@@ -1,4 +1,4 @@
-import React from 'react';
+import { G } from '@mobily/ts-belt';
 
 import { TextProps } from '@suite-native/atoms';
 import { useFormatters } from '@suite-common/formatters';
@@ -8,11 +8,12 @@ import { FormatterProps } from '../types';
 import { EmptyAmountText } from './EmptyAmountText';
 import { AmountText } from './AmountText';
 
-type CryptoToFiatAmountFormatterProps = FormatterProps<string | null> &
+type CryptoToFiatAmountFormatterProps = FormatterProps<string | null | number> &
     TextProps & {
         network: NetworkSymbol;
         isBalance?: boolean;
         isDiscreetText?: boolean;
+        decimals?: number;
     };
 
 export const CryptoAmountFormatter = ({
@@ -22,15 +23,17 @@ export const CryptoAmountFormatter = ({
     isDiscreetText = true,
     variant = 'hint',
     color = 'textSubdued',
+    decimals,
     ...textProps
 }: CryptoToFiatAmountFormatterProps) => {
     const { CryptoAmountFormatter: formatter } = useFormatters();
 
-    if (!value) return <EmptyAmountText />;
+    if (G.isNullable(value)) return <EmptyAmountText />;
 
-    const maxDisplayedDecimals = networks[network].decimals;
+    const maxDisplayedDecimals = decimals ?? networks[network].decimals;
 
-    const formattedValue = formatter.format(value, {
+    const stringValue = G.isNumber(value) ? value.toString() : value;
+    const formattedValue = formatter.format(stringValue, {
         isBalance,
         maxDisplayedDecimals,
         symbol: network,

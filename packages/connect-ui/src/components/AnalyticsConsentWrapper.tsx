@@ -1,5 +1,3 @@
-import React from 'react';
-
 import styled from 'styled-components';
 
 import { analytics } from '@trezor/connect-analytics';
@@ -10,7 +8,7 @@ const Wrapper = styled.div`
 `;
 
 type AnalyticsConsentWrapperProps = {
-    onAnalyticsConfirm: () => void;
+    onAnalyticsConfirm: (enabled: boolean) => void;
 };
 
 export const AnalyticsConsentWrapper = ({ onAnalyticsConfirm }: AnalyticsConsentWrapperProps) => {
@@ -21,7 +19,7 @@ export const AnalyticsConsentWrapper = ({ onAnalyticsConfirm }: AnalyticsConsent
             analytics.disable();
         }
 
-        onAnalyticsConfirm();
+        onAnalyticsConfirm(trackingEnabled);
     };
 
     return (

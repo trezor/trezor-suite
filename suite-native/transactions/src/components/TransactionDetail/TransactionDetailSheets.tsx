@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import { AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { Card, VStack } from '@suite-native/atoms';
@@ -62,7 +62,8 @@ export const TransactionDetailSheets = ({
                 )}
                 <TransactionDetailInputsSheet
                     isVisible={expandedSheet === 'inputs'}
-                    transaction={transaction}
+                    txid={transaction.txid}
+                    accountKey={accountKey}
                     onSheetVisibilityChange={() => toggleSheet('inputs')}
                 />
             </VStack>

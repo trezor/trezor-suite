@@ -1,26 +1,21 @@
-import React from 'react';
 import styled from 'styled-components';
 
-import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@suite-components/Settings';
-import * as suiteActions from '@suite-actions/suiteActions';
-import { useSelector, useActions } from '@suite-hooks';
-import invityAPI from '@suite-services/invityAPI';
+import { ActionColumn, ActionSelect, SectionItem, TextColumn } from 'src/components/suite/Settings';
+import { setDebugMode } from 'src/actions/suite/suiteActions';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import invityAPI from 'src/services/suite/invityAPI';
 import type { InvityServerEnvironment } from '@suite-common/invity';
-import { useAnchor } from '@suite-hooks/useAnchor';
-import { SettingsAnchor } from '@suite-constants/anchors';
-import { reloadApp } from '@suite-utils/reload';
+import { useAnchor } from 'src/hooks/suite/useAnchor';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { reloadApp } from 'src/utils/suite/reload';
 
 const StyledActionSelect = styled(ActionSelect)`
     min-width: 256px;
 `;
 
 export const InvityApi = () => {
-    const { setDebugMode } = useActions({
-        setDebugMode: suiteActions.setDebugMode,
-    });
-    const { debug } = useSelector(state => ({
-        debug: state.suite.settings.debug,
-    }));
+    const debug = useSelector(state => state.suite.settings.debug);
+    const dispatch = useDispatch();
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.InvityApi);
 
     const invityApiServerOptions = Object.entries(invityAPI.servers).map(
@@ -29,10 +24,16 @@ export const InvityApi = () => {
             value: environment as InvityServerEnvironment,
         }),
     );
-
     const selectedInvityApiServer =
         invityApiServerOptions.find(s => s.value === debug.invityServerEnvironment) ||
         invityApiServerOptions[0];
+
+    const handleChange = (item: { value: InvityServerEnvironment; label: string }) => {
+        dispatch(setDebugMode({ invityServerEnvironment: item.value }));
+        invityAPI.setInvityServersEnvironment(item.value);
+        // reload the Suite to reinitialize everything, with a slight delay to let the browser save the settings
+        reloadApp(100);
+    };
 
     return (
         <SectionItem
@@ -46,14 +47,7 @@ export const InvityApi = () => {
             />
             <ActionColumn>
                 <StyledActionSelect
-                    onChange={(item: { value: InvityServerEnvironment; label: string }) => {
-                        setDebugMode({
-                            invityServerEnvironment: item.value,
-                        });
-                        invityAPI.setInvityServersEnvironment(item.value);
-                        // reload the Suite to reinitialize everything, with a slight delay to let the browser save the settings
-                        reloadApp(100);
-                    }}
+                    onChange={handleChange}
                     value={selectedInvityApiServer}
                     options={invityApiServerOptions}
                 />

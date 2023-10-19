@@ -1,6 +1,6 @@
 import { IconType, CoinType } from '../support/types';
-import { COINS as CoinsObject } from '../components/logos/CoinLogo/coins';
-import { ICONS as IconsObject } from '../components/Icon/icons';
+import { COINS as CoinsObject } from '../components/assets/CoinLogo/coins';
+import { ICONS as IconsObject } from '../components/assets/Icon/icons';
 
 export const SCREEN_SIZE = {
     UNAVAILABLE: '260px',
@@ -55,6 +55,7 @@ export const Z_INDEX = {
     PAGE_HEADER: 11, // above STICKY_BAR to hide it when the page is on top
     STICKY_BAR: 10, // above page content to scroll over it
     SECONDARY_STICKY_BAR: 9, // below STICKY_BAR so that it can hide beneath it when no longer needed
+    ONNBOARDING_FOREGROUND: 2, // for handling multiple layers on the onboarding page
     BASE: 1, // above static content to be fully visible
 } as const;
 

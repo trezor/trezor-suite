@@ -1,17 +1,21 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import invityAPI from '@suite-services/invityAPI';
-import { useActions, useSelector, useDevice } from '@suite-hooks';
-import { useTimer } from '@trezor/react-utils';
+
 import { BuyTrade } from 'invity-api';
-import { processQuotes, createQuoteLink, createTxLink } from '@wallet-utils/coinmarket/buyUtils';
-import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
-import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
-import * as routerActions from '@suite-actions/routerActions';
-import { UseOffersProps, ContextValues } from '@wallet-types/coinmarketBuyOffers';
+
+import { useTimer } from '@trezor/react-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { isDesktop } from '@suite-utils/env';
-import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
-import { InvityAPIReloadQuotesAfterSeconds } from '@wallet-constants/coinmarket/metadata';
+import { isDesktop } from '@trezor/env-utils';
+import { selectDevice } from '@suite-common/wallet-core';
+
+import invityAPI from 'src/services/suite/invityAPI';
+import { useActions, useSelector, useDevice } from 'src/hooks/suite';
+import { processQuotes, createQuoteLink, createTxLink } from 'src/utils/wallet/coinmarket/buyUtils';
+import * as coinmarketCommonActions from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
+import * as coinmarketBuyActions from 'src/actions/wallet/coinmarketBuyActions';
+import * as routerActions from 'src/actions/suite/routerActions';
+import { UseOffersProps, ContextValues } from 'src/types/wallet/coinmarketBuyOffers';
+import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
+import { InvityAPIReloadQuotesAfterSeconds } from 'src/constants/wallet/coinmarket/metadata';
 
 export const useOffers = ({ selectedAccount }: UseOffersProps) => {
     const timer = useTimer();
@@ -41,25 +45,13 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
         goto: routerActions.goto,
     });
 
-    const {
-        invityServerEnvironment,
-        device,
-        quotes,
-        alternativeQuotes,
-        quotesRequest,
-        isFromRedirect,
-        addressVerified,
-        providersInfo,
-    } = useSelector(state => ({
-        invityServerEnvironment: state.suite.settings.debug.invityServerEnvironment,
-        device: state.suite.device,
-        quotes: state.wallet.coinmarket.buy.quotes,
-        alternativeQuotes: state.wallet.coinmarket.buy.alternativeQuotes,
-        quotesRequest: state.wallet.coinmarket.buy.quotesRequest,
-        isFromRedirect: state.wallet.coinmarket.buy.isFromRedirect,
-        addressVerified: state.wallet.coinmarket.buy.addressVerified,
-        providersInfo: state.wallet.coinmarket.buy.buyInfo?.providerInfos,
-    }));
+    const invityServerEnvironment = useSelector(
+        state => state.suite.settings.debug.invityServerEnvironment,
+    );
+    const device = useSelector(selectDevice);
+    const { addressVerified, alternativeQuotes, buyInfo, isFromRedirect, quotes, quotesRequest } =
+        useSelector(state => state.wallet.coinmarket.buy);
+
     const [innerQuotes, setInnerQuotes] = useState<BuyTrade[] | undefined>(quotes);
     const [innerAlternativeQuotes, setInnerAlternativeQuotes] = useState<BuyTrade[] | undefined>(
         alternativeQuotes,
@@ -112,7 +104,7 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
     });
 
     const selectQuote = async (quote: BuyTrade) => {
-        const provider = providersInfo && quote.exchange ? providersInfo[quote.exchange] : null;
+        const provider = buyInfo && quote.exchange ? buyInfo.providerInfos[quote.exchange] : null;
         if (quotesRequest) {
             const result = await openCoinmarketBuyConfirmModal(
                 provider?.companyName,
@@ -186,8 +178,7 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
         selectedQuote,
         verifyAddress,
         device,
-        providersInfo,
-        saveTrade,
+        providersInfo: buyInfo?.providerInfos,
         quotesRequest,
         addressVerified,
         quotes: innerQuotes,

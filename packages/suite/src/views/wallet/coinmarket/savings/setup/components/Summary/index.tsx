@@ -1,14 +1,13 @@
-import React from 'react';
 import styled from 'styled-components';
 import { variables } from '@trezor/components';
-import { FiatValue, FormattedCryptoAmount, Translation } from '@suite-components';
-import { NetworkSymbol } from '@wallet-types';
+import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
+import { NetworkSymbol } from 'src/types/wallet';
 
 const SummaryWrapper = styled.div`
     display: flex;
     justify-content: space-between;
-    border-top: 1px solid ${props => props.theme.BG_GREY};
-    border-bottom: 1px solid ${props => props.theme.BG_GREY};
+    border-top: 1px solid ${({ theme }) => theme.BG_GREY};
+    border-bottom: 1px solid ${({ theme }) => theme.BG_GREY};
     margin: 34px 0;
     padding: 14px 0;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
@@ -29,7 +28,7 @@ const Right = styled.div`
 const StyledFiatValue = styled(FiatValue)`
     font-size: 20px;
     line-height: 28px;
-    color: ${props => props.theme.TYPE_GREEN};
+    color: ${({ theme }) => theme.TYPE_GREEN};
     justify-content: end;
     display: flex;
 `;
@@ -37,12 +36,12 @@ const StyledFiatValue = styled(FiatValue)`
 const Crypto = styled.div`
     font-size: 20px;
     line-height: 28px;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     justify-content: end;
     display: flex;
 `;
 
-interface Props {
+interface SummaryProps {
     fiatCurrency?: string;
     annualSavingsFiatAmount: number;
     annualSavingsCryptoAmount: string;
@@ -54,7 +53,7 @@ const Summary = ({
     annualSavingsCryptoAmount,
     annualSavingsFiatAmount,
     fiatCurrency,
-}: Props) => (
+}: SummaryProps) => (
     <SummaryWrapper>
         <Left>
             <Translation id="TR_SAVINGS_SETUP_SUMMARY_LABEL" />

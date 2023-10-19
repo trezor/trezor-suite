@@ -75,15 +75,15 @@ export default class CardanoGetAddress extends AbstractMethod<'cardanoGetAddress
             this.params[0].show_display;
         this.confirmed = useEventListener;
         this.useUi = !useEventListener;
+    }
 
-        // set info
+    get info() {
         if (this.params.length === 1) {
-            this.info = `Export Cardano address for account #${
+            return `Export Cardano address for account #${
                 fromHardened(this.params[0].address_parameters.address_n[2]) + 1
             }`;
-        } else {
-            this.info = 'Export multiple Cardano addresses';
         }
+        return 'Export multiple Cardano addresses';
     }
 
     getButtonRequestData(code: string) {

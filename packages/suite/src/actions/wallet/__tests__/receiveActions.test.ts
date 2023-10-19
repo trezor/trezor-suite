@@ -1,15 +1,20 @@
 /* eslint-disable global-require */
 
-import { configureStore } from '@suite/support/tests/configureStore';
-
-import receiveReducer from '@wallet-reducers/receiveReducer';
-import suiteReducer from '@suite-reducers/suiteReducer';
-import modalReducer from '@suite-reducers/modalReducer';
 import { connectInitThunk } from '@suite-common/connect-init';
-import * as receiveActions from '@wallet-actions/receiveActions';
+import { prepareDeviceReducer } from '@suite-common/wallet-core';
+
+import { configureStore } from 'src/support/tests/configureStore';
+import receiveReducer from 'src/reducers/wallet/receiveReducer';
+import suiteReducer from 'src/reducers/suite/suiteReducer';
+import modalReducer from 'src/reducers/suite/modalReducer';
+import * as receiveActions from 'src/actions/wallet/receiveActions';
+import { extraDependencies } from 'src/support/extraDependencies';
+
 import fixtures from '../__fixtures__/receiveActions';
 
 const { getSuiteDevice } = global.JestMocks;
+
+const deviceReducer = prepareDeviceReducer(extraDependencies);
 
 jest.mock('@trezor/connect', () => {
     let fixture: any;
@@ -60,19 +65,27 @@ jest.mock('@trezor/connect', () => {
         UI_EVENT: 'UI_EVENT',
         TRANSPORT_EVENT: 'TRANSPORT_EVENT',
         BLOCKCHAIN_EVENT: 'BLOCKCHAIN_EVENT',
-        DEVICE: {},
+        DEVICE: {
+            DISCONNECT: 'device-disconnect',
+            CONNECT_UNACQUIRED: 'device-connect-unacquired',
+            CHANGED: 'device-changed',
+        },
         TRANSPORT: {},
         BLOCKCHAIN: {},
         UI: {
             REQUEST_BUTTON: 'ui-button',
         },
         PROTO,
+        DeviceModelInternal: {
+            T2T1: 'T2T1',
+        },
     };
 });
 
 type ReceiveState = ReturnType<typeof receiveReducer>;
 type SuiteState = ReturnType<typeof suiteReducer>;
 type ModalState = ReturnType<typeof modalReducer>;
+type DeviceState = ReturnType<typeof deviceReducer>;
 
 interface InitialState {
     suite: Partial<SuiteState>;
@@ -87,14 +100,14 @@ interface InitialState {
             enabledNetworks: string[];
         };
     };
+    device: Partial<DeviceState>;
     modal: ModalState;
 }
 
 export const getInitialState = (state: Partial<InitialState> | undefined) => ({
-    devices: [],
     suite: {
         ...suiteReducer(undefined, { type: 'foo' } as any),
-        device: getSuiteDevice({ available: true, connected: true }),
+        ...state?.suite,
     },
     wallet: {
         receive: receiveReducer([], { type: 'foo' } as any),
@@ -106,9 +119,17 @@ export const getInitialState = (state: Partial<InitialState> | undefined) => ({
         settings: {
             enabledNetworks: ['btc'],
         },
+        ...state?.wallet,
     },
-    modal: modalReducer(undefined, { type: 'foo' } as any),
-    ...state,
+    modal: {
+        ...modalReducer(undefined, { type: 'foo' } as any),
+        ...state?.modal,
+    },
+    device: {
+        ...deviceReducer(undefined, { type: 'foo' } as any),
+        selectedDevice: getSuiteDevice({ available: true, connected: true }),
+        ...state?.device,
+    },
 });
 
 type State = ReturnType<typeof getInitialState>;
@@ -127,7 +148,6 @@ const initStore = (state: State) => {
 };
 
 describe('ReceiveActions', () => {
-    // fixtures.slice(3, 4).forEach(f => {
     fixtures.forEach(f => {
         it(f.description, async () => {
             // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -165,17 +185,17 @@ describe('ReceiveActions', () => {
         const VERIFIED = [{ path: 'a', address: 'b', isVerified: true }];
         const UNVERIFIED = [{ path: 'a', address: 'b', isVerified: false }];
 
-        await store.dispatch(receiveActions.showUnverifiedAddress('a', 'b'));
+        await store.dispatch(receiveActions.openAddressModal({ addressPath: 'a', value: 'b' }));
         expect(store.getState().wallet.receive).toEqual(UNVERIFIED);
 
         await store.dispatch(receiveActions.showAddress('a', 'b'));
         expect(store.getState().wallet.receive).toEqual(VERIFIED);
 
-        await store.dispatch(receiveActions.showUnverifiedAddress('a', 'b'));
+        await store.dispatch(receiveActions.openAddressModal({ addressPath: 'a', value: 'b' }));
         expect(store.getState().wallet.receive).toEqual(UNVERIFIED);
 
         // add second
-        await store.dispatch(receiveActions.showUnverifiedAddress('c', 'd'));
+        await store.dispatch(receiveActions.openAddressModal({ addressPath: 'c', value: 'd' }));
         expect(store.getState().wallet.receive.length).toEqual(2);
 
         // clear

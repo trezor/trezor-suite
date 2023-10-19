@@ -25,7 +25,7 @@
     ## when debugging or developing tests it does not make sense to have retries,
     ## in other cases retries are useful to avoid occasional failures due to flaky tests
     ALLOW_RETRY: 1
-    CYPRESS_TEST_URLS: ${CI_BUILD_REF_NAME}
+    CYPRESS_TEST_URLS: ${CI_COMMIT_REF_NAME}
   before_script:
     - docker login $CI_DEPENDENCY_PROXY_SERVER -u $CI_DEPENDENCY_PROXY_USER -p $CI_DEPENDENCY_PROXY_PASSWORD
   script:
@@ -79,7 +79,7 @@ suite web migrations:
   extends: .e2e web
   variables:
     # Each test file will be run for all urls in TEST_URLS array. Useful for migration tests
-    CYPRESS_TEST_URLS: release/22.5 ${CI_BUILD_REF_NAME}
+    CYPRESS_TEST_URLS: release/22.5 ${CI_COMMIT_REF_NAME}
     CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: 1
   parallel:
     matrix:
@@ -96,7 +96,7 @@ suite web snapshots:
     CYPRESS_SNAPSHOT: 1
     CYPRESS_updateSnapshots: 1
 
-# Tests against latest trezor-firmware master
+# Tests against latest trezor-firmware main
 suite web 2-master:
   extends: .suite web base
   only:
@@ -133,7 +133,7 @@ suite web 2-master manual:
     - yarn install --immutable
     # 3 next steps could be removed if we passed packages/suite-desktop/dist and build folder as an artifact
     # but since this is run only in nightly builds it can be probably built inside the job for now..
-    - yarn workspace @trezor/message-system sign-config
+    - yarn message-system-sign-config
     - yarn workspace @trezor/suite-desktop build:linux
     - docker-compose pull
     - docker-compose up -d ${CONTAINERS}
@@ -202,7 +202,7 @@ transport manual:
   variables:
     COMPOSE_PROJECT_NAME: $CI_JOB_ID
     COMPOSE_FILE: ./docker/docker-compose.connect-popup-ci.yml
-    URL: ${DEV_SERVER_URL}/connect/${CI_BUILD_REF_NAME}/
+    URL: ${DEV_SERVER_URL}/connect/${CI_COMMIT_REF_NAME}/
     TEST_FILE: $TEST_FILE
   script:
     - yarn install --immutable
@@ -222,11 +222,15 @@ transport manual:
   interruptible: true
   parallel:
     matrix:
-      - TEST_FILE: ["methods"]
-      - TEST_FILE: ["popup-close"]
-      - TEST_FILE: ["unchained"]
-      - TEST_FILE: ["browser-support"]
-      - TEST_FILE: ["install-bridge"]
+      - TEST_FILE: ["methods.test"]
+      - TEST_FILE: ["popup-close.test"]
+      - TEST_FILE: ["popup-error-page.test"]
+      - TEST_FILE: ["passphrase.test"]
+      - TEST_FILE: ["log-page.test"]
+      - TEST_FILE: ["unchained.test"]
+      - TEST_FILE: ["browser-support.test"]
+      - TEST_FILE: ["transport.test"]
+      - TEST_FILE: ["permissions.test"]
 
 connect-popup:
   extends: .e2e connect-popup
@@ -241,6 +245,26 @@ connect-popup manual:
   needs:
     - install
     - connect-web build
+  except:
+    <<: *run_everything_rules
+  when: manual
+
+connect-popup legacy:
+  extends: .e2e connect-popup
+  needs:
+    - install
+    - connect-web build
+  retry: 0
+  variables:
+    COMPOSE_PROJECT_NAME: $CI_JOB_ID
+    COMPOSE_FILE: ./docker/docker-compose.connect-popup-ci.yml
+    # It will use connect version from npm legacy version with current popup.
+    URL: ${DEV_SERVER_URL}/connect/npm-release/connect-${CONNECT_VERSION}/?trezor-connect-src=${DEV_SERVER_URL}/connect/${CI_COMMIT_REF_NAME}/
+    TEST_FILE: $TEST_FILE
+  parallel:
+    matrix:
+      - CONNECT_VERSION: "9.0.11"
+        TEST_FILE: ["methods.test", "browser-support.test", "popup-close-legacy.test"]
   except:
     <<: *run_everything_rules
   when: manual
@@ -278,16 +302,26 @@ connect-popup manual:
     - docker-compose up -d trezor-user-env-unix
     - docker-compose run test-run
   after_script:
+    - docker cp ${CI_JOB_ID}_trezor-user-env-unix_1:/trezor-user-env/logs/debugging.log trezor-user-env-debugging.log
+    - docker cp ${CI_JOB_ID}_trezor-user-env-unix_1:/trezor-user-env/logs/emulator_bridge.log tenv-emulator-bridge-debugging.log
+    - docker cp ${CI_JOB_ID}_trezor-user-env-unix_1:/trezor-user-env/docker/version.txt trezor-user-env-version.txt
     - docker-compose down
     - docker network prune -f
   interruptible: true
+  artifacts:
+    expire_in: 7 days
+    when: always
+    paths:
+      - trezor-user-env-debugging.log
+      - tenv-emulator-bridge-debugging.log
+      - trezor-user-env-version.txt
 
 .connect matrix:
   extends: .connect
   parallel:
     matrix:
       - TESTS_ENVIRONMENT: ["node", "web"]
-        TESTS_PATTERN: "init authorizeCoinjoin passphrase unlockPath setBusy"
+        TESTS_PATTERN: "init authorizeCoinjoin cancelCoinjoinAuthorization passphrase unlockPath setBusy override"
         TESTS_FIRMWARE: ["2-master", "2.2.0"]
         # todo:
         # TESTS_NODE_VERSION: ["12", "14", "16"]
@@ -298,7 +332,7 @@ connect-popup manual:
         # TESTS_NODE_VERSION: ["12", "14", "16"]
         TESTS_INCLUDED_METHODS:
           [
-            "applySettings,applyFlags,getFeatures,getFirmwareHash",
+            "applySettings,applyFlags,getFeatures,getFirmwareHash,checkFirmwareAuthenticity",
             "signTransaction",
             "getAccountInfo,getAddress,getPublicKey,signMessage,verifyMessage,composeTransaction,getOwnershipId,getOwnershipProof",
             "stellarGetAddress,stellarSignTransaction",
@@ -326,68 +360,40 @@ connect manual:
       - schedules
   when: manual
 
-connect model R:
+connect T2B1:
   extends: .connect
-  allow_failure: true
   only:
     refs:
       - schedules
   parallel:
     matrix:
+      - TESTS_ENVIRONMENT: ["node", "web"]
+        TESTS_PATTERN: "authenticateDevice"
+        TESTS_FIRMWARE: ["2-latest"]
+        TESTS_FIRMWARE_MODEL: "R"
       - TESTS_ENVIRONMENT: ["node"]
         TESTS_PATTERN: "methods"
         TESTS_FIRMWARE: ["2-latest"]
         TESTS_FIRMWARE_MODEL: "R"
-        # todo: would be nice to create a scheduled job in firmware-repo in order to have artifact from this branch always available
-        TESTS_FIRMWARE_URL: "https://gitlab.com/satoshilabs/trezor/trezor-firmware/-/jobs/4189306201/artifacts/raw/core/build/unix/trezor-emu-core"
-        # one method per job for easier debugging
         TESTS_INCLUDED_METHODS: [
-            "applySettings",
-            "applyFlags",
-            "getFeatures",
-            "getFirmwareHash",
-            "signTransaction",
-            "getAccountInfo",
-            "getAddress",
-            "getPublicKey",
-            "signMessage",
-            "verifyMessage",
-            "composeTransaction",
-            "stellarGetAddress",
-            "stellarSignTransaction",
-            "cardanoGetAddress",
-            "cardanoGetNativeScriptHash",
-            "cardanoGetPublicKey",
-            "cardanoSignTransaction",
-            "eosGetPublicKey",
-            "eosSignTransaction",
-            "ethereumGetAddress",
-            "ethereumGetPublicKey",
-            "ethereumSignMessage",
-            "ethereumSignTransaction",
-            "ethereumVerifyMessage",
-            "nemGetAddress",
-            "nemSignTransaction",
-            "rippleGetAddress",
-            "rippleSignTransaction",
-            "tezosGetAddress",
-            "tezosGetPublicKey",
-            "tezosSignTransaction",
-            "binanceGetAddress",
-            "binanceGetPublicKey",
-            "binanceSignTransaction",
-            # Failing, firmware probably not rebased, newly added functionality
-            "getOwnershipId",
-            "getOwnershipProof",
-            # Fails on structs_arrays_v4, weird error "Transport stopped."
-            "ethereumSignTypedData",
+            "applySettings,applyFlags,getFirmwareHash", # getFeatures (capabilies)
+            # "signTransaction", (unsupported chain in fixtures)
+            "getAccountInfo,getPublicKey,signMessage,verifyMessage,composeTransaction,getOwnershipId,getOwnershipProof", # getAddress (unsuppported chain in fixtures)
+            "stellarGetAddress,stellarSignTransaction",
+            "cardanoGetAddress,cardanoGetNativeScriptHash,cardanoGetPublicKey,cardanoSignTransaction",
+            # eos not supported
+            "ethereumGetAddress,ethereumGetPublicKey,ethereumSignMessage,ethereumSignTransaction,ethereumVerifyMessage,ethereumSignTypedData",
+            # nem not supported
+            "rippleGetAddress,rippleSignTransaction",
+            "tezosGetAddress,tezosGetPublicKey,tezosSignTransaction",
+            "binanceGetAddress,binanceGetPublicKey,binanceSignTransaction",
           ]
         TESTS_MOCK_BACKENDS: "false"
 
 .e2e connect-web:
   stage: integration testing
   variables:
-    URL: ${DEV_SERVER_URL}/connect/${CI_BUILD_REF_NAME}/
+    URL: ${DEV_SERVER_URL}/connect/${CI_COMMIT_REF_NAME}/
   script:
     - yarn install --immutable
     - yarn workspace @trezor/connect-web test:e2e
@@ -395,5 +401,23 @@ connect model R:
 
 connect-web:
   extends: .e2e connect-web
+  only:
+    <<: *run_everything_rules
+
+connect-web mv2:
+  stage: integration testing
+  variables:
+    COMPOSE_PROJECT_NAME: $CI_JOB_ID
+    COMPOSE_FILE: ./docker/docker-compose.connect-webextension-test.yml
+    URL: ${DEV_SERVER_URL}/connect/${CI_COMMIT_REF_NAME}/
+  script:
+    - yarn install --immutable
+    - node ./packages/connect-examples/update-webextensions.js --trezor-connect-src "${URL}" --npm-src "${URL}/trezor-connect.js"
+    - docker-compose pull
+    - docker-compose up -d trezor-user-env-unix
+    - docker-compose run test-run
+  after_script:
+    - docker-compose down
+    - docker network prune -f
   only:
     <<: *run_everything_rules

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect, ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
 import * as Sentry from '@sentry/react-native';
@@ -24,7 +24,7 @@ const initSentry = () => {
 
 initSentry();
 
-export const SentryProvider = ({ children }: { children: React.ReactNode }) => {
+export const SentryProvider = ({ children }: { children: ReactNode }) => {
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
     const isAnalyticsEnabled = useSelector(selectIsAnalyticsEnabled);
 

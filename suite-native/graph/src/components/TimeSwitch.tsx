@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box } from '@suite-native/atoms';
 
@@ -24,9 +22,10 @@ export const timeSwitchItems: TimeSwitchItemType[] = [
     { label: 'all', valueBackInHours: null },
 ];
 
-const timeSwitchStyle = prepareNativeStyle(() => ({
+const timeSwitchStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
     justifyContent: 'space-around',
+    paddingHorizontal: utils.spacings.medium,
 }));
 
 export const TimeSwitch = ({ selectedTimeFrame = 24, onSelectTimeFrame }: TimeSwitchProps) => {

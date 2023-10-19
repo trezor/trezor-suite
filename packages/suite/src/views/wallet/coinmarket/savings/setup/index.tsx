@@ -1,18 +1,19 @@
-import React from 'react';
-import { withCoinmarket, WithSelectedAccountLoadedProps } from '@wallet-components';
 import styled from 'styled-components';
+
+import { WithSelectedAccountLoadedProps } from 'src/components/wallet';
 import { Button, variables, Select, Flag } from '@trezor/components';
-import { useSavingsSetup } from '@wallet-hooks/useCoinmarketSavingsSetup';
+import { useSavingsSetup } from 'src/hooks/wallet/useCoinmarketSavingsSetup';
 import { Controller } from 'react-hook-form';
-import { Translation } from '@suite-components';
-import regional from '@wallet-constants/coinmarket/regional';
-import type { CountryOption } from '@wallet-types/coinmarketCommonTypes';
-import { getCountryLabelParts } from '@wallet-utils/coinmarket/coinmarketUtils';
+import { Translation } from 'src/components/suite';
+import regional from 'src/constants/wallet/coinmarket/regional';
+import type { CountryOption } from 'src/types/wallet/coinmarketCommonTypes';
+import { getCountryLabelParts } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import FiatAmount from './components/FiatAmount';
 import Summary from './components/Summary';
-import { NoProviders, StyledSelectBar } from '@wallet-views/coinmarket';
+import { NoProviders, StyledSelectBar } from 'src/views/wallet/coinmarket';
 import { getTitleForNetwork } from '@suite-common/wallet-utils';
 import { AllFeesIncluded } from '../AllFeesIncluded';
+import { withCoinmarket } from '../withCoinmarket';
 
 const Header = styled.div`
     font-weight: 500;
@@ -38,7 +39,7 @@ const Label = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     text-transform: capitalize;
     font-size: ${variables.FONT_SIZE.NORMAL};
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     margin-bottom: 11px;
 `;
 
@@ -63,7 +64,7 @@ const FlagWrapper = styled.div`
 const LabelText = styled.div`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
 `;
 
 const LinkButton = styled(Button)`
@@ -97,7 +98,7 @@ const CoinmarketSavingsSetup = (props: WithSelectedAccountLoadedProps) => {
         fiatAmount,
         fiatCurrency,
         account,
-        errors,
+        formState: { errors },
         canConfirmSetup,
         handleSubmit,
         onSubmit,
@@ -143,7 +144,7 @@ const CoinmarketSavingsSetup = (props: WithSelectedAccountLoadedProps) => {
                 control={control}
                 name="country"
                 defaultValue={defaultCountryOption}
-                render={({ onChange, value }) => (
+                render={({ field: { onChange, value } }) => (
                     <StyledSelect
                         value={value}
                         label={<Translation id="TR_SAVINGS_UNSUPPORTED_COUNTRY_SELECT_LABEL" />}
@@ -193,7 +194,7 @@ const CoinmarketSavingsSetup = (props: WithSelectedAccountLoadedProps) => {
                         control={control}
                         name="paymentFrequency"
                         defaultValue={defaultPaymentFrequency}
-                        render={({ onChange, value }) => (
+                        render={({ field: { onChange, value } }) => (
                             <FrequencyStyledSelectBar
                                 onChange={onChange}
                                 selectedOption={value}

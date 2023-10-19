@@ -31,7 +31,7 @@ export const init =
             });
         });
 
-        TrezorConnect.on(TRANSPORT_EVENT, event => {
+        TrezorConnect.on(TRANSPORT_EVENT, _event => {
             // this type of event should not be emitted in "popup mode"
         });
 

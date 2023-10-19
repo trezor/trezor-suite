@@ -1,9 +1,15 @@
-import React from 'react';
 import styled from 'styled-components';
 import { variables } from '@trezor/components';
-import { useLoadingSkeleton } from '@suite-hooks';
-import { SkeletonRectangle, Spread } from '@suite-components/Skeleton';
-import { Wrapper, Left, Middle, Right, StyledIcon, FooterWrapper } from '@wallet-views/coinmarket';
+import { useLoadingSkeleton } from 'src/hooks/suite';
+import { SkeletonRectangle, Spread } from 'src/components/suite/Skeleton';
+import {
+    Wrapper,
+    Left,
+    Middle,
+    Right,
+    StyledIcon,
+    FooterWrapper,
+} from 'src/views/wallet/coinmarket';
 
 const SkeletonWrapper = styled.div`
     display: flex;
@@ -20,7 +26,7 @@ const FooterSkeletonWrapper = styled(FooterWrapper)`
 
 const Divider = styled(Wrapper)`
     display: flex;
-    border-top: 1px solid ${props => props.theme.STROKE_GREY};
+    border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
     padding: 0;
 `;
 

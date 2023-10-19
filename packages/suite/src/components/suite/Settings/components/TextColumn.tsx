@@ -1,13 +1,13 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import styled from 'styled-components';
-import { variables, Button } from '@trezor/components';
-import { Translation, TrezorLink } from '@suite-components';
+import { variables, Button, Icon } from '@trezor/components';
+import { Translation, TrezorLink } from 'src/components/suite';
 
 interface TextColumnProps {
-    title?: React.ReactNode;
-    description?: React.ReactNode;
+    title?: ReactNode;
+    description?: ReactNode;
     buttonLink?: string;
-    buttonTitle?: React.ReactNode;
+    buttonTitle?: ReactNode;
 }
 
 const Wrapper = styled.div`
@@ -21,10 +21,14 @@ const Wrapper = styled.div`
 
 const ButtonLink = styled(Button)`
     max-width: fit-content;
+
+    svg {
+        margin-left: 6px;
+    }
 `;
 
 const Description = styled.div`
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     margin-bottom: 12px;
     margin-top: 12px;
     font-size: ${variables.FONT_SIZE.SMALL};
@@ -52,6 +56,7 @@ export const TextColumn = ({ title, description, buttonLink, buttonTitle }: Text
             <TrezorLink variant="nostyle" href={buttonLink}>
                 <ButtonLink variant="tertiary">
                     {buttonTitle || <Translation id="TR_LEARN_MORE" />}
+                    <Icon icon="EXTERNAL_LINK" size={12} />
                 </ButtonLink>
             </TrezorLink>
         )}

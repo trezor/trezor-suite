@@ -1,14 +1,13 @@
-import React from 'react';
 import styled from 'styled-components';
-import { TrezorDevice } from '@suite-types';
-import { getFormattedFingerprint } from '@firmware-utils';
+import { TrezorDevice } from 'src/types/suite';
+import { getFormattedFingerprint } from 'src/utils/firmware';
 
 const Wrapper = styled.pre`
     padding: 8px;
     width: 100%;
     overflow: hidden;
-    background-color: ${props => props.theme.BG_GREY};
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    background-color: ${({ theme }) => theme.BG_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     text-align: center;
     word-break: break-all;
     font-family: monospace;

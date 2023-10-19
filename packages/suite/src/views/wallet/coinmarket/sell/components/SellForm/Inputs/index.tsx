@@ -1,15 +1,16 @@
-import React, { useCallback, useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import BigNumber from 'bignumber.js';
 import styled from 'styled-components';
-import { useCoinmarketSellFormContext } from '@wallet-hooks/useCoinmarketSellForm';
+
+import { useCoinmarketSellFormContext } from 'src/hooks/wallet/useCoinmarketSellForm';
 import FiatInput from './FiatInput';
-import { CRYPTO_INPUT, FIAT_INPUT, OUTPUT_AMOUNT } from '@suite/types/wallet/coinmarketSellForm';
+import { CRYPTO_INPUT, FIAT_INPUT, OUTPUT_AMOUNT } from 'src/types/wallet/coinmarketSellForm';
 import CryptoInput from './CryptoInput';
-import { useLayoutSize } from '@suite/hooks/suite';
-import FractionButtons from '@wallet-components/CoinmarketFractionButtons';
+import { useLayoutSize } from 'src/hooks/suite';
+import { CoinmarketFractionButtons } from 'src/views/wallet/coinmarket/common';
 import { amountToSatoshi, isZero } from '@suite-common/wallet-utils';
-import { Wrapper, Left, Middle, Right, StyledIcon } from '@wallet-views/coinmarket';
-import { useBitcoinAmountUnit } from '@wallet-hooks/useBitcoinAmountUnit';
+import { Wrapper, Left, Middle, Right, StyledIcon } from 'src/views/wallet/coinmarket';
+import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 
 const EmptyDiv = styled.div`
     width: 100%;
@@ -17,33 +18,21 @@ const EmptyDiv = styled.div`
 
 const Inputs = () => {
     const {
-        errors,
         trigger,
-        watch,
         composeRequest,
         account,
         network,
         setValue,
         clearErrors,
         onCryptoAmountChange,
-        activeInput,
-        setActiveInput,
         getValues,
+        amountLimits,
     } = useCoinmarketSellFormContext();
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
-
-    // if FIAT_INPUT has a valid value, set it as the activeInput
-    if (watch(FIAT_INPUT) && !errors[FIAT_INPUT] && activeInput === CRYPTO_INPUT) {
-        setActiveInput(FIAT_INPUT);
-    }
 
     const { outputs } = getValues();
     const tokenAddress = outputs?.[0]?.token;
     const tokenData = account.tokens?.find(t => t.contract === tokenAddress);
-
-    useEffect(() => {
-        trigger([activeInput]);
-    }, [activeInput, trigger]);
 
     const { layoutSize } = useLayoutSize();
     const isLargeLayoutSize = layoutSize === 'XLARGE' || layoutSize === 'LARGE';
@@ -64,7 +53,6 @@ const Inputs = () => {
                 : amount;
             setValue(CRYPTO_INPUT, cryptoInputValue, { shouldDirty: true });
             clearErrors([CRYPTO_INPUT]);
-            setActiveInput(CRYPTO_INPUT);
             onCryptoAmountChange(cryptoInputValue);
         },
         [
@@ -73,7 +61,6 @@ const Inputs = () => {
             clearErrors,
             network.decimals,
             onCryptoAmountChange,
-            setActiveInput,
             tokenData,
             setValue,
         ],
@@ -84,22 +71,28 @@ const Inputs = () => {
         setValue(FIAT_INPUT, '', { shouldDirty: true });
         setValue(OUTPUT_AMOUNT, '', { shouldDirty: true });
         clearErrors([FIAT_INPUT, CRYPTO_INPUT]);
-        setActiveInput(CRYPTO_INPUT);
         composeRequest(CRYPTO_INPUT);
-    }, [clearErrors, composeRequest, setActiveInput, setValue]);
+    }, [clearErrors, composeRequest, setValue]);
 
     const isBalanceZero = tokenData
         ? isZero(tokenData.balance || '0')
         : isZero(account.formattedBalance);
 
+    // Trigger validation once amountLimits are loaded after first submit
+    useEffect(() => {
+        if (amountLimits) {
+            trigger([CRYPTO_INPUT, FIAT_INPUT]);
+        }
+    }, [amountLimits, trigger]);
+
     return (
         <Wrapper responsiveSize="LG">
             <Left>
-                <CryptoInput activeInput={activeInput} setActiveInput={setActiveInput} />
+                <CryptoInput />
             </Left>
             <Middle responsiveSize="LG">
                 {!isLargeLayoutSize && (
-                    <FractionButtons
+                    <CoinmarketFractionButtons
                         disabled={isBalanceZero}
                         onFractionClick={setRatioAmount}
                         onAllClick={setAllAmount}
@@ -109,10 +102,10 @@ const Inputs = () => {
                 {!isLargeLayoutSize && <EmptyDiv />}
             </Middle>
             <Right>
-                <FiatInput activeInput={activeInput} setActiveInput={setActiveInput} />
+                <FiatInput />
             </Right>
             {isLargeLayoutSize && (
-                <FractionButtons
+                <CoinmarketFractionButtons
                     disabled={isBalanceZero}
                     onFractionClick={setRatioAmount}
                     onAllClick={setAllAmount}

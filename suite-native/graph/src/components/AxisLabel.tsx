@@ -1,5 +1,5 @@
-import React, { useCallback, useMemo, useState } from 'react';
-import { Dimensions, LayoutChangeEvent, View } from 'react-native';
+import { useCallback, useRef, useState } from 'react';
+import { Dimensions, View } from 'react-native';
 
 import { useDiscreetMode } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -10,35 +10,55 @@ type AxisLabelProps = {
     value: number;
 };
 
+type AxisLabelStyleProps = {
+    x: number;
+    isOverflowing: boolean;
+};
+
+const SCREEN_WIDTH = Dimensions.get('screen').width;
+
 export const MAX_CLAMP_VALUE = 90;
 
-const axisLabelStyle = prepareNativeStyle<Pick<AxisLabelProps, 'x'>>((_, { x }) => ({
+const axisLabelStyle = prepareNativeStyle<AxisLabelStyleProps>((_, { x, isOverflowing }) => ({
     position: 'absolute',
     left: `${x}%`,
+    extend: {
+        // Position the axis label from the right if it's overflowing the screen width.
+        condition: isOverflowing,
+        style: {
+            left: undefined,
+            right: 0,
+        },
+    },
 }));
 
 export const AxisLabel = ({ x, value }: AxisLabelProps) => {
-    const { applyStyle } = useNativeStyles();
+    const { applyStyle, utils } = useNativeStyles();
     const { isDiscreetMode } = useDiscreetMode();
-    const [textWidth, setTextWidth] = useState<null | number>(0);
+    const viewRef = useRef<View>(null);
+    const [isOverflowing, setIsOverflowing] = useState(false);
 
-    const handleTextLayout = useCallback((event: LayoutChangeEvent) => {
-        const { width } = event.nativeEvent.layout;
-        setTextWidth(width);
-    }, []);
-
-    // If the highest value is at the end of range, it will overflow so we need to calculate width percentage of axis label from the screen and offset it.
-    const labelOffset = useMemo(() => {
-        if (x !== MAX_CLAMP_VALUE || !textWidth) return x;
-        const textWidthPercentage = (textWidth / Dimensions.get('window').width) * 100;
-        return x - textWidthPercentage;
-    }, [textWidth, x]);
+    const handleLayoutOverflow = useCallback(() => {
+        if (viewRef.current) {
+            viewRef.current.measureInWindow((viewX, _, viewWidth) => {
+                const graphHorizontalPadding = utils.spacings.small;
+                // The right most pixel of the axis label is overflowing the graph width.
+                if (viewX + viewWidth + graphHorizontalPadding > SCREEN_WIDTH) {
+                    setIsOverflowing(true);
+                }
+            });
+        }
+    }, [utils]);
 
     if (isDiscreetMode) return null;
 
     return (
-        <View style={applyStyle(axisLabelStyle, { x: labelOffset })} onLayout={handleTextLayout}>
-            <FiatAmountFormatter value={String(value)} />
+        <View
+            style={applyStyle(axisLabelStyle, { x, isOverflowing })}
+            onLayout={handleLayoutOverflow}
+            ref={viewRef}
+        >
+            <FiatAmountFormatter value={String(value)} variant="label" color="textDisabled" />
         </View>
     );
 };

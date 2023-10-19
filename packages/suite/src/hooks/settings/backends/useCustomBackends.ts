@@ -1,4 +1,4 @@
-import { useSelector } from '@suite-hooks';
+import { useSelector } from 'src/hooks/suite';
 import { getCustomBackends } from '@suite-common/wallet-utils';
 
 export const useCustomBackends = () => {

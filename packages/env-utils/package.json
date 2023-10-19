@@ -1,6 +1,6 @@
 {
     "name": "@trezor/env-utils",
-    "version": "1.0.0",
+    "version": "1.0.7",
     "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/env-utils",
     "npmPublishAccess": "public",
     "license": "See LICENSE.md in repo root",
@@ -20,16 +20,32 @@
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "type-check": "tsc --build",
-        "build:lib": "rimraf lib && yarn tsc --build ./tsconfig.lib.json",
+        "build:lib": "rimraf ./lib && yarn tsc --build tsconfig.lib.json",
         "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
         "prepublish": "yarn tsx ../../scripts/prepublish.js"
     },
     "dependencies": {
-        "ua-parser-js": "^1.0.34"
+        "ua-parser-js": "^1.0.35"
     },
     "devDependencies": {
-        "rimraf": "^4.4.1",
-        "tsx": "^3.12.6",
+        "rimraf": "^5.0.1",
+        "tsx": "^3.12.7",
         "typescript": "4.9.5"
+    },
+    "peerDependencies": {
+        "expo-localization": "^14.1.1",
+        "react-native": "0.71.8",
+        "react-native-config": "^1.5.0"
+    },
+    "peerDependenciesMeta": {
+        "expo-localization": {
+            "optional": true
+        },
+        "react-native": {
+            "optional": true
+        },
+        "react-native-config": {
+            "optional": true
+        }
     }
 }

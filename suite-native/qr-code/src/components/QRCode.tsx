@@ -1,17 +1,24 @@
-import React from 'react';
-import { View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { Dimensions, View } from 'react-native';
 import ReactQRCode from 'react-qr-code';
 
+import * as Brightness from 'expo-brightness';
+
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Box, Text } from '@suite-native/atoms';
+import { Box } from '@suite-native/atoms';
 import { colorVariants } from '@trezor/theme';
 
 type QRCodeProps = {
     data: string;
 };
 
-export const QRCODE_SIZE = 197;
-export const QRCODE_PADDING = 12;
+const SCREEN_WIDTH = Dimensions.get('screen').width;
+
+const MAX_QRCODE_SIZE = 250;
+const QRCODE_PADDING = 12;
+
+const QRCODE_SIZE =
+    SCREEN_WIDTH < MAX_QRCODE_SIZE + QRCODE_PADDING ? SCREEN_WIDTH : MAX_QRCODE_SIZE;
 
 const qrCodeContainerStyle = prepareNativeStyle(_ => ({
     width: QRCODE_SIZE + QRCODE_PADDING,
@@ -23,6 +30,26 @@ const qrCodeContainerStyle = prepareNativeStyle(_ => ({
 
 export const QRCode = ({ data }: QRCodeProps) => {
     const { applyStyle } = useNativeStyles();
+    const [originalBrightnessValue, setOriginalBrightnessValue] = useState<number>();
+
+    useEffect(() => {
+        const storeBrightnessValue = async () => {
+            const brightnessValue = await Brightness.getBrightnessAsync();
+            setOriginalBrightnessValue(brightnessValue);
+        };
+
+        // Set brightness to maximum and store the original value.
+        storeBrightnessValue();
+        Brightness.setBrightnessAsync(1);
+    }, []);
+
+    useEffect(
+        // Restore the original brightness value when the QR code is unmounted.
+        () => () => {
+            if (originalBrightnessValue) Brightness.setBrightnessAsync(originalBrightnessValue);
+        },
+        [originalBrightnessValue],
+    );
 
     return (
         <Box alignItems="center">
@@ -35,10 +62,6 @@ export const QRCode = ({ data }: QRCodeProps) => {
                     value={data}
                 />
             </View>
-
-            <Box margin="small" alignItems="center" justifyContent="center">
-                <Text variant="body">{data}</Text>
-            </Box>
         </Box>
     );
 };

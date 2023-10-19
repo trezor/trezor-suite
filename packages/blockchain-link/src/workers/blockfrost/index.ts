@@ -1,6 +1,6 @@
 import { CustomError } from '@trezor/blockchain-link-types/lib/constants/errors';
 import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/lib/constants';
-import { BaseWorker, CONTEXT, ContextType } from '../base';
+import { BaseWorker, CONTEXT, ContextType } from '../baseWorker';
 import { BlockfrostAPI } from './websocket';
 import {
     transformUtxos,
@@ -222,7 +222,7 @@ const unsubscribeAddresses = async ({ state, connect }: Context, addresses?: str
     if (subscribed.length < 1) {
         // there are no subscribed addresses left
         // remove listeners
-        socket.removeListener('notification', onTransaction);
+        socket.removeAllListeners('notification');
         state.removeSubscription('notification');
         return socket.unsubscribeAddresses();
     }

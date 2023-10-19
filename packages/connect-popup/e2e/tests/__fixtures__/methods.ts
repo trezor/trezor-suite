@@ -184,7 +184,7 @@ const composeTransaction = [
                 screenshot: {
                     name: 'select-fee-default-screen',
                 },
-                next: 'text=Custom >> visible=true',
+                next: '.custom-fee >> visible=true',
             },
             {
                 selector: '.send-button >> visible=true',
@@ -217,7 +217,7 @@ const ethereumSignTransaction = [
     {
         device: initializedDevice,
         url: 'ethereumSignTransaction',
-        views: [followDevice, followDevice, followDevice, followDevice],
+        views: [followDevice, followDevice, followDevice],
     },
 ];
 
@@ -343,15 +343,6 @@ const recoverDevice = [
             {
                 selector: '.follow-device >> visible=true',
                 screenshot: {
-                    name: 'follow-device-confirm-select-number-of-words',
-                },
-                nextEmu: {
-                    type: 'emulator-press-yes',
-                },
-            },
-            {
-                selector: '.follow-device >> visible=true',
-                screenshot: {
                     name: 'follow-device-select-number-of-words',
                 },
                 nextEmu: {
@@ -405,6 +396,24 @@ const ethereumGetAddress = [
         views: [
             confirmExportAddressScreen,
             getConfirmAddressOnDeviceScreen('0x3f2329C9ADFbcCd9A84f52c906E936A42dA18CB8'),
+        ],
+    },
+];
+
+const ethereumGetAddressGoChain = [
+    {
+        ...getAddress[0],
+        url: 'ethereumGetAddress-gochain',
+        views: [
+            {
+                // Tests that definition was correctly loaded, decoded and displayed in the "main section of screen"
+                selector: 'text=Export GoChain address',
+                screenshot: {
+                    name: 'export-address-go-chain',
+                },
+                next: 'button.confirm >> visible=true',
+            },
+            getConfirmAddressOnDeviceScreen('0x2cfd36BE875fd9cF203Ad1BD90C96e085a7839DB'),
         ],
     },
 ];
@@ -615,6 +624,7 @@ export const fixtures = [
     ...recoverDevice,
     ...ethereumGetPublicKey,
     ...ethereumGetAddress,
+    ...ethereumGetAddressGoChain,
     ...ethereumSignTransaction,
     ...ethereumSignMessage,
     ...ethereumVerifyMessage,

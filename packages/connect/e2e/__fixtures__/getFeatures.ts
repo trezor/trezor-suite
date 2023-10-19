@@ -1,5 +1,7 @@
 // firmware should be always set. This tests actually tests the fact that
 
+import { DeviceModelInternal } from '../../src/types';
+
 const emulatorStartOpts = process.env.emulatorStartOpts || global.emulatorStartOpts;
 // @ts-expect-error (here might be bug)
 const firmware = emulatorStartOpts.version;
@@ -27,7 +29,7 @@ export default {
     },
     tests: [
         {
-            description: 'TT/TR features',
+            description: 'T2T1/T2B1 features',
             skip: ['1'],
             params: {},
             result: {
@@ -50,6 +52,7 @@ export default {
                 needs_backup: expect.any(Boolean),
                 // flags: expect.any(Number), // flags may be changed by applyFlags test
                 model: expect.any(String), // "T" | "R"
+                internal_model: expect.any(String),
                 fw_major: null,
                 fw_minor: null,
                 fw_patch: null,
@@ -57,16 +60,14 @@ export default {
                 unfinished_backup: expect.any(Boolean),
                 no_backup: expect.any(Boolean),
                 recovery_mode: false,
-                capabilities: [
+                capabilities: expect.arrayContaining([
                     'Capability_Bitcoin',
                     'Capability_Bitcoin_like',
                     'Capability_Binance',
                     'Capability_Cardano',
                     'Capability_Crypto',
-                    'Capability_EOS',
                     'Capability_Ethereum',
                     'Capability_Monero',
-                    'Capability_NEM',
                     'Capability_Ripple',
                     'Capability_Stellar',
                     'Capability_Tezos',
@@ -74,9 +75,11 @@ export default {
                     'Capability_Shamir',
                     'Capability_ShamirGroups',
                     'Capability_PassphraseEntry',
-                ],
+                    'Capability_NEM',
+                    'Capability_EOS',
+                ]),
                 backup_type: 'Bip39',
-                sd_card_present: expect.any(Boolean), // model T true, model R false
+                sd_card_present: expect.any(Boolean), // T2T1 true, T2B1 false
                 sd_protection: false,
                 wipe_code_protection: false,
                 session_id: expect.any(String),
@@ -87,7 +90,7 @@ export default {
                     rules: ['<2.4.2'], // 2.4.2 removed Lisk capability
                     success: true,
                     payload: {
-                        capabilities: [
+                        capabilities: expect.arrayContaining([
                             'Capability_Bitcoin',
                             'Capability_Bitcoin_like',
                             'Capability_Binance',
@@ -105,7 +108,7 @@ export default {
                             'Capability_Shamir',
                             'Capability_ShamirGroups',
                             'Capability_PassphraseEntry',
-                        ],
+                        ]),
                         session_id: expect.any(String),
                         passphrase_always_on_device: false,
                     },
@@ -114,7 +117,7 @@ export default {
                     rules: ['<2.2.1'], // 2.2.1 added PassphraseEntry capability
                     success: true,
                     payload: {
-                        capabilities: [
+                        capabilities: expect.arrayContaining([
                             'Capability_Bitcoin',
                             'Capability_Bitcoin_like',
                             'Capability_Binance',
@@ -131,7 +134,7 @@ export default {
                             'Capability_U2F',
                             'Capability_Shamir',
                             'Capability_ShamirGroups',
-                        ],
+                        ]),
                         backup_type: 'Bip39',
                         session_id: null,
                         passphrase_always_on_device: null,
@@ -141,7 +144,7 @@ export default {
                     rules: ['<2.1.6'], // 2.1.6 added ShamirGroups capability
                     success: true,
                     payload: {
-                        capabilities: [
+                        capabilities: expect.arrayContaining([
                             'Capability_Bitcoin',
                             'Capability_Bitcoin_like',
                             'Capability_Binance',
@@ -157,7 +160,7 @@ export default {
                             'Capability_Tezos',
                             'Capability_U2F',
                             'Capability_Shamir',
-                        ],
+                        ]),
                         backup_type: undefined,
                     },
                 },
@@ -165,7 +168,7 @@ export default {
                     rules: ['<2.1.5'], // 2.1.5 added Shamir and Lisk capability
                     success: true,
                     payload: {
-                        capabilities: [
+                        capabilities: expect.arrayContaining([
                             'Capability_Bitcoin',
                             'Capability_Bitcoin_like',
                             'Capability_Binance',
@@ -179,14 +182,14 @@ export default {
                             'Capability_Stellar',
                             'Capability_Tezos',
                             'Capability_U2F',
-                        ],
+                        ]),
                         backup_type: undefined,
                     },
                 },
             ],
         },
         {
-            description: 'T1 features',
+            description: 'T1B1 features',
             skip: ['2'],
             params: {},
             result: {
@@ -202,21 +205,22 @@ export default {
                 label: expect.any(String),
                 initialized: true,
                 revision: expect.any(String),
-                bootloader_hash: expect.any(String), // difference between TT
-                imported: true, // difference between TT
+                bootloader_hash: expect.any(String), // difference between T2T1
+                imported: true, // difference between T2T1
                 unlocked: expect.any(Boolean),
                 firmware_present: null,
                 needs_backup: expect.any(Boolean),
                 // flags: null, // flags may be changed by applyFlags test
                 model: '1',
+                internal_model: DeviceModelInternal.T1B1,
                 fw_major: null,
                 fw_minor: null,
                 fw_patch: null,
                 // fw_vendor: null, // "EMULATOR" since 1.11.1
                 unfinished_backup: expect.any(Boolean),
                 no_backup: expect.any(Boolean),
-                recovery_mode: null, // difference between TT
-                capabilities: [
+                recovery_mode: null, // difference between T2T1
+                capabilities: expect.arrayContaining([
                     'Capability_Bitcoin',
                     'Capability_Bitcoin_like',
                     'Capability_Crypto',
@@ -224,20 +228,20 @@ export default {
                     'Capability_NEM',
                     'Capability_Stellar',
                     'Capability_U2F',
-                ],
-                backup_type: undefined, // difference between TT
-                sd_card_present: null, // no sdcard in T1
-                sd_protection: null, // no sdcard in T1
+                ]),
+                backup_type: undefined, // difference between T2T1
+                sd_card_present: null, // no sdcard in T1B1
+                sd_protection: null, // no sdcard in T1B1
                 wipe_code_protection: false,
                 session_id: expect.any(String),
-                passphrase_always_on_device: null, // no passphrase input on T1 device
+                passphrase_always_on_device: null, // no passphrase input on T1B1 device
             },
             legacyResults: [
                 {
                     rules: ['<1.10.3'], // 1.10.3 removed Lisk capability
                     success: true,
                     payload: {
-                        capabilities: [
+                        capabilities: expect.arrayContaining([
                             'Capability_Bitcoin',
                             'Capability_Bitcoin_like',
                             'Capability_Crypto',
@@ -246,14 +250,14 @@ export default {
                             'Capability_NEM',
                             'Capability_Stellar',
                             'Capability_U2F',
-                        ],
+                        ]),
                     },
                 },
                 {
                     rules: ['<1.8.3'], // 1.8.3 added Lisk capability
                     success: true,
                     payload: {
-                        capabilities: [
+                        capabilities: expect.arrayContaining([
                             'Capability_Bitcoin',
                             'Capability_Bitcoin_like',
                             'Capability_Crypto',
@@ -261,7 +265,7 @@ export default {
                             'Capability_NEM',
                             'Capability_Stellar',
                             'Capability_U2F',
-                        ],
+                        ]),
                     },
                 },
             ],

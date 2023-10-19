@@ -1,4 +1,5 @@
 import { bufferutils, Transaction, Network } from '@trezor/utxo-lib';
+import { getRandomNumberInRange } from '@trezor/utils';
 
 import {
     COORDINATOR_FEE_RATE_FALLBACK,
@@ -6,6 +7,7 @@ import {
     MIN_ALLOWED_AMOUNT_FALLBACK,
     PLEBS_DONT_PAY_THRESHOLD_FALLBACK,
     ROUND_REGISTRATION_END_OFFSET,
+    ROUND_MAXIMUM_REQUEST_DELAY,
 } from '../constants';
 import { RoundPhase } from '../enums';
 import { CoinjoinTransactionData } from '../types';
@@ -25,11 +27,11 @@ export const getRoundEvents = <T extends CoinjoinStateEvent['Type']>(
 ) => events.filter(e => e.Type === type) as Extract<CoinjoinStateEvent, { Type: T }>[];
 
 export const getRoundParameters = (round: Round) => {
-    const events = getRoundEvents('RoundCreated', round.coinjoinState.events);
+    const events = getRoundEvents('RoundCreated', round.CoinjoinState.Events);
     if (events.length < 1) return;
 
-    const [{ roundParameters }] = events;
-    return roundParameters;
+    const [{ RoundParameters }] = events;
+    return RoundParameters;
 };
 
 // round commitmentData used in request for input ownershipProof
@@ -67,51 +69,72 @@ export const readTimeSpan = (ts: string) => {
     return date.getTime() - now;
 };
 
+const clamp = (value: number, min = Number.NEGATIVE_INFINITY, max = Number.POSITIVE_INFINITY) =>
+    Math.min(Math.max(value, min), max);
+
+export const scheduleDelay = (
+    deadline: number,
+    minimumDelay = 0,
+    maximumDelay = ROUND_MAXIMUM_REQUEST_DELAY,
+) => {
+    // reduce deadline to have absolute minimum time to make the actual request (10 seconds),
+    // but it must be at least 1 sec
+    const deadlineOffset = clamp(deadline - ROUND_MAXIMUM_REQUEST_DELAY, 1000);
+    // clamp the given maximum delay so it's at least 1 sec (so there's always room for randomness)
+    // and at most the calculated offset (so we meet the deadline)
+    const max = clamp(maximumDelay, 1000, deadlineOffset);
+    // clamp the given minimum delay so it's at least immediate (no negative delays)
+    // and at most 1 sec before the calculated max (so there's room for randomness)
+    const min = clamp(minimumDelay, 0, max - 1000);
+
+    return getRandomNumberInRange(min, max);
+};
+
 // NOTE: deadlines are not accurate. phase may change earlier
 // accept CoinjoinRound or modified coordinator Round (see estimatePhaseDeadline below)
 type PartialCoinjoinRound = {
-    phase: RoundPhase;
-    inputRegistrationEnd: string;
-    roundParameters: CoinjoinRoundParameters;
+    Phase: RoundPhase;
+    InputRegistrationEnd: string;
+    RoundParameters: CoinjoinRoundParameters;
 };
 
 export const getCoinjoinRoundDeadlines = (round: PartialCoinjoinRound) => {
     const now = Date.now();
-    switch (round.phase) {
+    switch (round.Phase) {
         case RoundPhase.InputRegistration: {
             const deadline =
-                new Date(round.inputRegistrationEnd).getTime() + ROUND_REGISTRATION_END_OFFSET;
+                new Date(round.InputRegistrationEnd).getTime() + ROUND_REGISTRATION_END_OFFSET;
             return {
                 phaseDeadline: deadline,
                 roundDeadline:
                     deadline +
-                    readTimeSpan(round.roundParameters.connectionConfirmationTimeout) +
-                    readTimeSpan(round.roundParameters.outputRegistrationTimeout) +
-                    readTimeSpan(round.roundParameters.transactionSigningTimeout),
+                    readTimeSpan(round.RoundParameters.ConnectionConfirmationTimeout) +
+                    readTimeSpan(round.RoundParameters.OutputRegistrationTimeout) +
+                    readTimeSpan(round.RoundParameters.TransactionSigningTimeout),
             };
         }
         case RoundPhase.ConnectionConfirmation: {
             const deadline =
-                now + readTimeSpan(round.roundParameters.connectionConfirmationTimeout);
+                now + readTimeSpan(round.RoundParameters.ConnectionConfirmationTimeout);
             return {
                 phaseDeadline: deadline,
                 roundDeadline:
                     deadline +
-                    readTimeSpan(round.roundParameters.outputRegistrationTimeout) +
-                    readTimeSpan(round.roundParameters.transactionSigningTimeout),
+                    readTimeSpan(round.RoundParameters.OutputRegistrationTimeout) +
+                    readTimeSpan(round.RoundParameters.TransactionSigningTimeout),
             };
         }
         case RoundPhase.OutputRegistration: {
-            const deadline = now + readTimeSpan(round.roundParameters.outputRegistrationTimeout);
+            const deadline = now + readTimeSpan(round.RoundParameters.OutputRegistrationTimeout);
             return {
                 phaseDeadline: deadline,
                 roundDeadline:
-                    deadline + readTimeSpan(round.roundParameters.transactionSigningTimeout),
+                    deadline + readTimeSpan(round.RoundParameters.TransactionSigningTimeout),
             };
         }
         case RoundPhase.TransactionSigning:
         case RoundPhase.Ended: {
-            const deadline = now + readTimeSpan(round.roundParameters.transactionSigningTimeout);
+            const deadline = now + readTimeSpan(round.RoundParameters.TransactionSigningTimeout);
             return {
                 phaseDeadline: deadline,
                 roundDeadline: deadline,
@@ -129,7 +152,10 @@ export const estimatePhaseDeadline = (round: Round) => {
     const roundParameters = getRoundParameters(round);
     if (!roundParameters) return 0;
 
-    const { phaseDeadline } = getCoinjoinRoundDeadlines({ ...round, roundParameters });
+    const { phaseDeadline } = getCoinjoinRoundDeadlines({
+        ...round,
+        RoundParameters: roundParameters,
+    });
 
     return phaseDeadline;
 };
@@ -153,13 +179,13 @@ const getDataFromRounds = (rounds: Round[]) => {
     return {
         coordinationFeeRate: {
             plebsDontPayThreshold:
-                roundParameters?.coordinationFeeRate.plebsDontPayThreshold ??
+                roundParameters?.CoordinationFeeRate.PlebsDontPayThreshold ??
                 PLEBS_DONT_PAY_THRESHOLD_FALLBACK,
-            rate: roundParameters?.coordinationFeeRate.rate ?? COORDINATOR_FEE_RATE_FALLBACK,
+            rate: roundParameters?.CoordinationFeeRate.Rate ?? COORDINATOR_FEE_RATE_FALLBACK,
         },
         allowedInputAmounts: {
-            max: roundParameters?.allowedInputAmounts.max ?? MAX_ALLOWED_AMOUNT_FALLBACK,
-            min: roundParameters?.allowedInputAmounts.min ?? MIN_ALLOWED_AMOUNT_FALLBACK,
+            max: roundParameters?.AllowedInputAmounts.Max ?? MAX_ALLOWED_AMOUNT_FALLBACK,
+            min: roundParameters?.AllowedInputAmounts.Min ?? MIN_ALLOWED_AMOUNT_FALLBACK,
         },
     };
 };
@@ -170,13 +196,13 @@ const getDataFromRounds = (rounds: Round[]) => {
  * - feeRateMedian: array => value in kvBytes
  */
 export const transformStatus = ({
-    coinJoinFeeRateMedians,
-    roundStates: rounds,
+    CoinJoinFeeRateMedians,
+    RoundStates: rounds,
 }: CoinjoinStatus) => {
     const { allowedInputAmounts, coordinationFeeRate } = getDataFromRounds(rounds);
     // coinJoinFeeRateMedians include an array of medians per day, week and month - we take the first (day) median as the recommended fee rate base.
     // The value is converted from kvBytes (kilo virtual bytes) to vBytes (how the value is displayed in UI).
-    const feeRateMedian = Math.round(coinJoinFeeRateMedians[0].medianFeeRate / 1000);
+    const feeRateMedian = Math.round(CoinJoinFeeRateMedians[0].MedianFeeRate / 1000);
 
     return {
         rounds,
@@ -190,7 +216,7 @@ export const compareOutpoint = (a: string, b: string) =>
     Buffer.from(a, 'hex').compare(Buffer.from(b, 'hex')) === 0;
 
 // sum input Credentials
-export const sumCredentials = (c: Credentials[]) => c.reduce((sum, cre) => sum + cre.value, 0);
+export const sumCredentials = (c: Credentials[]) => c.reduce((sum, cre) => sum + cre.Value, 0);
 
 export const getAffiliateRequest = (
     roundParameters: CoinjoinRoundParameters,
@@ -212,9 +238,9 @@ export const getAffiliateRequest = (
     }
 
     return {
-        fee_rate: roundParameters.coordinationFeeRate.rate * 10 ** 8,
-        no_fee_threshold: roundParameters.coordinationFeeRate.plebsDontPayThreshold,
-        min_registrable_amount: roundParameters.allowedInputAmounts.min,
+        fee_rate: roundParameters.CoordinationFeeRate.Rate * 10 ** 8,
+        no_fee_threshold: roundParameters.CoordinationFeeRate.PlebsDontPayThreshold,
+        min_registrable_amount: roundParameters.AllowedInputAmounts.Min,
         mask_public_key: mask.toString('hex'),
         signature: signature.toString('hex'),
         coinjoin_flags_array: flags,
@@ -222,7 +248,7 @@ export const getAffiliateRequest = (
 };
 
 export const getBroadcastedTxDetails = ({
-    coinjoinState: { isFullySigned, witnesses },
+    coinjoinState: { IsFullySigned, Witnesses },
     transactionData,
     network,
 }: {
@@ -230,7 +256,7 @@ export const getBroadcastedTxDetails = ({
     network: Network;
     transactionData?: CoinjoinTransactionData;
 }) => {
-    if (!isFullySigned || !witnesses || !transactionData) return;
+    if (!IsFullySigned || !Witnesses || !transactionData) return;
 
     const { reverseBuffer, BufferReader } = bufferutils;
     const tx = new Transaction({ network });
@@ -246,7 +272,7 @@ export const getBroadcastedTxDetails = ({
             index: input.index,
             script: Buffer.allocUnsafe(0), // script is not used in calculation
             sequence,
-            witness: new BufferReader(Buffer.from(witnesses[index], 'hex')).readVector(),
+            witness: new BufferReader(Buffer.from(Witnesses[index], 'hex')).readVector(),
         });
     });
 

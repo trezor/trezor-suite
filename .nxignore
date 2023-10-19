@@ -1,4 +1,3 @@
-.next
 build
 build-electron
 build-renderer
@@ -30,6 +29,7 @@ logs
 .attic
 .env\*
 !.env.dev
+nx-cloud.env
 
 # cache
 
@@ -41,13 +41,14 @@ _.code-workspace
 .stylelintcache
 _.tsbuildinfo
 
-# model 1 emulation file
-
-docker/trezor-user-env/controller/emulator.img
-
 # Vagrant
 
 .vagrant
+
+# test outputs
+
+screenshots
+test-results
 
 # build outputs
 
@@ -88,11 +89,7 @@ build/
 local.properties
 _.iml
 _.hprof
-
-# BUCK
-
-buck-out/
-\.buckd/
+.cxx/
 \*.keystore
 !debug.keystore
 
@@ -111,12 +108,15 @@ buck-out/
 **/android/fastlane/report.xml
 **/android/fastlane/Preview.html
 **/android/fastlane/screenshots
+**/android/fastlane/test_output
 **/ios/fastlane/report.xml
 **/ios/fastlane/Preview.html
 **/ios/fastlane/screenshots
+**/ios/fastlane/test_output
 **/fastlane/report.xml
 **/fastlane/Preview.html
-\*\*/fastlane/screenshots
+**/fastlane/screenshots
+**/fastlane/test_output
 
 _.cer
 _.certSigningRequest
@@ -127,15 +127,25 @@ _.mobileprovision
 
 \*\*/android/fastlane/test_output
 
+!**/suite-native/app/.env.debug
+!**/suite-native/app/.env.develop
+!**/suite-native/app/.env.production
+!**/suite-native/app/.env.staging
+
 # ios
 
 **/ios/\*.xcarchive
 **/ios/builds/\*
+\*\*/ios/.xcode.env.local
 
 # Ruby / CocoaPods
 
 **/ios/Pods/
 **/vendor/bundle/
+
+# Temporary files created by Metro to check the health of the file watcher
+
+.metro-health-check\*
 
 # android
 
@@ -151,10 +161,10 @@ _.mobileprovision
 
 # Yarn 3
 
-.yarn/\*
+.yarn/_
 .yarn/cache
 !.yarn/patches
-!.yarn/plugins
+!.yarn/plugins/_
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
@@ -162,6 +172,6 @@ _.mobileprovision
 # @trezor/suite-data
 
 packages/suite-data/files/browser-detection
-packages/suite-data/files/message-system
 packages/suite-data/files/guide
 packages/suite-data/files/translations/master.json
+packages/suite-data/files/videos/lottie/*.json

@@ -1,67 +1,224 @@
-const subsriptionResponse = '{"subscribed":true}';
-const fiatRatesResponse =
-    '{"tickers":[{"ts":1668608419,"rates":{"aed":0.313449,"ars":13.86,"aud":0.126158,"bch":0.00080987,"bdt":8.78,"bhd":0.03216376,"bits":5.17,"bmd":0.085339,"bnb":0.00031391,"brl":0.452372,"btc":0.00000517,"cad":0.11324,"chf":0.080316,"clp":75.75,"cny":0.604931,"czk":2,"dkk":0.610123,"dot":0.01497846,"eos":0.09367225,"eth":0.00007053,"eur":0.08203,"gbp":0.07183,"hkd":0.667574,"huf":33.45,"idr":1332.77,"ils":0.292208,"inr":6.94,"jpy":11.91,"krw":113.13,"kwd":0.0262812,"link":0.01384595,"lkr":31.36,"ltc":0.00148098,"mmk":179.2,"mxn":1.65,"myr":0.387864,"ngn":37.7,"nok":0.850553,"nzd":0.138308,"php":4.9,"pkr":18.97,"pln":0.385447,"rub":5.17,"sar":0.320782,"sats":516.58,"sek":0.890692,"sgd":0.1168,"thb":3.05,"try":1.59,"twd":2.65,"uah":3.15,"usd":0.085339,"vef":0.00854495,"vnd":2115.22,"xag":0.00393495,"xau":0.00004798,"xdr":0.063491,"xlm":0.94575838,"xrp":0.22875961,"yfi":0.00001349,"zar":1.47}}]}';
+const PREV_TX = {
+    txid: '3796497830e70bbf60fbdd8f9570ed53851df6e3d7a34fb1eff2119caf03616d',
+    version: 1,
+    vin: [
+        {
+            txid: 'adf4a7fc64379932db9690c6f28a731e3322df9cc1311d09a742f407cf3396c6',
+            sequence: 4294967295,
+            n: 0,
+            addresses: ['DN1ZMYxicfqLqRWcgftsS2iTAUhmLzcDKK'],
+            isAddress: true,
+            value: '1000000000',
+            hex: '47304402207cecdcab4b1c631bbed8da9776c91d5fff3e1afde9e91bfa44e7decffbd8331c022036fec7707d5371a2346ebb52d0ce2805ce6409439b8d6338b05b2c1df485b10f012102960563167bea073f7979cfe5525ca3a24655d3560894f577ab452e19216eda87',
+        },
+    ],
+    vout: [
+        {
+            value: '11556856856844445555',
+            n: 0,
+            hex: '76a9148ae3fead7569f965e334788cc40176b3ecee571588ac',
+            addresses: ['DHoUv6AUXrxadt5GhqK2TLN6Lw4bgKZnjG'],
+            isAddress: true,
+        },
+    ],
+    blockHash: 'deadfea6fa7eaee8568f5ef04c4ea0b1b2c47e08299ec6fd4c45fb4b89792088',
+    blockHeight: 4484551,
+    confirmations: 79,
+    blockTime: 1669212266,
+    value: '11556856856844445555',
+    valueIn: '1000000000',
+    fees: '19200',
+    hex: '0100000001c69633cf07f442a7091d31c19cdf22331e738af2c69096db32993764fca7f4ad000000006a47304402207cecdcab4b1c631bbed8da9776c91d5fff3e1afde9e91bfa44e7decffbd8331c022036fec7707d5371a2346ebb52d0ce2805ce6409439b8d6338b05b2c1df485b10f012102960563167bea073f7979cfe5525ca3a24655d3560894f577ab452e19216eda87ffffffff01007f9a3b000000001976a9148ae3fead7569f965e334788cc40176b3ecee571588ac00000000',
+};
 
-const isFirstAccount = (descriptor: string) =>
-    descriptor ===
-    'dgub8rE9bgXY9DuS9fvhBMshxu6auWGdAcD9P6weqZrqnLx13edD963SB3kjHBTWYWBWErhpLW9SkopNwx7zLdvDt1nySVb8qj8zR95iH4578JN';
-
-export const endpoints = {
-    getInfo() {
-        return '{"name":"Dogecoin","shortcut":"DOGE","decimals":8,"version":"0.3.6","bestHeight":4484566,"bestHash":"38fbb073e7eb4bfac9ed485dd0b3212247fb2a3d8b509dc9738c01a86ede33b3","block0Hash":"1a91e3dace36e2be3bf030a65679fe821aa1d6ef92e7c9902eb318182c355691","testnet":false,"backend":{"version":"1140600","subversion":"/Shibetoshi:1.14.6/"}}';
-    },
-
-    getAccountInfo(params: any) {
-        if (isFirstAccount(params.descriptor)) {
-            return '{"page":1,"totalPages":1,"itemsOnPage":25,"address":"dgub8rE9bgXY9DuS9fvhBMshxu6auWGdAcD9P6weqZrqnLx13edD963SB3kjHBTWYWBWErhpLW9SkopNwx7zLdvDt1nySVb8qj8zR95iH4578JN","balance":"11556856856844445555","totalReceived":"11556856856844445555","totalSent":"0","unconfirmedBalance":"0","unconfirmedTxs":0,"txs":1,"transactions":[{"txid":"3796497830e70bbf60fbdd8f9570ed53851df6e3d7a34fb1eff2119caf03616d","version":1,"vin":[{"txid":"adf4a7fc64379932db9690c6f28a731e3322df9cc1311d09a742f407cf3396c6","sequence":4294967295,"n":0,"addresses":["DN1ZMYxicfqLqRWcgftsS2iTAUhmLzcDKK"],"isAddress":true,"value":"1000000000","hex":"47304402207cecdcab4b1c631bbed8da9776c91d5fff3e1afde9e91bfa44e7decffbd8331c022036fec7707d5371a2346ebb52d0ce2805ce6409439b8d6338b05b2c1df485b10f012102960563167bea073f7979cfe5525ca3a24655d3560894f577ab452e19216eda87"}],"vout":[{"value":"11556856856844445555","n":0,"hex":"76a9148ae3fead7569f965e334788cc40176b3ecee571588ac","addresses":["DHoUv6AUXrxadt5GhqK2TLN6Lw4bgKZnjG"],"isAddress":true,"isOwn":true}],"blockHash":"deadfea6fa7eaee8568f5ef04c4ea0b1b2c47e08299ec6fd4c45fb4b89792088","blockHeight":4484551,"confirmations":16,"blockTime":1669212266,"value":"11556856856844445555","valueIn":"1000000000","fees":"19200","hex":"0100000001c69633cf07f442a7091d31c19cdf22331e738af2c69096db32993764fca7f4ad000000006a47304402207cecdcab4b1c631bbed8da9776c91d5fff3e1afde9e91bfa44e7decffbd8331c022036fec7707d5371a2346ebb52d0ce2805ce6409439b8d6338b05b2c1df485b10f012102960563167bea073f7979cfe5525ca3a24655d3560894f577ab452e19216eda87ffffffff01007f9a3b000000001976a9148ae3fead7569f965e334788cc40176b3ecee571588ac00000000"}],"usedTokens":1,"tokens":[{"type":"XPUBAddress","name":"DHoUv6AUXrxadt5GhqK2TLN6Lw4bgKZnjG","path":"m/44\'/3\'/0\'/0/0","transfers":1,"decimals":8,"balance":"11556856856844445555","totalReceived":"11556856856844445555","totalSent":"0"},{"type":"XPUBAddress","name":"DBNkNukxRcH6QTPSp69KhVHQWkUpVLotWs","path":"m/44\'/3\'/0\'/0/1","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DCRNm5H5HXppYNdEP4rsBVcX8Kv7H93aB8","path":"m/44\'/3\'/0\'/0/2","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DTqzMv1S12pZeofMK2wDyE7YnXNjPbhuvh","path":"m/44\'/3\'/0\'/0/3","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DCLCra4dFUu49iNFMtcXosTKCsiT3KHAdJ","path":"m/44\'/3\'/0\'/0/4","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DN4ND1f57omWfWCFL93SYY9djzBJpXSvid","path":"m/44\'/3\'/0\'/0/5","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DNc5nCuhN3sxsJmikwEiYHLiGCoCusFdbd","path":"m/44\'/3\'/0\'/0/6","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DAEV5iY4VSksubjGa2FtWBTBoy6kTPrJ5g","path":"m/44\'/3\'/0\'/0/7","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DQQwcpkP1nKnzH4Mdu4QMpRJd4TrXj5hLV","path":"m/44\'/3\'/0\'/0/8","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DDg7fSYG8uEqJVzVZLFDghdYJ52drPemRs","path":"m/44\'/3\'/0\'/0/9","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"D7XmadyKiDnG8D7RJqFNd3sxX7D76AWpDB","path":"m/44\'/3\'/0\'/0/10","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DAMr95XH6GgRn6bTnNMLArJ6YoHva8whLG","path":"m/44\'/3\'/0\'/0/11","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DP2sdVYaMJdp6Tnou4Z1tYxnZbZjN5kwsH","path":"m/44\'/3\'/0\'/0/12","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DT2Cxu4UHBmdoghPZgjiDUfPzQkSUjkbxB","path":"m/44\'/3\'/0\'/0/13","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DS54EVycGYyS82KfenHBDXxVNkxbeuMYod","path":"m/44\'/3\'/0\'/0/14","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DFPxxdrq2eouqV9JrKfMDS2GQrsCdyV4Mo","path":"m/44\'/3\'/0\'/0/15","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"D73BfdxiJco8cCvuhZG7XSs2wZtxts3b9r","path":"m/44\'/3\'/0\'/0/16","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"D7d1dW2SBiNCknLw2vhtMwXoh6j6m53SeM","path":"m/44\'/3\'/0\'/0/17","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"D6yC3jzt1M1zcgSd1SiTmBs85LWBhH54Ez","path":"m/44\'/3\'/0\'/0/18","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DKc5DgpRm1GT9JuL1FS8MUA89MXMPCAyck","path":"m/44\'/3\'/0\'/0/19","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DHEvFVNNJ3Fxhd7qj2fJDhcXr8nbwuuzqb","path":"m/44\'/3\'/0\'/0/20","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DCsP6RCfFHvTKFRocJEoW1CjYEPMk9pk3i","path":"m/44\'/3\'/0\'/1/0","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DMRZ3D9ppogDQoY7AUCLy5EaRTTEv6xJ5f","path":"m/44\'/3\'/0\'/1/1","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DHgWwG6PR1NofL6SbvjToBJTexpxrWc6Nq","path":"m/44\'/3\'/0\'/1/2","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DTdctucwB5Re7VzWnyNtidQu7yfzBUoi9m","path":"m/44\'/3\'/0\'/1/3","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DDaXEJkk5saNnxAE5jvjhLoMTafU9bjR7V","path":"m/44\'/3\'/0\'/1/4","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DJ1B4ESY55CaaG8EGkqGwpEerXy32kaGAZ","path":"m/44\'/3\'/0\'/1/5","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DK5rpLRpCUJB6XW3Rj1kzZxAdeHLD7dyvp","path":"m/44\'/3\'/0\'/1/6","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DKg662Pq4jCk2xBMtNZQa8gkfEVUEnPsea","path":"m/44\'/3\'/0\'/1/7","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DMCFF2nprk8TLD5iKpojdBbBVbdbkJyv6e","path":"m/44\'/3\'/0\'/1/8","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DMwNnABoRKmp4LGkbHTyDqjYiRtKvaYTSc","path":"m/44\'/3\'/0\'/1/9","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DSR1nCL7Lx2vFVwrBzhLsvN3uvsUzpWWjD","path":"m/44\'/3\'/0\'/1/10","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"D6AyvDdsPCENjXL7zhqxmrVDUVsfCL2Gtb","path":"m/44\'/3\'/0\'/1/11","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DBhqtLjE6Dh8XSFPMMTfoTTp9Gc9259r2m","path":"m/44\'/3\'/0\'/1/12","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DAEoXdoYvBDo5xiuCvgSXgQ8gXBh9SvxkW","path":"m/44\'/3\'/0\'/1/13","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DJrDapF1AuXP9Ht8M5SDwZogcxGwvuWe8C","path":"m/44\'/3\'/0\'/1/14","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DKX9Nkq2C4xV781TcQuqx9scVsut4hpmzy","path":"m/44\'/3\'/0\'/1/15","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DNamVUttydS5okBMc7bW3pvuE16gPr1CNF","path":"m/44\'/3\'/0\'/1/16","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"D89jdGqkifnsiFE7t3VLvZW8ubgchjjFba","path":"m/44\'/3\'/0\'/1/17","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DT1QN1UBDW66kogRwPXYk5EHAMpDb3XPER","path":"m/44\'/3\'/0\'/1/18","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"D83WmiDWSxYSUJeNgqF7hYojYsExrY2h33","path":"m/44\'/3\'/0\'/1/19","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DTStuFKxwcFe1MpbVMepuyQd4Ymsh5evSz","path":"m/44\'/3\'/0\'/1/20","transfers":0,"decimals":8}]}';
-        }
-        return '{"page":1,"totalPages":1,"itemsOnPage":25,"address":"dgub8rNS4892mHCMm1oR95TNanswrhNvtqogXqXEvq6Gzuouh959v3y3ZkoN1ZgCkFGMcX46Aa3QLCfuudPoG3FhEXjgM6JWzBvhiZLWonTMKHi","balance":"0","totalReceived":"0","totalSent":"0","unconfirmedBalance":"0","unconfirmedTxs":0,"txs":0,"tokens":[{"type":"XPUBAddress","name":"DU1mSU2WtBDqeCxgkJA1vhmnBTE6LQZyBN","path":"m/44\'/3\'/0\'/0/0","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DNdYnbEBczaVP3hLJ9Tmo2Mr6kNAEvJ1Z8","path":"m/44\'/3\'/0\'/0/1","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DDohr3hp8Ra2bdKB7pCap2bQzmApheKmez","path":"m/44\'/3\'/0\'/0/2","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DSsuLEJAjDFnss5pWrjgG4YaoUoE2q8qau","path":"m/44\'/3\'/0\'/0/3","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DH3EJtvsFYxNLQRZ3Dyo7XCL54xsH88xuQ","path":"m/44\'/3\'/0\'/0/4","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"D5XihD1B6LXT3yti4U3MKc8q8NMrzBRyQ7","path":"m/44\'/3\'/0\'/0/5","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DLqpUpTWRWyiQ94yw3FecT5He3QFyZ3xLe","path":"m/44\'/3\'/0\'/0/6","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DGJ5GbkGavaXvSSYiuYNyDGPt4YKTW51bN","path":"m/44\'/3\'/0\'/0/7","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DC5Mvizr4iKdyCmjRimc6K7XibU8VVW8Z3","path":"m/44\'/3\'/0\'/0/8","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"D93jMSFs5xhfC1BEPfHtedAeJ7J2V36v5a","path":"m/44\'/3\'/0\'/0/9","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"D6Kwhe2FeRtXd6ik6MGhfFW7mcgZvEvVZW","path":"m/44\'/3\'/0\'/0/10","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DLQF7DT1kE6MFeJTcbcLF7qG9yKXdDhsX6","path":"m/44\'/3\'/0\'/0/11","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"D9hFHH8T4TGNS6p1w6Br5A4qfHXb5PGaoN","path":"m/44\'/3\'/0\'/0/12","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DAsQ1vHY6E3sBgRPGWSNsH1c9mzrRXf2gv","path":"m/44\'/3\'/0\'/0/13","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DPgr8YYC2UGRm2sY69MeHjaMbtegQG6CTD","path":"m/44\'/3\'/0\'/0/14","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DQdCVNKcAsA9H5W1X5saSd956ZgKEAMMTy","path":"m/44\'/3\'/0\'/0/15","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DA7az2qoL3EXgRVnsjD3ZCGNg916KSuJrd","path":"m/44\'/3\'/0\'/0/16","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DJQByT14m35Q9NmTJ7fbN4ShmmRiBBnyRi","path":"m/44\'/3\'/0\'/0/17","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DAQ8wU9EF343ZExrqMMQt4oWwCf7C8PyeB","path":"m/44\'/3\'/0\'/0/18","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"D6h9LFKNccYVTF5G3N5GS4ruWS9JdUigfj","path":"m/44\'/3\'/0\'/0/19","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DCpUp24EauERBSo5VyCEWR5chQiAzzL6dd","path":"m/44\'/3\'/0\'/0/20","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DD4f3THYyBdRF6UTMGmK4W2BeKoW7yC3tQ","path":"m/44\'/3\'/0\'/1/0","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"D81GTGEy3wU9C5oUVn3ZMfiU39zUvvNJum","path":"m/44\'/3\'/0\'/1/1","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DFmr51EcRbYKsf3Rfeyo3RbAS1JfGsvgMU","path":"m/44\'/3\'/0\'/1/2","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"D9wf61riL11U9gKUgvf8yb9YtJx3PvQ1FD","path":"m/44\'/3\'/0\'/1/3","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"D9tQiurPU1v1fMxCKmiMTztvqBVt4DbkBT","path":"m/44\'/3\'/0\'/1/4","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DC2EeZnAKeTrANZMRmvARdEHN2VidUJQzs","path":"m/44\'/3\'/0\'/1/5","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"D7aS5jsZheaaXRuTzVt9yrfgkivWkSX4Lh","path":"m/44\'/3\'/0\'/1/6","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DSgrsGsizxNmmneTPCESEUFMCDRxf2gDGy","path":"m/44\'/3\'/0\'/1/7","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DEfuLVsBTmCbfGQ2gWV1uQnqgksthusQdU","path":"m/44\'/3\'/0\'/1/8","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DCeJ6JjX8UHBQEyKEqvddvVcZSJ2LTGH2C","path":"m/44\'/3\'/0\'/1/9","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DF7LEPkMV2jceq5tsLkZCuisd5oQa7br7H","path":"m/44\'/3\'/0\'/1/10","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DFHEkNy5TdWa42ZbQGTjfzUjDYYRDcLrCM","path":"m/44\'/3\'/0\'/1/11","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DN9ZNM7siQjNmihbMhk5rrK9LWtvGY6FTn","path":"m/44\'/3\'/0\'/1/12","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DFmecvwzgev8fu8LgQmFVehC2S3NpZ16bq","path":"m/44\'/3\'/0\'/1/13","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DAoSNWqbrCa3wBGsUoxT98WZsciNH1ti5n","path":"m/44\'/3\'/0\'/1/14","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DS8NYBWkUPaU21gzrx59fTrd9yuZ6Yzrcw","path":"m/44\'/3\'/0\'/1/15","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DG57KxdVVVSjDZQniDKqQPWdw2bJPKXk3Q","path":"m/44\'/3\'/0\'/1/16","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DS745u7xNKUTjBt7BDGwAidjWdZW275ifm","path":"m/44\'/3\'/0\'/1/17","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DL41d6hch62QW46tKNnJx4PprWjQQVCfNh","path":"m/44\'/3\'/0\'/1/18","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DQ5TsfK1wnLEeXcqVp6WJec3yVbS4UjaUR","path":"m/44\'/3\'/0\'/1/19","transfers":0,"decimals":8},{"type":"XPUBAddress","name":"DJq66kHkmK4iyipT1fMjcUpCigTPdWc6bX","path":"m/44\'/3\'/0\'/1/20","transfers":0,"decimals":8}]}';
-    },
-
-    getAccountUtxo(params: any) {
-        if (isFirstAccount(params.descriptor)) {
-            return '[{"txid":"3796497830e70bbf60fbdd8f9570ed53851df6e3d7a34fb1eff2119caf03616d","vout":0,"value":"11556856856844445555","height":4484551,"confirmations":16,"address":"DHoUv6AUXrxadt5GhqK2TLN6Lw4bgKZnjG","path":"m/44\'/3\'/0\'/0/0"}]';
-        }
-        return '[]';
-    },
-
-    getBalanceHistory(params: any) {
-        if (isFirstAccount(params.descriptor)) {
-            return '[{"time":1669161600,"txs":1,"received":"11556856856844445555","sent":"0","sentToSelf":"0","rates":{"aed":0.289727,"ars":12.98,"aud":0.118657,"bch":0.00072236,"bdt":8.08,"bhd":0.02973873,"bits":4.86,"bmd":0.078881,"bnb":0.00029567,"brl":0.42274,"btc":0.00000486,"cad":0.10541,"chf":0.075025,"clp":73.2,"cny":0.563235,"czk":1.86,"dkk":0.568993,"dot":0.0149232,"eos":0.08964144,"eth":0.00006923,"eur":0.076502,"gbp":0.066322,"hkd":0.616665,"huf":31.09,"idr":1236.97,"ils":0.27369,"inr":6.45,"jpy":11.13,"krw":106.73,"kwd":0.0243069,"link":0.01230647,"lkr":29,"ltc":0.00111713,"mmk":165.73,"mxn":1.53,"myr":0.361236,"ngn":34.98,"nok":0.796827,"nzd":0.128158,"php":4.52,"pkr":17.68,"pln":0.360119,"rub":4.79,"sar":0.296479,"sats":486.42,"sek":0.838927,"sgd":0.108702,"thb":2.85,"try":1.47,"twd":2.45,"uah":2.91,"usd":0.078881,"vef":0.00789836,"vnd":1960.51,"xag":0.00374075,"xau":0.00004531,"xdr":0.058687,"xlm":0.90058953,"xrp":0.20886275,"yfi":0.00001279,"zar":1.36}}]';
-        }
-        return '[]';
-    },
-
-    subscribeFiatRates() {
-        return subsriptionResponse;
-    },
-
-    subscribeAddresses() {
-        return subsriptionResponse;
-    },
-
-    subscribeNewBlock() {
-        return subsriptionResponse;
-    },
-
-    estimateFee() {
-        return '[{"feePerUnit":"-100000000"},{"feePerUnit":"6418769"},{"feePerUnit":"1003782"},{"feePerUnit":"1003782"},{"feePerUnit":"1003782"},{"feePerUnit":"1003782"},{"feePerUnit":"1003782"},{"feePerUnit":"1003782"},{"feePerUnit":"1003782"},{"feePerUnit":"1003782"}]';
-    },
-
-    getCurrentFiatRates() {
-        return fiatRatesResponse;
-    },
-
-    getFiatRatesForTimestamps() {
-        return fiatRatesResponse;
-    },
-
-    getTransaction(params: any) {
-        if (params?.txid === '3796497830e70bbf60fbdd8f9570ed53851df6e3d7a34fb1eff2119caf03616d') {
-            return '{"txid":"3796497830e70bbf60fbdd8f9570ed53851df6e3d7a34fb1eff2119caf03616d","version":1,"vin":[{"txid":"adf4a7fc64379932db9690c6f28a731e3322df9cc1311d09a742f407cf3396c6","sequence":4294967295,"n":0,"addresses":["DN1ZMYxicfqLqRWcgftsS2iTAUhmLzcDKK"],"isAddress":true,"value":"1000000000","hex":"47304402207cecdcab4b1c631bbed8da9776c91d5fff3e1afde9e91bfa44e7decffbd8331c022036fec7707d5371a2346ebb52d0ce2805ce6409439b8d6338b05b2c1df485b10f012102960563167bea073f7979cfe5525ca3a24655d3560894f577ab452e19216eda87"}],"vout":[{"value":"11556856856844445555","n":0,"hex":"76a9148ae3fead7569f965e334788cc40176b3ecee571588ac","addresses":["DHoUv6AUXrxadt5GhqK2TLN6Lw4bgKZnjG"],"isAddress":true}],"blockHash":"deadfea6fa7eaee8568f5ef04c4ea0b1b2c47e08299ec6fd4c45fb4b89792088","blockHeight":4484551,"confirmations":79,"blockTime":1669212266,"value":"11556856856844445555","valueIn":"1000000000","fees":"19200","hex":"0100000001c69633cf07f442a7091d31c19cdf22331e738af2c69096db32993764fca7f4ad000000006a47304402207cecdcab4b1c631bbed8da9776c91d5fff3e1afde9e91bfa44e7decffbd8331c022036fec7707d5371a2346ebb52d0ce2805ce6409439b8d6338b05b2c1df485b10f012102960563167bea073f7979cfe5525ca3a24655d3560894f577ab452e19216eda87ffffffff01007f9a3b000000001976a9148ae3fead7569f965e334788cc40176b3ecee571588ac00000000"}';
-        }
-
-        // todo: this should always return something
-        return '{}';
+const DOGE_ACCOUNT = {
+    data: {
+        page: 1,
+        totalPages: 1,
+        itemsOnPage: 25,
+        address:
+            'dgub8rE9bgXY9DuS9fvhBMshxu6auWGdAcD9P6weqZrqnLx13edD963SB3kjHBTWYWBWErhpLW9SkopNwx7zLdvDt1nySVb8qj8zR95iH4578JN',
+        balance: '11556856856844445555',
+        totalReceived: '11556856856844445555',
+        totalSent: '0',
+        unconfirmedBalance: '0',
+        unconfirmedTxs: 0,
+        txs: 1,
+        transactions: [
+            {
+                txid: '3796497830e70bbf60fbdd8f9570ed53851df6e3d7a34fb1eff2119caf03616d',
+                version: 1,
+                vin: [
+                    {
+                        txid: 'adf4a7fc64379932db9690c6f28a731e3322df9cc1311d09a742f407cf3396c6',
+                        sequence: 4294967295,
+                        n: 0,
+                        addresses: ['DN1ZMYxicfqLqRWcgftsS2iTAUhmLzcDKK'],
+                        isAddress: true,
+                        value: '1000000000',
+                        hex: '47304402207cecdcab4b1c631bbed8da9776c91d5fff3e1afde9e91bfa44e7decffbd8331c022036fec7707d5371a2346ebb52d0ce2805ce6409439b8d6338b05b2c1df485b10f012102960563167bea073f7979cfe5525ca3a24655d3560894f577ab452e19216eda87',
+                    },
+                ],
+                vout: [
+                    {
+                        value: '11556856856844445555',
+                        n: 0,
+                        hex: '76a9148ae3fead7569f965e334788cc40176b3ecee571588ac',
+                        addresses: ['DHoUv6AUXrxadt5GhqK2TLN6Lw4bgKZnjG'],
+                        isAddress: true,
+                        isOwn: true,
+                    },
+                ],
+                blockHash: 'deadfea6fa7eaee8568f5ef04c4ea0b1b2c47e08299ec6fd4c45fb4b89792088',
+                blockHeight: 4484551,
+                confirmations: 16,
+                blockTime: 1669212266,
+                value: '11556856856844445555',
+                valueIn: '1000000000',
+                fees: '19200',
+                hex: '0100000001c69633cf07f442a7091d31c19cdf22331e738af2c69096db32993764fca7f4ad000000006a47304402207cecdcab4b1c631bbed8da9776c91d5fff3e1afde9e91bfa44e7decffbd8331c022036fec7707d5371a2346ebb52d0ce2805ce6409439b8d6338b05b2c1df485b10f012102960563167bea073f7979cfe5525ca3a24655d3560894f577ab452e19216eda87ffffffff01007f9a3b000000001976a9148ae3fead7569f965e334788cc40176b3ecee571588ac00000000',
+            },
+        ],
+        usedTokens: 1,
+        tokens: [
+            {
+                type: 'XPUBAddress',
+                name: 'DHoUv6AUXrxadt5GhqK2TLN6Lw4bgKZnjG',
+                path: "m/44'/3'/0'/0/0",
+                transfers: 1,
+                decimals: 8,
+                balance: '11556856856844445555',
+                totalReceived: '11556856856844445555',
+                totalSent: '0',
+            },
+            {
+                type: 'XPUBAddress',
+                name: 'DBNkNukxRcH6QTPSp69KhVHQWkUpVLotWs',
+                path: "m/44'/3'/0'/0/1",
+                transfers: 0,
+                decimals: 8,
+            },
+            {
+                type: 'XPUBAddress',
+                name: 'DCsP6RCfFHvTKFRocJEoW1CjYEPMk9pk3i',
+                path: "m/44'/3'/0'/1/0",
+                transfers: 0,
+                decimals: 8,
+            },
+            {
+                type: 'XPUBAddress',
+                name: 'DMRZ3D9ppogDQoY7AUCLy5EaRTTEv6xJ5f',
+                path: "m/44'/3'/0'/1/1",
+                transfers: 0,
+                decimals: 8,
+            },
+        ],
     },
 };
+
+const isFirstAccount = (descriptor: string) => descriptor === DOGE_ACCOUNT.data.address;
+
+export const fixtures = [
+    {
+        method: 'getInfo',
+        default: true,
+        response: {
+            data: {
+                name: 'DogecoinMock',
+                shortcut: 'DOGE',
+                decimals: 8,
+                version: '0.3.6',
+                bestHeight: 4484566,
+                bestHash: '38fbb073e7eb4bfac9ed485dd0b3212247fb2a3d8b509dc9738c01a86ede33b3',
+                block0Hash: '1a91e3dace36e2be3bf030a65679fe821aa1d6ef92e7c9902eb318182c355691',
+                testnet: false,
+                backend: { version: '1140600', subversion: '/Shibetoshi:1.14.6/' },
+            },
+        },
+    },
+    {
+        method: 'getAccountInfo',
+        default: true,
+        response: ({ params }: any) => {
+            if (isFirstAccount(params.descriptor)) {
+                return DOGE_ACCOUNT;
+            }
+        },
+    },
+    {
+        method: 'getAccountUtxo',
+        default: true,
+        response: {
+            data: [
+                {
+                    txid: PREV_TX.txid,
+                    vout: 0,
+                    value: '11556856856844445555',
+                    height: 4484551,
+                    confirmations: 16,
+                    address: 'DHoUv6AUXrxadt5GhqK2TLN6Lw4bgKZnjG',
+                    path: "m/44'/3'/0'/0/0",
+                },
+            ],
+        },
+    },
+    {
+        method: 'getBalanceHistory',
+        default: true,
+        response: {
+            data: [
+                {
+                    time: 1669161600,
+                    txs: 1,
+                    received: '11556856856844445555',
+                    sent: '0',
+                    sentToSelf: '0',
+                    rates: { usd: 0.078881 },
+                },
+            ],
+        },
+    },
+    {
+        method: 'estimateFee',
+        default: true,
+        response: {
+            data: [
+                { feePerUnit: '-100000000' },
+                { feePerUnit: '6418769' },
+                { feePerUnit: '1003782' },
+                { feePerUnit: '1003782' },
+                { feePerUnit: '1003782' },
+                { feePerUnit: '1003782' },
+                { feePerUnit: '1003782' },
+                { feePerUnit: '1003782' },
+                { feePerUnit: '1003782' },
+                { feePerUnit: '1003782' },
+            ],
+        },
+    },
+    {
+        method: 'getFiatRatesForTimestamps',
+        default: true,
+        response: {
+            data: {
+                tickers: [
+                    {
+                        ts: 1668608419,
+                        rates: {
+                            usd: 0.085339,
+                        },
+                    },
+                ],
+            },
+        },
+    },
+    {
+        method: 'getTransaction',
+        default: true,
+        response: ({ params }: any) => {
+            if (params?.txid === PREV_TX.txid) {
+                return { data: PREV_TX };
+            }
+        },
+    },
+];

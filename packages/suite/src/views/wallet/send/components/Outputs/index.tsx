@@ -1,7 +1,7 @@
-import React, { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useSendFormContext } from '@wallet-hooks';
+import { useSendFormContext } from 'src/hooks/wallet';
 import { variables, motionAnimation } from '@trezor/components';
 import { Address } from './components/Address';
 import { Amount } from './components/Amount';
@@ -28,7 +28,7 @@ const OutputWrapper = styled.div<{ index: number }>`
         css`
             margin: 0 42px;
             padding-top: 32px;
-            border-top: 1px solid ${props => props.theme.STROKE_GREY};
+            border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
         `}
 `;
 
@@ -40,11 +40,11 @@ const Row = styled.div`
     }
 `;
 
-interface Props {
+interface OutputsProps {
     disableAnim?: boolean; // used in tests, with animations enabled react-testing-library can't find output fields
 }
 
-const Outputs = ({ disableAnim }: Props) => {
+const Outputs = ({ disableAnim }: OutputsProps) => {
     const { outputs } = useSendFormContext();
     const [renderedOutputs, setRenderedOutputs] = useState(1);
     const lastOutputRef = useRef<HTMLDivElement | null>(null);

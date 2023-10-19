@@ -1,12 +1,15 @@
 import { useCallback } from 'react';
+
+import { selectDevice } from '@suite-common/wallet-core';
+
+import { SUITE } from 'src/actions/suite/constants';
+
 import { useSelector } from './useSelector';
-import { SUITE } from '@suite-actions/constants';
 
 export const useDevice = () => {
-    const { device, locks } = useSelector(state => ({
-        device: state.suite.device,
-        locks: state.suite.locks,
-    }));
+    const device = useSelector(selectDevice);
+    const locks = useSelector(state => state.suite.locks);
+
     const isLocked = useCallback(
         (ignoreDisconnectedDevice = false) => {
             if (!device?.connected && !ignoreDisconnectedDevice) return true;

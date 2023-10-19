@@ -7,8 +7,8 @@ import {
     CoreMessage,
     ConnectSettings,
     SystemInfo,
+    createUiResponse,
 } from '@trezor/connect';
-import React from 'react';
 import { createRoot } from 'react-dom/client';
 
 import { ConnectUI } from '@trezor/connect-ui';
@@ -27,7 +27,6 @@ type State = {
 };
 
 let state: State = {};
-const channel = new MessageChannel(); // used in direct element communication (iframe.postMessage)
 
 export const setState = (newState: State) => (state = { ...state, ...newState });
 export const getState = () => state;
@@ -93,35 +92,83 @@ export const getIframeElement = () => {
 };
 
 // initialize message channel with iframe element
-export const initMessageChannel = (
+export const initMessageChannel = async (
     payload: PopupInit['payload'],
     handler: (e: MessageEvent) => void,
 ) => {
     // settings received from window.opener (POPUP.INIT) are not considered as safe (they could be injected/modified)
     // settings will be set later on, after POPUP.HANDSHAKE event from iframe
-    const { settings, systemInfo } = payload;
-    // npm version < 8.1.20 doesn't have it in POPUP.INIT message
-    const useBroadcastChannel =
-        typeof payload.useBroadcastChannel === 'boolean' ? payload.useBroadcastChannel : true;
-    const id = useBroadcastChannel ? `${settings.env}-${settings.timestamp}` : undefined;
-    let broadcast: BroadcastChannel | undefined;
-    if (id && typeof BroadcastChannel !== 'undefined') {
+    const { settings, systemInfo, useBroadcastChannel } = payload;
+
+    const handshakeMessage = createUiResponse(POPUP.HANDSHAKE);
+
+    const broadcastId =
+        useBroadcastChannel && typeof BroadcastChannel !== 'undefined'
+            ? `${settings.env}-${settings.timestamp}`
+            : undefined;
+
+    // wait for POPUP.HANDSHAKE message from the iframe or timeout
+    const handshakeLoader = (api: Pick<MessagePort, 'addEventListener' | 'removeEventListener'>) =>
+        Promise.race([
+            new Promise<boolean>(resolve => {
+                api.addEventListener('message', function handler(event) {
+                    if (event.data.type === POPUP.HANDSHAKE) {
+                        api.removeEventListener('message', handler);
+                        resolve(true);
+                    }
+                });
+            }),
+            new Promise<boolean>(resolve => setTimeout(() => resolve(false), 1000)),
+        ]);
+
+    const iframe = getIframeElement();
+    if (!iframe) {
+        throw ERRORS.TypedError('Popup_ConnectionMissing');
+    }
+    // iframe requested communication via BroadcastChannel.
+    if (broadcastId) {
         try {
-            broadcast = new BroadcastChannel(id);
-            broadcast.onmessage = handler;
+            // create BroadcastChannel and assign message listener
+            const broadcast = new BroadcastChannel(broadcastId);
+            broadcast.addEventListener('message', handler);
+
+            // create handshake loader
+            const broadcastHandshake = handshakeLoader(broadcast);
+
+            // send POPUP.HANDSHAKE to BroadcastChannel
+            broadcast.postMessage(handshakeMessage);
+
+            // POPUP.HANDSHAKE successfully received back from the iframe
+            if (await broadcastHandshake) {
+                setState({ broadcast, systemInfo, iframe });
+                return;
+            }
+
+            // otherwise close BroadcastChannel and try to use MessageChannel fallback
+            broadcast.close();
+            broadcast.removeEventListener('message', handler);
         } catch (error) {
             // silent error. use MessageChannel as fallback communication
         }
     }
-    const iframe = getIframeElement();
-    if (!broadcast && !iframe) {
-        throw ERRORS.TypedError('Popup_ConnectionMissing');
-    }
-    if (!broadcast) {
-        channel.port1.onmessage = handler;
+
+    // create MessageChannel and assign message listener
+    const channel = new MessageChannel();
+    channel.port1.onmessage = handler;
+
+    // create handshake loader
+    const iframeHandshake = handshakeLoader(channel.port1);
+
+    // send POPUP.HANDSHAKE to iframe with assigned MessagePort
+    iframe.postMessage(handshakeMessage, window.location.origin, [channel.port2]);
+
+    // POPUP.HANDSHAKE successfully received back from the iframe
+    if (await iframeHandshake) {
+        setState({ iframe, systemInfo });
+        return;
     }
 
-    setState({ iframe, broadcast, systemInfo });
+    throw ERRORS.TypedError('Popup_ConnectionMissing');
 };
 
 // this method can be used from anywhere
@@ -136,11 +183,6 @@ export const postMessage = (message: CoreMessage) => {
         throw ERRORS.TypedError('Popup_ConnectionMissing');
     }
 
-    // First message to iframe, MessageChannel port needs to set here
-    if (message.type && message.type === POPUP.HANDSHAKE) {
-        iframe.postMessage(message, window.location.origin, [channel.port2]);
-        return;
-    }
     iframe.postMessage(message, window.location.origin);
 };
 
@@ -186,6 +228,7 @@ export const renderConnectUI = () => {
         </StyleSheetWrapper>
     );
 
+    clearLegacyView();
     root.render(Component);
 
     return new Promise(resolve => {

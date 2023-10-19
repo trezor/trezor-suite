@@ -1,12 +1,14 @@
-import React, { useEffect, useRef } from 'react';
-import { variables } from '@trezor/components';
-import { TrezorLink } from '@suite-components';
+import { useEffect, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import styled from 'styled-components';
-import { useGuideOpenNode } from '@guide-hooks';
+
+import { variables } from '@trezor/components';
+import { TrezorLink } from 'src/components/suite';
+import { useGuideOpenNode } from 'src/hooks/guide';
+import { GuideHint } from './GuideHint';
 
 const StyledMarkdown = styled.div`
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     line-height: 1.5;
@@ -17,7 +19,7 @@ const StyledMarkdown = styled.div`
     h4,
     h5,
     h6 {
-        color: ${props => props.theme.TYPE_DARK_GREY};
+        color: ${({ theme }) => theme.TYPE_DARK_GREY};
         font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     }
     h1 {
@@ -48,13 +50,16 @@ const StyledMarkdown = styled.div`
         margin: 0 0 8px;
     }
     a {
-        color: ${props => props.theme.TYPE_GREEN};
+        color: ${({ theme }) => theme.TYPE_GREEN};
         &:hover {
             text-decoration: underline;
         }
     }
     img {
         max-width: 100%;
+    }
+    strong {
+        font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     }
 `;
 
@@ -79,7 +84,7 @@ export const GuideMarkdown = ({ markdown }: GuideMarkdownProps) => {
                     components={{
                         a: ({ children, href }) => {
                             if (!href) {
-                                console.error(`Missing href in Suite Guide link!`);
+                                console.error('Missing href in Suite Guide link!');
                                 return null;
                             }
 
@@ -93,6 +98,7 @@ export const GuideMarkdown = ({ markdown }: GuideMarkdownProps) => {
                                 </TrezorLink>
                             );
                         },
+                        blockquote: props => <GuideHint {...props} />,
                     }}
                 >
                     {markdown}

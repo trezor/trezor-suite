@@ -20,13 +20,44 @@
                     path: "m/49'/0'/0'/0/0",
                     coin: 'btc',
                 }).then(res => {
-                    console.info(res);
-                    document.getElementById('result').innerText = JSON.stringify(res);
+                    appendLog('calls', JSON.stringify(res));
                 });
+            };
+
+            window.TrezorConnect.on('DEVICE_EVENT', function (event) {
+                console.log('event', event);
+                appendLog(
+                    'events',
+                    JSON.stringify({
+                        type: event.type,
+                        device: event.payload.type, // applies for device events
+                        code: event.payload.code, // applies for button events
+                        payload: '(...redacted)',
+                    }),
+                );
+            });
+
+            let logNumber = 1;
+            appendLog = function (id, log) {
+                const record = document.createElement('div');
+                record.className = id;
+                record.innerText = id + ' ' + logNumber + ' ' + log;
+                document.getElementById(id).appendChild(record);
+                logNumber++;
             };
         </script>
 
         <button onclick="trezorGetAddress()">Get address</button>
-        <div id="result"></div>
+
+        <div style="display: flex; flex-direction: row; overflow-wrap: anywhere">
+            <div style="flex: 1; margin: 10px">
+                <div>calls</div>
+                <div id="calls"></div>
+            </div>
+            <div style="flex: 1; margin: 10px">
+                <div>events</div>
+                <div id="events"></div>
+            </div>
+        </div>
     </body>
 </html>

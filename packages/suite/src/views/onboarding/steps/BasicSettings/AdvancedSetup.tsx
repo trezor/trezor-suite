@@ -1,11 +1,12 @@
-import React, { useCallback, useState } from 'react';
+import { useState, ReactNode } from 'react';
 import styled from 'styled-components';
-import { Translation } from '@suite-components';
-import { Icon, useTheme, CollapsibleCard } from '@trezor/components';
-import { useSelector } from '@suite-hooks';
-import { isDesktop, isWeb } from '@suite-utils/env';
+import { Translation } from 'src/components/suite';
+import { Icon, useTheme } from '@trezor/components';
+import { useSelector } from 'src/hooks/suite';
+import { isDesktop, isWeb } from '@trezor/env-utils';
 import { TorSection } from './TorSection';
-import { getIsTorEnabled } from '@suite-utils/tor';
+import { getIsTorEnabled } from 'src/utils/suite/tor';
+import { CollapsibleOnboardingCard } from 'src/components/onboarding/CollapsibleOnboardingCard';
 
 const AdvancedSetupWrapper = styled.div`
     width: 100%;
@@ -35,7 +36,7 @@ const IconWrapper = styled.div`
 `;
 
 interface AdvancedSetupProps {
-    children: React.ReactNode;
+    children: ReactNode;
 }
 
 export const AdvancedSetup = ({ children }: AdvancedSetupProps) => {
@@ -44,9 +45,7 @@ export const AdvancedSetup = ({ children }: AdvancedSetupProps) => {
 
     const theme = useTheme();
 
-    const toggleTor = useCallback(() => {
-        setTorOpen(!torOpen);
-    }, [torOpen]);
+    const toggleTor = () => setTorOpen(!torOpen);
 
     const isTorEnabled = getIsTorEnabled(torStatus);
 
@@ -54,7 +53,7 @@ export const AdvancedSetup = ({ children }: AdvancedSetupProps) => {
         <AdvancedSetupWrapper>
             <Boxes>
                 {(isDesktop() || (isWeb() && isTorEnabled)) && (
-                    <CollapsibleCard
+                    <CollapsibleOnboardingCard
                         heading={<Translation id="TR_TOR" />}
                         description={
                             <Translation
@@ -79,7 +78,7 @@ export const AdvancedSetup = ({ children }: AdvancedSetupProps) => {
                         onToggle={toggleTor}
                     >
                         <TorSection torStatus={torStatus} />
-                    </CollapsibleCard>
+                    </CollapsibleOnboardingCard>
                 )}
             </Boxes>
             <Buttons>{children}</Buttons>

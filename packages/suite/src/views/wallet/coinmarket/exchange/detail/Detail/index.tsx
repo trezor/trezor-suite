@@ -1,17 +1,17 @@
-import React from 'react';
 import styled from 'styled-components';
-import { Card, variables } from '@trezor/components';
-import { CoinmarketExchangeOfferInfo, CoinmarketExchangeTopPanel } from '@wallet-components';
-import { useCoinmarketExchangeDetailContext } from '@wallet-hooks/useCoinmarketExchangeDetail';
-import { ExchangeTradeFinalStatuses } from '@wallet-hooks/useCoinmarket';
-import * as routerActions from '@suite-actions/routerActions';
-import { useActions, useLayout } from '@suite-hooks';
 
+import { Card, variables } from '@trezor/components';
+import { CoinmarketExchangeTopPanel } from 'src/views/wallet/coinmarket/common';
+import { useCoinmarketExchangeDetailContext } from 'src/hooks/wallet/useCoinmarketExchangeDetail';
+import { ExchangeTradeFinalStatuses } from 'src/hooks/wallet/useCoinmarket';
+import { goto } from 'src/actions/suite/routerActions';
+import { useDispatch, useLayout } from 'src/hooks/suite';
 import PaymentFailed from '../components/PaymentFailed';
 import PaymentSuccessful from '../components/PaymentSuccessful';
 import PaymentKYC from '../components/PaymentKYC';
 import PaymentConverting from '../components/PaymentConverting';
 import PaymentSending from '../components/PaymentSending';
+import { CoinmarketExchangeOfferInfo } from '../../components/ExchangeForm/CoinmarketExchangeOfferInfo';
 
 const Wrapper = styled.div`
     display: flex;
@@ -31,18 +31,20 @@ const CoinmarketDetail = () => {
     useLayout('Trezor Suite | Trade', CoinmarketExchangeTopPanel);
 
     const { account, trade, exchangeInfo } = useCoinmarketExchangeDetailContext();
-    const { goto } = useActions({ goto: routerActions.goto });
+    const dispatch = useDispatch();
 
     // if trade not found, it is because user refreshed the page and stored transactionId got removed
     // go to the default coinmarket page, the trade is shown there in the previous trades
     if (!trade) {
-        goto('wallet-coinmarket-exchange', {
-            params: {
-                symbol: account.symbol,
-                accountIndex: account.index,
-                accountType: account.accountType,
-            },
-        });
+        dispatch(
+            goto('wallet-coinmarket-exchange', {
+                params: {
+                    symbol: account.symbol,
+                    accountIndex: account.index,
+                    accountType: account.accountType,
+                },
+            }),
+        );
         return null;
     }
 

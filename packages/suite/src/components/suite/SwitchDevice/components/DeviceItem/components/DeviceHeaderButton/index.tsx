@@ -1,23 +1,23 @@
-import React from 'react';
 import styled from 'styled-components';
+
+import * as deviceUtils from '@suite-common/suite-utils';
 import { useTheme, Icon } from '@trezor/components';
-import { Translation } from '@suite-components';
-import NotificationCard from '@suite-components/NotificationCard'; // on purpose to avoid hacky sc overriding
-import * as deviceUtils from '@suite-utils/device';
-import { TrezorDevice } from '@suite-types';
+
+import { NotificationCard, Translation } from 'src/components/suite';
+import { TrezorDevice } from 'src/types/suite';
 
 const GrayNotificationCard = styled(NotificationCard)`
-    background: ${props => props.theme.BG_GREY};
+    background: ${({ theme }) => theme.BG_GREY};
     margin-bottom: 0px;
 `;
-interface Props {
+interface DeviceHeaderButtonProps {
     needsAttention: boolean;
     device: TrezorDevice;
     onSolveIssueClick: () => void;
     onDeviceSettingsClick: () => void;
 }
 
-const DeviceHeaderButton = (props: Props) => {
+const DeviceHeaderButton = (props: DeviceHeaderButtonProps) => {
     const { device } = props;
     const theme = useTheme();
     const deviceStatus = deviceUtils.getStatus(device);

@@ -1,7 +1,7 @@
 import { A } from '@mobily/ts-belt';
 import { atom } from 'jotai';
 
-import { IconName } from '@trezor/icons';
+import { IconName } from '@suite-common/icons';
 
 export type ToastVariant = 'default' | 'success' | 'warning' | 'error' | 'info';
 

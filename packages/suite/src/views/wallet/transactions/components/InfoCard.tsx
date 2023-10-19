@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import styled from 'styled-components';
 import { variables, Card } from '@trezor/components';
 import {
@@ -6,8 +6,8 @@ import {
     FormattedCryptoAmount,
     Sign,
     SkeletonRectangle,
-} from '@suite-components';
-import { Account } from '@wallet-types';
+} from 'src/components/suite';
+import { Account } from 'src/types/wallet';
 import BigNumber from 'bignumber.js';
 
 const Wrapper = styled(Card)`
@@ -63,9 +63,9 @@ const StyledFormattedValue = styled(FormattedCryptoAmount)`
 `;
 
 type InfoCardProps = {
-    title: React.ReactNode;
-    value: React.ReactNode;
-    secondaryValue: React.ReactNode;
+    title: ReactNode;
+    value: ReactNode;
+    secondaryValue: ReactNode;
     symbol?: Account['symbol'];
     isNumeric?: boolean;
     isLoading?: boolean;

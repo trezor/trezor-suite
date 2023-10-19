@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { View } from 'react-native';
 
 import { RequireAllOrNone } from 'type-fest';
@@ -27,7 +27,7 @@ const screenHeaderStyle = prepareNativeStyle(utils => ({
     alignItems: 'center',
     justifyContent: 'space-between',
     height: ICON_SIZE,
-    marginHorizontal: utils.spacings.small,
+    marginHorizontal: utils.spacings.medium,
 }));
 
 const iconWrapperStyle = prepareNativeStyle(() => ({
@@ -77,7 +77,7 @@ export const ScreenHeader = ({
                         <StepsProgressBar numberOfSteps={numberOfSteps} activeStep={activeStep} />
                     )}
                     {typeof content === 'string' ? (
-                        <Text variant={titleVariant} numberOfLines={1} ellipsizeMode="tail">
+                        <Text variant={titleVariant} adjustsFontSizeToFit numberOfLines={1}>
                             {content}
                         </Text>
                     ) : (

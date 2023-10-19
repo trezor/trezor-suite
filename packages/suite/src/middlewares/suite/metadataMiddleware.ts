@@ -1,8 +1,10 @@
 import { MiddlewareAPI } from 'redux';
-import * as metadataActions from '@suite-actions/metadataActions';
-import { AppState, Action, Dispatch } from '@suite-types';
-import { ROUTER, SUITE } from '@suite-actions/constants';
-import { accountsActions } from '@suite-common/wallet-core';
+
+import { accountsActions, deviceActions } from '@suite-common/wallet-core';
+
+import * as metadataActions from 'src/actions/suite/metadataActions';
+import { AppState, Action, Dispatch } from 'src/types/suite';
+import { ROUTER } from 'src/actions/suite/constants';
 
 const metadata =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -15,16 +17,17 @@ const metadata =
         // pass action
         next(action);
 
+        if (deviceActions.receiveAuthConfirm.match(action)) {
+            if (
+                action.payload.success &&
+                api.getState().metadata.enabled &&
+                action.payload.device.metadata.status === 'disabled'
+            ) {
+                api.dispatch(metadataActions.init());
+            }
+        }
+
         switch (action.type) {
-            case SUITE.RECEIVE_AUTH_CONFIRM:
-                if (
-                    action.success &&
-                    api.getState().metadata.enabled &&
-                    action.payload.metadata.status === 'disabled'
-                ) {
-                    api.dispatch(metadataActions.init());
-                }
-                break;
             case ROUTER.LOCATION_CHANGE:
                 // if there is editing field active, changing route turns it inactive
                 if (api.getState().metadata.editing) {

@@ -8,7 +8,9 @@ import {
 import { useNativeStyles } from '@trezor/styles';
 import { Color } from '@trezor/theme';
 
-const pressTimingConfig = { duration: 70 };
+export const BUTTON_PRESS_ANIMATION_DURATION = 70;
+
+const pressTimingConfig = { duration: BUTTON_PRESS_ANIMATION_DURATION };
 
 export const useButtonPressAnimatedStyle = (
     isPressed: boolean,

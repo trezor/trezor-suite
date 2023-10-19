@@ -1,7 +1,7 @@
 import {
     CardanoNativeScriptHashDisplayFormat,
     CardanoTxSigningMode,
-} from '@trezor/transport/lib/types/messages';
+} from '@trezor/protobuf/lib/messages';
 
 export const cardanoDerivationType = {
     name: 'derivationType',

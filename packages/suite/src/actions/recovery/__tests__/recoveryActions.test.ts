@@ -1,9 +1,9 @@
-import { configureStore } from '@suite/support/tests/configureStore';
+import { DeviceModelInternal } from '@trezor/connect';
 
-import recoveryReducer from '@recovery-reducers/recoveryReducer';
-import { Action } from '@suite-types';
-import * as recoveryActions from '@recovery-actions/recoveryActions';
-import { DeviceModel } from '@trezor/device-utils';
+import { configureStore } from 'src/support/tests/configureStore';
+import recoveryReducer from 'src/reducers/recovery/recoveryReducer';
+import { Action } from 'src/types/suite';
+import * as recoveryActions from 'src/actions/recovery/recoveryActions';
 
 jest.mock('@trezor/connect', () => ({
     ...jest.requireActual('@trezor/connect'),
@@ -23,14 +23,16 @@ jest.mock('@trezor/connect', () => ({
 
 export const getInitialState = (custom?: any): any => ({
     suite: {
-        device: {
-            features: {
-                major_version: 2,
-                model: DeviceModel.TT,
-            },
-        },
         flags: {},
         locks: [],
+    },
+    device: {
+        selectedDevice: {
+            features: {
+                major_version: 2,
+                internal_model: DeviceModelInternal.T2T1,
+            },
+        },
     },
     recovery: {
         ...recoveryReducer(undefined, {} as Action),

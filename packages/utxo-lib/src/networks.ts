@@ -240,7 +240,7 @@ export const decredSim: Network = {
     wif: 0x2307,
 };
 
-export const doge = {
+export const doge: Network = {
     messagePrefix: '\x19Dogecoin Signed Message:\n',
     bech32: '',
     bip32: {
@@ -259,6 +259,7 @@ const NETWORK_TYPES = {
     peercoin: [peercoin, peercoinTest],
     zcash: [zcash, zcashTest, komodo],
     litecoin: [litecoin, litecoinTest],
+    doge: [doge],
 };
 
 export type NetworkTypes = keyof typeof NETWORK_TYPES;

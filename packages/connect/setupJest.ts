@@ -1,6 +1,6 @@
 /* WARNING! This file should be imported ONLY in tests! */
 
-import type { Features, FirmwareRelease } from './src/types';
+import { DeviceModelInternal, type Features, type FirmwareRelease } from './src/types';
 
 export const getDeviceFeatures = (feat?: Partial<Features>): Features => ({
     vendor: 'trezor.io',
@@ -22,6 +22,7 @@ export const getDeviceFeatures = (feat?: Partial<Features>): Features => ({
     needs_backup: false,
     flags: 0,
     model: 'T',
+    internal_model: DeviceModelInternal.T2T1,
     fw_major: null,
     fw_minor: null,
     fw_patch: null,
@@ -49,7 +50,7 @@ const getRelease = (model: 1 | 2): FirmwareRelease => ({
     min_bridge_version: [2, 0, 25],
     min_firmware_version: [model, 0, 0],
     min_bootloader_version: [model, 0, 0],
-    url: 'data/firmware/1/trezor-1.8.1.bin',
+    url: 'data/firmware/t1b1/trezor-t1b1-1.8.1.bin',
     fingerprint: '019e849c1eb285a03a92bbad6d18a328af3b4dc6999722ebb47677b403a4cd16',
     changelog: '* Fix fault when using the device with no PIN* Fix OMNI transactions parsing',
 });

@@ -1,19 +1,15 @@
-import React from 'react';
 import styled from 'styled-components';
 import { CoinLogo, variables, Icon, H2 } from '@trezor/components';
 import { BuyTrade } from 'invity-api';
-import { useCoinmarketBuyOffersContext } from '@wallet-hooks/useCoinmarketBuyOffers';
+import { useCoinmarketBuyOffersContext } from 'src/hooks/wallet/useCoinmarketBuyOffers';
 import Quote from './Quote';
-import { Translation } from '@suite-components';
-import { CoinmarketRefreshTime } from '@wallet-components';
-import { InvityAPIReloadQuotesAfterSeconds } from '@wallet-constants/coinmarket/metadata';
-import { CoinmarketCryptoAmount } from '@wallet-views/coinmarket/common/CoinmarketCryptoAmount';
-import { CoinmarketFiatAmount } from '@wallet-views/coinmarket/common/CoinmarketFiatAmount';
-
-interface Props {
-    isAlternative?: boolean;
-    quotes: BuyTrade[];
-}
+import { Translation } from 'src/components/suite';
+import {
+    CoinmarketCryptoAmount,
+    CoinmarketFiatAmount,
+    CoinmarketRefreshTime,
+} from 'src/views/wallet/coinmarket/common';
+import { InvityAPIReloadQuotesAfterSeconds } from 'src/constants/wallet/coinmarket/metadata';
 
 const Wrapper = styled.div``;
 const Quotes = styled.div``;
@@ -51,7 +47,7 @@ const SummaryRow = styled.div`
 `;
 
 const OrigAmount = styled.div`
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
 `;
 
@@ -79,7 +75,12 @@ const NoQuotes = styled.div`
     flex: 1;
 `;
 
-const List = ({ isAlternative, quotes }: Props) => {
+interface ListProps {
+    isAlternative?: boolean;
+    quotes: BuyTrade[];
+}
+
+const List = ({ isAlternative, quotes }: ListProps) => {
     const { account, quotesRequest, timer } = useCoinmarketBuyOffersContext();
 
     if (!quotesRequest) return null;

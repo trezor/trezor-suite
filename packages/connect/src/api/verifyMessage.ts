@@ -10,7 +10,6 @@ import { PROTO, ERRORS } from '../constants';
 export default class VerifyMessage extends AbstractMethod<'verifyMessage', PROTO.VerifyMessage> {
     init() {
         this.requiredPermissions = ['read', 'write'];
-        this.info = 'Verify message';
 
         const { payload } = this;
 
@@ -29,7 +28,6 @@ export default class VerifyMessage extends AbstractMethod<'verifyMessage', PROTO
         } else {
             // check required firmware with coinInfo support
             this.firmwareRange = getFirmwareRange(this.name, coinInfo, this.firmwareRange);
-            this.info = getLabel('Verify #NETWORK message', coinInfo);
         }
         const messageHex = payload.hex
             ? messageToHex(payload.message)
@@ -42,6 +40,14 @@ export default class VerifyMessage extends AbstractMethod<'verifyMessage', PROTO
             message: messageHex,
             coin_name: coinInfo.name,
         };
+    }
+
+    get info() {
+        const coinInfo = getBitcoinNetwork(this.payload.coin);
+        if (!coinInfo) {
+            return 'Verify message';
+        }
+        return getLabel('Verify #NETWORK message', coinInfo);
     }
 
     async run() {

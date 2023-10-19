@@ -10,7 +10,7 @@ import { getCoinInfo } from '../data/coinInfo';
 import { PROTO, ERRORS } from '../constants';
 import { UI, createUiMessage } from '../events';
 import { isBackendSupported, initBlockchain } from '../backend/BlockchainLink';
-import type { CoinInfo, AccountInfo, AccountUtxo } from '../types';
+import type { CoinInfo, AccountInfo, AccountUtxo, DerivationPath } from '../types';
 import type { GetAccountInfo as GetAccountInfoParams } from '../types/api/getAccountInfo';
 
 type Request = GetAccountInfoParams & { address_n: number[]; coinInfo: CoinInfo };
@@ -22,7 +22,6 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
 
     init() {
         this.requiredPermissions = ['read'];
-        this.info = 'Export account info';
         this.useDevice = true;
         this.useUi = true;
 
@@ -56,6 +55,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                 { name: 'marker', type: 'object' },
                 { name: 'defaultAccountType', type: 'string' },
                 { name: 'derivationType', type: 'number' },
+                { name: 'suppressBackupWarning', type: 'boolean' },
             ]);
 
             // validate coin info
@@ -94,6 +94,10 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
         this.useUi = willUseDevice;
     }
 
+    get info() {
+        return 'Export account info';
+    }
+
     async confirmation() {
         // wait for popup window
         await this.getPopupPromise().promise;
@@ -114,7 +118,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
             );
         } else {
             const keys: {
-                [coin: string]: { coinInfo: CoinInfo; values: Array<string | number[]> };
+                [coin: string]: { coinInfo: CoinInfo; values: DerivationPath[] };
             } = {};
             this.params.forEach(b => {
                 if (!keys[b.coinInfo.label]) {
@@ -158,7 +162,10 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
         return uiResp.payload;
     }
 
-    async noBackupConfirmation() {
+    async noBackupConfirmation(allowSuppression?: boolean) {
+        if (allowSuppression && this.params.every(batch => batch.suppressBackupWarning)) {
+            return true;
+        }
         // wait for popup window
         await this.getPopupPromise().promise;
         // initialize user response promise

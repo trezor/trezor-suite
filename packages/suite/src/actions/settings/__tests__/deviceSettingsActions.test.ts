@@ -1,12 +1,17 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable global-require */
 
-import { configureStore } from '@suite/support/tests/configureStore';
+import { prepareDeviceReducer, deviceActions } from '@suite-common/wallet-core';
+
+import { configureStore } from 'src/support/tests/configureStore';
+import suiteReducer from 'src/reducers/suite/suiteReducer';
+import { extraDependencies } from 'src/support/extraDependencies';
+
 import fixtures from '../__fixtures__/deviceSettings';
-import suiteReducer from '@suite-reducers/suiteReducer';
-import deviceReducer from '@suite-reducers/deviceReducer';
 
 const { getSuiteDevice } = global.JestMocks;
+
+const deviceReducer = prepareDeviceReducer(extraDependencies);
 
 jest.mock('@trezor/connect', () => {
     let fixture: { success: boolean; payload: any };
@@ -41,25 +46,31 @@ jest.mock('@trezor/connect', () => {
         },
         DEVICE: {
             CHANGED: 'device-changed',
+            CONNECT_UNACQUIRED: 'device-connect_unacquired',
+            DISCONNECT: 'device-disconnect',
         },
         TRANSPORT: {},
         BLOCKCHAIN: {},
     };
 });
 
+jest.mock('@trezor/suite-analytics', () => global.JestMocks.getAnalytics());
+
 const DEVICE = getSuiteDevice({ path: '1', connected: true });
 
 type State = {
     suite: ReturnType<typeof suiteReducer>;
-    devices: ReturnType<typeof deviceReducer>;
+    device: ReturnType<typeof deviceReducer>;
 };
 
 export const getInitialState = (state: Partial<State> = {}) => ({
     suite: {
         ...suiteReducer(undefined, { type: '@suite/init' }),
-        device: DEVICE,
     },
-    devices: state.devices ?? [DEVICE],
+    device: {
+        devices: state.device?.devices ?? [DEVICE],
+        selectedDevice: DEVICE,
+    },
     router: {},
 });
 
@@ -69,10 +80,10 @@ const initStore = (state: State) => {
     const store = mockStore(state);
     store.subscribe(() => {
         const action = store.getActions().pop();
-        const { suite, devices } = store.getState();
+        const { suite, device } = store.getState();
         // process action in reducers
         store.getState().suite = suiteReducer(suite, action);
-        store.getState().devices = deviceReducer(devices, action);
+        store.getState().device = deviceReducer(device, action);
         // add action back to stack
         store.getActions().push(action);
     });
@@ -90,15 +101,13 @@ describe('DeviceSettings Actions', () => {
             // this action have influence on reducers and forget device process
             if (f.deviceChange) {
                 require('@trezor/connect').setDeviceChangeEvent(() => {
-                    store.dispatch({ type: 'device-changed', payload: f.deviceChange });
-                    store.dispatch({
-                        type: '@suite/update-selected-device',
-                        payload: f.deviceChange,
-                    });
+                    store.dispatch(deviceActions.deviceChanged(f.deviceChange));
+                    store.dispatch(deviceActions.updateSelectedDevice(f.deviceChange));
                 });
             }
 
             await store.dispatch(f.action());
+
             if (f.result) {
                 if (f.result.actions) {
                     expect(store.getActions()).toMatchObject(f.result.actions);

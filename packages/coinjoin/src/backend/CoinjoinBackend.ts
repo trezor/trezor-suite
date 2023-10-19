@@ -1,62 +1,31 @@
-import { EventEmitter } from 'events';
+import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
 
 import { CoinjoinBackendClient } from './CoinjoinBackendClient';
 import { CoinjoinFilterController } from './CoinjoinFilterController';
 import { CoinjoinMempoolController } from './CoinjoinMempoolController';
-import { DISCOVERY_LOOKOUT } from '../constants';
+import { DISCOVERY_LOOKOUT, DISCOVERY_LOOKOUT_EXTENDED } from '../constants';
 import { scanAccount } from './scanAccount';
-import { scanAddress } from './scanAddress';
 import { getAccountInfo } from './getAccountInfo';
 import { createPendingTransaction } from './createPendingTx';
-import { deriveAddresses, isTaprootTx } from './backendUtils';
+import { deriveAddresses, isTaprootAddress } from './backendUtils';
 import { getNetwork } from '../utils/settingsUtils';
 import type { CoinjoinBackendSettings, LogEvent, Logger, LogLevel } from '../types';
 import type {
-    ScanAddressParams,
     ScanAccountParams,
-    ScanAddressCheckpoint,
     ScanAccountCheckpoint,
     ScanAccountProgress,
+    ScanProgressInfo,
     Transaction,
     AccountCache,
 } from '../types/backend';
 
-interface SimpleEvents {
+interface Events {
     log: LogEvent;
+    [event: `progress/${string}`]: ScanAccountProgress;
+    [event: `progress-info/${string}`]: ScanProgressInfo;
 }
 
-interface DescriptorEvents {
-    progress: ScanAccountProgress;
-}
-
-type DescriptorEventType<K extends keyof DescriptorEvents, D extends string> = `${K}/${D}`;
-
-export declare interface CoinjoinBackend {
-    on<K extends keyof SimpleEvents>(type: K, listener: (event: SimpleEvents[K]) => void): this;
-    on<K extends keyof DescriptorEvents, D extends string>(
-        type: DescriptorEventType<K, D>,
-        listener: (event: DescriptorEvents[K]) => void,
-    ): this;
-
-    off<K extends keyof SimpleEvents>(type: K, listener: (event: SimpleEvents[K]) => void): this;
-    off<K extends keyof DescriptorEvents, D extends string>(
-        type: DescriptorEventType<K, D>,
-        listener: (event: DescriptorEvents[K]) => void,
-    ): this;
-
-    emit<K extends keyof SimpleEvents>(type: K, ...args: SimpleEvents[K][]): boolean;
-    emit<K extends keyof DescriptorEvents, D extends string>(
-        type: DescriptorEventType<K, D>,
-        ...args: DescriptorEvents[K][]
-    ): boolean;
-
-    removeAllListeners<K extends keyof SimpleEvents>(type?: K): this;
-    removeAllListeners<K extends keyof DescriptorEvents, D extends string>(
-        type?: DescriptorEventType<K, D>,
-    ): this;
-}
-
-export class CoinjoinBackend extends EventEmitter {
+export class CoinjoinBackend extends TypedEmitter<Events> {
     readonly settings: CoinjoinBackendSettings;
 
     private readonly network;
@@ -73,21 +42,21 @@ export class CoinjoinBackend extends EventEmitter {
         this.client = new CoinjoinBackendClient({ ...settings, logger });
         this.mempool = new CoinjoinMempoolController({
             client: this.client,
-            filter: tx => isTaprootTx(tx, this.network),
+            network: this.network,
+            filter: address => isTaprootAddress(address, this.network),
             logger,
         });
     }
 
-    async scanAccount({ descriptor, progressHandle, checkpoints, cache }: ScanAccountParams) {
+    scanAccount({ descriptor, progressHandle, checkpoints, cache }: ScanAccountParams) {
         this.abortController = new AbortController();
         const filters = new CoinjoinFilterController(this.client, this.settings);
-        const getFirstAddress = () =>
-            deriveAddresses([], descriptor, 'receive', 0, 1, this.network)[0].address;
+        const handle = progressHandle ?? descriptor;
 
         return scanAccount(
             {
                 descriptor,
-                checkpoints: await this.getCheckpoints(checkpoints, getFirstAddress),
+                checkpoints: this.getCheckpoints(checkpoints),
                 cache,
             },
             {
@@ -96,31 +65,8 @@ export class CoinjoinBackend extends EventEmitter {
                 abortSignal: this.abortController.signal,
                 filters,
                 mempool: this.mempool,
-                onProgress: progress =>
-                    this.emit(`progress/${progressHandle ?? descriptor}`, progress),
-            },
-        );
-    }
-
-    async scanAddress({ descriptor, progressHandle, checkpoints }: ScanAddressParams) {
-        this.abortController = new AbortController();
-        const filters = new CoinjoinFilterController(this.client, this.settings);
-        const getFirstAddress = () => descriptor;
-
-        return scanAddress(
-            { descriptor, checkpoints: await this.getCheckpoints(checkpoints, getFirstAddress) },
-            {
-                client: this.client,
-                network: this.network,
-                abortSignal: this.abortController.signal,
-                filters,
-                mempool: this.mempool,
-                onProgress: progress =>
-                    this.emit(`progress/${progressHandle ?? descriptor}`, {
-                        ...progress,
-                        // TODO resolve this correctly
-                        checkpoint: { ...progress.checkpoint, receiveCount: -1, changeCount: -1 },
-                    }),
+                onProgress: progress => this.emit(`progress/${handle}`, progress),
+                onProgressInfo: info => this.emit(`progress-info/${handle}`, info),
             },
         );
     }
@@ -141,15 +87,6 @@ export class CoinjoinBackend extends EventEmitter {
         return Promise.resolve(accountInfo);
     }
 
-    getAddressInfo(address: string, transactions: Transaction[]) {
-        const addressInfo = getAccountInfo({
-            descriptor: address,
-            transactions,
-            network: this.network,
-        });
-        return Promise.resolve(addressInfo);
-    }
-
     createPendingTransaction(...args: Parameters<typeof createPendingTransaction>) {
         return Promise.resolve(createPendingTransaction(...args));
     }
@@ -163,31 +100,24 @@ export class CoinjoinBackend extends EventEmitter {
         this.mempool.stop();
     }
 
-    private getCheckpoints<T extends ScanAddressCheckpoint>(
-        checkpoints: T[] | undefined,
-        getFirstAddress: () => string,
-    ): Promise<T[]>;
-    private async getCheckpoints(checkpoints: any[] = [], getFirstAddress: () => string) {
-        const cp = checkpoints.length
-            ? checkpoints
-            : [await this.getAccountCheckpoint(getFirstAddress())];
-
-        if (cp.find(({ blockHeight }) => blockHeight <= this.settings.baseBlockHeight)) {
+    private getCheckpoints(checkpoints: ScanAccountCheckpoint[] = []) {
+        if (checkpoints.find(({ blockHeight }) => blockHeight <= this.settings.baseBlockHeight)) {
             throw new Error('Cannot get checkpoint which precedes base block.');
         }
 
-        return cp
+        return checkpoints
             .slice()
             .sort((a, b) => b.blockHeight - a.blockHeight)
             .concat({
                 blockHash: this.settings.baseBlockHash,
                 blockHeight: this.settings.baseBlockHeight,
                 receiveCount: DISCOVERY_LOOKOUT,
-                changeCount: DISCOVERY_LOOKOUT,
+                changeCount: DISCOVERY_LOOKOUT_EXTENDED,
             });
     }
 
-    private async getAccountCheckpoint(address: string) {
+    async getAccountCheckpoint(xpub: string) {
+        const { address } = deriveAddresses([], xpub, 'receive', 0, 1, this.network)[0];
         const addressFirstPage = await this.client.fetchAddress(address);
 
         if (addressFirstPage.txs === 0) {
@@ -196,7 +126,7 @@ export class CoinjoinBackend extends EventEmitter {
                 blockHash: networkInfo.bestHash,
                 blockHeight: networkInfo.bestHeight,
                 receiveCount: DISCOVERY_LOOKOUT,
-                changeCount: DISCOVERY_LOOKOUT,
+                changeCount: DISCOVERY_LOOKOUT_EXTENDED,
             };
         }
 
@@ -214,7 +144,7 @@ export class CoinjoinBackend extends EventEmitter {
             blockHash,
             blockHeight,
             receiveCount: DISCOVERY_LOOKOUT,
-            changeCount: DISCOVERY_LOOKOUT,
+            changeCount: DISCOVERY_LOOKOUT_EXTENDED,
         };
     }
 

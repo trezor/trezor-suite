@@ -1,4 +1,4 @@
-import React, { ReactNode, ReactElement } from 'react';
+import { ReactNode, ReactElement } from 'react';
 import styled from 'styled-components';
 import { Card, variables, P, Icon, types, useTheme } from '@trezor/components';
 
@@ -15,7 +15,7 @@ const Title = styled.div`
     display: flex;
     align-items: center;
     font-size: ${variables.FONT_SIZE.TINY};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     text-transform: uppercase;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 `;

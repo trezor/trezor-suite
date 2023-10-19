@@ -1,25 +1,21 @@
-import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import {
-    ControllerRenderProps,
-    InputState,
-    useController,
-    UseControllerOptions,
-} from 'react-hook-form';
+    useCallback,
+    useLayoutEffect,
+    useRef,
+    useState,
+    KeyboardEvent,
+    ClipboardEvent,
+    FormEvent,
+} from 'react';
+
+import { Control, FieldValues, useController, UseControllerProps } from 'react-hook-form';
+import BigNumber from 'bignumber.js';
+
 import { Input, InputProps } from '@trezor/components';
-import { TypedValidationRules } from '@suite-common/wallet-types';
 import { localizeNumber } from '@suite-common/wallet-utils';
-import { useSelector } from '@trezor/suite/src/hooks/suite';
-import { Locale } from '@suite-config/languages';
-
-const getLocaleSeparators = (locale: Locale) => {
-    const numberFormat = new Intl.NumberFormat(locale);
-    const parts = numberFormat.formatToParts(10000.1);
-
-    const decimalSeparator = parts.find(({ type }) => type === 'decimal')?.value as string;
-    const thousandsSeparator = parts.find(({ type }) => type === 'group')?.value as string;
-
-    return { decimalSeparator, thousandsSeparator };
-};
+import { Locale } from 'src/config/suite/languages';
+import { useSelector } from 'src/hooks/suite';
+import { getLocaleSeparators } from '@trezor/utils';
 
 const isValidDecimalString = (value: string) => /^([^.]*)\.[^.]+$/.test(value);
 const hasLeadingZeroes = (value: string) => /^0+(\d+\.\d*|\d+)$/.test(value);
@@ -27,6 +23,15 @@ const hasLeadingZeroes = (value: string) => /^0+(\d+\.\d*|\d+)$/.test(value);
 const removeLeadingZeroes = (value: string) => value.replace(/^0+(?!\.|$)/, '');
 
 const cleanValueString = (value: string, locale: Locale) => {
+    if (value === undefined) {
+        return '';
+    }
+
+    // in case somehow the value is a number, convert it to string
+    if (typeof value !== 'string') {
+        value = String(value);
+    }
+
     const { decimalSeparator, thousandsSeparator } = getLocaleSeparators(locale);
 
     // clean the entered number string if it's not convertable to Number or if it has a non-conventional format
@@ -55,11 +60,11 @@ const cleanValueString = (value: string, locale: Locale) => {
         cleanedValue = cleanedValue.slice(0, cleanedValue.length - 1);
     }
 
-    // if a value is not a valid decimal or integer, dont format it – let it be converted to NaN later
-    if (cleanedValue && isValidDecimalString(cleanedValue)) {
-        cleanedValue = parseFloat(cleanedValue).toString();
-    } else if (cleanedValue && !cleanedValue.slice(0, -1).includes('.')) {
-        cleanedValue = parseInt(cleanedValue, 10).toString();
+    if (cleanedValue) {
+        // do not convert to the exponential format to avoid unexpected results
+        BigNumber.config({ EXPONENTIAL_AT: 20 });
+
+        cleanedValue = new BigNumber(cleanedValue).toFixed();
     }
 
     return cleanedValue;
@@ -67,47 +72,41 @@ const cleanValueString = (value: string, locale: Locale) => {
 
 const DECIMAL_SEPARATORS = [',', '.'];
 
-type TypedMethods = {
-    field: Omit<ControllerRenderProps<Record<string, unknown>>, 'ref' | 'value'> & {
-        value: string | undefined;
-        ref?: React.RefObject<HTMLInputElement>;
-    };
-    meta: InputState;
-};
-
-interface NumberInputProps extends Omit<InputProps, 'onChange' | 'type'> {
-    name: string;
-    rules?: TypedValidationRules;
-    control: UseControllerOptions<Record<string, unknown>>['control'];
+export interface NumberInputProps<TFieldValues extends FieldValues>
+    extends Omit<InputProps, 'defaultValue' | 'name' | 'onChange'>,
+        Omit<UseControllerProps<TFieldValues>, 'rules'> {
     decimalScale?: number;
     onChange?: (value: string) => void;
+    rules?: UseControllerProps['rules'];
 }
 
-export const NumberInput = ({
+export const NumberInput = <TFieldValues extends FieldValues>({
     name,
     rules,
     control,
     onChange: onChangeCallback,
     defaultValue,
     ...props
-}: NumberInputProps) => {
-    const locale = useSelector(state => state.suite.settings.language);
-    const [pressedKey, setPressedKey] = useState('');
-
+}: NumberInputProps<TFieldValues>) => {
     const {
-        field: { value, onChange, ref: inputRef, ...controlProps },
-        meta: { invalid },
-    }: TypedMethods = useController<Record<string, unknown>>({
+        field: { value = '', onChange, ref, ...controlProps },
+        fieldState: { invalid },
+    } = useController({
         name,
-        control,
-        rules: rules as UseControllerOptions<Record<string, unknown>>['rules'],
+        control: control as Control<FieldValues>,
+        rules,
         defaultValue,
     });
 
-    const [displayValue, setDisplayValue] = useState(localizeNumber(value || '', locale));
+    const locale = useSelector(state => state.suite.settings.language);
+    const [pressedKey, setPressedKey] = useState('');
+    const [displayValue, setDisplayValue] = useState(localizeNumber(value, locale));
+    const [changeHistory, setChangeHistory] = useState<string[]>([value]);
+    const [redoHistory, setRedoHistory] = useState<string[]>([]);
 
+    const inputRef = useRef<HTMLInputElement | null>(null);
     const previousFormValueRef = useRef<string | undefined>(value);
-    const previousDisplayValueRef = useRef(displayValue);
+    const previousDisplayValueRef = useRef<string | undefined>(displayValue);
 
     // formats and sets the value visible in the input (not the form)
     const formatDisplayValue = useCallback(
@@ -115,21 +114,33 @@ export const NumberInput = ({
             const handleSetDisplayValue = (newDisplayValue: string) => {
                 setDisplayValue(newDisplayValue);
 
-                if (!inputRef.current) {
+                if (!inputRef?.current) {
                     return;
                 }
 
                 previousDisplayValueRef.current = newDisplayValue;
                 inputRef.current.value = newDisplayValue; // for setSelectionRange() working as intended
 
+                setChangeHistory(current => [...current, newDisplayValue]);
+
                 return newDisplayValue;
             };
 
+            // in case somehow the value is a number, convert it to string
+            if (typeof rawValue !== 'string') {
+                rawValue = String(rawValue);
+            }
+
             // don't localize when entering a separator or a 0 in decimals (e.g. 0.0000 -> 0.00001),
             // otherwise the separator might get removed
+            const { decimalSeparator } = getLocaleSeparators(locale);
             const lastSymbol = rawValue.at(-1);
 
-            if (lastSymbol && [...DECIMAL_SEPARATORS, '0'].includes(lastSymbol)) {
+            if (
+                lastSymbol &&
+                (DECIMAL_SEPARATORS.includes(lastSymbol) ||
+                    (lastSymbol === '0' && rawValue.includes(decimalSeparator)))
+            ) {
                 if (lastSymbol !== '0') {
                     // disallow entering more than one separator
                     const secondToLastSymbol = rawValue.at(-2);
@@ -138,7 +149,6 @@ export const NumberInput = ({
                     }
 
                     // format a decimal separator to a locale-specific one to allow entering either one
-                    const { decimalSeparator } = getLocaleSeparators(locale);
 
                     // ignore additional decimal separators when a number is already a decimal
                     if (rawValue.slice(0, -1).includes(decimalSeparator)) {
@@ -164,7 +174,10 @@ export const NumberInput = ({
     useLayoutEffect(() => {
         const cleanPrevFormValue = cleanValueString(previousFormValueRef.current ?? '', locale);
         const cleanFormValue = cleanValueString(value ?? '', locale);
-        const cleanPrevDisplayValue = cleanValueString(previousDisplayValueRef.current, locale);
+        const cleanPrevDisplayValue = cleanValueString(
+            previousDisplayValueRef.current ?? '',
+            locale,
+        );
         const cleanDisplayValue = cleanValueString(displayValue, locale);
 
         if (cleanPrevFormValue !== cleanFormValue && cleanPrevDisplayValue === cleanDisplayValue) {
@@ -185,7 +198,7 @@ export const NumberInput = ({
             if (cursorPosition === null) return;
 
             const { thousandsSeparator } = getLocaleSeparators(locale);
-            const previousDisplayValue = previousDisplayValueRef.current;
+            const previousDisplayValue = previousDisplayValueRef.current ?? '';
             // Ctrl+D on Mac
             const isDeleteKeyUsed =
                 pressedKey === 'Delete' || pressedKey.toLocaleLowerCase() === 'd';
@@ -227,7 +240,13 @@ export const NumberInput = ({
                 onChange(cleanInput);
 
                 // get the latest error state
-                const hasError = !!rules?.validate?.(cleanInput);
+                const hasError =
+                    (typeof rules?.validate === 'function' &&
+                        !!rules?.validate?.(cleanInput, {})) ||
+                    (typeof rules?.validate === 'object' &&
+                        Object.values(rules.validate).some(validateFunction =>
+                            validateFunction(cleanInput, {}),
+                        ));
                 // because the form is not updated yet after calling `onChange()`,
                 // the value of `invalid` here is the one before this change has been handled
                 const hasErrorStateChanged = hasError !== invalid;
@@ -279,7 +298,7 @@ export const NumberInput = ({
 
     // copy the non-formatted value
     const handleCopy = useCallback(
-        (e: React.ClipboardEvent<HTMLInputElement>) => {
+        (e: ClipboardEvent<HTMLInputElement>) => {
             if (!inputRef.current) {
                 return;
             }
@@ -299,7 +318,7 @@ export const NumberInput = ({
 
     // cut the non-formatted value and manually clear the input
     const handleCut = useCallback(
-        (e: React.ClipboardEvent<HTMLInputElement>) => {
+        (e: ClipboardEvent<HTMLInputElement>) => {
             handleCopy(e);
 
             if (!inputRef.current) {
@@ -321,16 +340,15 @@ export const NumberInput = ({
     );
 
     // only allow digits and separators
-    const handleOnBeforeInput = useCallback(
-        (e: React.FormEvent<HTMLInputElement> & { data: string }) => {
-            if (/[\d.,]/g.test(e.data)) {
-                return;
-            }
+    const handleOnBeforeInput = useCallback((e: FormEvent<HTMLInputElement> & { data: string }) => {
+        if (/[\d.,]/g.test(e.data)) {
+            // reset the redo history when a new digit is entered
+            setRedoHistory([]);
+            return;
+        }
 
-            e.preventDefault();
-        },
-        [],
-    );
+        e.preventDefault();
+    }, []);
 
     // checks for separators at pos + cursorCharacterOffset and moves the cursor to pos + cursorPositionOffset
     const handleCursorShift = useCallback(
@@ -379,7 +397,7 @@ export const NumberInput = ({
 
     // jump over group separators when navigatind the input
     const handleKeyNav = useCallback(
-        (e: React.KeyboardEvent<HTMLInputElement>) => {
+        (e: KeyboardEvent<HTMLInputElement>) => {
             const pressedKey = e.key;
 
             if (pressedKey === 'ArrowRight') handleCursorShift(0, 1);
@@ -388,30 +406,66 @@ export const NumberInput = ({
         [handleCursorShift],
     );
 
+    const handleUndo = useCallback(() => {
+        if (changeHistory.length < 2) {
+            return;
+        }
+
+        const previousValue = changeHistory.at(-2) || '';
+        handleChange(previousValue);
+
+        setRedoHistory(current => [...current, changeHistory.at(-1) || '']);
+        setChangeHistory(current => [...current].splice(0, current.length - 2));
+    }, [changeHistory, handleChange]);
+
+    const handleRedo = useCallback(() => {
+        if (!redoHistory.length) {
+            return;
+        }
+
+        const previousValue = redoHistory.at(-1) || '';
+        handleChange(previousValue);
+
+        setRedoHistory(current => [...current].splice(0, current.length - 1));
+    }, [redoHistory, handleChange]);
+
     const handleKeyDown = useCallback(
-        (e: React.KeyboardEvent<HTMLInputElement>) => {
+        (e: KeyboardEvent<HTMLInputElement>) => {
             const pressedKey = e.key;
             setPressedKey(pressedKey);
 
             if (['ArrowLeft', 'ArrowRight'].includes(pressedKey)) {
                 handleKeyNav(e);
-
                 return;
             }
 
-            // undo doesn't work properly so better disallow it altogether
-            if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
+            if (!e.shiftKey && (e.ctrlKey || e.metaKey) && pressedKey.toLocaleLowerCase() === 'z') {
                 e.preventDefault();
+                handleUndo();
+                return;
+            }
+
+            if (e.shiftKey && (e.ctrlKey || e.metaKey) && pressedKey.toLocaleLowerCase() === 'z') {
+                e.preventDefault();
+                handleRedo();
+                return;
+            }
+
+            if (pressedKey === 'Backspace') {
+                setRedoHistory([]);
             }
         },
-        [handleKeyNav],
+        [handleKeyNav, handleUndo, handleRedo],
     );
 
     return (
         <Input
             {...props}
             {...controlProps}
-            innerRef={inputRef}
+            innerRef={e => {
+                ref(e);
+                inputRef.current = e;
+            }}
             value={displayValue}
             inputMode="decimal"
             onSelect={handleSelect}

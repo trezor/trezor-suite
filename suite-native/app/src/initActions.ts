@@ -19,6 +19,9 @@ export const applicationInit = createThunk(
         try {
             dispatch(initAnalyticsThunk());
 
+            // TODO: uncomment or revert commit when UI is ready for message system
+            // dispatch(initMessageSystemThunk({ jwsPublicKey: getJWSPublicKey() }));
+
             await dispatch(connectInitThunk()).unwrap();
 
             dispatch(setIsConnectInitialized(true));

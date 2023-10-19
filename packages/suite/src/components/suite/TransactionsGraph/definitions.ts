@@ -1,9 +1,9 @@
-import { Account } from '@wallet-types';
+import { Account } from 'src/types/wallet';
 import {
     GraphRange,
     AggregatedAccountHistory,
     AggregatedDashboardHistory,
-} from '../../../types/wallet/graph';
+} from 'src/types/wallet/graph';
 
 interface CommonProps {
     isLoading?: boolean;

@@ -1,7 +1,6 @@
-import React from 'react';
 import styled, { DefaultTheme } from 'styled-components';
 import { variables } from '@trezor/components';
-import type { AddressItem } from '@wallet-hooks/sign-verify/useSignAddressOptions';
+import type { AddressItem } from 'src/hooks/wallet/sign-verify/useSignAddressOptions';
 
 type OverlayVariant = 'option' | 'option-focused' | 'input';
 

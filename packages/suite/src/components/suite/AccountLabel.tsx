@@ -1,8 +1,7 @@
-import React from 'react';
 import styled from 'styled-components';
 import { getTitleForNetwork, getTitleForCoinjoinAccount } from '@suite-common/wallet-utils';
-import { Translation } from '@suite-components';
-import { Account } from '@wallet-types';
+import { Translation } from 'src/components/suite';
+import { Account } from 'src/types/wallet';
 
 const TabularNums = styled.span`
     font-variant-numeric: tabular-nums;

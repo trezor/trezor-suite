@@ -1,20 +1,15 @@
 import { analytics, EventType } from '@trezor/suite-analytics';
 
-import { useActions, useSelector } from '@suite-hooks';
-import * as guideActions from '@suite-actions/guideActions';
-import { getNodeById } from '@suite-utils/guide';
-import { useGuide } from '@guide-hooks';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { openNode } from 'src/actions/suite/guideActions';
+import { getNodeById } from 'src/utils/suite/guide';
+import { useGuide } from 'src/hooks/guide';
 
 export const useGuideOpenNode = () => {
     const { isGuideOpen, openGuide } = useGuide();
 
-    const { openNode } = useActions({
-        openNode: guideActions.openNode,
-    });
-
-    const { indexNode } = useSelector(state => ({
-        indexNode: state.guide.indexNode,
-    }));
+    const indexNode = useSelector(state => state.guide.indexNode);
+    const dispatch = useDispatch();
 
     const openNodeById = (id: string) => {
         if (!indexNode) {
@@ -27,7 +22,7 @@ export const useGuideOpenNode = () => {
             return;
         }
 
-        openNode(node);
+        dispatch(openNode(node));
 
         if (!isGuideOpen) {
             openGuide();

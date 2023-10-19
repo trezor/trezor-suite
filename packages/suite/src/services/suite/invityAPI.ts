@@ -41,7 +41,7 @@ import {
     WatchSavingTradeItemResponse,
     FormResponse,
 } from 'invity-api';
-import { isDesktop } from '@suite-utils/env';
+import { isDesktop } from '@trezor/env-utils';
 import type { InvityServerEnvironment, InvityServers } from '@suite-common/invity';
 
 export const SavingsTradeKYCFinalStatuses: SavingsKYCStatus[] = ['Failed', 'Verified'];

@@ -1,18 +1,27 @@
 {
-    "extends": "../../tsconfig.aliases.json",
-    "compilerOptions": { "outDir": "./libDev" },
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "outDir": "./libDev",
+        "baseUrl": "../suite"
+    },
     "include": ["."],
     "references": [
         {
             "path": "../../suite-common/formatters"
         },
         { "path": "../../suite-common/sentry" },
+        { "path": "../connect" },
         { "path": "../device-utils" },
         { "path": "../suite" },
         {
             "path": "../../suite-common/test-utils"
         },
+        {
+            "path": "../../suite-common/wallet-config"
+        },
         { "path": "../e2e-utils" },
+        { "path": "../env-utils" },
+        { "path": "../suite-analytics" },
         { "path": "../trezor-user-env-link" },
         { "path": "../utils" }
     ]

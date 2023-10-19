@@ -12,6 +12,8 @@
         { "path": "../blockchain-link-types" },
         { "path": "../blockchain-link-utils" },
         { "path": "../utils" },
-        { "path": "../utxo-lib" }
+        { "path": "../utxo-lib" },
+        { "path": "../e2e-utils" },
+        { "path": "../type-utils" }
     ]
 }

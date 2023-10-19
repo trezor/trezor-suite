@@ -1,12 +1,11 @@
 import { v4 as uuidv4 } from 'uuid';
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { Account } from '@wallet-types';
-import { AppState } from '@suite-types';
-import { AmountLimits } from '@wallet-types/coinmarketBuyForm';
+import { Account } from 'src/types/wallet';
+import { AppState } from 'src/types/suite';
+import { AmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
 import { BuyTrade, BuyTradeQuoteRequest, BuyTradeStatus } from 'invity-api';
-import { invityApiSymbolToSymbol } from '@wallet-utils/coinmarket/coinmarketUtils';
-import { isDesktop } from '@suite-utils/env';
-import { getLocationOrigin } from '@trezor/env-utils';
+import { invityApiSymbolToSymbol } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { isDesktop, getLocationOrigin } from '@trezor/env-utils';
 
 // loop through quotes and if all quotes are either with error below minimum or over maximum, return the limits
 export function getAmountLimits(

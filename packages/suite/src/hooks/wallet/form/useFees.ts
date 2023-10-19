@@ -1,40 +1,39 @@
 import { useEffect, useRef } from 'react';
-import { UseFormMethods } from 'react-hook-form';
+import { FieldPath, UseFormReturn } from 'react-hook-form';
 import { FeeLevel } from '@trezor/connect';
-import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
-import { useActions } from '@suite-hooks';
-import { FeeInfo, PrecomposedLevels, PrecomposedLevelsCardano } from '@wallet-types/sendForm';
+import { setLastUsedFeeLevel } from 'src/actions/settings/walletSettingsActions';
+import { useDispatch } from 'src/hooks/suite';
+import {
+    FeeInfo,
+    FormState,
+    PrecomposedLevels,
+    PrecomposedLevelsCardano,
+    SendContextValues,
+} from 'src/types/wallet/sendForm';
 
-type Props = UseFormMethods<{
-    selectedFee?: FeeLevel['label'];
-    feePerUnit?: string;
-    feeLimit?: string;
-    estimatedFeeLimit?: string;
-}> & {
+interface Props<TFieldValues extends FormState> extends UseFormReturn<TFieldValues> {
     defaultValue?: FeeLevel['label'];
     feeInfo?: FeeInfo;
     saveLastUsedFee?: boolean;
     onChange?: (prev?: FeeLevel['label'], current?: FeeLevel['label']) => void;
-    composeRequest: (field?: string) => void;
+    composeRequest: SendContextValues['composeTransaction'];
     composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;
-};
+}
 
 // shareable sub-hook used in useRbfForm and useSendForm (TODO)
 
-export const useFees = ({
+export const useFees = <TFieldValues extends FormState>({
     defaultValue,
     feeInfo,
     saveLastUsedFee,
     onChange,
     composeRequest,
     composedLevels,
-    watch,
-    register,
-    getValues,
-    setValue,
-    errors,
-    clearErrors,
-}: Props) => {
+    formState: { errors },
+    ...props
+}: Props<TFieldValues>) => {
+    const dispatch = useDispatch();
+
     // local references
     const selectedFeeRef = useRef(defaultValue);
     const feePerUnitRef = useRef<string | undefined>('');
@@ -42,14 +41,14 @@ export const useFees = ({
     const estimatedFeeLimitRef = useRef<string | undefined>('');
     const saveLastUsedFeeRef = useRef(saveLastUsedFee);
 
-    const { setLastUsedFeeLevel } = useActions({
-        setLastUsedFeeLevel: walletSettingsActions.setLastUsedFeeLevel,
-    });
+    // Type assertion allowing to make the component reusable, see https://stackoverflow.com/a/73624072.
+    const { clearErrors, getValues, register, setValue, watch } =
+        props as unknown as UseFormReturn<FormState>;
 
     // register custom form fields (without HTMLElement)
     useEffect(() => {
-        register({ name: 'selectedFee', type: 'custom' }); // NOTE: custom is not a fee level, its a type of `react-hook-form` field
-        register({ name: 'estimatedFeeLimit', type: 'custom' });
+        register('selectedFee', { shouldUnregister: true });
+        register('estimatedFeeLimit', { shouldUnregister: true });
     }, [register]);
 
     // watch selectedFee change and update local references
@@ -68,7 +67,7 @@ export const useFees = ({
     useEffect(() => {
         if (selectedFeeRef.current !== 'custom') return;
 
-        let updateField: string | undefined;
+        let updateField: FieldPath<FormState> | undefined;
         if (feePerUnitRef.current !== feePerUnit) {
             feePerUnitRef.current = feePerUnit;
             updateField = 'feePerUnit';
@@ -81,7 +80,9 @@ export const useFees = ({
 
         // compose
         if (updateField) {
-            if (composeRequest) composeRequest(updateField);
+            if (composeRequest) {
+                composeRequest(updateField);
+            }
             // save last used fee
             if (
                 saveLastUsedFeeRef.current &&
@@ -89,17 +90,12 @@ export const useFees = ({
                 !errors.feePerUnit &&
                 !errors.feeLimit
             ) {
-                setLastUsedFeeLevel({ label: 'custom', feePerUnit, feeLimit, blocks: -1 });
+                dispatch(
+                    setLastUsedFeeLevel({ label: 'custom', feePerUnit, feeLimit, blocks: -1 }),
+                );
             }
         }
-    }, [
-        feePerUnit,
-        feeLimit,
-        errors.feePerUnit,
-        errors.feeLimit,
-        composeRequest,
-        setLastUsedFeeLevel,
-    ]);
+    }, [dispatch, feePerUnit, feeLimit, errors.feePerUnit, errors.feeLimit, composeRequest]);
 
     // watch estimatedFee change
     const estimatedFeeLimit = watch('estimatedFeeLimit');
@@ -160,7 +156,7 @@ export const useFees = ({
         // save last used fee
         if (level !== 'custom' && saveLastUsedFeeRef.current) {
             const nextLevel = feeInfo.levels.find(l => l.label === (level || 'normal'))!;
-            setLastUsedFeeLevel(nextLevel);
+            dispatch(setLastUsedFeeLevel(nextLevel));
         }
 
         selectedFeeRef.current = selectedFee;

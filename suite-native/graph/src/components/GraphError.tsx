@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Text, VStack } from '@suite-native/atoms';
 
 type GraphErrorProps = {
@@ -9,10 +7,10 @@ type GraphErrorProps = {
 
 export const GraphError = ({ error, onTryAgain }: GraphErrorProps) => (
     <VStack spacing="small" alignItems="center">
-        <Text variant="label" color="textSubdued" align="center">
+        <Text variant="label" color="textSubdued" textAlign="center">
             There are some troubles with loading graph points: {error}
         </Text>
-        <Text variant="body" color="textSecondaryHighlight" align="center" onPress={onTryAgain}>
+        <Text variant="body" color="textSecondaryHighlight" textAlign="center" onPress={onTryAgain}>
             Try again
         </Text>
     </VStack>

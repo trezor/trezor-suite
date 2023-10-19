@@ -1,7 +1,7 @@
 import * as protobuf from 'protobufjs/light';
 
-import { buildOne, buildBuffers } from '../src/lowlevel/send';
-import { receiveOne, receiveAndParse } from '../src/lowlevel/receive';
+import { buildOne, buildBuffers } from '../src/utils/send';
+import { receiveOne, receiveAndParse } from '../src/utils/receive';
 
 const messages = {
     StellarPaymentOp: {
@@ -73,11 +73,12 @@ const messages = {
     },
 };
 
-const fixtures = [
-    {
+const fixtures = Array(100)
+    .fill(undefined)
+    .map((_u, i) => ({
         name: 'StellarPaymentOp',
         in: {
-            source_account: 'meow'.repeat(100), // make message longer then 63 bytes
+            source_account: 'm'.repeat(13 * i), // make message longer then 64 bytes
             destination_account: 'wuff',
             asset: {
                 type: 'NATIVE',
@@ -86,8 +87,7 @@ const fixtures = [
             },
             amount: 10,
         },
-    },
-];
+    }));
 
 const parsedMessages = protobuf.Root.fromJSON({
     nested: { hw: { nested: { trezor: { nested: { messages: { nested: messages } } } } } },
@@ -95,7 +95,7 @@ const parsedMessages = protobuf.Root.fromJSON({
 
 describe('encoding json -> protobuf -> json', () => {
     fixtures.forEach(f => {
-        describe(f.name, () => {
+        describe(`${f.name} - payload length ${f.in.source_account.length}`, () => {
             test('buildOne - receiveOne', () => {
                 // encoded message
                 const encodedMessage = buildOne(parsedMessages, f.name, f.in);
@@ -108,7 +108,7 @@ describe('encoding json -> protobuf -> json', () => {
             test('buildBuffers - receiveAndParse', async () => {
                 const result = buildBuffers(parsedMessages, f.name, f.in);
                 result.forEach(r => {
-                    expect(r.byteLength).toBeLessThanOrEqual(63);
+                    expect(r.byteLength).toBeLessThanOrEqual(64);
                 });
                 let i = -1;
                 const decoded = await receiveAndParse(parsedMessages, () => {

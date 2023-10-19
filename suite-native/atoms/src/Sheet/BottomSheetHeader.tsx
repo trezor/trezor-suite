@@ -1,11 +1,9 @@
-import React from 'react';
 import { View } from 'react-native';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { Text } from '../Text';
 import { IconButton } from '../Button/IconButton';
-import { Divider } from '../Divider';
 import { Box } from '../Box';
 
 type BottomSheetHeaderProps = {
@@ -19,17 +17,36 @@ const sheetHeaderStyle = prepareNativeStyle(utils => ({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: utils.spacings.large,
-    paddingVertical: utils.spacings.extraLarge,
+    paddingTop: utils.spacings.extraLarge,
+    paddingBottom: utils.spacings.medium,
 }));
 
 const titlesContainer = prepareNativeStyle(_ => ({
     maxWidth: '70%',
 }));
 
+const bottomSheetGrabberStyle = prepareNativeStyle(utils => ({
+    width: 32,
+    height: 4,
+    borderRadius: utils.borders.radii.round,
+    backgroundColor: utils.colors.borderDashed,
+}));
+
+const BottomSheetGrabber = () => {
+    const { applyStyle } = useNativeStyles();
+
+    return (
+        <Box flex={1} alignItems="center">
+            <Box style={applyStyle(bottomSheetGrabberStyle)} />
+        </Box>
+    );
+};
+
 export const BottomSheetHeader = ({ title, subtitle, onCloseSheet }: BottomSheetHeaderProps) => {
     const { applyStyle } = useNativeStyles();
     return (
-        <Box marginBottom="small">
+        <Box marginVertical="small">
+            <BottomSheetGrabber />
             <View style={applyStyle(sheetHeaderStyle)}>
                 <View style={applyStyle(titlesContainer)}>
                     <Text variant="titleSmall">{title}</Text>
@@ -51,7 +68,6 @@ export const BottomSheetHeader = ({ title, subtitle, onCloseSheet }: BottomSheet
                     size="medium"
                 />
             </View>
-            <Divider />
         </Box>
     );
 };

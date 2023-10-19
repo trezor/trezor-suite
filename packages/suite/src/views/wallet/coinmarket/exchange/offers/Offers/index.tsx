@@ -1,20 +1,19 @@
-import React from 'react';
 import styled from 'styled-components';
-import invityAPI from '@suite-services/invityAPI';
-import { FormattedCryptoAmount, Translation } from '@suite-components';
+import invityAPI from 'src/services/suite/invityAPI';
+import { FormattedCryptoAmount, Translation } from 'src/components/suite';
 import {
     CoinmarketExchangeTopPanel,
     CoinmarketFooter,
     CoinmarketRefreshTime,
-} from '@wallet-components';
+    NoOffers,
+} from 'src/views/wallet/coinmarket/common';
 import { variables, Icon, CoinLogo, H2 } from '@trezor/components';
-import { useLayout } from '@suite-hooks';
-import { useCoinmarketExchangeOffersContext } from '@wallet-hooks/useCoinmarketExchangeOffers';
-import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
-import { InvityAPIReloadQuotesAfterSeconds } from '@wallet-constants/coinmarket/metadata';
+import { useLayout } from 'src/hooks/suite';
+import { useCoinmarketExchangeOffersContext } from 'src/hooks/wallet/useCoinmarketExchangeOffers';
+import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
+import { InvityAPIReloadQuotesAfterSeconds } from 'src/constants/wallet/coinmarket/metadata';
 import List from './List';
 import SelectedOffer from './SelectedOffer';
-import NoOffers from '@wallet-views/coinmarket/common/no-offers';
 
 const Wrapper = styled.div`
     padding: 0 32px 32px 32px;

@@ -2,9 +2,9 @@ import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
-import { isWeb, isDesktop } from '@suite-utils/env';
-import { useActions } from '@suite-hooks';
-import * as protocolActions from '@suite-actions/protocolActions';
+import { isWeb, isDesktop } from '@trezor/env-utils';
+import { useActions } from 'src/hooks/suite';
+import * as protocolActions from 'src/actions/suite/protocolActions';
 
 const Protocol = () => {
     const { handleProtocolRequest } = useActions({

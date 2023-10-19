@@ -1,16 +1,19 @@
-import React, { useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { Pressable, TextInput, TouchableOpacity } from 'react-native';
 
-import { Icon } from '@trezor/icons';
+import { Icon } from '@suite-common/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { Box } from '../Box';
+import { SurfaceElevation } from '../types';
 
 type InputProps = {
     value: string;
     onChange: (value: string) => void;
     placeholder: string;
     isDisabled?: boolean;
+    maxLength?: number;
+    elevation?: SurfaceElevation;
 };
 
 const inputStyle = prepareNativeStyle(utils => ({
@@ -21,40 +24,48 @@ const inputStyle = prepareNativeStyle(utils => ({
     lineHeight: 0,
 }));
 
-const clearIconStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.backgroundNeutralSubdued,
-    height: 20,
-    width: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: utils.borders.radii.round,
-}));
-
 type InputStyleProps = {
     isFocused: boolean;
+    elevation: SurfaceElevation;
 };
-const inputWrapperStyle = prepareNativeStyle<InputStyleProps>((utils, { isFocused }) => ({
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    height: 48,
-    borderWidth: utils.borders.widths.small,
-    borderColor: utils.colors.backgroundNeutralSubtleOnElevation0,
-    backgroundColor: utils.colors.borderOnElevation0,
-    borderRadius: utils.borders.radii.small,
-    paddingLeft: 14,
-    paddingRight: 14.25,
-    extend: [
-        {
-            condition: isFocused,
-            style: {
-                borderColor: utils.colors.borderFocus,
+const inputWrapperStyle = prepareNativeStyle<InputStyleProps>(
+    (utils, { isFocused, elevation }) => ({
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        height: 48,
+        borderWidth: utils.borders.widths.small,
+        borderRadius: utils.borders.radii.small,
+        borderColor: utils.colors.backgroundNeutralSubtleOnElevation0,
+        backgroundColor: utils.colors.backgroundNeutralSubtleOnElevation0,
+        paddingLeft: 14,
+        paddingRight: 14.25,
+        extend: [
+            {
+                condition: isFocused,
+                style: {
+                    borderColor: utils.colors.borderFocus,
+                },
             },
-        },
-    ],
-}));
+            {
+                condition: elevation === '1',
+                style: {
+                    borderColor: utils.colors.backgroundNeutralSubtleOnElevation1,
+                    backgroundColor: utils.colors.backgroundNeutralSubtleOnElevation1,
+                },
+            },
+        ],
+    }),
+);
 
-export const SearchInput = ({ value, onChange, placeholder, isDisabled = false }: InputProps) => {
+export const SearchInput = ({
+    value,
+    onChange,
+    placeholder,
+    maxLength,
+    isDisabled = false,
+    elevation = '0',
+}: InputProps) => {
     const { applyStyle, utils } = useNativeStyles();
     const [isFocused, setIsFocused] = useState<boolean>(false);
     const searchInputRef = useRef<TextInput | null>(null);
@@ -69,10 +80,8 @@ export const SearchInput = ({ value, onChange, placeholder, isDisabled = false }
 
     return (
         <Pressable onPress={handleInputFocus}>
-            <Box style={applyStyle(inputWrapperStyle, { isFocused })}>
-                <Box>
-                    <Icon name="search" color="iconSubdued" />
-                </Box>
+            <Box style={applyStyle(inputWrapperStyle, { isFocused, elevation })}>
+                <Icon name="search" color="iconSubdued" size="large" />
                 <TextInput
                     ref={searchInputRef}
                     value={value}
@@ -83,10 +92,11 @@ export const SearchInput = ({ value, onChange, placeholder, isDisabled = false }
                     onFocus={() => setIsFocused(true)}
                     onBlur={() => setIsFocused(false)}
                     style={applyStyle(inputStyle)}
+                    maxLength={maxLength}
                 />
                 {isClearButtonVisible && (
-                    <TouchableOpacity onPress={handleClear} style={applyStyle(clearIconStyle)}>
-                        <Icon name="close" size="small" color="iconOnPrimary" />
+                    <TouchableOpacity onPress={handleClear}>
+                        <Icon name="closeCircle" size="large" color="iconSubdued" />
                     </TouchableOpacity>
                 )}
             </Box>

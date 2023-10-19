@@ -25,7 +25,7 @@ There are multiple ways of displaying message to a user:
 
 The system of messages is based on a configuration file in which messages with specific conditions ​are described. If specific conditions are satisfied, the message is shown to a user.
 
-Current configuration file is located in `packages/message-system/src/config` folder. Its name is `config.vX.json`. The `X` express current version messaging system.
+Current configuration file is located in `suite-common/message-system/config` folder. Its name is `config.vX.json`. The `X` express current version messaging system.
 
 The config is fetched at launch of the application and then every minute. It remembers the previously fetched config to inform the user even if he is offline. For this reason, the latest available config during build time is bundled with the application.
 
@@ -33,7 +33,7 @@ If fetching of a new config fails, the fetching process is repeated every 30 sec
 
 ### Schema
 
-The configuration structure is specified in JSON file using JSON schema. The file can be found in `packages/message-system/src/schema` folder. Its name is `config.schema.vX.json`.
+The configuration structure is specified in JSON file using JSON schema. The file can be found in `suite-common/message-system/schema` folder. Its name is `config.schema.vX.json`.
 
 We use JSON schema for 2 reasons:
 
@@ -42,7 +42,7 @@ We use JSON schema for 2 reasons:
 
 ### Types
 
-Types are generated from JSON-schema during the `build:libs` process or can be generated manually by `yarn workspace @trezor/message-system msg-system-types`. A `messageSystem.ts` file is created in `suite-common/suite-types/src` folder.
+Types are generated from JSON-schema during the `build:libs` process or can be generated manually by `yarn workspace @suite-common/message-system msg-system-types`. A `messageSystem.ts` file is created in `suite-common/suite-types/src` folder.
 
 -   This file should never be changed manually.
 -   This file is committed into the repository.
@@ -56,19 +56,23 @@ To ensure the authenticity of a configuration file, JSON Web Signatures are used
 #### Validation
 
 -   Validation of configuration file is performed in CI job in `validation` phase. It is used to detect possible structure and semantic errors.
--   It can be run locally by `yarn workspace @trezor/message-system validate-config` script.
+-   It can be run locally by `yarn workspace @suite-common/message-system validate-config` script.
 
 #### Signing
 
--   Signing of the configuration file is performed in CI job in `prebuild` phase.
--   The result is saved into `packages/message-system/files` to be bundled with application and automatically uploaded to `https://data.trezor.io/config/$environment/config.vX.json`. For example, on localhost, the config is available at `http://localhost:8000/static/message-system/config.vX.jws`.
--   It can be run manually by `yarn workspace @trezor/message-system sign-config` script. The resulting JWS is stored in `packages/message-system/files` folder as `config.vX.jws` file.
--   Development public and private keys are baked into project structure. For production environment, these keys are replaced by CI job by production keys. This production CI job is activated on `codesign` branches.
--   Development private key can be found in `packages/message-system/src/scripts/sign-config.ts` file, the public key can be found in `suite-build` in `codesign.ts` file.
+-   Signing of the configuration file is performed:
+    -   in CI job in `prebuild` phase for distribution and
+    -   manually by `yarn message-system-sign-config` (or `yarn build:libs`) script for local development.
+-   The results are saved into `suite-common/message-system/files` as two files:
+    -   `config.v1.jws` to be uploaded to `https://data.trezor.io/config/$environment/config.vX.jws`
+    -   `config.v1.ts` to be bundled with application
+-   Development private key is baked into project structure together with public keys for both development and production.
+-   Production private key is available only on `codesign` branch in CI (both Gitlab and Github).
+-   Development private key can be found in `suite-common/message-system/scripts/sign-config.ts` file, the public keys can be found in `packages/suite-build/utils/jws.ts` file.
 
 ### Versioning of implementation
 
-If changes made to the message system are incompatible with the previous version, the version number should be bumped in `messageSystemConstants.ts` file in `suite` package as well as in suite-data package in `message-system/constants`. Also in `ci/packages/suite-data.yml`.
+If changes made to the message system are incompatible with the previous version, the version number should be bumped in `messageSystemConstants.ts` file and CI jobs has to be adapted. There are also few places where the version is defined statically so search for `config.v1` over the whole project.
 
 ### Config Structure
 
@@ -163,11 +167,13 @@ Structure of config, types and optionality of specific keys can be found in the 
                     // Empty device array is targeting users without a connected device.
                     "devices": [
                         {
-                            // Possible values: "1" or "T"
-                            "model": "1",
+                            // Possible values: "1" +  "T1B1", "T" + "T2T1", "T2B1"
+                            // in case of targeting "T1B1" or "T2T1", for backwards compatibility use old (1, T) and new naming (T1B1, T2T1 together in a new object
+                            // in case of targeting "T2B1" in Suites before device release, please use all three "T2B1", "Safe 3" and empty string ""
+                            "model": "T1B1",
                             /*
                             Beware
-                            - firmware version in bootloader mode is unavailable on model 1
+                            - firmware version in bootloader mode is unavailable on T1B1
                             - bootloader version is available only in bootloader mode
                             */
                             "firmware": "2.4.1",

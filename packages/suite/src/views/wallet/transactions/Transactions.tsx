@@ -1,19 +1,19 @@
-import React from 'react';
-import { WalletLayout, CoinjoinExplanation } from '@wallet-components';
-import { useSelector } from '@suite-hooks';
-import { AppState } from '@suite-types';
-import { CoinjoinSummary } from '@wallet-components/CoinjoinSummary';
-import { selectAccountTransactions, selectIsLoadingTransactions } from '@suite-common/wallet-core';
+import { ReactNode } from 'react';
 
+import { WalletLayout, CoinjoinAccountDiscoveryProgress } from 'src/components/wallet';
+import { useSelector } from 'src/hooks/suite';
+import { AppState } from 'src/types/suite';
+import { selectAccountTransactions, selectIsLoadingTransactions } from '@suite-common/wallet-core';
 import { NoTransactions } from './components/NoTransactions';
 import { AccountEmpty } from './components/AccountEmpty';
-import { TransactionList } from './components/TransactionList';
+import { TransactionList } from './TransactionList/TransactionList';
 import { TransactionSummary } from './components/TransactionSummary';
-import { CoinjoinAccountDiscoveryProgress } from '@wallet-components/WalletLayout/components/CoinjoinAccountDiscovery/CoinjoinAccountDiscoveryProgress';
+import { CoinjoinExplanation } from './CoinjoinExplanation/CoinjoinExplanation';
+import { CoinjoinSummary } from './CoinjoinSummary/CoinjoinSummary';
 
 interface LayoutProps {
     selectedAccount: AppState['wallet']['selectedAccount'];
-    children?: React.ReactNode;
+    children?: ReactNode;
     showEmptyHeaderPlaceholder?: boolean;
 }
 

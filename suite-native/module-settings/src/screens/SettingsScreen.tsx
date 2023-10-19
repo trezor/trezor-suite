@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { VStack } from '@suite-native/atoms';
 import { Screen } from '@suite-native/navigation';
 
@@ -8,7 +6,7 @@ import { SupportSettings } from '../components/SupportSettings';
 
 export const SettingsScreen = () => (
     <Screen>
-        <VStack spacing="xxl">
+        <VStack marginTop="extraLarge" spacing="extraLarge">
             <ApplicationSettings />
             <SupportSettings />
         </VStack>

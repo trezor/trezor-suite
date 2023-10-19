@@ -1,13 +1,16 @@
-import React from 'react';
 import styled from 'styled-components';
 
-import { SettingsLayout } from '@settings-components';
-import { CoinsGroup, TooltipSymbol, Translation } from '@suite-components';
-import { DeviceBanner, SettingsSection, SectionItem } from '@suite-components/Settings';
-import { useEnabledNetworks } from '@settings-hooks/useEnabledNetworks';
-import { useAnchor } from '@suite-hooks/useAnchor';
-import { SettingsAnchor } from '@suite-constants/anchors';
-import { useDevice, useSelector } from '@suite-hooks';
+import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-utils';
+import { selectSupportedNetworks } from '@suite-common/wallet-core';
+
+import { SettingsLayout } from 'src/components/settings';
+import { CoinsGroup, TooltipSymbol, Translation } from 'src/components/suite';
+import { DeviceBanner, SettingsSection, SectionItem } from 'src/components/suite/Settings';
+import { useEnabledNetworks } from 'src/hooks/settings/useEnabledNetworks';
+import { useAnchor } from 'src/hooks/suite/useAnchor';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { useDevice, useSelector } from 'src/hooks/suite';
+
 import { FirmwareTypeSuggestion } from './FirmwareTypeSuggestion';
 
 const StyledSettingsLayout = styled(SettingsLayout)`
@@ -20,6 +23,10 @@ export const SettingsCoins = () => {
     const { firmwareTypeBannerClosed } = useSelector(state => state.suite.flags);
 
     const { mainnets, testnets, enabledNetworks, setEnabled } = useEnabledNetworks();
+    const supportedNetworks = useSelector(selectSupportedNetworks);
+    const supportedEnabledNetworks = enabledNetworks.filter(enabledNetwork =>
+        supportedNetworks.includes(enabledNetwork),
+    );
 
     const { anchorRef: anchorRefCrypto, shouldHighlight: shouldHighlightCrypto } = useAnchor(
         SettingsAnchor.Crypto,
@@ -29,15 +36,21 @@ export const SettingsCoins = () => {
 
     const { device } = useDevice();
 
-    const bitcoinOnlyFirmware = device?.firmwareType === 'bitcoin-only';
-    const onlyBitcoinEnabled =
-        !!enabledNetworks.length &&
-        enabledNetworks.every(coin => ['btc', 'regtest', 'test'].includes(coin));
+    const bitcoinOnlyFirmware = hasBitcoinOnlyFirmware(device);
+    const bitcoinNetworks = ['btc', 'test', 'regtest'];
+
+    const onlyBitcoinNetworksEnabled =
+        !!supportedEnabledNetworks.length &&
+        supportedEnabledNetworks.every(coin => bitcoinNetworks.includes(coin));
+    const bitcoinOnlyDevice = isBitcoinOnlyDevice(device);
+
     const showDeviceBanner = device?.connected === false; // device is remembered and disconnected
+
     const showFirmwareTypeBanner =
         !firmwareTypeBannerClosed &&
         device &&
-        (bitcoinOnlyFirmware || (!bitcoinOnlyFirmware && onlyBitcoinEnabled));
+        !bitcoinOnlyDevice &&
+        (bitcoinOnlyFirmware || (!bitcoinOnlyFirmware && onlyBitcoinNetworksEnabled));
 
     return (
         <StyledSettingsLayout>
@@ -78,7 +91,6 @@ export const SettingsCoins = () => {
                         networks={testnets}
                         onToggle={setEnabled}
                         selectedNetworks={enabledNetworks}
-                        testnet
                     />
                 </SectionItem>
             </SettingsSection>

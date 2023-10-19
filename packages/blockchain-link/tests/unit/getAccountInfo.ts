@@ -1,15 +1,15 @@
-import createServer, { EnhancedServer } from '../websocket';
+import { BackendWebsocketServerMock } from '@trezor/e2e-utils';
 import workers from './worker';
 import BlockchainLink from '../../src';
 import fixtures from './fixtures/getAccountInfo';
 
 workers.forEach(instance => {
     describe(`getAccountInfo: ${instance.name}`, () => {
-        let server: EnhancedServer;
+        let server: BackendWebsocketServerMock;
         let blockchain: BlockchainLink;
 
         const setup = async () => {
-            server = await createServer(instance.name);
+            server = await BackendWebsocketServerMock.create(instance.name);
             blockchain = new BlockchainLink({
                 ...instance,
                 server: [`ws://localhost:${server.options.port}`],

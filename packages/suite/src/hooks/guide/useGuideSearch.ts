@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { GuideCategory, GuidePage } from '@suite-common/suite-types';
-import { loadPageMarkdownFile } from '@guide-hooks/useGuideLoadPage';
+import { loadPageMarkdownFile } from 'src/hooks/guide/useGuideLoadPage';
 
 const SEARCH_DELAY = 300;
 const MIN_QUERY_LENGTH = 3;
@@ -21,7 +21,7 @@ export type SearchResult = {
 };
 
 const getPreview = (markdown: string, query: string, index: number) => {
-    const previewStart = markdown.substr(0, Math.max(index - 10, 0)).lastIndexOf(' ') + 1;
+    const previewStart = markdown.substring(0, Math.max(index - 10, 0)).lastIndexOf(' ') + 1;
     const previewEnd = markdown.indexOf(' ', index + query.length + 20);
     return {
         content: markdown.slice(previewStart, previewEnd),

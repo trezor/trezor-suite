@@ -1,15 +1,9 @@
-import React from 'react';
 import { useSelector } from 'react-redux';
 
-import {
-    AccountsRootState,
-    selectAccountLabel,
-    selectFormattedAccountType,
-} from '@suite-common/wallet-core';
-import { Badge, Box, Text } from '@suite-native/atoms';
+import { AccountsRootState, selectFormattedAccountType } from '@suite-common/wallet-core';
+import { Badge, Box, RoundedIcon, Text } from '@suite-native/atoms';
 import { Account } from '@suite-common/wallet-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { CryptoIcon } from '@trezor/icons';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { FiatRatesRootState } from '@suite-native/fiat-rates';
 import { selectIsEthereumAccountWithTokensWithFiatRates } from '@suite-native/ethereum-tokens';
@@ -21,13 +15,10 @@ export type AccountListItemProps = {
 };
 
 const accountListItemStyle = prepareNativeStyle<{ isFollowedByTokens: boolean }>(
-    (utils, { isFollowedByTokens }) => ({
+    (_, { isFollowedByTokens }) => ({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItem: 'center',
-        backgroundColor: utils.colors.backgroundSurfaceElevation1,
-        padding: utils.spacings.medium,
-        borderRadius: utils.borders.radii.medium,
         extend: {
             condition: isFollowedByTokens,
             style: {
@@ -50,9 +41,7 @@ export const valuesContainerStyle = prepareNativeStyle(utils => ({
 
 export const AccountListItem = ({ account, areTokensDisplayed = false }: AccountListItemProps) => {
     const { applyStyle } = useNativeStyles();
-    const accountLabel = useSelector((state: AccountsRootState) =>
-        selectAccountLabel(state, account.key),
-    );
+    const { accountLabel } = account;
 
     const formattedAccountType = useSelector((state: AccountsRootState) =>
         selectFormattedAccountType(state, account.key),
@@ -70,7 +59,7 @@ export const AccountListItem = ({ account, areTokensDisplayed = false }: Account
         >
             <Box flexDirection="row" alignItems="center" flex={1}>
                 <Box marginRight="medium">
-                    <CryptoIcon name={account.symbol} />
+                    <RoundedIcon name={account.symbol} />
                 </Box>
                 <Box style={applyStyle(accountDescriptionStyle)}>
                     <Text>{accountLabel}</Text>
@@ -86,7 +75,7 @@ export const AccountListItem = ({ account, areTokensDisplayed = false }: Account
                     network={account.symbol}
                 />
                 <CryptoAmountFormatter
-                    value={account.balance}
+                    value={account.availableBalance}
                     network={account.symbol}
                     isBalance={false}
                     numberOfLines={1}

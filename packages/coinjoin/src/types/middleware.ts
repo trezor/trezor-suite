@@ -1,39 +1,39 @@
 export interface Credentials {
-    value: number;
-    randomness: string;
-    mac: {
+    Value: number;
+    Randomness: string;
+    Mac: {
         t: string;
     };
 }
 
 export type UtxoForRound = {
-    outpoint: string;
-    amount: number;
-    scriptPubKey: string;
-    anonymitySet: number;
+    Outpoint: string;
+    Amount: number;
+    ScriptPubKey: string;
+    AnonymitySet: number;
 };
 
 export interface AnalyzeInternalVinVout {
-    address: string;
-    value: number;
+    Address: string;
+    Value: number;
 }
 
 export interface AnalyzeExternalVinVout {
-    scriptPubKey: string;
-    value: number;
+    ScriptPubKey: string;
+    Value: number;
 }
 
 export interface AnalyzeTransactionDetails {
-    internalInputs: AnalyzeInternalVinVout[];
-    internalOutputs: AnalyzeInternalVinVout[];
-    externalInputs: AnalyzeExternalVinVout[];
-    externalOutputs: AnalyzeExternalVinVout[];
+    InternalInputs: AnalyzeInternalVinVout[];
+    InternalOutputs: AnalyzeInternalVinVout[];
+    ExternalInputs: AnalyzeExternalVinVout[];
+    ExternalOutputs: AnalyzeExternalVinVout[];
 }
 
 export interface AnalyzeResult {
-    results: {
-        address: string;
-        anonymitySet: number;
+    Results: {
+        Address: string;
+        AnonymitySet: number;
     }[];
 }
 

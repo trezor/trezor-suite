@@ -1,9 +1,9 @@
-import React from 'react';
+import { MouseEvent } from 'react';
 import styled from 'styled-components';
 import { Icon, variables } from '@trezor/components';
-import { showAddress as showAddressAction } from '@wallet-actions/signVerifyActions';
-import { useActions } from '@suite-hooks';
-import { Translation } from '@suite-components';
+import { showAddress } from 'src/actions/wallet/signVerifyActions';
+import { useDispatch } from 'src/hooks/suite';
+import { Translation } from 'src/components/suite';
 
 const RevealText = styled.div`
     max-width: 0;
@@ -31,7 +31,7 @@ const ButtonWrapper = styled.button`
     cursor: pointer;
 
     :hover {
-        background-color: ${props => props.theme.BG_WHITE_ALT_HOVER};
+        background-color: ${({ theme }) => theme.BG_WHITE_ALT_HOVER};
 
         > div {
             max-width: 100px;
@@ -44,14 +44,11 @@ interface VerifyAddressButtonProps {
 }
 
 export const VerifyAddressButton = ({ item: { label, value } }: VerifyAddressButtonProps) => {
-    const { showAddress } = useActions({
-        showAddress: showAddressAction,
-    });
+    const dispatch = useDispatch();
 
-    const reveal = (e: React.MouseEvent<HTMLElement>) => {
+    const reveal = (e: MouseEvent<HTMLElement>) => {
         e.stopPropagation();
-
-        showAddress(label, value);
+        dispatch(showAddress(label, value));
     };
 
     return (

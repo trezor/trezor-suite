@@ -135,7 +135,7 @@ const setAffectedValues = (state: MethodState, field: any) => {
             const key = field.key.split('-');
             const bundle = state.fields.find(f => f.name === key[0]);
             if (bundle) {
-                root = bundle.items?.find((batch, index) => index === Number.parseInt(key[1], 10));
+                root = bundle.items?.find((_batch, index) => index === Number.parseInt(key[1], 10));
             }
         } else {
             root = state.fields;
@@ -173,7 +173,7 @@ const findField = (state: MethodState, field: any) => {
     if (typeof field.key === 'string') {
         const key = field.key.split('-');
         const bundle = state.fields.find(f => f.name === key[0]);
-        const batch = bundle?.items?.find((batch, index) => index === Number.parseInt(key[1], 10));
+        const batch = bundle?.items?.find((_batch, index) => index === Number.parseInt(key[1], 10));
         return batch.find(f => f.name === field.name);
     }
     return state.fields.find(f => f.name === field.name);

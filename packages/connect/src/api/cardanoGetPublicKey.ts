@@ -7,10 +7,11 @@ import { getMiscNetwork } from '../data/coinInfo';
 import { validatePath, fromHardened, getSerializedPath } from '../utils/pathUtils';
 import { UI, createUiMessage } from '../events';
 
-export default class CardanoGetPublicKey extends AbstractMethod<
-    'cardanoGetPublicKey',
-    PROTO.CardanoGetPublicKey[]
-> {
+interface Params extends PROTO.CardanoGetPublicKey {
+    suppressBackupWarning?: boolean;
+}
+
+export default class CardanoGetPublicKey extends AbstractMethod<'cardanoGetPublicKey', Params[]> {
     hasBundle?: boolean;
     confirmed?: boolean;
 
@@ -21,7 +22,6 @@ export default class CardanoGetPublicKey extends AbstractMethod<
             getMiscNetwork('Cardano'),
             this.firmwareRange,
         );
-        this.info = 'Export Cardano public key';
 
         // create a bundle with only one batch if bundle doesn't exists
         this.hasBundle = !!this.payload.bundle;
@@ -38,6 +38,7 @@ export default class CardanoGetPublicKey extends AbstractMethod<
                 { name: 'path', required: true },
                 { name: 'derivationType', type: 'number' },
                 { name: 'showOnTrezor', type: 'boolean' },
+                { name: 'suppressBackupWarning', type: 'boolean' },
             ]);
 
             const path = validatePath(batch.path, 3);
@@ -48,8 +49,13 @@ export default class CardanoGetPublicKey extends AbstractMethod<
                         ? batch.derivationType
                         : PROTO.CardanoDerivationType.ICARUS_TREZOR,
                 show_display: typeof batch.showOnTrezor === 'boolean' ? batch.showOnTrezor : false,
+                suppress_backup_warning: batch.suppressBackupWarning,
             };
         });
+    }
+
+    get info() {
+        return 'Export Cardano public key';
     }
 
     async confirmation() {
@@ -81,6 +87,30 @@ export default class CardanoGetPublicKey extends AbstractMethod<
 
         this.confirmed = uiResp.payload;
         return this.confirmed;
+    }
+
+    async noBackupConfirmation(allowSuppression?: boolean) {
+        if (
+            allowSuppression &&
+            this.params.every(batch => batch.suppressBackupWarning || !batch.show_display)
+        ) {
+            return true;
+        }
+        // wait for popup window
+        await this.getPopupPromise().promise;
+        // initialize user response promise
+        const uiPromise = this.createUiPromise(UI.RECEIVE_CONFIRMATION);
+
+        // request confirmation view
+        this.postMessage(
+            createUiMessage(UI.REQUEST_CONFIRMATION, {
+                view: 'no-backup',
+            }),
+        );
+
+        // wait for user action
+        const uiResp = await uiPromise.promise;
+        return uiResp.payload;
     }
 
     async run() {

@@ -1,8 +1,7 @@
-import React from 'react';
-import { Translation } from '@suite-components/Translation';
+import { Translation } from 'src/components/suite/Translation';
 import styled from 'styled-components';
 import { Button } from '@trezor/components';
-import { useSendFormContext } from '@wallet-hooks';
+import { useSendFormContext } from 'src/hooks/wallet';
 
 const Wrapper = styled.div`
     display: flex;
@@ -15,11 +14,14 @@ const In = styled.div`
     display: flex;
     align-items: center;
     padding-right: 10px;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 export const Clear = () => {
-    const { resetContext, isDirty } = useSendFormContext();
+    const {
+        resetContext,
+        formState: { isDirty },
+    } = useSendFormContext();
 
     if (!isDirty) return null;
     return (

@@ -6,7 +6,7 @@ import {
 } from '@trezor/coinjoin/src/constants';
 import type { CoinjoinBackendSettings, CoinjoinClientSettings } from '@trezor/coinjoin';
 import type { PartialRecord } from '@trezor/type-utils';
-import type { CoinjoinServerEnvironment } from '@wallet-types/coinjoin';
+import type { CoinjoinServerEnvironment } from 'src/types/wallet/coinjoin';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 
 type CoinjoinNetworksConfig = CoinjoinBackendSettings & CoinjoinClientSettings;
@@ -28,13 +28,17 @@ export const COINJOIN_NETWORKS: PartialRecord<NetworkSymbol, ServerEnvironment> 
                 'https://btc4.trezor.io',
                 'https://btc5.trezor.io',
             ],
+            onionDomains: {
+                'trezor.io': 'trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion',
+                'wasabiwallet.io': 'wasabiukrxmkdgve5kynjztuovbg43uxcbcxn6y2okcrsg7gb6jdmbad.onion',
+            },
             /* 28.02.2023 */
             baseBlockHeight: 778666,
             baseBlockHash: '000000000000000000054d1ca4a160dd37541d776ccc34af955dbfcd3b2405f6',
             // TODO post MVP: unify filters batch size with wabisabi or implement filters on blockbooks
             // https://github.com/trezor/trezor-suite/issues/7182#issuecomment-1438182493
             filtersBatchSize: 500,
-            middlewareUrl: 'http://localhost:8081/',
+            middlewareUrl: 'http://127.0.0.1:8081/',
         },
     },
     /*
@@ -54,6 +58,10 @@ export const COINJOIN_NETWORKS: PartialRecord<NetworkSymbol, ServerEnvironment> 
             // backend settings
             wabisabiBackendUrl: 'https://wasabiwallet.co/',
             blockbookUrls: ['https://tbtc1.trezor.io', 'https://tbtc2.trezor.io'],
+            onionDomains: {
+                'trezor.io': 'trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion',
+                'wasabiwallet.co': 'testwnp3fugjln6vh5vpj7mvq3lkqqwjj3c2aafyu7laxz42kgwh2rad.onion',
+            },
             /* */
             /* onion addresses *
             coordinatorUrl:
@@ -88,7 +96,7 @@ export const COINJOIN_NETWORKS: PartialRecord<NetworkSymbol, ServerEnvironment> 
             /* */
             filtersBatchSize: 5000,
             // client settings
-            middlewareUrl: 'http://localhost:8081/',
+            middlewareUrl: 'http://127.0.0.1:8081/',
         },
         staging: {
             network: 'test',
@@ -101,7 +109,7 @@ export const COINJOIN_NETWORKS: PartialRecord<NetworkSymbol, ServerEnvironment> 
             baseBlockHash: '0000000000000014af3e6e1a3f0a24be7bc65998b9bc01e4a05b134a89d304bf',
             filtersBatchSize: 5000,
             // client settings
-            middlewareUrl: 'http://localhost:8081/',
+            middlewareUrl: 'http://127.0.0.1:8081/',
         },
     },
     regtest: {
@@ -109,15 +117,15 @@ export const COINJOIN_NETWORKS: PartialRecord<NetworkSymbol, ServerEnvironment> 
         localhost: {
             network: 'regtest',
             coordinatorName: 'CoinJoinCoordinatorIdentifier',
-            coordinatorUrl: 'http://localhost:8081/backend/wabisabi/',
+            coordinatorUrl: 'http://127.0.0.1:8081/backend/wabisabi/',
             // backend settings
-            wabisabiBackendUrl: 'http://localhost:8081/backend/',
-            blockbookUrls: ['http://localhost:19121'],
+            wabisabiBackendUrl: 'http://127.0.0.1:8081/backend/',
+            blockbookUrls: ['http://127.0.0.1:19121'],
             baseBlockHeight: 0,
             baseBlockHash: '0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206',
             filtersBatchSize: 5000,
             // client settings
-            middlewareUrl: 'http://localhost:8081/client/',
+            middlewareUrl: 'http://127.0.0.1:8081/client/',
         },
     },
 };
@@ -125,6 +133,7 @@ export const COINJOIN_NETWORKS: PartialRecord<NetworkSymbol, ServerEnvironment> 
 export const ESTIMATED_ANONYMITY_GAINED_PER_ROUND = 10; // initial value replaced by config via message-system in state.wallet.coinjoin.config.averageAnonymityGainPerRound
 export const MIN_ANONYMITY_GAINED_PER_ROUND = 0.1; // the minimum anonymity gain per coinjoin round that is used to avoid division by zero when computing roundsNeeded.
 export const ESTIMATED_ROUNDS_FAIL_RATE_BUFFER = 2.5;
+export const MAX_ROUNDS_ALLOWED = 500; // Never ask trezor to sign more than 500 rounds, it will fail if safety checks are enabled.
 export const ESTIMATED_MIN_ROUNDS_NEEDED = 4;
 export const ESTIMATED_HOURS_PER_ROUND = 1;
 export const UNECONOMICAL_COINJOIN_THRESHOLD = 1_000_000;
@@ -146,6 +155,8 @@ export const CLIENT_STATUS_FALLBACK = {
         max: MAX_ALLOWED_AMOUNT_FALLBACK,
     },
 };
+export const ZKSNACKS_LEGAL_DOCUMENTS_VERSION = '1.0';
+export const TREZOR_LEGAL_DOCUMENTS_VERSION = '1.0';
 
 // Estimating anonymity gain per round:
 // How many previous coinjoin transactions are taken into account

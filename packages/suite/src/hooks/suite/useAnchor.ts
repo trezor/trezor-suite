@@ -1,16 +1,11 @@
 import { useRef, useEffect } from 'react';
 
-import { useSelector, useActions } from '@suite-hooks';
-import * as routerActions from '@suite-actions/routerActions';
+import { useSelector } from 'src/hooks/suite';
 
 export const useAnchor = (anchorId: string) => {
     const anchorRef = useRef<HTMLDivElement>(null);
 
     const anchor = useSelector(state => state.router.anchor);
-
-    const { onAnchorChange } = useActions({
-        onAnchorChange: routerActions.onAnchorChange,
-    });
 
     useEffect(() => {
         if (anchorId === anchor && anchorRef.current) {
@@ -27,7 +22,7 @@ export const useAnchor = (anchorId: string) => {
 
             return () => clearTimeout(scrollTimeout);
         }
-    }, [anchorRef, anchor, anchorId, onAnchorChange]);
+    }, [anchor, anchorId]);
 
     return {
         anchorRef,

@@ -7,6 +7,7 @@ import backupDevice from './backupDevice';
 import changePin from './changePin';
 import recoverDevice from './recoverDevice';
 import firmwareUpdate from './firmwareUpdate';
+import rebootToBootloader from './rebootToBootloader';
 
 export default [
     ...getFeatures,
@@ -18,4 +19,5 @@ export default [
     ...changePin,
     ...recoverDevice,
     ...firmwareUpdate,
+    ...rebootToBootloader,
 ];

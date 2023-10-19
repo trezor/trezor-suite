@@ -1,14 +1,10 @@
-import React from 'react';
-import {
-    CoinmarketLayout,
-    withSelectedAccountLoaded,
-    WithSelectedAccountLoadedProps,
-} from '@wallet-components';
+import { withSelectedAccountLoaded, WithSelectedAccountLoadedProps } from 'src/components/wallet';
 import ExchangeForm from './components/ExchangeForm';
 import {
     useCoinmarketExchangeForm,
     ExchangeFormContext,
-} from '@wallet-hooks/useCoinmarketExchangeForm';
+} from 'src/hooks/wallet/useCoinmarketExchangeForm';
+import { CoinmarketLayout } from 'src/views/wallet/coinmarket/common';
 
 const CoinmarketExchange = (props: WithSelectedAccountLoadedProps) => {
     const coinmarketExchangeContextValues = useCoinmarketExchangeForm(props);

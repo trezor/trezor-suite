@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Box, Text } from '@suite-native/atoms';
 import { CryptoAmountFormatter, AccountAddressFormatter } from '@suite-native/formatters';
 import { NetworkSymbol } from '@suite-common/wallet-config';

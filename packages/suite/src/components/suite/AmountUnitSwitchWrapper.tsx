@@ -1,8 +1,8 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import styled from 'styled-components';
 import { Tooltip, variables } from '@trezor/components';
-import { useBitcoinAmountUnit } from '@wallet-hooks/useBitcoinAmountUnit';
-import { NetworkSymbol } from '@wallet-types';
+import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
+import { NetworkSymbol } from 'src/types/wallet';
 import { Translation } from './Translation';
 
 const Container = styled.div`
@@ -25,7 +25,7 @@ const Container = styled.div`
 
 interface AmountUnitSwitchWrapperProps {
     symbol: NetworkSymbol;
-    children: React.ReactNode;
+    children: ReactNode;
 }
 
 export const AmountUnitSwitchWrapper = ({ symbol, children }: AmountUnitSwitchWrapperProps) => {

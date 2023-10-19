@@ -1,7 +1,7 @@
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 
-import { IconName, Icon } from '@trezor/icons';
-import { Color } from '@trezor/theme';
+import { IconName, Icon } from '@suite-common/icons';
+import { Color, TypographyStyle } from '@trezor/theme';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { Box } from './Box';
@@ -9,11 +9,16 @@ import { Text } from './Text';
 import { VStack } from './Stack';
 
 export type PictogramVariant = 'green' | 'red' | 'yellow';
+type PictogramSize = 'small' | 'large';
+
+const ICON_SIZE = 40;
 
 type PictogramProps = {
     variant: PictogramVariant;
     icon: IconName;
-    title: string | ReactNode;
+    size?: PictogramSize;
+    title?: ReactNode;
+    titleVariant?: TypographyStyle;
     subtitle?: string;
 };
 
@@ -40,9 +45,17 @@ const pictogramVariantsMap = {
     },
 } as const satisfies Record<PictogramVariant, PictogramStyle>;
 
-const OUTER_RING_SIZE = 114;
-const INNER_RING_SIZE = 80;
-const ICON_SIZE = 48;
+type PictogramSizeProps = { outerRingSize: number; innerRingSize: number };
+const sizeToDimensionsMap = {
+    small: {
+        outerRingSize: 88,
+        innerRingSize: 64,
+    },
+    large: {
+        outerRingSize: 114,
+        innerRingSize: 80,
+    },
+} as const satisfies Record<PictogramSize, PictogramSizeProps>;
 
 type CircleStyleProps = { backgroundColorName: Color; size: number };
 
@@ -57,34 +70,47 @@ const circleContainerStyle = prepareNativeStyle<CircleStyleProps>(
     }),
 );
 
-export const Pictogram = ({ variant, icon, title, subtitle }: PictogramProps) => {
+export const Pictogram = ({
+    variant,
+    icon,
+    title,
+    subtitle,
+    titleVariant = 'titleSmall',
+    size = 'large',
+}: PictogramProps) => {
     const { applyStyle } = useNativeStyles();
     const { outerBackgroundColor, innerBackgroundColor, iconColor } = pictogramVariantsMap[variant];
+    const { outerRingSize, innerRingSize } = sizeToDimensionsMap[size];
+
     return (
-        <VStack alignItems="center" spacing="medium">
+        <VStack alignItems="center" spacing="large">
             <Box
                 style={applyStyle(circleContainerStyle, {
                     backgroundColorName: outerBackgroundColor,
-                    size: OUTER_RING_SIZE,
+                    size: outerRingSize,
                 })}
             >
                 <Box
                     style={applyStyle(circleContainerStyle, {
                         backgroundColorName: innerBackgroundColor,
-                        size: INNER_RING_SIZE,
+                        size: innerRingSize,
                     })}
                 >
                     <Icon name={icon} color={iconColor} customSize={ICON_SIZE} />
                 </Box>
             </Box>
-            <VStack alignItems="center">
-                <Text variant="titleSmall" align="center">
-                    {title}
-                </Text>
-                <Text color="textSubdued" align="center">
-                    {subtitle}
-                </Text>
-            </VStack>
+            {title && (
+                <VStack alignItems="center">
+                    <Box>
+                        <Text variant={titleVariant} textAlign="center">
+                            {title}
+                        </Text>
+                    </Box>
+                    <Text color="textSubdued" textAlign="center">
+                        {subtitle}
+                    </Text>
+                </VStack>
+            )}
         </VStack>
     );
 };

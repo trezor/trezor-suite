@@ -44,7 +44,6 @@ type Params = {
 export default class SignTransaction extends AbstractMethod<'signTransaction', Params> {
     init() {
         this.requiredPermissions = ['read', 'write'];
-        this.info = 'Sign transaction';
 
         const { payload } = this;
 
@@ -86,11 +85,22 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
         // set required firmware from coinInfo support
         this.firmwareRange = getFirmwareRange(this.name, coinInfo, this.firmwareRange);
         this.preauthorized = payload.preauthorized;
-        this.info = getLabel('Sign #NETWORK transaction', coinInfo);
 
         const inputs = validateTrezorInputs(payload.inputs, coinInfo);
         const outputs = validateTrezorOutputs(payload.outputs, coinInfo);
-        const refTxs = validateReferencedTransactions(payload.refTxs, inputs, outputs);
+
+        if (payload.refTxs && payload.account?.transactions) {
+            console.warn(
+                'two sources of referential transactions were passed. payload.refTxs have precedence',
+            );
+        }
+        const refTxs = validateReferencedTransactions({
+            transactions: payload.refTxs || payload.account?.transactions,
+            inputs,
+            outputs,
+            coinInfo,
+            addresses: payload.account?.addresses,
+        });
 
         const outputsWithAmount = outputs.filter(
             output =>
@@ -102,7 +112,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
                 (bn, output) => bn.plus(typeof output.amount === 'string' ? output.amount : '0'),
                 new BigNumber(0),
             );
-            if (total.lte(coinInfo.dustLimit)) {
+            if (total.lt(coinInfo.dustLimit)) {
                 throw ERRORS.TypedError(
                     'Method_InvalidParameter',
                     'Total amount is below dust limit.',
@@ -112,7 +122,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
 
         this.params = {
             inputs,
-            outputs: payload.outputs,
+            outputs,
             paymentRequests: payload.paymentRequests || [],
             refTxs,
             addresses: payload.account ? payload.account.addresses : undefined,
@@ -135,6 +145,11 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
         };
 
         this.params.options = enhanceSignTx(this.params.options, coinInfo);
+    }
+
+    get info() {
+        const coinInfo = getBitcoinNetwork(this.payload.coin);
+        return getLabel('Sign #NETWORK transaction', coinInfo);
     }
 
     private async fetchAddresses(blockchain: Blockchain) {

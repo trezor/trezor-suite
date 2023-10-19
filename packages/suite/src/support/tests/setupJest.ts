@@ -28,6 +28,7 @@ declare global {
         getWalletAccount: typeof testMocks.getWalletAccount;
         getWalletTransaction: typeof testMocks.getWalletTransaction;
         getTrezorConnect: typeof testMocks.getTrezorConnect;
+        getAnalytics: typeof testMocks.getAnalytics;
         getMessageSystemConfig: typeof testMocks.getMessageSystemConfig;
         getGuideNode: typeof testMocks.getGuideNode;
         intlMock: typeof testMocks.intlMock;
@@ -42,6 +43,7 @@ global.JestMocks = {
     getWalletAccount: testMocks.getWalletAccount,
     getWalletTransaction: testMocks.getWalletTransaction,
     getTrezorConnect: testMocks.getTrezorConnect,
+    getAnalytics: testMocks.getAnalytics,
     getMessageSystemConfig: testMocks.getMessageSystemConfig,
     getGuideNode: testMocks.getGuideNode,
     intlMock: testMocks.intlMock,

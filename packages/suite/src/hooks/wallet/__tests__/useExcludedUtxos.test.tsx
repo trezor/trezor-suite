@@ -1,4 +1,4 @@
-import React from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { render, screen } from '@testing-library/react';
 import { testMocks } from '@suite-common/test-utils';
 import { useExcludedUtxos } from '../form/useExcludedUtxos';
@@ -43,10 +43,10 @@ const initialProps = (): Props => JSON.parse(JSON.stringify(PROPS));
 
 const Component = (props: Props) => {
     const excludedUtxos = useExcludedUtxos(props);
-    const renderCount = React.useRef(0);
-    const [count, setCount] = React.useState(0);
+    const renderCount = useRef(0);
+    const [count, setCount] = useState(0);
 
-    React.useEffect(() => {
+    useEffect(() => {
         renderCount.current++;
         setCount(renderCount.current);
     }, [excludedUtxos]);

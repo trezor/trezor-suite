@@ -1,6 +1,6 @@
 # Path
 
--   `path` - `string | Array<number>` in [BIP44](https://github.com/trezor/trezor-firmware/blob/master/docs/misc/coins-bip44-paths.md#bip-44-derivation-paths) path scheme or `Array` of hardended numbers.
+-   `path` - `string | Array<number>` in [BIP44](https://github.com/trezor/trezor-firmware/blob/main/docs/misc/coins-bip44-paths.md#bip-44-derivation-paths) path scheme or `Array` of hardended numbers.
 
 ## Examples
 

@@ -1,11 +1,12 @@
-import React, { useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import styled from 'styled-components';
-import { CheckItem, Translation, Modal } from '@suite-components';
 
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { Button, P, Tooltip, Image } from '@trezor/components';
+
+import { CheckItem, Translation, Modal } from 'src/components/suite';
 
 import { ImageWrapper, Description, Divider, Title } from './styles';
 

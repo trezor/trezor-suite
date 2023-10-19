@@ -14,7 +14,6 @@ export default class GetOwnershipId extends AbstractMethod<
 
     init() {
         this.requiredPermissions = ['read'];
-        this.info = 'Export ownership id';
 
         // create a bundle with only one batch if bundle doesn't exists
         this.hasBundle = !!this.payload.bundle;
@@ -46,6 +45,10 @@ export default class GetOwnershipId extends AbstractMethod<
                 script_type,
             };
         });
+    }
+
+    get info() {
+        return 'Export ownership id';
     }
 
     async confirmation() {

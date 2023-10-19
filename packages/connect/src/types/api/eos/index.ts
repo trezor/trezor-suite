@@ -1,5 +1,5 @@
-// todo: should extend PROTO respective types maybe?
-import { PROTO } from '../../../constants';
+import type { PROTO } from '../../../constants';
+import type { DerivationPath } from '../../params';
 
 // eosGetPublicKey
 
@@ -137,6 +137,6 @@ export interface EosSDKTransaction {
 }
 
 export interface EosSignTransaction {
-    path: string | number[];
+    path: DerivationPath;
     transaction: EosSDKTransaction;
 }

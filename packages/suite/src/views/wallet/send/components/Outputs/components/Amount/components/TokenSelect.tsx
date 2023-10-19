@@ -1,13 +1,13 @@
-import React, { useEffect } from 'react';
+import { useMemo, useEffect } from 'react';
 import { Controller } from 'react-hook-form';
 import { Select, variables } from '@trezor/components';
 import { components } from 'react-select';
 import styled from 'styled-components';
-import { useSendFormContext } from '@wallet-hooks';
-import { Account } from '@wallet-types';
-import { Output } from '@wallet-types/sendForm';
-import { getShortFingerprint } from '@wallet-utils/cardanoUtils';
-import { useSelector } from '@suite-hooks';
+import { useSendFormContext } from 'src/hooks/wallet';
+import { Account } from 'src/types/wallet';
+import { Output } from 'src/types/wallet/sendForm';
+import { getShortFingerprint } from 'src/utils/wallet/cardanoUtils';
+import { useSelector } from 'src/hooks/suite';
 import { enhanceTokensWithRates, sortTokensWithRates } from '@suite-common/wallet-utils';
 
 interface Option {
@@ -120,14 +120,14 @@ export const TokenSelect = ({ output, outputId }: TokenSelectProps) => {
     } = useSendFormContext();
     const coins = useSelector(state => state.wallet.fiat.coins);
 
-    const sortedTokens = React.useMemo(() => {
+    const sortedTokens = useMemo(() => {
         const tokensWithRates = enhanceTokensWithRates(account.tokens, coins);
 
         return tokensWithRates.sort(sortTokensWithRates);
     }, [account.tokens, coins]);
 
-    const tokenInputName = `outputs[${outputId}].token`;
-    const amountInputName = `outputs[${outputId}].amount`;
+    const tokenInputName = `outputs.${outputId}.token` as const;
+    const amountInputName = `outputs.${outputId}.amount` as const;
     const tokenValue = getDefaultValue(tokenInputName, output.token);
     const isSetMaxActive = getDefaultValue('setMaxOutputId') === outputId;
     const dataEnabled = getDefaultValue('options', []).includes('ethereumData');
@@ -140,7 +140,7 @@ export const TokenSelect = ({ output, outputId }: TokenSelectProps) => {
     const tokenWatch = watch(tokenInputName, null);
     useEffect(() => {
         if (account.networkType === 'ethereum' && !isSetMaxActive) {
-            const amountValue = getValues(`outputs[${outputId}].amount`) as string;
+            const amountValue = getValues(`outputs.${outputId}.amount`) as string;
             if (amountValue) setAmount(outputId, amountValue);
         }
     }, [outputId, tokenWatch, setAmount, getValues, account.networkType, isSetMaxActive]);
@@ -159,7 +159,7 @@ export const TokenSelect = ({ output, outputId }: TokenSelectProps) => {
             name={tokenInputName}
             data-test={tokenInputName}
             defaultValue={tokenValue}
-            render={({ onChange }) => (
+            render={({ field: { onChange } }) => (
                 <Select
                     options={options}
                     minWidth="58px"

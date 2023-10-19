@@ -1,6 +1,6 @@
 import { NavigatorScreenParams } from '@react-navigation/native';
 
-import { AccountKey, TokenSymbol, XpubAddress } from '@suite-common/wallet-types';
+import { AccountKey, TokenAddress, XpubAddress } from '@suite-common/wallet-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountInfo, TokenTransfer } from '@trezor/connect';
 
@@ -14,11 +14,12 @@ import {
     AccountsStackRoutes,
     DevUtilsStackRoutes,
     OnboardingStackRoutes,
+    ConnectDeviceStackRoutes,
 } from './routes';
 
 type ReceiveAccountsParams = {
     accountKey?: AccountKey;
-    tokenSymbol?: TokenSymbol;
+    tokenContract?: TokenAddress;
 };
 
 export type AccountsStackParamList = {
@@ -47,7 +48,7 @@ export type ReceiveStackParamList = {
     [ReceiveStackRoutes.ReceiveAccounts]: undefined;
     [ReceiveStackRoutes.Receive]: {
         accountKey: AccountKey;
-        tokenSymbol?: TokenSymbol;
+        tokenContract?: TokenAddress;
     };
 };
 
@@ -85,9 +86,17 @@ export type AccountsImportStackParamList = {
     };
 };
 
+export type ConnectDeviceStackParamList = {
+    [ConnectDeviceStackRoutes.ConnectDeviceCrossroads]: undefined;
+    [ConnectDeviceStackRoutes.ConnectAndUnlockDevice]: undefined;
+    [ConnectDeviceStackRoutes.PinMatrix]: undefined;
+    [ConnectDeviceStackRoutes.ConnectingDevice]: undefined;
+};
+
 export type RootStackParamList = {
     [RootStackRoutes.AppTabs]: NavigatorScreenParams<AppTabsParamList>;
     [RootStackRoutes.Onboarding]: NavigatorScreenParams<AppTabsParamList>;
+    [RootStackRoutes.ConnectDevice]: NavigatorScreenParams<ConnectDeviceStackParamList>;
     [RootStackRoutes.AccountsImport]: NavigatorScreenParams<AccountsImportStackParamList>;
     [RootStackRoutes.ReceiveModal]: ReceiveAccountsParams;
     [RootStackRoutes.AccountSettings]: { accountKey: AccountKey };
@@ -99,6 +108,6 @@ export type RootStackParamList = {
     [RootStackRoutes.DevUtilsStack]: undefined;
     [RootStackRoutes.AccountDetail]: {
         accountKey: AccountKey;
-        tokenSymbol?: TokenSymbol;
+        tokenContract?: TokenAddress;
     };
 };

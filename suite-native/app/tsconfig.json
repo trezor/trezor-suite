@@ -11,6 +11,10 @@
         {
             "path": "../../suite-common/formatters"
         },
+        { "path": "../../suite-common/icons" },
+        {
+            "path": "../../suite-common/message-system"
+        },
         {
             "path": "../../suite-common/redux-utils"
         },
@@ -23,10 +27,18 @@
         { "path": "../alerts" },
         { "path": "../analytics" },
         { "path": "../atoms" },
+        { "path": "../biometrics" },
         { "path": "../config" },
+        { "path": "../device" },
+        { "path": "../feature-flags" },
         { "path": "../fiat-rates" },
-        { "path": "../module-accounts" },
+        { "path": "../intl" },
+        { "path": "../message-system" },
         { "path": "../module-accounts-import" },
+        {
+            "path": "../module-accounts-management"
+        },
+        { "path": "../module-connect-device" },
         { "path": "../module-dev-utils" },
         { "path": "../module-home" },
         { "path": "../module-onboarding" },
@@ -41,9 +53,7 @@
         { "path": "../toasts" },
         { "path": "../transactions" },
         { "path": "../../packages/connect" },
-        { "path": "../../packages/icons" },
         { "path": "../../packages/styles" },
-        { "path": "../../packages/suite-data" },
         { "path": "../../packages/theme" }
     ],
     "include": [".", "**.json"]

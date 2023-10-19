@@ -1,8 +1,8 @@
-import React from 'react';
+import { Component, ErrorInfo } from 'react';
 import { connect, ConnectedComponent } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
-import { Error } from '@suite-components/Error';
-import { reportToSentry } from '@suite-utils/sentry';
+import { Error } from 'src/components/suite/Error';
+import { reportToSentry } from 'src/utils/suite/sentry';
 
 interface StateProps {
     error: Error | null | undefined;
@@ -18,19 +18,19 @@ type Props = ReturnType<typeof mapDispatchToProps> & {
  * Swallow render errors
  * Read more: https://reactjs.org/docs/error-boundaries.html
  *
- * This component cannot be written as a `React.FunctionalComponent`
+ * This component cannot be written as a `FunctionalComponent`
  * because of the absence of hook equivalent for `componentDidCatch`
  * see: https://reactjs.org/docs/hooks-faq.html#do-hooks-cover-all-use-cases-for-classes
  *
  *  It's not translatable, because ErrorBoundary is not nested in IntlProvider.
  */
-class ErrorBoundary extends React.Component<Props, StateProps> {
+class ErrorBoundary extends Component<Props, StateProps> {
     constructor(props: Props) {
         super(props);
         this.state = { error: null };
     }
 
-    componentDidCatch(error: Error | null, _errorInfo: React.ErrorInfo) {
+    componentDidCatch(error: Error | null, _errorInfo: ErrorInfo) {
         this.props.reportToSentry(error);
         this.setState({ error });
     }

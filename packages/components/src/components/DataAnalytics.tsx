@@ -1,7 +1,18 @@
-import React, { useState } from 'react';
+import { Fragment, useState, ReactNode } from 'react';
 import styled from 'styled-components';
-import { H1, Switch, CollapsibleBox, variables, Button, CollapsibleCard } from '@trezor/components';
+
 import { FormattedMessage } from 'react-intl';
+import { variables } from '../config';
+import { Button } from './buttons/Button/Button';
+import { CollapsibleBox } from './CollapsibleBox/CollapsibleBox';
+import { Card } from './Card/Card';
+import { Switch } from './form/Switch/Switch';
+import { H1 } from './typography/Heading/Heading';
+
+const StyledCard = styled(Card)`
+    max-width: 550px;
+    padding: 20px 30px;
+`;
 
 const Wrapper = styled.div`
     display: flex;
@@ -26,7 +37,7 @@ const Label = styled.span`
     margin-left: 20px;
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     align-items: center;
     display: flex;
 `;
@@ -34,7 +45,7 @@ const Label = styled.span`
 const Heading = styled(H1)`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     margin-bottom: 16px;
     text-align: left;
 `;
@@ -42,7 +53,7 @@ const Heading = styled(H1)`
 const Description = styled.span`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 
     margin-bottom: 20px;
     /* text-align: center; */
@@ -96,15 +107,17 @@ const collectedData = [
 
 type DataAnalyticsProps = {
     onConfirm: (trackingEnabled: boolean) => void;
-    analyticsLink?: (chunks: React.ReactNode[]) => JSX.Element;
-    tosLink?: (chunks: React.ReactNode[]) => JSX.Element;
+    analyticsLink?: (chunks: ReactNode[]) => JSX.Element;
+    tosLink?: (chunks: ReactNode[]) => JSX.Element;
 };
 
+// This component is used in connect-ui, therefore it's located in this library,
+// although in the future it should be moved elsewhere.
 export const DataAnalytics = ({ onConfirm, analyticsLink, tosLink }: DataAnalyticsProps) => {
     const [trackingEnabled, setTrackingEnabled] = useState<boolean>(true);
 
     return (
-        <CollapsibleCard variant="small" data-test="@analytics/consent">
+        <StyledCard data-test="@analytics/consent">
             <Wrapper>
                 <Heading>
                     <FormattedMessage
@@ -135,12 +148,12 @@ export const DataAnalytics = ({ onConfirm, analyticsLink, tosLink }: DataAnalyti
                     <Category>
                         {collectedData.map((category, i) => (
                             // eslint-disable-next-line react/no-array-index-key
-                            <React.Fragment key={i}>
+                            <Fragment key={i}>
                                 <CategoryName>{category.name}</CategoryName>
                                 <CategoryItems>
                                     <Label>{category.item}</Label>
                                 </CategoryItems>
-                            </React.Fragment>
+                            </Fragment>
                         ))}
                     </Category>
                 </CollapsibleBox>
@@ -168,6 +181,6 @@ export const DataAnalytics = ({ onConfirm, analyticsLink, tosLink }: DataAnalyti
                     </StyledButton>
                 </ButtonWrapper>
             </Wrapper>
-        </CollapsibleCard>
+        </StyledCard>
     );
 };

@@ -1,9 +1,15 @@
-import React from 'react';
 import styled from 'styled-components';
-import { FiatValue, FormattedCryptoAmount, AccountLabeling, Translation } from '@suite-components';
+
 import { CoinLogo, variables } from '@trezor/components';
-import { Account } from '@wallet-types';
-import { Route } from '@suite-constants/routes';
+import { Route } from '@suite-common/suite-types';
+
+import {
+    FiatValue,
+    FormattedCryptoAmount,
+    AccountLabeling,
+    Translation,
+} from 'src/components/suite';
+import { Account } from 'src/types/wallet';
 
 const Main = styled.div`
     align-items: center;

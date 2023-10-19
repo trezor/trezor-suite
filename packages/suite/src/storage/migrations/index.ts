@@ -1,21 +1,20 @@
 import BigNumber from 'bignumber.js';
 import { toWei } from 'web3-utils';
-import { isDesktop } from '@suite-utils/env';
-import type { State } from '@wallet-reducers/settingsReducer';
-import type { CustomBackend, BlockbookUrl } from '@wallet-types/backend';
-import type { Network, Account, Discovery } from '@wallet-types';
+import { isDesktop } from '@trezor/env-utils';
+import type { State } from 'src/reducers/wallet/settingsReducer';
+import type { CustomBackend, BlockbookUrl } from 'src/types/wallet/backend';
+import type { Network } from 'src/types/wallet';
 
 import type { BackendSettings } from '@suite-common/wallet-types';
 import type { OnUpgradeFunc } from '@trezor/suite-storage';
-import type { DBWalletAccountTransaction } from '@trezor/suite/src/storage/definitions';
+import type { DBWalletAccountTransaction, SuiteDBSchema } from '../definitions';
 import {
     formatNetworkAmount,
     networkAmountToSatoshi,
     amountToSatoshi,
 } from '@suite-common/wallet-utils';
-
-import type { SuiteDBSchema } from '../definitions';
-import { GraphData } from '../../types/wallet/graph';
+import { updateAll } from './utils';
+import { DeviceModelInternal, FirmwareType } from '@trezor/connect';
 
 type WalletWithBackends = {
     backends?: Partial<{
@@ -38,41 +37,39 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
 
     // TODO: make separate file for each iterative migration
 
-    // EXAMPLES
+    // migrations from version older than 13 (internal releases) are not implemented
+    if (oldVersion < 13) {
+        // object store for wallet transactions
+        const txsStore = db.createObjectStore('txs', {
+            keyPath: ['tx.deviceState', 'tx.descriptor', 'tx.txid', 'tx.type'],
+        });
+        txsStore.createIndex('txid', 'tx.txid', { unique: false });
+        txsStore.createIndex('order', 'order', { unique: false });
+        txsStore.createIndex('blockTime', 'tx.blockTime', { unique: false });
+        txsStore.createIndex('deviceState', 'tx.deviceState', { unique: false });
+        txsStore.createIndex('accountKey', ['tx.descriptor', 'tx.symbol', 'tx.deviceState'], {
+            unique: false,
+        });
 
-    // if (oldVersion < 3) {
-    //     // upgrade to version 3
-    //     db.deleteObjectStore('devices');
-    //     db.createObjectStore('devices');
+        // object store for settings
+        db.createObjectStore('suiteSettings');
+        db.createObjectStore('walletSettings');
 
-    //     // object store for accounts
-    //     const accountsStore = db.createObjectStore('accounts', {
-    //         keyPath: ['descriptor', 'symbol', 'deviceState'],
-    //     });
-    //     accountsStore.createIndex('deviceState', 'deviceState', { unique: false });
+        // object store for devices
+        db.createObjectStore('devices');
 
-    //     // object store for discovery
-    //     db.createObjectStore('discovery', { keyPath: 'deviceState' });
-    // }
+        // object store for accounts
+        const accountsStore = db.createObjectStore('accounts', {
+            keyPath: ['descriptor', 'symbol', 'deviceState'],
+        });
+        accountsStore.createIndex('deviceState', 'deviceState', { unique: false });
 
-    // if (oldVersion < 9) {
-    //     // added timestamp field
-    //     let cursor = await transaction.store.openCursor();
+        // object store for discovery
+        db.createObjectStore('discovery', { keyPath: 'deviceState' });
 
-    //     while (cursor) {
-    //         console.log(cursor.key, cursor.value);
-    //         const updateData = cursor.value;
-    //         updateData.timestamp = 146684800000;
-    //         const request = cursor.update(updateData);
-    //         // eslint-disable-next-line no-await-in-loop
-    //         cursor = await cursor.continue();
-    //     }
+        db.createObjectStore('analytics');
+    }
 
-    //     // create new index if not created before
-    //     if (!transaction.store.indexNames.contains('timestamp')) {
-    //         transaction.store.createIndex('timestamp', 'timestamp', { unique: false });
-    //     }
-    // }
     if (oldVersion < 14) {
         // added graph object store
         const graphStore = db.createObjectStore('graph', {
@@ -89,81 +86,59 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
     if (oldVersion < 15) {
         db.createObjectStore('metadata');
 
-        const accountsStore = transaction.objectStore('accounts');
-        await accountsStore
-            .openCursor()
-            .then(async function addMetadataKeys(cursor): Promise<void> {
-                if (!cursor) {
-                    return;
-                }
-                const account = cursor.value;
+        await updateAll(transaction, 'accounts', account => {
+            account.metadata = {
+                key: '',
+                // @ts-expect-error
+                fileName: '',
+                aesKey: '',
+                outputLabels: {},
+                addressLabels: {},
+            };
+            account.key = `${account.descriptor}-${account.symbol}-${account.deviceState}`;
+            return account;
+        });
 
-                account.metadata = {
-                    key: '',
-                    fileName: '',
-                    aesKey: '',
-                    outputLabels: {},
-                    addressLabels: {},
-                };
-                account.key = `${account.descriptor}-${account.symbol}-${account.deviceState}`;
-                await cursor.update(account);
-
-                return cursor.continue().then(addMetadataKeys);
-            });
-
-        const devicesStore = transaction.objectStore('devices');
-        await devicesStore.openCursor().then(async function addMetadataKeys(cursor): Promise<void> {
-            if (!cursor) {
-                return;
-            }
-            const device = cursor.value;
-
+        await updateAll(transaction, 'devices', device => {
             device.metadata = {
                 status: 'disabled',
             };
-            await cursor.update(device);
-
-            return cursor.continue().then(addMetadataKeys);
+            return device;
         });
     }
 
     if (oldVersion < 16) {
-        // object store for send form
         // @ts-expect-error sendForm doesn't exists anymore
-        db.deleteObjectStore('sendForm');
+        if (db.objectStoreNames.contains('sendForm')) {
+            // @ts-expect-error sendForm doesn't exists anymore
+            db.deleteObjectStore('sendForm');
+        }
+        // object store for send form
         db.createObjectStore('sendFormDrafts');
     }
 
     if (oldVersion < 17) {
-        db.createObjectStore('coinmarketTrades');
+        db.createObjectStore('coinmarketTrades', { keyPath: 'key' });
     }
 
     if (oldVersion < 18) {
-        const devicesStore = transaction.objectStore('devices');
-        await devicesStore.openCursor().then(async function addWalletNumber(cursor): Promise<void> {
-            if (!cursor) {
-                return;
-            }
-            const device = cursor.value;
-
+        await updateAll(transaction, 'devices', device => {
             device.walletNumber = device.instance;
-            await cursor.update(device);
-
-            return cursor.continue().then(addWalletNumber);
+            return device;
         });
     }
 
     if (oldVersion < 19) {
         // no longer uses keyPath to generate primary key
-        db.deleteObjectStore('fiatRates');
+        if (db.objectStoreNames.contains('fiatRates')) {
+            db.deleteObjectStore('fiatRates');
+        }
         db.createObjectStore('fiatRates');
     }
 
     if (oldVersion < 20) {
         // enhance tx.details
-        let cursor = await transaction.objectStore('txs').openCursor();
-        while (cursor) {
-            const tx = cursor.value;
+        await updateAll(transaction, 'txs', tx => {
             if (tx.tx.details) {
                 tx.tx.details = {
                     ...tx.tx.details,
@@ -179,20 +154,14 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
                     totalOutput: formatNetworkAmount(tx.tx.details.totalOutput, tx.tx.symbol),
                 };
             }
-
-            // eslint-disable-next-line no-await-in-loop
-            await cursor.update(tx);
-            // eslint-disable-next-line no-await-in-loop
-            cursor = await cursor.continue();
-        }
+            return tx;
+        });
     }
 
     if (oldVersion < 21) {
         // do the same thing as in blockchain-link's transformTransaction
-        let cursor = await transaction.objectStore('txs').openCursor();
         const symbolsToExclude = ['eth', 'etc', 'xrp', 'trop', 'txrp'];
-        while (cursor) {
-            const tx = cursor.value as DBWalletAccountTransactionCompatible;
+        await updateAll<'txs', DBWalletAccountTransactionCompatible>(transaction, 'txs', tx => {
             if (!tx.tx.totalSpent) {
                 if (!symbolsToExclude.includes(tx.tx.symbol)) {
                     // btc-like txs
@@ -221,41 +190,28 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
                     // self, recv txs
                     tx.tx.totalSpent = tx.tx.amount;
                 }
-                // eslint-disable-next-line no-await-in-loop
-                await cursor.update(tx);
+                return tx;
             }
-            // eslint-disable-next-line no-await-in-loop
-            cursor = await cursor.continue();
-        }
+        });
     }
 
     if (oldVersion < 22) {
-        let cursor = await transaction.objectStore('accounts').openCursor();
-        while (cursor) {
-            const account = cursor.value;
+        await updateAll(transaction, 'accounts', account => {
             if (account.symbol === 'ltc' && account.accountType === 'normal') {
                 // change account type from normal to segwit
                 account.accountType = 'segwit';
-                // eslint-disable-next-line no-await-in-loop
-                await cursor.update(account);
+                return account;
             }
-            // eslint-disable-next-line no-await-in-loop
-            cursor = await cursor.continue();
-        }
+        });
 
-        let discovery = await transaction.objectStore('discovery').openCursor();
-        while (discovery) {
-            const d = discovery.value;
+        await updateAll(transaction, 'discovery', d => {
             // reset discovery
             if (d.networks.includes('ltc')) {
                 d.index = 0;
                 d.loaded = 0;
-                // eslint-disable-next-line no-await-in-loop
-                await discovery.update(d);
+                return d;
             }
-            // eslint-disable-next-line no-await-in-loop
-            discovery = await discovery.continue();
-        }
+        });
     }
 
     if (oldVersion < 23) {
@@ -267,11 +223,12 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
     }
 
     if (oldVersion < 25) {
-        let cursor = await transaction.objectStore('walletSettings').openCursor();
-        while (cursor) {
-            const settings: State & {
+        await updateAll<
+            'walletSettings',
+            State & {
                 blockbookUrls?: BlockbookUrl[];
-            } & WalletWithBackends = cursor.value;
+            } & WalletWithBackends
+        >(transaction, 'walletSettings', settings => {
             if (!settings.backends && settings.blockbookUrls) {
                 settings.backends = settings.blockbookUrls.reduce<{ [key: string]: any }>(
                     (backends, { coin, url, tor }) =>
@@ -287,231 +244,139 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
                     {},
                 );
                 delete settings.blockbookUrls;
-                // eslint-disable-next-line no-await-in-loop
-                await cursor.update(settings);
+                return settings;
             }
-
-            // eslint-disable-next-line no-await-in-loop
-            cursor = await cursor.continue();
-        }
+        });
     }
 
     if (oldVersion < 26) {
-        let cursor = await transaction.objectStore('accounts').openCursor();
-        while (cursor) {
-            const account = cursor.value;
+        await updateAll(transaction, 'accounts', account => {
             if (account.symbol === 'vtc' && account.accountType === 'normal') {
                 // change account type from normal to segwit
                 account.accountType = 'segwit';
-                // eslint-disable-next-line no-await-in-loop
-                await cursor.update(account);
+                return account;
             }
-            // eslint-disable-next-line no-await-in-loop
-            cursor = await cursor.continue();
-        }
+        });
 
-        let discovery = await transaction.objectStore('discovery').openCursor();
-        while (discovery) {
-            const d = discovery.value;
+        await updateAll(transaction, 'discovery', d => {
             // reset discovery
             if (d.networks.includes('vtc')) {
                 d.index = 0;
                 d.loaded = 0;
-                // eslint-disable-next-line no-await-in-loop
-                await discovery.update(d);
+                return d;
             }
-            // eslint-disable-next-line no-await-in-loop
-            discovery = await discovery.continue();
-        }
+        });
     }
 
     if (oldVersion < 27) {
         const backendSettings = db.createObjectStore('backendSettings');
-        let cursor = await transaction.objectStore('walletSettings').openCursor();
-        while (cursor) {
-            const settings: State & WalletWithBackends = cursor.value;
-            const { backends = {}, ...rest } = settings;
-            Object.entries(backends).forEach(([coin, { type, urls }]) => {
-                const settings: BackendSettings = {
-                    selected: type,
-                    urls: {
-                        [type]: urls,
-                    },
-                };
-                backendSettings.add(settings, coin as Network['symbol']);
-            });
 
-            // eslint-disable-next-line no-await-in-loop
-            await cursor.update(rest);
-            // eslint-disable-next-line no-await-in-loop
-            cursor = await cursor.continue();
-        }
+        await updateAll<'walletSettings', State & WalletWithBackends>(
+            transaction,
+            'walletSettings',
+            settings => {
+                const { backends = {}, ...rest } = settings;
+                Object.entries(backends).forEach(([coin, { type, urls }]) => {
+                    const settings: BackendSettings = {
+                        selected: type,
+                        urls: {
+                            [type]: urls,
+                        },
+                    };
+                    backendSettings.add(settings, coin as Network['symbol']);
+                });
+
+                return rest;
+            },
+        );
     }
 
     if (oldVersion < 28) {
-        const devicesStore = transaction.objectStore('devices');
-        await devicesStore.openCursor().then(async function update(cursor): Promise<void> {
-            if (!cursor) {
-                return;
-            }
-            const device = cursor.value;
-
+        await updateAll(transaction, 'devices', device => {
             if (device.state?.includes('undefined')) {
                 device.state = device.state.replace('undefined', '0');
-                await cursor.update(device);
+                return device;
             }
-
-            return cursor.continue().then(update);
         });
 
-        const accounts: Account[] = [];
-        const accountsStore = transaction.objectStore('accounts');
-        await accountsStore
-            .openCursor()
-            .then(function read(cursor): Promise<void> | undefined {
-                if (!cursor) {
-                    return;
-                }
-                const account = cursor.value;
-                accounts.push(account);
-                return cursor.continue().then(read);
-            })
-            .then(() => {
-                db.deleteObjectStore('accounts');
-            })
-            .then(() => {
-                const accountsStore = db.createObjectStore('accounts', {
-                    keyPath: ['descriptor', 'symbol', 'deviceState'],
-                });
-                accountsStore.createIndex('deviceState', 'deviceState', { unique: false });
+        // accounts
+        const accountsStoreOld = transaction.objectStore('accounts');
+        const accounts = await accountsStoreOld.getAll();
+        db.deleteObjectStore('accounts');
 
-                return accountsStore;
-            })
-            .then(accountsStore => {
-                accounts.forEach(account => {
-                    account.deviceState = account.deviceState.replace('undefined', '0');
-                    account.key = account.key.replace('undefined', '0');
-                    accountsStore.add(account);
-                });
-            });
+        const accountsStoreNew = db.createObjectStore('accounts', {
+            keyPath: ['descriptor', 'symbol', 'deviceState'],
+        });
+        accountsStoreNew.createIndex('deviceState', 'deviceState', { unique: false });
 
-        const txs: DBWalletAccountTransaction[] = [];
-        const txsStore = transaction.objectStore('txs');
-        await txsStore
-            .openCursor()
-            .then(function read(cursor): Promise<void> | undefined {
-                if (!cursor) {
-                    return;
-                }
-                const tx = cursor.value;
-                txs.push(tx);
-                return cursor.continue().then(read);
-            })
-            .then(() => {
-                db.deleteObjectStore('txs');
-            })
-            .then(() => {
-                const txsStore = db.createObjectStore('txs', {
-                    keyPath: ['tx.deviceState', 'tx.descriptor', 'tx.txid', 'tx.type'],
-                });
-                txsStore.createIndex('txid', 'tx.txid', { unique: false });
-                txsStore.createIndex('order', 'order', { unique: false });
-                txsStore.createIndex('blockTime', 'tx.blockTime', { unique: false });
-                txsStore.createIndex('deviceState', 'tx.deviceState', { unique: false });
-                txsStore.createIndex(
-                    'accountKey',
-                    ['tx.descriptor', 'tx.symbol', 'tx.deviceState'],
-                    {
-                        unique: false,
-                    },
-                );
-                return txsStore;
-            })
-            .then(txsStore => {
-                txs.forEach(tx => {
-                    tx.tx.deviceState = tx.tx.deviceState.replace('undefined', '0');
-                    txsStore.add(tx);
-                });
-            });
+        accounts.forEach(account => {
+            account.deviceState = account.deviceState.replace('undefined', '0');
+            account.key = account.key.replace('undefined', '0');
+            accountsStoreNew.add(account);
+        });
+
+        // transactions
+        const txsStoreOld = transaction.objectStore('txs');
+        const txs = await txsStoreOld.getAll();
+        db.deleteObjectStore('txs');
+
+        const txsStoreNew = db.createObjectStore('txs', {
+            keyPath: ['tx.deviceState', 'tx.descriptor', 'tx.txid', 'tx.type'],
+        });
+        txsStoreNew.createIndex('txid', 'tx.txid', { unique: false });
+        txsStoreNew.createIndex('order', 'order', { unique: false });
+        txsStoreNew.createIndex('blockTime', 'tx.blockTime', { unique: false });
+        txsStoreNew.createIndex('deviceState', 'tx.deviceState', { unique: false });
+        txsStoreNew.createIndex('accountKey', ['tx.descriptor', 'tx.symbol', 'tx.deviceState'], {
+            unique: false,
+        });
+
+        txs.forEach(tx => {
+            tx.tx.deviceState = tx.tx.deviceState.replace('undefined', '0');
+            txsStoreNew.add(tx);
+        });
 
         // graph
-        const graphs: GraphData[] = [];
-        const graphStore = transaction.objectStore('graph');
-        await graphStore
-            .openCursor()
-            .then(function read(cursor): Promise<void> | undefined {
-                if (!cursor) {
-                    return;
-                }
-                const graph = cursor.value;
-                graphs.push(graph);
-                return cursor.continue().then(read);
-            })
-            .then(() => {
-                db.deleteObjectStore('graph');
-            })
-            .then(() => {
-                // graph
-                const graphStore = db.createObjectStore('graph', {
-                    keyPath: ['account.descriptor', 'account.symbol', 'account.deviceState'],
-                });
-                graphStore.createIndex('accountKey', [
-                    'account.descriptor',
-                    'account.symbol',
-                    'account.deviceState',
-                ]);
+        const graphStoreOld = transaction.objectStore('graph');
+        const graphs = await graphStoreOld.getAll();
+        db.deleteObjectStore('graph');
 
-                graphStore.createIndex('deviceState', 'account.deviceState');
+        const graphStoreNew = db.createObjectStore('graph', {
+            keyPath: ['account.descriptor', 'account.symbol', 'account.deviceState'],
+        });
+        graphStoreNew.createIndex('accountKey', [
+            'account.descriptor',
+            'account.symbol',
+            'account.deviceState',
+        ]);
+        graphStoreNew.createIndex('deviceState', 'account.deviceState');
 
-                return graphStore;
-            })
-            .then(graphStore => {
-                graphs.forEach(graph => {
-                    graph.account.deviceState = graph.account.deviceState.replace('undefined', '0');
-                    graphStore.add(graph);
-                });
-            });
+        graphs.forEach(graph => {
+            graph.account.deviceState = graph.account.deviceState.replace('undefined', '0');
+            graphStoreNew.add(graph);
+        });
 
         // discovery
-        const discoveries: Discovery[] = [];
-        const discoveryStore = transaction.objectStore('discovery');
-        await discoveryStore
-            .openCursor()
-            .then(function read(cursor): Promise<void> | undefined {
-                if (!cursor) {
-                    return;
-                }
-                const discovery = cursor.value;
-                discoveries.push(discovery);
-                return cursor.continue().then(read);
-            })
-            .then(() => {
-                db.deleteObjectStore('discovery');
-            })
-            .then(() =>
-                // object store for discovery
-                db.createObjectStore('discovery', { keyPath: 'deviceState' }),
-            )
-            .then(discoveryStore => {
-                discoveries.forEach(discovery => {
-                    discovery.deviceState = discovery.deviceState.replace('undefined', '0');
-                    discoveryStore.add(discovery);
-                });
-            });
+        const discoveryStoreOld = transaction.objectStore('discovery');
+        const discoveries = await discoveryStoreOld.getAll();
+        db.deleteObjectStore('discovery');
+
+        const discoveryStoreNew = db.createObjectStore('discovery', { keyPath: 'deviceState' });
+
+        discoveries.forEach(discovery => {
+            discovery.deviceState = discovery.deviceState.replace('undefined', '0');
+            discoveryStoreNew.add(discovery);
+        });
     }
 
     if (oldVersion < 29) {
         db.createObjectStore('firmware');
 
-        const providerStore = await transaction.objectStore('metadata');
-        await providerStore.openCursor().then(async function update(cursor): Promise<void> {
-            if (!cursor) {
-                return;
-            }
-            const state = cursor.value;
+        await updateAll(transaction, 'metadata', state => {
             // @ts-expect-error (token property removed)
             if (state.provider?.token) {
                 if (isDesktop()) {
+                    // @ts-expect-error (provider removed in later version)
                     state.provider.tokens = {
                         accessToken: '',
                         // @ts-expect-error
@@ -520,110 +385,87 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
                 }
                 // @ts-expect-error
                 delete state.provider.token;
-                await cursor.update(state);
+                return state;
             }
-            return cursor.continue().then(update);
         });
     }
 
     if (oldVersion < 30) {
-        const walletSettingsStore = transaction.objectStore('walletSettings');
+        await updateAll(transaction, 'walletSettings', walletSettings => {
+            if (walletSettings.bitcoinAmountUnit || !walletSettings) {
+                return;
+            }
 
-        await walletSettingsStore
-            .openCursor()
-            .then(async function addAmountUnits(cursor): Promise<void> {
-                if (!cursor) {
-                    return;
-                }
-
-                const walletSettings = cursor.value;
-
-                if (walletSettings.bitcoinAmountUnit || !walletSettings) {
-                    return;
-                }
-
-                walletSettings.bitcoinAmountUnit = 0;
-                await cursor.update(walletSettings);
-
-                return cursor.continue().then(addAmountUnits);
-            });
+            walletSettings.bitcoinAmountUnit = 0;
+            return walletSettings;
+        });
     }
 
     if (oldVersion < 31) {
-        let cursor = await transaction.objectStore('txs').openCursor();
-        while (cursor) {
-            const { order, tx: origTx } = cursor.value as DBWalletAccountTransactionCompatible;
+        await updateAll<'txs', DBWalletAccountTransactionCompatible>(
+            transaction,
+            'txs',
+            ({ order, tx: origTx }) => {
+                const unformat = (amount: string) => networkAmountToSatoshi(amount, origTx.symbol);
+                const unformatIfDefined = (amount: string | undefined) =>
+                    amount ? unformat(amount) : amount;
 
-            const unformat = (amount: string) => networkAmountToSatoshi(amount, origTx.symbol);
-            const unformatIfDefined = (amount: string | undefined) =>
-                amount ? unformat(amount) : amount;
-
-            const unenhancedTx = {
-                ...origTx,
-                amount: unformat(origTx.amount),
-                fee: unformat(origTx.fee),
-                totalSpent: unformat(origTx.totalSpent),
-                tokens: origTx.tokens.map(tok => ({
-                    ...tok,
-                    amount: amountToSatoshi(tok.amount, tok.decimals),
-                })),
-                targets: origTx.targets.map(target => ({
-                    ...target,
-                    amount: unformatIfDefined(target.amount),
-                })),
-                ethereumSpecific: origTx.ethereumSpecific
-                    ? {
-                          ...origTx.ethereumSpecific,
-                          gasPrice: toWei(origTx.ethereumSpecific.gasPrice, 'gwei'),
-                      }
-                    : undefined,
-                cardanoSpecific: origTx.cardanoSpecific
-                    ? {
-                          ...origTx.cardanoSpecific,
-                          withdrawal: unformatIfDefined(origTx.cardanoSpecific.withdrawal),
-                          deposit: unformatIfDefined(origTx.cardanoSpecific.deposit),
-                      }
-                    : undefined,
-                details: origTx.details && {
-                    ...origTx.details,
-                    vin: origTx.details.vin.map(v => ({
-                        ...v,
-                        value: unformatIfDefined(v.value),
+                const unenhancedTx = {
+                    ...origTx,
+                    amount: unformat(origTx.amount),
+                    fee: unformat(origTx.fee),
+                    totalSpent: unformat(origTx.totalSpent),
+                    tokens: origTx.tokens.map(tok => ({
+                        ...tok,
+                        amount: amountToSatoshi(tok.amount, tok.decimals),
                     })),
-                    vout: origTx.details.vout.map(v => ({
-                        ...v,
-                        value: unformatIfDefined(v.value),
+                    targets: origTx.targets.map(target => ({
+                        ...target,
+                        amount: unformatIfDefined(target.amount),
                     })),
-                    totalInput: unformat(origTx.details.totalInput),
-                    totalOutput: unformat(origTx.details.totalOutput),
-                },
-            };
+                    ethereumSpecific: origTx.ethereumSpecific
+                        ? {
+                              ...origTx.ethereumSpecific,
+                              gasPrice: toWei(origTx.ethereumSpecific.gasPrice, 'gwei'),
+                          }
+                        : undefined,
+                    cardanoSpecific: origTx.cardanoSpecific
+                        ? {
+                              ...origTx.cardanoSpecific,
+                              withdrawal: unformatIfDefined(origTx.cardanoSpecific.withdrawal),
+                              deposit: unformatIfDefined(origTx.cardanoSpecific.deposit),
+                          }
+                        : undefined,
+                    details: origTx.details && {
+                        ...origTx.details,
+                        vin: origTx.details.vin.map(v => ({
+                            ...v,
+                            value: unformatIfDefined(v.value),
+                        })),
+                        vout: origTx.details.vout.map(v => ({
+                            ...v,
+                            value: unformatIfDefined(v.value),
+                        })),
+                        totalInput: unformat(origTx.details.totalInput),
+                        totalOutput: unformat(origTx.details.totalOutput),
+                    },
+                };
 
-            // eslint-disable-next-line no-await-in-loop
-            await cursor.update({ order, tx: unenhancedTx });
-            // eslint-disable-next-line no-await-in-loop
-            cursor = await cursor.continue();
-        }
+                return { order, tx: unenhancedTx };
+            },
+        );
 
-        const devicesStore = transaction.objectStore('devices');
-        await devicesStore.openCursor().then(async function update(cursor): Promise<void> {
-            if (!cursor) {
-                return;
-            }
-            const device = cursor.value;
-
+        await updateAll(transaction, 'devices', device => {
             const { features } = device;
 
             device.firmwareType =
                 features &&
                 features.capabilities &&
                 !features.capabilities.includes('Capability_Bitcoin_like')
-                    ? 'bitcoin-only'
-                    : 'regular';
+                    ? FirmwareType.BitcoinOnly
+                    : FirmwareType.Regular;
 
-            await cursor.update(device);
-
-            return cursor.continue().then(update);
+            return device;
         });
     }
 
@@ -632,20 +474,15 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
     }
 
     if (oldVersion < 33) {
-        let cursor = await transaction.objectStore('messageSystem').openCursor();
-        while (cursor) {
-            const messageSystem = cursor.value;
+        await updateAll(transaction, 'messageSystem', messageSystem => {
             Object.values(messageSystem.dismissedMessages).forEach(dismissedMessage => {
                 if (typeof dismissedMessage.feature === 'undefined') {
                     dismissedMessage.feature = false;
                 }
             });
 
-            // eslint-disable-next-line no-await-in-loop
-            await cursor.update(messageSystem);
-            // eslint-disable-next-line no-await-in-loop
-            cursor = await cursor.continue();
-        }
+            return messageSystem;
+        });
     }
 
     if (oldVersion < 34) {
@@ -653,111 +490,68 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
     }
 
     if (oldVersion < 35) {
-        // remove ethereum network transactions
-        let txsCursor = await transaction.objectStore('txs').openCursor();
-
         const accountsToUpdate = ['eth', 'etc', 'trop', 'tgor'];
 
-        while (txsCursor) {
-            const tx = txsCursor.value as DBWalletAccountTransactionCompatible;
-
+        // remove ethereum network transactions
+        await updateAll<'txs', DBWalletAccountTransactionCompatible>(transaction, 'txs', tx => {
             if (accountsToUpdate.includes(tx.tx.symbol)) {
-                // eslint-disable-next-line no-await-in-loop
-                await txsCursor.delete();
-            } else {
-                tx.tx.internalTransfers = [];
-                // eslint-disable-next-line no-await-in-loop
-                await txsCursor.update(tx);
+                return null;
             }
-            // eslint-disable-next-line no-await-in-loop
-            txsCursor = await txsCursor.continue();
-        }
+            tx.tx.internalTransfers = [];
+            return tx;
+        });
 
         // force to fetch ethereum network transactions again
-        let accountsCursor = await transaction.objectStore('accounts').openCursor();
-
-        while (accountsCursor) {
-            const account = accountsCursor.value;
-
+        await updateAll(transaction, 'accounts', account => {
             if (accountsToUpdate.includes(account.symbol)) {
                 account.history = { total: 0, unconfirmed: 0, tokens: 0 };
-                // eslint-disable-next-line no-await-in-loop
-                await accountsCursor.update(account);
+                return account;
             }
-
-            // eslint-disable-next-line no-await-in-loop
-            accountsCursor = await accountsCursor.continue();
-        }
+        });
     }
 
     if (oldVersion < 36) {
         // remove trop network transactions, change token address to contract
-        let txsCursor = await transaction.objectStore('txs').openCursor();
-
-        while (txsCursor) {
-            const tx = txsCursor.value;
-
+        await updateAll(transaction, 'txs', tx => {
             // @ts-expect-error
             if (tx.tx.symbol === 'trop') {
-                // eslint-disable-next-line no-await-in-loop
-                await txsCursor.delete();
-            } else {
-                tx.tx.tokens.forEach(token => {
-                    // @ts-expect-error
-                    token.contract = token.address;
-                    // @ts-expect-error
-                    delete token.address;
-                });
+                return null;
             }
-
-            // eslint-disable-next-line no-await-in-loop
-            txsCursor = await txsCursor.continue();
-        }
+            tx.tx.tokens.forEach(token => {
+                // @ts-expect-error
+                token.contract = token.address;
+                // @ts-expect-error
+                delete token.address;
+            });
+            return tx;
+        });
 
         // remove trop network accounts, change token address to contract
-        let accountsCursor = await transaction.objectStore('accounts').openCursor();
-
-        while (accountsCursor) {
-            const account = accountsCursor.value;
-
+        await updateAll(transaction, 'accounts', account => {
             // @ts-expect-error
             if (account.symbol === 'trop') {
-                // eslint-disable-next-line no-await-in-loop
-                await accountsCursor.delete();
-            } else {
-                account.tokens?.forEach(token => {
-                    // @ts-expect-error
-                    token.contract = token.address;
-                    // @ts-expect-error
-                    delete token.address;
-                });
+                return null;
             }
-
-            // eslint-disable-next-line no-await-in-loop
-            accountsCursor = await accountsCursor.continue();
-        }
+            account.tokens?.forEach(token => {
+                // @ts-expect-error
+                token.contract = token.address;
+                // @ts-expect-error
+                delete token.address;
+            });
+            return account;
+        });
 
         // remove trop from coin settings
-        let walletSettingsCursor = await transaction.objectStore('walletSettings').openCursor();
-
-        while (walletSettingsCursor) {
-            const walletSettings: State = walletSettingsCursor.value;
-
+        await updateAll(transaction, 'walletSettings', walletSettings => {
             walletSettings.enabledNetworks = walletSettings.enabledNetworks.filter(
                 // @ts-expect-error
                 network => network !== 'trop',
             );
 
-            // eslint-disable-next-line no-await-in-loop
-            await walletSettingsCursor.update(walletSettings);
+            return walletSettings;
+        });
 
-            // eslint-disable-next-line no-await-in-loop
-            walletSettingsCursor = await walletSettingsCursor.continue();
-        }
-
-        let discoveryCursor = await transaction.objectStore('discovery').openCursor();
-        while (discoveryCursor) {
-            const discovery = discoveryCursor.value;
+        await updateAll(transaction, 'discovery', discovery => {
             // remove trop from discovery networks
             discovery.networks = discovery.networks.filter(
                 // @ts-expect-error
@@ -765,11 +559,124 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             );
             discovery.failed = [];
 
-            // eslint-disable-next-line no-await-in-loop
-            await discoveryCursor.update(discovery);
+            return discovery;
+        });
 
-            // eslint-disable-next-line no-await-in-loop
-            discoveryCursor = await discoveryCursor.continue();
-        }
+        // remove trop from backend settings
+        const backendSettings = transaction.objectStore('backendSettings');
+        // @ts-expect-error
+        backendSettings.delete('trop');
+    }
+
+    if (oldVersion < 37) {
+        await updateAll(transaction, 'coinjoinAccounts', account => {
+            delete account.session;
+            // @ts-expect-error previousSessions field is removed
+            delete account.previousSessions;
+
+            return account;
+        });
+    }
+
+    if (oldVersion < 38) {
+        await updateAll(transaction, 'devices', device => {
+            const { features } = device;
+            if (!features.internal_model) {
+                let deviceInternalModel;
+                switch (features.model.toUpperCase()) {
+                    case 'T':
+                        deviceInternalModel = DeviceModelInternal.T2T1;
+                        break;
+                    case '1':
+                    default:
+                        deviceInternalModel = DeviceModelInternal.T1B1;
+                        break;
+                }
+                device.features.internal_model = deviceInternalModel;
+            }
+            return device;
+        });
+    }
+    if (oldVersion < 39) {
+        await updateAll(transaction, 'accounts', account => {
+            // @ts-expect-error
+            if (!account.metadata?.fileName || !account.metadata?.aesKey) {
+                return;
+            }
+            account.metadata = {
+                key: account.metadata.key,
+                1: {
+                    // @ts-expect-error
+                    fileName: `${account.metadata.fileName}.mtdt`,
+                    // @ts-expect-error
+                    aesKey: account.metadata.aesKey,
+                },
+            };
+
+            return account;
+        });
+
+        await updateAll(transaction, 'devices', device => {
+            if (
+                device.metadata.status === 'enabled' &&
+                // @ts-expect-error
+                device.metadata.fileName &&
+                // @ts-expect-error
+                device.metadata.aesKey
+            ) {
+                device.metadata = {
+                    status: device.metadata.status,
+                    1: {
+                        // @ts-expect-error
+                        key: device.metadata.key,
+                        // @ts-expect-error
+                        fileName: `${device.metadata.fileName}.mtdt`,
+                        // @ts-expect-error
+                        aesKey: device.metadata.aesKey,
+                    },
+                };
+            }
+
+            return device;
+        });
+
+        await updateAll(transaction, 'metadata', metadata => {
+            const updatedMetadata = {
+                selectedProvider: { labels: '' },
+                providers: [],
+                enabled: metadata.enabled,
+            };
+            // @ts-expect-error
+            if (metadata.provider) {
+                let clientId: string;
+
+                // @ts-expect-error
+                switch (metadata.provider.type) {
+                    case 'dropbox':
+                        clientId = 'wg0yz2pbgjyhoda';
+                        break;
+                    case 'google':
+                        // select clientId supporting refresh tokens if refresh token was avaialble
+                        clientId =
+                            // @ts-expect-error
+                            metadata.provider.tokens?.refreshToken
+                                ? '705190185912-m4mrh55knjbg6gqhi72fr906a6n0b0u1.apps.googleusercontent.com'
+                                : '705190185912-nejegm4dbdecdaiumncbaa4ulrfnpk82.apps.googleusercontent.com';
+                        break;
+                    case 'fileSystem':
+                        clientId = 'fileSystem';
+                        break;
+                    default:
+                }
+                // @ts-expect-error
+                updatedMetadata.providers[0] = { ...metadata.provider, clientId, data: {} };
+                updatedMetadata.selectedProvider = {
+                    // @ts-expect-error
+                    labels: clientId,
+                };
+            }
+
+            return updatedMetadata;
+        });
     }
 };

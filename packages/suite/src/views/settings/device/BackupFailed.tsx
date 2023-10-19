@@ -1,10 +1,9 @@
-import React from 'react';
 import { HELP_CENTER_FAILED_BACKUP_URL } from '@trezor/urls';
 
-import { Translation } from '@suite-components';
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
-import { useAnchor } from '@suite-hooks/useAnchor';
-import { SettingsAnchor } from '@suite-constants/anchors';
+import { Translation } from 'src/components/suite';
+import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';
+import { useAnchor } from 'src/hooks/suite/useAnchor';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 export const BackupFailed = () => {
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.BackupFailed);

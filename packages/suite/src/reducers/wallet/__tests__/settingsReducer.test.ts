@@ -1,7 +1,7 @@
-import reducer, { initialState } from '@wallet-reducers/settingsReducer';
-import { STORAGE } from '@suite-actions/constants';
-import { WALLET_SETTINGS } from '@settings-actions/constants';
-import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
+import reducer, { initialState } from 'src/reducers/wallet/settingsReducer';
+import { STORAGE } from 'src/actions/suite/constants';
+import { WALLET_SETTINGS } from 'src/actions/settings/constants';
+import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
 
 describe('settings reducer', () => {
     it('test initial state', () => {

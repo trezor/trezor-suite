@@ -5,8 +5,8 @@ import type { EventTypeDeviceSelected } from '@trezor/connect-analytics';
 
 import type { PROTO } from '../constants';
 import type { TransportDisableWebUSB, TransportRequestWebUSBDevice } from './transport';
-import type { Device, CoinInfo, BitcoinNetworkInfo } from '../types';
-import type { DiscoveryAccountType, DiscoveryAccount, SelectFeeLevel } from '../types/account';
+import type { Device, CoinInfo, BitcoinNetworkInfo, SelectFeeLevel } from '../types';
+import type { DiscoveryAccountType, DiscoveryAccount } from '../types/account';
 import type { MessageFactoryFn } from '../types/utils';
 import type { DeviceButtonRequest } from './device';
 

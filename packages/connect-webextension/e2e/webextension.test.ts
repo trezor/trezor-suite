@@ -1,7 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/no-shadow
-import { test, expect } from '@playwright/test';
+import { test, expect, chromium } from '@playwright/test';
 import path from 'path';
-import { chromium } from 'playwright';
 
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { ensureDirectoryExists } from '@trezor/node-utils';
@@ -41,6 +40,7 @@ test('Basic web extension MV2', async () => {
         '..',
         'connect-examples',
         'webextension-mv2',
+        'build',
     );
 
     const userDataDir = '/tmp/test-user-data-dir';
@@ -72,13 +72,13 @@ test('Basic web extension MV2', async () => {
 
     expect(extensionId).toBeTruthy();
 
-    await page.goto(url);
+    await page.goto(`chrome-extension://${extensionId}/connect-manager.html`);
 
-    await page.evaluate(() => {
-        chrome.tabs.query({ active: true }, tabs => {
-            chrome.browserAction.onClicked.dispatch(tabs[0]);
-        });
-    });
+    // Wait for connect to be ready.
+    await page.waitForSelector("div[data-test='connect-loaded']");
+
+    await page.waitForSelector("button[data-test='get-address']");
+    await page.click("button[data-test='get-address']");
 
     const popup = await browserContext.waitForEvent('page');
     await popup.waitForLoadState('load');
@@ -100,6 +100,8 @@ test('Basic web extension MV2', async () => {
         popup.waitForEvent('close'),
         TrezorUserEnvLink.send({ type: 'emulator-press-yes' }),
     ]);
+
+    await page.waitForSelector('text=3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX');
 
     await browserContext.close();
 });
@@ -134,6 +136,7 @@ test('Basic web extension MV3', async () => {
         '..',
         'connect-examples',
         'webextension-mv3',
+        'build',
     );
 
     const userDataDir = '/tmp/test-user-data-dir';

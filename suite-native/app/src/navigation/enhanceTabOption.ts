@@ -1,4 +1,4 @@
-import { IconName } from '@trezor/icons';
+import { IconName } from '@suite-common/icons';
 import { AppTabsParamList } from '@suite-native/navigation';
 
 type TabOption<ParamList extends AppTabsParamList, RouteName extends keyof ParamList> = {

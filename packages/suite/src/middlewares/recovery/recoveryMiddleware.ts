@@ -1,10 +1,12 @@
-import { UI } from '@trezor/connect';
 import { MiddlewareAPI } from 'redux';
-import { SUITE } from '@suite-actions/constants';
-import * as recoveryActions from '@recovery-actions/recoveryActions';
-import * as onboardingActions from '@onboarding-actions/onboardingActions';
 
-import { AppState, Action, Dispatch } from '@suite-types';
+import { UI } from '@trezor/connect';
+import { deviceActions } from '@suite-common/wallet-core';
+
+import { SUITE } from 'src/actions/suite/constants';
+import * as recoveryActions from 'src/actions/recovery/recoveryActions';
+import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
+import { AppState, Action, Dispatch } from 'src/types/suite';
 
 const recovery =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -28,7 +30,7 @@ const recovery =
         }
 
         if (
-            action.type === SUITE.UPDATE_SELECTED_DEVICE &&
+            deviceActions.updateSelectedDevice.match(action) &&
             action.payload?.features?.recovery_mode &&
             recovery.status !== 'in-progress'
         ) {
@@ -39,7 +41,7 @@ const recovery =
                 }),
             );
             if (!analytics.confirmed) {
-                // If you connect TT in recovery mode to fresh Suite, you should see analytics optout option first.
+                // If you connect T2T1 in recovery mode to fresh Suite, you should see analytics optout option first.
                 api.dispatch(recoveryActions.setStatus('in-progress'));
             } else {
                 api.dispatch(recoveryActions.rerun());

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+        <meta
+            name="viewport"
+            content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"
+        />
+        <title>TrezorConnect | Trezor</title>
+        <meta name="description" content="" />
+        <meta name="keywords" content="" />
+        <meta name="author" content="Trezor info@trezor.io" />
+        <meta name="robots" content="noindex, nofollow" />
+        <meta name="title" content="Trezor Connect" />
+        <meta name="theme-color" content="#ffffff" />
+        <meta http-equiv="Pragma" content="no-cache" />
+        <meta http-equiv="Expires" content="-1" />
+        <link href="./popup.css" rel="stylesheet" />
+
+        <!-- suite-like fonts -->
+        <link media="all" rel="stylesheet" href="./fonts/fonts.css" />
+    </head>
+    <body>
+        <div id="debug-react"></div>
+
+        <script type="text/javascript" async="false">
+            const logScript = document.createElement('script');
+            logScript.setAttribute('type', 'text/javascript');
+            logScript.setAttribute('src', '<%= htmlWebpackPlugin.files.js[0] %>');
+            logScript.setAttribute('async', 'false');
+            document.body.appendChild(logScript);
+        </script>
+    </body>
+</html>

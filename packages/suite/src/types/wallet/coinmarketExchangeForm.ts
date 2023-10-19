@@ -1,26 +1,23 @@
-import type { AppState } from '@suite-types';
-import type { UseFormMethods, FormState as ReactHookFormState } from 'react-hook-form';
-import type { Account, Network, CoinFiatRates } from '@wallet-types';
+import type { AppState } from 'src/types/suite';
+import type { FormState as ReactHookFormState, UseFormReturn } from 'react-hook-form';
+import type { Account, Network, CoinFiatRates } from 'src/types/wallet';
 import type { FeeLevel } from '@trezor/connect';
-import type { ExchangeTrade, ExchangeTradeQuoteRequest, ExchangeCoinInfo } from 'invity-api';
-import type {
-    ExchangeInfo,
-    CoinmarketExchangeAction,
-} from '@wallet-actions/coinmarketExchangeActions';
-import type { TypedValidationRules } from './form';
+import type { ExchangeCoinInfo } from 'invity-api';
+import type { ExchangeInfo } from 'src/actions/wallet/coinmarketExchangeActions';
 import type {
     FeeInfo,
     FormState,
     PrecomposedLevels,
     PrecomposedLevelsCardano,
-} from '@wallet-types/sendForm';
-import type { Option } from './coinmarketCommonTypes';
-import type { WithSelectedAccountLoadedProps } from '@wallet-components';
+} from 'src/types/wallet/sendForm';
+import type { AmountLimits, CryptoAmountLimits, Option } from './coinmarketCommonTypes';
+import type { WithSelectedAccountLoadedProps } from 'src/components/wallet';
+import { SendContextValues } from '@suite-common/wallet-types';
 
-export const CRYPTO_INPUT = 'outputs[0].amount';
-export const CRYPTO_TOKEN = 'outputs[0].token';
-export const FIAT_INPUT = 'outputs[0].fiat';
-export const FIAT_CURRENCY = 'outputs[0].currency';
+export const CRYPTO_INPUT = 'outputs.0.amount';
+export const CRYPTO_TOKEN = 'outputs.0.token';
+export const FIAT_INPUT = 'outputs.0.fiat';
+export const FIAT_CURRENCY = 'outputs.0.currency';
 
 export type UseCoinmarketExchangeFormProps = WithSelectedAccountLoadedProps;
 
@@ -30,14 +27,7 @@ export type ExchangeFormState = FormState & {
     sendCryptoSelect: Option;
 };
 
-export interface AmountLimits {
-    currency: string;
-    min?: number;
-    max?: number;
-}
-
-export type ExchangeFormContextValues = Omit<UseFormMethods<ExchangeFormState>, 'register'> & {
-    register: (rules?: TypedValidationRules) => (ref: any) => void;
+export interface ExchangeFormContextValues extends UseFormReturn<ExchangeFormState> {
     onSubmit: () => void;
     account: Account;
     isComposing: boolean;
@@ -45,24 +35,13 @@ export type ExchangeFormContextValues = Omit<UseFormMethods<ExchangeFormState>, 
     exchangeInfo?: ExchangeInfo;
     exchangeCoinInfo?: ExchangeCoinInfo[];
     defaultCurrency: Option;
-    composeRequest: (field?: string) => void;
+    composeRequest: SendContextValues['composeTransaction'];
     updateFiatCurrency: (selectedCurrency: { value: string; label: string }) => void;
     updateSendCryptoValue: (fiatValue: string, decimals: number) => void;
-    saveQuoteRequest: (request: ExchangeTradeQuoteRequest) => CoinmarketExchangeAction;
-    saveQuotes: (
-        fixedQuotes: ExchangeTrade[],
-        floatQuotes: ExchangeTrade[],
-        dexQuotes: ExchangeTrade[],
-    ) => CoinmarketExchangeAction;
-    saveTrade: (
-        exchangeTrade: ExchangeTrade,
-        account: Account,
-        date: string,
-    ) => CoinmarketExchangeAction;
     amountLimits?: AmountLimits;
     composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;
     fiatRates?: CoinFiatRates;
-    setAmountLimits: (limits?: AmountLimits) => void;
+    setAmountLimits: (limits?: CryptoAmountLimits) => void;
     quotesRequest: AppState['wallet']['coinmarket']['exchange']['quotesRequest'];
     isLoading: boolean;
     updateFiatValue: (amount: string) => void;
@@ -73,4 +52,5 @@ export type ExchangeFormContextValues = Omit<UseFormMethods<ExchangeFormState>, 
     formState: ReactHookFormState<ExchangeFormState>;
     handleClearFormButtonClick: () => void;
     isDraft: boolean;
-};
+    tokensFiatValue?: Record<string, number>;
+}

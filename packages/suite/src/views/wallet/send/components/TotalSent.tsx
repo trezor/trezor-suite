@@ -1,9 +1,8 @@
-import React from 'react';
 import styled from 'styled-components';
 import { variables } from '@trezor/components';
-import { useSendFormContext } from '@wallet-hooks';
+import { useSendFormContext } from 'src/hooks/wallet';
 import { formatNetworkAmount, formatAmount } from '@suite-common/wallet-utils';
-import { Card, Translation, FiatValue, FormattedCryptoAmount } from '@suite-components';
+import { Card, Translation, FiatValue, FormattedCryptoAmount } from 'src/components/suite';
 
 const StyledCard = styled(Card)`
     display: flex;
@@ -28,13 +27,13 @@ const Label = styled.div`
     padding-right: 10px;
     text-transform: capitalize;
     font-size: ${variables.FONT_SIZE.NORMAL};
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
 `;
 
 const SecondaryLabel = styled.div`
     padding-top: 2px;
     font-size: ${variables.FONT_SIZE.SMALL};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 const Right = styled.div`
@@ -49,7 +48,7 @@ const TotalSentCoin = styled.div`
     display: flex;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.NORMAL};
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     padding-bottom: 6px;
 `;
 
@@ -57,7 +56,7 @@ const TotalSentFiat = styled.div`
     display: flex;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.NORMAL};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 export const TotalSent = () => {
@@ -69,7 +68,7 @@ export const TotalSent = () => {
 
     const selectedFee = getValues().selectedFee || 'normal';
     const transactionInfo = composedLevels ? composedLevels[selectedFee] : undefined;
-    const isTokenTransfer = networkType === 'ethereum' && !!getValues('outputs[0].token');
+    const isTokenTransfer = networkType === 'ethereum' && !!getValues('outputs.0.token');
     const tokenInfo =
         transactionInfo && transactionInfo.type !== 'error' ? transactionInfo.token : undefined;
 

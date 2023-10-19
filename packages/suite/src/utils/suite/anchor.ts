@@ -1,8 +1,8 @@
 import { css } from 'styled-components';
 
-import { AccountTransactionBaseAnchor, AnchorType } from '@suite-constants/anchors';
+import { AccountTransactionBaseAnchor, AnchorType } from 'src/constants/suite/anchors';
 
-import type { WalletAccountTransaction } from '@wallet-types';
+import type { WalletAccountTransaction } from 'src/types/wallet';
 
 export const getTxIdFromAnchor = (anchor?: string): string => anchor?.split('/').pop() || '';
 
@@ -33,7 +33,7 @@ export const anchorOutlineStyles = css<{ shouldHighlight?: boolean }>`
     ${props =>
         props.shouldHighlight &&
         css`
-            outline: solid 3px ${props => props.theme.TYPE_ORANGE};
-            background: ${props => props.theme.TYPE_LIGHT_ORANGE};
+            outline: solid 3px ${({ theme }) => theme.TYPE_ORANGE};
+            background: ${({ theme }) => theme.TYPE_LIGHT_ORANGE};
         `}
 `;

@@ -1,5 +1,3 @@
-import { select } from './common';
-
 const name = 'ethereumGetPublicKey';
 const docs = 'methods/ethereumGetPublicKey.md';
 const batch = [

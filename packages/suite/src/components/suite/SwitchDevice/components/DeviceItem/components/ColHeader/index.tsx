@@ -1,10 +1,10 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import styled from 'styled-components';
 import { Tooltip, TooltipProps, variables } from '@trezor/components';
 
 const Wrapper = styled.div`
     display: flex;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     align-items: center;
     justify-content: center;
 `;
@@ -16,13 +16,13 @@ const Text = styled.span`
     text-transform: uppercase;
 `;
 
-interface Props {
-    children?: React.ReactNode;
+interface ColHeaderProps {
+    children?: ReactNode;
     tooltipContent?: TooltipProps['content'];
     tooltipOpenGuide?: TooltipProps['guideAnchor'];
 }
 
-const ColHeader = ({ children, tooltipContent, tooltipOpenGuide, ...rest }: Props) => (
+const ColHeader = ({ children, tooltipContent, tooltipOpenGuide, ...rest }: ColHeaderProps) => (
     <Wrapper {...rest}>
         {tooltipContent ? (
             <Tooltip maxWidth={285} content={tooltipContent} guideAnchor={tooltipOpenGuide} dashed>

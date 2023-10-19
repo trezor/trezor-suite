@@ -1,16 +1,18 @@
-import TrezorConnect, { UI, UiRequestButton } from '@trezor/connect';
-import { RECEIVE } from '@wallet-actions/constants';
-import * as suiteActions from '@suite-actions/suiteActions';
-import * as modalActions from '@suite-actions/modalActions';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { GetState, Dispatch } from '@suite-types';
+import TrezorConnect from '@trezor/connect';
+import { getDerivationType } from '@suite-common/wallet-utils';
+import { UserContextPayload } from '@suite-common/suite-types';
+import { selectDevice } from '@suite-common/wallet-core';
+
+import { RECEIVE } from 'src/actions/wallet/constants';
+import * as modalActions from 'src/actions/suite/modalActions';
+import { GetState, Dispatch } from 'src/types/suite';
 import {
     getStakingPath,
     getProtocolMagic,
     getNetworkId,
     getAddressType,
-    getDerivationType,
-} from '@wallet-utils/cardanoUtils';
+} from 'src/utils/wallet/cardanoUtils';
 
 export type ReceiveAction =
     | { type: typeof RECEIVE.DISPOSE }
@@ -21,41 +23,36 @@ export const dispose = (): ReceiveAction => ({
     type: RECEIVE.DISPOSE,
 });
 
-export const showUnverifiedAddress =
-    (path: string, address: string) => (dispatch: Dispatch, getState: GetState) => {
-        const { device } = getState().suite;
-        const { account } = getState().wallet.selectedAccount;
-        if (!device || !account) return;
+export const openAddressModal =
+    (
+        params: Pick<
+            Extract<UserContextPayload, { type: 'address' }>,
+            'addressPath' | 'value' | 'isConfirmed'
+        >,
+    ) =>
+    (dispatch: Dispatch) => {
         dispatch(
             modalActions.openModal({
                 type: 'address',
-                device,
-                address,
-                addressPath: path,
-                networkType: account.networkType,
-                symbol: account.symbol,
-                cancelable: true,
+                ...params,
             }),
         );
         dispatch({
-            type: RECEIVE.SHOW_UNVERIFIED_ADDRESS,
-            path,
-            address,
+            type: params.isConfirmed ? RECEIVE.SHOW_ADDRESS : RECEIVE.SHOW_UNVERIFIED_ADDRESS,
+            path: params.addressPath,
+            address: params.value,
         });
     };
 
 export const showAddress =
     (path: string, address: string) => async (dispatch: Dispatch, getState: GetState) => {
-        const { device } = getState().suite;
+        const device = selectDevice(getState());
         const { account } = getState().wallet.selectedAccount;
         if (!device || !account) return;
 
         const modalPayload = {
-            device,
-            address,
+            value: address,
             addressPath: path,
-            networkType: account.networkType,
-            symbol: account.symbol,
         };
 
         // Show warning when device is not connected
@@ -69,24 +66,6 @@ export const showAddress =
             return;
         }
 
-        // catch button request and open modal
-        const buttonRequestHandler = (event: UiRequestButton['payload']) => {
-            if (!event || event.code !== 'ButtonRequest_Address') return;
-            // Receive modal has 2 steps, 1. step: we are waiting till an user confirms the address on a device
-            // 2. step: we show the copy button and hide confirm-on-device bubble.
-            // The problem is that after user confirms the address device sent UI.CLOSE_UI.WINDOW that triggers closing the modal.
-            // By setting a device's processMode to 'confirm-addr' we are blocking the action UI.CLOSE_UI.WINDOW (handled in actionBlockerMiddleware)
-            // processMode is set back to undefined at the end of the receive modal flow
-            dispatch(suiteActions.setProcessMode(device, 'confirm-addr'));
-            dispatch(
-                modalActions.openModal({
-                    type: 'address',
-                    ...modalPayload,
-                    confirmed: false,
-                }),
-            );
-        };
-
         let response;
         const params = {
             device,
@@ -96,7 +75,7 @@ export const showAddress =
             coin: account.symbol,
         };
 
-        TrezorConnect.on(UI.REQUEST_BUTTON, buttonRequestHandler);
+        dispatch(modalActions.preserve());
 
         switch (account.networkType) {
             case 'ethereum':
@@ -130,23 +109,9 @@ export const showAddress =
                 break;
         }
 
-        TrezorConnect.off(UI.REQUEST_BUTTON, buttonRequestHandler);
-
         if (response.success) {
             // show second part of the "confirm address" modal
-            dispatch(
-                modalActions.openModal({
-                    type: 'address',
-                    ...modalPayload,
-                    confirmed: true,
-                    cancelable: true,
-                }),
-            );
-            dispatch({
-                type: RECEIVE.SHOW_ADDRESS,
-                path,
-                address,
-            });
+            dispatch(openAddressModal({ ...modalPayload, isConfirmed: true }));
         } else {
             dispatch(modalActions.onCancel());
             // special case: device no-backup permissions not granted
@@ -159,5 +124,4 @@ export const showAddress =
                 }),
             );
         }
-        dispatch(suiteActions.setProcessMode(device, undefined));
     };

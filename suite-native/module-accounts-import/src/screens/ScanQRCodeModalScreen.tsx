@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { QRCodeScanner } from '@suite-native/qr-code';
 import {
     AccountsImportStackParamList,

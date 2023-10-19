@@ -336,7 +336,7 @@ export default {
         },
         {
             description: 'Zcash testnet: NU5 external presigned input',
-            skip: ['1', '<2.5.1'], // T1 external inputs are not supported in T1
+            skip: ['1', '<2.5.1'], // T1B1 external inputs are not supported in T1B1
             params: {
                 coin: 'taz',
                 // enhancement for v5 is added automatically
@@ -379,7 +379,7 @@ export default {
         },
         {
             description: 'Zcash testnet: NU5 spend multisig',
-            skip: ['<1.11.1', '<2.5.1'], // T1 external inputs not supported
+            skip: ['<1.11.1', '<2.5.1'], // T1B1 external inputs not supported
             params: {
                 coin: 'taz',
                 // enhancement for v5 is added automatically

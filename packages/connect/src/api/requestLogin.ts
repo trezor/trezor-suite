@@ -14,7 +14,6 @@ export default class RequestLogin extends AbstractMethod<'requestLogin', PROTO.S
     init() {
         this.requiredPermissions = ['read', 'write'];
         this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
-        this.info = 'Login';
         this.useEmptyPassphrase = true;
 
         const { payload } = this;
@@ -44,6 +43,10 @@ export default class RequestLogin extends AbstractMethod<'requestLogin', PROTO.S
             challenge_visual: payload.challengeVisual || '',
         };
         this.asyncChallenge = !!payload.asyncChallenge;
+    }
+
+    get info() {
+        return 'Login';
     }
 
     async run() {

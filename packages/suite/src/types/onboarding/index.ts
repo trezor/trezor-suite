@@ -1,11 +1,13 @@
-import * as STEP from '@onboarding-constants/steps';
-import { PrerequisiteType } from '@suite/utils/suite/prerequisites';
+import { DeviceModelInternal } from '@trezor/connect';
+import * as STEP from 'src/constants/onboarding/steps';
+import { PrerequisiteType } from 'src/utils/suite/prerequisites';
 
 export interface Step {
     id: AnyStepId;
     stepGroup: number | undefined;
     prerequisites?: (PrerequisiteType | 'device-different')[];
     path?: AnyPath[];
+    unsupportedModels?: DeviceModelInternal[];
 }
 
 // todo: remove, improve typing
@@ -15,6 +17,8 @@ export type AnyStepId =
     | typeof STEP.ID_BACKUP_STEP
     | typeof STEP.ID_FINAL_STEP
     | typeof STEP.ID_FIRMWARE_STEP
+    | typeof STEP.ID_AUTHENTICATE_DEVICE_STEP
+    | typeof STEP.ID_TUTORIAL_STEP
     | typeof STEP.ID_SET_PIN_STEP
     | typeof STEP.ID_SECURITY_STEP
     | typeof STEP.ID_RESET_DEVICE_STEP

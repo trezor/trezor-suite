@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 
 type Status = 'ok' | 'warning' | 'error';
@@ -30,12 +29,12 @@ const Circle = styled.div<{ status: Status }>`
     }
 `;
 
-type Props = {
+interface StatusLightProps {
     status: Status;
     className?: string;
-};
+}
 
-const StatusLight = ({ status, className }: Props) => (
+const StatusLight = ({ status, className }: StatusLightProps) => (
     <Circle status={status} className={className}>
         <div />
     </Circle>

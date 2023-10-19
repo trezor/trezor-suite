@@ -1,24 +1,29 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import invityAPI from '@suite-services/invityAPI';
-import { useActions, useSelector, useDevice } from '@suite-hooks';
-import { useTimer } from '@trezor/react-utils';
+
 import { ExchangeCoinInfo, ExchangeTrade } from 'invity-api';
-import * as coinmarketExchangeActions from '@wallet-actions/coinmarketExchangeActions';
-import { Account } from '@wallet-types';
+
+import { useTimer } from '@trezor/react-utils';
+import { notificationsActions } from '@suite-common/toast-notifications';
+import { networksCompatibility as networks } from '@suite-common/wallet-config';
+import { amountToSatoshi } from '@suite-common/wallet-utils';
+import { selectDevice } from '@suite-common/wallet-core';
+
+import invityAPI from 'src/services/suite/invityAPI';
+import { useActions, useSelector, useDevice } from 'src/hooks/suite';
+import * as coinmarketExchangeActions from 'src/actions/wallet/coinmarketExchangeActions';
+import { Account } from 'src/types/wallet';
 import {
     UseCoinmarketExchangeFormProps,
     ContextValues,
     ExchangeStep,
-} from '@wallet-types/coinmarketExchangeOffers';
-import { notificationsActions } from '@suite-common/toast-notifications';
-import { splitToQuoteCategories } from '@wallet-utils/coinmarket/exchangeUtils';
-import { networksCompatibility as networks } from '@suite-common/wallet-config';
-import { getUnusedAddressFromAccount } from '@wallet-utils/coinmarket/coinmarketUtils';
+} from 'src/types/wallet/coinmarketExchangeOffers';
+import { splitToQuoteCategories } from 'src/utils/wallet/coinmarket/exchangeUtils';
+import { getUnusedAddressFromAccount } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
+import { InvityAPIReloadQuotesAfterSeconds } from 'src/constants/wallet/coinmarket/metadata';
+import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
+
 import { useCoinmarketRecomposeAndSign } from './useCoinmarketRecomposeAndSign ';
-import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
-import { InvityAPIReloadQuotesAfterSeconds } from '@wallet-constants/coinmarket/metadata';
-import { useBitcoinAmountUnit } from '@wallet-hooks/useBitcoinAmountUnit';
-import { amountToSatoshi } from '@suite-common/wallet-utils';
 
 const getReceiveAccountSymbol = (
     symbol?: string,
@@ -64,29 +69,21 @@ export const useOffers = ({ selectedAccount }: UseCoinmarketExchangeFormProps) =
         verifyAddress: coinmarketExchangeActions.verifyAddress,
     });
 
+    const invityServerEnvironment = useSelector(
+        state => state.suite.settings.debug.invityServerEnvironment,
+    );
+    const accounts = useSelector(state => state.wallet.accounts);
+    const device = useSelector(selectDevice);
     const {
-        invityServerEnvironment,
+        addressVerified,
+        dexQuotes,
         exchangeCoinInfo,
-        accounts,
-        device,
+        exchangeInfo,
         fixedQuotes,
         floatQuotes,
-        dexQuotes,
         quotesRequest,
-        addressVerified,
-        exchangeInfo,
-    } = useSelector(state => ({
-        invityServerEnvironment: state.suite.settings.debug.invityServerEnvironment,
-        exchangeCoinInfo: state.wallet.coinmarket.exchange.exchangeCoinInfo,
-        accounts: state.wallet.accounts,
-        device: state.suite.device,
-        fixedQuotes: state.wallet.coinmarket.exchange.fixedQuotes,
-        floatQuotes: state.wallet.coinmarket.exchange.floatQuotes,
-        dexQuotes: state.wallet.coinmarket.exchange.dexQuotes,
-        quotesRequest: state.wallet.coinmarket.exchange.quotesRequest,
-        addressVerified: state.wallet.coinmarket.exchange.addressVerified,
-        exchangeInfo: state.wallet.coinmarket.exchange.exchangeInfo,
-    }));
+    } = useSelector(state => state.wallet.coinmarket.exchange);
+
     const [innerFixedQuotes, setInnerFixedQuotes] = useState<ExchangeTrade[] | undefined>(
         fixedQuotes,
     );
@@ -340,7 +337,6 @@ export const useOffers = ({ selectedAccount }: UseCoinmarketExchangeFormProps) =
         exchangeInfo,
         exchangeStep,
         setExchangeStep,
-        saveTrade,
         quotesRequest,
         addressVerified,
         fixedQuotes: innerFixedQuotes,

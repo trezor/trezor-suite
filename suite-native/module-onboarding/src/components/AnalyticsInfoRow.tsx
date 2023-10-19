@@ -1,6 +1,4 @@
-import React from 'react';
-
-import { Icon, IconName } from '@trezor/icons';
+import { Icon, IconName } from '@suite-common/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box, Text } from '@suite-native/atoms';
 

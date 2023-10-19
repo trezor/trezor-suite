@@ -100,6 +100,7 @@ export interface AccountBalanceHistory {
 export interface Transaction {
     type: 'sent' | 'recv' | 'self' | 'joint' | 'contract' | 'failed' | 'unknown';
     txid: string;
+    hex?: string;
     blockTime?: number;
     blockHeight?: number;
     blockHash?: string;
@@ -188,6 +189,7 @@ export interface AccountInfo {
         unconfirmed: number; // unconfirmed transactions
         transactions?: Transaction[]; // list of transactions
         txids?: string[]; // not implemented
+        addrTxCount?: number; // number of confirmed address/transaction pairs, only for bitcoin-like
     };
     misc?: {
         // ETH

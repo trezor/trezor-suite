@@ -1,16 +1,40 @@
 import { MiddlewareAPI } from 'redux';
-import { WALLET_SETTINGS } from '@settings-actions/constants';
-import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
-import { SUITE, ROUTER, DESKTOP_UPDATE, METADATA, MODAL, PROTOCOL } from '@suite-actions/constants';
-import { getSuiteReadyPayload } from '@suite-utils/analytics';
-import { addSentryBreadcrumb, setSentryContext, setSentryTag } from '@suite-utils/sentry';
-import { AppState, Action, Dispatch } from '@suite-types';
-import { DISCOVERY } from '@wallet-actions/constants';
 
-import { getBootloaderVersion, getDeviceModel, getFirmwareVersion } from '@trezor/device-utils';
+import {
+    discoveryActions,
+    accountsActions,
+    blockchainActions,
+    selectDevice,
+    deviceActions,
+} from '@suite-common/wallet-core';
+import {
+    getBootloaderVersion,
+    getFirmwareVersion,
+    hasBitcoinOnlyFirmware,
+} from '@trezor/device-utils';
 import { DEVICE, TRANSPORT } from '@trezor/connect';
-import { accountsActions, blockchainActions } from '@suite-common/wallet-core';
 import { analyticsActions } from '@suite-common/analytics';
+import { deviceAuthenticityActions } from '@suite-common/device-authenticity';
+
+import { WALLET_SETTINGS } from 'src/actions/settings/constants';
+import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
+import {
+    SUITE,
+    ROUTER,
+    DESKTOP_UPDATE,
+    METADATA,
+    MODAL,
+    PROTOCOL,
+} from 'src/actions/suite/constants';
+import { getSuiteReadyPayload } from 'src/utils/suite/analytics';
+import {
+    addSentryBreadcrumb,
+    setSentryContext,
+    setSentryTag,
+    withSentryScope,
+    captureSentryMessage,
+} from 'src/utils/suite/sentry';
+import { AppState, Action, Dispatch } from 'src/types/suite';
 
 const deviceContextName = 'trezor-device';
 
@@ -30,15 +54,15 @@ const breadcrumbActions = [
     DESKTOP_UPDATE.NOT_AVAILABLE,
     DESKTOP_UPDATE.READY,
     MODAL.CLOSE,
-    SUITE.AUTH_DEVICE,
+    deviceActions.authDevice.type,
     DEVICE.CONNECT,
     DEVICE.DISCONNECT,
     accountsActions.createAccount.type,
     accountsActions.updateAccount.type,
-    DISCOVERY.COMPLETE,
-    SUITE.UPDATE_SELECTED_DEVICE,
-    SUITE.REMEMBER_DEVICE,
-    METADATA.SET_PROVIDER,
+    discoveryActions.completeDiscovery.type,
+    deviceActions.updateSelectedDevice.type,
+    deviceActions.rememberDevice.type,
+    METADATA.ADD_PROVIDER,
     walletSettingsActions.changeNetworks.type,
     TRANSPORT.START,
     TRANSPORT.ERROR,
@@ -48,7 +72,7 @@ const breadcrumbActions = [
     DESKTOP_UPDATE.ALLOW_PRERELEASE,
     SUITE.TOR_STATUS,
     SUITE.ONLINE_STATUS,
-    SUITE.ADD_BUTTON_REQUEST,
+    deviceActions.addButtonRequest.type,
     PROTOCOL.SAVE_COIN_PROTOCOL,
     MODAL.OPEN_USER_CONTEXT,
 ];
@@ -80,9 +104,9 @@ const sentryMiddleware =
                 setSentryContext(deviceContextName, {
                     mode,
                     firmware: getFirmwareVersion(action.payload),
-                    isBitcoinOnly: action.payload.firmwareType === 'bitcoin-only',
+                    isBitcoinOnly: hasBitcoinOnlyFirmware(action.payload),
                     bootloader: getBootloaderVersion(action.payload),
-                    model: getDeviceModel(state.suite.device),
+                    model: selectDevice(state)?.features?.internal_model,
                 });
                 break;
             }
@@ -102,6 +126,20 @@ const sentryMiddleware =
                 setSentryContext('transport', {
                     name: type /* type key is used internally by Sentry so it's not allowed */,
                     version: version || 'not-available',
+                });
+                break;
+            }
+            case deviceAuthenticityActions.result.type: {
+                if (action.payload.result.valid) return;
+
+                withSentryScope(scope => {
+                    scope.setLevel('error');
+                    scope.setTag('deviceAuthenticityError', action.payload.result.error);
+                    captureSentryMessage(
+                        `Device authenticity invalid!
+                        ${JSON.stringify(action.payload.result, null, 2)}`,
+                        scope,
+                    );
                 });
                 break;
             }

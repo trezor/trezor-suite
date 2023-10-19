@@ -1,26 +1,27 @@
-import { db } from '@suite/storage';
+import { FieldValues } from 'react-hook-form';
+
+import { Discovery, FormDraftKeyPrefix } from '@suite-common/wallet-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import * as suiteActions from '@suite-actions/suiteActions';
+import { getFormDraftKey } from '@suite-common/wallet-utils';
+import { FormDraftPrefixKeyValues } from '@suite-common/wallet-constants';
+import { selectDevices, deviceActions } from '@suite-common/wallet-core';
+
+import { db } from 'src/storage';
 import {
     serializeDiscovery,
     serializeDevice,
-    serializeCoinjoinSession,
-} from '@suite-utils/storage';
-import type { AppState, Dispatch, GetState, TrezorDevice } from '@suite-types';
-import type { Account, Network } from '@wallet-types';
-import type { Discovery } from '@wallet-reducers/discoveryReducer';
-import type { FormState } from '@wallet-types/sendForm';
-import type { Trade } from '@wallet-types/coinmarketCommonTypes';
-import type { FormDraft, FormDraftKeyPrefix } from '@wallet-types/form';
-import type { PreloadStoreAction } from '@suite-support/preloadStore';
-
-import { getFormDraftKey } from '@suite-common/wallet-utils';
-import { FormDraftPrefixKeyValues } from '@suite-common/wallet-constants';
+    serializeCoinjoinAccount,
+} from 'src/utils/suite/storage';
+import type { AppState, Dispatch, GetState, TrezorDevice } from 'src/types/suite';
+import type { Account, Network } from 'src/types/wallet';
+import type { FormState } from 'src/types/wallet/sendForm';
+import type { Trade } from 'src/types/wallet/coinmarketCommonTypes';
+import type { PreloadStoreAction } from 'src/support/suite/preloadStore';
+import { GraphData } from 'src/types/wallet/graph';
+import { deviceGraphDataFilterFn } from 'src/utils/wallet/graph';
+import { selectCoinjoinAccountByKey } from 'src/reducers/wallet/coinjoinReducer';
 
 import { STORAGE } from './constants';
-import { GraphData } from '../../types/wallet/graph';
-import { deviceGraphDataFilterFn } from '../../utils/wallet/graphUtils';
-import { selectCoinjoinAccountByKey } from '@wallet-reducers/coinjoinReducer';
 
 export type StorageAction = NonNullable<PreloadStoreAction>;
 export type StorageLoadAction = Extract<StorageAction, { type: typeof STORAGE.LOAD }>;
@@ -54,12 +55,9 @@ export const saveCoinjoinAccount =
     (accountKey: string) => async (_: Dispatch, getState: GetState) => {
         const coinjoinAccount = selectCoinjoinAccountByKey(getState(), accountKey);
         if (!coinjoinAccount || !(await db.isAccessible())) return;
-        return db.addItem(
-            'coinjoinAccounts',
-            serializeCoinjoinSession(coinjoinAccount),
-            accountKey,
-            true,
-        );
+        const serializedAccount = serializeCoinjoinAccount(coinjoinAccount);
+
+        return db.addItem('coinjoinAccounts', serializedAccount, accountKey, true);
     };
 
 const removeCoinjoinRelatedSetting = (state: AppState) => {
@@ -97,7 +95,7 @@ export const saveCoinjoinDebugSettings = () => async (_dispatch: Dispatch, getSt
 
 // send form drafts end
 
-export const saveFormDraft = async (key: string, draft: FormDraft) => {
+export const saveFormDraft = async (key: string, draft: FieldValues) => {
     if (!(await db.isAccessible())) return;
     return db.addItem('formDrafts', draft, key, true);
 };
@@ -331,7 +329,11 @@ export const saveMetadata = () => async (_dispatch: Dispatch, getState: GetState
     const { metadata } = getState();
     db.addItem(
         'metadata',
-        { provider: metadata.provider, enabled: metadata.enabled },
+        {
+            providers: metadata.providers,
+            enabled: metadata.enabled,
+            selectedProvider: metadata.selectedProvider,
+        },
         'state',
         true,
     );
@@ -364,10 +366,11 @@ export const saveFirmware = () => async (_dispatch: Dispatch, getState: GetState
 export const removeDatabase = () => async (dispatch: Dispatch, getState: GetState) => {
     if (!(await db.isAccessible())) return;
 
-    const rememberedDevices = getState().devices.filter(d => d.remember);
+    const devices = selectDevices(getState());
+    const rememberedDevices = devices.filter(d => d.remember);
     // forget all remembered devices
     rememberedDevices.forEach(d => {
-        dispatch(suiteActions.forgetDevice(d));
+        dispatch(deviceActions.forgetDevice(d));
     });
     await db.removeDatabase();
     dispatch(

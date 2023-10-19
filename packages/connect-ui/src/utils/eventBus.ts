@@ -14,7 +14,9 @@ export type ConnectUIEventProps =
     | { type: typeof UI_REQUEST.FIRMWARE_OUTDATED; device: Device }
     // connect-popup events
     | { type: 'phishing-domain' }
-    | { type: 'connect-ui-rendered' };
+    | { type: 'connect-ui-rendered' }
+    | { type: 'waiting-for-iframe-handshake' }
+    | { type: 'waiting-for-iframe-init' };
 
 const reactChannel = 'react';
 

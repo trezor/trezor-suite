@@ -205,7 +205,7 @@ export const selectFee = (data: UiRequestSelectFee['payload']) => {
         sendButton.setAttribute('disabled', 'disabled');
         // @ts-expect-error value not found on Event HTMLInputElement.oninput fn
         const { value } = event.currentTarget;
-        const valueNum = parseInt(value, 10);
+        const valueNum = parseFloat(value);
 
         if (Number.isNaN(valueNum)) {
             if (value.length > 0) {
@@ -213,8 +213,6 @@ export const selectFee = (data: UiRequestSelectFee['payload']) => {
             } else {
                 customFeeLabel.innerHTML = 'Missing fee';
             }
-        } else if (valueNum.toString() !== value) {
-            customFeeLabel.innerHTML = 'Incorrect fee';
         } else if (valueNum < minFee) {
             customFeeLabel.innerHTML = 'Fee is too low';
         } else if (valueNum > maxFee) {

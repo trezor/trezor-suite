@@ -1,12 +1,16 @@
-import { SUITE } from '@suite-actions/constants';
-import { Action } from '@suite-types';
 import type { HandshakeElectron } from '@trezor/suite-desktop-api';
+
+import { SUITE } from 'src/actions/suite/constants';
+import { Action } from 'src/types/suite';
 
 export type DesktopState = null | Pick<HandshakeElectron, 'paths' | 'urls'>;
 
 const initialState: DesktopState = null;
 
-export const desktopReducer = (state: DesktopState = initialState, action: Action) => {
+export const desktopReducer = (
+    state: DesktopState = initialState,
+    action: Action,
+): DesktopState => {
     switch (action.type) {
         case SUITE.DESKTOP_HANDSHAKE:
             return action.payload;
@@ -14,3 +18,5 @@ export const desktopReducer = (state: DesktopState = initialState, action: Actio
             return state;
     }
 };
+
+export const selectDesktopBinDir = (state: DesktopState) => state?.paths?.binDir;

@@ -1,4 +1,3 @@
-import React from 'react';
 import { TouchableOpacity } from 'react-native';
 
 import { Text } from '@suite-native/atoms';
@@ -24,12 +23,13 @@ const textStyle = prepareNativeStyle<ItemStyleProps>((utils, { isSelected }) => 
 const switchItemStyle = prepareNativeStyle<ItemStyleProps>((utils, { isSelected }) => ({
     flex: 1,
     alignItems: 'center',
-    paddingVertical: utils.spacings.small,
+    paddingVertical: 6,
     extend: {
         condition: isSelected,
         style: {
             backgroundColor: utils.colors.backgroundSurfaceElevation1,
             borderRadius: utils.borders.radii.round,
+            ...utils.boxShadows.small,
         },
     },
 }));

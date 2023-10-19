@@ -1,10 +1,13 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useSetAtom } from 'jotai';
 
-import { useGraphForAllAccounts, enhanceGraphPoints, Graph, TimeSwitch } from '@suite-native/graph';
+import { useGraphForAllAccounts, Graph, TimeSwitch } from '@suite-native/graph';
 import { selectFiatCurrency } from '@suite-native/module-settings';
+import { VStack } from '@suite-native/atoms';
+import { selectIsDeviceDiscoveryActive } from '@suite-common/wallet-core';
+import { selectIsPortfolioEmpty } from '@suite-native/assets';
 
 import {
     PortfolioGraphHeader,
@@ -14,16 +17,17 @@ import {
 
 export const PortfolioGraph = () => {
     const fiatCurrency = useSelector(selectFiatCurrency);
-    const { graphPoints, error, isLoading, refetch, setHoursToHistory, hoursToHistory } =
+    const isDiscoveryActive = useSelector(selectIsDeviceDiscoveryActive);
+    const isPortfolioEmpty = useSelector(selectIsPortfolioEmpty);
+    const { graphPoints, error, isLoading, refetch, onSelectTimeFrame, timeframe } =
         useGraphForAllAccounts({
             fiatCurrency: fiatCurrency.label,
         });
-    const enhancedPoints = useMemo(() => enhanceGraphPoints(graphPoints), [graphPoints]);
     const setSelectedPoint = useSetAtom(selectedPointAtom);
     const setReferencePoint = useSetAtom(referencePointAtom);
 
-    const lastPoint = enhancedPoints[enhancedPoints.length - 1];
-    const firstPoint = enhancedPoints[0];
+    const lastPoint = graphPoints[graphPoints.length - 1];
+    const firstPoint = graphPoints[0];
 
     const setInitialSelectedPoints = useCallback(() => {
         if (lastPoint && firstPoint) {
@@ -34,19 +38,20 @@ export const PortfolioGraph = () => {
 
     useEffect(setInitialSelectedPoints, [setInitialSelectedPoints]);
 
-    return (
-        <>
-            <PortfolioGraphHeader />
+    if (isPortfolioEmpty && isDiscoveryActive) return null;
 
+    return (
+        <VStack spacing="large">
+            <PortfolioGraphHeader />
             <Graph
-                points={enhancedPoints}
+                points={graphPoints}
                 loading={isLoading}
                 onPointSelected={setSelectedPoint}
                 onGestureEnd={setInitialSelectedPoints}
                 onTryAgain={refetch}
                 error={error}
             />
-            <TimeSwitch selectedTimeFrame={hoursToHistory} onSelectTimeFrame={setHoursToHistory} />
-        </>
+            <TimeSwitch selectedTimeFrame={timeframe} onSelectTimeFrame={onSelectTimeFrame} />
+        </VStack>
     );
 };

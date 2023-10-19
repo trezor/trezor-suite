@@ -1,19 +1,23 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
-import { Translation } from '@suite-components';
-import { isTranslationMode, getOsLocale } from '@suite-utils/l10n';
-import { useActions, useSelector, useTranslation } from '@suite-hooks';
-import LANGUAGES, { Locale, LocaleInfo } from '@suite-config/languages';
-import * as suiteActions from '@suite-actions/suiteActions';
-import * as languageActions from '@settings-actions/languageActions';
-import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@suite-components/Settings';
-import { useAnchor } from '@suite-hooks/useAnchor';
-import { SettingsAnchor } from '@suite-constants/anchors';
+import { Translation } from 'src/components/suite';
+import { isTranslationMode, getOsLocale } from 'src/utils/suite/l10n';
+import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
+import LANGUAGES, { Locale, LocaleInfo } from 'src/config/suite/languages';
+import { setAutodetect } from 'src/actions/suite/suiteActions';
+import { setLanguage } from 'src/actions/settings/languageActions';
+import { ActionColumn, ActionSelect, SectionItem, TextColumn } from 'src/components/suite/Settings';
+import { useAnchor } from 'src/hooks/suite/useAnchor';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { getPlatformLanguages } from '@trezor/env-utils';
+import { CROWDIN_URL } from '@trezor/urls';
 
-const onlyComplete = (locale: [string, LocaleInfo]): locale is [Locale, LocaleInfo] =>
-    !!locale[1].complete;
+const onlyOfficial = (locale: [string, LocaleInfo]): locale is [Locale, LocaleInfo] =>
+    locale[1].type === 'official';
+
+const onlyCommunity = (locale: [string, LocaleInfo]): locale is [Locale, LocaleInfo] =>
+    locale[1].type === 'community';
 
 const useLanguageOptions = () => {
     const { translationString } = useTranslation();
@@ -30,12 +34,19 @@ const useLanguageOptions = () => {
                 options: [systemOption],
             },
             {
+                label: translationString('TR_OFFICIAL_LANGUAGES'),
                 options: Object.entries(LANGUAGES)
-                    .filter(onlyComplete)
+                    .filter(onlyOfficial)
+                    .map(([value, { name }]) => ({ value, label: name })),
+            },
+            {
+                label: translationString('TR_COMMUNITY_LANGUAGES'),
+                options: Object.entries(LANGUAGES)
+                    .filter(onlyCommunity)
                     .map(([value, { name }]) => ({ value, label: name })),
             },
         ],
-        [systemOption],
+        [systemOption, translationString],
     );
     return {
         options,
@@ -44,18 +55,14 @@ const useLanguageOptions = () => {
 };
 
 export const Language = () => {
-    const { language, autodetectLanguage } = useSelector(state => ({
-        language: state.suite.settings.language,
-        autodetectLanguage: state.suite.settings.autodetect.language,
-    }));
-    const { setLanguage, setAutodetect } = useActions({
-        setLanguage: languageActions.setLanguage,
-        setAutodetect: suiteActions.setAutodetect,
-    });
+    const language = useSelector(state => state.suite.settings.language);
+    const autodetectLanguage = useSelector(state => state.suite.settings.autodetect.language);
+    const dispatch = useDispatch();
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.Language);
 
     const { options, systemOption } = useLanguageOptions();
 
+    const isCommunityLanguage = LANGUAGES[language].type === 'community';
     const selectedValue =
         autodetectLanguage && !isTranslationMode()
             ? systemOption
@@ -76,10 +83,10 @@ export const Language = () => {
             },
         });
         if ((value === 'system') !== autodetectLanguage) {
-            setAutodetect({ language: !autodetectLanguage });
+            dispatch(setAutodetect({ language: !autodetectLanguage }));
         }
         if (value !== 'system') {
-            setLanguage(value);
+            dispatch(setLanguage(value));
         }
     };
 
@@ -89,7 +96,12 @@ export const Language = () => {
             ref={anchorRef}
             shouldHighlight={shouldHighlight}
         >
-            <TextColumn title={<Translation id="TR_LANGUAGE" />} />
+            <TextColumn
+                title={<Translation id="TR_LANGUAGE" />}
+                description={isCommunityLanguage && <Translation id="TR_LANGUAGE_DESCRIPTION" />}
+                buttonTitle={<Translation id="TR_LANGUAGE_CREDITS" />}
+                buttonLink={isCommunityLanguage ? CROWDIN_URL : undefined}
+            />
             <ActionColumn>
                 <ActionSelect
                     hideTextCursor

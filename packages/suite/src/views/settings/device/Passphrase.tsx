@@ -1,27 +1,35 @@
-import React from 'react';
 import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
-import { Translation } from '@suite-components';
-import { ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
+import { Translation } from 'src/components/suite';
+import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';
 import { Switch } from '@trezor/components';
-import { useDevice, useActions } from '@suite-hooks';
-import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
-import { useAnchor } from '@suite-hooks/useAnchor';
-import { SettingsAnchor } from '@suite-constants/anchors';
+import { useDevice, useDispatch } from 'src/hooks/suite';
+import { applySettings } from 'src/actions/settings/deviceSettingsActions';
+import { useAnchor } from 'src/hooks/suite/useAnchor';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 interface PassphraseProps {
     isDeviceLocked: boolean;
 }
 
 export const Passphrase = ({ isDeviceLocked }: PassphraseProps) => {
+    const dispatch = useDispatch();
     const { device } = useDevice();
-    const { applySettings } = useActions({
-        applySettings: deviceSettingsActions.applySettings,
-    });
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.Passphrase);
 
     const passphraseProtection = !!device?.features?.passphrase_protection;
+
+    const handleChange = () => {
+        dispatch(applySettings({ use_passphrase: !passphraseProtection }));
+        analytics.report({
+            type: EventType.SettingsDeviceChangePassphraseProtection,
+            payload: {
+                use_passphrase: !passphraseProtection,
+            },
+        });
+    };
+
     return (
         <SectionItem
             data-test="@settings/device/passphrase"
@@ -36,17 +44,7 @@ export const Passphrase = ({ isDeviceLocked }: PassphraseProps) => {
             <ActionColumn>
                 <Switch
                     isChecked={passphraseProtection}
-                    onChange={() => {
-                        applySettings({
-                            use_passphrase: !passphraseProtection,
-                        });
-                        analytics.report({
-                            type: EventType.SettingsDeviceChangePassphraseProtection,
-                            payload: {
-                                use_passphrase: !passphraseProtection,
-                            },
-                        });
-                    }}
+                    onChange={handleChange}
                     dataTest="@settings/device/passphrase-switch"
                     isDisabled={isDeviceLocked}
                 />

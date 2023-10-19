@@ -1,12 +1,11 @@
-import React from 'react';
 import styled from 'styled-components';
 import { TokenTransfer } from '@trezor/connect';
 
 import { SignValue } from '@suite-common/suite-types';
 import { HiddenPlaceholder } from './HiddenPlaceholder';
 import { Sign } from './Sign';
-import TrezorLink from '@suite-components/TrezorLink';
-import { useSelector } from '@suite-hooks/useSelector';
+import TrezorLink from 'src/components/suite/TrezorLink';
+import { useSelector } from 'src/hooks/suite/useSelector';
 import { getNftTokenId } from '@suite-common/wallet-utils';
 
 const Container = styled.div`

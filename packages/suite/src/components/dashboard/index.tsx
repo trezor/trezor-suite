@@ -1,3 +1,3 @@
-import Section from './Section';
+import { DashboardSection } from './DashboardSection';
 
-export { Section };
+export { DashboardSection };

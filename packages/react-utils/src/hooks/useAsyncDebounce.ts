@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
 import { createDeferred } from '@trezor/utils';
 import type { Timeout } from '@trezor/type-utils';
@@ -25,6 +25,13 @@ export const useAsyncDebounce = () => {
             return result;
         },
         [timeout],
+    );
+
+    useEffect(
+        () => () => {
+            if (timeout.current) clearTimeout(timeout.current);
+        },
+        [],
     );
 
     return debounce;

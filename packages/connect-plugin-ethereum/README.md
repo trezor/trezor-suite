@@ -4,7 +4,7 @@
 [![NPM](https://img.shields.io/npm/v/@trezor/connect-plugin-ethereum.svg)](https://www.npmjs.org/package/@trezor/connect-plugin-ethereum)
 [![Known Vulnerabilities](https://snyk.io/test/github/trezor/connect-plugin-ethereum/badge.svg?targetFile=package.json)](https://snyk.io/test/github/trezor/trezor-suite?targetFile=packages/connect-plugin-ethereum/package.json)
 
-The Trezor Model One firmware currently does not support constructing [EIP-712](https://eips.ethereum.org/EIPS/eip-712)
+T1B1 firmware currently does not support constructing [EIP-712](https://eips.ethereum.org/EIPS/eip-712)
 hashes. However, it supports signing pre-constructed hashes.
 
 EIP-712 hashes can be constructed with the plugin function

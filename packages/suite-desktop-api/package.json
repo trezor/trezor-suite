@@ -11,24 +11,19 @@
     "bugs": {
         "url": "https://github.com/trezor/trezor-suite/issues"
     },
-    "main": "./lib/main.js",
-    "browser": "./lib/renderer.js",
-    "files": [
-        "lib/main.js",
-        "lib/renderer.js",
-        "!**/*.map"
-    ],
-    "types": "lib/main.d.ts",
-    "typings": "lib/main.d.ts",
+    "main": "./src/main.ts",
+    "browser": "./src/renderer.ts",
     "scripts": {
         "lint:js": "yarn g:eslint '**/*{.ts,.tsx}'",
         "test:unit": "jest --verbose -c jest.config.js",
-        "type-check": "tsc --build tsconfig.json",
-        "build:lib": "rimraf lib && yarn tsc --build ./tsconfig.lib.json"
+        "type-check": "tsc --build tsconfig.json"
+    },
+    "dependencies": {
+        "electron": "26.2.1"
     },
     "devDependencies": {
         "jest": "^26.6.3",
-        "rimraf": "^4.4.1",
+        "rimraf": "^5.0.1",
         "typescript": "4.9.5"
     }
 }

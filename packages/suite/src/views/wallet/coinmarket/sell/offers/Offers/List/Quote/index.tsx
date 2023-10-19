@@ -1,19 +1,17 @@
-import React from 'react';
 import styled from 'styled-components';
-import { useTheme, Button, variables, Icon, H2 } from '@trezor/components';
-import { CoinmarketPaymentType, CoinmarketProviderInfo, CoinmarketTag } from '@wallet-components';
-import { QuestionTooltip, Translation } from '@suite-components';
 import { SellFiatTrade } from 'invity-api';
-import { useCoinmarketSellOffersContext } from '@wallet-hooks/useCoinmarketSellOffers';
-import { getTagAndInfoNote } from '@wallet-utils/coinmarket/coinmarketUtils';
-import { CoinmarketCryptoAmount } from '@wallet-views/coinmarket/common/CoinmarketCryptoAmount';
-import { CoinmarketFiatAmount } from '@wallet-views/coinmarket/common/CoinmarketFiatAmount';
 
-interface Props {
-    className?: string;
-    quote: SellFiatTrade;
-    amountInCrypto: boolean;
-}
+import { useTheme, Button, variables, Icon, H2 } from '@trezor/components';
+import {
+    CoinmarketPaymentType,
+    CoinmarketProviderInfo,
+    CoinmarketTag,
+} from 'src/views/wallet/coinmarket/common';
+import { QuestionTooltip, Translation } from 'src/components/suite';
+import { useCoinmarketSellOffersContext } from 'src/hooks/wallet/useCoinmarketSellOffers';
+import { getTagAndInfoNote } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { CoinmarketCryptoAmount } from 'src/views/wallet/coinmarket/common/CoinmarketCryptoAmount';
+import { CoinmarketFiatAmount } from 'src/views/wallet/coinmarket/common/CoinmarketFiatAmount';
 
 const Wrapper = styled.div`
     display: flex;
@@ -23,7 +21,7 @@ const Wrapper = styled.div`
     width: 100%;
     min-height: 150px;
     padding-bottom: 16px;
-    background: ${props => props.theme.BG_WHITE};
+    background: ${({ theme }) => theme.BG_WHITE};
 `;
 
 const Main = styled.div`
@@ -31,7 +29,7 @@ const Main = styled.div`
     margin: 0 30px;
     justify-content: space-between;
     padding: 20px 0;
-    border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
+    border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
 
     @media (max-width: ${variables.SCREEN_SIZE.SM}) {
         flex-direction: column;
@@ -78,7 +76,7 @@ const Column = styled.div`
 const Heading = styled.div`
     display: flex;
     text-transform: uppercase;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     padding-bottom: 9px;
 `;
@@ -94,7 +92,7 @@ const StyledButton = styled(Button)`
 const Value = styled.div`
     display: flex;
     align-items: center;
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
@@ -102,8 +100,8 @@ const Footer = styled.div`
     margin: 0 30px;
     padding: 10px 0;
     padding-top: 23px;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
-    border-top: 1px solid ${props => props.theme.STROKE_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.SMALL};
 
@@ -116,8 +114,8 @@ const ErrorFooter = styled.div`
     display: flex;
     margin: 0 30px;
     padding: 10px 0;
-    border-top: 1px solid ${props => props.theme.STROKE_GREY};
-    color: ${props => props.theme.TYPE_RED};
+    border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
+    color: ${({ theme }) => theme.TYPE_RED};
 
     @media (max-width: ${variables.SCREEN_SIZE.SM}) {
         margin: 0 20px;
@@ -135,12 +133,12 @@ const IconWrapper = styled.div`
 const ErrorText = styled.div``;
 
 const VerificationInfo = styled.div`
-    color: ${props => props.theme.TYPE_BLUE};
+    color: ${({ theme }) => theme.TYPE_BLUE};
 `;
 
 const StyledQuestionTooltip = styled(QuestionTooltip)`
     padding-left: 4px;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 export function getQuoteError(quote: SellFiatTrade, amountInCrypto: boolean) {
@@ -228,12 +226,18 @@ export function getQuoteError(quote: SellFiatTrade, amountInCrypto: boolean) {
     return '';
 }
 
-const Quote = ({ className, quote, amountInCrypto }: Props) => {
+interface QuoteProps {
+    className?: string;
+    quote: SellFiatTrade;
+    amountInCrypto: boolean;
+}
+
+const Quote = ({ className, quote, amountInCrypto }: QuoteProps) => {
     const theme = useTheme();
     const { selectQuote, sellInfo, needToRegisterOrVerifyBankAccount } =
         useCoinmarketSellOffersContext();
     const { tag, infoNote } = getTagAndInfoNote(quote);
-    const { paymentMethod, exchange, error, bankAccounts } = quote;
+    const { paymentMethod, paymentMethodName, exchange, error, bankAccounts } = quote;
     if (!exchange || !sellInfo) return null;
 
     // show bank account verification info if no verified account and no error and BANK_ACCOUNT flow
@@ -297,7 +301,10 @@ const Quote = ({ className, quote, amountInCrypto }: Props) => {
                         <Translation id="TR_SELL_PAID_BY" />
                     </Heading>
                     <Value>
-                        <CoinmarketPaymentType method={paymentMethod}>
+                        <CoinmarketPaymentType
+                            method={paymentMethod}
+                            methodName={paymentMethodName}
+                        >
                             {verificationInfo && (
                                 <VerificationInfo>
                                     <Translation id="TR_SELL_BANK_ACCOUNT_VERIFICATION_INFO" />

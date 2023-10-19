@@ -1,20 +1,20 @@
-import React from 'react';
-import { Translation } from '@suite-components';
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
-import { useActions } from '@suite-hooks';
-import * as modalActions from '@suite-actions/modalActions';
-import { useAnchor } from '@suite-hooks/useAnchor';
-import { SettingsAnchor } from '@suite-constants/anchors';
+import { Translation } from 'src/components/suite';
+import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';
+import { useDispatch } from 'src/hooks/suite';
+import { openModal } from 'src/actions/suite/modalActions';
+import { useAnchor } from 'src/hooks/suite/useAnchor';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 interface SafetyChecksProps {
     isDeviceLocked: boolean;
 }
 
 export const SafetyChecks = ({ isDeviceLocked }: SafetyChecksProps) => {
-    const { openModal } = useActions({
-        openModal: modalActions.openModal,
-    });
+    const dispatch = useDispatch();
+
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.SafetyChecks);
+
+    const handleClick = () => dispatch(openModal({ type: 'safety-checks' }));
 
     return (
         <SectionItem
@@ -29,9 +29,7 @@ export const SafetyChecks = ({ isDeviceLocked }: SafetyChecksProps) => {
             <ActionColumn>
                 <ActionButton
                     variant="secondary"
-                    onClick={() => {
-                        openModal({ type: 'safety-checks' });
-                    }}
+                    onClick={handleClick}
                     data-test="@settings/device/safety-checks-button"
                     isDisabled={isDeviceLocked}
                 >

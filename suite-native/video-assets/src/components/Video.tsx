@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { View, ActivityIndicator } from 'react-native';
 
 import { Video as ExpoVideo, VideoProps as ExpoVideoProps, ResizeMode } from 'expo-av';

@@ -1,81 +1,58 @@
-import React from 'react';
 import { TouchableOpacity } from 'react-native';
 
-import { CryptoIcon, CryptoIconName } from '@trezor/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Box, Button, Text } from '@suite-native/atoms';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { Badge, Box, HStack, RoundedIcon, Text } from '@suite-native/atoms';
+import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import { useFormatters } from '@suite-common/formatters';
 
 export type SelectableAssetItemProps = {
-    cryptoCurrencySymbol: NetworkSymbol;
-    cryptoCurrencyName: string;
-    iconName: CryptoIconName;
+    symbol: NetworkSymbol;
     onPress?: (networkSymbol: NetworkSymbol) => void;
-    onPressActionButton?: () => void;
 };
 
-const selectableAssetContentStyle = prepareNativeStyle(() => ({
+const selectableAssetContentStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     flex: 1,
-    marginLeft: 12,
+    marginLeft: utils.spacings.small + utils.spacings.extraSmall,
 }));
 
-const cryptoIconStyle = prepareNativeStyle(utils => ({
-    height: 48,
-    width: 48,
-    borderRadius: utils.borders.radii.round,
-    backgroundColor: utils.colors.backgroundSurfaceElevation2,
-    justifyContent: 'center',
-    alignItems: 'center',
+const erc20BadgeStyle = prepareNativeStyle(utils => ({
+    paddingBottom: utils.spacings.extraSmall / 2,
 }));
 
-export const SelectableNetworkItem = ({
-    cryptoCurrencyName,
-    cryptoCurrencySymbol,
-    iconName,
-    onPress,
-    onPressActionButton,
-}: SelectableAssetItemProps) => {
+export const SelectableNetworkItem = ({ symbol, onPress }: SelectableAssetItemProps) => {
     const { applyStyle } = useNativeStyles();
     const { NetworkSymbolFormatter } = useFormatters();
 
     const handlePress = () => {
         if (!onPress) return;
-        onPress(cryptoCurrencySymbol);
+        onPress(symbol);
     };
+
+    const networkName = networks[symbol].name;
+
+    const isEthereumNetwork = symbol === 'eth';
 
     return (
         <TouchableOpacity disabled={!onPress} onPress={handlePress}>
             <Box flexDirection="row" alignItems="center">
-                <Box justifyContent="center" alignItems="center">
-                    <Box style={applyStyle(cryptoIconStyle)}>
-                        <CryptoIcon name={iconName} />
-                    </Box>
-                </Box>
+                <RoundedIcon name={symbol} />
                 <Box style={applyStyle(selectableAssetContentStyle)}>
                     <Box flex={1} justifyContent="space-between" alignItems="flex-start">
-                        <Text variant="body">{cryptoCurrencyName}</Text>
-                        <Box flexDirection="row" alignItems="center">
+                        <Text variant="body">{networkName}</Text>
+                        <HStack alignItems="center" justifyContent="center">
                             <Text variant="hint" color="textSubdued">
-                                <NetworkSymbolFormatter value={cryptoCurrencySymbol} />
+                                <NetworkSymbolFormatter value={symbol} />
                             </Text>
-                        </Box>
+                            {isEthereumNetwork && (
+                                <Box style={applyStyle(erc20BadgeStyle)}>
+                                    <Badge label="+ ERC-20" variant="neutral" size="small" />
+                                </Box>
+                            )}
+                        </HStack>
                     </Box>
-                    {onPressActionButton && (
-                        <Box alignItems="flex-end">
-                            <Button
-                                data-testID="@onboarding/sync-coins/change"
-                                colorScheme="tertiaryElevation1"
-                                size="small"
-                                onPress={onPressActionButton}
-                            >
-                                Change
-                            </Button>
-                        </Box>
-                    )}
                 </Box>
             </Box>
         </TouchableOpacity>

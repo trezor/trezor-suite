@@ -1,4 +1,4 @@
-import { EventEmitter } from 'events';
+import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
 import { createDeferred, Deferred } from '@trezor/utils/lib/createDeferred';
 import { CustomError } from '@trezor/blockchain-link-types/lib/constants/errors';
 import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/lib/constants';
@@ -17,7 +17,7 @@ const workerWrapper = (factory: BlockchainSettings['worker']): Worker => {
 
 // initialize worker communication, raise error if worker not found
 const initWorker = (settings: BlockchainSettings) => {
-    const dfd: Deferred<Worker> = createDeferred(-1);
+    const dfd = createDeferred<Worker>(-1);
     const worker = workerWrapper(settings.worker);
 
     if (typeof worker !== 'object' || typeof worker.postMessage !== 'function') {
@@ -59,13 +59,7 @@ const initWorker = (settings: BlockchainSettings) => {
     return dfd.promise;
 };
 
-declare interface BlockchainLink {
-    on<K extends keyof Events>(type: K, listener: (event: Events[K]) => void): this;
-    off<K extends keyof Events>(type: K, listener: (event: Events[K]) => void): this;
-    emit<K extends keyof Events>(type: K, ...args: Events[K][]): boolean;
-}
-
-class BlockchainLink extends EventEmitter {
+class BlockchainLink extends TypedEmitter<Events> {
     settings: BlockchainSettings;
 
     messageId = 0;

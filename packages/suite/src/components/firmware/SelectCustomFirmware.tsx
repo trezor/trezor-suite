@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 import { Button } from '@trezor/components';
 import { GITHUB_FW_BINARIES_URL } from '@trezor/urls';
-import { Translation, TrezorLink } from '@suite-components';
-import { DropZone } from '@suite-components/DropZone';
-import type { TrezorDevice, ExtendedMessageDescriptor } from '@suite-types';
-import { validateFirmware } from '@firmware-utils';
-import { InstructionStep } from '@suite-components/InstructionStep';
+import { Translation, TrezorLink } from 'src/components/suite';
+import { DropZone } from 'src/components/suite/DropZone';
+import type { TrezorDevice, ExtendedMessageDescriptor } from 'src/types/suite';
+import { validateFirmware } from 'src/utils/firmware';
+import { InstructionStep } from 'src/components/suite/InstructionStep';
 
 const Container = styled.div`
     width: 100%;
@@ -24,12 +24,12 @@ const InstallButton = styled(Button)`
     margin: 36px auto 0;
 `;
 
-type Props = {
+type SelectCustomFirmwareProps = {
     device?: TrezorDevice;
     onSuccess: (fw: ArrayBuffer) => void;
 };
 
-export const SelectCustomFirmware = ({ device, onSuccess }: Props) => {
+export const SelectCustomFirmware = ({ device, onSuccess }: SelectCustomFirmwareProps) => {
     const [firmwareBinary, setFirmwareBinary] = useState<ArrayBuffer>();
 
     const onFirmwareUpload = async (

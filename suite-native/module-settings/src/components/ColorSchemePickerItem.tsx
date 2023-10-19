@@ -1,4 +1,3 @@
-import React from 'react';
 import { TouchableOpacity } from 'react-native';
 
 import { Box, Text } from '@suite-native/atoms';
@@ -14,7 +13,7 @@ const pickerItemWrapperStyle = prepareNativeStyle<{ isColorSchemeActive: boolean
     (utils, { isColorSchemeActive }) => ({
         backgroundColor: utils.colors.backgroundSurfaceElevationNegative,
         borderRadius: utils.borders.radii.medium,
-        height: 114,
+        minHeight: 114,
         flex: 1,
         paddingTop: 33,
         borderWidth: utils.borders.widths.medium,
@@ -45,8 +44,10 @@ const pickerItemDotStyle = prepareNativeStyle<PickerItemDotStyleProps>(
 
 const textStyle = prepareNativeStyle(utils => ({
     alignSelf: 'center',
+    textAlign: 'center',
     paddingTop: 23,
     paddingBottom: utils.spacings.small,
+    paddingHorizontal: utils.spacings.small,
     textTransform: 'capitalize',
 }));
 

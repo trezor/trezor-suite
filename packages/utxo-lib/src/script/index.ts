@@ -111,7 +111,7 @@ export function decompile(buffer: Buffer | Stack) {
             // attempt to read too much data? empty script
             if (i + d.number > buffer.length) return [];
 
-            const data = buffer.slice(i, i + d.number);
+            const data = buffer.subarray(i, i + d.number);
             i += d.number;
 
             // decompile minimally
@@ -193,7 +193,7 @@ export function isCanonicalScriptSignature(buffer: Buffer) {
     if (!types.Buffer(buffer)) return false;
     if (!isDefinedHashType(buffer[buffer.length - 1])) return false;
 
-    return bip66.check(buffer.slice(0, -1));
+    return bip66.check(buffer.subarray(0, -1));
 }
 
 export const number = scriptNumber;

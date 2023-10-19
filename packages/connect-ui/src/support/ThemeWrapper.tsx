@@ -1,11 +1,11 @@
-import React from 'react';
+import { ReactNode } from 'react';
 
 import { ThemeProvider } from 'styled-components';
 
 import { THEME } from '@trezor/components';
 
 interface ReactWrapperProps {
-    children: React.ReactNode;
+    children: ReactNode;
 }
 
 export const ThemeWrapper = ({ children }: ReactWrapperProps) => (

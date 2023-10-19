@@ -1,22 +1,23 @@
-import { DEVICE } from '@trezor/connect';
-import { configureStore } from '@suite/support/tests/configureStore';
 import { Middleware } from 'redux';
 
-import * as routerActions from '@suite-actions/routerActions';
-import { SUITE } from '@suite-actions/constants';
+import { deviceActions, prepareDeviceReducer } from '@suite-common/wallet-core';
+import { DEVICE } from '@trezor/connect';
 
-import routerReducer from '@suite-reducers/routerReducer';
-import deviceReducer from '@suite-reducers/deviceReducer';
-import suiteReducer from '@suite-reducers/suiteReducer';
-import modalReducer from '@suite-reducers/modalReducer';
-
-import suiteMiddleware from '@suite-middlewares/suiteMiddleware';
-import redirectMiddleware from '@suite-middlewares/redirectMiddleware';
-import { Action } from '@suite-types';
+import { configureStore } from 'src/support/tests/configureStore';
+import * as routerActions from 'src/actions/suite/routerActions';
+import routerReducer from 'src/reducers/suite/routerReducer';
+import suiteReducer from 'src/reducers/suite/suiteReducer';
+import modalReducer from 'src/reducers/suite/modalReducer';
+import suiteMiddleware from 'src/middlewares/suite/suiteMiddleware';
+import redirectMiddleware from 'src/middlewares/suite/redirectMiddleware';
+import { Action } from 'src/types/suite';
+import { extraDependencies } from 'src/support/extraDependencies';
 
 const { getSuiteDevice } = global.JestMocks;
 
-jest.mock('@suite-actions/storageActions', () => ({ __esModule: true }));
+jest.mock('src/actions/suite/storageActions', () => ({ __esModule: true }));
+
+const deviceReducer = prepareDeviceReducer(extraDependencies);
 
 type SuiteState = ReturnType<typeof suiteReducer>;
 type DevicesState = ReturnType<typeof deviceReducer>;
@@ -25,7 +26,7 @@ type ModalState = ReturnType<typeof modalReducer>;
 
 const getInitialState = (
     suite?: Partial<SuiteState>,
-    devices?: DevicesState,
+    device?: Partial<DevicesState>,
     router?: Partial<RouterState>,
     modal?: Partial<ModalState>,
 ) => ({
@@ -33,7 +34,10 @@ const getInitialState = (
         ...suiteReducer(undefined, { type: 'foo' } as any),
         ...suite,
     },
-    devices: devices || [],
+    device: {
+        ...deviceReducer(undefined, { type: 'foo' } as any),
+        ...device,
+    },
     router: {
         ...routerReducer(undefined, { type: 'foo' } as any),
         ...router,
@@ -53,10 +57,10 @@ const initStore = (state: State) => {
     const store = mockStore(state);
     store.subscribe(() => {
         const action = store.getActions().pop();
-        const { suite, router, devices } = store.getState();
+        const { suite, router, device } = store.getState();
         store.getState().suite = suiteReducer(suite, action);
         store.getState().router = routerReducer(router as RouterState, action);
-        store.getState().devices = deviceReducer(devices, action);
+        store.getState().device = deviceReducer(device, action);
 
         // add action back to stack
         store.getActions().push(action);
@@ -94,8 +98,10 @@ describe('redirectMiddleware', () => {
         it('SUITE.SELECT_DEVICE reset wallet params', () => {
             const store = initStore(
                 getInitialState(
+                    undefined,
                     {
-                        device: getSuiteDevice(
+                        devices: [],
+                        selectedDevice: getSuiteDevice(
                             {
                                 path: '2',
                             },
@@ -104,7 +110,6 @@ describe('redirectMiddleware', () => {
                             },
                         ),
                     },
-                    undefined,
                     {
                         app: 'wallet',
                         params: {
@@ -125,7 +130,7 @@ describe('redirectMiddleware', () => {
                 ),
             );
             store.dispatch({
-                type: SUITE.SELECT_DEVICE,
+                type: deviceActions.selectDevice.type,
                 payload: getSuiteDevice(),
             });
             expect(goto).toHaveBeenNthCalledWith(1, 'wallet-index');

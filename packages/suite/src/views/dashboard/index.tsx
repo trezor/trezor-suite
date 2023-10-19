@@ -1,10 +1,10 @@
-import React from 'react';
 import styled from 'styled-components';
 import { variables } from '@trezor/components';
-import { useLayout } from '@suite-hooks';
+import { useLayout } from 'src/hooks/suite';
 import AssetsCard from './components/AssetsCard';
 import PortfolioCard from './components/PortfolioCard';
 import SecurityFeatures from './components/SecurityFeatures';
+import { PromoBanner } from './components/PromoBanner';
 
 const Wrapper = styled.div`
     width: 100%;
@@ -33,6 +33,7 @@ const Dashboard = () => {
             <Divider />
             <SecurityFeatures />
             <Divider />
+            <PromoBanner />
         </Wrapper>
     );
 };

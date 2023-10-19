@@ -1,9 +1,11 @@
 /**
  * Use override for react-native (@trezor/suite-native/src/actions)
  */
-import * as suiteActions from '@suite-actions/suiteActions';
-import { SUITE, ROUTER } from '@suite-actions/constants';
-import { RouterAppWithParams, SettingsBackRoute } from '@suite-constants/routes';
+import { Route } from '@suite-common/suite-types';
+
+import * as suiteActions from 'src/actions/suite/suiteActions';
+import { SUITE, ROUTER } from 'src/actions/suite/constants';
+import { RouterAppWithParams, SettingsBackRoute } from 'src/constants/suite/routes';
 import {
     getAppWithParams,
     getPrefixedURL,
@@ -12,11 +14,10 @@ import {
     findRoute,
     findRouteByName,
     RouteParams,
-} from '@suite-utils/router';
-import { Dispatch, GetState, Route } from '@suite-types';
-import history from '@suite/support/history';
-
-import type { AnchorType } from '@suite-constants/anchors';
+} from 'src/utils/suite/router';
+import { Dispatch, GetState } from 'src/types/suite';
+import history from 'src/support/history';
+import type { AnchorType } from 'src/constants/suite/anchors';
 
 export type RouterAction =
     | {

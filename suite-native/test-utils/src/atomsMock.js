@@ -1,5 +1,5 @@
-jest.mock('@trezor/icons', () => {
-    const originalModule = jest.requireActual('@trezor/icons');
+jest.mock('@suite-common/icons', () => {
+    const originalModule = jest.requireActual('@suite-common/icons');
     return {
         __esModule: true,
         ...originalModule,

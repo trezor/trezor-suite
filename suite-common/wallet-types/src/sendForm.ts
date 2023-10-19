@@ -1,9 +1,9 @@
-import { UseFormMethods } from 'react-hook-form';
+import { Dispatch, SetStateAction } from 'react';
+import { FieldPath, UseFormReturn } from 'react-hook-form';
 
 import { Network } from '@suite-common/wallet-config';
 import { AccountUtxo, FeeLevel, PROTO } from '@trezor/connect';
 
-import { TypedValidationRules } from './form';
 import { Account } from './account';
 import { CoinFiatRates } from './fiatRates';
 import {
@@ -24,9 +24,8 @@ export type FormOptions =
     | 'ethereumNonce' // TODO
     | 'rippleDestinationTag';
 
-export type FormState = {
-    outputs: Output[];
-    // output arrays, each element is corresponding with single Output item
+export interface FormState {
+    outputs: Output[]; // output arrays, each element is corresponding with single Output item
     setMaxOutputId?: number;
     selectedFee?: FeeLevel['label'];
     feePerUnit: string; // bitcoin/ethereum/ripple custom fee field (satB/gasPrice/drops)
@@ -43,8 +42,9 @@ export type FormState = {
     rbfParams?: RbfTransactionParams;
     isCoinControlEnabled: boolean;
     hasCoinControlBeenOpened: boolean;
+    anonymityWarningChecked?: boolean;
     selectedUtxos: AccountUtxo[];
-};
+}
 
 export type ExcludedUtxos = Record<string, 'low-anonymity' | 'dust' | undefined>;
 
@@ -54,11 +54,8 @@ export type UseSendFormState = {
     network: Network;
     coinFees: FeeInfo;
     feeInfo: FeeInfo;
-    feeOutdated: boolean;
     fiatRates: CoinFiatRates | undefined;
     localCurrencyOption: CurrencyOption;
-    isLoading: boolean;
-    isDirty: boolean;
     composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;
     online: boolean;
     metadataEnabled: boolean;
@@ -69,6 +66,7 @@ export interface ComposeActionContext {
     network: Network;
     feeInfo: FeeInfo;
     excludedUtxos?: ExcludedUtxos;
+    prison?: Record<string, unknown>;
 }
 
 export interface UtxoSelectionContext {
@@ -80,6 +78,7 @@ export interface UtxoSelectionContext {
     lowAnonymityUtxos: AccountUtxo[];
     selectedUtxos: AccountUtxo[];
     spendableUtxos: AccountUtxo[];
+    coinjoinRegisteredUtxos: AccountUtxo[];
     isLowAnonymityUtxoSelected: boolean;
     anonymityWarningChecked: boolean;
     toggleAnonymityWarning: () => void;
@@ -97,32 +96,32 @@ export interface GetDefaultValue {
     <K, T>(fieldName: K, fallback: T): K extends keyof FormState ? FormState[K] : T;
 }
 
-export type SendContextValues = Omit<UseFormMethods<FormState>, 'register'> &
-    UseSendFormState & {
-        // strongly typed UseFormMethods.register
-        register: (rules?: TypedValidationRules) => (ref: any) => void; // TODO: ReturnType of UseFormMethods['register'] union
-        // additional fields
-        outputs: Partial<Output & { id: string }>[]; // useFieldArray fields
-        updateContext: (value: Partial<UseSendFormState>) => void;
-        resetContext: () => void;
-        composeTransaction: (field?: string) => void;
-        loadTransaction: () => Promise<void>;
-        signTransaction: () => void;
-        // useSendFormFields utils:
-        calculateFiat: (outputIndex: number, amount?: string) => void;
-        setAmount: (outputIndex: number, amount: string) => void;
-        changeFeeLevel: (currentLevel: FeeLevel['label']) => void;
-        resetDefaultValue: (field: string) => void;
-        setMax: (index: number, active: boolean) => void;
-        getDefaultValue: GetDefaultValue;
-        toggleOption: (option: FormOptions) => void;
-        // useSendFormOutputs utils:
-        addOutput: () => void; // useFieldArray append
-        removeOutput: (index: number) => void; // useFieldArray remove
-        addOpReturn: () => void;
-        removeOpReturn: (index: number) => void;
-        // useSendFormCompose
-        setDraftSaveRequest: React.Dispatch<React.SetStateAction<boolean>>;
-        // UTXO selection
-        utxoSelection: UtxoSelectionContext;
-    };
+export type SendContextValues<TFormValues extends FormState = FormState> =
+    UseFormReturn<TFormValues> &
+        UseSendFormState & {
+            isLoading: boolean;
+            // additional fields
+            outputs: Partial<Output & { id: string }>[]; // useFieldArray fields
+            updateContext: (value: Partial<UseSendFormState>) => void;
+            resetContext: () => void;
+            composeTransaction: (field?: FieldPath<TFormValues>) => void;
+            loadTransaction: () => Promise<void>;
+            signTransaction: () => void;
+            // useSendFormFields utils:
+            calculateFiat: (outputIndex: number, amount?: string) => void;
+            setAmount: (outputIndex: number, amount: string) => void;
+            changeFeeLevel: (currentLevel: FeeLevel['label']) => void;
+            resetDefaultValue: (field: FieldPath<TFormValues>) => void;
+            setMax: (index: number, active: boolean) => void;
+            getDefaultValue: GetDefaultValue;
+            toggleOption: (option: FormOptions) => void;
+            // useSendFormOutputs utils:
+            addOutput: () => void; // useFieldArray append
+            removeOutput: (index: number) => void; // useFieldArray remove
+            addOpReturn: () => void;
+            removeOpReturn: (index: number) => void;
+            // useSendFormCompose
+            setDraftSaveRequest: Dispatch<SetStateAction<boolean>>;
+            // UTXO selection
+            utxoSelection: UtxoSelectionContext;
+        };

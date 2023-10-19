@@ -1,5 +1,10 @@
 import { BlockFilter } from '../../src/types/backend';
 
+export type MockBlockFilter = BlockFilter & {
+    prevHash: string;
+    filterParams: { key: string };
+};
+
 /**
  * example: 3 => {
  *  blockHeight: 3,
@@ -9,20 +14,20 @@ import { BlockFilter } from '../../src/types/backend';
  *  filter: 'filter_3',
  * }
  */
-export const mockFilter = (height: number): BlockFilter => ({
+export const mockFilter = (height: number): MockBlockFilter => ({
     blockHeight: height,
-    blockTime: height * 10,
     blockHash: `hash_${height}`,
     prevHash: `hash_${height - 1}`,
     filter: `filter_${height}`,
+    filterParams: { key: `hash_${height}` },
 });
 
 export const mockFilterSequence = (
     count: number,
     baseHeight = 0,
     baseHash = 'hash_0',
-): BlockFilter[] => {
-    const filters: BlockFilter[] = [];
+): MockBlockFilter[] => {
+    const filters: MockBlockFilter[] = [];
     for (let i = 0; i < count; ++i) {
         filters.push({
             ...mockFilter(baseHeight + i + 1),

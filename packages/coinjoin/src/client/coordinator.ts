@@ -1,4 +1,5 @@
-import { coordinatorRequest as request, RequestOptions } from '../utils/http';
+import { coordinatorRequest, RequestOptions } from './coordinatorRequest';
+import { patchResponse } from '../utils/http';
 import {
     CoinjoinStatus,
     ZeroCredentials,
@@ -9,11 +10,14 @@ import {
 } from '../types/coordinator';
 import { AFFILIATION_ID } from '../constants';
 
+const request = <T>(...args: Parameters<typeof coordinatorRequest>) =>
+    coordinatorRequest<T>(...args).then(patchResponse);
+
 export const getStatus = async (options: RequestOptions) => {
     const data = await request<CoinjoinStatus>(
         'status',
         {
-            roundCheckpoints: [], // TODO: use it data saving: skipping known coinjoin.events
+            RoundCheckpoints: [], // TODO: use it data saving: skipping known coinjoin.events
         },
         options,
     );
@@ -21,7 +25,7 @@ export const getStatus = async (options: RequestOptions) => {
 };
 
 export const inputRegistration = (
-    roundId: string,
+    RoundId: string,
     input: string,
     ownershipProof: string,
     zeroAmountCredentials: ZeroCredentials,
@@ -31,28 +35,28 @@ export const inputRegistration = (
     request<RegistrationData>(
         'input-registration',
         {
-            roundId,
-            input,
-            ownershipProof,
-            zeroAmountCredentialRequests: zeroAmountCredentials.credentialsRequest,
-            zeroVsizeCredentialRequests: zeroVsizeCredentials.credentialsRequest,
+            RoundId,
+            Input: input.toUpperCase(),
+            OwnershipProof: ownershipProof.toUpperCase(),
+            ZeroAmountCredentialRequests: zeroAmountCredentials.CredentialsRequest,
+            ZeroVsizeCredentialRequests: zeroVsizeCredentials.CredentialsRequest,
         },
         options,
     );
 
-export const inputUnregistration = (roundId: string, aliceId: string, options: RequestOptions) =>
+export const inputUnregistration = (RoundId: string, AliceId: string, options: RequestOptions) =>
     request(
         'input-unregistration',
         {
-            roundId,
-            aliceId,
+            RoundId,
+            AliceId,
         },
         options,
     );
 
 export const connectionConfirmation = (
-    roundId: string,
-    aliceId: string,
+    RoundId: string,
+    AliceId: string,
     realAmountCredentials: RealCredentials,
     realVsizeCredentials: RealCredentials,
     zeroAmountCredentials: ZeroCredentials,
@@ -62,18 +66,18 @@ export const connectionConfirmation = (
     request<ConfirmationData>(
         'connection-confirmation',
         {
-            roundId,
-            aliceId,
-            zeroAmountCredentialRequests: zeroAmountCredentials.credentialsRequest,
-            realAmountCredentialRequests: realAmountCredentials.credentialsRequest,
-            zeroVsizeCredentialRequests: zeroVsizeCredentials.credentialsRequest,
-            realVsizeCredentialRequests: realVsizeCredentials.credentialsRequest,
+            RoundId,
+            AliceId,
+            ZeroAmountCredentialRequests: zeroAmountCredentials.CredentialsRequest,
+            RealAmountCredentialRequests: realAmountCredentials.CredentialsRequest,
+            ZeroVsizeCredentialRequests: zeroVsizeCredentials.CredentialsRequest,
+            RealVsizeCredentialRequests: realVsizeCredentials.CredentialsRequest,
         },
         options,
     );
 
 export const credentialIssuance = (
-    roundId: string,
+    RoundId: string,
     realAmountCredentials: RealCredentials,
     realVsizeCredentials: RealCredentials,
     zeroAmountCredentials: ZeroCredentials,
@@ -83,17 +87,17 @@ export const credentialIssuance = (
     request<IssuanceData>(
         'credential-issuance',
         {
-            roundId,
-            realAmountCredentialRequests: realAmountCredentials.credentialsRequest,
-            realVsizeCredentialRequests: realVsizeCredentials.credentialsRequest,
-            zeroAmountCredentialRequests: zeroAmountCredentials.credentialsRequest,
-            zeroVsizeCredentialsRequests: zeroVsizeCredentials.credentialsRequest,
+            RoundId,
+            RealAmountCredentialRequests: realAmountCredentials.CredentialsRequest,
+            RealVsizeCredentialRequests: realVsizeCredentials.CredentialsRequest,
+            ZeroAmountCredentialRequests: zeroAmountCredentials.CredentialsRequest,
+            ZeroVsizeCredentialsRequests: zeroVsizeCredentials.CredentialsRequest,
         },
         options,
     );
 
 export const outputRegistration = (
-    roundId: string,
+    RoundId: string,
     output: { scriptPubKey: string },
     amountCredentials: ZeroCredentials,
     vsizeCredentials: ZeroCredentials,
@@ -102,45 +106,48 @@ export const outputRegistration = (
     request(
         'output-registration',
         {
-            roundId,
-            script: output.scriptPubKey,
-            amountCredentialRequests: amountCredentials.credentialsRequest,
-            vsizeCredentialRequests: vsizeCredentials.credentialsRequest,
+            RoundId,
+            Script: output.scriptPubKey,
+            AmountCredentialRequests: amountCredentials.CredentialsRequest,
+            VsizeCredentialRequests: vsizeCredentials.CredentialsRequest,
         },
         options,
     );
 
 export const readyToSign = (
-    roundId: string,
-    aliceId: string,
+    RoundId: string,
+    AliceId: string,
     affiliationFlag: boolean,
     options: RequestOptions,
 ) =>
     request(
         'ready-to-sign',
         {
-            roundId,
-            aliceId,
-            affiliationId: affiliationFlag ? AFFILIATION_ID : undefined,
+            RoundId,
+            AliceId,
+            // NOTE: if affiliationFlag is not set behave as WalletWasabi clients
+            AffiliationId: affiliationFlag ? AFFILIATION_ID.trezor : AFFILIATION_ID.wasabi,
         },
         options,
     );
 
 export const transactionSignature = (
-    roundId: string,
-    inputIndex: number,
+    RoundId: string,
+    InputIndex: number,
     witness: string,
     options: RequestOptions,
 ) =>
     request(
         'transaction-signature',
         {
-            roundId,
-            inputIndex,
-            witness,
+            RoundId,
+            InputIndex,
+            Witness: witness.toUpperCase(),
         },
         options,
     );
+
+export { WabiSabiProtocolException } from './coordinatorRequest';
 
 // reexport all coordinator types
 export * from '../types/coordinator';

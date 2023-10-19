@@ -1,8 +1,6 @@
-import React from 'react';
-
-import { SettingsLayout } from '@settings-components';
-import { SettingsSection } from '@suite-components/Settings';
-import { isWeb } from '@suite-utils/env';
+import { SettingsLayout } from 'src/components/settings';
+import { SettingsSection } from 'src/components/suite/Settings';
+import { isWeb } from '@trezor/env-utils';
 
 import { TranslationMode } from './TranslationMode';
 import { GithubIssue } from './GithubIssue';
@@ -12,6 +10,7 @@ import { InvityApi } from './InvityApi';
 import { CoinjoinApi } from './CoinjoinApi';
 import { OAuthApi } from './OAuthApi';
 import { CheckFirmwareAuthenticity } from './CheckFirmwareAuthenticity';
+import { DeviceAuthenticity } from './DeviceAuthenticity';
 import { Devkit } from './Devkit';
 import { Transport } from './Transport';
 import { Processes } from './Processes';
@@ -36,7 +35,8 @@ export const SettingsDebug = () => (
         <SettingsSection title="Coinjoin">
             <CoinjoinApi />
         </SettingsSection>
-        <SettingsSection title="Firmware">
+        <SettingsSection title="Device">
+            <DeviceAuthenticity />
             <Devkit />
             <CheckFirmwareAuthenticity />
         </SettingsSection>

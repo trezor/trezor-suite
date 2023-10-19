@@ -21,7 +21,7 @@ describe('bufferutils', () => {
             it(`decodes ${f.hexPD} correctly`, () => {
                 const buffer = Buffer.from(f.hexPD, 'hex');
                 const d = bufferutils.readPushDataInt(buffer, 0);
-                const fopcode = parseInt(f.hexPD.substr(0, 2), 16);
+                const fopcode = parseInt(f.hexPD.substring(0, 2), 16);
 
                 expect(d.opcode).toEqual(fopcode);
                 expect(d.number).toEqual(f.dec);
@@ -124,7 +124,7 @@ describe('bufferutils', () => {
                 const buffer = Buffer.alloc(5, 0);
 
                 const n = bufferutils.writePushDataInt(buffer, f.dec, 0);
-                expect(buffer.slice(0, n).toString('hex')).toEqual(f.hexPD);
+                expect(buffer.subarray(0, n).toString('hex')).toEqual(f.hexPD);
             });
         });
     });
@@ -156,7 +156,7 @@ describe('bufferutils', () => {
                 const buffer = Buffer.alloc(9, 0);
 
                 const n = bufferutils.writeVarInt(buffer, f.dec, 0);
-                expect(buffer.slice(0, n).toString('hex')).toEqual(f.hexVI);
+                expect(buffer.subarray(0, n).toString('hex')).toEqual(f.hexVI);
             });
         });
 

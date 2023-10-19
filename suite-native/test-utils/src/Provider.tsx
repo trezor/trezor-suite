@@ -1,11 +1,11 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { createRenderer, StylesProvider } from '@trezor/styles';
 import { prepareNativeTheme } from '@trezor/theme';
 
 type ProviderProps = {
-    children: React.ReactNode;
+    children: ReactNode;
 };
 const renderer = createRenderer();
 const theme = prepareNativeTheme({ colorVariant: 'standard' });

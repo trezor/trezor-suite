@@ -2,17 +2,16 @@ import type { Network } from '@trezor/utxo-lib';
 import { sortTxsFromLatest } from '@trezor/blockchain-link-utils';
 import { sumAddressValues } from '@trezor/blockchain-link/lib/workers/electrum/methods/getAccountInfo';
 
-import { isTxConfirmed, doesTxContainAddress, deriveAddresses } from './backendUtils';
+import { isTxConfirmed, doesTxContainAddress } from './backendUtils';
 import type {
     Transaction,
-    AddressInfo,
     AccountInfo,
     ScanAccountCheckpoint,
-    Address,
     PrederivedAddress,
     AccountCache,
 } from '../types/backend';
 import { getAccountUtxo } from './getAccountUtxo';
+import { CoinjoinAddressController } from './CoinjoinAddressController';
 
 const PAGE_SIZE_DEFAULT = 25;
 
@@ -38,15 +37,9 @@ const getDelta = ({ type, amount, fee }: Transaction) => {
 
 const sumBalance = (current: number, tx: Transaction) => current + getDelta(tx);
 
-const deriveTxAddresses = (
-    descriptor: string,
-    type: 'receive' | 'change',
-    count: number,
-    prederived: PrederivedAddress[] | undefined,
-    network: Network,
-    transactions: Transaction[],
-): Address[] =>
-    deriveAddresses(prederived, descriptor, type, 0, count, network).map(({ address, path }) => {
+const enhanceAddress =
+    (transactions: Transaction[]) =>
+    ({ address, path }: PrederivedAddress) => {
         const txs = transactions.filter(tx => doesTxContainAddress(address)(tx.details));
         const sent = sumAddressValues(txs, address, tx => tx.details.vin);
         const received = sumAddressValues(txs, address, tx => tx.details.vout);
@@ -58,25 +51,17 @@ const deriveTxAddresses = (
             sent: txs.length ? sent.toString() : undefined,
             received: txs.length ? received.toString() : undefined,
         };
-    });
+    };
 
-type GetAddressInfoParams = {
+type GetAccountInfoParams = {
     descriptor: string;
     transactions: Transaction[];
     network: Network;
-};
-
-type GetAccountInfoParams = GetAddressInfoParams & {
     checkpoint: ScanAccountCheckpoint;
     cache?: AccountCache;
 };
 
-type GetAccountInfo = {
-    (params: GetAccountInfoParams): AccountInfo;
-    (params: GetAddressInfoParams): AddressInfo;
-};
-
-export const getAccountInfo: GetAccountInfo = params => {
+export const getAccountInfo = (params: GetAccountInfoParams): AccountInfo => {
     const { descriptor, transactions, network } = params;
     const txCountTotal = transactions.length;
     const balanceTotal = transactions.reduce(sumBalance, 0);
@@ -88,7 +73,23 @@ export const getAccountInfo: GetAccountInfo = params => {
     const txsFromLatest = sortTxsFromLatest(transactions);
     const txsFromOldest = txsFromLatest.slice().reverse();
 
-    const commonInfo = {
+    const addressController = new CoinjoinAddressController(
+        descriptor,
+        network,
+        params.checkpoint,
+        params.cache,
+    );
+
+    const receive = addressController.receive.map(enhanceAddress(txsConfirmed));
+    const change = addressController.change.map(enhanceAddress(txsConfirmed));
+
+    const addresses = {
+        change,
+        unused: receive.filter(({ transfers }) => !transfers),
+        used: receive.filter(({ transfers }) => transfers),
+    };
+
+    return {
         descriptor,
         balance: balanceConfirmed.toString(),
         availableBalance: balanceTotal.toString(),
@@ -99,38 +100,7 @@ export const getAccountInfo: GetAccountInfo = params => {
             transactions: txsFromLatest,
         },
         page: getPagination(transactions.length),
+        addresses,
+        utxo: getAccountUtxo({ transactions: txsFromOldest, addresses }),
     };
-
-    if ('checkpoint' in params) {
-        const receive = deriveTxAddresses(
-            descriptor,
-            'receive',
-            params.checkpoint.receiveCount,
-            params.cache?.receivePrederived,
-            network,
-            txsConfirmed,
-        );
-        const change = deriveTxAddresses(
-            descriptor,
-            'change',
-            params.checkpoint.changeCount,
-            params.cache?.changePrederived,
-            network,
-            txsConfirmed,
-        );
-        const addresses = {
-            change,
-            unused: receive.filter(({ transfers }) => !transfers),
-            used: receive.filter(({ transfers }) => transfers),
-        };
-        return {
-            ...commonInfo,
-            addresses,
-            utxo: getAccountUtxo({ transactions: txsFromOldest, addresses }),
-        };
-    }
-    return {
-        ...commonInfo,
-        utxo: getAccountUtxo({ transactions: txsFromOldest }),
-    } as AccountInfo;
 };

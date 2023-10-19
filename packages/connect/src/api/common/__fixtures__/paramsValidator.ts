@@ -203,7 +203,7 @@ export const getFirmwareRange = [
         result: { 1: { min: '0', max: '0' }, 2: { min: '0', max: '0' } },
     },
     {
-        description: 'coinInfo without T1 support',
+        description: 'coinInfo without T1B1 support',
         config: EMPTY_CONFIG,
         params: [
             'signTransaction',

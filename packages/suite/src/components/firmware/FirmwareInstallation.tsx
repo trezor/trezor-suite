@@ -1,14 +1,14 @@
-import React, { useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { Button } from '@trezor/components';
-import { getTextForStatus } from '@firmware-utils';
-import { Translation, WebUsbButton } from '@suite-components';
-import { useDevice, useFirmware } from '@suite-hooks';
-import { FirmwareOffer, ProgressBar, ReconnectDevicePrompt } from '@firmware-components';
-import { OnboardingStepBox } from '@onboarding-components';
-import { TrezorDevice } from '@suite-types';
-import { DeviceModel, getDeviceModel } from '@trezor/device-utils';
-import { selectIsActionAbortable } from '@suite-reducers/suiteReducer';
-import { useSelector } from '@suite-hooks/useSelector';
+import { getTextForStatus } from 'src/utils/firmware';
+import { Translation, WebUsbButton } from 'src/components/suite';
+import { useDevice, useFirmware } from 'src/hooks/suite';
+import { FirmwareOffer, FirmwareProgressBar, ReconnectDevicePrompt } from 'src/components/firmware';
+import { OnboardingStepBox } from 'src/components/onboarding';
+import { TrezorDevice } from 'src/types/suite';
+import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
+import { useSelector } from 'src/hooks/suite/useSelector';
+import { DeviceModelInternal } from '@trezor/connect';
 
 interface FirmwareInstallationProps {
     cachedDevice?: TrezorDevice;
@@ -31,8 +31,7 @@ export const FirmwareInstallation = ({
     const { device } = useDevice();
     const { status, installingProgress, resetReducer, isWebUSB, subsequentInstalling } =
         useFirmware();
-    const deviceModel = getDeviceModel(device);
-    const cachedDeviceModel = getDeviceModel(cachedDevice);
+    const cachedDeviceModelInternal = cachedDevice?.features?.internal_model;
     const isActionAbortable = useSelector(selectIsActionAbortable);
 
     const statusIntlId = getTextForStatus(status);
@@ -49,10 +48,10 @@ export const FirmwareInstallation = ({
     const getFakeProgressDuration = () => {
         if (cachedDevice?.firmware === 'none') {
             // device without fw starts installation without a confirmation and we need to fake progress bar for both devices (UI.FIRMWARE_PROGRESS is sent too late)
-            return cachedDeviceModel === DeviceModel.T1 ? 25 : 40; // T1 seems a bit faster
+            return cachedDeviceModelInternal === DeviceModelInternal.T1B1 ? 25 : 40; // T1B1 seems a bit faster
         }
         // Updating from older fw, device asks for confirmation, but sends first info about installation progress somewhat to late
-        return cachedDeviceModel === DeviceModel.T1 ? 25 : undefined; // 25s for T1, no fake progress for updating from older fw on other devices
+        return cachedDeviceModelInternal === DeviceModelInternal.T1B1 ? 25 : undefined; // 25s for T1B1, no fake progress for updating from older fw on other devices
     };
 
     const InnerActionComponent = useMemo(() => {
@@ -99,7 +98,7 @@ export const FirmwareInstallation = ({
                         <Translation id="TR_INSTALL_FIRMWARE" />
                     )
                 }
-                deviceModel={status === 'waiting-for-confirmation' ? deviceModel : undefined}
+                device={status === 'waiting-for-confirmation' ? device : undefined}
                 isActionAbortable={isActionAbortable}
                 innerActions={InnerActionComponent}
                 nested={!!standaloneFwUpdate}
@@ -114,12 +113,12 @@ export const FirmwareInstallation = ({
                         // Progress bar shown in 'installing', 'wait-for-reboot', 'unplug', 'reconnect-in-normal', 'partially-done', 'done'
                         // Also in 'started' if the device has no fw (freshly unpacked device). In this case device won't ask for confirmation
                         // and starts installation right away. However it doesn't provide an installation progress till way later (we set status to 'installing' only after receiving UI.FIRMWARE_PROGRESS in firmware reducer)
-                        <ProgressBar
+                        <FirmwareProgressBar
                             key={subsequentInstalling ? 1 : 0} // will reset the progress after an installation of intermediary fw (subsequent fw update will follow)
                             label={statusText}
                             total={100}
                             current={installingProgress || 0}
-                            fakeProgressDuration={getFakeProgressDuration()} // fake progress bar for T1 and devices without fw that will animate progress bar for up to xy seconds of installation
+                            fakeProgressDuration={getFakeProgressDuration()} // fake progress bar for T1B1 and devices without fw that will animate progress bar for up to xy seconds of installation
                         />
                     )}
             </OnboardingStepBox>

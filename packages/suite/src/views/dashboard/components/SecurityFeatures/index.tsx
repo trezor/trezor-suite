@@ -1,16 +1,19 @@
-import React from 'react';
 import styled from 'styled-components';
 
-import { Button, SecurityCard, SecurityCardProps, variables } from '@trezor/components';
-import { Translation } from '@suite-components';
-import { Section } from '@dashboard-components';
-import { AcquiredDevice } from '@suite-types';
-import { useDevice, useDiscovery, useActions, useSelector } from '@suite-hooks';
-import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
-import * as suiteActions from '@suite-actions/suiteActions';
-import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
-import * as routerActions from '@suite-actions/routerActions';
-import { SettingsAnchor } from '@suite-constants/anchors';
+import { selectDevice, createDeviceInstance } from '@suite-common/wallet-core';
+import { Button, variables } from '@trezor/components';
+
+import { Translation } from 'src/components/suite';
+import { DashboardSection } from 'src/components/dashboard';
+import { AcquiredDevice } from 'src/types/suite';
+import { useDevice, useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
+import { setDiscreetMode } from 'src/actions/settings/walletSettingsActions';
+import { setFlag } from 'src/actions/suite/suiteActions';
+import { applySettings, changePin } from 'src/actions/settings/deviceSettingsActions';
+import { goto } from 'src/actions/suite/routerActions';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
+
+import { SecurityCard, SecurityCardProps } from '../SecurityCard';
 
 const Content = styled.div`
     display: grid;
@@ -26,20 +29,10 @@ const Content = styled.div`
 `;
 
 const SecurityFeatures = () => {
-    const { setDiscreetMode, createDeviceInstance, changePin, applySettings, goto, setFlag } =
-        useActions({
-            setDiscreetMode: walletSettingsActions.setDiscreetMode,
-            createDeviceInstance: suiteActions.createDeviceInstance,
-            changePin: deviceSettingsActions.changePin,
-            applySettings: deviceSettingsActions.applySettings,
-            goto: routerActions.goto,
-            setFlag: suiteActions.setFlag,
-        });
-    const { discreetMode, device, flags } = useSelector(state => ({
-        discreetMode: state.wallet.settings.discreetMode,
-        device: state.suite.device,
-        flags: state.suite.flags,
-    }));
+    const discreetMode = useSelector(state => state.wallet.settings.discreetMode);
+    const device = useSelector(selectDevice);
+    const flags = useSelector(state => state.suite.flags);
+    const dispatch = useDispatch();
 
     const { isLocked } = useDevice();
     const isDeviceLocked = isLocked();
@@ -77,7 +70,7 @@ const SecurityFeatures = () => {
               cta: {
                   label: <Translation id="TR_BACKUP_NOW" />,
                   dataTest: 'backup',
-                  action: () => goto('backup-index'),
+                  action: () => dispatch(goto('backup-index')),
                   isDisabled: !!backupFailed,
               },
           }
@@ -89,7 +82,9 @@ const SecurityFeatures = () => {
                   label: <Translation id="TR_CHECK_SEED_IN_SETTINGS" />,
                   dataTest: 'seed-link',
                   action: () =>
-                      goto('settings-device', { anchor: SettingsAnchor.CheckRecoverySeed }),
+                      dispatch(
+                          goto('settings-device', { anchor: SettingsAnchor.CheckRecoverySeed }),
+                      ),
               },
           };
 
@@ -102,7 +97,7 @@ const SecurityFeatures = () => {
               cta: {
                   label: <Translation id="TR_ENABLE_PIN" />,
                   dataTest: 'pin',
-                  action: () => changePin({}),
+                  action: () => dispatch(changePin({})),
                   isDisabled: isDeviceLocked,
               },
           }
@@ -113,7 +108,8 @@ const SecurityFeatures = () => {
               cta: {
                   label: <Translation id="TR_CHANGE_PIN_IN_SETTINGS" />,
                   dataTest: 'pin-link',
-                  action: () => goto('settings-device', { anchor: SettingsAnchor.ChangePin }),
+                  action: () =>
+                      dispatch(goto('settings-device', { anchor: SettingsAnchor.ChangePin })),
               },
           };
 
@@ -126,9 +122,11 @@ const SecurityFeatures = () => {
               cta: {
                   label: <Translation id="TR_ENABLE_PASSPHRASE" />,
                   action: () =>
-                      applySettings({
-                          use_passphrase: true,
-                      }),
+                      dispatch(
+                          applySettings({
+                              use_passphrase: true,
+                          }),
+                      ),
                   dataTest: 'hidden-wallet',
                   isDisabled: isDeviceLocked,
               },
@@ -139,7 +137,8 @@ const SecurityFeatures = () => {
               heading: <Translation id="TR_PASSPHRASE_PROTECTION_ENABLED" />,
               cta: {
                   label: <Translation id="TR_CREATE_HIDDEN_WALLET" />,
-                  action: () => createDeviceInstance(device as AcquiredDevice),
+                  action: () =>
+                      dispatch(createDeviceInstance({ device: device as AcquiredDevice })),
                   dataTest: 'create-hidden-wallet',
                   isDisabled: isDeviceLocked,
               },
@@ -153,7 +152,7 @@ const SecurityFeatures = () => {
               description: <Translation id="TR_TRY_TO_TEMPORARILY_HIDE" />,
               cta: {
                   label: <Translation id="TR_TRY_DISCREET_MODE" />,
-                  action: () => setDiscreetMode(true),
+                  action: () => dispatch(setDiscreetMode(true)),
                   dataTest: 'discreet',
               },
           }
@@ -167,7 +166,7 @@ const SecurityFeatures = () => {
                   ) : (
                       <Translation id="TR_ENABLE_DISCREET_MODE" />
                   ),
-                  action: () => setDiscreetMode(!discreetMode),
+                  action: () => dispatch(setDiscreetMode(!discreetMode)),
                   dataTest: 'toggle-discreet',
               },
           };
@@ -175,7 +174,7 @@ const SecurityFeatures = () => {
     const cards: SecurityCardProps[] = [backupData, pinData, hiddenWalletData, discreetModeData];
 
     return (
-        <Section
+        <DashboardSection
             heading={
                 <Translation
                     id="TR_SECURITY_FEATURES_COMPLETED_N"
@@ -186,7 +185,7 @@ const SecurityFeatures = () => {
                 <Button
                     variant="tertiary"
                     icon={securityStepsHidden ? 'ARROW_DOWN' : 'ARROW_UP'}
-                    onClick={() => setFlag('securityStepsHidden', !securityStepsHidden)}
+                    onClick={() => dispatch(setFlag('securityStepsHidden', !securityStepsHidden))}
                 >
                     {securityStepsHidden ? (
                         <Translation id="TR_SHOW_BUTTON" />
@@ -217,7 +216,7 @@ const SecurityFeatures = () => {
                         );
                     })}
             </Content>
-        </Section>
+        </DashboardSection>
     );
 };
 

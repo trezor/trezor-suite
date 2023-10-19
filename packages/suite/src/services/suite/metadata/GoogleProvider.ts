@@ -1,5 +1,7 @@
-import { AbstractMetadataProvider, OAuthServerEnvironment, Tokens } from '@suite-types/metadata';
-import GoogleClient from '@suite/services/google';
+/* eslint-disable no-underscore-dangle */
+
+import { AbstractMetadataProvider, OAuthServerEnvironment, Tokens } from 'src/types/suite/metadata';
+import GoogleClient from 'src/services/google';
 
 class GoogleProvider extends AbstractMetadataProvider {
     connected = false;
@@ -7,6 +9,10 @@ class GoogleProvider extends AbstractMetadataProvider {
     constructor(tokens: Tokens, environment: OAuthServerEnvironment) {
         super('google');
         GoogleClient.init(tokens, environment);
+    }
+
+    get clientId() {
+        return GoogleClient.clientId;
     }
 
     async connect() {
@@ -34,9 +40,9 @@ class GoogleProvider extends AbstractMetadataProvider {
         }
     }
 
-    async getFileContent(file: string) {
+    private async _getFileContent(file: string) {
         try {
-            const id = await GoogleClient.getIdByName(`${file}.mtdt`);
+            const id = await GoogleClient.getIdByName(file);
             if (!id) {
                 return this.ok(undefined);
             }
@@ -62,16 +68,20 @@ class GoogleProvider extends AbstractMetadataProvider {
         }
     }
 
-    async setFileContent(file: string, content: Buffer) {
+    getFileContent(file: string) {
+        return this.scheduleApiRequest(() => this._getFileContent(file));
+    }
+
+    private async _setFileContent(file: string, content: Buffer) {
         try {
             // search for file by name with forceReload=true parameter to make sure that we do not save
             // two files with the same name but different ids
-            const id = await GoogleClient.getIdByName(`${file}.mtdt`, true);
+            const id = await GoogleClient.getIdByName(file, true);
             if (id) {
                 await GoogleClient.update(
                     {
                         body: {
-                            name: `${file}.mtdt`,
+                            name: file,
                             mimeType: 'text/plain;charset=UTF-8',
                         },
                     },
@@ -83,7 +93,7 @@ class GoogleProvider extends AbstractMetadataProvider {
             await GoogleClient.create(
                 {
                     body: {
-                        name: `${file}.mtdt`,
+                        name: file,
                         mimeType: 'text/plain;charset=UTF-8',
                         parents: ['appDataFolder'],
                     },
@@ -93,6 +103,48 @@ class GoogleProvider extends AbstractMetadataProvider {
             return this.ok();
         } catch (err) {
             return this.handleProviderError(err);
+        }
+    }
+
+    setFileContent(file: string, content: Buffer) {
+        return this.scheduleApiRequest(() => this._setFileContent(file, content));
+    }
+
+    async getFilesList() {
+        try {
+            const response = await GoogleClient.list({
+                query: { spaces: 'appDataFolder' },
+            });
+
+            if (response) {
+                const formattedList = response.files.map(({ name }) => name);
+
+                return this.ok(formattedList);
+            }
+
+            return this.ok(undefined);
+        } catch (error) {
+            return this.handleProviderError(error);
+        }
+    }
+
+    async renameFile(from: string, to: string) {
+        try {
+            const id = await GoogleClient.getIdByName(from, true);
+
+            await GoogleClient.updateMetadata(
+                {
+                    body: {
+                        name: to,
+                        mimeType: 'text/plain;charset=UTF-8',
+                    },
+                },
+                id,
+            );
+
+            return this.ok(undefined);
+        } catch (error) {
+            return this.handleProviderError(error);
         }
     }
 
@@ -109,6 +161,7 @@ class GoogleProvider extends AbstractMetadataProvider {
                     refreshToken: GoogleClient.refreshToken,
                 },
                 user: response.user.displayName,
+                clientId: this.clientId,
             } as const);
         } catch (err) {
             return this.handleProviderError(err);

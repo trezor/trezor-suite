@@ -1,34 +1,17 @@
-import { PartialDevice } from './types';
-
-export enum DeviceModel {
-    T1 = '1',
-    TT = 'T',
-    TR = 'R',
-    UNKNOWN = '',
-}
-
-export const getDeviceModel = (device?: PartialDevice): DeviceModel => {
-    const deviceModel = device?.features?.model;
-
-    if (Object.values(DeviceModel).includes(deviceModel as DeviceModel)) {
-        return deviceModel as DeviceModel;
-    }
-
-    return DeviceModel.UNKNOWN;
-};
+import { DeviceModelInternal } from '@trezor/connect';
 
 export const pickByDeviceModel = <Type>(
-    deviceModel: DeviceModel | undefined,
+    deviceModelInternal: DeviceModelInternal | undefined,
     options: {
         default: Type;
-        [DeviceModel.T1]?: Type;
-        [DeviceModel.TT]?: Type;
-        [DeviceModel.TR]?: Type;
+        [DeviceModelInternal.T1B1]?: Type;
+        [DeviceModelInternal.T2T1]?: Type;
+        [DeviceModelInternal.T2B1]?: Type;
     },
 ): Type => {
-    if (!deviceModel || typeof options[deviceModel] === 'undefined') {
+    if (!deviceModelInternal || typeof options[deviceModelInternal] === 'undefined') {
         return options.default;
     }
 
-    return options[deviceModel] ?? options.default;
+    return options[deviceModelInternal] ?? options.default;
 };

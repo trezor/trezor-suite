@@ -1,5 +1,4 @@
-import React from 'react';
-import { Translation, TroubleshootingTips } from '@suite-components';
+import { Translation, TroubleshootingTips } from 'src/components/suite';
 
 export const DeviceDisconnectRequired = () => (
     <TroubleshootingTips

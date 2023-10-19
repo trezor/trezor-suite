@@ -1,11 +1,10 @@
-import React from 'react';
 import styled from 'styled-components';
 
 import { Button, Tooltip } from '@trezor/components';
-import { Translation } from '@suite-components';
-import { TrezorDevice, AcquiredDevice } from '@suite-types';
-import { useSelector } from '@suite-hooks';
-import { SUITE } from '@suite-actions/constants';
+import { Translation } from 'src/components/suite';
+import { TrezorDevice, AcquiredDevice } from 'src/types/suite';
+import { useSelector } from 'src/hooks/suite';
+import { SUITE } from 'src/actions/suite/constants';
 
 const AddWallet = styled.div`
     display: flex;
@@ -16,7 +15,7 @@ const AddWallet = styled.div`
 const StyledButton = styled(Button)`
     padding: 16px;
     justify-content: center;
-    border: 1px dashed ${props => props.theme.STROKE_GREY};
+    border: 1px dashed ${({ theme }) => theme.STROKE_GREY};
     border-radius: 8px;
     background: transparent;
 
@@ -31,14 +30,19 @@ const StyledTooltip = styled(Tooltip)`
     width: 100%;
 `;
 
-interface Props {
+interface AddWalletButtonProps {
     device: TrezorDevice;
     instances: AcquiredDevice[];
     addDeviceInstance: (instance: TrezorDevice) => Promise<void>;
     selectDeviceInstance: (instance: TrezorDevice) => void;
 }
 
-const AddWalletButton = ({ device, instances, addDeviceInstance, selectDeviceInstance }: Props) => {
+const AddWalletButton = ({
+    device,
+    instances,
+    addDeviceInstance,
+    selectDeviceInstance,
+}: AddWalletButtonProps) => {
     const hasAtLeastOneWallet = instances.find(d => d.state);
     // Find a "standard wallet" among user's wallet instances. If no such wallet is found, the variable is undefined.
     const emptyPassphraseWalletExists = instances.find(d => d.useEmptyPassphrase && d.state);

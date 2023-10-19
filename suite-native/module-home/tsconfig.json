@@ -5,15 +5,23 @@
         {
             "path": "../../suite-common/formatters"
         },
+        { "path": "../../suite-common/graph" },
+        { "path": "../../suite-common/icons" },
+        {
+            "path": "../../suite-common/wallet-core"
+        },
         { "path": "../assets" },
         { "path": "../atoms" },
+        { "path": "../feature-flags" },
         { "path": "../formatters" },
         { "path": "../graph" },
-        { "path": "../module-accounts" },
+        { "path": "../intl" },
+        {
+            "path": "../module-accounts-management"
+        },
         { "path": "../module-settings" },
         { "path": "../navigation" },
         { "path": "../receive" },
-        { "path": "../../packages/icons" },
         { "path": "../../packages/styles" }
     ]
 }

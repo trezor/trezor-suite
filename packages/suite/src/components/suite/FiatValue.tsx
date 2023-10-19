@@ -1,14 +1,14 @@
-import React from 'react';
+import { ReactElement } from 'react';
 import styled from 'styled-components';
 import { selectCoins } from '@suite-common/wallet-core';
-import { HiddenPlaceholder } from '@suite-components';
-import { useSelector } from '@suite-hooks';
-import { Network } from '@wallet-types';
-import { TimestampedRates } from '@wallet-types/fiatRates';
+import { HiddenPlaceholder } from 'src/components/suite';
+import { useSelector } from 'src/hooks/suite';
+import { Network } from 'src/types/wallet';
+import { TimestampedRates } from 'src/types/wallet/fiatRates';
 import { toFiatCurrency } from '@suite-common/wallet-utils';
 import { useFormatters } from '@suite-common/formatters';
 import type { FormatNumberOptions } from '@formatjs/intl';
-import { selectLocalCurrency } from '@wallet-reducers/settingsReducer';
+import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 
 const StyledHiddenPlaceholder = styled(props => <HiddenPlaceholder {...props} />)`
     font-variant-numeric: tabular-nums;
@@ -29,7 +29,7 @@ interface CommonOwnProps {
     symbol: Network['symbol'] | string;
     tokenAddress?: string;
     fiatCurrency?: string;
-    children?: (props: Params) => React.ReactElement | null;
+    children?: (props: Params) => ReactElement | null;
     showApproximationIndicator?: boolean;
     disableHiddenPlaceholder?: boolean;
     fiatAmountFormatterOptions?: FormatNumberOptions;
@@ -57,7 +57,7 @@ type FiatValueProps = (DefaultSourceProps | CustomSourceProps) & { className?: s
  * The function will be called (and rendered) with 1 object param: {fiatValue, fiatRateValue, fiatRateTimestamp}.
  *
  *  In case of custom source of fiat rates returned timestamp is always null;
- * @param {Props} { amount, symbol, fiatCurrency, ...props }
+ * @param {FiatValuePropsProps} { amount, symbol, fiatCurrency, ...props }
  * @returns
  */
 export const FiatValue = ({

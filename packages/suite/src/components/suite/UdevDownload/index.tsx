@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 import { DATA_URL, HELP_CENTER_UDEV_URL } from '@trezor/urls';
-import { Translation, TrezorLink } from '@suite-components';
-import { variables, Button, Select, Link, Loader } from '@trezor/components';
-import { useSelector } from '@suite-hooks';
+import { Translation, TrezorLink } from 'src/components/suite';
+import { variables, Button, Select, Link, Spinner } from '@trezor/components';
+import { useSelector } from 'src/hooks/suite';
 
 const Wrapper = styled.div`
     display: flex;
@@ -33,7 +33,7 @@ const LoaderWrapper = styled.div`
 const Manual = styled(Download)`
     margin-top: 24px;
     padding-top: 24px;
-    border-top: 1px solid ${props => props.theme.STROKE_GREY};
+    border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
 `;
 
 const StyledButton = styled(Button)`
@@ -84,7 +84,7 @@ const UdevDownload = () => {
                     </>
                 ) : (
                     <LoaderWrapper>
-                        <Loader size={24} />
+                        <Spinner size={24} />
                         <Translation id="TR_GATHERING_INFO" />
                     </LoaderWrapper>
                 )}

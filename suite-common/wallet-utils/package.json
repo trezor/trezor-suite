@@ -12,8 +12,8 @@
         "test-unit:watch": "jest -o --watch"
     },
     "dependencies": {
-        "@ethereumjs/common": "^3.1.1",
-        "@ethereumjs/tx": "^4.1.1",
+        "@ethereumjs/common": "^3.1.2",
+        "@ethereumjs/tx": "^4.1.2",
         "@suite-common/fiat-services": "workspace:*",
         "@suite-common/metadata-types": "workspace:*",
         "@suite-common/suite-config": "workspace:*",
@@ -24,17 +24,17 @@
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-constants": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
-        "@trezor/connect": "workspace:9.0.9",
+        "@trezor/connect": "workspace:*",
         "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*",
         "bignumber.js": "^9.1.1",
-        "date-fns": "^2.29.3",
+        "date-fns": "^2.30.0",
         "ethereumjs-util": "^7.1.5",
         "pdfmake": "^0.2.7",
         "react": "18.2.0",
-        "react-hook-form": "6.15.7",
+        "react-hook-form": "7.44.3",
         "trezor-address-validator": "^0.4.3",
-        "web3-utils": "^1.9.0"
+        "web3-utils": "^1.10.0"
     },
     "devDependencies": {
         "@types/pdfmake": "^0.2.2",

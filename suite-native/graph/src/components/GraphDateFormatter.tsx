@@ -1,21 +1,19 @@
-import React from 'react';
-
 import { Atom, useAtomValue } from 'jotai';
 
 import { useFormatters } from '@suite-common/formatters';
+import { FiatGraphPoint } from '@suite-common/graph';
+import { Text } from '@suite-native/atoms';
 
-import { EnhancedGraphPoint } from '../utils';
-
-type SelectedPointAtom = Atom<EnhancedGraphPoint>;
+type SelectedPointAtom = Atom<FiatGraphPoint>;
 
 type GraphDateFormatterProps = {
     firstPointDate: Date;
-    selectedPointAtom: Atom<EnhancedGraphPoint>;
+    selectedPointAtom: Atom<FiatGraphPoint>;
 };
 
 const WeekFormatter = ({ selectedPointAtom }: { selectedPointAtom: SelectedPointAtom }) => {
     const { DateTimeFormatter } = useFormatters();
-    const { originalDate: value } = useAtomValue(selectedPointAtom);
+    const { date: value } = useAtomValue(selectedPointAtom);
 
     return <DateTimeFormatter value={value} />;
 };
@@ -23,7 +21,7 @@ const WeekFormatter = ({ selectedPointAtom }: { selectedPointAtom: SelectedPoint
 const OtherDateFormatter = ({ selectedPointAtom }: { selectedPointAtom: SelectedPointAtom }) => {
     const { DateFormatter } = useFormatters();
 
-    const { originalDate: value } = useAtomValue(selectedPointAtom);
+    const { date: value } = useAtomValue(selectedPointAtom);
     return <DateFormatter value={value} />;
 };
 
@@ -35,9 +33,15 @@ export const GraphDateFormatter = ({
 }: GraphDateFormatterProps) => {
     const millisecondElapsedFromFistPoint = new Date().getTime() - firstPointDate.getTime();
     // this check is significantly faster than using date-fns/differenceInWeeks(days)
-    if (millisecondElapsedFromFistPoint < millisecondsPerTwoWeek) {
-        return <WeekFormatter selectedPointAtom={selectedPointAtom} />;
-    }
+    const isWeekFormatted = millisecondElapsedFromFistPoint < millisecondsPerTwoWeek;
 
-    return <OtherDateFormatter selectedPointAtom={selectedPointAtom} />;
+    return (
+        <Text variant="hint" color="textSubdued">
+            {isWeekFormatted ? (
+                <WeekFormatter selectedPointAtom={selectedPointAtom} />
+            ) : (
+                <OtherDateFormatter selectedPointAtom={selectedPointAtom} />
+            )}
+        </Text>
+    );
 };

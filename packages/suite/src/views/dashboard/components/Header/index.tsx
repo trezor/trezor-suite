@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import { ReactElement } from 'react';
 import styled from 'styled-components';
 
 const Wrapper = styled.div`
@@ -8,17 +8,17 @@ const Wrapper = styled.div`
 `;
 
 const Left = styled.div`
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
 `;
 
 const Right = styled.div``;
 
-interface Props {
+interface HeaderProps {
     left: ReactElement;
     right?: ReactElement;
 }
 
-const Header = ({ left, right }: Props) => (
+const Header = ({ left, right }: HeaderProps) => (
     <Wrapper>
         {left && <Left>{left}</Left>}
         {right && <Right>{right}</Right>}

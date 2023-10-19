@@ -1,25 +1,19 @@
-import React, { useState } from 'react';
-import { useDispatch, useSelector } from '@suite-hooks';
+import { useState } from 'react';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import styled from 'styled-components';
 
 import { Account } from '@suite-common/wallet-types';
-import { Translation, TrezorLink } from '@suite-components';
-import { Error } from '@suite-components/Error';
+import { Translation, TrezorLink } from 'src/components/suite';
+import { Error } from 'src/components/suite/Error';
 import { Button, Card, Checkbox, Link, Note, Tooltip, variables } from '@trezor/components';
 import { DATA_TOS_URL, ZKSNACKS_TERMS_URL } from '@trezor/urls';
-import { startCoinjoinSession } from '@wallet-actions/coinjoinAccountActions';
+import { startCoinjoinSession } from 'src/actions/wallet/coinjoinAccountActions';
 import {
-    selectCurrentTargetAnonymity,
-    selectRoundsNeededByAccountKey,
-    selectRoundsFailRateBuffer,
     selectCoinjoinClient,
-    selectCoinjoinAccountByKey,
-    selectDefaultMaxMiningFeeByAccountKey,
-} from '@wallet-reducers/coinjoinReducer';
-import { useCoinjoinSessionBlockers } from '@suite/hooks/coinjoin/useCoinjoinSessionBlockers';
-import { getMaxRounds, getSkipRounds } from '@wallet-utils/coinjoinUtils';
+    selectStartCoinjoinSessionArguments,
+} from 'src/reducers/wallet/coinjoinReducer';
+import { useCoinjoinSessionBlockers } from 'src/hooks/coinjoin/useCoinjoinSessionBlockers';
 import { Tile, TileProps } from './Tile';
-import { SKIP_ROUNDS_BY_DEFAULT } from '@suite/services/coinjoin';
 
 const StyledCard = styled(Card)`
     padding: 24px;
@@ -113,13 +107,9 @@ export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => 
     const [termsConfirmed, setTermsConfirmed] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
-    const coinjoinAccount = useSelector(state => selectCoinjoinAccountByKey(state, account.key));
     const coinjoinClient = useSelector(state => selectCoinjoinClient(state, account.key));
-    const targetAnonymity = useSelector(selectCurrentTargetAnonymity);
-    const roundsNeeded = useSelector(state => selectRoundsNeededByAccountKey(state, account.key));
-    const roundsFailRateBuffer = useSelector(selectRoundsFailRateBuffer);
-    const defaultMaxMiningFee = useSelector(state =>
-        selectDefaultMaxMiningFeeByAccountKey(state, account.key),
+    const startCoinjoinArgs = useSelector(state =>
+        selectStartCoinjoinSessionArguments(state, account.key),
     );
 
     const dispatch = useDispatch();
@@ -128,7 +118,7 @@ export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => 
         account.key,
     );
 
-    if (!coinjoinClient || !targetAnonymity || !coinjoinAccount) {
+    if (!coinjoinClient || !startCoinjoinArgs) {
         return (
             <Error
                 error={`Suite could not ${
@@ -140,11 +130,6 @@ export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => 
 
     const isDisabled = !termsConfirmed || isCoinjoinSessionBlocked;
     const coordinatorFeePercentage = `${coinjoinClient.coordinationFeeRate.rate * 100}%`;
-    const maxFeePerKvbyte = (coinjoinAccount.setup?.maxFeePerVbyte ?? defaultMaxMiningFee) * 1000; // Transform to kvB.
-    const maxRounds = getMaxRounds(roundsNeeded, roundsFailRateBuffer);
-    const skipRounds = getSkipRounds(
-        coinjoinAccount.setup ? coinjoinAccount.setup.skipRounds : SKIP_ROUNDS_BY_DEFAULT,
-    );
 
     const getButtonTooltipMessage = () => {
         if (coinjoinSessionBlockedMessage) {
@@ -157,15 +142,7 @@ export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => 
     const toggleTermsConfirmation = () => setTermsConfirmed(current => !current);
     const anonymize = async () => {
         setIsLoading(true);
-        await dispatch(
-            startCoinjoinSession(account, {
-                maxCoordinatorFeeRate: coinjoinClient.coordinationFeeRate.rate,
-                maxFeePerKvbyte,
-                maxRounds,
-                skipRounds,
-                targetAnonymity,
-            }),
-        );
+        await dispatch(startCoinjoinSession(...startCoinjoinArgs));
         setIsLoading(false);
     };
 

@@ -1,15 +1,15 @@
 import type { MiddlewareAPI } from 'redux';
-import type { AppState, Action, Dispatch } from '@suite-types';
-import { COINMARKET_SAVINGS } from '@wallet-actions/constants';
-import * as coinmarketSavingsActions from '@wallet-actions/coinmarketSavingsActions';
-import * as pollingActions from '@wallet-actions/pollingActions';
+import type { AppState, Action, Dispatch } from 'src/types/suite';
+import { COINMARKET_SAVINGS } from 'src/actions/wallet/constants';
+import * as coinmarketSavingsActions from 'src/actions/wallet/coinmarketSavingsActions';
+import * as pollingActions from 'src/actions/wallet/pollingActions';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import invityAPI, { SavingsTradeKYCFinalStatuses } from '@suite-services/invityAPI';
+import invityAPI, { SavingsTradeKYCFinalStatuses } from 'src/services/suite/invityAPI';
 import {
     KYCStatusPollingIntervalMilliseconds,
     KYCStatusPollingMaxCount,
-} from '@wallet-constants/coinmarket/savings';
-import { isDesktop } from '@suite-utils/env';
+} from 'src/constants/wallet/coinmarket/savings';
+import { isDesktop } from '@trezor/env-utils';
 
 const coinmarketSavingsMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>

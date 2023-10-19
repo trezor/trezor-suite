@@ -1,5 +1,5 @@
 import { ObjectValues } from '@trezor/type-utils';
-import { STATUS as discoveryStatus } from '@suite-common/wallet-constants';
+import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import { Network } from '@suite-common/wallet-config';
 import { Deferred } from '@trezor/utils';
 
@@ -12,7 +12,7 @@ export interface Discovery {
     total: number;
     loaded: number;
     bundleSize: number;
-    status: ObjectValues<typeof discoveryStatus>;
+    status: ObjectValues<typeof DiscoveryStatus>;
     // coins which failed to load
     failed: {
         symbol: Network['symbol'];
@@ -30,6 +30,8 @@ export interface Discovery {
     availableCardanoDerivations?: ('normal' | 'legacy' | 'ledger')[];
 }
 
+export type PartialDiscovery = { deviceState: string } & Partial<Discovery>;
+
 export type DiscoveryItem = {
     // @trezor/connect
     path: string;
@@ -37,6 +39,7 @@ export type DiscoveryItem = {
     coin: Account['symbol'];
     details?: 'basic' | 'tokens' | 'tokenBalances' | 'txids' | 'txs';
     pageSize?: number;
+    suppressBackupWarning?: boolean;
     // wallet
     index: number;
     accountType: Account['accountType'];

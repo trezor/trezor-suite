@@ -1,3 +1,7 @@
+import { SuiteAnalyticsEvent } from '@trezor/suite-analytics';
+import { urlSearchParams } from '@trezor/suite/src/utils/suite/metadata';
+import { EventPayload, Requests } from '../types';
+
 /**
  * Shortcut to click device menu
  */
@@ -7,9 +11,16 @@ export const passThroughInitialRun = () => {
     cy.getTestElement('@analytics/continue-button', { timeout: 40000 })
         .click()
         .getTestElement('@onboarding/exit-app-button')
-        .click()
-        .getTestElement('@suite/loading')
-        .should('not.exist');
+        .click();
+};
+
+export const passThroughAuthenticityCheck = () => {
+    // enable debug mode to allow debug keys for authenticity check
+    cy.enableDebugMode();
+
+    cy.getTestElement('@authenticity-check/start-button').click();
+    cy.task('pressYes');
+    cy.getTestElement('@authenticity-check/continue-button').click();
 };
 
 export const passThroughBackup = () => {
@@ -63,6 +74,12 @@ export const passThroughSetPin = () => {
     cy.getTestElement('@onboarding/pin/continue-button').click();
 };
 
+export const enableDebugMode = () => {
+    cy.window().then(window => {
+        window.store.dispatch({ type: '@suite/set-debug-mode', payload: { showDebugMenu: true } });
+    });
+};
+
 export const toggleDebugModeInSettings = () => {
     const timesClickToSetDebugMode = 5;
     for (let i = 0; i < timesClickToSetDebugMode; i++) {
@@ -101,4 +118,34 @@ export const createAccountFromMyAccounts = (coin: string, label: string) => {
     cy.getTestElement('@add-account-type/select/input').click();
     cy.get(`[data-test="@add-account-type/select/option/${label}"]`).click();
     cy.getTestElement('@add-account').click();
+};
+
+export const interceptDataTrezorIo = (requests: Requests) =>
+    cy.intercept({ hostname: 'data.trezor.io', url: '/suite/log/**' }, req => {
+        const params = urlSearchParams(req.url);
+        requests.push(params);
+    });
+
+export const findAnalyticsEventByType = <T extends SuiteAnalyticsEvent>(
+    requests: Requests,
+    eventType: T['type'],
+): Cypress.Chainable<NonNullable<EventPayload<T>>> =>
+    cy.wrap(requests).then(requestsArr => {
+        const event = requestsArr.find(req => req.c_type === eventType) as EventPayload<T>;
+
+        if (!event) {
+            throw new Error(`Event with type ${eventType} not found.`);
+        }
+
+        return event;
+    });
+
+export const enterPinOnBlindMatrix = (pinEntryNumber: string) => {
+    cy.task('getDebugState').then(state => {
+        // TODO: export and take types from @trezor/user-env-link
+        // @ts-expect-error
+        const index = state.matrix.indexOf(pinEntryNumber) + 1;
+        cy.getTestElement(`@pin/input/${index}`).click();
+        cy.getTestElement('@pin/submit-button').click();
+    });
 };

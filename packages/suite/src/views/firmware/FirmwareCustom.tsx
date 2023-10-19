@@ -1,24 +1,26 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback } from 'react';
+
 import styled from 'styled-components';
+
+import { acquireDevice } from '@suite-common/wallet-core';
 import { ConfirmOnDevice } from '@trezor/components';
-import { useActions, useDevice, useFirmware } from '@suite-hooks';
-import { Translation, Modal } from '@suite-components';
-import { DeviceAcquire } from '@suite-views/device-acquire';
-import { DeviceUnknown } from '@suite-views/device-unknown';
-import { DeviceUnreadable } from '@suite-views/device-unreadable';
-import * as routerActions from '@suite-actions/routerActions';
-import type { TrezorDevice } from '@suite-types';
-import { ConnectDevicePromptManager, OnboardingStepBox } from '@onboarding-components';
-import { useCachedDevice } from '@firmware-hooks/useCachedDevice';
+
+import { useDevice, useDispatch, useFirmware } from 'src/hooks/suite';
+import { Translation, Modal } from 'src/components/suite';
+import { DeviceAcquire } from 'src/views/suite/device-acquire';
+import { DeviceUnknown } from 'src/views/suite/device-unknown';
+import { DeviceUnreadable } from 'src/views/suite/device-unreadable';
+import { closeModalApp } from 'src/actions/suite/routerActions';
+import type { TrezorDevice } from 'src/types/suite';
+import { ConnectDevicePromptManager, OnboardingStepBox } from 'src/components/onboarding';
+import { useCachedDevice } from 'src/hooks/firmware/useCachedDevice';
 import {
     FirmwareInstallation,
-    CloseButton,
+    FirmwareCloseButton,
     CheckSeedStep,
     ReconnectDevicePrompt,
     SelectCustomFirmware,
-} from '@firmware-components';
-import * as suiteActions from '@suite-actions/suiteActions';
-import { getDeviceModel } from '@trezor/device-utils';
+} from 'src/components/firmware';
 
 const StyledModal = styled(Modal)<{ isNarrow: boolean }>`
     width: ${({ isNarrow }) => (isNarrow ? '450px' : '620px')};
@@ -34,15 +36,13 @@ const ModalContent = styled.div<{ isNarrow: boolean }>`
 
 export const FirmwareCustom = () => {
     const [firmwareBinary, setFirmwareBinary] = useState<ArrayBuffer>();
-    const { closeModalApp, acquireDevice } = useActions({
-        closeModalApp: routerActions.closeModalApp,
-        acquireDevice: suiteActions.acquireDevice,
-    });
+
+    const dispatch = useDispatch();
 
     const { setStatus, firmwareCustom, resetReducer, status, error } = useFirmware();
     const { device: liveDevice } = useDevice();
     const cachedDevice = useCachedDevice(liveDevice);
-    const liveDeviceModel = getDeviceModel(liveDevice);
+    const liveDeviceModelInternal = liveDevice?.features?.internal_model;
 
     const onFirmwareSelected = useCallback(
         (fw: ArrayBuffer) => {
@@ -69,11 +69,11 @@ export const FirmwareCustom = () => {
 
     const onClose = useCallback(() => {
         if (liveDevice?.status !== 'available') {
-            acquireDevice(liveDevice);
+            dispatch(acquireDevice(liveDevice));
         }
-        closeModalApp();
+        dispatch(closeModalApp());
         resetReducer();
-    }, [liveDevice, acquireDevice, closeModalApp, resetReducer]);
+    }, [dispatch, liveDevice, resetReducer]);
 
     const shouldDisplayConnectPrompt = (device?: TrezorDevice) =>
         !device?.connected || !device?.features;
@@ -102,9 +102,9 @@ export const FirmwareCustom = () => {
                                 />
                             }
                             innerActions={
-                                <CloseButton onClick={onClose}>
+                                <FirmwareCloseButton onClick={onClose}>
                                     <Translation id="TR_BACK" />
-                                </CloseButton>
+                                </FirmwareCloseButton>
                             }
                             nested
                         />
@@ -132,9 +132,9 @@ export const FirmwareCustom = () => {
                 case 'started': // called from firmwareUpdate()
                 case 'installing':
                 case 'wait-for-reboot':
-                case 'unplug': // only relevant for T1, TT auto restarts itself
-                case 'reconnect-in-normal': // only relevant for T1, TT auto restarts itself
-                case 'partially-done': // only relevant for T1, updating from very old fw is done in 2 fw updates, partially-done means first update was installed
+                case 'unplug': // only relevant for T1B1, T2T1 auto restarts itself
+                case 'reconnect-in-normal': // only relevant for T1B1, T2T1 auto restarts itself
+                case 'partially-done': // only relevant for T1B1, updating from very old fw is done in 2 fw updates, partially-done means first update was installed
                 case 'done':
                 case 'validation':
                     return (
@@ -177,7 +177,8 @@ export const FirmwareCustom = () => {
                 status === 'waiting-for-confirmation' && (
                     <ConfirmOnDevice
                         title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
-                        deviceModel={liveDeviceModel}
+                        deviceModelInternal={liveDeviceModelInternal}
+                        deviceUnitColor={liveDevice?.features?.unit_color}
                     />
                 )
             }

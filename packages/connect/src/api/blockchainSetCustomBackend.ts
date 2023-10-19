@@ -17,7 +17,6 @@ export default class BlockchainSetCustomBackend extends AbstractMethod<
 > {
     init() {
         this.requiredPermissions = [];
-        this.info = '';
         this.useDevice = false;
         this.useUi = false;
 
@@ -39,6 +38,10 @@ export default class BlockchainSetCustomBackend extends AbstractMethod<
         this.params = {
             coinInfo,
         };
+    }
+
+    get info() {
+        return '';
     }
 
     async run() {

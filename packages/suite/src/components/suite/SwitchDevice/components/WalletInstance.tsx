@@ -1,24 +1,28 @@
-import React from 'react';
 import styled from 'styled-components';
-import { analytics, EventType } from '@trezor/suite-analytics';
 
+import {
+    toggleRememberDevice,
+    deviceActions,
+    selectDiscoveryByDeviceState,
+} from '@suite-common/wallet-core';
+import { useFormatters } from '@suite-common/formatters';
 import { Switch, Box, Icon, useTheme, variables } from '@trezor/components';
 import { getAllAccounts, getTotalFiatBalance } from '@suite-common/wallet-utils';
-import * as suiteActions from '@suite-actions/suiteActions';
-import { useFormatters } from '@suite-common/formatters';
-import { selectDiscovery } from '@wallet-reducers/discoveryReducer';
+import { analytics, EventType } from '@trezor/suite-analytics';
+
 import {
     WalletLabeling,
     Translation,
     MetadataLabeling,
     HiddenPlaceholder,
-} from '@suite-components';
-import { useSelector, useActions } from '@suite-hooks';
-import { TrezorDevice, AcquiredDevice } from '@suite-types';
+} from 'src/components/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { TrezorDevice, AcquiredDevice } from 'src/types/suite';
+import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer';
 
 const InstanceType = styled.div`
     display: flex;
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.NORMAL};
     line-height: 1.5;
@@ -34,7 +38,7 @@ const Wrapper = styled(Box)`
     display: flex;
     width: 100%;
     align-items: center;
-    background: ${props => props.theme.BG_WHITE};
+    background: ${({ theme }) => theme.BG_WHITE};
 
     & + & {
         margin-top: 10px;
@@ -57,16 +61,16 @@ const Wrapper = styled(Box)`
 const InstanceTitle = styled.div`
     font-weight: 500;
     line-height: 1.57;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-variant-numeric: tabular-nums;
 `;
 
 const Col = styled.div<{ grow?: number; centerItems?: boolean }>`
     display: flex;
-    flex-grow: ${props => props.grow || 0};
+    flex-grow: ${({ grow }) => grow || 0};
     flex-direction: column;
-    align-items: ${props => (props.centerItems ? 'center' : 'flex-start')};
+    align-items: ${({ centerItems }) => (centerItems ? 'center' : 'flex-start')};
 
     :first-child {
         cursor: pointer;
@@ -101,28 +105,35 @@ export const WalletInstance = ({
     index,
     ...rest
 }: WalletInstanceProps) => {
-    const { toggleRememberDevice, forgetDevice } = useActions({
-        toggleRememberDevice: suiteActions.toggleRememberDevice,
-        forgetDevice: suiteActions.forgetDevice,
-    });
-    const { accounts, fiat, localCurrency, editing } = useSelector(state => ({
-        accounts: state.wallet.accounts,
-        fiat: state.wallet.fiat,
-        localCurrency: state.wallet.settings.localCurrency,
-        editing: state.metadata.editing,
-    }));
+    const accounts = useSelector(state => state.wallet.accounts);
+    const fiat = useSelector(state => state.wallet.fiat);
+    const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
+    const editing = useSelector(state => state.metadata.editing);
+    const dispatch = useDispatch();
 
     const { FiatAmountFormatter } = useFormatters();
     const theme = useTheme();
 
-    const discoveryProcess = useSelector(state => selectDiscovery(state, instance.state));
+    const discoveryProcess = useSelector(state =>
+        selectDiscoveryByDeviceState(state, instance.state),
+    );
 
     const deviceAccounts = getAllAccounts(instance.state, accounts);
     const accountsCount = deviceAccounts.length;
     const instanceBalance = getTotalFiatBalance(deviceAccounts, localCurrency, fiat.coins);
     const isSelected = enabled && selected && !!discoveryProcess;
-
+    const { walletLabel } = useSelector(state =>
+        selectLabelingDataForWallet(state, instance.state),
+    );
     const dataTestBase = `@switch-device/wallet-on-index/${index}`;
+
+    const handleRememberChange = () => dispatch(toggleRememberDevice({ device: instance }));
+    const handleEject = () => {
+        dispatch(deviceActions.forgetDevice(instance));
+        analytics.report({
+            type: EventType.SwitchDeviceEject,
+        });
+    };
 
     return (
         <Wrapper
@@ -145,9 +156,7 @@ export const WalletInstance = ({
                                     deviceState: instance.state,
                                     defaultValue: instance.state,
                                     value:
-                                        instance?.metadata.status === 'enabled'
-                                            ? instance.metadata.walletLabel
-                                            : '',
+                                        instance?.metadata.status === 'enabled' ? walletLabel : '',
                                 }}
                             />
                         ) : (
@@ -185,7 +194,7 @@ export const WalletInstance = ({
                     <SwitchCol>
                         <Switch
                             isChecked={!!instance.remember}
-                            onChange={() => toggleRememberDevice(instance)}
+                            onChange={handleRememberChange}
                             dataTest={`${dataTestBase}/toggle-remember-switch`}
                         />
                     </SwitchCol>
@@ -197,12 +206,7 @@ export const WalletInstance = ({
                             size={22}
                             color={theme.TYPE_LIGHT_GREY}
                             hoverColor={theme.TYPE_DARK_GREY}
-                            onClick={() => {
-                                forgetDevice(instance);
-                                analytics.report({
-                                    type: EventType.SwitchDeviceEject,
-                                });
-                            }}
+                            onClick={handleEject}
                         />
                     </ColEject>
                 </>

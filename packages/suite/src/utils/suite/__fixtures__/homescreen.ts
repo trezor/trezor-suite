@@ -1,103 +1,103 @@
-import { deviceModelInformation } from '@suite-utils/homescreen';
-import { DeviceModel } from '@trezor/device-utils';
+import { deviceModelInformation } from 'src/utils/suite/homescreen';
+import { DeviceModelInternal } from '@trezor/connect';
 
 export const isValidImageFormat = [
     {
-        description: 'valid image format for model T',
+        description: 'valid image format for T2T1',
         dataUrl: 'data:image/jpeg;base64,1234567890',
-        deviceModel: DeviceModel.TT,
+        deviceModelInternal: DeviceModelInternal.T2T1,
         result: true,
     },
     {
-        description: 'invalid image format for model T',
+        description: 'invalid image format for T2T1',
         dataUrl: 'data:image/png;base64,1234567890',
-        deviceModel: DeviceModel.TT,
+        deviceModelInternal: DeviceModelInternal.T2T1,
         result: false,
     },
     {
-        description: 'no image format for model T',
+        description: 'no image format for T2T1',
         dataUrl: '',
-        deviceModel: DeviceModel.TT,
+        deviceModelInternal: DeviceModelInternal.T2T1,
         result: false,
     },
     {
-        description: 'valid JPG image format for model 1',
+        description: 'valid JPG image format for T1B1',
         dataUrl: 'data:image/jpeg;base64,1234567890',
-        deviceModel: DeviceModel.T1,
+        deviceModelInternal: DeviceModelInternal.T1B1,
         result: true,
     },
     {
-        description: 'valid PNG image format for model 1',
+        description: 'valid PNG image format for T1B1',
         dataUrl: 'data:image/png;base64,1234567890',
-        deviceModel: DeviceModel.T1,
+        deviceModelInternal: DeviceModelInternal.T1B1,
         result: true,
     },
     {
-        description: 'no image format for model 1',
+        description: 'no image format for T1B1',
         dataUrl: '',
-        deviceModel: DeviceModel.T1,
+        deviceModelInternal: DeviceModelInternal.T1B1,
         result: false,
     },
 ];
 
 export const isValidImageWidth = [
     {
-        description: 'valid image width for model T',
-        deviceModel: DeviceModel.TT,
-        width: deviceModelInformation[DeviceModel.TT].width,
+        description: 'valid image width for T2T1',
+        deviceModelInternal: DeviceModelInternal.T2T1,
+        width: deviceModelInformation[DeviceModelInternal.T2T1].width,
         result: true,
     },
     {
-        description: 'invalid image width for model T, too small',
-        deviceModel: DeviceModel.TT,
-        width: deviceModelInformation[DeviceModel.TT].width + 1,
+        description: 'invalid image width for T2T1, too small',
+        deviceModelInternal: DeviceModelInternal.T2T1,
+        width: deviceModelInformation[DeviceModelInternal.T2T1].width + 1,
         result: false,
     },
     {
-        description: 'invalid image width for model T, too big',
-        deviceModel: DeviceModel.TT,
-        width: deviceModelInformation[DeviceModel.TT].width - 1,
+        description: 'invalid image width for T2T1, too big',
+        deviceModelInternal: DeviceModelInternal.T2T1,
+        width: deviceModelInformation[DeviceModelInternal.T2T1].width - 1,
         result: false,
     },
 ];
 
 export const isValidImageHeight = [
     {
-        description: 'valid image height for model T',
-        deviceModel: DeviceModel.TT,
-        height: deviceModelInformation[DeviceModel.TT].height,
+        description: 'valid image height for T2T1',
+        deviceModelInternal: DeviceModelInternal.T2T1,
+        height: deviceModelInformation[DeviceModelInternal.T2T1].height,
         result: true,
     },
     {
-        description: 'invalid image height for model T, too big',
-        deviceModel: DeviceModel.TT,
-        height: deviceModelInformation[DeviceModel.TT].height + 1,
+        description: 'invalid image height for T2T1, too big',
+        deviceModelInternal: DeviceModelInternal.T2T1,
+        height: deviceModelInformation[DeviceModelInternal.T2T1].height + 1,
         result: false,
     },
     {
-        description: 'invalid image height for model T, too small',
-        deviceModel: DeviceModel.TT,
-        height: deviceModelInformation[DeviceModel.TT].height - 1,
+        description: 'invalid image height for T2T1, too small',
+        deviceModelInternal: DeviceModelInternal.T2T1,
+        height: deviceModelInformation[DeviceModelInternal.T2T1].height - 1,
         result: false,
     },
 ];
 
 export const isProgressiveJPG = [
     {
-        description: 'progressive image for model T',
-        deviceModel: DeviceModel.TT,
+        description: 'progressive image for T2T1',
+        deviceModelInternal: DeviceModelInternal.T2T1,
         buffer: new Uint8Array([0xff, 0xc2, 0x00, 0x0b, 0x08, 0x00, 0x00, 0x03, 0x01, 0x22, 0x00]),
         result: true,
     },
     {
-        description: 'non-progressive image for model T',
-        deviceModel: DeviceModel.TT,
+        description: 'non-progressive image for T2T1',
+        deviceModelInternal: DeviceModelInternal.T2T1,
         buffer: new Uint8Array([0xff, 0xc0, 0x00, 0x0b, 0x08, 0x00, 0x00, 0x03, 0x01, 0x22, 0x00]),
         result: false,
     },
     {
-        description: 'progressive image for model 1',
-        deviceModel: DeviceModel.T1,
+        description: 'progressive image for T1B1',
+        deviceModelInternal: DeviceModelInternal.T1B1,
         buffer: new Uint8Array([0xff, 0xc2, 0x00, 0x0b, 0x08, 0x00, 0x00, 0x03, 0x01, 0x22, 0x00]),
         result: false,
     },

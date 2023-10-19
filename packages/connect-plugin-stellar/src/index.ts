@@ -1,9 +1,19 @@
-import StellarSdk, { Signer, Asset, Memo, Transaction } from 'stellar-sdk';
+import {
+    Signer,
+    Asset,
+    Memo,
+    Transaction,
+    Keypair,
+    MemoText,
+    MemoID,
+    MemoHash,
+    MemoReturn,
+} from 'stellar-sdk';
 import BigNumber from 'bignumber.js';
 
 /**
- * Transforms StellarSdk.Signer to TrezorConnect.StellarTransaction.Signer
- * @param {StellarSdk.Signer} signer
+ * Transforms Signer to TrezorConnect.StellarTransaction.Signer
+ * @param {Signer} signer
  * @returns { type: 1 | 2 | 3, key: string, weight: number }
  */
 const transformSigner = (signer: Signer) => {
@@ -11,7 +21,7 @@ const transformSigner = (signer: Signer) => {
     let key: string | undefined;
     const { weight } = signer;
     if ('ed25519PublicKey' in signer) {
-        const keyPair = StellarSdk.Keypair.fromPublicKey(signer.ed25519PublicKey);
+        const keyPair = Keypair.fromPublicKey(signer.ed25519PublicKey);
         key = keyPair.rawPublicKey().toString('hex');
     }
     if ('preAuthTx' in signer && signer.preAuthTx instanceof Buffer) {
@@ -30,8 +40,8 @@ const transformSigner = (signer: Signer) => {
 };
 
 /**
- * Transforms StellarSdk.Asset to TrezorConnect.StellarTransaction.Asset
- * @param {StellarSdk.Asset} asset
+ * Transforms Asset to TrezorConnect.StellarTransaction.Asset
+ * @param {Asset} asset
  * @returns { type: 0 | 1 | 2, code: string, issuer?: string }
  */
 const transformAsset = (asset: Asset) => {
@@ -56,20 +66,20 @@ const transformAsset = (asset: Asset) => {
 const transformAmount = (amount: number) => new BigNumber(amount).times(10000000).toString();
 
 /**
- * Transforms StellarSdk.Memo to TrezorConnect.StellarTransaction.Memo
+ * Transforms Memo to TrezorConnect.StellarTransaction.Memo
  * @param {string} type
  * @returns {string}
  */
 const transformMemo = (memo: Memo) => {
     switch (memo.type) {
-        case StellarSdk.MemoText:
+        case MemoText:
             return { type: 1, text: memo.value!.toString('utf-8') };
-        case StellarSdk.MemoID:
+        case MemoID:
             return { type: 2, id: memo.value!.toString('utf-8') };
-        case StellarSdk.MemoHash:
+        case MemoHash:
             // stringify is not necessary, Buffer is also accepted
             return { type: 3, hash: memo.value!.toString('hex') };
-        case StellarSdk.MemoReturn:
+        case MemoReturn:
             // stringify is not necessary, Buffer is also accepted
             return { type: 4, hash: memo.value!.toString('hex') };
         default:
@@ -78,9 +88,9 @@ const transformMemo = (memo: Memo) => {
 };
 
 /**
- * Transforms StellarSdk.Transaction.timeBounds to TrezorConnect.StellarTransaction.timebounds
+ * Transforms Transaction.timeBounds to TrezorConnect.StellarTransaction.timebounds
  * @param {string} path
- * @param {StellarSdk.Transaction.timeBounds} timebounds
+ * @param {Transaction.timeBounds} timebounds
  * @returns {minTime: number, maxTime: number}
  */
 const transformTimebounds = (timebounds: Transaction['timeBounds']) => {
@@ -93,9 +103,9 @@ const transformTimebounds = (timebounds: Transaction['timeBounds']) => {
 };
 
 /**
- * Transforms StellarSdk.Transaction to TrezorConnect.StellarTransaction
+ * Transforms Transaction to TrezorConnect.StellarTransaction
  * @param {string} path
- * @param {StellarSdk.Transaction} transaction
+ * @param {Transaction} transaction
  * @returns {TrezorConnect.StellarTransaction}
  */
 export const transformTransaction = (path: string, transaction: Transaction) => {
@@ -114,7 +124,7 @@ export const transformTransaction = (path: string, transaction: Transaction) => 
     const operations = transaction.operations.map((o, i) => {
         const operation: any = { ...o };
 
-        // transform StellarSdk.Signer
+        // transform Signer
         if (operation.signer) {
             operation.signer = transformSigner(operation.signer);
         }
@@ -150,7 +160,7 @@ export const transformTransaction = (path: string, transaction: Transaction) => 
 
         // add missing field
         if (operation.type === 'allowTrust') {
-            const allowTrustAsset = new StellarSdk.Asset(operation.assetCode, operation.trustor);
+            const allowTrustAsset = new Asset(operation.assetCode, operation.trustor);
             operation.assetType = transformAsset(allowTrustAsset).type;
         }
 

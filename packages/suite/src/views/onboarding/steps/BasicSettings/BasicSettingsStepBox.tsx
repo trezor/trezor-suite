@@ -1,15 +1,28 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import styled from 'styled-components';
-import { OnboardingStepBox, OnboardingStepBoxProps } from '@onboarding-components';
-import { CoinsGroup } from '@suite-components';
-import { useEnabledNetworks } from '@settings-hooks/useEnabledNetworks';
+import { OnboardingStepBox, OnboardingStepBoxProps } from 'src/components/onboarding';
+import { CoinsGroup, TooltipSymbol, Translation } from 'src/components/suite';
+import { useEnabledNetworks } from 'src/hooks/settings/useEnabledNetworks';
+import { CollapsibleBox } from '@trezor/components';
 
 const Separator = styled.hr`
     height: 1px;
     width: 100%;
     background: none;
     border: 0;
-    border-top: 1px solid ${props => props.theme.STROKE_GREY};
+    border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
+    margin-bottom: 30px;
+`;
+
+const StyledCollapsibleBox = styled(CollapsibleBox)`
+    background: none;
+    box-shadow: none;
+    margin-top: 12px;
+    width: 100%;
+
+    ${CollapsibleBox.Header} {
+        padding: 24px 12px 24px 6px;
+    }
 `;
 
 const StyledCoinsGroup = styled(CoinsGroup)`
@@ -27,17 +40,29 @@ export const BasicSettingsStepBox = (props: OnboardingStepBoxProps) => {
     return (
         <OnboardingStepBox image="COINS" {...props}>
             <Separator />
-            <StyledCoinsGroup
+            <CoinsGroup
                 networks={mainnets}
                 onToggle={setEnabled}
                 selectedNetworks={enabledNetworks}
             />
-            <StyledCoinsGroup
-                networks={testnets}
-                onToggle={setEnabled}
-                selectedNetworks={enabledNetworks}
-                testnet
-            />
+            <StyledCollapsibleBox
+                noContentPadding
+                heading={
+                    <>
+                        <Translation id="TR_TESTNET_COINS" />
+                        <TooltipSymbol
+                            content={<Translation id="TR_TESTNET_COINS_DESCRIPTION" />}
+                        />
+                    </>
+                }
+                variant="large"
+            >
+                <StyledCoinsGroup
+                    networks={testnets}
+                    onToggle={setEnabled}
+                    selectedNetworks={enabledNetworks}
+                />
+            </StyledCollapsibleBox>
         </OnboardingStepBox>
     );
 };

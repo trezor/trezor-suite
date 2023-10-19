@@ -1,12 +1,12 @@
-import React from 'react';
+import { MouseEventHandler } from 'react';
 import { Button } from '@trezor/components';
-import { Translation, TroubleshootingTips } from '@suite-components';
-import * as recoveryActions from '@recovery-actions/recoveryActions';
-import { useDevice, useSelector, useActions } from '@suite-hooks';
+import { Translation, TroubleshootingTips } from 'src/components/suite';
+import { rerun } from 'src/actions/recovery/recoveryActions';
+import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 
 export const DeviceRecoveryMode = () => {
     const recovery = useSelector(state => state.recovery);
-    const { rerun } = useActions({ rerun: recoveryActions.rerun });
+    const dispatch = useDispatch();
 
     const { isLocked } = useDevice();
 
@@ -14,17 +14,16 @@ export const DeviceRecoveryMode = () => {
         return null;
     }
 
+    const handleClick: MouseEventHandler = e => {
+        e.stopPropagation();
+        dispatch(rerun());
+    };
+
     return (
         <TroubleshootingTips
             label={<Translation id="TR_DEVICE_IN_RECOVERY_MODE" />}
             cta={
-                <Button
-                    isDisabled={isLocked()}
-                    onClick={e => {
-                        e.stopPropagation();
-                        rerun();
-                    }}
-                >
+                <Button isDisabled={isLocked()} onClick={handleClick}>
                     <Translation id="TR_CONTINUE" />
                 </Button>
             }

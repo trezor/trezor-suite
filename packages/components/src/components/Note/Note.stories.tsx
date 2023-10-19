@@ -1,12 +1,13 @@
-import React from 'react';
-import { ComponentStory } from '@storybook/react';
-
-import { Note } from './Note';
+import { Note as NoteComponent } from './Note';
 
 export default {
-    title: 'Note',
+    title: 'Misc/Note',
+    component: NoteComponent,
+};
+
+export const Note = {
     args: {
-        children: 'Note: this is a note',
+        children: 'Example tooltip',
     },
     argTypes: {
         className: {
@@ -17,7 +18,3 @@ export default {
         },
     },
 };
-
-export const Basic: ComponentStory<typeof Note> = args => (
-    <Note color={args.color}>{args.children}</Note>
-);

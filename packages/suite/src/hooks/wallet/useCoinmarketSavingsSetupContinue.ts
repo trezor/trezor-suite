@@ -3,52 +3,38 @@ import type {
     SavingsSetupContinueFormState,
     SavingsSetupContinueContextValues,
     UseSavingsSetupContinueProps,
-} from '@wallet-types/coinmarketSavingsSetupContinue';
+} from 'src/types/wallet/coinmarketSavingsSetupContinue';
 import { useForm, useWatch } from 'react-hook-form';
-import { useActions, useSelector } from '@suite-hooks';
-import { getUnusedAddressFromAccount } from '@wallet-utils/coinmarket/coinmarketUtils';
-import { CustomPaymentAmountKey } from '@wallet-constants/coinmarket/savings';
-import * as coinmarketSavingsActions from '@wallet-actions/coinmarketSavingsActions';
-import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
-import * as pollingActions from '@wallet-actions/pollingActions';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { getUnusedAddressFromAccount } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { CustomPaymentAmountKey } from 'src/constants/wallet/coinmarket/savings';
+import { saveSavingsTradeResponse } from 'src/actions/wallet/coinmarketSavingsActions';
+import { loadInvityData } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
+import { isPolling } from 'src/actions/wallet/pollingActions';
 import {
     calculateAnnualSavings,
     getFiatAmountEffective,
     getPaymentFrequencyOptions,
-} from '@wallet-utils/coinmarket/savingsUtils';
+} from 'src/utils/wallet/coinmarket/savingsUtils';
 import { SavingsTrade } from 'invity-api';
-import invityAPI from '@suite-services/invityAPI';
-import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
-import { useFormDraft } from '@wallet-hooks/useFormDraft';
-import { TypedValidationRules } from '@suite-common/wallet-types';
+import invityAPI from 'src/services/suite/invityAPI';
+import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
+import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
 
 export const useSavingsSetupContinue = ({
     selectedAccount,
 }: UseSavingsSetupContinueProps): SavingsSetupContinueContextValues => {
     const { account } = selectedAccount;
+    const fiat = useSelector(state => state.wallet.fiat);
     const {
-        fiat,
-        isWatchingKYCStatus,
-        selectedProvider,
-        providers,
-        savingsTrade,
         isSavingsTradeLoading,
+        isWatchingKYCStatus,
         kycFinalStatus,
-    } = useSelector(state => ({
-        fiat: state.wallet.fiat,
-        isWatchingKYCStatus: state.wallet.coinmarket.savings.isWatchingKYCStatus,
-        selectedProvider: state.wallet.coinmarket.savings.selectedProvider,
-        providers: state.wallet.coinmarket.savings.savingsInfo?.savingsList?.providers,
-        savingsTrade: state.wallet.coinmarket.savings.savingsTrade,
-        isSavingsTradeLoading: state.wallet.coinmarket.savings.isSavingsTradeLoading,
-        kycFinalStatus: state.wallet.coinmarket.savings.kycFinalStatus,
-    }));
-
-    const { loadInvityData, saveSavingsTradeResponse, isPolling } = useActions({
-        loadInvityData: coinmarketCommonActions.loadInvityData,
-        saveSavingsTradeResponse: coinmarketSavingsActions.saveSavingsTradeResponse,
-        isPolling: pollingActions.isPolling,
-    });
+        savingsInfo,
+        savingsTrade,
+        selectedProvider,
+    } = useSelector(state => state.wallet.coinmarket.savings);
+    const dispatch = useDispatch();
 
     const { navigateToSavingsPaymentInfo, navigateToSavingsOverview } =
         useCoinmarketNavigation(account);
@@ -57,12 +43,13 @@ export const useSavingsSetupContinue = ({
 
     const pollingKey = `coinmarket-savings-trade/${account.descriptor}` as const;
     const isSavingsTradeLoadingEffective =
-        (!providers || isSavingsTradeLoading) && !isPolling(pollingKey);
+        (!savingsInfo?.savingsList?.providers || isSavingsTradeLoading) &&
+        !dispatch(isPolling(pollingKey));
 
     useEffect(() => {
-        loadInvityData();
+        dispatch(loadInvityData());
         removeDraft(account.descriptor);
-    }, [account.descriptor, loadInvityData, removeDraft]);
+    }, [account.descriptor, dispatch, removeDraft]);
 
     const fiatRates = fiat.coins.find(item => item.symbol === account.symbol);
     // NOTE: There is only one fiat currency per provider.
@@ -149,7 +136,7 @@ export const useSavingsSetupContinue = ({
                 });
 
                 if (response) {
-                    saveSavingsTradeResponse(response);
+                    dispatch(saveSavingsTradeResponse(response));
                     switch (response.trade?.status) {
                         case 'ConfirmPaymentInfo':
                             navigateToSavingsPaymentInfo();
@@ -163,13 +150,7 @@ export const useSavingsSetupContinue = ({
                 }
             }
         },
-        [
-            address,
-            navigateToSavingsOverview,
-            navigateToSavingsPaymentInfo,
-            saveSavingsTradeResponse,
-            savingsTrade,
-        ],
+        [address, dispatch, navigateToSavingsOverview, navigateToSavingsPaymentInfo, savingsTrade],
     );
 
     const canConfirmSetup =
@@ -187,7 +168,7 @@ export const useSavingsSetupContinue = ({
 
     return {
         ...methods,
-        register: register as (rules?: TypedValidationRules) => (ref: any) => void,
+        register,
         onSubmit,
         annualSavingsCryptoAmount,
         annualSavingsFiatAmount,

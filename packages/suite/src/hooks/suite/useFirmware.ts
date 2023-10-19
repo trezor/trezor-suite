@@ -1,31 +1,41 @@
-import * as firmwareActions from '@firmware-actions/firmwareActions';
-import { useActions, useSelector } from '@suite-hooks';
-import { isWebUsb } from '@suite-utils/transport';
-import { MODAL } from '@suite/actions/suite/constants';
+import { useDispatch } from 'react-redux';
+
+import {
+    checkFirmwareAuthenticity,
+    firmwareCustom,
+    firmwareUpdate,
+    selectFirmware,
+    firmwareActions,
+} from '@suite-common/wallet-core';
+import { FirmwareStatus } from '@suite-common/suite-types';
+
+import { useActions, useSelector } from 'src/hooks/suite';
+import { isWebUsb } from 'src/utils/suite/transport';
+import { MODAL } from 'src/actions/suite/constants';
 
 export const useFirmware = () => {
-    const { firmware, transport, modal } = useSelector(state => ({
-        firmware: state.firmware,
-        modal: state.modal,
-        transport: state.suite.transport,
-    }));
+    const dispatch = useDispatch();
+    const firmware = useSelector(selectFirmware);
+    const transport = useSelector(state => state.suite.transport);
+    const modal = useSelector(state => state.modal);
 
     const showFingerprintCheck =
         modal.context === MODAL.CONTEXT_DEVICE &&
         modal.windowType === 'ButtonRequest_FirmwareCheck';
 
     const actions = useActions({
-        toggleHasSeed: firmwareActions.toggleHasSeed,
-        setStatus: firmwareActions.setStatus,
-        firmwareUpdate: firmwareActions.firmwareUpdate,
-        firmwareCustom: firmwareActions.firmwareCustom,
-        resetReducer: firmwareActions.resetReducer,
-        checkFirmwareAuthenticity: firmwareActions.checkFirmwareAuthenticity,
+        firmwareUpdate,
+        firmwareCustom,
+        checkFirmwareAuthenticity,
     });
 
     return {
         ...firmware,
         ...actions,
+        toggleHasSeed: () => dispatch(firmwareActions.toggleHasSeed()),
+        setStatus: (status: FirmwareStatus | 'error') =>
+            dispatch(firmwareActions.setStatus(status)),
+        resetReducer: () => dispatch(firmwareActions.resetReducer()),
         isWebUSB: isWebUsb(transport),
         showFingerprintCheck,
     };

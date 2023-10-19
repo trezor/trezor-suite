@@ -16,12 +16,17 @@ import type {
 import { getFieldType, parseArrayType, encodeData } from './ethereum/ethereumSignTypedData';
 import { messageToHex } from '../utils/formatUtils';
 import { getEthereumDefinitions } from './ethereum/ethereumDefinitions';
+import type { EthereumNetworkInfo } from '../types';
+import type { EthereumDefinitions } from '@trezor/protobuf/lib/messages';
+import { DeviceModelInternal } from '../types';
 
 type Params = (
     | Omit<EthereumSignTypedDataParams<EthereumSignTypedDataTypes>, 'path'>
     | Omit<EthereumSignTypedHashParams<EthereumSignTypedDataTypes>, 'path'>
 ) & {
     address_n: number[];
+    network?: EthereumNetworkInfo;
+    definitions?: EthereumDefinitions;
 };
 export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignTypedData', Params> {
     init() {
@@ -32,10 +37,10 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
         // validate incoming parameters
         validateParams(payload, [
             { name: 'path', required: true },
-            // model T
+            // T2T1
             { name: 'metamask_v4_compat', type: 'boolean', required: true },
             { name: 'data', type: 'object', required: true },
-            // model One (optional params)
+            // T1B1 (optional params)
             { name: 'domain_separator_hash', type: 'string' },
             { name: 'message_hash', type: 'string' },
         ]);
@@ -44,12 +49,11 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
         const network = getEthereumNetwork(path);
         this.firmwareRange = getFirmwareRange(this.name, network, this.firmwareRange);
 
-        this.info = getNetworkLabel('Sign #NETWORK typed data', network);
-
         this.params = {
             address_n: path,
             metamask_v4_compat: payload.metamask_v4_compat,
             data: payload.data,
+            network,
         };
 
         if (payload.domain_separator_hash) {
@@ -91,18 +95,27 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
         }
     }
 
-    async run() {
-        const cmd = this.device.getCommands();
-        const { address_n } = this.params;
+    async initAsync() {
+        if (this.params.network) return;
 
-        const network = getEthereumNetwork(address_n);
+        const { address_n } = this.params;
         const slip44 = getSlip44ByPath(address_n);
-        const definitions = await getEthereumDefinitions({
-            chainId: network?.chainId,
+        this.params.definitions = await getEthereumDefinitions({
             slip44,
         });
+    }
 
-        if (this.device.features.model === '1') {
+    get info() {
+        return getNetworkLabel(
+            'Sign #NETWORK typed data',
+            getEthereumNetwork(this.params.address_n),
+        );
+    }
+
+    async run() {
+        const cmd = this.device.getCommands();
+        const { address_n, definitions } = this.params;
+        if (this.device.features.internal_model === DeviceModelInternal.T1B1) {
             validateParams(this.params, [
                 { name: 'domain_separator_hash', type: 'string', required: true },
                 { name: 'message_hash', type: 'string' },
@@ -110,13 +123,7 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
 
             const { domain_separator_hash, message_hash } = this.params;
 
-            const definitionParams = {
-                ...(definitions.encoded_network && {
-                    encoded_network: definitions.encoded_network,
-                }),
-            };
-
-            // For Model 1 we use EthereumSignTypedHash
+            // For T1B1 we use EthereumSignTypedHash
             const response = await cmd.typedCall(
                 'EthereumSignTypedHash',
                 'EthereumTypedDataSignature',
@@ -124,7 +131,7 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
                     address_n,
                     domain_separator_hash: domain_separator_hash as string, // TODO: https://github.com/trezor/trezor-suite/issues/5297
                     message_hash,
-                    ...definitionParams,
+                    encoded_network: definitions?.encoded_network,
                 },
             );
 
@@ -138,7 +145,7 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
         const { data, metamask_v4_compat } = this.params;
         const { types, primaryType, domain, message } = data;
 
-        // For Model T we use EthereumSignTypedData
+        // For T2T1, T2B1 we use EthereumSignTypedData
         let response = await cmd.typedCall(
             'EthereumSignTypedData',
             [

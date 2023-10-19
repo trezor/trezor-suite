@@ -2,9 +2,8 @@ import path from 'path';
 import webpack from 'webpack';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import TerserPlugin from 'terser-webpack-plugin';
-import SentryWebpackPlugin from '@sentry/webpack-plugin';
+import { sentryWebpackPlugin } from '@sentry/webpack-plugin';
 
-import alias from '../utils/alias';
 import {
     assetPrefix,
     project,
@@ -12,7 +11,7 @@ import {
     isAnalyzing,
     isCodesignBuild,
     sentryAuthToken,
-    publicKey,
+    jwsPublicKey,
 } from '../utils/env';
 import { getRevision } from '../utils/git';
 import { getPathForProject } from '../utils/path';
@@ -42,7 +41,9 @@ const config: webpack.Configuration = {
     resolve: {
         extensions: ['.ts', '.tsx', '.js', '.jsx'],
         modules: ['node_modules'],
-        alias,
+        alias: {
+            src: path.resolve(__dirname, '../../suite/src/'),
+        },
         fallback: {
             // Polyfills crypto API for NodeJS libraries in the browser. 'crypto' does not run without 'stream'
             crypto: require.resolve('crypto-browserify'),
@@ -55,6 +56,8 @@ const config: webpack.Configuration = {
             os: false,
             path: false,
             https: false,
+            http: false,
+            zlib: false,
         },
     },
     optimization: {
@@ -110,7 +113,15 @@ const config: webpack.Configuration = {
                     loader: 'babel-loader',
                     options: {
                         cacheDirectory: true,
-                        presets: ['@babel/preset-react', '@babel/preset-typescript'],
+                        presets: [
+                            [
+                                '@babel/preset-react',
+                                {
+                                    runtime: 'automatic',
+                                },
+                            ],
+                            '@babel/preset-typescript',
+                        ],
                         plugins: [
                             '@babel/plugin-proposal-class-properties',
                             [
@@ -166,9 +177,11 @@ const config: webpack.Configuration = {
             'process.env.VERSION': JSON.stringify(suiteVersion),
             'process.env.COMMITHASH': JSON.stringify(gitRevision),
             'process.env.ASSET_PREFIX': JSON.stringify(assetPrefix),
-            'process.env.PUBLIC_KEY': JSON.stringify(publicKey),
+            'process.env.JWS_PUBLIC_KEY': JSON.stringify(jwsPublicKey),
             'process.env.CODESIGN_BUILD': isCodesignBuild,
             'process.env.SENTRY_RELEASE': JSON.stringify(sentryRelease),
+            __SENTRY_DEBUG__: isDev,
+            __SENTRY_TRACING__: false, // needs to be removed when we introduce performance monitoring in trezor-suite
         }),
         new webpack.ProvidePlugin({
             Buffer: ['buffer', 'Buffer'],
@@ -184,14 +197,15 @@ const config: webpack.Configuration = {
             : []),
         ...(!isDev && sentryAuthToken
             ? [
-                  new SentryWebpackPlugin({
-                      authToken: sentryAuthToken,
+                  sentryWebpackPlugin({
                       org: 'satoshilabs',
                       project: 'trezor-suite',
-                      release: sentryRelease,
-                      include: path.join(getPathForProject(project), 'build'),
-                      ignore: ['static/connect'], // connect does not contain source maps for now
-                      cleanArtifacts: true,
+                      authToken: sentryAuthToken,
+                      release: { name: sentryRelease, cleanArtifacts: true },
+                      sourcemaps: {
+                          assets: path.join(getPathForProject(project), 'build'),
+                          ignore: ['static/connect'], // connect does not contain source maps for now
+                      },
                   }),
               ]
             : []),

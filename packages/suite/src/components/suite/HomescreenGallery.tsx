@@ -1,30 +1,25 @@
-import React from 'react';
 import styled from 'styled-components';
 import { analytics, EventType } from '@trezor/suite-analytics';
-import { resolveStaticPath } from '@trezor/utils';
+import { resolveStaticPath } from '@suite-common/suite-utils';
 
-import { homescreensBW64x128, homescreensColor240x240 } from '@suite-constants/homescreens';
-import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
-import { imagePathToHex } from '@suite-utils/homescreen';
-import { useActions, useDevice } from '@suite-hooks';
-import { DeviceModel, getDeviceModel } from '@trezor/device-utils';
+import { homescreens } from 'src/constants/suite/homescreens';
+import { applySettings } from 'src/actions/settings/deviceSettingsActions';
+import { imagePathToHex } from 'src/utils/suite/homescreen';
+import { useDevice, useDispatch } from 'src/hooks/suite';
+import { DeviceModelInternal } from '@trezor/connect';
 
-type AnyImageName = (typeof homescreensBW64x128)[number] | (typeof homescreensColor240x240)[number];
+type AnyImageName = (typeof homescreens)[keyof typeof homescreens][number];
 
 const Wrapper = styled.div`
     display: flex;
     justify-content: center;
 `;
 
-const BackgroundGalleryWrapper64x128 = styled.div`
+const BackgroundGalleryWrapper = styled.div`
     display: flex;
     gap: 10px;
     justify-content: center;
     flex-wrap: wrap;
-`;
-
-const BackgroundGalleryWrapper240x240 = styled(BackgroundGalleryWrapper64x128)`
-    width: 400px;
 `;
 
 const BackgroundImageBW64x128 = styled.img`
@@ -44,18 +39,22 @@ type HomescreenGalleryProps = {
 };
 
 export const HomescreenGallery = ({ onConfirm }: HomescreenGalleryProps) => {
+    const dispatch = useDispatch();
     const { device, isLocked } = useDevice();
-    const { applySettings } = useActions({ applySettings: deviceSettingsActions.applySettings });
-    const deviceModel = getDeviceModel(device);
 
-    if (!deviceModel) return null;
+    const deviceModelInternal = device?.features?.internal_model;
+
+    if (!deviceModelInternal) return null;
 
     const setHomescreen = async (imagePath: string, image: AnyImageName) => {
         if (isLocked()) return;
 
-        const hex = await imagePathToHex(imagePath, deviceModel);
+        // original image is the default image already available in device, set it by empty string
+        const isOriginalImage = image === `original_${deviceModelInternal.toLowerCase()}`;
 
-        applySettings({ homescreen: hex });
+        const hex = isOriginalImage ? '' : await imagePathToHex(imagePath, deviceModelInternal);
+
+        dispatch(applySettings({ homescreen: hex }));
 
         if (onConfirm) {
             onConfirm();
@@ -71,9 +70,9 @@ export const HomescreenGallery = ({ onConfirm }: HomescreenGalleryProps) => {
 
     return (
         <Wrapper>
-            {[DeviceModel.T1, DeviceModel.TR].includes(deviceModel) && (
-                <BackgroundGalleryWrapper64x128>
-                    {homescreensBW64x128.map(image => (
+            {[DeviceModelInternal.T1B1, DeviceModelInternal.T2B1].includes(deviceModelInternal) && (
+                <BackgroundGalleryWrapper>
+                    {homescreens[deviceModelInternal].map(image => (
                         <BackgroundImageBW64x128
                             data-test={`@modal/gallery/bw_64x128/${image}`}
                             key={image}
@@ -84,11 +83,11 @@ export const HomescreenGallery = ({ onConfirm }: HomescreenGalleryProps) => {
                             src={resolveStaticPath(`images/homescreens/BW_64x128/${image}.png`)}
                         />
                     ))}
-                </BackgroundGalleryWrapper64x128>
+                </BackgroundGalleryWrapper>
             )}
-            {deviceModel === DeviceModel.TT && (
-                <BackgroundGalleryWrapper240x240>
-                    {homescreensColor240x240.map(image => (
+            {deviceModelInternal === DeviceModelInternal.T2T1 && (
+                <BackgroundGalleryWrapper>
+                    {homescreens[deviceModelInternal].map(image => (
                         <BackgroundImageColor240x240
                             data-test={`@modal/gallery/color_240x240/${image}`}
                             key={image}
@@ -99,7 +98,7 @@ export const HomescreenGallery = ({ onConfirm }: HomescreenGalleryProps) => {
                             src={resolveStaticPath(`images/homescreens/COLOR_240x240/${image}.jpg`)}
                         />
                     ))}
-                </BackgroundGalleryWrapper240x240>
+                </BackgroundGalleryWrapper>
             )}
         </Wrapper>
     );

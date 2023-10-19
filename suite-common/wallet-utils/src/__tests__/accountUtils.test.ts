@@ -153,6 +153,7 @@ describe('account utils', () => {
 
     it('isTestnet', () => {
         expect(isTestnet('test')).toEqual(true);
+        expect(isTestnet('tsep')).toEqual(true);
         expect(isTestnet('tgor')).toEqual(true);
         expect(isTestnet('txrp')).toEqual(true);
         expect(isTestnet('btc')).toEqual(false);
@@ -186,12 +187,12 @@ describe('account utils', () => {
             accountType: 'legacy',
             metadata: {
                 key: 'xpub-foo-bar',
-                fileName: '123',
-                aesKey: 'foo',
-                accountLabel: 'meow',
-                outputLabels: {},
-                addressLabels: {},
+                1: {
+                    fileName: '123',
+                    aesKey: 'foo',
+                },
             },
+            accountLabel: 'meow',
         });
 
         expect(accountSearchFn(btcAcc, 'btc')).toBe(true);
@@ -210,6 +211,7 @@ describe('account utils', () => {
         expect(accountSearchFn(btcAcc, 'ltc')).toBe(false);
         expect(accountSearchFn(btcAcc, 'litecoin')).toBe(false);
         expect(accountSearchFn(btcAcc, 'meow')).toBe(true);
+        expect(accountSearchFn(btcAcc, 'wuff', undefined, 'wuff')).toBe(true);
         expect(accountSearchFn(btcAcc, 'meo')).toBe(true);
         expect(accountSearchFn(btcAcc, 'eow')).toBe(true);
         expect(accountSearchFn(btcAcc, 'MEOW')).toBe(true);
@@ -245,7 +247,7 @@ describe('account utils', () => {
         expect(getNetworkFeatures(btcAcc)).toEqual(['rbf', 'sign-verify', 'amount-unit']);
         expect(getNetworkFeatures(btcTaprootAcc)).toEqual(['rbf', 'amount-unit']);
         expect(getNetworkFeatures(ethAcc)).toEqual(['rbf', 'sign-verify', 'tokens']);
-        expect(getNetworkFeatures(coinjoinAcc)).toEqual(['amount-unit']);
+        expect(getNetworkFeatures(coinjoinAcc)).toEqual(['rbf', 'amount-unit']);
     });
 
     it('hasNetworkFeatures', () => {

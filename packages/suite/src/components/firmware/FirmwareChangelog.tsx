@@ -1,13 +1,13 @@
-import React from 'react';
 import styled from 'styled-components';
 
-import { Translation, TrezorLink } from '@suite-components';
-import { getChangelogUrl } from '@suite-utils/device';
+import { getChangelogUrl } from '@suite-common/suite-utils';
 import { Button, variables } from '@trezor/components';
-import { AcquiredDevice } from '@suite-types/index';
+
+import { Translation, TrezorLink } from 'src/components/suite';
+import { AcquiredDevice } from 'src/types/suite/index';
 
 const Wrapper = styled.div`
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     max-height: 360px;
     min-width: 305px;
     overflow: auto;

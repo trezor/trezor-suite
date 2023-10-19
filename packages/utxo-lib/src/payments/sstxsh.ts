@@ -3,7 +3,7 @@ import * as bs58check from '../bs58check';
 import { decred as DECRED_NETWORK } from '../networks';
 import * as bscript from '../script';
 import * as lazy from './lazy';
-import type { Payment, PaymentOpts } from './index';
+import { Payment, PaymentOpts } from '../types';
 
 const { OPS } = bscript;
 
@@ -26,7 +26,7 @@ export function sstxsh(a: Payment, opts?: PaymentOpts): Payment {
     );
 
     const network = a.network || DECRED_NETWORK;
-    const o = { name: 'sstxsh', network } as Payment;
+    const o: Payment = { name: 'sstxsh', network };
     const _address = lazy.value(() => bs58check.decodeAddress(a.address!, network));
 
     lazy.prop(o, 'address', () => {
@@ -34,7 +34,7 @@ export function sstxsh(a: Payment, opts?: PaymentOpts): Payment {
         return bs58check.encodeAddress(o.hash, network.scriptHash, network);
     });
     lazy.prop(o, 'hash', () => {
-        if (a.output) return a.output.slice(3, 23);
+        if (a.output) return a.output.subarray(3, 23);
         if (a.address) return _address().hash;
     });
     lazy.prop(o, 'output', () => {
@@ -44,7 +44,7 @@ export function sstxsh(a: Payment, opts?: PaymentOpts): Payment {
 
     // extended validation
     if (opts.validate) {
-        let hash: Buffer = Buffer.from([]);
+        let hash = Buffer.from([]);
         if (a.address) {
             const { version, hash: aHash } = _address();
             if (version !== network.scriptHash)
@@ -66,7 +66,7 @@ export function sstxsh(a: Payment, opts?: PaymentOpts): Payment {
             )
                 throw new TypeError('sstxsh output is invalid');
 
-            const hash2 = a.output.slice(3, 23);
+            const hash2 = a.output.subarray(3, 23);
             if (hash.length > 0 && !hash.equals(hash2)) throw new TypeError('Hash mismatch');
         }
     }

@@ -1,11 +1,14 @@
 import { useState, useCallback, useMemo } from 'react';
-import { ActionAvailability, CardanoStaking } from '@wallet-types/cardanoStaking';
-import { SUITE } from '@suite-actions/constants';
-import trezorConnect, { PROTO } from '@trezor/connect';
-import { useActions, useSelector } from '@suite-hooks';
+
+import { isTestnet, getDerivationType } from '@suite-common/wallet-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import * as cardanoStakingActions from '@wallet-actions/cardanoStakingActions';
-import { isTestnet } from '@suite-common/wallet-utils';
+import trezorConnect, { PROTO } from '@trezor/connect';
+import { addFakePendingCardanoTxThunk, selectDevice } from '@suite-common/wallet-core';
+
+import { ActionAvailability, CardanoStaking } from 'src/types/wallet/cardanoStaking';
+import { SUITE } from 'src/actions/suite/constants';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { setPendingStakeTx } from 'src/actions/wallet/cardanoStakingActions';
 import {
     getStakingPath,
     getProtocolMagic,
@@ -17,13 +20,11 @@ import {
     getStakePoolForDelegation,
     getTtl,
     loadCardanoLib,
-    getDerivationType,
-} from '@wallet-utils/cardanoUtils';
-import { AppState } from '@suite-types';
-import { addFakePendingCardanoTxThunk } from '@suite-common/wallet-core';
+} from 'src/utils/wallet/cardanoUtils';
+import { AppState } from 'src/types/suite';
 
 const getDeviceAvailability = (
-    device: AppState['suite']['device'],
+    device: AppState['device']['selectedDevice'],
     locks: AppState['suite']['locks'],
 ) => {
     // Handle all external cases where it is not possible to make delegate or withdrawal action
@@ -62,17 +63,11 @@ export const useCardanoStaking = (): CardanoStaking => {
         throw Error('useCardanoStaking used for other network');
     }
 
-    const { device, locks, pendingStakeTxs, cardanoStaking } = useSelector(state => ({
-        device: state.suite.device,
-        locks: state.suite.locks,
-        pendingStakeTxs: state.wallet.cardanoStaking.pendingTx,
-        cardanoStaking: state.wallet.cardanoStaking,
-    }));
-    const { addToast, setPendingStakeTx, addFakePendingCardanoTx } = useActions({
-        addToast: notificationsActions.addToast,
-        setPendingStakeTx: cardanoStakingActions.setPendingStakeTx,
-        addFakePendingCardanoTx: addFakePendingCardanoTxThunk,
-    });
+    const device = useSelector(selectDevice);
+    const locks = useSelector(state => state.suite.locks);
+    const cardanoStaking = useSelector(state => state.wallet.cardanoStaking);
+    const dispatch = useDispatch();
+
     const [deposit, setDeposit] = useState<undefined | string>(undefined);
     const [fee, setFee] = useState<undefined | string>(undefined);
     const [loading, setLoading] = useState<boolean>(false);
@@ -88,7 +83,7 @@ export const useCardanoStaking = (): CardanoStaking => {
     });
     const [error, setError] = useState<string | undefined>(undefined);
     const stakingPath = getStakingPath(account);
-    const pendingStakeTx = pendingStakeTxs.find(tx => tx.accountKey === account.key);
+    const pendingStakeTx = cardanoStaking.pendingTx.find(tx => tx.accountKey === account.key);
 
     const {
         rewards: rewardsAmount,
@@ -220,10 +215,12 @@ export const useCardanoStaking = (): CardanoStaking => {
 
             if (!res.success) {
                 if (res.payload.error === 'tx-cancelled') return;
-                addToast({
-                    type: 'sign-tx-error',
-                    error: res.payload.error,
-                });
+                dispatch(
+                    notificationsActions.addToast({
+                        type: 'sign-tx-error',
+                        error: res.payload.error,
+                    }),
+                );
             } else {
                 const signedTx = trezorUtils.signTransaction(
                     txPlan.tx.body,
@@ -239,21 +236,27 @@ export const useCardanoStaking = (): CardanoStaking => {
 
                 if (sentTx.success) {
                     const { txid } = sentTx.payload;
-                    addToast({
-                        type: 'raw-tx-sent',
-                        txid,
-                    });
-                    addFakePendingCardanoTx({ precomposedTx: txPlan, txid, account });
-                    setPendingStakeTx(account, txid);
+                    dispatch(
+                        notificationsActions.addToast({
+                            type: 'raw-tx-sent',
+                            txid,
+                        }),
+                    );
+                    dispatch(
+                        addFakePendingCardanoTxThunk({ precomposedTx: txPlan, txid, account }),
+                    );
+                    dispatch(setPendingStakeTx(account, txid));
                 } else {
-                    addToast({
-                        type: 'sign-tx-error',
-                        error: sentTx.payload.error,
-                    });
+                    dispatch(
+                        notificationsActions.addToast({
+                            type: 'sign-tx-error',
+                            error: sentTx.payload.error,
+                        }),
+                    );
                 }
             }
         },
-        [account, addFakePendingCardanoTx, addToast, device, prepareTxPlan, setPendingStakeTx],
+        [account, device, dispatch, prepareTxPlan],
     );
 
     const action = useCallback(
@@ -270,23 +273,27 @@ export const useCardanoStaking = (): CardanoStaking => {
                     error.code === 'UTXO_BALANCE_INSUFFICIENT'
                 ) {
                     setError('AMOUNT_IS_NOT_ENOUGH');
-                    addToast({
-                        type:
-                            action === 'delegate'
-                                ? 'cardano-delegate-error'
-                                : 'cardano-withdrawal-error',
-                        error: error.code,
-                    });
+                    dispatch(
+                        notificationsActions.addToast({
+                            type:
+                                action === 'delegate'
+                                    ? 'cardano-delegate-error'
+                                    : 'cardano-withdrawal-error',
+                            error: error.code,
+                        }),
+                    );
                 } else {
-                    addToast({
-                        type: 'sign-tx-error',
-                        error: error.message,
-                    });
+                    dispatch(
+                        notificationsActions.addToast({
+                            type: 'sign-tx-error',
+                            error: error.message,
+                        }),
+                    );
                 }
             }
             setLoading(false);
         },
-        [addToast, signAndPushTransaction],
+        [dispatch, signAndPushTransaction],
     );
 
     const delegate = useCallback(() => action('delegate'), [action]);

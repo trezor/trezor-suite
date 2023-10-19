@@ -1,4 +1,5 @@
 import type { TickerId, TimestampedRates, LastWeekRates } from '@suite-common/wallet-types';
+import { FiatCurrencyCode } from '@suite-common/suite-config';
 
 import * as coingeckoService from './coingecko';
 import * as blockbookService from './blockbook';
@@ -14,7 +15,7 @@ export const fetchCurrentFiatRates = async (ticker: TickerId): Promise<Timestamp
 
 export const fetchLastWeekFiatRates = async (
     ticker: TickerId,
-    currency: string,
+    currency: FiatCurrencyCode,
 ): Promise<LastWeekRates | null> => {
     const res = blockbookService.isTickerSupported(ticker)
         ? await blockbookService.fetchLastWeekRates(ticker.symbol, currency)
@@ -25,9 +26,10 @@ export const fetchLastWeekFiatRates = async (
 export const getFiatRatesForTimestamps = async (
     ticker: TickerId,
     timestamps: number[],
+    currency: FiatCurrencyCode,
 ): Promise<LastWeekRates | null> => {
     const res = blockbookService.isTickerSupported(ticker)
-        ? await blockbookService.getFiatRatesForTimestamps(ticker.symbol, timestamps)
+        ? await blockbookService.getFiatRatesForTimestamps(ticker.symbol, timestamps, currency)
         : null;
-    return res ?? coingeckoService.getFiatRatesForTimestamps(ticker, timestamps);
+    return res ?? coingeckoService.getFiatRatesForTimestamps(ticker, timestamps, currency);
 };

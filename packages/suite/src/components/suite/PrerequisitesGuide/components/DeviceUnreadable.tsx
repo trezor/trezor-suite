@@ -1,20 +1,19 @@
-import React, { useState } from 'react';
+import { useState, MouseEvent } from 'react';
 import { Button } from '@trezor/components';
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { isDesktop } from '@suite-utils/env';
-import { Translation, TroubleshootingTips } from '@suite-components';
-import UdevDownload from '@suite-components/UdevDownload';
+import { isDesktop, isLinux } from '@trezor/env-utils';
+import { Translation, TroubleshootingTips } from 'src/components/suite';
+import UdevDownload from 'src/components/suite/UdevDownload';
 import {
     TROUBLESHOOTING_TIP_BRIDGE_STATUS,
     TROUBLESHOOTING_TIP_BRIDGE_INSTALL,
     TROUBLESHOOTING_TIP_CABLE,
     TROUBLESHOOTING_TIP_USB,
     TROUBLESHOOTING_TIP_DIFFERENT_COMPUTER,
-} from '@suite-components/TroubleshootingTips/tips';
-import { useActions } from '@suite-hooks';
+} from 'src/components/suite/TroubleshootingTips/tips';
+import { useDispatch } from 'src/hooks/suite';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import type { TrezorDevice } from '@suite-types';
-import { isLinux } from '@trezor/env-utils';
+import type { TrezorDevice } from 'src/types/suite';
 
 // linux web
 const UdevWeb = () => (
@@ -40,11 +39,9 @@ const UdevWeb = () => (
 const UdevDesktop = () => {
     const [response, setResponse] = useState(-1);
 
-    const { addToast } = useActions({
-        addToast: notificationsActions.addToast,
-    });
+    const dispatch = useDispatch();
 
-    const handleCtaClick = async (event: React.MouseEvent) => {
+    const handleCtaClick = async (event: MouseEvent) => {
         event.preventDefault();
         event.stopPropagation();
 
@@ -53,10 +50,12 @@ const UdevDesktop = () => {
         if (resp?.success) {
             setResponse(1);
         } else {
-            addToast({
-                type: 'error',
-                error: resp?.error || 'desktopApi not available',
-            });
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'error',
+                    error: resp?.error || 'desktopApi not available',
+                }),
+            );
 
             setResponse(0);
         }

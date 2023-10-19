@@ -1,6 +1,6 @@
 {
     "name": "@trezor/trezor-user-env-link",
-    "version": "1.0.0",
+    "version": "1.0.2",
     "license": "See LICENSE.md in repo root",
     "sideEffects": false,
     "main": "src/index",
@@ -10,7 +10,7 @@
     },
     "dependencies": {
         "@trezor/utils": "workspace:*",
-        "cross-fetch": "^3.1.5",
+        "cross-fetch": "^3.1.6",
         "ws": "7.5.9"
     }
 }

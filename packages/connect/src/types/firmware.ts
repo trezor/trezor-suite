@@ -9,14 +9,14 @@ export interface FirmwareRange {
     };
 }
 
-export type VersionArray = [1 | 2, number, number];
+export type VersionArray = [number, number, number];
 
 export type FirmwareRelease = {
     required: boolean;
     url: string;
     fingerprint: string;
     changelog: string;
-    min_bridge_version: [number, number, number];
+    min_bridge_version: VersionArray;
     version: VersionArray;
     min_firmware_version: VersionArray;
     min_bootloader_version: VersionArray;

@@ -1,8 +1,9 @@
+import { bufferUtils } from '@trezor/utils';
 import {
     payments,
     address as baddress,
     script as bscript,
-    bufferutils,
+    bufferutils as bUtils,
     Network,
 } from '@trezor/utxo-lib';
 
@@ -92,10 +93,10 @@ export const getExternalOutputSize = (scriptPubKey: string) => {
 
 // read index, hash and txid from input `outpoint`
 export const readOutpoint = (outpoint: string) => {
-    const reader = new bufferutils.BufferReader(Buffer.from(outpoint, 'hex'));
+    const reader = new bUtils.BufferReader(Buffer.from(outpoint, 'hex'));
     const txid = reader.readSlice(32);
     const index = reader.readUInt32();
-    const hash = bufferutils.reverseBuffer(txid).toString('hex');
+    const hash = bUtils.reverseBuffer(txid).toString('hex');
     return { index, hash, txid: txid.toString('hex') };
 };
 
@@ -117,43 +118,38 @@ const compareByteArray = (left: Buffer, right: Buffer) => {
 // merge outputs with the same scriptPubKey's
 export const mergePubkeys = (outputs: CoinjoinOutputAddedEvent[]) =>
     outputs.reduce((a, item) => {
-        const duplicates = outputs.filter(o => o.output.scriptPubKey === item.output.scriptPubKey);
+        const duplicates = outputs.filter(o => o.Output.ScriptPubKey === item.Output.ScriptPubKey);
         if (duplicates.length > 1) {
-            if (a.find(o => o.output.scriptPubKey === item.output.scriptPubKey)) return a;
-            const value = duplicates.reduce((v, b) => v + b.output.value, 0);
-            return a.concat({ ...item, output: { ...item.output, value } });
+            if (a.find(o => o.Output.ScriptPubKey === item.Output.ScriptPubKey)) return a;
+            const Value = duplicates.reduce((v, b) => v + b.Output.Value, 0);
+            return a.concat({ ...item, Output: { ...item.Output, Value } });
         }
         return a.concat(item);
     }, [] as CoinjoinOutputAddedEvent[]);
 
 // WalletWasabi/WalletWasabi/WabiSabi/Models/MultipartyTransaction/SigningState.cs
 export const sortInputs = (a: CoinjoinInput, b: CoinjoinInput) => {
-    if (a.txOut.value === b.txOut.value) {
-        return compareByteArray(Buffer.from(a.outpoint), Buffer.from(b.outpoint));
+    if (a.TxOut.Value === b.TxOut.Value) {
+        return compareByteArray(Buffer.from(a.Outpoint), Buffer.from(b.Outpoint));
     }
 
-    return b.txOut.value - a.txOut.value;
+    return b.TxOut.Value - a.TxOut.Value;
 };
 
 // WalletWasabi/WalletWasabi/WabiSabi/Models/MultipartyTransaction/SigningState.cs
 export const sortOutputs = (a: CoinjoinOutput, b: CoinjoinOutput) => {
-    if (a.value === b.value)
-        return compareByteArray(Buffer.from(a.scriptPubKey), Buffer.from(b.scriptPubKey));
-    return b.value - a.value;
+    if (a.Value === b.Value)
+        return compareByteArray(Buffer.from(a.ScriptPubKey), Buffer.from(b.ScriptPubKey));
+    return b.Value - a.Value;
 };
 
 // Transform transaction signature to witness, based on @trezor/utxo-lib/Transaction.getWitness
 // bip-0141 format: chunks size + (chunk[i].size + chunk[i]),
 export const getWitnessFromSignature = (signature: string) => {
     const chunks = [Buffer.from(signature, 'hex')]; // NOTE: Trezor signature = only one chunk
-    const getChunkSize = (n: number) => {
-        const buf = Buffer.allocUnsafe(1);
-        buf.writeUInt8(n);
-        return buf;
-    };
     const prefixedChunks = chunks.reduce(
-        (arr, chunk) => arr.concat([getChunkSize(chunk.length), chunk]),
-        [getChunkSize(chunks.length)],
+        (arr, chunk) => arr.concat([bufferUtils.getChunkSize(chunk.length), chunk]),
+        [bufferUtils.getChunkSize(chunks.length)],
     );
 
     return Buffer.concat(prefixedChunks).toString('hex');

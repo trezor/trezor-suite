@@ -1,4 +1,5 @@
-import { Environment } from '@trezor/analytics';
+import { DeviceModelInternal } from '@trezor/connect';
+import { Environment } from '@trezor/env-utils';
 
 /**
  * A group of Guide content.
@@ -58,7 +59,7 @@ export interface UserData {
     suite_version: string;
     suite_revision: string;
     window_dimensions: string;
-    device_model: string;
+    device_model?: DeviceModelInternal;
     firmware_version: string;
     firmware_revision: string;
     firmware_type: string;

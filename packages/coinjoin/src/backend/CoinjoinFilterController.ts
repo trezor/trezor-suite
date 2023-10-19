@@ -1,13 +1,16 @@
-import { PROGRESS_BATCH_SIZE_MIN, PROGRESS_BATCH_SIZE_MAX } from '../constants';
+import { createCooldown } from '@trezor/utils';
+
+import { PROGRESS_INFO_COOLDOWN } from '../constants';
 import type {
     FilterClient,
-    FilterController,
     FilterControllerParams,
     FilterControllerContext,
 } from '../types/backend';
 import type { CoinjoinBackendSettings } from '../types';
 
-export class CoinjoinFilterController implements FilterController {
+export type FilterController = Pick<CoinjoinFilterController, 'getFilterIterator'>;
+
+export class CoinjoinFilterController {
     private readonly client;
     private readonly batchSize;
     private readonly baseBlock;
@@ -24,23 +27,11 @@ export class CoinjoinFilterController implements FilterController {
         };
     }
 
-    /**
-     * Returns function which calculates progress for given block height and returns it whenever it changes by 1 %
-     * (clamped by PROGRESS_BATCH_SIZE_MIN so progress is not signalled too often and PROGRESS_BATCH_SIZE_MAX so
-     * there isn't too big gap between two progress signallings), or undefined when the change is smaller.
-     * First block progress is always signalled (required for handling reorgs properly)
-     */
-    private getProgressHandler(baseHeight: number, bestHeight: number) {
-        const blockCount = bestHeight - baseHeight;
-        const percent = Math.ceil(blockCount / 100);
-        const batch = Math.min(Math.max(percent, PROGRESS_BATCH_SIZE_MIN), PROGRESS_BATCH_SIZE_MAX);
-        return (height: number) => {
-            const count = height - baseHeight;
-            return count % batch === 1 ? count / blockCount : undefined;
-        };
-    }
-
-    async *getFilterIterator(params: FilterControllerParams, context?: FilterControllerContext) {
+    async *getFilterIterator(
+        params: FilterControllerParams,
+        { abortSignal, onProgressInfo }: FilterControllerContext = {},
+    ) {
+        const batchSize = params?.batchSize ?? this.batchSize;
         const [latestCheckpoint, ...olderCheckpoints] = params?.checkpoints?.length
             ? params.checkpoints
             : [this.baseBlock];
@@ -48,11 +39,15 @@ export class CoinjoinFilterController implements FilterController {
         const fetchFilterBatch = async ({ blockHeight, blockHash }: typeof latestCheckpoint) => ({
             height: blockHeight,
             hash: blockHash,
-            response: await this.client.fetchFilters(
-                blockHash,
-                params?.batchSize ?? this.batchSize,
-                { signal: context?.abortSignal },
-            ),
+            response: await this.client.fetchBlockFilters(blockHash, batchSize, {
+                signal: abortSignal,
+            }),
+        });
+
+        onProgressInfo?.({
+            stage: 'block',
+            activity: 'fetch',
+            batchFrom: latestCheckpoint.blockHeight,
         });
 
         // Try to fetch filters from the latest checkpoint
@@ -70,14 +65,46 @@ export class CoinjoinFilterController implements FilterController {
         // Forward phase:
         // If there are filters, iterate over them and fetch subsequent batch
         if (batch.response.status === 'ok') {
-            const getProgress = this.getProgressHandler(batch.height, batch.response.bestHeight);
+            const from = batch.height;
+            const { bestHeight } = await this.client.fetchNetworkInfo({ signal: abortSignal });
+            const progressCooldown = createCooldown(PROGRESS_INFO_COOLDOWN);
             do {
-                const { filters } = batch.response;
-                const nextBatchPromise = fetchFilterBatch(filters[filters.length - 1]);
+                const { filters, M, P, zeroedKey } = batch.response;
+                const [last] = filters.slice(-1);
+
+                // In case of new block mined during the discovery, its height
+                // is used as `to` instead of `bestHeight` from the beginning
+                const to = Math.max(bestHeight, last.blockHeight);
+
+                onProgressInfo?.({
+                    stage: 'block',
+                    activity: 'scan-fetch',
+                    batchFrom: last.blockHeight,
+                });
+
+                const nextBatchPromise = fetchFilterBatch(last).finally(() => {
+                    onProgressInfo?.({
+                        stage: 'block',
+                        activity: 'scan',
+                        batchFrom: last.blockHeight,
+                    });
+                });
                 // eslint-disable-next-line no-restricted-syntax
                 for (const filter of filters) {
-                    yield { ...filter, progress: getProgress(filter.blockHeight) };
+                    const filterParams = { M, P, key: zeroedKey ? undefined : filter.blockHash };
+                    yield { ...filter, filterParams };
+                    if (progressCooldown())
+                        onProgressInfo?.({
+                            stage: 'block',
+                            progress: { from, to, current: filter.blockHeight },
+                        });
                 }
+                onProgressInfo?.({
+                    stage: 'block',
+                    activity: 'fetch',
+                    batchFrom: last.blockHeight,
+                    progress: { from, to, current: last.blockHeight },
+                });
                 // eslint-disable-next-line no-await-in-loop
                 batch = await nextBatchPromise;
             } while (batch.response.status === 'ok');

@@ -1,15 +1,9 @@
 import { CoinjoinBackendClient } from '../../src/backend/CoinjoinBackendClient';
 import { COINJOIN_BACKEND_SETTINGS } from '../fixtures/config.fixture';
 
-const ZERO_HASH = '0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206';
-const TIP_HASH = '66a8baf3fe7e759f4682a2c9780efcbb78a9bd938c95d0114737b3fcef709b82';
-const NONEXISTENT_HASH = 'deadbeef3cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206';
-const MALFORMED_HASH = 'deadbeef';
-
-const VALID_TX = 'd20a1e1f3b98f82dc7aa0fa0538b75be357ab53f2d1c6f68c0be4e7537122f5d';
-const INVALID_TX = 'deadbeef';
-
 const BLOCKBOOKS = ['bb_A', 'bb_B', 'bb_C', 'bb_D', 'bb_E', 'bb_F', 'bb_G'];
+const WS_ERROR_403 = 'Unexpected server response: 403';
+const WS_ERROR_TIMEOUT = 'Websocket timeout';
 
 describe('CoinjoinBackendClient', () => {
     let client: CoinjoinBackendClient;
@@ -21,15 +15,12 @@ describe('CoinjoinBackendClient', () => {
         });
     });
 
-    it.only('blockbook backends rotation', async () => {
+    it('Blockbook backends rotation', async () => {
         let lastBackend = '';
-        (client as any).websockets = {
-            getOrCreate: (url: string) => {
-                [lastBackend] = (url as string).split('/');
-                return new Proxy({}, { get: (_, b) => b !== 'then' && (() => undefined) });
-            },
-            getSocketId: () => undefined,
-        };
+        jest.spyOn((client as any).websockets, 'getOrCreate').mockImplementation(args => {
+            [lastBackend] = (args as any).url.split('/');
+            return new Proxy({}, { get: (_, b, c) => b !== 'then' && (() => c) });
+        });
 
         const shuffledBackends = (client as any).blockbookUrls as string[];
         expect(shuffledBackends.slice().sort()).toEqual(BLOCKBOOKS.slice().sort());
@@ -47,50 +38,74 @@ describe('CoinjoinBackendClient', () => {
         }
     });
 
-    it('fetchFilters success', async () => {
-        const response = await client.fetchFilters(ZERO_HASH, 10);
-        expect(response.status).toBe('ok');
-        expect((response as any).filters.length).toBe(10);
+    it('Blockbook switch identities on 403', async () => {
+        const identities: string[] = [];
+        jest.spyOn((client as any).websockets, 'getOrCreate').mockImplementation(args => {
+            const { identity } = args as any;
+            identities.push(identity);
+            return Promise.reject(new Error(identity === 'is' ? 'unknown' : WS_ERROR_403));
+        });
+
+        await expect(() =>
+            client.fetchBlock(123456, { identity: 'taxation', /* default attempts: 3 */ gap: 0 }),
+        ).rejects.toThrow(WS_ERROR_403);
+        await expect(() =>
+            client.fetchTransaction('txid', { identity: 'is', attempts: 4, gap: 0 }),
+        ).rejects.toThrow('unknown');
+        await expect(() =>
+            client.fetchNetworkInfo({ identity: 'theft', attempts: 2, gap: 0 }),
+        ).rejects.toThrow(WS_ERROR_403);
+
+        expect(identities.length).toBe(9);
+
+        expect(identities[0]).toBe('taxation');
+        identities.slice(1, 3).forEach((id, i, arr) => {
+            expect(id).toMatch(/taxation:[a-zA-Z0-9]+/);
+            expect(arr.indexOf(id)).toBe(i);
+        });
+
+        identities.slice(3, 7).forEach(id => expect(id).toBe('is'));
+
+        expect(identities[7]).toBe('theft');
+        identities.slice(8, 9).forEach((id, i, arr) => {
+            expect(id).toMatch(/theft:[a-zA-Z0-9]+/);
+            expect(arr.indexOf(id)).toBe(i);
+        });
     });
 
-    it('fetchFilters tip', async () => {
-        const { status } = await client.fetchFilters(TIP_HASH, 10);
-        expect(status).toBe('up-to-date');
-    });
+    it('Blockbook onion with fallback', async () => {
+        client = new CoinjoinBackendClient({
+            ...COINJOIN_BACKEND_SETTINGS,
+            blockbookUrls: ['http://bb.x'],
+            onionDomains: { 'bb.x': 'bb.onion' },
+        });
 
-    it('fetchFilters not found', async () => {
-        const { status } = await client.fetchFilters(NONEXISTENT_HASH, 10);
-        expect(status).toBe('not-found');
-    });
+        const urls: string[] = [];
+        const identities: string[] = [];
+        jest.spyOn((client as any).websockets, 'getOrCreate').mockImplementation(args => {
+            const { url, identity } = args as any;
+            urls.push(url);
+            identities.push(identity);
+            return Promise.reject(
+                new Error(url.includes('.onion') ? WS_ERROR_TIMEOUT : WS_ERROR_403),
+            );
+        });
 
-    it('fetchFilters bad params', async () => {
-        await expect(client.fetchFilters(TIP_HASH, -1)).rejects.toThrow(/^400:/);
-    });
+        await expect(() =>
+            client.fetchNetworkInfo({ identity: 'id', attempts: 4, gap: 0 }),
+        ).rejects.toThrow(WS_ERROR_403);
 
-    it('fetchFilters malformed', async () => {
-        await expect(client.fetchFilters(MALFORMED_HASH, 10)).rejects.toThrow(/^500:/);
-    });
+        expect(urls).toStrictEqual([
+            'http://bb.onion',
+            'http://bb.x',
+            'http://bb.x',
+            'http://bb.x',
+        ]);
 
-    it('fetchMempoolTxids', async () => {
-        const res = await client.fetchMempoolTxids();
-        expect(Array.isArray(res)).toBe(true);
-    });
-
-    it('fetchBlock success', async () => {
-        const block = await client.fetchBlock(3);
-        expect(block).toMatchObject({ height: 3 });
-    });
-
-    it('fetchBlock not found', async () => {
-        await expect(client.fetchBlock(999)).rejects.toThrow(/^400:/);
-    });
-
-    it('fetchTransaction success', async () => {
-        const tx = await client.fetchTransaction(VALID_TX);
-        expect(tx).toMatchObject({ txid: VALID_TX, blockHeight: 1 });
-    });
-
-    it('fetchTransaction not found', async () => {
-        await expect(client.fetchTransaction(INVALID_TX)).rejects.toThrow(/^400:/);
+        const [idA, idB, idC, idD] = identities;
+        expect([idA, idB]).toStrictEqual(['id', 'id']);
+        expect(idC).toMatch(/id:[a-zA-Z0-9]+/);
+        expect(idD).toMatch(/id:[a-zA-Z0-9]+/);
+        expect(idC).not.toBe(idD);
     });
 });

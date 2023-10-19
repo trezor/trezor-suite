@@ -10,7 +10,7 @@ import * as bcrypto from '../crypto';
 import { bitcoin as BITCOIN_NETWORK } from '../networks';
 import * as bscript from '../script';
 import * as lazy from './lazy';
-import type { Payment, PaymentOpts, StackFunction } from './index';
+import { Payment, PaymentOpts, StackFunction } from '../types';
 
 const { OPS } = bscript;
 
@@ -48,7 +48,7 @@ export function p2pkh(a: Payment, opts?: PaymentOpts): Payment {
         return bs58check.encodeAddress(o.hash, network.pubKeyHash, network);
     });
     lazy.prop(o, 'hash', () => {
-        if (a.output) return a.output.slice(3, 23);
+        if (a.output) return a.output.subarray(3, 23);
         if (a.address) return _address().hash;
         if (a.pubkey || o.pubkey) return bcrypto.hash160(a.pubkey! || o.pubkey!);
     });
@@ -82,7 +82,7 @@ export function p2pkh(a: Payment, opts?: PaymentOpts): Payment {
 
     // extended validation
     if (opts.validate) {
-        let hash: Buffer = Buffer.from([]);
+        let hash = Buffer.from([]);
         if (a.address) {
             const { version, hash: aHash } = _address();
             if (version !== network.pubKeyHash)
@@ -107,7 +107,7 @@ export function p2pkh(a: Payment, opts?: PaymentOpts): Payment {
             )
                 throw new TypeError('Output is invalid');
 
-            const hash2 = a.output.slice(3, 23);
+            const hash2 = a.output.subarray(3, 23);
             if (hash.length > 0 && !hash.equals(hash2)) throw new TypeError('Hash mismatch');
             else hash = hash2;
         }

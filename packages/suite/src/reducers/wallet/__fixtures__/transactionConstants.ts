@@ -67,10 +67,10 @@ export const accounts: CommonAccount[] = [
         },
         metadata: {
             key: 'xpub6DDUPHpUo4pcy43iJeZjbSVWGav1SMMmuWdMHiGtkK8rhKmfbomtkwW6GKs1GGAKehT6QRocrmda3WWxXawpjmwaUHfFRXuKrXSapdckEYF',
-            fileName: '',
-            aesKey: '',
-            outputLabels: {},
-            addressLabels: {},
+            1: {
+                fileName: '',
+                aesKey: '',
+            },
         },
         networkType: 'bitcoin',
         page: {
@@ -139,10 +139,10 @@ export const accounts: CommonAccount[] = [
         },
         metadata: {
             key: 'xpub6Bw885JisRbcKmowfBvMmCxaFHodKn1VpmRmctmJJoM8D4DzyP4qJv8ZdD9V9r3SSGjmK2KJEDnvLH6f1Q4HrobEvnCeKydNvf1eir3RHZk',
-            fileName: '',
-            aesKey: '',
-            outputLabels: {},
-            addressLabels: {},
+            1: {
+                fileName: '',
+                aesKey: '',
+            },
         },
         networkType: 'bitcoin',
         page: {

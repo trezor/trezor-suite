@@ -1,9 +1,9 @@
-import * as sendFormActions from '@wallet-actions/sendFormActions';
-import { useActions } from '@suite-hooks';
+import { importRequest } from 'src/actions/wallet/sendFormActions';
+import { useDispatch } from 'src/hooks/suite';
 import { DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
-import { FIAT } from '@suite-config';
+import { fiatCurrencies } from '@suite-common/suite-config';
 import { fromFiatCurrency, toFiatCurrency } from '@suite-common/wallet-utils';
-import { UseSendFormState, Output } from '@wallet-types/sendForm';
+import { UseSendFormState, Output } from 'src/types/wallet/sendForm';
 
 type Props = {
     network: UseSendFormState['network'];
@@ -15,13 +15,11 @@ type Props = {
 // This hook should be used only as a sub-hook of `useSendForm`
 
 export const useSendFormImport = ({ network, tokens, localCurrencyOption, fiatRates }: Props) => {
-    const { importRequest } = useActions({
-        importRequest: sendFormActions.importRequest,
-    });
+    const dispatch = useDispatch();
 
     const importTransaction = async () => {
-        // open ImportTransaction modal and get parsed csv
-        const result = await importRequest();
+        // open ImportTransactionModal and get parsed csv
+        const result = await dispatch(importRequest());
         if (!result) return; // cancelled
 
         const outputs = result.map(item => {
@@ -54,7 +52,7 @@ export const useSendFormImport = ({ network, tokens, localCurrencyOption, fiatRa
                             ) || '';
                     }
                 } else if (
-                    FIAT.currencies.find(c => c === currency) &&
+                    Object.keys(fiatCurrencies).find(c => c === currency) &&
                     fiatRates &&
                     fiatRates.current &&
                     Object.keys(fiatRates.current.rates).includes(currency)

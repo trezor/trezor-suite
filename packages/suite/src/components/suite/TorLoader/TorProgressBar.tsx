@@ -1,8 +1,7 @@
-import React from 'react';
 import styled from 'styled-components';
 
-import { Button, Progress, Icon, variables } from '@trezor/components';
-import { Translation } from '@suite-components/Translation';
+import { Button, ProgressBar, Icon, variables } from '@trezor/components';
+import { Translation } from 'src/components/suite/Translation';
 
 const IconWrapper = styled.div`
     width: 120px;
@@ -57,13 +56,13 @@ const Percentage = styled.span`
     height: 24px;
 `;
 
-const StyledProgress = styled(Progress)`
+const StyledProgressBar = styled(ProgressBar)`
     display: flex;
     margin: 0 20px;
     border-radius: 5px;
     flex: 1;
 
-    ${Progress.Value} {
+    ${ProgressBar.Value} {
         position: relative;
         border-radius: 5px;
     }
@@ -120,7 +119,7 @@ export const TorProgressBar = ({
 
             <InfoWrapper>
                 <ProgressWrapper>
-                    <StyledProgress isRed={isTorError} value={isTorError ? 100 : progress} />
+                    <StyledProgressBar isRed={isTorError} value={isTorError ? 100 : progress} />
 
                     <ProgressMessage>
                         {isTorError ? (

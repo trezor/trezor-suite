@@ -217,7 +217,14 @@ export const factory = ({
 
         applySettings: params => call({ ...params, method: 'applySettings' }),
 
+        authenticateDevice: params => call({ ...params, method: 'authenticateDevice' }),
+
         authorizeCoinjoin: params => call({ ...params, method: 'authorizeCoinjoin' }),
+
+        cancelCoinjoinAuthorization: params =>
+            call({ ...params, method: 'cancelCoinjoinAuthorization' }),
+
+        showDeviceTutorial: params => call({ ...params, method: 'showDeviceTutorial' }),
 
         backupDevice: params => call({ ...params, method: 'backupDevice' }),
 

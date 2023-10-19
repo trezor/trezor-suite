@@ -1,6 +1,6 @@
-import React, { useMemo } from 'react';
+import { useMemo, ReactNode } from 'react';
 import styled from 'styled-components';
-import { Translation, TrezorLink } from '@suite-components';
+import { Translation, TrezorLink } from 'src/components/suite';
 import { variables, Button, CollapsibleBox } from '@trezor/components';
 import { TREZOR_SUPPORT_URL } from '@trezor/urls';
 import TrezorConnect from '@trezor/connect';
@@ -80,16 +80,16 @@ const FooterText = styled.span`
 
 interface Item {
     key: string;
-    heading?: React.ReactNode;
-    description?: React.ReactNode;
+    heading?: ReactNode;
+    description?: ReactNode;
     hide?: boolean;
     noBullet?: boolean;
-    action?: React.ReactNode;
+    action?: ReactNode;
 }
 
 interface TroubleshootingTipsProps {
-    label: React.ReactNode;
-    cta?: React.ReactNode;
+    label: ReactNode;
+    cta?: ReactNode;
     items: Item[];
     offerWebUsb?: boolean;
     opened?: boolean;

@@ -1,7 +1,12 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/utils/pathUtils.js
 
 import { PROTO, ERRORS } from '../constants';
-import type { CoinInfo } from '../types';
+import type {
+    CoinInfo,
+    DerivationPath,
+    ProtoWithDerivationPath,
+    ProtoWithAddressN,
+} from '../types';
 
 export const HD_HARDENED = 0x80000000;
 export const toHardened = (n: number) => (n | HD_HARDENED) >>> 0;
@@ -141,7 +146,7 @@ export const getOutputScriptType = (path?: number[]): PROTO.ChangeOutputScriptTy
     }
 };
 
-export const validatePath = (path: string | number[], length = 0, base = false): number[] => {
+export const validatePath = (path: DerivationPath, length = 0, base = false): number[] => {
     let valid: number[] | undefined;
     if (typeof path === 'string') {
         valid = getHDPath(path);
@@ -188,18 +193,22 @@ export const getIndexFromPath = (path: number[]) => {
     return fromHardened(path[2]);
 };
 
-export const fixPath = <T extends PROTO.TxInputType | PROTO.TxOutputType>(utxo: T): T => {
+export const fixPath = <
+    T extends
+        | ProtoWithDerivationPath<PROTO.TxInputType>
+        | ProtoWithDerivationPath<PROTO.TxOutputType>,
+>(
+    utxo: T,
+): ProtoWithAddressN<T> => {
     // make sure bip32 indices are unsigned
     if (utxo.address_n && Array.isArray(utxo.address_n)) {
         utxo.address_n = utxo.address_n.map(i => i >>> 0);
     }
-    // This is only a part of API wide issue: https://github.com/trezor/trezor-suite/issues/4875
-    // it works only in runtime. type T needs to have address_n as string, but currently we are using Protobuf declaration
+    // make sure that address_n is an array
     if (utxo.address_n && typeof utxo.address_n === 'string') {
-        // @ts-expect-error Related to previous comment
         utxo.address_n = getHDPath(utxo.address_n);
     }
-    return utxo;
+    return utxo as ProtoWithAddressN<T>;
 };
 
 export const getLabel = (label: string, coinInfo?: CoinInfo) => {

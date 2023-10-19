@@ -1,12 +1,17 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
+
 import { AccountAddress } from '@trezor/connect';
 import { variables, Button } from '@trezor/components';
-import { Card, Translation, MetadataLabeling, FormattedCryptoAmount } from '@suite-components';
+import { Card, Translation, MetadataLabeling, FormattedCryptoAmount } from 'src/components/suite';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
-import { Network } from '@wallet-types';
-import { AppState } from '@suite-types';
-import { MetadataAddPayload } from '@suite-types/metadata';
+import { Network } from 'src/types/wallet';
+import { AppState } from 'src/types/suite';
+import { MetadataAddPayload } from 'src/types/suite/metadata';
+import { showAddress } from 'src/actions/wallet/receiveActions';
+import { useDispatch } from 'src/hooks/suite/';
+import { useSelector } from 'src/hooks/suite/useSelector';
+import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
 
 const StyledCard = styled(Card)`
     flex-direction: column;
@@ -106,15 +111,16 @@ const DEFAULT_LIMIT = 10;
 interface ItemProps {
     index: number;
     addr: AccountAddress;
+    locked: boolean;
     symbol: Network['symbol'];
     metadataPayload: MetadataAddPayload;
     onClick: () => void;
 }
 
-const Item = ({ addr, symbol, onClick, metadataPayload, index }: ItemProps) => {
+const Item = ({ addr, locked, symbol, onClick, metadataPayload, index }: ItemProps) => {
     // Currently used addresses are always partially hidden
     // The only place where full address is shown is confirm-addr modal
-    const [isHovered, setIsHovered] = React.useState(false);
+    const [isHovered, setIsHovered] = useState(false);
     const amount = formatNetworkAmount(addr.received || '0', symbol);
     const fresh = !addr.transfers;
     const address = addr.address.substring(0, 20);
@@ -161,6 +167,8 @@ const Item = ({ addr, symbol, onClick, metadataPayload, index }: ItemProps) => {
                     <Button
                         data-test={`@wallet/receive/reveal-address-button/${index}`}
                         variant="tertiary"
+                        disabled={locked}
+                        isLoading={locked}
                         onClick={onClick}
                     >
                         <Translation id="TR_REVEAL_ADDRESS" />
@@ -174,7 +182,6 @@ const Item = ({ addr, symbol, onClick, metadataPayload, index }: ItemProps) => {
 interface UsedAddressesProps {
     account: AppState['wallet']['selectedAccount']['account'];
     addresses: AppState['wallet']['receive'];
-    showAddress: (path: string, address: string) => void;
     locked: boolean;
     pendingAddresses: string[];
 }
@@ -183,10 +190,11 @@ export const UsedAddresses = ({
     account,
     addresses,
     pendingAddresses,
-    showAddress,
     locked,
 }: UsedAddressesProps) => {
     const [limit, setLimit] = useState(DEFAULT_LIMIT);
+    const dispatch = useDispatch();
+    const { addressLabels } = useSelector(selectLabelingDataForSelectedAccount);
 
     if (!account) {
         return null;
@@ -200,7 +208,6 @@ export const UsedAddresses = ({
     }
 
     const { used, unused } = account.addresses;
-    const { addressLabels } = account.metadata;
     // find revealed addresses in `unused` list
     const revealed = unused.reduce((result, addr) => {
         const r = addresses.find(u => u.path === addr.path);
@@ -238,13 +245,14 @@ export const UsedAddresses = ({
                         key={addr.path}
                         addr={addr}
                         symbol={account.symbol}
+                        locked={locked}
                         metadataPayload={{
                             type: 'addressLabel',
                             accountKey: account.key,
                             defaultValue: addr.address,
                             value: addressLabels[addr.address],
                         }}
-                        onClick={() => (!locked ? showAddress(addr.path, addr.address) : undefined)}
+                        onClick={() => dispatch(showAddress(addr.path, addr.address))}
                     />
                 ))}
             </GridTable>

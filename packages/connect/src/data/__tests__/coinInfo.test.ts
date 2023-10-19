@@ -1,5 +1,5 @@
 import coinsJSON from '@trezor/connect-common/files/coins.json';
-import { parseCoinsJson, getCoinInfo, getUniqueNetworks } from '../coinInfo';
+import { parseCoinsJson, getCoinInfo, getUniqueNetworks, getAllNetworks } from '../coinInfo';
 
 describe('data/coinInfo', () => {
     beforeAll(() => {
@@ -16,5 +16,12 @@ describe('data/coinInfo', () => {
         ];
         const result = [getCoinInfo('btc'), getCoinInfo('ltc')];
         expect(getUniqueNetworks(inputs)).toEqual(result);
+    });
+
+    it('bitcoin network blocktime', () => {
+        const bitcoinNetworks = getAllNetworks().filter(({ type }) => type === 'bitcoin');
+        bitcoinNetworks.forEach(network => {
+            expect(network.blockTime).toBeGreaterThan(0);
+        });
     });
 });

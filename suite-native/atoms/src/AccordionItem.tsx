@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from 'react';
+import { useState, ReactNode } from 'react';
 import { Pressable } from 'react-native';
 import Animated, {
     Easing,
@@ -8,11 +8,14 @@ import Animated, {
     withDelay,
 } from 'react-native-reanimated';
 
-import { Icon, IconName } from '@trezor/icons';
+import { IconName } from '@suite-common/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { Box } from './Box';
 import { Text } from './Text';
+import { IconButton } from './Button/IconButton';
+import { Divider } from './Divider';
+import { VStack } from './Stack';
 
 type AccordionItemProps = {
     title: string;
@@ -22,6 +25,7 @@ type AccordionItemProps = {
 const triggerStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
     paddingVertical: utils.spacings.small,
 }));
 
@@ -69,23 +73,31 @@ export const AccordionItem = ({ title, content }: AccordionItemProps) => {
         setIsOpen(!isOpen);
     };
 
-    const icon: IconName = isOpen ? 'minusCircle' : 'plusCircle';
+    const icon: IconName = isOpen ? 'minus' : 'plus';
 
     return (
         <Pressable onPress={toggleOpen}>
-            <Box>
-                <Box style={applyStyle(triggerStyle)}>
-                    <Text style={applyStyle(titleStyle)}>{title}</Text>
-                    <Icon name={icon} color="iconPrimaryDefault" />
-                </Box>
-                <Box flexDirection="row">
-                    <Animated.View style={accordionAnimationStyle}>
-                        <Animated.View style={textAnimationStyle}>
-                            <Text variant="label">{content}</Text>
+            <VStack>
+                <Box>
+                    <Box style={applyStyle(triggerStyle)}>
+                        <Text style={applyStyle(titleStyle)}>{title}</Text>
+                        <IconButton
+                            iconName={icon}
+                            colorScheme="tertiaryElevation0"
+                            size="small"
+                            onPress={toggleOpen}
+                        />
+                    </Box>
+                    <Box flexDirection="row">
+                        <Animated.View style={accordionAnimationStyle}>
+                            <Animated.View style={textAnimationStyle}>
+                                <Text variant="label">{content}</Text>
+                            </Animated.View>
                         </Animated.View>
-                    </Animated.View>
+                    </Box>
                 </Box>
-            </Box>
+                <Divider />
+            </VStack>
         </Pressable>
     );
 };

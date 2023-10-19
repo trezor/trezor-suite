@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { Icon, Input, Loader, variables } from '@trezor/components';
-import { Translation } from '@suite-components';
-import { useTranslation } from '@suite-hooks';
-import { GuideNode } from '@guide-components';
-import { useGuideSearch } from '@guide-hooks';
+import { Icon, Input, Spinner, variables } from '@trezor/components';
+import { Translation } from 'src/components/suite';
+import { useTranslation } from 'src/hooks/suite';
+import { GuideNode } from 'src/components/guide';
+import { useGuideSearch } from 'src/hooks/guide';
 
 import type { GuideCategory } from '@suite-common/suite-types';
 
@@ -44,7 +44,7 @@ const StyledInput = styled(Input)`
         background-color: ${({ theme }) => theme.BG_GREY_ALT};
         border-radius: 8px;
         height: 40px;
-        border-color: ${props => props.theme.BG_GREY_ALT};
+        border-color: ${({ theme }) => theme.BG_GREY_ALT};
         transition: border-color 0.2s;
 
         :focus {
@@ -95,7 +95,7 @@ export const GuideSearch = ({ pageRoot, setSearchActive }: GuideSearchProps) => 
                 addonAlign="left"
                 clearButton="always"
                 onClear={() => setQuery('')}
-                innerAddon={loading ? <Loader size={16} /> : <Icon icon="SEARCH" size={16} />}
+                innerAddon={loading ? <Spinner size={16} /> : <Icon icon="SEARCH" size={16} />}
                 data-test="@guide/search"
             />
 

@@ -1,13 +1,17 @@
-import React, { useEffect } from 'react';
-import styled from 'styled-components';
-import type { AccountAddress } from '@trezor/connect';
-import { Translation, FiatValue, FormattedCryptoAmount } from '@suite-components';
-import { variables, Select } from '@trezor/components';
-import { UseFormMethods, Control, Controller } from 'react-hook-form';
-import { formatNetworkAmount } from '@suite-common/wallet-utils';
-import type { Account } from '@wallet-types';
-import { useAccountAddressDictionary } from '@wallet-hooks/useAccounts';
+import { useEffect, ReactElement } from 'react';
+import { UseFormReturn, Control, Controller } from 'react-hook-form';
 import type { MenuPlacement } from 'react-select';
+import styled from 'styled-components';
+
+import type { AccountAddress } from '@trezor/connect';
+import { Translation, FiatValue, FormattedCryptoAmount } from 'src/components/suite';
+import { variables, Select } from '@trezor/components';
+import { formatNetworkAmount } from '@suite-common/wallet-utils';
+import type { Account } from 'src/types/wallet';
+import { useAccountAddressDictionary } from 'src/hooks/wallet/useAccounts';
+import { AddressOptionsFormState } from 'src/types/wallet/coinmarketBuyOffers';
+import { selectLabelingDataForAccount } from 'src/reducers/suite/metadataReducer';
+import { useSelector } from 'src/hooks/suite';
 
 const AddressWrapper = styled.div`
     display: flex;
@@ -25,7 +29,7 @@ const PathWrapper = styled.div`
 const Amount = styled.div`
     display: flex;
     font-size: ${variables.FONT_SIZE.TINY};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
@@ -47,7 +51,7 @@ const buildOptions = (addresses: Account['addresses']) => {
     if (!addresses) return undefined;
 
     interface Options {
-        label: React.ReactElement;
+        label: ReactElement;
         options: AccountAddress[];
     }
 
@@ -64,31 +68,30 @@ const buildOptions = (addresses: Account['addresses']) => {
     return [unused, used];
 };
 
-type FormState = {
-    address?: string;
-};
-
-interface Props extends Pick<UseFormMethods<FormState>, 'setValue'> {
-    control: Control;
+interface AddressOptionsProps<TFieldValues extends AddressOptionsFormState>
+    extends Pick<UseFormReturn<TFieldValues>, 'setValue'> {
+    control: Control<TFieldValues>;
     receiveSymbol?: string;
     account?: Account;
     address?: string;
     menuPlacement?: MenuPlacement;
 }
-export const AddressOptions = ({
-    control,
+export const AddressOptions = <TFieldValues extends AddressOptionsFormState>({
     receiveSymbol,
-    setValue,
     address,
     account,
     menuPlacement,
-}: Props) => {
+    ...props
+}: AddressOptionsProps<TFieldValues>) => {
+    // Type assertion allowing to make the component reusable, see https://stackoverflow.com/a/73624072.
+    const { control, setValue } = props as unknown as UseFormReturn<AddressOptionsFormState>;
+
     const addresses = account?.addresses;
     const addressDictionary = useAccountAddressDictionary(account);
-    const value = address ? addressDictionary[address] : null;
-
-    const handleChange = (accountAddress: AccountAddress) =>
-        setValue('address', accountAddress.address);
+    const value = address ? addressDictionary[address] : undefined;
+    const accountMetadata = useSelector(state =>
+        selectLabelingDataForAccount(state, account?.key || ''),
+    );
 
     useEffect(() => {
         if (!address && addresses) {
@@ -100,11 +103,9 @@ export const AddressOptions = ({
         <Controller
             control={control}
             name="address"
-            defaultValue={value}
-            render={({ ref, ...field }) => (
+            render={({ field: { onChange } }) => (
                 <Select
-                    {...field}
-                    onChange={handleChange}
+                    onChange={({ address }) => onChange(address)}
                     isClearable={false}
                     value={value}
                     options={buildOptions(addresses)}
@@ -119,7 +120,10 @@ export const AddressOptions = ({
                         return (
                             <Option>
                                 <AddressWrapper>
-                                    <Address>{accountAddress.address}</Address>
+                                    <Address>
+                                        {accountMetadata.addressLabels[accountAddress.address] ||
+                                            accountAddress.address}
+                                    </Address>
                                     <Amount>
                                         <CryptoWrapper>
                                             <FormattedCryptoAmount

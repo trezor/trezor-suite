@@ -1,7 +1,7 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import styled, { useTheme } from 'styled-components';
 
-import { Icon } from '../Icon';
+import { Icon } from '../assets/Icon/Icon';
 import { FONT_SIZE, FONT_WEIGHT } from '../../config/variables';
 
 const Row = styled.div`
@@ -13,14 +13,14 @@ const InfoIcon = styled(Icon)`
     margin-top: 1px;
 `;
 
-const P = styled.p<{ $color?: string }>`
+const Text = styled.div<{ $color?: string }>`
     color: ${({ $color }) => $color};
     font-size: ${FONT_SIZE.SMALL};
     font-weight: ${FONT_WEIGHT.MEDIUM};
 `;
 
-interface NoteProps {
-    children: React.ReactNode;
+export interface NoteProps {
+    children: ReactNode;
     className?: string;
     color?: string;
 }
@@ -33,7 +33,7 @@ export const Note = ({ children, className, color }: NoteProps) => {
     return (
         <Row className={className}>
             <InfoIcon icon="INFO" size={14} color={noteColor} />
-            <P $color={noteColor}>{children}</P>
+            <Text $color={noteColor}>{children}</Text>
         </Row>
     );
 };

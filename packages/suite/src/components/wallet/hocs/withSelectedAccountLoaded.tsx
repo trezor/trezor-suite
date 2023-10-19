@@ -1,10 +1,11 @@
-import React from 'react';
-import { WalletLayout } from '@wallet-components';
-import { useSelector } from '@suite-hooks';
-import type { AppState, ExtendedMessageDescriptor } from '@suite-types';
+import { ComponentType } from 'react';
+import { WalletLayout } from 'src/components/wallet';
+import { useSelector } from 'src/hooks/suite';
+import type { ExtendedMessageDescriptor } from 'src/types/suite';
+import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
 
 export interface WithSelectedAccountLoadedProps {
-    selectedAccount: Extract<AppState['wallet']['selectedAccount'], { status: 'loaded' }>;
+    selectedAccount: SelectedAccountLoaded;
 }
 
 export interface WithSelectedAccountLoadedOptions {
@@ -12,15 +13,13 @@ export interface WithSelectedAccountLoadedOptions {
 }
 
 export const withSelectedAccountLoaded = (
-    WrappedComponent: React.ComponentType<WithSelectedAccountLoadedProps>,
+    WrappedComponent: ComponentType<WithSelectedAccountLoadedProps>,
     options: WithSelectedAccountLoadedOptions,
 ) => {
     const { title } = options;
     const displayName = WrappedComponent.displayName || WrappedComponent.name || 'Component';
     const Component = () => {
-        const { selectedAccount } = useSelector(state => ({
-            selectedAccount: state.wallet.selectedAccount,
-        }));
+        const selectedAccount = useSelector(state => state.wallet.selectedAccount);
 
         if (selectedAccount.status !== 'loaded') {
             return <WalletLayout title={title} account={selectedAccount} />;

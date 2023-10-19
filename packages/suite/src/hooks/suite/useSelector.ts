@@ -1,4 +1,4 @@
-import { AppState } from '@suite-types';
+import { AppState } from 'src/types/suite';
 import { useSelector as useReduxSelector, shallowEqual, TypedUseSelectorHook } from 'react-redux';
 
 /**

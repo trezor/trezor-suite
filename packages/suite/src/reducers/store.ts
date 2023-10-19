@@ -3,35 +3,38 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import thunkMiddleware from 'redux-thunk';
 import { createLogger } from 'redux-logger';
-import suiteMiddlewares from '@suite-middlewares';
-import walletMiddlewares from '@wallet-middlewares';
-import onboardingMiddlewares from '@onboarding-middlewares';
-import firmwareMiddlewares from '@firmware-middlewares';
-import backupMiddlewares from '@backup-middlewares';
-import recoveryMiddlewares from '@recovery-middlewares';
-import suiteReducers from '@suite-reducers';
-import walletReducers from '@wallet-reducers';
-import onboardingReducers from '@onboarding-reducers';
-import recoveryReducers from '@recovery-reducers';
-import firmwareReducers from '@firmware-reducers';
-import backupReducers from '@backup-reducers';
+
+import { prepareFirmwareReducer } from '@suite-common/wallet-core';
+import { addLog } from '@suite-common/logger';
+
+import suiteMiddlewares from 'src/middlewares/suite';
+import walletMiddlewares from 'src/middlewares/wallet';
+import onboardingMiddlewares from 'src/middlewares/onboarding';
+import firmwareMiddlewares from 'src/middlewares/firmware';
+import backupMiddlewares from 'src/middlewares/backup';
+import recoveryMiddlewares from 'src/middlewares/recovery';
+import suiteReducers from 'src/reducers/suite';
+import walletReducers from 'src/reducers/wallet';
+import onboardingReducers from 'src/reducers/onboarding';
+import recoveryReducers from 'src/reducers/recovery';
+import backupReducers from 'src/reducers/backup';
 
 // toastMiddleware can be used only in suite-desktop and suite-web
 // it's not included into `@suite-middlewares` index
-import toastMiddleware from '@suite-middlewares/toastMiddleware';
-import type { PreloadStoreAction } from '@suite-support/preloadStore';
-
-import { addLog } from '@suite-common/logger';
+import toastMiddleware from 'src/middlewares/suite/toastMiddleware';
+import type { PreloadStoreAction } from 'src/support/suite/preloadStore';
 
 import { desktopReducer } from './desktop';
 import { extraDependencies } from '../support/extraDependencies';
+
+const firmwareReducer = prepareFirmwareReducer(extraDependencies);
 
 const rootReducer = combineReducers({
     ...suiteReducers,
     onboarding: onboardingReducers,
     wallet: walletReducers,
     recovery: recoveryReducers,
-    firmware: firmwareReducers,
+    firmware: firmwareReducer,
     backup: backupReducers,
     desktop: desktopReducer,
 });
@@ -52,10 +55,12 @@ const middleware = [
 const excludedActions = [addLog.type];
 
 if (!process.env.CODESIGN_BUILD) {
-    const excludeLogger = (_getState: any, action: any): boolean => {
-        const pass = excludedActions.filter(act => action.type === act);
-        return pass.length === 0;
-    };
+    const excludeLogger = (_getState: any, action: any): boolean =>
+        // exclude generated lifecycle actions
+        // https://redux-toolkit.js.org/api/createAsyncThunk#promise-lifecycle-actions
+        !action?.meta?.requestId &&
+        // explicitly excluded actions
+        !excludedActions.some(act => action.type === act);
 
     const logger = createLogger({
         level: 'info',

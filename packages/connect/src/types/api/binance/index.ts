@@ -1,4 +1,5 @@
 import type { PROTO } from '../../../constants';
+import type { DerivationPath } from '../../params';
 
 // BinanceSDKTransaction from https://github.com/binance-chain/javascript-sdk/blob/master/src/tx/index.js
 
@@ -33,6 +34,6 @@ export interface BinancePreparedTransaction extends BinanceSDKTransaction {
 }
 
 export interface BinanceSignTransaction {
-    path: string | number[];
+    path: DerivationPath;
     transaction: BinanceSDKTransaction;
 }

@@ -3,7 +3,7 @@ import * as middleware from '../middleware';
 import { readTimeSpan } from '../../utils/roundUtils';
 import type { Alice, AliceConfirmationInterval } from '../Alice';
 import type { CoinjoinRound, CoinjoinRoundOptions } from '../CoinjoinRound';
-import { SessionPhase } from '../../enums';
+import { SessionPhase, WabiSabiProtocolErrorCode } from '../../enums';
 
 /**
  * usage in RoundPhase: 0, InputRegistration
@@ -52,7 +52,7 @@ const confirmInput = async (
     );
 
     const deadline =
-        round.phaseDeadline + readTimeSpan(round.roundParameters.connectionConfirmationTimeout);
+        round.phaseDeadline + readTimeSpan(round.roundParameters.ConnectionConfirmationTimeout);
 
     logger.info(
         `Confirming ~~${input.outpoint}~~ to ~~${round.id}~~ phase ${round.phase} with delay ${delay}ms and deadline ${deadline}`,
@@ -60,7 +60,7 @@ const confirmInput = async (
 
     const confirmationData = await coordinator.connectionConfirmation(
         round.id,
-        input.registrationData.aliceId,
+        input.registrationData.AliceId,
         input.realAmountCredentials,
         input.realVsizeCredentials,
         zeroAmountCredentials,
@@ -71,8 +71,8 @@ const confirmInput = async (
     // stop here if it's confirmationInterval at phase 0
     if (
         !confirmationData ||
-        !confirmationData.realAmountCredentials ||
-        !confirmationData.realVsizeCredentials
+        !confirmationData.RealAmountCredentials ||
+        !confirmationData.RealVsizeCredentials
     ) {
         logger.info(`Confirmed in phase ${round.phase} ~~${input.outpoint}~~ in ~~${round.id}~~`);
         return input;
@@ -80,14 +80,14 @@ const confirmInput = async (
 
     const confirmedAmountCredentials = await middleware.getCredentials(
         round.amountCredentialIssuerParameters,
-        confirmationData.realAmountCredentials,
-        input.realAmountCredentials.credentialsResponseValidation,
+        confirmationData.RealAmountCredentials,
+        input.realAmountCredentials.CredentialsResponseValidation,
         { baseUrl: middlewareUrl }, // NOTE: post processing intentionally without abort signal (should not be aborted)
     );
     const confirmedVsizeCredentials = await middleware.getCredentials(
         round.vsizeCredentialIssuerParameters,
-        confirmationData.realVsizeCredentials,
-        input.realVsizeCredentials.credentialsResponseValidation,
+        confirmationData.RealVsizeCredentials,
+        input.realVsizeCredentials.CredentialsResponseValidation,
         { baseUrl: middlewareUrl }, // NOTE: post processing intentionally without abort signal (should not be aborted)
     );
 
@@ -108,7 +108,7 @@ export const confirmationInterval = (
     options: CoinjoinRoundOptions,
 ): AliceConfirmationInterval => {
     const intervalDelay = Math.floor(
-        readTimeSpan(round.roundParameters.connectionConfirmationTimeout) * 0.5,
+        readTimeSpan(round.roundParameters.ConnectionConfirmationTimeout) * 0.5,
     );
     let requestLatency = 0;
 
@@ -145,7 +145,7 @@ export const confirmationInterval = (
             } catch (error) {
                 if (
                     !controller.signal.aborted &&
-                    error.message !== coordinator.WabiSabiProtocolErrorCode.WrongPhase
+                    error.errorCode !== WabiSabiProtocolErrorCode.WrongPhase
                 ) {
                     input.setError(error);
                 }
@@ -160,7 +160,23 @@ export const confirmationInterval = (
     });
 
     return {
-        abort: () => controller.abort(),
+        abort: () => {
+            controller.abort();
+
+            // We only need to unregister if Alice wouldn't be removed automatically by the coordinator - otherwise just leave it there.
+            const wouldBeRemovedByBackend = round.phaseDeadline - intervalDelay - Date.now() > 0;
+            if (!wouldBeRemovedByBackend && input.registrationData) {
+                coordinator
+                    .inputUnregistration(round.id, input.registrationData.AliceId, {
+                        signal: options.signal,
+                        baseUrl: options.coordinatorUrl,
+                        identity: input.outpoint,
+                    })
+                    .catch(() => {
+                        // ignore if unregistration fails
+                    });
+            }
+        },
         promise,
     };
 };

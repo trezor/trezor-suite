@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { Checkbox } from '@trezor/components';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
-import { ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
+import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';
 
 interface Process {
     service: boolean;

@@ -8,13 +8,17 @@ import { addMatchImageSnapshotPlugin } from 'cypress-image-snapshot/plugin';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import * as metadataUtils from '@trezor/suite/src/utils/suite/metadata';
 
-import { TrezorBridgeMock, DropboxMock, GoogleMock, BlockbookMock } from '@trezor/e2e-utils';
+import {
+    TrezorBridgeMock,
+    DropboxMock,
+    GoogleMock,
+    BackendWebsocketServerMock,
+} from '@trezor/e2e-utils';
 
 const mocked = {
     bridge: new TrezorBridgeMock(),
     dropbox: new DropboxMock(),
     google: new GoogleMock(),
-    blockbook: BlockbookMock,
 };
 
 const ensureRdpPort = (args: any[]) => {
@@ -33,7 +37,7 @@ const ensureRdpPort = (args: any[]) => {
 
 let port = 0;
 let client: any = null;
-let blockbook: Awaited<ReturnType<(typeof mocked.blockbook)['start']>> | undefined;
+let blockbook: BackendWebsocketServerMock | undefined;
 
 // // add snapshot plugin
 // addMatchImageSnapshotPlugin(on);
@@ -117,10 +121,10 @@ export default defineConfig({
                 metadataSetNextResponse: ({ provider, status, body }) => {
                     switch (provider) {
                         case 'dropbox':
-                            mocked.dropbox.nextResponse = { status, body };
+                            mocked.dropbox.nextResponse.push({ status, body });
                             break;
                         case 'google':
-                            mocked.google.nextResponse = { status, body };
+                            mocked.google.nextResponse.push({ status, body });
                             break;
                         default:
                             throw new Error('not a valid case');
@@ -176,6 +180,7 @@ export default defineConfig({
                     });
                 },
                 readDir: dir => fs.readdirSync(dir, { encoding: 'utf-8' }),
+                readFile: path => fs.readFileSync(path, { encoding: 'utf-8' }),
                 rmDir: (opts: {
                     recursive: fs.RmDirOptions['recursive'];
                     dir: string;
@@ -209,10 +214,11 @@ export default defineConfig({
                     return result;
                 },
                 async startBlockbookMock({ endpointsFile }) {
-                    const { endpoints } = await import(`./fixtures/${endpointsFile}.ts`);
+                    const { fixtures } = await import(`./fixtures/${endpointsFile}.ts`);
 
-                    blockbook = await mocked.blockbook.start({ endpoints });
-                    return blockbook.port;
+                    blockbook = await BackendWebsocketServerMock.create('blockbook');
+                    blockbook.setFixtures(fixtures);
+                    return blockbook.options.port;
                 },
                 stopBlockbookMock() {
                     if (blockbook) {

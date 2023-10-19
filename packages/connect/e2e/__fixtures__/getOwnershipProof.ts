@@ -1,8 +1,8 @@
-// https://github.com/trezor/trezor-firmware/blob/master/tests/device_tests/bitcoin/test_getownershipproof.py
+// https://github.com/trezor/trezor-firmware/blob/main/tests/device_tests/bitcoin/test_getownershipproof.py
 
 const legacyResults = [
     {
-        // getOwnershipProof not supported on T1 and TT below 2.5.3
+        // getOwnershipProof not supported on T1B1 and T2T1 below 2.5.3
         rules: ['1', '<2.5.3'],
         success: false,
     },

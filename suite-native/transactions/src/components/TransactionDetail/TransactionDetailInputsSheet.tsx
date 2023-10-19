@@ -1,110 +1,105 @@
-import React from 'react';
+import { useSelector } from 'react-redux';
 
-import { NetworkSymbol } from 'suite-common/wallet-config/src';
+import { G } from '@mobily/ts-belt';
 
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Icon } from '@trezor/icons';
-import { WalletAccountTransaction } from '@suite-common/wallet-types';
-import { Box, Card, Text, VStack } from '@suite-native/atoms';
-import { AccountAddressFormatter, CryptoAmountFormatter } from '@suite-native/formatters';
+import { Icon } from '@suite-common/icons';
+import { AccountKey } from '@suite-common/wallet-types';
+import { Box, Text, VStack } from '@suite-native/atoms';
+import { FiatRatesRootState } from '@suite-native/fiat-rates';
+import { TransactionsRootState } from '@suite-common/wallet-core';
+import { SettingsSliceRootState } from '@suite-native/module-settings';
 
 import { TransactionDetailSheet } from './TransactionDetailSheet';
+import { selectTransactionInputAndOutputTransfers, TransactionTranfer } from '../../selectors';
+import { TransactionDetailInputsSheetSection } from './TransactionDetailInputsSheetSection';
 
 type TransactionDetailInputsSheetProps = {
     isVisible: boolean;
-    transaction: WalletAccountTransaction;
+    txid: string;
+    accountKey: AccountKey;
     onSheetVisibilityChange: () => void;
 };
 
-type TransactionAddressAmountProps = {
-    address: string;
-    amount?: string;
-    symbol: NetworkSymbol;
+type InputsOutputsHeaderProps = {
+    inputsCount: number;
+    outputsCount: number;
 };
 
-const addressAmountColumnStyle = prepareNativeStyle(_ => ({
-    maxWidth: '42.5%',
-}));
+const InputsOutputsHeader = ({ inputsCount, outputsCount }: InputsOutputsHeaderProps) => (
+    <Box flexDirection="row" justifyContent="space-between" marginBottom="medium">
+        <Box flex={1} flexDirection="row" alignItems="center" paddingLeft="small">
+            <Text variant="hint" color="textSubdued">
+                Inputs · {inputsCount}
+            </Text>
+            <Box marginLeft="small">
+                <Icon name="receiveAlt" color="iconSubdued" size="medium" />
+            </Box>
+        </Box>
 
-const TransactionAddressAmount = ({
-    address,
-    amount = '0',
-    symbol,
-}: TransactionAddressAmountProps) => (
-    <Box>
-        <AccountAddressFormatter value={address} variant="hint" />
-        <CryptoAmountFormatter value={amount} network={symbol} isBalance={false} variant="label" />
+        <Box flex={1} flexDirection="row" alignItems="center" paddingLeft="large">
+            <Text variant="hint" color="textSubdued">
+                Outputs · {outputsCount}
+            </Text>
+            <Box marginLeft="small">
+                <Icon name="sendAlt" color="iconSubdued" size="medium" />
+            </Box>
+        </Box>
     </Box>
 );
+
+const getTransactionInputsAndOutputsCount = (transfers: TransactionTranfer[]) =>
+    transfers.reduce(
+        (accumulator, { inputs, outputs }) => {
+            accumulator.inputsCount += inputs.length;
+            accumulator.outputsCount += outputs.length;
+            return accumulator;
+        },
+        { inputsCount: 0, outputsCount: 0 },
+    );
 
 export const TransactionDetailInputsSheet = ({
     isVisible,
     onSheetVisibilityChange,
-    transaction,
+    txid,
+    accountKey,
 }: TransactionDetailInputsSheetProps) => {
-    const { applyStyle } = useNativeStyles();
+    const transactionTransfers = useSelector(
+        (state: TransactionsRootState & FiatRatesRootState & SettingsSliceRootState) =>
+            selectTransactionInputAndOutputTransfers(state, txid, accountKey),
+    );
 
-    const txInputs = transaction.details.vin;
-    const txOutputs = transaction.details.vout;
+    if (G.isNull(transactionTransfers)) return null;
+    const { externalTransfers, internalTransfers, tokenTransfers } = transactionTransfers;
+    const { inputsCount, outputsCount } = getTransactionInputsAndOutputsCount(externalTransfers);
 
     return (
         <TransactionDetailSheet
             isVisible={isVisible}
             onVisibilityChange={onSheetVisibilityChange}
-            title="Inpust & Outputs"
+            title="Inputs & Outputs"
             iconName="swap"
-            transactionId={transaction.txid}
+            transactionId={txid}
         >
-            <Box
-                flexDirection="row"
-                justifyContent="space-between"
-                marginHorizontal="small"
-                marginBottom="medium"
-            >
-                <Box flex={1} flexDirection="row" alignItems="center" paddingLeft="small">
-                    <Text variant="hint" color="textSubdued">
-                        Inputs · {txInputs.length}
-                    </Text>
-                    <Box marginLeft="small">
-                        <Icon name="receiveAlt" color="iconSubdued" size="medium" />
-                    </Box>
-                </Box>
-
-                <Box flex={1} flexDirection="row" alignItems="center" paddingLeft="large">
-                    <Text variant="hint" color="textSubdued">
-                        Outputs · {txOutputs.length}
-                    </Text>
-                    <Box marginLeft="small">
-                        <Icon name="sendAlt" color="iconSubdued" size="medium" />
-                    </Box>
-                </Box>
-            </Box>
             <VStack>
-                <Card>
-                    <Box flexDirection="row" justifyContent="space-between">
-                        <Box style={applyStyle(addressAmountColumnStyle)}>
-                            {txInputs.map(input => (
-                                <TransactionAddressAmount
-                                    key={input.addresses![0]}
-                                    address={input.addresses![0]}
-                                    amount={input.value}
-                                    symbol={transaction.symbol}
-                                />
-                            ))}
-                        </Box>
-                        <Icon name="circleRight" color="iconDisabled" size="medium" />
-                        <Box style={applyStyle(addressAmountColumnStyle)}>
-                            {txOutputs.map(output => (
-                                <TransactionAddressAmount
-                                    key={output.addresses![0]}
-                                    address={output.addresses![0]}
-                                    amount={output.value}
-                                    symbol={transaction.symbol}
-                                />
-                            ))}
-                        </Box>
-                    </Box>
-                </Card>
+                <TransactionDetailInputsSheetSection
+                    header={
+                        <InputsOutputsHeader
+                            inputsCount={inputsCount}
+                            outputsCount={outputsCount}
+                        />
+                    }
+                    transfers={externalTransfers}
+                />
+
+                <TransactionDetailInputsSheetSection
+                    header="Internal Transfers"
+                    transfers={internalTransfers}
+                />
+
+                <TransactionDetailInputsSheetSection
+                    header="Token Transfers"
+                    transfers={tokenTransfers}
+                />
             </VStack>
         </TransactionDetailSheet>
     );

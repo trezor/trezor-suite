@@ -1,11 +1,12 @@
-import { FORM_DRAFT } from '@wallet-actions/constants';
 import produce from 'immer';
-import { Action } from '@suite-types';
-import { FormDraft } from '@wallet-types/form';
-import { STORAGE } from '@suite/actions/suite/constants';
+import { FieldValues } from 'react-hook-form';
+
+import { FORM_DRAFT } from 'src/actions/wallet/constants';
+import { Action } from 'src/types/suite';
+import { STORAGE } from 'src/actions/suite/constants';
 
 export interface FormDraftState {
-    [key: string]: FormDraft;
+    [key: string]: FieldValues;
 }
 export const initialState: FormDraftState = {};
 

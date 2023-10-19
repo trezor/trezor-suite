@@ -120,11 +120,18 @@ export const prepareTransactionsReducer = createReducerWithExtraDeps(
                         const existingTxIndex = accountTxs.findIndex(
                             t => t && t.txid === existingTx.txid,
                         );
+                        const existingBlockHeight = existingTx.blockHeight ?? 0;
+                        const incomingBlockHeight = transaction.blockHeight ?? 0;
+                        const existingIsPending = existingBlockHeight <= 0;
+                        const incomingIsPending = incomingBlockHeight <= 0;
 
                         if (
-                            ((existingTx.blockHeight ?? 0) <= 0 &&
-                                (transaction.blockHeight ?? 0) > 0) ||
-                            (!existingTx.blockTime && transaction.blockTime) ||
+                            (existingIsPending && !incomingIsPending) ||
+                            (existingIsPending === incomingIsPending &&
+                                existingBlockHeight < incomingBlockHeight) ||
+                            (existingIsPending === incomingIsPending &&
+                                (existingTx.blockTime ?? 0) < (transaction.blockTime ?? 0)) ||
+                            (existingIsPending && !existingTx.rbfParams && transaction.rbfParams) ||
                             (existingTx.deadline && !transaction.deadline)
                         ) {
                             // pending tx got confirmed (blockHeight changed from undefined/0 to a number > 0)
@@ -152,7 +159,6 @@ export const prepareTransactionsReducer = createReducerWithExtraDeps(
 
 // Used to define selector cache size
 const EXPECTED_MAX_NUMBER_OF_ACCOUNTS = 50;
-const EXPECTED_NUMBER_OF_TRANSACTIONS = 500;
 
 export const selectIsLoadingTransactions = (state: TransactionsRootState) =>
     state.wallet.transactions.isLoading;
@@ -193,13 +199,14 @@ export const selectPendingAccountAddresses = memoizeWithArgs(
 );
 
 // Note: Account key is passed because there can be duplication of TXIDs if self transaction was sent.
-export const selectTransactionByTxidAndAccountKey = memoizeWithArgs(
-    (state: TransactionsRootState, txid: string, accountKey: AccountKey) => {
-        const transactions = selectAccountTransactions(state, accountKey);
-        return transactions.find(tx => tx?.txid === txid) ?? null;
-    },
-    { size: EXPECTED_NUMBER_OF_TRANSACTIONS },
-);
+export const selectTransactionByTxidAndAccountKey = (
+    state: TransactionsRootState,
+    txid: string,
+    accountKey: AccountKey,
+) => {
+    const transactions = selectAccountTransactions(state, accountKey);
+    return transactions.find(tx => tx?.txid === txid) ?? null;
+};
 
 export const selectTransactionBlockTimeById = (
     state: TransactionsRootState,

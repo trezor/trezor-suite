@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
-import { QuestionTooltip, Translation } from '@suite-components';
+import { QuestionTooltip, Translation } from 'src/components/suite';
 import { variables, Button, Select, Icon, useTheme } from '@trezor/components';
-import { useCoinmarketSellOffersContext } from '@wallet-hooks/useCoinmarketSellOffers';
+import { useCoinmarketSellOffersContext } from 'src/hooks/wallet/useCoinmarketSellOffers';
 import { BankAccount } from 'invity-api';
-import { formatIban } from '@wallet-utils/coinmarket/sellUtils';
+import { formatIban } from 'src/utils/wallet/coinmarket/sellUtils';
 
 const Wrapper = styled.div`
     display: flex;
@@ -30,7 +30,7 @@ const StyledQuestionTooltip = styled(QuestionTooltip)`
 
 const CustomLabel = styled(Label)`
     padding: 12px 0;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 const LabelText = styled.div``;
@@ -51,7 +51,7 @@ const AccountInfo = styled.div`
 
 const AccountName = styled.div`
     display: flex;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 const AccountNumber = styled.div`
@@ -63,11 +63,11 @@ const AccountVerified = styled.div`
     display: flex;
     justify-content: flex-end;
     font-size: ${variables.FONT_SIZE.TINY};
-    color: ${props => props.theme.TYPE_GREEN};
+    color: ${({ theme }) => theme.TYPE_GREEN};
 `;
 
 const AccountNotVerified = styled(AccountVerified)`
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 const ButtonWrapper = styled.div`
@@ -75,7 +75,7 @@ const ButtonWrapper = styled.div`
     align-items: center;
     justify-content: center;
     padding-top: 20px;
-    border-top: 1px solid ${props => props.theme.STROKE_GREY};
+    border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
     margin: 20px 0;
 `;
 

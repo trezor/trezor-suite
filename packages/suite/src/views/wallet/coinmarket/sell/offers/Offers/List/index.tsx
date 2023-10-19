@@ -1,19 +1,14 @@
-import React from 'react';
 import styled from 'styled-components';
-import { CoinLogo, variables, Icon, H2 } from '@trezor/components';
 import { SellFiatTrade } from 'invity-api';
-import { useCoinmarketSellOffersContext } from '@wallet-hooks/useCoinmarketSellOffers';
-import Quote from './Quote';
-import { Translation } from '@suite-components';
-import { CoinmarketRefreshTime } from '@wallet-components';
-import { InvityAPIReloadQuotesAfterSeconds } from '@wallet-constants/coinmarket/metadata';
-import { CoinmarketCryptoAmount } from '@wallet-views/coinmarket/common/CoinmarketCryptoAmount';
-import { CoinmarketFiatAmount } from '@wallet-views/coinmarket/common/CoinmarketFiatAmount';
 
-interface Props {
-    isAlternative?: boolean;
-    quotes: SellFiatTrade[];
-}
+import { CoinLogo, variables, Icon, H2 } from '@trezor/components';
+import { useCoinmarketSellOffersContext } from 'src/hooks/wallet/useCoinmarketSellOffers';
+import { Translation } from 'src/components/suite';
+import { CoinmarketRefreshTime } from 'src/views/wallet/coinmarket/common';
+import { InvityAPIReloadQuotesAfterSeconds } from 'src/constants/wallet/coinmarket/metadata';
+import { CoinmarketCryptoAmount } from 'src/views/wallet/coinmarket/common/CoinmarketCryptoAmount';
+import { CoinmarketFiatAmount } from 'src/views/wallet/coinmarket/common/CoinmarketFiatAmount';
+import Quote from './Quote';
 
 const Wrapper = styled.div``;
 const Quotes = styled.div``;
@@ -52,7 +47,7 @@ const SummaryRow = styled(H2)`
 `;
 
 const OrigAmount = styled.div`
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
 `;
 
@@ -81,7 +76,12 @@ const NoQuotes = styled.div`
     flex: 1;
 `;
 
-const List = ({ isAlternative, quotes }: Props) => {
+interface ListProps {
+    isAlternative?: boolean;
+    quotes: SellFiatTrade[];
+}
+
+const List = ({ isAlternative, quotes }: ListProps) => {
     const { account, quotesRequest, timer } = useCoinmarketSellOffersContext();
 
     if (!quotesRequest) return null;

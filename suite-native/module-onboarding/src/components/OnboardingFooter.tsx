@@ -1,4 +1,3 @@
-import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useRoute } from '@react-navigation/native';
@@ -49,11 +48,15 @@ export const OnboardingFooter = ({ redirectTarget, isLastStep = false }: Onboard
     return (
         <Stack spacing="large" style={applyStyle(wrapperStyle)}>
             <Box flexDirection="row" alignItems="center" justifyContent="center">
-                <Text variant="hint">
+                <Text variant="hint" textAlign="center">
                     Don’t have a Trezor? <Link href="https://trezor.io/" label="Get one here." />
                 </Text>
             </Box>
-            <Button data-testID={`@onboarding/${route.name}/nextBtn`} onPress={handlePress}>
+            <Button
+                size="large"
+                data-testID={`@onboarding/${route.name}/nextBtn`}
+                onPress={handlePress}
+            >
                 {buttonTitle}
             </Button>
         </Stack>

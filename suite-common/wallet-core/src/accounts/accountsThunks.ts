@@ -56,6 +56,7 @@ const fetchAccountTokens = async (account: Account, payloadTokens: AccountInfo['
             descriptor: account.descriptor,
             details: 'tokenBalances',
             contractFilter: t.contract,
+            suppressBackupWarning: true,
         }),
     );
 
@@ -86,6 +87,7 @@ export const fetchAndUpdateAccountThunk = createThunk(
             coin: account.symbol,
             descriptor: account.descriptor,
             details: 'basic',
+            suppressBackupWarning: true,
         });
         if (!basic.success) return;
 
@@ -107,6 +109,7 @@ export const fetchAndUpdateAccountThunk = createThunk(
             details: 'txs',
             page: 1, // useful for every network except ripple
             pageSize,
+            suppressBackupWarning: true,
         });
 
         if (response.success) {

@@ -1,4 +1,3 @@
-import React from 'react';
 import { View, ViewProps, ViewStyle } from 'react-native';
 
 import { D, pipe } from '@mobily/ts-belt';
@@ -17,6 +16,7 @@ const layoutStylePropsKeys = [
     'alignContent',
     'alignSelf',
     'flexWrap',
+    'flexShrink',
 ] as const;
 
 const spacingStylePropsKeys = [

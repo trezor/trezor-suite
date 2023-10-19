@@ -1,6 +1,6 @@
-import { configureStore } from '@suite/support/tests/configureStore';
+import { configureStore } from 'src/support/tests/configureStore';
 
-import selectedAccountReducer from '@wallet-reducers/selectedAccountReducer';
+import selectedAccountReducer from 'src/reducers/wallet/selectedAccountReducer';
 
 import { syncSelectedAccount } from '../selectedAccountActions';
 import fixtures from '../__fixtures__/selectedAccountActions';

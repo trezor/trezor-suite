@@ -1,11 +1,11 @@
-import { configureStore } from '@suite/support/tests/configureStore';
+import { configureStore } from 'src/support/tests/configureStore';
 
-import cardanoStakingReducer from '@wallet-reducers/cardanoStakingReducer';
-import * as cardanoStakingActions from '@wallet-actions/cardanoStakingActions';
+import cardanoStakingReducer from 'src/reducers/wallet/cardanoStakingReducer';
+import * as cardanoStakingActions from 'src/actions/wallet/cardanoStakingActions';
 import { CARDANO_STAKING } from '../constants';
-import { WalletAccountTransaction } from '@wallet-types';
+import { WalletAccountTransaction } from 'src/types/wallet';
 import { BlockchainBlock } from '@trezor/connect';
-import { transactionsReducer } from '@wallet-reducers';
+import { transactionsReducer } from 'src/reducers/wallet';
 import { getUnixTime } from 'date-fns';
 
 const { getSuiteDevice } = global.JestMocks;

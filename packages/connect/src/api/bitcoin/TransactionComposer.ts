@@ -5,8 +5,7 @@ import { composeTx, ComposeInput, ComposeOutput, ComposeResult } from '@trezor/u
 import { FeeLevels } from './Fees';
 import { Blockchain } from '../../backend/BlockchainLink';
 import { getHDPath } from '../../utils/pathUtils';
-import type { BitcoinNetworkInfo } from '../../types';
-import type { DiscoveryAccount, SelectFeeLevel } from '../../types/account';
+import type { BitcoinNetworkInfo, DiscoveryAccount, SelectFeeLevel } from '../../types';
 import type { PrecomposeParams } from '../../types/api/composeTransaction';
 
 type Options = {
@@ -56,7 +55,7 @@ export class TransactionComposer {
                   .map(a => a.address);
         this.utxos = options.utxo.flatMap(u => {
             // exclude amounts lower than dust limit if they are NOT required
-            if (!u.required && new BigNumber(u.amount).lte(this.coinInfo.dustLimit)) return [];
+            if (!u.required && new BigNumber(u.amount).lt(this.coinInfo.dustLimit)) return [];
             const addressPath = getHDPath(u.path);
             const [chain, index] = addressPath.slice(addressPath.length - 2);
 
@@ -139,7 +138,7 @@ export class TransactionComposer {
                     name: level.label,
                     fee: tx.fee,
                     feePerByte: level.feePerUnit,
-                    minutes: level.blocks * this.coinInfo.blocktime,
+                    minutes: level.blocks * this.coinInfo.blockTime,
                     total: tx.totalSpent,
                 });
             } else {
@@ -164,30 +163,20 @@ export class TransactionComposer {
         const changeId = getHDPath(changeAddress.path).slice(-1)[0]; // get address id from the path
         // const inputAmounts = coinInfo.segwit || coinInfo.forkid !== null || coinInfo.network.consensusBranchId !== null;
 
-        const enhancement = {
-            baseFee,
-            floorBaseFee: false,
-            dustOutputFee: 0,
-        };
-
-        // DOGE changed fee policy and requires:
-        if (coinInfo.shortcut === 'DOGE') {
-            enhancement.dustOutputFee = 1000000; // 0.01 DOGE for every output lower than dust (dust = 0.01 DOGE)
-        }
-
         return composeTx({
             txType: account.type,
             utxos: this.utxos,
             outputs: this.outputs,
             height: this.blockHeight,
             feeRate,
+            longTermFeeRate: this.feeLevels.longTermFeeRate,
             skipPermutation: this.skipPermutation,
             basePath: account.address_n,
             network: coinInfo.network,
             changeId,
             changeAddress: changeAddress.address,
             dustThreshold: coinInfo.dustLimit,
-            ...enhancement,
+            baseFee,
         });
     }
 

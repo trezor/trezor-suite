@@ -4,7 +4,7 @@ import * as typef from 'typeforce';
 import { bitcoin as BITCOIN_NETWORK } from '../networks';
 import * as bscript from '../script';
 import * as lazy from './lazy';
-import type { Payment, PaymentOpts, Stack } from './index';
+import { Payment, PaymentOpts, Stack } from '../types';
 
 const { OPS } = bscript;
 
@@ -30,7 +30,7 @@ export function p2data(a: Payment, opts?: PaymentOpts): Payment {
     );
 
     const network = a.network || BITCOIN_NETWORK;
-    const o = { name: 'embed', network } as Payment;
+    const o: Payment = { name: 'embed', network };
 
     lazy.prop(o, 'output', () => {
         if (!a.data) return;

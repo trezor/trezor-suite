@@ -195,6 +195,10 @@ export class TorController extends EventEmitter {
         });
     }
 
+    public closeActiveCircuits() {
+        return this.controlPort.closeActiveCircuits();
+    }
+
     public stop() {
         this.status = TOR_CONTROLLER_STATUS.Stopped;
     }

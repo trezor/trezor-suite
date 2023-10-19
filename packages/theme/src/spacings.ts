@@ -9,6 +9,7 @@ export type Spacings = typeof spacings;
 export type Spacing = keyof typeof spacings;
 
 export const nativeSpacings = {
+    extraSmall: 4,
     small: 8,
     medium: 16,
     large: 24,

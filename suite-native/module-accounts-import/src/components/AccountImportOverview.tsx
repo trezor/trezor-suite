@@ -1,9 +1,10 @@
-import React from 'react';
-
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
-import { CryptoIcon } from '@trezor/icons';
-import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
-import { Box } from '@suite-native/atoms';
+import {
+    CryptoAmountFormatter,
+    FiatBalanceFormatter,
+    useFiatFromCryptoValue,
+} from '@suite-native/formatters';
+import { RoundedIcon, VStack } from '@suite-native/atoms';
 import { isTestnet } from '@suite-common/wallet-utils';
 import { TextInputField } from '@suite-native/forms';
 
@@ -14,36 +15,35 @@ type AssetsOverviewProps = {
     networkSymbol: NetworkSymbol;
 };
 
-export const AccountImportOverview = ({ balance, networkSymbol }: AssetsOverviewProps) => (
-    <AccountImportOverviewCard
-        icon={<CryptoIcon name={networkSymbol} size="large" />}
-        coinName={networks[networkSymbol].name}
-        symbol={networkSymbol}
-        cryptoAmount={
-            <CryptoAmountFormatter
-                value={balance}
-                network={networkSymbol}
-                isBalance={false}
-                variant="label"
-            />
-        }
-    >
-        {!isTestnet(networkSymbol) && (
-            <Box marginBottom="large">
-                <CryptoToFiatAmountFormatter
+export const AccountImportOverview = ({ balance, networkSymbol }: AssetsOverviewProps) => {
+    const fiatBalanceValue = useFiatFromCryptoValue({
+        cryptoValue: balance,
+        network: networkSymbol,
+    });
+    return (
+        <AccountImportOverviewCard
+            icon={<RoundedIcon name={networkSymbol} iconSize="large" />}
+            coinName={networks[networkSymbol].name}
+            symbol={networkSymbol}
+            cryptoAmount={
+                <CryptoAmountFormatter
                     value={balance}
                     network={networkSymbol}
                     isDiscreetText={false}
-                    variant="titleLarge"
+                    isBalance={false}
+                    variant="label"
                 />
-            </Box>
-        )}
-        <Box>
-            <TextInputField
-                data-testID="@account-import/coin-synced/label-input"
-                name="accountLabel"
-                label="Coin label"
-            />
-        </Box>
-    </AccountImportOverviewCard>
-);
+            }
+        >
+            <VStack spacing="large">
+                {!isTestnet(networkSymbol) && <FiatBalanceFormatter value={fiatBalanceValue} />}
+                <TextInputField
+                    data-testID="@account-import/coin-synced/label-input"
+                    name="accountLabel"
+                    label="Coin label"
+                    elevation="1"
+                />
+            </VStack>
+        </AccountImportOverviewCard>
+    );
+};

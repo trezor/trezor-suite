@@ -1,8 +1,8 @@
-import React, { useRef, useLayoutEffect } from 'react';
+import { useRef, useLayoutEffect } from 'react';
 import { useTheme } from '@trezor/components';
-import { FormattedCryptoAmount } from '@suite-components';
+import { FormattedCryptoAmount } from 'src/components/suite';
 import { useFormatters } from '@suite-common/formatters';
-import { NetworkSymbol } from '@wallet-types';
+import { NetworkSymbol } from 'src/types/wallet';
 
 interface CommonProps {
     setWidth: (n: number) => void;

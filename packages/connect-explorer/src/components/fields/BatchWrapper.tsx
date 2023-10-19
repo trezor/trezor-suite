@@ -1,9 +1,9 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import styled from 'styled-components';
 import { THEME, Icon } from '@trezor/components';
 
 interface BatchWrapperProps {
-    children: React.ReactNode;
+    children: ReactNode;
     onRemove: () => void;
 }
 

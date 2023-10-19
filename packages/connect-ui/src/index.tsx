@@ -1,8 +1,15 @@
-import React, { useCallback, useEffect, useState, useMemo } from 'react';
+import { useCallback, useEffect, useState, useMemo, ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { PostMessage, UI, PopupHandshake, UI_REQUEST } from '@trezor/connect';
+import {
+    PostMessage,
+    UI,
+    PopupHandshake,
+    UI_REQUEST,
+    POPUP,
+    createPopupMessage,
+} from '@trezor/connect';
 
 // views
 import { Transport } from './views/Transport';
@@ -63,7 +70,7 @@ export const ConnectUI = ({ postMessage, clearLegacyView }: ConnectUIProps) => {
     }, []);
 
     const [Component, Notifications] = useMemo(() => {
-        let component: React.ReactNode | null;
+        let component: ReactNode | null;
 
         // component (main screen)
 
@@ -72,8 +79,14 @@ export const ConnectUI = ({ postMessage, clearLegacyView }: ConnectUIProps) => {
         } else {
             // messages[0] could be null. in that case, legacy view is rendered
             switch (messages[0]?.type) {
+                case 'waiting-for-iframe-init':
+                    component = <Loader message="waiting for host to load" />;
+                    break;
+                case 'waiting-for-iframe-handshake':
+                    component = <Loader message="waiting for handshake from host" />;
+                    break;
                 case 'popup-handshake':
-                    component = <Loader />;
+                    component = <Loader message="ready" />;
                     break;
                 case UI.TRANSPORT:
                     component = <Transport />;
@@ -141,7 +154,13 @@ export const ConnectUI = ({ postMessage, clearLegacyView }: ConnectUIProps) => {
                             </div>
                         )}
 
-                        <BottomRightFloatingBar />
+                        <BottomRightFloatingBar
+                            onAnalyticsConfirm={enabled => {
+                                postMessage(
+                                    createPopupMessage(POPUP.ANALYTICS_RESPONSE, { enabled }),
+                                );
+                            }}
+                        />
                     </Layout>
                 </IntlWrapper>
             </ThemeWrapper>

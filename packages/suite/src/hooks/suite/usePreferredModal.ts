@@ -1,7 +1,9 @@
-import { MODAL } from '@suite-actions/constants';
-import { useSelector, useDiscovery } from '@suite-hooks';
-import type { Route, ForegroundAppRoute } from '@suite-types';
-import { ModalAppParams } from '@suite-utils/router';
+import { Route } from '@suite-common/suite-types';
+
+import { MODAL } from 'src/actions/suite/constants';
+import { useSelector, useDiscovery } from 'src/hooks/suite';
+import type { ForegroundAppRoute } from 'src/types/suite';
+import { ModalAppParams } from 'src/utils/suite/router';
 
 const isForegroundApp = (route: Route): route is ForegroundAppRoute =>
     !route.isFullscreenApp && !!route.isForegroundApp;
@@ -36,11 +38,9 @@ const getForegroundAppAction = (route: ForegroundAppRoute, params: Partial<Modal
 
 export const usePreferredModal = () => {
     const { getDiscoveryStatus } = useDiscovery();
-    const { route, params, modal } = useSelector(state => ({
-        route: state.router.route,
-        params: state.router.params as Partial<ModalAppParams>,
-        modal: state.modal,
-    }));
+    const route = useSelector(state => state.router.route);
+    const params = useSelector(state => state.router.params as Partial<ModalAppParams>);
+    const modal = useSelector(state => state.modal);
 
     if (route && isForegroundApp(route) && hasPriority(route)) {
         return getForegroundAppAction(route, params);

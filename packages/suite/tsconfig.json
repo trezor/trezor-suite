@@ -1,5 +1,5 @@
 {
-    "extends": "../../tsconfig.aliases.json",
+    "extends": "../../tsconfig.json",
     "compilerOptions": {
         "plugins": [
             {
@@ -7,7 +7,8 @@
                 "tags": ["styled", "css", "sty"]
             }
         ],
-        "outDir": "./libDev"
+        "outDir": "./libDev",
+        "baseUrl": "."
     },
     "include": [".", "**/*.json"],
     "references": [
@@ -16,6 +17,9 @@
         },
         {
             "path": "../../suite-common/connect-init"
+        },
+        {
+            "path": "../../suite-common/device-authenticity"
         },
         {
             "path": "../../suite-common/fiat-services"
@@ -29,11 +33,15 @@
         { "path": "../../suite-common/invity" },
         { "path": "../../suite-common/logger" },
         {
+            "path": "../../suite-common/message-system"
+        },
+        {
             "path": "../../suite-common/metadata-types"
         },
         {
             "path": "../../suite-common/redux-utils"
         },
+        { "path": "../../suite-common/sentry" },
         {
             "path": "../../suite-common/suite-config"
         },
@@ -68,6 +76,7 @@
             "path": "../../suite-common/wallet-utils"
         },
         { "path": "../analytics" },
+        { "path": "../blockchain-link" },
         { "path": "../coinjoin" },
         { "path": "../components" },
         { "path": "../connect" },
@@ -75,7 +84,7 @@
         { "path": "../device-utils" },
         { "path": "../dom-utils" },
         { "path": "../env-utils" },
-        { "path": "../message-system" },
+        { "path": "../ipc-proxy" },
         { "path": "../react-utils" },
         { "path": "../suite-analytics" },
         { "path": "../suite-data" },

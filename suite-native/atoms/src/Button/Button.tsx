@@ -1,16 +1,17 @@
-import React, { useState } from 'react';
-import { Pressable, PressableProps, View } from 'react-native';
+import { useState } from 'react';
+import { Pressable, PressableProps } from 'react-native';
 import Animated from 'react-native-reanimated';
 
 import { MergeExclusive } from 'type-fest';
 
 import { Color, TypographyStyle, nativeSpacings } from '@trezor/theme';
 import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Icon, IconName } from '@trezor/icons';
+import { Icon, IconColor, IconName, IconSize } from '@suite-common/icons';
 
 import { Text } from '../Text';
 import { useButtonPressAnimatedStyle } from './useButtonPressAnimatedStyle';
 import { TestProps } from '../types';
+import { HStack } from '../Stack';
 
 export type ButtonBackgroundElevation = '0' | '1';
 
@@ -32,6 +33,12 @@ export type ButtonProps = Omit<PressableProps, 'style' | 'onPressIn' | 'onPressO
 } & MergeExclusive<{ iconLeft?: IconName }, { iconRight?: IconName }> &
     TestProps;
 
+type ButtonIconProps = {
+    iconName: IconName;
+    color: IconColor;
+    buttonSize: ButtonSize;
+};
+
 type ButtonColorSchemeColors = {
     backgroundColor: Color;
     onPressColor: Color;
@@ -44,10 +51,6 @@ export type ButtonStyleProps = {
     backgroundColor: Color;
     isDisabled: boolean;
     hasTitle?: boolean;
-};
-
-type IconStyleProps = {
-    position: 'left' | 'right';
 };
 
 export const buttonSchemeToColorsMap = {
@@ -93,44 +96,33 @@ export const buttonSchemeToColorsMap = {
 
 const sizeToDimensionsMap = {
     small: {
-        height: 40,
+        minHeight: 40,
         paddingVertical: 10,
         paddingHorizontal: nativeSpacings.medium,
     },
     medium: {
-        height: 48,
+        minHeight: 48,
         paddingVertical: 12,
         paddingHorizontal: 20,
     },
     large: {
-        height: 56,
+        minHeight: 56,
         paddingVertical: nativeSpacings.medium,
         paddingHorizontal: nativeSpacings.large,
     },
 } as const satisfies Record<ButtonSize, NativeStyleObject>;
 
-const textSizeToVariantMap = {
+export const buttonToTextSizeMap = {
     small: 'hint',
     medium: 'body',
     large: 'body',
 } as const satisfies Record<ButtonSize, TypographyStyle>;
 
-const iconStyle = prepareNativeStyle((utils, { position }: IconStyleProps) => ({
-    extend: [
-        {
-            condition: position === 'left',
-            style: {
-                marginRight: utils.spacings.small,
-            },
-        },
-        {
-            condition: position === 'right',
-            style: {
-                marginLeft: utils.spacings.small,
-            },
-        },
-    ],
-}));
+const buttonToIconSizeMap = {
+    small: 'medium',
+    medium: 'mediumLarge',
+    large: 'large',
+} as const satisfies Record<ButtonSize, IconSize>;
 
 export const buttonStyle = prepareNativeStyle<ButtonStyleProps>(
     (utils, { size, backgroundColor, isDisabled }) => {
@@ -152,6 +144,10 @@ export const buttonStyle = prepareNativeStyle<ButtonStyleProps>(
             ],
         };
     },
+);
+
+export const ButtonIcon = ({ iconName, color, buttonSize }: ButtonIconProps) => (
+    <Icon name={iconName} color={color} size={buttonToIconSizeMap[buttonSize]} />
 );
 
 export const Button = ({
@@ -181,13 +177,11 @@ export const Button = ({
 
     const iconName = iconLeft || iconRight;
     const icon = iconName ? (
-        <View style={applyStyle(iconStyle, { position: iconLeft ? 'left' : 'right' })}>
-            <Icon
-                name={iconName}
-                color={isDisabled ? 'backgroundNeutralDisabled' : textColor}
-                size={size}
-            />
-        </View>
+        <ButtonIcon
+            iconName={iconName}
+            color={isDisabled ? disabledTextColor : textColor}
+            buttonSize={size}
+        />
     ) : null;
 
     return (
@@ -208,14 +202,17 @@ export const Button = ({
                     style,
                 ]}
             >
-                {iconLeft && icon}
-                <Text
-                    variant={textSizeToVariantMap[size]}
-                    color={isDisabled ? disabledTextColor : textColor}
-                >
-                    {children}
-                </Text>
-                {iconRight && icon}
+                <HStack alignItems="center">
+                    {iconLeft && icon}
+                    <Text
+                        textAlign="center"
+                        variant={buttonToTextSizeMap[size]}
+                        color={isDisabled ? disabledTextColor : textColor}
+                    >
+                        {children}
+                    </Text>
+                    {iconRight && icon}
+                </HStack>
             </Animated.View>
         </Pressable>
     );

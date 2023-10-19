@@ -3,21 +3,42 @@
 // unit test for suite actions
 // data provided by TrezorConnect are mocked
 
-import { configureStore } from '@suite/support/tests/configureStore';
-
+import {
+    prepareDeviceReducer,
+    selectDevice,
+    selectDevices,
+    selectDevicesCount,
+    prepareFirmwareReducer,
+    deviceActions,
+    acquireDevice,
+    authConfirm,
+    authorizeDevice,
+    createDeviceInstance,
+    forgetDisconnectedDevices,
+    handleDeviceConnect,
+    observeSelectedDevice,
+    switchDuplicatedDevice,
+    selectDeviceThunk,
+    handleDeviceDisconnect,
+} from '@suite-common/wallet-core';
+import { connectInitThunk } from '@suite-common/connect-init';
 import { DEVICE } from '@trezor/connect';
-import suiteReducer from '@suite-reducers/suiteReducer';
-import deviceReducer from '@suite-reducers/deviceReducer';
-import routerReducer from '@suite-reducers/routerReducer';
-import modalReducer from '@suite-reducers/modalReducer';
-import firmwareReducer from '@firmware-reducers/firmwareReducer';
+
+import { configureStore, filterThunkActionTypes } from 'src/support/tests/configureStore';
+import suiteReducer from 'src/reducers/suite/suiteReducer';
+import routerReducer from 'src/reducers/suite/routerReducer';
+import modalReducer from 'src/reducers/suite/modalReducer';
+import { discardMockedConnectInitActions } from 'src/utils/suite/storage';
+import { extraDependencies } from 'src/support/extraDependencies';
+
 import { SUITE } from '../constants';
 import * as suiteActions from '../suiteActions';
-import { connectInitThunk } from '@suite-common/connect-init';
 import fixtures from '../__fixtures__/suiteActions';
-import { discardMockedConnectInitActions } from '@suite-utils/storage';
 
 const { getSuiteDevice } = global.JestMocks;
+
+const firmwareReducer = prepareFirmwareReducer(extraDependencies);
+const deviceReducer = prepareDeviceReducer(extraDependencies);
 
 jest.mock('@trezor/connect', () => {
     let fixture: any;
@@ -47,6 +68,7 @@ jest.mock('@trezor/connect', () => {
                 },
         },
         DEVICE: {
+            CHANGED: 'device-changed',
             CONNECT: 'device-connect',
             DISCONNECT: 'device-disconnect',
         },
@@ -60,6 +82,9 @@ jest.mock('@trezor/connect', () => {
         setTestFixtures: (f: any) => {
             fixture = f;
         },
+        DeviceModelInternal: {
+            T2T1: 'T2T1',
+        },
     };
 });
 
@@ -70,7 +95,7 @@ type FirmwareState = ReturnType<typeof firmwareReducer>;
 
 const getInitialState = (
     suite?: Partial<SuiteState>,
-    devices?: DevicesState,
+    device?: Partial<DevicesState>,
     router?: RouterState,
     firmware?: Partial<FirmwareState>,
 ) => ({
@@ -78,7 +103,10 @@ const getInitialState = (
         ...suiteReducer(undefined, { type: 'foo' } as any),
         ...suite,
     },
-    devices: devices || [],
+    device: {
+        ...deviceReducer(undefined, { type: 'foo' } as any),
+        ...device,
+    },
     router: {
         ...routerReducer(undefined, { type: 'foo' } as any),
         ...router,
@@ -102,9 +130,9 @@ const initStore = (state: State) => {
     const store = mockStore(state);
     store.subscribe(() => {
         const action = store.getActions().pop();
-        const { suite, devices, router } = store.getState();
+        const { suite, device, router } = store.getState();
         store.getState().suite = suiteReducer(suite, action);
-        store.getState().devices = deviceReducer(devices, action);
+        store.getState().device = deviceReducer(device, action);
         store.getState().router = routerReducer(router, action);
         // add action back to stack
         store.getActions().push(action);
@@ -135,14 +163,14 @@ describe('Suite Actions', () => {
 
     fixtures.selectDevice.forEach(f => {
         it(`selectDevice: ${f.description}`, async () => {
-            const state = getInitialState({}, f.state.devices);
+            const state = getInitialState({}, f.state.device);
             const store = initStore(state);
-            await store.dispatch(suiteActions.selectDevice(f.device));
+            await store.dispatch(selectDeviceThunk(f.device));
             if (!f.result) {
                 expect(store.getActions().length).toEqual(0);
             } else {
-                const action = store.getActions().pop();
-                expect(action.payload).toEqual(f.result.payload);
+                const action = filterThunkActionTypes(store.getActions()).pop();
+                expect(action?.payload).toEqual(f.result.payload);
             }
         });
     });
@@ -151,32 +179,34 @@ describe('Suite Actions', () => {
         it(`handleDeviceConnect: ${f.description}`, async () => {
             const state = getInitialState(
                 f.state.suite,
-                f.state.devices,
+                f.state.device,
                 undefined,
                 f.state.firmware as FirmwareState,
             );
             const store = initStore(state);
-            await store.dispatch(suiteActions.handleDeviceConnect(f.device));
+            await store.dispatch(handleDeviceConnect(f.device));
             if (!f.result) {
-                expect(store.getActions().length).toEqual(0);
+                expect(filterThunkActionTypes(store.getActions()).length).toEqual(0);
             } else {
-                const action = store.getActions().pop();
-                expect(action.type).toEqual(f.result);
+                const action = filterThunkActionTypes(store.getActions()).pop();
+                expect(action?.type).toEqual(f.result);
             }
         });
     });
 
     fixtures.handleDeviceDisconnect.forEach(f => {
         it(`handleDeviceDisconnect: ${f.description}`, () => {
-            const state = getInitialState(f.state.suite, f.state.devices);
+            const state = getInitialState(f.state.suite, f.state.device);
             const store = initStore(state);
             store.dispatch({
                 type: DEVICE.DISCONNECT, // TrezorConnect event to affect "deviceReducer"
                 payload: f.device,
             });
-            store.dispatch(suiteActions.handleDeviceDisconnect(f.device));
+            store.dispatch(handleDeviceDisconnect(f.device));
             if (!f.result) {
-                expect(store.getActions().length).toEqual(1); // only DEVICE.DISCONNECT action present
+                expect(filterThunkActionTypes(store.getActions()).pop()?.type).toEqual(
+                    deviceActions.deviceDisconnect.type,
+                );
             } else {
                 const action = store.getActions().pop();
                 if (f.result.type) {
@@ -189,10 +219,10 @@ describe('Suite Actions', () => {
 
     fixtures.forgetDisconnectedDevices.forEach(f => {
         it(`forgetDisconnectedDevices: ${f.description}`, () => {
-            const state = getInitialState(f.state.suite, f.state.devices);
+            const state = getInitialState(f.state.suite, f.state.device);
             const store = initStore(state);
-            store.dispatch(suiteActions.forgetDisconnectedDevices(f.device));
-            const actions = store.getActions();
+            store.dispatch(forgetDisconnectedDevices(f.device));
+            const actions = filterThunkActionTypes(store.getActions());
             expect(actions.length).toEqual(f.result.length);
             actions.forEach((a, i) => {
                 expect(a.payload).toMatchObject(f.result[i]);
@@ -202,15 +232,15 @@ describe('Suite Actions', () => {
 
     fixtures.observeSelectedDevice.forEach(f => {
         it(`observeSelectedDevice: ${f.description}`, () => {
-            const state = getInitialState(f.state.suite, f.state.devices);
+            const state = getInitialState(f.state.suite, f.state.device);
             const store = initStore(state);
-            const changed = store.dispatch(suiteActions.observeSelectedDevice(f.action as any));
+            const changed = store.dispatch(observeSelectedDevice());
             expect(changed).toEqual(f.changed);
             if (!f.result) {
-                expect(store.getActions().length).toEqual(0);
+                expect(filterThunkActionTypes(store.getActions()).length).toEqual(0);
             } else {
-                const action = store.getActions().pop();
-                expect(action.type).toEqual(f.result);
+                const action = filterThunkActionTypes(store.getActions()).pop();
+                expect(action?.type).toEqual(f.result);
             }
         });
     });
@@ -218,17 +248,19 @@ describe('Suite Actions', () => {
     fixtures.acquireDevice.forEach(f => {
         it(`acquireDevice: ${f.description}`, async () => {
             require('@trezor/connect').setTestFixtures(f.getFeatures);
-            const state = getInitialState(f.state);
+            const state = getInitialState(undefined, f.state.device);
             const store = initStore(state);
             store.dispatch(connectInitThunk()); // trezorConnectActions.connectInitThunk needs to be called in order to wrap "getFeatures" with lockUi action
-            await store.dispatch(suiteActions.acquireDevice(f.requestedDevice));
+            await store.dispatch(acquireDevice(f.requestedDevice));
             // we are not interested in thunk state here
-            const expectedActions = discardMockedConnectInitActions(store.getActions());
+            const expectedActions = filterThunkActionTypes(
+                discardMockedConnectInitActions(store.getActions()),
+            );
             if (!f.result) {
                 expect(expectedActions.length).toEqual(0);
             } else {
                 const action = expectedActions.pop();
-                expect(action.type).toEqual(f.result);
+                expect(action?.type).toEqual(f.result);
             }
         });
     });
@@ -236,25 +268,25 @@ describe('Suite Actions', () => {
     fixtures.authorizeDevice.forEach(f => {
         it(`authorizeDevice: ${f.description}`, async () => {
             require('@trezor/connect').setTestFixtures(f.getDeviceState);
-            const state = getInitialState(f.suiteState, f.devicesState);
+            const state = getInitialState(undefined, {
+                selectedDevice: f.suiteState?.selectedDevice,
+                devices: f.devicesState ?? [],
+            });
             const store = initStore(state);
-            await store.dispatch(suiteActions.authorizeDevice());
+            await store.dispatch(authorizeDevice());
             if (!f.result) {
-                expect(store.getActions().length).toEqual(0);
+                expect(filterThunkActionTypes(store.getActions()).length).toEqual(0);
             } else {
-                const action = store.getActions().pop();
-                expect(action.type).toEqual(f.result);
+                const action = filterThunkActionTypes(store.getActions()).pop();
+                expect(action?.type).toEqual(f.result);
                 if (f.deviceReducerResult) {
-                    // expect(store.getState().devices).toMatchObject(f.deviceReducerResult);
-                    store.getState().devices.forEach((d, i) => {
+                    const devices = selectDevices(store.getState());
+                    devices.forEach((d, i) => {
                         const dev = f.deviceReducerResult[i];
                         expect(d.state).toEqual(dev.state);
                         expect(d.instance).toEqual(dev.instance);
                         expect(d.useEmptyPassphrase).toEqual(dev.useEmptyPassphrase);
                     });
-                    // expect(store.getState().devices).toEqual(
-                    //     expect.arrayContaining(f.deviceReducerResult),
-                    // );
                 }
             }
         });
@@ -263,13 +295,13 @@ describe('Suite Actions', () => {
     fixtures.authConfirm.forEach(f => {
         it(`authConfirm: ${f.description}`, async () => {
             require('@trezor/connect').setTestFixtures(f.getDeviceState);
-            const state = getInitialState(f.state);
+            const state = getInitialState(undefined, f.state);
             const store = initStore(state);
-            await store.dispatch(suiteActions.authConfirm());
+            await store.dispatch(authConfirm());
             if (!f.result) {
-                expect(store.getActions().length).toEqual(0);
+                expect(filterThunkActionTypes(store.getActions()).length).toEqual(0);
             } else {
-                const action = store.getActions().pop();
+                const action = filterThunkActionTypes(store.getActions()).pop();
                 expect(action).toMatchObject(f.result);
             }
         });
@@ -278,39 +310,37 @@ describe('Suite Actions', () => {
     fixtures.createDeviceInstance.forEach(f => {
         it(`createDeviceInstance: ${f.description}`, async () => {
             require('@trezor/connect').setTestFixtures(f.applySettings);
-            const state = getInitialState(f.state);
+            const state = getInitialState(undefined, f.state.device);
             const store = initStore(state);
-            await store.dispatch(suiteActions.createDeviceInstance(f.state.device));
+            await store.dispatch(createDeviceInstance({ device: f.state.device.selectedDevice }));
             if (!f.result) {
-                expect(store.getActions().length).toEqual(0);
+                expect(filterThunkActionTypes(store.getActions()).length).toEqual(0);
             } else {
-                const action = store.getActions().pop();
-                expect(action.type).toEqual(f.result);
+                const action = filterThunkActionTypes(store.getActions()).pop();
+                expect(action?.type).toEqual(f.result);
             }
         });
     });
 
     fixtures.switchDuplicatedDevice.forEach(f => {
         it(`createDeviceInstance: ${f.description}`, async () => {
-            const state = getInitialState(f.state.suite, f.state.devices);
+            const state = getInitialState(undefined, f.state.device);
             const store = initStore(state);
-            await store.dispatch(suiteActions.switchDuplicatedDevice(f.device, f.duplicate));
-            expect(store.getState().suite.device).toEqual(f.result.selected);
-            expect(store.getState().devices.length).toEqual(f.result.devices.length);
-            // if (!f.result) {
-            //     expect(store.getActions().length).toEqual(0);
-            // } else {
-            //     const action = store.getActions().pop();
-            //     expect(action.type).toEqual(f.result);
-            // }
+            await store.dispatch(
+                switchDuplicatedDevice({ device: f.device, duplicate: f.duplicate }),
+            );
+            const device = selectDevice(store.getState());
+            const devicesCount = selectDevicesCount(store.getState());
+            expect(device).toEqual(f.result.selected);
+            expect(devicesCount).toEqual(f.result.devices.length);
         });
     });
 
     // just for coverage
     it('misc', () => {
         const SUITE_DEVICE = getSuiteDevice({ path: '1' });
-        expect(suiteActions.forgetDevice(SUITE_DEVICE)).toMatchObject({
-            type: SUITE.FORGET_DEVICE,
+        expect(deviceActions.forgetDevice(SUITE_DEVICE)).toMatchObject({
+            type: deviceActions.forgetDevice.type,
         });
         expect(suiteActions.setDebugMode({ showDebugMenu: true })).toMatchObject({
             type: SUITE.SET_DEBUG_MODE,

@@ -2,8 +2,12 @@ import { ActionCreatorWithoutPayload, ActionCreatorWithPayload, AnyAction } from
 
 export * from './device';
 export * from './guide';
+export * from './firmware';
 export * from './sign';
+export * from './modal';
 export * from './github';
+export * from './messageSystem';
+export * from './route';
 
 export type Selector<TReturnValue> = (state: any) => TReturnValue;
 export type SuiteCompatibleAction<TPayload> = (

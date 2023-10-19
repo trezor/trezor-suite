@@ -14,8 +14,8 @@ describe('Script Signatures', () => {
         s: string;
     } {
         return {
-            r: signature.slice(0, 32).toString('hex'),
-            s: signature.slice(32, 64).toString('hex'),
+            r: signature.subarray(0, 32).toString('hex'),
+            s: signature.subarray(32, 64).toString('hex'),
         };
     }
 

@@ -1,20 +1,21 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { configureStore } from '@suite/support/tests/configureStore';
 
-import { accountsReducer, blockchainReducer } from '@wallet-reducers';
-import walletSettingsReducer from '@wallet-reducers/settingsReducer';
-import walletMiddleware from '@wallet-middlewares/walletMiddleware';
 import { prepareBlockchainMiddleware } from '@suite-common/wallet-core';
-import * as fixtures from '../__fixtures__/walletMiddleware';
+
+import walletSettingsReducer from 'src/reducers/wallet/settingsReducer';
+import walletMiddleware from 'src/middlewares/wallet/walletMiddleware';
+import { accountsReducer, blockchainReducer } from 'src/reducers/wallet';
+import { configureStore } from 'src/support/tests/configureStore';
 import selectedAccountReducer, {
     State as SelectedAccountState,
-} from '@wallet-reducers/selectedAccountReducer';
-import sendFormReducer, { SendState } from '@wallet-reducers/sendFormReducer';
-import formDraftReducer from '@wallet-reducers/formDraftReducer';
+} from 'src/reducers/wallet/selectedAccountReducer';
+import sendFormReducer, { SendState } from 'src/reducers/wallet/sendFormReducer';
+import formDraftReducer from 'src/reducers/wallet/formDraftReducer';
+import { RouterState } from 'src/reducers/suite/routerReducer';
+import { Action } from 'src/types/suite';
+import { extraDependencies } from 'src/support/extraDependencies';
 
-import { RouterState } from '@suite-reducers/routerReducer';
-import { Action } from '@suite-types';
-import { extraDependencies } from '@suite/support/extraDependencies';
+import * as fixtures from '../__fixtures__/walletMiddleware';
 
 const { getWalletAccount } = global.JestMocks;
 
@@ -42,7 +43,8 @@ export const getInitialState = ({
         app: 'wallet',
         ...router,
     },
-    suite: {
+    suite: {},
+    device: {
         device: true, // device is irrelevant in this test
     },
     wallet: {

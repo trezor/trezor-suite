@@ -1,6 +1,7 @@
-import * as deviceSettingsActions from '../deviceSettingsActions';
-import { SUITE } from '@suite-actions/constants';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { deviceActions } from '@suite-common/wallet-core';
+
+import * as deviceSettingsActions from '../deviceSettingsActions';
 
 const { getSuiteDevice } = global.JestMocks;
 
@@ -12,70 +13,78 @@ export default [
         deviceChange: getSuiteDevice({ path: '1' }, { device_id: 'new-device-id' }),
         result: {
             actions: [
-                { type: 'device-changed' },
-                { type: '@suite/update-selected-device' },
-                { type: SUITE.FORGET_DEVICE, payload: { features: { device_id: 'device-id' } } },
+                { type: deviceActions.deviceChanged.type },
+                { type: deviceActions.updateSelectedDevice.type },
                 {
-                    type: SUITE.FORGET_DEVICE,
+                    type: deviceActions.forgetDevice.type,
+                    payload: { features: { device_id: 'device-id' } },
+                },
+                {
+                    type: deviceActions.forgetDevice.type,
                     payload: { features: { device_id: 'new-device-id' } },
                 },
                 { type: notificationsActions.addToast.type, payload: { type: 'device-wiped' } },
-                { type: SUITE.REQUEST_DEVICE_RECONNECT },
+                { type: deviceActions.requestDeviceReconnect.type },
             ],
         },
     },
     {
         description: 'Wipe device with multiple device instances',
         initialState: {
-            devices: [
-                getSuiteDevice({
-                    path: '1',
-                    connected: true,
-                }),
-                getSuiteDevice({
-                    path: '1',
-                    connected: true,
-                    instance: 1,
-                    state: '1',
-                }),
-                getSuiteDevice({
-                    path: '1',
-                    connected: true,
-                    instance: 2,
-                    state: '2',
-                }),
-            ],
+            device: {
+                devices: [
+                    getSuiteDevice({
+                        path: '1',
+                        connected: true,
+                    }),
+                    getSuiteDevice({
+                        path: '1',
+                        connected: true,
+                        instance: 1,
+                        state: '1',
+                    }),
+                    getSuiteDevice({
+                        path: '1',
+                        connected: true,
+                        instance: 2,
+                        state: '2',
+                    }),
+                ],
+            },
         },
         action: () => deviceSettingsActions.wipeDevice(),
         mocks: { success: true, payload: { message: 'Success' } },
         deviceChange: getSuiteDevice({ path: '1' }, { device_id: 'new-device-id' }),
         result: {
             actions: [
-                { type: 'device-changed' },
-                { type: '@suite/update-selected-device' },
-                { type: SUITE.FORGET_DEVICE, payload: { features: { device_id: 'device-id' } } },
+                { type: deviceActions.deviceChanged.type },
+                { type: deviceActions.updateSelectedDevice.type },
                 {
-                    type: SUITE.FORGET_DEVICE,
+                    type: deviceActions.forgetDevice.type,
+                    payload: { features: { device_id: 'device-id' } },
+                },
+                {
+                    type: deviceActions.forgetDevice.type,
                     payload: { instance: 1, features: { device_id: 'device-id' } },
                 },
                 {
-                    type: SUITE.FORGET_DEVICE,
+                    type: deviceActions.forgetDevice.type,
                     payload: { instance: 2, features: { device_id: 'device-id' } },
                 },
                 {
-                    type: SUITE.FORGET_DEVICE,
+                    type: deviceActions.forgetDevice.type,
                     payload: { features: { device_id: 'new-device-id' } },
                 },
                 {
-                    type: SUITE.FORGET_DEVICE,
+                    type: deviceActions.forgetDevice.type,
                     payload: { instance: 1, features: { device_id: 'new-device-id' } },
                 },
                 {
-                    type: SUITE.FORGET_DEVICE,
+                    type: deviceActions.forgetDevice.type,
                     payload: { instance: 2, features: { device_id: 'new-device-id' } },
                 },
                 { type: notificationsActions.addToast.type, payload: { type: 'device-wiped' } },
-                { type: SUITE.REQUEST_DEVICE_RECONNECT },
+                { type: deviceActions.requestDeviceReconnect.type },
             ],
         },
     },

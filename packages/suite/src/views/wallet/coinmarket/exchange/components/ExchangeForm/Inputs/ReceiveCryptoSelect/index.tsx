@@ -1,14 +1,13 @@
 import { variables, Select } from '@trezor/components';
-import { ExchangeInfo } from '@wallet-actions/coinmarketExchangeActions';
-import React from 'react';
+import { ExchangeInfo } from 'src/actions/wallet/coinmarketExchangeActions';
 import { Controller } from 'react-hook-form';
 import styled from 'styled-components';
 import { ExchangeCoinInfo } from 'invity-api';
-import { useCoinmarketExchangeFormContext } from '@wallet-hooks/useCoinmarketExchangeForm';
-import { Translation } from '@suite-components';
-import { Account } from '@wallet-types';
-import invityAPI from '@suite-services/invityAPI';
-import { symbolToInvityApiSymbol } from '@suite/utils/wallet/coinmarket/coinmarketUtils';
+import { useCoinmarketExchangeFormContext } from 'src/hooks/wallet/useCoinmarketExchangeForm';
+import { Translation } from 'src/components/suite';
+import { Account } from 'src/types/wallet';
+import invityAPI from 'src/services/suite/invityAPI';
+import { symbolToInvityApiSymbol } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { getInputState } from '@suite-common/wallet-utils';
 
 const Wrapper = styled.div`
@@ -35,7 +34,7 @@ const Option = styled.div`
 
 const OptionName = styled.div`
     display: flex;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.TINY};
     max-width: 150px;
 `;
@@ -84,8 +83,15 @@ const buildOptions = (
 };
 
 const ReceiveCryptoSelect = () => {
-    const { control, setAmountLimits, exchangeInfo, exchangeCoinInfo, account, getValues, errors } =
-        useCoinmarketExchangeFormContext();
+    const {
+        control,
+        setAmountLimits,
+        exchangeInfo,
+        exchangeCoinInfo,
+        account,
+        getValues,
+        formState: { errors },
+    } = useCoinmarketExchangeFormContext();
 
     const customSearch = (
         option: { data: { label: string; value: string; name: string } },
@@ -103,12 +109,13 @@ const ReceiveCryptoSelect = () => {
     const { outputs, receiveCryptoSelect } = getValues();
     const token = outputs?.[0]?.token;
     const tokenData = account.tokens?.find(t => t.contract === token);
+
     return (
         <Wrapper>
             <Controller
                 control={control}
                 name="receiveCryptoSelect"
-                render={({ onChange, value }) => (
+                render={({ field: { onChange, value } }) => (
                     <Select
                         inputState={getInputState(
                             errors.receiveCryptoSelect,

@@ -1,19 +1,23 @@
 import { MiddlewareAPI } from 'redux';
+
+import { deviceActions, selectDevice } from '@suite-common/wallet-core';
 import { TRANSPORT, DEVICE } from '@trezor/connect';
+import {
+    messageSystemActions,
+    categorizeMessages,
+    getValidMessages,
+} from '@suite-common/message-system';
 
-import { MESSAGE_SYSTEM, SUITE } from '@suite-actions/constants';
-import { getValidMessages } from '@suite-utils/messageSystem';
-import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
-import { saveValidMessages, ValidMessagesPayload } from '@suite-actions/messageSystemActions';
-import { getIsTorEnabled } from '@suite-utils/tor';
-
-import type { AppState, Action, Dispatch } from '@suite-types';
+import { SUITE } from 'src/actions/suite/constants';
+import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
+import { getIsTorEnabled } from 'src/utils/suite/tor';
+import type { AppState, Action, Dispatch } from 'src/types/suite';
 
 // actions which can affect message system messages
 const actions = [
-    SUITE.SELECT_DEVICE,
+    deviceActions.selectDevice.type,
     SUITE.TOR_STATUS,
-    MESSAGE_SYSTEM.FETCH_CONFIG_SUCCESS_UPDATE,
+    messageSystemActions.fetchSuccessUpdate.type,
     walletSettingsActions.changeNetworks.type,
     TRANSPORT.START,
     DEVICE.CONNECT,
@@ -27,10 +31,11 @@ const messageSystemMiddleware =
 
         if (actions.includes(action.type)) {
             const { config } = api.getState().messageSystem;
-            const { device, transport, torStatus } = api.getState().suite;
+            const { transport, torStatus } = api.getState().suite;
+            const device = selectDevice(api.getState());
             const { enabledNetworks } = api.getState().wallet.settings;
 
-            const messages = getValidMessages(config, {
+            const validMessages = getValidMessages(config, {
                 device,
                 transport,
                 settings: {
@@ -39,24 +44,9 @@ const messageSystemMiddleware =
                 },
             });
 
-            const payload: ValidMessagesPayload = {
-                banner: [],
-                modal: [],
-                context: [],
-                feature: [],
-            };
+            const categorizedValidMessages = categorizeMessages(validMessages);
 
-            messages.forEach(message => {
-                let { category: categories } = message;
-
-                if (typeof categories === 'string') {
-                    categories = [categories];
-                }
-
-                categories.forEach(category => payload[category]?.push(message.id));
-            });
-
-            api.dispatch(saveValidMessages(payload));
+            api.dispatch(messageSystemActions.updateValidMessages(categorizedValidMessages));
         }
 
         return action;

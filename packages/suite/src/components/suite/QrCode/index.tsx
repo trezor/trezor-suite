@@ -1,4 +1,3 @@
-import React from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import styled from 'styled-components';
 
@@ -8,7 +7,7 @@ export const QRCODE_SIZE = 384;
 export const QRCODE_PADDING = 12;
 
 const Wrapper = styled.div`
-    margin: 0 auto 20px;
+    margin: auto;
     max-height: 50vh;
 
     /* some qr code scanners can't recognize qr codes on dark background, having white border around helps with this */
@@ -19,10 +18,11 @@ const Wrapper = styled.div`
 
 interface QrCodeProps {
     value: string;
+    className?: string;
 }
 
-export const QrCode = ({ value }: QrCodeProps) => (
-    <Wrapper>
+export const QrCode = ({ value, className }: QrCodeProps) => (
+    <Wrapper className={className}>
         <QRCodeSVG
             bgColor={colors.BG_WHITE}
             fgColor={colors.TYPE_DARK_GREY}

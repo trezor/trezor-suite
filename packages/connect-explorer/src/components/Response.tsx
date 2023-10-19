@@ -1,5 +1,4 @@
-import React from 'react';
-import styled, { createGlobalStyle } from 'styled-components';
+import styled from 'styled-components';
 import { Inspector } from 'react-inspector';
 import type { AppState } from '../types';
 
@@ -40,7 +39,7 @@ const ClipboardButton = styled.div`
 `;
 
 const CopyToClipboard = props => (
-    <ClipboardButton title="Copy to clipboard" onClick={event => copy(props.data)}>
+    <ClipboardButton title="Copy to clipboard" onClick={_event => copy(props.data)}>
         <svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid">
             <path d="M 5 2 C 3.9 2 3 2.9 3 4 L 3 17 L 5 17 L 5 4 L 15 4 L 15 2 L 5 2 z M 9 6 C 7.9 6 7 6.9 7 8 L 7 20 C 7 21.1 7.9 22 9 22 L 18 22 C 19.1 22 20 21.1 20 20 L 20 8 C 20 6.9 19.1 6 18 6 L 9 6 z M 9 8 L 18 8 L 18 20 L 9 20 L 9 8 z" />
         </svg>
@@ -85,66 +84,6 @@ const MethodResultMenuItem = styled.div`
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
 `;
 
-const DocStyles = createGlobalStyle`
-.docs-container {
-    word-break: break-word;
-    padding: 20px;
-    font-size: 14px;
-    line-height: 1.5;
-    h1, h2, h3, h4 {
-        margin: 0;
-        font-weight: 600;
-        line-height: 1.25;
-        margin-bottom: 16px;
-        margin-top: 24px;
-    }
-    h2 {
-        font-size: 1.5em;
-        border-bottom: 1px solid #eaecef;
-        padding-bottom: .3em;
-        margin: 0;
-    }
-    h3 {
-        font-size: 1.25em;
-    }
-    h4 {
-        font-size: 1em;
-    }
-    p {
-        margin: 16px 0px;
-    }
-
-    code {
-        border-radius: 3px;
-        font-size: 85%;
-        background-color: rgba(27,31,35,.05);
-        padding: .2em .4em;
-        &.language-javascript {
-            display: block;
-            white-space: pre-wrap;
-            background-color: #f6f8fa;
-            line-height: 1.45;
-            overflow: auto;
-            padding: 16px;
-        }
-    }
-
-    ul {
-        padding-left: 2em;
-        list-style: unset;
-        li {
-            em {
-                font-style: italic;
-            }
-        }
-    }
-
-    a {
-        color: #0366d6;
-        text-decoration: none;
-    }
-}
-`;
 interface ResponseProps {
     tab: AppState['method']['tab'];
     response: AppState['method']['response'];
@@ -200,7 +139,6 @@ const Response = ({ code, docs, hasDocumentation, response, tab }: ResponseProps
                     case 'docs':
                         return (
                             <div data-test="@docs">
-                                <DocStyles />
                                 <Container
                                     className="docs-container"
                                     dangerouslySetInnerHTML={{ __html: docs! }}

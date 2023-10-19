@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 
 import { THEME } from '@trezor/components';
@@ -6,18 +6,20 @@ import { Menu } from './Menu';
 
 const MainComponent = styled.main`
     max-width: 1170px;
-    min-width: 800px;
-    min-height: 100%;
-    padding-top: 90px;
+    padding-top: 150px;
     padding-bottom: 25px;
     margin: 0 auto;
     background: ${THEME.light.BG_LIGHT_GREY};
     display: flex;
     flex-direction: row;
+
+    @media (min-width: 640px) {
+        padding-top: 90px;
+    }
 `;
 
 interface MainProps {
-    children: React.ReactNode;
+    children: ReactNode;
 }
 
 export const Main = ({ children }: MainProps) => (

@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unused-prop-types */
 
-import React from 'react';
+import { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
@@ -15,12 +15,14 @@ const WhiteCollapsibleBox = styled(CollapsibleBox)`
 export interface ErrorViewProps {
     type: 'error';
     detail: // errors that might arise when using connect-ui with connect-popup
-    | 'handshake-timeout' // communication was not established in a set time period
+    | 'response-event-error' // Error coming from connect RESPONSE_EVENT
+        | 'handshake-timeout' // communication was not established in a set time period
         | 'iframe-failure'; // another (legacy) error, this is sent from popupManager (host) to popup. it means basically the same like handshake-timeout but we might be notified earlier
     // future errors when using connect-ui in different contexts
+    message?: string;
 }
 
-const StepsOrderedList = styled.ol`
+const StepsList = styled.ul`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.SMALL};
     line-height: 24px;
@@ -43,7 +45,7 @@ interface Tip {
     icon: IconProps['icon'];
     title: string;
     detail: {
-        steps: React.ReactNode[];
+        steps: ReactNode[];
     };
 }
 
@@ -120,19 +122,29 @@ const getTroubleshootingTips = (props: ErrorViewProps) => {
             // fallback, last resort tips
             tips.push({
                 icon: 'FINGERPRINT',
-                title: 'Open site in “incognito mode”',
+                title: 'Open site in “Incognito/Private mode”',
                 detail: {
                     steps: [
                         <Step>
                             Go to <Black>File</Black>
                         </Step>,
                         <Step>
-                            Open <Green>New Incognito Window</Green>
+                            Open <Green>New Incognito/Private Window</Green>
                         </Step>,
                     ],
                 },
             });
         }
+    }
+
+    if (props.detail === 'response-event-error') {
+        tips.push({
+            icon: 'QUESTION',
+            title: 'Action not completed',
+            detail: {
+                steps: [<Step>{props.message}</Step>],
+            },
+        });
     }
 
     if (!tips.length) {
@@ -201,39 +213,53 @@ const HeadingH1 = styled.div`
     margin-bottom: 4px;
 `;
 
-export const ErrorView = (props: ErrorViewProps) => (
-    <View>
-        <InnerWrapper>
-            <H>Error</H>
-            <Text>You can try the following steps to solve the problem</Text>
-            <TipsContainer>
-                {getTroubleshootingTips(props).map(tip => (
-                    <WhiteCollapsibleBox
-                        key={tip.title}
-                        heading={
-                            <Heading>
-                                <StyledIcon icon={tip.icon} color="#000" />
-                                <HeadingText>
-                                    <HeadingH1>{tip.title}</HeadingH1>
-                                </HeadingText>
-                            </Heading>
-                        }
-                        variant="large"
-                        noContentPadding
-                    >
-                        <StepsOrderedList>
-                            {tip.detail.steps.map((step, index) => (
-                                // eslint-disable-next-line react/no-array-index-key
-                                <li key={index}>{step}</li>
-                            ))}
-                        </StepsOrderedList>
-                    </WhiteCollapsibleBox>
-                ))}
-            </TipsContainer>
+export const ErrorView = (props: ErrorViewProps) => {
+    const tips = getTroubleshootingTips(props);
 
-            <Button variant="primary" onClick={() => window.close()}>
-                Close
-            </Button>
-        </InnerWrapper>
-    </View>
-);
+    return (
+        <View data-test="@connect-ui/error">
+            <InnerWrapper>
+                <H>Error</H>
+
+                {/* response error event is just something that went wrong. we don't show any steps here. we only abuse steps UI but there is nothing to follow */}
+                {props.detail !== 'response-event-error' && (
+                    <Text>You can try the following steps to solve the problem</Text>
+                )}
+
+                <TipsContainer>
+                    {tips.map(tip => (
+                        <WhiteCollapsibleBox
+                            opened={tips.length === 1}
+                            key={tip.title}
+                            heading={
+                                <Heading>
+                                    <StyledIcon icon={tip.icon} color="#000" />
+                                    <HeadingText>
+                                        <HeadingH1>{tip.title}</HeadingH1>
+                                    </HeadingText>
+                                </Heading>
+                            }
+                            variant="large"
+                            noContentPadding
+                        >
+                            <StepsList>
+                                {tip.detail.steps.map((step, index) => (
+                                    // eslint-disable-next-line react/no-array-index-key
+                                    <li key={index}>{step}</li>
+                                ))}
+                            </StepsList>
+                        </WhiteCollapsibleBox>
+                    ))}
+                </TipsContainer>
+
+                <Button
+                    data-test="@connect-ui/error-close-button"
+                    variant="primary"
+                    onClick={() => window.close()}
+                >
+                    Close
+                </Button>
+            </InnerWrapper>
+        </View>
+    );
+};

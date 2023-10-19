@@ -1,68 +1,67 @@
-import React from 'react';
 import { Alert, Share } from 'react-native';
 
-import { Button, ButtonBackgroundElevation, VStack } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { pipe, S, A } from '@mobily/ts-belt';
+
+import { Box, Text, Button, ButtonBackgroundElevation, VStack, HStack } from '@suite-native/atoms';
+import { useCopyToClipboard } from '@suite-native/helpers';
 
 import { QRCode } from './QRCode';
-import { QRCodeCopyAndShareButton } from './QRCodeCopyAndShareButton';
 
 type AddressQRCodeProps = {
-    onCopy: () => void;
-    data?: string;
-    onCopyMessage?: string;
-    isShareEnabled?: boolean;
+    address: string;
     backgroundElevation?: ButtonBackgroundElevation;
 };
 
-const actionButtonsStyle = prepareNativeStyle(_ => ({
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row',
-}));
+const ON_COPY_MESSAGE = 'Address copied';
 
-export const AddressQRCode = ({
-    onCopy,
-    data,
-    onCopyMessage = 'Address copied',
-    isShareEnabled = false,
-    backgroundElevation = '0',
-}: AddressQRCodeProps) => {
-    const { applyStyle } = useNativeStyles();
+const splitStringByFourCharacters = (address: string) =>
+    pipe(address, S.splitByRe(/(.{4})/g), A.join(' '));
 
-    if (!data) return null;
+export const AddressQRCode = ({ address, backgroundElevation = '0' }: AddressQRCodeProps) => {
+    const copyToClipboard = useCopyToClipboard();
 
-    const handleSharedata = async () => {
+    const handleCopyAddress = async () => {
+        await copyToClipboard(address, ON_COPY_MESSAGE);
+    };
+
+    const handleShareData = async () => {
         try {
             await Share.share({
-                message: data,
+                message: address,
             });
         } catch (error) {
             Alert.alert('Something went wrong.', error.message);
         }
     };
 
+    const formattedAddress = splitStringByFourCharacters(address);
+
     return (
-        <>
-            <QRCode data={data} />
-            <VStack spacing="small">
-                {isShareEnabled && (
-                    <Button
-                        iconRight="share"
-                        size="large"
-                        colorScheme={`tertiaryElevation${backgroundElevation}`}
-                        onPress={handleSharedata}
-                        style={applyStyle(actionButtonsStyle)}
-                    >
-                        Share
-                    </Button>
-                )}
-                <QRCodeCopyAndShareButton
-                    data={data}
-                    onCopyMessage={onCopyMessage}
-                    onCopy={onCopy}
-                />
-            </VStack>
-        </>
+        <VStack spacing="large">
+            <QRCode data={address} />
+            <Box alignItems="center" justifyContent="center">
+                <Text variant="titleSmall" textAlign="center">
+                    {formattedAddress}
+                </Text>
+            </Box>
+            <HStack spacing="small" justifyContent="center">
+                <Button
+                    size="small"
+                    iconLeft="copy"
+                    onPress={handleCopyAddress}
+                    colorScheme={`tertiaryElevation${backgroundElevation}`}
+                >
+                    Copy
+                </Button>
+                <Button
+                    size="small"
+                    iconLeft="shareAlt"
+                    colorScheme={`tertiaryElevation${backgroundElevation}`}
+                    onPress={handleShareData}
+                >
+                    Share
+                </Button>
+            </HStack>
+        </VStack>
     );
 };

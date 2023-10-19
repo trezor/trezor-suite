@@ -1,5 +1,3 @@
-import React, { memo } from 'react';
-
 import { AccountKey } from '@suite-common/wallet-types';
 import { EthereumTokenTransfer } from '@suite-native/ethereum-tokens';
 import {
@@ -28,7 +26,6 @@ export const TokenTransferListItemValues = ({
         <EthereumTokenToFiatAmountFormatter
             value={tokenTransfer.amount}
             contract={tokenTransfer.contract}
-            ethereumToken={tokenTransfer.symbol}
             decimals={tokenTransfer.decimals}
             signValue={signValueMap[tokenTransfer.type]}
             numberOfLines={1}
@@ -36,7 +33,7 @@ export const TokenTransferListItemValues = ({
         />
         <EthereumTokenAmountFormatter
             value={tokenTransfer.amount}
-            ethereumToken={tokenTransfer.symbol}
+            symbol={tokenTransfer.symbol}
             decimals={tokenTransfer.decimals}
             numberOfLines={1}
             ellipsizeMode="tail"
@@ -44,25 +41,23 @@ export const TokenTransferListItemValues = ({
     </>
 );
 
-export const TokenTransferListItem = memo(
-    ({
-        txid,
-        accountKey,
-        tokenTransfer,
-        includedCoinsCount = 0,
-        isFirst,
-        isLast,
-    }: TokenTransferListItemProps) => (
-        <TransactionListItemContainer
-            tokenTransfer={tokenTransfer}
-            transactionType={tokenTransfer.type}
-            txid={txid}
-            includedCoinsCount={includedCoinsCount}
-            accountKey={accountKey}
-            isFirst={isFirst}
-            isLast={isLast}
-        >
-            <TokenTransferListItemValues tokenTransfer={tokenTransfer} />
-        </TransactionListItemContainer>
-    ),
+export const TokenTransferListItem = ({
+    txid,
+    accountKey,
+    tokenTransfer,
+    includedCoinsCount = 0,
+    isFirst,
+    isLast,
+}: TokenTransferListItemProps) => (
+    <TransactionListItemContainer
+        tokenTransfer={tokenTransfer}
+        transactionType={tokenTransfer.type}
+        txid={txid}
+        includedCoinsCount={includedCoinsCount}
+        accountKey={accountKey}
+        isFirst={isFirst}
+        isLast={isLast}
+    >
+        <TokenTransferListItemValues tokenTransfer={tokenTransfer} />
+    </TransactionListItemContainer>
 );

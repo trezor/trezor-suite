@@ -1,7 +1,6 @@
-import React from 'react';
 import styled from 'styled-components';
 import { variables } from '@trezor/components';
-import { Translation } from '@suite-components';
+import { Translation } from 'src/components/suite';
 
 const Text = styled.div`
     font-size: ${variables.FONT_SIZE.SMALL};

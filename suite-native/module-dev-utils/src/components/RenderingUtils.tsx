@@ -1,4 +1,3 @@
-import React from 'react';
 import { TouchableOpacity } from 'react-native';
 
 import { Box, Card, CheckBox, Text, useDebugView } from '@suite-native/atoms';

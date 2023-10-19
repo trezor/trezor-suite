@@ -226,9 +226,10 @@ export const transformTransaction = (
 
     type = isTxFailed(tx) ? 'failed' : type;
 
-    const rbf = inputs.find(i => typeof i.sequence === 'number' && i.sequence < 0xffffffff - 1)
-        ? true
-        : undefined;
+    const rbf =
+        tx.rbf || inputs.find(i => typeof i.sequence === 'number' && i.sequence < 0xffffffff - 1)
+            ? true
+            : undefined;
 
     const fee =
         tx.ethereumSpecific && !tx.ethereumSpecific.gasUsed
@@ -243,11 +244,12 @@ export const transformTransaction = (
         : undefined;
 
     // some instances of bb don't send size yet
-    const size = tx.size || typeof tx.hex === 'string' ? tx.hex.length / 2 : 0;
+    const size = tx.size || (typeof tx.hex === 'string' ? tx.hex.length / 2 : 0);
 
     return {
         type,
         txid: tx.txid,
+        hex: tx.hex,
         blockTime: tx.blockTime,
         blockHeight: tx.blockHeight,
         blockHash: tx.blockHash,
@@ -365,6 +367,7 @@ export const transformAccountInfo = (payload: BlockbookAccountInfo): AccountInfo
         tokens,
         addresses,
         history: {
+            addrTxCount: payload.addrTxCount,
             total: payload.txs,
             tokens:
                 typeof payload.nonTokenTxs === 'number'

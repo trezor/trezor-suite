@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { useTheme } from '@trezor/components';
 import { SignValue } from '@suite-common/suite-types';

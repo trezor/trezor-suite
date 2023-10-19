@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box, StepsProgressBar, Text } from '@suite-native/atoms';
 
@@ -10,6 +8,7 @@ type OnboardingScreenHeaderProps = {
 };
 
 const titleStyle = prepareNativeStyle(() => ({
+    textAlign: 'center',
     marginBottom: 12,
 }));
 

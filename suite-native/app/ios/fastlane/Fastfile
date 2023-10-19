@@ -16,9 +16,11 @@ def create_temp_keychain(name, password)
     name: name,
     password: password,
     unlock: true,
+    default_keychain: true,
     add_to_search_list: true,
-    timeout: 0
-  )
+    lock_when_sleeps: false,
+    timeout: 3600
+    )
 end
 
 def ensure_temp_keychain(name, password)
@@ -34,7 +36,7 @@ platform :ios do
 
     puts "Running lane #{lane} with App ID #{app_identifier}."
 
-    if lane != :debug
+    if lane != :debugging
       PROVISIONING_NAME = "AppStore #{app_identifier}"
       import_certificate_to_keychain
       load_appstore_connect_api_key
@@ -228,16 +230,19 @@ platform :ios do
       configuration: build_scheme
     )
   end
-
-  lane :debug do
+  desc "Build debug version of the app"
+  lane :debugging do
     build_local_ipa(scheme: "Debug", export_method: "development")
   end
+  desc "Build develop version of the app"
   lane :develop do
     build_to_testflight(scheme: "Develop", export_method: "app-store")
   end
+  desc "Build staging version of the app and upload to App Store Connect"
   lane :staging do
     build_to_testflight(scheme: "Staging", export_method: "app-store")
   end
+  desc "Build production version of the app and upload to App Store Connect"
   lane :production do
     build_to_app_store(scheme: "Release", export_method: "app-store")
   end

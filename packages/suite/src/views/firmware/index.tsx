@@ -1,22 +1,24 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+
 import styled from 'styled-components';
-import * as routerActions from '@suite-actions/routerActions';
-import { TrezorDevice } from '@suite-types';
+
+import { acquireDevice, selectDevice } from '@suite-common/wallet-core';
+import { ConfirmOnDevice, variables } from '@trezor/components';
+
+import { closeModalApp } from 'src/actions/suite/routerActions';
+import { TrezorDevice } from 'src/types/suite';
 import {
     CheckSeedStep,
-    CloseButton,
+    FirmwareCloseButton,
     FirmwareInitial,
     FirmwareInstallation,
-} from '@firmware-components';
-import { DeviceAcquire } from '@suite-views/device-acquire';
-import { DeviceUnknown } from '@suite-views/device-unknown';
-import { DeviceUnreadable } from '@suite-views/device-unreadable';
-import { Translation, Modal } from '@suite-components';
-import { OnboardingStepBox } from '@onboarding-components';
-import { useActions, useFirmware, useSelector } from '@suite-hooks';
-import { ConfirmOnDevice, variables } from '@trezor/components';
-import * as suiteActions from '@suite-actions/suiteActions';
-import { getDeviceModel } from '@trezor/device-utils';
+} from 'src/components/firmware';
+import { DeviceAcquire } from 'src/views/suite/device-acquire';
+import { DeviceUnknown } from 'src/views/suite/device-unknown';
+import { DeviceUnreadable } from 'src/views/suite/device-unreadable';
+import { Translation, Modal } from 'src/components/suite';
+import { OnboardingStepBox } from 'src/components/onboarding';
+import { useDispatch, useFirmware, useSelector } from 'src/hooks/suite';
 
 const Wrapper = styled.div<{ isWithTopPadding: boolean }>`
     display: flex;
@@ -44,18 +46,16 @@ type FirmwareProps = {
 export const Firmware = ({ shouldSwitchFirmwareType }: FirmwareProps) => {
     const { resetReducer, status, setStatus, error, firmwareUpdate, firmwareHashInvalid } =
         useFirmware();
-    const device = useSelector(state => state.suite.device);
-    const { closeModalApp, acquireDevice } = useActions({
-        closeModalApp: routerActions.closeModalApp,
-        acquireDevice: suiteActions.acquireDevice,
-    });
-    const deviceModel = getDeviceModel(device);
+    const device = useSelector(selectDevice);
+    const dispatch = useDispatch();
+
+    const deviceModelInternal = device?.features?.internal_model;
 
     const onClose = () => {
         if (device?.status !== 'available') {
-            acquireDevice(device);
+            dispatch(acquireDevice(device));
         }
-        closeModalApp();
+        dispatch(closeModalApp());
         resetReducer();
     };
 
@@ -98,9 +98,9 @@ export const Firmware = ({ shouldSwitchFirmwareType }: FirmwareProps) => {
                             <Translation id="TOAST_GENERIC_ERROR" values={{ error: error || '' }} />
                         }
                         innerActions={
-                            <CloseButton onClick={onClose}>
+                            <FirmwareCloseButton onClick={onClose}>
                                 <Translation id="TR_BACK" />
-                            </CloseButton>
+                            </FirmwareCloseButton>
                         }
                         nested
                     />
@@ -124,9 +124,9 @@ export const Firmware = ({ shouldSwitchFirmwareType }: FirmwareProps) => {
             case 'started': // called from firmwareUpdate()
             case 'installing':
             case 'wait-for-reboot':
-            case 'unplug': // only relevant for T1, TT auto restarts itself
-            case 'reconnect-in-normal': // only relevant for T1, TT auto restarts itself
-            case 'partially-done': // only relevant for T1, updating from very old fw is done in 2 fw updates, partially-done means first update was installed
+            case 'unplug': // only relevant for T1B1, T2T1 auto restarts itself
+            case 'reconnect-in-normal': // only relevant for T1B1, T2T1 auto restarts itself
+            case 'partially-done': // only relevant for T1B1, updating from very old fw is done in 2 fw updates, partially-done means first update was installed
             case 'validation':
             case 'done':
                 return (
@@ -162,7 +162,8 @@ export const Firmware = ({ shouldSwitchFirmwareType }: FirmwareProps) => {
                 status === 'waiting-for-confirmation' && (
                     <ConfirmOnDevice
                         title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
-                        deviceModel={deviceModel}
+                        deviceModelInternal={deviceModelInternal}
+                        deviceUnitColor={device?.features?.unit_color}
                     />
                 )
             }

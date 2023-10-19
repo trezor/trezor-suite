@@ -17,7 +17,6 @@ export default class RippleSignTransaction extends AbstractMethod<
             getMiscNetwork('Ripple'),
             this.firmwareRange,
         );
-        this.info = 'Sign Ripple transaction';
 
         const { payload } = this;
         // validate incoming parameters
@@ -56,6 +55,10 @@ export default class RippleSignTransaction extends AbstractMethod<
                 destination_tag: transaction.payment.destinationTag,
             },
         };
+    }
+
+    get info() {
+        return 'Sign Ripple transaction';
     }
 
     async run() {

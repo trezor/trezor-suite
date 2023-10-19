@@ -1,27 +1,32 @@
 import { combineReducers, createReducer } from '@reduxjs/toolkit';
+
 import { configureMockStore } from '@suite-common/test-utils';
-import messageSystemReducer from '@suite-reducers/messageSystemReducer';
-import routerReducer from '@suite-reducers/routerReducer';
-import suiteReducer from '@suite-reducers/suiteReducer';
-import { CoinjoinService } from '@suite/services/coinjoin/coinjoinService';
-import { coinjoinMiddleware } from '@wallet-middlewares/coinjoinMiddleware';
-import { fixtures } from '@wallet-middlewares/__fixtures__/coinjoinMiddleware';
-import { accountsReducer } from '@wallet-reducers';
-import { coinjoinReducer } from '@wallet-reducers/coinjoinReducer';
-import selectedAccountReducer from '@wallet-reducers/selectedAccountReducer';
+import { prepareMessageSystemReducer } from '@suite-common/message-system';
+
+import { extraDependencies } from 'src/support/extraDependencies';
+import routerReducer from 'src/reducers/suite/routerReducer';
+import suiteReducer from 'src/reducers/suite/suiteReducer';
+import { CoinjoinService } from 'src/services/coinjoin/coinjoinService';
+import { coinjoinMiddleware } from 'src/middlewares/wallet/coinjoinMiddleware';
+import { fixtures } from 'src/middlewares/wallet/__fixtures__/coinjoinMiddleware';
+import { accountsReducer } from 'src/reducers/wallet';
+import { coinjoinReducer } from 'src/reducers/wallet/coinjoinReducer';
+import selectedAccountReducer from 'src/reducers/wallet/selectedAccountReducer';
 
 jest.mock('@trezor/connect', () => global.JestMocks.getTrezorConnect({}));
 // eslint-disable-next-line
 const TrezorConnect = require('@trezor/connect').default;
 
-jest.mock('@suite/services/coinjoin/coinjoinService', () => {
+jest.mock('src/services/coinjoin/coinjoinService', () => {
     const mock = jest.requireActual('../../../actions/wallet/__fixtures__/mockCoinjoinService');
     return mock.mockCoinjoinService();
 });
 
+const messageSystem = prepareMessageSystemReducer(extraDependencies);
+
 const rootReducer = combineReducers({
-    devices: createReducer({}, {}),
-    messageSystem: messageSystemReducer,
+    device: createReducer({}, () => ({})),
+    messageSystem,
     router: routerReducer,
     suite: suiteReducer,
     wallet: combineReducers({
@@ -33,11 +38,11 @@ const rootReducer = combineReducers({
 
 type State = ReturnType<typeof rootReducer>;
 
-const initStore = ({ devices, router, suite, wallet }: Partial<State> = {}) => {
+const initStore = ({ device, router, suite, wallet }: Partial<State> = {}) => {
     const preloadedState: State = rootReducer(undefined, { type: 'init' });
 
-    if (devices) {
-        preloadedState.devices = devices;
+    if (device) {
+        preloadedState.device = device;
     }
 
     if (router) {
@@ -90,7 +95,7 @@ describe('coinjoinMiddleware', () => {
             }
 
             if (f.client) {
-                await CoinjoinService.createInstance(f.client);
+                await CoinjoinService.createInstance({ network: f.client });
             }
 
             store.dispatch(f.action);

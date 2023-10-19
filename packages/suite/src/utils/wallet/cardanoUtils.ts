@@ -9,10 +9,8 @@ import {
     PoolsResponse,
     StakePool,
 } from '@suite-common/wallet-types';
-import { Network } from '@suite-common/wallet-config';
 import { CARDANO, CardanoCertificate, CardanoOutput, PROTO } from '@trezor/connect';
 import { CARDANO_DEFAULT_TTL_OFFSET } from '@suite-common/wallet-constants';
-
 import {
     amountToSatoshi,
     formatAmount,
@@ -33,19 +31,6 @@ export const getProtocolMagic = (accountSymbol: Account['symbol']) =>
 
 export const getNetworkId = (accountSymbol: Account['symbol']) =>
     accountSymbol === 'ada' ? CARDANO.NETWORK_IDS.mainnet : CARDANO.NETWORK_IDS.testnet;
-
-export const getDerivationType = (accountType: Network['accountType']) => {
-    switch (accountType) {
-        case 'normal':
-            return 1;
-        case 'legacy':
-            return 2;
-        case 'ledger':
-            return 0;
-        default:
-            return 1;
-    }
-};
 
 export const getAddressType = (_accountType: Account['accountType']) =>
     PROTO.CardanoAddressType.BASE;

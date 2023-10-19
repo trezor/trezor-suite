@@ -1,7 +1,8 @@
 const name = 'firmwareUpdate';
 
-const list1Url = 'https://wallet.trezor.io/data/firmware/1/releases.json';
-const list2Url = 'https://wallet.trezor.io/data/firmware/2/releases.json';
+const list1Url = 'https://wallet.trezor.io/data/firmware/t1b1/releases.json';
+const list2Url = 'https://wallet.trezor.io/data/firmware/t2t1/releases.json';
+// t2b1 can be added here if anyone need it
 const fwBaseUrl = 'https://wallet.trezor.io';
 
 export default [

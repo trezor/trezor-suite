@@ -4,16 +4,23 @@ import createDebugger from 'redux-flipper';
 import { prepareFiatRatesMiddleware } from '@suite-native/fiat-rates';
 import { logsMiddleware } from '@suite-common/logger';
 import { logsMiddleware as nativeLogsMiddleware } from '@suite-native/logger';
+import { messageSystemMiddleware } from '@suite-native/message-system';
 import { prepareBlockchainMiddleware } from '@suite-common/wallet-core';
+import { prepareButtonRequestMiddleware, prepareDeviceMiddleware } from '@suite-native/device';
+import { prepareDiscoveryMiddleware } from '@suite-native/discovery';
 
 import { extraDependencies } from './extraDependencies';
 import { prepareRootReducers } from './reducers';
 
 const middlewares: Middleware[] = [
     nativeLogsMiddleware,
+    messageSystemMiddleware,
     prepareBlockchainMiddleware(extraDependencies),
     prepareFiatRatesMiddleware(extraDependencies),
     logsMiddleware,
+    prepareDeviceMiddleware(extraDependencies),
+    prepareButtonRequestMiddleware(extraDependencies),
+    prepareDiscoveryMiddleware(extraDependencies),
 ];
 
 if (__DEV__) {

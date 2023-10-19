@@ -1,15 +1,15 @@
 import { Select, CoinLogo } from '@trezor/components';
-import React from 'react';
 import { Controller } from 'react-hook-form';
 import styled from 'styled-components';
-import invityAPI from '@suite-services/invityAPI';
-import { useCoinmarketExchangeFormContext } from '@wallet-hooks/useCoinmarketExchangeForm';
-import { CRYPTO_INPUT, FIAT_INPUT, CRYPTO_TOKEN } from '@wallet-types/coinmarketExchangeForm';
+import { getEthereumTypeNetworkSymbols } from '@suite-common/wallet-config';
+import invityAPI from 'src/services/suite/invityAPI';
+import { useCoinmarketExchangeFormContext } from 'src/hooks/wallet/useCoinmarketExchangeForm';
+import { CRYPTO_INPUT, FIAT_INPUT, CRYPTO_TOKEN } from 'src/types/wallet/coinmarketExchangeForm';
 import {
     getSendCryptoOptions,
     invityApiSymbolToSymbol,
-} from '@suite/utils/wallet/coinmarket/coinmarketUtils';
-import { useBitcoinAmountUnit } from '@wallet-hooks/useBitcoinAmountUnit';
+} from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 
 const Option = styled.div`
     display: flex;
@@ -27,19 +27,32 @@ const TokenLogo = styled.img`
 `;
 
 const SendCryptoSelect = () => {
-    const { control, setAmountLimits, account, setValue, exchangeInfo, composeRequest } =
-        useCoinmarketExchangeFormContext();
+    const {
+        control,
+        setAmountLimits,
+        account,
+        setValue,
+        exchangeInfo,
+        composeRequest,
+        tokensFiatValue,
+    } = useCoinmarketExchangeFormContext();
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
 
     const { tokens } = account;
-    const sendCryptoOptions = getSendCryptoOptions(account, exchangeInfo?.sellSymbols || new Set());
+    const sendCryptoOptions = getSendCryptoOptions(
+        account,
+        exchangeInfo?.sellSymbols || new Set(),
+        tokensFiatValue,
+    );
+
+    const ethereumTypeNetworkSymbols = getEthereumTypeNetworkSymbols();
 
     return (
         <Controller
             control={control}
             name="sendCryptoSelect"
             defaultValue={sendCryptoOptions[0]}
-            render={({ onChange, value }) => (
+            render={({ field: { onChange, value } }) => (
                 <Select
                     onChange={(selected: any) => {
                         setValue('setMaxOutputId', undefined);
@@ -48,17 +61,17 @@ const SendCryptoSelect = () => {
                         setValue(CRYPTO_INPUT, '');
                         setValue(FIAT_INPUT, '');
                         const token = selected.value;
-                        if (token === 'ETH' || token === 'TGOR' || token === 'ETC') {
-                            setValue(CRYPTO_TOKEN, undefined);
+                        if (ethereumTypeNetworkSymbols.includes(token)) {
+                            setValue(CRYPTO_TOKEN, null);
                             // set own account for non ERC20 transaction
-                            setValue('outputs[0].address', account.descriptor);
+                            setValue('outputs.0.address', account.descriptor);
                         } else {
                             // set the address of the token to the output
                             const symbol = invityApiSymbolToSymbol(token).toLowerCase();
                             const tokenData = tokens?.find(t => t.symbol === symbol);
-                            setValue(CRYPTO_TOKEN, tokenData?.contract);
+                            setValue(CRYPTO_TOKEN, tokenData?.contract ?? null);
                             // set token address for ERC20 transaction to estimate the fees more precisely
-                            setValue('outputs[0].address', tokenData?.contract);
+                            setValue('outputs.0.address', tokenData?.contract ?? '');
                         }
                         composeRequest();
                     }}

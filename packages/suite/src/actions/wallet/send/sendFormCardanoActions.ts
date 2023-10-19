@@ -1,5 +1,15 @@
 import TrezorConnect, { PROTO } from '@trezor/connect';
-import { formatNetworkAmount, isTestnet } from '@suite-common/wallet-utils';
+import { formatNetworkAmount, isTestnet, getDerivationType } from '@suite-common/wallet-utils';
+import { notificationsActions } from '@suite-common/toast-notifications';
+import {
+    FormState,
+    ComposeActionContext,
+    PrecomposedLevelsCardano,
+    PrecomposedTransactionFinalCardano,
+} from '@suite-common/wallet-types';
+import { selectDevice } from '@suite-common/wallet-core';
+
+import { Dispatch, GetState } from 'src/types/suite';
 import {
     getChangeAddressParameters,
     getTtl,
@@ -9,16 +19,7 @@ import {
     transformUtxos,
     formatMaxOutputAmount,
     loadCardanoLib,
-    getDerivationType,
-} from '@wallet-utils/cardanoUtils';
-import { notificationsActions } from '@suite-common/toast-notifications';
-import {
-    FormState,
-    ComposeActionContext,
-    PrecomposedLevelsCardano,
-    PrecomposedTransactionFinalCardano,
-} from '@suite-common/wallet-types';
-import { Dispatch, GetState } from '@suite-types';
+} from 'src/utils/wallet/cardanoUtils';
 
 export const composeTransaction =
     (formValues: FormState, formState: ComposeActionContext) =>
@@ -150,7 +151,7 @@ export const signTransaction =
     async (dispatch: Dispatch, getState: GetState) => {
         const { trezorUtils } = await loadCardanoLib();
         const { selectedAccount } = getState().wallet;
-        const { device } = getState().suite;
+        const device = selectDevice(getState());
 
         if (
             selectedAccount.status !== 'loaded' ||
@@ -184,7 +185,7 @@ export const signTransaction =
         });
 
         if (!res.success) {
-            // catch manual error from ReviewTransaction modal
+            // catch manual error from TransactionReviewModal
             if (res.payload.error === 'tx-cancelled') return;
             dispatch(
                 notificationsActions.addToast({

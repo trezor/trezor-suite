@@ -1,15 +1,23 @@
 import { MiddlewareAPI } from 'redux';
-import { AppState, Action, Dispatch } from '@suite-types';
-import { DESKTOP_UPDATE, METADATA, MODAL, PROTOCOL, ROUTER, SUITE } from '@suite-actions/constants';
-import { DISCOVERY } from '@wallet-actions/constants';
-import { WALLET_SETTINGS } from '@settings-actions/constants';
-import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
-import { redactTransactionIdFromAnchor } from '@suite-utils/analytics';
 
+import { deviceActions, discoveryActions } from '@suite-common/wallet-core';
 import { addLog } from '@suite-common/logger';
 import { TRANSPORT, DEVICE } from '@trezor/connect';
 import { redactUserPathFromString } from '@trezor/utils';
 import { analyticsActions } from '@suite-common/analytics';
+
+import { AppState, Action, Dispatch } from 'src/types/suite';
+import {
+    DESKTOP_UPDATE,
+    METADATA,
+    MODAL,
+    PROTOCOL,
+    ROUTER,
+    SUITE,
+} from 'src/actions/suite/constants';
+import { WALLET_SETTINGS } from 'src/actions/settings/constants';
+import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
+import { redactTransactionIdFromAnchor } from 'src/utils/suite/analytics';
 
 const log =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -25,6 +33,19 @@ const log =
                     type: action.type,
                 }),
             );
+        }
+
+        if (deviceActions.addButtonRequest.match(action)) {
+            if (action.payload.buttonRequest) {
+                api.dispatch(
+                    addLog({
+                        type: action.type,
+                        payload: {
+                            code: action.payload.buttonRequest.code,
+                        },
+                    }),
+                );
+            }
         }
 
         switch (action.type) {
@@ -66,12 +87,12 @@ const log =
                     }),
                 );
                 break;
-            case SUITE.AUTH_DEVICE:
+            case deviceActions.authDevice.type:
             case DEVICE.CONNECT:
             case DEVICE.DISCONNECT:
-            case DISCOVERY.COMPLETE:
-            case SUITE.UPDATE_SELECTED_DEVICE:
-            case SUITE.REMEMBER_DEVICE:
+            case discoveryActions.completeDiscovery.type:
+            case deviceActions.updateSelectedDevice.type:
+            case deviceActions.rememberDevice.type:
                 api.dispatch(
                     addLog({
                         type: action.type,
@@ -83,7 +104,7 @@ const log =
                     }),
                 );
                 break;
-            case METADATA.SET_PROVIDER:
+            case METADATA.ADD_PROVIDER:
                 api.dispatch(
                     addLog({
                         type: action.type,
@@ -134,18 +155,6 @@ const log =
                         },
                     }),
                 );
-                break;
-            case SUITE.ADD_BUTTON_REQUEST:
-                if (action.payload) {
-                    api.dispatch(
-                        addLog({
-                            type: action.type,
-                            payload: {
-                                code: action.payload.code,
-                            },
-                        }),
-                    );
-                }
                 break;
             case PROTOCOL.SAVE_COIN_PROTOCOL:
                 api.dispatch(

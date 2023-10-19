@@ -1,8 +1,9 @@
 import * as request from './request';
 import * as result from './result';
 import * as transaction from './transaction';
-import { convertFeeRate } from './utils';
+import { convertFeeRate } from './composeUtils';
 import { coinselect } from './coinselect';
+import { ComposeRequest, ComposeResult } from '../types';
 
 export function composeTx({
     txType,
@@ -10,6 +11,7 @@ export function composeTx({
     outputs,
     height,
     feeRate,
+    longTermFeeRate,
     basePath,
     network,
     changeId,
@@ -17,9 +19,8 @@ export function composeTx({
     dustThreshold,
     baseFee,
     floorBaseFee,
-    dustOutputFee,
     skipPermutation,
-}: request.ComposeRequest): result.ComposeResult {
+}: ComposeRequest): ComposeResult {
     if (outputs.length === 0) {
         return result.empty;
     }
@@ -31,6 +32,14 @@ export function composeTx({
     const feeRateNumber = convertFeeRate(feeRate);
     if (!feeRateNumber) {
         return { type: 'error', error: 'INCORRECT-FEE-RATE' };
+    }
+
+    let longTermFeeRateNumber;
+    if (longTermFeeRate) {
+        longTermFeeRateNumber = convertFeeRate(longTermFeeRate);
+        if (!longTermFeeRateNumber) {
+            return { type: 'error', error: 'INCORRECT-FEE-RATE' };
+        }
     }
 
     let countMax = { exists: false, id: 0 };
@@ -46,7 +55,7 @@ export function composeTx({
 
     const splitOutputs = request.splitByCompleteness(outputs);
 
-    let csResult: ReturnType<typeof coinselect> = { type: 'false' };
+    let csResult: ReturnType<typeof coinselect> = { success: false };
     try {
         csResult = coinselect(
             txType || 'p2pkh',
@@ -54,13 +63,13 @@ export function composeTx({
             outputs,
             height,
             feeRateNumber,
+            longTermFeeRateNumber,
             countMax.exists,
             countMax.id,
             dustThreshold,
             network,
             baseFee,
             floorBaseFee,
-            dustOutputFee,
             skipPermutation,
         );
     } catch (e) {
@@ -71,7 +80,7 @@ export function composeTx({
         return { type: 'error', error: `${e}` };
     }
 
-    if (csResult.type === 'false') {
+    if (!csResult.success) {
         return { type: 'error', error: 'NOT-ENOUGH-FUNDS' };
     }
 
@@ -81,9 +90,9 @@ export function composeTx({
 
     const resTransaction = transaction.createTransaction(
         utxos,
-        csResult.result.inputs,
+        csResult.payload.inputs,
         splitOutputs.complete,
-        csResult.result.outputs,
+        csResult.payload.outputs,
         basePath,
         changeId,
         changeAddress,

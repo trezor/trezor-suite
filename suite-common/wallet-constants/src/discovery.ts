@@ -1,4 +1,4 @@
-export const STATUS = {
+export const DiscoveryStatus = {
     IDLE: 0,
     RUNNING: 1,
     STOPPING: 2,

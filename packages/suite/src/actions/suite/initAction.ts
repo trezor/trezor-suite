@@ -1,12 +1,12 @@
-import * as suiteActions from '@suite-actions/suiteActions';
-import * as routerActions from '@suite-actions/routerActions';
-import * as analyticsActions from '@suite-actions/analyticsActions';
-import * as messageSystemActions from '@suite-actions/messageSystemActions';
-import * as languageActions from '@settings-actions/languageActions';
-import type { Dispatch, GetState } from '@suite-types';
-
+import { initMessageSystemThunk } from '@suite-common/message-system';
 import * as trezorConnectActions from '@suite-common/connect-init';
-import { initBlockchainThunk } from '@suite-common/wallet-core';
+import { initBlockchainThunk, initDevices } from '@suite-common/wallet-core';
+
+import * as routerActions from 'src/actions/suite/routerActions';
+import * as analyticsActions from 'src/actions/suite/analyticsActions';
+import * as metadataActions from 'src/actions/suite/metadataActions';
+import * as languageActions from 'src/actions/settings/languageActions';
+import type { Dispatch, GetState } from 'src/types/suite';
 
 import { SUITE } from './constants';
 
@@ -22,7 +22,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
 
     dispatch({ type: SUITE.INIT });
 
-    dispatch(suiteActions.initDevices());
+    dispatch(initDevices());
 
     // right after storage is loaded, we might start:
 
@@ -33,7 +33,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     dispatch(languageActions.setLanguage(language));
 
     // 3. fetch message system config
-    dispatch(messageSystemActions.init());
+    dispatch(initMessageSystemThunk({ jwsPublicKey: process.env.JWS_PUBLIC_KEY }));
 
     // 4. redirecting user into welcome screen (if needed)
     dispatch(routerActions.initialRedirection());
@@ -57,6 +57,11 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     // 7. dispatch initial location change
     dispatch(routerActions.init());
 
-    // 8. backend connected, suite is ready to use
+    // 8. fetch metadata. metadata is not saved together with other data in storage.
+    // historically it was saved in indexedDB together with devices and accounts and we did not need to load them
+    // immediately after suite start.
+    dispatch(metadataActions.fetchAndSaveMetadata());
+
+    // 9. backend connected, suite is ready to use
     dispatch({ type: SUITE.READY });
 };

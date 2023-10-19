@@ -1,6 +1,6 @@
 import { networks } from '@trezor/utxo-lib';
 
-import { RoundPhase, EndRoundState } from '../../src/enums';
+import { RoundPhase, EndRoundState, WabiSabiProtocolErrorCode } from '../../src/enums';
 import { ended } from '../../src/client/round/endedRound';
 import { createInput } from '../fixtures/input.fixture';
 import { createCoinjoinRound } from '../fixtures/round.fixture';
@@ -33,7 +33,7 @@ describe('ended', () => {
                 createInput('account-A', 'A1', {
                     ownershipProof: '01A1',
                     registrationData: {
-                        aliceId: '01A1-01a1',
+                        AliceId: '01A1-01a1',
                     },
                     realAmountCredentials: {},
                     realVsizeCredentials: {},
@@ -61,7 +61,7 @@ describe('ended', () => {
                 createInput('account-A', 'A1', {
                     ownershipProof: '01A1',
                     registrationData: {
-                        aliceId: '01A1-01a1',
+                        AliceId: '01A1-01a1',
                     },
                     realAmountCredentials: {},
                     realVsizeCredentials: {},
@@ -92,7 +92,7 @@ describe('ended', () => {
                 createInput('account-A', 'A1', {
                     ownershipProof: '01A1',
                     registrationData: {
-                        aliceId: '01A1-01a1',
+                        AliceId: '01A1-01a1',
                     },
                     realAmountCredentials: {},
                     realVsizeCredentials: {},
@@ -123,7 +123,7 @@ describe('ended', () => {
 
         expect(logger.error).toBeCalledTimes(1);
         expect(logger.error).toBeCalledWith(expect.stringMatching(/Missing affiliate request/));
-        expect(round.prison.inmates.length).toEqual(1);
+        expect(round.prison.inmates.length).toEqual(2); // input + output are detained
     });
 
     it('NotAllAlicesSign by this instance (missing witnesses)', () => {
@@ -133,7 +133,7 @@ describe('ended', () => {
                 createInput('account-A', 'A1', {
                     ownershipProof: '01A1',
                     registrationData: {
-                        aliceId: '01A1-01a1',
+                        AliceId: '01A1-01a1',
                     },
                     realAmountCredentials: {},
                     realVsizeCredentials: {},
@@ -164,7 +164,7 @@ describe('ended', () => {
 
         expect(logger.error).toBeCalledTimes(1);
         expect(logger.error).toBeCalledWith(expect.stringMatching(/Missing signed inputs/));
-        expect(round.prison.inmates.length).toEqual(1);
+        expect(round.prison.inmates.length).toEqual(2); // input + output are detained
     });
 
     it('NotAllAlicesSign by this instance (other)', () => {
@@ -173,7 +173,7 @@ describe('ended', () => {
                 createInput('account-A', 'A1', {
                     ownershipProof: '01A1',
                     registrationData: {
-                        aliceId: '01A1-01a1',
+                        AliceId: '01A1-01a1',
                     },
                     realAmountCredentials: {},
                     realVsizeCredentials: {},
@@ -205,7 +205,7 @@ describe('ended', () => {
 
         expect(logger.error).toBeCalledTimes(1);
         expect(logger.error).toBeCalledWith(expect.stringMatching(/This should never happen/));
-        expect(round.prison.inmates.length).toEqual(1);
+        expect(round.prison.inmates.length).toEqual(2); // input + output are detained
     });
 
     it('AbortedNotEnoughAlicesSigned by other instance (no blame round)', () => {
@@ -214,7 +214,7 @@ describe('ended', () => {
                 createInput('account-A', '0'.repeat(72), {
                     ownershipProof: '01A1',
                     registrationData: {
-                        aliceId: '01A1-01a1',
+                        AliceId: '01A1-01a1',
                     },
                     realAmountCredentials: {},
                     realVsizeCredentials: {},
@@ -255,7 +255,7 @@ describe('ended', () => {
                 createInput('account-A', '0'.repeat(72), {
                     ownershipProof: '01A1',
                     registrationData: {
-                        aliceId: '01A1-01a1',
+                        AliceId: '01A1-01a1',
                     },
                     realAmountCredentials: {},
                     realVsizeCredentials: {},
@@ -296,7 +296,7 @@ describe('ended', () => {
                 createInput('account-A', '0'.repeat(72), {
                     ownershipProof: '01A1',
                     registrationData: {
-                        aliceId: '01A1-01a1',
+                        AliceId: '01A1-01a1',
                     },
                     realAmountCredentials: {},
                     realVsizeCredentials: {},
@@ -312,10 +312,13 @@ describe('ended', () => {
         );
 
         // NOTE: registered inputs are detained by inputRegistration process
-        round.prison.detain('0'.repeat(72), {
-            roundId: round.id,
-            reason: 'AliceAlreadyRegistered',
-        });
+        round.prison.detain(
+            { accountKey: 'account-A', outpoint: '0'.repeat(72) },
+            {
+                roundId: round.id,
+                errorCode: WabiSabiProtocolErrorCode.AliceAlreadyRegistered,
+            },
+        );
 
         ended(round, options);
 
@@ -329,7 +332,7 @@ describe('ended', () => {
                 createInput('account-A', '0'.repeat(72), {
                     ownershipProof: '01A1',
                     registrationData: {
-                        aliceId: '01A1-01a1',
+                        AliceId: '01A1-01a1',
                     },
                     realAmountCredentials: {},
                     realVsizeCredentials: {},

@@ -13,20 +13,23 @@
     "dependencies": {
         "@react-navigation/core": "^6.4.6",
         "@react-navigation/native-stack": "^6.9.11",
-        "@sentry/react-native": "5.3.1",
+        "@sentry/react-native": "5.5.0",
+        "@suite-common/icons": "workspace:*",
         "@suite-common/logger": "workspace:*",
+        "@suite-common/wallet-types": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/config": "workspace:*",
+        "@suite-native/feature-flags": "workspace:*",
         "@suite-native/helpers": "workspace:*",
         "@suite-native/module-settings": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@suite-native/storage": "workspace:*",
-        "@trezor/icons": "workspace:*",
+        "@trezor/env-utils": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
         "react": "18.2.0",
-        "react-native": "0.71.7",
-        "react-redux": "8.0.5"
+        "react-native": "0.71.8",
+        "react-redux": "8.0.7"
     },
     "devDependencies": {
         "jest": "^26.6.3",

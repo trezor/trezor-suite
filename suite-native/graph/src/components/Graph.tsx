@@ -1,19 +1,24 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 
 import { N } from '@mobily/ts-belt';
+import * as Haptics from 'expo-haptics';
 
 import { GraphPoint, LineGraph } from '@suite-native/react-native-graph';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box, Loader } from '@suite-native/atoms';
-
 import {
-    getExtremaFromGraphPoints,
-    EnhancedGraphPointWithCryptoBalance,
-    EnhancedGraphPoint,
-} from '../utils';
+    FiatGraphPoint,
+    FiatGraphPointWithCryptoBalance,
+    GroupedBalanceMovementEvent,
+    GroupedBalanceMovementEventPayload,
+} from '@suite-common/graph';
+
+import { getExtremaFromGraphPoints } from '../utils';
 import { AxisLabel, MAX_CLAMP_VALUE } from './AxisLabel';
 import { GraphError } from './GraphError';
+import { TransactionEventTooltip } from './TransactionEventTooltip';
 import { SelectionDotWithLine } from './SelectionDotWithLine';
+import { TransactionEvent } from './TransactionEvent';
 
 type GraphProps<TGraphPoint extends GraphPoint> = {
     points: TGraphPoint[];
@@ -23,6 +28,7 @@ type GraphProps<TGraphPoint extends GraphPoint> = {
     animated?: boolean;
     error?: string | null;
     onTryAgain: () => void;
+    events?: GroupedBalanceMovementEvent[];
 };
 
 const GRAPH_HEIGHT = 250;
@@ -52,22 +58,24 @@ const graphStyle = prepareNativeStyle<GraphStyleProps>((_, { loading, error }) =
     opacity: loading || !!error ? 0.1 : 1,
 }));
 
-export const emptyGraphPoint: EnhancedGraphPointWithCryptoBalance = {
+export const emptyGraphPoint: FiatGraphPointWithCryptoBalance = {
     value: 0,
     date: new Date(0),
     cryptoBalance: '0',
-    originalDate: new Date(),
 };
 
-const emptyPoints: EnhancedGraphPointWithCryptoBalance[] = [
+const emptyPoints: FiatGraphPointWithCryptoBalance[] = [
     { ...emptyGraphPoint },
     { ...emptyGraphPoint, date: new Date(1) },
 ];
 
 // to avoid overflows from the screen
 const clampAxisLabels = (value: number) => N.clamp(value, 5, MAX_CLAMP_VALUE);
+const triggerHaptics = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+};
 
-export const Graph = <TGraphPoint extends EnhancedGraphPoint>({
+export const Graph = <TGraphPoint extends FiatGraphPoint>({
     onPointSelected,
     onGestureEnd,
     points = [],
@@ -75,11 +83,13 @@ export const Graph = <TGraphPoint extends EnhancedGraphPoint>({
     animated = true,
     onTryAgain,
     error,
+    events,
 }: GraphProps<TGraphPoint>) => {
     const {
         applyStyle,
         utils: { colors },
     } = useNativeStyles();
+
     const isPointsEmpty = points.length <= 1;
 
     const nonEmptyPoints = isPointsEmpty ? emptyPoints : points;
@@ -103,9 +113,12 @@ export const Graph = <TGraphPoint extends EnhancedGraphPoint>({
         }
     }, [extremaFromGraphPoints]);
 
+    // For some reason, 16 feels better than 0
+    const panGestureDelay = 16;
+
     return (
         <Box style={applyStyle(graphWrapperStyle)}>
-            <LineGraph
+            <LineGraph<GroupedBalanceMovementEventPayload>
                 style={applyStyle(graphStyle, { loading, error })}
                 points={nonEmptyPoints}
                 color={colors.borderSecondary}
@@ -117,7 +130,11 @@ export const Graph = <TGraphPoint extends EnhancedGraphPoint>({
                 BottomAxisLabel={axisLabels?.BottomAxisLabel}
                 onPointSelected={onPointSelected as any /* because of ExtendedGraphPoint */}
                 onGestureEnd={onGestureEnd}
-                panGestureDelay={0}
+                panGestureDelay={panGestureDelay}
+                events={events}
+                EventComponent={TransactionEvent}
+                EventTooltipComponent={TransactionEventTooltip}
+                onEventHover={triggerHaptics}
             />
             {loading && (
                 <Box style={applyStyle(graphMessageStyleContainer)}>

@@ -1,12 +1,10 @@
 import { useMemo } from 'react';
 
 import { Account } from '@suite-common/wallet-types';
-import { getExcludedUtxos } from '@suite-common/wallet-utils';
+import { getExcludedUtxos, GetExcludedUtxosProps } from '@suite-common/wallet-utils';
 
-interface UseExcludedUtxosProps {
+interface UseExcludedUtxosProps extends GetExcludedUtxosProps {
     account: Account;
-    dustLimit?: number;
-    targetAnonymity?: number;
 }
 
 /**

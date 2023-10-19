@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable global-require */
 
-import { configureStore } from '@suite/support/tests/configureStore';
 import { mergeDeepObject } from '@trezor/utils';
 import { connectInitThunk } from '@suite-common/connect-init';
-import { SUITE } from '@suite-actions/constants';
-import { BACKUP } from '@backup-actions/constants';
-import * as backupActions from '@backup-actions/backupActions';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { CommonParams } from '@trezor/connect';
-import { DeviceModel } from '@trezor/device-utils';
+import { CommonParams, DeviceModelInternal } from '@trezor/connect';
+
+import { configureStore } from 'src/support/tests/configureStore';
+import { SUITE } from 'src/actions/suite/constants';
+import { BACKUP } from 'src/actions/backup/constants';
+import * as backupActions from 'src/actions/backup/backupActions';
 
 jest.mock('@trezor/connect', () => {
     let fixture: any;
@@ -17,7 +17,7 @@ jest.mock('@trezor/connect', () => {
     const backupDevice = () => fixture;
     const callbacks: { [key: string]: () => any } = {};
 
-    const { PROTO } = jest.requireActual('@trezor/connect');
+    const { PROTO, DeviceModelInternal } = jest.requireActual('@trezor/connect');
 
     return {
         __esModule: true, // this property makes it work
@@ -37,25 +37,28 @@ jest.mock('@trezor/connect', () => {
             fixture = f;
         },
         PROTO,
+        DeviceModelInternal,
     };
 });
 
 export const getInitialState = (override: any) => {
     const defaults = {
         suite: {
-            device: {
-                connected: true,
-                type: 'acquired',
-                features: {
-                    major_version: 2,
-                    model: DeviceModel.TT,
-                },
-            },
             locks: [3],
             settings: { debug: {} },
         },
         // doesnt affect anything, just needed for TrezorConnect.init action
-        devices: [],
+        device: {
+            selectedDevice: {
+                connected: true,
+                type: 'acquired',
+                features: {
+                    major_version: 2,
+                    internal_model: DeviceModelInternal.T2T1,
+                },
+            },
+            devices: [],
+        },
         wallet: {
             settings: {
                 enabledNetworks: ['btc'],
@@ -86,7 +89,9 @@ describe('Backup Actions', () => {
         await store.dispatch(connectInitThunk());
 
         await store.dispatch(
-            backupActions.backupDevice({ device: store.getState().suite.device } as CommonParams),
+            backupActions.backupDevice({
+                device: store.getState().device.selectedDevice,
+            } as CommonParams),
         );
 
         expect(store.getActions().shift()).toMatchObject({
@@ -120,7 +125,9 @@ describe('Backup Actions', () => {
         await store.dispatch(connectInitThunk());
 
         await store.dispatch(
-            backupActions.backupDevice({ device: store.getState().suite.device } as CommonParams),
+            backupActions.backupDevice({
+                device: store.getState().device.selectedDevice,
+            } as CommonParams),
         );
 
         expect(store.getActions().shift()).toMatchObject({

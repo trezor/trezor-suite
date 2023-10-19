@@ -1,64 +1,58 @@
 import { createContext, useContext, useCallback, useState, useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
-import { isChanged } from '@suite-utils/comparisonUtils';
+
 import useDebounce from 'react-use/lib/useDebounce';
-import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
-import { useActions, useSelector } from '@suite-hooks';
-import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
 import type { BuyTradeQuoteRequest } from 'invity-api';
-import invityAPI from '@suite-services/invityAPI';
-import { getAmountLimits, processQuotes } from '@wallet-utils/coinmarket/buyUtils';
+
+import { isChanged } from '@suite-common/suite-utils';
+import { amountToSatoshi, formatAmount } from '@suite-common/wallet-utils';
+import { useDidUpdate } from '@trezor/react-utils';
+
+import {
+    clearQuotes,
+    saveCachedAccountInfo,
+    saveQuoteRequest,
+    saveQuotes,
+} from 'src/actions/wallet/coinmarketBuyActions';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { loadInvityData } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
+import invityAPI from 'src/services/suite/invityAPI';
+import { getAmountLimits, processQuotes } from 'src/utils/wallet/coinmarket/buyUtils';
 import type {
     FormState,
     UseCoinmarketBuyFormProps,
-    AmountLimits,
     BuyFormContextValues,
-} from '@wallet-types/coinmarketBuyForm';
-import { useFormDraft } from '@wallet-hooks/useFormDraft';
+} from 'src/types/wallet/coinmarketBuyForm';
+import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
+import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
+import { CRYPTO_INPUT } from 'src/types/wallet/coinmarketSellForm';
+import { AmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
+
 import { useCoinmarketBuyFormDefaultValues } from './useCoinmarketBuyFormDefaultValues';
-import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
 import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
-import { amountToSatoshi, formatAmount } from '@suite-common/wallet-utils';
-import { useDidUpdate } from '@trezor/react-utils';
-import { CRYPTO_INPUT } from '@wallet-types/coinmarketSellForm';
-import { TypedValidationRules } from '@suite-common/wallet-types';
 
 export const BuyFormContext = createContext<BuyFormContextValues | null>(null);
 BuyFormContext.displayName = 'CoinmarketBuyContext';
 
-export const useCoinmarketBuyForm = (props: UseCoinmarketBuyFormProps): BuyFormContextValues => {
-    const {
-        saveQuoteRequest,
-        saveQuotes,
-        clearQuotes,
-        saveCachedAccountInfo,
-        saveTrade,
-        loadInvityData,
-    } = useActions({
-        saveQuoteRequest: coinmarketBuyActions.saveQuoteRequest,
-        saveQuotes: coinmarketBuyActions.saveQuotes,
-        clearQuotes: coinmarketBuyActions.clearQuotes,
-        saveCachedAccountInfo: coinmarketBuyActions.saveCachedAccountInfo,
-        saveTrade: coinmarketBuyActions.saveTrade,
-        loadInvityData: coinmarketCommonActions.loadInvityData,
-    });
+export const useCoinmarketBuyForm = ({
+    selectedAccount,
+}: UseCoinmarketBuyFormProps): BuyFormContextValues => {
+    const buyInfo = useSelector(state => state.wallet.coinmarket.buy.buyInfo);
+    const exchangeCoinInfo = useSelector(
+        state => state.wallet.coinmarket.exchange.exchangeCoinInfo,
+    );
+    const dispatch = useDispatch();
 
     useEffect(() => {
-        loadInvityData();
-    }, [loadInvityData]);
+        dispatch(loadInvityData());
+    }, [dispatch]);
 
-    const { selectedAccount } = props;
     const { account, network } = selectedAccount;
     const { navigateToBuyOffers } = useCoinmarketNavigation(account);
     const [amountLimits, setAmountLimits] = useState<AmountLimits | undefined>(undefined);
     const { saveDraft, getDraft, removeDraft } = useFormDraft<FormState>('coinmarket-buy');
     const draft = getDraft(account.key);
     const isDraft = !!draft;
-
-    const { buyInfo, exchangeCoinInfo } = useSelector(state => ({
-        buyInfo: state.wallet.coinmarket.buy.buyInfo,
-        exchangeCoinInfo: state.wallet.coinmarket.exchange.exchangeCoinInfo,
-    }));
 
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
     const { defaultValues, defaultCountry, defaultCurrency } = useCoinmarketBuyFormDefaultValues(
@@ -70,7 +64,7 @@ export const useCoinmarketBuyForm = (props: UseCoinmarketBuyFormProps): BuyFormC
         defaultValues: isDraft ? draft : defaultValues,
     });
 
-    const { register, control, formState, errors, reset, setValue, getValues } = methods;
+    const { register, control, formState, reset, setValue, getValues } = methods;
     const values = useWatch<FormState>({ control });
 
     useEffect(() => {
@@ -99,12 +93,24 @@ export const useCoinmarketBuyForm = (props: UseCoinmarketBuyFormProps): BuyFormC
 
     useDebounce(
         () => {
-            if (formState.isDirty && !formState.isValidating && Object.keys(errors).length === 0) {
+            if (
+                formState.isDirty &&
+                !formState.isValidating &&
+                Object.keys(formState.errors).length === 0
+            ) {
                 saveDraft(account.key, values as FormState);
             }
         },
         200,
-        [errors, saveDraft, account.key, values, shouldSendInSats],
+        [
+            formState.errors,
+            formState.isDirty,
+            formState.isValidating,
+            saveDraft,
+            account.key,
+            values,
+            shouldSendInSats,
+        ],
     );
     useEffect(() => {
         if (!isChanged(defaultValues, values)) {
@@ -128,8 +134,8 @@ export const useCoinmarketBuyForm = (props: UseCoinmarketBuyFormProps): BuyFormC
             fiatStringAmount,
             cryptoStringAmount,
         };
-        saveQuoteRequest(request);
-        saveCachedAccountInfo(account.symbol, account.index, account.accountType);
+        dispatch(saveQuoteRequest(request));
+        dispatch(saveCachedAccountInfo(account.symbol, account.index, account.accountType));
         const allQuotes = await invityAPI.getBuyQuotes(request);
         if (Array.isArray(allQuotes)) {
             const [quotes, alternativeQuotes] = processQuotes(allQuotes);
@@ -137,11 +143,11 @@ export const useCoinmarketBuyForm = (props: UseCoinmarketBuyFormProps): BuyFormC
             if (limits) {
                 setAmountLimits(limits);
             } else {
-                saveQuotes(quotes, alternativeQuotes);
+                dispatch(saveQuotes(quotes, alternativeQuotes));
                 navigateToBuyOffers();
             }
         } else {
-            clearQuotes();
+            dispatch(clearQuotes());
             navigateToBuyOffers();
         }
     };
@@ -158,11 +164,9 @@ export const useCoinmarketBuyForm = (props: UseCoinmarketBuyFormProps): BuyFormC
         onSubmit,
         defaultCountry,
         defaultCurrency,
-        register: register as (rules?: TypedValidationRules) => (ref: any) => void,
+        register,
         buyInfo,
         exchangeCoinInfo,
-        saveQuotes,
-        saveTrade,
         amountLimits,
         setAmountLimits,
         isLoading,

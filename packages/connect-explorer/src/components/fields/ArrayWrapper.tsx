@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import styled from 'styled-components';
 import { Icon } from '@trezor/components';
 
@@ -28,7 +28,7 @@ const AddButton = ({ field, onAdd, label }: AddButtonProps) => {
 };
 
 interface ArrayWrapperProps {
-    children: React.ReactNode;
+    children: ReactNode;
     field: FieldWithBundle<any>;
     onAdd: () => void;
 }

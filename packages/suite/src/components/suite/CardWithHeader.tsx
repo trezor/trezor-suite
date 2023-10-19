@@ -1,7 +1,7 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import styled from 'styled-components';
 import { variables, Card } from '@trezor/components';
-import { CARD_PADDING_SIZE, CARD_PADDING_SIZE_LARGE } from '@suite-constants/layout';
+import { CARD_PADDING_SIZE, CARD_PADDING_SIZE_LARGE } from 'src/constants/suite/layout';
 
 const getPaddingSize = (
     largePadding?: boolean,
@@ -24,7 +24,7 @@ const Wrapper = styled.div`
 
 const Content = styled(Card)`
     flex-direction: row;
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
 `;
 
 const Header = styled.div`
@@ -38,16 +38,16 @@ const Title = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     text-transform: uppercase;
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
 `;
 
 const Description = styled.div``;
 
-export interface Props {
-    children?: React.ReactNode;
-    customHeader?: React.ReactNode;
-    title?: string | React.ReactNode;
-    description?: string | React.ReactNode;
+export interface CardWithHeaderProps {
+    children?: ReactNode;
+    customHeader?: ReactNode;
+    title?: string | ReactNode;
+    description?: string | ReactNode;
     largePadding?: boolean;
     noPadding?: boolean;
     noVerticalPadding?: boolean;
@@ -62,7 +62,7 @@ export const CardWithHeader = ({
     noVerticalPadding,
     customHeader,
     ...rest
-}: Props) => (
+}: CardWithHeaderProps) => (
     <Wrapper>
         {title && (
             <Header>

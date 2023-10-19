@@ -2,9 +2,7 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": {
         "noImplicitAny": false,
-        "outDir": "./libDev",
-        "noUnusedLocals": false,
-        "noUnusedParameters": false
+        "outDir": "./libDev"
     },
     "include": [
         ".",
@@ -13,7 +11,8 @@
     ],
     "references": [
         { "path": "../components" },
-        { "path": "../connect-web" }
+        { "path": "../connect-web" },
+        { "path": "../protobuf" }
     ],
     "ts-node": {
         "compilerOptions": {

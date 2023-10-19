@@ -1,62 +1,17 @@
 // upstream: https://github.com/bitcoinjs/bitcoinjs-lib/blob/master/ts_src/payments/index.ts
 
-import { p2data as embed } from './embed';
-import { p2ms } from './p2ms';
-import { p2pk } from './p2pk';
-import { p2pkh } from './p2pkh';
-import { p2sh } from './p2sh';
-import { p2tr } from './p2tr';
-import { p2wpkh } from './p2wpkh';
-import { p2wsh } from './p2wsh';
-import { sstxchange } from './sstxchange';
-import { sstxcommitment } from './sstxcommitment';
-import { sstxpkh } from './sstxpkh';
-import { sstxsh } from './sstxsh';
-import type { Network } from '../networks';
-
-export interface Payment {
-    name?: string;
-    network?: Network;
-    output?: Buffer;
-    data?: Buffer[];
-    m?: number;
-    n?: number;
-    pubkeys?: Buffer[];
-    input?: Buffer;
-    signatures?: Buffer[];
-    pubkey?: Buffer;
-    signature?: Buffer;
-    address?: string;
-    hash?: Buffer;
-    redeem?: Payment;
-    witness?: Buffer[];
-    amount?: string; // sstxcommitment
-}
-
-export declare type PaymentCreator = (a: Payment, opts?: PaymentOpts) => Payment;
-
-export declare type PaymentFunction = () => Payment;
-export interface PaymentOpts {
-    validate?: boolean;
-    allowIncomplete?: boolean;
-}
-
-export type { StackElement, Stack, StackFunction } from '../types';
-
-export {
-    embed,
-    p2ms,
-    p2pk,
-    p2pkh,
-    p2sh,
-    p2tr,
-    p2wpkh,
-    p2wsh,
-    sstxchange,
-    sstxcommitment,
-    sstxpkh,
-    sstxsh,
-};
+export { p2data as embed } from './embed';
+export { p2ms } from './p2ms';
+export { p2pk } from './p2pk';
+export { p2pkh } from './p2pkh';
+export { p2sh } from './p2sh';
+export { p2tr } from './p2tr';
+export { p2wpkh } from './p2wpkh';
+export { p2wsh } from './p2wsh';
+export { sstxchange } from './sstxchange';
+export { sstxcommitment } from './sstxcommitment';
+export { sstxpkh } from './sstxpkh';
+export { sstxsh } from './sstxsh';
 
 // TODO
 // witness commitment

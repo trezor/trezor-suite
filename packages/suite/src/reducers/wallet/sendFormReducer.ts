@@ -1,9 +1,10 @@
 import produce from 'immer';
-import { STORAGE } from '@suite-actions/constants';
-import { SEND } from '@wallet-actions/constants';
-import { Action } from '@suite-types';
-import { FormState, PrecomposedTransactionFinal, TxFinalCardano } from '@wallet-types/sendForm';
+import { STORAGE } from 'src/actions/suite/constants';
+import { SEND } from 'src/actions/wallet/constants';
+import { Action } from 'src/types/suite';
+import { FormState, PrecomposedTransactionFinal, TxFinalCardano } from 'src/types/wallet/sendForm';
 import { accountsActions } from '@suite-common/wallet-core';
+import { cloneObject } from '@trezor/utils';
 
 export interface SendState {
     drafts: {
@@ -30,7 +31,11 @@ const sendFormReducer = (state: SendState = initialState, action: Action): SendS
                 });
                 break;
             case SEND.STORE_DRAFT:
-                draft.drafts[action.key] = action.formState;
+                // Deep-cloning to prevent buggy interaction between react-hook-form and immer, see https://github.com/orgs/react-hook-form/discussions/3715#discussioncomment-2151458
+                // Otherwise, whenever the outputs fieldArray is updated after the form draft or precomposedForm is saved, there is na error:
+                // TypeError: Cannot assign to read only property of object '#<Object>'
+                // This might not be necessary in the future when the dependencies are upgraded.
+                draft.drafts[action.key] = cloneObject(action.formState);
                 break;
             case SEND.REMOVE_DRAFT:
                 delete draft.drafts[action.key];
@@ -46,7 +51,11 @@ const sendFormReducer = (state: SendState = initialState, action: Action): SendS
             case SEND.REQUEST_SIGN_TRANSACTION:
                 if (action.payload) {
                     draft.precomposedTx = action.payload.transactionInfo;
-                    draft.precomposedForm = action.payload.formValues;
+                    // Deep-cloning to prevent buggy interaction between react-hook-form and immer, see https://github.com/orgs/react-hook-form/discussions/3715#discussioncomment-2151458
+                    // Otherwise, whenever the outputs fieldArray is updated after the form draft or precomposedForm is saved, there is na error:
+                    // TypeError: Cannot assign to read only property of object '#<Object>'
+                    // This might not be necessary in the future when the dependencies are upgraded.
+                    draft.precomposedForm = cloneObject(action.payload.formValues);
                 } else {
                     delete draft.precomposedTx;
                     delete draft.precomposedForm;

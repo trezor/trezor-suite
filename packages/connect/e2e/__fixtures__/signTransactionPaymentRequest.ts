@@ -1,4 +1,4 @@
-// fixtures: https://github.com/trezor/trezor-firmware/blob/master/tests/device_tests/bitcoin/test_signtx_payreq.py
+// fixtures: https://github.com/trezor/trezor-firmware/blob/main/tests/device_tests/bitcoin/test_signtx_payreq.py
 
 const { ADDRESS_N, TX_CACHE } = global.TestUtils;
 
@@ -13,7 +13,7 @@ export default {
     tests: [
         {
             description: 'Testnet (Bech32/P2WPKH): Payment request success',
-            skip: ['1', '<2.4.4'], // payment requests are not implemented in T1 and < 2.4.4
+            skip: ['1', '<2.4.4'], // payment requests are not implemented in T1B1 and < 2.4.4
             params: {
                 coin: 'Testnet',
                 inputs: [

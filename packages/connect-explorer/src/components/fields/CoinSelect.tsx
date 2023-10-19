@@ -1,4 +1,3 @@
-import React from 'react';
 import { Select } from '@trezor/components';
 
 import type { Field } from '../../types';

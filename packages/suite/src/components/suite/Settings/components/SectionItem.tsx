@@ -1,10 +1,10 @@
-import React from 'react';
+import { forwardRef, HTMLAttributes } from 'react';
 import styled from 'styled-components';
 
 import { variables } from '@trezor/components';
-import { CARD_PADDING_SIZE } from '@suite-constants/layout';
-import { SECONDARY_PANEL_HEIGHT } from '@suite-components/AppNavigation';
-import { anchorOutlineStyles } from '@suite-utils/anchor';
+import { CARD_PADDING_SIZE } from 'src/constants/suite/layout';
+import { SECONDARY_PANEL_HEIGHT } from 'src/components/suite/AppNavigation';
+import { anchorOutlineStyles } from 'src/utils/suite/anchor';
 
 const Wrapper = styled.div<{ shouldHighlight?: boolean }>`
     padding: 0 ${CARD_PADDING_SIZE};
@@ -13,7 +13,7 @@ const Wrapper = styled.div<{ shouldHighlight?: boolean }>`
 
     &:not(:first-child) {
         > div {
-            border-top: 1px solid ${props => props.theme.STROKE_GREY};
+            border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
         }
     }
 
@@ -42,11 +42,11 @@ const Content = styled.div`
     }
 `;
 
-interface Props extends React.HTMLAttributes<HTMLDivElement> {
+interface SectionItemProps extends HTMLAttributes<HTMLDivElement> {
     shouldHighlight?: boolean;
 }
 
-export const SectionItem = React.forwardRef<HTMLDivElement, Props>(
+export const SectionItem = forwardRef<HTMLDivElement, SectionItemProps>(
     ({ children, shouldHighlight, ...rest }, ref) => (
         <Wrapper ref={ref} shouldHighlight={shouldHighlight} {...rest}>
             <Content>{children}</Content>

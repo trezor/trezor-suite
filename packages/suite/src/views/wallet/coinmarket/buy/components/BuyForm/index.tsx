@@ -1,9 +1,8 @@
-import React from 'react';
 import styled from 'styled-components';
-import { Translation } from '@suite-components';
-import { useCoinmarketBuyFormContext } from '@wallet-hooks/useCoinmarketBuyForm';
-import { Wrapper, NoProviders } from '@wallet-views/coinmarket';
-import { CoinmarketSkeleton } from '@wallet-views/coinmarket/skeleton';
+import { Translation } from 'src/components/suite';
+import { useCoinmarketBuyFormContext } from 'src/hooks/wallet/useCoinmarketBuyForm';
+import { Wrapper, NoProviders } from 'src/views/wallet/coinmarket';
+import { CoinmarketSkeleton } from 'src/views/wallet/coinmarket/skeleton';
 
 import Inputs from './Inputs';
 import Footer from './Footer';

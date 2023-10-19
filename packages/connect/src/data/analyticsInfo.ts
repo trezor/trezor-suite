@@ -31,7 +31,7 @@ export const enhancePostMessageWithAnalytics = (
                             passphraseProtection: device?.features?.passphrase_protection || '',
                             backupType: device?.features?.backup_type || 'Bip39',
                             language: device?.features?.language || '',
-                            model: device?.features?.model || '',
+                            model: device?.features?.internal_model || '',
                             vendor: device?.features?.vendor || '',
                             // TODO:
                             // I don't want to release @trezor/device-utils into npm just because of this file.

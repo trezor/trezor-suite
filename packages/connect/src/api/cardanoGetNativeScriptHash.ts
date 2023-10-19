@@ -18,7 +18,6 @@ export default class CardanoGetNativeScriptHash extends AbstractMethod<
             getMiscNetwork('Cardano'),
             this.firmwareRange,
         );
-        this.info = 'Get Cardano native script hash';
 
         const { payload } = this;
 
@@ -38,6 +37,10 @@ export default class CardanoGetNativeScriptHash extends AbstractMethod<
                     ? payload.derivationType
                     : PROTO.CardanoDerivationType.ICARUS_TREZOR,
         };
+    }
+
+    get info() {
+        return 'Get Cardano native script hash';
     }
 
     validateScript(script: CardanoNativeScript) {

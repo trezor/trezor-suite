@@ -1,24 +1,26 @@
-import React from 'react';
 import styled from 'styled-components';
-import { useDispatch, useSelector } from '@suite-hooks';
+
 import { P, Button, Image } from '@trezor/components';
 import { HELP_CENTER_FAILED_BACKUP_URL } from '@trezor/urls';
-import { backupDevice } from '@backup-actions/backupActions';
-import { changePin } from '@settings-actions/deviceSettingsActions';
-import { Loading, Translation, TrezorLink, Modal } from '@suite-components';
-import { PreBackupCheckboxes, AfterBackupCheckboxes } from '@backup-components';
-import { canStart, canContinue } from '@backup-utils';
-import { selectDevice, selectLocks } from '@suite-reducers/suiteReducer';
-import type { ForegroundAppProps } from '@suite-types';
-import type { BackupStatus } from '@backup-actions/backupActions';
-import { selectBackup } from '@backup-reducers/backupReducer';
+import { selectDevice } from '@suite-common/wallet-core';
+
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { backupDevice } from 'src/actions/backup/backupActions';
+import { changePin } from 'src/actions/settings/deviceSettingsActions';
+import { Loading, Translation, TrezorLink, Modal } from 'src/components/suite';
+import { PreBackupCheckboxes, AfterBackupCheckboxes } from 'src/components/backup';
+import { canStart, canContinue } from 'src/utils/backup';
+import { selectLocks } from 'src/reducers/suite/suiteReducer';
+import type { ForegroundAppProps } from 'src/types/suite';
+import type { BackupStatus } from 'src/actions/backup/backupActions';
+import { selectBackup } from 'src/reducers/backup/backupReducer';
 
 const StyledButton = styled(Button)`
     width: 224px;
 `;
 
 const StyledP = styled(P)`
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 const StyledImage = styled(Image)`

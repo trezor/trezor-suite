@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { Translation, AccountLabeling } from '@suite-components';
-import { Button, Loader, P, RadioButton, Truncate, variables } from '@trezor/components';
-import { useCoinmarketExchangeOffersContext } from '@wallet-hooks/useCoinmarketExchangeOffers';
-import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
+import { Translation, AccountLabeling } from 'src/components/suite';
+import { Button, Spinner, P, RadioButton, Truncate, variables } from '@trezor/components';
+import { useCoinmarketExchangeOffersContext } from 'src/hooks/wallet/useCoinmarketExchangeOffers';
+import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 import { DexApprovalType, ExchangeTrade } from 'invity-api';
 import useTimeoutFn from 'react-use/lib/useTimeoutFn';
 import useUnmount from 'react-use/lib/useUnmount';
-import invityAPI from '@suite-services/invityAPI';
+import invityAPI from 'src/services/suite/invityAPI';
 
 // add APPROVED means no approval request is necessary
 type ExtendedDexApprovalType = DexApprovalType | 'APPROVED';
@@ -20,13 +20,13 @@ const Wrapper = styled.div`
 
 const LabelText = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 const Value = styled.div`
     padding-top: 6px;
     font-size: ${variables.FONT_SIZE.SMALL};
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
@@ -39,7 +39,7 @@ const ButtonWrapper = styled.div`
     align-items: center;
     justify-content: center;
     padding-top: 20px;
-    border-top: 1px solid ${props => props.theme.STROKE_GREY};
+    border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
     margin: 20px 0;
 `;
 
@@ -70,7 +70,7 @@ const LoaderWrapper = styled.div`
 `;
 
 const ErrorWrapper = styled(LoaderWrapper)`
-    color: ${props => props.theme.TYPE_RED};
+    color: ${({ theme }) => theme.TYPE_RED};
 `;
 
 const REFRESH_SECONDS = 15;
@@ -189,7 +189,7 @@ const SendApprovalTransactionComponent = () => {
             )}
             {selectedQuote.status === 'APPROVAL_PENDING' && (
                 <LoaderWrapper>
-                    <Loader />
+                    <Spinner />
                     <Title>
                         <Translation id="TR_EXCHANGE_APPROVAL_CONFIRMING" />
                     </Title>

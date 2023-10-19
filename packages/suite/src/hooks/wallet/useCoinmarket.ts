@@ -7,20 +7,20 @@ import {
 } from 'invity-api';
 import useUnmount from 'react-use/lib/useUnmount';
 import useTimeoutFn from 'react-use/lib/useTimeoutFn';
-import { useActions } from '@suite-hooks';
-import invityAPI from '@suite-services/invityAPI';
-import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
-import * as coinmarketExchangeActions from '@wallet-actions/coinmarketExchangeActions';
-import * as coinmarketSellActions from '@wallet-actions/coinmarketSellActions';
-import * as coinmarketSavingsActions from '@wallet-actions/coinmarketSavingsActions';
-import { Account } from '@wallet-types';
+import { useDispatch } from 'src/hooks/suite';
+import invityAPI from 'src/services/suite/invityAPI';
+import { saveTrade as saveBuyTrade } from 'src/actions/wallet/coinmarketBuyActions';
+import { saveTrade as saveExchangeTrade } from 'src/actions/wallet/coinmarketExchangeActions';
+import { saveTrade as saveSellTrade } from 'src/actions/wallet/coinmarketSellActions';
+import { saveTrade as saveSavingsTrade } from 'src/actions/wallet/coinmarketSavingsActions';
+import { Account } from 'src/types/wallet';
 import type {
     TradeBuy,
     TradeSell,
     TradeExchange,
     TradeSavings,
-} from '@wallet-types/coinmarketCommonTypes';
-import { useFormDraft } from '@wallet-hooks/useFormDraft';
+} from 'src/types/wallet/coinmarketCommonTypes';
+import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
 
 const BuyTradeFinalStatuses: BuyTradeStatus[] = ['SUCCESS', 'ERROR', 'BLOCKED'];
 
@@ -29,7 +29,7 @@ const shouldRefreshBuyTrade = (trade?: TradeBuy) =>
 
 export const useWatchBuyTrade = (account: Account, trade: TradeBuy) => {
     const REFRESH_SECONDS = 30;
-    const { saveTrade } = useActions({ saveTrade: coinmarketBuyActions.saveTrade });
+    const dispatch = useDispatch();
     const [refreshCount, setRefreshCount] = useState(0);
     const invokeRefresh = () => {
         if (shouldRefreshBuyTrade(trade)) {
@@ -56,7 +56,7 @@ export const useWatchBuyTrade = (account: Account, trade: TradeBuy) => {
                         status: response.status,
                         error: response.error,
                     };
-                    saveTrade(tradeData, account, newDate);
+                    dispatch(saveBuyTrade(tradeData, account, newDate));
                 }
                 if (response.status && BuyTradeFinalStatuses.includes(response.status)) {
                     removeDraft(account.key);
@@ -64,7 +64,7 @@ export const useWatchBuyTrade = (account: Account, trade: TradeBuy) => {
             });
             resetRefresh();
         }
-    }, [account, cancelRefresh, refreshCount, removeDraft, resetRefresh, saveTrade, trade]);
+    }, [account, cancelRefresh, dispatch, refreshCount, removeDraft, resetRefresh, trade]);
 };
 
 export const ExchangeTradeFinalStatuses: ExchangeTradeStatus[] = ['SUCCESS', 'ERROR', 'KYC'];
@@ -74,7 +74,7 @@ const shouldRefreshExchangeTrade = (trade?: TradeExchange) =>
 
 export const useWatchExchangeTrade = (account: Account, trade: TradeExchange) => {
     const REFRESH_SECONDS = 30;
-    const { saveTrade } = useActions({ saveTrade: coinmarketExchangeActions.saveTrade });
+    const dispatch = useDispatch();
     const [refreshCount, setRefreshCount] = useState(0);
     const invokeRefresh = () => {
         if (shouldRefreshExchangeTrade(trade)) {
@@ -101,7 +101,7 @@ export const useWatchExchangeTrade = (account: Account, trade: TradeExchange) =>
                         status: response.status,
                         error: response.error,
                     };
-                    saveTrade(tradeData, account, newDate);
+                    dispatch(saveExchangeTrade(tradeData, account, newDate));
                 }
                 if (response.status && ExchangeTradeFinalStatuses.includes(response.status)) {
                     removeDraft(account.key);
@@ -109,7 +109,7 @@ export const useWatchExchangeTrade = (account: Account, trade: TradeExchange) =>
             });
             resetRefresh();
         }
-    }, [account, cancelRefresh, refreshCount, removeDraft, resetRefresh, saveTrade, trade]);
+    }, [account, cancelRefresh, dispatch, refreshCount, removeDraft, resetRefresh, trade]);
 };
 
 export const SellFiatTradeFinalStatuses: SellTradeStatus[] = [
@@ -125,7 +125,7 @@ const shouldRefreshSellTrade = (trade?: TradeSell) =>
 
 export const useWatchSellTrade = (account: Account, trade?: TradeSell) => {
     const REFRESH_SECONDS = 30;
-    const { saveTrade } = useActions({ saveTrade: coinmarketSellActions.saveTrade });
+    const dispatch = useDispatch();
     const [refreshCount, setRefreshCount] = useState(0);
     const invokeRefresh = () => {
         if (shouldRefreshSellTrade(trade)) {
@@ -156,7 +156,7 @@ export const useWatchSellTrade = (account: Account, trade?: TradeSell) => {
                         tradeData.destinationAddress = response.destinationAddress;
                         tradeData.destinationPaymentExtraId = response.destinationPaymentExtraId;
                     }
-                    saveTrade(tradeData, account, newDate);
+                    dispatch(saveSellTrade(tradeData, account, newDate));
                     if (response.status && SellFiatTradeFinalStatuses.includes(response.status)) {
                         removeDraft(account.key);
                     }
@@ -164,7 +164,7 @@ export const useWatchSellTrade = (account: Account, trade?: TradeSell) => {
             });
             resetRefresh();
         }
-    }, [account, cancelRefresh, refreshCount, removeDraft, resetRefresh, saveTrade, trade]);
+    }, [account, cancelRefresh, dispatch, refreshCount, removeDraft, resetRefresh, trade]);
 };
 
 export const SavingsTradeFinalStatuses: SavingsTradeItemStatus[] = [
@@ -180,7 +180,7 @@ const shouldRefreshSavingsTrade = (trade?: TradeSavings) =>
 
 export const useWatchSavingsTrade = (account: Account, trade: TradeSavings) => {
     const REFRESH_SECONDS = 30;
-    const { saveTrade } = useActions({ saveTrade: coinmarketSavingsActions.saveTrade });
+    const dispatch = useDispatch();
     const [refreshCount, setRefreshCount] = useState(0);
     const invokeRefresh = () => {
         if (shouldRefreshSavingsTrade(trade)) {
@@ -208,10 +208,10 @@ export const useWatchSavingsTrade = (account: Account, trade: TradeSavings) => {
                         status: response.savingsTradeItem?.status || 'Error',
                         error: response.error,
                     };
-                    saveTrade(tradeData, account, newDate);
+                    dispatch(saveSavingsTrade(tradeData, account, newDate));
                 }
             });
             resetRefresh();
         }
-    }, [account, cancelRefresh, refreshCount, resetRefresh, saveTrade, trade]);
+    }, [account, cancelRefresh, dispatch, refreshCount, resetRefresh, trade]);
 };

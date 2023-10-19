@@ -1,6 +1,6 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { variables } from '@trezor/components';
-import { Translation } from '@suite-components';
+import { Translation } from 'src/components/suite';
 import styled from 'styled-components';
 
 const Wrapper = styled.div`
@@ -12,8 +12,8 @@ const Wrapper = styled.div`
 const PageItem = styled.div<{ isActive?: boolean }>`
     cursor: pointer;
     font-size: ${variables.FONT_SIZE.SMALL};
-    background: ${props => (props.isActive ? props.theme.BG_GREEN : 'transparent')};
-    color: ${props => (props.isActive ? props.theme.TYPE_WHITE : props.theme.TYPE_GREEN)};
+    background: ${({ isActive, theme }) => (isActive ? theme.BG_GREEN : 'transparent')};
+    color: ${({ isActive, theme }) => (isActive ? theme.TYPE_WHITE : theme.TYPE_GREEN)};
     padding: 4px 8px;
     border-radius: 2px;
 `;
@@ -24,7 +24,7 @@ const Actions = styled.div<{ isActive: boolean }>`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
-interface Props {
+interface PaginationProps {
     currentPage: number;
     isLastPage?: boolean;
     hasPages?: boolean;
@@ -41,7 +41,7 @@ export const Pagination = ({
     perPage,
     totalItems,
     ...rest
-}: Props) => {
+}: PaginationProps) => {
     const totalPages = Math.ceil(totalItems / perPage);
     const showPrevious = currentPage > 1;
     // array of int used for creating all page buttons

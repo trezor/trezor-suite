@@ -1,5 +1,6 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
-import { UseFormMethods } from 'react-hook-form';
+import { useState, useRef, useEffect, useCallback, Dispatch, SetStateAction } from 'react';
+import { FieldPath, UseFormReturn } from 'react-hook-form';
+
 import {
     FormState,
     UseSendFormState,
@@ -11,18 +12,24 @@ import {
     PrecomposedLevelsCardano,
 } from '@suite-common/wallet-types';
 import { useAsyncDebounce } from '@trezor/react-utils';
-import { useActions } from '@suite-hooks';
-import { isChanged } from '@suite-utils/comparisonUtils';
-import * as sendFormActions from '@wallet-actions/sendFormActions';
+import { isChanged } from '@suite-common/suite-utils';
 import { findComposeErrors } from '@suite-common/wallet-utils';
+import { FeeLevel } from '@trezor/connect';
+import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 
-type Props = UseFormMethods<FormState> & {
+import { TranslationKey } from 'src/components/suite/Translation';
+import { composeTransaction } from 'src/actions/wallet/sendFormActions';
+import { useDispatch, useTranslation } from 'src/hooks/suite';
+
+type Props = UseFormReturn<FormState> & {
     state: UseSendFormState;
     excludedUtxos: ExcludedUtxos;
     account: UseSendFormState['account']; // account from the component props !== state.account
     updateContext: SendContextValues['updateContext'];
+    setLoading: Dispatch<SetStateAction<boolean>>;
     setAmount: (index: number, amount: string) => void;
     targetAnonymity?: number;
+    prison?: Record<string, unknown>;
 };
 
 // This hook should be used only as a sub-hook of `useSendForm`
@@ -30,24 +37,25 @@ export const useSendFormCompose = ({
     getValues,
     setValue,
     setError,
-    errors,
+    formState: { errors, isDirty },
     clearErrors,
     state,
     account,
     excludedUtxos,
     updateContext,
+    setLoading,
     setAmount,
+    prison,
 }: Props) => {
     const [composedLevels, setComposedLevels] =
         useState<SendContextValues['composedLevels']>(undefined);
-    const [composeField, setComposeField] = useState<string | undefined>(undefined);
+    const [composeField, setComposeField] = useState<FieldPath<FormState> | undefined>(undefined);
     const [draftSaveRequest, setDraftSaveRequest] = useState(false);
 
-    const { composeTransaction } = useActions({
-        composeTransaction: sendFormActions.composeTransaction,
-    });
+    const dispatch = useDispatch();
 
-    const composeRequestRef = useRef<string | undefined>(undefined); // input name, caller of compose request
+    const { translationString } = useTranslation();
+
     const composeRequestID = useRef(0); // compose ID, incremented with every compose request
 
     const debounce = useAsyncDebounce();
@@ -55,100 +63,97 @@ export const useSendFormCompose = ({
     const composeDraft = useCallback(
         async (values: FormState) => {
             // start composing without debounce
-            updateContext({ isLoading: true, isDirty: true });
+            setLoading(true);
             setComposedLevels(undefined);
 
-            const result = await composeTransaction(values, {
-                account,
-                network: state.network,
-                feeInfo: state.feeInfo,
-                excludedUtxos,
-            });
+            const result = await dispatch(
+                composeTransaction(values, {
+                    account,
+                    network: state.network,
+                    feeInfo: state.feeInfo,
+                    excludedUtxos,
+                    prison,
+                }),
+            );
 
-            setComposedLevels(result);
-            updateContext({ isLoading: false, isDirty: true }); // isDirty needs to be set again, "state" is cached in updateContext callback
+            if (result) {
+                setComposedLevels(result);
+            } else {
+                // undefined result will not be processed by useEffect below, reset loader
+                setLoading(false);
+            }
         },
-        [account, excludedUtxos, state.network, state.feeInfo, composeTransaction, updateContext],
+        [account, dispatch, prison, excludedUtxos, setLoading, state.network, state.feeInfo],
     );
 
-    // called from composeRequest useEffect
-    const processComposeRequest = useCallback(async () => {
-        // eslint-disable-next-line require-await
-        const composeInner = async () => {
-            if (Object.keys(errors).length > 0) {
-                return;
+    // Create a compose request
+    const composeRequest = useCallback(
+        async (field: FieldPath<FormState> | undefined = 'outputs.0.amount') => {
+            // reset current precomposed transactions
+            setComposedLevels(undefined);
+            // update request id
+            composeRequestID.current++;
+            // clear errors from previous compose process
+            const composeErrors = findComposeErrors(errors);
+            if (composeErrors.length > 0) {
+                clearErrors(composeErrors);
             }
+            // set state value for later use in updateComposedValues function
+            setComposeField(field);
+            // start composing
+            setLoading(true);
 
-            const values = getValues();
-            // save draft (it could be changed later, after composing)
-            setDraftSaveRequest(true);
+            // store current request ID before async debounced process and compare it later. see explanation below
+            const resultID = composeRequestID.current;
+            const result = await debounce(() => {
+                if (Object.keys(errors).length > 0) {
+                    return Promise.resolve(undefined);
+                }
 
-            return composeTransaction(values, {
-                account,
-                network: state.network,
-                feeInfo: state.feeInfo,
-                excludedUtxos,
+                const values = getValues();
+                // save draft (it could be changed later, after composing)
+                setDraftSaveRequest(true);
+
+                return dispatch(
+                    composeTransaction(values, {
+                        account,
+                        network: state.network,
+                        feeInfo: state.feeInfo,
+                        excludedUtxos,
+                        prison,
+                    }),
+                );
             });
-        };
 
-        // store current request ID before async debounced process and compare it later. see explanation below
-        const resultID = composeRequestID.current;
-        const result = await debounce(composeInner);
-        // RACE-CONDITION NOTE:
-        // resultID could be outdated when composeRequestID was updated by another upcoming/pending composeRequest and render tick didn't process it yet,
-        // therefore another debounce process was not called yet to interrupt current one
-        // unexpected result: `updateComposedValues` is trying to work with updated/newer FormState
-        if (resultID === composeRequestID.current) {
-            if (result) {
-                // set new composed transactions
-                setComposedLevels(result);
+            // RACE-CONDITION NOTE:
+            // resultID could be outdated when composeRequestID was updated by another upcoming/pending composeRequest and render tick didn't process it yet,
+            // therefore another debounce process was not called yet to interrupt current one
+            // unexpected result: `updateComposedValues` is trying to work with updated/newer FormState
+            if (resultID === composeRequestID.current) {
+                if (result) {
+                    // set new composed transactions
+                    setComposedLevels(result);
+                } else {
+                    // result undefined: (FormState got errors or sendFormActions got errors)
+                    // undefined result will not be processed by useEffect below, reset loader
+                    setLoading(false);
+                }
             }
-            // result undefined: (FormState got errors or sendFormActions got errors)
-            updateContext({ isLoading: false });
-        }
-    }, [
-        account,
-        excludedUtxos,
-        state.network,
-        state.feeInfo,
-        updateContext,
-        debounce,
-        errors,
-        getValues,
-        composeTransaction,
-    ]);
-
-    // Create a compose request which should be processed in useEffect below
-    // This function should be called from the UI (input.onChange, button.click etc...)
-    // react-hook-form doesn't propagate values immediately. New calculated FormState is available until render tick
-    // IMPORTANT NOTE: Processing request without useEffect will use outdated FormState values (FormState before input.onChange)
-    // NOTE: this function doesn't have to be wrapped in useCallback since no component is using it as a hook dependency and it will be cleared by garbage collector (useCallback are not)
-    const composeRequest = (field = 'outputs[0].amount') => {
-        // reset precomposed transactions
-        setComposedLevels(undefined);
-        // set ref for later use in useEffect which handle composedLevels change
-        composeRequestRef.current = field;
-        // set ref for later use in processComposeRequest function
-        composeRequestID.current++;
-        // clear errors from compose process
-        const composeErrors = findComposeErrors(errors);
-        if (composeErrors.length > 0) {
-            clearErrors(composeErrors);
-        }
-        // set state value for later use in updateComposedValues function
-        setComposeField(field);
-        // start composing
-        updateContext({ isLoading: true, isDirty: true });
-    };
-
-    // Handle composeRequest
-    useEffect(() => {
-        // compose request is not set, do nothing
-        if (!composeRequestRef.current) return;
-        processComposeRequest();
-        // reset compose request
-        composeRequestRef.current = undefined;
-    }, [composeRequestRef, processComposeRequest]);
+        },
+        [
+            debounce,
+            dispatch,
+            setLoading,
+            errors,
+            clearErrors,
+            getValues,
+            account,
+            state.network,
+            state.feeInfo,
+            excludedUtxos,
+            prison,
+        ],
+    );
 
     // update fields AFTER composedLevels change or selectedFee change (below)
     const updateComposedValues = useCallback(
@@ -160,24 +165,34 @@ export const useSendFormCompose = ({
                     // composed tx doesn't have an errorMessage (Translation props)
                     // this error is unexpected and should be handled in sendFormActions
                     console.warn('Compose unexpected error', error);
+                    setLoading(false);
                     return;
                 }
 
+                const getErrorType = (translationKey: TranslationKey) => {
+                    switch (translationKey) {
+                        case 'TR_NOT_ENOUGH_ANONYMIZED_FUNDS_WARNING':
+                            return COMPOSE_ERROR_TYPES.ANONYMITY;
+                        case 'TR_NOT_ENOUGH_SELECTED':
+                            return COMPOSE_ERROR_TYPES.COIN_CONTROL;
+                        default:
+                            return COMPOSE_ERROR_TYPES.COMPOSE;
+                    }
+                };
+
+                const formError = {
+                    type: getErrorType(errorMessage.id),
+                    message: translationString(errorMessage.id, errorMessage.values),
+                };
+
                 if (composeField) {
                     // setError to the field which created `composeRequest`
-                    setError(composeField, {
-                        type: 'compose',
-                        message: errorMessage as any, // setError types is broken? according to ts it accepts only strings, but object or react component could be used as well...
-                    });
+                    setError(composeField, formError);
                 } else if (values.outputs) {
                     // setError to the all `Amount` fields, composeField not specified (load draft case)
-                    values.outputs.forEach((_, i) => {
-                        setError(`outputs[${i}].amount`, {
-                            type: 'compose',
-                            message: errorMessage as any,
-                        });
-                    });
+                    values.outputs.forEach((_, i) => setError(`outputs.${i}.amount`, formError));
                 }
+                setLoading(false);
                 return;
             }
 
@@ -195,8 +210,19 @@ export const useSendFormCompose = ({
                 setAmount(setMaxOutputId, composed.max);
                 setDraftSaveRequest(true);
             }
+            setLoading(false);
         },
-        [composeField, getValues, setAmount, errors, setError, clearErrors, setValue],
+        [
+            composeField,
+            getValues,
+            setAmount,
+            errors,
+            setError,
+            clearErrors,
+            setValue,
+            setLoading,
+            translationString,
+        ],
     );
 
     // handle composedLevels change, setValues or errors for composeField
@@ -215,7 +241,7 @@ export const useSendFormCompose = ({
             !selectedFee || (typeof setMaxOutputId === 'number' && selectedFee !== 'custom');
         if (shouldSwitch && composed.type === 'error') {
             // find nearest possible tx
-            const nearest = Object.keys(composedLevels).find(
+            const nearest = (Object.keys(composedLevels) as FeeLevel['label'][]).find(
                 key => composedLevels[key].type !== 'error',
             );
             // switch to it
@@ -226,7 +252,7 @@ export const useSendFormCompose = ({
                     // @ts-expect-error: type = error already filtered above
                     const { feePerByte, feeLimit } = composed;
                     setValue('feePerUnit', feePerByte);
-                    setValue('feeLimit', feeLimit);
+                    setValue('feeLimit', feeLimit || '');
                 }
                 setDraftSaveRequest(true);
             }
@@ -259,10 +285,9 @@ export const useSendFormCompose = ({
                 const currentLevel = composedLevels[current || 'normal'];
                 updateComposedValues(currentLevel);
             }
-            updateContext({ isDirty: true });
             setDraftSaveRequest(true);
         },
-        [composedLevels, updateComposedValues, updateContext],
+        [composedLevels, updateComposedValues],
     );
 
     // handle props.account change:
@@ -278,7 +303,7 @@ export const useSendFormCompose = ({
         ) {
             return; // account didn't change
         }
-        if (!state.isDirty) {
+        if (!isDirty) {
             // there was no interaction with the form, just update state.account
             updateContext({ account });
             return;
@@ -286,8 +311,6 @@ export const useSendFormCompose = ({
 
         // reset precomposed transactions
         setComposedLevels(undefined);
-        // set ref for later use in useEffect which handle composedLevels change
-        composeRequestRef.current = 'outputs[0].amount';
         // set ref for later use in processComposeRequest function
         composeRequestID.current++;
         // clear errors from compose process
@@ -296,15 +319,17 @@ export const useSendFormCompose = ({
             clearErrors(composeErrors);
         }
         // start composing
-        updateContext({ account, isLoading: true });
+        setLoading(true);
+        updateContext({ account });
     }, [
         state.account,
         state.feeInfo.dustLimit,
-        state.isDirty,
+        isDirty,
         account,
         clearErrors,
         errors,
         updateContext,
+        setLoading,
     ]);
 
     return {

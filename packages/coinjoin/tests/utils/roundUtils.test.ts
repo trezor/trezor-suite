@@ -1,12 +1,25 @@
+import { getRandomNumberInRange } from '@trezor/utils';
+
 import {
     getCommitmentData,
     readTimeSpan,
     estimatePhaseDeadline,
     transformStatus,
     getAffiliateRequest,
+    scheduleDelay,
 } from '../../src/utils/roundUtils';
 import { ROUND_REGISTRATION_END_OFFSET } from '../../src/constants';
 import { DEFAULT_ROUND, STATUS_EVENT, STATUS_TRANSFORMED } from '../fixtures/round.fixture';
+
+// mock random delay function
+jest.mock('@trezor/utils', () => {
+    const originalModule = jest.requireActual('@trezor/utils');
+    return {
+        __esModule: true,
+        ...originalModule,
+        getRandomNumberInRange: jest.fn(originalModule.getRandomNumberInRange),
+    };
+});
 
 describe('roundUtils', () => {
     it('getCommitmentData', () => {
@@ -26,21 +39,21 @@ describe('roundUtils', () => {
     it('estimatePhaseDeadline', () => {
         const round = {
             ...DEFAULT_ROUND,
-            coinjoinState: {
-                events: [
+            CoinjoinState: {
+                Events: [
                     {
                         Type: 'RoundCreated',
-                        roundParameters: {
-                            connectionConfirmationTimeout: '0d 0h 1m 0s',
-                            outputRegistrationTimeout: '0d 0h 2m 0s',
-                            transactionSigningTimeout: '0d 0h 3m 0s',
+                        RoundParameters: {
+                            ConnectionConfirmationTimeout: '0d 0h 1m 0s',
+                            OutputRegistrationTimeout: '0d 0h 2m 0s',
+                            TransactionSigningTimeout: '0d 0h 3m 0s',
                         },
                     },
                 ],
             },
         } as typeof DEFAULT_ROUND;
 
-        const base = new Date(round.inputRegistrationEnd).getTime() + ROUND_REGISTRATION_END_OFFSET;
+        const base = new Date(round.InputRegistrationEnd).getTime() + ROUND_REGISTRATION_END_OFFSET;
         expect(estimatePhaseDeadline(DEFAULT_ROUND)).toEqual(base);
 
         // result may vary +-5 milliseconds
@@ -53,7 +66,7 @@ describe('roundUtils', () => {
         expectInRange(
             estimatePhaseDeadline({
                 ...round,
-                phase: 1,
+                Phase: 1,
             }),
             Date.now() + timeouts,
         );
@@ -61,7 +74,7 @@ describe('roundUtils', () => {
         expectInRange(
             estimatePhaseDeadline({
                 ...round,
-                phase: 2,
+                Phase: 2,
             }),
             Date.now() + timeouts * 2,
         );
@@ -69,7 +82,7 @@ describe('roundUtils', () => {
         expectInRange(
             estimatePhaseDeadline({
                 ...round,
-                phase: 3,
+                Phase: 3,
             }),
             Date.now() + timeouts * 3,
         );
@@ -77,7 +90,7 @@ describe('roundUtils', () => {
         expectInRange(
             estimatePhaseDeadline({
                 ...round,
-                phase: 4,
+                Phase: 4,
             }),
             Date.now() + timeouts * 3,
         );
@@ -95,13 +108,13 @@ describe('roundUtils', () => {
     it('getAffiliateRequest', () => {
         const response = getAffiliateRequest(
             {
-                coordinationFeeRate: {
-                    rate: 0.005,
-                    plebsDontPayThreshold: 1000000,
+                CoordinationFeeRate: {
+                    Rate: 0.005,
+                    PlebsDontPayThreshold: 1000000,
                 },
-                allowedInputAmounts: {
-                    min: 5000,
-                    max: 134375000000,
+                AllowedInputAmounts: {
+                    Min: 5000,
+                    Max: 134375000000,
                 },
             } as any, // incomplete roundParams
             Buffer.from(
@@ -118,5 +131,48 @@ describe('roundUtils', () => {
                 '106bf94e6c325e3f9a8627ac6a8ebe71f322edcde26b43add515d81fc306a309a914ff0e7cfc75b05fc1cddbb60f0f5594642991a23f19b4a4794000d4169db2',
             coinjoin_flags_array: [1, 1],
         });
+    });
+
+    it('scheduleDelay', () => {
+        const resultInRange = (result: number, min: number, max: number) => {
+            expect(result).toBeGreaterThanOrEqual(min);
+            expect(result).toBeLessThanOrEqual(max);
+        };
+
+        // default (no min, no max) range 0-10 sec.
+        resultInRange(scheduleDelay(60000), 0, 10000);
+        expect(getRandomNumberInRange).toHaveBeenLastCalledWith(0, 10000);
+
+        // range 3-10sec.
+        resultInRange(scheduleDelay(20000, 3000), 3000, 10000);
+        expect(getRandomNumberInRange).toHaveBeenLastCalledWith(3000, 10000);
+
+        // deadlineOffset < 0, range 0-1 sec.
+        resultInRange(scheduleDelay(1000, 3000), 0, 1000);
+        expect(getRandomNumberInRange).toHaveBeenLastCalledWith(0, 1000);
+
+        // deadline < min, range 9-10 sec.
+        resultInRange(scheduleDelay(60000, 61000), 9000, 10000);
+        expect(getRandomNumberInRange).toHaveBeenLastCalledWith(9000, 10000);
+
+        // deadline < min && deadline < max, range 49-50 sec.
+        resultInRange(scheduleDelay(60000, 61000, 62000), 49000, 50000);
+        expect(getRandomNumberInRange).toHaveBeenLastCalledWith(49000, 50000);
+
+        // deadline > min && deadline < max, range 3-20 sec.
+        resultInRange(scheduleDelay(30000, 3000, 50000), 3000, 20000);
+        expect(getRandomNumberInRange).toHaveBeenLastCalledWith(3000, 20000);
+
+        // min < 0 && deadline < max && deadlineOffset > 0, range 0-2.5 sec.
+        resultInRange(scheduleDelay(12500, -3000, 50000), 0, 2500);
+        expect(getRandomNumberInRange).toHaveBeenLastCalledWith(0, 2500);
+
+        // min < 0 && max < 0 && deadlineOffset > 0, range 0-1 sec.
+        resultInRange(scheduleDelay(12500, -10000, -5000), 0, 1000);
+        expect(getRandomNumberInRange).toHaveBeenLastCalledWith(0, 1000);
+
+        // min < 0 && max < 0 && deadlineOffset < 0, range 0-1 sec.
+        resultInRange(scheduleDelay(7500, -10000, -5000), 0, 1000);
+        expect(getRandomNumberInRange).toHaveBeenLastCalledWith(0, 1000);
     });
 });

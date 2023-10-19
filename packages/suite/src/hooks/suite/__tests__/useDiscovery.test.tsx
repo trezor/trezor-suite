@@ -1,19 +1,25 @@
-import React from 'react';
 import { act } from '@testing-library/react';
-import { renderWithProviders } from '@suite/support/tests/hooksHelper';
+import { combineReducers } from 'redux';
 
-import discoveryReducer from '@wallet-reducers/discoveryReducer';
-import suiteReducer from '@suite-reducers/suiteReducer';
+import { prepareDiscoveryReducer, prepareDeviceReducer } from '@suite-common/wallet-core';
+import { configureMockStore } from '@suite-common/test-utils';
+
+import { renderWithProviders } from 'src/support/tests/hooksHelper';
+import suiteReducer from 'src/reducers/suite/suiteReducer';
+import { extraDependencies } from 'src/support/extraDependencies';
+
 import { useDiscovery } from '../useDiscovery';
 import { actions } from '../__fixtures__/useDiscovery';
-import { configureMockStore } from '@suite-common/test-utils';
-import { combineReducers } from 'redux';
+
+const discoveryReducer = prepareDiscoveryReducer(extraDependencies);
+const deviceReducer = prepareDeviceReducer(extraDependencies);
 
 export const getInitialState = (action: any = { type: 'initial' }) => ({
     wallet: {
         discovery: discoveryReducer(undefined, action),
     },
     suite: suiteReducer(undefined, action),
+    device: deviceReducer(undefined, action),
 });
 
 const reducer = combineReducers({
@@ -21,6 +27,7 @@ const reducer = combineReducers({
         discovery: discoveryReducer,
     }),
     suite: suiteReducer,
+    device: deviceReducer,
 });
 
 type State = ReturnType<typeof getInitialState>;

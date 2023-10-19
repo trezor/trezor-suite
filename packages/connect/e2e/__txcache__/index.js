@@ -12,7 +12,7 @@ const cacheFiles = (dir, cache = {}) => {
             cacheFiles(filePath, cache);
         } else if (file.endsWith('.json')) {
             // use shortened hash
-            const key = file.substr(0, 6);
+            const key = file.substring(0, 6);
             if (cache[key]) throw Error(`TX_CACHE duplicated key: ${key} file: ${file}`);
 
             try {
@@ -39,7 +39,12 @@ const CACHE = cacheFiles(path.resolve(__dirname));
 
 const TX_CACHE = (txs, force = false) => {
     if (process.env.TESTS_USE_TX_CACHE === 'false' && !force) return [];
-    return txs.map(hash => CACHE[hash]);
+    return txs.map(hash => {
+        if (!CACHE[hash]) {
+            throw Error(`TX_CACHE for ${hash} is undefined`);
+        }
+        return CACHE[hash];
+    });
 };
 
 module.exports = {

@@ -4,6 +4,7 @@ import * as coordinator from '../coordinator';
 import * as middleware from '../middleware';
 import { getRoundEvents, compareOutpoint, sumCredentials } from '../../utils/roundUtils';
 import { getExternalOutputSize } from '../../utils/coordinatorUtils';
+import type { Account } from '../Account';
 import type { CoinjoinRound, CoinjoinRoundOptions } from '../CoinjoinRound';
 
 /**
@@ -27,44 +28,44 @@ const getOutputAmounts = async (params: GetOutputAmountsParams) => {
     const { roundParameters } = round;
     const { signal, middlewareUrl, logger } = options;
 
-    const registeredInputs = getRoundEvents('InputAdded', round.coinjoinState.events);
-    const internalAmounts: number[] = [];
-    const externalAmounts: number[] = [];
+    const registeredInputs = getRoundEvents('InputAdded', round.coinjoinState.Events);
+    const InternalAmounts: number[] = [];
+    const ExternalAmounts: number[] = [];
 
     registeredInputs.forEach(i => {
         const internal = round.inputs.find(
             input =>
-                input.accountKey === accountKey && compareOutpoint(input.outpoint, i.coin.outpoint),
+                input.accountKey === accountKey && compareOutpoint(input.outpoint, i.Coin.Outpoint),
         );
         if (internal) {
-            internalAmounts.push(internal.confirmedAmountCredentials![0].value);
+            InternalAmounts.push(internal.confirmedAmountCredentials![0].Value);
         } else {
-            const size = getExternalOutputSize(i.coin.txOut.scriptPubKey);
-            const miningFee = Math.floor((size * roundParameters.miningFeeRate) / 1000);
+            const size = getExternalOutputSize(i.Coin.TxOut.ScriptPubKey);
+            const miningFee = Math.floor((size * roundParameters.MiningFeeRate) / 1000);
             const coordinatorFee = Math.floor(
-                roundParameters.coordinationFeeRate.rate * i.coin.txOut.value,
+                roundParameters.CoordinationFeeRate.Rate * i.Coin.TxOut.Value,
             );
-            externalAmounts.push(i.coin.txOut.value - coordinatorFee - miningFee);
+            ExternalAmounts.push(i.Coin.TxOut.Value - coordinatorFee - miningFee);
         }
     });
-    logger.info(`Internal inputs: ${internalAmounts.join(',')}`);
-    logger.info(`External inputs: ${externalAmounts.join(',')}`);
+    logger.info(`Internal inputs: ${InternalAmounts.join(',')}`);
+    logger.info(`External inputs: ${ExternalAmounts.join(',')}`);
 
     const outputAmounts = await middleware.getOutputsAmounts(
         {
-            inputSize: params.inputSize,
-            outputSize,
-            availableVsize: params.availableVsize,
-            miningFeeRate: roundParameters.miningFeeRate,
-            allowedOutputAmounts: roundParameters.allowedOutputAmounts,
-            internalAmounts,
-            externalAmounts,
+            InputSize: params.inputSize,
+            OutputSize: outputSize,
+            AvailableVsize: params.availableVsize,
+            MiningFeeRate: roundParameters.MiningFeeRate,
+            AllowedOutputAmounts: roundParameters.AllowedOutputAmounts,
+            InternalAmounts,
+            ExternalAmounts,
         },
         { signal, baseUrl: middlewareUrl },
     );
     logger.info(`Decompose amounts: ${outputAmounts.join(',')}`);
     return outputAmounts.map(amount => {
-        const miningFee = Math.floor((outputSize * roundParameters.miningFeeRate) / 1000);
+        const miningFee = Math.floor((outputSize * roundParameters.MiningFeeRate) / 1000);
         const coordinatorFee = 0; // NOTE: middleware issue https://github.com/zkSNACKs/WalletWasabi/issues/8814 should be `amount > plebsDontPayThreshold ? Math.floor(roundParameters.coordinationFeeRate.rate * amount) : 0` but middleware does not considerate coordinationFeeRate and plebs for external amounts
         return amount + coordinatorFee + miningFee;
     });
@@ -91,10 +92,10 @@ const credentialIssuance = async (params: CredentialIssuanceParams) => {
 
     logger.info('Joining credentials');
     logger.info(
-        `Amount ${amountCredentials.map(c => c.value).join(',')} to ${amountToRequest.join(',')}`,
+        `Amount ${amountCredentials.map(c => c.Value).join(',')} to ${amountToRequest.join(',')}`,
     );
     logger.info(
-        `Vsize ${vsizeCredentials.map(c => c.value).join(',')} to ${vsizeToRequest.join(',')}`,
+        `Vsize ${vsizeCredentials.map(c => c.Value).join(',')} to ${vsizeToRequest.join(',')}`,
     );
 
     // Credentials are always joined in pairs
@@ -109,14 +110,14 @@ const credentialIssuance = async (params: CredentialIssuanceParams) => {
         amountToRequest,
         amountCredentials,
         round.amountCredentialIssuerParameters,
-        roundParameters.maxAmountCredentialValue,
+        roundParameters.MaxAmountCredentialValue,
         { signal, baseUrl: middlewareUrl },
     );
     const issuanceVsizeCredentials = await middleware.getRealCredentials(
         vsizeToRequest,
         vsizeCredentials,
         round.vsizeCredentialIssuerParameters,
-        roundParameters.maxVsizeCredentialValue,
+        roundParameters.MaxVsizeCredentialValue,
         { signal, baseUrl: middlewareUrl },
     );
 
@@ -148,28 +149,28 @@ const credentialIssuance = async (params: CredentialIssuanceParams) => {
     // create credentials for output
     const amountCredentialsOut = await middleware.getCredentials(
         round.amountCredentialIssuerParameters,
-        issuanceData.realAmountCredentials,
-        issuanceAmountCredentials.credentialsResponseValidation,
+        issuanceData.RealAmountCredentials,
+        issuanceAmountCredentials.CredentialsResponseValidation,
         { signal, baseUrl: middlewareUrl },
     );
     const vsizeCredentialsOut = await middleware.getCredentials(
         round.vsizeCredentialIssuerParameters,
-        issuanceData.realVsizeCredentials,
-        issuanceVsizeCredentials.credentialsResponseValidation,
+        issuanceData.RealVsizeCredentials,
+        issuanceVsizeCredentials.CredentialsResponseValidation,
         { signal, baseUrl: middlewareUrl },
     );
 
     // create zero credentials
     const zeroAmountCredentialsOut = await middleware.getCredentials(
         round.amountCredentialIssuerParameters,
-        issuanceData.zeroAmountCredentials,
-        zeroAmountCredentials.credentialsResponseValidation,
+        issuanceData.ZeroAmountCredentials,
+        zeroAmountCredentials.CredentialsResponseValidation,
         { signal, baseUrl: middlewareUrl },
     );
     const zeroVsizeCredentialsOut = await middleware.getCredentials(
         round.vsizeCredentialIssuerParameters,
-        issuanceData.zeroVsizeCredentials,
-        zeroVsizeCredentials.credentialsResponseValidation,
+        issuanceData.ZeroVsizeCredentials,
+        zeroVsizeCredentials.CredentialsResponseValidation,
         { signal, baseUrl: middlewareUrl },
     );
 
@@ -188,13 +189,13 @@ const credentialIssuance = async (params: CredentialIssuanceParams) => {
     };
 
     logger.info(
-        `Output amount credentials: ${output.amountCredentials.map(c => c.value).join(',')}`,
+        `Output amount credentials: ${output.amountCredentials.map(c => c.Value).join(',')}`,
     );
-    logger.info(`Output vsize credentials: ${output.vsizeCredentials.map(c => c.value).join(',')}`);
+    logger.info(`Output vsize credentials: ${output.vsizeCredentials.map(c => c.Value).join(',')}`);
     logger.info(
-        `Change amount credentials: ${change.amountCredentials.map(c => c.value).join(',')}`,
+        `Change amount credentials: ${change.amountCredentials.map(c => c.Value).join(',')}`,
     );
-    logger.info(`Change vsize credentials: ${change.vsizeCredentials.map(c => c.value).join(',')}`);
+    logger.info(`Change vsize credentials: ${change.vsizeCredentials.map(c => c.Value).join(',')}`);
 
     return {
         output,
@@ -208,16 +209,16 @@ const findCredentialsForTarget = (
     maxValue: number,
 ): [middleware.Credentials, middleware.Credentials] | undefined => {
     // sort descending. higher possibility for match
-    const sorted = credentials.sort((a, b) => (a.value > b.value ? -1 : 1));
+    const sorted = credentials.sort((a, b) => (a.Value > b.Value ? -1 : 1));
 
     // find one Credential big enough to cover requested target
-    const bigCredential = sorted.find(cre => cre.value >= target);
+    const bigCredential = sorted.find(cre => cre.Value >= target);
     if (bigCredential) {
         // try find a pair to produce change Credential used in next iteration
         // always try to pair with greatest Credential or at least 0 value Credential
-        const changeValue = bigCredential.value - target;
+        const changeValue = bigCredential.Value - target;
         const pair = sorted.find(
-            cre => cre !== bigCredential && cre.value + changeValue <= maxValue,
+            cre => cre !== bigCredential && cre.Value + changeValue <= maxValue,
         );
         if (pair) {
             return [bigCredential, pair];
@@ -232,7 +233,7 @@ const findCredentialsForTarget = (
             // always try to pair with greatest Credential to produce greatest possible change
             const pair = sorted
                 .slice(index + 1)
-                .find(p => p.value + cre.value >= target && p.value + cre.value <= maxValue);
+                .find(p => p.Value + cre.Value >= target && p.Value + cre.Value <= maxValue);
 
             if (pair) {
                 return [cre, pair];
@@ -244,7 +245,7 @@ const findCredentialsForTarget = (
     return candidate ? [candidate[0], candidate[1]] : undefined;
 };
 
-interface Bob {
+export interface Bob {
     accountKey: string;
     amount: number;
     amountCredentials: middleware.Credentials[];
@@ -275,7 +276,7 @@ const createOutputsCredentials = async (params: CreateOutputsCredentials): Promi
         credentials: findCredentialsForTarget(
             amount,
             amountCredentials,
-            roundParameters.maxAmountCredentialValue,
+            roundParameters.MaxAmountCredentialValue,
         ),
     }));
 
@@ -284,7 +285,7 @@ const createOutputsCredentials = async (params: CreateOutputsCredentials): Promi
     const vsizePair = findCredentialsForTarget(
         outputSize,
         vsizeCredentials,
-        round.roundParameters.maxVsizeCredentialValue,
+        round.roundParameters.MaxVsizeCredentialValue,
     );
 
     if (amountPair?.credentials && vsizePair) {
@@ -346,12 +347,12 @@ const createOutputsCredentials = async (params: CreateOutputsCredentials): Promi
     const amountToJoin = findCredentialsForTarget(
         0,
         amountCredentials,
-        roundParameters.maxAmountCredentialValue,
+        roundParameters.MaxAmountCredentialValue,
     );
     const vsizeToJoin = findCredentialsForTarget(
         0,
         vsizeCredentials,
-        roundParameters.maxVsizeCredentialValue,
+        roundParameters.MaxVsizeCredentialValue,
     );
 
     if (!amountToJoin || !vsizeToJoin) {
@@ -394,6 +395,7 @@ export interface DecomposedOutputs {
 
 export const outputDecomposition = async (
     round: CoinjoinRound,
+    accounts: Account[],
     options: CoinjoinRoundOptions,
 ): Promise<DecomposedOutputs[]> => {
     // group inputs by accountKeys
@@ -415,9 +417,19 @@ export const outputDecomposition = async (
     // calculate amounts
     const outputAmounts = await Promise.all(
         Object.values(groupInputsByAccount).map(inputs => {
-            const allVsizeCredentials = inputs.flatMap(i => i.confirmedVsizeCredentials!);
-            const availableVsize = sumCredentials(allVsizeCredentials);
             const { accountKey, inputSize, outputSize } = inputs[0]; // all inputs belongs to the same account (key, size)
+            const allVsizeCredentials = inputs.flatMap(i => i.confirmedVsizeCredentials!);
+            // limit available vsize if it's bigger than available change addresses
+            // prevent from creating amounts which cannot be assigned to address
+            const availableAddresses =
+                accounts
+                    .find(account => account.accountKey === accountKey)
+                    ?.changeAddresses.filter(addr => !round.prison.isDetained(addr.address)) || [];
+            const availableVsize = Math.min(
+                sumCredentials(allVsizeCredentials),
+                availableAddresses.length * outputSize,
+            );
+
             return getOutputAmounts({
                 round,
                 accountKey,

@@ -25,7 +25,7 @@ describe('Passphrase cancel', () => {
 
             cy.getTestElement('@modal/close-button').click();
             cy.getTestElement('@toast/auth-failed');
-            // todo: interesting fact is that model One and model T have different text in the toast notification
+            // todo: interesting fact is that T1B1 and T2T1 have different text in the toast notification
         });
     });
 });

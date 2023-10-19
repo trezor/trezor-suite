@@ -1,29 +1,37 @@
-import React from 'react';
 import { useSelector } from 'react-redux';
 
-import { A } from '@mobily/ts-belt';
+import { D } from '@mobily/ts-belt';
 
-import { Text } from '@suite-native/atoms';
-import { selectAccounts, selectAccountsSymbols } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
-import { EthereumTokenSymbol } from '@suite-native/ethereum-tokens';
+import { AccountsRootState } from '@suite-common/wallet-core';
+import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { FiatRatesRootState } from '@suite-native/fiat-rates';
+import { SettingsSliceRootState } from '@suite-native/module-settings';
 
 import { AccountsListGroup } from './AccountsListGroup';
+import { selectFilteredAccountsGroupedByNetwork } from '../selectors';
+import { AccountListPlaceholder } from './AccountListPlaceholder';
 
 type AccountsListProps = {
-    onSelectAccount: (accountKey: AccountKey, tokenSymbol?: EthereumTokenSymbol) => void;
+    onSelectAccount: (accountKey: AccountKey, tokenContract?: TokenAddress) => void;
+    filterValue?: string;
 };
 
-export const AccountsList = ({ onSelectAccount }: AccountsListProps) => {
-    const accountsSymbols = useSelector(selectAccountsSymbols);
-    const accounts = useSelector(selectAccounts);
+export const AccountsList = ({ onSelectAccount, filterValue = '' }: AccountsListProps) => {
+    const accounts = useSelector(
+        (state: AccountsRootState & FiatRatesRootState & SettingsSliceRootState) =>
+            selectFilteredAccountsGroupedByNetwork(state, filterValue),
+    );
 
-    if (A.isEmpty(accounts)) return <Text>No accounts found.</Text>;
+    if (D.isEmpty(accounts)) return <AccountListPlaceholder />;
 
     return (
         <>
-            {accountsSymbols.map(symbol => (
-                <AccountsListGroup key={symbol} symbol={symbol} onSelectAccount={onSelectAccount} />
+            {Object.entries(accounts).map(([networkSymbol, networkAccounts]) => (
+                <AccountsListGroup
+                    key={networkSymbol}
+                    accounts={networkAccounts}
+                    onSelectAccount={onSelectAccount}
+                />
             ))}
         </>
     );

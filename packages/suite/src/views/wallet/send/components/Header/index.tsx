@@ -1,23 +1,19 @@
-import React from 'react';
 import { Dropdown } from '@trezor/components';
-import { Translation } from '@suite-components';
-import { useActions } from '@suite-hooks';
-import { useSendFormContext } from '@wallet-hooks';
-import * as sendFormActions from '@wallet-actions/sendFormActions';
+import { Translation } from 'src/components/suite';
+import { useDispatch } from 'src/hooks/suite';
+import { useSendFormContext } from 'src/hooks/wallet';
+import { sendRaw } from 'src/actions/wallet/sendFormActions';
 import { Clear } from './components/Clear';
-import { WalletLayoutHeader } from '@wallet-components';
+import { WalletLayoutHeader } from 'src/components/wallet';
 
 export const Header = () => {
+    const dispatch = useDispatch();
     const {
         outputs,
         account: { networkType },
         addOpReturn,
         loadTransaction,
     } = useSendFormContext();
-
-    const { sendRaw } = useActions({
-        sendRaw: sendFormActions.sendRaw,
-    });
 
     const opreturnOutput = (outputs || []).find(o => o.type === 'opreturn');
     const options = [
@@ -41,7 +37,7 @@ export const Header = () => {
         {
             key: 'raw',
             callback: () => {
-                sendRaw(true);
+                dispatch(sendRaw(true));
                 return true;
             },
             label: <Translation id="SEND_RAW" />,

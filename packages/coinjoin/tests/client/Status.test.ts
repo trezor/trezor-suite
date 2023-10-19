@@ -1,8 +1,13 @@
 import { Status } from '../../src/client/Status';
-import * as http from '../../src/utils/http';
+import * as http from '../../src/client/coordinatorRequest';
 import { STATUS_TIMEOUT } from '../../src/constants';
 import { createServer } from '../mocks/server';
-import { AFFILIATE_INFO, DEFAULT_ROUND, STATUS_EVENT } from '../fixtures/round.fixture';
+import {
+    AFFILIATE_INFO,
+    DEFAULT_ROUND,
+    STATUS_EVENT,
+    createCoinjoinRound,
+} from '../fixtures/round.fixture';
 
 // using fakeTimers and async callbacks
 const fastForward = (time: number) =>
@@ -56,14 +61,16 @@ describe('Status', () => {
         jest.useFakeTimers();
 
         const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
-        const coordinatorRequestSpy = jest
-            .spyOn(http, 'coordinatorRequest')
-            .mockImplementation(() =>
-                Promise.resolve({
-                    ...STATUS_EVENT,
-                    roundStates: [{ ...DEFAULT_ROUND }],
-                }),
-            );
+        const coordinatorRequestSpy = jest.fn();
+        jest.spyOn(http, 'coordinatorRequest').mockImplementation(url => {
+            if (url === 'status') {
+                coordinatorRequestSpy();
+            }
+            return Promise.resolve({
+                ...STATUS_EVENT,
+                RoundStates: [{ ...DEFAULT_ROUND }],
+            });
+        });
 
         status = new Status(server?.requestOptions);
         await status.start();
@@ -101,25 +108,26 @@ describe('Status', () => {
     });
 
     it('setStatusTimeout by following CoinjoinRound', async () => {
-        const coinjoinRound = {
-            ...DEFAULT_ROUND,
-            phaseDeadline: Date.now() + 1000, // initial phaseDeadline is lower than STATUS_TIMEOUT.enabled / 2
-            inputs: [],
-        };
+        const coinjoinRound = createCoinjoinRound([], {
+            round: {
+                phaseDeadline: Date.now() + 1000, // initial phaseDeadline is lower than STATUS_TIMEOUT.enabled / 2
+            },
+            ...server?.requestOptions,
+        });
 
         jest.useFakeTimers();
 
         const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
-        const coordinatorRequestSpy = jest
-            .spyOn(http, 'coordinatorRequest')
-            .mockImplementation(() =>
-                Promise.resolve({
-                    ...STATUS_EVENT,
-                    roundStates: [
-                        { ...DEFAULT_ROUND, phase: coordinatorRequestSpy.mock.calls.length },
-                    ], // increment phase on each request to trigger update event
-                }),
-            );
+        const coordinatorRequestSpy = jest.fn();
+        jest.spyOn(http, 'coordinatorRequest').mockImplementation(url => {
+            if (url === 'status') {
+                coordinatorRequestSpy();
+            }
+            return Promise.resolve({
+                ...STATUS_EVENT,
+                RoundStates: [{ ...DEFAULT_ROUND, Phase: coordinatorRequestSpy.mock.calls.length }], // increment phase on each request to trigger update event
+            });
+        });
 
         const half = STATUS_TIMEOUT.enabled / 2;
 
@@ -151,14 +159,16 @@ describe('Status', () => {
 
     it('Status identities', async () => {
         const identities: string[] = [];
-        jest.spyOn(http, 'coordinatorRequest').mockImplementation((_a, _b, options) => {
-            const id = options?.identity;
-            if (id && !identities.includes(id)) {
-                identities.push(id);
+        jest.spyOn(http, 'coordinatorRequest').mockImplementation((url, _b, options) => {
+            if (url === 'status') {
+                const id = options?.identity;
+                if (id && !identities.includes(id)) {
+                    identities.push(id);
+                }
             }
             return Promise.resolve({
                 ...STATUS_EVENT,
-                roundStates: [{ ...DEFAULT_ROUND }],
+                RoundStates: [{ ...DEFAULT_ROUND }],
             });
         });
 
@@ -220,19 +230,23 @@ describe('Status', () => {
         jest.spyOn(STATUS_TIMEOUT, 'registered', 'get').mockReturnValue(250 as any);
 
         let request = 0;
-        server?.addListener('test-request', ({ resolve }) => {
-            if (request === 6) {
-                resolve({
-                    ...STATUS_EVENT,
-                    roundStates: [{ ...DEFAULT_ROUND, phase: 1 }],
-                });
+        server?.addListener('test-request', ({ url, resolve }) => {
+            if (url.endsWith('/status')) {
+                if (request === 6) {
+                    resolve({
+                        ...STATUS_EVENT,
+                        RoundStates: [{ ...DEFAULT_ROUND, Phase: 1 }],
+                    });
+                } else if (request > 0 && request % 2 === 0) {
+                    // timeout error on every second request
+                    setTimeout(resolve, 500);
+                } else {
+                    resolve();
+                }
+                request++;
             } else {
-                setTimeout(
-                    resolve,
-                    request % 2 === 0 ? 500 : 0, // timeout error on every second request
-                );
+                resolve();
             }
-            request++;
         });
 
         status = new Status(server?.requestOptions);
@@ -260,26 +274,28 @@ describe('Status', () => {
     it('Status onStatusChange with delayed affiliateRequest', async () => {
         const round = {
             ...DEFAULT_ROUND,
-            phase: 3,
+            Phase: 3,
         };
 
         const affiliateDataBase64 = Buffer.from('{}', 'utf-8').toString('base64');
 
-        const coordinatorRequestSpy = jest
-            .spyOn(http, 'coordinatorRequest')
-            .mockImplementation(() =>
-                Promise.resolve({
-                    ...STATUS_EVENT,
-                    roundStates: [{ ...round }], // NOTE: always return new reference for the Round from mock
-                    affiliateInformation: {
-                        ...AFFILIATE_INFO,
-                        affiliateData:
-                            coordinatorRequestSpy.mock.calls.length > 3 // return affiliateData after 3rd iteration
-                                ? { [round.id]: { trezor: affiliateDataBase64 } }
-                                : AFFILIATE_INFO.affiliateData,
-                    },
-                }),
-            );
+        const coordinatorRequestSpy = jest.fn();
+        jest.spyOn(http, 'coordinatorRequest').mockImplementation(url => {
+            if (url === 'status') {
+                coordinatorRequestSpy();
+            }
+            return Promise.resolve({
+                ...STATUS_EVENT,
+                RoundStates: [{ ...round }], // NOTE: always return new reference for the Round from mock
+                AffiliateInformation: {
+                    ...AFFILIATE_INFO,
+                    AffiliateData:
+                        coordinatorRequestSpy.mock.calls.length > 3 // return affiliateData after 3rd iteration
+                            ? { [round.Id]: { trezor: affiliateDataBase64 } }
+                            : AFFILIATE_INFO.AffiliateData,
+                },
+            });
+        });
 
         jest.useFakeTimers();
 
@@ -300,10 +316,10 @@ describe('Status', () => {
         await fastForward(STATUS_TIMEOUT.enabled);
 
         expect(coordinatorRequestSpy).toHaveBeenCalledTimes(4); // status fetched 4 times
-        expect(onUpdateListener).toHaveBeenCalledTimes(2); // status changed twice, affiliateData added at 3rd iteration
+        expect(onUpdateListener).toHaveBeenCalledTimes(4); // affiliateData added at 3rd iteration
 
-        expect(onUpdateListener.mock.calls[1][0]).toMatchObject({
-            changed: [{ affiliateRequest: affiliateDataBase64 }],
+        expect(onUpdateListener.mock.calls[3][0]).toMatchObject({
+            changed: [{ AffiliateRequest: affiliateDataBase64 }],
         });
     });
 
@@ -312,9 +328,10 @@ describe('Status', () => {
             if (url.endsWith('/status')) {
                 resolve({
                     ...STATUS_EVENT,
-                    roundStates: [{}],
+                    RoundStates: [{}],
                 });
             }
+            resolve();
         });
 
         status = new Status(server?.requestOptions);

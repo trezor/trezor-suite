@@ -1,6 +1,7 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/Device.js
 
-import EventEmitter from 'events';
+import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
+import { createDeferred, Deferred, versionUtils } from '@trezor/utils';
 import { DeviceCommands } from './DeviceCommands';
 import { PROTO, ERRORS, NETWORK } from '../constants';
 import { DEVICE, DeviceButtonRequestPayload, UI } from '../events';
@@ -10,19 +11,21 @@ import {
     parseCapabilities,
     getUnavailableCapabilities,
     parseRevision,
+    ensureInternalModelFeature,
 } from '../utils/deviceFeaturesUtils';
-import { versionCompare } from '../utils/versionUtils';
-import { create as createDeferred, Deferred } from '../utils/deferred';
 import { initLog } from '../utils/debug';
-import type { Transport, TrezorDeviceInfoWithSession as DeviceDescriptor } from '@trezor/transport';
-import type {
+import type { Transport, Descriptor } from '@trezor/transport';
+import {
     Device as DeviceTyped,
     DeviceFirmwareStatus,
     DeviceStatus,
     Features,
     ReleaseInfo,
     UnavailableCapabilities,
+    FirmwareType,
+    VersionArray,
 } from '../types';
+import { models } from '../data/models';
 
 // custom log
 const _log = initLog('Device');
@@ -53,18 +56,20 @@ const parseRunOptions = (options?: RunOptions): RunOptions => {
 };
 
 export interface DeviceEvents {
-    [DEVICE.PIN]: [Device, PROTO.PinMatrixRequestType | undefined, (err: any, pin: string) => void];
-    [DEVICE.WORD]: [Device, PROTO.WordRequestType, (err: any, word: string) => void];
-    [DEVICE.PASSPHRASE]: [Device, (response: any) => void];
-    [DEVICE.PASSPHRASE_ON_DEVICE]: [Device, ((response: any) => void)?];
-    [DEVICE.BUTTON]: [Device, DeviceButtonRequestPayload];
-    [DEVICE.ACQUIRED]: [];
-}
-
-export interface Device {
-    on<K extends keyof DeviceEvents>(type: K, listener: (...event: DeviceEvents[K]) => void): this;
-    off<K extends keyof DeviceEvents>(type: K, listener: (...event: DeviceEvents[K]) => void): this;
-    emit<K extends keyof DeviceEvents>(type: K, ...args: DeviceEvents[K]): boolean;
+    [DEVICE.PIN]: (
+        device: Device,
+        b: PROTO.PinMatrixRequestType | undefined,
+        callback: (err: any, pin: string) => void,
+    ) => void;
+    [DEVICE.WORD]: (
+        device: Device,
+        b: PROTO.WordRequestType,
+        callback: (err: any, word: string) => void,
+    ) => void;
+    [DEVICE.PASSPHRASE]: (device: Device, callback: (response: any) => void) => void;
+    [DEVICE.PASSPHRASE_ON_DEVICE]: () => void;
+    [DEVICE.BUTTON]: (device: Device, payload: DeviceButtonRequestPayload) => void;
+    [DEVICE.ACQUIRED]: () => void;
 }
 
 /**
@@ -72,10 +77,10 @@ export interface Device {
  * @class Device
  * @extends {EventEmitter}
  */
-export class Device extends EventEmitter {
+export class Device extends TypedEmitter<DeviceEvents> {
     transport: Transport;
 
-    originalDescriptor: DeviceDescriptor;
+    originalDescriptor: Descriptor;
 
     unreadableError?: string; // unreadable error like: HID device, LIBUSB_ERROR
 
@@ -89,9 +94,10 @@ export class Device extends EventEmitter {
 
     featuresNeedsReload = false;
 
-    deferredActions: { [key: string]: Deferred<void> } = {};
+    acquirePromise?: ReturnType<Transport['acquire']> = undefined;
+    releasePromise?: ReturnType<Transport['release']> = undefined;
 
-    runPromise?: Deferred<void> | null;
+    runPromise?: Deferred<void>;
 
     loaded = false;
 
@@ -115,9 +121,13 @@ export class Device extends EventEmitter {
 
     networkTypeState: NETWORK.NetworkType[] = [];
 
-    firmwareType: 'regular' | 'bitcoin-only' = 'regular';
+    firmwareType?: FirmwareType;
 
-    constructor(transport: Transport, descriptor: DeviceDescriptor) {
+    name = 'Trezor';
+
+    color?: string;
+
+    constructor(transport: Transport, descriptor: Descriptor) {
         super();
 
         // === immutable properties
@@ -128,7 +138,7 @@ export class Device extends EventEmitter {
         this.firstRunPromise = createDeferred();
     }
 
-    static fromDescriptor(transport: Transport, originalDescriptor: DeviceDescriptor) {
+    static fromDescriptor(transport: Transport, originalDescriptor: Descriptor) {
         const descriptor = { ...originalDescriptor, session: null };
         try {
             const device: Device = new Device(transport, descriptor);
@@ -141,7 +151,7 @@ export class Device extends EventEmitter {
 
     static createUnacquired(
         transport: Transport,
-        descriptor: DeviceDescriptor,
+        descriptor: Descriptor,
         unreadableError?: string,
     ) {
         const device = new Device(transport, descriptor);
@@ -150,60 +160,64 @@ export class Device extends EventEmitter {
     }
 
     async acquire() {
-        // will be resolved after trezor-link acquire event
-        this.deferredActions[DEVICE.ACQUIRE] = createDeferred();
-        this.deferredActions[DEVICE.ACQUIRED] = createDeferred();
-        try {
-            const sessionID = await this.transport.acquire(
-                {
-                    path: this.originalDescriptor.path,
-                    // @ts-expect-error TODO: https://github.com/trezor/trezor-suite/issues/5332
-                    previous: this.originalDescriptor.session,
-                },
-                false,
-            );
-            _log.debug('Expected session id:', sessionID);
-            this.activitySessionID = sessionID;
-            this.deferredActions[DEVICE.ACQUIRED].resolve();
-            delete this.deferredActions[DEVICE.ACQUIRED];
-
-            if (this.commands) {
-                this.commands.dispose();
-            }
-            this.commands = new DeviceCommands(this, this.transport, sessionID);
-
-            // future defer for trezor-link release event
-            this.deferredActions[DEVICE.RELEASE] = createDeferred();
-        } catch (error) {
-            this.deferredActions[DEVICE.ACQUIRED].resolve();
-            delete this.deferredActions[DEVICE.ACQUIRED];
+        this.acquirePromise = this.transport.acquire({
+            input: {
+                path: this.originalDescriptor.path,
+                previous: this.originalDescriptor.session,
+            },
+        });
+        const acquireResult = await this.acquirePromise.promise;
+        this.acquirePromise = undefined;
+        if (!acquireResult.success) {
             if (this.runPromise) {
-                this.runPromise.reject(error);
-            } else {
-                throw error;
+                this.runPromise.reject(new Error(acquireResult.error));
+                delete this.runPromise;
             }
-            this.runPromise = null;
+            throw acquireResult.error;
         }
+
+        const sessionID = acquireResult.payload;
+
+        _log.debug('Expected session id:', sessionID);
+        this.activitySessionID = sessionID;
+        // note: this.originalDescriptor is updated here and also in TRANSPORT.UPDATE listener.
+        // I would like to update it only in one place (listener) but it some cases (unchained test),
+        // listen response is not triggered by device acquire. not sure why.
+        this.originalDescriptor.session = sessionID;
+
+        if (this.commands) {
+            this.commands.dispose();
+        }
+        this.commands = new DeviceCommands(this, this.transport, sessionID);
     }
 
     async release() {
-        if (this.isUsedHere() && !this.keepSession && this.activitySessionID) {
+        if (
+            this.isUsedHere() &&
+            !this.keepSession &&
+            this.activitySessionID &&
+            !this.releasePromise
+        ) {
             if (this.commands) {
                 this.commands.dispose();
                 if (this.commands.callPromise) {
-                    try {
-                        await this.commands.callPromise;
-                    } catch (error) {
-                        this.commands.callPromise = undefined;
-                    }
+                    await this.commands.callPromise.promise;
                 }
             }
-            try {
-                await this.transport.release(this.activitySessionID, false, false);
-                if (this.deferredActions[DEVICE.RELEASE])
-                    await this.deferredActions[DEVICE.RELEASE].promise;
-            } catch (err) {
-                // empty
+
+            if (this.releasePromise) {
+                await this.releasePromise;
+            }
+            this.releasePromise = this.transport.release({
+                session: this.activitySessionID,
+                path: this.originalDescriptor.path,
+            });
+
+            const releaseResponse = await this.releasePromise.promise;
+            this.releasePromise = undefined;
+            if (releaseResponse.success) {
+                this.activitySessionID = null;
+                this.originalDescriptor.session = null;
             }
         }
     }
@@ -211,7 +225,7 @@ export class Device extends EventEmitter {
     async cleanup() {
         this.removeAllListeners();
         // make sure that Device_CallInProgress will not be thrown
-        this.runPromise = null;
+        delete this.runPromise;
         await this.release();
     }
 
@@ -223,49 +237,71 @@ export class Device extends EventEmitter {
 
         options = parseRunOptions(options);
 
-        this.runPromise = createDeferred(this._runInner.bind(this, fn, options));
-        return this.runPromise.promise;
+        const runPromise = createDeferred();
+        this.runPromise = runPromise;
+
+        // either finish with result or reject runPromise
+        return Promise.race([this._runInner(fn, options), runPromise.promise]);
     }
 
     async override(error: Error) {
-        if (this.deferredActions[DEVICE.ACQUIRE]) {
-            await this.deferredActions[DEVICE.ACQUIRE].promise;
+        if (this.acquirePromise) {
+            await this.acquirePromise.promise;
         }
 
         if (this.runPromise) {
             await this.interruptionFromUser(error);
         }
-
-        if (!this.keepSession && this.deferredActions[DEVICE.RELEASE]) {
-            await this.deferredActions[DEVICE.RELEASE].promise;
+        if (this.releasePromise) {
+            await this.releasePromise.promise;
         }
     }
 
     async interruptionFromUser(error: Error) {
         _log.debug('interruptionFromUser');
-        if (this.commands) {
-            await this.commands.cancel();
-            this.commands.dispose();
-        }
+
         if (this.runPromise) {
             // reject inner defer
             this.runPromise.reject(error);
-            this.runPromise = null;
+            delete this.runPromise;
+        }
+        if (this.commands) {
+            await this.commands.cancel();
         }
     }
 
+    /**
+     * TODO: this does not work properly (even before transport-refactor)
+     * one of the problem here is, that this.runPromise.reject is caught in src/core finally block that triggers
+     * device release. This is not right because we know that somebody else has already taken control of device
+     * which means that session management does not make sense anymore. releasing device, on the other hand
+     * makes sense, because this instance of connect might be the only one who has the right to do it.
+     */
     interruptionFromOutside() {
         _log.debug('interruptionFromOutside');
+
         if (this.commands) {
             this.commands.dispose();
         }
         if (this.runPromise) {
             this.runPromise.reject(ERRORS.TypedError('Device_UsedElsewhere'));
-            this.runPromise = null;
+            delete this.runPromise;
         }
+
+        // session was acquired by another instance. but another might not have power to release interface
+        // so it only notified about its session acquiral and the interrupted instance should cooperate
+        // and release device too.
+        this.transport.releaseDevice(this.originalDescriptor.path);
     }
 
     async _runInner<X>(fn: (() => Promise<X>) | undefined, options: RunOptions): Promise<void> {
+        // typically when using cancel/override, device might be releasing
+        // note: I am tempted to do this check at the beginning of device.acquire but on the other hand I would like
+        // to have methods as atomic as possible and shift responsibility for deciding when to call them on the caller
+        if (this.releasePromise) {
+            await this.releasePromise.promise;
+        }
+
         if (!this.isUsedHere() || this.commands?.disposed || !this.getExternalState()) {
             // acquire session
             await this.acquire();
@@ -279,7 +315,7 @@ export class Device extends EventEmitter {
                     );
                 } else {
                     // do not initialize while firstRunPromise otherwise `features.session_id` could be affected
-                    // Corner-case: T1 + bootloader < 1.4.0 doesn't know the "GetFeatures" message yet and it will send no response to it
+                    // Edge-case: T1B1 + bootloader < 1.4.0 doesn't know the "GetFeatures" message yet and it will send no response to it
                     // transport response is pending endlessly, calling any other message will end up with "device call in progress"
                     // set the timeout for this call so whenever it happens "unacquired device" will be created instead
                     // next time device should be called together with "Initialize" (calling "acquireDevice" from the UI)
@@ -291,20 +327,23 @@ export class Device extends EventEmitter {
                     ]);
                 }
             } catch (error) {
+                // note: this happens on T1B1 with webusb if there was "select wallet dialog" and user reloads page.
+                // note this happens even before transport-refactor-2 branch
                 if (!this.inconsistent && error.message === 'GetFeatures timeout') {
-                    // handling corner-case T1 + bootloader < 1.4.0 (above)
+                    // handling corner-case T1B1 + bootloader < 1.4.0 (above)
                     // if GetFeatures fails try again
                     // this time add empty "fn" param to force Initialize message
                     this.inconsistent = true;
                     return this._runInner(() => Promise.resolve({}), options);
                 }
                 this.inconsistent = true;
-                await this.deferredActions[DEVICE.ACQUIRE].promise;
-                this.runPromise = null;
+                delete this.runPromise;
                 return Promise.reject(
                     ERRORS.TypedError(
                         'Device_InitializeFailed',
-                        `Initialize failed: ${error.message}, code: ${error.code}`,
+                        `Initialize failed: ${error.message} ${
+                            error.code ? `, code: ${error.code}` : ''
+                        }`,
                     ),
                 );
             }
@@ -316,8 +355,11 @@ export class Device extends EventEmitter {
             this.keepSession = true;
         }
 
-        // wait for event from trezor-link
-        await this.deferredActions[DEVICE.ACQUIRE].promise;
+        // if we were waiting for device to be acquired, it should be guaranteed here that it had already happened
+        // (features are reloaded too)
+        if (this.listeners(DEVICE.ACQUIRED).length > 0) {
+            this.emit(DEVICE.ACQUIRED);
+        }
 
         // call inner function
         if (fn) {
@@ -341,7 +383,7 @@ export class Device extends EventEmitter {
             this.runPromise.resolve();
         }
 
-        this.runPromise = null;
+        delete this.runPromise;
 
         if (!this.loaded) {
             this.loaded = true;
@@ -366,7 +408,7 @@ export class Device extends EventEmitter {
                 this.keepSession = false;
             }
 
-            // T1: forget passphrase cached in internal state
+            // T1B1: forget passphrase cached in internal state
             if (this.isT1() && this.useLegacyPassphrase()) {
                 this.setInternalState(undefined);
             }
@@ -467,126 +509,75 @@ export class Device extends EventEmitter {
     _updateFeatures(feat: Features) {
         const capabilities = parseCapabilities(feat);
         feat.capabilities = capabilities;
-        const version = [feat.major_version, feat.minor_version, feat.patch_version];
-        // capabilities could change in case where features was fetched with older version of messages.json which doesn't know this field
-        const capabilitiesDidChange =
-            this.features &&
-            this.features.capabilities &&
-            this.features.capabilities.join('') !== capabilities.join('');
-        // check if FW version or capabilities did change
-        if (versionCompare(version, this.getVersion()) !== 0 || capabilitiesDidChange) {
-            this.unavailableCapabilities = getUnavailableCapabilities(feat, getAllNetworks());
-            this.firmwareStatus = getFirmwareStatus(feat);
-            this.firmwareRelease = getRelease(feat);
-        }
         // GetFeatures doesn't return 'session_id'
         if (this.features && this.features.session_id && !feat.session_id) {
             feat.session_id = this.features.session_id;
         }
         feat.unlocked = feat.unlocked ?? true;
-        // fix inconsistency of revision attribute between T1 and T2
+        // fix inconsistency of revision attribute between T1B1 and old T2T1 fw
         const revision = parseRevision(feat);
         feat.revision = revision;
 
-        // old T1 is missing features.model
+        // Fix missing model and internal_model in older fw, model has to be fixed first
+        // 1. - old T1B1 is missing features.model
         if (!feat.model && feat.major_version === 1) {
             feat.model = '1';
+        }
+        // 2. - old fw does not include internal_model. T1B1 does not report it yet, T2T1 starts in 2.6.0, T2B1 reports it from beginning
+        if (!feat.internal_model) {
+            feat.internal_model = ensureInternalModelFeature(feat.model);
+        }
+
+        const version = [
+            feat.major_version,
+            feat.minor_version,
+            feat.patch_version,
+        ] satisfies VersionArray;
+
+        // check if FW version or capabilities did change
+        if (!versionUtils.isEqual(version, this.getVersion() as VersionArray)) {
+            this.unavailableCapabilities = getUnavailableCapabilities(feat, getAllNetworks());
+            this.firmwareStatus = getFirmwareStatus(feat);
+            this.firmwareRelease = getRelease(feat);
         }
 
         this.features = feat;
         this.featuresNeedsReload = false;
 
-        this.firmwareType =
-            feat.capabilities &&
-            feat.capabilities.length > 0 &&
-            !feat.capabilities.includes('Capability_Bitcoin_like')
-                ? 'bitcoin-only'
-                : 'regular';
+        // Firmware type is unknown in bootloader mode
+        if (this.getMode() !== 'bootloader') {
+            this.firmwareType =
+                feat.capabilities &&
+                feat.capabilities.length > 0 &&
+                !feat.capabilities.includes('Capability_Bitcoin_like')
+                    ? FirmwareType.BitcoinOnly
+                    : FirmwareType.Regular;
+        }
+
+        const deviceInfo = models[feat.internal_model];
+
+        this.name = deviceInfo.name;
+
+        if (feat?.unit_color) {
+            const deviceUnitColor = feat.unit_color.toString();
+
+            if (deviceUnitColor in deviceInfo.colors) {
+                this.color = (deviceInfo.colors as Record<string, string>)[deviceUnitColor];
+            }
+        }
     }
 
     isUnacquired() {
         return this.features === undefined;
     }
 
-    async updateDescriptor(upcomingDescriptor: DeviceDescriptor) {
-        const originalSession = this.originalDescriptor.session;
-        const upcomingSession = upcomingDescriptor.session;
-
-        _log.debug(
-            'updateDescriptor',
-            'currentSession',
-            originalSession,
-            'upcoming',
-            upcomingSession,
-            'lastUsedID',
-            this.activitySessionID,
-        );
-
-        if (!originalSession && !upcomingSession && !this.activitySessionID) {
-            // no change
-            return;
-        }
-
-        if (this.deferredActions[DEVICE.ACQUIRED]) {
-            await this.deferredActions[DEVICE.ACQUIRED].promise;
-        }
-
-        if (!upcomingSession) {
-            // corner-case: if device was unacquired but some call to this device was made
-            // this will automatically change unacquired device to acquired (without deviceList)
-            // emit ACQUIRED event to deviceList which will propagate DEVICE.CONNECT event
-            if (this.listeners(DEVICE.ACQUIRED).length > 0) {
-                this.emit(DEVICE.ACQUIRED);
-            }
-        }
-
-        const methodStillRunning = this.commands && !this.commands.disposed;
-        if (!upcomingSession && !methodStillRunning) {
-            // released
-            if (originalSession === this.activitySessionID) {
-                // by myself
-                _log.debug('Session released by this app');
-                if (this.deferredActions[DEVICE.RELEASE]) {
-                    this.deferredActions[DEVICE.RELEASE].resolve();
-                    delete this.deferredActions[DEVICE.RELEASE];
-                }
-                this.activitySessionID = null;
-            } else {
-                // by other application
-                _log.debug('Session released by other app');
-                this.featuresNeedsReload = true;
-            }
-            this.keepSession = false;
-        } else if (upcomingSession === this.activitySessionID) {
-            // acquired
-            // TODO: Case where listen event will dispatch before this.transport.acquire (this.acquire) return ID
-
-            // by myself
-            _log.debug('Session acquired by this app');
-            if (this.deferredActions[DEVICE.ACQUIRE]) {
-                this.deferredActions[DEVICE.ACQUIRE].resolve();
-                // delete this.deferred[ DEVICE.ACQUIRE ];
-            }
-        } else {
-            // by other application
-            _log.debug('Session acquired by other app');
-            this.interruptionFromOutside();
-        }
-
-        this.originalDescriptor = upcomingDescriptor;
-    }
-
     disconnect() {
         // TODO: cleanup everything
         _log.debug('Disconnect cleanup');
-        // don't try to release
-        if (this.deferredActions[DEVICE.RELEASE]) {
-            this.deferredActions[DEVICE.RELEASE].resolve();
-            delete this.deferredActions[DEVICE.RELEASE];
-        }
 
+        this.activitySessionID = null; // set to null to prevent transport.release
         this.interruptionFromUser(ERRORS.TypedError('Device_Disconnected'));
-        this.runPromise = null;
+        delete this.runPromise;
     }
 
     isBootloader() {
@@ -611,14 +602,14 @@ export class Device extends EventEmitter {
             this.features.major_version,
             this.features.minor_version,
             this.features.patch_version,
-        ];
+        ] satisfies [number, number, number];
     }
 
     atLeast(versions: string[] | string) {
         if (!this.features) return false;
         const modelVersion =
             typeof versions === 'string' ? versions : versions[this.features.major_version - 1];
-        return versionCompare(this.getVersion(), modelVersion) >= 0;
+        return versionUtils.isNewerOrEqual(this.getVersion().join('.'), modelVersion);
     }
 
     isUsed() {
@@ -683,7 +674,11 @@ export class Device extends EventEmitter {
                     this.commands.cancel();
                 }
 
-                return this.transport.release(this.activitySessionID, true);
+                return this.transport.release({
+                    session: this.activitySessionID,
+                    path: this.originalDescriptor.path,
+                    onClose: true,
+                });
             } catch (err) {
                 // empty
             }
@@ -705,6 +700,7 @@ export class Device extends EventEmitter {
                 path: this.originalDescriptor.path,
                 error: this.unreadableError, // provide error details
                 label: 'Unreadable device',
+                name: this.name,
             };
         }
         if (this.isUnacquired()) {
@@ -712,6 +708,7 @@ export class Device extends EventEmitter {
                 type: 'unacquired',
                 path: this.originalDescriptor.path,
                 label: 'Unacquired device',
+                name: this.name,
             };
         }
         const defaultLabel = 'My Trezor';
@@ -727,6 +724,8 @@ export class Device extends EventEmitter {
             state: this.getExternalState(),
             status,
             mode: this.getMode(),
+            name: this.name,
+            color: this.color,
             firmware: this.firmwareStatus,
             firmwareRelease: this.firmwareRelease,
             firmwareType: this.firmwareType,
@@ -762,7 +761,6 @@ export class Device extends EventEmitter {
         return networkType ? ['cardano'].includes(networkType) : false;
     }
 
-    //
     async legacyForceRelease() {
         if (this.isUsedHere()) {
             await this.acquire();

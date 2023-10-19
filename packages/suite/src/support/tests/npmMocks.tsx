@@ -1,8 +1,5 @@
 /* eslint-disable max-classes-per-file */
 
-import React from 'react';
-
-// globally mock npm modules.
 jest.mock('dropbox', () => {
     class Dropbox {
         filesUpload() {

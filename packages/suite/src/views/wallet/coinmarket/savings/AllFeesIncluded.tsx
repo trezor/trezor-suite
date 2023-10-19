@@ -1,8 +1,7 @@
-import React from 'react';
 import styled from 'styled-components';
 import { Link, Tooltip, variables } from '@trezor/components';
 import { INVITY_SCHEDULE_OF_FEES } from '@trezor/urls';
-import { Translation } from '@suite-components';
+import { Translation } from 'src/components/suite';
 
 const StyledTooltip = styled(Tooltip)`
     display: inline-block;

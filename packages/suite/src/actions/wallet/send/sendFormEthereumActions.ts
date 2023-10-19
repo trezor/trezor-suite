@@ -1,6 +1,7 @@
-import TrezorConnect, { FeeLevel, TokenInfo } from '@trezor/connect';
 import BigNumber from 'bignumber.js';
 import { toWei } from 'web3-utils';
+
+import TrezorConnect, { FeeLevel, TokenInfo } from '@trezor/connect';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     calculateTotal,
@@ -23,7 +24,9 @@ import {
     PrecomposedTransactionFinal,
     ExternalOutput,
 } from '@suite-common/wallet-types';
-import { Dispatch, GetState } from '@suite-types';
+import { selectDevice } from '@suite-common/wallet-core';
+
+import { Dispatch, GetState } from 'src/types/suite';
 
 const calculate = (
     availableBalance: string,
@@ -127,8 +130,9 @@ export const composeTransaction =
                     from: account.descriptor,
                     ...getEthereumEstimateFeeParams(
                         address || account.descriptor,
+                        // if amount is not set (set-max case) use max available balance
+                        amount || (tokenInfo ? tokenInfo.balance! : account.formattedBalance),
                         tokenInfo,
-                        amount,
                         formValues.ethereumDataHex,
                     ),
                 },
@@ -225,7 +229,7 @@ export const signTransaction =
     (formValues: FormState, transactionInfo: PrecomposedTransactionFinal) =>
     async (dispatch: Dispatch, getState: GetState) => {
         const { selectedAccount, transactions } = getState().wallet;
-        const { device } = getState().suite;
+        const device = selectDevice(getState());
         if (
             selectedAccount.status !== 'loaded' ||
             !device ||
@@ -280,7 +284,7 @@ export const signTransaction =
         });
 
         if (!signedTx.success) {
-            // catch manual error from ReviewTransaction modal
+            // catch manual error from TransactionReviewModal
             if (signedTx.payload.error === 'tx-cancelled') return;
             dispatch(
                 notificationsActions.addToast({

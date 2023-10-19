@@ -1,10 +1,11 @@
-import React from 'react';
-import { Icon } from '@trezor/components';
-import { Translation } from '@suite-components';
-import TrezorLink from '@suite-components/TrezorLink';
-import { transparentize } from 'polished';
-import { useGuideOpenNode } from '@guide-hooks';
+import { MouseEvent } from 'react';
 import styled from 'styled-components';
+import { transparentize } from 'polished';
+
+import { Icon } from '@trezor/components';
+import { Translation } from 'src/components/suite';
+import TrezorLink from 'src/components/suite/TrezorLink';
+import { useGuideOpenNode } from 'src/hooks/guide';
 
 const OpenGuideLink = styled(TrezorLink)`
     display: flex;
@@ -13,7 +14,7 @@ const OpenGuideLink = styled(TrezorLink)`
 `;
 
 const StyledText = styled.span`
-    color: ${props => props.theme.TYPE_ORANGE};
+    color: ${({ theme }) => theme.TYPE_ORANGE};
     font-weight: 500;
     overflow: hidden;
     max-width: 0;
@@ -28,7 +29,7 @@ const StyledIconWrap = styled.span`
     justify-content: center;
     transition: all 0.3s ease-in-out;
     border-radius: 50%;
-    background-color: ${props => transparentize(0.85, props.theme.TYPE_ORANGE)};
+    background-color: ${({ theme }) => transparentize(0.85, theme.TYPE_ORANGE)};
 `;
 
 type OpenGuideFromTooltipProps = {
@@ -43,7 +44,7 @@ export const OpenGuideFromTooltip = ({ id, instance, dataTest }: OpenGuideFromTo
     return (
         <OpenGuideLink
             data-test={dataTest}
-            onClick={(e: React.MouseEvent<any>) => {
+            onClick={(e: MouseEvent<any>) => {
                 e.stopPropagation();
                 instance.hide();
                 openNodeById(id);

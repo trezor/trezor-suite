@@ -5,6 +5,7 @@
         {
             "path": "../../suite-common/formatters"
         },
+        { "path": "../../suite-common/icons" },
         {
             "path": "../../suite-common/redux-utils"
         },
@@ -29,7 +30,6 @@
         { "path": "../fiat-rates" },
         { "path": "../formatters" },
         { "path": "../forms" },
-        { "path": "../module-devices" },
         { "path": "../module-settings" },
         { "path": "../navigation" },
         { "path": "../qr-code" },
@@ -41,7 +41,6 @@
             "path": "../../packages/blockchain-link-types"
         },
         { "path": "../../packages/connect" },
-        { "path": "../../packages/icons" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/utxo-lib" },
         { "path": "../../packages/validation" }

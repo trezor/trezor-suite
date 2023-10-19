@@ -84,7 +84,7 @@ class AccountsPage {
 
     clickOnDesiredAccount(coinName: NetworkSymbol) {
         cy.getTestElement(`@account-menu/${coinName}/normal/0`)
-            .click()
+            .click('left')
             .parent()
             .should('have.class', 'selected');
     }

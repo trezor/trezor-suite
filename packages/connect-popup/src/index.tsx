@@ -2,13 +2,14 @@
 import {
     POPUP,
     UI_REQUEST,
+    RESPONSE_EVENT,
     parseMessage,
     createPopupMessage,
-    createUiResponse,
     UiEvent,
     PopupEvent,
     PopupInit,
     PopupHandshake,
+    MethodResponseMessage,
 } from '@trezor/connect';
 import { config } from '@trezor/connect/lib/data/config';
 
@@ -23,9 +24,11 @@ import {
     initMessageChannel,
     postMessageToParent,
     renderConnectUI,
-    postMessage,
 } from './view/common';
 import { isPhishingDomain } from './utils/isPhishingDomain';
+import { initSharedLogger } from './utils/debug';
+
+const log = initSharedLogger('./workers/shared-logger-worker.js');
 
 let handshakeTimeout: ReturnType<typeof setTimeout>;
 
@@ -42,15 +45,53 @@ const escapeHtml = (payload: any) => {
 };
 
 // handle messages from window.opener and iframe
-const handleMessage = (event: MessageEvent<PopupEvent | UiEvent>) => {
+const handleMessage = (
+    event: MessageEvent<
+        | PopupEvent
+        | UiEvent
+        | (Omit<MethodResponseMessage, 'payload'> & { payload?: { error: string; code?: string } })
+    >,
+) => {
     const { data } = event;
-
     if (!data) return;
-
     // This is message from the window.opener
     if (data.type === POPUP.INIT) {
         init(escapeHtml(data.payload)); // eslint-disable-line @typescript-eslint/no-use-before-define
         return;
+    }
+
+    if (data.type === RESPONSE_EVENT && data.success) {
+        // When success we can close popup.
+        window.close();
+        return;
+    }
+
+    if (data.type === RESPONSE_EVENT && !data.success) {
+        switch (data.payload?.code) {
+            case 'Device_CallInProgress':
+                // Ignoring when device call is in progress.
+                // User triggers new call but device call is in progress PopupManager will focus popup.
+                break;
+            case 'Transport_Missing':
+                // Ignore this error. It is handled after.
+                break;
+            case 'Method_PermissionsNotGranted':
+            case 'Method_Cancel':
+                // User canceled process, close popup.
+                window.close();
+                break;
+            default:
+                reactEventBus.dispatch({
+                    type: 'error',
+                    detail: 'response-event-error',
+                    message: data.payload?.error || 'Unknown error',
+                });
+                analytics.report({
+                    type: EventType.ViewChangeError,
+                    payload: { code: data.payload?.code || 'Code missing' },
+                });
+                return;
+        }
     }
 
     // This is message from the window.opener
@@ -103,13 +144,9 @@ const handleMessage = (event: MessageEvent<PopupEvent | UiEvent>) => {
     }
 
     // otherwise we still render in legacy way
-    // dispatch empty message to instruct the "reactified"
-    // part of app to hide the main content
-    reactEventBus.dispatch();
-
     switch (message.type) {
         case UI_REQUEST.LOADING:
-            // case UI.REQUEST_UI_WINDOW :
+        case UI_REQUEST.REQUEST_UI_WINDOW:
             showView('loader');
             break;
         case UI_REQUEST.SELECT_DEVICE:
@@ -182,27 +219,26 @@ const handleMessage = (event: MessageEvent<PopupEvent | UiEvent>) => {
 
 // handle POPUP.INIT message from window.opener
 const init = async (payload: PopupInit['payload']) => {
+    log.debug('popup init');
+
     if (!payload) return;
 
     if (!payload.systemInfo) {
         payload.systemInfo = getSystemInfo(config.supportedBrowsers);
     }
 
+    const isBrowserSupported = await view.initBrowserView(payload.systemInfo);
+    if (!isBrowserSupported) {
+        return;
+    }
+
+    // try to establish connection with iframe
     try {
-        initMessageChannel(payload, handleMessage);
-        // reset loading hash
-        window.location.hash = '';
-
-        // handshake with iframe
-        const isBrowserSupported = await view.initBrowserView();
-        // but only if browser is supported
-        if (!isBrowserSupported) {
-            return;
-        }
-
+        // render react view
         await renderConnectUI();
-
-        postMessage(createUiResponse(POPUP.HANDSHAKE));
+        reactEventBus.dispatch({ type: 'waiting-for-iframe-init' });
+        await initMessageChannel(payload, handleMessage);
+        reactEventBus.dispatch({ type: 'waiting-for-iframe-handshake' });
     } catch (error) {
         postMessageToParent(createPopupMessage(POPUP.ERROR, { error: error.message }));
     }
@@ -220,23 +256,10 @@ const handshake = (handshake: PopupHandshake) => {
 
     reactEventBus.dispatch(handshake);
 
-    analytics.report({
-        type: EventType.AppReady,
-        payload: {
-            version: payload?.settings?.version,
-            // reported in IFRAME.INIT. either origin where iframe was initiated or chrome.runtime.id for extensions
-            origin: payload?.settings?.origin,
-            referrerApp: payload?.settings?.manifest?.appUrl,
-            referrerEmail: payload?.settings?.manifest?.email,
-            method: payload?.method,
-            transportType: payload.transport?.type,
-            transportVersion: payload.transport?.version,
-        },
-    });
-
     if (isPhishingDomain(payload.settings.origin || '')) {
         reactEventBus.dispatch({ type: 'phishing-domain' });
     }
+    log.debug('handshake done');
 };
 
 const onLoad = () => {

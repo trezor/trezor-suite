@@ -1,11 +1,13 @@
 {
     "extends": "../../tsconfig.json",
     "compilerOptions": {
-        "module": "commonjs",
-        "outDir": "./libDev"
+        "outDir": "./libDev",
+        "types": ["w3c-web-usb", "jest", "node"]
     },
     "include": ["src"],
     "references": [
+        { "path": "../protobuf" },
+        { "path": "../protocol" },
         { "path": "../utils" },
         { "path": "../trezor-user-env-link" }
     ]

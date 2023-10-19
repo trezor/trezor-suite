@@ -1,23 +1,23 @@
-import React from 'react';
+import { MouseEventHandler } from 'react';
 import { Button } from '@trezor/components';
 
-import { Translation, TroubleshootingTips } from '@suite-components';
-import { useActions } from '@suite-hooks';
-import * as routerActions from '@suite-actions/routerActions';
+import { Translation, TroubleshootingTips } from 'src/components/suite';
+import { useDispatch } from 'src/hooks/suite';
+import { goto } from 'src/actions/suite/routerActions';
 
 export const DeviceUpdateRequired = () => {
-    const { goto } = useActions({ goto: routerActions.goto });
+    const dispatch = useDispatch();
+
+    const handleClick: MouseEventHandler = e => {
+        e.stopPropagation();
+        dispatch(goto('firmware-index'));
+    };
 
     return (
         <TroubleshootingTips
             label={<Translation id="FW_CAPABILITY_UPDATE_REQUIRED" />}
             cta={
-                <Button
-                    onClick={e => {
-                        e.stopPropagation();
-                        goto('firmware-index');
-                    }}
-                >
+                <Button onClick={handleClick}>
                     <Translation id="TR_SEE_DETAILS" />
                 </Button>
             }

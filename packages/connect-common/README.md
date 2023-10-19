@@ -13,7 +13,7 @@ Data in `releases.json` are used to determine which version of Bridge to use dep
 
 ### firmware
 
-Binaries of the latest versions of firmware for each Trezor model are included in this package so that they are available to users of Suite desktop app without connecting to the internet. The process of adding new firmwares is described [here](../../docs/releases/adding-new-firmwares.md). Besides the latest versions, model One and model T both require a transitory version for upgrading from old firware (intermediary firmware `trezor-inter-1.10.0.bin` for model One and version `trezor-2.1.1.bin` for model T).
+Binaries of the latest versions of firmware for each Trezor model are included in this package so that they are available to users of Suite desktop app without connecting to the internet. The process of adding new firmwares is described [here](../../docs/releases/adding-new-firmwares.md). Besides the latest versions, T1B1 and T2T1 both require a transitory version for upgrading from old firmware (intermediary firmware `trezor-inter-1.10.0.bin` for T1B1 and version `trezor-2.1.1.bin` for T2T1).
 
 There is a `releases.json` file for each Trezor model which must be updated any time new binaries are added. This file provides data about all available firmware versions and it is used to display them in Suite and to make sure that the correct firmware is downloaded. Read more about `releases.json` and it's structure [here](../../docs/releases/adding-new-firmwares.md#firmware-releasesjson-files-structure)
 

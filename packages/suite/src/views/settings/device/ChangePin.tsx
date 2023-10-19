@@ -1,23 +1,26 @@
-import React from 'react';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
-import { Translation } from '@suite-components';
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
-import { useActions } from '@suite-hooks';
-import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
-import { useAnchor } from '@suite-hooks/useAnchor';
-import { SettingsAnchor } from '@suite-constants/anchors';
+import { Translation } from 'src/components/suite';
+import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';
+import { useDispatch } from 'src/hooks/suite';
+import { changePin } from 'src/actions/settings/deviceSettingsActions';
+import { useAnchor } from 'src/hooks/suite/useAnchor';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 interface ChangePinProps {
     isDeviceLocked: boolean;
 }
 
 export const ChangePin = ({ isDeviceLocked }: ChangePinProps) => {
+    const dispatch = useDispatch();
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.ChangePin);
 
-    const { changePin } = useActions({
-        changePin: deviceSettingsActions.changePin,
-    });
+    const handleClick = () => {
+        dispatch(changePin({ remove: false }));
+        analytics.report({
+            type: EventType.SettingsDeviceChangePin,
+        });
+    };
 
     return (
         <SectionItem
@@ -30,16 +33,7 @@ export const ChangePin = ({ isDeviceLocked }: ChangePinProps) => {
                 description={<Translation id="TR_DEVICE_SETTINGS_CHANGE_PIN_DESC" />}
             />
             <ActionColumn>
-                <ActionButton
-                    onClick={() => {
-                        changePin({ remove: false });
-                        analytics.report({
-                            type: EventType.SettingsDeviceChangePin,
-                        });
-                    }}
-                    isDisabled={isDeviceLocked}
-                    variant="secondary"
-                >
+                <ActionButton onClick={handleClick} isDisabled={isDeviceLocked} variant="secondary">
                     <Translation id="TR_CHANGE_PIN" />
                 </ActionButton>
             </ActionColumn>

@@ -14,20 +14,24 @@
         "@react-navigation/native": "^6.1.3",
         "@react-navigation/native-stack": "^6.9.11",
         "@suite-common/formatters": "workspace:*",
+        "@suite-common/graph": "workspace:*",
+        "@suite-common/icons": "workspace:*",
+        "@suite-common/wallet-core": "workspace:*",
         "@suite-native/assets": "workspace:*",
         "@suite-native/atoms": "workspace:*",
+        "@suite-native/feature-flags": "workspace:*",
         "@suite-native/formatters": "workspace:*",
         "@suite-native/graph": "workspace:*",
-        "@suite-native/module-accounts": "workspace:*",
+        "@suite-native/intl": "workspace:*",
+        "@suite-native/module-accounts-management": "workspace:*",
         "@suite-native/module-settings": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@suite-native/receive": "workspace:*",
-        "@trezor/icons": "workspace:*",
         "@trezor/styles": "workspace:*",
         "jotai": "1.9.1",
         "react": "18.2.0",
-        "react-native": "0.71.7",
-        "react-redux": "8.0.5"
+        "react-native": "0.71.8",
+        "react-redux": "8.0.7"
     },
     "devDependencies": {
         "typescript": "4.9.5"

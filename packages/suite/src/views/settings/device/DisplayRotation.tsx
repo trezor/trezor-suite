@@ -1,14 +1,13 @@
-import React from 'react';
 import styled from 'styled-components';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
-import { Translation } from '@suite-components';
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
+import { Translation } from 'src/components/suite';
+import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';
 import { variables } from '@trezor/components';
-import { useActions } from '@suite-hooks';
-import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
-import { useAnchor } from '@suite-hooks/useAnchor';
-import { SettingsAnchor } from '@suite-constants/anchors';
+import { useDispatch } from 'src/hooks/suite';
+import { applySettings } from 'src/actions/settings/deviceSettingsActions';
+import { useAnchor } from 'src/hooks/suite/useAnchor';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 const DISPLAY_ROTATIONS = [
     { label: <Translation id="TR_NORTH" />, value: 0 },
@@ -33,9 +32,7 @@ interface DisplayRotationProps {
 }
 
 export const DisplayRotation = ({ isDeviceLocked }: DisplayRotationProps) => {
-    const { applySettings } = useActions({
-        applySettings: deviceSettingsActions.applySettings,
-    });
+    const dispatch = useDispatch();
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.DisplayRotation);
 
     return (
@@ -51,9 +48,7 @@ export const DisplayRotation = ({ isDeviceLocked }: DisplayRotationProps) => {
                         key={variant.value}
                         variant="secondary"
                         onClick={() => {
-                            applySettings({
-                                display_rotation: variant.value,
-                            });
+                            dispatch(applySettings({ display_rotation: variant.value }));
                             analytics.report({
                                 type: EventType.SettingsDeviceChangeOrientation,
                                 payload: {

@@ -1,8 +1,8 @@
-import React, { useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 
 import styled, { css } from 'styled-components';
-import { Translation } from '@suite-components';
-import { useGraph, useLocales } from '@suite-hooks';
+import { Translation } from 'src/components/suite';
+import { useGraph, useLocales } from 'src/hooks/suite';
 import {
     startOfDay,
     startOfToday,
@@ -14,7 +14,7 @@ import {
 } from 'date-fns';
 
 import { colors, variables, Dropdown, DropdownRef, Timerange } from '@trezor/components';
-import { GraphRange } from '../../../../types/wallet/graph';
+import { GraphRange } from 'src/types/wallet/graph';
 
 const Wrapper = styled.div`
     display: flex;
@@ -100,13 +100,13 @@ const getFormattedLabel = (rangeLabel: GraphRange['label']) => {
     }
 };
 
-interface Props {
+interface RangeSelectorProps {
     onSelectedRange?: (range: GraphRange) => void;
     className?: string;
     align?: 'left' | 'right';
 }
 
-export const RangeSelector = ({ onSelectedRange, className, align }: Props) => {
+export const RangeSelector = ({ onSelectedRange, className, align }: RangeSelectorProps) => {
     const [customTimerangeStart, setCustomTimerangeStart] = useState<Date>();
     const [customTimerangeEnd, setCustomTimerangeEnd] = useState<Date>();
 

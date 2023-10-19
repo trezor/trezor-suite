@@ -1,5 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/data/CoinInfo.js
-
+import { cloneObject } from '@trezor/utils';
+import { getBitcoinFeeLevels, getEthereumFeeLevels, getMiscFeeLevels } from './defaultFeeLevels';
 import { ERRORS } from '../constants';
 import { toHardened, fromHardened } from '../utils/pathUtils';
 import type {
@@ -7,25 +8,15 @@ import type {
     BitcoinNetworkInfo,
     EthereumNetworkInfo,
     MiscNetworkInfo,
-} from '../types/coinInfo';
+    DerivationPath,
+} from '../types';
 
 const bitcoinNetworks: BitcoinNetworkInfo[] = [];
 const ethereumNetworks: EthereumNetworkInfo[] = [];
 const miscNetworks: MiscNetworkInfo[] = [];
 
-// TODO: replace by structuredClone() after updating TS
-export function cloneCoinInfo<T>(info: T): T {
-    const jsonString = JSON.stringify(info);
-    if (jsonString === undefined) {
-        // jsonString === undefined IF and only IF obj === undefined
-        // therefore no need to clone
-        return info;
-    }
-    return JSON.parse(jsonString);
-}
-
-export const getBitcoinNetwork = (pathOrName: number[] | string) => {
-    const networks = cloneCoinInfo(bitcoinNetworks);
+export const getBitcoinNetwork = (pathOrName: DerivationPath) => {
+    const networks = cloneObject(bitcoinNetworks);
     if (typeof pathOrName === 'string') {
         const name = pathOrName.toLowerCase();
         return networks.find(
@@ -39,8 +30,8 @@ export const getBitcoinNetwork = (pathOrName: number[] | string) => {
     return networks.find(n => n.slip44 === slip44);
 };
 
-export const getEthereumNetwork = (pathOrName: number[] | string) => {
-    const networks = cloneCoinInfo(ethereumNetworks);
+export const getEthereumNetwork = (pathOrName: DerivationPath) => {
+    const networks = cloneObject(ethereumNetworks);
     if (typeof pathOrName === 'string') {
         const name = pathOrName.toLowerCase();
         return networks.find(
@@ -51,8 +42,8 @@ export const getEthereumNetwork = (pathOrName: number[] | string) => {
     return networks.find(n => n.slip44 === slip44);
 };
 
-export const getMiscNetwork = (pathOrName: number[] | string) => {
-    const networks = cloneCoinInfo(miscNetworks);
+export const getMiscNetwork = (pathOrName: DerivationPath) => {
+    const networks = cloneObject(miscNetworks);
     if (typeof pathOrName === 'string') {
         const name = pathOrName.toLowerCase();
         return networks.find(
@@ -95,7 +86,7 @@ export const getBech32Network = (coin: BitcoinNetworkInfo) => {
 
 // fix coinInfo network values from path (segwit/legacy)
 export const fixCoinInfoNetwork = (ci: BitcoinNetworkInfo, path: number[]) => {
-    const coinInfo = cloneCoinInfo(ci);
+    const coinInfo = cloneObject(ci);
     if (path[0] === toHardened(84)) {
         const bech32Network = getBech32Network(coinInfo);
         if (bech32Network) {
@@ -131,7 +122,7 @@ const detectBtcVersion = (data: { subversion?: string }) => {
 
 // TODO: https://github.com/trezor/trezor-suite/issues/4886
 export const getCoinInfoByHash = (hash: string, networkInfo: any) => {
-    const networks = cloneCoinInfo(bitcoinNetworks);
+    const networks = cloneObject(bitcoinNetworks);
     const result = networks.find(
         info => hash.toLowerCase() === info.hashGenesisBlock.toLowerCase(),
     );
@@ -199,7 +190,6 @@ const parseBitcoinNetworksJson = (json: any) => {
             // bitcore: not used,
             // blockbook: not used,
             blockchainLink: coin.blockchain_link,
-            blocktime: Math.round(coin.blocktime_seconds / 60),
             cashAddrPrefix: coin.cashaddr_prefix,
             label: coin.coin_label,
             name: coin.coin_name,
@@ -207,8 +197,6 @@ const parseBitcoinNetworksJson = (json: any) => {
             // cooldown not used
             curveName: coin.curve_name,
             // decred not used
-            defaultFees: coin.default_fee_b,
-            dustLimit: coin.dust_limit,
             forceBip143: coin.force_bip143,
             // forkid in Network
             // github not used
@@ -236,44 +224,32 @@ const parseBitcoinNetworksJson = (json: any) => {
             // custom
             network, // bitcoinjs network
             isBitcoin,
-            maxFee: Math.round(coin.maxfee_kb / 1000),
-            minFee: Math.round(coin.minfee_kb / 1000),
 
-            // used in backend ?
-            blocks: Math.round(coin.blocktime_seconds / 60),
             decimals: coin.decimals,
+            ...getBitcoinFeeLevels(coin),
         });
     });
+};
+
+export const ethereumNetworkInfoBase = {
+    type: 'ethereum' as const,
+    decimals: 16,
+    ...getEthereumFeeLevels(),
 };
 
 const parseEthereumNetworksJson = (json: any) => {
     Object.keys(json).forEach(key => {
         const network = json[key];
+
         ethereumNetworks.push({
-            type: 'ethereum',
+            ...ethereumNetworkInfoBase,
             blockchainLink: network.blockchain_link,
-            blocktime: -1, // unknown
-            chain: network.chain,
             chainId: network.chain_id,
-            // key not used
-            defaultFees: [
-                {
-                    label: 'normal',
-                    feePerUnit: '5000000000',
-                    feeLimit: '21000',
-                },
-            ],
-            minFee: 1,
-            maxFee: 10000,
             label: network.name,
             name: network.name,
             shortcut: network.shortcut,
-            rskip60: network.rskip60,
             slip44: network.slip44,
             support: network.support,
-            // url not used
-            network: undefined,
-            decimals: 16,
         });
     });
 };
@@ -281,38 +257,17 @@ const parseEthereumNetworksJson = (json: any) => {
 const parseMiscNetworksJSON = (json: any, type?: 'misc' | 'nem') => {
     Object.keys(json).forEach(key => {
         const network = json[key];
-        let minFee = -1; // unknown
-        let maxFee = -1; // unknown
-        let defaultFees = { Normal: -1 }; // unknown
-        const shortcut = network.shortcut.toLowerCase();
-        if (shortcut === 'xrp' || shortcut === 'txrp') {
-            minFee = 10;
-            maxFee = 10000;
-            defaultFees = { Normal: 12 };
-        }
-        if (shortcut === 'ada' || shortcut === 'tada') {
-            minFee = 44;
-            // max tx size * lovelace per byte + base fee
-            maxFee = 16384 * 44 + 155381;
-            defaultFees = { Normal: 44 };
-        }
         miscNetworks.push({
             type: type || 'misc',
             blockchainLink: network.blockchain_link,
-            blocktime: -1,
             curve: network.curve,
-            // TODO: https://github.com/trezor/trezor-suite/issues/5340
-            // @ts-expect-error
-            defaultFees,
-            minFee,
-            maxFee,
             label: network.name,
             name: network.name,
             shortcut: network.shortcut,
             slip44: network.slip44,
             support: network.support,
-            network: undefined,
             decimals: network.decimals,
+            ...getMiscFeeLevels(network),
         });
     });
 };

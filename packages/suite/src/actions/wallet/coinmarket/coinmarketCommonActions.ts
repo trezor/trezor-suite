@@ -1,35 +1,37 @@
-import TrezorConnect, { UI, DeviceButtonRequest, PROTO } from '@trezor/connect';
-import { GetState, Dispatch } from '@suite-types';
+import { isDesktop } from '@trezor/env-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import * as modalActions from '@suite-actions/modalActions';
-import {
-    COINMARKET_BUY,
-    COINMARKET_EXCHANGE,
-    COINMARKET_SAVINGS,
-    COINMARKET_COMMON,
-} from '../constants';
-import { getUnusedAddressFromAccount } from '@wallet-utils/coinmarket/coinmarketUtils';
-import { Account } from '@wallet-types';
-import { ComposedTransactionInfo } from '@wallet-reducers/coinmarketReducer';
-import * as suiteActions from '@suite-actions/suiteActions';
-import {
-    getStakingPath,
-    getProtocolMagic,
-    getNetworkId,
-    getAddressType,
-    getDerivationType,
-} from '@wallet-utils/cardanoUtils';
-
-import { submitRequestForm as envSubmitRequestForm, isDesktop } from '@suite-utils/env';
-import * as formDraftActions from '@wallet-actions/formDraftActions';
+import TrezorConnect, { PROTO } from '@trezor/connect';
 import {
     amountToSatoshi,
     formatAmount,
     getAccountDecimals,
     hasNetworkFeatures,
     parseFormDraftKey,
+    getDerivationType,
 } from '@suite-common/wallet-utils';
 import { Output } from '@suite-common/wallet-types/src';
+import { selectDevice, toggleRememberDevice } from '@suite-common/wallet-core';
+
+import { GetState, Dispatch } from 'src/types/suite';
+import * as modalActions from 'src/actions/suite/modalActions';
+import { getUnusedAddressFromAccount } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { Account } from 'src/types/wallet';
+import { ComposedTransactionInfo } from 'src/reducers/wallet/coinmarketReducer';
+import {
+    getStakingPath,
+    getProtocolMagic,
+    getNetworkId,
+    getAddressType,
+} from 'src/utils/wallet/cardanoUtils';
+import { submitRequestForm as envSubmitRequestForm } from 'src/utils/suite/env';
+import * as formDraftActions from 'src/actions/wallet/formDraftActions';
+
+import {
+    COINMARKET_BUY,
+    COINMARKET_EXCHANGE,
+    COINMARKET_SAVINGS,
+    COINMARKET_COMMON,
+} from '../constants';
 
 export type CoinmarketCommonAction =
     | {
@@ -61,30 +63,22 @@ export const verifyAddress =
             | typeof COINMARKET_SAVINGS.VERIFY_ADDRESS,
     ) =>
     async (dispatch: Dispatch, getState: GetState) => {
-        const { device } = getState().suite;
+        const device = selectDevice(getState());
         if (!device || !account) return;
         const accountAddress = getUnusedAddressFromAccount(account);
         address = address ?? accountAddress.address;
         path = path ?? accountAddress.path;
         if (!path || !address) return;
 
-        const { networkType, symbol } = account;
         const { useEmptyPassphrase, connected, available } = device;
-
-        const modalPayload = {
-            device,
-            address,
-            networkType,
-            symbol,
-            addressPath: path,
-        };
 
         // Show warning when device is not connected
         if (!connected || !available) {
             dispatch(
                 modalActions.openModal({
                     type: 'unverified-address',
-                    ...modalPayload,
+                    value: address,
+                    addressPath: path,
                 }),
             );
             return;
@@ -96,19 +90,6 @@ export const verifyAddress =
             useEmptyPassphrase,
             coin: account.symbol,
         };
-
-        // catch button request and open modal
-        const buttonRequestHandler = (event: DeviceButtonRequest['payload']) => {
-            if (!event || event.code !== 'ButtonRequest_Address') return;
-            dispatch(
-                modalActions.openModal({
-                    type: 'address',
-                    ...modalPayload,
-                }),
-            );
-        };
-
-        TrezorConnect.on(UI.REQUEST_BUTTON, buttonRequestHandler);
 
         let response;
         switch (account.networkType) {
@@ -142,8 +123,6 @@ export const verifyAddress =
                 };
                 break;
         }
-
-        TrezorConnect.off(UI.REQUEST_BUTTON, buttonRequestHandler);
 
         if (response.success) {
             dispatch({
@@ -180,9 +159,9 @@ export const submitRequestForm =
         };
     }) =>
     (dispatch: Dispatch, getState: GetState) => {
-        const { device } = getState().suite;
+        const device = selectDevice(getState());
         if (device && !device.remember && !isDesktop()) {
-            dispatch(suiteActions.toggleRememberDevice(device, true));
+            dispatch(toggleRememberDevice({ device, forceRemember: true }));
         }
         if (form) {
             envSubmitRequestForm(

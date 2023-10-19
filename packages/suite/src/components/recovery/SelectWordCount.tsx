@@ -1,11 +1,10 @@
-import React from 'react';
 import styled from 'styled-components';
-import { Option, OptionsWrapper, OptionsDivider } from '@onboarding-components';
 
-import { WordCount } from '@recovery-types';
-import { Translation } from '@suite-components';
+import { OnboardingOption, OptionsWrapper, OptionsDivider } from 'src/components/onboarding';
+import { WordCount } from 'src/types/recovery';
+import { Translation } from 'src/components/suite';
 
-const StyledOption = styled(Option)`
+const StyledOption = styled(OnboardingOption)`
     justify-content: center;
 `;
 

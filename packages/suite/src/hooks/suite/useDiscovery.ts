@@ -1,13 +1,15 @@
 import { useCallback } from 'react';
+
+import { selectDiscoveryByDeviceState, selectDevice } from '@suite-common/wallet-core';
+import { DiscoveryStatus } from '@suite-common/wallet-constants';
+
+import { DiscoveryStatusType } from 'src/types/wallet';
+
 import { useSelector } from './useSelector';
-import { DISCOVERY } from '@wallet-actions/constants';
-import { DiscoveryStatus } from '@wallet-types';
-import { selectDevice } from '@suite-reducers/suiteReducer';
-import { selectDiscovery } from '@wallet-reducers/discoveryReducer';
 
 export const useDiscovery = () => {
     const device = useSelector(selectDevice);
-    const discovery = useSelector(state => selectDiscovery(state, device?.state));
+    const discovery = useSelector(state => selectDiscoveryByDeviceState(state, device?.state));
 
     const calculateProgress = useCallback(() => {
         if (discovery && discovery.loaded && discovery.total) {
@@ -16,7 +18,7 @@ export const useDiscovery = () => {
         return 0;
     }, [discovery]);
 
-    const getStatus = useCallback((): DiscoveryStatus | undefined => {
+    const getStatus = useCallback((): DiscoveryStatusType | undefined => {
         if (!device)
             return {
                 status: 'loading',
@@ -39,13 +41,13 @@ export const useDiscovery = () => {
             };
 
         if (discovery) {
-            if (discovery.status < DISCOVERY.STATUS.STOPPING)
+            if (discovery.status < DiscoveryStatus.STOPPING)
                 return {
                     status: 'loading',
                     type: discovery.authConfirm ? 'auth-confirm' : 'discovery',
                 };
 
-            if (discovery.status === DISCOVERY.STATUS.COMPLETED && discovery.authConfirm)
+            if (discovery.status === DiscoveryStatus.COMPLETED && discovery.authConfirm)
                 return {
                     status: 'loading',
                     type: 'auth-confirm',
@@ -75,7 +77,7 @@ export const useDiscovery = () => {
     return {
         device,
         discovery,
-        isDiscoveryRunning: discovery && discovery.status < DISCOVERY.STATUS.STOPPING,
+        isDiscoveryRunning: discovery && discovery.status < DiscoveryStatus.STOPPING,
         getDiscoveryStatus: getStatus,
         calculateProgress,
     };

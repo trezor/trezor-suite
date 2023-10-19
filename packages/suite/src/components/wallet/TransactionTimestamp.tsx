@@ -1,8 +1,7 @@
-import React from 'react';
 import styled from 'styled-components';
-import { FormattedDate } from '@suite-components';
+import { FormattedDate } from 'src/components/suite';
 import { variables } from '@trezor/components';
-import { WalletAccountTransaction } from '@wallet-types';
+import { WalletAccountTransaction } from 'src/types/wallet';
 
 const TimestampLink = styled.div`
     display: block;
@@ -22,13 +21,11 @@ export const TransactionTimestamp = ({
     showDate = false,
     transaction,
 }: TransactionTimestampProps) => {
-    const { blockTime, blockHeight } = transaction;
+    const { blockTime } = transaction;
 
     return (
         <TimestampLink>
-            {blockHeight !== 0 && blockTime && blockTime > 0 && (
-                <FormattedDate value={new Date(blockTime * 1000)} time date={showDate} />
-            )}
+            {blockTime && <FormattedDate value={new Date(blockTime * 1000)} time date={showDate} />}
         </TimestampLink>
     );
 };

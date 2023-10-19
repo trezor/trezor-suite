@@ -5,6 +5,7 @@ import * as base58check from 'bs58check';
 
 const CIPHER_TYPE = 'aes-256-gcm';
 const CIPHER_IVSIZE = 96 / 8;
+const AUTH_SIZE = 128 / 8;
 
 export const deriveMetadataKey = (masterKey: string, xpub: string) => {
     const hmac = crypto.createHmac('sha256', Buffer.from(masterKey, 'hex'));
@@ -29,14 +30,22 @@ export const deriveAesKey = (metadataKey: string) => {
             )}`,
         );
     }
-    const secondHalf = hash.slice(32, 64);
+    const secondHalf = hash.subarray(32, 64);
     return secondHalf.toString('hex');
 };
 
 export const deriveFilename = (metadataKey: string) => {
     const hash = deriveHmac(metadataKey);
-    const firstHalf = hash.slice(0, 32);
+    const firstHalf = hash.subarray(0, 32);
     return firstHalf.toString('hex');
+};
+
+export const deriveFilenameForLabeling = (metaKey: string, encryptionVersion: number) => {
+    const name = deriveFilename(metaKey);
+    // postfixes were added with version 2
+    const postfix = encryptionVersion > 1 ? `_v${encryptionVersion}` : '';
+    const extension = '.mtdt';
+    return `${name}${postfix}${extension}`;
 };
 
 const getRandomIv = (): Promise<Buffer> =>
@@ -83,11 +92,10 @@ export const decrypt = (input: Buffer, key: string | Buffer) => {
         key = Buffer.from(key, 'hex');
     }
 
-    const ivsize = CIPHER_IVSIZE;
-    const iv = input.slice(0, ivsize);
+    const iv = input.subarray(0, CIPHER_IVSIZE);
     // tag is always 128-bits
-    const authTag = input.slice(ivsize, ivsize + 128 / 8);
-    const cText = input.slice(ivsize + 128 / 8);
+    const authTag = input.subarray(CIPHER_IVSIZE, CIPHER_IVSIZE + AUTH_SIZE);
+    const cText = input.subarray(CIPHER_IVSIZE + AUTH_SIZE);
     const decipher = crypto.createDecipheriv(CIPHER_TYPE, key, iv);
     const start = decipher.update(cText);
 

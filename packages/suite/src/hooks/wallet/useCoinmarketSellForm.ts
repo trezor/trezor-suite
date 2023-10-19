@@ -1,42 +1,54 @@
 import { createContext, useContext, useCallback, useState, useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
+
 import type { SellFiatTradeQuoteRequest } from 'invity-api';
-import { useActions, useSelector } from '@suite-hooks';
-import invityAPI from '@suite-services/invityAPI';
+import useDebounce from 'react-use/lib/useDebounce';
+
 import {
     fromFiatCurrency,
     getFeeLevels,
     amountToSatoshi,
     formatAmount,
 } from '@suite-common/wallet-utils';
-import { isChanged } from '@suite-utils/comparisonUtils';
-import * as coinmarketSellActions from '@wallet-actions/coinmarketSellActions';
-import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
+import { useDidUpdate } from '@trezor/react-utils';
+import { isChanged } from '@suite-common/suite-utils';
+import { selectDevice } from '@suite-common/wallet-core';
+
+import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
+import invityAPI from 'src/services/suite/invityAPI';
+import {
+    clearQuotes,
+    saveQuoteRequest,
+    saveQuotes,
+} from 'src/actions/wallet/coinmarketSellActions';
+import {
+    loadInvityData,
+    saveComposedTransactionInfo,
+} from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 import {
     SellFormState,
     UseCoinmarketSellFormProps,
-    AmountLimits,
     SellFormContextValues,
     CRYPTO_INPUT,
     FIAT_INPUT,
     OUTPUT_AMOUNT,
     FIAT_CURRENCY_SELECT,
-} from '@wallet-types/coinmarketSellForm';
+} from 'src/types/wallet/coinmarketSellForm';
 import {
     getComposeAddressPlaceholder,
+    getTokensFiatValue,
     mapTestnetSymbol,
-} from '@wallet-utils/coinmarket/coinmarketUtils';
-import { getAmountLimits, processQuotes } from '@wallet-utils/coinmarket/sellUtils';
-import { useFees } from './form/useFees';
-import { useCompose } from './form/useCompose';
-import useDebounce from 'react-use/lib/useDebounce';
-import { useFormDraft } from '@wallet-hooks/useFormDraft';
+} from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { getAmountLimits, processQuotes } from 'src/utils/wallet/coinmarket/sellUtils';
+import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
+import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
+import type { AppState } from 'src/types/suite';
+import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
+import { AmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
+
 import { useCoinmarketSellFormDefaultValues } from './useCoinmarketSellFormDefaultValues';
-import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
-import type { AppState } from '@suite-types';
-import { useBitcoinAmountUnit } from '@wallet-hooks/useBitcoinAmountUnit';
-import { useDidUpdate } from '@trezor/react-utils';
-import { TypedValidationRules } from '@suite-common/wallet-types';
+import { useCompose } from './form/useCompose';
+import { useFees } from './form/useFees';
 
 export const SellFormContext = createContext<SellFormContextValues | null>(null);
 SellFormContext.displayName = 'CoinmarketSellContext';
@@ -54,11 +66,13 @@ const useSellState = (
     const coinFees = fees[account.symbol];
     const levels = getFeeLevels(account.networkType, coinFees);
     const feeInfo = { ...coinFees, levels };
+    const tokensFiatValue: Awaited<ReturnType<typeof getTokensFiatValue>> = {};
 
     return {
         account,
         network,
         feeInfo,
+        tokensFiatValue,
         formValues: defaultFormValues,
     };
 };
@@ -66,45 +80,22 @@ const useSellState = (
 export const useCoinmarketSellForm = ({
     selectedAccount,
 }: UseCoinmarketSellFormProps): SellFormContextValues => {
-    const {
-        saveQuoteRequest,
-        saveQuotes,
-        clearQuotes,
-        saveTrade,
-        saveComposedTransactionInfo,
-        loadInvityData,
-    } = useActions({
-        saveQuoteRequest: coinmarketSellActions.saveQuoteRequest,
-        saveQuotes: coinmarketSellActions.saveQuotes,
-        clearQuotes: coinmarketSellActions.clearQuotes,
-        saveTrade: coinmarketSellActions.saveTrade,
-        saveComposedTransactionInfo: coinmarketCommonActions.saveComposedTransactionInfo,
-        loadInvityData: coinmarketCommonActions.loadInvityData,
-    });
+    const dispatch = useDispatch();
 
     useEffect(() => {
-        loadInvityData();
-    }, [loadInvityData]);
+        dispatch(loadInvityData());
+    }, [dispatch]);
 
-    const {
-        accounts,
-        sellInfo,
-        quotesRequest,
-        exchangeCoinInfo,
-        fiat,
-        device,
-        localCurrency,
-        fees,
-    } = useSelector(state => ({
-        accounts: state.wallet.accounts,
-        sellInfo: state.wallet.coinmarket.sell.sellInfo,
-        quotesRequest: state.wallet.coinmarket.sell.quotesRequest,
-        exchangeCoinInfo: state.wallet.coinmarket.exchange.exchangeCoinInfo,
-        fiat: state.wallet.fiat,
-        device: state.suite.device,
-        localCurrency: state.wallet.settings.localCurrency,
-        fees: state.wallet.fees,
-    }));
+    const accounts = useSelector(state => state.wallet.accounts);
+    const device = useSelector(selectDevice);
+    const fiat = useSelector(state => state.wallet.fiat);
+    const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
+    const fees = useSelector(state => state.wallet.fees);
+    const sellInfo = useSelector(state => state.wallet.coinmarket.sell.sellInfo);
+    const quotesRequest = useSelector(state => state.wallet.coinmarket.sell.quotesRequest);
+    const exchangeCoinInfo = useSelector(
+        state => state.wallet.coinmarket.exchange.exchangeCoinInfo,
+    );
 
     const { account, network } = selectedAccount;
     const { navigateToSellOffers } = useCoinmarketNavigation(account);
@@ -119,9 +110,6 @@ export const useCoinmarketSellForm = ({
     const localCurrencyOption = { value: localCurrency, label: localCurrency.toUpperCase() };
 
     const [state, setState] = useState<ReturnType<typeof useSellState>>(undefined);
-    const [activeInput, setActiveInput] = useState<typeof FIAT_INPUT | typeof CRYPTO_INPUT>(
-        FIAT_INPUT,
-    );
 
     const { saveDraft, getDraft, removeDraft } = useFormDraft<SellFormState>('coinmarket-sell');
     const draft = getDraft(account.key);
@@ -137,10 +125,16 @@ export const useCoinmarketSellForm = ({
     const initState = useSellState(selectedAccount, fees, !!state, defaultValues);
 
     useEffect(() => {
-        const setStateAsync = async (initState: ReturnType<typeof useSellState>) => {
+        const setStateAsync = async (initState: NonNullable<ReturnType<typeof useSellState>>) => {
             const address = await getComposeAddressPlaceholder(account, network, device, accounts);
-            if (initState?.formValues && address) {
+            if (initState.formValues && address) {
                 initState.formValues.outputs[0].address = address;
+
+                initState.tokensFiatValue = await getTokensFiatValue(
+                    account,
+                    sellInfo?.supportedCryptoCurrencies || new Set(),
+                );
+
                 setState(initState);
             }
         };
@@ -148,38 +142,17 @@ export const useCoinmarketSellForm = ({
         if (!state && initState) {
             setStateAsync(initState);
         }
-    }, [state, initState, account, network, device, accounts]);
+    }, [state, initState, account, network, device, accounts, sellInfo?.supportedCryptoCurrencies]);
 
     const methods = useForm<SellFormState>({
         mode: 'onChange',
-        shouldUnregister: false, // NOTE: tracking custom fee inputs
         defaultValues: isDraft ? draft : defaultValues,
     });
 
-    const {
-        reset,
-        register,
-        setValue,
-        getValues,
-        setError,
-        clearErrors,
-        trigger,
-        control,
-        errors,
-        formState,
-    } = methods;
+    const { reset, register, setValue, getValues, setError, clearErrors, control, formState } =
+        methods;
 
     const values = useWatch<SellFormState>({ control });
-
-    useDebounce(
-        () => {
-            if (formState.isDirty && !formState.isValidating && Object.keys(errors).length === 0) {
-                saveDraft(selectedAccount.account.key, values as SellFormState);
-            }
-        },
-        200,
-        [errors, saveDraft, selectedAccount.account.key, values, formState],
-    );
 
     useEffect(() => {
         if (!isChanged(defaultValues, values)) {
@@ -189,9 +162,9 @@ export const useCoinmarketSellForm = ({
 
     // react-hook-form auto register custom form fields (without HTMLElement)
     useEffect(() => {
-        register({ name: 'options', type: 'custom' });
-        register({ name: 'outputs', type: 'custom' });
-        register({ name: 'setMaxOutputId', type: 'custom' });
+        register('options');
+        register('outputs');
+        register('setMaxOutputId');
     }, [register]);
 
     // react-hook-form reset, set default values
@@ -210,6 +183,29 @@ export const useCoinmarketSellForm = ({
         ...methods,
         state,
     });
+
+    useDebounce(
+        () => {
+            if (
+                formState.isDirty &&
+                !formState.isValidating &&
+                Object.keys(formState.errors).length === 0 &&
+                !isComposing
+            ) {
+                saveDraft(selectedAccount.account.key, values as SellFormState);
+            }
+        },
+        200,
+        [
+            saveDraft,
+            selectedAccount.account.key,
+            values,
+            formState.errors,
+            formState.isDirty,
+            formState.isValidating,
+            isComposing,
+        ],
+    );
 
     const [amountLimits, setAmountLimits] = useState<AmountLimits | undefined>(undefined);
 
@@ -234,7 +230,7 @@ export const useCoinmarketSellForm = ({
             setValue('setMaxOutputId', undefined, { shouldDirty: true });
             clearErrors(FIAT_INPUT);
             setValue(OUTPUT_AMOUNT, amount || '', { shouldDirty: true });
-            composeRequest();
+            composeRequest(CRYPTO_INPUT);
         },
         [clearErrors, composeRequest, setValue],
     );
@@ -258,7 +254,10 @@ export const useCoinmarketSellForm = ({
                 cryptoValue && shouldSendInSats
                     ? amountToSatoshi(cryptoValue, network.decimals)
                     : cryptoValue;
-            setValue(OUTPUT_AMOUNT, cryptoInputValue || '', { shouldDirty: true });
+            setValue(OUTPUT_AMOUNT, cryptoInputValue || '', {
+                shouldDirty: true,
+                shouldValidate: false,
+            });
             composeRequest(FIAT_INPUT);
         },
         [
@@ -272,6 +271,8 @@ export const useCoinmarketSellForm = ({
         ],
     );
 
+    const { translationString } = useTranslation();
+
     useEffect(() => {
         if (!composedLevels) return;
         const values = getValues();
@@ -280,30 +281,23 @@ export const useCoinmarketSellForm = ({
         const composed = composedLevels[selectedFeeLevel];
         if (!composed) return;
 
-        if (composed.type === 'error' && composed.errorMessage && activeInput === CRYPTO_INPUT) {
-            setError(CRYPTO_INPUT, {
-                type: 'compose',
-                message: composed.errorMessage as any,
-            });
-        }
-        // set calculated and formatted "max" value to `Amount` input
-        else if (composed.type === 'final') {
+        if (composed.type === 'final') {
             if (typeof setMaxOutputId === 'number' && composed.max) {
                 setValue(CRYPTO_INPUT, composed.max, { shouldValidate: true, shouldDirty: true });
                 clearErrors(CRYPTO_INPUT);
             }
-            saveComposedTransactionInfo({ selectedFee: selectedFeeLevel, composed });
+            dispatch(saveComposedTransactionInfo({ selectedFee: selectedFeeLevel, composed }));
             setValue('estimatedFeeLimit', composed.estimatedFeeLimit, { shouldDirty: true });
         }
     }, [
         clearErrors,
         composedLevels,
+        dispatch,
         getValues,
-        saveComposedTransactionInfo,
         setError,
         setValue,
         selectedFee,
-        activeInput,
+        translationString,
     ]);
 
     useDidUpdate(() => {
@@ -335,20 +329,19 @@ export const useCoinmarketSellForm = ({
             fiatStringAmount,
             flows: ['BANK_ACCOUNT', 'PAYMENT_GATE'],
         };
-        saveQuoteRequest(request);
+        dispatch(saveQuoteRequest(request));
         const allQuotes = await invityAPI.getSellQuotes(request);
         if (Array.isArray(allQuotes)) {
             const limits = getAmountLimits(request, allQuotes);
             if (limits) {
                 setAmountLimits(limits);
-                trigger([CRYPTO_INPUT, FIAT_INPUT]);
             } else {
                 const [quotes, alternativeQuotes] = processQuotes(allQuotes);
-                saveQuotes(quotes, alternativeQuotes);
+                dispatch(saveQuotes(quotes, alternativeQuotes));
                 navigateToSellOffers();
             }
         } else {
-            clearQuotes();
+            dispatch(clearQuotes());
             navigateToSellOffers();
         }
     };
@@ -356,7 +349,7 @@ export const useCoinmarketSellForm = ({
     const handleClearFormButtonClick = useCallback(() => {
         removeDraft(account.key);
         reset(defaultValues);
-        composeRequest();
+        composeRequest(CRYPTO_INPUT);
     }, [account.key, removeDraft, reset, defaultValues, composeRequest]);
 
     return {
@@ -365,16 +358,13 @@ export const useCoinmarketSellForm = ({
         defaultCountry,
         defaultCurrency,
         onSubmit,
-        register: register as (rules?: TypedValidationRules) => (ref: any) => void,
+        register,
         sellInfo,
         changeFeeLevel,
-        saveQuoteRequest,
-        saveQuotes,
         quotesRequest,
         composedLevels,
         localCurrencyOption,
         exchangeCoinInfo,
-        saveTrade,
         feeInfo,
         composeRequest,
         fiatRates,
@@ -389,8 +379,7 @@ export const useCoinmarketSellForm = ({
         handleClearFormButtonClick,
         formState,
         isDraft,
-        activeInput,
-        setActiveInput,
+        tokensFiatValue: state?.tokensFiatValue,
     };
 };
 

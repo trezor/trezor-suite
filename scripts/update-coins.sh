@@ -29,3 +29,7 @@ $SRC/cointool.py dump -p -d connect -o $DIST/coins.json \
     -e bitcore \
     -e confidential_assets \
     -e negative_fee \
+    -E eth \
+    -E erc20 \
+
+yarn prettier --write $DIST/coins.json

@@ -1,27 +1,39 @@
-import React from 'react';
 import { TouchableOpacity } from 'react-native';
+import { useSelector } from 'react-redux';
 
 import { Box } from '@suite-native/atoms';
-import { AccountKey, TokenSymbol } from '@suite-common/wallet-types';
-import { isEthereumAccountSymbol } from '@suite-common/wallet-utils';
+import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { selectIsEthereumAccountWithTokensWithFiatRates } from '@suite-native/ethereum-tokens';
+import { SettingsSliceRootState } from '@suite-native/module-settings';
+import { FiatRatesRootState } from '@suite-native/fiat-rates';
 
-import { AccountListItem, AccountListItemProps } from './AccountListItem';
 import { TokenList } from './TokenList';
+import { AccountListItem, AccountListItemProps } from './AccountListItem';
 
 interface AccountListItemInteractiveProps extends AccountListItemProps {
-    onSelectAccount: (accountKey: AccountKey, tokenSymbol?: TokenSymbol) => void;
+    onSelectAccount: (accountKey: AccountKey, tokenContract?: TokenAddress) => void;
 }
 
 export const AccountListItemInteractive = ({
     account,
     onSelectAccount,
-}: AccountListItemInteractiveProps) => (
-    <Box>
-        <TouchableOpacity onPress={() => onSelectAccount(account.key)}>
-            <AccountListItem key={account.key} account={account} areTokensDisplayed />
-        </TouchableOpacity>
-        {isEthereumAccountSymbol(account.symbol) && (
-            <TokenList accountKey={account.key} onSelectAccount={onSelectAccount} />
-        )}
-    </Box>
-);
+}: AccountListItemInteractiveProps) => {
+    const areTokensDisplayed = useSelector((state: SettingsSliceRootState & FiatRatesRootState) =>
+        selectIsEthereumAccountWithTokensWithFiatRates(state, account.key),
+    );
+
+    return (
+        <Box padding="medium">
+            <TouchableOpacity onPress={() => onSelectAccount(account.key)}>
+                <AccountListItem
+                    key={account.key}
+                    account={account}
+                    areTokensDisplayed={areTokensDisplayed}
+                />
+            </TouchableOpacity>
+            {areTokensDisplayed && (
+                <TokenList accountKey={account.key} onSelectAccount={onSelectAccount} />
+            )}
+        </Box>
+    );
+};

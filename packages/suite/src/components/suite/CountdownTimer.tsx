@@ -1,9 +1,8 @@
-import React from 'react';
 import styled from 'styled-components';
 import { FormattedNumber } from 'react-intl';
 import { Translation } from './Translation';
 import { TranslationKey } from '@suite-common/intl-types';
-import { useCountdownTimer } from '@suite-hooks';
+import { useCountdownTimer } from 'src/hooks/suite';
 
 const UnitWrapper = styled.span`
     font-variant-numeric: tabular-nums;

@@ -1,4 +1,4 @@
-import { EventEmitter } from 'events';
+import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
 
 import { Status } from './Status';
 import { Account } from './Account';
@@ -17,23 +17,7 @@ import type {
     LogLevel,
 } from '../types';
 
-export declare interface CoinjoinClient {
-    on<K extends keyof CoinjoinClientEvents>(
-        type: K,
-        listener: (event: CoinjoinClientEvents[K]) => void,
-    ): this;
-    off<K extends keyof CoinjoinClientEvents>(
-        type: K,
-        listener: (event: CoinjoinClientEvents[K]) => void,
-    ): this;
-    emit<K extends keyof CoinjoinClientEvents>(
-        type: K,
-        ...args: CoinjoinClientEvents[K][]
-    ): boolean;
-    removeAllListeners<K extends keyof CoinjoinClientEvents>(type?: K): this;
-}
-
-export class CoinjoinClient extends EventEmitter {
+export class CoinjoinClient extends TypedEmitter<CoinjoinClientEvents> {
     readonly settings: CoinjoinClientSettings;
     private logger: Logger;
     private network;
@@ -60,7 +44,8 @@ export class CoinjoinClient extends EventEmitter {
         this.status.on('log', ({ level, payload }) => this.logger[level](payload));
         this.status.on('affiliate-server', event => this.onAffiliateServerStatus(event));
 
-        this.prison = new CoinjoinPrison();
+        this.prison = new CoinjoinPrison(settings.prison);
+        this.prison.on('change', data => this.emit('prison', data));
     }
 
     enable() {
@@ -105,12 +90,20 @@ export class CoinjoinClient extends EventEmitter {
         }
         this.logger.info(`Register account ~~${account.accountKey}~~`);
 
-        // iterate Status more frequently
-        if (this.accounts.length === 0) {
-            this.status.setMode('enabled');
-        }
+        const candidate = new Account(account, this.network);
+        // walk thru all status Rounds and search in for accounts inputs/outputs which are not supposed to be there. (interrupted round)
+        // detain them if they are not already detained
+        const detained = candidate.findDetainedElements(this.status.rounds);
+        detained.forEach(item => {
+            if (!this.prison.isDetained(item)) {
+                this.prison.detain(item);
+            }
+        });
 
-        this.accounts.push(new Account(account, this.network));
+        this.accounts.push(candidate);
+
+        // iterate Status more frequently
+        this.status.setMode('enabled');
 
         // try to trigger registration immediately without waiting for Status change
         this.onStatusUpdate({
@@ -156,7 +149,7 @@ export class CoinjoinClient extends EventEmitter {
             const currentRound = this.rounds.find(r => r.id === event.roundId);
             if (currentRound) {
                 currentRound.resolveRequest(event);
-                const statusRound = this.status.rounds.find(r => r.id === event.roundId);
+                const statusRound = this.status.rounds.find(r => r.Id === event.roundId);
                 if (statusRound) {
                     changed.push(statusRound);
                 }
@@ -184,12 +177,12 @@ export class CoinjoinClient extends EventEmitter {
         rounds,
     }: Pick<CoinjoinStatusEvent, 'changed' | 'rounds'>) {
         // try to release inputs from prison
-        this.prison.release();
+        this.prison.release(rounds.map(r => r.Id));
 
         // find all CoinjoinRounds changed by Status
         const roundsToProcess = await Promise.all(
             changed.flatMap(round => {
-                const currentRound = this.rounds.find(r => r.id === round.id);
+                const currentRound = this.rounds.find(r => r.id === round.Id);
                 if (currentRound) {
                     // try to finish/interrupt current running process on changed round (if any)
                     // and update fresh data from Status

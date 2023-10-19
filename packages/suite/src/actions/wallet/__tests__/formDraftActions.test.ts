@@ -1,6 +1,6 @@
-import { configureStore } from '@suite/support/tests/configureStore';
+import { configureStore } from 'src/support/tests/configureStore';
 
-import formDraftReducer, { FormDraftState } from '@wallet-reducers/formDraftReducer';
+import formDraftReducer, { FormDraftState } from 'src/reducers/wallet/formDraftReducer';
 import * as formDraftActions from '../formDraftActions';
 
 export const getInitialState = (state?: FormDraftState) => ({

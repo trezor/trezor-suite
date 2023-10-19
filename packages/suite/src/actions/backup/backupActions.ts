@@ -1,10 +1,10 @@
 import TrezorConnect, { CommonParams } from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
-
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { BACKUP } from '@backup-actions/constants';
+import { selectDevice } from '@suite-common/wallet-core';
 
-import type { Dispatch, GetState } from '@suite-types';
+import { BACKUP } from 'src/actions/backup/constants';
+import type { Dispatch, GetState } from 'src/types/suite';
 
 export type ConfirmKey =
     | 'has-enough-time'
@@ -43,7 +43,7 @@ export const resetReducer = (): BackupAction => ({
 export const backupDevice =
     (params: CommonParams = {}) =>
     async (dispatch: Dispatch, getState: GetState) => {
-        const { device } = getState().suite;
+        const device = selectDevice(getState());
         if (!device) {
             return dispatch(
                 notificationsActions.addToast({

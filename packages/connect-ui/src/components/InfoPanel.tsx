@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
@@ -67,7 +67,7 @@ const Origin = styled.p`
 interface InfoPanelProps {
     method?: string;
     origin?: string;
-    topSlot?: React.ReactNode;
+    topSlot?: ReactNode;
 }
 
 export const InfoPanel = ({ method, origin, topSlot }: InfoPanelProps) => (

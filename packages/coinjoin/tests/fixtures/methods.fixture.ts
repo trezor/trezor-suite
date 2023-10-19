@@ -25,11 +25,12 @@ export const BLOCKS = [
     {
         height: 1,
         hash: '09f69854a4572575e2a8af0dea70ff5efd46957e2cb60e81c0d760098ab48b44',
-        filter: '01656c90', // receive 1 out
+        filter: '03a282604dcbe72d0e', // receive 1 out
         previousBlockHash: BASE_HASH,
         txs: [
             {
-                txid: 'txid_1',
+                txid: '11111111111111111111111111111111',
+                filter: '03928f707d3166a2ea',
                 blockHeight: 1,
                 blockTime: 1337,
                 value: '1578597058',
@@ -40,6 +41,7 @@ export const BLOCKS = [
                         addresses: ['mkUzYq8aQ4xzgPoCw8QVsRzkn1dceiPzmi'],
                         isAddress: true,
                         value: '1578625117',
+                        txid: 'foo',
                     },
                 ],
                 vout: [
@@ -64,11 +66,12 @@ export const BLOCKS = [
     {
         height: 2,
         hash: '5513d63651bbb32985b54fa9e0e530553e3e9cebdd10feae7f019c04edb80f61',
-        filter: '0298ad7857d0c0', // receive 1 in, receive 2 out
+        filter: '02044071f773c0', // receive 1 in, receive 2 out
         previousBlockHash: '09f69854a4572575e2a8af0dea70ff5efd46957e2cb60e81c0d760098ab48b44',
         txs: [
             {
-                txid: 'txid_2',
+                txid: '22222222222222222222222222222222',
+                filter: '021944359ad6e0',
                 blockHeight: 2,
                 blockTime: 1337,
                 value: '999999890',
@@ -79,7 +82,7 @@ export const BLOCKS = [
                         addresses: ['bcrt1qkvwu9g3k2pdxewfqr7syz89r3gj557l374sg5v'],
                         isAddress: true,
                         value: '1000000000',
-                        txid: 'txid_1',
+                        txid: '11111111111111111111111111111111',
                         vout: 1,
                     },
                 ],
@@ -98,18 +101,19 @@ export const BLOCKS = [
     {
         height: 3,
         hash: '295578a3c8eb87736a5e657b06a0933f7ec5f82c43f8418fdb38f74c0fc066c7',
-        filter: '0802a1103e91e638632d0f148d8c4618cc6118aeaad3d0', // nothing
+        filter: '', // empty
         previousBlockHash: '5513d63651bbb32985b54fa9e0e530553e3e9cebdd10feae7f019c04edb80f61',
         txs: [],
     },
     {
         height: 4,
         hash: '12de06b8ae4bbc660e3f565c876c606f5a1bd3463364c6abfc882b5ff6dd86e3',
-        filter: '03018bfa4d4731ee2480', // receive 1 out
+        filter: '030361ceb3dfc1c1e600', // receive 1 out
         previousBlockHash: '295578a3c8eb87736a5e657b06a0933f7ec5f82c43f8418fdb38f74c0fc066c7',
         txs: [
             {
-                txid: 'txid_3',
+                txid: '33333333333333333333333333333333',
+                filter: '031e20cd856d4fa3f1',
                 blockHeight: 4,
                 blockTime: 1337,
                 value: '999999858',
@@ -122,6 +126,7 @@ export const BLOCKS = [
                         ],
                         isAddress: true,
                         value: '1000000000',
+                        txid: 'bar',
                     },
                 ],
                 vout: [
@@ -147,18 +152,19 @@ export const BLOCKS = [
     {
         height: 5,
         hash: '2c2c65aad93eebe235955e170913fd6558453dd999a4ded6249bbdc9d54da1f7',
-        filter: '08a4afd740dddb6185ca00666d22a55fc9252008f9cda0', // nothing
+        filter: '03c1e18a1589b6051780', // no match
         previousBlockHash: '12de06b8ae4bbc660e3f565c876c606f5a1bd3463364c6abfc882b5ff6dd86e3',
         txs: [],
     },
     {
         height: 6,
         hash: '5021a2185f27ad04d45f1b53c873b2231311aea99e0f1d7a6252167540b9db4c',
-        filter: '03a69058941e6f5fc1', // receive 2 in, receive 1 out, change 1 out'
+        filter: '036e6e302da2ce028c', // receive 2 in, receive 1 out, change 1 out'
         previousBlockHash: '2c2c65aad93eebe235955e170913fd6558453dd999a4ded6249bbdc9d54da1f7',
         txs: [
             {
-                txid: 'txid_4',
+                txid: '44444444444444444444444444444444',
+                filter: '034a680453fcd11cf180',
                 blockHeight: 6,
                 blockTime: 1337,
                 value: '999999749',
@@ -169,7 +175,7 @@ export const BLOCKS = [
                         addresses: ['bcrt1qldlynaqp0hy4zc2aag3pkenzvxy65saej0huey'],
                         isAddress: true,
                         value: '999999890',
-                        txid: 'txid_2',
+                        txid: '22222222222222222222222222222222',
                     },
                 ],
                 vout: [
@@ -194,11 +200,12 @@ export const BLOCKS = [
     {
         height: 7,
         hash: '01d37c4490e9ddaf6b5c886eaa215b8d0b658c93ea42cfd871b226f606672c0b',
-        filter: '023eee59053e40', // receive 1 in, change 1 in, receive 1 out'
+        filter: '02020f2a9a0ac0', // receive 1 in, change 1 in, receive 1 out'
         previousBlockHash: '5021a2185f27ad04d45f1b53c873b2231311aea99e0f1d7a6252167540b9db4c',
         txs: [
             {
-                txid: 'txid_5',
+                txid: '55555555555555555555555555555555',
+                filter: '0262fbd3058600',
                 blockHeight: 7,
                 blockTime: 1337,
                 value: '999999571',
@@ -209,14 +216,14 @@ export const BLOCKS = [
                         addresses: ['bcrt1qkvwu9g3k2pdxewfqr7syz89r3gj557l374sg5v'],
                         isAddress: true,
                         value: '547',
-                        txid: 'txid_4',
+                        txid: '44444444444444444444444444444444',
                     },
                     {
                         n: 1,
                         addresses: ['bcrt1qejqxwzfld7zr6mf7ygqy5s5se5xq7vmt8ntmj0'],
                         isAddress: true,
                         value: '999999202',
-                        txid: 'txid_4',
+                        txid: '44444444444444444444444444444444',
                         vout: 1,
                     },
                 ],
@@ -234,11 +241,12 @@ export const BLOCKS = [
     {
         height: 8,
         hash: '36d01c975372c363d94f0e9e22e8a61a6a52e3408c98920ef1587b024ec487e3',
-        filter: '02782a5165c980', // receive 1 out
+        filter: '023e09f4f752a0', // receive 1 out
         previousBlockHash: '01d37c4490e9ddaf6b5c886eaa215b8d0b658c93ea42cfd871b226f606672c0b',
         txs: [
             {
-                txid: 'txid_6',
+                txid: '66666666666666666666666666666666',
+                filter: '0256bf6979ccc0',
                 blockHeight: 8,
                 blockTime: 1337,
                 value: '999999212',
@@ -251,6 +259,7 @@ export const BLOCKS = [
                         ],
                         isAddress: true,
                         value: '999999311',
+                        txid: 'baz',
                     },
                 ],
                 vout: [
@@ -666,7 +675,7 @@ export const SEGWIT_XPUB_RESULT = {
         transactions: [
             {
                 type: 'recv',
-                txid: 'txid_6',
+                txid: '66666666666666666666666666666666',
                 blockTime: 1337,
                 blockHeight: 8,
                 amount: '999999212',
@@ -708,7 +717,7 @@ export const SEGWIT_XPUB_RESULT = {
             },
             {
                 type: 'self',
-                txid: 'txid_5',
+                txid: '55555555555555555555555555555555',
                 blockTime: 1337,
                 blockHeight: 7,
                 amount: '178',
@@ -754,7 +763,7 @@ export const SEGWIT_XPUB_RESULT = {
             },
             {
                 type: 'self',
-                txid: 'txid_4',
+                txid: '44444444444444444444444444444444',
                 blockTime: 1337,
                 blockHeight: 6,
                 amount: '141',
@@ -801,7 +810,7 @@ export const SEGWIT_XPUB_RESULT = {
             },
             {
                 type: 'recv',
-                txid: 'txid_3',
+                txid: '33333333333333333333333333333333',
                 blockTime: 1337,
                 blockHeight: 4,
                 amount: '547',
@@ -853,7 +862,7 @@ export const SEGWIT_XPUB_RESULT = {
             },
             {
                 type: 'self',
-                txid: 'txid_2',
+                txid: '22222222222222222222222222222222',
                 blockTime: 1337,
                 blockHeight: 2,
                 amount: '110',
@@ -893,7 +902,7 @@ export const SEGWIT_XPUB_RESULT = {
             },
             {
                 type: 'recv',
-                txid: 'txid_1',
+                txid: '11111111111111111111111111111111',
                 blockTime: 1337,
                 blockHeight: 1,
                 amount: '1000000000',
@@ -947,7 +956,7 @@ export const SEGWIT_XPUB_RESULT = {
         {
             address: 'bcrt1qkvwu9g3k2pdxewfqr7syz89r3gj557l374sg5v',
             path: "m/84'/1'/0'/0/0",
-            txid: 'txid_3',
+            txid: '33333333333333333333333333333333',
             vout: 0,
             blockHeight: 4,
             amount: '547',
@@ -956,7 +965,7 @@ export const SEGWIT_XPUB_RESULT = {
         {
             address: 'bcrt1qkvwu9g3k2pdxewfqr7syz89r3gj557l374sg5v',
             path: "m/84'/1'/0'/0/0",
-            txid: 'txid_5',
+            txid: '55555555555555555555555555555555',
             vout: 0,
             blockHeight: 7,
             amount: '999999571',
@@ -965,7 +974,7 @@ export const SEGWIT_XPUB_RESULT = {
         {
             address: 'bcrt1qkvwu9g3k2pdxewfqr7syz89r3gj557l374sg5v',
             path: "m/84'/1'/0'/0/0",
-            txid: 'txid_6',
+            txid: '66666666666666666666666666666666',
             vout: 0,
             blockHeight: 8,
             amount: '999999212',
@@ -1003,7 +1012,7 @@ export const SEGWIT_XPUB_RESULT_HALF = {
             },
             { ...used2, balance: '999999890', received: '999999890', sent: '0', transfers: 1 },
         ],
-        change: [{ ...change1, transfers: 0 }, ...change.slice(0, 19)],
+        change: [{ ...change1, transfers: 0 }, ...change],
     },
     history: {
         total: 3,
@@ -1013,7 +1022,7 @@ export const SEGWIT_XPUB_RESULT_HALF = {
     utxo: [
         utxo,
         {
-            txid: 'txid_4',
+            txid: '44444444444444444444444444444444',
             vout: 0,
             address: 'bcrt1qkvwu9g3k2pdxewfqr7syz89r3gj557l374sg5v',
             path: "m/84'/1'/0'/0/0",
@@ -1022,7 +1031,7 @@ export const SEGWIT_XPUB_RESULT_HALF = {
             amount: '547',
         },
         {
-            txid: 'txid_4',
+            txid: '44444444444444444444444444444444',
             vout: 1,
             address: 'bcrt1qejqxwzfld7zr6mf7ygqy5s5se5xq7vmt8ntmj0',
             path: "m/84'/1'/0'/1/0",
@@ -1031,52 +1040,4 @@ export const SEGWIT_XPUB_RESULT_HALF = {
             amount: '999999202',
         },
     ],
-};
-
-const {
-    addresses,
-    history: {
-        transactions: [
-            tx6,
-            tx5,
-            tx4,
-            tx3,
-            {
-                targets: [{ isAccountTarget, ...tx2Target }],
-                ...tx2
-            },
-            tx1,
-        ],
-        ...xpubHistory
-    },
-    utxo: [
-        { address: addr1, path: p1, ...utxo1 },
-        { address: addr2, path: p2, ...utxo2 },
-        { address: addr3, path: p3, ...utxo3 },
-    ],
-    ...xpubRest
-} = SEGWIT_XPUB_RESULT;
-
-export const SEGWIT_RECEIVE_RESULT = {
-    ...xpubRest,
-    descriptor: 'bcrt1qkvwu9g3k2pdxewfqr7syz89r3gj557l374sg5v',
-    balance: '1999999330',
-    availableBalance: '1999999330',
-    history: {
-        ...xpubHistory,
-        transactions: [
-            tx6,
-            { ...tx5, type: 'joint', amount: '999999024', targets: [] },
-            { ...tx4, type: 'recv', amount: '547' },
-            tx3,
-            {
-                ...tx2,
-                type: 'sent',
-                amount: '999999890',
-                targets: [tx2Target],
-            },
-            tx1,
-        ],
-    },
-    utxo: [utxo1, utxo2, utxo3],
 };

@@ -1,4 +1,5 @@
-import { ANONYMITY_GAINS_HINDSIGHT_COUNT } from '@suite/services/coinjoin';
+import { RoundPhase, SessionPhase } from '@trezor/coinjoin';
+import { ANONYMITY_GAINS_HINDSIGHT_COUNT } from 'src/services/coinjoin';
 import * as coinjoinUtils from '../coinjoinUtils';
 
 const baseUtxo = {
@@ -153,6 +154,23 @@ export const calculateProgressParams: Array<{
         },
         result: 100,
     },
+];
+
+export const getRoundPhaseFromSessionPhase: {
+    sessionPhase: SessionPhase;
+    result?: RoundPhase | 'error';
+}[] = [
+    { sessionPhase: 101, result: 0 },
+    { sessionPhase: 451, result: 3 },
+];
+
+export const getFirstSessionPhaseFromRoundPhase: {
+    roundPhase: RoundPhase;
+    result: SessionPhase | 'error';
+}[] = [
+    { roundPhase: 0, result: 101 },
+    { roundPhase: 1, result: 201 },
+    { roundPhase: 4, result: 'error' },
 ];
 
 export const cleanAnonymityGains: Array<{

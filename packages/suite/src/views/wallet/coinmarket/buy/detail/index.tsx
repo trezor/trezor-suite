@@ -1,10 +1,9 @@
-import React from 'react';
 import styled from 'styled-components';
-import { withSelectedAccountLoaded, WithSelectedAccountLoadedProps } from '@wallet-components';
+import { withSelectedAccountLoaded, WithSelectedAccountLoadedProps } from 'src/components/wallet';
 import {
     useCoinmarketBuyDetail,
     CoinmarketBuyDetailContext,
-} from '@wallet-hooks/useCoinmarketBuyDetail';
+} from 'src/hooks/wallet/useCoinmarketBuyDetail';
 import Detail from './Detail';
 
 const Wrapper = styled.div`

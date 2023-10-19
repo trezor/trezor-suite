@@ -1,15 +1,15 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import styled from 'styled-components';
-import { P, variables } from '@trezor/components';
+import { LottieAnimation, P, variables } from '@trezor/components';
 
-import { DeviceAnimation } from '@onboarding-components';
-import { useDevice, useSelector } from '@suite-hooks';
-import { isWebUsb } from '@suite-utils/transport';
-import { WebUsbButton } from '@suite-components/WebUsbButton';
+import { useDevice, useSelector } from 'src/hooks/suite';
+import { isWebUsb } from 'src/utils/suite/transport';
+import { WebUsbButton } from 'src/components/suite/WebUsbButton';
 
-const DeviceBadge = styled(DeviceAnimation)`
+const StyledLottieAnimation = styled(LottieAnimation)`
     margin: 8px 16px 8px 0;
     min-width: 64px;
+    background: ${({ theme }) => theme.BG_GREY};
 `;
 
 const Wrapper = styled.div`
@@ -48,22 +48,26 @@ const Title = styled(P)`
 `;
 
 interface DeviceBannerProps {
-    title: React.ReactNode;
-    description?: React.ReactNode;
+    title: ReactNode;
+    description?: ReactNode;
 }
 
 export const DeviceBanner = ({ title, description }: DeviceBannerProps) => {
     const { device } = useDevice();
 
-    const { transport } = useSelector(state => ({
-        transport: state.suite.transport,
-    }));
+    const transport = useSelector(state => state.suite.transport);
 
     const isWebUsbTransport = isWebUsb(transport);
 
     return (
         <Wrapper data-test="@settings/device/disconnected-device-banner">
-            <DeviceBadge type="CONNECT" shape="CIRCLE" size={64} device={device} />
+            <StyledLottieAnimation
+                type="CONNECT"
+                shape="CIRCLE"
+                size={64}
+                deviceModelInternal={device?.features?.internal_model}
+                loop
+            />
             <Column>
                 <Title weight="bold">
                     {title}{' '}

@@ -1,7 +1,7 @@
 import produce from 'immer';
-import { BACKUP } from '@backup-actions/constants';
-import { ConfirmKey, BackupStatus } from '@backup-actions/backupActions';
-import { Action } from '@suite-types';
+import { BACKUP } from 'src/actions/backup/constants';
+import { ConfirmKey, BackupStatus } from 'src/actions/backup/backupActions';
+import { Action } from 'src/types/suite';
 
 export interface BackupRootState {
     backup: BackupState;

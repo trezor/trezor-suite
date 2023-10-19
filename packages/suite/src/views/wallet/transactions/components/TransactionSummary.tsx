@@ -1,22 +1,18 @@
-import React from 'react';
-
 import styled from 'styled-components';
 import { getUnixTime } from 'date-fns';
-import { Account } from '@wallet-types';
-import { TransactionsGraph, Translation, HiddenPlaceholder } from '@suite-components';
-import { useSelector, useActions } from '@suite-hooks';
-import * as graphActions from '@wallet-actions/graphActions';
-import { RangeSelector } from '@suite-components/TransactionsGraph/components/RangeSelector';
+
+import { Account } from 'src/types/wallet';
+import { TransactionsGraph, Translation, HiddenPlaceholder } from 'src/components/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { getGraphDataForInterval, updateGraphData } from 'src/actions/wallet/graphActions';
+import { RangeSelector } from 'src/components/suite/TransactionsGraph/components/RangeSelector';
 
 import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
 import { variables, Button, Card } from '@trezor/components';
 
 import { TransactionSummaryDropdown } from './TransactionSummaryDropdown';
 import { SummaryCards } from './SummaryCards';
-import {
-    aggregateBalanceHistory,
-    getMinMaxValueFromData,
-} from '../../../../utils/wallet/graphUtils';
+import { aggregateBalanceHistory, getMinMaxValueFromData } from 'src/utils/wallet/graph';
 
 const Wrapper = styled.div`
     display: flex;
@@ -51,7 +47,7 @@ const ErrorMessage = styled.div`
     padding: 20px;
     align-items: center;
     justify-content: center;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     text-align: center;
 `;
@@ -59,7 +55,7 @@ const ErrorMessage = styled.div`
 const Divider = styled.div`
     width: 100%;
     height: 1px;
-    background: ${props => props.theme.STROKE_GREY};
+    background: ${({ theme }) => theme.STROKE_GREY};
     margin: 24px 0px;
 `;
 
@@ -68,26 +64,11 @@ interface TransactionSummaryProps {
 }
 
 export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
-    const { graph, localCurrency } = useSelector(state => ({
-        graph: state.wallet.graph,
-        localCurrency: state.wallet.settings.localCurrency,
-    }));
-    const { updateGraphData, getGraphDataForInterval } = useActions({
-        updateGraphData: graphActions.updateGraphData,
-        getGraphDataForInterval: graphActions.getGraphDataForInterval,
-    });
+    const selectedRange = useSelector(state => state.wallet.graph.selectedRange);
+    const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
+    const dispatch = useDispatch();
 
-    const { selectedRange } = graph;
-
-    const onRefresh = () => {
-        updateGraphData([account]);
-    };
-
-    const onSelectedRange = () => {
-        updateGraphData([account], { newAccountsOnly: true });
-    };
-
-    const intervalGraphData = getGraphDataForInterval({ account });
+    const intervalGraphData = dispatch(getGraphDataForInterval({ account }));
     const data = intervalGraphData[0]?.data
         ? aggregateBalanceHistory(intervalGraphData, selectedRange.groupBy, 'account')
         : [];
@@ -119,6 +100,9 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
                   intervalGraphData[0]?.data[intervalGraphData[0].data.length - 1]?.time,
               ]
             : [getUnixTime(selectedRange.startDate), getUnixTime(selectedRange.endDate)];
+
+    const onRefresh = () => dispatch(updateGraphData([account]));
+    const onSelectedRange = () => dispatch(updateGraphData([account], { newAccountsOnly: true }));
 
     return (
         <Wrapper>

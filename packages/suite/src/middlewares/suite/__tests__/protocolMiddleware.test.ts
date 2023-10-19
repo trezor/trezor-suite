@@ -1,8 +1,8 @@
-import { configureStore } from '@suite/support/tests/configureStore';
+import { configureStore } from 'src/support/tests/configureStore';
 
-import { PROTOCOL } from '@suite-actions/constants';
+import { PROTOCOL } from 'src/actions/suite/constants';
 import protocolMiddleware from '../protocolMiddleware';
-import protocolReducer from '@suite-reducers/protocolReducer';
+import protocolReducer from 'src/reducers/suite/protocolReducer';
 import {
     NotificationEntry,
     notificationsActions,

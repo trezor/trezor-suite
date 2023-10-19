@@ -1,123 +1,132 @@
 import { RoundPhase, EndRoundState } from '../enums';
 import { AFFILIATION_ID } from '../constants';
 
-export type AffiliationId = typeof AFFILIATION_ID;
+export type AffiliationId = keyof typeof AFFILIATION_ID;
 
 export interface CoinjoinStatus {
-    roundStates: Round[];
-    coinJoinFeeRateMedians: FeeRateMedians[];
-    affiliateInformation?: {
-        runningAffiliateServers: AffiliationId[];
-        affiliateData: Record<string, Record<AffiliationId, string>>;
+    RoundStates: Round[];
+    CoinJoinFeeRateMedians: FeeRateMedians[];
+    AffiliateInformation?: {
+        RunningAffiliateServers: AffiliationId[];
+        AffiliateData: Record<string, Record<AffiliationId, string>>;
     };
 }
 
+export interface SoftwareVersion {
+    ClientVersion: string;
+    BackenMajordVersion: string; // NOTE: typo is intentional https://github.com/zkSNACKs/WalletWasabi/blob/18edb38d4fb0a3ce75ff161e47d4b50fa9f71575/WalletWasabi/Backend/Models/Responses/VersionsResponse.cs#L9
+    LegalDocumentsVersion: string;
+    Ww2LegalDocumentsVersion: string;
+    CommitHash: string;
+}
+
 export interface CredentialsResponseValidation {
-    transcript: any;
-    presented: any[];
-    requested: any[];
+    Transcript: Record<string, any>;
+    Presented: any[];
+    Requested: any[];
 }
 
 export interface CredentialsRequestData {
-    delta: number;
-    presented: any[];
-    requested: any[];
-    proofs: any[];
+    Delta: number;
+    Presented: any[];
+    Proofs: any[];
+    Requested: any[];
 }
 
 export interface ZeroCredentials {
-    credentialsRequest: CredentialsRequestData;
-    credentialsResponseValidation: CredentialsResponseValidation;
+    CredentialsRequest: CredentialsRequestData;
+    CredentialsResponseValidation: CredentialsResponseValidation;
 }
 
 export interface RealCredentials {
-    credentialsRequest: CredentialsRequestData;
-    credentialsResponseValidation: CredentialsResponseValidation;
+    CredentialsRequest: CredentialsRequestData;
+    CredentialsResponseValidation: CredentialsResponseValidation;
 }
 
 export interface IssuerParameter {
-    cw: string;
-    i: string;
+    Cw: string;
+    I: string;
 }
 
 export interface IssuanceData {
-    realAmountCredentials: ZeroCredentials;
-    realVsizeCredentials: ZeroCredentials;
-    zeroAmountCredentials: RealCredentials;
-    zeroVsizeCredentials: RealCredentials;
+    RealAmountCredentials: ZeroCredentials;
+    RealVsizeCredentials: ZeroCredentials;
+    ZeroAmountCredentials: RealCredentials;
+    ZeroVsizeCredentials: RealCredentials;
 }
 
 export interface ConfirmationData {
-    realAmountCredentials?: RealCredentials; // real Credentials are not present in phase: 0
-    realVsizeCredentials?: RealCredentials;
-    zeroAmountCredentials: RealCredentials;
-    zeroVsizeCredentials: RealCredentials;
+    RealAmountCredentials?: RealCredentials; // real Credentials are not present in phase: 0
+    RealVsizeCredentials?: RealCredentials;
+    ZeroAmountCredentials: RealCredentials;
+    ZeroVsizeCredentials: RealCredentials;
 }
 
 export interface RegistrationData {
-    aliceId: string;
-    amountCredentials: RealCredentials;
-    vsizeCredentials: RealCredentials;
-    isPayingZeroCoordinationFee: boolean;
+    AliceId: string;
+    AmountCredentials: RealCredentials;
+    VsizeCredentials: RealCredentials;
+    IsPayingZeroCoordinationFee: boolean;
 }
 
 export interface CoordinationFeeRate {
-    rate: number;
-    plebsDontPayThreshold: number;
+    Rate: number;
+    PlebsDontPayThreshold: number;
 }
 
 export interface CoinjoinRoundParameters {
-    network: string;
-    miningFeeRate: number;
-    coordinationFeeRate: CoordinationFeeRate;
-    maxSuggestedAmount: number;
-    minInputCountByRound: number;
-    maxInputCountByRound: number;
-    allowedInputAmounts: AllowedRange;
-    allowedOutputAmounts: AllowedRange;
-    allowedInputTypes: AllowedScriptTypes[];
-    allowedOutputTypes: AllowedScriptTypes[];
-    standardInputRegistrationTimeout: string;
-    connectionConfirmationTimeout: string;
-    outputRegistrationTimeout: string;
-    transactionSigningTimeout: string;
-    blameInputRegistrationTimeout: string;
-    minAmountCredentialValue: number;
-    maxAmountCredentialValue: number;
-    initialInputVsizeAllocation: number;
-    maxVsizeCredentialValue: number;
-    maxVsizeAllocationPerAlice: number;
-    maxTransactionSize: number;
-    minRelayTxFee: number;
+    Network: string;
+    MiningFeeRate: number;
+    CoordinationFeeRate: CoordinationFeeRate;
+    MaxSuggestedAmount: number;
+    MinInputCountByRound: number;
+    MaxInputCountByRound: number;
+    AllowedInputAmounts: AllowedRange;
+    AllowedOutputAmounts: AllowedRange;
+    AllowedInputTypes: AllowedScriptTypes[];
+    AllowedOutputTypes: AllowedScriptTypes[];
+    StandardInputRegistrationTimeout: string;
+    ConnectionConfirmationTimeout: string;
+    OutputRegistrationTimeout: string;
+    TransactionSigningTimeout: string;
+    BlameInputRegistrationTimeout: string;
+    MinAmountCredentialValue: number;
+    MaxAmountCredentialValue: number;
+    InitialInputVsizeAllocation: number;
+    MaxVsizeCredentialValue: number;
+    MaxVsizeAllocationPerAlice: number;
+    MaxTransactionSize: number;
+    MinRelayTxFee: number;
+    DelayTransactionSigning: boolean;
 }
 
 export interface CoinjoinRoundCreatedEvent {
     Type: 'RoundCreated';
-    roundParameters: CoinjoinRoundParameters;
+    RoundParameters: CoinjoinRoundParameters;
 }
 
 export interface CoinjoinInput {
-    outpoint: string;
-    txOut: {
-        scriptPubKey: string; // format: "0 f23290d9f9be3d13a315b6febe29fc0786d34c96"
-        value: number;
+    Outpoint: string;
+    TxOut: {
+        ScriptPubKey: string; // format: "0 f23290d9f9be3d13a315b6febe29fc0786d34c96"
+        Value: number;
     };
 }
 
 export interface CoinjoinInputAddedEvent {
     Type: 'InputAdded';
-    coin: CoinjoinInput;
-    ownershipProof: string;
+    Coin: CoinjoinInput;
+    OwnershipProof: string;
 }
 
 export interface CoinjoinOutput {
-    scriptPubKey: string; // format: "0 76215d74689b52e41c1636e46df04bde793be57a"
-    value: number;
+    ScriptPubKey: string; // format: "0 76215d74689b52e41c1636e46df04bde793be57a"
+    Value: number;
 }
 
 export interface CoinjoinOutputAddedEvent {
     Type: 'OutputAdded';
-    output: CoinjoinOutput;
+    Output: CoinjoinOutput;
 }
 
 export type CoinjoinStateEvent =
@@ -126,74 +135,35 @@ export type CoinjoinStateEvent =
     | CoinjoinOutputAddedEvent;
 
 export interface AllowedRange {
-    min: number;
-    max: number;
+    Min: number;
+    Max: number;
 }
 export type AllowedScriptTypes = 'P2WPKH' | 'Taproot';
 
 export interface CoinjoinState {
     Type: string; // TODO enum?
-    events: CoinjoinStateEvent[];
-    isFullySigned?: boolean;
-    witnesses?: Record<number, string>;
+    Events: CoinjoinStateEvent[];
+    IsFullySigned?: boolean;
+    Witnesses?: Record<number, string>;
 }
 
 export interface FeeRateMedians {
-    timeFrame: string; // 1 day, 1 week, 1 month
-    medianFeeRate: number;
+    TimeFrame: string; // 1 day, 1 week, 1 month
+    MedianFeeRate: number;
 }
 
 export interface Round {
-    id: string;
-    blameOf: string;
-    phase: RoundPhase;
-    endRoundState: EndRoundState;
-    amountCredentialIssuerParameters: IssuerParameter;
-    vsizeCredentialIssuerParameters: IssuerParameter;
-    coinjoinState: CoinjoinState;
-    inputRegistrationStart: string;
-    inputRegistrationTimeout: string;
-    inputRegistrationEnd: string;
-    affiliateRequest?: string; // conditionally added by ./client/Status
-}
-
-// errors from coordinator in string based format (see ./utils/http coordinatorRequest errorCode handling)
-export enum WabiSabiProtocolErrorCode {
-    RoundNotFound = 'RoundNotFound',
-    WrongPhase = 'WrongPhase',
-    InputSpent = 'InputSpent',
-    InputUnconfirmed = 'InputUnconfirmed',
-    InputImmature = 'InputImmature',
-    WrongOwnershipProof = 'WrongOwnershipProof',
-    TooManyInputs = 'TooManyInputs',
-    NotEnoughFunds = 'NotEnoughFunds',
-    TooMuchFunds = 'TooMuchFunds',
-    NonUniqueInputs = 'NonUniqueInputs',
-    InputBanned = 'InputBanned',
-    InputLongBanned = 'InputLongBanned',
-    InputNotWhitelisted = 'InputNotWhitelisted',
-    AliceNotFound = 'AliceNotFound',
-    IncorrectRequestedVsizeCredentials = 'IncorrectRequestedVsizeCredentials',
-    TooMuchVsize = 'TooMuchVsize',
-    ScriptNotAllowed = 'ScriptNotAllowed',
-    IncorrectRequestedAmountCredentials = 'IncorrectRequestedAmountCredentials',
-    WrongCoinjoinSignature = 'WrongCoinjoinSignature',
-    SignatureTooLong = 'SignatureTooLong',
-    AliceAlreadyRegistered = 'AliceAlreadyRegistered',
-    NonStandardInput = 'NonStandardInput',
-    NonStandardOutput = 'NonStandardOutput',
-    WitnessAlreadyProvided = 'WitnessAlreadyProvided',
-    InsufficientFees = 'InsufficientFees',
-    SizeLimitExceeded = 'SizeLimitExceeded',
-    DustOutput = 'DustOutput',
-    UneconomicalInput = 'UneconomicalInput',
-    VsizeQuotaExceeded = 'VsizeQuotaExceeded',
-    DeltaNotZero = 'DeltaNotZero',
-    WrongNumberOfCreds = 'WrongNumberOfCreds',
-    CryptoException = 'CryptoException',
-    AliceAlreadySignalled = 'AliceAlreadySignalled',
-    AliceAlreadyConfirmedConnection = 'AliceAlreadyConfirmedConnection',
-    AlreadyRegisteredScript = 'AlreadyRegisteredScript',
+    Id: string;
+    BlameOf: string;
+    Phase: RoundPhase;
+    EndRoundState: EndRoundState;
+    AmountCredentialIssuerParameters: IssuerParameter;
+    VsizeCredentialIssuerParameters: IssuerParameter;
+    CoinjoinState: CoinjoinState;
+    InputRegistrationStart: string;
+    InputRegistrationTimeout: string;
+    InputRegistrationEnd: string;
+    AffiliateRequest?: string; // conditionally added by ./client/Status
 }
 
 export interface CoinjoinAffiliateRequest {

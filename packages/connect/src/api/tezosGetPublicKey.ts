@@ -21,7 +21,6 @@ export default class TezosGetPublicKey extends AbstractMethod<
             getMiscNetwork('Tezos'),
             this.firmwareRange,
         );
-        this.info = 'Export Tezos public key';
 
         // create a bundle with only one batch if bundle doesn't exists
         this.hasBundle = !!this.payload.bundle;
@@ -45,6 +44,10 @@ export default class TezosGetPublicKey extends AbstractMethod<
                 show_display: typeof batch.showOnTrezor === 'boolean' ? batch.showOnTrezor : true,
             };
         });
+    }
+
+    get info() {
+        return 'Export Tezos public key';
     }
 
     async confirmation() {

@@ -8,6 +8,7 @@ export type {
     AccountAddresses,
     Utxo as AccountUtxo,
     Address as AccountAddress,
+    Transaction as AccountTransaction,
 } from '@trezor/blockchain-link';
 
 export type DiscoveryAccountType = 'p2pkh' | 'p2sh' | 'p2tr' | 'p2wpkh';
@@ -26,25 +27,3 @@ export interface DiscoveryAccount {
     balance?: string;
     addresses?: AccountAddresses;
 }
-export interface FeeLevel {
-    label: 'high' | 'normal' | 'economy' | 'low' | 'custom';
-    feePerUnit: string;
-    blocks: number;
-    feeLimit?: string; // eth gas limit
-    feePerTx?: string; // fee for BlockchainEstimateFeeParams.request.specific
-}
-
-export type SelectFeeLevel =
-    | {
-          name: string;
-          fee: '0';
-          feePerByte?: undefined;
-          disabled: true;
-      }
-    | {
-          name: string;
-          fee: string;
-          feePerByte: string;
-          minutes: number;
-          total: string;
-      };

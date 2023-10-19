@@ -1,6 +1,6 @@
 import { CustomError } from '@trezor/blockchain-link-types/lib/constants/errors';
 import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/lib/constants';
-import { BaseWorker, CONTEXT, ContextType } from '../base';
+import { BaseWorker, CONTEXT, ContextType } from '../baseWorker';
 import { BlockbookAPI } from './websocket';
 import * as utils from '@trezor/blockchain-link-utils/lib/blockbook';
 import type { Response, SubscriptionAccountInfo } from '@trezor/blockchain-link-types';

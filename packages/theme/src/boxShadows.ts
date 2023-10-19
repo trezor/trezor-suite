@@ -23,35 +23,14 @@ interface NativeBoxShadowDefinition {
 
 export const nativeBoxShadows: Record<string, NativeBoxShadowDefinition> = {
     small: {
-        elevation: 4,
-        shadowColor: 'rgba(0, 0, 0, 0.04)',
+        elevation: 2,
+        shadowColor: 'rgba(0, 0, 0, 0.4)',
         shadowOffset: {
-            height: 0,
+            height: 2,
             width: 0,
         },
         shadowOpacity: 0.1,
-        shadowRadius: 5,
-    },
-    // TODO: next shadows needs to be defined
-    medium: {
-        elevation: 4,
-        shadowColor: 'rgba(0, 0, 0, 0.04)',
-        shadowOffset: {
-            height: 0,
-            width: 0,
-        },
-        shadowOpacity: 0.1,
-        shadowRadius: 5,
-    },
-    big: {
-        elevation: 4,
-        shadowColor: 'rgba(0, 0, 0, 0.04)',
-        shadowOffset: {
-            height: 0,
-            width: 0,
-        },
-        shadowOpacity: 0.1,
-        shadowRadius: 5,
+        shadowRadius: 4,
     },
 };
 

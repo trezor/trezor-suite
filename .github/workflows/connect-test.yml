@@ -44,14 +44,14 @@ jobs:
     needs: [build]
     uses: ./.github/workflows/connect-test-params.yml
     with:
-      test-pattern: "init authorizeCoinjoin passphrase unlockPath setBusy override"
+      test-pattern: "init authorizeCoinjoin cancelCoinjoinAuthorization passphrase unlockPath setBusy override checkFirmwareAuthenticity"
 
   management:
     needs: [build]
     uses: ./.github/workflows/connect-test-params.yml
     with:
       test-pattern: methods
-      methods: "applySettings,applyFlags,getFeatures,getFirmwareHash,checkFirmwareAuthenticity"
+      methods: "applySettings,applyFlags,getFeatures,getFirmwareHash"
 
   btc-sign:
     needs: [build]

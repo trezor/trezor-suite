@@ -1,13 +1,12 @@
-import { CoinjoinBackend, CoinjoinClient } from '@trezor/coinjoin';
+import { CoinjoinBackend, CoinjoinClient, CoinjoinPrisonInmate } from '@trezor/coinjoin';
 import { createIpcProxy } from '@trezor/ipc-proxy';
 import { PartialRecord } from '@trezor/type-utils';
-import { isDesktop } from '@suite-utils/env';
-import { CoinjoinServerEnvironment } from '@wallet-types/coinjoin';
-import { NetworkSymbol } from '@wallet-types';
+import { isDesktop } from '@trezor/env-utils';
+import { CoinjoinServerEnvironment } from 'src/types/wallet/coinjoin';
+import { NetworkSymbol } from 'src/types/wallet';
 import { getCoinjoinConfig } from './config';
 
-const loadInstance = (network: NetworkSymbol, environment?: CoinjoinServerEnvironment) => {
-    const settings = getCoinjoinConfig(network, environment);
+const loadInstance = (settings: ReturnType<typeof getCoinjoinConfig>) => {
     if (isDesktop()) {
         return Promise.all([
             createIpcProxy<CoinjoinBackend>('CoinjoinBackend', { target: { settings } }, settings),
@@ -27,9 +26,18 @@ export interface CoinjoinServiceInstance {
 export class CoinjoinService {
     private static instances: PartialRecord<NetworkSymbol, CoinjoinServiceInstance> = {};
 
-    static async createInstance(network: NetworkSymbol, environment?: CoinjoinServerEnvironment) {
+    static async createInstance({
+        network,
+        prison,
+        environment,
+    }: {
+        network: NetworkSymbol;
+        prison?: CoinjoinPrisonInmate[];
+        environment?: CoinjoinServerEnvironment;
+    }) {
         if (this.instances[network]) return this.instances[network] as CoinjoinServiceInstance;
-        const [backend, client] = await loadInstance(network, environment);
+        const settings = getCoinjoinConfig(network, environment);
+        const [backend, client] = await loadInstance({ ...settings, prison });
         const instance = { backend, client };
         if (!isDesktop()) {
             // display client log directly in console

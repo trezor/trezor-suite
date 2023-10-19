@@ -1,12 +1,17 @@
-import React from 'react';
 import styled from 'styled-components';
 
-import { variables, Icon, Button, useTheme, motionEasing } from '@trezor/components';
-import { DeviceAnimation } from '@onboarding-components';
-import { Translation } from '@suite-components';
-import { useDevice, useActions } from '@suite-hooks';
-import * as routerActions from '@suite-actions/routerActions';
-import type { PrerequisiteType } from '@suite-types';
+import {
+    variables,
+    Icon,
+    Button,
+    useTheme,
+    motionEasing,
+    LottieAnimation,
+} from '@trezor/components';
+import { Translation } from 'src/components/suite';
+import { useDevice, useDispatch } from 'src/hooks/suite';
+import { goto } from 'src/actions/suite/routerActions';
+import type { PrerequisiteType } from 'src/types/suite';
 import { motion } from 'framer-motion';
 
 const Wrapper = styled(motion.div)`
@@ -48,6 +53,10 @@ const Text = styled.div`
     }
 `;
 
+const StyledLottieAnimation = styled(LottieAnimation)`
+    background: ${({ theme }) => theme.BG_GREY};
+`;
+
 const getMessageId = ({
     connected,
     showWarning,
@@ -85,12 +94,12 @@ export const ConnectDevicePrompt = ({
     showWarning,
     allowSwitchDevice,
 }: ConnectDevicePromptProps) => {
-    const { goto } = useActions({
-        goto: routerActions.goto,
-    });
-
+    const dispatch = useDispatch();
     const theme = useTheme();
     const { device } = useDevice();
+
+    const handleSwitchDeviceClick = () =>
+        dispatch(goto('suite-switch-device', { params: { cancelable: true } }));
 
     return (
         <Wrapper
@@ -100,9 +109,9 @@ export const ConnectDevicePrompt = ({
             data-test="@connect-device-prompt"
         >
             <ImageWrapper>
-                <DeviceAnimation
+                <StyledLottieAnimation
                     type="CONNECT"
-                    device={device}
+                    deviceModelInternal={device?.features?.internal_model}
                     loop={!connected}
                     shape="CIRCLE"
                     size={100}
@@ -121,12 +130,7 @@ export const ConnectDevicePrompt = ({
                 <Translation id={getMessageId({ connected, showWarning, prerequisite })} />
 
                 {allowSwitchDevice && (
-                    <Button
-                        variant="tertiary"
-                        onClick={() =>
-                            goto('suite-switch-device', { params: { cancelable: true } })
-                        }
-                    >
+                    <Button variant="tertiary" onClick={handleSwitchDeviceClick}>
                         <Translation id="TR_SWITCH_DEVICE" />
                     </Button>
                 )}

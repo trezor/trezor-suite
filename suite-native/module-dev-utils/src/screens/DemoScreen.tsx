@@ -1,10 +1,9 @@
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { TextInput, View } from 'react-native';
 
 import {
     Text,
     Box,
-    NumPadButton,
     Hint,
     SearchInput,
     Radio,
@@ -22,21 +21,20 @@ import {
     Badge,
     BadgeVariant,
     HStack,
+    ButtonSize,
+    TextButton,
+    NumPadButton,
+    TextButtonVariant,
+    Card,
+    ListItemSkeleton,
 } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
-import {
-    CryptoIcon,
-    EthereumTokenIcon,
-    EthereumTokenIconName,
-    ethereumTokenIcons,
-    Icon,
-    IconName,
-    icons,
-} from '@trezor/icons';
+import { CryptoIcon, tokenIcons, Icon, IconName, icons } from '@suite-common/icons';
 import { CoinsSettings } from '@suite-native/module-settings';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { TypographyStyle } from '@trezor/theme';
+import { TokenAddress } from '@suite-common/wallet-types';
 
 const inputStackStyle = prepareNativeStyle(utils => ({
     borderRadius: utils.borders.radii.medium,
@@ -53,6 +51,12 @@ const textVariants: TypographyStyle[] = [
     'hint',
     'label',
 ];
+
+const buttonSizes = ['small', 'medium', 'large'] satisfies ButtonSize[];
+
+const flexWrapStyle = prepareNativeStyle(_ => ({
+    flexWrap: 'wrap',
+}));
 
 export const DemoScreen = () => {
     const { applyStyle } = useNativeStyles();
@@ -75,6 +79,7 @@ export const DemoScreen = () => {
         'dangerElevation0',
     ] satisfies ButtonColorScheme[];
 
+    const textButtonVariants = ['primary', 'tertiary'] satisfies TextButtonVariant[];
     const badgeVariants = ['neutral', 'green', 'red', 'bold'] satisfies BadgeVariant[];
 
     const handleRadioPress = (value: string | number) => {
@@ -88,7 +93,7 @@ export const DemoScreen = () => {
             <VStack spacing="medium">
                 <VStack>
                     <Text variant="titleSmall">Badge:</Text>
-                    <HStack justifyContent="center">
+                    <HStack justifyContent="center" style={applyStyle(flexWrapStyle)}>
                         {badgeVariants.map(badgeVariant => (
                             <Badge
                                 key={badgeVariant}
@@ -119,22 +124,18 @@ export const DemoScreen = () => {
                                 flexDirection="row"
                                 justifyContent="space-around"
                                 alignItems="center"
+                                style={applyStyle(flexWrapStyle)}
                             >
-                                <Button colorScheme={buttonScheme} size="large" iconLeft="calendar">
-                                    Large
-                                </Button>
-
-                                <Button
-                                    colorScheme={buttonScheme}
-                                    size="medium"
-                                    iconLeft="calendar"
-                                >
-                                    Medium
-                                </Button>
-
-                                <Button colorScheme={buttonScheme} size="small" iconLeft="calendar">
-                                    Small
-                                </Button>
+                                {buttonSizes.map(buttonSize => (
+                                    <Button
+                                        key={buttonSize}
+                                        colorScheme={buttonScheme}
+                                        iconLeft="calendar"
+                                        size={buttonSize}
+                                    >
+                                        {buttonSize}
+                                    </Button>
+                                ))}
                             </Box>
                         </VStack>
                     ))}
@@ -150,64 +151,55 @@ export const DemoScreen = () => {
                                 justifyContent="space-around"
                                 alignItems="center"
                             >
-                                <IconButton
-                                    colorScheme={buttonScheme}
-                                    size="large"
-                                    iconName="calendar"
-                                >
-                                    Large
-                                </IconButton>
-
-                                <IconButton
-                                    colorScheme={buttonScheme}
-                                    size="medium"
-                                    iconName="calendar"
-                                >
-                                    Medium
-                                </IconButton>
-
-                                <IconButton
-                                    colorScheme={buttonScheme}
-                                    size="small"
-                                    iconName="calendar"
-                                >
-                                    Small
-                                </IconButton>
+                                {buttonSizes.map(buttonSize => (
+                                    <IconButton
+                                        key={buttonSize}
+                                        colorScheme={buttonScheme}
+                                        iconName="calendar"
+                                        size={buttonSize}
+                                    />
+                                ))}
                             </Box>
                         </View>
                     ))}
                     <View>
                         <Text>with title</Text>
                         <Box flexDirection="row" justifyContent="space-around" alignItems="center">
-                            <IconButton
-                                colorScheme="primary"
-                                size="large"
-                                iconName="calendar"
-                                title="large"
-                            >
-                                Large
-                            </IconButton>
-
-                            <IconButton
-                                colorScheme="primary"
-                                size="medium"
-                                iconName="calendar"
-                                title="medium"
-                            >
-                                Medium
-                            </IconButton>
-
-                            <IconButton
-                                colorScheme="primary"
-                                size="small"
-                                iconName="calendar"
-                                title="small"
-                            >
-                                Small
-                            </IconButton>
+                            {buttonSizes.map(buttonSize => (
+                                <IconButton
+                                    key={buttonSize}
+                                    colorScheme="primary"
+                                    iconName="calendar"
+                                    size={buttonSize}
+                                    title={buttonSize}
+                                />
+                            ))}
                         </Box>
                     </View>
                 </VStack>
+                <VStack>
+                    <Text variant="titleSmall">TextButton:</Text>
+                    {textButtonVariants.map(variant => (
+                        <HStack
+                            key="variant"
+                            flexDirection="row"
+                            justifyContent="space-around"
+                            alignItems="center"
+                        >
+                            {buttonSizes.map(buttonSize => (
+                                <TextButton
+                                    variant={variant}
+                                    key={buttonSize}
+                                    iconLeft="trezorT"
+                                    size={buttonSize}
+                                >
+                                    {buttonSize}
+                                </TextButton>
+                            ))}
+                        </HStack>
+                    ))}
+                </VStack>
+                <Divider />
                 <Divider />
                 <Box>
                     <SearchInput
@@ -230,7 +222,7 @@ export const DemoScreen = () => {
                                     value={input3Text}
                                     onChangeText={setInput3Text}
                                     label="From"
-                                    leftIcon={<CryptoIcon name="btc" size="extraSmall" />}
+                                    leftIcon={<CryptoIcon symbol="btc" size="extraSmall" />}
                                     hasWarning
                                 />
                             </InputWrapper>
@@ -325,13 +317,7 @@ export const DemoScreen = () => {
                             />
                         </Box>
                     </Box>
-
-                    <NumPadButton
-                        value={5}
-                        onPress={value =>
-                            console.warn('Press num pad button. No implementation yet.', value)
-                        }
-                    />
+                    <NumPadButton value={2} onPress={() => null} />
                     <Box marginVertical="medium">
                         <ListItem
                             iconName="warningCircle"
@@ -378,21 +364,27 @@ export const DemoScreen = () => {
                     </Box>
                     <Box marginTop="medium">
                         <Text variant="titleMedium">Token Icons</Text>
-                        <Box flexWrap="wrap" flexDirection="row">
-                            {Object.keys(ethereumTokenIcons).map((icon: string) => (
-                                <Box
-                                    key={icon}
-                                    marginRight="large"
-                                    marginBottom="large"
-                                    justifyContent="center"
-                                    alignItems="center"
-                                >
-                                    <EthereumTokenIcon name={icon as EthereumTokenIconName} />
-                                    <Text>{icon}</Text>
-                                </Box>
+                        <HStack
+                            flexWrap="wrap"
+                            flexDirection="row"
+                            marginVertical="medium"
+                            alignItems="center"
+                            justifyContent="center"
+                        >
+                            {Object.keys(tokenIcons).map((iconContract: string) => (
+                                <CryptoIcon
+                                    key={iconContract}
+                                    symbol={iconContract as TokenAddress}
+                                />
                             ))}
-                        </Box>
+                        </HStack>
                     </Box>
+                    <VStack marginTop="medium">
+                        <Text variant="titleMedium">Skeleton</Text>
+                        <Card>
+                            <ListItemSkeleton />
+                        </Card>
+                    </VStack>
                     <CoinsSettings />
                 </Box>
             </VStack>

@@ -6,8 +6,11 @@
     },
     "references": [
         { "path": "../blockchain-link" },
+        { "path": "../blockchain-link-types" },
         { "path": "../connect-analytics" },
         { "path": "../connect-common" },
+        { "path": "../protobuf" },
+        { "path": "../protocol" },
         { "path": "../transport" },
         { "path": "../utils" },
         { "path": "../utxo-lib" },

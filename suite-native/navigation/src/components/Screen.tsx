@@ -1,6 +1,7 @@
-import React, { ReactNode, useEffect, useContext } from 'react';
+import { useEffect, useContext, ReactNode } from 'react';
 import { Platform, StatusBar, View } from 'react-native';
 import { useSafeAreaInsets, EdgeInsets } from 'react-native-safe-area-context';
+import { useSelector } from 'react-redux';
 
 import * as SystemUI from 'expo-system-ui';
 import * as NavigationBar from 'expo-navigation-bar';
@@ -9,6 +10,7 @@ import { BottomTabBarHeightContext } from '@react-navigation/bottom-tabs';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color, nativeSpacings } from '@trezor/theme';
 import { Box, Divider } from '@suite-native/atoms';
+import { selectIsAnyBannerMessageActive } from '@suite-common/message-system';
 
 import { ScreenContent } from './ScreenContent';
 
@@ -22,31 +24,57 @@ type ScreenProps = {
     backgroundColor?: Color;
     customVerticalPadding?: number;
     customHorizontalPadding?: number;
+    extraKeyboardAvoidingViewHeight?: number;
+    hasBottomInset?: boolean;
 };
 
 const screenContainerStyle = prepareNativeStyle<{
     backgroundColor: Color;
     insets: EdgeInsets;
     customVerticalPadding: number;
-    isTabBarVisible: boolean;
-}>((utils, { backgroundColor, customVerticalPadding, insets, isTabBarVisible }) => ({
-    flex: 1,
-    backgroundColor: utils.colors[backgroundColor],
-    paddingTop: Math.max(insets.top, customVerticalPadding),
-    extend: {
-        condition: !isTabBarVisible,
-        style: {
-            paddingBottom: Math.max(insets.bottom, customVerticalPadding),
+    hasPaddingBottom: boolean;
+    isMessageBannerDisplayed: boolean;
+}>(
+    (
+        utils,
+        {
+            backgroundColor,
+            customVerticalPadding,
+            insets,
+            hasPaddingBottom,
+            isMessageBannerDisplayed,
         },
-    },
-}));
+    ) => ({
+        flex: 1,
+        backgroundColor: utils.colors[backgroundColor],
+        paddingTop: Math.max(insets.top, customVerticalPadding),
+        extend: [
+            {
+                condition: hasPaddingBottom,
+                style: {
+                    paddingBottom: Math.max(insets.bottom, customVerticalPadding),
+                },
+            },
+            {
+                // If the message banner is displayed, the top padding has to be equal to 0
+                // to render the app content right under the banner.
+                condition: isMessageBannerDisplayed,
+                style: {
+                    paddingTop: 0,
+                },
+            },
+        ],
+    }),
+);
 
 const screenHeaderStyle = prepareNativeStyle<{
     insets: EdgeInsets;
     customHorizontalPadding: number;
-}>((_, { insets, customHorizontalPadding }) => ({
+}>((utils, { insets, customHorizontalPadding }) => ({
     paddingLeft: Math.max(insets.left, customHorizontalPadding),
     paddingRight: Math.max(insets.right, customHorizontalPadding),
+    paddingTop: utils.spacings.large,
+    paddingBottom: utils.spacings.extraLarge,
 }));
 
 export const Screen = ({
@@ -59,16 +87,20 @@ export const Screen = ({
     backgroundColor = 'backgroundSurfaceElevation0',
     customVerticalPadding = nativeSpacings.small,
     customHorizontalPadding = nativeSpacings.small,
+    extraKeyboardAvoidingViewHeight = 0,
+    hasBottomInset = true,
 }: ScreenProps) => {
     const {
         applyStyle,
         utils: { colors, isDarkColor },
     } = useNativeStyles();
 
-    const isTabBarVisible = !!useContext(BottomTabBarHeightContext);
+    const hasPaddingBottom = !useContext(BottomTabBarHeightContext) && hasBottomInset;
     const insets = useSafeAreaInsets();
     const backgroundCSSColor = colors[backgroundColor];
     const barStyle = isDarkColor(backgroundCSSColor) ? 'light-content' : 'dark-content';
+
+    const isMessageBannerDisplayed = useSelector(selectIsAnyBannerMessageActive);
 
     useEffect(() => {
         // this prevents some weird flashing of splash screen on Android during screen transitions
@@ -86,7 +118,8 @@ export const Screen = ({
                 backgroundColor,
                 customVerticalPadding,
                 insets,
-                isTabBarVisible,
+                hasPaddingBottom,
+                isMessageBannerDisplayed,
             })}
         >
             <StatusBar
@@ -96,7 +129,7 @@ export const Screen = ({
                 backgroundColor={backgroundCSSColor}
             />
             {header && (
-                <View>
+                <>
                     <View
                         style={[
                             applyStyle(screenHeaderStyle, {
@@ -112,13 +145,14 @@ export const Screen = ({
                             <Divider />
                         </Box>
                     )}
-                </View>
+                </>
             )}
             <ScreenContent
                 footer={footer}
                 isScrollable={isScrollable}
                 customVerticalPadding={customVerticalPadding}
                 customHorizontalPadding={customHorizontalPadding}
+                extraKeyboardAvoidingViewHeight={extraKeyboardAvoidingViewHeight}
             >
                 {children}
             </ScreenContent>

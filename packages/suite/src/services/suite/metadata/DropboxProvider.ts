@@ -1,8 +1,12 @@
+/* eslint-disable no-underscore-dangle */
+
 import { Dropbox, DropboxAuth } from 'dropbox';
 import type { users } from 'dropbox';
-import { AbstractMetadataProvider } from '@suite-types/metadata';
-import { extractCredentialsFromAuthorizationFlow, getOauthReceiverUrl } from '@suite-utils/oauth';
-import { METADATA } from '@suite-actions/constants';
+import { AbstractMetadataProvider } from 'src/types/suite/metadata';
+import {
+    extractCredentialsFromAuthorizationFlow,
+    getOauthReceiverUrl,
+} from 'src/utils/suite/oauth';
 
 import { getWeakRandomId } from '@trezor/utils';
 
@@ -13,13 +17,16 @@ class DropboxProvider extends AbstractMetadataProvider {
     auth: DropboxAuth;
     user?: users.FullAccount;
     isCloud = true;
+    clientId: string;
 
-    constructor(token?: string) {
+    constructor({ token, clientId }: { token?: string; clientId: string }) {
         super('dropbox');
 
         const fetch = window.fetch.bind(window);
 
-        const dbxAuth = new DropboxAuth({ clientId: METADATA.DROPBOX_CLIENT_ID, fetch });
+        const dbxAuth = new DropboxAuth({ clientId, fetch });
+
+        this.clientId = clientId;
 
         this.auth = dbxAuth;
 
@@ -100,10 +107,10 @@ class DropboxProvider extends AbstractMetadataProvider {
         }
     }
 
-    async getFileContent(file: string) {
+    private async _getFileContent(file: string) {
         try {
             const { result } = await this.client.filesSearchV2({
-                query: `${file}.mtdt`,
+                query: file,
             });
 
             // this is basically impossible to happen (maybe QA team might get there) after few years of testing
@@ -113,9 +120,7 @@ class DropboxProvider extends AbstractMetadataProvider {
             if (result?.matches?.length > 0) {
                 // check whether the file is in the regular folder ...
                 let match = result.matches.find(
-                    m =>
-                        'metadata' in m.metadata &&
-                        m.metadata.metadata.path_lower === `/${file}.mtdt`,
+                    m => 'metadata' in m.metadata && m.metadata.metadata.path_lower === `/${file}`,
                 );
 
                 // ... or in the legacy folder
@@ -124,7 +129,7 @@ class DropboxProvider extends AbstractMetadataProvider {
                 const matchLegacy = result.matches.find(
                     m =>
                         'metadata' in m.metadata &&
-                        m.metadata.metadata.path_lower === `/apps/trezor/${file}.mtdt`,
+                        m.metadata.metadata.path_lower === `/apps/trezor/${file}`,
                 );
 
                 // fail if it is in neither
@@ -153,11 +158,15 @@ class DropboxProvider extends AbstractMetadataProvider {
         }
     }
 
-    async setFileContent(file: string, content: Buffer) {
+    getFileContent(file: string) {
+        return this.scheduleApiRequest(() => this._getFileContent(file));
+    }
+
+    private async _setFileContent(file: string, content: Buffer) {
         try {
             const blob = new Blob([content], { type: 'text/plain;charset=UTF-8' });
             await this.client.filesUpload({
-                path: `/${file}.mtdt`,
+                path: `/${file}`,
                 contents: blob,
                 // @ts-expect-error
                 mode: 'overwrite',
@@ -166,6 +175,43 @@ class DropboxProvider extends AbstractMetadataProvider {
             return this.ok();
         } catch (err) {
             return this.handleProviderError(err);
+        }
+    }
+
+    setFileContent(file: string, content: Buffer) {
+        return this.scheduleApiRequest(() => this._setFileContent(file, content));
+    }
+
+    async getFilesList() {
+        try {
+            const response = await this.client.filesListFolder({ path: '' });
+
+            if (response.result) {
+                const formattedList = response.result.entries.map(({ name }) => name);
+
+                return this.ok(formattedList);
+            }
+
+            return this.ok(undefined);
+        } catch (error) {
+            if (error?.error?.code === 404) {
+                return this.ok(undefined);
+            }
+
+            return this.handleProviderError(error);
+        }
+    }
+
+    async renameFile(from: string, to: string) {
+        try {
+            await this.client.filesMoveV2({
+                from_path: `/${from}`,
+                to_path: `/${to}`,
+            });
+
+            return this.ok(undefined);
+        } catch (error) {
+            return this.handleProviderError(error);
         }
     }
 
@@ -182,6 +228,7 @@ class DropboxProvider extends AbstractMetadataProvider {
                     refreshToken: token,
                 },
                 user: result.name.given_name,
+                clientId: this.clientId,
             } as const;
 
             return this.ok(account);

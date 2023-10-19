@@ -1,19 +1,13 @@
-import React, { useRef, useLayoutEffect, useState } from 'react';
+import { useRef, useLayoutEffect, useState, ReactNode } from 'react';
 import styled, { css } from 'styled-components';
-import {
-    variables,
-    IconProps,
-    useTheme,
-    Button,
-    Icon,
-    Dropdown,
-    HoverAnimation,
-} from '@trezor/components';
-import { AccountFormCloseButton, AppNavigationTooltip } from '@suite-components';
-import { useSelector } from '@suite-hooks';
-import { Route } from '@suite-types';
+
+import { variables, IconProps, useTheme, Button, Icon, Dropdown } from '@trezor/components';
+import { Route } from '@suite-common/suite-types';
+
+import { AccountFormCloseButton, AppNavigationTooltip, HoverAnimation } from 'src/components/suite';
+import { useSelector } from 'src/hooks/suite';
+import { MAX_WIDTH, MAX_WIDTH_WALLET_CONTENT } from 'src/constants/suite/layout';
 import { AccountStickyContent } from './AccountStickyContent';
-import { MAX_WIDTH, MAX_WIDTH_WALLET_CONTENT } from '@suite-constants/layout';
 
 const { FONT_WEIGHT, FONT_SIZE } = variables;
 
@@ -24,7 +18,7 @@ const Wrapper = styled.div<{ subRoute: boolean | undefined; inView?: boolean }>`
     width: 100%;
     z-index: ${variables.Z_INDEX.STICKY_BAR};
     display: flex;
-    background: ${props => props.theme.BG_LIGHT_GREY};
+    background: ${({ theme }) => theme.BG_LIGHT_GREY};
     justify-content: center;
     position: sticky;
     top: 0;
@@ -77,7 +71,7 @@ const KeepWidth = styled.div<{ maxWidth?: string; inView?: boolean }>`
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: ${props => props.theme.BG_LIGHT_GREY};
+    background: ${({ theme }) => theme.BG_LIGHT_GREY};
     width: 100%;
     max-width: ${props => (props.maxWidth === 'default' ? MAX_WIDTH : MAX_WIDTH_WALLET_CONTENT)};
 `;
@@ -107,16 +101,13 @@ const MenuElement = styled.div<{ isActive: boolean }>`
     position: relative;
     height: ${SECONDARY_PANEL_HEIGHT};
     font-size: ${FONT_SIZE.NORMAL};
-    color: ${props =>
-        props.isActive
-            ? props => props.theme.TYPE_DARK_GREY
-            : props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ isActive, theme }) => (isActive ? theme.TYPE_DARK_GREY : theme.TYPE_LIGHT_GREY)};
     font-weight: ${FONT_WEIGHT.MEDIUM};
     display: flex;
     align-items: center;
     white-space: nowrap;
     border-bottom: 2px solid
-        ${props => (props.isActive ? props => props.theme.TYPE_DARK_GREY : 'transparent')};
+        ${({ isActive, theme }) => (isActive ? theme.TYPE_DARK_GREY : 'transparent')};
     margin-right: 20px;
 
     :first-child {
@@ -142,8 +133,8 @@ const InnerWrap = styled.div`
     justify-content: center;
     align-content: center;
     padding: 0 16px;
-    border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
-    background: ${props => props.theme.BG_LIGHT_GREY};
+    border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
+    background: ${({ theme }) => theme.BG_LIGHT_GREY};
 `;
 
 const IconWrapper = styled.div`
@@ -175,7 +166,6 @@ const StyledDropdown = styled(Dropdown)<{ isDisabled: boolean }>`
     }
 `;
 
-// TODO - maybe add to global styleguide when used elsewhere
 const StyledButton = styled(Button)`
     font-size: ${FONT_SIZE.NORMAL};
     font-weight: ${FONT_WEIGHT.DEMI_BOLD};
@@ -192,12 +182,11 @@ export type AppNavigationItem = {
     icon?: IconProps['icon'];
     'data-test'?: string;
     isHidden?: boolean;
-    rightContent?: JSX.Element;
 };
 
-interface Props {
+interface AppNavigationProps {
     items: AppNavigationItem[];
-    primaryContent?: React.ReactNode;
+    primaryContent?: ReactNode;
     maxWidth?: 'small' | 'default';
     inView?: boolean;
 }
@@ -219,7 +208,7 @@ const isSubsection = (routeName: Route['name']): boolean =>
 const isSecondaryMenuOverflown = ({ primary, secondary, wrapper }: MenuWidths) =>
     primary + secondary >= wrapper;
 
-export const AppNavigation = ({ items, primaryContent, maxWidth, inView }: Props) => {
+export const AppNavigation = ({ items, primaryContent, maxWidth, inView }: AppNavigationProps) => {
     const [condensedSecondaryMenuVisible, setCondensedSecondaryMenuVisible] =
         useState<boolean>(false);
     const wrapper = useRef<HTMLDivElement>(null);
@@ -313,7 +302,6 @@ export const AppNavigation = ({ items, primaryContent, maxWidth, inView }: Props
                                                         )}
 
                                                         <Text>{title}</Text>
-                                                        {item.rightContent}
                                                     </StyledNavLink>
                                                 </AppNavigationTooltip>
                                             </HoverAnimation>

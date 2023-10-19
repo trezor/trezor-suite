@@ -1,12 +1,11 @@
-import React from 'react';
 import { PROTO } from '@trezor/connect';
 
-import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@suite-components/Settings';
-import { Translation } from '@suite-components/Translation';
-import { useAnchor } from '@suite-hooks/useAnchor';
+import { ActionColumn, ActionSelect, SectionItem, TextColumn } from 'src/components/suite/Settings';
+import { Translation } from 'src/components/suite/Translation';
+import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { UNIT_LABELS, UNIT_OPTIONS } from '@suite-common/suite-constants';
-import { SettingsAnchor } from '@suite-constants/anchors';
-import { useBitcoinAmountUnit } from '@wallet-hooks/useBitcoinAmountUnit';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 
 export const BitcoinAmountUnit = () => {
     const { bitcoinAmountUnit, setBitcoinAmountUnits } = useBitcoinAmountUnit();

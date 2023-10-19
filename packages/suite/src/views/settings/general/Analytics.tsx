@@ -1,11 +1,10 @@
-import React from 'react';
 import { useSelector } from 'react-redux';
 
 import styled from 'styled-components';
-import { Translation } from '@suite-components/Translation';
-import { SectionItem, ActionColumn, TextColumn } from '@suite-components/Settings';
-import { useAnchor } from '@suite-hooks/useAnchor';
-import { SettingsAnchor } from '@suite-constants/anchors';
+import { Translation } from 'src/components/suite/Translation';
+import { SectionItem, ActionColumn, TextColumn } from 'src/components/suite/Settings';
+import { useAnchor } from 'src/hooks/suite/useAnchor';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 import { selectHasUserAllowedTracking } from '@suite-common/analytics';
 import { Switch } from '@trezor/components';

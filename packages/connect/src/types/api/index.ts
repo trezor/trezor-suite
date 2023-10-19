@@ -1,5 +1,6 @@
 import { applyFlags } from './applyFlags';
 import { applySettings } from './applySettings';
+import { authenticateDevice } from './authenticateDevice';
 import { authorizeCoinjoin } from './authorizeCoinjoin';
 import { backupDevice } from './backupDevice';
 import { binanceGetAddress } from './binanceGetAddress';
@@ -75,6 +76,8 @@ import { unlockPath } from './unlockPath';
 import { verifyMessage } from './verifyMessage';
 import { wipeDevice } from './wipeDevice';
 import { checkFirmwareAuthenticity } from './checkFirmwareAuthenticity';
+import { cancelCoinjoinAuthorization } from './cancelCoinjoinAuthorization';
+import { showDeviceTutorial } from './showDeviceTutorial';
 
 export interface TrezorConnect {
     // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/applyFlags.md
@@ -83,8 +86,17 @@ export interface TrezorConnect {
     // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/applySettings.md
     applySettings: typeof applySettings;
 
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/authenticateDevice.md
+    authenticateDevice: typeof authenticateDevice;
+
     // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/authorizeCoinjoin.md
     authorizeCoinjoin: typeof authorizeCoinjoin;
+
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/cancelCoinjoinAuthorization.md
+    cancelCoinjoinAuthorization: typeof cancelCoinjoinAuthorization;
+
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/showDeviceTutorial.md
+    showDeviceTutorial: typeof showDeviceTutorial;
 
     // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/backupDevice.md
     backupDevice: typeof backupDevice;

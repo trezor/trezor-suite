@@ -1,6 +1,5 @@
-import type { TrezorDevice } from '@suite/types/suite';
-import type { FirmwareRelease } from '@trezor/connect';
-import { DeviceModel } from '@trezor/device-utils';
+import type { TrezorDevice } from 'src/types/suite';
+import { DeviceModelInternal, type FirmwareRelease } from '@trezor/connect';
 import * as URLS from '@trezor/urls';
 
 const { getSuiteDevice } = global.JestMocks;
@@ -161,19 +160,6 @@ const isSelectedInstance = [
         selected: SUITE_DEVICE,
         device: getSuiteDevice({ instance: 1 }),
         result: false,
-    },
-];
-
-const getDeviceModel = [
-    {
-        description: `model T`,
-        device: getSuiteDevice(undefined, { model: DeviceModel.TT }),
-        result: DeviceModel.TT,
-    },
-    {
-        description: `model 1`,
-        device: getSuiteDevice(undefined, { model: DeviceModel.T1 }),
-        result: DeviceModel.T1,
     },
 ];
 
@@ -553,7 +539,7 @@ const getChangelogUrl = [
         device: {
             ...SUITE_DEVICE,
             features: {
-                model: DeviceModel.TR,
+                internal_model: DeviceModelInternal.T2B1,
             },
         } as TrezorDevice,
         revision: 'ab12cd',
@@ -564,20 +550,20 @@ const getChangelogUrl = [
         device: {
             ...SUITE_DEVICE,
             features: {
-                model: DeviceModel.T1,
+                internal_model: DeviceModelInternal.T1B1,
             },
         } as TrezorDevice,
-        result: 'https://github.com/trezor/trezor-firmware/blob/master/legacy/firmware/CHANGELOG.md',
+        result: 'https://github.com/trezor/trezor-firmware/blob/main/legacy/firmware/CHANGELOG.md',
     },
     {
         description: 'Missing revision, core firmware',
         device: {
             ...SUITE_DEVICE,
             features: {
-                model: DeviceModel.TT,
+                internal_model: DeviceModelInternal.T2T1,
             },
         } as TrezorDevice,
-        result: 'https://github.com/trezor/trezor-firmware/blob/master/core/CHANGELOG.md',
+        result: 'https://github.com/trezor/trezor-firmware/blob/main/core/CHANGELOG.md',
     },
 ];
 
@@ -592,10 +578,10 @@ const getCheckBackupUrl = [
         device: {
             ...SUITE_DEVICE,
             features: {
-                model: DeviceModel.TR,
+                internal_model: DeviceModelInternal.T2B1,
             },
         } as TrezorDevice,
-        result: URLS[`HELP_CENTER_DRY_RUN_T${DeviceModel.TR}_URL`],
+        result: URLS[`HELP_CENTER_DRY_RUN_${DeviceModelInternal.T2B1}_URL`],
     },
 ];
 
@@ -610,10 +596,10 @@ const getPackagingUrl = [
         device: {
             ...SUITE_DEVICE,
             features: {
-                model: DeviceModel.TR,
+                internal_model: DeviceModelInternal.T2B1,
             },
         } as TrezorDevice,
-        result: URLS[`HELP_CENTER_PACKAGING_T${DeviceModel.TR}_URL`],
+        result: URLS[`HELP_CENTER_PACKAGING_${DeviceModelInternal.T2B1}_URL`],
     },
 ];
 
@@ -628,10 +614,10 @@ const getFirmwareDowngradeUrl = [
         device: {
             ...SUITE_DEVICE,
             features: {
-                model: DeviceModel.TR,
+                internal_model: DeviceModelInternal.T2B1,
             },
         } as TrezorDevice,
-        result: URLS[`HELP_CENTER_FW_DOWNGRADE_T${DeviceModel.TR}_URL`],
+        result: URLS[`HELP_CENTER_FW_DOWNGRADE_${DeviceModelInternal.T2B1}_URL`],
     },
 ];
 
@@ -640,7 +626,6 @@ export default {
     isDeviceAccessible,
     isSelectedDevice,
     isSelectedInstance,
-    getDeviceModel,
     getNewInstanceNumber,
     getNewWalletNumber,
     findInstanceIndex,

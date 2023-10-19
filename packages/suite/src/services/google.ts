@@ -6,11 +6,14 @@
  * in case our authorization server (which holds a client secret necessary for the authorization code flow) is not available.
  */
 
-import { METADATA } from '@suite-actions/constants';
-import { isDesktop } from '@suite-utils/env';
-import { OAuthServerEnvironment, Tokens } from '@suite-types/metadata';
-import { extractCredentialsFromAuthorizationFlow, getOauthReceiverUrl } from '@suite-utils/oauth';
-import { getCodeChallenge } from '@suite-utils/random';
+import { METADATA } from 'src/actions/suite/constants';
+import { isDesktop } from '@trezor/env-utils';
+import { OAuthServerEnvironment, Tokens } from 'src/types/suite/metadata';
+import {
+    extractCredentialsFromAuthorizationFlow,
+    getOauthReceiverUrl,
+} from 'src/utils/suite/oauth';
+import { getCodeChallenge } from 'src/utils/suite/random';
 
 const SCOPES = 'https://www.googleapis.com/auth/drive.appdata';
 const BOUNDARY = '-------314159265358979323846';
@@ -345,6 +348,20 @@ class Client {
         params.body = Client.getWriteBody(params.body, payload);
         const response = await Client.call(
             `https://www.googleapis.com/upload/drive/v3/files/${id}?uploadType=multipart`,
+            {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': `multipart/related; boundary="${BOUNDARY}"`,
+                },
+            },
+            params,
+        );
+        return response.json;
+    }
+
+    static async updateMetadata(params: UpdateParams, id: string) {
+        const response = await Client.call(
+            `https://www.googleapis.com/drive/v3/files/${id}?uploadType=multipart`,
             {
                 method: 'PATCH',
                 headers: {

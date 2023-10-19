@@ -1,27 +1,58 @@
-import React from 'react';
 import styled from 'styled-components';
 
-import { Switch } from '@trezor/components';
-import { COINJOIN_NETWORKS } from '@suite/services/coinjoin';
-import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@suite-components/Settings';
-import * as coinjoinClientActions from '@wallet-actions/coinjoinClientActions';
-import { useSelector, useActions } from '@suite-hooks';
-import { CoinjoinServerEnvironment } from '@wallet-types/coinjoin';
+import { Switch, Button, Link } from '@trezor/components';
+import { COINJOIN_NETWORKS } from 'src/services/coinjoin';
+import { ActionColumn, ActionSelect, SectionItem, TextColumn } from 'src/components/suite/Settings';
+import { setDebugSettings } from 'src/actions/wallet/coinjoinClientActions';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { CoinjoinServerEnvironment, CoinjoinClientInstance } from 'src/types/wallet/coinjoin';
 import { NetworkSymbol, networks } from '@suite-common/wallet-config';
-import { reloadApp } from '@suite-utils/reload';
+import { reloadApp } from 'src/utils/suite/reload';
 
 const StyledActionSelect = styled(ActionSelect)`
     min-width: 256px;
 `;
 
+const CoordinatorVersionContainer = styled.div`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+`;
+
 interface CoordinatorServerProps {
     symbol: NetworkSymbol;
+    version?: CoinjoinClientInstance['version'];
     environments: CoinjoinServerEnvironment[];
     value?: CoinjoinServerEnvironment;
     onChange: (network: NetworkSymbol, value: CoinjoinServerEnvironment) => void;
 }
 
-const CoordinatorServer = ({ symbol, environments, value, onChange }: CoordinatorServerProps) => {
+const CoordinatorVersion = ({ version }: { version: CoordinatorServerProps['version'] }) => {
+    if (!version) return null;
+    return (
+        <CoordinatorVersionContainer>
+            Build{' '}
+            <Link href={`https://github.com/zkSNACKs/WalletWasabi/commit/${version.commitHash}`}>
+                <Button
+                    variant="tertiary"
+                    icon="EXTERNAL_LINK"
+                    alignIcon="right"
+                    style={{ marginLeft: '8px' }}
+                >
+                    {version.commitHash}
+                </Button>
+            </Link>
+        </CoordinatorVersionContainer>
+    );
+};
+
+const CoordinatorServer = ({
+    symbol,
+    version,
+    environments,
+    value,
+    onChange,
+}: CoordinatorServerProps) => {
     const options = environments.map(environment => ({
         label: environment,
         value: environment,
@@ -33,8 +64,13 @@ const CoordinatorServer = ({ symbol, environments, value, onChange }: Coordinato
     return (
         <SectionItem data-test={`@settings/debug/coinjoin/${symbol}`}>
             <TextColumn
-                title={networkName}
-                description={`${networkName} coordinator server configuration`}
+                title={`${networkName}`}
+                description={
+                    <>
+                        {networkName} coordinator server configuration
+                        <CoordinatorVersion version={version} />
+                    </>
+                }
             />
             <ActionColumn>
                 <StyledActionSelect
@@ -50,26 +86,24 @@ const CoordinatorServer = ({ symbol, environments, value, onChange }: Coordinato
 };
 
 export const CoinjoinApi = () => {
-    const { setDebugSettings } = useActions({
-        setDebugSettings: coinjoinClientActions.setDebugSettings,
-    });
     const debug = useSelector(state => state.wallet.coinjoin.debug);
+    const clients = useSelector(state => state.wallet.coinjoin.clients);
+    const dispatch = useDispatch();
 
     const handleServerChange: CoordinatorServerProps['onChange'] = (network, value) => {
-        setDebugSettings({
-            coinjoinServerEnvironment: {
-                [network]: value,
-            },
-        });
+        dispatch(
+            setDebugSettings({
+                coinjoinServerEnvironment: {
+                    [network]: value,
+                },
+            }),
+        );
         // reload the Suite to reinitialize everything, with a slight delay to let the browser save the settings
         reloadApp(100);
     };
 
-    const handleTorChange = () => {
-        setDebugSettings({
-            coinjoinAllowNoTor: !debug?.coinjoinAllowNoTor,
-        });
-    };
+    const handleTorChange = () =>
+        dispatch(setDebugSettings({ coinjoinAllowNoTor: !debug?.coinjoinAllowNoTor }));
 
     return (
         <>
@@ -81,6 +115,7 @@ export const CoinjoinApi = () => {
                     <CoordinatorServer
                         key={symbol}
                         symbol={symbol}
+                        version={clients[symbol]?.version}
                         environments={environments}
                         value={
                             debug?.coinjoinServerEnvironment &&

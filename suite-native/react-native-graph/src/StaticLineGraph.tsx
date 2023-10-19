@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState, ReactElement } from 'react';
 import { View, StyleSheet, LayoutChangeEvent } from 'react-native';
 
 import { Canvas, LinearGradient, Path, vec } from '@shopify/react-native-skia';
@@ -20,7 +20,7 @@ export function StaticLineGraph({
     enableFadeInMask,
     style,
     ...props
-}: StaticLineGraphProps): React.ReactElement {
+}: StaticLineGraphProps): ReactElement {
     const [width, setWidth] = useState(0);
     const [height, setHeight] = useState(0);
 
@@ -61,24 +61,7 @@ export function StaticLineGraph({
 
     return (
         <View {...props} style={style} onLayout={onLayout}>
-            {/* Fix for react-native-skia's incorrect type declarations */}
-            <Canvas
-                style={styles.svg}
-                onPointerEnter={undefined}
-                onPointerEnterCapture={undefined}
-                onPointerLeave={undefined}
-                onPointerLeaveCapture={undefined}
-                onPointerMove={undefined}
-                onPointerMoveCapture={undefined}
-                onPointerCancel={undefined}
-                onPointerCancelCapture={undefined}
-                onPointerDown={undefined}
-                onPointerDownCapture={undefined}
-                onPointerUp={undefined}
-                onPointerUpCapture={undefined}
-                accessibilityLabelledBy={undefined}
-                accessibilityLanguage={undefined}
-            >
+            <Canvas style={styles.svg}>
                 <Path
                     path={path}
                     strokeWidth={lineThickness}

@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { CSSColor } from '@trezor/theme';
 

@@ -1,6 +1,5 @@
-import React from 'react';
 import styled from 'styled-components';
-import { Tooltip } from './index';
+import { Tooltip } from './Tooltip';
 import { storiesOf } from '@storybook/react';
 
 const TooltipWrapper = styled.div`
@@ -15,7 +14,7 @@ const RichContentExample = styled.div`
     text-align: left;
 `;
 
-storiesOf('Tooltip', module).add(
+storiesOf('Misc/Tooltip', module).add(
     'All',
     () => (
         <>

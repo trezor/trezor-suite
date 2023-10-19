@@ -1,10 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { configureStore, filterThunkActionTypes } from '@suite/support/tests/configureStore';
 import { PROTO } from '@trezor/connect';
-import { accountsReducer, transactionsReducer, blockchainReducer } from '@wallet-reducers';
-import feesReducer from '@wallet-reducers/feesReducer';
 import { notificationsActions, notificationsReducer } from '@suite-common/toast-notifications';
-import * as fixtures from '../__fixtures__/blockchainActions';
 import {
     initBlockchainThunk,
     onBlockchainConnectThunk,
@@ -15,6 +11,12 @@ import {
     setCustomBackendThunk,
     updateFeeInfoThunk,
 } from '@suite-common/wallet-core';
+
+import { configureStore, filterThunkActionTypes } from 'src/support/tests/configureStore';
+import { accountsReducer, transactionsReducer, blockchainReducer } from 'src/reducers/wallet';
+import feesReducer from 'src/reducers/wallet/feesReducer';
+
+import * as fixtures from '../__fixtures__/blockchainActions';
 
 jest.mock('@trezor/connect', () => global.JestMocks.getTrezorConnect({}));
 const TrezorConnect = require('@trezor/connect').default;
@@ -57,7 +59,9 @@ export const getInitialState = (
         },
     },
     notifications: notificationsReducer([], action),
-    devices: [{ state: 'deviceState' }], // device is needed for notification/event
+    device: {
+        devices: [{ state: 'deviceState' }], // device is needed for notification/event
+    },
     suite: {
         device: { state: 'deviceState' }, // device is needed for notification/event
     },

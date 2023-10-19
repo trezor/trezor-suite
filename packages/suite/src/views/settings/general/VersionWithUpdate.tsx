@@ -1,16 +1,15 @@
-import React, { useCallback } from 'react';
 import styled from 'styled-components';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
-import * as desktopUpdateActions from '@suite-actions/desktopUpdateActions';
-import { VersionWithGithubTooltip } from '@suite-components/VersionWithGithubTooltip';
-import { Translation } from '@suite-components';
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
-import { useSelector, useActions } from '@suite-hooks';
-import { UpdateState } from '@suite-reducers/desktopUpdateReducer';
+import { installUpdate, setUpdateWindow } from 'src/actions/suite/desktopUpdateActions';
+import { VersionWithGithubTooltip } from 'src/components/suite/VersionWithGithubTooltip';
+import { Translation } from 'src/components/suite';
+import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { UpdateState } from 'src/reducers/suite/desktopUpdateReducer';
 import { isDevEnv } from '@suite-common/suite-utils';
-import { useAnchor } from '@suite-hooks/useAnchor';
-import { SettingsAnchor } from '@suite-constants/anchors';
+import { useAnchor } from 'src/hooks/suite/useAnchor';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 const getUpdateStateMessage = (state: UpdateState) => {
     switch (state) {
@@ -32,16 +31,13 @@ const Version = styled.div`
 `;
 
 export const VersionWithUpdate = () => {
-    const { setUpdateWindow, installUpdate } = useActions({
-        setUpdateWindow: desktopUpdateActions.setUpdateWindow,
-        installUpdate: desktopUpdateActions.installUpdate,
-    });
+    const desktopUpdate = useSelector(state => state.desktopUpdate);
+    const dispatch = useDispatch();
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.VersionWithUpdate);
 
-    const desktopUpdate = useSelector(state => state.desktopUpdate);
-
-    const checkForUpdates = useCallback(() => desktopApi.checkForUpdates(true), []);
-    const maximizeUpdater = useCallback(() => setUpdateWindow('maximized'), [setUpdateWindow]);
+    const checkForUpdates = () => desktopApi.checkForUpdates(true);
+    const maximizeUpdater = () => dispatch(setUpdateWindow('maximized'));
+    const install = () => dispatch(installUpdate());
 
     return (
         <SectionItem
@@ -114,7 +110,7 @@ export const VersionWithUpdate = () => {
                         </ActionButton>
                     )}
                     {desktopUpdate.state === UpdateState.Ready && (
-                        <ActionButton onClick={() => installUpdate()} variant="secondary">
+                        <ActionButton onClick={install} variant="secondary">
                             <Translation id="SETTINGS_UPDATE_READY" />
                         </ActionButton>
                     )}

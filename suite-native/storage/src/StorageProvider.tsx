@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 
 import { Persistor } from 'redux-persist/es/types';
 import { PersistGate } from 'redux-persist/integration/react';
@@ -7,7 +7,7 @@ import { StorageContext } from './contexts';
 
 type StorageProviderProps = {
     persistor: Persistor;
-    children: React.ReactNode;
+    children: ReactNode;
 };
 
 export const StorageProvider = ({ children, persistor }: StorageProviderProps) => (

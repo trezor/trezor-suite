@@ -2,18 +2,22 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": {
         "outDir": "./libDev",
-        "types": ["web", "jest"]
+        "types": ["web", "w3c-web-usb", "jest"]
     },
     "include": [".", "**/*.json"],
     "references": [
+        { "path": "../components" },
         { "path": "../connect" },
         { "path": "../connect-analytics" },
         { "path": "../connect-common" },
         { "path": "../connect-ui" },
         { "path": "../crypto-utils" },
+        { "path": "../device-utils" },
+        { "path": "../transport" },
         { "path": "../urls" },
         { "path": "../node-utils" },
-        { "path": "../trezor-user-env-link" }
+        { "path": "../trezor-user-env-link" },
+        { "path": "../utils" }
     ],
     "ts-node": {
         "compilerOptions": {

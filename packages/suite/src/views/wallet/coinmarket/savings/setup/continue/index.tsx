@@ -1,22 +1,22 @@
-import React from 'react';
 import styled from 'styled-components';
 import { Controller } from 'react-hook-form';
+
+import { WithSelectedAccountLoadedProps } from 'src/components/wallet';
 import {
-    withCoinmarket,
-    WithSelectedAccountLoadedProps,
-    KYCInProgress,
-    KYCFailed,
-    KYCError,
-} from '@wallet-components';
+    AddressOptions,
+    KycError,
+    KycFailed,
+    KycInProgress,
+} from 'src/views/wallet/coinmarket/common';
 import { Button, SelectBar, variables } from '@trezor/components';
-import { useSavingsSetupContinue } from '@wallet-hooks/useCoinmarketSavingsSetupContinue';
-import { Translation } from '@suite-components';
-import { AddressOptions } from '@wallet-views/coinmarket/common/AddressOptions';
+import { useSavingsSetupContinue } from 'src/hooks/wallet/useCoinmarketSavingsSetupContinue';
+import { Translation } from 'src/components/suite';
 import FiatAmount from '../components/FiatAmount';
 import Summary from '../components/Summary';
 import { AllFeesIncluded } from '../../AllFeesIncluded';
 import { ProvidedBy } from '../../ProvidedBy';
-import ReauthorizationCard from '@wallet-components/CoinmarketReauthorizationCard';
+import { CoinmarketReauthorizationCard } from '../../CoinmarketReauthorizationCard';
+import { withCoinmarket } from '../../withCoinmarket';
 
 const Header = styled.div`
     font-weight: 500;
@@ -32,7 +32,7 @@ const Label = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     text-transform: capitalize;
     font-size: ${variables.FONT_SIZE.NORMAL};
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     margin-bottom: 11px;
 `;
 
@@ -45,7 +45,7 @@ const StyledSelectBar = styled(SelectBar)`
 
 const FrequencyStyledSelectBar = styled(StyledSelectBar)`
     margin-bottom: 26px;
-`;
+` as typeof StyledSelectBar;
 
 const AddressOptionsWrapper = styled.div`
     margin-bottom: 16px;
@@ -54,7 +54,7 @@ const AddressOptionsWrapper = styled.div`
 const ReceivingAddressChangesPaymentInfoLabel = styled.div`
     margin-top: 8px;
     font-size: ${variables.FONT_SIZE.SMALL};
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
 `;
 
 const Footer = styled.div`
@@ -71,7 +71,7 @@ const CoinmarketSavingsSetupContinue = (props: WithSelectedAccountLoadedProps) =
         annualSavingsFiatAmount,
         fiatAmount,
         fiatCurrency,
-        errors,
+        formState: { errors },
         isWatchingKYCStatus,
         canConfirmSetup,
         account,
@@ -99,12 +99,14 @@ const CoinmarketSavingsSetupContinue = (props: WithSelectedAccountLoadedProps) =
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
-            {reauthorizationUrl && <ReauthorizationCard reauthorizationUrl={reauthorizationUrl} />}
-            {isWatchingKYCStatus && <KYCInProgress />}
-            {!isWatchingKYCStatus && kycFinalStatus === 'Failed' && (
-                <KYCFailed providerName={selectedProviderName} />
+            {reauthorizationUrl && (
+                <CoinmarketReauthorizationCard reauthorizationUrl={reauthorizationUrl} />
             )}
-            {!isWatchingKYCStatus && kycFinalStatus === 'Error' && <KYCError />}
+            {isWatchingKYCStatus && <KycInProgress />}
+            {!isWatchingKYCStatus && kycFinalStatus === 'Failed' && (
+                <KycFailed providerName={selectedProviderName} />
+            )}
+            {!isWatchingKYCStatus && kycFinalStatus === 'Error' && <KycError />}
             <Header>
                 <Translation id="TR_SAVINGS_SETUP_HEADER" />
             </Header>
@@ -115,7 +117,7 @@ const CoinmarketSavingsSetupContinue = (props: WithSelectedAccountLoadedProps) =
                 control={control}
                 name="paymentFrequency"
                 defaultValue={savingsTrade?.paymentFrequency}
-                render={({ onChange, value }) => (
+                render={({ field: { onChange, value } }) => (
                     <FrequencyStyledSelectBar
                         onChange={onChange}
                         selectedOption={value}

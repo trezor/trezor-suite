@@ -1,6 +1,15 @@
 import UAParser from 'ua-parser-js';
 
-import { EnvUtils } from './types';
+import { EnvUtils, Environment } from './types';
+
+export const isWeb = () => process.env.SUITE_TYPE === 'web';
+
+export const isDesktop = () => process.env.SUITE_TYPE === 'desktop';
+
+export const getEnvironment = (): Environment => {
+    if (isWeb()) return 'web';
+    return 'desktop';
+};
 
 let userAgentParser: UAParser;
 
@@ -21,8 +30,12 @@ const isChromeOs = () => /CrOS/.test(getUserAgent());
 
 const getBrowserVersion = () => getUserAgentParser().getBrowser().version || '';
 
+const getCommitHash = () => process.env.COMMITHASH || '';
+
 /* Not correct for Linux as there is many different distributions in different versions */
 const getOsVersion = () => getUserAgentParser().getOS().version || '';
+
+const getSuiteVersion = () => process.env.VERSION || '';
 
 const getBrowserName = () => {
     const browserName = getUserAgentParser().getBrowser().name;
@@ -104,13 +117,18 @@ const getOsFamily = () => {
 const getDeviceType = () => getUserAgentParser().getDevice().type;
 
 export const envUtils: EnvUtils = {
+    isWeb,
+    isDesktop,
+    getEnvironment,
     getUserAgent,
     isAndroid,
     isChromeOs,
     getOsVersion,
     getBrowserName,
     getBrowserVersion,
+    getCommitHash,
     getDeviceType,
+    getSuiteVersion,
     isFirefox,
     getPlatform,
     getPlatformLanguages,

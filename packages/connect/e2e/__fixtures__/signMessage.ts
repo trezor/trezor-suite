@@ -1,6 +1,6 @@
 const { ADDRESS_N } = global.TestUtils;
 
-// vectors from https://github.com/trezor/trezor-firmware/blob/master/tests/device_tests/test_msg_signmessage.py
+// vectors from https://github.com/trezor/trezor-firmware/blob/main/tests/device_tests/test_msg_signmessage.py
 
 const legacyResults = [
     // SignMessage.no_script_type

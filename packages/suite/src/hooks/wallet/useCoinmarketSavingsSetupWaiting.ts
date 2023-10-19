@@ -2,36 +2,27 @@ import { useCallback, useEffect } from 'react';
 import type {
     UseCoinmarketSavingsSetupWaitingProps,
     UseCoinmarketSavingsSetupWaitingValues,
-} from '@wallet-types/coinmarketSavingsSetupWaiting';
-import { useActions, useSelector } from '@suite-hooks';
-import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
-import { useFormDraft } from '@wallet-hooks/useFormDraft';
-import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
-import * as coinmarketSavingsActions from '@wallet-actions/coinmarketSavingsActions';
-import * as pollingActions from '@wallet-actions/pollingActions';
+} from 'src/types/wallet/coinmarketSavingsSetupWaiting';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
+import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
+import { submitRequestForm } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
+import { loadSavingsTrade } from 'src/actions/wallet/coinmarketSavingsActions';
+import { isPolling, startPolling } from 'src/actions/wallet/pollingActions';
 import {
     SavingsTradePollingIntervalMilliseconds,
     SavingsTradePollingMaxCount,
-} from '@wallet-constants/coinmarket/savings';
-import invityAPI, { SavingsTradeKYCFinalStatuses } from '@suite-services/invityAPI';
-import { createReturnLink } from '@wallet-utils/coinmarket/savingsUtils';
-import { isDesktop } from '@suite-utils/env';
+} from 'src/constants/wallet/coinmarket/savings';
+import invityAPI, { SavingsTradeKYCFinalStatuses } from 'src/services/suite/invityAPI';
+import { createReturnLink } from 'src/utils/wallet/coinmarket/savingsUtils';
+import { isDesktop } from '@trezor/env-utils';
 
 export const useCoinmarketSavingsSetupWaiting = ({
     selectedAccount,
 }: UseCoinmarketSavingsSetupWaitingProps): UseCoinmarketSavingsSetupWaitingValues => {
     const { account } = selectedAccount;
-    const { savingsTrade } = useSelector(state => ({
-        savingsTrade: state.wallet.coinmarket.savings.savingsTrade,
-    }));
-    const { loadSavingsTrade, submitRequestForm, startPolling, stopPolling, isPolling } =
-        useActions({
-            loadSavingsTrade: coinmarketSavingsActions.loadSavingsTrade,
-            submitRequestForm: coinmarketCommonActions.submitRequestForm,
-            startPolling: pollingActions.startPolling,
-            stopPolling: pollingActions.stopPolling,
-            isPolling: pollingActions.isPolling,
-        });
+    const savingsTrade = useSelector(state => state.wallet.coinmarket.savings.savingsTrade);
+    const dispatch = useDispatch();
 
     const { navigateToSavingsSetup, navigateToSavingsSetupContinue } =
         useCoinmarketNavigation(account);
@@ -59,23 +50,25 @@ export const useCoinmarketSavingsSetupWaiting = ({
 
     useEffect(() => {
         const pollingKey = `coinmarket-savings-trade/${account.descriptor}` as const;
-        if (!isPolling(pollingKey)) {
+        if (!dispatch(isPolling(pollingKey))) {
             // NOTE: Suite Desktop and Web application might be still open -> start polling savings trade,
             // so the user sees refreshed UI after successful completion of savings flow on Invity.io page,
             // and show screen "Waiting for completion on Invity.io web page.".
-            startPolling(
-                pollingKey,
-                () => loadSavingsTrade(),
-                SavingsTradePollingIntervalMilliseconds,
-                SavingsTradePollingMaxCount,
+            dispatch(
+                startPolling(
+                    pollingKey,
+                    () => dispatch(loadSavingsTrade()),
+                    SavingsTradePollingIntervalMilliseconds,
+                    SavingsTradePollingMaxCount,
+                ),
             );
         }
-    }, [account.descriptor, isPolling, loadSavingsTrade, startPolling, stopPolling]);
+    }, [account.descriptor, dispatch]);
 
     const handleGoToInvity = useCallback(async () => {
         const form = getDraft(account.descriptor) as Parameters<typeof submitRequestForm>[0];
         if (form) {
-            submitRequestForm(form);
+            dispatch(submitRequestForm(form));
         } else if (
             savingsTrade?.fiatStringAmount &&
             savingsTrade.country &&
@@ -95,7 +88,7 @@ export const useCoinmarketSavingsSetupWaiting = ({
             if (formResponse?.form) {
                 saveDraft(account.descriptor, formResponse.form);
                 if (!isDesktop()) {
-                    submitRequestForm(formResponse?.form);
+                    dispatch(submitRequestForm(formResponse?.form));
                 }
             }
         } else {
@@ -104,6 +97,7 @@ export const useCoinmarketSavingsSetupWaiting = ({
         }
     }, [
         account.descriptor,
+        dispatch,
         getDraft,
         navigateToSavingsSetup,
         saveDraft,
@@ -113,7 +107,6 @@ export const useCoinmarketSavingsSetupWaiting = ({
         savingsTrade?.fiatCurrency,
         savingsTrade?.fiatStringAmount,
         savingsTrade?.paymentFrequency,
-        submitRequestForm,
     ]);
 
     return {

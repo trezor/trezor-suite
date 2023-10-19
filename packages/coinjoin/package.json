@@ -14,19 +14,14 @@
     },
     "license": "See LICENSE.md in repo root",
     "sideEffects": false,
-    "main": "lib/index.js",
-    "files": [
-        "lib/",
-        "!**/*.map"
-    ],
-    "types": "lib/index.d.ts",
+    "main": "src/index.ts",
     "scripts": {
         "lint": "eslint '**/*.{ts,js}'",
         "test:unit": "jest --version && jest",
         "test:discovery": "tsx ./tests/tools/discovery-test.ts",
         "test:anonymity": "tsx ./tests/tools/anonymity-test.ts",
-        "type-check": "tsc --build",
-        "build:lib": "rimraf lib && tsc --build ./tsconfig.lib.json"
+        "test:benchmark": "tsx ./tests/tools/benchmark-test.ts",
+        "type-check": "tsc --build"
     },
     "dependencies": {
         "@trezor/blockchain-link": "workspace:*",
@@ -35,14 +30,14 @@
         "@trezor/utils": "workspace:*",
         "@trezor/utxo-lib": "workspace:*",
         "bignumber.js": "^9.1.1",
-        "cross-fetch": "^3.1.5",
+        "cross-fetch": "^3.1.6",
         "events": "^3.3.0",
         "golomb": "1.2.0",
         "n64": "^0.2.10"
     },
     "devDependencies": {
         "jest": "^29.5.0",
-        "rimraf": "^4.4.1",
+        "rimraf": "^5.0.1",
         "typescript": "4.9.5"
     }
 }

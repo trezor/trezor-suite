@@ -22,28 +22,43 @@ import {
 import { selectFiatCurrencyCode, SettingsSliceRootState } from '@suite-native/module-settings';
 import { isEthereumAccountSymbol } from '@suite-common/wallet-utils';
 
-import { EthereumTokenSymbol, WalletAccountTransaction } from './types';
+import { EthereumTokenTransfer, WalletAccountTransaction } from './types';
 
-export const selectEthereumAccountToken = (
+export const selectEthereumAccountTokenInfo = (
     state: AccountsRootState,
     accountKey: AccountKey,
-    tokenSymbol?: EthereumTokenSymbol,
+    tokenAddress?: TokenAddress,
 ): TokenInfoBranded | null => {
     const account = selectAccountByKey(state, accountKey);
     if (!account || !account.tokens) return null;
     return (
         (A.find(
             account.tokens,
-            (token: TokenInfo) => token.symbol === tokenSymbol,
+            (token: TokenInfo) => token.contract === tokenAddress,
         ) as TokenInfoBranded) ?? null
     );
+};
+
+export const selectEthereumAccountTokenSymbol = (
+    state: AccountsRootState,
+    accountKey: AccountKey,
+    tokenAddress?: TokenAddress,
+): TokenSymbol | null => {
+    const tokenInfo = selectEthereumAccountTokenInfo(state, accountKey, tokenAddress);
+
+    if (!tokenInfo) return null;
+
+    // FIXME: This is the only place in the codebase where we change case of token symbol.
+    // The `toUpperCase()` operation is necessary because we are receiving wrongly formatted token symbol from connect.
+    // Can be removed at the moment when desktop issue https://github.com/trezor/trezor-suite/issues/8037 is resolved.
+    return tokenInfo.symbol.toUpperCase() as TokenSymbol;
 };
 
 export const selectEthereumAccountTokenTransactions = memoizeWithArgs(
     (
         state: TransactionsRootState,
         accountKey: AccountKey,
-        tokenSymbol: EthereumTokenSymbol,
+        tokenAddress: TokenAddress,
     ): WalletAccountTransaction[] =>
         pipe(
             selectAccountTransactions(state, accountKey),
@@ -51,11 +66,14 @@ export const selectEthereumAccountTokenTransactions = memoizeWithArgs(
                 ...transaction,
                 tokens: transaction.tokens.map((tokenTransfer: TokenTransfer) => ({
                     ...tokenTransfer,
-                    symbol: tokenTransfer.symbol.toLowerCase(),
+                    symbol: tokenTransfer.symbol,
                 })),
             })),
             A.filter(transaction =>
-                A.some(transaction.tokens, tokenTransfer => tokenTransfer.symbol === tokenSymbol),
+                A.some(
+                    transaction.tokens,
+                    tokenTransfer => tokenTransfer.contract === tokenAddress,
+                ),
             ),
         ) as WalletAccountTransaction[],
     { size: 500 },
@@ -70,8 +88,7 @@ export const selectEthereumTokenHasFiatRates = (
     const fiatCurrencyCode = selectFiatCurrencyCode(state);
     const fiatRateKey = getFiatRateKeyFromTicker(
         {
-            symbol: tokenSymbol.toLowerCase() as TokenSymbol,
-            mainNetworkSymbol: 'eth',
+            symbol: 'eth',
             tokenAddress: contract,
         },
         fiatCurrencyCode,
@@ -80,8 +97,21 @@ export const selectEthereumTokenHasFiatRates = (
     return !!rates?.rate;
 };
 
+export const selectAnyOfTokensHasFiatRates = (
+    state: FiatRatesRootState & SettingsSliceRootState,
+    tokens: TokenInfoBranded[],
+) => A.any(tokens, token => selectEthereumTokenHasFiatRates(state, token.contract, token.symbol));
+
 const isNotZeroAmountTranfer = (tokenTranfer: TokenTransfer) =>
     tokenTranfer.amount !== '' && tokenTranfer.amount !== '0';
+
+/** Is not a transaction with zero amount and no internal transfers. */
+const isNotEmptyTransaction = (transaction: WalletAccountTransaction) =>
+    transaction.amount !== '0' ||
+    (G.isArray(transaction.internalTransfers) && A.isNotEmpty(transaction.internalTransfers));
+
+const isTransactionWithTokenTransfers = (transaction: WalletAccountTransaction) =>
+    G.isArray(transaction.tokens) && A.isNotEmpty(transaction.tokens);
 
 const selectAccountTransactionsWithTokensWithFiatRates = memoizeWithArgs(
     (
@@ -105,16 +135,15 @@ const selectAccountTransactionsWithTokensWithFiatRates = memoizeWithArgs(
                     ),
                     A.map((tokenTransfer: TokenTransfer) => ({
                         ...tokenTransfer,
-                        symbol: tokenTransfer.symbol.toLowerCase(),
+                        symbol: tokenTransfer.symbol,
                     })),
-                ),
+                ) as EthereumTokenTransfer[],
             })),
             A.filter(
                 transaction =>
-                    transaction.amount !== '0' ||
+                    isNotEmptyTransaction(transaction) ||
                     (areTokenOnlyTransactionsIncluded &&
-                        G.isArray(transaction.tokens) &&
-                        A.isNotEmpty(transaction.tokens)),
+                        isTransactionWithTokenTransfers(transaction)),
             ),
         ) as WalletAccountTransaction[],
     { size: 500 },
@@ -123,11 +152,11 @@ const selectAccountTransactionsWithTokensWithFiatRates = memoizeWithArgs(
 export const selectAccountOrTokenAccountTransactions = (
     state: TransactionsRootState & FiatRatesRootState & SettingsSliceRootState,
     accountKey: AccountKey,
-    tokenSymbol: EthereumTokenSymbol | null,
+    tokenAddress: TokenAddress | null,
     areTokenOnlyTransactionsIncluded: boolean,
 ): WalletAccountTransaction[] => {
-    if (tokenSymbol) {
-        return selectEthereumAccountTokenTransactions(state, accountKey, tokenSymbol);
+    if (tokenAddress) {
+        return selectEthereumAccountTokenTransactions(state, accountKey, tokenAddress);
     }
     return selectAccountTransactionsWithTokensWithFiatRates(
         state,
@@ -140,7 +169,7 @@ export const selectEthereumAccountsTokensWithFiatRates = memoizeWithArgs(
     (
         state: FiatRatesRootState & SettingsSliceRootState,
         ethereumAccountKey: string,
-    ): readonly TokenInfoBranded[] => {
+    ): TokenInfoBranded[] => {
         const account = selectAccountByKey(state, ethereumAccountKey);
         if (!account || !isEthereumAccountSymbol(account.symbol)) return [];
         return A.filter(account.tokens ?? [], token =>
@@ -154,8 +183,6 @@ export const selectEthereumAccountsTokensWithFiatRates = memoizeWithArgs(
     { size: 50 },
 );
 
-// If account item is ethereum which has tokens with fiat rates,
-// we want to adjust styling to display token items.
 export const selectIsEthereumAccountWithTokensWithFiatRates = (
     state: FiatRatesRootState & SettingsSliceRootState,
     ethereumAccountKey: AccountKey,
@@ -163,13 +190,15 @@ export const selectIsEthereumAccountWithTokensWithFiatRates = (
     const account = selectAccountByKey(state, ethereumAccountKey);
     if (!account || G.isNullable(account.tokens) || !isEthereumAccountSymbol(account.symbol))
         return false;
-    return A.isNotEmpty(
-        A.filterMap(account.tokens, token =>
+
+    return (
+        account.tokens,
+        A.any(account.tokens, token =>
             selectEthereumTokenHasFiatRates(
                 state,
                 token.contract as TokenAddress,
                 token.symbol as TokenSymbol,
             ),
-        ),
+        )
     );
 };

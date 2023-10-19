@@ -1,6 +1,5 @@
-import React from 'react';
-import { useRecovery } from '@suite-hooks';
-import { WordInput, WordInputAdvanced } from '@suite-components';
+import { useRecovery } from 'src/hooks/suite';
+import { WordInput, WordInputAdvanced } from 'src/components/suite';
 
 export const SelectRecoveryWord = () => {
     const { wordRequestInputType } = useRecovery();

@@ -8,7 +8,7 @@ suite codesign deploy staging-suite:
     - suite-desktop build linux codesign
     - suite-desktop build windows codesign
   environment:
-    name: ${CI_BUILD_REF_NAME}-staging-suite
+    name: ${CI_COMMIT_REF_NAME}-staging-suite
     url: ${STAGING_SUITE_SERVER_URL}
   before_script: []
   only:
@@ -43,7 +43,7 @@ suite-desktop deploy autoupdate test:
       - codesign
   when: manual
   variables:
-    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-desktop/${CI_BUILD_REF_NAME}
+    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-desktop/${CI_COMMIT_REF_NAME}
   script:
     - mkdir -p ${DEPLOY_DIRECTORY}
     - 'rsync --delete -va Trezor-Suite* "${DEPLOY_DIRECTORY}/" || :'
@@ -60,7 +60,7 @@ suite-desktop github release:
     - suite-desktop build linux codesign
     - suite-desktop build windows codesign
   environment:
-    name: ${CI_BUILD_REF_NAME}-staging-suite
+    name: ${CI_COMMIT_REF_NAME}-staging-suite
     url: ${STAGING_SUITE_SERVER_URL}
   before_script: []
   only:
@@ -80,6 +80,8 @@ release commit messages:
     refs:
       - /^release\//
       - codesign
+  variables:
+    GIT_DEPTH: 300
   script:
     - ci/scripts/check_release_commit_messages.sh
 
@@ -98,35 +100,31 @@ msg-system codesign deploy:
     AWS_CLOUDFRONT_ID: E1ERY5K2OTKKI1
   script:
     - source ${MSG_SYSTEM_DATA_DEPLOY_KEYFILE}
-    - aws s3 cp packages/message-system/files/config.v1.jws s3://data.trezor.io/config/stable/config.v1.jws --cache-control no-cache
+    - aws s3 cp suite-common/message-system/files/config.v1.jws s3://data.trezor.io/config/stable/config.v1.jws --cache-control no-cache
     - aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_ID} --paths '/config/stable/*'
 
 # connect v9 deploy to production jobs
 
-# Create rollback copy of connect.trezo.io
+# Create rollback copy of connect.trezor.io
 connect v9 rollback production:
   stage: deploy to production
   only:
     refs:
-      - release/connect-v9
+      - /^release\/connect\//
   when: manual
   before_script: []
   needs:
     - connect-web build
     - connect-explorer build
+    - connect v9 deploy production
   script:
     - source ${CONNECT_DEPLOY_KEYFILE}
-    - aws s3 sync s3://connect.trezor.io s3://rollback-connect.trezor.io
+    - aws s3 sync --delete s3://rollback-connect.trezor.io/9/ s3://connect.trezor.io/9/
   tags:
     - connect_deploy
 
-# Deploy connect v9 to connect.trezor.io
-connect v9 deploy production:
+.connect v9 deploy:
   stage: deploy to production
-  only:
-    refs:
-      - release/connect-v9
-  when: manual
   dependencies:
     - connect-web build
     - connect-explorer build
@@ -134,9 +132,22 @@ connect v9 deploy production:
     - release commit messages
     - connect-web build
     - connect-explorer build
-  before_script: []
-  script:
+  before_script:
     - source ${CONNECT_DEPLOY_KEYFILE}
-    - ./ci/scripts/connect-release.sh 9
   tags:
     - connect_deploy
+  only:
+    refs:
+      - /^release\/connect\//
+
+connect v9 deploy staging:
+  extends: .connect v9 deploy
+  script:
+    - ./ci/scripts/connect-release-staging.sh 9
+
+# Deploy connect v9 to connect.trezor.io from staging-conntect.trezor.io
+connect v9 deploy production:
+  extends: .connect v9 deploy
+  when: manual
+  script:
+    - ./ci/scripts/connect-release-production.sh 9

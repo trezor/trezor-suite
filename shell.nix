@@ -1,15 +1,15 @@
-# the last successful build of nixpkgs-unstable as of 2023-02-28
+# the last successful build of nixos-unstable as of 2023-09-13
 with import
   (builtins.fetchTarball {
-    url = "https://github.com/NixOS/nixpkgs/archive/7785526659fe5885abbd88a85a23a11bd0617e3c.tar.gz";
-    sha256 = "0sjsy3jihhdmck6hn9lizwvk25kzf5ags1p21xqqn3kj7fv5ax9x";
+    url = "https://github.com/NixOS/nixpkgs/archive/5d7c754943c8e28dc631748128906161b62f4e96.tar.gz";
+    sha256 = "13077wbwxvsrhizr8azd3wr726z3j5r1xczd500l3dwrhcpxni9r";
   })
 { };
 
 let
   # unstable packages
-  electron = electron_23;  # use the same version as defined in packages/suite-desktop/package.json
-  nodejs = nodejs-18_x;
+  electron = electron_26;  # use the same version as defined in packages/suite-desktop/package.json
+  nodejs = nodejs_18;
 in
   stdenv.mkDerivation {
     name = "trezor-suite-dev";
@@ -31,6 +31,7 @@ in
       shellcheck
     ] ++ lib.optionals stdenv.isLinux [
       appimagekit nsis openjpeg osslsigncode p7zip squashfsTools  # binaries used by node_module: electron-builder
+      udev  # used by node_module: usb
       # winePackages.minimal
     ] ++ lib.optionals stdenv.isDarwin (with darwin.apple_sdk.frameworks; [
       Cocoa

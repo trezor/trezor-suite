@@ -1,7 +1,7 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import styled from 'styled-components';
-import { useLayout } from '@suite-hooks';
-import { SettingsMenu } from '@settings-components';
+import { useLayout } from 'src/hooks/suite';
+import { SettingsMenu } from 'src/components/settings';
 import { variables } from '@trezor/components';
 
 const Wrapper = styled.div`
@@ -14,7 +14,7 @@ const Wrapper = styled.div`
 
 type SettingsLayoutProps = {
     title?: string;
-    children?: React.ReactNode;
+    children?: ReactNode;
     ['data-test']?: string;
     className?: string;
 };

@@ -4,10 +4,12 @@ import type { TorSettings } from './types';
 export class TorIdentities {
     private readonly getTorSettings: () => TorSettings;
     private readonly identities: { [key: string]: SocksProxyAgent };
+    private readonly passwords: { [key: string]: string };
 
     constructor(getTorSettings: () => TorSettings) {
         this.getTorSettings = getTorSettings;
         this.identities = {};
+        this.passwords = {};
     }
 
     public getIdentity(
@@ -17,10 +19,11 @@ export class TorIdentities {
     ): SocksProxyAgent {
         const [user, password] = identity.split(':');
 
-        if (this.identities[user] && password) {
-            // looks like destroy does nothing, but just in case
-            this.identities[user].destroy();
-            delete this.identities[user];
+        if (password && this.passwords[user] !== password) {
+            if (this.identities[user]) {
+                this.removeIdentity(user);
+            }
+            this.passwords[user] = password;
         }
 
         const { host, port } = this.getTorSettings();
@@ -44,5 +47,12 @@ export class TorIdentities {
         if (protocol) agent.protocol = `${protocol}:`;
 
         return agent;
+    }
+
+    public removeIdentity(user: string) {
+        // looks like destroy does nothing, but just in case
+        this.identities[user].destroy();
+        delete this.identities[user];
+        delete this.passwords[user];
     }
 }

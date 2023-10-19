@@ -1,11 +1,16 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
+
 import styled, { css } from 'styled-components';
+import { motion } from 'framer-motion';
+
+import { getStatus, deviceNeedsAttention } from '@suite-common/suite-utils';
 import { variables, motionEasing } from '@trezor/components';
-import { ConnectDevicePrompt } from '@suite-components';
-import { isWebUsb } from '@suite-utils/transport';
-import { getStatus, deviceNeedsAttention } from '@suite-utils/device';
-import { useSelector } from '@suite-hooks';
-import type { PrerequisiteType } from '@suite-types';
+import { selectDevicesCount, selectDevice } from '@suite-common/wallet-core';
+
+import { ConnectDevicePrompt } from 'src/components/suite';
+import { isWebUsb } from 'src/utils/suite/transport';
+import { useSelector } from 'src/hooks/suite';
+import type { PrerequisiteType } from 'src/types/suite';
 
 import { Transport } from './components/Transport';
 import { DeviceConnect } from './components/DeviceConnect';
@@ -19,7 +24,6 @@ import { DeviceBootloader } from './components/DeviceBootloader';
 import { DeviceNoFirmware } from './components/DeviceNoFirmware';
 import { DeviceUpdateRequired } from './components/DeviceUpdateRequired';
 import { DeviceDisconnectRequired } from './components/DeviceDisconnectRequired';
-import { motion } from 'framer-motion';
 
 const Wrapper = styled.div<{ padded?: boolean }>`
     display: flex;
@@ -58,11 +62,9 @@ export const PrerequisitesGuide = ({
     padded,
     allowSwitchDevice,
 }: PrerequisitesGuideProps) => {
-    const { device, transport, devices } = useSelector(state => ({
-        device: state.suite.device,
-        devices: state.devices.length,
-        transport: state.suite.transport,
-    }));
+    const device = useSelector(selectDevice);
+    const devices = useSelector(selectDevicesCount);
+    const transport = useSelector(state => state.suite.transport);
 
     const isWebUsbTransport = isWebUsb(transport);
 

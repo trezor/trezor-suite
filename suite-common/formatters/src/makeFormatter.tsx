@@ -1,5 +1,3 @@
-import React from 'react';
-
 export type DataContext = Record<string, unknown>;
 
 interface FormatDefinition<TInput, TOutput, TDataContext extends DataContext> {
@@ -29,6 +27,8 @@ export interface Formatter<TInput, TOutput, TDataContext extends DataContext = D
     /** Formats a value. */
     format: FormatMethod<TInput, TOutput, TDataContext>;
     (props: FormatterProps<TInput, TDataContext>): JSX.Element | null;
+    /** Name of the formatter for easier debugging and profiling. */
+    displayName?: string;
 }
 
 /**
@@ -38,9 +38,11 @@ export interface Formatter<TInput, TOutput, TDataContext extends DataContext = D
  */
 export const makeFormatter = <TInput, TOutput, TDataContext extends DataContext = DataContext>(
     format: FormatDefinition<TInput, TOutput, TDataContext>,
+    displayName = 'Formatter',
 ): Formatter<TInput, TOutput, TDataContext> => {
     const formatter: Formatter<TInput, TOutput, TDataContext> = props =>
         <>{format(props.value, props)}</> ?? null;
+    formatter.displayName = displayName;
 
     formatter.format = (value, dataContext = {}) => format(value, dataContext);
 

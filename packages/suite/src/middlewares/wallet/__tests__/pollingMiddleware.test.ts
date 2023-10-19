@@ -1,10 +1,10 @@
-import { configureStore } from '@suite/support/tests/configureStore';
+import { configureStore } from 'src/support/tests/configureStore';
 
-import pollingReducer, { initialState } from '@wallet-reducers/pollingReducer';
-import pollingMiddleware from '@wallet-middlewares/pollingMiddleware';
-import type { Action } from '@suite-types';
-import { POLLING } from '@wallet-actions/constants';
-import type { PollingAction } from '@wallet-actions/pollingActions';
+import pollingReducer, { initialState } from 'src/reducers/wallet/pollingReducer';
+import pollingMiddleware from 'src/middlewares/wallet/pollingMiddleware';
+import type { Action } from 'src/types/suite';
+import { POLLING } from 'src/actions/wallet/constants';
+import type { PollingAction } from 'src/actions/wallet/pollingActions';
 
 type PollingState = ReturnType<typeof pollingReducer>;
 interface Args {
@@ -88,6 +88,11 @@ describe('pollingMiddleware', () => {
         jest.runOnlyPendingTimers();
 
         expect(store.getActions()).toEqual([{ type: POLLING.REQUEST, key: 'fake' }]);
+        // todo:
+        // this assertion fails without
+        // legacyFakeTimers: true,
+        // (see jest.config.js)
+        // https://jestjs.io/docs/28.x/upgrading-to-jest28#faketimers
         expect(setTimeout).toHaveBeenCalledTimes(1);
     });
 

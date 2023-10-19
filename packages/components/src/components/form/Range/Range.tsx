@@ -1,7 +1,14 @@
-import React, { useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { variables } from '../../../config';
+import {
+    useLayoutEffect,
+    useRef,
+    useState,
+    ReactNode,
+    KeyboardEventHandler,
+    ChangeEventHandler,
+} from 'react';
 import styled, { css, CSSObject } from 'styled-components';
-
-import { useTheme, variables } from '@trezor/components';
+import { useTheme } from '../../../utils';
 
 const track = css<Pick<RangeProps, 'trackStyle'>>`
     background: ${({ theme }) => theme.BG_GREEN};
@@ -94,11 +101,11 @@ const LabelsWrapper = styled.div<{ count: number; $width?: number }>`
 export interface RangeProps {
     className?: string;
     disabled?: boolean;
-    labels?: Array<{ value: string | number; component?: React.ReactNode }>;
+    labels?: Array<{ value: string | number; component?: ReactNode }>;
     max?: number;
     min?: number;
-    onChange: React.ChangeEventHandler<HTMLInputElement>;
-    onKeyDown?: React.KeyboardEventHandler;
+    onChange: ChangeEventHandler<HTMLInputElement>;
+    onKeyDown?: KeyboardEventHandler;
     onLabelClick?: (value: number) => void;
     step?: string;
     thumbStyle?: CSSObject;

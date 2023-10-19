@@ -1,94 +1,65 @@
-import React from 'react';
-import { configureStore, filterThunkActionTypes } from '@suite/support/tests/configureStore';
+import { useState, useEffect } from 'react';
 import { DeepPartial } from 'react-hook-form';
+
+import { configureMockStore, initPreloadedState } from '@suite-common/test-utils';
 import { PROTO } from '@trezor/connect';
-import sendFormReducer from '@wallet-reducers/sendFormReducer';
-import resizeReducer from '@suite-reducers/resizeReducer';
+
+import { filterThunkActionTypes } from 'src/support/tests/configureStore';
 import {
     renderWithProviders,
     waitForLoader,
     findByTestId,
     UserAction,
     actionSequence,
-} from '@suite/support/tests/hooksHelper';
+} from 'src/support/tests/hooksHelper';
+import { FormState, SendContextValues } from 'src/types/wallet/sendForm';
+import SendIndex from 'src/views/wallet/send';
 
-import { SendContextValues } from '@wallet-types/sendForm';
-import SendIndex from '@wallet-views/send';
 import * as fixtures from '../__fixtures__/useSendForm';
 import { useSendFormContext } from '../useSendForm';
 
-jest.mock('@suite-actions/routerActions', () => ({
+jest.mock('src/actions/suite/routerActions', () => ({
     goto: () => ({ type: 'mock-redirect' }),
 }));
 
 jest.mock('react-svg', () => ({ ReactSVG: () => 'SVG' }));
 
 // render only Translation['id']
-jest.mock('@suite-components/Translation', () => ({ Translation: ({ id }: any) => id }));
+jest.mock('src/components/suite/Translation', () => ({ Translation: ({ id }: any) => id }));
 
 jest.mock('@trezor/connect', () => global.JestMocks.getTrezorConnect({}));
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const TrezorConnect = require('@trezor/connect').default;
 
-type SendState = ReturnType<typeof sendFormReducer>;
+type RootReducerState = ReturnType<ReturnType<typeof fixtures.getRootReducer>>;
 interface Args {
-    send?: Partial<SendState>;
+    send?: Partial<RootReducerState['wallet']['send']>;
     fees?: any;
     selectedAccount?: any;
     coinjoin?: any;
     bitcoinAmountUnit?: PROTO.AmountUnit;
 }
 
-export const getInitialState = ({
-    send,
-    fees,
-    selectedAccount,
-    coinjoin,
-    bitcoinAmountUnit,
-}: Args = {}) => ({
-    ...fixtures.DEFAULT_STORE,
-    wallet: {
-        ...fixtures.DEFAULT_STORE.wallet,
-        send: {
-            ...sendFormReducer(undefined, { type: 'foo' } as any),
-            ...send,
-        },
-        fees: {
-            ...fixtures.DEFAULT_STORE.wallet.fees,
-            ...fees,
-        },
-        selectedAccount: selectedAccount ?? fixtures.DEFAULT_STORE.wallet.selectedAccount,
-        coinjoin: {
-            ...fixtures.DEFAULT_STORE.wallet.coinjoin,
-            ...coinjoin,
-        },
-        settings: {
-            ...fixtures.DEFAULT_STORE.wallet.settings,
-            bitcoinAmountUnit:
-                bitcoinAmountUnit || fixtures.DEFAULT_STORE.wallet.settings.bitcoinAmountUnit,
-        },
-    },
-    devices: [],
-    resize: resizeReducer(undefined, { type: 'foo' } as any),
-    guide: {},
-    metadata: { enabled: false },
-    router: {},
-    modal: {},
-});
+const initStore = ({ send, fees, selectedAccount, coinjoin, bitcoinAmountUnit }: Args = {}) => {
+    const rootReducer = fixtures.getRootReducer(selectedAccount, fees);
 
-type State = ReturnType<typeof getInitialState>;
-const mockStore = configureStore<State, any>();
-
-const initStore = (state: State) => {
-    const store = mockStore(state);
-    store.subscribe(() => {
-        const action = store.getActions().pop();
-        const prevState = store.getState();
-        store.getState().wallet.send = sendFormReducer(prevState.wallet.send, action);
-        // add action back to stack
-        store.getActions().push(action);
+    const preloadedState = initPreloadedState({
+        rootReducer,
+        partialState: {
+            wallet: {
+                send,
+                coinjoin,
+                settings: { bitcoinAmountUnit },
+            },
+        },
     });
-    return store;
+
+    return configureMockStore({
+        reducer: rootReducer,
+        preloadedState,
+        // NOTE: this action contains `decision` callback which is not serializable
+        serializableCheck: { ignoredActions: ['@modal/open-user-context'] },
+    });
 };
 
 interface TestCallback {
@@ -105,8 +76,8 @@ const Component = ({ callback }: { callback: TestCallback }) => {
     // sendForm.state.isLoading field is updated **BEFORE** last render of react-hook-form
     // results are verified **BEFORE** components are finally rerendered.
     // force additional re-render here (using state update) before removing loader from the view
-    const [loading, setLoading] = React.useState(false);
-    React.useEffect(() => {
+    const [loading, setLoading] = useState(false);
+    useEffect(() => {
         setLoading(values.isLoading);
     }, [loading, values.isLoading]);
 
@@ -121,7 +92,7 @@ interface Result {
     getAccountInfoCalls?: number; // used in XRP
     getAccountInfoParams?: any; // partial @trezor/connect params
     composedLevels?: any; // partial PrecomposedLevel
-    formValues?: DeepPartial<ReturnType<SendContextValues['getValues']>>;
+    formValues?: DeepPartial<FormState>;
     errors?: any; // partial SendContextValues['errors']
 }
 
@@ -172,7 +143,11 @@ const actionCallback = (
         );
     }
 
-    const { composedLevels, getValues, errors } = getContextValues();
+    const {
+        composedLevels,
+        getValues,
+        formState: { errors },
+    } = getContextValues();
 
     // validate composedLevels object
     if (Object.prototype.hasOwnProperty.call(result, 'composedLevels')) {
@@ -214,16 +189,13 @@ const actionCallback = (
 };
 
 describe('useSendForm hook', () => {
-    beforeEach(() => {
-        jest.setTimeout(30000); // action sequences takes time
-    });
     afterEach(() => {
         jest.clearAllMocks();
     });
 
     fixtures.addingOutputs.forEach(f => {
         it(f.description, async () => {
-            const store = initStore(getInitialState(f.store));
+            const store = initStore(f.store);
             const callback: TestCallback = {};
             const { unmount } = renderWithProviders(
                 store,
@@ -237,12 +209,12 @@ describe('useSendForm hook', () => {
             if (!callback.getContextValues) throw Error('callback.getContextValues missing');
 
             // check HTML elements after first render
-            expect(findByTestId(/outputs\[.*\].address/).length).toBe(f.initial.outputs.length);
+            expect(findByTestId(/outputs\.[0-9]+\.address/).length).toBe(f.initial.outputs.length);
             expect(callback.getContextValues().getValues()).toMatchObject(f.initial);
 
             await actionSequence(f.actions, a => {
                 // check rendered HTML elements (Output.address input)
-                expect(findByTestId(/outputs\[.*\].address/).length).toBe(
+                expect(findByTestId(/outputs\.[0-9]+\.address/).length).toBe(
                     a.result.formValues.outputs.length,
                 );
                 // validate action result
@@ -251,39 +223,43 @@ describe('useSendForm hook', () => {
 
             unmount();
         });
-    });
+    }, 30000);
 
     fixtures.setMax.forEach(f => {
-        it(f.description, async () => {
-            TrezorConnect.setTestFixtures(f.connect);
-            const store = initStore(getInitialState(f.store));
-            const callback: TestCallback = {};
-            const { unmount } = renderWithProviders(
-                store,
-                <SendIndex>
-                    <Component callback={callback} />
-                </SendIndex>,
-            );
+        it(
+            f.description,
+            async () => {
+                TrezorConnect.setTestFixtures(f.connect);
+                const store = initStore(f.store);
+                const callback: TestCallback = {};
+                const { unmount } = renderWithProviders(
+                    store,
+                    <SendIndex>
+                        <Component callback={callback} />
+                    </SendIndex>,
+                );
 
-            // wait for first render
-            await waitForLoader();
+                // wait for first render
+                await waitForLoader();
 
-            // execute user actions sequence
-            if (f.actions) {
-                await actionSequence(f.actions, a => actionCallback(callback, a));
-            }
+                // execute user actions sequence
+                if (f.actions) {
+                    await actionSequence(f.actions, a => actionCallback(callback, a));
+                }
 
-            // validate finalResult
-            actionCallback(callback, { result: f.finalResult });
+                // validate finalResult
+                actionCallback(callback, { result: f.finalResult });
 
-            unmount();
-        });
+                unmount();
+            },
+            30000,
+        );
     });
 
     fixtures.composeDebouncedTransaction.forEach(f => {
         it(f.description, async () => {
             TrezorConnect.setTestFixtures(f.connect);
-            const store = initStore(getInitialState());
+            const store = initStore();
             const callback: TestCallback = {};
             const { unmount } = renderWithProviders(
                 store,
@@ -307,7 +283,7 @@ describe('useSendForm hook', () => {
     fixtures.signAndPush.forEach(f => {
         it(f.description, async () => {
             TrezorConnect.setTestFixtures(f.connect);
-            const store = initStore(getInitialState(f.store));
+            const store = initStore(f.store);
             const callback: TestCallback = {};
             const { unmount } = renderWithProviders(
                 store,
@@ -340,9 +316,9 @@ describe('useSendForm hook', () => {
     });
 
     fixtures.feeChange.forEach(f => {
-        it(f.description, async () => {
+        it(`changeFee: ${f.description}`, async () => {
             TrezorConnect.setTestFixtures(f.connect);
-            const store = initStore(getInitialState(f.store));
+            const store = initStore(f.store);
             const callback: TestCallback = {};
             const { unmount } = renderWithProviders(
                 store,
@@ -361,13 +337,13 @@ describe('useSendForm hook', () => {
             actionCallback(callback, { result: f.finalResult });
 
             unmount();
-        });
+        }, 30000);
     });
 
     fixtures.amountUnitChange.forEach(f => {
         it(f.description, async () => {
             TrezorConnect.setTestFixtures(f.connect);
-            const store = initStore(getInitialState(f.store));
+            const store = initStore(f.store);
             const callback: TestCallback = {};
             const { unmount } = renderWithProviders(
                 store,

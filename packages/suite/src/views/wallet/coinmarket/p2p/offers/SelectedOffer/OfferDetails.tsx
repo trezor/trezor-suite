@@ -1,19 +1,12 @@
-import React from 'react';
 import styled from 'styled-components';
-import { useFormatters } from '@suite-common/formatters';
-import { AccountLabeling, Translation } from '@suite-components';
-import { CoinLogo, variables } from '@trezor/components';
-import { Account } from '@wallet-types';
-import { CoinmarketProviderInfo } from '@wallet-components';
 import { P2pProviderInfo, P2pQuote, P2pQuotesRequest } from 'invity-api';
-import { Avatar } from '../Avatar';
 
-interface Props {
-    account: Account;
-    providers?: { [name: string]: P2pProviderInfo };
-    quotesRequest: P2pQuotesRequest;
-    selectedQuote: P2pQuote;
-}
+import { useFormatters } from '@suite-common/formatters';
+import { AccountLabeling, Translation } from 'src/components/suite';
+import { CoinLogo, variables } from '@trezor/components';
+import { Account } from 'src/types/wallet';
+import { CoinmarketProviderInfo } from 'src/views/wallet/coinmarket/common';
+import { Avatar } from '../Avatar';
 
 const Wrapper = styled.div`
     display: flex;
@@ -91,7 +84,19 @@ const Dark = styled.div`
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
 `;
 
-export const OfferDetails = ({ account, providers, quotesRequest, selectedQuote }: Props) => {
+interface OfferDetailsProps {
+    account: Account;
+    providers?: { [name: string]: P2pProviderInfo };
+    quotesRequest: P2pQuotesRequest;
+    selectedQuote: P2pQuote;
+}
+
+export const OfferDetails = ({
+    account,
+    providers,
+    quotesRequest,
+    selectedQuote,
+}: OfferDetailsProps) => {
     const { FiatAmountFormatter } = useFormatters();
     const { amount, currency } = quotesRequest;
     const { provider, trader, paymentWindowMinutes, confirmations } = selectedQuote;

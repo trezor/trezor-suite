@@ -1,13 +1,13 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 
 import { Checkbox } from '@trezor/components';
-import { isDesktop } from '@suite-utils/env';
-import { useSelector, useActions } from '@suite-hooks';
-import * as suiteActions from '@suite-actions/suiteActions';
-import { DebugModeOptions } from '@suite/reducers/suite/suiteReducer';
+import { isDesktop } from '@trezor/env-utils';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { setDebugMode } from 'src/actions/suite/suiteActions';
+import { DebugModeOptions } from 'src/reducers/suite/suiteReducer';
 import { ArrayElement } from '@trezor/type-utils';
 
-import { ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
+import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';
 
 type TransportMenuItem = {
     name: ArrayElement<NonNullable<DebugModeOptions['transports']>>;
@@ -17,10 +17,9 @@ type TransportMenuItem = {
 };
 
 export const Transport = () => {
-    const { debug, transport } = useSelector(state => ({
-        debug: state.suite.settings.debug,
-        transport: state.suite.transport,
-    }));
+    const debug = useSelector(state => state.suite.settings.debug);
+    const transport = useSelector(state => state.suite.transport);
+    const dispatch = useDispatch();
 
     // fallback [] to avoid need of migration.
     const debugTransports = useMemo(() => debug.transports || [], [debug.transports]);
@@ -29,8 +28,8 @@ export const Transport = () => {
         const transports: TransportMenuItem['name'][] = ['BridgeTransport'];
 
         if (isDesktop()) {
-            // todo: enable when nodeusb added
-            // transports.push('NodeUsbTransport');
+            transports.push('NodeUsbTransport');
+            transports.push('UdpTransport');
         } else {
             transports.push('WebUsbTransport');
         }
@@ -40,10 +39,6 @@ export const Transport = () => {
             name: t,
         }));
     }, [transport]);
-
-    const { setDebugMode } = useActions({
-        setDebugMode: suiteActions.setDebugMode,
-    });
 
     return (
         <>
@@ -68,9 +63,7 @@ export const Transport = () => {
                                     ? debugTransports.filter(t => t !== transport.name)
                                     : [...debugTransports, transport.name];
 
-                                setDebugMode({
-                                    transports: nextTransports,
-                                });
+                                dispatch(setDebugMode({ transports: nextTransports }));
                             }}
                         />
                     </ActionColumn>

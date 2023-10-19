@@ -1,4 +1,5 @@
 import { storage } from '@trezor/connect-common';
+import { Deferred, versionUtils } from '@trezor/utils';
 import { DataManager } from '../data/DataManager';
 import { ERRORS, NETWORK } from '../constants';
 import {
@@ -9,12 +10,9 @@ import {
     CallMethodPayload,
     CallMethodResponse,
     UiRequestButtonData,
-    UiPromise,
-    UiPromiseResponse,
+    UiPromiseCreator,
     PostMessage,
 } from '../events';
-import { Deferred } from '../utils/deferred';
-import { versionCompare } from '../utils/versionUtils';
 import { getHost } from '../utils/urlUtils';
 import type { Device } from '../device/Device';
 import type { FirmwareRange } from '../types';
@@ -50,7 +48,9 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
     payload: Payload<Name>; // method payload
 
-    info = ''; // method info, displayed in popup info-panel
+    get info() {
+        return '';
+    } // method info, displayed in popup info-panel
 
     useUi: boolean; // should use popup?
 
@@ -78,7 +78,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
     confirmation?(): Promise<boolean | undefined>;
 
-    noBackupConfirmation?(): Promise<boolean>;
+    noBackupConfirmation?(allowSuppression?: boolean): Promise<boolean>;
 
     getButtonRequestData?(code: string): UiRequestButtonData | undefined;
 
@@ -88,12 +88,12 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
     // @ts-expect-error: strictPropertyInitialization
     getPopupPromise: () => Deferred<void>;
     // @ts-expect-error: strictPropertyInitialization
-    createUiPromise: <T extends UiPromiseResponse['type']>(
-        promiseId: T,
-        device?: Device,
-    ) => UiPromise<T>;
+    createUiPromise: UiPromiseCreator;
     // @ts-expect-error: strictPropertyInitialization
     removeUiPromise: (promise: Deferred<any>) => void;
+
+    initAsync?(): Promise<void>;
+    initAsyncPromise?: Promise<void>;
 
     constructor(message: { id?: number; payload: Payload<Name> }) {
         const { payload } = message;
@@ -264,11 +264,14 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
             return UI.FIRMWARE_NOT_SUPPORTED;
         }
 
-        if (device.firmwareStatus === 'required' || versionCompare(version, range.min) < 0) {
+        if (
+            device.firmwareStatus === 'required' ||
+            !versionUtils.isNewerOrEqual(version.join('.'), range.min)
+        ) {
             return UI.FIRMWARE_OLD;
         }
 
-        if (range.max !== '0' && versionCompare(version, range.max) > 0) {
+        if (range.max !== '0' && versionUtils.isNewer(version.join('.'), range.max)) {
             if (isUsingPopup) {
                 // wait for popup handshake
                 await this.getPopupPromise().promise;

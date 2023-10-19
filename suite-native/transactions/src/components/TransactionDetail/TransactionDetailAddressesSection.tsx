@@ -1,22 +1,29 @@
-import React from 'react';
+import { useMemo } from 'react';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
-import { Box, Text } from '@suite-native/atoms';
+import { Box, Divider, Text } from '@suite-native/atoms';
 import { AccountAddressFormatter } from '@suite-native/formatters';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { EthereumTokenSymbol, CoinIcon } from '@suite-native/ethereum-tokens';
+import { CoinSymbol, CryptoIcon } from '@suite-common/icons';
 
 import { SummaryRow } from './TransactionDetailStatusSection';
 import { formatAddressLabel } from './TransactionDetailAddressesSheet';
+import { VinVoutAddress } from '../../types';
+import { ChangeAddressesHeader } from './ChangeAddressesHeader';
 
 type TransactionDetailAddressesSectionProps = {
-    addresses: string[];
+    addresses: VinVoutAddress[];
     addressesType: 'inputs' | 'outputs';
     onShowMore: () => void;
-    icon?: NetworkSymbol | EthereumTokenSymbol;
+    icon?: CoinSymbol;
 };
 
+const SHOW_MORE_BUTTON_MARGIN_LEFT = 52;
+
+const showMoreButtonContainerStyle = prepareNativeStyle(_ => ({
+    flexDirection: 'row',
+    marginLeft: SHOW_MORE_BUTTON_MARGIN_LEFT,
+}));
 const showMoreButtonStyle = prepareNativeStyle(_ => ({ flexDirection: 'row' }));
 
 const hiddenTransactionsCountStyle = prepareNativeStyle(utils => ({
@@ -43,8 +50,8 @@ const stepperDotWrapperStyle = prepareNativeStyle(utils => ({
 }));
 
 const stepperDotStyle = prepareNativeStyle(utils => ({
-    width: utils.spacings.small / 2,
-    height: utils.spacings.small / 2,
+    width: utils.spacings.extraSmall,
+    height: utils.spacings.extraSmall,
     borderRadius: utils.borders.radii.round,
     backgroundColor: utils.colors.backgroundNeutralSubdued,
 }));
@@ -74,48 +81,74 @@ export const TransactionDetailAddressesSection = ({
 }: TransactionDetailAddressesSectionProps) => {
     const { applyStyle } = useNativeStyles();
 
-    const formattedTitle = formatAddressLabel(addressesType, addresses.length);
+    const { targetAddresses, changeAddresses } = useMemo(
+        () => ({
+            targetAddresses: addresses.filter(({ isChangeAddress }) => !isChangeAddress),
+            changeAddresses: addresses.filter(({ isChangeAddress }) => isChangeAddress),
+        }),
+        [addresses],
+    );
 
-    const displayedAddresses = addresses.slice(0, 2);
+    const formattedTitle = formatAddressLabel(addressesType, targetAddresses.length);
+
     const isShowMoreButtonVisible = addresses.length > 2;
-    const hiddenAddressesCount = addresses.length - 2;
-
+    const hiddenAddressesCount = targetAddresses.length - 2;
+    const areChangeAddressesVisible = changeAddresses.length > 0;
     return (
-        <SummaryRow leftComponent={<TransactionDetailSummaryStepper />}>
-            <Box flexDirection="row" justifyContent="space-between" alignItems="center">
-                <Box>
-                    <Text color="textSubdued" variant="hint">
-                        {formattedTitle}
-                    </Text>
-                    {displayedAddresses.map(address => (
-                        <AccountAddressFormatter
-                            key={address}
-                            value={address}
-                            style={applyStyle(addressTextStyle)}
-                        />
-                    ))}
-                    {isShowMoreButtonVisible && (
-                        <Box marginTop="small" flexDirection="row">
-                            <TouchableOpacity
-                                onPress={onShowMore}
-                                style={applyStyle(showMoreButtonStyle)}
-                            >
-                                <Text color="textPrimaryDefault">Show more</Text>
-                                <Box style={applyStyle(hiddenTransactionsCountStyle)}>
-                                    <Text variant="label" color="textSubdued">
-                                        {hiddenAddressesCount}
-                                    </Text>
-                                </Box>
-                            </TouchableOpacity>
+        <>
+            <SummaryRow leftComponent={<TransactionDetailSummaryStepper />}>
+                <Box flexDirection="row" justifyContent="space-between" alignItems="center">
+                    <Box>
+                        <Text color="textSubdued" variant="hint">
+                            {formattedTitle}
+                        </Text>
+                        {targetAddresses.slice(0, 2).map(({ address }) => (
+                            <AccountAddressFormatter
+                                key={address}
+                                value={address}
+                                style={applyStyle(addressTextStyle)}
+                            />
+                        ))}
+                    </Box>
+                    {icon && (
+                        <Box style={applyStyle(coinIconWrapperStyle)}>
+                            <CryptoIcon symbol={icon} size="extraSmall" />
                         </Box>
                     )}
                 </Box>
-                {icon && (
-                    <Box style={applyStyle(coinIconWrapperStyle)}>
-                        <CoinIcon symbol={icon} size="extraSmall" />
-                    </Box>
-                )}
-            </Box>
-        </SummaryRow>
+            </SummaryRow>
+
+            {areChangeAddressesVisible && (
+                <>
+                    <Divider />
+                    <SummaryRow leftComponent={<TransactionDetailSummaryStepper />}>
+                        <Box flexDirection="row" justifyContent="space-between" alignItems="center">
+                            <Box>
+                                <ChangeAddressesHeader addressesCount={changeAddresses.length} />
+                                {changeAddresses.map(({ address }) => (
+                                    <AccountAddressFormatter
+                                        key={address}
+                                        value={address}
+                                        style={applyStyle(addressTextStyle)}
+                                    />
+                                ))}
+                            </Box>
+                        </Box>
+                    </SummaryRow>
+                </>
+            )}
+            {isShowMoreButtonVisible && (
+                <Box style={applyStyle(showMoreButtonContainerStyle)}>
+                    <TouchableOpacity onPress={onShowMore} style={applyStyle(showMoreButtonStyle)}>
+                        <Text color="textPrimaryDefault">Show more</Text>
+                        <Box style={applyStyle(hiddenTransactionsCountStyle)}>
+                            <Text variant="label" color="textSubdued">
+                                {hiddenAddressesCount}
+                            </Text>
+                        </Box>
+                    </TouchableOpacity>
+                </Box>
+            )}
+        </>
     );
 };

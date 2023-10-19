@@ -1,36 +1,35 @@
-import React from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
 import { Router as RouterProvider } from 'react-router-dom';
 
 import { createRoot } from 'react-dom/client';
 import { init as initSentry } from '@sentry/electron/renderer';
-import { initStore } from '@suite/reducers/store';
-import { preloadStore } from '@suite-support/preloadStore';
-import Metadata from '@suite-components/Metadata';
-import Preloader from '@suite-components/Preloader';
-import { ToastContainer } from '@suite-components/ToastContainer';
-import { ConnectedIntlProvider } from '@suite-support/ConnectedIntlProvider';
-import Resize from '@suite-support/Resize';
-import Autodetect from '@suite-support/Autodetect';
-import Protocol from '@suite-support/Protocol';
-import { useTor } from '@suite-support/useTor';
-import OnlineStatus from '@suite-support/OnlineStatus';
-import ErrorBoundary from '@suite-support/ErrorBoundary';
-import RouterHandler from '@suite-support/Router';
-import { ConnectedThemeProvider } from '@suite-support/ConnectedThemeProvider';
-import { LoadingScreen } from '@suite-support/screens/LoadingScreen';
-import { ErrorScreen } from '@suite-support/screens/ErrorScreen';
-import { useFormattersConfig } from '@suite-hooks';
-import history from '@suite/support/history';
-import { ModalContextProvider } from '@suite-support/ModalContext';
-import { desktopHandshake } from '@suite-actions/suiteActions';
-import * as STORAGE from '@suite-actions/constants/storageConstants';
 
 import { SENTRY_CONFIG } from '@suite-common/sentry';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { FormatterProvider } from '@suite-common/formatters';
 import { createIpcProxy } from '@trezor/ipc-proxy';
 import TrezorConnect from '@trezor/connect';
+
+import { initStore } from 'src/reducers/store';
+import { preloadStore } from 'src/support/suite/preloadStore';
+import { Metadata } from 'src/components/suite/Metadata';
+import { Preloader, ToastContainer } from 'src/components/suite';
+import { ConnectedIntlProvider } from 'src/support/suite/ConnectedIntlProvider';
+import Resize from 'src/support/suite/Resize';
+import Autodetect from 'src/support/suite/Autodetect';
+import Protocol from 'src/support/suite/Protocol';
+import { useTor } from 'src/support/suite/useTor';
+import OnlineStatus from 'src/support/suite/OnlineStatus';
+import ErrorBoundary from 'src/support/suite/ErrorBoundary';
+import RouterHandler from 'src/support/suite/Router';
+import { ConnectedThemeProvider } from 'src/support/suite/ConnectedThemeProvider';
+import { LoadingScreen } from 'src/support/suite/screens/LoadingScreen';
+import { ErrorScreen } from 'src/support/suite/screens/ErrorScreen';
+import { useFormattersConfig } from 'src/hooks/suite';
+import history from 'src/support/history';
+import { ModalContextProvider } from 'src/support/suite/ModalContext';
+import { desktopHandshake } from 'src/actions/suite/suiteActions';
+import * as STORAGE from 'src/actions/suite/constants/storageConstants';
 
 import { DesktopUpdater } from './support/DesktopUpdater';
 import { AppRouter } from './support/Router';

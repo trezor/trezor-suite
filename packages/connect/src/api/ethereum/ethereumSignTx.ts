@@ -1,6 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/ethereumSignTx.js
 
-import { EthereumDefinitions } from '@trezor/transport/lib/types/messages';
+import { EthereumDefinitions } from '@trezor/protobuf/lib/messages';
 import { PROTO, ERRORS } from '../../constants';
 import type { TypedCall } from '../../device/DeviceCommands';
 import type { EthereumAccessList } from '../../types/api/ethereum';

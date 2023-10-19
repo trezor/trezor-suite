@@ -128,6 +128,10 @@ export default [
                         url: '/method/ethereumGetAddress',
                     },
                     {
+                        name: 'export address GoChain',
+                        url: '/method/ethereumGetAddress-gochain',
+                    },
+                    {
                         name: 'export multiple addresses',
                         url: '/method/ethereumGetAddress-multiple',
                     },
@@ -166,8 +170,12 @@ export default [
                         url: '/method/ethereumSignTransaction',
                     },
                     {
-                        name: 'ERC 20',
-                        url: '/method/ethereumSignTransaction-erc20',
+                        name: 'ERC20 known token',
+                        url: '/method/ethereumSignTransaction-erc20-known',
+                    },
+                    {
+                        name: 'ERC20 unknown token',
+                        url: '/method/ethereumSignTransaction-erc20-unknown',
                     },
                 ],
             },
@@ -478,6 +486,10 @@ export default [
             {
                 name: 'Change PIN',
                 url: '/method/changePin',
+            },
+            {
+                name: 'Reboot to bootloader',
+                url: '/method/rebootToBootloader',
             },
             {
                 name: 'Firmware update',

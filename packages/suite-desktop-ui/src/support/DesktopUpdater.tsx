@@ -1,14 +1,14 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
-
-import { useActions, useSelector } from '@suite-hooks';
-import * as desktopUpdateActions from '@suite-actions/desktopUpdateActions';
-import { UpdateState } from '@suite-reducers/desktopUpdateReducer';
-import { ModalContextProvider } from '@suite-support/ModalContext';
-import { getAppUpdatePayload } from '@suite-utils/analytics';
-import { selectRouteName } from '@suite-reducers/routerReducer';
+import { useCallback, useEffect, useMemo, ReactNode } from 'react';
 
 import { analytics, AppUpdateEventStatus, EventType } from '@trezor/suite-analytics';
 import { desktopApi } from '@trezor/suite-desktop-api';
+
+import { useActions, useSelector } from 'src/hooks/suite';
+import * as desktopUpdateActions from 'src/actions/suite/desktopUpdateActions';
+import { UpdateState } from 'src/reducers/suite/desktopUpdateReducer';
+import { ModalContextProvider } from 'src/support/suite/ModalContext';
+import { getAppUpdatePayload } from 'src/utils/suite/analytics';
+import { selectRouteName } from 'src/reducers/suite/routerReducer';
 
 import { Available } from './DesktopUpdater/Available';
 import { Downloading } from './DesktopUpdater/Downloading';
@@ -17,7 +17,7 @@ import { EarlyAccessEnable } from './DesktopUpdater/EarlyAccessEnable';
 import { EarlyAccessDisable } from './DesktopUpdater/EarlyAccessDisable';
 
 interface DesktopUpdaterProps {
-    children: React.ReactNode;
+    children: ReactNode;
 }
 
 export const DesktopUpdater = ({ children }: DesktopUpdaterProps) => {

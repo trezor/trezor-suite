@@ -1,8 +1,7 @@
-import { enumUtils } from '@trezor/utils';
+import { enumUtils, getRandomNumberInRange } from '@trezor/utils';
 
 import type { CoinjoinRound, CoinjoinRoundOptions } from '../CoinjoinRound';
-import { EndRoundState } from '../../enums';
-import { WabiSabiProtocolErrorCode } from '../../types/coordinator';
+import { EndRoundState, WabiSabiProtocolErrorCode } from '../../enums';
 import { getBroadcastedTxDetails } from '../../utils/roundUtils';
 
 /**
@@ -40,7 +39,8 @@ export const ended = (round: CoinjoinRound, { logger, network }: CoinjoinRoundOp
             logger.error('Round not signed. Missing outputs.');
         } else if (!round.affiliateRequest) {
             // missing affiliateRequest
-            logger.error('Round not signed. Missing affiliate request.');
+            const times = round.transactionSignTries.join(',');
+            logger.error(`Round not signed. Missing affiliate request. Status fetched at ${times}`);
         } else if (inputs.some(i => !i.witness)) {
             // no signed inputs
             logger.error('Round not signed. Missing signed inputs.');
@@ -48,33 +48,40 @@ export const ended = (round: CoinjoinRound, { logger, network }: CoinjoinRoundOp
             // not signed because of other reason however
             logger.error(`Round not signed. This should never happen.`);
         }
-        inputs.forEach(input =>
-            prison.detain(input.outpoint, {
-                roundId: id,
-                reason: WabiSabiProtocolErrorCode.InputBanned,
+
+        // assume that inputs are not banned but just noted.
+        // all depends on the coordinator `AllowNotedInputRegistration` flag which is not visible in the Status
+        // https://github.com/zkSNACKs/WalletWasabi/blob/master/WalletWasabi/WabiSabi/Backend/Rounds/Arena.Partial.cs#L414
+        // give used inputs/outputs some random cool off time and try again,
+        // repeated input-registration will tell if they are really banned,
+        // make sure that addresses registered in round are recycled (reset Infinity sentence)
+        const minute = 60 * 1000;
+        const sentenceEnd = getRandomNumberInRange(5 * minute, 10 * minute);
+        [...inputs, ...addresses].forEach(vinvout =>
+            prison.detain(vinvout, {
+                sentenceEnd,
             }),
         );
     } else if (endRoundState === EndRoundState.NotAllAlicesSign) {
         logger.info('Awaiting blame round');
-        const inmates = inputs.map(i => i.outpoint).concat(addresses.map(a => a.scriptPubKey));
 
-        prison.detainForBlameRound(inmates, id);
+        prison.detainForBlameRound([...inputs, ...addresses], id);
     } else if (endRoundState === EndRoundState.AbortedNotEnoughAlices) {
         prison.releaseRegisteredInmates(id);
     } else if (endRoundState === EndRoundState.TransactionBroadcasted) {
         // detain all signed inputs and addresses forever
         inputs.forEach(input =>
-            prison.detain(input.outpoint, {
+            prison.detain(input, {
                 roundId: id,
-                reason: WabiSabiProtocolErrorCode.InputSpent,
+                errorCode: WabiSabiProtocolErrorCode.InputSpent,
                 sentenceEnd: Infinity,
             }),
         );
 
         addresses.forEach(addr =>
-            prison.detain(addr.scriptPubKey, {
+            prison.detain(addr, {
                 roundId: id,
-                reason: WabiSabiProtocolErrorCode.AlreadyRegisteredScript,
+                errorCode: WabiSabiProtocolErrorCode.AlreadyRegisteredScript,
                 sentenceEnd: Infinity,
             }),
         );

@@ -1,7 +1,5 @@
-import React from 'react';
-
 import { Box, Text, useDiscreetMode } from '@suite-native/atoms';
-import { Icon, IconName } from '@trezor/icons';
+import { Icon, IconName } from '@suite-common/icons';
 import { TransactionType } from '@suite-common/wallet-types';
 import {
     CryptoAmountFormatter,
@@ -92,7 +90,7 @@ export const TransactionDetailHeader = ({
                 {tokenTransfer ? (
                     <EthereumTokenAmountFormatter
                         value={tokenTransfer.amount}
-                        ethereumToken={tokenTransfer.symbol}
+                        symbol={tokenTransfer.symbol}
                         decimals={tokenTransfer.decimals}
                         variant="titleMedium"
                         color="textDefault"
@@ -114,7 +112,6 @@ export const TransactionDetailHeader = ({
                         <EthereumTokenToFiatAmountFormatter
                             contract={tokenTransfer.contract}
                             value={tokenTransfer.amount}
-                            ethereumToken={tokenTransfer.symbol}
                             decimals={tokenTransfer.decimals}
                         />
                     ) : (

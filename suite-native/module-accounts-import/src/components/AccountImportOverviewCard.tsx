@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 
 import { useNavigation } from '@react-navigation/core';
 
@@ -65,7 +65,7 @@ export const AccountImportOverviewCard = ({
                 {shouldDisplayDeleteIcon && (
                     <IconButton
                         data-testID="@account-import/coin-synced/delete-icon"
-                        iconName="trash"
+                        iconName="trashAlt"
                         colorScheme="tertiaryElevation1"
                         onPress={handleNavigateToQRScan}
                         size="medium"

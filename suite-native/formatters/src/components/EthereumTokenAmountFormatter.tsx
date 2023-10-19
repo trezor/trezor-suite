@@ -1,7 +1,5 @@
-import React from 'react';
-
 import { TextProps } from '@suite-native/atoms';
-import { EthereumTokenSymbol } from '@suite-native/ethereum-tokens';
+import { TokenSymbol } from '@suite-common/wallet-types';
 import { localizeNumber } from '@suite-common/wallet-utils';
 
 import { FormatterProps } from '../types';
@@ -9,7 +7,7 @@ import { AmountText } from './AmountText';
 import { convertTokenValueToDecimal } from '../utils';
 
 type EthereumTokenAmountFormatterProps = {
-    ethereumToken: EthereumTokenSymbol;
+    symbol: TokenSymbol | null;
     isDiscreetText?: boolean;
     decimals?: number;
 } & FormatterProps<number | string> &
@@ -17,7 +15,7 @@ type EthereumTokenAmountFormatterProps = {
 
 export const EthereumTokenAmountFormatter = ({
     value,
-    ethereumToken,
+    symbol,
     isDiscreetText = true,
     decimals = 0,
     variant = 'hint',
@@ -26,8 +24,7 @@ export const EthereumTokenAmountFormatter = ({
 }: EthereumTokenAmountFormatterProps) => {
     const decimalValue = convertTokenValueToDecimal(value, decimals);
 
-    const formattedSymbol = ethereumToken.toUpperCase();
-    const formattedValue = `${localizeNumber(decimalValue)} ${formattedSymbol}`;
+    const formattedValue = `${localizeNumber(decimalValue)} ${symbol}`;
 
     return (
         <AmountText

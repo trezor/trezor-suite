@@ -1,26 +1,22 @@
-import React, { ReactNode } from 'react';
-
 import { useNavigation } from '@react-navigation/native';
 
-import { Box, Text, Image } from '@suite-native/atoms';
+import { Box, Text, Image, TrezorSuiteLiteHeader } from '@suite-native/atoms';
 import {
     OnboardingStackParamList,
     OnboardingStackRoutes,
     Screen,
     StackNavigationProps,
 } from '@suite-native/navigation';
-import { Icon } from '@trezor/icons';
+import { Icon } from '@suite-common/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Color } from '@trezor/theme';
 import { useActiveColorScheme } from '@suite-native/theme';
 
 import { OnboardingFooter } from '../components/OnboardingFooter';
 
-const titleStyle = prepareNativeStyle(utils => ({
+const titleStyle = prepareNativeStyle(_ => ({
     maxWidth: '60%',
     textAlign: 'center',
     marginBottom: 12,
-    ...utils.typography.titleMedium,
 }));
 
 const imageContainerStyle = prepareNativeStyle(() => ({
@@ -28,12 +24,6 @@ const imageContainerStyle = prepareNativeStyle(() => ({
     left: 0,
     top: 0,
 }));
-
-const TitleText = ({ children, color }: { children: ReactNode; color: Color }) => (
-    <Text variant="titleMedium" color={color} style={{ textAlign: 'center' }}>
-        {children}
-    </Text>
-);
 
 export const WelcomeScreen = () => {
     const navigation =
@@ -49,10 +39,8 @@ export const WelcomeScreen = () => {
 
     const getImageSource = () => {
         if (colorScheme === 'dark') {
-            // eslint-disable-next-line global-require
             return require('../assets/darkRectangles.png');
         }
-        // eslint-disable-next-line global-require
         return require('../assets/rectangles.png');
     };
 
@@ -64,15 +52,15 @@ export const WelcomeScreen = () => {
                     <Box alignItems="center" flex={1}>
                         <Box alignItems="center">
                             <Box marginBottom="large">
-                                <Icon size="large" name="trezor" color="backgroundPrimaryDefault" />
+                                <Icon size="extraLarge" name="trezor" color="iconDefault" />
                             </Box>
-                            <Text style={applyStyle(titleStyle)}>
-                                <TitleText color="textDefault">Welcome to</TitleText>
-                                <TitleText color="textSecondaryHighlight"> Trezor Suite</TitleText>
-                                <TitleText color="textSubdued"> Lite</TitleText>
+                            <Text variant="titleMedium" style={applyStyle(titleStyle)}>
+                                Welcome to <TrezorSuiteLiteHeader textVariant="titleMedium" />
                             </Text>
                         </Box>
-                        <Text color="textSubdued">Simple and secure portfolio tracker</Text>
+                        <Text color="textSubdued" textAlign="center">
+                            Simple and secure portfolio tracker
+                        </Text>
                     </Box>
                     <OnboardingFooter redirectTarget={handleRedirect} />
                 </Box>

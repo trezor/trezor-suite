@@ -12,7 +12,7 @@
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
-        "@reduxjs/toolkit": "1.9.2",
+        "@reduxjs/toolkit": "1.9.5",
         "@suite-common/fiat-services": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-config": "workspace:*",
@@ -20,8 +20,8 @@
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",
-        "@trezor/connect": "workspace:9.0.9",
-        "date-fns": "^2.29.3",
-        "proxy-memoize": "^2.0.2"
+        "@trezor/connect": "workspace:*",
+        "date-fns": "^2.30.0",
+        "proxy-memoize": "2.0.2"
     }
 }

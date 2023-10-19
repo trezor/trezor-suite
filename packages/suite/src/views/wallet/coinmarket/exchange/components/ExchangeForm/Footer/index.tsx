@@ -1,10 +1,9 @@
-import React from 'react';
 import styled from 'styled-components';
 import { Button } from '@trezor/components';
-import { Translation } from '@suite-components';
-import { useCoinmarketExchangeFormContext } from '@wallet-hooks/useCoinmarketExchangeForm';
-import { CRYPTO_INPUT } from '@wallet-types/coinmarketExchangeForm';
-import { FooterWrapper } from '@wallet-views/coinmarket';
+import { Translation } from 'src/components/suite';
+import { useCoinmarketExchangeFormContext } from 'src/hooks/wallet/useCoinmarketExchangeForm';
+import { CRYPTO_INPUT } from 'src/types/wallet/coinmarketExchangeForm';
+import { FooterWrapper } from 'src/views/wallet/coinmarket';
 
 const Center = styled.div`
     display: flex;
@@ -18,13 +17,13 @@ const StyledButton = styled(Button)`
 `;
 
 const Footer = () => {
-    const { formState, getValues, watch, errors, isComposing } = useCoinmarketExchangeFormContext();
+    const { formState, getValues, watch, isComposing } = useCoinmarketExchangeFormContext();
     const hasValues = !!watch(CRYPTO_INPUT) && !!watch('receiveCryptoSelect')?.value;
     const formValues = getValues();
     const equalCrypto =
         formValues.sendCryptoSelect.value.toUpperCase() ===
         formValues.receiveCryptoSelect?.value?.toUpperCase();
-    const formIsValid = Object.keys(errors).length === 0;
+    const formIsValid = Object.keys(formState.errors).length === 0;
 
     return (
         <FooterWrapper>

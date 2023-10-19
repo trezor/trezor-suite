@@ -1,8 +1,7 @@
-import React from 'react';
 import styled from 'styled-components';
 import { H1, P, Button, variables } from '@trezor/components';
-import { db } from '@suite/storage';
-import { reloadApp } from '@suite-utils/reload';
+import { db } from 'src/storage';
+import { reloadApp } from 'src/utils/suite/reload';
 
 const Wrapper = styled.div`
     display: flex;
@@ -26,7 +25,7 @@ const Buttons = styled.div`
 `;
 
 const Separator = styled.div`
-    background: ${props => props.theme.STROKE_GREY};
+    background: ${({ theme }) => theme.STROKE_GREY};
     height: 1px;
     margin: 30px 0px;
     width: 80%;
@@ -51,7 +50,7 @@ const ErrorMessage = styled.span`
     max-width: 600px;
     font-family: Consolas, Menlo, Courier, monospace;
     font-size: ${variables.FONT_SIZE.TINY};
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
 `;
 
 type ErrorProps = {

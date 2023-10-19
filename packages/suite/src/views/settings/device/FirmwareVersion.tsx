@@ -1,16 +1,16 @@
-import React from 'react';
 import styled from 'styled-components';
-import { getFirmwareVersion } from '@trezor/device-utils';
 
-import { Translation, TrezorLink } from '@suite-components';
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
-import { useDevice, useActions } from '@suite-hooks';
-import * as routerActions from '@suite-actions/routerActions';
-import { getChangelogUrl, getFwUpdateVersion } from '@suite-utils/device';
+import { getChangelogUrl, getFwUpdateVersion } from '@suite-common/suite-utils';
+import { getFirmwareVersion } from '@trezor/device-utils';
 import { Button, Tooltip } from '@trezor/components';
-import { AcquiredDevice } from '@suite-types';
-import { useAnchor } from '@suite-hooks/useAnchor';
-import { SettingsAnchor } from '@suite-constants/anchors';
+
+import { Translation, TrezorLink } from 'src/components/suite';
+import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';
+import { useDevice, useDispatch } from 'src/hooks/suite';
+import { goto } from 'src/actions/suite/routerActions';
+import { AcquiredDevice } from 'src/types/suite';
+import { useAnchor } from 'src/hooks/suite/useAnchor';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 const Version = styled.div`
     span {
@@ -56,10 +56,8 @@ interface FirmwareVersionProps {
 }
 
 export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
+    const dispatch = useDispatch();
     const { device } = useDevice();
-    const { goto } = useActions({
-        goto: routerActions.goto,
-    });
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.FirmwareVersion);
 
     if (!device?.features) {
@@ -72,7 +70,7 @@ export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
     const changelogUrl = getChangelogUrl(device, revision);
     const githubButtonIcon = revision ? 'EXTERNAL_LINK' : undefined;
 
-    const handleUpdate = () => goto('firmware-index', { params: { cancelable: true } });
+    const handleUpdate = () => dispatch(goto('firmware-index', { params: { cancelable: true } }));
 
     const GithubButton = () => (
         <Button variant="tertiary" icon={githubButtonIcon} alignIcon="right" disabled={!revision}>

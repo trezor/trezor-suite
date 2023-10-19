@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import { Card } from '@suite-native/atoms';
 import { AccountKey } from '@suite-common/wallet-types';

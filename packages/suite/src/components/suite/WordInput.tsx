@@ -1,10 +1,10 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef, memo, Children, ReactElement } from 'react';
 import { FixedSizeList as List } from 'react-window';
 import { MenuListProps, SelectInstance, createFilter } from 'react-select';
 import styled from 'styled-components';
 import { Select, variables } from '@trezor/components';
 import { bip39 } from '@trezor/crypto-utils';
-import { useTranslation } from '@suite-hooks/useTranslation';
+import { useTranslation } from 'src/hooks/suite/useTranslation';
 import { useKeyPress } from 'react-use';
 import TrezorConnect, { UI } from '@trezor/connect';
 import { createTimeoutPromise } from '@trezor/utils';
@@ -36,7 +36,7 @@ type Option = { label: string; value: string };
 const MenuList = (props: MenuListProps<Option, boolean>) => {
     const listRef = useRef<List>(null);
 
-    const children = React.Children.toArray(props.children) as React.ReactElement[];
+    const children = Children.toArray(props.children) as ReactElement[];
     const [arrowDownPress] = useKeyPress('ArrowDown');
     const [arrowUpPress] = useKeyPress('ArrowUp');
 
@@ -62,7 +62,7 @@ const MenuList = (props: MenuListProps<Option, boolean>) => {
     );
 };
 
-export const WordInput = React.memo(() => {
+export const WordInput = memo(() => {
     const { translationString } = useTranslation();
 
     return (

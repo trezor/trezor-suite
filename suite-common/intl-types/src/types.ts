@@ -1,6 +1,6 @@
 // IMPORTANT! This package is just temporary solution until https://github.com/trezor/trezor-suite/pull/5647 will be merged.
 // Then we won't need this package anymore and can be deleted.
-import React from 'react';
+import { ReactElement } from 'react';
 import { MessageDescriptor } from 'react-intl';
 
 import { PrimitiveType } from '@trezor/type-utils';
@@ -18,7 +18,7 @@ export interface ExtendedMessageDescriptor extends MessageDescriptor {
     values?: {
         [key: string]:
             | PrimitiveType
-            | React.ReactElement
+            | ReactElement
             | ExtendedMessageDescriptor
             | FormatXMLElementFn;
     };

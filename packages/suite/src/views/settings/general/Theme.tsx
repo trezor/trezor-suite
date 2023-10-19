@@ -1,14 +1,14 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { desktopApi, SuiteThemeVariant } from '@trezor/suite-desktop-api';
-import * as suiteActions from '@suite-actions/suiteActions';
-import { Translation } from '@suite-components/Translation';
-import { SectionItem, ActionColumn, ActionSelect, TextColumn } from '@suite-components/Settings';
-import { useActions, useSelector, useTranslation } from '@suite-hooks';
-import { useAnchor } from '@suite-hooks/useAnchor';
-import { SettingsAnchor } from '@suite-constants/anchors';
-import { getOsTheme } from '@suite-utils/env';
+import { setAutodetect, setTheme } from 'src/actions/suite/suiteActions';
+import { Translation } from 'src/components/suite/Translation';
+import { SectionItem, ActionColumn, ActionSelect, TextColumn } from 'src/components/suite/Settings';
+import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
+import { useAnchor } from 'src/hooks/suite/useAnchor';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { getOsTheme } from 'src/utils/suite/env';
 
 const useThemeOptions = () => {
     const { translationString } = useTranslation();
@@ -46,16 +46,10 @@ const useThemeOptions = () => {
 };
 
 export const Theme = () => {
-    const { theme, autodetectTheme } = useSelector(state => ({
-        theme: state.suite.settings.theme,
-        autodetectTheme: state.suite.settings.autodetect.theme,
-    }));
-    const { setTheme, setAutodetect } = useActions({
-        setTheme: suiteActions.setTheme,
-        setAutodetect: suiteActions.setAutodetect,
-    });
+    const theme = useSelector(state => state.suite.settings.theme);
+    const autodetectTheme = useSelector(state => state.suite.settings.autodetect.theme);
+    const dispatch = useDispatch();
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.Theme);
-
     const { options, getOption } = useThemeOptions();
 
     const selectedValue = getOption(autodetectTheme ? 'system' : theme.variant);
@@ -73,10 +67,10 @@ export const Theme = () => {
             },
         });
         if ((value === 'system') !== autodetectTheme) {
-            setAutodetect({ theme: !autodetectTheme });
+            dispatch(setAutodetect({ theme: !autodetectTheme }));
         }
         if (value !== 'system') {
-            setTheme(value);
+            dispatch(setTheme(value));
         }
         if (desktopApi.available) {
             desktopApi.themeChange(value);

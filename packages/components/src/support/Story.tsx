@@ -1,4 +1,3 @@
-import React from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 import { THEME, P } from '../index';
 
@@ -7,8 +6,8 @@ const Wrapper = styled.div`
     display: flex;
     height: 100%;
     flex-wrap: wrap;
-    background: ${props => props.theme.BG_WHITE};
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    background: ${({ theme }) => theme.BG_WHITE};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
 `;
 
 const StoryWrapper = (story: any) => (

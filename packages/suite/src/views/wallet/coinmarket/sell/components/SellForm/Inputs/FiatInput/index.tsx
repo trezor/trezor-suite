@@ -1,31 +1,19 @@
-import React, { useMemo } from 'react';
-import { FIAT } from '@suite-config';
-import { Translation, NumberInput } from '@suite-components';
+import { fiatCurrencies } from '@suite-common/suite-config';
+import { NumberInput } from 'src/components/suite';
 import { Select } from '@trezor/components';
-import { buildOption } from '@wallet-utils/coinmarket/coinmarketUtils';
-import Bignumber from 'bignumber.js';
+import { buildOption } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { Controller } from 'react-hook-form';
-import { useCoinmarketSellFormContext } from '@wallet-hooks/useCoinmarketSellForm';
-import { isDecimalsValid, getInputState } from '@suite-common/wallet-utils';
-import { InputError } from '@wallet-components';
-import { MAX_LENGTH } from '@suite-constants/inputs';
-import {
-    CRYPTO_INPUT,
-    FIAT_CURRENCY_SELECT,
-    FIAT_INPUT,
-} from '@suite/types/wallet/coinmarketSellForm';
-import { TypedValidationRules } from '@wallet-types/form';
+import { useCoinmarketSellFormContext } from 'src/hooks/wallet/useCoinmarketSellForm';
+import { getInputState } from '@suite-common/wallet-utils';
+import { MAX_LENGTH } from 'src/constants/suite/inputs';
+import { FIAT_CURRENCY_SELECT, FIAT_INPUT } from 'src/types/wallet/coinmarketSellForm';
+import { useTranslation } from 'src/hooks/suite';
+import { validateDecimals, validateMin } from 'src/utils/suite/validation';
 
-interface Props {
-    activeInput: typeof FIAT_INPUT | typeof CRYPTO_INPUT;
-    setActiveInput: React.Dispatch<React.SetStateAction<typeof FIAT_INPUT | typeof CRYPTO_INPUT>>;
-}
-
-const FiatInput = ({ activeInput, setActiveInput }: Props) => {
+const FiatInput = () => {
     const {
-        errors,
+        formState: { errors },
         control,
-        formState,
         amountLimits,
         sellInfo,
         setAmountLimits,
@@ -36,70 +24,35 @@ const FiatInput = ({ activeInput, setActiveInput }: Props) => {
         account,
     } = useCoinmarketSellFormContext();
 
+    const { translationString } = useTranslation();
+
     const fiatInputValue = getValues(FIAT_INPUT);
-    const { outputs } = getValues();
-    const tokenAddress = outputs?.[0]?.token;
+    const tokenAddress = getValues('outputs.0.token');
     const tokenData = account.tokens?.find(t => t.contract === tokenAddress);
 
-    const fiatInputRules = useMemo<TypedValidationRules>(
-        () => ({
-            validate: (value: string) => {
-                if (activeInput === FIAT_INPUT) {
-                    if (!value) {
-                        if (formState.isSubmitting) {
-                            return <Translation id="TR_REQUIRED_FIELD" />;
-                        }
-                        return;
+    const fiatInputRules = {
+        validate: {
+            min: validateMin(translationString),
+            decimals: validateDecimals(translationString, { decimals: 2 }),
+            limits: (value: string) => {
+                if (value && amountLimits) {
+                    const amount = Number(value);
+                    if (amountLimits.minFiat && amount < amountLimits.minFiat) {
+                        return translationString('TR_SELL_VALIDATION_ERROR_MINIMUM_FIAT', {
+                            minimum: amountLimits.minFiat,
+                            currency: amountLimits.currency,
+                        });
                     }
-
-                    const amountBig = new Bignumber(value);
-                    if (amountBig.isNaN()) {
-                        return <Translation id="AMOUNT_IS_NOT_NUMBER" />;
-                    }
-
-                    if (amountBig.lte(0)) {
-                        return <Translation id="AMOUNT_IS_TOO_LOW" />;
-                    }
-
-                    if (!isDecimalsValid(value, 2)) {
-                        return (
-                            <Translation
-                                id="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
-                                values={{ decimals: 2 }}
-                            />
-                        );
-                    }
-
-                    if (amountLimits) {
-                        const amount = Number(value);
-                        if (amountLimits.minFiat && amount < amountLimits.minFiat) {
-                            return (
-                                <Translation
-                                    id="TR_SELL_VALIDATION_ERROR_MINIMUM_FIAT"
-                                    values={{
-                                        minimum: amountLimits.minFiat,
-                                        currency: amountLimits.currency,
-                                    }}
-                                />
-                            );
-                        }
-                        if (amountLimits.maxFiat && amount > amountLimits.maxFiat) {
-                            return (
-                                <Translation
-                                    id="TR_SELL_VALIDATION_ERROR_MAXIMUM_FIAT"
-                                    values={{
-                                        maximum: amountLimits.maxFiat,
-                                        currency: amountLimits.currency,
-                                    }}
-                                />
-                            );
-                        }
+                    if (amountLimits.maxFiat && amount > amountLimits.maxFiat) {
+                        return translationString('TR_SELL_VALIDATION_ERROR_MAXIMUM_FIAT', {
+                            maximum: amountLimits.maxFiat,
+                            currency: amountLimits.currency,
+                        });
                     }
                 }
             },
-        }),
-        [activeInput, amountLimits, formState.isSubmitting],
-    );
+        },
+    };
 
     return (
         <NumberInput
@@ -107,18 +60,12 @@ const FiatInput = ({ activeInput, setActiveInput }: Props) => {
             noTopLabel
             defaultValue=""
             rules={fiatInputRules}
-            onFocus={() => {
-                setActiveInput(FIAT_INPUT);
-            }}
-            onChange={value => {
-                setActiveInput(FIAT_INPUT);
-                onFiatAmountChange(value);
-            }}
+            onChange={onFiatAmountChange}
             isDisabled={tokenData !== undefined}
             inputState={getInputState(errors.fiatInput, fiatInputValue)}
             name={FIAT_INPUT}
             maxLength={MAX_LENGTH.AMOUNT}
-            bottomText={<InputError error={errors[FIAT_INPUT]} />}
+            bottomText={errors[FIAT_INPUT]?.message}
             innerAddon={
                 <Controller
                     control={control}
@@ -131,9 +78,9 @@ const FiatInput = ({ activeInput, setActiveInput }: Props) => {
                               }
                             : defaultCurrency
                     }
-                    render={({ onChange, value }) => (
+                    render={({ field: { value, onChange } }) => (
                         <Select
-                            options={FIAT.currencies
+                            options={Object.keys(fiatCurrencies)
                                 .filter(c => sellInfo?.supportedFiatCurrencies.has(c))
                                 .map((currency: string) => buildOption(currency))}
                             isSearchable

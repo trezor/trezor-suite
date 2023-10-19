@@ -3,14 +3,17 @@ import { networks } from '@trezor/utxo-lib';
 
 import { DISCOVERY_LOOKOUT } from '../../src/constants';
 import { scanAccount } from '../../src/backend/scanAccount';
-import { scanAddress } from '../../src/backend/scanAddress';
 import { getAccountInfo } from '../../src/backend/getAccountInfo';
 import { CoinjoinFilterController } from '../../src/backend/CoinjoinFilterController';
 import { CoinjoinMempoolController } from '../../src/backend/CoinjoinMempoolController';
 import * as FIXTURES from '../fixtures/methods.fixture';
 import { COINJOIN_BACKEND_SETTINGS } from '../fixtures/config.fixture';
 import { MockBackendClient } from '../mocks/MockBackendClient';
-import type { BlockFilterResponse, Transaction } from '../../src/types/backend';
+import type {
+    BlockFilterResponse,
+    ScanAccountProgress,
+    Transaction,
+} from '../../src/types/backend';
 
 const EMPTY_CHECKPOINT = {
     blockHash: FIXTURES.BASE_HASH,
@@ -24,7 +27,7 @@ const hasFilters = (r: BlockFilterResponse): r is Extract<BlockFilterResponse, {
 
 describe(`CoinjoinBackend methods`, () => {
     const client = new MockBackendClient();
-    const fetchFiltersMock = jest.spyOn(client, 'fetchFilters');
+    const fetchFiltersMock = jest.spyOn(client, 'fetchBlockFilters');
     const fetchBlockMock = jest.spyOn(client, 'fetchBlock');
 
     const getRequestedFilters = () =>
@@ -41,50 +44,23 @@ describe(`CoinjoinBackend methods`, () => {
             .filter(arrayDistinct)
             .sort();
 
-    const getContext = <T>(onProgress: (t: T) => void) => ({
+    const getContext = (onProgress: (t: ScanAccountProgress) => void) => ({
         client,
         filters: new CoinjoinFilterController(client, {
             ...COINJOIN_BACKEND_SETTINGS,
             baseBlockHash: FIXTURES.BASE_HASH,
             baseBlockHeight: FIXTURES.BASE_HEIGHT,
         }),
-        mempool: new CoinjoinMempoolController({ client }),
+        mempool: new CoinjoinMempoolController({ client, network: networks.regtest }),
         network: networks.regtest,
         onProgress,
+        onProgressInfo: () => {},
     });
 
     beforeEach(() => {
         fetchFiltersMock.mockClear();
         fetchBlockMock.mockClear();
         client.setFixture(FIXTURES.BLOCKS);
-    });
-
-    it('scanAddress', async () => {
-        let txs: Transaction[] = [];
-
-        const { pending } = await scanAddress(
-            {
-                descriptor: FIXTURES.SEGWIT_RECEIVE_ADDRESSES[0],
-                checkpoints: [EMPTY_CHECKPOINT],
-            },
-            getContext(progress => {
-                txs = txs.concat(progress.transactions);
-            }),
-        );
-
-        const info = getAccountInfo({
-            descriptor: FIXTURES.SEGWIT_RECEIVE_ADDRESSES[0],
-            network: networks.regtest,
-            transactions: txs.concat(pending),
-        });
-
-        expect(info).toMatchObject(FIXTURES.SEGWIT_RECEIVE_RESULT);
-
-        const filters = await getRequestedFilters();
-        expect(filters).toEqual([1, 2, 3, 4, 5, 6, 7, 8]);
-
-        const blocks = getRequestedBlocks();
-        expect(blocks).toEqual([1, 2, 4, 6, 7, 8]);
     });
 
     it('scanAccount at once', async () => {
@@ -120,17 +96,19 @@ describe(`CoinjoinBackend methods`, () => {
         let txs: Transaction[] = [];
 
         // Only four blocks are known,
-        // txid_4 is in mempool
+        // tx 44444444444444444444444444444444 is in mempool
         client.setFixture(FIXTURES.BLOCKS.slice(0, 4), [FIXTURES.TX_4_PENDING]);
+
+        const context = getContext(progress => {
+            txs = txs.concat(progress.transactions);
+        });
 
         const half = await scanAccount(
             {
                 descriptor: FIXTURES.SEGWIT_XPUB,
                 checkpoints: [EMPTY_CHECKPOINT],
             },
-            getContext(progress => {
-                txs = txs.concat(progress.transactions);
-            }),
+            context,
         );
 
         const halfInfo = getAccountInfo({
@@ -160,9 +138,7 @@ describe(`CoinjoinBackend methods`, () => {
                 descriptor: FIXTURES.SEGWIT_XPUB,
                 checkpoints: [half.checkpoint],
             },
-            getContext(progress => {
-                txs = txs.concat(progress.transactions);
-            }),
+            context,
         );
 
         const fullInfo = getAccountInfo({
@@ -230,5 +206,41 @@ describe(`CoinjoinBackend methods`, () => {
         // Progress with reorged block should be emitted
         expect(progresses).toHaveLength(1);
         expect(progresses[0]).toEqual(cp3);
+    });
+
+    it('scanAccount derive pending', async () => {
+        client.setFixture([{ ...FIXTURES.BLOCKS[0], txs: [] }]);
+
+        const scan1 = await scanAccount(
+            { descriptor: FIXTURES.SEGWIT_XPUB, checkpoints: [EMPTY_CHECKPOINT] },
+            getContext(() => {}),
+        );
+
+        const info1 = getAccountInfo({
+            descriptor: FIXTURES.SEGWIT_XPUB,
+            network: networks.regtest,
+            transactions: scan1.pending,
+            checkpoint: scan1.checkpoint,
+        });
+
+        expect(scan1.checkpoint.receiveCount).toBe(20);
+        expect(info1.addresses.unused.length).toBe(20);
+
+        client.setFixture([{ ...FIXTURES.BLOCKS[0], txs: [] }], [FIXTURES.TX_4_PENDING]);
+
+        const scan2 = await scanAccount(
+            { descriptor: FIXTURES.SEGWIT_XPUB, checkpoints: [scan1.checkpoint] },
+            getContext(() => {}),
+        );
+
+        const info2 = getAccountInfo({
+            descriptor: FIXTURES.SEGWIT_XPUB,
+            network: networks.regtest,
+            transactions: scan2.pending,
+            checkpoint: scan2.checkpoint,
+        });
+
+        expect(scan2.checkpoint.receiveCount).toBe(22);
+        expect(info2.addresses.unused.length).toBe(22);
     });
 });

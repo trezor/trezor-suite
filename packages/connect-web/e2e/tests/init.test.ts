@@ -17,7 +17,6 @@ const fixtures = [
     },
     {
         params: {
-            versionChannel: undefined,
             connectSrc: 'https://connect.trezor.io/9.0.1/',
         },
         result: 'https://connect.trezor.io/9.0.1/iframe.html',
@@ -42,7 +41,6 @@ fixtures.forEach(f => {
                         email: 'developer@xyz.com',
                         appUrl: 'http://your.application.com',
                     },
-                    versionChannel: '${f.params.versionChannel}',
                     connectSrc: '${f.params.connectSrc}'
                 });
         `,

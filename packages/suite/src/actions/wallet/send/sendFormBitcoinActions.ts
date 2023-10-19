@@ -1,5 +1,6 @@
-import TrezorConnect, { FeeLevel, Params, PROTO, SignTransaction } from '@trezor/connect';
 import BigNumber from 'bignumber.js';
+
+import TrezorConnect, { FeeLevel, Params, PROTO, SignTransaction } from '@trezor/connect';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     formatNetworkAmount,
@@ -16,17 +17,19 @@ import {
     PrecomposedTransaction,
     PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
-import { Dispatch, GetState } from '@suite-types';
+import { selectDevice } from '@suite-common/wallet-core';
+
+import { Dispatch, GetState } from 'src/types/suite';
 
 export const composeTransaction =
     (formValues: FormState, formState: ComposeActionContext) =>
     async (dispatch: Dispatch, getState: GetState) => {
-        const { account, excludedUtxos, feeInfo } = formState;
+        const { account, excludedUtxos, feeInfo, prison } = formState;
 
         const {
             settings: { bitcoinAmountUnit },
         } = getState().wallet;
-        const { device } = getState().suite;
+        const device = selectDevice(getState());
 
         const isSatoshis =
             bitcoinAmountUnit === PROTO.AmountUnit.SATOSHI &&
@@ -53,11 +56,11 @@ export const composeTransaction =
         // FeeLevels in rbf form are increased by original/prev rate
         // decrease it since the calculation (in connect) is based on the baseFee not the prev rate
         const origRate = formValues.rbfParams
-            ? parseInt(formValues.rbfParams.feeRate, 10)
+            ? parseFloat(formValues.rbfParams.feeRate)
             : undefined;
         if (origRate) {
             predefinedLevels.forEach(l => {
-                l.feePerUnit = Number(parseInt(l.feePerUnit, 10) - origRate).toString();
+                l.feePerUnit = Number(parseFloat(l.feePerUnit) - origRate).toString();
             });
         }
 
@@ -76,12 +79,24 @@ export const composeTransaction =
         // unspendable utxos are defined in `useSendForm` hook
         const utxo = formValues.isCoinControlEnabled
             ? formValues.selectedUtxos?.map(u => ({ ...u, required: true }))
-            : account.utxo.filter(u => (u as any).required || !excludedUtxos?.[getUtxoOutpoint(u)]);
+            : account.utxo.filter(u => {
+                  const outpoint = getUtxoOutpoint(u);
+                  return (u as any).required || (!excludedUtxos?.[outpoint] && !prison?.[outpoint]);
+              });
+
+        // certain change addresses might be temporary blocked by coinjoin process
+        // exclude addresses which exists in "prison" dataset (see coinjoinReducer/selectRegisteredUtxosByAccountKey)
+        const changeAddresses = prison
+            ? account.addresses.change.filter(a => !prison[a.address])
+            : account.addresses.change;
 
         const params = {
             account: {
                 path: account.path,
-                addresses: account.addresses,
+                addresses: {
+                    ...account.addresses,
+                    change: changeAddresses,
+                },
                 utxo,
             },
             feeLevels: predefinedLevels,
@@ -196,11 +211,12 @@ export const composeTransaction =
 export const signTransaction =
     (formValues: FormState, transactionInfo: PrecomposedTransactionFinal) =>
     async (dispatch: Dispatch, getState: GetState) => {
+        const state = getState();
         const {
             selectedAccount,
             settings: { bitcoinAmountUnit },
-        } = getState().wallet;
-        const { device } = getState().suite;
+        } = state.wallet;
+        const device = selectDevice(state);
 
         if (
             selectedAccount.status !== 'loaded' ||
@@ -221,8 +237,21 @@ export const signTransaction =
             signEnhancement.locktime = new BigNumber(formValues.bitcoinLockTime).toNumber();
         }
 
+        let refTxs;
+
         if (formValues.rbfParams && transactionInfo.useNativeRbf) {
             const { txid, utxo, outputs } = formValues.rbfParams;
+
+            // normally taproot/coinjoin account doesn't require referenced transactions while signing
+            // but in RBF case they are needed to obtain data of original transaction
+            // passing them directly from tx history will prevent downloading them from the backend (in @trezor/connect)
+            // this is essential step for coinjoin account to avoid leaking txid
+            if (['coinjoin', 'taproot'].includes(account.accountType)) {
+                refTxs = (state.wallet.transactions.transactions[account.key] || []).filter(
+                    tx => tx.txid === txid,
+                );
+            }
+
             // override inputs and outputs of precomposed transaction
             // NOTE: RBF inputs/outputs required are to be in the same exact order as in original tx (covered by TrezorConnect.composeTransaction.skipPermutation param)
             // possible variations:
@@ -264,6 +293,7 @@ export const signTransaction =
             outputs: transaction.outputs,
             account: {
                 addresses: account.addresses!,
+                transactions: refTxs,
             },
             coin: account.symbol,
             ...signEnhancement,
@@ -271,7 +301,7 @@ export const signTransaction =
 
         const response = await TrezorConnect.signTransaction(signPayload);
         if (!response.success) {
-            // catch manual error from ReviewTransaction modal
+            // catch manual error from TransactionReviewModal
             if (response.payload.error === 'tx-cancelled') return;
             dispatch(
                 notificationsActions.addToast({

@@ -1,14 +1,13 @@
-import TrezorConnect, { UI, RecoveryDevice } from '@trezor/connect';
+import { deviceActions, selectDevice } from '@suite-common/wallet-core';
+import TrezorConnect, { UI, RecoveryDevice, DeviceModelInternal } from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
-import { RECOVERY } from '@recovery-actions/constants';
-import * as onboardingActions from '@onboarding-actions/onboardingActions';
-import * as routerActions from '@suite-actions/routerActions';
-import { Dispatch, GetState } from '@suite-types';
-import { WordCount } from '@recovery-types';
-import { DEFAULT_PASSPHRASE_PROTECTION } from '@suite-constants/device';
-import { SUITE } from '@suite-actions/constants';
-import { DeviceModel, getDeviceModel } from '@trezor/device-utils';
+import { RECOVERY } from 'src/actions/recovery/constants';
+import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
+import * as routerActions from 'src/actions/suite/routerActions';
+import { Dispatch, GetState } from 'src/types/suite';
+import { WordCount } from 'src/types/recovery';
+import { DEFAULT_PASSPHRASE_PROTECTION } from 'src/constants/suite/device';
 
 export type SeedInputStatus =
     | 'initial'
@@ -55,13 +54,13 @@ const submit = (word: string) => () => {
 
 const checkSeed = () => async (dispatch: Dispatch, getState: GetState) => {
     const { advancedRecovery, wordsCount } = getState().recovery;
-    const { device } = getState().suite;
-    const deviceModel = getDeviceModel(device);
+    const device = selectDevice(getState());
 
-    if (!device || !device.features) return;
+    if (!device?.features) return;
+
     dispatch(setError(''));
 
-    if (deviceModel === DeviceModel.T1) {
+    if (device.features.internal_model === DeviceModelInternal.T1B1) {
         dispatch(setStatus('waiting-for-confirmation'));
     } else {
         dispatch(setStatus('in-progress'));
@@ -93,15 +92,13 @@ const checkSeed = () => async (dispatch: Dispatch, getState: GetState) => {
 
 const recoverDevice = () => async (dispatch: Dispatch, getState: GetState) => {
     const { advancedRecovery, wordsCount } = getState().recovery;
-    const { device } = getState().suite;
+    const device = selectDevice(getState());
     if (!device?.features) {
         return;
     }
     dispatch(setError(''));
 
-    const deviceModel = getDeviceModel(device);
-
-    if (deviceModel === DeviceModel.T1) {
+    if (device.features.internal_model === DeviceModelInternal.T1B1) {
         dispatch(setStatus('waiting-for-confirmation'));
     } else {
         dispatch(setStatus('in-progress'));
@@ -131,7 +128,7 @@ const recoverDevice = () => async (dispatch: Dispatch, getState: GetState) => {
         // It means that when user finished the onboarding process a standard wallet is automatically
         // discovered instead of asking for selecting between standard wallet and a passphrase.
         // This action takes cares of setting useEmptyPassphrase to false (handled by deviceReducer).
-        dispatch({ type: SUITE.UPDATE_PASSPHRASE_MODE, payload: device, hidden: true });
+        dispatch(deviceActions.updatePassphraseMode({ device, hidden: true }));
     }
 
     if (!response.success) {
@@ -141,12 +138,12 @@ const recoverDevice = () => async (dispatch: Dispatch, getState: GetState) => {
     dispatch(setStatus('finished'));
 };
 
-// Recovery mode is persistent on model T. This means that device stays in recovery mode even after reconnecting.
+// Recovery mode is persistent on T2T1. This means that device stays in recovery mode even after reconnecting.
 // In such case, we need to call again the call that brought device into recovery mode (either proper recovery
 // or seed check). This way, communication is renewed and host starts receiving messages from device again.
 const rerun = () => async (dispatch: Dispatch, getState: GetState) => {
-    const { suite, router } = getState();
-    const { device } = suite;
+    const { router } = getState();
+    const device = selectDevice(getState());
     if (!device?.features) {
         return;
     }

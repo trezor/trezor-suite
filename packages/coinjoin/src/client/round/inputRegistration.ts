@@ -6,7 +6,7 @@ import { confirmationInterval } from './connectionConfirmation';
 import { ROUND_SELECTION_REGISTRATION_OFFSET } from '../../constants';
 import type { Alice } from '../Alice';
 import type { CoinjoinRound, CoinjoinRoundOptions } from '../CoinjoinRound';
-import { SessionPhase } from '../../enums';
+import { SessionPhase, WabiSabiProtocolErrorCode } from '../../enums';
 
 /**
  * RoundPhase: 0, InputRegistration
@@ -79,15 +79,37 @@ const registerInput = async (
             logger.warn(
                 `Registration ~~${input.outpoint}~~ to ~~${round.id}~~ failed: ${error.message}`,
             );
-            // catch specific error
-            if (error.message === coordinator.WabiSabiProtocolErrorCode.WrongPhase) {
-                // abort remaining delayed candidates to register (if exists) registration is not going to happen for them anyway
-                signal.dispatchEvent(new Event('abort'));
+
+            if (error instanceof coordinator.WabiSabiProtocolException) {
+                // catch specific error
+                if (error.errorCode === WabiSabiProtocolErrorCode.WrongPhase) {
+                    // abort remaining delayed candidates to register (if exists) registration is not going to happen for them anyway
+                    signal.dispatchEvent(new Event('abort'));
+                }
+                if (error.errorCode === WabiSabiProtocolErrorCode.InputBanned) {
+                    const sentenceEnd =
+                        'BannedUntil' in error.exceptionData
+                            ? new Date(error.exceptionData.BannedUntil).getTime() - Date.now()
+                            : 60 * 60 * 1000; // try again in 1 hour
+                    round.prison.detain(input, {
+                        errorCode: WabiSabiProtocolErrorCode.InputBanned,
+                        sentenceEnd,
+                    });
+                }
+                if (error.errorCode === WabiSabiProtocolErrorCode.InputLongBanned) {
+                    // track blacklist ban if it happens
+                    logger.error(error.message);
+                    const sentenceEnd =
+                        'BannedUntil' in error.exceptionData
+                            ? new Date(error.exceptionData.BannedUntil).getTime() - Date.now()
+                            : 10 * 24 * 60 * 60 * 1000; // try again in 10 days
+                    round.prison.detain(input, {
+                        errorCode: WabiSabiProtocolErrorCode.InputLongBanned,
+                        sentenceEnd,
+                    });
+                }
             }
-            if (error.message === coordinator.WabiSabiProtocolErrorCode.InputLongBanned) {
-                // track blacklist ban if it happens
-                logger.error('InputLongBanned');
-            }
+
             throw error;
         });
 
@@ -95,20 +117,20 @@ const registerInput = async (
     // coordinator fee is 0 if input is remixed or amount is lower than or equal to plebsDontPayThreshold value
     const { roundParameters } = round;
     const coordinatorFee =
-        input.amount > roundParameters.coordinationFeeRate.plebsDontPayThreshold &&
-        !registrationData.isPayingZeroCoordinationFee
-            ? Math.floor(roundParameters.coordinationFeeRate.rate * input.amount)
+        input.amount > roundParameters.CoordinationFeeRate.PlebsDontPayThreshold &&
+        !registrationData.IsPayingZeroCoordinationFee
+            ? Math.floor(roundParameters.CoordinationFeeRate.Rate * input.amount)
             : 0;
-    const miningFee = Math.floor((input.inputSize * roundParameters.miningFeeRate) / 1000);
+    const miningFee = Math.floor((input.inputSize * roundParameters.MiningFeeRate) / 1000);
     const amount = input.amount - coordinatorFee - miningFee;
-    const vsize = roundParameters.maxVsizeAllocationPerAlice - input.inputSize;
+    const vsize = roundParameters.MaxVsizeAllocationPerAlice - input.inputSize;
 
     // store RegistrationData and affiliateFlag
     input.setRegistrationData(registrationData, coordinatorFee > 0);
     // and put input to prison
-    round.prison.detain(input.outpoint, {
+    round.prison.detain(input, {
         roundId: round.id,
-        reason: coordinator.WabiSabiProtocolErrorCode.AliceAlreadyRegistered,
+        errorCode: WabiSabiProtocolErrorCode.AliceAlreadyRegistered,
     });
 
     // NOTE: RegistrationData processing on middleware is intentionally not using abort signal
@@ -118,14 +140,14 @@ const registerInput = async (
         // get Credentials and use them in middleware.getRealCredentials
         const amountCredentials = await middleware.getCredentials(
             round.amountCredentialIssuerParameters,
-            registrationData.amountCredentials,
-            zeroAmountCredentials.credentialsResponseValidation,
+            registrationData.AmountCredentials,
+            zeroAmountCredentials.CredentialsResponseValidation,
             { baseUrl: middlewareUrl }, // NOTE: without abort signal (should not be aborted)
         );
         const vsizeCredentials = await middleware.getCredentials(
             round.vsizeCredentialIssuerParameters,
-            registrationData.vsizeCredentials,
-            zeroVsizeCredentials.credentialsResponseValidation,
+            registrationData.VsizeCredentials,
+            zeroVsizeCredentials.CredentialsResponseValidation,
             { baseUrl: middlewareUrl }, // NOTE: without abort signal (should not be aborted)
         );
 
@@ -134,19 +156,19 @@ const registerInput = async (
             [amount, 0],
             amountCredentials,
             round.amountCredentialIssuerParameters,
-            roundParameters.maxAmountCredentialValue,
+            roundParameters.MaxAmountCredentialValue,
             { baseUrl: middlewareUrl },
         );
         const realVsizeCredentials = await middleware.getRealCredentials(
             [vsize, 0],
             vsizeCredentials,
             round.vsizeCredentialIssuerParameters,
-            roundParameters.maxVsizeCredentialValue,
+            roundParameters.MaxVsizeCredentialValue,
             { baseUrl: middlewareUrl },
         );
 
         logger.info(
-            `Registration ~~${input.outpoint}~~ to ~~${round.id}~~ successful. aliceId: ${registrationData.aliceId}`,
+            `Registration ~~${input.outpoint}~~ to ~~${round.id}~~ successful. aliceId: ${registrationData.AliceId}`,
         );
         logger.info(
             `~~${input.outpoint}~~ will pay ${coordinatorFee} coordinator fee and ${miningFee} mining fee`,
@@ -159,13 +181,6 @@ const registerInput = async (
 
         return input;
     } catch (error) {
-        // TODO: try to unregister if post processing fails?
-        // await coordinator.inputUnregistration(round.id, registrationData.aliceId, {
-        //     // signal,
-        //     baseUrl: coordinatorUrl,
-        //     identity: input.outpoint,
-        // });
-
         input.setError(error);
         return input;
     }

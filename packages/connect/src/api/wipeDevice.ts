@@ -12,7 +12,6 @@ export default class WipeDevice extends AbstractMethod<'wipeDevice'> {
         this.useDeviceState = false;
         this.requiredPermissions = ['management'];
         this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
-        this.info = 'Wipe device';
     }
 
     async confirmation() {
@@ -39,6 +38,10 @@ export default class WipeDevice extends AbstractMethod<'wipeDevice'> {
 
         this.confirmed = uiResp.payload;
         return this.confirmed;
+    }
+
+    get info() {
+        return 'Wipe device';
     }
 
     async run() {

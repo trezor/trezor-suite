@@ -1,17 +1,17 @@
-import React, { useCallback, useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
-import { RegisterOptions, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import addressValidator from 'trezor-address-validator';
-import { QuestionTooltip, Translation } from '@suite-components';
-import { Input, variables, DeviceImage, Button } from '@trezor/components';
-import { InputError } from '@wallet-components';
-import { useCoinmarketExchangeOffersContext } from '@wallet-hooks/useCoinmarketExchangeOffers';
-import { TypedValidationRules } from '@wallet-types/form';
+
+import { QuestionTooltip, Translation } from 'src/components/suite';
+import { Input, variables, Button } from '@trezor/components';
+import { useCoinmarketExchangeOffersContext } from 'src/hooks/wallet/useCoinmarketExchangeOffers';
 import { isHexValid, isInteger } from '@suite-common/wallet-utils';
-import { AddressOptions } from '@wallet-views/coinmarket/common/AddressOptions';
-import { useAccountAddressDictionary } from '@wallet-hooks/useAccounts';
+import { AddressOptions } from 'src/views/wallet/coinmarket/common';
+import { useAccountAddressDictionary } from 'src/hooks/wallet/useAccounts';
 import { ReceiveOptions, AccountSelectOption } from './ReceiveOptions';
-import { getDeviceModel } from '@trezor/device-utils';
+import { useTranslation } from 'src/hooks/suite/useTranslation';
+import { ConfirmedOnTrezor } from 'src/views/wallet/coinmarket/common/ConfirmedOnTrezor';
 
 const Wrapper = styled.div`
     display: flex;
@@ -20,7 +20,7 @@ const Wrapper = styled.div`
 `;
 
 const Heading = styled.div`
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     padding: 16px 24px 0 24px;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.SMALL};
@@ -46,28 +46,13 @@ const CustomLabel = styled(Label)`
     padding: 12px 0;
 `;
 
-const StyledDeviceImage = styled(DeviceImage)`
-    padding: 0 10px 0 0;
-`;
-
 const ButtonWrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
     padding-top: 20px;
-    border-top: 1px solid ${props => props.theme.STROKE_GREY};
+    border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
     margin: 20px 0;
-`;
-
-const Confirmed = styled.div`
-    display: flex;
-    height: 60px;
-    font-size: ${variables.FONT_SIZE.BIG};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    background: ${props => props.theme.BG_GREY};
-    align-items: center;
-    justify-content: center;
-    margin-top: 27px;
 `;
 
 const Row = styled.div`
@@ -103,20 +88,25 @@ const VerifyAddressComponent = () => {
         receiveSymbol,
     } = useCoinmarketExchangeOffersContext();
     const [selectedAccountOption, setSelectedAccountOption] = useState<AccountSelectOption>();
-    const { register, watch, errors, formState, setValue, control } = useForm<FormState>({
+
+    const {
+        register,
+        watch,
+        formState: { errors, isValid },
+        setValue,
+        control,
+    } = useForm<FormState>({
         mode: 'onChange',
     });
-    const deviceModel = getDeviceModel(device);
 
-    const typedRegister = useCallback(
-        (rules?: TypedValidationRules) => register(rules as RegisterOptions),
-        [register],
-    );
+    const { translationString } = useTranslation();
 
     const addressDictionary = useAccountAddressDictionary(selectedAccountOption?.account);
     const { address, extraField } = watch();
     const accountAddress = address && addressDictionary[address];
-
+    const { accountTooltipTranslationId, addressTooltipTranslationId } = getTranslationIds(
+        selectedAccountOption?.type,
+    );
     const extraFieldDescription = selectedQuote?.extraFieldDescription
         ? {
               extraFieldName: selectedQuote?.extraFieldDescription?.name,
@@ -125,11 +115,34 @@ const VerifyAddressComponent = () => {
           }
         : {};
 
-    const formErrors = !formState.isValid;
-
-    const { accountTooltipTranslationId, addressTooltipTranslationId } = getTranslationIds(
-        selectedAccountOption?.type,
-    );
+    const { ref: networkRef, ...networkField } = register('address', {
+        required: translationString('TR_EXCHANGE_RECEIVING_ADDRESS_REQUIRED'),
+        validate: value => {
+            if (selectedAccountOption?.type === 'NON_SUITE' && receiveSymbol) {
+                if (value && !addressValidator.validate(value, receiveSymbol)) {
+                    return translationString('TR_EXCHANGE_RECEIVING_ADDRESS_INVALID');
+                }
+            }
+        },
+    });
+    const { ref: descriptionRef, ...descriptionField } = register('extraField', {
+        required: selectedQuote?.extraFieldDescription?.required
+            ? translationString('TR_EXCHANGE_EXTRA_FIELD_REQUIRED', extraFieldDescription)
+            : undefined,
+        validate: value => {
+            let valid = true;
+            if (value) {
+                if (selectedQuote?.extraFieldDescription?.type === 'hex') {
+                    valid = isHexValid(value);
+                } else if (selectedQuote?.extraFieldDescription?.type === 'number') {
+                    valid = isInteger(value);
+                }
+            }
+            if (!valid) {
+                return translationString('TR_EXCHANGE_EXTRA_FIELD_INVALID', extraFieldDescription);
+            }
+        },
+    });
 
     return (
         <Wrapper>
@@ -183,31 +196,16 @@ const VerifyAddressComponent = () => {
                                 </Label>
                             }
                             variant="small"
-                            name="address"
-                            innerRef={typedRegister({
-                                required: 'TR_EXCHANGE_RECEIVING_ADDRESS_REQUIRED',
-                                validate: value => {
-                                    if (
-                                        selectedAccountOption?.type === 'NON_SUITE' &&
-                                        receiveSymbol
-                                    ) {
-                                        if (!addressValidator.validate(value, receiveSymbol)) {
-                                            return 'TR_EXCHANGE_RECEIVING_ADDRESS_INVALID';
-                                        }
-                                    }
-                                },
-                            })}
                             readOnly={selectedAccountOption?.type !== 'NON_SUITE'}
                             inputState={errors.address ? 'error' : undefined}
-                            bottomText={<InputError error={errors.address} />}
+                            bottomText={errors.address?.message}
+                            innerRef={networkRef}
+                            {...networkField}
                         />
                     )}
 
                     {addressVerified && addressVerified === address && (
-                        <Confirmed>
-                            <StyledDeviceImage height={25} deviceModel={deviceModel} />
-                            <Translation id="TR_EXCHANGE_CONFIRMED_ON_TREZOR" />
-                        </Confirmed>
+                        <ConfirmedOnTrezor device={device} />
                     )}
                 </Row>
                 {selectedQuote?.extraFieldDescription && (
@@ -230,37 +228,10 @@ const VerifyAddressComponent = () => {
                                     />
                                 </Label>
                             }
-                            name="extraField"
-                            innerRef={typedRegister({
-                                required: selectedQuote?.extraFieldDescription?.required ? (
-                                    <Translation
-                                        id="TR_EXCHANGE_EXTRA_FIELD_REQUIRED"
-                                        values={extraFieldDescription}
-                                    />
-                                ) : undefined,
-                                validate: value => {
-                                    let valid = true;
-                                    if (value) {
-                                        if (selectedQuote?.extraFieldDescription?.type === 'hex') {
-                                            valid = isHexValid(value);
-                                        } else if (
-                                            selectedQuote?.extraFieldDescription?.type === 'number'
-                                        ) {
-                                            valid = isInteger(value);
-                                        }
-                                    }
-                                    if (!valid) {
-                                        return (
-                                            <Translation
-                                                id="TR_EXCHANGE_EXTRA_FIELD_INVALID"
-                                                values={extraFieldDescription}
-                                            />
-                                        );
-                                    }
-                                },
-                            })}
                             inputState={errors.extraField ? 'error' : undefined}
-                            bottomText={<InputError error={errors.extraField} />}
+                            bottomText={errors.extraField?.message}
+                            innerRef={descriptionRef}
+                            {...descriptionField}
                         />
                     </Row>
                 )}
@@ -296,7 +267,7 @@ const VerifyAddressComponent = () => {
                                     confirmTrade(address, extraField);
                                 }
                             }}
-                            isDisabled={formErrors || callInProgress}
+                            isDisabled={!isValid || callInProgress}
                         >
                             <Translation id="TR_EXCHANGE_GO_TO_PAYMENT" />
                         </Button>

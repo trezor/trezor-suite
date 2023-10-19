@@ -1,19 +1,19 @@
-import React from 'react';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
-import { getUnusedAddressFromAccount } from '@wallet-utils/coinmarket/coinmarketUtils';
+import { getUnusedAddressFromAccount } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import {
     FiatValue,
     QuestionTooltip,
     Translation,
     AccountLabeling,
     FormattedCryptoAmount,
-} from '@suite-components';
-import { Input, Button, variables, CoinLogo, DeviceImage } from '@trezor/components';
-import { useCoinmarketBuyOffersContext } from '@wallet-hooks/useCoinmarketBuyOffers';
-import { AddressOptions } from '@wallet-views/coinmarket/common/AddressOptions';
-import { useAccountAddressDictionary } from '@wallet-hooks/useAccounts';
-import { getDeviceModel } from '@trezor/device-utils';
+} from 'src/components/suite';
+import { Input, Button, variables, CoinLogo } from '@trezor/components';
+import { useCoinmarketBuyOffersContext } from 'src/hooks/wallet/useCoinmarketBuyOffers';
+import { AddressOptions } from 'src/views/wallet/coinmarket/common';
+import { useAccountAddressDictionary } from 'src/hooks/wallet/useAccounts';
+import { ConfirmedOnTrezor } from 'src/views/wallet/coinmarket/common/ConfirmedOnTrezor';
+import { AddressOptionsFormState } from 'src/types/wallet/coinmarketBuyOffers';
 
 const Wrapper = styled.div`
     display: flex;
@@ -63,14 +63,10 @@ const CustomLabel = styled(Label)`
 
 const LabelText = styled.div``;
 
-const StyledDeviceImage = styled(DeviceImage)`
-    padding: 0 10px 0 0;
-`;
-
 const Amount = styled.div`
     display: flex;
     font-size: ${variables.FONT_SIZE.TINY};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
@@ -86,8 +82,8 @@ const FakeInput = styled.div`
     min-height: 61px;
     align-items: center;
     border-radius: 4px;
-    border: solid 2px ${props => props.theme.STROKE_GREY};
-    background: ${props => props.theme.BG_WHITE};
+    border: solid 2px ${({ theme }) => theme.STROKE_GREY};
+    background: ${({ theme }) => theme.BG_WHITE};
 `;
 
 const ButtonWrapper = styled.div`
@@ -95,24 +91,9 @@ const ButtonWrapper = styled.div`
     align-items: center;
     justify-content: center;
     padding-top: 20px;
-    border-top: 1px solid ${props => props.theme.STROKE_GREY};
+    border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
     margin: 20px 0;
 `;
-
-const Confirmed = styled.div`
-    display: flex;
-    height: 60px;
-    font-size: ${variables.FONT_SIZE.BIG};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    background: ${props => props.theme.BG_GREY};
-    align-items: center;
-    justify-content: center;
-    margin-top: 27px;
-`;
-
-interface FormState {
-    address: string;
-}
 
 const VerifyAddressComponent = () => {
     const {
@@ -126,16 +107,15 @@ const VerifyAddressComponent = () => {
     } = useCoinmarketBuyOffersContext();
     const { symbol, formattedBalance } = account;
     const { path, address: unusedAddress } = getUnusedAddressFromAccount(account);
-    const deviceModel = getDeviceModel(device);
 
-    const { watch, setValue, control } = useForm<FormState>({
+    const { watch, setValue, control } = useForm<AddressOptionsFormState>({
         mode: 'onChange',
         defaultValues: { address: unusedAddress },
     });
 
     const addressDictionary = useAccountAddressDictionary(account);
     const { address } = watch();
-    const accountAddress = addressDictionary[address];
+    const accountAddress = address ? addressDictionary[address] : undefined;
 
     if (!path || !address || !selectedQuote) {
         return null;
@@ -196,10 +176,7 @@ const VerifyAddressComponent = () => {
                     />
                 )}
                 {addressVerified && addressVerified === address && (
-                    <Confirmed>
-                        <StyledDeviceImage height={25} deviceModel={deviceModel} />
-                        <Translation id="TR_BUY_CONFIRMED_ON_TREZOR" />
-                    </Confirmed>
+                    <ConfirmedOnTrezor device={device} />
                 )}
             </CardContent>
             <ButtonWrapper>

@@ -16,6 +16,8 @@
             "connect-analytics",
             "type-utils",
             "env-utils",
+            "protocol",
+            "protobuf",
           ]
 
 .packages_matrix_connect: &packages_matrix_connect
@@ -70,7 +72,7 @@ beta deploy npm connect:
   extends: .deploy npm base
   only:
     refs:
-      - release/connect-v9
+      - /^release\/connect\//
   <<: *packages_matrix_connect
   script:
     - nix-shell --run "yarn && cd ./packages/$PACKAGE && yarn npm publish --tag beta --access public"
@@ -79,7 +81,9 @@ deploy npm connect:
   extends: .deploy npm base
   only:
     refs:
-      - release/connect-v9
+      - /^release\/connect\//
   <<: *packages_matrix_connect
   script:
     - nix-shell --run "cd ./packages/${PACKAGE} && yarn npm publish --access public"
+    - nix-shell --run "./packages/connect/e2e/test-npm-install.sh"
+    - nix-shell --run "./packages/connect/e2e/test-yarn-install.sh"

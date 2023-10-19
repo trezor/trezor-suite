@@ -43,6 +43,7 @@ type Params = {
     floorBaseFee?: PrecomposeParams['floorBaseFee'];
     sequence?: PrecomposeParams['sequence'];
     skipPermutation?: PrecomposeParams['skipPermutation'];
+    total: BigNumber;
 };
 
 export default class ComposeTransaction extends AbstractMethod<'composeTransaction', Params> {
@@ -86,8 +87,6 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
             outputs.push(output);
         });
 
-        const sendMax = outputs.find(o => o.type === 'send-max') !== undefined;
-
         // there should be only one output when using send-max option
         // if (sendMax && outputs.length > 1) {
         //     throw ERRORS.TypedError('Method_InvalidParameter', 'Only one output allowed when using "send-max" option');
@@ -95,15 +94,9 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
 
         // if outputs contains regular items
         // check if total amount is not lower than dust limit
-        // if (outputs.find(o => o.type === 'complete') !== undefined && total.lte(coinInfo.dustLimit)) {
+        // if (outputs.find(o => o.type === 'complete') !== undefined && total.lt(coinInfo.dustLimit)) {
         //     throw error 'Total amount is too low';
         // }
-
-        if (sendMax) {
-            this.info = 'Send maximum amount';
-        } else {
-            this.info = `Send ${formatAmount(total.toString(), coinInfo)}`;
-        }
 
         this.useDevice = !payload.account && !payload.feeLevels;
 
@@ -119,7 +112,17 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
             sequence: payload.sequence,
             skipPermutation: payload.skipPermutation,
             push: typeof payload.push === 'boolean' ? payload.push : false,
+            total,
         };
+    }
+
+    get info() {
+        const sendMax = this.params?.outputs.find(o => o.type === 'send-max') !== undefined;
+
+        if (sendMax) {
+            return 'Send maximum amount';
+        }
+        return `Send ${formatAmount(this.params.total.toString(), this.params.coinInfo)}`;
     }
 
     async precompose(

@@ -1,15 +1,16 @@
-import { ROUTER, SUITE } from '@suite-actions/constants';
 import { accountsActions } from '@suite-common/wallet-core';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { AnonymitySet } from '@trezor/blockchain-link';
-import { SuiteState } from '@suite-reducers/suiteReducer';
-import { AcquiredDevice } from '@suite-types';
 import { DEVICE } from '@trezor/connect';
-import { COINJOIN } from '@wallet-actions/constants';
-import { CoinjoinState } from '@wallet-reducers/coinjoinReducer';
-import { CoinjoinAccount, CoinjoinSession } from '@wallet-types/coinjoin';
-import { Account, NetworkSymbol } from '@wallet-types';
-import { RouterState } from '@suite-reducers/routerReducer';
+
+import { SuiteState } from 'src/reducers/suite/suiteReducer';
+import { AcquiredDevice } from 'src/types/suite';
+import { ROUTER, SUITE } from 'src/actions/suite/constants';
+import { COINJOIN } from 'src/actions/wallet/constants';
+import { CoinjoinState } from 'src/reducers/wallet/coinjoinReducer';
+import { CoinjoinAccount, CoinjoinSession } from 'src/types/wallet/coinjoin';
+import { Account, NetworkSymbol } from 'src/types/wallet';
+import { RouterState } from 'src/reducers/suite/routerReducer';
 
 const DEVICE_A = {
     available: true,
@@ -51,9 +52,11 @@ const COINJOIN_ACCOUNT_B = {
 };
 
 const DEFAULT_STATE = {
-    devices: [DEVICE_A, DEVICE_B],
+    device: {
+        devices: [DEVICE_A, DEVICE_B],
+        selectedDevice: DEVICE_A,
+    },
     suite: {
-        device: DEVICE_A,
         torStatus: 'Enabled',
     } as SuiteState,
     wallet: {
@@ -77,7 +80,6 @@ const STATE_WITH_INTERRUPTED_SESSION = {
                     ...DEFAULT_STATE.wallet.coinjoin.accounts[0],
                     session: {
                         ...DEFAULT_STATE.wallet.coinjoin.accounts[0].session,
-                        paused: true,
                     } as CoinjoinSession,
                 },
                 {
@@ -85,7 +87,6 @@ const STATE_WITH_INTERRUPTED_SESSION = {
                     session: {
                         ...DEFAULT_STATE.wallet.coinjoin.accounts[1].session,
                         paused: true,
-                        interrupted: true,
                     } as CoinjoinSession,
                 },
             ],
@@ -98,14 +99,12 @@ const PAUSE_ALL_INTERRUPTED_SESSIONS_ACTIONS = [
         type: COINJOIN.SESSION_PAUSE,
         payload: {
             accountKey: 'account-A-key',
-            interrupted: true,
         },
     },
     {
         type: COINJOIN.SESSION_PAUSE,
         payload: {
             accountKey: 'account-B-key',
-            interrupted: true,
         },
     },
 ];
@@ -135,8 +134,9 @@ const RESTORE_SESSION_B_ACTIONS = [
 
 export const fixtures = [
     {
-        description: 'pause coinjoin session when remembered device disconnects',
+        description: 'stopping coinjoin session when remembered device disconnects',
         state: DEFAULT_STATE,
+        client: 'btc' as NetworkSymbol,
         action: {
             type: DEVICE.DISCONNECT,
             payload: {
@@ -145,10 +145,9 @@ export const fixtures = [
         },
         expectedActions: [
             {
-                type: COINJOIN.SESSION_PAUSE,
+                type: COINJOIN.ACCOUNT_UNREGISTER,
                 payload: {
                     accountKey: 'account-A-key',
-                    interrupted: false,
                 },
             },
         ],
@@ -191,7 +190,6 @@ export const fixtures = [
                 type: COINJOIN.SESSION_PAUSE,
                 payload: {
                     accountKey: 'account-B-key',
-                    interrupted: true,
                 },
             },
         ],
@@ -230,7 +228,6 @@ export const fixtures = [
                 type: COINJOIN.SESSION_PAUSE,
                 payload: {
                     accountKey: 'account-B-key',
-                    interrupted: true,
                 },
             },
         ],

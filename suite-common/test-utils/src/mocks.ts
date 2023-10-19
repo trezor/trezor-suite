@@ -1,9 +1,15 @@
 /* WARNING! This file should be imported ONLY in tests! */
 /* eslint-disable require-await */
 
-import { AccountUtxo, Device, Features } from '@trezor/connect';
-import { TrezorDevice, GuideNode, GuidePage, GuideCategory } from '@suite-common/suite-types';
-import { MessageSystem, Action } from '@trezor/message-system';
+import { AccountUtxo, Device, Features, DeviceModelInternal, FirmwareType } from '@trezor/connect';
+import {
+    TrezorDevice,
+    GuideNode,
+    GuidePage,
+    GuideCategory,
+    MessageSystem,
+    Action,
+} from '@suite-common/suite-types';
 import {
     Account,
     FeeInfo,
@@ -11,7 +17,6 @@ import {
     BlockchainNetworks,
 } from '@suite-common/wallet-types';
 import { networksCompatibility } from '@suite-common/wallet-config';
-import { DeviceModel } from '@trezor/device-utils';
 
 // in-memory implementation of indexedDB
 import 'fake-indexeddb/auto';
@@ -20,7 +25,7 @@ import 'fake-indexeddb/auto';
  * @param {Partial<Account>} [account]
  * @returns {Features}
  */
-// @ts-expect-error
+// @ts-expect-error - related to backendType and status
 const getWalletAccount = (account?: Partial<Account>): Account => ({
     deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
     index: 0,
@@ -38,6 +43,7 @@ const getWalletAccount = (account?: Partial<Account>): Account => ({
     visible: true,
     balance: '0',
     availableBalance: '0',
+    formattedBalance: '0',
     tokens: [],
     history: { total: 13, tokens: 0, unconfirmed: 0 },
     misc: { nonce: '6' },
@@ -45,6 +51,7 @@ const getWalletAccount = (account?: Partial<Account>): Account => ({
     utxo: undefined,
     marker: undefined,
     addresses: undefined,
+    metadata: { key: 'xpub' },
     ...account,
 });
 
@@ -62,7 +69,7 @@ const getFirmwareRelease = (): NonNullable<Device['firmwareRelease']> => ({
             min_bridge_version: [2, 0, 25],
             min_firmware_version: [2, 0, 0],
             min_bootloader_version: [2, 0, 0],
-            url: 'data/firmware/1/trezor-1.8.1.bin',
+            url: 'data/firmware/t1b1/trezor-t1b1-1.8.1.bin',
             fingerprint: '019e849c1eb285a03a92bbad6d18a328af3b4dc6999722ebb47677b403a4cd16',
             changelog:
                 '* Fix fault when using the device with no PIN* Fix OMNI transactions parsing',
@@ -74,7 +81,7 @@ const getFirmwareRelease = (): NonNullable<Device['firmwareRelease']> => ({
         min_bridge_version: [2, 0, 25],
         min_firmware_version: [2, 0, 0],
         min_bootloader_version: [2, 0, 0],
-        url: 'data/firmware/1/trezor-1.8.1.bin',
+        url: 'data/firmware/t1b1/trezor-t1b1-1.8.1.bin',
         fingerprint: '019e849c1eb285a03a92bbad6d18a328af3b4dc6999722ebb47677b403a4cd16',
         changelog: '* Fix fault when using the device with no PIN* Fix OMNI transactions parsing',
     },
@@ -104,7 +111,8 @@ const getDeviceFeatures = (feat?: Partial<Features>): Features => ({
     firmware_present: null,
     needs_backup: false,
     flags: 0,
-    model: DeviceModel.TT,
+    model: 'T',
+    internal_model: DeviceModelInternal.T2T1,
     fw_major: null,
     fw_minor: null,
     fw_patch: null,
@@ -156,8 +164,8 @@ const getConnectDevice = (dev?: Partial<Device>, feat?: Partial<Features>): Devi
         unavailableCapabilities: {},
         firmwareType:
             feat && feat.capabilities && !feat?.capabilities.includes('Capability_Bitcoin_like')
-                ? 'bitcoin-only'
-                : 'regular',
+                ? FirmwareType.BitcoinOnly
+                : FirmwareType.Regular,
         ...dev,
         type: 'acquired',
     } as Device;
@@ -281,6 +289,11 @@ const getTrezorConnect = <M>(methods?: M) => {
                 ...getFixture(),
                 _params,
             })),
+            cancelCoinjoinAuthorization: jest.fn(async _params => ({
+                success: true,
+                ...getFixture(),
+                _params,
+            })),
             blockchainSetCustomBackend: jest.fn(async _params => ({
                 success: true,
                 ...getFixture(),
@@ -351,6 +364,11 @@ const getTrezorConnect = <M>(methods?: M) => {
                 ...getFixture(),
                 _params,
             })),
+            showDeviceTutorial: jest.fn(async _params => ({
+                success: true,
+                ...getFixture(),
+                _params,
+            })),
             ethereumSignTransaction: jest.fn(async _params => ({
                 success: false,
                 payload: { error: 'error' },
@@ -394,6 +412,18 @@ const getTrezorConnect = <M>(methods?: M) => {
                 });
             },
             ...methods,
+        },
+    };
+};
+
+// Mocked @trezor/suite-analytics package used in various tests
+const getAnalytics = () => {
+    const originalModule = jest.requireActual('@trezor/suite-analytics');
+    return {
+        __esModule: true, // this property makes it work
+        ...originalModule,
+        analytics: {
+            report: jest.fn(),
         },
     };
 };
@@ -448,7 +478,7 @@ const getMessageSystemConfig = (
                     },
                     devices: [
                         {
-                            model: DeviceModel.TT,
+                            model: DeviceModelInternal.T2T1,
                             firmware: '2.1.1',
                             bootloader: '*',
                             firmwareRevision: '*',
@@ -663,6 +693,7 @@ export const testMocks = {
     getSuiteDevice,
     getWalletTransaction,
     getTrezorConnect,
+    getAnalytics,
     getMessageSystemConfig,
     getGuideNode,
     getUtxo,

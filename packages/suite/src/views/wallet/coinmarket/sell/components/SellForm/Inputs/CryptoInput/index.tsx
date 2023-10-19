@@ -1,36 +1,31 @@
-import React, { useMemo } from 'react';
 import styled from 'styled-components';
-import invityAPI from '@suite-services/invityAPI';
-import { FormattedCryptoAmount, Translation, NumberInput } from '@suite-components';
+import invityAPI from 'src/services/suite/invityAPI';
+import { NumberInput } from 'src/components/suite';
 import { Select, CoinLogo } from '@trezor/components';
-import Bignumber from 'bignumber.js';
 import { Controller } from 'react-hook-form';
-import { useCoinmarketSellFormContext } from '@wallet-hooks/useCoinmarketSellForm';
-import {
-    amountToSatoshi,
-    isDecimalsValid,
-    isInteger,
-    getInputState,
-} from '@suite-common/wallet-utils';
-import { InputError } from '@wallet-components';
-import { MAX_LENGTH } from '@suite-constants/inputs';
+import { useCoinmarketSellFormContext } from 'src/hooks/wallet/useCoinmarketSellForm';
+import { getEthereumTypeNetworkSymbols } from '@suite-common/wallet-config';
+import { getInputState } from '@suite-common/wallet-utils';
+import { MAX_LENGTH } from 'src/constants/suite/inputs';
 import {
     CRYPTO_CURRENCY_SELECT,
     CRYPTO_INPUT,
     CRYPTO_TOKEN,
     FIAT_INPUT,
-} from '@suite/types/wallet/coinmarketSellForm';
+} from 'src/types/wallet/coinmarketSellForm';
 import {
     getSendCryptoOptions,
     invityApiSymbolToSymbol,
-} from '@suite/utils/wallet/coinmarket/coinmarketUtils';
-import { useBitcoinAmountUnit } from '@wallet-hooks/useBitcoinAmountUnit';
-import { TypedValidationRules } from '@wallet-types/form';
-
-interface CryptoInputProps {
-    activeInput: typeof FIAT_INPUT | typeof CRYPTO_INPUT;
-    setActiveInput: React.Dispatch<React.SetStateAction<typeof FIAT_INPUT | typeof CRYPTO_INPUT>>;
-}
+} from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
+import { useTranslation } from 'src/hooks/suite';
+import { useFormatters } from '@suite-common/formatters';
+import {
+    validateDecimals,
+    validateInteger,
+    validateLimits,
+    validateMin,
+} from 'src/utils/suite/validation';
 
 const Option = styled.div`
     display: flex;
@@ -47,13 +42,12 @@ const TokenLogo = styled.img`
     height: 18px;
 `;
 
-const CryptoInput = ({ activeInput, setActiveInput }: CryptoInputProps) => {
+const CryptoInput = () => {
     const {
-        errors,
+        formState: { errors },
         account,
         network,
         control,
-        formState,
         amountLimits,
         onCryptoAmountChange,
         getValues,
@@ -61,8 +55,13 @@ const CryptoInput = ({ activeInput, setActiveInput }: CryptoInputProps) => {
         setValue,
         setAmountLimits,
         composeRequest,
+        tokensFiatValue,
     } = useCoinmarketSellFormContext();
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
+
+    const { CryptoAmountFormatter } = useFormatters();
+
+    const { translationString } = useTranslation();
 
     const uppercaseSymbol = account.symbol.toUpperCase();
     const cryptoOption = {
@@ -73,126 +72,38 @@ const CryptoInput = ({ activeInput, setActiveInput }: CryptoInputProps) => {
     const { tokens } = account;
     const cryptoInputValue = getValues(CRYPTO_INPUT);
 
-    const cryptoInputRules = useMemo<TypedValidationRules>(
-        () => ({
-            validate: (value: string) => {
-                if (activeInput === CRYPTO_INPUT) {
-                    if (!value) {
-                        if (formState.isSubmitting) {
-                            return <Translation id="TR_REQUIRED_FIELD" />;
-                        }
-                        return;
-                    }
+    const cryptoInputRules = {
+        validate: {
+            min: validateMin(translationString),
+            integer: validateInteger(translationString, { except: !shouldSendInSats }),
+            decimals: validateDecimals(translationString, { decimals: network.decimals }),
+            limits: validateLimits(translationString, {
+                amountLimits,
+                areSatsUsed: !!shouldSendInSats,
+                formatter: CryptoAmountFormatter,
+            }),
+        },
+    };
 
-                    const amountBig = new Bignumber(value);
-
-                    if (amountBig.isNaN()) {
-                        return <Translation id="AMOUNT_IS_NOT_NUMBER" />;
-                    }
-
-                    if (shouldSendInSats && !isInteger(value)) {
-                        return 'AMOUNT_IS_NOT_INTEGER';
-                    }
-
-                    if (amountBig.lte(0)) {
-                        return <Translation id="AMOUNT_IS_TOO_LOW" />;
-                    }
-
-                    if (!isDecimalsValid(value, network.decimals)) {
-                        return (
-                            <Translation
-                                id="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
-                                values={{ decimals: network.decimals }}
-                            />
-                        );
-                    }
-
-                    if (amountLimits) {
-                        const amount = Number(value);
-
-                        let minCrypto = 0;
-                        if (amountLimits.minCrypto) {
-                            minCrypto = shouldSendInSats
-                                ? Number(
-                                      amountToSatoshi(
-                                          amountLimits.minCrypto.toString(),
-                                          network.decimals,
-                                      ),
-                                  )
-                                : amountLimits.minCrypto;
-                        }
-                        if (minCrypto && amount < minCrypto) {
-                            return (
-                                <Translation
-                                    id="TR_SELL_VALIDATION_ERROR_MINIMUM_CRYPTO"
-                                    values={{
-                                        minimum: (
-                                            <FormattedCryptoAmount
-                                                value={amountLimits.minCrypto}
-                                                symbol={amountLimits.currency}
-                                            />
-                                        ),
-                                    }}
-                                />
-                            );
-                        }
-
-                        let maxCrypto = 0;
-                        if (amountLimits.maxCrypto) {
-                            maxCrypto = shouldSendInSats
-                                ? Number(
-                                      amountToSatoshi(
-                                          amountLimits.maxCrypto.toString(),
-                                          network.decimals,
-                                      ),
-                                  )
-                                : amountLimits.maxCrypto;
-                        }
-                        if (maxCrypto && amount > maxCrypto) {
-                            return (
-                                <Translation
-                                    id="TR_SELL_VALIDATION_ERROR_MAXIMUM_CRYPTO"
-                                    values={{
-                                        maximum: (
-                                            <FormattedCryptoAmount
-                                                value={amountLimits.maxCrypto}
-                                                symbol={amountLimits.currency}
-                                            />
-                                        ),
-                                    }}
-                                />
-                            );
-                        }
-                    }
-                }
-            },
-        }),
-        [activeInput, amountLimits, formState.isSubmitting, network.decimals, shouldSendInSats],
-    );
+    const ethereumTypeNetworkSymbols = getEthereumTypeNetworkSymbols();
 
     return (
         <NumberInput
             control={control}
-            onFocus={() => {
-                setActiveInput(CRYPTO_INPUT);
-            }}
-            onChange={value => {
-                setActiveInput(CRYPTO_INPUT);
-                onCryptoAmountChange(value);
-            }}
+            onChange={onCryptoAmountChange}
             defaultValue=""
             inputState={getInputState(errors.cryptoInput, cryptoInputValue)}
             name={CRYPTO_INPUT}
             noTopLabel
             maxLength={MAX_LENGTH.AMOUNT}
             rules={cryptoInputRules}
-            bottomText={<InputError error={errors[CRYPTO_INPUT]} />}
+            bottomText={errors[CRYPTO_INPUT]?.message}
             innerAddon={
                 <Controller
                     control={control}
                     name={CRYPTO_CURRENCY_SELECT}
                     defaultValue={cryptoOption}
-                    render={({ onChange, value }) => (
+                    render={({ field: { onChange, value } }) => (
                         <Select
                             onChange={(selected: any) => {
                                 setValue('setMaxOutputId', undefined);
@@ -201,17 +112,21 @@ const CryptoInput = ({ activeInput, setActiveInput }: CryptoInputProps) => {
                                 setValue(CRYPTO_INPUT, '');
                                 setValue(FIAT_INPUT, '');
                                 const token = selected.value;
-                                if (token === 'ETH' || token === 'TGOR' || token === 'ETC') {
-                                    setValue(CRYPTO_TOKEN, undefined);
+                                if (ethereumTypeNetworkSymbols.includes(token)) {
+                                    setValue(CRYPTO_TOKEN, null);
                                     // set own account for non ERC20 transaction
-                                    setValue('outputs[0].address', account.descriptor);
+                                    setValue('outputs.0.address', account.descriptor);
                                 } else {
                                     // set the address of the token to the output
                                     const symbol = invityApiSymbolToSymbol(token).toLowerCase();
-                                    const tokenData = tokens?.find(t => t.symbol === symbol);
-                                    setValue(CRYPTO_TOKEN, tokenData?.contract);
+                                    const tokenData = tokens?.find(
+                                        t =>
+                                            t.symbol === symbol &&
+                                            t.contract === selected.token?.contract,
+                                    );
+                                    setValue(CRYPTO_TOKEN, tokenData?.contract ?? null);
                                     // set token address for ERC20 transaction to estimate the fees more precisely
-                                    setValue('outputs[0].address', tokenData?.contract);
+                                    setValue('outputs.0.address', tokenData?.contract ?? '');
                                 }
                                 composeRequest();
                             }}
@@ -220,6 +135,7 @@ const CryptoInput = ({ activeInput, setActiveInput }: CryptoInputProps) => {
                             options={getSendCryptoOptions(
                                 account,
                                 sellInfo?.supportedCryptoCurrencies || new Set(),
+                                tokensFiatValue,
                             )}
                             isClean
                             hideTextCursor

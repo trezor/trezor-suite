@@ -34,7 +34,7 @@ In order to be able to use new features of trezor-firmware you need to update pr
 
 ### In depth explanation
 
-The beginning and source of truth are the `.proto` definitions in the [firmware repository](https://github.com/trezor/trezor-firmware/tree/master/common/protob). These are duplicated as read-only in the [trezor-common](https://github.com/trezor/trezor-common) repository.
+The beginning and source of truth are the `.proto` definitions in the [firmware repository](https://github.com/trezor/trezor-firmware/tree/main/common/protob). These are duplicated as read-only in the [trezor-common](https://github.com/trezor/trezor-common) repository.
 
 `trezor-common` is included in `trezor-suite` as a git submodule mounted at `packages/transport/trezor-common`.`
 

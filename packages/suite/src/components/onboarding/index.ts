@@ -1,34 +1,29 @@
-import { Option, OptionsWrapper, OptionWrapper, OptionsDivider } from './Option';
+import { OnboardingOption, OptionsWrapper, OptionsDivider } from './OnboardingOption';
 
-import OnboardingButtonAlt from './Buttons/ButtonAlt';
-import OnboardingButtonCta from './Buttons/ButtonCta';
-import OnboardingButtonBack from './Buttons/ButtonBack';
-import OnboardingButtonSkip from './Buttons/ButtonSkip';
+import { OnboardingButtonCta } from './Buttons/OnboardingButtonCta';
+import { OnboardingButtonBack } from './Buttons/OnboardingButtonBack';
+import { OnboardingButtonSkip } from './Buttons/OnboardingButtonSkip';
 
-import { ConnectDevicePromptManager } from './ConnectDevicePromptManager';
-import { OnboardingLayout } from './Layouts/OnboardingLayout';
+import { ConnectDevicePromptManager } from './ConnectDevicePromptManager/ConnectDevicePromptManager';
+import { OnboardingLayout } from './OnboardingLayout';
 import { Hologram } from './Hologram';
-import { DeviceAnimation, type DeviceAnimationType } from './DeviceAnimation';
 import { OnboardingStepBox, type OnboardingStepBoxProps } from './OnboardingStepBox';
-import SkipStepConfirmation from './SkipStepConfirmation';
-import { ProgressBar } from './ProgressBar';
+import { SkipStepConfirmation } from './SkipStepConfirmation';
+import { OnboardingProgressBar } from './OnboardingProgressBar';
 
 export {
-    OnboardingButtonAlt,
     OnboardingButtonCta,
     OnboardingButtonBack,
     OnboardingButtonSkip,
-    Option,
+    OnboardingOption,
     OptionsWrapper,
-    OptionWrapper,
     OptionsDivider,
     ConnectDevicePromptManager,
     OnboardingLayout,
     Hologram,
-    DeviceAnimation,
     OnboardingStepBox,
     SkipStepConfirmation,
-    ProgressBar,
+    OnboardingProgressBar,
 };
 
-export type { DeviceAnimationType, OnboardingStepBoxProps };
+export type { OnboardingStepBoxProps };

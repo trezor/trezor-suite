@@ -1,14 +1,24 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import styled from 'styled-components';
 import { transparentize } from 'polished';
 
-import { Icon } from '../Icon';
+import { Icon } from '../assets/Icon/Icon';
 import { useTheme } from '../../utils';
 import { variables } from '../../config';
 
-type Variant = 'info' | 'warning' | 'critical';
+type Variant = 'learn' | 'info' | 'warning' | 'critical';
 
 const getColor = (variant: Variant, colors: Record<Variant, string>) => colors[variant];
+const getIcon = (variant: Variant) => {
+    switch (variant) {
+        case 'learn':
+            return 'LIGHTBULB';
+        case 'info':
+            return 'INFO';
+        default:
+            return 'WARNING';
+    }
+};
 
 const Wrapper = styled.div<{ variant: Variant; withIcon?: boolean }>`
     align-items: center;
@@ -16,6 +26,7 @@ const Wrapper = styled.div<{ variant: Variant; withIcon?: boolean }>`
         transparentize(
             0.9,
             getColor(variant, {
+                learn: theme.BG_GREEN,
                 info: theme.TYPE_BLUE,
                 warning: theme.TYPE_DARK_ORANGE,
                 critical: theme.BG_RED,
@@ -24,6 +35,7 @@ const Wrapper = styled.div<{ variant: Variant; withIcon?: boolean }>`
     border-radius: 8px;
     color: ${({ variant, theme }) =>
         getColor(variant, {
+            learn: theme.TYPE_DARK_GREY,
             info: theme.TYPE_BLUE,
             warning: theme.TYPE_DARK_ORANGE,
             critical: theme.TYPE_DARK_GREY,
@@ -31,6 +43,7 @@ const Wrapper = styled.div<{ variant: Variant; withIcon?: boolean }>`
     display: flex;
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    gap: 14px;
     justify-content: ${({ withIcon }) => !withIcon && 'center'};
     padding: 14px 20px;
     width: 100%;
@@ -42,12 +55,8 @@ const Wrapper = styled.div<{ variant: Variant; withIcon?: boolean }>`
     }
 `;
 
-const StyledIcon = styled(Icon)`
-    margin-right: 14px;
-`;
-
-interface WarningProps {
-    children: React.ReactNode;
+export interface WarningProps {
+    children: ReactNode;
     className?: string;
     variant?: Variant;
     withIcon?: boolean;
@@ -56,16 +65,17 @@ interface WarningProps {
 export const Warning = ({ children, className, variant = 'warning', withIcon }: WarningProps) => {
     const theme = useTheme();
 
-    const color = getColor(variant, {
+    const iconColor = getColor(variant, {
+        learn: theme.TYPE_GREEN,
         info: theme.TYPE_BLUE,
         warning: theme.TYPE_ORANGE,
         critical: theme.TYPE_RED,
     });
-    const icon = variant === 'info' ? 'INFO' : 'WARNING';
+    const icon = getIcon(variant);
 
     return (
         <Wrapper variant={variant} withIcon={withIcon} className={className}>
-            {withIcon && <StyledIcon size={20} icon={icon} color={color} />}
+            {withIcon && <Icon size={20} icon={icon} color={iconColor} />}
             {children}
         </Wrapper>
     );

@@ -1,5 +1,5 @@
 /**
- * Reboots device (currently only T1 with fw >= 1.10.0) in bootloader mode
+ * Reboots device (currently only T1B1 with fw >= 1.10.0) in bootloader mode
  */
 
 import type { PROTO } from '../../constants';

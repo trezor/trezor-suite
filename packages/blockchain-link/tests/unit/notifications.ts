@@ -1,4 +1,4 @@
-import createServer, { EnhancedServer } from '../websocket';
+import { BackendWebsocketServerMock } from '@trezor/e2e-utils';
 import workers from './worker';
 import BlockchainLink from '../../src';
 
@@ -18,11 +18,11 @@ const fixtures = {
 
 workers.forEach(instance => {
     describe(`Notifications ${instance.name}`, () => {
-        let server: EnhancedServer;
+        let server: BackendWebsocketServerMock;
         let blockchain: BlockchainLink;
 
         const setup = async () => {
-            server = await createServer(instance.name);
+            server = await BackendWebsocketServerMock.create(instance.name);
             blockchain = new BlockchainLink({
                 ...instance,
                 server: [`ws://localhost:${server.options.port}`],
@@ -83,7 +83,7 @@ workers.forEach(instance => {
 
                     expect(s).toEqual({ subscribed: f.method === 'subscribe' });
 
-                    await server.sendNotification(f.notifications);
+                    await server.sendNotification(f.notifications as any);
 
                     // wait for block event throttling
                     await new Promise(resolve =>

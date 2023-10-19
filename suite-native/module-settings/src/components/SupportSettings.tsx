@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { useNavigation } from '@react-navigation/core';
 
 import {
@@ -8,6 +6,7 @@ import {
     SettingsStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+import { TrezorSuiteLiteHeader } from '@suite-native/atoms';
 
 import { SettingsSection } from './SettingsSection';
 import { SettingsSectionItem } from './SettingsSectionItem';
@@ -25,15 +24,19 @@ export const SupportSettings = () => {
     return (
         <SettingsSection title="Support">
             <SettingsSectionItem
-                title="About Trezor Suite Lite"
-                iconName="trezorT"
-                onPress={() => navigation.navigate(SettingsStackRoutes.SettingsAbout)}
-            />
-            <SettingsSectionItem
-                iconName="question"
+                iconName="questionLight"
                 title="Get help"
                 subtitle="FAQ, Customer support"
                 onPress={() => navigation.navigate(SettingsStackRoutes.SettingsFAQ)}
+            />
+            <SettingsSectionItem
+                title={
+                    <>
+                        About <TrezorSuiteLiteHeader textVariant="body" />
+                    </>
+                }
+                iconName="trezorT"
+                onPress={() => navigation.navigate(SettingsStackRoutes.SettingsAbout)}
             />
         </SettingsSection>
     );

@@ -1,3 +1,5 @@
+import type { DerivationPath } from '../../params';
+
 export interface RipplePayment {
     amount: string;
     destination: string;
@@ -13,7 +15,7 @@ export interface RippleTransaction {
 }
 
 export interface RippleSignTransaction {
-    path: string | number[];
+    path: DerivationPath;
     transaction: RippleTransaction;
 }
 

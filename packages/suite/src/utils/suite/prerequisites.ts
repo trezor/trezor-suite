@@ -1,5 +1,5 @@
 import type { TransportInfo } from '@trezor/connect';
-import type { TrezorDevice, AppState } from '@suite-types';
+import type { TrezorDevice, AppState } from 'src/types/suite';
 
 interface PrerequisitesInput {
     router: AppState['router'];

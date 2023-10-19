@@ -2,53 +2,16 @@
 
 import BigNumber from 'bignumber.js';
 import { Blockchain } from '../../backend/BlockchainLink';
-import type { BitcoinDefaultFeesKeys, CoinInfo } from '../../types';
-import type { FeeLevel } from '../../types/account';
+import type { CoinInfo, FeeLevel } from '../../types';
 
 type Blocks = Array<string | undefined>;
-// this is workaround for the lack of information from 'trezor-common'
-// we need to declare what does "high/normal/low" mean in block time (eg: normal BTC = 6 blocks = ~1 hour)
-// coins other than BTC usually got 2 levels maximum (high/low) and we should consider to remove other levels from 'trezor-common'
 
-const BLOCKS: Record<string, Record<string, number>> = {
-    btc: {
-        // blocktime ~ 600sec.
-        high: 1,
-        normal: 6,
-        economy: 36,
-        low: 144,
-    },
-    bch: {
-        // blocktime ~ 600sec.
-        high: 1,
-        normal: 5,
-        economy: 10,
-        low: 10,
-    },
-    btg: {
-        // blocktime ~ 600sec.
-        high: 1,
-        normal: 5,
-        economy: 10,
-        low: 10,
-    },
-    dgb: {
-        // blocktime ~ 20sec.
-        high: 1,
-        normal: 15,
-        economy: 30,
-        low: 60,
-    },
-};
-
-const getDefaultBlocks = (shortcut: string, label: string) =>
-    BLOCKS[shortcut] && BLOCKS[shortcut][label] ? BLOCKS[shortcut][label] : -1; // -1 for unknown
-
-const feePerKB = (fee: string) => {
-    const bn = new BigNumber(fee);
-    if (bn.isNaN() || bn.lte('0')) return;
-    return bn.div(1000).integerValue(BigNumber.ROUND_HALF_CEIL).toString();
-    // return bn.toString();
+const convertFeeRate = (fee: string, minFee: number) => {
+    const feePerKB = new BigNumber(fee);
+    if (feePerKB.isNaN() || feePerKB.lte('0')) return;
+    const feePerB = feePerKB.div(1000);
+    if (feePerB.lt(minFee)) return minFee.toString();
+    return feePerB.isInteger() ? feePerB.toString() : feePerB.toFixed(2);
 };
 
 const fillGap = (from: number, step: number, size: number) => {
@@ -59,41 +22,35 @@ const fillGap = (from: number, step: number, size: number) => {
     return fill;
 };
 
-const findLowest = (blocks: Blocks) => {
-    const unique: string[] = [];
-    blocks.forEach(item => {
-        if (typeof item === 'string' && unique.indexOf(item) < 0) {
-            unique.push(item);
-        }
-    });
-    return unique[unique.length - 1];
-};
-
 const findNearest = (requested: number, blocks: Blocks) => {
-    const len = blocks.length;
-    const knownValue = blocks[requested];
-    // return first occurrence of requested block value
-    if (typeof knownValue === 'string') return knownValue;
-    const lastKnownValue = blocks
-        .slice()
-        .reverse()
-        .find(item => typeof item === 'string');
-    if (!lastKnownValue) return;
-    const lastKnownIndex = blocks.indexOf(lastKnownValue);
-    // there is no information for this block entry
-    if (requested >= lastKnownIndex) {
-        // requested block is greater than known range
-        // return first occurrence of the lowest known fee
-        return lastKnownValue;
-    }
+    // found exact requested value
+    if (typeof blocks[requested] === 'string') return blocks[requested];
 
-    // try to find nearest lower value
+    // exact value for requested block is unknown?
+    // walk forward through blocks and try to find first known value
+    const len = blocks.length;
     let index = requested;
     while (typeof blocks[index] !== 'string' && index < len) {
         index++;
     }
+    // found something useful
+    if (typeof blocks[index] === 'string') {
+        return blocks[index];
+    }
+    // didn't find anything while looking forward? then try to walk backward
+    index = requested;
+    while (typeof blocks[index] !== 'string' && index > 0) {
+        index--;
+    }
+    // return something or undefined
     return blocks[index];
 };
+
+const findLowest = (blocks: Blocks) =>
+    blocks
+        .slice(0)
+        .reverse()
+        .find(item => typeof item === 'string');
 
 const findBlocksForFee = (feePerUnit: string, blocks: Blocks) => {
     const bn = new BigNumber(feePerUnit);
@@ -108,37 +65,13 @@ export class FeeLevels {
     coinInfo: CoinInfo;
 
     levels: FeeLevel[];
+    longTermFeeRate?: string; // long term fee rate is used by @trezor/utxo-lib composeTx module
 
     blocks: Blocks = [];
 
     constructor(coinInfo: CoinInfo) {
         this.coinInfo = coinInfo;
-        const shortcut = coinInfo.shortcut.toLowerCase();
-
-        if (coinInfo.type === 'ethereum') {
-            // TODO: https://github.com/trezor/trezor-suite/issues/5340
-            // unlike the others, ethereum got additional value "feeLimit" in coinInfo (Gas limit)
-            this.levels = coinInfo.defaultFees.map(level => ({
-                ...level,
-                blocks: -1, // blocks unknown
-            }));
-            return;
-        }
-
-        // sort fee levels from coinInfo
-        // and transform in to FeeLevel object
-        const keys = Object.keys(coinInfo.defaultFees) as BitcoinDefaultFeesKeys[];
-        this.levels = keys
-            .sort((levelA, levelB) => coinInfo.defaultFees[levelB] - coinInfo.defaultFees[levelA])
-            .map(level => {
-                const label: any = level.toLowerCase(); // string !== 'high' | 'normal'....
-                const blocks = getDefaultBlocks(shortcut, label); // TODO: get this value from trezor-common
-                return {
-                    label,
-                    feePerUnit: coinInfo.defaultFees[level].toString(),
-                    blocks,
-                };
-            });
+        this.levels = coinInfo.defaultFees;
     }
 
     async loadMisc(blockchain: Blockchain) {
@@ -188,27 +121,25 @@ export class FeeLevels {
                     return result.concat(fill);
                 }, []);
         }
+        // add more blocks to the request to find `longTermFee`
+        const oneDayBlocks = 6 * 24; // maximum value accepted by backends is usually 1008 - 7 days (6 * 24 * 7)
+        blocks.push(...fillGap(oneDayBlocks, oneDayBlocks / 2, oneDayBlocks * 6));
 
         try {
             const response = await blockchain.estimateFee({ blocks });
-            response.forEach((r, i) => {
-                this.blocks[blocks[i]] = feePerKB(r.feePerUnit);
+            response.forEach(({ feePerUnit }, index) => {
+                this.blocks[blocks[index]] = convertFeeRate(feePerUnit, this.coinInfo.minFee);
             });
-            if (this.levels.length === 1) {
-                const lowest = findLowest(this.blocks);
-                if (typeof lowest === 'string') {
-                    this.levels[0].blocks = this.blocks.indexOf(lowest);
-                    this.levels[0].feePerUnit = lowest;
+
+            this.levels.forEach(level => {
+                const updatedValue = findNearest(level.blocks, this.blocks);
+                if (typeof updatedValue === 'string') {
+                    level.blocks = this.blocks.indexOf(updatedValue);
+                    level.feePerUnit = updatedValue;
                 }
-            } else {
-                this.levels.forEach(l => {
-                    const updatedValue = findNearest(l.blocks, this.blocks);
-                    if (typeof updatedValue === 'string') {
-                        l.blocks = this.blocks.indexOf(updatedValue);
-                        l.feePerUnit = updatedValue;
-                    }
-                });
-            }
+            });
+
+            this.longTermFeeRate = findLowest(this.blocks);
         } catch (error) {
             // do not throw
         }

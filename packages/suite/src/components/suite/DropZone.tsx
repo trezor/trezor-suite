@@ -1,11 +1,11 @@
-import React, { useRef, useCallback, useMemo, useState } from 'react';
+import { useRef, useCallback, useMemo, useState, MouseEvent, DragEvent, ChangeEvent } from 'react';
 import styled from 'styled-components';
 import { P, Icon } from '@trezor/components';
-import { Translation } from '@suite-components';
-import type { ExtendedMessageDescriptor } from '@suite-types';
+import { Translation } from 'src/components/suite';
+import type { ExtendedMessageDescriptor } from 'src/types/suite';
 import { IconType } from '@trezor/components/src/support/types';
 
-interface Props {
+interface DropZoneProps {
     // 'accept' attribute for underlying HTML file input
     accept?: string;
     // icon displayed inside Dropzone
@@ -15,7 +15,7 @@ interface Props {
     className?: string;
 }
 
-export const useDropZone = ({ accept, onSelect, className }: Props) => {
+export const useDropZone = ({ accept, onSelect, className }: DropZoneProps) => {
     const available = useRef(window.File && window.FileReader && window.FileList && window.Blob);
     const wrapperRef = useRef<HTMLDivElement | null>(null);
     const inputRef = useRef<HTMLInputElement | null>(null);
@@ -59,22 +59,22 @@ export const useDropZone = ({ accept, onSelect, className }: Props) => {
         }
     }, [inputRef]);
 
-    const prevent = useCallback((event: React.MouseEvent) => {
+    const prevent = useCallback((event: MouseEvent) => {
         event.preventDefault();
     }, []);
 
-    const onDragEnter = useCallback((event: React.MouseEvent) => {
+    const onDragEnter = useCallback((event: MouseEvent) => {
         event.preventDefault();
         event.currentTarget?.classList?.add('dragging');
     }, []);
 
-    const onDragLeave = useCallback((event: React.MouseEvent) => {
+    const onDragLeave = useCallback((event: MouseEvent) => {
         event.preventDefault();
         event.currentTarget?.classList?.remove('dragging');
     }, []);
 
     const onDrop = useCallback(
-        (event: React.DragEvent) => {
+        (event: DragEvent) => {
             event.preventDefault();
             event.currentTarget?.classList?.remove('dragging');
             if (event.dataTransfer) {
@@ -87,7 +87,7 @@ export const useDropZone = ({ accept, onSelect, className }: Props) => {
     );
 
     const onInputChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
+        (event: ChangeEvent<HTMLInputElement>) => {
             event.stopPropagation();
             if (event.target?.value && event.target.files) {
                 readFileContent(event.target.files[0]);
@@ -98,7 +98,7 @@ export const useDropZone = ({ accept, onSelect, className }: Props) => {
         [readFileContent],
     );
 
-    const onInputClick = useCallback((event: React.MouseEvent) => {
+    const onInputClick = useCallback((event: MouseEvent) => {
         event.stopPropagation();
     }, []);
 
@@ -144,14 +144,14 @@ const Wrapper = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    border: 2px dashed ${props => props.theme.STROKE_GREY};
+    border: 2px dashed ${({ theme }) => theme.STROKE_GREY};
     border-radius: 8px;
     cursor: pointer;
     min-height: 250px;
     transition: background-color 0.3s;
     &:hover,
     &.dragging {
-        background: ${props => props.theme.BG_GREY};
+        background: ${({ theme }) => theme.BG_GREY};
     }
     * {
         pointer-events: none;
@@ -171,7 +171,7 @@ const Label = styled.div`
     align-items: center;
 `;
 
-export const DropZone = (props: Props) => {
+export const DropZone = (props: DropZoneProps) => {
     const { getWrapperProps, getInputProps, error, filename } = useDropZone(props);
 
     return (

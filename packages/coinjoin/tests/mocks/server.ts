@@ -12,92 +12,99 @@ type RequestData = Record<string, any>;
 const DEFAULT = {
     // middleware
     'get-anonymity-scores': {
-        results: [],
+        Results: [],
     },
     'select-inputs-for-round': {
-        indices: [],
+        Indices: [],
     },
     'get-real-credential-requests': (data?: RequestData): RequestData => {
-        if (!data || !data.amountsToRequest) {
-            return { realCredentialRequests: {} };
+        if (!data || !data.AmountsToRequest) {
+            return { RealCredentialRequests: {} };
         }
         return {
-            realCredentialRequests: {
-                credentialsRequest: {
-                    delta: data.amountsToRequest[0],
-                    presented: data.credentialsToPresent,
-                    requested: data.amountsToRequest,
+            RealCredentialRequests: {
+                CredentialsRequest: {
+                    Delta: data.AmountsToRequest[0],
+                    Presented: data.CredentialsToPresent,
+                    Requested: data.AmountsToRequest,
                 },
             },
         };
     },
     'get-zero-credential-requests': {
-        zeroCredentialRequests: {
-            credentialsRequest: {
-                delta: 0,
-                presented: [],
-                requested: [{ ma: '00' }, { ma: '01' }],
-                proofs: [{}, {}],
+        ZeroCredentialRequests: {
+            CredentialsRequest: {
+                Delta: 0,
+                Presented: [],
+                Requested: [{ Ma: '00' }, { Ma: '01' }],
+                Proofs: [{}, {}],
             },
-            credentialsResponseValidation: {
-                presented: [],
-                requested: [
-                    { ma: '00', value: 0 },
-                    { ma: '01', value: 0 },
+            CredentialsResponseValidation: {
+                Presented: [],
+                Requested: [
+                    { Ma: '00', Value: 0 },
+                    { Ma: '01', Value: 0 },
                 ],
             },
         },
     },
     'get-credentials': (data?: RequestData): RequestData => {
-        if (!data || !data.credentialsResponse) {
-            return { credentials: [{}, {}] };
+        if (!data || !data.CredentialsResponse) {
+            return { Credentials: [{}, {}] };
         }
         return {
-            credentials: data.credentialsResponse,
+            Credentials: data.CredentialsResponse,
         };
     },
-    'get-outputs-amounts': { outputAmounts: [] },
-    'init-liquidity-clue': { rawLiquidityClue: null },
-    'update-liquidity-clue': { rawLiquidityClue: null },
-    'get-liquidity-clue': { liquidityClue: 1 },
+    'get-outputs-amounts': { OutputAmounts: [] },
+    'init-liquidity-clue': { RawLiquidityClue: null },
+    'update-liquidity-clue': { RawLiquidityClue: null },
+    'get-liquidity-clue': { LiquidityClue: 1 },
     // payment request server
     'payment-request': {
         recipient_name: 'trezor.io',
         signature: 'AA',
     },
     // coordinator
+    'api/Software/versions': {
+        ClientVersion: '0',
+        BackenMajordVersion: '0',
+        LegalDocumentsVersion: '0',
+        Ww2LegalDocumentsVersion: '0',
+        CommitHash: '000000',
+    },
     status: {
-        roundStates: [DEFAULT_ROUND],
-        coinJoinFeeRateMedians: FEE_RATE_MEDIANS,
-        affiliateInformation: AFFILIATE_INFO,
+        RoundStates: [DEFAULT_ROUND],
+        CoinJoinFeeRateMedians: FEE_RATE_MEDIANS,
+        AffiliateInformation: AFFILIATE_INFO,
     },
     'input-registration': {
-        aliceId: Math.random().toString(),
+        AliceId: Math.random().toString(),
     },
     'connection-confirmation': {
-        realAmountCredentials: {
-            credentialsRequest: {},
+        RealAmountCredentials: {
+            CredentialsRequest: {},
         },
-        realVsizeCredentials: {
-            credentialsRequest: {},
+        RealVsizeCredentials: {
+            CredentialsRequest: {},
         },
     },
     'credential-issuance': (data?: RequestData): RequestData => {
-        if (!data || !data.realAmountCredentialRequests) {
+        if (!data || !data.RealAmountCredentialRequests) {
             return {};
         }
         return {
-            realAmountCredentials: data.realAmountCredentialRequests.requested.map((a: number) => ({
-                value: a,
+            RealAmountCredentials: data.RealAmountCredentialRequests.Requested.map((a: number) => ({
+                Value: a,
             })),
-            realVsizeCredentials: data.realVsizeCredentialRequests.requested.map((a: number) => ({
-                value: a,
+            RealVsizeCredentials: data.RealVsizeCredentialRequests.Requested.map((a: number) => ({
+                Value: a,
             })),
-            zeroAmountCredentials: data.zeroAmountCredentialRequests.requested.map(() => ({
-                value: 0,
+            ZeroAmountCredentials: data.ZeroAmountCredentialRequests.Requested.map(() => ({
+                Value: 0,
             })),
-            zeroVsizeCredentials: data.zeroVsizeCredentialsRequests.requested.map(() => ({
-                value: 0,
+            ZeroVsizeCredentials: data.ZeroVsizeCredentialsRequests.Requested.map(() => ({
+                Value: 0,
             })),
         };
     },
@@ -127,7 +134,7 @@ const readRequest = (request: http.IncomingMessage) =>
             data += chunk;
         });
         request.on('end', () => {
-            resolve(JSON.parse(data));
+            resolve(data ? JSON.parse(data) : {});
         });
     });
 
@@ -146,7 +153,7 @@ const handleRequest = (
         return;
     }
 
-    const url = request.url?.split('/').pop();
+    const url = request.url?.substring(1);
     const defaultResponse = DEFAULT[url as keyof typeof DEFAULT] ?? {};
     if (typeof defaultResponse === 'function') {
         const r = defaultResponse.call(null, requestData);
@@ -197,6 +204,7 @@ export interface MockedServer extends Exclude<http.Server, 'addListener'> {
     requestOptions: {
         network: any;
         coordinatorName: string;
+        wabisabiBackendUrl: string;
         coordinatorUrl: string;
         middlewareUrl: string;
         signal: AbortSignal;
@@ -234,11 +242,14 @@ export const createServer = async () => {
 
     server.listen(port);
 
+    const url = `http://localhost:${port}/`;
+
     server.requestOptions = {
         network: 'test',
         coordinatorName: 'CoinJoinCoordinatorIdentifier',
-        coordinatorUrl: `http://localhost:${port}/`,
-        middlewareUrl: `http://localhost:${port}/`,
+        wabisabiBackendUrl: url,
+        coordinatorUrl: url,
+        middlewareUrl: url,
         signal: new AbortController().signal,
         logger: {
             debug: () => {},

@@ -1,28 +1,25 @@
-import React from 'react';
-import { Button } from '@trezor/components';
+import { MouseEventHandler } from 'react';
 
-import { Translation, TroubleshootingTips } from '@suite-components';
-import { useDevice, useActions } from '@suite-hooks';
-import * as suiteActions from '@suite-actions/suiteActions';
-import { isDesktop } from '@suite-utils/env';
+import { acquireDevice } from '@suite-common/wallet-core';
+import { Button } from '@trezor/components';
+import { isDesktop } from '@trezor/env-utils';
+
+import { Translation, TroubleshootingTips } from 'src/components/suite';
+import { useDevice, useDispatch } from 'src/hooks/suite';
 
 export const DeviceAcquire = () => {
     const { isLocked } = useDevice();
-    const { acquireDevice } = useActions({
-        acquireDevice: suiteActions.acquireDevice,
-    });
+    const dispatch = useDispatch();
 
     const isDeviceLocked = isLocked();
 
+    const handleClick: MouseEventHandler = e => {
+        e.stopPropagation();
+        dispatch(acquireDevice());
+    };
+
     const ctaButton = (
-        <Button
-            data-test="@device-acquire"
-            isLoading={isDeviceLocked}
-            onClick={e => {
-                e.stopPropagation();
-                acquireDevice();
-            }}
-        >
+        <Button data-test="@device-acquire" isLoading={isDeviceLocked} onClick={handleClick}>
             <Translation id="TR_ACQUIRE_DEVICE" />
         </Button>
     );

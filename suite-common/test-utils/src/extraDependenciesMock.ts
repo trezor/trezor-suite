@@ -54,6 +54,8 @@ export const extraDependenciesMock: ExtraDependencies = {
     thunks: {
         cardanoValidatePendingTxOnBlock: mockThunk('validatePendingTxOnBlock'),
         cardanoFetchTrezorPools: mockThunk('fetchTrezorPools'),
+        fetchAndSaveMetadata: mockThunk('fetchAndSaveMetadata'),
+        initMetadata: mockThunk('initMetadata'),
     },
     selectors: {
         selectFeeInfo: (networkSymbol: any) =>
@@ -70,22 +72,42 @@ export const extraDependenciesMock: ExtraDependencies = {
             showDebugMenu: false,
             transports: [],
         }),
+        selectDesktopBinDir: mockSelector('selectDesktopBinDir', '/bin'),
+        selectRouterApp: mockSelector('selectRouterApp', ''),
+        selectMetadata: mockSelector('selectMetadata', {}),
+        selectDevice: mockSelector('selectDevice', {
+            ...testMocks.getSuiteDevice(),
+        }),
+        selectDiscoveryForDevice: mockSelector('selectDiscoveryForDevice', undefined),
+        selectCheckFirmwareAuthenticity: mockSelector('selectCheckFirmwareAuthenticity', false),
     },
     actions: {
-        setAccountLoadedMetadata: mockAction('setAccountLoadedMetadata'),
         setAccountAddMetadata: mockAction('setAccountAddMetadata'),
         setWalletSettingsLocalCurrency: mockAction('setWalletSettingsLocalCurrency'),
         changeWalletSettingsNetworks: mockAction('changeWalletSettingsNetworks'),
         lockDevice: mockAction('lockDevice'),
+        appChanged: mockAction('appChanged'),
+        setSelectedDevice: mockAction('setSelectedDevice'),
+        updateSelectedDevice: mockAction('updateSelectedDevice'),
+        requestAuthConfirm: mockAction('requestAuthConfirm'),
+        onModalCancel: mockAction('onModalCancel'),
+        openModal: mockAction('openModal'),
     },
     actionTypes: {
         storageLoad: mockActionType('storageLoad'),
+        addButtonRequest: mockActionType('addButtonRequest'),
+        setDeviceMetadata: mockActionType('setDeviceMetadata'),
     },
     reducers: {
         storageLoadBlockchain: mockReducer('storageLoadBlockchain'),
         storageLoadAccounts: mockReducer('storageLoadAccounts'),
         storageLoadTransactions: mockReducer('storageLoadTransactions'),
         storageLoadFiatRates: mockReducer('storageLoadAccounts'),
+        storageLoadFirmware: mockReducer('storageLoadFirmware'),
+        storageLoadDiscovery: mockReducer('storageLoadDiscovery'),
+        addButtonRequestFirmware: mockReducer('addButtonRequestFirmware'),
+        setDeviceMetadataReducer: mockReducer('setDeviceMetadataReducer'),
+        storageLoadDevices: mockReducer('storageLoadDevices'),
     },
     utils: {
         saveAs: (data, fileName) =>

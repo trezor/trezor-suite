@@ -1,5 +1,4 @@
-import { EventEmitter } from 'events';
-
+import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
 import { scheduleAction, arrayDistinct, arrayPartition } from '@trezor/utils';
 import { Network } from '@trezor/utxo-lib';
 
@@ -9,7 +8,7 @@ import {
     getCoinjoinRoundDeadlines,
 } from '../utils/roundUtils';
 import { ROUND_PHASE_PROCESS_TIMEOUT, ACCOUNT_BUSY_TIMEOUT } from '../constants';
-import { RoundPhase, EndRoundState, SessionPhase } from '../enums';
+import { EndRoundState, RoundPhase, SessionPhase } from '../enums';
 import { AccountAddress, RegisterAccountParams } from '../types/account';
 import {
     SerializedCoinjoinRound,
@@ -20,7 +19,7 @@ import {
     CoinjoinResponseEvent,
     BroadcastedTransactionDetails,
 } from '../types/round';
-import { Round, CoinjoinRoundParameters, WabiSabiProtocolErrorCode } from '../types/coordinator';
+import { Round, CoinjoinRoundParameters } from '../types/coordinator';
 import { Account } from './Account';
 import { Alice } from './Alice';
 import { CoinjoinPrison } from './CoinjoinPrison';
@@ -45,13 +44,6 @@ export interface CoinjoinRoundOptions {
 interface Events {
     ended: CoinjoinRoundEvent;
     changed: CoinjoinRoundEvent;
-}
-
-export declare interface CoinjoinRound {
-    on<K extends keyof Events>(type: K, listener: (event: Events[K]) => void): this;
-    off<K extends keyof Events>(type: K, listener: (event: Events[K]) => void): this;
-    emit<K extends keyof Events>(type: K, ...args: Events[K][]): boolean;
-    removeAllListeners<K extends keyof Events>(type?: K): this;
 }
 
 const createRoundLock = (mainSignal: AbortSignal) => {
@@ -93,7 +85,7 @@ interface CreateRoundProps {
     runningAffiliateServer: boolean;
 }
 
-export class CoinjoinRound extends EventEmitter {
+export class CoinjoinRound extends TypedEmitter<Events> {
     private lock?: ReturnType<typeof createRoundLock>;
     private options: CoinjoinRoundOptions;
     private logger: Logger;
@@ -105,11 +97,11 @@ export class CoinjoinRound extends EventEmitter {
     blameOf: string;
     phase: RoundPhase;
     endRoundState: EndRoundState;
-    coinjoinState: Round['coinjoinState'];
+    coinjoinState: Round['CoinjoinState'];
     inputRegistrationEnd: string;
-    amountCredentialIssuerParameters: Round['amountCredentialIssuerParameters'];
-    vsizeCredentialIssuerParameters: Round['vsizeCredentialIssuerParameters'];
-    affiliateRequest: Round['affiliateRequest'];
+    amountCredentialIssuerParameters: Round['AmountCredentialIssuerParameters'];
+    vsizeCredentialIssuerParameters: Round['VsizeCredentialIssuerParameters'];
+    affiliateRequest: Round['AffiliateRequest'];
     //
     roundParameters: CoinjoinRoundParameters;
     inputs: Alice[] = []; // list of registered inputs
@@ -117,28 +109,33 @@ export class CoinjoinRound extends EventEmitter {
     phaseDeadline: number; // deadline is inaccurate, phase may change earlier
     roundDeadline: number; // deadline is inaccurate,round may end earlier
     commitmentData: string; // commitment data used for ownership proof and witness requests
-    addresses: AccountAddress[] = []; // list of addresses (outputs) used in this round in outputRegistration phase
+    addresses: (AccountAddress & { accountKey: string })[] = []; // list of addresses (outputs) used in this round in outputRegistration phase
+    transactionSignTries: number[] = []; // timestamps for processing transactionSigning phase
     transactionData?: CoinjoinTransactionData; // transaction to sign
     broadcastedTxDetails?: BroadcastedTransactionDetails; // transaction broadcasted
     liquidityClues?: CoinjoinTransactionLiquidityClue[]; // updated liquidity clues
 
     constructor(round: Round, prison: CoinjoinPrison, options: CoinjoinRoundOptions) {
         super();
-        this.id = round.id;
-        this.blameOf = round.blameOf;
+        this.id = round.Id;
+        this.blameOf = round.BlameOf;
         this.phase = 0;
-        this.endRoundState = round.endRoundState;
-        this.coinjoinState = round.coinjoinState;
-        this.inputRegistrationEnd = round.inputRegistrationEnd;
-        this.amountCredentialIssuerParameters = round.amountCredentialIssuerParameters;
-        this.vsizeCredentialIssuerParameters = round.vsizeCredentialIssuerParameters;
+        this.endRoundState = round.EndRoundState;
+        this.coinjoinState = round.CoinjoinState;
+        this.inputRegistrationEnd = round.InputRegistrationEnd;
+        this.amountCredentialIssuerParameters = round.AmountCredentialIssuerParameters;
+        this.vsizeCredentialIssuerParameters = round.VsizeCredentialIssuerParameters;
         const roundParameters = getRoundParameters(round);
         if (!roundParameters) {
             throw new Error('Missing CoinjoinRound roundParameters');
         }
         this.roundParameters = roundParameters;
-        this.commitmentData = getCommitmentData(options.coordinatorName, round.id);
-        const { phaseDeadline, roundDeadline } = getCoinjoinRoundDeadlines(this as any);
+        this.commitmentData = getCommitmentData(options.coordinatorName, round.Id);
+        const { phaseDeadline, roundDeadline } = getCoinjoinRoundDeadlines({
+            Phase: this.phase,
+            InputRegistrationEnd: this.inputRegistrationEnd,
+            RoundParameters: roundParameters,
+        });
         this.phaseDeadline = phaseDeadline;
         this.roundDeadline = roundDeadline;
         this.options = options;
@@ -184,7 +181,7 @@ export class CoinjoinRound extends EventEmitter {
             // try to interrupt running process and start processing new phase
             // but give current process some time to cool off
             // example: http request is sent but response was not received yet and aborted
-            const shouldCoolOff = changed.phase === this.phase + 1;
+            const shouldCoolOff = changed.Phase === this.phase + 1;
             const { promise, abort } = this.lock;
             const unlock = () => {
                 this.logger.warn(`Aborting round ${this.id}`);
@@ -208,20 +205,27 @@ export class CoinjoinRound extends EventEmitter {
         if (this.phase === RoundPhase.Ended) return this;
 
         // update data from status
-        this.phase = changed.phase;
-        this.endRoundState = changed.endRoundState;
-        this.coinjoinState = changed.coinjoinState;
-        const { phaseDeadline, roundDeadline } = getCoinjoinRoundDeadlines(this);
-        this.phaseDeadline = phaseDeadline;
-        this.roundDeadline = roundDeadline;
+        if (this.phase !== changed.Phase) {
+            this.phase = changed.Phase;
+            this.endRoundState = changed.EndRoundState;
+            this.coinjoinState = changed.CoinjoinState;
+            const { phaseDeadline, roundDeadline } = getCoinjoinRoundDeadlines({
+                Phase: this.phase,
+                InputRegistrationEnd: this.inputRegistrationEnd,
+                RoundParameters: this.roundParameters,
+            });
+            this.phaseDeadline = phaseDeadline;
+            this.roundDeadline = roundDeadline;
+        }
+
         // update affiliateRequest once and keep the value
         // affiliateData are removed from the status once phase is changed to Ended
-        if (!this.affiliateRequest && changed.affiliateRequest) {
-            this.affiliateRequest = changed.affiliateRequest;
+        if (!this.affiliateRequest && changed.AffiliateRequest) {
+            this.affiliateRequest = changed.AffiliateRequest;
         }
 
         // NOTE: emit changed event before each async phase
-        if (changed.phase !== RoundPhase.Ended) {
+        if (changed.Phase !== RoundPhase.Ended) {
             this.emit('changed', { round: this.toSerialized() });
         }
 
@@ -239,10 +243,20 @@ export class CoinjoinRound extends EventEmitter {
         const [inputs, failed] = arrayPartition(this.inputs, input => !input.error);
         this.inputs = inputs;
 
-        // do not pass failed inputs from InputRegistration to further phases
-        if (this.phase > RoundPhase.InputRegistration) {
+        if (this.phase === RoundPhase.InputRegistration && failed.length > 0) {
+            // strictly follow the result of `middleware.selectInputsForRound` algorithm
+            // if **any** input registration fails for **any** reason exclude all inputs related to this account
+            const failedAccounts = failed.map(input => input.accountKey).filter(arrayDistinct);
+            this.inputs = inputs.filter(input => {
+                const shouldBeExcluded = failedAccounts.includes(input.accountKey);
+                if (shouldBeExcluded) {
+                    input.clearConfirmationInterval();
+                }
+                return !shouldBeExcluded;
+            });
+        } else if (this.phase > RoundPhase.InputRegistration) {
             failed.forEach(input =>
-                this.prison.detain(input.outpoint, {
+                this.prison.detain(input, {
                     roundId: this.id,
                     reason: input.error?.message,
                 }),
@@ -348,7 +362,12 @@ export class CoinjoinRound extends EventEmitter {
                 if (type === 'ownership') {
                     // wallet request respond with error, account (device) is busy,
                     // detain whole account for short while and try again later
-                    this.prison.detain(input.accountKey, { sentenceEnd: ACCOUNT_BUSY_TIMEOUT });
+                    this.prison.detain(
+                        { accountKey: input.accountKey },
+                        {
+                            sentenceEnd: ACCOUNT_BUSY_TIMEOUT,
+                        },
+                    );
                 }
             } else if ('ownershipProof' in i) {
                 log(`Resolving ${type} request for ~~${i.outpoint}~~`);
@@ -370,8 +389,8 @@ export class CoinjoinRound extends EventEmitter {
         // set error on each input
         spentInputs.forEach(input => {
             input.clearConfirmationInterval();
-            input.setError(new Error(WabiSabiProtocolErrorCode.InputSpent));
-        }); // TODO: error same as wasabi coordinator?
+            input.setError(new Error('Input spent'));
+        });
 
         this.breakRound(spentInputs);
     }
@@ -390,26 +409,43 @@ export class CoinjoinRound extends EventEmitter {
 
     // decide if round process should be interrupted by Account change
     private breakRound(inputs: Alice[]) {
-        if (inputs.length > 0) {
-            if (this.phase > RoundPhase.InputRegistration) {
-                // unregistered in critical phase, breaking the round
-                this.lock?.abort();
-            }
-            if (inputs.length === this.inputs.length) {
-                // no more inputs left in round, breaking the round
-                this.lock?.abort();
+        if (inputs.length < 1) return;
+
+        let breaking = false;
+        if (this.phase > RoundPhase.InputRegistration) {
+            // unregistered in critical phase, breaking the round
+            breaking = true;
+        }
+        if (inputs.length === this.inputs.length || !this.inputs.filter(i => !i.error).length) {
+            // no more inputs left in round, breaking the round
+            breaking = true;
+        }
+
+        if (breaking) {
+            if (this.lock) {
+                // abort processing if locked. Round will be ended automatically as result of abort
+                this.lock.abort();
+            } else {
+                // emit events if not locked
+                this.phase = RoundPhase.Ended;
+                this.emit('ended', { round: this.toSerialized() });
+                this.emit('changed', { round: this.toSerialized() });
             }
         }
     }
 
     onAffiliateServerStatus(status: boolean) {
-        if (!status && this.phase <= RoundPhase.OutputRegistration) {
+        if (!status) {
             // if affiliate server goes offline try to abort round if it's not in critical phase.
-            // if round is in critical phase, there is noting much we can do...
+            // if round is in critical phase, there is noting much we can do, just log it...
             // ...we need to continue and hope that server will become online before transaction signing phase
-            this.logger.info(`Affiliate server offline. Aborting round ${this.id}`);
-            this.lock?.abort();
-            this.inputs.forEach(i => i.clearConfirmationInterval());
+            if (this.phase <= RoundPhase.OutputRegistration) {
+                this.logger.warn(`Affiliate server offline. Aborting round ${this.id}`);
+                this.lock?.abort();
+                this.inputs.forEach(i => i.clearConfirmationInterval());
+            } else {
+                this.logger.error(`Affiliate server offline in phase ${this.phase}!`);
+            }
         }
     }
 

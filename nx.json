@@ -1,8 +1,7 @@
 {
-    "extends": "nx/presets/npm.json",
     "tasksRunnerOptions": {
         "default": {
-            "runner": "@nrwl/nx-cloud",
+            "runner": "nx-cloud",
             "options": {
                 "cacheableOperations": [
                     "lint",
@@ -17,36 +16,39 @@
             }
         }
     },
+    "extends": "nx/presets/npm.json",
     "namedInputs": {
-        "default": ["{projectRoot}/**/*"],
-        "prod": ["!{projectRoot}/**/*.test.{ts,tsx}"]
+        "sharedGlobals": [
+            "{workspaceRoot}/nx.json",
+            "{workspaceRoot}/.yarnrc.yml",
+            "{workspaceRoot}/patches/*.patch",
+            "{workspaceRoot}/package.json"
+        ],
+        "default": ["{projectRoot}/**/*", "sharedGlobals"],
+        "prod": ["default", "!{projectRoot}/**/*.test.{ts,tsx}"]
     },
     "targetDefaults": {
         "build:lib": {
             "dependsOn": ["^build:lib"],
             "inputs": [
-                "default",
                 "^prod",
                 "{workspaceRoot}/tsconfig.json",
-                "{workspaceRoot}/tsconfig.aliases.json",
                 "{workspaceRoot}/tsconfig.lib.json"
             ],
-            "outputs": ["./lib", "./build"]
+            "outputs": ["{projectRoot}/lib", "{projectRoot}/build"]
         },
         "type-check": {
             "dependsOn": ["^build:lib", "^type-check"],
             "inputs": [
-                "default",
                 "^prod",
                 "{workspaceRoot}/tsconfig.json",
-                "{workspaceRoot}/tsconfig.aliases.json",
                 "{workspaceRoot}/tsconfig.lib.json"
-            ]
+            ],
+            "outputs": ["{projectRoot}/libDev"]
         },
         "test:unit": {
             "dependsOn": ["^build:lib"],
             "inputs": [
-                "default",
                 "^prod",
                 "{workspaceRoot}/jest.config.base.js",
                 "{workspaceRoot}/jest.config.native.js"
@@ -59,13 +61,8 @@
             "inputs": ["default"]
         }
     },
-    "implicitDependencies": {
-        "package.json": "*",
-        "nx.json": "*",
-        ".yarnrc.yml": "*",
-        "patches/*.patch": "*"
-    },
     "affected": {
         "defaultBase": "origin/develop"
-    }
+    },
+    "$schema": "./node_modules/nx/schemas/nx-schema.json"
 }

@@ -1,16 +1,8 @@
 name: "@trezor/connect-webextension"
 
+# TODO: until we are able to build and deploy webextension from github, this workflow can not be used
 on:
-  pull_request:
-    paths:
-      - "packages/connect/**"
-      - "packages/connect-iframe/**"
-      - "packages/connect-web/**"
-      - "packages/connect-examples/**"
-      - "packages/connect-webextension/**"
-  push:
-    branches:
-      - develop
+  workflow_dispatch:
 
 jobs:
   connect-webextension-test:
@@ -22,6 +14,8 @@ jobs:
       - run: yarn install
       - run: yarn build:libs
       - name: Build extension
-        run: "node ./packages/connect-examples/update-webextensions.js"
+        # this does not make much sense, in fact, we are testing what is already in production and we cant change that
+        # unless we have build and deploys in github
+        run: node ./packages/connect-examples/update-webextensions.js --npm-src "https://connect.trezor.io/9/trezor-connect.js"
       - name: Run connect web extension test
         run: "./docker/docker-connect-webextension-ci.sh"

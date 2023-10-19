@@ -20,7 +20,6 @@ export default class BinanceSignTransaction extends AbstractMethod<
     init() {
         this.requiredPermissions = ['read', 'write'];
         this.firmwareRange = getFirmwareRange(this.name, getMiscNetwork('BNB'), this.firmwareRange);
-        this.info = 'Sign Binance transaction';
 
         const { payload } = this;
         // validate incoming parameters
@@ -36,6 +35,10 @@ export default class BinanceSignTransaction extends AbstractMethod<
             path,
             transaction,
         };
+    }
+
+    get info() {
+        return 'Sign Binance transaction';
     }
 
     run() {

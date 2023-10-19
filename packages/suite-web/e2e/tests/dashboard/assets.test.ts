@@ -1,6 +1,11 @@
 // @group:suite
 // @retry=2
 
+import { EventType } from '@trezor/suite-analytics';
+import { ExtractByEventType, Requests } from '../../support/types';
+
+let requests: Requests;
+
 describe('Assets', () => {
     beforeEach(() => {
         cy.task('startEmu', { wipe: true });
@@ -11,23 +16,64 @@ describe('Assets', () => {
         cy.task('startBridge');
 
         cy.viewport(1080, 1440).resetDb();
-        cy.prefixedVisit('/');
-        cy.passThroughInitialRun();
+
+        requests = [];
+        cy.interceptDataTrezorIo(requests);
     });
 
-    /*
-     * 1. navigate to the `Dashboard` page
-     * 2. check the `Assets` part of the page
-     * 3. the modal is rendered correctly and shows 1-n coins
-     * 4. click on a coin name (e.g. `Bitcoin`)
-     * 5. user is transferred to a bitcoin account
-     */
-    it('Assets', () => {
-        //
-        // Test execution && assert
-        //
+    it('checks that BTC and ETH accounts are available', () => {
+        cy.prefixedVisit('/');
+
+        // enable ethereum
+        cy.getTestElement('@suite/menu/settings').click();
+        cy.getTestElement('@settings/menu/wallet').click();
+        cy.getTestElement('@settings/wallet/network/eth').click();
+        cy.getTestElement('@settings/menu/close').click();
+
+        cy.passThroughInitialRun();
+
+        // ugly bug which takes user to settings after initial run in case he was there before and had initialized device
+        cy.getTestElement('@settings/menu/close').click();
+
         cy.discoveryShouldFinish();
-        cy.contains('Bitcoin').should('be.visible').click();
+        cy.contains('Bitcoin').should('be.visible');
+        cy.contains('Ethereum').should('be.visible').click();
+
+        cy.findAnalyticsEventByType<ExtractByEventType<EventType.SelectWalletType>>(
+            requests,
+            EventType.SelectWalletType,
+        ).then(selectWalletTypeEvent => {
+            expect(selectWalletTypeEvent.type).to.equal('standard');
+        });
+
+        cy.findAnalyticsEventByType<ExtractByEventType<EventType.AccountsStatus>>(
+            requests,
+            EventType.AccountsStatus,
+        ).then(accountsStatusEvent => {
+            expect(parseInt(accountsStatusEvent.btc_normal.toString(), 10)).to.not.equal(NaN);
+            expect(parseInt(accountsStatusEvent.btc_taproot.toString(), 10)).to.not.equal(NaN);
+            expect(parseInt(accountsStatusEvent.btc_segwit.toString(), 10)).to.not.equal(NaN);
+            expect(parseInt(accountsStatusEvent.btc_legacy.toString(), 10)).to.not.equal(NaN);
+            expect(parseInt(accountsStatusEvent.eth_normal.toString(), 10)).to.not.equal(NaN);
+        });
+
+        cy.findAnalyticsEventByType<ExtractByEventType<EventType.AccountsNonZeroBalance>>(
+            requests,
+            EventType.AccountsNonZeroBalance,
+        ).then(accountsNonZeroBalanceEvent => {
+            // 0x73d0385F4d8E00C5e6504C6030F47BF6212736A8 has token and nobody will be able to move it without ETH
+            expect(parseInt(accountsNonZeroBalanceEvent.eth_normal.toString(), 10)).to.not.equal(
+                NaN,
+            );
+        });
+
+        cy.findAnalyticsEventByType<ExtractByEventType<EventType.AccountsTokensStatus>>(
+            requests,
+            EventType.AccountsTokensStatus,
+        ).then(accountsTokensStatusEvent => {
+            // 0x73d0385F4d8E00C5e6504C6030F47BF6212736A8 has token and nobody will be able to move it without ETH
+            expect(parseInt(accountsTokensStatusEvent.eth.toString(), 10)).to.not.equal(NaN);
+        });
     });
 });
 

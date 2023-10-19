@@ -6,8 +6,13 @@ Tested in Chrome and Firefox
 
 ## Install
 
--   `cd packages/connect-examples/`
--   `node update-webextensions.js`
+Run the commands below in order to get the MV2 and MV3 webextension ready to be loaded in the browser.
+
+-   `yarn`
+-   `yarn build:libs`
+-   `yarn workspace @trezor/connect-web build:webextension`
+-   `yarn workspace @trezor/connect-web build:inline`
+-   `node packages/connect-examples/update-webextensions.js`
 
 ## Browsers
 
@@ -101,7 +106,7 @@ Basic implementation is the same for both Google Chrome & Firefox. However, few 
                     : `Error: ${response.payload.error}`;
                 chrome.notifications.create(new Date().getTime().toString(), {
                     type: 'basic',
-                    iconUrl: 'icons/48.png',
+                    iconUrl: 'icon48.png',
                     title: 'TrezorConnect',
                     message,
                 });
@@ -128,7 +133,7 @@ Basic implementation is the same for both Google Chrome & Firefox. However, few 
                     : `Error: ${response.payload.error}`;
                 chrome.notifications.create(new Date().getTime().toString(), {
                     type: 'basic',
-                    iconUrl: 'icons/48.png',
+                    iconUrl: 'icon48.png',
                     title: 'TrezorConnect',
                     message,
                 });

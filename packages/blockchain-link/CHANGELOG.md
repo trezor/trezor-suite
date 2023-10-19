@@ -1,3 +1,30 @@
+# 2.1.17
+
+-   feat(blockchain-link): add block filter methods (66606afc6)
+-   chore: adjust/unify createDeferred usage (4d724a451)
+
+# 2.1.16
+
+-   feat(blockchain-link): ipv6 electrum support (1d4b5471c)
+-   fix(blockchain-link): WsWrapper default export (0c5297e56)
+-   feat(blockchain-link): return tx hex in blockbook transactions (6aba6f094)
+-   feat(blockchain-link): add baseWebsocket options (951bd3e29)
+
+# 2.1.14
+
+-   fix(coinjoin): pending ws message closing recovery (0171cf3ef)
+-   chore(deps): update (a21a081ba)
+-   chore(blockchain-link): remove ts-loader from blockchain-link (3b117830a)
+-   fix(blockchain-link): browser and native Websocket error message (e160101f5)
+-   fix(blockchain-link): handle Websocket ping rejection (b9940b6e9)
+-   chore(blockchain-link): define missing extraneous dependencies (83230e063)
+
+# 2.1.12
+
+-   5711aa998 feat(blockchain-link): add getMempoolFilters method
+-   819c019d1 chore: use workspace:\* everywhere
+-   3e072b11f chore(blockchain-link): use `@trezor/e2e-utils` in tests
+
 # 2.1.11
 
 -   chore(blockchain-link): fix ripple blocktime

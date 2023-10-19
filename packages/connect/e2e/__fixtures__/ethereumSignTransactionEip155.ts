@@ -15,12 +15,30 @@ const legacyResults: Record<string, LegacyResult[]> = {
     ],
     'Ledger Live legacy path': [
         {
-            // 'Forbidden key path between these versions (t1 does not have starting fw, too much effort to find)
+            // 'Forbidden key path between these versions (T1B1 does not have starting fw, too much effort to find)
             rules: ['2.3.4-2.5.4', '<1.12.2'],
             success: false,
         },
     ],
 };
+
+// Legacy results for eth networks related fixtures
+// historically, ethereum definitions used to be part of firwmares so it was expected that certain fw would
+// not support certain eth network. With (I believe) 2.6.0, definitions are sent from host so we don't really need
+// to care about support of particular networks.
+[
+    'Unknown_chain_id_testnet_path',
+    'Ropsten',
+    'Rinkeby',
+    'max_chain_id',
+    'max_chain_plus_one',
+].forEach(fixture => {
+    legacyResults[fixture] = [
+        {
+            rules: ['2.2.0'], // I am not sure about exact fw ranges here, so just lets use 2.2.0 which is the fw version we run legacy tests with
+        },
+    ];
+});
 
 export default {
     method: 'ethereumSignTransaction',

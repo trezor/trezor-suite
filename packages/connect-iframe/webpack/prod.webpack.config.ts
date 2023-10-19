@@ -1,13 +1,17 @@
 import path from 'path';
+import { execSync } from 'child_process';
 import webpack from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import TerserPlugin from 'terser-webpack-plugin';
+import { version } from '../package.json';
 
 const COMMON_DATA_SRC = '../../packages/connect-common/files';
-const MESSAGES_SRC = '../../packages/transport/messages.json';
+const MESSAGES_SRC = '../../packages/protobuf/messages.json';
 
 const DIST = path.resolve(__dirname, '../build');
+
+const commitHash = execSync('git rev-parse HEAD').toString().trim();
 
 const config: webpack.Configuration = {
     target: 'web',
@@ -33,13 +37,33 @@ const config: webpack.Configuration = {
                 },
             },
             {
-                test: /sharedConnectionWorker/i,
+                test: (input: string) => input.includes('background-sharedworker'),
                 loader: 'worker-loader',
-                issuer: /workers\/workers-*/i, // replace import ONLY in /workers\/workers- not @trezor/transport
                 options: {
                     worker: 'SharedWorker',
-                    filename: './workers/shared-connection-worker.[contenthash].js',
+                    filename: './workers/sessions-background-sharedworker.[contenthash].js',
                 },
+            },
+            {
+                test: /sharedLoggerWorker.ts/i,
+                use: [
+                    {
+                        loader: 'worker-loader',
+                        options: {
+                            worker: 'SharedWorker',
+                            // TODO: we are not using contenthash here because we want to use that worker from
+                            // different environments (iframe, popup, connect-web, etc.) and we would not know the
+                            // name of the file.
+                            filename: './workers/shared-logger-worker.js',
+                        },
+                    },
+                    {
+                        loader: 'babel-loader',
+                        options: {
+                            presets: ['@babel/preset-typescript'],
+                        },
+                    },
+                ],
             },
             {
                 test: /\workers\/blockbook\/index/i,
@@ -78,6 +102,10 @@ const config: webpack.Configuration = {
             crypto: require.resolve('crypto-browserify'), // required by multiple dependencies
             stream: require.resolve('stream-browserify'), // required by utxo-lib and keccak
             events: require.resolve('events'),
+            http: false,
+            zlib: false,
+            path: false, // usb
+            os: false, // usb
         },
     },
     performance: {
@@ -113,6 +141,14 @@ const config: webpack.Configuration = {
             template: path.resolve(__dirname, '../src/static/iframe.html'),
             minify: false,
             inject: false,
+        }),
+        new webpack.DefinePlugin({
+            process: {
+                env: {
+                    VERSION: JSON.stringify(version),
+                    COMMIT_HASH: JSON.stringify(commitHash),
+                },
+            },
         }),
     ],
 

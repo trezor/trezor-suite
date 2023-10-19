@@ -1,9 +1,9 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/data/config.json
 
-import { TREZOR_DESCS } from '@trezor/transport';
+import { TREZOR_USB_DESCRIPTORS } from '@trezor/transport/lib/constants';
 
 export const config = {
-    webusb: TREZOR_DESCS,
+    webusb: TREZOR_USB_DESCRIPTORS,
     whitelist: [
         { origin: 'chrome-extension://imloifkgjagghnncjkhggdhalmcnfklk', priority: 1 },
         { origin: 'chrome-extension://niebkpllfhmpfbffbfifagfgoamhpflf', priority: 1 },
@@ -21,12 +21,6 @@ export const config = {
             icon: '',
         },
         { origin: 'niebkpllfhmpfbffbfifagfgoamhpflf', label: 'Trezor Password Manager', icon: '' },
-        { origin: 'trezor-connect@trezor.io', label: 'Trezor Connect FF Extension', icon: '' },
-        {
-            origin: 'efbfhenfhihgdcmnfdkhaphjdnopihlf',
-            label: 'Trezor Connect Chrome Extension',
-            icon: '',
-        },
         {
             origin: 'mnpfhpndmjholfdlhpkjfmjkgppmodaf',
             label: 'MetaMask',
@@ -34,6 +28,11 @@ export const config = {
         },
         {
             origin: 'webextension@metamask.io',
+            label: 'MetaMask',
+            icon: '',
+        },
+        {
+            origin: 'nkbihfbeogaeaoehlefnkodbefgpgknn',
             label: 'MetaMask',
             icon: '',
         },
@@ -48,16 +47,24 @@ export const config = {
             url: './data/coins.json',
         },
         {
+            name: 'coinsEth',
+            url: './data/coins-eth.json',
+        },
+        {
             name: 'bridge',
             url: './data/bridge/releases.json',
         },
         {
-            name: 'firmware-t1',
-            url: './data/firmware/1/releases.json',
+            name: 'firmware-t1b1',
+            url: './data/firmware/t1b1/releases.json',
         },
         {
-            name: 'firmware-t2',
-            url: './data/firmware/2/releases.json',
+            name: 'firmware-t2t1',
+            url: './data/firmware/t2t1/releases.json',
+        },
+        {
+            name: 'firmware-t2b1',
+            url: './data/firmware/t2b1/releases.json',
         },
     ],
     messages: './data/messages/messages.json',
@@ -101,7 +108,7 @@ export const config = {
             ],
         },
         {
-            coin: ['eth', 'tgor'],
+            coin: ['eth', 'tsep', 'tgor'],
             min: ['1.8.0', '2.1.0'],
             comment: ['There were protobuf backwards incompatible changes.'],
         },
@@ -184,12 +191,18 @@ export const config = {
             capabilities: ['coinjoin'],
             methods: [
                 'authorizeCoinjoin',
+                'cancelCoinjoinAuthorization',
                 'getOwnershipId',
                 'getOwnershipProof',
                 'setBusy',
                 'unlockPath',
             ],
             min: ['1.12.1', '2.5.3'],
+        },
+        {
+            methods: ['showDeviceTutorial'],
+            min: ['0', '2.6.1'],
+            comment: ['Only on T2B1'],
         },
     ],
 };

@@ -113,6 +113,13 @@ export const signTransaction = async (api: TrezorConnect) => {
                 script_type: 'SPENDADDRESS',
             },
             {
+                address_n: "m/44'/0'/0'/0/0",
+                prev_index: 0,
+                prev_hash: 'txhash',
+                amount: '1',
+                script_type: 'SPENDADDRESS',
+            },
+            {
                 address_n: [0],
                 prev_index: 0,
                 prev_hash: 'txhash',
@@ -197,6 +204,11 @@ export const signTransaction = async (api: TrezorConnect) => {
                 },
             },
             // change outputs
+            {
+                address_n: "m/44'/0'/0'/1/0",
+                amount: '100',
+                script_type: 'PAYTOADDRESS',
+            },
             {
                 address_n: [0],
                 amount: '100',

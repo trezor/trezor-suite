@@ -3,10 +3,21 @@ import { PartialRecord } from '@trezor/type-utils';
 
 // @trezor/coinjoin package is meant to be imported dynamically
 // importing types is safe, but importing an enum thru index will bundle whole lib
-import { RegisterAccountParams } from '@trezor/coinjoin';
-import { RoundPhase, SessionPhase, EndRoundState } from '@trezor/coinjoin/src/enums';
+import {
+    RegisterAccountParams,
+    CoinjoinPrisonInmate,
+    CoinjoinStatusEvent,
+    CoinjoinClientVersion,
+} from '@trezor/coinjoin';
+import {
+    RoundPhase,
+    SessionPhase,
+    EndRoundState,
+    WabiSabiProtocolErrorCode,
+} from '@trezor/coinjoin/src/enums';
 
-export { RoundPhase, SessionPhase, EndRoundState };
+export { EndRoundState, WabiSabiProtocolErrorCode };
+export type { RoundPhase, SessionPhase };
 
 export interface CoinjoinSetup {
     targetAnonymity: number;
@@ -22,12 +33,21 @@ export interface CoinjoinSessionParameters {
     maxCoordinatorFeeRate: number;
 }
 
+export interface CoinjoinClientInstance
+    extends Pick<
+        CoinjoinStatusEvent,
+        'coordinationFeeRate' | 'allowedInputAmounts' | 'feeRateMedian'
+    > {
+    rounds: { id: string; phase: RoundPhase }[]; // store only slice of Round in reducer. may be extended in the future
+    version?: CoinjoinClientVersion;
+    status: 'loading' | 'loaded';
+}
+
 export interface CoinjoinSession extends CoinjoinSessionParameters {
     timeCreated: number; // timestamp when was created
     timeEnded?: number; // timestamp when was finished
     paused?: boolean; // current state
-    isAutoPauseEnabled?: boolean; // auto pause after current round
-    interrupted?: boolean; // it was paused by force
+    isAutoStopEnabled?: boolean; // auto pause after current round
     starting?: boolean; // is coinjoin session (re)starting, i.e. initiated but not yet running
     sessionPhaseQueue: Array<SessionPhase>;
     roundPhase?: RoundPhase; // current phase enum
@@ -53,15 +73,26 @@ export interface AnonymityGains {
     lastReportTimestamp?: number;
 }
 
+export interface CoinjoinTxCandidate {
+    roundId: string;
+}
+
+export interface CoinjoinLegalDocuments {
+    zkSNACKs: string;
+    trezor: string;
+}
+
 export interface CoinjoinAccount {
     key: string; // reference to wallet Account.key
     symbol: NetworkSymbol;
     setup?: CoinjoinSetup; // unless enabled, account uses default (recommended) values
     rawLiquidityClue: RegisterAccountParams['rawLiquidityClue'];
     session?: CoinjoinSession; // current/active authorized session
-    previousSessions: CoinjoinSession[]; // history
     checkpoints?: CoinjoinDiscoveryCheckpoint[];
     anonymityGains?: AnonymityGains;
+    transactionCandidates?: CoinjoinTxCandidate[];
+    prison?: Record<string, Omit<CoinjoinPrisonInmate, 'id' | 'accountKey'>>;
+    agreedToLegalDocumentVersions?: CoinjoinLegalDocuments;
 }
 
 export type CoinjoinServerEnvironment = 'public' | 'staging' | 'localhost';
@@ -77,4 +108,5 @@ export interface CoinjoinConfig {
     roundsDurationInHours: number;
     maxMiningFeeModifier: number;
     maxFeePerVbyte?: number;
+    legalDocumentsVersion: string;
 }

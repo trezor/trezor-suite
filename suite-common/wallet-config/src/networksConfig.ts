@@ -1,6 +1,6 @@
+import { DeviceModelInternal } from '@trezor/connect';
 import type { ExtendedMessageDescriptor } from '@suite-common/intl-types';
 import type { Keys, Without } from '@trezor/type-utils';
-import { DeviceModel } from '@trezor/device-utils';
 
 export const networks = {
     btc: {
@@ -20,7 +20,7 @@ export const networks = {
             coinjoin: {
                 bip43Path: "m/10025'/0'/i'/1'", // https://github.com/satoshilabs/slips/blob/master/slip-0025.md#public-key-derivation
                 backendType: 'coinjoin', // use non-standard backend
-                features: ['amount-unit'], // no rbf, no sign-verify
+                features: ['rbf', 'amount-unit'], // no sign-verify
             },
             taproot: {
                 bip43Path: "m/86'/0'/i'",
@@ -262,7 +262,7 @@ export const networks = {
             coinjoin: {
                 bip43Path: "m/10025'/1'/i'/1'", // https://github.com/satoshilabs/slips/blob/master/slip-0025.md#public-key-derivation
                 backendType: 'coinjoin', // use non-standard backend
-                features: ['amount-unit'], // no rbf, no sign-verify
+                features: ['rbf', 'amount-unit'], // no sign-verify
             },
             taproot: {
                 bip43Path: "m/86'/1'/i'",
@@ -294,7 +294,7 @@ export const networks = {
             coinjoin: {
                 bip43Path: "m/10025'/1'/i'/1'", // https://github.com/satoshilabs/slips/blob/master/slip-0025.md#public-key-derivation
                 backendType: 'coinjoin', // use non-standard backend
-                features: ['amount-unit'], // no rbf, no sign-verify
+                features: ['rbf', 'amount-unit'], // no sign-verify
             },
             taproot: {
                 bip43Path: "m/86'/1'/i'",
@@ -307,6 +307,24 @@ export const networks = {
                 bip43Path: "m/44'/1'/i'",
             },
         },
+    },
+    tsep: {
+        name: 'Ethereum Sepolia',
+        networkType: 'ethereum',
+        bip43Path: "m/44'/1'/0'/0/i",
+        chainId: 11155111,
+        decimals: 18,
+        testnet: true,
+        label: 'TR_TESTNET_COINS_LABEL',
+        explorer: {
+            tx: 'https://sepolia1.trezor.io/tx/',
+            account: 'https://sepolia1.trezor.io/address/',
+            nft: 'https://sepolia1.trezor.io/nft/',
+            address: 'https://sepolia1.trezor.io/address/',
+        },
+        features: ['rbf', 'sign-verify', 'tokens'],
+        customBackends: ['blockbook'],
+        accountTypes: {},
     },
     tgor: {
         name: 'Ethereum Goerli',
@@ -349,14 +367,15 @@ export const networks = {
         bip43Path: "m/1852'/1815'/i'",
         decimals: 6,
         testnet: false,
-        features: ['tokens'],
+        features: ['tokens', 'staking'],
         explorer: {
             tx: 'https://explorer.blockfrost.dev/transaction/',
             account: 'https://explorer.blockfrost.dev/account/',
             token: 'https://explorer.blockfrost.dev/token/',
         },
         support: {
-            [DeviceModel.TT]: '2.4.3',
+            [DeviceModelInternal.T2T1]: '2.4.3',
+            [DeviceModelInternal.T2B1]: '2.6.1',
         },
         customBackends: ['blockfrost'],
         accountTypes: {
@@ -378,14 +397,15 @@ export const networks = {
         label: 'TR_TESTNET_COINS_LABEL',
         decimals: 6,
         testnet: true,
-        features: ['tokens'],
+        features: ['tokens', 'staking'],
         explorer: {
             tx: 'https://testnet-explorer.blockfrost.dev/transaction/',
             account: 'https://testnet-explorer.blockfrost.dev/account/',
             token: 'https://testnet-explorer.blockfrost.dev/token/',
         },
         support: {
-            [DeviceModel.TT]: '2.4.3',
+            [DeviceModelInternal.T2T1]: '2.4.3',
+            [DeviceModelInternal.T2B1]: '2.6.1',
         },
         customBackends: ['blockfrost'],
         accountTypes: {
@@ -417,7 +437,7 @@ export type AccountType =
     | 'imported'
     | 'taproot'
     | 'legacySegwit';
-export type NetworkFeature = 'rbf' | 'sign-verify' | 'amount-unit' | 'tokens';
+export type NetworkFeature = 'rbf' | 'sign-verify' | 'amount-unit' | 'tokens' | 'staking';
 export type Network = Without<NetworkValue, 'accountTypes'> & {
     symbol: NetworkSymbol;
     accountType?: 'normal' | AccountType;
@@ -429,7 +449,7 @@ export type Network = Without<NetworkValue, 'accountTypes'> & {
     label?: ExtendedMessageDescriptor['id'];
     tooltip?: ExtendedMessageDescriptor['id'];
     support?: {
-        [key in DeviceModel]: string;
+        [key in DeviceModelInternal]: string;
     };
 };
 
@@ -454,3 +474,8 @@ export const getTestnets = (debug = false) =>
     networksCompatibility.filter(
         n => !n.accountType && n.testnet === true && (n.symbol !== 'regtest' || debug),
     );
+
+export const getEthereumTypeNetworkSymbols = () =>
+    networksCompatibility.filter(n => n.networkType === 'ethereum').map(n => n.symbol);
+
+export const getTestnetSymbols = () => getTestnets().map(n => n.symbol);

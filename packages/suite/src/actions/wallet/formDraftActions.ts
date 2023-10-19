@@ -1,14 +1,15 @@
-import { Dispatch, GetState } from '@suite-types';
+import { FieldValues } from 'react-hook-form';
+
+import { Dispatch, GetState } from 'src/types/suite';
 import { getFormDraftKey } from '@suite-common/wallet-utils';
 import { FORM_DRAFT } from './constants';
-
-import type { FormDraftKeyPrefix, FormDraft } from '@wallet-types/form';
+import type { FormDraftKeyPrefix } from '@suite-common/wallet-types';
 
 export type FormDraftAction =
     | {
           type: typeof FORM_DRAFT.STORE_DRAFT;
           key: string;
-          formDraft: FormDraft;
+          formDraft: FieldValues;
       }
     | {
           type: typeof FORM_DRAFT.REMOVE_DRAFT;
@@ -16,7 +17,7 @@ export type FormDraftAction =
       };
 
 export const saveDraft =
-    <T extends FormDraft>(prefix: FormDraftKeyPrefix) =>
+    <T extends FieldValues>(prefix: FormDraftKeyPrefix) =>
     (key: string, formDraft: T) =>
     (dispatch: Dispatch) => {
         dispatch({
@@ -27,7 +28,7 @@ export const saveDraft =
     };
 
 export const getDraft =
-    <T extends FormDraft>(prefix: FormDraftKeyPrefix) =>
+    <T extends FieldValues>(prefix: FormDraftKeyPrefix) =>
     (key: string) =>
     (_dispatch: Dispatch, getState: GetState) => {
         const { formDrafts } = getState().wallet;

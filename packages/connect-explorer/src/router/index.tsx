@@ -1,12 +1,13 @@
-import React from 'react';
 import { Provider } from 'react-redux';
 import store from '../store';
 import GlobalStyle from '../GlobalStyle';
 import { HashRouter as Router, Switch, Route } from 'react-router-dom';
 
 import AppContainer from '../containers/AppContainer';
-import About from '../components/About';
 import Method from '../components/Method';
+import { About } from '../components/PageAbout';
+import { Events } from '../components/PageEvents';
+import { Changelog } from '../components/PageChangelog';
 
 const App = () => (
     <>
@@ -17,6 +18,8 @@ const App = () => (
                     <AppContainer>
                         <Route path="/method/:method" component={Method} />
                         <Route exact path="/" component={About} />
+                        <Route exact path="/changelog" component={Changelog} />
+                        <Route exact path="/events" component={Events} />
                     </AppContainer>
                 </Switch>
             </Router>

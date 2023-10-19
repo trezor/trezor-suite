@@ -1,45 +1,42 @@
 import { createContext, useCallback, useContext, useEffect } from 'react';
+import { useForm, useWatch } from 'react-hook-form';
+
+import useDebounce from 'react-use/lib/useDebounce';
+
+import { isChanged } from '@suite-common/suite-utils';
+
 import {
     FormState,
     P2pFormContextValues,
     UseCoinmarketP2pFormProps,
-} from '@wallet-types/coinmarketP2pForm';
-import { useActions, useSelector } from '@suite-hooks';
-import * as coinmarketP2pActions from '@wallet-actions/coinmarketP2pActions';
-import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
-import { useCoinmarketP2pFormDefaultValues } from '@wallet-hooks/useCoinmarketP2pFormDefaultValues';
-import { useForm, useWatch } from 'react-hook-form';
-import { useFormDraft } from '@wallet-hooks/useFormDraft';
-import useDebounce from 'react-use/lib/useDebounce';
-import { isChanged } from '@suite-utils/comparisonUtils';
-import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
-import invityAPI from '@suite-services/invityAPI';
-import { TypedValidationRules } from '@suite-common/wallet-types';
+} from 'src/types/wallet/coinmarketP2pForm';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { saveQuotes, saveQuotesRequest } from 'src/actions/wallet/coinmarketP2pActions';
+import { loadInvityData } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
+import { useCoinmarketP2pFormDefaultValues } from 'src/hooks/wallet/useCoinmarketP2pFormDefaultValues';
+import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
+import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
+import invityAPI from 'src/services/suite/invityAPI';
 
 export const P2pFormContext = createContext<P2pFormContextValues | null>(null);
 P2pFormContext.displayName = 'CoinmarketP2pContext';
 
-export const useCoinmarketP2pForm = (props: UseCoinmarketP2pFormProps): P2pFormContextValues => {
-    const { loadInvityData, saveQuotesRequest, saveQuotes } = useActions({
-        loadInvityData: coinmarketCommonActions.loadInvityData,
-        saveQuotesRequest: coinmarketP2pActions.saveQuotesRequest,
-        saveQuotes: coinmarketP2pActions.saveQuotes,
-    });
+export const useCoinmarketP2pForm = ({
+    selectedAccount,
+}: UseCoinmarketP2pFormProps): P2pFormContextValues => {
+    const p2pInfo = useSelector(state => state.wallet.coinmarket.p2p.p2pInfo);
+    const dispatch = useDispatch();
 
     useEffect(() => {
-        loadInvityData();
-    }, [loadInvityData]);
+        dispatch(loadInvityData());
+    }, [dispatch]);
 
-    const { selectedAccount } = props;
     const { account } = selectedAccount;
     const { navigateToP2pOffers } = useCoinmarketNavigation(account);
     const { getDraft, saveDraft, removeDraft } = useFormDraft<FormState>('coinmarket-p2p');
     const draft = getDraft(account.key);
     const isDraft = !!draft;
 
-    const { p2pInfo } = useSelector(state => ({
-        p2pInfo: state.wallet.coinmarket.p2p.p2pInfo,
-    }));
     const { defaultValues, defaultCountry, defaultCurrency } =
         useCoinmarketP2pFormDefaultValues(p2pInfo);
     const methods = useForm<FormState>({
@@ -47,7 +44,7 @@ export const useCoinmarketP2pForm = (props: UseCoinmarketP2pFormProps): P2pFormC
         defaultValues: isDraft ? draft : defaultValues,
     });
 
-    const { register, control, formState, errors, reset } = methods;
+    const { register, control, formState, reset } = methods;
     const values = useWatch<FormState>({ control });
 
     useEffect(() => {
@@ -64,12 +61,16 @@ export const useCoinmarketP2pForm = (props: UseCoinmarketP2pFormProps): P2pFormC
 
     useDebounce(
         () => {
-            if (formState.isDirty && !formState.isValidating && Object.keys(errors).length === 0) {
+            if (
+                formState.isDirty &&
+                !formState.isValidating &&
+                Object.keys(formState.errors).length === 0
+            ) {
                 saveDraft(account.key, values as FormState);
             }
         },
         200,
-        [errors, saveDraft, account.key, values, formState],
+        [formState.errors, saveDraft, account.key, values, formState],
     );
     useEffect(() => {
         if (!isChanged(defaultValues, values)) {
@@ -90,17 +91,17 @@ export const useCoinmarketP2pForm = (props: UseCoinmarketP2pFormProps): P2pFormC
             currency: formValues.currencySelect.value.toUpperCase(),
             country: formValues.countrySelect.value,
         };
-        saveQuotesRequest(request);
+        dispatch(saveQuotesRequest(request));
 
         const response = await invityAPI.getP2pQuotes(request);
-        saveQuotes(response?.quotes || []);
+        dispatch(saveQuotes(response?.quotes || []));
 
         navigateToP2pOffers();
     };
 
     return {
         ...methods,
-        register: register as (rules?: TypedValidationRules) => (ref: any) => void,
+        register,
         account,
         defaultCountry,
         defaultCurrency,

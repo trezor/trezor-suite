@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { configureStore } from '@suite/support/tests/configureStore';
+import { configureStore } from 'src/support/tests/configureStore';
 
-import suiteReducer from '@suite-reducers/suiteReducer';
-import routerReducer from '@suite-reducers/routerReducer';
-import modalReducer from '@suite-reducers/modalReducer';
+import suiteReducer from 'src/reducers/suite/suiteReducer';
+import routerReducer from 'src/reducers/suite/routerReducer';
+import modalReducer from 'src/reducers/suite/modalReducer';
 import * as fixtures from '../__fixtures__/routerActions';
 import * as routerActions from '../routerActions';
 
@@ -74,7 +74,7 @@ describe('Suite Actions', () => {
             const state = getInitialState(f.state as InitialState);
             const store = initStore(state);
             // eslint-disable-next-line global-require
-            require('@suite/support/history').default.location.pathname = f.pathname || '/';
+            require('src/support/history').default.location.pathname = f.pathname || '/';
             store.dispatch(routerActions.initialRedirection());
             expect(store.getState().router.app).toEqual(f.app);
         });
@@ -85,7 +85,7 @@ describe('Suite Actions', () => {
             const state = getInitialState(f.state as InitialState);
             const store = initStore(state);
             // eslint-disable-next-line global-require
-            require('@suite/support/history').default.location.hash = `#${f.hash}`;
+            require('src/support/history').default.location.hash = `#${f.hash}`;
             store.dispatch(routerActions.goto(f.url as any, { preserveParams: f.preserveHash }));
             if (f.result) {
                 expect(store.getActions()[0].payload.url).toEqual(f.result);
@@ -112,7 +112,7 @@ describe('Suite Actions', () => {
         const state = getInitialState({ router: { pathname: '/firmware' } });
         const store = initStore(state);
         // eslint-disable-next-line global-require
-        require('@suite/support/history').default.location.pathname = '/accounts/send';
+        require('src/support/history').default.location.pathname = '/accounts/send';
         store.dispatch(routerActions.closeModalApp());
         expect(store.getActions().length).toEqual(2); // unlock + location change
         expect(store.getState().router.app).toEqual('wallet');

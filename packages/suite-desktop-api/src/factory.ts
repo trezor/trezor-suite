@@ -1,3 +1,4 @@
+import type { IpcRendererEvent } from 'electron';
 import { DesktopApi, RendererChannels } from './api';
 import { StrictIpcRenderer } from './ipc';
 import * as validation from './validation';
@@ -26,7 +27,9 @@ const omitElectronEvent = <
     if (validation.isValidChannel(channel)) on(channel, (_, ...args) => listener(...args)); // call listener without event
 };
 
-export const factory = <R extends StrictIpcRenderer<any>>(ipcRenderer?: R): DesktopApi => {
+export const factory = <R extends StrictIpcRenderer<any, IpcRendererEvent>>(
+    ipcRenderer?: R,
+): DesktopApi => {
     if (!ipcRenderer) return factory(ipcRendererFallback);
     return {
         available: ipcRenderer !== ipcRendererFallback,
@@ -78,7 +81,13 @@ export const factory = <R extends StrictIpcRenderer<any>>(ipcRenderer?: R): Desk
             }
             return Promise.resolve({ success: false, error: 'invalid params' });
         },
-
+        metadataGetFiles: () => ipcRenderer.invoke('metadata/get-files'),
+        metadataRenameFile: options => {
+            if (validation.isObject({ file: 'string', to: 'string' }, options)) {
+                return ipcRenderer.invoke('metadata/rename-file', options);
+            }
+            return Promise.resolve({ success: false, error: 'invalid params' });
+        },
         // HttpReceiver
         getHttpReceiverAddress: route => {
             if (validation.isPrimitive('string', route)) {

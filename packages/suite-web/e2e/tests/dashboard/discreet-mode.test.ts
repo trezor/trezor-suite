@@ -1,10 +1,13 @@
 // @group:suite
 // @retry=2
 
+import { EventType } from '@trezor/suite-analytics';
+import { ExtractByEventType, Requests } from '../../support/types';
+
+let requests: Requests;
+
 describe('Dashboard', () => {
     beforeEach(() => {
-        cy.task('stopEmu');
-
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', {
             needs_backup: true,
@@ -15,10 +18,9 @@ describe('Dashboard', () => {
         cy.viewport(1080, 1440).resetDb();
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
-    });
 
-    afterEach(() => {
-        cy.task('stopEmu');
+        requests = [];
+        cy.interceptDataTrezorIo(requests);
     });
 
     /*
@@ -28,22 +30,11 @@ describe('Dashboard', () => {
      * 4. check that status of Discreet mode
      */
     it('Discreet mode checkbox', () => {
-        //
-        // Test preparation
-        //
-
         const discreetPartialClass = 'HiddenPlaceholder';
-
-        //
-        // Test execution
-        //
 
         cy.discoveryShouldFinish();
         cy.getTestElement('@dashboard/security-card/discreet/button').click();
 
-        //
-        // Assert
-        //
         cy.getTestElement('@wallet/coin-balance/value-btc')
             .parent()
             .parent()
@@ -51,6 +42,13 @@ describe('Dashboard', () => {
             .then(className => {
                 expect(className).to.contain(discreetPartialClass);
             });
+
+        cy.findAnalyticsEventByType<ExtractByEventType<EventType.MenuToggleDiscreet>>(
+            requests,
+            EventType.MenuToggleDiscreet,
+        ).then(menuToggleDiscreetEvent => {
+            expect(menuToggleDiscreetEvent.value).to.equal('true');
+        });
     });
 });
 

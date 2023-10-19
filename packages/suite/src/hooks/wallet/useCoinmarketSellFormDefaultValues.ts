@@ -1,24 +1,17 @@
 import { useMemo } from 'react';
-import regional from '@wallet-constants/coinmarket/regional';
-import { SellInfo } from '@wallet-actions/coinmarketSellActions';
+import { SellInfo } from 'src/actions/wallet/coinmarketSellActions';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
-import { buildOption } from '@wallet-utils/coinmarket/coinmarketUtils';
-import { Account } from '@wallet-types';
-import { SellFormState } from '@wallet-types/coinmarketSellForm';
+import { buildOption, getDefaultCountry } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { Account } from 'src/types/wallet';
+import { SellFormState } from 'src/types/wallet/coinmarketSellForm';
 
 export const useCoinmarketSellFormDefaultValues = (
     symbol: Account['symbol'],
     sellInfo?: SellInfo,
     defaultAddress?: string,
 ) => {
-    const country = sellInfo?.sellList?.country || regional.unknownCountry;
-    const defaultCountry = useMemo(
-        () => ({
-            label: regional.countriesMap.get(country),
-            value: country,
-        }),
-        [country],
-    );
+    const country = sellInfo?.sellList?.country;
+    const defaultCountry = useMemo(() => getDefaultCountry(country), [country]);
     const defaultCurrency = useMemo(() => ({ label: 'EUR', value: 'eur' }), []);
     const defaultValues = useMemo(
         () =>

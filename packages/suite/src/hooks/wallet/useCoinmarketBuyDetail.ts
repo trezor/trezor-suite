@@ -1,18 +1,20 @@
 import { createContext, useContext } from 'react';
-import { UseCoinmarketBuyDetailProps, ContextValues } from '@wallet-types/coinmarketBuyDetail';
-import { useWatchBuyTrade } from '@wallet-hooks/useCoinmarket';
-import { useSelector } from '@suite-hooks';
-import invityAPI from '@suite-services/invityAPI';
-import type { TradeBuy } from '@wallet-types/coinmarketCommonTypes';
+import { UseCoinmarketBuyDetailProps, ContextValues } from 'src/types/wallet/coinmarketBuyDetail';
+import { useWatchBuyTrade } from 'src/hooks/wallet/useCoinmarket';
+import { useSelector } from 'src/hooks/suite';
+import invityAPI from 'src/services/suite/invityAPI';
+import type { TradeBuy } from 'src/types/wallet/coinmarketCommonTypes';
 
 export const useCoinmarketBuyDetail = ({ selectedAccount }: UseCoinmarketBuyDetailProps) => {
+    const invityServerEnvironment = useSelector(
+        state => state.suite.settings.debug.invityServerEnvironment,
+    );
+    const buyInfo = useSelector(state => state.wallet.coinmarket.buy.buyInfo);
+    const trades = useSelector(state => state.wallet.coinmarket.trades);
+    const transactionId = useSelector(state => state.wallet.coinmarket.buy.transactionId);
+
     const { account } = selectedAccount;
-    const { invityServerEnvironment, buyInfo, trades, transactionId } = useSelector(state => ({
-        invityServerEnvironment: state.suite.settings.debug.invityServerEnvironment,
-        buyInfo: state.wallet.coinmarket.buy.buyInfo,
-        trades: state.wallet.coinmarket.trades,
-        transactionId: state.wallet.coinmarket.buy.transactionId,
-    }));
+
     const buyTrade = trades.find(
         trade =>
             trade.tradeType === 'buy' &&

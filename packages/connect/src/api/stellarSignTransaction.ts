@@ -30,7 +30,6 @@ export default class StellarSignTransaction extends AbstractMethod<
             getMiscNetwork('Stellar'),
             this.firmwareRange,
         );
-        this.info = 'Sign Stellar transaction';
 
         const { payload } = this;
         // validate incoming parameters
@@ -48,6 +47,10 @@ export default class StellarSignTransaction extends AbstractMethod<
             networkPassphrase: payload.networkPassphrase,
             transaction,
         };
+    }
+
+    get info() {
+        return 'Sign Stellar transaction';
     }
 
     _isFeatureSupported(feature: keyof typeof StellarSignTransactionFeatures) {

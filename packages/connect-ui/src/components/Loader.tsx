@@ -1,45 +1,72 @@
-import React from 'react';
+import styled, { keyframes } from 'styled-components';
 
-import styled from 'styled-components';
+const StyledLoaderWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+`;
+
+const rotateAnimation = keyframes`
+  100% {
+    transform: rotate(360deg);
+  }
+`;
+
+const dashAnimation = keyframes`
+  0% {
+    stroke-dasharray: 1, 200;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 89, 200;
+    stroke-dashoffset: -35;
+  }
+  100% {
+    stroke-dasharray: 89, 200;
+    stroke-dashoffset: -124;
+  }
+`;
 
 const StyledLoader = styled.div`
-    .loader {
-        position: relative;
-        width: 130px;
-        height: 130px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        align-self: center;
-        color: #757575;
-    }
-    .loader .circular {
-        padding-top: 0px;
-        width: 130px;
-        height: 130px;
-        animation: rotate 2s linear infinite;
-        transform-origin: center center;
-        position: absolute;
-    }
-    .loader .circular .route {
-        stroke: #f2f2f2;
-    }
-    .loader .circular .path {
-        stroke-dasharray: 1, 200;
-        stroke-dashoffset: 0;
-        animation: dash 1.5s ease-in-out infinite, color 6s ease-in-out infinite;
-        stroke-linecap: round;
-    }
+    position: relative;
+    width: 130px;
+    height: 130px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-self: center;
+    color: #757575;
+
     @media screen and (min-width: 768px) {
-        .loader {
-            width: 160px;
-            height: 160px;
-        }
-        .loader .circular {
-            width: 160px;
-            height: 160px;
-        }
+        width: 160px;
+        height: 160px;
     }
+`;
+
+const Circular = styled.div`
+    padding-top: 0px;
+    width: 100%;
+    height: 100%;
+    animation: ${rotateAnimation} 2s linear infinite;
+    animation-delay: 200ms;
+    transition-delay: 200ms;
+    transform-origin: center center;
+    position: absolute;
+`;
+
+const Route = styled.circle`
+    stroke: #f2f2f2;
+`;
+
+const Path = styled.circle`
+    stroke-dasharray: 1, 200;
+    stroke-dashoffset: 0;
+    animation: ${dashAnimation} 1.5s ease-in-out infinite, color 6s ease-in-out infinite;
+    animation-delay: 200ms;
+    transition-delay: 200ms;
+    stroke-linecap: round;
+
     @keyframes color {
         100%,
         0% {
@@ -56,52 +83,47 @@ const StyledLoader = styled.div`
             stroke: #009546;
         }
     }
-    @keyframes rotate {
-        100% {
-            transform: rotate(360deg);
-        }
-    }
-    @keyframes dash {
-        0% {
-            stroke-dasharray: 1, 200;
-            stroke-dashoffset: 0;
-        }
-        50% {
-            stroke-dasharray: 89, 200;
-            stroke-dashoffset: -35;
-        }
-        100% {
-            stroke-dasharray: 89, 200;
-            stroke-dashoffset: -124;
-        }
-    }
 `;
 
-export const Loader = () => (
-    <StyledLoader>
-        <div className="loader">
-            Loading...
-            <svg className="circular" viewBox="25 25 50 50" preserveAspectRatio="xMidYMid">
-                <circle
-                    className="route"
-                    cx="50"
-                    cy="50"
-                    r="20"
-                    fill="none"
-                    stroke=""
-                    strokeWidth="1"
-                    strokeMiterlimit="10"
-                />
-                <circle
-                    className="path"
-                    cx="50"
-                    cy="50"
-                    r="20"
-                    fill="none"
-                    strokeWidth="1"
-                    strokeMiterlimit="10"
-                />
-            </svg>
+const Message = styled.div`
+    color: #757575;
+    size: 9px;
+`;
+
+interface LoaderProps {
+    message?: string;
+}
+export const Loader = ({ message }: LoaderProps) => (
+    <StyledLoaderWrapper data-test="@connect-ui/loader">
+        <StyledLoader>
+            <Circular>
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="25 25 50 50"
+                    preserveAspectRatio="xMidYMid"
+                >
+                    <Route
+                        cx="50"
+                        cy="50"
+                        r="20"
+                        fill="none"
+                        stroke=""
+                        strokeWidth="1"
+                        strokeMiterlimit="10"
+                    />
+                    <Path
+                        cx="50"
+                        cy="50"
+                        r="20"
+                        fill="none"
+                        strokeWidth="1"
+                        strokeMiterlimit="10"
+                    />
+                </svg>
+            </Circular>
+        </StyledLoader>
+        <div>
+            <Message>{message}</Message>
         </div>
-    </StyledLoader>
+    </StyledLoaderWrapper>
 );

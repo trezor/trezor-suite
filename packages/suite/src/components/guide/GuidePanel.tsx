@@ -1,19 +1,18 @@
-import React from 'react';
 import styled, { css, keyframes } from 'styled-components';
 import { AnimatePresence, motion } from 'framer-motion';
 import { FreeFocusInside } from 'react-focus-lock';
 
 import { variables, Backdrop } from '@trezor/components';
 import { useOnce } from '@trezor/react-utils';
-import { useSelector } from '@suite-hooks';
+import { useSelector } from 'src/hooks/suite';
 import {
     SupportFeedbackSelection,
     GuideDefault,
     GuidePage,
     GuideCategory,
     Feedback,
-} from '@guide-components';
-import { useGuide, GUIDE_ANIMATION_DURATION_MS } from '@guide-hooks';
+} from 'src/components/guide';
+import { useGuide, GUIDE_ANIMATION_DURATION_MS } from 'src/hooks/guide';
 
 const fullHeightStyle = css`
     position: absolute;
@@ -60,9 +59,7 @@ const MotionGuide = styled(motion.div)`
 `;
 
 export const GuidePanel = () => {
-    const { activeView } = useSelector(state => ({
-        activeView: state.guide.view,
-    }));
+    const activeView = useSelector(state => state.guide.view);
 
     const { isGuideOpen, closeGuide } = useGuide();
 

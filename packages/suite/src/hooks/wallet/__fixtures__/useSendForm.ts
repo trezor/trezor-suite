@@ -1,50 +1,55 @@
+import { combineReducers, createReducer } from '@reduxjs/toolkit';
+
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import { accountsActions } from '@suite-common/wallet-core';
 import { PROTO } from '@trezor/connect';
+import { testMocks } from '@suite-common/test-utils';
+
+import sendFormReducer from 'src/reducers/wallet/sendFormReducer';
 
 const UTXO = {
-    '00': {
+    '00': testMocks.getUtxo({
         amount: '0',
         address: 'should-never-be-used',
         txid: '0000000000000000000000000000000000000000000000000000000000000000',
         vout: 0,
-    },
-    AA: {
+    }),
+    AA: testMocks.getUtxo({
         amount: '50000000000',
         address: 'AA',
         txid: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
         vout: 0,
-    },
-    BB: {
+    }),
+    BB: testMocks.getUtxo({
         amount: '25000000000',
         address: 'BB',
         txid: 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',
         vout: 0,
-    },
-    CC: {
+    }),
+    CC: testMocks.getUtxo({
         amount: '12500000000',
         address: 'CC',
         txid: 'cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc',
         vout: 0,
-    },
-    DD: {
+    }),
+    DD: testMocks.getUtxo({
         amount: '6250000000',
         address: 'DD',
         txid: 'dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd',
         vout: 0,
-    },
-    EE: {
+    }),
+    EE: testMocks.getUtxo({
         amount: '6250000000',
         address: 'EE',
         txid: 'eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
         vout: 0,
-    },
+    }),
 };
 
 export const BTC_ACCOUNT = {
     status: 'loaded',
-    account: {
+    account: testMocks.getWalletAccount({
         symbol: 'btc',
         networkType: 'bitcoin',
         descriptor: 'xpub',
@@ -52,30 +57,29 @@ export const BTC_ACCOUNT = {
         key: 'xpub-btc-deviceState',
         addresses: {
             change: [
-                { path: "m/44'/0'/0'/1/0", address: '1-change' },
-                { path: "m/44'/0'/0'/1/1", address: '2-change' },
+                { path: "m/44'/0'/0'/1/0", address: '1-change', transfers: 0 },
+                { path: "m/44'/0'/0'/1/1", address: '2-change', transfers: 0 },
             ],
             used: [
-                { path: "m/44'/0'/0'/0/0", address: '1-used' },
-                { path: "m/44'/0'/0'/0/1", address: '2-used' },
+                { path: "m/44'/0'/0'/0/0", address: '1-used', transfers: 1 },
+                { path: "m/44'/0'/0'/0/1", address: '2-used', transfers: 1 },
             ],
             unused: [
-                { path: "m/44'/0'/0'/0/2", address: '1-unused' },
-                { path: "m/44'/0'/0'/0/3", address: '2-unused' },
+                { path: "m/44'/0'/0'/0/2", address: '1-unused', transfers: 0 },
+                { path: "m/44'/0'/0'/0/3", address: '2-unused', transfers: 0 },
             ],
         },
         balance: '100000000000',
         availableBalance: '100000000000',
         formattedBalance: '1000 BTC',
         utxo: Object.values(UTXO),
-        history: {},
-    },
+    }),
     network: { networkType: 'bitcoin', symbol: 'btc', decimals: 8, features: ['rbf'] },
 };
 
 export const ETH_ACCOUNT = {
     status: 'loaded',
-    account: {
+    account: testMocks.getWalletAccount({
         symbol: 'eth',
         networkType: 'ethereum',
         descriptor: '0xdB09b793984B862C430b64B9ed53AcF867cC041F',
@@ -84,17 +88,16 @@ export const ETH_ACCOUNT = {
         balance: '10000000000000000000', // 10 ETH
         availableBalance: '10000000000000000000', // 10 ETH
         misc: { nonce: '0' },
-        history: {},
         tokens: [
             { type: 'ERC20', contract: '0xABCD', symbol: '0xABCD', decimals: 3, balance: '1' },
         ],
-    },
+    }),
     network: { networkType: 'ethereum', symbol: 'eth', decimals: 18, chainId: 1 },
 };
 
 export const XRP_ACCOUNT = {
     status: 'loaded',
-    account: {
+    account: testMocks.getWalletAccount({
         symbol: 'xrp',
         networkType: 'ripple',
         descriptor: 'rAPERVgXZavGgiGv6xBgtiZurirW2yAmY',
@@ -102,110 +105,148 @@ export const XRP_ACCOUNT = {
         key: 'rAPERVgXZavGgiGv6xBgtiZurirW2yAmY-xrp-deviceState',
         balance: '100000000', // 100 XRP
         availableBalance: '100000000', // 100 XRP
-        misc: { reserve: '21' },
-        history: {},
-    },
+        misc: { reserve: '21', sequence: 0 },
+    }),
     network: { networkType: 'ripple', symbol: 'xrp', decimals: 6 },
 };
 
-export const DEFAULT_STORE = {
-    suite: {
-        device: global.JestMocks.getSuiteDevice({
-            state: 'deviceState',
-            connected: true,
-            available: true,
-        }),
-        settings: { debug: {}, theme: { variant: 'light' } },
-        online: true,
-        locks: [],
+const DEVICE = testMocks.getSuiteDevice({
+    state: 'deviceState',
+    connected: true,
+    available: true,
+});
+
+const DEFAULT_FEES = {
+    btc: {
+        minFee: 1,
+        maxFee: 100,
+        blockHeight: 1,
+        blockTime: 1,
+        levels: [{ label: 'normal', feePerUnit: '4', blocks: 1 }],
     },
-    wallet: {
-        accounts: [BTC_ACCOUNT.account, ETH_ACCOUNT.account, XRP_ACCOUNT.account],
-        selectedAccount: BTC_ACCOUNT,
-        coinjoin: {
-            accounts: [],
-        },
-        discovery: [],
-        settings: {
-            localCurrency: 'usd',
-            lastUsedFeeLevel: {},
-            debug: {},
-            bitcoinAmountUnit: PROTO.AmountUnit.BITCOIN,
-        },
-        blockchain: {
-            btc: {},
-            eth: {},
-            xrp: {},
-        },
-        fees: {
-            btc: {
-                minFee: 1,
-                maxFee: 100,
-                blockHeight: 1,
-                blockTime: 1,
-                levels: [{ label: 'normal', feePerUnit: '4', blocks: 1 }],
+    eth: {
+        minFee: 1,
+        maxFee: 100,
+        blockHeight: 1,
+        blockTime: 1,
+        levels: [
+            {
+                label: 'normal',
+                feePerUnit: '3300000000',
+                feeLimit: '21000',
+                blocks: -1,
             },
-            eth: {
-                minFee: 1,
-                maxFee: 100,
-                blockHeight: 1,
-                blockTime: 1,
-                levels: [
-                    { label: 'normal', feePerUnit: '3300000000', feeLimit: '21000', blocks: -1 },
-                ],
-            },
-            xrp: {
-                minFee: 1,
-                maxFee: 100,
-                blockHeight: 1,
-                blockTime: 1,
-                levels: [{ label: 'normal', feePerUnit: '12', blocks: -1 }],
-            },
-        },
-        fiat: {
-            coins: [
-                {
-                    symbol: 'btc',
-                    current: {
-                        symbol: 'btc',
-                        ts: 0,
-                        rates: { usd: 1, eur: 1.2, czk: 22 },
-                    },
-                },
-                {
-                    symbol: 'eth',
-                    current: {
-                        symbol: 'eth',
-                        ts: 0,
-                        rates: { usd: 1, eur: 1.2, czk: 22 },
-                    },
-                },
-                {
-                    symbol: 'xrp',
-                    current: {
-                        symbol: 'xrp',
-                        ts: 0,
-                        rates: { usd: 1, eur: 1.2, czk: 22 },
-                    },
-                },
-            ],
-        },
-        transactions: {
-            transactions: {},
-        },
+        ],
     },
-    devices: [], // to remove?
-    protocol: { sendForm: {} },
-    messageSystem: {
-        validMessages: {
-            banner: [],
-            context: [],
-            modal: [],
-            feature: [],
-        },
-        dismissedMessages: {},
+    xrp: {
+        minFee: 1,
+        maxFee: 100,
+        blockHeight: 1,
+        blockTime: 1,
+        levels: [{ label: 'normal', feePerUnit: '12', blocks: -1 }],
     },
 };
+
+// - default selectedAccount needs to be explicitly passed from test. merging default with custom will override custom
+// - default fees needs to be explicitly passed from test. merge Arrays will add items, not replace them
+export const getRootReducer = (selectedAccount = BTC_ACCOUNT, fees = DEFAULT_FEES) =>
+    combineReducers({
+        suite: createReducer(
+            {
+                locks: [],
+                online: true,
+                settings: { debug: {}, theme: { variant: 'light' } },
+            },
+            () => ({}),
+        ),
+        device: createReducer({ selectedDevice: DEVICE }, () => {}),
+        wallet: combineReducers({
+            send: sendFormReducer,
+            accounts: createReducer(
+                [BTC_ACCOUNT.account, ETH_ACCOUNT.account, XRP_ACCOUNT.account],
+                () => ({}),
+            ),
+            selectedAccount: createReducer(selectedAccount, () => ({})),
+            coinjoin: createReducer({ accounts: [] }, () => ({})),
+            discovery: createReducer([], () => ({})),
+            settings: createReducer(
+                {
+                    localCurrency: 'usd',
+                    lastUsedFeeLevel: {},
+                    debug: {},
+                    bitcoinAmountUnit: PROTO.AmountUnit.BITCOIN,
+                },
+                () => ({}),
+            ),
+            blockchain: createReducer(
+                {
+                    btc: {},
+                    eth: {},
+                    xrp: {},
+                },
+                () => ({}),
+            ),
+            fees: createReducer(fees, () => ({})),
+            fiat: createReducer(
+                {
+                    coins: [
+                        {
+                            symbol: 'btc',
+                            current: {
+                                symbol: 'btc',
+                                ts: 0,
+                                rates: { usd: 1, eur: 1.2, czk: 22 },
+                            },
+                        },
+                        {
+                            symbol: 'eth',
+                            current: {
+                                symbol: 'eth',
+                                ts: 0,
+                                rates: { usd: 1, eur: 1.2, czk: 22 },
+                            },
+                        },
+                        {
+                            symbol: 'xrp',
+                            current: {
+                                symbol: 'xrp',
+                                ts: 0,
+                                rates: { usd: 1, eur: 1.2, czk: 22 },
+                            },
+                        },
+                    ],
+                },
+                () => ({}),
+            ),
+            transactions: createReducer(
+                {
+                    transactions: {},
+                },
+                () => ({}),
+            ),
+        }),
+        protocol: createReducer({ sendForm: {} }, () => ({})),
+        messageSystem: createReducer(
+            {
+                validMessages: {
+                    banner: [],
+                    context: [],
+                    modal: [],
+                    feature: [],
+                },
+                dismissedMessages: {},
+            },
+            () => ({}),
+        ),
+        resize: createReducer({}, () => ({})),
+        guide: createReducer({}, () => ({})),
+        metadata: createReducer(
+            { enabled: false, providers: [], selectedProvider: {} },
+            () => ({}),
+        ),
+        router: createReducer({}, () => ({})),
+        modal: createReducer({}, () => ({})),
+    });
 
 const DEFAULT_DRAFT = {
     ...DEFAULT_VALUES,
@@ -251,31 +292,6 @@ const getDraft = (draft?: any) => ({
 });
 
 export const addingOutputs = [
-    // {
-    //     description: 'Add/Remove opreturn',
-    //     initial: {
-    //         outputs: [{ address: '' }],
-    //     },
-    //     actions: [
-    //         {
-    //             type: 'click',
-    //             element: '@send/header-dropdown',
-    //         },
-    //         {
-    //             type: 'click',
-    //             element: '@send/header-dropdown',
-    //         },
-    //         {
-    //             type: 'click',
-    //             element: '@send/header-dropdown/opreturn',
-    //             result: {
-    //                 formValues: {
-    //                     outputs: [{ type: 'opreturn' }],
-    //                 },
-    //             },
-    //         },
-    //     ],
-    // },
     {
         description: 'Add/Remove/Reset outputs without draft',
         initial: {
@@ -293,16 +309,7 @@ export const addingOutputs = [
             },
             {
                 type: 'click',
-                element: 'outputs[0].remove',
-                result: {
-                    formValues: {
-                        outputs: [{ address: '' }],
-                    },
-                },
-            },
-            {
-                type: 'click',
-                element: 'clear-form',
+                element: 'outputs.0.remove',
                 result: {
                     formValues: {
                         outputs: [{ address: '' }],
@@ -351,7 +358,7 @@ export const addingOutputs = [
             },
             {
                 type: 'click',
-                element: 'outputs[0].remove',
+                element: 'outputs.0.remove',
                 result: {
                     formValues: {
                         outputs: [{ address: 'B' }, { address: '' }],
@@ -411,7 +418,7 @@ export const addingOutputs = [
             },
             {
                 type: 'click',
-                element: 'outputs[0].remove',
+                element: 'outputs.0.remove',
                 result: {
                     formValues: {
                         outputs: [{ address: 'B' }, { address: '' }],
@@ -452,20 +459,20 @@ export const composeDebouncedTransaction = [
         actions: [
             {
                 type: 'input',
-                element: 'outputs[0].address',
+                element: 'outputs.0.address',
                 value: 'X',
                 result: {
                     errors: {
-                        outputs: [{ address: { message: 'RECIPIENT_IS_NOT_VALID' } }],
+                        outputs: [{ address: { type: 'valid' } }],
                     },
                 },
             },
             {
                 type: 'input',
-                element: 'outputs[0].address',
+                element: 'outputs.0.address',
                 result: {
                     errors: {
-                        outputs: [{ address: { message: 'RECIPIENT_IS_NOT_SET' } }],
+                        outputs: [{ address: { type: 'required' } }],
                     },
                 },
             },
@@ -474,18 +481,18 @@ export const composeDebouncedTransaction = [
             composeTransactionCalls: 0,
             composedLevels: undefined,
             errors: {
-                outputs: [{ address: { message: 'RECIPIENT_IS_NOT_SET' } }],
+                outputs: [{ address: { type: 'required' } }],
             },
         },
     },
     {
         description: 'compose with validation errors (Address invalid)',
-        actions: [{ type: 'input', element: 'outputs[0].address', value: 'FOO', delay: 1 }],
+        actions: [{ type: 'input', element: 'outputs.0.address', value: 'FOO', delay: 1 }],
         finalResult: {
             composeTransactionCalls: 0,
             composedLevels: undefined,
             errors: {
-                outputs: [{ address: { message: 'RECIPIENT_IS_NOT_VALID' } }],
+                outputs: [{ address: { type: 'valid' } }],
             },
         },
     },
@@ -495,7 +502,7 @@ export const composeDebouncedTransaction = [
             success: false,
             payload: { error: 'error' },
         },
-        actions: [{ type: 'input', element: 'outputs[0].amount', value: '1' }],
+        actions: [{ type: 'input', element: 'outputs.0.amount', value: '1' }],
         finalResult: {
             composeTransactionCalls: 1,
             composedLevels: undefined,
@@ -511,7 +518,7 @@ export const composeDebouncedTransaction = [
                 },
             ],
         },
-        actions: [{ type: 'input', element: 'outputs[0].amount', value: '111', delay: 100 }],
+        actions: [{ type: 'input', element: 'outputs.0.amount', value: '111', delay: 100 }],
         finalResult: {
             composeTransactionCalls: 1,
             composedLevels: {
@@ -540,7 +547,7 @@ export const composeDebouncedTransaction = [
                 payload: [{ type: 'nonfinal', totalSpent: '11100000000' }],
             }, // delay in @trezor/connect response, greater than typing delay
         ],
-        actions: [{ type: 'input', element: 'outputs[0].amount', value: '111', delay: 310 }], // delay greater than composeDebounced timeout
+        actions: [{ type: 'input', element: 'outputs.0.amount', value: '111', delay: 310 }], // delay greater than composeDebounced timeout
         finalResult: {
             composeTransactionCalls: 3,
             composedLevels: {
@@ -584,11 +591,11 @@ export const setMax = [
         actions: [
             {
                 type: 'hover',
-                element: 'outputs[0].amount',
+                element: 'outputs.0.amount',
             },
             {
                 type: 'click',
-                element: 'outputs[0].setMax',
+                element: 'outputs.0.setMax',
                 result: {
                     composeTransactionCalls: 1,
                     composeTransactionParams: {
@@ -741,11 +748,11 @@ export const setMax = [
         actions: [
             {
                 type: 'hover',
-                element: 'outputs[0].amount',
+                element: 'outputs.0.amount',
             },
             {
                 type: 'click',
-                element: 'outputs[0].setMax',
+                element: 'outputs.0.setMax',
                 result: {
                     composeTransactionCalls: 1,
                     composeTransactionParams: {
@@ -762,7 +769,7 @@ export const setMax = [
             },
             {
                 type: 'input',
-                element: 'outputs[0].address',
+                element: 'outputs.0.address',
                 value: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX',
                 result: {
                     composeTransactionParams: {
@@ -830,7 +837,7 @@ export const setMax = [
         actions: [
             {
                 type: 'input',
-                element: 'outputs[0].address',
+                element: 'outputs.0.address',
                 value: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX',
                 result: {
                     composeTransactionCalls: 0,
@@ -839,11 +846,11 @@ export const setMax = [
             },
             {
                 type: 'hover',
-                element: 'outputs[0].amount',
+                element: 'outputs.0.amount',
             },
             {
                 type: 'click',
-                element: 'outputs[0].setMax',
+                element: 'outputs.0.setMax',
                 result: {
                     composeTransactionCalls: 1,
                     formValues: {
@@ -886,7 +893,7 @@ export const setMax = [
             // fill address in second output
             {
                 type: 'input',
-                element: 'outputs[1].address',
+                element: 'outputs.1.address',
                 value: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX',
                 result: {
                     formValues: {
@@ -903,7 +910,7 @@ export const setMax = [
                     composeTransactionParams: {
                         outputs: [
                             // corner-case: send-max was changed to send-max-noaddress
-                            // see sendFormUtils.getBitcoinComposeOutput
+                            // see sendFormUtils.getBitcoinComposeOutputs
                             {
                                 type: 'send-max-noaddress',
                                 address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX',
@@ -915,7 +922,7 @@ export const setMax = [
             // disable send max
             {
                 type: 'click',
-                element: 'outputs[0].setMax',
+                element: 'outputs.0.setMax',
                 result: {
                     formValues: {
                         setMaxOutputId: undefined,
@@ -923,7 +930,7 @@ export const setMax = [
                     composeTransactionParams: {
                         outputs: [
                             // corner-case: external was changed to noaddress
-                            // see sendFormUtils.getBitcoinComposeOutput
+                            // see sendFormUtils.getBitcoinComposeOutputs
                             {
                                 type: 'noaddress',
                                 address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX',
@@ -936,7 +943,7 @@ export const setMax = [
             // fill fiat in second output
             {
                 type: 'input',
-                element: 'outputs[1].fiat',
+                element: 'outputs.1.fiat',
                 value: '0.20',
                 result: {
                     formValues: {
@@ -972,7 +979,7 @@ export const setMax = [
             // remove second output
             // {
             //     type: 'click',
-            //     element: 'outputs[1].remove',
+            //     element: 'outputs.1.remove',
             //     result: {
             //         composeTransactionParams: {
             //             outputs: [
@@ -1616,7 +1623,7 @@ export const feeChange = [
                         feePerUnit: '',
                     },
                     errors: {
-                        feePerUnit: { message: 'CUSTOM_FEE_IS_NOT_SET' },
+                        feePerUnit: { type: 'required' },
                     },
                 },
             },
@@ -1715,7 +1722,7 @@ export const feeChange = [
             },
             {
                 type: 'input',
-                element: 'outputs[0].amount',
+                element: 'outputs.0.amount',
                 value: '.1',
                 expectRerender: true, // caused by feeLimit set in useFees sub hook
                 result: {
@@ -1742,7 +1749,7 @@ export const feeChange = [
                         estimatedFeeLimit: '41000',
                     },
                     errors: {
-                        feeLimit: { type: 'validate' }, // limit below recommended error
+                        feeLimit: { type: 'feeLimit' },
                     },
                 },
             },
@@ -1805,7 +1812,7 @@ export const feeChange = [
                         feeLimit: '21',
                     },
                     errors: {
-                        feeLimit: { type: 'validate' }, // limit error
+                        feeLimit: { type: 'feeLimit' },
                     },
                 },
             },
@@ -1926,7 +1933,7 @@ export const feeChange = [
                     },
                     composedLevels: undefined,
                     errors: {
-                        feePerUnit: { message: 'CUSTOM_FEE_IS_NOT_SET' },
+                        feePerUnit: { type: 'required' },
                     },
                 },
             },
@@ -1978,32 +1985,7 @@ export const amountUnitChange = [
         store: {
             bitcoinAmountUnit: PROTO.AmountUnit.SATOSHI,
         },
-        actions: [{ type: 'input', element: 'outputs[0].amount', value: '111', delay: 100 }],
-        finalResult: {
-            composeTransactionCalls: 1,
-            formValues: {
-                selectedFee: undefined,
-                outputs: [{ address: '', amount: '111' }],
-            },
-        },
-    },
-    {
-        description: 'compose with satoshi AmountUnit',
-        connect: [
-            {
-                success: true,
-                payload: [
-                    {
-                        type: 'final',
-                        max: '100000000',
-                    },
-                ],
-            },
-        ],
-        store: {
-            bitcoinAmountUnit: PROTO.AmountUnit.SATOSHI,
-        },
-        actions: [{ type: 'input', element: 'outputs[0].amount', value: '111' }],
+        actions: [{ type: 'input', element: 'outputs.0.amount', value: '111' }],
         finalResult: {
             composeTransactionCalls: 1,
             formValues: {
@@ -2028,11 +2010,11 @@ export const amountUnitChange = [
         actions: [
             {
                 type: 'hover',
-                element: 'outputs[0].amount',
+                element: 'outputs.0.amount',
             },
             {
                 type: 'click',
-                element: 'outputs[0].setMax',
+                element: 'outputs.0.setMax',
                 result: {
                     composeTransactionCalls: 1,
                     composeTransactionParams: {

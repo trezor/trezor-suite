@@ -1,7 +1,7 @@
-import { versionCompare } from './versionUtils';
+import { versionUtils } from '@trezor/utils';
 import { PROTO } from '../constants';
 import { config } from '../data/config';
-import type { Features, CoinInfo, UnavailableCapabilities } from '../types';
+import { Features, CoinInfo, UnavailableCapabilities, DeviceModelInternal } from '../types';
 
 const DEFAULT_CAPABILITIES_T1: PROTO.Capability[] = [
     'Capability_Bitcoin',
@@ -87,7 +87,7 @@ export const getUnavailableCapabilities = (features: Features, coins: CoinInfo[]
     supported
         .filter(info => !unavailable.includes(info))
         .forEach(info => {
-            if (versionCompare(info.support[key], fw) > 0) {
+            if (versionUtils.isNewer(info.support[key], fw.join('.'))) {
                 list[info.shortcut.toLowerCase()] = 'update-required';
                 unavailable.push(info);
             }
@@ -98,25 +98,34 @@ export const getUnavailableCapabilities = (features: Features, coins: CoinInfo[]
         if (!s.capabilities) return;
         const min = s.min ? s.min[fw[0] - 1] : null;
         const max = s.max ? s.max[fw[0] - 1] : null;
-        if (min && (min === '0' || versionCompare(min, fw) > 0)) {
+        if (min && (min === '0' || versionUtils.isNewer(min, fw.join('.')))) {
             const value = min === '0' ? 'no-support' : 'update-required';
             s.capabilities.forEach(m => {
                 list[m] = value;
             });
         }
-        if (max && versionCompare(max, fw) < 0) {
+        if (max && !versionUtils.isNewerOrEqual(max, fw.join('.'))) {
             s.capabilities.forEach(m => {
                 list[m] = 'trezor-connect-outdated';
             });
         }
     });
+
+    // Bitcoin Gold, Dash, DigiByte, NameCoin, Vertcoin support dropped for new devices
+    if (![DeviceModelInternal.T1B1, DeviceModelInternal.T2T1].includes(features.internal_model)) {
+        const unsupportedCoins = ['btg', 'dash', 'dgb', 'nmc', 'vtc'];
+        unsupportedCoins.forEach(coin => {
+            list[coin] = 'no-support';
+        });
+    }
+
     return list;
 };
 
 /**
  * Fixes an inconsistency in representation of device feature revision attribute (git commit of specific release).
- * - T1 uses standard hexadecimal notation. (df0963ec48f01f3d07ffca556e21ff0070cab099)
- * - T2 uses hexadecimal raw bytes notation. (6466303936336563)
+ * - T1B1 uses standard hexadecimal notation. (df0963ec48f01f3d07ffca556e21ff0070cab099)
+ * - T2T1 old fw <2.2.4 uses hexadecimal raw bytes notation. (6466303936336563)
  * To avoid being model specific, in case the inconsistency is fixed, it is required to reliably detect what encoding is used.
  * @param {Features} features
  * @returns revision - standard hexadecimal notation or null
@@ -138,4 +147,14 @@ export const parseRevision = (features: Features) => {
      * So, if it contains characters different from a-f and numbers, it was in hexadecimal notation before encoding.
      */
     return /^([a-f0-9])*$/gi.test(revisionUtf8) ? revisionUtf8 : revision;
+};
+
+export const ensureInternalModelFeature = (model: Features['model']): DeviceModelInternal => {
+    switch (model.toUpperCase()) {
+        case 'T':
+            return DeviceModelInternal.T2T1;
+        case '1':
+        default:
+            return DeviceModelInternal.T1B1;
+    }
 };

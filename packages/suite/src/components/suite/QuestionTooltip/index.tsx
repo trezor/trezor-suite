@@ -1,8 +1,7 @@
-import React from 'react';
 import styled from 'styled-components';
 import { Tooltip, H3 } from '@trezor/components';
-import { Translation } from '@suite-components';
-import { ExtendedMessageDescriptor } from '@suite-types';
+import { Translation } from 'src/components/suite';
+import { ExtendedMessageDescriptor } from 'src/types/suite';
 
 const Wrapper = styled.div`
     display: flex;
@@ -11,7 +10,7 @@ const Wrapper = styled.div`
 
 const Label = styled(H3)`
     margin-right: 4px;
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
 `;
 
 // Label container to avoid jumping when tooltip appears

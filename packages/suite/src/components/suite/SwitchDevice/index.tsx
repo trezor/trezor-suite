@@ -1,14 +1,16 @@
-import React from 'react';
 import styled from 'styled-components';
-import { Translation } from '@suite-components/Translation';
-import { Modal } from '@suite-components';
-import * as deviceUtils from '@suite-utils/device';
-import { isWebUsb } from '@suite-utils/transport';
-import { getBackgroundRoute } from '@suite-utils/router';
-import DeviceItem from './components/DeviceItem';
-import { ForegroundAppProps } from '@suite-types';
-import { useSelector } from '@suite-hooks';
 
+import * as deviceUtils from '@suite-common/suite-utils';
+import { selectDevice, selectDevices } from '@suite-common/wallet-core';
+
+import { Translation } from 'src/components/suite/Translation';
+import { Modal } from 'src/components/suite';
+import { isWebUsb } from 'src/utils/suite/transport';
+import { getBackgroundRoute } from 'src/utils/suite/router';
+import { ForegroundAppProps } from 'src/types/suite';
+import { useSelector } from 'src/hooks/suite';
+
+import DeviceItem from './components/DeviceItem';
 import { WebUsbButton } from '../WebUsbButton';
 
 const DeviceItemsWrapper = styled.div`
@@ -19,12 +21,9 @@ const DeviceItemsWrapper = styled.div`
 `;
 
 export const SwitchDevice = ({ cancelable, onCancel }: ForegroundAppProps) => {
-    const { selectedDevice, devices, transport } = useSelector(state => ({
-        router: state.router,
-        selectedDevice: state.suite.device,
-        devices: state.devices,
-        transport: state.suite.transport,
-    }));
+    const selectedDevice = useSelector(selectDevice);
+    const devices = useSelector(selectDevices);
+    const transport = useSelector(state => state.suite.transport);
 
     const isWebUsbTransport = isWebUsb(transport);
 

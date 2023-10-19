@@ -1,17 +1,20 @@
+import { ReactNode } from 'react';
+
 import { atom } from 'jotai';
 import { RequireAllOrNone } from 'type-fest';
 
-import { IconName } from '@trezor/icons';
-import { PictogramVariant } from '@suite-native/atoms';
+import { IconName } from '@suite-common/icons';
+import { ButtonColorScheme, PictogramVariant } from '@suite-native/atoms';
 
 export type Alert = RequireAllOrNone<
     {
-        title: string;
+        title: ReactNode;
         description: string;
         icon: IconName;
         pictogramVariant: PictogramVariant;
         primaryButtonTitle: string;
-        onPressPrimaryButton: () => void;
+        primaryButtonVariant?: ButtonColorScheme;
+        onPressPrimaryButton?: () => void;
         secondaryButtonTitle?: string;
         onPressSecondaryButton?: () => void;
     },

@@ -1,15 +1,10 @@
-import React from 'react';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { Box, Text } from '@suite-native/atoms';
+import { Box, RoundedIcon, Text } from '@suite-native/atoms';
 import { AccountKey } from '@suite-common/wallet-types';
-import {
-    EthereumTokenTransfer,
-    CoinIcon,
-    WalletAccountTransaction,
-} from '@suite-native/ethereum-tokens';
+import { EthereumTokenTransfer, WalletAccountTransaction } from '@suite-native/ethereum-tokens';
 import {
     StackNavigationProps,
     RootStackParamList,
@@ -37,15 +32,6 @@ type TransactionDetailNavigation = StackNavigationProps<
     RootStackParamList,
     RootStackRoutes.TransactionDetail
 >;
-
-export const iconContainerStyle = prepareNativeStyle(utils => ({
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 12,
-    borderRadius: utils.borders.radii.round,
-    backgroundColor: utils.colors.backgroundSurfaceElevation2,
-    marginRight: utils.spacings.medium,
-}));
 
 const CoinNameContainerStyle = prepareNativeStyle(_ => ({
     flexShrink: 1,
@@ -77,8 +63,8 @@ export const TransactionDetailListItem = ({
             style={applyStyle(transactionListItemContainerStyle, { isFirst, isLast })}
         >
             <Box flexDirection="row" alignItems="center" flex={1}>
-                <Box style={applyStyle(iconContainerStyle)}>
-                    <CoinIcon symbol={tokenTransfer?.symbol || transaction.symbol} size="small" />
+                <Box marginRight="medium">
+                    <RoundedIcon name={tokenTransfer?.contract || transaction.symbol} />
                 </Box>
                 <Box style={applyStyle(CoinNameContainerStyle)}>
                     <Text>{tokenTransfer?.name ?? 'Ethereum'}</Text>

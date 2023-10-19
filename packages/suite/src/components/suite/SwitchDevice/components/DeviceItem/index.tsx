@@ -1,22 +1,36 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+
 import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
-import { useTheme, variables, Icon, DeviceImage, motionAnimation } from '@trezor/components';
-import { Translation } from '@suite-components';
-import * as deviceUtils from '@suite-utils/device';
-import { useSelector, useActions } from '@suite-hooks';
-import * as routerActions from '@suite-actions/routerActions';
-import * as suiteActions from '@suite-actions/suiteActions';
-import { OpenGuideFromTooltip } from '@guide-components';
+import {
+    useTheme,
+    variables,
+    Icon,
+    Image,
+    motionAnimation,
+    DeviceAnimation,
+} from '@trezor/components';
+
+import {
+    selectDevice,
+    acquireDevice,
+    createDeviceInstance,
+    selectDeviceThunk,
+} from '@suite-common/wallet-core';
+import { Translation } from 'src/components/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { goto } from 'src/actions/suite/routerActions';
+import { OpenGuideFromTooltip } from 'src/components/guide';
 
 import { WalletInstance } from '../WalletInstance';
 import ColHeader from './components/ColHeader';
 import AddWalletButton from './components/AddWalletButton';
 import DeviceHeaderButton from './components/DeviceHeaderButton';
 
-import type { TrezorDevice, AcquiredDevice, ForegroundAppProps } from '@suite-types';
-import type { getBackgroundRoute } from '@suite-utils/router';
-import { getDeviceModel } from '@trezor/device-utils';
+import type { TrezorDevice, AcquiredDevice, ForegroundAppProps } from 'src/types/suite';
+import type { getBackgroundRoute } from 'src/utils/suite/router';
+import { DeviceModelInternal } from '@trezor/connect';
+import * as deviceUtils from '@suite-common/suite-utils';
 
 const DeviceWrapper = styled.div`
     display: flex;
@@ -36,14 +50,14 @@ const Device = styled.div`
 const DeviceTitle = styled.span`
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
 `;
 
 const DeviceStatus = styled.span<{ color: string }>`
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: 600;
     text-transform: uppercase;
-    color: ${props => props.color};
+    color: ${({ color }) => color};
     margin-bottom: 2px;
 `;
 
@@ -55,15 +69,15 @@ const DeviceActions = styled.div`
 
 const Col = styled.div<{ grow?: number }>`
     display: flex;
-    flex-grow: ${props => props.grow || 0};
+    flex-grow: ${({ grow }) => grow || 0};
     align-items: flex-start;
     flex-direction: column;
 `;
 
 const WalletsWrapper = styled.div<{ enabled: boolean }>`
-    opacity: ${props => (props.enabled ? 1 : 0.5)};
-    pointer-events: ${props => (props.enabled ? 'unset' : 'none')};
-    padding-bottom: ${props => (props.enabled ? '0px' : '24px')};
+    opacity: ${({ enabled }) => (enabled ? 1 : 0.5)};
+    pointer-events: ${({ enabled }) => (enabled ? 'unset' : 'none')};
+    padding-bottom: ${({ enabled }) => (enabled ? '0px' : '24px')};
     margin-left: 37px;
     margin-top: 24px;
 
@@ -116,28 +130,30 @@ const ColEjectHeader = styled(ColHeader)`
     margin: 0px 24px;
 `;
 
-interface Props {
+const StyledImage = styled(Image)`
+    height: 36px;
+
+    /* do not apply the darkening filter in dark mode on device images */
+    filter: none;
+`;
+
+interface DeviceItemProps {
     device: TrezorDevice;
     instances: AcquiredDevice[];
     onCancel: ForegroundAppProps['onCancel'];
     backgroundRoute: ReturnType<typeof getBackgroundRoute>;
 }
 
-const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: Props) => {
-    const { goto, selectDevice, acquireDevice, createDeviceInstance } = useActions({
-        goto: routerActions.goto,
-        selectDevice: suiteActions.selectDevice,
-        acquireDevice: suiteActions.acquireDevice,
-        createDeviceInstance: suiteActions.createDeviceInstance,
-    });
-    const selectedDevice = useSelector(state => state.suite.device);
+const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: DeviceItemProps) => {
+    const selectedDevice = useSelector(selectDevice);
+    const dispatch = useDispatch();
 
     const theme = useTheme();
     const [isExpanded, setIsExpanded] = useState(true);
     const [animateArrow, setAnimateArrow] = useState(false);
 
     const deviceStatus = deviceUtils.getStatus(device);
-    const deviceModel = getDeviceModel(device);
+    const deviceModelInternal = device.features?.internal_model;
 
     const needsAttention = deviceUtils.deviceNeedsAttention(deviceStatus);
     const isUnknown = device.type !== 'acquired';
@@ -149,27 +165,27 @@ const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: Props) => 
         const isWalletOrDashboardContext =
             backgroundRoute && ['wallet', 'dashboard'].includes(backgroundRoute.app);
         if (!isWalletOrDashboardContext) {
-            await goto('suite-index');
+            await dispatch(goto('suite-index'));
         }
 
         // Subpaths of wallet are not available to all account types (e.g. Tokens tab not available to BTC accounts).
         const isWalletSubpath =
             backgroundRoute?.app === 'wallet' && backgroundRoute?.name !== 'wallet-index';
         if (isWalletSubpath) {
-            await goto('wallet-index');
+            await dispatch(goto('wallet-index'));
         }
 
         const preserveParams = false;
         onCancel(preserveParams);
     };
 
-    const selectDeviceInstance = (instance: Props['device']) => {
-        selectDevice(instance);
+    const selectDeviceInstance = (instance: DeviceItemProps['device']) => {
+        dispatch(selectDeviceThunk(instance));
         handleRedirection();
     };
 
-    const addDeviceInstance = async (instance: Props['device']) => {
-        await createDeviceInstance(instance);
+    const addDeviceInstance = async (instance: DeviceItemProps['device']) => {
+        await dispatch(createDeviceInstance({ device: instance }));
         handleRedirection();
     };
 
@@ -179,7 +195,7 @@ const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: Props) => 
             deviceStatus === 'used-in-other-window' ||
             deviceStatus === 'was-used-in-other-window';
         if (needsAcquire) {
-            acquireDevice(device);
+            dispatch(acquireDevice(device));
         } else {
             selectDeviceInstance(device);
         }
@@ -187,9 +203,9 @@ const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: Props) => 
 
     const onDeviceSettingsClick = async () => {
         // await needed otherwise it just selects first account (???)
-        await goto('settings-device');
+        await dispatch(goto('settings-device'));
         if (!isSelected) {
-            selectDevice(device);
+            dispatch(selectDeviceThunk(device));
         }
     };
 
@@ -197,9 +213,21 @@ const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: Props) => 
         <DeviceWrapper>
             <Device>
                 <DeviceHeader>
-                    <DeviceImageWrapper>
-                        <DeviceImage height={36} deviceModel={deviceModel} />
-                    </DeviceImageWrapper>
+                    {deviceModelInternal && (
+                        <DeviceImageWrapper>
+                            {deviceModelInternal === DeviceModelInternal.T2B1 && (
+                                <DeviceAnimation
+                                    type="ROTATE"
+                                    size={36}
+                                    deviceModelInternal={deviceModelInternal}
+                                    deviceUnitColor={device?.features?.unit_color}
+                                />
+                            )}
+                            {deviceModelInternal !== DeviceModelInternal.T2B1 && (
+                                <StyledImage alt="Trezor" image={`TREZOR_${deviceModelInternal}`} />
+                            )}
+                        </DeviceImageWrapper>
+                    )}
                     <Col grow={1}>
                         <DeviceStatus
                             color={device.connected ? theme.TYPE_GREEN : theme.TYPE_RED}
@@ -259,7 +287,7 @@ const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: Props) => 
                                         <ColRememberHeader
                                             tooltipOpenGuide={instance => (
                                                 <OpenGuideFromTooltip
-                                                    id="/privacy/remember-and-eject.md"
+                                                    id="/1_initialize-and-secure-your-trezor/8_remember-and-eject.md"
                                                     instance={instance}
                                                 />
                                             )}
@@ -272,7 +300,7 @@ const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: Props) => 
                                         <ColEjectHeader
                                             tooltipOpenGuide={instance => (
                                                 <OpenGuideFromTooltip
-                                                    id="/privacy/remember-and-eject.md"
+                                                    id="/1_initialize-and-secure-your-trezor/8_remember-and-eject.md"
                                                     instance={instance}
                                                 />
                                             )}

@@ -1,19 +1,20 @@
-import React from 'react';
+import { memo, ComponentProps } from 'react';
 import styled, { css } from 'styled-components';
-import { Network } from '@wallet-types';
+import { Network } from 'src/types/wallet';
 import { CoinLogo, Icon, variables, useTheme, motionAnimation } from '@trezor/components';
 import {
-    FiatValue,
     AmountUnitSwitchWrapper,
+    CoinBalance,
+    FiatValue,
     SkeletonCircle,
     SkeletonRectangle,
     Ticker,
     Translation,
-} from '@suite-components';
-import { CoinBalance } from '@wallet-components';
+} from 'src/components/suite';
+import { CoinmarketBuyButton } from 'src/views/dashboard/components/CoinmarketBuyButton';
 import { isTestnet } from '@suite-common/wallet-utils';
-import * as routerActions from '@suite-actions/routerActions';
-import { useActions, useAccountSearch, useLoadingSkeleton } from '@suite-hooks';
+import { goto } from 'src/actions/suite/routerActions';
+import { useAccountSearch, useDispatch, useLoadingSkeleton } from 'src/hooks/suite';
 import { motion } from 'framer-motion';
 
 const LogoWrapper = styled.div`
@@ -55,7 +56,7 @@ const StyledCol = styled(motion.div)<{ $isLastRow?: boolean }>`
         `}
 `;
 
-const Col = (props: React.ComponentProps<typeof StyledCol>) => {
+const Col = (props: ComponentProps<typeof StyledCol>) => {
     const newProps = { ...props };
     delete newProps.isLastRow;
 
@@ -110,8 +111,13 @@ const FiatBalanceWrapper = styled.span`
 
 const ExchangeRateWrapper = styled(Col)`
     font-variant-numeric: tabular-nums;
-    margin-right: 25px;
     padding-right: 0px;
+`;
+
+const BuyButtonWrapper = styled(Col)`
+    justify-content: right;
+    margin-right: 25px;
+    padding-right: 0;
 `;
 
 interface AssetTableProps {
@@ -121,73 +127,82 @@ interface AssetTableProps {
     isLastRow?: boolean;
 }
 
-export const AssetTable = React.memo(
-    ({ network, failed, cryptoValue, isLastRow }: AssetTableProps) => {
-        const { symbol, name } = network;
-        const theme = useTheme();
-        const { setCoinFilter, setSearchString } = useAccountSearch();
+export const AssetTable = memo(({ network, failed, cryptoValue, isLastRow }: AssetTableProps) => {
+    const { symbol, name } = network;
+    const dispatch = useDispatch();
+    const theme = useTheme();
+    const { setCoinFilter, setSearchString } = useAccountSearch();
 
-        const { goto } = useActions({ goto: routerActions.goto });
-
-        return (
-            <>
-                <CoinNameWrapper
-                    isLastRow={isLastRow}
-                    onClick={() => {
-                        goto('wallet-index', {
-                            params: {
-                                symbol,
-                                accountIndex: 0,
-                                accountType: 'normal',
-                            },
-                        });
-                        // activate coin filter and reset account search string
-                        setCoinFilter(symbol);
-                        setSearchString(undefined);
-                    }}
-                >
-                    <LogoWrapper>
-                        <CoinLogo symbol={symbol} size={24} />
-                    </LogoWrapper>
-
-                    <Coin>{name}</Coin>
-
-                    <Symbol>{symbol.toUpperCase()}</Symbol>
-                </CoinNameWrapper>
-
-                {!failed ? (
-                    <CryptoBalanceWrapper isLastRow={isLastRow}>
-                        <AmountUnitSwitchWrapper symbol={symbol}>
-                            <CoinBalance value={cryptoValue} symbol={symbol} />
-
-                            <FiatBalanceWrapper>
-                                <FiatValue
-                                    amount={cryptoValue}
-                                    symbol={symbol}
-                                    showApproximationIndicator
-                                />
-                            </FiatBalanceWrapper>
-                        </AmountUnitSwitchWrapper>
-                    </CryptoBalanceWrapper>
-                ) : (
-                    <FailedCol isLastRow={isLastRow}>
-                        <Translation id="TR_DASHBOARD_ASSET_FAILED" />
-
-                        <Icon
-                            style={{ paddingLeft: '4px', paddingBottom: '2px' }}
-                            icon="WARNING"
-                            color={theme.TYPE_RED}
-                            size={14}
-                        />
-                    </FailedCol>
-                )}
-                <ExchangeRateWrapper isLastRow={isLastRow}>
-                    {!isTestnet(symbol) && <Ticker symbol={symbol} />}
-                </ExchangeRateWrapper>
-            </>
+    const handleLogoClick = () => {
+        dispatch(
+            goto('wallet-index', {
+                params: {
+                    symbol,
+                    accountIndex: 0,
+                    accountType: 'normal',
+                },
+            }),
         );
-    },
-);
+        // activate coin filter and reset account search string
+        setCoinFilter(symbol);
+        setSearchString(undefined);
+    };
+
+    return (
+        <>
+            <CoinNameWrapper isLastRow={isLastRow} onClick={handleLogoClick}>
+                <LogoWrapper>
+                    <CoinLogo symbol={symbol} size={24} />
+                </LogoWrapper>
+
+                <Coin>{name}</Coin>
+
+                <Symbol>{symbol.toUpperCase()}</Symbol>
+            </CoinNameWrapper>
+
+            {!failed ? (
+                <CryptoBalanceWrapper
+                    isLastRow={isLastRow}
+                    data-test={`@asset-card/${symbol}/balance`}
+                >
+                    <AmountUnitSwitchWrapper symbol={symbol}>
+                        <CoinBalance value={cryptoValue} symbol={symbol} />
+
+                        <FiatBalanceWrapper>
+                            <FiatValue
+                                amount={cryptoValue}
+                                symbol={symbol}
+                                showApproximationIndicator
+                            />
+                        </FiatBalanceWrapper>
+                    </AmountUnitSwitchWrapper>
+                </CryptoBalanceWrapper>
+            ) : (
+                <FailedCol isLastRow={isLastRow}>
+                    <Translation id="TR_DASHBOARD_ASSET_FAILED" />
+
+                    <Icon
+                        style={{ paddingLeft: '4px', paddingBottom: '2px' }}
+                        icon="WARNING"
+                        color={theme.TYPE_RED}
+                        size={14}
+                    />
+                </FailedCol>
+            )}
+            <ExchangeRateWrapper isLastRow={isLastRow}>
+                {!isTestnet(symbol) && <Ticker symbol={symbol} />}
+            </ExchangeRateWrapper>
+            <BuyButtonWrapper isLastRow={isLastRow}>
+                {!isTestnet(symbol) && (
+                    <CoinmarketBuyButton
+                        symbol={symbol}
+                        dataTest={`@dashboard/assets/table/${symbol}/buy-button`}
+                    />
+                )}
+            </BuyButtonWrapper>
+        </>
+    );
+});
 
 export const AssetTableSkeleton = (props: { animate?: boolean }) => {
     const { shouldAnimate } = useLoadingSkeleton();
@@ -211,6 +226,9 @@ export const AssetTableSkeleton = (props: { animate?: boolean }) => {
             <ExchangeRateWrapper isLastRow>
                 <SkeletonRectangle animate={animate} />
             </ExchangeRateWrapper>
+            <BuyButtonWrapper isLastRow>
+                <SkeletonRectangle animate={animate} />
+            </BuyButtonWrapper>
         </>
     );
 };

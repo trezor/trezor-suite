@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { RouteComponentProps, useLocation, withRouter } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
 import InfinityMenu from 'react-infinity-menu';
 import { createGlobalStyle } from 'styled-components';
@@ -96,7 +96,6 @@ interface LeafProps extends NodeProps {
 
 const Leaf = ({ data, isOpen, name, onClick }: LeafProps) => {
     const css = isOpen ? 'leaf selected' : 'leaf';
-    const href = `#${data.url}`;
     return (
         <div key={data.keyPath} className={css} onClick={onClick}>
             <div className="leaf-arrow">

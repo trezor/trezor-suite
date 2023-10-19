@@ -13,7 +13,6 @@ export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.Res
         this.useDeviceState = false;
         this.requiredPermissions = ['management'];
         this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
-        this.info = 'Setup device';
 
         const { payload } = this;
         // validate bundle type
@@ -42,6 +41,10 @@ export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.Res
             no_backup: payload.no_backup,
             backup_type: payload.backup_type,
         };
+    }
+
+    get info() {
+        return 'Setup device';
     }
 
     async confirmation() {

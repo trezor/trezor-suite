@@ -5,9 +5,7 @@
   "AMOUNT_IS_NOT_ENOUGH": "Onvoldoende fondse",
   "AMOUNT_IS_NOT_INTEGER": "Bedrag is nie 'n heelgetal nie",
   "AMOUNT_IS_NOT_IN_RANGE_DECIMALS": "Hoogstens {decimals} desimale word aanvaar",
-  "AMOUNT_IS_NOT_NUMBER": "Tik 'n syfer in (bv. 1.5)",
   "CUSTOM_FEE_IS_NOT_INTEGER": "Voer 'n heelgetal in",
-  "CUSTOM_FEE_IS_NOT_NUMBER": "Voer 'n nommer in",
   "CUSTOM_FEE_LIMIT_USE_RECOMMENDED": "Gebruik aanbevole",
   "CUSTOM_FEE_NOT_IN_RANGE": "Voer 'n fooi in tussen {minFee} en {maxFee}",
   "DATA_ETH": "Data:",
@@ -23,8 +21,6 @@
   "FEE_LEVEL_LOW": "Laag",
   "FEE_LEVEL_NORMAL": "Normaal",
   "FIRMWARE_USER_HAS_SEED_CHECKBOX_DESC": "Ja, ek doen!",
-  "FW_CAPABILITY_NO_CAPABILITY": "Nie ondersteun nie",
-  "FW_CAPABILITY_NO_SUPPORT": "Nie ondersteun nie",
   "FW_CAPABILITY_UPDATE_REQUIRED": "Vereis opdatering",
   "TR_EXCHANGE_FEES_INFO": "All fees included; the transaction fee is estimated at {feeAmount} ({feeAmountFiat})."
 }

@@ -1,8 +1,7 @@
-import React from 'react';
 import styled from 'styled-components';
-import { Translation, Modal } from '@suite-components';
-import UdevDownload from '@suite-components/UdevDownload';
-import type { ForegroundAppProps } from '@suite-types';
+import { Translation, Modal } from 'src/components/suite';
+import UdevDownload from 'src/components/suite/UdevDownload';
+import type { ForegroundAppProps } from 'src/types/suite';
 
 const Wrapper = styled.div`
     display: flex;

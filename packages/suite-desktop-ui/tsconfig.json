@@ -1,6 +1,9 @@
 {
-    "extends": "../../tsconfig.aliases.json",
-    "compilerOptions": { "outDir": "libDev" },
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "outDir": "libDev",
+        "baseUrl": "../suite"
+    },
     "include": ["."],
     "references": [
         {

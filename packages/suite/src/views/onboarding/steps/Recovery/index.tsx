@@ -1,29 +1,29 @@
-import React from 'react';
-import { OnboardingButtonCta } from '@onboarding-components';
-import { SelectWordCount, SelectRecoveryType, SelectRecoveryWord } from '@recovery-components';
-import { Translation } from '@suite-components';
-import * as onboardingActions from '@onboarding-actions/onboardingActions';
-import { useActions, useRecovery, useSelector } from '@suite-hooks';
-import RecoveryStepBox from './RecoveryStepBox';
-import { DeviceModel, getDeviceModel, pickByDeviceModel } from '@trezor/device-utils';
-import { selectIsActionAbortable } from '@suite-reducers/suiteReducer';
 import styled from 'styled-components';
 
-const InProgressRecoveryStepBox = styled(RecoveryStepBox)<{ deviceModel: DeviceModel }>`
-    ${({ deviceModel }) => (deviceModel === DeviceModel.T1 ? 'min-height: 475px' : '')};
+import { pickByDeviceModel } from '@trezor/device-utils';
+import { DeviceModelInternal } from '@trezor/connect';
+import { selectDevice } from '@suite-common/wallet-core';
+
+import { OnboardingButtonCta } from 'src/components/onboarding';
+import { SelectWordCount, SelectRecoveryType, SelectRecoveryWord } from 'src/components/recovery';
+import { Translation } from 'src/components/suite';
+import { goToNextStep, updateAnalytics } from 'src/actions/onboarding/onboardingActions';
+import { useDispatch, useRecovery, useSelector } from 'src/hooks/suite';
+import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
+
+import RecoveryStepBox from './RecoveryStepBox';
+
+const InProgressRecoveryStepBox = styled(RecoveryStepBox)<{
+    $deviceModelInternal: DeviceModelInternal;
+}>`
+    ${({ $deviceModelInternal }) =>
+        $deviceModelInternal === DeviceModelInternal.T1B1 ? 'min-height: 475px' : ''};
 `;
 
 export const RecoveryStep = () => {
-    const { goToNextStep, updateAnalytics } = useActions({
-        goToNextStep: onboardingActions.goToNextStep,
-        updateAnalytics: onboardingActions.updateAnalytics,
-    });
-
     const isActionAbortable = useSelector(selectIsActionAbortable);
-
-    const { device } = useSelector(state => ({
-        device: state.suite.device,
-    }));
+    const device = useSelector(selectDevice);
+    const dispatch = useDispatch();
 
     const {
         status,
@@ -40,13 +40,13 @@ export const RecoveryStep = () => {
         return null;
     }
 
-    const deviceModel = getDeviceModel(device);
+    const deviceModelInternal = device.features.internal_model;
 
     if (status === 'initial') {
-        // 1. step where users chooses number of words in case of T1
-        // In case of model T and model R show CTA button to start the process
-        if (deviceModel === DeviceModel.T1) {
-            // Model 1
+        // 1. step where users chooses number of words in case of T1B1
+        // In case of T2T1 and T2B1 show CTA button to start the process
+        if (deviceModelInternal === DeviceModelInternal.T1B1) {
+            // T1B1
             return (
                 <RecoveryStepBox
                     key={status} // to properly rerender in translation mode
@@ -63,17 +63,17 @@ export const RecoveryStep = () => {
             );
         }
 
-        // Model T and R
+        // T2T1 and T2B1
         return (
             <RecoveryStepBox
                 key={status} // to properly rerender in translation mode
                 heading={<Translation id="TR_RECOVER_YOUR_WALLET_FROM" />}
                 description={
                     <Translation
-                        id={pickByDeviceModel(deviceModel, {
+                        id={pickByDeviceModel(deviceModelInternal, {
                             default: 'TR_RECOVER_SUBHEADING_TOUCH',
-                            [DeviceModel.TT]: 'TR_RECOVER_SUBHEADING_TOUCH',
-                            [DeviceModel.TR]: 'TR_RECOVER_SUBHEADING_BUTTONS',
+                            [DeviceModelInternal.T2T1]: 'TR_RECOVER_SUBHEADING_TOUCH',
+                            [DeviceModelInternal.T2B1]: 'TR_RECOVER_SUBHEADING_BUTTONS',
                         })}
                     />
                 }
@@ -91,35 +91,35 @@ export const RecoveryStep = () => {
 
     if (status === 'select-recovery-type') {
         // 2. step: Standard recovery (user enters recovery seed word by word on host) or Advanced recovery (user types words on a device)
+        const handleSelect = (type: 'standard' | 'advanced') => {
+            setAdvancedRecovery(type === 'advanced');
+            dispatch(updateAnalytics({ recoveryType: type }));
+            recoverDevice();
+        };
+
         return (
             <RecoveryStepBox
                 key={status} // to properly rerender in translation mode
                 heading={<Translation id="TR_SELECT_RECOVERY_METHOD" />}
                 description={<Translation id="TR_RECOVERY_TYPES_DESCRIPTION" />}
             >
-                <SelectRecoveryType
-                    onSelect={(type: 'standard' | 'advanced') => {
-                        setAdvancedRecovery(type === 'advanced');
-                        updateAnalytics({ recoveryType: type });
-                        recoverDevice();
-                    }}
-                />
+                <SelectRecoveryType onSelect={handleSelect} />
             </RecoveryStepBox>
         );
     }
 
     if (status === 'waiting-for-confirmation') {
-        // On model 1 we show confirm bubble only while we wait for confirmation that users wants to start the process
+        // On T1B1 we show confirm bubble only while we wait for confirmation that users wants to start the process
         return (
             <RecoveryStepBox
                 key={status} // to properly rerender in translation mode
                 heading={<Translation id="TR_RECOVER_YOUR_WALLET_FROM" />}
-                description={pickByDeviceModel(deviceModel, {
+                description={pickByDeviceModel(deviceModelInternal, {
                     default: undefined,
-                    [DeviceModel.TT]: <Translation id="TR_RECOVER_SUBHEADING_TOUCH" />,
-                    [DeviceModel.TR]: <Translation id="TR_RECOVER_SUBHEADING_BUTTONS" />,
+                    [DeviceModelInternal.T2T1]: <Translation id="TR_RECOVER_SUBHEADING_TOUCH" />,
+                    [DeviceModelInternal.T2B1]: <Translation id="TR_RECOVER_SUBHEADING_BUTTONS" />,
                 })}
-                deviceModel={deviceModel}
+                device={device}
                 isActionAbortable={isActionAbortable}
             />
         );
@@ -145,12 +145,13 @@ export const RecoveryStep = () => {
             <InProgressRecoveryStepBox
                 key={status} // to properly rerender in translation mode
                 heading={<Translation id="TR_RECOVER_YOUR_WALLET_FROM" />}
-                deviceModel={deviceModel}
-                description={pickByDeviceModel(deviceModel, {
+                $deviceModelInternal={deviceModelInternal}
+                device={device}
+                description={pickByDeviceModel(deviceModelInternal, {
                     default: undefined,
-                    [DeviceModel.T1]: getModel1Description(),
-                    [DeviceModel.TT]: <Translation id="TR_RECOVER_SUBHEADING_TOUCH" />,
-                    [DeviceModel.TR]: <Translation id="TR_RECOVER_SUBHEADING_BUTTONS" />,
+                    [DeviceModelInternal.T1B1]: getModel1Description(),
+                    [DeviceModelInternal.T2T1]: <Translation id="TR_RECOVER_SUBHEADING_TOUCH" />,
+                    [DeviceModelInternal.T2B1]: <Translation id="TR_RECOVER_SUBHEADING_BUTTONS" />,
                 })}
                 isActionAbortable
             >
@@ -161,6 +162,8 @@ export const RecoveryStep = () => {
 
     if (device && device.mode === 'normal') {
         // Ready to continue to the next step
+        const handleClick = () => dispatch(goToNextStep('set-pin'));
+
         return (
             <RecoveryStepBox
                 key={status} // to properly rerender in translation mode
@@ -168,7 +171,7 @@ export const RecoveryStep = () => {
                 innerActions={
                     <OnboardingButtonCta
                         data-test="@onboarding/recovery/continue-button"
-                        onClick={() => goToNextStep('set-pin')}
+                        onClick={handleClick}
                     >
                         <Translation id="TR_CONTINUE" />
                     </OnboardingButtonCta>
@@ -186,7 +189,11 @@ export const RecoveryStep = () => {
                 innerActions={
                     <OnboardingButtonCta
                         data-test="@onboarding/recovery/retry-button"
-                        onClick={deviceModel === DeviceModel.T1 ? resetReducer : recoverDevice}
+                        onClick={
+                            deviceModelInternal === DeviceModelInternal.T1B1
+                                ? resetReducer
+                                : recoverDevice
+                        }
                     >
                         <Translation id="TR_RETRY" />
                     </OnboardingButtonCta>

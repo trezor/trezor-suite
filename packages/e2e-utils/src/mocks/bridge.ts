@@ -2,7 +2,7 @@
 /* eslint-disable no-console */
 
 import express from 'express';
-import EventEmitter from 'events';
+import { EventEmitter } from 'events';
 
 const port = 21325;
 const listenTimeout = 10000;

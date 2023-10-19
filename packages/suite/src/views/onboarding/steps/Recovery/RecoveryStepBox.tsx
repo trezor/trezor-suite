@@ -1,39 +1,38 @@
-import React from 'react';
+import { DeviceModelInternal } from '@trezor/connect';
 import {
     OnboardingButtonBack,
     OnboardingStepBox,
     OnboardingStepBoxProps,
-} from '@onboarding-components';
-import { Translation } from '@suite-components';
-import * as onboardingActions from '@onboarding-actions/onboardingActions';
-import * as recoveryActions from '@recovery-actions/recoveryActions';
-import { useActions, useSelector } from '@suite-hooks';
-import { DeviceModel } from '@trezor/device-utils';
-import { useDeviceModel } from '@suite-hooks/useDeviceModel';
+} from 'src/components/onboarding';
+import { goToPreviousStep } from 'src/actions/onboarding/onboardingActions';
+import { setStatus } from 'src/actions/recovery/recoveryActions';
+import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 
 const RecoveryStepBox = (props: OnboardingStepBoxProps) => {
-    const { goToPreviousStep, setStatus } = useActions({
-        goToPreviousStep: onboardingActions.goToPreviousStep,
-        setStatus: recoveryActions.setStatus,
-    });
-
     const recovery = useSelector(state => state.recovery);
+    const dispatch = useDispatch();
 
-    const deviceModel = useDeviceModel();
+    const { device } = useDevice();
 
-    if (!deviceModel) {
+    const deviceModelInternal = device?.features?.internal_model;
+
+    if (!deviceModelInternal) {
         return null;
     }
 
     const handleBack = () => {
         if (recovery.status === 'select-recovery-type') {
-            return setStatus('initial');
+            return dispatch(setStatus('initial'));
         }
-        // allow to change recovery settings for T1 in case of error
-        if (recovery.status === 'finished' && recovery.error && deviceModel === DeviceModel.T1) {
-            return setStatus('initial');
+        // allow to change recovery settings for T1B1 in case of error
+        if (
+            recovery.status === 'finished' &&
+            recovery.error &&
+            deviceModelInternal === DeviceModelInternal.T1B1
+        ) {
+            return dispatch(setStatus('initial'));
         }
-        return goToPreviousStep();
+        return dispatch(goToPreviousStep());
     };
 
     const isBackButtonVisible = () => {
@@ -54,9 +53,7 @@ const RecoveryStepBox = (props: OnboardingStepBoxProps) => {
                     <OnboardingButtonBack
                         onClick={() => handleBack()}
                         data-test="@onboarding/recovery/back-button"
-                    >
-                        <Translation id="TR_BACK" />
-                    </OnboardingButtonBack>
+                    />
                 ) : undefined
             }
             {...props}

@@ -1,0 +1,401 @@
+{
+    "$id": "https://data.trezor.io/message-system/schema.json",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Message system",
+    "description": "JSON schema of the Trezor Suite messaging system.",
+    "type": "object",
+    "required": ["version", "timestamp", "sequence", "actions"],
+    "properties": {
+        "version": {
+            "description": "A version of the messaging system. In case we would change the format of the config itself.",
+            "type": "integer",
+            "minimum": 1,
+            "default": 1
+        },
+        "timestamp": {
+            "$ref": "#/definitions/date-time"
+        },
+        "sequence": {
+            "description": "An increasing counter. Trezor Suite must decline any sequence lower than the latest number. This is to protect against replay attacks, where an attacker could send an older version of the file, and Trezor Suite would accept it.",
+            "type": "integer",
+            "minimum": 1,
+            "default": 1
+        },
+        "actions": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "title": "Action",
+                "type": "object",
+                "required": ["conditions", "message"],
+                "properties": {
+                    "conditions": {
+                        "type": "array",
+                        "items": {
+                            "title": "Condition",
+                            "type": "object",
+                            "properties": {
+                                "duration": {
+                                    "title": "Duration",
+                                    "type": "object",
+                                    "required": ["from", "to"],
+                                    "properties": {
+                                        "from": {
+                                            "$ref": "#/definitions/date-time"
+                                        },
+                                        "to": {
+                                            "$ref": "#/definitions/date-time"
+                                        }
+                                    },
+                                    "additionalProperties": false
+                                },
+                                "os": {
+                                    "title": "Operating System",
+                                    "type": "object",
+                                    "required": [
+                                        "macos",
+                                        "linux",
+                                        "windows",
+                                        "android",
+                                        "ios",
+                                        "chromeos"
+                                    ],
+                                    "properties": {
+                                        "macos": {
+                                            "$ref": "#/definitions/version"
+                                        },
+                                        "linux": {
+                                            "$ref": "#/definitions/version"
+                                        },
+                                        "windows": {
+                                            "$ref": "#/definitions/version"
+                                        },
+                                        "android": {
+                                            "$ref": "#/definitions/version"
+                                        },
+                                        "ios": {
+                                            "$ref": "#/definitions/version"
+                                        },
+                                        "chromeos": {
+                                            "$ref": "#/definitions/version"
+                                        }
+                                    },
+                                    "additionalProperties": {
+                                        "$ref": "#/definitions/version"
+                                    }
+                                },
+                                "environment": {
+                                    "title": "Environment",
+                                    "type": "object",
+                                    "required": ["desktop", "mobile", "web"],
+                                    "properties": {
+                                        "desktop": {
+                                            "$ref": "#/definitions/version"
+                                        },
+                                        "mobile": {
+                                            "$ref": "#/definitions/version"
+                                        },
+                                        "web": {
+                                            "$ref": "#/definitions/version"
+                                        },
+                                        "revision": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "browser": {
+                                    "title": "Browser",
+                                    "type": "object",
+                                    "required": ["firefox", "chrome", "chromium"],
+                                    "properties": {
+                                        "firefox": {
+                                            "$ref": "#/definitions/version"
+                                        },
+                                        "chrome": {
+                                            "$ref": "#/definitions/version"
+                                        },
+                                        "chromium": {
+                                            "$ref": "#/definitions/version"
+                                        }
+                                    },
+                                    "additionalProperties": {
+                                        "$ref": "#/definitions/version"
+                                    }
+                                },
+                                "transport": {
+                                    "title": "Transport",
+                                    "type": "object",
+                                    "required": ["bridge", "webusbplugin"],
+                                    "properties": {
+                                        "bridge": {
+                                            "$ref": "#/definitions/version"
+                                        },
+                                        "webusbplugin": {
+                                            "$ref": "#/definitions/version"
+                                        }
+                                    },
+                                    "additionalProperties": {
+                                        "$ref": "#/definitions/version"
+                                    }
+                                },
+                                "settings": {
+                                    "type": "array",
+                                    "minItems": 1,
+                                    "items": {
+                                        "title": "Settings",
+                                        "description": "If a setting is not specified, then it can be either true or false. Currently, 'tor' and coin symbols are supported.",
+                                        "type": "object",
+                                        "properties": {
+                                            "tor": {
+                                                "type": "boolean"
+                                            }
+                                        },
+                                        "additionalProperties": true
+                                    }
+                                },
+                                "devices": {
+                                    "type": "array",
+                                    "items": {
+                                        "title": "Device",
+                                        "type": "object",
+                                        "required": [
+                                            "model",
+                                            "firmwareRevision",
+                                            "firmware",
+                                            "bootloader",
+                                            "variant",
+                                            "vendor"
+                                        ],
+                                        "properties": {
+                                            "model": {
+                                                "title": "Model",
+                                                "type": "string",
+                                                "enum": [
+                                                    "1",
+                                                    "T",
+                                                    "T1B1",
+                                                    "T2T1",
+                                                    "T2B1",
+                                                    "Safe 3",
+                                                    ""
+                                                ]
+                                            },
+                                            "firmwareRevision": {
+                                                "title": "Firmware Revision",
+                                                "type": "string"
+                                            },
+                                            "firmware": {
+                                                "$ref": "#/definitions/version"
+                                            },
+                                            "bootloader": {
+                                                "$ref": "#/definitions/version"
+                                            },
+                                            "variant": {
+                                                "title": "Firmware Variant",
+                                                "type": "string",
+                                                "enum": ["*", "bitcoin-only", "regular"]
+                                            },
+                                            "vendor": {
+                                                "title": "Vendor",
+                                                "description": "Eligible authorized vendors.",
+                                                "type": "string",
+                                                "enum": ["*", "trezor.io"]
+                                            }
+                                        },
+                                        "additionalProperties": false
+                                    }
+                                }
+                            },
+                            "additionalProperties": false
+                        }
+                    },
+                    "message": {
+                        "title": "Message",
+                        "type": "object",
+                        "required": [
+                            "id",
+                            "priority",
+                            "dismissible",
+                            "variant",
+                            "category",
+                            "content"
+                        ],
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "priority": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 100
+                            },
+                            "dismissible": {
+                                "type": "boolean"
+                            },
+                            "variant": {
+                                "title": "Variant",
+                                "type": "string",
+                                "enum": ["info", "warning", "critical"]
+                            },
+                            "category": {
+                                "oneOf": [
+                                    {
+                                        "$ref": "#/definitions/category"
+                                    },
+                                    {
+                                        "type": "array",
+                                        "items": {
+                                            "$ref": "#/definitions/category"
+                                        }
+                                    }
+                                ]
+                            },
+                            "content": {
+                                "$ref": "#/definitions/localization"
+                            },
+                            "cta": {
+                                "title": "CTA",
+                                "description": "Only used for 'banner' and 'context' categories.",
+                                "required": ["action", "link", "label"],
+                                "type": "object",
+                                "properties": {
+                                    "action": {
+                                        "type": "string",
+                                        "enum": ["internal-link", "external-link"]
+                                    },
+                                    "link": {
+                                        "type": "string"
+                                    },
+                                    "anchor": {
+                                        "type": "string"
+                                    },
+                                    "label": {
+                                        "$ref": "#/definitions/localization"
+                                    }
+                                },
+                                "additionalProperties": false
+                            },
+                            "modal": {
+                                "title": "Modal",
+                                "type": "object",
+                                "description": "Only used for 'modal' category.",
+                                "required": ["title", "image"],
+                                "properties": {
+                                    "title": {
+                                        "$ref": "#/definitions/localization"
+                                    },
+                                    "image": {
+                                        "type": "string"
+                                    }
+                                },
+                                "additionalProperties": false
+                            },
+                            "feature": {
+                                "type": "array",
+                                "minItems": 1,
+                                "items": {
+                                    "title": "Feature",
+                                    "description": "Only used for 'feature' category. Feature flag can disable a feature for a specific version of a specific app.",
+                                    "type": "object",
+                                    "required": ["domain", "flag"],
+                                    "properties": {
+                                        "domain": {
+                                            "type": "string"
+                                        },
+                                        "flag": {
+                                            "type": "boolean"
+                                        },
+                                        "isPublic": {
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "additionalProperties": true
+                                }
+                            },
+                            "context": {
+                                "title": "Context",
+                                "type": "object",
+                                "description": "Only used for 'context' category.",
+                                "required": ["domain"],
+                                "properties": {
+                                    "domain": {
+                                        "description": "The domain to which the message applies. Only used for 'context' category.",
+                                        "oneOf": [
+                                            {
+                                                "type": "string"
+                                            },
+                                            {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                },
+                                "additionalProperties": false
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                },
+                "additionalProperties": false
+            }
+        }
+    },
+    "additionalProperties": false,
+    "definitions": {
+        "version": {
+            "examples": ["<=20.01", ">30", "~20.1", "^20.1", "82", "*", "!", ["<70", ">71"]],
+            "oneOf": [
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            ]
+        },
+        "localization": {
+            "title": "Localization",
+            "description": "A multilingual text localization.",
+            "type": "object",
+            "required": ["en-GB", "en", "es", "cs", "ru", "ja"],
+            "properties": {
+                "en-GB": {
+                    "type": "string"
+                },
+                "en": {
+                    "type": "string"
+                },
+                "es": {
+                    "type": "string"
+                },
+                "cs": {
+                    "type": "string"
+                },
+                "ru": {
+                    "type": "string"
+                },
+                "ja": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": {
+                "type": "string"
+            }
+        },
+        "category": {
+            "type": "string",
+            "enum": ["banner", "context", "modal", "feature"]
+        },
+        "date-time": {
+            "description": "ISO 8601 date-time format.",
+            "type": "string",
+            "examples": ["2021-03-03T03:48:16+00:00", "2021-03-03T03:48:16Z"]
+        }
+    }
+}

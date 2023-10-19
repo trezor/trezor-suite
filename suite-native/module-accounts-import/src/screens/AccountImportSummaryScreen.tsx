@@ -1,5 +1,3 @@
-import React from 'react';
-
 import {
     StackToTabCompositeScreenProps,
     Screen,
@@ -21,7 +19,7 @@ export const AccountImportSummaryScreen = ({
     const { accountInfo, networkSymbol } = route.params;
 
     return (
-        <Screen header={<AccountImportHeader activeStep={4} />}>
+        <Screen header={<AccountImportHeader activeStep={3} />}>
             <AccountImportSummary accountInfo={accountInfo} networkSymbol={networkSymbol} />
         </Screen>
     );

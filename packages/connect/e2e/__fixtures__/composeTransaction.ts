@@ -363,9 +363,9 @@ export default {
                 {
                     type: 'final',
                     bytes: 226,
-                    fee: '1000000', // NOTE: +0.01 DOGE per dust limit output
+                    fee: '1226000', // NOTE: +0.01 DOGE per dust limit output
                     max: undefined,
-                    totalSpent: '1100000',
+                    totalSpent: '1326000',
                     transaction: {
                         inputs: [{ script_type: 'SPENDADDRESS' }],
                         outputs: [
@@ -374,7 +374,7 @@ export default {
                                 amount: '100000',
                                 script_type: 'PAYTOADDRESS',
                             },
-                            { amount: '498900000', script_type: 'PAYTOADDRESS' },
+                            { amount: '498674000', script_type: 'PAYTOADDRESS' },
                         ],
                     },
                 },

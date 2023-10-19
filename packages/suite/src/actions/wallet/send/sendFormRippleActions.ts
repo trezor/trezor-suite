@@ -1,5 +1,6 @@
-import TrezorConnect, { FeeLevel, RipplePayment } from '@trezor/connect';
 import BigNumber from 'bignumber.js';
+
+import TrezorConnect, { FeeLevel, RipplePayment } from '@trezor/connect';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     calculateTotal,
@@ -17,7 +18,9 @@ import {
     PrecomposedTransactionFinal,
     ExternalOutput,
 } from '@suite-common/wallet-types';
-import { Dispatch, GetState } from '@suite-types';
+import { selectDevice } from '@suite-common/wallet-core';
+
+import { Dispatch, GetState } from 'src/types/suite';
 
 const calculate = (
     availableBalance: string,
@@ -110,6 +113,7 @@ export const composeTransaction =
             const accountResponse = await TrezorConnect.getAccountInfo({
                 descriptor: address,
                 coin: account.symbol,
+                suppressBackupWarning: true,
             });
             if (accountResponse.success && accountResponse.payload.empty) {
                 requiredAmount = new BigNumber(accountResponse.payload.misc!.reserve!);
@@ -177,7 +181,7 @@ export const signTransaction =
     (formValues: FormState, transactionInfo: PrecomposedTransactionFinal) =>
     async (dispatch: Dispatch, getState: GetState) => {
         const { selectedAccount } = getState().wallet;
-        const { device } = getState().suite;
+        const device = selectDevice(getState());
         if (
             selectedAccount.status !== 'loaded' ||
             !device ||
@@ -213,7 +217,7 @@ export const signTransaction =
             },
         });
         if (!signedTx.success) {
-            // catch manual error from ReviewTransaction modal
+            // catch manual error from TransactionReviewModal
             if (signedTx.payload.error === 'tx-cancelled') return;
             dispatch(
                 notificationsActions.addToast({

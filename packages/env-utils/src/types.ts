@@ -1,11 +1,18 @@
+export type Environment = 'desktop' | 'web' | 'mobile';
+
 export interface EnvUtils {
+    isWeb: () => boolean;
+    isDesktop: () => boolean;
+    getEnvironment: () => Environment;
     getUserAgent: () => string;
     isAndroid: () => boolean;
     isChromeOs: () => boolean;
     getBrowserName: () => string;
     getBrowserVersion: () => string;
+    getCommitHash: () => string;
     getDeviceType: () => string | undefined;
     getOsVersion: () => string;
+    getSuiteVersion: () => string;
     isFirefox: () => boolean;
     getPlatform: () => string;
     getPlatformLanguages: () => readonly string[];

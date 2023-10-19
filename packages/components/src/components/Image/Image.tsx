@@ -1,7 +1,7 @@
-import React from 'react';
+import { ImgHTMLAttributes } from 'react';
 import styled from 'styled-components';
-import { resolveStaticPath } from '@trezor/utils';
 import { PngImage, SvgImage, PNG_IMAGES, SVG_IMAGES } from './images';
+import { resolveStaticPath } from '../../utils/resolveStaticPath';
 
 const PNG_PATH = 'images/png';
 const SVG_PATH = 'images/svg';
@@ -36,7 +36,7 @@ const buildSrcSet = <
 
 export type ImageType = PngImage | SvgImage;
 
-export type ImageProps = React.ImgHTMLAttributes<Omit<HTMLImageElement, 'src'>> &
+export type ImageProps = ImgHTMLAttributes<Omit<HTMLImageElement, 'src'>> &
     (
         | {
               image: ImageType;

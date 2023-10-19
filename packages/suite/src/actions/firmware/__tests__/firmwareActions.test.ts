@@ -1,14 +1,17 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable global-require */
 
-import { configureStore } from '@suite/support/tests/configureStore';
-
-import firmwareReducer from '@firmware-reducers/firmwareReducer';
-import suiteReducer from '@suite-reducers/suiteReducer';
+import { prepareFirmwareReducer, State as DeviceState } from '@suite-common/wallet-core';
 import { ArrayElement } from '@trezor/type-utils';
+import { DeviceModelInternal } from '@trezor/connect';
+
+import { configureStore, filterThunkActionTypes } from 'src/support/tests/configureStore';
+import suiteReducer from 'src/reducers/suite/suiteReducer';
+import { extraDependencies } from 'src/support/extraDependencies';
+
 import { actions, reducerActions } from '../__fixtures__/firmwareActions';
-import { TrezorDevice } from '@suite-types';
-import { DeviceModel } from '@trezor/device-utils';
+
+const firmwareReducer = prepareFirmwareReducer(extraDependencies);
 
 type Fixture = ArrayElement<typeof actions>;
 
@@ -17,7 +20,7 @@ type FirmwareState = ReturnType<typeof firmwareReducer>;
 interface InitialState {
     suite?: Partial<SuiteState>;
     firmware?: Partial<FirmwareState>;
-    devices?: TrezorDevice[];
+    device?: Partial<DeviceState>;
 }
 
 jest.mock('@trezor/connect', () => {
@@ -33,7 +36,7 @@ jest.mock('@trezor/connect', () => {
         return Promise.resolve(fixture.mocks.connect);
     };
 
-    const { PROTO } = jest.requireActual('@trezor/connect');
+    const { PROTO, DeviceModelInternal, FirmwareType } = jest.requireActual('@trezor/connect');
 
     return {
         __esModule: true, // this property makes it work
@@ -55,29 +58,35 @@ jest.mock('@trezor/connect', () => {
             fixture = f;
         },
         PROTO,
+        DeviceModelInternal,
+        FirmwareType,
     };
 });
 
+jest.mock('@trezor/suite-analytics', () => global.JestMocks.getAnalytics());
+
 export const getInitialState = (override?: InitialState): any => {
     const suite = override ? override.suite : undefined;
-    const devices = override ? override.devices : [];
+    const device = override ? override.device : undefined;
 
     return {
         suite: {
-            device: {
-                connected: true,
-                type: 'acquired',
-                features: {
-                    major_version: 2,
-                    model: DeviceModel.TT,
-                },
-            },
             locks: [],
             flags: {},
             ...suite,
         },
         firmware: firmwareReducer(undefined, { type: 'foo' } as any),
-        devices,
+        device: {
+            selectedDevice: {
+                connected: true,
+                type: 'acquired',
+                features: {
+                    major_version: 2,
+                    internal_model: DeviceModelInternal.T2T1,
+                },
+            },
+            ...device,
+        },
         analytics: {
             enabled: false,
         },
@@ -128,7 +137,9 @@ describe('Firmware Actions', () => {
                     expect(result).toMatchObject(f.result.state);
                 }
                 if (f.result.actions) {
-                    expect(store.getActions()).toMatchObject(f.result.actions);
+                    expect(filterThunkActionTypes(store.getActions())).toMatchObject(
+                        f.result.actions,
+                    );
                 }
             }
         });

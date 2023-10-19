@@ -1,12 +1,12 @@
 export const TRANSLATION_PSEUDOLANGUAGE = 'lol' as const;
 
 const LANGUAGES = {
-    en: { name: 'English', en: 'English', complete: true },
-    es: { name: 'Español', en: 'Spanish', complete: true },
+    en: { name: 'English', en: 'English', type: 'official' },
+    es: { name: 'Español', en: 'Spanish', type: 'community' },
     af: { name: 'Afrikaans', en: 'Afrikaans' },
     ar: { name: 'العربية‬', en: 'Arabic' },
     ca: { name: 'Català', en: 'Catalan' },
-    cs: { name: 'Česky', en: 'Czech', complete: true },
+    cs: { name: 'Čeština', en: 'Czech', type: 'community' },
     da: { name: 'Dansk', en: 'Danish' },
     de: { name: 'Deutsch', en: 'German' },
     el: { name: 'Ελληνικά', en: 'Greek' },
@@ -14,10 +14,10 @@ const LANGUAGES = {
     fr: { name: 'Français', en: 'French' },
     he: { name: 'עברית‬', en: 'Hebrew' },
     hi: { name: 'हिन्दी', en: 'Hindi' },
-    hu: { name: 'Magyar', en: 'Hungarian' },
+    hu: { name: 'Magyar', en: 'Hungarian', type: 'community' },
     id: { name: 'Bahasa Indonesia', en: 'Indonesian' },
-    it: { name: 'Italiano', en: 'Italian' },
-    ja: { name: '日本語（ベータ版）', en: 'Japanese (BETA)', complete: true },
+    it: { name: 'Italiano', en: 'Italian', type: 'community' },
+    ja: { name: '日本語（ベータ版）', en: 'Japanese (BETA)', type: 'community' },
     jv: { name: 'Basa Jawa', en: 'Javanese' },
     ko: { name: '한국어', en: 'Korean' },
     nl: { name: 'Nederlands', en: 'Dutch' },
@@ -25,7 +25,7 @@ const LANGUAGES = {
     pl: { name: 'Polski', en: 'Polish' },
     pt: { name: 'Português', en: 'Portuguese' },
     ro: { name: 'Română', en: 'Romanian' },
-    ru: { name: 'Русский', en: 'Russian', complete: true },
+    ru: { name: 'Русский', en: 'Russian', type: 'community' },
     sk: { name: 'Slovenčina', en: 'Slovak' },
     sr: { name: 'Српски', en: 'Serbian' },
     sv: { name: 'Svenska', en: 'Swedish' },
@@ -41,7 +41,7 @@ export type Locale = keyof typeof LANGUAGES;
 export type LocaleInfo = {
     name: string;
     en: string;
-    complete?: boolean;
+    type?: 'official' | 'community';
 };
 
 export default LANGUAGES as { [code in Locale]: LocaleInfo };

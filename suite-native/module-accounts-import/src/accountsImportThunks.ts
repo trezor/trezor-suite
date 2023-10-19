@@ -1,14 +1,15 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { accountsActions, selectAccountsByNetworkAndDevice } from '@suite-common/wallet-core';
-import { AccountInfo } from '@trezor/connect';
-import { networks, NetworkSymbol, AccountType } from '@suite-common/wallet-config';
 import {
-    createDevice,
+    accountsActions,
+    deviceActions,
     hiddenDevice,
     HIDDEN_DEVICE_ID,
     HIDDEN_DEVICE_STATE,
+    selectAccountsByNetworkAndDevice,
     selectDeviceById,
-} from '@suite-native/module-devices';
+} from '@suite-common/wallet-core';
+import { AccountInfo } from '@trezor/connect';
+import { networks, NetworkSymbol, AccountType } from '@suite-common/wallet-config';
 import { getXpubOrDescriptorInfo } from '@trezor/utxo-lib';
 
 import { paymentTypeToAccountType } from './constants';
@@ -26,7 +27,8 @@ const getAccountTypeFromDescriptor = (
     networkSymbol: NetworkSymbol,
 ): AccountType => {
     // account type supported only for btc and ltc
-    if (networkSymbol !== 'btc' && networkSymbol !== 'ltc') return 'imported';
+    if (networkSymbol !== 'btc' && networkSymbol !== 'ltc' && networkSymbol !== 'test')
+        return 'imported';
     const { paymentType } = getXpubOrDescriptorInfo(descriptor);
     return paymentTypeToAccountType[paymentType];
 };
@@ -34,11 +36,11 @@ const getAccountTypeFromDescriptor = (
 export const importAccountThunk = createThunk(
     `${actionPrefix}/importAccountThunk`,
     ({ accountInfo, accountLabel, coin }: ImportAssetThunkPayload, { dispatch, getState }) => {
-        const device = selectDeviceById(HIDDEN_DEVICE_ID)(getState());
+        const device = selectDeviceById(getState(), HIDDEN_DEVICE_ID);
         const deviceState = HIDDEN_DEVICE_STATE;
 
         if (!device) {
-            dispatch(createDevice(hiddenDevice));
+            dispatch(deviceActions.createDeviceInstance(hiddenDevice));
         }
 
         const deviceNetworkAccounts = selectAccountsByNetworkAndDevice(

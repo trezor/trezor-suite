@@ -1,4 +1,4 @@
-import LANGUAGES, { Locale, TRANSLATION_PSEUDOLANGUAGE } from '@suite-config/languages';
+import LANGUAGES, { Locale, TRANSLATION_PSEUDOLANGUAGE } from 'src/config/suite/languages';
 import { getPlatformLanguages } from '@trezor/env-utils';
 
 const TRANSLATION_MODE_FLAG = 'translation_mode';
@@ -17,7 +17,7 @@ export const setTranslationMode = (value: boolean) => {
 export const isLocale = (lang: string): lang is Locale => lang in LANGUAGES;
 
 export const isCompletedLocale = (lang: string): lang is Locale =>
-    isLocale(lang) && !!LANGUAGES[lang].complete;
+    isLocale(lang) && !!LANGUAGES[lang].type;
 
 /**
  * Finds and returns first of languages preferred by user's environment

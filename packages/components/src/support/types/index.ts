@@ -1,7 +1,7 @@
-import { ICONS } from '../../components/Icon/icons';
-import { FLAGS } from '../../components/Flag/flags';
+import { ICONS } from '../../components/assets/Icon/icons';
+import { FLAGS } from '../../components/assets/Flag/flags';
 import { ReactNode } from 'react';
-import { COINS } from '../../components/logos/CoinLogo/coins';
+import { COINS } from '../../components/assets/CoinLogo/coins';
 import { THEME } from '../../config/colors';
 
 export type TextAlign = 'left' | 'center' | 'right';

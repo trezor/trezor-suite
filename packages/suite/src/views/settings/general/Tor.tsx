@@ -1,37 +1,23 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { LoadingContent, Switch } from '@trezor/components';
 import { TOR_PROJECT_URL } from '@trezor/urls';
-import { useSelector, useActions } from '@suite-hooks';
-import { ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
-import * as suiteActions from '@suite-actions/suiteActions';
-import { Translation } from '@suite-components';
-import { useAnchor } from '@suite-hooks/useAnchor';
-import { SettingsAnchor } from '@suite-constants/anchors';
-import { getIsTorEnabled, getIsTorLoading } from '@suite-utils/tor';
-import { Dispatch, TorStatus } from '@suite-types';
-
-import * as modalActions from '@suite-actions/modalActions';
-import { selectCoinjoinAccounts } from '@wallet-reducers/coinjoinReducer';
-
-const disableTorStopCoinjoinAction = () => (dispatch: Dispatch) =>
-    dispatch(
-        modalActions.openDeferredModal({
-            type: 'disable-tor-stop-coinjoin',
-        }),
-    );
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';
+import { toggleTor } from 'src/actions/suite/suiteActions';
+import { Translation } from 'src/components/suite';
+import { useAnchor } from 'src/hooks/suite/useAnchor';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { getIsTorEnabled, getIsTorLoading } from 'src/utils/suite/tor';
+import { TorStatus } from 'src/types/suite';
+import { openDeferredModal } from 'src/actions/suite/modalActions';
+import { selectCoinjoinAccounts } from 'src/reducers/wallet/coinjoinReducer';
 
 export const Tor = () => {
+    const [hasTorError, setHasTorError] = useState(false);
     const coinjoinAccounts = useSelector((state: any) => selectCoinjoinAccounts(state));
     const isCoinjoinAccount = coinjoinAccounts.length > 0;
     const torStatus = useSelector(state => state.suite.torStatus);
-
-    const [hasTorError, setHasTorError] = useState(false);
-
-    const { toggleTor, disableTorStopCoinjoin } = useActions({
-        toggleTor: suiteActions.toggleTor,
-        disableTorStopCoinjoin: disableTorStopCoinjoinAction,
-    });
-
+    const dispatch = useDispatch();
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.Tor);
 
     useEffect(() => {
@@ -50,13 +36,17 @@ export const Tor = () => {
     const handleTorSwitch = async () => {
         if (isTorEnabled && isCoinjoinAccount) {
             // Let the user know that stopping Tor will stop coinjoin.
-            const isKeepRunningTor = await disableTorStopCoinjoin();
+            const isKeepRunningTor = await dispatch(
+                openDeferredModal({
+                    type: 'disable-tor-stop-coinjoin',
+                }),
+            );
             if (isKeepRunningTor) {
                 return;
             }
         }
         try {
-            await toggleTor(!isTorEnabled);
+            await dispatch(toggleTor(!isTorEnabled));
         } catch {
             setHasTorError(true);
         }

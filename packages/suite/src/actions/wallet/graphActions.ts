@@ -1,6 +1,6 @@
 import { isWithinInterval, fromUnixTime } from 'date-fns';
-import { Dispatch, GetState } from '@suite-types';
-import { Account } from '@wallet-types';
+import { Dispatch, GetState } from 'src/types/suite';
+import { Account } from 'src/types/wallet';
 
 import { isTrezorConnectBackendType } from '@suite-common/wallet-utils';
 
@@ -15,13 +15,14 @@ import {
     SET_SELECTED_RANGE,
     SET_SELECTED_VIEW,
 } from './constants/graphConstants';
-import { GraphData, GraphRange, GraphScale } from '../../types/wallet/graph';
+import { GraphData, GraphRange, GraphScale } from 'src/types/wallet/graph';
 import {
     ensureHistoryRates,
     enhanceBlockchainAccountHistory,
     accountGraphDataFilterFn,
     deviceGraphDataFilterFn,
-} from '../../utils/wallet/graphUtils';
+} from 'src/utils/wallet/graph';
+import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 
 export type GraphAction =
     | {
@@ -70,7 +71,7 @@ export const setSelectedView = (view: GraphScale): GraphAction => ({
  * @returns
  */
 export const fetchAccountGraphData =
-    (account: Account) => async (dispatch: Dispatch, _getState: GetState) => {
+    (account: Account) => async (dispatch: Dispatch, getState: GetState) => {
         dispatch({
             type: ACCOUNT_GRAPH_START,
             payload: {
@@ -85,6 +86,7 @@ export const fetchAccountGraphData =
             },
         });
 
+        const localCurrency = selectLocalCurrency(getState());
         const response = await TrezorConnect.blockchainGetAccountBalanceHistory({
             coin: account.symbol,
             descriptor: account.descriptor,
@@ -92,7 +94,11 @@ export const fetchAccountGraphData =
         });
 
         if (response?.success) {
-            const responseWithRates = await ensureHistoryRates(account.symbol, response.payload);
+            const responseWithRates = await ensureHistoryRates(
+                account.symbol,
+                response.payload,
+                localCurrency,
+            );
 
             const enhancedResponse = enhanceBlockchainAccountHistory(
                 responseWithRates,

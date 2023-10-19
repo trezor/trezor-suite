@@ -1,7 +1,5 @@
-import * as React from 'react';
-
 import { Box, Chip } from '@suite-native/atoms';
-import { CryptoIcon, CryptoIconName } from '@trezor/icons';
+import { CryptoIcon, CryptoIconName } from '@suite-common/icons';
 
 import { SettingsSection } from './SettingsSection';
 
@@ -56,7 +54,7 @@ export const CoinsSettings = () => (
             {dummyCoins.map(item => (
                 <Box marginRight="small" marginBottom="small" key={item.title}>
                     <Chip
-                        icon={<CryptoIcon name={item.iconName} />}
+                        icon={<CryptoIcon symbol={item.iconName} />}
                         description={item.description}
                         title={item.title}
                         onSelect={() => {}}

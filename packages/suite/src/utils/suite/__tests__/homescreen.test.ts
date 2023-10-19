@@ -7,9 +7,9 @@ import {
     isValidImageHeight,
     isValidImageSize,
     isValidImageWidth,
-} from '@suite-utils/homescreen';
-import { DeviceModel } from '@trezor/device-utils';
+} from 'src/utils/suite/homescreen';
 import * as fixtures from '../__fixtures__/homescreen';
+import { DeviceModelInternal } from '@trezor/connect';
 
 describe('homescreen', () => {
     describe('fileToDataUrl', () => {
@@ -45,11 +45,11 @@ describe('homescreen', () => {
     describe('dataUrlToImage', () => {
         const originalCreateElement = document.createElement;
         beforeAll(() => {
-            document.createElement = (create =>
+            (document.createElement as any) = ((create: typeof originalCreateElement) =>
                 function () {
                     // @ts-expect-error
                     // eslint-disable-next-line prefer-rest-params
-                    const element: HTMLElement = create.apply(this, arguments);
+                    const element: HTMLElement = create.apply(this, arguments as any);
 
                     if (element.tagName === 'IMG') {
                         setTimeout(() => {
@@ -58,7 +58,7 @@ describe('homescreen', () => {
                         }, 100);
                     }
                     return element;
-                })(document.createElement);
+                })(originalCreateElement);
         });
 
         afterAll(() => {
@@ -79,7 +79,7 @@ describe('homescreen', () => {
     describe('isValidImageFormat', () => {
         fixtures.isValidImageFormat.forEach(fixture => {
             it(fixture.description, () => {
-                const result = isValidImageFormat(fixture.dataUrl, fixture.deviceModel);
+                const result = isValidImageFormat(fixture.dataUrl, fixture.deviceModelInternal);
                 expect(result).toBe(fixture.result);
             });
         });
@@ -90,7 +90,7 @@ describe('homescreen', () => {
             it(fixture.description, () => {
                 const image = new Image();
                 image.width = fixture.width;
-                const result = isValidImageWidth(image, fixture.deviceModel);
+                const result = isValidImageWidth(image, fixture.deviceModelInternal);
                 expect(result).toBe(fixture.result);
             });
         });
@@ -101,7 +101,7 @@ describe('homescreen', () => {
             it(fixture.description, () => {
                 const image = new Image();
                 image.height = fixture.height;
-                const result = isValidImageHeight(image, fixture.deviceModel);
+                const result = isValidImageHeight(image, fixture.deviceModelInternal);
                 expect(result).toBe(fixture.result);
             });
         });
@@ -110,37 +110,37 @@ describe('homescreen', () => {
     describe('isProgressiveJPG', () => {
         fixtures.isProgressiveJPG.forEach(fixture => {
             it(fixture.description, () => {
-                const result = isProgressiveJPG(fixture.buffer, fixture.deviceModel);
+                const result = isProgressiveJPG(fixture.buffer, fixture.deviceModelInternal);
                 expect(result).toBe(fixture.result);
             });
         });
     });
 
     describe('isValidImageSize', () => {
-        it('should return true for non-TT device models', () => {
+        it('should return true for non-T2T1 device models', () => {
             const file = new File([], 'test.png', { type: 'image/png', lastModified: 0 });
-            expect(isValidImageSize(file, DeviceModel.TR)).toBe(true);
-            expect(isValidImageSize(file, DeviceModel.T1)).toBe(true);
+            expect(isValidImageSize(file, DeviceModelInternal.T2B1)).toBe(true);
+            expect(isValidImageSize(file, DeviceModelInternal.T1B1)).toBe(true);
         });
 
-        it('should return true for TT device models when file size is less than or equal to 16384 bytes', () => {
+        it('should return true for T2T1 device models when file size is less than or equal to 16384 bytes', () => {
             const file = new File([], 'test.png', {
                 type: 'image/png',
                 lastModified: 0,
             });
             Object.defineProperty(file, 'size', { value: 16384, configurable: true });
 
-            expect(isValidImageSize(file, DeviceModel.TT)).toBe(true);
+            expect(isValidImageSize(file, DeviceModelInternal.T2T1)).toBe(true);
         });
 
-        it('should return false for TT device models when file size is greater than 16384 bytes', () => {
+        it('should return false for T2T1 device models when file size is greater than 16384 bytes', () => {
             const file = new File([], 'test.png', {
                 type: 'image/png',
                 lastModified: 0,
             });
             Object.defineProperty(file, 'size', { value: 16385, configurable: true });
 
-            expect(isValidImageSize(file, DeviceModel.TT)).toBe(false);
+            expect(isValidImageSize(file, DeviceModelInternal.T2T1)).toBe(false);
         });
     });
 });

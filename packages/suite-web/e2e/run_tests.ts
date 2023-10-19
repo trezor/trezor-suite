@@ -140,9 +140,9 @@ const runTests = async () => {
         const retries = Number(grepForValue('@retry', testFile));
         const allowedRuns = !Number.isNaN(retries) && Number(ALLOW_RETRY) ? retries + 1 : 1;
 
-        const spec = path.join(__dirname, testFile.substr(testFile.lastIndexOf('/tests')));
+        const spec = path.join(__dirname, testFile.substring(testFile.lastIndexOf('/tests')));
         const testFileName = testFile
-            .substr(testFile.lastIndexOf('/tests/') + 7)
+            .substring(testFile.lastIndexOf('/tests/') + 7)
             .replace('.test.ts', '');
 
         console.log('');

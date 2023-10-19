@@ -1,7 +1,8 @@
-import React from 'react';
 import { TouchableOpacity, TouchableOpacityProps, View } from 'react-native';
 
 import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+
+import { ACCESSIBILITY_FONTSIZE_MULTIPLIER } from './Text';
 
 type RadioValue = string | number;
 export interface RadioProps extends Omit<TouchableOpacityProps, 'style' | 'onPress'> {
@@ -17,9 +18,12 @@ type RadioStyleProps = {
     isDisabled: boolean;
 };
 
+const RADIO_SIZE = 24 * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
+const RADIO_CHECK_SIZE = 14 * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
+
 const radioStyle = prepareNativeStyle<RadioStyleProps>((utils, { isChecked, isDisabled }) => ({
-    height: 24,
-    width: 24,
+    height: RADIO_SIZE,
+    width: RADIO_SIZE,
     backgroundColor: isDisabled
         ? utils.colors.backgroundNeutralDisabled
         : utils.colors.backgroundSurfaceElevation1,
@@ -37,8 +41,8 @@ const radioStyle = prepareNativeStyle<RadioStyleProps>((utils, { isChecked, isDi
 
 const radioCheckStyle = prepareNativeStyle<Omit<RadioStyleProps, 'isChecked'>>(
     (utils, { isDisabled }) => ({
-        height: 14,
-        width: 14,
+        height: RADIO_CHECK_SIZE,
+        width: RADIO_CHECK_SIZE,
         borderRadius: utils.borders.radii.round,
         backgroundColor: isDisabled
             ? utils.colors.backgroundNeutralDisabled

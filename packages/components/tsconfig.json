@@ -4,14 +4,14 @@
         "plugins": [
             { "name": "typescript-styled-plugin" }
         ],
-        "outDir": "./libDev",
-        "noUnusedLocals": false,
-        "noUnusedParameters": false
+        "outDir": "./libDev"
     },
     "include": ["."],
     "references": [
-        { "path": "../device-utils" },
+        { "path": "../connect" },
         { "path": "../dom-utils" },
-        { "path": "../react-utils" }
+        { "path": "../env-utils" },
+        { "path": "../react-utils" },
+        { "path": "../utils" }
     ]
 }

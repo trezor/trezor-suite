@@ -1,8 +1,10 @@
-import { useActions } from '@suite-hooks';
-import { FormDraft, FormDraftKeyPrefix } from '@wallet-types/form';
-import * as formDraftActions from '@wallet-actions/formDraftActions';
+import { FieldValues } from 'react-hook-form';
 
-export const useFormDraft = <T extends FormDraft>(keyPrefix: FormDraftKeyPrefix) =>
+import { useActions } from 'src/hooks/suite';
+import { FormDraftKeyPrefix } from '@suite-common/wallet-types';
+import * as formDraftActions from 'src/actions/wallet/formDraftActions';
+
+export const useFormDraft = <T extends FieldValues>(keyPrefix: FormDraftKeyPrefix) =>
     useActions({
         getDraft: formDraftActions.getDraft<T>(keyPrefix),
         saveDraft: formDraftActions.saveDraft<T>(keyPrefix),

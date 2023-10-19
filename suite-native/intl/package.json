@@ -1,0 +1,19 @@
+{
+    "name": "@suite-native/intl",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": [
+        "src/i18n.ts"
+    ],
+    "main": "src/index",
+    "scripts": {
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "type-check": "tsc --build"
+    },
+    "dependencies": {
+        "react": "18.2.0",
+        "react-intl": "6.4.7",
+        "react-native": "0.71.8"
+    }
+}

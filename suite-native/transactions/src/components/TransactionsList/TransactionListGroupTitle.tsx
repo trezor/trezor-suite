@@ -1,6 +1,4 @@
-import React from 'react';
-
-import { Text } from '@suite-native/atoms';
+import { Box, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { useFormatters } from '@suite-common/formatters';
 import { MonthKey, parseTransactionMonthKey } from '@suite-common/wallet-utils';
@@ -23,8 +21,10 @@ export const TransactionListGroupTitle = ({ monthKey }: TransactionListGroupProp
             : MonthNameFormatter.format(parseTransactionMonthKey(monthKey));
 
     return (
-        <Text color="textSubdued" variant="hint" style={applyStyle(dateTextStyle)}>
-            {sectionTitle}
-        </Text>
+        <Box paddingLeft="small">
+            <Text color="textSubdued" variant="hint" style={applyStyle(dateTextStyle)}>
+                {sectionTitle}
+            </Text>
+        </Box>
     );
 };

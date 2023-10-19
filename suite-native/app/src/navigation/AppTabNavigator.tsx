@@ -1,10 +1,8 @@
-import React from 'react';
-
 import { BottomTabBarProps, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import { ReceiveStackNavigator } from '@suite-native/module-receive';
 import { HomeStackNavigator } from '@suite-native/module-home';
-import { AccountsStackNavigator } from '@suite-native/module-accounts';
+import { AccountsStackNavigator } from '@suite-native/module-accounts-management';
 import { SettingsStackNavigator } from '@suite-native/module-settings';
 import { AppTabsParamList, AppTabsRoutes, TabBar } from '@suite-native/navigation';
 

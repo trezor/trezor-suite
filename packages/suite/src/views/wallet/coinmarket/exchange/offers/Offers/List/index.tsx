@@ -1,11 +1,15 @@
-import React from 'react';
 import styled from 'styled-components';
 import { variables } from '@trezor/components';
 import Quote from './Quote';
 import { ExchangeTrade } from 'invity-api';
-import { FiatValue, FormattedCryptoAmount, QuestionTooltip, Translation } from '@suite-components';
-import { useCoinmarketExchangeOffersContext } from '@wallet-hooks/useCoinmarketExchangeOffers';
-import { useSelector } from '@suite-hooks';
+import {
+    FiatValue,
+    FormattedCryptoAmount,
+    QuestionTooltip,
+    Translation,
+} from 'src/components/suite';
+import { useCoinmarketExchangeOffersContext } from 'src/hooks/wallet/useCoinmarketExchangeOffers';
+import { useSelector } from 'src/hooks/suite';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 
 const Wrapper = styled.div``;
@@ -19,7 +23,7 @@ const SummaryRow = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     padding: 10px 0;
@@ -36,7 +40,7 @@ const Divider = styled.div`
 const DividerLine = styled.div`
     height: 1px;
     flex: 1;
-    background: ${props => props.theme.STROKE_GREY};
+    background: ${({ theme }) => theme.STROKE_GREY};
 `;
 
 const Left = styled.div`
@@ -52,7 +56,7 @@ const Right = styled.div`
 const StyledQuestionTooltip = styled(QuestionTooltip)`
     padding-left: 4px;
     padding-top: 1px;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 const RatesRow = styled.div`
@@ -61,19 +65,18 @@ const RatesRow = styled.div`
     align-items: center;
 `;
 
-interface Props {
+interface ListProps {
     quotes?: ExchangeTrade[];
     type: 'float' | 'fixed' | 'dex';
 }
 
-const List = ({ quotes, type }: Props) => {
+const List = ({ quotes, type }: ListProps) => {
     const {
         quotesRequest,
         account: { symbol },
     } = useCoinmarketExchangeOffersContext();
-    const { fee } = useSelector(state => ({
-        fee: state.wallet.coinmarket.composedTransactionInfo.composed?.fee,
-    }));
+    const fee = useSelector(state => state.wallet.coinmarket.composedTransactionInfo.composed?.fee);
+
     if (!quotesRequest || !quotes) return null;
 
     return (

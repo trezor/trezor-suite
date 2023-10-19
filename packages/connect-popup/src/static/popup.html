@@ -16,6 +16,7 @@
         <meta name="theme-color" content="#ffffff" />
         <meta http-equiv="Pragma" content="no-cache" />
         <meta http-equiv="Expires" content="-1" />
+        <link rel="icon" type="image/png" href="images/favicon.png" />
         <link href="./popup.css" rel="stylesheet" />
 
         <!-- suite-like fonts -->
@@ -23,14 +24,14 @@
     </head>
     <body>
         <main>
-            <!-- 
-                give react slot min-width of left panel (InfoPanel) which is not 
+            <!--
+                give react slot min-width of left panel (InfoPanel) which is not
                 loaded yet to prevent loader from "jumping"
              -->
             <div id="react" style="min-width: 35vw"></div>
             <section id="container">
                 <div class="loader">
-                    <p>Initiating...</p>
+                    <p></p>
                     <svg class="circular" viewBox="25 25 50 50" preserveAspectRatio="xMidYMid">
                         <circle
                             class="route"
@@ -274,7 +275,7 @@
             <!-- Passphrase: END -->
 
             <!-- invalid passphrase -->
-            <div class="invalid-passphrase">
+            <div data-test="@invalid-passphrase" class="invalid-passphrase">
                 <div>
                     <h3>Passphrase doesn't match</h3>
                     <p>Looks like You have set a different passphrase</p>
@@ -474,14 +475,22 @@
                 </div>
 
                 <div class="buttons">
-                    <button class="confirm retry">No, Try again</button>
-                    <button class="cancel useCurrent" tabindex="4">Yes, use this passphrase</button>
+                    <button data-test="@invalid-passphrase/try-again" class="confirm retry">
+                        No, Try again
+                    </button>
+                    <button
+                        data-test="@invalid-passphrase/use-this-passphrase"
+                        class="cancel useCurrent"
+                        tabindex="4"
+                    >
+                        Yes, use this passphrase
+                    </button>
                 </div>
             </div>
             <!-- invalid passphrase: END -->
 
             <!-- Permissions -->
-            <div class="permissions">
+            <div data-test="@permissions" class="permissions">
                 <h3>Allow<span class="host-name"></span>permissions to:</h3>
 
                 <div class="list-wrapper">
@@ -502,8 +511,10 @@
                     >
                 </div>
                 <div class="buttons">
-                    <button class="confirm">Allow once for this session</button>
-                    <button class="cancel">Cancel</button>
+                    <button data-test="@permissions/confirm-button" class="confirm">
+                        Allow once for this session
+                    </button>
+                    <button data-test="@permissions/cancel-button" class="cancel">Cancel</button>
                 </div>
             </div>
             <!-- Permissions: END -->
@@ -1985,7 +1996,7 @@
             <!-- Firmware not supported -->
             <div class="firmware-not-supported">
                 <div>
-                    <h3>Trezor One is not supported</h3>
+                    <h3>Connected Trezor device not supported</h3>
                     <p>Find more information about coins support.</p>
                 </div>
                 <div class="svg-icon">
@@ -2838,7 +2849,7 @@
             <!-- No backup confirmation: END -->
 
             <!-- Export address -->
-            <div class="export-address">
+            <div data-test="@export-address" class="export-address">
                 <div>
                     <h3></h3>
                 </div>
@@ -3133,14 +3144,16 @@
                     </svg>
                 </div>
                 <div class="buttons">
-                    <button class="confirm">Export</button>
-                    <button class="cancel">Cancel</button>
+                    <button data-test="@export-address/confirm-button" class="confirm">
+                        Export
+                    </button>
+                    <button data-test="@export-address/cancel-button" class="cancel">Cancel</button>
                 </div>
             </div>
             <!-- Export address: END -->
 
             <!-- Check address on device -->
-            <div class="check-address">
+            <div data-test="@check-address-on-device" class="check-address">
                 <svg width="12px" height="35px" viewBox="0 0 20 57">
                     <g stroke="none" stroke-width="1" fill="none" transform="translate(1, 1)">
                         <path

@@ -1,19 +1,20 @@
-import React from 'react';
+import { memo } from 'react';
 import styled from 'styled-components';
-import { Network } from '@wallet-types';
+import { Network } from 'src/types/wallet';
 import { CoinLogo, Icon, variables, useTheme } from '@trezor/components';
 import {
-    FiatValue,
     AmountUnitSwitchWrapper,
+    CoinBalance,
+    FiatValue,
     SkeletonCircle,
     SkeletonRectangle,
     Ticker,
     Translation,
-} from '@suite-components';
-import { CoinBalance } from '@wallet-components';
+} from 'src/components/suite';
+import { CoinmarketBuyButton } from 'src/views/dashboard/components/CoinmarketBuyButton';
 import { isTestnet } from '@suite-common/wallet-utils';
-import * as routerActions from '@suite-actions/routerActions';
-import { useActions, useAccountSearch, useLoadingSkeleton } from '@suite-hooks';
+import { goto } from 'src/actions/suite/routerActions';
+import { useAccountSearch, useDispatch, useLoadingSkeleton } from 'src/hooks/suite';
 
 const Col = styled.div`
     display: flex;
@@ -35,7 +36,7 @@ const CoinNameWrapper = styled.div`
 const UpperRowWrapper = styled.div`
     display: flex;
     justify-content: space-between;
-    padding: 0px 15px 15px 15px;
+    padding: 15px 0;
     border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
 `;
 
@@ -83,44 +84,58 @@ const FiatBalanceWrapper = styled.span`
     margin-left: 0.5ch;
 `;
 
+const TickerWrapper = styled.div`
+    align-self: center;
+`;
+
 interface AssetGridProps {
     network: Network;
     failed: boolean;
     cryptoValue: string;
 }
 
-export const AssetGrid = React.memo(({ network, failed, cryptoValue }: AssetGridProps) => {
+export const AssetGrid = memo(({ network, failed, cryptoValue }: AssetGridProps) => {
     const { symbol, name } = network;
+    const dispatch = useDispatch();
     const theme = useTheme();
     const { setCoinFilter, setSearchString } = useAccountSearch();
 
-    const { goto } = useActions({ goto: routerActions.goto });
+    const handleLogoClick = () => {
+        dispatch(
+            goto('wallet-index', {
+                params: {
+                    symbol,
+                    accountIndex: 0,
+                    accountType: 'normal',
+                },
+            }),
+        );
+        // activate coin filter and reset account search string
+        setCoinFilter(symbol);
+        setSearchString(undefined);
+    };
 
     return (
         <CoinGridWrapper>
             <UpperRowWrapper>
-                <CoinNameWrapper
-                    onClick={() => {
-                        goto('wallet-index', {
-                            params: {
-                                symbol,
-                                accountIndex: 0,
-                                accountType: 'normal',
-                            },
-                        });
-                        // activate coin filter and reset account search string
-                        setCoinFilter(symbol);
-                        setSearchString(undefined);
-                    }}
-                >
+                <CoinNameWrapper onClick={handleLogoClick}>
                     <LogoWrapper>
                         <CoinLogo symbol={symbol} size={24} />
                     </LogoWrapper>
 
                     <Coin>{name}</Coin>
                 </CoinNameWrapper>
-
-                {!isTestnet(symbol) && <Ticker symbol={symbol} />}
+                {!isTestnet(symbol) && (
+                    <>
+                        <TickerWrapper>
+                            <Ticker symbol={symbol} />
+                        </TickerWrapper>
+                        <CoinmarketBuyButton
+                            symbol={symbol}
+                            dataTest={`@dashboard/assets/grid/${symbol}/buy-button`}
+                        />
+                    </>
+                )}
             </UpperRowWrapper>
 
             {!failed ? (
@@ -163,9 +178,11 @@ export const AssetGridSkeleton = (props: { animate?: boolean }) => {
                     <LogoWrapper>
                         <SkeletonCircle />
                     </LogoWrapper>
-
                     <SkeletonRectangle animate={animate} />
                 </CoinNameWrapper>
+
+                <SkeletonRectangle animate={animate} />
+                <SkeletonRectangle animate={animate} />
             </UpperRowWrapper>
 
             <CryptoBalanceWrapper>

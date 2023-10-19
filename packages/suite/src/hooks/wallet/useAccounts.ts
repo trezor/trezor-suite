@@ -1,16 +1,17 @@
 import { useState, useEffect, useMemo } from 'react';
-import { useSelector } from '@suite-hooks';
+
 import type { AccountAddress } from '@trezor/connect';
 import * as accountUtils from '@suite-common/wallet-utils';
-import type { Account, Discovery } from '@wallet-types';
+import { selectDevice } from '@suite-common/wallet-core';
+
+import { useSelector } from 'src/hooks/suite';
+import type { Account, Discovery } from 'src/types/wallet';
 
 export const useAccounts = (discovery?: Discovery) => {
     const [accounts, setAccounts] = useState<Account[]>([]);
 
-    const { device, accountsState } = useSelector(state => ({
-        device: state.suite.device,
-        accountsState: state.wallet.accounts,
-    }));
+    const device = useSelector(selectDevice);
+    const accountsState = useSelector(state => state.wallet.accounts);
 
     useEffect(() => {
         if (device) {
@@ -27,10 +28,9 @@ export const useAccounts = (discovery?: Discovery) => {
 };
 
 export const useFastAccounts = () => {
-    const { device, accounts } = useSelector(state => ({
-        device: state.suite.device,
-        accounts: state.wallet.accounts,
-    }));
+    const device = useSelector(selectDevice);
+    const accounts = useSelector(state => state.wallet.accounts);
+
     const deviceAccounts = useMemo(
         () => (device ? accountUtils.getAllAccounts(device.state, accounts) : []),
         [accounts, device],

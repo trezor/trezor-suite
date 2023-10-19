@@ -1,24 +1,21 @@
-import React from 'react';
-import { useSelector } from '@suite-hooks';
-import { Header, Content, ViewWrapper, GuideMarkdown } from '@guide-components';
-import { Translation } from '@suite-components';
-import { useGuideLoadPage } from '@guide-hooks';
+import { useSelector } from 'src/hooks/suite';
+import { GuideHeader, GuideContent, GuideViewWrapper, GuideMarkdown } from 'src/components/guide';
+import { Translation } from 'src/components/suite';
+import { useGuideLoadPage } from 'src/hooks/guide';
 
 export const GuidePage = () => {
-    const { currentNode, language } = useSelector(state => ({
-        currentNode: state.guide.currentNode,
-        language: state.suite.settings.language,
-    }));
+    const currentNode = useSelector(state => state.guide.currentNode);
+    const language = useSelector(state => state.suite.settings.language);
 
     const { markdown, hasError } = useGuideLoadPage(currentNode, language);
 
     return (
-        <ViewWrapper>
-            <Header useBreadcrumb />
-            <Content>
+        <GuideViewWrapper>
+            <GuideHeader useBreadcrumb />
+            <GuideContent>
                 <GuideMarkdown markdown={markdown} />
                 {hasError && <Translation id="TR_GENERIC_ERROR_TITLE" />}
-            </Content>
-        </ViewWrapper>
+            </GuideContent>
+        </GuideViewWrapper>
     );
 };

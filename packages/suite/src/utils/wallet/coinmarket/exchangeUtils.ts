@@ -1,9 +1,9 @@
-import { ExchangeInfo } from '@wallet-actions/coinmarketExchangeActions';
-import { AmountLimits } from '@wallet-types/coinmarketExchangeForm';
+import { ExchangeInfo } from 'src/actions/wallet/coinmarketExchangeActions';
+import { CryptoAmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
 import { ExchangeTrade, ExchangeTradeStatus } from 'invity-api';
 
 // loop through quotes and if all quotes are either with error below minimum or over maximum, return error message
-export const getAmountLimits = (quotes: ExchangeTrade[]): AmountLimits | undefined => {
+export const getAmountLimits = (quotes: ExchangeTrade[]): CryptoAmountLimits | undefined => {
     let min: number | undefined;
     let max: number | undefined;
     let currency = '';
@@ -28,7 +28,7 @@ export const getAmountLimits = (quotes: ExchangeTrade[]): AmountLimits | undefin
         }
     }
     if (min || max) {
-        return { currency, min, max };
+        return { currency, minCrypto: min, maxCrypto: max };
     }
 };
 

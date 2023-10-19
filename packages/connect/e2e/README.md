@@ -17,26 +17,6 @@ you may use the following params:
 -i <in case -p methods, use -i to filter one connect method, such as -i binanceGetAddress>
 ```
 
-or
-
-```
-yarn workspace @trezor/integration-tests test:connect
-```
-
-## karma tests
-
-Testing `./packages/connect-iframe/build` directory in browser environment.
-
-```
-./docker/docker-connect-test-karma.sh
-```
-
-or
-
-```
-yarn workspace @trezor/integration-tests test:connect:karma
-```
-
 ## Transactions cache
 
 Bitcoin-like coins `signTransaction` method require additional data about transactions referenced from used inputs.
@@ -50,7 +30,7 @@ Backend connection will be omitted in case of providing `refTxs` so even coins w
 
 To reduce network traffic `Github Actions CI` is using **cached** (offline) mode and whitelisted `GitLab CI` is using **default** (online) mode.
 
-Cached transactions are stored in `./tests/__txcache__` directory in the same structure as in [trezor-firmware](https://github.com/trezor/trezor-firmware/tree/master/tests/txcache) repository.
+Cached transactions are stored in `./tests/__txcache__` directory in the same structure as in [trezor-firmware](https://github.com/trezor/trezor-firmware/tree/main/tests/txcache) repository.
 
 Cached transactions are provided to test fixtures via [TX_CACHE](./__txcache__/index.js) utility.
 

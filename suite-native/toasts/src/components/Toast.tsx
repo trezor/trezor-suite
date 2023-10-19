@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box, HStack, Text } from '@suite-native/atoms';
-import { Icon } from '@trezor/icons';
+import { Icon } from '@suite-common/icons';
 import { Color } from '@trezor/theme';
 
 import { Toast as ToastInterface, ToastVariant } from '../toastsAtoms';
@@ -26,8 +26,8 @@ type ToastStyle = {
 const ToastContainerStyle = prepareNativeStyle<{ backgroundColor: Color }>(
     (utils, { backgroundColor }) => ({
         backgroundColor: utils.colors[backgroundColor],
-        paddingVertical: utils.spacings.small / 2,
-        paddingLeft: utils.spacings.small / 2,
+        paddingVertical: utils.spacings.extraSmall,
+        paddingLeft: utils.spacings.extraSmall,
         paddingRight: utils.spacings.medium,
         borderRadius: utils.borders.radii.round,
     }),

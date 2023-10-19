@@ -5,7 +5,7 @@ import * as typef from 'typeforce';
 import { bitcoin as BITCOIN_NETWORK } from '../networks';
 import * as bscript from '../script';
 import * as lazy from './lazy';
-import type { Payment, PaymentOpts, StackFunction } from './index';
+import { Payment, PaymentOpts, StackFunction } from '../types';
 
 const { OPS } = bscript;
 
@@ -40,7 +40,7 @@ export function p2pk(a: Payment, opts?: PaymentOpts): Payment {
     });
     lazy.prop(o, 'pubkey', () => {
         if (!a.output) return;
-        return a.output.slice(1, -1);
+        return a.output.subarray(1, -1);
     });
     lazy.prop(o, 'signature', () => {
         if (!a.input) return;

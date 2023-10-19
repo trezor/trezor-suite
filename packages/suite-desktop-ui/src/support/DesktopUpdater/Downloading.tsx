@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import styled from 'styled-components';
-import { Translation, Modal } from '@suite-components';
 
 import { UpdateProgress } from '@trezor/suite-desktop-api';
 import { bytesToHumanReadable } from '@trezor/utils';
 import { Button, H2, variables } from '@trezor/components';
+
+import { Translation, Modal } from 'src/components/suite';
 
 import { Row } from './styles';
 
@@ -16,19 +17,19 @@ const DownloadWrapper = styled(Row)`
 const DownloadProgress = styled.span`
     font-size: 20px;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 const ReceivedData = styled.span`
-    color: ${props => props.theme.TYPE_GREEN};
+    color: ${({ theme }) => theme.TYPE_GREEN};
 `;
 
 const TotalData = styled.span`
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 const Text = styled(H2)`
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 

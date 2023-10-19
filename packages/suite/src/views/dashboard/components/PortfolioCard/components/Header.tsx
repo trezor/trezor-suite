@@ -1,14 +1,14 @@
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 
 import styled, { css } from 'styled-components';
-import { Translation, HiddenPlaceholder } from '@suite-components';
-import { RangeSelector } from '@suite-components/TransactionsGraph/components/RangeSelector';
-import { updateGraphData } from '@wallet-actions/graphActions';
-import { useFastAccounts } from '@wallet-hooks';
+import { Translation, HiddenPlaceholder } from 'src/components/suite';
+import { RangeSelector } from 'src/components/suite/TransactionsGraph/components/RangeSelector';
+import { updateGraphData } from 'src/actions/wallet/graphActions';
+import { useFastAccounts } from 'src/hooks/wallet';
 
 import { useFormatters } from '@suite-common/formatters';
 import { H2, Button, LoadingContent } from '@trezor/components';
-import { GraphRange } from '../../../../../types/wallet/graph';
+import { GraphRange } from 'src/types/wallet/graph';
 
 const Wrapper = styled.div<{ hideBorder: boolean }>`
     display: flex;
@@ -18,12 +18,12 @@ const Wrapper = styled.div<{ hideBorder: boolean }>`
     ${props =>
         !props.hideBorder &&
         css`
-            border-bottom: solid 1px ${props => props.theme.STROKE_GREY};
+            border-bottom: solid 1px ${({ theme }) => theme.STROKE_GREY};
         `}
 `;
 
 const ValueWrapper = styled(H2)`
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-variant-numeric: tabular-nums;
 `;
 

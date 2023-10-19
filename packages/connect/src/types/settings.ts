@@ -18,7 +18,7 @@ export interface ConnectSettings {
     popup?: boolean;
     transportReconnect?: boolean;
     webusb?: boolean; // deprecated
-    transports?: Transport['name'][];
+    transports?: (Transport['name'] | Transport)[];
     pendingTransportEvent?: boolean;
     lazyLoad?: boolean;
     interactionTimeout?: number;

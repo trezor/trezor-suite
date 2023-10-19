@@ -20,7 +20,7 @@ const accountsStack = enhanceTabOption({
 const receiveStack = enhanceTabOption({
     routeName: AppTabsRoutes.ReceiveStack,
     label: 'Receive',
-    iconName: 'receive',
+    iconName: 'arrowDownLight',
 });
 
 const settingsStack = enhanceTabOption({

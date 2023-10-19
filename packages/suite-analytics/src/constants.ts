@@ -35,6 +35,7 @@ export enum EventType {
     AccountsEmptyAccountBuy = 'accounts/empty-account/buy',
     AccountsEmptyAccountReceive = 'accounts/empty-account/receive',
     AccountsTransactionsExport = 'accounts/transactions-export',
+    AccountsDashboardBuy = 'accounts/dashboard/buy',
     TransactionCreated = 'transaction-created',
     SendRawTransaction = 'send-raw-transaction',
 
@@ -77,4 +78,7 @@ export enum EventType {
     SettingsTorOnionLinks = 'settings/tor/onion-links',
 
     SettingsAnalytics = 'settings/analytics',
+
+    GetDesktopApp = 'promo/desktop',
+    GetMobileApp = 'promo/mobile',
 }

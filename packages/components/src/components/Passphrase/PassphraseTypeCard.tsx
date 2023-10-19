@@ -1,26 +1,22 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, ReactNode, ChangeEvent } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { AnimatePresence, motion } from 'framer-motion';
 
 import { useKeyPress } from '@trezor/react-utils';
 import { setCaretPosition } from '@trezor/dom-utils';
-import styled, { css } from 'styled-components';
-import {
-    Button,
-    useTheme,
-    variables,
-    Input,
-    Tooltip,
-    TooltipProps,
-    Checkbox,
-    Icon,
-    motionAnimation,
-} from '@trezor/components';
+import styled, { css, useTheme } from 'styled-components';
+
 import { countBytesInString } from '@trezor/utils';
 import { isAndroid } from '@trezor/env-utils';
 
-import PasswordStrengthIndicator from './PasswordStrengthIndicator';
+import { PasswordStrengthIndicator } from './PasswordStrengthIndicator';
+import { variables, motion as motionConfig } from '../../config';
+import { Button } from '../buttons/Button/Button';
+import { Checkbox } from '../form/Checkbox/Checkbox';
+import { Input } from '../form/Input/Input';
+import { Icon } from '../assets/Icon/Icon';
+import { TooltipProps, Tooltip } from '../Tooltip/Tooltip';
 
 const MAX_LENGTH = 50;
 
@@ -41,7 +37,7 @@ const Wrapper = styled.div<Pick<PassphraseTypeCardProps, 'type' | 'singleColModa
         !props.singleColModal &&
         css`
             padding: 12px;
-            /* border: solid 1px ${props => props.theme.STROKE_GREY}; */
+            /* border: solid 1px ${({ theme }) => theme.STROKE_GREY}; */
         `}
 
     ${props =>
@@ -54,8 +50,8 @@ const Wrapper = styled.div<Pick<PassphraseTypeCardProps, 'type' | 'singleColModa
 const IconWrapper = styled.div<Pick<PassphraseTypeCardProps, 'type'>>`
     width: 38px;
     height: 38px;
-    background: ${props =>
-        props.type === 'standard' ? props.theme.BG_LIGHT_GREEN : props.theme.BG_GREY};
+    background: ${({ theme, type }) =>
+        type === 'standard' ? theme.BG_LIGHT_GREEN : theme.BG_GREY};
     border-radius: 8px;
     display: flex;
     justify-content: center;
@@ -79,7 +75,7 @@ const ArrowCol = styled(Col)`
 const WalletTitle = styled.div<{ withMargin: boolean }>`
     display: flex;
     font-size: ${variables.FONT_SIZE.NORMAL};
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-weight: 500;
     line-height: 1.5;
     align-items: center;
@@ -88,7 +84,7 @@ const WalletTitle = styled.div<{ withMargin: boolean }>`
 
 const Description = styled.div<Pick<PassphraseTypeCardProps, 'authConfirmation'>>`
     display: flex;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.TINY};
     line-height: 1.33;
 `;
@@ -108,7 +104,7 @@ const Spacer = styled.div`
 `;
 
 const PassphraseInput = styled(Input)`
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
 `;
 
@@ -135,7 +131,7 @@ const ActionButton = styled(Button)`
 const OnDeviceActionButton = styled(ActionButton)`
     background: transparent;
     text-decoration: underline;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 
     &:first-child {
         margin-top: 0px;
@@ -144,7 +140,7 @@ const OnDeviceActionButton = styled(ActionButton)`
     &:hover,
     &:focus,
     &:active {
-        color: ${props => props.theme.TYPE_LIGHT_GREY};
+        color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
         background: transparent;
     }
 `;
@@ -153,14 +149,14 @@ const Content = styled.div`
     display: flex;
     flex: 1;
     margin: 8px 12px;
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
 `;
 
 type PassphraseTypeCardProps = {
-    title?: React.ReactNode;
-    description?: React.ReactNode;
-    submitLabel: React.ReactNode;
+    title?: ReactNode;
+    description?: ReactNode;
+    submitLabel: ReactNode;
     type: 'standard' | 'hidden';
     offerPassphraseOnDevice?: boolean;
     singleColModal?: boolean;
@@ -208,7 +204,7 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardProps) => {
         }
     }, [enterPressed, canSubmit, submit, value]);
 
-    const onPassphraseChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const onPassphraseChange = (event: ChangeEvent<HTMLInputElement>) => {
         const tmpValue = event.target.value;
         // spread current value into array
         const newValue = [...value];
@@ -392,7 +388,7 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardProps) => {
                         {/* Submit button */}
                         {/* Visible in standalone modal for creating a hidden wallet or after a click also in modal for selecting wallet type */}
                         {(props.singleColModal || hiddenWalletTouched) && (
-                            <motion.div {...motionAnimation.expand}>
+                            <motion.div {...motionConfig.motionAnimation.expand}>
                                 <ActionButton
                                     data-test={`@passphrase/${
                                         props.type === 'hidden' ? 'hidden' : 'standard'

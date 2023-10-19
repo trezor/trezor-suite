@@ -27,6 +27,7 @@ export type ConnectAnalyticsEvent =
               referrerApp?: string;
               referrerEmail?: string;
               method?: string;
+              payload?: string[];
               transportType?: string;
               transportVersion?: string;
           };
@@ -49,6 +50,12 @@ export type ConnectAnalyticsEvent =
           type: EventType.ViewChange;
           payload: {
               nextView: string;
+          };
+      }
+    | {
+          type: EventType.ViewChangeError;
+          payload: {
+              code: string;
           };
       }
     | {

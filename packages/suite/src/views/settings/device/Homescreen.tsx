@@ -1,14 +1,13 @@
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import styled from 'styled-components';
 import { HOMESCREEN_EDITOR_URL } from '@trezor/urls';
 
-import { Translation } from '@suite-components';
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
+import { Translation } from 'src/components/suite';
+import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';
 import { Tooltip, variables } from '@trezor/components';
-import { useDevice, useActions } from '@suite-hooks';
-import * as modalActions from '@suite-actions/modalActions';
-import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
-import { DeviceModel, getDeviceModel } from '@trezor/device-utils';
+import { useDevice, useDispatch } from 'src/hooks/suite';
+import { openModal } from 'src/actions/suite/modalActions';
+import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import {
     deviceModelInformation,
     imagePathToHex,
@@ -17,10 +16,11 @@ import {
     validateImage,
     dataUrlToImage,
     isHomescreenSupportedOnDevice,
-} from '@suite-utils/homescreen';
-import { useAnchor } from '@suite-hooks/useAnchor';
-import { SettingsAnchor } from '@suite-constants/anchors';
+} from 'src/utils/suite/homescreen';
+import { useAnchor } from 'src/hooks/suite/useAnchor';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { analytics, EventType } from '@trezor/suite-analytics';
+import { DeviceModelInternal } from '@trezor/connect';
 
 const StyledActionButton = styled(ActionButton)`
     &:not(:first-of-type) {
@@ -39,7 +39,7 @@ const Col = styled.div`
 `;
 
 const ValidationMessage = styled.div`
-    color: ${props => props.theme.TYPE_ORANGE};
+    color: ${({ theme }) => theme.TYPE_ORANGE};
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
@@ -63,22 +63,19 @@ interface HomescreenProps {
 }
 
 export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
-    const { device } = useDevice();
-    const { applySettings, openModal } = useActions({
-        applySettings: deviceSettingsActions.applySettings,
-        openModal: modalActions.openModal,
-    });
-    const fileInputElement = useRef<HTMLInputElement>(null);
-    const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.Homescreen);
-
     const [customHomescreen, setCustomHomescreen] = useState('');
     const [validationError, setValidationError] = useState<ImageValidationError | undefined>();
+
+    const dispatch = useDispatch();
+    const { device } = useDevice();
+    const fileInputElement = useRef<HTMLInputElement>(null);
+    const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.Homescreen);
 
     if (!device?.features) {
         return null;
     }
 
-    const deviceModel = getDeviceModel(device);
+    const deviceModelInternal = device.features.internal_model;
 
     const resetUpload = () => {
         setCustomHomescreen('');
@@ -91,7 +88,7 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
         if (!files || !files.length) return;
         const file = files[0];
 
-        const validationResult = await validateImage(file, deviceModel);
+        const validationResult = await validateImage(file, deviceModelInternal);
         setValidationError(validationResult);
 
         const dataUrl = await fileToDataUrl(file);
@@ -101,13 +98,13 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
     };
 
     const onChangeHomescreen = async () => {
-        const hex = await imagePathToHex(customHomescreen, deviceModel);
+        const hex = await imagePathToHex(customHomescreen, deviceModelInternal);
 
-        await applySettings({
-            homescreen: hex,
-        });
+        await dispatch(applySettings({ homescreen: hex }));
         resetUpload();
     };
+
+    const openGallery = () => dispatch(openModal({ type: 'device-background-gallery' }));
 
     const isSupportedHomescreen = isHomescreenSupportedOnDevice(device);
 
@@ -118,7 +115,9 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                 ref={anchorRef}
                 shouldHighlight={shouldHighlight}
             >
-                {[DeviceModel.T1, DeviceModel.TR].includes(deviceModel) && (
+                {[DeviceModelInternal.T1B1, DeviceModelInternal.T2B1].includes(
+                    deviceModelInternal,
+                ) && (
                     <TextColumn
                         title={<Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_TITLE" />}
                         description={
@@ -129,7 +128,7 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                     />
                 )}
 
-                {DeviceModel.TT === deviceModel && (
+                {DeviceModelInternal.T2T1 === deviceModelInternal && (
                     <TextColumn
                         title={<Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_TITLE" />}
                         description={
@@ -141,7 +140,7 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                     <HiddenInput
                         ref={fileInputElement}
                         type="file"
-                        accept={deviceModelInformation[deviceModel].supports
+                        accept={deviceModelInformation[deviceModelInternal].supports
                             .map(format => `image/${format}`)
                             .join(', ')}
                         onChange={e => onUploadHomescreen(e.target.files)}
@@ -172,11 +171,7 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                         }
                     >
                         <StyledActionButton
-                            onClick={() =>
-                                openModal({
-                                    type: 'device-background-gallery',
-                                })
-                            }
+                            onClick={openGallery}
                             isDisabled={isDeviceLocked || !isSupportedHomescreen}
                             data-test="@settings/device/homescreen-gallery"
                             variant="secondary"
@@ -220,8 +215,8 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                                 <Translation
                                     id={validationError}
                                     values={{
-                                        width: deviceModelInformation[deviceModel].width,
-                                        height: deviceModelInformation[deviceModel].height,
+                                        width: deviceModelInformation[deviceModelInternal].width,
+                                        height: deviceModelInformation[deviceModelInternal].height,
                                     }}
                                 />
                             </ValidationMessage>
@@ -234,7 +229,7 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                     ].includes(validationError) && (
                         <Col>
                             <img
-                                width={`${deviceModelInformation[deviceModel].width}px`}
+                                width={`${deviceModelInformation[deviceModelInternal].width}px`}
                                 alt="Custom homescreen"
                                 id="custom-image"
                                 src={customHomescreen}

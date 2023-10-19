@@ -6,7 +6,7 @@ import { redactUserPathFromString } from '@trezor/utils';
 
 export const allowReportTag = 'allowReport';
 export const coinjoinReportTag = 'coinjoinReport';
-export const coinjoinNetworktTag = 'coinjoinNetwork';
+export const coinjoinNetworkTag = 'coinjoinNetwork';
 
 /**
  * Full user path could be part of reported error in some cases and we want to actively filter username out.
@@ -52,7 +52,7 @@ const beforeSend: Options['beforeSend'] = event => {
             level: event.level,
             tags: {
                 coinjoinReport: true,
-                coinjoinNetworktTag: event.tags?.[coinjoinNetworktTag],
+                coinjoinNetworkTag: event.tags?.[coinjoinNetworkTag],
             },
         };
     }
@@ -64,9 +64,9 @@ const beforeBreadcrumb: Options['beforeBreadcrumb'] = breadcrumb => {
     // filter out analytics requests and image fetches
     const isAnalytics =
         breadcrumb.category === 'fetch' &&
-        breadcrumb.data?.url?.contains('data.trezor.io/suite/log');
+        breadcrumb.data?.url?.contains?.('data.trezor.io/suite/log');
     const isImageFetch =
-        breadcrumb.category === 'xhr' && breadcrumb.data?.url?.contains('/assets/');
+        breadcrumb.category === 'xhr' && breadcrumb.data?.url?.contains?.('/assets/');
     const isConsole = breadcrumb.category === 'console';
 
     if (isAnalytics || isImageFetch || isConsole) {
@@ -80,10 +80,11 @@ const ignoreErrors = [
     'ERR_NETWORK_IO_SUSPENDED',
     'ERR_NETWORK_CHANGED',
     'Error: HTTP Error',
+    'ResizeObserver loop limit exceeded',
+    // comes from bridge originally, we allowed user to init another connect call. should now be wrapped however and not thrown on transport layer
     'other call in progress',
     'Action cancelled by user',
-    'ResizeObserver loop limit exceeded',
-    'device disconnected during action',
+    'device disconnected during action', // the same as with 'other call in progress'
 ];
 
 export const SENTRY_CONFIG: Options = {
@@ -97,6 +98,7 @@ export const SENTRY_CONFIG: Options = {
     ],
     beforeSend,
     enabled: !isDevEnv,
+    maxValueLength: 500, // default 250 is not enough for some errors
     release: process.env.SENTRY_RELEASE,
     environment: process.env.SUITE_TYPE,
     normalizeDepth: 4,

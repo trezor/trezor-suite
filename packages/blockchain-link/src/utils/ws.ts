@@ -13,7 +13,6 @@ class WSWrapper extends EventEmitter {
 
     constructor(url: string, _protocols: any, _websocketOptions: any) {
         super();
-        this.setMaxListeners(Infinity);
 
         this._ws = new WebSocket(url);
 
@@ -25,8 +24,14 @@ class WSWrapper extends EventEmitter {
             this.emit('open');
         };
 
-        this._ws.onerror = error => {
-            this.emit('error', error);
+        // WebSocket error Event does not contain any useful description.
+        // https://websockets.spec.whatwg.org//#dom-websocket-onerror
+        // If the user agent was required to fail the WebSocket connection,
+        // or if the WebSocket connection was closed after being flagged as full,
+        // fire an event named error at the WebSocket object.
+        // https://stackoverflow.com/a/31003057
+        this._ws.onerror = _event => {
+            this.emit('error', new Error(`WsWrapper error. Ready state: ${this.readyState}`));
         };
 
         this._ws.onmessage = message => {
@@ -49,4 +54,4 @@ class WSWrapper extends EventEmitter {
     }
 }
 
-export = WSWrapper;
+export default WSWrapper;

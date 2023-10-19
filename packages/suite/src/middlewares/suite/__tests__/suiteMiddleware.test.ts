@@ -1,18 +1,21 @@
-import { configureStore } from '@suite/support/tests/configureStore';
-import { SUITE, ROUTER } from '@suite-actions/constants';
-import routerReducer from '@suite-reducers/routerReducer';
-import suiteReducer from '@suite-reducers/suiteReducer';
-import modalReducer from '@suite-reducers/modalReducer';
-import suiteMiddleware from '@suite-middlewares/suiteMiddleware';
-import type { Action } from '@suite-types';
-import { extraDependencies } from '@suite/support/extraDependencies';
-
 import { analyticsActions, prepareAnalyticsReducer } from '@suite-common/analytics';
+import { prepareDeviceReducer } from '@suite-common/wallet-core';
+
+import { configureStore } from 'src/support/tests/configureStore';
+import { ROUTER } from 'src/actions/suite/constants';
+import routerReducer from 'src/reducers/suite/routerReducer';
+import suiteReducer from 'src/reducers/suite/suiteReducer';
+import modalReducer from 'src/reducers/suite/modalReducer';
+import suiteMiddleware from 'src/middlewares/suite/suiteMiddleware';
+import type { Action } from 'src/types/suite';
+import { extraDependencies } from 'src/support/extraDependencies';
+import { appChanged } from 'src/actions/suite/suiteActions';
 
 type SuiteState = ReturnType<typeof suiteReducer>;
 type RouterState = ReturnType<typeof routerReducer>;
 
 const analyticsReducer = prepareAnalyticsReducer(extraDependencies);
+const deviceReducer = prepareDeviceReducer(extraDependencies);
 
 const getInitialState = (router?: RouterState, suite?: Partial<SuiteState>) => ({
     router: {
@@ -22,6 +25,9 @@ const getInitialState = (router?: RouterState, suite?: Partial<SuiteState>) => (
     suite: {
         ...suiteReducer(undefined, { type: 'foo' } as any),
         ...suite,
+    },
+    device: {
+        ...deviceReducer(undefined, { type: 'foo' } as any),
     },
     modal: modalReducer(undefined, { type: 'foo' } as any),
     analytics: analyticsReducer(undefined, {
@@ -88,7 +94,7 @@ describe('suite middleware', () => {
                 payload,
             });
             expect(store.getActions()).toEqual([
-                { type: SUITE.APP_CHANGED, payload: 'dashboard' },
+                { type: appChanged.type, payload: 'dashboard' },
                 {
                     type: ROUTER.LOCATION_CHANGE,
                     payload,

@@ -6,6 +6,10 @@
             "path": "../../suite-common/formatters"
         },
         { "path": "../../suite-common/graph" },
+        { "path": "../../suite-common/icons" },
+        {
+            "path": "../../suite-common/suite-types"
+        },
         {
             "path": "../../suite-common/wallet-config"
         },
@@ -19,7 +23,10 @@
         { "path": "../atoms" },
         { "path": "../formatters" },
         { "path": "../react-native-graph" },
-        { "path": "../../packages/icons" },
-        { "path": "../../packages/styles" }
+        { "path": "../storage" },
+        { "path": "../theme" },
+        { "path": "../../packages/styles" },
+        { "path": "../../packages/suite-data" },
+        { "path": "../../packages/theme" }
     ]
 }

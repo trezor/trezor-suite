@@ -1,22 +1,29 @@
-import React, { useCallback, useEffect } from 'react';
+import { useState, useCallback, ReactNode, ChangeEvent } from 'react';
 import styled, { css } from 'styled-components';
 import { analytics, EventType } from '@trezor/suite-analytics';
-import { getFirmwareType, getFirmwareVersion, getDeviceModel } from '@trezor/device-utils';
+import { getFirmwareVersion } from '@trezor/device-utils';
 
-import { CharacterCount, Translation } from '@suite-components';
+import { Translation } from 'src/components/suite';
 import { Textarea, Select, variables, Button, CollapsibleBox } from '@trezor/components';
-import { useActions, useDevice, useSelector } from '@suite-hooks';
-import * as guideActions from '@suite-actions/guideActions';
-import { ViewWrapper, Header, Content } from '@guide-components';
+import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
+import { sendFeedback, setView } from 'src/actions/suite/guideActions';
+import { GuideViewWrapper, GuideHeader, GuideContent } from 'src/components/guide';
 import { Rating, FeedbackCategory, FeedbackType, UserData } from '@suite-common/suite-types';
-import { getEnvironment } from '@suite-utils/env';
-import { getUserAgent, getWindowHeight, getWindowWidth, getOsName } from '@trezor/env-utils';
+import {
+    getEnvironment,
+    getUserAgent,
+    getWindowHeight,
+    getWindowWidth,
+    getOsName,
+    getCommitHash,
+    getSuiteVersion,
+} from '@trezor/env-utils';
 
 const Headline = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     text-align: left;
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     padding: 0 0 11px;
     width: 100%;
 `;
@@ -44,19 +51,19 @@ const RatingItem = styled.button<{ selected?: boolean }>`
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 1px solid ${props => props.theme.STROKE_GREY};
+    border: 1px solid ${({ theme }) => theme.STROKE_GREY};
     cursor: pointer;
     font-size: 30px;
     background-color: inherit;
 
-    ${props =>
-        props.selected &&
+    ${({ selected, theme }) =>
+        selected &&
         css`
-            background: ${props.theme.BG_GREEN};
-            border: 1px solid ${props.theme.BG_GREEN};
+            background: ${theme.BG_GREEN};
+            border: 1px solid ${theme.BG_GREEN};
 
             &:hover {
-                background: ${props.theme.BG_GREEN};
+                background: ${theme.BG_GREEN};
             }
         `};
 `;
@@ -69,12 +76,12 @@ const AnonymousDataItem = styled.li`
     margin-bottom: 4px;
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
 `;
 
 type RatingItem = {
     id: Rating;
-    value: React.ReactNode;
+    value: ReactNode;
 };
 
 const MESSAGE_CHARACTER_LIMIT = 1000;
@@ -103,7 +110,7 @@ const ratingOptions: RatingItem[] = [
 
 /** A format compatible with React Select component. */
 type FeedbackCategoryOption = {
-    label: React.ReactNode;
+    label: ReactNode;
     value: FeedbackCategory;
 };
 
@@ -113,16 +120,12 @@ type FeedbackProps = {
 
 export const Feedback = ({ type }: FeedbackProps) => {
     const { device } = useDevice();
-    const { setView, sendFeedback } = useActions({
-        setView: guideActions.setView,
-        sendFeedback: guideActions.sendFeedback,
-    });
-
+    const dispatch = useDispatch();
     const router = useSelector(state => state.router);
-    const [description, setDescription] = React.useState('');
-    const [rating, setRating] = React.useState<RatingItem>();
+    const [description, setDescription] = useState('');
+    const [rating, setRating] = useState<RatingItem>();
 
-    const feedbackCategories: { [key in FeedbackCategory]: React.ReactNode } = {
+    const feedbackCategories: { [key in FeedbackCategory]: ReactNode } = {
         dashboard: <Translation id="TR_FEEDBACK_CATEGORY_DASHBOARD" />,
         account: <Translation id="TR_FEEDBACK_CATEGORY_ACCOUNT" />,
         settings: <Translation id="TR_FEEDBACK_CATEGORY_SETTINGS" />,
@@ -158,69 +161,63 @@ export const Feedback = ({ type }: FeedbackProps) => {
                 return undefined;
         }
     };
-    const [category, setCategory] = React.useState(getDefaultCategory());
+    const [category, setCategory] = useState(getDefaultCategory());
 
     const categoryToOption = (category: FeedbackCategory): FeedbackCategoryOption => ({
         value: category,
         label: feedbackCategories[category],
     });
 
-    useEffect(() => {
-        if (description.length >= MESSAGE_CHARACTER_LIMIT) {
-            setDescription(description.slice(0, MESSAGE_CHARACTER_LIMIT));
-        }
-    }, [description]);
-
-    let firmwareType = '';
-    if (device?.features) {
-        firmwareType = getFirmwareType(device);
-    }
-
+    const goBack = () => dispatch(setView('SUPPORT_FEEDBACK_SELECTION'));
     const onSubmit = useCallback(() => {
         const userData: UserData = {
             platform: getEnvironment(),
             os: getOsName(),
             user_agent: getUserAgent(),
-            suite_version: process.env.VERSION || '',
-            suite_revision: process.env.COMMITHASH || '',
+            suite_version: getSuiteVersion(),
+            suite_revision: getCommitHash(),
             window_dimensions: `${getWindowWidth()}x${getWindowHeight()}`,
-            device_model: getDeviceModel(device),
+            device_model: device?.features?.internal_model,
             firmware_version: device?.features ? getFirmwareVersion(device) : '',
             firmware_revision: device?.features?.revision || '',
-            firmware_type: firmwareType,
+            firmware_type: device?.firmwareType || '',
         };
         if (type === 'BUG') {
-            sendFeedback({
-                type: 'BUG',
-                payload: {
-                    description,
-                    // By the time of submission a category must be selected.
-                    // Otherwise the submit button would be disabled.
-                    category: category!,
-                    ...userData,
-                },
-            });
+            dispatch(
+                sendFeedback({
+                    type: 'BUG',
+                    payload: {
+                        description,
+                        // By the time of submission a category must be selected.
+                        // Otherwise the submit button would be disabled.
+                        category: category!,
+                        ...userData,
+                    },
+                }),
+            );
         } else {
-            sendFeedback({
-                type: 'SUGGESTION',
-                payload: {
-                    description,
-                    rating: rating?.id,
-                    ...userData,
-                },
-            });
+            dispatch(
+                sendFeedback({
+                    type: 'SUGGESTION',
+                    payload: {
+                        description,
+                        rating: rating?.id,
+                        ...userData,
+                    },
+                }),
+            );
         }
-        setView('GUIDE_DEFAULT');
+        dispatch(setView('GUIDE_DEFAULT'));
         analytics.report({
             type: EventType.GuideFeedbackSubmit,
             payload: { type: type === 'BUG' ? 'bug' : 'suggestion' },
         });
-    }, [device, firmwareType, type, setView, sendFeedback, description, category, rating?.id]);
+    }, [device, dispatch, type, description, category, rating?.id]);
 
     return (
-        <ViewWrapper>
-            <Header
-                back={() => setView('SUPPORT_FEEDBACK_SELECTION')}
+        <GuideViewWrapper>
+            <GuideHeader
+                back={goBack}
                 label={
                     type === 'BUG' ? (
                         <Translation id="TR_GUIDE_VIEW_HEADLINE_REPORT_BUG" />
@@ -229,7 +226,7 @@ export const Feedback = ({ type }: FeedbackProps) => {
                     )
                 }
             />
-            <Content>
+            <GuideContent>
                 {type === 'BUG' && (
                     <>
                         <Headline>
@@ -286,14 +283,14 @@ export const Feedback = ({ type }: FeedbackProps) => {
                 <Textarea
                     rows={8}
                     value={description}
-                    onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                    onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
                         setDescription(e.target.value)
                     }
                     noTopLabel
+                    characterCount
                     data-test="@guide/feedback/suggestion-form"
-                >
-                    <CharacterCount current={description.length} max={MESSAGE_CHARACTER_LIMIT} />
-                </Textarea>
+                    maxLength={MESSAGE_CHARACTER_LIMIT}
+                />
 
                 <Submit
                     onClick={onSubmit}
@@ -327,7 +324,7 @@ export const Feedback = ({ type }: FeedbackProps) => {
                         </AnonymousDataItem>
                     </AnonymousDataList>
                 </CollapsibleBox>
-            </Content>
-        </ViewWrapper>
+            </GuideContent>
+        </GuideViewWrapper>
     );
 };

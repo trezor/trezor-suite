@@ -1,6 +1,7 @@
 import { accumulative } from '../../src/coinselect/inputs/accumulative';
 import fixtures from '../__fixtures__/coinselect/accumulative';
 import * as utils from './test.utils';
+import { CoinSelectOptions } from '../../src/types';
 
 describe('coinselect: accumulative', () => {
     fixtures.forEach(f => {
@@ -9,23 +10,18 @@ describe('coinselect: accumulative', () => {
             const outputs = utils.expand(f.outputs as any, false);
             const expected = utils.addScriptLengthToExpected(f.expected);
             const options = {
-                txType: 'p2pkh',
+                txType: f.txType || 'p2pkh',
                 dustThreshold: f.dustThreshold,
                 baseFee: f.baseFee,
                 floorBaseFee: f.floorBaseFee,
-                dustOutputFee: f.dustOutputFee,
-            } as const;
+                feePolicy: f.feePolicy,
+            } as CoinSelectOptions;
 
-            const actual = accumulative(inputs, outputs, f.feeRate as any, options);
-
+            const actual = accumulative(inputs, outputs, f.feeRate, options);
             expect(actual).toEqual(expected);
+
             if (actual.inputs) {
-                const feedback = accumulative(
-                    actual.inputs,
-                    actual.outputs,
-                    f.feeRate as any,
-                    options,
-                );
+                const feedback = accumulative(actual.inputs, actual.outputs, f.feeRate, options);
                 expect(feedback).toEqual(expected);
             }
         });

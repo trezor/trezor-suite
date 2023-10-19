@@ -1,7 +1,6 @@
 import * as SIGN_VERIFY from './signVerifyConstants';
 import * as RECEIVE from './receiveConstants';
 import * as SEND from './sendFormConstants';
-import * as DISCOVERY from './discoveryConstants';
 import * as WALLET from './walletConstants';
 import * as GRAPH from './graphConstants';
 import * as COINMARKET_BUY from './coinmarketBuyConstants';
@@ -19,7 +18,6 @@ import * as COINJOIN from './coinjoinConstants';
 export {
     SIGN_VERIFY,
     RECEIVE,
-    DISCOVERY,
     WALLET,
     SEND,
     GRAPH,

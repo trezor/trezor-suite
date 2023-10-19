@@ -1,0 +1,17 @@
+{
+    "name": "@trezor/connect web extension mv3 example",
+    "version": "1.0.0",
+    "manifest_version": 3,
+    "action": {
+        "default_popup": "popup.html"
+    },
+    "content_scripts": [
+        {
+            "matches": ["*://connect.trezor.io/9/popup.html", "*://suite.corp.sldev.cz/*"],
+            "js": ["./vendor/trezor-content-script.js"]
+        }
+    ],
+    "background": {
+        "service_worker": "serviceWorker.js"
+    }
+}

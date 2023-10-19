@@ -1,5 +1,5 @@
 import { copyToClipboard } from '@trezor/dom-utils';
-import { useActions } from '@suite-hooks';
+import { useDispatch } from 'src/hooks/suite';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
 type SignedMessageData = {
@@ -22,7 +22,7 @@ export const useCopySignedMessage = <T extends SignedMessageData>(
     { message, address, signature }: T,
     network?: string,
 ) => {
-    const { addNotification } = useActions({ addNotification: notificationsActions.addToast });
+    const dispatch = useDispatch();
 
     const canCopy = address && signature;
 
@@ -32,10 +32,10 @@ export const useCopySignedMessage = <T extends SignedMessageData>(
             (network || '').split('(')[0].toUpperCase(),
         );
 
-        const result = copyToClipboard(formatted, null);
+        const result = copyToClipboard(formatted);
 
         if (typeof result !== 'string') {
-            addNotification({ type: 'copy-to-clipboard' });
+            dispatch(notificationsActions.addToast({ type: 'copy-to-clipboard' }));
         }
     };
 

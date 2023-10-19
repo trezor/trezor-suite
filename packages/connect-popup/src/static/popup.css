@@ -2354,20 +2354,25 @@ section > div .divider span:after {
     align-items: center;
     padding: 10px 15px;
 }
-.select-device .wrapper .select-device-list button .icon {
+.select-device .wrapper .select-device-list button .trezor_icon {
     width: 24px;
     height: 24px;
     display: inline-block;
     vertical-align: middle;
     background-repeat: no-repeat;
-    background-image: url(./images/icon-trezor.png);
     background-size: 14px 24px;
 }
-.select-device .wrapper .select-device-list button .icon.model-t {
-    background-image: url(./images/icon-trezorT.png);
+.select-device .wrapper .select-device-list button .trezor_icon.trezor_icon_t1b1 {
+    background-image: url(./images/trezor-t1b1.png);
 }
-.select-device .wrapper .select-device-list button .icon.unknown {
-    background-image: url(./images/icon-unknown.png);
+.select-device .wrapper .select-device-list button .trezor_icon.trezor_icon_t2t1 {
+    background-image: url(./images/trezor-t2t1.png);
+}
+.select-device .wrapper .select-device-list button .trezor_icon.trezor_icon_t2b1 {
+    background-image: url(./images/trezor-t2b1.png);
+}
+.select-device .wrapper .select-device-list button .trezor_icon.trezor_icon_unknown {
+    background-image: url(./images/trezor-unknown.png);
 }
 .select-device .wrapper .select-device-list button .explain {
     padding: 15px 10px;

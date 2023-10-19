@@ -1,13 +1,13 @@
-import React from 'react';
 import styled from 'styled-components';
+
 import { Card, Icon, variables, colors } from '@trezor/components';
-import { useCoinmarketExchangeOffersContext } from '@wallet-hooks/useCoinmarketExchangeOffers';
-import CoinmarketExchangeOfferInfo from '@wallet-components/CoinmarketExchangeOfferInfo';
+import { useCoinmarketExchangeOffersContext } from 'src/hooks/wallet/useCoinmarketExchangeOffers';
 import VerifyAddress from './components/VerifyAddress';
 import SendTransaction from './components/SendTransaction';
-import { Translation } from '@suite-components';
+import { Translation } from 'src/components/suite';
 import SendApprovalTransaction from './components/SendApprovalTransaction';
 import SendSwapTransaction from './components/SendSwapTransaction';
+import { CoinmarketExchangeOfferInfo } from '../../../components/ExchangeForm/CoinmarketExchangeOfferInfo';
 
 const Wrapper = styled.div`
     display: flex;
@@ -28,7 +28,7 @@ const Header = styled.div`
     align-items: center;
     justify-content: center;
     padding: 10px 25px;
-    border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
+    border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
 `;
 
 interface ActiveProps {
@@ -36,10 +36,9 @@ interface ActiveProps {
 }
 
 const Step = styled.div<ActiveProps>`
-    font-weight: ${props =>
-        props.active ? variables.FONT_WEIGHT.DEMI_BOLD : variables.FONT_WEIGHT.MEDIUM};
-    color: ${props =>
-        props.active ? props => props.theme.TYPE_GREEN : props.theme.TYPE_LIGHT_GREY};
+    font-weight: ${({ active }) =>
+        active ? variables.FONT_WEIGHT.DEMI_BOLD : variables.FONT_WEIGHT.MEDIUM};
+    color: ${({ active, theme }) => (active ? theme.TYPE_GREEN : theme.TYPE_LIGHT_GREY)};
     display: flex;
     font-size: ${variables.FONT_SIZE.SMALL};
     flex: 1;
@@ -63,7 +62,7 @@ const Middle = styled.div`
     height: 48px;
     align-items: center;
     justify-content: center;
-    color: ${props => props.theme.STROKE_GREY};
+    color: ${({ theme }) => theme.STROKE_GREY};
 `;
 
 const MiddleNarrow = styled.div`
@@ -71,7 +70,7 @@ const MiddleNarrow = styled.div`
     height: 48px;
     align-items: center;
     justify-content: center;
-    color: ${props => props.theme.STROKE_GREY};
+    color: ${({ theme }) => theme.STROKE_GREY};
 `;
 
 const SelectedOffer = () => {

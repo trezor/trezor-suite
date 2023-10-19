@@ -1,7 +1,7 @@
-import { Account } from '@wallet-types';
-import coinmarketReducer from '@wallet-reducers/coinmarketReducer';
-import selectedAccountReducer from '@wallet-reducers/selectedAccountReducer';
-import { transactionsReducer } from '@wallet-reducers';
+import { Account } from 'src/types/wallet';
+import coinmarketReducer from 'src/reducers/wallet/coinmarketReducer';
+import selectedAccountReducer from 'src/reducers/wallet/selectedAccountReducer';
+import { transactionsReducer } from 'src/reducers/wallet';
 
 export const ACCOUNT: Account = {
     networkType: 'bitcoin',
@@ -36,10 +36,10 @@ export const ACCOUNT: Account = {
     },
     metadata: {
         key: 'C5B245DD2B69C7291',
-        fileName: '',
-        aesKey: '',
-        outputLabels: {},
-        addressLabels: {},
+        1: {
+            fileName: '',
+            aesKey: '',
+        },
     },
     page: undefined,
     misc: undefined,
@@ -52,7 +52,8 @@ export const DEFAULT_STORE = {
         selectedAccount: selectedAccountReducer(undefined, { type: 'foo' } as any),
         transactions: transactionsReducer(undefined, { type: 'foo' } as any),
     },
-    suite: {
-        device: undefined,
+    suite: {},
+    device: {
+        selectedDevice: undefined,
     },
 };

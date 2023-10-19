@@ -2,12 +2,12 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
-import { useActions, useSelector, useTranslation } from '@suite-hooks';
+import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { isUrl } from '@trezor/utils';
-import { isOnionUrl } from '@suite-utils/tor';
+import { isOnionUrl } from 'src/utils/suite/tor';
 import { blockchainActions } from '@suite-common/wallet-core';
 import { isElectrumUrl } from '@suite-common/wallet-utils';
-import type { Network, BackendType } from '@wallet-types';
+import type { Network, BackendType } from 'src/types/wallet';
 import { BackendSettings } from '@suite-common/wallet-types';
 
 export type BackendOption = BackendType | 'default';
@@ -48,25 +48,28 @@ const useBackendUrlInput = (
     type: BackendOption,
     currentUrls: string[],
 ) => {
-    const { register, watch, setValue, errors } = useForm<{ url: string }>({
+    const {
+        register,
+        watch,
+        setValue,
+        formState: { errors },
+    } = useForm<{ url: string }>({
         mode: 'onChange',
     });
     const { translationString } = useTranslation();
 
-    const name = 'url';
-    const ref = register({
-        validate: (value: string) => {
-            // Check if URL is valid
-            if (!validateUrl(type, value)) {
-                return 'TR_CUSTOM_BACKEND_INVALID_URL';
-            }
+    const name = 'url' as const;
+    const validate = (value: string) => {
+        // Check if URL is valid
+        if (!validateUrl(type, value)) {
+            return translationString('TR_CUSTOM_BACKEND_INVALID_URL');
+        }
 
-            // Check if already exists
-            if (currentUrls.find(url => url === value)) {
-                return 'TR_CUSTOM_BACKEND_BACKEND_ALREADY_ADDED';
-            }
-        },
-    });
+        // Check if already exists
+        if (currentUrls.find(url => url === value)) {
+            return translationString('TR_CUSTOM_BACKEND_BACKEND_ALREADY_ADDED');
+        }
+    };
 
     const placeholder = translationString('SETTINGS_ADV_COIN_URL_INPUT_PLACEHOLDER', {
         url: getUrlPlaceholder(coin, type),
@@ -75,7 +78,8 @@ const useBackendUrlInput = (
     return {
         name,
         placeholder,
-        ref,
+        register,
+        validate,
         error: errors[name],
         value: watch(name) || '',
         reset: () => setValue(name, ''),
@@ -93,11 +97,9 @@ const getStoredState = (
 
 export const useBackendsForm = (coin: Network['symbol']) => {
     const backends = useSelector(state => state.wallet.blockchain[coin].backends);
+    const dispatch = useDispatch();
     const initial = getStoredState(coin, backends.selected, backends.urls);
     const [currentValues, setCurrentValues] = useState(initial);
-    const actions = useActions({
-        setBackend: blockchainActions.setBackend,
-    });
 
     const changeType = (type: BackendOption) => {
         setCurrentValues(getStoredState(coin, type, backends.urls));
@@ -132,7 +134,7 @@ export const useBackendsForm = (coin: Network['symbol']) => {
     const save = () => {
         const { type } = currentValues;
         const urls = type === 'default' ? [] : getUrls();
-        actions.setBackend({ coin, type, urls });
+        dispatch(blockchainActions.setBackend({ coin, type, urls }));
         const totalOnion = urls.filter(isOnionUrl).length;
 
         analytics.report({

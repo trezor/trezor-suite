@@ -1,7 +1,6 @@
-import React from 'react';
 import styled from 'styled-components';
-import { Fees } from '@wallet-components/Fees';
-import { useCoinmarketSellFormContext } from '@wallet-hooks/useCoinmarketSellForm';
+import { Fees } from 'src/components/wallet/Fees/Fees';
+import { useCoinmarketSellFormContext } from 'src/hooks/wallet/useCoinmarketSellForm';
 
 const StyledCard = styled.div`
     display: flex;
@@ -13,7 +12,7 @@ const StyledCard = styled.div`
 // wrapper for shareable Fees component
 const SellFees = () => {
     const {
-        errors,
+        formState: { errors },
         register,
         control,
         setValue,

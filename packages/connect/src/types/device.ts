@@ -13,7 +13,10 @@ export type UnavailableCapability =
     | 'update-required'
     | 'trezor-connect-outdated';
 
-export type FirmwareType = 'bitcoin-only' | 'regular';
+export enum FirmwareType {
+    BitcoinOnly = 'bitcoin-only',
+    Regular = 'regular',
+}
 
 // NOTE: unavailableCapabilities is an object with information what is NOT supported by this device.
 // in ideal/expected setup this object should be empty but given setup might have exceptions.
@@ -29,6 +32,8 @@ export type KnownDevice = {
     firmware: DeviceFirmwareStatus;
     firmwareRelease?: ReleaseInfo | null;
     firmwareType?: FirmwareType;
+    name: string;
+    color?: string;
     status: DeviceStatus;
     mode: DeviceMode;
     state?: string;
@@ -46,6 +51,8 @@ export type UnknownDevice = {
     firmware?: typeof undefined;
     firmwareRelease?: typeof undefined;
     firmwareType?: typeof undefined;
+    name: string;
+    color?: typeof undefined;
     status?: typeof undefined;
     mode?: typeof undefined;
     state?: typeof undefined;
@@ -62,6 +69,8 @@ export type UnreadableDevice = {
     firmware?: typeof undefined;
     firmwareRelease?: typeof undefined;
     firmwareType?: typeof undefined;
+    name: string;
+    color?: typeof undefined;
     status?: typeof undefined;
     mode?: typeof undefined;
     state?: typeof undefined;
@@ -70,6 +79,7 @@ export type UnreadableDevice = {
 
 export type Device = KnownDevice | UnknownDevice | UnreadableDevice;
 export type Features = PROTO.Features;
+export { DeviceModelInternal } from '@trezor/protobuf/lib/messages';
 
 type FeaturesNarrowing =
     | {

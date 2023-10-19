@@ -34,7 +34,7 @@ suite-web build dev:
   stage: build
   <<: *config_sign_dev
   variables:
-    ASSET_PREFIX: /suite-web/${CI_BUILD_REF_NAME}/web
+    ASSET_PREFIX: /suite-web/${CI_COMMIT_REF_NAME}/web
   script:
     - yarn install --immutable
     - yarn workspace @trezor/suite-web build
@@ -90,7 +90,7 @@ suite-web build stable codesign:
     - nix-shell --option system x86_64-darwin --run "yarn install --immutable"
     - nix-shell --option system x86_64-darwin --run "yarn build:libs"
     - nix-shell --option system x86_64-darwin --run "yarn workspace @trezor/suite-desktop build:${platform}"
-    - nix-shell --option system x86_64-darwin --run "bash packages/suite-desktop/scripts/gnupg-sign.sh"
+    - nix-shell --option system x86_64-darwin --run "bash packages/suite-desktop-core/scripts/gnupg-sign.sh"
     - ls -la packages/suite-desktop/build-electron
     - mv packages/suite-desktop/build-electron/* .
     - more latest*.yml | cat
@@ -226,7 +226,7 @@ suite-desktop build windows codesign:
   interruptible: true
   script:
     - yarn install --immutable
-    - __TREZOR_CONNECT_SRC=https://suite.corp.sldev.cz/connect/${CI_BUILD_REF_NAME}/ yarn workspace @trezor/connect-explorer build
+    - __TREZOR_CONNECT_SRC=https://suite.corp.sldev.cz/connect/${CI_COMMIT_REF_NAME}/ yarn workspace @trezor/connect-explorer build
   artifacts:
     expire_in: 7 days
     paths:
@@ -256,24 +256,33 @@ connect-web build:
     - git submodule update --init --recursive
     - yarn install --immutable
     - yarn workspace @trezor/connect-web build
+    - ./packages/connect-web/scripts/check-inline-build-size.sh
     - yarn workspace @trezor/connect-iframe build
     - yarn workspace @trezor/connect-popup build
+    # build webextension examples with latest trezor.io and latest npm package
+    - node ./packages/connect-examples/update-webextensions.js --trezor-connect-src "https://suite.corp.sldev.cz/connect/${CI_COMMIT_REF_NAME}/"
+    # build webextension examples with latest trezor.io and outdated npm package (current production)
+    - node ./packages/connect-examples/update-webextensions.js --trezor-connect-src "https://suite.corp.sldev.cz/connect/${CI_COMMIT_REF_NAME}/" --build-folder build-legacy --npm-src "https://connect.trezor.io/9/trezor-connect.js"
+    - yarn workspace @trezor/connect-explorer-webextension build
+
   artifacts:
-    expire_in: 1 week
+    expire_in: 14 days
     paths:
       - packages/connect-iframe/build
       - packages/connect-web/build
       - packages/connect-popup/build
+      - packages/connect-examples/webextension-mv2/build
+      - packages/connect-examples/webextension-mv2/build-legacy
+      - packages/connect-examples/webextension-mv3/build
+      - packages/connect-examples/webextension-mv3/build-legacy
+      - packages/connect-explorer-webextension/build
 
 # Build components
 
 .run_components_rules: &run_components_rules
   refs:
     - develop
-    - releases
     - schedules
-    - /^release\//
-    - /^run\//
   changes:
     - packages/components
     - packages/components-storybook

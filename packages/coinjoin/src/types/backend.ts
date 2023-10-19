@@ -10,10 +10,12 @@ import type {
 import type {
     Transaction as BlockbookTransaction,
     VinVout,
+    FilterResponse,
 } from '@trezor/blockchain-link-types/lib/blockbook';
 
 import type { CoinjoinBackendClient } from '../backend/CoinjoinBackendClient';
 import type { MempoolController } from '../backend/CoinjoinMempoolController';
+import type { FilterController } from '../backend/CoinjoinFilterController';
 
 export type { BlockbookTransaction, VinVout, EnhancedVinVout };
 export type { Address, Utxo, Transaction, AccountAddresses };
@@ -30,59 +32,55 @@ export type BlockFilter = {
     blockHeight: number;
     blockHash: string;
     filter: string;
-    prevHash: string;
-    blockTime: number;
 };
 
 export type BlockFilterResponse =
     | { status: 'up-to-date' }
     | { status: 'not-found' }
-    | {
-          status: 'ok';
-          bestHeight: number;
-          filters: BlockFilter[];
-      };
+    | ({ status: 'ok'; filters: BlockFilter[] } & Partial<FilterResponse>);
 
-type MethodContext = {
+export type MempoolFilterResponse = Partial<FilterResponse> & {
+    entries: { [txid: string]: string };
+};
+
+export type ScanAccountContext = {
     client: CoinjoinBackendClient;
     network: Network;
     abortSignal?: AbortSignal;
-};
-
-type ScanContext<T> = MethodContext & {
     filters: FilterController;
     mempool?: MempoolController;
-    onProgress: (progress: T) => void;
+    onProgress: (progress: ScanAccountProgress) => void;
+    onProgressInfo: OnProgressInfo;
 };
 
-export type ScanAddressContext = ScanContext<ScanAddressProgress>;
-
-export type ScanAccountContext = ScanContext<ScanAccountProgress>;
-
-export type ScanAddressCheckpoint = {
+export type ScanAccountCheckpoint = {
     blockHash: string;
     blockHeight: number;
-};
-
-export type ScanAccountCheckpoint = ScanAddressCheckpoint & {
     receiveCount: number;
     changeCount: number;
 };
 
-export type ScanProgressInfo = {
-    progress?: number;
-    message?: string;
-};
+export type ScanProgressInfo =
+    | {
+          stage: 'block';
+          activity: 'fetch' | 'scan-fetch' | 'scan';
+          batchFrom: number;
+          progress?: { current: number; from: number; to: number };
+      } // scan is always one batch behind fetch
+    | { stage: 'block'; progress: { current: number; from: number; to: number } }
+    | {
+          stage: 'mempool';
+          activity: 'fetch' | 'scan';
+          progress?: { current: number; total: number; iteration: number };
+      }
+    | { stage: 'mempool'; progress: { current: number; total: number; iteration: number } };
 
-type ScanProgress<T> = {
-    checkpoint: T;
+export type OnProgressInfo = (info: ScanProgressInfo) => void;
+
+export type ScanAccountProgress = {
+    checkpoint: ScanAccountCheckpoint;
     transactions: Transaction[];
-    info?: ScanProgressInfo;
 };
-
-export type ScanAddressProgress = ScanProgress<ScanAddressCheckpoint>;
-
-export type ScanAccountProgress = ScanProgress<ScanAccountCheckpoint>;
 
 export type ScanAccountParams = {
     descriptor: string;
@@ -91,21 +89,10 @@ export type ScanAccountParams = {
     cache?: AccountCache;
 };
 
-export type ScanAddressParams = {
-    descriptor: string;
-    progressHandle?: string;
-    checkpoints?: ScanAddressCheckpoint[];
-};
-
 export type ScanAccountResult = {
     pending: Transaction[];
     checkpoint: ScanAccountCheckpoint;
     cache?: AccountCache;
-};
-
-export type ScanAddressResult = {
-    pending: Transaction[];
-    checkpoint: ScanAddressCheckpoint;
 };
 
 export type FilterControllerParams = {
@@ -118,34 +105,21 @@ export type FilterControllerParams = {
 
 export type FilterControllerContext = {
     abortSignal?: AbortSignal;
+    onProgressInfo?: OnProgressInfo;
 };
 
-type IteratedBlockFilter = BlockFilter & {
-    progress?: number;
-};
-
-export interface FilterController {
-    getFilterIterator(
-        params?: FilterControllerParams,
-        context?: FilterControllerContext,
-    ): AsyncGenerator<IteratedBlockFilter>;
-}
-
-export type FilterClient = Pick<CoinjoinBackendClient, 'fetchFilters'>;
+export type FilterClient = Pick<CoinjoinBackendClient, 'fetchNetworkInfo' | 'fetchBlockFilters'>;
 
 export type MempoolClient = Pick<
     CoinjoinBackendClient,
-    'fetchMempoolTxids' | 'fetchTransaction' | 'subscribeMempoolTxs' | 'unsubscribeMempoolTxs'
+    'fetchMempoolFilters' | 'fetchTransaction' | 'subscribeMempoolTxs' | 'unsubscribeMempoolTxs'
 >;
 
-export type AddressInfo = AccountInfoBase & {
+export type AccountInfo = AccountInfoBase & {
     history: AccountInfoBase['history'] & {
         transactions: NonNullable<AccountInfoBase['history']['transactions']>;
     };
     utxo: Utxo[];
-};
-
-export type AccountInfo = AddressInfo & {
     addresses: NonNullable<AccountInfoBase['addresses']>;
 };
 

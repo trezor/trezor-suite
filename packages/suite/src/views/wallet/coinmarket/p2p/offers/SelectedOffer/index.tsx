@@ -1,9 +1,8 @@
-import React from 'react';
 import styled from 'styled-components';
-import { Translation } from '@suite-components';
+import { Translation } from 'src/components/suite';
 import { Card, Icon, colors, variables } from '@trezor/components';
-import { useCoinmarketP2pOffersContext } from '@wallet-hooks/useCoinmarketP2pOffers';
-import { P2pStep } from '@wallet-types/coinmarketP2pOffers';
+import { useCoinmarketP2pOffersContext } from 'src/hooks/wallet/useCoinmarketP2pOffers';
+import { P2pStep } from 'src/types/wallet/coinmarketP2pOffers';
 import { GetStartedStep } from './GetStartedStep';
 import { ReceivingAddressStep } from './ReceivingAddressStep';
 import { OfferDetails } from './OfferDetails';

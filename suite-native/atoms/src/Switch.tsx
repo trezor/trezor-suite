@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { Pressable } from 'react-native';
 import Animated, {
     Easing,
@@ -10,16 +10,18 @@ import Animated, {
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
+import { ACCESSIBILITY_FONTSIZE_MULTIPLIER } from './Text';
+
 type SwitchProps = {
     isChecked: boolean;
     onChange: (value: boolean) => void;
     isDisabled?: boolean; // Functionality of disabled works but styles are not implemented yet (waiting for design)
 };
 
-const SWITCH_CONTAINER_WIDTH = 44;
-const SWITCH_CONTAINER_HEIGHT = 24;
-const SWITCH_CIRCLE_SIZE = 20;
-const SWITCH_CIRCLE_MARGIN = 2;
+const SWITCH_CONTAINER_WIDTH = 44 * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
+const SWITCH_CONTAINER_HEIGHT = 24 * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
+const SWITCH_CIRCLE_SIZE = 20 * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
+const SWITCH_CIRCLE_MARGIN = 2 * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
 const SWITCH_CIRCLE_TRACK_WIDTH =
     SWITCH_CONTAINER_WIDTH - SWITCH_CIRCLE_SIZE - SWITCH_CIRCLE_MARGIN * 2;
 

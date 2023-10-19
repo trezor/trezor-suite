@@ -1,15 +1,11 @@
-import React, { useCallback } from 'react';
-import { runOnJS, useAnimatedReaction } from 'react-native-reanimated';
-
 import {
-    vec,
-    runSpring,
-    useValue,
-    useComputedValue,
-    Circle,
-    Group,
-    Line,
-} from '@shopify/react-native-skia';
+    useAnimatedReaction,
+    useDerivedValue,
+    useSharedValue,
+    withSpring,
+} from 'react-native-reanimated';
+
+import { vec, Circle, Group, Line } from '@shopify/react-native-skia';
 
 import type { SelectionDotProps } from '@suite-native/react-native-graph';
 
@@ -23,25 +19,22 @@ const springAnimationConfig = {
 };
 
 export const SelectionDotWithLine = ({ isActive, color, circleX, circleY }: SelectionDotProps) => {
-    const circleRadius = useValue(0);
-    const lineWidth = useValue(LINE_HIDDEN_WIDTH);
+    const circleRadius = useSharedValue(0);
+    const lineWidth = useSharedValue(LINE_HIDDEN_WIDTH);
 
-    const lineStart = useComputedValue(() => vec(circleX.current, 0), [circleX]);
-    const lineEnd = useComputedValue(() => vec(circleX.current, LINE_LENGTH), [circleX]);
+    const lineStart = useDerivedValue(() => vec(circleX.value, 0));
+    const lineEnd = useDerivedValue(() => vec(circleX.value, LINE_LENGTH));
 
-    const setIsActive = useCallback(
-        (active: boolean) => {
-            runSpring(circleRadius, active ? CIRCLE_RADIUS : 0, springAnimationConfig);
-            runSpring(lineWidth, active ? LINE_WIDTH : LINE_HIDDEN_WIDTH, springAnimationConfig);
-        },
-        [circleRadius, lineWidth],
-    );
     useAnimatedReaction(
         () => isActive.value,
         active => {
-            runOnJS(setIsActive)(active);
+            circleRadius.value = withSpring(active ? CIRCLE_RADIUS : 0, springAnimationConfig);
+            lineWidth.value = withSpring(
+                active ? LINE_WIDTH : LINE_HIDDEN_WIDTH,
+                springAnimationConfig,
+            );
         },
-        [isActive, setIsActive],
+        [isActive],
     );
 
     return (

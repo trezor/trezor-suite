@@ -5,7 +5,7 @@ export default {
             response: {
                 blockHeight: 1,
                 decimals: 9,
-                name: 'Test',
+                name: 'TestMock',
                 shortcut: 'test',
             },
         },
@@ -85,7 +85,7 @@ export default {
                 blockHeight: 1,
                 blockHash: 'test_block_hash-hash',
                 decimals: 6,
-                name: 'Blockfrost',
+                name: 'BlockfrostMock',
                 shortcut: 'ada',
                 testnet: false,
                 version: '1.4.0',

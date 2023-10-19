@@ -7,21 +7,22 @@ import { Account, SelectedAccountStatus } from '@suite-common/wallet-types';
 import {
     ANONYMITY_GAINS_HINDSIGHT_COUNT,
     ANONYMITY_GAINS_HINDSIGHT_DAYS,
+    MAX_ROUNDS_ALLOWED,
     ESTIMATED_MIN_ROUNDS_NEEDED,
     SKIP_ROUNDS_VALUE_WHEN_ENABLED,
-} from '@suite/services/coinjoin/config';
+} from 'src/services/coinjoin/config';
 import {
     AnonymityGainPerRound,
     CoinjoinAccount,
     CoinjoinSessionParameters,
-    RoundPhase,
-    SessionPhase,
-} from '@wallet-types/coinjoin';
+} from 'src/types/wallet/coinjoin';
 import { AnonymitySet } from '@trezor/blockchain-link';
 import {
     CoinjoinStatusEvent,
     RegisterAccountParams,
     CoinjoinTransactionData,
+    SessionPhase,
+    RoundPhase,
 } from '@trezor/coinjoin';
 
 export type CoinjoinBalanceBreakdown = {
@@ -120,7 +121,7 @@ export const transformCoinjoinStatus = ({
     coordinationFeeRate,
     feeRateMedian,
     allowedInputAmounts,
-    rounds: rounds.map(({ id, phase }) => ({ id, phase })),
+    rounds: rounds.map(({ Id: id, Phase: phase }) => ({ id, phase })),
 });
 
 // convert suite account type to @trezor/coinjoin RegisterAccountParams scriptType
@@ -187,15 +188,18 @@ const getSkipRoundsRate = (skipRounds?: [number, number]) =>
 export const getMaxRounds = (roundsNeeded: number, roundsFailRateBuffer: number) => {
     const estimatedRoundsCount = Math.ceil(roundsNeeded * roundsFailRateBuffer);
 
-    return Math.max(estimatedRoundsCount, ESTIMATED_MIN_ROUNDS_NEEDED);
+    return Math.min(
+        Math.max(estimatedRoundsCount, ESTIMATED_MIN_ROUNDS_NEEDED),
+        MAX_ROUNDS_ALLOWED,
+    );
 };
 
 // transform boolean to skip rounds value used by @trezor/coinjoin
 export const getSkipRounds = (enabled: boolean) =>
     enabled ? SKIP_ROUNDS_VALUE_WHEN_ENABLED : undefined;
 
-export const getMaxFeePerVbyte = (weeklyMedian: number, maxMiningFeeModifier: number) =>
-    Math.round(weeklyMedian * maxMiningFeeModifier);
+export const getMaxFeePerVbyte = (feeRateMedian: number, maxMiningFeeModifier: number) =>
+    Math.round(feeRateMedian * maxMiningFeeModifier);
 
 // get time estimate in millisecond per round
 export const getEstimatedTimePerRound = (
@@ -253,12 +257,12 @@ export const prepareCoinjoinTransaction = (
                     prev_index: input.index,
                     amount: input.amount,
                     coinjoin_flags: flags,
-                };
+                } as const;
             }
 
             return {
                 address_n: undefined,
-                script_type: 'EXTERNAL' as const,
+                script_type: 'EXTERNAL',
                 prev_hash: input.hash,
                 prev_index: input.index,
                 amount: input.amount,
@@ -266,21 +270,21 @@ export const prepareCoinjoinTransaction = (
                 ownership_proof: input.ownershipProof,
                 commitment_data: input.commitmentData,
                 coinjoin_flags: flags,
-            };
+            } as const;
         }),
         outputs: transaction.outputs.map(output => {
             if (isInternalOutput(output)) {
                 return {
-                    address_n: output.path! as any,
+                    address_n: output.path!,
                     amount: output.amount,
                     script_type: outputScriptType,
-                };
+                } as const;
             }
             return {
                 address: output.address,
                 amount: output.amount,
-                script_type: 'PAYTOADDRESS' as const,
-            };
+                script_type: 'PAYTOADDRESS',
+            } as const;
         }),
     };
 
@@ -304,19 +308,31 @@ export const getIsCoinjoinOutOfSync = (selectedAccount: SelectedAccountStatus) =
     }
 };
 
-const roundPhases = [
-    RoundPhase.InputRegistration,
-    RoundPhase.ConnectionConfirmation,
-    RoundPhase.OutputRegistration,
-    RoundPhase.TransactionSigning,
-    RoundPhase.Ended,
-];
+export const getRoundPhaseFromSessionPhase = (sessionPhase: SessionPhase) => {
+    const isValidRoundPhase = (result: number): result is RoundPhase =>
+        Object.values(RoundPhase).some(value => value === result);
 
-export const getRoundPhaseFromSessionPhase = (sessionPhase: SessionPhase): RoundPhase =>
-    roundPhases[Number(String(sessionPhase)[0]) - 1];
+    const result = Number(String(sessionPhase)[0]) - 1;
 
-export const getFirstSessionPhaseFromRoundPhase = (roundPhase?: RoundPhase): SessionPhase =>
-    Number(`${(roundPhase || 0) + 1}1`);
+    if (!isValidRoundPhase(result)) {
+        throw new Error(`Invalid round phase value: ${result}`);
+    }
+
+    return result;
+};
+
+export const getFirstSessionPhaseFromRoundPhase = (roundPhase?: RoundPhase) => {
+    const isValidSessionPhase = (result: number): result is SessionPhase =>
+        Object.values(SessionPhase).some(value => value === result);
+
+    const result = Number(`${(roundPhase || 0) + 1}01`);
+
+    if (!isValidSessionPhase(result)) {
+        throw new Error(`Invalid session phase value: ${result}`);
+    }
+
+    return result;
+};
 
 export const getAccountProgressHandle = (account: Pick<Account, 'key'>) =>
     createHash('sha256').update(account.key).digest('hex').slice(0, 16);

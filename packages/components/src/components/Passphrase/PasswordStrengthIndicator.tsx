@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { colors } from '@trezor/components';
 
 import type { ZXCVBNScore } from 'zxcvbn';
+import { colors } from '../../config';
 
 interface WrapperProps {
     width?: number;
@@ -54,11 +54,11 @@ const getPasswordScore = async (password: string) => {
     return zxcvbn.default(password).score;
 };
 
-interface Props {
+interface PasswordStrengthIndicatorProps {
     password: string;
 }
 
-const PasswordStrengthIndicator = ({ password }: Props) => {
+export const PasswordStrengthIndicator = ({ password }: PasswordStrengthIndicatorProps) => {
     const [score, setScore] = useState<OptionalZXCVBNScore>();
     useEffect(() => {
         const runScoring = async () => {
@@ -88,5 +88,3 @@ const PasswordStrengthIndicator = ({ password }: Props) => {
         </Wrapper>
     );
 };
-
-export default PasswordStrengthIndicator;

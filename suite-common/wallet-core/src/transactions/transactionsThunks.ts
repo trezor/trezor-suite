@@ -14,6 +14,9 @@ import {
     isTrezorConnectBackendType,
     getPendingAccount,
     findAccountsByAddress,
+    enhanceTransaction,
+    getRbfParams,
+    replaceEthereumSpecific,
 } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 import { blockbookUtils } from '@trezor/blockchain-link-utils';
@@ -27,84 +30,86 @@ import { selectAccountByKey, selectAccounts } from '../accounts/accountsReducer'
 import { selectBlockchainHeightBySymbol } from '../blockchain/blockchainReducer';
 
 /**
- * Replace existing transaction in the reducer.
+ * Replace existing transaction in the reducer (RBF)
  * There might be multiple occurrences of the same transaction assigned to multiple accounts in the storage:
  * sender account and receiver account(s)
  */
-export const replaceTransactionThunk = createThunk(
+interface ReplaceTransactionThunkParams {
+    precomposedTx: PrecomposedTransactionFinal; // tx params signed by @trezor/connect
+    newTxid: string; // new txid
+    signedTransaction?: Transaction; // tx returned from @trezor/connect (only in bitcoin-like)
+}
+
+export const replaceTransactionThunk = createThunk<ReplaceTransactionThunkParams>(
     `${modulePrefix}/replaceTransactionThunk`,
-    (
-        {
-            tx,
-            newTxid,
-        }: {
-            tx: PrecomposedTransactionFinal;
-            newTxid: string;
-        },
-        { getState, dispatch },
-    ) => {
-        if (!tx.prevTxid) return; // ignore if it's not replacement tx
+    ({ precomposedTx, newTxid, signedTransaction }, { getState, dispatch }) => {
+        if (!precomposedTx.prevTxid) return; // ignore if it's not a replacement tx
 
         const walletTransactions = selectTransactions(getState());
 
         // find all transactions to replace, they may be related to another account
-        const transactions = findTransactions(tx.prevTxid, walletTransactions);
-        const newBaseFee = parseInt(tx.fee, 10);
+        const origTransactions = findTransactions(precomposedTx.prevTxid, walletTransactions);
 
         // prepare replace actions for txs
-        const actions = transactions.map(t => {
-            // type: transactionsActions.replaceTransaction.type,
-            const payload: { key: string; txid: string; tx: WalletAccountTransaction } = {
-                key: t.key,
-                txid: tx.prevTxid,
-                tx: {
-                    ...t.tx,
+        const actions = origTransactions.flatMap(origTx => {
+            let newTx: WalletAccountTransaction;
+            const affectedAccount = selectAccountByKey(getState(), origTx.key);
+            if (!affectedAccount) return []; // skip, highly unlikely
+
+            if (signedTransaction) {
+                // bitcoin-like: profile transaction for affected account
+                newTx = enhanceTransaction(
+                    blockbookUtils.transformTransaction(
+                        affectedAccount.descriptor,
+                        affectedAccount.addresses,
+                        signedTransaction,
+                    ),
+                    affectedAccount,
+                );
+            } else {
+                // ethereum-like: update transaction manually
+                newTx = {
+                    ...origTx.tx,
                     txid: newTxid,
-                    fee: tx.fee,
-                    rbf: !!tx.rbf,
+                    fee: precomposedTx.fee,
+                    rbf: !!precomposedTx.rbf,
                     blockTime: Math.round(new Date().getTime() / 1000),
                     // TODO: details: {}, is it worth it?
-                },
-            };
-            // finalized and recv tx shouldn't have rbfParams
-            if (!tx.rbf || t.tx.type === 'recv') {
-                delete payload.tx.rbfParams;
-                return transactionsActions.replaceTransaction(payload);
+                };
+
+                // update ethereumSpecific values
+                newTx.ethereumSpecific = replaceEthereumSpecific(newTx, precomposedTx);
+
+                // finalized and recv tx shouldn't have rbfParams
+                if (!precomposedTx.rbf || origTx.tx.type === 'recv') {
+                    delete newTx.rbfParams;
+                } else {
+                    // update tx rbfParams
+                    newTx.rbfParams = getRbfParams(newTx, affectedAccount);
+                }
             }
 
-            if (payload.tx.type === 'self') {
-                payload.tx.amount = tx.fee;
-            }
-            // update tx rbfParams
-            if (payload.tx.rbfParams) {
-                payload.tx.rbfParams = {
-                    ...payload.tx.rbfParams,
-                    txid: newTxid,
-                    baseFee: newBaseFee,
-                    feeRate: tx.feePerByte,
-                };
-            }
-            return transactionsActions.replaceTransaction(payload);
+            return transactionsActions.replaceTransaction({
+                key: origTx.key,
+                txid: precomposedTx.prevTxid,
+                tx: newTx,
+            });
         });
-        // dispatch replace actions
+
+        // dispatch all replace actions
         actions.forEach(a => dispatch(a));
     },
 );
 
-export const addFakePendingTxThunk = createThunk(
+interface AddFakePendingTransactionParams {
+    transaction: Transaction;
+    precomposedTx: PrecomposedTransactionFinal;
+    account: Account;
+}
+
+export const addFakePendingTxThunk = createThunk<AddFakePendingTransactionParams>(
     `${modulePrefix}/addFakePendingTransaction`,
-    (
-        {
-            transaction,
-            precomposedTx,
-            account,
-        }: {
-            transaction: Transaction;
-            precomposedTx: PrecomposedTransactionFinal;
-            account: Account;
-        },
-        { dispatch, getState },
-    ) => {
+    ({ transaction, precomposedTx, account }, { dispatch, getState }) => {
         const blockHeight = selectBlockchainHeightBySymbol(getState(), account.symbol);
         const accounts = selectAccounts(getState());
 
@@ -133,29 +138,34 @@ export const addFakePendingTxThunk = createThunk(
 
         Object.keys(affectedAccounts).forEach(key => {
             const affectedAccount = affectedAccounts[key];
-            // profile pending transaction for this affected account
-            const affectedAccountTransaction = blockbookUtils.transformTransaction(
-                affectedAccount.descriptor,
-                affectedAccount.addresses,
-                transaction,
-            );
-            const prependingTx = { ...affectedAccountTransaction, deadline: blockHeight + 2 };
-            dispatch(
-                transactionsActions.addTransaction({
-                    transactions: [prependingTx],
-                    account: affectedAccount,
-                }),
-            );
+            if (!precomposedTx.prevTxid) {
+                // create and profile pending transaction for affected account if it's not a replacement tx
+                const affectedAccountTransaction = blockbookUtils.transformTransaction(
+                    affectedAccount.descriptor,
+                    affectedAccount.addresses,
+                    transaction,
+                );
+                const prependingTx = { ...affectedAccountTransaction, deadline: blockHeight + 2 };
+                dispatch(
+                    transactionsActions.addTransaction({
+                        transactions: [prependingTx],
+                        account: affectedAccount,
+                    }),
+                );
+            }
+
             if (affectedAccount.backendType === 'coinjoin') {
-                // updating of coinjoin accounts is solved in coinjoinAccoundActions and coinjoinMiddleware
+                // updating of coinjoin accounts is solved in coinjoinAccountActions and coinjoinMiddleware
                 return;
             }
+
             const pendingAccount = getPendingAccount({
                 account: affectedAccount,
                 tx: precomposedTx,
                 txid: transaction.txid,
                 receivingAccount: account.key !== affectedAccount.key,
             });
+
             if (pendingAccount) {
                 dispatch(accountsActions.updateAccount(pendingAccount));
             }
@@ -228,17 +238,34 @@ export const exportTransactionsThunk = createThunk(
         // Get state of transactions
         const allTransactions = selectTransactions(getState());
         const localCurrency = selectors.selectLocalCurrency(getState());
-        const transactions = getAccountTransactions(
-            account.key,
-            allTransactions,
-            // add metadata directly to transactions
-        ).map(transaction => ({
-            ...transaction,
-            targets: transaction.targets.map(target => ({
-                ...target,
-                metadataLabel: account.metadata?.outputLabels?.[transaction.txid]?.[target.n],
-            })),
-        }));
+
+        // TODO: this is not nice (copy-paste)
+        // metadata reducer is still not part of trezor-common and I can not import it
+        // here. so either followup, or maybe when I have a moment I'll refactor it  before merging this
+        // eslint-disable-next-line no-restricted-syntax
+        const provider = getState().metadata?.providers.find(
+            // @ts-expect-error
+            // eslint-disable-next-line no-restricted-syntax
+            p => p.clientId === getState().metadata.selectedProvider.labels,
+        );
+        const metadataKeys = account?.metadata[1];
+        let labels = {};
+        if (!metadataKeys || !metadataKeys?.fileName || !provider?.data[metadataKeys.fileName]) {
+            labels = { outputLabels: {} };
+        } else {
+            labels = provider.data[metadataKeys.fileName];
+        }
+
+        const transactions = getAccountTransactions(account.key, allTransactions)
+            .filter(transaction => transaction.blockHeight !== -1)
+            .map(transaction => ({
+                ...transaction,
+                targets: transaction.targets.map(target => ({
+                    ...target,
+                    // @ts-expect-error
+                    metadataLabel: labels.outputLabels?.[transaction.txid]?.[target.n],
+                })),
+            }));
 
         // Prepare data in right format
         const data = await formatData({
@@ -320,6 +347,7 @@ export const fetchTransactionsThunk = createThunk(
             page, // useful for every network except ripple
             pageSize: perPage,
             ...(marker ? { marker } : {}), // set marker only if it is not undefined (ripple), otherwise it fails on marker validation
+            suppressBackupWarning: true,
         });
 
         if (signal.aborted) return;

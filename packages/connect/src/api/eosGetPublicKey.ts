@@ -17,7 +17,6 @@ export default class EosGetPublicKey extends AbstractMethod<
     init() {
         this.requiredPermissions = ['read'];
         this.firmwareRange = getFirmwareRange(this.name, getMiscNetwork('EOS'), this.firmwareRange);
-        this.info = 'Export Eos public key';
 
         // create a bundle with only one batch if bundle doesn't exists
         this.hasBundle = !!this.payload.bundle;
@@ -41,6 +40,10 @@ export default class EosGetPublicKey extends AbstractMethod<
                 show_display: typeof batch.showOnTrezor === 'boolean' ? batch.showOnTrezor : false,
             };
         });
+    }
+
+    get info() {
+        return 'Export Eos public key';
     }
 
     async confirmation() {

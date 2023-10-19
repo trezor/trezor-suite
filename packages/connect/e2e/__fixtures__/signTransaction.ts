@@ -1,6 +1,6 @@
 const { ADDRESS_N, TX_CACHE } = global.TestUtils;
 
-// vectors from https://github.com/trezor/trezor-firmware/blob/master/tests/device_tests/test_msg_signtx.py
+// vectors from https://github.com/trezor/trezor-firmware/blob/main/tests/device_tests/test_msg_signtx.py
 
 const outputs = [];
 const total = 255;
@@ -274,7 +274,7 @@ export default {
                     '0100000001f36ea247c36f027a45d0265718c74ae8ab87bd45b3fb6e14ef558d76656f321f000000006a4730440220342860add2f161c74a67462cd209783557ab5affafe12fa53436a924eb2b2bcb022032be926c63df8532464e9e4adf0cf8f4609f959e230c58fdf306302f3b7fa60a0121038bac33bcdaeec5626e2f2c5680a9fdc5e551d4e1167f272825bea98e6158d4c8ffffffff01633a3200000000001976a914895d571ebb79808367bfd2a70742ac08f519cb6088ac00000000',
             },
         },
-        // TODO hardfail, skip T1
+        // TODO hardfail, skip T1B1
         {
             description: 'Bitcoin (P2PKH): not enough funds',
             params: {

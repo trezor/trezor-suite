@@ -1,8 +1,12 @@
 # @trezor/suite-desktop
 
-Trezor Suite desktop application.
+Build target for Trezor Suite desktop application.
 
 [Official download page](https://suite.trezor.io/)
+
+> The @trezor/suite-desktop package now serves as a container for the generated/bundled code from the UI and Electron layers, and is responsible for creating the Electron app. No custom code should be added to this package, and no dependencies from the monorepo should be added to the package.json in @trezor/suite-desktop. Doing so would break this system.
+
+Both `dependencies` and `devDependencies` defined in `package.json` of this package are [taken as "external" and copied into bundle without other processing](../suite-desktop-core/scripts/build.ts/#L70).
 
 ## Development
 
@@ -20,7 +24,6 @@ Prerequisites:
 
 ```
 yarn && yarn build:libs
-yarn workspace @trezor/message-system sign-config
 ```
 
 ### Linux
@@ -68,34 +71,27 @@ _Note: If build fails on a missing cache file _(.cache/\*\*/mksquashfsthis)_ add
 
 ---
 
+## User data dir
+
+Location of data directory depends on platform:
+| Platform | User data dir path |
+| --------------------- | ------------------------------------------------------------------- |
+| linux | `/home/<user>/.config/` |
+| macOS | `~/Library/Application Support/` |
+| Windows | `C:\Users\<user>\AppData\Roaming\` |
+
+Name of data directory [depends on environment](../../docs/packages/suite-desktop.md/#app-id-and-name-by-environment) and it's `@trezor/suite-desktop`, `@trezor/suite-desktop-dev` or `@trezor/suite-desktop-local`.
+
+You can open current user data dir directly in Suite debug settings via the link in "Wipe app data" description.
+
 ## Remove IndexedDB from local machine
 
 To remove a database, delete following folder:
 
-### Linux
-
-`/home/<user>/.config/@trezor/suite-desktop/IndexedDB`
-
-### macOS
-
-`/Users/<user>/Library/Application Support/@trezor/suite-desktop/IndexedDB`
-
-### Windows
-
-`C:\Users\<user>\AppData\Roaming\@trezor\suite-desktop\IndexedDB`
+`<user data dir>/IndexedDB`
 
 ## Clearing Electron cache
 
 To clear electron cache, delete following folder:
 
-### Linux
-
-`/home/<user>/.config/@trezor/suite-desktop/Cache`
-
-### macOS
-
-`/Users/<user>/Library/ApplicationSupport/@trezor/suite-desktop/Cache`
-
-### Windows
-
-`C:\Users\<user>\AppData\Roaming\@trezor\suite-desktop\Cache`
+`<user data dir>/Cache`

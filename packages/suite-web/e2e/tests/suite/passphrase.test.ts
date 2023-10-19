@@ -1,5 +1,9 @@
 // @group:passphrase
 // @retry=2
+import { EventType } from '@trezor/suite-analytics';
+import { ExtractByEventType, Requests } from '../../support/types';
+
+let requests: Requests;
 
 const abcAddr = 'bc1qpyfvfvm52zx7gek86ajj5pkkne3h385ada8r2y';
 const defAddr = 'bc1qek0hazgrelpuce8anp72ur4kpgel74ype3pw52';
@@ -15,6 +19,8 @@ describe('Passphrase', () => {
         cy.viewport(1080, 1440).resetDb();
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
+
+        requests = [];
     });
 
     // TODO: there is a problem with clearing our password input element -> cypress deletes only last char with {selectAll}{backspace} and totally ignores .clear() command
@@ -103,6 +109,8 @@ describe('Passphrase', () => {
         cy.task('pressYes');
         cy.task('pressYes');
 
+        cy.interceptDataTrezorIo(requests);
+
         cy.getTestElement('@dashboard/wallet-ready');
         // go to wallet
         cy.getTestElement('@suite/menu/wallet-index').click();
@@ -112,6 +120,7 @@ describe('Passphrase', () => {
         cy.getTestElement('@wallet/receive/reveal-address-button').click();
         cy.getTestElement('@modal/confirm-address/address-field').should('contain', abcAddr);
         cy.task('pressYes');
+        cy.getTestElement('@metadata/copy-address-button').should('exist');
         // close modal
         cy.getTestElement('@modal/close-button').click();
 
@@ -134,6 +143,14 @@ describe('Passphrase', () => {
 
         cy.getTestElement('@passphrase/hidden/submit-button').click();
         cy.getTestElement('@modal').should('not.exist');
+
+        cy.findAnalyticsEventByType<ExtractByEventType<EventType.SelectWalletType>>(
+            requests,
+            EventType.SelectWalletType,
+        ).then(selectWalletTypeEvent => {
+            expect(selectWalletTypeEvent.type).to.equal('hidden');
+        });
+
         // go to receive
         cy.wait(1000);
         cy.getTestElement('@wallet/menu/wallet-receive').click({ timeout: 10000 });
@@ -145,6 +162,7 @@ describe('Passphrase', () => {
 
         cy.getTestElement('@modal/confirm-address/address-field').should('contain', defAddr);
         cy.task('pressYes');
+        cy.getTestElement('@metadata/copy-address-button').should('exist');
         // close modal
         cy.getTestElement('@modal/close-button').click();
 

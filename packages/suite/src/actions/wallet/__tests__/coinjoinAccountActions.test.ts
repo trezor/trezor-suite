@@ -1,17 +1,21 @@
 import { combineReducers, createReducer } from '@reduxjs/toolkit';
-import { configureMockStore, testMocks } from '@suite-common/test-utils';
 
-import { accountsReducer } from '@wallet-reducers';
-import { coinjoinReducer } from '@wallet-reducers/coinjoinReducer';
+import { configureMockStore, initPreloadedState, testMocks } from '@suite-common/test-utils';
+
+import { accountsReducer } from 'src/reducers/wallet';
+import { coinjoinReducer } from 'src/reducers/wallet/coinjoinReducer';
+import selectedAccountReducer from 'src/reducers/wallet/selectedAccountReducer';
+import { CoinjoinService } from 'src/services/coinjoin/coinjoinService';
+
 import * as coinjoinAccountActions from '../coinjoinAccountActions';
+import * as coinjoinClientActions from '../coinjoinClientActions';
 import * as fixtures from '../__fixtures__/coinjoinAccountActions';
-import { CoinjoinService } from '@suite/services/coinjoin/coinjoinService';
 
 jest.mock('@trezor/connect', () => global.JestMocks.getTrezorConnect({}));
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const TrezorConnect = require('@trezor/connect').default;
 
-jest.mock('@suite/services/coinjoin/coinjoinService', () => {
+jest.mock('src/services/coinjoin/coinjoinService', () => {
     const mock = jest.requireActual('../__fixtures__/mockCoinjoinService');
     return mock.mockCoinjoinService();
 });
@@ -22,43 +26,35 @@ const rootReducer = combineReducers({
     suite: createReducer(
         {
             locks: [],
-            device: DEVICE,
             settings: {
                 debug: {},
             },
         },
-        {},
+        () => ({}),
     ),
-    devices: createReducer([DEVICE], {}),
+    device: createReducer({ devices: [DEVICE], selectedDevice: DEVICE }, () => ({})),
     modal: () => ({}),
     wallet: combineReducers({
         coinjoin: coinjoinReducer,
         accounts: accountsReducer,
+        selectedAccount: selectedAccountReducer,
+        blockchain: () => ({ btc: { blockHeight: 150 } }),
+        transactions: () => ({ transactions: {} }),
     }),
 });
 
 type State = ReturnType<typeof rootReducer>;
-type Wallet = Partial<State['wallet']> & { devices?: State['devices'] };
+type Wallet = Partial<State['wallet']> & { devices?: State['device']['devices'] };
 
-const initStore = ({ accounts, coinjoin, devices }: Wallet = {}) => {
-    const preloadedState: State = JSON.parse(
-        JSON.stringify(rootReducer(undefined, { type: 'init' })),
-    );
-    if (devices) {
-        preloadedState.devices = devices;
-    }
-    if (accounts) {
-        preloadedState.wallet.accounts = accounts;
-    }
-    if (coinjoin) {
-        preloadedState.wallet.coinjoin = {
-            ...preloadedState.wallet.coinjoin,
-            ...coinjoin,
-        };
-    }
+const initStore = ({ accounts, coinjoin, devices }: Wallet = {}) =>
     // State != suite AppState, therefore <any>
-    return configureMockStore<any>({ reducer: rootReducer, preloadedState });
-};
+    configureMockStore<any>({
+        reducer: rootReducer,
+        preloadedState: initPreloadedState({
+            rootReducer,
+            partialState: { device: { devices }, wallet: { accounts, coinjoin } },
+        }),
+    });
 
 describe('coinjoinAccountActions', () => {
     beforeEach(() => {
@@ -72,6 +68,7 @@ describe('coinjoinAccountActions', () => {
         it(`createCoinjoinAccount: ${f.description}`, async () => {
             const store = initStore();
             TrezorConnect.setTestFixtures(f.connect);
+            jest.spyOn(console, 'log').mockImplementation(() => {});
 
             await store.dispatch(coinjoinAccountActions.createCoinjoinAccount(f.params as any)); // params are incomplete
 
@@ -97,10 +94,10 @@ describe('coinjoinAccountActions', () => {
             const store = initStore(f.state as Wallet);
 
             if (f.client) {
-                await CoinjoinService.createInstance(f.client as any);
+                await CoinjoinService.createInstance({ network: f.client as any });
             }
 
-            await store.dispatch(coinjoinAccountActions.stopCoinjoinSession(f.param));
+            await store.dispatch(coinjoinClientActions.stopCoinjoinSession(f.param));
 
             const actions = store.getActions();
             expect(actions.map(a => a.type)).toEqual(f.result.actions);
@@ -123,7 +120,7 @@ describe('coinjoinAccountActions', () => {
             const store = initStore(f.state as Wallet);
 
             if (f.client) {
-                await CoinjoinService.createInstance(f.client as any);
+                await CoinjoinService.createInstance({ network: f.client as any });
             }
 
             await store.dispatch(coinjoinAccountActions.restoreCoinjoinSession(f.param));

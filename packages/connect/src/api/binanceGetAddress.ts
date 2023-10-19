@@ -55,15 +55,16 @@ export default class BinanceGetAddress extends AbstractMethod<'binanceGetAddress
             this.params[0].show_display;
         this.confirmed = useEventListener;
         this.useUi = !useEventListener;
+    }
 
+    get info() {
         // set info
         if (this.params.length === 1) {
-            this.info = `Export Binance address for account #${
+            return `Export Binance address for account #${
                 fromHardened(this.params[0].address_n[2]) + 1
             }`;
-        } else {
-            this.info = 'Export multiple Binance addresses';
         }
+        return 'Export multiple Binance addresses';
     }
 
     getButtonRequestData(code: string) {

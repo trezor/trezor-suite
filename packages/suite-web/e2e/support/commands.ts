@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 /* eslint-disable @typescript-eslint/no-var-requires */
 
-import 'cypress-wait-until';
-
 import {
     onboardingShouldLoad,
     dashboardShouldLoad,
@@ -12,19 +10,25 @@ import { getTestElement, getConfirmActionOnDeviceModal, hoverTestElement } from 
 import { resetDb } from './utils/test-env';
 import {
     toggleDeviceMenu,
+    enableDebugMode,
     toggleDebugModeInSettings,
     passThroughInitialRun,
+    passThroughAuthenticityCheck,
     passThroughBackup,
     passThroughBackupShamir,
     passThroughInitMetadata,
     passThroughSetPin,
     enableRegtestAndGetCoins,
     createAccountFromMyAccounts,
+    interceptDataTrezorIo,
+    findAnalyticsEventByType,
+    enterPinOnBlindMatrix,
 } from './utils/shortcuts';
 import { interceptInvityApi } from './utils/intercept-invity-api';
+import { SuiteAnalyticsEvent } from '@trezor/suite-analytics';
+import { EventPayload, Requests } from './types';
 
 const command = require('cypress-image-snapshot/command');
-const { skipOn, onlyOn } = require('@cypress/skip-test');
 
 const prefixedVisit = (route: string, options?: Partial<Cypress.VisitOptions>) => {
     const baseUrl = Cypress.config('baseUrl');
@@ -95,9 +99,11 @@ declare global {
             dashboardShouldLoad: () => Chainable<Subject>;
             discoveryShouldFinish: () => Chainable<Subject>;
             toggleDeviceMenu: () => Chainable<Subject>;
+            enableDebugMode: () => Chainable<Subject>;
             toggleDebugModeInSettings: () => Chainable<Subject>;
             text: () => Chainable<Subject>;
             passThroughInitialRun: () => Chainable<Subject>;
+            passThroughAuthenticityCheck: () => Chainable<Subject>;
             passThroughBackup: () => Chainable<Subject>;
             passThroughBackupShamir: (shares: number, threshold: number) => Chainable<Subject>;
             passThroughSetPin: () => Chainable<Subject>;
@@ -109,6 +115,12 @@ declare global {
             onlyOn: (nameOrFlag: string | boolean, cb?: () => void) => Cypress.Chainable<any>;
             createAccountFromMyAccounts: (coin: string, label: string) => Chainable<Subject>;
             interceptInvityApi: () => void;
+            interceptDataTrezorIo: (requests: Requests) => Cypress.Chainable<null>;
+            findAnalyticsEventByType: <T extends SuiteAnalyticsEvent>(
+                requests: Requests,
+                eventType: T['type'],
+            ) => Cypress.Chainable<NonNullable<EventPayload<T>>>;
+            enterPinOnBlindMatrix: (entryPinNumber: string) => Cypress.Chainable<null>;
         }
     }
 }
@@ -119,7 +131,9 @@ if (Cypress.env('SNAPSHOT')) {
         failureThresholdType: 'percent', // percent of image or number of pixels
     });
 } else {
-    Cypress.Commands.add('matchImageSnapshot', () => cy.log('skipping image snapshot'));
+    Cypress.Commands.add('matchImageSnapshot', () => {
+        cy.log('skipping image snapshot');
+    });
 }
 
 Cypress.Commands.add('prefixedVisit', prefixedVisit);
@@ -135,19 +149,21 @@ Cypress.Commands.add('hoverTestElement', hoverTestElement);
 
 // various shortcuts
 Cypress.Commands.add('toggleDeviceMenu', toggleDeviceMenu);
+Cypress.Commands.add('enableDebugMode', enableDebugMode);
 Cypress.Commands.add('toggleDebugModeInSettings', toggleDebugModeInSettings);
 Cypress.Commands.add('passThroughInitialRun', passThroughInitialRun);
+Cypress.Commands.add('passThroughAuthenticityCheck', passThroughAuthenticityCheck);
 Cypress.Commands.add('passThroughBackup', passThroughBackup);
 Cypress.Commands.add('passThroughBackupShamir', passThroughBackupShamir);
 Cypress.Commands.add('passThroughInitMetadata', passThroughInitMetadata);
 Cypress.Commands.add('passThroughSetPin', passThroughSetPin);
 // @ts-expect-error
 Cypress.Commands.add('enableRegtestAndGetCoins', enableRegtestAndGetCoins);
-// redux
-// skip tests conditionally
-Cypress.Commands.add('skipOn', skipOn);
-Cypress.Commands.add('onlyOn', onlyOn);
 
 Cypress.Commands.add('text', { prevSubject: true }, subject => subject.text());
 Cypress.Commands.add('createAccountFromMyAccounts', createAccountFromMyAccounts);
 Cypress.Commands.add('interceptInvityApi', interceptInvityApi);
+Cypress.Commands.add('interceptDataTrezorIo', interceptDataTrezorIo);
+
+Cypress.Commands.add('findAnalyticsEventByType', findAnalyticsEventByType);
+Cypress.Commands.add('enterPinOnBlindMatrix', enterPinOnBlindMatrix);

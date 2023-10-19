@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
 import { Box, Text } from '@suite-native/atoms';
@@ -10,7 +10,7 @@ import {
     TransactionsRootState,
 } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
-import { Icon } from '@trezor/icons';
+import { Icon } from '@suite-common/icons';
 
 type TransactionDetailStatusSectionProps = {
     txid: string;
@@ -37,6 +37,13 @@ const borderLineStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.backgroundNeutralSubdued,
     height: 25,
     width: 1,
+}));
+
+const confirmationContainerStyle = prepareNativeStyle(_ => ({
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flexWrap: 'wrap',
 }));
 
 const VerticalSeparator = () => {
@@ -94,7 +101,7 @@ export const TransactionDetailStatusSection = ({
                 </Box>
             }
         >
-            <Box flexDirection="row" justifyContent="space-between" alignItems="center">
+            <Box style={applyStyle(confirmationContainerStyle)}>
                 <Text
                     variant="hint"
                     color={isTransactionPending ? 'textAlertYellow' : 'textPrimaryDefault'}

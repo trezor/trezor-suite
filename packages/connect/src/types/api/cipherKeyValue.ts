@@ -1,7 +1,7 @@
-import type { Params, BundledParams, Response } from '../params';
+import type { Params, BundledParams, Response, DerivationPath } from '../params';
 
 export interface CipherKeyValue {
-    path: string | number[];
+    path: DerivationPath;
     key: string;
     value: string | Buffer;
     encrypt?: boolean;

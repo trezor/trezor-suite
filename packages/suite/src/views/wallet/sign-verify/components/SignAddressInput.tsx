@@ -1,13 +1,12 @@
-import React from 'react';
 import { components } from 'react-select';
 import styled from 'styled-components';
 import { Select, SelectProps } from '@trezor/components';
-import type { Account } from '@wallet-types';
-import type { State as RevealedAddresses } from '@wallet-reducers/receiveReducer';
+import type { Account } from 'src/types/wallet';
+import type { State as RevealedAddresses } from 'src/reducers/wallet/receiveReducer';
 import {
     useSignAddressOptions,
     AddressItem,
-} from '@wallet-hooks/sign-verify/useSignAddressOptions';
+} from 'src/hooks/wallet/sign-verify/useSignAddressOptions';
 import { HiddenAddressRow } from './HiddenAddressRow';
 import { VerifyAddressButton } from './VerifyAddressButton';
 

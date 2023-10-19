@@ -1,18 +1,19 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import EventEmitter from 'events';
+
+import { TRANSPORT, TRANSPORT_ERROR } from '@trezor/transport';
+import { createDeferred, Deferred } from '@trezor/utils';
+
 import { DataManager } from '../data/DataManager';
 import { DeviceList } from '../device/DeviceList';
 import { enhancePostMessageWithAnalytics } from '../data/analyticsInfo';
-
 import { ERRORS } from '../constants';
-
 import {
     CORE_EVENT,
     RESPONSE_EVENT,
     UI,
     POPUP,
     IFRAME,
-    TRANSPORT,
     DEVICE,
     createUiMessage,
     createPopupMessage,
@@ -22,16 +23,15 @@ import {
     TransportInfo,
     CoreMessage,
     UiPromise,
+    AnyUiPromise,
+    UiPromiseCreator,
     UiPromiseResponse,
 } from '../events';
 import { getMethod } from './method';
-
-import { create as createDeferred, Deferred } from '../utils/deferred';
 import { resolveAfter } from '../utils/promiseUtils';
-import { initLog, enableLog } from '../utils/debug';
+import { initLog, enableLog, setLogWriter, LogWriter } from '../utils/debug';
 import { dispose as disposeBackend } from '../backend/BlockchainLink';
 import { InteractionTimeout } from '../utils/interactionTimeout';
-
 import type { DeviceEvents, Device } from '../device/Device';
 import type { ConnectSettings, CommonParams, Device as DeviceTyped } from '../types';
 
@@ -41,11 +41,12 @@ type AbstractMethod = ReturnType<typeof getMethod>;
 let _core: Core; // Class with event emitter
 let _deviceList: DeviceList | undefined; // Instance of DeviceList
 let _popupPromise: Deferred<void> | undefined; // Waiting for popup handshake
-let _uiPromises: UiPromise<UiPromiseResponse['type']>[] = []; // Waiting for ui response
+const _uiPromises: AnyUiPromise[] = []; // Waiting for ui response
 const _callMethods: AbstractMethod[] = []; // generic type is irrelevant. only common functions are called at this level
 let _preferredDevice: CommonParams['device'];
 let _interactionTimeout: InteractionTimeout;
 let _deviceListInitTimeout: ReturnType<typeof setTimeout> | undefined;
+let _overridePromise: Promise<void> | undefined;
 
 // custom log
 const _log = initLog('Core');
@@ -100,9 +101,12 @@ const interactionTimeout = () =>
  * @returns {Deferred<UiPromise>}
  * @memberof Core
  */
-const createUiPromise = <T extends UiPromiseResponse['type']>(promiseEvent: T, device?: Device) => {
-    const uiPromise: UiPromise<T> = createDeferred(promiseEvent, device);
-    _uiPromises.push(uiPromise as any);
+const createUiPromise: UiPromiseCreator = (promiseEvent, device) => {
+    const uiPromise: UiPromise<typeof promiseEvent> = {
+        ...createDeferred(promiseEvent),
+        device,
+    };
+    _uiPromises.push(uiPromise as unknown as AnyUiPromise);
 
     // Interaction timeout
     interactionTimeout();
@@ -120,30 +124,17 @@ const findUiPromise = <T extends UiPromiseResponse['type']>(promiseEvent: T) =>
     _uiPromises.find(p => p.id === promiseEvent) as UiPromise<T> | undefined;
 
 const removeUiPromise = (promise: Deferred<any>) => {
-    _uiPromises = _uiPromises.filter(p => p !== promise);
+    _uiPromises.splice(0).push(..._uiPromises.filter(p => p !== promise));
 };
 
 /**
  * Handle incoming message.
  * @param {CoreMessage} message
- * @param {boolean} isTrustedOrigin
  * @returns {void}
  * @memberof Core
  */
-export const handleMessage = (message: CoreMessage, isTrustedOrigin = false) => {
-    _log.debug('handleMessage', isTrustedOrigin, message);
-
-    const safeMessages: CoreMessage['type'][] = [
-        IFRAME.CALL,
-        POPUP.CLOSED,
-        // UI.CHANGE_SETTINGS,
-        UI.LOGIN_CHALLENGE_RESPONSE,
-        TRANSPORT.DISABLE_WEBUSB,
-    ];
-
-    if (!isTrustedOrigin && safeMessages.indexOf(message.type) === -1) {
-        return;
-    }
+export const handleMessage = (message: CoreMessage) => {
+    _log.debug('handleMessage', message);
 
     switch (message.type) {
         case POPUP.HANDSHAKE:
@@ -312,13 +303,18 @@ export const onCall = async (message: CoreMessage) => {
         method.createUiPromise = createUiPromise;
         // start validation process
         method.init();
+
+        _callMethods.push(method);
+
+        if (method.initAsync) {
+            method.initAsyncPromise = method.initAsync();
+            await method.initAsyncPromise;
+        }
     } catch (error) {
         postMessage(createPopupMessage(POPUP.CANCEL_POPUP_REQUEST));
         postMessage(createResponseMessage(responseID, false, { error }));
         return Promise.resolve();
     }
-
-    _callMethods.push(method);
 
     // this method is not using the device, there is no need to acquire
     if (!method.useDevice) {
@@ -390,7 +386,8 @@ export const onCall = async (message: CoreMessage) => {
         // interrupt potential communication with device. this should throw error in try/catch block below
         // this error will apply to the last item of pending methods
         const overrideError = ERRORS.TypedError('Method_Override');
-        await device.override(overrideError);
+        _overridePromise = device.override(overrideError);
+        await _overridePromise;
         // if current method was overridden while waiting for device.override result
         // return response with status false
         if (method.overridden) {
@@ -497,7 +494,7 @@ export const onCall = async (message: CoreMessage) => {
 
             const deviceNeedsBackup = device.features.needs_backup;
             if (deviceNeedsBackup && typeof method.noBackupConfirmation === 'function') {
-                const permitted = await method.noBackupConfirmation();
+                const permitted = await method.noBackupConfirmation(!isUsingPopup);
                 if (!permitted) {
                     // interrupt process and go to "final" block
                     return Promise.reject(ERRORS.TypedError('Method_PermissionsNotGranted'));
@@ -530,6 +527,7 @@ export const onCall = async (message: CoreMessage) => {
             }
 
             // Make sure that device will display pin/passphrase
+            const isDeviceUnlocked = device.features.unlocked;
             try {
                 const invalidDeviceState = method.useDeviceState
                     ? await device.validateState(method.network, method.preauthorized)
@@ -563,10 +561,8 @@ export const onCall = async (message: CoreMessage) => {
                 }
             } catch (error) {
                 // catch wrong pin error
-                if (
-                    error.message === ERRORS.INVALID_PIN_ERROR_MESSAGE &&
-                    PIN_TRIES < MAX_PIN_TRIES
-                ) {
+                // PinMatrixAck returns { code: "Failure_PinInvalid", message: "PIN invalid"}
+                if (error.message.includes('PIN invalid') && PIN_TRIES < MAX_PIN_TRIES) {
                     PIN_TRIES++;
                     postMessage(
                         createUiMessage(UI.INVALID_PIN, { device: device.toMessageObject() }),
@@ -580,6 +576,12 @@ export const onCall = async (message: CoreMessage) => {
                 device.setInternalState(undefined);
                 // interrupt process and go to "final" block
                 return Promise.reject(error);
+            }
+
+            // emit additional CHANGE event if device becomes unlocked after authorization
+            // features were automatically updated after PinMatrixAck in DeviceCommands
+            if (!isDeviceUnlocked && device.features.unlocked) {
+                postMessage(createDeviceMessage(DEVICE.CHANGED, device.toMessageObject()));
             }
 
             if (method.useUi) {
@@ -600,6 +602,9 @@ export const onCall = async (message: CoreMessage) => {
         };
 
         // run inner function
+        if (_overridePromise) {
+            await _overridePromise;
+        }
         await device.run(inner, {
             keepSession: method.keepSession,
             useEmptyPassphrase: method.useEmptyPassphrase,
@@ -619,12 +624,15 @@ export const onCall = async (message: CoreMessage) => {
             // thrown while acquiring device
             // it's a race condition between two tabs
             // workaround is to enumerate transport again and report changes to get a valid session number
-            if (_deviceList && error.message === ERRORS.WRONG_PREVIOUS_SESSION_ERROR_MESSAGE) {
-                _deviceList.enumerate();
+            if (_deviceList && error.message === TRANSPORT_ERROR.SESSION_WRONG_PREVIOUS) {
+                await _deviceList.enumerate();
             }
             messageResponse = createResponseMessage(method.responseID, false, { error });
         }
     } finally {
+        if (_overridePromise) {
+            await _overridePromise;
+        }
         // Work done
 
         // TODO: This requires a massive refactoring https://github.com/trezor/trezor-suite/issues/5323
@@ -638,8 +646,14 @@ export const onCall = async (message: CoreMessage) => {
                 await resolveAfter(1000).promise;
                 // call Device.run with empty function to fetch new Features
                 // (acquire > Initialize > nothing > release)
-                await device.run(() => Promise.resolve(), { skipFinalReload: true });
+                try {
+                    await device.run(() => Promise.resolve(), { skipFinalReload: true });
+                } catch (err) {
+                    // ignore. on model T, this block of code is probably not needed at all. but I am keeping it here for
+                    // backwards compatibility
+                }
             }
+
             await device.cleanup();
 
             closePopup();
@@ -649,7 +663,6 @@ export const onCall = async (message: CoreMessage) => {
                 method.dispose();
             }
 
-            // restore default messages
             if (_deviceList) {
                 if (response.success) {
                     _deviceList.removeAuthPenalty(device);
@@ -668,7 +681,7 @@ export const onCall = async (message: CoreMessage) => {
 const cleanup = () => {
     // closePopup(); // this causes problem when action is interrupted (example: bootloader mode)
     _popupPromise = undefined;
-    _uiPromises = []; // TODO: remove only promises with params callId
+    _uiPromises.splice(0);
     _interactionTimeout.stop();
     _log.debug('Cleanup...');
 };
@@ -693,7 +706,7 @@ const closePopup = () => {
  * @memberof Core
  */
 const onDeviceButtonHandler = async (
-    ...[device, request, method]: [...DeviceEvents['button'], AbstractMethod]
+    ...[device, request, method]: [...Parameters<DeviceEvents['button']>, AbstractMethod]
 ) => {
     // wait for popup handshake
     const addressRequest = request.code === 'ButtonRequest_Address';
@@ -730,7 +743,7 @@ const onDeviceButtonHandler = async (
  * @returns {Promise<void>}
  * @memberof Core
  */
-const onDevicePinHandler = async (...[device, type, callback]: DeviceEvents['pin']) => {
+const onDevicePinHandler: DeviceEvents['pin'] = async (...[device, type, callback]) => {
     // wait for popup handshake
     await getPopupPromise().promise;
     // create ui promise
@@ -743,7 +756,7 @@ const onDevicePinHandler = async (...[device, type, callback]: DeviceEvents['pin
     callback(null, uiResp.payload);
 };
 
-const onDeviceWordHandler = async (...[device, type, callback]: DeviceEvents['word']) => {
+const onDeviceWordHandler: DeviceEvents['word'] = async (...[device, type, callback]) => {
     // wait for popup handshake
     await getPopupPromise().promise;
     // create ui promise
@@ -761,7 +774,7 @@ const onDeviceWordHandler = async (...[device, type, callback]: DeviceEvents['wo
  * @returns {Promise<void>}
  * @memberof Core
  */
-const onDevicePassphraseHandler = async (...[device, callback]: DeviceEvents['passphrase']) => {
+const onDevicePassphraseHandler: DeviceEvents['passphrase'] = async (...[device, callback]) => {
     // wait for popup handshake
     await getPopupPromise().promise;
     // create ui promise
@@ -786,7 +799,7 @@ const onDevicePassphraseHandler = async (...[device, callback]: DeviceEvents['pa
  * @returns {Promise<void>}
  * @memberof Core
  */
-const onEmptyPassphraseHandler = (...[_, callback]: DeviceEvents['passphrase']) => {
+const onEmptyPassphraseHandler: DeviceEvents['passphrase'] = (...[_, callback]) => {
     // send as PassphrasePromptResponse
     callback({ passphrase: '' });
 };
@@ -805,7 +818,7 @@ const onPopupClosed = (customErrorMessage?: string) => {
         _deviceList.allDevices().forEach(d => {
             d.keepSession = false; // clear session on release
             if (d.isUsedHere()) {
-                d.interruptionFromUser(error);
+                _overridePromise = d.interruptionFromUser(error);
             } else {
                 const uiPromise = findUiPromise(DEVICE.DISCONNECT);
                 if (uiPromise) {
@@ -825,7 +838,7 @@ const onPopupClosed = (customErrorMessage?: string) => {
             _uiPromises.forEach(p => {
                 p.reject(error);
             });
-            _uiPromises = [];
+            _uiPromises.splice(0);
         }
         if (_popupPromise) {
             _popupPromise.reject(error);
@@ -874,7 +887,7 @@ const handleDeviceSelectionChanges = (interruptDevice?: DeviceTyped) => {
         const { path } = interruptDevice;
         let shouldClosePopup = false;
         _uiPromises.forEach(p => {
-            if (p.data && p.data.getDevicePath() === path) {
+            if (p.device && p.device.getDevicePath() === path) {
                 if (p.id === DEVICE.DISCONNECT) {
                     p.resolve({ type: DEVICE.DISCONNECT });
                 }
@@ -922,8 +935,9 @@ const initDeviceList = async (settings: ConnectSettings) => {
             postMessage(createDeviceMessage(DEVICE.CHANGED, device));
         });
 
-        _deviceList.on(TRANSPORT.ERROR, async error => {
+        _deviceList.on(TRANSPORT.ERROR, error => {
             _log.warn('TRANSPORT.ERROR', error);
+
             if (_deviceList) {
                 _deviceList.disconnectDevices();
                 _deviceList.dispose();
@@ -936,8 +950,9 @@ const initDeviceList = async (settings: ConnectSettings) => {
             if (settings.transportReconnect) {
                 const { promise, timeout } = resolveAfter(1000, null);
                 _deviceListInitTimeout = timeout;
-                await promise;
-                initDeviceList(settings);
+                promise.then(() => {
+                    initDeviceList(settings);
+                });
             }
         });
 
@@ -945,7 +960,7 @@ const initDeviceList = async (settings: ConnectSettings) => {
             postMessage(createTransportMessage(TRANSPORT.START, transportType)),
         );
 
-        await _deviceList.init();
+        _deviceList.init();
         if (_deviceList) {
             await _deviceList.waitForTransportFirstEvent();
         }
@@ -970,8 +985,8 @@ const initDeviceList = async (settings: ConnectSettings) => {
  * @memberof Core
  */
 export class Core extends EventEmitter {
-    handleMessage(message: any, isTrustedOrigin: boolean) {
-        handleMessage(message, isTrustedOrigin);
+    handleMessage(message: any) {
+        handleMessage(message);
     }
 
     async dispose() {
@@ -989,42 +1004,30 @@ export class Core extends EventEmitter {
         return _callMethods;
     }
 
-    getTransportInfo(): TransportInfo {
-        if (_deviceList) {
-            return _deviceList.getTransportInfo();
+    getTransportInfo(): TransportInfo | undefined {
+        if (!_deviceList) {
+            return undefined;
         }
-
-        return {
-            type: '',
-            version: '',
-            outdated: true,
-        };
+        return _deviceList.getTransportInfo();
     }
 }
 
 /**
- * Init instance of Core event emitter.
- * @returns {Core}
- * @memberof Core
- */
-export const initCore = () => {
-    _core = new Core();
-    return _core;
-};
-
-/**
  * Module initialization.
- * This will download the config.json, start DeviceList, init Core emitter instance.
+ * This will download the config.json, init Core emitter instance.
  * Returns Core, an event emitter instance.
  * @param {Object} settings - optional // TODO
  * @returns {Promise<Core>}
  * @memberof Core
  */
-export const init = async (settings: ConnectSettings) => {
+export const initCore = async (settings: ConnectSettings, logWriterFactory?: () => LogWriter) => {
+    if (logWriterFactory) {
+        setLogWriter(logWriterFactory);
+    }
     try {
         await DataManager.load(settings);
         enableLog(DataManager.getSettings('debug'));
-        initCore();
+        _core = new Core();
 
         // If we're not in popup mode, set the interaction timeout to 0 (= disabled)
         _interactionTimeout = new InteractionTimeout(
@@ -1060,13 +1063,16 @@ const disableWebUSBTransport = async () => {
     // override settings
     const settings = DataManager.getSettings();
 
-    if (settings.transports?.includes('WebUsbTransport')) {
-        settings.transports.splice(settings.transports.indexOf('WebUsbTransport'), 1);
-    }
-
-    // adding BridgeTransport here is probably not needed since there is fallback in DeviceList if transport settings is empty
-    if (!settings.transports?.includes('BridgeTransport')) {
-        settings.transports!.unshift('BridgeTransport');
+    if (settings.transports) {
+        const transportStr = settings.transports?.filter(
+            transport => typeof transport !== 'object',
+        );
+        if (transportStr.includes('WebUsbTransport')) {
+            settings.transports.splice(settings.transports.indexOf('WebUsbTransport'), 1);
+        }
+        if (!transportStr.includes('BridgeTransport')) {
+            settings.transports!.unshift('BridgeTransport');
+        }
     }
 
     try {

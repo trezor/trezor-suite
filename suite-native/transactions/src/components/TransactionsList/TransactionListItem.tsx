@@ -1,4 +1,3 @@
-import React, { memo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { AccountKey, TransactionType } from '@suite-common/wallet-types';
@@ -71,41 +70,41 @@ export const TransactionListItemValues = ({
     );
 };
 
-export const TransactionListItem = memo(
-    ({
-        transaction,
-        accountKey,
-        areTokensIncluded,
-        isFirst = false,
-        isLast = false,
-    }: TransactionListItemProps) => {
-        const includedCoinsCount = areTokensIncluded ? transaction.tokens.length : 0;
+export const TransactionListItem = ({
+    transaction,
+    accountKey,
+    areTokensIncluded,
+    isFirst = false,
+    isLast = false,
+}: TransactionListItemProps) => {
+    const includedCoinsCount = areTokensIncluded ? transaction.tokens.length : 0;
 
-        const isTokenOnlyTransaction =
-            areTokensIncluded && transaction.amount === '0' && transaction.tokens.length !== 0;
+    const isTokenOnlyTransaction =
+        areTokensIncluded && transaction.amount === '0' && transaction.tokens.length !== 0;
 
-        if (isTokenOnlyTransaction)
-            return (
-                <TokenTransferListItem
-                    accountKey={accountKey}
-                    txid={transaction.txid}
-                    tokenTransfer={transaction.tokens[0]}
-                    includedCoinsCount={transaction.tokens.length - 1}
-                />
-            );
-
+    if (isTokenOnlyTransaction)
         return (
-            <TransactionListItemContainer
-                networkSymbol={transaction.symbol}
-                txid={transaction.txid}
-                transactionType={transaction.type}
+            <TokenTransferListItem
                 accountKey={accountKey}
-                includedCoinsCount={includedCoinsCount}
-                isFirst={isFirst}
-                isLast={isLast}
-            >
-                <TransactionListItemValues accountKey={accountKey} transaction={transaction} />
-            </TransactionListItemContainer>
+                txid={transaction.txid}
+                tokenTransfer={transaction.tokens[0]}
+                includedCoinsCount={transaction.tokens.length - 1}
+            />
         );
-    },
-);
+
+    return (
+        <TransactionListItemContainer
+            networkSymbol={transaction.symbol}
+            txid={transaction.txid}
+            transactionType={transaction.type}
+            accountKey={accountKey}
+            includedCoinsCount={includedCoinsCount}
+            isFirst={isFirst}
+            isLast={isLast}
+        >
+            <TransactionListItemValues accountKey={accountKey} transaction={transaction} />
+        </TransactionListItemContainer>
+    );
+};
+
+TransactionListItem.displayName = 'TransactionListItem';

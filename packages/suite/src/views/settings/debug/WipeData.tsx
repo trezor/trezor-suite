@@ -1,11 +1,10 @@
-import React from 'react';
 import styled from 'styled-components';
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
-import { useSelector, useActions } from '@suite-hooks';
-import { useAnchor } from '@suite-hooks/useAnchor';
+import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { SettingsAnchor } from '@suite-constants/anchors';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 const UserDataLink = styled.span`
     cursor: pointer;
@@ -16,10 +15,8 @@ const UserDataLink = styled.span`
 
 export const WipeData = () => {
     const userDataDir = useSelector(state => state.desktop?.paths.userDir);
+    const dispatch = useDispatch();
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.WipeData);
-    const { addToast } = useActions({
-        addToast: notificationsActions.addToast,
-    });
 
     return (
         <SectionItem
@@ -38,10 +35,12 @@ export const WipeData = () => {
                                 const result = await desktopApi.openUserDataDirectory();
 
                                 if (!result.success) {
-                                    addToast({
-                                        type: 'error',
-                                        error: result.error,
-                                    });
+                                    dispatch(
+                                        notificationsActions.addToast({
+                                            type: 'error',
+                                            error: result.error,
+                                        }),
+                                    );
                                 }
                             }}
                         >

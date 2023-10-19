@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { CommonActions, RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import {
@@ -10,7 +8,7 @@ import {
     StackNavigationProps,
 } from '@suite-native/navigation';
 import { AccountsList } from '@suite-native/accounts';
-import { AccountKey, TokenSymbol } from '@suite-common/wallet-types';
+import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 
 import { ReceiveAccount } from '../components/ReceiveAccount';
 
@@ -20,18 +18,19 @@ export const ReceiveModal = () => {
     const navigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.ReceiveModal>>();
 
-    const handleSelectAccount = (accountKey: AccountKey, tokenSymbol?: TokenSymbol) => {
+    const handleSelectAccount = (accountKey: AccountKey, tokenContract?: TokenAddress) => {
         navigation.dispatch({
-            ...CommonActions.setParams({ accountKey, tokenSymbol }),
+            ...CommonActions.setParams({ accountKey, tokenContract }),
         });
     };
 
     return (
-        <Screen header={<ScreenHeader />}>
+        <Screen header={<ScreenHeader content="Receive address" />}>
             {route.params?.accountKey ? (
                 <ReceiveAccount
                     accountKey={route.params.accountKey}
-                    tokenSymbol={route.params?.tokenSymbol}
+                    tokenContract={route.params?.tokenContract}
+                    isAccountChangeAllowed={false}
                 />
             ) : (
                 <AccountsList onSelectAccount={handleSelectAccount} />

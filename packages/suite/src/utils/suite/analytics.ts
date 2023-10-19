@@ -1,6 +1,3 @@
-import { AppState } from '@suite-types';
-import { AccountTransactionBaseAnchor } from '@suite-constants/anchors';
-
 import { AppUpdateEvent } from '@trezor/suite-analytics';
 import {
     getScreenWidth,
@@ -16,6 +13,10 @@ import {
 import { getCustomBackends } from '@suite-common/wallet-utils';
 import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
 import type { UpdateInfo } from '@trezor/suite-desktop-api';
+import { selectDevices } from '@suite-common/wallet-core';
+
+import { AccountTransactionBaseAnchor } from 'src/constants/suite/anchors';
+import { AppState } from 'src/types/suite';
 
 import { getIsTorEnabled } from './tor';
 
@@ -27,6 +28,9 @@ export const redactTransactionIdFromAnchor = (anchor?: string) => {
 
     return anchor.startsWith(AccountTransactionBaseAnchor) ? AccountTransactionBaseAnchor : anchor;
 };
+
+// 1. replace coinjoin by taproot
+export const redactRouterUrl = (url: string) => url.replace(/coinjoin/g, 'taproot');
 
 export const getSuiteReadyPayload = (state: AppState) => ({
     language: state.suite.settings.language,
@@ -41,9 +45,15 @@ export const getSuiteReadyPayload = (state: AppState) => ({
     screenHeight: getScreenHeight(),
     platformLanguages: getPlatformLanguages().join(','),
     tor: getIsTorEnabled(state.suite.torStatus),
-    labeling: state.metadata.enabled ? state.metadata.provider?.type || 'missing-provider' : '',
-    rememberedStandardWallets: state.devices.filter(d => d.remember && d.useEmptyPassphrase).length,
-    rememberedHiddenWallets: state.devices.filter(d => d.remember && !d.useEmptyPassphrase).length,
+    // todo: duplicated with suite/src/utils/suite/logUtils
+    labeling: state.metadata.enabled
+        ? state.metadata.providers.find(p => p.clientId === state.metadata.selectedProvider.labels)
+              ?.type || 'missing-provider'
+        : '',
+    rememberedStandardWallets: selectDevices(state).filter(d => d.remember && d.useEmptyPassphrase)
+        .length,
+    rememberedHiddenWallets: selectDevices(state).filter(d => d.remember && !d.useEmptyPassphrase)
+        .length,
     theme: state.suite.settings.theme.variant,
     suiteVersion: process.env.VERSION || '',
     earlyAccessProgram: state.desktopUpdate.allowPrerelease,

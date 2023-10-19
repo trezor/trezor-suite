@@ -1,27 +1,39 @@
 import { MiddlewareAPI } from 'redux';
 import BigNumber from 'bignumber.js';
-import { SUITE, ROUTER } from '@suite-actions/constants';
-import { COINJOIN, DISCOVERY } from '@wallet-actions/constants';
-import { getPhysicalDeviceCount } from '@suite-utils/device';
-import { getSuiteReadyPayload, redactTransactionIdFromAnchor } from '@suite-utils/analytics';
-import type { AppState, Action, Dispatch } from '@suite-types';
 
+import { getPhysicalDeviceCount } from '@suite-common/suite-utils';
+import {
+    discoveryActions,
+    selectDevices,
+    selectDevicesCount,
+    deviceActions,
+} from '@suite-common/wallet-core';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { TRANSPORT, DEVICE } from '@trezor/connect';
 import {
     getBootloaderHash,
     getBootloaderVersion,
-    getDeviceModel,
     getFirmwareRevision,
     getFirmwareVersion,
+    hasBitcoinOnlyFirmware,
     isDeviceInBootloaderMode,
 } from '@trezor/device-utils';
 import { analyticsActions } from '@suite-common/analytics';
+
+import { SUITE, ROUTER } from 'src/actions/suite/constants';
+import { COINJOIN } from 'src/actions/wallet/constants';
+import {
+    getSuiteReadyPayload,
+    redactRouterUrl,
+    redactTransactionIdFromAnchor,
+} from 'src/utils/suite/analytics';
+import type { AppState, Action, Dispatch } from 'src/types/suite';
 import {
     selectAnonymityGainToReportByAccountKey,
     selectCoinjoinAccountByKey,
-} from '@wallet-reducers/coinjoinReducer';
-import { updateLastAnonymityReportTimestamp } from '@wallet-actions/coinjoinAccountActions';
+} from 'src/reducers/wallet/coinjoinReducer';
+import { updateLastAnonymityReportTimestamp } from 'src/actions/wallet/coinjoinAccountActions';
+import { Account } from '@suite-common/wallet-types';
 
 /*
     In analytics middleware we may intercept actions we would like to log. For example:
@@ -37,6 +49,13 @@ const analyticsMiddleware =
         next(action);
 
         const state = api.getState();
+
+        if (deviceActions.authDevice.match(action)) {
+            analytics.report({
+                type: EventType.SelectWalletType,
+                payload: { type: action.payload.device.walletNumber ? 'hidden' : 'standard' },
+            });
+        }
 
         switch (action.type) {
             case SUITE.READY:
@@ -80,11 +99,11 @@ const analyticsMiddleware =
                             backup_type: features.backup_type || 'Bip39',
                             pin_protection: features.pin_protection,
                             passphrase_protection: features.passphrase_protection,
-                            totalInstances: state.devices.length,
-                            isBitcoinOnly: action.payload.firmwareType === 'bitcoin-only',
-                            totalDevices: getPhysicalDeviceCount(state.devices),
+                            totalInstances: selectDevicesCount(state),
+                            isBitcoinOnly: hasBitcoinOnlyFirmware(action.payload),
+                            totalDevices: getPhysicalDeviceCount(selectDevices(state)),
                             language: features.language,
-                            model: getDeviceModel(action.payload),
+                            model: features.internal_model,
                         },
                     });
                 } else {
@@ -102,14 +121,22 @@ const analyticsMiddleware =
             case DEVICE.DISCONNECT:
                 analytics.report({ type: EventType.DeviceDisconnect });
                 break;
-            case DISCOVERY.COMPLETE: {
+            case discoveryActions.completeDiscovery.type: {
+                const accumulateAccountCountBySymbolAndType = (
+                    acc: { [key: string]: number },
+                    { symbol, accountType }: Account,
+                ) => {
+                    // change coinjoin accounts to taproot for analytics
+                    const accType = accountType === 'coinjoin' ? 'taproot' : accountType;
+
+                    const id = `${symbol}_${accType}`;
+                    acc[id] = (acc[id] || 0) + 1;
+                    return acc;
+                };
+
                 const accountsWithTransactions = state.wallet.accounts
                     .filter(account => account.history.total + (account.history.unconfirmed || 0))
-                    .reduce((acc: { [key: string]: number }, obj) => {
-                        const id = `${obj.symbol}_${obj.accountType}`;
-                        acc[id] = (acc[id] || 0) + 1;
-                        return acc;
-                    }, {});
+                    .reduce(accumulateAccountCountBySymbolAndType, {});
 
                 const accountsWithNonZeroBalance = state.wallet.accounts
                     .filter(
@@ -121,16 +148,12 @@ const analyticsMiddleware =
                                 ).length,
                             ).gt(0),
                     )
-                    .reduce((acc: { [key: string]: number }, obj) => {
-                        const id = `${obj.symbol}_${obj.accountType}`;
-                        acc[id] = (acc[id] || 0) + 1;
-                        return acc;
-                    }, {});
+                    .reduce(accumulateAccountCountBySymbolAndType, {});
 
                 const accountsWithTokens = state.wallet.accounts
                     .filter(account => new BigNumber((account.tokens || []).length).gt(0))
-                    .reduce((acc: { [key: string]: number }, obj) => {
-                        acc[obj.symbol] = (acc[obj.symbol] || 0) + 1;
+                    .reduce((acc: { [key: string]: number }, { symbol }: Account) => {
+                        acc[symbol] = (acc[symbol] || 0) + 1;
                         return acc;
                     }, {});
 
@@ -158,8 +181,8 @@ const analyticsMiddleware =
                     analytics.report({
                         type: EventType.RouterLocationChange,
                         payload: {
-                            prevRouterUrl,
-                            nextRouterUrl: action.payload.url,
+                            prevRouterUrl: redactRouterUrl(prevRouterUrl),
+                            nextRouterUrl: redactRouterUrl(action.payload.url),
                             anchor: redactTransactionIdFromAnchor(action.payload.anchor),
                         },
                     });
@@ -170,18 +193,12 @@ const analyticsMiddleware =
                     analytics.report({
                         type: EventType.RouterLocationChange,
                         payload: {
-                            prevRouterUrl,
-                            nextRouterUrl: prevRouterUrl,
+                            prevRouterUrl: redactRouterUrl(prevRouterUrl),
+                            nextRouterUrl: redactRouterUrl(prevRouterUrl),
                             anchor: redactTransactionIdFromAnchor(action.payload),
                         },
                     });
                 }
-                break;
-            case SUITE.AUTH_DEVICE:
-                analytics.report({
-                    type: EventType.SelectWalletType,
-                    payload: { type: action.payload.walletNumber ? 'hidden' : 'standard' },
-                });
                 break;
             case COINJOIN.SESSION_COMPLETED:
             case COINJOIN.SESSION_PAUSE:

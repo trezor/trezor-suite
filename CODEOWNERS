@@ -38,7 +38,7 @@
 
 /packages/icons @trezor/suite-mobile
 
-/packages/message-system @tomasklim @matejkriz
+/suite-common/message-system @tomasklim @matejkriz
 
 /packages/suite @tomasklim @matejkriz
 
@@ -78,6 +78,6 @@
 
 /translations @alex-jerechinsky
 
-/packages/suite/src/support/messages.ts @alex-jerechinsky @sime
+/packages/suite/src/support/messages.ts @alex-jerechinsky
 
 /suite-common/graph @trezor/suite-mobile @Nodonisko

@@ -1,5 +1,5 @@
-import type { Dispatch, GetState } from '@suite-types';
-import type { PollingKey } from '@wallet-types/polling';
+import type { Dispatch, GetState } from 'src/types/suite';
+import type { PollingKey } from 'src/types/wallet/polling';
 import { POLLING } from './constants';
 
 export type PollingAction =

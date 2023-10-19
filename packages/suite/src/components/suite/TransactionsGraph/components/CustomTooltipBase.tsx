@@ -1,13 +1,13 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 
 import styled from 'styled-components';
-import { Translation, FormattedDate } from '@suite-components';
+import { Translation, FormattedDate } from 'src/components/suite';
 import { TooltipProps } from 'recharts';
 
 import { variables } from '@trezor/components';
 
 import { Props as GraphProps } from '../definitions';
-import { CommonAggregatedHistory } from '../../../../types/wallet/graph';
+import { CommonAggregatedHistory } from 'src/types/wallet/graph';
 
 // Used for triggering custom Tooltip alignment
 const OFFSET_LIMIT_HORIZONTAL = 125;

@@ -1,16 +1,15 @@
-import React from 'react';
-
+import { firmwareActions, selectUseDevkit } from '@suite-common/wallet-core';
 import { Switch } from '@trezor/components';
-import { ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
-import { useSelector, useDispatch } from '@suite-hooks';
-import { toggleUseDevkit } from '@firmware-actions/firmwareActions';
+
+import { useSelector, useDispatch } from 'src/hooks/suite';
+import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';
 
 export const Devkit = () => {
     const dispatch = useDispatch();
-    const useDevkit = useSelector(state => state.firmware.useDevkit);
+    const useDevkit = useSelector(selectUseDevkit);
 
     const onChangeRegularCheck = () => {
-        dispatch(toggleUseDevkit(!useDevkit));
+        dispatch(firmwareActions.toggleUseDevkit(!useDevkit));
     };
 
     return (

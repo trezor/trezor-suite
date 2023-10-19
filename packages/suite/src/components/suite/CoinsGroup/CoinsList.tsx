@@ -1,17 +1,20 @@
-import React from 'react';
 import styled from 'styled-components';
+
+import { getCoinUnavailabilityMessage } from '@suite-common/suite-utils';
 import { Tooltip } from '@trezor/components';
+import { getFirmwareVersion, isDeviceInBootloaderMode } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
-import { Coin, Translation } from '@suite-components';
-import { useDevice, useSelector } from '@suite-hooks';
-import { getCoinUnavailabilityMessage } from '@suite-utils/device';
-import type { Network } from '@wallet-types';
-import { getDeviceModel, getFirmwareVersion, isDeviceInBootloaderMode } from '@trezor/device-utils';
+import { selectSupportedNetworks } from '@suite-common/wallet-core';
+
+import { Coin, Translation } from 'src/components/suite';
+import { useDevice, useSelector } from 'src/hooks/suite';
+import type { Network } from 'src/types/wallet';
 
 const Wrapper = styled.div`
     width: 100%;
     display: flex;
     flex-flow: wrap;
+    gap: 16px 12px;
 `;
 
 interface CoinsListProps {
@@ -22,71 +25,83 @@ interface CoinsListProps {
     onToggle: (symbol: Network['symbol'], toggled: boolean) => void;
 }
 
-const CoinsList = ({
+export const CoinsList = ({
     networks,
     selectedNetworks,
     settingsMode = false,
     onSettings,
     onToggle,
 }: CoinsListProps) => {
-    const blockchain = useSelector(state => state.wallet.blockchain);
-
     const { device, isLocked } = useDevice();
-    const locked = !!device && isLocked();
+    const blockchain = useSelector(state => state.wallet.blockchain);
+    const supportedNetworkSymbols = useSelector(selectSupportedNetworks);
+
+    const supportedNetworks = networks.filter(network =>
+        supportedNetworkSymbols.includes(network.symbol),
+    );
+
+    const isDeviceLocked = !!device && isLocked();
+    const lockedTooltip = isDeviceLocked && 'TR_DISABLED_SWITCH_TOOLTIP';
+    const deviceModelInternal = device?.features?.internal_model;
+    const isBootloaderMode = isDeviceInBootloaderMode(device);
+    const firmwareVersion = getFirmwareVersion(device);
+
+    const deviceDisplayName = device?.name;
 
     return (
         <Wrapper>
-            {networks.map(({ symbol, label, tooltip, name, support }) => {
-                const toggled = !!selectedNetworks?.includes(symbol);
-                const isBootloaderMode = isDeviceInBootloaderMode(device);
+            {supportedNetworks.map(network => {
+                const { symbol, label, tooltip, name, support } = network;
 
-                const lockedTooltip = locked && 'TR_DISABLED_SWITCH_TOOLTIP';
+                const firmwareSupportRestriction =
+                    deviceModelInternal && support?.[deviceModelInternal];
+                const isSupportedByApp =
+                    !firmwareSupportRestriction ||
+                    versionUtils.isNewerOrEqual(firmwareVersion, firmwareSupportRestriction);
 
-                const backend = blockchain[symbol].backends.selected;
-                const note = backend ? 'TR_CUSTOM_BACKEND' : label;
+                const unavailableReason = isSupportedByApp
+                    ? device?.unavailableCapabilities?.[symbol]
+                    : 'update-required';
 
-                const firmwareVersion = getFirmwareVersion(device);
-                const deviceModel = getDeviceModel(device);
+                const isEnabled = !!selectedNetworks?.includes(symbol);
 
-                const supportField = deviceModel && support?.[deviceModel];
-                const supportedBySuite =
-                    !firmwareVersion ||
-                    !supportField ||
-                    versionUtils.isNewerOrEqual(firmwareVersion, supportField);
-
-                let unavailable = device?.unavailableCapabilities?.[symbol];
-                if (!supportedBySuite) {
-                    unavailable = 'update-required';
-                }
-
-                // Coin is not available because:
-                // - connect reports this in device.unavailableCapabilities (not supported by fw, not supported by connect)
-                // - suite considers device 'locked'
-                // - suite does not support it which is defined in network.ts
-                // When in bootloader mode we cannot check version of firmware so we do not know if coin is available.
-                // In order to achieve consistency between devices we do not use it when in bootloader mode.
                 const disabled =
-                    (!settingsMode && !!unavailable && !isBootloaderMode) ||
-                    locked ||
-                    !supportedBySuite;
+                    (!settingsMode && !!unavailableReason && !isBootloaderMode) ||
+                    isDeviceLocked ||
+                    !isSupportedByApp;
                 const unavailabilityTooltip =
-                    !!unavailable && !isBootloaderMode && getCoinUnavailabilityMessage(unavailable);
-                const anyTooltip = lockedTooltip || unavailabilityTooltip || tooltip;
+                    !!unavailableReason &&
+                    !isBootloaderMode &&
+                    getCoinUnavailabilityMessage(unavailableReason);
+                const tooltipString = lockedTooltip || unavailabilityTooltip || tooltip;
+
+                const coinLabel = blockchain[symbol].backends.selected
+                    ? 'TR_CUSTOM_BACKEND'
+                    : label;
 
                 return (
                     <Tooltip
                         key={symbol}
                         placement="top"
-                        content={anyTooltip && <Translation id={anyTooltip} />}
+                        content={
+                            tooltipString && (
+                                <Translation
+                                    id={tooltipString}
+                                    values={{
+                                        deviceDisplayName,
+                                    }}
+                                />
+                            )
+                        }
                     >
                         <Coin
                             symbol={symbol}
                             name={name}
-                            label={note}
-                            toggled={toggled}
-                            disabled={disabled || (settingsMode && !toggled)}
+                            label={coinLabel}
+                            toggled={isEnabled}
+                            disabled={disabled || (settingsMode && !isEnabled)}
                             forceHover={settingsMode}
-                            onToggle={disabled ? undefined : () => onToggle(symbol, !toggled)}
+                            onToggle={disabled ? undefined : () => onToggle(symbol, !isEnabled)}
                             onSettings={
                                 disabled || !onSettings ? undefined : () => onSettings(symbol)
                             }
@@ -97,5 +112,3 @@ const CoinsList = ({
         </Wrapper>
     );
 };
-
-export default CoinsList;

@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { A } from '@mobily/ts-belt';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -20,9 +18,10 @@ const progressBarWrapperStyle = prepareNativeStyle(utils => ({
 const progressBarItemStyle = prepareNativeStyle<{ isActive: boolean }>((utils, { isActive }) => ({
     width: 24,
     height: 2,
-    marginRight: utils.spacings.small / 2,
+    marginRight: utils.spacings.extraSmall,
     borderRadius: utils.borders.radii.small / 4,
-    backgroundColor: isActive
+    borderWidth: utils.borders.widths.medium,
+    borderColor: isActive
         ? utils.colors.backgroundPrimaryDefault
         : utils.colors.backgroundNeutralSubdued,
 }));

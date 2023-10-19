@@ -1,20 +1,20 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
-import { IntlProvider } from 'react-intl';
 
 import * as SplashScreen from 'expo-splash-screen';
 import * as Sentry from '@sentry/react-native';
 
-// FIXME this is only temporary until Intl refactor will be finished
-import enMessages from '@trezor/suite-data/files/translations/en.json';
 import { selectIsAppReady, selectIsConnectInitialized, StoreProvider } from '@suite-native/state';
 // import { NotificationRenderer } from '@suite-native/notifications';
 import { ToastRenderer } from '@suite-native/toasts';
 import { FormatterProvider } from '@suite-common/formatters';
 import { AlertRenderer } from '@suite-native/alerts';
 import { NavigationContainerWithAnalytics } from '@suite-native/navigation';
+import { AuthenticatorProvider } from '@suite-native/biometrics';
+import { MessageSystemRenderer } from '@suite-native/message-system';
+import { IntlProvider } from '@suite-native/intl';
 
 import { RootStackNavigator } from './navigation/RootStackNavigator';
 import { StylesProvider } from './StylesProvider';
@@ -36,6 +36,7 @@ const AppComponent = () => {
     const formattersConfig = useFormattersConfig();
     const isAppReady = useSelector(selectIsAppReady);
     const isConnectInitialized = useSelector(selectIsConnectInitialized);
+
     useReportAppInitToAnalytics(APP_STARTED_TIMESTAMP);
 
     useEffect(() => {
@@ -50,39 +51,40 @@ const AppComponent = () => {
         }
     }, [isAppReady]);
 
-    if (!isAppReady) {
-        return null;
-    }
+    if (!isAppReady) return null;
 
     return (
         <FormatterProvider config={formattersConfig}>
-            <AlertRenderer>
-                {/* Notifications are disabled until the problem with after-import notifications flooding is solved. */}
-                {/* More here: https://github.com/trezor/trezor-suite/issues/7721  */}
-                {/* <NotificationRenderer> */}
-                <ToastRenderer>
-                    <RootStackNavigator />
-                </ToastRenderer>
-                {/* </NotificationRenderer> */}
-            </AlertRenderer>
+            <AuthenticatorProvider>
+                <AlertRenderer>
+                    <MessageSystemRenderer />
+                    {/* Notifications are disabled until the problem with after-import notifications flooding is solved. */}
+                    {/* More here: https://github.com/trezor/trezor-suite/issues/7721  */}
+                    {/* <NotificationRenderer> */}
+                    <ToastRenderer>
+                        <RootStackNavigator />
+                    </ToastRenderer>
+                    {/* </NotificationRenderer> */}
+                </AlertRenderer>
+            </AuthenticatorProvider>
         </FormatterProvider>
     );
 };
 
 const PureApp = () => (
     <GestureHandlerRootView style={{ flex: 1 }}>
-        <IntlProvider locale="en" defaultLocale="en" messages={enMessages}>
-            <NavigationContainerWithAnalytics>
-                <StoreProvider>
-                    <SentryProvider>
-                        <SafeAreaProvider>
-                            <StylesProvider>
+        <IntlProvider>
+            <StoreProvider>
+                <SentryProvider>
+                    <SafeAreaProvider>
+                        <StylesProvider>
+                            <NavigationContainerWithAnalytics>
                                 <AppComponent />
-                            </StylesProvider>
-                        </SafeAreaProvider>
-                    </SentryProvider>
-                </StoreProvider>
-            </NavigationContainerWithAnalytics>
+                            </NavigationContainerWithAnalytics>
+                        </StylesProvider>
+                    </SafeAreaProvider>
+                </SentryProvider>
+            </StoreProvider>
         </IntlProvider>
     </GestureHandlerRootView>
 );

@@ -5,9 +5,9 @@ import * as bs58check from 'bs58check';
 import { blake256 } from './crypto';
 
 export function decodeBlake(buffer: Buffer) {
-    const want = buffer.slice(-4);
-    const payload = buffer.slice(0, -4);
-    const got = blake256(blake256(payload)).slice(0, 4);
+    const want = buffer.subarray(-4);
+    const payload = buffer.subarray(0, -4);
+    const got = blake256(blake256(payload)).subarray(0, 4);
 
     if ((want[0] ^ got[0]) | (want[1] ^ got[1]) | (want[2] ^ got[2]) | (want[3] ^ got[3]))
         throw new Error('invalid checksum');
@@ -38,7 +38,7 @@ export function decodeBlake256(address: string) {
 }
 
 export function encodeBlake256(payload: Buffer) {
-    const checksum = blake256(blake256(payload)).slice(0, 4);
+    const checksum = blake256(blake256(payload)).subarray(0, 4);
     return bs58.encode(Buffer.concat([payload, checksum]));
 }
 
@@ -69,7 +69,7 @@ export function decodeAddress(address: string, network = BITCOIN_NETWORK) {
     const offset = multibyte ? 2 : 1;
 
     const version = multibyte ? payload.readUInt16BE(0) : payload[0];
-    const hash = payload.slice(offset);
+    const hash = payload.subarray(offset);
 
     return { version, hash };
 }

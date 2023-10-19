@@ -1,7 +1,31 @@
-import { AnyStepId, AnyPath, Step } from '@onboarding-types';
-// types types types
+import { selectDevice } from '@suite-common/wallet-core';
 
-export const isStepInPath = (step: Step, path: AnyPath[]) => {
+import { AnyStepId, AnyPath, Step } from 'src/types/onboarding';
+import { GetState } from 'src/types/suite';
+import { ID_AUTHENTICATE_DEVICE_STEP } from 'src/constants/onboarding/steps';
+
+export const isStepUsed = (step: Step, getState: GetState) => {
+    const state = getState();
+    const device = selectDevice(state);
+
+    const { path } = state.onboarding;
+    const deviceModelInternal = device?.features?.internal_model;
+
+    // The order of IF conditions matters!
+    if (deviceModelInternal && step.unsupportedModels?.includes(deviceModelInternal)) {
+        return false;
+    }
+    if (step.id === ID_AUTHENTICATE_DEVICE_STEP) {
+        const {
+            isDeviceAuthenticityCheckDisabled,
+            debug: { isUnlockedBootloaderAllowed },
+        } = state.suite.settings;
+        const isBootloaderUnlocked = device?.features?.bootloader_locked === false;
+        return (
+            !isDeviceAuthenticityCheckDisabled &&
+            (!isUnlockedBootloaderAllowed || !isBootloaderUnlocked)
+        );
+    }
     if (!step.path) {
         return true;
     }
@@ -9,8 +33,7 @@ export const isStepInPath = (step: Step, path: AnyPath[]) => {
         return true;
     }
     return path.every((pathMember: AnyPath) =>
-        // @ts-expect-error
-        step.path.some((stepPathMember: AnyPath) => stepPathMember === pathMember),
+        step.path?.some((stepPathMember: AnyPath) => stepPathMember === pathMember),
     );
 };
 

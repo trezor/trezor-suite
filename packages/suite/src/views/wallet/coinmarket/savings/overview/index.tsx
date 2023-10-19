@@ -1,31 +1,26 @@
-import React from 'react';
-import {
-    KYCError,
-    KYCFailed,
-    KYCInProgress,
-    withCoinmarket,
-    WithCoinmarketProps,
-} from '@wallet-components';
 import styled from 'styled-components';
+import { darken } from 'polished';
+
+import { KycError, KycFailed, KycInProgress } from 'src/views/wallet/coinmarket/common';
 import { Icon, variables } from '@trezor/components';
 import {
     FiatValue,
     FormattedCryptoAmount,
     HiddenPlaceholder,
     Translation,
-} from '@suite-components';
+} from 'src/components/suite';
 import { PaymentDetail } from './components/PaymentDetail';
 import {
     SavingsOverviewContext,
     useSavingsOverview,
-} from '@wallet-hooks/useCoinmarketSavingsOverview';
+} from 'src/hooks/wallet/useCoinmarketSavingsOverview';
 import type { PaymentFrequency, SavingsKYCStatus, SavingsTrade } from 'invity-api';
 import { WaitingForFirstPayment } from './components/WaitingForFirstPayment';
-import { darken } from 'polished';
-import type { Account, NetworkSymbol } from '@wallet-types';
+import type { Account, NetworkSymbol } from 'src/types/wallet';
 import { AllFeesIncluded } from '../AllFeesIncluded';
 import { ProvidedBy } from '../ProvidedBy';
-import ReauthorizationCard from '@wallet-components/CoinmarketReauthorizationCard';
+import { CoinmarketReauthorizationCard } from '../CoinmarketReauthorizationCard';
+import { withCoinmarket, WithCoinmarketProps } from '../withCoinmarket';
 
 const Wrapper = styled.div`
     display: flex;
@@ -57,7 +52,7 @@ const HeaderBlock = styled.div`
     height: 120px;
 `;
 const Setup = styled(HeaderBlock)`
-    background-color: ${props => props.theme.BG_GREY};
+    background-color: ${({ theme }) => theme.BG_GREY};
     padding: 21px;
     border-radius: 8px;
     margin-right: 12px;
@@ -74,14 +69,14 @@ const StyledFiatValue = styled(FiatValue)`
 const Period = styled.div`
     font-size: 16px;
     line-height: 24px;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 const SoFarSaved = styled.div`
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    background-color: ${props => props.theme.BG_WHITE};
+    background-color: ${({ theme }) => theme.BG_WHITE};
     padding: 21px 0 0 21px;
     width: 100%;
 `;
@@ -89,14 +84,14 @@ const SoFarSaved = styled.div`
 const Crypto = styled.div`
     font-size: 20px;
     line-height: 28px;
-    color: ${props => props.theme.TYPE_GREEN};
+    color: ${({ theme }) => theme.TYPE_GREEN};
     display: flex;
 `;
 
 const Fiat = styled(HiddenPlaceholder)`
     font-size: 20px;
     line-height: 28px;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     display: flex;
 `;
 
@@ -113,7 +108,7 @@ const StyledIcon = styled(Icon)`
         width: 26px;
         height: 26px;
         border-radius: 50%;
-        background: ${props => darken(0.1)(props.theme.BG_GREY)};
+        background: ${({ theme }) => darken(0.1)(theme.BG_GREY)};
     }
 `;
 
@@ -143,11 +138,11 @@ function renderSavingsStatus(
 ) {
     switch (true) {
         case isWatchingKYCStatus:
-            return <KYCInProgress />;
+            return <KycInProgress />;
         case kycFinalStatus === 'Error':
-            return <KYCError />;
+            return <KycError />;
         case kycFinalStatus === 'Failed':
-            return <KYCFailed providerName={selectedProviderCompanyName} />;
+            return <KycFailed providerName={selectedProviderCompanyName} />;
         case !savingsTradeItemCompletedExists:
             return (
                 <WaitingForFirstPayment
@@ -216,7 +211,7 @@ const Overview = (props: WithCoinmarketProps) => {
         <SavingsOverviewContext.Provider value={contextValues}>
             <Wrapper>
                 {reauthorizationUrl && (
-                    <ReauthorizationCard reauthorizationUrl={reauthorizationUrl} />
+                    <CoinmarketReauthorizationCard reauthorizationUrl={reauthorizationUrl} />
                 )}
                 <HeaderWrapper>
                     <Left>

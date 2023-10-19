@@ -61,7 +61,7 @@ export default class BlockchainEstimateFee extends AbstractMethod<'blockchainEst
     async run() {
         const { coinInfo, request } = this.params;
         const feeInfo: MethodReturnType<typeof this.name> = {
-            blockTime: coinInfo.blocktime,
+            blockTime: coinInfo.blockTime,
             minFee: coinInfo.minFee,
             maxFee: coinInfo.maxFee,
             dustLimit: coinInfo.type === 'bitcoin' ? coinInfo.dustLimit : undefined,

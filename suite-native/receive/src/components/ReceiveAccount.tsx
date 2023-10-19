@@ -1,15 +1,24 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useNavigation } from '@react-navigation/native';
 import { G } from '@mobily/ts-belt';
+import { useNavigation } from '@react-navigation/native';
 
-import { Box, ErrorMessage, Text, VStack } from '@suite-native/atoms';
-import { getEthereumTokenName, selectEthereumAccountToken } from '@suite-native/ethereum-tokens';
+import {
+    AlertBox,
+    Box,
+    Button,
+    ErrorMessage,
+    HeaderedCard,
+    TextButton,
+    VStack,
+} from '@suite-native/atoms';
 import { AccountListItem } from '@suite-native/accounts';
 import { analytics, EventType } from '@suite-native/analytics';
 import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { AccountKey, TokenSymbol } from '@suite-common/wallet-types';
+import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { useOpenLink } from '@suite-native/link';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { TokenReceiveCard } from './TokenReceiveCard';
 import { ReceiveAddress } from './ReceiveAddress';
@@ -17,19 +26,29 @@ import { ReceiveTextHint } from './ReceiveTextHint';
 
 type AccountReceiveProps = {
     accountKey: AccountKey;
-    tokenSymbol?: TokenSymbol;
+    tokenContract?: TokenAddress;
+    isAccountChangeAllowed?: boolean;
 };
 
-export const ReceiveAccount = ({ accountKey, tokenSymbol }: AccountReceiveProps) => {
-    const navigation = useNavigation();
+const receiveAddressCardStyle = prepareNativeStyle(utils => ({
+    minHeight: 440,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: utils.spacings.extraLarge,
+}));
+
+export const ReceiveAccount = ({
+    accountKey,
+    tokenContract,
+    isAccountChangeAllowed = true,
+}: AccountReceiveProps) => {
     const [isAddressVisible, setIsAddressVisible] = useState(false);
+    const { applyStyle } = useNativeStyles();
+    const navigation = useNavigation();
+    const openLink = useOpenLink();
 
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
-    );
-
-    const token = useSelector((state: AccountsRootState) =>
-        selectEthereumAccountToken(state, accountKey, tokenSymbol),
     );
 
     if (G.isNullable(account))
@@ -43,32 +62,51 @@ export const ReceiveAccount = ({ accountKey, tokenSymbol }: AccountReceiveProps)
         setIsAddressVisible(true);
     };
 
+    const handleGoBack = () => {
+        navigation.goBack();
+    };
+
+    const handleOpenEduLink = () => {
+        openLink('https://trezor.io/learn/a/verifying-trezor-suite-lite-addresses');
+    };
+
     return (
         <VStack spacing="medium">
-            {token ? (
-                <TokenReceiveCard
-                    contract={token.contract}
-                    accountKey={accountKey}
-                    tokenSymbol={token.symbol}
-                    balance={token.balance}
-                    tokenName={getEthereumTokenName(token.name)}
-                />
-            ) : (
-                <AccountListItem account={account} />
+            <HeaderedCard
+                title="Receive To"
+                buttonIcon="discover"
+                buttonTitle={isAccountChangeAllowed ? 'Change' : ''}
+                onButtonPress={handleGoBack}
+            >
+                {tokenContract ? (
+                    <TokenReceiveCard contract={tokenContract} accountKey={accountKey} />
+                ) : (
+                    <AccountListItem account={account} />
+                )}
+            </HeaderedCard>
+
+            {tokenContract && (
+                <AlertBox title="Your receive address is your Ethereum address." isIconVisible />
             )}
-            <Box marginLeft="small">
-                <Text variant="hint" color="textSubdued">
-                    Address
-                </Text>
-            </Box>
-            {isAddressVisible ? (
-                <ReceiveAddress
-                    accountKey={accountKey}
-                    onClose={navigation.goBack}
-                    backgroundElevation="1"
-                />
-            ) : (
-                <ReceiveTextHint onShowAddress={handleShowAddress} />
+
+            <HeaderedCard title="Address" style={applyStyle(receiveAddressCardStyle)}>
+                {isAddressVisible ? (
+                    <ReceiveAddress accountKey={accountKey} backgroundElevation="1" />
+                ) : (
+                    <ReceiveTextHint />
+                )}
+            </HeaderedCard>
+
+            <TextButton size="small" onPress={handleOpenEduLink} iconRight="arrowUpRight">
+                Learn more about verifying addresses
+            </TextButton>
+
+            {!isAddressVisible && (
+                <Box paddingHorizontal="medium">
+                    <Button iconLeft="eye" size="large" onPress={handleShowAddress}>
+                        Show address
+                    </Button>
+                </Box>
             )}
         </VStack>
     );

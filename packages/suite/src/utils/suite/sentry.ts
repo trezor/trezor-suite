@@ -1,14 +1,20 @@
 import * as Sentry from '@sentry/core';
-import { Dispatch, GetState } from '@suite-types';
-import { redactDevice, redactDiscovery, getApplicationLog } from '@suite-utils/logsUtils';
 
 import { allowReportTag } from '@suite-common/sentry';
+import { selectDevice } from '@suite-common/wallet-core';
+
+import { Dispatch, GetState } from 'src/types/suite';
+import { redactDevice, redactDiscovery, getApplicationLog } from 'src/utils/suite/logsUtils';
 
 export const setSentryContext = Sentry.setContext;
 
 export const setSentryTag = Sentry.setTag;
 
 export const addSentryBreadcrumb = Sentry.addBreadcrumb;
+
+export const withSentryScope = Sentry.withScope;
+
+export const captureSentryMessage = Sentry.captureMessage;
 
 export const allowSentryReport = (value: boolean) => {
     Sentry.setTag(allowReportTag, value);
@@ -23,12 +29,13 @@ export const unsetSentryUser = () => {
 };
 
 export const reportToSentry = (error: any) => (_: Dispatch, getState: GetState) => {
-    const { analytics, wallet, suite, logs } = getState();
+    const { analytics, wallet, logs } = getState();
+    const device = selectDevice(getState());
 
     Sentry.withScope(scope => {
         scope.setUser({ id: analytics.instanceId });
         scope.setContext('suiteState', {
-            device: redactDevice(suite.device) ?? null,
+            device: redactDevice(device) ?? null,
             discovery: wallet.discovery.map(redactDiscovery),
             enabledCoins: wallet.settings.enabledNetworks,
             suiteLog: getApplicationLog(logs.logEntries, true)?.slice(-30), // send only the last 30 actions to avoid "413 Request Entity Too Large" response from Sentry

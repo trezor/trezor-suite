@@ -1,7 +1,9 @@
+import type { DerivationPath } from '../../params';
+
 // ethereumSignMessage
 
 export interface EthereumSignMessage {
-    path: string | number[];
+    path: DerivationPath;
     message: string;
     hex?: boolean;
 }
@@ -40,7 +42,7 @@ export interface EthereumTransactionEIP1559 {
 }
 
 export interface EthereumSignTransaction {
-    path: string | number[];
+    path: DerivationPath;
     transaction: EthereumTransaction | EthereumTransactionEIP1559;
 }
 
@@ -76,7 +78,7 @@ export interface EthereumSignTypedDataMessage<T extends EthereumSignTypedDataTyp
 }
 
 export interface EthereumSignTypedData<T extends EthereumSignTypedDataTypes> {
-    path: string | number[];
+    path: DerivationPath;
     data: EthereumSignTypedDataMessage<T>;
     metamask_v4_compat: boolean;
     domain_separator_hash?: undefined;
@@ -84,13 +86,13 @@ export interface EthereumSignTypedData<T extends EthereumSignTypedDataTypes> {
 }
 
 /**
- * The Trezor Model 1 cannot currently calculate EIP-712 hashes by itself,
+ * T1B1 cannot currently calculate EIP-712 hashes by itself,
  * so we have to precalculate them.
  * Used for full EIP-712 signing or blind signing.
- * Supports both Trezor Model T and Trezor Model 1.
+ * Supports both T2T1 and T1B1.
  */
 export interface EthereumSignTypedHash<T extends EthereumSignTypedDataTypes> {
-    path: string | number[];
+    path: DerivationPath;
     data: EthereumSignTypedDataMessage<T>;
     metamask_v4_compat: boolean;
     domain_separator_hash: string;

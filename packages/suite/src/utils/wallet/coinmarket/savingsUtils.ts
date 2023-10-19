@@ -2,14 +2,14 @@ import type { PaymentFrequency, SavingsProviderInfo, SavingsTradeItemStatus } fr
 import {
     CustomPaymentAmountKey,
     PaymentFrequencyAnnualCoefficient,
-} from '@wallet-constants/coinmarket/savings';
-import type { CurrentFiatRates } from '@wallet-types/fiatRates';
+} from 'src/constants/wallet/coinmarket/savings';
+import type { CurrentFiatRates } from 'src/types/wallet/fiatRates';
 import BigNumber from 'bignumber.js';
-import type { PaymentFrequencyOption } from '@wallet-types/coinmarketCommonTypes';
-import { isDesktop } from '@suite-utils/env';
+import type { PaymentFrequencyOption } from 'src/types/wallet/coinmarketCommonTypes';
+import { isDesktop } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { Translation } from '@suite-components/Translation';
-import type { PaymentFrequencyTranslationId } from '@wallet-types/coinmarketSavingsSetup';
+import { Translation } from 'src/components/suite/Translation';
+import type { PaymentFrequencyTranslationId } from 'src/types/wallet/coinmarketSavingsSetup';
 
 export const getStatusMessage = (status: SavingsTradeItemStatus) => {
     switch (status) {

@@ -15,16 +15,18 @@ import type {
     VersionArray,
     IntermediaryVersion,
 } from '../types';
-import { isVersionArray } from '../utils/versionUtils';
+import { DeviceModelInternal } from '../types';
 
-const releases: { [key: number]: FirmwareRelease[] } = {};
-releases[1] = [];
-releases[2] = [];
+const releases: Record<keyof typeof DeviceModelInternal, FirmwareRelease[]> = {
+    [DeviceModelInternal.T1B1]: [],
+    [DeviceModelInternal.T2T1]: [],
+    [DeviceModelInternal.T2B1]: [],
+};
 
-export const parseFirmware = (json: any, model: number) => {
+export const parseFirmware = (json: any, deviceModel: DeviceModelInternal) => {
     Object.keys(json).forEach(key => {
         const release = json[key];
-        releases[model].push({
+        releases[deviceModel].push({
             ...release,
         });
     });
@@ -121,7 +123,7 @@ const getIntermediaryVersion = (
     offerLatest: boolean,
 ): IntermediaryVersion | undefined => {
     if (features.major_version !== 1 || offerLatest) {
-        // Intermediary is only supported on T1 and not needed if latest firmware is already offered
+        // Intermediary is only supported on T1B1 and not needed if latest firmware is already offered
         return;
     }
 
@@ -156,20 +158,20 @@ const getSafeReleases = ({ features, releases }: GetInfoProps) => {
 
     const firmwareVersion = [major_version, minor_version, patch_version];
 
-    if (!isVersionArray(firmwareVersion)) {
+    if (!versionUtils.isVersionArray(firmwareVersion)) {
         return [];
     }
 
     if (major_version === 2 && bootloader_mode) {
         const fwVersion = [fw_major, fw_minor, fw_patch];
-        if (isVersionArray(fwVersion)) {
-            // in bootloader, model T knows its firmware, so we still may filter "by firmware".
+        if (versionUtils.isVersionArray(fwVersion)) {
+            // in bootloader, T2T1, T2B1 knows its firmware, so we still may filter "by firmware".
             return filterSafeListByFirmware(releases, fwVersion);
         }
         return filterSafeListByBootloader(releases, firmwareVersion);
     }
     if (major_version === 1 && bootloader_mode) {
-        // model one does not know its firmware, we need to filter by bootloader. this has the consequence
+        // T1B1 does not know its firmware, we need to filter by bootloader. this has the consequence
         // that we do not know if the version we find in the end is newer than the actual installed version
         return filterSafeListByBootloader(releases, firmwareVersion);
     }
@@ -180,7 +182,7 @@ const getSafeReleases = ({ features, releases }: GetInfoProps) => {
 
 /**
  * Get info about available firmware update.
- * For T1, it always returns the latest firmware plus intermediaryVersion
+ * For T1B1, it always returns the latest firmware plus intermediaryVersion
  * needed to get to the latest if it's not availabe for direct install.
  * @param features
  * @param releases
@@ -203,8 +205,8 @@ export const getInfo = ({ features, releases }: GetInfoProps): ReleaseInfo | nul
     }
 
     /**
-     * For model 1 we always support installation of latest firmware, possibly using an intermediary.
-     * For model T there is only "incremental FW update" if it's not possible to install latest right away.
+     * For T1B1 we always support installation of latest firmware, possibly using an intermediary.
+     * For T2T1 there is only "incremental FW update" if it's not possible to install latest right away.
      */
     const releasesParsed = features.major_version === 1 ? releases : releasesSafe;
 
@@ -232,13 +234,16 @@ export const getFirmwareStatus = (features: Features) => {
     if (features.firmware_present === false) {
         return 'none';
     }
-    // for t1 in bootloader, what device reports as firmware version is in fact bootloader version, so we can
+    // for T1B1 in bootloader, what device reports as firmware version is in fact bootloader version, so we can
     // not safely tell firmware version
     if (features.major_version === 1 && features.bootloader_mode) {
         return 'unknown';
     }
 
-    const info = getInfo({ features, releases: releases[features.major_version] });
+    const info = getInfo({
+        features,
+        releases: releases[features?.internal_model],
+    });
 
     // should not happen, possibly if releases list contains inconsistent data or so
     if (!info) return 'unknown';
@@ -251,6 +256,9 @@ export const getFirmwareStatus = (features: Features) => {
 };
 
 export const getRelease = (features: Features) =>
-    getInfo({ features, releases: releases[features.major_version] });
+    getInfo({
+        features,
+        releases: releases[features?.internal_model],
+    });
 
-export const getReleases = (model: number) => releases[model];
+export const getReleases = (deviceModel: DeviceModelInternal) => releases[deviceModel];

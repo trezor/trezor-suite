@@ -1,23 +1,23 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { UseCoinmarketSpendProps, SpendContextValues } from '@wallet-types/coinmarketSpend';
-import invityAPI from '@suite-services/invityAPI';
+import { UseCoinmarketSpendProps, SpendContextValues } from 'src/types/wallet/coinmarketSpend';
+import invityAPI from 'src/services/suite/invityAPI';
 import { SellVoucherTrade } from 'invity-api';
-import { getUnusedAddressFromAccount } from '@suite/utils/wallet/coinmarket/coinmarketUtils';
-import { useActions, useSelector } from '@suite-hooks';
-import { useTranslation } from '@suite-hooks/useTranslation';
-import * as coinmarketSellActions from '@wallet-actions/coinmarketSellActions';
-import * as coinmarketSpendActions from '@wallet-actions/coinmarketSpendActions';
-import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
+import { getUnusedAddressFromAccount } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { useActions, useSelector } from 'src/hooks/suite';
+import { useTranslation } from 'src/hooks/suite/useTranslation';
+import * as coinmarketSellActions from 'src/actions/wallet/coinmarketSellActions';
+import * as coinmarketSpendActions from 'src/actions/wallet/coinmarketSpendActions';
+import * as coinmarketCommonActions from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import type { FormState } from '@wallet-types/sendForm';
+import type { FormState } from 'src/types/wallet/sendForm';
 import { amountToSatoshi, getFeeLevels } from '@suite-common/wallet-utils';
-import { isDesktop } from '@suite-utils/env';
+import { isDesktop } from '@trezor/env-utils';
 import { useCompose } from './form/useCompose';
 import { useForm } from 'react-hook-form';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
-import type { AppState } from '@suite-types';
-import { useBitcoinAmountUnit } from '@wallet-hooks/useBitcoinAmountUnit';
+import type { AppState } from 'src/types/suite';
+import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 
 export const SpendContext = createContext<SpendContextValues | null>(null);
 SpendContext.displayName = 'CoinmarketSpendContext';
@@ -68,11 +68,10 @@ export const useCoinmarketSpend = ({
 
     const { account, network } = selectedAccount;
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
-    const { sellInfo, language, fees } = useSelector(state => ({
-        sellInfo: state.wallet.coinmarket.sell.sellInfo,
-        language: state.suite.settings.language,
-        fees: state.wallet.fees,
-    }));
+    const sellInfo = useSelector(state => state.wallet.coinmarket.sell.sellInfo);
+    const language = useSelector(state => state.suite.settings.language);
+    const fees = useSelector(state => state.wallet.fees);
+
     const country = sellInfo?.sellList?.country;
     const isLoading = !sellInfo || !voucherSiteUrl;
     const provider = sellInfo?.sellList?.providers.filter(p => p.type === 'Voucher')[0];
@@ -122,13 +121,13 @@ export const useCoinmarketSpend = ({
         }
     }, [state, initState]);
 
-    const useFormMethods = useForm<FormState>({ mode: 'onChange', shouldUnregister: false });
+    const useFormMethods = useForm<FormState>({ mode: 'onChange' });
     const { reset, register } = useFormMethods;
 
     // react-hook-form auto register custom form fields (without HTMLElement)
     useEffect(() => {
-        register({ name: 'outputs', type: 'custom' });
-        register({ name: 'options', type: 'custom' });
+        register('outputs');
+        register('options');
     }, [register]);
 
     const { composeRequest, composedLevels, signTransaction } = useCompose({
@@ -235,7 +234,9 @@ export const useCoinmarketSpend = ({
                         });
                         composeRequest();
                         setTrade(trade);
-                        desktopApi.appFocus();
+                        if (desktopApi.available) {
+                            desktopApi.appFocus();
+                        }
                     }
                 }
             };

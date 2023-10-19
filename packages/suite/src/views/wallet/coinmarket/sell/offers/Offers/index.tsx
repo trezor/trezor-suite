@@ -1,12 +1,15 @@
-import React from 'react';
 import styled from 'styled-components';
-import { CoinmarketFooter, CoinmarketSellTopPanel } from '@wallet-components';
+
+import {
+    CoinmarketFooter,
+    CoinmarketSellTopPanel,
+    NoOffers,
+} from 'src/views/wallet/coinmarket/common';
 import { variables } from '@trezor/components';
-import { Translation } from '@suite-components';
-import { useLayout } from '@suite-hooks/useLayout';
-import { useCoinmarketSellOffersContext } from '@wallet-hooks/useCoinmarketSellOffers';
-import NoOffers from '@wallet-views/coinmarket/common/no-offers';
-import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
+import { Translation } from 'src/components/suite';
+import { useLayout } from 'src/hooks/suite/useLayout';
+import { useCoinmarketSellOffersContext } from 'src/hooks/wallet/useCoinmarketSellOffers';
+import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 import List from './List';
 import { SelectedOffer } from './SelectedOffer';
 
@@ -33,14 +36,14 @@ const Divider = styled.div`
 const DividerLine = styled.div`
     height: 1px;
     flex: 1;
-    background: ${props => props.theme.STROKE_GREY};
+    background: ${({ theme }) => theme.STROKE_GREY};
 `;
 
 const DividerLeft = styled(DividerLine)``;
 const DividerRight = styled(DividerLine)``;
 
 const Currency = styled.div`
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     text-transform: uppercase;
     padding-left: 3px;
 `;
@@ -49,12 +52,12 @@ const DividerMiddle = styled.div`
     display: flex;
     align-items: center;
     padding: 5px 20px;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.SMALL};
     border-radius: 25px;
-    border: 1px solid ${props => props.theme.STROKE_GREY};
-    background: ${props => props.theme.BG_WHITE};
+    border: 1px solid ${({ theme }) => theme.STROKE_GREY};
+    background: ${({ theme }) => theme.BG_WHITE};
     text-align: center;
 `;
 

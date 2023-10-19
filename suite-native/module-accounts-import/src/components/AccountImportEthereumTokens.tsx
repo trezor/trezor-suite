@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { A } from '@mobily/ts-belt';
 
 import { Box, VStack, Text } from '@suite-native/atoms';
@@ -17,8 +15,8 @@ export const AccountImportEthereumTokens = ({ tokens }: AccountImportEthereumTok
 
     return (
         <Box marginTop="medium">
-            <Text variant="titleSmall">Tokens: </Text>
             <VStack spacing="small" marginBottom="small">
+                <Text variant="titleSmall">Tokens: </Text>
                 {tokens.map(({ symbol, contract, balance, name, decimals }) => (
                     <EthereumTokenInfo
                         key={contract}

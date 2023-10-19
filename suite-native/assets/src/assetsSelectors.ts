@@ -3,7 +3,11 @@ import { memoize } from 'proxy-memoize';
 
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import { selectAccounts, AccountsRootState } from '@suite-common/wallet-core';
-import { selectCoinsLegacy, FiatRatesRootState } from '@suite-native/fiat-rates';
+import {
+    FiatRatesRootState,
+    selectFiatRatesByFiatRateKey,
+    getFiatRateKey,
+} from '@suite-native/fiat-rates';
 import { toFiatCurrency } from '@suite-common/wallet-utils';
 import { selectFiatCurrencyCode, SettingsSliceRootState } from '@suite-native/module-settings';
 
@@ -45,26 +49,26 @@ export const selectBalancesPerNetwork = memoize((state: AssetsRootState): Format
 export const selectAssetsWithBalances = memoize((state: AssetsRootState) => {
     const balancesPerNetwork = selectBalancesPerNetwork(state);
     const networksWithAssets = Object.keys(balancesPerNetwork) as NetworkSymbol[];
-    const coins = selectCoinsLegacy(state);
 
-    const fiatCurrency = selectFiatCurrencyCode(state);
+    const fiatCurrencyCode = selectFiatCurrencyCode(state);
 
     return networksWithAssets
         .map((networkSymbol: NetworkSymbol) => {
-            const network = networks[networkSymbol];
-
-            const currentFiatRates = coins.find(
-                f => f.symbol.toLowerCase() === networkSymbol.toLowerCase(),
-            )?.current;
+            const fiatRate = selectFiatRatesByFiatRateKey(
+                state,
+                getFiatRateKey(networkSymbol, fiatCurrencyCode),
+            );
 
             // Note: This shouldn't be happening in a selector but rather in component itself.
             // In future, we will probably have something like `CryptoAmountToFiatFormatter` in component just using value sent from this selector.
             const fiatBalance =
                 toFiatCurrency(
                     balancesPerNetwork[networkSymbol]?.toString() ?? '0',
-                    fiatCurrency,
-                    currentFiatRates?.rates,
+                    fiatCurrencyCode,
+                    { [fiatCurrencyCode]: fiatRate?.rate },
                 ) ?? '0';
+
+            const network = networks[networkSymbol];
 
             const asset: AssetType = {
                 symbol: networkSymbol,
@@ -76,3 +80,9 @@ export const selectAssetsWithBalances = memoize((state: AssetsRootState) => {
         })
         .filter(data => data !== undefined) as AssetType[];
 });
+
+export const selectIsPortfolioEmpty = (state: AssetsRootState) => {
+    const accounts = selectAccounts(state);
+
+    return accounts.length === 0;
+};

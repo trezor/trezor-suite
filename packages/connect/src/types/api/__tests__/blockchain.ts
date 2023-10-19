@@ -7,6 +7,10 @@ export const blockchainEstimateFee = async (api: TrezorConnect) => {
         payload.blockTime.toFixed();
         payload.minFee.toFixed();
         payload.maxFee.toFixed();
+        // @ts-expect-error dustLimit may be undefined
+        payload.dustLimit.toFixed();
+        payload.dustLimit?.toFixed();
+
         payload.levels.forEach(level => {
             // @ts-expect-error label not present
             if (level.label === 'custom') {

@@ -1,8 +1,7 @@
-import React from 'react';
 import styled from 'styled-components';
 
 import { Icon, variables } from '@trezor/components';
-import { useGuide } from '@guide-hooks';
+import { useGuide } from 'src/hooks/guide';
 import { FreeFocusInside } from 'react-focus-lock';
 
 const Wrapper = styled.button<{ $isGuideOpen: boolean }>`

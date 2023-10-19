@@ -1,10 +1,9 @@
-import * as routerActions from '@suite-actions/routerActions';
-import React from 'react';
 import styled from 'styled-components';
 import { Button, variables, Image } from '@trezor/components';
-import { Translation } from '@suite-components';
-import { useActions } from '@suite-hooks';
-import { Account } from '@wallet-types';
+import { Translation } from 'src/components/suite';
+import { useDispatch } from 'src/hooks/suite';
+import { Account } from 'src/types/wallet';
+import { goto } from 'src/actions/suite/routerActions';
 
 const Wrapper = styled.div`
     display: flex;
@@ -23,7 +22,7 @@ const Description = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     margin: 17px 0 30px 0;
     max-width: 310px;
@@ -33,7 +32,7 @@ const Description = styled.div`
 const FixedRate = styled.div`
     display: flex;
     flex-direction: column;
-    background-color: ${props => props.theme.BG_GREY};
+    background-color: ${({ theme }) => theme.BG_GREY};
     padding: 14px 18px;
     border-radius: 8px;
     margin-bottom: 30px;
@@ -43,16 +42,26 @@ const FixedRateHeader = styled.div`
     font-size: ${variables.FONT_SIZE.SMALL};
 `;
 const FixedRateMessage = styled.div`
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
-interface Props {
+interface PaymentSuccessfulProps {
     account: Account;
 }
 
-const PaymentSuccessful = ({ account }: Props) => {
-    const { goto } = useActions({
-        goto: routerActions.goto,
-    });
+const PaymentSuccessful = ({ account }: PaymentSuccessfulProps) => {
+    const dispatch = useDispatch();
+
+    const goToSell = () =>
+        dispatch(
+            goto('wallet-coinmarket-sell', {
+                params: {
+                    symbol: account.symbol,
+                    accountIndex: account.index,
+                    accountType: account.accountType,
+                },
+            }),
+        );
+
     return (
         <Wrapper>
             <Image image="COINMARKET_SUCCESS" />
@@ -70,17 +79,7 @@ const PaymentSuccessful = ({ account }: Props) => {
                     <Translation id="TR_SELL_DETAIL_SUCCESS_FIXED_RATE_MESSAGE" />
                 </FixedRateMessage>
             </FixedRate>
-            <Button
-                onClick={() =>
-                    goto('wallet-coinmarket-sell', {
-                        params: {
-                            symbol: account.symbol,
-                            accountIndex: account.index,
-                            accountType: account.accountType,
-                        },
-                    })
-                }
-            >
+            <Button onClick={goToSell}>
                 <Translation id="TR_SELL_DETAIL_SUCCESS_BUTTON" />
             </Button>
         </Wrapper>

@@ -1,11 +1,11 @@
-import React from 'react';
 import styled from 'styled-components';
-import { Translation, TroubleshootingTips } from '@suite-components';
+import { Translation, TroubleshootingTips } from 'src/components/suite';
 import { Button } from '@trezor/components';
-import { useActions } from '@suite-hooks';
-import * as routerActions from '@suite-actions/routerActions';
-import { TrezorDevice } from '@suite-types';
-import { DeviceModel, getDeviceModel, pickByDeviceModel } from '@trezor/device-utils';
+import { useDispatch } from 'src/hooks/suite';
+import { goto } from 'src/actions/suite/routerActions';
+import { TrezorDevice } from 'src/types/suite';
+import { pickByDeviceModel } from '@trezor/device-utils';
+import { DeviceModelInternal } from '@trezor/connect';
 
 const WhiteSpace = styled.div`
     min-width: 60px;
@@ -17,10 +17,11 @@ interface DeviceBootloaderProps {
 
 /* User connected the device in bootloader mode, but in order to continue it needs to be in normal mode */
 export const DeviceBootloader = ({ device }: DeviceBootloaderProps) => {
-    const { goto } = useActions({
-        goto: routerActions.goto,
-    });
-    const deviceModel = getDeviceModel(device);
+    const dispatch = useDispatch();
+
+    const deviceModelInternal = device?.features?.internal_model;
+
+    const gotToDeviceSettings = () => dispatch(goto('settings-device'));
 
     const tips = [
         {
@@ -28,9 +29,9 @@ export const DeviceBootloader = ({ device }: DeviceBootloaderProps) => {
             heading: <Translation id="TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT" />,
             description: (
                 <Translation
-                    id={pickByDeviceModel(deviceModel, {
+                    id={pickByDeviceModel(deviceModelInternal, {
                         default: 'TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT_IN_NORMAL_NO_BUTTON',
-                        [DeviceModel.TT]:
+                        [DeviceModelInternal.T2T1]:
                             'TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT_IN_NORMAL_NO_TOUCH',
                     })}
                 />
@@ -43,15 +44,7 @@ export const DeviceBootloader = ({ device }: DeviceBootloaderProps) => {
             heading: <Translation id="TR_WIPE_OR_UPDATE" />,
             description: <Translation id="TR_WIPE_OR_UPDATE_DESCRIPTION" />,
             noBullet: true,
-            action: (
-                <Button
-                    onClick={() => {
-                        goto('settings-device');
-                    }}
-                    icon="SETTINGS"
-                    size={20}
-                />
-            ),
+            action: <Button onClick={gotToDeviceSettings} icon="SETTINGS" size={20} />,
         },
     ];
 

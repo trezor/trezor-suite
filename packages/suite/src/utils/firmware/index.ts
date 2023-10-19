@@ -1,7 +1,8 @@
 import { valid, satisfies } from 'semver';
-import { DeviceModel, getDeviceModel, getFirmwareVersion } from '@trezor/device-utils';
+import { getFirmwareVersion } from '@trezor/device-utils';
 
-import type { AppState, TrezorDevice, ExtendedMessageDescriptor } from '@suite-types';
+import { type AppState, type TrezorDevice, type ExtendedMessageDescriptor } from 'src/types/suite';
+import { DeviceModelInternal, FirmwareType } from '@trezor/connect';
 
 export const getFormattedFingerprint = (fingerprint: string) =>
     [
@@ -55,11 +56,11 @@ enum FirmwareFormat {
     'T2',
 }
 
-const FORMAT_MAP: { [format in FirmwareFormat]: ReturnType<typeof getDeviceModel>[] } = {
-    [FirmwareFormat.T1]: [DeviceModel.T1],
-    [FirmwareFormat.T1_EMBEDDED_V2]: [DeviceModel.T1],
-    [FirmwareFormat.T1_V2]: [DeviceModel.T1],
-    [FirmwareFormat.T2]: [DeviceModel.TT, DeviceModel.TR],
+const FORMAT_MAP: { [format in FirmwareFormat]: DeviceModelInternal[] } = {
+    [FirmwareFormat.T1]: [DeviceModelInternal.T1B1],
+    [FirmwareFormat.T1_EMBEDDED_V2]: [DeviceModelInternal.T1B1],
+    [FirmwareFormat.T1_V2]: [DeviceModelInternal.T1B1],
+    [FirmwareFormat.T2]: [DeviceModelInternal.T2T1, DeviceModelInternal.T2B1],
 };
 
 export const parseFirmwareFormat = (fw: ArrayBuffer): FirmwareFormat | undefined => {
@@ -83,9 +84,9 @@ export const validateFirmware = (
     fw: ArrayBuffer,
     device: TrezorDevice | undefined,
 ): ExtendedMessageDescriptor['id'] | undefined => {
-    const deviceModel = getDeviceModel(device);
+    const deviceModelInternal = device?.features?.internal_model;
 
-    if (!deviceModel) {
+    if (!deviceModelInternal) {
         return 'TR_UNKNOWN_DEVICE';
     }
 
@@ -95,7 +96,7 @@ export const validateFirmware = (
     if (!firmwareFormat) {
         return 'TR_FIRMWARE_VALIDATION_UNRECOGNIZED_FORMAT';
     }
-    if (!FORMAT_MAP[firmwareFormat].includes(deviceModel)) {
+    if (!FORMAT_MAP[firmwareFormat].includes(deviceModelInternal)) {
         return 'TR_FIRMWARE_VALIDATION_UNMATCHING_DEVICE';
     }
 
@@ -106,5 +107,16 @@ export const validateFirmware = (
     }
     if (!isT1V2 && firmwareFormat === FirmwareFormat.T1_V2) {
         return 'TR_FIRMWARE_VALIDATION_T1_V2';
+    }
+};
+
+export const getSuiteFirmwareTypeString = (firmwareType?: FirmwareType) => {
+    switch (firmwareType) {
+        case FirmwareType.BitcoinOnly:
+            return 'TR_FIRMWARE_TYPE_BITCOIN_ONLY';
+        case FirmwareType.Regular:
+            return 'TR_FIRMWARE_TYPE_REGULAR';
+        default:
+            return undefined;
     }
 };

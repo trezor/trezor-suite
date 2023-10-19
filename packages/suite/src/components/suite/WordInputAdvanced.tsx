@@ -1,11 +1,10 @@
-import React, { useEffect, useCallback } from 'react';
+import { useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import { HELP_CENTER_ADVANCED_RECOVERY_URL } from '@trezor/urls';
-import { Button, ButtonPin, KEYBOARD_CODE } from '@trezor/components';
-import { Translation, TrezorLink, DeviceMatrixExplanation } from '@suite-components';
-import { DeviceModel } from '@trezor/device-utils';
+import { Button, PinButton, KEYBOARD_CODE } from '@trezor/components';
+import { Translation, TrezorLink, DeviceMatrixExplanation } from 'src/components/suite';
 import { createTimeoutPromise } from '@trezor/utils';
-import TrezorConnect, { UI } from '@trezor/connect';
+import TrezorConnect, { DeviceModelInternal, UI } from '@trezor/connect';
 
 const Wrapper = styled.div`
     display: flex;
@@ -109,7 +108,7 @@ export const WordInputAdvanced = ({ count }: WordInputAdvancedProps) => {
                     {
                         key: '1',
                         title: <Translation id="TR_RECOVERY_MATRIX_DISPLAYED_ON_TREZOR" />,
-                        deviceModel: DeviceModel.T1,
+                        deviceModelInternal: DeviceModelInternal.T1B1,
                     },
                     {
                         key: '2',
@@ -129,24 +128,23 @@ export const WordInputAdvanced = ({ count }: WordInputAdvancedProps) => {
                 {count === 9 && (
                     <>
                         <Row>
-                            <ButtonPin type="button" data-value="7" onClick={() => onSubmit('7')} />
-                            <ButtonPin type="button" data-value="8" onClick={() => onSubmit('8')} />
-                            <ButtonPin type="button" data-value="9" onClick={() => onSubmit('9')} />
+                            <PinButton data-value="7" onClick={() => onSubmit('7')} />
+                            <PinButton data-value="8" onClick={() => onSubmit('8')} />
+                            <PinButton data-value="9" onClick={() => onSubmit('9')} />
                         </Row>
                         <Row>
-                            <ButtonPin type="button" data-value="4" onClick={() => onSubmit('4')} />
-                            <ButtonPin type="button" data-value="5" onClick={() => onSubmit('5')} />
-                            <ButtonPin type="button" data-value="6" onClick={() => onSubmit('6')} />
+                            <PinButton data-value="4" onClick={() => onSubmit('4')} />
+                            <PinButton data-value="5" onClick={() => onSubmit('5')} />
+                            <PinButton data-value="6" onClick={() => onSubmit('6')} />
                         </Row>
                         <Row>
-                            <ButtonPin
-                                type="button"
+                            <PinButton
                                 data-value="1"
                                 onClick={() => onSubmit('1')}
                                 data-test="@recovery/word-input-advanced/1"
                             />
-                            <ButtonPin type="button" data-value="2" onClick={() => onSubmit('2')} />
-                            <ButtonPin type="button" data-value="3" onClick={() => onSubmit('3')} />
+                            <PinButton data-value="2" onClick={() => onSubmit('2')} />
+                            <PinButton data-value="3" onClick={() => onSubmit('3')} />
                         </Row>
                     </>
                 )}
@@ -154,25 +152,24 @@ export const WordInputAdvanced = ({ count }: WordInputAdvancedProps) => {
                 {count === 6 && (
                     <>
                         <Row>
-                            <ButtonPin type="button" data-value="8" onClick={() => onSubmit('7')} />
-                            <ButtonPin type="button" data-value="9" onClick={() => onSubmit('9')} />
+                            <PinButton data-value="8" onClick={() => onSubmit('7')} />
+                            <PinButton data-value="9" onClick={() => onSubmit('9')} />
                         </Row>
                         <Row>
-                            <ButtonPin type="button" data-value="5" onClick={() => onSubmit('4')} />
-                            <ButtonPin type="button" data-value="6" onClick={() => onSubmit('6')} />
+                            <PinButton data-value="5" onClick={() => onSubmit('4')} />
+                            <PinButton data-value="6" onClick={() => onSubmit('6')} />
                         </Row>
                         <Row>
-                            <ButtonPin
-                                type="button"
+                            <PinButton
                                 data-value="2"
                                 onClick={() => onSubmit('1')}
                                 data-test="@recovery/word-input-advanced/1"
                             />
-                            <ButtonPin type="button" data-value="3" onClick={() => onSubmit('3')} />
+                            <PinButton data-value="3" onClick={() => onSubmit('3')} />
                         </Row>
                     </>
                 )}
-                <Backspace variant="tertiary" onClick={() => backspace()} icon="ARROW_LEFT">
+                <Backspace variant="tertiary" onClick={backspace} icon="ARROW_LEFT">
                     <Translation id="TR_BACKSPACE" />
                 </Backspace>
             </MatrixWrapper>

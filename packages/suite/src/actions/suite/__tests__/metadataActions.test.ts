@@ -2,17 +2,22 @@
 /* eslint-disable global-require */
 import fs from 'fs';
 import path from 'path';
-import { configureStore } from '@suite/support/tests/configureStore';
 
-import metadataReducer from '@suite-reducers/metadataReducer';
-import suiteReducer, { SuiteState } from '@suite-reducers/suiteReducer';
-import deviceReducer from '@suite-reducers/deviceReducer';
+import { prepareDeviceReducer } from '@suite-common/wallet-core';
+
+import { configureStore } from 'src/support/tests/configureStore';
+import metadataReducer from 'src/reducers/suite/metadataReducer';
+import { SuiteState } from 'src/reducers/suite/suiteReducer';
+import DropboxProvider from 'src/services/suite/metadata/DropboxProvider';
+import suiteMiddleware from 'src/middlewares/suite/suiteMiddleware';
+import { accountsReducer } from 'src/reducers/wallet';
+import { extraDependencies } from 'src/support/extraDependencies';
+
 import { STORAGE, MODAL } from '../constants';
 import * as metadataActions from '../metadataActions';
 import * as fixtures from '../__fixtures__/metadataActions';
-import DropboxProvider from '@suite-services/metadata/DropboxProvider';
-import suiteMiddleware from '@suite-middlewares/suiteMiddleware';
-import { accountsReducer } from '@wallet-reducers';
+
+const deviceReducer = prepareDeviceReducer(extraDependencies);
 
 jest.mock('@trezor/connect', () => {
     let fixture: any;
@@ -33,13 +38,22 @@ jest.mock('@trezor/connect', () => {
         setTestFixtures: (f: any) => {
             fixture = f;
         },
-        DEVICE: {},
+        DEVICE: {
+            CONNECT_UNACQUIRED: 'device-connect-unacquired',
+            CHANGED: 'device-changed',
+            DISCONNECT: 'device-disconnect',
+        },
         BLOCKCHAIN: {},
         TRANSPORT: {},
         UI: {},
         PROTO,
+        DeviceModelInternal: {
+            T2T1: 'T2T1',
+        },
     };
 });
+
+jest.mock('@trezor/suite-analytics', () => global.JestMocks.getAnalytics());
 
 // @ts-expect-error declare fetch (used in Dropbox constructor)
 global.fetch = () => {};
@@ -63,16 +77,16 @@ export const getInitialState = (state?: InitialState) => {
     const settings = suite?.settings || { debug: {} };
     const debug = settings?.debug || {};
     const initAction: any = { type: STORAGE.LOAD, payload: { metadata } };
+
     return {
         metadata: metadataReducer(metadata, initAction),
-        devices: device ? [device] : [], // device is needed for notification/event
+        device: { devices: device ? [device] : [], selectedDevice: device }, // device is needed for notification/event
         suite: {
             ...suite,
             settings: {
                 ...settings,
                 debug, // debug settings are needed for OAuth API
             },
-            device, // device is needed for notification/event
         },
         wallet: {
             accounts,
@@ -99,20 +113,17 @@ const initStore = (state: State) => {
             // automatically resolve modal decision
             switch (action.payload.type) {
                 case 'metadata-provider':
-                    await store.dispatch(metadataActions.connectProvider('dropbox'));
+                    await store.dispatch(metadataActions.connectProvider({ type: 'dropbox' }));
                     action.payload.decision.resolve(true);
                     break;
                 default:
                     action.payload.decision.resolve(true);
             }
         }
-        const { metadata, suite, devices, wallet } = store.getState();
+        const { metadata, device, wallet } = store.getState();
         store.getState().metadata = metadataReducer(metadata, action);
-        // @ts-expect-error
-        store.getState().suite = suiteReducer(suite, action);
         store.getState().wallet.accounts = accountsReducer(wallet.accounts, action);
-        store.getState().devices = deviceReducer(devices, action);
-        // store.
+        store.getState().device = deviceReducer(device, action) as any;
     });
     return store;
 };
@@ -161,15 +172,19 @@ describe('Metadata Actions', () => {
             const store = initStore(getInitialState(f.initialState));
             // @ts-expect-error, params
             await store.dispatch(metadataActions.addAccountMetadata(f.params));
+
+            const result = store.getActions();
             if (!f.result) {
-                expect(store.getActions().length).toEqual(0);
+                expect(result.length).toEqual(0);
+            } else {
+                expect(result).toEqual(f.result);
             }
         });
     });
 
     fixtures.connectProvider.forEach(f => {
         it(`connectProvider - ${f.description}`, async () => {
-            jest.mock('@suite-services/metadata/DropboxProvider');
+            jest.mock('src/services/suite/metadata/DropboxProvider');
             DropboxProvider.prototype.connect = () =>
                 Promise.resolve({ success: true, payload: undefined });
 
@@ -188,7 +203,7 @@ describe('Metadata Actions', () => {
 
     fixtures.addMetadata.forEach(f => {
         it(`add metadata - ${f.description}`, async () => {
-            jest.mock('@suite-services/metadata/DropboxProvider');
+            jest.mock('src/services/suite/metadata/DropboxProvider');
             DropboxProvider.prototype.connect = () =>
                 Promise.resolve({ success: true, payload: undefined });
             DropboxProvider.prototype.getProviderDetails = () =>
@@ -201,6 +216,7 @@ describe('Metadata Actions', () => {
                             refreshToken: 'token',
                         },
                         user: 'power-user',
+                        clientId: 'meow',
                     },
                 });
 
@@ -263,7 +279,7 @@ describe('Metadata Actions', () => {
 
     fixtures.init.forEach(f => {
         it(`initMetadata - ${f.description}`, async () => {
-            jest.mock('@suite-services/metadata/DropboxProvider');
+            jest.mock('src/services/suite/metadata/DropboxProvider');
             // @ts-expect-error
             const store = initStore(getInitialState(f.initialState));
             // @ts-expect-error, params

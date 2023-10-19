@@ -1,5 +1,5 @@
-import BlockchainLink from '@trezor/blockchain-link';
-import createServer, { EnhancedServer } from '../websocket';
+import { BackendWebsocketServerMock } from '@trezor/e2e-utils';
+import BlockchainLink from '../../lib';
 import { blockbookWorkerFactory, blockbookModuleFactory } from './worker';
 
 const backends = [
@@ -17,11 +17,11 @@ const backends = [
 
 backends.forEach(b => {
     describe(`Blockbook ${b.name}`, () => {
-        let server: EnhancedServer;
+        let server: BackendWebsocketServerMock;
         let blockchain: BlockchainLink;
 
         beforeEach(async () => {
-            server = await createServer('blockbook');
+            server = await BackendWebsocketServerMock.create('blockbook');
             blockchain = new BlockchainLink({
                 name: b.name,
                 worker: b.worker,
@@ -38,7 +38,7 @@ backends.forEach(b => {
         it('Get info', async () => {
             const result = await blockchain.getInfo();
             expect(result).toEqual({
-                name: 'Test',
+                name: 'TestMock',
                 shortcut: 'test',
                 decimals: 9,
                 blockHeight: 1,

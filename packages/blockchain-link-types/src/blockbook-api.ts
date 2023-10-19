@@ -145,6 +145,7 @@ export interface Address {
     unconfirmedBalance: string;
     unconfirmedTxs: number;
     txs: number;
+    addrTxCount?: number;
     nonTokenTxs?: number;
     internalTxs?: number;
     transactions?: Tx[];
@@ -308,7 +309,8 @@ export interface WsReq {
         | 'ping'
         | 'getCurrentFiatRates'
         | 'getFiatRatesForTimestamps'
-        | 'getFiatRatesTickersList';
+        | 'getFiatRatesTickersList'
+        | 'getMempoolFilters';
     params: any;
 }
 export interface WsRes {
@@ -354,6 +356,13 @@ export interface WsBlockReq {
     id: string;
     pageSize?: number;
     page?: number;
+}
+export interface WsBlockFilterReq {
+    blockHash: string;
+}
+export interface WsBlockFiltersBatchReq {
+    bestKnownBlockHash: string;
+    pageSize?: number;
 }
 export interface WsAccountUtxoReq {
     descriptor: string;
@@ -410,4 +419,11 @@ export interface WsFiatRatesForTimestampsReq {
 export interface WsFiatRatesTickersListReq {
     timestamp?: number;
     token?: string;
+}
+export interface WsMempoolFiltersReq {
+    scriptType: string;
+    fromTimestamp: number;
+}
+export interface MempoolTxidFilterEntries {
+    entries?: { [key: string]: string };
 }

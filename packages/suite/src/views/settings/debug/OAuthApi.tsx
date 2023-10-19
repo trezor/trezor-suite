@@ -1,25 +1,20 @@
-import React from 'react';
 import styled from 'styled-components';
 
-import GoogleClient from '@suite/services/google';
-import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@suite-components/Settings';
-import * as suiteActions from '@suite-actions/suiteActions';
-import { useSelector, useActions } from '@suite-hooks';
-import type { OAuthServerEnvironment } from '@suite-types/metadata';
-import { useAnchor } from '@suite-hooks/useAnchor';
-import { SettingsAnchor } from '@suite-constants/anchors';
+import GoogleClient from 'src/services/google';
+import { ActionColumn, ActionSelect, SectionItem, TextColumn } from 'src/components/suite/Settings';
+import { setDebugMode } from 'src/actions/suite/suiteActions';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import type { OAuthServerEnvironment } from 'src/types/suite/metadata';
+import { useAnchor } from 'src/hooks/suite/useAnchor';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 const StyledActionSelect = styled(ActionSelect)`
     min-width: 256px;
 `;
 
 export const OAuthApi = () => {
-    const { setDebugMode } = useActions({
-        setDebugMode: suiteActions.setDebugMode,
-    });
-    const { debug } = useSelector(state => ({
-        debug: state.suite.settings.debug,
-    }));
+    const debug = useSelector(state => state.suite.settings.debug);
+    const dispatch = useDispatch();
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.OAuthApi);
 
     const options = Object.entries(GoogleClient.servers).map(([environment, server]) => ({
@@ -30,9 +25,7 @@ export const OAuthApi = () => {
         options.find(option => option.value === debug.oauthServerEnvironment) || options[0];
 
     const handleChange = (item: { value: OAuthServerEnvironment }) => {
-        setDebugMode({
-            oauthServerEnvironment: item.value,
-        });
+        dispatch(setDebugMode({ oauthServerEnvironment: item.value }));
         GoogleClient.setEnvironment(item.value);
     };
 

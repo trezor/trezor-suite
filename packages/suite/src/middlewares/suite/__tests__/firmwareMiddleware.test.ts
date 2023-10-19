@@ -1,37 +1,49 @@
-import { configureStore } from '@suite/support/tests/configureStore';
+import {
+    deviceActions,
+    prepareDeviceReducer,
+    prepareFirmwareReducer,
+    firmwareActions,
+} from '@suite-common/wallet-core';
 
-import { SUITE } from '@suite-actions/constants';
-import { FIRMWARE } from '@firmware-actions/constants';
-import firmwareReducer from '@firmware-reducers/firmwareReducer';
-import routerReducer from '@suite-reducers/routerReducer';
-import modalReducer from '@suite-reducers/modalReducer';
-import suiteReducer from '@suite-reducers/suiteReducer';
-import firmwareMiddleware from '@firmware-middlewares/firmwareMiddleware';
+import { configureStore, filterThunkActionTypes } from 'src/support/tests/configureStore';
+import routerReducer from 'src/reducers/suite/routerReducer';
+import modalReducer from 'src/reducers/suite/modalReducer';
+import { prepareFirmwareMiddleware } from 'src/middlewares/firmware/firmwareMiddleware';
+import { extraDependencies } from 'src/support/extraDependencies';
 
 const { getSuiteDevice } = global.JestMocks;
 
+const firmwareMiddleware = prepareFirmwareMiddleware(extraDependencies);
+
 const middlewares = [firmwareMiddleware];
+
+const deviceReducer = prepareDeviceReducer(extraDependencies);
 
 type FirmwareState = ReturnType<typeof firmwareReducer>;
 type RouterState = ReturnType<typeof routerReducer>;
-type SuiteState = ReturnType<typeof suiteReducer>;
+type DeviceState = ReturnType<typeof deviceReducer>;
+
+const firmwareReducer = prepareFirmwareReducer(extraDependencies);
 
 const getInitialState = (
     router?: Partial<RouterState>,
     firmware?: Partial<FirmwareState>,
-    suite?: Partial<SuiteState>,
+    device?: Partial<DeviceState>,
 ) => ({
     firmware: {
-        ...firmwareReducer(undefined, { type: FIRMWARE.RESET_REDUCER }),
+        ...firmwareReducer(undefined, {
+            type: firmwareActions.resetReducer.type,
+            payload: undefined,
+        }),
         ...firmware,
     },
     router: {
         ...routerReducer(undefined, { type: 'foo' } as any),
         ...router,
     },
-    suite: {
-        ...suiteReducer(undefined, { type: 'foo' } as any),
-        ...suite,
+    device: {
+        ...deviceReducer(undefined, { type: 'foo' } as any),
+        ...device,
     },
     modal: modalReducer(undefined, { type: 'foo' } as any),
     analytics: {
@@ -47,15 +59,17 @@ const initStore = (state: State) => {
     const store = mockStore(state);
     store.subscribe(() => {
         const action = store.getActions().pop();
-        const { firmware, suite } = store.getState();
-        // @ts-expect-error
+        const { firmware, device } = store.getState();
         store.getState().firmware = firmwareReducer(firmware, action);
-        store.getState().suite = suiteReducer(suite, action);
+        store.getState().device = deviceReducer(device, action);
 
         store.getActions().push(action);
     });
     return store;
 };
+
+jest.mock('@trezor/suite-analytics', () => global.JestMocks.getAnalytics());
+jest.spyOn(console, 'warn').mockImplementation(() => {});
 
 describe('firmware middleware', () => {
     it('if status === "unplug" disconnecting device results in status "reconnect-in-normal"', async () => {
@@ -67,12 +81,12 @@ describe('firmware middleware', () => {
                 firmwareHash: '345',
             }),
         );
-        await store.dispatch({ type: SUITE.UPDATE_SELECTED_DEVICE, payload: undefined });
+        await store.dispatch(deviceActions.updateSelectedDevice(undefined));
 
-        const result = store.getActions();
+        const result = filterThunkActionTypes(store.getActions());
         expect(result).toEqual([
-            { type: SUITE.UPDATE_SELECTED_DEVICE, payload: undefined },
-            { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'reconnect-in-normal' },
+            { type: deviceActions.updateSelectedDevice.type, payload: undefined },
+            { type: firmwareActions.setStatus.type, payload: 'reconnect-in-normal' },
         ]);
     });
 
@@ -86,14 +100,17 @@ describe('firmware middleware', () => {
             }),
         );
         await store.dispatch({
-            type: SUITE.UPDATE_SELECTED_DEVICE,
+            type: deviceActions.updateSelectedDevice.type,
             payload: getSuiteDevice({ connected: false }),
         });
 
         const result = store.getActions();
         expect(result).toEqual([
-            { type: SUITE.UPDATE_SELECTED_DEVICE, payload: getSuiteDevice({ connected: false }) },
-            { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'reconnect-in-normal' },
+            {
+                type: deviceActions.updateSelectedDevice.type,
+                payload: getSuiteDevice({ connected: false }),
+            },
+            { type: firmwareActions.setStatus.type, payload: 'reconnect-in-normal' },
         ]);
     });
 
@@ -109,20 +126,20 @@ describe('firmware middleware', () => {
         );
 
         await store.dispatch({
-            type: SUITE.SELECT_DEVICE,
+            type: deviceActions.selectDevice.type,
             payload: getSuiteDevice({
                 mode: 'bootloader',
                 connected: true,
             }),
         });
 
-        const result = store.getActions();
+        const result = filterThunkActionTypes(store.getActions());
         expect(result).toEqual([
             {
-                type: SUITE.SELECT_DEVICE,
+                type: deviceActions.selectDevice.type,
                 payload: getSuiteDevice({ connected: true, mode: 'bootloader' }),
             },
-            { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'started' },
+            { type: firmwareActions.setStatus.type, payload: 'started' },
         ]);
     });
 
@@ -137,18 +154,18 @@ describe('firmware middleware', () => {
         );
 
         await store.dispatch({
-            type: SUITE.SELECT_DEVICE,
+            type: deviceActions.selectDevice.type,
             payload: getSuiteDevice({ firmware: 'valid', connected: true }),
         });
 
-        const result = store.getActions();
+        const result = filterThunkActionTypes(store.getActions());
 
         expect(result).toEqual([
             {
-                type: SUITE.SELECT_DEVICE,
+                type: deviceActions.selectDevice.type,
                 payload: getSuiteDevice({ firmware: 'valid', connected: true }),
             },
-            { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'validation' },
+            { type: firmwareActions.setStatus.type, payload: 'validation' },
         ]);
     });
 
@@ -163,7 +180,7 @@ describe('firmware middleware', () => {
         );
 
         await store.dispatch({
-            type: SUITE.SELECT_DEVICE,
+            type: deviceActions.selectDevice.type,
             payload: getSuiteDevice({ firmware: 'none' }),
         });
     });
@@ -179,13 +196,13 @@ describe('firmware middleware', () => {
                     firmwareHash: '345',
                 },
                 {
-                    device: getSuiteDevice(),
+                    selectedDevice: getSuiteDevice(),
                 },
             ),
         );
 
         await store.dispatch({
-            type: FIRMWARE.SET_UPDATE_STATUS,
+            type: firmwareActions.setStatus.type,
             payload: 'waiting-for-bootloader',
             firmwareChallenge: '123',
             firmwareHash: '345',
@@ -193,6 +210,6 @@ describe('firmware middleware', () => {
 
         const result = store.getActions();
         result.shift();
-        expect(result[0].type).toEqual(FIRMWARE.SET_TARGET_RELEASE);
+        expect(result[0].type).toEqual(firmwareActions.setTargetRelease.type);
     });
 });

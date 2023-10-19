@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { VStack, Card } from '@suite-native/atoms';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
 

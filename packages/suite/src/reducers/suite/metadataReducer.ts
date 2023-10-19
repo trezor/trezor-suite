@@ -1,16 +1,35 @@
 import produce from 'immer';
-import { createSelector } from '@reduxjs/toolkit';
 
-import { STORAGE, METADATA } from '@suite-actions/constants';
-import { Action } from '@suite-types';
-import { MetadataState } from '@suite-types/metadata';
-import { selectDevice } from '@suite-reducers/suiteReducer';
+import {
+    selectAccountByKey,
+    DeviceRootState,
+    selectDevice,
+    selectDevices,
+    State,
+} from '@suite-common/wallet-core';
+
+import { STORAGE, METADATA } from 'src/actions/suite/constants';
+import { Action } from 'src/types/suite';
+import { MetadataState, WalletLabels, AccountLabels } from 'src/types/suite/metadata';
+import { Account } from 'src/types/wallet';
+import {
+    DEFAULT_ACCOUNT_METADATA,
+    DEFAULT_WALLET_METADATA,
+} from 'src/actions/suite/constants/metadataConstants';
 
 export const initialState: MetadataState = {
     // is Suite trying to load metadata (get master key -> sync cloud)?
     enabled: false,
     initiating: false,
+    providers: [],
+    selectedProvider: {
+        labels: '',
+    },
 };
+
+type MetadataRootState = {
+    metadata: MetadataState;
+} & DeviceRootState;
 
 const metadataReducer = (state = initialState, action: Action): MetadataState =>
     produce(state, draft => {
@@ -23,8 +42,14 @@ const metadataReducer = (state = initialState, action: Action): MetadataState =>
             case METADATA.DISABLE:
                 draft.enabled = false;
                 break;
-            case METADATA.SET_PROVIDER:
-                draft.provider = action.payload;
+            case METADATA.ADD_PROVIDER:
+                draft.providers.push(action.payload);
+                break;
+            case METADATA.REMOVE_PROVIDER:
+                draft.providers = draft.providers.filter(p => p.type !== action.payload.type);
+                break;
+            case METADATA.SET_SELECTED_PROVIDER:
+                draft.selectedProvider[action.payload.dataType] = action.payload.clientId;
                 break;
             case METADATA.SET_EDITING:
                 draft.editing = action.payload;
@@ -32,17 +57,121 @@ const metadataReducer = (state = initialState, action: Action): MetadataState =>
             case METADATA.SET_INITIATING:
                 draft.initiating = action.payload;
                 break;
+            case METADATA.SET_DATA: {
+                const targetProvider = draft.providers.find(
+                    p =>
+                        p.type === action.payload.provider.type &&
+                        p.clientId === action.payload.provider.clientId,
+                );
+                if (!targetProvider) {
+                    break;
+                }
+                if (!action.payload.data) {
+                    targetProvider.data = {};
+                } else {
+                    targetProvider.data = { ...targetProvider.data, ...action.payload.data };
+                }
+
+                break;
+            }
             // no default
         }
     });
 
-const selectMetadata = (state: { metadata: MetadataState }) => state.metadata;
+export const selectMetadata = (state: MetadataRootState) => state.metadata;
+
+/**
+ * Select currently selected provider for metadata of type 'labels'
+ */
+export const selectSelectedProviderForLabels = (state: { metadata: MetadataState }) =>
+    state.metadata.providers.find(p => p.clientId === state.metadata.selectedProvider.labels);
+
+/**
+ * Select metadata of type 'labels' for currently selected account
+ */
+export const selectLabelingDataForSelectedAccount = (state: {
+    metadata: MetadataState;
+    wallet: { selectedAccount: { account?: Account } };
+}) => {
+    const provider = selectSelectedProviderForLabels(state);
+    const { selectedAccount } = state.wallet;
+
+    const metadataKeys = selectedAccount?.account?.metadata[METADATA.ENCRYPTION_VERSION];
+    if (!metadataKeys || !metadataKeys.fileName || !provider?.data[metadataKeys.fileName]) {
+        return DEFAULT_ACCOUNT_METADATA;
+    }
+
+    return provider.data[metadataKeys.fileName] as AccountLabels;
+};
+
+/**
+ * Select metadata of type 'labels' for requested account
+ */
+export const selectLabelingDataForAccount = (
+    state: { metadata: MetadataState; wallet: { accounts: Account[] } },
+    accountKey: string,
+) => {
+    const provider = selectSelectedProviderForLabels(state);
+    const account = selectAccountByKey(state, accountKey);
+    const metadataKeys = account?.metadata?.[METADATA.ENCRYPTION_VERSION];
+
+    if (!metadataKeys || !metadataKeys?.fileName || !provider?.data[metadataKeys.fileName]) {
+        return DEFAULT_ACCOUNT_METADATA;
+    }
+
+    return provider.data[metadataKeys.fileName] as AccountLabels;
+};
+
+/**
+ * Returns dict <account-key: account-label>
+ */
+export const selectAccountLabels = (state: {
+    metadata: MetadataState;
+    wallet: { accounts: Account[] };
+}) => {
+    const provider = selectSelectedProviderForLabels(state);
+
+    return state.wallet.accounts.reduce((dict, account) => {
+        const metadataKeys = account?.metadata?.[METADATA.ENCRYPTION_VERSION];
+        if (!metadataKeys || !metadataKeys?.fileName || !provider?.data[metadataKeys.fileName]) {
+            return dict;
+        }
+        const data = provider.data[metadataKeys.fileName];
+        if ('accountLabel' in data) {
+            dict[account.key] = data.accountLabel;
+        }
+        return dict;
+    }, {} as Record<string, string | undefined>);
+};
+
+/**
+ * Select metadata of type 'labels' for requested device
+ */
+export const selectLabelingDataForWallet = (
+    state: { metadata: MetadataState; device: State },
+    deviceState?: string,
+) => {
+    const provider = selectSelectedProviderForLabels(state);
+    const devices = selectDevices(state);
+    const device = devices.find(d => d.state === deviceState);
+    if (device?.metadata.status !== 'enabled') {
+        return DEFAULT_WALLET_METADATA;
+    }
+    const metadataKeys = device?.metadata[METADATA.ENCRYPTION_VERSION];
+
+    if (metadataKeys && metadataKeys.fileName && provider?.data[metadataKeys.fileName]) {
+        return provider.data[metadataKeys.fileName] as WalletLabels;
+    }
+    return DEFAULT_WALLET_METADATA;
+};
 
 // is everything ready (more or less) to add label?
-export const selectIsLabelingAvailable = createSelector(
-    [selectDevice, selectMetadata],
-    (device, metadata) =>
-        !!(metadata.enabled && device?.metadata?.status === 'enabled' && metadata.provider),
-);
+export const selectIsLabelingAvailable = (state: MetadataRootState) => {
+    const { enabled } = selectMetadata(state);
+    const provider = selectSelectedProviderForLabels(state);
+    const device = selectDevice(state);
+
+    return !!(enabled && device?.metadata?.status === 'enabled' && provider);
+};
 
 export default metadataReducer;

@@ -1,35 +1,45 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/popup/view/selectDevice.js
 
-import TrezorConnect, {
+import {
     UI,
     POPUP,
     ERRORS,
     createUiResponse,
     UiRequestSelectDevice,
+    UI_EVENT,
+    TRANSPORT,
 } from '@trezor/connect';
+import { TREZOR_USB_DESCRIPTORS } from '@trezor/transport/lib/constants';
 import { SUITE_BRIDGE_URL, SUITE_UDEV_URL, TREZOR_SUPPORT_URL } from '@trezor/urls';
 import { container, getState, showView, postMessage } from './common';
 
-const initWebUsbButton = (webusb: boolean, showLoader: boolean) => {
-    if (!webusb) return;
+const initWebUsbButton = (showLoader: boolean) => {
+    const { iframe } = getState();
 
+    const usb = iframe ? iframe.navigator.usb : null;
     const webusbContainer = container.getElementsByClassName('webusb')[0] as HTMLElement;
     webusbContainer.style.display = 'flex';
     const button = webusbContainer.getElementsByTagName('button')[0];
 
-    const { iframe } = getState();
-    if (!iframe) {
-        button.innerHTML = '<span class="plus"></span><span class="text">Pair devices</span>';
-    }
+    button.innerHTML = '<span class="plus"></span><span class="text">Pair devices</span>';
 
-    const usb = iframe ? iframe.clientInformation.usb : null;
     const onClick = async () => {
         if (!usb) {
             window.postMessage({ type: POPUP.EXTENSION_USB_PERMISSIONS }, window.location.origin);
             return;
         }
         try {
-            await TrezorConnect.requestWebUSBDevice();
+            await window.navigator.usb.requestDevice({
+                filters: TREZOR_USB_DESCRIPTORS,
+            });
+            const { iframe } = getState();
+            if (!iframe) {
+                throw ERRORS.TypedError('Popup_ConnectionMissing');
+            }
+            iframe.postMessage({
+                event: UI_EVENT,
+                type: TRANSPORT.REQUEST_DEVICE,
+            });
             if (showLoader) {
                 showView('loader');
             }
@@ -44,16 +54,19 @@ const initWebUsbButton = (webusb: boolean, showLoader: boolean) => {
 
 export const selectDevice = (payload: UiRequestSelectDevice['payload']) => {
     if (!payload) return;
-
     if (!payload.devices || !Array.isArray(payload.devices) || payload.devices.length === 0) {
         // No device connected
         showView('connect');
-        initWebUsbButton(payload.webusb, true);
+        if (payload.webusb) {
+            initWebUsbButton(true);
+        }
         return;
     }
 
     showView('select-device');
-    initWebUsbButton(payload.webusb, false);
+    if (payload.webusb) {
+        initWebUsbButton(false);
+    }
 
     // If only 'remember device for now' toggle and no webusb button is available
     // show it right under the table
@@ -96,12 +109,14 @@ export const selectDevice = (payload: UiRequestSelectDevice['payload']) => {
         }
 
         const deviceIcon = document.createElement('span');
-        deviceIcon.className = 'icon';
+        deviceIcon.className = 'trezor_icon';
 
-        if (device.features) {
-            if (device.features.major_version === 2) {
-                deviceIcon.classList.add('model-t');
-            }
+        const { features } = device;
+
+        if (features) {
+            deviceIcon.classList.add(`trezor_icon_${features.internal_model.toLowerCase()}`);
+        } else {
+            deviceIcon.classList.add('trezor_icon_unknown');
         }
 
         const deviceName = document.createElement('span');
@@ -138,7 +153,6 @@ export const selectDevice = (payload: UiRequestSelectDevice['payload']) => {
                     explanationContent = `Please install <a href="${SUITE_BRIDGE_URL}" target="_blank" rel="noreferrer noopener" onclick="window.closeWindow();">Bridge</a> to use Trezor device.`;
                 }
                 deviceButton.disabled = true;
-                deviceIcon.classList.add('unknown');
                 deviceName.textContent = 'Unrecognized device';
                 explanation.innerHTML = `${device.error}<br />${explanationContent}`;
             }

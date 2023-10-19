@@ -12,7 +12,8 @@
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
-        "@reduxjs/toolkit": "1.9.3",
+        "@reduxjs/toolkit": "1.9.5",
+        "@suite-common/device-authenticity": "workspace:*",
         "@suite-common/fiat-services": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-config": "workspace:*",
@@ -21,15 +22,19 @@
         "@suite-common/test-utils": "workspace:*",
         "@suite-common/toast-notifications": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
+        "@suite-common/wallet-constants": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/blockchain-link-utils": "workspace:*",
-        "@trezor/connect": "workspace:9.0.9",
+        "@trezor/connect": "workspace:*",
+        "@trezor/device-utils": "workspace:*",
+        "@trezor/env-utils": "workspace:*",
+        "@trezor/suite-analytics": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "date-fns": "^2.29.3",
-        "proxy-memoize": "^2.0.2"
+        "date-fns": "^2.30.0",
+        "proxy-memoize": "2.0.2"
     },
     "devDependencies": {
         "jest": "^26.6.3",

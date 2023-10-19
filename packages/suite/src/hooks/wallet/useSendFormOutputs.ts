@@ -1,10 +1,10 @@
 import { useCallback, useEffect } from 'react';
-import { useFieldArray, UseFormMethods } from 'react-hook-form';
-import { FormState, UseSendFormState, SendContextValues } from '@wallet-types/sendForm';
+import { useFieldArray, UseFormReturn } from 'react-hook-form';
+import { FormState, UseSendFormState, SendContextValues } from 'src/types/wallet/sendForm';
 import { DEFAULT_PAYMENT, DEFAULT_OPRETURN } from '@suite-common/wallet-constants';
 
-type Props = UseFormMethods<FormState> & {
-    outputsFieldArray: ReturnType<typeof useFieldArray>;
+type Props = UseFormReturn<FormState> & {
+    outputsFieldArray: ReturnType<typeof useFieldArray<FormState, 'outputs'>>;
     localCurrencyOption: UseSendFormState['localCurrencyOption'];
     composeRequest: SendContextValues['composeTransaction'];
 };
@@ -14,7 +14,6 @@ type Props = UseFormMethods<FormState> & {
 export const useSendFormOutputs = ({
     outputsFieldArray,
     register,
-    unregister,
     getValues,
     setValue,
     reset,
@@ -42,11 +41,6 @@ export const useSendFormOutputs = ({
                 setValue('setMaxOutputId', setMaxOutputId - 1);
             }
 
-            // TEMP: reset values for the Output which will be removed
-            // react-hook-form somehow keeps cached values which has been set "from the outside" using setValue TODO: investigate more
-            // use case example:
-            // add second Output > click "send-max" (calculated "max" value will be set after compose) > remove second Output > add second Output again
-            setValue(`outputs[${index}]`, DEFAULT_PAYMENT);
             outputsFieldArray.remove(index);
         },
         [getValues, setValue, outputsFieldArray],
@@ -65,7 +59,7 @@ export const useSendFormOutputs = ({
                     ...values,
                     outputs: [DEFAULT_OPRETURN],
                 },
-                { errors: true },
+                { keepErrors: true },
             );
         }
     };
@@ -75,7 +69,7 @@ export const useSendFormOutputs = ({
         if (values.outputs.length > 1) {
             removeOutput(index);
         } else {
-            clearErrors('outputs[0]');
+            clearErrors('outputs.0');
             reset(
                 {
                     ...values,
@@ -86,28 +80,22 @@ export const useSendFormOutputs = ({
                         },
                     ],
                 },
-                { errors: true },
+                { keepErrors: true },
             );
         }
-        composeRequest('outputs[0].amount');
+        composeRequest('outputs.0.amount');
     };
 
-    // each Output have additional uncontrolled values that needs to be present in FormState
+    // each Output has additional uncontrolled values that need to be present in FormState
     // they need to be registered without any HTMLElement as a "custom" field
     const { fields } = outputsFieldArray;
     useEffect(() => {
         fields.forEach((output, index) => {
-            register({ name: `outputs[${index}].type`, type: 'custom' });
+            register(`outputs.${index}.type`, { shouldUnregister: true });
             // set defaultValues
-            setValue(`outputs[${index}].type`, output.type);
+            setValue(`outputs.${index}.type`, output.type);
         });
-        return () => {
-            // unregister fields
-            fields.forEach((_output, index) => {
-                unregister(`outputs[${index}].type`);
-            });
-        };
-    }, [fields, register, unregister, setValue]);
+    }, [fields, register, setValue]);
 
     return {
         addOutput,

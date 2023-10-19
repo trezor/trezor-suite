@@ -1,12 +1,9 @@
-import React from 'react';
 import styled from 'styled-components';
-import { P2pFormContext, useCoinmarketP2pForm } from '@wallet-hooks/useCoinmarketP2pForm';
-import {
-    CoinmarketLayout,
-    withSelectedAccountLoaded,
-    WithSelectedAccountLoadedProps,
-} from '@wallet-components';
-import { Wrapper } from '@wallet-views/coinmarket';
+
+import { P2pFormContext, useCoinmarketP2pForm } from 'src/hooks/wallet/useCoinmarketP2pForm';
+import { withSelectedAccountLoaded, WithSelectedAccountLoadedProps } from 'src/components/wallet';
+import { Wrapper } from 'src/views/wallet/coinmarket';
+import { CoinmarketLayout } from 'src/views/wallet/coinmarket/common';
 import { Inputs } from './Inputs';
 import { P2pInfo } from './P2pInfo';
 import { Footer } from './Footer';

@@ -1,8 +1,8 @@
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { TouchableOpacity } from 'react-native';
 
 import { Box, Text, VStack, Card } from '@suite-native/atoms';
-import { Icon, IconName } from '@trezor/icons';
+import { Icon, IconName } from '@suite-common/icons';
 
 type SettingsSectionProps = {
     title: string;
@@ -24,8 +24,8 @@ export const SettingsSection = ({
             flexDirection="row"
             justifyContent="space-between"
             alignItems="center"
-            marginBottom="medium"
-            marginLeft="small"
+            marginBottom="extraLarge"
+            marginLeft="medium"
         >
             <Box>
                 <Text variant="titleSmall">{title}</Text>

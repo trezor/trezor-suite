@@ -1,4 +1,5 @@
 import type { PROTO, NEM } from '../../../constants';
+import type { DerivationPath } from '../../params';
 
 // NEM types from nem-sdk
 // https://nemproject.github.io/#transferTransaction
@@ -109,6 +110,6 @@ export type NEMMultisigTransaction = TransactionCommon & {
 export type NEMTransaction = NEMRegularTransaction | NEMMultisigTransaction;
 
 export interface NEMSignTransaction {
-    path: string | number[];
+    path: DerivationPath;
     transaction: NEMTransaction;
 }

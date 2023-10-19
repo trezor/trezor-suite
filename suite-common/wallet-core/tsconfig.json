@@ -2,6 +2,7 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../device-authenticity" },
         { "path": "../fiat-services" },
         { "path": "../redux-utils" },
         { "path": "../suite-config" },
@@ -10,6 +11,7 @@
         { "path": "../test-utils" },
         { "path": "../toast-notifications" },
         { "path": "../wallet-config" },
+        { "path": "../wallet-constants" },
         { "path": "../wallet-types" },
         { "path": "../wallet-utils" },
         {
@@ -19,6 +21,11 @@
             "path": "../../packages/blockchain-link-utils"
         },
         { "path": "../../packages/connect" },
+        { "path": "../../packages/device-utils" },
+        { "path": "../../packages/env-utils" },
+        {
+            "path": "../../packages/suite-analytics"
+        },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" }
     ]

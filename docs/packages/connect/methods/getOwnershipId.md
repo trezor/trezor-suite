@@ -6,7 +6,7 @@ Export SLIP-0019 ownership identifier. [Read more](https://github.com/satoshilab
 const result = await TrezorConnect.getOwnershipId(params);
 ```
 
-> :note: **Supported only by Trezor T with Firmware 2.4.4 or higher!**
+> :note: **Supported only by T2T1 with Firmware 2.4.4 or higher!**
 
 ### Params
 

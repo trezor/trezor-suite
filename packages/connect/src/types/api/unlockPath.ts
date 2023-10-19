@@ -1,8 +1,8 @@
 import type { PROTO } from '../../constants';
-import type { Params, Response } from '../params';
+import type { Params, Response, DerivationPath } from '../params';
 
 export interface UnlockPathParams {
-    path: string | number[];
+    path: DerivationPath;
     mac?: string;
 }
 

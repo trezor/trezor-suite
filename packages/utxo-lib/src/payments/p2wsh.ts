@@ -7,7 +7,7 @@ import * as bcrypto from '../crypto';
 import { bitcoin as BITCOIN_NETWORK } from '../networks';
 import * as bscript from '../script';
 import * as lazy from './lazy';
-import type { Payment, PaymentOpts, StackElement, StackFunction } from './index';
+import { Payment, PaymentOpts, StackElement, StackFunction } from '../types';
 
 const { OPS } = bscript;
 
@@ -73,7 +73,7 @@ export function p2wsh(a: Payment, opts?: PaymentOpts): Payment {
         network = (a.redeem && a.redeem.network) || BITCOIN_NETWORK;
     }
 
-    const o: Payment = { network };
+    const o: Payment = { name: 'p2wsh', network };
 
     lazy.prop(o, 'address', () => {
         if (!o.hash) return;
@@ -82,7 +82,7 @@ export function p2wsh(a: Payment, opts?: PaymentOpts): Payment {
         return bech32.encode(network!.bech32, words);
     });
     lazy.prop(o, 'hash', () => {
-        if (a.output) return a.output.slice(2);
+        if (a.output) return a.output.subarray(2);
         if (a.address) return _address().data;
         if (o.redeem && o.redeem.output) return bcrypto.sha256(o.redeem.output);
     });
@@ -132,7 +132,7 @@ export function p2wsh(a: Payment, opts?: PaymentOpts): Payment {
 
     // extended validation
     if (opts.validate) {
-        let hash: Buffer = Buffer.from([]);
+        let hash = Buffer.from([]);
         if (a.address) {
             const { prefix, version, data } = _address();
             if (prefix !== network.bech32)
@@ -150,7 +150,7 @@ export function p2wsh(a: Payment, opts?: PaymentOpts): Payment {
         if (a.output) {
             if (a.output.length !== 34 || a.output[0] !== OPS.OP_0 || a.output[1] !== 0x20)
                 throw new TypeError('Output is invalid');
-            const hash2 = a.output.slice(2);
+            const hash2 = a.output.subarray(2);
             if (hash.length > 0 && !hash.equals(hash2)) throw new TypeError('Hash mismatch');
             else hash = hash2;
         }

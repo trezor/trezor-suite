@@ -1,6 +1,6 @@
 # @trezor/connect
 
-API version 9.0.9
+API version 9.1.4
 
 [![Build Status](https://github.com/trezor/trezor-suite/actions/workflows/connect-test.yml/badge.svg)](https://github.com/trezor/trezor-suite/actions/workflows/connect-test.yml)
 [![NPM](https://img.shields.io/npm/v/@trezor/connect.svg)](https://www.npmjs.org/package/@trezor/connect)
@@ -34,7 +34,7 @@ import TrezorConnect from '@trezor/connect';
 
 For more instructions [refer to this document](https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/index.md)
 
-## Version 9 (stable)
+## Versioning
 
 Since version 9 we are adopting a new versioning strategy. With every release, we are going to update two urls
 
@@ -42,6 +42,23 @@ Since version 9 we are adopting a new versioning strategy. With every release, w
 -   B) For those who like to have more control over their dependencies, there will be also a new url created in form of https://connect.trezor.io/9.1../trezor-connect.js. Please note that these endpoints will not receive any further updates including security updates.
 
 Version 9 is available as `@trezor/connect` and `@trezor/connect-web` npm packages.
+
+### Major version
+
+New major version is released when there are breaking changes on API level. Previous major version will be maintained for 12 months and after this period it can be taken down without notice.
+
+Current major version 9 is being developed on top of `develop` branch. When there is a new major version a new branch should be created (`v-<major-version>`) and mantained separately.
+
+### Minor version
+
+Minor versions are released when there are:
+
+-   considerable additions to API
+-   changes in npm package
+
+### Patch version
+
+Everything else that does not fall under major or minor version.
 
 ## Version 8 (legacy)
 
@@ -57,6 +74,8 @@ With regards to this repo - All updates should go to current version branch, the
 
 For deployment process of trezor-connect v8 refer to [trezor/connect repository](https://github.com/trezor/connect/blob/develop/docs/deployment/index.md)
 
+Version 8 will go offline by the end of 2023.
+
 ## Docs
 
 Interactive API explorer is available on https://connect.trezor.io/9/#/
@@ -69,4 +88,4 @@ A collection of examples on how to implement @trezor/connect in various environm
 
 ## Tests
 
-For integration testing against trezord and emulator refer to [this document](https://github.com/trezor/trezor-suite/blob/develop/packages/integration-tests/projects/connect/README.md).
+For integration testing against trezord and emulator refer to [this document](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/e2e/README.md).

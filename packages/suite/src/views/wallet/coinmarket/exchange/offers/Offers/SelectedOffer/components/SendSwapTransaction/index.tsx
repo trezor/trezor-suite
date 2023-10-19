@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState, ChangeEvent, MouseEventHandler } from 'react';
 import styled from 'styled-components';
-import { Translation, AccountLabeling, FormattedCryptoAmount } from '@suite-components';
+import { Translation, AccountLabeling, FormattedCryptoAmount } from 'src/components/suite';
 import {
     Button,
     Icon,
@@ -12,11 +12,10 @@ import {
     useTheme,
     variables,
 } from '@trezor/components';
-import { TypedFieldError } from '@wallet-types/form';
-import { useCoinmarketExchangeOffersContext } from '@wallet-hooks/useCoinmarketExchangeOffers';
-import { InputError } from '@wallet-components';
+import { useCoinmarketExchangeOffersContext } from 'src/hooks/wallet/useCoinmarketExchangeOffers';
 import useDebounce from 'react-use/lib/useDebounce';
 import BigNumber from 'bignumber.js';
+import { FieldError } from 'react-hook-form';
 
 const Wrapper = styled.div`
     display: flex;
@@ -26,13 +25,13 @@ const Wrapper = styled.div`
 
 const LabelText = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 const Value = styled.div`
     padding-top: 6px;
     font-size: ${variables.FONT_SIZE.SMALL};
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
@@ -49,7 +48,7 @@ const ButtonWrapper = styled.div`
     align-items: center;
     justify-content: center;
     padding-top: 20px;
-    border-top: 1px solid ${props => props.theme.STROKE_GREY};
+    border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
     margin: 20px 0;
 `;
 
@@ -80,7 +79,7 @@ const RightColumn = styled.div`
 `;
 
 const Slippage = styled.div`
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
@@ -159,7 +158,7 @@ const SendSwapTransactionComponent = () => {
     const [slippageSettings, setSlippageSettings] = useState(false);
     const [slippage, setSlippage] = useState(selectedQuote?.swapSlippage || '1');
     const [customSlippage, setCustomSlippage] = useState(slippage);
-    const [customSlippageError, setCustomSlippageError] = useState<TypedFieldError | undefined>();
+    const [customSlippageError, setCustomSlippageError] = useState<FieldError | undefined>();
     useDebounce(
         () => {
             if (
@@ -191,7 +190,7 @@ const SendSwapTransactionComponent = () => {
         provider: providerName,
     };
 
-    const toggleSlippage = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    const toggleSlippage: MouseEventHandler<HTMLButtonElement> = e => {
         e.preventDefault();
         setSlippageSettings(!slippageSettings);
     };
@@ -208,7 +207,7 @@ const SendSwapTransactionComponent = () => {
         }
     };
 
-    const changeCustomSlippage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const changeCustomSlippage = (event: ChangeEvent<HTMLInputElement>) => {
         const { value } = event.target;
         setCustomSlippage(value);
         if (!value) {
@@ -300,7 +299,7 @@ const SendSwapTransactionComponent = () => {
                                     name="CustomSlippage"
                                     data-test="CustomSlippage"
                                     onChange={changeCustomSlippage}
-                                    bottomText={<InputError error={customSlippageError} />}
+                                    bottomText={customSlippageError?.message}
                                 />
                             </RightColumn>
                         )}

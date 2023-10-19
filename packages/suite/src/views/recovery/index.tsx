@@ -1,17 +1,26 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { useIntl } from 'react-intl';
 import styled from 'styled-components';
+
+import { getCheckBackupUrl } from '@suite-common/suite-utils';
 import { Button, H2, P, Image, variables } from '@trezor/components';
-import { SelectWordCount, SelectRecoveryType } from '@recovery-components';
-import { Loading, Translation, CheckItem, TrezorLink, Modal } from '@suite-components';
-import { ReduxModal } from '@suite-components/ModalSwitcher/ReduxModal';
-import * as recoveryActions from '@recovery-actions/recoveryActions';
-import { useDevice, useSelector, useActions } from '@suite-hooks';
-import type { ForegroundAppProps } from '@suite-types';
-import type { WordCount } from '@recovery-types';
-import { InstructionStep } from '@suite-components/InstructionStep';
-import { getCheckBackupUrl } from '@suite-utils/device';
-import { DeviceModel, getDeviceModel, pickByDeviceModel } from '@trezor/device-utils';
-import TrezorConnect from '@trezor/connect';
+import { pickByDeviceModel } from '@trezor/device-utils';
+import TrezorConnect, { DeviceModelInternal } from '@trezor/connect';
+
+import { SelectWordCount, SelectRecoveryType } from 'src/components/recovery';
+import { Loading, Translation, CheckItem, TrezorLink, Modal } from 'src/components/suite';
+import { ReduxModal } from 'src/components/suite/modals/ReduxModal/ReduxModal';
+import {
+    checkSeed,
+    setAdvancedRecovery,
+    setStatus,
+    setWordsCount,
+} from 'src/actions/recovery/recoveryActions';
+import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
+import type { ForegroundAppProps } from 'src/types/suite';
+import type { WordCount } from 'src/types/recovery';
+import { InstructionStep } from 'src/components/suite/InstructionStep';
+import messages from 'src/support/messages';
 
 const StyledModal = styled(Modal)`
     min-height: 450px;
@@ -57,33 +66,28 @@ const VerticalCenter = styled.div`
 `;
 
 export const Recovery = ({ onCancel }: ForegroundAppProps) => {
-    const { recovery, modal } = useSelector(state => ({
-        recovery: state.recovery,
-        modal: state.modal,
-    }));
-    const actions = useActions({
-        checkSeed: recoveryActions.checkSeed,
-        setStatus: recoveryActions.setStatus,
-        setWordsCount: recoveryActions.setWordsCount,
-        setAdvancedRecovery: recoveryActions.setAdvancedRecovery,
-    });
+    const recovery = useSelector(state => state.recovery);
+    const modal = useSelector(state => state.modal);
+    const dispatch = useDispatch();
     const { device, isLocked } = useDevice();
     const [understood, setUnderstood] = useState(false);
 
+    const intl = useIntl();
+
     const onSetWordsCount = (count: WordCount) => {
-        actions.setWordsCount(count);
-        actions.setStatus('select-recovery-type');
+        dispatch(setWordsCount(count));
+        dispatch(setStatus('select-recovery-type'));
     };
 
     const onSetRecoveryType = (type: 'standard' | 'advanced') => {
-        actions.setAdvancedRecovery(type === 'advanced');
-        actions.checkSeed();
+        dispatch(setAdvancedRecovery(type === 'advanced'));
+        dispatch(checkSeed());
     };
 
-    const deviceModel = getDeviceModel(device);
+    const deviceModelInternal = device?.features?.internal_model;
     const learnMoreUrl = getCheckBackupUrl(device);
     const statesInProgressBar =
-        deviceModel === DeviceModel.T1
+        deviceModelInternal === DeviceModelInternal.T1B1
             ? [
                   'initial',
                   'select-word-count',
@@ -94,7 +98,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
               ]
             : ['initial', 'in-progress', 'finished'];
 
-    if (!device || !device.features || !deviceModel) {
+    if (!device || !device.features || !deviceModelInternal) {
         return (
             <Modal
                 heading={<Translation id="TR_RECONNECT_HEADER" />}
@@ -112,9 +116,9 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
             {recovery.status === 'initial' && (
                 <StyledButton
                     onClick={() =>
-                        deviceModel === DeviceModel.T1
-                            ? actions.setStatus('select-word-count')
-                            : actions.checkSeed()
+                        deviceModelInternal === DeviceModelInternal.T1B1
+                            ? dispatch(setStatus('select-word-count'))
+                            : dispatch(checkSeed())
                     }
                     isDisabled={!understood || isLocked()}
                     data-test="@recovery/start-button"
@@ -147,7 +151,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                                 number="1"
                                 title={
                                     <Translation
-                                        id={`TR_CHECK_RECOVERY_SEED_DESC_T${deviceModel}`}
+                                        id={`TR_CHECK_RECOVERY_SEED_DESC_${deviceModelInternal}`}
                                     />
                                 }
                             >
@@ -165,11 +169,12 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                                 title={<Translation id="TR_ENTER_ALL_WORDS_IN_CORRECT" />}
                             >
                                 <Translation
-                                    id={pickByDeviceModel(deviceModel, {
+                                    id={pickByDeviceModel(deviceModelInternal, {
                                         default: 'TR_SEED_WORDS_ENTER_BUTTONS',
-                                        [DeviceModel.T1]: 'TR_SEED_WORDS_ENTER_COMPUTER',
-                                        [DeviceModel.TT]: 'TR_SEED_WORDS_ENTER_TOUCHSCREEN',
-                                        [DeviceModel.TR]: 'TR_SEED_WORDS_ENTER_BUTTONS',
+                                        [DeviceModelInternal.T1B1]: 'TR_SEED_WORDS_ENTER_COMPUTER',
+                                        [DeviceModelInternal.T2T1]:
+                                            'TR_SEED_WORDS_ENTER_TOUCHSCREEN',
+                                        [DeviceModelInternal.T2B1]: 'TR_SEED_WORDS_ENTER_BUTTONS',
                                     })}
                                 />
                             </InstructionStep>
@@ -259,7 +264,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
             isCancelable
             onCancel={() => {
                 if (['in-progress', 'waiting-for-confirmation'].includes(recovery.status)) {
-                    TrezorConnect.cancel();
+                    TrezorConnect.cancel(intl.formatMessage(messages.TR_CANCELLED));
                 } else {
                     onCancel();
                 }

@@ -1,10 +1,17 @@
-import { EventEmitter } from 'events';
+import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
 
 import * as coordinator from './coordinator';
 import { transformStatus } from '../utils/roundUtils';
+import { patchResponse } from '../utils/http';
+import { coordinatorRequest } from './coordinatorRequest';
 import { STATUS_TIMEOUT } from '../constants';
 import { RoundPhase } from '../enums';
-import { CoinjoinClientSettings, CoinjoinStatusEvent, LogEvent } from '../types';
+import {
+    CoinjoinClientSettings,
+    CoinjoinStatusEvent,
+    LogEvent,
+    CoinjoinClientVersion,
+} from '../types';
 import { Round } from '../types/coordinator';
 
 type StatusMode = keyof typeof STATUS_TIMEOUT;
@@ -22,13 +29,7 @@ interface RegisteredRound {
     inputs: { outpoint: string }[];
 }
 
-export declare interface Status {
-    on<K extends keyof StatusEvents>(type: K, listener: (event: StatusEvents[K]) => void): this;
-    off<K extends keyof StatusEvents>(type: K, listener: (event: StatusEvents[K]) => void): this;
-    emit<K extends keyof StatusEvents>(type: K, ...args: StatusEvents[K][]): boolean;
-}
-
-export class Status extends EventEmitter {
+export class Status extends TypedEmitter<StatusEvents> {
     enabled = false;
     timestamp = 0;
     nextTimestamp = 0;
@@ -55,28 +56,24 @@ export class Status extends EventEmitter {
     private compareStatus(next: Round[]) {
         return next
             .filter(nextRound => {
-                const known = this.rounds.find(prevRound => prevRound.id === nextRound.id);
+                const known = this.rounds.find(prevRound => prevRound.Id === nextRound.Id);
                 if (!known) return true; // new phase
-                if (nextRound.phase === known.phase + 1) return true; // expected update
-                if (
-                    nextRound.phase === RoundPhase.TransactionSigning &&
-                    !known.affiliateRequest &&
-                    nextRound.affiliateRequest
-                ) {
+                if (nextRound.Phase === known.Phase + 1) return true; // expected update
+                if (nextRound.Phase === RoundPhase.TransactionSigning && !known.AffiliateRequest) {
                     return true; // affiliateRequest is propagated asynchronously, might be added after phase change
                 }
 
                 if (
-                    known.phase === RoundPhase.Ended &&
-                    known.endRoundState !== nextRound.endRoundState
+                    known.Phase === RoundPhase.Ended &&
+                    known.EndRoundState !== nextRound.EndRoundState
                 )
                     return true;
-                if (nextRound.phase === RoundPhase.Ended && known.phase !== RoundPhase.Ended)
+                if (nextRound.Phase === RoundPhase.Ended && known.Phase !== RoundPhase.Ended)
                     return true; // round ended
-                if (nextRound.phase !== known.phase) {
+                if (nextRound.Phase !== known.Phase) {
                     this.log(
                         'warn',
-                        `Unexpected phase change: ${nextRound.id} ${known.phase} => ${nextRound.phase}`,
+                        `Unexpected phase change: ${nextRound.Id} ${known.Phase} => ${nextRound.Phase}`,
                     );
                     // possible corner-case:
                     // - suite fetch the /status, next fetch will be in ~20 sec. + potential network delay
@@ -92,8 +89,8 @@ export class Status extends EventEmitter {
                 this.rounds
                     .filter(
                         prevRound =>
-                            prevRound.phase < RoundPhase.Ended &&
-                            !next.find(nextRound => prevRound.id === nextRound.id),
+                            prevRound.Phase < RoundPhase.Ended &&
+                            !next.find(nextRound => prevRound.Id === nextRound.Id),
                     )
                     .map(r => ({ ...r, phase: RoundPhase.Ended })),
             );
@@ -158,30 +155,35 @@ export class Status extends EventEmitter {
         this.log('debug', `Next status fetch in ${timeout}ms`);
 
         this.statusTimeout = setTimeout(() => {
-            this.getStatus().then(() => {
-                // single status request might fail (no scheduled attempts are set)
-                // continue lifecycle regardless of the result until this.enabled
-                this.setStatusTimeout();
-            });
+            this.getStatus()
+                .catch(error => {
+                    // silent error. do not interrupt the lifecycle
+                    this.log('warn', `Status: ${error.message}`);
+                })
+                .finally(() => {
+                    // single status request might fail (no scheduled attempts are set)
+                    // continue lifecycle regardless of the result until this.enabled
+                    this.setStatusTimeout();
+                });
         }, timeout);
     }
 
     private processStatus(status: coordinator.CoinjoinStatus) {
         // add matching coinjoinRequest to rounds
-        status.roundStates.forEach(round => {
-            const roundRequest = status.affiliateInformation?.affiliateData[round.id];
-            round.affiliateRequest = roundRequest?.trezor;
+        status.RoundStates.forEach(round => {
+            const roundRequest = status.AffiliateInformation?.AffiliateData[round.Id];
+            round.AffiliateRequest = roundRequest?.trezor;
         });
 
         // report affiliate server status
         const runningAffiliateServer =
-            !!status.affiliateInformation?.runningAffiliateServers.includes('trezor');
+            !!status.AffiliateInformation?.RunningAffiliateServers.includes('trezor');
         if (this.runningAffiliateServer !== runningAffiliateServer) {
             this.emit('affiliate-server', runningAffiliateServer);
         }
         this.runningAffiliateServer = runningAffiliateServer;
 
-        const changed = this.compareStatus(status.roundStates);
+        const changed = this.compareStatus(status.RoundStates);
         if (changed.length > 0) {
             const statusEvent = {
                 changed,
@@ -189,7 +191,7 @@ export class Status extends EventEmitter {
             };
 
             this.emit('update', statusEvent);
-            this.rounds = status.roundStates;
+            this.rounds = status.RoundStates;
             return statusEvent;
         }
     }
@@ -198,41 +200,64 @@ export class Status extends EventEmitter {
         return this.runningAffiliateServer;
     }
 
-    getStatus(attempts?: number) {
+    async getStatus() {
         if (!this.enabled) return Promise.resolve();
 
         const identity = this.identities[Math.floor(Math.random() * this.identities.length)];
-        return coordinator
-            .getStatus({
-                baseUrl: this.settings.coordinatorUrl,
-                signal: this.abortController.signal,
-                identity,
-                attempts,
-            })
-            .then(status => {
-                // explicitly catch processStatus errors
-                try {
-                    return this.processStatus(status);
-                } catch (error) {
-                    this.log('error', `Status: ${error.message}`);
-                }
-            })
-            .catch(error => {
-                this.log('warn', `Status: ${error.message}`);
-            });
+        const status = await coordinator.getStatus({
+            baseUrl: this.settings.coordinatorUrl,
+            signal: this.abortController.signal,
+            identity,
+        });
+
+        // for easier debugging explicitly catch and log processStatus errors
+        try {
+            return this.processStatus(status);
+        } catch (error) {
+            this.log('error', `Status processing ${error.message}`);
+            throw new Error(`Status processing ${error.message}`);
+        }
     }
 
-    start() {
+    private async getVersion() {
+        const version = await coordinatorRequest<coordinator.SoftwareVersion>(
+            'api/Software/versions',
+            undefined,
+            {
+                method: 'GET',
+                baseUrl: this.settings.wabisabiBackendUrl,
+                signal: this.abortController.signal,
+                identity: this.identities[0],
+                attempts: 3, // schedule 3 attempts on start
+            },
+        ).then(patchResponse);
+
+        return version
+            ? ({
+                  majorVersion: version.BackenMajordVersion,
+                  commitHash: version.CommitHash,
+                  legalDocumentsVersion: version.Ww2LegalDocumentsVersion,
+              } as CoinjoinClientVersion)
+            : undefined;
+    }
+
+    async start() {
         this.abortController = new AbortController();
         this.enabled = true;
-        // schedule 3 attempts on start
-        return this.getStatus(3).then(status => {
-            if (status) {
-                // start lifecycle only if status is present
-                this.setStatusTimeout();
-            }
-            return status;
-        });
+
+        try {
+            const version = await this.getVersion();
+            if (!version) throw new Error('Coordinator api version is missing on start');
+
+            const status = await this.getStatus();
+            if (!status) throw new Error('Status not processed on start');
+
+            // start lifecycle only if status is present
+            this.setStatusTimeout();
+            return { success: true as const, ...status, version };
+        } catch (error) {
+            return { success: false as const, error: error.message };
+        }
     }
 
     stop() {

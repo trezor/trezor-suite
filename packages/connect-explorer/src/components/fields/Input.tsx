@@ -1,4 +1,3 @@
-import React from 'react';
 import { Input as InputComponent } from '@trezor/components';
 
 import { Field } from '../../types';

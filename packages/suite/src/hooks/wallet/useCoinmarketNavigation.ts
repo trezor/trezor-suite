@@ -1,12 +1,10 @@
 import { useCallback } from 'react';
-import { Account } from '@wallet-types';
-import * as routerActions from '@suite-actions/routerActions';
-import { useActions } from '@suite-hooks';
+import { Account } from 'src/types/wallet';
+import { goto } from 'src/actions/suite/routerActions';
+import { useDispatch } from 'src/hooks/suite';
 
 export const useCoinmarketNavigation = (account: Account) => {
-    const { goto } = useActions({
-        goto: routerActions.goto,
-    });
+    const dispatch = useDispatch();
 
     type WalletCoinmarketRouteNameType = Extract<
         Parameters<typeof goto>[0],
@@ -14,13 +12,15 @@ export const useCoinmarketNavigation = (account: Account) => {
     >;
     const useNavigateToRouteName = (routeName: WalletCoinmarketRouteNameType) =>
         useCallback(() => {
-            goto(routeName, {
-                params: {
-                    symbol: account.symbol,
-                    accountIndex: account.index,
-                    accountType: account.accountType,
-                },
-            });
+            dispatch(
+                goto(routeName, {
+                    params: {
+                        symbol: account.symbol,
+                        accountIndex: account.index,
+                        accountType: account.accountType,
+                    },
+                }),
+            );
         }, [routeName]);
 
     return {

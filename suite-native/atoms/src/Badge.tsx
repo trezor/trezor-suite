@@ -1,22 +1,20 @@
-import React from 'react';
-
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Icon, IconSize, IconName, CryptoIconName, icons, CryptoIcon } from '@trezor/icons';
+import { Icon, IconSize, IconName, CryptoIconName, icons, CryptoIcon } from '@suite-common/icons';
 import { Color } from '@trezor/theme';
 
 import { Text } from './Text';
 import { HStack } from './Stack';
+import { SurfaceElevation } from './types';
 
 export type BadgeVariant = 'neutral' | 'green' | 'red' | 'bold';
 export type BadgeSize = 'small' | 'medium';
-export type BadgeElevation = '0' | '1';
 type BadgeProps = {
     label: string;
     variant?: BadgeVariant;
     size?: BadgeSize;
     icon?: IconName | CryptoIconName;
     iconSize?: IconSize;
-    elevation?: BadgeElevation;
+    elevation?: SurfaceElevation;
     isDisabled?: boolean;
 };
 
@@ -53,7 +51,7 @@ const BadgeStyle = prepareNativeStyle<BadgeStyleProps>(
             {
                 condition: isIconDisplayed,
                 style: {
-                    paddingLeft: utils.spacings.small / 2,
+                    paddingLeft: utils.spacings.extraSmall,
                 },
             },
         ],
@@ -115,7 +113,7 @@ export const Badge = ({
             <Icon name={icon as IconName} color={iconColor} size={iconSize ?? size} />
         ) : (
             <CryptoIcon
-                name={icon as CryptoIconName}
+                symbol={icon as CryptoIconName}
                 size={size === 'small' ? 'extraSmall' : 'small'}
             />
         );
@@ -127,7 +125,7 @@ export const Badge = ({
                 isIconDisplayed: !!icon,
                 isDisabled,
             })}
-            spacing={utils.spacings.small / 2}
+            spacing={utils.spacings.extraSmall}
         >
             {icon && badgeIcon}
             <Text color={textColor} variant={textVariant} numberOfLines={1} ellipsizeMode="tail">

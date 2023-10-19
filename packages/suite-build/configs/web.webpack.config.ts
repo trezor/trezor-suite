@@ -4,8 +4,7 @@ import CopyPlugin from 'copy-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
 
-import routes from '../../suite/src/config/suite/routes';
-import { FLAGS } from '@suite-common/suite-config';
+import { FLAGS, routes } from '@suite-common/suite-config';
 
 import { assetPrefix, isDev } from '../utils/env';
 import { getPathForProject } from '../utils/path';
@@ -26,7 +25,14 @@ const config: webpack.Configuration = {
                 }))
                 .concat([
                     {
-                        from: path.join(__dirname, '..', '..', 'message-system', 'files'),
+                        from: path.join(
+                            __dirname,
+                            '../../../',
+                            'suite-common',
+                            'message-system',
+                            'files',
+                            'config.v1.ts',
+                        ),
                         to: path.join(baseDir, 'build', 'static', 'message-system'),
                     },
                 ])

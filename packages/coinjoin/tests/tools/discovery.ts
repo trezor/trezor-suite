@@ -34,22 +34,22 @@ export const getAccountInfo = async ({
         console[level]('🌐', new Date().toLocaleTimeString(), payload),
     );
 
+    backend.on(`progress-info/${descriptor}`, e => {
+        const now = new Date().toLocaleTimeString();
+        if ('activity' in e) console.log('🔄', now, e.stage, e.activity);
+        if (e.progress) console.log('⌛', now, e.progress.current);
+    });
+
     backend.on(`progress/${descriptor}`, e => {
-        transactions.push(...e.transactions);
-        if (e.info?.progress)
-            console.log(
-                '⌛',
-                new Date().toLocaleTimeString(),
-                e.info.progress,
-                `(block: ${e.checkpoint.blockHeight})`,
-            );
-        if (e.transactions.length)
+        if (e.transactions.length) {
+            transactions.push(...e.transactions);
             console.log(
                 '🎯',
                 new Date().toLocaleTimeString(),
                 `${e.transactions.length} txs`,
                 `(block: ${e.checkpoint.blockHeight})`,
             );
+        }
     });
 
     const { checkpoint, pending, cache } = await backend.scanAccount({ descriptor });

@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Pressable, PressableProps } from 'react-native';
 import Animated from 'react-native-reanimated';
 
-import { Icon, IconName } from '@trezor/icons';
+import { IconName } from '@suite-common/icons';
 import {
     NativeStyleObject,
     prepareNativeStyle,
@@ -16,6 +16,7 @@ import {
     buttonSchemeToColorsMap,
     buttonStyle,
     ButtonStyleProps,
+    ButtonIcon,
 } from './Button';
 import { Box } from '../Box';
 import { Text } from '../Text';
@@ -92,7 +93,7 @@ export const IconButton = ({
                             style,
                         ]}
                     >
-                        <Icon name={iconName} color={iconColor} size={size} />
+                        <ButtonIcon iconName={iconName} color={iconColor} buttonSize={size} />
                     </Animated.View>
                     {title && (
                         <Text variant="label" color="textSubdued">

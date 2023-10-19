@@ -1,5 +1,3 @@
-import { select } from './common';
-
 const name = 'ethereumSignTransaction';
 const docs = 'methods/ethereumSignTransaction.md';
 
@@ -9,8 +7,7 @@ const tx = `{
     gasLimit: '0x14',
     to: '0xd0d6d6c5fe4a677d343cc433536bb717bae167dd',
     chainId: 1,
-    value: '0x0',
-    data: '0xa9059cbb000000000000000000000000574bbb36871ba6b78e27f4b4dcfb76ea0091880b000000000000000000000000000000000000000000000000000000000bebc200',
+    value: '1',
 }`;
 
 export default [

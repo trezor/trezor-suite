@@ -1,18 +1,18 @@
-import React from 'react';
 import styled from 'styled-components';
 
-import * as suiteActions from '@suite-actions/suiteActions';
-import * as routerActions from '@suite-actions/routerActions';
-import { Translation } from '@suite-components';
-import { TextColumn } from '@suite-components/Settings';
-import { SettingsAnchor } from '@suite-constants/anchors';
-import { useActions, useDevice } from '@suite-hooks';
+import { setFlag } from 'src/actions/suite/suiteActions';
+import { goto } from 'src/actions/suite/routerActions';
+import { Translation } from 'src/components/suite';
+import { TextColumn } from 'src/components/suite/Settings';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { useDevice, useDispatch } from 'src/hooks/suite';
 import { Button, Card } from '@trezor/components';
+import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 
 const StyledCard = styled(Card)`
     align-items: flex-start;
-    border-left: 10px solid ${props => props.theme.TYPE_GREEN};
-    box-shadow: 0 2px 5px 0 ${props => props.theme.BOX_SHADOW_BLACK_20};
+    border-left: 10px solid ${({ theme }) => theme.TYPE_GREEN};
+    box-shadow: 0 2px 5px 0 ${({ theme }) => theme.BOX_SHADOW_BLACK_20};
     flex-direction: row;
     justify-content: space-between;
 `;
@@ -22,22 +22,16 @@ const StyledButton = styled(Button)`
 `;
 
 export const FirmwareTypeSuggestion = () => {
-    const { goto, setFlag } = useActions({
-        goto: routerActions.goto,
-        setFlag: suiteActions.setFlag,
-    });
+    const dispatch = useDispatch();
     const { device } = useDevice();
 
-    const bitcoinOnlyFirmware = device?.firmwareType === 'bitcoin-only';
-    const translationId = bitcoinOnlyFirmware
-        ? 'TR_SETTINGS_COINS_UNIVERSAL_FIRMWARE_SUGGESTION'
-        : 'TR_SETTINGS_COINS_BITCOIN_FIRMWARE_SUGGESTION';
+    const translationId = hasBitcoinOnlyFirmware(device)
+        ? 'TR_SETTINGS_COINS_REGULAR_FIRMWARE_SUGGESTION'
+        : 'TR_SETTINGS_COINS_BITCOIN_ONLY_FIRMWARE_SUGGESTION';
 
-    const handleClose = () => setFlag('firmwareTypeBannerClosed', true);
+    const handleClose = () => dispatch(setFlag('firmwareTypeBannerClosed', true));
     const goToFirmwareType = () =>
-        goto('settings-device', {
-            anchor: SettingsAnchor.FirmwareType,
-        });
+        dispatch(goto('settings-device', { anchor: SettingsAnchor.FirmwareType }));
 
     return (
         <StyledCard>
@@ -51,6 +45,8 @@ export const FirmwareTypeSuggestion = () => {
                                     {chunks}
                                 </StyledButton>
                             ),
+                            bitcoinOnly: <Translation id="TR_FIRMWARE_TYPE_BITCOIN_ONLY" />,
+                            regular: <Translation id="TR_FIRMWARE_TYPE_REGULAR" />,
                         }}
                     />
                 }

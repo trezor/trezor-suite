@@ -83,54 +83,54 @@ describe('coordinatorUtils', () => {
         // sorting by amount
         expect(
             [
-                { scriptPubKey: '0', value: 2 },
-                { scriptPubKey: '1', value: 1 },
+                { ScriptPubKey: '0', Value: 2 },
+                { ScriptPubKey: '1', Value: 1 },
             ].sort(sortOutputs),
         ).toEqual([
-            { scriptPubKey: '0', value: 2 },
-            { scriptPubKey: '1', value: 1 },
+            { ScriptPubKey: '0', Value: 2 },
+            { ScriptPubKey: '1', Value: 1 },
         ]);
         // sorting by scriptPubKey
         expect(
             [
-                { scriptPubKey: '0 10', value: 1 },
-                { scriptPubKey: '0 10', value: 1 },
-                { scriptPubKey: '0 00', value: 1 },
-                { scriptPubKey: '1 12', value: 1 },
-                { scriptPubKey: '1 11', value: 1 },
+                { ScriptPubKey: '0 10', Value: 1 },
+                { ScriptPubKey: '0 10', Value: 1 },
+                { ScriptPubKey: '0 00', Value: 1 },
+                { ScriptPubKey: '1 12', Value: 1 },
+                { ScriptPubKey: '1 11', Value: 1 },
             ].sort(sortOutputs),
         ).toEqual([
-            { scriptPubKey: '0 00', value: 1 },
-            { scriptPubKey: '0 10', value: 1 },
-            { scriptPubKey: '0 10', value: 1 },
-            { scriptPubKey: '1 11', value: 1 },
-            { scriptPubKey: '1 12', value: 1 },
+            { ScriptPubKey: '0 00', Value: 1 },
+            { ScriptPubKey: '0 10', Value: 1 },
+            { ScriptPubKey: '0 10', Value: 1 },
+            { ScriptPubKey: '1 11', Value: 1 },
+            { ScriptPubKey: '1 12', Value: 1 },
         ]);
     });
 
     it('mergePubkeys', () => {
         expect(
             mergePubkeys([
-                { Type: 'OutputAdded', output: { scriptPubKey: '01', value: 1 } },
-                { Type: 'OutputAdded', output: { scriptPubKey: '02', value: 1 } },
-                { Type: 'OutputAdded', output: { scriptPubKey: '03', value: 1 } },
+                { Type: 'OutputAdded', Output: { ScriptPubKey: '01', Value: 1 } },
+                { Type: 'OutputAdded', Output: { ScriptPubKey: '02', Value: 1 } },
+                { Type: 'OutputAdded', Output: { ScriptPubKey: '03', Value: 1 } },
             ]),
         ).toEqual([
-            { Type: 'OutputAdded', output: { scriptPubKey: '01', value: 1 } },
-            { Type: 'OutputAdded', output: { scriptPubKey: '02', value: 1 } },
-            { Type: 'OutputAdded', output: { scriptPubKey: '03', value: 1 } },
+            { Type: 'OutputAdded', Output: { ScriptPubKey: '01', Value: 1 } },
+            { Type: 'OutputAdded', Output: { ScriptPubKey: '02', Value: 1 } },
+            { Type: 'OutputAdded', Output: { ScriptPubKey: '03', Value: 1 } },
         ]);
 
         expect(
             mergePubkeys([
-                { Type: 'OutputAdded', output: { scriptPubKey: '01', value: 1 } },
-                { Type: 'OutputAdded', output: { scriptPubKey: '01', value: 1 } },
-                { Type: 'OutputAdded', output: { scriptPubKey: '02', value: 1 } },
-                { Type: 'OutputAdded', output: { scriptPubKey: '01', value: 1 } },
+                { Type: 'OutputAdded', Output: { ScriptPubKey: '01', Value: 1 } },
+                { Type: 'OutputAdded', Output: { ScriptPubKey: '01', Value: 1 } },
+                { Type: 'OutputAdded', Output: { ScriptPubKey: '02', Value: 1 } },
+                { Type: 'OutputAdded', Output: { ScriptPubKey: '01', Value: 1 } },
             ]),
         ).toEqual([
-            { Type: 'OutputAdded', output: { scriptPubKey: '01', value: 3 } },
-            { Type: 'OutputAdded', output: { scriptPubKey: '02', value: 1 } },
+            { Type: 'OutputAdded', Output: { ScriptPubKey: '01', Value: 3 } },
+            { Type: 'OutputAdded', Output: { ScriptPubKey: '02', Value: 1 } },
         ]);
     });
 });

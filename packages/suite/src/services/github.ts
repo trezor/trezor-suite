@@ -1,8 +1,14 @@
-import { getDeviceModel, getFirmwareType, getFirmwareVersion } from '@trezor/device-utils';
+import { getFirmwareVersion } from '@trezor/device-utils';
 
-import { isDesktop } from '@suite-utils/env';
-import { getUserAgent, getScreenWidth, getScreenHeight } from '@trezor/env-utils';
-import type { TrezorDevice } from '@suite-types';
+import {
+    getCommitHash,
+    getScreenHeight,
+    getScreenWidth,
+    getSuiteVersion,
+    getUserAgent,
+    isDesktop,
+} from '@trezor/env-utils';
+import type { TrezorDevice } from 'src/types/suite';
 import type { TransportInfo } from '@trezor/connect';
 import { GITHUB_REPO_URL } from '@trezor/urls';
 
@@ -15,13 +21,13 @@ const getDeviceInfo = (device?: TrezorDevice) => {
     if (!device?.features) {
         return '';
     }
-    return `model ${getDeviceModel(device)} ${getFirmwareVersion(device)} ${getFirmwareType(
-        device,
-    )} (revision ${device.features.revision})`;
+    return `Trezor ${device.features.internal_model} ${getFirmwareVersion(device)} ${
+        device.firmwareType
+    } (revision ${device.features.revision})`;
 };
 
 const getSuiteInfo = () =>
-    `${isDesktop() ? 'desktop' : 'web'} ${process.env.VERSION} (${process.env.COMMITHASH})`;
+    `${isDesktop() ? 'desktop' : 'web'} ${getSuiteVersion()} (${getCommitHash()})`;
 
 const getTransportInfo = (transport?: Partial<TransportInfo>) => {
     if (!transport?.type) {

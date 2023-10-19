@@ -1,14 +1,17 @@
 import { MiddlewareAPI } from 'redux';
-import { DEVICE } from '@trezor/connect';
-import { SUITE } from '@suite-actions/constants';
+
 import {
-    notificationsActions,
-    removeAccountEventsThunk,
-    removeTransactionEventsThunk,
-} from '@suite-common/toast-notifications';
-import * as deviceUtils from '@suite-utils/device';
-import { AppState, Action, Dispatch } from '@suite-types';
-import { accountsActions, transactionsActions } from '@suite-common/wallet-core';
+    selectDevices,
+    selectDevice,
+    accountsActions,
+    deviceActions,
+} from '@suite-common/wallet-core';
+import * as deviceUtils from '@suite-common/suite-utils';
+import { DEVICE } from '@trezor/connect';
+import { notificationsActions, removeAccountEventsThunk } from '@suite-common/toast-notifications';
+
+import { SUITE } from 'src/actions/suite/constants';
+import { AppState, Action, Dispatch } from 'src/types/suite';
 
 /*
  * Middleware for event notifications.
@@ -30,9 +33,10 @@ const eventsMiddleware =
 
         if (action.type === DEVICE.CONNECT || action.type === DEVICE.CONNECT_UNACQUIRED) {
             // get TrezorDevice from @trezor/connect:Device object
-            const device = api.getState().devices.find(d => d.path === action.payload.path);
+            const devices = selectDevices(api.getState());
+            const device = devices.find(d => d.path === action.payload.path);
             if (!device) return action; // this shouldn't happen
-            const seen = deviceUtils.isSelectedDevice(action.payload, api.getState().suite.device);
+            const seen = deviceUtils.isSelectedDevice(action.payload, selectDevice(api.getState()));
 
             const toRemove = api
                 .getState()
@@ -55,7 +59,7 @@ const eventsMiddleware =
             }
         }
 
-        if (action.type === SUITE.SELECT_DEVICE) {
+        if (deviceActions.selectDevice.match(action)) {
             // Find and mark all notification associated (new connected!, update required etc)
             if (!action.payload) return action;
             const notifications = api
@@ -71,18 +75,16 @@ const eventsMiddleware =
             }
         }
 
-        if (action.type === DEVICE.DISCONNECT || action.type === SUITE.FORGET_DEVICE) {
+        if (action.type === DEVICE.DISCONNECT || deviceActions.forgetDevice.match(action)) {
             // remove notifications associated with disconnected device
             // api.dispatch(addEvent({ type: 'disconnected-device' }));
             const { notifications } = api.getState();
-            const affectedDevices =
-                action.type === SUITE.FORGET_DEVICE
-                    ? prevState.devices.filter(
-                          d =>
-                              d.path === action.payload.path &&
-                              d.instance === action.payload.instance,
-                      )
-                    : prevState.devices.filter(d => d.path === action.payload.path);
+            const devices = selectDevices(prevState);
+            const affectedDevices = deviceActions.forgetDevice.match(action)
+                ? devices.filter(
+                      d => d.path === action.payload.path && d.instance === action.payload.instance,
+                  )
+                : devices.filter(d => d.path === action.payload.path);
             affectedDevices.forEach(d => {
                 if (!d.remember) {
                     const toRemove = notifications.filter(n =>
@@ -95,24 +97,16 @@ const eventsMiddleware =
             });
         }
 
-        if (transactionsActions.removeTransaction.match(action)) {
-            const { txs } = action.payload;
-            api.dispatch(removeTransactionEventsThunk(txs));
-        }
-
         if (accountsActions.removeAccount.match(action)) {
             action.payload.forEach(account => {
                 api.dispatch(removeAccountEventsThunk(account.descriptor));
             });
         }
 
-        switch (action.type) {
-            // Example event: wallet creation
-            case SUITE.AUTH_DEVICE:
-                api.dispatch(notificationsActions.addEvent({ type: action.type, seen: true }));
-                break;
-            // no default
+        if (deviceActions.authDevice.match(action)) {
+            api.dispatch(notificationsActions.addEvent({ type: action.type, seen: true }));
         }
+
         return action;
     };
 

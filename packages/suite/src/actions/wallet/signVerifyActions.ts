@@ -1,9 +1,11 @@
-import TrezorConnect, { UiRequestButton, UI, Unsuccessful, Success } from '@trezor/connect';
-import { SIGN_VERIFY } from './constants';
+import TrezorConnect, { Unsuccessful, Success } from '@trezor/connect';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { openModal } from '@suite-actions/modalActions';
-import type { Dispatch, GetState, TrezorDevice } from '@suite-types';
-import type { Account } from '@wallet-types';
+import { selectDevice } from '@suite-common/wallet-core';
+
+import type { Dispatch, GetState, TrezorDevice } from 'src/types/suite';
+import type { Account } from 'src/types/wallet';
+
+import { SIGN_VERIFY } from './constants';
 
 export type SignVerifyAction =
     | { type: typeof SIGN_VERIFY.SIGN_SUCCESS; signSignature: string }
@@ -18,11 +20,11 @@ type StateParams = {
 
 const getStateParams = (getState: GetState): Promise<StateParams> => {
     const {
-        suite: { device },
         wallet: {
             selectedAccount: { account },
         },
     } = getState();
+    const device = selectDevice(getState());
 
     return !device || !device.connected || !device.available || !account
         ? Promise.reject(new Error('Device not found'))
@@ -35,27 +37,8 @@ const getStateParams = (getState: GetState): Promise<StateParams> => {
 };
 
 const showAddressByNetwork =
-    (dispatch: Dispatch, address: string, path: string) =>
+    (_: Dispatch, address: string, path: string) =>
     ({ account, device, coin, useEmptyPassphrase }: StateParams) => {
-        const buttonRequestHandler = (event: UiRequestButton['payload']) => {
-            if (!event || event.code !== 'ButtonRequest_Address') return;
-            dispatch(
-                openModal({
-                    type: 'address',
-                    device,
-                    address,
-                    addressPath: path,
-                    networkType: account.networkType,
-                    symbol: account.symbol,
-                }),
-            );
-        };
-        const bindRequestButton = <T>(response: Promise<T>) => {
-            TrezorConnect.on(UI.REQUEST_BUTTON, buttonRequestHandler);
-            return response.finally(() =>
-                TrezorConnect.off(UI.REQUEST_BUTTON, buttonRequestHandler),
-            );
-        };
         const params = {
             device,
             address,
@@ -65,9 +48,9 @@ const showAddressByNetwork =
         };
         switch (account.networkType) {
             case 'bitcoin':
-                return bindRequestButton(TrezorConnect.getAddress(params));
+                return TrezorConnect.getAddress(params);
             case 'ethereum':
-                return bindRequestButton(TrezorConnect.ethereumGetAddress(params));
+                return TrezorConnect.ethereumGetAddress(params);
             default:
                 return Promise.reject(new Error('ShowAddress not supported'));
         }

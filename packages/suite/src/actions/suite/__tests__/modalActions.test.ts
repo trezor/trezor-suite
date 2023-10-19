@@ -12,6 +12,17 @@ jest.mock('@trezor/connect', () => ({
         RECEIVE_PASSPHRASE: 'ui-receive_passphrase',
         RECEIVE_CONFIRMATION: 'ui-receive_confirmation',
     },
+    DEVICE: {
+        CONNECT: 'device-connect',
+    },
+    PROTO: {
+        AmountUnit: {
+            Bitcoin: 'BTC',
+        },
+    },
+    DeviceModelInternal: {
+        T2T1: 'T2T1',
+    },
 }));
 
 describe('Modal Actions', () => {
@@ -21,18 +32,4 @@ describe('Modal Actions', () => {
         };
         expect(modalActions.onCancel()).toEqual(expectedAction);
     });
-
-    // it('onPinSubmit', () => {
-    //     const expectedAction = {
-    //         type: MODAL.CLOSE,
-    //     };
-    //     expect(modalActions.onPinSubmit('1234')).toEqual(expectedAction);
-    // });
-
-    // it('onReceiveConfirmation', () => {
-    //     const expectedAction = {
-    //         type: MODAL.CLOSE,
-    //     };
-    //     expect(modalActions.onReceiveConfirmation(true)).toEqual(expectedAction);
-    // });
 });

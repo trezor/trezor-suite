@@ -4,12 +4,15 @@
 
 import {
     CORE_EVENT,
+    RESPONSE_EVENT,
     UI_EVENT,
     DEVICE_EVENT,
     TRANSPORT_EVENT,
+    TRANSPORT,
     POPUP,
     IFRAME,
     UI,
+    DEVICE,
     parseMessage,
     createResponseMessage,
     createIFrameMessage,
@@ -19,7 +22,7 @@ import {
     CoreMessage,
     PostMessageEvent,
 } from '@trezor/connect';
-import { Core, init as initCore, initTransport } from '@trezor/connect/src/core';
+import { Core, initCore, initTransport } from '@trezor/connect/src/core';
 import { DataManager } from '@trezor/connect/src/data/DataManager';
 import { config } from '@trezor/connect/src/data/config';
 import { initLog } from '@trezor/connect/src/utils/debug';
@@ -28,11 +31,18 @@ import { suggestBridgeInstaller } from '@trezor/connect/src/data/transportInfo';
 import { suggestUdevInstaller } from '@trezor/connect/src/data/udevInfo';
 import { storage, getSystemInfo, getInstallerPackage } from '@trezor/connect-common';
 import { parseConnectSettings, isOriginWhitelisted } from './connectSettings';
+import { analytics, EventType } from '@trezor/connect-analytics';
+import { logWriterFactory } from './logWriter';
 
 let _core: Core | undefined;
 
 // custom log
 const _log = initLog('IFrame');
+// `logWriterProxy` is used here to pass to shared logger worker logs from
+// environments that do not have access to it, like connect-web, webextension.
+// It does not log anything in this environment, just used as proxy.
+const logWriterProxy = logWriterFactory();
+
 let _popupMessagePort: (MessagePort | BroadcastChannel) | undefined;
 
 // Wrapper which listens to events from Core
@@ -51,6 +61,11 @@ const handleMessage = (event: PostMessageEvent) => {
         postMessage(createPopupMessage(POPUP.CANCEL_POPUP_REQUEST));
     };
 
+    if (data.type === IFRAME.LOG && data.payload.prefix === '@trezor/connect-web') {
+        logWriterProxy.add(data.payload);
+        return;
+    }
+
     // respond to call
     // TODO: instead of error _core should be initialized automatically
     if (!_core && data.type === IFRAME.CALL) {
@@ -66,11 +81,15 @@ const handleMessage = (event: PostMessageEvent) => {
 
     // popup handshake initialization process, get reference to message channel
     if (data.type === POPUP.HANDSHAKE && event.origin === window.location.origin) {
-        if (!_popupMessagePort || _popupMessagePort instanceof MessagePort) {
-            if (!event.ports || event.ports.length < 1) {
+        // check if message was received via BroadcastChannel (persistent default channel. see "init")
+        // or reassign _popupMessagePort to current MessagePort (dynamic channel. created by popup. see @trezor/connect-popup initMessageChannel)
+        // event.target === BroadcastChannel only in if message was sent via BroadcastChannel otherwise event.target = Window message was send via iframe.postMessage
+        if (event.target !== _popupMessagePort) {
+            if (event.ports?.length < 1) {
                 fail('POPUP.HANDSHAKE: popupMessagePort not found');
                 return;
             }
+            // reassign to current MessagePort
             [_popupMessagePort] = event.ports;
         }
 
@@ -80,19 +99,60 @@ const handleMessage = (event: PostMessageEvent) => {
         }
 
         const method = _core.getCurrentMethod()[0];
-        postMessage(
-            createPopupMessage(POPUP.HANDSHAKE, {
-                settings: DataManager.getSettings(),
-                transport: _core.getTransportInfo(),
-                method: method ? method.info : undefined,
-            }),
-        );
+        (method.initAsyncPromise ? method.initAsyncPromise : Promise.resolve()).finally(() => {
+            const transport = _core!.getTransportInfo();
+            const settings = DataManager.getSettings();
+
+            postMessage(
+                createPopupMessage(POPUP.HANDSHAKE, {
+                    settings: DataManager.getSettings(),
+                    transport,
+                    method: method ? method.info : undefined, // method.info might change based on initAsync
+                }),
+            );
+
+            // eslint-disable-next-line camelcase
+            const { tracking_enabled, tracking_id } = storage.load();
+
+            // eslint-disable-next-line camelcase
+            analytics.init(tracking_enabled || false, {
+                // eslint-disable-next-line camelcase
+                instanceId: tracking_id,
+                commitId: process.env.COMMIT_HASH || '',
+                isDev: process.env.NODE_ENV === 'development',
+                useQueue: true,
+            });
+
+            const { method: methodName, ...payload } = method.payload;
+
+            analytics.report({
+                type: EventType.AppReady,
+                payload: {
+                    version: settings?.version,
+                    origin: settings?.origin,
+                    referrerApp: settings?.manifest?.appUrl,
+                    referrerEmail: settings?.manifest?.email,
+                    method: methodName,
+                    payload: method.payload ? Object.keys(payload) : undefined,
+                    transportType: transport?.type,
+                    transportVersion: transport?.version,
+                },
+            });
+        });
     }
 
     // clear reference to popup MessagePort
     if (data.type === POPUP.CLOSED) {
         if (_popupMessagePort instanceof MessagePort) {
             _popupMessagePort = undefined;
+        }
+    }
+
+    if (data.type === POPUP.ANALYTICS_RESPONSE) {
+        if (data.payload.enabled) {
+            analytics.enable();
+        } else {
+            analytics.disable();
         }
     }
 
@@ -115,9 +175,21 @@ const handleMessage = (event: PostMessageEvent) => {
     event.preventDefault();
     event.stopImmediatePropagation();
 
+    const safeMessages: CoreMessage['type'][] = [
+        IFRAME.CALL,
+        POPUP.CLOSED,
+        // UI.CHANGE_SETTINGS,
+        UI.LOGIN_CHALLENGE_RESPONSE,
+        TRANSPORT.DISABLE_WEBUSB,
+    ];
+
+    if (!isTrustedDomain && safeMessages.indexOf(message.type) === -1) {
+        return;
+    }
+
     // pass data to Core
     if (_core) {
-        _core.handleMessage(message, isTrustedDomain);
+        _core.handleMessage(message);
     }
 };
 
@@ -132,7 +204,7 @@ const postMessage = (message: CoreMessage) => {
     // popup handshake is resolved automatically
     if (!usingPopup) {
         if (_core && message.type === UI.REQUEST_UI_WINDOW) {
-            _core.handleMessage({ event: UI_EVENT, type: POPUP.HANDSHAKE }, true);
+            _core.handleMessage({ event: UI_EVENT, type: POPUP.HANDSHAKE });
             return;
         }
         if (message.type === POPUP.CANCEL_POPUP_REQUEST) {
@@ -155,18 +227,18 @@ const postMessage = (message: CoreMessage) => {
         message.payload.udev = suggestUdevInstaller(platform);
     }
 
-    if (usingPopup && shouldUiEventBeSentToPopup(message)) {
-        if (_popupMessagePort) {
-            _popupMessagePort.postMessage(message);
-        }
-    } else {
+    if (usingPopup && _popupMessagePort) {
+        _popupMessagePort.postMessage(message);
+    }
+
+    if (!usingPopup || shouldUiEventBeSentToHost(message)) {
         let origin = DataManager.getSettings('origin');
         if (!origin || origin.indexOf('file://') >= 0) origin = '*';
         window.parent.postMessage(message, origin);
     }
 };
 
-const shouldUiEventBeSentToPopup = (message: CoreMessage) => {
+const shouldUiEventBeSentToHost = (message: CoreMessage) => {
     // whitelistedMessages are messages that are sent to 3rd party/host/parent.
     const whitelistedMessages: CoreMessage['type'][] = [
         IFRAME.LOADED,
@@ -176,8 +248,14 @@ const shouldUiEventBeSentToPopup = (message: CoreMessage) => {
         UI.LOGIN_CHALLENGE_REQUEST,
         UI.BUNDLE_PROGRESS,
         UI.ADDRESS_VALIDATION,
+        RESPONSE_EVENT,
+        DEVICE.CONNECT,
+        DEVICE.CONNECT_UNACQUIRED,
+        DEVICE.CHANGED,
+        DEVICE.DISCONNECT,
+        DEVICE.BUTTON,
     ];
-    return message.event === UI_EVENT && whitelistedMessages.indexOf(message.type) < 0;
+    return whitelistedMessages.includes(message.type);
 };
 
 const filterDeviceEvent = (message: DeviceEvent) => {
@@ -226,7 +304,7 @@ const init = async (payload: IFrameInit['payload'], origin: string) => {
 
     try {
         // initialize core
-        _core = await initCore(parsedSettings);
+        _core = await initCore(parsedSettings, logWriterFactory);
         _core.on(CORE_EVENT, postMessage);
 
         // initialize transport and wait for the first transport event (start or error)

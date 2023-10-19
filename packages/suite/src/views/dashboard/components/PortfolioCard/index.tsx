@@ -1,20 +1,20 @@
-import React, { useMemo } from 'react';
+import { memo, useMemo } from 'react';
 import styled from 'styled-components';
 import { Dropdown } from '@trezor/components';
-import { Card, QuestionTooltip, Translation } from '@suite-components';
-import { Section } from '@dashboard-components';
-import { useDiscovery, useSelector, useActions } from '@suite-hooks';
-import { useFastAccounts, useFiatValue } from '@wallet-hooks';
-import { SkeletonTransactionsGraph } from '@suite-components/TransactionsGraph';
-import * as routerActions from '@suite-actions/routerActions';
-import * as suiteActions from '@suite-actions/suiteActions';
+import { Card, QuestionTooltip, Translation } from 'src/components/suite';
+import { DashboardSection } from 'src/components/dashboard';
+import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
+import { useFastAccounts, useFiatValue } from 'src/hooks/wallet';
+import { SkeletonTransactionsGraph } from 'src/components/suite/TransactionsGraph';
+import { goto } from 'src/actions/suite/routerActions';
+import { setFlag } from 'src/actions/suite/suiteActions';
 import * as accountUtils from '@suite-common/wallet-utils';
 
 import { Header } from './components/Header';
 import { Exception } from './components/Exception';
 import { EmptyWallet } from './components/EmptyWallet';
 import { DashboardGraph } from './components/DashboardGraph';
-import { GraphScaleDropdownItem } from '@suite-components/TransactionsGraph/components/GraphScaleDropdownItem';
+import { GraphScaleDropdownItem } from 'src/components/suite/TransactionsGraph/components/GraphScaleDropdownItem';
 
 const StyledCard = styled(Card)`
     flex-direction: column;
@@ -39,15 +39,12 @@ const Wrapper = styled.div`
     display: flex;
 `;
 
-const PortfolioCard = React.memo(() => {
+const PortfolioCard = memo(() => {
     const { fiat, localCurrency } = useFiatValue();
     const { discovery, getDiscoveryStatus, isDiscoveryRunning } = useDiscovery();
     const accounts = useFastAccounts();
     const { dashboardGraphHidden } = useSelector(s => s.suite.flags);
-    const { setFlag, goto } = useActions({
-        setFlag: suiteActions.setFlag,
-        goto: routerActions.goto,
-    });
+    const dispatch = useDispatch();
 
     const isDeviceEmpty = useMemo(() => accounts.every(a => a.empty), [accounts]);
     const portfolioValue = accountUtils
@@ -88,8 +85,11 @@ const PortfolioCard = React.memo(() => {
         showGraphControls &&
         !!accounts.find(a => a.networkType === 'ethereum' || a.networkType === 'ripple');
 
+    const goToReceive = () => dispatch(goto('wallet-receive'));
+    const goToBuy = () => dispatch(goto('wallet-coinmarket-buy'));
+
     return (
-        <Section
+        <DashboardSection
             heading={
                 <QuestionTooltip
                     label="TR_MY_PORTFOLIO"
@@ -120,7 +120,12 @@ const PortfolioCard = React.memo(() => {
                                             <Translation id="TR_HIDE_GRAPH" />
                                         ),
                                         callback: () => {
-                                            setFlag('dashboardGraphHidden', !dashboardGraphHidden);
+                                            dispatch(
+                                                setFlag(
+                                                    'dashboardGraphHidden',
+                                                    !dashboardGraphHidden,
+                                                ),
+                                            );
                                             return true;
                                         },
                                     },
@@ -141,13 +146,13 @@ const PortfolioCard = React.memo(() => {
                     isWalletLoading={isWalletLoading}
                     isWalletError={isWalletError}
                     isDiscoveryRunning={isDiscoveryRunning}
-                    receiveClickHandler={() => goto('wallet-receive')}
-                    buyClickHandler={() => goto('wallet-coinmarket-buy')}
+                    receiveClickHandler={goToReceive}
+                    buyClickHandler={goToBuy}
                 />
 
                 {body && <Body>{body}</Body>}
             </StyledCard>
-        </Section>
+        </DashboardSection>
     );
 });
 

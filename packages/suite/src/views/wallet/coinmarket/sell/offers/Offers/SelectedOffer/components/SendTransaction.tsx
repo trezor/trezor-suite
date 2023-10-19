@@ -1,9 +1,8 @@
-import React from 'react';
 import styled from 'styled-components';
-import { Translation, AccountLabeling } from '@suite-components';
-import { Button, variables, Loader } from '@trezor/components';
-import { useCoinmarketSellOffersContext } from '@wallet-hooks/useCoinmarketSellOffers';
-import { useWatchSellTrade } from '@wallet-hooks/useCoinmarket';
+import { Translation, AccountLabeling } from 'src/components/suite';
+import { Button, variables, Spinner } from '@trezor/components';
+import { useCoinmarketSellOffersContext } from 'src/hooks/wallet/useCoinmarketSellOffers';
+import { useWatchSellTrade } from 'src/hooks/wallet/useCoinmarket';
 
 const Wrapper = styled.div`
     display: flex;
@@ -21,13 +20,13 @@ const WaitingWrapper = styled.div`
 
 const LabelText = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 const Value = styled.div`
     padding-top: 6px;
     font-size: ${variables.FONT_SIZE.SMALL};
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
@@ -36,7 +35,7 @@ const ButtonWrapper = styled.div`
     align-items: center;
     justify-content: center;
     padding-top: 20px;
-    border-top: 1px solid ${props => props.theme.STROKE_GREY};
+    border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
     margin: 20px 0;
 `;
 
@@ -94,7 +93,7 @@ export const SendTransaction = () => {
                 </>
             ) : (
                 <WaitingWrapper>
-                    <Loader />
+                    <Spinner />
                     <Title>
                         <Translation
                             id="TR_SELL_DETAIL_WAITING_FOR_SEND_CRYPTO"

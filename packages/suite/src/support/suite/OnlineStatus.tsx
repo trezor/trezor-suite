@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import { useActions } from '@suite-hooks/useActions';
-import { updateOnlineStatus } from '@suite-actions/suiteActions';
+import { useDispatch } from 'src/hooks/suite';
+import { updateOnlineStatus } from 'src/actions/suite/suiteActions';
 
 /**
  * Navigator online/offline handler
@@ -9,10 +9,11 @@ import { updateOnlineStatus } from '@suite-actions/suiteActions';
  */
 
 const OnlineStatus = () => {
-    const actions = useActions({ updateOnlineStatus });
+    const dispatch = useDispatch();
+
     useEffect(() => {
         const statusHandler = () => {
-            actions.updateOnlineStatus(navigator.onLine);
+            dispatch(updateOnlineStatus(navigator.onLine));
         };
 
         // handle browser back button
@@ -25,7 +26,7 @@ const OnlineStatus = () => {
             window.removeEventListener('online', statusHandler, false);
             window.removeEventListener('offline', statusHandler, false);
         };
-    }, [actions]);
+    }, [dispatch]);
 
     return null;
 };

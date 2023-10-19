@@ -1,7 +1,6 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
 import { updateFiatRatesThunk } from '@suite-native/fiat-rates';
 import { selectFiatCurrencyCode } from '@suite-native/module-settings';
 import {
@@ -9,11 +8,11 @@ import {
     AccountsImportStackRoutes,
     RootStackParamList,
     Screen,
-    StackToTabCompositeScreenProps,
+    StackToStackCompositeScreenProps,
 } from '@suite-native/navigation';
 import TrezorConnect, { AccountInfo } from '@trezor/connect';
+import { TokenAddress } from '@suite-common/wallet-types';
 
-import { AccountImportHeader } from '../components/AccountImportHeader';
 import { AccountImportLoader } from '../components/AccountImportLoader';
 import { useShowImportError } from '../useShowImportError';
 
@@ -24,7 +23,7 @@ const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 export const AccountImportLoadingScreen = ({
     navigation,
     route,
-}: StackToTabCompositeScreenProps<
+}: StackToStackCompositeScreenProps<
     AccountsImportStackParamList,
     AccountsImportStackRoutes.AccountImportLoading,
     RootStackParamList
@@ -50,8 +49,8 @@ export const AccountImportLoadingScreen = ({
         return () => clearTimeout(timeout);
     }, [setIsAnimationFinished]);
 
-    const safelyShowImportError: typeof showImportError = useCallback(
-        async (message, onRetry) => {
+    const safelyShowImportError = useCallback(
+        async (message?: string, onRetry?: () => Promise<void>) => {
             // Delay displaying the error message to avoid freezing the app on iOS. If an error occurs too quickly during the
             // transition from ScanQRCodeModalScreen, the error modal won't appear, resulting in a frozen app.
             await sleep(1000);
@@ -69,9 +68,9 @@ export const AccountImportLoadingScreen = ({
                     coin: networkSymbol,
                     descriptor: xpubAddress,
                     details: 'tokenBalances',
+                    suppressBackupWarning: true,
                 }),
                 dispatch(
-                    // @ts-expect-error Seems there is a problem with global types do dispatch, no idea how to fix it
                     updateFiatRatesThunk({
                         ticker: {
                             symbol: networkSymbol,
@@ -87,11 +86,9 @@ export const AccountImportLoadingScreen = ({
                     if (networkSymbol === 'eth') {
                         fetchedAccountInfo.payload.tokens?.forEach(token => {
                             dispatch(
-                                // @ts-expect-error Seems there is a problem with global types do dispatch, no idea how to fix it
                                 updateFiatRatesThunk({
                                     ticker: {
-                                        symbol: token.symbol as TokenSymbol,
-                                        mainNetworkSymbol: 'eth',
+                                        symbol: 'eth',
                                         tokenAddress: token.contract as TokenAddress,
                                     },
                                     rateType: 'current',
@@ -120,7 +117,7 @@ export const AccountImportLoadingScreen = ({
     }, [xpubAddress, networkSymbol, dispatch, safelyShowImportError, fiatCurrency]);
 
     return (
-        <Screen header={<AccountImportHeader activeStep={3} />}>
+        <Screen>
             <AccountImportLoader />
         </Screen>
     );

@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
@@ -11,6 +11,7 @@ type ScreenContentProps = {
     isScrollable: boolean;
     customVerticalPadding: number;
     customHorizontalPadding: number;
+    extraKeyboardAvoidingViewHeight: number;
 };
 
 const screenContentStyle = prepareNativeStyle<{
@@ -43,6 +44,7 @@ export const ScreenContent = ({
     isScrollable,
     customHorizontalPadding,
     customVerticalPadding,
+    extraKeyboardAvoidingViewHeight,
 }: ScreenContentProps) => {
     const { applyStyle } = useNativeStyles();
     const insets = useSafeAreaInsets();
@@ -61,6 +63,7 @@ export const ScreenContent = ({
                     keyboardShouldPersistTaps="always"
                     contentInsetAdjustmentBehavior="automatic"
                     contentContainerStyle={screenStyle}
+                    extraHeight={extraKeyboardAvoidingViewHeight}
                 >
                     {children}
                 </KeyboardAwareScrollView>

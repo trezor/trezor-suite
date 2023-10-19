@@ -1,8 +1,8 @@
-// Minimum number of blocks after which 'progress' event is fired by scanAccount
-export const PROGRESS_BATCH_SIZE_MIN = 10;
+// minimum time span (in ms) after which discovery checkpoint is emitted by scanAccount
+export const CHECKPOINT_COOLDOWN = 10000;
 
-// Maximum number of blocks after which 'progress' event is fired by scanAccount
-export const PROGRESS_BATCH_SIZE_MAX = 10000;
+// minimum time span (in ms) after which progress info is emitted by scanAccount
+export const PROGRESS_INFO_COOLDOWN = 1000;
 
 export const DISCOVERY_LOOKOUT = 20;
 
@@ -19,11 +19,22 @@ export const STATUS_TIMEOUT = {
 // we are expecting phase to change but server didn't propagate it yet
 export const ROUND_REGISTRATION_END_OFFSET = 2000;
 
+// following https://github.com/zkSNACKs/WalletWasabi/blob/913b16953a965eb922e0ae02a0f71a991a7b9bb7/WalletWasabi/WabiSabi/Client/CoinJoinClient.cs#L31-L34
+// Maximum delay when spreading the requests in time, except input registration requests which
+// timings only depends on the input-reg timeout and signing requests which timings must be larger.
+// This is a maximum cap the delay can be zero if the remaining time is less.
+export const ROUND_MAXIMUM_REQUEST_DELAY = 10000;
+
+export const TX_SIGNING_DELAY = 50000;
+
 // do not register into Round if round.inputRegistrationEnd is below offset
 export const ROUND_SELECTION_REGISTRATION_OFFSET = 30000;
 
 // max output count
 export const ROUND_SELECTION_MAX_OUTPUTS = 20;
+
+// custom timeout for websocket opening
+export const WS_CONNECT_TIMEOUT = 15000;
 
 // custom timeout for http requests (default is 50000 ms)
 export const HTTP_REQUEST_TIMEOUT = 35000;
@@ -33,6 +44,10 @@ export const HTTP_REQUEST_GAP = 1000;
 
 // special timeout for quite large filter batches downloaded over tor
 export const FILTERS_REQUEST_TIMEOUT = 300000;
+
+// After how many ms should mempool be purged again
+// (= large request for all mempool txids and throwing away all unincluded)
+export const MEMPOOL_PURGE_CYCLE = 10 * 60 * 1000;
 
 // timeout for CoinjoinRound currently running process
 export const ROUND_PHASE_PROCESS_TIMEOUT = 10000;
@@ -50,4 +65,7 @@ export const MAX_ALLOWED_AMOUNT_FALLBACK = 134375000000;
 // affiliation flag:
 // - sent coordinator/ready-to-sign request **only** when Alice pays coordination fee
 // - check if Trezor affiliate server is running in status.affiliateInformation.runningAffiliateServers
-export const AFFILIATION_ID = 'trezor';
+export const AFFILIATION_ID = {
+    trezor: 'trezor',
+    wasabi: 'WalletWasabi',
+};

@@ -2,6 +2,7 @@ export * from './api';
 export * from './account';
 export * from './coinInfo';
 export * from './device';
+export * from './fees';
 export * from './firmware';
 export * from './params';
 export * from './settings';
@@ -19,12 +20,12 @@ export * from './api/tezos';
 // types used in @trezor/suite. if you need a type, reexport it from ./api/<method>
 export type { ComposeOutput, PrecomposedTransaction } from './api/composeTransaction';
 export type { RecoveryDevice } from './api/recoveryDevice';
+export type { AuthenticateDeviceResult } from './api/authenticateDevice';
 export type {
     TokenInfo,
     TokenTransfer,
     InternalTransfer,
     FiatRates,
-    Transaction as AccountTransaction,
     Target as TransactionTarget,
     AccountBalanceHistory as BlockchainAccountBalanceHistory,
 } from '@trezor/blockchain-link';

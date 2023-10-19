@@ -1,24 +1,21 @@
-import React from 'react';
+import { getFirmwareDowngradeUrl } from '@suite-common/suite-utils';
 
-import { Translation } from '@suite-components';
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
-import { useActions, useDevice } from '@suite-hooks';
-import * as routerActions from '@suite-actions/routerActions';
-import { useAnchor } from '@suite-hooks/useAnchor';
-import { SettingsAnchor } from '@suite-constants/anchors';
-import { getFirmwareDowngradeUrl } from '@suite-utils/device';
+import { Translation } from 'src/components/suite';
+import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';
+import { useDevice, useDispatch } from 'src/hooks/suite';
+import { goto } from 'src/actions/suite/routerActions';
+import { useAnchor } from 'src/hooks/suite/useAnchor';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 export const CustomFirmware = () => {
-    const { goto } = useActions({
-        goto: routerActions.goto,
-    });
+    const dispatch = useDispatch();
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.CustomFirmware);
     const { device, isLocked } = useDevice();
 
     const isDeviceLocked = isLocked();
     const firmwareDowngradeUrl = getFirmwareDowngradeUrl(device);
 
-    const openModal = () => goto('firmware-custom', { params: { cancelable: true } });
+    const openModal = () => dispatch(goto('firmware-custom', { params: { cancelable: true } }));
 
     return (
         <SectionItem

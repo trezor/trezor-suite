@@ -19,7 +19,7 @@ build & push image:
 install:
   stage: setup environment
   variables:
-    ASSET_PREFIX: /suite-web/${CI_BUILD_REF_NAME}/web
+    ASSET_PREFIX: /suite-web/${CI_COMMIT_REF_NAME}/web
   script:
     - ci/scripts/check_branch_name.sh $CI_COMMIT_BRANCH
     - yarn --immutable
@@ -31,4 +31,4 @@ install:
       - "packages/suite-data/files/browser-detection/*"
       - "packages/suite-data/files/guide/*"
       - "packages/connect-iframe/build/*"
-      - "packages/message-system/src/types/messageSystem.ts"
+      - "suite-common/message-system/src/types/messageSystem.ts"

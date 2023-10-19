@@ -1,0 +1,646 @@
+{
+    "version": 1,
+    "timestamp": "2023-10-13T00:00:00+00:00",
+    "sequence": 43,
+    "actions": [
+        {
+            "conditions": [
+                {
+                    "devices": [
+                        {
+                            "model": "T",
+                            "firmware": "<2.6.0",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T2T1",
+                            "firmware": "<2.6.0",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "1",
+                            "firmware": "<1.12.1",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T1B1",
+                            "firmware": "<1.12.1",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        }
+                    ],
+                    "environment": {
+                        "desktop": ">=23.1.0",
+                        "mobile": "!",
+                        "web": "!"
+                    }
+                }
+            ],
+            "message": {
+                "id": "6f793f82-5e13-492f-803c-2d5Fsdcc3cb6",
+                "priority": 92,
+                "dismissible": true,
+                "variant": "warning",
+                "category": ["context", "feature"],
+                "content": {
+                    "en-GB": "Firmware update required to enable the coinjoin feature",
+                    "en": "Firmware update required to enable the coinjoin feature.",
+                    "es": "Actualiza tu firmware para poder utilizar la función coinjoin",
+                    "cs": "Aktualizujte prosím firmware, abyste mohli používat funkci coinjoin.",
+                    "ru": "Пожалуйста, обновите прошивку, чтобы иметь возможность использовать функцию coinjoin",
+                    "ja": "コインジョイン機能を使用できるようにファームウェアをアップデートしてください。"
+                },
+                "context": { "domain": "accounts.coinjoin" },
+                "feature": [
+                    {
+                        "domain": "coinjoin",
+                        "flag": false
+                    }
+                ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": ">=23.8.1",
+                        "mobile": "!",
+                        "web": ">=23.8.1"
+                    }
+                }
+            ],
+            "message": {
+                "id": "cdkf9j02-b796-4c67-abcb-ac38c15ae343",
+                "priority": 90,
+                "dismissible": false,
+                "variant": "info",
+                "category": ["feature"],
+                "content": {
+                    "en-GB": "NOTE: This content is not visible until flag is set to false!",
+                    "en": "Coinjoin is temporarily unavailable due to technical issues",
+                    "es": "Coinjoin no está disponible temporalmente por problemas técnicos",
+                    "cs": "Coinjoin je z technických důvodů dočasně nedostupný",
+                    "ru": "Coinjoin временно недоступен по техническим причинам",
+                    "ja": "Coinjoinは技術的な問題により、一時的に利用できません。"
+                },
+                "feature": [
+                    {
+                        "domain": "coinjoin",
+                        "flag": true,
+                        "averageAnonymityGainPerRound": 0.2,
+                        "roundsFailRateBuffer": 10,
+                        "roundsDurationInHours": 1.5
+                    }
+                ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": "<23.10.1",
+                        "mobile": "!",
+                        "web": "<23.10.1"
+                    }
+                }
+            ],
+            "message": {
+                "id": "c3196202-b796-4c67-abcb-ac38c15ae344",
+                "priority": 91,
+                "dismissible": false,
+                "variant": "critical",
+                "category": ["context", "feature"],
+                "content": {
+                    "en-GB": "To use coinjoin, update to the latest version of the app.",
+                    "en": "To use coinjoin, update to the latest version of the app.",
+                    "es": "Para utilizar coinjoin, actualiza a la última versión de la aplicación.",
+                    "cs": "Pro použití coinjoinu aktualizujte na poslední verzi aplikace.",
+                    "ru": "Чтобы использовать coinjoin, обновите приложение до последней версии.",
+                    "ja": "coinjoinを使用するには、アプリを最新バージョンにアップデートしてください。"
+                },
+                "feature": [{ "domain": "coinjoin", "flag": false }],
+                "context": { "domain": "accounts.coinjoin" }
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": "<22.12.1",
+                        "mobile": "!",
+                        "web": "<22.12.1"
+                    }
+                }
+            ],
+            "message": {
+                "id": "640577d2-a82d-477e-9590-d5da3a10c80c",
+                "priority": 98,
+                "dismissible": false,
+                "variant": "critical",
+                "category": "banner",
+                "content": {
+                    "en-GB": "Update required! Install the latest version of Trezor Suite for enhanced security and an improved user experience.",
+                    "en": "Update required! Install the latest version of Trezor Suite for enhanced security and an improved user experience.",
+                    "es": "¡Actualización necesaria! Instala la última versión de Trezor Suite para una seguridad y experiencia de usuario mejorada.",
+                    "cs": "Nutná aktualizace! Nainstalujte si nejnovější verzi Trezor Suite a získejte lepší zabezpečení a komfortnější používání.",
+                    "ru": "Требуется обновление! Установите последнюю версию Trezor Suite для улучшения безопасности и удобства использования.",
+                    "ja": "アップデートが必要です！Trezor Suiteの最新バージョンをインストールして、セキュリティと使いやすさを向上させましょう。"
+                },
+                "cta": {
+                    "action": "external-link",
+                    "link": "https://trezor.io/trezor-suite",
+                    "label": {
+                        "en-GB": "Go to trezor.io/trezor-suite",
+                        "en": "Go to trezor.io/trezor-suite",
+                        "es": "Ir a trezor.io/trezor-suite",
+                        "cs": "Přejít na trezor.io/trezor-suite",
+                        "ru": "Перейти на trezor.io/trezor-suite",
+                        "ja": "trezor.io/trezor-suite に移動"
+                    }
+                }
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": "<23.7.2",
+                        "mobile": "!",
+                        "web": "!"
+                    }
+                }
+            ],
+            "message": {
+                "id": "a99d0ad4-3bab-4660-9352-fh1d6518153f",
+                "priority": 91,
+                "dismissible": true,
+                "variant": "warning",
+                "category": "banner",
+                "content": {
+                    "en-GB": "Update Trezor Suite for enhanced security, all the latest features, and to keep everything running as smoothly as possible.",
+                    "en": "Update Trezor Suite for enhanced security, all the latest features, and to keep everything running as smoothly as possible.",
+                    "es": "Actualice Trezor Suite para obtener una mayor seguridad, las últimas funciones y para que todo funcione lo mejor posible.",
+                    "cs": "Aktualizujte Trezor Suite, abyste získali lepší zabezpečení a nejnovější funkce.",
+                    "ru": "Обновите Trezor Suite, чтобы улучшить безопасность, использовать все новейшие функции и обеспечить максимально эффективную работу.",
+                    "ja": "Trezor Suiteをアップデートすることで、セキュリティの強化、最新機能の搭載、スムーズな動作が可能になります。"
+                },
+                "cta": {
+                    "action": "external-link",
+                    "link": "https://trezor.io/trezor-suite",
+                    "label": {
+                        "en-GB": "Go to trezor.io/trezor-suite",
+                        "en": "Go to trezor.io/trezor-suite",
+                        "es": "Ir a trezor.io/trezor-suite",
+                        "cs": "Přejít na trezor.io/trezor-suite",
+                        "ru": "Перейти на trezor.io/trezor-suite",
+                        "ja": "trezor.io/trezor-suite に移動"
+                    }
+                }
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": "22.4.0",
+                        "mobile": "!",
+                        "web": "22.4.0"
+                    }
+                }
+            ],
+            "message": {
+                "id": "c3196201-b796-4c47-abdb-ac68c15ae371",
+                "priority": 99,
+                "dismissible": false,
+                "variant": "critical",
+                "category": "banner",
+                "content": {
+                    "en-GB": "WARNING: You are currently using a fake version of Trezor Suite. EXIT THIS PROGRAM IMMEDIATELY!",
+                    "en": "WARNING: You are currently using a fake version of Trezor Suite. EXIT THIS PROGRAM IMMEDIATELY!",
+                    "es": "ADVERTENCIA: Está utilizando una versión falsa de Trezor Suite. ¡SALGA DE ESTE PROGRAMA INMEDIATAMENTE!",
+                    "cs": "VAROVÁNÍ: Momentálně používáte falešnou verzi Trezor Suite. OKAMŽITĚ UKONČETE TENTO PROGRAM!",
+                    "ru": "ВНИМАНИЕ: Вы сейчас используете поддельную версию Trezor Suite. НЕМЕДЛЕННО ВЫЙДИТЕ ИЗ ЭТОЙ ПРОГРАММЫ!",
+                    "ja": "警告：あなたは現在、Trezor Suiteの偽バージョンを使用しています。このプログラムを直ちに終了してください。"
+                }
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": ">=22.4.3",
+                        "mobile": "!",
+                        "web": ">=22.4.3",
+                        "revision": "*"
+                    },
+                    "devices": [
+                        {
+                            "model": "T",
+                            "firmware": "*",
+                            "bootloader": "2.0.4",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T2T1",
+                            "firmware": "*",
+                            "bootloader": "2.0.4",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "5bc3e353e0b9fe977013005001f6e34e03ec6f08",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T2T1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "5bc3e353e0b9fe977013005001f6e34e03ec6f08",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "b0a7e13c884b2fb4f06a45ba474dbb6f94da3357",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T2T1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "b0a7e13c884b2fb4f06a45ba474dbb6f94da3357",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "e1c605ca90c6107befe11692b4675b7537f3a658",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T2T1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "e1c605ca90c6107befe11692b4675b7537f3a658",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "e1c605ca90c6107befe11692b4675b7537f3a658",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T1B1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "e1c605ca90c6107befe11692b4675b7537f3a658",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "1e62209d024b7e84a7368be8175735372b8080c9",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T2T1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "1e62209d024b7e84a7368be8175735372b8080c9",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "1e62209d024b7e84a7368be8175735372b8080c9",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T1B1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "1e62209d024b7e84a7368be8175735372b8080c9",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T",
+                            "firmware": "2.4.4",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T2T1",
+                            "firmware": "2.4.4",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "661ae37506f6e6ef94067d4b6de26c80bfb4c4b5",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T1B1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "661ae37506f6e6ef94067d4b6de26c80bfb4c4b5",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "661ae37506f6e6ef94067d4b6de26c80bfb4c4b5",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T2T1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "661ae37506f6e6ef94067d4b6de26c80bfb4c4b5",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "307865613335663436663566356364373962353461373039643438623533343132363534356533646230",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T2T1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "307865613335663436663566356364373962353461373039643438623533343132363534356533646230",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "ea35f46f5f5cd79b54a709d48b534126545e3db0",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T2T1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "ea35f46f5f5cd79b54a709d48b534126545e3db0",
+                            "vendor": "*"
+                        }
+                    ]
+                }
+            ],
+            "message": {
+                "id": "6f793f82-5e13-492f-803c-1jdk7dcc3cb6",
+                "priority": 99,
+                "dismissible": false,
+                "variant": "critical",
+                "category": "banner",
+                "content": {
+                    "en-GB": "CAUTION: Unofficial firmware detected! Your Trezor may be counterfeit. Contact help@trezor.io immediately.",
+                    "en": "CAUTION: Unofficial firmware detected! Your Trezor may be counterfeit. Contact help@trezor.io immediately.",
+                    "es": "¡PRECAUCIÓN: ¡El firmware detectado no es oficial! Es posible que su Trezor sea falso. Póngase en contacto de inmediato con help@trezor.io.",
+                    "cs": "UPOZORNĚNÍ: Byl detekován neoficiální firmware! Váš Trezor může být padělaný. Okamžitě kontaktujte help@trezor.io.",
+                    "ru": "ВНИМАНИЕ: Обнаружено неофициальное ПО! Ваш Trezor может быть подделкой. Свяжитесь с нами немедленно на help@trezor.io.",
+                    "ja": "注意：非公式のファームウェアが検出されました！お使いのTrezorは偽物かもしれません。直ちにhelp@trezor.ioに連絡してください。"
+                }
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "settings": [
+                        {
+                            "zec": true
+                        }
+                    ],
+                    "environment": {
+                        "desktop": "<22.6.2",
+                        "mobile": "!",
+                        "web": "!"
+                    }
+                }
+            ],
+            "message": {
+                "id": "57934104-14e4-413f-8da1-7c7d42abe313",
+                "priority": 92,
+                "dismissible": true,
+                "variant": "warning",
+                "category": "banner",
+                "content": {
+                    "en-GB": "Please update your application to be able to sign Zcash transactions",
+                    "en": "Please update your application to be able to sign Zcash transactions",
+                    "es": "Por favor, actualiza tu aplicación para poder firmar transacciones de Zcash",
+                    "cs": "Aktualizujte prosím aplikaci, abyste mohli podepisovat Zcash transakce",
+                    "ru": "_Пожалуйста, обновите свое приложение, чтобы иметь возможность подписывать транзакции Zcash",
+                    "ja": "Zcashの取引に署名できるようにアプリケーションを更新してください"
+                },
+                "cta": {
+                    "action": "internal-link",
+                    "link": "settings-index",
+                    "anchor": "@general-settings/version-with-update",
+                    "label": {
+                        "en-GB": "Update Suite",
+                        "en": "Update Suite",
+                        "es": "Actualizar Suite",
+                        "cs": "Aktualizovat Suite",
+                        "ru": "Обновить Suite",
+                        "ja": "Suiteのアップデート"
+                    }
+                }
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "settings": [
+                        {
+                            "zec": true
+                        }
+                    ],
+                    "environment": {
+                        "desktop": ">=22.6.2",
+                        "mobile": "!",
+                        "web": ">=22.6.2"
+                    },
+                    "devices": [
+                        {
+                            "model": "1",
+                            "firmware": "<1.11.1",
+                            "bootloader": "*",
+                            "variant": "regular",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T1B1",
+                            "firmware": "<1.11.1",
+                            "bootloader": "*",
+                            "variant": "regular",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T",
+                            "firmware": "<2.5.1",
+                            "bootloader": "*",
+                            "variant": "regular",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T2T1",
+                            "firmware": "<2.5.1",
+                            "bootloader": "*",
+                            "variant": "regular",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        }
+                    ]
+                }
+            ],
+            "message": {
+                "id": "0370bae9-a082-4634-9765-a0ce5de015c1",
+                "priority": 92,
+                "dismissible": true,
+                "variant": "warning",
+                "category": "banner",
+                "content": {
+                    "en-GB": "Please update your firmware to be able to sign Zcash transactions",
+                    "en": "Please update your firmware to be able to sign Zcash transactions",
+                    "es": "Para firmar transacciones de Zcash es necesario actualizar el firmware",
+                    "cs": "Aktualizujte prosím svůj firmware, abyste mohli podepisovat Zcash transakce",
+                    "ru": "Для подписывания транзакций zcach необходимо обновить прошивку",
+                    "ja": "Zcashの取引に署名できるようにファームウェアをアップデートしてください。"
+                },
+                "cta": {
+                    "action": "internal-link",
+                    "link": "firmware-index",
+                    "label": {
+                        "en-GB": "Update Firmware",
+                        "en": "Update Firmware",
+                        "es": "Actualizar el Firmware",
+                        "cs": "Aktualizovat Firmware",
+                        "ru": "Обновить прошивку",
+                        "ja": "ファームウェアのアップデート"
+                    }
+                }
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": "<23.10.1",
+                        "mobile": "!",
+                        "web": "<23.10.1"
+                    },
+                    "devices": [
+                        {
+                            "model": "",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T2B1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "Safe 3",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        }
+                    ]
+                }
+            ],
+            "message": {
+                "id": "e95a586f-f2d7-4c7b-8dd9-d8e56d9c905d",
+                "priority": 99,
+                "dismissible": false,
+                "variant": "critical",
+                "category": "banner",
+                "content": {
+                    "en-GB": "Update required! This version of Trezor Suite isn’t compatible with your device. Update to continue.",
+                    "en": "Update required! This version of Trezor Suite isn’t compatible with your device. Update to continue.",
+                    "es": "¡Actualización necesaria! Esta versión de Trezor Suite no es compatible con tu dispositivo. Actualiza para continuar.",
+                    "cs": "Nutná aktualizace! Tato verze Trezor Suite není kompatibilní s vaším zařízením. Chcete-li pokračovat, proveďte aktualizaci.",
+                    "ru": "Требуется обновление! Данная версия Trezor Suite несовместима с вашим устройством. Обновите программу, чтобы продолжить.",
+                    "ja": "アップデートが必要です！このバージョンのTrezor Suiteは、お使いのデバイスと互換性がありません。続行するには、アップデートしてください。"
+                },
+                "cta": {
+                    "action": "internal-link",
+                    "link": "settings-index",
+                    "anchor": "@general-settings/version-with-update",
+                    "label": {
+                        "en-GB": "Update Suite",
+                        "en": "Update Suite",
+                        "es": "Actualizar Suite",
+                        "cs": "Aktualizovat Suite",
+                        "ru": "Обновить Suite",
+                        "ja": "Suiteのアップデート"
+                    }
+                }
+            }
+        }
+    ]
+}

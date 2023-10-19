@@ -1,8 +1,8 @@
-import type React from 'react';
+import type { ComponentType, ReactElement } from 'react';
 import type { ViewProps } from 'react-native';
 import type { SharedValue } from 'react-native-reanimated';
 
-import type { Color, SkiaMutableValue } from '@shopify/react-native-skia';
+import type { Color } from '@shopify/react-native-skia';
 
 import type { GraphPathRange } from './CreateGraphPath';
 
@@ -11,14 +11,40 @@ export interface GraphPoint {
     date: Date;
 }
 
+export type GraphEvent<TEventPayload extends object> = {
+    payload: TEventPayload;
+    date: Date;
+};
+
+export type GraphEventWithCords<TEventPayload extends object> = GraphEvent<TEventPayload> & {
+    x: number;
+    y: number;
+};
+
+export type EventComponentProps<TEventPayload extends object = object> = {
+    isGraphActive: SharedValue<boolean>;
+    fingerX: SharedValue<number>;
+    index: number;
+    eventX: number;
+    eventY: number;
+    color: string;
+    onEventHover?: (index: number, willBeTooltipDisplayed: boolean) => void;
+} & TEventPayload;
+
+export type EventTooltipComponentProps<TEventPayload extends object = object> = {
+    eventX: number;
+    eventY: number;
+    eventPayload: TEventPayload;
+};
+
 export type GraphRange = Partial<GraphPathRange>;
 
 export interface SelectionDotProps {
     isActive: SharedValue<boolean>;
     color: BaseLineGraphProps['color'];
     lineThickness: BaseLineGraphProps['lineThickness'];
-    circleX: SkiaMutableValue<number>;
-    circleY: SkiaMutableValue<number>;
+    circleX: SharedValue<number>;
+    circleY: SharedValue<number>;
 }
 
 interface BaseLineGraphProps extends ViewProps {
@@ -54,7 +80,8 @@ interface BaseLineGraphProps extends ViewProps {
 export type StaticLineGraphProps = BaseLineGraphProps & {
     /* any static-only line graph props? */
 };
-export type AnimatedLineGraphProps = BaseLineGraphProps & {
+
+export type AnimatedLineGraphProps<TEventPayload extends object> = BaseLineGraphProps & {
     /**
      * Whether to enable Graph scrubbing/pan gesture.
      */
@@ -100,19 +127,38 @@ export type AnimatedLineGraphProps = BaseLineGraphProps & {
     /**
      * The element that renders the selection dot
      */
-    SelectionDot?: React.ComponentType<SelectionDotProps> | null;
+    SelectionDot?: ComponentType<SelectionDotProps> | null;
 
     /**
      * The element that gets rendered above the Graph (usually the "max" point/value of the Graph)
      */
-    TopAxisLabel?: () => React.ReactElement | null;
+    TopAxisLabel?: () => ReactElement | null;
 
     /**
      * The element that gets rendered below the Graph (usually the "min" point/value of the Graph)
      */
-    BottomAxisLabel?: () => React.ReactElement | null;
+    BottomAxisLabel?: () => ReactElement | null;
+
+    /**
+     * All points to be marked in the graph. The position will be calculated based on the `date` property according to points of the graph.
+     */
+    events?: GraphEvent<TEventPayload>[];
+
+    /**
+     * The element that renders each event of the graph.
+     */
+    EventComponent?: ComponentType<EventComponentProps<TEventPayload>> | null;
+    /**
+     * The element that gets rendered on hover on an EventComponent element.
+     */
+    EventTooltipComponent?: ComponentType<EventTooltipComponentProps<TEventPayload>> | null;
+
+    /**
+     * Called once the user hover on EventComponent element.
+     */
+    onEventHover?: () => void;
 };
 
-export type LineGraphProps =
-    | ({ animated: true } & AnimatedLineGraphProps)
+export type LineGraphProps<TEventPayload extends object> =
+    | ({ animated: true } & AnimatedLineGraphProps<TEventPayload>)
     | ({ animated: false } & StaticLineGraphProps);

@@ -1,5 +1,6 @@
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { BLOCKCHAIN as TREZOR_CONNECT_BLOCKCHAIN_ACTIONS } from '@trezor/connect';
+import { isTickerSupportedByBlockbook } from '@suite-common/fiat-services';
 
 import { transactionsActions } from '../transactions/transactionsActions';
 import { accountsActions } from '../accounts/accountsActions';
@@ -13,13 +14,16 @@ import {
     onUpdateFiatRateThunk,
 } from './fiatRatesThunks';
 import { blockchainActions } from '../blockchain/blockchainActions';
+import { selectAccountTransactions } from '../transactions/transactionsReducer';
 
 export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
     (action, { dispatch, extra, next, getState }) => {
         const {
+            selectors: { selectLocalCurrency },
             actions: { setWalletSettingsLocalCurrency, changeWalletSettingsNetworks },
         } = extra;
         const prevStateAccounts = selectAccounts(getState());
+        const prevStateLocalCurrency = selectLocalCurrency(getState());
 
         if (accountsActions.updateAccount.match(action)) {
             // fetch rates for new tokens added on account update
@@ -41,8 +45,7 @@ export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
                         dispatch(
                             updateCurrentFiatRatesThunk({
                                 ticker: {
-                                    symbol: token.symbol,
-                                    mainNetworkSymbol: account.symbol,
+                                    symbol: account.symbol,
                                     tokenAddress: token.contract,
                                 },
                             }),
@@ -62,8 +65,7 @@ export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
                 dispatch(
                     updateCurrentFiatRatesThunk({
                         ticker: {
-                            symbol: token.symbol,
-                            mainNetworkSymbol: account.symbol,
+                            symbol: account.symbol,
                             tokenAddress: token.contract,
                         },
                     }),
@@ -78,13 +80,30 @@ export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
                 updateTxsFiatRatesThunk({
                     account,
                     txs: transactions,
+                    localCurrency: prevStateLocalCurrency,
                 }),
             );
         }
 
         if (setWalletSettingsLocalCurrency.match(action)) {
-            // for coins relying on coingecko we only fetch rates for one fiat currency
-            dispatch(updateLastWeekFiatRatesThunk());
+            // For coins depending on Coingecko API we always download fiat rates for only one currency.
+            const { localCurrency } = action.payload;
+
+            dispatch(updateLastWeekFiatRatesThunk(localCurrency));
+
+            prevStateAccounts.forEach(account => {
+                // if fiat rates are downloaded from blockbook we already have all the currency-rate pairs.
+                if (isTickerSupportedByBlockbook({ symbol: account.symbol })) return;
+
+                const accountTransactions = selectAccountTransactions(getState(), account.key);
+                dispatch(
+                    updateTxsFiatRatesThunk({
+                        account,
+                        txs: accountTransactions,
+                        localCurrency,
+                    }),
+                );
+            });
         }
 
         if (changeWalletSettingsNetworks.match(action)) {

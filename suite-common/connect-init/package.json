@@ -12,11 +12,11 @@
         "test-unit:watch": "jest -o --watch"
     },
     "dependencies": {
-        "@reduxjs/toolkit": "1.9.3",
+        "@reduxjs/toolkit": "1.9.5",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/test-utils": "workspace:*",
-        "@trezor/connect": "workspace:9.0.9",
+        "@trezor/connect": "workspace:*",
         "@trezor/utils": "workspace:*"
     },
     "devDependencies": {

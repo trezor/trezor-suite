@@ -1,10 +1,14 @@
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { AbstractMetadataProvider } from '@suite-types/metadata';
+import { AbstractMetadataProvider } from 'src/types/suite/metadata';
 
 class FileSystemProvider extends AbstractMetadataProvider {
     isCloud = false;
     constructor() {
         super('fileSystem');
+    }
+
+    get clientId() {
+        return this.type;
     }
 
     connect() {
@@ -22,11 +26,12 @@ class FileSystemProvider extends AbstractMetadataProvider {
             isCloud: this.isCloud,
             tokens: {},
             user: '',
+            clientId: this.clientId,
         });
     }
 
     async getFileContent(file: string) {
-        const result = await desktopApi.metadataRead({ file: `${file}.mtdt` });
+        const result = await desktopApi.metadataRead({ file });
         if (!result.success && result.code !== 'ENOENT') {
             return this.error('PROVIDER_ERROR', result.error);
         }
@@ -37,13 +42,35 @@ class FileSystemProvider extends AbstractMetadataProvider {
         const hex = content.toString('hex');
 
         const result = await desktopApi.metadataWrite({
-            file: `${file}.mtdt`,
+            file,
             content: hex,
         });
         if (!result.success) {
             return this.error('PROVIDER_ERROR', result.error);
         }
 
+        return this.ok(undefined);
+    }
+
+    async getFilesList() {
+        const response = await desktopApi.metadataGetFiles();
+
+        if (!response.success) {
+            return this.error('PROVIDER_ERROR', response.error);
+        }
+
+        return this.ok(response.payload);
+    }
+
+    async renameFile(from: string, to: string) {
+        const response = await desktopApi.metadataRenameFile({
+            file: from,
+            to,
+        });
+
+        if (!response.success) {
+            return this.error('PROVIDER_ERROR', response.error);
+        }
         return this.ok(undefined);
     }
 

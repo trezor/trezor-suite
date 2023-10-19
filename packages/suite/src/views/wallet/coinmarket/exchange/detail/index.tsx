@@ -1,9 +1,8 @@
-import React from 'react';
 import {
     useCoinmarketExchangeDetail,
     CoinmarketExchangeDetailContext,
-} from '@wallet-hooks/useCoinmarketExchangeDetail';
-import { withSelectedAccountLoaded, WithSelectedAccountLoadedProps } from '@wallet-components';
+} from 'src/hooks/wallet/useCoinmarketExchangeDetail';
+import { withSelectedAccountLoaded, WithSelectedAccountLoadedProps } from 'src/components/wallet';
 import styled from 'styled-components';
 import Detail from './Detail';
 

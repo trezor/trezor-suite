@@ -1,10 +1,12 @@
+import { CoinjoinPrisonInmate } from './client';
+
 interface BaseSettings {
     network: 'btc' | 'test' | 'regtest';
-    coordinatorUrl: string;
+    wabisabiBackendUrl: string;
+    onionDomains?: { [clearnet: string]: string };
 }
 
 export interface CoinjoinBackendSettings extends BaseSettings {
-    wabisabiBackendUrl: string;
     blockbookUrls: readonly string[];
     baseBlockHeight: number;
     baseBlockHash: string;
@@ -13,16 +15,13 @@ export interface CoinjoinBackendSettings extends BaseSettings {
 }
 
 export interface CoinjoinClientSettings extends BaseSettings {
+    coordinatorUrl: string;
     coordinatorName: string; // identifier used in commitment data and ownership proof
     middlewareUrl: string;
+    prison?: CoinjoinPrisonInmate[];
 }
 
-export type {
-    ScanAddressProgress,
-    ScanAddressCheckpoint,
-    ScanAccountProgress,
-    ScanAccountCheckpoint,
-} from './backend';
+export type { ScanAccountProgress, ScanAccountCheckpoint, ScanProgressInfo } from './backend';
 
 export * from './account';
 export * from './client';

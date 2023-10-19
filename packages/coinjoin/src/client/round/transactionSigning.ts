@@ -1,6 +1,13 @@
+import { arrayShuffle } from '@trezor/utils';
+
 import * as coordinator from '../coordinator';
 import * as middleware from '../middleware';
-import { getRoundEvents, compareOutpoint, getAffiliateRequest } from '../../utils/roundUtils';
+import {
+    getRoundEvents,
+    compareOutpoint,
+    getAffiliateRequest,
+    scheduleDelay,
+} from '../../utils/roundUtils';
 import {
     mergePubkeys,
     sortInputs,
@@ -13,15 +20,16 @@ import type { Account } from '../Account';
 import type { Alice } from '../Alice';
 import type { CoinjoinRound, CoinjoinRoundOptions } from '../CoinjoinRound';
 import { CoinjoinTransactionData } from '../../types';
-import { SessionPhase } from '../../enums';
+import { SessionPhase, WabiSabiProtocolErrorCode } from '../../enums';
+import { TX_SIGNING_DELAY } from '../../constants';
 
 const getTransactionData = (
     round: CoinjoinRound,
     options: CoinjoinRoundOptions,
 ): CoinjoinTransactionData => {
-    const registeredInputs = getRoundEvents('InputAdded', round.coinjoinState.events);
+    const registeredInputs = getRoundEvents('InputAdded', round.coinjoinState.Events);
     const registeredOutputs = mergePubkeys(
-        getRoundEvents('OutputAdded', round.coinjoinState.events),
+        getRoundEvents('OutputAdded', round.coinjoinState.Events),
     );
     const myInputsInRound = round.inputs;
     const myOutputsInRound = round.addresses;
@@ -39,36 +47,36 @@ const getTransactionData = (
     }
 
     const inputs = registeredInputs
-        .sort((a, b) => sortInputs(a.coin, b.coin))
-        .map(({ coin, ownershipProof }) => {
-            const { index, hash } = readOutpoint(coin.outpoint);
-            const internal = myInputsInRound.find(a => compareOutpoint(a.outpoint, coin.outpoint));
-            const address = getAddressFromScriptPubKey(coin.txOut.scriptPubKey, options.network);
+        .sort((a, b) => sortInputs(a.Coin, b.Coin))
+        .map(({ Coin, OwnershipProof }) => {
+            const { index, hash } = readOutpoint(Coin.Outpoint);
+            const internal = myInputsInRound.find(a => compareOutpoint(a.outpoint, Coin.Outpoint));
+            const address = getAddressFromScriptPubKey(Coin.TxOut.ScriptPubKey, options.network);
             return {
                 path: internal?.path,
-                outpoint: internal?.outpoint || coin.outpoint, // NOTE: internal outpoints are in lowercase, coordinators in uppercase
+                outpoint: internal?.outpoint || Coin.Outpoint, // NOTE: internal outpoints are in lowercase, coordinators in uppercase
                 hash,
                 index,
-                amount: coin.txOut.value,
+                amount: Coin.TxOut.Value,
                 address,
-                scriptPubKey: prefixScriptPubKey(coin.txOut.scriptPubKey),
-                ownershipProof,
+                scriptPubKey: prefixScriptPubKey(Coin.TxOut.ScriptPubKey),
+                ownershipProof: OwnershipProof,
                 commitmentData: round.commitmentData,
             };
         });
 
     const outputs = registeredOutputs
-        .sort((a, b) => sortOutputs(a.output, b.output))
-        .map(({ output }) => {
+        .sort((a, b) => sortOutputs(a.Output, b.Output))
+        .map(({ Output }) => {
             const internalOutput = myOutputsInRound.find(
-                o => output.scriptPubKey === o.scriptPubKey,
+                o => Output.ScriptPubKey === o.scriptPubKey,
             );
-            const address = getAddressFromScriptPubKey(output.scriptPubKey, options.network);
+            const address = getAddressFromScriptPubKey(Output.ScriptPubKey, options.network);
             return {
                 path: internalOutput?.path,
                 address,
-                amount: output.value,
-                scriptPubKey: prefixScriptPubKey(output.scriptPubKey),
+                amount: Output.Value,
+                scriptPubKey: prefixScriptPubKey(Output.ScriptPubKey),
             };
         });
 
@@ -92,7 +100,7 @@ const updateRawLiquidityClue = async (
                 .map(o => o.amount);
             return middleware.updateLiquidityClue(
                 account.rawLiquidityClue,
-                round.roundParameters.maxSuggestedAmount,
+                round.roundParameters.MaxSuggestedAmount,
                 externalAmounts,
                 { baseUrl: options.middlewareUrl },
             );
@@ -112,20 +120,43 @@ const updateRawLiquidityClue = async (
     });
 };
 
-// TODO: delay
-// TODO: notify wallet about success and create "pending account" state in suite
 const sendTxSignature = async (
     round: CoinjoinRound,
+    resolvedTime: number,
     input: Alice,
-    { signal, coordinatorUrl }: CoinjoinRoundOptions,
+    { signal, coordinatorUrl, logger }: CoinjoinRoundOptions,
 ) => {
-    await coordinator.transactionSignature(round.id, input.witnessIndex!, input.witness!, {
-        signal,
-        baseUrl: coordinatorUrl,
-        identity: input.outpoint, // NOTE: recycle input identity
-        delay: 0,
-        deadline: round.phaseDeadline,
-    });
+    // if DelayTransactionSigning is set then start sending signatures **after** 50 seconds reduced by time spent on actual signing on the device.
+    // time span for sending signatures is also 50 seconds.
+    const roundSigningDelay = round.roundParameters.DelayTransactionSigning ? TX_SIGNING_DELAY : 0;
+    const minimumDelay = roundSigningDelay - resolvedTime;
+    const maximumDelay = minimumDelay + TX_SIGNING_DELAY;
+    const delay = scheduleDelay(round.phaseDeadline - Date.now(), minimumDelay, maximumDelay);
+
+    logger.info(
+        `Sending signature of ~~${input.outpoint}~~ with delay ${delay}ms. Round signing delay: ${round.roundParameters.DelayTransactionSigning}`,
+    );
+
+    await coordinator
+        .transactionSignature(round.id, input.witnessIndex!, input.witness!, {
+            signal,
+            baseUrl: coordinatorUrl,
+            identity: input.outpoint, // NOTE: recycle input identity
+            delay,
+            deadline: round.phaseDeadline,
+        })
+        .catch(error => {
+            if (
+                error instanceof coordinator.WabiSabiProtocolException &&
+                error.errorCode === WabiSabiProtocolErrorCode.WitnessAlreadyProvided
+            ) {
+                // there is a possibility that previous request timed out on the client side but was successfully received by coordinator
+                // ignore this error... it shouldn't break the round
+            } else {
+                throw error;
+            }
+        });
+
     return input;
 };
 
@@ -155,10 +186,17 @@ export const transactionSigning = async (
     if (!round.affiliateRequest) {
         logger.warn(`Missing affiliate request. Waiting for status`);
         round.setSessionPhase(SessionPhase.AwaitingCoinjoinTransaction);
+        round.transactionSignTries.push(Date.now());
         return round;
     }
 
     const sendProcessStart = Date.now();
+    const resolvedTime = Math.max(
+        ...round.inputs.map(i => {
+            const res = i.getResolvedRequest('signature');
+            return res?.timestamp || 0;
+        }),
+    );
 
     try {
         const inputsWithoutWitness = round.inputs.filter(input => !input.witness);
@@ -177,8 +215,11 @@ export const transactionSigning = async (
         }
 
         round.setSessionPhase(SessionPhase.SendingSignature);
-
-        await Promise.all(round.inputs.map(input => sendTxSignature(round, input, options)));
+        await Promise.all(
+            arrayShuffle(round.inputs).map(input =>
+                sendTxSignature(round, resolvedTime, input, options),
+            ),
+        );
 
         round.signedSuccessfully();
         round.setSessionPhase(SessionPhase.AwaitingOtherSignatures);
@@ -186,12 +227,6 @@ export const transactionSigning = async (
     } catch (error) {
         // NOTE: if anything goes wrong in this process this Round will be corrupted for all the users
         // registered inputs will probably be banned
-        const resolvedTime = Math.max(
-            ...round.inputs.map(i => {
-                const res = i.getResolvedRequest('signature');
-                return res?.timestamp || 0;
-            }),
-        );
 
         const sendTime = Date.now() - sendProcessStart;
 

@@ -1,11 +1,68 @@
+# 9.1.4
+
+-   feat(connect-popup): add metamask extension id to known third party (f137b3e4d6)
+-   test(connect): composeTransaction fix doge fee (69a92483c6)
+-   refactor(connect): remove doge fee branch (c79f3f25d8)
+-   feat(transport): udp support for transport methods (65e617195c)
+-   fix(connect): accept signTransaction inputs/outputs with `address_n: string` (82910e0766)
+-   fix(connect-explorer, connect-popup): add favicon (cafb574ada, c6071123f3)
+-   feat(connect-popup): use trezor icons with display off from suite-data (1c806519a7)
+-   feat(connect): trezor color in device object (31535e2b0f)
+-   feat(connect): trezor name in device object (a0ecb66390)
+-   feat(connect-common): copy models.json from submodules (6d80197523)
+-   fix(connect-iframe): device event not propagating to host (d35e37863a)
+-   feat(connect, suite): unify no backup warning button text (375f3fa1a1)
+-   feat(connect): add suppressBackupWarning param to getPublicKey and getAccountInfo (2c2698d8af)
+-   fix(type-check): connect-web includes connect-iframe package.json (f9f576ab66)
+-   fix(connect-iframe): method.initAsync method superfluous call (37ace99a5d)
+-   fix(connect-iframe): define plugin in build to support analytics (c793ce358c)
+
+# 9.1.3
+
+-   fix(connect): correct import of internal connect dependency (https://github.com/trezor/trezor-suite/issues/9389)
+
+# 9.1.2
+
+-   feat(connect): analytics method name and method param names (23df6d8)
+-   feat(connect): improve calculation of fees and dust limit. (d726aab, 9d1ef05, 60f1e26, 2187c34, d84e3ca)
+-   fix(connect): device.firmwareType can't be safely determined in bootloader mode so we set it to undefined (c3d33a0)
+-   feat(connect): signTransaction with refTxs passed as AccountTransaction interface (d7ec435)
+-   feat(connect): decoding ethereum definitions which allows richer UI in connect-popup (0e9356f)
+-   feat(connect-explorer): updated examples ethereum (b025834, e58c416), applySettings (1a28816)
+-   feat(connect-explorer): render docs from docs folder on index page (93fddc4)
+
+# 9.1.1
+
+-   feat(connect-popup): added device model_internal in features
+-   feat(connect): add cancelCoinjoinAuthorization method
+-   feat(connect): added nodeusb transport. TrezorConnect is now capable of communicating with Trezor devices without using TrezorBridge (in node.js environment).
+-   feat(connect-popup): when a call to TrezorConnect returns `success: false` popup remains opened and displays error page instead.
+-   feat(connect-popup): add no-backup warning to getPublicKey method
+-   fix(connect): respect useEmptyPassphrase param in cipherKeyValue method
+
+# 9.0.11
+
+-   fix(connect-web): fix imports from connect
+
+# 9.0.10
+
+-   fix(connect-popup): fix connect-popup in firefox
+-   feat(connect-popup): tiny visual updates, added loading messages based on communication with iframe
+-   fix(connect-web): prevent unexpected import of transport runtime code in connect/web
+
+# 9.0.9
+
+-   fix(connect): prevent .asArray of undefined runtime error
+-   fix(connect): add missing currencies param for getFiatRatesForTimestamps
+
 # 9.0.8
 
--   feat: support multiple intermediary FWs for model 1 and devkit binaries
+-   feat: support multiple intermediary FWs for T1B1 and devkit binaries
     -   `FirmwareUpdate` now accepts `intermediaryVersion` param instead of `intermediary`
-    -   `getInfo` returns `intermediaryVersion` needed for T1 and removed `latest` param. 'release' always return latest version for T1 so it means abandoning the concept of incremental updates for T1.
+    -   `getInfo` returns `intermediaryVersion` needed for T1B1 and removed `latest` param. 'release' always return latest version for T1B1 so it means abandoning the concept of incremental updates for T1B1.
 -   feat: signTransaction now returns `signedTransaction` which can be used for visualization purposes before notification about pending transaction from blockchain is received.
 -   feat(blockchain): `blockchainGetCurrentFiatRates` and `blockchainGetFiatRatesForTimestamps` now accept additional `token` parameter
--   feat: support coinjoin for model 1
+-   feat: support coinjoin for T1B1
 -   feat(transport): eth definitions
 -   feat(webextension): Ignore port events if it is not port created by current popup
 -   feat(cardano): allow external reward addresses in governance registrations

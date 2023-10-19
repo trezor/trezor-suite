@@ -1,11 +1,10 @@
-import React from 'react';
 import {
     useCoinmarketSellDetail,
     CoinmarketSellDetailContext,
-} from '@wallet-hooks/useCoinmarketSellDetail';
+} from 'src/hooks/wallet/useCoinmarketSellDetail';
 import styled from 'styled-components';
 import Detail from './Detail';
-import { withSelectedAccountLoaded, WithSelectedAccountLoadedProps } from '@wallet-components';
+import { withSelectedAccountLoaded, WithSelectedAccountLoadedProps } from 'src/components/wallet';
 
 const Wrapper = styled.div`
     display: flex;

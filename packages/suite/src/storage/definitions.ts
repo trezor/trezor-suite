@@ -1,25 +1,25 @@
 import type { DBSchema } from 'idb';
-import type { SuiteState } from '@suite-reducers/suiteReducer';
-import type { FormState } from '@wallet-types/sendForm';
-import type { AcquiredDevice } from '@suite-types';
-import type { MetadataState } from '@suite-types/metadata';
-import type { Trade } from '@wallet-types/coinmarketCommonTypes';
-import type { MessageState } from '@suite/reducers/suite/messageSystemReducer';
-import type { FormDraft } from '@wallet-types/form';
+import { FieldValues } from 'react-hook-form';
+
+import type { SuiteState } from 'src/reducers/suite/suiteReducer';
+import type { FormState } from 'src/types/wallet/sendForm';
+import type { AcquiredDevice } from 'src/types/suite';
+import type { MetadataState } from 'src/types/suite/metadata';
+import type { Trade } from 'src/types/wallet/coinmarketCommonTypes';
+import type { MessageState } from '@suite-common/message-system';
+import type { MessageSystem } from '@suite-common/suite-types';
 import type {
     Account,
     Discovery,
     Network,
     CoinFiatRates,
     WalletAccountTransaction,
-} from '@wallet-types';
-import type { CoinjoinAccount, CoinjoinDebugSettings } from '@wallet-types/coinjoin';
+} from 'src/types/wallet';
+import type { CoinjoinAccount, CoinjoinDebugSettings } from 'src/types/wallet/coinjoin';
 
-import type { MessageSystem } from '@trezor/message-system';
 import type { BackendSettings, WalletSettings } from '@suite-common/wallet-types';
 import type { StorageUpdateMessage } from '@trezor/suite-storage';
 import { AnalyticsState } from '@suite-common/analytics';
-
 import { GraphData } from '../types/wallet/graph';
 
 export interface DBWalletAccountTransaction {
@@ -117,7 +117,7 @@ export interface SuiteDBSchema extends DBSchema {
     };
     formDrafts: {
         key: string;
-        value: FormDraft;
+        value: FieldValues;
     };
     firmware: {
         key: 'firmware';

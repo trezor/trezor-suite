@@ -1,15 +1,12 @@
-import React from 'react';
-
-import { FIAT } from '@suite-config';
-import { Translation } from '@suite-components';
-import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@suite-components/Settings';
-import { useSelector, useActions } from '@suite-hooks';
-import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
-import { useAnchor } from '@suite-hooks/useAnchor';
-import { SettingsAnchor } from '@suite-constants/anchors';
-
 import { analytics, EventType } from '@trezor/suite-analytics';
-import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { FiatCurrencyCode, fiatCurrencies } from '@suite-common/suite-config';
+
+import { Translation } from 'src/components/suite';
+import { ActionColumn, ActionSelect, SectionItem, TextColumn } from 'src/components/suite/Settings';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { setLocalCurrency } from 'src/actions/settings/walletSettingsActions';
+import { useAnchor } from 'src/hooks/suite/useAnchor';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 const buildCurrencyOption = (currency: string) => ({
     value: currency,
@@ -17,15 +14,22 @@ const buildCurrencyOption = (currency: string) => ({
 });
 
 export const Fiat = () => {
+    const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
+    const dispatch = useDispatch();
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.Fiat);
 
-    const { localCurrency } = useSelector(state => ({
-        localCurrency: state.wallet.settings.localCurrency,
-    }));
+    const options = Object.keys(fiatCurrencies).map(c => buildCurrencyOption(c));
+    const value = buildCurrencyOption(localCurrency);
 
-    const { setLocalCurrency } = useActions({
-        setLocalCurrency: walletSettingsActions.setLocalCurrency,
-    });
+    const handleChange = (option: { value: FiatCurrencyCode; label: string }) => {
+        dispatch(setLocalCurrency(option.value));
+        analytics.report({
+            type: EventType.SettingsGeneralChangeFiat,
+            payload: {
+                fiat: option.value,
+            },
+        });
+    };
 
     return (
         <SectionItem data-test="@settings/fiat" ref={anchorRef} shouldHighlight={shouldHighlight}>
@@ -34,17 +38,9 @@ export const Fiat = () => {
                 <ActionSelect
                     hideTextCursor
                     useKeyPressScroll
-                    onChange={(option: { value: FiatCurrencyCode; label: string }) => {
-                        setLocalCurrency(option.value);
-                        analytics.report({
-                            type: EventType.SettingsGeneralChangeFiat,
-                            payload: {
-                                fiat: option.value,
-                            },
-                        });
-                    }}
-                    value={buildCurrencyOption(localCurrency)}
-                    options={FIAT.currencies.map(c => buildCurrencyOption(c))}
+                    onChange={handleChange}
+                    value={value}
+                    options={options}
                     data-test="@settings/fiat-select"
                 />
             </ActionColumn>

@@ -31,12 +31,18 @@ export const parseConnectSettings = (
     // occasionally received origin is a stringified "null" or empty string. rename it to avoid confusion
     settings.origin = !origin || origin === 'null' ? 'unknown' : origin;
 
+    const hostOriginMatchesIframeOrigin = window.origin === settings.origin;
+
     // check if iframe is running on localhost
-    const isLocalhost = window?.location?.hostname === 'localhost';
+    const isIframeLocalhost = window?.location?.hostname === 'localhost';
     // check if origin is whitelisted
     const whitelist = isOriginWhitelisted(settings.origin);
 
-    settings.trustedHost = (isLocalhost || !!whitelist) && !settings.popup;
+    // respect false value from input.
+    // otherwise set trustedHost to true if origin is whitelisted or iframe is running on localhost
+    if (settings.trustedHost !== false) {
+        settings.trustedHost = isIframeLocalhost || !!whitelist;
+    }
 
     // ensure that popup will be used
     if (!settings.trustedHost) {
@@ -44,30 +50,34 @@ export const parseConnectSettings = (
     }
 
     // ensure that debug is disabled
-    if (!settings.trustedHost && !whitelist && !isLocalhost) {
+    if (!settings.trustedHost && !isIframeLocalhost) {
         settings.debug = false;
     }
 
     settings.priority = getPriority(whitelist);
 
     let disableWebUsb = false;
+
+    if (!navigator.usb) {
+        disableWebUsb = true;
+    }
+
     // disable webusb on local files
     if (window?.location?.protocol === 'file:') {
         settings.origin = `file://${window.location.pathname}`;
-        settings.webusb = false;
         disableWebUsb = true;
     }
 
-    // hotfix webusb + chrome:72, allow webextensions
-    if (settings.popup && settings.env !== 'webextension') {
+    // hotfix webusb + chrome:72, allow webextensions, allow cases when host origin and iframe origin are same
+    if (!hostOriginMatchesIframeOrigin && settings.env !== 'webextension') {
         disableWebUsb = true;
-        settings.webusb = false;
     }
 
     if (disableWebUsb) {
+        settings.webusb = false;
         // allow all but WebUsbTransport
         settings.transports = settings.transports?.filter(
-            (transport: string) => transport !== 'WebUsbTransport',
+            transport => transport !== 'WebUsbTransport',
         );
     }
 
