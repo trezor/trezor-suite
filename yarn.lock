@@ -8093,7 +8093,7 @@ __metadata:
     pdfmake: ^0.2.7
     react: 18.2.0
     react-hook-form: 7.44.3
-    trezor-address-validator: ^0.4.3
+    trezor-address-validator: ^0.4.4
     typescript: 4.9.5
     web3-utils: ^1.10.0
   languageName: unknown
@@ -10258,7 +10258,7 @@ __metadata:
     stylelint: 14.16.1
     stylelint-config-recommended: ^9.0.0
     stylelint-config-styled-components: ^0.1.1
-    trezor-address-validator: ^0.4.3
+    trezor-address-validator: ^0.4.4
     tsx: ^3.12.7
     typescript: 4.9.5
     typescript-styled-plugin: ^0.18.3
@@ -35295,9 +35295,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"trezor-address-validator@npm:^0.4.3":
-  version: 0.4.3
-  resolution: "trezor-address-validator@npm:0.4.3"
+"trezor-address-validator@npm:^0.4.4":
+  version: 0.4.4
+  resolution: "trezor-address-validator@npm:0.4.4"
   dependencies:
     base-x: ^3.0.7
     bech32: ^2.0.0
@@ -35307,7 +35307,7 @@ __metadata:
     groestl-hash-js: 1.0.0
     jssha: 2.3.1
     lodash: ^4.17.15
-  checksum: 31046b80303acecd0507a5db12beb82b565988ca444374766d7816a5880d4b82a3ea0d4a6edb5fbdc9029d263c21b4c35d2d491ae2f822007caf92ba87adddcc
+  checksum: 593791dab582d6f6dbf21009ae4b262e4e591574c2c8c6234e3b0b7c4e03ef8710bc05740303c5a09642e53604eb3bd23933f46a5aaa4b9b43739fbf2a12df1c
   languageName: node
   linkType: hard
 

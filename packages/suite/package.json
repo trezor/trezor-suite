@@ -105,7 +105,7 @@
         "redux-thunk": "^2.4.2",
         "semver": "^7.5.3",
         "styled-components": "^5.3.10",
-        "trezor-address-validator": "^0.4.3",
+        "trezor-address-validator": "^0.4.4",
         "uuid": "^9.0.0",
         "web3-utils": "^1.10.0",
         "zxcvbn": "^4.4.2"
