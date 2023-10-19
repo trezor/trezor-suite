@@ -92,6 +92,8 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
         const transactionsPage = await fetchTransactionPage(api, txIds);
         const uniqueTransactionSlots = Array.from(new Set(transactionsPage.map(tx => tx.slot)));
 
+        // we do not get blockheight from the transaction history, we only get slot for each transaction.
+        // for this reason we have to fetch block for each slot and an create a dictionary
         const slotToBlockHeightMapping = (
             await Promise.all(
                 uniqueTransactionSlots.map(async slot => {
