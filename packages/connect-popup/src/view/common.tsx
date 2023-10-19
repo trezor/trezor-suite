@@ -49,7 +49,7 @@ export const clearLegacyView = () => {
 };
 
 const renderLegacyView = (className: string) => {
-    container!.style.display = 'flex';
+    container!.style.display = 'flex'; // FIXME? what about other
 
     const view = views.getElementsByClassName(className);
     if (view) {
@@ -72,10 +72,20 @@ export const showView = (component: string) => {
     return renderLegacyView(component);
 };
 
+// Check if popup is loaded by iframe overlay
+export const isPopupInOverlay = () => {
+    try {
+        return window.self !== window.top;
+    } catch (e) {
+        return true;
+    }
+};
+
 export const getIframeElement = () => {
+    const isOverlay = isPopupInOverlay();
     // try find iframe in opener window
-    if (!window.opener) return;
-    const { frames } = window.opener;
+    if (!isOverlay && !window.opener) return;
+    const { frames } = isOverlay ? window.parent : window.opener;
     if (!frames) return; // electron will return undefined
     let iframe: Window | undefined;
     for (let i = 0; i < frames.length; i++) {
@@ -83,6 +93,7 @@ export const getIframeElement = () => {
             // try to get iframe origin, this action will not fail ONLY if the origins of iframe and popup are the same
             if (frames[i].location.host === window.location.host) {
                 iframe = frames[i];
+                break;
             }
         } catch (error) {
             // do nothing, try next entry
@@ -190,6 +201,8 @@ export const postMessageToParent = (message: CoreMessage) => {
     if (window.opener) {
         // post message to parent and wait for POPUP.INIT message
         window.opener.postMessage(message, '*');
+    } else if (isPopupInOverlay()) {
+        window.parent.postMessage(message, window.location.origin);
     } else {
         // webextensions doesn't have "window.opener" reference and expect this message in "content-script" above popup [see: ./src/plugins/webextension/trezor-content-script.js]
         // future communication channel with webextension iframe will be "ChromePort"

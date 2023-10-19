@@ -23,6 +23,7 @@ import {
     showView,
     initMessageChannel,
     postMessageToParent,
+    isPopupInOverlay,
     renderConnectUI,
 } from './view/common';
 import { isPhishingDomain } from './utils/isPhishingDomain';
@@ -238,7 +239,7 @@ const init = async (payload: PopupInit['payload']) => {
         await renderConnectUI();
         reactEventBus.dispatch({ type: 'waiting-for-iframe-init' });
         await initMessageChannel(payload, handleMessage);
-        reactEventBus.dispatch({ type: 'waiting-for-iframe-handshake' });
+        // FIXME reactEventBus.dispatch({ type: 'waiting-for-iframe-handshake' });
     } catch (error) {
         postMessageToParent(createPopupMessage(POPUP.ERROR, { error: error.message }));
     }
@@ -260,6 +261,11 @@ const handshake = (handshake: PopupHandshake) => {
         reactEventBus.dispatch({ type: 'phishing-domain' });
     }
     log.debug('handshake done');
+
+    if (isPopupInOverlay()) {
+        // TODO: get payload from iframe
+        view.selectDevice({ webusb: true, devices: [] });
+    }
 };
 
 const onLoad = () => {

@@ -12,14 +12,16 @@ import {
 } from '@trezor/connect/lib/exports';
 import { getOrigin } from '@trezor/connect/lib/utils/urlUtils';
 import { showPopupRequest } from './showPopupRequest';
+import { showPopupOverlay, hideOverlay } from '../overlay';
 
 // Event `POPUP_REQUEST_TIMEOUT` is used to close Popup window when there was no handshake from iframe.
-const POPUP_REQUEST_TIMEOUT = 850;
+const POPUP_REQUEST_TIMEOUT = 1; // 850;
 const POPUP_CLOSE_INTERVAL = 500;
 const POPUP_OPEN_TIMEOUT = 3000;
 
 export class PopupManager extends EventEmitter {
     popupWindow: any;
+    popupOverlay?: HTMLElement | null;
 
     settings: ConnectSettings;
 
@@ -269,6 +271,17 @@ export class PopupManager extends EventEmitter {
             }
             // popup is successfully loaded
             this.iframeHandshake.promise.then(payload => {
+                if (this.popupOverlay) {
+                    message.source?.postMessage({
+                        type: POPUP.INIT,
+                        payload: {
+                            ...payload,
+                            settings: this.settings,
+                        },
+                    });
+                    return;
+                }
+
                 // send ConnectSettings to popup
                 // note this settings and iframe.ConnectSettings could be different (especially: origin, popup, webusb, debug)
                 // now popup is able to load assets
@@ -283,6 +296,12 @@ export class PopupManager extends EventEmitter {
                     this.origin,
                 );
             });
+        } else if (data.type === 'request-webusb') {
+            clearInterval(this.closeInterval);
+            this.popupOverlay = showPopupOverlay(this.settings.popupSrc);
+
+            this.popupWindow.close();
+            this.popupWindow = null;
         } else if (data.type === POPUP.CANCEL_POPUP_REQUEST || data.type === UI.CLOSE_UI_WINDOW) {
             this.clear(false);
         }
@@ -316,6 +335,11 @@ export class PopupManager extends EventEmitter {
         if (focus && this.extensionTabId) {
             chrome.tabs.update(this.extensionTabId, { active: true });
             this.extensionTabId = 0;
+        }
+
+        if (this.popupOverlay) {
+            hideOverlay(this.popupOverlay);
+            this.popupOverlay = null;
         }
     }
 

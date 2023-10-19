@@ -11,45 +11,49 @@ import {
 } from '@trezor/connect';
 import { TREZOR_USB_DESCRIPTORS } from '@trezor/transport/lib/constants';
 import { SUITE_BRIDGE_URL, SUITE_UDEV_URL, TREZOR_SUPPORT_URL } from '@trezor/urls';
-import { container, getState, showView, postMessage } from './common';
+import { container, getState, showView, postMessage, isPopupInOverlay } from './common';
 
 const initWebUsbButton = (showLoader: boolean) => {
     const { iframe } = getState();
 
     const usb = iframe ? iframe.navigator.usb : null;
+    const isOverlay = isPopupInOverlay();
     const webusbContainer = container.getElementsByClassName('webusb')[0] as HTMLElement;
     webusbContainer.style.display = 'flex';
     const button = webusbContainer.getElementsByTagName('button')[0];
 
     button.innerHTML = '<span class="plus"></span><span class="text">Pair devices</span>';
 
-    const onClick = async () => {
-        if (!usb) {
-            window.postMessage({ type: POPUP.EXTENSION_USB_PERMISSIONS }, window.location.origin);
-            return;
-        }
-        try {
-            await window.navigator.usb.requestDevice({
-                filters: TREZOR_USB_DESCRIPTORS,
-            });
-            const { iframe } = getState();
-            if (!iframe) {
-                throw ERRORS.TypedError('Popup_ConnectionMissing');
-            }
-            iframe.postMessage({
-                event: UI_EVENT,
-                type: TRANSPORT.REQUEST_DEVICE,
-            });
-            if (showLoader) {
-                showView('loader');
-            }
-        } catch (error) {
-            // empty, do nothing, should not happen anyway
-            console.error(error);
-        }
-    };
+    if (usb && !isOverlay) {
+        window.opener.postMessage({ type: 'request-webusb' }, '*');
+        return;
+    }
 
-    button.onclick = onClick;
+    button.onclick = isOverlay
+        ? async () => {
+              try {
+                  await window.navigator.usb.requestDevice({
+                      filters: TREZOR_USB_DESCRIPTORS,
+                  });
+                  const { iframe } = getState();
+                  if (!iframe) {
+                      throw ERRORS.TypedError('Popup_ConnectionMissing');
+                  }
+                  iframe.postMessage({
+                      event: UI_EVENT,
+                      type: TRANSPORT.REQUEST_DEVICE,
+                  });
+                  if (showLoader) {
+                      showView('loader');
+                  }
+              } catch (error) {
+                  // empty, do nothing, should not happen anyway
+                  console.error(error);
+              }
+          }
+        : () => {
+              window.postMessage({ type: POPUP.EXTENSION_USB_PERMISSIONS }, window.location.origin);
+          };
 };
 
 export const selectDevice = (payload: UiRequestSelectDevice['payload']) => {
