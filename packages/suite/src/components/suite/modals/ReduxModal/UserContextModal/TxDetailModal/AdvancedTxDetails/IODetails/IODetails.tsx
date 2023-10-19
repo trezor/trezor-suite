@@ -8,10 +8,10 @@ import { useSelector } from 'src/hooks/suite/useSelector';
 import { AnonymitySet, TokenTransfer } from '@trezor/blockchain-link';
 import { Icon, useTheme, variables, CollapsibleBox } from '@trezor/components';
 import { UtxoAnonymity } from 'src/components/wallet';
-import { IOAddress } from './IOAddress';
 import { AnalyzeInExplorerBanner } from './AnalyzeInExplorerBanner';
 import { FormattedNftAmount } from 'src/components/suite/FormattedNftAmount';
 import { useExplorerTxUrl } from 'src/hooks/suite/useExplorerTxUrl';
+import { IOAddress } from '../../IOAddress';
 
 export const blurFix = css`
     margin-left: -10px;
