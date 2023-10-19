@@ -8,8 +8,8 @@ import { useSelector } from 'src/hooks/suite/useSelector';
 import { AnonymitySet, TokenTransfer } from '@trezor/blockchain-link';
 import { Icon, useTheme, variables, CollapsibleBox } from '@trezor/components';
 import { UtxoAnonymity } from 'src/components/wallet';
-import { IOAddress } from '../../IOAddress';
-import { AnalyzeInBlockbookBanner } from './AnalyzeInBlockbookBanner';
+import { IOAddress } from './IOAddress';
+import { AnalyzeInExplorerBanner } from './AnalyzeInExplorerBanner';
 import { FormattedNftAmount } from 'src/components/suite/FormattedNftAmount';
 import { useExplorerTxUrl } from 'src/hooks/suite/useExplorerTxUrl';
 
@@ -424,7 +424,7 @@ export const IODetails = ({ tx }: IODetailsProps) => {
     if (network?.networkType === 'ethereum') {
         return (
             <Wrapper>
-                <AnalyzeInBlockbookBanner txid={tx.txid} />
+                <AnalyzeInExplorerBanner txid={tx.txid} />
                 <BalanceDetailsRow tx={tx} />
                 <EthereumSpecificBalanceDetailsRow tx={tx} />
             </Wrapper>
@@ -434,7 +434,7 @@ export const IODetails = ({ tx }: IODetailsProps) => {
     if (tx.type === 'joint') {
         return (
             <Wrapper>
-                <AnalyzeInBlockbookBanner txid={tx.txid} />
+                <AnalyzeInExplorerBanner txid={tx.txid} />
                 <CollapsibleIOSection
                     heading={<Translation id="TR_MY_INPUTS_AND_OUTPUTS" />}
                     opened
@@ -455,7 +455,7 @@ export const IODetails = ({ tx }: IODetailsProps) => {
     return (
         <Wrapper>
             {/* solana is not supported by blockbook */}
-            <AnalyzeInBlockbookBanner txid={tx.txid} />
+            <AnalyzeInExplorerBanner txid={tx.txid} />
             <IOSectionColumn tx={tx} inputs={tx.details.vin} outputs={tx.details.vout} />
         </Wrapper>
     );
