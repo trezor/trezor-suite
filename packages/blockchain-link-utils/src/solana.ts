@@ -1,4 +1,4 @@
-import { ParsedTransactionWithMeta } from '@solana/web3.js';
+import { ParsedInstruction, ParsedTransactionWithMeta } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import { Target, Transaction } from '@trezor/blockchain-link-types/lib';
 
@@ -85,37 +85,43 @@ export const getTxType = (
         return 'failed';
     }
 
-    const isTransfer = transaction.transaction.message.instructions.every(instruction => {
-        const isParsedInstruction = 'parsed' in instruction;
-        return isParsedInstruction && instruction.parsed.type === 'transfer';
-    });
+    // we consider only parsed instructions because only based on them we can determine the type of transaction
+    const parsedInstructions = transaction.transaction.message.instructions.filter(
+        (instruction): instruction is ParsedInstruction => 'parsed' in instruction,
+    );
 
-    // for now we support only transfers, so we interpret all other transactions as `unknown`
-    if (!isTransfer) {
+    if (parsedInstructions.length === 0) {
         return 'unknown';
     }
 
+    const isTransfer = parsedInstructions.every(
+        instruction => instruction.parsed.type === 'transfer',
+    );
+
+    // for now we support only transfers, so we interpret all other transactions as `unknown`
+    if (isTransfer) {
+        if (
+            effects.length === 1 &&
+            effects[0]?.address === accountAddress &&
+            effects[0]?.amount.abs().isEqualTo(new BigNumber(transaction.meta?.fee || 0))
+        ) {
+            return 'self';
+        }
+
+        const senders = effects.filter(({ amount }) => amount.isNegative());
+
+        if (senders.find(({ address }) => address === accountAddress)) {
+            return 'sent';
+        }
+
+        const receivers = effects.filter(({ amount }) => amount.isPositive());
+
+        if (receivers.find(({ address }) => address === accountAddress)) {
+            return 'recv';
+        }
+    }
+
     // TODO(vl): phase two, isTokenTx
-
-    if (
-        effects.length === 1 &&
-        effects[0]?.address === accountAddress &&
-        effects[0]?.amount.abs().isEqualTo(new BigNumber(transaction.meta?.fee || 0))
-    ) {
-        return 'self';
-    }
-
-    const senders = effects.filter(({ amount }) => amount.isNegative());
-
-    if (senders.find(({ address }) => address === accountAddress)) {
-        return 'sent';
-    }
-
-    const receivers = effects.filter(({ amount }) => amount.isPositive());
-
-    if (receivers.find(({ address }) => address === accountAddress)) {
-        return 'recv';
-    }
 
     return 'unknown';
 };
