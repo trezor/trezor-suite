@@ -105,7 +105,7 @@ const fetchLastWeekRate = async (
         token: tokenAddress,
         timestamps,
         currencies: [fiatCurrency],
-    });
+    }); // TODO(vl): add solana conversion rates
 
     const rate = success ? payload.tickers?.[0]?.rates?.[fiatCurrency] : null;
     if (rate) return rate;

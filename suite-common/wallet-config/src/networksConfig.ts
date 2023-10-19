@@ -419,6 +419,26 @@ export const networks = {
             },
         },
     },
+    sol: {
+        name: 'Solana',
+        networkType: 'solana',
+        bip43Path: "m/44'/501'/i'", // TODO(vl): accounts and paths
+        decimals: 9,
+        testnet: false,
+        // features: ['tokens', 'staking'],
+        explorer: {
+            tx: '', // TODO(vl): add explorer links
+            account: '',
+            address: '',
+        },
+        support: {
+            [DeviceModelInternal.T2T1]: '0.0.0', // TODO(vl): always support, update this once we have version
+        },
+        customBackends: [''], // TODO(vl): investigate what this affects
+        accountTypes: {
+            // TODO(vl): accounts and paths
+        },
+    },
 } as const;
 
 export const TREZOR_CONNECT_BACKENDS = ['blockbook', 'electrum', 'ripple', 'blockfrost'] as const;
