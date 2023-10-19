@@ -6,10 +6,13 @@ import animationMiddle from './animationData/refresh-spinner-middle.json';
 import animationEnd from './animationData/refresh-spinner-end-success.json';
 import animationWarn from './animationData/refresh-spinner-end-warning.json';
 
-const StyledLottie = styled(Lottie)<Pick<FluidSpinnerProps, 'size' | 'isGrey'>>`
+const StyledLottie = styled(Lottie)<{
+    size: FluidSpinnerProps['size'];
+    $isGrey: FluidSpinnerProps['isGrey'];
+}>`
     width: ${({ size }) => `${size}px`};
     height: ${({ size }) => `${size}px`};
-    filter: ${({ isGrey }) => (isGrey ? 'grayscale(1) opacity(0.6)' : 'none')};
+    filter: ${({ $isGrey }) => ($isGrey ? 'grayscale(1) opacity(0.6)' : 'none')};
 `;
 
 export interface FluidSpinnerProps {
@@ -74,7 +77,7 @@ export const Spinner = ({
     return (
         <StyledLottie
             size={size}
-            isGrey={isGrey}
+            $isGrey={isGrey}
             className={className}
             {...getProps()}
             data-test={dataTest}
