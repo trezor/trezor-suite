@@ -272,13 +272,17 @@ export class PopupManager extends EventEmitter {
             // popup is successfully loaded
             this.iframeHandshake.promise.then(payload => {
                 if (this.popupOverlay) {
-                    message.source?.postMessage({
-                        type: POPUP.INIT,
-                        payload: {
-                            ...payload,
-                            settings: this.settings,
+                    message.source?.postMessage(
+                        {
+                            type: POPUP.INIT,
+                            payload: {
+                                ...payload,
+                                settings: this.settings,
+                            },
                         },
-                    });
+                        // @ts-expect-error
+                        '*',
+                    );
                     return;
                 }
 
