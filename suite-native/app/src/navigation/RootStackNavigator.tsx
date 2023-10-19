@@ -16,10 +16,8 @@ import { selectIsOnboardingFinished } from '@suite-native/module-settings';
 import { DevUtilsStackNavigator } from '@suite-native/module-dev-utils';
 import { TransactionDetailScreen } from '@suite-native/transactions';
 import { OnboardingStackNavigator } from '@suite-native/module-onboarding';
-import { selectUserHasAccounts } from '@suite-common/wallet-core';
 import { ReceiveModal } from '@suite-native/receive';
 import { ConnectDeviceStackNavigator } from '@suite-native/module-connect-device';
-import { useIsUsbDeviceConnectFeatureEnabled } from '@suite-native/feature-flags';
 
 import { AppTabNavigator } from './AppTabNavigator';
 
@@ -27,15 +25,10 @@ const RootStack = createNativeStackNavigator<RootStackParamList>();
 
 export const RootStackNavigator = () => {
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
-    const userHasAccounts = useSelector(selectUserHasAccounts);
-    const { isUsbDeviceConnectFeatureEnabled } = useIsUsbDeviceConnectFeatureEnabled();
 
     const getInitialRouteName = () => {
         if (isOnboardingFinished) {
-            if (userHasAccounts) return RootStackRoutes.AppTabs;
-            if (isUsbDeviceConnectFeatureEnabled) return RootStackRoutes.ConnectDevice;
-
-            return RootStackRoutes.AccountsImport;
+            return RootStackRoutes.AppTabs;
         }
         return RootStackRoutes.Onboarding;
     };

@@ -13,6 +13,7 @@
         { "path": "../assets" },
         { "path": "../atoms" },
         { "path": "../biometrics" },
+        { "path": "../device" },
         { "path": "../feature-flags" },
         { "path": "../formatters" },
         { "path": "../graph" },
@@ -23,6 +24,7 @@
         { "path": "../module-settings" },
         { "path": "../navigation" },
         { "path": "../receive" },
+        { "path": "../theme" },
         { "path": "../../packages/styles" }
     ]
 }

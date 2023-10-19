@@ -87,7 +87,6 @@ export type AccountsImportStackParamList = {
 };
 
 export type ConnectDeviceStackParamList = {
-    [ConnectDeviceStackRoutes.ConnectDeviceCrossroads]: undefined;
     [ConnectDeviceStackRoutes.ConnectAndUnlockDevice]: undefined;
     [ConnectDeviceStackRoutes.PinMatrix]: undefined;
     [ConnectDeviceStackRoutes.ConnectingDevice]: undefined;

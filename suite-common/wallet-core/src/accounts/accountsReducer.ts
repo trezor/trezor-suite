@@ -10,6 +10,8 @@ import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import { selectCoins, FiatRatesRootState } from '../fiat-rates/fiatRatesReducer';
 import { accountsActions } from './accountsActions';
 import { formattedAccountTypeMap } from './constants';
+import { DeviceRootState, selectIsDeviceDiscoveryActive } from '../device/deviceReducer';
+import { DiscoveryRootState } from '../discovery/discoveryReducer';
 
 export const accountsInitialState: Account[] = [];
 
@@ -134,11 +136,6 @@ export const selectMainnetAccounts = memoize((state: AccountsRootState) =>
         A.filter(account => !isTestnet(account.symbol)),
     ),
 );
-
-export const selectNumberOfAccounts = (state: AccountsRootState) => selectAccounts(state).length;
-
-export const selectUserHasAccounts = (state: AccountsRootState): boolean =>
-    pipe(selectAccounts(state), A.isNotEmpty);
 
 export const selectAccountByKey = (state: AccountsRootState, accountKey: AccountKey) => {
     const accounts = selectAccounts(state);
@@ -287,4 +284,16 @@ export const selectIsAccountWithRatesByKey = (
     const rates = selectCoins(state);
 
     return !!rates.find(rate => rate.symbol === account.symbol);
+};
+
+export const selectIsAccountsListEmpty = (state: AccountsRootState) =>
+    pipe(selectAccounts(state), A.isEmpty);
+
+export const selectIsPortfolioEmpty = (
+    state: AccountsRootState & DeviceRootState & DiscoveryRootState,
+) => {
+    const isAccountsListEmpty = selectIsAccountsListEmpty(state);
+    const isDiscoveryActive = selectIsDeviceDiscoveryActive(state);
+
+    return isAccountsListEmpty && !isDiscoveryActive;
 };

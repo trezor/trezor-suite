@@ -1,9 +1,12 @@
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useSelector } from 'react-redux';
 
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box } from '@suite-native/atoms';
+import { selectIsPortfolioEmpty, selectIsSelectedDeviceImported } from '@suite-common/wallet-core';
+import { useIsUsbDeviceConnectFeatureEnabled } from '@suite-native/feature-flags';
 
 import { TabBarItem } from './TabBarItem';
 import { TabsOptions } from '../types';
@@ -11,6 +14,7 @@ import { TabsOptions } from '../types';
 interface TabBarProps extends BottomTabBarProps {
     tabItemOptions: TabsOptions;
 }
+
 const tabBarStyle = prepareNativeStyle<{
     insetLeft: number;
     insetRight: number;
@@ -31,6 +35,14 @@ const tabBarStyle = prepareNativeStyle<{
 export const TabBar = ({ state, navigation, tabItemOptions }: TabBarProps) => {
     const { applyStyle } = useNativeStyles();
     const insets = useSafeAreaInsets();
+    const { isUsbDeviceConnectFeatureEnabled } = useIsUsbDeviceConnectFeatureEnabled();
+    const isDeviceImported = useSelector(selectIsSelectedDeviceImported);
+
+    const isPortfolioEmpty = useSelector(selectIsPortfolioEmpty);
+
+    const isConnectedDevice = isUsbDeviceConnectFeatureEnabled && !isDeviceImported;
+
+    if (isPortfolioEmpty && !isConnectedDevice) return null;
 
     return (
         <Box

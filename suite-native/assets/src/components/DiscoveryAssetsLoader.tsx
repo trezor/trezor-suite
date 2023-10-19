@@ -1,19 +1,18 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 
 import { ListItemSkeleton, HStack, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-common/icons';
 import { useTranslate } from '@suite-native/intl';
+import { selectIsAccountsListEmpty } from '@suite-common/wallet-core';
 
 type DiscoveryAssetsLoaderProps = {
-    isListEmpty: boolean;
     emptyListSkeletonCount: number;
 };
 
-export const DiscoveryAssetsLoader = ({
-    isListEmpty,
-    emptyListSkeletonCount,
-}: DiscoveryAssetsLoaderProps) => {
+export const DiscoveryAssetsLoader = ({ emptyListSkeletonCount }: DiscoveryAssetsLoaderProps) => {
     const { translate } = useTranslate();
+    const isListEmpty = useSelector(selectIsAccountsListEmpty);
 
     const discoveryProgressText = translate(
         isListEmpty

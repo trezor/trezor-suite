@@ -11,6 +11,7 @@ import { deviceAuthenticityActions } from '@suite-common/device-authenticity';
 
 import { deviceActions } from './deviceActions';
 import { DiscoveryRootState, selectDiscoveryByDeviceState } from '../discovery/discoveryReducer';
+import { PORTFOLIO_TRACKER_DEVICE_ID } from './deviceConstants';
 
 export type State = {
     devices: TrezorDevice[];
@@ -557,11 +558,16 @@ export const selectIsConnectedDeviceUninitialized = (state: DeviceRootState) => 
     return device && !isDeviceInitialized;
 };
 
+export const selectIsSelectedDeviceAuthorized = (state: DeviceRootState) => {
+    const device = selectDevice(state);
+    return !!device?.state;
+};
+
 export const selectIsDeviceConnectedAndAuthorized = (state: DeviceRootState) => {
-    const deviceState = selectDeviceState(state);
+    const isDeviceAuthorized = selectIsSelectedDeviceAuthorized(state);
     const deviceFeatures = selectDeviceFeatures(state);
 
-    return !!deviceState && !!deviceFeatures;
+    return isDeviceAuthorized && !!deviceFeatures;
 };
 
 export const selectDeviceByState = (state: DeviceRootState, deviceState: string) =>
@@ -587,14 +593,6 @@ export const selectIsDeviceDiscoveryActive = (state: DiscoveryRootState & Device
         discovery.status === DiscoveryStatus.RUNNING ||
         discovery.status === DiscoveryStatus.STOPPING
     );
-};
-
-export const selectIsDeviceReadyForDiscovery = (state: DiscoveryRootState & DeviceRootState) => {
-    const device = selectDevice(state);
-
-    if (!device) return false;
-
-    return device.connected && !device.authFailed && !device.authConfirm;
 };
 
 /**
@@ -664,4 +662,9 @@ export const selectIsDeviceAuthenticityFulfilled = (
         deviceAuthenticity.valid ||
         (deviceAuthenticity.error === 'CA_PUBKEY_NOT_FOUND' && deviceAuthenticity.configExpired) // CA_PUBKEY_NOT_FOUND with configExpired is temporary allowed and just logged to Sentry
     );
+};
+
+export const selectIsSelectedDeviceImported = (state: DeviceRootState) => {
+    const device = selectDevice(state);
+    return device?.id === PORTFOLIO_TRACKER_DEVICE_ID;
 };

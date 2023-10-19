@@ -17,10 +17,31 @@ export const en = {
         graph: {
             title: 'My portfolio balance',
         },
-        placeholder: {
-            title: "We haven't discovered any coins in your wallet.",
-            subtitle: 'Get started by receiving coins',
-            receive: 'Receive',
+        emptyState: {
+            device: {
+                title: "We haven't discovered any coins in your wallet.",
+                subtitle: 'Get started by receiving coins',
+            },
+            portfolioTracker: {
+                title: 'Get started',
+                subtitle: 'Sync your coin addresses and view your portfolio balance.',
+                primaryButton: 'Sync my coins',
+                secondaryButton: 'Settings',
+                alert: 'This requires your Trezor hardware wallet and access to Trezor Suite.',
+            },
+            connectOrImportCrossroads: {
+                gotMyTrezor: {
+                    title: "I've got my Trezor",
+                    description: 'Connect to manage your assets',
+                    connectButton: 'Connect Trezor',
+                },
+                syncCoins: {
+                    title: 'Sync coins without your Trezor',
+                    description:
+                        "Track your favorite coins anytime, anywhere, even when your Trezor isn't connected.",
+                    syncButton: 'Sync my coins',
+                },
+            },
         },
         biometricsModal: {
             title: {
@@ -50,24 +71,6 @@ export const en = {
         title: 'Sync my coins',
     },
     moduleConnectDevice: {
-        connectCrossroadsScreen: {
-            gotMyTrezor: {
-                title: "I've got my Trezor",
-                description: 'Connect to manage your assets',
-                connectButton: 'Connect Trezor',
-            },
-            syncCoins: {
-                title: 'Sync coins without your Trezor',
-                description:
-                    "Track your favorite coins anytime, anywhere, even when your Trezor isn't connected.",
-                syncButton: 'Sync my coins',
-            },
-            noSeedModal: {
-                title: 'No seed on device.',
-                description: 'Please set your device in desktop app first.',
-                button: 'Got it',
-            },
-        },
         connectAndUnlockScreen: {
             title: 'Connect & unlock your Trezor',
         },
@@ -89,11 +92,6 @@ export const en = {
             title: 'Connecting',
             hodlOn: 'Hodl on tight',
         },
-        unacquiredDeviceModal: {
-            title: 'We found your connected device in incorrect state.',
-            description: 'Please reconnect your device or ...',
-            button: 'Steal session',
-        },
         helpModal: {
             title: 'Connecting Trezor',
             subtitle: "Don't see your Trezor?",
@@ -101,6 +99,18 @@ export const en = {
             step1: '1. Use a different USB data cable.',
             step2: '2. Use a different USB port.',
             step3: '3. Use a different device.',
+        },
+    },
+    moduleDevice: {
+        noSeedModal: {
+            title: 'No seed on device.',
+            description: 'Please set your device in desktop app first.',
+            button: 'Got it',
+        },
+        unacquiredDeviceModal: {
+            title: 'We found your connected device in incorrect state.',
+            description: 'Please reconnect your device or ...',
+            button: 'Steal session',
         },
     },
     moduleReceive: {

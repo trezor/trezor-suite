@@ -6,7 +6,7 @@ import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
     selectAccountsByNetworkAndDevice,
-    HIDDEN_DEVICE_STATE,
+    PORTFOLIO_TRACKER_DEVICE_STATE,
 } from '@suite-common/wallet-core';
 import { Box, Button, Divider, VStack } from '@suite-native/atoms';
 import { useAccountLabelForm, AccountFormValues } from '@suite-native/accounts';
@@ -57,7 +57,7 @@ export const AccountImportSummaryForm = ({
     const showImportError = useShowImportError(networkSymbol, navigation);
 
     const deviceNetworkAccounts = useSelector((state: AccountsRootState) =>
-        selectAccountsByNetworkAndDevice(state, HIDDEN_DEVICE_STATE, networkSymbol),
+        selectAccountsByNetworkAndDevice(state, PORTFOLIO_TRACKER_DEVICE_STATE, networkSymbol),
     );
 
     const defaultAccountLabel = `${networks[networkSymbol].name} #${

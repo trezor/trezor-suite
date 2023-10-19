@@ -4,8 +4,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import {
-    ConnectDeviceStackParamList,
     ConnectDeviceStackRoutes,
+    HomeStackParamList,
+    HomeStackRoutes,
     RootStackParamList,
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
@@ -21,8 +22,8 @@ import { useAlert } from '@suite-native/alerts';
 import { useTranslate } from '@suite-native/intl';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
-    ConnectDeviceStackParamList,
-    ConnectDeviceStackRoutes.ConnectDeviceCrossroads,
+    HomeStackParamList,
+    HomeStackRoutes.Home,
     RootStackParamList
 >;
 
@@ -53,11 +54,11 @@ export const useDeviceConnect = () => {
     useEffect(() => {
         if (isUnacquiredDevice) {
             showAlert({
-                title: translate('moduleConnectDevice.unacquiredDeviceModal.title'),
-                description: translate('moduleConnectDevice.unacquiredDeviceModal.description'),
+                title: translate('moduleDevice.unacquiredDeviceModal.title'),
+                description: translate('moduleDevice.unacquiredDeviceModal.description'),
                 icon: 'warningCircle',
                 pictogramVariant: 'red',
-                primaryButtonTitle: translate('moduleConnectDevice.unacquiredDeviceModal.button'),
+                primaryButtonTitle: translate('moduleDevice.unacquiredDeviceModal.button'),
                 onPressPrimaryButton: () => dispatch(acquireDevice()),
             });
         } else {
@@ -68,15 +69,11 @@ export const useDeviceConnect = () => {
     useEffect(() => {
         if (isConnectedDeviceUninitialized) {
             showAlert({
-                title: translate('moduleConnectDevice.connectCrossroadsScreen.noSeedModal.title'),
-                description: translate(
-                    'moduleConnectDevice.connectCrossroadsScreen.noSeedModal.description',
-                ),
+                title: translate('moduleDevice.noSeedModal.title'),
+                description: translate('moduleDevice.noSeedModal.description'),
                 icon: 'warningCircle',
                 pictogramVariant: 'red',
-                primaryButtonTitle: translate(
-                    'moduleConnectDevice.connectCrossroadsScreen.noSeedModal.button',
-                ),
+                primaryButtonTitle: translate('moduleDevice.noSeedModal.button'),
             });
         }
     }, [isConnectedDeviceUninitialized, showAlert, translate]);
