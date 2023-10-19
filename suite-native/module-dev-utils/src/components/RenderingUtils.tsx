@@ -1,28 +1,6 @@
-import { TouchableOpacity } from 'react-native';
+import { useDebugView } from '@suite-native/atoms';
 
-import { Box, Card, CheckBox, Text, useDebugView } from '@suite-native/atoms';
-
-const DevCheckBoxListItem = ({
-    title,
-    onPress,
-    isChecked,
-}: {
-    title: string;
-    onPress: () => void;
-    isChecked: boolean;
-}) => (
-    <TouchableOpacity onPress={onPress}>
-        <Box
-            flexDirection="row"
-            justifyContent="space-between"
-            alignItems="center"
-            paddingVertical="small"
-        >
-            <Text variant="body">{title}</Text>
-            <CheckBox isChecked={isChecked} onChange={onPress} />
-        </Box>
-    </TouchableOpacity>
-);
+import { DevCheckBoxListItem } from './DevCheckBoxListItem';
 
 export const RenderingUtils = () => {
     const {
@@ -33,7 +11,7 @@ export const RenderingUtils = () => {
     } = useDebugView();
 
     return (
-        <Card>
+        <>
             <DevCheckBoxListItem
                 title="Flash on rerender"
                 onPress={toggleFlashOnRerender}
@@ -44,6 +22,6 @@ export const RenderingUtils = () => {
                 onPress={toggleRerenderCount}
                 isChecked={isRerenderCountEnabled}
             />
-        </Card>
+        </>
     );
 };

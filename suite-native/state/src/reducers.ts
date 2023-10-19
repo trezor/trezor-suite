@@ -15,6 +15,7 @@ import { prepareAnalyticsReducer } from '@suite-common/analytics';
 import { prepareMessageSystemReducer } from '@suite-common/message-system';
 import { notificationsReducer } from '@suite-common/toast-notifications';
 import { graphReducer, graphPersistWhitelist } from '@suite-native/graph';
+import { discoveryConfigPersistWhitelist, discoveryConfigReducer } from '@suite-native/discovery';
 
 import { extraDependencies } from './extraDependencies';
 import { appReducer } from './appSlice';
@@ -73,6 +74,13 @@ export const prepareRootReducers = async () => {
         version: 1,
     });
 
+    const discoveryConfigPersistedReducer = await preparePersistReducer({
+        reducer: discoveryConfigReducer,
+        persistedKeys: discoveryConfigPersistWhitelist,
+        key: 'discoveryConfig',
+        version: 1,
+    });
+
     return combineReducers({
         app: appReducer,
         analytics: analyticsPersistedReducer,
@@ -82,6 +90,7 @@ export const prepareRootReducers = async () => {
         device: deviceReducer,
         logs: logsSlice.reducer,
         notifications: notificationsReducer,
+        discoveryConfig: discoveryConfigPersistedReducer,
         messageSystem,
     });
 };

@@ -171,6 +171,17 @@ export const en = {
             accountLabelBadge: 'Run on {accountLabel}',
         },
     },
+    moduleDevUtils: {
+        devUtilsScreen: {
+            throwErrorButton: 'Throw Sentry error',
+            wipeStorageButton: 'Wipe all data',
+        },
+        testnetsToggle: {
+            title: 'Testnet coins & features',
+            description:
+                'These coins carry no value and cannot be used to pay transactions. They are used only for testing.',
+        },
+    },
 };
 
 export type Translations = typeof en;

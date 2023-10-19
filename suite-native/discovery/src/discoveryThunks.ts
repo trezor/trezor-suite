@@ -4,11 +4,12 @@ import { createThunk } from '@suite-common/redux-utils';
 import { TrezorDevice } from '@suite-common/suite-types';
 import {
     accountsActions,
-    createDiscoveryThunk,
     DISCOVERY_MODULE_PREFIX,
     filterUnavailableNetworks,
     selectDiscoveryForDevice,
     updateDiscovery,
+    createDiscovery,
+    removeDiscovery,
 } from '@suite-common/wallet-core';
 import { selectIsAccountAlreadyDiscovered } from '@suite-native/accounts';
 import TrezorConnect from '@trezor/connect';
@@ -16,6 +17,7 @@ import { DiscoveryItem } from '@suite-common/wallet-types';
 import { getDerivationType } from '@suite-common/wallet-utils';
 import { Network } from '@suite-common/wallet-config';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
+import { supportedMainnetSymbols, supportedNetworkSymbols } from '@suite-native/config';
 
 import { DeviceAccessMutex, getBundleDescriptors } from './utils';
 
@@ -41,12 +43,7 @@ const finishNetworkTypeDiscoveryThunk = createThunk(
         );
 
         if (finishedNetworksCount === discovery.networks.length) {
-            dispatch(
-                updateDiscovery({
-                    ...discovery,
-                    status: DiscoveryStatus.COMPLETED,
-                }),
-            );
+            dispatch(removeDiscovery(discovery.deviceState));
         }
     },
 );
@@ -210,17 +207,50 @@ const discoverNetworkBatchThunk = createThunk(
     },
 );
 
+export const createDescriptorPreloadedDiscoveryThunk = createThunk(
+    `${DISCOVERY_MODULE_PREFIX}/createDescriptorPreloadedDiscoveryThunk`,
+    (
+        {
+            deviceState,
+            device,
+            areTestnetsEnabled,
+        }: { deviceState: string; device: TrezorDevice; areTestnetsEnabled: boolean },
+        { dispatch },
+    ) => {
+        const networks = areTestnetsEnabled ? supportedNetworkSymbols : supportedMainnetSymbols;
+
+        dispatch(
+            createDiscovery({
+                deviceState,
+                authConfirm: !device.useEmptyPassphrase,
+                index: 0,
+                status: DiscoveryStatus.IDLE,
+                total: networks.length,
+                bundleSize: 0,
+                loaded: 0,
+                failed: [],
+                networks,
+            }),
+        );
+    },
+);
+
 export const startDescriptorPreloadedDiscoveryThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/startDescriptorPreloadedDiscoveryThunk`,
     async (
-        { deviceState, device }: { deviceState: string; device: TrezorDevice },
+        {
+            deviceState,
+            device,
+            areTestnetsEnabled,
+        }: { deviceState: string; device: TrezorDevice; areTestnetsEnabled: boolean },
         { dispatch, getState },
     ) => {
         const mutex = new DeviceAccessMutex();
         await dispatch(
-            createDiscoveryThunk({
+            createDescriptorPreloadedDiscoveryThunk({
                 deviceState,
                 device,
+                areTestnetsEnabled,
             }),
         );
         const discovery = selectDiscoveryForDevice(getState());

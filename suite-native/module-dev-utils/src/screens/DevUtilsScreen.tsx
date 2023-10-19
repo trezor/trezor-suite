@@ -12,44 +12,52 @@ import {
     ScreenSubHeader,
 } from '@suite-native/navigation';
 import { clearStorage } from '@suite-native/storage';
+import { useTranslate } from '@suite-native/intl';
 
 import { BuildInfo } from '../components/BuildInfo';
 import { RenderingUtils } from '../components/RenderingUtils';
 import { CopyLogsButton } from '../components/CopyLogsButton';
 import { FeatureFlags } from '../components/FeatureFlags';
+import { TestnetsToggle } from '../components/TestnetsToggle';
 
 export const DevUtilsScreen = ({
     navigation,
 }: StackProps<DevUtilsStackParamList, DevUtilsStackRoutes.DevUtils>) => {
     const shouldShowFeatureFlags = isDevelopOrDebugEnv();
+    const { translate } = useTranslate();
 
     return (
         <Screen subheader={<ScreenSubHeader content="DEV utils" />}>
-            <Card>
-                <VStack spacing="medium">
-                    {!isDebugEnv() && <BuildInfo />}
-                    {isDebugEnv() && (
-                        <Button onPress={() => navigation.navigate(DevUtilsStackRoutes.Demo)}>
-                            See Component Demo
+            <VStack>
+                <Card>
+                    <VStack spacing="medium">
+                        {!isDebugEnv() && <BuildInfo />}
+                        {isDebugEnv() && (
+                            <Button onPress={() => navigation.navigate(DevUtilsStackRoutes.Demo)}>
+                                See Component Demo
+                            </Button>
+                        )}
+                        {!isProduction() && <RenderingUtils />}
+                        {shouldShowFeatureFlags && <FeatureFlags />}
+                        <Button
+                            onPress={() => {
+                                const errorMessage = `Sentry test error - ${Date.now()}`;
+                                Sentry.captureException(new Error(errorMessage));
+                                Alert.alert('Sentry error thrown', errorMessage);
+                            }}
+                        >
+                            {translate('moduleDevUtils.devUtilsScreen.throwErrorButton')}
                         </Button>
-                    )}
-                    {!isProduction() && <RenderingUtils />}
-                    {shouldShowFeatureFlags && <FeatureFlags />}
-                    <Button
-                        onPress={() => {
-                            const errorMessage = `Sentry test error - ${Date.now()}`;
-                            Sentry.captureException(new Error(errorMessage));
-                            Alert.alert('Sentry error thrown', errorMessage);
-                        }}
-                    >
-                        Throw Sentry error
-                    </Button>
-                    <CopyLogsButton />
-                    <Button colorScheme="dangerElevation0" onPress={clearStorage}>
-                        Wipe all data
-                    </Button>
-                </VStack>
-            </Card>
+                        <CopyLogsButton />
+                        <Button colorScheme="dangerElevation0" onPress={clearStorage}>
+                            {translate('moduleDevUtils.devUtilsScreen.wipeStorageButton')}
+                        </Button>
+                    </VStack>
+                </Card>
+                <Card>
+                    <TestnetsToggle />
+                </Card>
+            </VStack>
         </Screen>
     );
 };
