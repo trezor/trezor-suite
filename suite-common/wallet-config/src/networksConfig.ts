@@ -425,6 +425,7 @@ export const networks = {
         bip43Path: "m/44'/501'/i'/0'",
         decimals: 9,
         testnet: false,
+        chainId: 1399811149,
         // features: ['tokens', 'staking'],
         explorer: {
             tx: 'https://explorer.solana.com/tx/',
