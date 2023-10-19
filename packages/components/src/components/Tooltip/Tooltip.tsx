@@ -25,8 +25,8 @@ const getContainerPadding = (isLarge: boolean, isWithHeader: boolean) => {
 
 const TooltipContainer = styled(motion.div)<{
     $maxWidth: string | number;
-    isLarge: boolean;
-    isWithHeader: boolean;
+    $isLarge: boolean;
+    $isWithHeader: boolean;
 }>`
     background: ${({ theme }) => theme.backgroundNeutralBold};
     color: ${({ theme }) => theme.textOnPrimary};
@@ -37,7 +37,7 @@ const TooltipContainer = styled(motion.div)<{
     ${typography.hint}
 
     > div {
-        padding: ${({ isLarge, isWithHeader }) => getContainerPadding(isLarge, isWithHeader)};
+        padding: ${({ $isLarge, $isWithHeader }) => getContainerPadding($isLarge, $isWithHeader)};
     }
 `;
 
@@ -165,8 +165,8 @@ export const Tooltip = ({
                 {...rest}
                 render={(attrs, _content, instance) => (
                     <TooltipContainer
-                        isLarge={isLarge}
-                        isWithHeader={!!(title || addon)}
+                        $isLarge={isLarge}
+                        $isWithHeader={!!(title || addon)}
                         $maxWidth={maxWidth}
                         tabIndex={-1}
                         variants={animationVariants}
