@@ -449,4 +449,29 @@ export default [
             tx: '83a400818258208911f640d452c3be4ff3d89db63b41ce048c056951286e2e28bbf8a51588ab44000181825839009493315cd92eb5d8c4304e67b7e16ae36d61d34502694657811a2c8e32c728d3861e164cab28cb8f006448139c8f1740ffb8e7aa9e5232dc1a10b2531f021a00029519075820cb798b0bce50604eaf2e0dc89367896b18f0a6ef6b32b57e3c9f83f8ee71e608a1008182582073fea80d424276ad0978d4fe5310e8bc2d485f5f6bb3bf87612989f112ad5a7d5840c40425229749a9434763cf01b492057fd56d7091a6372eaa777a1c9b1ca508c914e6a4ee9c0d40fc10952ed668e9ad65378a28b149de6bd4204bd9f095b0a902a11907b0a1667469636b657281a266736f757263656b736f757263655f6e616d656576616c7565736675676961742076656e69616d206d696e7573',
         },
     },
+    {
+        blockchain: {
+            name: 'Solana Mainnet',
+            // we do not use path to worker build here because its not used, we use it just to match this config to actual implementation of the worker
+            worker: 'solana',
+            server: [
+                'wiser-green-owl.solana-mainnet.discover.quiknode.pro/c218d0c9e451f6c5c0bf8b7c7d8e5a72384c9570/',
+            ],
+            debug: true,
+        },
+        data: {
+            estimateFeeOptions: {
+                // TODO(vl): revisit once we implement txs
+                blocks: [1],
+            },
+            accountInfoOptions: {
+                page: 0,
+                pageSize: 25,
+            },
+            address: 'FSJnAbqHcGm1wAijWEptDVc77VWjL7PrLw3ds8hLYgAf',
+            txid: '', // TODO(vl): once we implemented tx history
+            blockNumber: '', // TODO(vl): once we implement getBlock '212702904',
+            tx: '', // TODO(vl): once we implemented tx submission
+        },
+    },
 ];
