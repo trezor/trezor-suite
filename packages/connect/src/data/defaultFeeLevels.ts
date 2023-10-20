@@ -88,11 +88,20 @@ const CARDANO_FEE_INFO: FeeInfoWithLevels = {
     dustLimit: -1, // unknown/unused
 };
 
+const SOLANA_FEE_INFO: FeeInfoWithLevels = {
+    blockTime: -1, // unknown
+    defaultFees: [{ label: 'normal', feePerUnit: '5000', blocks: -1 }],
+    minFee: 5000,
+    maxFee: 5000,
+    dustLimit: -1, // unknown/unused
+};
+
 const MISC_FEE_LEVELS: Record<string, FeeInfoWithLevels> = {
     xrp: RIPPLE_FEE_INFO,
     txrp: RIPPLE_FEE_INFO,
     ada: CARDANO_FEE_INFO,
     tada: CARDANO_FEE_INFO,
+    sol: SOLANA_FEE_INFO,
 };
 
 export const getMiscFeeLevels = (data: CoinsJsonData): FeeInfoWithLevels => {
