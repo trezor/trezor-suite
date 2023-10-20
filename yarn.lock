@@ -9871,9 +9871,9 @@ __metadata:
   dependencies:
     "@types/react": ^18.0.25
     expo-module-scripts: ^3.0.11
-    expo-modules-core: ^1.5.7
   peerDependencies:
     expo: "*"
+    expo-modules-core: "*"
     react: "*"
     react-native: "*"
   languageName: unknown
@@ -20000,15 +20000,6 @@ __metadata:
     compare-versions: ^3.4.0
     invariant: ^2.2.4
   checksum: 7f0e18c33151dced735e30513b62b389211dc6c8e734fbbb2625427733dd76a53594fda792569778ce07493255657e0106c2d51b11407c474146b4e44ab582cc
-  languageName: node
-  linkType: hard
-
-"expo-modules-core@npm:^1.5.7":
-  version: 1.9.0
-  resolution: "expo-modules-core@npm:1.9.0"
-  dependencies:
-    invariant: ^2.2.4
-  checksum: a63c565baec99d726a0e1c46040c0a58ec11158f758b376fea5ae922a64280c10a7266fcc515f16e598fe707a5cc6e9c224188a3973af2dbcea1ff0f6727b019
   languageName: node
   linkType: hard
 
