@@ -1,4 +1,5 @@
-import TrezorConnect, { FeeLevel, TokenInfo } from '@trezor/connect';
+import TrezorConnect, { FeeLevel } from '@trezor/connect';
+import type { TokenInfo, TokenAccount } from '@trezor/blockchain-link-types';
 import {
     FormState,
     PrecomposedTransactionFinal,
@@ -10,13 +11,19 @@ import {
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { Dispatch, GetState } from 'src/types/suite';
 import {
+    amountToSatoshi,
     calculateMax,
     calculateTotal,
     formatAmount,
     getExternalComposeOutput,
 } from '@suite-common/wallet-utils';
 import BigNumber from 'bignumber.js';
-import { getPubKeyFromAddress, buildTransferTransaction } from 'src/utils/wallet/solanaUtils';
+import {
+    getPubKeyFromAddress,
+    buildTransferTransaction,
+    buildTokenTransferTransaction,
+} from 'src/utils/wallet/solanaUtils';
+import { SYSTEM_PROGRAM_PUBLIC_KEY } from '@trezor/blockchain-link-utils/lib/solana';
 
 const calculate = (
     availableBalance: string,
@@ -27,8 +34,11 @@ const calculate = (
     const feeInLamports = feeLevel.feePerUnit;
     let amount: string;
     let max: string | undefined;
+    const availableTokenBalance = token
+        ? amountToSatoshi(token.balance!, token.decimals)
+        : undefined;
     if (output.type === 'send-max' || output.type === 'send-max-noaddress') {
-        max = calculateMax(availableBalance, feeInLamports);
+        max = availableTokenBalance || calculateMax(availableBalance, feeInLamports);
         amount = max;
     } else {
         amount = output.amount;
@@ -75,6 +85,31 @@ const calculate = (
     return payloadData;
 };
 
+const fetchAccountOwnerAndTokenInfoForAddress = async (
+    address: string,
+    symbol: string,
+    mint: string,
+) => {
+    // Fetch data about recipient account owner if this is a token transfer
+    // We need this in order to validate the address and ensure transfers go through
+    let accountOwner: string | undefined;
+    let tokenInfo: TokenAccount[] | undefined;
+
+    const accountInfoResponse = await TrezorConnect.getAccountInfo({
+        coin: symbol,
+        descriptor: address,
+    });
+
+    if (accountInfoResponse.success) {
+        accountOwner = accountInfoResponse.payload?.misc?.owner;
+        tokenInfo = accountInfoResponse.payload?.tokens?.find(
+            token => token.contract === mint,
+        )?.accounts;
+    }
+
+    return [accountOwner, tokenInfo] as const;
+};
+
 export const composeTransaction =
     (formValues: FormState, formState: ComposeActionContext) =>
     async (_dispatch: Dispatch, getState: GetState) => {
@@ -82,24 +117,48 @@ export const composeTransaction =
         const composeOutputs = getExternalComposeOutput(formValues, account, network);
         if (!composeOutputs) return; // no valid Output
 
-        const { output, decimals } = composeOutputs;
+        const { output, decimals, tokenInfo } = composeOutputs;
 
         let fetchedFee: string | undefined;
 
         const blockhash = getState().wallet.blockchain.sol.blockHash;
+
+        const [recipientAccountOwner, recipientTokenAccounts] = tokenInfo
+            ? await fetchAccountOwnerAndTokenInfoForAddress(
+                  formValues.outputs[0].address,
+                  account.symbol,
+                  tokenInfo.contract,
+              )
+            : [undefined, undefined];
+
+        // invalid token transfer -- should never happen
+        if (tokenInfo && !tokenInfo.accounts) return;
 
         // To estimate fees on Solana we need to turn a transaction into a message for which fees are estimated.
         // Since all the values don't have to be filled in the form at the time of this function call, we use dummy values
         // for the estimation, since these values don't affect the final fee.
         // The real transaction is constructed in `signTransaction`, this one is used solely for fee estimation and is never submitted.
         const transactionMessage = (
-            await buildTransferTransaction(
-                account.descriptor,
-                formValues.outputs[0].address || account.descriptor,
-                formValues.outputs[0].amount || '0',
-                blockhash,
-                50,
-            )
+            tokenInfo && tokenInfo.accounts
+                ? await buildTokenTransferTransaction(
+                      account.descriptor,
+                      formValues.outputs[0].address || account.descriptor,
+                      recipientAccountOwner || SYSTEM_PROGRAM_PUBLIC_KEY,
+                      tokenInfo.contract,
+                      formValues.outputs[0].amount || '0',
+                      tokenInfo.decimals,
+                      tokenInfo.accounts,
+                      recipientTokenAccounts,
+                      blockhash,
+                      50,
+                  )
+                : await buildTransferTransaction(
+                      account.descriptor,
+                      formValues.outputs[0].address || account.descriptor,
+                      formValues.outputs[0].amount || '0',
+                      blockhash,
+                      50,
+                  )
         ).compileMessage();
 
         const estimatedFee = await TrezorConnect.blockchainEstimateFee({
@@ -120,19 +179,14 @@ export const composeTransaction =
 
         // FeeLevels are read-only, so we create a copy if need be
         const levels = fetchedFee ? feeInfo.levels.map(l => ({ ...l })) : feeInfo.levels;
-        const predefinedLevels = levels.filter(l => l.label !== 'custom');
-
         // update predefined levels with fee fetched from network
-        if (fetchedFee) {
-            predefinedLevels.map(l => ({
-                ...l,
-                feePerUnit: fetchedFee,
-            }));
-        }
+        const predefinedLevels = levels
+            .filter(l => l.label !== 'custom')
+            .map(l => ({ ...l, feePerUnit: fetchedFee || l.feePerUnit }));
 
         const wrappedResponse: PrecomposedLevels = {};
         const response = predefinedLevels.map(level =>
-            calculate(account.availableBalance, output, level),
+            calculate(account.availableBalance, output, level, tokenInfo),
         );
         response.forEach((tx, index) => {
             const feeLabel = predefinedLevels[index].label as FeeLevel['label'];
@@ -171,23 +225,49 @@ export const signTransaction =
         )
             return;
 
-        const { account, network } = selectedAccount;
+        const { account } = selectedAccount;
+
         if (account.networkType !== 'solana') return;
+        const { token } = transactionInfo;
 
         const blockhash = getState().wallet.blockchain.sol.blockHash;
+
+        const [recipientAccountOwner, recipientTokenAccounts] = token
+            ? await fetchAccountOwnerAndTokenInfoForAddress(
+                  formValues.outputs[0].address,
+                  account.symbol,
+                  token.contract,
+              )
+            : [undefined, undefined];
+
+        if (token && !token.accounts && !recipientAccountOwner) return;
 
         // The last block height for which the transaction will be considered valid, after which it can no longer be processed.
         // The current block time is set to 800ms, meaning this transaction should be valid when submitted within for 40 seconds
         // For more information see: https://docs.solana.com/cluster/synchronization
         const lastValidBlockHeight = 50;
 
-        const tx = await buildTransferTransaction(
-            account.descriptor,
-            formValues.outputs[0].address,
-            formValues.outputs[0].amount,
-            blockhash,
-            lastValidBlockHeight,
-        );
+        const tx =
+            token && token.accounts && recipientAccountOwner
+                ? await buildTokenTransferTransaction(
+                      account.descriptor,
+                      formValues.outputs[0].address,
+                      recipientAccountOwner,
+                      token.contract,
+                      formValues.outputs[0].amount,
+                      token.decimals,
+                      token.accounts,
+                      recipientTokenAccounts,
+                      blockhash,
+                      lastValidBlockHeight,
+                  )
+                : await buildTransferTransaction(
+                      account.descriptor,
+                      formValues.outputs[0].address,
+                      formValues.outputs[0].amount,
+                      blockhash,
+                      lastValidBlockHeight,
+                  );
 
         const serializedTx = tx.serializeMessage().toString('hex');
 
