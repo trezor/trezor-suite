@@ -1,4 +1,7 @@
-import { ParsedInstruction, ParsedTransactionWithMeta } from '@solana/web3.js';
+import type {
+    ParsedInstruction,
+    ParsedTransactionWithMeta,
+} from '@trezor/blockchain-link-types/lib/solana';
 import BigNumber from 'bignumber.js';
 import { Target, Transaction } from '@trezor/blockchain-link-types/lib';
 import { SolanaValidParsedTxWithMeta } from '@trezor/blockchain-link-types/lib/solana';

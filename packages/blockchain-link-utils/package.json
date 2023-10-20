@@ -17,7 +17,6 @@
         "prepublish": "yarn tsx ../../scripts/prepublish.js"
     },
     "dependencies": {
-        "@solana/web3.js": "^1.78.4",
         "@trezor/utils": "workspace:*",
         "bignumber.js": "^9.1.1"
     },

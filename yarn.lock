@@ -6165,7 +6165,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@solana/web3.js@npm:^1.78.4":
+"@solana/web3.js@npm:1.78.4, @solana/web3.js@npm:^1.78.4":
   version: 1.78.4
   resolution: "@solana/web3.js@npm:1.78.4"
   dependencies:
@@ -9241,6 +9241,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/blockchain-link-types@workspace:packages/blockchain-link-types"
   dependencies:
+    "@solana/web3.js": 1.78.4
     "@trezor/utxo-lib": "workspace:*"
     rimraf: ^5.0.1
     ripple-lib: ^1.10.1
@@ -9254,7 +9255,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/blockchain-link-utils@workspace:packages/blockchain-link-utils"
   dependencies:
-    "@solana/web3.js": ^1.78.4
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
