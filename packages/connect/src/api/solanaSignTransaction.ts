@@ -4,8 +4,6 @@ import { validateParams, getFirmwareRange } from './common/paramsValidator';
 import { getMiscNetwork } from '../data/coinInfo';
 import { validatePath } from '../utils/pathUtils';
 
-// TODO(vl/connect): add tests
-// TODO(vl/connect): add docs
 export default class SolanaSignTransaction extends AbstractMethod<
     'solanaSignTransaction',
     PROTO.SolanaSignTx

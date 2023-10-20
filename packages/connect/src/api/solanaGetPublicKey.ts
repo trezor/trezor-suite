@@ -5,8 +5,6 @@ import { getMiscNetwork } from '../data/coinInfo';
 import { validatePath, fromHardened, getSerializedPath } from '../utils/pathUtils';
 import { UI, createUiMessage } from '../events';
 
-// TODO(vl/connect): add tests
-// TODO(vl/connect): add docs
 export default class SolanaGetPublicKey extends AbstractMethod<
     'solanaGetPublicKey',
     PROTO.SolanaGetPublicKey[]
