@@ -86,7 +86,7 @@ export function onDeviceConnected(
     "onDeviceConnect",
     (event) => {
       const eventPayload = {
-        device: createWebUSBDevice(event),
+        device: createWebUSBDevice(event as any),
       };
       console.log("JS: USB onDeviceConnect", eventPayload);
       return listener(eventPayload as any);
@@ -101,7 +101,7 @@ export function onDeviceDisconnect(
     "onDeviceDisconnect",
     (event) => {
       const eventPayload = {
-        device: event,
+        device: createWebUSBDevice(event as any),
       };
       console.log("JS: USB onDeviceDisconnect", eventPayload);
       return listener(eventPayload as any);

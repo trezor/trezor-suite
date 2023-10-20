@@ -90,7 +90,6 @@ class ReactNativeUsbModule : Module() {
                 Log.d("ReactNativeUsbModule", "Disconnect event sent for device ${devicesHistory[deviceName]}")
 
                 openedConnections.remove(deviceName)
-                devicesHistory.remove(deviceName)
             }
             val onPermissionReceived: OnPermissionReceived = { device ->
                 Log.d("ReactNativeUsbModule", "onPermissionReceived: $device")
