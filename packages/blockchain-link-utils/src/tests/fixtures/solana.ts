@@ -388,55 +388,6 @@ export const fixtures = {
     ],
     transformTransaction: [
         {
-            description: 'should return null when tx is null',
-            input: {
-                transaction: null,
-                accountAddress: 'myAddress',
-                slotToBlockHeightMapping: {},
-            },
-            expectedOutput: null,
-        },
-        {
-            description: 'should return null when tx.meta is null',
-            input: {
-                transaction: {
-                    transaction: {
-                        signatures: ['txid1'],
-                    },
-                    blockTime: 1631753600,
-                },
-                accountAddress: 'myAddress',
-                slotToBlockHeightMapping: {},
-            },
-            expectedOutput: null,
-        },
-        {
-            description: 'should return null when tx.transaction is null',
-            input: {
-                transaction: {
-                    meta: {},
-                    blockTime: 1631753600,
-                },
-                accountAddress: 'myAddress',
-                slotToBlockHeightMapping: {},
-            },
-            expectedOutput: null,
-        },
-        {
-            description: 'should return null when tx.blockTime is null',
-            input: {
-                transaction: {
-                    meta: {},
-                    transaction: {
-                        signatures: ['txid2'],
-                    },
-                },
-                accountAddress: 'myAddress',
-                slotToBlockHeightMapping: {},
-            },
-            expectedOutput: null,
-        },
-        {
             description: 'should return a valid Transaction object when all inputs are valid',
             input: {
                 transaction: parsedTransactions.basic.transaction,

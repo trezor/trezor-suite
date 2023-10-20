@@ -1,6 +1,5 @@
-import { ParsedTransactionWithMeta } from '@solana/web3.js';
-
 import { Transaction } from '@trezor/blockchain-link-types';
+import { SolanaValidParsedTxWithMeta } from '@trezor/blockchain-link-types/lib/solana';
 
 import {
     extractAccountBalanceDiff,
@@ -18,7 +17,7 @@ describe('solana/utils', () => {
         fixtures.extractAccountBalanceDiff.forEach(({ description, input, expectedOutput }) => {
             it(description, () => {
                 const result = extractAccountBalanceDiff(
-                    input.transaction as ParsedTransactionWithMeta,
+                    input.transaction as SolanaValidParsedTxWithMeta,
                     input.address,
                 );
                 expect(result).toEqual(expectedOutput);
@@ -30,7 +29,7 @@ describe('solana/utils', () => {
         fixtures.getTransactionEffects.forEach(({ description, input, expectedOutput }) => {
             it(description, () => {
                 const result = getTransactionEffects(
-                    input.transaction as ParsedTransactionWithMeta,
+                    input.transaction as SolanaValidParsedTxWithMeta,
                 );
                 expect(result).toEqual(expectedOutput);
             });
@@ -41,7 +40,7 @@ describe('solana/utils', () => {
         fixtures.getTxType.forEach(({ description, input, expectedOutput }) => {
             it(description, () => {
                 const result = getTxType(
-                    input.transaction as ParsedTransactionWithMeta,
+                    input.transaction as SolanaValidParsedTxWithMeta,
                     input.effects,
                     input.accountAddress,
                 );
@@ -76,7 +75,7 @@ describe('solana/utils', () => {
         fixtures.getDetails.forEach(({ description, input, expectedOutput }) => {
             it(description, () => {
                 const result = getDetails(
-                    input.transaction as ParsedTransactionWithMeta,
+                    input.transaction as SolanaValidParsedTxWithMeta,
                     input.effects,
                     input.accountAddress,
                 );
@@ -89,7 +88,7 @@ describe('solana/utils', () => {
         fixtures.transformTransaction.forEach(({ description, input, expectedOutput }) => {
             it(description, () => {
                 const result = transformTransaction(
-                    input.transaction as ParsedTransactionWithMeta,
+                    input.transaction as SolanaValidParsedTxWithMeta,
                     input.accountAddress,
                     input.slotToBlockHeightMapping as Record<number, number>,
                 );
