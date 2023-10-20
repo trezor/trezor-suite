@@ -434,14 +434,20 @@ export const networks = {
         support: {
             [DeviceModelInternal.T2T1]: '0.0.0', // TODO(vl): always support, update this once we have version
         },
-        customBackends: [''], // TODO(vl): investigate what this affects
+        customBackends: ['solana'],
         accountTypes: {
             // TODO(vl): accounts and paths
         },
     },
 } as const;
 
-export const TREZOR_CONNECT_BACKENDS = ['blockbook', 'electrum', 'ripple', 'blockfrost'] as const;
+export const TREZOR_CONNECT_BACKENDS = [
+    'blockbook',
+    'electrum',
+    'ripple',
+    'blockfrost',
+    'solana',
+] as const;
 export const NON_STANDARD_BACKENDS = ['coinjoin'] as const;
 
 export type BackendType =
