@@ -2212,10 +2212,11 @@
             "shortcut": "SOL",
             "slip44": 501,
             "support": {
+                "T1B1": false,
+                "T2B1": "2.6.1",
+                "T2T1": "2.6.1",
                 "connect": true,
-                "suite": true,
-                "trezor1": false,
-                "trezor2": "2.4.3"
+                "suite": true
             }
         },
         {
