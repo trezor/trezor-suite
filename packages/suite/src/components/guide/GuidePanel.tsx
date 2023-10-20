@@ -13,6 +13,7 @@ import {
     Feedback,
 } from 'src/components/guide';
 import { useGuide, GUIDE_ANIMATION_DURATION_MS } from 'src/hooks/guide';
+import { zIndices } from '@trezor/theme';
 
 const fullHeightStyle = css`
     position: absolute;
@@ -32,7 +33,7 @@ const smoothBlur = keyframes`
 
 const StyledBackdrop = styled(Backdrop)`
     animation: ${smoothBlur} 0.3s ease-in forwards;
-    z-index: ${variables.Z_INDEX.GUIDE};
+    z-index: ${zIndices.guide};
     cursor: pointer;
 
     ${variables.SCREEN_QUERY.ABOVE_LAPTOP} {
@@ -43,7 +44,7 @@ const StyledBackdrop = styled(Backdrop)`
 const GuideWrapper = styled.div`
     max-width: 100vw;
     height: 100%;
-    z-index: ${variables.Z_INDEX.GUIDE};
+    z-index: ${zIndices.guide};
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
         ${fullHeightStyle}

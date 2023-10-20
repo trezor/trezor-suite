@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import styled, { useTheme } from 'styled-components';
 
 import { useLayoutSize, useSelector } from 'src/hooks/suite';
+import { zIndices } from '@trezor/theme';
 import { Icon, variables } from '@trezor/components';
 import { DeviceSelector } from './components/DeviceSelector';
 import { MainNavigation } from './components/MainNavigation';
@@ -13,7 +14,7 @@ const Wrapper = styled.div`
     width: 100%;
     height: 64px;
     flex: 0;
-    z-index: ${variables.Z_INDEX.NAVIGATION_BAR};
+    z-index: ${zIndices.navigationBar};
     padding: 6px 8px;
     align-items: center;
     background: ${({ theme }) => theme.BG_WHITE};
@@ -34,7 +35,7 @@ const HamburgerWrapper = styled.div`
 const MobileNavigationWrapper = styled.div`
     position: relative;
     height: 100vh;
-    z-index: ${variables.Z_INDEX.NAVIGATION_BAR};
+    z-index: ${zIndices.navigationBar};
 `;
 
 const ExpandedMobileNavigation = styled.div`

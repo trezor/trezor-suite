@@ -6,7 +6,7 @@ import { mediaQueries } from '@trezor/styles';
 import type { Locale } from 'date-fns';
 
 import { Button } from '../buttons/Button/Button';
-import { variables } from '../../config';
+import { zIndices } from '@trezor/theme';
 
 type Selection = {
     key: string;
@@ -184,7 +184,7 @@ const datepickerStyle = css`
         display: flex;
         align-items: center;
         justify-content: center;
-        z-index: ${variables.Z_INDEX.BASE};
+        z-index: ${zIndices.base};
     }
 
     .rdrSelected,
@@ -574,7 +574,7 @@ const Calendar = styled.div`
         color: ${({ theme }) => theme.TYPE_WHITE};
         box-shadow: ${({ theme }) => theme.BG_GREEN} 0px 0px 0px 2px;
         border-radius: 4px;
-        z-index: ${variables.Z_INDEX.BASE};
+        z-index: ${zIndices.base};
     }
 
     .rdrDayDisabled {

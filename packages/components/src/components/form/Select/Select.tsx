@@ -13,9 +13,9 @@ import ReactSelect, {
 } from 'react-select';
 import styled, { css, DefaultTheme, useTheme } from 'styled-components';
 import { darken } from 'polished';
-import { borders } from '@trezor/theme';
+import { borders, zIndices } from '@trezor/theme';
 
-import { FONT_WEIGHT, FONT_SIZE, Z_INDEX } from '../../../config/variables';
+import { FONT_WEIGHT, FONT_SIZE } from '../../../config/variables';
 import { animations } from '../../../config';
 
 import {
@@ -130,11 +130,11 @@ const selectStyle = (
         background: theme.BG_WHITE_ALT,
         margin: '5px 0',
         borderRadius: '4px',
-        zIndex: Z_INDEX.BASE,
+        zIndex: zIndices.base,
     }),
     menuPortal: base => ({
         ...base,
-        zIndex: Z_INDEX.MODAL /* Necessary to be visible inside a Modal */,
+        zIndex: zIndices.modal /* Necessary to be visible inside a Modal */,
     }),
     menuList: base => ({
         ...base,

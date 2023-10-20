@@ -7,6 +7,7 @@ import { useFormatters } from '@suite-common/formatters';
 import { parseTransactionDateKey, isTestnet } from '@suite-common/wallet-utils';
 import { Network } from 'src/types/wallet';
 import { SECONDARY_PANEL_HEIGHT } from 'src/components/suite/AppNavigation';
+import { zIndices } from '@trezor/theme';
 
 const Wrapper = styled.div`
     display: flex;
@@ -19,7 +20,7 @@ const Wrapper = styled.div`
     padding-top: 8px;
     padding-bottom: 8px;
     padding-right: 24px;
-    z-index: ${variables.Z_INDEX.SECONDARY_STICKY_BAR};
+    z-index: ${zIndices.secondaryStickyBar};
 `;
 
 const Col = styled(HiddenPlaceholder)`

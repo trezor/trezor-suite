@@ -8,6 +8,7 @@ import { TransactionTypeIcon } from 'src/components/wallet/TransactionItem/Trans
 import { TxTypeIconWrapper } from 'src/components/wallet/TransactionItem/CommonComponents';
 import { Translation } from 'src/components/suite/Translation';
 import TooltipSymbol from 'src/components/suite/TooltipSymbol';
+import { zIndices } from '@trezor/theme';
 
 const Header = styled.div`
     position: sticky;
@@ -20,7 +21,7 @@ const Header = styled.div`
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     text-transform: uppercase;
-    z-index: ${variables.Z_INDEX.SECONDARY_STICKY_BAR};
+    z-index: ${zIndices.secondaryStickyBar};
 `;
 
 const Wrapper = styled(Card)`

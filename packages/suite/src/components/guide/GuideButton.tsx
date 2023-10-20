@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
-import { Icon, variables } from '@trezor/components';
+import { Icon } from '@trezor/components';
+import { zIndices } from '@trezor/theme';
 import { useGuide } from 'src/hooks/guide';
 import { FreeFocusInside } from 'react-focus-lock';
 
@@ -9,7 +10,7 @@ const Wrapper = styled.button<{ $isGuideOpen: boolean }>`
     justify-content: center;
     align-items: center;
     position: fixed;
-    z-index: ${variables.Z_INDEX.GUIDE_BUTTON};
+    z-index: ${zIndices.guideButton};
     bottom: 18px;
     right: 18px;
     width: 40px;

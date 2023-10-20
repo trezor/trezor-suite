@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { useIntl } from 'react-intl';
 import styled from 'styled-components';
 import TrezorConnect from '@trezor/connect';
-import { Button, variables } from '@trezor/components';
+import { Button } from '@trezor/components';
 import {
     beginOnbordingTutorial,
     goToNextStep,
@@ -15,6 +15,7 @@ import messages from 'src/support/messages';
 import { OnboardingStepBox } from '../onboarding';
 import { Translation } from '../suite';
 import { StyledBackdrop } from '../onboarding/OnboardingStepBox';
+import { zIndices } from '@trezor/theme';
 
 const BoxContainer = styled.div`
     width: 100%;
@@ -24,7 +25,7 @@ const BoxContainer = styled.div`
     margin-top: -60px;
 
     ${StyledBackdrop} {
-        z-index: ${variables.Z_INDEX.ONNBOARDING_FOREGROUND};
+        z-index: ${zIndices.onboardingForeground};
     }
 `;
 

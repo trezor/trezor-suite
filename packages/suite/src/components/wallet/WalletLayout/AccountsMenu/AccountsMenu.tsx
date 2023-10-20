@@ -14,11 +14,12 @@ import { AccountSearchBox } from './AccountSearchBox';
 import { AccountGroup } from './AccountGroup';
 import { AccountItem } from './AccountItem';
 import { AccountItemSkeleton } from './AccountItemSkeleton';
+import { zIndices } from '@trezor/theme';
 
 const Wrapper = styled.div<{ isInline?: boolean }>`
     display: flex;
     flex-direction: column;
-    z-index: ${variables.Z_INDEX.EXPANDABLE_NAVIGATION_HEADER};
+    z-index: ${zIndices.expandableNavigationHeader};
     width: 100%;
 
     ${props =>
@@ -88,7 +89,7 @@ const ExpandedMobileWrapper = styled.div`
     position: absolute;
     flex-direction: column;
     background: ${({ theme }) => theme.BG_WHITE};
-    z-index: ${variables.Z_INDEX.EXPANDABLE_NAVIGATION};
+    z-index: ${zIndices.expandableNavigation};
     width: 100%;
     max-height: 80vh;
     overflow-y: auto;

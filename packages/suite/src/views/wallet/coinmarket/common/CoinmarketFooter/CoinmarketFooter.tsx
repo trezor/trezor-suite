@@ -5,6 +5,7 @@ import { useOnClickOutside } from '@trezor/react-utils';
 import { DATA_TOS_INVITY_URL, INVITY_URL } from '@trezor/urls';
 import { CoinmarketProvidedByInvity } from './CoinmarketProvidedByInvity';
 import { Translation } from 'src/components/suite';
+import { zIndices } from '@trezor/theme';
 
 const Wrapper = styled.div`
     display: flex;
@@ -41,7 +42,7 @@ const FooterBox = styled.div`
     min-width: 345px;
     bottom: 30px;
     box-shadow: 0 1px 2px 0 ${({ theme }) => theme.BOX_SHADOW_BLACK_20};
-    z-index: ${variables.Z_INDEX.TOOLTIP};
+    z-index: ${zIndices.tooltip};
 
     background: ${({ theme }) => theme.BG_WHITE};
     overflow: hidden;

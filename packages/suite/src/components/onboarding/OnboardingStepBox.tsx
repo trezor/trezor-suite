@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
 import TrezorConnect, { DeviceModelInternal } from '@trezor/connect';
-import { ConfirmOnDevice, Backdrop, variables } from '@trezor/components';
+import { ConfirmOnDevice, Backdrop } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { useIntl } from 'react-intl';
 import messages from 'src/support/messages';
@@ -9,11 +9,12 @@ import {
     CollapsibleOnboardingCard,
     CollapsibleOnboardingCardProps,
 } from './CollapsibleOnboardingCard';
+import { zIndices } from '@trezor/theme';
 
 const ConfirmWrapper = styled.div`
     margin-bottom: 20px;
     height: 62px;
-    z-index: ${variables.Z_INDEX.ONNBOARDING_FOREGROUND};
+    z-index: ${zIndices.onboardingForeground};
 `;
 
 const InnerActions = styled.div`
@@ -28,14 +29,14 @@ const OuterActions = styled.div<{ smallMargin?: boolean }>`
     margin-top: ${({ smallMargin }) => (smallMargin ? '0px' : '20px')};
     width: 100%;
     justify-content: center;
-    z-index: ${variables.Z_INDEX.ONNBOARDING_FOREGROUND};
+    z-index: ${zIndices.onboardingForeground};
 `;
 
 export const StyledBackdrop = styled(Backdrop)<{ show: boolean }>`
     transition: all 0.3s;
     opacity: ${({ show }) => (show ? '1' : '0')};
     pointer-events: ${({ show }) => (show ? 'initial' : 'none')};
-    z-index: ${variables.Z_INDEX.BASE};
+    z-index: ${zIndices.base};
 `;
 
 const StyledCollapsibleCard = styled(CollapsibleOnboardingCard)<{ $isBackDropVisible: boolean }>`

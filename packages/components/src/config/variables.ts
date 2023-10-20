@@ -38,22 +38,6 @@ export const LAYOUT_SIZE = {
     GUIDE_PANEL_CONTENT_WIDTH: '349px',
 } as const;
 
-export const Z_INDEX = {
-    TOOLTIP: 60, // above all content to be always fully visible when toggled
-    GUIDE: 50, // above MODAL to stay accessible when modal is open
-    GUIDE_BUTTON: 49, // below GUIDE to get covered by the guide when it is opening
-    MODAL: 40, // above other suite content to disable interating with it
-    NAVIGATION_BAR: 30,
-    DISCOVERY_PROGRESS: 29, // below NAVIGATION_BAR to stay below notifications
-    EXPANDABLE_NAVIGATION_HEADER: 21, // above EXPANDABLE_NAVIGATION to cover its box-shadow
-    EXPANDABLE_NAVIGATION: 20, // above PAGE_HEADER to spread over it
-    PAGE_HEADER: 11, // above STICKY_BAR to hide it when the page is on top
-    STICKY_BAR: 10, // above page content to scroll over it
-    SECONDARY_STICKY_BAR: 9, // below STICKY_BAR so that it can hide beneath it when no longer needed
-    ONNBOARDING_FOREGROUND: 2, // for handling multiple layers on the onboarding page
-    BASE: 1, // above static content to be fully visible
-} as const;
-
 export const FONT_SIZE = {
     BIG: '18px',
     NORMAL: '16px',
