@@ -10,6 +10,7 @@ import {
     getTxType,
     transformTransaction,
     getTokenNameAndSymbol,
+    transformTokenInfo,
 } from '../solana';
 import { fixtures } from './fixtures/solana';
 
@@ -103,6 +104,14 @@ describe('solana/utils', () => {
                     input.slotToBlockHeightMapping as Record<number, number>,
                 );
                 expect(result).toEqual(expectedOutput);
+            });
+        });
+    });
+
+    describe('transformTokenInfo', () => {
+        fixtures.transformTokenInfo.forEach(({ description, input, expectedOutput }) => {
+            it(description, () => {
+                expect(transformTokenInfo(input.accountInfo, input.map)).toEqual(expectedOutput);
             });
         });
     });
