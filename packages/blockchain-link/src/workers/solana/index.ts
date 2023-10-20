@@ -455,7 +455,9 @@ class SolanaWorker extends BaseWorker<SolanaAPI> {
         }
     }
 
-    disconnect(): void {}
+    disconnect(): void {
+        this.api = undefined;
+    }
 }
 
 // export worker factory used in src/index
