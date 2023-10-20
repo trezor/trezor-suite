@@ -6,11 +6,11 @@ import { rerouteMetadataToMockProvider, stubOpen } from '../../stubs/metadata';
 const providers = [
     {
         provider: 'google',
-        file: 'f7acc942eeb83921892a95085e409b3e6b5325db6400ae5d8de523a305291dca.mtdt',
+        file: 'b9b5e1fd2800d4dc68e2f4e775fd819f4da3fb9e1bcc2cacd7f04fa543eac8a0_v2.mtdt',
     },
     {
         provider: 'dropbox',
-        file: '/f7acc942eeb83921892a95085e409b3e6b5325db6400ae5d8de523a305291dca.mtdt',
+        file: '/b9b5e1fd2800d4dc68e2f4e775fd819f4da3fb9e1bcc2cacd7f04fa543eac8a0_v2.mtdt',
     },
 ] as const;
 
@@ -40,7 +40,7 @@ On disable, it throws away all metadata related records from memory.`, () => {
                     outputLabels: {},
                     addressLabels: {},
                 },
-                aesKey: 'c785ef250807166bffc141960c525df97647fcc1bca57f6892ca3742ba86ed8d',
+                aesKey: '998daf71f3fbc486076f0ee8d5737a61b82bceacb0ec69100cbe4d45cd79676a',
             });
 
             cy.prefixedVisit('/', {
@@ -105,11 +105,10 @@ On disable, it throws away all metadata related records from memory.`, () => {
             cy.getTestElement('@account-menu/btc/normal/0/label').should('not.contain', 'label');
             cy.hoverTestElement("@metadata/accountLabel/m/84'/0'/0'/hover-container");
             cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'/add-label-button").click();
-            cy.log(
-                'disabling metadata removed also all keys, so metadata init flow takes all steps now expect for providers, these stay connected',
+            cy.getTestElement('@account-menu/btc/normal/0/label').should(
+                'contain',
+                'already existing label',
             );
-            cy.getConfirmActionOnDeviceModal();
-            cy.task('pressYes');
 
             // device saved, disconnect provider
             cy.getTestElement('@menu/switch-device').click();
