@@ -130,7 +130,7 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
         descriptor: payload.descriptor,
         balance: accountInfo.lamports.toString(), // TODO(vl): check if this should also include staking balances
         availableBalance: accountInfo.lamports.toString(), // TODO(vl): revisit to make sure that what getAccountInfo returns is actually available balance
-        empty: !!allTxIds.length,
+        empty: !allTxIds.length,
         history: {
             total: allTxIds.length,
             unconfirmed: 0,
