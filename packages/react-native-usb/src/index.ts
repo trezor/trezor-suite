@@ -1,8 +1,16 @@
-/* eslint-disable no-console */
 import { NativeModulesProxy, EventEmitter, Subscription } from 'expo-modules-core';
 
 import { ReactNativeUsbModule } from './ReactNativeUsbModule';
 import { NativeDevice, OnConnectEvent, WebUSBDevice } from './ReactNativeUsb.types';
+
+const DEBUG_LOGS = true;
+
+const debugLog = (...args: any[]) => {
+    if (DEBUG_LOGS) {
+        // eslint-disable-next-line no-console
+        console.log(...args);
+    }
+};
 
 const emitter = new EventEmitter(ReactNativeUsbModule ?? NativeModulesProxy.ReactNativeUsb);
 
@@ -20,20 +28,22 @@ const selectConfiguration = (deviceName: string, configurationValue: number) =>
     ReactNativeUsbModule.selectConfiguration(deviceName, configurationValue);
 
 const transferIn = async (deviceName: string, endpointNumber: number, length: number) => {
+    const perf = performance.now();
     const data = await ReactNativeUsbModule.transferIn(deviceName, endpointNumber, length)
         .catch((error: any) => {
-            console.log('JS: USB read error: ', error);
+            debugLog('JS: USB read error: ', error);
             throw error;
         })
         // eslint-disable-next-line arrow-body-style
         .then((result: number[]) => {
-            // console.log('JS: Native USB read result:', JSON.stringify(result));
+            // debugLog('JS: Native USB read result:', JSON.stringify(result));
 
             return {
                 data: new Uint8Array(result),
                 status: 'ok',
             };
         });
+    debugLog('JS: USB read time', performance.now() - perf);
 
     return data;
 };
@@ -44,17 +54,19 @@ const transferOut = async (
     data: Uint8Array | BufferSource,
 ) => {
     try {
+        const perf = performance.now();
         await ReactNativeUsbModule.transferOut(deviceName, endpointNumber, data.toString());
+        debugLog('JS: USB write time', performance.now() - perf);
         return { status: 'ok' };
     } catch (error) {
-        console.log('JS: USB write error', error);
+        debugLog('JS: USB write error', error);
         throw error;
     }
 };
 
 // eslint-disable-next-line require-await
 const createNoop = (methodName: string) => async () => {
-    console.log(`Calling ${methodName} which is not implemented.`);
+    debugLog(`Calling ${methodName} which is not implemented.`);
 };
 
 const createWebUSBDevice = (device: NativeDevice): WebUSBDevice => ({
@@ -94,7 +106,7 @@ export function onDeviceConnected(listener: (event: OnConnectEvent) => void): Su
         const eventPayload = {
             device: createWebUSBDevice(event as NativeDevice),
         };
-        console.log('JS: USB onDeviceConnect', eventPayload);
+        debugLog('JS: USB onDeviceConnect', eventPayload);
         return listener(eventPayload as any);
     });
 }
@@ -104,7 +116,7 @@ export function onDeviceDisconnect(listener: (event: OnConnectEvent) => void): S
         const eventPayload = {
             device: createWebUSBDevice(event as NativeDevice),
         };
-        console.log('JS: USB onDeviceDisconnect', eventPayload);
+        debugLog('JS: USB onDeviceDisconnect', eventPayload);
         return listener(eventPayload as any);
     });
 }

@@ -208,8 +208,8 @@ class ReactNativeUsbModule : Module() {
     private fun transferOut(deviceName: String, endpointNumber: Int, data: String): Int {
         Log.d("ReactNativeUsbModule", "Transfering data to device $deviceName")
         Log.d("ReactNativeUsbModule", "data: ${data}")
-        // split string into byte array
-        val dataByteArray = data.split(",").map { it.toByte() }.toByteArray()
+        // split string into array of numbers and then convert numbers to byte array
+        val dataByteArray = data.split(",").map { it.toInt().toByte() }.toByteArray()
         Log.d("ReactNativeUsbModule", "dataByteArray: $dataByteArray")
         val device = getDeviceByName(deviceName)
         val usbConnection = getOpenedConnection(deviceName)
