@@ -133,6 +133,8 @@ describe('utils/deviceFeaturesUtils', () => {
                 bnb: 'no-support',
                 eos: 'no-support',
                 ppc: 'update-required',
+                sol: 'no-support',
+                dsol: 'no-support',
                 sys: 'update-required',
                 tppc: 'update-required',
                 txrp: 'no-support',
@@ -168,6 +170,8 @@ describe('utils/deviceFeaturesUtils', () => {
                 tgor: 'update-required',
                 coinjoin: 'update-required',
                 signMessageNoScriptType: 'update-required',
+                sol: 'no-capability',
+                dsol: 'no-capability',
             });
         });
 
@@ -184,6 +188,8 @@ describe('utils/deviceFeaturesUtils', () => {
                 dgb: 'no-support',
                 eos: 'no-support',
                 nmc: 'no-support',
+                sol: 'no-capability',
+                dsol: 'no-capability',
                 vtc: 'no-support',
                 xem: 'no-support',
             });

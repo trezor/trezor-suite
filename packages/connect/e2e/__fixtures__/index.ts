@@ -55,6 +55,9 @@ import signTransactionReplace from './signTransactionReplace';
 import signTransactionSegwit from './signTransactionSegwit';
 import signTransactionTaproot from './signTransactionTaproot';
 import signTransactionZcash from './signTransactionZcash';
+import solanaGetAddress from './solanaGetAddress';
+import solanaGetPublicKey from './solanaGetPublicKey';
+import solanaSignTransaction from './solanaSignTransaction';
 import stellarGetAddress from './stellarGetAddress';
 import stellarSignTransaction from './stellarSignTransaction';
 import tezosGetAddress from './tezosGetAddress';
@@ -149,6 +152,9 @@ let fixtures = [
     signTransactionSegwit,
     signTransactionTaproot,
     signTransactionZcash,
+    solanaGetAddress,
+    solanaGetPublicKey,
+    solanaSignTransaction,
     stellarGetAddress,
     stellarSignTransaction,
     tezosGetAddress,

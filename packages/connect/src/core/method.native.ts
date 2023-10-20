@@ -11,6 +11,7 @@ const moduleMethods = {
     ethereum: require('../api/ethereum/api'),
     nem: require('../api/nem/api'),
     ripple: require('../api/ripple/api'),
+    solana: require('../api/solana/api'),
     stellar: require('../api/stellar/api'),
     tezos: require('../api/tezos/api'),
 } as const satisfies Record<ModuleName, any>;
