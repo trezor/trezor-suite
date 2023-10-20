@@ -58,6 +58,21 @@ const checklistItems = [
     },
 ] as const;
 
+const softChecklistItems = [
+    {
+        icon: 'PLUGS',
+        content: <Translation id="TR_DISCONNECT_DEVICE_SOFT" />,
+    },
+    {
+        icon: 'HAND',
+        content: <Translation id="TR_AVOID_USING_DEVICE_SOFT" />,
+    },
+    {
+        icon: 'CHAT',
+        content: <Translation id="TR_USE_CHAT_SOFT" values={{ b: chunks => <b>{chunks}</b> }} />,
+    },
+] as const;
+
 const supportChatUrl = `${TREZOR_SUPPORT_URL}#open-chat`;
 
 interface SecurityCheckFailProps {
@@ -67,6 +82,7 @@ interface SecurityCheckFailProps {
 export const SecurityCheckFail = ({ goBack }: SecurityCheckFailProps) => {
     const heading = goBack ? 'TR_DEVICE_COMPROMISED_HEADING_SOFT' : 'TR_DEVICE_COMPROMISED_HEADING';
     const text = goBack ? 'TR_DEVICE_COMPROMISED_TEXT_SOFT' : 'TR_DEVICE_COMPROMISED_TEXT';
+    const items = goBack ? softChecklistItems : checklistItems;
 
     return (
         <SecurityCheckLayout isFailed>
@@ -78,7 +94,7 @@ export const SecurityCheckFail = ({ goBack }: SecurityCheckFailProps) => {
                     <Translation id={text} />
                 </Text>
             </TopSection>
-            <SecurityChecklist items={checklistItems} />
+            <SecurityChecklist items={items} />
             <Buttons>
                 {goBack && (
                     <SecurityCheckButton variant="secondary" onClick={goBack}>
