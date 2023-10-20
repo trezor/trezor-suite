@@ -9,7 +9,7 @@ export const getDefaultBackendType = (coin: NetworkSymbol) => {
     if (coin === 'ada' || coin === 'tada') {
         return 'blockfrost';
     }
-    if (coin === 'sol') {
+    if (coin === 'sol' || coin === 'dsol') {
         return 'solana';
     }
     return 'blockbook';

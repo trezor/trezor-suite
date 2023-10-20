@@ -474,4 +474,29 @@ export default [
             tx: '', // TODO(vl): once we implemented tx submission
         },
     },
+    {
+        blockchain: {
+            name: 'Solana Devnet',
+            // we do not use path to worker build here because its not used, we use it just to match this config to actual implementation of the worker
+            worker: 'solana',
+            server: [
+                'api.devnet.solana.com/',
+            ],
+            debug: true,
+        },
+        data: {
+            estimateFeeOptions: {
+                // TODO(vl): revisit once we implement txs
+                blocks: [1],
+            },
+            accountInfoOptions: {
+                page: 0,
+                pageSize: 25,
+            },
+            address: 'FSJnAbqHcGm1wAijWEptDVc77VWjL7PrLw3ds8hLYgAf',
+            txid: '', // TODO(vl): once we implemented tx history
+            blockNumber: '', // TODO(vl): once we implement getBlock '212702904',
+            tx: '', // TODO(vl): once we implemented tx submission
+        },
+    },
 ];
