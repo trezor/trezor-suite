@@ -1,5 +1,19 @@
 import BigNumber from 'bignumber.js';
 
+const instructions = {
+    transfer: {
+        parsed: {
+            type: 'transfer',
+        },
+    },
+    nonTransfer: {
+        parsed: {
+            type: 'nonTransfer',
+        },
+    },
+    notParsed: {},
+};
+
 const parsedTransactions = {
     basic: {
         transaction: {
@@ -16,6 +30,7 @@ const parsedTransactions = {
                         { pubkey: { toString: () => 'address1' } },
                         { pubkey: { toString: () => 'address2' } },
                     ],
+                    instructions: [instructions.transfer],
                 },
             },
             version: 'legacy',
@@ -76,9 +91,12 @@ const parsedTransactions = {
     justWithFee: {
         transaction: {
             transaction: {
-                meta: {
-                    fee: 10,
+                message: {
+                    instructions: [instructions.transfer],
                 },
+            },
+            meta: {
+                fee: 5,
             },
         },
     },
@@ -165,11 +183,46 @@ export const fixtures = {
             expectedOutput: 'failed',
         },
         {
+            description: 'should return "unknown" if instructions are not transfer',
+            input: {
+                transaction: {
+                    transaction: {
+                        message: {
+                            instructions: [instructions.nonTransfer],
+                        },
+                    },
+                },
+                effects: [effects.negative],
+                accountAddress: effects.negative.address,
+            },
+            expectedOutput: 'unknown',
+        },
+        {
+            description: 'should return "unknown" if at least single instruction is not parsed',
+            input: {
+                transaction: {
+                    transaction: {
+                        message: {
+                            instructions: [instructions.notParsed],
+                        },
+                    },
+                },
+                effects: [effects.negative],
+                accountAddress: effects.negative.address,
+            },
+            expectedOutput: 'unknown',
+        },
+        {
             description: 'should return "self" if it matches a self-transaction with fee',
             input: {
                 transaction: {
+                    transaction: {
+                        message: {
+                            instructions: [instructions.transfer],
+                        },
+                    },
                     meta: {
-                        fee: effects.negative.amount.abs().toNumber(),
+                        fee: effects.negative.amount.abs().toString(),
                     },
                 },
                 effects: [effects.negative],

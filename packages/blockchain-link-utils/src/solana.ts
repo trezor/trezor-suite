@@ -85,6 +85,18 @@ export const getTxType = (
         return 'failed';
     }
 
+    const isTransfer = transaction.transaction.message.instructions.every(instruction => {
+        const isParsedInstruction = 'parsed' in instruction;
+        return isParsedInstruction && instruction.parsed.type === 'transfer';
+    });
+
+    // for now we support only transfers, so we interpret all other transactions as `unknown`
+    if (!isTransfer) {
+        return 'unknown';
+    }
+
+    // TODO(vl): phase two, isTokenTx
+
     if (
         effects.length === 1 &&
         effects[0]?.address === accountAddress &&
