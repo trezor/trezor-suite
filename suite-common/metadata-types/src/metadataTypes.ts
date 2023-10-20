@@ -148,17 +148,32 @@ export abstract class AbstractMetadataProvider {
         } as const;
     }
 
+    private apiRequestsNumber = 0;
     scheduleApiRequest<T extends () => ReturnType<R>, R extends (...args: any) => Result<any>>(
         fn: T,
-        options: { retries: number; delay: number } = { retries: 3, delay: 1000 },
+        options: { retries: number; delay: number; maxConcurrent: number } = {
+            retries: 3,
+            delay: 1000,
+            maxConcurrent: 10,
+        },
     ) {
         let retried = 0;
         return new Promise<Awaited<ReturnType<R>>>(resolve => {
-            const { retries, delay } = options;
+            const { retries, delay, maxConcurrent } = options;
             const run = async () => {
-                const res = await fn();
+                if (this.apiRequestsNumber > maxConcurrent) {
+                    setTimeout(run, delay);
+                    return;
+                }
+
+                this.apiRequestsNumber++;
+
+                const res = await fn().finally(() => {
+                    this.apiRequestsNumber--;
+                });
 
                 if (res.success) {
+                    // @ts-expect-error adding finally above causes ts to have problem here. I don't know why
                     return resolve(res);
                 }
 
@@ -167,6 +182,7 @@ export abstract class AbstractMetadataProvider {
                     setTimeout(run, delay);
                 } else {
                     // reached retries limit, return error
+                    // @ts-expect-error adding finally above causes ts to have problem here. I don't know why
                     resolve(res);
                 }
             };
