@@ -161,11 +161,17 @@ export const composeTransaction =
                   )
         ).compileMessage();
 
+        const isCreatingAccount =
+            tokenInfo &&
+            recipientTokenAccounts === undefined &&
+            recipientAccountOwner === SYSTEM_PROGRAM_PUBLIC_KEY;
+
         const estimatedFee = await TrezorConnect.blockchainEstimateFee({
             coin: account.symbol,
             request: {
                 specific: {
                     data: transactionMessage.serialize().toString('hex'),
+                    isCreatingAccount,
                 },
             },
         });
