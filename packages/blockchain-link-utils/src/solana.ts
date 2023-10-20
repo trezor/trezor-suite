@@ -154,6 +154,7 @@ export function getAmount(
 export const transformTransaction = (
     tx: ParsedTransactionWithMeta,
     accountAddress: string,
+    slotToBlockHeightMapping: Record<number, number | null>,
 ): Transaction | null => {
     if (!tx || !tx.meta || !tx.transaction || !tx.blockTime) {
         return null;
