@@ -1,3 +1,7 @@
+# 1.0.2
+
+-   chore(transport): update protobuf (3ecb44412)
+
 # 1.0.1
 
 -   chore(protobuf): update protobuf messages (9a9b193e7)
