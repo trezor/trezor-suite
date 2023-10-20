@@ -44,7 +44,6 @@
         "prepublish": "yarn tsx ../../scripts/prepublish.js"
     },
     "devDependencies": {
-        "@trezor/react-native-usb": "workspace:*",
         "@trezor/trezor-user-env-link": "workspace:*",
         "@types/bytebuffer": "^5.0.44",
         "@types/sharedworker": "^0.0.97",
@@ -59,6 +58,7 @@
     "dependencies": {
         "@trezor/protobuf": "workspace:*",
         "@trezor/protocol": "workspace:*",
+        "@trezor/react-native-usb": "workspace:*",
         "@trezor/utils": "workspace:*",
         "bytebuffer": "^5.0.1",
         "cross-fetch": "^3.1.6",

@@ -19,7 +19,19 @@ export const extraDependencies: ExtraDependencies = mergeDeepObject(extraDepende
     } as Partial<ExtraDependencies['actions']>,
     actionTypes: {} as Partial<ExtraDependencies['actionTypes']>,
     reducers: {} as Partial<ExtraDependencies['reducers']>,
-    utils: {} as Partial<ExtraDependencies['utils']>,
+    utils: {
+        connectInitSettings: {
+            lazyLoad: false,
+            transportReconnect: false,
+            debug: true,
+            popup: false,
+            manifest: {
+                email: 'info@trezor.io',
+                appUrl: '@trezor/suite',
+            },
+            transports: ['NativeUsbTransport', 'UdpTransport'],
+        },
+    } as Partial<ExtraDependencies['utils']>,
 } as OneLevelPartial<ExtraDependencies>) as ExtraDependencies;
 
 type OneLevelPartial<T extends object> = Record<keyof T, Partial<T[keyof T]>>;

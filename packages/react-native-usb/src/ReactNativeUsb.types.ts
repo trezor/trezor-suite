@@ -77,8 +77,6 @@ export interface WebUSBDevice {
     reset(): Promise<void>;
 }
 
-export type OnConnectEventPayload = {
-    value: NativeDevice;
-};
-
-export type OnDeviceDisconnectEventPayload = Pick<NativeDevice, 'deviceName' | 'serialNumber'>;
+export interface OnConnectEvent extends Event {
+    device: WebUSBDevice;
+}

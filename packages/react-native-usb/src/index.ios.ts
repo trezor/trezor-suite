@@ -1,13 +1,18 @@
-import { OnConnectEventPayload, OnDeviceDisconnectEventPayload } from './ReactNativeUsb.types';
+import { OnConnectEvent } from './ReactNativeUsb.types';
 
 // We don't support USB on iOS :(
 export class WebUSB {
     public getDevices = () => [];
 
-    set onconnect(listener: (event: OnConnectEventPayload) => void) {
+    set onconnect(_listener: (event: OnConnectEvent) => void) {
         // do nothing
     }
-    set ondisconnect(listener: (event: OnDeviceDisconnectEventPayload) => void) {
+    set ondisconnect(_listener: (event: OnConnectEvent) => void) {
         // do nothing
     }
+
+    requestDevice = async (..._params: any[]): Promise<any> => {};
+    addEventListener = (..._params: any[]): any => {};
+    removeEventListener = (..._params: any[]): any => {};
+    dispatchEvent = (..._params: any[]): any => {};
 }

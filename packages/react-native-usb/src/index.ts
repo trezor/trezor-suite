@@ -2,12 +2,7 @@
 import { NativeModulesProxy, EventEmitter, Subscription } from 'expo-modules-core';
 
 import { ReactNativeUsbModule } from './ReactNativeUsbModule';
-import {
-    NativeDevice,
-    OnConnectEventPayload,
-    OnDeviceDisconnectEventPayload,
-    WebUSBDevice,
-} from './ReactNativeUsb.types';
+import { NativeDevice, OnConnectEvent, WebUSBDevice } from './ReactNativeUsb.types';
 
 const emitter = new EventEmitter(ReactNativeUsbModule ?? NativeModulesProxy.ReactNativeUsb);
 
@@ -94,22 +89,20 @@ const createWebUSBDevice = (device: NativeDevice): WebUSBDevice => ({
     configurations: [],
 });
 
-export function onDeviceConnected(listener: (event: OnConnectEventPayload) => void): Subscription {
-    return emitter.addListener<OnConnectEventPayload>('onDeviceConnect', event => {
+export function onDeviceConnected(listener: (event: OnConnectEvent) => void): Subscription {
+    return emitter.addListener<NativeDevice>('onDeviceConnect', event => {
         const eventPayload = {
-            device: createWebUSBDevice(event as any),
+            device: createWebUSBDevice(event as NativeDevice),
         };
         console.log('JS: USB onDeviceConnect', eventPayload);
         return listener(eventPayload as any);
     });
 }
 
-export function onDeviceDisconnect(
-    listener: (event: OnDeviceDisconnectEventPayload) => void,
-): Subscription {
-    return emitter.addListener<OnDeviceDisconnectEventPayload>('onDeviceDisconnect', event => {
+export function onDeviceDisconnect(listener: (event: OnConnectEvent) => void): Subscription {
+    return emitter.addListener<NativeDevice>('onDeviceDisconnect', event => {
         const eventPayload = {
-            device: createWebUSBDevice(event as any),
+            device: createWebUSBDevice(event as NativeDevice),
         };
         console.log('JS: USB onDeviceDisconnect', eventPayload);
         return listener(eventPayload as any);
@@ -124,10 +117,16 @@ export async function getDevices(): Promise<any> {
 export class WebUSB {
     public getDevices = getDevices;
 
-    set onconnect(listener: (event: OnConnectEventPayload) => void) {
+    set onconnect(listener: (event: OnConnectEvent) => void) {
         onDeviceConnected(listener);
     }
-    set ondisconnect(listener: (event: OnDeviceDisconnectEventPayload) => void) {
+    set ondisconnect(listener: (event: OnConnectEvent) => void) {
         onDeviceDisconnect(listener);
     }
+
+    // Not supported methods
+    requestDevice = async (..._params: any[]): Promise<any> => {};
+    addEventListener = (..._params: any[]): any => {};
+    removeEventListener = (..._params: any[]): any => {};
+    dispatchEvent = (..._params: any[]): any => {};
 }

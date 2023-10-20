@@ -74,6 +74,7 @@
         "@suite-native/toasts": "workspace:*",
         "@suite-native/transactions": "workspace:*",
         "@trezor/connect": "workspace:*",
+        "@trezor/react-native-usb": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
         "babel-plugin-transform-remove-console": "^6.9.4",
