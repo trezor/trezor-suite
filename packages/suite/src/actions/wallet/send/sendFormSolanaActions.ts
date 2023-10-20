@@ -9,6 +9,7 @@ import {
     PrecomposedLevels,
 } from '@suite-common/wallet-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { selectDevice } from '@suite-common/wallet-core';
 import { Dispatch, GetState } from 'src/types/suite';
 import {
     amountToSatoshi,
@@ -221,7 +222,7 @@ export const signTransaction =
     (formValues: FormState, transactionInfo: PrecomposedTransactionFinal) =>
     async (dispatch: Dispatch, getState: GetState) => {
         const { selectedAccount } = getState().wallet;
-        const { device } = getState().suite;
+        const device = selectDevice(getState());
 
         if (
             selectedAccount.status !== 'loaded' ||
