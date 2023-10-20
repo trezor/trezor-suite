@@ -215,7 +215,7 @@ const tokenAccountInfoWithDuplicateTokenAccount = [
             owner: new PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'),
             rentEpoch: 0,
         },
-        pubkey: new PublicKey('ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF'),
+        pubkey: new PublicKey('CR6QfobBidQTSYdR6jihKTfMnHkRUtw8cLDCxENDVYmd'),
     },
 ];
 
@@ -587,6 +587,12 @@ export const fixtures = {
                     decimals: 6,
                     name: 'Raydium',
                     symbol: 'RAY',
+                    accounts: [
+                        {
+                            balance: '2000000',
+                            publicKey: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
+                        },
+                    ],
                 },
             ],
         },
@@ -605,6 +611,16 @@ export const fixtures = {
                     decimals: 6,
                     name: 'Raydium',
                     symbol: 'RAY',
+                    accounts: [
+                        {
+                            balance: '2000000',
+                            publicKey: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
+                        },
+                        {
+                            balance: '1000000',
+                            publicKey: 'CR6QfobBidQTSYdR6jihKTfMnHkRUtw8cLDCxENDVYmd',
+                        },
+                    ],
                 },
             ],
         },

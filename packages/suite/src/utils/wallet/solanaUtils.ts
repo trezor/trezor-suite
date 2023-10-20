@@ -6,7 +6,6 @@ import {
     TOKEN_PROGRAM_PUBLIC_KEY,
     ASSOCIATED_TOKEN_PROGRAM_PUBLIC_KEY,
     SYSTEM_PROGRAM_PUBLIC_KEY,
-    SYSVAR_RENT_PUBLIC_KEY,
 } from '@trezor/blockchain-link-utils/lib/solana';
 import BigNumber from 'bignumber.js';
 
@@ -122,7 +121,7 @@ export const buildCreateAssociatedTokenAccountInstruction = async (
     newOwnerAddress: string,
     tokenMintAddress: string,
 ) => {
-    const { TransactionInstruction, PublicKey } = await loadSolanaLib();
+    const { TransactionInstruction, PublicKey, SYSVAR_RENT_PUBKEY } = await loadSolanaLib();
 
     const associatedTokenAccountAddress = PublicKey.findProgramAddressSync(
         [
@@ -166,7 +165,7 @@ export const buildCreateAssociatedTokenAccountInstruction = async (
             isWritable: false,
         },
         {
-            pubkey: new PublicKey(SYSVAR_RENT_PUBLIC_KEY),
+            pubkey: SYSVAR_RENT_PUBKEY,
             isSigner: false,
             isWritable: false,
         },
