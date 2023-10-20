@@ -38,6 +38,7 @@ import { MetadataAddPayload } from 'src/types/suite/metadata';
 import * as sendFormBitcoinActions from './send/sendFormBitcoinActions';
 import * as sendFormEthereumActions from './send/sendFormEthereumActions';
 import * as sendFormRippleActions from './send/sendFormRippleActions';
+import * as sendFormSolanaActions from './send/sendFormSolanaActions';
 import * as sendFormCardanoActions from './send/sendFormCardanoActions';
 
 export type SendFormAction =
@@ -172,6 +173,9 @@ export const composeTransaction =
         }
         if (account.networkType === 'cardano') {
             return dispatch(sendFormCardanoActions.composeTransaction(formValues, formState));
+        }
+        if (account.networkType === 'solana') {
+            return dispatch(sendFormSolanaActions.composeTransaction(formValues, formState));
         }
         return Promise.resolve(undefined);
     };
