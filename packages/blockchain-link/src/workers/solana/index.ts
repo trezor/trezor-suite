@@ -12,8 +12,8 @@ import type * as MessageTypes from '@trezor/blockchain-link-types/lib/messages';
 import { CustomError } from '@trezor/blockchain-link-types/lib/constants/errors';
 import { BaseWorker, ContextType, CONTEXT } from '../baseWorker';
 import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/lib/constants';
-import { Connection, PublicKey } from '@solana/web3.js';
 import { solanaUtils } from '@trezor/blockchain-link-utils';
+import { Connection, Message, PublicKey } from '@solana/web3.js';
 
 export type SolanaAPI = Connection;
 
@@ -198,8 +198,36 @@ const getInfo = async (request: Request<MessageTypes.GetInfo>) => {
     } as const;
 };
 
-const BLOCK_SUBSCRIBE_INTERVAL_MS = 10000;
+const estimateFee = async (request: Request<MessageTypes.EstimateFee>) => {
+    const api = await request.connect();
 
+    const message = request.payload.specific?.data;
+
+    if (message == null) {
+        throw new Error('Could not estimate fee for transaction.');
+    }
+
+    const result = await api.getFeeForMessage(Message.from(Buffer.from(message)));
+
+    // The result can be null, for example if the transaction blockhash is invalid.
+    // In this case, we should fall back to the default fee.
+    if (result.value == null) {
+        throw new Error('Could not estimate fee for transaction.');
+    }
+
+    const payload = [
+        {
+            feePerUnit: `${result.value}`,
+        },
+    ];
+
+    return {
+        type: RESPONSES.ESTIMATE_FEE,
+        payload,
+    } as const;
+};
+
+const BLOCK_SUBSCRIBE_INTERVAL_MS = 10000;
 const subscribeBlock = async ({ state, connect, post }: Context) => {
     if (state.getSubscription('block')) return;
     const api = await connect();
@@ -357,6 +385,8 @@ const onRequest = (request: Request<MessageTypes.Message>) => {
             return getInfo(request);
         case MESSAGES.PUSH_TRANSACTION:
             return pushTransaction(request);
+        case MESSAGES.ESTIMATE_FEE:
+            return estimateFee(request);
         case MESSAGES.SUBSCRIBE:
             return subscribe(request);
         case MESSAGES.UNSUBSCRIBE:
