@@ -8582,6 +8582,7 @@ __metadata:
     "@suite-common/wallet-core": "workspace:*"
     "@suite-native/assets": "workspace:*"
     "@suite-native/atoms": "workspace:*"
+    "@suite-native/biometrics": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"
     "@suite-native/formatters": "workspace:*"
     "@suite-native/graph": "workspace:*"
@@ -8591,6 +8592,7 @@ __metadata:
     "@suite-native/navigation": "workspace:*"
     "@suite-native/receive": "workspace:*"
     "@trezor/styles": "workspace:*"
+    expo-local-authentication: ^13.6.0
     jotai: 1.9.1
     react: 18.2.0
     react-native: 0.71.8
@@ -8668,7 +8670,6 @@ __metadata:
     "@suite-common/icons": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
-    "@suite-native/alerts": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/biometrics": "workspace:*"
@@ -19439,14 +19440,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-local-authentication@npm:^13.3.0":
-  version: 13.4.0
-  resolution: "expo-local-authentication@npm:13.4.0"
+"expo-local-authentication@npm:^13.3.0, expo-local-authentication@npm:^13.6.0":
+  version: 13.7.0
+  resolution: "expo-local-authentication@npm:13.7.0"
   dependencies:
     invariant: ^2.2.4
   peerDependencies:
     expo: "*"
-  checksum: b4c0c3ed9216b9ae3bc567a9d92e46a68533461615fbd5a81744879b644ec40e7ba21e28ebde8f33995718f1f35f8b42ae3b55ed1fb4017611440d6c5fff01cd
+  checksum: 6c37fe973deb58f36bad524c1e06e3ad79c2d045ae5ced97026cb214e6f968bd768841a89aff646471d63b8eae4816cef0d0b507c2bb46d85eb81e146baf0600
   languageName: node
   linkType: hard
 

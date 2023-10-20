@@ -22,6 +22,23 @@ export const en = {
             subtitle: 'Get started by receiving coins',
             receive: 'Receive',
         },
+        biometricsModal: {
+            title: {
+                faceId: 'Enable Face Id',
+                fingerprint: 'Enable fingerprint',
+                touchId: 'Enable Touch Id',
+                unknown: 'Enable biometrics',
+            },
+            description: 'Use biometricts verification \nto unlock the app.',
+            button: {
+                later: 'I’ll do that later in Settings',
+                enable: 'Enable',
+            },
+            resultMsg: {
+                error: 'Unable to enable biometrics',
+                success: 'Biometrics enabled',
+            },
+        },
     },
     assets: {
         dashboard: {
