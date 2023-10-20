@@ -172,6 +172,12 @@ export const factory = ({
 
         signTransaction: params => call({ ...params, method: 'signTransaction' }),
 
+        solanaGetPublicKey: params => call({ ...params, method: 'solanaGetPublicKey' }),
+
+        solanaGetAddress: params => call({ ...params, method: 'solanaGetAddress' }),
+
+        solanaSignTransaction: params => call({ ...params, method: 'solanaSignTransaction' }),
+
         stellarGetAddress: params =>
             call({
                 ...params,
