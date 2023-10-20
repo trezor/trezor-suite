@@ -351,7 +351,7 @@ export const startDiscoveryThunk = createThunk(
         }
 
         const { deviceState, authConfirm } = discovery;
-        const metadataEnabled = metadata.enabled && !device.metadata[1]; // todo: can't import constant
+        const metadataEnabled = metadata.enabled && device.metadata[2]; // todo: can't import constant
 
         // start process
         if (
