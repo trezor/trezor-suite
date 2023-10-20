@@ -29,7 +29,8 @@ const getCoinFromTestnet = (symbol: Account['symbol']) => {
 export const isAddressValid = (address: string, symbol: Account['symbol']) => {
     const networkType = getNetworkType(symbol);
     const updatedSymbol = getCoinFromTestnet(symbol);
-    return addressValidator.validate(address, updatedSymbol.toUpperCase(), networkType); // TODO(vl): validate address
+
+    return addressValidator.validate(address, updatedSymbol.toUpperCase(), networkType);
 };
 
 export const isAddressDeprecated = (address: string, symbol: Account['symbol']) => {
