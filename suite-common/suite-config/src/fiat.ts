@@ -70,6 +70,7 @@ export const FIAT = {
         { symbol: 'vtc', coingeckoId: 'vertcoin' },
         { symbol: 'nmc', coingeckoId: 'namecoin' },
         { symbol: 'zec', coingeckoId: 'zcash' },
+        { symbol: 'sol', coingeckoId: 'solana' },
     ],
     currencies: Object.keys(fiatCurrencies),
 } as const;
