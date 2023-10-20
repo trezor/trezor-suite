@@ -2,6 +2,12 @@ import * as BufferLayout from '@solana/buffer-layout';
 import type { TokenAccount } from '@trezor/blockchain-link-types';
 import { A, F, pipe } from '@mobily/ts-belt';
 import { getLamportsFromSol } from '@suite-common/wallet-utils';
+import {
+    TOKEN_PROGRAM_PUBLIC_KEY,
+    ASSOCIATED_TOKEN_PROGRAM_PUBLIC_KEY,
+    SYSTEM_PROGRAM_PUBLIC_KEY,
+    SYSVAR_RENT_PUBLIC_KEY,
+} from '@trezor/blockchain-link-utils/lib/solana';
 import BigNumber from 'bignumber.js';
 
 const loadSolanaLib = async () => {
@@ -108,4 +114,68 @@ export const buildTokenTransferInstruction = async (
         }),
         programId: new PublicKey(TOKEN_PROGRAM_PUBLIC_KEY),
     });
+};
+
+// Construct an instruction to create an associated token account. Used in token transfers
+export const buildCreateAssociatedTokenAccountInstruction = async (
+    funderAddress: string,
+    newOwnerAddress: string,
+    tokenMintAddress: string,
+) => {
+    const { TransactionInstruction, PublicKey } = await loadSolanaLib();
+
+    const associatedTokenAccountAddress = PublicKey.findProgramAddressSync(
+        [
+            new PublicKey(newOwnerAddress).toBuffer(),
+            new PublicKey(TOKEN_PROGRAM_PUBLIC_KEY).toBuffer(),
+            new PublicKey(tokenMintAddress).toBuffer(),
+        ],
+        new PublicKey(ASSOCIATED_TOKEN_PROGRAM_PUBLIC_KEY),
+    )[0];
+
+    // key layout: https://github.com/solana-labs/solana-program-library/blob/master/associated-token-account/program/src/lib.rs#L58
+    const keys = [
+        {
+            pubkey: new PublicKey(funderAddress),
+            isSigner: true,
+            isWritable: true,
+        },
+        {
+            pubkey: new PublicKey(associatedTokenAccountAddress),
+            isSigner: false,
+            isWritable: true,
+        },
+        {
+            pubkey: new PublicKey(newOwnerAddress),
+            isSigner: false,
+            isWritable: false,
+        },
+        {
+            pubkey: new PublicKey(tokenMintAddress),
+            isSigner: false,
+            isWritable: false,
+        },
+        {
+            pubkey: new PublicKey(SYSTEM_PROGRAM_PUBLIC_KEY),
+            isSigner: false,
+            isWritable: false,
+        },
+        {
+            pubkey: new PublicKey(TOKEN_PROGRAM_PUBLIC_KEY),
+            isSigner: false,
+            isWritable: false,
+        },
+        {
+            pubkey: new PublicKey(SYSVAR_RENT_PUBLIC_KEY),
+            isSigner: false,
+            isWritable: false,
+        },
+    ];
+
+    const txInstruction = new TransactionInstruction({
+        keys,
+        programId: new PublicKey(ASSOCIATED_TOKEN_PROGRAM_PUBLIC_KEY),
+        data: Buffer.from([]),
+    });
+    return [txInstruction, associatedTokenAccountAddress] as const;
 };

@@ -1,4 +1,5 @@
 import { A, D, F, pipe } from '@mobily/ts-belt';
+import { SYSVAR_RENT_PUBKEY } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 
 import { Target, Transaction } from '@trezor/blockchain-link-types/lib';
@@ -7,13 +8,13 @@ import type {
     ParsedTransactionWithMeta,
     SolanaValidParsedTxWithMeta,
     TokenDetailByMint,
-    AccountInfo,
-    ParsedAccountData,
-    PublicKey,
 } from '@trezor/blockchain-link-types/lib/solana';
 import type { TokenInfo } from '@trezor/blockchain-link-types/lib';
 
-type TokenAccount = { account: AccountInfo<ParsedAccountData>; pubkey: PublicKey };
+export const TOKEN_PROGRAM_PUBLIC_KEY = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
+export const ASSOCIATED_TOKEN_PROGRAM_PUBLIC_KEY = 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL';
+export const SYSTEM_PROGRAM_PUBLIC_KEY = '11111111111111111111111111111111';
+export const SYSVAR_RENT_PUBLIC_KEY = SYSVAR_RENT_PUBKEY.toString();
 
 export const getTokenNameAndSymbol = (mint: string, tokenDetailByMint: TokenDetailByMint) => {
     const tokenDetail = tokenDetailByMint[mint];
