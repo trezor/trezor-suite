@@ -224,6 +224,7 @@ export interface AccountInfo {
 export interface SubscriptionAccountInfo {
     descriptor: string;
     addresses?: AccountAddresses; // bitcoin addresses
+    subscriptionId?: number;
 }
 
 export type ChannelMessage<T> = T & { id: number };

@@ -1,10 +1,17 @@
-import type { Response, AccountInfo, Transaction } from '@trezor/blockchain-link-types';
-import type { SolanaValidParsedTxWithMeta } from '@trezor/blockchain-link-types/lib/solana';
+import type {
+    Response,
+    AccountInfo,
+    Transaction,
+    SubscriptionAccountInfo,
+} from '@trezor/blockchain-link-types';
+import type {
+    SolanaValidParsedTxWithMeta,
+    ParsedTransactionWithMeta,
+} from '@trezor/blockchain-link-types/lib/solana';
 import type * as MessageTypes from '@trezor/blockchain-link-types/lib/messages';
 import { CustomError } from '@trezor/blockchain-link-types/lib/constants/errors';
 import { BaseWorker, ContextType, CONTEXT } from '../baseWorker';
 import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/lib/constants';
-import type { ParsedTransactionWithMeta } from '@trezor/blockchain-link-types/lib/solana';
 import { Connection, PublicKey } from '@solana/web3.js';
 import { solanaUtils } from '@trezor/blockchain-link-utils';
 
@@ -226,10 +233,92 @@ const unsubscribeBlock = ({ state }: Context) => {
     state.removeSubscription('block');
 };
 
+const subscribeAccounts = async (
+    { connect, state, post }: Context,
+    accounts: SubscriptionAccountInfo[],
+) => {
+    const api = await connect();
+    const subscribedAccounts = state.getAccounts();
+    const newAccounts = accounts.filter(
+        account =>
+            !subscribedAccounts.some(
+                subscribeAccount => account.descriptor === subscribeAccount.descriptor,
+            ),
+    );
+    newAccounts.forEach(a => {
+        const subscriptionId = api.onAccountChange(new PublicKey(a.descriptor), async () => {
+            // get the last transaction signature for the account, since that wha triggered this callback
+            const lastSignature = (
+                await api.getSignaturesForAddress(new PublicKey(a.descriptor), {
+                    before: undefined,
+                    limit: 1,
+                })
+            )[0]?.signature;
+            if (!lastSignature) return;
+
+            // get the last transaction
+            const lastTx = (
+                await api.getParsedTransactions([lastSignature], {
+                    maxSupportedTransactionVersion: 0,
+                    commitment: 'finalized',
+                })
+            )[0];
+            if (!lastTx) return;
+
+            const slotToBlockHeightMapping = {
+                [lastTx.slot]: (
+                    await api.getParsedBlock(lastTx.slot, {
+                        maxSupportedTransactionVersion: 0,
+                    })
+                ).blockHeight,
+            };
+
+            if (!lastTx || !isValidTransaction(lastTx)) {
+                return;
+            }
+
+            const tx = solanaUtils.transformTransaction(
+                lastTx,
+                a.descriptor,
+                slotToBlockHeightMapping,
+            );
+            post({
+                id: -1,
+                type: RESPONSES.NOTIFICATION,
+                payload: {
+                    type: 'notification',
+                    payload: {
+                        descriptor: a.descriptor,
+                        tx,
+                    },
+                },
+            });
+            state.addAccounts([{ ...a, subscriptionId }]);
+        });
+    });
+    return { subscribed: true };
+};
+
+const unsubscribeAccounts = async (
+    { state, connect }: Context,
+    accounts: SubscriptionAccountInfo[] | undefined = [],
+) => {
+    const api = await connect();
+    accounts.forEach(a => {
+        if (a.subscriptionId) {
+            api.removeAccountChangeListener(a.subscriptionId);
+            state.removeAccounts([a]);
+        }
+    });
+};
+
 const subscribe = (request: Request<MessageTypes.Subscribe>) => {
     switch (request.payload.type) {
         case 'block':
             subscribeBlock(request);
+            break;
+        case 'accounts':
+            subscribeAccounts(request, request.payload.accounts);
             break;
         default:
             throw new CustomError('worker_unknown_request', `+${request.type}`);
@@ -245,6 +334,10 @@ const unsubscribe = (request: Request<MessageTypes.Unsubscribe>) => {
         case 'block':
             unsubscribeBlock(request);
             break;
+        case 'accounts': {
+            unsubscribeAccounts(request, request.payload.accounts);
+            break;
+        }
         default:
             throw new CustomError('worker_unknown_request', `+${request.type}`);
     }
