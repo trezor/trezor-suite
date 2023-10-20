@@ -188,4 +188,66 @@ export const fixtures = {
             expectedOutput: 'unknown',
         },
     ],
+    getTargets: [
+        {
+            description: 'should return an array with a target for "self" transaction type',
+            input: {
+                effects: [effects.negative],
+                txType: 'self',
+                accountAddress: effects.negative.address,
+            },
+            expectedOutput: [
+                {
+                    n: 0,
+                    addresses: [effects.negative.address],
+                    isAddress: true,
+                    amount: effects.negative.amount.abs().toString(),
+                    isAccountTarget: true,
+                },
+            ],
+        },
+        {
+            description: 'should return an array with a target for "sent" transaction type',
+            input: {
+                effects: [effects.positive, effects.negative],
+                txType: 'sent',
+                accountAddress: effects.negative.address,
+            },
+            expectedOutput: [
+                {
+                    n: 0,
+                    addresses: [effects.positive.address],
+                    isAddress: true,
+                    amount: effects.positive.amount.abs().toString(),
+                    isAccountTarget: false,
+                },
+            ],
+        },
+        {
+            description: 'should return an array with a target for "recv" transaction type',
+            input: {
+                effects: [effects.positive, effects.negative],
+                txType: 'recv',
+                accountAddress: effects.positive.address,
+            },
+            expectedOutput: [
+                {
+                    n: 0,
+                    addresses: [effects.positive.address],
+                    isAddress: true,
+                    amount: effects.positive.amount.abs().toString(),
+                    isAccountTarget: true,
+                },
+            ],
+        },
+        {
+            description: 'should return an empty array for "unknown" transaction type',
+            input: {
+                effects: [effects.positive, effects.negative],
+                txType: 'unknown',
+                accountAddress: 'someOtherAddress',
+            },
+            expectedOutput: [],
+        },
+    ],
 };
