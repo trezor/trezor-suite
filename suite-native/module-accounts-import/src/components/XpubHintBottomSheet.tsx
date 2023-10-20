@@ -59,6 +59,7 @@ export const networkToAssetsMap = {
         video: 'xpubImportETH',
     },
     cardano: undefined,
+    solana: undefined,
 } as const satisfies Record<NetworkType, NetworkAssets | undefined>;
 
 export const defaultAssets = networkToAssetsMap.bitcoin;

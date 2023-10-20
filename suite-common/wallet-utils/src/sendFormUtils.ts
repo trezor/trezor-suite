@@ -224,7 +224,7 @@ export const getFeeUnits = (networkType: NetworkType) => {
     if (networkType === 'ethereum') return 'GWEI';
     if (networkType === 'ripple') return 'Drops';
     if (networkType === 'cardano') return 'Lovelaces/B';
-    return 'sat/B';
+    return 'sat/B'; // TODO:(vl): solana fee unit
 };
 
 // Find all validation errors set while composing a transaction

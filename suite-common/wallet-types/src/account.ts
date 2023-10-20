@@ -44,6 +44,12 @@ type AccountNetworkSpecific =
           misc: { nonce: string };
           marker: undefined;
           page: AccountInfo['page'];
+      }
+    | {
+          networkType: 'solana'; // TODO(vl): account specific solana
+          misc: undefined;
+          marker: undefined;
+          page: AccountInfo['page'];
       };
 
 // decides if account is using TrezorConnect/blockchain-link or other non-standard api
