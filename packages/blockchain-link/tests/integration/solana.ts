@@ -151,7 +151,13 @@ export const solanaApi = {
                 signatures: ['deadbeaf'],
                 message: {
                     accountKeys: [{ pubkey: { toString: () => descriptor } }],
-                    instructions: [],
+                    instructions: [
+                        {
+                            parsed: {
+                                type: 'transfer',
+                            },
+                        },
+                    ],
                 },
             },
             version: 'legacy',
