@@ -10148,6 +10148,7 @@ __metadata:
     "@hookform/resolvers": 3.1.0
     "@reduxjs/toolkit": 1.9.5
     "@sentry/core": ^7.56.0
+    "@solana/web3.js": ^1.78.4
     "@suite-common/analytics": "workspace:*"
     "@suite-common/connect-init": "workspace:*"
     "@suite-common/device-authenticity": "workspace:*"
