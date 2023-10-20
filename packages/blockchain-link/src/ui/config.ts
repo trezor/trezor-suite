@@ -455,7 +455,7 @@ export default [
             // we do not use path to worker build here because its not used, we use it just to match this config to actual implementation of the worker
             worker: 'solana',
             server: [
-                'wiser-green-owl.solana-mainnet.discover.quiknode.pro/c218d0c9e451f6c5c0bf8b7c7d8e5a72384c9570/',
+                'floral-wider-aura.solana-mainnet.quiknode.pro/dbc557c5d503280fd160a157ccc25d96923bba44/',
             ],
             debug: true,
         },
