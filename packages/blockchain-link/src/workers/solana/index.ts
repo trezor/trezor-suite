@@ -64,6 +64,7 @@ const fetchTransactionPage = async (
 
 const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => {
     const { payload } = request;
+    const { details = 'basic' } = payload;
     const api = await request.connect();
 
     const accountInfo = await api.getAccountInfo(new PublicKey(payload.descriptor));
@@ -87,57 +88,62 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
         } as const);
     }
 
+    const getTransactionPage = async (txIds: string[]) => {
+        const transactionsPage = await fetchTransactionPage(api, txIds);
+        const uniqueTransactionSlots = Array.from(new Set(transactionsPage.map(tx => tx.slot)));
+
+        const slotToBlockHeightMapping = (
+            await Promise.all(
+                uniqueTransactionSlots.map(async slot => {
+                    const { blockHeight } = await api.getParsedBlock(slot, {
+                        maxSupportedTransactionVersion: 0,
+                    });
+                    return blockHeight;
+                }),
+            )
+        ).reduce(
+            (acc, curr, i) => ({ ...acc, [uniqueTransactionSlots[i]]: curr }),
+            {} as Record<number, number | null>,
+        );
+
+        return transactionsPage
+            .map(tx =>
+                solanaUtils.transformTransaction(tx, payload.descriptor, slotToBlockHeightMapping),
+            )
+            .filter((tx): tx is Transaction => !!tx);
+    };
+
+    const allTxIds = Array.from(new Set(await getAllSignatures(api, payload.descriptor)));
+
+    const pageNumber = payload.page ? payload.page - 1 : 0;
     // for the first page of txs, payload.page is undefined, for the second page is 2
-    const page = payload.page ? payload.page - 1 : 0;
     const pageSize = payload.pageSize || 10; // TODO(vl): change to 25
 
-    const allSignatures = Array.from(new Set(await getAllSignatures(api, payload.descriptor)));
-    const pageStartIndex = page * pageSize;
-    const pageEndIndex = Math.min(pageStartIndex + pageSize, allSignatures.length);
+    const pageStartIndex = pageNumber * pageSize;
+    const pageEndIndex = Math.min(pageStartIndex + pageSize, allTxIds.length);
 
-    const transactionsPage = await fetchTransactionPage(
-        api,
-        allSignatures.slice(pageStartIndex, pageEndIndex),
-    );
+    const txIdPage = allTxIds.slice(pageStartIndex, pageEndIndex);
 
-    const uniqueTransactionSlots = Array.from(new Set(transactionsPage.map(tx => tx.slot)));
-
-    const slotToBlockHeightMapping = (
-        await Promise.all(
-            uniqueTransactionSlots.map(async slot => {
-                const { blockHeight } = await api.getParsedBlock(slot, {
-                    maxSupportedTransactionVersion: 0,
-                });
-                return blockHeight;
-            }),
-        )
-    ).reduce(
-        (acc, curr, i) => ({ ...acc, [uniqueTransactionSlots[i]]: curr }),
-        {} as Record<number, number | null>,
-    );
-
-    const transactions = transactionsPage
-        .map(tx =>
-            solanaUtils.transformTransaction(tx, payload.descriptor, slotToBlockHeightMapping),
-        )
-        .filter((tx): tx is Transaction => !!tx);
+    const transactionPage = details === 'txs' ? await getTransactionPage(txIdPage) : undefined;
 
     const account: AccountInfo = {
         descriptor: payload.descriptor,
         balance: accountInfo.lamports.toString(), // TODO(vl): check if this should also include staking balances
         availableBalance: accountInfo.lamports.toString(), // TODO(vl): revisit to make sure that what getAccountInfo returns is actually available balance
-        empty: !!transactions.length,
+        empty: !!allTxIds.length,
         history: {
-            total: allSignatures.length,
+            total: allTxIds.length,
             unconfirmed: 0,
-            transactions,
-            txids: transactions.map(({ txid }) => txid),
+            transactions: transactionPage,
+            txids: txIdPage,
         },
-        page: {
-            total: allSignatures.length,
-            index: page,
-            size: transactions.length,
-        },
+        page: transactionPage
+            ? {
+                  total: allTxIds.length,
+                  index: pageNumber,
+                  size: transactionPage.length,
+              }
+            : undefined,
     };
 
     return Promise.resolve({
