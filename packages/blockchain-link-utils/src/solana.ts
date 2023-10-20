@@ -150,3 +150,37 @@ export function getAmount(
     }
     return accountEffect.amount.toString();
 }
+
+export const transformTransaction = (
+    tx: ParsedTransactionWithMeta,
+    accountAddress: string,
+): Transaction | null => {
+    if (!tx || !tx.meta || !tx.transaction || !tx.blockTime) {
+        return null;
+    }
+
+    const effects = getTransactionEffects(tx);
+
+    const type = getTxType(tx, effects, accountAddress);
+
+    const targets = getTargets(effects, type, accountAddress);
+
+    const amount = getAmount(
+        effects.find(({ address }) => address === accountAddress),
+        type,
+    );
+
+    return {
+        type,
+        txid: tx.transaction.signatures[0].toString(),
+        blockTime: tx.blockTime,
+        amount,
+        fee: tx.meta.fee.toString(),
+        targets,
+        tokens: [], // TODO(vl): phase 2
+        internalTransfers: [], // not relevant for solana
+        details: getDetails(tx, effects, accountAddress),
+        blockHeight: slotToBlockHeightMapping[tx.slot] || undefined,
+        blockHash: tx.transaction.message.recentBlockhash,
+    };
+};

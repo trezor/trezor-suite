@@ -1,9 +1,10 @@
-import type { Response, AccountInfo } from '@trezor/blockchain-link-types';
+import type { Response, AccountInfo, Transaction } from '@trezor/blockchain-link-types';
 import type * as MessageTypes from '@trezor/blockchain-link-types/lib/messages';
 import { CustomError } from '@trezor/blockchain-link-types/lib/constants/errors';
 import { BaseWorker, ContextType, CONTEXT } from '../baseWorker';
 import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/lib/constants';
-import { Connection, PublicKey } from '@solana/web3.js';
+import { Connection, ParsedTransactionWithMeta, PublicKey } from '@solana/web3.js';
+import { solanaUtils } from '@trezor/blockchain-link-utils';
 
 export type SolanaAPI = Connection;
 
@@ -77,20 +78,23 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
 
     const transactionsPage = await fetchTransactionPage(request);
 
-    // TODO(vl): parse transaction page
+    const transactions = transactionsPage
+        .map(tx => solanaUtils.transformTransaction(tx, payload.descriptor))
+        .filter((tx): tx is Transaction => !!tx);
 
     const account: AccountInfo = {
         descriptor: payload.descriptor,
         balance: accountInfo.lamports.toString(), // TODO(vl): check if this should also include staking balances
         availableBalance: accountInfo.lamports.toString(), // TODO(vl): revisit to make sure that what getAccountInfo returns is actually available balance
-        empty: accountInfo.lamports === 0, // TODO(vl): this is not correct, it should depend on the length of transaction history
-        // TODO(vl): transaction history
+        empty: !!transactions.length,
         history: {
-            total: -1,
+            total: transactions.length,
             unconfirmed: 0,
-            transactions: undefined,
+            transactions,
+            txids: transactions.map(({ txid }) => txid),
         },
     };
+
     return Promise.resolve({
         type: RESPONSES.GET_ACCOUNT_INFO,
         payload: account,

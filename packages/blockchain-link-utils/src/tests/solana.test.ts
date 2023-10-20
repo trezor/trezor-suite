@@ -9,6 +9,7 @@ import {
     getTargets,
     getTransactionEffects,
     getTxType,
+    transformTransaction,
 } from '../solana';
 import { fixtures } from './fixtures/solana';
 
@@ -77,6 +78,18 @@ describe('solana/utils', () => {
                 const result = getDetails(
                     input.transaction as ParsedTransactionWithMeta,
                     input.effects,
+                    input.accountAddress,
+                );
+                expect(result).toEqual(expectedOutput);
+            });
+        });
+    });
+
+    describe('transformTransaction', () => {
+        fixtures.transformTransaction.forEach(({ description, input, expectedOutput }) => {
+            it(description, () => {
+                const result = transformTransaction(
+                    input.transaction as ParsedTransactionWithMeta,
                     input.accountAddress,
                 );
                 expect(result).toEqual(expectedOutput);
