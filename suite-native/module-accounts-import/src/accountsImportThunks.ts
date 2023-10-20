@@ -58,19 +58,19 @@ export const importAccountThunk = createThunk(
             const accountType = getAccountTypeFromDescriptor(accountInfo.descriptor, coin);
             const imported = true;
             dispatch(
-                accountsActions.createAccount(
+                accountsActions.createAccount({
                     deviceState,
-                    {
+                    discoveryItem: {
                         index: deviceNetworkAccounts.length, // indexed from 0
                         path: accountInfo?.path ?? '',
                         accountType,
                         networkType: networks[coin].networkType,
                         coin,
                     },
-                    { ...accountInfo },
+                    accountInfo,
                     imported,
                     accountLabel,
-                ),
+                }),
             );
         }
     },
