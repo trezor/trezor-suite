@@ -1,5 +1,8 @@
 import * as BufferLayout from '@solana/buffer-layout';
+import type { TokenAccount } from '@trezor/blockchain-link-types';
+import { A, F, pipe } from '@mobily/ts-belt';
 import { getLamportsFromSol } from '@suite-common/wallet-utils';
+import BigNumber from 'bignumber.js';
 
 const loadSolanaLib = async () => {
     const lib = await import('@solana/web3.js');
@@ -54,6 +57,29 @@ export const buildTransferTransaction = async (
     );
 
     return transaction;
+};
+
+// exported for testing
+export const getMinimumRequiredTokenAccountsForTransfer = (
+    tokenAccounts: TokenAccount[],
+    requiredAmount: string,
+) => {
+    // sort the tokenAccounts from highest to lowest balance
+    let accumulatedBalance = new BigNumber('0');
+    const requiredAccounts = F.toMutable(
+        pipe(
+            tokenAccounts,
+            A.sort((a, b) => new BigNumber(b.balance).comparedTo(new BigNumber(a.balance))),
+            A.takeWhile(tokenAccount => {
+                const needMoreAccounts = accumulatedBalance.lt(requiredAmount);
+                accumulatedBalance = accumulatedBalance.plus(tokenAccount.balance);
+
+                return needMoreAccounts;
+            }),
+        ),
+    );
+
+    return requiredAccounts;
 };
 
 // Construct the transfer instruction for a token transfer
