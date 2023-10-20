@@ -12,6 +12,9 @@ export const extraDependencies: ExtraDependencies = mergeDeepObject(extraDepende
         selectBitcoinAmountUnit: () => PROTO.AmountUnit.BITCOIN,
         selectLocalCurrency: selectFiatCurrencyCode,
         selectDevices,
+        selectDebugSettings: () => ({
+            transports: ['NativeUsbTransport', 'UdpTransport'],
+        }),
     } as Partial<ExtraDependencies['selectors']>,
     thunks: {} as Partial<ExtraDependencies['thunks']>,
     actions: {
@@ -23,7 +26,7 @@ export const extraDependencies: ExtraDependencies = mergeDeepObject(extraDepende
         connectInitSettings: {
             lazyLoad: false,
             transportReconnect: false,
-            debug: true,
+            debug: false,
             popup: false,
             manifest: {
                 email: 'info@trezor.io',

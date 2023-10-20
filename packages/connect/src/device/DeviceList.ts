@@ -12,6 +12,7 @@ import {
     TRANSPORT,
     Descriptor,
     TRANSPORT_ERROR,
+    NativeUsbTransport,
 } from '@trezor/transport';
 import { ERRORS } from '../constants';
 import { DEVICE, TransportInfo } from '../events';
@@ -94,6 +95,14 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
                     case 'NodeUsbTransport':
                         this.transports.push(
                             new NodeUsbTransport({
+                                messages: this.messages,
+                                logger: transportLogger,
+                            }),
+                        );
+                        break;
+                    case 'NativeUsbTransport':
+                        this.transports.push(
+                            new NativeUsbTransport({
                                 messages: this.messages,
                                 logger: transportLogger,
                             }),
