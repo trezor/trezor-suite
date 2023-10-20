@@ -7,3 +7,5 @@ export type SolanaValidParsedTxWithMeta = ParsedTransactionWithMeta & {
 };
 
 export type { ParsedInstruction, ParsedTransactionWithMeta } from '@solana/web3.js';
+
+export type TokenDetailByMint = { [mint: string]: { name: string; symbol: string } };
