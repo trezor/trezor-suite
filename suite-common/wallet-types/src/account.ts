@@ -46,7 +46,7 @@ type AccountNetworkSpecific =
           page: AccountInfo['page'];
       }
     | {
-          networkType: 'solana'; // TODO(vl): account specific solana
+          networkType: 'solana';
           misc: undefined;
           marker: undefined;
           page: AccountInfo['page'];

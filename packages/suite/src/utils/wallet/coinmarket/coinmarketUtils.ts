@@ -184,7 +184,7 @@ export const getComposeAddressPlaceholder = async (
             return '37btjrVyb4KDXBNC4haBVPCrro8AQPHwvCMp3RFhhSVWwfFmZ6wwzSK6JK1hY6wHNmtrpTf1kdbva8TCneM2YsiXT7mrzT21EacHnPpz5YyUdj64na';
         case 'ethereum':
         case 'ripple':
-        case 'solana': // TODO(vl): address
+        case 'solana':
             return account.descriptor;
         // no default
     }

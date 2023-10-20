@@ -25,7 +25,6 @@ const validateUrl = (type: BackendOption, value: string) => {
             return isUrl(value);
         case 'electrum':
             return isElectrumUrl(value);
-        // TODO(vl): solana backend
         default:
             return false;
     }
@@ -39,7 +38,6 @@ const getUrlPlaceholder = (coin: Network['symbol'], type: BackendOption) => {
             return `wss://blockfrost.io`;
         case 'electrum':
             return `electrum.example.com:50001:t`;
-        // TODO(vl): solana backend
         default:
             return '';
     }
