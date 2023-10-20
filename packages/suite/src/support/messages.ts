@@ -3727,6 +3727,18 @@ export default defineMessages({
         id: 'TR_ACCOUNT_TYPE_BIP44_TECH',
         defaultMessage: 'BIP44, P2PKH, Base58',
     },
+    TR_ACCOUNT_TYPE_SOLANA_BIP44_CHANGE_NAME: {
+        id: 'TR_ACCOUNT_TYPE_SOLANA_BIP44_CHANGE_NAME',
+        defaultMessage: 'Bip44Change',
+    },
+    TR_ACCOUNT_TYPE_SOLANA_BIP44_CHANGE_TECH: {
+        id: 'TR_ACCOUNT_TYPE_SOLANA_BIP44_CHANGE_TECH',
+        defaultMessage: 'BIP44, Base58',
+    },
+    TR_ACCOUNT_TYPE_SOLANA_BIP44_CHANGE_DESC: {
+        id: 'TR_ACCOUNT_TYPE_SOLANA_BIP44_CHANGE_DESC',
+        defaultMessage: 'Bip44Change account',
+    },
     TR_ACCOUNT_TYPE_SLIP25_NAME: {
         id: 'TR_ACCOUNT_TYPE_SLIP25_NAME',
         defaultMessage: 'Coinjoin',
