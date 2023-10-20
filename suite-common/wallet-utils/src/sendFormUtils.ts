@@ -224,7 +224,8 @@ export const getFeeUnits = (networkType: NetworkType) => {
     if (networkType === 'ethereum') return 'GWEI';
     if (networkType === 'ripple') return 'Drops';
     if (networkType === 'cardano') return 'Lovelaces/B';
-    return 'sat/B'; // TODO:(vl): solana fee unit
+    if (networkType === 'solana') return 'Lamports';
+    return 'sat/B';
 };
 
 // Find all validation errors set while composing a transaction
@@ -474,3 +475,8 @@ export const getExcludedUtxos = ({
     });
     return excludedUtxos;
 };
+
+// SOL Specific
+
+export const getLamportsFromSol = (amountInSol: string) =>
+    BigInt(new BigNumber(amountInSol).times(10 ** 9).toString());
