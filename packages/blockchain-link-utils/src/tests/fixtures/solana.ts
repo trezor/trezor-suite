@@ -54,6 +54,26 @@ const parsedTransactions = {
             },
         },
     },
+    justWithFee: {
+        transaction: {
+            transaction: {
+                meta: {
+                    fee: 10,
+                },
+            },
+        },
+    },
+};
+
+const effects = {
+    negative: {
+        address: 'address1',
+        amount: new BigNumber(-20),
+    },
+    positive: {
+        address: 'address2',
+        amount: new BigNumber(10),
+    },
 };
 
 export const fixtures = {
@@ -108,6 +128,64 @@ export const fixtures = {
                     amount: new BigNumber(10),
                 },
             ],
+        },
+    ],
+    getTxType: [
+        {
+            description: 'should return "failed" if the transaction has an error',
+            input: {
+                transaction: {
+                    meta: {
+                        fee: 10,
+                        err: 'Transaction failed',
+                    },
+                },
+                effects: [],
+                accountAddress: 'myAddress',
+            },
+            expectedOutput: 'failed',
+        },
+        {
+            description: 'should return "self" if it matches a self-transaction with fee',
+            input: {
+                transaction: {
+                    meta: {
+                        fee: effects.negative.amount.abs().toNumber(),
+                    },
+                },
+                effects: [effects.negative],
+                accountAddress: effects.negative.address,
+            },
+            expectedOutput: 'self',
+        },
+        {
+            description:
+                'should return "sent" if there are negative effects and the account address is a sender',
+            input: {
+                transaction: parsedTransactions.justWithFee.transaction,
+                effects: [effects.negative],
+                accountAddress: effects.negative.address,
+            },
+            expectedOutput: 'sent',
+        },
+        {
+            description:
+                'should return "recv" if there are positive effects and the account address is a receiver',
+            input: {
+                transaction: parsedTransactions.justWithFee.transaction,
+                effects: [effects.positive],
+                accountAddress: effects.positive.address,
+            },
+            expectedOutput: 'recv',
+        },
+        {
+            description: 'should return "unknown" if none of the conditions match',
+            input: {
+                transaction: parsedTransactions.justWithFee.transaction,
+                effects: [effects.positive],
+                accountAddress: 'someOtherAddress',
+            },
+            expectedOutput: 'unknown',
         },
     ],
 };
