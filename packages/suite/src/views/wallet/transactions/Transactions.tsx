@@ -69,9 +69,12 @@ export const Transactions = () => {
     }
 
     if (accountTransactions.length > 0 || transactionsIsLoading) {
+        const networksWithoutTxSummary = ['ripple', 'solana'];
         return (
             <Layout selectedAccount={selectedAccount}>
-                {account.networkType !== 'ripple' && <TransactionSummary account={account} />}
+                {!networksWithoutTxSummary.includes(account.networkType) && (
+                    <TransactionSummary account={account} />
+                )}
 
                 <TransactionList
                     account={account}

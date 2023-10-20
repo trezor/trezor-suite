@@ -65,7 +65,7 @@ export const setSelectedView = (view: GraphScale): GraphAction => ({
 /**
  * Fetch the account history (received, sent amounts, num of txs) for the given `startDate`, `endDate`.
  * Returned data are grouped by `groupBy` seconds
- * No XRP support
+ * No XRP and SOL support
  *
  * @param {Account} account
  * @returns
