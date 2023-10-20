@@ -49,6 +49,7 @@ import { AmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
 import { useCoinmarketSellFormDefaultValues } from './useCoinmarketSellFormDefaultValues';
 import { useCompose } from './form/useCompose';
 import { useFees } from './form/useFees';
+import { AddressDisplayOptions, selectAddressDisplay } from 'src/reducers/suite/suiteReducer';
 
 export const SellFormContext = createContext<SellFormContextValues | null>(null);
 SellFormContext.displayName = 'CoinmarketSellContext';
@@ -96,6 +97,7 @@ export const useCoinmarketSellForm = ({
     const exchangeCoinInfo = useSelector(
         state => state.wallet.coinmarket.exchange.exchangeCoinInfo,
     );
+    const addressDisplay = useSelector(selectAddressDisplay);
 
     const { account, network } = selectedAccount;
     const { navigateToSellOffers } = useCoinmarketNavigation(account);
@@ -124,9 +126,17 @@ export const useCoinmarketSellForm = ({
     // throttle initial state calculation
     const initState = useSellState(selectedAccount, fees, !!state, defaultValues);
 
+    const chunkify = addressDisplay === AddressDisplayOptions.CHUNKED;
+
     useEffect(() => {
         const setStateAsync = async (initState: NonNullable<ReturnType<typeof useSellState>>) => {
-            const address = await getComposeAddressPlaceholder(account, network, device, accounts);
+            const address = await getComposeAddressPlaceholder(
+                account,
+                network,
+                device,
+                accounts,
+                chunkify,
+            );
             if (initState.formValues && address) {
                 initState.formValues.outputs[0].address = address;
 
@@ -142,7 +152,16 @@ export const useCoinmarketSellForm = ({
         if (!state && initState) {
             setStateAsync(initState);
         }
-    }, [state, initState, account, network, device, accounts, sellInfo?.supportedCryptoCurrencies]);
+    }, [
+        state,
+        initState,
+        account,
+        network,
+        device,
+        accounts,
+        chunkify,
+        sellInfo?.supportedCryptoCurrencies,
+    ]);
 
     const methods = useForm<SellFormState>({
         mode: 'onChange',

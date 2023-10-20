@@ -35,6 +35,7 @@ import {
 } from 'src/reducers/wallet/coinjoinReducer';
 
 import * as COINJOIN from './constants/coinjoinConstants';
+import { AddressDisplayOptions, selectAddressDisplay } from 'src/reducers/suite/suiteReducer';
 
 const clientEnable = (symbol: Account['symbol']) =>
     ({
@@ -555,6 +556,7 @@ const signCoinjoinTx =
             wallet: { coinjoin, accounts },
         } = getState();
         const devices = selectDevices(getState());
+        const addressDisplay = selectAddressDisplay(getState());
 
         // prepare empty response object
         const response: CoinjoinResponseEvent = {
@@ -631,6 +633,7 @@ const signCoinjoinTx =
                             serialize: false,
                             unlockPath,
                             override: true, // override current call (override SUITE.LOCK)
+                            chunkify: addressDisplay === AddressDisplayOptions.CHUNKED,
                         });
 
                         if (signTx.success) {

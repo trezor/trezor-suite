@@ -27,6 +27,7 @@ import {
 import { selectDevice } from '@suite-common/wallet-core';
 
 import { Dispatch, GetState } from 'src/types/suite';
+import { AddressDisplayOptions, selectAddressDisplay } from 'src/reducers/suite/suiteReducer';
 
 const calculate = (
     availableBalance: string,
@@ -240,6 +241,8 @@ export const signTransaction =
         const { account, network } = selectedAccount;
         if (account.networkType !== 'ethereum' || !network.chainId) return;
 
+        const addressDisplay = selectAddressDisplay(getState());
+
         // Ethereum account `misc.nonce` is not updated before pending tx is mined
         // Calculate `pendingNonce`: greatest value in pending tx + 1
         // This may lead to unexpected/unwanted behavior
@@ -280,6 +283,7 @@ export const signTransaction =
             useEmptyPassphrase: device.useEmptyPassphrase,
             path: account.path,
             transaction,
+            chunkify: addressDisplay === AddressDisplayOptions.CHUNKED,
         });
 
         if (!signedTx.success) {

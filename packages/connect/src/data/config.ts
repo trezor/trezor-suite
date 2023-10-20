@@ -212,5 +212,12 @@ export const config = {
             methods: ['getFirmwareHash'],
             min: { T1B1: '1.11.1', T2T1: '2.5.1' },
         },
+        {
+            capabilities: ['chunkify'],
+            min: { T1B1: '0', T2T1: '2.6.3', T2B1: '2.6.3' },
+            comment: [
+                "Since firmware 2.6.3 there is a new protobuf field 'chunkify' in almost all getAddress and signTx methods",
+            ],
+        },
     ],
 };

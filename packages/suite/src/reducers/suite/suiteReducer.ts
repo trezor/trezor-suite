@@ -277,6 +277,8 @@ export const selectIsDebugModeActive = (state: SuiteRootState) =>
 
 export const selectLanguage = (state: SuiteRootState) => state.suite.settings.language;
 
+export const selectAddressDisplay = (state: SuiteRootState) => state.suite.settings.addressDisplay;
+
 export const selectLocks = (state: SuiteRootState) => state.suite.locks;
 
 export const selectIsDeviceLocked = (state: SuiteRootState) =>
