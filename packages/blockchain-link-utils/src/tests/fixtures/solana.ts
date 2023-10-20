@@ -1,5 +1,8 @@
 import BigNumber from 'bignumber.js';
-import { PublicKey } from '@solana/web3.js';
+
+const getPublicKey = (address: string) => ({
+    toString: () => address,
+});
 
 const instructions = {
     transfer: {
@@ -153,10 +156,10 @@ const tokenAccountInfo = [
             },
             executable: false,
             lamports: 2039280,
-            owner: new PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'),
+            owner: getPublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'),
             rentEpoch: 0,
         },
-        pubkey: new PublicKey('ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF'),
+        pubkey: getPublicKey('ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF'),
     },
 ];
 
@@ -184,10 +187,10 @@ const tokenAccountInfoWithDuplicateTokenAccount = [
             },
             executable: false,
             lamports: 2039280,
-            owner: new PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'),
+            owner: getPublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'),
             rentEpoch: 0,
         },
-        pubkey: new PublicKey('ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF'),
+        pubkey: getPublicKey('ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF'),
     },
     {
         account: {
@@ -212,10 +215,10 @@ const tokenAccountInfoWithDuplicateTokenAccount = [
             },
             executable: false,
             lamports: 2039280,
-            owner: new PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'),
+            owner: getPublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'),
             rentEpoch: 0,
         },
-        pubkey: new PublicKey('CR6QfobBidQTSYdR6jihKTfMnHkRUtw8cLDCxENDVYmd'),
+        pubkey: getPublicKey('CR6QfobBidQTSYdR6jihKTfMnHkRUtw8cLDCxENDVYmd'),
     },
 ];
 

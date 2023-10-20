@@ -11,6 +11,7 @@ import {
     transformTransaction,
     getTokenNameAndSymbol,
     transformTokenInfo,
+    ApiTokenAccount,
 } from '../solana';
 import { fixtures } from './fixtures/solana';
 
@@ -111,7 +112,9 @@ describe('solana/utils', () => {
     describe('transformTokenInfo', () => {
         fixtures.transformTokenInfo.forEach(({ description, input, expectedOutput }) => {
             it(description, () => {
-                expect(transformTokenInfo(input.accountInfo, input.map)).toEqual(expectedOutput);
+                expect(
+                    transformTokenInfo(input.accountInfo as ApiTokenAccount[], input.map),
+                ).toEqual(expectedOutput);
             });
         });
     });

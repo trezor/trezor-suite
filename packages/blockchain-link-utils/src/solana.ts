@@ -13,7 +13,7 @@ import type {
 } from '@trezor/blockchain-link-types/lib/solana';
 import type { TokenInfo } from '@trezor/blockchain-link-types/lib';
 
-type ApiTokenAccount = { account: AccountInfo<ParsedAccountData>; pubkey: PublicKey };
+export type ApiTokenAccount = { account: AccountInfo<ParsedAccountData>; pubkey: PublicKey };
 
 export const TOKEN_PROGRAM_PUBLIC_KEY = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
 export const ASSOCIATED_TOKEN_PROGRAM_PUBLIC_KEY = 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL';
