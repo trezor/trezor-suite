@@ -16,6 +16,7 @@ export const SET_INITIATING = '@metadata/set-initiating';
 export const SET_DATA = '@metadata/set-data';
 export const SET_SELECTED_PROVIDER = '@metadata/set-selected-provider';
 export const SET_ERROR_FOR_DEVICE = '@metadata/set-error-for-device';
+export const SET_ENTITIES_DESCRIPTORS = '@metadata/set-entities';
 
 /**
  * Changelog:

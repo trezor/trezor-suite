@@ -534,6 +534,36 @@ const init = [
     },
 ];
 
+const getLabelableEntitiesDescriptors = [
+    {
+        description: 'device with state',
+        initialState: {
+            device: { state: 'device-state' },
+        },
+        result: ['device-state'],
+    },
+    {
+        description: 'device without state',
+        initialState: {
+            device: { state: undefined },
+        },
+        result: [],
+    },
+    {
+        description: 'accounts',
+        initialState: {
+            device: { state: 'meow' },
+            accounts: [
+                {
+                    deviceState: 'meow',
+                    key: 'account-key',
+                },
+            ],
+        },
+        result: ['account-key', 'meow'],
+    },
+];
+
 const disposeMetadata = [
     {
         description: '',
@@ -630,5 +660,6 @@ export {
     connectProvider,
     addMetadata,
     init,
+    getLabelableEntitiesDescriptors,
     disposeMetadata,
 };

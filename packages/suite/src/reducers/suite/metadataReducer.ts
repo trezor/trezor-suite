@@ -31,6 +31,7 @@ export const initialState: MetadataState = {
         labels: '',
     },
     error: {},
+    entities: [],
 };
 
 type MetadataRootState = {
@@ -96,7 +97,10 @@ const metadataReducer = (state = initialState, action: Action): MetadataState =>
                 if (action.payload.state) {
                     delete draft.error?.[action.payload.state];
                 }
-
+                break;
+            case METADATA.SET_ENTITIES_DESCRIPTORS:
+                draft.entities = action.payload;
+                break;
             // no default
         }
     });

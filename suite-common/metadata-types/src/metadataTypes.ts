@@ -236,13 +236,27 @@ export interface MetadataState {
     // information in reducer to make it easily accessible in UI.
     // field shall hold default value for which user may add metadata (address, txId, etc...);
     editing?: string;
+    /**
+     * Initiating is used in UI to display loader and disallow user to edit labels until init is finished
+     * which happens after discovery is finished.
+     * TODO: this could be improved, we only need to wait for all accounts to be loaded. once a single account
+     * is loaded and we have device master key we are able to add labels without interaction with device => we don't need to wait for discovery to finish
+     */
     initiating?: boolean;
     /**
      * error, typical reasons:
      * - user clicked cancel button on device when "Enable labeling" was shown.
      * - device disconnected
+     *
+     * we need to disable editing labels in this state otherwise user might add a label which would cause next attempt to migrate data not to find
+     * previously saved labels for that labelable entity.
      */
     error?: { [deviceState: string]: boolean };
+    /**
+     * entitites represent state of labelable entities in suite known to metadata module.
+     * this is used to track changes in labelable entities and trigger metadata init (and metadata migration) when needed.
+     */
+    entities?: string[];
 }
 
 export type OAuthServerEnvironment = 'production' | 'staging' | 'localhost';
