@@ -185,7 +185,16 @@ export interface WalletLabels {
     walletLabel?: string;
 }
 
-export type Labels = AccountLabels | WalletLabels;
+export type Labels = (AccountLabels | WalletLabels) & {
+    /**
+     * in case file was migrated from a different file. reference to previous file
+     */
+    migratedFrom?: string;
+    /**
+     * we might create some dummy data to make it hard to guess number of labels by file size
+     */
+    dummy?: string;
+};
 
 export type DeviceMetadata = DeviceEntityKeys;
 
