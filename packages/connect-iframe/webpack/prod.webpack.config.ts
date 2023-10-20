@@ -86,6 +86,13 @@ const config: webpack.Configuration = {
                     filename: './workers/blockfrost-worker.[contenthash].js',
                 },
             },
+            {
+                test: /\workers\/solana\/index/i,
+                loader: 'worker-loader',
+                options: {
+                    filename: './workers/solana-worker.[contenthash].js',
+                },
+            },
         ],
     },
     resolve: {
