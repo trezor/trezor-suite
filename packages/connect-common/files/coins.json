@@ -2200,6 +2200,26 @@
     "misc": [
         {
             "blockchain_link": {
+                "type": "solana",
+                "url": [
+                    "wiser-green-owl.solana-mainnet.discover.quiknode.pro/c218d0c9e451f6c5c0bf8b7c7d8e5a72384c9570/"
+                ]
+            },
+            "curve": "ed25519",
+            "decimals": 9,
+            "is_testnet": false,
+            "name": "Solana",
+            "shortcut": "SOL",
+            "slip44": 501,
+            "support": {
+                "connect": true,
+                "suite": true,
+                "trezor1": false,
+                "trezor2": "2.4.3"
+            }
+        },
+        {
+            "blockchain_link": {
                 "type": "blockfrost",
                 "url": ["wss://trezor-cardano-mainnet.blockfrost.io"]
             },
