@@ -2379,6 +2379,26 @@
                 "trezor1": false,
                 "trezor2": "2.0.8"
             }
+        },
+        {
+            "blockchain_link": {
+                "type": "solana",
+                "url": [
+                    "api.devnet.solana.com/"
+                ]
+            },
+            "curve": "ed25519",
+            "decimals": 9,
+            "is_testnet": true,
+            "name": "Solana Devnet",
+            "shortcut": "DSOL",
+            "slip44": 501,
+            "support": {
+                "connect": true,
+                "suite": true,
+                "trezor1": false,
+                "trezor2": "2.4.3"
+            }
         }
     ],
     "nem": [

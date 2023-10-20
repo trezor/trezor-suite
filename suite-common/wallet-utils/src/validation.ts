@@ -18,6 +18,8 @@ const getCoinFromTestnet = (symbol: Account['symbol']) => {
             return 'xrp';
         case 'tada':
             return 'ada';
+        case 'dsol':
+            return 'sol';
         case 'tsep':
         case 'tgor':
             return 'eth';
