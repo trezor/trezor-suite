@@ -11,6 +11,8 @@ import type {
 } from '@trezor/blockchain-link-types/lib/solana';
 import type { TokenInfo } from '@trezor/blockchain-link-types/lib';
 
+type ApiTokenAccount = { account: AccountInfo<ParsedAccountData>; pubkey: PublicKey };
+
 export const TOKEN_PROGRAM_PUBLIC_KEY = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
 export const ASSOCIATED_TOKEN_PROGRAM_PUBLIC_KEY = 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL';
 export const SYSTEM_PROGRAM_PUBLIC_KEY = '11111111111111111111111111111111';
@@ -28,13 +30,13 @@ export const getTokenNameAndSymbol = (mint: string, tokenDetailByMint: TokenDeta
 };
 
 export const transformTokenInfo = (
-    tokenAccounts: TokenAccount[],
+    tokenAccounts: ApiTokenAccount[],
     tokenDetailByMint: TokenDetailByMint,
 ) => {
     const tokens: TokenInfo[] = F.toMutable(
         pipe(
             tokenAccounts,
-            A.map((tokenAccount: TokenAccount): TokenInfo => {
+            A.map((tokenAccount: ApiTokenAccount): TokenInfo & { address: string } => {
                 const { info } = tokenAccount.account.data.parsed;
 
                 return {
@@ -43,19 +45,38 @@ export const transformTokenInfo = (
                     balance: info.tokenAmount.amount,
                     decimals: info.tokenAmount.decimals,
                     ...getTokenNameAndSymbol(info.mint, tokenDetailByMint),
+                    address: tokenAccount.pubkey.toString(),
                 };
             }),
-            A.reduce({}, (acc: { [mint: string]: TokenInfo }, token: TokenInfo) => {
-                if (acc[token.contract] != null) {
-                    acc[token.contract].balance = new BigNumber(acc[token.contract].balance || '0')
-                        .plus(token.balance || '0')
-                        .toString();
-                } else {
-                    acc[token.contract] = token;
-                }
+            A.reduce(
+                {},
+                (acc: { [mint: string]: TokenInfo }, token: TokenInfo & { address: string }) => {
+                    if (acc[token.contract] != null) {
+                        acc[token.contract].balance = new BigNumber(
+                            acc[token.contract].balance || '0',
+                        )
+                            .plus(token.balance || '0')
+                            .toString();
+                        acc[token.contract].accounts!.push({
+                            publicKey: token.address,
+                            balance: token.balance || '0',
+                        });
+                    } else {
+                        const { type, contract, balance, decimals, name, symbol } = token;
+                        acc[token.contract] = {
+                            type,
+                            contract,
+                            balance,
+                            decimals,
+                            name,
+                            symbol,
+                            accounts: [{ publicKey: token.address, balance: balance || '0' }],
+                        };
+                    }
 
-                return acc;
-            }),
+                    return acc;
+                },
+            ),
             D.values,
         ),
     );
