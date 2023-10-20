@@ -79,6 +79,8 @@ const getInfo = async (request: Request<MessageTypes.GetInfo>) => {
     } as const;
 };
 
+const BLOCK_SUBSCRIBE_INTERVAL_MS = 10000;
+
 const subscribeBlock = async ({ state, connect, post }: Context) => {
     if (state.getSubscription('block')) return;
     const api = await connect();
@@ -105,7 +107,7 @@ const subscribeBlock = async ({ state, connect, post }: Context) => {
                 },
             });
         }
-    }, 10000);
+    }, BLOCK_SUBSCRIBE_INTERVAL_MS);
     // we save the interval in the state so we can clear it later
     state.addSubscription('block', interval);
 };
