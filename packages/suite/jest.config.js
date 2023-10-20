@@ -26,6 +26,7 @@ module.exports = {
         '^@trezor/(.+)': '<rootDir>/../$1',
         '^src/(.+)': '<rootDir>/src/$1',
         '\\.(mp4)$': '<rootDir>/__mocks__/file.js',
+        uuid: require.resolve('uuid'), // https://stackoverflow.com/questions/73203367/jest-syntaxerror-unexpected-token-export-with-uuid-library
     },
     moduleFileExtensions: ['js', 'ts', 'tsx'],
     coverageDirectory: './coverage',
