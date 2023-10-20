@@ -6728,6 +6728,18 @@ export default defineMessages({
         id: 'TR_USE_CHAT',
         defaultMessage: 'Click below and use the <b>Chat</b> option on the next page.',
     },
+    TR_DISCONNECT_DEVICE_SOFT: {
+        id: 'TR_DISCONNECT_DEVICE_SOFT',
+        defaultMessage: 'Disconnect your device from your laptop or computer.',
+    },
+    TR_AVOID_USING_DEVICE_SOFT: {
+        id: 'TR_AVOID_USING_DEVICE_SOFT',
+        defaultMessage: 'Avoid using this device or sending any funds to it.',
+    },
+    TR_USE_CHAT_SOFT: {
+        id: 'TR_USE_CHAT_SOFT',
+        defaultMessage: 'Click below and use the <b>Chat</b> option on the next page.',
+    },
     TR_CONTACT_TREZOR_SUPPORT: {
         id: 'TR_CONTACT_TREZOR_SUPPORT',
         defaultMessage: 'Contact Trezor Support',
