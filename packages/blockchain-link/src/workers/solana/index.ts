@@ -174,8 +174,8 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
 
     const account: AccountInfo = {
         descriptor: payload.descriptor,
-        balance: accountInfo.lamports.toString(), // TODO(vl): check if this should also include staking balances
-        availableBalance: accountInfo.lamports.toString(), // TODO(vl): revisit to make sure that what getAccountInfo returns is actually available balance
+        balance: accountInfo.lamports.toString(),
+        availableBalance: accountInfo.lamports.toString(),
         empty: !allTxIds.length,
         history: {
             total: allTxIds.length,
@@ -455,11 +455,7 @@ class SolanaWorker extends BaseWorker<SolanaAPI> {
         }
     }
 
-    disconnect(): void {
-        if (this.api) {
-            // TODO(vl): revisit, seems there is no way to disconnect, but we can remove all created listeners
-        }
-    }
+    disconnect(): void {}
 }
 
 // export worker factory used in src/index
