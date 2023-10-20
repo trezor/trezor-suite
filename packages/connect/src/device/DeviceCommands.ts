@@ -700,6 +700,16 @@ export class DeviceCommands {
             };
         }
 
+        if (coinInfo.shortcut === 'SOL') {
+            const { message } = await this.typedCall('SolanaGetAddress', 'SolanaAddress', {
+                address_n,
+            });
+            return {
+                descriptor: message.address,
+                address_n,
+            };
+        }
+
         throw ERRORS.TypedError(
             'Runtime',
             'DeviceCommands.getAccountDescriptor: unsupported coinInfo.type',
