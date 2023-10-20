@@ -179,13 +179,8 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
 
 const getInfo = async (request: Request<MessageTypes.GetInfo>) => {
     const api = await request.connect();
-    const blockHeight = await api.getBlockHeight('finalized');
-
-    // more info for the parsedBlock endpoint here https://www.quicknode.com/docs/solana/getParsedBlock
-    // the maxSupportedTransactionVersion might need to get updated if solana introduces a new version of transactions
-    const { blockhash: blockHash } = await api.getParsedBlock(blockHeight, {
-        maxSupportedTransactionVersion: 0,
-    });
+    const { blockhash: blockHash, lastValidBlockHeight: blockHeight } =
+        await api.getLatestBlockhash('finalized');
     const serverInfo = {
         // genesisHash is reliable identifier of the network, for mainnet the genesis hash is 5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d
         testnet: (await api.getGenesisHash()) !== '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d',
@@ -213,11 +208,8 @@ const subscribeBlock = async ({ state, connect, post }: Context) => {
     // but solana block height is updated so often that it slows down the whole application and overloads the the api
     // so we instead use setInterval to check for new blocks every 10 seconds
     const interval = setInterval(async () => {
-        const blockHeight = await api.getBlockHeight('finalized');
-        const { blockhash: blockHash } = await api.getParsedBlock(blockHeight, {
-            maxSupportedTransactionVersion: 0,
-        });
-
+        const { blockhash: blockHash, lastValidBlockHeight: blockHeight } =
+            await api.getLatestBlockhash('finalized');
         if (blockHeight) {
             post({
                 id: -1,
