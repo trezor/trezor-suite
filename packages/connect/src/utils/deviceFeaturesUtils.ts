@@ -74,6 +74,7 @@ export const getUnavailableCapabilities = (features: Features, coins: CoinInfo[]
             return !capabilities.includes('Capability_Cardano');
         if (info.shortcut === 'XRP' || info.shortcut === 'tXRP')
             return !capabilities.includes('Capability_Ripple');
+        if (info.shortcut === 'SOL') return !capabilities.includes('Capability_Solana');
         return !capabilities.includes(`Capability_${info.name}` as PROTO.Capability);
     });
 

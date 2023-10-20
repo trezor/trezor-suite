@@ -212,5 +212,11 @@ export const config = {
             methods: ['getFirmwareHash'],
             min: { T1B1: '1.11.1', T2T1: '2.5.1' },
         },
+        {
+            methods: ['solanaGetPublicKey', 'solanaGetAddress', 'solanaSignTransaction'],
+            // TODO (vl/connect): increase version
+            min: ['0', '2.6.1.'],
+            comment: ['Only on T2B1'],
+        },
     ],
 };

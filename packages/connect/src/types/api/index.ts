@@ -66,6 +66,9 @@ import { setBusy } from './setBusy';
 import { setProxy } from './setProxy';
 import { signMessage } from './signMessage';
 import { signTransaction } from './signTransaction';
+import { solanaGetPublicKey } from './solanaGetPublicKey';
+import { solanaGetAddress } from './solanaGetAddress';
+import { solanaSignTransaction } from './solanaSignTransaction';
 import { stellarGetAddress } from './stellarGetAddress';
 import { stellarSignTransaction } from './stellarSignTransaction';
 import { tezosGetAddress } from './tezosGetAddress';
@@ -288,6 +291,15 @@ export interface TrezorConnect {
 
     // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/signTransaction.md
     signTransaction: typeof signTransaction;
+
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/solanaGetPublicKey.md
+    solanaGetPublicKey: typeof solanaGetPublicKey;
+
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/solanaGetAddress.md
+    solanaGetAddress: typeof solanaGetAddress;
+
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/solanaSignTransaction.md
+    solanaSignTransaction: typeof solanaSignTransaction;
 
     // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/stellarGetAddress.md
     stellarGetAddress: typeof stellarGetAddress;

@@ -4551,7 +4551,8 @@
                         "Capability_U2F": 14,
                         "Capability_Shamir": 15,
                         "Capability_ShamirGroups": 16,
-                        "Capability_PassphraseEntry": 17
+                        "Capability_PassphraseEntry": 17,
+                        "Capability_Solana": 18
                     }
                 }
             }
@@ -6491,6 +6492,82 @@
                     "rule": "required",
                     "type": "bytes",
                     "id": 2
+                }
+            }
+        },
+        "SolanaGetPublicKey": {
+            "fields": {
+                "address_n": {
+                    "rule": "repeated",
+                    "type": "uint32",
+                    "id": 1,
+                    "options": {
+                        "packed": false
+                    }
+                },
+                "show_display": {
+                    "type": "bool",
+                    "id": 2
+                }
+            }
+        },
+        "SolanaPublicKey": {
+            "fields": {
+                "public_key": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 1
+                }
+            }
+        },
+        "SolanaGetAddress": {
+            "fields": {
+                "address_n": {
+                    "rule": "repeated",
+                    "type": "uint32",
+                    "id": 1,
+                    "options": {
+                        "packed": false
+                    }
+                },
+                "show_display": {
+                    "type": "bool",
+                    "id": 2
+                }
+            }
+        },
+        "SolanaAddress": {
+            "fields": {
+                "address": {
+                    "rule": "required",
+                    "type": "string",
+                    "id": 1
+                }
+            }
+        },
+        "SolanaSignTx": {
+            "fields": {
+                "address_n": {
+                    "rule": "repeated",
+                    "type": "uint32",
+                    "id": 1,
+                    "options": {
+                        "packed": false
+                    }
+                },
+                "serialized_tx": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 2
+                }
+            }
+        },
+        "SolanaTxSignature": {
+            "fields": {
+                "signature": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 1
                 }
             }
         },
@@ -8608,7 +8685,13 @@
                 "MessageType_WebAuthnListResidentCredentials": 800,
                 "MessageType_WebAuthnCredentials": 801,
                 "MessageType_WebAuthnAddResidentCredential": 802,
-                "MessageType_WebAuthnRemoveResidentCredential": 803
+                "MessageType_WebAuthnRemoveResidentCredential": 803,
+                "MessageType_SolanaGetPublicKey": 900,
+                "MessageType_SolanaPublicKey": 901,
+                "MessageType_SolanaGetAddress": 902,
+                "MessageType_SolanaAddress": 903,
+                "MessageType_SolanaSignTx": 904,
+                "MessageType_SolanaTxSignature": 905
             }
         },
         "google": {
