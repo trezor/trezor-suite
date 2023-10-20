@@ -6,6 +6,12 @@ export type SolanaValidParsedTxWithMeta = ParsedTransactionWithMeta & {
     blockTime: Required<NonNullable<ParsedTransactionWithMeta['blockTime']>>;
 };
 
-export type { ParsedInstruction, ParsedTransactionWithMeta } from '@solana/web3.js';
+export type {
+    ParsedInstruction,
+    ParsedTransactionWithMeta,
+    AccountInfo,
+    ParsedAccountData,
+    PublicKey,
+} from '@solana/web3.js';
 
 export type TokenDetailByMint = { [mint: string]: { name: string; symbol: string } };
