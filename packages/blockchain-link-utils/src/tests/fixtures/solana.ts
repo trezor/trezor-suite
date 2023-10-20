@@ -1,6 +1,17 @@
 import BigNumber from 'bignumber.js';
 
 const parsedTransactions = {
+    basic: {
+        transaction: {
+            meta: {
+                computeUnitsConsumed: 100,
+            },
+            transaction: {
+                signatures: ['txid1'],
+            },
+            version: 'legacy',
+        },
+    },
     withoutMeta: {
         transaction: {
             transaction: {
@@ -275,6 +286,43 @@ export const fixtures = {
                 txType: 'unknown',
             },
             expectedOutput: effects.positive.amount.toString(),
+        },
+    ],
+    getDetails: [
+        {
+            description: 'should return transaction details with valid inputs',
+            input: {
+                transaction: parsedTransactions.basic.transaction,
+                effects: [effects.positive, effects.negative],
+                accountAddress: effects.negative.address,
+            },
+            expectedOutput: {
+                size: parsedTransactions.basic.transaction.meta.computeUnitsConsumed,
+                totalInput: effects.negative.amount.abs().toString(),
+                totalOutput: effects.positive.amount.abs().toString(),
+                vin: [
+                    {
+                        txid: 'txid1',
+                        version: 'legacy',
+                        isAddress: true,
+                        isAccountOwned: true,
+                        n: 0,
+                        value: effects.negative.amount.abs().toString(),
+                        addresses: [effects.negative.address],
+                    },
+                ],
+                vout: [
+                    {
+                        txid: 'txid1',
+                        version: 'legacy',
+                        isAddress: true,
+                        isAccountOwned: false,
+                        n: 0,
+                        value: effects.positive.amount.abs().toString(),
+                        addresses: [effects.positive.address],
+                    },
+                ],
+            },
         },
     ],
 };
