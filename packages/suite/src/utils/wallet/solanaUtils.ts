@@ -179,3 +179,83 @@ export const buildCreateAssociatedTokenAccountInstruction = async (
     });
     return [txInstruction, associatedTokenAccountAddress] as const;
 };
+
+export const buildTokenTransferTransaction = async (
+    fromAddress: string,
+    toAddress: string,
+    toAddressOwner: string,
+    tokenMint: string,
+    tokenUiAmount: string,
+    tokenDecimals: number,
+    fromTokenAccounts: TokenAccount[],
+    toTokenAccounts: TokenAccount[] | undefined,
+    blockhash: string,
+    lastValidBlockHeight: number,
+) => {
+    const { Transaction, PublicKey } = await loadSolanaLib();
+
+    const transaction = new Transaction({
+        blockhash,
+        lastValidBlockHeight,
+        feePayer: new PublicKey(fromAddress),
+    });
+
+    // Token transaction building logic
+
+    const tokenAmount = new BigNumber(tokenUiAmount).times(10 ** tokenDecimals);
+
+    // Step 1: Select all required token accounts and amounts we need to fulfill the transaction on the user's end
+    const requiredAccounts = getMinimumRequiredTokenAccountsForTransfer(
+        fromTokenAccounts,
+        tokenAmount.toString(),
+    );
+
+    // Step 2: Check if the receiver address is a token account
+    const isReceiverAddressSystemAccount = toAddressOwner === SYSTEM_PROGRAM_PUBLIC_KEY;
+
+    let finalReceiverAddress = toAddress;
+    if (isReceiverAddressSystemAccount) {
+        // Step 3: If not, check if the receiver owns an associated token account
+        if (toTokenAccounts && toTokenAccounts.length > 0) {
+            // If yes, use the first one.
+            finalReceiverAddress = toTokenAccounts[0].publicKey;
+        } else {
+            // Step 4: If not, create an associated token account for the receiver
+            const [createAccountInstruction, associatedTokenAccountAddress] =
+                await buildCreateAssociatedTokenAccountInstruction(
+                    fromAddress,
+                    toAddress,
+                    tokenMint,
+                );
+
+            // Add the account creation instruction to the transaction and use the newly created associated token account as the receiver
+            transaction.add(createAccountInstruction);
+            finalReceiverAddress = associatedTokenAccountAddress.toString();
+        }
+    }
+
+    // Step 5: Build the token transfer instruction(s)
+    let remainingAmount = tokenAmount;
+    const instructionPromises = requiredAccounts.map(async tokenAccount => {
+        const transferAmount = BigNumber.min(remainingAmount, new BigNumber(tokenAccount.balance));
+
+        const transferInstruction = await buildTokenTransferInstruction(
+            tokenAccount.publicKey,
+            finalReceiverAddress,
+            fromAddress,
+            transferAmount,
+            tokenMint,
+            tokenDecimals,
+        );
+
+        // Step 6: Add the token transfer instruction(s) to the transaction
+        transaction.add(transferInstruction);
+
+        remainingAmount = remainingAmount.minus(transferAmount);
+    });
+
+    await Promise.all(instructionPromises);
+
+    // Step 7: Return the transaction
+    return transaction;
+};
