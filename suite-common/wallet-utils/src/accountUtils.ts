@@ -162,6 +162,8 @@ export const getTitleForNetwork = (symbol: NetworkSymbol) => {
             return 'TR_NETWORK_XRP_TESTNET';
         case 'tada':
             return 'TR_NETWORK_CARDANO_TESTNET';
+        case 'sol':
+            return 'TR_NETWORK_SOLANA_MAINNET';
         default:
             return 'TR_NETWORK_UNKNOWN';
     }

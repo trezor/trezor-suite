@@ -2940,6 +2940,10 @@ export default defineMessages({
         defaultMessage: 'Coinjoin Regtest',
         id: 'TR_NETWORK_COINJOIN_BITCOIN_REGTEST',
     },
+    TR_NETWORK_SOLANA_MAINNET: {
+        defaultMessage: 'Solana',
+        id: 'TR_NETWORK_SOLANA_MAINNET',
+    },
     TR_NEW_COMMUNICATION_TOOL: {
         defaultMessage:
             'New communication tool to facilitate the connection between your Trezor and your internet browser.',
