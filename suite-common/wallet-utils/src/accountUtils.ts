@@ -663,7 +663,6 @@ export const getAccountSpecific = (
     }
 
     if (networkType === 'solana') {
-        // TODO(vl): account specific solana
         return {
             networkType,
             misc: undefined,
