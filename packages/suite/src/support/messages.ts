@@ -695,10 +695,6 @@ export default defineMessages({
         defaultMessage: "Use an account ({symbol}) that isn't in Suite",
         id: 'TR_EXCHANGE_USE_NON_SUITE_ACCOUNT',
     },
-    TR_EXCHANGE_CONFIRMED_ON_TREZOR: {
-        defaultMessage: 'Confirmed on Trezor',
-        id: 'TR_EXCHANGE_CONFIRMED_ON_TREZOR',
-    },
     TR_EXCHANGE_CONFIRM_ON_TREZOR: {
         defaultMessage: 'Confirm on Trezor',
         id: 'TR_EXCHANGE_CONFIRM_ON_TREZOR',
