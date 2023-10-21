@@ -39,6 +39,7 @@ describe('Coin Settings', () => {
             'tgor',
             'txrp',
             'tada',
+            'dsol',
         ];
 
         // only btc is selected by default;

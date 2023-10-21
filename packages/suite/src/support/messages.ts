@@ -2944,6 +2944,10 @@ export default defineMessages({
         defaultMessage: 'Solana',
         id: 'TR_NETWORK_SOLANA_MAINNET',
     },
+    TR_NETWORK_SOLANA_DEVNET: {
+        defaultMessage: 'Solana Devnet',
+        id: 'TR_NETWORK_SOLANA_DEVNET',
+    },
     TR_NEW_COMMUNICATION_TOOL: {
         defaultMessage:
             'New communication tool to facilitate the connection between your Trezor and your internet browser.',

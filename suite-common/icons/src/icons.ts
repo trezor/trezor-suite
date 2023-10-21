@@ -105,6 +105,7 @@ export const cryptoIcons = {
     dash: require('../assets/cryptoIcons/dash.svg'),
     dgb: require('../assets/cryptoIcons/dgb.svg'),
     doge: require('../assets/cryptoIcons/doge.svg'),
+    dsol: require('../assets/cryptoIcons/sol.svg'),
     etc: require('../assets/cryptoIcons/etc.svg'),
     eth: require('../assets/cryptoIcons/eth.svg'),
     gnt: require('../assets/cryptoIcons/gnt.svg'),

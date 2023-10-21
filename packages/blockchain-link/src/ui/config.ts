@@ -478,4 +478,33 @@ export default [
             tx: '016b6504fe0a54f4e30c13e4707fdea772496a932d3cb87cbf817ddad7a7924d6cae2aaf687dd57851829c2d884f1c135abad4a1a36167dcebdb28286c31d6d80b01000102c80f8b50107e9f3e3c16a661b8c806df454a6deb293d5e8730a9d28f2f4998c60000000000000000000000000000000000000000000000000000000000000000c41dc0c82a686ce8dfed732687b5869180d6239c026af160a5297506ad87ea5901010200000c0200000070ec9b0700000000',
         },
     },
+    {
+        blockchain: {
+            name: 'Solana Devnet',
+            // we do not use path to worker build here because its not used, we use it just to match this config to actual implementation of the worker
+            worker: 'solana',
+            server: [
+                'cool-spring-gadget.solana-testnet.quiknode.pro/2224f3bca76cdcad9232ddedfd0852b2cb200813/',
+            ],
+            debug: true,
+        },
+        data: {
+            estimateFeeOptions: {
+                // please note that fee estimation is time sensitive and this specific params are outdated
+                specific: {
+                    data: '01000102c80f8b50107e9f3e3c16a661b8c806df454a6deb293d5e8730a9d28f2f4998c60000000000000000000000000000000000000000000000000000000000000000c41dc0c82a686ce8dfed732687b5869180d6239c026af160a5297506ad87ea5901010200000c020000000000000000000000',
+                },
+            },
+            accountInfoOptions: {
+                page: 0,
+                pageSize: 25,
+            },
+            address: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
+            txid: '', // not implemented
+            blockNumber: '', // not implemented
+            // please note transaction submission is time sensitive and this specific params are outdated
+            // also the transaction has already been submitted so its invalid
+            tx: '016b6504fe0a54f4e30c13e4707fdea772496a932d3cb87cbf817ddad7a7924d6cae2aaf687dd57851829c2d884f1c135abad4a1a36167dcebdb28286c31d6d80b01000102c80f8b50107e9f3e3c16a661b8c806df454a6deb293d5e8730a9d28f2f4998c60000000000000000000000000000000000000000000000000000000000000000c41dc0c82a686ce8dfed732687b5869180d6239c026af160a5297506ad87ea5901010200000c0200000070ec9b0700000000',
+        },
+    },
 ];

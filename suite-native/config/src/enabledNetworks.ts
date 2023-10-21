@@ -20,7 +20,7 @@ export const mainnetsOrder: NetworkSymbol[] = [
     'dgb',
 ];
 
-export const testnetsOrder: NetworkSymbol[] = ['test', 'regtest', 'tsep', 'tgor', 'tada', 'txrp'];
+export const testnetsOrder: NetworkSymbol[] = ['test', 'regtest', 'tsep', 'tgor', 'tada', 'txrp', 'dsol'];
 
 // Currently not supported in suite native. When it needs to be supported, just remove this filter.
 const filterOutRipple = (network: NetworkSymbol) => network !== 'xrp' && network !== 'txrp';

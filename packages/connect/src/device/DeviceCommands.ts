@@ -700,7 +700,7 @@ export class DeviceCommands {
             };
         }
 
-        if (coinInfo.shortcut === 'SOL') {
+        if (coinInfo.shortcut === 'SOL' || coinInfo.shortcut === 'DSOL') {
             const { message } = await this.typedCall('SolanaGetAddress', 'SolanaAddress', {
                 address_n,
             });

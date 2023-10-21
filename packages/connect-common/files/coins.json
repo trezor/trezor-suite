@@ -2358,6 +2358,27 @@
                 "connect": true,
                 "suite": false
             }
+        },
+        {
+            "blockchain_link": {
+                "type": "solana",
+                "url": [
+                    "cool-spring-gadget.solana-testnet.quiknode.pro/2224f3bca76cdcad9232ddedfd0852b2cb200813/"
+                ]
+            },
+            "curve": "ed25519",
+            "decimals": 9,
+            "is_testnet": true,
+            "name": "Solana Devnet",
+            "shortcut": "DSOL",
+            "slip44": 501,
+            "support": {
+                "T1B1": false,
+                "T2B1": "2.6.1",
+                "T2T1": "2.6.1",
+                "connect": true,
+                "suite": true
+            }
         }
     ],
     "nem": [

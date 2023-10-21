@@ -144,6 +144,7 @@ describe('utils/deviceFeaturesUtils', () => {
                 xvg: 'update-required',
                 zcr: 'update-required',
                 sol: 'no-support',
+                dsol: 'no-support',
                 replaceTransaction: 'update-required',
                 amountUnit: 'update-required',
                 decreaseOutput: 'update-required',
@@ -170,6 +171,7 @@ describe('utils/deviceFeaturesUtils', () => {
                 tsep: 'update-required',
                 tgor: 'update-required',
                 sol: 'update-required',
+                dsol: 'update-required',
                 coinjoin: 'update-required',
                 signMessageNoScriptType: 'update-required',
             });

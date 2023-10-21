@@ -437,6 +437,25 @@ export const networks = {
         customBackends: [],
         accountTypes: {},
     },
+    dsol: {
+        name: 'Solana Devnet',
+        networkType: 'solana',
+        bip43Path: "m/44'/501'/i'/0'",
+        label: 'TR_TESTNET_COINS_LABEL',
+        decimals: 9,
+        testnet: true,
+        features: ['tokens' /* , 'staking' */],
+        explorer: {
+            tx: 'https://explorer.solana.com/tx/',
+            account: 'https://explorer.solana.com/address/',
+            address: 'https://explorer.solana.com/address/',
+        },
+        support: {
+            [DeviceModelInternal.T2T1]: '2.4.3', // TODO(vl): revisit, for now just anything above 2.0.0
+        },
+        customBackends: ['solana'],
+        accountTypes: {},
+    },
 } as const;
 
 export const TREZOR_CONNECT_BACKENDS = [

@@ -164,6 +164,8 @@ export const getTitleForNetwork = (symbol: NetworkSymbol) => {
             return 'TR_NETWORK_CARDANO_TESTNET';
         case 'sol':
             return 'TR_NETWORK_SOLANA_MAINNET';
+        case 'dsol':
+            return 'TR_NETWORK_SOLANA_DEVNET';
         default:
             return 'TR_NETWORK_UNKNOWN';
     }
