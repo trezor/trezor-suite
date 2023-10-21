@@ -78,9 +78,7 @@ class ReactNativeUsbModule : Module() {
                     sendEvent(ON_DEVICE_CONNECT_EVENT_NAME, webUsbDevice)
                     devicesHistory[device.deviceName] = webUsbDevice
                 } else {
-                    Log.d("ReactNativeUsbModule", "Requesting permission for device: $device")
-                    val permissionIntent = PendingIntent.getBroadcast(context, 0, Intent(ACTION_USB_PERMISSION), PendingIntent.FLAG_IMMUTABLE)
-                    usbManager.requestPermission(device, permissionIntent)
+                    Log.d("ReactNativeUsbModule", "No permission for connected device: $device")
                 }
             }
             val onDeviceDisconnect: OnDeviceDisconnect = { deviceName ->
@@ -91,31 +89,37 @@ class ReactNativeUsbModule : Module() {
 
                 openedConnections.remove(deviceName)
             }
-            val onPermissionReceived: OnPermissionReceived = { device ->
-                Log.d("ReactNativeUsbModule", "onPermissionReceived: $device")
-
-                val webUsbDevice = getWebUSBDevice(device)
-                sendEvent(ON_DEVICE_CONNECT_EVENT_NAME, webUsbDevice)
-                devicesHistory[device.deviceName] = webUsbDevice
-            }
 
             ReactNativeUsbAttachedReceiver.setOnDeviceConnectCallback(onDeviceConnect)
             ReactNativeUsbDetachedReceiver.setOnDeviceDisconnectCallback(onDeviceDisconnect)
-            ReactNativeUsbPermissionReceiver.setOnPermissionReceivedCallback(onPermissionReceived)
 
             context.registerReceiver(usbAttachedReceiver, IntentFilter(UsbManager.ACTION_USB_DEVICE_ATTACHED))
             context.registerReceiver(usbDetachedReceiver, IntentFilter(UsbManager.ACTION_USB_DEVICE_DETACHED))
-            context.registerReceiver(usbPermissionReceiver, IntentFilter(UsbManager.EXTRA_PERMISSION_GRANTED))
+        }
+
+        OnActivityEntersForeground {
+            // We need to check all devices for permission when app enters foreground because it seems as only possible way
+            // how to detect if user granted permission for device from dialog.
+            // Dialog causes app to go to background, accept or deny permission and then app goes to foreground again.
+            val devicesList = usbManager.deviceList.values.toList()
+            for (device in devicesList) {
+                if (usbManager.hasPermission(device)) {
+                    Log.d("ReactNativeUsbModule", "Has permission, send event onDeviceConnected: $device")
+                    val webUsbDevice = getWebUSBDevice(device)
+                    sendEvent(ON_DEVICE_CONNECT_EVENT_NAME, webUsbDevice)
+                    devicesHistory[device.deviceName] = webUsbDevice
+                } else {
+                    Log.d("ReactNativeUsbModule", "No permission for device: $device")
+                }
+            }
         }
 
         OnDestroy {
             context.unregisterReceiver(usbAttachedReceiver)
             context.unregisterReceiver(usbDetachedReceiver)
-            context.unregisterReceiver(usbPermissionReceiver)
 
             ReactNativeUsbAttachedReceiver.setOnDeviceConnectCallback(null)
             ReactNativeUsbDetachedReceiver.setOnDeviceDisconnectCallback(null)
-            ReactNativeUsbPermissionReceiver.setOnPermissionReceivedCallback(null)
 
             openedConnections.forEach { (deviceName, _) ->
                 closeDevice(deviceName)
@@ -126,7 +130,6 @@ class ReactNativeUsbModule : Module() {
 
     private val usbAttachedReceiver = ReactNativeUsbAttachedReceiver()
     private val usbDetachedReceiver = ReactNativeUsbDetachedReceiver()
-    private val usbPermissionReceiver = ReactNativeUsbPermissionReceiver()
 
     private val context: Context
         get() = appContext.reactContext ?: throw Exceptions.ReactContextLost()
@@ -277,7 +280,9 @@ class ReactNativeUsbModule : Module() {
                 Log.d("ReactNativeUsbModule", "device: ${device.deviceName} has no permission, skipping")
                 continue
             }
-            devices.add(getWebUSBDevice(device))
+            val webUsbDevice = getWebUSBDevice(device)
+            devices.add(webUsbDevice)
+            devicesHistory[device.deviceName] = webUsbDevice
         }
         Log.d("ReactNativeUsbModule", "getDevices: $devices")
         return devices

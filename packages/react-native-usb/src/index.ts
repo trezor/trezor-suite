@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { NativeModulesProxy, EventEmitter, Subscription } from 'expo-modules-core';
 
 import { ReactNativeUsbModule } from './ReactNativeUsbModule';
@@ -7,7 +8,6 @@ const DEBUG_LOGS = true;
 
 const debugLog = (...args: any[]) => {
     if (DEBUG_LOGS) {
-        // eslint-disable-next-line no-console
         console.log(...args);
     }
 };
