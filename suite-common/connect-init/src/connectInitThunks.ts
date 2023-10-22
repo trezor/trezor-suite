@@ -71,6 +71,7 @@ export const connectInitThunk = createThunk(
             'getOwnershipProof',
             'setBusy',
             'rebootToBootloader',
+            'cipherKeyValue',
         ] as const;
 
         wrappedMethods.forEach(key => {
