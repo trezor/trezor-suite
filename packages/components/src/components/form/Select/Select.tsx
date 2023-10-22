@@ -263,7 +263,11 @@ export const Select = ({
                 }}
             />
 
-            {!noError && <BottomText inputState={inputState}>{bottomText}</BottomText>}
+            {!noError && (
+                <BottomText inputState={inputState} isDisabled={isDisabled}>
+                    {bottomText}
+                </BottomText>
+            )}
         </Wrapper>
     );
 };
