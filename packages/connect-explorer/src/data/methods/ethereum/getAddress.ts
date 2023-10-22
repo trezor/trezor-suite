@@ -14,7 +14,14 @@ const showOnTrezor = {
     value: true,
 };
 
-const batch = [getAddress, showOnTrezor];
+const chunkify = {
+    name: 'chunkify',
+    label: 'Display address in chunks of 4 characters',
+    type: 'checkbox',
+    value: false,
+};
+
+const batch = [getAddress, showOnTrezor, chunkify];
 
 export default [
     {
@@ -29,7 +36,7 @@ export default [
         name,
         docs,
         submitButton: 'Get address GoChain',
-        fields: [{ ...getAddress, value: `m/44'/6060'/0'/0/0` }, showOnTrezor],
+        fields: [{ ...getAddress, value: `m/44'/6060'/0'/0/0` }, showOnTrezor, chunkify],
     },
     {
         url: '/method/ethereumGetAddress-multiple',

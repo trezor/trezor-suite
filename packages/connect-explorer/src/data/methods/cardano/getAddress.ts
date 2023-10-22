@@ -33,6 +33,12 @@ const batch = [
         type: 'checkbox',
         value: true,
     },
+    {
+        name: 'chunkify',
+        label: 'Display address in chunks of 4 characters',
+        type: 'checkbox',
+        value: false,
+    },
     cardanoDerivationType,
 ];
 

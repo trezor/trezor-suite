@@ -60,6 +60,12 @@ export default [
                 type: 'json',
                 value: tx.transactions,
             },
+            {
+                name: 'chunkify',
+                label: 'Display recipient address in chunks of 4 characters',
+                type: 'checkbox',
+                value: false,
+            },
         ],
     },
 ];
