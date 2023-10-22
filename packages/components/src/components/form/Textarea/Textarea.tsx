@@ -116,7 +116,11 @@ export const Textarea = ({
                 {label && <TextareaLabel isDisabled={isDisabled}>{label}</TextareaLabel>}
             </TextareaWrapper>
 
-            {bottomText && <BottomText inputState={inputState}>{bottomText}</BottomText>}
+            {bottomText && (
+                <BottomText inputState={inputState} isDisabled={isDisabled}>
+                    {bottomText}
+                </BottomText>
+            )}
         </Wrapper>
     );
 };

@@ -173,7 +173,11 @@ const Input = ({
                 )}
             </InputWrapper>
 
-            {bottomText && <BottomText inputState={inputState}>{bottomText}</BottomText>}
+            {bottomText && (
+                <BottomText inputState={inputState} isDisabled={isDisabled}>
+                    {bottomText}
+                </BottomText>
+            )}
         </Wrapper>
     );
 };
