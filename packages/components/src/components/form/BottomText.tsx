@@ -1,5 +1,5 @@
 import styled, { keyframes, useTheme } from 'styled-components';
-import { spacingsPx, typography } from '@trezor/theme';
+import { CSSColor, Color, spacingsPx, typography } from '@trezor/theme';
 import { Icon } from '@suite-common/icons/src/webComponents';
 import { IconName } from '@suite-common/icons';
 
@@ -20,31 +20,40 @@ const slideDown = keyframes`
     }
 `;
 
-export const Container = styled.div<{ inputState?: InputState }>`
+export const Container = styled.div<Pick<BottomTextProps, 'inputState' | 'isDisabled'>>`
     display: flex;
     align-items: center;
     gap: ${spacingsPx.xxs};
     padding: ${spacingsPx.xs} ${spacingsPx.sm} 0 ${spacingsPx.sm};
     min-height: ${BOTTOM_TEXT_MIN_HEIGHT}px;
-    color: ${({ inputState, theme }) => getInputStateTextColor(inputState, theme)};
+    color: ${({ inputState, isDisabled, theme }) =>
+        isDisabled ? theme.textDisabled : getInputStateTextColor(inputState, theme)};
     ${typography.label}
     animation: ${slideDown} 0.18s ease-in-out forwards;
 `;
 
 interface BottomTextProps {
     inputState?: InputState;
+    isDisabled?: boolean;
     icon?: IconName;
     children: ReactNode;
 }
 
-export const BottomText = ({ inputState, icon = 'warningCircle', children }: BottomTextProps) => {
+export const BottomText = ({
+    inputState,
+    isDisabled,
+    icon = 'warningCircle',
+    children,
+}: BottomTextProps) => {
     const theme = useTheme();
 
+    const iconColor: Color | CSSColor = isDisabled
+        ? 'iconDisabled'
+        : getInputStateTextColor(inputState, theme);
+
     return (
-        <Container inputState={inputState}>
-            {icon && (
-                <Icon name={icon} size="medium" color={getInputStateTextColor(inputState, theme)} />
-            )}
+        <Container inputState={inputState} isDisabled={isDisabled}>
+            {icon && <Icon name={icon} size="medium" color={iconColor} />}
 
             {children}
         </Container>
