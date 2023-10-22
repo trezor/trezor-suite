@@ -327,10 +327,26 @@ export const saveAnalytics = () => async (_dispatch: Dispatch, getState: GetStat
     );
 };
 
-export const saveMetadata = async (metadata: MetadataState) => {
+type MetadataPersistentKeys = 'providers' | 'enabled' | 'selectedProvider' | 'error';
+
+const saveMetadata = async (metadata: Partial<Pick<MetadataState, MetadataPersistentKeys>>) => {
     if (!(await db.isAccessible())) return;
 
-    await db.addItem('metadata', metadata, 'state', true);
+    // remove undefined in metadata arg
+    (Object.keys as unknown as (args: any) => MetadataPersistentKeys[])(metadata).forEach(
+        (key: MetadataPersistentKeys) => {
+            if (typeof metadata[key] === 'undefined') {
+                delete metadata[key];
+            }
+        },
+    );
+    const savedMetadata = await db.getItemByPK('metadata', 'state');
+    const nextMetadata = { ...savedMetadata, ...metadata } as Pick<
+        MetadataState,
+        MetadataPersistentKeys
+    >;
+
+    await db.addItem('metadata', nextMetadata, 'state', true);
 };
 
 /**
@@ -354,7 +370,8 @@ export const saveDeviceMetadataError =
 
         const { metadata } = getState();
         if (device.state && metadata?.error?.[device.state]) {
-            await saveMetadata(metadata);
+            const { error } = metadata;
+            await saveMetadata({ error });
         }
     };
 
@@ -366,7 +383,7 @@ export const forgetDeviceMetadataError =
         if (device.state && metadata?.error) {
             const next = cloneObject(metadata.error);
             delete next[device.state];
-            saveMetadata({ ...metadata, error: next });
+            saveMetadata({ error: next });
         }
     };
 
