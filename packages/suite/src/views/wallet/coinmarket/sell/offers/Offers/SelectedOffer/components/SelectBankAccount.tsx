@@ -149,7 +149,7 @@ export const SelectBankAccount = () => {
                         value={bankAccount}
                         isClearable={false}
                         options={bankAccounts}
-                        minWidth="70px"
+                        minValueWidth="70px"
                         formatOptionLabel={(option: BankAccount) => (
                             <Option>
                                 <AccountInfo>

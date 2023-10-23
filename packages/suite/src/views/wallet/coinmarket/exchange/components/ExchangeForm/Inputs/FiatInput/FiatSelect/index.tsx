@@ -24,7 +24,7 @@ const FiatSelect = () => {
                     value={value}
                     isClearable={false}
                     options={buildCurrencyOptions(value)}
-                    minWidth="58px"
+                    minValueWidth="58px"
                     isClean
                     hideTextCursor
                 />
