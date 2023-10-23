@@ -1,10 +1,10 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
-import { variables } from '../../../config';
+import { zIndices } from '@trezor/theme';
 
 const Wrapper = styled.div`
     position: absolute;
-    z-index: ${variables.Z_INDEX.MODAL};
+    z-index: ${zIndices.modal};
     top: 0;
     left: 0;
     right: 0;

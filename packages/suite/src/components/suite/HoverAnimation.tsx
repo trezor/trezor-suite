@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 import { transparentize } from 'polished';
-import { variables } from '@trezor/components/src/config';
+import { zIndices } from '@trezor/theme';
 
 const Wrapper = styled.div<{ size?: string; isHoverable?: boolean }>`
     position: relative;
@@ -21,7 +21,7 @@ const Wrapper = styled.div<{ size?: string; isHoverable?: boolean }>`
 
         background-color: transparent;
         pointer-events: none;
-        z-index: ${variables.Z_INDEX.BASE};
+        z-index: ${zIndices.base};
     }
 
     ${props =>
