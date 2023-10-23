@@ -150,7 +150,7 @@ export const OnboardingLayout = ({ children }: OnboardingLayoutProps) => {
                                     <TrezorLogo type="suite" width="128px" />
 
                                     <TrezorLink
-                                        size="small"
+                                        type="hint"
                                         variant="nostyle"
                                         href={TREZOR_SUPPORT_URL}
                                     >
