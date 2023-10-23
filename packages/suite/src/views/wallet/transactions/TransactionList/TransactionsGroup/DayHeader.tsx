@@ -6,7 +6,7 @@ import { Translation, HiddenPlaceholder, FormattedCryptoAmount } from 'src/compo
 import { useFormatters } from '@suite-common/formatters';
 import { parseTransactionDateKey, isTestnet } from '@suite-common/wallet-utils';
 import { Network } from 'src/types/wallet';
-import { SECONDARY_PANEL_HEIGHT } from 'src/components/suite/AppNavigation';
+import { SECONDARY_PANEL_HEIGHT } from 'src/components/suite/AppNavigation/AppNavigation';
 
 const Wrapper = styled.div`
     display: flex;

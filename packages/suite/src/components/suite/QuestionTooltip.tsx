@@ -41,5 +41,3 @@ export const QuestionTooltip = ({ label, tooltip, className }: QuestionTooltipPr
             ))}
     </Wrapper>
 );
-
-export default QuestionTooltip;

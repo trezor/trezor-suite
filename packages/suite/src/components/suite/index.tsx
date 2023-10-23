@@ -1,8 +1,7 @@
 import { AccountLabel } from './AccountLabel';
 import { DeviceConfirmImage } from './DeviceConfirmImage';
-import { DeviceIcon } from './DeviceIcon';
 import { CheckItem } from './CheckItem';
-import { PrerequisitesGuide } from './PrerequisitesGuide';
+import { PrerequisitesGuide } from './PrerequisitesGuide/PrerequisitesGuide';
 import { WelcomeLayout } from './WelcomeLayout';
 import { CardWithHeader } from './CardWithHeader';
 import { NotificationCard } from './NotificationCard';
@@ -17,16 +16,14 @@ import { QuestionTooltip } from './QuestionTooltip';
 import TransactionsGraph from './TransactionsGraph';
 import { DeviceInvalidModeLayout } from './DeviceInvalidModeLayout';
 import { AppNavigationPanel } from './AppNavigationPanel';
-import { AppNavigationTooltip } from './AppNavigationTooltip';
-import { AppNavigation } from './AppNavigation';
+import { AppNavigation } from './AppNavigation/AppNavigation';
 import { Ticker } from './Ticker/Ticker';
 import { Translation } from './Translation';
 import { AccountLabeling, AddressLabeling, WalletLabeling, MetadataLabeling } from './labeling';
 import { FormattedCryptoAmount } from './FormattedCryptoAmount';
 import { FormattedNftAmount } from './FormattedNftAmount';
 import { Sign } from './Sign';
-import { AddAccountButton } from './AddAccountButton';
-import TrezorLink from './TrezorLink';
+import { TrezorLink } from './TrezorLink';
 import { ReadMoreLink } from './ReadMoreLink';
 import { Modal, ModalProps } from './modals/Modal/Modal';
 import { SkeletonRectangle, SkeletonCircle } from './Skeleton';
@@ -36,12 +33,10 @@ import { Metadata } from './Metadata';
 import { HomescreenGallery } from './HomescreenGallery';
 import { DeviceMatrixExplanation } from './DeviceMatrixExplanation';
 import { AccountFormCloseButton } from './AccountFormCloseButton';
-import { TroubleshootingTips } from './TroubleshootingTips';
+import { TroubleshootingTips } from './troubleshooting/TroubleshootingTips';
 import { ConnectDevicePrompt } from './ConnectDevicePrompt';
-import { DeviceButton } from './DeviceButton';
-import { Coin } from './Coin';
-import { CoinsGroup } from './CoinsGroup/CoinsGroup';
-import { CoinsList } from './CoinsGroup/CoinsList';
+import { CoinGroup } from './CoinGroup/CoinGroup';
+import { CoinList } from './CoinList/CoinList';
 import { CloseButton } from './CloseButton';
 import TooltipSymbol from './TooltipSymbol';
 import StatusLight from './StatusLight';
@@ -55,11 +50,11 @@ import { DeviceAuthenticationExplainer } from './DeviceAuthenticationExplainer';
 import { HoverAnimation } from './HoverAnimation';
 import { Preloader } from './Preloader/Preloader';
 import { PinMatrix } from './PinMatrix/PinMatrix';
+import { UdevDownload } from './UdevDownload';
 
 export {
     AccountLabel,
     DeviceConfirmImage,
-    DeviceIcon,
     CheckItem,
     DeviceInvalidModeLayout,
     PrerequisitesGuide,
@@ -81,13 +76,11 @@ export {
     QuestionTooltip,
     TransactionsGraph,
     AppNavigationPanel,
-    AppNavigationTooltip,
     AppNavigation,
     FormattedCryptoAmount,
     FormattedNftAmount,
     Ticker,
     Sign,
-    AddAccountButton,
     ReadMoreLink,
     TrezorLink,
     Modal,
@@ -101,9 +94,8 @@ export {
     AccountFormCloseButton,
     TroubleshootingTips,
     ConnectDevicePrompt,
-    Coin,
-    CoinsGroup,
-    CoinsList,
+    CoinGroup,
+    CoinList,
     CloseButton,
     TooltipSymbol,
     StatusLight,
@@ -111,13 +103,15 @@ export {
     TorLoader,
     CountdownTimer,
     NumberInput,
-    DeviceButton,
     QrCode,
     CoinBalance,
     DeviceAuthenticationExplainer,
     HoverAnimation,
     Preloader,
     PinMatrix,
+    UdevDownload,
 };
+export * from './graph';
 export * from './notifications';
+export * from './section';
 export type { ModalProps, NumberInputProps };

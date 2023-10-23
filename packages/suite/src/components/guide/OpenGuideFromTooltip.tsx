@@ -4,7 +4,8 @@ import { transparentize } from 'polished';
 
 import { Icon } from '@trezor/components';
 import { Translation } from 'src/components/suite';
-import TrezorLink from 'src/components/suite/TrezorLink';
+// importing directly, otherwise unit tests fail, seems to be a styled-components issue
+import { TrezorLink } from 'src/components/suite/TrezorLink';
 import { useGuideOpenNode } from 'src/hooks/guide';
 
 const OpenGuideLink = styled(TrezorLink)`

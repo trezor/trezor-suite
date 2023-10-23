@@ -4,10 +4,11 @@ import styled, { css } from 'styled-components';
 import { variables, IconProps, useTheme, Button, Icon, Dropdown } from '@trezor/components';
 import { Route } from '@suite-common/suite-types';
 
-import { AccountFormCloseButton, AppNavigationTooltip, HoverAnimation } from 'src/components/suite';
+import { AccountFormCloseButton, HoverAnimation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { MAX_WIDTH, MAX_WIDTH_WALLET_CONTENT } from 'src/constants/suite/layout';
 import { AccountStickyContent } from './AccountStickyContent';
+import { AppNavigationTooltip } from './AppNavigationTooltip';
 
 const { FONT_WEIGHT, FONT_SIZE } = variables;
 

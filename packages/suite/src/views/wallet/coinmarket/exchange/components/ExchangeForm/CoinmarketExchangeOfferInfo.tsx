@@ -6,9 +6,12 @@ import {
     CoinmarketTransactionId,
 } from 'src/views/wallet/coinmarket/common';
 import { Account } from 'src/types/wallet';
-import { AccountLabeling, FormattedCryptoAmount, Translation } from 'src/components/suite';
-// hitting issue https://github.com/styled-components/styled-components/issues/213 in unit test when importing directly from @suite-components
-import QuestionTooltip from 'src/components/suite/QuestionTooltip';
+import {
+    AccountLabeling,
+    FormattedCryptoAmount,
+    QuestionTooltip,
+    Translation,
+} from 'src/components/suite';
 import { ExchangeInfo } from 'src/actions/wallet/coinmarketExchangeActions';
 import invityAPI from 'src/services/suite/invityAPI';
 

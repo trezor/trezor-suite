@@ -2,7 +2,7 @@ import { Translation, TroubleshootingTips } from 'src/components/suite';
 import {
     TROUBLESHOOTING_TIP_BRIDGE_STATUS,
     TROUBLESHOOTING_TIP_BRIDGE_INSTALL,
-} from 'src/components/suite/TroubleshootingTips/tips';
+} from 'src/components/suite/troubleshooting/tips';
 import { pickByDeviceModel } from '@trezor/device-utils';
 import { DeviceModelInternal } from '@trezor/connect';
 

@@ -3,27 +3,23 @@ import styled from 'styled-components';
 
 import { useDispatch } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
-import { CoinsGroupHeader } from './CoinsGroupHeader';
-import { CoinsList } from './CoinsList';
+import { CoinList } from 'src/components/suite';
 import type { Network } from 'src/types/wallet';
 
-const CoinsGroupWrapper = styled.div`
+import { CoinGroupHeader } from './CoinGroupHeader';
+
+const CoinGroupWrapper = styled.div`
     width: 100%;
 `;
 
-interface CoinsGroupProps {
+interface CoinGroupProps {
     networks: Network[];
     selectedNetworks?: Network['symbol'][];
     className?: string;
     onToggle: (symbol: Network['symbol'], toggled: boolean) => void;
 }
 
-export const CoinsGroup = ({
-    onToggle,
-    networks,
-    selectedNetworks,
-    className,
-}: CoinsGroupProps) => {
+export const CoinGroup = ({ onToggle, networks, selectedNetworks, className }: CoinGroupProps) => {
     const dispatch = useDispatch();
 
     const [settingsMode, setSettingsMode] = useState(false);
@@ -42,19 +38,19 @@ export const CoinsGroup = ({
     const toggleSettingsMode = () => setSettingsMode(value => !value);
 
     return (
-        <CoinsGroupWrapper className={className}>
-            <CoinsGroupHeader
+        <CoinGroupWrapper className={className}>
+            <CoinGroupHeader
                 isAtLeastOneActive={isAtLeastOneActive}
                 settingsMode={settingsMode}
                 toggleSettingsMode={toggleSettingsMode}
             />
-            <CoinsList
+            <CoinList
                 networks={networks}
                 selectedNetworks={selectedNetworks}
                 settingsMode={settingsMode}
                 onToggle={settingsMode ? onSettings : onToggle}
                 onSettings={settingsMode ? undefined : onSettings}
             />
-        </CoinsGroupWrapper>
+        </CoinGroupWrapper>
     );
 };

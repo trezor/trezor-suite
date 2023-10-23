@@ -12,18 +12,18 @@ import { isWebUsb } from 'src/utils/suite/transport';
 import { useSelector } from 'src/hooks/suite';
 import type { PrerequisiteType } from 'src/types/suite';
 
-import { Transport } from './components/Transport';
-import { DeviceConnect } from './components/DeviceConnect';
-import { DeviceAcquire } from './components/DeviceAcquire';
-import { DeviceUnreadable } from './components/DeviceUnreadable';
-import { DeviceUnknown } from './components/DeviceUnknown';
-import { DeviceSeedless } from './components/DeviceSeedless';
-import { DeviceRecoveryMode } from './components/DeviceRecoveryMode';
-import { DeviceInitialize } from './components/DeviceInitialize';
-import { DeviceBootloader } from './components/DeviceBootloader';
-import { DeviceNoFirmware } from './components/DeviceNoFirmware';
-import { DeviceUpdateRequired } from './components/DeviceUpdateRequired';
-import { DeviceDisconnectRequired } from './components/DeviceDisconnectRequired';
+import { Transport } from './Transport';
+import { DeviceConnect } from './DeviceConnect';
+import { DeviceAcquire } from './DeviceAcquire';
+import { DeviceUnreadable } from './DeviceUnreadable';
+import { DeviceUnknown } from './DeviceUnknown';
+import { DeviceSeedless } from './DeviceSeedless';
+import { DeviceRecoveryMode } from './DeviceRecoveryMode';
+import { DeviceInitialize } from './DeviceInitialize';
+import { DeviceBootloader } from './DeviceBootloader';
+import { DeviceNoFirmware } from './DeviceNoFirmware';
+import { DeviceUpdateRequired } from './DeviceUpdateRequired';
+import { DeviceDisconnectRequired } from './DeviceDisconnectRequired';
 
 const Wrapper = styled.div<{ padded?: boolean }>`
     display: flex;

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import { Translation, Modal } from 'src/components/suite';
-import UdevDownload from 'src/components/suite/UdevDownload';
+
+import { Modal, Translation, UdevDownload } from 'src/components/suite';
 import type { ForegroundAppProps } from 'src/types/suite';
 
 const Wrapper = styled.div`

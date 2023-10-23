@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import styled from 'styled-components';
 import { OnboardingStepBox, OnboardingStepBoxProps } from 'src/components/onboarding';
-import { CoinsGroup, TooltipSymbol, Translation } from 'src/components/suite';
+import { CoinGroup, TooltipSymbol, Translation } from 'src/components/suite';
 import { useEnabledNetworks } from 'src/hooks/settings/useEnabledNetworks';
 import { CollapsibleBox } from '@trezor/components';
 
@@ -25,7 +25,7 @@ const StyledCollapsibleBox = styled(CollapsibleBox)`
     }
 `;
 
-const StyledCoinsGroup = styled(CoinsGroup)`
+const StyledCoinsGroup = styled(CoinGroup)`
     margin-top: 30px;
 `;
 
@@ -40,7 +40,7 @@ export const BasicSettingsStepBox = (props: OnboardingStepBoxProps) => {
     return (
         <OnboardingStepBox image="COINS" {...props}>
             <Separator />
-            <CoinsGroup
+            <CoinGroup
                 networks={mainnets}
                 onToggle={setEnabled}
                 selectedNetworks={enabledNetworks}

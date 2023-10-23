@@ -5,10 +5,11 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { H1, TrezorLogo, Button, variables, SVG_IMAGES } from '@trezor/components';
 import { useOnce } from '@trezor/react-utils';
 import { Translation } from 'src/components/suite';
+// importing directly, otherwise unit tests fail, seems to be a styled-components issue
+import { TrezorLink } from 'src/components/suite/TrezorLink';
 import { useSelector } from 'src/hooks/suite';
 import { selectBannerMessage } from '@suite-common/message-system';
 import { MessageSystemBanner } from 'src/components/suite/banners';
-import TrezorLink from 'src/components/suite/TrezorLink';
 import { isWeb } from '@trezor/env-utils';
 import { TREZOR_URL, SUITE_URL } from '@trezor/urls';
 import { resolveStaticPath } from '@suite-common/suite-utils';

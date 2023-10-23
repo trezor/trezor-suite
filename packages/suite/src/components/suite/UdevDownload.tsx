@@ -47,7 +47,7 @@ interface Installer {
     preferred?: boolean;
 }
 
-const UdevDownload = () => {
+export const UdevDownload = () => {
     const transport = useSelector(state => state.suite.transport);
 
     const installers: Installer[] =
@@ -100,5 +100,3 @@ const UdevDownload = () => {
         </Wrapper>
     );
 };
-
-export default UdevDownload;

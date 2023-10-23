@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { P, CollapsibleBox, motionAnimation } from '@trezor/components';
 
-import { CoinsList, Translation, TooltipSymbol } from 'src/components/suite';
+import { CoinList, Translation, TooltipSymbol } from 'src/components/suite';
 import { Network } from 'src/types/wallet';
 
 import { MoreCoins } from './MoreCoins';
@@ -34,7 +34,7 @@ export const EnableNetwork = ({
 
     return (
         <MoreCoins>
-            <CoinsList
+            <CoinList
                 onToggle={handleNetworkSelection}
                 networks={networks}
                 selectedNetworks={selectedNetworks}
@@ -55,7 +55,7 @@ export const EnableNetwork = ({
                     }
                 >
                     <TestnetCoinsWrapper>
-                        <CoinsList
+                        <CoinList
                             onToggle={handleNetworkSelection}
                             networks={testnetNetworks}
                             selectedNetworks={selectedNetworks}

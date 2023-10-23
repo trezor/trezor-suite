@@ -3,7 +3,7 @@ import { resolveStaticPath } from '@suite-common/suite-utils';
 import { Card, SVG_IMAGES, variables } from '@trezor/components';
 import { useSelector } from 'src/hooks/suite';
 import { selectCoinjoinAccountByKey } from 'src/reducers/wallet/coinjoinReducer';
-import { SECONDARY_PANEL_HEIGHT } from 'src/components/suite/AppNavigation';
+import { SECONDARY_PANEL_HEIGHT } from 'src/components/suite/AppNavigation/AppNavigation';
 import { TransactionTypeIcon } from 'src/components/wallet/TransactionItem/TransactionTypeIcon';
 import { TxTypeIconWrapper } from 'src/components/wallet/TransactionItem/CommonComponents';
 import { Translation } from 'src/components/suite/Translation';

@@ -28,7 +28,7 @@ import {
 } from './CommonComponents';
 import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { AccountTransactionBaseAnchor } from 'src/constants/suite/anchors';
-import { SECONDARY_PANEL_HEIGHT } from 'src/components/suite/AppNavigation';
+import { SECONDARY_PANEL_HEIGHT } from 'src/components/suite/AppNavigation/AppNavigation';
 import { anchorOutlineStyles } from 'src/utils/suite/anchor';
 import { TransactionTimestamp } from 'src/components/wallet/TransactionTimestamp';
 
