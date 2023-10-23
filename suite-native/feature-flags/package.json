@@ -13,6 +13,7 @@
     "dependencies": {
         "@suite-native/config": "workspace:*",
         "@suite-native/storage": "workspace:*",
-        "jotai": "1.9.1"
+        "jotai": "1.9.1",
+        "react-native": "0.71.8"
     }
 }
