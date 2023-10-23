@@ -8257,6 +8257,7 @@ __metadata:
     "@suite-native/config": "workspace:*"
     "@suite-native/storage": "workspace:*"
     jotai: 1.9.1
+    react-native: 0.71.8
   languageName: unknown
   linkType: soft
 
