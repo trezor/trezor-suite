@@ -27,7 +27,6 @@ const createSelectStyle = (theme: DefaultTheme): StylesConfig<Option, boolean> =
 type WrapperProps = Pick<
     SelectProps,
     | 'isClean'
-    | 'hideTextCursor'
     | 'hideDropdownIndicator'
     | 'isDisabled'
     | 'minValueWidth'
@@ -106,14 +105,11 @@ const Wrapper = styled.div<WrapperProps>`
         transform: none;
 
         :hover {
-            cursor: ${({ hideTextCursor, isSearchable }) =>
-                hideTextCursor || !isSearchable ? 'pointer' : 'text'};
+            cursor: ${({ isSearchable }) => isSearchable && 'text'};
         }
     }
 
     .${reactSelectClassNamePrefix}__input {
-        width: ${({ hideTextCursor }) => (hideTextCursor ? '2px' : 'auto')};
-        margin: ${({ hideTextCursor }) => (hideTextCursor ? 0 : '2px')};
         color: ${({ theme }) => theme.textDefault} !important;
 
         ${typography.body};
@@ -171,7 +167,6 @@ interface CommonProps extends Omit<ReactSelectProps<Option>, 'onChange'> {
     size?: InputSize;
     noError?: boolean;
     bottomText?: ReactNode;
-    hideTextCursor?: boolean; // this prop hides blinking text cursor
     minValueWidth?: string;
     inputState?: InputState;
     onChange?: (value: Option, ref?: SelectInstance<Option, boolean> | null) => void;
@@ -187,7 +182,6 @@ type KeyPressScrollProps =
 export type SelectProps = CommonProps & KeyPressScrollProps;
 
 export const Select = ({
-    hideTextCursor = false,
     hideDropdownIndicator,
     className,
     isClean = false,
@@ -233,7 +227,6 @@ export const Select = ({
             isSearchable={isSearchable}
             hideDropdownIndicator={hideDropdownIndicator}
             size={size}
-            hideTextCursor={hideTextCursor || isClean}
             minValueWidth={minValueWidth}
             isDisabled={isDisabled}
             menuIsOpen={menuIsOpen}

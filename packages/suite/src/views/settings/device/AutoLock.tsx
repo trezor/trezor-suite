@@ -67,7 +67,6 @@ export const AutoLock = ({ isDeviceLocked }: AutoLockProps) => {
             />
             <ActionColumn>
                 <ActionSelect
-                    hideTextCursor
                     useKeyPressScroll
                     placeholder=""
                     onChange={handleChange}

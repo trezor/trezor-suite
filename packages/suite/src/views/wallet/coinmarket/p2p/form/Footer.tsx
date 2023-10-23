@@ -100,7 +100,6 @@ export const Footer = () => {
                             isClearable={false}
                             minValueWidth="160px"
                             isClean
-                            hideTextCursor
                             onChange={(selected: any) => {
                                 onChange(selected);
                             }}

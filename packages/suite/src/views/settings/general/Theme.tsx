@@ -85,7 +85,6 @@ export const Theme = () => {
             />
             <ActionColumn>
                 <ActionSelect
-                    hideTextCursor
                     useKeyPressScroll
                     value={selectedValue}
                     options={options}

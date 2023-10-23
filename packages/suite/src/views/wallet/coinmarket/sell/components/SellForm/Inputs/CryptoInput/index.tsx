@@ -131,7 +131,6 @@ const CryptoInput = () => {
                                 sellInfo?.supportedCryptoCurrencies || new Set(),
                             )}
                             isClean
-                            hideTextCursor
                             isDisabled={account.networkType !== 'ethereum'}
                             minValueWidth="100px"
                             formatOptionLabel={(option: any) => (

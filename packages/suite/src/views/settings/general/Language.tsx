@@ -104,7 +104,6 @@ export const Language = () => {
             />
             <ActionColumn>
                 <ActionSelect
-                    hideTextCursor
                     useKeyPressScroll
                     value={selectedValue}
                     options={options}
