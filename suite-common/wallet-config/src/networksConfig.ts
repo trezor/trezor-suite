@@ -453,7 +453,7 @@ export const networks = {
         support: {
             [DeviceModelInternal.T2T1]: '2.4.3', // TODO(vl): revisit, for now just anything above 2.0.0
         },
-        customBackends: ['solana'],
+        customBackends: [],
         accountTypes: {},
     },
 } as const;
