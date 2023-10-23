@@ -182,7 +182,6 @@ export const Fiat = ({ output, outputId }: FiatProps) => {
             value={value}
             isClearable={false}
             isSearchable
-            hideTextCursor
             minValueWidth="58px"
             isClean
             data-test={currencyInputName}

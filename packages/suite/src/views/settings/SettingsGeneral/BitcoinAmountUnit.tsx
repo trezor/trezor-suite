@@ -28,7 +28,6 @@ export const BitcoinAmountUnit = () => {
             <TextColumn title={<Translation id="TR_BTC_UNITS" />} />
             <ActionColumn>
                 <ActionSelect
-                    hideTextCursor
                     useKeyPressScroll
                     value={{
                         label: UNIT_LABELS[
