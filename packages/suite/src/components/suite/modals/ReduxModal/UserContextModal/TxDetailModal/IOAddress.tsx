@@ -99,7 +99,7 @@ export const IOAddress = ({ txAddress, explorerUrl, explorerUrlQueryString }: IO
                 {explorerUrl ? (
                     <IconWrapper>
                         <Link
-                            size="tiny"
+                            type="label"
                             variant="nostyle"
                             href={`${explorerUrl}${txAddress}${explorerUrlQueryString}`}
                         >

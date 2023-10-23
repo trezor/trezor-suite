@@ -18,7 +18,7 @@ const LoaderCell = styled.div<Required<Omit<LoadingContentProps, 'isSuccessful'>
             opacity: 0;
         `}
     svg {
-        fill: ${({ theme }) => theme.TYPE_GREEN};
+        fill: ${({ theme }) => theme.iconPrimaryDefault};
     }
 `;
 
@@ -46,7 +46,7 @@ export const LoadingContent = ({
                     <Icon
                         icon={isSuccessful ? 'CHECK' : 'CROSS'}
                         size={size}
-                        color={isSuccessful ? theme.TYPE_GREEN : theme.TYPE_RED}
+                        color={isSuccessful ? theme.iconPrimaryDefault : theme.iconAlertRed}
                     />
                 )}
             </LoaderCell>
