@@ -27,13 +27,15 @@ const filterOutRipple = (network: NetworkSymbol) => network !== 'xrp' && network
 
 const networkSymbols = Object.keys(networks) as NetworkSymbol[];
 
-export const enabledNetworks = networkSymbols
+export const supportedNetworkSymbols = networkSymbols
     .filter(network => !deprecatedNetworks.includes(network))
     .filter(filterOutRipple);
 
-export const enabledMainnets = getMainnets().filter(network =>
-    enabledNetworks.includes(network.symbol),
+export const supportedMainnets = getMainnets().filter(network =>
+    supportedNetworkSymbols.includes(network.symbol),
 );
-export const enabledTestnets = getTestnets().filter(network =>
-    enabledNetworks.includes(network.symbol),
+export const supportedTestnets = getTestnets().filter(network =>
+    supportedNetworkSymbols.includes(network.symbol),
 );
+
+export const supportedMainnetSymbols = supportedMainnets.map(network => network.symbol);

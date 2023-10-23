@@ -1,6 +1,6 @@
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { extraDependenciesMock } from '@suite-common/test-utils';
-import { enabledNetworks } from '@suite-native/config';
+import { supportedNetworkSymbols } from '@suite-native/config';
 import { selectDevices } from '@suite-common/wallet-core';
 import { selectFiatCurrencyCode, setFiatCurrency } from '@suite-native/module-settings';
 import { PROTO } from '@trezor/connect';
@@ -8,7 +8,7 @@ import { mergeDeepObject } from '@trezor/utils';
 
 export const extraDependencies: ExtraDependencies = mergeDeepObject(extraDependenciesMock, {
     selectors: {
-        selectEnabledNetworks: () => enabledNetworks,
+        selectEnabledNetworks: () => supportedNetworkSymbols,
         selectBitcoinAmountUnit: () => PROTO.AmountUnit.BITCOIN,
         selectLocalCurrency: selectFiatCurrencyCode,
         selectDevices,

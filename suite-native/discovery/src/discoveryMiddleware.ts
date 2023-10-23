@@ -2,6 +2,7 @@ import { deviceActions, selectDevice, discoveryActions } from '@suite-common/wal
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 
 import { startDescriptorPreloadedDiscoveryThunk } from './discoveryThunks';
+import { selectAreTestnetsEnabled, toggleAreTestnetsEnabled } from './discoveryConfigSlice';
 
 export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
     (action, { dispatch, next, getState }) => {
@@ -11,12 +12,26 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
 
         const device = selectDevice(getState());
 
+        const areTestnetsEnabled = selectAreTestnetsEnabled(getState());
+
         // On successful authorization, create discovery instance and run.
         if (deviceActions.authDevice.match(action) && device) {
             dispatch(
                 startDescriptorPreloadedDiscoveryThunk({
                     deviceState: action.payload.state,
                     device,
+                    areTestnetsEnabled,
+                }),
+            );
+        }
+
+        // If user enables testnets discovery, run it.
+        if (toggleAreTestnetsEnabled.match(action) && !areTestnetsEnabled && device?.state) {
+            dispatch(
+                startDescriptorPreloadedDiscoveryThunk({
+                    deviceState: device.state,
+                    device,
+                    areTestnetsEnabled: true,
                 }),
             );
         }

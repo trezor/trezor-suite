@@ -20,6 +20,7 @@
         "@suite-common/wallet-types": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",
         "@suite-native/accounts": "workspace:*",
+        "@suite-native/config": "workspace:*",
         "@trezor/connect": "workspace:*"
     }
 }

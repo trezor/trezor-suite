@@ -7,7 +7,7 @@ import {
 } from '@suite-common/wallet-core';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountInfo } from '@trezor/connect';
-import { enabledNetworks } from '@suite-native/config';
+import { supportedNetworkSymbols } from '@suite-native/config';
 
 import { AccountImportSummaryForm } from './AccountImportSummaryForm';
 import { AccountAlreadyImported } from './AccountAlreadyImported';
@@ -22,7 +22,9 @@ export const AccountImportSummary = ({ networkSymbol, accountInfo }: AccountImpo
         selectAccountByDescriptorAndNetworkSymbol(state, accountInfo.descriptor, networkSymbol),
     );
 
-    const isAccountImportSupported = enabledNetworks.some(network => network === networkSymbol);
+    const isAccountImportSupported = supportedNetworkSymbols.some(
+        network => network === networkSymbol,
+    );
 
     if (!isAccountImportSupported) {
         return <ErrorMessage errorMessage="Unsupported account network type." />;
