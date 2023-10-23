@@ -4,9 +4,8 @@ import { motion } from 'framer-motion';
 import Tippy, { TippyProps } from '@tippyjs/react/headless';
 import { Instance } from 'tippy.js';
 import { transparentize } from 'polished';
-import { borders, boxShadows, spacings, spacingsPx, typography } from '@trezor/theme';
+import { borders, boxShadows, spacings, spacingsPx, typography, zIndices } from '@trezor/theme';
 
-import * as variables from '../../config/variables';
 import { Icon, IconType } from '../assets/Icon/Icon';
 
 type Cursor = 'inherit' | 'pointer' | 'help' | 'default' | 'not-allowed';
@@ -149,7 +148,7 @@ export const Tooltip = ({
     return (
         <div className={className}>
             <Tippy
-                zIndex={variables.Z_INDEX.TOOLTIP}
+                zIndex={zIndices.tooltip}
                 placement={placement}
                 animation
                 onShow={handleOnShow}
