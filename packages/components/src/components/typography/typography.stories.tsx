@@ -12,48 +12,71 @@ storiesOf('Typography/All', module).add(
             </StoryColumn>
             <StoryColumn>
                 <P data-test="paragraph-default">
-                    size="default" <br />
+                    default
+                    <br />
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a ante quis
                     lectus eleifend rutrum. Aenean tincidunt odio vel fermentum ultricies. Sed
                     suscipit interdum eros, eget placerat lorem pulvinar in. Ut elit orci, rhoncus
                     eu porta vel, feugiat vel mi.
                 </P>
-                <P size="small" data-test="paragraph-small">
-                    size="small" <br />
+                <P type="titleLarge" data-test="paragraph-titleLarge">
+                    type="titleLarge" <br />
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a ante quis
                     lectus eleifend rutrum. Aenean tincidunt odio vel fermentum ultricies. Sed
                     suscipit interdum eros, eget placerat lorem pulvinar in. Ut elit orci, rhoncus
                     eu porta vel, feugiat vel mi.
                 </P>
-                <P size="tiny" data-test="paragraph-tiny">
-                    size="tiny" <br />
+                <P type="titleMedium" data-test="paragraph-titleMedium">
+                    type="titleMedium" <br />
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a ante quis
                     lectus eleifend rutrum. Aenean tincidunt odio vel fermentum ultricies. Sed
                     suscipit interdum eros, eget placerat lorem pulvinar in. Ut elit orci, rhoncus
                     eu porta vel, feugiat vel mi.
                 </P>
-                <P weight="bold" data-test="paragraph-bold">
-                    weight="bold" <br />
+                <P type="titleSmall" data-test="paragraph-titleSmall">
+                    type ="titleSmall" <br />
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a ante quis
                     lectus eleifend rutrum. Aenean tincidunt odio vel fermentum ultricies. Sed
                     suscipit interdum eros, eget placerat lorem pulvinar in. Ut elit orci, rhoncus
                     eu porta vel, feugiat vel mi.
                 </P>
-                <P size="small" weight="bold" data-test="paragraph-small-bold">
-                    size="small" weight="bold" <br />
+                <P type="highlight" data-test="paragraph-highlight">
+                    type="highlight" <br />
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a ante quis
                     lectus eleifend rutrum. Aenean tincidunt odio vel fermentum ultricies. Sed
                     suscipit interdum eros, eget placerat lorem pulvinar in. Ut elit orci, rhoncus
                     eu porta vel, feugiat vel mi.
                 </P>
+                <P type="callout" data-test="paragraph-callout">
+                    type="callout" <br />
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a ante quis
+                    lectus eleifend rutrum. Aenean tincidunt odio vel fermentum ultricies. Sed
+                    suscipit interdum eros, eget placerat lorem pulvinar in. Ut elit orci, rhoncus
+                    eu porta vel, feugiat vel mi.
+                </P>
+                <P type="hint" data-test="paragraph-hint">
+                    type="hint" <br />
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a ante quis
+                    lectus eleifend rutrum. Aenean tincidunt odio vel fermentum ultricies. Sed
+                    suscipit interdum eros, eget placerat lorem pulvinar in. Ut elit orci, rhoncus
+                    eu porta vel, feugiat vel mi.
+                </P>
+                <P type="label" data-test="paragraph-label">
+                    type="label" <br />
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a ante quis
+                    lectus eleifend rutrum. Aenean tincidunt odio vel fermentum ultricies. Sed
+                    suscipit interdum eros, eget placerat lorem pulvinar in. Ut elit orci, rhoncus
+                    eu porta vel, feugiat vel mi.
+                </P>
+
                 <P data-test="paragraph-link">
                     Default text with <Link href="/">link</Link>.
                 </P>
-                <P size="small" data-test="paragraph-link-small">
-                    Small text with <Link href="/">link</Link>.
+                <P type="hint" data-test="paragraph-link-hint">
+                    Hint text with <Link href="/">link</Link>.
                 </P>
-                <P size="tiny" data-test="paragraph-link-tiny">
-                    Tiny text with <Link href="/">link</Link>.
+                <P type="label" data-test="paragraph-link-label">
+                    Label text with <Link href="/">link</Link>.
                 </P>
             </StoryColumn>
         </>
