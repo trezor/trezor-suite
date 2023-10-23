@@ -16,6 +16,7 @@ import { CustomTooltipDashboard } from './components/CustomTooltipDashboard';
 import { CustomTooltipAccount } from './components/CustomTooltipAccount';
 import { SkeletonTransactionsGraph } from './components/SkeletonTransactionsGraph';
 import { calcYDomain, calcFakeGraphDataForTimestamps, calcXDomain } from 'src/utils/wallet/graph';
+import { zIndices } from '@trezor/theme';
 
 const Wrapper = styled.div`
     display: flex;
@@ -145,7 +146,7 @@ const TransactionsGraph = memo((props: Props) => {
                             />
                             <Tooltip
                                 position={{ y: 0, x: 0 }}
-                                wrapperStyle={{ zIndex: variables.Z_INDEX.TOOLTIP }}
+                                wrapperStyle={{ zIndex: zIndices.tooltip }}
                                 cursor={{ stroke: theme.BG_TOOLTIP, strokeWidth: 1 }}
                                 content={
                                     props.variant === 'one-asset' ? (

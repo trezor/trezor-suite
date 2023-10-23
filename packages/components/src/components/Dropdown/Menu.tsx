@@ -1,7 +1,6 @@
 import React, { forwardRef, useEffect, useState } from 'react';
 import styled, { css, keyframes, useTheme } from 'styled-components';
-import { borders, boxShadows, spacings, spacingsPx, typography } from '@trezor/theme';
-import { Z_INDEX } from '../../config/variables';
+import { borders, boxShadows, spacings, spacingsPx, typography, zIndices } from '@trezor/theme';
 import { animations } from '../../config';
 import { Icon, IconProps } from '../assets/Icon/Icon';
 import type { Coords } from './getAdjustedCoords';
@@ -50,7 +49,7 @@ const Container = styled.ul<Pick<MenuProps, 'coords' | 'alignMenu'>>`
     border-radius: ${borders.radii.md};
     background: ${({ theme }) => theme.backgroundSurfaceElevation1};
     box-shadow: ${boxShadows.elevation3};
-    z-index: ${Z_INDEX.MODAL};
+    z-index: ${zIndices.modal};
     animation: ${animations.DROPDOWN_MENU} 0.15s ease-in-out;
     list-style-type: none;
     overflow: hidden;

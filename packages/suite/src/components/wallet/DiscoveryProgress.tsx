@@ -1,11 +1,12 @@
 import styled from 'styled-components';
 
 import { useDiscovery } from 'src/hooks/suite';
-import { Progress, variables } from '@trezor/components';
+import { Progress } from '@trezor/components';
+import { zIndices } from '@trezor/theme';
 
 const StyledProgress = styled(Progress)`
     height: 0;
-    z-index: ${variables.Z_INDEX.DISCOVERY_PROGRESS};
+    z-index: ${zIndices.discoveryProgress};
 `;
 
 export const DiscoveryProgress = () => {
