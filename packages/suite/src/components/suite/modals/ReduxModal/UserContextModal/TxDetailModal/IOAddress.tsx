@@ -97,7 +97,7 @@ export const IOAddress = ({ txAddress, explorerUrl }: IOAddressProps) => {
                 </IconWrapper>
                 {explorerUrl ? (
                     <IconWrapper>
-                        <Link size="tiny" variant="nostyle" href={`${explorerUrl}${txAddress}`}>
+                        <Link type="label" variant="nostyle" href={`${explorerUrl}${txAddress}`}>
                             <Icon icon="EXTERNAL_LINK" size={12} color={theme.BG_WHITE} />
                         </Link>
                     </IconWrapper>
