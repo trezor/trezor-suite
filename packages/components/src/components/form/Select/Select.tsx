@@ -28,9 +28,9 @@ type WrapperProps = Pick<
     SelectProps,
     | 'isClean'
     | 'hideTextCursor'
-    | 'withDropdownIndicator'
+    | 'hideDropdownIndicator'
     | 'isDisabled'
-    | 'minWidth'
+    | 'minValueWidth'
     | 'size'
     | 'menuIsOpen'
     | 'isSearchable'
@@ -48,7 +48,7 @@ const Wrapper = styled.div<WrapperProps>`
         `}
 
     .${reactSelectClassNamePrefix}__dropdown-indicator {
-        display: ${({ withDropdownIndicator }) => (!withDropdownIndicator ? 'none' : 'flex')};
+        display: ${({ hideDropdownIndicator }) => (hideDropdownIndicator ? 'none' : 'flex')};
         align-items: center;
         color: ${({ theme, isDisabled }) => (isDisabled ? theme.iconDisabled : theme.iconSubdued)};
         padding: 0;
@@ -88,7 +88,7 @@ const Wrapper = styled.div<WrapperProps>`
     .${reactSelectClassNamePrefix}__value-container {
         display: flex;
         flex-wrap: nowrap;
-        min-width: ${({ minWidth }) => minWidth};
+        min-width: ${({ minValueWidth }) => minValueWidth};
         justify-content: ${({ isClean }) => (isClean ? 'flex-end' : 'flex-start')};
         padding: 0;
         border: none;
@@ -165,15 +165,14 @@ const closeMenuOnScroll = (e: Event) =>
 export type Option = any;
 
 interface CommonProps extends Omit<ReactSelectProps<Option>, 'onChange'> {
-    withDropdownIndicator?: boolean;
+    hideDropdownIndicator?: boolean;
     isClean?: boolean;
     label?: ReactNode;
-    wrapperProps?: Record<string, any>;
     size?: InputSize;
     noError?: boolean;
     bottomText?: ReactNode;
     hideTextCursor?: boolean; // this prop hides blinking text cursor
-    minWidth?: string;
+    minValueWidth?: string;
     inputState?: InputState;
     onChange?: (value: Option, ref?: SelectInstance<Option, boolean> | null) => void;
     'data-test'?: string;
@@ -189,9 +188,8 @@ export type SelectProps = CommonProps & KeyPressScrollProps;
 
 export const Select = ({
     hideTextCursor = false,
-    withDropdownIndicator = true,
+    hideDropdownIndicator,
     className,
-    wrapperProps,
     isClean = false,
     label,
     size = 'large',
@@ -199,7 +197,7 @@ export const Select = ({
     bottomText,
     useKeyPressScroll,
     isSearchable = false,
-    minWidth = 'initial',
+    minValueWidth = 'initial',
     menuIsOpen,
     inputState,
     components,
@@ -233,13 +231,12 @@ export const Select = ({
             className={className}
             isClean={isClean}
             isSearchable={isSearchable}
-            withDropdownIndicator={withDropdownIndicator}
+            hideDropdownIndicator={hideDropdownIndicator}
             size={size}
-            hideTextCursor={hideTextCursor}
-            minWidth={minWidth}
+            hideTextCursor={hideTextCursor || isClean}
+            minValueWidth={minValueWidth}
             isDisabled={isDisabled}
             menuIsOpen={menuIsOpen}
-            {...wrapperProps}
         >
             <ReactSelect
                 ref={selectRef}
