@@ -3,6 +3,7 @@ import { useCallback, useState } from 'react';
 import styled, { css, useTheme } from 'styled-components';
 
 import { H2, variables, Icon, LoadingContent } from '@trezor/components';
+import { zIndices } from '@trezor/theme';
 import { sortByCoin, getFailedAccounts, accountSearchFn } from '@suite-common/wallet-utils';
 import { selectDevice } from '@suite-common/wallet-core';
 
@@ -19,7 +20,7 @@ import { AddAccountButton } from './AddAccountButton';
 const Wrapper = styled.div<{ isInline?: boolean }>`
     display: flex;
     flex-direction: column;
-    z-index: ${variables.Z_INDEX.EXPANDABLE_NAVIGATION_HEADER};
+    z-index: ${zIndices.expandableNavigationHeader};
     width: 100%;
 
     ${props =>
@@ -89,7 +90,7 @@ const ExpandedMobileWrapper = styled.div`
     position: absolute;
     flex-direction: column;
     background: ${({ theme }) => theme.BG_WHITE};
-    z-index: ${variables.Z_INDEX.EXPANDABLE_NAVIGATION};
+    z-index: ${zIndices.expandableNavigation};
     width: 100%;
     max-height: 80vh;
     overflow-y: auto;

@@ -5,7 +5,6 @@ import styled from 'styled-components';
 import { selectDevice } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 import { Button } from '@trezor/components';
-
 import {
     beginOnboardingTutorial,
     goToNextStep,

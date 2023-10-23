@@ -1,6 +1,7 @@
 import { ReactNode, HTMLAttributes } from 'react';
 import styled, { css } from 'styled-components';
 import { motion } from 'framer-motion';
+import { zIndices } from '@trezor/theme';
 import { H1, Icon, Image, ImageType, motionEasing, variables } from '@trezor/components';
 
 const headerVariants = {
@@ -38,7 +39,7 @@ const CardWrapper = styled(
     width: ${({ variant }) => (variant === 'large' ? '100%' : 'auto')};
     border-radius: 16px;
     background: ${({ theme }) => theme.BG_WHITE};
-    z-index: ${variables.Z_INDEX.BASE};
+    z-index: ${zIndices.base};
     cursor: ${({ expanded }) => !expanded && 'pointer'};
 
     ${({ expandable, variant }) =>

@@ -10,6 +10,7 @@ import {
     Dropdown,
     DropdownMenuItemProps,
 } from '@trezor/components';
+import { zIndices } from '@trezor/theme';
 import { Route } from '@suite-common/suite-types';
 
 import { AccountFormCloseButton, HoverAnimation } from 'src/components/suite';
@@ -25,7 +26,7 @@ export const SECONDARY_PANEL_HEIGHT = '60px';
 
 const Wrapper = styled.div<{ subRoute: boolean | undefined; inView?: boolean }>`
     width: 100%;
-    z-index: ${variables.Z_INDEX.STICKY_BAR};
+    z-index: ${zIndices.stickyBar};
     display: flex;
     background: ${({ theme }) => theme.BG_LIGHT_GREY};
     justify-content: center;

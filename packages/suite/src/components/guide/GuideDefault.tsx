@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { darken } from 'polished';
 import styled, { useTheme } from 'styled-components';
 import { analytics, EventType } from '@trezor/suite-analytics';
-
+import { zIndices } from '@trezor/theme';
 import { Translation } from 'src/components/suite';
 import { setView } from 'src/actions/suite/guideActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -35,7 +35,7 @@ const FeedbackButton = styled.button`
         `background ${theme.HOVER_TRANSITION_TIME} ${theme.HOVER_TRANSITION_EFFECT}`};
     /* speficy position and z-index so that GuideButton does not interfere */
     position: relative;
-    z-index: ${variables.Z_INDEX.GUIDE};
+    z-index: ${zIndices.guide};
 
     :hover,
     :focus {

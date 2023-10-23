@@ -12,6 +12,7 @@ import { GuideButton, GuidePanel } from 'src/components/guide';
 import { selectBannerMessage } from '@suite-common/message-system';
 import { MessageSystemBanner } from 'src/components/suite/banners';
 import { ModalContextProvider } from 'src/support/suite/ModalContext';
+import { zIndices } from '@trezor/theme';
 
 const Wrapper = styled.div`
     display: flex;
@@ -56,7 +57,7 @@ const Header = styled.div`
     background: ${({ theme }) => theme.BG_LIGHT_GREY};
     box-shadow: 0px 14px 10px 4px ${({ theme }) => theme.BG_LIGHT_GREY};
     margin-bottom: 14px;
-    z-index: ${variables.Z_INDEX.BASE};
+    z-index: ${zIndices.base};
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
         padding: 0px 20px;
