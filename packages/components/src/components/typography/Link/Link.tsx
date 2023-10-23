@@ -1,21 +1,13 @@
 import { ReactNode, MouseEvent } from 'react';
 import styled, { css, useTheme } from 'styled-components';
 import { Icon, IconProps } from '../../assets/Icon/Icon';
-import { FONT_SIZE } from '../../../config/variables';
-
-export type LinkSize = 'normal' | 'small' | 'tiny';
-
-const A_SIZES = {
-    normal: FONT_SIZE.NORMAL,
-    small: FONT_SIZE.SMALL,
-    tiny: FONT_SIZE.TINY,
-};
+import { TypographyStyle, spacings, typography, typographyStylesBase } from '@trezor/theme';
 
 const A = styled.a<LinkProps>`
-    font-size: ${props => (props.size ? A_SIZES[props.size] : 'inherit')};
+    ${({ type }) => (type ? typography[type] : typography.body)}
     text-decoration: none;
     cursor: pointer;
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.textDefault};
     font-weight: 500;
     display: inline-flex;
     align-items: center;
@@ -45,14 +37,14 @@ const A = styled.a<LinkProps>`
 `;
 
 const IconWrapper = styled.div`
-    margin-left: 4px;
+    margin-left: ${spacings.xxs};
 `;
 
 interface LinkProps {
     href?: string;
     to?: any;
     target?: string;
-    size?: LinkSize;
+    type?: TypographyStyle;
     onClick?: (event: MouseEvent<any>) => void;
     children?: ReactNode;
     className?: string;
@@ -61,8 +53,11 @@ interface LinkProps {
     iconProps?: IconProps;
 }
 
-const Link = ({ icon, iconProps, ...props }: LinkProps) => {
+const Link = ({ icon, iconProps, type, ...props }: LinkProps) => {
     const theme = useTheme();
+
+    const iconSize = typographyStylesBase[type || 'body'].fontSize;
+
     return (
         <A
             href={props.href}
@@ -82,12 +77,7 @@ const Link = ({ icon, iconProps, ...props }: LinkProps) => {
             {props.children}
             {icon && (
                 <IconWrapper>
-                    <Icon
-                        size={props.size ? Number(A_SIZES[props.size].replace('px', '')) : 24}
-                        icon={icon}
-                        color={theme.TYPE_DARK_GREY}
-                        {...iconProps}
-                    />
+                    <Icon size={iconSize} icon={icon} color={theme.iconSubdued} {...iconProps} />
                 </IconWrapper>
             )}
         </A>

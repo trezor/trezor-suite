@@ -7,11 +7,12 @@ import { useKeyPress } from '@trezor/react-utils';
 import { setCaretPosition } from '@trezor/dom-utils';
 import styled, { css, useTheme } from 'styled-components';
 
+import { borders, spacingsPx, typography } from '@trezor/theme';
 import { countBytesInString } from '@trezor/utils';
 import { isAndroid } from '@trezor/env-utils';
 
 import { PasswordStrengthIndicator } from './PasswordStrengthIndicator';
-import { variables, motion as motionConfig } from '../../config';
+import { motion as motionConfig } from '../../config';
 import { Button } from '../buttons/Button/Button';
 import { Checkbox } from '../form/Checkbox/Checkbox';
 import { Input } from '../form/Input/Input';
@@ -30,13 +31,13 @@ const Wrapper = styled.div<Pick<PassphraseTypeCardProps, 'type' | 'singleColModa
     width: 100%;
 
     & + & {
-        margin-top: 18px;
+        margin-top: ${spacingsPx.md};
     }
 
     ${props =>
         !props.singleColModal &&
         css`
-            padding: 12px;
+            padding: ${spacingsPx.sm};
             /* border: solid 1px ${({ theme }) => theme.STROKE_GREY}; */
         `}
 
@@ -51,12 +52,14 @@ const IconWrapper = styled.div<Pick<PassphraseTypeCardProps, 'type'>>`
     width: 38px;
     height: 38px;
     background: ${({ theme, type }) =>
-        type === 'standard' ? theme.BG_LIGHT_GREEN : theme.BG_GREY};
-    border-radius: 8px;
+        type === 'standard'
+            ? theme.backgroundPrimarySubtleOnElevation1
+            : theme.backgroundSurfaceElevation1};
+    border-radius: ${borders.radii.sm};
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-right: 24px;
+    margin-right: ${spacingsPx.xl};
 `;
 
 const Col = styled.div`
@@ -74,19 +77,16 @@ const ArrowCol = styled(Col)`
 
 const WalletTitle = styled.div<{ withMargin: boolean }>`
     display: flex;
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
-    font-weight: 500;
-    line-height: 1.5;
+    ${typography.body}
+    color: ${({ theme }) => theme.textDefault};
     align-items: center;
-    ${props => props.withMargin && `margin-bottom: 5px;`}
+    ${props => props.withMargin && `margin-bottom: ${spacingsPx.xxs};`}
 `;
 
 const Description = styled.div<Pick<PassphraseTypeCardProps, 'authConfirmation'>>`
     display: flex;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    font-size: ${variables.FONT_SIZE.TINY};
-    line-height: 1.33;
+    color: ${({ theme }) => theme.textSubdued};
+    ${typography.label}
 `;
 
 const InputWrapper = styled(Description)`
@@ -95,18 +95,18 @@ const InputWrapper = styled(Description)`
     ${props =>
         props.authConfirmation &&
         css`
-            margin-top: 12px;
+            margin-top: ${spacingsPx.sm};
         `}
 `;
 
 const Spacer = styled.div`
-    margin: 16px 0px;
+    margin: ${spacingsPx.md} 0px;
 `;
 
 const PassphraseInput = styled(Input)`
     input {
-        color: ${({ theme }) => theme.TYPE_DARK_GREY};
-        font-size: ${variables.FONT_SIZE.SMALL};
+        color: ${({ theme }) => theme.textSubdued};
+        ${typography.hint}
     }
 `;
 
@@ -119,11 +119,11 @@ const Actions = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
-    margin-top: 16px;
+    margin-top: ${spacingsPx.md};
 `;
 
 const ActionButton = styled(Button)`
-    margin-top: 8px;
+    margin-top: ${spacingsPx.xs};
 
     &:first-child {
         margin-top: 0px;
@@ -133,7 +133,7 @@ const ActionButton = styled(Button)`
 const OnDeviceActionButton = styled(ActionButton)`
     background: transparent;
     text-decoration: underline;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.textSubdued};
 
     &:first-child {
         margin-top: 0px;
@@ -142,7 +142,7 @@ const OnDeviceActionButton = styled(ActionButton)`
     &:hover,
     &:focus,
     &:active {
-        color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+        color: ${({ theme }) => theme.textSubdued};
         background: transparent;
     }
 `;
@@ -150,12 +150,12 @@ const OnDeviceActionButton = styled(ActionButton)`
 const Content = styled.div`
     display: flex;
     flex: 1;
-    margin: 8px 12px;
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
-    font-size: ${variables.FONT_SIZE.SMALL};
+    margin: ${spacingsPx.xs} ${spacingsPx.sm};
+    color: ${({ theme }) => theme.textSubdued};
+    ${typography.hint}
 `;
 
-type PassphraseTypeCardProps = {
+export type PassphraseTypeCardProps = {
     title?: ReactNode;
     description?: ReactNode;
     submitLabel: ReactNode;
@@ -277,9 +277,9 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardProps) => {
                     <Row>
                         <IconWrapper type={props.type}>
                             {props.type === 'standard' ? (
-                                <Icon size={24} icon="WALLET" color={theme.TYPE_GREEN} />
+                                <Icon size={24} icon="WALLET" color={theme.iconPrimaryDefault} />
                             ) : (
-                                <Icon size={24} icon="LOCK" color={theme.TYPE_LIGHT_GREY} />
+                                <Icon size={24} icon="LOCK" color={theme.iconSubdued} />
                             )}
                         </IconWrapper>
                         <Col>
@@ -315,7 +315,7 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardProps) => {
                         </Col>
                         {props.type === 'standard' && (
                             <ArrowCol>
-                                <Icon icon="ARROW_RIGHT" color={theme.TYPE_LIGHT_GREY} />
+                                <Icon icon="ARROW_RIGHT" color={theme.iconSubdued} />
                             </ArrowCol>
                         )}
                     </Row>
@@ -350,7 +350,7 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardProps) => {
                                 innerAddon={
                                     <Icon
                                         size={18}
-                                        color={theme.TYPE_LIGHT_GREY}
+                                        color={theme.iconSubdued}
                                         icon={showPassword ? 'HIDE' : 'SHOW'}
                                         onClick={() => {
                                             if (typeof ref.current?.selectionStart === 'number') {
