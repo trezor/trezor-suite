@@ -26,7 +26,6 @@ const FiatSelect = () => {
                     options={buildCurrencyOptions(value)}
                     minValueWidth="58px"
                     isClean
-                    hideTextCursor
                 />
             )}
         />
