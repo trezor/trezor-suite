@@ -85,7 +85,7 @@ const FiatInput = () => {
                             isSearchable
                             value={value}
                             isClearable={false}
-                            minWidth="45px"
+                            minValueWidth="45px"
                             isClean
                             hideTextCursor
                             onChange={(selected: any) => {

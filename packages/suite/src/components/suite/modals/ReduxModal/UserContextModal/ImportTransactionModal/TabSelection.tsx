@@ -13,7 +13,7 @@ const TabSelector = styled.div`
 const TabButton = styled.button<{ selected: boolean }>`
     border: none;
     background-color: inherit;
-    font-size: ${variables.NEUE_FONT_SIZE.NORMAL};
+    font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     padding-top: 12px;
     padding-bottom: 12px;

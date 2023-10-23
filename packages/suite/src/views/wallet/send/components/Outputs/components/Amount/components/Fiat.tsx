@@ -183,7 +183,7 @@ export const Fiat = ({ output, outputId }: FiatProps) => {
             isClearable={false}
             isSearchable
             hideTextCursor
-            minWidth="58px"
+            minValueWidth="58px"
             isClean
             data-test={currencyInputName}
             onChange={async (selected: CurrencyOption) => {

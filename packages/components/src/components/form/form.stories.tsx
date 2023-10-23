@@ -291,13 +291,7 @@ export const All = {
             </StoryColumn>
             <StoryColumn maxWidth={200}>
                 <Heading>Select</Heading>
-                <Select
-                    options={SELECT_OPTIONS}
-                    label="Not selected"
-                    wrapperProps={{
-                        'data-test': 'select',
-                    }}
-                />
+                <Select options={SELECT_OPTIONS} label="Not selected" />
                 <Select
                     options={SELECT_OPTIONS}
                     value={{
@@ -305,9 +299,6 @@ export const All = {
                         value: 'value-one',
                     }}
                     label="Selected"
-                    wrapperProps={{
-                        'data-test': 'select-selected',
-                    }}
                 />
                 <Select
                     options={SELECT_OPTIONS}
@@ -316,19 +307,10 @@ export const All = {
                         value: 'value-one',
                     }}
                     label="Small"
-                    wrapperProps={{
-                        'data-test': 'select-small',
-                    }}
                     size="small"
                 />
 
-                <Select
-                    isDisabled
-                    label="Disabled"
-                    wrapperProps={{
-                        'data-test': 'select-disabled',
-                    }}
-                />
+                <Select isDisabled label="Disabled" />
             </StoryColumn>
             <StoryColumn>
                 <Heading>Range</Heading>
