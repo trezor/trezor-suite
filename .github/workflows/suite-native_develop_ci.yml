@@ -70,7 +70,7 @@ jobs:
         with:
           name: app-apk
           path: |
-            **/*.apk
+            suite-native/app/android/**/*.apk
 
   ios_develop:
     runs-on: macos-12
