@@ -138,7 +138,6 @@ const Inputs = () => {
                                     isClearable={false}
                                     minValueWidth="58px"
                                     isClean
-                                    hideTextCursor
                                     onChange={(selected: any) => {
                                         onChange(selected);
                                         setAmountLimits(undefined);
@@ -203,7 +202,6 @@ const Inputs = () => {
                                         </Option>
                                     )}
                                     isClean
-                                    hideTextCursor
                                     isDisabled={account.networkType !== 'ethereum'}
                                     minValueWidth="100px"
                                 />
