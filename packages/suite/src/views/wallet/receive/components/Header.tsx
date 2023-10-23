@@ -20,7 +20,7 @@ export const Header = ({ account }: HeaderProps) => {
             <Content>
                 <H2>{title}</H2>
                 {/* temp disable description to get consistent looks across tabs */}
-                {/* <P size="tiny">
+                {/* <P type="label">
                     <Translation id="RECEIVE_DESC_BITCOIN" />
                 </P> */}
             </Content>
@@ -30,7 +30,7 @@ export const Header = ({ account }: HeaderProps) => {
         return (
             <Content>
                 <H2>{title}</H2>
-                <P size="tiny">
+                <P type="label">
                     <Translation id="RECEIVE_DESC_ETHEREUM" />
                 </P>
             </Content>

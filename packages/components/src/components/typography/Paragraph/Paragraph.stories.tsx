@@ -11,17 +11,18 @@ export const Paragraph: StoryObj<PProps> = {
         children: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     },
     argTypes: {
-        textAlign: {
+        type: {
             control: 'radio',
-            options: ['left', 'center', 'right'],
-        },
-        size: {
-            control: 'radio',
-            options: ['normal', 'small', 'tiny'],
-        },
-        weight: {
-            control: 'radio',
-            options: ['normal', 'bold'],
+            options: [
+                'titleLarge',
+                'titleMedium',
+                'titleSmall',
+                'highlight',
+                'body',
+                'callout',
+                'hint',
+                'label',
+            ],
         },
     },
 };
