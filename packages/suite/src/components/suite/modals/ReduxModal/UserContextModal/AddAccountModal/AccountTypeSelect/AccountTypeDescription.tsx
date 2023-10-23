@@ -31,7 +31,7 @@ export const AccountTypeDescription = ({
             {accountTypeUrl && (
                 <>
                     {' '}
-                    <TrezorLink icon="EXTERNAL_LINK" href={accountTypeUrl} size="small">
+                    <TrezorLink icon="EXTERNAL_LINK" href={accountTypeUrl} type="hint">
                         <Translation id="TR_LEARN_MORE" />
                     </TrezorLink>
                 </>

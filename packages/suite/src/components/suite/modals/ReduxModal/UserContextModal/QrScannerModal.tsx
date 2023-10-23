@@ -172,7 +172,7 @@ export const QrScannerModal = ({ onCancel, decision, allowPaste }: QrScannerModa
                             <Translation id="TR_FOR_EASIER_AND_SAFER_INPUT" />
                             <TrezorLink
                                 icon="EXTERNAL_LINK"
-                                size="small"
+                                type="hint"
                                 href={HELP_CENTER_QR_CODE_URL}
                             >
                                 <Translation id="TR_LEARN_MORE" />
