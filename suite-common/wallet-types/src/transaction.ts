@@ -136,12 +136,14 @@ export type PrecomposedTransactionFinal =
           feeDifference?: typeof undefined;
           useNativeRbf?: typeof undefined;
           useDecreaseOutput?: typeof undefined;
+          isTokenKnown?: typeof undefined;
       })
     | (TxFinal & {
           prevTxid: string;
           feeDifference: string;
           useNativeRbf: boolean;
           useDecreaseOutput: boolean;
+          isTokenKnown?: boolean;
       });
 
 export type PrecomposedTransaction =

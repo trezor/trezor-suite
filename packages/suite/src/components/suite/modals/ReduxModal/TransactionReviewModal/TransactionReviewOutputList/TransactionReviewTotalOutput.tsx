@@ -1,10 +1,16 @@
 import { forwardRef } from 'react';
+import BigNumber from 'bignumber.js';
 
-import { formatNetworkAmount, isTestnet } from '@suite-common/wallet-utils';
+import { formatAmount, formatNetworkAmount, isTestnet } from '@suite-common/wallet-utils';
 import { selectDevice } from '@suite-common/wallet-core';
+import { TrezorDevice } from 'src/types/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite/useSelector';
-import { getOutputState, getIsUpdatedSendFlow } from 'src/utils/wallet/reviewTransactionUtils';
+import {
+    getOutputState,
+    getIsUpdatedSendFlow,
+    getIsUpdatedEthereumSendFlow,
+} from 'src/utils/wallet/reviewTransactionUtils';
 import { TransactionReviewStepIndicator } from './TransactionReviewStepIndicator';
 import {
     TransactionReviewOutputElement,
@@ -28,6 +34,64 @@ type TransactionReviewTotalOutputProps = Omit<
     'precomposedForm' | 'decision' | 'detailsOpen' | 'isRbfAction'
 >;
 
+const getLines = (
+    device: TrezorDevice,
+    networkType: TransactionReviewOutputListProps['account']['networkType'],
+    symbol: TransactionReviewOutputListProps['account']['symbol'],
+    precomposedTx: TransactionReviewOutputListProps['precomposedTx'],
+): Array<OutputElementLine> => {
+    const isUpdatedSendFlow = getIsUpdatedSendFlow(device);
+    const isUpdatedEthereumSendFlow = getIsUpdatedEthereumSendFlow(device, networkType);
+    const isEthereum = networkType === 'ethereum';
+    const tokenInfo = precomposedTx?.token;
+    const amountWithoutFee = new BigNumber(precomposedTx.totalSpent)
+        .minus(precomposedTx.fee)
+        .toString();
+
+    if (isUpdatedEthereumSendFlow) {
+        return [
+            {
+                id: 'amount', // In updated ethereum send flow there is no total amount shown, only amount without fee
+                label: <Translation id="AMOUNT" />,
+                value: tokenInfo
+                    ? formatAmount(precomposedTx.totalSpent, tokenInfo.decimals)
+                    : formatNetworkAmount(amountWithoutFee, symbol),
+            },
+            {
+                id: 'fee',
+                label: <Translation id="MAX_FEE" />,
+                value: formatNetworkAmount(precomposedTx.fee, symbol),
+            },
+        ];
+    }
+    if (isUpdatedSendFlow) {
+        return [
+            {
+                id: 'total',
+                label: <Translation id={isEthereum ? 'AMOUNT' : 'TR_TOTAL_AMOUNT'} />,
+                value: tokenInfo
+                    ? formatAmount(precomposedTx.totalSpent, tokenInfo.decimals)
+                    : formatNetworkAmount(
+                          isEthereum ? amountWithoutFee : precomposedTx.totalSpent,
+                          symbol,
+                      ),
+            },
+            {
+                id: 'fee',
+                label: <Translation id={isEthereum ? 'MAX_FEE' : 'TR_INCLUDING_FEE'} />,
+                value: formatNetworkAmount(precomposedTx.fee, symbol),
+            },
+        ];
+    }
+    return [
+        {
+            id: 'total',
+            label: <Translation id="TR_TOTAL" />,
+            value: formatNetworkAmount(precomposedTx.totalSpent, symbol),
+        },
+    ];
+};
+
 export const TransactionReviewTotalOutput = forwardRef<
     HTMLDivElement,
     TransactionReviewTotalOutputProps
@@ -38,29 +102,9 @@ export const TransactionReviewTotalOutput = forwardRef<
         return null;
     }
 
-    const { symbol } = account;
-    const isUpdatedSendFlow = getIsUpdatedSendFlow(device);
+    const { symbol, networkType } = account;
 
-    const lines: Array<OutputElementLine> = isUpdatedSendFlow
-        ? [
-              {
-                  id: 'total',
-                  label: <Translation id="TR_TOTAL_AMOUNT" />,
-                  value: formatNetworkAmount(precomposedTx.totalSpent, symbol),
-              },
-              {
-                  id: 'fee',
-                  label: <Translation id="TR_INCLUDING_FEE" />,
-                  value: formatNetworkAmount(precomposedTx.fee, symbol),
-              },
-          ]
-        : [
-              {
-                  id: 'total',
-                  label: <Translation id="TR_TOTAL" />,
-                  value: formatNetworkAmount(precomposedTx.totalSpent, symbol),
-              },
-          ];
+    const lines = getLines(device, networkType, symbol, precomposedTx);
 
     return (
         <TransactionReviewOutputElement
@@ -77,6 +121,7 @@ export const TransactionReviewTotalOutput = forwardRef<
             fiatSymbol={symbol}
             fiatVisible={!isTestnet(symbol)}
             ref={ref}
+            token={precomposedTx?.token}
         />
     );
 });
