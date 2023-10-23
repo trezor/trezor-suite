@@ -185,16 +185,14 @@ export const TransactionReviewOutputList = ({
                             );
                         })}
 
-                        {!precomposedTx.token && (
-                            <TransactionReviewTotalOutput
-                                ref={totalRef}
-                                account={account}
-                                signedTx={signedTx}
-                                outputs={outputs}
-                                buttonRequestsCount={buttonRequestsCount}
-                                precomposedTx={precomposedTx}
-                            />
-                        )}
+                        <TransactionReviewTotalOutput
+                            ref={totalRef}
+                            account={account}
+                            signedTx={signedTx}
+                            outputs={outputs}
+                            buttonRequestsCount={buttonRequestsCount}
+                            precomposedTx={precomposedTx}
+                        />
                     </RightTopInner>
                 </RightTop>
                 <RightBottom>

@@ -187,11 +187,17 @@ export const TransactionReviewOutputElement = forwardRef<
                                             <FormattedCryptoAmount
                                                 disableHiddenPlaceholder
                                                 value={line.value}
-                                                symbol={cryptoSymbol}
+                                                symbol={
+                                                    // TX fee is so far always paid in network native coin
+                                                    line.id !== 'fee' && token
+                                                        ? token.symbol
+                                                        : cryptoSymbol
+                                                }
                                             />
                                         )}
                                     </OutputValueWrapper>
-                                    {fiatVisible && (
+                                    {/* temporary solution until fiat value for ERC20 tokens will be fixed  */}
+                                    {fiatVisible && !(line.id !== 'fee' && token) && (
                                         <>
                                             <DotSeparatorWrapper>
                                                 <DotSeparator />

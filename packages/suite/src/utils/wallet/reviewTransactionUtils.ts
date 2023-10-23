@@ -18,9 +18,19 @@ export const getOutputState = (index: number, buttonRequestsCount: number) => {
 export const getIsUpdatedSendFlow = (device: TrezorDevice) => {
     const firmwareVersion = getFirmwareVersion(device);
 
-    const isWithUpdatedFlow = versionUtils.isNewerOrEqual(firmwareVersion, '2.6.0');
+    return versionUtils.isNewerOrEqual(firmwareVersion, '2.6.0');
+};
 
-    return isWithUpdatedFlow;
+export const getIsUpdatedEthereumSendFlow = (
+    device: TrezorDevice,
+    network: Account['networkType'],
+) => {
+    if (network !== 'ethereum') return false;
+
+    const firmwareVersion = getFirmwareVersion(device);
+
+    // publicly introduced in 2.6.3, versions 2.6.1 and 2.6.2 were internal
+    return versionUtils.isNewer(firmwareVersion, '2.6.0');
 };
 
 const getCardanoTokenBundle = (account: Account, output: CardanoOutput) => {
@@ -61,7 +71,6 @@ const getCardanoTokenBundle = (account: Account, output: CardanoOutput) => {
 
 type ConstructOutputsParams = {
     precomposedTx: TxFinalCardano | PrecomposedTransactionFinal;
-    device: TrezorDevice;
     decreaseOutputId: number | undefined;
     account: Account;
     precomposedForm: FormState;
@@ -72,7 +81,7 @@ const constructOldFlow = ({
     decreaseOutputId,
     account,
     precomposedForm,
-}: Omit<ConstructOutputsParams, 'device'>) => {
+}: ConstructOutputsParams) => {
     const outputs: ReviewOutput[] = [];
 
     const isCardano = isCardanoTx(account, precomposedTx);
@@ -175,7 +184,8 @@ const constructNewFlow = ({
     decreaseOutputId,
     account,
     precomposedForm,
-}: Omit<ConstructOutputsParams, 'device'>) => {
+    isUpdatedEthereumSendFlow,
+}: ConstructOutputsParams & { isUpdatedEthereumSendFlow: boolean }) => {
     const outputs: ReviewOutput[] = [];
 
     const isCardano = isCardanoTx(account, precomposedTx);
@@ -231,15 +241,18 @@ const constructNewFlow = ({
     } else {
         precomposedTx.outputs.forEach(o => {
             if (typeof o.address === 'string') {
-                if (precomposedTx.token) {
+                // this is displayed only for tokens without definitions
+                if (precomposedTx.token && !precomposedTx.isTokenKnown) {
                     outputs.push({ type: 'contract', value: precomposedTx.token.contract });
                 }
                 outputs.push({ type: 'address', value: o.address });
-                outputs.push({
-                    type: 'amount',
-                    value: o.amount.toString(),
-                    token: precomposedTx.token,
-                });
+                if (!isUpdatedEthereumSendFlow) {
+                    outputs.push({
+                        type: 'amount',
+                        value: o.amount.toString(),
+                        token: precomposedTx.token,
+                    });
+                }
             } else if (o.script_type === 'PAYTOOPRETURN') {
                 outputs.push({
                     type: 'opreturn',
@@ -249,7 +262,7 @@ const constructNewFlow = ({
         });
     }
 
-    if (networkType === 'ethereum') {
+    if (networkType === 'ethereum' && !isUpdatedEthereumSendFlow) {
         // device shows ether, precomposedTx.feePerByte is in gwei
         const wei = toWei(precomposedTx.feePerByte, 'gwei'); // from gwei to wei
         const ether = fromWei(wei, 'ether'); // from wei to ether
@@ -278,10 +291,19 @@ const constructNewFlow = ({
     return outputs;
 };
 
-export const constructOutputs = ({ device, ...params }: ConstructOutputsParams) => {
-    const isWithUpdatedSendFlow = getIsUpdatedSendFlow(device);
+export const constructOutputs = ({
+    device,
+    ...params
+}: ConstructOutputsParams & { device: TrezorDevice }) => {
+    const isUpdatedSendFlow = getIsUpdatedSendFlow(device); // >= 2.6.0
+    const isUpdatedEthereumSendFlow = getIsUpdatedEthereumSendFlow(
+        device,
+        params.account.networkType,
+    ); // > 2.6.0 && isEthereum
 
-    const outputs = isWithUpdatedSendFlow ? constructNewFlow(params) : constructOldFlow(params);
+    if (!isUpdatedSendFlow) {
+        return constructOldFlow(params);
+    }
 
-    return outputs;
+    return constructNewFlow({ isUpdatedEthereumSendFlow, ...params });
 };
