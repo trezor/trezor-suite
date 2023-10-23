@@ -125,11 +125,11 @@ export const goto =
             }
             return;
         }
-
         const newUrl = `${urlBase}${preserveParams ? history.location.hash : ''}`;
         dispatch(onLocationChange(newUrl, anchor));
 
         const route = findRouteByName(routeName);
+
         if (route?.isForegroundApp) {
             dispatch(suiteActions.lockRouter(true));
             return;

@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import styled, { useTheme } from 'styled-components';
 
 import { Icon } from '../assets/Icon/Icon';
-import { FONT_SIZE, FONT_WEIGHT } from '../../config/variables';
+import { typography } from '@trezor/theme';
 
 const Row = styled.div`
     display: flex;
@@ -15,8 +15,7 @@ const InfoIcon = styled(Icon)`
 
 const Text = styled.div<{ $color?: string }>`
     color: ${({ $color }) => $color};
-    font-size: ${FONT_SIZE.SMALL};
-    font-weight: ${FONT_WEIGHT.MEDIUM};
+    ${typography.hint}
 `;
 
 export interface NoteProps {
@@ -28,7 +27,7 @@ export interface NoteProps {
 export const Note = ({ children, className, color }: NoteProps) => {
     const theme = useTheme();
 
-    const noteColor = color || theme.TYPE_LIGHT_GREY;
+    const noteColor = color || theme.backgroundSurfaceElevation1;
 
     return (
         <Row className={className}>

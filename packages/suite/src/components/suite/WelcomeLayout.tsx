@@ -141,7 +141,7 @@ export const WelcomeLayout = ({ children }: WelcomeLayoutProps) => {
                                 <Bottom>
                                     {isWeb() && (
                                         <StyledTrezorLink
-                                            size="small"
+                                            type="hint"
                                             variant="nostyle"
                                             href={SUITE_URL}
                                         >
@@ -154,7 +154,7 @@ export const WelcomeLayout = ({ children }: WelcomeLayoutProps) => {
                                             </Button>
                                         </StyledTrezorLink>
                                     )}
-                                    <TrezorLink size="small" variant="nostyle" href={TREZOR_URL}>
+                                    <TrezorLink type="hint" variant="nostyle" href={TREZOR_URL}>
                                         <Button
                                             variant="tertiary"
                                             icon="EXTERNAL_LINK"
