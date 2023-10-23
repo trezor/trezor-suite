@@ -137,7 +137,6 @@ const CryptoInput = () => {
                                 tokensFiatValue,
                             )}
                             isClean
-                            hideTextCursor
                             isDisabled={account.networkType !== 'ethereum'}
                             minValueWidth="100px"
                             formatOptionLabel={(option: any) => (
