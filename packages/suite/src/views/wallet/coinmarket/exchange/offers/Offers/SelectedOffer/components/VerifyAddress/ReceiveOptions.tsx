@@ -133,7 +133,7 @@ export const ReceiveOptions = (props: ReceiveOptionsProps) => {
             value={selectedAccountOption}
             isClearable={false}
             options={selectAccountOptions}
-            minWidth="70px"
+            minValueWidth="70px"
             formatOptionLabel={(option: AccountSelectOption) => {
                 switch (option.type) {
                     case 'SUITE': {

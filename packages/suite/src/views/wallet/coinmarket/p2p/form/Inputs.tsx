@@ -77,7 +77,7 @@ export const Inputs = () => {
                                     isSearchable
                                     value={value}
                                     isClearable={false}
-                                    minWidth="58px"
+                                    minValueWidth="58px"
                                     isClean
                                     hideTextCursor
                                     onChange={(selected: any) => {
