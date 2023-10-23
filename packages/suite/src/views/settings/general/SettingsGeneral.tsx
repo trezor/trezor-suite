@@ -20,7 +20,7 @@ import { Theme } from './Theme';
 import { Analytics } from './Analytics';
 import { ShowApplicationLog } from './ShowApplicationLog';
 import { ClearStorage } from './ClearStorage';
-import { VersionWithUpdate } from './VersionWithUpdate';
+import { VersionWithUpdate } from './VersionWithUpdate/VersionWithUpdate';
 import { EarlyAccess } from './EarlyAccess';
 import { BitcoinAmountUnit } from './BitcoinAmountUnit';
 import { DesktopSuiteBanner } from './DesktopSuiteBanner';

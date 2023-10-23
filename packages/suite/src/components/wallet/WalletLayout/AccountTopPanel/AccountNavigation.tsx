@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { WalletParams } from 'src/types/wallet';
-import { AppNavigation, AppNavigationItem } from 'src/components/suite/AppNavigation';
+import { AppNavigation, AppNavigationItem } from 'src/components/suite/AppNavigation/AppNavigation';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { getNetwork, hasNetworkFeatures } from '@suite-common/wallet-utils';

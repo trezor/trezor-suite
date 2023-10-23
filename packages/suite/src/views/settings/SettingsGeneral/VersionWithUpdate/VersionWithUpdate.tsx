@@ -1,15 +1,22 @@
 import styled from 'styled-components';
+
+import { isDevEnv } from '@suite-common/suite-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { installUpdate, setUpdateWindow } from 'src/actions/suite/desktopUpdateActions';
-import { VersionWithGithubTooltip } from 'src/components/suite/VersionWithGithubTooltip';
-import { Translation } from 'src/components/suite';
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';
+import {
+    ActionButton,
+    ActionColumn,
+    SectionItem,
+    TextColumn,
+    Translation,
+} from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { UpdateState } from 'src/reducers/suite/desktopUpdateReducer';
-import { isDevEnv } from '@suite-common/suite-utils';
 import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
+
+import { VersionWithGithubTooltip } from './VersionWithGithubTooltip';
 
 const getUpdateStateMessage = (state: UpdateState) => {
     switch (state) {

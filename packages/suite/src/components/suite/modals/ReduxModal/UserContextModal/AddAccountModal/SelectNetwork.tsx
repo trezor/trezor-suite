@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components';
 import { Icon, P, variables } from '@trezor/components';
 import { FADE_IN } from '@trezor/components/src/config/animations';
-import { CoinsList, Translation } from 'src/components/suite';
+import { CoinList, Translation } from 'src/components/suite';
 import type { Network } from 'src/types/wallet';
 
 const Header = styled.div<{ disabled: boolean }>`
@@ -58,7 +58,7 @@ export const SelectNetwork = ({
                 </Title>
                 {networkCanChange && <IconAnimated icon="PENCIL" size={12} useCursorPointer />}
             </Header>
-            <CoinsList
+            <CoinList
                 onToggle={handleNetworkSelection}
                 networks={networks}
                 selectedNetworks={selectedNetworks}

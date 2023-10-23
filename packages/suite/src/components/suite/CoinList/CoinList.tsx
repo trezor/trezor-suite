@@ -6,9 +6,11 @@ import { getFirmwareVersion, isDeviceInBootloaderMode } from '@trezor/device-uti
 import { versionUtils } from '@trezor/utils';
 import { selectSupportedNetworks } from '@suite-common/wallet-core';
 
-import { Coin, Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite';
 import { useDevice, useSelector } from 'src/hooks/suite';
 import type { Network } from 'src/types/wallet';
+
+import { Coin } from './Coin';
 
 const Wrapper = styled.div`
     width: 100%;
@@ -17,7 +19,7 @@ const Wrapper = styled.div`
     gap: 16px 12px;
 `;
 
-interface CoinsListProps {
+interface CoinListProps {
     networks: Network[];
     selectedNetworks?: Network['symbol'][];
     settingsMode?: boolean;
@@ -25,13 +27,13 @@ interface CoinsListProps {
     onToggle: (symbol: Network['symbol'], toggled: boolean) => void;
 }
 
-export const CoinsList = ({
+export const CoinList = ({
     networks,
     selectedNetworks,
     settingsMode = false,
     onSettings,
     onToggle,
-}: CoinsListProps) => {
+}: CoinListProps) => {
     const { device, isLocked } = useDevice();
     const blockchain = useSelector(state => state.wallet.blockchain);
     const supportedNetworkSymbols = useSelector(selectSupportedNetworks);

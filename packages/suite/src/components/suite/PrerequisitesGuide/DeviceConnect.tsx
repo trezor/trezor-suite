@@ -6,7 +6,7 @@ import {
     TROUBLESHOOTING_TIP_USB,
     TROUBLESHOOTING_TIP_DIFFERENT_COMPUTER,
     TROUBLESHOOTING_TIP_UDEV,
-} from 'src/components/suite/TroubleshootingTips/tips';
+} from 'src/components/suite/troubleshooting/tips';
 
 interface DeviceConnectProps {
     isWebUsbTransport: boolean;

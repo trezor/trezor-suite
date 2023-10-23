@@ -3,9 +3,8 @@ import styled from 'styled-components';
 import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-utils';
 import { selectSupportedNetworks } from '@suite-common/wallet-core';
 
-import { SettingsLayout } from 'src/components/settings';
-import { CoinsGroup, TooltipSymbol, Translation } from 'src/components/suite';
-import { DeviceBanner, SettingsSection, SectionItem } from 'src/components/suite/Settings';
+import { DeviceBanner, SettingsLayout, SettingsSection } from 'src/components/settings';
+import { CoinGroup, SectionItem, TooltipSymbol, Translation } from 'src/components/suite';
 import { useEnabledNetworks } from 'src/hooks/settings/useEnabledNetworks';
 import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
@@ -64,7 +63,7 @@ export const SettingsCoins = () => {
             {showFirmwareTypeBanner && <FirmwareTypeSuggestion />}
             <SettingsSection title={<Translation id="TR_COINS" />} icon="COIN">
                 <SectionItem ref={anchorRefCrypto} shouldHighlight={shouldHighlightCrypto}>
-                    <CoinsGroup
+                    <CoinGroup
                         networks={mainnets}
                         onToggle={setEnabled}
                         selectedNetworks={enabledNetworks}
@@ -87,7 +86,7 @@ export const SettingsCoins = () => {
                     ref={anchorRefTestnetCrypto}
                     shouldHighlight={shouldHighlightTestnetCrypto}
                 >
-                    <CoinsGroup
+                    <CoinGroup
                         networks={testnets}
                         onToggle={setEnabled}
                         selectedNetworks={enabledNetworks}

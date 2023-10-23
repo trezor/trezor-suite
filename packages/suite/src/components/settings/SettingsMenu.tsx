@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { setDebugMode } from 'src/actions/suite/suiteActions';
 import { FADE_IN } from '@trezor/components/src/config/animations';
-import { AppNavigationItem } from 'src/components/suite/AppNavigation';
+import { AppNavigationItem } from 'src/components/suite/AppNavigation/AppNavigation';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
 const CloseButtonWrapper = styled.div<{ isAppNavigationPanelInView?: boolean }>`

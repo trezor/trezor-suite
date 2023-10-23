@@ -1,13 +1,13 @@
 import { useRef, useState } from 'react';
-
 import styled from 'styled-components';
-import { Translation, Modal } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
-import { SectionItem, ActionColumn, TextColumn } from 'src/components/suite/Settings';
-import { getApplicationInfo, getApplicationLog, prettifyLog } from 'src/utils/suite/logsUtils';
 
 import { selectLogs } from '@suite-common/logger';
 import { Switch, Button, variables } from '@trezor/components';
+
+import { ActionColumn, Modal, TextColumn, Translation } from 'src/components/suite';
+import { SectionItem } from 'src/components/suite/section';
+import { useSelector } from 'src/hooks/suite';
+import { getApplicationInfo, getApplicationLog, prettifyLog } from 'src/utils/suite/logsUtils';
 
 const LogWrapper = styled.pre`
     padding: 20px;

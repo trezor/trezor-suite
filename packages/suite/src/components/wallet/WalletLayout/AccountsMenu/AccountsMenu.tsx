@@ -7,13 +7,14 @@ import { sortByCoin, getFailedAccounts, accountSearchFn } from '@suite-common/wa
 import { selectDevice } from '@suite-common/wallet-core';
 
 import { useDiscovery, useAccountSearch, useSelector } from 'src/hooks/suite';
-import { Translation, AddAccountButton } from 'src/components/suite';
+import { Translation } from 'src/components/suite';
 import { Account } from 'src/types/wallet';
 import { selectAccountLabels } from 'src/reducers/suite/metadataReducer';
 import { AccountSearchBox } from './AccountSearchBox';
 import { AccountGroup } from './AccountGroup';
 import { AccountItem } from './AccountItem';
 import { AccountItemSkeleton } from './AccountItemSkeleton';
+import { AddAccountButton } from './AddAccountButton';
 
 const Wrapper = styled.div<{ isInline?: boolean }>`
     display: flex;

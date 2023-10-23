@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import { AnimatePresence, motion } from 'framer-motion';
+
 import { Button, H2, Icon, Image, P, motionEasing } from '@trezor/components';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { SUITE_URL } from '@trezor/urls';
+
 import { useDispatch } from 'src/hooks/suite/useDispatch';
-import TrezorLink from 'src/components/suite/TrezorLink';
 import { hideDesktopSuitePromo } from 'src/actions/suite/suiteActions';
-import { Translation } from 'src/components/suite/Translation';
+import { Translation, TrezorLink } from 'src/components/suite';
 
 const Container = styled(motion.div)`
     position: relative;

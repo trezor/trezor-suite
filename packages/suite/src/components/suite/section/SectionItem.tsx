@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { variables } from '@trezor/components';
 import { CARD_PADDING_SIZE } from 'src/constants/suite/layout';
-import { SECONDARY_PANEL_HEIGHT } from 'src/components/suite/AppNavigation';
+import { SECONDARY_PANEL_HEIGHT } from 'src/components/suite/AppNavigation/AppNavigation';
 import { anchorOutlineStyles } from 'src/utils/suite/anchor';
 
 const Wrapper = styled.div<{ shouldHighlight?: boolean }>`

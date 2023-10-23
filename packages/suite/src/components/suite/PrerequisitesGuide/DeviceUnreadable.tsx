@@ -2,15 +2,14 @@ import { useState, MouseEvent } from 'react';
 import { Button } from '@trezor/components';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { isDesktop, isLinux } from '@trezor/env-utils';
-import { Translation, TroubleshootingTips } from 'src/components/suite';
-import UdevDownload from 'src/components/suite/UdevDownload';
+import { Translation, TroubleshootingTips, UdevDownload } from 'src/components/suite';
 import {
     TROUBLESHOOTING_TIP_BRIDGE_STATUS,
     TROUBLESHOOTING_TIP_BRIDGE_INSTALL,
     TROUBLESHOOTING_TIP_CABLE,
     TROUBLESHOOTING_TIP_USB,
     TROUBLESHOOTING_TIP_DIFFERENT_COMPUTER,
-} from 'src/components/suite/TroubleshootingTips/tips';
+} from 'src/components/suite/troubleshooting/tips';
 import { useDispatch } from 'src/hooks/suite';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import type { TrezorDevice } from 'src/types/suite';
