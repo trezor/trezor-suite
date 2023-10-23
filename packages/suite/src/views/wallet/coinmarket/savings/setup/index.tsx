@@ -166,7 +166,7 @@ const CoinmarketSavingsSetup = (props: WithSelectedAccountLoadedProps) => {
                             );
                         }}
                         isClearable={false}
-                        minWidth="160px"
+                        minValueWidth="160px"
                         hideTextCursor
                         onChange={onChange}
                     />

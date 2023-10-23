@@ -136,7 +136,7 @@ const Inputs = () => {
                                     data-test="@coinmarket/buy/fiat-currency-select"
                                     value={value}
                                     isClearable={false}
-                                    minWidth="58px"
+                                    minValueWidth="58px"
                                     isClean
                                     hideTextCursor
                                     onChange={(selected: any) => {
@@ -205,7 +205,7 @@ const Inputs = () => {
                                     isClean
                                     hideTextCursor
                                     isDisabled={account.networkType !== 'ethereum'}
-                                    minWidth="100px"
+                                    minValueWidth="100px"
                                 />
                             )}
                         />
