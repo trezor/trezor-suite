@@ -92,9 +92,8 @@ const Footer = () => {
                                 );
                             }}
                             isClearable={false}
-                            minWidth="160px"
+                            minValueWidth="160px"
                             isClean
-                            hideTextCursor
                             onChange={(selected: any) => {
                                 onChange(selected);
                                 setAmountLimits(undefined);

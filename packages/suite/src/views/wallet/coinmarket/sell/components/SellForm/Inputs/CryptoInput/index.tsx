@@ -139,7 +139,7 @@ const CryptoInput = () => {
                             isClean
                             hideTextCursor
                             isDisabled={account.networkType !== 'ethereum'}
-                            minWidth="100px"
+                            minValueWidth="100px"
                             formatOptionLabel={(option: any) => (
                                 <Option>
                                     {account.symbol === option.value.toLowerCase() ? (
