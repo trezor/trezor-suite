@@ -10,6 +10,7 @@ import {
 import styled from 'styled-components';
 import { H1, variables } from '@trezor/components';
 import { MAX_WIDTH, MAX_WIDTH_WALLET_CONTENT } from 'src/constants/suite/layout';
+import { zIndices } from '@trezor/theme';
 
 const Wrapper = styled.div`
     display: flex;
@@ -17,7 +18,7 @@ const Wrapper = styled.div`
     justify-content: center;
     background: ${({ theme }) => theme.BG_LIGHT_GREY};
     padding: 24px 32px 10px;
-    z-index: ${variables.Z_INDEX.PAGE_HEADER};
+    z-index: ${zIndices.pageHeader};
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
         padding: 24px 16px 20px;

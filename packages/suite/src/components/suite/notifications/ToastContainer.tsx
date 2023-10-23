@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { ToastContainer as BaseToastContainer, Slide } from 'react-toastify';
 
-import { variables } from '@trezor/components';
+import { zIndices } from '@trezor/theme';
 
 // A set of required styles copied from 'react-toastify/dist/ReactToastify.css'
 // Note: lib styles are ready only for a current setup, if you want to change e.g. transition, copy additional styles
@@ -10,7 +10,7 @@ const StyledContainer = styled(BaseToastContainer)`
     & {
         min-width: 330px;
         max-width: 430px;
-        z-index: ${variables.Z_INDEX.TOOLTIP};
+        z-index: ${zIndices.tooltip};
         position: fixed;
         padding: 4px;
         box-sizing: border-box;

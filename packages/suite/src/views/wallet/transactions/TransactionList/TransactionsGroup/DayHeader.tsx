@@ -1,10 +1,13 @@
 import { FormattedDate } from 'react-intl';
 import styled from 'styled-components';
 import BigNumber from 'bignumber.js';
+
 import { variables } from '@trezor/components';
-import { Translation, HiddenPlaceholder, FormattedCryptoAmount } from 'src/components/suite';
+import { zIndices } from '@trezor/theme';
 import { useFormatters } from '@suite-common/formatters';
 import { parseTransactionDateKey, isTestnet } from '@suite-common/wallet-utils';
+
+import { Translation, HiddenPlaceholder, FormattedCryptoAmount } from 'src/components/suite';
 import { Network } from 'src/types/wallet';
 import { SECONDARY_PANEL_HEIGHT } from 'src/components/suite/AppNavigation/AppNavigation';
 
@@ -19,7 +22,7 @@ const Wrapper = styled.div`
     padding-top: 8px;
     padding-bottom: 8px;
     padding-right: 24px;
-    z-index: ${variables.Z_INDEX.SECONDARY_STICKY_BAR};
+    z-index: ${zIndices.secondaryStickyBar};
 `;
 
 const Col = styled(HiddenPlaceholder)`
