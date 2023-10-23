@@ -4,15 +4,18 @@ import {
     RootStackParamList,
     RootStackRoutes,
     Screen,
-    ScreenHeader,
+    ScreenSubHeader,
     StackNavigationProps,
 } from '@suite-native/navigation';
 import { AccountsList } from '@suite-native/accounts';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { useTranslate } from '@suite-native/intl';
 
 import { ReceiveAccount } from '../components/ReceiveAccount';
 
 export const ReceiveModal = () => {
+    const { translate } = useTranslate();
+
     const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.ReceiveModal>>();
 
     const navigation =
@@ -25,7 +28,7 @@ export const ReceiveModal = () => {
     };
 
     return (
-        <Screen header={<ScreenHeader content="Receive address" />}>
+        <Screen subheader={<ScreenSubHeader content={translate('moduleReceive.title')} />}>
             {route.params?.accountKey ? (
                 <ReceiveAccount
                     accountKey={route.params.accountKey}

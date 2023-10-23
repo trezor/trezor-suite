@@ -3,7 +3,7 @@ import {
     AccountsImportStackParamList,
     AccountsImportStackRoutes,
     Screen,
-    ScreenHeader,
+    ScreenSubHeader,
     StackProps,
 } from '@suite-native/navigation';
 import { networks, NetworkType } from '@suite-common/wallet-config';
@@ -30,7 +30,7 @@ export const ScanQRCodeModalScreen = ({
     const screenTitle = networkTypeToTitleMap[networkType];
 
     return (
-        <Screen header={<ScreenHeader content={screenTitle} />}>
+        <Screen subheader={<ScreenSubHeader content={screenTitle} />}>
             <QRCodeScanner onCodeScanned={handleBarCodeScanned} />
         </Screen>
     );

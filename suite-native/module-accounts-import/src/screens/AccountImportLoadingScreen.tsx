@@ -117,7 +117,7 @@ export const AccountImportLoadingScreen = ({
     }, [xpubAddress, networkSymbol, dispatch, safelyShowImportError, fiatCurrency]);
 
     return (
-        <Screen>
+        <Screen isScrollable={false}>
             <AccountImportLoader />
         </Screen>
     );

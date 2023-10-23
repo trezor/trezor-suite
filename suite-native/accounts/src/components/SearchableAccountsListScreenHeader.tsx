@@ -7,8 +7,9 @@ import Animated, {
     withTiming,
 } from 'react-native-reanimated';
 
-import { ScreenHeader } from '@suite-native/navigation';
-import { IconButton } from '@suite-native/atoms';
+import { ScreenSubHeader } from '@suite-native/navigation';
+import { Box, IconButton } from '@suite-native/atoms';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { AccountsSearchForm, SEARCH_INPUT_ANIMATION_DURATION } from './AccountsSearchForm';
 
@@ -19,6 +20,12 @@ type SearchableAccountsListScreenHeaderProps = {
 };
 
 const HEADER_ANIMATION_DURATION = 100;
+export const SEARCH_FORM_CONTAINER_HEIGHT = 56;
+
+const searchFormContainerStyle = prepareNativeStyle(utils => ({
+    height: SEARCH_FORM_CONTAINER_HEIGHT,
+    marginBottom: utils.spacings.medium,
+}));
 
 export const SearchableAccountsListScreenHeader = ({
     title,
@@ -26,6 +33,7 @@ export const SearchableAccountsListScreenHeader = ({
     rightIcon,
 }: SearchableAccountsListScreenHeaderProps) => {
     const isFirstRender = useSharedValue(true);
+    const { applyStyle } = useNativeStyles();
 
     const [isSearchActive, setIsSearchActive] = useState(false);
 
@@ -56,25 +64,32 @@ export const SearchableAccountsListScreenHeader = ({
         };
     };
 
-    return isSearchActive ? (
-        <AccountsSearchForm onPressCancel={handleHideFilter} onInputChange={onSearchInputChange} />
-    ) : (
-        <Animated.View
-            entering={enteringFadeInAnimation}
-            exiting={FadeOut.duration(HEADER_ANIMATION_DURATION)}
-        >
-            <ScreenHeader
-                content={title}
-                leftIcon={
-                    <IconButton
-                        iconName="search"
-                        onPress={() => setIsSearchActive(true)}
-                        colorScheme="tertiaryElevation0"
-                        size="medium"
+    return (
+        <Box style={applyStyle(searchFormContainerStyle)}>
+            {isSearchActive ? (
+                <AccountsSearchForm
+                    onPressCancel={handleHideFilter}
+                    onInputChange={onSearchInputChange}
+                />
+            ) : (
+                <Animated.View
+                    entering={enteringFadeInAnimation}
+                    exiting={FadeOut.duration(HEADER_ANIMATION_DURATION)}
+                >
+                    <ScreenSubHeader
+                        content={title}
+                        rightIcon={rightIcon}
+                        leftIcon={
+                            <IconButton
+                                iconName="search"
+                                onPress={() => setIsSearchActive(true)}
+                                colorScheme="tertiaryElevation0"
+                                size="medium"
+                            />
+                        }
                     />
-                }
-                rightIcon={rightIcon}
-            />
-        </Animated.View>
+                </Animated.View>
+            )}
+        </Box>
     );
 };

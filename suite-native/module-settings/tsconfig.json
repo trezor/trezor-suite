@@ -17,6 +17,7 @@
         { "path": "../atoms" },
         { "path": "../biometrics" },
         { "path": "../config" },
+        { "path": "../intl" },
         { "path": "../link" },
         { "path": "../navigation" },
         { "path": "../storage" },

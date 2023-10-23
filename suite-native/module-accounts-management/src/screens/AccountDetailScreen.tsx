@@ -22,7 +22,7 @@ import { SettingsSliceRootState } from '@suite-native/module-settings';
 
 import { TransactionListHeader } from '../components/TransactionListHeader';
 import { AccountDetailScreenHeader } from '../components/AccountDetailScreenHeader';
-import { TokenAccountDetailScreenHeader } from '../components/TokenAccountDetailScreenHeader';
+import { TokenAccountDetailScreenSubHeader } from '../components/TokenAccountDetailScreenSubHeader';
 
 export const AccountDetailScreen = memo(() => {
     const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.AccountDetail>>();
@@ -90,9 +90,9 @@ export const AccountDetailScreen = memo(() => {
 
     return (
         <Screen
-            header={
+            subheader={
                 token?.name ? (
-                    <TokenAccountDetailScreenHeader
+                    <TokenAccountDetailScreenSubHeader
                         tokenName={token.name}
                         accountKey={accountKey}
                     />
@@ -103,7 +103,7 @@ export const AccountDetailScreen = memo(() => {
                     />
                 )
             }
-            // The padding is handled inside of the TransactionList to prevent scrollbar glitches.
+            // The padding is handled inside the TransactionList to prevent scrollbar glitches.
             customVerticalPadding={0}
             customHorizontalPadding={0}
             isScrollable={false}

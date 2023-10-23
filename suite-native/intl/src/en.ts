@@ -29,6 +29,9 @@ export const en = {
             discoveryProgress: { loading: 'Loading...', stillWorking: 'Still working...' },
         },
     },
+    moduleAccountImport: {
+        title: 'Sync my coins',
+    },
     moduleConnectDevice: {
         connectCrossroadsScreen: {
             gotMyTrezor: {
@@ -73,6 +76,38 @@ export const en = {
             title: 'We found your connected device in incorrect state.',
             description: 'Please reconnect your device or ...',
             button: 'Steal session',
+        },
+        helpModal: {
+            title: 'Connecting Trezor',
+            subtitle: "Don't see your Trezor?",
+            stepsTitle: 'Follow these steps:',
+            step1: '1. Use a different USB data cable.',
+            step2: '2. Use a different USB port.',
+            step3: '3. Use a different device.',
+        },
+    },
+    moduleReceive: {
+        title: 'Receive address',
+    },
+    moduleSettings: {
+        faq: {
+            title: 'Get help',
+            supportCard: {
+                title: 'Need more help?',
+                contact: 'Contact support',
+            },
+        },
+        localizations: {
+            title: 'Localization',
+        },
+        customization: {
+            title: 'Customization',
+        },
+        aboutUs: {
+            title: 'About Trezor Suite Lite',
+        },
+        privacyAndSecurity: {
+            title: 'Privacy & Security',
         },
     },
     moduleOnboarding: {
@@ -129,6 +164,11 @@ export const en = {
             },
             helpSwitchTitle: 'Help us anonymously',
             learnMore: 'Learn more about our <securityLink>security protocols</securityLink>',
+        },
+    },
+    moduleAccounts: {
+        accountDetail: {
+            accountLabelBadge: 'Run on {accountLabel}',
         },
     },
 };

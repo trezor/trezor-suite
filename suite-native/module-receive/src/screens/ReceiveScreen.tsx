@@ -3,17 +3,19 @@ import { RouteProp, useRoute } from '@react-navigation/native';
 import { ReceiveAccount } from '@suite-native/receive';
 import {
     Screen,
-    ScreenHeader,
     ReceiveStackParamList,
     ReceiveStackRoutes,
+    ScreenSubHeader,
 } from '@suite-native/navigation';
+import { useTranslate } from '@suite-native/intl';
 
 export const ReceiveScreen = () => {
     const route = useRoute<RouteProp<ReceiveStackParamList, ReceiveStackRoutes.Receive>>();
     const { accountKey, tokenContract } = route.params;
+    const { translate } = useTranslate();
 
     return (
-        <Screen header={<ScreenHeader content="Receive address" />}>
+        <Screen subheader={<ScreenSubHeader content={translate('moduleReceive.title')} />}>
             <ReceiveAccount accountKey={accountKey} tokenContract={tokenContract} />
         </Screen>
     );

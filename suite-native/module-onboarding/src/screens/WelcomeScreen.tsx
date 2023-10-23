@@ -92,7 +92,7 @@ export const WelcomeScreen = () => {
                 resizeMode="cover"
                 style={applyStyle(imageContainerStyle)}
             />
-            <Screen isScrollable={false} backgroundColor="transparent">
+            <Screen isScrollable={false} backgroundColor="transparent" isHeaderDisplayed={false}>
                 <LinearGradient
                     style={applyStyle(cardStyle)}
                     colors={[
