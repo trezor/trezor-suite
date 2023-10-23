@@ -1,6 +1,7 @@
 import { ReactNode, HTMLAttributes } from 'react';
 import styled, { css } from 'styled-components';
 import { getInputStateBorderColor } from '../form/InputStyles';
+import { borders, spacingsPx } from '@trezor/theme';
 
 export interface BoxProps extends HTMLAttributes<HTMLDivElement> {
     state?: 'success' | 'warning' | 'error';
@@ -10,9 +11,9 @@ export interface BoxProps extends HTMLAttributes<HTMLDivElement> {
 const Wrapper = styled.div<{ state: BoxProps['state'] }>`
     display: flex;
     flex: 1;
-    border-radius: 8px;
-    padding: 16px 14px;
-    border: solid 1px ${({ theme }) => theme.STROKE_GREY};
+    border-radius: ${borders.radii.sm};
+    padding: ${spacingsPx.md};
+    border: solid 1px ${({ theme }) => theme.borderOnElevation0};
 
     ${({ state, theme }) =>
         state &&
@@ -22,7 +23,7 @@ const Wrapper = styled.div<{ state: BoxProps['state'] }>`
     ${({ state }) =>
         !state &&
         css`
-            padding-left: 20px;
+            padding-left: ${spacingsPx.lg};
         `}
 `;
 

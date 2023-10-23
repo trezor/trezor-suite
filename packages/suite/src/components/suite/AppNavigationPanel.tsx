@@ -112,7 +112,7 @@ export const AppNavigationPanel = ({
                 <Content maxWidth={maxWidth}>
                     <BasicInfo>
                         <TitleRow>
-                            <Title noMargin>{title}</Title>
+                            <Title>{title}</Title>
                             <Aside data-test="@app/navigation/aside">
                                 {titleContent?.(inView)}
                             </Aside>
