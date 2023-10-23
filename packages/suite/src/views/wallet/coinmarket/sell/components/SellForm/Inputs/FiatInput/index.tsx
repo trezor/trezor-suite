@@ -87,7 +87,6 @@ const FiatInput = () => {
                             isClearable={false}
                             minValueWidth="45px"
                             isClean
-                            hideTextCursor
                             onChange={(selected: any) => {
                                 onChange(selected);
                                 setAmountLimits(undefined);

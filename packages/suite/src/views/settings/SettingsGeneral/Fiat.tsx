@@ -41,7 +41,6 @@ export const Fiat = () => {
             <TextColumn title={<Translation id="TR_PRIMARY_FIAT" />} />
             <ActionColumn>
                 <ActionSelect
-                    hideTextCursor
                     useKeyPressScroll
                     onChange={handleChange}
                     value={value}
