@@ -19,6 +19,7 @@
         { "path": "../suite" },
         { "path": "../suite-analytics" },
         { "path": "../suite-desktop-api" },
+        { "path": "../theme" },
         { "path": "../urls" },
         { "path": "../utils" }
     ]

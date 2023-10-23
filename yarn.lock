@@ -9285,6 +9285,7 @@ __metadata:
     "@trezor/suite": "workspace:*"
     "@trezor/suite-analytics": "workspace:*"
     "@trezor/suite-desktop-api": "workspace:*"
+    "@trezor/theme": "workspace:*"
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/react": "npm:18.0.32"

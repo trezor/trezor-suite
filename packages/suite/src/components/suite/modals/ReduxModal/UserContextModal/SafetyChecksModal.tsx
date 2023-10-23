@@ -68,7 +68,7 @@ export const SafetyChecksModal = ({ onCancel }: ModalProps) => {
                         <H3>
                             <Translation id="TR_SAFETY_CHECKS_STRICT_LEVEL" />
                         </H3>
-                        <P size="small">
+                        <P type="hint">
                             <Translation id="TR_SAFETY_CHECKS_STRICT_LEVEL_DESC" />
                         </P>
                     </RadioButtonInner>
@@ -86,7 +86,7 @@ export const SafetyChecksModal = ({ onCancel }: ModalProps) => {
                         <StyledWarning withIcon>
                             <Translation id="TR_SAFETY_CHECKS_PROMPT_LEVEL_WARNING" />
                         </StyledWarning>
-                        <P size="small">
+                        <P type="hint">
                             <Translation id="TR_SAFETY_CHECKS_PROMPT_LEVEL_DESC" />
                         </P>
                     </RadioButtonInner>
