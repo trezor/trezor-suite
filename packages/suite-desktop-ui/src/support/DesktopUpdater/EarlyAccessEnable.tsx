@@ -101,7 +101,7 @@ export const EarlyAccessEnable = ({ hideWindow }: EarlyAccessEnableProps) => {
             <DescriptionWrapper>
                 <Image width={60} height={60} image="EARLY_ACCESS" />
                 <DescriptionTextWrapper>
-                    <P weight="bold">
+                    <P type="highlight">
                         <Translation id="TR_EARLY_ACCESS_ENABLE_CONFIRM_TITLE" />
                     </P>
                     <Description>
@@ -113,7 +113,7 @@ export const EarlyAccessEnable = ({ hideWindow }: EarlyAccessEnableProps) => {
             <Checkbox
                 data-test="@settings/early-access-confirm-check"
                 title={
-                    <P weight="bold">
+                    <P type="highlight">
                         <Translation id="TR_EARLY_ACCESS_ENABLE_CONFIRM_CHECK" />
                     </P>
                 }

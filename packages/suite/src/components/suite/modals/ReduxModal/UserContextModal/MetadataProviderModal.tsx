@@ -36,8 +36,6 @@ const StyledButton = styled(Button)`
 const StyledP = styled(P)`
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
     margin-bottom: 25px;
-    font-size: ${FONT_SIZE.SMALL};
-    font-weight: ${FONT_WEIGHT.REGULAR};
 `;
 
 const StyledModal = styled(Modal)`
@@ -127,7 +125,7 @@ export const MetadataProviderModal = ({ onCancel, decision }: MetadataProviderMo
                 </>
             }
         >
-            <StyledP>
+            <StyledP type="hint">
                 <Translation id="METADATA_MODAL_DESCRIPTION" />
             </StyledP>
             {error && <Error>{error}</Error>}

@@ -202,7 +202,7 @@ export const Backup = ({ cancelable, onCancel }: ForegroundAppProps) => {
         >
             {backup.status === 'initial' && (
                 <>
-                    <StyledP size="small">
+                    <StyledP type="hint">
                         <Translation id="TR_BACKUP_SUBHEADING_1" />
                     </StyledP>
                     <PreBackupCheckboxes />
@@ -213,7 +213,7 @@ export const Backup = ({ cancelable, onCancel }: ForegroundAppProps) => {
 
             {backup.status === 'finished' && (
                 <>
-                    <StyledP size="small" data-test="@backup/success-message">
+                    <StyledP type="hint" data-test="@backup/success-message">
                         <Translation id="TR_BACKUP_FINISHED_TEXT" />
                     </StyledP>
                     <AfterBackupCheckboxes />

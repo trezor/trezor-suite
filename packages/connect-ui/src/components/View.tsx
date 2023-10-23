@@ -12,9 +12,7 @@ const Title = styled(H3)`
 
 const StyledP = styled(P)`
     margin: 0 20%;
-    font-size: 15px;
-    font-weight: ${variables.FONT_WEIGHT.LIGHT}
-    color: #757575
+    color: #757575;
 `;
 
 const Buttons = styled.div``;
