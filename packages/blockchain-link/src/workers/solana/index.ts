@@ -27,23 +27,31 @@ export type SolanaAPI = Connection;
 type Context = ContextType<SolanaAPI>;
 type Request<T> = T & Context;
 
+type SignatureWithSlot = {
+    signature: string,
+    slot: number,
+}
+
 const getAllSignatures = async (
     api: SolanaAPI,
     descriptor: MessageTypes.GetAccountInfo['payload']['descriptor'],
 ) => {
-    let lastSignature: string | undefined;
+    let lastSignature: SignatureWithSlot | undefined;
     let keepFetching = true;
-    let allSignatures: string[] = [];
+    let allSignatures: SignatureWithSlot[] = [];
 
     const limit = 100;
     while (keepFetching) {
         const signaturesInfos = // eslint-disable-next-line no-await-in-loop
             await api.getSignaturesForAddress(new PublicKey(descriptor), {
-                before: lastSignature,
+                before: lastSignature?.signature,
                 limit,
             });
 
-        const signatures = signaturesInfos.map(info => info.signature);
+        const signatures = signaturesInfos.map(info => ({
+          signature: info.signature,
+          slot: info.slot,
+        }));
         lastSignature = signatures[signatures.length - 1];
         keepFetching = signatures.length === limit;
         allSignatures = [...allSignatures, ...signatures];
@@ -147,7 +155,20 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
             .filter((tx): tx is Transaction => !!tx);
     };
 
-    const allTxIds = Array.from(new Set(await getAllSignatures(api, payload.descriptor)));
+    const tokenAccounts = await api.getParsedTokenAccountsByOwner(publicKey, {
+        programId: new PublicKey(TOKEN_PROGRAM_PUBLIC_KEY),
+    });
+
+    const allAccounts = [payload.descriptor, ...tokenAccounts.value.map(a => a.pubkey.toString())]
+
+    const allTxIds = Array.from(
+      new Set(
+        (await Promise.all(
+          allAccounts.map(async (account) => await getAllSignatures(api, account))
+        )).flat()
+      )
+    ).sort((a, b) => b.slot - a.slot)
+    .map((it) => it.signature);
 
     const pageNumber = payload.page ? payload.page - 1 : 0;
     // for the first page of txs, payload.page is undefined, for the second page is 2
@@ -160,16 +181,12 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
 
     const transactionPage = details === 'txs' ? await getTransactionPage(txIdPage) : undefined;
 
-    const tokenInfo = await api.getParsedTokenAccountsByOwner(publicKey, {
-        programId: new PublicKey(TOKEN_PROGRAM_PUBLIC_KEY),
-    });
-
     // Fetch token info only if the account owns tokens
     let tokens: TokenInfo[] = [];
-    if (tokenInfo.value.length > 0) {
+    if (tokenAccounts.value.length > 0) {
         const tokenMetadata = await getTokenMetadata();
 
-        tokens = transformTokenInfo(tokenInfo.value, tokenMetadata);
+        tokens = transformTokenInfo(tokenAccounts.value, tokenMetadata);
     }
 
     const account: AccountInfo = {
