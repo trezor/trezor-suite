@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
-import { variables, Button, Icon } from '@trezor/components';
+import { variables, Button } from '@trezor/components';
 import { Translation, TrezorLink } from 'src/components/suite';
 
 interface TextColumnProps {
@@ -54,9 +54,13 @@ export const TextColumn = ({ title, description, buttonLink, buttonTitle }: Text
         {description && <Description>{description}</Description>}
         {buttonLink && (
             <TrezorLink variant="nostyle" href={buttonLink}>
-                <ButtonLink variant="tertiary">
+                <ButtonLink
+                    variant="tertiary"
+                    size="small"
+                    icon="EXTERNAL_LINK"
+                    iconAlignment="right"
+                >
                     {buttonTitle || <Translation id="TR_LEARN_MORE" />}
-                    <Icon icon="EXTERNAL_LINK" size={12} />
                 </ButtonLink>
             </TrezorLink>
         )}
