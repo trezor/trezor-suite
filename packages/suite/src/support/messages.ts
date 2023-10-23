@@ -3662,6 +3662,15 @@ export default defineMessages({
         id: 'TR_ACCOUNT_DETAILS_TYPE_HEADER',
         defaultMessage: 'Account type',
     },
+    TR_ACCOUNT_DETAILS_PATH_HEADER: {
+        id: 'TR_ACCOUNT_DETAILS_PATH_HEADER',
+        defaultMessage: 'Derivation path',
+    },
+    TR_ACCOUNT_DETAILS_PATH_DESC: {
+        id: 'TR_ACCOUNT_DETAILS_PATH_DESC',
+        defaultMessage:
+            'Derivation path is a parameter according to which the Hierarchical Deterministic (HD) wallet derives individual keys within the tree of keys.',
+    },
     TR_ACCOUNT_TYPE_BIP84_DESC: {
         id: 'TR_ACCOUNT_TYPE_BIP84_DESC',
         defaultMessage:
