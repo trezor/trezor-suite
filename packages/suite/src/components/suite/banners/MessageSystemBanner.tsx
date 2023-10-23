@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 import styled from 'styled-components';
-
-import { variables } from '@trezor/components';
+import { zIndices } from '@trezor/theme';
 import { goto } from 'src/actions/suite/routerActions';
 import { messageSystemActions } from '@suite-common/message-system';
 import { Message } from '@suite-common/suite-types';
@@ -13,7 +12,7 @@ import { selectTorState } from 'src/reducers/suite/suiteReducer';
 
 const BannerOnTop = styled(Banner)`
     position: relative;
-    z-index: ${variables.Z_INDEX.GUIDE};
+    z-index: ${zIndices.guide};
 `;
 
 type MessageSystemBannerProps = {
