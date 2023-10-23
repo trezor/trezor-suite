@@ -66,6 +66,12 @@ jobs:
           bundle install
           bundle exec fastlane android develop
 
+      - uses: actions/upload-artifact@v3
+        with:
+          name: app-apk
+          path: |
+            **/*.apk
+
   ios_develop:
     runs-on: macos-12
     environment: develop
