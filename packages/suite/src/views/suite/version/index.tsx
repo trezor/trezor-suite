@@ -16,14 +16,10 @@ const Line = styled.div`
 export const Version = () => (
     <Modal data-test="@modal/version">
         <Wrapper>
-            <P size="small" weight="bold">
-                APPLICATION VERSION
-            </P>
+            <P type="callout">APPLICATION VERSION</P>
             <H2 data-test="@version/number">{getSuiteVersion()}</H2>
             <Line />
-            <P size="small" weight="bold">
-                LAST COMMIT HASH
-            </P>
+            <P type="callout">LAST COMMIT HASH</P>
             <Link
                 href={`https://github.com/trezor/trezor-suite/commits/${getCommitHash()}`}
                 data-test="@version/commit-hash-link"

@@ -115,13 +115,13 @@ const Details = () => {
                         />
                         <AccountTypeLabel>
                             {accountTypeName && (
-                                <P size="small" weight="medium">
+                                <P type="hint">
                                     <NoWrap>
                                         <Translation id={accountTypeName} />
                                     </NoWrap>
                                 </P>
                             )}
-                            <P size="tiny">
+                            <P type="label">
                                 (<Translation id={accountTypeTech} />)
                             </P>
                         </AccountTypeLabel>
