@@ -1,11 +1,11 @@
 import styled from 'styled-components';
 import { Translation, FormattedDateWithBullet } from 'src/components/suite';
 import { getNotificationIcon } from 'src/utils/suite/notification';
-import { Button, Icon, P } from '@trezor/components';
+import { Button, Icon, Paragraph } from '@trezor/components';
 import { useLayoutSize } from 'src/hooks/suite';
 import type { NotificationViewProps } from 'src/components/suite/NotificationRenderer';
 
-const TextP = styled(P)<{ $seen?: boolean }>`
+const TextP = styled(Paragraph)<{ $seen?: boolean }>`
     opacity: ${props => (props.$seen ? 0.7 : 1)};
 `;
 

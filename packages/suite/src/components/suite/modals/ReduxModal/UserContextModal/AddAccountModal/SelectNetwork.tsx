@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-import { Icon, P, variables } from '@trezor/components';
+import { Icon, Paragraph, variables } from '@trezor/components';
 import { FADE_IN } from '@trezor/components/src/config/animations';
 import { CoinsList, Translation } from 'src/components/suite';
 import type { Network } from 'src/types/wallet';
@@ -20,7 +20,7 @@ const Header = styled.div<{ disabled: boolean }>`
               `}
 `;
 
-const Title = styled(P)`
+const Title = styled(Paragraph)`
     margin-right: 9px;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;

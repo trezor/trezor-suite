@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { H1, P, Button, variables } from '@trezor/components';
+import { H1, Paragraph, Button, variables } from '@trezor/components';
 import { db } from 'src/storage';
 import { reloadApp } from 'src/utils/suite/reload';
 
@@ -41,7 +41,7 @@ const StyledButton = styled(Button)`
     margin: 6px 12px;
 `;
 
-const GenericMessage = styled(P)`
+const GenericMessage = styled(Paragraph)`
     margin-bottom: 10px;
     text-align: center;
 `;

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { P } from '@trezor/components';
+import { Paragraph } from '@trezor/components';
 import { Loading } from 'src/components/suite';
 import { ThemeProvider } from '../ThemeProvider';
 
@@ -19,7 +19,7 @@ const Loader = styled(Loading)`
     flex: 0;
 `;
 
-const LoadingText = styled(P)`
+const LoadingText = styled(Paragraph)`
     height: 0;
 `;
 

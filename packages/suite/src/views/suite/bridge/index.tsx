@@ -2,7 +2,7 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import { DATA_URL, HELP_CENTER_TOR_URL, GITHUB_BRIDGE_CHANGELOG_URL } from '@trezor/urls';
 import { Translation, TrezorLink, Modal, Metadata } from 'src/components/suite';
-import { Button, P, Link, Select, Image, variables, Spinner } from '@trezor/components';
+import { Button, Paragraph, Link, Select, Image, variables, Spinner } from '@trezor/components';
 import { goto } from 'src/actions/suite/routerActions';
 import { isDesktop, isWeb } from '@trezor/env-utils';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -77,7 +77,7 @@ const Version = styled.div<{ show: boolean }>`
     font-size: ${variables.FONT_SIZE.SMALL};
 `;
 
-const BridgeDesktopNote = styled(P)`
+const BridgeDesktopNote = styled(Paragraph)`
     margin-top: 10px;
     font-size: ${variables.FONT_SIZE.TINY};
 `;
@@ -156,9 +156,9 @@ export const InstallBridge = () => {
                 {isLoading ? (
                     <LoaderWrapper data-test="@bridge/loading">
                         <CenteredLoader size={50} />
-                        <P>
+                        <Paragraph>
                             <Translation id="TR_GATHERING_INFO" />
-                        </P>
+                        </Paragraph>
                     </LoaderWrapper>
                 ) : (
                     <Download>
@@ -183,11 +183,11 @@ export const InstallBridge = () => {
                     </Download>
                 )}
                 {isWeb() && isTorEnabled && (
-                    <P>
+                    <Paragraph>
                         <TrezorLink href={HELP_CENTER_TOR_URL}>
                             <Translation id="TR_TOR_BRIDGE" />
                         </TrezorLink>
-                    </P>
+                    </Paragraph>
                 )}
             </Content>
 

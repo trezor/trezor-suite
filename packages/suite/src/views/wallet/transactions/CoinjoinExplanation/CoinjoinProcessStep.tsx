@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
-import { Image, ImageType, P, variables } from '@trezor/components';
+import { Image, ImageType, Paragraph, variables } from '@trezor/components';
 import { Translation } from 'src/components/suite/Translation';
 
 const StyledImage = styled(Image)`
@@ -13,7 +13,7 @@ const StyledImage = styled(Image)`
     }
 `;
 
-const StepNumber = styled(P)`
+const StepNumber = styled(Paragraph)`
     margin: 24px 0 6px;
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.TINY};
@@ -25,7 +25,7 @@ const StepNumber = styled(P)`
     }
 `;
 
-const StepTitle = styled(P)`
+const StepTitle = styled(Paragraph)`
     margin-bottom: 20px;
     font-size: ${variables.FONT_SIZE.H3};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
@@ -38,7 +38,7 @@ const StepTitle = styled(P)`
     }
 `;
 
-const StepDescription = styled(P)`
+const StepDescription = styled(Paragraph)`
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 
