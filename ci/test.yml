@@ -105,7 +105,7 @@ suite web 2-master:
   variables:
     FIRMWARE: 2-master
 
-suite web 2-master manual:
+suite web 2-master m:
   extends: .suite web base
   except:
     refs:
@@ -162,7 +162,7 @@ suite desktop:
   only:
     <<: *run_everything_rules
 
-suite desktop manual:
+suite desktop m:
   extends: .e2e desktop
   except:
     <<: *run_everything_rules
@@ -189,7 +189,7 @@ transport:
   only:
     <<: *run_everything_rules
 
-transport manual:
+transport m:
   extends: .e2e transport
   except:
     <<: *run_everything_rules
@@ -240,7 +240,7 @@ connect-popup:
   only:
     <<: *run_everything_rules
 
-connect-popup manual:
+connect-popup m:
   extends: .e2e connect-popup
   needs:
     - install
@@ -307,7 +307,7 @@ connect-popup-webextension:
   only:
     <<: *run_everything_rules
 
-connect-popup-webextension manual:
+connect-popup-webextension m:
   extends: .e2e connect-popup-webextension
   needs:
     - install
@@ -400,7 +400,7 @@ connect:
     refs:
       - schedules # only nightly jobs, this is too heavy for develop branches at the moment
 
-connect manual:
+connect m:
   extends: .connect matrix
   except:
     refs:
@@ -473,7 +473,7 @@ connect-web mv2:
     <<: *run_everything_rules
   when: always
 
-connect-web mv2 manual:
+connect-web mv2 m:
   extends: .connect-web mv2
   except:
     <<: *run_everything_rules
