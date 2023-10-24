@@ -1,15 +1,15 @@
-import { SkeletonRectangle, Spread, Stack } from 'src/components/suite/Skeleton';
+import { SkeletonRectangle, SkeletonSpread, SkeletonStack } from 'src/components/suite';
 
 export const SkeletonTransactionItem = () => (
-    <Stack col childMargin="0px 0px 8px 0px">
-        <Spread>
+    <SkeletonStack col childMargin="0px 0px 8px 0px">
+        <SkeletonSpread>
             <SkeletonRectangle width="120px" height="18px" />
             <SkeletonRectangle width="80px" height="18px" />
-        </Spread>
+        </SkeletonSpread>
         <SkeletonRectangle width="100%" height="70px" animate />
         <SkeletonRectangle width="100%" height="70px" animate />
         <SkeletonRectangle width="100%" height="70px" animate />
-    </Stack>
+    </SkeletonStack>
 );
 
 export default SkeletonTransactionItem;

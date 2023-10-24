@@ -1,7 +1,10 @@
 import styled from 'styled-components';
+
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { Account } from 'src/types/wallet';
+import { isTestnet } from '@suite-common/wallet-utils';
 import { CoinLogo, H1, H3 } from '@trezor/components';
+
+import { Account } from 'src/types/wallet';
 import {
     Ticker,
     FiatValue,
@@ -10,10 +13,11 @@ import {
     FormattedCryptoAmount,
     MetadataLabeling,
     AmountUnitSwitchWrapper,
+    SkeletonCircle,
+    SkeletonRectangle,
+    SkeletonStack,
 } from 'src/components/suite';
-import { Stack, SkeletonCircle, SkeletonRectangle } from 'src/components/suite/Skeleton';
 import { useSelector } from 'src/hooks/suite';
-import { isTestnet } from '@suite-common/wallet-utils';
 import { AccountNavigation } from './AccountNavigation';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
 
@@ -47,13 +51,13 @@ const AccountTopPanelSkeleton = ({ animate, account, symbol }: AccountTopPanelSk
         }
         navigation={<AccountNavigation />}
     >
-        <Stack alignItems="center">
+        <SkeletonStack alignItems="center">
             {symbol ? <CoinLogo size={24} symbol={symbol} /> : <SkeletonCircle size="24px" />}
 
             <Balance noMargin>
                 <SkeletonRectangle width="160px" height="32px" animate={animate} />
             </Balance>
-        </Stack>
+        </SkeletonStack>
     </AppNavigationPanel>
 );
 

@@ -1,13 +1,13 @@
 import styled, { css, keyframes } from 'styled-components';
 
-interface StackProps {
+interface SkeletonStackProps {
     col?: boolean;
     grow?: boolean;
     margin?: string;
     childMargin?: string;
     alignItems?: string;
 }
-const Stack = styled.div<StackProps>`
+export const SkeletonStack = styled.div<SkeletonStackProps>`
     display: flex;
     align-items: ${props => props.alignItems ?? 'auto'};
     flex-direction: ${props => (props.col ? 'column' : 'row')};
@@ -26,8 +26,8 @@ const Stack = styled.div<StackProps>`
         `}
 `;
 
-const Spread = styled(Stack)<
-    StackProps & {
+export const SkeletonSpread = styled(SkeletonStack)<
+    SkeletonStackProps & {
         spaceAround?: boolean;
     }
 >`
@@ -43,7 +43,7 @@ const SHINE = keyframes`
     }
 `;
 
-export const shimmerEffect = css`
+const shimmerEffect = css`
     animation: ${SHINE} 1.5s ease infinite;
     background: linear-gradient(
         90deg,
@@ -53,7 +53,17 @@ export const shimmerEffect = css`
     background-size: 200%;
 `;
 
-const SkeletonRectangle = styled.div<SkeletonProps>`
+interface SkeletonProps {
+    width?: string;
+    height?: string;
+    size?: string;
+    background?: string;
+    animate?: boolean;
+    borderRadius?: string;
+    alignItems?: string;
+}
+
+export const SkeletonRectangle = styled.div<SkeletonProps>`
     width: ${props => props.width ?? '80px'};
     height: ${props => props.height ?? '20px'};
     background: ${({ background, theme }) => background ?? theme.BG_GREY_ALT};
@@ -67,7 +77,7 @@ const SkeletonRectangle = styled.div<SkeletonProps>`
         `}
 `;
 
-const SkeletonCircle = styled.div<SkeletonProps>`
+export const SkeletonCircle = styled.div<SkeletonProps>`
     width: ${props => props.size ?? '24px'};
     height: ${props => props.size ?? '24px'};
     border-radius: ${props => props.size ?? '24px'};
@@ -80,15 +90,3 @@ const SkeletonCircle = styled.div<SkeletonProps>`
             ${shimmerEffect}
         `}
 `;
-
-interface SkeletonProps {
-    width?: string;
-    height?: string;
-    size?: string;
-    background?: string;
-    animate?: boolean;
-    borderRadius?: string;
-    alignItems?: string;
-}
-
-export { SkeletonRectangle, SkeletonCircle, Spread, Stack };
