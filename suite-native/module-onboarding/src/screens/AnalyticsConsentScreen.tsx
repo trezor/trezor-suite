@@ -70,10 +70,13 @@ export const AnalyticsConsentScreen = () => {
                     </Stack>
                 </Card>
                 <Stack spacing="small" style={applyStyle(buttonsWrapperStyle)}>
-                    <Button data-testID="reject-userData" onPress={handleRedirect}>
+                    <Button testID="@onboarding/UserDataConsent/reject" onPress={handleRedirect}>
                         Not now
                     </Button>
-                    <Button data-testID="allow-userData" onPress={handleAnalyticsConsent}>
+                    <Button
+                        testID="@onboarding/UserDataConsent/allow"
+                        onPress={handleAnalyticsConsent}
+                    >
                         Allow anonymous data collection
                     </Button>
                 </Stack>

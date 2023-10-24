@@ -1,0 +1,43 @@
+# Test case:
+# 1. Start the app with clear state
+# 2. Click through first initial onboarding screens
+# 4. Click on "Sync my coins"
+# 5. Select "Bitcoin"
+# 6. Fill in a valid BTC XPUB and confirm
+# 7. Verify that coin has been synced
+
+appId: io.trezor.suite.debug
+---
+- launchApp:
+    clearState: true
+- tapOn:
+    id: "@onboarding/Welcome/nextBtn"
+    retryTapIfNoChange: false
+- tapOn:
+    id: "@onboarding/TrackBalances/nextBtn"
+- tapOn:
+    id: "@onboarding/AboutReceiveCoinsFeature/nextBtn"
+- tapOn:
+    id: "@onboarding/UserDataConsent/allow"
+- tapOn:
+    id: "@onboarding/GetStarted/nextBtn"
+- tapOn:
+    id: "@onboarding/import/without-trezor"
+- tapOn:
+    id: "@onboarding/select-coin/Bitcoin"
+- scrollUntilVisible:
+    element:
+      id: "@accounts-import/sync-coins/xpub-input"
+    direction: DOWN
+# type in the first all seed btc XPUB
+- tapOn:
+    id: "@accounts-import/sync-coins/xpub-input"
+- inputText: "zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT"
+- scrollUntilVisible:
+    element:
+      id: "@accounts-import/sync-coins/xpub-submit"
+    direction: DOWN
+- tapOn:
+    id: "@accounts-import/sync-coins/xpub-submit"
+- assertVisible: "Coin Synced"
+

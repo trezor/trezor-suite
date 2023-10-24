@@ -120,6 +120,7 @@ export const ConnectDeviceCrossroadsScreen = () => {
                             </Text>
                         </VStack>
                         <Button
+                            testID="@onboarding/import/without-trezor"
                             onPress={handleSyncMyCoins}
                             colorScheme="tertiaryElevation1"
                             size="large"

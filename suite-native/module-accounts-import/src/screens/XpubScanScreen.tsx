@@ -162,7 +162,7 @@ export const XpubScanScreen = ({
                 <Form form={form}>
                     <VStack spacing="medium">
                         <TextInputField
-                            data-testID="@accounts-import/sync-coins/xpub-input"
+                            testID="@accounts-import/sync-coins/xpub-input"
                             name="xpubAddress"
                             label={inputLabel}
                             multiline
@@ -170,7 +170,7 @@ export const XpubScanScreen = ({
                         {isXpubFormFilled && (
                             <Animated.View entering={FadeIn.duration(FORM_BUTTON_FADE_IN_DURATION)}>
                                 <Button
-                                    data-testID="@accounts-import/sync-coins/xpub-submit"
+                                    testID="@accounts-import/sync-coins/xpub-submit"
                                     onPress={onXpubFormSubmit}
                                     size="large"
                                 >

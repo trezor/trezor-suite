@@ -22,6 +22,9 @@ import { useFormattersConfig } from './hooks/useFormattersConfig';
 import { applicationInit } from './initActions';
 import { useReportAppInitToAnalytics } from './hooks/useReportAppInitToAnalytics';
 import { SentryProvider } from './SentryProvider';
+import { LogBox } from 'react-native';
+
+LogBox.ignoreAllLogs();
 
 // Base time to measure app loading time.
 // The constant has to be placed at the beginning of this file to be initialized as soon as possible.
