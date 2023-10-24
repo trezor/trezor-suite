@@ -1,6 +1,7 @@
-import TrezorLink from 'src/components/suite/TrezorLink';
-import { Translation } from 'src/components/suite/Translation';
 import { isWeb, isLinux, isAndroid } from '@trezor/env-utils';
+
+import { TrezorLink } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
 
