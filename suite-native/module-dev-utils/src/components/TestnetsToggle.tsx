@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { selectAreTestnetsEnabled, toggleAreTestnetsEnabled } from '@suite-native/discovery';
 import { Box, HStack, Switch, Text } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
 
 export const TestnetsToggle = () => {
     const areTestnetsEnabled = useSelector(selectAreTestnetsEnabled);
@@ -16,11 +15,10 @@ export const TestnetsToggle = () => {
     return (
         <HStack flexDirection="row" alignItems="center" spacing="large">
             <Box flexShrink={1}>
-                <Text>
-                    <Translation id="moduleDevUtils.testnetsToggle.title" />
-                </Text>
+                <Text>Testnet coins & features</Text>
                 <Text variant="hint" color="textSubdued">
-                    <Translation id="moduleDevUtils.testnetsToggle.description" />
+                    These coins carry no value and cannot be used to pay transactions. They are used
+                    only for testing.
                 </Text>
             </Box>
             <Switch isChecked={areTestnetsEnabled} onChange={handleToggle} />

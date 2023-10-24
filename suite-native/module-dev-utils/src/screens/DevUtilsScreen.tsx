@@ -12,7 +12,6 @@ import {
     ScreenSubHeader,
 } from '@suite-native/navigation';
 import { clearStorage } from '@suite-native/storage';
-import { useTranslate } from '@suite-native/intl';
 
 import { BuildInfo } from '../components/BuildInfo';
 import { RenderingUtils } from '../components/RenderingUtils';
@@ -24,7 +23,6 @@ export const DevUtilsScreen = ({
     navigation,
 }: StackProps<DevUtilsStackParamList, DevUtilsStackRoutes.DevUtils>) => {
     const shouldShowFeatureFlags = isDevelopOrDebugEnv();
-    const { translate } = useTranslate();
 
     return (
         <Screen subheader={<ScreenSubHeader content="DEV utils" />}>
@@ -46,11 +44,11 @@ export const DevUtilsScreen = ({
                                 Alert.alert('Sentry error thrown', errorMessage);
                             }}
                         >
-                            {translate('moduleDevUtils.devUtilsScreen.throwErrorButton')}
+                            Throw Sentry error
                         </Button>
                         <CopyLogsButton />
                         <Button colorScheme="dangerElevation0" onPress={clearStorage}>
-                            {translate('moduleDevUtils.devUtilsScreen.wipeStorageButton')}
+                            Wipe all data
                         </Button>
                     </VStack>
                 </Card>
