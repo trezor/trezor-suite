@@ -194,6 +194,9 @@ test('introduce passphrase successfully reload 3rd party it should ask again for
     // Confirm right address is displayed.
     await TrezorUserEnvLink.api.pressYes();
 
+    // Wait for success message before reloading page.
+    await page.waitForSelector('text=success: true');
+
     // Reload page
     await page.reload();
 
