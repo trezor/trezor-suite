@@ -7,7 +7,7 @@ import {
     TROUBLESHOOTING_TIP_CABLE,
     TROUBLESHOOTING_TIP_USB,
     TROUBLESHOOTING_TIP_DIFFERENT_COMPUTER,
-} from 'src/components/suite/TroubleshootingTips/tips';
+} from 'src/components/suite/troubleshooting/tips';
 
 interface NoDeviceDetectedProps {
     offerWebUsb: boolean;

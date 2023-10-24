@@ -5,7 +5,7 @@ import {
     TROUBLESHOOTING_TIP_BRIDGE_INSTALL,
     TROUBLESHOOTING_TIP_UDEV,
     TROUBLESHOOTING_TIP_RESTART_COMPUTER,
-} from 'src/components/suite/TroubleshootingTips/tips';
+} from 'src/components/suite/troubleshooting/tips';
 
 export const NoTransport = () => (
     // No transport layer (bridge/webUSB) is available
