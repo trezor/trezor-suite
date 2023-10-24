@@ -16,7 +16,7 @@ import {
     AutodetectSettings,
     selectTorState,
 } from 'src/reducers/suite/suiteReducer';
-import type { TranslationKey } from 'src/components/suite/Translation/components/BaseTranslation';
+import type { TranslationKey } from 'src/components/suite/Translation';
 
 import { SUITE } from './constants';
 
