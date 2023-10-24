@@ -99,30 +99,45 @@ const logInConsole = (logs: any[]) => {
 };
 
 const useLogWorker = (setLogs: React.Dispatch<React.SetStateAction<any[]>>) => {
-    const logWorker = new SharedWorker('./workers/shared-logger-worker.js');
-    useEffect(() => {
-        logWorker.port.onmessage = function (event) {
-            const { data } = event;
-            switch (data.type) {
-                case 'get-logs':
-                    logInConsole(data.payload);
-                    setLogs(data.payload);
-                    break;
-                case 'log-entry':
-                    logInConsole([data.payload]);
-                    setLogs(prevLogs => {
-                        if (prevLogs.length > MAX_ENTRIES) {
-                            prevLogs.shift();
-                        }
-                        return [...prevLogs, data.payload];
-                    });
-                    break;
-                default:
-            }
-        };
+    let logWorker: SharedWorker | undefined;
 
-        logWorker.port.postMessage({ type: 'get-logs' });
-        logWorker.port.postMessage({ type: 'subscribe' });
+    if (SharedWorker) {
+        try {
+            logWorker = new SharedWorker('./workers/shared-logger-worker.js');
+        } catch (error) {
+            console.warn('Failed to initialize SharedWorker');
+        }
+    } else {
+        console.warn('SharedWorker is not supported in this browser');
+    }
+
+    useEffect(() => {
+        if (!logWorker) {
+            console.warn('SharedWorker is not initialized');
+        } else {
+            logWorker.port.onmessage = function (event) {
+                const { data } = event;
+                switch (data.type) {
+                    case 'get-logs':
+                        logInConsole(data.payload);
+                        setLogs(data.payload);
+                        break;
+                    case 'log-entry':
+                        logInConsole([data.payload]);
+                        setLogs(prevLogs => {
+                            if (prevLogs.length > MAX_ENTRIES) {
+                                prevLogs.shift();
+                            }
+                            return [...prevLogs, data.payload];
+                        });
+                        break;
+                    default:
+                }
+            };
+
+            logWorker.port.postMessage({ type: 'get-logs' });
+            logWorker.port.postMessage({ type: 'subscribe' });
+        }
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
