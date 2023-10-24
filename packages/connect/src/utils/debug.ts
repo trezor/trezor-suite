@@ -125,10 +125,12 @@ export const initLog = (prefix: string, enabled?: boolean, logWriter?: LogWriter
     return instance;
 };
 
-export const setLogWriter = (logWriterFactory: () => LogWriter) => {
+export const setLogWriter = (logWriterFactory: () => LogWriter | undefined) => {
     Object.keys(_logs).forEach(key => {
         writer = logWriterFactory();
-        _logs[key].setWriter(writer);
+        if (writer) {
+            _logs[key].setWriter(writer);
+        }
     });
 };
 
