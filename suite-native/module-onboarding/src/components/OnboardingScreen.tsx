@@ -1,5 +1,6 @@
 import { ReactNode, useMemo } from 'react';
 import { Dimensions, ImageBackground } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Screen } from '@suite-native/navigation';
 import { Box } from '@suite-native/atoms';
@@ -8,14 +9,13 @@ import { useActiveColorScheme } from '@suite-native/theme';
 
 import { OnboardingScreenHeader } from './OnboardingScreenHeader';
 
-type OnboardingScreenProps = {
-    children: ReactNode;
-    footer?: ReactNode;
-    title: string;
-    subtitle?: string;
-    activeStep: number;
-    isScrollable?: boolean;
+type WrapperStyleProps = {
+    height: number;
 };
+
+const screenWrapperStyle = prepareNativeStyle<WrapperStyleProps>((_, { height }) => ({
+    height,
+}));
 
 const contentStyle = prepareNativeStyle(utils => ({
     flex: 1,
@@ -40,6 +40,15 @@ const imageContainerStyle = prepareNativeStyle(() => ({
     aspectRatio: 390 / 296,
 }));
 
+type OnboardingScreenProps = {
+    children: ReactNode;
+    footer?: ReactNode;
+    title: string;
+    subtitle?: string;
+    activeStep: number;
+    isScrollable?: boolean;
+};
+
 export const OnboardingScreen = ({
     children,
     footer,
@@ -50,6 +59,7 @@ export const OnboardingScreen = ({
 }: OnboardingScreenProps) => {
     const { applyStyle } = useNativeStyles();
     const colorScheme = useActiveColorScheme();
+    const { top: topSafeInset, bottom: bottomSafeInset } = useSafeAreaInsets();
 
     const getImageSource = useMemo(() => {
         if (colorScheme === 'dark') {
@@ -57,6 +67,9 @@ export const OnboardingScreen = ({
         }
         return require('../assets/rectangles.png');
     }, [colorScheme]);
+
+    const { height } = Dimensions.get('window');
+    const screenHeight = height - topSafeInset - bottomSafeInset;
 
     return (
         <Box style={applyStyle(contentStyle)}>
@@ -69,25 +82,28 @@ export const OnboardingScreen = ({
                 isScrollable={isScrollable}
                 backgroundColor="transparent"
                 isHeaderDisplayed={false}
+                hasStatusBar={false}
             >
-                <Box
-                    alignItems="center"
-                    flex={1}
-                    justifyContent="space-between"
-                    style={applyStyle(cardStyle)}
-                >
-                    <OnboardingScreenHeader
-                        title={title}
-                        subtitle={subtitle}
-                        activeStep={activeStep}
-                    />
-                    {children}
-                </Box>
-                {footer && (
-                    <Box alignItems="center" marginTop="large">
-                        {footer}
+                <Box style={applyStyle(screenWrapperStyle, { height: screenHeight })}>
+                    <Box
+                        alignItems="center"
+                        flex={1}
+                        justifyContent="space-between"
+                        style={applyStyle(cardStyle)}
+                    >
+                        <OnboardingScreenHeader
+                            title={title}
+                            subtitle={subtitle}
+                            activeStep={activeStep}
+                        />
+                        {children}
                     </Box>
-                )}
+                    {footer && (
+                        <Box alignItems="center" marginTop="large">
+                            {footer}
+                        </Box>
+                    )}
+                </Box>
             </Screen>
         </Box>
     );
