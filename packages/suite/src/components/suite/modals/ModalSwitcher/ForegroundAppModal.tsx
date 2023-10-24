@@ -7,7 +7,7 @@ import { closeModalApp } from 'src/actions/suite/routerActions';
 import { InstallBridge } from 'src/views/suite/bridge';
 import { UdevRules } from 'src/views/suite/udev';
 import { Version } from 'src/views/suite/version';
-import { SwitchDevice } from 'src/components/suite/SwitchDevice';
+import { SwitchDevice } from 'src/views/suite/SwitchDevice/SwitchDevice';
 import type { ForegroundAppRoute } from 'src/types/suite';
 
 // would not work if defined directly in the switch

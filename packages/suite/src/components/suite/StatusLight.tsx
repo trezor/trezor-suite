@@ -34,10 +34,8 @@ interface StatusLightProps {
     className?: string;
 }
 
-const StatusLight = ({ status, className }: StatusLightProps) => (
+export const StatusLight = ({ status, className }: StatusLightProps) => (
     <Circle status={status} className={className}>
         <div />
     </Circle>
 );
-
-export default StatusLight;

@@ -17,28 +17,33 @@ interface DeviceHeaderButtonProps {
     onDeviceSettingsClick: () => void;
 }
 
-const DeviceHeaderButton = (props: DeviceHeaderButtonProps) => {
-    const { device } = props;
+export const DeviceHeaderButton = ({
+    device,
+    needsAttention,
+    onDeviceSettingsClick,
+    onSolveIssueClick,
+}: DeviceHeaderButtonProps) => {
     const theme = useTheme();
+
     const deviceStatus = deviceUtils.getStatus(device);
     const deviceStatusMessage = deviceUtils.getDeviceNeedsAttentionMessage(deviceStatus);
     const isUnknown = device.type !== 'acquired';
 
     return (
         <>
-            {props.needsAttention && (
+            {needsAttention && (
                 <GrayNotificationCard
                     variant="warning"
                     button={{
                         children: <Translation id="TR_SOLVE_ISSUE" />,
-                        onClick: props.onSolveIssueClick,
+                        onClick: onSolveIssueClick,
                         'data-test': `@switch-device/${device.path}/solve-issue-button`,
                     }}
                 >
                     {deviceStatusMessage && <Translation id={deviceStatusMessage} />}
                 </GrayNotificationCard>
             )}
-            {!props.needsAttention && !isUnknown && (
+            {!needsAttention && !isUnknown && (
                 // Device Settings button
                 <Icon
                     useCursorPointer
@@ -46,11 +51,9 @@ const DeviceHeaderButton = (props: DeviceHeaderButtonProps) => {
                     icon="SETTINGS"
                     color={theme.TYPE_LIGHT_GREY}
                     hoverColor={theme.TYPE_LIGHTER_GREY}
-                    onClick={props.onDeviceSettingsClick}
+                    onClick={onDeviceSettingsClick}
                 />
             )}
         </>
     );
 };
-
-export default DeviceHeaderButton;
