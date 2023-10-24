@@ -2,12 +2,13 @@ import { TooltipProps } from 'recharts';
 
 import { useFormatters } from '@suite-common/formatters';
 
-import { Props as GraphProps, FiatGraphProps } from '../definitions';
-import { CustomTooltipBase } from './CustomTooltipBase';
-import { CommonAggregatedHistory } from 'src/types/wallet/graph';
+import { CommonAggregatedHistory, GraphRange } from 'src/types/wallet/graph';
 
-interface CustomTooltipDashboardProps extends TooltipProps<number, any> {
-    selectedRange: GraphProps['selectedRange'];
+import type { FiatGraphProps } from './TransactionsGraph';
+import { GraphTooltipBase } from './GraphTooltipBase';
+
+interface GraphTooltipDashboardProps extends TooltipProps<number, any> {
+    selectedRange: GraphRange;
     localCurrency: string;
     sentValueFn: FiatGraphProps['sentValueFn'];
     receivedValueFn: FiatGraphProps['receivedValueFn'];
@@ -16,7 +17,7 @@ interface CustomTooltipDashboardProps extends TooltipProps<number, any> {
     extendedDataForInterval?: CommonAggregatedHistory[];
 }
 
-export const CustomTooltipDashboard = (props: CustomTooltipDashboardProps) => {
+export const GraphTooltipDashboard = (props: GraphTooltipDashboardProps) => {
     const { FiatAmountFormatter } = useFormatters();
 
     if (!props.active || !props.payload) {
@@ -35,7 +36,7 @@ export const CustomTooltipDashboard = (props: CustomTooltipDashboardProps) => {
     );
 
     return (
-        <CustomTooltipBase
+        <GraphTooltipBase
             {...props}
             selectedRange={props.selectedRange}
             sentAmount={sentAmount}

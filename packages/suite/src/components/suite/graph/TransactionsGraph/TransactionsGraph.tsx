@@ -1,21 +1,25 @@
 import { memo, useState } from 'react';
-
 import styled from 'styled-components';
 import { ComposedChart, Tooltip, Bar, YAxis, XAxis, Line, CartesianGrid, Cell } from 'recharts';
-import { useGraph } from 'src/hooks/suite';
 
 import { variables, Icon, useTheme } from '@trezor/components';
 
-import { Props } from './definitions';
-import { RangeSelector } from './components/RangeSelector';
-import { CustomResponsiveContainer } from './components/CustomResponsiveContainer';
-import { CustomXAxisTick } from './components/CustomXAxisTick';
-import { CustomYAxisTick } from './components/CustomYAxisTick';
-import { CustomBar } from './components/CustomBar';
-import { CustomTooltipDashboard } from './components/CustomTooltipDashboard';
-import { CustomTooltipAccount } from './components/CustomTooltipAccount';
-import { SkeletonTransactionsGraph } from './components/SkeletonTransactionsGraph';
+import { useGraph } from 'src/hooks/suite';
+import { Account } from 'src/types/wallet';
+import {
+    GraphRange,
+    AggregatedAccountHistory,
+    AggregatedDashboardHistory,
+} from 'src/types/wallet/graph';
 import { calcYDomain, calcFakeGraphDataForTimestamps, calcXDomain } from 'src/utils/wallet/graph';
+import { GraphSkeleton, GraphRangeSelector } from 'src/components/suite';
+
+import { GraphResponsiveContainer } from './GraphResponsiveContainer';
+import { GraphXAxisTick } from './GraphXAxisTick';
+import { GraphYAxisTick } from './GraphYAxisTick';
+import { GraphBar } from './GraphBar';
+import { GraphTooltipDashboard } from './GraphTooltipDashboard';
+import { GraphTooltipAccount } from './GraphTooltipAccount';
 
 const Wrapper = styled.div`
     display: flex;
@@ -51,7 +55,37 @@ const Description = styled.div`
     flex: 1;
 `;
 
-const TransactionsGraph = memo((props: Props) => {
+interface CommonProps {
+    isLoading?: boolean;
+    selectedRange: GraphRange;
+    xTicks: number[];
+    localCurrency: string;
+    minMaxValues: [number, number];
+    hideToolbar?: boolean;
+    onRefresh?: () => void;
+}
+
+export interface CryptoGraphProps extends CommonProps {
+    variant: 'one-asset';
+    account: Account;
+    data: AggregatedAccountHistory[];
+    receivedValueFn: (data: AggregatedAccountHistory) => string | undefined;
+    sentValueFn: (data: AggregatedAccountHistory) => string | undefined;
+    balanceValueFn: (data: AggregatedAccountHistory) => string | undefined;
+}
+
+export interface FiatGraphProps extends CommonProps {
+    variant: 'all-assets';
+    data: AggregatedDashboardHistory[];
+    receivedValueFn: (data: AggregatedDashboardHistory) => string | undefined;
+    sentValueFn: (data: AggregatedDashboardHistory) => string | undefined;
+    balanceValueFn: (data: AggregatedDashboardHistory) => string | undefined;
+    account?: never;
+}
+
+export type TransactionsGraphProps = CryptoGraphProps | FiatGraphProps;
+
+export const TransactionsGraph = memo((props: TransactionsGraphProps) => {
     const { isLoading, data, selectedRange, xTicks } = props;
     const [maxYTickWidth, setMaxYTickWidth] = useState(20);
 
@@ -84,15 +118,15 @@ const TransactionsGraph = memo((props: Props) => {
         <Wrapper>
             {!props.hideToolbar && (
                 <Toolbar>
-                    <RangeSelector align="right" />
+                    <GraphRangeSelector align="right" />
                     {props.onRefresh && <Icon size={14} icon="REFRESH" onClick={props.onRefresh} />}
                 </Toolbar>
             )}
             <Description>
-                {isLoading && <SkeletonTransactionsGraph animate />}
+                {isLoading && <GraphSkeleton animate />}
 
                 {!isLoading && data && (
-                    <CustomResponsiveContainer height="100%" width="100%">
+                    <GraphResponsiveContainer height="100%" width="100%">
                         <ComposedChart
                             data={extendedDataForInterval}
                             barGap={0}
@@ -115,7 +149,7 @@ const TransactionsGraph = memo((props: Props) => {
                                 // width={10}
                                 stroke={theme.STROKE_LIGHT_GREY}
                                 interval="preserveEnd"
-                                tick={<CustomXAxisTick selectedRange={selectedRange} />}
+                                tick={<GraphXAxisTick selectedRange={selectedRange} />}
                                 ticks={xTicks}
                                 tickLine={false}
                                 onMouseEnter={() => setHovered(-1)}
@@ -130,12 +164,12 @@ const TransactionsGraph = memo((props: Props) => {
                                 stroke="transparent"
                                 tick={
                                     props.variant === 'one-asset' ? (
-                                        <CustomYAxisTick
+                                        <GraphYAxisTick
                                             symbol={props.account.symbol}
                                             setWidth={setWidth}
                                         />
                                     ) : (
-                                        <CustomYAxisTick
+                                        <GraphYAxisTick
                                             localCurrency={props.localCurrency}
                                             setWidth={setWidth}
                                         />
@@ -149,7 +183,7 @@ const TransactionsGraph = memo((props: Props) => {
                                 cursor={{ stroke: theme.BG_TOOLTIP, strokeWidth: 1 }}
                                 content={
                                     props.variant === 'one-asset' ? (
-                                        <CustomTooltipAccount
+                                        <GraphTooltipAccount
                                             selectedRange={selectedRange}
                                             symbol={props.account.symbol}
                                             localCurrency={props.localCurrency}
@@ -160,7 +194,7 @@ const TransactionsGraph = memo((props: Props) => {
                                             onShow={(index: number) => setHovered(index)}
                                         />
                                     ) : (
-                                        <CustomTooltipDashboard
+                                        <GraphTooltipDashboard
                                             selectedRange={selectedRange}
                                             localCurrency={props.localCurrency}
                                             sentValueFn={props.sentValueFn}
@@ -228,7 +262,7 @@ const TransactionsGraph = memo((props: Props) => {
                                 dataKey={(data: any) => Number(props.receivedValueFn(data) ?? 0)}
                                 // stackId="stack"
                                 barSize={selectedRange.label === 'all' ? 8 : 16}
-                                shape={<CustomBar variant="received" />}
+                                shape={<GraphBar variant="received" />}
                             >
                                 {extendedDataForInterval.map((entry, index) => (
                                     <Cell
@@ -244,7 +278,7 @@ const TransactionsGraph = memo((props: Props) => {
                                 dataKey={(data: any) => Number(props.sentValueFn(data) ?? 0)}
                                 // stackId="stack"
                                 barSize={selectedRange.label === 'all' ? 8 : 16}
-                                shape={<CustomBar variant="sent" />}
+                                shape={<GraphBar variant="sent" />}
                             >
                                 {extendedDataForInterval.map((entry, index) => (
                                     <Cell
@@ -255,12 +289,9 @@ const TransactionsGraph = memo((props: Props) => {
                                 ))}
                             </Bar>
                         </ComposedChart>
-                    </CustomResponsiveContainer>
+                    </GraphResponsiveContainer>
                 )}
             </Description>
         </Wrapper>
     );
 });
-
-export default TransactionsGraph;
-export { SkeletonTransactionsGraph };

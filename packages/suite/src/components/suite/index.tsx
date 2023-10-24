@@ -13,7 +13,6 @@ import { FiatValue } from './FiatValue';
 import { WebUsbButton } from './WebUsbButton';
 import { HiddenPlaceholder } from './HiddenPlaceholder';
 import { QuestionTooltip } from './QuestionTooltip';
-import TransactionsGraph from './TransactionsGraph';
 import { DeviceInvalidModeLayout } from './DeviceInvalidModeLayout';
 import { AppNavigationPanel } from './AppNavigationPanel';
 import { AppNavigation } from './AppNavigation/AppNavigation';
@@ -74,7 +73,6 @@ export {
     WalletLabeling,
     MetadataLabeling,
     QuestionTooltip,
-    TransactionsGraph,
     AppNavigationPanel,
     AppNavigation,
     FormattedCryptoAmount,

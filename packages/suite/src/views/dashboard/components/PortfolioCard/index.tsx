@@ -1,11 +1,16 @@
 import { memo, useMemo } from 'react';
 import styled from 'styled-components';
 import { Dropdown } from '@trezor/components';
-import { Card, QuestionTooltip, Translation } from 'src/components/suite';
+import {
+    Card,
+    GraphScaleDropdownItem,
+    GraphSkeleton,
+    QuestionTooltip,
+    Translation,
+} from 'src/components/suite';
 import { DashboardSection } from 'src/components/dashboard';
 import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import { useFastAccounts, useFiatValue } from 'src/hooks/wallet';
-import { SkeletonTransactionsGraph } from 'src/components/suite/TransactionsGraph';
 import { goto } from 'src/actions/suite/routerActions';
 import { setFlag } from 'src/actions/suite/suiteActions';
 import * as accountUtils from '@suite-common/wallet-utils';
@@ -14,7 +19,6 @@ import { Header } from './components/Header';
 import { Exception } from './components/Exception';
 import { EmptyWallet } from './components/EmptyWallet';
 import { DashboardGraph } from './components/DashboardGraph';
-import { GraphScaleDropdownItem } from 'src/components/suite/TransactionsGraph/components/GraphScaleDropdownItem';
 
 const StyledCard = styled(Card)`
     flex-direction: column;
@@ -65,7 +69,7 @@ const PortfolioCard = memo(() => {
         body = dashboardGraphHidden ? null : (
             <SkeletonTransactionsGraphWrapper>
                 <Wrapper>
-                    <SkeletonTransactionsGraph data-test="@dashboard/loading" />
+                    <GraphSkeleton data-test="@dashboard/loading" />
                 </Wrapper>
             </SkeletonTransactionsGraphWrapper>
         );

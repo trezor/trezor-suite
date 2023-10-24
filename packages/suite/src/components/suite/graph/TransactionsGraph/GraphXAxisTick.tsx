@@ -5,11 +5,6 @@ import { differenceInMonths } from 'date-fns';
 import { useTheme } from '@trezor/components';
 import { GraphRange } from 'src/types/wallet/graph';
 
-interface CustomXAxisProps {
-    selectedRange: GraphRange;
-    [k: string]: any;
-}
-
 const getFormattedDate = (range: GraphRange, date: Date) => {
     switch (range.label) {
         case 'all':
@@ -30,9 +25,12 @@ const getFormattedDate = (range: GraphRange, date: Date) => {
     }
 };
 
-export const CustomXAxisTick = (props: CustomXAxisProps) => {
-    const { x, y, payload } = props;
+interface GraphXAxisProps {
+    selectedRange: GraphRange;
+    [k: string]: any;
+}
 
+export const GraphXAxisTick = ({ x, y, payload, selectedRange }: GraphXAxisProps) => {
     const theme = useTheme();
 
     const date = new Date(0);
@@ -48,7 +46,7 @@ export const CustomXAxisTick = (props: CustomXAxisProps) => {
                 fill={theme.TYPE_LIGHT_GREY}
                 style={{ fontVariantNumeric: 'tabular-nums' }}
             >
-                {date && getFormattedDate(props.selectedRange, date)}
+                {date && getFormattedDate(selectedRange, date)}
             </text>
         </g>
     );
