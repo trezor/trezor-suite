@@ -1,7 +1,7 @@
 import { useArgs } from '@storybook/client-api';
 import styled from 'styled-components';
 
-import { RadioButton as RadioButtonComponent, RadioProps } from './RadioButton';
+import { Radio as RadioComponent, RadioProps } from './Radio';
 import { H2 } from '../../typography/Heading/Heading';
 import { StoryObj } from '@storybook/react';
 
@@ -15,7 +15,7 @@ const Wrapper = styled.div`
 
 export default {
     title: 'Form/RadioButton',
-    component: RadioButtonComponent,
+    component: RadioComponent,
 };
 
 export const RadioButton: StoryObj<RadioProps> = {
@@ -25,9 +25,9 @@ export const RadioButton: StoryObj<RadioProps> = {
         const handleIsChecked = () => updateArgs({ isChecked: !isChecked });
 
         return (
-            <RadioButtonComponent {...args} onClick={handleIsChecked} isChecked={isChecked}>
+            <RadioComponent {...args} onClick={handleIsChecked} isChecked={isChecked}>
                 {args.children}
-            </RadioButtonComponent>
+            </RadioComponent>
         );
     },
     args: { children: 'RadioButton' },
@@ -42,7 +42,7 @@ export const RadioButtonGroup: StoryObj = {
 
         return (
             <Wrapper>
-                <RadioButtonComponent
+                <RadioComponent
                     onClick={() => setOption('option1')}
                     isChecked={option === 'option1'}
                 >
@@ -50,19 +50,19 @@ export const RadioButtonGroup: StoryObj = {
                         <H2>Some heading</H2>
                         First option (example of custom content)
                     </div>
-                </RadioButtonComponent>
-                <RadioButtonComponent
+                </RadioComponent>
+                <RadioComponent
                     onClick={() => setOption('option2')}
                     isChecked={option === 'option2'}
                 >
                     Second option
-                </RadioButtonComponent>
-                <RadioButtonComponent
+                </RadioComponent>
+                <RadioComponent
                     onClick={() => setOption('option3')}
                     isChecked={option === 'option3'}
                 >
                     Third option
-                </RadioButtonComponent>
+                </RadioComponent>
             </Wrapper>
         );
     },
