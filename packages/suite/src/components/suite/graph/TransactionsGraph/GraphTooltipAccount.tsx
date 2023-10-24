@@ -5,9 +5,9 @@ import { NetworkSymbol } from 'src/types/wallet';
 
 import { Formatters, useFormatters } from '@suite-common/formatters';
 
-import { Props as GraphProps, CryptoGraphProps } from '../definitions';
-import { CustomTooltipBase } from './CustomTooltipBase';
-import { CommonAggregatedHistory } from 'src/types/wallet/graph';
+import type { CryptoGraphProps } from './TransactionsGraph';
+import { GraphTooltipBase } from './GraphTooltipBase';
+import { CommonAggregatedHistory, GraphRange } from 'src/types/wallet/graph';
 import { SignOperator } from '@suite-common/suite-types';
 
 const StyledCryptoAmount = styled(FormattedCryptoAmount)`
@@ -45,8 +45,8 @@ const formatAmount = (
     );
 };
 
-interface CustomTooltipAccountProps extends TooltipProps<number, any> {
-    selectedRange: GraphProps['selectedRange'];
+interface GraphTooltipAccountProps extends TooltipProps<number, any> {
+    selectedRange: GraphRange;
     localCurrency: string;
     symbol: NetworkSymbol;
     sentValueFn: CryptoGraphProps['sentValueFn'];
@@ -56,7 +56,7 @@ interface CustomTooltipAccountProps extends TooltipProps<number, any> {
     extendedDataForInterval?: CommonAggregatedHistory[];
 }
 
-export const CustomTooltipAccount = ({
+export const GraphTooltipAccount = ({
     active,
     balanceValueFn,
     receivedValueFn,
@@ -65,7 +65,7 @@ export const CustomTooltipAccount = ({
     localCurrency,
     symbol,
     ...props
-}: CustomTooltipAccountProps) => {
+}: GraphTooltipAccountProps) => {
     const formatters = useFormatters();
     if (!active || !payload) {
         return null;
@@ -80,7 +80,7 @@ export const CustomTooltipAccount = ({
     const sentFiat: string | undefined = payload[0].payload.sentFiat[localCurrency] ?? undefined;
 
     return (
-        <CustomTooltipBase
+        <GraphTooltipBase
             {...props}
             active={active}
             payload={payload}

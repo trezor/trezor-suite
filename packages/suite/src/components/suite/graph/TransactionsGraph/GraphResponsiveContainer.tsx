@@ -1,7 +1,7 @@
 import { ResponsiveContainer, ResponsiveContainerProps } from 'recharts';
 
 // https://github.com/recharts/recharts/issues/1767#issuecomment-598607012
-export const CustomResponsiveContainer = (props: ResponsiveContainerProps) => (
+export const GraphResponsiveContainer = (props: ResponsiveContainerProps) => (
     <div style={{ width: '100%', height: '100%', position: 'relative' }}>
         <div
             style={{

@@ -9,18 +9,18 @@ interface CommonProps {
     [k: string]: any;
 }
 
-type CustomYAxisTickProps =
+type GraphYAxisTickProps =
     | ({ localCurrency: string; symbol?: never } & CommonProps)
     | ({ symbol: NetworkSymbol; localCurrency?: never } & CommonProps);
 
-export const CustomYAxisTick = ({
+export const GraphYAxisTick = ({
     x,
     y,
     payload,
     setWidth,
     localCurrency,
     symbol,
-}: CustomYAxisTickProps) => {
+}: GraphYAxisTickProps) => {
     const { FiatAmountFormatter } = useFormatters();
 
     const theme = useTheme();

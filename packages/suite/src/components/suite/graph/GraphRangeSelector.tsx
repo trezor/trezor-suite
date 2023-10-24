@@ -100,13 +100,17 @@ const getFormattedLabel = (rangeLabel: GraphRange['label']) => {
     }
 };
 
-interface RangeSelectorProps {
+interface GraphRangeSelectorProps {
     onSelectedRange?: (range: GraphRange) => void;
     className?: string;
     align?: 'left' | 'right';
 }
 
-export const RangeSelector = ({ onSelectedRange, className, align }: RangeSelectorProps) => {
+export const GraphRangeSelector = ({
+    onSelectedRange,
+    className,
+    align,
+}: GraphRangeSelectorProps) => {
     const [customTimerangeStart, setCustomTimerangeStart] = useState<Date>();
     const [customTimerangeEnd, setCustomTimerangeEnd] = useState<Date>();
 

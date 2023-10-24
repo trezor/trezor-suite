@@ -21,7 +21,11 @@ const SkeletonBar = (props: ComponentProps<typeof SkeletonRectangle>) => (
     <SkeletonRectangle borderRadius="4px 4px 0px 0px" {...props} />
 );
 
-export const SkeletonTransactionsGraph = ({ animate, ...rest }: { animate?: boolean }) => {
+interface GraphSkeletonProps {
+    animate?: boolean;
+}
+
+export const GraphSkeleton = ({ animate, ...rest }: GraphSkeletonProps) => {
     const { shouldAnimate } = useLoadingSkeleton();
     const animationEnabled = animate ?? shouldAnimate;
     return (

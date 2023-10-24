@@ -1,13 +1,11 @@
 import { useEffect } from 'react';
-
 import styled from 'styled-components';
-import { Translation, FormattedDate } from 'src/components/suite';
 import { TooltipProps } from 'recharts';
 
 import { variables } from '@trezor/components';
 
-import { Props as GraphProps } from '../definitions';
-import { CommonAggregatedHistory } from 'src/types/wallet/graph';
+import { Translation, FormattedDate } from 'src/components/suite';
+import { CommonAggregatedHistory, GraphRange } from 'src/types/wallet/graph';
 
 // Used for triggering custom Tooltip alignment
 const OFFSET_LIMIT_HORIZONTAL = 125;
@@ -130,8 +128,8 @@ const formatDate = (date: Date, dateFormat: 'day' | 'month') => {
     return <FormattedDate value={date} date day={undefined} />;
 };
 
-interface CustomTooltipBaseProps extends TooltipProps<number, any> {
-    selectedRange: GraphProps['selectedRange'];
+interface GraphTooltipBaseProps extends TooltipProps<number, any> {
+    selectedRange: GraphRange;
     receivedAmount: JSX.Element;
     sentAmount: JSX.Element;
     balance?: JSX.Element;
@@ -139,7 +137,7 @@ interface CustomTooltipBaseProps extends TooltipProps<number, any> {
     extendedDataForInterval?: CommonAggregatedHistory[];
 }
 
-export const CustomTooltipBase = (props: CustomTooltipBaseProps) => {
+export const GraphTooltipBase = (props: GraphTooltipBaseProps) => {
     useEffect(() => {
         if (!props.onShow || !props.extendedDataForInterval) {
             return;

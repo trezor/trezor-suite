@@ -2,10 +2,14 @@ import styled from 'styled-components';
 import { getUnixTime } from 'date-fns';
 
 import { Account } from 'src/types/wallet';
-import { TransactionsGraph, Translation, HiddenPlaceholder } from 'src/components/suite';
+import {
+    GraphRangeSelector,
+    HiddenPlaceholder,
+    TransactionsGraph,
+    Translation,
+} from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { getGraphDataForInterval, updateGraphData } from 'src/actions/wallet/graphActions';
-import { RangeSelector } from 'src/components/suite/TransactionsGraph/components/RangeSelector';
 
 import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
 import { variables, Button, Card } from '@trezor/components';
@@ -107,7 +111,7 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
     return (
         <Wrapper>
             <Actions>
-                <RangeSelector onSelectedRange={onSelectedRange} align="left" />
+                <GraphRangeSelector onSelectedRange={onSelectedRange} align="left" />
                 <TransactionSummaryDropdown />
             </Actions>
             <ContentWrapper>
