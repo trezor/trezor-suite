@@ -25,10 +25,10 @@ describe('TrezorConnect.authenticateDevice', () => {
         timestamp: '2023-09-07T14:00:00+00:00',
         T2B1: {
             rootPubKeys: [
-                '04626d58aca84f0fcb52ea63f0eb08de1067b8d406574a715d5e7928f4b67f113a00fb5c5918e74d2327311946c446b242c20fe7347482999bdc1e229b94e27d96',
+                '047f77368dea2d4d61e989f474a56723c3212dacf8a808d8795595ef38441427c4389bc454f02089d7f08b873005e4c28d432468997871c0bf286fd3861e21e96a',
             ],
             caPubKeys: [
-                '049bf0760cd7555efc5b01e64ce94606cdeeb48a4f9196f454bc2a0141b331882d068b4b6e637913dd220654e28fde3c442141f953b3e36ad9a57519007119d9c9',
+                '04ba6084cb9fba7c86d5d5a86108a91d55a27056da4eabbedde88a95e1cae8bce3620889167aaf7f2db166998f950984aa195e868f96e22803c3cd991be31d39e7',
             ],
         },
     };
