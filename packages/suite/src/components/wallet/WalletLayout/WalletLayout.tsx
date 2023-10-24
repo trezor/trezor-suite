@@ -1,9 +1,11 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
+
+import { SkeletonRectangle } from 'src/components/suite';
 import { MAX_WIDTH_WALLET_CONTENT } from 'src/constants/suite/layout';
 import { AppState, ExtendedMessageDescriptor } from 'src/types/suite';
 import { useTranslation, useLayout } from 'src/hooks/suite';
-import { SkeletonRectangle } from 'src/components/suite/Skeleton';
+
 import { AccountBanners } from './AccountBanners/AccountBanners';
 import { AccountsMenu } from './AccountsMenu/AccountsMenu';
 import { AccountException } from './AccountException/AccountException';

@@ -1,7 +1,9 @@
 import styled from 'styled-components';
+
 import { variables } from '@trezor/components';
+
 import { useLoadingSkeleton } from 'src/hooks/suite';
-import { SkeletonRectangle, Spread } from 'src/components/suite/Skeleton';
+import { SkeletonRectangle, SkeletonSpread } from 'src/components/suite';
 import {
     Wrapper,
     Left,
@@ -76,10 +78,10 @@ export const CoinmarketSkeleton = () => {
             </SkeletonWrapper>
             <FooterSkeletonWrapper>
                 <StyledLeft>
-                    <Spread childMargin="0 8px 0 0" alignItems="center">
+                    <SkeletonSpread childMargin="0 8px 0 0" alignItems="center">
                         <SkeletonRectangle height="20px" width="68px" animate={shouldAnimate} />
                         <SkeletonRectangle height="20px" width="180px" animate={shouldAnimate} />
-                    </Spread>
+                    </SkeletonSpread>
                 </StyledLeft>
                 <StyledRight>
                     <SkeletonRectangle height="38px" width="200px" animate={shouldAnimate} />

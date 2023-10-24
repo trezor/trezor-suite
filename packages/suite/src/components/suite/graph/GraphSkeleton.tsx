@@ -1,8 +1,10 @@
 import { ComponentProps } from 'react';
 import styled from 'styled-components';
+
 import { variables } from '@trezor/components';
+
 import { useLoadingSkeleton } from 'src/hooks/suite';
-import { SkeletonRectangle, Stack, Spread } from 'src/components/suite/Skeleton';
+import { SkeletonRectangle, SkeletonSpread, SkeletonStack } from 'src/components/suite';
 
 const SkeletonWrapper = styled.div`
     display: flex;
@@ -30,51 +32,51 @@ export const GraphSkeleton = ({ animate, ...rest }: GraphSkeletonProps) => {
     const animationEnabled = animate ?? shouldAnimate;
     return (
         <SkeletonWrapper {...rest}>
-            <Spread grow alignItems="flex-end">
-                <Stack childMargin="0px 4px" alignItems="flex-end">
+            <SkeletonSpread grow alignItems="flex-end">
+                <SkeletonStack childMargin="0px 4px" alignItems="flex-end">
                     <SkeletonBar width="12px" height="30px" animate={false} />
                     <SkeletonBar width="12px" height="40px" animate={false} />
-                </Stack>
+                </SkeletonStack>
 
                 <SkeletonBar width="12px" height="80px" />
 
-                <Stack childMargin="0px 4px" alignItems="flex-end">
+                <SkeletonStack childMargin="0px 4px" alignItems="flex-end">
                     <SkeletonBar width="12px" height="20px" animate={false} />
                     <SkeletonBar width="12px" height="50px" animate={false} />
                     <SkeletonBar width="12px" height="70px" animate={false} />
                     <SkeletonBar width="12px" height="30px" animate={false} />
-                </Stack>
+                </SkeletonStack>
 
-                <Stack childMargin="0px 4px" alignItems="flex-end">
+                <SkeletonStack childMargin="0px 4px" alignItems="flex-end">
                     <SkeletonBar width="12px" height="120px" animate={false} />
                     <SkeletonBar width="12px" height="150px" animate={false} />
                     <SkeletonBar width="12px" height="200px" animate={false} />
                     <SkeletonBar width="12px" height="170px" animate={false} />
                     <SkeletonBar width="12px" height="80px" animate={false} />
-                </Stack>
+                </SkeletonStack>
 
-                <Stack childMargin="0px 4px" alignItems="flex-end">
+                <SkeletonStack childMargin="0px 4px" alignItems="flex-end">
                     <SkeletonBar width="12px" height="100px" animate={false} />
                     <SkeletonBar width="12px" height="180px" animate={false} />
                     <SkeletonBar width="12px" height="30px" animate={false} />
                     <SkeletonBar width="12px" height="10px" animate={false} />
-                </Stack>
+                </SkeletonStack>
                 <SkeletonBar width="12px" height="30px" />
-                <Stack childMargin="0px 4px" alignItems="flex-end">
+                <SkeletonStack childMargin="0px 4px" alignItems="flex-end">
                     <SkeletonBar width="12px" height="10px" animate={false} />
                     <SkeletonBar width="12px" height="30px" animate={false} />
                     <SkeletonBar width="12px" height="70px" animate={false} />
-                </Stack>
-            </Spread>
+                </SkeletonStack>
+            </SkeletonSpread>
             <SkeletonRectangle height="2px" width="100%" animate={animationEnabled} />
-            <Spread spaceAround margin="12px 0px 50px 0px" alignItems="flex-end">
+            <SkeletonSpread spaceAround margin="12px 0px 50px 0px" alignItems="flex-end">
                 <SkeletonRectangle height="10px" animate={false} />
                 <SkeletonRectangle height="10px" animate={false} />
                 <SkeletonRectangle height="10px" animate={false} />
                 <SkeletonRectangle height="10px" animate={false} />
                 <SkeletonRectangle height="10px" animate={false} />
                 <SkeletonRectangle height="10px" animate={false} />
-            </Spread>
+            </SkeletonSpread>
         </SkeletonWrapper>
     );
 };

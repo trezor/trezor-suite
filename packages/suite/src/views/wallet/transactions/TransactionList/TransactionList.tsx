@@ -10,8 +10,7 @@ import {
     getAccountNetwork,
 } from '@suite-common/wallet-utils';
 import { CoinjoinBatchItem } from 'src/components/wallet/TransactionItem/CoinjoinBatchItem';
-import { Stack } from 'src/components/suite/Skeleton';
-import { Translation } from 'src/components/suite';
+import { SkeletonStack, Translation } from 'src/components/suite';
 import { DashboardSection } from 'src/components/dashboard';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { SETTINGS } from 'src/config/suite';
@@ -190,11 +189,11 @@ export const TransactionList = ({
 
             {/* TODO: show this skeleton also while searching in txs */}
             {isLoading ? (
-                <Stack col childMargin="0px 0px 16px 0px">
+                <SkeletonStack col childMargin="0px 0px 16px 0px">
                     <SkeletonTransactionItem />
                     <SkeletonTransactionItem />
                     <SkeletonTransactionItem />
-                </Stack>
+                </SkeletonStack>
             ) : (
                 <>{areTransactionsAvailable ? <NoSearchResults /> : listItems}</>
             )}

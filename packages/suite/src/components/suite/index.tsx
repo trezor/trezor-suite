@@ -25,7 +25,6 @@ import { Sign } from './Sign';
 import { TrezorLink } from './TrezorLink';
 import { ReadMoreLink } from './ReadMoreLink';
 import { Modal, ModalProps } from './modals/Modal/Modal';
-import { SkeletonRectangle, SkeletonCircle } from './Skeleton';
 import { FormattedDate } from './FormattedDate';
 import { FormattedDateWithBullet } from './FormattedDateWithBullet';
 import { Metadata } from './Metadata';
@@ -82,8 +81,6 @@ export {
     ReadMoreLink,
     TrezorLink,
     Modal,
-    SkeletonRectangle,
-    SkeletonCircle,
     FormattedDate,
     FormattedDateWithBullet,
     Metadata,
@@ -112,4 +109,5 @@ export {
 export * from './graph';
 export * from './notifications';
 export * from './section';
+export * from './skeletons';
 export type { ModalProps, NumberInputProps };

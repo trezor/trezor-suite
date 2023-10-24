@@ -1,12 +1,20 @@
 import { forwardRef, Ref, MouseEventHandler } from 'react';
-import { CoinLogo, variables } from '@trezor/components';
 import styled from 'styled-components';
+
 import { isTestnet } from '@suite-common/wallet-utils';
-import { AccountLabel, CoinBalance, FiatValue } from 'src/components/suite';
-import { Stack, SkeletonRectangle } from 'src/components/suite/Skeleton';
+import { CoinLogo, variables } from '@trezor/components';
+
+import {
+    AccountLabel,
+    CoinBalance,
+    FiatValue,
+    SkeletonStack,
+    SkeletonRectangle,
+} from 'src/components/suite';
 import { useDispatch, useLoadingSkeleton } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
 import { goto } from 'src/actions/suite/routerActions';
+
 import { TokensCount } from './TokensCount';
 
 const activeClassName = 'selected';
@@ -189,7 +197,11 @@ export const AccountItem = forwardRef(
                             </>
                         )}
                         {!isBalanceShown && (
-                            <Stack col margin="6px 0px 0px 0px" childMargin="0px 0px 8px 0px">
+                            <SkeletonStack
+                                col
+                                margin="6px 0px 0px 0px"
+                                childMargin="0px 0px 8px 0px"
+                            >
                                 <SkeletonRectangle
                                     width="100px"
                                     height="16px"
@@ -203,7 +215,7 @@ export const AccountItem = forwardRef(
                                         animate={shouldAnimate}
                                     />
                                 )}
-                            </Stack>
+                            </SkeletonStack>
                         )}
                     </Right>
                 </AccountHeader>
