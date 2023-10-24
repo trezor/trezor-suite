@@ -13,6 +13,7 @@ interface Dependencies {
     renderWebUSBButton: TrezorConnect['renderWebUSBButton'];
     disableWebUSB: TrezorConnect['disableWebUSB'];
     requestWebUSBDevice: TrezorConnect['requestWebUSBDevice'];
+    requestWebBluetoothDevice: TrezorConnect['requestWebBluetoothDevice'];
     cancel: TrezorConnect['cancel'];
     dispose: TrezorConnect['dispose'];
 }
@@ -27,6 +28,7 @@ export const factory = ({
     renderWebUSBButton,
     disableWebUSB,
     requestWebUSBDevice,
+    requestWebBluetoothDevice,
     cancel,
     dispose,
 }: Dependencies): TrezorConnect => {
@@ -251,6 +253,8 @@ export const factory = ({
         disableWebUSB,
 
         requestWebUSBDevice,
+
+        requestWebBluetoothDevice,
     };
     return api;
 };

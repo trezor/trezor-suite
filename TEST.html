@@ -1,0 +1,56 @@
+<html>
+    <head>
+        <title>Bluetooth Test</title>
+    </head>
+    <body>
+        <button onclick="func()">Connect BT</button>
+        <script>
+            const NUS_SERVICE_UUID = '6e400001-b5a3-f393-e0a9-e50e24dcca9e';
+            const NUS_CHARACTERISTIC_RX = '6e400002-b5a3-f393-e0a9-e50e24dcca9e';
+            const NUS_CHARACTERISTIC_TX = '6e400003-b5a3-f393-e0a9-e50e24dcca9e';
+
+            const message = new ArrayBuffer(244 /* 64 */);
+            const view = new Uint8Array(message);
+            view.set([63, 35, 35, 0, 0 /* 55 */], 0);
+
+            const logBuffer = (name, buffer) => {
+                console.log(name, [...new Uint8Array(buffer)]);
+            };
+
+            async function func() {
+                await navigator.bluetooth.requestDevice({
+                    filters: [{ services: [NUS_SERVICE_UUID] }],
+                });
+
+                const [device] = await navigator.bluetooth.getDevices();
+                const server = await device.gatt?.connect();
+                const service = await server?.getPrimaryService(NUS_SERVICE_UUID);
+                const write = await service.getCharacteristic(NUS_CHARACTERISTIC_RX);
+                const notify = await service.getCharacteristic(NUS_CHARACTERISTIC_TX);
+
+                notify.startNotifications();
+                notify.addEventListener('characteristicvaluechanged', e => {
+                    logBuffer('RECEIVED', e.target.value.buffer);
+                });
+
+                await write.writeValue(message);
+                logBuffer('SENT', message);
+
+                await new Promise(resolve => setTimeout(resolve, 1000));
+
+                // const value = await notify.readValue();
+                // logBuffer('RECEIVED', value.buffer);
+                // await new Promise(resolve => setTimeout(resolve, 1000));
+
+                view.set([55], 4);
+                await write.writeValue(message);
+                logBuffer('SENT', message);
+
+                await new Promise(resolve => setTimeout(resolve, 1000));
+
+                // const value2 = await notify.readValue();
+                // logBuffer('RECEIVED', value2.buffer);
+            }
+        </script>
+    </body>
+</html>

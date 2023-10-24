@@ -1,3 +1,5 @@
+/// <reference types="@types/web-bluetooth" />
+
 import EventEmitter from 'events';
 
 // NOTE: @trezor/connect part is intentionally not imported from the index due to NormalReplacementPlugin
@@ -320,6 +322,20 @@ const requestWebUSBDevice = async () => {
     }
 };
 
+const requestWebBluetoothDevice = async () => {
+    try {
+        await window.navigator.bluetooth.requestDevice({
+            filters: [{ services: ['00000001-0000-1000-8000-00805f9b34fb'] }],
+        });
+        iframe.postMessage({
+            event: UI_EVENT,
+            type: TRANSPORT.REQUEST_DEVICE,
+        });
+    } catch (err) {
+        console.log('ERRRRROR', err.message);
+    }
+};
+
 const TrezorConnect = factory({
     eventEmitter,
     manifest,
@@ -330,6 +346,7 @@ const TrezorConnect = factory({
     renderWebUSBButton,
     disableWebUSB,
     requestWebUSBDevice,
+    requestWebBluetoothDevice,
     cancel,
     dispose,
 });

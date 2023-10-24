@@ -59,6 +59,7 @@ import { removeAllListeners } from './removeAllListeners';
 import { renderWebUSBButton } from './renderWebUSBButton';
 import { requestLogin } from './requestLogin';
 import { requestWebUSBDevice } from './requestWebUSBDevice';
+import { requestWebBluetoothDevice } from './requestWebBluetoothDevice';
 import { resetDevice } from './resetDevice';
 import { rippleGetAddress } from './rippleGetAddress';
 import { rippleSignTransaction } from './rippleSignTransaction';
@@ -171,6 +172,8 @@ export interface TrezorConnect {
     disableWebUSB: typeof disableWebUSB;
 
     requestWebUSBDevice: typeof requestWebUSBDevice;
+
+    requestWebBluetoothDevice: typeof requestWebBluetoothDevice;
 
     // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/dispose.md
     dispose: typeof dispose;

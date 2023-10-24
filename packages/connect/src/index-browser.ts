@@ -18,6 +18,7 @@ const TrezorConnect = factory({
     call: fallback,
     requestLogin: fallback,
     requestWebUSBDevice: fallback,
+    requestWebBluetoothDevice: fallback,
     uiResponse: fallback,
     renderWebUSBButton: fallback,
     disableWebUSB: fallback,

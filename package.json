@@ -105,6 +105,7 @@
         "@types/node": "18.17.15",
         "@types/prettier": "^2.7.3",
         "@types/semver": "^7.5.0",
+        "@types/web-bluetooth": "^0.0.17",
         "@typescript-eslint/eslint-plugin": "^5.60.0",
         "@typescript-eslint/parser": "^5.60.0",
         "babel-jest": "^26.6.3",

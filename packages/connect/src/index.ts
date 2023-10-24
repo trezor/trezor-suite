@@ -244,6 +244,10 @@ const requestWebUSBDevice = () => {
     throw ERRORS.TypedError('Method_InvalidPackage');
 };
 
+const requestWebBluetoothDevice = () => {
+    throw ERRORS.TypedError('Method_InvalidPackage');
+};
+
 const TrezorConnect = factory({
     eventEmitter,
     manifest,
@@ -254,6 +258,7 @@ const TrezorConnect = factory({
     renderWebUSBButton,
     disableWebUSB,
     requestWebUSBDevice,
+    requestWebBluetoothDevice,
     cancel,
     dispose,
 });

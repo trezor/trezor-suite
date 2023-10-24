@@ -41,7 +41,8 @@
         "test:e2e": "ts-node -O '{\"module\": \"commonjs\", \"esModuleInterop\": true}' ./e2e/run.ts",
         "example:bridge": "jest --verbose -c jest.config.e2e.js --testPathPattern bridge.integration",
         "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
-        "prepublish": "yarn tsx ../../scripts/prepublish.js"
+        "prepublish": "yarn tsx ../../scripts/prepublish.js",
+        "bluetooth": "sudo yarn tsx ./tests/bluetooth.ts"
     },
     "devDependencies": {
         "@trezor/trezor-user-env-link": "workspace:*",
@@ -56,6 +57,7 @@
         "typescript": "4.9.5"
     },
     "dependencies": {
+        "@abandonware/noble": "^1.9.2-23",
         "@trezor/protobuf": "workspace:*",
         "@trezor/protocol": "workspace:*",
         "@trezor/utils": "workspace:*",
