@@ -81,15 +81,11 @@ const discoverAccountsByDescriptorThunk = createThunk(
                 }
 
                 dispatch(
-                    accountsActions.createAccount(
+                    accountsActions.createIndexLabeledAccount({
+                        discoveryItem: bundleItem,
                         deviceState,
-                        bundleItem,
                         accountInfo,
-                        false,
-                        // TODO: name of newly created account will be handled in follow-up issue:
-                        // see more: https://github.com/trezor/trezor-suite/issues/9501
-                        bundleItem.descriptor,
-                    ),
+                    }),
                 );
             }
         }

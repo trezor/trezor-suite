@@ -36,16 +36,16 @@ describe('Account Reducer', () => {
     it('Create account', () => {
         const store = initStore();
         store.dispatch(
-            accountsActions.createAccount(
-                'device-state',
-                {
+            accountsActions.createAccount({
+                deviceState: 'device-state',
+                discoveryItem: {
                     index: 0,
                     path: "m/84'/0'/0'",
                     accountType: 'normal',
                     networkType: 'bitcoin',
                     coin: 'btc',
                 },
-                {
+                accountInfo: {
                     descriptor: 'XPUB',
                     path: "m/84'/0'/0'",
                     empty: false,
@@ -58,7 +58,7 @@ describe('Account Reducer', () => {
                         unconfirmed: 0,
                     },
                 },
-            ),
+            }),
         );
         expect(store.getState().wallet.accounts.length).toEqual(1);
     });

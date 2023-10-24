@@ -77,6 +77,23 @@ export const prepareAccountsReducer = createReducerWithExtraDeps(
                 };
                 state.push(account);
             })
+            .addCase(accountsActions.createIndexLabeledAccount, (state, action) => {
+                const { deviceState, symbol } = action.payload;
+                const deviceNetworkAccounts = state.filter(
+                    account => account.deviceState === deviceState && account.symbol === symbol,
+                );
+
+                const indexOfLastAccount = deviceNetworkAccounts.length;
+                const networkName = networks[symbol].name;
+                const accountLabel = `${networkName} #${indexOfLastAccount + 1}`;
+
+                const account = {
+                    ...action.payload,
+                    accountLabel,
+                    history: enhanceHistory(action.payload.history),
+                };
+                state.push(account);
+            })
             .addCase(accountsActions.updateAccount, (state, action) => {
                 update(state, action.payload);
             })

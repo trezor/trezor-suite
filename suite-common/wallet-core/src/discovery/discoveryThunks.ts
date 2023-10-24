@@ -118,7 +118,13 @@ const handleProgressThunk = createThunk(
                 },
             ]);
         } else {
-            dispatch(accountsActions.createAccount(deviceState, item, response));
+            dispatch(
+                accountsActions.createAccount({
+                    deviceState,
+                    discoveryItem: item,
+                    accountInfo: response,
+                }),
+            );
         }
         // calculate progress
         const progress = dispatch(

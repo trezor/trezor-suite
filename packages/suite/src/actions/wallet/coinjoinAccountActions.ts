@@ -592,9 +592,9 @@ export const createCoinjoinAccount =
 
         // create empty account
         const account = dispatch(
-            accountsActions.createAccount(
-                device!.state!,
-                {
+            accountsActions.createAccount({
+                deviceState: device!.state!,
+                discoveryItem: {
                     index: 0,
                     path,
                     unlockPath: unlockPath.payload,
@@ -605,12 +605,12 @@ export const createCoinjoinAccount =
                     derivationType: 0,
                     status: 'initial',
                 },
-                {
+                accountInfo: {
                     ...EMPTY_ACCOUNT_INFO,
                     descriptor: publicKey.payload.xpubSegwit || publicKey.payload.xpub,
                     legacyXpub: publicKey.payload.xpub,
                 },
-            ),
+            }),
         );
 
         log(`CoinjoinAccount created: ${getAccountProgressHandle(account.payload)}`);
