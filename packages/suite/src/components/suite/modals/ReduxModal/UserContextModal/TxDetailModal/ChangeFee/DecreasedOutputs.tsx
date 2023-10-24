@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Icon, variables, RadioButton, motionAnimation } from '@trezor/components';
+import { Icon, variables, Radio, motionAnimation } from '@trezor/components';
 import { FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';
 import { Translation, TranslationKey } from 'src/components/suite/Translation';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
@@ -59,7 +59,7 @@ const ArrowIcon = styled(Icon)`
     }
 `;
 
-const StyledRadioButton = styled(RadioButton)`
+const StyledRadio = styled(Radio)`
     margin-right: 8px;
 `;
 
@@ -100,8 +100,7 @@ export const DecreasedOutputs = () => {
     }
 
     // find all outputs possible to reduce
-    const useRadioButtons =
-        formValues.outputs.filter(o => typeof o.address === 'string').length > 1;
+    const useRadio = formValues.outputs.filter(o => typeof o.address === 'string').length > 1;
 
     let decreaseWarning: TranslationKey = 'TR_DECREASE_TX';
     if (account.accountType === 'coinjoin') {
@@ -127,8 +126,8 @@ export const DecreasedOutputs = () => {
                                 // it's safe to use array index as key since outputs do not change
                                 // eslint-disable-next-line react/no-array-index-key
                                 <Output key={i}>
-                                    {useRadioButtons && (
-                                        <StyledRadioButton
+                                    {useRadio && (
+                                        <StyledRadio
                                             onClick={() => {
                                                 setValue('setMaxOutputId', i);
                                                 composeRequest();
