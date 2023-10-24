@@ -39,7 +39,7 @@ import { CloseButton } from './CloseButton';
 import TooltipSymbol from './TooltipSymbol';
 import { StatusLight } from './StatusLight';
 import { AmountUnitSwitchWrapper } from './AmountUnitSwitchWrapper';
-import { TorLoader } from './TorLoader';
+import { TorLoader } from './TorLoader/TorLoader';
 import { CountdownTimer } from './CountdownTimer';
 import { NumberInput, NumberInputProps } from './NumberInput';
 import { QrCode } from './QrCode';

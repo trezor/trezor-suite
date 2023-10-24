@@ -1,18 +1,19 @@
 import { ReactNode } from 'react';
 import { FormattedMessage } from 'react-intl';
-// We cannot use aliases here because this file is directly imported by the @suite-common/intl-types
-// It's little hacky by this will be solved when PR for refactor intl will be merged.
-import messages from '../../../../../support/messages';
+
 import {
     ExtendedMessageDescriptor as CommonExtendedMessageDescriptor,
     FormatXMLElementFn,
 } from '@suite-common/intl-types';
 
+// We cannot use aliases here because this file is directly imported by the @suite-common/intl-types
+// It's little hacky by this will be solved when PR for refactor intl will be merged.
+import messages from '../../support/messages';
+
 export type TranslationKey = keyof typeof messages;
 
 type OwnProps = {
     isNested?: boolean;
-    isReactNative?: boolean; // used to render span on the web, plain node for react-native
 };
 
 export type ExtendedMessageDescriptor = CommonExtendedMessageDescriptor;
@@ -23,14 +24,14 @@ export const isMsgType = (
 ): props is MsgType =>
     typeof props === 'object' && props !== null && (props as MsgType).id !== undefined;
 
-const BaseTranslation = (props: MsgType) => {
+export const Translation = (props: MsgType) => {
     const values: Record<string, any> = {};
     // message passed via props (id, defaultMessage, values)
     Object.keys(props.values || []).forEach(key => {
         // Iterates through all values. The entry may also contain a MessageDescriptor.
         // If so, Renders MessageDescriptor by passing it to `Translation` component
         const maybeMsg = props.values![key];
-        values[key] = isMsgType(maybeMsg) ? <BaseTranslation {...maybeMsg} isNested /> : maybeMsg;
+        values[key] = isMsgType(maybeMsg) ? <Translation {...maybeMsg} isNested /> : maybeMsg;
     });
 
     // prevent runtime errors
@@ -42,7 +43,7 @@ const BaseTranslation = (props: MsgType) => {
         return <>{`Unknown translation id: ${props.id}`}</>;
     }
 
-    const defaultTagName = props.isReactNative || props.isNested ? undefined : 'span';
+    const defaultTagName = props.isNested ? undefined : 'span';
 
     return (
         <FormattedMessage
@@ -54,5 +55,3 @@ const BaseTranslation = (props: MsgType) => {
         />
     );
 };
-
-export default BaseTranslation;

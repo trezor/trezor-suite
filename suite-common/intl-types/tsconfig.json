@@ -9,6 +9,6 @@
     ],
     "include": [
         "suite-common/intl-types/**/*",
-        "packages/suite/src/components/suite/Translation/components/BaseTranslation/**/*"
+        "packages/suite/src/components/suite/Translation"
     ]
 }

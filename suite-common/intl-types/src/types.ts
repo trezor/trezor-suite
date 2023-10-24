@@ -6,7 +6,7 @@ import { MessageDescriptor } from 'react-intl';
 import { PrimitiveType } from '@trezor/type-utils';
 
 // Warning, very hacky import solution, do not use this anywhere else than in this file.
-import type { TranslationKey as SuiteTranslationKey } from '../../../packages/suite/src/components/suite/Translation/components/BaseTranslation';
+import type { TranslationKey as SuiteTranslationKey } from '../../../packages/suite/src/components/suite/Translation';
 
 // reexport for easier usage, without need to have hacky solutions
 export type TranslationKey = SuiteTranslationKey;

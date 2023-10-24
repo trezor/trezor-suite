@@ -33,7 +33,7 @@ import type { SUITE } from 'src/actions/suite/constants';
 import type { GuideAction } from 'src/actions/suite/guideActions';
 
 // reexport
-export type { ExtendedMessageDescriptor } from 'src/components/suite/Translation/components/BaseTranslation';
+export type { ExtendedMessageDescriptor } from 'src/components/suite/Translation';
 export type { AppState } from 'src/reducers/store';
 export type { SuiteThemeColors } from '@trezor/components';
 export type { PrerequisiteType } from 'src/utils/suite/prerequisites';
