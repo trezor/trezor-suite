@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import { useDevice, useDispatch } from 'src/hooks/suite';
-import { RadioButton, Button, H3, Paragraph, Warning } from '@trezor/components';
+import { Radio, Button, H3, Paragraph, Warning } from '@trezor/components';
 import { Translation, Modal, ModalProps } from 'src/components/suite';
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 
@@ -19,7 +19,7 @@ const OptionsWrapper = styled.div`
     }
 `;
 
-const RadioButtonInner = styled.div`
+const RadioInner = styled.div`
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -59,27 +59,27 @@ export const SafetyChecksModal = ({ onCancel }: ModalProps) => {
             }
         >
             <OptionsWrapper>
-                <RadioButton
+                <Radio
                     isChecked={level === 'Strict'}
                     onClick={() => setLevel('Strict')}
                     data-test="@radio-button-strict"
                 >
-                    <RadioButtonInner>
+                    <RadioInner>
                         <H3>
                             <Translation id="TR_SAFETY_CHECKS_STRICT_LEVEL" />
                         </H3>
                         <Paragraph type="hint">
                             <Translation id="TR_SAFETY_CHECKS_STRICT_LEVEL_DESC" />
                         </Paragraph>
-                    </RadioButtonInner>
-                </RadioButton>
-                <RadioButton
+                    </RadioInner>
+                </Radio>
+                <Radio
                     // For the purpose of this modal consider `PromptAlways` as identical to `PromptTemporarily`.
                     isChecked={level === 'PromptTemporarily' || level === 'PromptAlways'}
                     onClick={() => setLevel('PromptTemporarily')}
                     data-test="@radio-button-prompt"
                 >
-                    <RadioButtonInner>
+                    <RadioInner>
                         <H3>
                             <Translation id="TR_SAFETY_CHECKS_PROMPT_LEVEL" />
                         </H3>
@@ -89,8 +89,8 @@ export const SafetyChecksModal = ({ onCancel }: ModalProps) => {
                         <Paragraph type="hint">
                             <Translation id="TR_SAFETY_CHECKS_PROMPT_LEVEL_DESC" />
                         </Paragraph>
-                    </RadioButtonInner>
-                </RadioButton>
+                    </RadioInner>
+                </Radio>
             </OptionsWrapper>
         </Modal>
     );

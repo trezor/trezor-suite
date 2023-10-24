@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { Input, Textarea, Select, Checkbox, RadioButton, Switch, Button, Range } from '../../index';
+import { Input, Textarea, Select, Checkbox, Radio, Switch, Button, Range } from '../../index';
 import { StoryColumn } from '../../support/Story';
 
 const Heading = styled.h2``;
@@ -281,13 +281,13 @@ export const All = {
             <StoryColumn maxWidth={200}>
                 <Heading>Radio Buttons</Heading>
                 <SubHeading>Unchecked</SubHeading>
-                <RadioButton onClick={() => {}} data-test="radio-button">
+                <Radio onClick={() => {}} data-test="radio-button">
                     Label
-                </RadioButton>
+                </Radio>
                 <SubHeading>Checked</SubHeading>
-                <RadioButton onClick={() => {}} isChecked data-test="radio-button-checked">
+                <Radio onClick={() => {}} isChecked data-test="radio-button-checked">
                     Label
-                </RadioButton>
+                </Radio>
             </StoryColumn>
             <StoryColumn maxWidth={200}>
                 <Heading>Select</Heading>
