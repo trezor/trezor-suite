@@ -77,7 +77,7 @@ export const TextButton = ({
             textPressedColorValue.value,
             [0, 1],
             [utils.colors[pressedColor], utils.colors[color]],
-        );
+        ) as `rgba(${number}, ${number}, ${number}, ${number})`;
     };
 
     const handlePressIn = () => {
