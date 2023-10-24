@@ -30,10 +30,10 @@ import WalletCoinmarketSavingsSetupWaiting from 'src/views/wallet/coinmarket/sav
 import WalletCoinmarketSavingsPaymentInfo from 'src/views/wallet/coinmarket/savings/payment-info';
 import WalletCoinmarketSavingsOverview from 'src/views/wallet/coinmarket/savings/overview';
 import WalletCoinmarketRedirect from 'src/views/wallet/coinmarket/redirect';
-import { SettingsGeneral } from 'src/views/settings/general/SettingsGeneral';
-import { SettingsCoins } from 'src/views/settings/coins/SettingsCoins';
-import { SettingsDebug } from 'src/views/settings/debug/SettingsDebug';
-import { SettingsDevice } from 'src/views/settings/device/SettingsDevice';
+import { SettingsGeneral } from 'src/views/settings/SettingsGeneral/SettingsGeneral';
+import { SettingsCoins } from 'src/views/settings/SettingsCoins/SettingsCoins';
+import { SettingsDebug } from 'src/views/settings/SettingsDebug/SettingsDebug';
+import { SettingsDevice } from 'src/views/settings/SettingsDevice/SettingsDevice';
 
 const components: { [key: string]: ComponentType<any> } = {
     'suite-index': Index,

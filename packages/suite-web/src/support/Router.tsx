@@ -118,23 +118,23 @@ const components: { [key: string]: LazyExoticComponent<any> } = {
     // settings
     'settings-index': lazy(() =>
         import(
-            /* webpackChunkName: "settings" */ 'src/views/settings/general/SettingsGeneral'
+            /* webpackChunkName: "settings" */ 'src/views/settings/SettingsGeneral/SettingsGeneral'
         ).then(({ SettingsGeneral }) => ({ default: SettingsGeneral })),
     ),
     'settings-coins': lazy(() =>
-        import(/* webpackChunkName: "settings" */ 'src/views/settings/coins/SettingsCoins').then(
-            ({ SettingsCoins }) => ({ default: SettingsCoins }),
-        ),
+        import(
+            /* webpackChunkName: "settings" */ 'src/views/settings/SettingsCoins/SettingsCoins'
+        ).then(({ SettingsCoins }) => ({ default: SettingsCoins })),
     ),
     'settings-debug': lazy(() =>
-        import(/* webpackChunkName: "settings" */ 'src/views/settings/debug/SettingsDebug').then(
-            ({ SettingsDebug }) => ({ default: SettingsDebug }),
-        ),
+        import(
+            /* webpackChunkName: "settings" */ 'src/views/settings/SettingsDebug/SettingsDebug'
+        ).then(({ SettingsDebug }) => ({ default: SettingsDebug })),
     ),
     'settings-device': lazy(() =>
-        import(/* webpackChunkName: "settings" */ 'src/views/settings/device/SettingsDevice').then(
-            ({ SettingsDevice }) => ({ default: SettingsDevice }),
-        ),
+        import(
+            /* webpackChunkName: "settings" */ 'src/views/settings/SettingsDevice/SettingsDevice'
+        ).then(({ SettingsDevice }) => ({ default: SettingsDevice })),
     ),
 };
 
