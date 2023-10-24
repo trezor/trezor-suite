@@ -1,23 +1,25 @@
 import styled from 'styled-components';
 
-import { P, variables } from '@trezor/components';
-import { HELP_CENTER_XPUB_URL } from '@trezor/urls';
-import { WalletLayout } from 'src/components/wallet';
-import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
-import { Card, Translation } from 'src/components/suite';
 import {
     getAccountTypeName,
     getAccountTypeTech,
     getAccountTypeUrl,
     getAccountTypeDesc,
 } from '@suite-common/wallet-utils';
-import { ActionColumn, Row, TextColumn, ActionButton } from 'src/components/suite/Settings';
+import { P, variables } from '@trezor/components';
+import { HELP_CENTER_XPUB_URL } from '@trezor/urls';
+
+import { WalletLayout } from 'src/components/wallet';
+import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
+import { ActionButton, ActionColumn, Card, TextColumn, Translation } from 'src/components/suite';
+
 import { CARD_PADDING_SIZE } from 'src/constants/suite/layout';
 import { showXpub } from 'src/actions/wallet/publicKeyActions';
 import { NETWORKS } from 'src/config/wallet';
 import { CoinjoinLogs } from './CoinjoinLogs';
 import { CoinjoinSetup } from './CoinjoinSetup/CoinjoinSetup';
 import { RescanAccount } from './RescanAccount';
+import { Row } from './Row';
 
 const Heading = styled.h3`
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};

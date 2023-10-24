@@ -1,4 +1,3 @@
-import { SettingsMenu } from './SettingsMenu';
-import { SettingsLayout } from './SettingsLayout';
-
-export { SettingsMenu, SettingsLayout };
+export { DeviceBanner } from './DeviceBanner';
+export { SettingsLayout } from './SettingsLayout/SettingsLayout';
+export { SettingsSection } from './SettingsSection';
