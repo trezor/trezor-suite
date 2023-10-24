@@ -100,6 +100,7 @@ export interface RadioProps {
     isDisabled?: boolean;
     labelAlignment?: LabelAlignment;
     onClick: EventHandler<SyntheticEvent>;
+    'data-test'?: string;
     children?: ReactNode;
 }
 
@@ -109,6 +110,7 @@ export const RadioButton = ({
     labelAlignment,
     isDisabled,
     onClick,
+    'data-test': dataTest,
     children,
 }: RadioProps) => {
     const handleKeyUp = (event: KeyboardEvent<HTMLElement>) => {
@@ -124,6 +126,7 @@ export const RadioButton = ({
             isDisabled={isDisabled}
             labelAlignment={labelAlignment}
             data-checked={isChecked}
+            data-test={dataTest}
         >
             <HiddenInput
                 type="radio"
