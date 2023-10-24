@@ -22,10 +22,10 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { OpenGuideFromTooltip } from 'src/components/guide';
 
-import { WalletInstance } from '../WalletInstance';
-import ColHeader from './components/ColHeader';
-import AddWalletButton from './components/AddWalletButton';
-import DeviceHeaderButton from './components/DeviceHeaderButton';
+import { WalletInstance } from './WalletInstance';
+import { ColHeader } from './ColHeader';
+import { AddWalletButton } from './AddWalletButton';
+import { DeviceHeaderButton } from './DeviceHeaderButton';
 
 import type { TrezorDevice, AcquiredDevice, ForegroundAppProps } from 'src/types/suite';
 import type { getBackgroundRoute } from 'src/utils/suite/router';
@@ -144,7 +144,7 @@ interface DeviceItemProps {
     backgroundRoute: ReturnType<typeof getBackgroundRoute>;
 }
 
-const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: DeviceItemProps) => {
+export const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: DeviceItemProps) => {
     const selectedDevice = useSelector(selectDevice);
     const dispatch = useDispatch();
 
@@ -343,5 +343,3 @@ const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: DeviceItem
         </DeviceWrapper>
     );
 };
-
-export default DeviceItem;

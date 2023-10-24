@@ -5,7 +5,7 @@ import { Icon, variables, useTheme, SuiteThemeColors } from '@trezor/components'
 
 import { TrezorDevice } from 'src/types/suite';
 import { Translation } from 'src/components/suite/Translation';
-import StatusLight from 'src/components/suite/StatusLight';
+import { StatusLight } from 'src/components/suite';
 
 type Status = 'connected' | 'disconnected' | 'warning';
 

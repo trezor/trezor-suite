@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 import { Button, Tooltip } from '@trezor/components';
+
 import { Translation } from 'src/components/suite';
 import { TrezorDevice, AcquiredDevice } from 'src/types/suite';
 import { useSelector } from 'src/hooks/suite';
@@ -37,7 +38,7 @@ interface AddWalletButtonProps {
     selectDeviceInstance: (instance: TrezorDevice) => void;
 }
 
-const AddWalletButton = ({
+export const AddWalletButton = ({
     device,
     instances,
     addDeviceInstance,
@@ -93,5 +94,3 @@ const AddWalletButton = ({
         </AddWallet>
     );
 };
-
-export default AddWalletButton;

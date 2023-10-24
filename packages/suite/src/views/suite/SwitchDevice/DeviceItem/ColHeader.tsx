@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
+
 import { Tooltip, TooltipProps, variables } from '@trezor/components';
 
 const Wrapper = styled.div`
@@ -22,7 +23,12 @@ interface ColHeaderProps {
     tooltipOpenGuide?: TooltipProps['guideAnchor'];
 }
 
-const ColHeader = ({ children, tooltipContent, tooltipOpenGuide, ...rest }: ColHeaderProps) => (
+export const ColHeader = ({
+    children,
+    tooltipContent,
+    tooltipOpenGuide,
+    ...rest
+}: ColHeaderProps) => (
     <Wrapper {...rest}>
         {tooltipContent ? (
             <Tooltip maxWidth={285} content={tooltipContent} guideAnchor={tooltipOpenGuide} dashed>
@@ -33,5 +39,3 @@ const ColHeader = ({ children, tooltipContent, tooltipOpenGuide, ...rest }: ColH
         )}
     </Wrapper>
 );
-
-export default ColHeader;

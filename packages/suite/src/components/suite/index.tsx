@@ -37,7 +37,7 @@ import { CoinGroup } from './CoinGroup/CoinGroup';
 import { CoinList } from './CoinList/CoinList';
 import { CloseButton } from './CloseButton';
 import TooltipSymbol from './TooltipSymbol';
-import StatusLight from './StatusLight';
+import { StatusLight } from './StatusLight';
 import { AmountUnitSwitchWrapper } from './AmountUnitSwitchWrapper';
 import { TorLoader } from './TorLoader';
 import { CountdownTimer } from './CountdownTimer';
