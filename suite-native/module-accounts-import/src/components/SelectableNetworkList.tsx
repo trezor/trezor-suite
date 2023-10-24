@@ -5,8 +5,8 @@ import { Network, NetworkSymbol } from '@suite-common/wallet-config';
 import {
     mainnetsOrder,
     testnetsOrder,
-    supportedMainnets,
-    supportedTestnets,
+    importEnabledMainnets,
+    importEnabledTestnets,
 } from '@suite-native/config';
 
 import { SelectableNetworkItem } from './SelectableNetworkItem';
@@ -22,8 +22,8 @@ const sortNetworkItems = (networkItems: Network[], networkOrder: NetworkSymbol[]
         return aOrder - bOrder;
     }) as Network[];
 
-const sortedMainnetsNetworks = sortNetworkItems(supportedMainnets, mainnetsOrder);
-const sortedTestnetNetworks = sortNetworkItems(supportedTestnets, testnetsOrder);
+const sortedMainnetsNetworks = sortNetworkItems(importEnabledMainnets, mainnetsOrder);
+const sortedTestnetNetworks = sortNetworkItems(importEnabledTestnets, testnetsOrder);
 
 const NetworkItemSection = ({
     title,
