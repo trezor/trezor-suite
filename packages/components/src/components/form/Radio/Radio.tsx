@@ -104,7 +104,7 @@ export interface RadioProps {
     children?: ReactNode;
 }
 
-export const RadioButton = ({
+export const Radio = ({
     variant = 'primary',
     isChecked,
     labelAlignment,

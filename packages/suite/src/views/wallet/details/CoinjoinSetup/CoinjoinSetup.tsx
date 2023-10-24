@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
-import { Card, RadioButton, motionAnimation, motionEasing, Warning } from '@trezor/components';
+import { Card, Radio, motionAnimation, motionEasing, Warning } from '@trezor/components';
 import { coinjoinAccountUpdateSetupOption } from 'src/actions/wallet/coinjoinAccountActions';
 import { AnonymityLevelSetup } from './AnonymityLevelSetup';
 import { MaxMiningFeeSetup } from './MaxMiningFeeSetup';
@@ -66,20 +66,20 @@ export const CoinjoinSetup = ({ accountKey }: CoinjoinSetupProps) => {
             )}
             <SetupContainer>
                 <SetupOptions>
-                    <RadioButton
+                    <Radio
                         isChecked={!coinjoinAccount.setup}
                         onClick={setRecommendedSetup}
                         isDisabled={hasSession}
                     >
                         <Translation id="TR_RECOMMENDED" />
-                    </RadioButton>
-                    <RadioButton
+                    </Radio>
+                    <Radio
                         isChecked={!!coinjoinAccount.setup}
                         onClick={setCustomSetup}
                         isDisabled={hasSession}
                     >
                         <Translation id="TR_CUSTOM" />
-                    </RadioButton>
+                    </Radio>
                 </SetupOptions>
                 <AnimatePresence initial={!coinjoinAccount.setup}>
                     {coinjoinAccount.setup && (
