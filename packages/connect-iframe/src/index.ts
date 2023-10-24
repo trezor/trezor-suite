@@ -62,7 +62,9 @@ const handleMessage = (event: PostMessageEvent) => {
     };
 
     if (data.type === IFRAME.LOG && data.payload.prefix === '@trezor/connect-web') {
-        logWriterProxy.add(data.payload);
+        if (logWriterProxy) {
+            logWriterProxy.add(data.payload);
+        }
         return;
     }
 
