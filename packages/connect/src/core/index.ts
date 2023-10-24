@@ -1025,7 +1025,10 @@ export class Core extends EventEmitter {
  * @returns {Promise<Core>}
  * @memberof Core
  */
-export const initCore = async (settings: ConnectSettings, logWriterFactory?: () => LogWriter) => {
+export const initCore = async (
+    settings: ConnectSettings,
+    logWriterFactory?: () => LogWriter | undefined,
+) => {
     if (logWriterFactory) {
         setLogWriter(logWriterFactory);
     }
