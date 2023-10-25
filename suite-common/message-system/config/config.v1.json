@@ -343,7 +343,7 @@
                 }
             ],
             "message": {
-                "id": "a99d0ad4-3bab-4660-9352-fh1d6518153f",
+                "id": "a99d0ad4-3bab-4660-9352-fh1d6518154a",
                 "priority": 91,
                 "dismissible": true,
                 "variant": "warning",
@@ -359,17 +359,18 @@
                     "it": "Aggiornate Trezor Suite per ottenere una maggiore sicurezza, tutte le funzioni più recenti e per far funzionare tutto nel modo più fluido possibile."
                 },
                 "cta": {
-                    "action": "external-link",
-                    "link": "https://trezor.io/trezor-suite",
+                    "action": "internal-link",
+                    "link": "settings-index",
+                    "anchor": "@general-settings/version-with-update",
                     "label": {
-                        "en-GB": "Go to trezor.io/trezor-suite",
-                        "en": "Go to trezor.io/trezor-suite",
-                        "es": "Ir a trezor.io/trezor-suite",
-                        "cs": "Přejít na trezor.io/trezor-suite",
-                        "ru": "Перейти на trezor.io/trezor-suite",
-                        "ja": "trezor.io/trezor-suite に移動",
-                        "hu": "Tovább a trezor.io/trezor-suite oldalra",
-                        "it": "Vai a trezor.io/trezor-suite"
+                        "en-GB": "Update Suite",
+                        "en": "Update Suite",
+                        "es": "Actualizar Suite",
+                        "cs": "Aktualizovat Suite",
+                        "ru": "Обновить Suite",
+                        "ja": "Suiteのアップデート",
+                        "hu": "Frissítés Suite",
+                        "it": "Suite di aggiornamento"
                     }
                 }
             }
