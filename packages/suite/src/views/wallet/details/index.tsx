@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { Card, P, variables } from '@trezor/components';
+import { Card, Paragraph, variables } from '@trezor/components';
 import { HELP_CENTER_XPUB_URL } from '@trezor/urls';
 import { WalletLayout } from 'src/components/wallet';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
@@ -116,15 +116,15 @@ const Details = () => {
                         />
                         <AccountTypeLabel>
                             {accountTypeName && (
-                                <P type="hint">
+                                <Paragraph type="hint">
                                     <NoWrap>
                                         <Translation id={accountTypeName} />
                                     </NoWrap>
-                                </P>
+                                </Paragraph>
                             )}
-                            <P type="label">
+                            <Paragraph type="label">
                                 (<Translation id={accountTypeTech} />)
-                            </P>
+                            </Paragraph>
                         </AccountTypeLabel>
                     </Row>
                     {!isCoinjoinAccount ? (

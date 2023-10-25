@@ -1,10 +1,10 @@
 import styled from 'styled-components';
-import { P } from '@trezor/components';
+import { Paragraph } from '@trezor/components';
 import { Network } from 'src/types/wallet';
 import { Translation, TrezorLink } from 'src/components/suite';
 import { getAccountTypeDesc, getAccountTypeUrl } from '@suite-common/wallet-utils';
 
-const Info = styled(P).attrs(() => ({
+const Info = styled(Paragraph).attrs(() => ({
     size: 'small',
     textAlign: 'left',
 }))`

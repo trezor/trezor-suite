@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
-import { P, CollapsibleBox, motionAnimation } from '@trezor/components';
+import { Paragraph, CollapsibleBox, motionAnimation } from '@trezor/components';
 
 import { CoinsList, Translation, TooltipSymbol } from 'src/components/suite';
 import { Network } from 'src/types/wallet';
@@ -45,9 +45,9 @@ export const EnableNetwork = ({
                     variant="small"
                     heading={
                         <>
-                            <P type="label">
+                            <Paragraph type="label">
                                 <Translation id="TR_TESTNET_COINS" />
-                            </P>
+                            </Paragraph>
                             <TooltipSymbol
                                 content={<Translation id="TR_TESTNET_COINS_DESCRIPTION" />}
                             />

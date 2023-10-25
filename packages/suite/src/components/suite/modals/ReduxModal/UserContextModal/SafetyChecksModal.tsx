@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import { useDevice, useDispatch } from 'src/hooks/suite';
-import { RadioButton, Button, H3, P, Warning } from '@trezor/components';
+import { RadioButton, Button, H3, Paragraph, Warning } from '@trezor/components';
 import { Translation, Modal, ModalProps } from 'src/components/suite';
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 
@@ -67,9 +67,9 @@ export const SafetyChecksModal = ({ onCancel }: ModalProps) => {
                         <H3>
                             <Translation id="TR_SAFETY_CHECKS_STRICT_LEVEL" />
                         </H3>
-                        <P type="hint">
+                        <Paragraph type="hint">
                             <Translation id="TR_SAFETY_CHECKS_STRICT_LEVEL_DESC" />
-                        </P>
+                        </Paragraph>
                     </RadioButtonInner>
                 </RadioButton>
                 <RadioButton
@@ -85,9 +85,9 @@ export const SafetyChecksModal = ({ onCancel }: ModalProps) => {
                         <StyledWarning withIcon>
                             <Translation id="TR_SAFETY_CHECKS_PROMPT_LEVEL_WARNING" />
                         </StyledWarning>
-                        <P type="hint">
+                        <Paragraph type="hint">
                             <Translation id="TR_SAFETY_CHECKS_PROMPT_LEVEL_DESC" />
-                        </P>
+                        </Paragraph>
                     </RadioButtonInner>
                 </RadioButton>
             </OptionsWrapper>

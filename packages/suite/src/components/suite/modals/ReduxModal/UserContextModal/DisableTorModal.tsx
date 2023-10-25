@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 
-import { Button, H3, P, CoinLogo, variables } from '@trezor/components';
+import { Button, H3, Paragraph, CoinLogo, variables } from '@trezor/components';
 import { getTitleForNetwork } from '@suite-common/wallet-utils';
 import { UserContextPayload } from '@suite-common/suite-types';
 import { blockchainActions } from '@suite-common/wallet-core';
@@ -73,7 +73,7 @@ const Title = styled(H3)`
     margin-bottom: 12px;
 `;
 
-const Description = styled(P)`
+const Description = styled(Paragraph)`
     text-align: left;
     margin-bottom: 16px;
 `;

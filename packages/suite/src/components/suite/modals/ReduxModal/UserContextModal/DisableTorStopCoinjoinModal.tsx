@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { Button, P } from '@trezor/components';
+import { Button, Paragraph } from '@trezor/components';
 import { UserContextPayload } from '@suite-common/suite-types';
 
 import { Modal, Translation } from 'src/components/suite';
@@ -9,7 +9,7 @@ const SmallModal = styled(Modal)`
     width: 560px;
 `;
 
-const Description = styled(P)`
+const Description = styled(Paragraph)`
     text-align: left;
     margin-bottom: 16px;
 `;

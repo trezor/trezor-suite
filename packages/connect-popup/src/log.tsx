@@ -6,7 +6,7 @@ import { ErrorBoundary } from '@trezor/connect-ui/src/support/ErrorBoundary';
 import { GlobalStyle } from '@trezor/connect-ui/src/support/GlobalStyle';
 import { InfoPanel } from '@trezor/connect-ui/src/components/InfoPanel';
 import { View } from '@trezor/connect-ui/src/components/View';
-import { Button, P, THEME } from '@trezor/components';
+import { Button, Paragraph, THEME } from '@trezor/components';
 import { LogMessage } from '@trezor/connect/src/utils/debug';
 
 interface ReactWrapperProps {
@@ -30,7 +30,7 @@ const Layout = styled.div`
     }
 `;
 
-const StyledP = styled(P)`
+const StyledP = styled(Paragraph)`
     margin: 0 20%;
     color: #757575;
 `;

@@ -3,7 +3,7 @@ import { useIntl } from 'react-intl';
 import styled from 'styled-components';
 
 import { getCheckBackupUrl } from '@suite-common/suite-utils';
-import { Button, H2, P, Image } from '@trezor/components';
+import { Button, H2, Paragraph, Image } from '@trezor/components';
 import { pickByDeviceModel } from '@trezor/device-utils';
 import TrezorConnect, { DeviceModelInternal } from '@trezor/connect';
 
@@ -38,7 +38,7 @@ const StepsContainer = styled.div`
     margin: 40px 0;
 `;
 
-const StyledP = styled(P)`
+const StyledP = styled(Paragraph)`
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
