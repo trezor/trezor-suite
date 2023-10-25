@@ -51,28 +51,34 @@ interface LinkProps {
     variant?: 'default' | 'nostyle' | 'underline';
     icon?: IconProps['icon'];
     iconProps?: IconProps;
+    'data-test'?: string;
 }
 
-const Link = ({ icon, iconProps, type, ...props }: LinkProps) => {
+const Link = ({
+    href,
+    target,
+    icon,
+    iconProps,
+    type,
+    onClick,
+    'data-test': dataTest,
+    ...props
+}: LinkProps) => {
     const theme = useTheme();
 
     const iconSize = typographyStylesBase[type || 'body'].fontSize;
 
     return (
         <A
-            href={props.href}
-            target={props.target || '_blank'}
+            href={href}
+            target={target || '_blank'}
             rel="noreferrer noopener"
-            {...props} // make sure {...props} is passed before calling onCLick()
+            data-test={dataTest}
             onClick={(e: MouseEvent<any>) => {
-                // if the user passed custom onClick action, run it first
-                if (props.onClick) {
-                    props.onClick(e);
-                }
-                // Prevent events from bubbling to the parent element.
-                // E.g. we don't want the checkbox to be checked when user clicks on link in checkbox label
                 e.stopPropagation();
+                onClick?.(e);
             }}
+            {...props}
         >
             {props.children}
             {icon && (

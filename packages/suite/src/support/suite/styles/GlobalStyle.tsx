@@ -20,6 +20,7 @@ const GlobalStyle = createGlobalStyle<{ theme: SuiteThemeColors }>`
         font-size: ${variables.FONT_SIZE.NORMAL};
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
+        color: ${({ theme }) => theme.TYPE_DARK_GREY};
         height: 100%;
         overflow-y: hidden;
 
