@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import styled from 'styled-components';
-import { Button, Image, P } from '@trezor/components';
+import { Button, Image, Paragraph } from '@trezor/components';
 import { Translation, CheckItem, Modal } from 'src/components/suite';
 import { deviceAutenticityOptOut } from 'src/actions/suite/suiteActions';
 import { useDispatch } from 'src/hooks/suite';
 
-const Paragraph = styled(P)`
+const StyledParagraph = styled(Paragraph)`
     text-align: left;
     padding: 16px;
 `;
@@ -61,15 +61,15 @@ export const DeviceAuthenticityOptOutModal = ({ onCancel }: DeviceAuthenticityOp
         >
             <WarningImage image="UNI_ERROR" />
 
-            <Paragraph>
+            <StyledParagraph>
                 <Translation id="TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_DESCRIPTION_1" />
-            </Paragraph>
-            <Paragraph>
+            </StyledParagraph>
+            <StyledParagraph>
                 <Translation id="TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_DESCRIPTION_2" />
-            </Paragraph>
-            <Paragraph>
+            </StyledParagraph>
+            <StyledParagraph>
                 <Translation id="TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_DESCRIPTION_3" />
-            </Paragraph>
+            </StyledParagraph>
 
             <CheckboxWrapper>
                 <CheckItem

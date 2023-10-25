@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import styled from 'styled-components';
-import { P, Button, variables } from '@trezor/components';
+import { Paragraph, Button, variables } from '@trezor/components';
 
 import { Translation, Modal } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
@@ -33,7 +33,7 @@ const StyledButton = styled(Button)`
 `;
 
 // todo: typography shall be unified and these ad hoc styles removed..
-const StyledP = styled(P)`
+const StyledP = styled(Paragraph)`
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
     margin-bottom: 25px;
 `;

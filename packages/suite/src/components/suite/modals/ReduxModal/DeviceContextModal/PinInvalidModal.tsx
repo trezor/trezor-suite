@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { P } from '@trezor/components';
+import { Paragraph } from '@trezor/components';
 import { Translation } from 'src/components/suite/Translation';
 import { DeviceConfirmImage, Modal, ModalProps } from 'src/components/suite';
 import { TrezorDevice } from 'src/types/suite';
@@ -26,8 +26,8 @@ export const PinInvalidModal = ({ device, ...rest }: PinInvalidModalProps) => (
     >
         <DeviceConfirmImage device={device} />
         <Divider />
-        <P type="hint">
+        <Paragraph type="hint">
             <Translation id="TR_RETRYING_DOT_DOT" />
-        </P>
+        </Paragraph>
     </StyledModal>
 );

@@ -1,12 +1,12 @@
 import { StoryObj } from '@storybook/react';
-import { P, PProps } from '../../../index';
+import { Paragraph as P, ParagraphProps } from '../../../index';
 
 export default {
     title: 'Typography/Paragraph',
     component: P,
 };
 
-export const Paragraph: StoryObj<PProps> = {
+export const Paragraph: StoryObj<ParagraphProps> = {
     args: {
         children: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     },

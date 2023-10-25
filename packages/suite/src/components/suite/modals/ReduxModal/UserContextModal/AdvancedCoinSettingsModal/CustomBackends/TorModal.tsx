@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Button, P } from '@trezor/components';
+import { Button, Paragraph } from '@trezor/components';
 import { Modal, Translation } from 'src/components/suite';
 import { isDesktop } from '@trezor/env-utils';
 import { useSelector } from 'src/hooks/suite/useSelector';
@@ -9,7 +9,7 @@ const StyledModal = styled(Modal)`
     width: 550px;
 `;
 
-const Content = styled(P)`
+const Content = styled(Paragraph)`
     margin: 16px 0;
 `;
 

@@ -1,7 +1,7 @@
 import { useState, ReactNode, Dispatch, SetStateAction } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import styled, { useTheme } from 'styled-components';
-import { Icon, P } from '@trezor/components';
+import { Icon, Paragraph } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 
 const animationDuration = 0.24;
@@ -95,7 +95,7 @@ const StyledIcon = styled(Icon)`
 `;
 
 const Label = styled(({ isExpanded, children }: { isExpanded: boolean; children: ReactNode }) => (
-    <P type={isExpanded ? 'callout' : 'body'}>{children}</P>
+    <Paragraph type={isExpanded ? 'callout' : 'body'}>{children}</Paragraph>
 ))`
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
     transition: all ${animationDuration}s ease-in-out;

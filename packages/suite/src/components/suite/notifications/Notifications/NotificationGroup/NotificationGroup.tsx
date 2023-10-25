@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { variables, P } from '@trezor/components';
+import { variables, Paragraph } from '@trezor/components';
 import { AppState } from 'src/types/suite';
 import { Translation } from 'src/components/suite';
 import { getSeenAndUnseenNotifications } from 'src/utils/suite/notification';
@@ -28,7 +28,7 @@ const EmptyHeadline = styled.div`
     margin: 10px 0 6px 0;
 `;
 
-const EmptyDescriptionP = styled(P)`
+const EmptyDescriptionP = styled(Paragraph)`
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 interface NotificationGroupProps {

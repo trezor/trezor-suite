@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import { AnimatePresence, motion } from 'framer-motion';
-
-import { Button, H2, Icon, Image, P, motionEasing } from '@trezor/components';
+import { Button, H2, Icon, Image, Paragraph, motionEasing } from '@trezor/components';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { SUITE_URL } from '@trezor/urls';
 
@@ -133,9 +132,9 @@ export const DesktopSuiteBanner = () => {
                             <H2>
                                 <Translation id="TR_DESKTOP_APP_PROMO_HEADING" />
                             </H2>
-                            <P>
+                            <Paragraph>
                                 <Translation id="TR_DESKTOP_APP_PROMO_TEXT" />
-                            </P>
+                            </Paragraph>
                         </TextContainer>
 
                         <TrezorLink

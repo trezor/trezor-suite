@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { P, Button, Image } from '@trezor/components';
+import { Paragraph, Button, Image } from '@trezor/components';
 import { HELP_CENTER_FAILED_BACKUP_URL } from '@trezor/urls';
 import { selectDevice } from '@suite-common/wallet-core';
 
@@ -19,7 +19,7 @@ const StyledButton = styled(Button)`
     width: 224px;
 `;
 
-const StyledP = styled(P)`
+const StyledP = styled(Paragraph)`
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 

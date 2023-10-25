@@ -6,7 +6,7 @@ import {
     getAccountTypeUrl,
     getAccountTypeDesc,
 } from '@suite-common/wallet-utils';
-import { P, variables, Card } from '@trezor/components';
+import { Paragraph, variables, Card } from '@trezor/components';
 import { HELP_CENTER_XPUB_URL } from '@trezor/urls';
 
 import { WalletLayout } from 'src/components/wallet';
@@ -118,15 +118,15 @@ const Details = () => {
                         />
                         <AccountTypeLabel>
                             {accountTypeName && (
-                                <P type="hint">
+                                <Paragraph type="hint">
                                     <NoWrap>
                                         <Translation id={accountTypeName} />
                                     </NoWrap>
-                                </P>
+                                </Paragraph>
                             )}
-                            <P type="label">
+                            <Paragraph type="label">
                                 (<Translation id={accountTypeTech} />)
-                            </P>
+                            </Paragraph>
                         </AccountTypeLabel>
                     </Row>
                     {!isCoinjoinAccount ? (
