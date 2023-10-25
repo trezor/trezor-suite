@@ -5,27 +5,23 @@ import { transparentize } from 'polished';
 import { Icon } from '@trezor/components';
 import { borders, spacingsPx, typography } from '@trezor/theme';
 import { Translation } from 'src/components/suite';
-import TrezorLink from 'src/components/suite/TrezorLink';
 import { useGuideOpenNode } from 'src/hooks/guide';
 
-const OpenGuideLink = styled(TrezorLink)`
+const OpenGuideLink = styled.span`
     display: flex;
     align-items: baseline;
     justify-content: space-between;
     gap: ${spacingsPx.xxs};
     padding: ${spacingsPx.xxxs} ${spacingsPx.xs};
     border-radius: ${borders.radii.sm};
+    color: ${({ theme }) => theme.iconAlertYellow};
+    ${typography.hint};
+    overflow: visible;
     cursor: pointer;
 
     :hover {
         background: ${({ theme }) => transparentize(0.9, theme.backgroundAlertYellowBold)};
     }
-`;
-
-const StyledText = styled.span`
-    color: ${({ theme }) => theme.iconAlertYellow};
-    ${typography.hint}
-    overflow: hidden;
 `;
 
 type OpenGuideFromTooltipProps = {
@@ -46,12 +42,9 @@ export const OpenGuideFromTooltip = ({ id, instance, dataTest }: OpenGuideFromTo
                 instance.hide();
                 openNodeById(id);
             }}
-            variant="nostyle"
         >
             <Icon size={12} color={theme.iconAlertYellow} icon="LIGHTBULB" />
-            <StyledText>
-                <Translation id="TR_LEARN" />
-            </StyledText>
+            <Translation id="TR_LEARN" />
         </OpenGuideLink>
     );
 };
