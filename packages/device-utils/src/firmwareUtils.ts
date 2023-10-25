@@ -19,7 +19,10 @@ export const getFirmwareVersion = (device?: Device) => {
     return `${features.major_version}.${features.minor_version}.${features.patch_version}`;
 };
 
+// This can give a false negative in bootloader mode for T1B1 and T2T1.
 export const hasBitcoinOnlyFirmware = (device?: Device) =>
     device?.firmwareType === FirmwareType.BitcoinOnly;
 
-export const isBitcoinOnlyDevice = (device?: Device) => device?.features?.unit_btconly;
+// Bitcoin-only device with Universal firmware is treated as a regular device.
+export const isBitcoinOnlyDevice = (device?: Device) =>
+    !!device?.features?.unit_btconly && device?.firmwareType !== FirmwareType.Regular;

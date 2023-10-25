@@ -159,17 +159,16 @@ export const FirmwareInitial = ({
         currentFwVersion &&
         availableFwVersion === currentFwVersion
     );
-    const bitcoinOnlyDevice = isBitcoinOnlyDevice(device);
-    const isCurrentlyBitcoinOnly = hasBitcoinOnlyFirmware(device) || bitcoinOnlyDevice;
+    const isCurrentlyBitcoinOnly = hasBitcoinOnlyFirmware(device);
     const targetFirmwareType =
-        // switching to Regular
-        (isCurrentlyBitcoinOnly && shouldSwitchFirmwareType) ||
-        // updating Regular
-        (!isCurrentlyBitcoinOnly && !shouldSwitchFirmwareType) ||
-        // attempting to switch to Bitcoin-only from old firmware
-        (!isCurrentlyBitcoinOnly && shouldSwitchFirmwareType && !isBitcoinOnlyAvailable)
-            ? FirmwareType.Regular
-            : FirmwareType.BitcoinOnly;
+        // updating Bitcoin-only
+        (isCurrentlyBitcoinOnly && !shouldSwitchFirmwareType) ||
+        // switching to Bitcoin-only
+        (!isCurrentlyBitcoinOnly && shouldSwitchFirmwareType && isBitcoinOnlyAvailable) ||
+        // Bitcoin-only device
+        isBitcoinOnlyDevice(device)
+            ? FirmwareType.BitcoinOnly
+            : FirmwareType.Regular;
 
     const installFirmware = (type: FirmwareType) => {
         onInstall(type);
@@ -196,7 +195,10 @@ export const FirmwareInitial = ({
                 </Description>
             ),
             body: cachedDevice?.firmwareRelease ? (
-                <FirmwareOffer device={cachedDevice} />
+                <FirmwareOffer
+                    device={cachedDevice}
+                    targetFirmwareType={FirmwareType.BitcoinOnly}
+                />
             ) : undefined,
             innerActions: (
                 <ButtonRow>

@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import { getFwUpdateVersion, parseFirmwareChangelog } from '@suite-common/suite-utils';
 import { Icon, Tooltip, variables } from '@trezor/components';
-import { getFirmwareVersion, isBitcoinOnlyDevice } from '@trezor/device-utils';
+import { getFirmwareVersion } from '@trezor/device-utils';
 import { AcquiredDevice } from '@suite-common/suite-types';
 import { FirmwareType } from '@trezor/connect';
 
@@ -63,20 +63,12 @@ export const FirmwareOffer = ({
         ? null
         : parseFirmwareChangelog(device.firmwareRelease?.release);
 
-    const firmwareType =
-        device.firmwareType ||
-        (isBitcoinOnlyDevice(device) ? FirmwareType.BitcoinOnly : FirmwareType.Regular);
-
-    const currentFirmwareType = getSuiteFirmwareTypeString(firmwareType);
-
-    // firmware type is undefined in bootloader on non-btc-only devices, regular type will be installed by default
-    const futureFirmwareType = getSuiteFirmwareTypeString(
-        targetFirmwareType || targetType || FirmwareType.Regular,
-    );
+    const currentFirmwareType = getSuiteFirmwareTypeString(device.firmwareType);
+    const futureFirmwareType = getSuiteFirmwareTypeString(targetFirmwareType || targetType);
 
     const nextVersionElement = (
         <Version isNew data-test="@firmware/offer-version/new">
-            <Translation id={futureFirmwareType!} />
+            {futureFirmwareType ? translationString(futureFirmwareType) : ''}
             {nextVersion ? ` ${nextVersion}` : ''}
             {useDevkit ? ' DEVKIT' : ''}
         </Version>
