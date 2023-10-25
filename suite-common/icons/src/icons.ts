@@ -39,6 +39,8 @@ export const icons = {
     eyeSlash: require('../assets/icons/eyeSlash.svg'),
     eyeglasses: require('../assets/icons/eyeglasses.svg'),
     facebook: require('../assets/icons/facebook.svg'),
+    faceId: require('../assets/icons/faceId.svg'),
+    fingerprint: require('../assets/icons/fingerprint.svg'),
     flag: require('../assets/icons/flag.svg'),
     ghost: require('../assets/icons/ghost.svg'),
     github: require('../assets/icons/github.svg'),

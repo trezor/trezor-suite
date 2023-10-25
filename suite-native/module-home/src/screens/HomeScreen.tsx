@@ -10,6 +10,7 @@ import { PortfolioGraph } from '../components/PortfolioGraph';
 import { DashboardNavigationButtons } from '../components/DashboardNavigationButtons';
 import { EmptyHomeScreenPlaceholder } from '../components/EmptyHomeScreenPlaceholder';
 import { MAX_ASSETS_ON_DASHBOARD } from '../constants';
+import { BiometricsBottomSheet } from '../components/BiometricsBottomSheet';
 
 export const HomeScreen = () => {
     const isPortfolioEmpty = useSelector(selectIsPortfolioEmpty);
@@ -27,6 +28,7 @@ export const HomeScreen = () => {
                     {!isUsbDeviceConnectFeatureEnabled && <DashboardNavigationButtons />}
                 </VStack>
             )}
+            <BiometricsBottomSheet />
         </Screen>
     );
 };

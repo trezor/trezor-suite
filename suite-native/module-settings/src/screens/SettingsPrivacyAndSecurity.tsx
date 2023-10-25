@@ -6,14 +6,7 @@ import { Screen, ScreenSubHeader } from '@suite-native/navigation';
 import { selectIsAnalyticsEnabled } from '@suite-common/analytics';
 import { Box, Card, DiscreetCanvas, Text, useDiscreetMode } from '@suite-native/atoms';
 import { useNativeStyles } from '@trezor/styles';
-import {
-    authenticate,
-    getIsBiometricsFeatureAvailable,
-    useIsBiometricsEnabled,
-    useIsBiometricsOverlayVisible,
-    useIsUserAuthenticated,
-} from '@suite-native/biometrics';
-import { useAlert } from '@suite-native/alerts';
+import { useBiometricsSettings, useIsBiometricsEnabled } from '@suite-native/biometrics';
 import { useTranslate } from '@suite-native/intl';
 
 import { TouchableSwitchRow } from '../components/TouchableSwitchRow';
@@ -95,51 +88,8 @@ const AnalyticsSwitchRow = () => {
 };
 
 const BiometricsSwitchRow = () => {
-    const { showAlert } = useAlert();
-    const { setIsUserAuthenticated } = useIsUserAuthenticated();
-    const { isBiometricsOptionEnabled, setIsBiometricsOptionEnabled } = useIsBiometricsEnabled();
-    const { setIsBiometricsOverlayVisible } = useIsBiometricsOverlayVisible();
-
-    const toggleBiometricsOption = async () => {
-        const isBiometricsAvailable = await getIsBiometricsFeatureAvailable();
-
-        if (!isBiometricsAvailable) {
-            showAlert({
-                title: 'Biometrics',
-                description:
-                    'No security features on your device. Make sure you have biometrics setup on your phone and try again.',
-                primaryButtonTitle: 'Cancel',
-                onPressPrimaryButton: () => null,
-                icon: 'warningCircle',
-                pictogramVariant: 'yellow',
-            });
-            return;
-        }
-
-        const authResult = await authenticate();
-
-        if (!authResult?.success) {
-            return;
-        }
-
-        if (isBiometricsOptionEnabled) {
-            setIsBiometricsOptionEnabled(false);
-            setIsUserAuthenticated(false);
-            analytics.report({
-                type: EventType.SettingsBiometricsToggle,
-                payload: { enabled: false },
-            });
-        } else {
-            setIsUserAuthenticated(true);
-            setIsBiometricsOptionEnabled(true);
-            analytics.report({
-                type: EventType.SettingsBiometricsToggle,
-                payload: { enabled: true },
-            });
-        }
-
-        setIsBiometricsOverlayVisible(false);
-    };
+    const { isBiometricsOptionEnabled } = useIsBiometricsEnabled();
+    const { toggleBiometricsOption } = useBiometricsSettings();
 
     return (
         <TouchableSwitchRow

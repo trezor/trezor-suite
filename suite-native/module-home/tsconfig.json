@@ -12,6 +12,7 @@
         },
         { "path": "../assets" },
         { "path": "../atoms" },
+        { "path": "../biometrics" },
         { "path": "../feature-flags" },
         { "path": "../formatters" },
         { "path": "../graph" },

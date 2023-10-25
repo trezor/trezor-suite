@@ -12,7 +12,6 @@
         {
             "path": "../../suite-common/suite-constants"
         },
-        { "path": "../alerts" },
         { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../biometrics" },
