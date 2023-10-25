@@ -1,4 +1,4 @@
-import { H2, P } from '@trezor/components';
+import { H2, Paragraph } from '@trezor/components';
 import { Account } from 'src/types/wallet';
 import styled from 'styled-components';
 import { Translation } from 'src/components/suite';
@@ -20,9 +20,9 @@ export const Header = ({ account }: HeaderProps) => {
             <Content>
                 <H2>{title}</H2>
                 {/* temp disable description to get consistent looks across tabs */}
-                {/* <P type="label">
+                {/* <Paragraph type="label">
                     <Translation id="RECEIVE_DESC_BITCOIN" />
-                </P> */}
+                </Paragraph> */}
             </Content>
         );
     }
@@ -30,9 +30,9 @@ export const Header = ({ account }: HeaderProps) => {
         return (
             <Content>
                 <H2>{title}</H2>
-                <P type="label">
+                <Paragraph type="label">
                     <Translation id="RECEIVE_DESC_ETHEREUM" />
-                </P>
+                </Paragraph>
             </Content>
         );
     }

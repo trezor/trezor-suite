@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 import styled from 'styled-components';
 
-import { Button, P } from '@trezor/components';
+import { Button, Paragraph } from '@trezor/components';
 import { UserContextPayload } from '@suite-common/suite-types';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { RequestEnableTorResponse } from '@suite-common/suite-config';
@@ -15,7 +15,7 @@ const SmallModal = styled(Modal)`
     width: 560px;
 `;
 
-const Description = styled(P)`
+const Description = styled(Paragraph)`
     text-align: left;
     margin-bottom: 16px;
 `;
