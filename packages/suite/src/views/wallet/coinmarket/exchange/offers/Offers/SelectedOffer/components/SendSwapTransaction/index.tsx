@@ -5,7 +5,7 @@ import {
     Button,
     Icon,
     Input,
-    P,
+    Paragraph,
     SelectBar,
     Tooltip,
     Truncate,
@@ -352,9 +352,9 @@ const SendSwapTransactionComponent = () => {
                     <Translation id="TR_EXCHANGE_SWAP_DATA" />
                 </LabelText>
                 <BreakableValue>
-                    <P type="hint">
+                    <Paragraph type="hint">
                         <Truncate>{dexTx.data}</Truncate>
-                    </P>
+                    </Paragraph>
                 </BreakableValue>
             </Row>
             <ButtonWrapper>

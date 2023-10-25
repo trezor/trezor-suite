@@ -1,10 +1,10 @@
 import styled from 'styled-components';
-import { P } from '@trezor/components';
+import { Paragraph } from '@trezor/components';
 import { useSelector } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite/Translation';
 import type { Network } from 'src/types/wallet';
 
-const Wrapper = styled(P)`
+const Wrapper = styled(Paragraph)`
     display: flex;
     flex-direction: column;
     text-align: left;
