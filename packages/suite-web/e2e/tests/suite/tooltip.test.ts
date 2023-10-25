@@ -18,7 +18,7 @@ describe('Test tooltip links', () => {
             .children()
             .children()
             .trigger('mouseenter');
-        cy.hoverTestElement('@tooltip/guideAnchor').click();
+        cy.getTestElement('@tooltip/guideAnchor').click();
         cy.getTestElement('@guide/panel').should('exist');
     });
 });
