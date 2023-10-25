@@ -2,6 +2,7 @@ import {
     getBootloaderVersion,
     getFirmwareVersion,
     hasBitcoinOnlyFirmware,
+    isBitcoinOnlyDevice,
 } from '@trezor/device-utils';
 import { Await } from '@trezor/type-utils';
 import { isDesktop } from '@trezor/env-utils';
@@ -101,19 +102,24 @@ const firmwareInstallThunk = createThunk(
 
             // update to same variant as is currently installed or to the regular one if device does not have any fw (new/wiped device),
             // unless the user wants to switch firmware type
-            let toBitcoinOnlyFirmware = firmwareType === FirmwareType.BitcoinOnly;
-            if (!firmwareType) {
-                toBitcoinOnlyFirmware = !prevDevice ? false : hasBitcoinOnlyFirmware(prevDevice);
-            }
+            const getTargetFirmwareType = () => {
+                if (firmwareType) {
+                    return firmwareType;
+                }
+                return hasBitcoinOnlyFirmware(prevDevice) || isBitcoinOnlyDevice(prevDevice)
+                    ? FirmwareType.BitcoinOnly
+                    : FirmwareType.Regular;
+            };
+
+            const targetFirmwareType = getTargetFirmwareType();
+            const toBitcoinOnlyFirmware = targetFirmwareType === FirmwareType.BitcoinOnly;
 
             const targetFirmwareVersion = release.version.join('.');
 
             console.warn(
                 intermediaryVersion
                     ? `Cannot install latest firmware. Will install intermediary v${intermediaryVersion} instead.`
-                    : `Installing ${
-                          toBitcoinOnlyFirmware ? FirmwareType.BitcoinOnly : FirmwareType.Regular
-                      } firmware ${targetFirmwareVersion}.`,
+                    : `Installing ${targetFirmwareType} firmware ${targetFirmwareVersion}.`,
             );
 
             analyticsPayload = {

@@ -14,7 +14,6 @@ import {
 } from '@trezor/device-utils';
 import { HELP_FIRMWARE_TYPE } from '@trezor/urls';
 import { getSuiteFirmwareTypeString } from 'src/utils/firmware';
-import { FirmwareType } from '@trezor/connect';
 
 const Version = styled.div`
     span {
@@ -42,9 +41,7 @@ export const FirmwareTypeChange = ({ isDeviceLocked }: FirmwareTypeProps) => {
 
     const bitcoinOnlyDevice = isBitcoinOnlyDevice(device);
     const currentFwVersion = getFirmwareVersion(device);
-    const currentFwType = getSuiteFirmwareTypeString(
-        device.firmwareType || (bitcoinOnlyDevice ? FirmwareType.BitcoinOnly : undefined),
-    );
+    const currentFwType = getSuiteFirmwareTypeString(device.firmwareType);
     const actionButtonId = hasBitcoinOnlyFirmware(device)
         ? 'TR_SWITCH_TO_REGULAR'
         : 'TR_SWITCH_TO_BITCOIN_ONLY';
