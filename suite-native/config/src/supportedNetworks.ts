@@ -22,20 +22,20 @@ export const mainnetsOrder: NetworkSymbol[] = [
 
 export const testnetsOrder: NetworkSymbol[] = ['test', 'regtest', 'tsep', 'tgor', 'tada', 'txrp'];
 
+export const supportedNetworkSymbols = Object.keys(networks) as NetworkSymbol[];
+export const supportedMainnetSymbols = getMainnets().map(network => network.symbol);
+
 // Currently not supported in suite native. When it needs to be supported, just remove this filter.
 const filterOutRipple = (network: NetworkSymbol) => network !== 'xrp' && network !== 'txrp';
 
-const networkSymbols = Object.keys(networks) as NetworkSymbol[];
-
-export const supportedNetworkSymbols = networkSymbols
+// These networks are enabled for xpub/address import in portfolio tracker.
+export const importEnabledNetworkSymbols = supportedNetworkSymbols
     .filter(network => !deprecatedNetworks.includes(network))
     .filter(filterOutRipple);
 
-export const supportedMainnets = getMainnets().filter(network =>
-    supportedNetworkSymbols.includes(network.symbol),
+export const importEnabledMainnets = getMainnets().filter(network =>
+    importEnabledNetworkSymbols.includes(network.symbol),
 );
-export const supportedTestnets = getTestnets().filter(network =>
-    supportedNetworkSymbols.includes(network.symbol),
+export const importEnabledTestnets = getTestnets().filter(network =>
+    importEnabledNetworkSymbols.includes(network.symbol),
 );
-
-export const supportedMainnetSymbols = supportedMainnets.map(network => network.symbol);
