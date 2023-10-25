@@ -27,11 +27,11 @@ type OnboardingProps = {
 export const Onboarding = ({ prerequisite }: OnboardingProps) => {
     const { activeStepId } = useOnboarding();
 
-    const [StepComponent, LayoutComponent, prerequisitesGuidePadded] = useMemo(() => {
+    const [StepComponent, LayoutComponent] = useMemo(() => {
         switch (activeStepId) {
             case STEP.ID_WELCOME_STEP:
                 // Welcome Layout with Connect device prompt and Analytics toggle
-                return [WelcomeStep, WelcomeLayout, true];
+                return [WelcomeStep, WelcomeLayout];
             case STEP.ID_FIRMWARE_STEP:
                 // Firmware installation
                 return [FirmwareStep, OnboardingLayout];
@@ -78,10 +78,7 @@ export const Onboarding = ({ prerequisite }: OnboardingProps) => {
     return (
         <LayoutComponent>
             {allowedModal && <ReduxModal {...allowedModal} />}
-            <UnexpectedState
-                prerequisite={prerequisite}
-                prerequisitesGuidePadded={prerequisitesGuidePadded}
-            >
+            <UnexpectedState prerequisite={prerequisite}>
                 <StepComponent />
             </UnexpectedState>
         </LayoutComponent>

@@ -7,6 +7,6 @@ interface PrerequisiteScreenProps {
 
 export const PrerequisiteScreen = ({ prerequisite }: PrerequisiteScreenProps) => (
     <WelcomeLayout>
-        <PrerequisitesGuide prerequisite={prerequisite} padded allowSwitchDevice />
+        <PrerequisitesGuide prerequisite={prerequisite} allowSwitchDevice />
     </WelcomeLayout>
 );

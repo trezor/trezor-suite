@@ -14,24 +14,19 @@ import IsSameDevice from './components/IsSameDevice';
 
 const Wrapper = styled.div`
     display: flex;
-    align-items: center;
+    flex: 1;
     flex-direction: column;
 `;
 
 interface UnexpectedStateProps {
     children: JSX.Element;
     prerequisite?: PrerequisiteType;
-    prerequisitesGuidePadded?: boolean;
 }
 
 /**
  * This component handles unexpected device states across various steps in the onboarding.
  */
-const UnexpectedState = ({
-    children,
-    prerequisite,
-    prerequisitesGuidePadded,
-}: UnexpectedStateProps) => {
+const UnexpectedState = ({ children, prerequisite }: UnexpectedStateProps) => {
     const device = useSelector(selectDevice);
     const { prevDevice, activeStepId, showPinMatrix } = useOnboarding();
     const activeStep = steps.find(s => s.id === activeStepId);
@@ -61,11 +56,9 @@ const UnexpectedState = ({
 
         // otherwise handle common prerequisite which are determined and passed as prop from Preloader component
         if (prerequisite && activeStep?.prerequisites?.includes(prerequisite)) {
-            return (
-                <PrerequisitesGuide prerequisite={prerequisite} padded={prerequisitesGuidePadded} />
-            );
+            return <PrerequisitesGuide prerequisite={prerequisite} />;
         }
-    }, [activeStep, prerequisite, isNotSameDevice, prerequisitesGuidePadded]);
+    }, [activeStep, prerequisite, isNotSameDevice]);
 
     const getPinComponent = () => {
         // After the PIN is set it may happen that it takes too long for an user to finish the onboarding process.

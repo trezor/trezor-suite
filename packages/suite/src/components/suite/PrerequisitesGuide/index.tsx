@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
 
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { motion } from 'framer-motion';
 
 import { getStatus, deviceNeedsAttention } from '@suite-common/suite-utils';
-import { variables, motionEasing } from '@trezor/components';
+import { motionEasing } from '@trezor/components';
 import { selectDevicesCount, selectDevice } from '@suite-common/wallet-core';
 
 import { ConnectDevicePrompt } from 'src/components/suite';
@@ -27,23 +27,12 @@ import { DeviceDisconnectRequired } from './components/DeviceDisconnectRequired'
 
 const Wrapper = styled.div<{ padded?: boolean }>`
     display: flex;
+    flex: 1;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     max-width: 700px;
-
-    ${({ padded }) =>
-        padded &&
-        css`
-            margin-top: 20vh;
-
-            @media all and (max-height: ${variables.SCREEN_SIZE.MD}) {
-                margin-top: 5vh;
-            }
-
-            @media all and (max-height: ${variables.SCREEN_SIZE.SM}) {
-                margin-top: 0vh;
-            }
-        `}
+    margin-bottom: 66px;
 `;
 
 const TipsContainer = styled(motion.div)`
@@ -52,14 +41,12 @@ const TipsContainer = styled(motion.div)`
 
 interface PrerequisitesGuideProps {
     prerequisite: PrerequisiteType;
-    padded?: boolean;
     allowSwitchDevice?: boolean;
 }
 
 // PrerequisitesGuide is a shared component used in Preloader and Onboarding
 export const PrerequisitesGuide = ({
     prerequisite,
-    padded,
     allowSwitchDevice,
 }: PrerequisitesGuideProps) => {
     const device = useSelector(selectDevice);
@@ -106,7 +93,7 @@ export const PrerequisitesGuide = ({
     );
 
     return (
-        <Wrapper padded={padded}>
+        <Wrapper>
             <ConnectDevicePrompt
                 connected={!!device}
                 showWarning={!!(device && deviceNeedsAttention(getStatus(device)))}
