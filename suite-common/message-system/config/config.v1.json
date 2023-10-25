@@ -1,8 +1,159 @@
 {
     "version": 1,
-    "timestamp": "2023-10-13T00:00:00+00:00",
-    "sequence": 43,
+    "timestamp": "2023-10-25T00:00:00+00:00",
+    "sequence": 44,
     "actions": [
+        {
+            "conditions": [
+                {
+                    "duration": {
+                        "from": "2023-10-24T00:00:00+00:00",
+                        "to": "2023-11-15T12:00:00+00:00"
+                    },
+                    "environment": {
+                        "desktop": "23.10.1",
+                        "mobile": "!",
+                        "web": "23.10.1"
+                    },
+                    "devices": [
+                        {
+                            "model": "T2B1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        }
+                    ]
+                }
+            ],
+            "message": {
+                "id": "e96a586f-f2d7-4c7b-7dd9-d8e56d1c90ad",
+                "priority": 92,
+                "dismissible": true,
+                "variant": "warning",
+                "category": "banner",
+                "content": {
+                    "en-GB": "When the next Trezor device update rolls out, make sure you've got your recovery seed ready. You’ll need it to regain access to your coins.",
+                    "en": "When the next Trezor device update rolls out, make sure you've got your recovery seed ready. You’ll need it to regain access to your coins.",
+                    "es": "Cuando salga la próxima actualización del dispositivo Trezor, asegúrate de tener preparada tu semilla de recuperación. La necesitarás para recuperar el acceso a tus monedas.",
+                    "cs": "Až se objeví další aktualizace zařízení Trezor, nezapomeňte si připravit sadu pro obnovení. Budete ho potřebovat k obnovení přístupu k mincím.",
+                    "ru": "Когда выйдет следующее обновление устройства Trezor, убедитесь, что у вас наготове семя восстановления. Она понадобится для восстановления доступа к монетам.",
+                    "ja": "次のTrezorデバイスのアップデートがリリースされたら、リカバリーシードを準備しておいてください。コインへのアクセスを回復するために必要です。",
+                    "hu": "Amikor a következő Trezor készülékfrissítés megjelenik, győződjön meg róla, hogy készen áll a helyreállítási mag. Szükséged lesz rá, hogy újra hozzáférj az érméidhez.",
+                    "it": "Quando uscirà il prossimo aggiornamento del dispositivo Trezor, assicuratevi di avere pronto il seme di ripristino. Ne avrete bisogno per riavere accesso alle vostre monete."
+                }
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "duration": {
+                        "from": "2023-11-15T12:00:00+00:00",
+                        "to": "2024-11-15T12:00:00+00:00"
+                    },
+                    "environment": {
+                        "desktop": "23.10.1",
+                        "mobile": "!",
+                        "web": "23.10.1"
+                    },
+                    "devices": [
+                        {
+                            "model": "T2B1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        }
+                    ]
+                }
+            ],
+            "message": {
+                "id": "e16a586f-f2d7-4c7b-7dd9-d8e56d1c90ae",
+                "priority": 93,
+                "dismissible": false,
+                "variant": "critical",
+                "category": "banner",
+                "content": {
+                    "en-GB": "Essential update of Trezor Suite is required for your new Trezor Safe 3.",
+                    "en": "Essential update of Trezor Suite is required for your new Trezor Safe 3.",
+                    "es": "Se requiere una actualización esencial de Trezor Suite para su nuevo Trezor Safe 3.",
+                    "cs": "Pro nový Trezor Safe 3 je nutná aktualizace Trezor Suite.",
+                    "ru": "Для нового Trezor Safe 3 требуется обновление Trezor Suite.",
+                    "ja": "新しいTrezor Safe 3を使用するには、Trezor Suiteの必須アップデートが必要です。",
+                    "hu": "A Trezor Suite alapvető frissítése szükséges az új Trezor Safe 3 készülékhez.",
+                    "it": "Per il nuovo Trezor Safe 3 è necessario un aggiornamento essenziale di Trezor Suite."
+                },
+                "cta": {
+                    "action": "internal-link",
+                    "link": "settings-index",
+                    "anchor": "@general-settings/version-with-update",
+                    "label": {
+                        "en-GB": "Update Suite",
+                        "en": "Update Suite",
+                        "es": "Actualizar Suite",
+                        "cs": "Aktualizovat Suite",
+                        "ru": "Обновить Suite",
+                        "ja": "Suiteのアップデート",
+                        "hu": "Frissítés Suite",
+                        "it": "Suite di aggiornamento"
+                    }
+                }
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": ">23.10.1",
+                        "mobile": "!",
+                        "web": ">23.10.1"
+                    },
+                    "devices": [
+                        {
+                            "model": "T2B1",
+                            "firmware": "<2.6.3",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        }
+                    ]
+                }
+            ],
+            "message": {
+                "id": "e11a586f-f2d7-4c7b-7dd9-d8f56d1c90ad",
+                "priority": 92,
+                "dismissible": false,
+                "variant": "critical",
+                "category": "banner",
+                "content": {
+                    "en-GB": "An update is available for your Trezor device. Make sure you’ve got your recovery seed ready as you’ll need it to regain access to your coins.",
+                    "en": "An update is available for your Trezor device. Make sure you’ve got your recovery seed ready as you’ll need it to regain access to your coins.",
+                    "es": "Hay una actualización disponible para tu dispositivo Trezor. Asegúrate de tener preparada tu semilla de recuperación, ya que la necesitarás para recuperar el acceso a tus monedas.",
+                    "cs": "Pro zařízení Trezor je k dispozici aktualizace. Ujistěte se, že máte připravený recovery seed, protože jej budete potřebovat k obnovení přístupu k mincím.",
+                    "ru": "Для устройства Trezor доступно обновление. Убедитесь, что у вас наготове семена восстановления, поскольку они понадобятся для восстановления доступа к монетам.",
+                    "ja": "お使いのTrezorデバイスにアップデートが提供されています。コインへのアクセスを回復するにはリカバリーのシードが必要です。",
+                    "hu": "Frissítés érhető el a Trezor készülékéhez. Győződjön meg róla, hogy készenlétben tartja a helyreállítási magot, mivel szüksége lesz rá, hogy újra hozzáférjen az érméihez.",
+                    "it": "È disponibile un aggiornamento per il vostro dispositivo Trezor. Assicuratevi di avere pronto il seme di ripristino, che vi servirà per riavere accesso alle monete."
+                },
+                "cta": {
+                    "action": "internal-link",
+                    "link": "firmware-index",
+                    "label": {
+                        "en-GB": "Update now",
+                        "en": "Update now",
+                        "es": "Actualizar ahora",
+                        "cs": "Aktualizovat teď",
+                        "ru": "Обновить сейчас",
+                        "ja": "今すぐアップデート",
+                        "hu": "Frissítés most",
+                        "it": "Aggiorna ora"
+                    }
+                }
+            }
+        },
         {
             "conditions": [
                 {
