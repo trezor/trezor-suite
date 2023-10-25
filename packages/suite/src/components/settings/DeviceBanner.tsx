@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
-import { LottieAnimation, P, variables } from '@trezor/components';
+import { LottieAnimation, Paragraph, variables } from '@trezor/components';
 
 import { useDevice, useSelector } from 'src/hooks/suite';
 import { isWebUsb } from 'src/utils/suite/transport';
@@ -22,7 +22,7 @@ const Wrapper = styled.div`
     width: 100%;
 `;
 
-const Description = styled(P)`
+const Description = styled(Paragraph)`
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
@@ -33,7 +33,7 @@ const Column = styled.div`
     width: 100%;
 `;
 
-const Title = styled(P)`
+const Title = styled(Paragraph)`
     display: flex;
     flex-direction: row;
     align-items: center;

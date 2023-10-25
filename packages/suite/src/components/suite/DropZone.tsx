@@ -1,6 +1,6 @@
 import { useRef, useCallback, useMemo, useState, MouseEvent, DragEvent, ChangeEvent } from 'react';
 import styled from 'styled-components';
-import { Icon, IconType, P } from '@trezor/components';
+import { Icon, IconType, Paragraph } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import type { ExtendedMessageDescriptor } from 'src/types/suite';
 
@@ -183,9 +183,9 @@ export const DropZone = (props: DropZoneProps) => {
                 {filename || <Translation id="TR_DROPZONE" />}
             </Label>
             {error && (
-                <P>
+                <Paragraph>
                     <Translation {...error} />
-                </P>
+                </Paragraph>
             )}
         </Wrapper>
     );

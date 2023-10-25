@@ -1,13 +1,13 @@
 import styled from 'styled-components';
 
 import type { NotificationEntry } from '@suite-common/toast-notifications';
-import { Button, Icon, P, ButtonProps, IconProps } from '@trezor/components';
+import { Button, Icon, ButtonProps, IconProps, Paragraph } from '@trezor/components';
 import { Translation, FormattedDateWithBullet } from 'src/components/suite';
 import { getNotificationIcon } from 'src/utils/suite/notification';
 import { useLayoutSize } from 'src/hooks/suite';
 import type { ExtendedMessageDescriptor, ToastNotificationVariant } from 'src/types/suite';
 
-const TextP = styled(P)<{ $seen?: boolean }>`
+const TextP = styled(Paragraph)<{ $seen?: boolean }>`
     opacity: ${({ $seen }) => ($seen ? 0.7 : 1)};
 `;
 

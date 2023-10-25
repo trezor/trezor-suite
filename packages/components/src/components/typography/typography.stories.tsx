@@ -1,5 +1,5 @@
 import { StoryColumn } from '../../support/Story';
-import { H1, H2, P, Link } from '../../index';
+import { H1, H2, Paragraph, Link } from '../../index';
 import { storiesOf } from '@storybook/react';
 
 storiesOf('Typography/All', module).add(
@@ -11,73 +11,73 @@ storiesOf('Typography/All', module).add(
                 <H2 data-test="heading-2">Heading 2</H2>
             </StoryColumn>
             <StoryColumn>
-                <P data-test="paragraph-default">
+                <Paragraph data-test="paragraph-default">
                     default
                     <br />
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a ante quis
                     lectus eleifend rutrum. Aenean tincidunt odio vel fermentum ultricies. Sed
                     suscipit interdum eros, eget placerat lorem pulvinar in. Ut elit orci, rhoncus
                     eu porta vel, feugiat vel mi.
-                </P>
-                <P type="titleLarge" data-test="paragraph-titleLarge">
+                </Paragraph>
+                <Paragraph type="titleLarge" data-test="paragraph-titleLarge">
                     type="titleLarge" <br />
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a ante quis
                     lectus eleifend rutrum. Aenean tincidunt odio vel fermentum ultricies. Sed
                     suscipit interdum eros, eget placerat lorem pulvinar in. Ut elit orci, rhoncus
                     eu porta vel, feugiat vel mi.
-                </P>
-                <P type="titleMedium" data-test="paragraph-titleMedium">
+                </Paragraph>
+                <Paragraph type="titleMedium" data-test="paragraph-titleMedium">
                     type="titleMedium" <br />
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a ante quis
                     lectus eleifend rutrum. Aenean tincidunt odio vel fermentum ultricies. Sed
                     suscipit interdum eros, eget placerat lorem pulvinar in. Ut elit orci, rhoncus
                     eu porta vel, feugiat vel mi.
-                </P>
-                <P type="titleSmall" data-test="paragraph-titleSmall">
+                </Paragraph>
+                <Paragraph type="titleSmall" data-test="paragraph-titleSmall">
                     type ="titleSmall" <br />
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a ante quis
                     lectus eleifend rutrum. Aenean tincidunt odio vel fermentum ultricies. Sed
                     suscipit interdum eros, eget placerat lorem pulvinar in. Ut elit orci, rhoncus
                     eu porta vel, feugiat vel mi.
-                </P>
-                <P type="highlight" data-test="paragraph-highlight">
+                </Paragraph>
+                <Paragraph type="highlight" data-test="paragraph-highlight">
                     type="highlight" <br />
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a ante quis
                     lectus eleifend rutrum. Aenean tincidunt odio vel fermentum ultricies. Sed
                     suscipit interdum eros, eget placerat lorem pulvinar in. Ut elit orci, rhoncus
                     eu porta vel, feugiat vel mi.
-                </P>
-                <P type="callout" data-test="paragraph-callout">
+                </Paragraph>
+                <Paragraph type="callout" data-test="paragraph-callout">
                     type="callout" <br />
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a ante quis
                     lectus eleifend rutrum. Aenean tincidunt odio vel fermentum ultricies. Sed
                     suscipit interdum eros, eget placerat lorem pulvinar in. Ut elit orci, rhoncus
                     eu porta vel, feugiat vel mi.
-                </P>
-                <P type="hint" data-test="paragraph-hint">
+                </Paragraph>
+                <Paragraph type="hint" data-test="paragraph-hint">
                     type="hint" <br />
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a ante quis
                     lectus eleifend rutrum. Aenean tincidunt odio vel fermentum ultricies. Sed
                     suscipit interdum eros, eget placerat lorem pulvinar in. Ut elit orci, rhoncus
                     eu porta vel, feugiat vel mi.
-                </P>
-                <P type="label" data-test="paragraph-label">
+                </Paragraph>
+                <Paragraph type="label" data-test="paragraph-label">
                     type="label" <br />
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a ante quis
                     lectus eleifend rutrum. Aenean tincidunt odio vel fermentum ultricies. Sed
                     suscipit interdum eros, eget placerat lorem pulvinar in. Ut elit orci, rhoncus
                     eu porta vel, feugiat vel mi.
-                </P>
+                </Paragraph>
 
-                <P data-test="paragraph-link">
+                <Paragraph data-test="paragraph-link">
                     Default text with <Link href="/">link</Link>.
-                </P>
-                <P type="hint" data-test="paragraph-link-hint">
+                </Paragraph>
+                <Paragraph type="hint" data-test="paragraph-link-hint">
                     Hint text with <Link href="/">link</Link>.
-                </P>
-                <P type="label" data-test="paragraph-link-label">
+                </Paragraph>
+                <Paragraph type="label" data-test="paragraph-link-label">
                     Label text with <Link href="/">link</Link>.
-                </P>
+                </Paragraph>
             </StoryColumn>
         </>
     ),

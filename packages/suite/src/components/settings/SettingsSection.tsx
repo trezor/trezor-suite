@@ -1,6 +1,6 @@
 import { ReactNode, ReactElement } from 'react';
 import styled, { useTheme } from 'styled-components';
-import { Card, variables, P, Icon, IconType } from '@trezor/components';
+import { Card, variables, Paragraph, Icon, IconType } from '@trezor/components';
 
 const Wrapper = styled.div`
     margin-bottom: 40px;
@@ -24,7 +24,7 @@ const StyledIcon = styled(Icon)`
     margin-right: 6px;
 `;
 
-const Description = styled(P)`
+const Description = styled(Paragraph)`
     margin-top: 4px;
 `;
 

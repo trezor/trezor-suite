@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { P, Image, variables } from '@trezor/components';
+import { Paragraph, Image, variables } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 
 const Wrapper = styled.div`
@@ -39,15 +39,15 @@ interface DeviceDisconnectedProps {
 export const DeviceDisconnected = ({ label, ...rest }: DeviceDisconnectedProps) => (
     <Wrapper {...rest}>
         <ContentCol>
-            <P type="hint">
+            <Paragraph type="hint">
                 <Translation
                     id="TR_DEVICE_LABEL_IS_NOT_CONNECTED"
                     values={{ deviceLabel: label }}
                 />
-            </P>
-            <P type="label">
+            </Paragraph>
+            <Paragraph type="label">
                 <Translation id="TR_PLEASE_CONNECT_YOUR_DEVICE" />
-            </P>
+            </Paragraph>
         </ContentCol>
         <ImageCol>
             <Image image="UNI_ERROR" />

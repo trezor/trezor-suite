@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { Button, P, Tooltip, Image } from '@trezor/components';
+import { Button, Paragraph, Tooltip, Image } from '@trezor/components';
 
 import { CheckItem, Translation, Modal } from 'src/components/suite';
 
@@ -101,9 +101,9 @@ export const EarlyAccessEnable = ({ hideWindow }: EarlyAccessEnableProps) => {
             <DescriptionWrapper>
                 <Image width={60} height={60} image="EARLY_ACCESS" />
                 <DescriptionTextWrapper>
-                    <P type="highlight">
+                    <Paragraph type="highlight">
                         <Translation id="TR_EARLY_ACCESS_ENABLE_CONFIRM_TITLE" />
-                    </P>
+                    </Paragraph>
                     <Description>
                         <Translation id="TR_EARLY_ACCESS_ENABLE_CONFIRM_DESCRIPTION" />
                     </Description>
@@ -113,9 +113,9 @@ export const EarlyAccessEnable = ({ hideWindow }: EarlyAccessEnableProps) => {
             <Checkbox
                 data-test="@settings/early-access-confirm-check"
                 title={
-                    <P type="highlight">
+                    <Paragraph type="highlight">
                         <Translation id="TR_EARLY_ACCESS_ENABLE_CONFIRM_CHECK" />
-                    </P>
+                    </Paragraph>
                 }
                 description=""
                 isChecked={understood}
