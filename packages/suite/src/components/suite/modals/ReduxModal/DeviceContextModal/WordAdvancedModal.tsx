@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import TrezorConnect from '@trezor/connect';
-import { P } from '@trezor/components';
+import { Paragraph } from '@trezor/components';
 import { HELP_CENTER_ADVANCED_RECOVERY_URL } from '@trezor/urls';
 import {
     Translation,
@@ -42,12 +42,12 @@ export const WordAdvancedModal = ({ count, ...rest }: WordAdvancedModalProps) =>
             <ContentWrapper>
                 <WordInputAdvanced count={count} />
                 <BottomText>
-                    <P type="label">
+                    <Paragraph type="label">
                         <Translation id="TR_ADVANCED_RECOVERY_NOT_SURE" />{' '}
                         <TrezorLink type="label" href={HELP_CENTER_ADVANCED_RECOVERY_URL}>
                             <Translation id="TR_LEARN_MORE" />
                         </TrezorLink>
-                    </P>
+                    </Paragraph>
                 </BottomText>
             </ContentWrapper>
         </Modal>

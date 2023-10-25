@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { H3, P, variables } from '@trezor/components';
+import { H3, Paragraph, variables } from '@trezor/components';
 
 const Title = styled(H3)`
     font-size: 19px;
@@ -10,7 +10,7 @@ const Title = styled(H3)`
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 `;
 
-const StyledP = styled(P)`
+const StyledP = styled(Paragraph)`
     margin: 0 20%;
     color: #757575;
 `;

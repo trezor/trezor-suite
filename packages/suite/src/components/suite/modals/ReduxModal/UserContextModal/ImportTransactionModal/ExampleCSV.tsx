@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
-import { P, Icon, variables, motionAnimation } from '@trezor/components';
+import { Paragraph, Icon, variables, motionAnimation } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { useSelector, useTranslation } from 'src/hooks/suite';
 import { selectIsLabelingAvailable } from 'src/reducers/suite/metadataReducer';
@@ -70,17 +70,19 @@ export const ExampleCSV = () => {
                 {isExpanded && (
                     <ExpandWrapper {...motionAnimation.expand}>
                         {/* CSV keys shouldn't be translated */}
-                        <P type="hint">address,amount,currency{isLabelingAvailable && ',label'}</P>
-                        <P type="hint">
+                        <Paragraph type="hint">
+                            address,amount,currency{isLabelingAvailable && ',label'}
+                        </Paragraph>
+                        <Paragraph type="hint">
                             {addresses[0]},0.31337,{account.symbol.toUpperCase()}
                             {isLabelingAvailable &&
                                 `,${translationString('TR_SENDFORM_LABELING_EXAMPLE_1')}`}
-                        </P>
-                        <P type="hint">
+                        </Paragraph>
+                        <Paragraph type="hint">
                             {addresses[1]},0.1,USD
                             {isLabelingAvailable &&
                                 `,${translationString('TR_SENDFORM_LABELING_EXAMPLE_2')}`}
-                        </P>
+                        </Paragraph>
                     </ExpandWrapper>
                 )}
             </AnimatePresence>
