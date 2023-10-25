@@ -7582,6 +7582,24 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-native/device-switcher@workspace:*, @suite-native/device-switcher@workspace:suite-native/device-switcher":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/device-switcher@workspace:suite-native/device-switcher"
+  dependencies:
+    "@suite-common/icons": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-native/atoms": "workspace:*"
+    "@suite-native/navigation": "workspace:*"
+    "@suite-native/screen-overlay": "workspace:*"
+    "@trezor/styles": "workspace:*"
+    jotai: 1.9.1
+    react: ^18.2.0
+    react-native: 0.71.8
+    react-redux: 8.0.7
+  languageName: unknown
+  linkType: soft
+
 "@suite-native/device@workspace:*, @suite-native/device@workspace:suite-native/device":
   version: 0.0.0-use.local
   resolution: "@suite-native/device@workspace:suite-native/device"
@@ -8096,6 +8114,7 @@ __metadata:
     "@suite-common/wallet-types": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
+    "@suite-native/device-switcher": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/styles": "workspace:*"

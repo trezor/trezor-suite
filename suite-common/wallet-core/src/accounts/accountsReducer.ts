@@ -10,7 +10,11 @@ import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import { selectCoins, FiatRatesRootState } from '../fiat-rates/fiatRatesReducer';
 import { accountsActions } from './accountsActions';
 import { formattedAccountTypeMap } from './constants';
-import { DeviceRootState, selectIsDeviceDiscoveryActive } from '../device/deviceReducer';
+import {
+    DeviceRootState,
+    selectDevice,
+    selectIsDeviceDiscoveryActive,
+} from '../device/deviceReducer';
 import { DiscoveryRootState } from '../discovery/discoveryReducer';
 
 export const accountsInitialState: Account[] = [];
@@ -129,6 +133,12 @@ export const prepareAccountsReducer = createReducerWithExtraDeps(
 );
 
 export const selectAccounts = (state: AccountsRootState) => state.wallet.accounts;
+
+export const selectDeviceAccounts = (state: AccountsRootState & DeviceRootState) =>
+    pipe(
+        selectAccounts(state),
+        A.filter(account => account.deviceState === selectDevice(state)?.state),
+    );
 
 export const selectMainnetAccounts = memoize((state: AccountsRootState) =>
     pipe(
@@ -250,10 +260,10 @@ export const selectAccountKeyByDescriptorAndNetworkSymbol = (
 };
 
 export const selectAccountsAmountPerSymbol = (
-    state: AccountsRootState,
+    state: AccountsRootState & DeviceRootState,
     networkSymbol: NetworkSymbol,
 ) => {
-    const accounts = selectAccounts(state);
+    const accounts = selectDeviceAccounts(state);
 
     return pipe(
         accounts,

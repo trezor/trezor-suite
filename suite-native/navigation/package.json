@@ -22,6 +22,7 @@
         "@suite-common/wallet-types": "workspace:*",
         "@suite-native/analytics": "workspace:*",
         "@suite-native/atoms": "workspace:*",
+        "@suite-native/device-switcher": "workspace:*",
         "@suite-native/feature-flags": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/styles": "workspace:*",

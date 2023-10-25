@@ -1,0 +1,26 @@
+{
+    "name": "@suite-native/device-switcher",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "jest -c ../../jest.config.base.js --passWithNoTests",
+        "type-check": "tsc --build"
+    },
+    "dependencies": {
+        "@suite-common/icons": "workspace:*",
+        "@suite-common/suite-types": "workspace:*",
+        "@suite-common/wallet-core": "workspace:*",
+        "@suite-native/atoms": "workspace:*",
+        "@suite-native/navigation": "workspace:*",
+        "@suite-native/screen-overlay": "workspace:*",
+        "@trezor/styles": "workspace:*",
+        "jotai": "1.9.1",
+        "react": "^18.2.0",
+        "react-native": "0.71.8",
+        "react-redux": "8.0.7"
+    }
+}

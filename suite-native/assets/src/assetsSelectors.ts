@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js';
 import { memoize } from 'proxy-memoize';
 
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
-import { selectAccounts, AccountsRootState } from '@suite-common/wallet-core';
+import { AccountsRootState, selectDeviceAccounts } from '@suite-common/wallet-core';
 import {
     FiatRatesRootState,
     selectFiatRatesByFiatRateKey,
@@ -27,7 +27,8 @@ const sumBalance = (balances: string[]): BigNumber =>
     balances.reduce((prev, balance) => prev.plus(balance), new BigNumber(0));
 
 export const selectBalancesPerNetwork = memoize((state: AssetsRootState): FormattedAssets => {
-    const accounts = selectAccounts(state);
+    const accounts = selectDeviceAccounts(state);
+
     const assets: Assets = {};
     accounts.forEach(account => {
         if (!assets[account.symbol]) {

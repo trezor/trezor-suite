@@ -20,6 +20,7 @@
         },
         { "path": "../analytics" },
         { "path": "../atoms" },
+        { "path": "../device-switcher" },
         { "path": "../feature-flags" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/styles" },

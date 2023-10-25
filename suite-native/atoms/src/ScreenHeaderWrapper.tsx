@@ -1,8 +1,9 @@
 import { ReactNode } from 'react';
 import { EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Box, BoxProps } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+
+import { Box, BoxProps } from './Box';
 
 type ScreenHeaderWrapperProps = {
     children: ReactNode;
@@ -17,6 +18,8 @@ const screenHeaderWrapperStyle = prepareNativeStyle<{ insets: EdgeInsets }>(
         paddingRight: Math.max(insets.right, utils.spacings.medium),
         paddingVertical: utils.spacings.medium,
         paddingBottom: utils.spacings.extraSmall * 3,
+        backgroundColor: utils.colors.backgroundSurfaceElevation0,
+        position: 'relative',
         ...utils.boxShadows.small,
     }),
 );
