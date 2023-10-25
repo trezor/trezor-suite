@@ -20,22 +20,6 @@ import { DeviceAuthenticity } from './DeviceAuthenticity';
 const StyledCard = styled(CollapsibleOnboardingCard)`
     max-width: ${MAX_WIDTH};
     padding: 16px;
-
-    /* compensate top margin from WelcomeStep wrapper only for this card, because it has lot of content */
-    @media all and (max-width: ${variables.SCREEN_SIZE.LG}) {
-        margin-top: -15vh;
-    }
-
-    @media all and (max-width: ${variables.SCREEN_SIZE.MD}) {
-        margin-top: -20vh;
-    }
-
-    @media all and (max-height: ${variables.SCREEN_SIZE.MD}) {
-        margin-top: -5vh;
-    }
-    @media all and (max-height: ${variables.SCREEN_SIZE.SM}) {
-        margin-top: 0vh;
-    }
 `;
 
 const Content = styled.div`
