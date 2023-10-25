@@ -1,3 +1,5 @@
+import { Dimensions } from 'react-native';
+
 import { useNavigation } from '@react-navigation/native';
 
 import {
@@ -7,12 +9,20 @@ import {
 } from '@suite-native/navigation';
 import { Image } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { OnboardingFooter } from '../components/OnboardingFooter';
 import { OnboardingScreen } from '../components/OnboardingScreen';
 
+const IMG_HEIGHT = Dimensions.get('screen').height * 0.35;
+
+const imageStyle = prepareNativeStyle(() => ({
+    height: IMG_HEIGHT,
+}));
+
 export const ConnectTrezorScreen = () => {
     const { translate } = useTranslate();
+    const { applyStyle } = useNativeStyles();
 
     const navigation =
         useNavigation<
@@ -37,7 +47,11 @@ export const ConnectTrezorScreen = () => {
                 />
             }
         >
-            <Image source={require('../assets/trezorT.png')} resizeMode="contain" />
+            <Image
+                source={require('../assets/trezorT.png')}
+                resizeMode="contain"
+                style={applyStyle(imageStyle)}
+            />
         </OnboardingScreen>
     );
 };
