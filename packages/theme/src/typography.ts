@@ -49,7 +49,7 @@ export const typographyStylesBase: Record<TypographyStyle, TypographyStyleDefini
     },
     titleSmall: {
         fontSize: 22,
-        lineHeight: 26,
+        lineHeight: 32,
         fontWeight: fontWeights.medium,
         letterSpacing: -0.3,
     },
