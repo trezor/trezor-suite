@@ -1,4 +1,4 @@
-// TODO: better types than any
+// TODO: implement these properties, because they are part of WebUSB specs, but very low priority we are not using them anywhere
 type USBConfiguration = any;
 type USBControlTransferParameters = any;
 type USBInTransferResult = any;
@@ -8,6 +8,8 @@ type USBIsochronousInTransferResult = any;
 type USBIsochronousOutTransferResult = any;
 
 export interface NativeDevice {
+    // TODO: implement commented out properties, because they are part of WebUSB specs, but very low priority we are not using them anywhere
+
     // readonly usbVersionMajor: number;
     // readonly usbVersionMinor: number;
     // readonly usbVersionSubminor: number;
@@ -25,7 +27,8 @@ export interface NativeDevice {
     // readonly configuration?: USBConfiguration | undefined;
     // readonly configurations: USBConfiguration[];
     readonly opened: boolean;
-    // extra properties
+
+    // extra properties that are not part of WebUSB specs
     readonly deviceName: string;
 }
 

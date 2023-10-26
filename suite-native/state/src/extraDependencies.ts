@@ -1,3 +1,5 @@
+import { Platform } from 'react-native';
+
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { extraDependenciesMock } from '@suite-common/test-utils';
 import { supportedNetworkSymbols } from '@suite-native/config';
@@ -9,12 +11,15 @@ import { NativeUsbTransport } from '@trezor/transport-native';
 
 const protobugMessages = require('@trezor/protobuf/messages.json');
 
-const transports = [
-    new NativeUsbTransport({
-        messages: protobugMessages,
-    }),
-    'UdpTransport',
-];
+const transports = Platform.select({
+    ios: ['UdpTransport'],
+    android: [
+        new NativeUsbTransport({
+            messages: protobugMessages,
+        }),
+        'UdpTransport',
+    ],
+});
 
 export const extraDependencies: ExtraDependencies = mergeDeepObject(extraDependenciesMock, {
     selectors: {

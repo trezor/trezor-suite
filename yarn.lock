@@ -8915,6 +8915,7 @@ __metadata:
     "@trezor/transport-native": "workspace:*"
     "@trezor/utils": "workspace:*"
     react: 18.2.0
+    react-native: 0.71.7
     react-redux: 8.0.7
     redux-flipper: 2.0.2
     redux-persist: 6.0.0

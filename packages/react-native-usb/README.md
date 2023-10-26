@@ -18,10 +18,31 @@ npm install react-native-usb
 
 ### Configure for iOS
 
+Warning: iOS is not yet supported.
 Run `npx pod-install` after installing the npm package.
 
 ### Configure for Android
 
-# Contributing
+Please add the following to your app's `AndroidManifest.xml` `.MainActivity` section:
 
-Contributions are very welcome! Please refer to guidelines described in the [contributing guide](https://github.com/expo/expo#contributing).
+```xml
+      <intent-filter>
+        <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
+        <action android:name="android.hardware.usb.action.USB_DEVICE_DETACHED" />
+      </intent-filter>
+
+      <meta-data android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
+          android:resource="@xml/device_filter" />
+```
+
+And also add file `android/app/src/main/res/xml/device_filter.xml` with the following content:
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <usb-device vendor-id="21324" product-id="1" />
+    <usb-device vendor-id="4617" product-id="21440" />
+    <usb-device vendor-id="4617" product-id="21441" />
+</resources>
+```

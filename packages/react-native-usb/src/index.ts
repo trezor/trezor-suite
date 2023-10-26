@@ -34,9 +34,8 @@ const transferIn = async (deviceName: string, endpointNumber: number, length: nu
             debugLog('JS: USB read error: ', error);
             throw error;
         })
-        // eslint-disable-next-line arrow-body-style
         .then((result: number[]) => {
-            // debugLog('JS: Native USB read result:', JSON.stringify(result));
+            debugLog('JS: Native USB read result:', JSON.stringify(result));
 
             return {
                 data: new Uint8Array(result),
@@ -91,7 +90,7 @@ const createWebUSBDevice = (device: NativeDevice): WebUSBDevice => ({
     isochronousTransferOut: createNoop('isochronousTransferOut'),
     reset: createNoop('reset'),
 
-    // TODO: Implement these properties
+    // TODO: Implement these properties, very low priority we are not using them anywhere
     usbVersionMajor: 2,
     usbVersionMinor: 0,
     usbVersionSubminor: 0,
@@ -136,7 +135,7 @@ export class WebUSB {
         onDeviceDisconnect(listener);
     }
 
-    // Not supported methods
+    // TODO: implement these commented out properties, because they are part of WebUSB specs, but very low priority we are not using them anywhere
     requestDevice = async (..._params: any[]): Promise<any> => {};
     addEventListener = (..._params: any[]): any => {};
     removeEventListener = (..._params: any[]): any => {};
