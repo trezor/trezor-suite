@@ -544,8 +544,13 @@ export class Device extends TypedEmitter<DeviceEvents> {
         this.features = feat;
         this.featuresNeedsReload = false;
 
-        // Firmware type is unknown in bootloader mode
-        if (this.getMode() !== 'bootloader') {
+        // Vendor headers have been changed in 2.6.3.
+        if (feat.fw_vendor === 'Trezor Bitcoin-only') {
+            this.firmwareType = FirmwareType.BitcoinOnly;
+        } else if (feat.fw_vendor === 'Trezor') {
+            this.firmwareType = FirmwareType.Regular;
+        } else if (this.getMode() !== 'bootloader') {
+            // Relevant for T1B1, T2T1 and custom firmware with a different vendor header. Capabilities do not work in bootloader mode.
             this.firmwareType =
                 feat.capabilities &&
                 feat.capabilities.length > 0 &&
