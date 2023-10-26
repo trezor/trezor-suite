@@ -484,7 +484,7 @@ export default [
             // we do not use path to worker build here because its not used, we use it just to match this config to actual implementation of the worker
             worker: 'solana',
             server: [
-                'cool-spring-gadget.solana-testnet.quiknode.pro/2224f3bca76cdcad9232ddedfd0852b2cb200813/',
+                'https://dark-maximum-waterfall.solana-devnet.quiknode.pro/d52d65584338b5697364c43f38d001c8ae45c259/',
             ],
             debug: true,
         },
