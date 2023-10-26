@@ -34,14 +34,14 @@ export const OnboardingFooter = ({
             {onBack && (
                 <Button
                     colorScheme="tertiaryElevation0"
-                    data-testID={`@onboarding/${route.name}/backBtn`}
+                    testID={`@onboarding/${route.name}/backBtn`}
                     onPress={onBack}
                 >
                     {backButtonTitle ?? 'Back'}
                 </Button>
             )}
 
-            <Button data-testID={`@onboarding/${route.name}/nextBtn`} onPress={redirectTarget}>
+            <Button testID={`@onboarding/${route.name}/nextBtn`} onPress={redirectTarget}>
                 {nextButtonTitle ?? buttonTitle}
             </Button>
         </Stack>

@@ -51,7 +51,7 @@
         "generate-package": "yarn tsx ./scripts/generatePackage.js",
         "deps": "rimraf 'node_modules' '*/**/node_modules' && yarn",
         "message-system-sign-config": "yarn workspace @suite-common/message-system sign-config",
-        "format": "yarn prettier --write \"**/*.{js,ts,tsx,mdx,md,html,json}\"",
+        "format": "yarn prettier --write \"**/*.{js,ts,tsx,mdx,md,html,json,yml,yaml}\"",
         "format:verify": "yarn prettier --check \"**/*.{js,ts,tsx,mdx,md,html,json}\"",
         "update-submodules": "./scripts/update-submodules.sh",
         "update-coins": "./scripts/update-coins.sh",
