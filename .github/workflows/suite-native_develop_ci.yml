@@ -71,6 +71,10 @@ jobs:
           name: app-apk
           path: |
             suite-native/app/android/**/*.apk
+      - uses: mobile-dev-inc/action-maestro-cloud@v1
+        with:
+          api-key: 23ea091f-0049-420e-ad9f-69dd5592d882
+          app-file: suite-native/app/android/app/build/outputs/apk/firebaseDevelop/release/app-firebaseDevelop-release.apk
 
   ios_develop:
     runs-on: macos-12

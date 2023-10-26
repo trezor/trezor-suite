@@ -36,7 +36,11 @@ export const SelectableNetworkItem = ({ symbol, onPress }: SelectableAssetItemPr
     const isEthereumNetwork = symbol === 'eth';
 
     return (
-        <TouchableOpacity disabled={!onPress} onPress={handlePress}>
+        <TouchableOpacity
+            disabled={!onPress}
+            onPress={handlePress}
+            testID={`@onboarding/select-coin/${networkName}`}
+        >
             <Box flexDirection="row" alignItems="center">
                 <RoundedIcon name={symbol} />
                 <Box style={applyStyle(selectableAssetContentStyle)}>

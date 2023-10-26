@@ -204,7 +204,7 @@ export const AnalyticsConsentScreen = () => {
 
             <Box style={applyStyle(buttonsWrapperStyle)}>
                 <Button
-                    data-testID="allow-userData"
+                    testID="@onboarding/UserDataConsent/allow"
                     onPress={isEnabled ? handleAnalyticsConsent : handleRedirect}
                 >
                     {translate('generic.buttons.confirm')}
