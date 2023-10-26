@@ -40,7 +40,7 @@ const result = await TrezorConnect.cardanoSignTransaction(params);
 
 #### `ORDINARY_TRANSACTION`
 
-Represents an ordinary user transaction transferring funds, delegating stake or withdrawing rewards. The transaction will be witnessed by keys derived from paths included in the `inputs`, `certificates` and `withdrawals`. Additionaly, if token minting is present, transaction will also be witnessed by keys derived from paths included in `additionalWitnessRequests`.
+Represents an ordinary user transaction transferring funds, delegating stake or withdrawing rewards. The transaction will be witnessed by keys derived from paths included in the `inputs`, `certificates` and `withdrawals`. Additionally, if token minting is present, transaction will also be witnessed by keys derived from paths included in `additionalWitnessRequests`.
 
 The transaction
 

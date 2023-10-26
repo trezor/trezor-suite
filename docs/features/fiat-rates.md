@@ -71,7 +71,7 @@ For converting to fiat amount using rates from custom source use `useCustomSourc
 ```
 
 To support more complex use-cases we are leveraging render props.
-When passing function as a children it will get called with one parameter, object with `value`, `rate` and `timestamp`. This allows us to handle cases where fiat rates are missing (all fiels in the object are set `null`) or show not only fiat amount, but also used exchange rate.
+When passing function as a children it will get called with one parameter, object with `value`, `rate` and `timestamp`. This allows us to handle cases where fiat rates are missing (all fields in the object are set `null`) or show not only fiat amount, but also used exchange rate.
 
 ```jsx
 <FiatValue amount="1" symbol={symbol}>
