@@ -1,3 +1,20 @@
+# 9.1.5
+
+-   feat(suite): T2B1 replace Model R name by official Trezor Safe 3 name (7460372ed1)
+-   feat(connect): add authenticateDevice method (45b99c0813, af907a296d, 249ddc358a)
+-   feat(connect): btg, dash, dgb, nmc, vrc no support for T2B1 (0819ff6fc1)
+-   feat(suite): support t2b1 firmware installation (9ef2bf627a)
+-   fix(connect): get firmware status and release after ensuring internal model (dca3333c2d)
+-   fix(connect-popup): webusb in popup if iframe is on same origin as host (e571971586)
+-   feat(connect-web): trust-issues query string param (b1b6e3f287)
+-   feat(connect-plugin-stellar): Update stellar-sdk and stellar-base (ee7e67db04)
+-   chore(connect): t1 emulator with pin (33c6ca58bf)
+-   fix(connect-popup): allow decimal custom fee entry (bf20f23f05, 8a8d93b5e8)
+-   feat(connect-explorer): add rebootToBootloader method (9996676358)
+-   fix(connect): wrong version format in discovery (19b13d1d4c)
+-   feat(connect-popup): logger in sharedworker collecting from all environments (732bc7d, 2521c7c, 6501dfa4fd)
+-   chore(connect): do not lowercase device color (7229b88c20)
+
 # 9.1.4
 
 -   feat(connect-popup): add metamask extension id to known third party (f137b3e4d6)
