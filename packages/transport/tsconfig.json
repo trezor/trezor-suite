@@ -4,11 +4,7 @@
         "outDir": "./libDev",
         "types": ["w3c-web-usb", "jest", "node"]
     },
-    "include": [
-        "src",
-        "../transport-native/src/nativeUsb.native.ts",
-        "../transport-native/src/nativeUsb.ts"
-    ],
+    "include": ["src"],
     "references": [
         { "path": "../protobuf" },
         { "path": "../protocol" },
