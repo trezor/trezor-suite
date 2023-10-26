@@ -70,6 +70,9 @@ class BlockchainLink extends TypedEmitter<Events> {
 
     private throttler: Throttler;
 
+    // worker promise is used to prevent multiple workers initialization when multiple methods are called at called parallel before worker is initialized
+    private workerPromise: Promise<Worker> | undefined;
+
     constructor(settings: BlockchainSettings) {
         super();
         this.settings = settings;
@@ -79,8 +82,15 @@ class BlockchainLink extends TypedEmitter<Events> {
     }
 
     async getWorker(): Promise<Worker> {
+        if (this.workerPromise) {
+            // Worker is being initialized, return that instance instead of creating new one
+            return this.workerPromise;
+        }
         if (!this.worker) {
-            this.worker = await initWorker(this.settings);
+            this.workerPromise = initWorker(this.settings);
+            this.worker = await this.workerPromise;
+            delete this.workerPromise;
+
             this.worker.onmessage = this.onMessage.bind(this);
             this.worker.onerror = this.onError.bind(this);
         }
