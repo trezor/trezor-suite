@@ -562,7 +562,10 @@ export class Device extends TypedEmitter<DeviceEvents> {
                     : FirmwareType.Regular;
         }
 
-        const deviceInfo = models[feat.internal_model];
+        const deviceInfo = models[feat.internal_model] ?? {
+            name: `Unknown ${feat.internal_model}`,
+            colors: {},
+        };
 
         this.name = deviceInfo.name;
 

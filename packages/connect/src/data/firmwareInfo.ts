@@ -188,6 +188,10 @@ const getSafeReleases = ({ features, releases }: GetInfoProps) => {
  * @param releases
  */
 export const getInfo = ({ features, releases }: GetInfoProps): ReleaseInfo | null => {
+    if (!Array.isArray(releases)) {
+        // no available releases - should never happen for official firmware, only custom
+        return null;
+    }
     if (!isStrictFeatures(features)) {
         throw new Error('Features of unexpected shape provided.');
     }
@@ -245,8 +249,8 @@ export const getFirmwareStatus = (features: Features) => {
         releases: releases[features?.internal_model],
     });
 
-    // should not happen, possibly if releases list contains inconsistent data or so
-    if (!info) return 'unknown';
+    // should never happen for official firmware, see getInfo
+    if (!info) return 'custom';
 
     if (info.isRequired) return 'required';
 
