@@ -40,7 +40,7 @@ const createMainWindow = (winBounds: WinBounds) => {
             // Node.js required for sentry-ipc, suite-desktop-api
             sandbox: false,
         },
-        icon: path.join(global.resourcesPath, 'images', 'icons', '512x512.png'),
+        icon: path.join(global.resourcesPath, 'images', 'desktop', '1024x1024_original.png'), // required for Linux, TODO check that it still works
     });
 
     let resizeDebounce: ReturnType<typeof setTimeout> | null = null;
