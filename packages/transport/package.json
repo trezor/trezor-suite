@@ -58,7 +58,6 @@
     "dependencies": {
         "@trezor/protobuf": "workspace:*",
         "@trezor/protocol": "workspace:*",
-        "@trezor/react-native-usb": "workspace:*",
         "@trezor/utils": "workspace:*",
         "bytebuffer": "^5.0.1",
         "cross-fetch": "^3.1.6",

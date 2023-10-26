@@ -15,6 +15,8 @@ export type { Descriptor } from './types';
 export { TREZOR_USB_DESCRIPTORS, TRANSPORT } from './constants';
 
 export { AbstractTransport as Transport } from './transports/abstract';
+export { AbstractUsbTransport } from './transports/abstractUsb';
+export { UsbInterface } from './interfaces/usb';
 
 // messages are exported but there is no real need to use them elsewhere
 // transports have reference to this already
@@ -32,6 +34,3 @@ export { SessionsBackground } from './sessions/background';
 export { SessionsClient } from './sessions/client';
 
 export { UdpTransport } from './transports/udp';
-
-// react-native only
-export { NativeUsbTransport } from './transports/nativeUsb';

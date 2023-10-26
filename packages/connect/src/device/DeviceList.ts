@@ -12,7 +12,6 @@ import {
     TRANSPORT,
     Descriptor,
     TRANSPORT_ERROR,
-    NativeUsbTransport,
 } from '@trezor/transport';
 import { ERRORS } from '../constants';
 import { DEVICE, TransportInfo } from '../events';
@@ -100,14 +99,6 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
                             }),
                         );
                         break;
-                    case 'NativeUsbTransport':
-                        this.transports.push(
-                            new NativeUsbTransport({
-                                messages: this.messages,
-                                logger: transportLogger,
-                            }),
-                        );
-                        break;
                     case 'BridgeTransport':
                         this.transports.push(
                             new BridgeTransport({
@@ -130,8 +121,6 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
                             'Runtime',
                             `DeviceList.init: transports[] of unexpected type: ${transportType}`,
                         );
-                    // not implemented
-                    // case 'UdpTransport':
                 }
             } else if (transportType instanceof Transport) {
                 this.transports.unshift(transportType);

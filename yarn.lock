@@ -8911,6 +8911,8 @@ __metadata:
     "@suite-native/storage": "workspace:*"
     "@suite-native/toasts": "workspace:*"
     "@trezor/connect": "workspace:*"
+    "@trezor/protobuf": "workspace:*"
+    "@trezor/transport-native": "workspace:*"
     "@trezor/utils": "workspace:*"
     react: 18.2.0
     react-redux: 8.0.7
@@ -10360,19 +10362,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/transport-native@workspace:packages/transport-native":
+"@trezor/transport-native@workspace:*, @trezor/transport-native@workspace:packages/transport-native":
   version: 0.0.0-use.local
   resolution: "@trezor/transport-native@workspace:packages/transport-native"
   dependencies:
-    "@types/react": 18.0.32
-    jest: ^26.6.3
-    pod-install: ^0.1.38
-    react: 18.2.0
-    react-native: 0.71.8
-    typescript: 4.9.5
-  peerDependencies:
-    react: "workspace:*"
-    react-native: "workspace:*"
+    "@trezor/react-native-usb": "workspace:*"
+    "@trezor/transport": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -10382,7 +10377,6 @@ __metadata:
   dependencies:
     "@trezor/protobuf": "workspace:*"
     "@trezor/protocol": "workspace:*"
-    "@trezor/react-native-usb": "workspace:*"
     "@trezor/trezor-user-env-link": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/bytebuffer": ^5.0.44
@@ -29817,15 +29811,6 @@ __metadata:
   dependencies:
     ts-pnp: ^1.1.6
   checksum: 0606a63db96400b07f182300168298da9518727a843f9e10cf5045d2a102a4be06bb18c73dc481281e3e0f1ed8d04ef0d285a342b6dcd0eff1340e28e5d2328d
-  languageName: node
-  linkType: hard
-
-"pod-install@npm:^0.1.38":
-  version: 0.1.38
-  resolution: "pod-install@npm:0.1.38"
-  bin:
-    pod-install: build/index.js
-  checksum: 9ff3e8f50dba2cee1c174deeb394312d6a950096f39c5a413a9dbf9acf4acb890440a9c316381799c8e125858c4c84d2c4f0c3d7ef2ceb056ea820a417004fd7
   languageName: node
   linkType: hard
 

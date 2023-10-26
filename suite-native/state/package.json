@@ -29,6 +29,8 @@
         "@suite-native/storage": "workspace:*",
         "@suite-native/toasts": "workspace:*",
         "@trezor/connect": "workspace:*",
+        "@trezor/protobuf": "workspace:*",
+        "@trezor/transport-native": "workspace:*",
         "@trezor/utils": "workspace:*",
         "react": "18.2.0",
         "react-redux": "8.0.7",

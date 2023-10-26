@@ -1,0 +1,17 @@
+{
+    "name": "@trezor/transport-native",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "jest -c ../../jest.config.base.js --passWithNoTests",
+        "type-check": "tsc --build"
+    },
+    "dependencies": {
+        "@trezor/react-native-usb": "workspace:*",
+        "@trezor/transport": "workspace:*"
+    }
+}

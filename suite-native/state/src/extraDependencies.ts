@@ -5,6 +5,16 @@ import { selectDevices } from '@suite-common/wallet-core';
 import { selectFiatCurrencyCode, setFiatCurrency } from '@suite-native/module-settings';
 import { PROTO } from '@trezor/connect';
 import { mergeDeepObject } from '@trezor/utils';
+import { NativeUsbTransport } from '@trezor/transport-native';
+
+const protobugMessages = require('@trezor/protobuf/messages.json');
+
+const transports = [
+    new NativeUsbTransport({
+        messages: protobugMessages,
+    }),
+    'UdpTransport',
+];
 
 export const extraDependencies: ExtraDependencies = mergeDeepObject(extraDependenciesMock, {
     selectors: {
@@ -13,7 +23,7 @@ export const extraDependencies: ExtraDependencies = mergeDeepObject(extraDepende
         selectLocalCurrency: selectFiatCurrencyCode,
         selectDevices,
         selectDebugSettings: () => ({
-            transports: ['NativeUsbTransport', 'UdpTransport'],
+            transports,
         }),
     } as Partial<ExtraDependencies['selectors']>,
     thunks: {} as Partial<ExtraDependencies['thunks']>,
@@ -32,7 +42,6 @@ export const extraDependencies: ExtraDependencies = mergeDeepObject(extraDepende
                 email: 'info@trezor.io',
                 appUrl: '@trezor/suite',
             },
-            transports: ['NativeUsbTransport', 'UdpTransport'],
         },
     } as Partial<ExtraDependencies['utils']>,
 } as OneLevelPartial<ExtraDependencies>) as ExtraDependencies;

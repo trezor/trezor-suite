@@ -30,6 +30,7 @@ export const connectInitThunk = createThunk(
 
         // set event listeners and dispatch as
         TrezorConnect.on(DEVICE_EVENT, ({ event: _, ...action }) => {
+            console.log('DEVICE_EVENT', action);
             // dispatch event as action
             dispatch(action);
         });
@@ -40,6 +41,7 @@ export const connectInitThunk = createThunk(
         });
 
         TrezorConnect.on(TRANSPORT_EVENT, ({ event: _, ...action }) => {
+            console.log('TRANSPORT_EVENT', action);
             // dispatch event as action
             dispatch(action);
         });

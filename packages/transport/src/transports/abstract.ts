@@ -62,8 +62,7 @@ export abstract class AbstractTransport extends TypedEmitter<{
         | 'BridgeTransport'
         | 'NodeUsbTransport'
         | 'WebUsbTransport'
-        | 'UdpTransport'
-        | 'NativeUsbTransport';
+        | 'UdpTransport';
     /**
      * transports with "external element" such as bridge can be outdated.
      */
