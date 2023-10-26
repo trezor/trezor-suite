@@ -7,6 +7,8 @@ import CopyPlugin from 'copy-webpack-plugin';
 const DIST = path.resolve(__dirname, '../build');
 const CONNECT_WEB_PATH = path.join(__dirname, '..', '..', 'connect-web');
 
+const CONNECT_WEB_EXTENSION_PATH = path.join(CONNECT_WEB_PATH, 'src', 'webextension');
+
 const config: webpack.Configuration = {
     target: 'web',
     mode: 'production',
@@ -109,13 +111,16 @@ const config: webpack.Configuration = {
         new CopyPlugin({
             patterns: [
                 {
-                    from: path.join(
-                        CONNECT_WEB_PATH,
-                        'src',
-                        'webextension',
-                        'trezor-content-script.js',
-                    ),
+                    from: path.join(CONNECT_WEB_EXTENSION_PATH, 'trezor-content-script.js'),
                     to: `${DIST}/vendor`,
+                },
+                {
+                    from: path.join(CONNECT_WEB_EXTENSION_PATH, 'trezor-usb-permissions.js'),
+                    to: `${DIST}/vendor`,
+                },
+                {
+                    from: path.join(CONNECT_WEB_EXTENSION_PATH, 'trezor-usb-permissions.html'),
+                    to: `${DIST}`,
                 },
             ],
         }),
