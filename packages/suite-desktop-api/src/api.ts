@@ -12,6 +12,7 @@ import {
     HandshakeTorModule,
     TorStatusEvent,
     Status,
+    SuiteAppIconVariant,
 } from './messages';
 
 // Event messages from renderer to main process
@@ -22,6 +23,7 @@ export interface MainChannels {
     'app/focus': void;
     'store/clear': void;
     'theme/change': SuiteThemeVariant;
+    'app-icon/change': SuiteAppIconVariant;
     'tor/get-status': void;
     'update/allow-prerelease': boolean;
     'update/cancel': void;
@@ -104,6 +106,7 @@ export interface DesktopApi {
     allowPrerelease: DesktopApiSend<'update/allow-prerelease'>;
     // Theme
     themeChange: DesktopApiSend<'theme/change'>;
+    appIconChange: DesktopApiSend<'app-icon/change'>;
     // Handshake
     handshake: DesktopApiInvoke<'handshake/client'>;
     loadModules: DesktopApiInvoke<'handshake/load-modules'>;

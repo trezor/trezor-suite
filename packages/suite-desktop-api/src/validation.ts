@@ -1,5 +1,5 @@
 import { RendererChannels } from './api';
-import { SuiteThemeVariant } from './messages';
+import { SuiteAppIconVariant, SuiteThemeVariant } from './messages';
 
 type Primitive = 'boolean' | 'string' | 'number';
 type OptionalPrimitive = Primitive | [Primitive, boolean];
@@ -21,6 +21,9 @@ export const isObject = (shape: { [key: string]: OptionalPrimitive }, value: any
 
 const validThemes: Array<SuiteThemeVariant> = ['light', 'dark', 'system'];
 export const isTheme = (theme: any) => validThemes.includes(theme);
+
+const validAppIcons: Array<SuiteAppIconVariant> = ['original', 'bitcoin'];
+export const isAppIcon = (appIcon: any) => validAppIcons.includes(appIcon);
 
 const validChannels: Array<keyof RendererChannels> = [
     'oauth/response',
