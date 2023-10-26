@@ -1,6 +1,6 @@
 {
     "name": "@trezor/utils",
-    "version": "9.0.13",
+    "version": "9.0.14",
     "author": "Trezor <info@trezor.io>",
     "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/utils",
     "description": "A collection of typescript utils that are intended to be used across trezor-suite monorepo.",
