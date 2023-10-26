@@ -4,6 +4,8 @@ import { variables } from '@trezor/components';
 import { NotificationCard, Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { typography } from '@trezor/theme';
+import { NetworkSymbol } from '@suite-common/wallet-config';
+import { selectBlockchainExplorerBySymbol } from '@suite-common/wallet-core';
 
 const TextWrapper = styled.div`
     display: flex;
@@ -25,19 +27,18 @@ const Description = styled.span`
 
 interface AnalyzeInExplorerBannerProps {
     txid: string;
+    symbol: NetworkSymbol;
 }
 
-export const AnalyzeInExplorerBanner = ({ txid }: AnalyzeInExplorerBannerProps) => {
-    const { selectedAccount } = useSelector(state => state.wallet);
-    const { network } = selectedAccount;
-    const explorerUrl = network?.explorer.tx;
+export const AnalyzeInExplorerBanner = ({ txid, symbol }: AnalyzeInExplorerBannerProps) => {
+    const explorer = useSelector(state => selectBlockchainExplorerBySymbol(state, symbol));
 
     return (
         <NotificationCard
             variant="info"
             icon="CUBE"
             button={{
-                href: `${explorerUrl}${txid}`,
+                href: `${explorer?.tx}${txid}`,
                 children: <Translation id="TR_ANALYZE_IN_BLOCKBOOK_OPEN" />,
                 icon: 'EXTERNAL_LINK',
                 iconAlignment: 'right',

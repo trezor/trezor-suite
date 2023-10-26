@@ -12,6 +12,7 @@ import { UtxoAnonymity } from 'src/components/wallet';
 import { AnalyzeInExplorerBanner } from './AnalyzeInExplorerBanner';
 import { FormattedNftAmount } from 'src/components/suite/FormattedNftAmount';
 import { IOAddress } from '../../IOAddress';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 
 export const blurFix = css`
     margin-left: -10px;
@@ -189,7 +190,7 @@ const IOGridGroupWrapper = ({
 interface GridRowGroupComponentProps {
     from?: string;
     to?: string;
-    symbol?: string;
+    symbol?: NetworkSymbol;
     amount?: string | ReactNode;
     isPhishingTransaction?: boolean;
 }
@@ -306,7 +307,7 @@ const EthereumSpecificBalanceDetailsRow = ({
                                         formatAmount(transfer.amount, transfer.decimals)
                                     )
                                 }
-                                symbol={transfer.symbol}
+                                symbol={transfer.symbol as NetworkSymbol}
                                 isPhishingTransaction={isPhishingTransaction}
                             />
                         ))}
@@ -336,7 +337,7 @@ const SolanaSpecificBalanceDetailsRow = ({
                     from={transfer.from}
                     to={transfer.to}
                     amount={formatAmount(transfer.amount, transfer.decimals)}
-                    symbol={transfer.symbol}
+                    symbol={transfer.symbol as NetworkSymbol}
                     isPhishingTransaction={isPhishingTransaction}
                 />
             ))}
@@ -473,7 +474,7 @@ export const IODetails = ({ tx, isPhishingTransaction }: IODetailsProps) => {
     if (network?.networkType === 'ethereum') {
         return (
             <Wrapper>
-                <AnalyzeInExplorerBanner txid={tx.txid} />
+                <AnalyzeInExplorerBanner txid={tx.txid} symbol={tx.symbol} />
                 <BalanceDetailsRow tx={tx} isPhishingTransaction={isPhishingTransaction} />
                 <EthereumSpecificBalanceDetailsRow
                     tx={tx}
@@ -486,7 +487,7 @@ export const IODetails = ({ tx, isPhishingTransaction }: IODetailsProps) => {
     if (network?.networkType === 'solana') {
         return (
             <Wrapper>
-                <AnalyzeInExplorerBanner txid={tx.txid} />
+                <AnalyzeInExplorerBanner txid={tx.txid} symbol={tx.symbol} />
                 <IOSectionColumn
                     tx={tx}
                     inputs={tx.details.vin}
@@ -504,7 +505,7 @@ export const IODetails = ({ tx, isPhishingTransaction }: IODetailsProps) => {
     if (tx.type === 'joint') {
         return (
             <Wrapper>
-                <AnalyzeInExplorerBanner txid={tx.txid} />
+                <AnalyzeInExplorerBanner txid={tx.txid} symbol={tx.symbol} />
                 <CollapsibleIOSection
                     heading={<Translation id="TR_MY_INPUTS_AND_OUTPUTS" />}
                     opened
@@ -525,7 +526,7 @@ export const IODetails = ({ tx, isPhishingTransaction }: IODetailsProps) => {
 
     return (
         <Wrapper>
-            <AnalyzeInExplorerBanner txid={tx.txid} />
+            <AnalyzeInExplorerBanner txid={tx.txid} symbol={tx.symbol} />
             <IOSectionColumn tx={tx} inputs={tx.details.vin} outputs={tx.details.vout} />
         </Wrapper>
     );
