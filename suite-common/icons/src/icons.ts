@@ -80,6 +80,7 @@ export const icons = {
     shuffle: require('../assets/icons/shuffle.svg'),
     stack: require('../assets/icons/stack.svg'),
     standardWallet: require('../assets/icons/standardWallet.svg'),
+    success: require('../assets/icons/success.svg'),
     swap: require('../assets/icons/swap.svg'),
     syncedCoin: require('../assets/icons/syncedCoin.svg'),
     tor: require('../assets/icons/tor.svg'),
