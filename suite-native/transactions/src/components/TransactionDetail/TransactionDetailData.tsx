@@ -1,12 +1,18 @@
 import { useSelector } from 'react-redux';
 
-import { Box, Card, Text, VStack } from '@suite-native/atoms';
+import { AlertBox, Box, Card, Text, VStack } from '@suite-native/atoms';
 import { AccountKey } from '@suite-common/wallet-types';
 import { Icon } from '@suite-common/icons';
 import { useFormatters } from '@suite-common/formatters';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
-import { selectTransactionBlockTimeById, TransactionsRootState } from '@suite-common/wallet-core';
+import {
+    selectTransactionBlockTimeById,
+    selectIsTransactionZeroValuePhishing,
+    TransactionsRootState,
+} from '@suite-common/wallet-core';
 import { EthereumTokenTransfer, WalletAccountTransaction } from '@suite-native/ethereum-tokens';
+import { Translation } from '@suite-native/intl';
+import { Link } from '@suite-native/link';
 
 import { TransactionDetailSummary } from './TransactionDetailSummary';
 import { TransactionDetailRow } from './TransactionDetailRow';
@@ -24,8 +30,13 @@ export const TransactionDetailData = ({
     tokenTransfer,
 }: TransactionDetailDataProps) => {
     const { DateTimeFormatter } = useFormatters();
+
     const transactionBlockTime = useSelector((state: TransactionsRootState) =>
         selectTransactionBlockTimeById(state, transaction.txid, accountKey),
+    );
+
+    const isZeroValuePhishing = useSelector((state: TransactionsRootState) =>
+        selectIsTransactionZeroValuePhishing(state, transaction.txid, accountKey),
     );
 
     const transactionTokensCount = transaction.tokens.length;
@@ -39,6 +50,27 @@ export const TransactionDetailData = ({
     return (
         <>
             <VStack>
+                {isZeroValuePhishing && (
+                    <AlertBox
+                        variant="error"
+                        isStandalone
+                        title={
+                            <Translation
+                                id="transactions.phishing.warning"
+                                values={{
+                                    blogLink: chunks => (
+                                        <Link
+                                            href="https://trezor.io/support/a/address-poisoning-attacks"
+                                            label={chunks}
+                                            textColor="textDefault"
+                                            isUnderlined
+                                        />
+                                    ),
+                                }}
+                            />
+                        }
+                    />
+                )}
                 <Card>
                     <TransactionDetailRow title="Date">
                         <Text variant="hint">
