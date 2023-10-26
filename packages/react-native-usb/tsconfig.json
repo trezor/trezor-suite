@@ -1,8 +1,6 @@
 {
     "extends": "../../tsconfig.json",
-    "compilerOptions": {
-        "outDir": "./libDev"
-    },
+    "compilerOptions": { "outDir": "./libDev" },
     "include": ["."],
     "references": []
 }
