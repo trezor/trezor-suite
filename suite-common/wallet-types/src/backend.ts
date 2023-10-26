@@ -37,6 +37,9 @@ export interface Blockchain extends ConnectionStatus {
         tx: string;
         account: string;
         queryString: string;
+        nft?: string;
+        address: string;
+        token?: string;
     };
     blockHash: string;
     blockHeight: number;
