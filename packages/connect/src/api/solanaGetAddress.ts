@@ -1,15 +1,17 @@
-import { PROTO } from '../constants';
+import { ERRORS, PROTO } from '../constants';
 import { AbstractMethod, MethodReturnType } from '../core/AbstractMethod';
 import { validateParams, getFirmwareRange } from './common/paramsValidator';
 import { getMiscNetwork } from '../data/coinInfo';
 import { validatePath, fromHardened, getSerializedPath } from '../utils/pathUtils';
 import { UI, createUiMessage } from '../events';
 
-export default class SolanaGetAddress extends AbstractMethod<
-    'solanaGetAddress',
-    PROTO.SolanaGetAddress[]
-> {
+type Params = PROTO.SolanaGetAddress & {
+    address?: string;
+};
+
+export default class SolanaGetAddress extends AbstractMethod<'solanaGetAddress', Params[]> {
     hasBundle?: boolean;
+    progress = 0;
     confirmed?: boolean;
 
     init() {
@@ -41,13 +43,34 @@ export default class SolanaGetAddress extends AbstractMethod<
             return {
                 address_n: path,
                 address: batch.address,
-                show_display: typeof batch.showOnTrezor === 'boolean' ? batch.showOnTrezor : false,
+                show_display: typeof batch.showOnTrezor === 'boolean' ? batch.showOnTrezor : true,
             };
         });
+
+        const useEventListener =
+            payload.useEventListener &&
+            this.params.length === 1 &&
+            typeof this.params[0].address === 'string' &&
+            this.params[0].show_display;
+        this.confirmed = useEventListener;
+        this.useUi = !useEventListener;
     }
 
     get info() {
-        return 'Export Solana address';
+        if (this.params.length === 1) {
+            return 'Export solana address';
+        }
+        return 'Export multiple Solana addresses';
+    }
+
+    getButtonRequestData(code: string) {
+        if (code === 'ButtonRequest_Address') {
+            return {
+                type: 'address' as const,
+                serializedPath: getSerializedPath(this.params[this.progress].address_n),
+                address: this.params[this.progress].address || 'not-set',
+            };
+        }
     }
 
     async confirmation() {
@@ -99,12 +122,38 @@ export default class SolanaGetAddress extends AbstractMethod<
         return uiResp.payload;
     }
 
+    async _call({ address_n, show_display }: Params) {
+        const cmd = this.device.getCommands();
+        const response = await cmd.typedCall('SolanaGetAddress', 'SolanaAddress', {
+            address_n,
+            show_display,
+        });
+        return response.message;
+    }
+
     async run() {
         const responses: MethodReturnType<typeof this.name> = [];
-        const cmd = this.device.getCommands();
         for (let i = 0; i < this.params.length; i++) {
             const batch = this.params[i];
-            const { message } = await cmd.typedCall('SolanaGetAddress', 'SolanaAddress', batch);
+
+            // silently get address and compare with requested address
+            // or display as default inside popup
+            if (batch.show_display) {
+                const silent = await this._call({
+                    ...batch,
+                    show_display: false,
+                });
+                if (typeof batch.address === 'string') {
+                    if (batch.address !== silent.address) {
+                        throw ERRORS.TypedError('Method_AddressNotMatch');
+                    }
+                } else {
+                    // save address for future verification in "getButtonRequestData"
+                    batch.address = silent.address;
+                }
+            }
+
+            const message = await this._call(batch);
             responses.push({
                 path: batch.address_n,
                 serializedPath: getSerializedPath(batch.address_n),
@@ -120,6 +169,8 @@ export default class SolanaGetAddress extends AbstractMethod<
                     }),
                 );
             }
+
+            this.progress++;
         }
         return this.hasBundle ? responses : responses[0];
     }
