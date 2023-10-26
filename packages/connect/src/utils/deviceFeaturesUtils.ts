@@ -42,12 +42,16 @@ export const getUnavailableCapabilities = (features: Features, coins: CoinInfo[]
     const { capabilities } = features;
     const list: UnavailableCapabilities = {};
     if (!capabilities) return list;
-    const fw = [features.major_version, features.minor_version, features.patch_version];
+    const fw = [features.major_version, features.minor_version, features.patch_version].join('.');
     const key = features.internal_model;
 
     // 1. check if firmware version is supported by CoinInfo.support
     const supported = coins.filter(info => {
-        if (!info.support || typeof info.support[key] !== 'string') {
+        // info.support[key] possible types:
+        // - undefined for unknown models (specified in coins.json)
+        // - boolean for unsupported models (false)
+        // - string for supported models (version)
+        if (!info.support || info.support[key] === false) {
             list[info.shortcut.toLowerCase()] = 'no-support';
             return false;
         }
@@ -88,7 +92,8 @@ export const getUnavailableCapabilities = (features: Features, coins: CoinInfo[]
     supported
         .filter(info => !unavailable.includes(info))
         .forEach(info => {
-            if (versionUtils.isNewer(info.support[key], fw.join('.'))) {
+            const supportVersion = info.support[key];
+            if (typeof supportVersion === 'string' && versionUtils.isNewer(supportVersion, fw)) {
                 list[info.shortcut.toLowerCase()] = 'update-required';
                 unavailable.push(info);
             }
@@ -99,13 +104,13 @@ export const getUnavailableCapabilities = (features: Features, coins: CoinInfo[]
         if (!s.capabilities) return;
         const min = s.min ? s.min[key] : null;
         const max = s.max ? s.max[key] : null;
-        if (min && (min === '0' || versionUtils.isNewer(min, fw.join('.')))) {
+        if (min && (min === '0' || versionUtils.isNewer(min, fw))) {
             const value = min === '0' ? 'no-support' : 'update-required';
             s.capabilities.forEach(m => {
                 list[m] = value;
             });
         }
-        if (max && !versionUtils.isNewerOrEqual(max, fw.join('.'))) {
+        if (max && !versionUtils.isNewerOrEqual(max, fw)) {
             s.capabilities.forEach(m => {
                 list[m] = 'trezor-connect-outdated';
             });

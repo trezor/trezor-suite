@@ -217,7 +217,7 @@ export const getFirmwareRange = [
         params: [
             'signTransaction',
             {
-                support: { T1B1: null, T2T1: '2.1.0', T2B1: '2.6.1' },
+                support: { T1B1: false, T2T1: '2.1.0', T2B1: '2.6.1' },
                 shortcut: 'btc',
                 type: 'bitcoin',
             },
@@ -234,7 +234,11 @@ export const getFirmwareRange = [
         config: EMPTY_CONFIG,
         params: [
             'signTransaction',
-            { support: { T1B1: '1.6.2' }, shortcut: 'btc', type: 'bitcoin' },
+            {
+                support: { T1B1: '1.6.2', T2T1: false, T2B1: false },
+                shortcut: 'btc',
+                type: 'bitcoin',
+            },
             DEFAULT_RANGE,
         ],
         result: {

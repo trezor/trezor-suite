@@ -5,7 +5,13 @@ export type DeviceStatus = 'available' | 'occupied' | 'used';
 
 export type DeviceMode = 'normal' | 'bootloader' | 'initialize' | 'seedless';
 
-export type DeviceFirmwareStatus = 'valid' | 'outdated' | 'required' | 'unknown' | 'none';
+export type DeviceFirmwareStatus =
+    | 'valid'
+    | 'outdated'
+    | 'required'
+    | 'unknown'
+    | 'custom'
+    | 'none';
 
 export type UnavailableCapability =
     | 'no-capability'

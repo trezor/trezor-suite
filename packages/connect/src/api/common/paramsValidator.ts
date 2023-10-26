@@ -108,13 +108,15 @@ export const getFirmwareRange = (
     // set minimum required firmware from coins.json (coinInfo)
     if (coinInfo) {
         models.forEach(model => {
-            if (!coinInfo.support || typeof coinInfo.support[model] !== 'string') {
+            const supportVersion = coinInfo.support ? coinInfo.support[model] : false;
+            if (supportVersion === false) {
                 range[model].min = '0';
             } else if (
                 range[model].min !== '0' &&
-                versionUtils.isNewer(coinInfo.support[model], range[model].min)
+                typeof supportVersion === 'string' &&
+                versionUtils.isNewer(supportVersion, range[model].min)
             ) {
-                range[model].min = coinInfo.support[model];
+                range[model].min = supportVersion;
             }
         });
     }

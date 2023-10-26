@@ -5,9 +5,9 @@ export type { Network } from '@trezor/utxo-lib';
 
 export interface CoinSupport {
     connect: boolean;
-    T1B1: string;
-    T2T1: string;
-    T2B1: string;
+    T1B1: string | false;
+    T2T1: string | false;
+    T2B1: string | false;
 }
 
 export interface BlockchainLink {

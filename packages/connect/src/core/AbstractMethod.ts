@@ -261,6 +261,10 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         if (device.firmwareStatus === 'none') {
             return UI.FIRMWARE_NOT_INSTALLED;
         }
+        if (!range) {
+            // range not known only for custom (unknown) models
+            return;
+        }
         if (range.min === '0') {
             return UI.FIRMWARE_NOT_SUPPORTED;
         }
