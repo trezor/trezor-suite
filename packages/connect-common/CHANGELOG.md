@@ -1,3 +1,10 @@
+# 0.0.22
+
+-   chore(connect): update coins.json support format (95f270fec)
+-   fix(connect-common): fix bootloader version in T2B1 release config (4e698091b)
+-   feat(suite): support t2b1 firmware installation (9ef2bf627)
+-   chore(connect): fix local storage check (#9547) (b9ac84446)
+
 # 0.0.19
 
 -   chore(connect): update coins.json (trezor-common f2374ae) (3b21c4308)
