@@ -165,7 +165,9 @@ interface CommonProps extends Omit<ReactSelectProps<Option>, 'onChange'> {
     isClean?: boolean;
     label?: ReactNode;
     size?: InputSize;
-    noError?: boolean;
+    /**
+     * @description pass `null` if bottom text can be `undefined`
+     */
     bottomText?: ReactNode;
     minValueWidth?: string;
     inputState?: InputState;
@@ -187,7 +189,6 @@ export const Select = ({
     isClean = false,
     label,
     size = 'large',
-    noError = true,
     bottomText,
     useKeyPressScroll,
     isSearchable = false,
@@ -253,7 +254,7 @@ export const Select = ({
                 }}
             />
 
-            {!noError && (
+            {bottomText && (
                 <BottomText inputState={inputState} isDisabled={isDisabled}>
                     {bottomText}
                 </BottomText>
