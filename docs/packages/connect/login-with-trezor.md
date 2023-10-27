@@ -40,7 +40,7 @@ There is no other way to log in and the site operator should decide carefully if
 
 This case occurs when Trezor is only one of more ways of accessing the user account. Usually, theuser already has an account with username-password authentication and they pair Trezor with the account later.
 
-With this option, the user doesn't have to expose their orginal credentials each time they authenticate. Nevertheless, they can still easily recover access to the account using username and password if their Trezor identity gets lost.
+With this option, the user doesn't have to expose their original credentials each time they authenticate. Nevertheless, they can still easily recover access to the account using username and password if their Trezor identity gets lost.
 
 The site can also give the user an option of disabling the original credentials, thus effectively creating the first use case.
 

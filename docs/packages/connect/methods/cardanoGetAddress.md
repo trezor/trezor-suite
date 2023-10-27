@@ -284,8 +284,8 @@ Result with only one address
     payload: {
         addressParameters: {
             addressType: number,
-            path: Array<number>, // hardend path
-            stakingPath?: Array<number>, // hardend path
+            path: Array<number>, // hardened path
+            stakingPath?: Array<number>, // hardened path
             stakingKeyHash?: string,
             certificatePointer?: {
                 blockIndex: number,
@@ -313,8 +313,8 @@ Result with bundle of addresses
         {
             addressParameters: {
                 addressType: number,
-                path: Array<number>, // hardend path
-                stakingPath?: Array<number>, // hardend path
+                path: Array<number>, // hardened path
+                stakingPath?: Array<number>, // hardened path
                 stakingKeyHash?: string,
                 certificatePointer?: {
                     blockIndex: number,
@@ -333,8 +333,8 @@ Result with bundle of addresses
         {
             addressParameters: {
                 addressType: number,
-                path: Array<number>, // hardend path
-                stakingPath?: Array<number>, // hardend path
+                path: Array<number>, // hardened path
+                stakingPath?: Array<number>, // hardened path
                 stakingKeyHash?: string,
                 certificatePointer?: {
                     blockIndex: number,
@@ -353,8 +353,8 @@ Result with bundle of addresses
         {
             addressParameters: {
                 addressType: number,
-                path: Array<number>, // hardend path
-                stakingPath?: Array<number>, // hardend path
+                path: Array<number>, // hardened path
+                stakingPath?: Array<number>, // hardened path
                 stakingKeyHash?: string,
                 certificatePointer?: {
                     blockIndex: number,

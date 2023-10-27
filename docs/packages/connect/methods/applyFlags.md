@@ -11,7 +11,7 @@ const result = await TrezorConnect.applyFlags(params);
 
 [Optional common params](commonParams.md)
 
--   `flags` — requried `number`
+-   `flags` — required `number`
 
 ### Result
 
