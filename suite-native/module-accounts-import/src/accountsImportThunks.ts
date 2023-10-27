@@ -1,12 +1,8 @@
 import { createThunk } from '@suite-common/redux-utils';
 import {
     accountsActions,
-    deviceActions,
-    hiddenDevice,
-    HIDDEN_DEVICE_ID,
-    HIDDEN_DEVICE_STATE,
+    PORTFOLIO_TRACKER_DEVICE_STATE,
     selectAccountsByNetworkAndDevice,
-    selectDeviceById,
 } from '@suite-common/wallet-core';
 import { AccountInfo } from '@trezor/connect';
 import { networks, NetworkSymbol, AccountType } from '@suite-common/wallet-config';
@@ -36,12 +32,7 @@ const getAccountTypeFromDescriptor = (
 export const importAccountThunk = createThunk(
     `${actionPrefix}/importAccountThunk`,
     ({ accountInfo, accountLabel, coin }: ImportAssetThunkPayload, { dispatch, getState }) => {
-        const device = selectDeviceById(getState(), HIDDEN_DEVICE_ID);
-        const deviceState = HIDDEN_DEVICE_STATE;
-
-        if (!device) {
-            dispatch(deviceActions.createDeviceInstance(hiddenDevice));
-        }
+        const deviceState = PORTFOLIO_TRACKER_DEVICE_STATE;
 
         const deviceNetworkAccounts = selectAccountsByNetworkAndDevice(
             getState(),

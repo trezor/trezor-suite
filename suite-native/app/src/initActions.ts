@@ -1,6 +1,6 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { connectInitThunk } from '@suite-common/connect-init';
-import { initBlockchainThunk } from '@suite-common/wallet-core';
+import { createImportedDeviceThunk, initBlockchainThunk } from '@suite-common/wallet-core';
 import { initAnalyticsThunk } from '@suite-native/analytics';
 import { periodicFetchFiatRatesThunk } from '@suite-native/fiat-rates';
 import { selectFiatCurrencyCode } from '@suite-native/module-settings';
@@ -34,6 +34,11 @@ export const applicationInit = createThunk(
                     localCurrency: selectFiatCurrencyCode(getState()),
                 }),
             );
+
+            // We need to make sure to have imported device in state
+            // Since devices are not persisted,
+            // we need to create device instance on app start
+            dispatch(createImportedDeviceThunk());
         } catch (error) {
             console.error(error);
         } finally {

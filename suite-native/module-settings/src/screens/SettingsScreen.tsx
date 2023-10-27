@@ -1,11 +1,11 @@
 import { VStack } from '@suite-native/atoms';
-import { Screen } from '@suite-native/navigation';
+import { Screen, ScreenSubHeader } from '@suite-native/navigation';
 
 import { ApplicationSettings } from '../components/ApplicationSettings';
 import { SupportSettings } from '../components/SupportSettings';
 
 export const SettingsScreen = () => (
-    <Screen>
+    <Screen subheader={<ScreenSubHeader />}>
         <VStack marginTop="extraLarge" spacing="extraLarge">
             <ApplicationSettings />
             <SupportSettings />

@@ -3,16 +3,16 @@ import { DeviceModelInternal } from '@trezor/connect';
 
 // These hidden device constants are used in mobile app to hold all imported accounts.
 
-export const HIDDEN_DEVICE_ID = 'hiddenDeviceWithImportedAccounts';
-export const HIDDEN_DEVICE_STATE = `state@${HIDDEN_DEVICE_ID}:1`;
+export const PORTFOLIO_TRACKER_DEVICE_ID = 'portfolioTrackerDeviceId';
+export const PORTFOLIO_TRACKER_DEVICE_STATE = `state@${PORTFOLIO_TRACKER_DEVICE_ID}:1`;
 
-export const hiddenDevice: TrezorDevice = {
+export const portfolioTrackerDevice: TrezorDevice = {
     type: 'acquired',
-    id: HIDDEN_DEVICE_ID,
+    id: PORTFOLIO_TRACKER_DEVICE_ID,
     status: 'available',
     mode: 'normal',
-    state: HIDDEN_DEVICE_STATE,
-    label: 'Hidden device with imported accounts',
+    state: PORTFOLIO_TRACKER_DEVICE_STATE,
+    label: 'Portfolio tracker device with imported accounts',
     path: '1',
     firmware: 'valid',
     name: 'Trezor Model T',

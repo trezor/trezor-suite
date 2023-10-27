@@ -6,7 +6,6 @@ import {
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
 
-import { ConnectDeviceCrossroadsScreen } from '../screens/ConnectDeviceCrossroadsScreen';
 import { ConnectAndUnlockDeviceScreen } from '../screens/ConnectAndUnlockDeviceScreen';
 import { PinMatrixScreen } from '../screens/PinMatrixScreen';
 import { ConnectingDeviceScreen } from '../screens/ConnectingDeviceScreen';
@@ -15,10 +14,6 @@ export const ConnectDeviceStack = createNativeStackNavigator<ConnectDeviceStackP
 
 export const ConnectDeviceStackNavigator = () => (
     <ConnectDeviceStack.Navigator screenOptions={stackNavigationOptionsConfig}>
-        <ConnectDeviceStack.Screen
-            name={ConnectDeviceStackRoutes.ConnectDeviceCrossroads}
-            component={ConnectDeviceCrossroadsScreen}
-        />
         <ConnectDeviceStack.Screen
             name={ConnectDeviceStackRoutes.ConnectAndUnlockDevice}
             component={ConnectAndUnlockDeviceScreen}

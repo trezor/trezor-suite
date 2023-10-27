@@ -12,10 +12,15 @@ import {
     getFirstDeviceInstance,
 } from '@suite-common/suite-utils';
 
-import { selectDevice as selectDeviceSelector, selectDevices } from './deviceReducer';
+import {
+    selectDevice as selectDeviceSelector,
+    selectDeviceById,
+    selectDevices,
+} from './deviceReducer';
 import { deviceActions, MODULE_PREFIX } from './deviceActions';
 import { selectFirmware } from '../firmware/firmwareReducer';
 import { checkFirmwareAuthenticity } from '../firmware/firmwareThunks';
+import { PORTFOLIO_TRACKER_DEVICE_ID, portfolioTrackerDevice } from './deviceConstants';
 
 /**
  * Called from:
@@ -415,6 +420,17 @@ export const initDevices = createThunk(
                     forcedDevices.length ? forcedDevices[0] : sortByTimestamp([...devices])[0],
                 ),
             );
+        }
+    },
+);
+
+export const createImportedDeviceThunk = createThunk(
+    `${MODULE_PREFIX}/createImportedDevice`,
+    (_, { getState, dispatch }) => {
+        const device = selectDeviceById(getState(), PORTFOLIO_TRACKER_DEVICE_ID);
+
+        if (!device) {
+            dispatch(deviceActions.createDeviceInstance(portfolioTrackerDevice));
         }
     },
 );

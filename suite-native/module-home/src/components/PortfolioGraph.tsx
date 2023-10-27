@@ -6,8 +6,7 @@ import { useSetAtom } from 'jotai';
 import { useGraphForAllAccounts, Graph, TimeSwitch } from '@suite-native/graph';
 import { selectFiatCurrency } from '@suite-native/module-settings';
 import { VStack } from '@suite-native/atoms';
-import { selectIsDeviceDiscoveryActive } from '@suite-common/wallet-core';
-import { selectIsPortfolioEmpty } from '@suite-native/assets';
+import { selectIsDeviceDiscoveryActive, selectIsPortfolioEmpty } from '@suite-common/wallet-core';
 
 import {
     PortfolioGraphHeader,

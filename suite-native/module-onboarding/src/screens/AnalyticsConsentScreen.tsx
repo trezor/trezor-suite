@@ -2,10 +2,11 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
+import { CommonActions } from '@react-navigation/core';
 
 import { setIsOnboardingFinished } from '@suite-native/module-settings';
 import {
-    AccountsImportStackRoutes,
+    HomeStackRoutes,
     OnboardingStackParamList,
     OnboardingStackRoutes,
     RootStackParamList,
@@ -15,10 +16,10 @@ import {
 } from '@suite-native/navigation';
 import { Box, Button, Stack, Switch, Text, VStack } from '@suite-native/atoms';
 import { useTranslate, Translation } from '@suite-native/intl';
-import { Link } from '@suite-native/link';
 import { Icon } from '@suite-common/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { EventType, analytics } from '@suite-native/analytics';
+import { Link } from '@suite-native/link';
 
 import { AnalyticsInfoRow } from '../components/AnalyticsInfoRow';
 
@@ -58,6 +59,11 @@ const cardStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.backGroundOnboardingCard,
 }));
 
+const consentInfoStyle = prepareNativeStyle(utils => ({
+    gap: utils.spacings.small,
+    paddingVertical: utils.spacings.extraSmall,
+}));
+
 const analyticsConsentStyle = prepareNativeStyle(_ => ({
     flex: 1,
     justifyContent: 'space-between',
@@ -72,11 +78,6 @@ const consentWrapperStyle = prepareNativeStyle(utils => ({
     borderRadius: utils.spacings.medium,
     backgroundColor: utils.colors.backgroundTertiaryDefaultOnElevation1,
     width: '100%',
-}));
-
-const consentInfoStyle = prepareNativeStyle(utils => ({
-    gap: 8,
-    paddingVertical: utils.spacings.extraSmall,
 }));
 
 const reportAnalyticsOnboardingCompleted = (isTrackingAllowed: boolean) => {
@@ -105,9 +106,19 @@ export const AnalyticsConsentScreen = () => {
         dispatch(setIsOnboardingFinished());
         reportAnalyticsOnboardingCompleted(isEnabled);
 
-        navigation.navigate(RootStackRoutes.AccountsImport, {
-            screen: AccountsImportStackRoutes.SelectNetwork,
-        });
+        navigation.dispatch(
+            CommonActions.reset({
+                index: 0,
+                routes: [
+                    {
+                        name: RootStackRoutes.AppTabs,
+                        params: {
+                            screen: HomeStackRoutes.Home,
+                        },
+                    },
+                ],
+            }),
+        );
     };
 
     const handleAnalyticsConsent = () => {

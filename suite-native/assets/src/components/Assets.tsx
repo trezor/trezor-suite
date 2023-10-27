@@ -18,7 +18,7 @@ import { selectIsDeviceDiscoveryActive } from '@suite-common/wallet-core';
 import { useTranslate } from '@suite-native/intl';
 
 import { DiscoveryAssetsLoader } from './DiscoveryAssetsLoader';
-import { selectAssetsWithBalances, selectIsPortfolioEmpty } from '../assetsSelectors';
+import { selectAssetsWithBalances } from '../assetsSelectors';
 import { calculateAssetsPercentage } from '../utils';
 import { NetworkAssetsBottomSheet } from './NetworkAssetsBottomSheet';
 import { AssetItem } from './AssetItem';
@@ -37,7 +37,6 @@ export const Assets = ({ maximumAssetsVisible }: AssetsProps) => {
     const navigation = useNavigation<NavigationProp>();
     const { translate } = useTranslate();
     const assetsData = useSelector(selectAssetsWithBalances);
-    const isPortfolioEmpty = useSelector(selectIsPortfolioEmpty);
     const isDiscoveryActive = useSelector(selectIsDeviceDiscoveryActive);
     const [selectedAssetSymbol, setSelectedAssetSymbol] = useState<NetworkSymbol | null>(null);
 
@@ -85,10 +84,7 @@ export const Assets = ({ maximumAssetsVisible }: AssetsProps) => {
                         />
                     ))}
                     {isDiscoveryActive && (
-                        <DiscoveryAssetsLoader
-                            isListEmpty={isPortfolioEmpty}
-                            emptyListSkeletonCount={maximumAssetsVisible}
-                        />
+                        <DiscoveryAssetsLoader emptyListSkeletonCount={maximumAssetsVisible} />
                     )}
                     {isViewMoreButtonVisible && (
                         <TextButton variant="tertiary" isUnderlined onPress={navigateToAssets}>
