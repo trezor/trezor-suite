@@ -9,13 +9,13 @@ import { PROTO } from '@trezor/connect';
 import { mergeDeepObject } from '@trezor/utils';
 import { NativeUsbTransport } from '@trezor/transport-native';
 
-const protobugMessages = require('@trezor/protobuf/messages.json');
+const protobufMessages = require('@trezor/protobuf/messages.json');
 
 const transports = Platform.select({
     ios: ['UdpTransport'],
     android: [
         new NativeUsbTransport({
-            messages: protobugMessages,
+            messages: protobufMessages,
         }),
         'UdpTransport',
     ],
