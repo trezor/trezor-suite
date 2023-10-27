@@ -6,12 +6,12 @@ describe('Onboarding - recover wallet T2T1', () => {
         cy.task('startBridge');
         cy.viewport(1080, 1440).resetDb();
         cy.prefixedVisit('/');
-        cy.task('startEmu', { wipe: true, version: '2.4.3' });
+        cy.task('startEmu', { wipe: true });
 
         cy.getTestElement('@analytics/continue-button').click();
         cy.getTestElement('@analytics/continue-button').click();
 
-        cy.getTestElement('@firmware/skip-button').click();
+        cy.getTestElement('@firmware/continue-button').click();
 
         cy.getTestElement('@onboarding/path-recovery-button').click();
     });
@@ -27,6 +27,7 @@ describe('Onboarding - recover wallet T2T1', () => {
             'If device disconnected during call, error page with retry button should appear. Also note, that unlike with T1B1, retry button initiates recoveryDevice call immediately',
         );
         cy.getTestElement('@onboarding/recovery/start-button', { timeout: 10000 }).click();
+        cy.getTestElement('@onboarding/confirm-on-device');
     });
 });
 
