@@ -21,7 +21,7 @@ export const ASSOCIATED_TOKEN_PROGRAM_PUBLIC_KEY = 'ATokenGPvbdGVxr1b2hvZbsiqW5x
 export const SYSTEM_PROGRAM_PUBLIC_KEY = '11111111111111111111111111111111';
 
 export const getTokenNameAndSymbol = (mint: string, tokenDetailByMint: TokenDetailByMint) => {
-    const tokenDetail = tokenDetailByMint[mint];
+    const tokenDetail = tokenDetailByMint[mint.toLowerCase()];
 
     return tokenDetail
         ? { name: tokenDetail.name, symbol: tokenDetail.symbol }
