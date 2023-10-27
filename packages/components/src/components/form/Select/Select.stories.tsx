@@ -48,6 +48,12 @@ export const Select: StoryObj<SelectProps> = {
                 type: 'radio',
             },
         },
+        label: {
+            control: { type: 'text' },
+        },
+        placeholder: {
+            control: { type: 'text' },
+        },
     },
     args: {
         label: 'Label',
