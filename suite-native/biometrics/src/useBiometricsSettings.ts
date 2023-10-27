@@ -41,6 +41,8 @@ export const useBiometricsSettings = () => {
             return 'failed';
         }
 
+        setIsBiometricsOverlayVisible(false);
+
         if (isBiometricsOptionEnabled) {
             setIsBiometricsOptionEnabled(false);
             setIsUserAuthenticated(false);
@@ -48,17 +50,16 @@ export const useBiometricsSettings = () => {
                 type: EventType.SettingsBiometricsToggle,
                 payload: { enabled: false },
             });
-        } else {
-            setIsUserAuthenticated(true);
-            setIsBiometricsOptionEnabled(true);
-            analytics.report({
-                type: EventType.SettingsBiometricsToggle,
-                payload: { enabled: true },
-            });
+            return 'disabled';
         }
 
-        setIsBiometricsOverlayVisible(false);
-        return isBiometricsOptionEnabled ? 'enabled' : 'disabled';
+        setIsUserAuthenticated(true);
+        setIsBiometricsOptionEnabled(true);
+        analytics.report({
+            type: EventType.SettingsBiometricsToggle,
+            payload: { enabled: true },
+        });
+        return 'enabled';
     }, [
         isBiometricsOptionEnabled,
         setIsBiometricsOptionEnabled,

@@ -57,12 +57,9 @@ export const BiometricsBottomSheet = () => {
     const [isVisible, setIsVisible] = useState(false);
     const [biometricsTypes, setBiometricsTypes] = useState<AuthenticationType[]>([]);
 
-    const isFace =
-        biometricsTypes.filter(biometricsType =>
-            [AuthenticationType.FACIAL_RECOGNITION, AuthenticationType.IRIS].includes(
-                biometricsType,
-            ),
-        ).length > 0;
+    const isFace = biometricsTypes.some(biometricsType =>
+        [AuthenticationType.FACIAL_RECOGNITION, AuthenticationType.IRIS].includes(biometricsType),
+    );
 
     const iconName = isFace ? 'faceId' : 'fingerprint';
 
