@@ -22,11 +22,11 @@ export const applicationInit = createThunk(
             // TODO: uncomment or revert commit when UI is ready for message system
             // dispatch(initMessageSystemThunk({ jwsPublicKey: getJWSPublicKey() }));
 
-            await dispatch(connectInitThunk()).unwrap();
+            await dispatch(connectInitThunk());
 
             dispatch(setIsConnectInitialized(true));
 
-            dispatch(initBlockchainThunk()).unwrap();
+            dispatch(initBlockchainThunk());
 
             dispatch(
                 periodicFetchFiatRatesThunk({
