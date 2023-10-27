@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { AppState, Platform } from 'react-native';
+import { AppState, NativeEventSubscription, Platform } from 'react-native';
 
 import * as LocalAuthentication from 'expo-local-authentication';
 
@@ -58,7 +58,7 @@ export const useBiometrics = () => {
 
     // Monitors AppState and adjust the authentication state accordingly.
     useEffect(() => {
-        const subscription = AppState.addEventListener('change', nextAppState => {
+        const changeSubscription = AppState.addEventListener('change', nextAppState => {
             switch (nextAppState) {
                 case 'active':
                     if (
@@ -91,13 +91,40 @@ export const useBiometrics = () => {
             setAppStateVisible(appState.current);
         });
 
-        return () => subscription.remove();
+        return () => {
+            changeSubscription.remove();
+        };
     }, [
         isBiometricsOptionEnabled,
         setIsUserAuthenticated,
         setIsBiometricsOverlayVisible,
         isUserAuthenticated,
     ]);
+
+    /* 
+        The AppState `change` event is on Android emitted to late to rerender the UI, so the content 
+        of the screen would be visible when the app is in the background. To make the biometrics
+        overlay visible, the Android specific `blur` and `focus` listeners are needed.
+    */
+    useEffect(() => {
+        let blurSubscription: NativeEventSubscription | undefined;
+        let focusSubscription: NativeEventSubscription | undefined;
+
+        if (Platform.OS === 'android') {
+            blurSubscription = AppState.addEventListener('blur', () =>
+                setIsBiometricsOverlayVisible(true),
+            );
+
+            focusSubscription = AppState.addEventListener('focus', () =>
+                setIsBiometricsOverlayVisible(false),
+            );
+        }
+
+        return () => {
+            blurSubscription?.remove();
+            focusSubscription?.remove();
+        };
+    }, [setIsBiometricsOverlayVisible]);
 
     // Ask the user for an authentication whenever the authentication state changes.
     useEffect(() => {

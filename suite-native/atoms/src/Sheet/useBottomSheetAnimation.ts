@@ -1,6 +1,5 @@
 import {
     Easing,
-    interpolateColor,
     runOnJS,
     useAnimatedGestureHandler,
     useAnimatedStyle,
@@ -11,7 +10,6 @@ import { useCallback, useEffect } from 'react';
 import { PanGestureHandlerGestureEvent } from 'react-native-gesture-handler';
 import { NativeScrollEvent } from 'react-native';
 
-import { useNativeStyles } from '@trezor/styles';
 import { getScreenHeight } from '@trezor/env-utils';
 
 type GestureHandlerContext = {
@@ -32,9 +30,7 @@ export const useBottomSheetAnimation = ({
     setIsCloseScrollEnabled?: (isCloseScrollEnabled: boolean) => void;
     isCloseScrollEnabled?: boolean;
 }) => {
-    const { utils } = useNativeStyles();
     const transparency = isVisible ? 1 : 0;
-    const colorOverlay = utils.transparentize(0.3, utils.colors.backgroundNeutralBold);
     const translatePanY = useSharedValue(SCREEN_HEIGHT);
     const animatedTransparency = useSharedValue(transparency);
 
@@ -44,17 +40,6 @@ export const useBottomSheetAnimation = ({
             easing: Easing.out(Easing.cubic),
         });
     }, [transparency, animatedTransparency]);
-
-    const animatedSheetWithOverlayStyle = useAnimatedStyle(
-        () => ({
-            backgroundColor: interpolateColor(
-                animatedTransparency.value,
-                [0, 1],
-                ['transparent', colorOverlay],
-            ),
-        }),
-        [transparency, animatedTransparency],
-    );
 
     const animatedSheetWrapperStyle = useAnimatedStyle(() => ({
         transform: [
@@ -130,7 +115,6 @@ export const useBottomSheetAnimation = ({
     });
 
     return {
-        animatedSheetWithOverlayStyle,
         animatedSheetWrapperStyle,
         closeSheetAnimated,
         openSheetAnimated,

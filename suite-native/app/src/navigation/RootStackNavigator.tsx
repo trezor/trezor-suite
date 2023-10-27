@@ -39,7 +39,6 @@ export const RootStackNavigator = () => {
         }
         return RootStackRoutes.Onboarding;
     };
-
     return (
         <RootStack.Navigator
             initialRouteName={getInitialRouteName()}
