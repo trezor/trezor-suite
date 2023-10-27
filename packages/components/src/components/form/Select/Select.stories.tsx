@@ -39,6 +39,9 @@ export const Select: StoryObj<SelectProps> = {
                 type: 'boolean',
             },
         },
+        bottomText: {
+            control: { type: 'text' },
+        },
         size: {
             control: {
                 options: { 'Large (default)': null, Small: 'small' },
