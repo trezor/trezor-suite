@@ -3,7 +3,14 @@ import { useState, Ref, ReactNode, TextareaHTMLAttributes } from 'react';
 import { spacingsPx } from '@trezor/theme';
 
 import { InputState } from '../inputTypes';
-import { baseInputStyle, InputWrapper, Label, getInputStateBgColor } from '../InputStyles';
+import {
+    baseInputStyle,
+    InputWrapper,
+    Label,
+    getInputStateBgColor,
+    INPUT_PADDING_TOP,
+    LABEL_TRANSFORM,
+} from '../InputStyles';
 import { BottomText } from '../BottomText';
 import { TopAddons } from '../TopAddons';
 import { CharacterCount, CharacterCountProps } from './CharacterCount';
@@ -37,8 +44,6 @@ const TextareaWrapper = styled(InputWrapper)`
 
 const StyledTextarea = styled.textarea<Pick<TextareaProps, 'inputState'>>`
     ${baseInputStyle}
-
-    width: 100%;
     padding: 0 ${spacingsPx.md} 0;
     border: none;
     resize: none;
@@ -46,7 +51,15 @@ const StyledTextarea = styled.textarea<Pick<TextareaProps, 'inputState'>>`
 `;
 
 const TextareaLabel = styled(Label)`
-    top: ${spacingsPx.md};
+    top: ${INPUT_PADDING_TOP};
+    left: ${spacingsPx.md};
+
+    /* move up when input is focused OR has a placeholder OR has value  */
+    textarea:focus ~ &,
+    textarea:not(:placeholder-shown) ~ &,
+    textarea:not([placeholder='']):placeholder-shown ~ & {
+        transform: ${LABEL_TRANSFORM};
+    }
 `;
 
 export interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
