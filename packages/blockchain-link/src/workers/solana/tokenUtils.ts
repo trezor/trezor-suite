@@ -17,7 +17,7 @@ export const TOKEN_ACCOUNT_LAYOUT = BufferLayout.struct<TokenAccountLayout>([
     BufferLayout.blob(93),
 ]);
 
-const WSOL_MINT = 'So11111111111111111111111111111111111111112';
+const WSOL_MINT_LOWERCASE = 'so11111111111111111111111111111111111111112';
 
 // https://github.com/viaprotocol/tokenlists
 // Aggregated token list with tokens listed on multiple exchanges
@@ -31,7 +31,7 @@ export const getTokenMetadata = async (): Promise<TokenDetailByMint> => {
 
     const tokenMap = tokenListResult.reduce(
         (acc, token) => ({
-            [token.address]: {
+            [token.address.toLowerCase()]: {
                 name: token.name,
                 symbol: token.symbol,
             },
@@ -41,7 +41,7 @@ export const getTokenMetadata = async (): Promise<TokenDetailByMint> => {
     );
 
     // Explicitly set Wrapped SOL symbol to WSOL instead of the official 'SOL' which leads to confusion in UI
-    tokenMap[WSOL_MINT].symbol = 'WSOL';
+    tokenMap[WSOL_MINT_LOWERCASE].symbol = 'WSOL';
 
     return tokenMap;
 };
