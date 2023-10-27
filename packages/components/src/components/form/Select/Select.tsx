@@ -3,7 +3,7 @@ import ReactSelect, { Props as ReactSelectProps, StylesConfig, SelectInstance } 
 import styled, { css, DefaultTheme, useTheme } from 'styled-components';
 import { borders, spacingsPx, typography, zIndices } from '@trezor/theme';
 
-import { INPUT_HEIGHTS, baseInputStyle } from '../InputStyles';
+import { INPUT_HEIGHTS, LABEL_TRANSFORM, Label, baseInputStyle } from '../InputStyles';
 import { BottomText } from '../BottomText';
 import { InputState, InputSize } from '../inputTypes';
 import { Control, GroupHeading, Option } from './customComponents';
@@ -33,9 +33,10 @@ type WrapperProps = Pick<
     | 'size'
     | 'menuIsOpen'
     | 'isSearchable'
->;
+> & { isWithLabel: boolean; isWithPlaceholder: boolean };
 
 const Wrapper = styled.div<WrapperProps>`
+    position: relative;
     width: 100%;
 
     ${({ isClean }) =>
@@ -56,17 +57,16 @@ const Wrapper = styled.div<WrapperProps>`
     }
 
     .${reactSelectClassNamePrefix}__control {
-        ${baseInputStyle}
+        padding: ${({ isClean }) => (isClean ? 0 : `0 ${spacingsPx.md}`)};
         display: flex;
         align-items: center;
         flex-wrap: nowrap;
         height: ${({ isClean, size }) => (isClean ? 22 : size && INPUT_HEIGHTS[size])}px;
-        padding: ${({ isClean }) => (isClean ? 0 : `0 ${spacingsPx.md}`)};
         border-style: ${({ isClean }) => (isClean ? 'none' : 'solid')};
-        background: ${({ isClean }) => isClean && 'transparent !important'};
         box-shadow: none;
-        ${typography.body};
         cursor: pointer;
+        ${baseInputStyle}
+        background-color: ${({ isClean }) => isClean && 'transparent !important'};
 
         :hover:not(:focus-within) {
             border-color: transparent;
@@ -80,6 +80,7 @@ const Wrapper = styled.div<WrapperProps>`
     }
 
     .${reactSelectClassNamePrefix}__placeholder {
+        display: ${({ isWithPlaceholder }) => !isWithPlaceholder && 'none'};
         color: ${({ theme, isDisabled }) => (isDisabled ? theme.textDisabled : theme.textSubdued)};
         ${typography.body}
     }
@@ -113,6 +114,12 @@ const Wrapper = styled.div<WrapperProps>`
         color: ${({ theme }) => theme.textDefault} !important;
 
         ${typography.body};
+    }
+
+    .${reactSelectClassNamePrefix}__indicators {
+        position: absolute;
+        top: ${spacingsPx.md};
+        right: ${spacingsPx.md};
     }
 
     .${reactSelectClassNamePrefix}__indicator-separator {
@@ -151,6 +158,15 @@ const Wrapper = styled.div<WrapperProps>`
         :active {
             background: ${({ theme }) => theme.backgroundSurfaceElevation0};
         }
+    }
+`;
+
+const SelectLabel = styled(Label)`
+    /* move up when input is focused OR has a placeholder OR has value  */
+    div:focus-within ~ &,
+    div:has(div.react-select__single-value:not(:empty)) ~ &,
+    div:has(div.react-select__placeholder:not(:empty)) ~ & {
+        transform: ${LABEL_TRANSFORM};
     }
 `;
 
@@ -197,6 +213,7 @@ export const Select = ({
     inputState,
     components,
     onChange,
+    placeholder,
     isDisabled,
     'data-test': dataTest,
     ...props
@@ -231,6 +248,8 @@ export const Select = ({
             minValueWidth={minValueWidth}
             isDisabled={isDisabled}
             menuIsOpen={menuIsOpen}
+            isWithLabel={!!label}
+            isWithPlaceholder={!!placeholder}
         >
             <ReactSelect
                 ref={selectRef}
@@ -245,6 +264,7 @@ export const Select = ({
                 isSearchable={isSearchable}
                 menuIsOpen={menuIsOpen}
                 isDisabled={isDisabled}
+                placeholder={placeholder || ''}
                 {...props}
                 components={{
                     Control: controlProps => <Control {...controlProps} dataTest={dataTest} />,
@@ -253,6 +273,12 @@ export const Select = ({
                     ...components,
                 }}
             />
+
+            {label && (
+                <SelectLabel $size={size} isDisabled={isDisabled}>
+                    {label}
+                </SelectLabel>
+            )}
 
             {bottomText && (
                 <BottomText inputState={inputState} isDisabled={isDisabled}>
