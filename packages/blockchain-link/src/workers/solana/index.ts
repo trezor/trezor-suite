@@ -163,11 +163,7 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
 
     const allTxIds = Array.from(
         new Set(
-            (
-                await Promise.all(
-                    allAccounts.map(async account => await getAllSignatures(api, account)),
-                )
-            ).flat(),
+            (await Promise.all(allAccounts.map(account => getAllSignatures(api, account)))).flat(),
         ),
     )
         .sort((a, b) => b.slot - a.slot)

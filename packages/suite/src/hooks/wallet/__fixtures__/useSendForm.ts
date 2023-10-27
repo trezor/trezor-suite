@@ -212,7 +212,7 @@ export const getRootReducer = (selectedAccount = BTC_ACCOUNT, fees = DEFAULT_FEE
                     btc: {},
                     eth: {},
                     xrp: {},
-                    sol: {},
+                    sol: { blockHash: 'BuKJXfBwb5BUXK7wACFCBpTHKyzcSfnAXG2NpyHJQhcX' },
                 },
                 () => ({}),
             ),
