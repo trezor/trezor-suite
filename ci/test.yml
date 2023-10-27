@@ -298,6 +298,7 @@ connect-popup legacy:
   parallel:
     matrix:
       - TEST_FILE: ["methods.test"]
+      - TEST_FILE: ["passphrase.test"]
 
 connect-popup-webextension:
   extends: .e2e connect-popup-webextension
