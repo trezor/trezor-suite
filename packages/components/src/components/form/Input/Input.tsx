@@ -4,7 +4,13 @@ import { useMeasure } from 'react-use';
 import { spacingsPx, spacings, typography } from '@trezor/theme';
 
 import { Icon } from '../../assets/Icon/Icon';
-import { baseInputStyle, INPUT_HEIGHTS, BaseInputProps, Label } from '../InputStyles';
+import {
+    baseInputStyle,
+    INPUT_HEIGHTS,
+    BaseInputProps,
+    Label,
+    LABEL_TRANSFORM,
+} from '../InputStyles';
 import { BOTTOM_TEXT_MIN_HEIGHT, BottomText } from '../BottomText';
 import { InputState, InputSize } from '../inputTypes';
 import { TopAddons } from '../TopAddons';
@@ -27,16 +33,13 @@ const getExtraAddonPadding = (size: InputSize) =>
     (size === 'small' ? spacings.sm : spacings.md) + spacings.xs;
 
 const StyledInput = styled.input<StyledInputProps & { isWithLabel: boolean }>`
-    ${baseInputStyle}
-
-    width: 100%;
-    height: ${({ $size }) => `${INPUT_HEIGHTS[$size as InputSize]}px`};
     padding: 0 ${spacingsPx.md};
-    padding-top: ${({ isWithLabel }) => isWithLabel && '18px'};
     padding-left: ${({ leftAddonWidth, $size }) =>
         leftAddonWidth ? `${leftAddonWidth + getExtraAddonPadding($size)}px` : undefined};
     padding-right: ${({ rightAddonWidth, $size }) =>
         rightAddonWidth ? `${rightAddonWidth + getExtraAddonPadding($size)}px` : undefined};
+    height: ${({ $size }) => `${INPUT_HEIGHTS[$size as InputSize]}px`};
+    ${baseInputStyle}
     ${({ $size }) => $size === 'small' && typography.hint};
 `;
 
@@ -57,6 +60,15 @@ const InputAddon = styled.div<{ align: innerAddonAlignment; size: InputSize }>`
     left: ${({ align, size }) => align === 'left' && getInputAddonPadding(size)};
     display: flex;
     align-items: center;
+`;
+
+const InputLabel = styled(Label)`
+    /* move up when input is focused OR has a placeholder OR has value  */
+    input:focus ~ &,
+    input:not(:placeholder-shown) ~ &,
+    input:not([placeholder='']):placeholder-shown ~ & {
+        transform: ${LABEL_TRANSFORM};
+    }
 `;
 
 type innerAddonAlignment = 'left' | 'right';
@@ -167,9 +179,9 @@ const Input = ({
                 />
 
                 {label && (
-                    <Label $size={size} isDisabled={isDisabled}>
+                    <InputLabel $size={size} isDisabled={isDisabled}>
                         {label}
-                    </Label>
+                    </InputLabel>
                 )}
             </InputWrapper>
 

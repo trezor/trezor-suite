@@ -45,12 +45,17 @@ export const getInputStateBgColor = (state: InputState | undefined, theme: Defau
     }
 };
 
+export const INPUT_PADDING_TOP = '18px';
+
 export interface BaseInputProps {
     inputState?: InputState;
     disabled?: boolean;
+    isWithLabel?: boolean;
 }
 
 export const baseInputStyle = css<BaseInputProps>`
+    width: 100%;
+    padding-top: ${({ isWithLabel }) => isWithLabel && INPUT_PADDING_TOP};
     background-color: ${({ theme, inputState }) => getInputStateBgColor(inputState, theme)};
     border-radius: ${borders.radii.sm};
     border: solid ${INPUT_BORDER_WIDTH}px;
@@ -105,6 +110,8 @@ export const RightLabel = styled.div`
     padding-left: 5px;
 `;
 
+export const LABEL_TRANSFORM = 'translate(0px, -10px) scale(0.75)';
+
 export const Label = styled.label<{ $size?: InputSize; isDisabled?: boolean }>`
     position: absolute;
     left: calc(${spacingsPx.md} + ${INPUT_BORDER_WIDTH}px);
@@ -115,14 +122,4 @@ export const Label = styled.label<{ $size?: InputSize; isDisabled?: boolean }>`
         font-size 0.12s ${motionEasingStrings.enter};
     transform-origin: 0;
     pointer-events: none;
-
-    /* move up when input is focused OR has a placeholder OR has value  */
-    input:focus ~ &,
-    textarea:focus ~ &,
-    input:not(:placeholder-shown) ~ &,
-    textarea:not(:placeholder-shown) ~ &,
-    input:not([placeholder='']):placeholder-shown ~ &,
-    textarea:not([placeholder='']):placeholder-shown ~ & {
-        transform: translate(0px, -10px) scale(0.75);
-    }
 `;
