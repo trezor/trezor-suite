@@ -46,7 +46,7 @@ export const AccountNavigation = ({
             },
             title: <Translation id="TR_NAV_DETAILS" />,
             position: 'primary',
-            isHidden: !['cardano', 'bitcoin', 'solana'].includes(networkType),
+            isHidden: !['cardano', 'bitcoin'].includes(networkType),
         },
         {
             id: 'wallet-tokens',
