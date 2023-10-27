@@ -43,7 +43,10 @@ const metadataReducer = (state = initialState, action: Action): MetadataState =>
     produce(state, draft => {
         switch (action.type) {
             case STORAGE.LOAD:
-                return action.payload.metadata || state;
+                return {
+                    ...state,
+                    ...action.payload.metadata,
+                };
             case METADATA.ENABLE:
                 draft.enabled = true;
                 break;
