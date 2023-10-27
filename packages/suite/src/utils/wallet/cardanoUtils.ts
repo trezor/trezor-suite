@@ -15,6 +15,8 @@ import {
     amountToSatoshi,
     formatAmount,
     formatNetworkAmount,
+    getAddressType,
+    getStakingPath,
     networkAmountToSatoshi,
 } from '@suite-common/wallet-utils';
 
@@ -24,18 +26,6 @@ export const loadCardanoLib = async () => {
     );
     return lib;
 };
-
-export const getProtocolMagic = (accountSymbol: Account['symbol']) =>
-    // TODO: use testnet magic from connect once this PR is merged https://github.com/trezor/connect/pull/1046
-    accountSymbol === 'ada' ? CARDANO.PROTOCOL_MAGICS.mainnet : 1097911063;
-
-export const getNetworkId = (accountSymbol: Account['symbol']) =>
-    accountSymbol === 'ada' ? CARDANO.NETWORK_IDS.mainnet : CARDANO.NETWORK_IDS.testnet;
-
-export const getAddressType = (_accountType: Account['accountType']) =>
-    PROTO.CardanoAddressType.BASE;
-
-export const getStakingPath = (account: Account) => `m/1852'/1815'/${account.index}'/2/0`;
 
 export const getChangeAddressParameters = (account: Account) => {
     if (!account.addresses || account.networkType !== 'cardano') return;

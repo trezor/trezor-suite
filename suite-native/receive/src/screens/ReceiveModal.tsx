@@ -27,13 +27,14 @@ export const ReceiveModal = () => {
         });
     };
 
+    // TODO: change title
+
     return (
         <Screen subheader={<ScreenSubHeader content={translate('moduleReceive.title')} />}>
             {route.params?.accountKey ? (
                 <ReceiveAccount
                     accountKey={route.params.accountKey}
                     tokenContract={route.params?.tokenContract}
-                    isAccountChangeAllowed={false}
                 />
             ) : (
                 <AccountsList onSelectAccount={handleSelectAccount} />

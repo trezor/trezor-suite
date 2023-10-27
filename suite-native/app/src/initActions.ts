@@ -26,7 +26,7 @@ export const applicationInit = createThunk(
 
             dispatch(setIsConnectInitialized(true));
 
-            dispatch(initBlockchainThunk()).unwrap();
+            await dispatch(initBlockchainThunk()).unwrap();
 
             dispatch(
                 periodicFetchFiatRatesThunk({

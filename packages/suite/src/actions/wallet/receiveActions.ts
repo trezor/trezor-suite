@@ -1,18 +1,11 @@
 import { notificationsActions } from '@suite-common/toast-notifications';
-import TrezorConnect from '@trezor/connect';
-import { getDerivationType } from '@suite-common/wallet-utils';
+import { readAddressFromDevice } from '@suite-common/wallet-utils';
 import { UserContextPayload } from '@suite-common/suite-types';
 import { selectDevice } from '@suite-common/wallet-core';
 
 import { RECEIVE } from 'src/actions/wallet/constants';
 import * as modalActions from 'src/actions/suite/modalActions';
 import { GetState, Dispatch } from 'src/types/suite';
-import {
-    getStakingPath,
-    getProtocolMagic,
-    getNetworkId,
-    getAddressType,
-} from 'src/utils/wallet/cardanoUtils';
 
 export type ReceiveAction =
     | { type: typeof RECEIVE.DISPOSE }
@@ -66,48 +59,9 @@ export const showAddress =
             return;
         }
 
-        let response;
-        const params = {
-            device,
-            path,
-            unlockPath: account.unlockPath,
-            useEmptyPassphrase: device.useEmptyPassphrase,
-            coin: account.symbol,
-        };
-
         dispatch(modalActions.preserve());
 
-        switch (account.networkType) {
-            case 'ethereum':
-                response = await TrezorConnect.ethereumGetAddress(params);
-                break;
-            case 'cardano':
-                response = await TrezorConnect.cardanoGetAddress({
-                    device,
-                    useEmptyPassphrase: device.useEmptyPassphrase,
-                    addressParameters: {
-                        stakingPath: getStakingPath(account),
-                        addressType: getAddressType(account.accountType),
-                        path,
-                    },
-                    protocolMagic: getProtocolMagic(account.symbol),
-                    networkId: getNetworkId(account.symbol),
-                    derivationType: getDerivationType(account.accountType),
-                });
-                break;
-            case 'ripple':
-                response = await TrezorConnect.rippleGetAddress(params);
-                break;
-            case 'bitcoin':
-                response = await TrezorConnect.getAddress(params);
-                break;
-            default:
-                response = {
-                    success: false,
-                    payload: { error: 'Method for getAddress not defined', code: undefined },
-                };
-                break;
-        }
+        const response = await readAddressFromDevice({ device, account, addressPath: path });
 
         if (response.success) {
             // show second part of the "confirm address" modal

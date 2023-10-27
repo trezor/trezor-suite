@@ -11,6 +11,7 @@ import { deviceAuthenticityActions } from '@suite-common/device-authenticity';
 
 import { deviceActions } from './deviceActions';
 import { DiscoveryRootState, selectDiscoveryByDeviceState } from '../discovery/discoveryReducer';
+import { HIDDEN_DEVICE_ID } from './deviceConstants';
 
 export type State = {
     devices: TrezorDevice[];
@@ -664,4 +665,9 @@ export const selectIsDeviceAuthenticityFulfilled = (
         deviceAuthenticity.valid ||
         (deviceAuthenticity.error === 'CA_PUBKEY_NOT_FOUND' && deviceAuthenticity.configExpired) // CA_PUBKEY_NOT_FOUND with configExpired is temporary allowed and just logged to Sentry
     );
+};
+
+export const selectIsSelectedDeviceImported = (state: DeviceRootState) => {
+    const device = selectDevice(state);
+    return device?.id === HIDDEN_DEVICE_ID;
 };
