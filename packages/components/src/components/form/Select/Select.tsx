@@ -26,13 +26,7 @@ const createSelectStyle = (theme: DefaultTheme): StylesConfig<Option, boolean> =
 
 type WrapperProps = Pick<
     SelectProps,
-    | 'isClean'
-    | 'hideDropdownIndicator'
-    | 'isDisabled'
-    | 'minValueWidth'
-    | 'size'
-    | 'menuIsOpen'
-    | 'isSearchable'
+    'isClean' | 'isDisabled' | 'minValueWidth' | 'size' | 'menuIsOpen' | 'isSearchable'
 > & { isWithLabel: boolean; isWithPlaceholder: boolean };
 
 const Wrapper = styled.div<WrapperProps>`
@@ -48,7 +42,7 @@ const Wrapper = styled.div<WrapperProps>`
         `}
 
     .${reactSelectClassNamePrefix}__dropdown-indicator {
-        display: ${({ hideDropdownIndicator }) => (hideDropdownIndicator ? 'none' : 'flex')};
+        display: flex;
         align-items: center;
         color: ${({ theme, isDisabled }) => (isDisabled ? theme.iconDisabled : theme.iconSubdued)};
         padding: 0;
@@ -177,7 +171,6 @@ const closeMenuOnScroll = (e: Event) =>
 export type Option = any;
 
 interface CommonProps extends Omit<ReactSelectProps<Option>, 'onChange'> {
-    hideDropdownIndicator?: boolean;
     isClean?: boolean;
     label?: ReactNode;
     size?: InputSize;
@@ -200,7 +193,6 @@ type KeyPressScrollProps =
 export type SelectProps = CommonProps & KeyPressScrollProps;
 
 export const Select = ({
-    hideDropdownIndicator,
     className,
     isClean = false,
     label,
@@ -243,7 +235,6 @@ export const Select = ({
             className={className}
             isClean={isClean}
             isSearchable={isSearchable}
-            hideDropdownIndicator={hideDropdownIndicator}
             size={size}
             minValueWidth={minValueWidth}
             isDisabled={isDisabled}
