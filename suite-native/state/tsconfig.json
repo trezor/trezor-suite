@@ -32,6 +32,10 @@
         { "path": "../storage" },
         { "path": "../toasts" },
         { "path": "../../packages/connect" },
+        { "path": "../../packages/protobuf" },
+        {
+            "path": "../../packages/transport-native"
+        },
         { "path": "../../packages/utils" }
     ]
 }

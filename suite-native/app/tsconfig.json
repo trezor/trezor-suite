@@ -53,6 +53,9 @@
         { "path": "../toasts" },
         { "path": "../transactions" },
         { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/react-native-usb"
+        },
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" }
     ],

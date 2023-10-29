@@ -121,8 +121,6 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
                             'Runtime',
                             `DeviceList.init: transports[] of unexpected type: ${transportType}`,
                         );
-                    // not implemented
-                    // case 'UdpTransport':
                 }
             } else if (transportType instanceof Transport) {
                 this.transports.unshift(transportType);

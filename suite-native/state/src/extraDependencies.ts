@@ -1,3 +1,5 @@
+import { Platform } from 'react-native';
+
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { extraDependenciesMock } from '@suite-common/test-utils';
 import { supportedNetworkSymbols } from '@suite-native/config';
@@ -5,6 +7,19 @@ import { selectDevices } from '@suite-common/wallet-core';
 import { selectFiatCurrencyCode, setFiatCurrency } from '@suite-native/module-settings';
 import { PROTO } from '@trezor/connect';
 import { mergeDeepObject } from '@trezor/utils';
+import { NativeUsbTransport } from '@trezor/transport-native';
+
+const protobufMessages = require('@trezor/protobuf/messages.json');
+
+const transports = Platform.select({
+    ios: ['UdpTransport'],
+    android: [
+        new NativeUsbTransport({
+            messages: protobufMessages,
+        }),
+        'UdpTransport',
+    ],
+});
 
 export const extraDependencies: ExtraDependencies = mergeDeepObject(extraDependenciesMock, {
     selectors: {
@@ -12,6 +27,9 @@ export const extraDependencies: ExtraDependencies = mergeDeepObject(extraDepende
         selectBitcoinAmountUnit: () => PROTO.AmountUnit.BITCOIN,
         selectLocalCurrency: selectFiatCurrencyCode,
         selectDevices,
+        selectDebugSettings: () => ({
+            transports,
+        }),
     } as Partial<ExtraDependencies['selectors']>,
     thunks: {} as Partial<ExtraDependencies['thunks']>,
     actions: {
@@ -19,7 +37,18 @@ export const extraDependencies: ExtraDependencies = mergeDeepObject(extraDepende
     } as Partial<ExtraDependencies['actions']>,
     actionTypes: {} as Partial<ExtraDependencies['actionTypes']>,
     reducers: {} as Partial<ExtraDependencies['reducers']>,
-    utils: {} as Partial<ExtraDependencies['utils']>,
+    utils: {
+        connectInitSettings: {
+            lazyLoad: false,
+            transportReconnect: false,
+            debug: false,
+            popup: false,
+            manifest: {
+                email: 'info@trezor.io',
+                appUrl: '@trezor/suite',
+            },
+        },
+    } as Partial<ExtraDependencies['utils']>,
 } as OneLevelPartial<ExtraDependencies>) as ExtraDependencies;
 
 type OneLevelPartial<T extends object> = Record<keyof T, Partial<T[keyof T]>>;

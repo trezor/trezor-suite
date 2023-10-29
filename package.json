@@ -37,6 +37,8 @@
         "_______ Global Scripts _______": "Shared scripts for running in all workspaces",
         "g:eslint": "cd $INIT_CWD && eslint --report-unused-disable-directives --cache --ignore-path ../../.gitignore",
         "g:jest": "cd $INIT_CWD && jest",
+        "g:rimraf": "cd $INIT_CWD && rimraf",
+        "g:tsc": "cd $INIT_CWD && tsc",
         "_______ Nx testing _______": "Nx wrapped commands for testing, linting, type checking...",
         "nx:build:libs": "yarn nx affected --target=build:lib",
         "nx:type-check": "yarn nx affected --target=type-check",
@@ -88,7 +90,8 @@
         "css-loader": "^6.8.1",
         "html-webpack-plugin": "^5.5.3",
         "@types/node": "18.17.15",
-        "@sentry/types": "7.56.0"
+        "@sentry/types": "7.56.0",
+        "@types/react": "18.0.32"
     },
     "devDependencies": {
         "@babel/cli": "^7.22.5",

@@ -1,0 +1,40 @@
+{
+    "name": "@trezor/react-native-usb",
+    "version": "1.0.0",
+    "description": "React Native WebUSB implementation",
+    "main": "src/index",
+    "publishConfig": {
+        "main": "lib/index.js",
+        "types": "lib/index.d.ts"
+    },
+    "scripts": {
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "type-check": "yarn g:tsc --build tsconfig.json",
+        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json",
+        "open:ios": "open -a \"Xcode\" example/ios",
+        "open:android": "open -a \"Android Studio\" example/android"
+    },
+    "keywords": [
+        "react-native",
+        "expo",
+        "react-native-usb",
+        "ReactNativeUsb"
+    ],
+    "repository": "https://github.com/trezor/trezor-suite",
+    "bugs": {
+        "url": "https://github.com/trezor/trezor-suite/issues"
+    },
+    "author": "Daniel Suchy <daniel.suchy@satoshilabs.com> (@Nodonisko)",
+    "license": "MIT",
+    "homepage": "https://github.com/trezor/trezor-suite#readme",
+    "devDependencies": {
+        "@types/react": "^18.0.25",
+        "expo-module-scripts": "^3.0.11"
+    },
+    "peerDependencies": {
+        "expo": "*",
+        "expo-modules-core": "*",
+        "react": "*",
+        "react-native": "*"
+    }
+}
