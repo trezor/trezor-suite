@@ -12,7 +12,7 @@ import { Color } from '@trezor/theme';
 import { useOpenLink } from '../useOpenLink';
 
 type LinkProps = {
-    label: string;
+    label: React.ReactNode;
     href: string;
     isUnderlined?: boolean;
     textColor?: Color;
