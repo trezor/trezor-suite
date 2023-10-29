@@ -72,7 +72,6 @@ export const WordInput = memo(() => {
                 isSearchable
                 isClearable={false}
                 menuIsOpen
-                hideDropdownIndicator
                 noOptionsMessage={({ inputValue }: { inputValue: string }) =>
                     translationString('TR_WORD_DOES_NOT_EXIST', { word: inputValue })
                 }
