@@ -51,21 +51,11 @@ const StyledConnectDevicePrompt = styled(ConnectDevicePromptManager)`
     margin-top: 120px;
 `;
 
-interface FirmwareInitialProps {
-    cachedDevice?: TrezorDevice;
-    setCachedDevice: Dispatch<SetStateAction<TrezorDevice | undefined>>;
-    // This component is shared between Onboarding flow and standalone fw update modal with few minor UI changes
-    // If it is set to true, then you know it is being rendered in standalone fw update modal
-    standaloneFwUpdate?: boolean;
-    onInstall: (firmwareType?: FirmwareType) => void;
-    shouldSwitchFirmwareType?: boolean;
-    onClose?: () => void;
-}
-
 interface GetDescriptionProps {
     required: boolean;
     standaloneFwUpdate: boolean;
     reinstall: boolean;
+    targetFirmwareType: FirmwareType;
     shouldSwitchFirmwareType?: boolean;
     isBitcoinOnlyAvailable?: boolean;
 }
@@ -74,13 +64,17 @@ const getDescription = ({
     required,
     standaloneFwUpdate,
     reinstall,
+    targetFirmwareType,
     shouldSwitchFirmwareType,
     isBitcoinOnlyAvailable,
 }: GetDescriptionProps) => {
     if (shouldSwitchFirmwareType) {
-        return isBitcoinOnlyAvailable
-            ? 'TR_SWITCH_FIRMWARE_TYPE_DESCRIPTION'
-            : 'TR_BITCOIN_ONLY_UNAVAILABLE';
+        if (!isBitcoinOnlyAvailable) {
+            return 'TR_BITCOIN_ONLY_UNAVAILABLE';
+        }
+        return targetFirmwareType === FirmwareType.BitcoinOnly
+            ? 'TR_SWITCH_TO_BITCOIN_ONLY_DESCRIPTION'
+            : 'TR_SWITCH_TO_REGULAR_DESCRIPTION';
     }
 
     if (required) {
@@ -107,6 +101,17 @@ const getNoFirmwareInstalledSubheading = (device: AcquiredDevice) => {
         ? 'TR_FIRMWARE_SUBHEADING_NONE'
         : 'TR_FIRMWARE_SUBHEADING_UNKNOWN';
 };
+
+interface FirmwareInitialProps {
+    cachedDevice?: TrezorDevice;
+    setCachedDevice: Dispatch<SetStateAction<TrezorDevice | undefined>>;
+    // This component is shared between Onboarding flow and standalone fw update modal with few minor UI changes
+    // If it is set to true, then you know it is being rendered in standalone fw update modal
+    standaloneFwUpdate?: boolean;
+    onInstall: (firmwareType?: FirmwareType) => void;
+    shouldSwitchFirmwareType?: boolean;
+    onClose?: () => void;
+}
 
 export const FirmwareInitial = ({
     cachedDevice,
@@ -275,7 +280,24 @@ export const FirmwareInitial = ({
         standaloneFwUpdate
     ) {
         content = {
-            heading: <Translation id="TR_INSTALL_FIRMWARE" />,
+            heading: shouldSwitchFirmwareType ? (
+                <Translation
+                    id="TR_SWITCH_FIRMWARE_TO"
+                    values={{
+                        firmwareType: (
+                            <Translation
+                                id={
+                                    targetFirmwareType === FirmwareType.BitcoinOnly
+                                        ? 'TR_FIRMWARE_TYPE_BITCOIN_ONLY'
+                                        : 'TR_FIRMWARE_TYPE_REGULAR'
+                                }
+                            />
+                        ),
+                    }}
+                />
+            ) : (
+                <Translation id="TR_INSTALL_FIRMWARE" />
+            ),
             description: (
                 <Translation
                     id={getDescription({
@@ -290,6 +312,7 @@ export const FirmwareInitial = ({
                         required: device.firmware === 'required',
                         standaloneFwUpdate,
                         reinstall: device.firmware === 'valid' || hasLatestAvailableFw,
+                        targetFirmwareType,
                         shouldSwitchFirmwareType,
                         isBitcoinOnlyAvailable,
                     })}
