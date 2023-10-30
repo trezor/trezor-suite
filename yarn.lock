@@ -2358,9 +2358,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@esbuild/android-arm64@npm:0.19.3":
-  version: 0.19.3
-  resolution: "@esbuild/android-arm64@npm:0.19.3"
+"@esbuild/android-arm64@npm:0.19.5":
+  version: 0.19.5
+  resolution: "@esbuild/android-arm64@npm:0.19.5"
   conditions: os=android & cpu=arm64
   languageName: node
   linkType: hard
@@ -2379,9 +2379,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@esbuild/android-arm@npm:0.19.3":
-  version: 0.19.3
-  resolution: "@esbuild/android-arm@npm:0.19.3"
+"@esbuild/android-arm@npm:0.19.5":
+  version: 0.19.5
+  resolution: "@esbuild/android-arm@npm:0.19.5"
   conditions: os=android & cpu=arm
   languageName: node
   linkType: hard
@@ -2393,9 +2393,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@esbuild/android-x64@npm:0.19.3":
-  version: 0.19.3
-  resolution: "@esbuild/android-x64@npm:0.19.3"
+"@esbuild/android-x64@npm:0.19.5":
+  version: 0.19.5
+  resolution: "@esbuild/android-x64@npm:0.19.5"
   conditions: os=android & cpu=x64
   languageName: node
   linkType: hard
@@ -2407,9 +2407,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@esbuild/darwin-arm64@npm:0.19.3":
-  version: 0.19.3
-  resolution: "@esbuild/darwin-arm64@npm:0.19.3"
+"@esbuild/darwin-arm64@npm:0.19.5":
+  version: 0.19.5
+  resolution: "@esbuild/darwin-arm64@npm:0.19.5"
   conditions: os=darwin & cpu=arm64
   languageName: node
   linkType: hard
@@ -2421,9 +2421,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@esbuild/darwin-x64@npm:0.19.3":
-  version: 0.19.3
-  resolution: "@esbuild/darwin-x64@npm:0.19.3"
+"@esbuild/darwin-x64@npm:0.19.5":
+  version: 0.19.5
+  resolution: "@esbuild/darwin-x64@npm:0.19.5"
   conditions: os=darwin & cpu=x64
   languageName: node
   linkType: hard
@@ -2435,9 +2435,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@esbuild/freebsd-arm64@npm:0.19.3":
-  version: 0.19.3
-  resolution: "@esbuild/freebsd-arm64@npm:0.19.3"
+"@esbuild/freebsd-arm64@npm:0.19.5":
+  version: 0.19.5
+  resolution: "@esbuild/freebsd-arm64@npm:0.19.5"
   conditions: os=freebsd & cpu=arm64
   languageName: node
   linkType: hard
@@ -2449,9 +2449,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@esbuild/freebsd-x64@npm:0.19.3":
-  version: 0.19.3
-  resolution: "@esbuild/freebsd-x64@npm:0.19.3"
+"@esbuild/freebsd-x64@npm:0.19.5":
+  version: 0.19.5
+  resolution: "@esbuild/freebsd-x64@npm:0.19.5"
   conditions: os=freebsd & cpu=x64
   languageName: node
   linkType: hard
@@ -2463,9 +2463,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@esbuild/linux-arm64@npm:0.19.3":
-  version: 0.19.3
-  resolution: "@esbuild/linux-arm64@npm:0.19.3"
+"@esbuild/linux-arm64@npm:0.19.5":
+  version: 0.19.5
+  resolution: "@esbuild/linux-arm64@npm:0.19.5"
   conditions: os=linux & cpu=arm64
   languageName: node
   linkType: hard
@@ -2477,9 +2477,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@esbuild/linux-arm@npm:0.19.3":
-  version: 0.19.3
-  resolution: "@esbuild/linux-arm@npm:0.19.3"
+"@esbuild/linux-arm@npm:0.19.5":
+  version: 0.19.5
+  resolution: "@esbuild/linux-arm@npm:0.19.5"
   conditions: os=linux & cpu=arm
   languageName: node
   linkType: hard
@@ -2491,9 +2491,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@esbuild/linux-ia32@npm:0.19.3":
-  version: 0.19.3
-  resolution: "@esbuild/linux-ia32@npm:0.19.3"
+"@esbuild/linux-ia32@npm:0.19.5":
+  version: 0.19.5
+  resolution: "@esbuild/linux-ia32@npm:0.19.5"
   conditions: os=linux & cpu=ia32
   languageName: node
   linkType: hard
@@ -2512,9 +2512,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@esbuild/linux-loong64@npm:0.19.3":
-  version: 0.19.3
-  resolution: "@esbuild/linux-loong64@npm:0.19.3"
+"@esbuild/linux-loong64@npm:0.19.5":
+  version: 0.19.5
+  resolution: "@esbuild/linux-loong64@npm:0.19.5"
   conditions: os=linux & cpu=loong64
   languageName: node
   linkType: hard
@@ -2526,9 +2526,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@esbuild/linux-mips64el@npm:0.19.3":
-  version: 0.19.3
-  resolution: "@esbuild/linux-mips64el@npm:0.19.3"
+"@esbuild/linux-mips64el@npm:0.19.5":
+  version: 0.19.5
+  resolution: "@esbuild/linux-mips64el@npm:0.19.5"
   conditions: os=linux & cpu=mips64el
   languageName: node
   linkType: hard
@@ -2540,9 +2540,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@esbuild/linux-ppc64@npm:0.19.3":
-  version: 0.19.3
-  resolution: "@esbuild/linux-ppc64@npm:0.19.3"
+"@esbuild/linux-ppc64@npm:0.19.5":
+  version: 0.19.5
+  resolution: "@esbuild/linux-ppc64@npm:0.19.5"
   conditions: os=linux & cpu=ppc64
   languageName: node
   linkType: hard
@@ -2554,9 +2554,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@esbuild/linux-riscv64@npm:0.19.3":
-  version: 0.19.3
-  resolution: "@esbuild/linux-riscv64@npm:0.19.3"
+"@esbuild/linux-riscv64@npm:0.19.5":
+  version: 0.19.5
+  resolution: "@esbuild/linux-riscv64@npm:0.19.5"
   conditions: os=linux & cpu=riscv64
   languageName: node
   linkType: hard
@@ -2568,9 +2568,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@esbuild/linux-s390x@npm:0.19.3":
-  version: 0.19.3
-  resolution: "@esbuild/linux-s390x@npm:0.19.3"
+"@esbuild/linux-s390x@npm:0.19.5":
+  version: 0.19.5
+  resolution: "@esbuild/linux-s390x@npm:0.19.5"
   conditions: os=linux & cpu=s390x
   languageName: node
   linkType: hard
@@ -2582,9 +2582,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@esbuild/linux-x64@npm:0.19.3":
-  version: 0.19.3
-  resolution: "@esbuild/linux-x64@npm:0.19.3"
+"@esbuild/linux-x64@npm:0.19.5":
+  version: 0.19.5
+  resolution: "@esbuild/linux-x64@npm:0.19.5"
   conditions: os=linux & cpu=x64
   languageName: node
   linkType: hard
@@ -2596,9 +2596,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@esbuild/netbsd-x64@npm:0.19.3":
-  version: 0.19.3
-  resolution: "@esbuild/netbsd-x64@npm:0.19.3"
+"@esbuild/netbsd-x64@npm:0.19.5":
+  version: 0.19.5
+  resolution: "@esbuild/netbsd-x64@npm:0.19.5"
   conditions: os=netbsd & cpu=x64
   languageName: node
   linkType: hard
@@ -2610,9 +2610,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@esbuild/openbsd-x64@npm:0.19.3":
-  version: 0.19.3
-  resolution: "@esbuild/openbsd-x64@npm:0.19.3"
+"@esbuild/openbsd-x64@npm:0.19.5":
+  version: 0.19.5
+  resolution: "@esbuild/openbsd-x64@npm:0.19.5"
   conditions: os=openbsd & cpu=x64
   languageName: node
   linkType: hard
@@ -2624,9 +2624,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@esbuild/sunos-x64@npm:0.19.3":
-  version: 0.19.3
-  resolution: "@esbuild/sunos-x64@npm:0.19.3"
+"@esbuild/sunos-x64@npm:0.19.5":
+  version: 0.19.5
+  resolution: "@esbuild/sunos-x64@npm:0.19.5"
   conditions: os=sunos & cpu=x64
   languageName: node
   linkType: hard
@@ -2638,9 +2638,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@esbuild/win32-arm64@npm:0.19.3":
-  version: 0.19.3
-  resolution: "@esbuild/win32-arm64@npm:0.19.3"
+"@esbuild/win32-arm64@npm:0.19.5":
+  version: 0.19.5
+  resolution: "@esbuild/win32-arm64@npm:0.19.5"
   conditions: os=win32 & cpu=arm64
   languageName: node
   linkType: hard
@@ -2652,9 +2652,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@esbuild/win32-ia32@npm:0.19.3":
-  version: 0.19.3
-  resolution: "@esbuild/win32-ia32@npm:0.19.3"
+"@esbuild/win32-ia32@npm:0.19.5":
+  version: 0.19.5
+  resolution: "@esbuild/win32-ia32@npm:0.19.5"
   conditions: os=win32 & cpu=ia32
   languageName: node
   linkType: hard
@@ -2666,9 +2666,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@esbuild/win32-x64@npm:0.19.3":
-  version: 0.19.3
-  resolution: "@esbuild/win32-x64@npm:0.19.3"
+"@esbuild/win32-x64@npm:0.19.5":
+  version: 0.19.5
+  resolution: "@esbuild/win32-x64@npm:0.19.5"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
@@ -9316,7 +9316,7 @@ __metadata:
     cors: ^2.8.5
     express: ^4.18.2
     jest: ^26.6.3
-    rimraf: ^5.0.1
+    rimraf: ^5.0.5
     tsx: ^3.12.7
     typescript: 4.9.5
   languageName: unknown
@@ -9327,7 +9327,7 @@ __metadata:
   resolution: "@trezor/blockchain-link-types@workspace:packages/blockchain-link-types"
   dependencies:
     "@trezor/utxo-lib": "workspace:*"
-    rimraf: ^5.0.1
+    rimraf: ^5.0.5
     ripple-lib: ^1.10.1
     socks-proxy-agent: 6.1.1
     tsx: ^3.12.7
@@ -9344,7 +9344,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     bignumber.js: ^9.1.1
     jest: ^26.6.3
-    rimraf: ^5.0.1
+    rimraf: ^5.0.5
     tsx: ^3.12.7
     typescript: 4.9.5
   languageName: unknown
@@ -9366,7 +9366,7 @@ __metadata:
     fs-extra: ^11.1.1
     html-webpack-plugin: ^5.5.3
     jest: ^26.6.3
-    rimraf: ^5.0.1
+    rimraf: ^5.0.5
     ripple-lib: ^1.10.1
     socks-proxy-agent: 6.1.1
     tiny-worker: ^2.3.0
@@ -9395,7 +9395,7 @@ __metadata:
     golomb: 1.2.0
     jest: ^29.5.0
     n64: ^0.2.10
-    rimraf: ^5.0.1
+    rimraf: ^5.0.5
     typescript: 4.9.5
   languageName: unknown
   linkType: soft
@@ -9465,7 +9465,7 @@ __metadata:
   dependencies:
     "@trezor/env-utils": "workspace:*"
     jest: ^26.6.3
-    rimraf: ^5.0.1
+    rimraf: ^5.0.5
     tsx: ^3.12.7
     typescript: 4.9.5
   languageName: unknown
@@ -9482,7 +9482,7 @@ __metadata:
     html-webpack-plugin: ^5.5.3
     react: ^18.2.0
     react-dom: ^18.2.0
-    rimraf: ^5.0.1
+    rimraf: ^5.0.5
     typescript: 4.9.5
     webpack: ^5.88.2
     webpack-cli: ^5.1.4
@@ -9502,7 +9502,7 @@ __metadata:
     "@types/react-router": ^5.1.20
     "@types/react-router-dom": ^5.1.7
     "@types/styled-components": ^5.1.26
-    babel-loader: ^9.1.2
+    babel-loader: ^9.1.3
     copy-webpack-plugin: ^11.0.0
     html-webpack-plugin: ^5.5.3
     jest: ^26.6.3
@@ -9519,7 +9519,7 @@ __metadata:
     redux: ^4.2.1
     redux-logger: ^3.0.6
     redux-thunk: ^2.4.2
-    rimraf: ^5.0.1
+    rimraf: ^5.0.5
     styled-components: ^5.3.10
     terser-webpack-plugin: ^5.3.9
     typescript: 4.9.5
@@ -9543,7 +9543,7 @@ __metadata:
     es6-promise: ^4.2.8
     html-webpack-plugin: ^5.5.3
     jest: ^26.6.3
-    rimraf: ^5.0.1
+    rimraf: ^5.0.5
     terser-webpack-plugin: ^5.3.9
     typescript: 4.9.5
     webpack: ^5.87.0
@@ -9558,7 +9558,7 @@ __metadata:
   dependencies:
     "@metamask/eth-sig-util": ^6.0.0
     jest: ^26.6.3
-    rimraf: ^5.0.1
+    rimraf: ^5.0.5
     typescript: 4.9.5
   peerDependencies:
     "@metamask/eth-sig-util": ^6.0.0
@@ -9571,7 +9571,7 @@ __metadata:
   dependencies:
     bignumber.js: ^9.1.1
     jest: ^26.6.3
-    rimraf: ^5.0.1
+    rimraf: ^5.0.5
     stellar-base: v10.0.0-beta.2
     stellar-sdk: ^v11.0.0-beta.3
     typescript: 4.9.5
@@ -9604,7 +9604,7 @@ __metadata:
     html-webpack-plugin: ^5.5.3
     jest: ^26.6.3
     react-dom: 18.2.0
-    rimraf: ^5.0.1
+    rimraf: ^5.0.5
     terser-webpack-plugin: ^5.3.9
     typescript: 4.9.5
     webpack: ^5.87.0
@@ -9652,7 +9652,7 @@ __metadata:
     events: ^3.3.0
     html-webpack-plugin: ^5.5.3
     jest: ^26.6.3
-    rimraf: ^5.0.1
+    rimraf: ^5.0.5
     selfsigned: ^2.1.1
     terser-webpack-plugin: ^5.3.9
     tsx: ^3.12.7
@@ -9708,7 +9708,7 @@ __metadata:
     karma-jasmine-async: ^0.0.1
     karma-sourcemap-loader: ^0.4.0
     karma-webpack: ^5.0.0
-    rimraf: ^5.0.1
+    rimraf: ^5.0.5
     ts-node: ^10.9.1
     tsx: ^3.12.7
     typescript: 4.9.5
@@ -9760,7 +9760,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/env-utils@workspace:packages/env-utils"
   dependencies:
-    rimraf: ^5.0.1
+    rimraf: ^5.0.5
     tsx: ^3.12.7
     typescript: 4.9.5
     ua-parser-js: ^1.0.35
@@ -9802,7 +9802,7 @@ __metadata:
     long: ^4.0.0
     protobufjs: 7.2.4
     protobufjs-cli: ^1.1.1
-    rimraf: ^5.0.1
+    rimraf: ^5.0.5
     tsx: ^3.12.7
     typescript: 4.9.5
   languageName: unknown
@@ -9814,7 +9814,7 @@ __metadata:
   dependencies:
     bytebuffer: ^5.0.1
     jest: ^29.5.0
-    rimraf: ^5.0.1
+    rimraf: ^5.0.5
     tsx: ^3.12.7
     typescript: 4.9.5
   languageName: unknown
@@ -9853,7 +9853,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     cross-fetch: ^3.1.6
     jest: ^26.6.3
-    rimraf: ^5.0.1
+    rimraf: ^5.0.5
     socks-proxy-agent: 6.1.1
     ts-node: ^10.9.1
     typescript: 4.9.5
@@ -9926,7 +9926,7 @@ __metadata:
     "@types/copy-webpack-plugin": ^10.1.0
     "@types/webpack-bundle-analyzer": ^4.6.0
     "@types/webpack-plugin-serve": ^1.4.2
-    babel-loader: ^9.1.2
+    babel-loader: ^9.1.3
     babel-plugin-styled-components: ^2.1.3
     copy-webpack-plugin: ^11.0.0
     crypto-browserify: ^3.12.0
@@ -9961,7 +9961,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     "@types/fs-extra": ^11.0.1
     autoprefixer: ^10.4.14
-    babel-loader: ^9.1.2
+    babel-loader: ^9.1.3
     css-loader: ^6.8.1
     fs-extra: ^11.1.1
     jest: ^26.6.3
@@ -9985,7 +9985,7 @@ __metadata:
   dependencies:
     electron: 26.4.2
     jest: ^26.6.3
-    rimraf: ^5.0.1
+    rimraf: ^5.0.5
     typescript: 4.9.5
   languageName: unknown
   linkType: soft
@@ -10011,19 +10011,19 @@ __metadata:
     "@trezor/trezor-user-env-link": "workspace:*"
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
-    "@types/electron-localshortcut": ^3.1.0
+    "@types/electron-localshortcut": ^3.1.2
     chalk: ^4.1.2
     cross-fetch: ^3.1.6
     electron: 26.4.2
     electron-localshortcut: ^3.2.1
     electron-store: ^8.1.0
     electron-updater: 6.1.4
-    esbuild: ^0.19.3
-    glob: ^10.2.7
+    esbuild: ^0.19.5
+    glob: ^10.3.10
     jest: ^26.6.3
-    openpgp: ^5.10.1
-    rimraf: ^5.0.1
-    systeminformation: ^5.21.7
+    openpgp: ^5.11.0
+    rimraf: ^5.0.5
+    systeminformation: ^5.21.15
     tsx: ^3.12.7
     typescript: 4.9.5
     xvfb-maybe: ^0.2.1
@@ -10070,10 +10070,10 @@ __metadata:
     electron-localshortcut: ^3.2.1
     electron-store: ^8.1.0
     electron-updater: 6.1.4
-    glob: ^10.2.7
+    glob: ^10.3.10
     jest: ^26.6.3
-    rimraf: ^5.0.1
-    usb: ^2.9.0
+    rimraf: ^5.0.5
+    usb: ^2.11.0
   languageName: unknown
   linkType: soft
 
@@ -10223,7 +10223,7 @@ __metadata:
     react-redux: 8.0.7
     react-router: ^5.2.0
     react-router-dom: ^5.2.0
-    rimraf: ^5.0.1
+    rimraf: ^5.0.5
     styled-components: ^5.3.10
     tsx: ^3.12.7
     typescript: 4.9.5
@@ -10406,11 +10406,11 @@ __metadata:
     json-stable-stringify: ^1.0.2
     long: ^4.0.0
     protobufjs: 7.2.4
-    rimraf: ^5.0.1
+    rimraf: ^5.0.5
     ts-node: ^10.9.1
     tsx: ^3.12.7
     typescript: 4.9.5
-    usb: ^2.9.0
+    usb: ^2.11.0
   languageName: unknown
   linkType: soft
 
@@ -10448,7 +10448,7 @@ __metadata:
   resolution: "@trezor/utils@workspace:packages/utils"
   dependencies:
     jest: ^26.6.3
-    rimraf: ^5.0.1
+    rimraf: ^5.0.5
     tsx: ^3.12.7
     typescript: 4.9.5
   languageName: unknown
@@ -10480,7 +10480,7 @@ __metadata:
     jest: ^26.6.3
     minimaldata: ^1.0.2
     pushdata-bitcoin: ^1.0.1
-    rimraf: ^5.0.1
+    rimraf: ^5.0.5
     tiny-secp256k1: ^1.1.6
     tsx: ^3.12.7
     typeforce: ^1.18.0
@@ -10890,12 +10890,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/electron-localshortcut@npm:^3.1.0":
-  version: 3.1.0
-  resolution: "@types/electron-localshortcut@npm:3.1.0"
+"@types/electron-localshortcut@npm:^3.1.2":
+  version: 3.1.2
+  resolution: "@types/electron-localshortcut@npm:3.1.2"
   dependencies:
     electron: "*"
-  checksum: e082a81821950b014b3243c14da0e391fd49fe9dd88d9295b543d0ff93c11cc98565ad2036cf1cda7c6b51decce52b53252e640da49e60f4dd7e52b46c5d2f94
+  checksum: 3d714c7b83f76c1a8fc7d7efefe691326feecdf08b3ed7b3dc94bc3a7c39676c26be76411504fe7d535ee13129eb9a111904c16cf9c3d4720dca5ee1e39464f3
   languageName: node
   linkType: hard
 
@@ -13664,7 +13664,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babel-loader@npm:^9.0.0, babel-loader@npm:^9.1.2":
+"babel-loader@npm:^9.0.0, babel-loader@npm:^9.1.3":
   version: 9.1.3
   resolution: "babel-loader@npm:9.1.3"
   dependencies:
@@ -18672,32 +18672,32 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esbuild@npm:^0.19.3":
-  version: 0.19.3
-  resolution: "esbuild@npm:0.19.3"
+"esbuild@npm:^0.19.5":
+  version: 0.19.5
+  resolution: "esbuild@npm:0.19.5"
   dependencies:
-    "@esbuild/android-arm": 0.19.3
-    "@esbuild/android-arm64": 0.19.3
-    "@esbuild/android-x64": 0.19.3
-    "@esbuild/darwin-arm64": 0.19.3
-    "@esbuild/darwin-x64": 0.19.3
-    "@esbuild/freebsd-arm64": 0.19.3
-    "@esbuild/freebsd-x64": 0.19.3
-    "@esbuild/linux-arm": 0.19.3
-    "@esbuild/linux-arm64": 0.19.3
-    "@esbuild/linux-ia32": 0.19.3
-    "@esbuild/linux-loong64": 0.19.3
-    "@esbuild/linux-mips64el": 0.19.3
-    "@esbuild/linux-ppc64": 0.19.3
-    "@esbuild/linux-riscv64": 0.19.3
-    "@esbuild/linux-s390x": 0.19.3
-    "@esbuild/linux-x64": 0.19.3
-    "@esbuild/netbsd-x64": 0.19.3
-    "@esbuild/openbsd-x64": 0.19.3
-    "@esbuild/sunos-x64": 0.19.3
-    "@esbuild/win32-arm64": 0.19.3
-    "@esbuild/win32-ia32": 0.19.3
-    "@esbuild/win32-x64": 0.19.3
+    "@esbuild/android-arm": 0.19.5
+    "@esbuild/android-arm64": 0.19.5
+    "@esbuild/android-x64": 0.19.5
+    "@esbuild/darwin-arm64": 0.19.5
+    "@esbuild/darwin-x64": 0.19.5
+    "@esbuild/freebsd-arm64": 0.19.5
+    "@esbuild/freebsd-x64": 0.19.5
+    "@esbuild/linux-arm": 0.19.5
+    "@esbuild/linux-arm64": 0.19.5
+    "@esbuild/linux-ia32": 0.19.5
+    "@esbuild/linux-loong64": 0.19.5
+    "@esbuild/linux-mips64el": 0.19.5
+    "@esbuild/linux-ppc64": 0.19.5
+    "@esbuild/linux-riscv64": 0.19.5
+    "@esbuild/linux-s390x": 0.19.5
+    "@esbuild/linux-x64": 0.19.5
+    "@esbuild/netbsd-x64": 0.19.5
+    "@esbuild/openbsd-x64": 0.19.5
+    "@esbuild/sunos-x64": 0.19.5
+    "@esbuild/win32-arm64": 0.19.5
+    "@esbuild/win32-ia32": 0.19.5
+    "@esbuild/win32-x64": 0.19.5
   dependenciesMeta:
     "@esbuild/android-arm":
       optional: true
@@ -18745,7 +18745,7 @@ __metadata:
       optional: true
   bin:
     esbuild: bin/esbuild
-  checksum: f998ba82b1bbf0f3036201dc2cb94f92aff887b7552738ea3e4dd6f386f87740ef76aabae2fc1c4b91a519354d390f6d9fd89eb71e26882983f6fbaf75369206
+  checksum: 5a0227cf6ffffa3076714d88230af1dfdd2fc363d91bd712a81fb91230c315a395e2c9b7588eee62986aeebf4999804b9b1b59eeab8e2457184eb0056bfe20c8
   languageName: node
   linkType: hard
 
@@ -21523,7 +21523,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"glob@npm:^10.0.0, glob@npm:^10.2.5, glob@npm:^10.2.7":
+"glob@npm:^10.0.0":
   version: 10.3.3
   resolution: "glob@npm:10.3.3"
   dependencies:
@@ -21535,6 +21535,21 @@ __metadata:
   bin:
     glob: dist/cjs/src/bin.js
   checksum: 29190d3291f422da0cb40b77a72fc8d2c51a36524e99b8bf412548b7676a6627489528b57250429612b6eec2e6fe7826d328451d3e694a9d15e575389308ec53
+  languageName: node
+  linkType: hard
+
+"glob@npm:^10.3.10, glob@npm:^10.3.7":
+  version: 10.3.10
+  resolution: "glob@npm:10.3.10"
+  dependencies:
+    foreground-child: ^3.1.0
+    jackspeak: ^2.3.5
+    minimatch: ^9.0.1
+    minipass: ^5.0.0 || ^6.0.2 || ^7.0.0
+    path-scurry: ^1.10.1
+  bin:
+    glob: dist/esm/bin.mjs
+  checksum: 4f2fe2511e157b5a3f525a54092169a5f92405f24d2aed3142f4411df328baca13059f4182f1db1bf933e2c69c0bd89e57ae87edd8950cba8c7ccbe84f721cf3
   languageName: node
   linkType: hard
 
@@ -23783,6 +23798,19 @@ __metadata:
     "@pkgjs/parseargs":
       optional: true
   checksum: d8cd5be4f0e89cef04add5b0b068162a086bdb1ca68113ed729e99489b7865ca3edcc6430d6fd20c430e15382929ef5f3c7ec36e6aa7c17be23cac116f92dcff
+  languageName: node
+  linkType: hard
+
+"jackspeak@npm:^2.3.5":
+  version: 2.3.6
+  resolution: "jackspeak@npm:2.3.6"
+  dependencies:
+    "@isaacs/cliui": ^8.0.2
+    "@pkgjs/parseargs": ^0.11.0
+  dependenciesMeta:
+    "@pkgjs/parseargs":
+      optional: true
+  checksum: 57d43ad11eadc98cdfe7496612f6bbb5255ea69fe51ea431162db302c2a11011642f50cfad57288bd0aea78384a0612b16e131944ad8ecd09d619041c8531b54
   languageName: node
   linkType: hard
 
@@ -28262,12 +28290,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-addon-api@npm:^6.0.0":
-  version: 6.1.0
-  resolution: "node-addon-api@npm:6.1.0"
+"node-addon-api@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "node-addon-api@npm:7.0.0"
   dependencies:
     node-gyp: latest
-  checksum: 3a539510e677cfa3a833aca5397300e36141aca064cdc487554f2017110709a03a95da937e98c2a14ec3c626af7b2d1b6dabe629a481f9883143d0d5bff07bf2
+  checksum: 4349465d737e284b280fc0e5fd2384f9379bca6b7f2a5a1460bea676ba5b90bf563e7d02a9254c35b9ed808641c81d9b4ca9e1da17d2849cd07727660b00b332
   languageName: node
   linkType: hard
 
@@ -28972,12 +29000,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"openpgp@npm:^5.10.1":
-  version: 5.10.1
-  resolution: "openpgp@npm:5.10.1"
+"openpgp@npm:^5.11.0":
+  version: 5.11.0
+  resolution: "openpgp@npm:5.11.0"
   dependencies:
     asn1.js: ^5.0.0
-  checksum: beea90d10e83a20e7516b34493b57af8e526eaf3e935038464a866bfdc94e9b5e78e1ac5e97bb38356e45865d805ecd352c75b3434bb60793af8af5f3a12fff6
+  checksum: e7e0dd1cb3e0e5fc428ae98b9c94955c921d7ead810e7f0221bd3ac41e829cfe9512f681b797d387c0c88e994bca2d6fb5a1a5cb1c916301fd500507985c6ef3
   languageName: node
   linkType: hard
 
@@ -32747,14 +32775,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rimraf@npm:^5.0.1":
-  version: 5.0.1
-  resolution: "rimraf@npm:5.0.1"
+"rimraf@npm:^5.0.5":
+  version: 5.0.5
+  resolution: "rimraf@npm:5.0.5"
   dependencies:
-    glob: ^10.2.5
+    glob: ^10.3.7
   bin:
-    rimraf: dist/cjs/src/bin.js
-  checksum: bafce85391349a2d960847980bf9b5caa2a8887f481af630f1ea27e08288217293cec72d75e9a2ba35495c212789f66a7f3d23366ba6197026ab71c535126857
+    rimraf: dist/esm/bin.mjs
+  checksum: d66eef829b2e23b16445f34e73d75c7b7cf4cbc8834b04720def1c8f298eb0753c3d76df77325fad79d0a2c60470525d95f89c2475283ad985fd7441c32732d1
   languageName: node
   linkType: hard
 
@@ -34967,12 +34995,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"systeminformation@npm:^5.21.7":
-  version: 5.21.8
-  resolution: "systeminformation@npm:5.21.8"
+"systeminformation@npm:^5.21.15":
+  version: 5.21.15
+  resolution: "systeminformation@npm:5.21.15"
   bin:
     systeminformation: lib/cli.js
-  checksum: 302b8b430a5b0a7009be95c086b1bc43db3ecfd6ecab6cf654ae3312240f616823505f15a080a70f2335a9e5aab45d789aaba018843c9a9f8f18117aa32dce8a
+  checksum: 664d4821c23ab704c02fc020ac5c140849a415bdee4be8188256a6ef5d5f418b4373383636bfff94d10304e47b1765ba9c8bec04fd05ec81e7552e1e94593054
   conditions: (os=darwin | os=linux | os=win32 | os=freebsd | os=openbsd | os=netbsd | os=sunos | os=android)
   languageName: node
   linkType: hard
@@ -35666,7 +35694,7 @@ __metadata:
     patch-package: 7.0.0
     prettier: 2.8.8
     prettier-eslint: ^15.0.1
-    rimraf: ^5.0.1
+    rimraf: ^5.0.5
     semver: ^7.5.3
     ts-jest: ^26.5.6
     ts-node: ^10.9.1
@@ -36662,15 +36690,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"usb@npm:^2.9.0":
-  version: 2.9.0
-  resolution: "usb@npm:2.9.0"
+"usb@npm:^2.11.0":
+  version: 2.11.0
+  resolution: "usb@npm:2.11.0"
   dependencies:
     "@types/w3c-web-usb": ^1.0.6
-    node-addon-api: ^6.0.0
+    node-addon-api: ^7.0.0
     node-gyp: latest
     node-gyp-build: ^4.5.0
-  checksum: 59474e106bb0e261c0c107994c948e4493b0d390671a738f386054263f6fdeea8f990ae22256dcf28812717844ec757b58501a9950ad9ca18ccb4791505870b0
+  checksum: c1c12140e8c93a76d15a0aecf84de19990694d57b568124f8eafe729e09b41293933a93856c3f37a9059c71f1fbd030b334f7392b868225243c1c5c99f0b2730
   languageName: node
   linkType: hard
 
