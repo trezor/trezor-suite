@@ -222,7 +222,6 @@
   "TR_CONNECTED_TO_PROVIDER": "Підключено до {provider} як {user}",
   "TR_CONNECTED_TO_PROVIDER_LOCALLY": "Збереження міток локально",
   "TR_CONNECT_YOUR_DEVICE": "Під'єднайте Ваш Trezor",
-  "TR_CONNECT_YOUR_TREZOR_TO_CHECK": "Під'єднайте Ваш TREZOR для перевірки цієї адреси",
   "TR_CONTACT_OUR_SUPPORT_LINK": "звернутися до служби підтримки Trezor",
   "TR_CONTACT_SUPPORT": "Звернутися до служби підтримки",
   "TR_CONTINUE": "Продовжити",
