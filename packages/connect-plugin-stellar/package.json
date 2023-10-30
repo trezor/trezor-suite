@@ -28,7 +28,7 @@
     },
     "devDependencies": {
         "jest": "^26.6.3",
-        "rimraf": "^5.0.1",
+        "rimraf": "^5.0.5",
         "stellar-base": "v10.0.0-beta.2",
         "stellar-sdk": "^v11.0.0-beta.3",
         "typescript": "4.9.5"

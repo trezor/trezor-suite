@@ -27,14 +27,14 @@
         "electron-localshortcut": "^3.2.1",
         "electron-store": "^8.1.0",
         "electron-updater": "6.1.4",
-        "usb": "^2.9.0"
+        "usb": "^2.11.0"
     },
     "devDependencies": {
         "@electron/notarize": "2.1.0",
         "electron": "26.4.2",
         "electron-builder": "24.6.4",
-        "glob": "^10.2.7",
+        "glob": "^10.3.10",
         "jest": "^26.6.3",
-        "rimraf": "^5.0.1"
+        "rimraf": "^5.0.5"
     }
 }
