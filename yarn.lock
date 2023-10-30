@@ -8166,6 +8166,7 @@ __metadata:
   dependencies:
     "@suite-common/icons": "workspace:*"
     "@suite-native/atoms": "workspace:*"
+    "@suite-native/screen-overlay": "workspace:*"
     "@trezor/styles": "workspace:*"
     jotai: 1.9.1
     react: 18.2.0
@@ -8230,6 +8231,7 @@ __metadata:
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-native/intl": "workspace:^"
+    "@suite-native/screen-overlay": "workspace:*"
     "@suite-native/storage": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/styles": "workspace:*"
@@ -8255,6 +8257,7 @@ __metadata:
     "@suite-native/alerts": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
+    "@suite-native/screen-overlay": "workspace:*"
     "@suite-native/storage": "workspace:*"
     "@trezor/styles": "workspace:*"
     expo-local-authentication: 13.7.0
@@ -8885,6 +8888,18 @@ __metadata:
     react: 18.2.0
     react-native: 0.71.8
     react-redux: 8.0.7
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/screen-overlay@workspace:*, @suite-native/screen-overlay@workspace:suite-native/screen-overlay":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/screen-overlay@workspace:suite-native/screen-overlay"
+  dependencies:
+    "@react-navigation/native": ^6.1.3
+    "@shopify/react-native-skia": 0.1.214
+    "@trezor/styles": "workspace:*"
+    react: 18.2.0
+    react-native: 0.71.8
   languageName: unknown
   linkType: soft
 
@@ -10110,6 +10125,7 @@ __metadata:
     "@suite-native/navigation": "workspace:*"
     "@suite-native/notifications": "workspace:*"
     "@suite-native/receive": "workspace:*"
+    "@suite-native/screen-overlay": "workspace:*"
     "@suite-native/state": "workspace:*"
     "@suite-native/storage": "workspace:*"
     "@suite-native/theme": "workspace:*"
