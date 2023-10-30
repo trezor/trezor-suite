@@ -77,7 +77,7 @@ export default defineMessages({
         id: 'TR_ACCOUNT_EXCEPTION_NOT_EXIST',
     },
     TR_ACCOUNT_OUT_OF_SYNC: {
-        defaultMessage: 'Account is possibly out-of-sync',
+        defaultMessage: 'Account sync in progress, please wait.',
         id: 'TR_ACCOUNT_OUT_OF_SYNC',
     },
     TR_ACCOUNT_IMPORTED_ANNOUNCEMENT: {
@@ -2208,7 +2208,7 @@ export default defineMessages({
         id: 'TR_DEVICE_DISCONNECTED_DURING_ACTION_DESCRIPTION',
     },
     TR_DEVICE_LABEL_IS_NOT_BACKED_UP: {
-        defaultMessage: 'Device "{deviceLabel}" is not backed up',
+        defaultMessage: 'Device "{deviceLabel}" isn\'t backed up',
         id: 'TR_DEVICE_LABEL_IS_NOT_BACKED_UP',
     },
     TR_DEVICE_NOT_CONNECTED: {
@@ -2220,7 +2220,7 @@ export default defineMessages({
         id: 'TR_DEVICE_FW_UNKNOWN',
     },
     TR_DEVICE_LABEL_IS_NOT_CONNECTED: {
-        defaultMessage: 'Device "{deviceLabel}" is not connected',
+        defaultMessage: 'Device "{deviceLabel}" isn\'t connected',
         id: 'TR_DEVICE_LABEL_IS_NOT_CONNECTED',
     },
     TR_DEVICE_LABEL_IS_UNAVAILABLE: {
@@ -2550,19 +2550,19 @@ export default defineMessages({
     },
     TR_FIRMWARE_SUBHEADING_NONE: {
         defaultMessage:
-            'Your Trezor is shipped without firmware. Your device is ready to receive the latest full-featured firmware in order to be used safely. If you use only bitcoin, we recommend installing <button>{bitcoinOnly} firmware</button>.',
+            'Your Trezor is shipped without firmware. Install the latest firmware in order to use your device safely. For Bitcoin-only users, we recommend installing <button>{bitcoinOnly} firmware</button>.',
         description: 'Main text on firmware page for devices without firmware',
         id: 'TR_FIRMWARE_SUBHEADING_NONE',
     },
     TR_FIRMWARE_SUBHEADING_NONE_BITCOIN_ONLY_DEVICE: {
         defaultMessage:
-            'Your device is ready to receive the latest firmware in order to be used safely. For Bitcoin enthusiasts, a Bitcoin-only firmware is available.',
+            'Your device is ready for the latest firmware in order to be used safely. For Bitcoin enthusiasts, a Bitcoin-only firmware is available.',
         description: 'Main text on firmware page for Bitcoin-only devices without firmware',
         id: 'TR_FIRMWARE_SUBHEADING_NONE_BITCOIN_ONLY_DEVICE',
     },
     TR_FIRMWARE_SUBHEADING_UNKNOWN: {
         defaultMessage:
-            'Your device is ready to receive the latest full-featured firmware in order to be used safely. If you use only bitcoin, we recommend installing <button>{bitcoinOnly} firmware</button>.',
+            'Your Trezor is shipped without firmware. Install the latest firmware in order to use your device safely. For Bitcoin-only users, we recommend installing <button>{bitcoinOnly} firmware</button>.',
         description:
             'Main text on firmware page for devices in bootloader mode, i.e. when Suite cannot determine current firmware type',
         id: 'TR_FIRMWARE_SUBHEADING_UNKNOWN',
@@ -3551,7 +3551,7 @@ export default defineMessages({
     },
     TR_WELCOME_TO_TREZOR_TEXT_WALLET_CREATION: {
         defaultMessage:
-            'Create a new wallet or recover one from a backup using your recovery seed (wallet backup)',
+            'Create a new wallet or recover one from a backup using your recovery seed.',
         id: 'TR_WELCOME_TO_TREZOR_TEXT_WALLET_CREATION',
     },
     TR_WEST: {
@@ -3918,7 +3918,7 @@ export default defineMessages({
     },
     TR_LAST_UPDATE: {
         id: 'TR_LAST_UPDATE',
-        defaultMessage: 'Price: Updated {value}',
+        defaultMessage: 'Price updated {value}',
     },
     TR_UPDATE_AVAILABLE: {
         id: 'TR_UPDATE_AVAILABLE',
@@ -4000,7 +4000,7 @@ export default defineMessages({
     },
     TR_UNAVAILABLE_COINJOIN_ACCOUNT_OUT_OF_SYNC: {
         id: 'TR_UNAVAILABLE_COINJOIN_ACCOUNT_OUT_OF_SYNC',
-        defaultMessage: 'Unavailable. Account is possibly out-of-sync.',
+        defaultMessage: 'Unavailable. Account sync in progress, please wait.',
     },
     TR_UNAVAILABLE_COINJOIN_NO_INTERNET: {
         id: 'TR_UNAVAILABLE_COINJOIN_NO_INTERNET',
@@ -4154,7 +4154,7 @@ export default defineMessages({
     TR_CHECK_RECOVERY_SEED_DESC_T2B1: {
         id: 'TR_CHECK_RECOVERY_SEED_DESC_T2B1',
         defaultMessage:
-            "Use the 2-button pad to enter your recovery seed (wallet backup). By doing this, you're keeping all your sensitive info safe and sound, away from any shady or insecure computer or web browser.",
+            "Use the two-button pad to enter your recovery seed (wallet backup). By doing this, you're keeping all your sensitive info safe and sound, away from any shady or insecure computer or web browser.",
         dynamic: true,
     },
     TR_SELECT_NUMBER_OF_WORDS: {
@@ -4379,7 +4379,7 @@ export default defineMessages({
     },
     RECEIVE_ADDRESS_LIMIT_REACHED: {
         id: 'RECEIVE_ADDRESS_LIMIT_REACHED',
-        defaultMessage: 'You have reached the maximum limit of 20 fresh unused addresses.',
+        defaultMessage: "You've reached the maximum limit of 20 fresh, unused addresses",
     },
     RECEIVE_ADDRESS_UNAVAILABLE: {
         id: 'RECEIVE_ADDRESS_UNAVAILABLE',
@@ -4920,12 +4920,12 @@ export default defineMessages({
     TR_SWITCH_FIRMWARE_TYPE_DESCRIPTION: {
         id: 'TR_SWITCH_FIRMWARE_TYPE_DESCRIPTION',
         defaultMessage:
-            '{bitcoinOnly} firmware is a lightweight option for users only interested in Bitcoin. {regular} firmware enables all supported coins and features. Do you want to switch firmware type?',
+            '{bitcoinOnly} firmware is a lightweight option for users only using bitcoin. {regular} firmware enables all supported coins and features. Do you want to switch firmware type?',
     },
     TR_BITCOIN_ONLY_UNAVAILABLE: {
         id: 'TR_BITCOIN_ONLY_UNAVAILABLE',
         defaultMessage:
-            'Before you can switch to {bitcoinOnly}, we need to upgrade your firmware to a newer version.',
+            'Before switching to {bitcoinOnly}, you need to upgrade your firmware to the latest version.',
     },
     TR_EXPERIMENTAL_FEATURES: {
         id: 'TR_EXPERIMENTAL_FEATURES',
@@ -5066,16 +5066,15 @@ export default defineMessages({
     },
     TR_SWITCH_TO_BOOTLOADER_HOLD_BOTH_BUTTONS: {
         id: 'TR_SWITCH_TO_BOOTLOADER_HOLD_BOTH_BUTTONS',
-        defaultMessage: 'Press and hold both buttons while reconnecting the USB cable.',
+        defaultMessage: 'Press and hold both buttons while connecting the USB cable.',
     },
     TR_SWITCH_TO_BOOTLOADER_HOLD_LEFT_BUTTON: {
         id: 'TR_SWITCH_TO_BOOTLOADER_HOLD_LEFT_BUTTON',
-        defaultMessage: 'Press and hold the left button while reconnecting the USB cable.',
+        defaultMessage: 'Press and hold the left button while connecting the USB cable.',
     },
     TR_SWITCH_TO_BOOTLOADER_SWIPE_YOUR_FINGERS: {
         id: 'TR_SWITCH_TO_BOOTLOADER_SWIPE_YOUR_FINGERS',
-        defaultMessage:
-            'Swipe your finger across the touchscreen while reconnecting the USB cable.',
+        defaultMessage: 'Swipe your finger across the touchscreen while connecting the USB cable.',
     },
     BACKUP_BACKUP_ALREADY_FINISHED_HEADING: {
         id: 'BACKUP_BACKUP_ALREADY_FINISHED_HEADING',
@@ -6067,7 +6066,7 @@ export default defineMessages({
     },
     TR_TAKES_N_MINUTES: {
         id: 'TR_TAKES_N_MINUTES',
-        defaultMessage: 'Usually takes <{n} mins',
+        defaultMessage: 'Takes <{n} mins',
     },
     TR_INPUTS_OUTPUTS: {
         id: 'TR_INPUTS_OUTPUTS',
@@ -6624,7 +6623,7 @@ export default defineMessages({
     },
     TR_ONBOARDING_CURRENT_VERSION: {
         id: 'TR_ONBOARDING_CURRENT_VERSION',
-        defaultMessage: 'Current Version',
+        defaultMessage: 'Current version',
     },
     TR_ONBOARDING_NEW_VERSION: {
         id: 'TR_ONBOARDING_NEW_VERSION',
@@ -6694,11 +6693,11 @@ export default defineMessages({
     },
     TR_ONBOARDING_DEVICE_CHECK_2: {
         id: 'TR_ONBOARDING_DEVICE_CHECK_2',
-        defaultMessage: 'I bought from the official shop or a trusted reseller.',
+        defaultMessage: 'My device was bought from the official Trezor Shop or a trusted reseller.',
     },
     TR_ONBOARDING_DEVICE_CHECK_3: {
         id: 'TR_ONBOARDING_DEVICE_CHECK_3',
-        defaultMessage: 'Package wasn’t tampered with.',
+        defaultMessage: 'The device package was intact and untampered with.',
     },
     TR_ONBOARDING_DEVICE_CHECK_4: {
         id: 'TR_ONBOARDING_DEVICE_CHECK_4',
@@ -6754,7 +6753,7 @@ export default defineMessages({
     },
     TR_USE_CHAT_SOFT: {
         id: 'TR_USE_CHAT_SOFT',
-        defaultMessage: 'Click below and use the <b>Chat</b> option on the next page.',
+        defaultMessage: 'Click below and use the <b>Chat</b> option on the next screen.',
     },
     TR_CONTACT_TREZOR_SUPPORT: {
         id: 'TR_CONTACT_TREZOR_SUPPORT',
@@ -6814,11 +6813,11 @@ export default defineMessages({
     },
     TR_DEVICE_AUTHENTICITY_OPT_OUT_TITLE: {
         id: 'TR_DEVICE_AUTHENTICITY_OPT_OUT_TITLE',
-        defaultMessage: 'Disable device check',
+        defaultMessage: 'Turn off device check',
     },
     TR_DEVICE_AUTHENTICITY_OPT_OUT_TITLE_DISABLED: {
         id: 'TR_DEVICE_AUTHENTICITY_OPT_OUT_TITLE_DISABLED',
-        defaultMessage: 'Enable device check',
+        defaultMessage: 'Turn on device check',
     },
     TR_DEVICE_AUTHENTICITY_OPT_OUT_DESCRIPTION: {
         id: 'TR_DEVICE_AUTHENTICITY_OPT_OUT_DESCRIPTION',
@@ -6848,7 +6847,7 @@ export default defineMessages({
     },
     TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_CHECKBOX_TITLE: {
         id: 'TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_CHECKBOX_TITLE',
-        defaultMessage: 'I’ve read and understood the above ',
+        defaultMessage: 'I’ve read and understood the above',
     },
     TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_DESCRIPTION_1: {
         id: 'TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_DESCRIPTION_1',
@@ -6858,7 +6857,7 @@ export default defineMessages({
     TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_DESCRIPTION_2: {
         id: 'TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_DESCRIPTION_2',
         defaultMessage:
-            'Don’t turn off this feature unless your device has successfully passed the check beforehand. Using an unverified device may lead to the loss of your funds.',
+            'Don’t turn off this feature unless your device has successfully passed the check before. Using an unverified device may lead to the loss of your funds.',
     },
     TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_DESCRIPTION_3: {
         id: 'TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_DESCRIPTION_3',
@@ -7318,7 +7317,7 @@ export default defineMessages({
     },
     TR_DEVICE_AUTHENTICITY_SUCCESS: {
         id: 'TR_DEVICE_AUTHENTICITY_SUCCESS',
-        defaultMessage: 'Device is genuine',
+        defaultMessage: 'Device check passed',
     },
     TR_DEVICE_AUTHENTICITY_ERROR: {
         id: 'TR_DEVICE_AUTHENTICITY_ERROR',

@@ -428,7 +428,6 @@
   "TR_CONNECTED_TO_PROVIDER": "Verbunden mit {provider} als {user}",
   "TR_CONNECTED_TO_PROVIDER_LOCALLY": "Lokale Labels speichern",
   "TR_CONNECT_YOUR_DEVICE": "Trezor verbinden",
-  "TR_CONNECT_YOUR_TREZOR_TO_CHECK": "Trezor verbinden, um diese Adresse zu verifizieren",
   "TR_CONTACT_OUR_SUPPORT_LINK": "unseren Support kontaktieren",
   "TR_CONTACT_SUPPORT": "Support kontaktieren",
   "TR_CONTACT_TREZOR_SUPPORT": "Trezor Support kontaktieren",
