@@ -57,7 +57,7 @@ export const BiometricsBottomSheet = () => {
     const [isVisible, setIsVisible] = useState(false);
     const [biometricsTypes, setBiometricsTypes] = useState<AuthenticationType[]>([]);
 
-    const isFace = biometricsTypes.filter(biometricsType =>
+    const isFace = biometricsTypes.some(biometricsType =>
         [AuthenticationType.FACIAL_RECOGNITION, AuthenticationType.IRIS].includes(biometricsType),
     );
 
