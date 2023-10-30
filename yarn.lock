@@ -9968,7 +9968,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/suite-desktop-api@workspace:packages/suite-desktop-api"
   dependencies:
-    electron: 26.2.1
+    electron: 26.4.2
     jest: ^26.6.3
     rimraf: ^5.0.1
     typescript: 4.9.5
@@ -9999,7 +9999,7 @@ __metadata:
     "@types/electron-localshortcut": ^3.1.0
     chalk: ^4.1.2
     cross-fetch: ^3.1.6
-    electron: 26.2.1
+    electron: 26.4.2
     electron-localshortcut: ^3.2.1
     electron-store: ^8.1.0
     electron-updater: 6.1.4
@@ -10050,7 +10050,7 @@ __metadata:
   dependencies:
     "@electron/notarize": 2.1.0
     blake-hash: ^2.0.0
-    electron: 26.2.1
+    electron: 26.4.2
     electron-builder: 24.6.4
     electron-localshortcut: ^3.2.1
     electron-store: ^8.1.0
@@ -17967,16 +17967,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron@npm:26.2.1":
-  version: 26.2.1
-  resolution: "electron@npm:26.2.1"
+"electron@npm:26.4.2":
+  version: 26.4.2
+  resolution: "electron@npm:26.4.2"
   dependencies:
     "@electron/get": ^2.0.0
     "@types/node": ^18.11.18
     extract-zip: ^2.0.1
   bin:
     electron: cli.js
-  checksum: 1790c8f96e08437c563e60f469553f9cdce514418f3df74a5a31c9839d74540d0ee91a9af0a5a25f125459bce5308a166bfcb4c496459ae21c8b9bd4e427b58c
+  checksum: 1912898986d2593e8782d184c305b342866d9e4ade9e8887a20278f46375c8846208ba185532a840bc5f00d2486b9b689705c404eb4ddc336f4a65ec4c8ed948
   languageName: node
   linkType: hard
 
