@@ -11,7 +11,7 @@ const LANGUAGES = {
     de: { name: 'Deutsch', en: 'German' },
     el: { name: 'Ελληνικά', en: 'Greek' },
     fi: { name: 'Suomi', en: 'Finnish' },
-    fr: { name: 'Français', en: 'French' },
+    fr: { name: 'Français', en: 'French', type: 'official' },
     he: { name: 'עברית‬', en: 'Hebrew' },
     hi: { name: 'हिन्दी', en: 'Hindi' },
     hu: { name: 'Magyar', en: 'Hungarian', type: 'community' },
