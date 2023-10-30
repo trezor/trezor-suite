@@ -12,6 +12,7 @@ const cardStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.backgroundSurfaceElevation1,
     borderRadius: utils.borders.radii.medium,
     padding: utils.spacings.medium,
+    overflow: 'hidden',
 
     ...utils.boxShadows.small,
 }));

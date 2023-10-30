@@ -27,8 +27,15 @@ const imageStyle = prepareNativeStyle(_ => ({
 }));
 
 const cardStyle = prepareNativeStyle(utils => ({
-    paddingTop: 40,
+    paddingTop: 0,
     paddingBottom: utils.spacings.extraLarge,
+    paddingHorizontal: 0,
+}));
+
+const contentStyle = prepareNativeStyle(utils => ({
+    paddingHorizontal: utils.spacings.medium,
+    paddingTop: utils.spacings.extraLarge,
+    alignItems: 'center',
 }));
 
 type NavigationProp = StackToTabCompositeNavigationProp<
@@ -61,8 +68,11 @@ export const EmptyPortfolioTrackerState = () => {
     return (
         <VStack spacing="extraLarge">
             <Card style={applyStyle(cardStyle)}>
-                <VStack spacing="large" alignItems="center">
-                    <AlertBox title={translate('moduleHome.emptyState.portfolioTracker.alert')} />
+                <AlertBox
+                    variant="info"
+                    title={translate('moduleHome.emptyState.portfolioTracker.alert')}
+                />
+                <VStack spacing="large" style={applyStyle(contentStyle)}>
                     <Image source={image} resizeMode="contain" style={applyStyle(imageStyle)} />
                     <Text variant="titleSmall">
                         <Translation id="moduleHome.emptyState.portfolioTracker.title" />
