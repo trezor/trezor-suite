@@ -1,17 +1,9 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/popup/view/common.js
 
-import {
-    POPUP,
-    ERRORS,
-    PopupInit,
-    CoreMessage,
-    ConnectSettings,
-    SystemInfo,
-    createUiResponse,
-} from '@trezor/connect';
+import { POPUP, ERRORS, PopupInit, CoreMessage, createUiResponse } from '@trezor/connect';
 import { createRoot } from 'react-dom/client';
 
-import { ConnectUI } from '@trezor/connect-ui';
+import { ConnectUI, State } from '@trezor/connect-ui';
 import { StyleSheetWrapper } from './react/StylesSheetWrapper';
 import { reactEventBus } from '@trezor/connect-ui/src/utils/eventBus';
 
@@ -19,16 +11,9 @@ export const header: HTMLElement = document.getElementsByTagName('header')[0];
 export const container: HTMLElement = document.getElementById('container')!;
 export const views: HTMLElement = document.getElementById('views')!;
 
-type State = {
-    settings?: ConnectSettings;
-    iframe?: Window;
-    broadcast?: BroadcastChannel;
-    systemInfo?: SystemInfo;
-};
-
 let state: State = {};
 
-export const setState = (newState: State) => (state = { ...state, ...newState });
+export const setState = (newState: Partial<State>) => (state = { ...state, ...newState });
 export const getState = () => state;
 
 export const createTooltip = (text: string) => {
