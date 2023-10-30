@@ -86,7 +86,7 @@
         "react": "18.2.0",
         "electron": "26.4.2",
         "@jest/types": "27.5.1",
-        "webpack": "^5.87.0",
+        "webpack": "^5.89.0",
         "css-loader": "^6.8.1",
         "html-webpack-plugin": "^5.5.3",
         "@types/node": "18.17.15",
