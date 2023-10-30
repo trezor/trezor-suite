@@ -79,11 +79,14 @@ const CardWrapper = styled(
         `}
 
     ${({ nested, theme }) =>
-        !nested &&
-        css`
-            box-shadow: 0 2px 5px 0 ${theme.BOX_SHADOW_BLACK_20};
-        `}
-
+        nested
+            ? css`
+                  padding: 0;
+              `
+            : css`
+                  box-shadow: 0 2px 5px 0 ${theme.BOX_SHADOW_BLACK_20};
+              `}
+              
     ${({ withImage }) =>
         withImage &&
         css`
