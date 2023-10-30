@@ -19,6 +19,7 @@ import { getSystemInfo } from '@trezor/connect-common';
 
 import * as view from './view';
 import {
+    getState,
     setState,
     showView,
     initMessageChannel,
@@ -253,9 +254,9 @@ const handshake = (handshake: PopupHandshake) => {
     clearTimeout(handshakeTimeout);
 
     // use trusted settings from iframe
-    setState({ settings: payload.settings });
+    setState({ ...getState(), ...payload.settings });
 
-    reactEventBus.dispatch(handshake);
+    reactEventBus.dispatch({ type: 'state-update', payload: getState() });
 
     if (isPhishingDomain(payload.settings.origin || '')) {
         reactEventBus.dispatch({ type: 'phishing-domain' });

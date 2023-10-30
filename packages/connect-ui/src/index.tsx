@@ -2,15 +2,7 @@ import { useCallback, useEffect, useState, useMemo, ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import {
-    PostMessage,
-    UI,
-    PopupHandshake,
-    PopupMethodInfo,
-    UI_REQUEST,
-    POPUP,
-    createPopupMessage,
-} from '@trezor/connect';
+import { PostMessage, UI, UI_REQUEST, POPUP, createPopupMessage } from '@trezor/connect';
 
 // views
 import { Transport } from './views/Transport';
@@ -31,6 +23,10 @@ import {
     BridgeUpdateNotification,
     SuspiciousOriginNotification,
 } from './components/Notification';
+import { State, getDefaultState } from './types';
+
+export type { State } from './types';
+export { getDefaultState } from './types';
 
 const Layout = styled.div`
     display: flex;
@@ -50,17 +46,15 @@ export const ConnectUI = ({ postMessage, clearLegacyView }: ConnectUIProps) => {
     // we simply store all UI relevant messages here and use them to derive what should we render
     const [messages, setMessages] = useState<(ConnectUIEventProps | null)[]>([]);
     // flowInfo is the only exception to the rule outlined above
-    const [flowInfo, setFlowInfo] = useState<
-        Partial<PopupHandshake['payload'] & PopupMethodInfo['payload']> | undefined
-    >(undefined);
+    const [state, setState] = useState<State>(getDefaultState());
 
     const listener = useCallback((message: ConnectUIEventProps | null) => {
-        if (message?.type === POPUP.HANDSHAKE || message?.type === POPUP.METHOD_INFO) {
-            setFlowInfo(prev => ({
-                ...prev,
-                ...message.payload,
-            }));
+        // set state
+        if (message?.type === 'state-update') {
+            setState(message.payload);
         }
+
+        // set current view
         setMessages(prevMessages => [message, ...prevMessages]);
     }, []);
 
@@ -91,9 +85,6 @@ export const ConnectUI = ({ postMessage, clearLegacyView }: ConnectUIProps) => {
                 case 'waiting-for-iframe-handshake':
                     component = <Loader message="waiting for handshake from host" />;
                     break;
-                case 'popup-handshake':
-                    component = <Loader message="ready" />;
-                    break;
                 case UI.TRANSPORT:
                     component = <Transport />;
                     break;
@@ -108,15 +99,12 @@ export const ConnectUI = ({ postMessage, clearLegacyView }: ConnectUIProps) => {
         }
 
         // notifications
-        const notifications: { [key in ConnectUIEventProps['type']]?: JSX.Element } = {};
+        const notifications: { [key: string]: JSX.Element } = {};
+        if (state?.transport?.outdated) {
+            notifications['bridge-outdated'] = <BridgeUpdateNotification key="bridge-outdated" />;
+        }
         messages.forEach(message => {
-            if (message?.type === 'popup-handshake') {
-                if (message.payload?.transport?.outdated) {
-                    notifications[message.type] = (
-                        <BridgeUpdateNotification key="bridge-outdated" />
-                    );
-                }
-            } else if (message?.type === UI_REQUEST.FIRMWARE_OUTDATED) {
+            if (message?.type === UI_REQUEST.FIRMWARE_OUTDATED) {
                 notifications[message.type] = <FirmwareUpdateNotification key={message.type} />;
             } else if (message?.type === UI_REQUEST.DEVICE_NEEDS_BACKUP) {
                 notifications[message.type] = <BackupNotification key={message.type} />;
@@ -127,7 +115,7 @@ export const ConnectUI = ({ postMessage, clearLegacyView }: ConnectUIProps) => {
         });
 
         return [component, notifications];
-    }, [messages, postMessage]);
+    }, [messages, postMessage, state?.transport?.outdated]);
 
     useEffect(() => {
         if (Component) {
@@ -143,9 +131,9 @@ export const ConnectUI = ({ postMessage, clearLegacyView }: ConnectUIProps) => {
                 <IntlWrapper>
                     <Layout>
                         <InfoPanel
-                            method={flowInfo?.info}
-                            origin={flowInfo?.settings?.origin}
-                            hostLabel={flowInfo?.settings?.hostLabel}
+                            method={state?.info}
+                            origin={state?.settings?.origin}
+                            hostLabel={state?.settings?.hostLabel}
                             topSlot={Object.values(Notifications)}
                         />
                         {Component && (

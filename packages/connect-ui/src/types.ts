@@ -1,6 +1,7 @@
-import { PopupHandshake, IFrameLoaded } from '@trezor/connect';
+import { PopupHandshake, PopupMethodInfo, IFrameLoaded } from '@trezor/connect';
 
 export type State = Partial<PopupHandshake['payload']> &
+    Partial<PopupMethodInfo['payload']> &
     Partial<IFrameLoaded['payload']> & {
         iframe?: Window;
         broadcast?: BroadcastChannel;
