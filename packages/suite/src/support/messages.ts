@@ -2539,6 +2539,14 @@ export default defineMessages({
         description: 'Heading in onboarding when user is about to install a new firmware',
         id: 'TR_INSTALL_FIRMWARE',
     },
+    TR_SWITCH_FIRMWARE: {
+        defaultMessage: 'Switch firmware',
+        id: 'TR_SWITCH_FIRMWARE',
+    },
+    TR_SWITCH_FIRMWARE_TO: {
+        defaultMessage: 'Switch firmware to {firmwareType}',
+        id: 'TR_SWITCH_FIRMWARE_TO',
+    },
     TR_INSTALL_BITCOIN_ONLY_FW: {
         defaultMessage: 'Install {bitcoinOnly} firmware',
         description: 'Heading in onboarding when user is about to install Bitcoin-only firmware',
@@ -4917,10 +4925,15 @@ export default defineMessages({
         defaultMessage:
             'Your device is already updated to the latest firmware. You may reinstall the firmware if needed.',
     },
-    TR_SWITCH_FIRMWARE_TYPE_DESCRIPTION: {
-        id: 'TR_SWITCH_FIRMWARE_TYPE_DESCRIPTION',
+    TR_SWITCH_TO_BITCOIN_ONLY_DESCRIPTION: {
+        id: 'TR_SWITCH_TO_BITCOIN_ONLY_DESCRIPTION',
         defaultMessage:
-            '{bitcoinOnly} firmware is a lightweight option for users only using bitcoin. {regular} firmware enables all supported coins and features. Do you want to switch firmware type?',
+            '{bitcoinOnly} firmware only works with Bitcoin transactions. If you want to access and manage all of your coins, just switch your device firmware back to {regular} anytime by using your recovery seed.',
+    },
+    TR_SWITCH_TO_REGULAR_DESCRIPTION: {
+        id: 'TR_SWITCH_TO_REGULAR_DESCRIPTION',
+        defaultMessage:
+            "{regular} firmware allows your device to access and manage all of your coins. {bitcoinOnly} firmware only works with Bitcoin transactions. You can change your device's firmware at anytime by using your recovery seed.",
     },
     TR_BITCOIN_ONLY_UNAVAILABLE: {
         id: 'TR_BITCOIN_ONLY_UNAVAILABLE',

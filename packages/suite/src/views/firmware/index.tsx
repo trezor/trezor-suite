@@ -154,6 +154,7 @@ export const Firmware = ({ shouldSwitchFirmwareType }: FirmwareProps) => {
     const isCancelable = ['initial', 'check-seed', 'done', 'partially-done', 'error'].includes(
         status,
     );
+    const heading = shouldSwitchFirmwareType ? 'TR_SWITCH_FIRMWARE' : 'TR_INSTALL_FIRMWARE';
 
     return (
         <StyledModal
@@ -169,7 +170,7 @@ export const Firmware = ({ shouldSwitchFirmwareType }: FirmwareProps) => {
             }
             onCancel={onClose}
             data-test="@firmware"
-            heading={<Translation id="TR_INSTALL_FIRMWARE" />}
+            heading={<Translation id={heading} />}
         >
             <Wrapper isWithTopPadding={!isCancelable}>{Component}</Wrapper>
         </StyledModal>
