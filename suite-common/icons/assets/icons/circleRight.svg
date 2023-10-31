@@ -1,4 +1,4 @@
-<svg fill="none" viewBox="0 0 20 20">
+<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" fill="none" viewBox="0 0 20 20">
   <path stroke="#1B1A19" stroke-miterlimit="10" stroke-width="1.5" d="M10 17.5a7.5 7.5 0 1 0 0-15 7.5 7.5 0 0 0 0 15Z"/>
   <path stroke="#1B1A19" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.063 7.188 12.187 10l-3.124 2.813"/>
 </svg>
