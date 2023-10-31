@@ -109,7 +109,6 @@ const Input = ({
     bottomText,
     size = 'large',
     isDisabled,
-    className,
     dataTest,
     showClearButton,
     placeholder,
