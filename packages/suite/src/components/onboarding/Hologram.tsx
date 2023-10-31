@@ -28,12 +28,12 @@ const HologramSubHeading = styled.span`
 `;
 
 const AnimationWrapper = styled.div`
-    margin: 8px 0px;
+    margin: 8px 0;
 `;
 
 const StyledWarning = styled(Warning)`
     width: calc(100% + 16px);
-    margin: 0px -8px;
+    margin: 0 -8px;
     font-size: ${variables.FONT_SIZE.TINY};
 `;
 

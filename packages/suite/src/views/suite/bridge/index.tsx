@@ -14,24 +14,25 @@ const Content = styled.div`
     flex-direction: column;
     text-align: center;
     flex: 1;
-    padding: 0px 74px;
+    padding: 0 74px;
+
     /* min-width: 560px; */
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        padding: 0px;
-        min-width: 0px;
+        padding: 0;
+        min-width: 0;
     }
 `;
 
 const Footer = styled.div`
     margin-top: 72px;
     display: flex;
-    padding: 0px 42px;
+    padding: 0 42px;
     justify-content: space-between;
     width: 100%;
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        padding: 0px 12px;
+        padding: 0 12px;
     }
 `;
 
@@ -42,8 +43,7 @@ const SelectWrapper = styled(Select)`
 const Download = styled.div`
     margin: 24px auto;
     display: flex;
-    justify-content: center;
-    align-content: center;
+    place-content: center center;
     flex-direction: column;
 `;
 
@@ -58,11 +58,11 @@ const CenteredLoader = styled(Spinner)`
 `;
 
 const LoaderWrapper = styled.div`
-    margin: 15px 0 25px 0;
-    align-items: center;
+    margin: 15px 0 25px;
+    place-items: center center;
+
     /* same height as content so it won't feel jumpy */
     min-height: 98px;
-    justify-items: center;
 `;
 
 const Version = styled.div<{ show: boolean }>`

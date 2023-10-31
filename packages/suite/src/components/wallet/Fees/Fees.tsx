@@ -47,7 +47,7 @@ const SelectBarWrapper = styled.div<{ desktop?: boolean }>`
     }
 
     ${variables.SCREEN_QUERY.MOBILE} {
-        margin: 8px 0px 20px;
+        margin: 8px 0 20px;
     }
 `;
 

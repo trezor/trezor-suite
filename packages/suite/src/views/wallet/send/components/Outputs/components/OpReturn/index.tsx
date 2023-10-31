@@ -10,8 +10,7 @@ import { useTranslation } from 'src/hooks/suite';
 const Wrapper = styled.div`
     display: flex;
     flex-direction: row;
-    justify-items: space-between;
-    align-items: center;
+    place-items: center space-between;
 `;
 
 const Label = styled.div`

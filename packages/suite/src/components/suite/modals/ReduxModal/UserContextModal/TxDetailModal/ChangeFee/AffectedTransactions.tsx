@@ -20,7 +20,7 @@ const ChainedTxs = styled.div`
 const TxRow = styled.div`
     display: flex;
     align-items: center;
-    padding: 4px 0px;
+    padding: 4px 0;
 `;
 
 const IconWrapper = styled.div`

@@ -25,7 +25,7 @@ const SectionHeader = styled.h3`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    padding: 0 0 18px 0;
+    padding: 0 0 18px;
 `;
 
 const SectionButton = styled.button<{ hasBackground?: boolean }>`
@@ -53,7 +53,7 @@ const StyledLink = styled(Link)`
 `;
 
 const Details = styled.div`
-    padding: 10px 0 0 0;
+    padding: 10px 0 0;
     font-size: 10px;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};

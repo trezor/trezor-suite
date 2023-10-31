@@ -54,12 +54,12 @@ const Header = styled.div`
     flex-direction: column;
     max-width: ${MAX_WIDTH};
     background: ${({ theme }) => theme.BG_LIGHT_GREY};
-    box-shadow: 0px 14px 10px 4px ${({ theme }) => theme.BG_LIGHT_GREY};
+    box-shadow: 0 14px 10px 4px ${({ theme }) => theme.BG_LIGHT_GREY};
     margin-bottom: 14px;
     z-index: ${variables.Z_INDEX.BASE};
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
-        padding: 0px 20px;
+        padding: 0 20px;
     }
 
     ${variables.SCREEN_QUERY.MOBILE} {
@@ -69,7 +69,7 @@ const Header = styled.div`
 
     @media all and (max-height: ${variables.SCREEN_SIZE.SM}) {
         /* low height screen */
-        padding: 0px 20px;
+        padding: 0 20px;
         margin-bottom: 26px;
     }
 `;

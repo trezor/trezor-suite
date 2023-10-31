@@ -16,7 +16,7 @@ const Wrapper = styled.div`
 const CardContent = styled.div`
     display: flex;
     flex-direction: column;
-    padding: 16px 24px 0 24px;
+    padding: 16px 24px 0;
 `;
 
 const Row = styled.div`
@@ -45,14 +45,11 @@ const Address = styled.div`
 `;
 
 const Overlay = styled.div`
-    top: 0px;
-    right: 0px;
-    bottom: 0px;
-    left: 0px;
+    inset: 0;
     position: absolute;
     background-image: linear-gradient(
         to right,
-        rgba(0, 0, 0, 0) 0%,
+        rgb(0 0 0 / 0%) 0%,
         ${({ theme }) => theme.BG_WHITE} 120px
     );
 `;

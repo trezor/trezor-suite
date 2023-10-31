@@ -40,7 +40,7 @@ const ItemText = styled.div`
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    padding: 26px 0px;
+    padding: 26px 0;
     text-align: left;
 `;
 

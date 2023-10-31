@@ -25,7 +25,7 @@ const Container = styled.div`
     ${variables.SCREEN_QUERY.MOBILE} {
         height: 110px;
         border-radius: 20px;
-        box-shadow: 0px -4px 6px -4px ${({ theme }) => theme.BOX_SHADOW_OPTION_CARD};
+        box-shadow: 0 -4px 6px -4px ${({ theme }) => theme.BOX_SHADOW_OPTION_CARD};
     }
 `;
 

@@ -14,13 +14,10 @@ const getOverlayColor = ({ theme, variant }: { theme: DefaultTheme; variant: Ove
 
 const Overlay = styled.div<{ variant: OverlayVariant }>`
     position: absolute;
-    bottom: 0;
-    top: 0;
-    left: 0;
-    right: 0;
+    inset: 0;
     margin: -8px;
     border-radius: 3px;
-    background-image: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, ${getOverlayColor} 160px);
+    background-image: linear-gradient(to right, rgb(0 0 0 / 0%) 0%, ${getOverlayColor} 160px);
 `;
 
 const DerivationPathColumn = styled.div`

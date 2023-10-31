@@ -55,6 +55,7 @@ const OptionValueName = styled.div`
 
 const OptionWrapper = styled.div`
     max-width: 200px;
+
     @media (max-width: ${variables.SCREEN_SIZE.XL}) {
         max-width: 120px;
     }

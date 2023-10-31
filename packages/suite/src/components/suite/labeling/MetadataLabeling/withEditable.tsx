@@ -45,10 +45,10 @@ const Editable = styled.div<{ value?: string; isButton?: boolean; touched: boole
     ${({ value, isButton }) =>
         !value &&
         css`
-           left: ${isButton ? '22px;' : '0px;'}
-           right: 0;
-           position: absolute;
-         `}
+            left: ${isButton ? '22px' : '0px'};
+            right: 0;
+            position: absolute;
+        `}
 
     color: ${({ touched, theme }) => (!touched ? theme.TYPE_LIGHT_GREY : 'inherit')};
 `;

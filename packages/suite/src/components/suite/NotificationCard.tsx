@@ -61,7 +61,7 @@ const getIcon = (variant: NotificationCardProps['variant'], theme: SuiteThemeCol
 const Wrapper = styled.div`
     display: flex;
     border-radius: 8px;
-    padding: 14px 18px 14px 18px;
+    padding: 14px 18px;
     align-items: center;
     background: ${({ theme }) => theme.STROKE_GREY};
     margin-bottom: 8px;

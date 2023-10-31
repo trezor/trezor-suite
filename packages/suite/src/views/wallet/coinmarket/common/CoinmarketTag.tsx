@@ -6,8 +6,8 @@ const TagRow = styled.div`
 `;
 
 const Tag = styled.div`
-    margin: 0 16px 2px 16px;
-    padding: 3px 8px 0 8px;
+    margin: 0 16px 2px;
+    padding: 3px 8px 0;
     border-radius: 8px;
     background: ${({ theme }) => theme.TYPE_ORANGE};
     color: ${({ theme }) => theme.TYPE_WHITE};

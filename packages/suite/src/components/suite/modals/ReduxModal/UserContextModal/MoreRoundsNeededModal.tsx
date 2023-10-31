@@ -29,7 +29,7 @@ const Heading = styled.h3`
     font-size: 32px;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     line-height: 32px;
-    margin: 10px 0 22px 0;
+    margin: 10px 0 22px;
 `;
 
 export const MoreRoundsNeededModal = () => {

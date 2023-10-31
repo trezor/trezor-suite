@@ -67,7 +67,7 @@ const Left = styled.div`
 `;
 
 const TokenBalance = styled.div`
-    padding: 0px 6px;
+    padding: 0 6px;
     font-size: ${variables.NEUE_FONT_SIZE.TINY};
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
@@ -82,12 +82,12 @@ const StyledTransferIcon = styled(Icon)`
     }
 `;
 const TransferIconWrapper = styled.div`
-    margin: 45px 20px 0px 20px;
+    margin: 45px 20px 0;
 
     @media all and (max-width: ${variables.SCREEN_SIZE.LG}) {
         /* transform: rotate(90deg); */
         align-self: center;
-        margin: 0px;
+        margin: 0;
     }
 `;
 

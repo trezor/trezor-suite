@@ -25,7 +25,7 @@ const Wrapper = styled.div`
 const GraphWrapper = styled(HiddenPlaceholder)`
     display: flex;
     flex: 1 1 auto;
-    padding: ${CARD_PADDING_SIZE} 0px;
+    padding: ${CARD_PADDING_SIZE} 0;
     height: 320px;
 `;
 

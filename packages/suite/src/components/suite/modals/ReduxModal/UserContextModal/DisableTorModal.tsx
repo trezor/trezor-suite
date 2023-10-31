@@ -17,6 +17,7 @@ const BackendRowWrapper = styled.div`
     width: 100%;
     align-items: center;
     padding: 12px 0;
+
     & + & {
         border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
     }

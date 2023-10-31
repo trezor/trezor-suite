@@ -7,8 +7,7 @@ import { Card, Translation, FiatValue, FormattedCryptoAmount } from 'src/compone
 const StyledCard = styled(Card)`
     display: flex;
     flex-direction: row;
-    justify-items: space-between;
-    align-items: center;
+    place-items: center space-between;
     min-height: 86px;
     padding: 0 42px;
 

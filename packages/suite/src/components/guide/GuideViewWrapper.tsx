@@ -6,8 +6,7 @@ const Wrapper = styled.div`
     background: ${({ theme }) => theme.BG_WHITE};
     display: flex;
     flex-direction: column;
-    overflow-x: hidden;
-    overflow-y: scroll;
+    overflow: hidden scroll;
     min-width: ${variables.LAYOUT_SIZE.GUIDE_PANEL_CONTENT_WIDTH};
 `;
 

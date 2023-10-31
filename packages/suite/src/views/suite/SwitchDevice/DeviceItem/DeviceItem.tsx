@@ -82,7 +82,7 @@ const WalletsWrapper = styled.div<{ enabled: boolean }>`
     margin-top: 24px;
 
     @media (max-width: ${variables.SCREEN_SIZE.SM}) {
-        margin-left: 0px;
+        margin-left: 0;
     }
 `;
 
@@ -127,7 +127,7 @@ const ColRememberHeader = styled(ColHeader)`
     margin: 0 24px;
 `;
 const ColEjectHeader = styled(ColHeader)`
-    margin: 0px 24px;
+    margin: 0 24px;
 `;
 
 const StyledImage = styled(Image)`

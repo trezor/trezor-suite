@@ -33,15 +33,16 @@ const Wrapper = styled(Card)`
     border-image-slice: 0 10;
     padding-left: 16px;
     margin: 8px 0 32px;
+
     /* height of secondary panel and a gap between transactions and graph */
     scroll-margin-top: calc(${SECONDARY_PANEL_HEIGHT} + 115px);
 
     @media (max-width: ${variables.SCREEN_SIZE.SM}) {
-        padding: 0px 16px;
+        padding: 0 16px;
     }
 
     @media (max-width: ${variables.SCREEN_SIZE.SM}) {
-        padding: 0px 8px;
+        padding: 0 8px;
     }
 `;
 

@@ -23,6 +23,7 @@ const SettingsWrapper = styled.div<{ disabled: boolean }>`
     padding: 10px;
     transition: 0.3s ease;
     cursor: pointer;
+
     ${props =>
         props.disabled &&
         css`

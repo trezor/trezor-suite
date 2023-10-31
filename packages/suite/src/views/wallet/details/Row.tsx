@@ -5,12 +5,13 @@ const Content = styled.div`
     display: flex;
     flex: 1;
     justify-content: space-between;
-    padding: 16px 0px;
+    padding: 16px 0;
 `;
 
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
+
     &:not(:first-child) {
         border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
     }

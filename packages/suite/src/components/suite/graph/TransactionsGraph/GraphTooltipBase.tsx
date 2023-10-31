@@ -57,7 +57,7 @@ const CustomTooltipWrapper = styled.div<WrapperProps>`
         getTooltipXPosition(positionX, boxWidth)}, -90px);
     line-height: 1.5;
 
-    :after {
+    ::after {
         position: absolute;
         content: '';
         top: 100%;
@@ -82,7 +82,7 @@ const Row = styled.div<{ noBottomMargin?: boolean }>`
     white-space: nowrap;
     align-items: center;
     justify-content: space-between;
-    padding: 0px 8px;
+    padding: 0 8px;
     margin-bottom: ${({ noBottomMargin }) => (noBottomMargin ? '0px' : '4px')};
 `;
 
@@ -100,8 +100,8 @@ const ColsWrapper = styled.div`
 `;
 
 const HighlightedArea = styled(Col)`
-    padding: 8px 0px;
-    background: rgba(255, 255, 255, 0.15);
+    padding: 8px 0;
+    background: rgb(255 255 255 / 15%);
 `;
 
 const HighlightedAreaLeft = styled(HighlightedArea)`

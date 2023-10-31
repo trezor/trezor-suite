@@ -45,7 +45,7 @@ const DeviceName = styled.div`
 const StyledH1 = styled(H1)`
     font-size: 28px;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    margin: 24px 0 0 0;
+    margin: 24px 0 0;
 `;
 
 const Underline = styled.span`

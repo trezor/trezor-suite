@@ -18,7 +18,7 @@ const RevealText = styled.div`
 
 const ButtonWrapper = styled.button`
     position: absolute;
-    right: 0px;
+    right: 0;
     display: flex;
     align-items: center;
     margin-left: auto;

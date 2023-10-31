@@ -26,6 +26,7 @@ export const Content = styled.div`
     overflow: hidden;
     flex-direction: column;
     font-variant-numeric: tabular-nums;
+
     /* workarounds for nice blur effect without cutoffs even inside parent with overflow: hidden */
     padding-left: 10px;
     margin-left: -10px;

@@ -8,7 +8,7 @@ import { useDevice, useDispatch } from 'src/hooks/suite';
 import { TrezorDevice } from 'src/types/suite';
 
 const StyledImage = styled(Image)`
-    margin: 14px 0px;
+    margin: 14px 0;
 `;
 
 const StyledModal = styled(Modal)`

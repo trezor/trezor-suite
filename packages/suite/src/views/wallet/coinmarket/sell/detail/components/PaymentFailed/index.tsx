@@ -11,7 +11,7 @@ const Wrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 60px 20px 60px 20px;
+    padding: 60px 20px;
     flex-direction: column;
 `;
 
@@ -26,7 +26,7 @@ const Description = styled.div`
     justify-content: center;
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    margin: 17px 0 10px 0;
+    margin: 17px 0 10px;
     max-width: 310px;
     text-align: center;
 `;

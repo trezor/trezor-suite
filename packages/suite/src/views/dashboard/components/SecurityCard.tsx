@@ -92,6 +92,7 @@ const Line = styled.div`
     height: 1px;
     margin: 10px 0;
     background: ${({ theme }) => theme.STROKE_GREY};
+
     /* border-top: 1px solid ${({ theme }) => theme.STROKE_GREY}; */
 `;
 

@@ -149,10 +149,12 @@ const Wrapper = styled.div`
     cursor: pointer;
     min-height: 250px;
     transition: background-color 0.3s;
+
     &:hover,
     &.dragging {
         background: ${({ theme }) => theme.BG_GREY};
     }
+
     * {
         pointer-events: none;
     }

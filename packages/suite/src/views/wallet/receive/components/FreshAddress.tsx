@@ -12,11 +12,10 @@ import { AccountsRootState, selectIsAccountUtxoBased } from '@suite-common/walle
 
 const StyledCard = styled(Card)`
     width: 100%;
-    flex-direction: row;
+    flex-flow: row wrap;
     margin-bottom: 16px;
     align-items: center;
     justify-content: space-between;
-    flex-wrap: wrap;
     padding: 32px 42px;
 
     @media (max-width: ${variables.SCREEN_SIZE.SM}) {
@@ -62,14 +61,11 @@ const AddressLabel = styled.span`
 `;
 
 const Overlay = styled.div`
-    top: 0px;
-    right: 0px;
-    bottom: 0px;
-    left: 0px;
+    inset: 0;
     position: absolute;
     background-image: linear-gradient(
         to right,
-        rgba(0, 0, 0, 0) 0%,
+        rgb(0 0 0 / 0%) 0%,
         ${({ theme }) => theme.BG_WHITE} 220px
     );
 `;

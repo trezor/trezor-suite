@@ -60,7 +60,7 @@ const Divider = styled.div`
     width: 100%;
     height: 1px;
     background: ${({ theme }) => theme.STROKE_GREY};
-    margin: 30px 0px 36px 0px;
+    margin: 30px 0 36px;
 `;
 
 interface AccountEmptyProps {

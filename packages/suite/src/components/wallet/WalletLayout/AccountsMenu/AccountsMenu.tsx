@@ -32,6 +32,7 @@ const Wrapper = styled.div<{ isInline?: boolean }>`
 const MenuHeader = styled.div<{ isInline?: boolean }>`
     display: flex;
     flex-direction: column;
+
     /* justify-content: center; */
     background: ${({ theme }) => theme.BG_WHITE};
 
@@ -44,7 +45,7 @@ const MenuHeader = styled.div<{ isInline?: boolean }>`
     ${props =>
         !props.isInline &&
         css`
-            padding: 20px 16px 8px 16px;
+            padding: 20px 16px 8px;
         `}
 `;
 
@@ -64,7 +65,7 @@ const AddAccountButtonWrapper = styled.div`
 const Search = styled.div`
     display: flex;
     justify-content: space-between;
-    padding: 8px 0px;
+    padding: 8px 0;
 
     background: ${({ theme }) => theme.BG_WHITE};
 `;
@@ -96,18 +97,17 @@ const ExpandedMobileWrapper = styled.div`
     box-shadow: 0 4px 10px 0 ${({ theme }) => theme.BOX_SHADOW_BLACK_20};
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
-    padding: 0px 16px;
+    padding: 0 16px;
     padding-bottom: 16px;
 `;
 
 const Scroll = styled.div<{ isInline?: boolean }>`
     height: auto;
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow: hidden auto;
     ${props =>
         !props.isInline &&
         css`
-            padding: 0px 8px;
+            padding: 0 8px;
         `}
 `;
 
@@ -118,7 +118,7 @@ const NoResults = styled.div`
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     justify-content: center;
     text-align: center;
-    margin: 36px 0px;
+    margin: 36px 0;
 `;
 
 type AccountsMenuProps = {

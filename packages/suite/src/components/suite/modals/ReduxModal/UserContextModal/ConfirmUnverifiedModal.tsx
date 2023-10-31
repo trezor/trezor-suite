@@ -11,7 +11,7 @@ import { onCancel } from 'src/actions/suite/modalActions';
 
 const StyledImage = styled(Image)`
     align-self: center;
-    padding: 20px 0px;
+    padding: 20px 0;
 `;
 
 const StyledModal = styled(Modal)`

@@ -25,7 +25,8 @@ const Subheader = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     text-align: center;
     margin-top: 8px;
-    :empty:before {
+
+    :empty::before {
         content: '\\200b'; /* zero-width space to preserve the height of empty div */
     }
 `;

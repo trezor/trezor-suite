@@ -25,14 +25,14 @@ const Wrapper = styled.div`
 
 const Main = styled.div`
     display: flex;
-    margin: 30px 30px 0 30px;
+    margin: 30px 30px 0;
     justify-content: space-between;
     padding-bottom: 20px;
     border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
 
     @media (max-width: ${variables.SCREEN_SIZE.SM}) {
         flex-direction: column;
-        margin: 20px 20px 0 20px;
+        margin: 20px 20px 0;
     }
 `;
 

@@ -70,8 +70,7 @@ export const CoinWrapper = styled.button<{
     hasSettings: boolean;
 }>`
     display: flex;
-    justify-items: flex-start;
-    align-items: center;
+    place-items: center flex-start;
     border: 1.5px solid ${({ theme }) => theme.STROKE_GREY};
     background: ${({ theme }) => theme.BG_WHITE};
     border-radius: 9999px;

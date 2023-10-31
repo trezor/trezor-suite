@@ -42,7 +42,7 @@ const Checkmark = styled.div`
 const Text = styled.div`
     display: flex;
     flex-direction: column;
-    margin: 0px 32px;
+    margin: 0 32px;
     text-align: center;
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-size: 20px;

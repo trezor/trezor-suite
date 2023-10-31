@@ -18,7 +18,7 @@ const Heading = styled.div`
 
 const Title = styled(H2)`
     font-weight: 600;
-    margin-bottom: 0px;
+    margin-bottom: 0;
 `;
 
 const Point = styled.div`
@@ -45,7 +45,7 @@ const Divider = styled.div`
     width: 100%;
     height: 1px;
     background: ${({ theme }) => theme.STROKE_GREY};
-    margin: 16px 0px 20px 0px;
+    margin: 16px 0 20px;
 `;
 
 interface TaprootBannerProps {

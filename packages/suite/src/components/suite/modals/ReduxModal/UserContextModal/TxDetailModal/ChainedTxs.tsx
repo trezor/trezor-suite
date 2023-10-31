@@ -17,8 +17,9 @@ const StyledTrezorLink = styled(TrezorLink)`
 
 const ChainedTransactionItem = styled(TransactionItem)`
     width: 100%;
-    padding: 0px 40px;
+    padding: 0 40px;
     cursor: pointer;
+
     &:hover {
         background: ${({ theme }) => theme.BG_GREY};
     }

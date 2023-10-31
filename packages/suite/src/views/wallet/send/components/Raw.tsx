@@ -13,8 +13,7 @@ import { OpenGuideFromTooltip } from 'src/components/guide';
 const StyledCard = styled(Card)`
     display: flex;
     flex-direction: row;
-    justify-items: space-between;
-    align-items: center;
+    place-items: center space-between;
     padding: 32px 42px;
 
     @media (max-width: ${variables.SCREEN_SIZE.SM}) {

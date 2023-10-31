@@ -14,7 +14,7 @@ import List from './List';
 import { SelectedOffer } from './SelectedOffer';
 
 const Wrapper = styled.div`
-    padding: 16px 32px 32px 32px;
+    padding: 16px 32px 32px;
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
         padding: 16px;

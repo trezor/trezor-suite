@@ -17,7 +17,7 @@ const FwVersionWrapper = styled.div`
     max-width: 364px;
     justify-content: space-between;
     align-items: center;
-    padding: 16px 0px;
+    padding: 16px 0;
 `;
 
 const FwVersion = styled.div`

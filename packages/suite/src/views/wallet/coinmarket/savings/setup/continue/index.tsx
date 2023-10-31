@@ -38,6 +38,7 @@ const Label = styled.div`
 
 const StyledSelectBar = styled(SelectBar)`
     width: 100%;
+
     & div div {
         justify-content: center;
     }

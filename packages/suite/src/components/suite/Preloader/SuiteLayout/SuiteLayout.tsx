@@ -40,8 +40,7 @@ const Body = styled.div`
     display: flex;
     flex-direction: column;
     flex: 1;
-    overflow-y: hidden;
-    overflow-x: hidden;
+    overflow: hidden hidden;
 `;
 
 // AppWrapper and MenuSecondary creates own scrollbars independently
@@ -59,8 +58,7 @@ const AppWrapper = styled.div`
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
     background: ${({ theme }) => theme.BG_GREY};
     flex-direction: column;
-    overflow-x: auto;
-    overflow-y: scroll;
+    overflow: auto scroll;
     width: 100%;
     align-items: center;
     position: relative;

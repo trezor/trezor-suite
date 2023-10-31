@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { Translation } from 'src/components/suite';
 
 const Content = styled.div`
-    margin: 0 0 24px 0;
+    margin: 0 0 24px;
 `;
 
 interface HeaderProps {

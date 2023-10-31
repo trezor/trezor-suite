@@ -27,7 +27,7 @@ const StyledCard = styled(Card)`
 const Body = styled.div`
     align-items: center;
     justify-content: center;
-    padding: 0px 20px;
+    padding: 0 20px;
     min-height: 329px;
     flex: 1;
 `;
@@ -35,7 +35,7 @@ const Body = styled.div`
 const SkeletonTransactionsGraphWrapper = styled.div`
     display: flex;
     flex-direction: column;
-    padding: 20px 0px;
+    padding: 20px 0;
     height: 320px;
 `;
 

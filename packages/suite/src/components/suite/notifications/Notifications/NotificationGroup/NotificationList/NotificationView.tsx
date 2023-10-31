@@ -20,7 +20,7 @@ const DateP = styled(TextP)`
 const Item = styled.div`
     display: flex;
     align-items: center;
-    padding: 16px 0px;
+    padding: 16px 0;
 
     & + & {
         border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
@@ -29,7 +29,7 @@ const Item = styled.div`
 
 const Text = styled.div`
     flex: 1;
-    padding: 0px 16px;
+    padding: 0 16px;
     white-space: break-spaces;
 `;
 

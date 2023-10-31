@@ -15,7 +15,7 @@ const Wrapper = styled.div`
 const CardContent = styled.div`
     display: flex;
     flex-direction: column;
-    padding: 24px 24px;
+    padding: 24px;
 `;
 
 const Label = styled.div`

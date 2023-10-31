@@ -6,7 +6,7 @@ import { variables } from '@trezor/components';
 // A set of required styles copied from 'react-toastify/dist/ReactToastify.css'
 // Note: lib styles are ready only for a current setup, if you want to change e.g. transition, copy additional styles
 const StyledContainer = styled(BaseToastContainer)`
-    /* stylelint-disable no-duplicate-selectors */
+    /* stylelint-disable selector-class-pattern, keyframes-name-pattern */
     & {
         min-width: 330px;
         max-width: 430px;
@@ -18,7 +18,7 @@ const StyledContainer = styled(BaseToastContainer)`
         top: 11px;
         right: 11px;
 
-        @media only screen and (max-width: 480px) {
+        @media only screen and (width <= 480px) {
             width: calc(100vw - 12px);
             padding: 0;
             left: 0;
@@ -27,14 +27,13 @@ const StyledContainer = styled(BaseToastContainer)`
             transform: translateX(0);
         }
     }
-    /* stylelint-enable no-duplicate-selectors */
 
     .Toastify__toast {
         border-radius: 8px;
-        box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.19);
+        box-shadow: 0 2px 5px 0 rgb(0 0 0 / 19%);
         color: ${({ theme }) => theme.TYPE_DARK_GREY};
         background: ${({ theme }) => theme.BG_WHITE};
-        padding: 0px;
+        padding: 0;
         font-family: 'TT Hoves', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue',
             Arial, sans-serif;
         position: relative;
@@ -65,7 +64,7 @@ const StyledContainer = styled(BaseToastContainer)`
         animation-duration: 0.7s;
     }
 
-    @media only screen and (max-width: 480px) {
+    @media only screen and (width <= 480px) {
         .Toastify__toast {
             margin-bottom: 0;
             border-radius: 0;
@@ -77,6 +76,7 @@ const StyledContainer = styled(BaseToastContainer)`
             transform: translate3d(110%, 0, 0);
             visibility: visible;
         }
+
         to {
             transform: translate3d(0, 0, 0);
         }
@@ -86,6 +86,7 @@ const StyledContainer = styled(BaseToastContainer)`
         from {
             transform: translate3d(0, 0, 0);
         }
+
         to {
             visibility: hidden;
             transform: translate3d(110%, 0, 0);
@@ -108,13 +109,16 @@ const StyledContainer = styled(BaseToastContainer)`
         0% {
             transform: scaleX(1);
         }
+
         100% {
             transform: scaleX(0);
         }
     }
+
     .Toastify__progress-bar--animated {
         animation: Toastify__trackProgress linear 1 forwards;
     }
+    /* stylelint-enable selector-class-pattern, keyframes-name-pattern */
 `;
 
 export const ToastContainer = () => (

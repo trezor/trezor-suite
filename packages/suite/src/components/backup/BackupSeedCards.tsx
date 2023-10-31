@@ -14,7 +14,7 @@ const Wrapper = styled.div`
 
 const Instructions = styled.div`
     text-align: center;
-    margin: 16px 0px 26px;
+    margin: 16px 0 26px;
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.TINY};
@@ -36,6 +36,7 @@ const StyledBackupSeedCard = styled(BackupSeedCard)`
 
     ${variables.SCREEN_QUERY.BELOW_TABLET} {
         width: 100%;
+
         & + & {
             margin-top: 10px;
         }

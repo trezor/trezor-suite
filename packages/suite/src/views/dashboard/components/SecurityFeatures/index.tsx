@@ -23,6 +23,7 @@ const Content = styled.div`
     @media only screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
         grid-template-columns: 1fr 1fr;
     }
+
     @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     }

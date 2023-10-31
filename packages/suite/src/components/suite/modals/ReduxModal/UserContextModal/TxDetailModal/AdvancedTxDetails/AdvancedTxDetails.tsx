@@ -9,7 +9,7 @@ import { IODetails } from './IODetails/IODetails';
 import { ChainedTxs } from '../ChainedTxs';
 
 const Wrapper = styled.div`
-    padding: 0px 24px 10px;
+    padding: 0 24px 10px;
 
     ${variables.SCREEN_QUERY.MOBILE} {
         padding-left: 10px;
@@ -33,7 +33,8 @@ const TabButton = styled.button<{ selected: boolean }>`
     padding-bottom: 12px;
     margin-right: 40px;
     cursor: pointer;
-    /* change styles if the button is selected*/
+
+    /* change styles if the button is selected */
     color: ${({ selected, theme }) =>
         selected ? `${theme.TYPE_GREEN}` : `${theme.TYPE_LIGHT_GREY}`};
     border-bottom: ${({ selected, theme }) => (selected ? `2px solid ${theme.BG_GREEN}` : 'none')};

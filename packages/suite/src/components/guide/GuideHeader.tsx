@@ -23,7 +23,7 @@ const HeaderWrapper = styled.div<{ noLabel?: boolean; isScrolled: boolean }>`
     ${({ isScrolled }) =>
         isScrolled &&
         css`
-            box-shadow: 0px 9px 27px 0px ${({ theme }) => transparentize(0.5, theme.STROKE_GREY)};
+            box-shadow: 0 9px 27px 0 ${({ theme }) => transparentize(0.5, theme.STROKE_GREY)};
             border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
         `}
 

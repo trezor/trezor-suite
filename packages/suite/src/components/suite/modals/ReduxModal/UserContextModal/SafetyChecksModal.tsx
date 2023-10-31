@@ -13,6 +13,7 @@ const OptionsWrapper = styled.div`
     width: 100%;
     text-align: left;
     margin: 20px 0 40px;
+
     & > * + * {
         margin-top: 40px;
     }

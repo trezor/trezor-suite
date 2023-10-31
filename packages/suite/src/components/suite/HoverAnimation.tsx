@@ -9,7 +9,7 @@ const Wrapper = styled.div<{ size?: string; isHoverable?: boolean }>`
     align-items: center;
     justify-content: center;
 
-    :after {
+    ::after {
         content: '';
         position: absolute;
         width: 100%;
@@ -30,7 +30,7 @@ const Wrapper = styled.div<{ size?: string; isHoverable?: boolean }>`
             :hover,
             :focus,
             :active {
-                :after {
+                ::after {
                     transform: scale(1);
                     background-color: ${({ theme }) =>
                         transparentize(

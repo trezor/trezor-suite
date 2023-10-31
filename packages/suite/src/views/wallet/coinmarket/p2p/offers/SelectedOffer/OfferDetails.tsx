@@ -45,7 +45,7 @@ const Info = styled.div`
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
         flex: 1;
-        margin: 20px 0 10px 0;
+        margin: 20px 0 10px;
         width: 100%;
     }
 `;

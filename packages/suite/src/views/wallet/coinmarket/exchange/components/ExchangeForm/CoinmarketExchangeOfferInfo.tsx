@@ -41,7 +41,7 @@ const Info = styled.div`
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
         flex: 1;
-        margin: 20px 0 10px 0;
+        margin: 20px 0 10px;
         width: 100%;
     }
 `;
@@ -72,7 +72,7 @@ const Row = styled.div`
 
 const AdjacentRow = styled.div`
     display: flex;
-    margin: -15px 24px 10px 24px;
+    margin: -15px 24px 10px;
 `;
 
 const Dark = styled.div`
@@ -88,7 +88,7 @@ const Dark = styled.div`
 const RowWithBorder = styled(Row)`
     border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
     border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
-    margin-bottom: 0px;
+    margin-bottom: 0;
     margin-top: 10px;
     padding-bottom: 10px;
     padding-top: 10px;

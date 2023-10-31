@@ -4,7 +4,7 @@ import { SavingsKYCCard } from 'src/views/wallet/coinmarket';
 import { Image } from '@trezor/components';
 
 const StyledCard = styled(SavingsKYCCard)`
-    background: rgba(239, 65, 65, 0.1);
+    background: rgb(239 65 65 / 10%);
     color: ${({ theme }) => theme.BG_RED};
 `;
 

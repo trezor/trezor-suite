@@ -19,7 +19,7 @@ import { useAccountSearch, useDispatch, useLoadingSkeleton } from 'src/hooks/sui
 const Col = styled.div`
     display: flex;
     align-items: center;
-    padding: 16px 0px;
+    padding: 16px 0;
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};

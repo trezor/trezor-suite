@@ -11,6 +11,7 @@ const Circle = styled.div<{ status: Status }>`
     border-radius: 50%;
     background: ${({ status, theme }) =>
         status === 'ok' ? theme.BG_LIGHT_GREEN : theme.BG_LIGHT_RED};
+
     & > div {
         width: 6px;
         height: 6px;

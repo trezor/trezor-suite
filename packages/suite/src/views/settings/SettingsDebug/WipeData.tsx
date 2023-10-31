@@ -9,6 +9,7 @@ import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 const UserDataLink = styled.span`
     cursor: pointer;
+
     :hover {
         text-decoration: underline;
     }

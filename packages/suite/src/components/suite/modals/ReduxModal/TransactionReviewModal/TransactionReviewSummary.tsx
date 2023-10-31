@@ -42,6 +42,7 @@ const IconWrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+
     & > svg {
         margin: 0 auto;
         display: block;
@@ -52,9 +53,9 @@ const NestedIconWrapper = styled(IconWrapper)`
     width: 16px;
     height: 16px;
     position: absolute;
-    top: 0px;
-    right: 0px;
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+    top: 0;
+    right: 0;
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 20%);
 `;
 
 const HeadlineAmount = styled.div`
@@ -75,6 +76,7 @@ const AccountWrapper = styled.div`
     margin-top: 5px;
     word-break: normal;
     overflow-wrap: anywhere;
+
     & > div {
         margin: 1px 5px 0 0;
         display: block;
@@ -152,6 +154,7 @@ const TxDetailsButton = styled.button<{ detailsOpen: boolean }>`
 const LeftDetailsRow = styled.div`
     display: flex;
     font-size: 12px;
+
     & + & {
         margin-top: 10px;
     }

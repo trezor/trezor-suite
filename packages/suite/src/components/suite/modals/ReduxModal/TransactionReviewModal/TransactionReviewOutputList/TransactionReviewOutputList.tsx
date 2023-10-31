@@ -32,7 +32,7 @@ const Right = styled.div`
     position: relative;
 
     @media (max-width: ${variables.SCREEN_SIZE.SM}) {
-        margin: 20px 10px 10px 10px;
+        margin: 20px 10px 10px;
     }
 `;
 
@@ -43,18 +43,18 @@ const RightTop = styled.div`
 `;
 
 const RightTopInner = styled.div`
-    padding: 10px 0 20px 0;
+    padding: 10px 0 20px;
 `;
 
 const RightBottom = styled.div`
     margin-left: 30px;
-    padding: 20px 0 0 0;
+    padding: 20px 0 0;
     border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
     display: flex;
 
     ${variables.SCREEN_QUERY.MOBILE} {
         display: block;
-        margin-left: 0px;
+        margin-left: 0;
     }
 `;
 
@@ -67,7 +67,7 @@ const StyledButton = styled(Button)`
         width: 100%;
 
         & + & {
-            margin: 10px 0 0 0;
+            margin: 10px 0 0;
         }
     }
 `;

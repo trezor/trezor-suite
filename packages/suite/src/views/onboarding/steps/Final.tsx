@@ -35,6 +35,7 @@ const StyledButton = styled(Button)`
     :not(:disabled) {
         color: ${({ theme }) => theme.TYPE_DARK_GREY};
     }
+
     :hover,
     :focus {
         background-color: transparent;
@@ -57,7 +58,7 @@ const Content = styled.div`
 
 const GalleryWrapper = styled.div`
     width: 330px;
-    padding: 8px 0px;
+    padding: 8px 0;
     height: 200px;
     overflow-y: auto;
     border: 1px solid ${({ theme }) => theme.STROKE_GREY};
@@ -121,7 +122,7 @@ const Wrapper = styled.div<{ shouldWrap?: boolean }>`
             flex-direction: column;
 
             ${DeviceImageWrapper} {
-                margin: 0 0 20px 0;
+                margin: 0 0 20px;
             }
 
             ${Heading} {
