@@ -59,7 +59,12 @@ export const Icon = ({
     const handleInjection = (svg: SVGSVGElement) => {
         const strokeColor = isCSSColor(color) ? color : theme[color];
 
-        svg.querySelectorAll('path')?.forEach(path => path.setAttribute('stroke', strokeColor));
+        svg.querySelectorAll('path')?.forEach(path => {
+            if (path.hasAttribute('fill')) {
+                path.setAttribute('fill', strokeColor);
+            }
+            path.setAttribute('stroke', strokeColor);
+        });
         svg.setAttribute('width', `${iconSize}px`);
         svg.setAttribute('height', `${iconSize}px`);
     };
