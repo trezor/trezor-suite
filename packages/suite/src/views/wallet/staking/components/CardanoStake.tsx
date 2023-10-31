@@ -21,7 +21,7 @@ import {
     Value,
     Text,
     Content,
-    StyledH1,
+    StyledH2,
     StyledCard,
 } from './CardanoPrimitives';
 
@@ -59,12 +59,12 @@ export const CardanoStake = ({ account }: CardanoStakeProps) => {
 
     return (
         <StyledCard>
-            <StyledH1>
+            <StyledH2>
                 <Icon icon="CROSS" size={25} />
                 <Heading>
                     <Translation id="TR_STAKING_STAKE_TITLE" />
                 </Heading>
-            </StyledH1>
+            </StyledH2>
             <Text>
                 <Translation id="TR_STAKING_STAKE_DESCRIPTION" values={{ br: <br /> }} />
             </Text>

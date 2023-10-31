@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { H1, variables } from '@trezor/components';
+import { H2, variables } from '@trezor/components';
 import { Translation } from 'src/components/suite/Translation';
 import { DeviceConfirmImage } from 'src/components/suite';
 import { TrezorDevice } from 'src/types/suite';
@@ -14,9 +14,10 @@ const StyledDeviceConfirmImage = styled(DeviceConfirmImage)`
     margin-top: -30px;
 `;
 
-const StyledH1 = styled(H1)`
+const StyledH1 = styled(H2)`
     margin-top: 12px;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    text-align: center;
 `;
 
 interface ConfirmActionProps extends DevicePromptModalProps {

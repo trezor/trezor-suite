@@ -76,7 +76,10 @@ export const CheckContainer = styled.div<{ variant: CheckboxVariant }>`
     border-radius: ${borders.radii.xs};
     background: ${({ theme, variant }) => theme[variantStyles[variant].background]};
     border: 2px solid ${({ theme, variant }) => theme[variantStyles[variant].border]};
-    transition: border 0.1s, background 0.1s, box-shadow 0.1s ease-out;
+    transition:
+        border 0.1s,
+        background 0.1s,
+        box-shadow 0.1s ease-out;
 
     input:checked + && {
         background: ${({ theme, variant }) => theme[variantStyles[variant].backgroundChecked]};

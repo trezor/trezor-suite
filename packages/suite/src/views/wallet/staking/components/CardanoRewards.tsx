@@ -12,7 +12,7 @@ import { useDevice } from 'src/hooks/suite';
 
 import { DeviceButton } from './DeviceButton';
 import {
-    StyledH1,
+    StyledH2,
     Actions,
     Heading,
     Row,
@@ -58,12 +58,12 @@ export const CardanoRewards = ({ account }: CardanoRewardsProps) => {
 
     return (
         <StyledCard>
-            <StyledH1>
+            <StyledH2>
                 <Icon icon="CHECK" size={25} />
                 <Heading>
                     <Translation id="TR_STAKING_REWARDS_TITLE" />
                 </Heading>
-            </StyledH1>
+            </StyledH2>
             <Text>
                 <Translation id="TR_STAKING_REWARDS_DESCRIPTION" />
             </Text>
