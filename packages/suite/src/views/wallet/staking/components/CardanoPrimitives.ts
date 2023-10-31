@@ -1,11 +1,11 @@
-import { variables, H1, Card } from '@trezor/components';
+import { variables, H2, Card } from '@trezor/components';
 import styled from 'styled-components';
 
 export const Heading = styled.div`
     padding-left: 5px;
 `;
 
-export const StyledH1 = styled(H1)`
+export const StyledH2 = styled(H2)`
     display: flex;
     flex-direction: row;
     align-items: center;

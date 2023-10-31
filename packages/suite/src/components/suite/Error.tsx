@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { H1, Paragraph, Button, variables } from '@trezor/components';
+import { H2, Paragraph, Button, variables } from '@trezor/components';
 import { db } from 'src/storage';
 import { reloadApp } from 'src/utils/suite/reload';
 
@@ -60,7 +60,7 @@ type ErrorProps = {
 
 export const Error = ({ error }: ErrorProps) => (
     <Wrapper>
-        <H1>Error occurred</H1>
+        <H2>Error occurred</H2>
         <GenericMessage>It appears something is broken.</GenericMessage>
         <ErrorMessage>{error}</ErrorMessage>
         <Separator />

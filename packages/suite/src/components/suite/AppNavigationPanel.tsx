@@ -8,7 +8,7 @@ import {
     cloneElement,
 } from 'react';
 import styled from 'styled-components';
-import { H1, variables } from '@trezor/components';
+import { H2, variables } from '@trezor/components';
 import { MAX_WIDTH, MAX_WIDTH_WALLET_CONTENT } from 'src/constants/suite/layout';
 import { zIndices } from '@trezor/theme';
 
@@ -37,7 +37,7 @@ const BasicInfo = styled.div`
     flex-direction: column;
 `;
 
-const Title = styled(H1)`
+const Title = styled(H2)`
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
     white-space: nowrap;

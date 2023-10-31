@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { H1, variables } from '@trezor/components';
+import { H2, variables } from '@trezor/components';
 import { TREZOR_SUPPORT_URL } from '@trezor/urls';
 
 import { Translation, TrezorLink } from 'src/components/suite';
@@ -15,7 +15,7 @@ const TopSection = styled.div`
     width: 100%;
 `;
 
-const StyledH1 = styled(H1)`
+const StyledH2 = styled(H2)`
     font-size: 28px;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     max-width: 300px;
@@ -87,9 +87,9 @@ export const SecurityCheckFail = ({ goBack }: SecurityCheckFailProps) => {
     return (
         <SecurityCheckLayout isFailed>
             <TopSection>
-                <StyledH1>
+                <StyledH2>
                     <Translation id={heading} />
-                </StyledH1>
+                </StyledH2>
                 <Text>
                     <Translation id={text} />
                 </Text>

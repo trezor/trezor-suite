@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Translation } from 'src/components/suite';
 
-import { Paragraph, H1, Button, Link, Image } from '@trezor/components';
+import { Paragraph, H2, Button, Link, Image } from '@trezor/components';
 
 const Wrapper = styled.div`
     display: flex;
@@ -17,9 +17,9 @@ export const ErrorPage = () => {
 
     return (
         <Wrapper>
-            <H1>
+            <H2>
                 <Translation id="TR_404_TITLE" />
-            </H1>
+            </H2>
             <Paragraph type="label">
                 <Translation id="TR_404_DESCRIPTION" />
             </Paragraph>
