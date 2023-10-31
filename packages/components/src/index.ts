@@ -5,6 +5,7 @@ export * as animations from './config/animations';
 export { motionAnimation, motionEasing } from './config/motion';
 export * from './support/ThemeProvider';
 
+export * from './components/Badge/Badge';
 export * from './components/buttons/Button/Button';
 export * from './components/buttons/IconButton/IconButton';
 export * from './components/buttons/TextButton/TextButton';

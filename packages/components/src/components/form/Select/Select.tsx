@@ -110,11 +110,15 @@ const Wrapper = styled.div<WrapperProps>`
         ${typography.body};
     }
 
-    .${reactSelectClassNamePrefix}__indicators {
-        position: absolute;
-        top: ${spacingsPx.md};
-        right: ${spacingsPx.md};
-    }
+    ${({ isClean }) =>
+        !isClean &&
+        css`
+            .${reactSelectClassNamePrefix}__indicators {
+                position: absolute;
+                top: ${spacingsPx.md};
+                right: ${spacingsPx.md};
+            }
+        `}
 
     .${reactSelectClassNamePrefix}__indicator-separator {
         display: none;
