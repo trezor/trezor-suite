@@ -72,7 +72,7 @@
             "eslint --fix",
             "git add"
         ],
-        "packages/{components,suite}/**/*.{ts,tsx}": [
+        "packages/{suite}/**/*.{ts,tsx}": [
             "stylelint --fix",
             "git add"
         ]
