@@ -21,6 +21,7 @@ const DescriptionWrapper = styled.div`
 const Description = styled.div`
     text-align: left;
     margin-left: 16px;
+
     & * + * {
         margin-left: 8px;
     }
@@ -75,9 +76,11 @@ const StyledQrReader = styled(QrReader)`
     width: 100%;
     height: 100%;
     position: relative;
+
     & > section {
         position: initial !important;
         padding-top: initial !important;
+
         & > video {
             border-radius: 16px;
         }
@@ -86,6 +89,7 @@ const StyledQrReader = styled(QrReader)`
 
 const StyledTextarea = styled(Textarea)`
     height: 100%;
+
     & > textarea {
         flex: 1;
     }

@@ -6,6 +6,7 @@ const ProgressBarWrapper = styled.div`
     display: flex;
     padding: 20px 0;
     width: 100%;
+
     /* prevents jumping in completed state with check mark icon shown */
     height: 64px;
     justify-content: space-between;
@@ -60,7 +61,7 @@ const IconWrapper = styled.div<{ stepCompleted?: boolean; active?: boolean }>`
 
 const Label = styled.div`
     text-align: center;
-    margin: 10px 0 0 0;
+    margin: 10px 0 0;
     display: block;
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-size: ${variables.NEUE_FONT_SIZE.TINY};

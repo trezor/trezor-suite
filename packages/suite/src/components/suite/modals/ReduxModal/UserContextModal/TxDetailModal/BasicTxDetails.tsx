@@ -55,7 +55,7 @@ const Grid = styled.div<{ showRbfCols?: boolean }>`
     grid-template-columns: 105px minmax(0, 2.5fr) 90px minmax(0, 2.5fr); /* title value title value */
     font-size: ${variables.NEUE_FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    padding: 28px 6px 10px 6px;
+    padding: 28px 6px 10px;
     text-align: left;
     align-items: center;
 
@@ -109,9 +109,9 @@ const NestedIconWrapper = styled(IconWrapper)`
     width: 18px;
     height: 18px;
     position: absolute;
-    top: 0px;
-    right: 0px;
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+    top: 0;
+    right: 0;
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 20%);
 `;
 
 const TxStatus = styled.div`

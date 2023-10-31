@@ -45,6 +45,7 @@ const SecondaryValueWrapper = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-variant-numeric: tabular-nums;
+
     /* margin-left: 1ch; */
     line-height: 1.57;
 `;

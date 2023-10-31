@@ -16,8 +16,10 @@ const Wrapper = styled.div`
 
 const NotificationsWrapper = styled.div`
     width: 450px;
+
     /* overwrite pointer cursor which is defined on Dropdown element by default */
     cursor: default;
+
     @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
         width: 330px;
     }

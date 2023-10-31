@@ -74,7 +74,7 @@ const StyledCheckbox = styled(Checkbox)`
 `;
 
 const StyledButton = styled(Button)`
-    margin: 24px auto 0 auto;
+    margin: 24px auto 0;
 
     :disabled {
         background: ${({ theme }) => theme.STROKE_GREY};

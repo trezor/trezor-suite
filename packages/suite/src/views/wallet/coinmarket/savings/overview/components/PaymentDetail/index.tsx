@@ -17,8 +17,7 @@ const Label = styled.div`
     line-height: 22px;
     font-weight: 600;
     display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
+    flex-flow: row nowrap;
     align-items: center;
     align-content: stretch;
     margin-bottom: 13px;
@@ -32,11 +31,9 @@ const PaymentItem = styled.div`
     border: 1px solid ${({ theme }) => theme.STROKE_GREY};
     border-radius: 8px;
     display: flex;
-    flex-direction: column;
-    flex-wrap: nowrap;
+    flex-flow: column nowrap;
     align-items: stretch;
-    align-content: stretch;
-    justify-content: space-between;
+    place-content: stretch space-between;
 `;
 
 const PaymentItemDate = styled.div`
@@ -69,6 +66,7 @@ const PaymentItemStatusIconReactSVG = styled(Image)<{ isNextUp: boolean }>`
     & div {
         display: flex;
     }
+
     & path {
         fill: ${({ isNextUp, theme }) => (isNextUp ? theme.TYPE_ORANGE : theme.TYPE_LIGHT_GREY)};
     }

@@ -37,7 +37,7 @@ const Wrapper = styled.div`
 const MobileWrapper = styled.div`
     display: flex;
     flex-direction: column;
-    padding: 0px 16px;
+    padding: 0 16px;
 `;
 
 const Separator = styled.div`

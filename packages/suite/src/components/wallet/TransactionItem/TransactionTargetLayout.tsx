@@ -15,6 +15,7 @@ const FiatAmount = styled.span`
 
 const TargetWrapper = styled(motion.div)`
     display: flex;
+
     /* position: relative; */
     flex: 1;
     justify-content: space-between;
@@ -60,7 +61,8 @@ const TargetAddress = styled(motion.div)`
     align-items: center;
     min-height: ${MIN_ROW_HEIGHT};
     align-self: baseline;
-    /* end of css to prevent hidden labeling button to expand the target row*/
+
+    /* end of css to prevent hidden labeling button to expand the target row */
 `;
 
 const TimelineDotWrapper = styled.div`

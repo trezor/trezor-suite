@@ -7,11 +7,9 @@ import { withCoinmarket } from '../../withCoinmarket';
 
 const Wrapper = styled.div`
     display: flex;
-    flex-direction: column;
-    flex-wrap: nowrap;
-    justify-content: flex-start;
+    flex-flow: column nowrap;
+    place-content: stretch flex-start;
     align-items: center;
-    align-content: stretch;
 `;
 
 const Message = styled.div`

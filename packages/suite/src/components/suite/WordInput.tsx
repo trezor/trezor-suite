@@ -12,7 +12,7 @@ import { createTimeoutPromise } from '@trezor/utils';
 const options = bip39.map(item => ({ label: item, value: item }));
 
 const SelectWrapper = styled.div`
-    margin: 12px auto 0px auto;
+    margin: 12px auto 0;
     text-align: left;
 
     width: 380px;

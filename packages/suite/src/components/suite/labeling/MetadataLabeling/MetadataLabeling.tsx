@@ -24,6 +24,7 @@ const LabelDefaultValue = styled(LabelValue)`
     /* do not shrink when the expanded label does not fit the contener - shrink only the label value */
     flex-shrink: 0;
     max-width: 0;
+
     /* transition max-width because it does not work with auto value */
     transition: max-width 0.25s, opacity 0.25s;
     transition-timing-function: ease-out;
@@ -54,6 +55,7 @@ const ActionButton = styled(Button)<{ isValueVisible?: boolean; isVisible?: bool
     margin-left: ${({ isValueVisible, isVisible, isLoading }) =>
         (isValueVisible || !isVisible || isLoading) && '12px'};
     visibility: ${({ isVisible }) => (isVisible ? 'visible' : 'hidden')};
+
     /* hack to keep button in place to prevent vertical jumping (if used display: none) */
     width: ${({ isVisible }) => (isVisible ? 'auto' : '0')};
 `;
@@ -64,6 +66,7 @@ const SuccessButton = styled(Button)`
     width: auto;
     background-color: ${({ theme }) => theme.BG_LIGHT_GREEN};
     color: ${({ theme }) => theme.BG_GREEN};
+
     :hover {
         color: ${({ theme }) => theme.BG_GREEN};
         background-color: ${({ theme }) => theme.BG_LIGHT_GREEN};
@@ -86,6 +89,7 @@ const LabelContainer = styled.div`
         ${LabelDefaultValue} {
             max-width: 300px;
             opacity: 1;
+
             /* the right side of the transition process cannot be reliably animated because we animate max-width while the width can vary  */
             transition-timing-function: ease-in;
         }

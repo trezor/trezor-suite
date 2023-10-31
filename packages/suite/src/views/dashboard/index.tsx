@@ -13,7 +13,7 @@ const Wrapper = styled.div`
 
     @media (max-width: ${variables.SCREEN_SIZE.SM}) {
         margin-top: 10px;
-        margin-bottom: 0px;
+        margin-bottom: 0;
     }
 `;
 

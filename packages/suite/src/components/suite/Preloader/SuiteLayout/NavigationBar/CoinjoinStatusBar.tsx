@@ -43,6 +43,7 @@ const Container = styled.div<{ isClickable: boolean }>`
         isClickable &&
         css`
             cursor: pointer;
+
             &:hover {
                 background: ${theme.BG_WHITE_ALT_HOVER};
                 ${ViewText} {

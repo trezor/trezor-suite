@@ -48,7 +48,7 @@ const Content = styled.div`
     margin-left: 24px;
 
     ${variables.SCREEN_QUERY.MOBILE} {
-        margin-left: 0px;
+        margin-left: 0;
     }
 `;
 

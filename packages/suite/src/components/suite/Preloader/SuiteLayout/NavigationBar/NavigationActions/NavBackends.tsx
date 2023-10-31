@@ -19,21 +19,25 @@ const RowWrapper = styled.div`
     display: flex;
     width: 260px;
     align-items: center;
+
     > * + * {
         margin-left: 8px;
     }
+
     > div:nth-child(2) {
         flex: 1;
         display: flex;
         flex-direction: column;
         margin-left: 8px;
         overflow: hidden;
+
         > span:first-child {
             font-weight: ${variables.FONT_WEIGHT.MEDIUM};
             font-size: ${variables.FONT_SIZE.NORMAL};
             overflow: hidden;
             text-overflow: ellipsis;
         }
+
         > span:last-child {
             font-weight: ${variables.FONT_WEIGHT.MEDIUM};
             font-size: ${variables.FONT_SIZE.SMALL};

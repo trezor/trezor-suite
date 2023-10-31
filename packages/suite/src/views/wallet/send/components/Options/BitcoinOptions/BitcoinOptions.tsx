@@ -39,7 +39,7 @@ const Right = styled.div`
 `;
 
 const StyledButton = styled(Button)`
-    margin: 4px 8px 4px 0px;
+    margin: 4px 8px 4px 0;
 `;
 
 export const BitcoinOptions = () => {

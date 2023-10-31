@@ -38,7 +38,7 @@ const Description = styled.div`
 `;
 
 const StyledImage = styled(props => <Image {...props} />)`
-    margin: 24px 0px;
+    margin: 24px 0;
 `;
 
 const Actions = styled.div`

@@ -64,7 +64,7 @@ const WelcomeTitle = styled(H1)`
 
 const Bottom = styled.div`
     display: flex;
-    margin: 24px 0px;
+    margin: 24px 0;
 `;
 
 const Content = styled.div`

@@ -12,9 +12,11 @@ const StyledWarning = styled(Warning)`
     :not(:last-child) {
         margin-bottom: 16px;
     }
+
     a {
         display: inline; /* Allow linebreaks inside links as the space is quite narrow. */
     }
+
     /* Provide a more specific selector to override paragraph style on parent. */
     p:last-child {
         margin: 0;

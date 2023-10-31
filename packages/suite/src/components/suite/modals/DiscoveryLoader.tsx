@@ -6,7 +6,7 @@ const Expand = styled.div`
     display: flex;
     width: 100%;
     justify-content: center;
-    margin: 40px 0px;
+    margin: 40px 0;
 `;
 
 const StyledModal = styled(Modal)`

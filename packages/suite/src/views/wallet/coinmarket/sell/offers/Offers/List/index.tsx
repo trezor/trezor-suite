@@ -18,7 +18,7 @@ const StyledQuote = styled(Quote)`
 `;
 
 const Header = styled.div`
-    margin: 36px 0 24px 0;
+    margin: 36px 0 24px;
     display: flex;
     justify-content: space-between;
 

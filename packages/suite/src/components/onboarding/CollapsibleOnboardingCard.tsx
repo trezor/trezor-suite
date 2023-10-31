@@ -61,12 +61,9 @@ const CardWrapper = styled(
         !expanded &&
         css`
             background: ${theme.BG_GREY};
-            box-shadow: rgba(0, 0, 0, 0) 0px 2px 5px 0px;
+            box-shadow: rgb(0 0 0 / 0%) 0 2px 5px 0;
             border-radius: 10px;
-            padding-top: 16px;
-            padding-left: 26px;
-            padding-right: 26px;
-            padding-bottom: 16px;
+            padding: 16px 26px;
         `}
 
     ${({ expanded, expandable, theme, variant }) =>
@@ -136,11 +133,11 @@ const Heading = styled(H1)<{ withDescription?: boolean }>`
 `;
 
 const Description = styled.div<{ hasChildren?: boolean }>`
-    padding: 0px 60px 36px 60px;
+    padding: 0 60px 36px;
     text-align: center;
 
     ${variables.SCREEN_QUERY.BELOW_TABLET} {
-        padding: 0px 0px 36px 0px;
+        padding: 0 0 36px;
     }
 `;
 

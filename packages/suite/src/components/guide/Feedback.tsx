@@ -34,7 +34,7 @@ const Submit = styled(Button)`
 `;
 
 const SelectWrapper = styled.div`
-    padding: 0 0 20px 0;
+    padding: 0 0 20px;
 `;
 
 const RatingWrapper = styled.div`

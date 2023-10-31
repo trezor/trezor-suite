@@ -22,10 +22,7 @@ const Wrapper = styled.div<{ subRoute: boolean | undefined; inView?: boolean }>`
     background: ${({ theme }) => theme.BG_LIGHT_GREY};
     justify-content: center;
     position: sticky;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: 0;
     height: 0;
 
     ${props =>
@@ -131,8 +128,7 @@ const InnerWrap = styled.div`
     width: 100%;
     height: ${SECONDARY_PANEL_HEIGHT};
     display: flex;
-    justify-content: center;
-    align-content: center;
+    place-content: center center;
     padding: 0 16px;
     border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
     background: ${({ theme }) => theme.BG_LIGHT_GREY};

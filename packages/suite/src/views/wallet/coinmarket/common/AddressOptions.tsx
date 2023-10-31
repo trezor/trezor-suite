@@ -23,7 +23,7 @@ const FiatWrapper = styled.div`
 `;
 
 const PathWrapper = styled.div`
-    padding: 0 3px 0 3px;
+    padding: 0 3px;
 `;
 
 const Amount = styled.div`

@@ -28,6 +28,7 @@ const StyledButton = styled(Button)<{ isVertical?: boolean; isDisabled: boolean 
         css`
             min-width: 170px;
             margin: 4px 0;
+
             &:not(:first-child) {
                 margin-left: 8px;
 

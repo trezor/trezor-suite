@@ -23,7 +23,7 @@ const Wrapper = styled.div`
 const MobileWrapper = styled.div`
     display: flex;
     flex-direction: column;
-    padding: 0px 16px;
+    padding: 0 16px;
     flex: 1;
     border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
 `;
@@ -86,11 +86,11 @@ const NewBadge = styled.span`
         position: absolute;
         top: -14px;
         right: -30px;
-        padding: 3px 3px 2px 3px;
+        padding: 3px 3px 2px;
         background: ${({ theme }) => theme.BG_LIGHT_GREEN};
         color: ${({ theme }) => theme.TYPE_GREEN};
         letter-spacing: 0.2px;
-        text-transform: UPPERCASE;
+        text-transform: uppercase;
         font-size: 12px;
         display: flex;
         cursor: default;

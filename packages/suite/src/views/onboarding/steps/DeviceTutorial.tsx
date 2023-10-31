@@ -19,7 +19,7 @@ import { selectOnboardingTutorialStatus } from 'src/reducers/onboarding/onboardi
 import messages from 'src/support/messages';
 
 const StyledOnboardingStepBox = styled(OnboardingStepBox)`
-    padding: 40px 20px 0px 20px;
+    padding: 40px 20px 0;
 `;
 
 const ActionButton = styled.p`

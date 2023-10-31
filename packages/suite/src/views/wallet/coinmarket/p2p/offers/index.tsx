@@ -11,7 +11,7 @@ const Wrapper = styled.div`
     display: flex;
     width: 100%;
     flex-direction: column;
-    padding: 0 32px 32px 32px;
+    padding: 0 32px 32px;
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
         padding: 16px;

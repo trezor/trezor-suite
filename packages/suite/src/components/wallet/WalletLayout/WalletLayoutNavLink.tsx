@@ -12,7 +12,7 @@ const NavLink = styled.div<{ active?: boolean }>`
     font-weight: ${FONT_WEIGHT.MEDIUM};
     display: flex;
     align-items: center;
-    padding: 14px 6px 12px 6px;
+    padding: 14px 6px 12px;
     white-space: nowrap;
     border-bottom: 2px solid ${({ active, theme }) => (active ? theme.BG_GREEN : 'transparent')};
     transition: border-color 0.1s;
@@ -39,7 +39,7 @@ const Badge = styled.span`
     position: absolute;
     top: -12px;
     right: -24px;
-    padding: 2px 4px 0 4px;
+    padding: 2px 4px 0;
     border-radius: 4px;
     background: ${({ theme }) => theme.BG_LIGHT_GREEN};
     color: ${({ theme }) => theme.TYPE_GREEN};

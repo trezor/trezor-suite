@@ -57,7 +57,7 @@ const StatusImage = styled(Image)`
 `;
 
 const StatusTitle = styled(H2)`
-    margin: 0px 0px 12px;
+    margin: 0 0 12px;
 `;
 
 const VerticalCenter = styled.div`

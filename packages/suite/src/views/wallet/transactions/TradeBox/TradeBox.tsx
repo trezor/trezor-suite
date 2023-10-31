@@ -41,7 +41,7 @@ const Header = styled.div`
 
 const Left = styled.div`
     padding: 20px 24px;
-    padding-right: 0px;
+    padding-right: 0;
 
     ${variables.SCREEN_QUERY.MOBILE} {
         padding: 20px 16px;
@@ -95,7 +95,7 @@ const Divider = styled.div`
     width: 100%;
     height: 1px;
     background: ${({ theme }) => theme.STROKE_GREY};
-    margin: 30px 0px;
+    margin: 30px 0;
 `;
 
 interface TradeBoxProps {

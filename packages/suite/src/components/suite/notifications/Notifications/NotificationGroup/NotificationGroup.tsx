@@ -25,7 +25,7 @@ const EmptyWrapper = styled.div`
 const EmptyHeadline = styled.div`
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    margin: 10px 0 6px 0;
+    margin: 10px 0 6px;
 `;
 
 const EmptyDescriptionP = styled(P)`

@@ -11,6 +11,7 @@ const OutputWrapper = styled.div`
     display: flex;
     padding: 0 20px 0 0;
     margin-top: 32px;
+
     &:first-child {
         margin-top: 0;
     }
@@ -47,7 +48,8 @@ const MultiIndicatorWrapper = styled.div<{ linesCount: number }>`
     align-items: center;
     position: relative;
     z-index: ${variables.Z_INDEX.BASE};
-    &:after {
+
+    &::after {
         z-index: -2;
         width: 10px;
         left: 10px;
@@ -59,7 +61,8 @@ const MultiIndicatorWrapper = styled.div<{ linesCount: number }>`
         content: '';
         display: block;
     }
-    &:before {
+
+    &::before {
         z-index: -1;
         width: 20px;
         background: ${({ theme }) => theme.BG_WHITE};

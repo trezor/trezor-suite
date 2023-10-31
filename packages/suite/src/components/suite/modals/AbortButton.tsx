@@ -46,11 +46,10 @@ const AbortContainer = styled.div`
         ${expandedStyle}
     }
 
-    /*Linting error because of a complex interpolation*/
+    /* Linting error because of a complex interpolation */
 
     ${/* sc-selector */ variables.MEDIA_QUERY.HOVER} {
         ${/* sc-block */ collapsedStyle}
-
         :hover {
             ${/* sc-block */ expandedStyle}
         }

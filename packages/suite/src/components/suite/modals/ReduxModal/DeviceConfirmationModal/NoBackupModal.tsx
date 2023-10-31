@@ -8,7 +8,7 @@ import { Button, Image } from '@trezor/components';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 const ImageWrapper = styled.div`
-    padding: 60px 0px;
+    padding: 60px 0;
 `;
 
 const StyledModal = styled(Modal)`

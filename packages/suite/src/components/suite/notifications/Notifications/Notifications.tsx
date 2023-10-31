@@ -32,7 +32,8 @@ const TabButton = styled.button<{ selected: boolean }>`
     padding-bottom: 12px;
     margin-right: 24px;
     cursor: pointer;
-    /* change styles if the button is selected*/
+
+    /* change styles if the button is selected */
     color: ${({ selected, theme }) => (selected ? theme.TYPE_DARK_GREY : theme.TYPE_LIGHT_GREY)};
     border-bottom: 2px solid;
     border-color: ${({ selected, theme }) => (selected ? theme.TYPE_DARK_GREY : 'transparent')};
@@ -48,8 +49,7 @@ const CloseButtonWrapper = styled.div``;
 const Content = styled.div`
     padding: 12px 22px;
     max-height: 340px;
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow: hidden auto;
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
         max-height: 100%;

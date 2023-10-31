@@ -42,7 +42,7 @@ const Symbol = styled.div`
 const StyledCol = styled(motion.div)<{ $isLastRow?: boolean }>`
     display: flex;
     align-items: center;
-    padding: 16px 0px;
+    padding: 16px 0;
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
@@ -111,7 +111,7 @@ const FiatBalanceWrapper = styled.span`
 
 const ExchangeRateWrapper = styled(Col)`
     font-variant-numeric: tabular-nums;
-    padding-right: 0px;
+    padding-right: 0;
 `;
 
 const BuyButtonWrapper = styled(Col)`

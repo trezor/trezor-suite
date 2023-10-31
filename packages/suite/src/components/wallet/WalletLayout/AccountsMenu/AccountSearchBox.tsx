@@ -37,7 +37,9 @@ const InputWrapper = styled.div<{ showCoinFilter: boolean }>`
         !props.showCoinFilter &&
         css`
             /* additional space under input if we are not showing coin filter */
+
             /* one could think why not to remove a margin from coin filter so it can be here regardless of whether coin filter is shown */
+
             /* but hold your horses, it is actually essential there is top PADDING on coin filter as a click to the area triggers deactivating the filter */
             margin-bottom: 12px;
         `}

@@ -25,6 +25,7 @@ const Box = styled.div`
 
 const Inner = styled.div`
     display: flex;
+
     & + & {
         border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
         margin-top: 28px;
@@ -61,6 +62,7 @@ const Amount = styled.div`
     flex-direction: column;
     align-items: flex-end;
     text-align: right;
+
     & * + * {
         margin-top: 6px;
     }
@@ -80,7 +82,7 @@ const FinalizeWarning = styled(Card)`
     display: flex;
     flex-direction: row;
     width: 100%;
-    padding: 12px 0px;
+    padding: 12px 0;
     margin-top: 16px;
     text-align: center;
     align-items: center;

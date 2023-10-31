@@ -21,7 +21,7 @@ const Wrapper = styled.div`
 
 const Heading = styled.div`
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    padding: 16px 24px 0 24px;
+    padding: 16px 24px 0;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.SMALL};
 `;
@@ -29,7 +29,7 @@ const Heading = styled.div`
 const CardContent = styled.div`
     display: flex;
     flex-direction: column;
-    padding: 0 24px 0 24px;
+    padding: 0 24px;
 `;
 
 const Label = styled.div`

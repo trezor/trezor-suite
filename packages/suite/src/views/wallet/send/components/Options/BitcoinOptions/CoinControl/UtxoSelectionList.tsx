@@ -11,7 +11,7 @@ import { UtxoSelection } from './UtxoSelection';
 
 const Wrapper = styled.section`
     border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
-    margin: 12px 0 16px 0;
+    margin: 12px 0 16px;
     padding-bottom: 14px;
 `;
 
@@ -20,7 +20,7 @@ const Header = styled.header`
     display: flex;
     font-size: ${variables.FONT_SIZE.SMALL};
     gap: 16px;
-    margin: 6px 0 12px 0;
+    margin: 6px 0 12px;
 `;
 
 const Heading = styled.div`
