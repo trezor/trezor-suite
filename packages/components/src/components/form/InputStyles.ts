@@ -118,7 +118,8 @@ export const Label = styled.label<{ $size?: InputSize; isDisabled?: boolean }>`
     color: ${({ theme, isDisabled }) => (isDisabled ? theme.textDisabled : theme.textSubdued)};
     ${typography.body};
     line-height: ${({ $size }) => $size && `${INPUT_HEIGHTS[$size as InputSize]}px`};
-    transition: transform 0.12s ${motionEasingStrings.enter},
+    transition:
+        transform 0.12s ${motionEasingStrings.enter},
         font-size 0.12s ${motionEasingStrings.enter};
     transform-origin: 0;
     pointer-events: none;
