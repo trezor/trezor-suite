@@ -139,6 +139,7 @@ export const ConnectUI = ({ postMessage, clearLegacyView }: ConnectUIProps) => {
                         <InfoPanel
                             method={flowInfo?.method}
                             origin={flowInfo?.settings?.origin}
+                            hostLabel={flowInfo?.settings?.hostLabel}
                             topSlot={Object.values(Notifications)}
                         />
                         {Component && (
