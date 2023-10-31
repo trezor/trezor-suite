@@ -11,8 +11,6 @@ const VersionTooltip = styled(Tooltip)`
 `;
 
 const VersionButton = styled(Button)<{ isDev?: boolean }>`
-    padding-left: 1ch;
-
     ${({ isDev }) =>
         isDev &&
         css`
@@ -49,6 +47,7 @@ export const VersionWithGithubTooltip = ({ appVersion, isDev }: VersionWithGithu
     >
         <Link href={getReleaseUrl(appVersion)}>
             <VersionButton
+                size="small"
                 variant="tertiary"
                 icon="EXTERNAL_LINK"
                 iconAlignment="right"

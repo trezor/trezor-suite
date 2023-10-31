@@ -1,5 +1,3 @@
-import styled from 'styled-components';
-
 import { isDevEnv } from '@suite-common/suite-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
@@ -30,13 +28,6 @@ const getUpdateStateMessage = (state: UpdateState) => {
     }
 };
 
-const Version = styled.div`
-    span {
-        display: flex;
-        align-items: center;
-    }
-`;
-
 export const VersionWithUpdate = () => {
     const desktopUpdate = useSelector(state => state.desktopUpdate);
     const dispatch = useDispatch();
@@ -55,7 +46,7 @@ export const VersionWithUpdate = () => {
             <TextColumn
                 title={<Translation id="TR_SUITE_VERSION" />}
                 description={
-                    <Version>
+                    <div>
                         <Translation
                             id="TR_YOUR_CURRENT_VERSION"
                             values={{
@@ -87,7 +78,7 @@ export const VersionWithUpdate = () => {
                                     />
                                 </>
                             )}
-                    </Version>
+                    </div>
                 }
             />
             {desktopUpdate.enabled && (
