@@ -86,6 +86,9 @@ const getTranslateStyle = (placement: TippyProps['placement']) => {
 };
 
 export type TooltipProps = Omit<TippyProps, 'offset'> & {
+    /**
+     *  @description Legacy prop
+     */
     isLarge?: boolean;
     dashed?: boolean;
     offset?: number;
