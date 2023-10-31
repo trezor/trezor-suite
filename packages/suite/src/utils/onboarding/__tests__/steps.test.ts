@@ -14,7 +14,7 @@ const backupStep: Step = {
     id: STEP.ID_BACKUP_STEP,
     path: [],
     stepGroup: 1,
-    unsupportedModels: [DeviceModelInternal.T1B1],
+    supportedModels: [DeviceModelInternal.T2B1],
 };
 
 const stateMock = {

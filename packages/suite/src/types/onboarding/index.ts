@@ -7,7 +7,7 @@ export interface Step {
     stepGroup: number | undefined;
     prerequisites?: (PrerequisiteType | 'device-different')[];
     path?: AnyPath[];
-    unsupportedModels?: DeviceModelInternal[];
+    supportedModels?: DeviceModelInternal[];
 }
 
 // todo: remove, improve typing

@@ -41,13 +41,13 @@ const steps: Step[] = [
     {
         id: STEP.ID_AUTHENTICATE_DEVICE_STEP,
         stepGroup: 0,
-        unsupportedModels: [DeviceModelInternal.T1B1, DeviceModelInternal.T2T1],
+        supportedModels: [DeviceModelInternal.T2B1],
         prerequisites: [...commonPrerequisites, 'device-recovery-mode', 'device-different'],
     },
     {
         id: STEP.ID_TUTORIAL_STEP,
         stepGroup: 0,
-        unsupportedModels: [DeviceModelInternal.T1B1, DeviceModelInternal.T2T1],
+        supportedModels: [DeviceModelInternal.T2B1],
         prerequisites: [...commonPrerequisites, 'device-recovery-mode', 'device-different'],
     },
     {
