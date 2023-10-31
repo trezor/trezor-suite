@@ -14,5 +14,6 @@ export * from './tokenUtils';
 export * from './localizeNumber';
 export * from './backend';
 export * from './cardanoUtils';
+export * from './confirmAddressOnDevice';
 
 export { analyzeTransactions as analyzeTransactionsFixtures } from './__fixtures__/transactionUtils';
