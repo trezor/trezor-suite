@@ -2,7 +2,7 @@ import { ReactNode, HTMLAttributes } from 'react';
 import styled, { css } from 'styled-components';
 import { motion } from 'framer-motion';
 import { zIndices } from '@trezor/theme';
-import { H1, Icon, Image, ImageType, motionEasing, variables } from '@trezor/components';
+import { H2, Icon, Image, ImageType, motionEasing, variables } from '@trezor/components';
 
 const headerVariants = {
     closed: {
@@ -126,7 +126,7 @@ const ChildrenWrapper = styled.div`
     align-items: center;
 `;
 
-const Heading = styled(H1)<{ withDescription?: boolean }>`
+const Heading = styled(H2)<{ withDescription?: boolean }>`
     font-size: 28px;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     margin-bottom: ${({ withDescription }) => (withDescription ? '16px' : '36px')};

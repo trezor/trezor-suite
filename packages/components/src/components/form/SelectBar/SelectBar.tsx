@@ -62,7 +62,9 @@ const Puck = styled.div<{ optionsCount: number; selectedIndex: number }>`
     border-radius: ${borders.radii.full};
     box-shadow: ${boxShadows.elevation1};
     transform: ${({ selectedIndex }) => `translateX(${getTranslateValue(selectedIndex)})`};
-    transition: transform 0.175s cubic-bezier(1, 0.02, 0.38, 0.74), ${focusStyleTransition};
+    transition:
+        transform 0.175s cubic-bezier(1, 0.02, 0.38, 0.74),
+        ${focusStyleTransition};
 
     ${getFocusShadowStyle()}
 
