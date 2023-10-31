@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { H1, variables } from '@trezor/components';
+import { H2, variables } from '@trezor/components';
 import { selectIsDiscoveryAuthConfirmationRequired } from '@suite-common/wallet-core';
 
 import { Translation } from 'src/components/suite/Translation';
@@ -13,7 +13,7 @@ const StyledDevicePromptModal = styled(DevicePromptModal)`
     width: 360px;
 `;
 
-const StyledH1 = styled(H1)`
+const StyledH2 = styled(H2)`
     margin-top: 12px;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
@@ -39,7 +39,7 @@ export const PassphraseSourceModal = ({ device }: PassphraseSourceModalProps) =>
         >
             <DeviceConfirmImage device={device} />
 
-            <StyledH1>
+            <StyledH2>
                 <Translation
                     id={
                         authConfirmation
@@ -48,7 +48,7 @@ export const PassphraseSourceModal = ({ device }: PassphraseSourceModalProps) =>
                     }
                     values={{ deviceLabel: device.label }}
                 />
-            </StyledH1>
+            </StyledH2>
         </StyledDevicePromptModal>
     );
 };

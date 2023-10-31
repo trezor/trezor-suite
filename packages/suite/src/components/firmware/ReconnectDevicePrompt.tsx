@@ -4,7 +4,7 @@ import * as semver from 'semver';
 
 import { pickByDeviceModel, getFirmwareVersion } from '@trezor/device-utils';
 import {
-    H1,
+    H2,
     Button,
     ConfirmOnDevice,
     variables,
@@ -108,7 +108,7 @@ const StyledConfirmImage = styled(DeviceConfirmImage)`
     height: 200px;
 `;
 
-const Heading = styled(H1)`
+const Heading = styled(H2)`
     margin-bottom: 16px;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 `;
