@@ -41,7 +41,8 @@
                     "ru": "Когда выйдет следующее обновление устройства Trezor, убедитесь, что у вас наготове семя восстановления. Она понадобится для восстановления доступа к монетам.",
                     "ja": "次のTrezorデバイスのアップデートがリリースされたら、リカバリーシードを準備しておいてください。コインへのアクセスを回復するために必要です。",
                     "hu": "Amikor a következő Trezor készülékfrissítés megjelenik, győződjön meg róla, hogy készen áll a helyreállítási mag. Szükséged lesz rá, hogy újra hozzáférj az érméidhez.",
-                    "it": "Quando uscirà il prossimo aggiornamento del dispositivo Trezor, assicuratevi di avere pronto il seme di ripristino. Ne avrete bisogno per riavere accesso alle vostre monete."
+                    "it": "Quando uscirà il prossimo aggiornamento del dispositivo Trezor, assicuratevi di avere pronto il seme di ripristino. Ne avrete bisogno per riavere accesso alle vostre monete.",
+                    "fr": ""
                 }
             }
         },
@@ -83,7 +84,8 @@
                     "ru": "Для нового Trezor Safe 3 требуется обновление Trezor Suite.",
                     "ja": "新しいTrezor Safe 3を使用するには、Trezor Suiteの必須アップデートが必要です。",
                     "hu": "A Trezor Suite alapvető frissítése szükséges az új Trezor Safe 3 készülékhez.",
-                    "it": "Per il nuovo Trezor Safe 3 è necessario un aggiornamento essenziale di Trezor Suite."
+                    "it": "Per il nuovo Trezor Safe 3 è necessario un aggiornamento essenziale di Trezor Suite.",
+                    "fr": ""
                 },
                 "cta": {
                     "action": "internal-link",
@@ -97,7 +99,8 @@
                         "ru": "Обновить Suite",
                         "ja": "Suiteのアップデート",
                         "hu": "Frissítés Suite",
-                        "it": "Suite di aggiornamento"
+                        "it": "Suite di aggiornamento",
+                        "fr": ""
                     }
                 }
             }
@@ -136,7 +139,8 @@
                     "ru": "Для устройства Trezor доступно обновление. Убедитесь, что у вас наготове семена восстановления, поскольку они понадобятся для восстановления доступа к монетам.",
                     "ja": "お使いのTrezorデバイスにアップデートが提供されています。コインへのアクセスを回復するにはリカバリーのシードが必要です。",
                     "hu": "Frissítés érhető el a Trezor készülékéhez. Győződjön meg róla, hogy készenlétben tartja a helyreállítási magot, mivel szüksége lesz rá, hogy újra hozzáférjen az érméihez.",
-                    "it": "È disponibile un aggiornamento per il vostro dispositivo Trezor. Assicuratevi di avere pronto il seme di ripristino, che vi servirà per riavere accesso alle monete."
+                    "it": "È disponibile un aggiornamento per il vostro dispositivo Trezor. Assicuratevi di avere pronto il seme di ripristino, che vi servirà per riavere accesso alle monete.",
+                    "fr": ""
                 },
                 "cta": {
                     "action": "internal-link",
@@ -149,7 +153,8 @@
                         "ru": "Обновить сейчас",
                         "ja": "今すぐアップデート",
                         "hu": "Frissítés most",
-                        "it": "Aggiorna ora"
+                        "it": "Aggiorna ora",
+                        "fr": ""
                     }
                 }
             }
@@ -212,7 +217,8 @@
                     "ru": "Пожалуйста, обновите прошивку, чтобы иметь возможность использовать функцию coinjoin",
                     "ja": "コインジョイン機能を使用できるようにファームウェアをアップデートしてください。",
                     "hu": "Firmware-frissítés szükséges a coinjoin funkció engedélyezéséhez",
-                    "it": "Aggiornamento del firmware necessario per abilitare la funzione coinjoin"
+                    "it": "Aggiornamento del firmware necessario per abilitare la funzione coinjoin",
+                    "fr": ""
                 },
                 "context": { "domain": "accounts.coinjoin" },
                 "feature": [
@@ -247,7 +253,8 @@
                     "ru": "Coinjoin временно недоступен по техническим причинам",
                     "ja": "Coinjoinは技術的な問題により、一時的に利用できません。",
                     "hu": "Coinjoin átmenetileg nem elérhető technikai problémák miatt",
-                    "it": "Coinjoin non è temporaneamente disponibile a causa di problemi tecnici."
+                    "it": "Coinjoin non è temporaneamente disponibile a causa di problemi tecnici.",
+                    "fr": ""
                 },
                 "feature": [
                     {
@@ -284,7 +291,8 @@
                     "ru": "Чтобы использовать coinjoin, обновите приложение до последней версии.",
                     "ja": "coinjoinを使用するには、アプリを最新バージョンにアップデートしてください。",
                     "hu": "A coinjoin használatához frissítsen az alkalmazás legújabb verziójára.",
-                    "it": "Per utilizzare coinjoin, aggiornare la versione più recente dell'applicazione."
+                    "it": "Per utilizzare coinjoin, aggiornare la versione più recente dell'applicazione.",
+                    "fr": ""
                 },
                 "feature": [{ "domain": "coinjoin", "flag": false }],
                 "context": { "domain": "accounts.coinjoin" }
@@ -314,7 +322,8 @@
                     "ru": "Требуется обновление! Установите последнюю версию Trezor Suite для улучшения безопасности и удобства использования.",
                     "ja": "アップデートが必要です！Trezor Suiteの最新バージョンをインストールして、セキュリティと使いやすさを向上させましょう。",
                     "hu": "Frissítés szükséges! Telepítse a Trezor Suite legújabb verzióját a nagyobb biztonság és a jobb felhasználói élmény érdekében.",
-                    "it": "È necessario un aggiornamento! Installate l'ultima versione di Trezor Suite per una maggiore sicurezza e una migliore esperienza d'uso."
+                    "it": "È necessario un aggiornamento! Installate l'ultima versione di Trezor Suite per una maggiore sicurezza e una migliore esperienza d'uso.",
+                    "fr": ""
                 },
                 "cta": {
                     "action": "external-link",
@@ -327,7 +336,8 @@
                         "ru": "Перейти на trezor.io/trezor-suite",
                         "ja": "trezor.io/trezor-suite に移動",
                         "hu": "Tovább a trezor.io/trezor-suite oldalra",
-                        "it": "Vai a trezor.io/trezor-suite"
+                        "it": "Vai a trezor.io/trezor-suite",
+                        "fr": ""
                     }
                 }
             }
@@ -356,7 +366,8 @@
                     "ru": "Обновите Trezor Suite, чтобы улучшить безопасность, использовать все новейшие функции и обеспечить максимально эффективную работу.",
                     "ja": "Trezor Suiteをアップデートすることで、セキュリティの強化、最新機能の搭載、スムーズな動作が可能になります。",
                     "hu": "Frissítse a Trezor Suite-ot a fokozott biztonság, a legújabb funkciók és a lehető leggördülékenyebb működés érdekében.",
-                    "it": "Aggiornate Trezor Suite per ottenere una maggiore sicurezza, tutte le funzioni più recenti e per far funzionare tutto nel modo più fluido possibile."
+                    "it": "Aggiornate Trezor Suite per ottenere una maggiore sicurezza, tutte le funzioni più recenti e per far funzionare tutto nel modo più fluido possibile.",
+                    "fr": ""
                 },
                 "cta": {
                     "action": "internal-link",
@@ -370,7 +381,8 @@
                         "ru": "Обновить Suite",
                         "ja": "Suiteのアップデート",
                         "hu": "Frissítés Suite",
-                        "it": "Suite di aggiornamento"
+                        "it": "Suite di aggiornamento",
+                        "fr": ""
                     }
                 }
             }
@@ -399,7 +411,8 @@
                     "ru": "ВНИМАНИЕ: Вы сейчас используете поддельную версию Trezor Suite. НЕМЕДЛЕННО ВЫЙДИТЕ ИЗ ЭТОЙ ПРОГРАММЫ!",
                     "ja": "警告：あなたは現在、Trezor Suiteの偽バージョンを使用しています。このプログラムを直ちに終了してください。",
                     "hu": "FIGYELMEZTETÉS: Ön jelenleg a Trezor Suite hamis verzióját használja. AZONNAL LÉPJEN KI A PROGRAMBÓL!",
-                    "it": "AVVERTENZA: Si sta utilizzando una versione contraffatta di Trezor Suite. USCITE IMMEDIATAMENTE DA QUESTO PROGRAMMA!"
+                    "it": "AVVERTENZA: Si sta utilizzando una versione contraffatta di Trezor Suite. USCITE IMMEDIATAMENTE DA QUESTO PROGRAMMA!",
+                    "fr": ""
                 }
             }
         },
@@ -638,7 +651,8 @@
                     "ru": "ВНИМАНИЕ: Обнаружено неофициальное ПО! Ваш Trezor может быть подделкой. Свяжитесь с нами немедленно на help@trezor.io.",
                     "ja": "注意：非公式のファームウェアが検出されました！お使いのTrezorは偽物かもしれません。直ちにhelp@trezor.ioに連絡してください。",
                     "hu": "FIGYELEM: Nem hivatalos firmware-t észleltek! Lehet, hogy a Trezorod hamisítvány. Azonnal lépjen kapcsolatba a help@trezor.io címen.",
-                    "it": "ATTENZIONE: rilevato un firmware non ufficiale! Il vostro Trezor potrebbe essere contraffatto. Contattare immediatamente help@trezor.io."
+                    "it": "ATTENZIONE: rilevato un firmware non ufficiale! Il vostro Trezor potrebbe essere contraffatto. Contattare immediatamente help@trezor.io.",
+                    "fr": ""
                 }
             }
         },
@@ -671,7 +685,8 @@
                     "ru": "_Пожалуйста, обновите свое приложение, чтобы иметь возможность подписывать транзакции Zcash",
                     "ja": "Zcashの取引に署名できるようにアプリケーションを更新してください",
                     "hu": "Kérjük, frissítse az alkalmazást, hogy képes legyen aláírni a Zcash tranzakciókat.",
-                    "it": "Aggiornare l'applicazione per poter firmare le transazioni Zcash."
+                    "it": "Aggiornare l'applicazione per poter firmare le transazioni Zcash.",
+                    "fr": ""
                 },
                 "cta": {
                     "action": "internal-link",
@@ -685,7 +700,8 @@
                         "ru": "Обновить Suite",
                         "ja": "Suiteのアップデート",
                         "hu": "Frissítés Suite",
-                        "it": "Suite di aggiornamento"
+                        "it": "Suite di aggiornamento",
+                        "fr": ""
                     }
                 }
             }
@@ -753,7 +769,8 @@
                     "ru": "Для подписывания транзакций zcach необходимо обновить прошивку",
                     "ja": "Zcashの取引に署名できるようにファームウェアをアップデートしてください。",
                     "hu": "Kérjük, frissítse a firmware-t, hogy képes legyen aláírni a Zcash tranzakciókat.",
-                    "it": "Aggiornare il firmware per poter firmare le transazioni Zcash"
+                    "it": "Aggiornare il firmware per poter firmare le transazioni Zcash",
+                    "fr": ""
                 },
                 "cta": {
                     "action": "internal-link",
@@ -766,7 +783,8 @@
                         "ru": "Обновить прошивку",
                         "ja": "ファームウェアのアップデート",
                         "hu": "Firmware frissítése",
-                        "it": "Aggiornamento del firmware"
+                        "it": "Aggiornamento del firmware",
+                        "fr": ""
                     }
                 }
             }
@@ -821,7 +839,8 @@
                     "ru": "Требуется обновление! Данная версия Trezor Suite несовместима с вашим устройством. Обновите программу, чтобы продолжить.",
                     "ja": "アップデートが必要です！このバージョンのTrezor Suiteは、お使いのデバイスと互換性がありません。続行するには、アップデートしてください。",
                     "hu": "Frissítés szükséges! A Trezor Suite ezen verziója nem kompatibilis az Ön készülékével. A folytatáshoz frissítsen.",
-                    "it": "È necessario un aggiornamento! Questa versione di Trezor Suite non è compatibile con il vostro dispositivo. Aggiornare per continuare."
+                    "it": "È necessario un aggiornamento! Questa versione di Trezor Suite non è compatibile con il vostro dispositivo. Aggiornare per continuare.",
+                    "fr": ""
                 },
                 "cta": {
                     "action": "internal-link",
@@ -835,7 +854,8 @@
                         "ru": "Обновить Suite",
                         "ja": "Suiteのアップデート",
                         "hu": "Frissítés Suite",
-                        "it": "Suite di aggiornamento"
+                        "it": "Suite di aggiornamento",
+                        "fr": ""
                     }
                 }
             }
