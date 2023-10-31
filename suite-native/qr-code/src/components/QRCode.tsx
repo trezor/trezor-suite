@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Dimensions, View } from 'react-native';
+import { AppState, Dimensions, View } from 'react-native';
 import ReactQRCode from 'react-qr-code';
 
 import * as Brightness from 'expo-brightness';
@@ -31,6 +31,25 @@ const qrCodeContainerStyle = prepareNativeStyle(_ => ({
 export const QRCode = ({ data }: QRCodeProps) => {
     const { applyStyle } = useNativeStyles();
     const [originalBrightnessValue, setOriginalBrightnessValue] = useState<number>();
+
+    useEffect(() => {
+        const subscription = AppState.addEventListener('change', nextAppState => {
+            if (!originalBrightnessValue) return;
+
+            // When app goes to background, restore the original brightness value.
+            if (nextAppState === 'background') {
+                Brightness.setBrightnessAsync(originalBrightnessValue);
+            }
+            // When app goes to foreground set full brightness.
+            if (nextAppState === 'active') {
+                Brightness.setBrightnessAsync(1);
+            }
+        });
+
+        return () => {
+            subscription.remove();
+        };
+    }, [originalBrightnessValue]);
 
     useEffect(() => {
         const storeBrightnessValue = async () => {
