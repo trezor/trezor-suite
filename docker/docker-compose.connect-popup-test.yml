@@ -18,7 +18,7 @@ services:
     network_mode: service:trezor-user-env-unix
 
   test-run:
-    image: mcr.microsoft.com/playwright:focal
+    image: mcr.microsoft.com/playwright:v1.35.1-focal
     container_name: explorer-test-runner
     depends_on:
       - trezor-user-env-unix
@@ -34,7 +34,7 @@ services:
       - TEST_FILE=$TEST_FILE
       - IS_WEBEXTENSION=$IS_WEBEXTENSION
     working_dir: /trezor-suite
-    command: bash -c "npx playwright install && docker/wait-for-200.sh http://localhost:8088/index.html && yarn workspace @trezor/connect-popup test:e2e $TEST_FILE"
+    command: bash -c "docker/wait-for-200.sh http://localhost:8088/index.html && yarn workspace @trezor/connect-popup test:e2e $TEST_FILE"
     volumes:
       - ../:/trezor-suite
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
