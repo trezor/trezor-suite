@@ -20,3 +20,35 @@ export const parseBalanceAmount = (value: string) => {
         decimalNumber: decimalNumberPart ? `.${decimalNumberPart}` : '',
     };
 };
+
+export const formatNumberWithThousandCommas = (
+    value: number | string | BigNumber,
+    minDecimals = 0,
+    maxDecimals?: number,
+) => {
+    if (maxDecimals !== undefined && maxDecimals < minDecimals) {
+        throw Error(
+            `maxDecimals (${maxDecimals}) cannot be lower than minDecimals (${minDecimals})`,
+        );
+    }
+
+    const amount = new BigNumber(value);
+
+    const getDecimalsLength = () => {
+        const originalDecimalsLegth = amount.decimalPlaces() ?? 0;
+        if (originalDecimalsLegth < minDecimals) {
+            return minDecimals;
+        }
+        if (maxDecimals !== undefined && originalDecimalsLegth > maxDecimals) {
+            // Remove trailing zeroes after formatting:
+            return new BigNumber(amount.toFixed(maxDecimals)).decimalPlaces() ?? maxDecimals;
+        }
+        return originalDecimalsLegth;
+    };
+
+    return amount.toFormat(getDecimalsLength(), {
+        decimalSeparator: '.',
+        groupSize: 3,
+        groupSeparator: ',',
+    });
+};
