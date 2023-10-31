@@ -1,29 +1,9 @@
 {
-    "processors": [
-        "stylelint-processor-styled-components"
-    ],
-    "extends": [
-        "stylelint-config-recommended",
-        "stylelint-config-styled-components"
-    ],
+    "customSyntax": "postcss-styled-syntax",
+    "extends": ["stylelint-config-standard"],
     "rules": {
-        "indentation": 4,
         "declaration-empty-line-before": null,
-        "custom-property-empty-line-before": null,
-        "max-empty-lines": 1,
-        "block-no-empty": null,
-        "property-no-unknown": [
-            true, {
-                "ignoreProperties": ["composes", "font-smoothing", "font-smooth"]
-            }
-        ],
-		"selector-type-no-unknown": [
-            true, {
-                "ignoreTypes": ["/-styled-mixin/"]
-            }
-        ],
-        "at-rule-no-unknown": [ true, {
-            "ignoreAtRules": ["each"]
-        }]
+        "media-query-no-invalid": null,
+        "no-empty-source": null
     }
 }
