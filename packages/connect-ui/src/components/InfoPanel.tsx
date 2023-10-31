@@ -67,10 +67,11 @@ const Origin = styled.p`
 interface InfoPanelProps {
     method?: string;
     origin?: string;
+    hostLabel?: string;
     topSlot?: ReactNode;
 }
 
-export const InfoPanel = ({ method, origin, topSlot }: InfoPanelProps) => (
+export const InfoPanel = ({ method, origin, hostLabel, topSlot }: InfoPanelProps) => (
     <>
         <Aside data-test="@info-panel">
             {/*  notifications appear hear */}
@@ -98,7 +99,7 @@ export const InfoPanel = ({ method, origin, topSlot }: InfoPanelProps) => (
                 </Header>
                 <Info>
                     <MethodName>{method}</MethodName>
-                    <Origin>{origin}</Origin>
+                    <Origin>{hostLabel || origin}</Origin>
                 </Info>
             </MainSlot>
         </Aside>
