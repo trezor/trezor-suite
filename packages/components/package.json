@@ -54,11 +54,10 @@
         "@types/react-truncate": "^2.3.4",
         "@types/styled-components": "^5.1.26",
         "jest": "^26.6.3",
+        "postcss-styled-syntax": "^0.5.0",
         "storybook": "^7.5.2",
-        "stylelint": "14.16.1",
-        "stylelint-config-recommended": "^9.0.0",
-        "stylelint-config-styled-components": "^0.1.1",
-        "stylelint-processor-styled-components": "^1.10.0",
+        "stylelint": "^15.11.0",
+        "stylelint-config-standard": "^34.0.0",
         "typescript": "4.9.5",
         "typescript-styled-plugin": "^0.18.3"
     }
