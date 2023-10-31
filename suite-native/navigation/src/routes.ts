@@ -13,7 +13,7 @@ export enum RootStackRoutes {
 export enum AppTabsRoutes {
     HomeStack = 'HomeStack',
     AccountsStack = 'AccountsStack',
-    ReceiveStack = 'ReceiveStack',
+    ReceiveAccounts = 'ReceiveAccounts',
     SettingsStack = 'SettingsStack',
 }
 
@@ -50,11 +50,6 @@ export enum HomeStackRoutes {
 
 export enum AccountsStackRoutes {
     Accounts = 'Accounts',
-}
-
-export enum ReceiveStackRoutes {
-    ReceiveAccounts = 'ReceiveAccounts',
-    Receive = 'Receive',
 }
 
 export enum SettingsStackRoutes {
