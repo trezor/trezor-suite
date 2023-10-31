@@ -12,7 +12,11 @@ export const isStepUsed = (step: Step, getState: GetState) => {
     const deviceModelInternal = device?.features?.internal_model;
 
     // The order of IF conditions matters!
-    if (deviceModelInternal && step.unsupportedModels?.includes(deviceModelInternal)) {
+    if (
+        deviceModelInternal &&
+        Array.isArray(step.supportedModels) &&
+        !step.supportedModels.includes(deviceModelInternal)
+    ) {
         return false;
     }
     if (step.id === ID_AUTHENTICATE_DEVICE_STEP) {
