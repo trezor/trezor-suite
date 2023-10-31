@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
+import { ReactNode, useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { usePrevious } from 'react-use';
 import { useSelector } from 'src/hooks/suite';
 import styled from 'styled-components';
@@ -95,8 +95,8 @@ export function OverflowItems<T extends OverflowItem>({
         }
     }, [minVisibleItems]);
 
-    useEffect(() => {
-        if (!previousWidth || screenWidth > previousWidth) {
+    useLayoutEffect(() => {
+        if (screenWidth && (!previousWidth || screenWidth > previousWidth)) {
             showAllItems();
             return;
         }
