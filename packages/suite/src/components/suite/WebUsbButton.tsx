@@ -1,4 +1,4 @@
-import TrezorConnect from '@trezor/connect';
+// import TrezorConnect from '@trezor/connect';
 import { ButtonProps, Button } from '@trezor/components';
 import { Translation } from './Translation';
 
@@ -10,7 +10,15 @@ export const WebUsbButton = (props: Omit<ButtonProps, 'children'>) => (
             variant="primary"
             onClick={e => {
                 e.stopPropagation();
-                TrezorConnect.requestWebUSBDevice();
+                // TrezorConnect.requestWebUSBDevice();
+                try {
+                    // @ts-expect-error
+                    navigator.bluetooth.requestDevice({
+                        filters: [{ services: ['6e400001-b5a3-f393-e0a9-e50e24dcca9e'] }],
+                    });
+                } catch (error) {
+                    // silent
+                }
             }}
             size="small"
         >

@@ -30,8 +30,10 @@ export const Transport = () => {
         if (isDesktop()) {
             transports.push('NodeUsbTransport');
             transports.push('UdpTransport');
+            transports.push('WebBluetoothTransport');
         } else {
             transports.push('WebUsbTransport');
+            transports.push('WebBluetoothTransport');
         }
 
         return transports.map(t => ({
