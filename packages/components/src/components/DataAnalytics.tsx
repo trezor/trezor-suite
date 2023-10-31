@@ -7,7 +7,7 @@ import { Button } from './buttons/Button/Button';
 import { CollapsibleBox } from './CollapsibleBox/CollapsibleBox';
 import { Card } from './Card/Card';
 import { Switch } from './form/Switch/Switch';
-import { H1 } from './typography/Heading/Heading';
+import { H2 } from './typography/Heading/Heading';
 
 const StyledCard = styled(Card)`
     max-width: 550px;
@@ -42,7 +42,7 @@ const Label = styled.span`
     display: flex;
 `;
 
-const Heading = styled(H1)`
+const Heading = styled(H2)`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     color: ${({ theme }) => theme.TYPE_DARK_GREY};

@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { isTestnet } from '@suite-common/wallet-utils';
-import { CoinLogo, H1, H3 } from '@trezor/components';
+import { CoinLogo, H2, H3 } from '@trezor/components';
 
 import { Account } from 'src/types/wallet';
 import {
@@ -21,7 +21,7 @@ import { useSelector } from 'src/hooks/suite';
 import { AccountNavigation } from './AccountNavigation';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
 
-const Balance = styled(H1)`
+const Balance = styled(H2)`
     height: 32px;
     white-space: nowrap;
     margin-left: 8px;

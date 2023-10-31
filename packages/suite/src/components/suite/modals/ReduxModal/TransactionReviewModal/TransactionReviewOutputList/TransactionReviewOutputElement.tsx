@@ -50,7 +50,7 @@ const MultiIndicatorWrapper = styled.div<{ linesCount: number }>`
     position: relative;
     z-index: ${zIndices.base};
 
-    &:after {
+    ::after {
         z-index: -2;
         width: 10px;
         left: 10px;

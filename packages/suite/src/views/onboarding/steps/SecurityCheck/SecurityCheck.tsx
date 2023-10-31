@@ -3,7 +3,7 @@ import styled, { useTheme } from 'styled-components';
 
 import { getConnectedDeviceStatus } from '@suite-common/suite-utils';
 import { selectDevice } from '@suite-common/wallet-core';
-import { Icon, Tooltip, variables, H1 } from '@trezor/components';
+import { Icon, Tooltip, variables, H2 } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/connect';
 
 import { useOnboarding, useSelector } from 'src/hooks/suite';
@@ -42,7 +42,7 @@ const DeviceName = styled.div`
     margin-top: 12px;
 `;
 
-const StyledH1 = styled(H1)`
+const StyledH2 = styled(H2)`
     font-size: 28px;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     margin: 24px 0 0;
@@ -206,9 +206,9 @@ export const SecurityCheck = () => {
                                 <Translation id="TR_CONNECTED_DIFFERENT_DEVICE" />
                             </OnboardingButtonSkip>
                         </DeviceNameSection>
-                        <StyledH1>
+                        <StyledH2>
                             <Translation id={headingText} />
-                        </StyledH1>
+                        </StyledH2>
                         <SecurityChecklist items={checklistItems} />
                     </Content>
                     <Buttons>
