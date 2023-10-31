@@ -17,7 +17,6 @@ export const prepareFirmwareMiddleware = createMiddlewareWithExtraDeps(
         const firmware = selectFirmware(getState());
         const device = selectDevice(getState());
         const routerApp = selectRouterApp(getState());
-        const { prevDevice } = firmware;
 
         // pass action
         next(action);
@@ -70,10 +69,7 @@ export const prepareFirmwareMiddleware = createMiddlewareWithExtraDeps(
                 action.payload?.connected &&
                 action.payload?.mode !== 'bootloader' && // after custom firmware install waiting for confirmation of fingerprint
                 ['reconnect-in-normal', 'wait-for-reboot'].includes(status) &&
-                !intermediaryInstalled &&
-                // if prevDevice is set, then prevDevice.id must equal currently connected device.id
-                // device id is not set in onboarding fresh device (no firmware installed, no device id, is in bootloader mode)
-                (!prevDevice?.id || prevDevice.id === action.payload.id)
+                !intermediaryInstalled
             ) {
                 dispatch(validateFirmwareHash(action.payload));
             }
