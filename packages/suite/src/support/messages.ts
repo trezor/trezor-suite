@@ -2492,14 +2492,6 @@ export default defineMessages({
         id: 'TR_7D_CHANGE',
         defaultMessage: '7d change',
     },
-    TR_24H_CHANGE: {
-        id: 'TR_24H_CHANGE',
-        defaultMessage: '24h change',
-    },
-    TR_LAST_DAYS: {
-        id: 'TR_LAST_DAYS',
-        defaultMessage: 'Last {days} days',
-    },
     TR_FAILED_BACKUP: {
         defaultMessage: 'Backup failed. Please wipe your Trezor and start the setup process again.',
         id: 'TR_FAILED_BACKUP',
@@ -8236,9 +8228,5 @@ export default defineMessages({
     TR_RESTART_TREZOR_DEVICE_TUTORIAL: {
         id: 'TR_RESTART_TREZOR_DEVICE_TUTORIAL',
         defaultMessage: 'Restart tutorial',
-    },
-    TR_PRICE: {
-        id: 'TR_PRICE',
-        defaultMessage: 'Price',
     },
 });
