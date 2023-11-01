@@ -71,11 +71,41 @@ jobs:
           name: app-apk
           path: |
             suite-native/app/android/**/*.apk
-      - uses: mobile-dev-inc/action-maestro-cloud@v1
+
+            maestro_tests:
+              - uses: mobile-dev-inc/action-maestro-cloud@v1
+                with:
+                  api-key: 23ea091f-0049-420e-ad9f-69dd5592d882
+                  app-file: suite-native/app/android/app/build/outputs/apk/firebaseDevelop/release/app-firebaseDevelop-release.apk
+                  async: true
+
+  maestro_tests:
+    runs-on: ubuntu-latest
+    environment: develop
+    timeout-minutes: 45
+    steps:
+      - name: install Maestro
+        run: |
+          curl -Ls "https://get.maestro.mobile.dev" | bash
+
+      - name: get android APK for tests
+        uses: actions/download-artifact@v2
         with:
-          api-key: 23ea091f-0049-420e-ad9f-69dd5592d882
-          app-file: suite-native/app/android/app/build/outputs/apk/firebaseDevelop/release/app-firebaseDevelop-release.apk
-          async: true
+          name: app-apk
+          path: suite-native/app/android
+
+      - name: install the apk via adb
+        run: |
+          adb install -r suite-native/app/android/app/build/outputs/apk/firebaseDevelop/release/app-firebaseDevelop-release.apk
+
+      - name: move to the tests directory
+        run: cd suite-native/app/.maestro
+
+      - name: run the tests on an emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 33
+          script: maestro test importBTCviaText.yaml
 
   ios_develop:
     runs-on: macos-12
