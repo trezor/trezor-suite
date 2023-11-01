@@ -23,9 +23,7 @@ const Value = styled.span`
     text-overflow: ellipsis;
 `;
 
-const Symbol = styled.span`
-    word-break: initial;
-`;
+const Symbol = styled.span``;
 
 export interface FormattedCryptoAmountProps {
     value?: string | number;
