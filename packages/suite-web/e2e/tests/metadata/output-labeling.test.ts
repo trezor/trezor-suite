@@ -70,7 +70,7 @@ describe('Metadata - Output labeling', () => {
             cy.getTestElement(`${sentToMyselfEl}/dropdown/edit-label`).click({ force: true });
             cy.getTestElement('@metadata/input').type(' edited{enter}');
 
-            // just check there is copy address button, as of cypress 12.17.1 there is some problem to click on it (breaks tests locally)
+            // just check there is copy address button, as of cypress 13.4.0 there is some problem to click on it (breaks tests locally)
             cy.getTestElement(`${sentToMyselfEl}`).click({ force: true });
             cy.getTestElement(`${sentToMyselfEl}/dropdown/copy-address`);
 
