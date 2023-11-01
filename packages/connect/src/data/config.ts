@@ -36,6 +36,12 @@ export const config = {
             label: 'MetaMask',
             icon: '',
         },
+        {
+            // temporary record. something to test that handing over this information from content script works
+            origin: 'mhindfjbfdlgedfmkkdgfdhkfkakifed',
+            label: 'Testing webextension',
+            icon: '',
+        },
         { origin: 'file://', label: ' ', icon: '' },
     ],
     onionDomains: {
