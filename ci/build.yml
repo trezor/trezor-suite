@@ -259,11 +259,14 @@ connect-web build:
     - ./packages/connect-web/scripts/check-inline-build-size.sh
     - yarn workspace @trezor/connect-iframe build
     - yarn workspace @trezor/connect-popup build
+    - yarn workspace @trezor/connect-explorer-webextension build
     # build webextension examples with latest trezor.io and latest npm package
     - node ./packages/connect-examples/update-webextensions.js --trezor-connect-src "https://suite.corp.sldev.cz/connect/${CI_COMMIT_REF_NAME}/"
     # build webextension examples with latest trezor.io and outdated npm package (current production)
     - node ./packages/connect-examples/update-webextensions.js --trezor-connect-src "https://suite.corp.sldev.cz/connect/${CI_COMMIT_REF_NAME}/" --build-folder build-legacy --npm-src "https://connect.trezor.io/9/trezor-connect.js"
-    - yarn workspace @trezor/connect-explorer-webextension build
+    # build webextension example using @trezor/connect-webextension package
+    - yarn workspace @trezor/connect-webextension build
+    - node ./packages/connect-examples/update-webextensions-sw.js
 
   artifacts:
     expire_in: 14 days
@@ -275,6 +278,7 @@ connect-web build:
       - packages/connect-examples/webextension-mv2/build-legacy
       - packages/connect-examples/webextension-mv3/build
       - packages/connect-examples/webextension-mv3/build-legacy
+      - packages/connect-examples/webextension-mv3-sw/build
       - packages/connect-explorer-webextension/build
 
 # Build components
