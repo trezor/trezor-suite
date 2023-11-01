@@ -2,5 +2,8 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": { "outDir": "./libDev" },
     "include": ["."],
-    "references": [{ "path": "../env-utils" }]
+    "references": [
+        { "path": "../env-utils" },
+        { "path": "../utils" }
+    ]
 }
