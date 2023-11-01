@@ -8811,9 +8811,22 @@ __metadata:
     "@playwright/browser-firefox": "npm:^1.39.0"
     "@playwright/browser-webkit": "npm:^1.39.0"
     "@playwright/test": "npm:^1.39.0"
+    "@trezor/connect": "workspace:*"
+    "@trezor/connect-common": "workspace:*"
     "@trezor/node-utils": "workspace:*"
     "@trezor/trezor-user-env-link": "workspace:*"
+    "@trezor/utils": "workspace:*"
+    "@types/chrome": "npm:latest"
+    events: "npm:^3.3.0"
+    jest: "npm:^26.6.3"
+    rimraf: "npm:^5.0.1"
+    terser-webpack-plugin: "npm:^5.3.9"
+    tsx: "npm:^3.12.7"
     typescript: "npm:^4.9.5"
+    webpack: "npm:^5.87.0"
+    webpack-cli: "npm:^5.1.4"
+    webpack-merge: "npm:^5.9.0"
+    webpack-plugin-serve: "npm:^1.6.0"
     xvfb-maybe: "npm:^0.2.1"
   languageName: unknown
   linkType: soft
@@ -9845,6 +9858,16 @@ __metadata:
     "@types/filesystem": "npm:*"
     "@types/har-format": "npm:*"
   checksum: 2f18deecc75101283993a6f08258a8ea98bfc166469fce9074959e8deb8d78f771f01578cdb66ffb6b87e8f50c55e1b516cf024b6ddaefbbd30d97d07d3dac3b
+  languageName: node
+  linkType: hard
+
+"@types/chrome@npm:latest":
+  version: 0.0.251
+  resolution: "@types/chrome@npm:0.0.251"
+  dependencies:
+    "@types/filesystem": "npm:*"
+    "@types/har-format": "npm:*"
+  checksum: a775f6ce867d8edd3d18950851b6a6670510cbed4b80ada79d45952d0baacf5e898c5453f44d4a012b1a906b58cf44b191272cb9970e3589b2f4c06fcb97a28e
   languageName: node
   linkType: hard
 
@@ -30667,7 +30690,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rimraf@npm:^5.0.5":
+"rimraf@npm:^5.0.1, rimraf@npm:^5.0.5":
   version: 5.0.5
   resolution: "rimraf@npm:5.0.5"
   dependencies:
@@ -33700,7 +33723,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsx@npm:^3.14.0":
+"tsx@npm:^3.12.7, tsx@npm:^3.14.0":
   version: 3.14.0
   resolution: "tsx@npm:3.14.0"
   dependencies:
@@ -35087,7 +35110,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webpack-merge@npm:^5.10.0, webpack-merge@npm:^5.7.3":
+"webpack-merge@npm:^5.10.0, webpack-merge@npm:^5.7.3, webpack-merge@npm:^5.9.0":
   version: 5.10.0
   resolution: "webpack-merge@npm:5.10.0"
   dependencies:

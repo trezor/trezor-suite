@@ -36,7 +36,7 @@ export type LogWriter = {
 
 const MAX_ENTRIES = 100;
 
-class Log {
+export class Log {
     prefix: string;
     enabled: boolean;
     css: string;
