@@ -1,34 +1,26 @@
 import { Route } from '@suite-common/suite-types';
 import { Account } from '@suite-common/wallet-types';
-import { Button, Dropdown } from '@trezor/components';
+import { Button, variables } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { ReactNode } from 'react';
 import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite';
-import { OverflowItem, OverflowItems } from 'src/components/suite/OverflowItems';
 import { useDispatch } from 'src/hooks/suite';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
-const StyledOverflowItems = styled(OverflowItems)`
+const Wrapper = styled.div`
+    display: flex;
     gap: 12px;
 `;
 
-const StyledDropdown = styled(Dropdown)<{ isDisabled: boolean }>`
-    background: ${({ isDisabled, theme }) => (isDisabled ? theme.BG_GREY : theme.BG_SECONDARY)};
-    width: 38px;
-    height: 38px;
-    border-radius: 8px;
-    margin-right: 0px;
-    flex-shrink: 0;
-
-    > :first-child {
-        width: 100%;
-        height: 100%;
-
-        :hover {
-            background: ${({ isDisabled, theme }) => !isDisabled && theme.BG_SECONDARY_HOVER};
-        }
-    }
+const StyledButton = styled(Button)<{ isHideable: boolean }>`
+    ${({ isHideable }) =>
+        isHideable &&
+        css`
+            ${variables.SCREEN_QUERY.MOBILE} {
+                display: none;
+            }
+        `};
 `;
 
 interface TradeBoxMenuProps {
@@ -38,25 +30,24 @@ interface TradeBoxMenuProps {
 export const TradeBoxMenu = ({ account }: TradeBoxMenuProps) => {
     const dispatch = useDispatch();
 
-    const menuItems: (OverflowItem & {
+    const menuItems: {
         route: Route['name'];
-        type: 'exchange' | 'buy' | 'sell' | 'spend';
+        type: 'exchange' | 'buy' | 'sell';
         title: ReactNode;
-    })[] = [
+        isHideable?: boolean;
+    }[] = [
         {
-            removeOrder: 3,
             route: 'wallet-coinmarket-buy',
             type: 'buy',
             title: <Translation id="TR_NAV_BUY" />,
         },
         {
-            removeOrder: 1,
             route: 'wallet-coinmarket-sell',
             type: 'sell',
             title: <Translation id="TR_NAV_SELL" />,
+            isHideable: true,
         },
         {
-            removeOrder: 2,
             route: 'wallet-coinmarket-exchange',
             type: 'exchange',
             title: <Translation id="TR_NAV_EXCHANGE" />,
@@ -64,11 +55,10 @@ export const TradeBoxMenu = ({ account }: TradeBoxMenuProps) => {
     ];
 
     return (
-        <StyledOverflowItems
-            items={menuItems}
-            minVisibleItems={1}
-            visibleItemRenderer={item => (
-                <Button
+        <Wrapper>
+            {menuItems.map(item => (
+                <StyledButton
+                    isHideable={!!item.isHideable}
                     key={item.route}
                     variant="secondary"
                     onClick={() => {
@@ -84,28 +74,8 @@ export const TradeBoxMenu = ({ account }: TradeBoxMenuProps) => {
                     data-test={`@coinmarket/menu/${item.route}`}
                 >
                     {item.title}
-                </Button>
-            )}
-            overflowRenderer={items => (
-                <StyledDropdown
-                    alignMenu="right"
-                    offset={5}
-                    isDisabled={false}
-                    data-test="@wallet/menu/extra-dropdown"
-                    items={[
-                        {
-                            key: 'extra',
-                            options: items.map(item => ({
-                                key: item.route,
-                                callback: () =>
-                                    dispatch(goto(item.route, { preserveParams: true })),
-                                label: item.title,
-                                'data-test': `@coinmarket/menu/dropdown/${item.route}`,
-                            })),
-                        },
-                    ]}
-                />
-            )}
-        />
+                </StyledButton>
+            ))}
+        </Wrapper>
     );
 };
