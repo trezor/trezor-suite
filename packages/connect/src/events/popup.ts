@@ -8,6 +8,9 @@ export const POPUP = {
     BOOTSTRAP: 'popup-bootstrap',
     // Message from popup.js to window.opener, called after "window.onload" event. This is second message from popup to window.opener.
     LOADED: 'popup-loaded',
+    // Message from popup run in "core" mode. Connect core has been loaded, popup is ready to handle messages
+    // This is similar to IFRAME.LOADED message which signals the same but core is loaded in different context
+    CORE_LOADED: 'popup-core-loaded',
     // Message from window.opener to popup.js. Send settings to popup. This is first message from window.opener to popup.
     INIT: 'popup-init',
     // Error message from popup to window.opener. Could be thrown during popup initialization process (POPUP.INIT)
@@ -28,6 +31,8 @@ export const POPUP = {
     CLOSE_WINDOW: 'window.close',
     // todo: shouldn't it be UI_RESPONSE?
     ANALYTICS_RESPONSE: 'popup-analytics-response',
+    /** webextension injected content script and content script notified popup */
+    CONTENT_SCRIPT_LOADED: 'popup-content-script-loaded',
     /** method.info async getter result passed from core to popup */
     METHOD_INFO: 'popup-method-info',
 } as const;
@@ -38,6 +43,7 @@ export interface PopupInit {
         settings: ConnectSettings; // settings from window.opener (sent by @trezor/connect-web)
         useBroadcastChannel: boolean;
         systemInfo: SystemInfo;
+        useCore?: boolean;
     };
 }
 
@@ -71,9 +77,14 @@ export interface PopupMethodInfo {
     payload: { info: string; method: string };
 }
 
+export interface PopupContentScriptLoaded {
+    type: typeof POPUP.CONTENT_SCRIPT_LOADED;
+    payload: { id: string };
+}
+
 export type PopupEvent =
     | {
-          type: typeof POPUP.LOADED | typeof POPUP.CANCEL_POPUP_REQUEST;
+          type: typeof POPUP.LOADED | typeof POPUP.CORE_LOADED | typeof POPUP.CANCEL_POPUP_REQUEST;
           payload?: typeof undefined;
       }
     | PopupInit
@@ -81,6 +92,7 @@ export type PopupEvent =
     | PopupError
     | PopupClosedMessage
     | PopupAnalyticsResponse
+    | PopupContentScriptLoaded
     | PopupMethodInfo;
 
 export type PopupEventMessage = PopupEvent & { event: typeof UI_EVENT };
