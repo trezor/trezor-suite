@@ -8,7 +8,7 @@ type PercentageDifferenceFormatterProps = {
 } & TextProps;
 
 const calculatePercentageDifference = (a: number, b: number) =>
-    Math.abs(Math.round(((a - b) / b) * 100));
+    Math.abs(Math.round(((a - b) / a) * 100));
 
 export const PercentageDifferenceFormatter = ({
     oldValue,
