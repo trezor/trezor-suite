@@ -1021,6 +1021,13 @@ export class Core extends EventEmitter {
         }
         return _deviceList.getTransportInfo();
     }
+
+    enumerate() {
+        if (!_deviceList) {
+            return;
+        }
+        _deviceList.enumerate();
+    }
 }
 
 /**
