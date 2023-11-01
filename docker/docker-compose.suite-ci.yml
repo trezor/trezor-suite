@@ -7,7 +7,7 @@ services:
       - XDG_RUNTIME_DIR=/var/tmp
     network_mode: bridge # this makes docker reuse existing networks
   test-run:
-    image: $CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX/cypress/included:12.17.1
+    image: $CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX/cypress/included:13.4.0
     entrypoint: []
     environment:
       - CYPRESS_SNAPSHOT=$CYPRESS_SNAPSHOT

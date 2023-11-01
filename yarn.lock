@@ -1914,9 +1914,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cypress/request@npm:^2.88.11":
-  version: 2.88.11
-  resolution: "@cypress/request@npm:2.88.11"
+"@cypress/request@npm:^3.0.0":
+  version: 3.0.1
+  resolution: "@cypress/request@npm:3.0.1"
   dependencies:
     aws-sign2: ~0.7.0
     aws4: ^1.8.0
@@ -1931,12 +1931,12 @@ __metadata:
     json-stringify-safe: ~5.0.1
     mime-types: ~2.1.19
     performance-now: ^2.1.0
-    qs: ~6.10.3
+    qs: 6.10.4
     safe-buffer: ^5.1.2
-    tough-cookie: ~2.5.0
+    tough-cookie: ^4.1.3
     tunnel-agent: ^0.6.0
     uuid: ^8.3.2
-  checksum: e4b3f62e0c41c4ccca6c942828461d8ea717e752fd918d685e9f74e2ebcfa8b7942427f7ce971e502635c3bf3d40011476db84dc753d3dc360c6d08350da6f93
+  checksum: 7175522ebdbe30e3c37973e204c437c23ce659e58d5939466615bddcd58d778f3a8ea40f087b965ae8b8138ea8d102b729c6eb18c6324f121f3778f4a2e8e727
   languageName: node
   linkType: hard
 
@@ -9543,7 +9543,7 @@ __metadata:
     "@types/react-router-dom": ^5.1.7
     "@types/styled-components": ^5.1.26
     chrome-remote-interface: ^0.32.2
-    cypress: ^12.17.1
+    cypress: ^13.4.0
     cypress-file-upload: ^5.0.8
     cypress-image-snapshot: ^4.0.1
     jest: ^26.6.3
@@ -15692,13 +15692,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cypress@npm:^12.17.1":
-  version: 12.17.1
-  resolution: "cypress@npm:12.17.1"
+"cypress@npm:^13.4.0":
+  version: 13.4.0
+  resolution: "cypress@npm:13.4.0"
   dependencies:
-    "@cypress/request": ^2.88.11
+    "@cypress/request": ^3.0.0
     "@cypress/xvfb": ^1.2.4
-    "@types/node": ^14.14.31
+    "@types/node": ^18.17.5
     "@types/sinonjs__fake-timers": 8.1.1
     "@types/sizzle": ^2.3.2
     arch: ^2.2.0
@@ -15731,6 +15731,7 @@ __metadata:
     minimist: ^1.2.8
     ospath: ^1.2.2
     pretty-bytes: ^5.6.0
+    process: ^0.11.10
     proxy-from-env: 1.0.0
     request-progress: ^3.0.0
     semver: ^7.5.3
@@ -15740,7 +15741,7 @@ __metadata:
     yauzl: ^2.10.0
   bin:
     cypress: bin/cypress
-  checksum: 1f042e3e5931498bdf826cba09060939349e677fca8654c9695760acbec5a424cb69d3445ace57cf80deb496d770ffe571ef791dff72af24e7f560ee43986ee4
+  checksum: d64495105a61ed1fb41a5189d5015cfa80314c84d1004595e9c4019eedd394f83509409b6f8489a18e92ea96c6b66ffbb918f41ab97c3eaed34abe107c0846aa
   languageName: node
   linkType: hard
 
@@ -28845,7 +28846,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"psl@npm:^1.1.28, psl@npm:^1.1.33":
+"psl@npm:^1.1.33":
   version: 1.9.0
   resolution: "psl@npm:1.9.0"
   checksum: 20c4277f640c93d393130673f392618e9a8044c6c7bf61c53917a0fddb4952790f5f362c6c730a9c32b124813e173733f9895add8d26f566ed0ea0654b2e711d
@@ -28984,6 +28985,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"qs@npm:6.10.4":
+  version: 6.10.4
+  resolution: "qs@npm:6.10.4"
+  dependencies:
+    side-channel: ^1.0.4
+  checksum: 31e4fedd759d01eae52dde6692abab175f9af3e639993c5caaa513a2a3607b34d8058d3ae52ceeccf37c3025f22ed5e90e9ddd6c2537e19c0562ddd10dc5b1eb
+  languageName: node
+  linkType: hard
+
 "qs@npm:6.11.0":
   version: 6.11.0
   resolution: "qs@npm:6.11.0"
@@ -28999,15 +29009,6 @@ __metadata:
   dependencies:
     side-channel: ^1.0.4
   checksum: e812f3c590b2262548647d62f1637b6989cc56656dc960b893fe2098d96e1bd633f36576f4cd7564dfbff9db42e17775884db96d846bebe4f37420d073ecdc0b
-  languageName: node
-  linkType: hard
-
-"qs@npm:~6.10.3":
-  version: 6.10.4
-  resolution: "qs@npm:6.10.4"
-  dependencies:
-    side-channel: ^1.0.4
-  checksum: 31e4fedd759d01eae52dde6692abab175f9af3e639993c5caaa513a2a3607b34d8058d3ae52ceeccf37c3025f22ed5e90e9ddd6c2537e19c0562ddd10dc5b1eb
   languageName: node
   linkType: hard
 
@@ -33510,25 +33511,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tough-cookie@npm:^4.0.0, tough-cookie@npm:^4.1.2":
-  version: 4.1.2
-  resolution: "tough-cookie@npm:4.1.2"
+"tough-cookie@npm:^4.0.0, tough-cookie@npm:^4.1.2, tough-cookie@npm:^4.1.3":
+  version: 4.1.3
+  resolution: "tough-cookie@npm:4.1.3"
   dependencies:
     psl: ^1.1.33
     punycode: ^2.1.1
     universalify: ^0.2.0
     url-parse: ^1.5.3
-  checksum: a7359e9a3e875121a84d6ba40cc184dec5784af84f67f3a56d1d2ae39b87c0e004e6ba7c7331f9622a7d2c88609032473488b28fe9f59a1fec115674589de39a
-  languageName: node
-  linkType: hard
-
-"tough-cookie@npm:~2.5.0":
-  version: 2.5.0
-  resolution: "tough-cookie@npm:2.5.0"
-  dependencies:
-    psl: ^1.1.28
-    punycode: ^2.1.1
-  checksum: 16a8cd090224dd176eee23837cbe7573ca0fa297d7e468ab5e1c02d49a4e9a97bb05fef11320605eac516f91d54c57838a25864e8680e27b069a5231d8264977
+  checksum: c9226afff36492a52118432611af083d1d8493a53ff41ec4ea48e5b583aec744b989e4280bcf476c910ec1525a89a4a0f1cae81c08b18fb2ec3a9b3a72b91dcc
   languageName: node
   linkType: hard
 
