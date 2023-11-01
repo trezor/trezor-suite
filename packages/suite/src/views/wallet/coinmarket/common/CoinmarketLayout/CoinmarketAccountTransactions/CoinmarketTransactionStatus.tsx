@@ -122,7 +122,7 @@ const getSpendTradeData = (theme: SuiteThemeColors) =>
         icon: 'CHECK',
         color: theme.TYPE_GREEN,
         statusMessageId: 'TR_SPEND_STATUS_FINISHED',
-    } as const);
+    }) as const;
 
 const getSavingsTradeData = (status: SavingsTradeItemStatus, theme: SuiteThemeColors) => {
     const message = getSavingsStatusMessage(status);

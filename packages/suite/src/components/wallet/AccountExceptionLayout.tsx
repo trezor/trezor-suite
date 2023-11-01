@@ -68,9 +68,7 @@ export const AccountExceptionLayout = (props: AccountExceptionLayoutProps) => (
             <>
                 <Divider />
                 <Actions>
-                    {props.actions?.map(action => (
-                        <ActionButton {...action} />
-                    ))}
+                    {props.actions?.map(action => <ActionButton {...action} />)}
                     {props.actionComponent && props.actionComponent}
                 </Actions>
             </>

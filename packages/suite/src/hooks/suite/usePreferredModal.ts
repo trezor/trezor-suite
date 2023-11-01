@@ -34,7 +34,7 @@ const getForegroundAppAction = (route: ForegroundAppRoute, params: Partial<Modal
             // params are undefined when the user goes directly to the URL
             cancelable: !!params?.cancelable,
         },
-    } as const);
+    }) as const;
 
 export const usePreferredModal = () => {
     const { getDiscoveryStatus } = useDiscovery();

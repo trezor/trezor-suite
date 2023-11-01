@@ -42,7 +42,7 @@ const clientEnable = (symbol: Account['symbol']) =>
         payload: {
             symbol,
         },
-    } as const);
+    }) as const;
 
 export const clientDisable = (symbol: Account['symbol']) =>
     ({
@@ -50,7 +50,7 @@ export const clientDisable = (symbol: Account['symbol']) =>
         payload: {
             symbol,
         },
-    } as const);
+    }) as const;
 
 const clientEnableSuccess = (
     symbol: Account['symbol'],
@@ -63,7 +63,7 @@ const clientEnableSuccess = (
             status,
             version,
         },
-    } as const);
+    }) as const;
 
 const clientEnableFailed = (symbol: Account['symbol']) =>
     ({
@@ -71,7 +71,7 @@ const clientEnableFailed = (symbol: Account['symbol']) =>
         payload: {
             symbol,
         },
-    } as const);
+    }) as const;
 
 const clientOnStatusEvent = (symbol: Account['symbol'], status: CoinjoinStatusEvent) =>
     ({
@@ -80,13 +80,13 @@ const clientOnStatusEvent = (symbol: Account['symbol'], status: CoinjoinStatusEv
             symbol,
             status,
         },
-    } as const);
+    }) as const;
 
 const clientOnPrisonEvent = (event: CoinjoinClientEvents['prison']) =>
     ({
         type: COINJOIN.CLIENT_PRISON_EVENT,
         payload: event.prison,
-    } as const);
+    }) as const;
 
 const clientSessionRoundChanged = (
     accountKey: string,
@@ -100,7 +100,7 @@ const clientSessionRoundChanged = (
             round,
             sessionDeadline,
         },
-    } as const);
+    }) as const;
 
 const clientSessionCompleted = (accountKey: string) =>
     ({
@@ -108,7 +108,7 @@ const clientSessionCompleted = (accountKey: string) =>
         payload: {
             accountKey,
         },
-    } as const);
+    }) as const;
 
 const clientSessionTxSigned = (payload: {
     accountKey: string;
@@ -118,7 +118,7 @@ const clientSessionTxSigned = (payload: {
     ({
         type: COINJOIN.SESSION_TX_SIGNED,
         payload,
-    } as const);
+    }) as const;
 
 const clientSessionTxCandidate = (accountKey: string, roundId: string) =>
     ({
@@ -127,7 +127,7 @@ const clientSessionTxCandidate = (accountKey: string, roundId: string) =>
             accountKey,
             roundId,
         },
-    } as const);
+    }) as const;
 
 const clientSessionTxBroadcasted = (accountKeys: string[], round: SerializedCoinjoinRound) =>
     ({
@@ -136,7 +136,7 @@ const clientSessionTxBroadcasted = (accountKeys: string[], round: SerializedCoin
             accountKeys,
             round,
         },
-    } as const);
+    }) as const;
 
 const clientSessionTxFailed = (accountKeys: string[], round: SerializedCoinjoinRound) =>
     ({
@@ -145,19 +145,19 @@ const clientSessionTxFailed = (accountKeys: string[], round: SerializedCoinjoinR
             accountKeys,
             round,
         },
-    } as const);
+    }) as const;
 
 const clientSessionPhase = (payload: CoinjoinClientEvents['session-phase']) =>
     ({
         type: COINJOIN.CLIENT_SESSION_PHASE,
         payload,
-    } as const);
+    }) as const;
 
 export const setDebugSettings = (payload: CoinjoinDebugSettings) =>
     ({
         type: COINJOIN.SET_DEBUG_SETTINGS,
         payload,
-    } as const);
+    }) as const;
 
 export const coinjoinSessionPause = (accountKey: string) =>
     ({
@@ -165,7 +165,7 @@ export const coinjoinSessionPause = (accountKey: string) =>
         payload: {
             accountKey,
         },
-    } as const);
+    }) as const;
 
 export type CoinjoinClientAction =
     | ReturnType<typeof setDebugSettings>
@@ -223,13 +223,16 @@ export const setBusyScreen =
         });
 
         // collect unique physical devices (by device.id)
-        const uniquePhysicalDevices = uniqueDeviceStates.reduce((result, state) => {
-            const device = devices.find(d => d.connected && d.state === state);
-            if (device && !result.find(d => d.id === device.id)) {
-                return result.concat(device);
-            }
-            return result;
-        }, [] as typeof devices);
+        const uniquePhysicalDevices = uniqueDeviceStates.reduce(
+            (result, state) => {
+                const device = devices.find(d => d.connected && d.state === state);
+                if (device && !result.find(d => d.id === device.id)) {
+                    return result.concat(device);
+                }
+                return result;
+            },
+            [] as typeof devices,
+        );
 
         // async actions on each physical device in sequence
         return promiseAllSequence(

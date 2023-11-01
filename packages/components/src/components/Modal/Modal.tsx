@@ -144,17 +144,18 @@ const ModalWindow = styled.div`
     position: relative;
     border-radius: 16px;
     text-align: center;
-    transition: background 0.3s, box-shadow 0.3s;
+    transition:
+        background 0.3s,
+        box-shadow 0.3s;
     max-width: 95%;
     min-width: 305px;
     max-height: 90vh;
     width: 680px;
 
-    ${({ theme }) =>
-        css`
-            background: ${theme.BG_WHITE};
-            box-shadow: 0 10px 80px 0 ${theme.BOX_SHADOW_MODAL};
-        `}
+    ${({ theme }) => css`
+        background: ${theme.BG_WHITE};
+        box-shadow: 0 10px 80px 0 ${theme.BOX_SHADOW_MODAL};
+    `}
 `;
 
 const CloseIcon = styled(Icon)`

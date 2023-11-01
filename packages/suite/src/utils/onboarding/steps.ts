@@ -32,8 +32,9 @@ export const isStepUsed = (step: Step, getState: GetState) => {
     if (path.length === 0) {
         return true;
     }
-    return path.every((pathMember: AnyPath) =>
-        step.path?.some((stepPathMember: AnyPath) => stepPathMember === pathMember),
+    return path.every(
+        (pathMember: AnyPath) =>
+            step.path?.some((stepPathMember: AnyPath) => stepPathMember === pathMember),
     );
 };
 

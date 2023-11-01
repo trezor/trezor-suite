@@ -79,4 +79,4 @@ export const createTransportMessage: MessageFactoryFn<typeof TRANSPORT_EVENT, Tr
         event: TRANSPORT_EVENT,
         type,
         payload: 'error' in payload ? serializeError(payload) : payload,
-    } as any);
+    }) as any;

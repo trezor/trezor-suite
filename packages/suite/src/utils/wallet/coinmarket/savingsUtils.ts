@@ -86,7 +86,7 @@ export const getPaymentFrequencyOptions = (selectedProvider?: SavingsProviderInf
             ({
                 label: Translation({ id: paymentFrequencyTranslationsIds[paymentFrequency] }),
                 value: paymentFrequency,
-            } as PaymentFrequencyOption),
+            }) as PaymentFrequencyOption,
     ) ?? [];
 
 export const createReturnLink = async () => {

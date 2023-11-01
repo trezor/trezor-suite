@@ -208,12 +208,15 @@ export const UsedAddresses = ({
 
     const { used, unused } = account.addresses;
     // find revealed addresses in `unused` list
-    const revealed = unused.reduce((result, addr) => {
-        const r = addresses.find(u => u.path === addr.path);
-        const p = pendingAddresses.find(u => u === addr.address);
-        const f = r || p;
-        return f ? result.concat(addr) : result;
-    }, [] as typeof unused);
+    const revealed = unused.reduce(
+        (result, addr) => {
+            const r = addresses.find(u => u.path === addr.path);
+            const p = pendingAddresses.find(u => u === addr.address);
+            const f = r || p;
+            return f ? result.concat(addr) : result;
+        },
+        [] as typeof unused,
+    );
     // TODO: add skipped addresses?
     // add revealed addresses to `used` list
     const list = revealed.concat(used.slice().reverse());

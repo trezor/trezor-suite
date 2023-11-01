@@ -73,7 +73,9 @@ const StatusText = styled.div<{ isShown: boolean; status: Status }>`
     color: ${({ status, theme }) => getStatusColor(status, theme)};
     text-transform: uppercase;
     opacity: ${({ isShown }) => (isShown ? 1 : 0)};
-    transition: opacity 0.5s ease, right 0.5s ease;
+    transition:
+        opacity 0.5s ease,
+        right 0.5s ease;
 `;
 
 const RefreshIcon = styled(Icon)`
@@ -88,7 +90,9 @@ const StyledStatusLight = styled(StatusLight)<{ isShown: boolean }>`
     top: 12px;
     right: ${({ isShown }) => (isShown ? '12px' : '48px')};
     opacity: ${({ isShown }) => (isShown ? 1 : 0)};
-    transition: opacity 0.5s ease, right 0.5s ease;
+    transition:
+        opacity 0.5s ease,
+        right 0.5s ease;
 `;
 
 interface DeviceStatusProps {

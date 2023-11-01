@@ -104,7 +104,7 @@ export class CoinjoinBackendClient {
             api =>
                 api
                     .getMempoolFilters(timestamp)
-                    .then(response => ({ fallbackNeeded: false, response } as const))
+                    .then(response => ({ fallbackNeeded: false, response }) as const)
                     .catch(error => {
                         if (identifyWsError(error) === 'ERROR_UNSUPPORTED_NOORDINALS') {
                             return { fallbackNeeded: true } as const;

@@ -255,7 +255,7 @@ describe('coinjoinClientActions', () => {
                     client: {
                         enable: () => Promise.resolve({ success: false, error: 'Some error' }),
                     },
-                } as any),
+                }) as any,
         );
         const cli = await store.dispatch(initCoinjoinService('btc'));
         expect(cli).toBe(undefined);

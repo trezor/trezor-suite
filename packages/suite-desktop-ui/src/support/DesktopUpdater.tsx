@@ -63,9 +63,12 @@ export const DesktopUpdater = ({ children }: DesktopUpdaterProps) => {
         // Initial check for updates
         desktopApi.checkForUpdates();
         // Check for updates every hour
-        const checkForUpdatesInterval = setInterval(() => {
-            desktopApi.checkForUpdates();
-        }, 60 * 60 * 1000);
+        const checkForUpdatesInterval = setInterval(
+            () => {
+                desktopApi.checkForUpdates();
+            },
+            60 * 60 * 1000,
+        );
 
         return () => clearInterval(checkForUpdatesInterval);
     }, [

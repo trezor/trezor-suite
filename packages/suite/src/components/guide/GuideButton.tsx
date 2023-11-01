@@ -18,7 +18,8 @@ const Wrapper = styled.button<{ $isGuideOpen: boolean }>`
     cursor: pointer;
     border: solid 1px ${({ theme }) => theme.STROKE_GREY_ALT};
     background: ${({ theme }) => theme.BG_WHITE_ALT};
-    box-shadow: 0 2px 7px 0 ${({ theme }) => theme.BOX_SHADOW_BLACK_15},
+    box-shadow:
+        0 2px 7px 0 ${({ theme }) => theme.BOX_SHADOW_BLACK_15},
         0 2px 3px 0 ${({ theme }) => theme.BOX_SHADOW_BLACK_5};
     transition: opacity 0.3s ease 0.3s;
     opacity: ${({ $isGuideOpen }) => ($isGuideOpen ? 0 : 1)};

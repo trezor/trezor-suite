@@ -87,10 +87,13 @@ export const getAnonymityScores = async (
             signal: options.signal,
         });
 
-        return scores.reduce((dict, { Address, AnonymitySet }) => {
-            dict[Address] = AnonymitySet;
-            return dict;
-        }, {} as Record<string, number>);
+        return scores.reduce(
+            (dict, { Address, AnonymitySet }) => {
+                dict[Address] = AnonymitySet;
+                return dict;
+            },
+            {} as Record<string, number>,
+        );
     } catch (error) {
         options.logger.error(`Error calculating anonymity levels. ${error}`);
     }
@@ -110,4 +113,4 @@ export const analyzeTransactions = async <T extends keyof AnalyzeTransactionsRes
             !sections || sections.includes('rawLiquidityClue' as T)
                 ? await getRawLiquidityClue(transactions, options)
                 : undefined,
-    } as AnalyzeTransactionsResult);
+    }) as AnalyzeTransactionsResult;

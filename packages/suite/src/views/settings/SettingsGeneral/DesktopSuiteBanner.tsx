@@ -31,7 +31,9 @@ const CloseButton = styled(Icon)`
     height: auto;
     padding: 4px;
     border-radius: 4px;
-    transition: opacity 0.15s, background 0.15s;
+    transition:
+        opacity 0.15s,
+        background 0.15s;
     cursor: pointer;
 
     path {

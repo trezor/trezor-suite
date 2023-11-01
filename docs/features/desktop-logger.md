@@ -115,7 +115,7 @@ logger.exit();
 
 ### How to format a string?
 
-The library does not have any formatting capabilities as JavaScript already has templating features built-in. Simply use string literals (for example: `` logger.info('Topic', `My string ${myvar}.`) ``).
+The library does not have any formatting capabilities as JavaScript already has templating features built-in. Simply use string literals (for example: ``logger.info('Topic', `My string ${myvar}.`)``).
 
 ### How to output an object?
 

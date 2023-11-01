@@ -18,7 +18,9 @@ const StyledIcon = styled(Icon)<{ isActivated: boolean }>`
     border: 1.5px solid
         ${({ theme, isActivated }) => (isActivated ? theme.TYPE_GREEN : theme.TYPE_LIGHT_GREY)};
     border-radius: 50%;
-    transition: background ${TRANSITION_CONFIG}, border-color ${TRANSITION_CONFIG};
+    transition:
+        background ${TRANSITION_CONFIG},
+        border-color ${TRANSITION_CONFIG};
 
     path {
         transition: fill ${TRANSITION_CONFIG};
@@ -57,7 +59,9 @@ const Container = styled.button<{
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     background: none;
-    transition: background ${TRANSITION_CONFIG}, border-color ${TRANSITION_CONFIG},
+    transition:
+        background ${TRANSITION_CONFIG},
+        border-color ${TRANSITION_CONFIG},
         color ${TRANSITION_CONFIG};
     cursor: pointer;
     appearance: none;
