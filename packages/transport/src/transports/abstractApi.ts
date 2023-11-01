@@ -205,6 +205,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                         this.messages,
                         () =>
                             this.api.read(path).then(result => {
+                                console.warn('usb read result', result);
                                 if (result.success) {
                                     return result.payload;
                                 }

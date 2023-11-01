@@ -173,7 +173,7 @@ export class UsbApi extends AbstractApi {
         return this.openInternal(path, first);
     }
 
-    public async openInternal(path: string, first: boolean) {
+    private async openInternal(path: string, first: boolean) {
         const device = this.findDevice(path);
         if (!device) {
             return this.error({ error: ERRORS.DEVICE_NOT_FOUND });

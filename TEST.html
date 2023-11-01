@@ -1,0 +1,234 @@
+<html>
+    <head>
+        <title>Bluetooth Test</title>
+    </head>
+    <body>
+        <button onclick="pair()">Connect BT</button>
+        <button onclick="send()">SEND</button>
+        <script>
+            const NUS_SERVICE_UUID = '6e400001-b5a3-f393-e0a9-e50e24dcca9e';
+            const NUS_CHARACTERISTIC_RX = '6e400002-b5a3-f393-e0a9-e50e24dcca9e';
+            const NUS_CHARACTERISTIC_TX = '6e400003-b5a3-f393-e0a9-e50e24dcca9e';
+
+            var encoder = new TextEncoder();
+            const PING = new ArrayBuffer(8);
+            const PING_view = new Uint8Array(PING);
+            PING_view.set(encoder.encode('PINGPONG'));
+
+            const message = new ArrayBuffer(244 /* 64 */);
+            // const message = new ArrayBuffer(64);
+            const view = new Uint8Array(message);
+            // view.set([63, 35, 35, 0, 0 /* 55 */], 0);
+            view.set([63, 35, 35, 0, 55], 0);
+
+            const logBuffer = (name, buffer) => {
+                console.log(name, [...new Uint8Array(buffer)]);
+            };
+
+            const isAvailable = () => {
+                if (typeof navigator.bluetooth !== 'undefined') {
+                    return navigator.bluetooth.getAvailability();
+                }
+                return false;
+            };
+
+            const enumerate = async () => {
+                const available = await isAvailable();
+                if (available) {
+                    const devices = await navigator.bluetooth.getDevices();
+                    if (devices.length > 0) {
+                        const [device] = devices;
+                        if (!device.gatt?.connected) {
+                            console.warn('not connected!!!');
+                            try {
+                                console.warn('trying to....', Promise);
+                                // https://bugs.chromium.org/p/chromium/issues/detail?id=684073
+                                // const server = await Promise.race([
+                                //     device.gatt.connect(),
+                                //     new Promise((_resolve, reject) =>
+                                //         setTimeout(() => reject('Racee'), 10000),
+                                //     ),
+                                // ]);
+                                const server = await device.gatt.connect();
+                                console.warn('conn success', server);
+                                device.addEventListener('gattserverdisconnected', evt => {
+                                    console.warn('gattserverdisconnected', evt);
+                                });
+                                // const adv = await device.watchAdvertisements();
+                            } catch (e) {
+                                console.warn('connection error', e);
+                            }
+                        }
+                    }
+                    console.warn('enumerate!', devices);
+                } else {
+                    console.warn('no BT');
+                }
+                setTimeout(enumerate, 3000);
+            };
+
+            // enumerate();
+
+            navigator.bluetooth.addEventListener('availabilitychanged', event => {
+                console.warn('availabilitychanged', event);
+            });
+
+            async function pair() {
+                // let [device] = await navigator.bluetooth.getDevices();
+                // if (!device) {
+                //     device = await navigator.bluetooth.requestDevice({
+                //         filters: [{ services: [NUS_SERVICE_UUID] }],
+                //     });
+                //     // device = await navigator.bluetooth.requestDevice({ acceptAllDevices: true });
+                // }
+
+                const device = await navigator.bluetooth.requestDevice({
+                    filters: [{ services: [NUS_SERVICE_UUID] }],
+                });
+
+                // const device = await navigator.bluetooth.requestDevice({
+                //     acceptAllDevices: true,
+                // });
+
+                device.onadvertisementreceived = adv => {
+                    console.warn('onAdv received', adv);
+                };
+                device.onserviceadded = serv => {
+                    console.warn('onserviceadded', serv);
+                };
+                device.oncharacteristicvaluechanged = evt => {
+                    console.warn('DEVICE-oncharacteristicvaluechanged', evt);
+                };
+                device.ongattserverdisconnected = evt => {
+                    console.warn('DEVICE-ongattserverdisconnected', evt);
+                };
+                device.watchAdvertisements();
+
+                const server = await device.gatt.connect();
+
+                const [service] = await device.gatt.getPrimaryServices();
+                const Characteristics = await service.getCharacteristics();
+                const [write, read] = Characteristics;
+
+                // const services = await server.getPrimaryServices();
+                // const service = await server.getPrimaryService(NUS_SERVICE_UUID);
+                // const write = await service.getCharacteristic(NUS_CHARACTERISTIC_RX);
+                // const notify = await service.getCharacteristic(NUS_CHARACTERISTIC_TX);
+
+                console.warn('DEVICE', device, Characteristics);
+
+                read.startNotifications();
+                read.oncharacteristicvaluechanged = async e => {
+                    logBuffer('characteristicvaluechanged', e.target.value.buffer);
+
+                    // const b = await read.readValue();
+                    // console.warn('characteristicvaluechanged-read', logBuffer(b));
+                };
+
+                // // write.startNotifications();
+                // // write.addEventListener('characteristicvaluechanged', e => {
+                // //     logBuffer('notifWrite', e.target.value.buffer);
+                // // });
+
+                // logBuffer('SENDING', message);
+                console.warn('START READ');
+                const connectionTimestamp = Date.now();
+                try {
+                    const b = await read.readValue();
+                    logBuffer('b', b);
+                    console.warn('READ VALUE', b, PING);
+                } catch (e) {
+                    console.warn('READ ERROR!!!', e);
+                    // device.gatt.disconnect();
+                    // device.forget();
+                    // read.stopNotifications();
+                    // read.oncharacteristicvaluechanged = null;
+                } finally {
+                    if (Date.now() - connectionTimestamp > 2000) {
+                        const devices = await navigator.bluetooth.getDevices();
+                        console.warn('FORGET DEVICE', devices);
+                        try {
+                            const [service] = await device.gatt.connect();
+                            // device.gatt.disconnect();
+                        } catch (e) {
+                            console.warn('Catch gatt disconnect error', e);
+                            // device.forget();
+                        }
+                        // device.gatt.disconnect();
+                        // device.forget();
+                    }
+                }
+
+                // const message0 = new ArrayBuffer(244 - 64);
+                // const view0 = new Uint8Array(message);
+                // await write.writeValue(new Uint8Array(message0));
+                // logBuffer('SENT', message);
+
+                // await new Promise(resolve => setTimeout(resolve, 1000));
+
+                // const value = await write.readValue();
+                // logBuffer('readValue', value.buffer);
+                // await new Promise(resolve => setTimeout(resolve, 1000));
+
+                // view.set([55], 4);
+                // await write.writeValue(message);
+                // logBuffer('SENT2', message);
+
+                // await new Promise(resolve => setTimeout(resolve, 1000));
+
+                // const value2 = await notify.readValue();
+                // logBuffer('RECEIVED', value2.buffer);
+            }
+
+            async function send() {
+                const devices = await navigator.bluetooth.getDevices();
+                console.warn('DEVICES', devices);
+                const device = devices.find(d => d.gatt?.connected);
+                const server = await device.gatt?.connect();
+                const services = await server.getPrimaryServices();
+                const service = await server.getPrimaryService(NUS_SERVICE_UUID);
+                const write = await service.getCharacteristic(NUS_CHARACTERISTIC_RX);
+                const notify = await service.getCharacteristic(NUS_CHARACTERISTIC_TX);
+
+                notify.startNotifications();
+                notify.addEventListener('characteristicvaluechanged', e => {
+                    logBuffer('notif', e.target.value.buffer);
+                });
+
+                logBuffer('SENDING', message);
+                await write.writeValue(message);
+
+                const value = await write.readValue();
+                logBuffer('readValue', value.buffer);
+            }
+
+            // chrome://settings/content/bluetoothDevices
+            // Flags:
+            // chrome://flags/#enable-web-bluetooth
+            // chrome://flags/#enable-web-bluetooth-new-permissions-backend (storage => electron problem?)
+            // chrome://flags/#enable-experimental-web-platform-features required to watchAdvertisements (not working on nixos?)
+            // https://stackoverflow.com/a/60609022
+            async function init() {
+                const devices = await navigator.bluetooth.getDevices();
+                devices.forEach(device => {
+                    device.onadvertisementreceived = adv => {
+                        console.warn('onAdv received', adv);
+                    };
+                    device.onserviceadded = serv => {
+                        console.warn('onserviceadded', serv);
+                    };
+                    device.oncharacteristicvaluechanged = evt => {
+                        console.warn('DEVICE-oncharacteristicvaluechanged', evt);
+                    };
+                    device.ongattserverdisconnected = evt => {
+                        console.warn('DEVICE-ongattserverdisconnected', evt);
+                    };
+                    device.watchAdvertisements();
+                    console.warn('Watch adv', device);
+                });
+            }
+
+            init();
+        </script>
+    </body>
+</html>

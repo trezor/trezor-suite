@@ -28,6 +28,7 @@ async function receiveBuffer(
     decoder: TransportProtocolDecode,
 ) {
     const data = await receiver();
+    console.warn('receiveBuffer', data);
     const { length, typeId, buffer } = decoder(data);
     const result = Buffer.alloc(length);
 
@@ -58,6 +59,7 @@ export async function receiveAndParse(
     const { buffer, typeId } = await receive(receiver, decoder);
     const { Message, messageName } = createMessageFromType(messages, typeId);
     const message = decodeProtobuf(Message, buffer);
+    console.warn('receiveAndParse', Message, messageName, message);
     return {
         message,
         type: messageName,
