@@ -120,6 +120,7 @@ export interface Localization {
     cs: string;
     ru: string;
     ja: string;
+    fr: string;
     [k: string]: string;
 }
 /**

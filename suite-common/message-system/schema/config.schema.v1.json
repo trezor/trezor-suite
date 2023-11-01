@@ -383,12 +383,6 @@
                 "ja": {
                     "type": "string"
                 },
-                "hu": {
-                    "type": "string"
-                },
-                "it": {
-                    "type": "string"
-                },
                 "fr": {
                     "type": "string"
                 }
