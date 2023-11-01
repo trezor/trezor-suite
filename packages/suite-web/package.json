@@ -6,6 +6,7 @@
         "type-check": "tsc --build tsconfig.json",
         "type-check:watch": "yarn type-check -- --watch",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "lint:styles": "npx stylelint './src/**/*{.ts,.tsx}' --cache --config ../../.stylelintrc",
         "dev": "rimraf ./build && yarn workspace @trezor/suite-build run dev:web",
         "analyze": "ANALYZE=true yarn build",
         "build": "rimraf ./build && yarn workspace @trezor/suite-build run build:web"
@@ -49,6 +50,8 @@
         "cypress-image-snapshot": "^4.0.1",
         "jest": "^26.6.3",
         "rimraf": "^5.0.5",
+        "stylelint": "^15.11.0",
+        "stylelint-config-standard": "^34.0.0",
         "tsx": "^3.12.7",
         "typescript": "4.9.5",
         "webpack": "^5.89.0",

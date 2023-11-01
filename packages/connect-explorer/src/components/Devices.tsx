@@ -19,15 +19,14 @@ const DeviceList = styled.ul`
 
 const DeviceItem = styled.li`
     position: relative;
-    display: block;
     cursor: pointer;
     padding: 10px 15px;
     white-space: nowrap;
-    //overflow: hidden;
     width: 25%;
     display: inline-block;
     border-top: 1px solid transparent;
     border-bottom: 4px solid transparent;
+
     &.active {
         background: #060606;
         border-top-color: #2c2c2c;

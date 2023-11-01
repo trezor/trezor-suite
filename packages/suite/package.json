@@ -6,7 +6,7 @@
     "scripts": {
         "lint": "yarn lint:styles && yarn lint:js",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "lint:styles": "npx stylelint './src/**/*{.ts,.tsx}' --cache",
+        "lint:styles": "npx stylelint './src/**/*{.ts,.tsx}' --cache --config ../../.stylelintrc",
         "translations:format": "yarn prettier --write \"../suite-data/files/translations/*\"",
         "translations:extract": "formatjs extract src/support/messages.ts --format simple > ../suite-data/files/translations/master.json",
         "translations:upload": "crowdin upload",

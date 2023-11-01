@@ -33,8 +33,8 @@ const Layout = styled.div`
 const StyledP = styled(P)`
     margin: 0 20%;
     font-size: 15px;
-    font-weight: ${variables.FONT_WEIGHT.LIGHT}
-    color: #757575
+    font-weight: ${variables.FONT_WEIGHT.LIGHT};
+    color: #757575;
 `;
 
 const Wrapper = styled.div`
