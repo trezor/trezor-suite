@@ -27,6 +27,7 @@ export { BridgeTransport } from './transports/bridge';
 
 // browser (chrome-like) only
 export { WebUsbTransport } from './transports/webusb';
+export { WebBluetoothTransport } from './transports/webbluetooth';
 
 // node only
 export { NodeUsbTransport } from './transports/nodeusb';

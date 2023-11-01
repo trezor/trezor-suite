@@ -9590,6 +9590,7 @@ __metadata:
     "@types/bytebuffer": "npm:^5.0.46"
     "@types/sharedworker": "npm:^0.0.105"
     "@types/w3c-web-usb": "npm:^1.0.9"
+    "@types/web-bluetooth": "npm:0.0.19"
     cross-fetch: "npm:^4.0.0"
     jest: "npm:29.5.0"
     json-stable-stringify: "npm:^1.0.2"
@@ -11024,6 +11025,13 @@ __metadata:
   version: 1.0.9
   resolution: "@types/w3c-web-usb@npm:1.0.9"
   checksum: dc6ec3b8985ee701ead63df2ad8f71b4b95deef17b390dadce5e0f9f031a12e3adfceaa557e61cd0db38c3aa872658c44ee2c346769cef65bcfb9369d2f52b0a
+  languageName: node
+  linkType: hard
+
+"@types/web-bluetooth@npm:0.0.19":
+  version: 0.0.19
+  resolution: "@types/web-bluetooth@npm:0.0.19"
+  checksum: 5dae7700526a3bc1beedefe952be57149aab8d05a2ba849d8eba2443d18265bbfe0c2084b72a0cb4c192b34d27191ae239ea6cd997c87b9c9881e25d31770837
   languageName: node
   linkType: hard
 

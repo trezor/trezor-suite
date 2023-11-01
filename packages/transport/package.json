@@ -19,9 +19,11 @@
     "browser": {
         "./lib/transports/nodeusb": "./lib/transports/nodeusb.browser",
         "./lib/transports/udp": "./lib/transports/udp.browser",
+        "./lib/transports/webbluetooth": "./lib/transports/webbluetooth.browser",
         "./lib/transports/webusb": "./lib/transports/webusb.browser",
         "./src/transports/nodeusb": "./src/transports/nodeusb.browser",
         "./src/transports/udp": "./src/transports/udp.browser",
+        "./src/transports/webbluetooth": "./src/transports/webbluetooth.browser",
         "./src/transports/webusb": "./src/transports/webusb.browser"
     },
     "react-native": {
@@ -47,6 +49,7 @@
         "@types/bytebuffer": "^5.0.46",
         "@types/sharedworker": "^0.0.105",
         "@types/w3c-web-usb": "^1.0.9",
+        "@types/web-bluetooth": "0.0.19",
         "jest": "29.5.0",
         "rimraf": "^5.0.5",
         "ts-node": "^10.9.1",
