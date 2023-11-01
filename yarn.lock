@@ -8709,6 +8709,7 @@ __metadata:
   resolution: "@trezor/connect-common@workspace:packages/connect-common"
   dependencies:
     "@trezor/env-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
     jest: "npm:^26.6.3"
     rimraf: "npm:^5.0.5"
     tsx: "npm:^3.14.0"
