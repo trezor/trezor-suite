@@ -10,8 +10,22 @@
 MAIN_BRANCH=develop
 FILEPATH=packages/suite/package.json
 
+if ! git diff --cached --quiet; then
+  tput setaf 1
+  echo "There are potentially unrelated staged changes that should not be committed. Unstage them before running this script."
+  tput sgr0
+  exit 1
+fi
+
+if ! git diff --quiet $FILEPATH; then
+  tput setaf 1
+  echo "There are potentially unrelated unstaged changes in $FILEPATH that should not be committed. Stash the changes before running this script."
+  tput sgr0
+  exit 1
+fi
+
 echo Calculating versions...
-CURRENT_VERSION=$(grep -m1 -o '\"suiteVersion\": *\"[^\"]*\"' packages/suite/package.json | cut -d':' -f2- | tr -d '\" ')
+CURRENT_VERSION=$(grep -m1 -o '\"suiteVersion\": *\"[^\"]*\"' $FILEPATH | cut -d':' -f2- | tr -d '\" ')
 CURRENT_VERSION_YEAR=$(echo "$CURRENT_VERSION" | cut -d '.' -f 1)
 CURRENT_VERSION_MONTH=$(echo "$CURRENT_VERSION" | cut -d '.' -f 2)
 
@@ -34,30 +48,36 @@ git pull origin $MAIN_BRANCH
 echo Creating release branch "$RELEASE_MONTH"...
 git switch -c release/"$RELEASE_MONTH" $MAIN_BRANCH
 sed -i '' -E "s/(\"suiteVersion\": \")[^\"]*(\".*)/\1$RELEASE_VERSION\2/" $FILEPATH
-git commit -am "chore(suite): bump Suite version to $RELEASE_VERSION [RELEASE ONLY]"
+git add $FILEPATH
+git commit -m "chore(suite): bump Suite version to $RELEASE_VERSION [RELEASE ONLY]"
 git push
 
 echo Creating testing branch "$TEST_UPGRADE_VERSION"...
 git switch -c release/test-"$TEST_UPGRADE_VERSION" $MAIN_BRANCH
 sed -i '' -E "s/(\"suiteVersion\": \")[^\"]*(\".*$)/\1$TEST_UPGRADE_VERSION\2/" $FILEPATH
-git commit -am "chore(suite): set Suite version to $TEST_UPGRADE_VERSION for testing [RELEASE ONLY]"
+git add $FILEPATH
+git commit -m "chore(suite): set Suite version to $TEST_UPGRADE_VERSION for testing [RELEASE ONLY]"
 git push
 
 echo Creating testing branch "$TEST_DOWNGRADE_VERSION"...
 git switch -c release/test-"$TEST_DOWNGRADE_VERSION" $MAIN_BRANCH
 sed -i '' -E "s/(\"suiteVersion\": \")[^\"]*(\".*$)/\1$TEST_DOWNGRADE_VERSION\2/" $FILEPATH
-git commit -am "chore(suite): set Suite version to $TEST_DOWNGRADE_VERSION for testing [RELEASE ONLY]"
+git add $FILEPATH
+git commit -m "chore(suite): set Suite version to $TEST_DOWNGRADE_VERSION for testing [RELEASE ONLY]"
 git push
 
 echo Bumping beta version to "$BETA_VERSION"...
 git switch -c chore/bump-suite-version-"$BETA_VERSION" $MAIN_BRANCH
 sed -i '' -E "s/(\"suiteVersion\": \")[^\"]*(\".*$)/\1$BETA_VERSION\2/" $FILEPATH
-git commit -am "chore(suite): bump beta version to $BETA_VERSION"
+git add $FILEPATH
+git commit -m "chore(suite): bump beta version to $BETA_VERSION"
 git push
 
 echo Creating pull request...
 if ! OUTPUT=$(gh pr create --repo trezor/trezor-suite --base $MAIN_BRANCH --title "Bump beta version to $BETA_VERSION" --body "Automatically generated PR to bump beta Suite version" --label deployment --web 2>&1); then
-  echo -e "$(tput setaf 3)Pull request not created. Create one manually on GitHub!\n${OUTPUT}$(tput sgr0)"
+  tput setaf 3
+  echo -e "Pull request not created. Create one manually on GitHub!\n${OUTPUT}"
+  tput sgr0
 fi
 
 echo Switching to $MAIN_BRANCH...
