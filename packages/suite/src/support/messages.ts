@@ -7385,7 +7385,7 @@ export default defineMessages({
     },
     TR_DEVICE_AUTHENTICITY_ERROR: {
         id: 'TR_DEVICE_AUTHENTICITY_ERROR',
-        defaultMessage: "Device isn't genuine",
+        defaultMessage: "We can't authenticate your device",
     },
     TR_FEE_ROUNDING_WARNING: {
         id: 'TR_FEE_ROUNDING_WARNING',

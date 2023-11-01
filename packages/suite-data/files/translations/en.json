@@ -592,7 +592,7 @@
   "TR_DESKTOP_APP_PROMO_TEXT": "Simple crypto management directly on your desktop",
   "TR_DETAIL": "Detail",
   "TR_DEVICE": "Device",
-  "TR_DEVICE_AUTHENTICITY_ERROR": "Device isn't genuine",
+  "TR_DEVICE_AUTHENTICITY_ERROR": "We can't authenticate your device",
   "TR_DEVICE_AUTHENTICITY_ITEM_1": "This check is a must-do step to ensure your device's reliability, integrity, and secure use.",
   "TR_DEVICE_AUTHENTICITY_ITEM_2": "This confirms that the chip inside your hardware wallet is genuine and from Trezor.",
   "TR_DEVICE_AUTHENTICITY_ITEM_3": "Once your device has been given a clean bill of health, you’re all set to Trezor with confidence.",
