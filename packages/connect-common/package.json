@@ -36,7 +36,8 @@
         "prepublish": "yarn tsx ../../scripts/prepublish.js"
     },
     "dependencies": {
-        "@trezor/env-utils": "workspace:*"
+        "@trezor/env-utils": "workspace:*",
+        "@trezor/utils": "workspace:*"
     },
     "devDependencies": {
         "jest": "29.5.0",

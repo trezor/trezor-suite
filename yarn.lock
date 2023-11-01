@@ -8829,6 +8829,7 @@ __metadata:
   resolution: "@trezor/connect-common@workspace:packages/connect-common"
   dependencies:
     "@trezor/env-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
     jest: "npm:29.5.0"
     jest-environment-jsdom: "npm:29.5.0"
     rimraf: "npm:^5.0.5"
