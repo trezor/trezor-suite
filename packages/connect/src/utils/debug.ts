@@ -6,10 +6,13 @@ const blue = '#20abd8';
 const orange = '#f4a744';
 const yellow = '#fbd948';
 
-const colors: Record<string, string> = {
+export const colors: Record<string, string> = {
     // blue, npm package related
     '@trezor/connect': `color: ${blue}; background: #000;`,
     '@trezor/connect-web': `color: ${blue}; background: #000;`,
+    '@trezor/connect-webextension': `color: ${blue}; background: #000;`,
+    '@trezor/connect-webextension/serviceWorkerWindowChannel': `color: ${blue}; background: #000;`,
+    '@trezor/connect-webextension/popupManager': `color: ${blue}; background: #000;`,
     // orange, api related
     IFrame: `color: ${orange}; background: #000;`,
     Core: `color: ${orange}; background: #000;`,
@@ -36,7 +39,7 @@ export type LogWriter = {
 
 const MAX_ENTRIES = 100;
 
-class Log {
+export class Log {
     prefix: string;
     enabled: boolean;
     css: string;
