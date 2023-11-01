@@ -16,7 +16,10 @@ export const Container = styled.div<{ isWide: boolean }>`
     height: ${({ isWide }) => `calc(100% - ${isWide ? 12 : 8}px)`};
     background: ${({ theme }) => theme.BG_WHITE};
     border-radius: 50%;
-    transition: background 0.15s ease-out, width 0.15s ease-out, height 0.15s ease-out;
+    transition:
+        background 0.15s ease-out,
+        width 0.15s ease-out,
+        height 0.15s ease-out;
 `;
 
 const CenteringContainer = styled.div`

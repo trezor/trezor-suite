@@ -86,7 +86,7 @@ Steps:
     - You will probably need to logout/login after XQuartz installation to have `xhost` command available.
 1. Run Docker and go to Preferences -> Resources -> Advanced and increase RAM to at least 4GB. Otherwise, the app during tests does not even load.
 1. In the terminal window, set two environment variables:
-    - `` export HOSTNAME=`hostname`  ``
+    - ``export HOSTNAME=`hostname` ``
     - `export DISPLAY=${HOSTNAME}:0`
 1. In terminal window, navigate to `trezor-user-env` repo root and run `./run.sh`.
 1. In another window, run web `Suite` with `yarn suite:dev`.

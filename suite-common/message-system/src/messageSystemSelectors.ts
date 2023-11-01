@@ -73,8 +73,8 @@ export const selectContextMessageContent = memoizeWithArgs(
 export const selectFeatureMessage = memoizeWithArgs(
     (state: MessageSystemRootState, domain: FeatureDomain) => {
         const activeFeatureMessages = selectActiveFeatureMessages(state);
-        return activeFeatureMessages.find(message =>
-            message.feature?.some(feature => feature.domain === domain),
+        return activeFeatureMessages.find(
+            message => message.feature?.some(feature => feature.domain === domain),
         );
     },
 );

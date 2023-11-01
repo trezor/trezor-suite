@@ -20,11 +20,14 @@ const { OPS } = bscript;
 const TAGS = ['TapLeaf', 'TapBranch', 'TapTweak', 'KeyAgg list', 'KeyAgg coefficient'] as const;
 type TaggedHashPrefix = (typeof TAGS)[number];
 /** An object mapping tags to their tagged hash prefix of [SHA256(tag) | SHA256(tag)] */
-const TAGGED_HASH_PREFIXES = TAGS.reduce((obj, tag) => {
-    const tagHash = bcrypto.sha256(Buffer.from(tag));
-    obj[tag] = Buffer.concat([tagHash, tagHash]);
-    return obj;
-}, {} as { [k in TaggedHashPrefix]: Buffer });
+const TAGGED_HASH_PREFIXES = TAGS.reduce(
+    (obj, tag) => {
+        const tagHash = bcrypto.sha256(Buffer.from(tag));
+        obj[tag] = Buffer.concat([tagHash, tagHash]);
+        return obj;
+    },
+    {} as { [k in TaggedHashPrefix]: Buffer },
+);
 
 const EVEN_Y_COORD_PREFIX = new Uint8Array([0x02]);
 

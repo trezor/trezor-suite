@@ -147,7 +147,7 @@ export const TransactionList = ({
                                 ({
                                     ...tokenTransfer,
                                     originalTransaction: transaction,
-                                } as EthereumTokenTransferWithTx),
+                                }) as EthereumTokenTransferWithTx,
                         ),
                 ),
             ]);

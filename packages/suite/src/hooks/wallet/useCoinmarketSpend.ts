@@ -268,9 +268,8 @@ export const useCoinmarketSpend = ({
 
     const openWindow = async (voucherSiteUrl?: string) => {
         const endpointIframe = await desktopApi.getHttpReceiverAddress('/spend-iframe');
-        const handleMessageEndpoint = await desktopApi.getHttpReceiverAddress(
-            '/spend-handle-message',
-        );
+        const handleMessageEndpoint =
+            await desktopApi.getHttpReceiverAddress('/spend-handle-message');
         if (voucherSiteUrl && handleMessageEndpoint) {
             const endpointWithParams = `${endpointIframe}?voucherSiteUrl=${encodeURIComponent(
                 voucherSiteUrl,

@@ -83,4 +83,4 @@ export const createPopupMessage: MessageFactoryFn<typeof UI_EVENT, PopupEvent> =
         event: UI_EVENT,
         type,
         payload,
-    } as any);
+    }) as any;

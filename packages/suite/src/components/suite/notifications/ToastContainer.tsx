@@ -34,8 +34,14 @@ const StyledContainer = styled(BaseToastContainer)`
         color: ${({ theme }) => theme.TYPE_DARK_GREY};
         background: ${({ theme }) => theme.BG_WHITE};
         padding: 0;
-        font-family: 'TT Hoves', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue',
-            Arial, sans-serif;
+        font-family:
+            'TT Hoves',
+            -apple-system,
+            BlinkMacSystemFont,
+            'Segoe UI',
+            'Helvetica Neue',
+            Arial,
+            sans-serif;
         position: relative;
         min-height: 50px;
         box-sizing: border-box;

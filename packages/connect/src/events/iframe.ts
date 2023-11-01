@@ -64,4 +64,4 @@ export const createIFrameMessage: MessageFactoryFn<typeof UI_EVENT, IFrameEvent>
         event: UI_EVENT,
         type,
         payload,
-    } as any);
+    }) as any;

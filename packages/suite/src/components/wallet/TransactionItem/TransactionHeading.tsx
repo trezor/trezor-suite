@@ -41,7 +41,10 @@ const ChevronIconWrapper = styled.div<{ show: boolean; animate: boolean }>`
     margin-left: ${({ animate }) => (animate ? '5px' : '3px')};
     padding-bottom: 2px;
     opacity: ${({ show }) => (show ? 1 : 0)};
-    transition: visibility 0s, opacity 0.15s linear, margin-left 0.15s ease-in-out;
+    transition:
+        visibility 0s,
+        opacity 0.15s linear,
+        margin-left 0.15s ease-in-out;
 
     /* select non-direct SVG children (the icon) and set animation property */
     > * svg {

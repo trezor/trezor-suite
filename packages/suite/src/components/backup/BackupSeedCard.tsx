@@ -18,7 +18,9 @@ const Card = styled.div<{ checked: boolean }>`
     padding: 24px;
     border-radius: 10px;
     border: solid 1.5px ${({ theme, checked }) => (checked ? theme.TYPE_GREEN : theme.STROKE_GREY)};
-    transition: box-shadow 0.2s ease-in-out, border 0.2s ease-in-out;
+    transition:
+        box-shadow 0.2s ease-in-out,
+        border 0.2s ease-in-out;
     cursor: pointer;
 
     :hover {

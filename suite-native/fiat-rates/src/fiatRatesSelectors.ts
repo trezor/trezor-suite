@@ -69,7 +69,7 @@ export const selectTickerFromAccounts = memoize((state: FiatRatesRootState): Tic
                     ({
                         symbol: account.symbol,
                         tokenAddress: token.contract,
-                    } as TickerId),
+                    }) as TickerId,
             ),
         ]),
         A.flat,

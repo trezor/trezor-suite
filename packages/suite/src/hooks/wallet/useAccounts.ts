@@ -45,10 +45,13 @@ export const useAccountAddressDictionary = (account: Account | undefined) =>
             case 'bitcoin': {
                 return (account?.addresses?.unused ?? [])
                     .concat(account?.addresses?.used ?? [])
-                    .reduce((previous, current) => {
-                        previous[current.address] = current;
-                        return previous;
-                    }, {} as { [address: string]: AccountAddress });
+                    .reduce(
+                        (previous, current) => {
+                            previous[current.address] = current;
+                            return previous;
+                        },
+                        {} as { [address: string]: AccountAddress },
+                    );
             }
             case 'ripple':
             case 'ethereum': {

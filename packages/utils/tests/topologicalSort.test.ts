@@ -18,7 +18,7 @@ const FIXTURES: Fixture<any>[] = [
         ],
         output: ['c', 'e', 'b', 'a', 'd'],
         precedes: (from: string, to: string) =>
-            ({ b: ['a', 'd'], e: ['b'] }[from]?.includes(to) ?? false),
+            ({ b: ['a', 'd'], e: ['b'] })[from]?.includes(to) ?? false,
     },
     {
         description: 'basic sorting with alphabetical ties',
@@ -29,7 +29,7 @@ const FIXTURES: Fixture<any>[] = [
         ],
         output: ['c', 'e', 'b', 'a', 'd'],
         precedes: (from: string, to: string) =>
-            ({ b: ['a', 'd'], e: ['b'] }[from]?.includes(to) ?? false),
+            ({ b: ['a', 'd'], e: ['b'] })[from]?.includes(to) ?? false,
         tie: (a: string, b: string) => a.localeCompare(b),
     },
     {
@@ -47,7 +47,7 @@ const FIXTURES: Fixture<any>[] = [
         ],
         output: ['b', 'a', 'a', 'c'],
         precedes: (from: string, to: string) =>
-            ({ b: ['a'], a: ['c'] }[from]?.includes(to) ?? false),
+            ({ b: ['a'], a: ['c'] })[from]?.includes(to) ?? false,
     },
     {
         description: 'cyclic error',
