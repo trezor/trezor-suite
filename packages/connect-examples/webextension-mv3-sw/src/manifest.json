@@ -1,0 +1,10 @@
+{
+    "name": "@trezor/connect web extension mv3 example",
+    "version": "1.0.0",
+    "manifest_version": 3,
+    "background": {
+        "service_worker": "serviceWorker.js"
+    },
+    "permissions": ["tabs", "notifications", "scripting", "activeTab"],
+    "host_permissions": ["http://*/*", "https://*/*"]
+}
