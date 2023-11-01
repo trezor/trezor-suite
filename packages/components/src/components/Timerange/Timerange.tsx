@@ -17,8 +17,8 @@ export type TimerangeSelection = {
     selection: Selection;
 };
 
-/* stylelint-disable no-descending-specificity */
 const datepickerStyle = css`
+    /* stylelint-disable */
     .rdrCalendarWrapper {
         box-sizing: border-box;
         display: inline-flex;
@@ -589,6 +589,7 @@ const Calendar = styled.div`
         background: ${({ theme }) => theme.BG_LIGHT_GREEN};
     }
 `;
+/* stylelint-enable */
 
 export interface TimerangeProps {
     onSubmit: (startDate: Date, endDate: Date) => any;

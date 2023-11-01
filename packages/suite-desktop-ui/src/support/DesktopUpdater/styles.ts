@@ -23,7 +23,7 @@ export const RightCol = styled.div`
 export const Divider = styled.div`
     width: 100%;
     height: 1px;
-    margin: 30px 0px;
+    margin: 30px 0;
     background: ${({ theme }) => theme.STROKE_GREY};
 `;
 

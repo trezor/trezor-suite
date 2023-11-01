@@ -6,15 +6,15 @@ import { H3, P, variables } from '@trezor/components';
 
 const Title = styled(H3)`
     font-size: 19px;
-    color: #333333;
+    color: #333;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 `;
 
 const StyledP = styled(P)`
     margin: 0 20%;
     font-size: 15px;
-    font-weight: ${variables.FONT_WEIGHT.LIGHT}
-    color: #757575
+    font-weight: ${variables.FONT_WEIGHT.LIGHT};
+    color: #757575;
 `;
 
 const Buttons = styled.div``;

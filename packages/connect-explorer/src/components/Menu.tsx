@@ -18,10 +18,11 @@ const Style = createGlobalStyle`
     position: relative;
     display: block;
     cursor: pointer;
-    padding: 6px 0px;
-    color: rgb(117, 117, 117);
+    padding: 6px 0;
+    color: rgb(117 117 117);
     border-color: @color_green;
     transition: color 0.3s;
+
     &.selected {
         color: @color_green;
     }
@@ -31,8 +32,9 @@ const Style = createGlobalStyle`
     cursor: pointer;
     padding: 10px 15px;
     transition: all 0.5s;
+
     &:hover {
-        background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%,rgba(255, 255, 255, 0.4) 100%);
+        background: linear-gradient(to right, rgb(255 255 255 / 0%) 0%,rgb(255 255 255 / 40%) 100%);
     }
 }
 
@@ -42,30 +44,31 @@ const Style = createGlobalStyle`
     padding-left: 16px;
 }
 
+.infinity-menu-display-tree-container .leaf-arrow {
+    line-height: 10px;
+    width: 10px;
+    height: 10px;
+    margin: 0 6px 0 0;
+    transition: all 1s;
+
+    svg {
+        vertical-align: top;
+        fill: currentcolor;
+    }
+}
+
 .infinity-menu-display-tree-container .leaf {
     display: flex;
     align-items: center;
     line-height: 18px;
-    padding: 4px 0px;
-    color: rgb(73, 73, 73);
+    padding: 4px 0;
+    color: rgb(73 73 73);
     cursor: pointer;
 
     &.selected {
         .leaf-arrow {
             transform: rotateZ(90deg);
         }
-    }
-}
-
-.infinity-menu-display-tree-container .leaf-arrow {
-    line-height: 10px;
-    width: 10px;
-    height: 10px;
-    margin: 0px 6px 0px 0px;
-    transition: all 1s;
-    svg {
-        vertical-align: top;
-        fill: currentcolor;
     }
 }
 `;

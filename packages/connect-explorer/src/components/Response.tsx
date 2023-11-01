@@ -23,8 +23,9 @@ const ClipboardButton = styled.div`
     position: absolute;
     top: 50px;
     right: 10px;
+
     svg {
-        padding: 0px;
+        padding: 0;
         width: 20px;
         height: 100%;
         fill: #000;
@@ -49,7 +50,7 @@ const CopyToClipboard = props => (
 const Container = styled.div`
     background: #fff;
     flex: 1;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 1px 2px rgb(0 0 0 / 15%);
     min-height: 400px;
     width: 100%;
     padding: 10px;
@@ -79,9 +80,9 @@ const MethodResultMenuItem = styled.div`
     padding: 10px 15px;
     cursor: pointer;
     border: 1px solid #eee;
-    border-bottom: 0px;
+    border-bottom: 0;
     z-index: 2;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 1px 2px rgb(0 0 0 / 15%);
 `;
 
 interface ResponseProps {

@@ -16,7 +16,7 @@ const GreenH2 = styled(H2)`
 `;
 
 const ChangelogWrapper = styled.div`
-    margin: 20px 0px;
+    margin: 20px 0;
     background: ${({ theme }) => theme.BG_GREY};
     border-radius: 8px;
     max-height: 400px;
@@ -39,12 +39,12 @@ const ChangelogWrapper = styled.div`
         margin-left: 36px; /* hacky way to add enough indentation so it is rendered right of an emoji in a section heading */
     }
 
-    li + li {
-        margin-top: 4px;
-    }
-
     li {
         line-height: 1.57;
+    }
+
+    li + li {
+        margin-top: 4px;
     }
 
     /*
@@ -55,6 +55,7 @@ const ChangelogWrapper = styled.div`
         cursor: pointer;
         text-decoration: underline;
         color: inherit;
+
         &:visited,
         &:active,
         &:hover {

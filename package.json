@@ -72,7 +72,7 @@
             "eslint --fix",
             "git add"
         ],
-        "packages/{suite}/**/*.{ts,tsx}": [
+        "packages/{suite,suite-web,suite-desktop-ui,connect-explorer,connect-popup,connect-ui}/**/*.{ts,tsx}": [
             "stylelint --fix",
             "git add"
         ]

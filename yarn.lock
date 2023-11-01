@@ -8843,6 +8843,8 @@ __metadata:
     redux-thunk: ^2.4.2
     rimraf: ^5.0.5
     styled-components: ^5.3.10
+    stylelint: ^15.11.0
+    stylelint-config-standard: ^34.0.0
     terser-webpack-plugin: ^5.3.9
     typescript: 4.9.5
     webpack: ^5.89.0
@@ -8938,6 +8940,8 @@ __metadata:
   peerDependencies:
     react: 18.2.0
     styled-components: ^5.3.10
+    stylelint: ^15.11.0
+    stylelint-config-standard: ^34.0.0
   languageName: unknown
   linkType: soft
 
@@ -8959,6 +8963,8 @@ __metadata:
   peerDependencies:
     react: 18.2.0
     styled-components: ^5.3.10
+    stylelint: ^15.11.0
+    stylelint-config-standard: ^34.0.0
   languageName: unknown
   linkType: soft
 
@@ -9377,6 +9383,8 @@ __metadata:
     react-redux: 8.0.7
     react-router-dom: ^5.2.0
     styled-components: ^5.3.10
+    stylelint: ^15.11.0
+    stylelint-config-standard: ^34.0.0
     typescript: 4.9.5
   languageName: unknown
   linkType: soft
@@ -9547,6 +9555,8 @@ __metadata:
     react-router-dom: ^5.2.0
     rimraf: ^5.0.5
     styled-components: ^5.3.10
+    stylelint: ^15.11.0
+    stylelint-config-standard: ^34.0.0
     tsx: ^3.12.7
     typescript: 4.9.5
     webpack: ^5.89.0

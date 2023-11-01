@@ -5,6 +5,7 @@
     "sideEffects": false,
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "lint:styles": "npx stylelint './src/**/*{.ts,.tsx}' --cache --config ../../.stylelintrc",
         "type-check": "tsc --build",
         "dev": "rimraf build && TS_NODE_PROJECT=\"tsconfig.json\" yarn webpack --config ./webpack/dev.webpack.config.ts",
         "build": "rimraf build && TS_NODE_PROJECT=\"tsconfig.json\" yarn webpack --config ./webpack/prod.webpack.config.ts",
@@ -45,6 +46,8 @@
     },
     "peerDependencies": {
         "react": "18.2.0",
-        "styled-components": "^5.3.10"
+        "styled-components": "^5.3.10",
+        "stylelint": "^15.11.0",
+        "stylelint-config-standard": "^34.0.0"
     }
 }
