@@ -7,6 +7,7 @@ import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import { FormatterProps } from '../types';
 import { EmptyAmountText } from './EmptyAmountText';
 import { AmountText } from './AmountText';
+import { formatNumberWithThousandCommas } from '../utils';
 
 type CryptoToFiatAmountFormatterProps = FormatterProps<string | null | number> &
     TextProps & {
@@ -33,7 +34,10 @@ export const CryptoAmountFormatter = ({
     const maxDisplayedDecimals = decimals ?? networks[network].decimals;
 
     const stringValue = G.isNumber(value) ? value.toString() : value;
-    const formattedValue = formatter.format(stringValue, {
+
+    const localizedValue = formatNumberWithThousandCommas(stringValue);
+
+    const formattedValue = formatter.format(localizedValue, {
         isBalance,
         maxDisplayedDecimals,
         symbol: network,
