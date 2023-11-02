@@ -86,7 +86,11 @@ export const ReceiveAccount = ({
             </HeaderedCard>
 
             {tokenContract && (
-                <AlertBox title="Your receive address is your Ethereum address." isIconVisible />
+                <AlertBox
+                    variant="info"
+                    title="Your receive address is your Ethereum address."
+                    isStandalone
+                />
             )}
 
             <HeaderedCard title="Address" style={applyStyle(receiveAddressCardStyle)}>

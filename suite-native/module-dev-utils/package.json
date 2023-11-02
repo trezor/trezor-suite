@@ -23,6 +23,7 @@
         "@suite-native/feature-flags": "workspace:*",
         "@suite-native/helpers": "workspace:*",
         "@suite-native/intl": "workspace:*",
+        "@suite-native/link": "workspace:*",
         "@suite-native/module-settings": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@suite-native/storage": "workspace:*",

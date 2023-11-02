@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { TextInput, View } from 'react-native';
 
+import { Link } from '@suite-native/link';
 import {
     Text,
     Box,
@@ -27,6 +28,7 @@ import {
     TextButtonVariant,
     Card,
     ListItemSkeleton,
+    AlertBox,
 } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Screen, ScreenSubHeader } from '@suite-native/navigation';
@@ -344,6 +346,33 @@ export const DemoScreen = () => {
                             value="firstSelectable"
                             isChecked={radioChecked === 'firstSelectable'}
                         />
+                    </Box>
+                    <Box marginTop="medium" marginBottom="medium">
+                        <Text>AlertBox:</Text>
+                        <VStack spacing="medium">
+                            <AlertBox variant="info" title="Info" isStandalone />
+                            <AlertBox variant="success" title="Success" isStandalone />
+                            <AlertBox variant="error" title="Error" isStandalone />
+                            <Box>
+                                <AlertBox variant="warning" title="Warning" isStandalone />
+                            </Box>
+                            <AlertBox
+                                variant="info"
+                                title={
+                                    <>
+                                        Info AlerBox with a longer text that does not fit one row
+                                        and it can also contain{' '}
+                                        <Link
+                                            href="https://trezor.io"
+                                            label="for example link"
+                                            isUnderlined
+                                            textColor="textDefault"
+                                        />
+                                    </>
+                                }
+                                isStandalone
+                            />
+                        </VStack>
                     </Box>
                     <Box marginTop="medium">
                         <Text variant="titleMedium">Icons</Text>

@@ -18,6 +18,7 @@ export const icons = {
     calendar: require('../assets/icons/calendar.svg'),
     change: require('../assets/icons/change.svg'),
     check: require('../assets/icons/check.svg'),
+    checkCircle: require('../assets/icons/checkCircle.svg'),
     chevronDown: require('../assets/icons/chevronDown.svg'),
     chevronLeft: require('../assets/icons/chevronLeft.svg'),
     chevronRight: require('../assets/icons/chevronRight.svg'),
