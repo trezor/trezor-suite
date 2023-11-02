@@ -6,7 +6,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "build:iframe": "TS_NODE_PROJECT=\"tsconfig.json\" yarn webpack --config ./webpack/prod.webpack.config.ts",
         "build:core-module": "TS_NODE_PROJECT=\"tsconfig.json\" yarn webpack --config ./webpack/core.webpack.config.ts",
-        "build": "rimraf build && yarn build:iframe",
+        "build": "rimraf build && yarn build:iframe && yarn build:core-module",
         "___NOTE__": "iframe build is one of the prerequisites of suite-web. build:lib script provides it together with other libraries",
         "build:lib": "yarn build",
         "type-check": "tsc --build tsconfig.json",

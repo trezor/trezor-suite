@@ -13,10 +13,15 @@ import {
     PopupInit,
     PopupHandshake,
     MethodResponseMessage,
+    CORE_EVENT,
+    IFrameCallMessage,
     IFrameLogRequest,
     CoreMessage,
 } from '@trezor/connect/lib/exports';
+import { initLog } from '@trezor/connect/lib/utils/debug';
+import type { Core } from '@trezor/connect/lib/core';
 import { config } from '@trezor/connect/lib/data/config';
+import { parseConnectSettings } from '@trezor/connect-iframe/src/connectSettings';
 
 import { reactEventBus } from '@trezor/connect-ui/src/utils/eventBus';
 import { ErrorViewProps } from '@trezor/connect-ui/src/views/Error';
@@ -33,9 +38,11 @@ import {
     showView,
 } from './view/common';
 import { isPhishingDomain } from './utils/isPhishingDomain';
-import { initSharedLogger } from './utils/debug';
+import { initSharedLogger, logWriterFactory } from './utils/debug';
 
-const log = initSharedLogger('./workers/shared-logger-worker.js');
+const logWriter = initSharedLogger('./workers/shared-logger-worker.js');
+
+const log = initLog('@trezor/connect-popup', true, logWriter);
 
 let handshakeTimeout: ReturnType<typeof setTimeout>;
 let renderConnectUIPromise: Promise<void> | undefined;
@@ -186,8 +193,21 @@ const handleInitMessage = (event: MessageEvent<PopupEvent | IFrameLogRequest>) =
     const { data } = event;
     if (!data) return;
 
+    // case of webextension which uses cross origin communication via content script
+    if (data.type === POPUP.CONTENT_SCRIPT_LOADED) {
+        log.debug('content-script loaded', data.payload);
+        setState({
+            settings: {
+                ...getState().settings!,
+                origin: data.payload.id,
+            },
+        });
+        reactEventBus.dispatch({ type: 'state-update', payload: getState() });
+        return;
+    }
+
     if (data.type === IFRAME.LOG) {
-        log.debug(data.payload);
+        logWriter.add(data.payload);
         return;
     }
 
@@ -252,6 +272,59 @@ const handleMessageInIframeMode = (
     handleUIAffectingMessage(message);
 };
 
+const handleMessageInCoreMode = (
+    event: MessageEvent<
+        | PopupEvent
+        | UiEvent
+        | IFrameLogRequest
+        | IFrameCallMessage
+        | (Omit<MethodResponseMessage, 'payload'> & { payload?: { error: string; code?: string } })
+    >,
+) => {
+    const { data } = event;
+
+    if (!data) return;
+
+    if (disposed) return;
+
+    if (data.type === IFRAME.LOG) {
+        logWriter.add(data.payload);
+        return;
+    }
+
+    if (data.type === POPUP.HANDSHAKE) {
+        handshake(data, getState().settings?.origin || '');
+        const core = ensureCore();
+        const transport = core.getTransportInfo();
+        setState({
+            ...data,
+            transport,
+        });
+        reactEventBus.dispatch({ type: 'state-update', payload: getState() });
+        return;
+    }
+
+    if (data.type === IFRAME.CALL) {
+        const core = ensureCore();
+        core.handleMessage(data);
+
+        core.getCurrentMethod().then(method => {
+            log.debug('handling method in popup', method.name);
+            (method.initAsyncPromise ? method.initAsyncPromise : Promise.resolve()).finally(() => {
+                setState({
+                    method: method.name,
+                    info: method.info,
+                });
+                reactEventBus.dispatch({ type: 'state-update', payload: getState() });
+            });
+        });
+    }
+
+    const message = parseMessage(data);
+
+    handleUIAffectingMessage(message);
+};
+
 // handle POPUP.INIT message from window.opener
 const init = async (payload: PopupInit['payload']) => {
     log.debug('popup init', payload);
@@ -275,11 +348,70 @@ const init = async (payload: PopupInit['payload']) => {
         await renderConnectUIPromise;
         log.debug('connect-ui rendered');
 
-        addWindowEventListener('message', handleMessageInIframeMode, false);
-        await initCoreInIframe(payload);
+        if (payload.useCore) {
+            addWindowEventListener('message', handleMessageInCoreMode, false);
+            await initCoreInPopup(payload);
+        } else {
+            addWindowEventListener('message', handleMessageInIframeMode, false);
+            await initCoreInIframe(payload);
+        }
     } catch (error) {
         postMessageToParent(createPopupMessage(POPUP.ERROR, { error: error.message }));
     }
+};
+
+const initCoreInPopup = async (payload: PopupInit['payload']) => {
+    // dynamically load core module
+    reactEventBus.dispatch({ type: 'loading', message: 'loading core' });
+
+    // core is built in a separate build step.
+    const { initCore, initTransport } = await import(
+        // @ts-expect-error
+        // eslint-disable-next-line import/extensions
+        /* webpackIgnore: true */ './js/core.js'
+    ).catch(_err => {
+        fail({
+            type: 'error',
+            detail: 'core-failed-to-load',
+        });
+    });
+
+    if (!initCore || !initTransport) {
+        return;
+    }
+    if (disposed) return;
+
+    // init core
+    log.debug('initiating core with settings: ', payload.settings);
+    reactEventBus.dispatch({ type: 'loading', message: 'initiating core' });
+    const core: Core = await initCore(
+        { ...payload.settings, trustedHost: false },
+        logWriterFactory,
+    );
+    if (disposed) return;
+    core.on(CORE_EVENT, event => {
+        const message = parseMessage(event);
+        handleUIAffectingMessage(message);
+
+        handleResponseEvent(message);
+    });
+    setState({ core });
+    log.debug('initiated core');
+
+    // init transport
+    log.debug('initiating transport with settings: ', payload.settings);
+    reactEventBus.dispatch({ type: 'loading', message: 'initiating transport' });
+    await initTransport(payload.settings);
+    if (disposed) return;
+    log.debug('initiated transport');
+
+    // done, in popup, we are ready to handle incoming messages
+    // todo: would it make sense to unify this with IFRAME.LOADED?
+    postMessageToParent(createPopupMessage(POPUP.CORE_LOADED));
+    reactEventBus.dispatch({
+        type: 'loading',
+        message: `waiting for handshake from from a 3rd party application`,
+    });
 };
 
 const initCoreInIframe = async (payload: PopupInit['payload']) => {
@@ -288,7 +420,7 @@ const initCoreInIframe = async (payload: PopupInit['payload']) => {
     // done, popup is ready to handle incoming messages, waiting for handshake from iframe
 };
 
-// handle POPUP.HANDSHAKE message from iframe
+// handle POPUP.HANDSHAKE message from iframe or npm-client
 const handshake = (handshake: PopupHandshake, origin: string) => {
     const { payload } = handshake;
     log.debug('handshake with origin: ', origin, 'payload: ', payload);
@@ -298,16 +430,34 @@ const handshake = (handshake: PopupHandshake, origin: string) => {
     clearTimeout(handshakeTimeout);
 
     // when this message comes from iframe, settings is already validated.
-    const trustedSettings = payload.settings;
+    // when there is no iframe, we must validate it here
+    const trustedSettings = parseConnectSettings(payload.settings, origin);
     setState({ settings: trustedSettings });
 
     if (isPhishingDomain(trustedSettings.origin || '')) {
         reactEventBus.dispatch({ type: 'phishing-domain' });
     }
 
-    reactEventBus.dispatch({ type: 'state-update', payload: getState() });
+    if (getState().core) {
+        const core = ensureCore();
+        core.handleMessage(handshake);
+    }
+    reactEventBus.dispatch({ type: 'state-update', payload: handshake.payload });
 
     log.debug('handshake done');
+};
+
+const ensureCore = () => {
+    const { core } = getState();
+    if (!core) {
+        fail({
+            type: 'error',
+            detail: 'core-missing',
+        });
+        throw new Error('connect core is missing');
+    }
+
+    return core;
 };
 
 // register onLoad event

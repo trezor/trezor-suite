@@ -167,17 +167,20 @@ export const initMessageChannelWithIframe = async (
 
 // this method can be used from anywhere
 export const postMessage = (message: CoreMessage) => {
-    const { broadcast, iframe } = getState();
+    const { broadcast, iframe, core } = getState();
+    if (core) {
+        core.handleMessage(message);
+        return;
+    }
     if (broadcast) {
         broadcast.postMessage(message);
         return;
     }
-
-    if (!iframe) {
-        throw ERRORS.TypedError('Popup_ConnectionMissing');
+    if (iframe) {
+        iframe.postMessage(message, window.location.origin);
+        return;
     }
-
-    iframe.postMessage(message, window.location.origin);
+    throw ERRORS.TypedError('Popup_ConnectionMissing');
 };
 
 export const postMessageToParent = (message: CoreMessage) => {
@@ -190,7 +193,15 @@ export const postMessageToParent = (message: CoreMessage) => {
 
         // and electron (electron which uses connect hosted outside)
         // https://github.com/electron/electron/issues/7228
-        window.postMessage(message, window.location.origin);
+        window.postMessage(
+            {
+                ...message,
+                channel: {
+                    here: '@trezor/connect-popup',
+                },
+            },
+            window.location.origin,
+        );
     }
 };
 

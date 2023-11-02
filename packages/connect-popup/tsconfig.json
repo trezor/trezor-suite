@@ -10,6 +10,7 @@
         { "path": "../connect" },
         { "path": "../connect-analytics" },
         { "path": "../connect-common" },
+        { "path": "../connect-iframe" },
         { "path": "../connect-ui" },
         { "path": "../crypto-utils" },
         { "path": "../device-utils" },

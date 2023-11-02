@@ -8,7 +8,8 @@
         "lint:styles": "npx stylelint './src/**/*{.ts,.tsx}' --cache --config ../../.stylelintrc",
         "type-check": "tsc --build",
         "dev": "rimraf build && TS_NODE_PROJECT=\"tsconfig.json\" yarn webpack --config ./webpack/dev.webpack.config.ts",
-        "build": "rimraf build && TS_NODE_PROJECT=\"tsconfig.json\" yarn webpack --config ./webpack/prod.webpack.config.ts",
+        "build:popup": "TS_NODE_PROJECT=\"tsconfig.json\" yarn webpack --config ./webpack/prod.webpack.config.ts",
+        "build": "rimraf build && yarn workspace @trezor/connect-popup build:popup",
         "test:e2e": "yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts",
         "test:unit": "jest"
     },
@@ -17,6 +18,7 @@
         "@trezor/connect": "workspace:*",
         "@trezor/connect-analytics": "workspace:*",
         "@trezor/connect-common": "workspace:*",
+        "@trezor/connect-iframe": "workspace:*",
         "@trezor/connect-ui": "workspace:*",
         "@trezor/crypto-utils": "workspace:*",
         "@trezor/device-utils": "workspace:*",
