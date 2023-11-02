@@ -32,6 +32,13 @@ const getExtensionPage = async () => {
         'build',
     );
 
+    const initialBrowserContext = await chromium.launchPersistentContext(
+        `/tmp/test-user-data-dir/${new Date().getTime()}`,
+    );
+    await initialBrowserContext.clearPermissions();
+    await initialBrowserContext.clearCookies();
+    await initialBrowserContext.close();
+
     const userDataDir = `/tmp/test-user-data-dir/${new Date().getTime()}`;
     const browserContext = await chromium.launchPersistentContext(userDataDir, {
         // https://playwright.dev/docs/chrome-extensions#headless-mode
@@ -47,6 +54,7 @@ const getExtensionPage = async () => {
     });
 
     await browserContext.clearCookies();
+    await browserContext.clearPermissions();
 
     const page = await browserContext.newPage();
 
@@ -130,4 +138,20 @@ export const setTrustedHost = async (explorerPage: Page, explorerUrl: string) =>
     await explorerPage.goto(`${explorerUrl}#/settings`);
     await waitAndClick(explorerPage, ['@checkbox/trustedHost']);
     await waitAndClick(explorerPage, ['@submit-button']);
+};
+
+export const waitForPopup = (
+    browserContext: BrowserContext | undefined,
+    explorerPage: Page,
+    isWebExtension: boolean,
+): Promise<Page[]> => {
+    const triggerPopup = [];
+
+    if (isWebExtension && browserContext) {
+        triggerPopup.push(browserContext.waitForEvent('page'));
+    } else {
+        triggerPopup.push(explorerPage.waitForEvent('popup'));
+    }
+
+    return Promise.all(triggerPopup) as Promise<Page[]>;
 };

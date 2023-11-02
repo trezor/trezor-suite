@@ -1,4 +1,4 @@
-import { test, expect, Page } from '@playwright/test';
+import { test, expect, Page, BrowserContext } from '@playwright/test';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { createDeferred, Deferred, addDashesToSpaces } from '@trezor/utils';
 import {
@@ -7,9 +7,13 @@ import {
     log,
     downloadLogs,
     checkHasLogs,
+    openPopup,
+    waitForPopup,
+    getContexts,
 } from '../support/helpers';
 
 const url = process.env.URL || 'http://localhost:8088/';
+const isWebExtension = process.env.IS_WEBEXTENSION === 'true';
 
 const WAIT_AFTER_TEST = 3000; // how long test should wait for more potential trezord requests
 
@@ -28,6 +32,9 @@ let releasePromise: Deferred<void> | undefined;
 let popup: Page;
 // let logPage: Page;
 let popupClosedPromise: Promise<undefined> | undefined;
+let browserContext: BrowserContext | undefined;
+let explorerPage: Page;
+let explorerUrl: string;
 
 test.beforeAll(async () => {
     await TrezorUserEnvLink.connect();
@@ -62,11 +69,18 @@ test.beforeAll(async () => {
         log('beforeEach', 'startBridge');
         await TrezorUserEnvLink.api.startBridge(bridgeVersion);
 
-        await page.goto(`${url}#/method/verifyMessage`);
-        await page.waitForSelector("button[data-test='@submit-button']", { state: 'visible' });
+        const contexts = await getContexts(page, url, isWebExtension);
+        browserContext = contexts.browserContext;
+        explorerPage = contexts.explorerPage;
+        explorerUrl = contexts.exploreUrl;
+
+        await explorerPage.goto(`${explorerUrl}#/method/verifyMessage`);
+        await explorerPage.waitForSelector("button[data-test='@submit-button']", {
+            state: 'visible',
+        });
 
         // Subscribe to 'request' and 'response' events.
-        page.on('request', request => {
+        explorerPage.on('request', request => {
             // ignore other than bridge requests
             if (!request.url().startsWith('http://127.0.0.1:21325')) {
                 return;
@@ -75,7 +89,7 @@ test.beforeAll(async () => {
         });
 
         let requestIndex = 0;
-        page.on('response', async response => {
+        explorerPage.on('response', async response => {
             // ignore other than bridge requests
             if (!response.url().startsWith('http://127.0.0.1:21325')) {
                 return;
@@ -92,36 +106,43 @@ test.beforeAll(async () => {
             });
         });
 
-        [popup] = await Promise.all([
-            page.waitForEvent('popup'),
-            page.click("button[data-test='@submit-button']"),
-        ]);
+        log('beforeEach', 'waiting for popup promise');
+        [popup] = await openPopup(browserContext, explorerPage, isWebExtension);
 
+        log('beforeEach', 'waiting for analytics confirm button');
         await popup.waitForSelector("button[data-test='@analytics/continue-button']", {
             state: 'visible',
             timeout: 40000,
         });
+        log('beforeEach', 'clicking on analytics confirm button');
         await popup.click("button[data-test='@analytics/continue-button']");
 
         popupClosedPromise = new Promise(resolve => {
             popup.on('close', () => resolve(undefined));
         });
 
+        log('beforeEach', 'waiting for popup load state');
         await popup.waitForLoadState('load');
 
+        log('beforeEach', 'waiting for permissions confirm button');
         await popup.waitForSelector('button.confirm', { state: 'visible', timeout: 40000 });
+        log('beforeEach', 'clicking on permissions confirm button');
         await popup.click('button.confirm');
+        log('beforeEach', 'waiting for selector .follow-device >> visible=true');
         await popup.waitForSelector('.follow-device >> visible=true');
     });
 
     // Finish verify message in afterEach. This is here to prove that after the first
     // failed attempt it is possible to retry successfully without any weird bug/race condition/edge-case
     // we are validating here this commit https://github.com/trezor/connect/commit/fc60c3c03d6e689f3de2d518cc51f62e649a20e2
-    test.afterEach(async ({ page, context }, testInfo) => {
+    test.afterEach(async ({ context: _context }, testInfo) => {
+        log('afterEach', 'starting');
+        const context = browserContext || _context;
         const logPage = await context.newPage();
         await logPage.goto(`${url}log.html`);
 
         const hasLogs = await checkHasLogs(logPage);
+        console.log('hasLogs', hasLogs);
         if (hasLogs) {
             log('afterEach', 'downloading logs');
             await downloadLogs(
@@ -138,13 +159,15 @@ test.beforeAll(async () => {
         );
         if (skipAfterFlow) return;
 
-        await page.goto(`${url}#/method/verifyMessage`);
-        await page.waitForSelector("button[data-test='@submit-button']", { state: 'visible' });
-        [popup] = await Promise.all([
-            page.waitForEvent('popup'),
-            page.click("button[data-test='@submit-button']"),
-        ]);
-
+        log('afterEach', 'go to verifyMessage');
+        await explorerPage.goto(`${explorerUrl}#/method/verifyMessage`);
+        log('afterEach', 'waiting for submit button');
+        await explorerPage.waitForSelector("button[data-test='@submit-button']", {
+            state: 'visible',
+        });
+        log('afterEach', 'waiting for popup open');
+        [popup] = await openPopup(context, explorerPage, isWebExtension);
+        log('afterEach', 'waiting for popup load state');
         await popup.waitForLoadState('load');
 
         await popup.waitForSelector('button.confirm', { state: 'visible', timeout: 40000 });
@@ -153,29 +176,40 @@ test.beforeAll(async () => {
         await TrezorUserEnvLink.send({ type: 'emulator-press-yes' });
         await TrezorUserEnvLink.send({ type: 'emulator-press-yes' });
         await TrezorUserEnvLink.send({ type: 'emulator-press-yes' });
-        await page.waitForSelector('text=Message verified');
-    });
-
-    test(`popup closed by user with bridge version ${bridgeVersion}`, async ({ page }) => {
-        // user closed popup
-        await popup.close();
-        await popupClosedPromise;
-        await page.waitForTimeout(WAIT_AFTER_TEST);
-
-        if (bridgeVersion === '2.0.31') {
-            expect(responses[12].url).toEqual('http://127.0.0.1:21325/post/2');
-            await page.waitForSelector('text=Method_Interrupted');
+        await explorerPage.waitForSelector('text=Message verified');
+        if (context) {
+            // BrowserContext has to start fresh each test.
+            // https://playwright.dev/docs/api/class-browsercontext#browser-context-close
+            await context.close();
+            await new Promise(resolve => setTimeout(resolve, 1000));
         }
     });
 
-    test(`device dialog canceled by user with bridge version ${bridgeVersion}`, async ({
-        page,
-    }) => {
+    test(`popup closed by user with bridge version ${bridgeVersion}`, async () => {
+        log(`test: ${test.info().title}`);
+
+        log('simulating user closed popup');
+        // user closed popup
+        await popup.close();
+        log('waiting for popup to be closed');
+        await popupClosedPromise;
+        await explorerPage.waitForTimeout(WAIT_AFTER_TEST);
+
+        if (bridgeVersion === '2.0.31') {
+            log('checking requests');
+            expect(responses[12].url).toEqual('http://127.0.0.1:21325/post/2');
+            await explorerPage.waitForSelector('text=Method_Interrupted');
+        }
+    });
+
+    test(`device dialog canceled by user with bridge version ${bridgeVersion}`, async () => {
+        log(`test: ${test.info().title}`);
+
         // user canceled dialog on device
         await TrezorUserEnvLink.send({ type: 'emulator-press-no' });
         await TrezorUserEnvLink.send({ type: 'emulator-press-yes' });
 
-        await page.waitForTimeout(WAIT_AFTER_TEST);
+        await explorerPage.waitForTimeout(WAIT_AFTER_TEST);
 
         responses.forEach(response => {
             expect(response.status).toEqual(200);
@@ -187,15 +221,14 @@ test.beforeAll(async () => {
         await releasePromise!.promise;
         await popupClosedPromise;
 
-        await page.waitForSelector('text=Failure_ActionCancelled');
+        await explorerPage.waitForSelector('text=Failure_ActionCancelled');
     });
 
-    test(`device disconnected during device interaction with bridge version ${bridgeVersion}`, async ({
-        page,
-    }) => {
+    test(`device disconnected during device interaction with bridge version ${bridgeVersion}`, async () => {
+        log(`test: ${test.info().title}`);
         // user canceled interaction on device
         await TrezorUserEnvLink.api.stopEmu();
-        await page.waitForTimeout(WAIT_AFTER_TEST);
+        await explorerPage.waitForTimeout(WAIT_AFTER_TEST);
 
         responses.forEach(response => {
             expect(response.url).not.toContain('post');
@@ -211,7 +244,7 @@ test.beforeAll(async () => {
         await releasePromise!.promise;
         await popupClosedPromise;
 
-        await page.waitForSelector('text=device disconnected during action');
+        await explorerPage.waitForSelector('text=device disconnected during action');
 
         await TrezorUserEnvLink.api.startEmu();
     });
@@ -248,13 +281,16 @@ test.beforeAll(async () => {
     // request: http://127.0.0.1:21325/call/3
     // response {"error":"closed device"}
     test.skip(`popup is reloaded by user. bridge version ${bridgeVersion}`, async () => {
+        log(`test: ${test.info().title}`);
         await popup.reload();
         // after popup is reload, communication is lost, there is only infinite loader
         await popup.waitForSelector('div[data-test="@connect-ui/loader"]');
         // todo: there is no message into client about the fact that popup was unloaded
     });
 
-    test('when user cancels permissions in popup it closes automatically', async ({ page }) => {
+    test('when user cancels permissions in popup it closes automatically', async () => {
+        log(`test: ${test.info().title}`);
+
         await TrezorUserEnvLink.api.pressYes();
         await TrezorUserEnvLink.api.pressYes();
         await TrezorUserEnvLink.api.pressYes();
@@ -265,13 +301,13 @@ test.beforeAll(async () => {
 
         await popupClosedPromise;
 
-        await page.goto(`${url}#/method/getAddress`);
-        await page.waitForSelector("button[data-test='@submit-button']", { state: 'visible' });
+        await explorerPage.goto(`${explorerUrl}#/method/getAddress`);
+        await explorerPage.waitForSelector("button[data-test='@submit-button']", {
+            state: 'visible',
+        });
 
-        [popup] = await Promise.all([
-            page.waitForEvent('popup'),
-            page.click("button[data-test='@submit-button']"),
-        ]);
+        log('waiting for popup open');
+        [popup] = await openPopup(browserContext, explorerPage, isWebExtension);
 
         popupClosedPromise = new Promise(resolve => {
             popup.on('close', () => resolve(undefined));
@@ -286,9 +322,9 @@ test.beforeAll(async () => {
         await popupClosedPromise;
     });
 
-    test('when user cancels Export Bitcoin address dialog in popup it closes automatically', async ({
-        page,
-    }) => {
+    test('when user cancels Export Bitcoin address dialog in popup it closes automatically', async () => {
+        log(`test: ${test.info().title}`);
+
         await TrezorUserEnvLink.api.pressYes();
         await TrezorUserEnvLink.api.pressYes();
         await TrezorUserEnvLink.api.pressYes();
@@ -299,12 +335,13 @@ test.beforeAll(async () => {
 
         await popupClosedPromise;
 
-        await page.goto(`${url}#/method/getAddress`);
-        await page.waitForSelector("button[data-test='@submit-button']", { state: 'visible' });
-        [popup] = await Promise.all([
-            page.waitForEvent('popup'),
-            page.click("button[data-test='@submit-button']"),
-        ]);
+        await explorerPage.goto(`${explorerUrl}#/method/getAddress`);
+        await explorerPage.waitForSelector("button[data-test='@submit-button']", {
+            state: 'visible',
+        });
+
+        log('waiting for popup open');
+        [popup] = await openPopup(browserContext, explorerPage, isWebExtension);
         popupClosedPromise = new Promise(resolve => {
             popup.on('close', () => resolve(undefined));
         });
@@ -320,10 +357,9 @@ test.beforeAll(async () => {
         await popupClosedPromise;
     });
 
-    test('popup should close and open new one when popup is in error state and user triggers new call', async ({
-        page,
-    }) => {
-        // user canceled interaction on device
+    test('popup should close and open new one when popup is in error state and user triggers new call', async () => {
+        log(`test: ${test.info().title}`);
+
         await TrezorUserEnvLink.api.pressNo();
         await TrezorUserEnvLink.api.pressYes();
 
@@ -332,24 +368,24 @@ test.beforeAll(async () => {
         // Error page is displayed.
         await findElementByDataTest(popup, '@connect-ui/error');
 
-        await waitAndClick(page, ['@submit-button']);
+        await waitAndClick(explorerPage, ['@submit-button']);
 
         // Currently open popup should be closed.
         await popupClosedPromise;
 
         // New popup should be opened. To handle the new request
-        [popup] = await Promise.all([page.waitForEvent('popup')]);
+        [popup] = await waitForPopup(browserContext, explorerPage, isWebExtension);
 
         // We cancel the request since we already tested what we wanted.
         await waitAndClick(popup, ['@permissions/cancel-button']);
         // Wait for popup to close.
         await popupClosedPromise;
-        await page.waitForSelector('text=Permissions not granted');
+        await explorerPage.waitForSelector('text=Permissions not granted');
     });
 
-    test('popup should be focused when a call is in progress and user triggers new call', async ({
-        page,
-    }) => {
+    test('popup should be focused when a call is in progress and user triggers new call', async () => {
+        log(`test: ${test.info().title}`);
+
         await TrezorUserEnvLink.api.pressYes();
         await TrezorUserEnvLink.api.pressYes();
         await TrezorUserEnvLink.api.pressYes();
@@ -360,12 +396,13 @@ test.beforeAll(async () => {
 
         await popupClosedPromise;
 
-        await page.goto(`${url}#/method/getAddress`);
-        await page.waitForSelector("button[data-test='@submit-button']", { state: 'visible' });
-        [popup] = await Promise.all([
-            page.waitForEvent('popup'),
-            page.click("button[data-test='@submit-button']"),
-        ]);
+        await explorerPage.goto(`${explorerUrl}#/method/getAddress`);
+        await explorerPage.waitForSelector("button[data-test='@submit-button']", {
+            state: 'visible',
+        });
+
+        log('waiting for popup open');
+        [popup] = await openPopup(browserContext, explorerPage, isWebExtension);
 
         popupClosedPromise = new Promise(resolve => {
             popup.on('close', () => resolve(undefined));
@@ -376,7 +413,7 @@ test.beforeAll(async () => {
         await waitAndClick(popup, ['@permissions/confirm-button']);
 
         // Click in 3rd party to trigger new call. But instead of new call it should focus on open popup.
-        await waitAndClick(page, ['@submit-button']);
+        await waitAndClick(explorerPage, ['@submit-button']);
 
         // Popup should keep its reference and state so we should be able to find confirm button for export-address.
         await waitAndClick(popup, ['@export-address/confirm-button']);
@@ -388,7 +425,9 @@ test.beforeAll(async () => {
         await popupClosedPromise;
     });
 
-    test('popup should close when third party is closed', async ({ page }) => {
+    test('popup should close when third party is closed', async () => {
+        log(`test: ${test.info().title}`);
+
         // We need to skip the after flow because this test closes 3rd party window and there is not window to continue with.
         test.info().annotations.push({ type: 'skip-after-flow' });
         await TrezorUserEnvLink.api.pressYes();
@@ -401,12 +440,13 @@ test.beforeAll(async () => {
 
         await popupClosedPromise;
 
-        await page.goto(`${url}#/method/getAddress`);
-        await page.waitForSelector("button[data-test='@submit-button']", { state: 'visible' });
-        [popup] = await Promise.all([
-            page.waitForEvent('popup'),
-            page.click("button[data-test='@submit-button']"),
-        ]);
+        await explorerPage.goto(`${explorerUrl}#/method/getAddress`);
+        await explorerPage.waitForSelector("button[data-test='@submit-button']", {
+            state: 'visible',
+        });
+        log('waiting for popup open');
+        [popup] = await openPopup(browserContext, explorerPage, isWebExtension);
+
         popupClosedPromise = new Promise(resolve => {
             popup.on('close', () => resolve(undefined));
         });
@@ -414,7 +454,7 @@ test.beforeAll(async () => {
         await waitAndClick(popup, ['@permissions/confirm-button']);
 
         // Closing page with 3rd party so we make sure that popup is closed automatically.
-        await page.close();
+        await explorerPage.close();
         // Wait for popup to close to consider the test successful.
         await popupClosedPromise;
     });
