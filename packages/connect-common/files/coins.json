@@ -2202,7 +2202,7 @@
             "blockchain_link": {
                 "type": "solana",
                 "url": [
-                    "floral-wider-aura.solana-mainnet.quiknode.pro/dbc557c5d503280fd160a157ccc25d96923bba44/"
+                    "wiser-green-owl.solana-mainnet.quiknode.pro/c218d0c9e451f6c5c0bf8b7c7d8e5a72384c9570/"
                 ]
             },
             "curve": "ed25519",
@@ -2363,7 +2363,7 @@
             "blockchain_link": {
                 "type": "solana",
                 "url": [
-                    "cool-spring-gadget.solana-testnet.quiknode.pro/2224f3bca76cdcad9232ddedfd0852b2cb200813/"
+                    "billowing-orbital-model.solana-devnet.quiknode.pro/3fee3e6bd1d751aca4afa5f494925c8643c88f42/"
                 ]
             },
             "curve": "ed25519",
