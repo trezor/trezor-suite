@@ -4709,12 +4709,12 @@ export default defineMessages({
     TR_SWITCH_FIRMWARE_NO_BACKUP: {
         id: 'TR_SWITCH_FIRMWARE_NO_BACKUP',
         defaultMessage:
-            "If you don't have your recovery seed, not even Trezor Support can help you recover your funds if your device is reset. If you have multiple recovery seeds, please make sure that you have the correct one ready and easily accessible to recover this specific Trezor device.",
+            'You may lose access to your coins on this wallet without a recovery seed. If you’re confident that this wallet is empty, you can proceed, but do so at your own risk.',
     },
     TR_SWITCH_FIRMWARE_NO_BACKUP_2: {
         id: 'TR_SWITCH_FIRMWARE_NO_BACKUP_2',
         defaultMessage:
-            'Before you continue, <button>check your backup in Settings</button>. This is an easy way to check and verify your recovery seed.',
+            'In all cases, we strongly recommend <button>creating a wallet backup in Settings</button>. With a wallet backup, your coins are safe and secure even if your Trezor is lost, damaged, or stolen.',
     },
     TR_IMPORTANT: {
         id: 'TR_IMPORTANT',
@@ -6122,7 +6122,7 @@ export default defineMessages({
     },
     TR_TAKES_N_MINUTES: {
         id: 'TR_TAKES_N_MINUTES',
-        defaultMessage: 'Takes <{n} mins',
+        defaultMessage: 'Takes ~20 mins',
     },
     TR_INPUTS_OUTPUTS: {
         id: 'TR_INPUTS_OUTPUTS',
@@ -7377,7 +7377,7 @@ export default defineMessages({
     },
     TR_DEVICE_AUTHENTICITY_ERROR: {
         id: 'TR_DEVICE_AUTHENTICITY_ERROR',
-        defaultMessage: "Device isn't genuine",
+        defaultMessage: "We can't authenticate your device",
     },
     TR_FEE_ROUNDING_WARNING: {
         id: 'TR_FEE_ROUNDING_WARNING',

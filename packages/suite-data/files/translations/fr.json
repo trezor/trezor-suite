@@ -1573,7 +1573,6 @@
   "TR_SUITE_STORAGE": "Stockage de l’application",
   "TR_SUITE_VERSION": "Version Suite",
   "TR_SWITCH_DEVICE": "Changer de dispositif",
-  "TR_SWITCH_FIRMWARE_TYPE_DESCRIPTION": "Le micrologiciel {bitcoinOnly} est une option légère pour les utilisateurs intéressés uniquement par Bitcoin. Le micrologiciel {regular} active tous les coins et toutes les fonctionnalités pris en charge. Voulez-vous changer de type de micrologiciel ?",
   "TR_SWITCH_TO_BITCOIN_ONLY": "Passer à {bitcoinOnly}",
   "TR_SWITCH_TO_BOOTLOADER_HOLD_BOTH_BUTTONS": "Appuyez sur les deux boutons et maintenez-les enfoncés tout en rebranchant le câble USB.",
   "TR_SWITCH_TO_BOOTLOADER_HOLD_LEFT_BUTTON": "Appuyez sur le bouton gauche et maintenez-le enfoncé tout en rebranchant le câble USB.",
