@@ -123,7 +123,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
                         );
                 }
             } else if (transportType instanceof Transport) {
-                this.transports.unshift(transportType);
+                this.transports.push(transportType);
             } else {
                 // runtime check
                 throw ERRORS.TypedError(
