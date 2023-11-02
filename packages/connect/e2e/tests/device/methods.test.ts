@@ -33,6 +33,7 @@ describe(`TrezorConnect methods`, () => {
 
                     await initTrezorConnect(controller);
                 } catch (error) {
+                    // eslint-disable-next-line no-console
                     console.log('Controller WS init error', error);
                 }
             }, 40000);

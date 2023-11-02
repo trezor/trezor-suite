@@ -37,7 +37,7 @@ module.exports = {
         '**/build-electron/*',
         '**/node_modules/*',
         'packages/suite-data/files/*',
-        'packages/transport/scripts/protobuf-patches/*',
+        'packages/protobuf/scripts/protobuf-patches/*',
     ],
     rules: {
         '@typescript-eslint/prefer-ts-expect-error': 'error',
@@ -185,7 +185,6 @@ module.exports = {
 
         // Variables
         // These rules have to do with variable declarations.
-        'no-catch-shadow': 'warn', // disallow the catch clause parameter name being the same as a variable in the outer scope (off by default in the node environment)
         'no-label-var': 'error', // disallow labels that share a name with a variable
         'no-shadow': 'off',
         '@typescript-eslint/no-shadow': [

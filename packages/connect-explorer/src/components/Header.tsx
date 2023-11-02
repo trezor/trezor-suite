@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/control-has-associated-label */
+
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import Devices from './Devices';
@@ -77,7 +79,6 @@ const Header = () => (
                         </g>
                     </Svg>
                 </a>
-
                 <Title>@trezor/connect</Title>
             </HeaderItemsPrimary>
             <HeaderItemsSecondary>

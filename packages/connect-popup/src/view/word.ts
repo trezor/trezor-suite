@@ -1,7 +1,5 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/popup/view/word.js
 
-/* eslint-disable no-loop-func */
-
 import { UI, createUiResponse, UiRequestDeviceAction } from '@trezor/connect';
 import { container, showView, postMessage } from './common';
 import { bip39 } from '@trezor/crypto-utils';
