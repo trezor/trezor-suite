@@ -1,13 +1,17 @@
 import type { TransportInfo } from '@trezor/connect';
+import { DefinedUnionMember } from '@trezor/type-utils';
+import { RouterState } from 'src/reducers/suite/routerReducer';
 import type { TrezorDevice, AppState } from 'src/types/suite';
 
-interface PrerequisitesInput {
+export const getPrerequisiteName = ({
+    router,
+    device,
+    transport,
+}: {
     router: AppState['router'];
     device?: TrezorDevice;
     transport?: Partial<TransportInfo>;
-}
-
-const getPrerequisiteName = ({ router, device, transport }: PrerequisitesInput) => {
+}) => {
     if (!router || router.app === 'unknown') return;
 
     // no transport available
@@ -50,7 +54,7 @@ const getPrerequisiteName = ({ router, device, transport }: PrerequisitesInput) 
     if (device.firmware === 'required') return 'firmware-required';
 };
 
-const getExcludedPrerequisites = (router: PrerequisitesInput['router']): PrerequisiteType[] => {
+export const getExcludedPrerequisites = (router: RouterState): PrerequisiteType[] => {
     if (router.app === 'settings') {
         return [
             'transport-bridge',
@@ -68,25 +72,5 @@ const getExcludedPrerequisites = (router: PrerequisitesInput['router']): Prerequ
     }
     return [];
 };
-
-/**
- * Returns information about reason that is blocking user from interacting with Suite
- */
-export const getPrerequisites = ({ router, device, transport }: PrerequisitesInput) => {
-    const excluded = getExcludedPrerequisites(router);
-
-    const prerequisite = getPrerequisiteName({ router, device, transport });
-
-    if (typeof prerequisite === 'undefined') return;
-
-    if (excluded.includes(prerequisite)) {
-        return;
-    }
-
-    return prerequisite;
-};
-
-// distributive conditional types to the rescue! This way we can infer union literal type from ReturnType but exclude undefined
-type DefinedUnionMember<T> = T extends string ? T : never;
 
 export type PrerequisiteType = DefinedUnionMember<ReturnType<typeof getPrerequisiteName>>;

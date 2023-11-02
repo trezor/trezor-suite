@@ -1,6 +1,6 @@
 import produce from 'immer';
 
-import { discoveryActions } from '@suite-common/wallet-core';
+import { discoveryActions, DeviceRootState, selectDevice } from '@suite-common/wallet-core';
 import type { InvityServerEnvironment } from '@suite-common/invity';
 import { getNumberFromPixelString, versionUtils } from '@trezor/utils';
 import { isWeb, getWindowWidth } from '@trezor/env-utils';
@@ -14,6 +14,8 @@ import { ensureLocale } from 'src/utils/suite/l10n';
 import type { Locale } from 'src/config/suite/languages';
 import { SUITE, STORAGE } from 'src/actions/suite/constants';
 import { Action, Lock, TorBootstrap, TorStatus } from 'src/types/suite';
+import { getExcludedPrerequisites, getPrerequisiteName } from 'src/utils/suite/prerequisites';
+import { RouterRootState, selectRouter } from './routerReducer';
 
 export interface SuiteRootState {
     suite: SuiteState;
@@ -276,5 +278,22 @@ export const selectIsActionAbortable = (state: SuiteRootState) =>
     state.suite.transport?.type === 'BridgeTransport'
         ? versionUtils.isNewerOrEqual(state.suite.transport?.version as string, '2.0.31')
         : true; // WebUSB
+
+export const selectPrerequisite = (state: SuiteRootState & RouterRootState & DeviceRootState) => {
+    const { transport } = state.suite;
+    const device = selectDevice(state);
+    const router = selectRouter(state);
+
+    const excluded = getExcludedPrerequisites(router);
+    const prerequisite = getPrerequisiteName({ router, device, transport });
+
+    if (prerequisite === undefined) return;
+
+    if (excluded.includes(prerequisite)) {
+        return;
+    }
+
+    return prerequisite;
+};
 
 export default suiteReducer;

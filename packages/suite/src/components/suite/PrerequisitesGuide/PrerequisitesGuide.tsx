@@ -10,7 +10,6 @@ import { selectDevicesCount, selectDevice } from '@suite-common/wallet-core';
 import { ConnectDevicePrompt } from 'src/components/suite';
 import { isWebUsb } from 'src/utils/suite/transport';
 import { useSelector } from 'src/hooks/suite';
-import type { PrerequisiteType } from 'src/types/suite';
 
 import { Transport } from './Transport';
 import { DeviceConnect } from './DeviceConnect';
@@ -24,6 +23,7 @@ import { DeviceBootloader } from './DeviceBootloader';
 import { DeviceNoFirmware } from './DeviceNoFirmware';
 import { DeviceUpdateRequired } from './DeviceUpdateRequired';
 import { DeviceDisconnectRequired } from './DeviceDisconnectRequired';
+import { selectPrerequisite } from 'src/reducers/suite/suiteReducer';
 
 const Wrapper = styled.div<{ padded?: boolean }>`
     display: flex;
@@ -40,18 +40,15 @@ const TipsContainer = styled(motion.div)`
 `;
 
 interface PrerequisitesGuideProps {
-    prerequisite: PrerequisiteType;
     allowSwitchDevice?: boolean;
 }
 
 // PrerequisitesGuide is a shared component used in Preloader and Onboarding
-export const PrerequisitesGuide = ({
-    prerequisite,
-    allowSwitchDevice,
-}: PrerequisitesGuideProps) => {
+export const PrerequisitesGuide = ({ allowSwitchDevice }: PrerequisitesGuideProps) => {
     const device = useSelector(selectDevice);
     const devices = useSelector(selectDevicesCount);
     const transport = useSelector(state => state.suite.transport);
+    const prerequisite = useSelector(selectPrerequisite);
 
     const isWebUsbTransport = isWebUsb(transport);
 

@@ -1,8 +1,7 @@
 import { useEffect } from 'react';
 
-import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { Onboarding } from 'src/views/onboarding';
-import { getPrerequisites } from 'src/utils/suite/prerequisites';
 import { ErrorPage } from 'src/views/suite/ErrorPage';
 import { useGuideKeyboard } from 'src/hooks/guide';
 import { init } from 'src/actions/suite/initAction';
@@ -11,6 +10,7 @@ import { SuiteLayout } from './SuiteLayout/SuiteLayout';
 import { InitialLoading } from './InitialLoading';
 import { DatabaseUpgradeModal } from './DatabaseUpgradeModal';
 import { PrerequisiteScreen } from './PrerequisiteScreen';
+import { selectPrerequisite } from 'src/reducers/suite/suiteReducer';
 
 const getFullscreenApp = (route: AppState['router']['route']) => {
     switch (route?.app) {
@@ -31,9 +31,9 @@ export const Preloader = ({ children }: PreloaderProps) => {
     const lifecycle = useSelector(state => state.suite.lifecycle);
     const transport = useSelector(state => state.suite.transport);
     const router = useSelector(state => state.router);
-    const dispatch = useDispatch();
+    const prerequisite = useSelector(selectPrerequisite);
 
-    const { device } = useDiscovery();
+    const dispatch = useDispatch();
 
     useEffect(() => {
         dispatch(init());
@@ -50,12 +50,9 @@ export const Preloader = ({ children }: PreloaderProps) => {
         return <DatabaseUpgradeModal variant={lifecycle.error} />;
     }
 
-    // check prerequisites for requested app
-    const prerequisite = getPrerequisites({ router, transport, device });
-
     const FullscreenApp = getFullscreenApp(router.route);
     if (FullscreenApp) {
-        return <FullscreenApp prerequisite={prerequisite} />;
+        return <FullscreenApp />;
     }
 
     if (router.route?.isForegroundApp) {
@@ -70,7 +67,7 @@ export const Preloader = ({ children }: PreloaderProps) => {
 
     // display prerequisite for regular application as page view
     if (prerequisite) {
-        return <PrerequisiteScreen prerequisite={prerequisite} />;
+        return <PrerequisiteScreen />;
     }
 
     // route does not exist, display error page in fullscreen mode
