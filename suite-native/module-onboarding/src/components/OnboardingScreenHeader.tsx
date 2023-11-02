@@ -31,6 +31,7 @@ export const OnboardingScreenHeader = ({
     const { applyStyle } = useNativeStyles();
 
     const { isUsbDeviceConnectFeatureEnabled } = useIsUsbDeviceConnectFeatureEnabled();
+
     return (
         <Box alignItems="center" style={applyStyle(wrapperStyle)} alignSelf="center">
             <Box marginBottom="extraLarge">

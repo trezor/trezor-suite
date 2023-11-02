@@ -33,12 +33,13 @@ export const selectDeviceThunk = createThunk(
     (device: Device | TrezorDevice | undefined, { dispatch, getState }) => {
         let payload: TrezorDevice | typeof undefined;
         const devices = selectDevices(getState());
+
         if (device) {
             // "ts" is one of the field which distinguish Device from TrezorDevice
-            const { ts } = device as TrezorDevice;
-            if (typeof ts === 'number') {
+            // (device from connect doesn't have timestampp but suite device has)
+            if ('ts' in device) {
                 // requested device is a @suite TrezorDevice type. get exact instance from reducer
-                payload = getSelectedDevice(device as TrezorDevice, devices);
+                payload = getSelectedDevice(device, devices);
             } else {
                 // requested device is a @trezor/connect Device type
                 // find all instances and select recently used

@@ -15,7 +15,7 @@ export const portfolioTrackerDevice: TrezorDevice = {
     mode: 'normal',
     state: PORTFOLIO_TRACKER_DEVICE_STATE,
     label: 'Portfolio tracker device with imported accounts',
-    path: '1',
+    path: 'imported-1',
     firmware: 'valid',
     name: 'Trezor Model T',
     features: {

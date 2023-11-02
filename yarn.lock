@@ -7603,6 +7603,7 @@ __metadata:
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-native/alerts": "workspace:*"
+    "@suite-native/feature-flags": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@trezor/connect": "workspace:*"
@@ -7652,10 +7653,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/feature-flags@workspace:suite-native/feature-flags"
   dependencies:
+    "@reduxjs/toolkit": 1.9.5
     "@suite-native/config": "workspace:*"
-    "@suite-native/storage": "workspace:*"
-    jotai: 1.9.1
     react-native: 0.71.8
+    react-redux: 8.0.7
   languageName: unknown
   linkType: soft
 
@@ -8235,6 +8236,7 @@ __metadata:
     "@suite-native/config": "workspace:*"
     "@suite-native/device": "workspace:*"
     "@suite-native/discovery": "workspace:*"
+    "@suite-native/feature-flags": "workspace:*"
     "@suite-native/fiat-rates": "workspace:*"
     "@suite-native/graph": "workspace:*"
     "@suite-native/logger": "workspace:*"

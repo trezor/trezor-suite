@@ -21,6 +21,7 @@
         "@suite-native/config": "workspace:*",
         "@suite-native/device": "workspace:*",
         "@suite-native/discovery": "workspace:*",
+        "@suite-native/feature-flags": "workspace:*",
         "@suite-native/fiat-rates": "workspace:*",
         "@suite-native/graph": "workspace:*",
         "@suite-native/logger": "workspace:*",

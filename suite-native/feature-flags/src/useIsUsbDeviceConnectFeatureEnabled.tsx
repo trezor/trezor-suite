@@ -1,22 +1,21 @@
-import { Platform } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { useAtom } from 'jotai';
-
-import { atomWithUnecryptedStorage } from '@suite-native/storage';
-import { isDevelopOrDebugEnv } from '@suite-native/config';
-
-const isDeviceConnectEnabledAtom = atomWithUnecryptedStorage<boolean>(
-    'isDeviceConnectEnabledAtom',
-    Platform.OS === 'android' && isDevelopOrDebugEnv(),
-);
+import {
+    selectIsDeviceConnectFeatureFlagEnabled,
+    toggleIsDeviceConnectEnabled,
+} from './featureFlagsSlice';
 
 export const useIsUsbDeviceConnectFeatureEnabled = () => {
-    const [isUsbDeviceConnectFeatureEnabled, setIsUsbDeviceConnectFeatureEnabled] = useAtom(
-        isDeviceConnectEnabledAtom,
-    );
+    const dispatch = useDispatch();
+
+    const isUsbDeviceConnectFeatureEnabled = useSelector(selectIsDeviceConnectFeatureFlagEnabled);
+
+    const toggleIsDeviceConnectFeatureFlagEnabled = () => {
+        dispatch(toggleIsDeviceConnectEnabled());
+    };
 
     return {
         isUsbDeviceConnectFeatureEnabled,
-        setIsUsbDeviceConnectFeatureEnabled,
+        toggleIsDeviceConnectFeatureFlagEnabled,
     };
 };

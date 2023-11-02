@@ -6,12 +6,11 @@ import {
     authorizeDevice,
     deviceActions,
     forgetDisconnectedDevices,
-    handleDeviceConnect,
     handleDeviceDisconnect,
     observeSelectedDevice,
-    PORTFOLIO_TRACKER_DEVICE_ID,
     selectDeviceThunk,
 } from '@suite-common/wallet-core';
+import { selectIsDeviceConnectFeatureFlagEnabled } from '@suite-native/feature-flags';
 
 const isActionDeviceRelated = (action: AnyAction): boolean => {
     if (
@@ -29,13 +28,11 @@ const isActionDeviceRelated = (action: AnyAction): boolean => {
         return true;
     }
 
-    if (Object.values(DEVICE).includes(action.type)) return true;
-
-    return false;
+    return Object.values(DEVICE).includes(action.type);
 };
 
 export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
-    (action, { dispatch, next }) => {
+    (action, { dispatch, next, getState }) => {
         if (action.type === DEVICE.DISCONNECT) {
             dispatch(forgetDisconnectedDevices(action.payload));
         }
@@ -44,10 +41,7 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
          expect that the state was already changed by the action stored in the `action` variable. */
         next(action);
 
-        if (
-            deviceActions.createDeviceInstance.match(action) &&
-            action.payload.id !== PORTFOLIO_TRACKER_DEVICE_ID
-        ) {
+        if (deviceActions.createDeviceInstance.match(action)) {
             dispatch(selectDeviceThunk(action.payload));
         }
 
@@ -63,10 +57,16 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
             dispatch(handleDeviceDisconnect(action.payload));
         }
 
+        const isUsbDeviceConnectFeatureEnabled = selectIsDeviceConnectFeatureFlagEnabled(
+            getState(),
+        );
+
         switch (action.type) {
             case DEVICE.CONNECT:
             case DEVICE.CONNECT_UNACQUIRED:
-                dispatch(handleDeviceConnect(action.payload));
+                if (isUsbDeviceConnectFeatureEnabled) {
+                    dispatch(selectDeviceThunk(action.payload));
+                }
                 break;
             case DEVICE.DISCONNECT:
                 dispatch(handleDeviceDisconnect(action.payload));
