@@ -55,3 +55,6 @@ export type Timeout = ReturnType<typeof setTimeout>;
 export type PartialRecord<K extends keyof any, T> = {
     [P in K]?: T;
 };
+
+// distributive conditional types to the rescue! This way we can infer union literal type from ReturnType but exclude undefined
+export type DefinedUnionMember<T> = T extends string ? T : never;

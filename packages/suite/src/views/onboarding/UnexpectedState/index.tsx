@@ -5,10 +5,10 @@ import styled from 'styled-components';
 import { selectDevice } from '@suite-common/wallet-core';
 
 import { PinMatrix, PrerequisitesGuide, Translation } from 'src/components/suite';
-import { PrerequisiteType } from 'src/types/suite';
 import { useOnboarding, useSelector } from 'src/hooks/suite';
 import { OnboardingStepBox } from 'src/components/onboarding';
 import steps from 'src/config/onboarding/steps';
+import { selectPrerequisite } from 'src/reducers/suite/suiteReducer';
 
 import IsSameDevice from './components/IsSameDevice';
 
@@ -20,15 +20,17 @@ const Wrapper = styled.div`
 
 interface UnexpectedStateProps {
     children: JSX.Element;
-    prerequisite?: PrerequisiteType;
 }
 
 /**
  * This component handles unexpected device states across various steps in the onboarding.
  */
-const UnexpectedState = ({ children, prerequisite }: UnexpectedStateProps) => {
+const UnexpectedState = ({ children }: UnexpectedStateProps) => {
     const device = useSelector(selectDevice);
+    const prerequisite = useSelector(selectPrerequisite);
+
     const { prevDevice, activeStepId, showPinMatrix } = useOnboarding();
+
     const activeStep = steps.find(s => s.id === activeStepId);
 
     const isNotSameDevice = useMemo(() => {
@@ -56,7 +58,7 @@ const UnexpectedState = ({ children, prerequisite }: UnexpectedStateProps) => {
 
         // otherwise handle common prerequisite which are determined and passed as prop from Preloader component
         if (prerequisite && activeStep?.prerequisites?.includes(prerequisite)) {
-            return <PrerequisitesGuide prerequisite={prerequisite} />;
+            return <PrerequisitesGuide />;
         }
     }, [activeStep, prerequisite, isNotSameDevice]);
 

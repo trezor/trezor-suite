@@ -17,14 +17,9 @@ import UnexpectedState from 'src/views/onboarding/UnexpectedState';
 import { useOnboarding, useFilteredModal } from 'src/hooks/suite';
 import { MODAL } from 'src/actions/suite/constants';
 import * as STEP from 'src/constants/onboarding/steps';
-import type { PrerequisiteType } from 'src/types/suite';
 import { DeviceTutorial } from './steps/DeviceTutorial';
 
-type OnboardingProps = {
-    prerequisite?: PrerequisiteType;
-};
-
-export const Onboarding = ({ prerequisite }: OnboardingProps) => {
+export const Onboarding = () => {
     const { activeStepId } = useOnboarding();
 
     const [StepComponent, LayoutComponent] = useMemo(() => {
@@ -78,7 +73,8 @@ export const Onboarding = ({ prerequisite }: OnboardingProps) => {
     return (
         <LayoutComponent>
             {allowedModal && <ReduxModal {...allowedModal} />}
-            <UnexpectedState prerequisite={prerequisite}>
+
+            <UnexpectedState>
                 <StepComponent />
             </UnexpectedState>
         </LayoutComponent>

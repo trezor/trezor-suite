@@ -1,12 +1,7 @@
 import { WelcomeLayout, PrerequisitesGuide } from 'src/components/suite';
-import type { PrerequisiteType } from 'src/types/suite';
 
-interface PrerequisiteScreenProps {
-    prerequisite: PrerequisiteType;
-}
-
-export const PrerequisiteScreen = ({ prerequisite }: PrerequisiteScreenProps) => (
+export const PrerequisiteScreen = () => (
     <WelcomeLayout>
-        <PrerequisitesGuide prerequisite={prerequisite} allowSwitchDevice />
+        <PrerequisitesGuide allowSwitchDevice />
     </WelcomeLayout>
 );
