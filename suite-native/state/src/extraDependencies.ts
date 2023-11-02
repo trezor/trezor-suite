@@ -1,5 +1,7 @@
 import { Platform } from 'react-native';
 
+import * as Device from 'expo-device';
+
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { extraDependenciesMock } from '@suite-common/test-utils';
 import { supportedNetworkSymbols } from '@suite-native/config';
@@ -11,16 +13,21 @@ import { NativeUsbTransport } from '@trezor/transport-native';
 
 const protobufMessages = require('@trezor/protobuf/messages.json');
 
-const transports = Platform.select({
-    ios: ['BridgeTransport', 'UdpTransport'],
-    android: [
-        'BridgeTransport',
-        'UdpTransport',
-        new NativeUsbTransport({
-            messages: protobufMessages,
-        }),
-    ],
-});
+const deviceType = Device.isDevice ? 'device' : 'emulator';
+
+const transportsPerDeviceType = {
+    device: Platform.select({
+        ios: ['BridgeTransport', 'UdpTransport'],
+        android: [
+            new NativeUsbTransport({
+                messages: protobufMessages,
+            }),
+        ],
+    }),
+    emulator: ['BridgeTransport', 'UdpTransport'],
+} as const;
+
+const transports = transportsPerDeviceType[deviceType];
 
 export const extraDependencies: ExtraDependencies = mergeDeepObject(extraDependenciesMock, {
     selectors: {

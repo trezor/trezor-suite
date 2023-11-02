@@ -8246,6 +8246,7 @@ __metadata:
     "@trezor/protobuf": "workspace:*"
     "@trezor/transport-native": "workspace:*"
     "@trezor/utils": "workspace:*"
+    expo-device: 5.6.0
     react: 18.2.0
     react-native: 0.71.7
     react-redux: 8.0.7
@@ -18674,6 +18675,17 @@ __metadata:
   peerDependencies:
     expo: "*"
   checksum: 647fda433b302780eae453a6dc58ea6da4aed42753729b04fd3ecaca277cc1979a67cfeaea2c6a60b82ca5d79f139b08b94576986264a1f13b0ef1bfc2911d01
+  languageName: node
+  linkType: hard
+
+"expo-device@npm:5.6.0":
+  version: 5.6.0
+  resolution: "expo-device@npm:5.6.0"
+  dependencies:
+    ua-parser-js: ^0.7.33
+  peerDependencies:
+    expo: "*"
+  checksum: d30bf016da78bc5f5d163e9583fb3199d273a33bce800f7b3d28212925f08be5a9dd89df3d19fe4449ebfa31c12fe3dd7b7b2270bf302abcce9e0da52f2ca639
   languageName: node
   linkType: hard
 
@@ -34065,6 +34077,13 @@ __metadata:
   version: 0.7.31
   resolution: "ua-parser-js@npm:0.7.31"
   checksum: e2f8324a83d1715601576af85b2b6c03890699aaa7272950fc77ea925c70c5e4f75060ae147dc92124e49f7f0e3d6dd2b0a91e7f40d267e92df8894be967ba8b
+  languageName: node
+  linkType: hard
+
+"ua-parser-js@npm:^0.7.33":
+  version: 0.7.37
+  resolution: "ua-parser-js@npm:0.7.37"
+  checksum: 9e91a66171aa16c74680cfac84af6ed7ecdeb508ff7c90a55222f56c63172da2d98d2478763e9469c940415fe29c45a56ae51fec1c19a498e7a3b293f7b3b874
   languageName: node
   linkType: hard
 
