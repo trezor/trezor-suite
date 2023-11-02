@@ -12,12 +12,13 @@ import { NativeUsbTransport } from '@trezor/transport-native';
 const protobufMessages = require('@trezor/protobuf/messages.json');
 
 const transports = Platform.select({
-    ios: ['UdpTransport'],
+    ios: ['BridgeTransport', 'UdpTransport'],
     android: [
+        'BridgeTransport',
+        'UdpTransport',
         new NativeUsbTransport({
             messages: protobufMessages,
         }),
-        'UdpTransport',
     ],
 });
 
