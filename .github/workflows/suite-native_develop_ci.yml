@@ -73,6 +73,7 @@ jobs:
             suite-native/app/android/**/*.apk
 
   maestro_tests:
+    needs: android_develop
     runs-on: ubuntu-latest
     environment: develop
     timeout-minutes: 45
