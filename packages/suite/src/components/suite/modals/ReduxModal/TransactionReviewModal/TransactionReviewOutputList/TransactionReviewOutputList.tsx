@@ -96,6 +96,7 @@ export const TransactionReviewOutputList = ({
     isRbfAction,
 }: TransactionReviewOutputListProps) => {
     const dispatch = useDispatch();
+    const { networkType } = account;
 
     const { symbol } = account;
     const { options, selectedFee, isCoinControlEnabled, hasCoinControlBeenOpened } =
@@ -185,14 +186,16 @@ export const TransactionReviewOutputList = ({
                             );
                         })}
 
-                        <TransactionReviewTotalOutput
-                            ref={totalRef}
-                            account={account}
-                            signedTx={signedTx}
-                            outputs={outputs}
-                            buttonRequestsCount={buttonRequestsCount}
-                            precomposedTx={precomposedTx}
-                        />
+                        {!(isRbfAction && networkType === 'bitcoin') && (
+                            <TransactionReviewTotalOutput
+                                ref={totalRef}
+                                account={account}
+                                signedTx={signedTx}
+                                outputs={outputs}
+                                buttonRequestsCount={buttonRequestsCount}
+                                precomposedTx={precomposedTx}
+                            />
+                        )}
                     </RightTopInner>
                 </RightTop>
                 <RightBottom>
