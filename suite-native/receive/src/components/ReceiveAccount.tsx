@@ -2,116 +2,54 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { G } from '@mobily/ts-belt';
-import { useNavigation } from '@react-navigation/native';
 
-import {
-    AlertBox,
-    Box,
-    Button,
-    ErrorMessage,
-    HeaderedCard,
-    TextButton,
-    VStack,
-} from '@suite-native/atoms';
-import { AccountListItem } from '@suite-native/accounts';
+import { ErrorMessage, VStack, Box } from '@suite-native/atoms';
 import { analytics, EventType } from '@suite-native/analytics';
 import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { useOpenLink } from '@suite-native/link';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { TokenReceiveCard } from './TokenReceiveCard';
-import { ReceiveAddress } from './ReceiveAddress';
-import { ReceiveTextHint } from './ReceiveTextHint';
+import { useAccountReceiveAddress } from '../hooks/useAccountReceiveAddress';
+import { ConfirmOnTrezorImage } from './ConfirmOnTrezorImage';
+import { ReceiveAddressCard } from './ReceiveAddressCard';
+import { ReceiveAccountDetailsCard } from './ReceiveAccountDetailsCard';
 
 type AccountReceiveProps = {
     accountKey: AccountKey;
     tokenContract?: TokenAddress;
-    isAccountChangeAllowed?: boolean;
 };
 
-const receiveAddressCardStyle = prepareNativeStyle(utils => ({
-    minHeight: 440,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: utils.spacings.extraLarge,
-}));
-
-export const ReceiveAccount = ({
-    accountKey,
-    tokenContract,
-    isAccountChangeAllowed = true,
-}: AccountReceiveProps) => {
-    const [isAddressVisible, setIsAddressVisible] = useState(false);
-    const { applyStyle } = useNativeStyles();
-    const navigation = useNavigation();
-    const openLink = useOpenLink();
-
+export const ReceiveAccount = ({ accountKey, tokenContract }: AccountReceiveProps) => {
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
 
-    if (G.isNullable(account))
-        return <ErrorMessage errorMessage={`Account ${accountKey} not found.`} />;
+    const { address, isReceiveApproved, isUnverifiedAddressRevealed, handleShowAddress } =
+        useAccountReceiveAddress(accountKey);
 
-    const handleShowAddress = () => {
-        analytics.report({
-            type: EventType.CreateReceiveAddressShowAddress,
-            payload: { assetSymbol: account.symbol },
-        });
-        setIsAddressVisible(true);
-    };
+    const isAccountDetailVisible = !isUnverifiedAddressRevealed && !isReceiveApproved;
 
-    const handleGoBack = () => {
-        navigation.goBack();
-    };
-
-    const handleOpenEduLink = () => {
-        openLink('https://trezor.io/learn/a/verifying-trezor-suite-lite-addresses');
-    };
+    if (G.isNullable(account) || G.isNullable(address))
+        return <ErrorMessage errorMessage="Something went wrong" />;
 
     return (
-        <VStack spacing="medium">
-            <HeaderedCard
-                title="Receive To"
-                buttonIcon="discover"
-                buttonTitle={isAccountChangeAllowed ? 'Change' : ''}
-                onButtonPress={handleGoBack}
-            >
-                {tokenContract ? (
-                    <TokenReceiveCard contract={tokenContract} accountKey={accountKey} />
-                ) : (
-                    <AccountListItem account={account} />
+        <Box flex={1}>
+            <VStack spacing={12}>
+                {isAccountDetailVisible && (
+                    <ReceiveAccountDetailsCard
+                        accountKey={accountKey}
+                        tokenContract={tokenContract}
+                    />
                 )}
-            </HeaderedCard>
-
-            {tokenContract && (
-                <AlertBox
-                    variant="info"
-                    title="Your receive address is your Ethereum address."
-                    isStandalone
+                {/* TODO: AlertBox message */}
+                <ReceiveAddressCard
+                    address={address}
+                    isReceiveApproved={isReceiveApproved}
+                    isUnverifiedAddressRevealed={isUnverifiedAddressRevealed}
+                    onShowAddress={handleShowAddress}
                 />
-            )}
+            </VStack>
 
-            <HeaderedCard title="Address" style={applyStyle(receiveAddressCardStyle)}>
-                {isAddressVisible ? (
-                    <ReceiveAddress accountKey={accountKey} backgroundElevation="1" />
-                ) : (
-                    <ReceiveTextHint />
-                )}
-            </HeaderedCard>
-
-            <TextButton size="small" onPress={handleOpenEduLink} iconRight="arrowUpRight">
-                Learn more about verifying addresses
-            </TextButton>
-
-            {!isAddressVisible && (
-                <Box paddingHorizontal="medium">
-                    <Button iconLeft="eye" size="large" onPress={handleShowAddress}>
-                        Show address
-                    </Button>
-                </Box>
-            )}
-        </VStack>
+            {isUnverifiedAddressRevealed && !isReceiveApproved && <ConfirmOnTrezorImage />}
+        </Box>
     );
 };

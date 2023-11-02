@@ -236,7 +236,7 @@ const getBundleThunk = createThunk(
     },
 );
 
-const getAvailableCardanoDerivationsThunk = createThunk(
+export const getAvailableCardanoDerivationsThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/getAvailableCardanoDerivations`,
     async (
         { deviceState, device }: { deviceState: string; device: TrezorDevice },

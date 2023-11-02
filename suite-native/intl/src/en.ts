@@ -114,7 +114,7 @@ export const en = {
         },
     },
     moduleReceive: {
-        title: 'Receive address',
+        title: '{coinSymbol} Receive address',
     },
     moduleSettings: {
         faq: {
