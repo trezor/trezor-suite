@@ -8,7 +8,7 @@ export const AuthFailed = () => {
     const dispatch = useDispatch();
     const { isLocked } = useDevice();
 
-    const handleClick = () => dispatch(authorizeDevice({ isUseEmptyPassphraseForced: false }));
+    const handleClick = () => dispatch(authorizeDevice());
 
     return (
         <AccountExceptionLayout

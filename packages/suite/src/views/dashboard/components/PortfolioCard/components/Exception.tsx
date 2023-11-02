@@ -132,8 +132,7 @@ export const Exception = ({ exception, discovery }: ExceptionProps) => {
                     title="TR_ACCOUNT_EXCEPTION_AUTH_ERROR"
                     description="TR_ACCOUNT_EXCEPTION_AUTH_ERROR_DESC"
                     cta={{
-                        action: () =>
-                            dispatch(authorizeDevice({ isUseEmptyPassphraseForced: false })),
+                        action: () => dispatch(authorizeDevice()),
                     }}
                     dataTestBase={exception.type}
                 />

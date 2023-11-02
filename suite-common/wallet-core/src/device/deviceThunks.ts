@@ -264,7 +264,10 @@ export const acquireDevice = createThunk(
 export const authorizeDevice = createThunk(
     `${MODULE_PREFIX}/authorizeDevice`,
     async (
-        { isUseEmptyPassphraseForced }: { isUseEmptyPassphraseForced: boolean },
+        // isUseEmptyPassphraseForced will be removed once the suite-native has support for passphrase authorization.
+        {
+            isUseEmptyPassphraseForced = false,
+        }: { isUseEmptyPassphraseForced?: boolean } | undefined = {},
         { dispatch, getState, extra },
     ): Promise<boolean> => {
         const {
