@@ -13,6 +13,9 @@
             "path": "../../suite-common/suite-types"
         },
         {
+            "path": "../../suite-common/suite-utils"
+        },
+        {
             "path": "../../suite-common/wallet-config"
         },
         {
@@ -30,6 +33,8 @@
         { "path": "../fiat-rates" },
         { "path": "../formatters" },
         { "path": "../helpers" },
+        { "path": "../intl" },
+        { "path": "../link" },
         { "path": "../module-settings" },
         { "path": "../navigation" },
         {

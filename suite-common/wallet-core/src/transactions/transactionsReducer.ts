@@ -2,6 +2,7 @@ import { memoizeWithArgs } from 'proxy-memoize';
 
 import { Account, WalletAccountTransaction, AccountKey } from '@suite-common/wallet-types';
 import { findTransaction, getConfirmations, isPending } from '@suite-common/wallet-utils';
+import { getIsZeroValuePhishing } from '@suite-common/suite-utils';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 
 import { fiatRatesActions } from '../fiat-rates/fiatRatesActions';
@@ -257,4 +258,16 @@ export const selectTransactionConfirmations = (
 
     const blockchainHeight = selectBlockchainHeightBySymbol(state, transaction.symbol);
     return getConfirmations(transaction, blockchainHeight);
+};
+
+export const selectIsTransactionZeroValuePhishing = (
+    state: TransactionsRootState,
+    txid: string,
+    accountKey: AccountKey,
+) => {
+    const transaction = selectTransactionByTxidAndAccountKey(state, txid, accountKey);
+
+    if (!transaction) return false;
+
+    return getIsZeroValuePhishing(transaction);
 };

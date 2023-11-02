@@ -16,12 +16,14 @@ import { Badge, Box, HStack, Text } from '@suite-native/atoms';
 import { useFormatters } from '@suite-common/formatters';
 import {
     selectIsTransactionPending,
+    selectIsTransactionZeroValuePhishing,
     selectTransactionBlockTimeById,
     TransactionsRootState,
 } from '@suite-common/wallet-core';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { EthereumTokenTransfer } from '@suite-native/ethereum-tokens';
 import { Color } from '@trezor/theme';
+import { useTranslate } from '@suite-native/intl';
 
 import { TransactionIcon } from './TransactionIcon';
 
@@ -87,6 +89,12 @@ export const transactionListItemContainerStyle = prepareNativeStyle<TransactionL
     }),
 );
 
+const titleStyle = prepareNativeStyle(utils => ({
+    flexDirection: 'row',
+    flex: 1,
+    gap: utils.spacings.small,
+}));
+
 const descriptionBoxStyle = prepareNativeStyle(_ => ({
     flex: 1,
     flexDirection: 'row',
@@ -131,6 +139,7 @@ export const TransactionListItemContainer = ({
     const { applyStyle } = useNativeStyles();
     const navigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AccountDetail>>();
+    const { translate } = useTranslate();
 
     const handleNavigateToTransactionDetail = () => {
         navigation.navigate(RootStackRoutes.TransactionDetail, {
@@ -150,6 +159,10 @@ export const TransactionListItemContainer = ({
 
     const isTransactionPending = useSelector((state: TransactionsRootState) =>
         selectIsTransactionPending(state, txid, accountKey),
+    );
+
+    const isZeroValuePhishing = useSelector((state: TransactionsRootState) =>
+        selectIsTransactionZeroValuePhishing(state, txid, accountKey),
     );
 
     const iconColor: Color = isTransactionPending ? 'backgroundAlertYellowBold' : 'iconSubdued';
@@ -172,7 +185,17 @@ export const TransactionListItemContainer = ({
                 )}
                 <Box marginLeft="medium" flex={1}>
                     <HStack flexDirection="row" alignItems="center" spacing="extraSmall">
-                        <Text>{transactionTitle}</Text>
+                        <Box style={applyStyle(titleStyle)}>
+                            <Text variant="body">{transactionTitle}</Text>
+                            {isZeroValuePhishing && (
+                                <Badge
+                                    label={translate('transactions.phishing.badge')}
+                                    size="small"
+                                    icon="warningTriangle"
+                                    variant="red"
+                                />
+                            )}
+                        </Box>
                         {hasIncludedCoins && <Badge label={includedCoinsLabel} size="small" />}
                     </HStack>
                     <Text variant="hint" color="textSubdued">
