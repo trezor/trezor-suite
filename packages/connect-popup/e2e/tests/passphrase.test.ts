@@ -1,6 +1,12 @@
 import { test, Page } from '@playwright/test';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
-import { findElementByDataTest, getContexts, openPopup, waitAndClick } from '../support/helpers';
+import {
+    findElementByDataTest,
+    getContexts,
+    log,
+    openPopup,
+    waitAndClick,
+} from '../support/helpers';
 
 const url = `${process.env.URL || 'http://localhost:8088/'}?trust-issues=true`;
 const bridgeVersion = '2.0.31';
@@ -11,6 +17,27 @@ let context: any = null;
 
 test.beforeAll(async () => {
     await TrezorUserEnvLink.connect();
+});
+
+test.beforeEach(async () => {
+    log('beforeEach', 'stopBridge');
+    await TrezorUserEnvLink.api.stopBridge();
+    log('beforeEach', 'stopEmu');
+    await TrezorUserEnvLink.api.stopEmu();
+    log('beforeEach', 'startEmu');
+    await TrezorUserEnvLink.api.startEmu({
+        wipe: true,
+    });
+    log('beforeEach', 'setupEmu');
+    await TrezorUserEnvLink.api.setupEmu({
+        mnemonic: 'alcohol woman abuse must during monitor noble actual mixed trade anger aisle',
+        pin: '',
+        passphrase_protection: true,
+        label: 'My Trevor',
+        needs_backup: false,
+    });
+    log('beforeEach', 'startBridge');
+    await TrezorUserEnvLink.api.startBridge(bridgeVersion);
 });
 
 test.afterEach(async () => {
@@ -27,20 +54,7 @@ let popup: Page;
 
 // Debug mode does not have to be enable since it is default in connect-explorer
 test('input passphrase in popup and device accepts it', async ({ page }) => {
-    await TrezorUserEnvLink.api.stopBridge();
-    await TrezorUserEnvLink.api.stopEmu();
-    await TrezorUserEnvLink.api.startEmu({
-        wipe: true,
-    });
-    await TrezorUserEnvLink.api.setupEmu({
-        mnemonic: 'alcohol woman abuse must during monitor noble actual mixed trade anger aisle',
-        pin: '',
-        passphrase_protection: true,
-        label: 'My Trevor',
-        needs_backup: false,
-    });
-    await TrezorUserEnvLink.api.startBridge(bridgeVersion);
-
+    log('start', test.info().title);
     const { explorerPage, exploreUrl, browserContext } = await getContexts(
         page,
         url,
@@ -48,13 +62,19 @@ test('input passphrase in popup and device accepts it', async ({ page }) => {
     );
     context = browserContext;
 
+    log(`opening ${exploreUrl}#/method/getAddress`);
     await explorerPage.goto(`${exploreUrl}#/method/getAddress`);
+
+    log('waiting for submit button');
     await findElementByDataTest(explorerPage, '@submit-button');
 
+    log('opening popup');
     [popup] = await openPopup(context, explorerPage, isWebExtension);
 
+    log('waiting for analytics continue button');
     await findElementByDataTest(popup, '@analytics/continue-button', 40 * 1000);
 
+    log('clicking on analytics continue button');
     await waitAndClick(popup, ['@analytics/continue-button']);
 
     log('waiting for confirm permissions button');
@@ -65,33 +85,23 @@ test('input passphrase in popup and device accepts it', async ({ page }) => {
         'abc',
     );
 
+    log('submitting passphrase');
     await waitAndClick(popup, ['@passphrase/hidden/submit-button']);
 
+    log('accepting to see passphrase');
     // Accept to see Passphrase.
     await TrezorUserEnvLink.api.pressYes();
 
+    log('confirming passphrase is correct');
     // Confirm Passphrase is correct.
     await TrezorUserEnvLink.api.pressYes();
 
+    log('confirming right address is displayed');
     // Confirm right address is displayed.
     await TrezorUserEnvLink.api.pressYes();
 });
 
 test('introduce passphrase in popup and device rejects it', async ({ page }) => {
-    await TrezorUserEnvLink.api.stopBridge();
-    await TrezorUserEnvLink.api.stopEmu();
-    await TrezorUserEnvLink.api.startEmu({
-        wipe: true,
-    });
-    await TrezorUserEnvLink.api.setupEmu({
-        mnemonic: 'alcohol woman abuse must during monitor noble actual mixed trade anger aisle',
-        pin: '',
-        passphrase_protection: true,
-        label: 'My Trevor',
-        needs_backup: false,
-    });
-    await TrezorUserEnvLink.api.startBridge(bridgeVersion);
-
     const { explorerPage, exploreUrl, browserContext } = await getContexts(
         page,
         url,
@@ -127,20 +137,6 @@ test('introduce passphrase in popup and device rejects it', async ({ page }) => 
 });
 
 test('introduce passphrase successfully next time should not ask for it', async ({ page }) => {
-    await TrezorUserEnvLink.api.stopBridge();
-    await TrezorUserEnvLink.api.stopEmu();
-    await TrezorUserEnvLink.api.startEmu({
-        wipe: true,
-    });
-    await TrezorUserEnvLink.api.setupEmu({
-        mnemonic: 'alcohol woman abuse must during monitor noble actual mixed trade anger aisle',
-        pin: '',
-        passphrase_protection: true,
-        label: 'My Trevor',
-        needs_backup: false,
-    });
-    await TrezorUserEnvLink.api.startBridge(bridgeVersion);
-
     const { explorerPage, exploreUrl, browserContext } = await getContexts(
         page,
         url,
@@ -192,20 +188,6 @@ test('introduce passphrase successfully next time should not ask for it', async 
 test('introduce passphrase successfully reload 3rd party it should ask again for passphrase', async ({
     page,
 }) => {
-    await TrezorUserEnvLink.api.stopBridge();
-    await TrezorUserEnvLink.api.stopEmu();
-    await TrezorUserEnvLink.api.startEmu({
-        wipe: true,
-    });
-    await TrezorUserEnvLink.api.setupEmu({
-        mnemonic: 'alcohol woman abuse must during monitor noble actual mixed trade anger aisle',
-        pin: '',
-        passphrase_protection: true,
-        label: 'My Trevor',
-        needs_backup: false,
-    });
-    await TrezorUserEnvLink.api.startBridge(bridgeVersion);
-
     const { explorerPage, exploreUrl, browserContext } = await getContexts(
         page,
         url,
@@ -262,19 +244,6 @@ test('passphrase mismatch', async ({ page }) => {
         // This test uses addScriptTag so we cannot run it in web extension.
         test.skip();
     }
-    await TrezorUserEnvLink.api.stopBridge();
-    await TrezorUserEnvLink.api.stopEmu();
-    await TrezorUserEnvLink.api.startEmu({
-        wipe: true,
-    });
-    await TrezorUserEnvLink.api.setupEmu({
-        mnemonic: 'alcohol woman abuse must during monitor noble actual mixed trade anger aisle',
-        pin: '',
-        passphrase_protection: true,
-        label: 'My Trevor',
-        needs_backup: false,
-    });
-    await TrezorUserEnvLink.api.startBridge(bridgeVersion);
 
     log('start', test.info().title);
     log('got to: ', `${url}#/method/getAddress`);
