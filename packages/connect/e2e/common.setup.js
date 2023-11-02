@@ -88,6 +88,7 @@ const initTrezorConnect = async (TrezorUserEnvLink, options) => {
     TrezorConnect.on('device-connect', device => {
         const { major_version, minor_version, patch_version, internal_model, revision } =
             device.features;
+        // eslint-disable-next-line no-console
         console.log('Device connected: ', {
             major_version,
             minor_version,

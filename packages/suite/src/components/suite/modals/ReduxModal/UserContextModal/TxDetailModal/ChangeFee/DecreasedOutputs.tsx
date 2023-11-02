@@ -125,6 +125,7 @@ export const DecreasedOutputs = () => {
                             const isChecked = setMaxOutputId === i;
                             return (
                                 // it's safe to use array index as key since outputs do not change
+                                // eslint-disable-next-line react/no-array-index-key
                                 <Output key={i}>
                                     {useRadioButtons && (
                                         <StyledRadioButton

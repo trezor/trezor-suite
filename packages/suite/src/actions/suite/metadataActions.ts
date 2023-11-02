@@ -383,6 +383,55 @@ const fetchMetadata =
         };
     };
 
+export const setAccountMetadataKey =
+    (account: Account, encryptionVersion = METADATA.ENCRYPTION_VERSION) =>
+    (dispatch: Dispatch, getState: GetState) => {
+        const device = selectDeviceByState(getState(), account.deviceState);
+        const deviceMetaKey = device?.metadata[encryptionVersion]?.key;
+
+        if (!deviceMetaKey) {
+            // account keys can't be set without device keys
+            return account;
+        }
+        try {
+            const metaKey = metadataUtils.deriveMetadataKey(deviceMetaKey, account.metadata.key);
+            const fileName = metadataUtils.deriveFilenameForLabeling(metaKey, encryptionVersion);
+
+            const aesKey = metadataUtils.deriveAesKey(metaKey);
+            return {
+                ...account,
+                metadata: {
+                    ...account.metadata,
+                    [encryptionVersion]: { fileName, aesKey },
+                },
+            };
+        } catch (error) {
+            dispatch(handleProviderError({ error, action: ProviderErrorAction.SAVE }));
+        }
+        return account;
+    };
+
+/**
+ * Fill any record in reducer that may have metadata with metadata keys (not values).
+ */
+const syncMetadataKeys =
+    (device: TrezorDevice, encryptionVersion = METADATA.ENCRYPTION_VERSION) =>
+    (dispatch: Dispatch, getState: GetState) => {
+        if (!device.metadata[METADATA.ENCRYPTION_VERSION]) {
+            return;
+        }
+        const targetAccounts = getState().wallet.accounts.filter(
+            acc => !acc.metadata[encryptionVersion]?.fileName && acc.deviceState === device.state,
+        );
+
+        targetAccounts.forEach(account => {
+            const accountWithMetadata = dispatch(setAccountMetadataKey(account, encryptionVersion));
+            dispatch(setAccountAdd(accountWithMetadata));
+        });
+        // note that devices are intentionally omitted here - device receives metadata
+        // keys sooner when enabling labeling on device;
+    };
+
 export const fetchAndSaveMetadata =
     (deviceStateArg?: string) => async (dispatch: Dispatch, getState: GetState) => {
         const provider = selectSelectedProviderForLabels(getState());
@@ -481,55 +530,6 @@ export const fetchAndSaveMetadataForAllDevices = () => (dispatch: Dispatch, getS
     });
 };
 
-export const setAccountMetadataKey =
-    (account: Account, encryptionVersion = METADATA.ENCRYPTION_VERSION) =>
-    (dispatch: Dispatch, getState: GetState) => {
-        const device = selectDeviceByState(getState(), account.deviceState);
-        const deviceMetaKey = device?.metadata[encryptionVersion]?.key;
-
-        if (!deviceMetaKey) {
-            // account keys can't be set without device keys
-            return account;
-        }
-        try {
-            const metaKey = metadataUtils.deriveMetadataKey(deviceMetaKey, account.metadata.key);
-            const fileName = metadataUtils.deriveFilenameForLabeling(metaKey, encryptionVersion);
-
-            const aesKey = metadataUtils.deriveAesKey(metaKey);
-            return {
-                ...account,
-                metadata: {
-                    ...account.metadata,
-                    [encryptionVersion]: { fileName, aesKey },
-                },
-            };
-        } catch (error) {
-            dispatch(handleProviderError({ error, action: ProviderErrorAction.SAVE }));
-        }
-        return account;
-    };
-
-/**
- * Fill any record in reducer that may have metadata with metadata keys (not values).
- */
-const syncMetadataKeys =
-    (device: TrezorDevice, encryptionVersion = METADATA.ENCRYPTION_VERSION) =>
-    (dispatch: Dispatch, getState: GetState) => {
-        if (!device.metadata[METADATA.ENCRYPTION_VERSION]) {
-            return;
-        }
-        const targetAccounts = getState().wallet.accounts.filter(
-            acc => !acc.metadata[encryptionVersion]?.fileName && acc.deviceState === device.state,
-        );
-
-        targetAccounts.forEach(account => {
-            const accountWithMetadata = dispatch(setAccountMetadataKey(account, encryptionVersion));
-            dispatch(setAccountAdd(accountWithMetadata));
-        });
-        // note that devices are intentionally omitted here - device receives metadata
-        // keys sooner when enabling labeling on device;
-    };
-
 export const selectProvider =
     ({ dataType, clientId }: { dataType: DataType; clientId: string }) =>
     (dispatch: Dispatch) => {
@@ -591,6 +591,37 @@ export const connectProvider =
         return true;
     };
 
+const encryptAndSaveMetadata =
+    ({
+        data,
+        aesKey,
+        fileName,
+        provider,
+    }: {
+        data: AccountLabels | WalletLabels;
+        aesKey: string;
+        fileName: string;
+        provider: MetadataProvider;
+    }) =>
+    async (dispatch: Dispatch) => {
+        const providerInstance = dispatch(getProviderInstance({ clientId: provider.clientId }));
+
+        if (!providerInstance) {
+            // provider should always be set here
+            return Promise.resolve({ success: false, error: 'no provider instance' });
+        }
+
+        const encrypted = await metadataUtils.encrypt(
+            {
+                version: METADATA.FORMAT_VERSION,
+                ...data,
+            },
+            aesKey,
+        );
+
+        return providerInstance.setFileContent(fileName, encrypted);
+    };
+
 export const addDeviceMetadata =
     (payload: Extract<MetadataAddPayload, { type: 'walletLabel' }>) =>
     (dispatch: Dispatch, getState: GetState) => {
@@ -639,6 +670,7 @@ export const addDeviceMetadata =
                 data: { walletLabel },
                 aesKey,
                 fileName,
+
                 provider,
             }),
         );
@@ -735,37 +767,6 @@ export const addAccountMetadata =
                 provider,
             }),
         );
-    };
-
-const encryptAndSaveMetadata =
-    ({
-        data,
-        aesKey,
-        fileName,
-        provider,
-    }: {
-        data: AccountLabels | WalletLabels;
-        aesKey: string;
-        fileName: string;
-        provider: MetadataProvider;
-    }) =>
-    async (dispatch: Dispatch) => {
-        const providerInstance = dispatch(getProviderInstance({ clientId: provider.clientId }));
-
-        if (!providerInstance) {
-            // provider should always be set here
-            return Promise.resolve({ success: false, error: 'no provider instance' });
-        }
-
-        const encrypted = await metadataUtils.encrypt(
-            {
-                version: METADATA.FORMAT_VERSION,
-                ...data,
-            },
-            aesKey,
-        );
-
-        return providerInstance.setFileContent(fileName, encrypted);
     };
 
 /**

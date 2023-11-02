@@ -88,6 +88,7 @@ const getEmulatorOptions = (availableFirmwares: Firmwares) => {
     }
 
     if (process.argv[2] === 'node') {
+        // eslint-disable-next-line no-console
         console.log('jest version: ', getJestVersion());
         // @ts-expect-error
         const { results } = await runCLI(argv, [__dirname]);
@@ -120,6 +121,7 @@ const getEmulatorOptions = (availableFirmwares: Firmwares) => {
                 server.start();
             },
             rejectReason => {
+                // eslint-disable-next-line no-console
                 console.log('reject reason', rejectReason);
                 process.exit(1);
             },
