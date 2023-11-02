@@ -36,6 +36,7 @@ __pycache__/
 .eslintcache
 .stylelintcache
 *.tsbuildinfo
+.nx
 
 # Vagrant
 .vagrant

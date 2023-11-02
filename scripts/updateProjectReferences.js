@@ -39,7 +39,7 @@ import { getPrettierConfig } from './utils/getPrettierConfig';
     // NOTE: Workspace keys must be sorted due to file systems being a part of the equation...
     Object.keys(workspaces)
         .sort()
-        .forEach(workspaceName => {
+        .forEach(async workspaceName => {
             const workspace = workspaces[workspaceName];
 
             if (ignoreGlobs.some(path => minimatch(workspace.location, path))) {
@@ -90,8 +90,8 @@ import { getPrettierConfig } from './utils/getPrettierConfig';
 
             if (isTesting) {
                 if (
-                    serializeConfig(workspaceConfig.references ?? []) !==
-                    serializeConfig(nextWorkspaceReferences)
+                    (await serializeConfig(workspaceConfig.references ?? [])) !==
+                    (await serializeConfig(nextWorkspaceReferences))
                 ) {
                     console.error(
                         chalk.red(
@@ -109,7 +109,7 @@ import { getPrettierConfig } from './utils/getPrettierConfig';
             workspaceConfig.references = nextWorkspaceReferences;
 
             if (!readOnlyGlobs.some(path => minimatch(workspace.location, path))) {
-                fs.writeFileSync(workspaceConfigPath, serializeConfig(workspaceConfig));
+                fs.writeFileSync(workspaceConfigPath, await serializeConfig(workspaceConfig));
             }
         });
 })();
