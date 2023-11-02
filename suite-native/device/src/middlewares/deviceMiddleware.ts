@@ -9,6 +9,7 @@ import {
     handleDeviceConnect,
     handleDeviceDisconnect,
     observeSelectedDevice,
+    PORTFOLIO_TRACKER_DEVICE_ID,
     selectDeviceThunk,
 } from '@suite-common/wallet-core';
 
@@ -43,7 +44,10 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
          expect that the state was already changed by the action stored in the `action` variable. */
         next(action);
 
-        if (deviceActions.createDeviceInstance.match(action)) {
+        if (
+            deviceActions.createDeviceInstance.match(action) &&
+            action.payload.id !== PORTFOLIO_TRACKER_DEVICE_ID
+        ) {
             dispatch(selectDeviceThunk(action.payload));
         }
 
@@ -52,7 +56,7 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
             deviceActions.selectDevice.match(action) ||
             deviceActions.updateSelectedDevice.match(action)
         ) {
-            dispatch(authorizeDevice());
+            dispatch(authorizeDevice({ isUseEmptyPassphraseForced: true }));
         }
 
         if (deviceActions.forgetDevice.match(action)) {
