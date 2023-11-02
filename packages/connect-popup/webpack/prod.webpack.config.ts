@@ -1,7 +1,7 @@
 import path from 'path';
 import webpack, { DefinePlugin } from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-import TerserPlugin from 'terser-webpack-plugin';
+// import TerserPlugin from 'terser-webpack-plugin';
 import CopyPlugin from 'copy-webpack-plugin';
 import * as URLS from '@trezor/urls';
 import { version } from '../package.json';
@@ -113,21 +113,18 @@ const config: webpack.Configuration = {
                     from: path.join(__dirname, '../../suite-data/files/images/png/trezor-*'),
                     to: `${DIST}/images/[name][ext]`,
                 },
+                {
+                    from: path.join(__dirname, '../../connect-iframe/build'),
+                    to: `${DIST}`,
+                },
             ],
         }),
     ],
     optimization: {
-        minimize: true,
-        minimizer: [
-            new TerserPlugin({
-                extractComments: false,
-                terserOptions: {
-                    format: {
-                        comments: false,
-                    },
-                },
-            }),
-        ],
+        minimize: false,
+    },
+    externals: {
+        'js/core': 'js/core',
     },
 };
 

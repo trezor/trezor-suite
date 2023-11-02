@@ -17,7 +17,9 @@ export interface ErrorViewProps {
     detail: // errors that might arise when using connect-ui with connect-popup
     | 'response-event-error' // Error coming from connect RESPONSE_EVENT
         | 'handshake-timeout' // communication was not established in a set time period
-        | 'iframe-failure'; // another (legacy) error, this is sent from popupManager (host) to popup. it means basically the same like handshake-timeout but we might be notified earlier
+        | 'iframe-failure' // another (legacy) error, this is sent from popupManager (host) to popup. it means basically the same like handshake-timeout but we might be notified earlier
+        | 'core-missing' // core was loaded correctly but became unavailable later
+        | 'core-failed-to-load'; // dynamic import of core failed
     // future errors when using connect-ui in different contexts
     message?: string;
 }
@@ -143,6 +145,16 @@ const getTroubleshootingTips = (props: ErrorViewProps) => {
             title: 'Action not completed',
             detail: {
                 steps: [<Step>{props.message}</Step>],
+            },
+        });
+    }
+
+    if (['core-missing', 'core-failed-to-load'].includes(props.detail)) {
+        tips.push({
+            icon: 'QUESTION',
+            title: 'Tried to access connect core which is not loaded yet',
+            detail: {
+                steps: [<Step>Try again or contact developers</Step>],
             },
         });
     }

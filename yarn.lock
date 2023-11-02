@@ -8779,7 +8779,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/connect-iframe@workspace:packages/connect-iframe":
+"@trezor/connect-iframe@workspace:*, @trezor/connect-iframe@workspace:packages/connect-iframe":
   version: 0.0.0-use.local
   resolution: "@trezor/connect-iframe@workspace:packages/connect-iframe"
   dependencies:
@@ -8842,6 +8842,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/connect-analytics": "workspace:*"
     "@trezor/connect-common": "workspace:*"
+    "@trezor/connect-iframe": "workspace:*"
     "@trezor/connect-ui": "workspace:*"
     "@trezor/crypto-utils": "workspace:*"
     "@trezor/device-utils": "workspace:*"

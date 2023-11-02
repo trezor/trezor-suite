@@ -14,9 +14,7 @@ import { SUITE_BRIDGE_URL, SUITE_UDEV_URL, TREZOR_SUPPORT_URL } from '@trezor/ur
 import { container, getState, showView, postMessage } from './common';
 
 const initWebUsbButton = (showLoader: boolean) => {
-    const { iframe } = getState();
-
-    const usb = iframe ? iframe.navigator.usb : null;
+    const { usb } = window.navigator;
     const webusbContainer = container.getElementsByClassName('webusb')[0] as HTMLElement;
     webusbContainer.style.display = 'flex';
     const button = webusbContainer.getElementsByTagName('button')[0];
@@ -32,16 +30,19 @@ const initWebUsbButton = (showLoader: boolean) => {
             await window.navigator.usb.requestDevice({
                 filters: TREZOR_USB_DESCRIPTORS,
             });
-            const { iframe } = getState();
-            if (!iframe) {
-                throw ERRORS.TypedError('Popup_ConnectionMissing');
-            }
-            iframe.postMessage({
-                event: UI_EVENT,
-                type: TRANSPORT.REQUEST_DEVICE,
-            });
-            if (showLoader) {
-                showView('loader');
+
+            const { iframe, core } = getState();
+
+            if (iframe) {
+                iframe.postMessage({
+                    event: UI_EVENT,
+                    type: TRANSPORT.REQUEST_DEVICE,
+                });
+                if (showLoader) {
+                    showView('loader');
+                }
+            } else if (core) {
+                core.enumerate();
             }
         } catch (error) {
             // empty, do nothing, should not happen anyway
