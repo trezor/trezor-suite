@@ -48,9 +48,9 @@
         "targets": {
             "build:lib": {
                 "outputs": [
-                    "./tmp",
-                    "./files/browser-detection",
-                    "./files/guide"
+                    "{projectRoot}/tmp",
+                    "{projectRoot}/files/browser-detection",
+                    "{projectRoot}/files/guide"
                 ]
             }
         }

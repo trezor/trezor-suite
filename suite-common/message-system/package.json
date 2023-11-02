@@ -42,7 +42,7 @@
         "targets": {
             "build:lib": {
                 "outputs": [
-                    "./files",
+                    "{projectRoot}/files",
                     "{workspaceRoot}/suite-common/suite-types/src/messageSystem.ts"
                 ]
             }

@@ -1,21 +1,4 @@
 {
-    "tasksRunnerOptions": {
-        "default": {
-            "runner": "nx-cloud",
-            "options": {
-                "cacheableOperations": [
-                    "lint",
-                    "test:unit",
-                    "type-check",
-                    "lint:js",
-                    "lint:styles",
-                    "build:lib"
-                ],
-                "accessToken": "NmE2NmFlYTUtN2JhZi00ZmQ3LWEyYzMtYWRkNzc3MTg0YmUyfHJlYWQ=",
-                "parallel": 3
-            }
-        }
-    },
     "extends": "nx/presets/npm.json",
     "namedInputs": {
         "sharedGlobals": [
@@ -35,7 +18,8 @@
                 "{workspaceRoot}/tsconfig.json",
                 "{workspaceRoot}/tsconfig.lib.json"
             ],
-            "outputs": ["{projectRoot}/lib", "{projectRoot}/build"]
+            "outputs": ["{projectRoot}/lib", "{projectRoot}/build"],
+            "cache": true
         },
         "type-check": {
             "dependsOn": ["^build:lib", "^type-check"],
@@ -44,7 +28,8 @@
                 "{workspaceRoot}/tsconfig.json",
                 "{workspaceRoot}/tsconfig.lib.json"
             ],
-            "outputs": ["{projectRoot}/libDev"]
+            "outputs": ["{projectRoot}/libDev"],
+            "cache": true
         },
         "test:unit": {
             "dependsOn": ["^build:lib"],
@@ -52,17 +37,25 @@
                 "^prod",
                 "{workspaceRoot}/jest.config.base.js",
                 "{workspaceRoot}/jest.config.native.js"
-            ]
+            ],
+            "cache": true
         },
         "lint:js": {
-            "inputs": ["default", "{workspaceRoot}/.eslintrc.js"]
+            "inputs": ["default", "{workspaceRoot}/.eslintrc.js"],
+            "cache": true
         },
         "lint:styles": {
-            "inputs": ["default"]
+            "inputs": ["default"],
+            "cache": true
+        },
+        "lint": {
+            "cache": true
         }
     },
     "affected": {
         "defaultBase": "origin/develop"
     },
-    "$schema": "./node_modules/nx/schemas/nx-schema.json"
+    "$schema": "./node_modules/nx/schemas/nx-schema.json",
+    "nxCloudAccessToken": "NmE2NmFlYTUtN2JhZi00ZmQ3LWEyYzMtYWRkNzc3MTg0YmUyfHJlYWQ=",
+    "parallel": 3
 }
