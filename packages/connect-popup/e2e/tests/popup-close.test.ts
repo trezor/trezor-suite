@@ -1,9 +1,10 @@
 import { test, expect, Page } from '@playwright/test';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { createDeferred, Deferred } from '@trezor/utils';
-import { findElementByDataTest, waitAndClick } from '../support/helpers';
+import { findElementByDataTest, waitAndClick, log } from '../support/helpers';
 
-const url = `${process.env.URL || 'http://localhost:8088/'}?trust-issues=true`;
+const host = process.env.URL || 'http://localhost:8088/';
+const url = `${host}?trust-issues=true`;
 
 const WAIT_AFTER_TEST = 3000; // how long test should wait for more potential trezord requests
 
@@ -20,6 +21,7 @@ let responses: Response[] = [];
 let releasePromise: Deferred<void> | undefined;
 // popup window reference
 let popup: Page;
+let logPage: Page;
 let popupClosedPromise: Promise<undefined> | undefined;
 
 test.beforeAll(async () => {
@@ -30,16 +32,20 @@ test.beforeAll(async () => {
 // - host bridge that is used in this test on trezor.io domain, or
 // - run it all locally in CI (./docker/docker-compose.connect.explorer.test.yml)
 [/* '2.0.27', */ '2.0.31'].forEach(bridgeVersion => {
-    test.beforeEach(async ({ page }) => {
+    test.beforeEach(async ({ page, context }) => {
         requests = [];
         responses = [];
         releasePromise = createDeferred();
 
+        log('beforeEach', 'stopBridge');
         await TrezorUserEnvLink.api.stopBridge();
+        log('beforeEach', 'stopEmu');
         await TrezorUserEnvLink.api.stopEmu();
+        log('beforeEach', 'startEmu');
         await TrezorUserEnvLink.api.startEmu({
             wipe: true,
         });
+        log('beforeEach', 'setupEmu');
         await TrezorUserEnvLink.api.setupEmu({
             mnemonic:
                 'alcohol woman abuse must during monitor noble actual mixed trade anger aisle',
@@ -48,7 +54,11 @@ test.beforeAll(async () => {
             label: 'My Trevor',
             needs_backup: false,
         });
+        log('beforeEach', 'startBridge');
         await TrezorUserEnvLink.api.startBridge(bridgeVersion);
+        log('beforeEach', 'open log page');
+        logPage = await context.newPage();
+        await logPage.goto(`${host}log.html`);
         await page.goto(`${url}#/method/verifyMessage`);
         await page.waitForSelector("button[data-test='@submit-button']", { state: 'visible' });
 
