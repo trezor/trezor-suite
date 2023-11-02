@@ -1106,7 +1106,7 @@
   "TR_SWITCH_TO_BOOTLOADER_HOLD_BOTH_BUTTONS": "Țineți apăsate ambele butoane în timp ce conectați dispozitivul",
   "TR_SWITCH_TO_BOOTLOADER_HOLD_LEFT_BUTTON": "Țineți apăsat unul sau ambele butoane în timp ce reconectați cablul USB.",
   "TR_SWITCH_TO_BOOTLOADER_SWIPE_YOUR_FINGERS": "\nGlisați degetul pe ecranul tactil în timp ce conectați cablul.",
-  "TR_TAKES_N_MINUTES": "Durează ~{n} minute",
+  "TR_TAKES_N_MINUTES": "Durează ~20 minute",
   "TR_TAPROOT_BANNER_TITLE": "Nou în Trezor Suite: Conturi BTC Taproot!",
   "TR_TERMS_OF_USE_INVITY": "Termeni de utilizare",
   "TR_TESTNET_COINS": "Monede Testnet",
