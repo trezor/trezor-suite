@@ -55,7 +55,6 @@ export const AccountsSearchForm = ({ onPressCancel, onInputChange }: AccountsSea
                     style={applyStyle(searchFormInputStyle)}
                 >
                     <SearchInput
-                        value={inputText}
                         placeholder="Search assets"
                         onChange={setInputText}
                         maxLength={MAX_SEARCH_VALUE_LENGTH}
