@@ -263,7 +263,10 @@ export const acquireDevice = createThunk(
  */
 export const authorizeDevice = createThunk(
     `${MODULE_PREFIX}/authorizeDevice`,
-    async (_, { dispatch, getState, extra }): Promise<boolean> => {
+    async (
+        { isUseEmptyPassphraseForced }: { isUseEmptyPassphraseForced: boolean },
+        { dispatch, getState, extra },
+    ): Promise<boolean> => {
         const {
             selectors: { selectCheckFirmwareAuthenticity },
             actions: { openModal },
@@ -284,6 +287,10 @@ export const authorizeDevice = createThunk(
             await dispatch(checkFirmwareAuthenticity());
         }
 
+        // The suite-native does not have support for passphrase authorization, so the `useEmptyPassphrase` has to be hardcoded to `true` in that case.
+        // The thunk argument `isUseEmptyPassphraseForced` can be removed once the passphrase support is implemented in suite-native.
+        const useEmptyPassphrase = isUseEmptyPassphraseForced || device.useEmptyPassphrase;
+
         const response = await TrezorConnect.getDeviceState({
             device: {
                 path: device.path,
@@ -291,7 +298,7 @@ export const authorizeDevice = createThunk(
                 state: undefined,
             },
             keepSession: true,
-            useEmptyPassphrase: device.useEmptyPassphrase,
+            useEmptyPassphrase,
         });
 
         if (response.success) {

@@ -273,7 +273,7 @@ describe('Suite Actions', () => {
                 devices: f.devicesState ?? [],
             });
             const store = initStore(state);
-            await store.dispatch(authorizeDevice());
+            await store.dispatch(authorizeDevice({ isUseEmptyPassphraseForced: false }));
             if (!f.result) {
                 expect(filterThunkActionTypes(store.getActions()).length).toEqual(0);
             } else {

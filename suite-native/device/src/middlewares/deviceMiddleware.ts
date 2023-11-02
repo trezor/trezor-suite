@@ -52,7 +52,7 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
             deviceActions.selectDevice.match(action) ||
             deviceActions.updateSelectedDevice.match(action)
         ) {
-            dispatch(authorizeDevice());
+            dispatch(authorizeDevice({ isUseEmptyPassphraseForced: true }));
         }
 
         if (deviceActions.forgetDevice.match(action)) {

@@ -36,7 +36,8 @@ export const PassphraseDuplicateModal = ({ device, duplicate }: PassphraseDuplic
     const isDeviceLocked = isLocked();
 
     const handleSwitchDevice = () => dispatch(switchDuplicatedDevice({ device, duplicate }));
-    const handleAuthorizeDevice = () => dispatch(authorizeDevice());
+    const handleAuthorizeDevice = () =>
+        dispatch(authorizeDevice({ isUseEmptyPassphraseForced: false }));
 
     return (
         <StyledModal
