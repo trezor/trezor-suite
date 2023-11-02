@@ -113,6 +113,10 @@ const config: webpack.Configuration = {
                     from: path.join(__dirname, '../../suite-data/files/images/png/trezor-*'),
                     to: `${DIST}/images/[name][ext]`,
                 },
+                {
+                    from: path.join(__dirname, '../../connect-iframe/build'),
+                    to: `${DIST}`,
+                },
             ],
         }),
     ],
@@ -128,6 +132,9 @@ const config: webpack.Configuration = {
                 },
             }),
         ],
+    },
+    externals: {
+        'js/core': 'js/core',
     },
 };
 
