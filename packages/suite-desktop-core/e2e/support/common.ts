@@ -8,14 +8,32 @@ const fileExists = promisify(fs.exists);
 const copyFile = promisify(fs.copyFile);
 const chmod = promisify(fs.chmod);
 
+
 export const launchSuite = async () => {
+    const appDir = path.join(__dirname, '../../../suite-desktop')
+
     const electronApp = await electron.launch({
-        cwd: path.join(__dirname, '../../../suite-desktop'),
+        cwd: appDir,
         args: ['./dist/app.js', '--log-level=debug', '--bridge-test'],
         // when testing electron, video needs to be setup like this. it works locally but not in docker
         // recordVideo: { dir: 'test-results' },
     });
+
+    await electronApp.evaluate(
+        (_, [resourcesPath]) => {
+            // This runs in the main Electron process.
+            // override global variable defined in app.ts
+            global.resourcesPath = resourcesPath;
+            return global.resourcesPath;
+        },
+        [path.join(appDir, 'build/static')],
+    );
+
+    electronApp.process().stdout?.on('data', data => console.log(data.toString()));
+    electronApp.process().stderr?.on('data', data => console.error(data.toString()));
+
     const window = await electronApp.firstWindow();
+
     return { electronApp, window };
 };
 
