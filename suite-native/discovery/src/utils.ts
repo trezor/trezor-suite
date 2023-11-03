@@ -1,4 +1,5 @@
-import { NetworkType } from '@suite-common/wallet-config';
+import { A, G, pipe } from '@mobily/ts-belt';
+
 import { DiscoveryItem } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 
@@ -37,38 +38,18 @@ export class DeviceAccessMutex {
 
 // This function will be removed in one of the following PRs, when `TrezorConnect.getAccountDescriptor` method is ready.
 // see more: https://github.com/trezor/trezor-suite/issues/9658
-export const getBundleDescriptors = async (
-    bundle: DiscoveryItem[],
-    networkType: NetworkType,
-): Promise<DiscoveryDescriptorItem[]> => {
-    if (networkType === 'bitcoin') {
-        const { success, payload } = await TrezorConnect.getPublicKey({
-            bundle,
-        });
-        if (success)
-            return payload.map(({ xpubSegwit, xpub }, index) => ({
-                ...bundle[index],
-                descriptor: xpubSegwit ?? xpub,
-            }));
-    } else if (networkType === 'ethereum') {
-        const { success, payload } = await TrezorConnect.ethereumGetAddress({
-            bundle,
-        });
-        if (success)
-            return payload.map(({ address }, index) => ({
-                ...bundle[index],
-                descriptor: address,
-            }));
-    } else if (networkType === 'cardano') {
-        const { success, payload } = await TrezorConnect.cardanoGetPublicKey({
-            bundle,
-        });
-        if (success)
-            return payload.map(({ publicKey }, index) => ({
-                ...bundle[index],
-                descriptor: publicKey,
-            }));
-    }
+export const fetchBundleDescriptors = async (bundle: DiscoveryItem[]) => {
+    const { success, payload } = await TrezorConnect.getAccountDescriptor({
+        bundle,
+    });
+
+    if (success && payload)
+        return pipe(
+            payload,
+            A.filter(G.isNotNullable),
+            A.map(bundleItem => bundleItem.descriptor),
+            A.zipWith(bundle, (descriptor, bundleItem) => ({ ...bundleItem, descriptor })),
+        ) as DiscoveryDescriptorItem[];
 
     return [];
 };

@@ -19,7 +19,7 @@ import { Network } from '@suite-common/wallet-config';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import { supportedMainnetSymbols, supportedNetworkSymbols } from '@suite-native/config';
 
-import { DeviceAccessMutex, getBundleDescriptors } from './utils';
+import { DeviceAccessMutex, fetchBundleDescriptors } from './utils';
 
 const DISCOVERY_BATCH_SIZE = 3;
 
@@ -133,7 +133,7 @@ const discoverNetworkBatchThunk = createThunk(
             return;
         }
 
-        const chunkBundle: Array<DiscoveryItem & { showOnTrezor: boolean }> = [];
+        const chunkBundle: Array<DiscoveryItem> = [];
 
         A.makeWithIndex(DISCOVERY_BATCH_SIZE, index => {
             const accountPath = network.bip43Path.replace(
@@ -156,7 +156,6 @@ const discoverNetworkBatchThunk = createThunk(
                     networkType: network.networkType,
                     derivationType: getDerivationType(accountType),
                     suppressBackupWarning: true,
-                    showOnTrezor: false,
                 });
             }
         });
@@ -177,7 +176,7 @@ const discoverNetworkBatchThunk = createThunk(
 
         // Take exclusive access to the device and hold it until is the fetching of the descriptors done.
         await mutex.lock();
-        const descriptorsBundle = await getBundleDescriptors(chunkBundle, network.networkType);
+        const descriptorsBundle = await fetchBundleDescriptors(chunkBundle);
         mutex.unlock();
 
         const isFinished = await dispatch(
