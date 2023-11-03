@@ -73,11 +73,9 @@ export const getInitialState = ({ suite, router, device }: any = {}) => ({
         settings: {},
     },
     router: {
-        app: 'suite-start',
+        app: 'suite-index',
         loaded: true,
-        route: {
-            app: 'suite-start',
-        },
+        route: '/dashboard',
         ...router,
     },
     recovery: {},

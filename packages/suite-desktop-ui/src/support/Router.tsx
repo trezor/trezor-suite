@@ -1,6 +1,8 @@
 import { memo, ComponentType } from 'react';
 import { Switch, Route } from 'react-router-dom';
 
+import { PageName } from '@suite-common/suite-types';
+
 import routes from 'src/constants/suite/routes';
 import Index from 'src/views/dashboard';
 import Notification from 'src/views/suite/notifications';
@@ -35,7 +37,7 @@ import { SettingsCoins } from 'src/views/settings/SettingsCoins/SettingsCoins';
 import { SettingsDebug } from 'src/views/settings/SettingsDebug/SettingsDebug';
 import { SettingsDevice } from 'src/views/settings/SettingsDevice/SettingsDevice';
 
-const components: { [key: string]: ComponentType<any> } = {
+const components: Record<PageName, ComponentType<any>> = {
     'suite-index': Index,
     'notifications-index': Notification,
 
@@ -80,7 +82,7 @@ export const AppRouter = memo(() => (
                 key={route.name}
                 path={process.env.ASSET_PREFIX + route.pattern}
                 exact={route.exact}
-                component={components[route.name]}
+                component={components[route.name as PageName]}
             />
         ))}
     </Switch>

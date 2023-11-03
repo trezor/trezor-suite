@@ -38,7 +38,6 @@ export const useCoinmarketNavigation = (account: Account) => {
         navigateToP2pForm: useNavigateToRouteName('wallet-coinmarket-p2p'),
         navigateToP2pOffers: useNavigateToRouteName('wallet-coinmarket-p2p-offers'),
 
-        navigateToSavings: useNavigateToRouteName('wallet-coinmarket-savings'),
         navigateToSavingsSetup: useNavigateToRouteName('wallet-coinmarket-savings-setup'),
         navigateToSavingsSetupContinue: useNavigateToRouteName(
             'wallet-coinmarket-savings-setup-continue',
