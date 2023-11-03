@@ -21,7 +21,7 @@ let responses: Response[] = [];
 let releasePromise: Deferred<void> | undefined;
 // popup window reference
 let popup: Page;
-let logPage: Page;
+// let logPage: Page;
 let popupClosedPromise: Promise<undefined> | undefined;
 
 test.beforeAll(async () => {
@@ -32,7 +32,7 @@ test.beforeAll(async () => {
 // - host bridge that is used in this test on trezor.io domain, or
 // - run it all locally in CI (./docker/docker-compose.connect.explorer.test.yml)
 [/* '2.0.27', */ '2.0.31'].forEach(bridgeVersion => {
-    test.beforeEach(async ({ page, context }) => {
+    test.beforeEach(async ({ page }) => {
         requests = [];
         responses = [];
         releasePromise = createDeferred();
@@ -57,8 +57,12 @@ test.beforeAll(async () => {
         log('beforeEach', 'startBridge');
         await TrezorUserEnvLink.api.startBridge(bridgeVersion);
         log('beforeEach', 'open log page');
-        logPage = await context.newPage();
-        await logPage.goto(`${host}log.html`);
+
+        // this would be very useful but is breaking one of the tests. could be
+        // that it inconsciously uncovers a bug in how npm pacakge is focusing popup
+        // logPage = await context.newPage();
+        // await logPage.goto(`${host}log.html`);
+
         await page.goto(`${url}#/method/verifyMessage`);
         await page.waitForSelector("button[data-test='@submit-button']", { state: 'visible' });
 
@@ -156,6 +160,8 @@ test.beforeAll(async () => {
     }) => {
         // user canceled dialog on device
         await TrezorUserEnvLink.send({ type: 'emulator-press-no' });
+        await TrezorUserEnvLink.send({ type: 'emulator-press-yes' });
+
         await page.waitForTimeout(WAIT_AFTER_TEST);
 
         responses.forEach(response => {
@@ -304,7 +310,11 @@ test.beforeAll(async () => {
     test('popup should close and open new one when popup is in error state and user triggers new call', async ({
         page,
     }) => {
+        // user canceled interaction on device
         await TrezorUserEnvLink.api.pressNo();
+        await TrezorUserEnvLink.api.pressYes();
+
+        // await page.pause();
 
         // Error page is displayed.
         await findElementByDataTest(popup, '@connect-ui/error');
@@ -319,6 +329,9 @@ test.beforeAll(async () => {
 
         // We cancel the request since we already tested what we wanted.
         await waitAndClick(popup, ['@permissions/cancel-button']);
+        // Wait for popup to close.
+        await popupClosedPromise;
+        await page.waitForSelector('text=Permissions not granted');
     });
 
     test('popup should be focused when a call is in progress and user triggers new call', async ({
