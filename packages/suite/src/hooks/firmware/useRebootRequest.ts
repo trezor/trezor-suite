@@ -8,6 +8,7 @@ import { getFirmwareVersion } from '@trezor/device-utils';
 import type { TrezorDevice } from 'src/types/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { SUITE } from 'src/actions/suite/constants';
+import { isWebUsb } from 'src/utils/suite/transport';
 
 export type RebootRequestedMode = 'bootloader' | 'normal';
 export type RebootPhase = 'initial' | 'wait-for-confirm' | 'disconnected' | 'done';
@@ -23,12 +24,19 @@ export const useRebootRequest = (
 ): RebootRequest => {
     const [phase, setPhase] = useState<RebootPhase>('initial');
 
+    const transport = useSelector(state => state.suite.transport);
+
+    const isWebUsbTransport = isWebUsb(transport);
+
     // Default reboot method is 'manual'. If the device is connected when
     // the hook is first called and fw version is sufficient,
     // then the 'automatic' method is enabled.
+    // Automatic reboot to bootloader not working properly with WebUSB so it's disabled for now.
     const [method, setMethod] = useState<RebootMethod>(() => {
-        if (!device?.connected || !device?.features) return 'manual';
+        if (!device?.connected || !device?.features || isWebUsbTransport) return 'manual';
+
         const deviceFwVersion = getFirmwareVersion(device);
+
         return requestedMode === 'bootloader' &&
             valid(deviceFwVersion) &&
             satisfies(deviceFwVersion, '>=1.10.0 <2.0.0 || >=2.6.0')
