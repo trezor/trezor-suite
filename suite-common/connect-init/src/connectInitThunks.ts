@@ -5,6 +5,7 @@ import TrezorConnect, {
     TRANSPORT_EVENT,
     UI_EVENT,
 } from '@trezor/connect';
+import { getSynchronize } from '@trezor/utils';
 
 import { cardanoConnectPatch } from './cardanoConnectPatch';
 
@@ -49,6 +50,8 @@ export const connectInitThunk = createThunk(
             dispatch(action);
         });
 
+        const synchronize = getSynchronize();
+
         const wrappedMethods = [
             'getFeatures',
             'getDeviceState',
@@ -80,7 +83,7 @@ export const connectInitThunk = createThunk(
             if (!original) return;
             (TrezorConnect[key] as any) = async (params: any) => {
                 dispatch(lockDevice(true));
-                const result = await original(params);
+                const result = await synchronize(() => original(params));
                 dispatch(lockDevice(false));
                 return result;
             };
