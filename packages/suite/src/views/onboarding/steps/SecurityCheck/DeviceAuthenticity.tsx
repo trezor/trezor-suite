@@ -31,7 +31,7 @@ export const DeviceAuthenticity = () => {
         selectIsDeviceAuthenticityFulfilled(state, device?.id),
     );
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
-    const { activeStepId, goToNextStep, goToSuite } = useOnboarding();
+    const { goToNextStep, goToSuite, isActive: isOnboarding } = useOnboarding();
     const dispatch = useDispatch();
     // Tracking confirmation state with useState because button request is not removed from the array
     // when the request is confirmed or aborted, the array is only reset on step change.
@@ -93,7 +93,7 @@ export const DeviceAuthenticity = () => {
             }
             setIsSubmitted(true);
         };
-        const goToNext = () => (activeStepId === 'welcome' ? goToSuite() : goToNextStep());
+        const goToNext = () => (isOnboarding ? goToNextStep() : goToSuite());
         const handleClick = isCheckSuccessful ? goToNext : authenticateDevice;
 
         const buttonText = isCheckSuccessful ? 'TR_CONTINUE' : 'TR_START_CHECK';

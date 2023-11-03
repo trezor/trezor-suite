@@ -4,8 +4,8 @@ import * as STEP from 'src/constants/onboarding/steps';
 import { Step } from 'src/types/onboarding';
 import { findNextStep, findPrevStep, isStepUsed } from '../steps';
 
-const welcomeStep: Step = {
-    id: STEP.ID_WELCOME_STEP,
+const firmwareStep: Step = {
+    id: STEP.ID_FIRMWARE_STEP,
     path: [],
     stepGroup: undefined,
 };
@@ -29,12 +29,12 @@ const stateMock = {
     suite: { settings: { debug: { isUnlockedBootloaderAllowed: false } } },
 } as any;
 
-const stepsMock = [welcomeStep, backupStep];
+const stepsMock = [firmwareStep, backupStep];
 
 describe('steps', () => {
     describe('findNextStep', () => {
         it('should find next step', () => {
-            expect(findNextStep(welcomeStep.id, stepsMock)).toEqual(backupStep);
+            expect(findNextStep(firmwareStep.id, stepsMock)).toEqual(backupStep);
         });
 
         it('should throw on improrper use (no more step exists)', () => {
@@ -44,30 +44,30 @@ describe('steps', () => {
 
     describe('findPrevStep', () => {
         it('should find previous step', () => {
-            expect(findPrevStep(backupStep.id, stepsMock)).toEqual(welcomeStep);
+            expect(findPrevStep(backupStep.id, stepsMock)).toEqual(firmwareStep);
         });
 
         it('should throw on improper use (no more step exists)', () => {
-            expect(() => findPrevStep(welcomeStep.id, stepsMock)).toThrow('no prev step exists');
+            expect(() => findPrevStep(firmwareStep.id, stepsMock)).toThrow('no prev step exists');
         });
     });
 
     describe('isStepUsed', () => {
         it('empty path means no restriction', () => {
-            expect(isStepUsed(welcomeStep, () => stateMock)).toEqual(true);
+            expect(isStepUsed(firmwareStep, () => stateMock)).toEqual(true);
         });
 
         it('should return false for no overlap', () => {
-            const step = welcomeStep;
-            welcomeStep.path = ['create'];
+            const step = firmwareStep;
+            firmwareStep.path = ['create'];
             expect(
                 isStepUsed(step, () => ({ ...stateMock, onboarding: { path: ['recovery'] } })),
             ).toEqual(false);
         });
 
         it('should return true for full overlap', () => {
-            const step = welcomeStep;
-            welcomeStep.path = ['create'];
+            const step = firmwareStep;
+            firmwareStep.path = ['create'];
             expect(
                 isStepUsed(step, () => ({ ...stateMock, onboarding: { path: ['create'] } })),
             ).toEqual(true);

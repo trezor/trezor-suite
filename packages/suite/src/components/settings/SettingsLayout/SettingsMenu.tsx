@@ -56,7 +56,7 @@ export const SettingsMenu = () => {
     };
     const handleClose = () =>
         dispatch(
-            goto(initialRun ? 'onboarding-index' : settingsBackRoute.name, {
+            goto(initialRun ? 'suite-start' : settingsBackRoute.name, {
                 params: settingsBackRoute.params,
             }),
         );

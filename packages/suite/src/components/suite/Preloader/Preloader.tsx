@@ -9,11 +9,15 @@ import type { AppState } from 'src/types/suite';
 import { SuiteLayout } from './SuiteLayout/SuiteLayout';
 import { InitialLoading } from './InitialLoading';
 import { DatabaseUpgradeModal } from './DatabaseUpgradeModal';
-import { PrerequisiteScreen } from './PrerequisiteScreen';
 import { selectPrerequisite } from 'src/reducers/suite/suiteReducer';
+import { SuiteStart } from 'src/views/start/SuiteStart';
+import { PrerequisitesGuide } from '../PrerequisitesGuide/PrerequisitesGuide';
+import { WelcomeLayout } from '../WelcomeLayout';
 
 const getFullscreenApp = (route: AppState['router']['route']) => {
     switch (route?.app) {
+        case 'start':
+            return SuiteStart;
         case 'onboarding':
             return Onboarding;
         default:
@@ -50,6 +54,15 @@ export const Preloader = ({ children }: PreloaderProps) => {
         return <DatabaseUpgradeModal variant={lifecycle.error} />;
     }
 
+    // @trezor/connect was initialized, but didn't emit "TRANSPORT" event yet (it could take a while)
+    // display Loader as full page view
+    if (lifecycle.status !== 'ready' || !router.loaded || !transport) {
+        return <InitialLoading timeout={90} />;
+    }
+
+    // TODO: murder the fullscreenapp logic, there must be a learer way
+    // i don't like how it's not clear which layout is used
+    // and that the prerequisite screen is handled multiple times
     const FullscreenApp = getFullscreenApp(router.route);
     if (FullscreenApp) {
         return <FullscreenApp />;
@@ -59,15 +72,14 @@ export const Preloader = ({ children }: PreloaderProps) => {
         return <SuiteLayout>{children}</SuiteLayout>;
     }
 
-    // @trezor/connect was initialized, but didn't emit "TRANSPORT" event yet (it could take a while)
-    // display Loader as full page view
-    if (lifecycle.status !== 'ready' || !router.loaded || !transport) {
-        return <InitialLoading timeout={90} />;
-    }
-
     // display prerequisite for regular application as page view
+    // Fullscreen Apps should handle prerequisites by themselves!!!
     if (prerequisite) {
-        return <PrerequisiteScreen />;
+        return (
+            <WelcomeLayout>
+                <PrerequisitesGuide allowSwitchDevice />
+            </WelcomeLayout>
+        );
     }
 
     // route does not exist, display error page in fullscreen mode

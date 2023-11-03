@@ -6,6 +6,7 @@ import routerReducer from 'src/reducers/suite/routerReducer';
 import modalReducer from 'src/reducers/suite/modalReducer';
 import * as fixtures from '../__fixtures__/routerActions';
 import * as routerActions from '../routerActions';
+import { AppState } from 'src/reducers/store';
 
 type SuiteState = ReturnType<typeof suiteReducer>;
 type RouterState = ReturnType<typeof routerReducer>;
@@ -15,7 +16,9 @@ interface InitialState {
 }
 
 // some super long recursive type will make TSC to fail with export
-const getInitialState = (state: InitialState | undefined) => {
+const getInitialState = (
+    state: InitialState | undefined,
+): Pick<AppState, 'suite' | 'router' | 'modal' | 'analytics'> => {
     const suite = state ? state.suite : undefined;
     const router = state ? state.router : undefined;
     return {
@@ -28,6 +31,9 @@ const getInitialState = (state: InitialState | undefined) => {
             ...router,
         },
         modal: modalReducer(undefined, { type: 'foo' } as any),
+        analytics: {
+            confirmed: false,
+        },
     };
 };
 
