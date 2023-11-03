@@ -10,6 +10,9 @@
             "path": "../../suite-common/formatters"
         },
         { "path": "../../suite-common/sentry" },
+        {
+            "path": "../../suite-common/suite-types"
+        },
         { "path": "../connect" },
         { "path": "../device-utils" },
         { "path": "../suite" },

@@ -9,11 +9,6 @@ const modalAppParams = ['cancelable', 'variant'] as const;
 
 export const routes = [
     {
-        name: 'suite-start',
-        pattern: '/start',
-        app: 'start',
-    },
-    {
         name: 'suite-index',
         pattern: '/',
         app: 'dashboard',
@@ -219,13 +214,6 @@ export const routes = [
         params: walletParams,
     },
     {
-        name: 'wallet-coinmarket-savings',
-        pattern: '/accounts/coinmarket/savings',
-        app: 'wallet',
-        params: walletParams,
-        exact: true,
-    },
-    {
         name: 'wallet-coinmarket-savings-setup',
         pattern: '/accounts/coinmarket/savings/setup',
         app: 'wallet',
@@ -283,16 +271,6 @@ export const routes = [
         pattern: '/accounts/anonymize',
         app: 'wallet',
         params: walletParams,
-    },
-    {
-        name: 'passwords-index',
-        pattern: '/passwords',
-        app: 'passwords',
-    },
-    {
-        name: 'portfolio-index',
-        pattern: '/portfolio',
-        app: 'portfolio',
     },
     {
         name: 'notifications-index',

@@ -9,3 +9,5 @@ type RouteKeys =
     | 'isFullscreenApp';
 
 export type Route = ArrayElement<ConstWithOptionalFields<typeof routes, RouteKeys>>;
+
+export type PageName = Exclude<Route, { isForegroundApp: true }>['name'];

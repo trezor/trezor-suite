@@ -1,10 +1,11 @@
-import { lazy, memo, Suspense, LazyExoticComponent } from 'react';
+import { lazy, memo, Suspense, LazyExoticComponent, ComponentType } from 'react';
 import { Switch, Route } from 'react-router-dom';
 
 import routes from 'src/constants/suite/routes';
 import { BundleLoader } from 'src/components/suite';
+import { PageName } from '@suite-common/suite-types';
 
-const components: { [key: string]: LazyExoticComponent<any> } = {
+const components: Record<PageName, LazyExoticComponent<ComponentType<any>>> = {
     'suite-index': lazy(() => import(/* webpackChunkName: "dashboard" */ 'src/views/dashboard')),
     'notifications-index': lazy(
         () => import(/* webpackChunkName: "notifications" */ 'src/views/suite/notifications'),
@@ -150,7 +151,7 @@ const AppRouter = () => (
                     key={route.name}
                     path={process.env.ASSET_PREFIX + route.pattern}
                     exact={route.exact}
-                    component={components[route.name]}
+                    component={components[route.name as PageName]}
                 />
             ))}
         </Switch>

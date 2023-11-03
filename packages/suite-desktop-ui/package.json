@@ -16,6 +16,7 @@
         "@sentry/electron": "^4.14.0",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/sentry": "workspace:*",
+        "@suite-common/suite-types": "workspace:*",
         "@trezor/components": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/ipc-proxy": "workspace:*",

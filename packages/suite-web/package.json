@@ -15,6 +15,7 @@
         "@sentry/browser": "^7.77.0",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/sentry": "workspace:*",
+        "@suite-common/suite-types": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "@trezor/suite": "workspace:*",
