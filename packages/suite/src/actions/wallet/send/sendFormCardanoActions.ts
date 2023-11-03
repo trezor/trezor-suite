@@ -1,5 +1,14 @@
 import TrezorConnect, { PROTO } from '@trezor/connect';
-import { isTestnet, getDerivationType } from '@suite-common/wallet-utils';
+import {
+    isTestnet,
+    getDerivationType,
+    getUnusedChangeAddress,
+    getAddressParameters,
+    getNetworkId,
+    getProtocolMagic,
+    transformUserOutputs,
+    formatMaxOutputAmount,
+} from '@suite-common/wallet-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     FormState,
@@ -11,14 +20,6 @@ import {
 import { selectDevice } from '@suite-common/wallet-core';
 
 import { Dispatch, GetState } from 'src/types/suite';
-import {
-    getUnusedChangeAddress,
-    getAddressParameters,
-    getNetworkId,
-    getProtocolMagic,
-    transformUserOutputs,
-    formatMaxOutputAmount,
-} from 'src/utils/wallet/cardanoUtils';
 
 export const composeTransaction =
     (formValues: FormState, formState: ComposeActionContext) =>

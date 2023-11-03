@@ -12,6 +12,7 @@ export const en = {
             continue: 'Continue',
             next: 'Next',
         },
+        unknownError: 'Something went wrong',
     },
     moduleHome: {
         graph: {
@@ -114,7 +115,24 @@ export const en = {
         },
     },
     moduleReceive: {
-        title: '{coinSymbol} Receive address',
+        screenTitle: '{coinSymbol} Receive address',
+        accountNotFound: 'Account {accountKey} not found.',
+        receiveAddressCard: {
+            unverifiedWarning: {
+                title: 'receive address',
+                content:
+                    'For an extra layer of security, use Trezor Suite with your Trezor hardware wallet to verify the receive address',
+            },
+            deviceHint: {
+                description:
+                    'The receive address shown above should match the one on your Trezor device.',
+                doesNotMatchButton: "Address doesn't match?",
+            },
+            showAddress: {
+                button: 'Show address',
+                learnMore: 'Learn more about verifying addresses',
+            },
+        },
     },
     moduleSettings: {
         faq: {
@@ -217,6 +235,11 @@ export const en = {
             sectionTitle: 'Connect Trezor device',
             connectButton: 'Connect',
         },
+    },
+    qrCode: {
+        addressCopied: 'Address copied',
+        copyButton: 'Copy',
+        shareButton: 'Share',
     },
 };
 

@@ -18,10 +18,12 @@
         { "path": "../device-manager" },
         { "path": "../ethereum-tokens" },
         { "path": "../formatters" },
+        { "path": "../helpers" },
         { "path": "../intl" },
         { "path": "../link" },
         { "path": "../navigation" },
         { "path": "../qr-code" },
+        { "path": "../toasts" },
         { "path": "../../packages/styles" }
     ]
 }

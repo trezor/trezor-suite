@@ -1,7 +1,6 @@
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { confirmAddressOnDevice } from '@suite-common/wallet-utils';
 import { UserContextPayload } from '@suite-common/suite-types';
-import { selectDevice } from '@suite-common/wallet-core';
+import { confirmAddressOnDeviceThunk, selectDevice } from '@suite-common/wallet-core';
 
 import { RECEIVE } from 'src/actions/wallet/constants';
 import * as modalActions from 'src/actions/suite/modalActions';
@@ -61,7 +60,9 @@ export const showAddress =
 
         dispatch(modalActions.preserve());
 
-        const response = await confirmAddressOnDevice({ device, account, addressPath: path });
+        const response = await dispatch(
+            confirmAddressOnDeviceThunk({ accountKey: account.key, addressPath: path }),
+        ).unwrap();
 
         if (response.success) {
             // show second part of the "confirm address" modal

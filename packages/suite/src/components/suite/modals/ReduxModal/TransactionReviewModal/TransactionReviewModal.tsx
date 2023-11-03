@@ -8,7 +8,7 @@ import { selectDevice } from '@suite-common/wallet-core';
 import { Translation, Modal } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { cancelSignTx } from 'src/actions/wallet/sendFormActions';
-import { isCardanoTx } from 'src/utils/wallet/cardanoUtils';
+import { isCardanoTx } from '@suite-common/wallet-utils';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import { constructOutputs } from 'src/utils/wallet/reviewTransactionUtils';
 import { TransactionReviewSummary } from './TransactionReviewSummary';

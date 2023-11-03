@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import {
     AccountsRootState,
@@ -7,15 +7,16 @@ import {
     TransactionsRootState,
     selectPendingAccountAddresses,
     selectIsAccountUtxoBased,
-    selectDevice,
     selectAccountNetworkSymbol,
     selectIsSelectedDeviceImported,
+    confirmAddressOnDeviceThunk,
 } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
-import { getFirstFreshAddress, confirmAddressOnDevice } from '@suite-common/wallet-utils';
+import { getFirstFreshAddress } from '@suite-common/wallet-utils';
 import { analytics, EventType } from '@suite-native/analytics';
 
 export const useAccountReceiveAddress = (accountKey: AccountKey) => {
+    const dispatch = useDispatch();
     const [isReceiveApproved, setIsReceiveApproved] = useState(false);
     const [isUnverifiedAddressRevealed, setIsUnverifiedAddressRevealed] = useState(false);
 
@@ -27,7 +28,6 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
     const networkSymbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
-    const device = useSelector(selectDevice);
     const pendingAddresses = useSelector((state: TransactionsRootState) =>
         selectPendingAccountAddresses(state, accountKey),
     );
@@ -42,18 +42,16 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
     }, [account, pendingAddresses, isAccountUtxoBased]);
 
     const verifyAddressOnDevice = useCallback(async () => {
-        if (device && account && freshAddress) {
-            const response = await confirmAddressOnDevice({
-                device,
-                account,
-                addressPath: freshAddress.path,
-            });
+        if (accountKey && freshAddress) {
+            const { success } = await dispatch(
+                confirmAddressOnDeviceThunk({ accountKey, addressPath: freshAddress.path }),
+            ).unwrap();
 
-            return response.success;
+            return success;
         }
 
         return false;
-    }, [device, account, freshAddress]);
+    }, [dispatch, accountKey, freshAddress]);
 
     const handleShowAddress = useCallback(async () => {
         if (isPortfolioTracker) {

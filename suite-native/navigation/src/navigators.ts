@@ -10,6 +10,7 @@ import {
     HomeStackRoutes,
     RootStackRoutes,
     SettingsStackRoutes,
+    ReceiveStackRoutes,
     AccountsStackRoutes,
     DevUtilsStackRoutes,
     OnboardingStackRoutes,
@@ -43,10 +44,18 @@ export type SettingsStackParamList = {
     [SettingsStackRoutes.SettingsFAQ]: undefined;
 };
 
+export type ReceiveStackParamList = {
+    [ReceiveStackRoutes.ReceiveAccounts]: undefined;
+    [ReceiveStackRoutes.Receive]: {
+        accountKey: AccountKey;
+        tokenContract?: TokenAddress;
+    };
+};
+
 export type AppTabsParamList = {
     [AppTabsRoutes.HomeStack]: NavigatorScreenParams<HomeStackParamList>;
     [AppTabsRoutes.AccountsStack]: NavigatorScreenParams<AccountsStackParamList>;
-    [AppTabsRoutes.ReceiveAccounts]: undefined;
+    [AppTabsRoutes.ReceiveStack]: NavigatorScreenParams<ReceiveStackParamList>;
     [AppTabsRoutes.SettingsStack]: NavigatorScreenParams<SettingsStackParamList>;
 };
 

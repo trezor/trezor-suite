@@ -6,25 +6,20 @@ import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { AccountsList, SearchableAccountsListScreenHeader } from '@suite-native/accounts';
 import {
     Screen,
-    RootStackRoutes,
-    RootStackParamList,
-    TabToStackCompositeNavigationProp,
-    AppTabsRoutes,
-    AppTabsParamList,
+    ReceiveStackParamList,
+    ReceiveStackRoutes,
+    StackNavigationProps,
 } from '@suite-native/navigation';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 
-type NavigationProps = TabToStackCompositeNavigationProp<
-    AppTabsParamList,
-    AppTabsRoutes.ReceiveAccounts,
-    RootStackParamList
->;
-
 export const ReceiveAccountsScreen = () => {
-    const navigation = useNavigation<NavigationProps>();
+    const navigation =
+        useNavigation<
+            StackNavigationProps<ReceiveStackParamList, ReceiveStackRoutes.ReceiveAccounts>
+        >();
 
     const navigateToReceiveScreen = (accountKey: AccountKey, tokenContract?: TokenAddress) =>
-        navigation.navigate(RootStackRoutes.ReceiveModal, { accountKey, tokenContract });
+        navigation.navigate(ReceiveStackRoutes.Receive, { accountKey, tokenContract });
 
     const [accountsFilterValue, setAccountsFilterValue] = useState<string>('');
 

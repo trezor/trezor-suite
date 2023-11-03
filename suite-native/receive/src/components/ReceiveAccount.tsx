@@ -1,12 +1,11 @@
-import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { G } from '@mobily/ts-belt';
 
 import { ErrorMessage, VStack, Box } from '@suite-native/atoms';
-import { analytics, EventType } from '@suite-native/analytics';
 import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { useTranslate } from '@suite-native/intl';
 
 import { useAccountReceiveAddress } from '../hooks/useAccountReceiveAddress';
 import { ConfirmOnTrezorImage } from './ConfirmOnTrezorImage';
@@ -19,6 +18,7 @@ type AccountReceiveProps = {
 };
 
 export const ReceiveAccount = ({ accountKey, tokenContract }: AccountReceiveProps) => {
+    const { translate } = useTranslate();
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
@@ -29,7 +29,7 @@ export const ReceiveAccount = ({ accountKey, tokenContract }: AccountReceiveProp
     const isAccountDetailVisible = !isUnverifiedAddressRevealed && !isReceiveApproved;
 
     if (G.isNullable(account) || G.isNullable(address))
-        return <ErrorMessage errorMessage="Something went wrong" />;
+        return <ErrorMessage errorMessage={translate('generic.unknownError')} />;
 
     return (
         <Box flex={1}>
@@ -40,7 +40,6 @@ export const ReceiveAccount = ({ accountKey, tokenContract }: AccountReceiveProp
                         tokenContract={tokenContract}
                     />
                 )}
-                {/* TODO: AlertBox message */}
                 <ReceiveAddressCard
                     address={address}
                     isReceiveApproved={isReceiveApproved}

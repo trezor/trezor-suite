@@ -8,6 +8,9 @@ import {
     hasNetworkFeatures,
     parseFormDraftKey,
     getDerivationType,
+    getProtocolMagic,
+    getNetworkId,
+    getAddressParameters,
 } from '@suite-common/wallet-utils';
 import { Output } from '@suite-common/wallet-types/src';
 import { selectDevice, toggleRememberDevice } from '@suite-common/wallet-core';
@@ -17,11 +20,6 @@ import * as modalActions from 'src/actions/suite/modalActions';
 import { getUnusedAddressFromAccount } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { Account } from 'src/types/wallet';
 import { ComposedTransactionInfo } from 'src/reducers/wallet/coinmarketReducer';
-import {
-    getProtocolMagic,
-    getNetworkId,
-    getAddressParameters,
-} from 'src/utils/wallet/cardanoUtils';
 import { submitRequestForm as envSubmitRequestForm } from 'src/utils/suite/env';
 import * as formDraftActions from 'src/actions/wallet/formDraftActions';
 

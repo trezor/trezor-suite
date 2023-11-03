@@ -6,7 +6,7 @@ import { versionUtils } from '@trezor/utils';
 import { TrezorDevice } from 'src/types/suite/index';
 import { FormState, PrecomposedTransactionFinal, TxFinalCardano } from 'src/types/wallet/sendForm';
 import { Account } from 'src/types/wallet/index';
-import { getShortFingerprint, isCardanoTx } from 'src/utils/wallet/cardanoUtils';
+import { getShortFingerprint, isCardanoTx } from '@suite-common/wallet-utils';
 import { ReviewOutput } from 'src/types/wallet/transaction';
 
 export const getOutputState = (index: number, buttonRequestsCount: number) => {

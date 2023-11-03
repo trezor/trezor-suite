@@ -4,6 +4,7 @@ import { A, pipe } from '@mobily/ts-belt';
 
 import { Box, Text, Button, VStack, HStack } from '@suite-native/atoms';
 import { splitAddressToChunks, useCopyToClipboard } from '@suite-native/helpers';
+import { useTranslate } from '@suite-native/intl';
 
 import { QRCode } from './QRCode';
 
@@ -11,13 +12,12 @@ type AddressQRCodeProps = {
     address: string;
 };
 
-const ON_COPY_MESSAGE = 'Address copied';
-
 export const AddressQRCode = ({ address }: AddressQRCodeProps) => {
     const copyToClipboard = useCopyToClipboard();
+    const { translate } = useTranslate();
 
     const handleCopyAddress = async () => {
-        await copyToClipboard(address, ON_COPY_MESSAGE);
+        await copyToClipboard(address, translate('qrCode.addressCopied'));
     };
 
     const handleShareData = async () => {
@@ -47,7 +47,7 @@ export const AddressQRCode = ({ address }: AddressQRCodeProps) => {
                     onPress={handleCopyAddress}
                     colorScheme="tertiaryElevation1"
                 >
-                    Copy
+                    {translate('qrCode.copyButton')}
                 </Button>
                 <Button
                     size="small"
@@ -55,7 +55,7 @@ export const AddressQRCode = ({ address }: AddressQRCodeProps) => {
                     colorScheme="tertiaryElevation1"
                     onPress={handleShareData}
                 >
-                    Share
+                    {translate('qrCode.shareButton')}
                 </Button>
             </HStack>
         </VStack>

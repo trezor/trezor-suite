@@ -8,6 +8,7 @@
         },
         { "path": "../atoms" },
         { "path": "../helpers" },
+        { "path": "../intl" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" }
     ]
