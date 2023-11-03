@@ -237,8 +237,8 @@ connect-popup:
   dependencies:
     - install
     - connect-web build
-  only:
-    <<: *run_everything_rules
+  # only:
+  #   <<: *run_everything_rules
 
 connect-popup manual:
   extends: .e2e connect-popup
@@ -396,9 +396,9 @@ connect-popup-webextension manual:
 connect:
   extends: .connect matrix
   retry: 1
-  only:
-    refs:
-      - schedules # only nightly jobs, this is too heavy for develop branches at the moment
+  # only:
+  #   refs:
+  #     - schedules # only nightly jobs, this is too heavy for develop branches at the moment
 
 connect manual:
   extends: .connect matrix
