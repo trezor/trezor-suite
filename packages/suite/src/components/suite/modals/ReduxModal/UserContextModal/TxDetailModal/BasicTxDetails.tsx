@@ -252,7 +252,11 @@ export const BasicTxDetails = ({
                 </Title>
 
                 <TxidValue>
-                    <IOAddress txAddress={tx.txid} explorerUrl={explorerUrl} />
+                    <IOAddress
+                        txAddress={tx.txid}
+                        explorerUrl={explorerUrl}
+                        urlSuffix={network.symbol === 'dsol' ? '?cluster=devnet' : undefined}
+                    />
                 </TxidValue>
 
                 {network.networkType === 'bitcoin' && (

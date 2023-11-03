@@ -124,7 +124,11 @@ export const TokenList = ({ tokens, explorerUrl, isTestnet, networkType }: Token
                             </Col>
                         )}
                         <Col isTestnet={isTestnet} justify="right">
-                            <TrezorLink href={`${explorerUrl}${t.contract}`}>
+                            <TrezorLink
+                                href={`${explorerUrl}${t.contract}${
+                                    networkType === 'solana' && isTestnet ? '?cluster=devnet' : ''
+                                }`}
+                            >
                                 <Icon
                                     icon="EXTERNAL_LINK"
                                     size={16}
