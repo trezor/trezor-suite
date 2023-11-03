@@ -28,9 +28,9 @@ type Context = ContextType<SolanaAPI>;
 type Request<T> = T & Context;
 
 type SignatureWithSlot = {
-    signature: string,
-    slot: number,
-}
+    signature: string;
+    slot: number;
+};
 
 const getAllSignatures = async (
     api: SolanaAPI,
@@ -49,8 +49,8 @@ const getAllSignatures = async (
             });
 
         const signatures = signaturesInfos.map(info => ({
-          signature: info.signature,
-          slot: info.slot,
+            signature: info.signature,
+            slot: info.slot,
         }));
         lastSignature = signatures[signatures.length - 1];
         keepFetching = signatures.length === limit;
@@ -159,20 +159,23 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
         programId: new PublicKey(TOKEN_PROGRAM_PUBLIC_KEY),
     });
 
-    const allAccounts = [payload.descriptor, ...tokenAccounts.value.map(a => a.pubkey.toString())]
+    const allAccounts = [payload.descriptor, ...tokenAccounts.value.map(a => a.pubkey.toString())];
 
     const allTxIds = Array.from(
-      new Set(
-        (await Promise.all(
-          allAccounts.map(async (account) => await getAllSignatures(api, account))
-        )).flat()
-      )
-    ).sort((a, b) => b.slot - a.slot)
-    .map((it) => it.signature);
+        new Set(
+            (
+                await Promise.all(
+                    allAccounts.map(async account => await getAllSignatures(api, account)),
+                )
+            ).flat(),
+        ),
+    )
+        .sort((a, b) => b.slot - a.slot)
+        .map(it => it.signature);
 
     const pageNumber = payload.page ? payload.page - 1 : 0;
     // for the first page of txs, payload.page is undefined, for the second page is 2
-    const pageSize = payload.pageSize || 25;
+    const pageSize = payload.pageSize || 2;
 
     const pageStartIndex = pageNumber * pageSize;
     const pageEndIndex = Math.min(pageStartIndex + pageSize, allTxIds.length);
