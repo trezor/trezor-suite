@@ -674,6 +674,11 @@ export const onCall = async (message: CoreMessage) => {
                 }
             }
             postMessage(response);
+
+            // if (!device.loaded && response.success) {
+            //     device.loaded = true;
+            //     device.firstRunPromise.resolve(true);
+            // }
         }
     }
 };

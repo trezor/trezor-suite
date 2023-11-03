@@ -349,6 +349,11 @@ export class Device extends TypedEmitter<DeviceEvents> {
             }
         }
 
+        if (!this.loaded) {
+            this.loaded = true;
+            this.firstRunPromise.resolve(true);
+        }
+
         // if keepSession is set do not release device
         // until method with keepSession: false will be called
         if (options.keepSession) {
@@ -385,10 +390,10 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
         delete this.runPromise;
 
-        if (!this.loaded) {
-            this.loaded = true;
-            this.firstRunPromise.resolve(true);
-        }
+        // if (!this.loaded) {
+        //     this.loaded = true;
+        //     this.firstRunPromise.resolve(true);
+        // }
     }
 
     getCommands() {
