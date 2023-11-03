@@ -82,7 +82,7 @@ export const XpubHintBottomSheet = ({
                 </VStack>
                 <Box marginTop="extraLarge">
                     <Button
-                        data-testID="@accounts-import/xpub-help-modal/confirm-btn"
+                        testID="@accounts-import/xpub-help-modal/confirm-btn"
                         onPress={handleClose}
                     >
                         Got it

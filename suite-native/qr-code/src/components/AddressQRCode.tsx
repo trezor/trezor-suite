@@ -46,6 +46,7 @@ export const AddressQRCode = ({ address }: AddressQRCodeProps) => {
                     iconLeft="copy"
                     onPress={handleCopyAddress}
                     colorScheme="tertiaryElevation1"
+                    testID="@receive/addressQrCode/copyButton"
                 >
                     {translate('qrCode.copyButton')}
                 </Button>

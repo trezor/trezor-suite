@@ -112,7 +112,7 @@ export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
     autoCorrect?: string;
     autoCapitalize?: string;
     spellCheck?: boolean;
-    dataTest?: string;
+    testID?: string;
     isPartiallyHidden?: boolean;
     wrapperProps?: Record<string, any>;
     inputState?: InputState;
@@ -145,7 +145,7 @@ const Input = ({
     autoCapitalize = 'off',
     isMonospace,
     labelAddonIsVisible,
-    dataTest,
+    testID,
     isPartiallyHidden,
     clearButton,
     onClear,
@@ -181,7 +181,7 @@ const Input = ({
     return (
         <Wrapper
             width={width}
-            data-test={dataTest}
+            testID={dataTest}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >

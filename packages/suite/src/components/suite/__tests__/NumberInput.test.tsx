@@ -28,7 +28,7 @@ const InputWithForm = ({ store }: InputWithFormProps) => {
                 <NumberInput
                     control={control}
                     name="input"
-                    data-testid="number-input"
+                    testID="number-input"
                     onChange={onChangeMock}
                 />
             </ThemeProvider>

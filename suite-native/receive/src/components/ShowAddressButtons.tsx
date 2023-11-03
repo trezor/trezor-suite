@@ -38,7 +38,12 @@ export const ShowAddressButtons = ({ onShowAddress }: ShowAddressButtonsProps) =
     return (
         <>
             <VStack spacing="large">
-                <Button iconLeft="eye" size="large" onPress={handlePressShowAddressButton}>
+                <Button
+                    iconLeft="eye"
+                    size="large"
+                    onPress={handlePressShowAddressButton}
+                    testID="@receive/showAddressBtn"
+                >
                     {translate('moduleReceive.receiveAddressCard.showAddress.button')}
                 </Button>
                 <TextButton size="small" onPress={handleOpenEduLink} iconRight="arrowUpRight">

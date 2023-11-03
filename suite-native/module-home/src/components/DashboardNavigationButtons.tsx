@@ -25,7 +25,7 @@ export const DashboardNavigationButtons = () => {
         <VStack spacing="large">
             <Box marginHorizontal="medium">
                 <Button
-                    data-testID="@home/portfolio/sync-coins-button"
+                    testID="@home/portfolio/sync-coins-button"
                     colorScheme="tertiaryElevation0"
                     size="large"
                     onPress={handleImportAssets}
@@ -36,7 +36,7 @@ export const DashboardNavigationButtons = () => {
             <Divider />
             <Box marginHorizontal="medium">
                 <Button
-                    data-testID="@home/portolio/recieve-button"
+                    testID="@home/portolio/recieve-button"
                     size="large"
                     onPress={handleReceive}
                     iconLeft="receive"

@@ -30,6 +30,7 @@ export const TabBarItem = ({ isFocused, onPress, iconName, title }: TabBarItemPr
 
     return (
         <TouchableOpacity
+            testID={`@bottomBar/${title}`}
             accessibilityRole="button"
             accessibilityState={isFocused ? { selected: true } : {}}
             onPress={() => {

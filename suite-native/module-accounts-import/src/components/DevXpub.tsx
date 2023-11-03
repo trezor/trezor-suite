@@ -26,7 +26,7 @@ export const DevXpub = ({ symbol, onSelect }: DevXpubProps) => {
     return (
         <Box marginTop="medium">
             <Button
-                data-testID={`@accounts-import/sync-coins/dev-xpub/${symbol}`}
+                testID={`@accounts-import/sync-coins/dev-xpub/${symbol}`}
                 onPress={() => onSelect({ xpubAddress: xpub })}
                 colorScheme="tertiaryElevation0"
             >
