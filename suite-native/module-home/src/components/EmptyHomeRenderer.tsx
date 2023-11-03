@@ -19,9 +19,9 @@ export const EmptyHomeRenderer = () => {
         if (!isDeviceImported && isDeviceAuthorized) {
             return <EmptyConnectedDeviceState />;
         }
-    } else if (isDeviceImported) {
-        return <EmptyPortfolioTrackerState />;
+
+        return <EmptyPortfolioCrossroads />;
     }
 
-    return <EmptyPortfolioCrossroads />;
+    return <EmptyPortfolioTrackerState />;
 };

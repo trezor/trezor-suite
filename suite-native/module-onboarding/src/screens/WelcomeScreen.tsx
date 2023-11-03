@@ -56,8 +56,7 @@ const cardStyle = prepareNativeStyle(utils => ({
 export const WelcomeScreen = () => {
     const { translate } = useTranslate();
 
-    const { isUsbDeviceConnectFeatureEnabled: isUsbConnectEnabled } =
-        useIsUsbDeviceConnectFeatureEnabled();
+    const { isUsbDeviceConnectFeatureEnabled } = useIsUsbDeviceConnectFeatureEnabled();
 
     const navigation =
         useNavigation<
@@ -70,7 +69,7 @@ export const WelcomeScreen = () => {
 
     const handleRedirect = () => {
         navigation.navigate(
-            isUsbConnectEnabled
+            isUsbDeviceConnectFeatureEnabled
                 ? OnboardingStackRoutes.ConnectTrezor
                 : OnboardingStackRoutes.TrackBalances,
         );

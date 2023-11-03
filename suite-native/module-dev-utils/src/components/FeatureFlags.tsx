@@ -2,7 +2,7 @@ import { Box, CheckBox, Text, VStack, Card } from '@suite-native/atoms';
 import { useIsUsbDeviceConnectFeatureEnabled } from '@suite-native/feature-flags';
 
 export const FeatureFlags = () => {
-    const { isUsbDeviceConnectFeatureEnabled, setIsUsbDeviceConnectFeatureEnabled } =
+    const { isUsbDeviceConnectFeatureEnabled, toggleIsDeviceConnectFeatureFlagEnabled } =
         useIsUsbDeviceConnectFeatureEnabled();
 
     return (
@@ -14,7 +14,7 @@ export const FeatureFlags = () => {
                         <Text>Connect device</Text>
                         <CheckBox
                             isChecked={isUsbDeviceConnectFeatureEnabled}
-                            onChange={setIsUsbDeviceConnectFeatureEnabled}
+                            onChange={toggleIsDeviceConnectFeatureFlagEnabled}
                         />
                     </Box>
                 </VStack>
