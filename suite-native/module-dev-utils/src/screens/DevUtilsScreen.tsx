@@ -10,8 +10,10 @@ import {
     DevUtilsStackParamList,
     DevUtilsStackRoutes,
     ScreenSubHeader,
+    ScreenHeader,
 } from '@suite-native/navigation';
 import { clearStorage } from '@suite-native/storage';
+import { DeviceManager } from '@suite-native/device-switcher';
 
 import { BuildInfo } from '../components/BuildInfo';
 import { RenderingUtils } from '../components/RenderingUtils';
@@ -25,7 +27,14 @@ export const DevUtilsScreen = ({
     const shouldShowFeatureFlags = isDevelopOrDebugEnv();
 
     return (
-        <Screen subheader={<ScreenSubHeader content="DEV utils" />}>
+        <Screen
+            screenHeader={
+                <ScreenHeader>
+                    <DeviceManager />
+                </ScreenHeader>
+            }
+            subheader={<ScreenSubHeader content="DEV utils" />}
+        >
             <VStack>
                 <Card>
                     <VStack spacing="medium">

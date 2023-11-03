@@ -8,10 +8,12 @@ import {
     AccountsImportStackRoutes,
     RootStackParamList,
     Screen,
+    ScreenHeader,
     StackToStackCompositeScreenProps,
 } from '@suite-native/navigation';
 import TrezorConnect, { AccountInfo } from '@trezor/connect';
 import { TokenAddress } from '@suite-common/wallet-types';
+import { DeviceManager } from '@suite-native/device-switcher';
 
 import { AccountImportLoader } from '../components/AccountImportLoader';
 import { useShowImportError } from '../useShowImportError';
@@ -117,7 +119,14 @@ export const AccountImportLoadingScreen = ({
     }, [xpubAddress, networkSymbol, dispatch, safelyShowImportError, fiatCurrency]);
 
     return (
-        <Screen isScrollable={false}>
+        <Screen
+            screenHeader={
+                <ScreenHeader hasBottomPadding>
+                    <DeviceManager />
+                </ScreenHeader>
+            }
+            isScrollable={false}
+        >
             <AccountImportLoader />
         </Screen>
     );

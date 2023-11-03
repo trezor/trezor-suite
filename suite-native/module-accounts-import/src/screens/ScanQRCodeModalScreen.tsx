@@ -4,8 +4,10 @@ import {
     AccountsImportStackRoutes,
     Screen,
     ScreenSubHeader,
+    ScreenHeader,
     StackProps,
 } from '@suite-native/navigation';
+import { DeviceManager } from '@suite-native/device-switcher';
 import { networks, NetworkType } from '@suite-common/wallet-config';
 
 export const networkTypeToTitleMap: Record<NetworkType, string> = {
@@ -30,7 +32,14 @@ export const ScanQRCodeModalScreen = ({
     const screenTitle = networkTypeToTitleMap[networkType];
 
     return (
-        <Screen subheader={<ScreenSubHeader content={screenTitle} />}>
+        <Screen
+            screenHeader={
+                <ScreenHeader>
+                    <DeviceManager />
+                </ScreenHeader>
+            }
+            subheader={<ScreenSubHeader content={screenTitle} />}
+        >
             <QRCodeScanner onCodeScanned={handleBarCodeScanned} />
         </Screen>
     );

@@ -20,6 +20,7 @@
         "@suite-native/accounts": "workspace:*",
         "@suite-native/analytics": "workspace:*",
         "@suite-native/atoms": "workspace:*",
+        "@suite-native/device-switcher": "workspace:*",
         "@suite-native/ethereum-tokens": "workspace:*",
         "@suite-native/formatters": "workspace:*",
         "@suite-native/intl": "workspace:*",

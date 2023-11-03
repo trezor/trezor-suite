@@ -5,6 +5,7 @@ import {
     RootStackParamList,
     AccountsImportStackParamList,
 } from '@suite-native/navigation';
+import { DeviceManager } from '@suite-native/device-switcher';
 
 import { AccountImportSubHeader } from '../components/AccountImportSubHeader';
 import { AccountImportSummary } from '../components/AccountImportSummary';
@@ -19,7 +20,14 @@ export const AccountImportSummaryScreen = ({
     const { accountInfo, networkSymbol } = route.params;
 
     return (
-        <Screen subheader={<AccountImportSubHeader />}>
+        <Screen
+            screenHeader={
+                <ScreenHeader>
+                    <DeviceManager />
+                </ScreenHeader>
+            }
+            subheader={<AccountImportSubHeader />}
+        >
             <AccountImportSummary accountInfo={accountInfo} networkSymbol={networkSymbol} />
         </Screen>
     );

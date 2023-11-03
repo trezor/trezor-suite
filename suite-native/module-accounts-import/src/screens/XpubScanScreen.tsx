@@ -138,6 +138,11 @@ export const XpubScanScreen = ({
 
     return (
         <Screen
+            screenHeader={
+                <ScreenHeader>
+                    <DeviceManager />
+                </ScreenHeader>
+            }
             subheader={<AccountImportSubHeader />}
             footer={<XpubHint networkType={networkType} handleOpen={handleOpenHint} />}
             extraKeyboardAvoidingViewHeight={EXTRA_KEYBOARD_AVOIDING_VIEW_HEIGHT}

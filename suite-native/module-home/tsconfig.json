@@ -14,6 +14,7 @@
         { "path": "../atoms" },
         { "path": "../biometrics" },
         { "path": "../device" },
+        { "path": "../device-switcher" },
         { "path": "../feature-flags" },
         { "path": "../formatters" },
         { "path": "../graph" },

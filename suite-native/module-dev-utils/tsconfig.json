@@ -9,6 +9,7 @@
         },
         { "path": "../atoms" },
         { "path": "../config" },
+        { "path": "../device-switcher" },
         { "path": "../discovery" },
         { "path": "../feature-flags" },
         { "path": "../helpers" },

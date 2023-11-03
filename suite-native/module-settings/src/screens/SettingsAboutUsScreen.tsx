@@ -1,7 +1,8 @@
-import { Screen, ScreenSubHeader } from '@suite-native/navigation';
+import { Screen, ScreenSubHeader, ScreenHeader } from '@suite-native/navigation';
 import { VStack, Divider } from '@suite-native/atoms';
 import { useOpenLink } from '@suite-native/link';
 import { useTranslate } from '@suite-native/intl';
+import { DeviceManager } from '@suite-native/device-switcher';
 
 import { AboutUsBanners } from '../components/AboutUsBanners';
 import { SettingsSection } from '../components/SettingsSection';
@@ -22,7 +23,14 @@ export const SettingsAboutUsScreen = () => {
     };
 
     return (
-        <Screen subheader={<ScreenSubHeader content={translate('moduleSettings.aboutUs.title')} />}>
+        <Screen
+            screenHeader={
+                <ScreenHeader>
+                    <DeviceManager />
+                </ScreenHeader>
+            }
+            subheader={<ScreenSubHeader content={translate('moduleSettings.aboutUs.title')} />}
+        >
             <VStack spacing="large">
                 <AboutUsBanners />
                 <Divider marginVertical="medium" />

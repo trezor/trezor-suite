@@ -1,7 +1,8 @@
 import { useSelector } from 'react-redux';
 
-import { Screen } from '@suite-native/navigation';
+import { Screen, ScreenHeader } from '@suite-native/navigation';
 import { selectIsPortfolioEmpty } from '@suite-common/wallet-core';
+import { DeviceManager } from '@suite-native/device-switcher';
 
 import { EmptyHomeRenderer } from '../components/EmptyHomeRenderer';
 import { PortfolioContent } from '../components/PortfolioContent';
@@ -11,7 +12,13 @@ export const HomeScreen = () => {
     const isPortfolioEmpty = useSelector(selectIsPortfolioEmpty);
 
     return (
-        <Screen>
+        <Screen
+            screenHeader={
+                <ScreenHeader hasBottomPadding>
+                    <DeviceManager />
+                </ScreenHeader>
+            }
+        >
             {isPortfolioEmpty ? <EmptyHomeRenderer /> : <PortfolioContent />}
             <BiometricsBottomSheet />
         </Screen>

@@ -10,6 +10,7 @@ import {
     StackNavigationProps,
 } from '@suite-native/navigation';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { DeviceManager } from '@suite-native/device-switcher';
 
 export const ReceiveAccountsScreen = () => {
     const navigation =
@@ -28,6 +29,11 @@ export const ReceiveAccountsScreen = () => {
 
     return (
         <Screen
+            screenHeader={
+                <ScreenHeader>
+                    <DeviceManager />
+                </ScreenHeader>
+            }
             subheader={
                 <SearchableAccountsListScreenHeader
                     title="Receive to"

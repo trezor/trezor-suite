@@ -10,6 +10,7 @@ import {
 } from '@suite-native/navigation';
 import { AccountsList, SearchableAccountsListScreenHeader } from '@suite-native/accounts';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { DeviceManager } from '@suite-native/device-switcher';
 
 import { AddAccountButton } from '../components/AddAccountsButton';
 
@@ -32,6 +33,11 @@ export const AccountsScreen = () => {
 
     return (
         <Screen
+            screenHeader={
+                <ScreenHeader>
+                    <DeviceManager />
+                </ScreenHeader>
+            }
             subheader={
                 <SearchableAccountsListScreenHeader
                     title="My assets"

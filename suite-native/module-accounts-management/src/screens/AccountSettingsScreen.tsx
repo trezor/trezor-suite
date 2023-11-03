@@ -6,6 +6,7 @@ import {
     RootStackParamList,
     RootStackRoutes,
     Screen,
+    ScreenHeader,
     ScreenSubHeader,
     StackProps,
 } from '@suite-native/navigation';
@@ -17,6 +18,7 @@ import {
     selectFormattedAccountType,
 } from '@suite-common/wallet-core';
 import { CryptoIcon } from '@suite-common/icons';
+import { DeviceManager } from '@suite-native/device-switcher';
 
 import { AccountRenameButton } from '../components/AccountRenameButton';
 import { AccountSettingsShowXpubButton } from '../components/AccountSettingsShowXpubButton';
@@ -64,6 +66,11 @@ export const AccountSettingsScreen = ({
 
     return (
         <Screen
+            screenHeader={
+                <ScreenHeader>
+                    <DeviceManager />
+                </ScreenHeader>
+            }
             subheader={
                 <ScreenSubHeader
                     content={accountLabel}

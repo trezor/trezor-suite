@@ -31,12 +31,13 @@ import {
     AlertBox,
 } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Screen, ScreenSubHeader } from '@suite-native/navigation';
+import { Screen, ScreenHeader, ScreenSubHeader } from '@suite-native/navigation';
 import { CryptoIcon, tokenIcons, Icon, IconName, icons } from '@suite-common/icons';
 import { CoinsSettings } from '@suite-native/module-settings';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { TypographyStyle } from '@trezor/theme';
 import { TokenAddress } from '@suite-common/wallet-types';
+import { DeviceManager } from '@suite-native/device-switcher';
 
 const inputStackStyle = prepareNativeStyle(utils => ({
     borderRadius: utils.borders.radii.medium,
@@ -91,7 +92,14 @@ export const DemoScreen = () => {
     if (!isDevelopOrDebugEnv()) return null;
 
     return (
-        <Screen subheader={<ScreenSubHeader />}>
+        <Screen
+            screenHeader={
+                <ScreenHeader>
+                    <DeviceManager />
+                </ScreenHeader>
+            }
+            subheader={<ScreenSubHeader />}
+        >
             <VStack spacing="medium">
                 <VStack>
                     <Text variant="titleSmall">Badge:</Text>

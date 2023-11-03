@@ -20,7 +20,7 @@ export const ConnectDeviceBackground = ({ children, style }: ConnectDeviceScreen
 
     return (
         <Screen
-            customHeader={<ConnectDeviceScreenHeader />}
+            screenHeader={<ConnectDeviceScreenHeader />}
             customHorizontalPadding={0}
             customVerticalPadding={0}
             hasBottomInset={false}

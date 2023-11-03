@@ -127,7 +127,7 @@ export const AnalyticsConsentScreen = () => {
     };
 
     return (
-        <Screen isHeaderDisplayed={false}>
+        <Screen>
             <Box
                 alignItems="center"
                 flex={1}

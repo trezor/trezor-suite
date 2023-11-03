@@ -2,12 +2,13 @@ import { ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
 import { analytics, EventType } from '@suite-native/analytics';
-import { Screen, ScreenSubHeader } from '@suite-native/navigation';
+import { Screen, ScreenSubHeader, ScreenHeader } from '@suite-native/navigation';
 import { selectIsAnalyticsEnabled } from '@suite-common/analytics';
 import { Box, Card, DiscreetCanvas, Text, useDiscreetMode } from '@suite-native/atoms';
 import { useNativeStyles } from '@trezor/styles';
 import { useBiometricsSettings, useIsBiometricsEnabled } from '@suite-native/biometrics';
 import { useTranslate } from '@suite-native/intl';
+import { DeviceManager } from '@suite-native/device-switcher';
 
 import { TouchableSwitchRow } from '../components/TouchableSwitchRow';
 
@@ -111,6 +112,11 @@ export const SettingsPrivacyAndSecurity = () => {
 
     return (
         <Screen
+            screenHeader={
+                <ScreenHeader>
+                    <DeviceManager />
+                </ScreenHeader>
+            }
             subheader={
                 <ScreenSubHeader content={translate('moduleSettings.privacyAndSecurity.title')} />
             }

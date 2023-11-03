@@ -3,7 +3,12 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { RouteProp, useRoute } from '@react-navigation/native';
 
-import { RootStackParamList, RootStackRoutes, Screen } from '@suite-native/navigation';
+import {
+    RootStackParamList,
+    RootStackRoutes,
+    Screen,
+    ScreenHeader,
+} from '@suite-native/navigation';
 import {
     AccountsRootState,
     fetchTransactionsThunk,
@@ -19,6 +24,7 @@ import {
 } from '@suite-native/ethereum-tokens';
 import { analytics, EventType } from '@suite-native/analytics';
 import { SettingsSliceRootState } from '@suite-native/module-settings';
+import { DeviceManager } from '@suite-native/device-switcher';
 
 import { TransactionListHeader } from '../components/TransactionListHeader';
 import { AccountDetailScreenHeader } from '../components/AccountDetailScreenHeader';
@@ -27,7 +33,9 @@ import { TokenAccountDetailScreenSubHeader } from '../components/TokenAccountDet
 export const AccountDetailScreen = memo(() => {
     const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.AccountDetail>>();
     const { accountKey, tokenContract } = route.params;
+
     const dispatch = useDispatch();
+
     const [areTokensIncluded, setAreTokensIncluded] = useState(false);
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
@@ -90,6 +98,11 @@ export const AccountDetailScreen = memo(() => {
 
     return (
         <Screen
+            screenHeader={
+                <ScreenHeader>
+                    <DeviceManager />
+                </ScreenHeader>
+            }
             subheader={
                 token?.name ? (
                     <TokenAccountDetailScreenSubHeader

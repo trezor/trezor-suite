@@ -2,9 +2,11 @@ import {
     AccountsImportStackParamList,
     AccountsImportStackRoutes,
     Screen,
+    ScreenHeader,
     StackProps,
 } from '@suite-native/navigation';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { DeviceManager } from '@suite-native/device-switcher';
 
 import { AccountImportSubHeader } from '../components/AccountImportSubHeader';
 import { SelectableNetworkList } from '../components/SelectableNetworkList';
@@ -19,7 +21,14 @@ export const SelectNetworkScreen = ({
     };
 
     return (
-        <Screen subheader={<AccountImportSubHeader />}>
+        <Screen
+            screenHeader={
+                <ScreenHeader>
+                    <DeviceManager />
+                </ScreenHeader>
+            }
+            subheader={<AccountImportSubHeader />}
+        >
             <SelectableNetworkList onSelectItem={handleSelectNetworkSymbol} />
         </Screen>
     );

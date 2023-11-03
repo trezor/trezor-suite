@@ -7,6 +7,7 @@ import {
     RootStackParamList,
     RootStackRoutes,
     Screen,
+    ScreenHeader,
     ScreenSubHeader,
     StackProps,
 } from '@suite-native/navigation';
@@ -19,6 +20,7 @@ import {
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { analytics, EventType } from '@suite-native/analytics';
 import { EthereumTokenTransfer, WalletAccountTransaction } from '@suite-native/ethereum-tokens';
+import { DeviceManager } from '@suite-native/device-switcher';
 
 import { TransactionDetailHeader } from '../components/TransactionDetail/TransactionDetailHeader';
 import { TransactionDetailData } from '../components/TransactionDetail/TransactionDetailData';
@@ -61,7 +63,15 @@ export const TransactionDetailScreen = ({
     const isTokenTransaction = !!tokenTransfer;
 
     return (
-        <Screen customHorizontalPadding={utils.spacings.small} subheader={<ScreenSubHeader />}>
+        <Screen
+            screenHeader={
+                <ScreenHeader>
+                    <DeviceManager />
+                </ScreenHeader>
+            }
+            customHorizontalPadding={utils.spacings.small}
+            subheader={<ScreenSubHeader />}
+        >
             <VStack spacing="large">
                 <TransactionDetailHeader
                     transaction={transaction}
