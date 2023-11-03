@@ -10,7 +10,9 @@ interface NoTransactionsProps {
 
 export const NoTransactions = ({ account }: NoTransactionsProps) => {
     const network = getNetwork(account.symbol)!;
-    const explorerUrl = `${network.explorer.account}${account.descriptor}`;
+    const explorerUrl = `${network.explorer.account}${account.descriptor}${
+        network.symbol === 'dsol' ? '?cluster=devnet' : ''
+    }`;
 
     return (
         <AccountExceptionLayout
