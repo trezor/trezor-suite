@@ -44,7 +44,7 @@ jobs:
     needs: [build]
     uses: ./.github/workflows/connect-test-params.yml
     with:
-      test-pattern: "init authorizeCoinjoin cancelCoinjoinAuthorization passphrase unlockPath setBusy override checkFirmwareAuthenticity"
+      test-pattern: "init authorizeCoinjoin cancelCoinjoinAuthorization passphrase unlockPath setBusy override checkFirmwareAuthenticity concurrence"
 
   management:
     needs: [build]
