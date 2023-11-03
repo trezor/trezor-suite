@@ -99,7 +99,7 @@ export const Pictogram = ({
                     <Icon name={icon} color={iconColor} customSize={ICON_SIZE} />
                 </Box>
             </Box>
-            {title && (
+            {(title || subtitle) && (
                 <VStack alignItems="center">
                     <Box>
                         <Text variant={titleVariant} textAlign="center">

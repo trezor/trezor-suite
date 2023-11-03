@@ -11,6 +11,15 @@ export const en = {
             confirm: 'Confirm',
             continue: 'Continue',
             next: 'Next',
+            dismiss: 'Dismiss',
+        },
+    },
+    messages: {
+        killswitch: {
+            title: 'Update required',
+            content:
+                'Update to continue using Trezor Suite Lite. Don’t worry, your funds are secure.',
+            cta: 'Download latest version',
         },
         unknownError: 'Something went wrong',
     },

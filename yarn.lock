@@ -7824,6 +7824,7 @@ __metadata:
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-native/atoms": "workspace:*"
+    "@suite-native/intl": "workspace:*"
     "@suite-native/link": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"

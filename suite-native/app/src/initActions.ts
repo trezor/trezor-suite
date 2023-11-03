@@ -4,6 +4,8 @@ import { createImportedDeviceThunk, initBlockchainThunk } from '@suite-common/wa
 import { initAnalyticsThunk } from '@suite-native/analytics';
 import { periodicFetchFiatRatesThunk } from '@suite-native/fiat-rates';
 import { selectFiatCurrencyCode } from '@suite-native/module-settings';
+import { getJWSPublicKey } from '@suite-native/config';
+import { initMessageSystemThunk } from '@suite-common/message-system';
 
 import { setIsAppReady, setIsConnectInitialized } from '../../state/src/appSlice';
 
@@ -19,8 +21,7 @@ export const applicationInit = createThunk(
         try {
             dispatch(initAnalyticsThunk());
 
-            // TODO: uncomment or revert commit when UI is ready for message system
-            // dispatch(initMessageSystemThunk({ jwsPublicKey: getJWSPublicKey() }));
+            dispatch(initMessageSystemThunk({ jwsPublicKey: getJWSPublicKey() }));
 
             await dispatch(connectInitThunk());
 
