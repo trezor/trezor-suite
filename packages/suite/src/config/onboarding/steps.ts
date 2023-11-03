@@ -20,11 +20,6 @@ const afterInitializePrerequisites: Step['prerequisites'] = [
 
 const steps: Step[] = [
     {
-        id: STEP.ID_WELCOME_STEP,
-        stepGroup: undefined,
-        prerequisites: [...commonPrerequisites],
-    },
-    {
         id: STEP.ID_FIRMWARE_STEP,
         stepGroup: 0,
         prerequisites: [

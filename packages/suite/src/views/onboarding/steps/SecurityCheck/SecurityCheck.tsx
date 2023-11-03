@@ -6,7 +6,8 @@ import { selectDevice } from '@suite-common/wallet-core';
 import { Icon, Tooltip, variables, useTheme, H1 } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/connect';
 
-import { useOnboarding, useSelector } from 'src/hooks/suite';
+import { goto } from 'src/actions/suite/routerActions';
+import { useDispatch, useOnboarding, useSelector } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
 import { Hologram, OnboardingButtonSkip } from 'src/components/onboarding';
 import { CollapsibleOnboardingCard } from 'src/components/onboarding/CollapsibleOnboardingCard';
@@ -16,6 +17,7 @@ import { SecurityChecklist } from './SecurityChecklist';
 import { SecurityCheckFail } from './SecurityCheckFail';
 import { SecurityCheckButton } from './SecurityCheckButton';
 import { DeviceAuthenticity } from './DeviceAuthenticity';
+import { selectIsOnboadingActive } from 'src/reducers/onboarding/onboardingReducer';
 
 const StyledCard = styled(CollapsibleOnboardingCard)`
     max-width: ${MAX_WIDTH};
@@ -135,7 +137,6 @@ const firmwareInstalledChecklist = [
 ] as const;
 
 export const SecurityCheck = () => {
-    const { goToNextStep, goToSuite, rerun, updateAnalytics } = useOnboarding();
     const recovery = useSelector(state => state.recovery);
     const device = useSelector(selectDevice);
     const initialRun = useSelector(state => state.suite.flags.initialRun);
@@ -143,9 +144,14 @@ export const SecurityCheck = () => {
         isDeviceAuthenticityCheckDisabled,
         debug: { isUnlockedBootloaderAllowed },
     } = useSelector(state => state.suite.settings);
-    const theme = useTheme();
+    const isOnboardingActive = useSelector(selectIsOnboadingActive);
+
     const [isFailed, setIsFailed] = useState(false);
     const [isDeviceAuthenticityCheck, setIsDeviceAuthenticityCheck] = useState(false);
+
+    const { goToNextStep, goToSuite, rerun, updateAnalytics } = useOnboarding();
+    const theme = useTheme();
+    const dispatch = useDispatch();
 
     const deviceStatus = getConnectedDeviceStatus(device);
     const initialized = deviceStatus === 'initialized';
@@ -170,7 +176,15 @@ export const SecurityCheck = () => {
         (!isUnlockedBootloaderAllowed || device.features?.bootloader_locked !== false);
     const handleContinueButtonClick = () =>
         isDeviceAuthenticationNeeded ? goToDeviceAuthentication() : goToSuite();
-    const handleSetupButtonClick = () => (isRecoveryInProgress ? rerun() : goToNextStep());
+    const handleSetupButtonClick = () => {
+        if (isRecoveryInProgress) {
+            rerun();
+        } else if (isOnboardingActive) {
+            goToNextStep();
+        } else {
+            dispatch(goto('onboarding-index'));
+        }
+    };
 
     // Start measuring onboarding duration. In case of an ongoing recovery, the timer is started in middleware.
     useEffect(() => {

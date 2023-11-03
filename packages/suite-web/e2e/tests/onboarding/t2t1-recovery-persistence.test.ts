@@ -79,6 +79,7 @@ describe('Onboarding - T2T1 in recovery mode', () => {
         cy.task('startEmu', { wipe: false, version: '2.4.3' });
         // analytics opt-out again
         cy.getTestElement('@analytics/continue-button').click();
+        cy.getTestElement('@analytics/continue-button').click();
         // recovery device persisted reload
         cy.getTestElement('@onboarding/confirm-on-device');
         cy.wait(1000);

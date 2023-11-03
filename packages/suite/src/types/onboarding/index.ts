@@ -12,7 +12,6 @@ export interface Step {
 
 // todo: remove, improve typing
 export type AnyStepId =
-    | typeof STEP.ID_WELCOME_STEP
     | typeof STEP.ID_CREATE_OR_RECOVER
     | typeof STEP.ID_BACKUP_STEP
     | typeof STEP.ID_FINAL_STEP

@@ -9,6 +9,7 @@ import * as languageActions from 'src/actions/settings/languageActions';
 import type { Dispatch, GetState } from 'src/types/suite';
 
 import { SUITE } from './constants';
+import { onSuiteReady } from './suiteActions';
 
 export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     const {
@@ -63,5 +64,5 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     dispatch(metadataActions.fetchAndSaveMetadataForAllDevices());
 
     // 9. backend connected, suite is ready to use
-    dispatch({ type: SUITE.READY });
+    dispatch(onSuiteReady());
 };

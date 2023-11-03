@@ -16,6 +16,7 @@ import { resolveStaticPath } from '@suite-common/suite-utils';
 import { GuideButton, GuidePanel } from 'src/components/guide';
 import { useGuide } from 'src/hooks/guide';
 import { NavSettings } from 'src/components/suite/Preloader/SuiteLayout/NavigationBar/NavigationActions/NavSettings';
+import { MAX_WIDTH } from 'src/constants/suite/layout';
 
 const Wrapper = styled.div`
     display: flex;
@@ -62,7 +63,9 @@ const WelcomeTitle = styled(H1)`
     margin-top: 32px;
 `;
 
-const Bottom = styled.div`
+const LinksContainer = styled.div`
+    position: absolute;
+    bottom: 0;
     display: flex;
     margin: 24px 0;
 `;
@@ -93,7 +96,18 @@ const StyledTrezorLink = styled(TrezorLink)`
 `;
 
 const SettingsWrapper = styled.div`
+    position: absolute;
     align-self: flex-end;
+`;
+
+const ChildrenWrapper = styled.div`
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: ${MAX_WIDTH};
 `;
 
 interface WelcomeLayoutProps {
@@ -112,6 +126,7 @@ export const WelcomeLayout = ({ children }: WelcomeLayoutProps) => {
     return (
         <Wrapper>
             {bannerMessage && <MessageSystemBanner message={bannerMessage} />}
+
             <Body data-test="@welcome-layout/body">
                 <WelcomeWrapper>
                     <AnimatePresence>
@@ -134,11 +149,13 @@ export const WelcomeLayout = ({ children }: WelcomeLayoutProps) => {
                             >
                                 <Expander>
                                     <TrezorLogo type="suite" width="128px" />
+
                                     <WelcomeTitle data-test="@welcome/title">
                                         <Translation id="TR_ONBOARDING_WELCOME_HEADING" />
                                     </WelcomeTitle>
                                 </Expander>
-                                <Bottom>
+
+                                <LinksContainer>
                                     {isWeb() && (
                                         <StyledTrezorLink
                                             size="small"
@@ -154,6 +171,7 @@ export const WelcomeLayout = ({ children }: WelcomeLayoutProps) => {
                                             </Button>
                                         </StyledTrezorLink>
                                     )}
+
                                     <TrezorLink size="small" variant="nostyle" href={TREZOR_URL}>
                                         <Button
                                             variant="tertiary"
@@ -163,16 +181,18 @@ export const WelcomeLayout = ({ children }: WelcomeLayoutProps) => {
                                             trezor.io
                                         </Button>
                                     </TrezorLink>
-                                </Bottom>
+                                </LinksContainer>
                             </MotionWelcome>
                         )}
                     </AnimatePresence>
                 </WelcomeWrapper>
+
                 <Content>
                     <SettingsWrapper>
                         <NavSettings />
                     </SettingsWrapper>
-                    {children}
+
+                    <ChildrenWrapper>{children}</ChildrenWrapper>
                 </Content>
 
                 <GuideButton />

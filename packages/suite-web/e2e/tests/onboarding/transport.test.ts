@@ -8,6 +8,7 @@ describe('Onboarding - transport webusb/bridge', () => {
     });
 
     it('Offer webusb as primary choice on web, but allow user to disable it and fallback to bridge', () => {
+        cy.getTestElement('@analytics/continue-button').click();
         cy.getTestElement('@webusb-button');
         cy.getTestElement('@connect-device-prompt/no-device-detected').click();
         cy.getTestElement('@onboarding/try-bridge-button').click();

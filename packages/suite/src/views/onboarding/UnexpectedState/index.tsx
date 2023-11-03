@@ -1,7 +1,5 @@
 import { useMemo } from 'react';
 
-import styled from 'styled-components';
-
 import { selectDevice } from '@suite-common/wallet-core';
 
 import { PinMatrix, PrerequisitesGuide, Translation } from 'src/components/suite';
@@ -11,12 +9,6 @@ import steps from 'src/config/onboarding/steps';
 import { selectPrerequisite } from 'src/reducers/suite/suiteReducer';
 
 import IsSameDevice from './components/IsSameDevice';
-
-const Wrapper = styled.div`
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-`;
 
 interface UnexpectedStateProps {
     children: JSX.Element;
@@ -90,7 +82,7 @@ const UnexpectedState = ({ children }: UnexpectedStateProps) => {
         );
     }
     if (UnexpectedStateComponent) {
-        return <Wrapper>{UnexpectedStateComponent}</Wrapper>;
+        return UnexpectedStateComponent;
     }
 
     return children;

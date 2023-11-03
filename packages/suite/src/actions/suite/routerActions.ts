@@ -170,13 +170,17 @@ export const closeModalApp =
  */
 export const initialRedirection = () => (dispatch: Dispatch, getState: GetState) => {
     const route = findRoute(history.location.pathname + history.location.hash);
-    const { initialRun } = getState().suite.flags;
 
-    if (route && route.isForegroundApp) {
-        dispatch(goto(route.name));
-    } else if (route && initialRun) {
-        // only do initial redirection of route is valid
-        dispatch(goto('onboarding-index'));
-    }
+    const { initialRun } = getState().suite.flags;
+    // only do initial redirection of route is valid
     // otherwise do nothing -> just show 404 page
+    if (!route) {
+        return;
+    }
+
+    if (route.isForegroundApp) {
+        dispatch(goto(route.name));
+    } else if (initialRun) {
+        dispatch(goto('suite-start'));
+    }
 };

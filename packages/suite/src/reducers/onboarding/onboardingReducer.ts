@@ -32,7 +32,7 @@ const initialState: OnboardingState = {
     // and here leave only isMatchingPrevDevice ?
 
     prevDevice: null,
-    activeStepId: STEP.ID_WELCOME_STEP,
+    activeStepId: STEP.ID_FIRMWARE_STEP,
     activeSubStep: null,
     path: [],
     onboardingAnalytics: {},
@@ -94,5 +94,7 @@ const onboarding = (state: OnboardingState = initialState, action: Action) => {
 
 export const selectOnboardingTutorialStatus = (state: OnboardingRootState) =>
     state.onboarding.tutorialStatus;
+
+export const selectIsOnboadingActive = (state: OnboardingRootState) => state.onboarding.isActive;
 
 export default onboarding;
