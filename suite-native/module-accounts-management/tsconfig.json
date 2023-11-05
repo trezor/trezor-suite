@@ -23,7 +23,7 @@
         { "path": "../alerts" },
         { "path": "../analytics" },
         { "path": "../atoms" },
-        { "path": "../device-switcher" },
+        { "path": "../device-manager" },
         { "path": "../ethereum-tokens" },
         { "path": "../fiat-rates" },
         { "path": "../formatters" },

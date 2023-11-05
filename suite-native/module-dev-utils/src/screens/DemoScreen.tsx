@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { TextInput, View } from 'react-native';
 
+import { DeviceManager } from '@suite-native/device-manager';
 import { Link } from '@suite-native/link';
 import {
     Text,
@@ -37,7 +38,6 @@ import { CoinsSettings } from '@suite-native/module-settings';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { TypographyStyle } from '@trezor/theme';
 import { TokenAddress } from '@suite-common/wallet-types';
-import { DeviceManager } from '@suite-native/device-switcher';
 
 const inputStackStyle = prepareNativeStyle(utils => ({
     borderRadius: utils.borders.radii.medium,

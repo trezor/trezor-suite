@@ -1,5 +1,6 @@
 import { CommonActions, RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
+import { DeviceManager } from '@suite-native/device-manager';
 import {
     RootStackParamList,
     RootStackRoutes,
@@ -11,7 +12,6 @@ import {
 import { AccountsList } from '@suite-native/accounts';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { useTranslate } from '@suite-native/intl';
-import { DeviceManager } from '@suite-native/device-switcher';
 
 import { ReceiveAccount } from '../components/ReceiveAccount';
 

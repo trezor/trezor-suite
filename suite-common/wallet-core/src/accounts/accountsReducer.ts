@@ -296,8 +296,8 @@ export const selectIsAccountWithRatesByKey = (
     return !!rates.find(rate => rate.symbol === account.symbol);
 };
 
-export const selectIsAccountsListEmpty = (state: AccountsRootState) =>
-    pipe(selectAccounts(state), A.isEmpty);
+export const selectIsAccountsListEmpty = (state: AccountsRootState & DeviceRootState) =>
+    pipe(selectDeviceAccounts(state), A.isEmpty);
 
 export const selectIsPortfolioEmpty = (
     state: AccountsRootState & DeviceRootState & DiscoveryRootState,

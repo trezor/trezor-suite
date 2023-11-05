@@ -674,18 +674,12 @@ export const selectIsSelectedDeviceImported = (state: DeviceRootState) => {
 
 export const selectDeviceLabel = (state: DeviceRootState, id: TrezorDevice['id']) => {
     const device = selectDeviceById(state, id);
-
-    if (!device) return null;
-
-    return device.label;
+    return device?.label ?? null;
 };
 
 export const selectDeviceName = (state: DeviceRootState, id: TrezorDevice['id']): string | null => {
     const device = selectDeviceById(state, id);
-
-    if (!device) return null;
-
-    return device.name;
+    return device?.name ?? null;
 };
 
 export const selectSelectedDevicesName = (state: DeviceRootState) => {

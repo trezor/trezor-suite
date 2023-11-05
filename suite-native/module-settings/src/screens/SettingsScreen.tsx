@@ -1,6 +1,6 @@
+import { DeviceManager } from '@suite-native/device-manager';
 import { VStack } from '@suite-native/atoms';
 import { Screen, ScreenSubHeader, ScreenHeader } from '@suite-native/navigation';
-import { DeviceManager } from '@suite-native/device-switcher';
 
 import { ApplicationSettings } from '../components/ApplicationSettings';
 import { SupportSettings } from '../components/SupportSettings';

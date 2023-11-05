@@ -24,7 +24,7 @@
         "@suite-native/atoms": "workspace:*",
         "@suite-native/biometrics": "workspace:*",
         "@suite-native/config": "workspace:*",
-        "@suite-native/device-switcher": "workspace:*",
+        "@suite-native/device-manager": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@suite-native/link": "workspace:*",
         "@suite-native/navigation": "workspace:*",

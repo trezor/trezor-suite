@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
+import { DeviceManager } from '@suite-native/device-manager';
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import {
     RootStackParamList,
@@ -18,7 +19,6 @@ import {
     selectFormattedAccountType,
 } from '@suite-common/wallet-core';
 import { CryptoIcon } from '@suite-common/icons';
-import { DeviceManager } from '@suite-native/device-switcher';
 
 import { AccountRenameButton } from '../components/AccountRenameButton';
 import { AccountSettingsShowXpubButton } from '../components/AccountSettingsShowXpubButton';

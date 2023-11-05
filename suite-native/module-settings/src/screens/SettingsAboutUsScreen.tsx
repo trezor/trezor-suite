@@ -1,8 +1,8 @@
+import { DeviceManager } from '@suite-native/device-manager';
 import { Screen, ScreenSubHeader, ScreenHeader } from '@suite-native/navigation';
 import { VStack, Divider } from '@suite-native/atoms';
 import { useOpenLink } from '@suite-native/link';
 import { useTranslate } from '@suite-native/intl';
-import { DeviceManager } from '@suite-native/device-switcher';
 
 import { AboutUsBanners } from '../components/AboutUsBanners';
 import { SettingsSection } from '../components/SettingsSection';

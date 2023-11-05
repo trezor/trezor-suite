@@ -2,6 +2,7 @@ import { Alert } from 'react-native';
 
 import * as Sentry from '@sentry/react-native';
 
+import { DeviceManager } from '@suite-native/device-manager';
 import { isDebugEnv, isDevelopOrDebugEnv, isProduction } from '@suite-native/config';
 import { Button, Card, VStack } from '@suite-native/atoms';
 import {
@@ -13,7 +14,6 @@ import {
     ScreenHeader,
 } from '@suite-native/navigation';
 import { clearStorage } from '@suite-native/storage';
-import { DeviceManager } from '@suite-native/device-switcher';
 
 import { BuildInfo } from '../components/BuildInfo';
 import { RenderingUtils } from '../components/RenderingUtils';

@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { RouteProp, useRoute } from '@react-navigation/native';
 
+import { DeviceManager } from '@suite-native/device-manager';
 import {
     RootStackParamList,
     RootStackRoutes,
@@ -24,7 +25,6 @@ import {
 } from '@suite-native/ethereum-tokens';
 import { analytics, EventType } from '@suite-native/analytics';
 import { SettingsSliceRootState } from '@suite-native/module-settings';
-import { DeviceManager } from '@suite-native/device-switcher';
 
 import { TransactionListHeader } from '../components/TransactionListHeader';
 import { AccountDetailScreenHeader } from '../components/AccountDetailScreenHeader';

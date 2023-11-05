@@ -1,3 +1,4 @@
+import { DeviceManager } from '@suite-native/device-manager';
 import {
     AccountsImportStackParamList,
     AccountsImportStackRoutes,
@@ -6,7 +7,6 @@ import {
     StackProps,
 } from '@suite-native/navigation';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { DeviceManager } from '@suite-native/device-switcher';
 
 import { AccountImportSubHeader } from '../components/AccountImportSubHeader';
 import { SelectableNetworkList } from '../components/SelectableNetworkList';

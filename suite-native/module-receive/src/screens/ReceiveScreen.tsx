@@ -1,6 +1,6 @@
 import { RouteProp, useRoute } from '@react-navigation/native';
 
-import { DeviceManager } from '@suite-native/device-switcher';
+import { DeviceManager } from '@suite-native/device-manager';
 import { ReceiveAccount } from '@suite-native/receive';
 import {
     Screen,

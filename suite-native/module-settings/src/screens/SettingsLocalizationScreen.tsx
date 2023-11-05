@@ -1,7 +1,7 @@
+import { DeviceManager } from '@suite-native/device-manager';
 import { VStack, Card } from '@suite-native/atoms';
 import { Screen, ScreenHeader, ScreenSubHeader } from '@suite-native/navigation';
 import { useTranslate } from '@suite-native/intl';
-import { DeviceManager } from '@suite-native/device-switcher';
 
 import { CurrencySelector } from '../components/CurrencySelector';
 import { CryptoUnitsSelector } from '../components/CryptoUnitsSelector';

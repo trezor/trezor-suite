@@ -4,6 +4,7 @@ import Animated, { FadeIn } from 'react-native-reanimated';
 
 import { useFocusEffect } from '@react-navigation/native';
 
+import { DeviceManager } from '@suite-native/device-manager';
 import { Box, Button, HeaderedCard, TextDivider, VStack } from '@suite-native/atoms';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { Form, TextInputField, useForm } from '@suite-native/forms';
@@ -11,6 +12,7 @@ import {
     AccountsImportStackParamList,
     AccountsImportStackRoutes,
     Screen,
+    ScreenHeader,
     StackProps,
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';

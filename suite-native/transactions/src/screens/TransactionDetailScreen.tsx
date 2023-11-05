@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Linking } from 'react-native';
 
+import { DeviceManager } from '@suite-native/device-manager';
 import { Box, Button, Divider, VStack } from '@suite-native/atoms';
 import {
     RootStackParamList,
@@ -20,7 +21,6 @@ import {
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { analytics, EventType } from '@suite-native/analytics';
 import { EthereumTokenTransfer, WalletAccountTransaction } from '@suite-native/ethereum-tokens';
-import { DeviceManager } from '@suite-native/device-switcher';
 
 import { TransactionDetailHeader } from '../components/TransactionDetail/TransactionDetailHeader';
 import { TransactionDetailData } from '../components/TransactionDetail/TransactionDetailData';

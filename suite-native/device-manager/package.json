@@ -1,5 +1,5 @@
 {
-    "name": "@suite-native/device-switcher",
+    "name": "@suite-native/device-manager",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
@@ -11,11 +11,13 @@
         "type-check": "tsc --build"
     },
     "dependencies": {
+        "@react-navigation/native": "^6.1.3",
         "@reduxjs/toolkit": "1.9.5",
         "@suite-common/icons": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-native/atoms": "workspace:*",
+        "@suite-native/intl": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@suite-native/screen-overlay": "workspace:*",
         "@trezor/styles": "workspace:*",

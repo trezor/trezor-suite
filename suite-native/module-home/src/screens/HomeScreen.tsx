@@ -1,8 +1,8 @@
 import { useSelector } from 'react-redux';
 
+import { DeviceManager } from '@suite-native/device-manager';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
 import { selectIsPortfolioEmpty } from '@suite-common/wallet-core';
-import { DeviceManager } from '@suite-native/device-switcher';
 
 import { EmptyHomeRenderer } from '../components/EmptyHomeRenderer';
 import { PortfolioContent } from '../components/PortfolioContent';

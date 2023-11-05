@@ -9,11 +9,10 @@ import { selectSelectedDevicesName } from '@suite-common/wallet-core';
 import { SCREEN_HEADER_HEIGHT } from '../constants';
 import { useDeviceManager } from '../hooks/useDeviceManager';
 
-const switchWrapperStyle = prepareNativeStyle(utils => ({
+const switchStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    flex: 1,
     height: SCREEN_HEADER_HEIGHT,
     paddingVertical: utils.spacings.small,
     paddingHorizontal: utils.spacings.medium,
@@ -21,6 +20,10 @@ const switchWrapperStyle = prepareNativeStyle(utils => ({
     borderWidth: utils.borders.widths.large,
     borderRadius: utils.borders.radii.round,
     backgroundColor: utils.colors.backgroundSurfaceElevation1,
+}));
+
+const switchWrapperStyle = prepareNativeStyle(_ => ({
+    flex: 1,
 }));
 
 export const DeviceSwitch = () => {
@@ -35,23 +38,23 @@ export const DeviceSwitch = () => {
     };
 
     return (
-        <Pressable style={{ flex: 1 }} onPress={toggleDeviceManager}>
-            <HStack alignItems="center">
-                <Box style={applyStyle(switchWrapperStyle)}>
+        <HStack alignItems="center">
+            <Pressable onPress={toggleDeviceManager} style={applyStyle(switchWrapperStyle)}>
+                <Box style={applyStyle(switchStyle)}>
                     <HStack>
                         <Icon name="trezor" />
                         <Text>{deviceName}</Text>
                     </HStack>
                     <Icon name="chevronUpAndDown" />
                 </Box>
-                {isDeviceManagerVisible && (
-                    <IconButton
-                        colorScheme="tertiaryElevation0"
-                        iconName="close"
-                        onPress={toggleDeviceManager}
-                    />
-                )}
-            </HStack>
-        </Pressable>
+            </Pressable>
+            {isDeviceManagerVisible && (
+                <IconButton
+                    colorScheme="tertiaryElevation0"
+                    iconName="close"
+                    onPress={toggleDeviceManager}
+                />
+            )}
+        </HStack>
     );
 };

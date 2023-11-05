@@ -1,3 +1,4 @@
+import { DeviceManager } from '@suite-native/device-manager';
 import { QRCodeScanner } from '@suite-native/qr-code';
 import {
     AccountsImportStackParamList,
@@ -7,7 +8,6 @@ import {
     ScreenHeader,
     StackProps,
 } from '@suite-native/navigation';
-import { DeviceManager } from '@suite-native/device-switcher';
 import { networks, NetworkType } from '@suite-common/wallet-config';
 
 export const networkTypeToTitleMap: Record<NetworkType, string> = {

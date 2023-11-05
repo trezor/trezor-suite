@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { DeviceManager } from '@suite-native/device-manager';
 import { AccountsList, SearchableAccountsListScreenHeader } from '@suite-native/accounts';
 import {
     Screen,
@@ -10,7 +11,6 @@ import {
     StackNavigationProps,
 } from '@suite-native/navigation';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { DeviceManager } from '@suite-native/device-switcher';
 
 export const ReceiveAccountsScreen = () => {
     const navigation =

@@ -1,3 +1,4 @@
+import { DeviceManager } from '@suite-native/device-manager';
 import {
     StackToTabCompositeScreenProps,
     Screen,
@@ -5,7 +6,6 @@ import {
     RootStackParamList,
     AccountsImportStackParamList,
 } from '@suite-native/navigation';
-import { DeviceManager } from '@suite-native/device-switcher';
 
 import { AccountImportSubHeader } from '../components/AccountImportSubHeader';
 import { AccountImportSummary } from '../components/AccountImportSummary';

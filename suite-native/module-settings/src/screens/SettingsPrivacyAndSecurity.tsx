@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
+import { DeviceManager } from '@suite-native/device-manager';
 import { analytics, EventType } from '@suite-native/analytics';
 import { Screen, ScreenSubHeader, ScreenHeader } from '@suite-native/navigation';
 import { selectIsAnalyticsEnabled } from '@suite-common/analytics';
@@ -8,7 +9,6 @@ import { Box, Card, DiscreetCanvas, Text, useDiscreetMode } from '@suite-native/
 import { useNativeStyles } from '@trezor/styles';
 import { useBiometricsSettings, useIsBiometricsEnabled } from '@suite-native/biometrics';
 import { useTranslate } from '@suite-native/intl';
-import { DeviceManager } from '@suite-native/device-switcher';
 
 import { TouchableSwitchRow } from '../components/TouchableSwitchRow';
 
