@@ -231,9 +231,13 @@ export const getSelectedDevice = (
 export const getChangelogUrl = (device: TrezorDevice, revision?: string | null) => {
     const deviceModelInternal = device.features?.internal_model;
     const commit = revision || 'main';
-    const folder = deviceModelInternal === DeviceModelInternal.T1B1 ? 'legacy/firmware' : 'core';
+    const isDeviceWithLegacyFirmware = deviceModelInternal === DeviceModelInternal.T1B1;
+    const folder = isDeviceWithLegacyFirmware ? 'legacy/firmware' : 'core';
+    const changelogFile = isDeviceWithLegacyFirmware
+        ? 'CHANGELOG.md'
+        : `CHANGELOG.${deviceModelInternal}.md`;
 
-    return `https://github.com/trezor/trezor-firmware/blob/${commit}/${folder}/CHANGELOG.md`;
+    return `https://github.com/trezor/trezor-firmware/blob/${commit}/${folder}/${changelogFile}`;
 };
 
 export const getCheckBackupUrl = (device?: TrezorDevice) => {
