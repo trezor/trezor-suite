@@ -190,15 +190,15 @@ const effects = {
 };
 
 const sampleMintToDetailMap = {
-    So11111111111111111111111111111111111111112: {
+    so11111111111111111111111111111111111111112: {
         name: 'Wrapped SOL',
         symbol: 'WSOL',
     },
-    Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB: {
+    es9vmfrzacermJfrf4h2fyd4kconkY11mcce8benwnyb: {
         name: 'Tether',
         symbol: 'USDT',
     },
-    '4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R': {
+    '4k3dyjzvzp8emzwuxbbcjevwskkk59s5icnly3qrkx6r': {
         name: 'Raydium',
         symbol: 'RAY',
     },
