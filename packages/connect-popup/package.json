@@ -26,7 +26,10 @@
         "react-dom": "18.2.0"
     },
     "devDependencies": {
-        "@playwright/test": "^1.35.1",
+        "@playwright/browser-chromium": "^1.39.0",
+        "@playwright/browser-firefox": "^1.39.0",
+        "@playwright/browser-webkit": "^1.39.0",
+        "@playwright/test": "^1.39.0",
         "@trezor/node-utils": "workspace:*",
         "@trezor/trezor-user-env-link": "workspace:*",
         "@trezor/utils": "workspace:*",
