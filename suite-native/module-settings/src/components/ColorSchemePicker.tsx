@@ -10,7 +10,7 @@ export const ColorSchemePicker = () => {
     return (
         <VStack spacing={11}>
             <Text>Color Scheme</Text>
-            <HStack spacing="small" style={applyStyle(themesContainerStyle)}>
+            <HStack spacing="s" style={applyStyle(themesContainerStyle)}>
                 <ColorSchemePickerItem colorScheme="standard" />
                 <ColorSchemePickerItem colorScheme="dark" />
                 <ColorSchemePickerItem colorScheme="system" />

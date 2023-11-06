@@ -44,7 +44,7 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 >;
 
 const confirmButtonStyle = prepareNativeStyle(utils => ({
-    marginBottom: utils.spacings.small,
+    marginBottom: utils.spacings.s,
 }));
 
 export const AccountImportSummaryForm = ({

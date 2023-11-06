@@ -28,7 +28,7 @@ const chipStyle = prepareNativeStyle<ChipStyleProps>((utils, { isSelected }) => 
     alignSelf: 'flex-start',
     height: 44,
     backgroundColor: utils.colors.backgroundSurfaceElevation0,
-    borderWidth: utils.borders.widths.small,
+    borderWidth: utils.borders.widths.s,
     borderRadius: utils.borders.radii.round,
     borderColor: utils.colors.borderFocus,
     paddingHorizontal: 10,
@@ -60,7 +60,7 @@ const chipDescriptionStyle = prepareNativeStyle(utils => ({
 
 const textWrapperStyle = prepareNativeStyle(utils => ({
     justifyContent: 'center',
-    marginLeft: utils.spacings.small,
+    marginLeft: utils.spacings.s,
 }));
 
 export const Chip = ({

@@ -6,7 +6,7 @@ type GraphErrorProps = {
 };
 
 export const GraphError = ({ error, onTryAgain }: GraphErrorProps) => (
-    <VStack spacing="small" alignItems="center">
+    <VStack spacing="s" alignItems="center">
         <Text variant="label" color="textSubdued" textAlign="center">
             There are some troubles with loading graph points: {error}
         </Text>

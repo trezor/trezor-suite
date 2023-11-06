@@ -51,7 +51,7 @@ export const TransactionIcon = ({
             />
             {isAnimated && <TransactionIconSpinner radius={SPINNER_RADIUS} color={iconColor} />}
             <Box style={applyStyle(cryptoIconStyle)}>
-                <CryptoIcon symbol={symbol} size="extraSmall" />
+                <CryptoIcon symbol={symbol} size="xs" />
             </Box>
         </Box>
     );

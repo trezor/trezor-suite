@@ -29,8 +29,8 @@ const statusIconStyle = prepareNativeStyle<{ isTransactionPending: boolean }>(
             ? utils.colors.backgroundAlertYellowBold
             : utils.colors.backgroundPrimaryDefault,
         borderRadius: utils.borders.radii.round,
-        padding: utils.spacings.small,
-        marginVertical: utils.spacings.small,
+        padding: utils.spacings.s,
+        marginVertical: utils.spacings.s,
     }),
 );
 const borderLineStyle = prepareNativeStyle(utils => ({

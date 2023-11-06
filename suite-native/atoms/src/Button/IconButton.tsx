@@ -35,7 +35,7 @@ const iconButtonStyle = mergeNativeStyles([
     buttonStyle,
     prepareNativeStyle<ButtonStyleProps>((_, { size, hasTitle }) => {
         const sizeDimensions = {
-            small: 40,
+            s: 40,
             medium: 48,
             large: 56,
         } as const satisfies Record<ButtonSize, number>;

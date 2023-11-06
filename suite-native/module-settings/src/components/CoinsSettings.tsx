@@ -52,7 +52,7 @@ export const CoinsSettings = () => (
     >
         <Box flexDirection="row" flexWrap="wrap" alignItems="center">
             {dummyCoins.map(item => (
-                <Box marginRight="small" marginBottom="small" key={item.title}>
+                <Box marginRight="s" marginBottom="s" key={item.title}>
                     <Chip
                         icon={<CryptoIcon symbol={item.iconName} />}
                         description={item.description}

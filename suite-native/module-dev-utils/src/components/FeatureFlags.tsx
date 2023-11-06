@@ -7,7 +7,7 @@ export const FeatureFlags = () => {
 
     return (
         <Card>
-            <VStack spacing="small">
+            <VStack spacing="s">
                 <Text variant="titleSmall">Feature Flags</Text>
                 <VStack>
                     <Box flexDirection="row" justifyContent="space-between">

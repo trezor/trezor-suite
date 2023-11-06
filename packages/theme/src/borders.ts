@@ -15,13 +15,13 @@ export type Borders = typeof borders;
 
 export const nativeBorders = {
     widths: {
-        small: 1,
+        s: 1,
         medium: 1.5,
         large: 2,
     },
     radii: {
-        extraSmall: 4,
-        small: 8,
+        xs: 4,
+        s: 8,
         medium: 16,
         large: 24,
         round: 100, // Equivalent to 50% on the web

@@ -3,7 +3,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box, BoxProps } from './Box';
 
 const dividerStyle = prepareNativeStyle(utils => ({
-    borderBottomWidth: utils.borders.widths.small,
+    borderBottomWidth: utils.borders.widths.s,
     borderBottomColor: utils.colors.borderFocus,
     flex: 1,
 }));

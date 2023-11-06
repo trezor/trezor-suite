@@ -25,7 +25,7 @@ const ANIMATION_DURATION = 1200;
 export const BoxSkeleton = ({
     height,
     width,
-    borderRadius = nativeBorders.radii.small,
+    borderRadius = nativeBorders.radii.s,
 }: BoxSkeletonProps) => {
     const {
         utils: { colors },

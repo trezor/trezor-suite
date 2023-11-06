@@ -24,7 +24,7 @@ export const ConnectingTrezorHelp = () => {
                 subtitle={translate('moduleConnectDevice.helpModal.subtitle')}
                 onClose={toggleBottomSheet}
             >
-                <VStack padding="small">
+                <VStack padding="s">
                     <Text variant="callout">
                         <Translation id="moduleConnectDevice.helpModal.stepsTitle" />
                     </Text>

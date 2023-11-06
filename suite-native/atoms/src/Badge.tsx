@@ -7,7 +7,7 @@ import { HStack } from './Stack';
 import { SurfaceElevation } from './types';
 
 export type BadgeVariant = 'neutral' | 'green' | 'red' | 'bold';
-export type BadgeSize = 'small' | 'medium';
+export type BadgeSize = 's' | 'medium';
 type BadgeProps = {
     label: string;
     variant?: BadgeVariant;
@@ -37,8 +37,8 @@ const BadgeStyle = prepareNativeStyle<BadgeStyleProps>(
         justifyContent: 'center',
         alignSelf: 'flex-start',
         backgroundColor: utils.colors[backgroundColor],
-        paddingHorizontal: utils.spacings.small - (size === 'medium' ? 0 : 2),
-        paddingVertical: utils.spacings.small / 4,
+        paddingHorizontal: utils.spacings.s - (size === 'medium' ? 0 : 2),
+        paddingVertical: utils.spacings.s / 4,
         borderRadius: utils.borders.radii.round,
         extend: [
             {
@@ -103,12 +103,9 @@ export const Badge = ({
 
     const badgeIcon =
         icon && icon in icons ? (
-            <Icon name={icon as IconName} color={iconColor} size={iconSize ?? 'small'} />
+            <Icon name={icon as IconName} color={iconColor} size={iconSize ?? 's'} />
         ) : (
-            <CryptoIcon
-                symbol={icon as CryptoIconName}
-                size={size === 'small' ? 'extraSmall' : 'small'}
-            />
+            <CryptoIcon symbol={icon as CryptoIconName} size={size === 's' ? 'xs' : 's'} />
         );
 
     return (
@@ -118,7 +115,7 @@ export const Badge = ({
                 isDisabled,
                 size,
             })}
-            spacing={utils.spacings.extraSmall}
+            spacing={utils.spacings.xs}
         >
             {icon && badgeIcon}
             <Text color={textColor} variant={textVariant} numberOfLines={1} ellipsizeMode="tail">

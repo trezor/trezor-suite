@@ -23,7 +23,7 @@ const tabBarStyle = prepareNativeStyle<{
     width: '100%',
     backgroundColor: utils.colors.backgroundSurfaceElevation0,
     borderTopColor: utils.colors.borderOnElevation0,
-    borderTopWidth: utils.borders.widths.small,
+    borderTopWidth: utils.borders.widths.s,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',

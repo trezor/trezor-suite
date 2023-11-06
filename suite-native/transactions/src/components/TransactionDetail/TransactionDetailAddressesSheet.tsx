@@ -26,8 +26,8 @@ const addressStyle = prepareNativeStyle(_ => ({ maxWidth: '90%' }));
 
 const copyContainerStyle = prepareNativeStyle(utils => ({
     flex: 1,
-    paddingTop: utils.spacings.extraSmall,
-    marginHorizontal: utils.spacings.small,
+    paddingTop: utils.spacings.xs,
+    marginHorizontal: utils.spacings.s,
 }));
 
 export const formatAddressLabel = (addressType: AddressesType, count: number) => {
@@ -123,7 +123,7 @@ export const TransactionDetailAddressesSheet = ({
                             </>
                         )}
                     </VStack>
-                    <Box marginTop="large" paddingHorizontal="small">
+                    <Box marginTop="large" paddingHorizontal="s">
                         <Button size="large" onPress={onClose}>
                             Close
                         </Button>

@@ -37,7 +37,7 @@ const TrackBalancesScreenWithDevice = () => {
                 />
             }
         >
-            <Box alignSelf="center" flex={2} justifyContent="center" paddingHorizontal="small">
+            <Box alignSelf="center" flex={2} justifyContent="center" paddingHorizontal="s">
                 <GraphSvg />
             </Box>
         </OnboardingScreen>

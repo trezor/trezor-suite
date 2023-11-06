@@ -118,7 +118,7 @@ export const TransactionListHeader = memo(
         const isPriceCardDisplayed = !isTestnetAccount && !isTokenDetail;
 
         return (
-            <Box marginBottom="small">
+            <Box marginBottom="s">
                 <VStack spacing="large">
                     <TransactionListHeaderContent
                         accountKey={accountKey}
@@ -134,7 +134,7 @@ export const TransactionListHeader = memo(
                     {isPriceCardDisplayed && <CoinPriceCard accountKey={accountKey} />}
 
                     <Divider />
-                    <Box marginVertical="small" marginHorizontal="large">
+                    <Box marginVertical="s" marginHorizontal="large">
                         <Text variant="titleSmall">Transactions</Text>
                     </Box>
                 </VStack>

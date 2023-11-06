@@ -21,7 +21,7 @@ export const Th = ({ children }: TdProps) => (
     </Box>
 );
 export const Tr = ({ children }: TableProps) => (
-    <HStack flexDirection="row" justifyContent="space-between" marginVertical="small">
+    <HStack flexDirection="row" justifyContent="space-between" marginVertical="s">
         {children}
     </HStack>
 );

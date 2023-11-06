@@ -47,7 +47,7 @@ const pictogramVariantsMap = {
 
 type PictogramSizeProps = { outerRingSize: number; innerRingSize: number };
 const sizeToDimensionsMap = {
-    small: {
+    s: {
         outerRingSize: 88,
         innerRingSize: 64,
     },

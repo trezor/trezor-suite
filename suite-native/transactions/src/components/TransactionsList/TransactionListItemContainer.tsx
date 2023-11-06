@@ -63,7 +63,7 @@ export const transactionListItemContainerStyle = prepareNativeStyle<TransactionL
         alignItems: 'center',
         justifyContent: 'space-between',
         backgroundColor: utils.colors.backgroundSurfaceElevation1,
-        marginHorizontal: utils.spacings.small,
+        marginHorizontal: utils.spacings.s,
         paddingHorizontal: utils.spacings.medium,
         paddingTop: 12,
         paddingBottom: 12,
@@ -80,7 +80,7 @@ export const transactionListItemContainerStyle = prepareNativeStyle<TransactionL
                 condition: isLast,
                 style: {
                     paddingBottom: utils.spacings.medium,
-                    marginBottom: utils.spacings.small,
+                    marginBottom: utils.spacings.s,
                     borderBottomLeftRadius: utils.borders.radii.large / 2,
                     borderBottomRightRadius: utils.borders.radii.large / 2,
                 },
@@ -92,7 +92,7 @@ export const transactionListItemContainerStyle = prepareNativeStyle<TransactionL
 const titleStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
     flex: 1,
-    gap: utils.spacings.small,
+    gap: utils.spacings.s,
 }));
 
 const descriptionBoxStyle = prepareNativeStyle(_ => ({
@@ -104,7 +104,7 @@ const descriptionBoxStyle = prepareNativeStyle(_ => ({
 export const valuesContainerStyle = prepareNativeStyle(utils => ({
     flexShrink: 0,
     alignItems: 'flex-end',
-    marginLeft: utils.spacings.small,
+    marginLeft: utils.spacings.s,
     maxWidth: '40%',
 }));
 
@@ -184,19 +184,19 @@ export const TransactionListItemContainer = ({
                     />
                 )}
                 <Box marginLeft="medium" flex={1}>
-                    <HStack flexDirection="row" alignItems="center" spacing="extraSmall">
+                    <HStack flexDirection="row" alignItems="center" spacing="xs">
                         <Box style={applyStyle(titleStyle)}>
                             <Text variant="body">{transactionTitle}</Text>
                             {isZeroValuePhishing && (
                                 <Badge
                                     label={translate('transactions.phishing.badge')}
-                                    size="small"
+                                    size="s"
                                     icon="warningTriangle"
                                     variant="red"
                                 />
                             )}
                         </Box>
-                        {hasIncludedCoins && <Badge label={includedCoinsLabel} size="small" />}
+                        {hasIncludedCoins && <Badge label={includedCoinsLabel} size="s" />}
                     </HStack>
                     <Text variant="hint" color="textSubdued">
                         <DateTimeFormatter value={transactionBlockTime} />

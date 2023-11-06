@@ -41,7 +41,7 @@ export const AxisLabel = ({ x, value }: AxisLabelProps) => {
     const handleLayoutOverflow = useCallback(() => {
         if (viewRef.current) {
             viewRef.current.measureInWindow((viewX, _, viewWidth) => {
-                const graphHorizontalPadding = utils.spacings.small;
+                const graphHorizontalPadding = utils.spacings.s;
                 // The right most pixel of the axis label is overflowing the graph width.
                 if (viewX + viewWidth + graphHorizontalPadding > SCREEN_WIDTH) {
                     setIsOverflowing(true);

@@ -10,8 +10,8 @@ const xpubCardStyle = prepareNativeStyle(utils => ({
     height: XPUB_CARD_HEIGHT,
     justifyContent: 'center',
     alignItems: 'center',
-    marginHorizontal: utils.spacings.small,
-    marginTop: utils.spacings.small,
+    marginHorizontal: utils.spacings.s,
+    marginTop: utils.spacings.s,
 }));
 
 export const XpubQRCodeCard = ({
@@ -27,7 +27,7 @@ export const XpubQRCodeCard = ({
             {isXpubShown ? (
                 <>
                     <QRCode data={qrCodeData} />
-                    <Box margin="small" alignItems="center" justifyContent="center">
+                    <Box margin="s" alignItems="center" justifyContent="center">
                         <Text textAlign="center">{qrCodeData}</Text>
                     </Box>
                 </>

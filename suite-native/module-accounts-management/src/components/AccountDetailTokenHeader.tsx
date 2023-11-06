@@ -40,9 +40,9 @@ export const AccountDetailTokenHeader = ({
     if (!tokenAccount || !tokenAccount.balance) return null;
 
     return (
-        <VStack alignItems="center" spacing="small" marginVertical="medium">
-            <HStack spacing="small" flexDirection="row" alignItems="center" justifyContent="center">
-                <CryptoIcon symbol={tokenAccount.contract} size="extraSmall" />
+        <VStack alignItems="center" spacing="s" marginVertical="medium">
+            <HStack spacing="s" flexDirection="row" alignItems="center" justifyContent="center">
+                <CryptoIcon symbol={tokenAccount.contract} size="xs" />
                 <EthereumTokenAmountFormatter value={tokenAccount?.balance} symbol={tokenSymbol} />
             </HStack>
             <FiatBalanceFormatter value={fiatValue} />

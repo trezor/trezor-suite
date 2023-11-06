@@ -15,7 +15,7 @@ export const AccountImportEthereumTokens = ({ tokens }: AccountImportEthereumTok
 
     return (
         <Box marginTop="medium">
-            <VStack spacing="small" marginBottom="small">
+            <VStack spacing="s" marginBottom="s">
                 <Text variant="titleSmall">Tokens: </Text>
                 {tokens.map(({ symbol, contract, balance, name, decimals }) => (
                     <EthereumTokenInfo

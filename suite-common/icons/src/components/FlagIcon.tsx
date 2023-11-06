@@ -8,8 +8,8 @@ type FlagIconProps = {
 };
 
 const flagIconSizes = {
-    extraSmall: 16,
-    small: 24,
+    xs: 16,
+    s: 24,
     medium: 30,
 } as const;
 

@@ -62,7 +62,7 @@ export const AccountDetailGraphHeader = ({ accountKey }: AccountBalanceProps) =>
     if (!account) return null;
 
     return (
-        <VStack spacing="extraSmall" alignItems="center">
+        <VStack spacing="xs" alignItems="center">
             <CryptoBalance accountSymbol={account.symbol} />
             <FiatBalance />
             <HStack alignItems="center">

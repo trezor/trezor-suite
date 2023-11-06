@@ -15,11 +15,11 @@ const selectableAssetContentStyle = prepareNativeStyle(utils => ({
     alignItems: 'center',
     justifyContent: 'space-between',
     flex: 1,
-    marginLeft: utils.spacings.small + utils.spacings.extraSmall,
+    marginLeft: utils.spacings.s + utils.spacings.xs,
 }));
 
 const erc20BadgeStyle = prepareNativeStyle(utils => ({
-    paddingBottom: utils.spacings.extraSmall / 2,
+    paddingBottom: utils.spacings.xs / 2,
 }));
 
 export const SelectableNetworkItem = ({ symbol, onPress }: SelectableAssetItemProps) => {
@@ -52,7 +52,7 @@ export const SelectableNetworkItem = ({ symbol, onPress }: SelectableAssetItemPr
                             </Text>
                             {isEthereumNetwork && (
                                 <Box style={applyStyle(erc20BadgeStyle)}>
-                                    <Badge label="+ ERC-20" variant="neutral" size="small" />
+                                    <Badge label="+ ERC-20" variant="neutral" size="s" />
                                 </Box>
                             )}
                         </HStack>

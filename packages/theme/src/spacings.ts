@@ -1,5 +1,5 @@
 export const spacings = {
-    small: '8px',
+    s: '8px',
     medium: '16px',
     large: '24px',
     extraLarge: '32px',
@@ -9,8 +9,8 @@ export type Spacings = typeof spacings;
 export type Spacing = keyof typeof spacings;
 
 export const nativeSpacings = {
-    extraSmall: 4,
-    small: 8,
+    xs: 4,
+    s: 8,
     medium: 16,
     large: 24,
     extraLarge: 32,

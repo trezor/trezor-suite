@@ -36,7 +36,7 @@ const pickerItemDotStyle = prepareNativeStyle<PickerItemDotStyleProps>(
         extend: {
             condition: !isFirstItem,
             style: {
-                marginLeft: utils.negative(utils.spacings.small),
+                marginLeft: utils.negative(utils.spacings.s),
             },
         },
     }),
@@ -46,8 +46,8 @@ const textStyle = prepareNativeStyle(utils => ({
     alignSelf: 'center',
     textAlign: 'center',
     paddingTop: 23,
-    paddingBottom: utils.spacings.small,
-    paddingHorizontal: utils.spacings.small,
+    paddingBottom: utils.spacings.s,
+    paddingHorizontal: utils.spacings.s,
     textTransform: 'capitalize',
 }));
 

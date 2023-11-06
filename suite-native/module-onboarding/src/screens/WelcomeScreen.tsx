@@ -49,7 +49,7 @@ const cardStyle = prepareNativeStyle(utils => ({
     flex: 1,
     justifyContent: 'space-between',
     alignItems: 'center',
-    borderWidth: utils.borders.widths.small,
+    borderWidth: utils.borders.widths.s,
     width: Dimensions.get('window').width - 48,
 }));
 

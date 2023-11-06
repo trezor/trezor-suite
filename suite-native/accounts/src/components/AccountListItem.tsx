@@ -36,7 +36,7 @@ export const valuesContainerStyle = prepareNativeStyle(utils => ({
     maxWidth: '40%',
     flexShrink: 0,
     alignItems: 'flex-end',
-    paddingLeft: utils.spacings.small,
+    paddingLeft: utils.spacings.s,
 }));
 
 export const AccountListItem = ({ account, areTokensDisplayed = false }: AccountListItemProps) => {
@@ -64,7 +64,7 @@ export const AccountListItem = ({ account, areTokensDisplayed = false }: Account
                 <Box style={applyStyle(accountDescriptionStyle)}>
                     <Text>{accountLabel}</Text>
                     {formattedAccountType && (
-                        <Badge label={formattedAccountType} size="small" elevation="1" />
+                        <Badge label={formattedAccountType} size="s" elevation="1" />
                     )}
                 </Box>
             </Box>

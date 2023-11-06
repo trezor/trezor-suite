@@ -36,11 +36,11 @@ const notificationContainerStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: utils.spacings.extraSmall,
+    paddingVertical: utils.spacings.xs,
     borderRadius: utils.borders.radii.round,
     backgroundColor: utils.colors.backgroundNeutralBold,
-    paddingHorizontal: utils.spacings.extraSmall,
-    ...utils.boxShadows.small,
+    paddingHorizontal: utils.spacings.xs,
+    ...utils.boxShadows.s,
 }));
 
 const notificationContentStyle = prepareNativeStyle(_ => ({
@@ -137,7 +137,7 @@ export const Notification = ({
                                         {description}
                                     </Box>
                                 </HStack>
-                                <Box marginHorizontal="small">{iconRight}</Box>
+                                <Box marginHorizontal="s">{iconRight}</Box>
                             </HStack>
                         </TouchableWithoutFeedback>
                     </Animated.View>

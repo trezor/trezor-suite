@@ -72,7 +72,7 @@ export const EmptyPortfolioCrossroads = () => {
             </Card>
             <Card style={applyStyle(cardStyle, { flex: 1 })}>
                 <VStack spacing="large" justifyContent="center" alignItems="center">
-                    <VStack spacing="small" alignItems="center">
+                    <VStack spacing="s" alignItems="center">
                         <Text variant="titleSmall" textAlign="center">
                             <Translation id="moduleHome.emptyState.connectOrImportCrossroads.syncCoins.title" />
                         </Text>

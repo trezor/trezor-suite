@@ -15,7 +15,7 @@ export const SettingsLocalizationScreen = () => {
             }
         >
             <Card>
-                <VStack spacing="small">
+                <VStack spacing="s">
                     <CurrencySelector />
                     <CryptoUnitsSelector />
                 </VStack>

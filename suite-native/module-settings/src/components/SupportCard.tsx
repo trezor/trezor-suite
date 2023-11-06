@@ -17,15 +17,15 @@ export const SupportCard = () => {
     return (
         <Card style={applyStyle(supportCardStyle)}>
             <HStack justifyContent="space-between">
-                <VStack spacing="medium" alignItems="flex-start" paddingTop="small">
+                <VStack spacing="medium" alignItems="flex-start" paddingTop="s">
                     <Text variant="titleSmall">
                         <Translation id="moduleSettings.faq.supportCard.title" />
                     </Text>
-                    <Button size="small" onPress={handleOpenSupportLink}>
+                    <Button size="s" onPress={handleOpenSupportLink}>
                         {translate('moduleSettings.faq.supportCard.contact')}
                     </Button>
                 </VStack>
-                <Pictogram variant="green" size="small" icon="lifebuoy" />
+                <Pictogram variant="green" size="s" icon="lifebuoy" />
             </HStack>
         </Card>
     );

@@ -44,9 +44,9 @@ export const AddressQRCode = ({ address, backgroundElevation = '0' }: AddressQRC
                     {formattedAddress}
                 </Text>
             </Box>
-            <HStack spacing="small" justifyContent="center">
+            <HStack spacing="s" justifyContent="center">
                 <Button
-                    size="small"
+                    size="s"
                     iconLeft="copy"
                     onPress={handleCopyAddress}
                     colorScheme={`tertiaryElevation${backgroundElevation}`}
@@ -54,7 +54,7 @@ export const AddressQRCode = ({ address, backgroundElevation = '0' }: AddressQRC
                     Copy
                 </Button>
                 <Button
-                    size="small"
+                    size="s"
                     iconLeft="shareAlt"
                     colorScheme={`tertiaryElevation${backgroundElevation}`}
                     onPress={handleShareData}

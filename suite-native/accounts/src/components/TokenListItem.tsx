@@ -25,7 +25,7 @@ const horizontalLine = prepareNativeStyle(utils => ({
     height: utils.spacings.medium,
     borderLeftColor: utils.colors.borderDashed,
     borderLeftWidth: 1,
-    marginVertical: utils.spacings.extraSmall,
+    marginVertical: utils.spacings.xs,
     marginLeft: utils.spacings.large,
 }));
 

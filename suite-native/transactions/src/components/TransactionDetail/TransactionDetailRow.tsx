@@ -14,7 +14,7 @@ const rowStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginVertical: utils.spacings.small,
+    marginVertical: utils.spacings.s,
 }));
 
 const valueContainerStyle = prepareNativeStyle(_ => ({

@@ -14,7 +14,7 @@ const cardStyle = prepareNativeStyle(utils => ({
     padding: utils.spacings.medium,
     overflow: 'hidden',
 
-    ...utils.boxShadows.small,
+    ...utils.boxShadows.s,
 }));
 
 export const Card = ({ children, style }: CardProps) => {

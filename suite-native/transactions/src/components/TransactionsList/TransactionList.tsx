@@ -55,12 +55,12 @@ type TransactionListItem =
     | (WalletAccountTransaction | MonthKey);
 
 const sectionListStyle = prepareNativeStyle(utils => ({
-    paddingHorizontal: utils.spacings.small,
+    paddingHorizontal: utils.spacings.s,
     flex: 1,
 }));
 
 const sectionListContainerStyle = prepareNativeStyle(utils => ({
-    paddingVertical: utils.spacings.small,
+    paddingVertical: utils.spacings.s,
 }));
 
 const renderTransactionItem = ({

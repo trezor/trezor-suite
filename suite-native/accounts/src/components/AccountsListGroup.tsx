@@ -14,7 +14,7 @@ type AccountsListGroupProps = {
 const accountListGroupStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.backgroundSurfaceElevation1,
     borderRadius: 12,
-    marginBottom: utils.spacings.small,
+    marginBottom: utils.spacings.s,
 }));
 
 export const AccountsListGroup = ({ accounts, onSelectAccount }: AccountsListGroupProps) => {

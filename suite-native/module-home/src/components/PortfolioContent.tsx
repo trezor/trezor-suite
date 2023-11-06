@@ -10,7 +10,7 @@ export const PortfolioContent = () => {
     const { isUsbDeviceConnectFeatureEnabled } = useIsUsbDeviceConnectFeatureEnabled();
 
     return (
-        <VStack spacing="large" marginTop="small">
+        <VStack spacing="large" marginTop="s">
             <PortfolioGraph />
             <Assets maximumAssetsVisible={MAX_ASSETS_ON_DASHBOARD} />
             {!isUsbDeviceConnectFeatureEnabled && <DashboardNavigationButtons />}

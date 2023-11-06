@@ -28,11 +28,11 @@ const showMoreButtonStyle = prepareNativeStyle(_ => ({ flexDirection: 'row' }));
 
 const hiddenTransactionsCountStyle = prepareNativeStyle(utils => ({
     justifyContent: 'center',
-    marginLeft: utils.spacings.small,
+    marginLeft: utils.spacings.s,
     backgroundColor: utils.colors.backgroundNeutralSubtleOnElevation1,
     borderRadius: utils.borders.radii.round,
-    paddingHorizontal: utils.spacings.small,
-    paddingVertical: utils.spacings.small / 4,
+    paddingHorizontal: utils.spacings.s,
+    paddingVertical: utils.spacings.s / 4,
 }));
 
 const addressTextStyle = prepareNativeStyle(_ => ({
@@ -42,7 +42,7 @@ const addressTextStyle = prepareNativeStyle(_ => ({
 const stepperDotWrapperStyle = prepareNativeStyle(utils => ({
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: utils.spacings.small,
+    marginTop: utils.spacings.s,
     backgroundColor: utils.colors.backgroundSurfaceElevation2,
     width: utils.spacings.medium,
     height: utils.spacings.medium,
@@ -50,15 +50,15 @@ const stepperDotWrapperStyle = prepareNativeStyle(utils => ({
 }));
 
 const stepperDotStyle = prepareNativeStyle(utils => ({
-    width: utils.spacings.extraSmall,
-    height: utils.spacings.extraSmall,
+    width: utils.spacings.xs,
+    height: utils.spacings.xs,
     borderRadius: utils.borders.radii.round,
     backgroundColor: utils.colors.backgroundNeutralSubdued,
 }));
 
 const coinIconWrapperStyle = prepareNativeStyle(utils => ({
     alignSelf: 'flex-start',
-    padding: utils.spacings.small * 1.5,
+    padding: utils.spacings.s * 1.5,
     backgroundColor: utils.colors.backgroundSurfaceElevation2,
     borderRadius: utils.borders.radii.round,
 }));
@@ -112,7 +112,7 @@ export const TransactionDetailAddressesSection = ({
                     </Box>
                     {icon && (
                         <Box style={applyStyle(coinIconWrapperStyle)}>
-                            <CryptoIcon symbol={icon} size="extraSmall" />
+                            <CryptoIcon symbol={icon} size="xs" />
                         </Box>
                     )}
                 </Box>

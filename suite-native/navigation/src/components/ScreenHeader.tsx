@@ -15,7 +15,7 @@ const switchWrapperStyle = prepareNativeStyle(utils => ({
     alignItems: 'center',
     flex: 1,
     height: SCREEN_HEADER_HEIGHT,
-    paddingVertical: utils.spacings.small,
+    paddingVertical: utils.spacings.s,
     paddingHorizontal: utils.spacings.medium,
     borderColor: utils.colors.borderOnElevation1,
     borderWidth: utils.borders.widths.large,

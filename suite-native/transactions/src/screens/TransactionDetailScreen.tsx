@@ -61,7 +61,7 @@ export const TransactionDetailScreen = ({
     const isTokenTransaction = !!tokenTransfer;
 
     return (
-        <Screen customHorizontalPadding={utils.spacings.small} subheader={<ScreenSubHeader />}>
+        <Screen customHorizontalPadding={utils.spacings.s} subheader={<ScreenSubHeader />}>
             <VStack spacing="large">
                 <TransactionDetailHeader
                     transaction={transaction}

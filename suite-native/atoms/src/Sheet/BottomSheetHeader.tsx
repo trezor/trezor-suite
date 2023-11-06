@@ -56,7 +56,7 @@ export const BottomSheetHeader = ({
     const showHeaderContent = title || subtitle || isCloseDisplayed;
 
     return (
-        <Box marginVertical="small">
+        <Box marginVertical="s">
             <BottomSheetGrabber />
             {showHeaderContent && (
                 <View style={applyStyle(sheetHeaderStyle, { isCloseDisplayed })}>

@@ -17,7 +17,7 @@ type TransactionDetailSheetProps = {
 const triggerStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: utils.spacings.small,
+    paddingVertical: utils.spacings.s,
 }));
 
 const BottomSheetTrigger = ({
@@ -62,7 +62,7 @@ export const TransactionDetailSheet = ({
         >
             <Box paddingTop="large">
                 {children}
-                <Box paddingHorizontal="small" marginTop="large">
+                <Box paddingHorizontal="s" marginTop="large">
                     <Button size="large" onPress={onVisibilityChange}>
                         Close
                     </Button>

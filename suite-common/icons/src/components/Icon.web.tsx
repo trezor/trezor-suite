@@ -11,7 +11,7 @@ type IconProps = {
 };
 
 const iconSizes = {
-    small: 12,
+    s: 12,
 } as const;
 
 type IconSize = keyof typeof iconSizes;

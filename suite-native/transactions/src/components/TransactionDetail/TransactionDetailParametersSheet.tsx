@@ -93,7 +93,7 @@ export const TransactionDetailParametersSheet = ({
                             <Text numberOfLines={1} style={{ flexShrink: 1 }}>
                                 <TransactionIdFormatter value={transaction.txid} />
                             </Text>
-                            <Box marginLeft="small">
+                            <Box marginLeft="s">
                                 <IconButton
                                     iconName="copy"
                                     onPress={handleClickCopy}
@@ -107,7 +107,7 @@ export const TransactionDetailParametersSheet = ({
                         <Text>
                             <ConfirmationsCount txid={transaction.txid} accountKey={accountKey} />
                         </Text>
-                        <Box marginLeft="small">
+                        <Box marginLeft="s">
                             <Icon name="confirmation" />
                         </Box>
                     </TransactionDetailRow>

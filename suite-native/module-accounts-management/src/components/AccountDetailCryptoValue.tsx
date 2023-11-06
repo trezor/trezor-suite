@@ -13,8 +13,8 @@ type AccountDetailBalanceProps = {
 
 export const AccountDetailCryptoValue = memo(
     ({ value, networkSymbol, isBalance = true }: AccountDetailBalanceProps) => (
-        <HStack spacing="small" flexDirection="row" alignItems="center" justifyContent="center">
-            <CryptoIcon symbol={networkSymbol} size="extraSmall" />
+        <HStack spacing="s" flexDirection="row" alignItems="center" justifyContent="center">
+            <CryptoIcon symbol={networkSymbol} size="xs" />
             <CryptoAmountFormatter
                 value={value}
                 network={networkSymbol}

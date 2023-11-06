@@ -101,7 +101,7 @@ export const ReceiveAccount = ({
                 )}
             </HeaderedCard>
 
-            <TextButton size="small" onPress={handleOpenEduLink} iconRight="arrowUpRight">
+            <TextButton size="s" onPress={handleOpenEduLink} iconRight="arrowUpRight">
                 Learn more about verifying addresses
             </TextButton>
 

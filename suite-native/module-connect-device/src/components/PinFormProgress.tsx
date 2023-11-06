@@ -6,11 +6,11 @@ import { useTranslate } from '@suite-native/intl';
 const MAX_DIGITS_DISPLAYED_AS_DOTS = 6;
 
 const dotStyle = prepareNativeStyle(utils => ({
-    width: utils.spacings.small,
-    height: utils.spacings.small,
+    width: utils.spacings.s,
+    height: utils.spacings.s,
     borderRadius: utils.borders.radii.round,
     borderColor: utils.colors.textDefault,
-    borderWidth: utils.borders.widths.small,
+    borderWidth: utils.borders.widths.s,
     backgroundColor: utils.colors.textDefault,
 }));
 

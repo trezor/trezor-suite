@@ -29,16 +29,16 @@ export const ListItemSkeleton = () => {
         <Box style={applyStyle(skeletonContainer)}>
             <BoxSkeleton width={MAIN_ITEM_WIDTH} height={MAIN_ITEM_HEIGHT} />
 
-            <VStack spacing="small" alignItems="flex-end">
+            <VStack spacing="s" alignItems="flex-end">
                 <BoxSkeleton
                     width={TOP_SUB_ITEM_WIDTH}
                     height={SUBITEM_HEIGHT}
-                    borderRadius={borders.radii.extraSmall}
+                    borderRadius={borders.radii.xs}
                 />
                 <BoxSkeleton
                     width={BOTTOM_SUB_ITEM_WIDTH}
                     height={SUBITEM_HEIGHT}
-                    borderRadius={borders.radii.extraSmall}
+                    borderRadius={borders.radii.xs}
                 />
             </VStack>
         </Box>

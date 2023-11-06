@@ -36,7 +36,7 @@ const underlineSectionStyle = prepareNativeStyle<SelectItemStyleProps>(
         color: utils.colors.textSubdued,
         paddingVertical: 20,
         marginLeft: 10,
-        borderBottomWidth: utils.borders.widths.small,
+        borderBottomWidth: utils.borders.widths.s,
         borderColor: utils.colors.backgroundTertiaryDefaultOnElevation1,
         extend: [
             {

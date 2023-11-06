@@ -27,7 +27,7 @@ const valuesContainerStyle = prepareNativeStyle(utils => ({
     maxWidth: '40%',
     flexShrink: 0,
     alignItems: 'flex-end',
-    paddingLeft: utils.spacings.small,
+    paddingLeft: utils.spacings.s,
 }));
 
 export const TokenReceiveCard = ({ contract, accountKey }: TokenReceiveCardProps) => {
@@ -58,12 +58,7 @@ export const TokenReceiveCard = ({ contract, accountKey }: TokenReceiveCardProps
                     </Box>
                     <Box style={applyStyle(tokenDescriptionStyle)}>
                         <Text>{tokenName}</Text>
-                        <Badge
-                            label={`Run on ${accountLabel}`}
-                            icon="eth"
-                            size="small"
-                            iconSize="extraSmall"
-                        />
+                        <Badge label={`Run on ${accountLabel}`} icon="eth" size="s" iconSize="xs" />
                     </Box>
                 </Box>
                 <Box style={applyStyle(valuesContainerStyle)}>

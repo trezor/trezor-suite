@@ -95,7 +95,7 @@ export const buttonSchemeToColorsMap = {
 } as const satisfies Record<ButtonColorScheme, ButtonColorSchemeColors>;
 
 const sizeToDimensionsMap = {
-    small: {
+    s: {
         minHeight: 40,
         paddingVertical: 10,
         paddingHorizontal: nativeSpacings.medium,
@@ -113,13 +113,13 @@ const sizeToDimensionsMap = {
 } as const satisfies Record<ButtonSize, NativeStyleObject>;
 
 export const buttonToTextSizeMap = {
-    small: 'hint',
+    s: 'hint',
     medium: 'body',
     large: 'body',
 } as const satisfies Record<ButtonSize, TypographyStyle>;
 
 const buttonToIconSizeMap = {
-    small: 'medium',
+    s: 'medium',
     medium: 'mediumLarge',
     large: 'large',
 } as const satisfies Record<ButtonSize, IconSize>;

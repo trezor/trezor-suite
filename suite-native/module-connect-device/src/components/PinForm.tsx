@@ -22,7 +22,7 @@ const pinFormSchema = yup.object({
 type PinFormValues = yup.InferType<typeof pinFormSchema>;
 
 const cardStyle = prepareNativeStyle(utils => ({
-    marginBottom: utils.spacings.small,
+    marginBottom: utils.spacings.s,
     padding: 40,
 }));
 
@@ -44,7 +44,7 @@ export const PinForm = () => {
 
     return (
         <Form form={form}>
-            <VStack spacing="small" alignItems="center">
+            <VStack spacing="s" alignItems="center">
                 <Text color="textSubdued">
                     {translate('moduleConnectDevice.pinScreen.form.keypadInfo')}
                 </Text>

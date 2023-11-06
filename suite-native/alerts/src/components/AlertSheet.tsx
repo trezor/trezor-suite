@@ -21,9 +21,9 @@ const alertSheetContainerStyle = prepareNativeStyle(utils => ({
     paddingHorizontal: utils.spacings.large,
     paddingVertical: utils.spacings.extraLarge,
     marginBottom: utils.spacings.extraLarge,
-    marginHorizontal: utils.spacings.small,
+    marginHorizontal: utils.spacings.s,
     borderRadius: utils.borders.radii.medium,
-    ...utils.boxShadows.small,
+    ...utils.boxShadows.s,
 }));
 
 const alertSheetContentStyle = prepareNativeStyle(_ => ({

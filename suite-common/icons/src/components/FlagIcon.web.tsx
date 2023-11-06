@@ -8,7 +8,7 @@ type FlagIconProps = {
 };
 
 const flagIconSizes = {
-    small: 30,
+    s: 30,
 } as const;
 
 type FlagIconSize = keyof typeof flagIconSizes;

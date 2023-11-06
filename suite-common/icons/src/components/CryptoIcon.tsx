@@ -14,8 +14,8 @@ type CryptoIconProps = {
 };
 
 export const cryptoIconSizes = {
-    extraSmall: 16,
-    small: 24,
+    xs: 16,
+    s: 24,
     large: 42,
 } as const;
 
@@ -29,7 +29,7 @@ const getIconFile = (symbol: CoinSymbol) => {
     return tokenIcons[symbol.toLowerCase() as TokenIconName] ?? genericTokenIcon;
 };
 
-export const CryptoIcon = ({ symbol, size = 'small' }: CryptoIconProps) => {
+export const CryptoIcon = ({ symbol, size = 's' }: CryptoIconProps) => {
     const iconFile = getIconFile(symbol);
     const svg = useSVG(iconFile);
     const sizeNumber = cryptoIconSizes[size];

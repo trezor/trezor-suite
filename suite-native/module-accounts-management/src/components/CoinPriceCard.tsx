@@ -36,7 +36,7 @@ const indicatorContainer = prepareNativeStyle(utils => ({
     maxWidth: '40%',
     alignItems: 'center',
     justifyContent: 'flex-start',
-    marginTop: utils.spacings.small / 4,
+    marginTop: utils.spacings.s / 4,
 }));
 
 const PriceChangeIndicator = ({ valuePercentageChange }: PriceChangeIndicatorProps) => {
@@ -55,7 +55,7 @@ const PriceChangeIndicator = ({ valuePercentageChange }: PriceChangeIndicatorPro
             <Box justifyContent="center" alignItems="center" flexDirection="row">
                 <Badge
                     icon={icon}
-                    iconSize="extraSmall"
+                    iconSize="xs"
                     size="medium"
                     variant={badgeVariant}
                     label={formattedPercentage}

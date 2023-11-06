@@ -48,7 +48,7 @@ export const AccountImportSubHeader = () => {
                 ) : null
             }
             content={
-                <VStack alignItems="center" spacing="small">
+                <VStack alignItems="center" spacing="s">
                     <Text variant="titleSmall" adjustsFontSizeToFit numberOfLines={1}>
                         <Translation id="moduleAccountImport.title" />
                     </Text>

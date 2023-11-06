@@ -60,8 +60,8 @@ const cardStyle = prepareNativeStyle(utils => ({
 }));
 
 const consentInfoStyle = prepareNativeStyle(utils => ({
-    gap: utils.spacings.small,
-    paddingVertical: utils.spacings.extraSmall,
+    gap: utils.spacings.s,
+    paddingVertical: utils.spacings.xs,
 }));
 
 const analyticsConsentStyle = prepareNativeStyle(_ => ({
@@ -73,8 +73,8 @@ const analyticsConsentStyle = prepareNativeStyle(_ => ({
 const consentWrapperStyle = prepareNativeStyle(utils => ({
     maxHeight: 64,
     paddingHorizontal: utils.spacings.medium,
-    paddingVertical: utils.spacings.small,
-    marginBottom: utils.spacings.small,
+    paddingVertical: utils.spacings.s,
+    marginBottom: utils.spacings.s,
     borderRadius: utils.spacings.medium,
     backgroundColor: utils.colors.backgroundTertiaryDefaultOnElevation1,
     width: '100%',

@@ -17,8 +17,8 @@ type IconProps = {
 };
 
 export const iconSizes = {
-    extraSmall: 8,
-    small: 12,
+    xs: 8,
+    s: 12,
     medium: 16,
     mediumLarge: 20,
     large: 24,

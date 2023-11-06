@@ -40,7 +40,7 @@ import { TokenAddress } from '@suite-common/wallet-types';
 
 const inputStackStyle = prepareNativeStyle(utils => ({
     borderRadius: utils.borders.radii.medium,
-    padding: utils.spacings.small,
+    padding: utils.spacings.s,
 }));
 
 const textVariants: TypographyStyle[] = [
@@ -210,7 +210,7 @@ export const DemoScreen = () => {
                         placeholder="Type here.."
                     />
                     <Box marginVertical="medium">
-                        <VStack style={applyStyle(inputStackStyle)} spacing="small">
+                        <VStack style={applyStyle(inputStackStyle)} spacing="s">
                             <InputWrapper label="Recipient">
                                 <Input
                                     ref={demoInputRef}
@@ -224,14 +224,14 @@ export const DemoScreen = () => {
                                     value={input3Text}
                                     onChangeText={setInput3Text}
                                     label="From"
-                                    leftIcon={<CryptoIcon symbol="btc" size="extraSmall" />}
+                                    leftIcon={<CryptoIcon symbol="btc" size="xs" />}
                                     hasWarning
                                 />
                             </InputWrapper>
                         </VStack>
                     </Box>
                     <Box marginVertical="medium">
-                        <VStack style={applyStyle(inputStackStyle)} spacing="small">
+                        <VStack style={applyStyle(inputStackStyle)} spacing="s">
                             <InputWrapper hint="This input is not valid.">
                                 <Input
                                     value={input2Text}

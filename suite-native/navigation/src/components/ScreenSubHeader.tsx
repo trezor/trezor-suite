@@ -14,7 +14,7 @@ type ScreenSubHeaderProps = {
 const ICON_SIZE = 48;
 
 const headerStyle = prepareNativeStyle(utils => {
-    const padding = utils.spacings.small;
+    const padding = utils.spacings.s;
 
     return {
         flexDirection: 'row',

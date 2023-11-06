@@ -26,7 +26,7 @@ const triggerStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: utils.spacings.small,
+    paddingVertical: utils.spacings.s,
 }));
 
 const titleStyle = prepareNativeStyle(_ => ({
@@ -84,7 +84,7 @@ export const AccordionItem = ({ title, content }: AccordionItemProps) => {
                         <IconButton
                             iconName={icon}
                             colorScheme="tertiaryElevation0"
-                            size="small"
+                            size="s"
                             onPress={toggleOpen}
                         />
                     </Box>

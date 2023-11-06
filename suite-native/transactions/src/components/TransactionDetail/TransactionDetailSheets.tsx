@@ -45,7 +45,7 @@ export const TransactionDetailSheets = ({
 
     return (
         <Card>
-            <VStack spacing="small">
+            <VStack spacing="s">
                 <TransactionDetailParametersSheet
                     isVisible={expandedSheet === 'parameters'}
                     transaction={transaction}

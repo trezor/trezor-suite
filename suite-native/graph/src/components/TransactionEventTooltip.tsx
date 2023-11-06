@@ -41,7 +41,7 @@ const TooltipContainerStyle = prepareNativeStyle<{ x: number; y: number }>((_, {
 }));
 
 const TooltipCardStyle = prepareNativeStyle(utils => ({
-    paddingVertical: 1.5 * utils.spacings.small,
+    paddingVertical: 1.5 * utils.spacings.s,
 }));
 
 const EventTooltipRow = ({ title, signValue, networkSymbol, value }: EventTooltipRowProps) => (

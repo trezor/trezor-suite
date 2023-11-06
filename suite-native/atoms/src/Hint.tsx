@@ -46,7 +46,7 @@ export const Hint = ({ style, children, variant = 'hint' }: HintProps) => {
             <Icon
                 name={hintVariants[variant].iconName}
                 color={hintVariants[variant].color}
-                size="small"
+                size="s"
             />
             <Text style={applyStyle(hintTextStyle, { color: hintVariants[variant].color })}>
                 {children}

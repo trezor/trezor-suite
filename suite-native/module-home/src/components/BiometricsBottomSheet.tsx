@@ -38,12 +38,12 @@ const imageWrapperStyle = prepareNativeStyle(utils => ({
 }));
 
 const textContentStyle = prepareNativeStyle(utils => ({
-    gap: utils.spacings.small,
+    gap: utils.spacings.s,
 }));
 
 const buttonWrapperStyle = prepareNativeStyle(utils => ({
     gap: utils.spacings.medium,
-    paddingHorizontal: utils.spacings.small,
+    paddingHorizontal: utils.spacings.s,
 }));
 
 export const BiometricsBottomSheet = () => {

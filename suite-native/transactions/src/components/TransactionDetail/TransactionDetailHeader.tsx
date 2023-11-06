@@ -70,7 +70,7 @@ export const TransactionDetailHeader = ({
 
     return (
         <Box alignItems="center">
-            <Box flexDirection="row" alignItems="center" marginBottom="small">
+            <Box flexDirection="row" alignItems="center" marginBottom="s">
                 <Text variant="hint" color="textSubdued">
                     {text}
                 </Text>

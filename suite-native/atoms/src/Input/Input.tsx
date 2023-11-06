@@ -36,7 +36,7 @@ const INPUT_LABEL_TOP_PADDING_MINIMIZED = 40;
 const INPUT_WRAPPER_PADDING_HORIZONTAL = 14 * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
 const INPUT_WRAPPER_PADDING_VERTICAL = 17 * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
 const INPUT_WRAPPER_PADDING_VERTICAL_MINIMIZED =
-    nativeSpacings.small * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
+    nativeSpacings.s * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
 const INPUT_TEXT_HEIGHT = 24 * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
 const INPUT_WRAPPER_HEIGHT = 58 * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
 
@@ -61,8 +61,8 @@ const inputWrapperStyle = prepareNativeStyle<InputWrapperStyleProps>(
     (utils, { hasError, hasWarning, isFocused, elevation }) => ({
         backgroundColor: utils.colors.backgroundNeutralSubtleOnElevation0,
         borderColor: utils.colors.backgroundNeutralSubtleOnElevation1,
-        borderWidth: utils.borders.widths.small,
-        borderRadius: 1.5 * utils.borders.radii.small,
+        borderWidth: utils.borders.widths.s,
+        borderRadius: 1.5 * utils.borders.radii.s,
         paddingHorizontal: INPUT_WRAPPER_PADDING_HORIZONTAL,
         paddingBottom: INPUT_WRAPPER_PADDING_VERTICAL_MINIMIZED,
         minHeight: INPUT_WRAPPER_HEIGHT,
@@ -110,7 +110,7 @@ const inputStyle = prepareNativeStyle<InputStyleProps>((utils, { isIconDisplayed
     flex: 1,
     // Make the text input uniform on both platforms (https://stackoverflow.com/a/68458803/1281305)
     paddingTop: 0,
-    paddingBottom: utils.spacings.extraSmall,
+    paddingBottom: utils.spacings.xs,
 }));
 
 const inputHitSlop = {
@@ -143,7 +143,7 @@ const leftIconStyle = prepareNativeStyle(utils => ({
     alignItems: 'center',
     marginRight: 3,
     top: 15,
-    left: utils.spacings.small,
+    left: utils.spacings.s,
 }));
 
 const useInputLabelAnimationStyles = ({

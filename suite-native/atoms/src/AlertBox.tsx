@@ -21,11 +21,11 @@ const alertWrapperStyle = prepareNativeStyle<AlertWrapperStyleType>(
     (utils, { isStandalone, backgroundColor }) => ({
         flexDirection: 'row',
         alignItems: 'center',
-        borderRadius: isStandalone ? utils.borders.radii.small : 0,
+        borderRadius: isStandalone ? utils.borders.radii.s : 0,
         backgroundColor: utils.colors[backgroundColor],
-        paddingVertical: utils.spacings.small,
+        paddingVertical: utils.spacings.s,
         paddingHorizontal: utils.spacings.medium,
-        gap: utils.spacings.small,
+        gap: utils.spacings.s,
     }),
 );
 

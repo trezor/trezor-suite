@@ -20,7 +20,7 @@ const tabBarItemStyle = prepareNativeStyle(_ => ({
 const tabBarItemContainerStyle = prepareNativeStyle(utils => ({
     justifyContent: 'center',
     alignItems: 'center',
-    paddingTop: utils.spacings.small,
+    paddingTop: utils.spacings.s,
 }));
 
 const TAB_BAR_ITEM_HORIZONTAL_HIT_SLOP = 15;

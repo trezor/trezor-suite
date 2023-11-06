@@ -23,12 +23,7 @@ import { AccountSettingsShowXpubButton } from '../components/AccountSettingsShow
 import { AccountSettingsRemoveCoinButton } from '../components/AccountSettingsRemoveCoinButton';
 
 const AccountDetailSettingsRow = ({ title, children }: { title: string; children: ReactNode }) => (
-    <Box
-        paddingVertical="small"
-        flexDirection="row"
-        alignItems="center"
-        justifyContent="space-between"
-    >
+    <Box paddingVertical="s" flexDirection="row" alignItems="center" justifyContent="space-between">
         <Text variant="hint" color="textSubdued">
             {title}
         </Text>
@@ -37,9 +32,9 @@ const AccountDetailSettingsRow = ({ title, children }: { title: string; children
 );
 
 const CryptoNameWithIcon = ({ symbol }: { symbol: NetworkSymbol }) => (
-    <HStack spacing="small" flexDirection="row" alignItems="center" justifyContent="flex-end">
+    <HStack spacing="s" flexDirection="row" alignItems="center" justifyContent="flex-end">
         <Text variant="hint">{networks[symbol].name}</Text>
-        <CryptoIcon symbol={symbol} size="extraSmall" />
+        <CryptoIcon symbol={symbol} size="xs" />
     </HStack>
 );
 
@@ -73,7 +68,7 @@ export const AccountSettingsScreen = ({
         >
             <Box flex={1} justifyContent="space-between">
                 <Card>
-                    <VStack spacing="extraSmall">
+                    <VStack spacing="xs">
                         <AccountDetailSettingsRow title="Coin">
                             <CryptoNameWithIcon symbol={account.symbol} />
                         </AccountDetailSettingsRow>

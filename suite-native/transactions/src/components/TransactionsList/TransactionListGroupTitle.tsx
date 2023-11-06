@@ -21,7 +21,7 @@ export const TransactionListGroupTitle = ({ monthKey }: TransactionListGroupProp
             : MonthNameFormatter.format(parseTransactionMonthKey(monthKey));
 
     return (
-        <Box paddingLeft="small">
+        <Box paddingLeft="s">
             <Text color="textSubdued" variant="hint" style={applyStyle(dateTextStyle)}>
                 {sectionTitle}
             </Text>
