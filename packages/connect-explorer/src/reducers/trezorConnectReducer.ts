@@ -1,6 +1,6 @@
 import TrezorConnect, { DEVICE } from '@trezor/connect-web';
 import * as ACTIONS from '../actions/index';
-import { TrezorConnectDevice, Action } from '../types';
+import { TrezorConnectDevice, Action, Field } from '../types';
 
 type ConnectState = {
     devices: TrezorConnectDevice[];
@@ -46,6 +46,22 @@ const removeDevice = (state: ConnectState, device: TrezorConnectDevice): Connect
     return state;
 };
 
+const onOptionChange = <T>(state: ConnectState, field: Field<T>, value: T): ConnectState => {
+    const newState = {
+        ...state,
+    };
+    if (!newState.options) {
+        newState.options = {
+            manifest: {
+                email: 'info@trezor.io',
+                appUrl: '@trezor/suite',
+            },
+        };
+    }
+    newState.options[field.name] = value;
+    return newState;
+};
+
 export default function connect(state: ConnectState = initialState, action: Action) {
     switch (action.type) {
         case DEVICE.CONNECT:
@@ -66,6 +82,9 @@ export default function connect(state: ConnectState = initialState, action: Acti
                 ...state,
                 selectedDevice: action.path,
             };
+
+        case ACTIONS.ON_CHANGE_CONNECT_OPTION:
+            return onOptionChange(state, action.payload.option, action.payload.value);
 
         case ACTIONS.ON_CHANGE_CONNECT_OPTIONS:
             return {

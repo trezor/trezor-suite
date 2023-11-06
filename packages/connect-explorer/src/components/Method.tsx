@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { Button } from '@trezor/components';
 
-import type { Field, FieldWithBundle, AppState } from '../types';
+import type { Field, FieldWithBundle } from '../types';
 
 import * as methodActions from '../actions/methodActions';
 import { useSelector, useActions } from '../hooks';
@@ -13,8 +13,6 @@ import { Row } from './fields/Row';
 import Response from './Response';
 
 interface Props {
-    method: AppState['method'];
-    docs: AppState['docs'];
     actions: any; // todo
 }
 
@@ -36,7 +34,7 @@ const getArray = (field: FieldWithBundle<any>, props: Props) => (
     </ArrayWrapper>
 );
 
-const getField = (field: Field<any> | FieldWithBundle<any>, props: Props) => {
+export const getField = (field: Field<any> | FieldWithBundle<any>, props: Props) => {
     switch (field.type) {
         case 'array':
             return getArray(field, props);
@@ -45,19 +43,12 @@ const getField = (field: Field<any> | FieldWithBundle<any>, props: Props) => {
         case 'number':
             return <Input key={field.name} field={field} onChange={props.actions.onFieldChange} />;
         case 'address':
-            return (
-                <Input
-                    key={field.name}
-                    field={field}
-                    // validation={props.method.addressValidation}
-                    onChange={props.actions.onFieldChange}
-                />
-            );
+            return <Input key={field.name} field={field} onChange={props.actions.onFieldChange} />;
 
         case 'checkbox':
             return (
                 <Checkbox
-                    data-test="@checkbox"
+                    data-test={`@checkbox/${field.name}`}
                     key={field.name}
                     field={field}
                     onChange={props.actions.onFieldChange}
@@ -134,7 +125,7 @@ const Method = () => {
 
     return (
         <MethodContent>
-            {fields.map(field => getField(field, { method, docs, actions }))}
+            {fields.map(field => getField(field, { actions }))}
             <Row>
                 <Button onClick={onSubmit} data-test="@submit-button">
                     {submitButton}
