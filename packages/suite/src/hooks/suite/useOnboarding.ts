@@ -15,7 +15,6 @@ export const useOnboarding = () => {
 
     const actions = useActions({
         goToStep: onboardingActions.goToStep,
-        goToSubStep: onboardingActions.goToSubStep,
         goToNextStep: onboardingActions.goToNextStep,
         goToPreviousStep: onboardingActions.goToPreviousStep,
         resetOnboarding: onboardingActions.resetOnboarding,

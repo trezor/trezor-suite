@@ -27,10 +27,6 @@ export type OnboardingAction =
           payload: AnyPath;
       }
     | {
-          type: typeof ONBOARDING.GO_TO_SUBSTEP;
-          subStepId: string | null;
-      }
-    | {
           type: typeof ONBOARDING.SET_STEP_ACTIVE;
           stepId: AnyStepId;
       }
@@ -46,11 +42,6 @@ export type OnboardingAction =
 const goToStep = (stepId: AnyStepId): OnboardingAction => ({
     type: ONBOARDING.SET_STEP_ACTIVE,
     stepId,
-});
-
-const goToSubStep = (subStepId: string | null): OnboardingAction => ({
-    type: ONBOARDING.GO_TO_SUBSTEP,
-    subStepId,
 });
 
 const addPath = (payload: AnyPath): OnboardingAction => ({
@@ -140,7 +131,6 @@ const beginOnboardingTutorial = () => async (dispatch: Dispatch, getState: GetSt
 export {
     enableOnboardingReducer,
     goToNextStep,
-    goToSubStep,
     goToStep,
     goToPreviousStep,
     addPath,

@@ -18,7 +18,6 @@ export interface OnboardingState {
     isActive: boolean;
     prevDevice: Device | null;
     activeStepId: AnyStepId;
-    activeSubStep: string | null;
     path: AnyPath[];
     onboardingAnalytics: Partial<OnboardingAnalytics>;
     tutorialStatus: DeviceTutorialStatus;
@@ -33,7 +32,6 @@ const initialState: OnboardingState = {
 
     prevDevice: null,
     activeStepId: STEP.ID_FIRMWARE_STEP,
-    activeSubStep: null,
     path: [],
     onboardingAnalytics: {},
     tutorialStatus: null,
@@ -64,10 +62,6 @@ const onboarding = (state: OnboardingState = initialState, action: Action) => {
                 break;
             case ONBOARDING.SET_STEP_ACTIVE:
                 draft.activeStepId = action.stepId;
-                draft.activeSubStep = null;
-                break;
-            case ONBOARDING.GO_TO_SUBSTEP:
-                draft.activeSubStep = action.subStepId;
                 break;
             case ONBOARDING.ADD_PATH:
                 draft.path = addPath(action.payload, state);
