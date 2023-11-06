@@ -90,7 +90,6 @@ describe('Usb', () => {
             const sessionsBackground = new SessionsBackground();
 
             const sessionsClient = new SessionsClient({
-                // @ts-expect-error
                 requestFn: params => sessionsBackground.handleMessage(params),
                 registerBackgroundCallbacks: () => {},
             });

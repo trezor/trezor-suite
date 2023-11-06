@@ -4,7 +4,6 @@
         "outDir": "./libDev",
         "types": ["w3c-web-usb", "jest", "node"]
     },
-    "include": ["src"],
     "references": [
         { "path": "../protobuf" },
         { "path": "../protocol" },
