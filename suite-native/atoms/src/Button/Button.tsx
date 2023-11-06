@@ -15,7 +15,7 @@ import { HStack } from '../Stack';
 
 export type ButtonBackgroundElevation = '0' | '1';
 
-export type ButtonSize = 'small' | 'medium' | 'large';
+export type ButtonSize = 's' | 'medium' | 'large';
 export type ButtonColorScheme =
     | 'primary'
     | 'secondary'

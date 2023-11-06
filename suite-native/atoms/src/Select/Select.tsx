@@ -52,10 +52,10 @@ export const Select = <TItemValue extends SelectItemValue>({
     const getIcon = (iconName?: CryptoIconName | FlagIconName, isSelectItem = false): ReactNode => {
         if (!iconName) return null;
         if (isCryptoIconType(iconName)) {
-            return <CryptoIcon size={isSelectItem ? 'small' : 'xs'} symbol={iconName} />;
+            return <CryptoIcon size={isSelectItem ? 's' : 'xs'} symbol={iconName} />;
         }
         if (isFlagIconType(iconName)) {
-            return <FlagIcon size={isSelectItem ? 'small' : 'xs'} name={iconName} />;
+            return <FlagIcon size={isSelectItem ? 's' : 'xs'} name={iconName} />;
         }
     };
 

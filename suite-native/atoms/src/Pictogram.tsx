@@ -9,7 +9,7 @@ import { Text } from './Text';
 import { VStack } from './Stack';
 
 export type PictogramVariant = 'green' | 'red' | 'yellow';
-type PictogramSize = 'small' | 'large';
+type PictogramSize = 's' | 'large';
 
 const ICON_SIZE = 40;
 
