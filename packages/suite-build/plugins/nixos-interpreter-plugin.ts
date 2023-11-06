@@ -26,10 +26,20 @@ export class NixosInterpreterPlugin {
     }
 
     setInterpreter(interpreter: string, file: string) {
-        return spawnSync('patchelf', ['--set-interpreter', interpreter, file], {
-            stdio: 'inherit',
-            cwd: this.options.cwd,
-        });
+        return spawnSync(
+            'patchelf',
+            [
+                '--set-rpath',
+                `${process.env.NIX_PATCHELF_LIBRARY_PATH}`,
+                '--set-interpreter',
+                interpreter,
+                file,
+            ],
+            {
+                stdio: 'inherit',
+                cwd: this.options.cwd,
+            },
+        );
     }
 
     apply(compiler: webpack.Compiler) {
