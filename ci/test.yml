@@ -186,8 +186,8 @@ suite desktop manual:
 
 transport:
   extends: .e2e transport
-  only:
-    <<: *run_everything_rules
+  # only:
+  #   <<: *run_everything_rules
 
 transport manual:
   extends: .e2e transport

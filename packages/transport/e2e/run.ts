@@ -13,6 +13,8 @@ import argv from './jest.config';
 
     // @ts-expect-error
     const { results } = await runCLI(argv, [__dirname]);
+    
+    console.log('results',results);
 
     process.exit(results.numFailedTests);
 })();
