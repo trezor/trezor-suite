@@ -39,7 +39,6 @@
         "publish:lib": "./scripts/publish-lib.sh",
         "test:unit": "jest",
         "test:e2e": "ts-node -O '{\"module\": \"commonjs\", \"esModuleInterop\": true}' ./e2e/run.ts",
-        "example:bridge": "jest --verbose -c jest.config.e2e.js --testPathPattern bridge.integration",
         "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
         "prepublish": "yarn tsx ../../scripts/prepublish.js"
     },
