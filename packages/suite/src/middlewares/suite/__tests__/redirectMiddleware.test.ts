@@ -83,7 +83,7 @@ describe('redirectMiddleware', () => {
                 type: DEVICE.CONNECT,
                 payload: getSuiteDevice({ mode: 'initialize' }),
             });
-            expect(goto).toHaveBeenNthCalledWith(1, 'onboarding-index');
+            expect(goto).toHaveBeenNthCalledWith(1, 'suite-start');
         });
 
         it('DEVICE.CONNECT firmware=required', () => {

@@ -30,18 +30,6 @@ export default [
         },
     },
     {
-        description: 'goToSubStep',
-        initialState: {
-            suite: {
-                device: getSuiteDevice(),
-            },
-        },
-        action: () => onboardingActions.goToSubStep('moo'),
-        expect: {
-            toMatchObject: { activeSubStep: 'moo' },
-        },
-    },
-    {
         description: 'goToPreviousStep',
         initialState: {
             onboarding: {
