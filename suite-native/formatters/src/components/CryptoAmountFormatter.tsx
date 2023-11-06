@@ -35,14 +35,22 @@ export const CryptoAmountFormatter = ({
 
     const stringValue = G.isNumber(value) ? value.toString() : value;
 
-    const localizedValue = formatNumberWithThousandCommas(stringValue);
-
-    const formattedValue = formatter.format(localizedValue, {
+    let formattedValue = formatter.format(stringValue, {
         isBalance,
         maxDisplayedDecimals,
         symbol: network,
         isEllipsisAppended: false,
     });
+
+    // due to possible sat <-> btc conversion in previous formatter
+    // we need to format the number after the currency was added (e.g. '123903 sat')
+    // split value and currency, format value with thousands commas
+    const splitValue = formattedValue.split(' ');
+    if (splitValue.length > 1) {
+        formattedValue = `${formatNumberWithThousandCommas(splitValue[0])} ${splitValue[1]}`;
+    } else if (splitValue.length > 0) {
+        formattedValue = formatNumberWithThousandCommas(splitValue[0]);
+    }
 
     return (
         <AmountText
