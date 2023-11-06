@@ -42,7 +42,7 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
         next(action);
 
         if (deviceActions.createDeviceInstance.match(action)) {
-            dispatch(selectDeviceThunk(action.payload));
+            dispatch(selectDeviceThunk(action.payload.id));
         }
 
         // Request authorization of a newly acquired device.
@@ -65,7 +65,7 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
             case DEVICE.CONNECT:
             case DEVICE.CONNECT_UNACQUIRED:
                 if (isUsbDeviceConnectFeatureEnabled) {
-                    dispatch(selectDeviceThunk(action.payload));
+                    dispatch(selectDeviceThunk(action.payload.id));
                 }
                 break;
             case DEVICE.DISCONNECT:

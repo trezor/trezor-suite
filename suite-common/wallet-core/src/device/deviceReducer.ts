@@ -642,7 +642,7 @@ export const selectSupportedNetworks = (state: DeviceRootState) => {
 };
 
 export const selectDeviceById = (state: DeviceRootState, deviceId: string) =>
-    state.device.devices.find(device => device.id === deviceId);
+    state.device.devices.find(device => device.id === deviceId) ?? null;
 
 export const selectDeviceAuthenticity = (state: DeviceRootState, deviceId?: TrezorDevice['id']) =>
     deviceId ? state.device.deviceAuthenticity?.[deviceId] : undefined;

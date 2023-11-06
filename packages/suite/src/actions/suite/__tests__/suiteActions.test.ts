@@ -165,7 +165,7 @@ describe('Suite Actions', () => {
         it(`selectDevice: ${f.description}`, async () => {
             const state = getInitialState({}, f.state.device);
             const store = initStore(state);
-            await store.dispatch(selectDeviceThunk(f.device));
+            await store.dispatch(selectDeviceThunk(f.device?.id));
             if (!f.result) {
                 expect(store.getActions().length).toEqual(0);
             } else {

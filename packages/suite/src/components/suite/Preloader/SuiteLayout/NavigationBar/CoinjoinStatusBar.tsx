@@ -103,7 +103,7 @@ export const CoinjoinStatusBar = ({ accountKey, session, isSingle }: CoinjoinSta
 
     const handleViewAccount = () => {
         if (!isOnSelectedDevice) {
-            dispatch(selectDeviceThunk(relatedDevice));
+            dispatch(selectDeviceThunk(relatedDevice.id));
         }
 
         dispatch(
