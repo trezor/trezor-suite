@@ -27,7 +27,7 @@ export const ScreenHeader = ({ hasBottomPadding }: ScreenHeaderProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
-        <ScreenHeaderWrapper marginBottom={hasBottomPadding ? 'small' : undefined}>
+        <ScreenHeaderWrapper marginBottom={hasBottomPadding ? 's' : undefined}>
             <HStack alignItems="center">
                 <Box style={applyStyle(switchWrapperStyle)}>
                     <HStack>
