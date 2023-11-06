@@ -8,6 +8,7 @@ import Method from '../components/Method';
 import { About } from '../components/PageAbout';
 import { Events } from '../components/PageEvents';
 import { Changelog } from '../components/PageChangelog';
+import { Settings } from '../components/Settings';
 
 const App = () => (
     <>
@@ -20,6 +21,7 @@ const App = () => (
                         <Route exact path="/" component={About} />
                         <Route exact path="/changelog" component={Changelog} />
                         <Route exact path="/events" component={Events} />
+                        <Route exact path="/settings" component={Settings} />
                     </AppContainer>
                 </Switch>
             </Router>

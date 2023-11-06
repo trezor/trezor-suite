@@ -9,9 +9,13 @@ interface CheckboxProps {
     onChange: typeof onFieldChange;
 }
 
-const Checkbox = ({ field, onChange }: CheckboxProps) => (
+const Checkbox = ({ field, onChange, ...rest }: CheckboxProps) => (
     <Row>
-        <CheckboxComponent onClick={_e => onChange(field, !field.value)} isChecked={field.value}>
+        <CheckboxComponent
+            onClick={_e => onChange(field, !field.value)}
+            isChecked={field.value}
+            {...rest}
+        >
             {field.name}
         </CheckboxComponent>
     </Row>

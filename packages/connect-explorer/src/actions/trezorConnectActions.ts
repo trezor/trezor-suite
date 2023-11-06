@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 import TrezorConnect, { DEVICE, DEVICE_EVENT, TRANSPORT_EVENT } from '@trezor/connect-web';
 
-import { TrezorConnectDevice, Dispatch } from '../types';
+import { TrezorConnectDevice, Dispatch, Field, GetState } from '../types';
 import * as ACTIONS from './index';
 
 type ConnectOptions = Parameters<(typeof TrezorConnect)['init']>[0];
@@ -10,7 +10,11 @@ export type TrezorConnectAction =
     | { type: typeof DEVICE.CONNECT; device: TrezorConnectDevice }
     | { type: typeof DEVICE.CONNECT_UNACQUIRED; device: TrezorConnectDevice }
     | { type: typeof DEVICE.DISCONNECT; device: TrezorConnectDevice }
-    | { type: typeof ACTIONS.ON_CHANGE_CONNECT_OPTIONS; payload: ConnectOptions };
+    | { type: typeof ACTIONS.ON_CHANGE_CONNECT_OPTIONS; payload: ConnectOptions }
+    | {
+          type: typeof ACTIONS.ON_CHANGE_CONNECT_OPTION;
+          payload: { option: Field<any>; value: any };
+      };
 
 export function onSelectDevice(path: string) {
     return {
@@ -18,6 +22,14 @@ export function onSelectDevice(path: string) {
         path,
     };
 }
+
+export const onConnectOptionChange = (option: string, value: any) => ({
+    type: ACTIONS.ON_CHANGE_CONNECT_OPTION,
+    payload: {
+        option,
+        value,
+    },
+});
 
 export const init =
     (options: Partial<Parameters<(typeof TrezorConnect)['init']>[0]> = {}) =>
@@ -62,6 +74,7 @@ export const init =
                 email: 'info@trezor.io',
                 appUrl: '@trezor/suite',
             },
+            trustedHost: false,
             ...options,
         };
 
@@ -74,3 +87,10 @@ export const init =
 
         dispatch({ type: ACTIONS.ON_CHANGE_CONNECT_OPTIONS, payload: connectOptions });
     };
+
+export const onSubmitInit = () => async (dispatch: Dispatch, getState: GetState) => {
+    const { connect } = getState();
+    // Disposing TrezorConnect to init it again.
+    await TrezorConnect.dispose();
+    return dispatch(init(connect.options));
+};
