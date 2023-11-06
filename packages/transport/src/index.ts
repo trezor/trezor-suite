@@ -14,7 +14,7 @@ protobuf.configure();
 export type { Descriptor } from './types';
 export { TREZOR_USB_DESCRIPTORS, TRANSPORT } from './constants';
 
-export { AbstractTransport as Transport } from './transports/abstract';
+export { AbstractTransport as Transport, isTransportInstance } from './transports/abstract';
 export { AbstractApiTransport } from './transports/abstractApi';
 export { UsbApi } from './api/usb';
 
