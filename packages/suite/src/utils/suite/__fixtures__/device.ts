@@ -543,7 +543,7 @@ const getChangelogUrl = [
             },
         } as TrezorDevice,
         revision: 'ab12cd',
-        result: 'https://github.com/trezor/trezor-firmware/blob/ab12cd/core/CHANGELOG.md',
+        result: 'https://github.com/trezor/trezor-firmware/blob/ab12cd/core/CHANGELOG.T2B1.md',
     },
     {
         description: 'Missing revision, master/legacy firmware',
@@ -563,7 +563,7 @@ const getChangelogUrl = [
                 internal_model: DeviceModelInternal.T2T1,
             },
         } as TrezorDevice,
-        result: 'https://github.com/trezor/trezor-firmware/blob/main/core/CHANGELOG.md',
+        result: 'https://github.com/trezor/trezor-firmware/blob/main/core/CHANGELOG.T2T1.md',
     },
 ];
 
