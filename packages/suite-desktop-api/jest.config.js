@@ -11,6 +11,8 @@ module.exports = {
     collectCoverage: true,
     collectCoverageFrom: ['**/src/**/*.ts', '!**/__tests__/**'],
     modulePathIgnorePatterns: ['node_modules', '<rootDir>/lib', '<rootDir>/libDev'],
+    watchPathIgnorePatterns: ['<rootDir>/libDev', '<rootDir>/lib'],
+    testPathIgnorePatterns: ['<rootDir>/libDev/', '<rootDir>/lib/'],
     transform: {
         '^.+\\.ts$': 'ts-jest',
     },

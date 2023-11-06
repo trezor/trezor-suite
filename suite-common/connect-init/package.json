@@ -8,8 +8,8 @@
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "type-check": "tsc --build tsconfig.json",
-        "test:unit": "jest",
-        "test-unit:watch": "jest -o --watch"
+        "test:unit": "jest -c ../../jest.config.base.js",
+        "test-unit:watch": "jest -c ../../jest.config.base.js -o --watch"
     },
     "dependencies": {
         "@reduxjs/toolkit": "1.9.5",

@@ -49,7 +49,19 @@ module.exports = {
             functions: 47,
         },
     },
-    modulePathIgnorePatterns: ['node_modules', '<rootDir>/libDev'],
+    modulePathIgnorePatterns: ['node_modules'],
+    watchPathIgnorePatterns: ['<rootDir>/libDev'],
+    testPathIgnorePatterns: [
+        '/node_modules/',
+        '/libDev/',
+        '/lib/',
+        '/dist/',
+        '/build/',
+        '/build-electron/',
+        '/coverage/',
+        '/public/',
+    ],
+
     transformIgnorePatterns: ['/node_modules/(?!d3-(.*)|internmap)/'],
     testMatch: ['**/*.test.(ts|tsx|js)'],
     transform: {
