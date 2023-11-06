@@ -50,6 +50,24 @@ export interface AbstractTransportParams {
     logger?: Logger;
 }
 
+export const isTransportInstance = (transport?: AbstractTransport) => {
+    const requiredMethods = [
+        'init',
+        'enumerate',
+        'listen',
+        'acquire',
+        'release',
+        'send',
+        'receive',
+        'call',
+    ] as const;
+
+    if (transport && typeof transport === 'object') {
+        return !requiredMethods.some(m => typeof transport[m] !== 'function');
+    }
+    return false;
+};
+
 export abstract class AbstractTransport extends TypedEmitter<{
     [TRANSPORT.UPDATE]: DeviceDescriptorDiff;
     [TRANSPORT.ERROR]:
