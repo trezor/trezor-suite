@@ -7,6 +7,8 @@ import { MODAL } from 'src/actions/suite/constants';
 
 const { getSuiteDevice } = testMocks;
 
+const LOCK_DEVICE = '@mocked/extraDependency/action/notImplemented/lockDevice';
+
 export default [
     {
         description: 'Show unverified public key',
@@ -31,6 +33,8 @@ export default [
                 { type: connectInitThunk.pending.type, payload: undefined },
                 { type: connectInitThunk.fulfilled.type, payload: undefined },
                 { type: MODAL.PRESERVE },
+                { type: LOCK_DEVICE },
+                { type: LOCK_DEVICE },
                 { type: MODAL.OPEN_USER_CONTEXT },
             ],
         },
@@ -47,6 +51,8 @@ export default [
                 { type: connectInitThunk.pending.type, payload: undefined },
                 { type: connectInitThunk.fulfilled.type, payload: undefined },
                 { type: MODAL.PRESERVE },
+                { type: LOCK_DEVICE },
+                { type: LOCK_DEVICE },
                 { type: MODAL.OPEN_USER_CONTEXT },
             ],
         },
@@ -121,6 +127,8 @@ export default [
                 { type: connectInitThunk.pending.type, payload: undefined },
                 { type: connectInitThunk.fulfilled.type, payload: undefined },
                 { type: MODAL.PRESERVE },
+                { type: LOCK_DEVICE },
+                { type: LOCK_DEVICE },
                 { type: MODAL.CLOSE },
                 {
                     type: notificationsActions.addToast.type,
@@ -144,6 +152,8 @@ export default [
                 { type: connectInitThunk.pending.type, payload: undefined },
                 { type: connectInitThunk.fulfilled.type, payload: undefined },
                 { type: MODAL.PRESERVE },
+                { type: LOCK_DEVICE },
+                { type: LOCK_DEVICE },
                 { type: MODAL.CLOSE },
             ],
         },

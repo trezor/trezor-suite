@@ -54,10 +54,12 @@ export const connectInitThunk = createThunk(
 
         const wrappedMethods: Array<keyof typeof TrezorConnect> = [
             'applySettings',
+            'authenticateDevice',
             'authorizeCoinjoin',
             'backupDevice',
             'cancelCoinjoinAuthorization',
             'cardanoGetAddress',
+            'cardanoGetPublicKey',
             'cardanoSignTransaction',
             'changePin',
             'checkFirmwareAuthenticity',
@@ -68,6 +70,7 @@ export const connectInitThunk = createThunk(
             'getDeviceState',
             'getFeatures',
             'getOwnershipProof',
+            'getPublicKey',
             'pushTransaction',
             'rebootToBootloader',
             'recoveryDevice',
@@ -75,9 +78,12 @@ export const connectInitThunk = createThunk(
             'rippleGetAddress',
             'rippleSignTransaction',
             'setBusy',
+            'showDeviceTutorial',
             'signTransaction',
             'solanaGetAddress',
             'solanaSignTransaction',
+            'unlockPath',
+            'wipeDevice',
         ] as const;
 
         wrappedMethods.forEach(key => {
