@@ -34,9 +34,7 @@ export const DeviceManagerModal = ({ children }: DeviceManagerModalProps) => {
             <BlurredScreenOverlay />
             <Box style={applyStyle(contentWrapper, { insets })}>
                 <ScreenHeaderWrapper>
-                    <Box flexDirection="row">
-                        <DeviceSwitch />
-                    </Box>
+                    <DeviceSwitch />
                 </ScreenHeaderWrapper>
                 {children}
             </Box>

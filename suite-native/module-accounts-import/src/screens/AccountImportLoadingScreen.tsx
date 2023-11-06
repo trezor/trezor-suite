@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { DeviceManager } from '@suite-native/device-manager';
+import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { updateFiatRatesThunk } from '@suite-native/fiat-rates';
 import { selectFiatCurrencyCode } from '@suite-native/module-settings';
 import {
@@ -9,7 +9,6 @@ import {
     AccountsImportStackRoutes,
     RootStackParamList,
     Screen,
-    ScreenHeader,
     StackToStackCompositeScreenProps,
 } from '@suite-native/navigation';
 import TrezorConnect, { AccountInfo } from '@trezor/connect';
@@ -119,14 +118,7 @@ export const AccountImportLoadingScreen = ({
     }, [xpubAddress, networkSymbol, dispatch, safelyShowImportError, fiatCurrency]);
 
     return (
-        <Screen
-            screenHeader={
-                <ScreenHeader hasBottomPadding>
-                    <DeviceManager />
-                </ScreenHeader>
-            }
-            isScrollable={false}
-        >
+        <Screen screenHeader={<DeviceManagerScreenHeader hasBottomPadding />} isScrollable={false}>
             <AccountImportLoader />
         </Screen>
     );

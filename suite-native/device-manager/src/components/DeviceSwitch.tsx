@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { Box, HStack, IconButton, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-common/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { selectSelectedDevicesName } from '@suite-common/wallet-core';
+import { selectSelectedDeviceName } from '@suite-common/wallet-core';
 
 import { SCREEN_HEADER_HEIGHT } from '../constants';
 import { useDeviceManager } from '../hooks/useDeviceManager';
@@ -27,7 +27,7 @@ const switchWrapperStyle = prepareNativeStyle(_ => ({
 }));
 
 export const DeviceSwitch = () => {
-    const deviceName = useSelector(selectSelectedDevicesName);
+    const deviceName = useSelector(selectSelectedDeviceName);
 
     const { applyStyle } = useNativeStyles();
 

@@ -1,5 +1,5 @@
-import { DeviceManager } from '@suite-native/device-manager';
-import { Screen, ScreenSubHeader, ScreenHeader } from '@suite-native/navigation';
+import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
+import { Screen, ScreenSubHeader } from '@suite-native/navigation';
 import { VStack } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 
@@ -11,11 +11,7 @@ export const SettingsFAQScreen = () => {
 
     return (
         <Screen
-            screenHeader={
-                <ScreenHeader>
-                    <DeviceManager />
-                </ScreenHeader>
-            }
+            screenHeader={<DeviceManagerScreenHeader />}
             subheader={<ScreenSubHeader content={translate('moduleSettings.faq.title')} />}
         >
             <VStack spacing="large">

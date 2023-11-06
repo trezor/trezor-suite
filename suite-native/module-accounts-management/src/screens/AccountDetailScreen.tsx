@@ -3,13 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { RouteProp, useRoute } from '@react-navigation/native';
 
-import { DeviceManager } from '@suite-native/device-manager';
-import {
-    RootStackParamList,
-    RootStackRoutes,
-    Screen,
-    ScreenHeader,
-} from '@suite-native/navigation';
+import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
+import { RootStackParamList, RootStackRoutes, Screen } from '@suite-native/navigation';
 import {
     AccountsRootState,
     fetchTransactionsThunk,
@@ -98,11 +93,7 @@ export const AccountDetailScreen = memo(() => {
 
     return (
         <Screen
-            screenHeader={
-                <ScreenHeader>
-                    <DeviceManager />
-                </ScreenHeader>
-            }
+            screenHeader={<DeviceManagerScreenHeader />}
             subheader={
                 token?.name ? (
                     <TokenAccountDetailScreenSubHeader

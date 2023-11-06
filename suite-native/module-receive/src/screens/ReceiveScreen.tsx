@@ -1,13 +1,12 @@
 import { RouteProp, useRoute } from '@react-navigation/native';
 
-import { DeviceManager } from '@suite-native/device-manager';
+import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { ReceiveAccount } from '@suite-native/receive';
 import {
     Screen,
     ReceiveStackParamList,
     ReceiveStackRoutes,
     ScreenSubHeader,
-    ScreenHeader,
 } from '@suite-native/navigation';
 import { useTranslate } from '@suite-native/intl';
 
@@ -18,11 +17,7 @@ export const ReceiveScreen = () => {
 
     return (
         <Screen
-            screenHeader={
-                <ScreenHeader>
-                    <DeviceManager />
-                </ScreenHeader>
-            }
+            screenHeader={<DeviceManagerScreenHeader />}
             subheader={<ScreenSubHeader content={translate('moduleReceive.title')} />}
         >
             <ReceiveAccount accountKey={accountKey} tokenContract={tokenContract} />

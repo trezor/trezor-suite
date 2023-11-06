@@ -1,4 +1,4 @@
-import { DeviceManager } from '@suite-native/device-manager';
+import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import {
     StackToTabCompositeScreenProps,
     Screen,
@@ -20,14 +20,7 @@ export const AccountImportSummaryScreen = ({
     const { accountInfo, networkSymbol } = route.params;
 
     return (
-        <Screen
-            screenHeader={
-                <ScreenHeader>
-                    <DeviceManager />
-                </ScreenHeader>
-            }
-            subheader={<AccountImportSubHeader />}
-        >
+        <Screen screenHeader={<DeviceManagerScreenHeader />} subheader={<AccountImportSubHeader />}>
             <AccountImportSummary accountInfo={accountInfo} networkSymbol={networkSymbol} />
         </Screen>
     );

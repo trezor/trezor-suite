@@ -1,11 +1,10 @@
-import { DeviceManager } from '@suite-native/device-manager';
+import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { QRCodeScanner } from '@suite-native/qr-code';
 import {
     AccountsImportStackParamList,
     AccountsImportStackRoutes,
     Screen,
     ScreenSubHeader,
-    ScreenHeader,
     StackProps,
 } from '@suite-native/navigation';
 import { networks, NetworkType } from '@suite-common/wallet-config';
@@ -33,11 +32,7 @@ export const ScanQRCodeModalScreen = ({
 
     return (
         <Screen
-            screenHeader={
-                <ScreenHeader>
-                    <DeviceManager />
-                </ScreenHeader>
-            }
+            screenHeader={<DeviceManagerScreenHeader />}
             subheader={<ScreenSubHeader content={screenTitle} />}
         >
             <QRCodeScanner onCodeScanned={handleBarCodeScanned} />

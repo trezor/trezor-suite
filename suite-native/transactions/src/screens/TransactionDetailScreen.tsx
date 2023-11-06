@@ -2,13 +2,12 @@ import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Linking } from 'react-native';
 
-import { DeviceManager } from '@suite-native/device-manager';
+import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { Box, Button, Divider, VStack } from '@suite-native/atoms';
 import {
     RootStackParamList,
     RootStackRoutes,
     Screen,
-    ScreenHeader,
     ScreenSubHeader,
     StackProps,
 } from '@suite-native/navigation';
@@ -64,11 +63,7 @@ export const TransactionDetailScreen = ({
 
     return (
         <Screen
-            screenHeader={
-                <ScreenHeader>
-                    <DeviceManager />
-                </ScreenHeader>
-            }
+            screenHeader={<DeviceManagerScreenHeader />}
             customHorizontalPadding={utils.spacings.small}
             subheader={<ScreenSubHeader />}
         >

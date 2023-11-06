@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { Box, Button, Text, VStack } from '@suite-native/atoms';
+import { Button, Text, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import {
     selectDevices,
@@ -22,13 +22,9 @@ import { DeviceItem } from './DeviceItem';
 import { DeviceControlButtons } from './DeviceControlButtons';
 import { useDeviceManager } from '../hooks/useDeviceManager';
 
-const modalWrapperStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.backgroundTertiaryDefaultOnElevation1,
-    borderBottomLeftRadius: utils.borders.radii.large,
-    borderBottomRightRadius: utils.borders.radii.large,
-}));
-
 const contentWrapperStyle = prepareNativeStyle(utils => ({
+    backgroundColor: utils.colors.backgroundTertiaryDefaultOnElevation1,
+    borderBottomRadius: utils.borders.radii.large,
     padding: utils.spacings.medium,
 }));
 
@@ -62,29 +58,27 @@ export const DeviceManagerContent = () => {
 
     return (
         <DeviceManagerModal>
-            <Box style={applyStyle(modalWrapperStyle)}>
-                <VStack spacing="medium" style={applyStyle(contentWrapperStyle)}>
-                    {!isPortfolioTrackerDevice && <DeviceControlButtons />}
+            <VStack spacing="medium" style={applyStyle(contentWrapperStyle)}>
+                {!isPortfolioTrackerDevice && <DeviceControlButtons />}
+                <VStack>
+                    <Text variant="callout">
+                        <Translation id="deviceManager.deviceList.sectionTitle" />
+                    </Text>
+                    {devices.map(device => (
+                        <DeviceItem key={device.id} id={device.id} />
+                    ))}
+                </VStack>
+                {shouldDisplayConnectButton && (
                     <VStack>
                         <Text variant="callout">
-                            <Translation id="deviceManager.deviceList.sectionTitle" />
+                            <Translation id="deviceManager.connectDevice.sectionTitle" />
                         </Text>
-                        {devices.map(device => (
-                            <DeviceItem id={device.id} key={device.id} />
-                        ))}
+                        <Button colorScheme="tertiaryElevation0" onPress={handleConnectDevice}>
+                            {translate('deviceManager.connectDevice.connectButton')}
+                        </Button>
                     </VStack>
-                    {shouldDisplayConnectButton && (
-                        <VStack>
-                            <Text variant="callout">
-                                <Translation id="deviceManager.connectDevice.sectionTitle" />
-                            </Text>
-                            <Button colorScheme="tertiaryElevation0" onPress={handleConnectDevice}>
-                                {translate('deviceManager.connectDevice.connectButton')}
-                            </Button>
-                        </VStack>
-                    )}
-                </VStack>
-            </Box>
+                )}
+            </VStack>
         </DeviceManagerModal>
     );
 };

@@ -143,7 +143,7 @@ export const Screen = ({
                 translucent={false}
                 backgroundColor={backgroundCSSColor}
             />
-            {!!screenHeader && screenHeader}
+            {screenHeader}
             <ScreenContentWrapper
                 isScrollable={isScrollable}
                 extraKeyboardAvoidingViewHeight={extraKeyboardAvoidingViewHeight}

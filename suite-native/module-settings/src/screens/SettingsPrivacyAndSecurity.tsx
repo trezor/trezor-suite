@@ -1,9 +1,9 @@
 import { ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
-import { DeviceManager } from '@suite-native/device-manager';
+import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { analytics, EventType } from '@suite-native/analytics';
-import { Screen, ScreenSubHeader, ScreenHeader } from '@suite-native/navigation';
+import { Screen, ScreenSubHeader } from '@suite-native/navigation';
 import { selectIsAnalyticsEnabled } from '@suite-common/analytics';
 import { Box, Card, DiscreetCanvas, Text, useDiscreetMode } from '@suite-native/atoms';
 import { useNativeStyles } from '@trezor/styles';
@@ -112,11 +112,7 @@ export const SettingsPrivacyAndSecurity = () => {
 
     return (
         <Screen
-            screenHeader={
-                <ScreenHeader>
-                    <DeviceManager />
-                </ScreenHeader>
-            }
+            screenHeader={<DeviceManagerScreenHeader />}
             subheader={
                 <ScreenSubHeader content={translate('moduleSettings.privacyAndSecurity.title')} />
             }

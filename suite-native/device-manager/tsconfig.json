@@ -10,6 +10,7 @@
             "path": "../../suite-common/wallet-core"
         },
         { "path": "../atoms" },
+        { "path": "../intl" },
         { "path": "../navigation" },
         { "path": "../screen-overlay" },
         { "path": "../../packages/styles" }

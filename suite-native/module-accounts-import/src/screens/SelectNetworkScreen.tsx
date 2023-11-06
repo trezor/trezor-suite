@@ -1,9 +1,8 @@
-import { DeviceManager } from '@suite-native/device-manager';
+import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import {
     AccountsImportStackParamList,
     AccountsImportStackRoutes,
     Screen,
-    ScreenHeader,
     StackProps,
 } from '@suite-native/navigation';
 import { NetworkSymbol } from '@suite-common/wallet-config';
@@ -21,14 +20,7 @@ export const SelectNetworkScreen = ({
     };
 
     return (
-        <Screen
-            screenHeader={
-                <ScreenHeader>
-                    <DeviceManager />
-                </ScreenHeader>
-            }
-            subheader={<AccountImportSubHeader />}
-        >
+        <Screen screenHeader={<DeviceManagerScreenHeader />} subheader={<AccountImportSubHeader />}>
             <SelectableNetworkList onSelectItem={handleSelectNetworkSymbol} />
         </Screen>
     );

@@ -1,6 +1,6 @@
-import { DeviceManager } from '@suite-native/device-manager';
+import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { VStack, Card } from '@suite-native/atoms';
-import { Screen, ScreenHeader, ScreenSubHeader } from '@suite-native/navigation';
+import { Screen, ScreenSubHeader } from '@suite-native/navigation';
 import { useTranslate } from '@suite-native/intl';
 
 import { CurrencySelector } from '../components/CurrencySelector';
@@ -11,11 +11,7 @@ export const SettingsLocalizationScreen = () => {
 
     return (
         <Screen
-            screenHeader={
-                <ScreenHeader>
-                    <DeviceManager />
-                </ScreenHeader>
-            }
+            screenHeader={<DeviceManagerScreenHeader />}
             subheader={
                 <ScreenSubHeader content={translate('moduleSettings.localizations.title')} />
             }

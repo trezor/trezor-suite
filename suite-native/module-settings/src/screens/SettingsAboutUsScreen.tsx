@@ -1,5 +1,5 @@
-import { DeviceManager } from '@suite-native/device-manager';
-import { Screen, ScreenSubHeader, ScreenHeader } from '@suite-native/navigation';
+import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
+import { Screen, ScreenSubHeader } from '@suite-native/navigation';
 import { VStack, Divider } from '@suite-native/atoms';
 import { useOpenLink } from '@suite-native/link';
 import { useTranslate } from '@suite-native/intl';
@@ -24,11 +24,7 @@ export const SettingsAboutUsScreen = () => {
 
     return (
         <Screen
-            screenHeader={
-                <ScreenHeader>
-                    <DeviceManager />
-                </ScreenHeader>
-            }
+            screenHeader={<DeviceManagerScreenHeader />}
             subheader={<ScreenSubHeader content={translate('moduleSettings.aboutUs.title')} />}
         >
             <VStack spacing="large">

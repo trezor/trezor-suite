@@ -682,7 +682,7 @@ export const selectDeviceName = (state: DeviceRootState, id: TrezorDevice['id'])
     return device?.name ?? null;
 };
 
-export const selectSelectedDevicesName = (state: DeviceRootState) => {
+export const selectSelectedDeviceName = (state: DeviceRootState) => {
     const selectedDevice = selectDevice(state);
     return selectDeviceName(state, selectedDevice?.id);
 };

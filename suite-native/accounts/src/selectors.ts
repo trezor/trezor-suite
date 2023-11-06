@@ -1,7 +1,12 @@
 import { A, pipe } from '@mobily/ts-belt';
 import { memoizeWithArgs } from 'proxy-memoize';
 
-import { AccountsRootState, selectAccounts, selectDeviceAccounts } from '@suite-common/wallet-core';
+import {
+    AccountsRootState,
+    DeviceRootState,
+    selectAccounts,
+    selectDeviceAccounts,
+} from '@suite-common/wallet-core';
 import { Account, TokenInfoBranded } from '@suite-common/wallet-types';
 import { getNetwork } from '@suite-common/wallet-utils';
 import { selectEthereumAccountsTokensWithFiatRates } from '@suite-native/ethereum-tokens';
@@ -47,7 +52,7 @@ const filterAccountsByLabelAndNetworkNames = (
 
 export const selectFilteredAccountsGroupedByNetwork = memoizeWithArgs(
     (
-        state: AccountsRootState & FiatRatesRootState & SettingsSliceRootState,
+        state: AccountsRootState & FiatRatesRootState & SettingsSliceRootState & DeviceRootState,
         filterValue: string,
     ) => {
         const accounts = selectDeviceAccounts(state);

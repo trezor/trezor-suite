@@ -2,7 +2,7 @@ import { Alert } from 'react-native';
 
 import * as Sentry from '@sentry/react-native';
 
-import { DeviceManager } from '@suite-native/device-manager';
+import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { isDebugEnv, isDevelopOrDebugEnv, isProduction } from '@suite-native/config';
 import { Button, Card, VStack } from '@suite-native/atoms';
 import {
@@ -11,7 +11,6 @@ import {
     DevUtilsStackParamList,
     DevUtilsStackRoutes,
     ScreenSubHeader,
-    ScreenHeader,
 } from '@suite-native/navigation';
 import { clearStorage } from '@suite-native/storage';
 
@@ -28,11 +27,7 @@ export const DevUtilsScreen = ({
 
     return (
         <Screen
-            screenHeader={
-                <ScreenHeader>
-                    <DeviceManager />
-                </ScreenHeader>
-            }
+            screenHeader={<DeviceManagerScreenHeader />}
             subheader={<ScreenSubHeader content="DEV utils" />}
         >
             <VStack>

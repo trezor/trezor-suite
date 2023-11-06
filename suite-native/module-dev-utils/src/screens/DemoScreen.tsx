@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { TextInput, View } from 'react-native';
 
-import { DeviceManager } from '@suite-native/device-manager';
+import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { Link } from '@suite-native/link';
 import {
     Text,
@@ -32,7 +32,7 @@ import {
     AlertBox,
 } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Screen, ScreenHeader, ScreenSubHeader } from '@suite-native/navigation';
+import { Screen, ScreenSubHeader } from '@suite-native/navigation';
 import { CryptoIcon, tokenIcons, Icon, IconName, icons } from '@suite-common/icons';
 import { CoinsSettings } from '@suite-native/module-settings';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
@@ -92,14 +92,7 @@ export const DemoScreen = () => {
     if (!isDevelopOrDebugEnv()) return null;
 
     return (
-        <Screen
-            screenHeader={
-                <ScreenHeader>
-                    <DeviceManager />
-                </ScreenHeader>
-            }
-            subheader={<ScreenSubHeader />}
-        >
+        <Screen screenHeader={<DeviceManagerScreenHeader />} subheader={<ScreenSubHeader />}>
             <VStack spacing="medium">
                 <VStack>
                     <Text variant="titleSmall">Badge:</Text>
