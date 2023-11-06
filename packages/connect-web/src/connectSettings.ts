@@ -71,6 +71,11 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}): Conn
         if (query['trust-issues'] === 'true') {
             settings.trustedHost = false;
         }
+
+        // Even if connect is running on not trusted domain we can override it with `trust-issues=false` query param.
+        if (query['trust-issues'] === 'false') {
+            settings.trustedHost = true;
+        }
     }
 
     if (typeof input.env !== 'string') {
