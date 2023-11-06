@@ -6,7 +6,6 @@ describe('sessions', () => {
 
     beforeEach(() => {
         const background = new SessionsBackground();
-        // @ts-expect-error
         requestFn = params => background.handleMessage(params);
     });
 
