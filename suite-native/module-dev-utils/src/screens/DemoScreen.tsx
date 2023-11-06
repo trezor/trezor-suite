@@ -54,7 +54,7 @@ const textVariants: TypographyStyle[] = [
     'label',
 ];
 
-const buttonSizes = ['small', 'medium', 'large'] satisfies ButtonSize[];
+const buttonSizes = ['s', 'medium', 'large'] satisfies ButtonSize[];
 
 const flexWrapStyle = prepareNativeStyle(_ => ({
     flexWrap: 'wrap',
