@@ -240,8 +240,11 @@ export class Device extends TypedEmitter<DeviceEvents> {
         const runPromise = createDeferred();
         this.runPromise = runPromise;
 
-        // either finish with result or reject runPromise
-        return Promise.race([this._runInner(fn, options), runPromise.promise]);
+        this._runInner(fn, options).catch(err => {
+            runPromise.reject(err);
+        });
+
+        return runPromise.promise;
     }
 
     async override(error: Error) {
