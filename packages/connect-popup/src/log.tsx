@@ -154,6 +154,7 @@ const DebugCenter = () => {
             {logs.length > 0 ? (
                 <View
                     title="Logs"
+                    data-test="@connect-logs/logs"
                     buttons={
                         <DownloadButton
                             array={orderByTimestamp(logs)}
@@ -169,7 +170,9 @@ const DebugCenter = () => {
                 </View>
             ) : (
                 <Wrapper>
-                    <StyledP>Waiting for an app to connect</StyledP>
+                    <StyledP data-test="@connect-logs/no-logs">
+                        Waiting for an app to connect
+                    </StyledP>
                 </Wrapper>
             )}
         </>
