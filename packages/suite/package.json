@@ -24,7 +24,7 @@
         "@formatjs/intl": "2.9.6",
         "@hookform/resolvers": "3.1.0",
         "@reduxjs/toolkit": "1.9.5",
-        "@sentry/core": "^7.56.0",
+        "@sentry/core": "^7.77.0",
         "@suite-common/analytics": "workspace:*",
         "@suite-common/connect-init": "workspace:*",
         "@suite-common/device-authenticity": "workspace:*",
