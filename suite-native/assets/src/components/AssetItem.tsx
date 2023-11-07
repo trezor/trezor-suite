@@ -13,6 +13,7 @@ import {
     selectAccountsAmountPerSymbol,
     selectAccountsByNetworkAndDevice,
     PORTFOLIO_TRACKER_DEVICE_STATE,
+    DeviceRootState,
 } from '@suite-common/wallet-core';
 import { CryptoAmountFormatter, FiatAmountFormatter } from '@suite-native/formatters';
 import {
@@ -73,7 +74,7 @@ export const AssetItem = memo(
                     RootStackParamList
                 >
             >();
-        const accountsPerAsset = useSelector((state: AccountsRootState) =>
+        const accountsPerAsset = useSelector((state: AccountsRootState & DeviceRootState) =>
             selectAccountsAmountPerSymbol(state, cryptoCurrencySymbol),
         );
         const accountsForNetworkSymbol = useSelector((state: AccountsRootState) =>

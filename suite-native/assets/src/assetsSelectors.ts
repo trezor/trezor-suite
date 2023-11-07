@@ -2,7 +2,11 @@ import BigNumber from 'bignumber.js';
 import { memoize } from 'proxy-memoize';
 
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
-import { selectAccounts, AccountsRootState } from '@suite-common/wallet-core';
+import {
+    AccountsRootState,
+    DeviceRootState,
+    selectDeviceAccounts,
+} from '@suite-common/wallet-core';
 import {
     FiatRatesRootState,
     selectFiatRatesByFiatRateKey,
@@ -26,27 +30,30 @@ type AssetsRootState = AccountsRootState & FiatRatesRootState & SettingsSliceRoo
 const sumBalance = (balances: string[]): BigNumber =>
     balances.reduce((prev, balance) => prev.plus(balance), new BigNumber(0));
 
-export const selectBalancesPerNetwork = memoize((state: AssetsRootState): FormattedAssets => {
-    const accounts = selectAccounts(state);
-    const assets: Assets = {};
-    accounts.forEach(account => {
-        if (!assets[account.symbol]) {
-            assets[account.symbol] = [];
-        }
-        assets[account.symbol]?.push(account.formattedBalance);
-    });
+export const selectBalancesPerNetwork = memoize(
+    (state: AssetsRootState & DeviceRootState): FormattedAssets => {
+        const accounts = selectDeviceAccounts(state);
 
-    const formattedNetworkAssets: FormattedAssets = {};
-    const assetKeys = Object.keys(assets) as NetworkSymbol[];
-    assetKeys.forEach((asset: NetworkSymbol) => {
-        const balances = assets[asset] ?? [];
-        formattedNetworkAssets[asset] = sumBalance(balances);
-    });
+        const assets: Assets = {};
+        accounts.forEach(account => {
+            if (!assets[account.symbol]) {
+                assets[account.symbol] = [];
+            }
+            assets[account.symbol]?.push(account.formattedBalance);
+        });
 
-    return formattedNetworkAssets;
-});
+        const formattedNetworkAssets: FormattedAssets = {};
+        const assetKeys = Object.keys(assets) as NetworkSymbol[];
+        assetKeys.forEach((asset: NetworkSymbol) => {
+            const balances = assets[asset] ?? [];
+            formattedNetworkAssets[asset] = sumBalance(balances);
+        });
 
-export const selectAssetsWithBalances = memoize((state: AssetsRootState) => {
+        return formattedNetworkAssets;
+    },
+);
+
+export const selectAssetsWithBalances = memoize((state: AssetsRootState & DeviceRootState) => {
     const balancesPerNetwork = selectBalancesPerNetwork(state);
     const networksWithAssets = Object.keys(balancesPerNetwork) as NetworkSymbol[];
 

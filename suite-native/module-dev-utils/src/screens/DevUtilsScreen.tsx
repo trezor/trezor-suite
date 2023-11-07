@@ -2,6 +2,7 @@ import { Alert } from 'react-native';
 
 import * as Sentry from '@sentry/react-native';
 
+import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { isDebugEnv, isDevelopOrDebugEnv, isProduction } from '@suite-native/config';
 import { Button, Card, VStack } from '@suite-native/atoms';
 import {
@@ -25,7 +26,10 @@ export const DevUtilsScreen = ({
     const shouldShowFeatureFlags = isDevelopOrDebugEnv();
 
     return (
-        <Screen subheader={<ScreenSubHeader content="DEV utils" />}>
+        <Screen
+            screenHeader={<DeviceManagerScreenHeader />}
+            subheader={<ScreenSubHeader content="DEV utils" />}
+        >
             <VStack>
                 <Card>
                     <VStack spacing="medium">

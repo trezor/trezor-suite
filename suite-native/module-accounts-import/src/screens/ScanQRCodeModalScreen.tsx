@@ -1,3 +1,4 @@
+import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { QRCodeScanner } from '@suite-native/qr-code';
 import {
     AccountsImportStackParamList,
@@ -30,7 +31,10 @@ export const ScanQRCodeModalScreen = ({
     const screenTitle = networkTypeToTitleMap[networkType];
 
     return (
-        <Screen subheader={<ScreenSubHeader content={screenTitle} />}>
+        <Screen
+            screenHeader={<DeviceManagerScreenHeader />}
+            subheader={<ScreenSubHeader content={screenTitle} />}
+        >
             <QRCodeScanner onCodeScanned={handleBarCodeScanned} />
         </Screen>
     );

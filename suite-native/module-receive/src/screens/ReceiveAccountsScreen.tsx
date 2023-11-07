@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { AccountsList, SearchableAccountsListScreenHeader } from '@suite-native/accounts';
 import {
     Screen,
@@ -28,6 +29,7 @@ export const ReceiveAccountsScreen = () => {
 
     return (
         <Screen
+            screenHeader={<DeviceManagerScreenHeader />}
             subheader={
                 <SearchableAccountsListScreenHeader
                     title="Receive to"

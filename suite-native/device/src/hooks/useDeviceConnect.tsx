@@ -16,6 +16,7 @@ import {
     selectDeviceRequestedPin,
     selectIsConnectedDeviceUninitialized,
     selectIsDeviceConnectedAndAuthorized,
+    selectIsSelectedDeviceImported,
     selectIsUnacquiredDevice,
 } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
@@ -32,6 +33,7 @@ export const useDeviceConnect = () => {
     const isDeviceConnectedAndAuthorized = useSelector(selectIsDeviceConnectedAndAuthorized);
     const isUnacquiredDevice = useSelector(selectIsUnacquiredDevice);
     const isConnectedDeviceUninitialized = useSelector(selectIsConnectedDeviceUninitialized);
+    const isSelectedDeviceImported = useSelector(selectIsSelectedDeviceImported);
 
     const dispatch = useDispatch();
 
@@ -79,10 +81,10 @@ export const useDeviceConnect = () => {
     }, [isConnectedDeviceUninitialized, showAlert, translate]);
 
     useEffect(() => {
-        if (isDeviceConnectedAndAuthorized) {
+        if (isDeviceConnectedAndAuthorized && !isSelectedDeviceImported) {
             navigation.navigate(RootStackRoutes.ConnectDevice, {
                 screen: ConnectDeviceStackRoutes.ConnectingDevice,
             });
         }
-    }, [hideAlert, isDeviceConnectedAndAuthorized, navigation]);
+    }, [hideAlert, isDeviceConnectedAndAuthorized, isSelectedDeviceImported, navigation]);
 };

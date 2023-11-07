@@ -6,7 +6,7 @@ import {
     AccountsRootState,
     FiatRatesState as FiatRatesStateLegacy,
     selectAccountByKey,
-    selectAccounts,
+    selectDeviceAccounts,
     selectTransactions,
 } from '@suite-common/wallet-core';
 import { Account, AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';
@@ -57,7 +57,7 @@ export const selectShouldUpdateFiatRate = (
 };
 
 export const selectTickerFromAccounts = memoize((state: FiatRatesRootState): TickerId[] => {
-    const accounts = selectAccounts(state as any);
+    const accounts = selectDeviceAccounts(state as any);
     return pipe(
         accounts,
         A.map(account => [
@@ -76,15 +76,6 @@ export const selectTickerFromAccounts = memoize((state: FiatRatesRootState): Tic
         F.toMutable,
     );
 });
-
-export const selectShouldUpdateTicker = (
-    state: FiatRatesRootState,
-    ticker: TickerId,
-    fiatCurrency: FiatCurrencyCode,
-) => {
-    const fiatRateKey = getFiatRateKeyFromTicker(ticker, fiatCurrency);
-    return selectShouldUpdateFiatRate(state, fiatRateKey);
-};
 
 export const selectTickersToBeUpdated = memoizeWithArgs(
     (state: FiatRatesRootState, fiatCurrency: FiatCurrencyCode, rateType: RateType): TickerId[] => {

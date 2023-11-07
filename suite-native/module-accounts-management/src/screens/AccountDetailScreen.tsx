@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { RouteProp, useRoute } from '@react-navigation/native';
 
+import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { RootStackParamList, RootStackRoutes, Screen } from '@suite-native/navigation';
 import {
     AccountsRootState,
@@ -27,7 +28,9 @@ import { TokenAccountDetailScreenSubHeader } from '../components/TokenAccountDet
 export const AccountDetailScreen = memo(() => {
     const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.AccountDetail>>();
     const { accountKey, tokenContract } = route.params;
+
     const dispatch = useDispatch();
+
     const [areTokensIncluded, setAreTokensIncluded] = useState(false);
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
@@ -90,6 +93,7 @@ export const AccountDetailScreen = memo(() => {
 
     return (
         <Screen
+            screenHeader={<DeviceManagerScreenHeader />}
             subheader={
                 token?.name ? (
                     <TokenAccountDetailScreenSubHeader

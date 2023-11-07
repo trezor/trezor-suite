@@ -26,6 +26,7 @@
         "@suite-common/wallet-utils": "workspace:*",
         "@suite-native/analytics": "workspace:*",
         "@suite-native/atoms": "workspace:*",
+        "@suite-native/device-manager": "workspace:*",
         "@suite-native/ethereum-tokens": "workspace:*",
         "@suite-native/fiat-rates": "workspace:*",
         "@suite-native/formatters": "workspace:*",

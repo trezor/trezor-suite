@@ -7582,6 +7582,28 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-native/device-manager@workspace:*, @suite-native/device-manager@workspace:suite-native/device-manager":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/device-manager@workspace:suite-native/device-manager"
+  dependencies:
+    "@react-navigation/native": ^6.1.3
+    "@reduxjs/toolkit": 1.9.5
+    "@suite-common/icons": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-native/atoms": "workspace:*"
+    "@suite-native/intl": "workspace:*"
+    "@suite-native/navigation": "workspace:*"
+    "@suite-native/screen-overlay": "workspace:*"
+    "@trezor/styles": "workspace:*"
+    jotai: 1.9.1
+    react: ^18.2.0
+    react-native: 0.71.8
+    react-native-safe-area-context: ^4.5.0
+    react-redux: 8.0.7
+  languageName: unknown
+  linkType: soft
+
 "@suite-native/device@workspace:*, @suite-native/device@workspace:suite-native/device":
   version: 0.0.0-use.local
   resolution: "@suite-native/device@workspace:suite-native/device"
@@ -7834,6 +7856,7 @@ __metadata:
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/config": "workspace:*"
+    "@suite-native/device-manager": "workspace:*"
     "@suite-native/ethereum-tokens": "workspace:*"
     "@suite-native/fiat-rates": "workspace:*"
     "@suite-native/formatters": "workspace:*"
@@ -7878,6 +7901,7 @@ __metadata:
     "@suite-native/alerts": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
+    "@suite-native/device-manager": "workspace:*"
     "@suite-native/ethereum-tokens": "workspace:*"
     "@suite-native/fiat-rates": "workspace:*"
     "@suite-native/formatters": "workspace:*"
@@ -7938,6 +7962,7 @@ __metadata:
     "@suite-common/wallet-types": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/config": "workspace:*"
+    "@suite-native/device-manager": "workspace:*"
     "@suite-native/discovery": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"
     "@suite-native/helpers": "workspace:*"
@@ -7971,6 +7996,7 @@ __metadata:
     "@suite-native/atoms": "workspace:*"
     "@suite-native/biometrics": "workspace:*"
     "@suite-native/device": "workspace:*"
+    "@suite-native/device-manager": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"
     "@suite-native/formatters": "workspace:*"
     "@suite-native/graph": "workspace:*"
@@ -8031,6 +8057,7 @@ __metadata:
     "@suite-native/accounts": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
+    "@suite-native/device-manager": "workspace:*"
     "@suite-native/ethereum-tokens": "workspace:*"
     "@suite-native/formatters": "workspace:*"
     "@suite-native/intl": "workspace:*"
@@ -8064,6 +8091,7 @@ __metadata:
     "@suite-native/atoms": "workspace:*"
     "@suite-native/biometrics": "workspace:*"
     "@suite-native/config": "workspace:*"
+    "@suite-native/device-manager": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@suite-native/link": "workspace:*"
     "@suite-native/navigation": "workspace:*"
@@ -8184,6 +8212,7 @@ __metadata:
     "@suite-native/accounts": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
+    "@suite-native/device-manager": "workspace:*"
     "@suite-native/ethereum-tokens": "workspace:*"
     "@suite-native/formatters": "workspace:*"
     "@suite-native/intl": "workspace:*"
@@ -8333,6 +8362,7 @@ __metadata:
     "@suite-common/wallet-utils": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
+    "@suite-native/device-manager": "workspace:*"
     "@suite-native/ethereum-tokens": "workspace:*"
     "@suite-native/fiat-rates": "workspace:*"
     "@suite-native/formatters": "workspace:*"

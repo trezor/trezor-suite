@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { D } from '@mobily/ts-belt';
 
-import { AccountsRootState } from '@suite-common/wallet-core';
+import { AccountsRootState, DeviceRootState } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { FiatRatesRootState } from '@suite-native/fiat-rates';
 import { SettingsSliceRootState } from '@suite-native/module-settings';
@@ -18,8 +18,12 @@ type AccountsListProps = {
 
 export const AccountsList = ({ onSelectAccount, filterValue = '' }: AccountsListProps) => {
     const accounts = useSelector(
-        (state: AccountsRootState & FiatRatesRootState & SettingsSliceRootState) =>
-            selectFilteredAccountsGroupedByNetwork(state, filterValue),
+        (
+            state: AccountsRootState &
+                FiatRatesRootState &
+                SettingsSliceRootState &
+                DeviceRootState,
+        ) => selectFilteredAccountsGroupedByNetwork(state, filterValue),
     );
 
     if (D.isEmpty(accounts)) return <AccountListPlaceholder />;

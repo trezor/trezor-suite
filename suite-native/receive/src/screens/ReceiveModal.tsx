@@ -1,5 +1,6 @@
 import { CommonActions, RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
+import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import {
     RootStackParamList,
     RootStackRoutes,
@@ -28,7 +29,10 @@ export const ReceiveModal = () => {
     };
 
     return (
-        <Screen subheader={<ScreenSubHeader content={translate('moduleReceive.title')} />}>
+        <Screen
+            screenHeader={<DeviceManagerScreenHeader />}
+            subheader={<ScreenSubHeader content={translate('moduleReceive.title')} />}
+        >
             {route.params?.accountKey ? (
                 <ReceiveAccount
                     accountKey={route.params.accountKey}

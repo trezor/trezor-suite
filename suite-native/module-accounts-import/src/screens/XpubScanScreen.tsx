@@ -4,6 +4,7 @@ import Animated, { FadeIn } from 'react-native-reanimated';
 
 import { useFocusEffect } from '@react-navigation/native';
 
+import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { Box, Button, HeaderedCard, TextDivider, VStack } from '@suite-native/atoms';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { Form, TextInputField, useForm } from '@suite-native/forms';
@@ -138,6 +139,7 @@ export const XpubScanScreen = ({
 
     return (
         <Screen
+            screenHeader={<DeviceManagerScreenHeader />}
             subheader={<AccountImportSubHeader />}
             footer={<XpubHint networkType={networkType} handleOpen={handleOpenHint} />}
             extraKeyboardAvoidingViewHeight={EXTRA_KEYBOARD_AVOIDING_VIEW_HEIGHT}

@@ -1,3 +1,4 @@
+import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import {
     AccountsImportStackParamList,
     AccountsImportStackRoutes,
@@ -19,7 +20,7 @@ export const SelectNetworkScreen = ({
     };
 
     return (
-        <Screen subheader={<AccountImportSubHeader />}>
+        <Screen screenHeader={<DeviceManagerScreenHeader />} subheader={<AccountImportSubHeader />}>
             <SelectableNetworkList onSelectItem={handleSelectNetworkSymbol} />
         </Screen>
     );

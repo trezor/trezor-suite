@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
+import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import {
     RootStackParamList,
@@ -15,6 +16,7 @@ import {
     selectAccountByKey,
     selectAccountLabel,
     selectFormattedAccountType,
+    selectIsSelectedDeviceImported,
 } from '@suite-common/wallet-core';
 import { CryptoIcon } from '@suite-common/icons';
 
@@ -48,6 +50,8 @@ export const AccountSettingsScreen = ({
 }: StackProps<RootStackParamList, RootStackRoutes.AccountSettings>) => {
     const { accountKey } = route.params;
 
+    const isSelectedDevicePortfolioTracker = useSelector(selectIsSelectedDeviceImported);
+
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
@@ -64,6 +68,7 @@ export const AccountSettingsScreen = ({
 
     return (
         <Screen
+            screenHeader={<DeviceManagerScreenHeader />}
             subheader={
                 <ScreenSubHeader
                     content={accountLabel}
@@ -86,7 +91,9 @@ export const AccountSettingsScreen = ({
                 </Card>
                 <VStack marginHorizontal="medium" spacing="medium">
                     <AccountSettingsShowXpubButton accountKey={account.key} />
-                    <AccountSettingsRemoveCoinButton accountKey={account.key} />
+                    {isSelectedDevicePortfolioTracker && (
+                        <AccountSettingsRemoveCoinButton accountKey={account.key} />
+                    )}
                 </VStack>
             </Box>
         </Screen>

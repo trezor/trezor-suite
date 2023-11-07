@@ -205,6 +205,19 @@ export const en = {
                 "Caution! This transaction may be a scam. If you’re unsure, don't engage. <blogLink>Read more</blogLink>",
         },
     },
+    deviceManager: {
+        deviceButtons: {
+            eject: 'Eject',
+            deviceInfo: 'Device info',
+        },
+        deviceList: {
+            sectionTitle: 'Open',
+        },
+        connectDevice: {
+            sectionTitle: 'Connect Trezor device',
+            connectButton: 'Connect',
+        },
+    },
 };
 
 export type Translations = typeof en;

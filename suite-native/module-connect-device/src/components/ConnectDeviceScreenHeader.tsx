@@ -1,8 +1,8 @@
 import { useNavigation } from '@react-navigation/native';
 import { CommonActions } from '@react-navigation/core';
 
-import { HomeStackRoutes, RootStackRoutes, ScreenHeaderWrapper } from '@suite-native/navigation';
-import { IconButton } from '@suite-native/atoms';
+import { HomeStackRoutes, RootStackRoutes } from '@suite-native/navigation';
+import { IconButton, ScreenHeaderWrapper } from '@suite-native/atoms';
 
 import { ConnectingTrezorHelp } from './ConnectingTrezorHelp';
 

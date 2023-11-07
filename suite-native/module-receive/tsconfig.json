@@ -15,6 +15,7 @@
         { "path": "../accounts" },
         { "path": "../analytics" },
         { "path": "../atoms" },
+        { "path": "../device-manager" },
         { "path": "../ethereum-tokens" },
         { "path": "../formatters" },
         { "path": "../intl" },

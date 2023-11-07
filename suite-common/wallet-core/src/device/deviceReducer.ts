@@ -346,11 +346,16 @@ const authConfirm = (draft: State, device: TrezorDevice, success: boolean) => {
 const createInstance = (draft: State, device: TrezorDevice) => {
     // only acquired devices
     if (!device || !device.features) return;
+
+    const isPortfolioTrackerDevice = device.id === PORTFOLIO_TRACKER_DEVICE_ID;
+
     const newDevice: TrezorDevice = {
         ...device,
         passphraseOnDevice: false,
         remember: false,
-        state: undefined,
+        // In mobile app, we need to keep device state defined by the constant
+        // to be able to filter device accounts for portfolio tracker
+        state: isPortfolioTrackerDevice ? device.state : undefined,
         walletNumber: undefined,
         authConfirm: false,
         ts: new Date().getTime(),
@@ -506,8 +511,6 @@ export const selectDevice = (state: DeviceRootState) => state.device.selectedDev
 export const selectIsDeviceUnlocked = (state: DeviceRootState) =>
     !!state.device.selectedDevice?.features?.unlocked;
 
-export const selectDeviceState = (state: DeviceRootState) => state.device.selectedDevice?.state;
-
 export const selectDeviceType = (state: DeviceRootState) => state.device.selectedDevice?.type;
 
 export const selectDeviceFeatures = (state: DeviceRootState) =>
@@ -641,7 +644,7 @@ export const selectSupportedNetworks = (state: DeviceRootState) => {
         .filter(Boolean) as Network['symbol'][]; // Filter out null values
 };
 
-export const selectDeviceById = (state: DeviceRootState, deviceId: string) =>
+export const selectDeviceById = (state: DeviceRootState, deviceId: TrezorDevice['id']) =>
     state.device.devices.find(device => device.id === deviceId);
 
 export const selectDeviceAuthenticity = (state: DeviceRootState, deviceId?: TrezorDevice['id']) =>
@@ -667,4 +670,19 @@ export const selectIsDeviceAuthenticityFulfilled = (
 export const selectIsSelectedDeviceImported = (state: DeviceRootState) => {
     const device = selectDevice(state);
     return device?.id === PORTFOLIO_TRACKER_DEVICE_ID;
+};
+
+export const selectDeviceLabel = (state: DeviceRootState, id: TrezorDevice['id']) => {
+    const device = selectDeviceById(state, id);
+    return device?.label ?? null;
+};
+
+export const selectDeviceName = (state: DeviceRootState, id: TrezorDevice['id']): string | null => {
+    const device = selectDeviceById(state, id);
+    return device?.name ?? null;
+};
+
+export const selectSelectedDeviceName = (state: DeviceRootState) => {
+    const selectedDevice = selectDevice(state);
+    return selectDeviceName(state, selectedDevice?.id);
 };

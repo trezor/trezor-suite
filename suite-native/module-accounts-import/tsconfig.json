@@ -26,6 +26,7 @@
         { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../config" },
+        { "path": "../device-manager" },
         { "path": "../ethereum-tokens" },
         { "path": "../fiat-rates" },
         { "path": "../formatters" },

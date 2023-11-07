@@ -13,15 +13,13 @@ import { selectIsAnyBannerMessageActive } from '@suite-common/message-system';
 import { Box } from '@suite-native/atoms';
 
 import { ScreenContentWrapper } from './ScreenContentWrapper';
-import { ScreenHeader } from './ScreenHeader';
 
 type ScreenProps = {
     children: ReactNode;
     footer?: ReactNode;
     subheader?: ReactNode;
-    customHeader?: ReactNode;
+    screenHeader?: ReactNode;
     hasStatusBar?: boolean;
-    isHeaderDisplayed?: boolean;
     isScrollable?: boolean;
     backgroundColor?: Color;
     customVerticalPadding?: number;
@@ -97,11 +95,10 @@ const screenContentBaseStyle = prepareNativeStyle<{
 export const Screen = ({
     children,
     footer,
+    screenHeader,
     subheader,
-    customHeader,
     isScrollable = true,
     hasStatusBar = true,
-    isHeaderDisplayed = true,
     backgroundColor = 'backgroundSurfaceElevation0',
     customVerticalPadding = nativeSpacings.small,
     customHorizontalPadding = nativeSpacings.small,
@@ -146,7 +143,7 @@ export const Screen = ({
                 translucent={false}
                 backgroundColor={backgroundCSSColor}
             />
-            {customHeader || (isHeaderDisplayed && <ScreenHeader hasBottomPadding={!subheader} />)}
+            {screenHeader}
             <ScreenContentWrapper
                 isScrollable={isScrollable}
                 extraKeyboardAvoidingViewHeight={extraKeyboardAvoidingViewHeight}
