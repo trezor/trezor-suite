@@ -2,7 +2,7 @@ import { Page, test as testPlaywright } from '@playwright/test';
 
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
-import { patchBinaries, launchSuite, waitForDataTestSelector } from '../support/common';
+import { launchSuite, waitForDataTestSelector } from '../support/common';
 
 const clickDataTest = (window: Page, selector: string) => window.click(`[data-test="${selector}"]`);
 
@@ -16,10 +16,6 @@ const toggleDebugModeInSettings = async (window: Page) => {
 
 testPlaywright.describe.serial('Suite works with Electrum server', () => {
     testPlaywright.beforeAll(async () => {
-        // todo: some problems with path in dev and production and tests. tldr tests are expecting
-        // binaries somewhere where they are not, so I copy them to that place. Maybe I find a
-        // better solution later
-        await patchBinaries();
         await TrezorUserEnvLink.api.trezorUserEnvConnect();
         await TrezorUserEnvLink.api.startEmu({ wipe: true });
         await TrezorUserEnvLink.api.setupEmu({
