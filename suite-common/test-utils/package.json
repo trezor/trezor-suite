@@ -20,7 +20,7 @@
         "@trezor/device-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "dropbox": "^10.34.0",
-        "fake-indexeddb": "^4.0.1",
+        "fake-indexeddb": "^4.0.2",
         "redux": "^4.2.1",
         "redux-thunk": "^2.4.2"
     },

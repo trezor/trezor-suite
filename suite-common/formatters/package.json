@@ -11,7 +11,7 @@
         "type-check": "tsc --build"
     },
     "dependencies": {
-        "@formatjs/intl": "2.9.0",
+        "@formatjs/intl": "2.9.6",
         "@mobily/ts-belt": "^3.13.1",
         "@suite-common/suite-config": "workspace:*",
         "@suite-common/suite-constants": "workspace:*",
@@ -24,7 +24,7 @@
         "bignumber.js": "^9.1.1",
         "date-fns": "^2.30.0",
         "react": "18.2.0",
-        "react-intl": "^6.4.4",
+        "react-intl": "^6.5.1",
         "react-redux": "8.0.7"
     },
     "devDependencies": {
