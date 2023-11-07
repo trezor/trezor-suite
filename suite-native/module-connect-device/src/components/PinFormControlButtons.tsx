@@ -72,7 +72,7 @@ export const PinFormControlButtons = () => {
     const pinLength = watch('pin').length;
 
     return (
-        <HStack spacing="medium">
+        <HStack spacing="m">
             {!!pinLength && (
                 <IconButton
                     onPress={handleDelete}

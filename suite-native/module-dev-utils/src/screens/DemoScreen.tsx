@@ -39,7 +39,7 @@ import { TypographyStyle } from '@trezor/theme';
 import { TokenAddress } from '@suite-common/wallet-types';
 
 const inputStackStyle = prepareNativeStyle(utils => ({
-    borderRadius: utils.borders.radii.medium,
+    borderRadius: utils.borders.radii.m,
     padding: utils.spacings.s,
 }));
 
@@ -54,7 +54,7 @@ const textVariants: TypographyStyle[] = [
     'label',
 ];
 
-const buttonSizes = ['s', 'medium', 'large'] satisfies ButtonSize[];
+const buttonSizes = ['s', 'm', 'large'] satisfies ButtonSize[];
 
 const flexWrapStyle = prepareNativeStyle(_ => ({
     flexWrap: 'wrap',
@@ -92,7 +92,7 @@ export const DemoScreen = () => {
 
     return (
         <Screen subheader={<ScreenSubHeader />}>
-            <VStack spacing="medium">
+            <VStack spacing="m">
                 <VStack>
                     <Text variant="titleSmall">Badge:</Text>
                     <HStack justifyContent="center" style={applyStyle(flexWrapStyle)}>
@@ -209,7 +209,7 @@ export const DemoScreen = () => {
                         onChange={setInputText}
                         placeholder="Type here.."
                     />
-                    <Box marginVertical="medium">
+                    <Box marginVertical="m">
                         <VStack style={applyStyle(inputStackStyle)} spacing="s">
                             <InputWrapper label="Recipient">
                                 <Input
@@ -230,7 +230,7 @@ export const DemoScreen = () => {
                             </InputWrapper>
                         </VStack>
                     </Box>
-                    <Box marginVertical="medium">
+                    <Box marginVertical="m">
                         <VStack style={applyStyle(inputStackStyle)} spacing="s">
                             <InputWrapper hint="This input is not valid.">
                                 <Input
@@ -257,16 +257,16 @@ export const DemoScreen = () => {
                         onChange={() => setIsSwitch2Active(!isSwitch2Active)}
                         isDisabled
                     />
-                    <Box marginVertical="medium">
+                    <Box marginVertical="m">
                         <Text>Icon:</Text>
                         <Icon name="warningCircle" size="large" />
                     </Box>
-                    <Box marginVertical="medium">
+                    <Box marginVertical="m">
                         <Text>Hints:</Text>
                         <Hint>Hned to mažem</Hint>
                         <Hint variant="error">Please enter a valid address dumbo</Hint>
                     </Box>
-                    <Box marginVertical="medium">
+                    <Box marginVertical="m">
                         <Text>Radio:</Text>
                         <Box flexDirection="row" justifyContent="space-between">
                             <Radio

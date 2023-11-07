@@ -42,7 +42,7 @@ const contentStyle = prepareNativeStyle(utils => ({
 }));
 
 const cardStyle = prepareNativeStyle(utils => ({
-    marginTop: utils.spacings.medium,
+    marginTop: utils.spacings.m,
     padding: utils.spacings.large,
     borderRadius: 20,
     borderColor: utils.colors.borderSubtleInverted,

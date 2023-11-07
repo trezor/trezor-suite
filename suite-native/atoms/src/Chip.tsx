@@ -36,7 +36,7 @@ const chipStyle = prepareNativeStyle<ChipStyleProps>((utils, { isSelected }) => 
         condition: isSelected,
         style: {
             borderColor: utils.colors.borderSecondary,
-            borderWidth: utils.borders.widths.medium,
+            borderWidth: utils.borders.widths.m,
         },
     },
 }));

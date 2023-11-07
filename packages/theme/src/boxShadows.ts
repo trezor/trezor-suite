@@ -1,9 +1,9 @@
 import { CSSColor } from './types';
 
 export const boxShadows = {
-    small: '0px 2px 4px rgba(0, 0, 0, 0.04)',
+    s: '0px 2px 4px rgba(0, 0, 0, 0.04)',
     // TODO: next shadows needs to be defined
-    medium: '0px 2px 4px rgba(0, 0, 0, 0.04)',
+    m: '0px 2px 4px rgba(0, 0, 0, 0.04)',
     big: '0px 2px 4px rgba(0, 0, 0, 0.04)',
 };
 

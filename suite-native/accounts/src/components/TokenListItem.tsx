@@ -22,7 +22,7 @@ type TokenListItemProps = {
 };
 
 const horizontalLine = prepareNativeStyle(utils => ({
-    height: utils.spacings.medium,
+    height: utils.spacings.m,
     borderLeftColor: utils.colors.borderDashed,
     borderLeftWidth: 1,
     marginVertical: utils.spacings.xs,
@@ -51,7 +51,7 @@ export const TokenListItem = ({
             <Box style={applyStyle(horizontalLine)} />
             <Box flexDirection="row" justifyContent="space-between" alignItems="center">
                 <Box flex={1} flexDirection="row" alignItems="center">
-                    <Box marginRight="medium">
+                    <Box marginRight="m">
                         <RoundedIcon name={contract} />
                     </Box>
                     <Text style={applyStyle(accountDescriptionStyle)}>{label}</Text>

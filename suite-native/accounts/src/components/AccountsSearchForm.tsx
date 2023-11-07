@@ -46,7 +46,7 @@ export const AccountsSearchForm = ({ onPressCancel, onInputChange }: AccountsSea
             )}
             exiting={FadeOut.duration(SEARCH_INPUT_ANIMATION_DURATION)}
         >
-            <HStack marginHorizontal="medium" spacing="medium" justifyContent="space-between">
+            <HStack marginHorizontal="m" spacing="m" justifyContent="space-between">
                 <Animated.View
                     entering={SlideInLeft.duration(SEARCH_INPUT_ANIMATION_DURATION).delay(
                         SEARCH_INPUT_ANIMATION_DELAY,

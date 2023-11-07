@@ -125,7 +125,7 @@ export const TransactionListHeader = memo(
                         tokenContract={tokenContract}
                     />
                     {accountHasTransactions && (
-                        <Box marginVertical="medium" paddingHorizontal="medium">
+                        <Box marginVertical="m" paddingHorizontal="m">
                             <Button iconLeft="receive" size="large" onPress={handleReceive}>
                                 Receive
                             </Button>

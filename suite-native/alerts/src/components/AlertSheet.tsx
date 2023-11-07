@@ -22,7 +22,7 @@ const alertSheetContainerStyle = prepareNativeStyle(utils => ({
     paddingVertical: utils.spacings.extraLarge,
     marginBottom: utils.spacings.extraLarge,
     marginHorizontal: utils.spacings.s,
-    borderRadius: utils.borders.radii.medium,
+    borderRadius: utils.borders.radii.m,
     ...utils.boxShadows.s,
 }));
 
@@ -91,7 +91,7 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
                                     icon={icon}
                                 />
 
-                                <VStack spacing="medium">
+                                <VStack spacing="m">
                                     <Button
                                         size="large"
                                         colorScheme={primaryButtonVariant}

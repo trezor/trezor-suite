@@ -18,7 +18,7 @@ const enteredDigitsStyle = prepareNativeStyle(utils => ({
     borderRadius: utils.borders.radii.round,
     backgroundColor: utils.colors.backgroundSurfaceElevation0,
     borderColor: utils.colors.borderOnElevation0,
-    paddingHorizontal: utils.spacings.medium,
+    paddingHorizontal: utils.spacings.m,
 }));
 
 export const PinFormProgress = () => {

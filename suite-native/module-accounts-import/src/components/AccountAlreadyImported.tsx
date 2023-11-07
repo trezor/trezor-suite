@@ -60,7 +60,7 @@ export const AccountAlreadyImported = ({ account }: AccountImportImportedAccount
                     <Divider />
                 </Box>
                 <Box>
-                    <Box marginBottom="medium">
+                    <Box marginBottom="m">
                         <Button
                             size="large"
                             colorScheme="tertiaryElevation0"

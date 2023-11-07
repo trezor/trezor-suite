@@ -31,7 +31,7 @@ const radioStyle = prepareNativeStyle<RadioStyleProps>((utils, { isChecked, isDi
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: utils.borders.radii.round,
-    borderWidth: isChecked ? utils.borders.widths.large : utils.borders.widths.medium,
+    borderWidth: isChecked ? utils.borders.widths.large : utils.borders.widths.m,
     borderColor: utils.colors.borderOnElevation1,
     extend: {
         condition: isChecked && !isDisabled,

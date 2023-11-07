@@ -10,8 +10,8 @@ export type CardProps = {
 
 const cardStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.backgroundSurfaceElevation1,
-    borderRadius: utils.borders.radii.medium,
-    padding: utils.spacings.medium,
+    borderRadius: utils.borders.radii.m,
+    padding: utils.spacings.m,
     overflow: 'hidden',
 
     ...utils.boxShadows.s,

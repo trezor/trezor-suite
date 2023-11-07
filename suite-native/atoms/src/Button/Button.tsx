@@ -15,7 +15,7 @@ import { HStack } from '../Stack';
 
 export type ButtonBackgroundElevation = '0' | '1';
 
-export type ButtonSize = 's' | 'medium' | 'large';
+export type ButtonSize = 's' | 'm' | 'large';
 export type ButtonColorScheme =
     | 'primary'
     | 'secondary'
@@ -98,29 +98,29 @@ const sizeToDimensionsMap = {
     s: {
         minHeight: 40,
         paddingVertical: 10,
-        paddingHorizontal: nativeSpacings.medium,
+        paddingHorizontal: nativeSpacings.m,
     },
-    medium: {
+    m: {
         minHeight: 48,
         paddingVertical: 12,
         paddingHorizontal: 20,
     },
     large: {
         minHeight: 56,
-        paddingVertical: nativeSpacings.medium,
+        paddingVertical: nativeSpacings.m,
         paddingHorizontal: nativeSpacings.large,
     },
 } as const satisfies Record<ButtonSize, NativeStyleObject>;
 
 export const buttonToTextSizeMap = {
     s: 'hint',
-    medium: 'body',
+    m: 'body',
     large: 'body',
 } as const satisfies Record<ButtonSize, TypographyStyle>;
 
 const buttonToIconSizeMap = {
     s: 'medium',
-    medium: 'mediumLarge',
+    m: 'mediumLarge',
     large: 'large',
 } as const satisfies Record<ButtonSize, IconSize>;
 

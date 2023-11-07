@@ -27,7 +27,7 @@ const progressBarItemStyle = prepareNativeStyle<{ isActive: boolean }>((utils, {
     width: isActive ? 8 : 4,
     height: 4,
     borderRadius: utils.borders.radii.s / 4,
-    borderWidth: utils.borders.widths.medium,
+    borderWidth: utils.borders.widths.m,
     borderColor: isActive
         ? utils.colors.backgroundPrimaryDefault
         : utils.colors.backgroundNeutralSubdued,

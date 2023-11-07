@@ -4,7 +4,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 const overlayStyle = prepareNativeStyle(utils => ({
     justifyContent: 'center',
     alignItems: 'center',
-    padding: utils.spacings.medium,
+    padding: utils.spacings.m,
 }));
 
 export const XpubOverlayWarning = () => {

@@ -10,7 +10,7 @@ type FlagIconProps = {
 const flagIconSizes = {
     xs: 16,
     s: 24,
-    medium: 30,
+    m: 30,
 } as const;
 
 type FlagIconSize = keyof typeof flagIconSizes;

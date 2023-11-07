@@ -41,7 +41,7 @@ const EXTRA_KEYBOARD_AVOIDING_VIEW_HEIGHT = 350;
 const cameraStyle = prepareNativeStyle(utils => ({
     alignItems: 'center',
     marginTop: 20,
-    marginBottom: utils.spacings.medium,
+    marginBottom: utils.spacings.m,
 }));
 
 const xpubFormValidationSchema = yup.object({
@@ -150,7 +150,7 @@ export const XpubScanScreen = ({
             >
                 <SelectableNetworkItem symbol={networkSymbol} />
             </HeaderedCard>
-            <Box marginHorizontal="medium">
+            <Box marginHorizontal="m">
                 <View style={applyStyle(cameraStyle)}>
                     <XpubImportSection
                         onRequestCamera={handleRequestCamera}
@@ -160,7 +160,7 @@ export const XpubScanScreen = ({
 
                 <TextDivider title="OR" />
                 <Form form={form}>
-                    <VStack spacing="medium">
+                    <VStack spacing="m">
                         <TextInputField
                             testID="@accounts-import/sync-coins/xpub-input"
                             name="xpubAddress"

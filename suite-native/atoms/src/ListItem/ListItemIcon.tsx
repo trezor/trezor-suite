@@ -8,7 +8,7 @@ type ListItemIconProps = {
 };
 
 export const ListItemIcon = ({ iconName }: ListItemIconProps) => (
-    <Box justifyContent="center" alignItems="center" marginRight="medium">
+    <Box justifyContent="center" alignItems="center" marginRight="m">
         <RoundedIcon name={iconName} color="iconSubdued" iconSize="mediumLarge" />
     </Box>
 );

@@ -30,7 +30,7 @@ const sheetWrapperStyle = prepareNativeStyle<WrapperStyleProps>((utils, { insetB
     backgroundColor: utils.colors.backgroundSurfaceElevation0,
     borderTopLeftRadius: utils.borders.radii.large,
     borderTopRightRadius: utils.borders.radii.large,
-    paddingBottom: Math.max(insetBottom, utils.spacings.medium),
+    paddingBottom: Math.max(insetBottom, utils.spacings.m),
     maxHeight: '90%',
 }));
 
@@ -113,7 +113,7 @@ export const BottomSheet = ({
                             keyboardShouldPersistTaps="handled"
                         >
                             <Animated.View>
-                                <Box paddingHorizontal="medium">{children}</Box>
+                                <Box paddingHorizontal="m">{children}</Box>
                             </Animated.View>
                         </ScrollView>
                     </Animated.View>

@@ -15,7 +15,7 @@ const textDividerStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: utils.spacings.medium,
+    marginBottom: utils.spacings.m,
 }));
 
 export const TextDivider = ({ title, style }: TextDividerProps) => {

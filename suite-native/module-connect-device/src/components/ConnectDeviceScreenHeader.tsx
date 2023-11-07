@@ -29,7 +29,7 @@ export const ConnectDeviceScreenHeader = () => {
         <ScreenHeaderWrapper>
             <IconButton
                 iconName="close"
-                size="medium"
+                size="m"
                 colorScheme="tertiaryElevation1"
                 onPress={handleCancel}
             />

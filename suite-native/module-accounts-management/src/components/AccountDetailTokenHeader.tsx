@@ -40,7 +40,7 @@ export const AccountDetailTokenHeader = ({
     if (!tokenAccount || !tokenAccount.balance) return null;
 
     return (
-        <VStack alignItems="center" spacing="s" marginVertical="medium">
+        <VStack alignItems="center" spacing="s" marginVertical="m">
             <HStack spacing="s" flexDirection="row" alignItems="center" justifyContent="center">
                 <CryptoIcon symbol={tokenAccount.contract} size="xs" />
                 <EthereumTokenAmountFormatter value={tokenAccount?.balance} symbol={tokenSymbol} />

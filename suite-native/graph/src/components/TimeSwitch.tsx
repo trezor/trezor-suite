@@ -25,7 +25,7 @@ export const timeSwitchItems: TimeSwitchItemType[] = [
 const timeSwitchStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
     justifyContent: 'space-around',
-    paddingHorizontal: utils.spacings.medium,
+    paddingHorizontal: utils.spacings.m,
 }));
 
 export const TimeSwitch = ({ selectedTimeFrame = 24, onSelectTimeFrame }: TimeSwitchProps) => {

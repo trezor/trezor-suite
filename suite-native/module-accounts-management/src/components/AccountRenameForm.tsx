@@ -69,7 +69,7 @@ export const AccountRenameForm = ({ accountKey, onSubmit }: AccountRenameFormPro
     });
 
     return (
-        <Box marginTop="medium">
+        <Box marginTop="m">
             <Form form={form}>
                 <VStack spacing="s">
                     <TextInputField

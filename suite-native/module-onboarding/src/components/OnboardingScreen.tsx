@@ -24,8 +24,8 @@ const contentStyle = prepareNativeStyle(utils => ({
 }));
 
 const cardStyle = prepareNativeStyle(utils => ({
-    marginHorizontal: utils.spacings.medium,
-    marginTop: utils.spacings.medium,
+    marginHorizontal: utils.spacings.m,
+    marginTop: utils.spacings.m,
     paddingTop: utils.spacings.large,
     borderRadius: 20,
     backgroundColor: utils.colors.backGroundOnboardingCard,

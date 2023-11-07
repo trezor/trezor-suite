@@ -38,19 +38,19 @@ export const typographyStylesBase: Record<TypographyStyle, TypographyStyleDefini
     titleLarge: {
         fontSize: 48,
         lineHeight: 53,
-        fontWeight: fontWeights.medium,
+        fontWeight: fontWeights.m,
         letterSpacing: 0.4,
     },
     titleMedium: {
         fontSize: 34,
         lineHeight: 37,
-        fontWeight: fontWeights.medium,
+        fontWeight: fontWeights.m,
         letterSpacing: -1.4,
     },
     titleSmall: {
         fontSize: 22,
         lineHeight: 32,
-        fontWeight: fontWeights.medium,
+        fontWeight: fontWeights.m,
         letterSpacing: -0.3,
     },
     highlight: {
@@ -62,7 +62,7 @@ export const typographyStylesBase: Record<TypographyStyle, TypographyStyleDefini
     body: {
         fontSize: 16,
         lineHeight: 24,
-        fontWeight: fontWeights.medium,
+        fontWeight: fontWeights.m,
         letterSpacing: -0.4,
     },
     callout: {
@@ -74,13 +74,13 @@ export const typographyStylesBase: Record<TypographyStyle, TypographyStyleDefini
     hint: {
         fontSize: 14,
         lineHeight: 21,
-        fontWeight: fontWeights.medium,
+        fontWeight: fontWeights.m,
         letterSpacing: -0.3,
     },
     label: {
         fontSize: 12,
         lineHeight: 18,
-        fontWeight: fontWeights.medium,
+        fontWeight: fontWeights.m,
         letterSpacing: -0.1,
     },
 };

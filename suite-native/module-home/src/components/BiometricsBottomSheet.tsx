@@ -20,7 +20,7 @@ const IMG_WRAPPER_DIMENSIONS = 88;
 const cardStyle = prepareNativeStyle(utils => ({
     alignItems: 'center',
     textAlign: 'center',
-    borderRadius: utils.borders.radii.medium,
+    borderRadius: utils.borders.radii.m,
     backgroundColor: utils.colors.backgroundSurfaceElevation1,
     paddingVertical: utils.spacings.large,
     marginBottom: utils.spacings.large,
@@ -42,7 +42,7 @@ const textContentStyle = prepareNativeStyle(utils => ({
 }));
 
 const buttonWrapperStyle = prepareNativeStyle(utils => ({
-    gap: utils.spacings.medium,
+    gap: utils.spacings.m,
     paddingHorizontal: utils.spacings.s,
 }));
 

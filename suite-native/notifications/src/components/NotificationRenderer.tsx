@@ -18,7 +18,7 @@ const notificationContainerStyle = prepareNativeStyle<{ topSafeAreaInset: number
         flex: 1,
         flexDirection: 'row',
         marginTop: topSafeAreaInset,
-        paddingHorizontal: utils.spacings.medium,
+        paddingHorizontal: utils.spacings.m,
     }),
 );
 

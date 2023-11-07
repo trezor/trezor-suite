@@ -57,7 +57,7 @@ export const AccountImportOverviewCard = ({
             <Box flexDirection="row" marginBottom="large" justifyContent="space-between">
                 <Box flexDirection="row">
                     {icon}
-                    <Box marginLeft="medium">
+                    <Box marginLeft="m">
                         <Text>{coinName}</Text>
                         {cryptoAmount}
                     </Box>
@@ -68,7 +68,7 @@ export const AccountImportOverviewCard = ({
                         iconName="trashAlt"
                         colorScheme="tertiaryElevation1"
                         onPress={handleNavigateToQRScan}
-                        size="medium"
+                        size="m"
                     />
                 )}
             </Box>

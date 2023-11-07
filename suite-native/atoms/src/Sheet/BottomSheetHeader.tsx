@@ -20,7 +20,7 @@ const sheetHeaderStyle = prepareNativeStyle<{ isCloseDisplayed: boolean }>(
         alignItems: 'center',
         paddingHorizontal: utils.spacings.large,
         paddingTop: utils.spacings.large,
-        paddingBottom: utils.spacings.medium,
+        paddingBottom: utils.spacings.m,
     }),
 );
 
@@ -78,7 +78,7 @@ export const BottomSheetHeader = ({
                             iconName="close"
                             onPress={onCloseSheet}
                             colorScheme="tertiaryElevation0"
-                            size="medium"
+                            size="m"
                         />
                     )}
                 </View>

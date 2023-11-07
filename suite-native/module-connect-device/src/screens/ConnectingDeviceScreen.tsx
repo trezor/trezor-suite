@@ -45,7 +45,7 @@ export const ConnectingDeviceScreen = () => {
 
     return (
         <ConnectDeviceBackground style={applyStyle(screenStyle)}>
-            <VStack spacing="medium" alignItems="center">
+            <VStack spacing="m" alignItems="center">
                 <VStack spacing="extraLarge" alignItems="center">
                     <Icon name="trezor" size="extraLarge" />
                     <Text variant="titleMedium">

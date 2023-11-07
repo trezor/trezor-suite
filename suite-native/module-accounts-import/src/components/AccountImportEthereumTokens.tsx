@@ -14,7 +14,7 @@ export const AccountImportEthereumTokens = ({ tokens }: AccountImportEthereumTok
     if (A.isEmpty(tokens)) return null;
 
     return (
-        <Box marginTop="medium">
+        <Box marginTop="m">
             <VStack spacing="s" marginBottom="s">
                 <Text variant="titleSmall">Tokens: </Text>
                 {tokens.map(({ symbol, contract, balance, name, decimals }) => (

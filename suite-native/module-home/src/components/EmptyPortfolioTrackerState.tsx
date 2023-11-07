@@ -33,7 +33,7 @@ const cardStyle = prepareNativeStyle(utils => ({
 }));
 
 const contentStyle = prepareNativeStyle(utils => ({
-    paddingHorizontal: utils.spacings.medium,
+    paddingHorizontal: utils.spacings.m,
     paddingTop: utils.spacings.extraLarge,
     alignItems: 'center',
 }));

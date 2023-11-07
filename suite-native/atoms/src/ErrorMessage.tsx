@@ -16,7 +16,7 @@ const errorMessageStyle = prepareNativeStyle(utils => ({
     margin: utils.spacings.s,
     borderColor: utils.colors.borderAlertRed,
     borderWidth: 1,
-    borderRadius: utils.borders.radii.medium,
+    borderRadius: utils.borders.radii.m,
     padding: utils.spacings.large,
 }));
 

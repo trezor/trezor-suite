@@ -7,7 +7,7 @@ import { OnboardingStackRoutes } from '@suite-native/navigation';
 
 const wrapperStyle = prepareNativeStyle(utils => ({
     width: '100%',
-    paddingHorizontal: utils.spacings.medium,
+    paddingHorizontal: utils.spacings.m,
     marginBottom: 28,
 }));
 

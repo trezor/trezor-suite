@@ -55,7 +55,7 @@ export const PinForm = () => {
             <Card style={applyStyle(cardStyle)}>
                 <VStack justifyContent="center" alignItems="center" spacing="large">
                     {pinMatrix.map(pinRow => (
-                        <HStack key={pinRow.join('')} spacing="medium">
+                        <HStack key={pinRow.join('')} spacing="m">
                             {pinRow.map(value => (
                                 <PinMatrixButton key={value} value={value} />
                             ))}

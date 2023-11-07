@@ -23,7 +23,7 @@ export const AddAccountButton = () => {
             iconName="plus"
             onPress={navigateToImportScreen}
             colorScheme="tertiaryElevation0"
-            size="medium"
+            size="m"
         />
     );
 };

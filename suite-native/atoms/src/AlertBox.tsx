@@ -24,7 +24,7 @@ const alertWrapperStyle = prepareNativeStyle<AlertWrapperStyleType>(
         borderRadius: isStandalone ? utils.borders.radii.s : 0,
         backgroundColor: utils.colors[backgroundColor],
         paddingVertical: utils.spacings.s,
-        paddingHorizontal: utils.spacings.medium,
+        paddingHorizontal: utils.spacings.m,
         gap: utils.spacings.s,
     }),
 );

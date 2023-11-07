@@ -38,7 +38,7 @@ export const AccountDetailScreenHeader = ({
             rightIcon={
                 <IconButton
                     colorScheme="tertiaryElevation0"
-                    size="medium"
+                    size="m"
                     iconName="settings"
                     onPress={handleSettingsNavigation}
                 />

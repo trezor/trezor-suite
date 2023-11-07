@@ -21,9 +21,9 @@ const cardStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItem: 'center',
-    padding: utils.spacings.medium,
+    padding: utils.spacings.m,
     backgroundColor: utils.colors.backgroundSurfaceElevation1,
-    borderRadius: utils.borders.radii.medium,
+    borderRadius: utils.borders.radii.m,
 }));
 
 const cardContentStyle = prepareNativeStyle(_ => ({
@@ -56,7 +56,7 @@ const PriceChangeIndicator = ({ valuePercentageChange }: PriceChangeIndicatorPro
                 <Badge
                     icon={icon}
                     iconSize="xs"
-                    size="medium"
+                    size="m"
                     variant={badgeVariant}
                     label={formattedPercentage}
                 />
@@ -80,7 +80,7 @@ export const CoinPriceCard = ({ accountKey }: CoinPriceCardProps) => {
     return (
         <Card style={applyStyle(cardStyle)}>
             <Box flexDirection="row" alignItems="center" flex={1}>
-                <Box marginRight="medium">
+                <Box marginRight="m">
                     <RoundedIcon name={networkSymbol} />
                 </Box>
                 <Box style={applyStyle(cardContentStyle)}>

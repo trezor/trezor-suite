@@ -8,8 +8,8 @@ type TransactionListGroupProps = {
 };
 
 const dateTextStyle = prepareNativeStyle(utils => ({
-    marginVertical: utils.spacings.medium,
-    marginHorizontal: utils.spacings.medium,
+    marginVertical: utils.spacings.m,
+    marginHorizontal: utils.spacings.m,
 }));
 
 export const TransactionListGroupTitle = ({ monthKey }: TransactionListGroupProps) => {

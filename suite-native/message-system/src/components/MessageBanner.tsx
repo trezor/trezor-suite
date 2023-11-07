@@ -47,7 +47,7 @@ const MessageBannerVariantToStyleMap = {
 const messageContainerStyle = prepareNativeStyle<{ backgroundColor: Color }>(
     (utils, { backgroundColor }) => ({
         backgroundColor: utils.colors[backgroundColor],
-        padding: utils.spacings.medium,
+        padding: utils.spacings.m,
         flexShrink: 1,
     }),
 );
@@ -96,7 +96,7 @@ const MessageCloseButton = ({
     <TouchableOpacity onPress={onClose}>
         <RoundedIcon
             name="close"
-            iconSize="medium"
+            iconSize="m"
             containerSize={44}
             backgroundColor={backgroundColor}
         />

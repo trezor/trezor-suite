@@ -23,7 +23,7 @@ export const AccountListItemInteractive = ({
     );
 
     return (
-        <Box padding="medium">
+        <Box padding="m">
             <TouchableOpacity onPress={() => onSelectAccount(account.key)}>
                 <AccountListItem
                     key={account.key}

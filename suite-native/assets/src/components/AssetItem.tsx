@@ -107,7 +107,7 @@ export const AssetItem = memo(
                             <Text>{cryptoCurrencyName}</Text>
                             <Box flexDirection="row" alignItems="center">
                                 <Box style={applyStyle(iconStyle)}>
-                                    <Icon size="medium" color="iconSubdued" name="standardWallet" />
+                                    <Icon size="m" color="iconSubdued" name="standardWallet" />
                                 </Box>
                                 <Text variant="hint" color="textSubdued">
                                     {accountsPerAsset}

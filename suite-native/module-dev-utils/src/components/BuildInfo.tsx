@@ -3,7 +3,7 @@ import { getSuiteVersion, getCommitHash } from '@trezor/env-utils';
 import { ListItem, VStack } from '@suite-native/atoms';
 
 export const BuildInfo = () => (
-    <VStack spacing="medium">
+    <VStack spacing="m">
         <ListItem
             subtitle={`${getEnv()}-${getSuiteVersion()} (${getBuildVersionNumber()}), commit ${getCommitHash()}`}
             title="Build version"

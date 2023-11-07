@@ -5,7 +5,7 @@ export const fontFamilies = {
 export type FontFamilies = typeof fontFamilies;
 
 export const nativeFontFamilies = {
-    medium: 'TTSatoshi-Medium',
+    m: 'TTSatoshi-Medium',
     semiBold: 'TTSatoshi-DemiBold',
 } as const;
 

@@ -79,7 +79,7 @@ export const AccountSettingsScreen = ({
                         )}
                     </VStack>
                 </Card>
-                <VStack marginHorizontal="medium" spacing="medium">
+                <VStack marginHorizontal="m" spacing="m">
                     <AccountSettingsShowXpubButton accountKey={account.key} />
                     <AccountSettingsRemoveCoinButton accountKey={account.key} />
                 </VStack>

@@ -24,7 +24,7 @@ export const SEARCH_FORM_CONTAINER_HEIGHT = 56;
 
 const searchFormContainerStyle = prepareNativeStyle(utils => ({
     height: SEARCH_FORM_CONTAINER_HEIGHT,
-    marginBottom: utils.spacings.medium,
+    marginBottom: utils.spacings.m,
 }));
 
 export const SearchableAccountsListScreenHeader = ({
@@ -84,7 +84,7 @@ export const SearchableAccountsListScreenHeader = ({
                                 iconName="search"
                                 onPress={() => setIsSearchActive(true)}
                                 colorScheme="tertiaryElevation0"
-                                size="medium"
+                                size="m"
                             />
                         }
                     />

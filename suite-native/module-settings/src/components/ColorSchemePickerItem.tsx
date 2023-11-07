@@ -12,11 +12,11 @@ type ColorSchemePickerItemProps = {
 const pickerItemWrapperStyle = prepareNativeStyle<{ isColorSchemeActive: boolean }>(
     (utils, { isColorSchemeActive }) => ({
         backgroundColor: utils.colors.backgroundSurfaceElevationNegative,
-        borderRadius: utils.borders.radii.medium,
+        borderRadius: utils.borders.radii.m,
         minHeight: 114,
         flex: 1,
         paddingTop: 33,
-        borderWidth: utils.borders.widths.medium,
+        borderWidth: utils.borders.widths.m,
         borderColor: isColorSchemeActive
             ? utils.colors.borderSecondary
             : utils.colors.borderOnElevation0,

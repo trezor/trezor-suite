@@ -49,7 +49,7 @@ export const EmptyPortfolioCrossroads = () => {
     };
 
     return (
-        <VStack spacing="medium" flex={1}>
+        <VStack spacing="m" flex={1}>
             <Card style={applyStyle(cardStyle, { flex: 2 })}>
                 <VStack spacing="large" justifyContent="center" alignItems="center">
                     <Pictogram

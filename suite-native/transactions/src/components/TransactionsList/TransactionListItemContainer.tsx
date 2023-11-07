@@ -64,14 +64,14 @@ export const transactionListItemContainerStyle = prepareNativeStyle<TransactionL
         justifyContent: 'space-between',
         backgroundColor: utils.colors.backgroundSurfaceElevation1,
         marginHorizontal: utils.spacings.s,
-        paddingHorizontal: utils.spacings.medium,
+        paddingHorizontal: utils.spacings.m,
         paddingTop: 12,
         paddingBottom: 12,
         extend: [
             {
                 condition: isFirst,
                 style: {
-                    paddingTop: utils.spacings.medium,
+                    paddingTop: utils.spacings.m,
                     borderTopLeftRadius: utils.borders.radii.large / 2,
                     borderTopRightRadius: utils.borders.radii.large / 2,
                 },
@@ -79,7 +79,7 @@ export const transactionListItemContainerStyle = prepareNativeStyle<TransactionL
             {
                 condition: isLast,
                 style: {
-                    paddingBottom: utils.spacings.medium,
+                    paddingBottom: utils.spacings.m,
                     marginBottom: utils.spacings.s,
                     borderBottomLeftRadius: utils.borders.radii.large / 2,
                     borderBottomRightRadius: utils.borders.radii.large / 2,

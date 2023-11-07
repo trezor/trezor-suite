@@ -21,7 +21,7 @@ const networkTypeToSheetTitleMap: Record<NetworkType, string> = {
 };
 
 const buttonStyle = prepareNativeStyle(utils => ({
-    paddingHorizontal: utils.spacings.medium,
+    paddingHorizontal: utils.spacings.m,
 }));
 
 const networkSymbolHasXpub = (networkSymbol: NetworkSymbol) => {

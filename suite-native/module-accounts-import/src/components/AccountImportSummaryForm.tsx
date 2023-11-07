@@ -120,7 +120,7 @@ export const AccountImportSummaryForm = ({
                     <AccountImportEthereumTokens tokens={accountInfo.tokens ?? []} />
                 )}
                 <Divider marginHorizontal="extraLarge" />
-                <Box marginHorizontal="medium">
+                <Box marginHorizontal="m">
                     <Button
                         data-testID="@account-import/coin-synced/confirm-button"
                         onPress={handleImportAccount}

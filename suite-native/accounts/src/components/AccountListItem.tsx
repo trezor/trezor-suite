@@ -58,7 +58,7 @@ export const AccountListItem = ({ account, areTokensDisplayed = false }: Account
             })}
         >
             <Box flexDirection="row" alignItems="center" flex={1}>
-                <Box marginRight="medium">
+                <Box marginRight="m">
                     <RoundedIcon name={account.symbol} />
                 </Box>
                 <Box style={applyStyle(accountDescriptionStyle)}>
