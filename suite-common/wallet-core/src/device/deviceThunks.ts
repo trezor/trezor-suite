@@ -30,14 +30,15 @@ import { PORTFOLIO_TRACKER_DEVICE_ID, portfolioTrackerDevice } from './deviceCon
  */
 export const selectDeviceThunk = createThunk(
     `${MODULE_PREFIX}/selectDevice`,
-    (device: Device | TrezorDevice | undefined, { dispatch, getState }) => {
+    (deviceId: Device['id'] | TrezorDevice['id'] | undefined, { dispatch, getState }) => {
         let payload: TrezorDevice | typeof undefined;
         const devices = selectDevices(getState());
+        const device = selectDeviceById(getState(), deviceId ?? '');
 
         if (device) {
             // "ts" is one of the field which distinguish Device from TrezorDevice
             // (device from connect doesn't have timestampp but suite device has)
-            if ('ts' in device) {
+            if (typeof device.ts === 'string') {
                 // requested device is a @suite TrezorDevice type. get exact instance from reducer
                 payload = getSelectedDevice(device, devices);
             } else {
@@ -136,10 +137,10 @@ export const handleDeviceConnect = createThunk(
             device.mode === 'bootloader' &&
             ['reconnect-in-normal', 'waiting-for-bootloader'].includes(firmware.status)
         ) {
-            dispatch(selectDeviceThunk(device));
+            dispatch(selectDeviceThunk(device.id));
         }
         if (!selectedDevice) {
-            dispatch(selectDeviceThunk(device));
+            dispatch(selectDeviceThunk(device.id));
         } else {
             // TODO: show some nice notification/tooltip in DeviceMenu
         }
@@ -179,13 +180,13 @@ export const handleDeviceDisconnect = createThunk(
         if (deviceInstances.length > 0) {
             // if selected device is gone from reducer, switch to first instance
             if (!devicePresent) {
-                dispatch(selectDeviceThunk(deviceInstances[0]));
+                dispatch(selectDeviceThunk(deviceInstances[0].id));
             }
             return;
         }
 
         const available = getFirstDeviceInstance(devices);
-        dispatch(selectDeviceThunk(available[0]));
+        dispatch(selectDeviceThunk(available[0].id));
     },
 );
 
@@ -408,7 +409,7 @@ export const switchDuplicatedDevice = createThunk(
         // switch to existing wallet
         // NOTE: await is important. otherwise `forgetDevice` action will be resolved first leading to race condition:
         // forgetDevice > suiteMiddleware > handleDeviceDisconnect > selectDevice (first available)
-        await dispatch(selectDeviceThunk(duplicate));
+        await dispatch(selectDeviceThunk(duplicate.id));
         // remove stateless instance
         dispatch(deviceActions.forgetDevice(device));
     },
@@ -428,7 +429,9 @@ export const initDevices = createThunk(
             });
             dispatch(
                 selectDeviceThunk(
-                    forcedDevices.length ? forcedDevices[0] : sortByTimestamp([...devices])[0],
+                    forcedDevices.length
+                        ? forcedDevices[0].id
+                        : sortByTimestamp([...devices])[0].id,
                 ),
             );
         }

@@ -59,7 +59,7 @@ const suite =
         next(action);
 
         if (deviceActions.createDeviceInstance.match(action)) {
-            api.dispatch(selectDeviceThunk(action.payload));
+            api.dispatch(selectDeviceThunk(action.payload.id));
         }
 
         if (deviceActions.forgetDevice.match(action)) {

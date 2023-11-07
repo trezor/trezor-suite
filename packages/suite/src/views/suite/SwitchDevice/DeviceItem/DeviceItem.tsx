@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
+
 import {
     useTheme,
     variables,
@@ -10,27 +11,26 @@ import {
     motionAnimation,
     DeviceAnimation,
 } from '@trezor/components';
-
 import {
     selectDevice,
     acquireDevice,
     createDeviceInstance,
     selectDeviceThunk,
 } from '@suite-common/wallet-core';
+import { DeviceModelInternal } from '@trezor/connect';
+import * as deviceUtils from '@suite-common/suite-utils';
+
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { OpenGuideFromTooltip } from 'src/components/guide';
+import type { TrezorDevice, AcquiredDevice, ForegroundAppProps } from 'src/types/suite';
+import type { getBackgroundRoute } from 'src/utils/suite/router';
 
 import { WalletInstance } from './WalletInstance';
 import { ColHeader } from './ColHeader';
 import { AddWalletButton } from './AddWalletButton';
 import { DeviceHeaderButton } from './DeviceHeaderButton';
-
-import type { TrezorDevice, AcquiredDevice, ForegroundAppProps } from 'src/types/suite';
-import type { getBackgroundRoute } from 'src/utils/suite/router';
-import { DeviceModelInternal } from '@trezor/connect';
-import * as deviceUtils from '@suite-common/suite-utils';
 
 const DeviceWrapper = styled.div`
     display: flex;
@@ -180,7 +180,7 @@ export const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: Dev
     };
 
     const selectDeviceInstance = (instance: DeviceItemProps['device']) => {
-        dispatch(selectDeviceThunk(instance));
+        dispatch(selectDeviceThunk(instance.id));
         handleRedirection();
     };
 
@@ -205,7 +205,7 @@ export const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: Dev
         // await needed otherwise it just selects first account (???)
         await dispatch(goto('settings-device'));
         if (!isSelected) {
-            dispatch(selectDeviceThunk(device));
+            dispatch(selectDeviceThunk(device.id));
         }
     };
 
