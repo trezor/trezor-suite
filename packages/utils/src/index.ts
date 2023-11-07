@@ -34,3 +34,4 @@ export * from './urlToOnion';
 export * as versionUtils from './versionUtils';
 export * as xssFilters from './xssFilters';
 export * from './getLocaleSeparators';
+export * from './addDashesToSpaces';
