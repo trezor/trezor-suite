@@ -1,7 +1,6 @@
+import { app } from 'electron';
 import path from 'path';
 import { spawn, ChildProcess } from 'child_process';
-
-import { isDevEnv } from '@suite-common/suite-utils';
 
 import { b2t } from '../utils';
 
@@ -110,11 +109,16 @@ export abstract class BaseProcess {
         this.stopped = false;
 
         const { system, ext } = this.getPlatformInfo();
+        // NOTE:
+        // - unpacked app (dev || e2e-test)
+        //   binaries are stored in suite-desktop/build/static/bin/{this.resourceName}/{system}/{this.processName} - see desktop.webpack.config.ts
+        // - packed app (.dmg || .AppImage || .exe)
+        //   binaries are stored in {app.resourcesPath}/bin/{this.resourceName}/{this.processName} - see electron-builder-config.js
         const processDir = path.join(
             global.resourcesPath,
             'bin',
             this.resourceName,
-            isDevEnv ? system : '',
+            !app.isPackaged ? system : '',
         );
         const processPath = path.join(processDir, `${this.processName}${ext}`);
         const processEnv = { ...process.env };

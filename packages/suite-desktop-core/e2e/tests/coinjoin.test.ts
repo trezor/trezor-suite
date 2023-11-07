@@ -4,7 +4,7 @@ import { Page, test as testPlaywright } from '@playwright/test';
 
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
-import { patchBinaries, launchSuite } from '../support/common';
+import { launchSuite } from '../support/common';
 import { sendToAddress, generateBlock, waitForCoinjoinBackend } from '../support/regtest';
 
 /**
@@ -111,10 +111,6 @@ const passThroughInitialRun = async (window: Page) => {
 testPlaywright.describe('Coinjoin', () => {
     testPlaywright.beforeAll(async () => {
         testPlaywright.setTimeout(timeout * 10);
-        // todo: some problems with path in dev and production and tests. tldr tests are expecting
-        // binaries somewhere where they are not, so I copy them to that place. Maybe I find a
-        // better solution later
-        await patchBinaries();
 
         await TrezorUserEnvLink.api.trezorUserEnvConnect();
         await waitForCoinjoinBackend();
