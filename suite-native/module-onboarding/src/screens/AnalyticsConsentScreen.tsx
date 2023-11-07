@@ -61,7 +61,7 @@ const cardStyle = prepareNativeStyle(utils => ({
 
 const consentInfoStyle = prepareNativeStyle(utils => ({
     gap: utils.spacings.s,
-    paddingVertical: utils.spacings.xs,
+    paddingVertical: utils.spacings.xxs,
 }));
 
 const analyticsConsentStyle = prepareNativeStyle(_ => ({

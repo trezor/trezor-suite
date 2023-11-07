@@ -68,7 +68,7 @@ export const AccountSettingsScreen = ({
         >
             <Box flex={1} justifyContent="space-between">
                 <Card>
-                    <VStack spacing="xs">
+                    <VStack spacing="xxs">
                         <AccountDetailSettingsRow title="Coin">
                             <CryptoNameWithIcon symbol={account.symbol} />
                         </AccountDetailSettingsRow>

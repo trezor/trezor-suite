@@ -62,7 +62,7 @@ const priceIncreaseWrapperStyle = prepareNativeStyle<{ hasPriceIncreased: boolea
         flexDirection: 'row',
         alignItems: 'center',
         paddingHorizontal: utils.spacings.s,
-        paddingVertical: utils.spacings.xs / 2,
+        paddingVertical: utils.spacings.xxxs,
         borderRadius: utils.borders.radii.round,
     }),
 );

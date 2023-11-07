@@ -36,10 +36,10 @@ const notificationContainerStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: utils.spacings.xs,
+    paddingVertical: utils.spacings.xxs,
     borderRadius: utils.borders.radii.round,
     backgroundColor: utils.colors.backgroundNeutralBold,
-    paddingHorizontal: utils.spacings.xs,
+    paddingHorizontal: utils.spacings.xxs,
     ...utils.boxShadows.s,
 }));
 

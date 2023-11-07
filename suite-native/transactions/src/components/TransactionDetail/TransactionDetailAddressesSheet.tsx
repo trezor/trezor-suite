@@ -26,7 +26,7 @@ const addressStyle = prepareNativeStyle(_ => ({ maxWidth: '90%' }));
 
 const copyContainerStyle = prepareNativeStyle(utils => ({
     flex: 1,
-    paddingTop: utils.spacings.xs,
+    paddingTop: utils.spacings.xxs,
     marginHorizontal: utils.spacings.s,
 }));
 

@@ -184,7 +184,7 @@ export const TransactionListItemContainer = ({
                     />
                 )}
                 <Box marginLeft="m" flex={1}>
-                    <HStack flexDirection="row" alignItems="center" spacing="xs">
+                    <HStack flexDirection="row" alignItems="center" spacing="xxs">
                         <Box style={applyStyle(titleStyle)}>
                             <Text variant="body">{transactionTitle}</Text>
                             {isZeroValuePhishing && (

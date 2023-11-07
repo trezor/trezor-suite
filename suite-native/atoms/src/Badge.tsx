@@ -115,7 +115,7 @@ export const Badge = ({
                 isDisabled,
                 size,
             })}
-            spacing={utils.spacings.xs}
+            spacing={utils.spacings.xxs}
         >
             {icon && badgeIcon}
             <Text color={textColor} variant={textVariant} numberOfLines={1} ellipsizeMode="tail">

@@ -110,7 +110,7 @@ const inputStyle = prepareNativeStyle<InputStyleProps>((utils, { isIconDisplayed
     flex: 1,
     // Make the text input uniform on both platforms (https://stackoverflow.com/a/68458803/1281305)
     paddingTop: 0,
-    paddingBottom: utils.spacings.xs,
+    paddingBottom: utils.spacings.xxs,
 }));
 
 const inputHitSlop = {

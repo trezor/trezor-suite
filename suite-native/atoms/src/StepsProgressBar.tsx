@@ -14,7 +14,7 @@ const progressBarWrapperStyle = prepareNativeStyle(utils => ({
     justifyContent: 'space-between',
     paddingVertical: utils.spacings.s,
     paddingHorizontal: utils.spacings.s,
-    gap: utils.spacings.xs,
+    gap: utils.spacings.xxs,
     borderRadius: 10,
     borderWidth: utils.borders.widths.s,
     alignItems: 'center',

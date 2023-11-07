@@ -15,11 +15,11 @@ const selectableAssetContentStyle = prepareNativeStyle(utils => ({
     alignItems: 'center',
     justifyContent: 'space-between',
     flex: 1,
-    marginLeft: utils.spacings.s + utils.spacings.xs,
+    marginLeft: utils.spacings.s + utils.spacings.xxs,
 }));
 
 const erc20BadgeStyle = prepareNativeStyle(utils => ({
-    paddingBottom: utils.spacings.xs / 2,
+    paddingBottom: utils.spacings.xxs / 2,
 }));
 
 export const SelectableNetworkItem = ({ symbol, onPress }: SelectableAssetItemProps) => {

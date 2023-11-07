@@ -45,7 +45,7 @@ export const PortfolioGraphHeader = () => {
 
     return (
         <Box>
-            <VStack spacing="xs" alignItems="center">
+            <VStack spacing="xxs" alignItems="center">
                 <Text color="textSubdued" variant="hint">
                     <Translation id="moduleHome.graph.title" />
                 </Text>
