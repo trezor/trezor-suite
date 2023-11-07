@@ -1,16 +1,28 @@
-import { test, Page } from '@playwright/test';
+import { test, Page, BrowserContext } from '@playwright/test';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
+import { getContexts, openPopup, log } from '../support/helpers';
 
 const url = process.env.URL || 'http://localhost:8088/';
 
 const bridgeVersion = '2.0.31';
+// popup window reference
+let popup: Page;
+let context: BrowserContext | undefined;
+
+const isWebExtension = process.env.IS_WEBEXTENSION === 'true';
 
 test.beforeAll(async () => {
     await TrezorUserEnvLink.connect();
 });
 
-// popup window reference
-let popup: Page;
+test.afterEach(async () => {
+    if (context) {
+        // BrowserContext has to start fresh each test.
+        // https://playwright.dev/docs/api/class-browsercontext#browser-context-close
+        await context.close();
+        await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+});
 
 // Debug mode does not have to be enable since it is default in connect-explorer
 test('popup should display error page when device disconnected and debug mode', async ({
@@ -30,22 +42,35 @@ test('popup should display error page when device disconnected and debug mode', 
     });
     await TrezorUserEnvLink.api.startBridge(bridgeVersion);
 
-    await page.goto(`${url}#/method/verifyMessage`);
-    await page.waitForSelector("button[data-test='@submit-button']", { state: 'visible' });
-    [popup] = await Promise.all([
-        page.waitForEvent('popup'),
-        page.click("button[data-test='@submit-button']"),
-    ]);
+    log('generating contexts');
+    const { explorerPage, exploreUrl, browserContext } = await getContexts(
+        page,
+        url,
+        isWebExtension,
+    );
+    context = browserContext;
 
+    log('opening explorer page');
+    await explorerPage.goto(`${exploreUrl}#/method/verifyMessage`);
+    log('waiting for explorer to load');
+    await explorerPage.waitForSelector("button[data-test='@submit-button']", { state: 'visible' });
+
+    log('opening popup');
+    [popup] = await openPopup(context, explorerPage, isWebExtension);
+
+    log('waiting for popup analytics to load');
     await popup.waitForSelector("button[data-test='@analytics/continue-button']", {
         state: 'visible',
         timeout: 40000,
     });
+    log('clicking on analytics continue button');
     await popup.click("button[data-test='@analytics/continue-button']");
 
+    log('waiting for permissions');
     await popup.waitForSelector("div[data-test='@permissions']");
 
+    log('stopEmu');
     await TrezorUserEnvLink.api.stopEmu();
-
+    log('waiting for popup error page');
     await popup.waitForSelector("div[data-test='@connect-ui/error']");
 });
