@@ -102,6 +102,7 @@ export interface Message {
     variant: Variant;
     category: Category | Category[];
     content: Localization;
+    headline?: Localization;
     cta?: CTA;
     modal?: Modal;
     /**

@@ -253,6 +253,9 @@
                             "content": {
                                 "$ref": "#/definitions/localization"
                             },
+                            "headline": {
+                                "$ref": "#/definitions/localization"
+                            },
                             "cta": {
                                 "title": "CTA",
                                 "description": "Only used for 'banner' and 'context' categories.",

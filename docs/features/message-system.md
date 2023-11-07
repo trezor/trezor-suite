@@ -215,6 +215,12 @@ Structure of config, types and optionality of specific keys can be found in the 
                     "en": "New Trezor firmware is available!",
                     "de": "Neue Trezor Firmware ist verfügbar!"
                 },
+                // optional headline following the language structure of content
+                "headline": {
+                    "en-GB": "Update your Trezor",
+                    "en": "Update your Trezor",
+                    "de": "Neue"
+                },
                 // Call to action. Used only for banner and context.
                 "cta": {
                     /*
