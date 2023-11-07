@@ -14,7 +14,7 @@
         "@hookform/resolvers": "3.1.0",
         "@suite-native/atoms": "workspace:*",
         "react": "18.2.0",
-        "react-hook-form": "7.44.3",
+        "react-hook-form": "^7.48.2",
         "yup": "^0.32.11"
     }
 }

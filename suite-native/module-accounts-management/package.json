@@ -44,7 +44,7 @@
         "date-fns": "^2.30.0",
         "jotai": "1.9.1",
         "react": "18.2.0",
-        "react-hook-form": "7.44.3",
+        "react-hook-form": "^7.48.2",
         "react-native": "0.71.8",
         "react-native-reanimated": "3.5.4",
         "react-redux": "8.0.7"

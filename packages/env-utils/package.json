@@ -25,11 +25,11 @@
         "prepublish": "yarn tsx ../../scripts/prepublish.js"
     },
     "dependencies": {
-        "ua-parser-js": "^1.0.35"
+        "ua-parser-js": "^1.0.37"
     },
     "devDependencies": {
         "rimraf": "^5.0.5",
-        "tsx": "^3.12.7",
+        "tsx": "^3.14.0",
         "typescript": "4.9.5"
     },
     "peerDependencies": {

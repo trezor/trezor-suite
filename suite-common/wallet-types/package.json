@@ -19,7 +19,7 @@
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "react": "18.2.0",
-        "react-hook-form": "7.44.3"
+        "react-hook-form": "^7.48.2"
     },
     "devDependencies": {
         "jest": "^26.6.3",

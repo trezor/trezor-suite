@@ -98,6 +98,7 @@ export abstract class AbstractMetadataProvider {
     /* isCloud means that this provider is not local and allows multi client sync. These providers are suitable for backing up data. */
     abstract isCloud: boolean;
 
+    // eslint-disable-next-line no-empty-function
     constructor(public type: MetadataProviderType) {}
 
     abstract connect(): Result<void>;

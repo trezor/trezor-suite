@@ -51,6 +51,7 @@ export interface TypedEmitter<T extends EventMap> {
     rawListeners<K extends EventKey<T>>(eventName: K): EventReceiver<T[K]>[];
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export class TypedEmitter<T extends EventMap> extends EventEmitter {
     // implement at least one function
     listenerCount<K extends EventKey<T>>(eventName: K) {
