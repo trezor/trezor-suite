@@ -107,3 +107,21 @@ export const openPopup = (
 
     return Promise.all(triggerPopup) as Promise<Page[]>;
 };
+
+export const checkHasLogs = async (logPage: Page) => {
+    const locator = await logPage.locator("button[data-test='@log-container/download-button']");
+    if (await locator.isVisible()) {
+        return true;
+    }
+    return false;
+};
+
+export const downloadLogs = async (logPage: Page, downloadLogPath: string) => {
+    const [download] = await Promise.all([
+        logPage.waitForEvent('download'), // wait for download to start
+        logPage.click("button[data-test='@log-container/download-button']"),
+    ]);
+
+    await download.saveAs(downloadLogPath);
+    return download;
+};
