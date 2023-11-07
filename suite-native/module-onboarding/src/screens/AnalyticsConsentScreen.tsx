@@ -142,7 +142,7 @@ export const AnalyticsConsentScreen = () => {
                     <Translation id="moduleOnboarding.analyticsConsentScreen.subtitle" />
                 </Text>
                 <VStack style={applyStyle(analyticsConsentStyle)}>
-                    <Stack spacing="large" paddingBottom="medium">
+                    <Stack spacing="large" paddingBottom="m">
                         <AnalyticsInfoRow
                             iconName="eyeSlash"
                             title={translate(

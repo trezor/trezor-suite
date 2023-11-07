@@ -33,7 +33,7 @@ const BottomSheetTrigger = ({
     return (
         <TouchableOpacity style={applyStyle(triggerStyle)} onPress={onPress}>
             <Box flexDirection="row">
-                <Box marginRight="medium">
+                <Box marginRight="m">
                     <Icon name={iconName} color="iconPrimaryDefault" />
                 </Box>
                 <Text>{title}</Text>

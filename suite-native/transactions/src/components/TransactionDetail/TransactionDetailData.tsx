@@ -77,7 +77,7 @@ export const TransactionDetailData = ({
                             <DateTimeFormatter value={transactionBlockTime} />
                         </Text>
                         <Box marginLeft="s">
-                            <Icon name="calendar" size="medium" />
+                            <Icon name="calendar" size="m" />
                         </Box>
                     </TransactionDetailRow>
                 </Card>

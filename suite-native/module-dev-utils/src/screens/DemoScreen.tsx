@@ -296,7 +296,7 @@ export const DemoScreen = () => {
                             />
                         </Box>
                     </Box>
-                    <Box marginVertical="medium">
+                    <Box marginVertical="m">
                         <Text>Checkbox:</Text>
                         <Box flexDirection="row" justifyContent="space-between">
                             <CheckBox
@@ -320,7 +320,7 @@ export const DemoScreen = () => {
                         </Box>
                     </Box>
                     <NumPadButton value={2} onPress={() => null} />
-                    <Box marginVertical="medium">
+                    <Box marginVertical="m">
                         <ListItem
                             iconName="warningCircle"
                             title="Some Really and I mean really really Long Headline"
@@ -328,7 +328,7 @@ export const DemoScreen = () => {
                             hasRightArrow={false}
                         />
                     </Box>
-                    <Box marginVertical="medium">
+                    <Box marginVertical="m">
                         <ListItem
                             iconName="placeholder"
                             title="Not wrapped example with long and I mean really long Headline"
@@ -337,7 +337,7 @@ export const DemoScreen = () => {
                             isTextTruncated
                         />
                     </Box>
-                    <Box marginVertical="medium">
+                    <Box marginVertical="m">
                         <SelectableListItem
                             iconName="placeholder"
                             title="Headline"
@@ -347,9 +347,9 @@ export const DemoScreen = () => {
                             isChecked={radioChecked === 'firstSelectable'}
                         />
                     </Box>
-                    <Box marginTop="medium" marginBottom="medium">
+                    <Box marginTop="m" marginBottom="m">
                         <Text>AlertBox:</Text>
-                        <VStack spacing="medium">
+                        <VStack spacing="m">
                             <AlertBox variant="info" title="Info" isStandalone />
                             <AlertBox variant="success" title="Success" isStandalone />
                             <AlertBox variant="error" title="Error" isStandalone />
@@ -374,7 +374,7 @@ export const DemoScreen = () => {
                             />
                         </VStack>
                     </Box>
-                    <Box marginTop="medium">
+                    <Box marginTop="m">
                         <Text variant="titleMedium">Icons</Text>
                         <Box flexWrap="wrap" flexDirection="row">
                             {Object.keys(icons).map((icon: string) => (
@@ -391,12 +391,12 @@ export const DemoScreen = () => {
                             ))}
                         </Box>
                     </Box>
-                    <Box marginTop="medium">
+                    <Box marginTop="m">
                         <Text variant="titleMedium">Token Icons</Text>
                         <HStack
                             flexWrap="wrap"
                             flexDirection="row"
-                            marginVertical="medium"
+                            marginVertical="m"
                             alignItems="center"
                             justifyContent="center"
                         >
@@ -408,7 +408,7 @@ export const DemoScreen = () => {
                             ))}
                         </HStack>
                     </Box>
-                    <VStack marginTop="medium">
+                    <VStack marginTop="m">
                         <Text variant="titleMedium">Skeleton</Text>
                         <Card>
                             <ListItemSkeleton />

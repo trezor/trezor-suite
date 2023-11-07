@@ -52,7 +52,7 @@ const AddressRow = ({ address }: { address: string }) => {
             </Box>
 
             <TouchableOpacity style={applyStyle(copyContainerStyle)} onPress={handleCopy}>
-                <Icon name="copy" color="iconPrimaryDefault" size="medium" />
+                <Icon name="copy" color="iconPrimaryDefault" size="m" />
             </TouchableOpacity>
         </Box>
     );
@@ -60,7 +60,7 @@ const AddressRow = ({ address }: { address: string }) => {
 
 const AddressesListCard = ({ addresses }: { addresses: VinVoutAddress[] }) => (
     <Card>
-        <VStack spacing="medium">
+        <VStack spacing="m">
             {addresses.map(({ address }) => (
                 <AddressRow key={address} address={address} />
             ))}
@@ -112,8 +112,8 @@ export const TransactionDetailAddressesSheet = ({
                     leftLabel={formatAddressLabel('inputs', inputAddresses.length)}
                     rightLabel={formatAddressLabel('outputs', outputAddresses.length)}
                 />
-                <Box marginVertical="medium">
-                    <VStack spacing="medium">
+                <Box marginVertical="m">
+                    <VStack spacing="m">
                         <AddressesListCard addresses={targetAddresses} />
 
                         {A.isNotEmpty(changeAddresses) && (

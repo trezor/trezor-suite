@@ -87,7 +87,7 @@ export const TransactionDetailParametersSheet = ({
                         <Box
                             flexDirection="row"
                             alignItems="center"
-                            paddingLeft="medium"
+                            paddingLeft="m"
                             justifyContent="flex-end"
                         >
                             <Text numberOfLines={1} style={{ flexShrink: 1 }}>
@@ -98,7 +98,7 @@ export const TransactionDetailParametersSheet = ({
                                     iconName="copy"
                                     onPress={handleClickCopy}
                                     colorScheme="tertiaryElevation1"
-                                    size="medium"
+                                    size="m"
                                 />
                             </Box>
                         </Box>

@@ -46,7 +46,7 @@ const faqMap: FAQ[] = [
 ];
 
 export const FAQInfoPanel = () => (
-    <VStack marginHorizontal="medium">
+    <VStack marginHorizontal="m">
         {faqMap.map(({ question, answer }) => (
             <Fragment key={question}>
                 <AccordionItem title={question} content={answer} />

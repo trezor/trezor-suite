@@ -1,8 +1,8 @@
 import { Box, VStack, Text, Pictogram, TrezorSuiteLiteHeader } from '@suite-native/atoms';
 
 export const ReceiveTextHint = () => (
-    <VStack spacing="medium" paddingVertical="extraLarge">
-        <Box marginVertical="medium" paddingHorizontal="medium">
+    <VStack spacing="m" paddingVertical="extraLarge">
+        <Box marginVertical="m" paddingHorizontal="m">
             <Pictogram
                 variant="yellow"
                 icon="warningTriangleLight"

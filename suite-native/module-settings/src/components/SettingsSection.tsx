@@ -25,7 +25,7 @@ export const SettingsSection = ({
             justifyContent="space-between"
             alignItems="center"
             marginBottom="extraLarge"
-            marginLeft="medium"
+            marginLeft="m"
         >
             <Box>
                 <Text variant="titleSmall">{title}</Text>

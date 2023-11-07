@@ -71,7 +71,7 @@ export const ReceiveAccount = ({
     };
 
     return (
-        <VStack spacing="medium">
+        <VStack spacing="m">
             <HeaderedCard
                 title="Receive To"
                 buttonIcon="discover"
@@ -106,7 +106,7 @@ export const ReceiveAccount = ({
             </TextButton>
 
             {!isAddressVisible && (
-                <Box paddingHorizontal="medium">
+                <Box paddingHorizontal="m">
                     <Button iconLeft="eye" size="large" onPress={handleShowAddress}>
                         Show address
                     </Button>

@@ -30,7 +30,7 @@ export const OnboardingFooter = ({
 
     const buttonTitle = route.name === OnboardingStackRoutes.Welcome ? 'Get started' : 'Next';
     return (
-        <Stack spacing="medium" style={applyStyle(wrapperStyle)}>
+        <Stack spacing="m" style={applyStyle(wrapperStyle)}>
             {onBack && (
                 <Button
                     colorScheme="tertiaryElevation0"

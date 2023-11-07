@@ -96,7 +96,7 @@ export const TransactionDetailInputsSheetSection = ({
                                     />
                                 ))}
                             </Box>
-                            <Icon name="circleRight" color="iconDisabled" size="medium" />
+                            <Icon name="circleRight" color="iconDisabled" size="m" />
                             <Box style={applyStyle(addressAmountColumnStyle)}>
                                 {outputs.map(({ address, amount }) => (
                                     <TransactionAddressAmount

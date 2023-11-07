@@ -15,7 +15,7 @@ const flagIconSizes = {
 
 type FlagIconSize = keyof typeof flagIconSizes;
 
-export const FlagIcon = ({ name, size = 'medium' }: FlagIconProps) => {
+export const FlagIcon = ({ name, size = 'm' }: FlagIconProps) => {
     const svg = useSVG(flagIcons[name]);
     const sizeNumber = flagIconSizes[size];
     return (

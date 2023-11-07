@@ -17,7 +17,7 @@ export const SupportCard = () => {
     return (
         <Card style={applyStyle(supportCardStyle)}>
             <HStack justifyContent="space-between">
-                <VStack spacing="medium" alignItems="flex-start" paddingTop="s">
+                <VStack spacing="m" alignItems="flex-start" paddingTop="s">
                     <Text variant="titleSmall">
                         <Translation id="moduleSettings.faq.supportCard.title" />
                     </Text>

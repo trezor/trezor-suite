@@ -8,7 +8,7 @@ export const GoBackIcon = () => {
     return (
         <IconButton
             iconName="chevronLeft"
-            size="medium"
+            size="m"
             colorScheme="tertiaryElevation0"
             onPress={() => navigation.goBack()}
         />

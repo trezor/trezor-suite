@@ -63,7 +63,7 @@ export const TransactionDetailListItem = ({
             style={applyStyle(transactionListItemContainerStyle, { isFirst, isLast })}
         >
             <Box flexDirection="row" alignItems="center" flex={1}>
-                <Box marginRight="medium">
+                <Box marginRight="m">
                     <RoundedIcon name={tokenTransfer?.contract || transaction.symbol} />
                 </Box>
                 <Box style={applyStyle(CoinNameContainerStyle)}>

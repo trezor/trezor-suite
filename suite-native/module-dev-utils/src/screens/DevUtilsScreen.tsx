@@ -28,7 +28,7 @@ export const DevUtilsScreen = ({
         <Screen subheader={<ScreenSubHeader content="DEV utils" />}>
             <VStack>
                 <Card>
-                    <VStack spacing="medium">
+                    <VStack spacing="m">
                         {!isDebugEnv() && <BuildInfo />}
                         {isDebugEnv() && (
                             <Button onPress={() => navigation.navigate(DevUtilsStackRoutes.Demo)}>

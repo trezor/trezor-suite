@@ -183,7 +183,7 @@ export const TransactionListItemContainer = ({
                         iconColor={iconColor}
                     />
                 )}
-                <Box marginLeft="medium" flex={1}>
+                <Box marginLeft="m" flex={1}>
                     <HStack flexDirection="row" alignItems="center" spacing="xs">
                         <Box style={applyStyle(titleStyle)}>
                             <Text variant="body">{transactionTitle}</Text>

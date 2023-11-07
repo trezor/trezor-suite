@@ -11,7 +11,7 @@ export const ChangeAddressesHeader = ({ addressesCount }: ChangeAddressesHeaderP
     return (
         <Box>
             <HStack alignItems="center">
-                <Icon name="change" color="iconSubdued" size="medium" />
+                <Icon name="change" color="iconSubdued" size="m" />
                 <Text color="textSubdued" variant="hint">
                     {changeAddressesTitle}
                 </Text>

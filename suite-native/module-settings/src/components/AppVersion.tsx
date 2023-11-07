@@ -12,7 +12,7 @@ export const AppVersion = () => {
 
     const hasCommitHash = S.isNotEmpty(getCommitHash());
     return (
-        <HStack marginHorizontal="medium" justifyContent="space-between">
+        <HStack marginHorizontal="m" justifyContent="space-between">
             <Box>
                 {hasVersionAndBuildInfo && (
                     <Text variant="hint" color="textDisabled">

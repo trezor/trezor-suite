@@ -53,7 +53,7 @@ export const IconButton = ({
     style,
     title,
     colorScheme = 'primary',
-    size = 'medium',
+    size = 'm',
     isDisabled = false,
     ...pressableProps
 }: IconButtonProps) => {

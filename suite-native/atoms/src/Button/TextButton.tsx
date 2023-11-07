@@ -53,7 +53,7 @@ export const TextButton = ({
     style,
     children,
     variant = 'primary',
-    size = 'medium',
+    size = 'm',
     isDisabled = false,
     isUnderlined = false,
     ...pressableProps

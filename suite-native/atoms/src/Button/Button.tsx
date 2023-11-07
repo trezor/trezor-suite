@@ -119,7 +119,7 @@ export const buttonToTextSizeMap = {
 } as const satisfies Record<ButtonSize, TypographyStyle>;
 
 const buttonToIconSizeMap = {
-    s: 'medium',
+    s: 'm',
     m: 'mediumLarge',
     large: 'large',
 } as const satisfies Record<ButtonSize, IconSize>;
@@ -156,7 +156,7 @@ export const Button = ({
     style,
     children,
     colorScheme = 'primary',
-    size = 'medium',
+    size = 'm',
     isDisabled = false,
     ...pressableProps
 }: ButtonProps) => {

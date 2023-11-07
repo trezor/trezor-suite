@@ -104,7 +104,7 @@ export const Toast = ({ toast }: ToastProps) => {
                         isDefaultVariant: variant === 'default',
                     })}
                 >
-                    <Icon name={icon} color={iconColor} size="medium" />
+                    <Icon name={icon} color={iconColor} size="m" />
                 </Box>
                 <Text color={textColor}>{message}</Text>
             </HStack>

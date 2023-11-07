@@ -75,11 +75,7 @@ export const TransactionDetailHeader = ({
                     {text}
                 </Text>
                 {hasTransactionSign && (
-                    <Icon
-                        name={transactionTypeInfo[type].iconName}
-                        color="iconSubdued"
-                        size="medium"
-                    />
+                    <Icon name={transactionTypeInfo[type].iconName} color="iconSubdued" size="m" />
                 )}
             </Box>
             <Text variant="titleMedium" numberOfLines={1} adjustsFontSizeToFit={!isDiscreetMode}>

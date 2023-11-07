@@ -23,7 +23,7 @@ export const DashboardNavigationButtons = () => {
 
     return (
         <VStack spacing="large">
-            <Box marginHorizontal="medium">
+            <Box marginHorizontal="m">
                 <Button
                     data-testID="@home/portfolio/sync-coins-button"
                     colorScheme="tertiaryElevation0"
@@ -34,7 +34,7 @@ export const DashboardNavigationButtons = () => {
                 </Button>
             </Box>
             <Divider />
-            <Box marginHorizontal="medium">
+            <Box marginHorizontal="m">
                 <Button
                     data-testID="@home/portolio/recieve-button"
                     size="large"

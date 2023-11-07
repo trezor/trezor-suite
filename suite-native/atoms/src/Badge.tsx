@@ -7,7 +7,7 @@ import { HStack } from './Stack';
 import { SurfaceElevation } from './types';
 
 export type BadgeVariant = 'neutral' | 'green' | 'red' | 'bold';
-export type BadgeSize = 's' | 'medium';
+export type BadgeSize = 's' | 'm';
 type BadgeProps = {
     label: string;
     variant?: BadgeVariant;
@@ -37,7 +37,7 @@ const BadgeStyle = prepareNativeStyle<BadgeStyleProps>(
         justifyContent: 'center',
         alignSelf: 'flex-start',
         backgroundColor: utils.colors[backgroundColor],
-        paddingHorizontal: utils.spacings.s - (size === 'medium' ? 0 : 2),
+        paddingHorizontal: utils.spacings.s - (size === 'm' ? 0 : 2),
         paddingVertical: utils.spacings.s / 4,
         borderRadius: utils.borders.radii.round,
         extend: [
@@ -82,7 +82,7 @@ export const Badge = ({
     label,
     icon,
     iconSize,
-    size = 'medium',
+    size = 'm',
     variant = 'neutral',
     elevation = '0',
     isDisabled = false,
@@ -95,7 +95,7 @@ export const Badge = ({
         activeIconColor,
     } = badgeVariantToStylePropsMap[variant];
 
-    const textVariant = size === 'medium' ? 'hint' : 'label';
+    const textVariant = size === 'm' ? 'hint' : 'label';
     const textColor = isDisabled ? 'textDisabled' : activeTextColor;
     const iconColor = isDisabled ? 'iconDisabled' : activeIconColor;
     const backgroundColor =
