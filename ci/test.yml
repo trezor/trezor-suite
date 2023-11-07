@@ -300,6 +300,7 @@ connect-popup legacy:
       - TEST_FILE: ["methods.test"]
       - TEST_FILE: ["passphrase.test"]
       - TEST_FILE: ["popup-close.test"]
+      - TEST_FILE: ["popup-error-page.test"]
 
 connect-popup-webextension:
   extends: .e2e connect-popup-webextension
