@@ -64,7 +64,7 @@ export const composeTransaction =
             });
         }
 
-        let sequence = 0;
+        let sequence; // Must be undefined for final transaction.
         if (formValues.options.includes('bitcoinRBF')) {
             // RBF is set, add sequence to inputs
             sequence = BTC_RBF_SEQUENCE;
