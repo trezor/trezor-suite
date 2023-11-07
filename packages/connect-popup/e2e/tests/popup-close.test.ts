@@ -1,7 +1,13 @@
 import { test, expect, Page } from '@playwright/test';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
-import { createDeferred, Deferred } from '@trezor/utils';
-import { findElementByDataTest, waitAndClick, log } from '../support/helpers';
+import { createDeferred, Deferred, addDashesToSpaces } from '@trezor/utils';
+import {
+    findElementByDataTest,
+    waitAndClick,
+    log,
+    downloadLogs,
+    checkHasLogs,
+} from '../support/helpers';
 
 const host = process.env.URL || 'http://localhost:8088/';
 const url = `${host}?trust-issues=true`;
@@ -56,12 +62,6 @@ test.beforeAll(async () => {
         });
         log('beforeEach', 'startBridge');
         await TrezorUserEnvLink.api.startBridge(bridgeVersion);
-        log('beforeEach', 'open log page');
-
-        // this would be very useful but is breaking one of the tests. could be
-        // that it inconsciously uncovers a bug in how npm pacakge is focusing popup
-        // logPage = await context.newPage();
-        // await logPage.goto(`${host}log.html`);
 
         await page.goto(`${url}#/method/verifyMessage`);
         await page.waitForSelector("button[data-test='@submit-button']", { state: 'visible' });
@@ -118,7 +118,21 @@ test.beforeAll(async () => {
     // Finish verify message in afterEach. This is here to prove that after the first
     // failed attempt it is possible to retry successfully without any weird bug/race condition/edge-case
     // we are validating here this commit https://github.com/trezor/connect/commit/fc60c3c03d6e689f3de2d518cc51f62e649a20e2
-    test.afterEach(async ({ page }, testInfo) => {
+    test.afterEach(async ({ page, context }, testInfo) => {
+        const logPage = await context.newPage();
+        await logPage.goto(`${host}log.html`);
+
+        const hasLogs = await checkHasLogs(logPage);
+        if (hasLogs) {
+            log('afterEach', 'downloading logs');
+            await downloadLogs(
+                logPage,
+                `./test-results/log-${addDashesToSpaces(testInfo.title)}.txt`,
+            );
+        } else {
+            log('afterEach', 'no logs');
+        }
+
         // For tests including annotation `skip-after-flow` we don't want to run this.
         const skipAfterFlow = testInfo.annotations.find(
             annotation => annotation.type === 'skip-after-flow',
