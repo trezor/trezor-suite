@@ -16,7 +16,7 @@
         "test:e2e": "yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts"
     },
     "dependencies": {
-        "@sentry/electron": "^4.6.0",
+        "@sentry/electron": "^4.14.0",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/sentry": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
