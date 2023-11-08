@@ -28,6 +28,7 @@ import {
     UiPromiseResponse,
 } from '../events';
 import { getMethod } from './method';
+import { AbstractMethod } from './AbstractMethod';
 import { resolveAfter } from '../utils/promiseUtils';
 import { initLog, enableLog, setLogWriter, LogWriter } from '../utils/debug';
 import { dispose as disposeBackend } from '../backend/BlockchainLink';
@@ -35,18 +36,17 @@ import { InteractionTimeout } from '../utils/interactionTimeout';
 import type { DeviceEvents, Device } from '../device/Device';
 import type { ConnectSettings, CommonParams, Device as DeviceTyped } from '../types';
 
-type AbstractMethod = Awaited<ReturnType<typeof getMethod>>;
-
 // Public variables
 let _core: Core; // Class with event emitter
 let _deviceList: DeviceList | undefined; // Instance of DeviceList
 let _popupPromise: Deferred<void> | undefined; // Waiting for popup handshake
 const _uiPromises: AnyUiPromise[] = []; // Waiting for ui response
-const _callMethods: AbstractMethod[] = []; // generic type is irrelevant. only common functions are called at this level
 let _preferredDevice: CommonParams['device'];
+const _callMethods: AbstractMethod<any>[] = []; // generic type is irrelevant. only common functions are called at this level
 let _interactionTimeout: InteractionTimeout;
 let _deviceListInitTimeout: ReturnType<typeof setTimeout> | undefined;
 let _overridePromise: Promise<void> | undefined;
+let _getMethodPromise: Promise<AbstractMethod<any>> | undefined;
 
 // custom log
 const _log = initLog('Core');
@@ -197,7 +197,7 @@ export const handleMessage = (message: CoreMessage) => {
  * @returns {Promise<Device>}
  * @memberof Core
  */
-const initDevice = async (method: AbstractMethod) => {
+const initDevice = async (method: AbstractMethod<any>) => {
     if (!_deviceList) {
         throw ERRORS.TypedError('Transport_Missing');
     }
@@ -298,10 +298,13 @@ export const onCall = async (message: CoreMessage) => {
     }
 
     // find method and parse incoming params
-    let method: AbstractMethod;
+    let method: AbstractMethod<any>;
     let messageResponse: CoreMessage;
     try {
-        method = await getMethod(message);
+        _log.debug('loading method...');
+        _getMethodPromise = getMethod(message);
+        method = await _getMethodPromise;
+        _log.debug('method selected', method.name);
         // bind callbacks
         method.postMessage = postMessage;
         method.getPopupPromise = getPopupPromise;
@@ -711,7 +714,7 @@ const closePopup = () => {
  * @memberof Core
  */
 const onDeviceButtonHandler = async (
-    ...[device, request, method]: [...Parameters<DeviceEvents['button']>, AbstractMethod]
+    ...[device, request, method]: [...Parameters<DeviceEvents['button']>, AbstractMethod<any>]
 ) => {
     // wait for popup handshake
     const addressRequest = request.code === 'ButtonRequest_Address';
@@ -1005,8 +1008,11 @@ export class Core extends EventEmitter {
         }
     }
 
-    getCurrentMethod() {
-        return _callMethods;
+    async getCurrentMethod() {
+        if (_getMethodPromise) {
+            await _getMethodPromise;
+        }
+        return _callMethods[0];
     }
 
     getTransportInfo(): TransportInfo | undefined {

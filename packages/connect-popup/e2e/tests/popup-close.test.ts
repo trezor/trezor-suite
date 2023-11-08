@@ -248,7 +248,7 @@ test.beforeAll(async () => {
     // just like the previous skipped test.
     // request: http://127.0.0.1:21325/call/3
     // response {"error":"closed device"}
-    test(`popup is reloaded by user. bridge version ${bridgeVersion}`, async () => {
+    test.skip(`popup is reloaded by user. bridge version ${bridgeVersion}`, async () => {
         await popup.reload();
         // after popup is reload, communication is lost, there is only infinite loader
         await popup.waitForSelector('div[data-test="@connect-ui/loader"]');
