@@ -6,6 +6,7 @@ import {
     PostMessage,
     UI,
     PopupHandshake,
+    PopupMethodInfo,
     UI_REQUEST,
     POPUP,
     createPopupMessage,
@@ -49,11 +50,16 @@ export const ConnectUI = ({ postMessage, clearLegacyView }: ConnectUIProps) => {
     // we simply store all UI relevant messages here and use them to derive what should we render
     const [messages, setMessages] = useState<(ConnectUIEventProps | null)[]>([]);
     // flowInfo is the only exception to the rule outlined above
-    const [flowInfo, setFlowInfo] = useState<PopupHandshake['payload'] | undefined>(undefined);
+    const [flowInfo, setFlowInfo] = useState<
+        Partial<PopupHandshake['payload'] & PopupMethodInfo['payload']> | undefined
+    >(undefined);
 
     const listener = useCallback((message: ConnectUIEventProps | null) => {
-        if (message?.type === 'popup-handshake') {
-            setFlowInfo(message.payload);
+        if (message?.type === POPUP.HANDSHAKE || message?.type === POPUP.METHOD_INFO) {
+            setFlowInfo(prev => ({
+                ...prev,
+                ...message.payload,
+            }));
         }
         setMessages(prevMessages => [message, ...prevMessages]);
     }, []);
@@ -137,7 +143,7 @@ export const ConnectUI = ({ postMessage, clearLegacyView }: ConnectUIProps) => {
                 <IntlWrapper>
                     <Layout>
                         <InfoPanel
-                            method={flowInfo?.method}
+                            method={flowInfo?.info}
                             origin={flowInfo?.settings?.origin}
                             hostLabel={flowInfo?.settings?.hostLabel}
                             topSlot={Object.values(Notifications)}

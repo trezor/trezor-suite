@@ -50,7 +50,7 @@ let _popupMessagePort: (MessagePort | BroadcastChannel) | undefined;
 // since iframe.html needs to send message via window.postMessage
 // we need to listen to events from Core and convert it to simple objects possible to send over window.postMessage
 
-const handleMessage = (event: PostMessageEvent) => {
+const handleMessage = async (event: PostMessageEvent) => {
     // ignore messages from myself (chrome bug?)
     if (event.source === window || !event.data) return;
     const { data } = event;
@@ -100,18 +100,26 @@ const handleMessage = (event: PostMessageEvent) => {
             return;
         }
 
-        const method = _core.getCurrentMethod()[0];
-        (method.initAsyncPromise ? method.initAsyncPromise : Promise.resolve()).finally(() => {
-            const transport = _core!.getTransportInfo();
-            const settings = DataManager.getSettings();
+        const transport = _core.getTransportInfo();
+        const settings = DataManager.getSettings();
 
-            postMessage(
-                createPopupMessage(POPUP.HANDSHAKE, {
-                    settings: DataManager.getSettings(),
-                    transport,
-                    method: method ? method.info : undefined, // method.info might change based on initAsync
-                }),
-            );
+        postMessage(
+            createPopupMessage(POPUP.HANDSHAKE, {
+                settings: DataManager.getSettings(),
+                transport,
+            }),
+        );
+        _log.debug('loading current method');
+        const method = await _core.getCurrentMethod();
+        (method.initAsyncPromise ? method.initAsyncPromise : Promise.resolve()).finally(() => {
+            if (method.info) {
+                postMessage(
+                    createPopupMessage(POPUP.METHOD_INFO, {
+                        method: method.name,
+                        info: method.info, // method.info might change based on initAsync
+                    }),
+                );
+            }
 
             // eslint-disable-next-line camelcase
             const { tracking_enabled, tracking_id } = storage.load();
@@ -125,8 +133,6 @@ const handleMessage = (event: PostMessageEvent) => {
                 useQueue: true,
             });
 
-            const { method: methodName, ...payload } = method.payload;
-
             analytics.report({
                 type: EventType.AppReady,
                 payload: {
@@ -134,8 +140,8 @@ const handleMessage = (event: PostMessageEvent) => {
                     origin: settings?.origin,
                     referrerApp: settings?.manifest?.appUrl,
                     referrerEmail: settings?.manifest?.email,
-                    method: methodName,
-                    payload: method.payload ? Object.keys(payload) : undefined,
+                    method: method.name,
+                    payload: method.payload ? Object.keys(method.payload) : undefined,
                     transportType: transport?.type,
                     transportVersion: transport?.version,
                 },

@@ -28,6 +28,8 @@ export const POPUP = {
     CLOSE_WINDOW: 'window.close',
     // todo: shouldn't it be UI_RESPONSE?
     ANALYTICS_RESPONSE: 'popup-analytics-response',
+    /** method.info async getter result passed from core to popup */
+    METHOD_INFO: 'popup-method-info',
 } as const;
 
 export interface PopupInit {
@@ -43,7 +45,6 @@ export interface PopupHandshake {
     type: typeof POPUP.HANDSHAKE;
     payload: {
         settings: ConnectSettings; // those are settings from the iframe, they could be different from window.opener settings
-        method?: string;
         transport?: TransportInfo;
     };
 }
@@ -65,6 +66,11 @@ export interface PopupAnalyticsResponse {
     payload: { enabled: boolean };
 }
 
+export interface PopupMethodInfo {
+    type: typeof POPUP.METHOD_INFO;
+    payload: { info: string; method: string };
+}
+
 export type PopupEvent =
     | {
           type: typeof POPUP.LOADED | typeof POPUP.CANCEL_POPUP_REQUEST;
@@ -74,7 +80,8 @@ export type PopupEvent =
     | PopupHandshake
     | PopupError
     | PopupClosedMessage
-    | PopupAnalyticsResponse;
+    | PopupAnalyticsResponse
+    | PopupMethodInfo;
 
 export type PopupEventMessage = PopupEvent & { event: typeof UI_EVENT };
 

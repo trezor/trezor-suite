@@ -1,4 +1,4 @@
-import { PopupHandshake, UI_REQUEST, Device } from '@trezor/connect';
+import { PopupHandshake, UI_REQUEST, Device, PopupMethodInfo } from '@trezor/connect';
 
 import { TransportEventProps } from '../views/Transport';
 import { PassphraseEventProps } from '../views/Passphrase';
@@ -10,6 +10,7 @@ export type ConnectUIEventProps =
     | PassphraseEventProps
     | ErrorViewProps
     | PopupHandshake
+    | PopupMethodInfo
     | { type: typeof UI_REQUEST.DEVICE_NEEDS_BACKUP; device: Device }
     | { type: typeof UI_REQUEST.FIRMWARE_OUTDATED; device: Device }
     // connect-popup events

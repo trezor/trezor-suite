@@ -130,6 +130,7 @@ const handleMessage = (
     }
 
     switch (message.type) {
+        case POPUP.METHOD_INFO:
         case UI_REQUEST.TRANSPORT:
         case UI_REQUEST.FIRMWARE_OUTDATED:
         case UI_REQUEST.DEVICE_NEEDS_BACKUP:
