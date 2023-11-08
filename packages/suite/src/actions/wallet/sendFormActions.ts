@@ -19,6 +19,7 @@ import {
     formatAmount,
     getAccountDecimals,
     hasNetworkFeatures,
+    isCardanoTx,
 } from '@suite-common/wallet-utils';
 import {
     FormState,
@@ -31,7 +32,6 @@ import { cloneObject } from '@trezor/utils';
 import * as modalActions from 'src/actions/suite/modalActions';
 import * as metadataActions from 'src/actions/suite/metadataActions';
 import { SEND } from 'src/actions/wallet/constants';
-import { isCardanoTx } from 'src/utils/wallet/cardanoUtils';
 import { Dispatch, GetState } from 'src/types/suite';
 import { Account } from 'src/types/wallet';
 import { MetadataAddPayload } from 'src/types/suite/metadata';

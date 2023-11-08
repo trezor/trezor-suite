@@ -11,9 +11,13 @@
         "type-check": "tsc --build"
     },
     "dependencies": {
+        "@mobily/ts-belt": "^3.13.1",
         "@suite-native/toasts": "workspace:*",
         "expo-clipboard": "^4.1.1",
         "react": "18.2.0",
         "react-native": "0.71.8"
+    },
+    "devDependencies": {
+        "jest": "^26.6.3"
     }
 }

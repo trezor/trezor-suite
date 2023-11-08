@@ -1,15 +1,8 @@
 import { useState, useCallback } from 'react';
 
-import { isTestnet, getDerivationType } from '@suite-common/wallet-utils';
-import { notificationsActions } from '@suite-common/toast-notifications';
-import trezorConnect, { PROTO } from '@trezor/connect';
-import { addFakePendingCardanoTxThunk, selectDevice } from '@suite-common/wallet-core';
-
-import { ActionAvailability, CardanoStaking } from 'src/types/wallet/cardanoStaking';
-import { SUITE } from 'src/actions/suite/constants';
-import { useDispatch, useSelector } from 'src/hooks/suite';
-import { setPendingStakeTx } from 'src/actions/wallet/cardanoStakingActions';
 import {
+    isTestnet,
+    getDerivationType,
     getStakingPath,
     getProtocolMagic,
     getNetworkId,
@@ -18,7 +11,15 @@ import {
     isPoolOverSaturated,
     getStakePoolForDelegation,
     getAddressParameters,
-} from 'src/utils/wallet/cardanoUtils';
+} from '@suite-common/wallet-utils';
+import { notificationsActions } from '@suite-common/toast-notifications';
+import trezorConnect, { PROTO } from '@trezor/connect';
+import { addFakePendingCardanoTxThunk, selectDevice } from '@suite-common/wallet-core';
+
+import { ActionAvailability, CardanoStaking } from 'src/types/wallet/cardanoStaking';
+import { SUITE } from 'src/actions/suite/constants';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { setPendingStakeTx } from 'src/actions/wallet/cardanoStakingActions';
 import { AppState } from 'src/types/suite';
 
 const getDeviceAvailability = (

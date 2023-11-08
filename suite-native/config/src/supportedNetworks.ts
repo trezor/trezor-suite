@@ -23,6 +23,7 @@ export const mainnetsOrder: NetworkSymbol[] = [
 export const testnetsOrder: NetworkSymbol[] = ['test', 'regtest', 'tsep', 'tgor', 'tada', 'txrp'];
 
 export const supportedNetworkSymbols = Object.keys(networks) as NetworkSymbol[];
+
 export const supportedMainnetSymbols = getMainnets().map(network => network.symbol);
 
 // Currently not supported in suite native. When it needs to be supported, just remove this filter.

@@ -16,6 +16,7 @@
         "@suite-common/wallet-config": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/helpers": "workspace:*",
+        "@suite-native/intl": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
         "expo-barcode-scanner": "^12.3.1",

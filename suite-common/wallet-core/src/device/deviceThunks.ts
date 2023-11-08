@@ -11,8 +11,17 @@ import {
     getDeviceInstances,
     getFirstDeviceInstance,
 } from '@suite-common/suite-utils';
+import { AccountKey } from '@suite-common/wallet-types';
+import {
+    getAddressType,
+    getDerivationType,
+    getNetworkId,
+    getProtocolMagic,
+    getStakingPath,
+} from '@suite-common/wallet-utils';
 
 import {
+    selectDevice,
     selectDevice as selectDeviceSelector,
     selectDeviceById,
     selectDevices,
@@ -21,6 +30,7 @@ import { deviceActions, MODULE_PREFIX } from './deviceActions';
 import { selectFirmware } from '../firmware/firmwareReducer';
 import { checkFirmwareAuthenticity } from '../firmware/firmwareThunks';
 import { PORTFOLIO_TRACKER_DEVICE_ID, portfolioTrackerDevice } from './deviceConstants';
+import { selectAccountByKey } from '../accounts/accountsReducer';
 
 /**
  * Called from:
@@ -443,5 +453,64 @@ export const createImportedDeviceThunk = createThunk(
         if (!device) {
             dispatch(deviceActions.createDeviceInstance(portfolioTrackerDevice));
         }
+    },
+);
+
+export const confirmAddressOnDeviceThunk = createThunk(
+    `${MODULE_PREFIX}/confirmAddressOnDeviceThunk`,
+    async (
+        { accountKey, addressPath }: { accountKey: AccountKey; addressPath: string },
+        { getState },
+    ) => {
+        const device = selectDevice(getState());
+        const account = selectAccountByKey(getState(), accountKey);
+
+        if (!device || !account)
+            return {
+                success: false,
+                payload: { error: 'Device or account does not exist.', code: undefined },
+            };
+
+        const params = {
+            device,
+            path: addressPath,
+            unlockPath: account.unlockPath,
+            useEmptyPassphrase: device.useEmptyPassphrase,
+            coin: account.symbol,
+        };
+
+        let response;
+
+        switch (account.networkType) {
+            case 'ethereum':
+                response = await TrezorConnect.ethereumGetAddress(params);
+                break;
+            case 'cardano':
+                response = TrezorConnect.cardanoGetAddress({
+                    device,
+                    useEmptyPassphrase: device.useEmptyPassphrase,
+                    addressParameters: {
+                        stakingPath: getStakingPath(account),
+                        addressType: getAddressType(),
+                        path: addressPath,
+                    },
+                    protocolMagic: getProtocolMagic(account.symbol),
+                    networkId: getNetworkId(account.symbol),
+                    derivationType: getDerivationType(account.accountType),
+                });
+                break;
+            case 'ripple':
+                response = TrezorConnect.rippleGetAddress(params);
+                break;
+            case 'bitcoin':
+                response = TrezorConnect.getAddress(params);
+                break;
+            default:
+                response = {
+                    success: false,
+                    payload: { error: 'Method for getAddress not defined', code: undefined },
+                };
+        }
+        return response;
     },
 );

@@ -1,2 +1,2 @@
 export * from './components/ReceiveAccount';
-export * from './screens/ReceiveModal';
+export * from './screens/ReceiveModalScreen';

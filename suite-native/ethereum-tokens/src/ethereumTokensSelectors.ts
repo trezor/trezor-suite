@@ -26,7 +26,7 @@ import { EthereumTokenTransfer, WalletAccountTransaction } from './types';
 
 export const selectEthereumAccountTokenInfo = (
     state: AccountsRootState,
-    accountKey: AccountKey,
+    accountKey?: AccountKey,
     tokenAddress?: TokenAddress,
 ): TokenInfoBranded | null => {
     const account = selectAccountByKey(state, accountKey);
@@ -41,7 +41,7 @@ export const selectEthereumAccountTokenInfo = (
 
 export const selectEthereumAccountTokenSymbol = (
     state: AccountsRootState,
-    accountKey: AccountKey,
+    accountKey?: AccountKey,
     tokenAddress?: TokenAddress,
 ): TokenSymbol | null => {
     const tokenInfo = selectEthereumAccountTokenInfo(state, accountKey, tokenAddress);

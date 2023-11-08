@@ -14,6 +14,8 @@
         "@mobily/ts-belt": "^3.13.1",
         "@react-navigation/native": "^6.1.3",
         "@react-navigation/native-stack": "^6.9.11",
+        "@reduxjs/toolkit": "1.9.5",
+        "@shopify/react-native-skia": "0.1.214",
         "@suite-common/icons": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
@@ -24,13 +26,16 @@
         "@suite-native/device-manager": "workspace:*",
         "@suite-native/ethereum-tokens": "workspace:*",
         "@suite-native/formatters": "workspace:*",
+        "@suite-native/helpers": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@suite-native/link": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@suite-native/qr-code": "workspace:*",
+        "@suite-native/toasts": "workspace:*",
         "@trezor/styles": "workspace:*",
         "react": "18.2.0",
         "react-native": "0.71.8",
+        "react-native-reanimated": "3.5.4",
         "react-redux": "8.0.7"
     }
 }

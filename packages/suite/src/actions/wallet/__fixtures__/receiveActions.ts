@@ -5,6 +5,7 @@ import * as receiveActions from 'src/actions/wallet/receiveActions';
 import { MODAL, SUITE } from 'src/actions/suite/constants';
 
 import { RECEIVE } from '../constants';
+import { confirmAddressOnDeviceThunk } from '@suite-common/wallet-core';
 
 const { getSuiteDevice } = global.JestMocks;
 
@@ -32,18 +33,6 @@ export default [
     },
     {
         description: 'Show address success (bitcoin)',
-        initialState: {
-            wallet: {
-                selectedAccount: {
-                    account: {
-                        networkType: 'bitcoin',
-                    },
-                },
-                settings: {
-                    enabledNetworks: ['btc'],
-                },
-            },
-        },
         mocks: {},
         action: () => receiveActions.showAddress(PATH, ADDRESS),
         result: {
@@ -51,8 +40,10 @@ export default [
                 { type: connectInitThunk.pending.type, payload: undefined },
                 { type: connectInitThunk.fulfilled.type, payload: undefined },
                 { type: MODAL.PRESERVE },
+                { type: confirmAddressOnDeviceThunk.pending.type, payload: undefined },
                 { type: SUITE.LOCK_DEVICE, payload: true },
                 { type: SUITE.LOCK_DEVICE, payload: false },
+                { type: confirmAddressOnDeviceThunk.fulfilled.type, payload: { success: true } },
                 { type: MODAL.OPEN_USER_CONTEXT },
                 { type: RECEIVE.SHOW_ADDRESS, path: PATH, address: ADDRESS },
             ],
@@ -64,9 +55,11 @@ export default [
             wallet: {
                 selectedAccount: {
                     account: {
+                        key: 'selected-account-key',
                         networkType: 'ethereum',
                     },
                 },
+                accounts: [{ key: 'selected-account-key', networkType: 'ethereum', symbol: 'eth' }],
                 settings: {
                     enabledNetworks: ['eth'],
                 },
@@ -79,8 +72,10 @@ export default [
                 { type: connectInitThunk.pending.type, payload: undefined },
                 { type: connectInitThunk.fulfilled.type, payload: undefined },
                 { type: MODAL.PRESERVE },
+                { type: confirmAddressOnDeviceThunk.pending.type, payload: undefined },
                 { type: SUITE.LOCK_DEVICE, payload: true },
                 { type: SUITE.LOCK_DEVICE, payload: false },
+                { type: confirmAddressOnDeviceThunk.fulfilled.type, payload: { success: true } },
                 { type: MODAL.OPEN_USER_CONTEXT },
                 { type: RECEIVE.SHOW_ADDRESS, path: PATH, address: ADDRESS },
             ],
@@ -92,9 +87,11 @@ export default [
             wallet: {
                 selectedAccount: {
                     account: {
+                        key: 'selected-account-key',
                         networkType: 'ripple',
                     },
                 },
+                accounts: [{ key: 'selected-account-key', networkType: 'ripple', symbol: 'xrp' }],
                 settings: {
                     enabledNetworks: ['xrp'],
                 },
@@ -107,8 +104,10 @@ export default [
                 { type: connectInitThunk.pending.type, payload: undefined },
                 { type: connectInitThunk.fulfilled.type, payload: undefined },
                 { type: MODAL.PRESERVE },
+                { type: confirmAddressOnDeviceThunk.pending.type, payload: undefined },
                 { type: SUITE.LOCK_DEVICE, payload: true },
                 { type: SUITE.LOCK_DEVICE, payload: false },
+                { type: confirmAddressOnDeviceThunk.fulfilled.type, payload: { success: true } },
                 { type: MODAL.OPEN_USER_CONTEXT },
                 { type: RECEIVE.SHOW_ADDRESS, path: PATH, address: ADDRESS },
             ],
@@ -123,6 +122,7 @@ export default [
                         networkType: 'ripple-2',
                     },
                 },
+                accounts: [{ key: 'selected-account-key', networkType: 'ripple', symbol: 'xrp' }],
                 settings: {
                     enabledNetworks: ['xrp'],
                 },
@@ -135,12 +135,14 @@ export default [
                 { type: connectInitThunk.pending.type, payload: undefined },
                 { type: connectInitThunk.fulfilled.type, payload: undefined },
                 { type: MODAL.PRESERVE },
+                { type: confirmAddressOnDeviceThunk.pending.type, payload: undefined },
+                { type: confirmAddressOnDeviceThunk.fulfilled.type, payload: { success: false } },
                 { type: MODAL.CLOSE },
                 {
                     type: notificationsActions.addToast.type,
                     payload: {
                         type: 'verify-address-error',
-                        error: 'Method for getAddress not defined',
+                        error: 'Device or account does not exist.',
                     },
                 },
             ],
@@ -171,18 +173,6 @@ export default [
     },
     {
         description: 'Show address, @trezor/connect error',
-        initialState: {
-            wallet: {
-                selectedAccount: {
-                    account: {
-                        networkType: 'bitcoin',
-                    },
-                },
-                settings: {
-                    enabledNetworks: ['btc'],
-                },
-            },
-        },
         mocks: {
             getAddress: { success: false, payload: { error: 'Runtime error' } },
         },
@@ -192,8 +182,10 @@ export default [
                 { type: connectInitThunk.pending.type, payload: undefined },
                 { type: connectInitThunk.fulfilled.type, payload: undefined },
                 { type: MODAL.PRESERVE },
+                { type: confirmAddressOnDeviceThunk.pending.type, payload: undefined },
                 { type: SUITE.LOCK_DEVICE, payload: true },
                 { type: SUITE.LOCK_DEVICE, payload: false },
+                { type: confirmAddressOnDeviceThunk.fulfilled.type, payload: { success: false } },
                 { type: MODAL.CLOSE },
                 {
                     type: notificationsActions.addToast.type,
@@ -217,8 +209,10 @@ export default [
                 { type: connectInitThunk.pending.type, payload: undefined },
                 { type: connectInitThunk.fulfilled.type, payload: undefined },
                 { type: MODAL.PRESERVE },
+                { type: confirmAddressOnDeviceThunk.pending.type, payload: undefined },
                 { type: SUITE.LOCK_DEVICE, payload: true },
                 { type: SUITE.LOCK_DEVICE, payload: false },
+                { type: confirmAddressOnDeviceThunk.fulfilled.type, payload: { success: false } },
                 { type: MODAL.CLOSE },
             ],
         },

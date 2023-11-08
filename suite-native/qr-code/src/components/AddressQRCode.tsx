@@ -1,27 +1,23 @@
 import { Alert, Share } from 'react-native';
 
-import { pipe, S, A } from '@mobily/ts-belt';
+import { A, pipe } from '@mobily/ts-belt';
 
-import { Box, Text, Button, ButtonBackgroundElevation, VStack, HStack } from '@suite-native/atoms';
-import { useCopyToClipboard } from '@suite-native/helpers';
+import { Box, Text, Button, VStack, HStack } from '@suite-native/atoms';
+import { splitAddressToChunks, useCopyToClipboard } from '@suite-native/helpers';
+import { useTranslate } from '@suite-native/intl';
 
 import { QRCode } from './QRCode';
 
 type AddressQRCodeProps = {
     address: string;
-    backgroundElevation?: ButtonBackgroundElevation;
 };
 
-const ON_COPY_MESSAGE = 'Address copied';
-
-const splitStringByFourCharacters = (address: string) =>
-    pipe(address, S.splitByRe(/(.{4})/g), A.join(' '));
-
-export const AddressQRCode = ({ address, backgroundElevation = '0' }: AddressQRCodeProps) => {
+export const AddressQRCode = ({ address }: AddressQRCodeProps) => {
     const copyToClipboard = useCopyToClipboard();
+    const { translate } = useTranslate();
 
     const handleCopyAddress = async () => {
-        await copyToClipboard(address, ON_COPY_MESSAGE);
+        await copyToClipboard(address, translate('qrCode.addressCopied'));
     };
 
     const handleShareData = async () => {
@@ -34,7 +30,7 @@ export const AddressQRCode = ({ address, backgroundElevation = '0' }: AddressQRC
         }
     };
 
-    const formattedAddress = splitStringByFourCharacters(address);
+    const formattedAddress = pipe(address, splitAddressToChunks, A.join(' '));
 
     return (
         <VStack spacing="large">
@@ -49,17 +45,17 @@ export const AddressQRCode = ({ address, backgroundElevation = '0' }: AddressQRC
                     size="small"
                     iconLeft="copy"
                     onPress={handleCopyAddress}
-                    colorScheme={`tertiaryElevation${backgroundElevation}`}
+                    colorScheme="tertiaryElevation1"
                 >
-                    Copy
+                    {translate('qrCode.copyButton')}
                 </Button>
                 <Button
                     size="small"
                     iconLeft="shareAlt"
-                    colorScheme={`tertiaryElevation${backgroundElevation}`}
+                    colorScheme="tertiaryElevation1"
                     onPress={handleShareData}
                 >
-                    Share
+                    {translate('qrCode.shareButton')}
                 </Button>
             </HStack>
         </VStack>

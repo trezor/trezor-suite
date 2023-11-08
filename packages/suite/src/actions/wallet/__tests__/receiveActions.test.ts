@@ -11,6 +11,8 @@ import * as receiveActions from 'src/actions/wallet/receiveActions';
 import { extraDependencies } from 'src/support/extraDependencies';
 
 import fixtures from '../__fixtures__/receiveActions';
+import { AccountKey } from '@suite-common/wallet-types';
+import { NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
 
 const { getSuiteDevice } = global.JestMocks;
 
@@ -93,9 +95,17 @@ interface InitialState {
         receive: ReceiveState;
         selectedAccount: {
             account?: {
+                key: AccountKey;
                 networkType: 'bitcoin' | 'ethereum' | 'ripple';
             };
         };
+        accounts: [
+            {
+                key: AccountKey;
+                symbol: NetworkSymbol;
+                networkType: NetworkType;
+            },
+        ];
         settings: {
             enabledNetworks: string[];
         };
@@ -113,12 +123,14 @@ export const getInitialState = (state: Partial<InitialState> | undefined) => ({
         receive: receiveReducer([], { type: 'foo' } as any),
         selectedAccount: {
             account: {
+                key: 'selected-account-key',
                 networkType: 'bitcoin',
             },
         },
         settings: {
             enabledNetworks: ['btc'],
         },
+        accounts: [{ key: 'selected-account-key', symbol: 'btc', networkType: 'bitcoin' }],
         ...state?.wallet,
     },
     modal: {
@@ -166,19 +178,7 @@ describe('ReceiveActions', () => {
     it('show unverified address then verify', async () => {
         // eslint-disable-next-line @typescript-eslint/no-var-requires
         require('@trezor/connect').setTestFixtures({});
-        const state = getInitialState({
-            wallet: {
-                receive: receiveReducer([], { type: 'foo' } as any),
-                selectedAccount: {
-                    account: {
-                        networkType: 'bitcoin',
-                    },
-                },
-                settings: {
-                    enabledNetworks: ['btc'],
-                },
-            },
-        });
+        const state = getInitialState({});
         const store = initStore(state);
         await store.dispatch(connectInitThunk());
 

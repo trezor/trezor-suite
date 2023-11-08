@@ -10,6 +10,7 @@ import {
     updateDiscovery,
     createDiscovery,
     removeDiscovery,
+    getAvailableCardanoDerivationsThunk,
 } from '@suite-common/wallet-core';
 import { selectIsAccountAlreadyDiscovered } from '@suite-native/accounts';
 import TrezorConnect from '@trezor/connect';
@@ -204,7 +205,7 @@ const discoverNetworkBatchThunk = createThunk(
 
 export const createDescriptorPreloadedDiscoveryThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/createDescriptorPreloadedDiscoveryThunk`,
-    (
+    async (
         {
             deviceState,
             device,
@@ -213,6 +214,10 @@ export const createDescriptorPreloadedDiscoveryThunk = createThunk(
         { dispatch },
     ) => {
         const networks = areTestnetsEnabled ? supportedNetworkSymbols : supportedMainnetSymbols;
+
+        const availableCardanoDerivations = await dispatch(
+            getAvailableCardanoDerivationsThunk({ deviceState, device }),
+        ).unwrap();
 
         dispatch(
             createDiscovery({
@@ -224,6 +229,7 @@ export const createDescriptorPreloadedDiscoveryThunk = createThunk(
                 bundleSize: 0,
                 loaded: 0,
                 failed: [],
+                availableCardanoDerivations,
                 networks,
             }),
         );

@@ -147,7 +147,14 @@ export const selectMainnetAccounts = memoize((state: AccountsRootState) =>
     ),
 );
 
-export const selectAccountByKey = (state: AccountsRootState, accountKey: AccountKey) => {
+export const selectNumberOfAccounts = (state: AccountsRootState) => selectAccounts(state).length;
+
+export const selectUserHasAccounts = (state: AccountsRootState): boolean =>
+    pipe(selectAccounts(state), A.isNotEmpty);
+
+export const selectAccountByKey = (state: AccountsRootState, accountKey?: AccountKey) => {
+    if (!accountKey) return null;
+
     const accounts = selectAccounts(state);
 
     return accounts.find(account => account.key === accountKey) ?? null;
@@ -187,7 +194,7 @@ export const selectAccountsByNetworkAndDevice = memoizeWithArgs(
 
 export const selectAccountLabel = (
     state: AccountsRootState,
-    accountKey: AccountKey,
+    accountKey?: AccountKey,
 ): string | null => {
     const account = selectAccountByKey(state, accountKey);
 
@@ -198,7 +205,7 @@ export const selectAccountLabel = (
 
 export const selectAccountNetworkSymbol = (
     state: AccountsRootState,
-    accountKey: AccountKey,
+    accountKey?: AccountKey,
 ): NetworkSymbol | null => {
     const account = selectAccountByKey(state, accountKey);
 
