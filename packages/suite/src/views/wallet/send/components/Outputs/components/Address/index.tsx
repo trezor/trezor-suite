@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import styled from 'styled-components';
-import { isValidChecksumAddress, toChecksumAddress } from 'ethereumjs-util';
+import { isValidChecksumAddress, toChecksumAddress } from '@ethereumjs/util';
 import { capitalizeFirstLetter } from '@trezor/utils';
 import { Input, useTheme, Icon, Button, Tooltip } from '@trezor/components';
 import { AddressLabeling, Translation, MetadataLabeling } from 'src/components/suite';

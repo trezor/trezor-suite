@@ -1,4 +1,4 @@
-import { Transaction } from '@ethereumjs/tx';
+import { TransactionFactory } from '@ethereumjs/tx';
 import { sha3 } from 'web3-utils';
 
 import { networksCompatibility as NETWORKS } from '@suite-common/wallet-config';
@@ -35,8 +35,8 @@ describe('sendForm utils', () => {
             // verify hash using 2 different tools
             if (f.tx.chainId !== 61) {
                 // ETC is not supported
-                const tx = Transaction.fromTxData(f.tx);
-                const hash1 = tx.hash().toString('hex');
+                const tx = TransactionFactory.fromTxData(f.tx);
+                const hash1 = Buffer.from(tx.hash()).toString('hex');
                 expect(`0x${hash1}`).toEqual(f.result);
             }
             const serialized = serializeEthereumTx(f.tx);
