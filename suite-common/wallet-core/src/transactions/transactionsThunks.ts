@@ -248,7 +248,9 @@ export const exportTransactionsThunk = createThunk(
             // eslint-disable-next-line no-restricted-syntax
             p => p.clientId === getState().metadata.selectedProvider.labels,
         );
-        const metadataKeys = account?.metadata[1];
+
+        // TODO: unfortunatelly we can't import metadata constats here yet so using [2] literally
+        const metadataKeys = account?.metadata[2];
         let labels = {};
         if (!metadataKeys || !metadataKeys?.fileName || !provider?.data[metadataKeys.fileName]) {
             labels = { outputLabels: {} };

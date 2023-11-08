@@ -10,6 +10,7 @@ const port = 30002;
 export class DropboxMock {
     files: Record<string, any> = {};
     nextResponse: Record<string, any>[] = [];
+    uploadSessionFiles: Record<string, Buffer> = {};
     // store requests for assertions in tests
     requests: string[] = [];
     app?: Express;
@@ -117,8 +118,8 @@ export class DropboxMock {
                                     metadata: {
                                         '.tag': 'file',
                                         name: query,
-                                        path_lower: `/apps/trezor/${query}`,
-                                        path_display: `/Apps/TREZOR/${query}`,
+                                        path_lower: `/${query}`,
+                                        path_display: `/${query}`,
                                         id: 'id:foo-id',
                                         client_modified: '2020-10-07T09:52:45Z',
                                         server_modified: '2020-10-07T09:52:45Z',
@@ -139,25 +140,39 @@ export class DropboxMock {
             res.end();
         });
 
+        // https://api.dropboxapi.com/2/files/list_folder
+        app.post('/2/files/list_folder', (_req, res) => {
+            const entries = Object.keys(this.files).map(name =>
+                // name is without leading slash /
+                ({ name: name.replace('/', '') }),
+            );
+
+            res.write(
+                JSON.stringify({
+                    entries,
+                }),
+            );
+
+            return res.send();
+        });
+
         // https://content.dropboxapi.com/2/files/download
         app.post('/2/files/download', (req, res) => {
             // @ts-expect-error
             const dropboxApiArgs = JSON.parse(req.headers['dropbox-api-arg']);
             const { path } = dropboxApiArgs;
-            const name = path.replace('/apps/trezor', '');
 
-            const file = this.files[name];
-
+            const file = this.files[path];
             if (file) {
                 // @ts-expect-error
                 res.writeHeader(200, {
                     'Content-Type': 'application/octet-stream',
-                    'Dropbox-Api-Result': `{"name": "${name}", "path_lower": "${path}", "path_display": "/Apps/TREZOR/${name}", "id": "id:foo-bar", "client_modified": "2020-10-07T09:52:45Z", "server_modified": "2020-10-07T09:52:45Z", "rev": "foo-bar", "size": 666, "is_downloadable": true, "content_hash": "foo-bar"}`,
+                    'Dropbox-Api-Result': `{"name": "${path}", "path_lower": "${path}", "path_display": "/${path}", "id": "id:foo-bar", "client_modified": "2020-10-07T09:52:45Z", "server_modified": "2020-10-07T09:52:45Z", "rev": "foo-bar", "size": 666, "is_downloadable": true, "content_hash": "foo-bar"}`,
                 });
 
                 res.write(file, 'binary');
             } else {
-                console.error('[dropboxMock]: no such file found', file);
+                console.error('[dropboxMock]: no such file found', path);
             }
             return res.end();
         });
@@ -172,6 +187,17 @@ export class DropboxMock {
                 const { path } = dropboxApiArgs;
                 this.files[path.toLowerCase()] = req.body;
 
+                res.send();
+            },
+        );
+
+        // https://content.dropboxapi.com/2/files/upload
+        app.post(
+            '/2/files/move_v2',
+            // express.raw({ type: 'application/octet-stream' }),
+            (req, res) => {
+                this.files[req.body.to_path] = this.files[req.body.from_path];
+                delete this.files[req.body.from_path];
                 res.send();
             },
         );

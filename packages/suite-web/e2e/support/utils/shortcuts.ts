@@ -58,8 +58,6 @@ export const passThroughBackupShamir = (shares: number, threshold: number) => {
 };
 
 export const passThroughInitMetadata = (provider: 'dropbox' | 'google') => {
-    cy.getConfirmActionOnDeviceModal();
-    cy.task('pressYes');
     cy.getTestElement(`@modal/metadata-provider/${provider}-button`).click();
     cy.getTestElement('@modal/metadata-provider').should('not.exist');
 };

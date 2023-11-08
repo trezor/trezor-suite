@@ -16,8 +16,14 @@ export const SET_INITIATING = '@metadata/set-initiating';
 export const SET_DATA = '@metadata/set-data';
 export const SET_SELECTED_PROVIDER = '@metadata/set-selected-provider';
 export const SET_ERROR_FOR_DEVICE = '@metadata/set-error-for-device';
+export const SET_ENTITIES_DESCRIPTORS = '@metadata/set-entities';
 
-export const FORMAT_VERSION = '1.0.0';
+/**
+ * Changelog:
+ * 1.0.0 - initial version
+ * 1.0.1 - added "dummy" (optional - only empty dummy files created during migration), added "migratedFrom" (optional - only migrated files)
+ */
+export const FORMAT_VERSION = '1.0.1';
 
 // @trezor/connect params
 export const ENABLE_LABELING_PATH = "m/10015'/0'";
@@ -42,7 +48,7 @@ export const GOOGLE_IMPLICIT_FLOW_CLIENT_ID =
 // dropbox allows authorization code flow for both web and desktop without client secret
 export const DROPBOX_CLIENT_ID = 'wg0yz2pbgjyhoda';
 
-export const ENCRYPTION_VERSION: MetadataEncryptionVersion = 1;
+export const ENCRYPTION_VERSION: MetadataEncryptionVersion = 2;
 
 export const ENCRYPTION_VERSION_CONFIGS: Record<
     MetadataEncryptionVersion,

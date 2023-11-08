@@ -18,14 +18,14 @@ describe('Dropbox api errors', () => {
         // prepare some initial files
         cy.task('metadataSetFileContent', {
             provider: 'dropbox',
-            file: '/f7acc942eeb83921892a95085e409b3e6b5325db6400ae5d8de523a305291dca.mtdt',
+            file: '/b9b5e1fd2800d4dc68e2f4e775fd819f4da3fb9e1bcc2cacd7f04fa543eac8a0_v2.mtdt',
             content: {
                 version: '1.0.0',
                 accountLabel: 'already existing label',
                 outputLabels: {},
                 addressLabels: {},
             },
-            aesKey: 'c785ef250807166bffc141960c525df97647fcc1bca57f6892ca3742ba86ed8d',
+            aesKey: '998daf71f3fbc486076f0ee8d5737a61b82bceacb0ec69100cbe4d45cd79676a',
         });
         cy.prefixedVisit('/', {
             onBeforeLoad: (win: Window) => {
@@ -80,14 +80,14 @@ describe('Dropbox api errors', () => {
         // prepare some initial files
         cy.task('metadataSetFileContent', {
             provider: 'dropbox',
-            file: '/f7acc942eeb83921892a95085e409b3e6b5325db6400ae5d8de523a305291dca.mtdt',
+            file: '/b9b5e1fd2800d4dc68e2f4e775fd819f4da3fb9e1bcc2cacd7f04fa543eac8a0_v2.mtdt',
             content: {
                 version: '1.0.0',
                 accountLabel: 'already existing label',
                 outputLabels: {},
                 addressLabels: {},
             },
-            aesKey: 'c785ef250807166bffc141960c525df97647fcc1bca57f6892ca3742ba86ed8d',
+            aesKey: '998daf71f3fbc486076f0ee8d5737a61b82bceacb0ec69100cbe4d45cd79676a',
         });
         cy.prefixedVisit('/', {
             onBeforeLoad: (win: Window) => {
@@ -100,32 +100,11 @@ describe('Dropbox api errors', () => {
         cy.discoveryShouldFinish();
 
         cy.getTestElement('@suite/menu/settings').click();
+
         cy.getTestElement('@settings/metadata-switch').click({ force: true });
 
         cy.passThroughInitMetadata('dropbox');
-
-        // this request is not retried
-        cy.task('metadataSetNextResponse', {
-            provider: 'dropbox',
-            status: 200,
-            body: {
-                name: {
-                    given_name: 'dog',
-                    surname: 'cat',
-                    familiar_name: 'kitty-dog',
-                    display_name: 'dog-cat',
-                    abbreviated_name: 'DC',
-                },
-                email: 'some@mail.com',
-                email_verified: true,
-                profile_photo_url: 'foo',
-                disabled: false,
-                country: 'CZ',
-                locale: 'en',
-                referral_link: 'foo',
-                is_paired: false,
-            },
-        });
+        cy.getTestElement('@settings/metadata/disconnect-provider-button');
 
         // this one is -> simulate rate limitted scenario
         cy.task('metadataSetNextResponse', {
@@ -139,6 +118,7 @@ describe('Dropbox api errors', () => {
         cy.getTestElement('@suite/menu/wallet-index').click();
 
         cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'").click({ force: true });
+
         cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'/edit-label-button").click({
             force: true,
         });
@@ -156,7 +136,7 @@ describe('Dropbox api errors', () => {
         // prepare some initial files
         cy.task('metadataSetFileContent', {
             provider: 'dropbox',
-            file: '/f7acc942eeb83921892a95085e409b3e6b5325db6400ae5d8de523a305291dca.mtdt',
+            file: '/b9b5e1fd2800d4dc68e2f4e775fd819f4da3fb9e1bcc2cacd7f04fa543eac8a0_v2.mtdt',
             content: {
                 version: '1.0.0',
                 accountLabel: 'already existing label',
@@ -164,7 +144,7 @@ describe('Dropbox api errors', () => {
                 // 1] user manually changed the files (very unlikely);
                 // 2] we screwed app data saving or reading
             },
-            aesKey: 'c785ef250807166bffc141960c525df97647fcc1bca57f6892ca3742ba86ed8d',
+            aesKey: '998daf71f3fbc486076f0ee8d5737a61b82bceacb0ec69100cbe4d45cd79676a',
         });
         cy.prefixedVisit('/', {
             onBeforeLoad: (win: Window) => {
@@ -180,6 +160,7 @@ describe('Dropbox api errors', () => {
         cy.getTestElement('@settings/metadata-switch').click({ force: true });
 
         cy.passThroughInitMetadata('dropbox');
+        cy.getTestElement('@settings/metadata/disconnect-provider-button');
 
         // just enter some label, this indicates that app did not crash
         cy.getTestElement('@suite/menu/wallet-index').click();

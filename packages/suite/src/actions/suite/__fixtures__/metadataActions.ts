@@ -55,9 +55,9 @@ const setDeviceMetadataKey: Fixture<(typeof metadataActions)['setDeviceMetadataK
                 payload: {
                     deviceState: 'device-state',
                     metadata: {
-                        1: {
+                        2: {
                             fileName:
-                                'c734ff5106c4910aa3444f3672cc2c82d8cb4595f0527be672d8b100ed82908f.mtdt',
+                                'c734ff5106c4910aa3444f3672cc2c82d8cb4595f0527be672d8b100ed82908f_v2.mtdt',
                             aesKey: 'bc37a9a8c6cfa6ab2f75b384df2745895d75f2c572a195ccff59ae9958aaf0e8',
                             key: '20c8bf0701213cdcf4c2f56fd0096c1772322d42fb9c4d0ddf6bb122d713d2f3',
                         },
@@ -68,10 +68,10 @@ const setDeviceMetadataKey: Fixture<(typeof metadataActions)['setDeviceMetadataK
                 type: deviceActions.updateSelectedDevice.type,
                 payload: {
                     metadata: {
-                        1: {
+                        2: {
                             aesKey: 'bc37a9a8c6cfa6ab2f75b384df2745895d75f2c572a195ccff59ae9958aaf0e8',
                             fileName:
-                                'c734ff5106c4910aa3444f3672cc2c82d8cb4595f0527be672d8b100ed82908f.mtdt',
+                                'c734ff5106c4910aa3444f3672cc2c82d8cb4595f0527be672d8b100ed82908f_v2.mtdt',
                             key: '20c8bf0701213cdcf4c2f56fd0096c1772322d42fb9c4d0ddf6bb122d713d2f3',
                         },
                     },
@@ -89,7 +89,7 @@ const setAccountMetadataKey = [
             device: {
                 state: 'a',
                 metadata: {
-                    1: {
+                    2: {
                         key: '20c8bf0701213cdcf4c2f56fd0096c1772322d42fb9c4d0ddf6bb122d713d2f3',
                     },
                 },
@@ -105,9 +105,9 @@ const setAccountMetadataKey = [
         ],
         result: {
             metadata: {
-                1: {
+                2: {
                     fileName:
-                        '828652b66f2e6f919fbb7fe4c9609d4891ed531c6fac4c28441e53ebe577ac85.mtdt',
+                        '828652b66f2e6f919fbb7fe4c9609d4891ed531c6fac4c28441e53ebe577ac85_v2.mtdt',
                     aesKey: '9bc3736f0b45cd681854a724b5bba67b9da1e50bc9983fd2dd56e53e74b75480',
                 },
             },
@@ -132,7 +132,7 @@ const addDeviceMetadata = [
             device: {
                 state: 'device-state',
                 metadata: {
-                    1: {
+                    2: {
                         aesKey: 'eb0f1f0238c7fa8018c6101f4e887b871ce07b99d01d5ea57089b82f93149557',
                         fileName:
                             '039fe833cba71d84b7bf4c99d44468ee48e311e741cbfcd6daf5263f584ef9f6',
@@ -256,7 +256,7 @@ const addAccountMetadata = [
             accounts: [
                 {
                     metadata: {
-                        1: {
+                        2: {
                             aesKey: '9bc3736f0b45cd681854a724b5bba67b9da1e50bc9983fd2dd56e53e74b75480',
                             fileName: 'filename-123',
                         },
@@ -427,9 +427,9 @@ const init = [
                 state: 'device-state',
                 connected: true,
                 metadata: {
-                    1: {
+                    '2': {
                         fileName:
-                            'c734ff5106c4910aa3444f3672cc2c82d8cb4595f0527be672d8b100ed82908f.mtdt',
+                            'c734ff5106c4910aa3444f3672cc2c82d8cb4595f0527be672d8b100ed82908f_v2.mtdt',
                         aesKey: 'bc37a9a8c6cfa6ab2f75b384df2745895d75f2c572a195ccff59ae9958aaf0e8',
                         key: '20c8bf0701213cdcf4c2f56fd0096c1772322d42fb9c4d0ddf6bb122d713d2f3',
                     },
@@ -485,9 +485,9 @@ const init = [
                 payload: {
                     deviceState: 'device-state',
                     metadata: {
-                        1: {
+                        '2': {
                             fileName:
-                                'c734ff5106c4910aa3444f3672cc2c82d8cb4595f0527be672d8b100ed82908f.mtdt',
+                                'c734ff5106c4910aa3444f3672cc2c82d8cb4595f0527be672d8b100ed82908f_v2.mtdt',
                             aesKey: 'bc37a9a8c6cfa6ab2f75b384df2745895d75f2c572a195ccff59ae9958aaf0e8',
                             key: '20c8bf0701213cdcf4c2f56fd0096c1772322d42fb9c4d0ddf6bb122d713d2f3',
                         },
@@ -500,9 +500,9 @@ const init = [
                     state: 'device-state',
                     connected: true,
                     metadata: {
-                        1: {
+                        '2': {
                             fileName:
-                                'c734ff5106c4910aa3444f3672cc2c82d8cb4595f0527be672d8b100ed82908f.mtdt',
+                                'c734ff5106c4910aa3444f3672cc2c82d8cb4595f0527be672d8b100ed82908f_v2.mtdt',
                             aesKey: 'bc37a9a8c6cfa6ab2f75b384df2745895d75f2c572a195ccff59ae9958aaf0e8',
                             key: '20c8bf0701213cdcf4c2f56fd0096c1772322d42fb9c4d0ddf6bb122d713d2f3',
                         },
@@ -531,6 +531,36 @@ const init = [
 
             { type: '@metadata/set-initiating', payload: false },
         ],
+    },
+];
+
+const getLabelableEntitiesDescriptors = [
+    {
+        description: 'device with state',
+        initialState: {
+            device: { state: 'device-state' },
+        },
+        result: ['device-state'],
+    },
+    {
+        description: 'device without state',
+        initialState: {
+            device: { state: undefined },
+        },
+        result: [],
+    },
+    {
+        description: 'accounts',
+        initialState: {
+            device: { state: 'meow' },
+            accounts: [
+                {
+                    deviceState: 'meow',
+                    key: 'account-key',
+                },
+            ],
+        },
+        result: ['account-key', 'meow'],
     },
 ];
 
@@ -579,7 +609,7 @@ const disposeMetadata = [
         initialState: {
             device: {
                 state: 'device-state',
-                metadata: { 1: { fileName: 'foo', aesKey: 'bar' } },
+                metadata: { 2: { fileName: 'foo', aesKey: 'bar' } },
             },
             metadata: {
                 providers: [
@@ -604,7 +634,7 @@ const disposeMetadata = [
                     deviceState: 'device-state',
                     key: 'account-key',
                     metadata: {
-                        1: {
+                        2: {
                             fileName: 'foo',
                             aesKey: 'bar',
                         },
@@ -630,5 +660,6 @@ export {
     connectProvider,
     addMetadata,
     init,
+    getLabelableEntitiesDescriptors,
     disposeMetadata,
 };

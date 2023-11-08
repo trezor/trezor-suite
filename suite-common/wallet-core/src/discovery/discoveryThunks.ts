@@ -22,7 +22,8 @@ import {
 import { selectDiscoveryByDeviceState, selectDiscovery } from './discoveryReducer';
 import { selectAccounts } from '../accounts/accountsReducer';
 import { accountsActions } from '../accounts/accountsActions';
-import { selectDevice, selectDevices, selectDiscoveryForDevice } from '../device/deviceReducer';
+// todo: shouldn't this be destructured from 'extra'?
+import { selectDevices, selectDiscoveryForDevice } from '../device/deviceReducer';
 
 type ProgressEvent = BundleProgress<AccountInfo | null>['payload'];
 
@@ -318,8 +319,7 @@ export const startDiscoveryThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/start`,
     async (_, { dispatch, getState, extra }): Promise<void> => {
         const {
-            selectors: { selectMetadata },
-            thunks: { initMetadata, fetchAndSaveMetadata },
+            selectors: { selectMetadata, selectDevice },
             actions: { requestAuthConfirm },
         } = extra;
         const device = selectDevice(getState());
@@ -357,19 +357,13 @@ export const startDiscoveryThunk = createThunk(
         }
 
         const { deviceState, authConfirm } = discovery;
-        const metadataEnabled = metadata.enabled && !device.metadata[1]; // todo: can't import constant
+        const metadataEnabled = metadata.enabled && device.metadata[2]; // todo: can't import constant
 
         // start process
         if (
             discovery.status === DiscoveryStatus.IDLE ||
             discovery.status > DiscoveryStatus.STOPPING
         ) {
-            // metadata are enabled in settings but metadata master key does not exist for this device
-            // try to generate device metadata master key if passphrase is not used
-            if (!authConfirm && metadataEnabled) {
-                await dispatch(initMetadata(false));
-            }
-
             dispatch({
                 type: startDiscovery.type,
                 payload: {
@@ -424,12 +418,6 @@ export const startDiscoveryThunk = createThunk(
                 if (authConfirm) {
                     dispatch(requestAuthConfirm());
                 }
-            }
-
-            // if previous discovery status was running (typically after application start or when user added a new account)
-            // trigger fetch metadata; necessary to load account labels
-            if (discovery.status === DiscoveryStatus.RUNNING) {
-                dispatch(fetchAndSaveMetadata(deviceState));
             }
 
             dispatch(
@@ -495,8 +483,6 @@ export const startDiscoveryThunk = createThunk(
                         authConfirm: false,
                     }),
                 );
-                // try to generate device metadata master key
-                await dispatch(initMetadata(false));
             }
             if (currentDiscovery.status === DiscoveryStatus.RUNNING) {
                 await dispatch(startDiscoveryThunk()); // try next index

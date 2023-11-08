@@ -83,8 +83,6 @@ describe('Metadata - wallet labeling', () => {
             cy.getConfirmActionOnDeviceModal();
             cy.task('pressYes');
             cy.getTestElement('@menu/switch-device').click();
-            cy.getConfirmActionOnDeviceModal();
-            cy.task('pressYes');
             cy.getTestElement(`@metadata/walletLabel/${standardWalletState}`).should(
                 'contain',
                 'wallet for drugs',
@@ -146,8 +144,6 @@ describe('Metadata - wallet labeling', () => {
             cy.getConfirmActionOnDeviceModal();
             cy.task('pressYes');
             cy.getTestElement('@menu/switch-device').click();
-            cy.getConfirmActionOnDeviceModal();
-            cy.task('pressNo'); // labeling was not enabled at this moment
             // select previous wallet
             cy.getTestElement('@switch-device/wallet-on-index/1').click();
             cy.getTestElement('@menu/switch-device').click();
@@ -155,8 +151,6 @@ describe('Metadata - wallet labeling', () => {
             cy.getTestElement(
                 `@metadata/walletLabel/${secondHiddenWalletState}/add-label-button`,
             ).click();
-            cy.getConfirmActionOnDeviceModal();
-            cy.task('pressYes'); // only now labeling was enabled
             cy.getTestElement('@metadata/input').type(
                 'still works, metadata enabled for currently not selected device{enter}',
             );
