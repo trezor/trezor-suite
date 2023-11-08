@@ -62,7 +62,7 @@ const discoverAccountsByDescriptorThunk = createThunk(
     ) => {
         let isFinalRound = false;
 
-        if (!descriptorsBundle) {
+        if (A.isEmpty(descriptorsBundle)) {
             isFinalRound = true;
         }
 
@@ -161,7 +161,7 @@ const discoverNetworkBatchThunk = createThunk(
         });
 
         // All accounts of the batch were already discovered, skip it.
-        if (!chunkBundle) {
+        if (A.isEmpty(chunkBundle)) {
             dispatch(
                 discoverNetworkBatchThunk({
                     deviceState,
