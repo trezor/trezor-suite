@@ -8,9 +8,8 @@ import { Box } from '../Box';
 import { SurfaceElevation } from '../types';
 
 type InputProps = {
-    value: string;
     onChange: (value: string) => void;
-    placeholder: string;
+    placeholder?: string;
     isDisabled?: boolean;
     maxLength?: number;
     elevation?: SurfaceElevation;
@@ -59,7 +58,6 @@ const inputWrapperStyle = prepareNativeStyle<InputStyleProps>(
 );
 
 export const SearchInput = ({
-    value,
     onChange,
     placeholder,
     maxLength,
@@ -68,14 +66,21 @@ export const SearchInput = ({
 }: InputProps) => {
     const { applyStyle, utils } = useNativeStyles();
     const [isFocused, setIsFocused] = useState<boolean>(false);
+    const [isClearButtonVisible, setIsClearButtonVisible] = useState<boolean>(false);
     const searchInputRef = useRef<TextInput | null>(null);
-    const isClearButtonVisible = !!value.length;
     const handleClear = () => {
+        setIsClearButtonVisible(false);
+        searchInputRef.current?.clear();
         onChange('');
     };
 
     const handleInputFocus = () => {
         searchInputRef?.current?.focus();
+    };
+
+    const handleOnChangeText = (value: string) => {
+        setIsClearButtonVisible(!!value.length);
+        onChange(value);
     };
 
     return (
@@ -84,8 +89,7 @@ export const SearchInput = ({
                 <Icon name="search" color="iconSubdued" size="large" />
                 <TextInput
                     ref={searchInputRef}
-                    value={value}
-                    onChangeText={onChange}
+                    onChangeText={handleOnChangeText}
                     placeholder={placeholder}
                     placeholderTextColor={utils.colors.textSubdued}
                     editable={!isDisabled}

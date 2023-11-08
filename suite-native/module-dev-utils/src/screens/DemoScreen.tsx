@@ -72,7 +72,6 @@ export const DemoScreen = () => {
     const [isCheckBox4Checked, setIsCheckBox4Checked] = useState(true);
     const [isSwitchActive, setIsSwitchActive] = useState<boolean>(true);
     const [isSwitch2Active, setIsSwitch2Active] = useState<boolean>(false);
-    const [inputText, setInputText] = useState<string>('');
     const demoInputRef = useRef<TextInput | null>(null);
 
     const buttonColorSchemes = [
@@ -205,11 +204,7 @@ export const DemoScreen = () => {
                 <Divider />
                 <Divider />
                 <Box>
-                    <SearchInput
-                        value={inputText}
-                        onChange={setInputText}
-                        placeholder="Type here.."
-                    />
+                    <SearchInput onChange={() => {}} placeholder="Type here.." />
                     <Box marginVertical="medium">
                         <VStack style={applyStyle(inputStackStyle)} spacing="small">
                             <InputWrapper label="Recipient">
