@@ -19,8 +19,7 @@
         "test-unit:watch": "jest -o --watch"
     },
     "dependencies": {
-        "@ethereumjs/common": "^3.1.2",
-        "@ethereumjs/tx": "^4.1.2",
+        "@ethereumjs/util": "^9.0.1",
         "@formatjs/intl": "2.9.6",
         "@hookform/resolvers": "3.1.0",
         "@reduxjs/toolkit": "1.9.5",
@@ -71,7 +70,6 @@
         "bs58check": "^3.0.1",
         "date-fns": "^2.30.0",
         "dropbox": "^10.34.0",
-        "ethereumjs-util": "^7.1.5",
         "file-saver": "^2.0.5",
         "framer-motion": "^10.16.4",
         "history": "^4.10.1",

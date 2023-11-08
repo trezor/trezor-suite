@@ -1,4 +1,4 @@
-import * as EthereumjsUtil from 'ethereumjs-util';
+import { isValidChecksumAddress, isValidAddress } from '@ethereumjs/util';
 import BigNumber from 'bignumber.js';
 
 import { hasUppercaseLetter } from '@trezor/utils';
@@ -29,10 +29,10 @@ export const validateAddress = (address: string): string | null => {
     if (address.length < 1) {
         return 'Address is not set';
     }
-    if (!EthereumjsUtil.isValidAddress(address)) {
+    if (!isValidAddress(address)) {
         return 'Address is not valid';
     }
-    if (hasUppercaseLetter(address) && !EthereumjsUtil.isValidChecksumAddress(address)) {
+    if (hasUppercaseLetter(address) && !isValidChecksumAddress(address)) {
         return 'Address is not a valid checksum';
     }
     return null;
