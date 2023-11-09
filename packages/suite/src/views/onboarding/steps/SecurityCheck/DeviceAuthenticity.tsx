@@ -39,6 +39,8 @@ export const DeviceAuthenticity = () => {
     // Tracking request cancellation because it is the only error that does not trigger the fail screen.
     const [isAborted, setIsAborted] = useState(false);
 
+    if (!device) return null;
+
     const isWaitingForConfirmation =
         !!device?.buttonRequests.some(request => request.code === 'ButtonRequest_Other') &&
         !isSubmitted;

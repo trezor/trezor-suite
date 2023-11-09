@@ -6,6 +6,7 @@ import TrezorConnect, { UI } from '@trezor/connect';
 import { SUITE } from 'src/actions/suite/constants';
 import { AppState, Action, Dispatch } from 'src/types/suite';
 import { ONBOARDING } from 'src/actions/onboarding/constants';
+import { checkDeviceAuthenticityThunk } from '@suite-common/device-authenticity';
 
 const buttonRequest =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -92,7 +93,8 @@ const buttonRequest =
                 }
                 break;
             case ONBOARDING.SET_STEP_ACTIVE:
-                // clear all device's button requests in each step of the onboarding
+            case checkDeviceAuthenticityThunk.fulfilled.type:
+                // clear all device's button requests in each step of the onboarding and after device authenticity check
                 api.dispatch(
                     deviceActions.removeButtonRequests({
                         device: selectDevice(api.getState()) ?? null,
