@@ -18,24 +18,14 @@ export const AuthenticateDeviceModal = () => {
     const handleClick = async () => {
         setIsLoading(true);
 
-        try {
-            const result = await dispatch(
-                checkDeviceAuthenticityThunk({
-                    allowDebugKeys: isDebugModeActive,
-                }),
-            ).unwrap();
+        const result = await dispatch(
+            checkDeviceAuthenticityThunk({ allowDebugKeys: isDebugModeActive }),
+        ).unwrap();
 
-            setIsLoading(false);
+        setIsLoading(false);
 
-            if (
-                typeof result !== 'string' &&
-                result.valid === false &&
-                (result.error !== 'CA_PUBKEY_NOT_FOUND' || !result.configExpired)
-            ) {
-                dispatch(openModal({ type: 'authenticate-device-fail' }));
-            }
-        } catch (error) {
-            console.warn(error);
+        if (result.resolved && !result.valid) {
+            dispatch(openModal({ type: 'authenticate-device-fail' }));
         }
     };
 
