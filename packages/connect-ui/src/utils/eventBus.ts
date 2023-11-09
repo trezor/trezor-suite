@@ -15,9 +15,8 @@ export type ConnectUIEventProps =
     // connect-popup events
     | { type: 'phishing-domain' }
     | { type: 'connect-ui-rendered' }
-    | { type: 'waiting-for-iframe-handshake' }
-    | { type: 'waiting-for-iframe-init' }
-    | { type: 'state-update'; payload: State };
+    | { type: 'state-update'; payload: State }
+    | { type: 'loading'; message?: string };
 
 const reactChannel = 'react';
 

@@ -79,11 +79,8 @@ export const ConnectUI = ({ postMessage, clearLegacyView }: ConnectUIProps) => {
         } else {
             // messages[0] could be null. in that case, legacy view is rendered
             switch (messages[0]?.type) {
-                case 'waiting-for-iframe-init':
-                    component = <Loader message="waiting for host to load" />;
-                    break;
-                case 'waiting-for-iframe-handshake':
-                    component = <Loader message="waiting for handshake from host" />;
+                case 'loading':
+                    component = <Loader message={messages[0]?.message} />;
                     break;
                 case UI.TRANSPORT:
                     component = <Transport />;
