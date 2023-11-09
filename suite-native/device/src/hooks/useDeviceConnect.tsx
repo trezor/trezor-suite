@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -18,9 +18,36 @@ import {
     selectIsDeviceConnectedAndAuthorized,
     selectIsSelectedDeviceImported,
     selectIsUnacquiredDevice,
+    selectDeviceFirmwareVersion,
+    selectDeviceModel,
+    selectDevice,
+    deviceActions,
 } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import { useTranslate } from '@suite-native/intl';
+import { Translation, useTranslate } from '@suite-native/intl';
+import { Box, Text, VStack } from '@suite-native/atoms';
+import { selectIsOnboardingFinished } from '@suite-native/module-settings';
+
+import { isFirmwareVersionSupported } from '../utils';
+
+const InstallFirmwareAppendix = () => (
+    <VStack>
+        <Text variant="callout">
+            <Translation id="moduleDevice.installFirmware.title" />
+        </Text>
+        <Box>
+            <Text color="textSubdued">
+                <Translation id="moduleDevice.installFirmware.lines.1" />
+            </Text>
+            <Text color="textSubdued">
+                <Translation id="moduleDevice.installFirmware.lines.2" />
+            </Text>
+            <Text color="textSubdued">
+                <Translation id="moduleDevice.installFirmware.lines.3" />
+            </Text>
+        </Box>
+    </VStack>
+);
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     HomeStackParamList,
@@ -34,6 +61,10 @@ export const useDeviceConnect = () => {
     const isUnacquiredDevice = useSelector(selectIsUnacquiredDevice);
     const isConnectedDeviceUninitialized = useSelector(selectIsConnectedDeviceUninitialized);
     const isSelectedDeviceImported = useSelector(selectIsSelectedDeviceImported);
+    const firmwareVersion = useSelector(selectDeviceFirmwareVersion);
+    const deviceModel = useSelector(selectDeviceModel);
+    const currentDevice = useSelector(selectDevice);
+    const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
 
     const dispatch = useDispatch();
 
@@ -42,6 +73,12 @@ export const useDeviceConnect = () => {
     const { hideAlert, showAlert } = useAlert();
 
     const { translate } = useTranslate();
+
+    const handleDisconnect = useCallback(() => {
+        if (currentDevice) {
+            dispatch(deviceActions.deviceDisconnect(currentDevice));
+        }
+    }, [currentDevice, dispatch]);
 
     useEffect(() => {
         if (hasDeviceRequestedPin) {
@@ -54,7 +91,7 @@ export const useDeviceConnect = () => {
     // If device is unacquired (restarted app, another app fetched device session, ...),
     // we cannot work with device anymore. Shouldn't happen on mobile app but just in case.
     useEffect(() => {
-        if (isUnacquiredDevice) {
+        if (isOnboardingFinished && isUnacquiredDevice) {
             showAlert({
                 title: translate('moduleDevice.unacquiredDeviceModal.title'),
                 description: translate('moduleDevice.unacquiredDeviceModal.description'),
@@ -66,25 +103,64 @@ export const useDeviceConnect = () => {
         } else {
             hideAlert();
         }
-    }, [dispatch, hideAlert, isUnacquiredDevice, showAlert, translate]);
+    }, [dispatch, hideAlert, isOnboardingFinished, isUnacquiredDevice, showAlert, translate]);
 
     useEffect(() => {
-        if (isConnectedDeviceUninitialized) {
+        if (isOnboardingFinished && !isFirmwareVersionSupported(firmwareVersion, deviceModel)) {
+            showAlert({
+                title: translate('moduleDevice.unsupportedFirmware.title'),
+                description: translate('moduleDevice.unsupportedFirmware.description'),
+                icon: 'warningCircle',
+                pictogramVariant: 'red',
+                primaryButtonTitle: translate('generic.buttons.eject'),
+                primaryButtonVariant: 'tertiaryElevation1',
+                appendix: <InstallFirmwareAppendix />,
+                onPressPrimaryButton: handleDisconnect,
+            });
+        }
+    }, [
+        dispatch,
+        firmwareVersion,
+        deviceModel,
+        showAlert,
+        translate,
+        handleDisconnect,
+        isOnboardingFinished,
+    ]);
+
+    useEffect(() => {
+        if (isOnboardingFinished && isConnectedDeviceUninitialized) {
             showAlert({
                 title: translate('moduleDevice.noSeedModal.title'),
                 description: translate('moduleDevice.noSeedModal.description'),
                 icon: 'warningCircle',
                 pictogramVariant: 'red',
-                primaryButtonTitle: translate('moduleDevice.noSeedModal.button'),
+                primaryButtonVariant: 'tertiaryElevation1',
+                primaryButtonTitle: translate('generic.buttons.eject'),
+                appendix: <InstallFirmwareAppendix />,
+                onPressPrimaryButton: () => handleDisconnect,
             });
         }
-    }, [isConnectedDeviceUninitialized, showAlert, translate]);
+    }, [
+        isConnectedDeviceUninitialized,
+        showAlert,
+        translate,
+        dispatch,
+        handleDisconnect,
+        isOnboardingFinished,
+    ]);
 
     useEffect(() => {
-        if (isDeviceConnectedAndAuthorized && !isSelectedDeviceImported) {
+        if (isOnboardingFinished && isDeviceConnectedAndAuthorized && !isSelectedDeviceImported) {
             navigation.navigate(RootStackRoutes.ConnectDevice, {
                 screen: ConnectDeviceStackRoutes.ConnectingDevice,
             });
         }
-    }, [hideAlert, isDeviceConnectedAndAuthorized, isSelectedDeviceImported, navigation]);
+    }, [
+        hideAlert,
+        isDeviceConnectedAndAuthorized,
+        isSelectedDeviceImported,
+        navigation,
+        isOnboardingFinished,
+    ]);
 };

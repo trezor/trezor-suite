@@ -25,6 +25,7 @@
         },
         { "path": "../accounts" },
         { "path": "../config" },
+        { "path": "../device" },
         { "path": "../../packages/connect" }
     ]
 }
