@@ -77,7 +77,7 @@ export const getIframeElement = () => {
 };
 
 // initialize message channel with iframe element
-export const initMessageChannel = async (
+export const initMessageChannelWithIframe = async (
     payload: PopupInit['payload'],
     handler: (e: MessageEvent) => void,
 ) => {
@@ -225,10 +225,10 @@ export const renderConnectUI = () => {
     clearLegacyView();
     root.render(Component);
 
-    return new Promise(resolve => {
+    return new Promise<void>(resolve => {
         reactEventBus.on(event => {
             if (event?.type === 'connect-ui-rendered') {
-                resolve(undefined);
+                resolve();
             }
         });
     });
