@@ -657,26 +657,6 @@ export const selectSupportedNetworks = (state: DeviceRootState) => {
 export const selectDeviceById = (state: DeviceRootState, deviceId: TrezorDevice['id']) =>
     state.device.devices.find(device => device.id === deviceId);
 
-export const selectDeviceAuthenticity = (state: DeviceRootState, deviceId?: TrezorDevice['id']) =>
-    deviceId ? state.device.deviceAuthenticity?.[deviceId] : undefined;
-
-// Return true if device passed the authenticity check successfully even if CA pubKey was not found but config is expired.
-export const selectIsDeviceAuthenticityFulfilled = (
-    state: DeviceRootState,
-    deviceId?: TrezorDevice['id'],
-) => {
-    const deviceAuthenticity = selectDeviceAuthenticity(state, deviceId);
-
-    if (!deviceAuthenticity) {
-        return undefined;
-    }
-
-    return (
-        deviceAuthenticity.valid ||
-        (deviceAuthenticity.error === 'CA_PUBKEY_NOT_FOUND' && deviceAuthenticity.configExpired) // CA_PUBKEY_NOT_FOUND with configExpired is temporary allowed and just logged to Sentry
-    );
-};
-
 export const selectIsSelectedDeviceImported = (state: DeviceRootState) => {
     const device = selectDevice(state);
     return device?.id === PORTFOLIO_TRACKER_DEVICE_ID;

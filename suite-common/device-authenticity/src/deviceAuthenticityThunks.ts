@@ -1,18 +1,18 @@
-import TrezorConnect, { AuthenticateDeviceResult } from '@trezor/connect';
+import TrezorConnect from '@trezor/connect';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
 import { ACTION_PREFIX, deviceAuthenticityActions } from './deviceAuthenticityActions';
 
 export const checkDeviceAuthenticityThunk = createThunk<
-    { allowDebugKeys: boolean; skipSuccessToast?: boolean },
-    string | AuthenticateDeviceResult
+    {
+        allowDebugKeys: boolean;
+        skipSuccessToast?: boolean;
+    },
+    { resolved: boolean; error?: string; valid?: boolean }
 >(
     `${ACTION_PREFIX}/checkDeviceAuthenticity`,
-    async (
-        { allowDebugKeys, skipSuccessToast },
-        { dispatch, getState, extra, rejectWithValue, fulfillWithValue },
-    ) => {
+    async ({ allowDebugKeys, skipSuccessToast }, { dispatch, getState, extra }) => {
         const {
             selectors: { selectDevice },
         } = extra;
@@ -35,12 +35,19 @@ export const checkDeviceAuthenticityThunk = createThunk<
                     error: `Unable to validate device: ${result.payload.error}`,
                 }),
             );
-            return rejectWithValue(result.payload.error);
+            if (!device.features?.bootloader_locked) {
+                return {
+                    resolved: true,
+                    valid: false,
+                    error: result.payload.error,
+                };
+            }
+            return { resolved: false };
         }
 
         dispatch(deviceAuthenticityActions.result({ device, result: result.payload }));
 
-        // CA_PUBKEY_NOT_FOUND with configExpired is temporary allowed and just logged to Sentry
+        // CA_PUBKEY_NOT_FOUND with configExpired is temporarily allowed and just logged to Sentry
         const caPubKeyNotFoundInExpiredConfig =
             result.payload.error === 'CA_PUBKEY_NOT_FOUND' && result.payload.configExpired;
 
@@ -56,6 +63,10 @@ export const checkDeviceAuthenticityThunk = createThunk<
             dispatch(notificationsActions.addToast({ type: 'device-authenticity-success' }));
         }
 
-        return fulfillWithValue(result.payload);
+        return {
+            resolved: true,
+            valid: caPubKeyNotFoundInExpiredConfig ? true : result.payload.valid,
+            error: result.payload.error,
+        };
     },
 );
