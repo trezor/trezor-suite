@@ -171,7 +171,7 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
 
     const pageNumber = payload.page ? payload.page - 1 : 0;
     // for the first page of txs, payload.page is undefined, for the second page is 2
-    const pageSize = payload.pageSize || 2;
+    const pageSize = payload.pageSize || 25;
 
     const pageStartIndex = pageNumber * pageSize;
     const pageEndIndex = Math.min(pageStartIndex + pageSize, allTxIds.length);
