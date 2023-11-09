@@ -1,17 +1,14 @@
 import { useState } from 'react';
-// useDispatch used directly from react-redux instead of src/hooks/suite because we need unwrap() method
-import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 
 import { checkDeviceAuthenticityThunk } from '@suite-common/device-authenticity';
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectDevice, selectDeviceAuthenticity } from '@suite-common/wallet-core';
 import { variables } from '@trezor/components';
 
-import { reportToSentry } from 'src/utils/suite/sentry';
 import { OnboardingButtonCta, OnboardingStepBox } from 'src/components/onboarding';
 import { CollapsibleOnboardingCard } from 'src/components/onboarding/CollapsibleOnboardingCard';
 import { DeviceAuthenticationExplainer, Translation } from 'src/components/suite';
-import { useOnboarding, useSelector } from 'src/hooks/suite';
+import { useDispatch, useOnboarding, useSelector } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 import { SecurityCheckFail } from './SecurityCheckFail';
 
@@ -27,28 +24,29 @@ const StyledExplainer = styled(DeviceAuthenticationExplainer)`
 
 export const DeviceAuthenticity = () => {
     const device = useSelector(selectDevice);
+    const deviceAuthenticity = useSelector(selectDeviceAuthenticity);
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
     const { goToNextStep, goToSuite, isActive: isOnboarding } = useOnboarding();
     const dispatch = useDispatch();
-    const [result, setResult] = useState<{ resolved: boolean; valid?: boolean }>({
-        resolved: false,
-    });
+    const [isLoading, setIsLoading] = useState(false);
+    const [isSubmitted, setIsSubmitted] = useState(false);
 
     if (!device) return null;
 
-    const isWaitingForConfirmation =
-        !result.resolved &&
-        device.buttonRequests.some(request => request.code === 'ButtonRequest_Other');
-    const isCheckFailed = result.resolved && !result.valid;
+    const isWaitingForConfirmation = device.buttonRequests.some(
+        request => request.code === 'ButtonRequest_Other',
+    );
+    const isCheckFailed = isSubmitted && deviceAuthenticity?.valid === false;
+    const isCheckSuccessful = isSubmitted && deviceAuthenticity?.valid;
 
     const getHeadingText = () => {
-        if (result.valid) {
+        if (isCheckSuccessful) {
             return 'TR_CONGRATS';
         }
         return isWaitingForConfirmation ? 'TR_CHECKING_YOUR_DEVICE' : 'TR_LETS_CHECK_YOUR_DEVICE';
     };
     const getDescription = () => {
-        if (result.valid) {
+        if (isCheckSuccessful) {
             return (
                 <Translation
                     id="TR_DEVICE_AUTHENTICITY_SUCCESS_DESCRIPTION"
@@ -66,29 +64,28 @@ export const DeviceAuthenticity = () => {
         }
 
         const authenticateDevice = async () => {
-            const result = await dispatch(
+            setIsLoading(true);
+            await dispatch(
                 checkDeviceAuthenticityThunk({
                     allowDebugKeys: isDebugModeActive,
                     skipSuccessToast: true,
                 }),
-            ).unwrap();
-            setResult(result);
-
-            // Report to sentry if bootloader is unlocked, other errors are reported by sentryMiddleware.
-            if (result?.error?.includes('bootloader is unlocked')) {
-                dispatch(reportToSentry(new Error(`Device authenticity error: ${result.error}`)));
-            }
+            );
+            setIsLoading(false);
+            setIsSubmitted(true);
         };
         const goToNext = () => (isOnboarding ? goToSuite() : goToNextStep());
-        const handleClick = result.resolved ? goToNext : authenticateDevice;
+        const handleClick = isCheckSuccessful ? goToNext : authenticateDevice;
 
-        const buttonText = result.resolved ? 'TR_CONTINUE' : 'TR_START_CHECK';
+        const buttonText = isCheckSuccessful ? 'TR_CONTINUE' : 'TR_START_CHECK';
 
         return (
             <OnboardingButtonCta
                 onClick={handleClick}
+                isDisabled={isLoading}
+                isLoading={isLoading}
                 data-test={
-                    result.resolved
+                    isCheckSuccessful
                         ? '@authenticity-check/continue-button'
                         : `@authenticity-check/start-button`
                 }
@@ -116,7 +113,7 @@ export const DeviceAuthenticity = () => {
             disableConfirmWrapper={!isWaitingForConfirmation}
             isActionAbortable
         >
-            {!result.resolved && <StyledExplainer horizontal />}
+            {!isCheckSuccessful && <StyledExplainer horizontal />}
         </OnboardingStepBox>
     );
 };

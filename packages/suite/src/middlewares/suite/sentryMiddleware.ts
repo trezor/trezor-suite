@@ -130,11 +130,11 @@ const sentryMiddleware =
                 break;
             }
             case deviceAuthenticityActions.result.type: {
-                if (action.payload.result.valid) return;
+                if (!action.payload.result?.error) return;
 
                 withSentryScope(scope => {
                     scope.setLevel('error');
-                    scope.setTag('deviceAuthenticityError', action.payload.result.error);
+                    scope.setTag('deviceAuthenticityError', action.payload.result?.error);
                     captureSentryMessage(
                         `Device authenticity invalid!
                         ${JSON.stringify(action.payload.result, null, 2)}`,
