@@ -3,6 +3,7 @@ export const select = [
     { value: 'etc', label: 'Ethereum Classic', affectedValue: `m/44'/60'/0'/0` },
     { value: 'tSEP', label: 'Ethereum Testnet Sepolia', affectedValue: `m/44'/1'/0'/0` },
     { value: 'tGOR', label: 'Ethereum Testnet Goerli', affectedValue: `m/44'/1'/0'/0` },
+    { value: 'tHOL', label: 'Ethereum Testnet Holesky', affectedValue: `m/44'/1'/0'/0` },
     { value: 'ubq', label: 'Ubiq', affectedValue: `m/44'/108'/0'/0` },
     { value: 'exp', label: 'Expanse', affectedValue: `m/44'/40'/0'/0` },
     { value: 'GO', label: 'GoChain', affectedValue: `m/44'/6060'/0'/0` },

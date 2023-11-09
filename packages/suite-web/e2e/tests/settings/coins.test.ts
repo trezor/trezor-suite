@@ -37,6 +37,7 @@ describe('Coin Settings', () => {
             'test',
             'tsep',
             'tgor',
+            'thol',
             'txrp',
             'tada',
         ];
