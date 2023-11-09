@@ -1,11 +1,9 @@
-import { AbstractTransport } from './abstract';
+import { AbstractTransportParams } from './abstract';
 import { AbstractUsbTransport } from './abstractUsb';
 import { SessionsClient } from '../sessions/client';
 import { UsbInterface } from '../interfaces/usb';
 
 import { initBackgroundInBrowser } from '../sessions/background-browser';
-
-type UsbTransportConstructorParams = ConstructorParameters<typeof AbstractTransport>[0];
 
 /**
  * WebUsbTransport
@@ -15,7 +13,8 @@ type UsbTransportConstructorParams = ConstructorParameters<typeof AbstractTransp
 export class WebUsbTransport extends AbstractUsbTransport {
     public name = 'WebUsbTransport' as const;
 
-    constructor({ messages, logger }: UsbTransportConstructorParams) {
+    constructor(params?: AbstractTransportParams) {
+        const { messages, logger } = params || {};
         const { requestFn, registerBackgroundCallbacks } = initBackgroundInBrowser();
 
         super({

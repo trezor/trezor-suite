@@ -4,7 +4,7 @@ import { bridgeApiCall } from '../utils/bridgeApiCall';
 import * as bridgeApiResult from '../utils/bridgeApiResult';
 import { buildOne } from '../utils/send';
 import { receiveOne } from '../utils/receive';
-import { AbstractTransport, AcquireInput, ReleaseInput } from './abstract';
+import { AbstractTransport, AbstractTransportParams, AcquireInput, ReleaseInput } from './abstract';
 
 import * as ERRORS from '../errors';
 import { AnyError, AsyncResultWithTypedError, Descriptor } from '../types';
@@ -44,7 +44,7 @@ type IncompleteRequestOptions = {
     signal?: AbortController['signal'];
 };
 
-type BridgeConstructorParameters = ConstructorParameters<typeof AbstractTransport>[0] & {
+type BridgeConstructorParameters = AbstractTransportParams & {
     // bridge url
     url?: string;
     latestVersion?: string;
@@ -68,7 +68,8 @@ export class BridgeTransport extends AbstractTransport {
 
     public name = 'BridgeTransport' as const;
 
-    constructor({ url = DEFAULT_URL, latestVersion, ...args }: BridgeConstructorParameters) {
+    constructor(params?: BridgeConstructorParameters) {
+        const { url = DEFAULT_URL, latestVersion, ...args } = params || {};
         super(args);
         this.url = url;
         this.latestVersion = latestVersion;
