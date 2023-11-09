@@ -36,16 +36,6 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
             );
         }
 
-        // Update discovery for pass-phrased wallets.
-        if (deviceActions.receiveAuthConfirm.match(action) && action.payload.device.state) {
-            dispatch(
-                discoveryActions.updateDiscovery({
-                    deviceState: action.payload.device.state,
-                    authConfirm: false,
-                }),
-            );
-        }
-
         return next(action);
     },
 );

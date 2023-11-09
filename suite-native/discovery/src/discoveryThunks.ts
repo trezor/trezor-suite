@@ -73,6 +73,8 @@ const discoverAccountsByDescriptorThunk = createThunk(
             const { success, payload: accountInfo } = await TrezorConnect.getAccountInfo({
                 coin: bundleItem.coin,
                 descriptor: bundleItem.descriptor,
+                useEmptyPassphrase: true,
+                details: 'tokenBalances',
             });
 
             if (success) {
@@ -216,13 +218,17 @@ export const createDescriptorPreloadedDiscoveryThunk = createThunk(
         const networks = areTestnetsEnabled ? supportedNetworkSymbols : supportedMainnetSymbols;
 
         const availableCardanoDerivations = await dispatch(
-            getAvailableCardanoDerivationsThunk({ deviceState, device }),
+            getAvailableCardanoDerivationsThunk({
+                deviceState,
+                device,
+                isUseEmptyPassphraseForced: true,
+            }),
         ).unwrap();
 
         dispatch(
             createDiscovery({
                 deviceState,
-                authConfirm: !device.useEmptyPassphrase,
+                authConfirm: false,
                 index: 0,
                 status: DiscoveryStatus.IDLE,
                 total: networks.length,
