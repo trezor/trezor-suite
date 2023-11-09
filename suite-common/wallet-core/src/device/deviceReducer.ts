@@ -2,14 +2,17 @@ import { memoize } from 'proxy-memoize';
 
 import * as deviceUtils from '@suite-common/suite-utils';
 import { getStatus } from '@suite-common/suite-utils';
-import { Device, Features, AuthenticateDeviceResult } from '@trezor/connect';
+import { Device, Features } from '@trezor/connect';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import { getFirmwareVersion, getFirmwareVersionArray } from '@trezor/device-utils';
 import { Network, networks } from '@suite-common/wallet-config';
 import { versionUtils } from '@trezor/utils';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { TrezorDevice, AcquiredDevice, ButtonRequest } from '@suite-common/suite-types';
-import { deviceAuthenticityActions } from '@suite-common/device-authenticity';
+import {
+    deviceAuthenticityActions,
+    StoredAuthenticateDeviceResult,
+} from '@suite-common/device-authenticity';
 
 import { deviceActions } from './deviceActions';
 import { DiscoveryRootState, selectDiscoveryByDeviceState } from '../discovery/discoveryReducer';
@@ -18,7 +21,7 @@ import { PORTFOLIO_TRACKER_DEVICE_ID } from './deviceConstants';
 export type State = {
     devices: TrezorDevice[];
     selectedDevice?: TrezorDevice;
-    deviceAuthenticity?: Record<string, AuthenticateDeviceResult>;
+    deviceAuthenticity?: Record<string, StoredAuthenticateDeviceResult>;
 };
 
 const initialState: State = { devices: [], selectedDevice: undefined };
@@ -443,7 +446,7 @@ const addButtonRequest = (
 export const setDeviceAuthenticity = (
     draft: State,
     device: TrezorDevice,
-    result: AuthenticateDeviceResult,
+    result?: StoredAuthenticateDeviceResult,
 ) => {
     if (!device.id) return;
     draft.deviceAuthenticity = {
@@ -656,6 +659,11 @@ export const selectSupportedNetworks = (state: DeviceRootState) => {
 
 export const selectDeviceById = (state: DeviceRootState, deviceId: TrezorDevice['id']) =>
     state.device.devices.find(device => device.id === deviceId);
+
+export const selectDeviceAuthenticity = (state: DeviceRootState) => {
+    const device = selectDevice(state);
+    return device?.id ? state.device.deviceAuthenticity?.[device.id] : undefined;
+};
 
 export const selectIsSelectedDeviceImported = (state: DeviceRootState) => {
     const device = selectDevice(state);
