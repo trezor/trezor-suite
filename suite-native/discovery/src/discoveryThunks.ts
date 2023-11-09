@@ -74,6 +74,7 @@ const discoverAccountsByDescriptorThunk = createThunk(
                 coin: bundleItem.coin,
                 descriptor: bundleItem.descriptor,
                 useEmptyPassphrase: true,
+                details: 'tokenBalances',
             });
 
             if (success) {
