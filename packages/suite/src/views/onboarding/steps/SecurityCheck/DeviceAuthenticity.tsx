@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 
 import { checkDeviceAuthenticityThunk } from '@suite-common/device-authenticity';
-import { selectDevice, selectIsDeviceAuthenticityFulfilled } from '@suite-common/wallet-core';
+import { selectDevice } from '@suite-common/wallet-core';
 import { variables } from '@trezor/components';
 
 import { reportToSentry } from 'src/utils/suite/sentry';
@@ -27,35 +27,28 @@ const StyledExplainer = styled(DeviceAuthenticationExplainer)`
 
 export const DeviceAuthenticity = () => {
     const device = useSelector(selectDevice);
-    const isDeviceAuthenticityFulfilled = useSelector(state =>
-        selectIsDeviceAuthenticityFulfilled(state, device?.id),
-    );
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
     const { goToNextStep, goToSuite, isActive: isOnboarding } = useOnboarding();
     const dispatch = useDispatch();
-    // Tracking confirmation state with useState because button request is not removed from the array
-    // when the request is confirmed or aborted, the array is only reset on step change.
-    const [isSubmitted, setIsSubmitted] = useState(false);
-    // Tracking request cancellation because it is the only error that does not trigger the fail screen.
-    const [isAborted, setIsAborted] = useState(false);
+    const [result, setResult] = useState<{ resolved: boolean; valid?: boolean }>({
+        resolved: false,
+    });
 
     if (!device) return null;
 
     const isWaitingForConfirmation =
-        !!device?.buttonRequests.some(request => request.code === 'ButtonRequest_Other') &&
-        !isSubmitted;
-    const isCheckSuccessful = !!(device && isDeviceAuthenticityFulfilled);
-    const isCheckFailed =
-        isSubmitted && !isAborted && !!device?.id && !isDeviceAuthenticityFulfilled;
+        !result.resolved &&
+        device.buttonRequests.some(request => request.code === 'ButtonRequest_Other');
+    const isCheckFailed = result.resolved && !result.valid;
 
     const getHeadingText = () => {
-        if (isCheckSuccessful) {
+        if (result.valid) {
             return 'TR_CONGRATS';
         }
         return isWaitingForConfirmation ? 'TR_CHECKING_YOUR_DEVICE' : 'TR_LETS_CHECK_YOUR_DEVICE';
     };
     const getDescription = () => {
-        if (isCheckSuccessful) {
+        if (result.valid) {
             return (
                 <Translation
                     id="TR_DEVICE_AUTHENTICITY_SUCCESS_DESCRIPTION"
@@ -73,38 +66,29 @@ export const DeviceAuthenticity = () => {
         }
 
         const authenticateDevice = async () => {
-            setIsSubmitted(false);
-            try {
-                const result = await dispatch(
-                    checkDeviceAuthenticityThunk({
-                        allowDebugKeys: isDebugModeActive,
-                        skipSuccessToast: true,
-                    }),
-                ).unwrap();
+            const result = await dispatch(
+                checkDeviceAuthenticityThunk({
+                    allowDebugKeys: isDebugModeActive,
+                    skipSuccessToast: true,
+                }),
+            ).unwrap();
+            setResult(result);
 
-                if (typeof result === 'string' || result.valid === undefined) {
-                    dispatch(reportToSentry(new Error(`Device authenticity failed: ${result}`)));
-                    setIsAborted(true);
-                }
-            } catch (error) {
-                // go to failded state if bootloader is unlocked but stay in initial state for other errors
-                if (!error.includes('bootloader is unlocked')) {
-                    setIsAborted(true);
-                }
-                dispatch(reportToSentry(new Error(`Device authenticity error: ${error}`)));
+            // Report to sentry if bootloader is unlocked, other errors are reported by sentryMiddleware.
+            if (result?.error?.includes('bootloader is unlocked')) {
+                dispatch(reportToSentry(new Error(`Device authenticity error: ${result.error}`)));
             }
-            setIsSubmitted(true);
         };
-        const goToNext = () => (isOnboarding ? goToNextStep() : goToSuite());
-        const handleClick = isCheckSuccessful ? goToNext : authenticateDevice;
+        const goToNext = () => (isOnboarding ? goToSuite() : goToNextStep());
+        const handleClick = result.resolved ? goToNext : authenticateDevice;
 
-        const buttonText = isCheckSuccessful ? 'TR_CONTINUE' : 'TR_START_CHECK';
+        const buttonText = result.resolved ? 'TR_CONTINUE' : 'TR_START_CHECK';
 
         return (
             <OnboardingButtonCta
                 onClick={handleClick}
                 data-test={
-                    isCheckSuccessful
+                    result.resolved
                         ? '@authenticity-check/continue-button'
                         : `@authenticity-check/start-button`
                 }
@@ -132,7 +116,7 @@ export const DeviceAuthenticity = () => {
             disableConfirmWrapper={!isWaitingForConfirmation}
             isActionAbortable
         >
-            {!isCheckSuccessful && <StyledExplainer horizontal />}
+            {!result.resolved && <StyledExplainer horizontal />}
         </OnboardingStepBox>
     );
 };
