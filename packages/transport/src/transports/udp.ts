@@ -1,4 +1,4 @@
-import { AbstractTransport } from './abstract';
+import { AbstractTransportParams } from './abstract';
 
 import { UdpInterface } from '../interfaces/udp';
 import { AbstractUsbTransport } from './abstractUsb';
@@ -6,11 +6,11 @@ import { AbstractUsbTransport } from './abstractUsb';
 import { SessionsClient } from '../sessions/client';
 import { SessionsBackground } from '../sessions/background';
 
-type UdpConstructorParameters = ConstructorParameters<typeof AbstractTransport>[0] & {};
 export class UdpTransport extends AbstractUsbTransport {
     public name = 'UdpTransport' as const;
 
-    constructor({ messages, logger }: UdpConstructorParameters) {
+    constructor(params?: AbstractTransportParams) {
+        const { messages, logger } = params || {};
         const sessionsBackground = new SessionsBackground();
 
         // in udp there is no synchronization yet. it depends where this transport runs (node or browser)

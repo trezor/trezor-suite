@@ -1,13 +1,13 @@
 import { createDeferred, Deferred } from '@trezor/utils';
 
-import { AbstractTransport, AcquireInput, ReleaseInput } from './abstract';
+import { AbstractTransport, AbstractTransportParams, AcquireInput, ReleaseInput } from './abstract';
 import { buildAndSend } from '../utils/send';
 import { receiveAndParse } from '../utils/receive';
 import { SessionsClient } from '../sessions/client';
 import * as ERRORS from '../errors';
 import type { UsbInterface } from '../interfaces/usb';
 
-export type UsbTransportConstructorParams = ConstructorParameters<typeof AbstractTransport>[0] & {
+export type UsbTransportConstructorParams = AbstractTransportParams & {
     usbInterface: UsbInterface;
     sessionsClient: (typeof SessionsClient)['prototype'];
 };

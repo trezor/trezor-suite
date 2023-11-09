@@ -1,4 +1,4 @@
-import { AbstractTransport } from './abstract';
+import { AbstractTransport, AbstractTransportParams } from './abstract';
 
 import { WRONG_ENVIRONMENT } from '../errors';
 import { empty, emptyAbortable, emptySync } from '../utils/resultEmpty';
@@ -7,7 +7,7 @@ import { empty, emptyAbortable, emptySync } from '../utils/resultEmpty';
 export class WebUsbTransport extends AbstractTransport {
     public name = 'WebUsbTransport' as const;
 
-    constructor(params: ConstructorParameters<typeof AbstractTransport>[0]) {
+    constructor(params?: AbstractTransportParams) {
         super(params);
         console.error(WRONG_ENVIRONMENT);
     }

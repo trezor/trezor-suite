@@ -1,5 +1,5 @@
 import { WebUSB } from 'usb';
-import { AbstractTransport } from './abstract';
+import { AbstractTransportParams } from './abstract';
 import { AbstractUsbTransport } from './abstractUsb';
 import { SessionsClient } from '../sessions/client';
 import { SessionsBackground } from '../sessions/background';
@@ -12,7 +12,8 @@ import { UsbInterface } from '../interfaces/usb';
 export class NodeUsbTransport extends AbstractUsbTransport {
     public name = 'NodeUsbTransport' as const;
 
-    constructor({ messages, logger }: ConstructorParameters<typeof AbstractTransport>[0]) {
+    constructor(params?: AbstractTransportParams) {
+        const { messages, logger } = params || {};
         const sessionsBackground = new SessionsBackground();
 
         // in nodeusb there is no synchronization yet. this is a followup and needs to be decided

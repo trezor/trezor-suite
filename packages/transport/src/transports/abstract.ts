@@ -44,11 +44,11 @@ type DeviceDescriptorDiff = {
     releasedElsewhere: Descriptor[];
 };
 
-type ConstructorParams = {
-    messages: Record<string, any>;
+export interface AbstractTransportParams {
+    messages?: Record<string, any>;
     signal?: AbortSignal;
     logger?: Logger;
-};
+}
 
 export abstract class AbstractTransport extends TypedEmitter<{
     [TRANSPORT.UPDATE]: DeviceDescriptorDiff;
@@ -127,10 +127,12 @@ export abstract class AbstractTransport extends TypedEmitter<{
      */
     protected logger: Logger;
 
-    constructor({ messages, signal, logger }: ConstructorParams) {
+    constructor(params?: AbstractTransportParams) {
+        const { messages, signal, logger } = params || {};
+
         super();
         this.descriptors = [];
-        this.messages = protobuf.Root.fromJSON(messages as protobuf.INamespace);
+        this.messages = protobuf.Root.fromJSON(messages || {});
 
         this.abortController = new AbortController();
 
@@ -431,6 +433,18 @@ export abstract class AbstractTransport extends TypedEmitter<{
 
         this.emit(TRANSPORT.UPDATE, diff);
         this.releasingSession = undefined;
+    }
+
+    /**
+     * Check if protobuf message is present in protobuf.Root
+     * default: GetFeatures - this message should be always present.
+     */
+    public getMessage(message = 'GetFeatures') {
+        return !!this.messages.get(message);
+    }
+
+    public updateMessages(messages: Record<string, any>) {
+        this.messages = protobuf.Root.fromJSON(messages);
     }
 
     protected success<T>(payload: T): Success<T> {
