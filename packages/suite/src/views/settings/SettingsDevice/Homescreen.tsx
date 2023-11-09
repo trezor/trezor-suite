@@ -82,6 +82,10 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
     }
 
     const deviceModelInternal = device.features.internal_model;
+    if (!deviceModelInformation[deviceModelInternal]) {
+        // disallow homescreen updates for unknown/custom models
+        return null;
+    }
 
     const resetUpload = () => {
         setCustomHomescreen('');
