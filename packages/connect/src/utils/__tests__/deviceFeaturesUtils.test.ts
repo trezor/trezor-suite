@@ -151,6 +151,7 @@ describe('utils/deviceFeaturesUtils', () => {
                 taproot: 'update-required',
                 tsep: 'update-required',
                 tgor: 'update-required',
+                thol: 'update-required',
                 coinjoin: 'update-required',
                 signMessageNoScriptType: 'update-required',
             });
@@ -168,6 +169,7 @@ describe('utils/deviceFeaturesUtils', () => {
                 taproot: 'update-required',
                 tsep: 'update-required',
                 tgor: 'update-required',
+                thol: 'update-required',
                 coinjoin: 'update-required',
                 signMessageNoScriptType: 'update-required',
                 sol: 'no-capability',

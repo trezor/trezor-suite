@@ -20,6 +20,7 @@ const getCoinFromTestnet = (symbol: Account['symbol']) => {
             return 'ada';
         case 'tsep':
         case 'tgor':
+        case 'thol':
             return 'eth';
         default:
             return symbol;

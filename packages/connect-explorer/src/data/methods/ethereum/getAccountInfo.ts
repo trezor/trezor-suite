@@ -6,6 +6,7 @@ export const select = [
     { value: 'etc', label: 'Ethereum Classic', affectedValue: `m/44'/61'/0'/0/0` },
     { value: 'tsep', label: 'Sepolia', affectedValue: `m/44'/60'/0'/0/0` },
     { value: 'tgor', label: 'Goerli', affectedValue: `m/44'/60'/0'/0/0` },
+    { value: 'thol', label: 'Holesky', affectedValue: `m/44'/60'/0'/0/0` },
     { value: 'btc', label: 'Bitcoin', affectedValue: `m/84'/0'/0'` },
     { value: 'test', label: 'Bitcoin Testnet', affectedValue: `m/49'/1'/0'` },
 ];
@@ -22,6 +23,13 @@ const batch = [
         name: 'coin',
         type: 'select',
         value: 'tgor',
+        affect: 'path',
+        data: select,
+    },
+    {
+        name: 'coin',
+        type: 'select',
+        value: 'thol',
         affect: 'path',
         data: select,
     },
@@ -57,6 +65,13 @@ const usingPath = [
         data: select,
     },
     {
+        name: 'coin',
+        type: 'select',
+        value: 'thol',
+        affect: 'path',
+        data: select,
+    },
+    {
         name: 'path',
         label: 'Bip44 path',
         type: 'input',
@@ -75,6 +90,12 @@ const usingAddress = [
         name: 'coin',
         type: 'select',
         value: 'tgor',
+        data: select,
+    },
+    {
+        name: 'coin',
+        type: 'select',
+        value: 'thol',
         data: select,
     },
     {
@@ -139,6 +160,12 @@ export default [
                 name: 'coin',
                 type: 'select',
                 value: 'tgor',
+                data: select,
+            },
+            {
+                name: 'coin',
+                type: 'select',
+                value: 'thol',
                 data: select,
             },
         ],

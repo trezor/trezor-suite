@@ -55,6 +55,7 @@ export const accountTitleFixture = [
     { symbol: 'txrp', title: 'TR_NETWORK_XRP_TESTNET' },
     { symbol: 'tsep', title: 'TR_NETWORK_ETHEREUM_SEPOLIA' },
     { symbol: 'tgor', title: 'TR_NETWORK_ETHEREUM_GOERLI' },
+    { symbol: 'thol', title: 'TR_NETWORK_ETHEREUM_HOLESKY' },
     { symbol: 'dgb', title: 'TR_NETWORK_DIGIBYTE' },
     { symbol: 'doge', title: 'TR_NETWORK_DOGECOIN' },
     { symbol: 'ltc', title: 'TR_NETWORK_LITECOIN' },

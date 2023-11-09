@@ -70,7 +70,7 @@ describe('validation', () => {
         expect(isAddressValid('bc1zw508d6qejxtdg4y5r3zarvaryvg6kdaj', 'test')).toEqual(false);
         expect(isAddressValid('BC1SW50QA3JX3S', 'test')).toEqual(false);
 
-        // ETH, ETC, TGOR, TSEP
+        // ETH, ETC, TGOR, TSEP, THOL
         expect(isAddressValid('0xE37c0D48d68da5c5b14E5c1a9f1CFE802776D9FF', 'eth')).toEqual(true);
         expect(isAddressValid('0xE37c0D48d68da5c5b14E5c1a9f1CFE802776D9FF0', 'eth')).toEqual(false);
         expect(isAddressValid('0xE37c0D48d68da5c5b14E5c1a9f1CFE802776D9FF', 'etc')).toEqual(true);
@@ -81,6 +81,10 @@ describe('validation', () => {
         );
         expect(isAddressValid('0xE37c0D48d68da5c5b14E5c1a9f1CFE802776D9FF', 'tgor')).toEqual(true);
         expect(isAddressValid('0xE37c0D48d68da5c5b14E5c1a9f1CFE802776D9FF0', 'tgor')).toEqual(
+            false,
+        );
+        expect(isAddressValid('0xE37c0D48d68da5c5b14E5c1a9f1CFE802776D9FF', 'thol')).toEqual(true);
+        expect(isAddressValid('0xE37c0D48d68da5c5b14E5c1a9f1CFE802776D9FF0', 'thol')).toEqual(
             false,
         );
 

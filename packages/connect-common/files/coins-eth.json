@@ -50,12 +50,29 @@
         "slip44": 1,
         "support": {
             "connect": true,
+            "T2T1": "2.5.2",
+            "T2B1": "2.6.1"
+        },
+        "url": "https://goerli.net/#about"
+    },
+    {
+        "blockchain_link": {
+            "type": "blockbook",
+            "url": ["https://holesky1.trezor.io", "https://holesky2.trezor.io"]
+        },
+        "chain": "hol",
+        "chain_id": 17000,
+        "name": "Holesky",
+        "shortcut": "tHOL",
+        "slip44": 1,
+        "support": {
+            "connect": true,
             "suite": false,
             "T1B1": "1.11.2",
             "T2T1": "2.5.2",
             "T2B1": "2.6.1"
         },
-        "url": "https://goerli.net/#about"
+        "url": "https://holesky.ethpandaops.io/"
     },
     {
         "blockchain_link": {
