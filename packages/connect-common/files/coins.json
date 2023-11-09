@@ -2201,9 +2201,7 @@
         {
             "blockchain_link": {
                 "type": "solana",
-                "url": [
-                    "wiser-green-owl.solana-mainnet.quiknode.pro/c218d0c9e451f6c5c0bf8b7c7d8e5a72384c9570/"
-                ]
+                "url": ["solana.trezor.io"]
             },
             "curve": "ed25519",
             "decimals": 9,
@@ -2362,9 +2360,7 @@
         {
             "blockchain_link": {
                 "type": "solana",
-                "url": [
-                    "billowing-orbital-model.solana-devnet.quiknode.pro/3fee3e6bd1d751aca4afa5f494925c8643c88f42/"
-                ]
+                "url": ["solana-dev.trezor.io"]
             },
             "curve": "ed25519",
             "decimals": 9,
