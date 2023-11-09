@@ -77,8 +77,10 @@ describe('Usb', () => {
             const transport = new TestUsbTransport({
                 usbInterface: testUsbInterface,
                 sessionsClient,
-                messages,
             });
+
+            // there are no loaded messages
+            expect(transport.getMessage()).toEqual(false);
 
             const res = await transport.init().promise;
             expect(res).toMatchObject({
@@ -107,7 +109,6 @@ describe('Usb', () => {
             const transport = new TestUsbTransport({
                 usbInterface: testUsbInterface,
                 sessionsClient,
-                messages,
             });
 
             await transport.init().promise;
@@ -285,6 +286,8 @@ describe('Usb', () => {
             if (!acquireRes.success) return;
 
             expect(acquireRes.payload).toEqual('1');
+
+            expect(transport.getMessage('GetAddress')).toEqual(true);
 
             // doesn't really matter what what message we send
             const res = await transport.call({
