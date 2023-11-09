@@ -123,6 +123,10 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
                         );
                 }
             } else if (transportType instanceof Transport) {
+                // custom Transport might be initialized without messages, update them if so
+                if (!transportType.getMessage()) {
+                    transportType.updateMessages(this.messages);
+                }
                 this.transports.push(transportType);
             } else {
                 // runtime check
