@@ -2,7 +2,7 @@ import { Modal } from 'react-native';
 import { ReactNode } from 'react';
 import { useSafeAreaInsets, EdgeInsets } from 'react-native-safe-area-context';
 
-import { Box, ScreenHeaderWrapper } from '@suite-native/atoms';
+import { Box, ScreenHeaderWrapper, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { BlurredScreenOverlay } from '@suite-native/screen-overlay';
 
@@ -13,9 +13,16 @@ type DeviceManagerModalProps = {
     children: ReactNode;
 };
 
-const contentWrapper = prepareNativeStyle<{ insets: EdgeInsets }>((utils, { insets }) => ({
+const modalWrapperStyle = prepareNativeStyle<{ insets: EdgeInsets }>((utils, { insets }) => ({
     paddingTop: Math.max(insets.top, utils.spacings.medium),
     backgroundColor: utils.colors.backgroundSurfaceElevation0,
+}));
+
+const contentWrapperStyle = prepareNativeStyle(utils => ({
+    backgroundColor: utils.colors.backgroundTertiaryDefaultOnElevation1,
+    borderBottomRadius: utils.borders.radii.large,
+    paddingHorizontal: utils.spacings.medium,
+    paddingBottom: utils.spacings.medium,
 }));
 
 export const DeviceManagerModal = ({ children }: DeviceManagerModalProps) => {
@@ -32,11 +39,13 @@ export const DeviceManagerModal = ({ children }: DeviceManagerModalProps) => {
     return (
         <Modal onRequestClose={handleClose} visible={isDeviceManagerVisible}>
             <BlurredScreenOverlay />
-            <Box style={applyStyle(contentWrapper, { insets })}>
+            <Box style={applyStyle(modalWrapperStyle, { insets })}>
                 <ScreenHeaderWrapper>
                     <DeviceSwitch />
                 </ScreenHeaderWrapper>
-                {children}
+                <VStack spacing="medium" style={applyStyle(contentWrapperStyle)}>
+                    {children}
+                </VStack>
             </Box>
         </Modal>
     );

@@ -235,6 +235,18 @@ export const en = {
             sectionTitle: 'Connect Trezor device',
             connectButton: 'Connect',
         },
+        portfolioTracker: {
+            explore: 'Explore Trezor',
+            learnBasics: 'Learn the basics',
+            readDocs: 'Read the docs',
+        },
+        status: {
+            connected: 'Connected',
+        },
+        syncCoinsButton: 'Sync coins',
+    },
+    deviceInfo: {
+        installedFw: 'Installed firmware: {version}',
     },
     qrCode: {
         addressCopied: 'Address copied',

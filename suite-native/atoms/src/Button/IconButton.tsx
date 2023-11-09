@@ -73,6 +73,7 @@ export const IconButton = ({
 
     const handlePressIn = () => setIsPressed(true);
     const handlePressOut = () => setIsPressed(false);
+
     return (
         <Box alignItems="center" style={style}>
             <Pressable

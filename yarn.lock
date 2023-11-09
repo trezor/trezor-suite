@@ -7469,9 +7469,11 @@ __metadata:
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-native/atoms": "workspace:*"
+    "@suite-native/feature-flags": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@suite-native/screen-overlay": "workspace:*"
+    "@trezor/connect": "workspace:*"
     "@trezor/styles": "workspace:*"
     jotai: 1.9.1
     react: ^18.2.0
@@ -7490,10 +7492,12 @@ __metadata:
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-native/alerts": "workspace:*"
+    "@suite-native/atoms": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@trezor/connect": "workspace:*"
+    "@trezor/styles": "workspace:*"
     react: 18.2.0
     react-redux: 8.0.7
   languageName: unknown
