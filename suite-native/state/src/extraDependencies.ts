@@ -11,18 +11,12 @@ import { PROTO } from '@trezor/connect';
 import { mergeDeepObject } from '@trezor/utils';
 import { NativeUsbTransport } from '@trezor/transport-native';
 
-const protobufMessages = require('@trezor/protobuf/messages.json');
-
 const deviceType = Device.isDevice ? 'device' : 'emulator';
 
 const transportsPerDeviceType = {
     device: Platform.select({
         ios: ['BridgeTransport', 'UdpTransport'],
-        android: [
-            new NativeUsbTransport({
-                messages: protobufMessages,
-            }),
-        ],
+        android: [new NativeUsbTransport()],
     }),
     emulator: ['BridgeTransport', 'UdpTransport'],
 } as const;

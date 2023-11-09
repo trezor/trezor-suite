@@ -30,7 +30,6 @@
         "@suite-native/storage": "workspace:*",
         "@suite-native/toasts": "workspace:*",
         "@trezor/connect": "workspace:*",
-        "@trezor/protobuf": "workspace:*",
         "@trezor/transport-native": "workspace:*",
         "@trezor/utils": "workspace:*",
         "expo-device": "5.6.0",
