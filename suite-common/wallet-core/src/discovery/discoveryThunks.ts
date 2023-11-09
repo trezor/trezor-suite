@@ -239,16 +239,25 @@ const getBundleThunk = createThunk(
 export const getAvailableCardanoDerivationsThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/getAvailableCardanoDerivations`,
     async (
-        { deviceState, device }: { deviceState: string; device: TrezorDevice },
+        {
+            deviceState,
+            device,
+            // TODO: isUseEmptyPassphraseForced will be removed once the suite-native has support for passphrase authorization.
+            isUseEmptyPassphraseForced = false,
+        }: { deviceState: string; device: TrezorDevice; isUseEmptyPassphraseForced?: boolean },
         { dispatch },
     ): Promise<('normal' | 'legacy' | 'ledger')[] | undefined> => {
+        // The suite-native does not have support for passphrase authorization, so the `useEmptyPassphrase` has to be hardcoded to `true` in that case.
+        // The thunk argument `isUseEmptyPassphraseForced` can be removed once the passphrase support is implemented in suite-native.
+        const useEmptyPassphrase = isUseEmptyPassphraseForced || device.useEmptyPassphrase;
+
         // If icarus and icarus-trezor derivations return same pub key
         // we can skip derivation of the latter as it would discover same accounts.
         // Ledger derivation will always result in different pub key except in shamir where all derivations are the same
         const commonParams = {
             device,
+            useEmptyPassphrase,
             keepSession: true,
-            useEmptyPassphrase: device.useEmptyPassphrase,
             path: "m/1852'/1815'/0'",
         };
         const icarusPubKeyResult = await TrezorConnect.cardanoGetPublicKey({
