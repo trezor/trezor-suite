@@ -8,7 +8,7 @@ import {
     waitAndClick,
 } from '../support/helpers';
 
-const url = `${process.env.URL || 'http://localhost:8088/'}?trust-issues=true`;
+const url = process.env.URL || 'http://localhost:8088/';
 const bridgeVersion = '2.0.31';
 
 const isWebExtension = process.env.IS_WEBEXTENSION === 'true';

@@ -9,7 +9,7 @@ import { buildOverview } from '../support/buildOverview';
 import { ensureDirectoryExists } from '@trezor/node-utils';
 import { getContexts, log, openPopup } from '../support/helpers';
 
-const url = `${process.env.URL || 'http://localhost:8088/'}?trust-issues=true`;
+const url = process.env.URL || 'http://localhost:8088/';
 
 const emuScreenshots: Record<string, string> = {};
 
