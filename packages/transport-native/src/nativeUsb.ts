@@ -11,7 +11,8 @@ export class NativeUsbTransport extends AbstractUsbTransport {
     // TODO: Not sure how to solve this type correctly.
     public name = 'NativeUsbTransport' as any;
 
-    constructor({ messages, logger }: ConstructorParameters<typeof AbstractTransport>[0]) {
+    constructor(params?: ConstructorParameters<typeof AbstractTransport>[0]) {
+        const { messages, logger } = params || {};
         const sessionsBackground = new SessionsBackground();
 
         const sessionsClient = new SessionsClient({
