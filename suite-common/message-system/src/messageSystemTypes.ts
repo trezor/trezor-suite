@@ -18,6 +18,7 @@ export type MessageSystemRootState = {
 
 export const Feature = {
     coinjoin: 'coinjoin',
+    killswitch: 'killswitch',
 } as const;
 
 export type FeatureDomain = (typeof Feature)[keyof typeof Feature];
