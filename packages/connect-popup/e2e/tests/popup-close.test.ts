@@ -9,8 +9,7 @@ import {
     checkHasLogs,
 } from '../support/helpers';
 
-const host = process.env.URL || 'http://localhost:8088/';
-const url = `${host}?trust-issues=true`;
+const url = process.env.URL || 'http://localhost:8088/';
 
 const WAIT_AFTER_TEST = 3000; // how long test should wait for more potential trezord requests
 
@@ -120,7 +119,7 @@ test.beforeAll(async () => {
     // we are validating here this commit https://github.com/trezor/connect/commit/fc60c3c03d6e689f3de2d518cc51f62e649a20e2
     test.afterEach(async ({ page, context }, testInfo) => {
         const logPage = await context.newPage();
-        await logPage.goto(`${host}log.html`);
+        await logPage.goto(`${url}log.html`);
 
         const hasLogs = await checkHasLogs(logPage);
         if (hasLogs) {

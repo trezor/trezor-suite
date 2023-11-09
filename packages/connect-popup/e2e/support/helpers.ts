@@ -125,3 +125,9 @@ export const downloadLogs = async (logPage: Page, downloadLogPath: string) => {
     await download.saveAs(downloadLogPath);
     return download;
 };
+
+export const setTrustedHost = async (explorerPage: Page, explorerUrl: string) => {
+    await explorerPage.goto(`${explorerUrl}#/settings`);
+    await waitAndClick(explorerPage, ['@checkbox/trustedHost']);
+    await waitAndClick(explorerPage, ['@submit-button']);
+};
