@@ -1,4 +1,5 @@
 import { app } from 'electron';
+import { exec } from 'child_process';
 import si from 'systeminformation';
 
 import { bytesToHumanReadable } from '@trezor/utils';
@@ -25,9 +26,24 @@ export const getComputerInfo = async () => {
         osInfo: 'platform, arch, distro, release',
     });
 
+    const ldd = await new Promise(resolve => {
+        exec('ldd --version', (error: any, stdout: any, stderr: any) => {
+            if (error) {
+                resolve(`LDD VERSION: ${error.message}`);
+                return;
+            }
+            if (stderr) {
+                resolve(`LDD VERSION: ${stderr}`);
+                return;
+            }
+            resolve(`LDD VERSION: ${stdout}`);
+        });
+    });
+
     return [
         'Info:',
         `- Platform: ${osInfo.platform} ${osInfo.arch}`,
+        `- LDD: ${ldd}`,
         `- OS: ${osInfo.distro} ${osInfo.release}`,
         `- Manufacturer: ${system.manufacturer}`,
         `- Model: ${system.model}`,
