@@ -14,6 +14,7 @@ export const DEVICE = {
     ACQUIRED: 'device-acquired',
     RELEASED: 'device-released',
     USED_ELSEWHERE: 'device-used_elsewhere',
+    LOCK: 'device-lock',
 
     LOADING: 'device-loading',
 
@@ -34,6 +35,11 @@ export interface DeviceButtonRequest {
     payload: DeviceButtonRequestPayload & { device: Device };
 }
 
+export interface DeviceLockEvent {
+    type: typeof DEVICE.LOCK;
+    payload: boolean;
+}
+
 export type DeviceEvent =
     | {
           type:
@@ -43,7 +49,8 @@ export type DeviceEvent =
               | typeof DEVICE.DISCONNECT;
           payload: Device;
       }
-    | DeviceButtonRequest;
+    | DeviceButtonRequest
+    | DeviceLockEvent;
 
 export type DeviceEventMessage = DeviceEvent & { event: typeof DEVICE_EVENT };
 

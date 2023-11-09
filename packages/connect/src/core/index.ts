@@ -343,6 +343,8 @@ export const onCall = async (message: CoreMessage) => {
         return Promise.resolve();
     }
 
+    postMessage(createDeviceMessage(DEVICE.LOCK, true));
+
     if (!_deviceList && !DataManager.getSettings('transportReconnect')) {
         // transport is missing try to initialize it once again
         await initTransport(DataManager.getSettings());
@@ -678,6 +680,8 @@ export const onCall = async (message: CoreMessage) => {
             }
             postMessage(response);
         }
+
+        postMessage(createDeviceMessage(DEVICE.LOCK, false));
     }
 };
 
