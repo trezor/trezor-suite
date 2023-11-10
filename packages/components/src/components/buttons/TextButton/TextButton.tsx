@@ -18,6 +18,7 @@ const TextButtonContainer = styled.button<{
     gap: ${({ hasIcon }) => hasIcon && spacingsPx.xs};
     height: ${({ size }) => (size === 'small' ? 22 : 26)}px;
     padding: 4px;
+    border: 1px solid transparent;
     border-radius: ${borders.radii.xs};
     background: none;
     color: ${({ theme }) => theme.textPrimaryDefault};
