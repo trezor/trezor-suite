@@ -72,13 +72,16 @@ suite-web build stable codesign:
 .build: &build
   stage: build
   script:
-    - yarn install --immutable
-    - yarn workspace @trezor/suite-desktop build:${platform}
+    - . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh || true # loads nix-shell
+    - nix-shell --option system x86_64-darwin --run "ldd --version"
+    - nix-shell --option system x86_64-darwin --run "git lfs pull"
+    - nix-shell --option system x86_64-darwin --run "yarn install --immutable"
+    - nix-shell --option system x86_64-darwin --run "yarn build:libs"
+    - nix-shell --option system x86_64-darwin --run "yarn workspace @trezor/suite-desktop build:${platform}"
     - ls -la packages/suite-desktop/build-electron
     - mv packages/suite-desktop/build-electron/* .
     - more latest*.yml | cat
-    - echo "Default build end..."
-    - ldd --version
+    - echo "Nixos build end..."
   artifacts:
     paths:
       - ${artifact}
@@ -152,7 +155,7 @@ suite-desktop build linux:
   variables:
     artifact: ${DESKTOP_APP_NAME}*
     platform: linux
-  <<: *build_nix
+  <<: *build
 
 suite-desktop build linux manual:
   <<: *config_sign_dev
