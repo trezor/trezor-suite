@@ -5771,28 +5771,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@shopify/react-native-skia@npm:0.1.188":
-  version: 0.1.188
-  resolution: "@shopify/react-native-skia@npm:0.1.188"
+"@shopify/react-native-skia@npm:0.1.216":
+  version: 0.1.216
+  resolution: "@shopify/react-native-skia@npm:0.1.216"
   dependencies:
-    "@types/pixelmatch": ^5.2.4
-    "@types/pngjs": ^6.0.1
-    "@types/ws": ^8.5.3
-    canvaskit-wasm: 0.38.0
-    pixelmatch: ^5.3.0
-    pngjs: ^6.0.0
+    canvaskit-wasm: 0.38.2
     react-reconciler: ^0.27.0
-    ws: ^8.11.0
   peerDependencies:
     react: ">=18.0"
     react-native: ">=0.64"
     react-native-reanimated: ">=2.0.0"
   peerDependenciesMeta:
+    react-native:
+      optional: true
     react-native-reanimated:
       optional: true
   bin:
     setup-skia-web: scripts/setup-canvaskit.js
-  checksum: daec5f5f906684eed5bce20c5ea6f2e7da413bb94c80ebd29d02937d795f7046f8abed581920260dac571c7613e8f0e431eafa485ddfbb8ba0dc0f589a915400
+  checksum: ea78ac2b10f936b822b02ab368accb06c64d449612297836bd0fda54362c615bf97b23072da4ffa5c22f8ceee236e3b0c80eef13945b0fad555942fdd105565c
   languageName: node
   linkType: hard
 
@@ -7454,7 +7450,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/icons@workspace:suite-common/icons"
   dependencies:
-    "@shopify/react-native-skia": 0.1.188
+    "@shopify/react-native-skia": 0.1.216
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/styles": "workspace:*"
@@ -7867,7 +7863,7 @@ __metadata:
   resolution: "@suite-native/atoms@workspace:suite-native/atoms"
   dependencies:
     "@mobily/ts-belt": ^3.13.1
-    "@shopify/react-native-skia": 0.1.188
+    "@shopify/react-native-skia": 0.1.216
     "@suite-common/icons": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
@@ -7997,7 +7993,7 @@ __metadata:
   dependencies:
     "@mobily/ts-belt": ^3.13.1
     "@reduxjs/toolkit": 1.9.5
-    "@shopify/react-native-skia": 0.1.188
+    "@shopify/react-native-skia": 0.1.216
     "@suite-common/formatters": "workspace:*"
     "@suite-common/graph": "workspace:*"
     "@suite-common/icons": "workspace:*"
@@ -8097,7 +8093,7 @@ __metadata:
     "@react-navigation/native": ^6.1.3
     "@react-navigation/native-stack": ^6.9.11
     "@reduxjs/toolkit": 1.9.5
-    "@shopify/react-native-skia": 0.1.188
+    "@shopify/react-native-skia": 0.1.216
     "@suite-common/formatters": "workspace:*"
     "@suite-common/icons": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
@@ -8407,7 +8403,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/react-native-graph@workspace:suite-native/react-native-graph"
   dependencies:
-    "@shopify/react-native-skia": 0.1.188
+    "@shopify/react-native-skia": 0.1.216
     "@types/react": 18.0.32
     react: 18.2.0
     react-native: 0.71.8
@@ -8548,7 +8544,7 @@ __metadata:
     "@mobily/ts-belt": ^3.13.1
     "@react-navigation/native": ^6.1.3
     "@shopify/flash-list": ^1.4.3
-    "@shopify/react-native-skia": 0.1.188
+    "@shopify/react-native-skia": 0.1.216
     "@suite-common/formatters": "workspace:*"
     "@suite-common/icons": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
@@ -9588,7 +9584,7 @@ __metadata:
     "@rnx-kit/metro-config": ^1.3.6
     "@sentry/react-native": 5.5.0
     "@shopify/flash-list": ^1.4.3
-    "@shopify/react-native-skia": 0.1.188
+    "@shopify/react-native-skia": 0.1.216
     "@suite-common/analytics": "workspace:*"
     "@suite-common/connect-init": "workspace:*"
     "@suite-common/formatters": "workspace:*"
@@ -10983,15 +10979,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/pixelmatch@npm:^5.2.4":
-  version: 5.2.4
-  resolution: "@types/pixelmatch@npm:5.2.4"
-  dependencies:
-    "@types/node": "*"
-  checksum: 8920c3b7df22851ad69192fb7637206cb8f7dc73520f602202e36dd6f6b7701a4b56746175e7d7391ed9dc2c636d4d9bc5d7bd26fc3f1b11df1a63fb86418b91
-  languageName: node
-  linkType: hard
-
 "@types/plist@npm:^3.0.1":
   version: 3.0.2
   resolution: "@types/plist@npm:3.0.2"
@@ -10999,15 +10986,6 @@ __metadata:
     "@types/node": "*"
     xmlbuilder: ">=11.0.1"
   checksum: b8f9e6b21fb41a7e8ea5250717da972cde40b120109d5d2ed79e0a25406a9f6793abcba048d9b8ecc3df4b25735d9e4223b4d8a56dff893665c4a8c8573b77ad
-  languageName: node
-  linkType: hard
-
-"@types/pngjs@npm:^6.0.1":
-  version: 6.0.1
-  resolution: "@types/pngjs@npm:6.0.1"
-  dependencies:
-    "@types/node": "*"
-  checksum: 5673a301c81edc6cfcf5c969d743c2e4f79c28e85d24c261be36273d557b131a98b35d9c79a00dc968f206cc7f73b603e261c6a6f7066c99ed98874299f369b9
   languageName: node
   linkType: hard
 
@@ -11465,7 +11443,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/ws@npm:^8.5.3, @types/ws@npm:^8.5.5":
+"@types/ws@npm:^8.5.5":
   version: 8.5.5
   resolution: "@types/ws@npm:8.5.5"
   dependencies:
@@ -14597,10 +14575,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"canvaskit-wasm@npm:0.38.0":
-  version: 0.38.0
-  resolution: "canvaskit-wasm@npm:0.38.0"
-  checksum: 5a743d7623187949241e1b18aa2bb43016dc837fa903594921afed4afb6b58032bccf81a30cdf71e23f185fc3827864f8ce780799c38de5325492a0fe2425e4e
+"canvaskit-wasm@npm:0.38.2":
+  version: 0.38.2
+  resolution: "canvaskit-wasm@npm:0.38.2"
+  checksum: a0b526759d0a1df9a76b69efe6fc9451b3dab81ecff0978c7153ead973e886e0ea33af53e67ab42d8b376e04091dbb3e898ab820cc7bf61fb6cdc36be900b812
   languageName: node
   linkType: hard
 
@@ -28885,7 +28863,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pixelmatch@npm:^5.1.0, pixelmatch@npm:^5.3.0":
+"pixelmatch@npm:^5.1.0":
   version: 5.3.0
   resolution: "pixelmatch@npm:5.3.0"
   dependencies:
