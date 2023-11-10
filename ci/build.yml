@@ -72,16 +72,13 @@ suite-web build stable codesign:
 .build: &build
   stage: build
   script:
-    - . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh || true # loads nix-shell
-    - nix-shell --option system x86_64-darwin --run "ldd --version"
-    - nix-shell --option system x86_64-darwin --run "git lfs pull"
-    - nix-shell --option system x86_64-darwin --run "yarn install --immutable"
-    - nix-shell --option system x86_64-darwin --run "yarn build:libs"
-    - nix-shell --option system x86_64-darwin --run "yarn workspace @trezor/suite-desktop build:${platform}"
+    - yarn install --immutable
+    - yarn workspace @trezor/suite-desktop build:${platform}
     - ls -la packages/suite-desktop/build-electron
     - mv packages/suite-desktop/build-electron/* .
     - more latest*.yml | cat
-    - echo "Nixos build end..."
+    - echo "Default build end..."
+    - ldd --version
   artifacts:
     paths:
       - ${artifact}
@@ -95,12 +92,12 @@ suite-web build stable codesign:
     - nix-shell --option system x86_64-darwin --run "yarn install --immutable"
     - nix-shell --option system x86_64-darwin --run "yarn build:libs"
     - nix-shell --option system x86_64-darwin --run "yarn workspace @trezor/suite-desktop build:${platform}"
-    # - nix-shell --option system x86_64-darwin --run "bash packages/suite-desktop-core/scripts/gnupg-sign.sh"
+    - nix-shell --option system x86_64-darwin --run "bash packages/suite-desktop-core/scripts/gnupg-sign.sh"
     - ls -la packages/suite-desktop/build-electron
     - mv packages/suite-desktop/build-electron/* .
     - more latest*.yml | cat
     - echo "Nixos build end..."
-    - nix-shell --option system x86_64-darwin --run "ldd --version"
+    - ldd --version
 
 ## Suite desktop macOS app
 suite-desktop build mac:
@@ -166,6 +163,7 @@ suite-desktop build linux manual:
     artifact: ${DESKTOP_APP_NAME}*
     platform: linux
   <<: *build
+  <<: *build_nix
 
 suite-desktop build linux codesign:
   <<: *config_sign_stable
