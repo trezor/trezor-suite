@@ -1,14 +1,17 @@
 import React from 'react';
 import { IconButton } from '../../../index';
-import { storiesOf } from '@storybook/react';
 import { StoryColumn } from '../../../support/Story';
 import { ButtonVariant } from '../buttonStyleUtils';
+import { Meta, StoryObj } from '@storybook/react';
 
 const variants: Array<Exclude<ButtonVariant, 'danger'>> = ['primary', 'secondary', 'tertiary'];
 
-storiesOf('Buttons/IconButton', module).add(
-    'All',
-    () => (
+export default {
+    title: 'Buttons/IconButton',
+} as Meta;
+
+export const IconButtons: StoryObj = {
+    render: () => (
         <>
             {variants.map(variant => (
                 <StoryColumn key={variant} minWidth={350} maxWidth={420}>
@@ -80,9 +83,4 @@ storiesOf('Buttons/IconButton', module).add(
             ))}
         </>
     ),
-    {
-        options: {
-            showPanel: false,
-        },
-    },
-);
+};
