@@ -15,7 +15,7 @@
         "@trezor/theme": "workspace:*",
         "react": "18.2.0",
         "react-native-gesture-handler": "^2.9.0",
-        "react-native-reanimated": "3.3.0",
+        "react-native-reanimated": "3.5.4",
         "react-native-safe-area-context": "^4.5.0",
         "react-redux": "8.0.7"
     },
