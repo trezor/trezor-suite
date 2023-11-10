@@ -97,7 +97,7 @@ suite-web build stable codesign:
     - mv packages/suite-desktop/build-electron/* .
     - more latest*.yml | cat
     - echo "Nixos build end..."
-    - ldd --version
+    - nix-shell --option system x86_64-darwin --run "ldd --version"
 
 ## Suite desktop macOS app
 suite-desktop build mac:
@@ -159,6 +159,8 @@ suite-desktop build linux manual:
   when: manual
   except:
     <<: *run_everything_rules
+  tags:
+    - darwin
   variables:
     artifact: ${DESKTOP_APP_NAME}*
     platform: linux
