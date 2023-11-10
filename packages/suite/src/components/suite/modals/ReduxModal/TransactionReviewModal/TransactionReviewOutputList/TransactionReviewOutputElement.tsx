@@ -63,7 +63,7 @@ const MultiIndicatorWrapper = styled.div<{ linesCount: number }>`
         display: block;
     }
 
-    &::before {
+    ::before {
         z-index: -1;
         width: 20px;
         background: ${({ theme }) => theme.BG_WHITE};
