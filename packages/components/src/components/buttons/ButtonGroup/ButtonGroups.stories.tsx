@@ -1,11 +1,16 @@
 import React from 'react';
-import { storiesOf } from '@storybook/react';
+import { Meta } from '@storybook/react';
 import { StoryColumn } from '../../../support/Story';
 import { Button } from '../Button/Button';
 import { ButtonGroup } from './ButtonGroup';
 import { IconButton } from '../IconButton/IconButton';
 
-storiesOf('Buttons/ButtonGroup', module).add('All', () => (
+export default {
+    title: 'Buttons/ButtonGroup',
+    component: ButtonGroup,
+} as Meta;
+
+export const ButtonGroups = () => (
     <StoryColumn minWidth={350} maxWidth={420}>
         <ButtonGroup>
             <Button>Button 1</Button>
@@ -55,4 +60,4 @@ storiesOf('Buttons/ButtonGroup', module).add('All', () => (
             <IconButton icon="BACKEND" />
         </ButtonGroup>
     </StoryColumn>
-));
+);

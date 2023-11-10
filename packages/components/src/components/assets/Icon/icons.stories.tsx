@@ -1,6 +1,6 @@
 import styled from 'styled-components';
+import { Meta } from '@storybook/react';
 import { Icon, variables, IconType } from '../../../index';
-import { storiesOf } from '@storybook/react';
 
 const Wrapper = styled.div`
     display: grid;
@@ -26,21 +26,17 @@ const IconText = styled.div`
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
-storiesOf('Assets/Icons', module).add(
-    'All',
-    () => (
-        <Wrapper>
-            {variables.ICONS.map((icon: IconType) => (
-                <IconWrapper>
-                    <IconText>{icon}</IconText>
-                    <Icon icon={icon} data-test={`icon-${icon.toLowerCase().replace('_', '-')}`} />
-                </IconWrapper>
-            ))}
-        </Wrapper>
-    ),
-    {
-        options: {
-            showPanel: false,
-        },
-    },
+export default {
+    title: 'Assets/Icons/All',
+} as Meta;
+
+export const All = () => (
+    <Wrapper>
+        {variables.ICONS.map((icon: IconType) => (
+            <IconWrapper key={icon}>
+                <IconText>{icon}</IconText>
+                <Icon icon={icon} data-test={`icon-${icon.toLowerCase().replace('_', '-')}`} />
+            </IconWrapper>
+        ))}
+    </Wrapper>
 );
