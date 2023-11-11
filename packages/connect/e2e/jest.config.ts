@@ -20,4 +20,6 @@ export default {
     bail: true,
     testEnvironment: 'node',
     globals: {},
+    watchPathIgnorePatterns: ['<rootDir>/libDev'],
+    testPathIgnorePatterns: ['<rootDir>/libDev'],
 };

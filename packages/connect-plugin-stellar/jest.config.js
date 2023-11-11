@@ -1,5 +1,7 @@
+const baseConfig = require('../../jest.config.base');
+
 module.exports = {
-    preset: '../../jest.config.base.js',
+    ...baseConfig,
     moduleNameMapper: {
         axios: 'axios/dist/node/axios.cjs',
     },

@@ -1,5 +1,7 @@
+const { testPathIgnorePatterns, ...baseConfig } = require('../../jest.config.base');
+
 module.exports = {
-    preset: '../../jest.config.base.js',
+    ...baseConfig,
     testMatch: ['**/tests/*.test.ts'],
-    testPathIgnorePatterns: ['e2e'],
+    testPathIgnorePatterns: [...testPathIgnorePatterns, 'e2e'],
 };

@@ -13,6 +13,8 @@ module.exports = {
         },
     },
     modulePathIgnorePatterns: ['node_modules', '<rootDir>/lib', '<rootDir>/libDev'],
+    watchPathIgnorePatterns: ['<rootDir>/libDev', '<rootDir>/lib'],
+    testPathIgnorePatterns: ['<rootDir>/libDev/', '<rootDir>/lib/'],
     transformIgnorePatterns: ['/node_modules/'],
     testMatch: ['**/*.test.(ts|tsx|js)'],
     transform: {

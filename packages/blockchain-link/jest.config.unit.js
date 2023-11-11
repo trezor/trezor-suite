@@ -29,4 +29,5 @@ module.exports = {
         '^.+\\.js$': 'babel-jest',
         '^.+\\.ts$': 'ts-jest',
     },
+    watchPathIgnorePatterns: ['<rootDir>/libDev'],
 };

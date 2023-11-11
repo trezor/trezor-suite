@@ -8,8 +8,8 @@
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "type-check": "tsc --build",
-        "test:unit": "jest",
-        "test-unit:watch": "jest -o --watch"
+        "test:unit": "jest -c ../../jest.config.base.js",
+        "test-unit:watch": "jest -c ../../jest.config.base.js -o --watch"
     },
     "dependencies": {
         "@ethereumjs/common": "^4.1.0",

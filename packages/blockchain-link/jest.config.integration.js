@@ -14,6 +14,7 @@ module.exports = {
     collectCoverage: false,
     moduleDirectories: ['node_modules', './'], // './' - ia a home directory for the 'trezor-blockchain-link' library (lib/index.js)
     modulePathIgnorePatterns: ['<rootDir>/libDev'],
+    watchPathIgnorePatterns: ['<rootDir>/libDev'],
     transform: {
         '^.+\\.js$': 'babel-jest',
         '^.+\\.ts$': 'ts-jest',
