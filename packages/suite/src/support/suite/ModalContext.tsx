@@ -1,4 +1,12 @@
-import { useContext, useRef, createContext, RefObject, ReactNode } from 'react';
+import {
+    useContext,
+    useRef,
+    createContext,
+    RefObject,
+    ReactNode,
+    useEffect,
+    useState,
+} from 'react';
 
 type ModalContextData = {
     isDisabled: boolean;
@@ -21,12 +29,19 @@ export const ModalContextProvider = ({
     isDisabled = false,
     children,
 }: ModalContextProviderProps) => {
-    const target = useRef<HTMLDivElement>(null);
     const disabled = useContext(ModalContext).isDisabled || isDisabled;
+    const [modalTarget, setModalTarget] = useState<RefObject<HTMLDivElement> | null>(null);
+
+    const target = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        setModalTarget(target);
+    }, [target]);
+
     return (
         <ModalContext.Provider
             value={{
-                modalTarget: !disabled ? target : null,
+                modalTarget: !disabled ? modalTarget : null,
                 isDisabled: disabled,
             }}
         >
