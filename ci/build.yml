@@ -89,6 +89,8 @@ suite-web build stable codesign:
   script: # override build script to use nix-shell instead
     - . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh || true # loads nix-shell
     - nix-shell --option system x86_64-darwin --run "git lfs pull"
+    - nix-shell --option system x86_64-darwin --run "echo $ELECTRON_BUILDER_CACHE"
+    - nix-shell --option system x86_64-darwin --run "echo $LD_LIBRARY_PATH"
     - nix-shell --option system x86_64-darwin --run "yarn install --immutable"
     - nix-shell --option system x86_64-darwin --run "yarn build:libs"
     - nix-shell --option system x86_64-darwin --run "yarn workspace @trezor/suite-desktop build:${platform}"
