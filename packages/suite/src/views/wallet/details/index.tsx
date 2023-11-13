@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 
 import {
-    getAccountTypeDesc,
     getAccountTypeName,
     getAccountTypeTech,
     getAccountTypeUrl,
@@ -44,10 +43,7 @@ const AccountTypeLabel = styled.div`
     line-height: 20px;
     text-align: center;
     min-width: 170px;
-
-    div:first-child {
-        margin-bottom: 8px;
-    }
+    gap: 8px;
 `;
 
 const StyledCard = styled(Card)`
