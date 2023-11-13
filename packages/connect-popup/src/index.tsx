@@ -300,8 +300,7 @@ const handleMessageInCoreMode = (
             ...data,
             transport,
         });
-        reactEventBus.dispatch(getState());
-
+        reactEventBus.dispatch({ type: 'state-update', payload: getState() });
         return;
     }
 
