@@ -83,14 +83,16 @@ suite-web build stable codesign:
     paths:
       - ${artifact}
       - latest*.yml
+      - out1.txt
+      - out2.txt
     expire_in: 1 days
 
 .build_nix: &build_nix
   script: # override build script to use nix-shell instead
     - . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh || true # loads nix-shell
     - nix-shell --option system x86_64-darwin --run "git lfs pull"
-    - nix-shell --option system x86_64-darwin --run "echo $ELECTRON_BUILDER_CACHE"
-    - nix-shell --option system x86_64-darwin --run "echo $LD_LIBRARY_PATH"
+    - nix-shell --option system x86_64-darwin --run "echo $ELECTRON_BUILDER_CACHE> out1.txt"
+    - nix-shell --option system x86_64-darwin --run "echo $LD_LIBRARY_PATH > out2.txt"
     - nix-shell --option system x86_64-darwin --run "yarn install --immutable"
     - nix-shell --option system x86_64-darwin --run "yarn build:libs"
     - nix-shell --option system x86_64-darwin --run "yarn workspace @trezor/suite-desktop build:${platform}"
