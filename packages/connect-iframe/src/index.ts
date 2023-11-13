@@ -1,7 +1,6 @@
 /* eslint-disable no-underscore-dangle, @typescript-eslint/no-use-before-define */
 
 // origin: https://github.com/trezor/connect/blob/develop/src/js/iframe/iframe.js
-
 import {
     CORE_EVENT,
     RESPONSE_EVENT,
@@ -56,6 +55,10 @@ const handleMessage = async (event: PostMessageEvent) => {
     const { data } = event;
     const id = typeof data.id === 'number' ? data.id : 0;
 
+    console.log('==== data.type', data);
+    // novy RESPONSE_ENVET z popupu -> preposle nahore
+    // novy message z popupu prepsni se do zombie modu
+
     const fail = (error: string) => {
         postMessage(createResponseMessage(id, false, { error }));
         postMessage(createPopupMessage(POPUP.CANCEL_POPUP_REQUEST));
@@ -80,6 +83,8 @@ const handleMessage = async (event: PostMessageEvent) => {
         init(data.payload, event.origin);
         return;
     }
+
+    // todo: tady v hanshaku se budou muset poslat vsechny parametry metody + pripadne informace o tom ze iframe je v zombie modu
 
     // popup handshake initialization process, get reference to message channel
     if (data.type === POPUP.HANDSHAKE && event.origin === window.location.origin) {
@@ -318,6 +323,8 @@ const init = async (payload: IFrameInit['payload'], origin: string) => {
         // initialize transport and wait for the first transport event (start or error)
         await initTransport(parsedSettings);
         postMessage(
+            // todo: consider reneming IFRAME.LOADED to CORE.LOADED. now we have multiple modes describing where
+            // core may live.
             createIFrameMessage(IFRAME.LOADED, {
                 useBroadcastChannel: !!_popupMessagePort,
                 systemInfo: getSystemInfo(config.supportedBrowsers),

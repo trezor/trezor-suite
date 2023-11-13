@@ -7,7 +7,7 @@ import { GlobalStyle } from '@trezor/connect-ui/src/support/GlobalStyle';
 import { InfoPanel } from '@trezor/connect-ui/src/components/InfoPanel';
 import { View } from '@trezor/connect-ui/src/components/View';
 import { Button, P, THEME, variables } from '@trezor/components';
-import { LogMessage } from '@trezor/connect/src/utils/debug';
+import { LogMessage, colors } from '@trezor/connect/src/utils/debug';
 
 interface ReactWrapperProps {
     children: React.ReactNode;
@@ -92,7 +92,11 @@ const logInConsole = (logs: any[]) => {
     logDebounceTimeout = setTimeout(() => {
         logDebounceCache.forEach(log => {
             const { prefix, css, message } = log;
-            console.log(`%c${prefix}`, css, ...message);
+            // todo carlos: it is not necessary to use logger module as a proxy in places that don't have
+            // access shared worker. if it is done like this, timestamp is overriden in the proxy place
+            // so we don't have corrent timestamp here in logger.
+            // disadvantage is that you don't get css for free, but it is possible to provide a fallback here - in logger
+            console.log(`%c${prefix}`, css || colors[prefix], ...message);
         });
         logDebounceCache = [];
     }, LOG_DEBOUNCE_TIME);
