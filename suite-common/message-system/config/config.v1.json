@@ -1,15 +1,11 @@
 {
     "version": 1,
-    "timestamp": "2023-10-25T00:00:00+00:00",
-    "sequence": 45,
+    "timestamp": "2023-11-13T00:00:00+00:00",
+    "sequence": 46,
     "actions": [
         {
             "conditions": [
                 {
-                    "duration": {
-                        "from": "2023-10-24T00:00:00+00:00",
-                        "to": "2023-11-15T12:00:00+00:00"
-                    },
                     "environment": {
                         "desktop": "23.10.1",
                         "mobile": "!",
@@ -28,49 +24,7 @@
                 }
             ],
             "message": {
-                "id": "e96a586f-f2d7-4c7b-7dd9-d8e56d1c90ad",
-                "priority": 92,
-                "dismissible": true,
-                "variant": "warning",
-                "category": "banner",
-                "content": {
-                    "en-GB": "When the next Trezor device update rolls out, make sure you've got your recovery seed ready. You’ll need it to regain access to your coins.",
-                    "en": "When the next Trezor device update rolls out, make sure you've got your recovery seed ready. You’ll need it to regain access to your coins.",
-                    "es": "Cuando salga la próxima actualización del dispositivo Trezor, asegúrate de tener preparada tu semilla de recuperación. La necesitarás para recuperar el acceso a tus monedas.",
-                    "cs": "Až se objeví další aktualizace zařízení Trezor, nezapomeňte si připravit sadu pro obnovení. Budete ho potřebovat k obnovení přístupu k mincím.",
-                    "ru": "Когда выйдет следующее обновление устройства Trezor, убедитесь, что у вас наготове семя восстановления. Она понадобится для восстановления доступа к монетам.",
-                    "ja": "次のTrezorデバイスのアップデートがリリースされたら、リカバリーシードを準備しておいてください。コインへのアクセスを回復するために必要です。",
-                    "hu": "Amikor a következő Trezor készülékfrissítés megjelenik, győződjön meg róla, hogy készen áll a helyreállítási mag. Szükséged lesz rá, hogy újra hozzáférj az érméidhez.",
-                    "it": "Quando uscirà il prossimo aggiornamento del dispositivo Trezor, assicuratevi di avere pronto il seme di ripristino. Ne avrete bisogno per riavere accesso alle vostre monete."
-                }
-            }
-        },
-        {
-            "conditions": [
-                {
-                    "duration": {
-                        "from": "2023-11-15T12:00:00+00:00",
-                        "to": "2024-11-15T12:00:00+00:00"
-                    },
-                    "environment": {
-                        "desktop": "23.10.1",
-                        "mobile": "!",
-                        "web": "23.10.1"
-                    },
-                    "devices": [
-                        {
-                            "model": "T2B1",
-                            "firmware": "*",
-                            "bootloader": "*",
-                            "variant": "*",
-                            "firmwareRevision": "*",
-                            "vendor": "*"
-                        }
-                    ]
-                }
-            ],
-            "message": {
-                "id": "e16a586f-f2d7-4c7b-7dd9-d8e56d1c90ae",
+                "id": "8231c0f4-e778-4838-bc40-5c28d8832f06",
                 "priority": 93,
                 "dismissible": false,
                 "variant": "critical",
@@ -336,14 +290,14 @@
             "conditions": [
                 {
                     "environment": {
-                        "desktop": "<23.7.2",
+                        "desktop": "<23.9.3",
                         "mobile": "!",
                         "web": "!"
                     }
                 }
             ],
             "message": {
-                "id": "a99d0ad4-3bab-4660-9352-fh1d6518154a",
+                "id": "b6012725-0450-41ed-810c-b12515adcf36",
                 "priority": 91,
                 "dismissible": true,
                 "variant": "warning",
