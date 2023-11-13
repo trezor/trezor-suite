@@ -184,7 +184,7 @@ suite-desktop build windows:
   <<: *config_sign_dev
   only:
     <<: *run_everything_rules
-  image: $CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX/electronuserland/builder:16-wine
+  image: $CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX/electronuserland/builder:18-wine
   variables:
     artifact: ${DESKTOP_APP_NAME}*
     platform: win
@@ -195,7 +195,7 @@ suite-desktop build windows manual:
   when: manual
   except:
     <<: *run_everything_rules
-  image: $CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX/electronuserland/builder:16-wine
+  image: $CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX/electronuserland/builder:18-wine
   variables:
     artifact: ${DESKTOP_APP_NAME}*
     platform: win
@@ -208,7 +208,7 @@ suite-desktop build windows codesign:
       - codesign
   tags:
     - darwin
-  image: $CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX/electronuserland/builder:16-wine
+  image: $CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX/electronuserland/builder:18-wine
   variables:
     IS_CODESIGN_BUILD: "true"
     artifact: ${DESKTOP_APP_NAME}*
