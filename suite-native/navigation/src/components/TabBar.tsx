@@ -42,7 +42,7 @@ export const TabBar = ({ state, navigation, tabItemOptions }: TabBarProps) => {
 
     const isConnectedDevice = isUsbDeviceConnectFeatureEnabled && !isDeviceImported;
 
-    if (isPortfolioEmpty && !isConnectedDevice) return null;
+    if (isPortfolioEmpty && isConnectedDevice) return null;
 
     return (
         <Box
