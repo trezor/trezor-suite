@@ -109,4 +109,5 @@ export type RootStackParamList = {
         accountKey: AccountKey;
         tokenContract?: TokenAddress;
     };
+    [RootStackRoutes.DeviceInfo]: undefined;
 };

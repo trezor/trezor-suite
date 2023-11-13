@@ -8,6 +8,7 @@ export enum RootStackRoutes {
     AccountSettings = 'AccountSettings',
     TransactionDetail = 'TransactionDetail',
     ReceiveModal = 'ReceiveModal',
+    DeviceInfo = 'DeviceInfo',
 }
 
 export enum AppTabsRoutes {

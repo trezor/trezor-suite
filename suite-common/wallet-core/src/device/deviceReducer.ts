@@ -686,3 +686,14 @@ export const selectSelectedDeviceName = (state: DeviceRootState) => {
     const selectedDevice = selectDevice(state);
     return selectDeviceName(state, selectedDevice?.id);
 };
+
+export const selectDeviceFirmwareVersion = (state: DeviceRootState) => {
+    const device = selectDevice(state);
+
+    return device?.firmwareRelease?.release.version ?? null;
+};
+
+export const selectDeviceModel = (state: DeviceRootState) => {
+    const features = selectDeviceFeatures(state);
+    return features?.internal_model ?? null;
+};

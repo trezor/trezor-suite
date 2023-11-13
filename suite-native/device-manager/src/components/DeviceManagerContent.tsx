@@ -3,12 +3,7 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { Button, Text, VStack } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import {
-    selectDevices,
-    selectDevicesCount,
-    selectIsSelectedDeviceImported,
-} from '@suite-common/wallet-core';
+import { selectDevices, selectIsSelectedDeviceImported } from '@suite-common/wallet-core';
 import {
     ConnectDeviceStackRoutes,
     RootStackParamList,
@@ -21,12 +16,6 @@ import { DeviceManagerModal } from './DeviceManagerModal';
 import { DeviceItem } from './DeviceItem';
 import { DeviceControlButtons } from './DeviceControlButtons';
 import { useDeviceManager } from '../hooks/useDeviceManager';
-
-const contentWrapperStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.backgroundTertiaryDefaultOnElevation1,
-    borderBottomRadius: utils.borders.radii.large,
-    padding: utils.spacings.medium,
-}));
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     RootStackParamList,
@@ -41,11 +30,8 @@ export const DeviceManagerContent = () => {
 
     const devices = useSelector(selectDevices);
     const isPortfolioTrackerDevice = useSelector(selectIsSelectedDeviceImported);
-    const devicesCount = useSelector(selectDevicesCount);
 
     const { setIsDeviceManagerVisible } = useDeviceManager();
-
-    const { applyStyle } = useNativeStyles();
 
     const handleConnectDevice = () => {
         setIsDeviceManagerVisible(false);
@@ -54,31 +40,27 @@ export const DeviceManagerContent = () => {
         });
     };
 
-    const shouldDisplayConnectButton = devicesCount === 1 && isPortfolioTrackerDevice;
-
     return (
         <DeviceManagerModal>
-            <VStack spacing="medium" style={applyStyle(contentWrapperStyle)}>
-                {!isPortfolioTrackerDevice && <DeviceControlButtons />}
+            {!isPortfolioTrackerDevice && <DeviceControlButtons />}
+            <VStack>
+                <Text variant="callout">
+                    <Translation id="deviceManager.deviceList.sectionTitle" />
+                </Text>
+                {devices.map(device => (
+                    <DeviceItem key={device.path} id={device.id} />
+                ))}
+            </VStack>
+            {isPortfolioTrackerDevice && (
                 <VStack>
                     <Text variant="callout">
-                        <Translation id="deviceManager.deviceList.sectionTitle" />
+                        <Translation id="deviceManager.connectDevice.sectionTitle" />
                     </Text>
-                    {devices.map(device => (
-                        <DeviceItem key={device.id} id={device.id} />
-                    ))}
+                    <Button colorScheme="tertiaryElevation0" onPress={handleConnectDevice}>
+                        {translate('deviceManager.connectDevice.connectButton')}
+                    </Button>
                 </VStack>
-                {shouldDisplayConnectButton && (
-                    <VStack>
-                        <Text variant="callout">
-                            <Translation id="deviceManager.connectDevice.sectionTitle" />
-                        </Text>
-                        <Button colorScheme="tertiaryElevation0" onPress={handleConnectDevice}>
-                            {translate('deviceManager.connectDevice.connectButton')}
-                        </Button>
-                    </VStack>
-                )}
-            </VStack>
+            )}
         </DeviceManagerModal>
     );
 };

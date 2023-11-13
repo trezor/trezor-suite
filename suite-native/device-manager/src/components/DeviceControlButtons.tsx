@@ -1,22 +1,43 @@
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { useNavigation } from '@react-navigation/native';
 
 import { Box, Button, HStack } from '@suite-native/atoms';
-import { selectDevice } from '@suite-common/wallet-core';
+import { deviceActions, selectDevice } from '@suite-common/wallet-core';
 import { useTranslate } from '@suite-native/intl';
+import {
+    RootStackParamList,
+    RootStackRoutes,
+    StackToStackCompositeNavigationProps,
+} from '@suite-native/navigation';
+
+import { useDeviceManager } from '../hooks/useDeviceManager';
+
+type NavigationProp = StackToStackCompositeNavigationProps<
+    RootStackParamList,
+    RootStackRoutes.AppTabs,
+    RootStackParamList
+>;
 
 export const DeviceControlButtons = () => {
     const selectedDevice = useSelector(selectDevice);
+
+    const { setIsDeviceManagerVisible } = useDeviceManager();
+
+    const navigation = useNavigation<NavigationProp>();
+    const dispatch = useDispatch();
 
     const { translate } = useTranslate();
 
     if (!selectedDevice) return null;
 
     const handleEject = () => {
-        // TODO
+        dispatch(deviceActions.forgetDevice(selectedDevice));
     };
 
     const handleDeviceRedirect = () => {
-        // TODO
+        setIsDeviceManagerVisible(false);
+        navigation.navigate(RootStackRoutes.DeviceInfo);
     };
 
     return (

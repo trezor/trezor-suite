@@ -5,6 +5,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { HStack, Text, VStack } from '@suite-native/atoms';
 import {
     DeviceRootState,
+    selectDevice,
     selectDeviceById,
     selectDeviceLabel,
     selectDeviceName,
@@ -34,6 +35,7 @@ export const DeviceItem = ({ id }: DeviceItemProps) => {
     const deviceLabel = useSelector((state: DeviceRootState) => selectDeviceLabel(state, id));
     const deviceName = useSelector((state: DeviceRootState) => selectDeviceName(state, id));
     const device = useSelector((state: DeviceRootState) => selectDeviceById(state, id));
+    const currentDevice = useSelector(selectDevice);
 
     const { applyStyle } = useNativeStyles();
 
@@ -42,8 +44,11 @@ export const DeviceItem = ({ id }: DeviceItemProps) => {
     if (!deviceLabel) return null;
 
     const handleSelectDevice = () => {
-        dispatch(selectDeviceThunk(device));
         setIsDeviceManagerVisible(false);
+
+        if (device?.id === currentDevice?.id) return;
+
+        dispatch(selectDeviceThunk(device));
     };
 
     return (
