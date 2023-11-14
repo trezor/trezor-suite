@@ -231,7 +231,7 @@ export const SecurityCheck = () => {
                                             color={theme.TYPE_WHITE}
                                         />
                                     </IconWrapper>
-                                    <Translation id="TR_TAKES_N_MINUTES" values={{ n: '5' }} />
+                                    <Translation id="TR_TAKES_N_MINUTES" />
                                 </TimeEstimateWrapper>
                             </SecurityCheckButtonWithSecondLine>
                         )}
