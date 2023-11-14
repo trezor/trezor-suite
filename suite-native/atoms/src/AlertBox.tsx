@@ -5,7 +5,7 @@ import { Icon, IconName } from '@suite-common/icons';
 import { Box } from './Box';
 import { Text } from './Text';
 
-type AlertBoxVariant = 'info' | 'success' | 'warning' | 'error';
+export type AlertBoxVariant = 'info' | 'success' | 'warning' | 'error';
 
 type AlertBoxStyle = {
     backgroundColor: Color;
@@ -21,11 +21,20 @@ const alertWrapperStyle = prepareNativeStyle<AlertWrapperStyleType>(
     (utils, { isStandalone, backgroundColor }) => ({
         flexDirection: 'row',
         alignItems: 'center',
-        borderRadius: isStandalone ? utils.borders.radii.small : 0,
+        borderRadius: utils.borders.radii.small,
         backgroundColor: utils.colors[backgroundColor],
         paddingVertical: utils.spacings.small,
         paddingHorizontal: utils.spacings.medium,
         gap: utils.spacings.small,
+
+        extend: {
+            condition: !isStandalone,
+            style: {
+                borderRadius: 0,
+                borderTopLeftRadius: utils.borders.radii.medium,
+                borderTopRightRadius: utils.borders.radii.medium,
+            },
+        },
     }),
 );
 

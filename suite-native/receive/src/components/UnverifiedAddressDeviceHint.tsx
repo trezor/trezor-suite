@@ -2,7 +2,6 @@ import React from 'react';
 import Animated, { FadeIn } from 'react-native-reanimated';
 
 import { Box, VStack, Button, Text } from '@suite-native/atoms';
-import { useToast } from '@suite-native/toasts';
 import { Translation, useTranslate } from '@suite-native/intl';
 
 export const UnverifiedAddressDeviceHint = () => {

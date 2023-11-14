@@ -127,6 +127,12 @@ export const en = {
         screenTitle: '{coinSymbol} Receive address',
         accountNotFound: 'Account {accountKey} not found.',
         receiveAddressCard: {
+            alert: {
+                success: 'Receive address confirmed on Trezor',
+                longCardanoAddress:
+                    'Cardano (ADA) address exceeds Trezor device’s screen. Scroll here and on the device to view it and confirm.',
+                ethereumToken: 'Your receive address is your Ethereum address',
+            },
             unverifiedWarning: {
                 title: 'receive address',
                 content:
