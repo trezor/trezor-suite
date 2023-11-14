@@ -62,6 +62,9 @@ export const factory = <R extends StrictIpcRenderer<any, IpcRendererEvent>>(
         themeChange: theme => {
             if (validation.isTheme(theme)) ipcRenderer.send('theme/change', theme);
         },
+        appIconChange: appIcon => {
+            if (validation.isAppIcon(appIcon)) ipcRenderer.send('app-icon/change', appIcon);
+        },
 
         // Client
         handshake: () => ipcRenderer.invoke('handshake/client'),

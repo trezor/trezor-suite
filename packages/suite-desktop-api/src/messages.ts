@@ -2,6 +2,7 @@ import { TorStatus } from './enums';
 import { ExtractUndefined } from './methods';
 
 export type SuiteThemeVariant = 'light' | 'dark' | 'system';
+export type SuiteAppIconVariant = 'original' | 'bitcoin';
 
 export type TorStatusEvent = {
     type: TorStatus;

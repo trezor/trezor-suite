@@ -17,6 +17,8 @@ import { SUITE, ROUTER, METADATA } from 'src/actions/suite/constants';
 import { AppState, Action, Dispatch } from 'src/types/suite';
 import { handleProtocolRequest } from 'src/actions/suite/protocolActions';
 import { appChanged } from 'src/actions/suite/suiteActions';
+import { desktopApi } from '@trezor/suite-desktop-api';
+import { isBitcoinOnlyDevice } from '@trezor/device-utils';
 
 const isActionDeviceRelated = (action: AnyAction): boolean => {
     if (
@@ -64,6 +66,21 @@ const suite =
 
         if (deviceActions.forgetDevice.match(action)) {
             api.dispatch(handleDeviceDisconnect(action.payload));
+        }
+
+        if (
+            isAnyOf(deviceActions.selectDevice, deviceActions.updateSelectedDevice)(action) &&
+            action.payload?.features && // device is available
+            desktopApi.available // is Desktop app
+        ) {
+            switch (isBitcoinOnlyDevice(action.payload)) {
+                case true:
+                    desktopApi.appIconChange('bitcoin');
+                    break;
+                default:
+                    desktopApi.appIconChange('original');
+                    break;
+            }
         }
 
         switch (action.type) {

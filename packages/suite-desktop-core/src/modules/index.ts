@@ -19,6 +19,7 @@ import * as requestFilter from './request-filter';
 import * as externalLinks from './external-links';
 import * as windowControls from './window-controls';
 import * as theme from './theme';
+import * as appIcon from './app-icon';
 import * as httpReceiverModule from './http-receiver';
 import * as metadata from './metadata';
 import * as bridge from './bridge';
@@ -49,6 +50,7 @@ const MODULES = [
     externalLinks,
     windowControls,
     theme,
+    appIcon,
     httpReceiverModule,
     metadata,
     bridge,

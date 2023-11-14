@@ -34,8 +34,12 @@ module.exports = {
     ],
     extraResources: [
         {
-            from: 'build/static/images/desktop/512x512.png',
-            to: 'images/desktop/512x512.png',
+            from: 'build/static/images/desktop/1024x1024_original.png',
+            to: 'images/desktop/1024x1024_original.png',
+        },
+        {
+            from: 'build/static/images/desktop/1024x1024_bitcoin.png',
+            to: 'images/desktop/1024x1024_bitcoin.png',
         },
         {
             from: 'build/static/bin/firmware',
@@ -91,7 +95,7 @@ module.exports = {
                 to: 'bin/coinjoin',
             },
         ],
-        icon: 'build/static/images/desktop/512x512.icns',
+        icon: 'build/static/images/desktop/1024x1024_original.png',
         artifactName: 'Trezor-Suite-${version}-mac-${arch}.${ext}',
         hardenedRuntime: true,
         gatekeeperAssess: false,
@@ -115,7 +119,7 @@ module.exports = {
                 to: 'bin/coinjoin',
             },
         ],
-        icon: 'build/static/images/desktop/512x512.png',
+        icon: 'build/static/images/desktop/1024x1024_original.png',
         artifactName: 'Trezor-Suite-${version}-win-${arch}.${ext}',
         target: ['nsis'],
         signDlls: true,
@@ -139,7 +143,7 @@ module.exports = {
                 to: 'bin/coinjoin',
             },
         ],
-        icon: 'build/static/images/desktop/512x512.png',
+        icon: 'build/static/images/desktop/1024x1024_original.png',
         artifactName: 'Trezor-Suite-${version}-linux-${arch}.${ext}',
         executableName: 'trezor-suite',
         category: 'Utility',
