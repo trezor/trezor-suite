@@ -4,7 +4,7 @@ import type { SubscriptionAccountInfo } from '@trezor/blockchain-link-types';
 export class WorkerState {
     addresses: string[];
     accounts: SubscriptionAccountInfo[];
-    subscription: { [key: string]: boolean };
+    subscription: { [key: string]: unknown };
     constructor() {
         this.addresses = [];
         this.accounts = [];
@@ -102,8 +102,8 @@ export class WorkerState {
         return this.accounts;
     }
 
-    addSubscription(type: string) {
-        this.subscription[type] = true;
+    addSubscription(type: string, id: unknown = true) {
+        this.subscription[type] = id;
     }
 
     getSubscription(type: string) {
