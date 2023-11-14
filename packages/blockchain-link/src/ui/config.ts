@@ -449,4 +449,62 @@ export default [
             tx: '83a400818258208911f640d452c3be4ff3d89db63b41ce048c056951286e2e28bbf8a51588ab44000181825839009493315cd92eb5d8c4304e67b7e16ae36d61d34502694657811a2c8e32c728d3861e164cab28cb8f006448139c8f1740ffb8e7aa9e5232dc1a10b2531f021a00029519075820cb798b0bce50604eaf2e0dc89367896b18f0a6ef6b32b57e3c9f83f8ee71e608a1008182582073fea80d424276ad0978d4fe5310e8bc2d485f5f6bb3bf87612989f112ad5a7d5840c40425229749a9434763cf01b492057fd56d7091a6372eaa777a1c9b1ca508c914e6a4ee9c0d40fc10952ed668e9ad65378a28b149de6bd4204bd9f095b0a902a11907b0a1667469636b657281a266736f757263656b736f757263655f6e616d656576616c7565736675676961742076656e69616d206d696e7573',
         },
     },
+    {
+        blockchain: {
+            name: 'Solana Mainnet',
+            // we do not use path to worker build here because its not used, we use it just to match this config to actual implementation of the worker
+            worker: 'solana',
+            server: [
+                'wiser-green-owl.solana-mainnet.discover.quiknode.pro/c218d0c9e451f6c5c0bf8b7c7d8e5a72384c9570/',
+            ],
+            debug: true,
+        },
+        data: {
+            estimateFeeOptions: {
+                // please note that fee estimation is time sensitive and this specific params are outdated
+                specific: {
+                    data: '01000102c80f8b50107e9f3e3c16a661b8c806df454a6deb293d5e8730a9d28f2f4998c60000000000000000000000000000000000000000000000000000000000000000c41dc0c82a686ce8dfed732687b5869180d6239c026af160a5297506ad87ea5901010200000c020000000000000000000000',
+                },
+            },
+            accountInfoOptions: {
+                page: 0,
+                pageSize: 25,
+            },
+            address: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
+            txid: '', // not implemented
+            blockNumber: '', // not implemented
+            // please note transaction submission is time sensitive and this specific params are outdated
+            // also the transaction has already been submitted so its invalid
+            tx: '016b6504fe0a54f4e30c13e4707fdea772496a932d3cb87cbf817ddad7a7924d6cae2aaf687dd57851829c2d884f1c135abad4a1a36167dcebdb28286c31d6d80b01000102c80f8b50107e9f3e3c16a661b8c806df454a6deb293d5e8730a9d28f2f4998c60000000000000000000000000000000000000000000000000000000000000000c41dc0c82a686ce8dfed732687b5869180d6239c026af160a5297506ad87ea5901010200000c0200000070ec9b0700000000',
+        },
+    },
+    {
+        blockchain: {
+            name: 'Solana Devnet',
+            // we do not use path to worker build here because its not used, we use it just to match this config to actual implementation of the worker
+            worker: 'solana',
+            server: [
+                'https://dark-maximum-waterfall.solana-devnet.quiknode.pro/d52d65584338b5697364c43f38d001c8ae45c259/',
+            ],
+            debug: true,
+        },
+        data: {
+            estimateFeeOptions: {
+                // please note that fee estimation is time sensitive and this specific params are outdated
+                specific: {
+                    data: '01000102c80f8b50107e9f3e3c16a661b8c806df454a6deb293d5e8730a9d28f2f4998c60000000000000000000000000000000000000000000000000000000000000000c41dc0c82a686ce8dfed732687b5869180d6239c026af160a5297506ad87ea5901010200000c020000000000000000000000',
+                },
+            },
+            accountInfoOptions: {
+                page: 0,
+                pageSize: 25,
+            },
+            address: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
+            txid: '', // not implemented
+            blockNumber: '', // not implemented
+            // please note transaction submission is time sensitive and this specific params are outdated
+            // also the transaction has already been submitted so its invalid
+            tx: '016b6504fe0a54f4e30c13e4707fdea772496a932d3cb87cbf817ddad7a7924d6cae2aaf687dd57851829c2d884f1c135abad4a1a36167dcebdb28286c31d6d80b01000102c80f8b50107e9f3e3c16a661b8c806df454a6deb293d5e8730a9d28f2f4998c60000000000000000000000000000000000000000000000000000000000000000c41dc0c82a686ce8dfed732687b5869180d6239c026af160a5297506ad87ea5901010200000c0200000070ec9b0700000000',
+        },
+    },
 ];
