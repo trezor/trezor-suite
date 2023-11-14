@@ -5,12 +5,16 @@ on:
   push:
     paths:
       - "packages/blockchain-link"
-      - "packages/connect*/**"
+      - "packages/connect/**"
+      - "packages/connect-common/**"
+      - "packages/connect-iframe/**"
+      - "packages/connect-web/**"
       - "packages/transport"
       - "packages/utxo-lib"
       - "packages/utils"
       - "docker"
       - "submodules/trezor-common"
+      - "yarn.lock"
 
 jobs:
   # todo: meaning of 'build' job is questionable. only 'web' tests use part of this jobs output
