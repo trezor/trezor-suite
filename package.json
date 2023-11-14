@@ -52,7 +52,7 @@
         "verify-project-references": "yarn update-project-references --test",
         "check-workspace-resolutions": "yarn tsx ./scripts/check-workspace-resolutions.ts",
         "generate-package": "yarn tsx ./scripts/generatePackage.js",
-        "deps": "rimraf 'node_modules' '*/**/node_modules' && yarn",
+        "deps": "rimraf **/node_modules && yarn",
         "message-system-sign-config": "yarn workspace @suite-common/message-system sign-config",
         "format": "yarn prettier --write \"**/*.{js,ts,tsx,mdx,md,html,json,yml,yaml}\"",
         "format:verify": "yarn prettier --check \"**/*.{js,ts,tsx,mdx,md,html,json}\"",
