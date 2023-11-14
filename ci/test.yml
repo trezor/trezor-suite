@@ -5,6 +5,28 @@
     - schedules
     - /^release\//
 
+.connect_included_methods: &connect_included_methods
+  TESTS_INCLUDED_METHODS:
+    [
+      "applySettings,applyFlags,getFeatures,getFirmwareHash,checkFirmwareAuthenticity",
+      "signTransaction",
+      "getAccountInfo,getAccountDescriptor,getAddress,getPublicKey,signMessage,verifyMessage,composeTransaction,getOwnershipId,getOwnershipProof",
+      "stellarGetAddress,stellarSignTransaction",
+      "cardanoGetAddress,cardanoGetNativeScriptHash,cardanoGetPublicKey,cardanoSignTransaction",
+      "eosGetPublicKey,eosSignTransaction",
+      "ethereumGetAddress,ethereumGetPublicKey,ethereumSignMessage,ethereumSignTransaction,ethereumVerifyMessage,ethereumSignTypedData",
+      "nemGetAddress,nemSignTransaction",
+      "rippleGetAddress,rippleSignTransaction",
+      "tezosGetAddress,tezosGetPublicKey,tezosSignTransaction",
+      "binanceGetAddress,binanceGetPublicKey,binanceSignTransaction",
+    ]
+
+.connect_test_pattern_1: &connect_test_pattern_1
+  TESTS_PATTERN: "init authorizeCoinjoin cancelCoinjoinAuthorization passphrase unlockPath setBusy override"
+
+.connect_test_pattern_2: &connect_test_pattern_2
+  TESTS_PATTERN: "methods"
+
 # @trezor/suite-web
 .e2e web:
   stage: integration testing
@@ -77,6 +99,7 @@
 
 suite web migrations:
   extends: .e2e web
+  stage: legacy testing
   variables:
     # Each test file will be run for all urls in TEST_URLS array. Useful for migration tests
     CYPRESS_TEST_URLS: release/22.5 ${CI_COMMIT_REF_NAME}
@@ -97,16 +120,18 @@ suite web snapshots:
     CYPRESS_updateSnapshots: 1
 
 # Tests against latest trezor-firmware main
-suite web 2-master:
+suite web canary fws:
   extends: .suite web base
+  stage: canary testing
   only:
     refs:
       - schedules
   variables:
     FIRMWARE: 2-master
 
-suite web 2-master manual:
+suite web canary fws manual:
   extends: .suite web base
+  stage: canary testing
   except:
     refs:
       - schedules
@@ -249,8 +274,9 @@ connect-popup manual:
     <<: *run_everything_rules
   when: manual
 
-connect-popup legacy:
+connect-popup legacy npm package:
   extends: .e2e connect-popup
+  stage: legacy testing
   needs:
     - install
     - connect-web build
@@ -321,6 +347,7 @@ connect-popup-webextension manual:
 
 .connect:
   stage: integration testing
+  retry: 1
   dependencies:
     - install
   variables:
@@ -371,40 +398,45 @@ connect-popup-webextension manual:
   parallel:
     matrix:
       - TESTS_ENVIRONMENT: ["node", "web"]
-        TESTS_PATTERN: "init authorizeCoinjoin cancelCoinjoinAuthorization passphrase unlockPath setBusy override"
-        TESTS_FIRMWARE: ["2-master", "2.2.0"]
-        # todo:
-        # TESTS_NODE_VERSION: ["12", "14", "16"]
+        <<: *connect_test_pattern_1
       - TESTS_ENVIRONMENT: ["node", "web"]
-        TESTS_PATTERN: "methods"
-        TESTS_FIRMWARE: ["2-master", "2.2.0"]
-        # todo:
-        # TESTS_NODE_VERSION: ["12", "14", "16"]
-        TESTS_INCLUDED_METHODS:
-          [
-            "applySettings,applyFlags,getFeatures,getFirmwareHash,checkFirmwareAuthenticity",
-            "signTransaction",
-            "getAccountInfo,getAccountDescriptor,getAddress,getPublicKey,signMessage,verifyMessage,composeTransaction,getOwnershipId,getOwnershipProof",
-            "stellarGetAddress,stellarSignTransaction",
-            "cardanoGetAddress,cardanoGetNativeScriptHash,cardanoGetPublicKey,cardanoSignTransaction",
-            "eosGetPublicKey,eosSignTransaction",
-            "ethereumGetAddress,ethereumGetPublicKey,ethereumSignMessage,ethereumSignTransaction,ethereumVerifyMessage,ethereumSignTypedData",
-            "nemGetAddress,nemSignTransaction",
-            "rippleGetAddress,rippleSignTransaction",
-            "tezosGetAddress,tezosGetPublicKey,tezosSignTransaction",
-            "binanceGetAddress,binanceGetPublicKey,binanceSignTransaction",
-          ]
+        <<: *connect_test_pattern_2
+        <<: *connect_included_methods
         TESTS_MOCK_BACKENDS: "false"
 
-connect:
+.connect legacy fws base:
   extends: .connect matrix
-  retry: 1
+  stage: legacy testing
+  variables:
+    TESTS_FIRMWARE: "2.2.0"
+
+connect legacy fws:
+  extends: .connect legacy fws base
   only:
     refs:
-      - schedules # only nightly jobs, this is too heavy for develop branches at the moment
+      - schedules
 
-connect manual:
+connect legacy fws manual:
+  extends: .connect legacy fws base
+  except:
+    refs:
+      - schedules
+  when: manual
+
+.connect canary fws base:
   extends: .connect matrix
+  stage: canary testing
+  variables:
+    TESTS_FIRMWARE: "2-master"
+
+connect canary fws:
+  extends: .connect canary fws base
+  only:
+    refs:
+      - schedules
+
+connect canary fws manual:
+  extends: .connect canary fws base
   except:
     refs:
       - schedules
