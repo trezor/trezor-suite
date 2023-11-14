@@ -15,7 +15,12 @@ stages:
   - build
   - deploy to dev
   - deploy npm
+  # testing that all the moving parts fit together
   - integration testing
+  # testing against what is about to come (next browser version, next firmware release)
+  - canary testing
+  # testing of what we are releasing together with what is already out in the wild
+  - legacy testing
   - build artifacts
   - utils
   - deploy to staging
