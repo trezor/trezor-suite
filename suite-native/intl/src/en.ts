@@ -11,8 +11,17 @@ export const en = {
             confirm: 'Confirm',
             continue: 'Continue',
             next: 'Next',
+            dismiss: 'Dismiss',
         },
         unknownError: 'Something went wrong',
+    },
+    messageSystem: {
+        killswitch: {
+            title: 'Update required',
+            content:
+                'Update to continue using Trezor Suite Lite. Don’t worry, your funds are secure.',
+            cta: 'Download latest version',
+        },
     },
     moduleHome: {
         graph: {

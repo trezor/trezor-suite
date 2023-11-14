@@ -16,7 +16,9 @@
             "path": "../../suite-common/wallet-core"
         },
         { "path": "../atoms" },
+        { "path": "../intl" },
         { "path": "../link" },
+        { "path": "../navigation" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" }
     ]
