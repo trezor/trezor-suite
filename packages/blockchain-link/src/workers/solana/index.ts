@@ -1,8 +1,10 @@
 import type {
     Response,
+    AccountInfo,
     SubscriptionAccountInfo,
 } from '@trezor/blockchain-link-types';
 import type * as MessageTypes from '@trezor/blockchain-link-types/lib/messages';
+import { CustomError } from '@trezor/blockchain-link-types/lib/constants/errors';
 import { BaseWorker, ContextType, CONTEXT } from '../baseWorker';
 import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/lib/constants';
 import { Connection, Message, PublicKey } from '@solana/web3.js';
@@ -11,6 +13,47 @@ export type SolanaAPI = Connection;
 
 type Context = ContextType<SolanaAPI>;
 type Request<T> = T & Context;
+const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => {
+    const { payload } = request;
+    const { details = 'basic' } = payload;
+    const api = await request.connect();
+
+    const publicKey = new PublicKey(payload.descriptor);
+
+    const accountInfo = await api.getAccountInfo(publicKey);
+
+    if (!accountInfo) {
+        // return empty account
+        const account: AccountInfo = {
+            descriptor: payload.descriptor,
+            balance: '0', // default balance
+            availableBalance: '0', // default balance
+            empty: true,
+            history: {
+                total: -1,
+                unconfirmed: 0,
+                transactions: undefined,
+            },
+        };
+        return Promise.resolve({
+            type: RESPONSES.GET_ACCOUNT_INFO,
+            payload: account,
+        } as const);
+    }
+
+    const account: AccountInfo = {
+        descriptor: payload.descriptor,
+        balance: accountInfo.lamports.toString(),
+        availableBalance: accountInfo.lamports.toString(),
+        misc: {
+            owner: accountInfo.owner.toString(),
+        },
+    };
+    return {
+        type: RESPONSES.GET_ACCOUNT_INFO,
+        payload: account,
+    } as const;
+};
 
 const getInfo = async (request: Request<MessageTypes.GetInfo>) => {
     const api = await request.connect();
@@ -222,6 +265,8 @@ const unsubscribe = (request: Request<MessageTypes.Unsubscribe>) => {
 
 const onRequest = (request: Request<MessageTypes.Message>) => {
     switch (request.type) {
+        case MESSAGES.GET_ACCOUNT_INFO:
+            return getAccountInfo(request);
         case MESSAGES.GET_INFO:
             return getInfo(request);
         case MESSAGES.ESTIMATE_FEE:

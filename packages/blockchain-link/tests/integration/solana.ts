@@ -5,6 +5,110 @@ const id = 79;
 const descriptor = '2MLmmoKgCrxVEzMeGatnjdABYS5RXsQSNikcWrmnvQna';
 const balance = '1000000000';
 
+const fixtures = {
+    accountInfoRequest: [
+        {
+            name: 'basic',
+            input: {
+                id,
+                descriptor,
+                details: 'basic',
+            },
+            result: {
+                descriptor,
+                balance,
+                availableBalance: balance,
+                empty: false,
+                history: {
+                    total: 1,
+                    unconfirmed: 0,
+                    transactions: undefined,
+                    txids: ['deadbeaf'],
+                },
+                page: undefined,
+            },
+        },
+        {
+            name: 'txIds',
+            input: {
+                id,
+                descriptor,
+                details: 'txIds',
+            },
+            result: {
+                descriptor,
+                balance,
+                availableBalance: balance,
+                empty: false,
+                history: {
+                    total: 1,
+                    unconfirmed: 0,
+                    transactions: undefined,
+                    txids: ['deadbeaf'],
+                },
+                page: undefined,
+            },
+        },
+        {
+            name: 'txs',
+            input: {
+                id,
+                descriptor,
+                details: 'txs',
+            },
+            result: {
+                descriptor,
+                balance,
+                availableBalance: balance,
+                empty: false,
+                history: {
+                    total: 1,
+                    unconfirmed: 0,
+                    transactions: [
+                        {
+                            type: 'self',
+                            txid: 'deadbeaf',
+                            blockTime: 1631753600,
+                            amount: '20',
+                            fee: '20',
+                            targets: [
+                                {
+                                    n: 0,
+                                    addresses: [descriptor],
+                                    isAddress: true,
+                                    amount: '20',
+                                    isAccountTarget: true,
+                                },
+                            ],
+                            tokens: [],
+                            internalTransfers: [],
+                            details: {
+                                size: 0,
+                                totalInput: '20',
+                                totalOutput: '0',
+                                vin: [
+                                    {
+                                        txid: 'deadbeaf',
+                                        version: 'legacy',
+                                        isAddress: true,
+                                        isAccountOwned: true,
+                                        n: 0,
+                                        value: '20',
+                                        addresses: [descriptor],
+                                    },
+                                ],
+                                vout: [],
+                            },
+                            blockHeight: 195138557,
+                        },
+                    ],
+                    txids: ['deadbeaf'],
+                },
+                page: { total: 1, index: 0, size: 1 },
+            },
+        },
+    ],
+};
 
 export const solanaApi = {
     getGenesisHash: () => '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d',
@@ -95,4 +199,11 @@ describe(`Solana`, () => {
             decimals: 9,
         });
     });
+
+    fixtures.accountInfoRequest.forEach(f =>
+        it(`Get account info ${f.name}`, async () => {
+            const result = await blockchain.getAccountInfo(f.input as AccountInfoParams);
+            expect(result).toEqual(f.result);
+        }),
+    );
 });
