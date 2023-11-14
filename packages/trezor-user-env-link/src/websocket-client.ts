@@ -121,7 +121,10 @@ class TrezorUserEnvLinkClass extends EventEmitter {
     }
 
     // todo: typesafe interface
-    send(params: any) {
+    async send(params: any) {
+        // probably after update to node 18 it started to disconnect after certain
+        // period of inactivity.
+        await this.connect();
         const { ws } = this;
         if (!ws) throw NOT_INITIALIZED;
         const id = this.messageID;
