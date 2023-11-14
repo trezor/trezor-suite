@@ -2,12 +2,18 @@ import type {
     Response,
     AccountInfo,
     SubscriptionAccountInfo,
+    TokenInfo,
 } from '@trezor/blockchain-link-types';
 import type * as MessageTypes from '@trezor/blockchain-link-types/lib/messages';
 import { CustomError } from '@trezor/blockchain-link-types/lib/constants/errors';
 import { BaseWorker, ContextType, CONTEXT } from '../baseWorker';
 import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/lib/constants';
 import { Connection, Message, PublicKey } from '@solana/web3.js';
+import {
+    transformTokenInfo,
+    TOKEN_PROGRAM_PUBLIC_KEY,
+} from '@trezor/blockchain-link-utils/lib/solana';
+import { getTokenMetadata, TOKEN_ACCOUNT_LAYOUT } from './tokenUtils';
 
 export type SolanaAPI = Connection;
 
@@ -41,10 +47,23 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
         } as const);
     }
 
+    const tokenAccounts = await api.getParsedTokenAccountsByOwner(publicKey, {
+        programId: new PublicKey(TOKEN_PROGRAM_PUBLIC_KEY),
+    });
+
+    // Fetch token info only if the account owns tokens
+    let tokens: TokenInfo[] = [];
+    if (tokenAccounts.value.length > 0) {
+        const tokenMetadata = await getTokenMetadata();
+
+        tokens = transformTokenInfo(tokenAccounts.value, tokenMetadata);
+    }
+
     const account: AccountInfo = {
         descriptor: payload.descriptor,
         balance: accountInfo.lamports.toString(),
         availableBalance: accountInfo.lamports.toString(),
+        tokens,
         misc: {
             owner: accountInfo.owner.toString(),
         },

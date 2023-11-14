@@ -17,6 +17,7 @@
         "prepublish": "yarn tsx ../../scripts/prepublish.js"
     },
     "dependencies": {
+        "@mobily/ts-belt": "^3.13.1",
         "@trezor/utils": "workspace:*",
         "bignumber.js": "^9.1.1"
     },
