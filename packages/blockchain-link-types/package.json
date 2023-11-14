@@ -16,6 +16,7 @@
         "prepublish": "yarn tsx ../../scripts/prepublish.js"
     },
     "devDependencies": {
+        "@solana/web3.js": "1.78.4",
         "@trezor/utxo-lib": "workspace:*",
         "rimraf": "^5.0.5",
         "ripple-lib": "^1.10.1",
