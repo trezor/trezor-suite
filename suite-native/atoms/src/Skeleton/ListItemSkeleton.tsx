@@ -25,6 +25,7 @@ export const ListItemSkeleton = () => {
         applyStyle,
         utils: { borders },
     } = useNativeStyles();
+
     return (
         <Box style={applyStyle(skeletonContainer)}>
             <BoxSkeleton width={MAIN_ITEM_WIDTH} height={MAIN_ITEM_HEIGHT} />

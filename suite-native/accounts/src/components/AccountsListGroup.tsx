@@ -19,6 +19,7 @@ const accountListGroupStyle = prepareNativeStyle(utils => ({
 
 export const AccountsListGroup = ({ accounts, onSelectAccount }: AccountsListGroupProps) => {
     const { applyStyle } = useNativeStyles();
+
     if (G.isNull(accounts)) return null;
 
     return (
