@@ -22,6 +22,7 @@ services:
       - CI_JOB_NAME=$CI_JOB_NAME
       - TEST_FILE=$TEST_FILE
       - IS_WEBEXTENSION=$IS_WEBEXTENSION
+      - BROWSER_CHANNEL=$BROWSER_CHANNEL
     working_dir: /e2e
     command: bash -c "npx playwright install && yarn workspace @trezor/connect-popup test:e2e $TEST_FILE"
     volumes:

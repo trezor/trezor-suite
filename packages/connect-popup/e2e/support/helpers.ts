@@ -44,6 +44,7 @@ const getExtensionPage = async () => {
             `--disable-extensions-except=${pathToExtension}`,
             `--load-extension=${pathToExtension}`,
         ],
+        channel: process.env.BROWSER_CHANNEL || 'chrome',
     });
 
     await browserContext.clearCookies();

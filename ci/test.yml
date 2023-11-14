@@ -249,6 +249,29 @@ connect-popup manual:
     <<: *run_everything_rules
   when: manual
 
+connect-popup chrome canary:
+  extends: .e2e connect-popup
+  variables:
+    BROWSER_CHANNEL: chrome-canary
+  dependencies:
+    - install
+    - connect-web build
+  only:
+    refs:
+      - schedules
+
+connect-popup chrome canary manual:
+  extends: .e2e connect-popup
+  variables:
+    BROWSER_CHANNEL: chrome-canary
+  needs:
+    - install
+    - connect-web build
+  except:
+    refs:
+      - schedules
+  when: manual
+
 connect-popup legacy:
   extends: .e2e connect-popup
   needs:
