@@ -40,5 +40,6 @@ export * from './RoundedIcon';
 export * from './TrezorSuiteLiteHeader';
 export * from './Skeleton/BoxSkeleton';
 export * from './Skeleton/ListItemSkeleton';
+export * from './BulletListItem';
 
 export { useDebugView } from './DebugView';
