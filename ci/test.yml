@@ -256,9 +256,9 @@ connect-popup chrome canary:
   dependencies:
     - install
     - connect-web build
-  only:
-    refs:
-      - schedules
+  # only:
+  #   refs:
+  #     - schedules
 
 connect-popup chrome canary manual:
   extends: .e2e connect-popup
