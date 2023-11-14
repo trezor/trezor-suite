@@ -5,7 +5,7 @@ import { Icon, IconName } from '@suite-common/icons';
 import { Box } from './Box';
 import { Text } from './Text';
 
-export type AlertBoxVariant = 'info' | 'success' | 'warning' | 'error';
+type AlertBoxVariant = 'info' | 'success' | 'warning' | 'error';
 
 type AlertBoxStyle = {
     backgroundColor: Color;
@@ -68,7 +68,7 @@ const variantToIconName = {
     error: 'warningTriangle',
 } as const satisfies Record<AlertBoxVariant, IconName>;
 
-type AlertBoxProps = {
+export type AlertBoxProps = {
     variant: AlertBoxVariant;
     title?: React.ReactNode;
     isStandalone?: boolean;

@@ -2,17 +2,16 @@ import { ReactNode } from 'react';
 import { View } from 'react-native';
 
 import { RequireAllOrNone } from 'type-fest';
-import { G } from '@mobily/ts-belt';
 
 import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { AlertBox, AlertBoxVariant } from '../AlertBox';
+import { AlertBox, AlertBoxProps } from '../AlertBox';
 
 export type CardProps = {
     children: ReactNode;
     style?: NativeStyleObject;
 } & RequireAllOrNone<
-    { alertVariant: AlertBoxVariant; alertTitle: string },
+    { alertVariant: AlertBoxProps['variant']; alertTitle: AlertBoxProps['title'] },
     'alertVariant' | 'alertTitle'
 >;
 
@@ -43,6 +42,7 @@ export const Card = ({ children, style, alertVariant, alertTitle }: CardProps) =
             {isAlertDisplayed && (
                 <AlertBox isStandalone={false} variant={alertVariant} title={alertTitle} />
             )}
+            {/* CAUTION: in case that alert is displayed, it is not possible to change styles of the top borders by the `style` prop. */}
             <View style={[applyStyle(cardContainerStyle, { isAlertDisplayed }), style]}>
                 {children}
             </View>

@@ -1,20 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Animated, { FadeIn } from 'react-native-reanimated';
 
 import { Box, VStack, Button, Text } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 
+import { AddressMismatchBottomSheet } from './AddressMismatchBottomSheet';
+
 export const UnverifiedAddressDeviceHint = () => {
-    const { showToast } = useToast();
+    const [isBottomSheetOpened, setIsBottomSheetOpened] = useState(false);
     const { translate } = useTranslate();
 
-    // TODO: https://github.com/trezor/trezor-suite/issues/9776
     const handlePress = () => {
-        showToast({
-            variant: 'default',
-            message: 'TODO: show informational modal',
-            icon: 'warningCircle',
-        });
+        setIsBottomSheetOpened(true);
+    };
+
+    const handleCloseBottomSheet = () => {
+        setIsBottomSheetOpened(false);
     };
 
     return (
@@ -25,12 +26,14 @@ export const UnverifiedAddressDeviceHint = () => {
                 </Text>
                 <Box flexDirection="row" flexShrink={1} justifyContent="center">
                     <Button size="small" colorScheme="tertiaryElevation1" onPress={handlePress}>
-                        {translate(
-                            'moduleReceive.receiveAddressCard.deviceHint.doesNotMatchButton',
-                        )}
+                        {translate('moduleReceive.bottomSheets.addressMismatch.title')}
                     </Button>
                 </Box>
             </VStack>
+            <AddressMismatchBottomSheet
+                isOpened={isBottomSheetOpened}
+                onClose={handleCloseBottomSheet}
+            />
         </Animated.View>
     );
 };

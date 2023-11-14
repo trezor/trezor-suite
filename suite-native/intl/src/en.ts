@@ -8,6 +8,7 @@ export const en = {
         header: '<green>Trezor Suite</green> <grey>Lite</grey>',
         buttons: {
             back: 'Back',
+            close: 'Close',
             confirm: 'Confirm',
             continue: 'Continue',
             next: 'Next',
@@ -141,11 +142,39 @@ export const en = {
             deviceHint: {
                 description:
                     'The receive address shown above should match the one on your Trezor device.',
-                doesNotMatchButton: "Address doesn't match?",
             },
             showAddress: {
                 button: 'Show address',
                 learnMore: 'Learn more about verifying addresses',
+            },
+        },
+        bottomSheets: {
+            verificationWalkthrough: {
+                title: {
+                    step1: 'Why is it important to verify?',
+                    step2: 'Why is it important to verify on device?',
+                },
+                description: {
+                    step1: 'Confirm that the address on your Trezor display matches the one on the following screen.',
+                    step2: 'While hackers can put fake info in your mobile phone, your Trezor’s screen always tells the truth.',
+                },
+                dontShowAgainButton: 'Don’t show again and continue',
+            },
+            confirmOnTrezor: {
+                title: 'Confirm on Trezor',
+                description:
+                    'See the connected Trezor. The receive address shown here in the app should match the one on your Trezor device.',
+            },
+            addressMismatch: {
+                title: "Address doesn't match?",
+                description:
+                    'The receive address shown on the app should match the one on your Trezor device.',
+                remember: 'Keep in mind:',
+                trustDevice:
+                    "Always trust your Trezor's screen, it never lies. Your mobile may be vulnerable to hacks and security breaches.",
+                contactSupport:
+                    'For any security concerns about your app or device, contact Trezor Support.',
+                reportIssueButton: 'Report security issue',
             },
         },
     },
