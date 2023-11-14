@@ -363,6 +363,7 @@ export const MetadataLabeling = (props: Props) => {
                             isLoading={actionButtonsDisabled}
                             isDisabled={actionButtonsDisabled}
                             isVisible={isVisible}
+                            size="small"
                             isValueVisible={!!props.payload.value}
                             onClick={e => {
                                 e.stopPropagation();
@@ -397,6 +398,7 @@ export const MetadataLabeling = (props: Props) => {
                             isLoading={actionButtonsDisabled}
                             isDisabled={actionButtonsDisabled}
                             isVisible={isVisible}
+                            size="small"
                             onClick={e => {
                                 e.stopPropagation();
                                 activateEdit();

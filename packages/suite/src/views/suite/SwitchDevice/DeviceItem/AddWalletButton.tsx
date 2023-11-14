@@ -6,6 +6,7 @@ import { Translation } from 'src/components/suite';
 import { TrezorDevice, AcquiredDevice } from 'src/types/suite';
 import { useSelector } from 'src/hooks/suite';
 import { SUITE } from 'src/actions/suite/constants';
+import { borders } from '@trezor/theme';
 
 const AddWallet = styled.div`
     display: flex;
@@ -17,7 +18,7 @@ const StyledButton = styled(Button)`
     padding: 16px;
     justify-content: center;
     border: 1px dashed ${({ theme }) => theme.STROKE_GREY};
-    border-radius: 8px;
+    border-radius: ${borders.radii.md};
     background: transparent;
 
     :hover,

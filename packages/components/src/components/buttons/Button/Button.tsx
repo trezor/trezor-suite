@@ -76,6 +76,7 @@ export interface ButtonProps extends SelectedHTMLButtonProps {
     iconSize?: number;
     iconAlignment?: IconAlignment;
     children: React.ReactNode;
+    title?: string;
     'data-test'?: string;
 }
 

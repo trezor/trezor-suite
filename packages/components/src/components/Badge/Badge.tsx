@@ -113,7 +113,7 @@ export interface BadgeProps {
     isDisabled?: boolean;
     icon?: IconName;
     hasAlert?: boolean;
-    onClick?: () => void;
+    onClick?: (e: any) => void;
     children?: React.ReactNode;
 }
 
