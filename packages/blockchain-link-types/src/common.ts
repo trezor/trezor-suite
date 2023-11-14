@@ -207,6 +207,8 @@ export interface AccountInfo {
             rewards: string;
             poolId: string | null;
         };
+        // SOL
+        owner?: string; // The Solana program owning the account
     };
     page?: {
         // blockbook and blockfrost
