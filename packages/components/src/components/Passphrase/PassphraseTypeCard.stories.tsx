@@ -1,5 +1,9 @@
 import { IntlProvider } from 'react-intl';
-import { PassphraseTypeCard as PassphraseTypeCardComponent } from './PassphraseTypeCard';
+import {
+    PassphraseTypeCard as PassphraseTypeCardComponent,
+    PassphraseTypeCardProps,
+} from './PassphraseTypeCard';
+import { Meta, StoryObj } from '@storybook/react';
 
 export default {
     title: 'Loaders/PassphraseTypeCard',
@@ -11,9 +15,9 @@ export default {
         ),
     ],
     component: PassphraseTypeCardComponent,
-};
+} as Meta;
 
-export const PassphraseTypeCard = {
+export const PassphraseTypeCard: StoryObj<PassphraseTypeCardProps> = {
     args: {
         title: 'My Trezor',
         description:

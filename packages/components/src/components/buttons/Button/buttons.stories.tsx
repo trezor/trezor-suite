@@ -1,5 +1,5 @@
 import { Button, ButtonProps } from '../../../index';
-import { Meta } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react';
 import { capitalizeFirstLetter } from '@trezor/utils';
 import { StoryColumn } from '../../../support/Story';
 import { ButtonVariant } from '../buttonStyleUtils';
@@ -10,7 +10,7 @@ export default {
     title: 'Buttons/Button/All',
 } as Meta<ButtonProps>;
 
-export const All = () => (
+export const All: StoryFn = () => (
     <>
         {variants.map(variant => (
             <StoryColumn key={variant} minWidth={350} maxWidth={420}>

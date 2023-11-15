@@ -1,11 +1,12 @@
-import { Warning as WarningComponent } from '../../index';
+import { Meta, StoryObj } from '@storybook/react';
+import { Warning as WarningComponent, WarningProps } from '../../index';
 
 export default {
     title: 'Misc/Warning',
     component: WarningComponent,
-};
+} as Meta;
 
-export const Warning = {
+export const Warning: StoryObj<WarningProps> = {
     args: {
         children: 'Insert text here.',
         withIcon: true,

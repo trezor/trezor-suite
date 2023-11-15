@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { Tooltip as TooltipComponent, TooltipProps } from '../../index';
-import { StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react';
 
 const Center = styled.div`
     display: flex;
@@ -19,7 +19,7 @@ const Addon = styled.span`
 export default {
     title: 'Misc/Tooltip',
     component: TooltipComponent,
-};
+} as Meta;
 
 export const Tooltip: StoryObj<TooltipProps> = {
     render: args => (

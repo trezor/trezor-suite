@@ -1,5 +1,5 @@
 import { useArgs } from '@storybook/client-api';
-import { StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react';
 
 import { Select as SelectComponent, SelectProps } from './Select';
 
@@ -18,7 +18,7 @@ const options = Object.keys(values)
 export default {
     title: 'Form/Select',
     component: SelectComponent,
-};
+} as Meta;
 
 export const Select: StoryObj<SelectProps> = {
     render: ({ ...args }) => {

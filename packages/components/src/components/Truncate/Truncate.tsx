@@ -21,10 +21,10 @@ const StyledButton = styled.button`
     line-height: 1;
 `;
 
-type TruncateProps = {
+export interface TruncateProps {
     children: ReactNode;
     lines?: number;
-};
+}
 
 export const Truncate = ({ children, lines = 1 }: TruncateProps) => {
     const theme = useTheme();

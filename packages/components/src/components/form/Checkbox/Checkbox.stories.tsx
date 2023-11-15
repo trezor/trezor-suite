@@ -1,13 +1,14 @@
 import { useArgs } from '@storybook/client-api';
+import { Meta, StoryObj } from '@storybook/react';
 
-import { Checkbox as CheckboxComponent } from './Checkbox';
+import { Checkbox as CheckboxComponent, CheckboxProps } from './Checkbox';
 
 export default {
     title: 'Form/Checkbox',
     component: CheckboxComponent,
-};
+} as Meta;
 
-export const Checkbox = {
+export const Checkbox: StoryObj<CheckboxProps> = {
     render: ({ ...args }) => {
         // eslint-disable-next-line
         const [{ isChecked }, updateArgs] = useArgs();
@@ -17,12 +18,12 @@ export const Checkbox = {
             <CheckboxComponent
                 variant="primary"
                 isChecked={isChecked}
-                onClick={handleIsChecked}
                 {...args}
+                onClick={handleIsChecked}
             >
-                {args.label}
+                {args.children}
             </CheckboxComponent>
         );
     },
-    args: { label: 'Checkbox' },
+    args: { children: 'Checkbox' },
 };

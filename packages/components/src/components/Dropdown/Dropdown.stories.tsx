@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Meta, StoryObj } from '@storybook/react';
 import { Dropdown as DropdownComponent, DropdownProps } from './Dropdown';
-import { StoryObj } from '@storybook/react';
 
 const Center = styled.div`
     display: flex;
@@ -13,7 +13,7 @@ const Center = styled.div`
 export default {
     title: 'Misc/Dropdown',
     component: DropdownComponent,
-};
+} as Meta;
 
 export const Dropdown: StoryObj<DropdownProps> = {
     render: args => (

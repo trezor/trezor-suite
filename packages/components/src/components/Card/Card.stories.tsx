@@ -1,10 +1,10 @@
+import { Meta, StoryObj } from '@storybook/react';
 import { Card as CardComponent } from './Card';
-import { StoryObj } from '@storybook/react';
 
 export default {
     title: 'Misc/Card',
     component: CardComponent,
-};
+} as Meta;
 
 export const Card: StoryObj = {
     args: {

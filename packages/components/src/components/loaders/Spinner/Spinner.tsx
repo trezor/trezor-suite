@@ -7,15 +7,15 @@ import animationEnd from './animationData/refresh-spinner-end-success.json';
 import animationWarn from './animationData/refresh-spinner-end-warning.json';
 
 const StyledLottie = styled(Lottie)<{
-    size: FluidSpinnerProps['size'];
-    $isGrey: FluidSpinnerProps['isGrey'];
+    size: SpinnerProps['size'];
+    $isGrey: SpinnerProps['isGrey'];
 }>`
     width: ${({ size }) => `${size}px`};
     height: ${({ size }) => `${size}px`};
     filter: ${({ $isGrey }) => ($isGrey ? 'grayscale(1) opacity(0.6)' : 'none')};
 `;
 
-export interface FluidSpinnerProps {
+export interface SpinnerProps {
     size?: number;
     isGrey?: boolean;
     isWithSpeadup?: boolean;
@@ -33,7 +33,7 @@ export const Spinner = ({
     hasError,
     className,
     dataTest,
-}: FluidSpinnerProps) => {
+}: SpinnerProps) => {
     const [hasStarted, setHasStarted] = useState(false);
     const [hasFinishedRotation, setHasFinishedRotation] = useState(false);
 

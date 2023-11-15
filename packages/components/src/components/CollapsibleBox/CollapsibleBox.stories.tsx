@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react';
 
 import { CollapsibleBox as CollapsibleBoxComponent } from './CollapsibleBox';
 
@@ -10,7 +10,7 @@ const Content = styled.div`
 export default {
     title: 'Misc/CollapsibleBox',
     component: CollapsibleBoxComponent,
-};
+} as Meta;
 
 export const CollapsibleBox: StoryObj = {
     args: {
