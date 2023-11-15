@@ -20,6 +20,7 @@ import { AddAccountButton } from './AddAccountButton';
 const Wrapper = styled.div<{ isInline?: boolean }>`
     display: flex;
     flex-direction: column;
+    flex: 1;
     z-index: ${zIndices.expandableNavigationHeader};
     width: 100%;
 
@@ -33,9 +34,6 @@ const Wrapper = styled.div<{ isInline?: boolean }>`
 const MenuHeader = styled.div<{ isInline?: boolean }>`
     display: flex;
     flex-direction: column;
-
-    /* justify-content: center; */
-    background: ${({ theme }) => theme.BG_WHITE};
 
     ${props =>
         props.isInline &&
@@ -102,14 +100,9 @@ const ExpandedMobileWrapper = styled.div`
     padding-bottom: 16px;
 `;
 
-const Scroll = styled.div<{ isInline?: boolean }>`
+const Scroll = styled.div`
     height: auto;
     overflow: hidden auto;
-    ${props =>
-        !props.isInline &&
-        css`
-            padding: 0 8px;
-        `}
 `;
 
 const NoResults = styled.div`
@@ -152,7 +145,7 @@ export const AccountsMenu = ({ isMenuInline }: AccountsMenuProps) => {
         // TODO: default empty state while retrieving data from the device
         return (
             <Wrapper isInline={isMenuInline}>
-                <Scroll isInline={isMenuInline}>
+                <Scroll>
                     <MenuHeader isInline={isMenuInline}>
                         <Heading isInline={isMenuInline}>
                             <Translation id="TR_MY_ACCOUNTS" />

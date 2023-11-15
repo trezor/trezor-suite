@@ -1,6 +1,7 @@
 import { SkeletonCircle, SkeletonRectangle, SkeletonStack } from 'src/components/suite';
 import { useLoadingSkeleton } from 'src/hooks/suite';
-import { AccountHeader, Left, Right } from './AccountItem';
+import { Left, Right } from './AccountItem';
+import { NavigationItemBase } from 'src/components/suite/Preloader/SuiteLayout/Sidebar/NavigationItem';
 
 interface AccountItemSkeletonProps {
     animate?: boolean;
@@ -10,7 +11,7 @@ export const AccountItemSkeleton = (props: AccountItemSkeletonProps) => {
     const { shouldAnimate } = useLoadingSkeleton();
     const animate = props.animate ?? shouldAnimate;
     return (
-        <AccountHeader>
+        <NavigationItemBase>
             <Left>
                 <SkeletonCircle size="18px" />
             </Left>
@@ -23,6 +24,6 @@ export const AccountItemSkeleton = (props: AccountItemSkeletonProps) => {
                     <SkeletonRectangle width="100px" height="16px" animate={animate} />
                 </SkeletonStack>
             </Right>
-        </AccountHeader>
+        </NavigationItemBase>
     );
 };
