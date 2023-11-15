@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { Meta, StoryObj } from '@storybook/react';
 import { TrezorLogo } from '../../../index';
 import { StoryColumn } from '../../../support/Story';
 
@@ -16,9 +17,9 @@ const LogoWrapper = styled.div<WrapperProps>`
 
 export default {
     title: 'Assets/TrezorLogos',
-};
+} as Meta;
 
-export const All = {
+export const All: StoryObj = {
     render: () => (
         <StoryColumn minWidth={400}>
             <LogoWrapper>

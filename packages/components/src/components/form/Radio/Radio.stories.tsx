@@ -1,9 +1,9 @@
 import { useArgs } from '@storybook/client-api';
 import styled from 'styled-components';
+import { Meta, StoryObj } from '@storybook/react';
 
 import { Radio as RadioComponent, RadioProps } from './Radio';
 import { H2 } from '../../typography/Heading/Heading';
-import { StoryObj } from '@storybook/react';
 
 const Wrapper = styled.div`
     display: flex;
@@ -16,7 +16,7 @@ const Wrapper = styled.div`
 export default {
     title: 'Form/RadioButton',
     component: RadioComponent,
-};
+} as Meta;
 
 export const RadioButton: StoryObj<RadioProps> = {
     render: ({ ...args }) => {

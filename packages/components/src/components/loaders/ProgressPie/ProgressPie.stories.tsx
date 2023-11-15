@@ -1,11 +1,12 @@
-import { ProgressPie as ProgressPieComponent } from './ProgressPie';
+import { Meta, StoryObj } from '@storybook/react';
+import { ProgressPie as ProgressPieComponent, ProgressPieProps } from './ProgressPie';
 
 export default {
     title: 'Loaders/ProgressPie',
     component: ProgressPieComponent,
-};
+} as Meta;
 
-export const ProgressPie = {
+export const ProgressPie: StoryObj<ProgressPieProps> = {
     args: {
         value: 21,
     },
