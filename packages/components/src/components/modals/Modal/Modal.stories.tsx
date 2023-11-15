@@ -1,4 +1,4 @@
-import { StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react';
 import { Modal as ModalComponent, Button, ModalProps, Icon } from '../../../index';
 
 const Buttons = () => (
@@ -16,7 +16,7 @@ const Buttons = () => (
 export default {
     title: 'Modals/Modal',
     component: ModalComponent,
-};
+} as Meta;
 
 export const Modal: StoryObj<ModalProps> = {
     args: {

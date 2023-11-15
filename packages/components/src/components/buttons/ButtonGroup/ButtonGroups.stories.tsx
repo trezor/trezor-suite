@@ -1,5 +1,5 @@
 import React from 'react';
-import { Meta } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react';
 import { StoryColumn } from '../../../support/Story';
 import { Button } from '../Button/Button';
 import { ButtonGroup } from './ButtonGroup';
@@ -10,7 +10,7 @@ export default {
     component: ButtonGroup,
 } as Meta;
 
-export const ButtonGroups = () => (
+export const ButtonGroups: StoryFn = () => (
     <StoryColumn minWidth={350} maxWidth={420}>
         <ButtonGroup>
             <Button>Button 1</Button>

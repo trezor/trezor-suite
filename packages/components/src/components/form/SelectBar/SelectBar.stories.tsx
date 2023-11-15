@@ -1,5 +1,5 @@
 import { useArgs } from '@storybook/client-api';
-import { StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react';
 
 import { SelectBar as SelectBarComponent, SelectBarProps } from './SelectBar';
 
@@ -14,7 +14,7 @@ export default {
     title: 'Form/SelectBar',
     args: { selectedOption: 'low', label: 'fee' },
     component: SelectBarComponent,
-};
+} as Meta;
 
 export const SelectBar: StoryObj<SelectBarProps<string>> = {
     render: ({ ...args }) => {

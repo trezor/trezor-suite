@@ -1,12 +1,12 @@
 import { useArgs } from '@storybook/client-api';
-import { StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react';
 import { ChangeEventHandler } from 'react';
 import { Textarea as TextareaComponent, TextareaProps } from './Textarea';
 
 export default {
     title: 'Form/Textarea',
     component: TextareaComponent,
-};
+} as Meta;
 
 const Component = ({ ...args }) => {
     const [{ value }, updateArgs] = useArgs();
