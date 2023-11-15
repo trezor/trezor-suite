@@ -109,15 +109,17 @@ export const SettingsMenu = () => {
                 </span>
             }
             navigation={<AppNavigation maxWidth="default" items={appNavItems} />}
-            titleContent={isAppNavigationPanelInView => (
-                <CloseButtonWrapper isAppNavigationPanelInView={isAppNavigationPanelInView}>
-                    <CloseButtonSticky
-                        isAppNavigationPanelInView={isAppNavigationPanelInView}
-                        onClick={handleClose}
-                        data-test="@settings/menu/close"
-                    />
-                </CloseButtonWrapper>
-            )}
+            titleContent={isAppNavigationPanelInView =>
+                initialRun && (
+                    <CloseButtonWrapper isAppNavigationPanelInView={isAppNavigationPanelInView}>
+                        <CloseButtonSticky
+                            isAppNavigationPanelInView={isAppNavigationPanelInView}
+                            onClick={handleClose}
+                            data-test="@settings/menu/close"
+                        />
+                    </CloseButtonWrapper>
+                )
+            }
         />
     );
 };
