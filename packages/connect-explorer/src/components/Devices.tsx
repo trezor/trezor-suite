@@ -10,7 +10,7 @@ const LayoutWrapper = styled.div`
     color: #fff;
     background: #2c2c2c;
     padding: 0;
-    padding: 4px 0 8px 20px;
+    padding: 4px 0 6px 20px;
 `;
 
 const DeviceList = styled.ul`
@@ -20,12 +20,10 @@ const DeviceList = styled.ul`
 const DeviceItem = styled.li`
     position: relative;
     cursor: pointer;
-    padding: 10px 15px;
+    padding: 0;
     white-space: nowrap;
     width: 25%;
     display: inline-block;
-    border-top: 1px solid transparent;
-    border-bottom: 4px solid transparent;
 
     &.active {
         background: #060606;
