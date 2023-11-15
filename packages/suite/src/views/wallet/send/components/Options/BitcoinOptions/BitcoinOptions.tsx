@@ -169,6 +169,7 @@ export const BitcoinOptions = () => {
                                 variant="tertiary"
                                 icon="COIN_CONTROL"
                                 onClick={toggleUtxoSelection}
+                                data-test="coin-control-button"
                             >
                                 <Translation id="TR_COIN_CONTROL" />
                                 {isCoinControlEnabled && <OnOffSwitcher isOn />}
