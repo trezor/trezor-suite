@@ -1,11 +1,11 @@
 import { useArgs } from '@storybook/client-api';
-import { StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react';
 
 import { Range as RangeComponent, RangeProps } from './Range';
 
 export default {
     title: 'Form/Range',
-};
+} as Meta;
 
 export const Range: StoryObj<RangeProps> = {
     render: args => {

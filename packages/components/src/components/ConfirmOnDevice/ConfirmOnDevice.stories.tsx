@@ -1,6 +1,7 @@
+import { Meta, StoryFn } from '@storybook/react';
+import { DeviceModelInternal } from '@trezor/connect';
 import { ConfirmOnDevice as ConfirmOnDeviceComponent } from './ConfirmOnDevice';
 import { StoryColumn } from '../../support/Story';
-import { DeviceModelInternal } from '@trezor/connect';
 
 export default {
     title: 'Misc/ConfirmOnDevice',
@@ -9,9 +10,9 @@ export default {
             showPanel: false,
         },
     },
-};
+} as Meta;
 
-export const ConfirmOnDevice = () => (
+export const ConfirmOnDevice: StoryFn = () => (
     <>
         <StoryColumn minWidth={300}>
             <ConfirmOnDeviceComponent

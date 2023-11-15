@@ -1,12 +1,12 @@
 import { StoryColumn } from '../../support/Story';
 import { H1, H2, Paragraph, Link } from '../../index';
-import { Meta } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react';
 
 export default {
     title: 'Typography/All',
 } as Meta;
 
-export const All = () => (
+export const All: StoryFn = () => (
     <>
         <StoryColumn>
             <H1 data-test="heading-1">Heading 1</H1>

@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { Meta, StoryFn } from '@storybook/react';
 
 import { Flag, FlagType } from './Flag';
 import { FLAGS } from './flags';
@@ -33,9 +34,9 @@ export default {
             showPanel: false,
         },
     },
-};
+} as Meta;
 
-export const All = () => {
+export const All: StoryFn = () => {
     const flags = Object.keys(FLAGS) as FlagType[];
     return (
         <Wrapper>
