@@ -2403,23 +2403,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethereumjs/common@npm:^3.2.0":
+"@ethereumjs/common@npm:^3.1.2, @ethereumjs/common@npm:^3.2.0":
   version: 3.2.0
   resolution: "@ethereumjs/common@npm:3.2.0"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     crc-32: "npm:^1.2.0"
   checksum: b3f612406b6bcefaf9117ceb42eff58d311e2b50205e3d55b4c793d803de517efbc84075e058dc0e2ec27a2bff11dfc279dda1fa2b249ed6ab3973be045898f4
-  languageName: node
-  linkType: hard
-
-"@ethereumjs/common@npm:^4.1.0":
-  version: 4.1.0
-  resolution: "@ethereumjs/common@npm:4.1.0"
-  dependencies:
-    "@ethereumjs/util": "npm:^9.0.1"
-    crc: "npm:^4.3.2"
-  checksum: 87079979431a1f79af868d0487d22bd84b4fe40a5e4cefc0da5e2125b11416c5f72bfbaabc8f5805c74de45d71c97fad56af7fd0aae6963dd89d119da98c8f28
   languageName: node
   linkType: hard
 
@@ -2432,16 +2422,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethereumjs/rlp@npm:^5.0.1":
-  version: 5.0.1
-  resolution: "@ethereumjs/rlp@npm:5.0.1"
-  bin:
-    rlp: bin/rlp.cjs
-  checksum: 5d68bfe03cda3d06e9ce9cc3dbe3b4abfd96a99171cc77f3353618340b38746771d866e2f10ace7ae3553a046d37d8c3ac669de5c8025ec353ae463698565a55
-  languageName: node
-  linkType: hard
-
-"@ethereumjs/tx@npm:^4.2.0":
+"@ethereumjs/tx@npm:^4.1.2, @ethereumjs/tx@npm:^4.2.0":
   version: 4.2.0
   resolution: "@ethereumjs/tx@npm:4.2.0"
   dependencies:
@@ -2453,23 +2434,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethereumjs/tx@npm:^5.1.0":
-  version: 5.1.0
-  resolution: "@ethereumjs/tx@npm:5.1.0"
-  dependencies:
-    "@ethereumjs/common": "npm:^4.1.0"
-    "@ethereumjs/rlp": "npm:^5.0.1"
-    "@ethereumjs/util": "npm:^9.0.1"
-    ethereum-cryptography: "npm:^2.1.2"
-  peerDependencies:
-    c-kzg: ^2.1.2
-  peerDependenciesMeta:
-    c-kzg:
-      optional: true
-  checksum: f147f3a7101b1db055562b3eedda20c5a4b0cf8d518fc3416c4d40b1d116c7dbd17b003c348e88db45da0449b61cc503cebcc27f7095e6c5c023164ebb6498af
-  languageName: node
-  linkType: hard
-
 "@ethereumjs/util@npm:^8.1.0":
   version: 8.1.0
   resolution: "@ethereumjs/util@npm:8.1.0"
@@ -2478,21 +2442,6 @@ __metadata:
     ethereum-cryptography: "npm:^2.0.0"
     micro-ftch: "npm:^0.3.1"
   checksum: cc35338932e49b15e54ca6e548b32a1f48eed7d7e1d34ee743e4d3600dd616668bd50f70139e86c5c35f55aac35fba3b6cc4e6f679cf650aeba66bf93016200c
-  languageName: node
-  linkType: hard
-
-"@ethereumjs/util@npm:^9.0.1":
-  version: 9.0.1
-  resolution: "@ethereumjs/util@npm:9.0.1"
-  dependencies:
-    "@ethereumjs/rlp": "npm:^5.0.1"
-    ethereum-cryptography: "npm:^2.1.2"
-  peerDependencies:
-    c-kzg: ^2.1.2
-  peerDependenciesMeta:
-    c-kzg:
-      optional: true
-  checksum: 1e8bb27994ffd1cbd5b5e2b6f35376f43f05e6999b7a703c7bb54a162c2d92e55d63e7aec067d980bec5837930cb2979ef62eb4925d4f3ef73d977809b7ead91
   languageName: node
   linkType: hard
 
@@ -7170,9 +7119,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/wallet-utils@workspace:suite-common/wallet-utils"
   dependencies:
-    "@ethereumjs/common": "npm:^4.1.0"
-    "@ethereumjs/tx": "npm:^5.1.0"
-    "@ethereumjs/util": "npm:^9.0.1"
     "@suite-common/fiat-services": "workspace:*"
     "@suite-common/metadata-types": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
@@ -8875,6 +8821,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/connect@workspace:packages/connect"
   dependencies:
+    "@ethereumjs/common": "npm:^3.1.2"
+    "@ethereumjs/tx": "npm:^4.1.2"
     "@fivebinaries/coin-selection": "npm:2.2.0"
     "@trezor/blockchain-link": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
@@ -8893,6 +8841,7 @@ __metadata:
     bs58: "npm:^5.0.0"
     bs58check: "npm:^3.0.1"
     cross-fetch: "npm:^4.0.0"
+    ethereum-cryptography: "npm:^2.0.0"
     events: "npm:^3.3.0"
     jest: "npm:29.5.0"
     jest-environment-jsdom: "npm:^29.5.0"
@@ -9447,7 +9396,6 @@ __metadata:
   resolution: "@trezor/suite@workspace:packages/suite"
   dependencies:
     "@crowdin/cli": "npm:^3.15.0"
-    "@ethereumjs/util": "npm:^9.0.1"
     "@formatjs/cli": "npm:^6.2.1"
     "@formatjs/intl": "npm:2.9.6"
     "@hookform/resolvers": "npm:3.1.0"
@@ -15213,18 +15161,6 @@ __metadata:
   dependencies:
     buffer: "npm:^5.1.0"
   checksum: 3a43061e692113d60fbaf5e438c5f6aa3374fe2368244a75cc083ecee6762513bcee8583f67c2c56feea0b0c72b41b7304fbd3c1e26cfcfaec310b9a18543fa8
-  languageName: node
-  linkType: hard
-
-"crc@npm:^4.3.2":
-  version: 4.3.2
-  resolution: "crc@npm:4.3.2"
-  peerDependencies:
-    buffer: ">=6.0.3"
-  peerDependenciesMeta:
-    buffer:
-      optional: true
-  checksum: daa5c340de4ccb0d248ad579d1ca1317efe89d2b3f68a124850a140e9afc17d595cdfc058bd14ea78325c0a706ac73ad94962c1efede6a2a1abf58a48ebbb9da
   languageName: node
   linkType: hard
 
