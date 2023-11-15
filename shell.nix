@@ -8,7 +8,7 @@ with import
 
 let
   # unstable packages
-  electron = electron_26;  # use the same version as defined in packages/suite-desktop/package.json
+  electron = electron_27; # use the same version as defined in packages/suite-desktop/package.json
   nodejs = nodejs_18;
 in
   stdenv.mkDerivation {
