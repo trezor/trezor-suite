@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, ReactNode } from 'react';
+import { useEffect, useRef, useState, ReactNode, useMemo, useLayoutEffect } from 'react';
 import styled from 'styled-components';
 
 import { variables } from '@trezor/components';
@@ -16,9 +16,11 @@ import { useLayoutSize, useSelector, useDevice, useDispatch } from 'src/hooks/su
 import { useGuide } from 'src/hooks/guide';
 import { LayoutContext, LayoutContextPayload } from 'src/support/suite/LayoutContext';
 import { ModalContextProvider } from 'src/support/suite/ModalContext';
+import { AccountsMenu } from 'src/components/wallet/WalletLayout/AccountsMenu/AccountsMenu';
 import { ModalSwitcher } from '../../modals/ModalSwitcher/ModalSwitcher';
-import { MenuSecondary } from './MenuSecondary';
-import { NavigationBar } from './NavigationBar/NavigationBar';
+import { MobileNavigation } from './NavigationBar/MobileNavigation';
+import { CoinjoinStatusBar } from './NavigationBar/CoinjoinStatusBar';
+import { Sidebar } from './Sidebar/Sidebar';
 
 const Wrapper = styled.div`
     display: flex;
@@ -94,20 +96,21 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
     const url = useSelector(state => state.router.url);
     const anchor = useSelector(state => state.router.anchor);
     const initialRun = useSelector(state => state.suite.flags.initialRun);
-    const dispatch = useDispatch();
+    const coinjoinAccounts = useSelector(state => state.wallet.coinjoin.accounts);
 
-    const { isMobileLayout, layoutSize } = useLayoutSize();
-    const { isGuideOpen, isModalOpen } = useGuide();
+    const { isMobileLayout } = useLayoutSize();
+    const { isModalOpen } = useGuide();
+    const dispatch = useDispatch();
     const { device } = useDevice();
 
-    const [{ title, SideMenu, TopMenu }, setLayoutPayload] = useState<LayoutContextPayload>({});
+    const [{ title, TopMenu }, setLayoutPayload] = useState<LayoutContextPayload>({});
 
     const wrapperRef = useRef<HTMLDivElement>(null);
     const appWrapperRef = useRef<HTMLDivElement>(null);
 
     // Reset scroll position on url change.
     // note: if you want to remove anchor highlight on scroll. It has to be added here
-    useEffect(() => {
+    useLayoutEffect(() => {
         const { current } = appWrapperRef;
 
         if (!current) return;
@@ -128,45 +131,58 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
         }
     }, [anchor, dispatch]);
 
-    // There are three layout configurations WRT the guide and menu:
-    // - On XLARGE viewports menu, body and guide are displayed in three columns.
-    // - On viewports wider than mobile but smaller than XLARGE body and menu are
-    //   are displayed in two columns unless guide is open. In such case, it takes
-    //   its own column and menu is inlined on top of body.
-    // - On mobile viewports the guide is simply hidden and menu is inlined on top
-    //   of body constantly.
-    const isMenuInline = isMobileLayout || (layoutSize === 'LARGE' && isGuideOpen);
-
     // Setting screens are available even if the device is not connected in normal mode
     // but then we need to hide NavigationBar so user can't navigate to Dashboard and Accounts.
     const isNavigationBarVisible = device?.mode === 'normal' && !initialRun;
 
     const isGuideFullHeight = isMobileLayout || isModalOpen;
 
+    let sessionCount = 0;
+    coinjoinAccounts.forEach(({ session }) => {
+        if (session) {
+            sessionCount++;
+        }
+    });
+
+    const coinjoinStatusBars = useMemo(
+        () =>
+            coinjoinAccounts?.map(({ key, session }) => {
+                if (!session) {
+                    return;
+                }
+
+                return (
+                    <CoinjoinStatusBar
+                        accountKey={key}
+                        session={session}
+                        isSingle={sessionCount === 1}
+                        key={key}
+                    />
+                );
+            }),
+        [coinjoinAccounts, sessionCount],
+    );
+
     return (
         <Wrapper ref={wrapperRef}>
             <PageWrapper>
                 <ModalContextProvider>
                     <Metadata title={title} />
-                    <SuiteBanners />
-
                     <ModalSwitcher />
 
-                    {isNavigationBarVisible && <NavigationBar />}
+                    <SuiteBanners />
+                    {coinjoinStatusBars}
+                    {isNavigationBarVisible && isMobileLayout && <MobileNavigation />}
 
                     <DiscoveryProgress />
 
                     <LayoutContext.Provider value={setLayoutPayload}>
                         <Body data-test="@suite-layout/body">
                             <Columns>
-                                {!isMenuInline && SideMenu && (
-                                    <MenuSecondary>
-                                        <SideMenu />
-                                    </MenuSecondary>
-                                )}
+                                {!isMobileLayout && <Sidebar />}
 
                                 <AppWrapper data-test="@app" ref={appWrapperRef} id="layout-scroll">
-                                    {isMenuInline && SideMenu && <SideMenu isMenuInline />}
+                                    {isMobileLayout && <AccountsMenu isMenuInline />}
                                     {TopMenu && <TopMenu />}
                                     <DefaultPaddings>{children}</DefaultPaddings>
                                 </AppWrapper>

@@ -29,6 +29,7 @@
         "@suite-common/device-authenticity": "workspace:*",
         "@suite-common/fiat-services": "workspace:*",
         "@suite-common/formatters": "workspace:*",
+        "@suite-common/icons": "workspace:*",
         "@suite-common/intl-types": "workspace:*",
         "@suite-common/invity": "workspace:*",
         "@suite-common/logger": "workspace:*",

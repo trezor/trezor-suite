@@ -6,7 +6,6 @@ export type SideMenuProps = {
 
 export type LayoutContextPayload = {
     title?: string;
-    SideMenu?: ComponentType<SideMenuProps>;
     TopMenu?: ComponentType;
 };
 

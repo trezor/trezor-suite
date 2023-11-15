@@ -7,7 +7,6 @@ import { AppState, ExtendedMessageDescriptor } from 'src/types/suite';
 import { useTranslation, useLayout } from 'src/hooks/suite';
 
 import { AccountBanners } from './AccountBanners/AccountBanners';
-import { AccountsMenu } from './AccountsMenu/AccountsMenu';
 import { AccountException } from './AccountException/AccountException';
 import { AccountTopPanel } from './AccountTopPanel/AccountTopPanel';
 import { CoinjoinAccountDiscovery } from './CoinjoinAccountDiscovery/CoinjoinAccountDiscovery';
@@ -46,7 +45,7 @@ export const WalletLayout = ({
     const { translationString } = useTranslation();
     const l10nTitle = translationString(title);
 
-    useLayout(l10nTitle, AccountTopPanel, AccountsMenu);
+    useLayout(l10nTitle, AccountTopPanel);
 
     const { status, account: selectedAccount, loader, network } = account;
 

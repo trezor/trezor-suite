@@ -8234,4 +8234,12 @@ export default defineMessages({
         id: 'TR_RESTART_TREZOR_DEVICE_TUTORIAL',
         defaultMessage: 'Restart tutorial',
     },
+    TR_HIDE_BALANCES: {
+        id: 'TR_HIDE_BALANCES',
+        defaultMessage: 'Hide balances',
+    },
+    TR_SHOW_BALANCES: {
+        id: 'TR_SHOW_BALANCES',
+        defaultMessage: 'Show balances',
+    },
 });

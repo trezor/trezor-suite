@@ -199,7 +199,8 @@ export const AccountsMenu = ({ isMenuInline }: AccountsMenuProps) => {
     const keepOpen = (type: Account['accountType']) =>
         params?.accountType === type || // selected account is from this group
         (type === 'coinjoin' && coinjoinIsPreloading) || // coinjoin account is requested but not yet created
-        (!!searchString && searchString.length > 0); // filter by search string is active
+        (!!searchString && searchString.length > 0) || // filter by search string is active
+        type === 'normal'; // always keep normal accounts open
 
     const isSelected = (account: Account) =>
         params &&
