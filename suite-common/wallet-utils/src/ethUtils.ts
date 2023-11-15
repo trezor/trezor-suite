@@ -1,7 +1,4 @@
-import { isValidChecksumAddress, isValidAddress } from '@ethereumjs/util';
 import BigNumber from 'bignumber.js';
-
-import { hasUppercaseLetter } from '@trezor/utils';
 
 export const decimalToHex = (dec: number): string => new BigNumber(dec).toString(16);
 
@@ -23,17 +20,4 @@ export const strip = (str: string): string => {
         return padLeftEven(str.substring(2, str.length));
     }
     return padLeftEven(str);
-};
-
-export const validateAddress = (address: string): string | null => {
-    if (address.length < 1) {
-        return 'Address is not set';
-    }
-    if (!isValidAddress(address)) {
-        return 'Address is not valid';
-    }
-    if (hasUppercaseLetter(address) && !isValidChecksumAddress(address)) {
-        return 'Address is not a valid checksum';
-    }
-    return null;
 };

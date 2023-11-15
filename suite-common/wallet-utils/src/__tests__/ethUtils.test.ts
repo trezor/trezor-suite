@@ -1,11 +1,4 @@
-import {
-    decimalToHex,
-    hexToDecimal,
-    padLeftEven,
-    sanitizeHex,
-    strip,
-    validateAddress,
-} from '../ethUtils';
+import { decimalToHex, hexToDecimal, padLeftEven, sanitizeHex, strip } from '../ethUtils';
 
 describe('eth utils', () => {
     it('decimalToHex', () => {
@@ -41,19 +34,5 @@ describe('eth utils', () => {
         expect(strip('0x')).toBe('');
         expect(strip('0x2540be3ff')).toBe('02540be3ff');
         expect(strip('2540be3ff')).toBe('02540be3ff');
-    });
-
-    it('validate address', () => {
-        // TODO: add more tests
-        expect(validateAddress('')).toBe('Address is not set');
-        expect(validateAddress('0x73d0385F4d8E00C5e6504C6030F47BF6212736A8')).toBeNull();
-
-        expect(validateAddress('aaa')).toBe('Address is not valid');
-        expect(validateAddress('0x89205A3A3b2A69De6Dbf7f01ED13B2108B2c43e6')).toBe(
-            'Address is not a valid checksum',
-        );
-        expect(validateAddress('BB9bc244D798123fDe783fCc1C72d3Bb8C189413')).toBe(
-            'Address is not valid',
-        );
     });
 });
