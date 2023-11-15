@@ -27,6 +27,7 @@ const initialSettings: ConnectSettings = {
     lazyLoad: false,
     timestamp: new Date().getTime(),
     interactionTimeout: 600, // 5 minutes
+    sharedLogger: true,
 };
 
 const parseManifest = (manifest?: Manifest) => {
@@ -126,6 +127,10 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
 
     if (typeof input.manifest === 'object') {
         settings.manifest = parseManifest(input.manifest);
+    }
+
+    if (typeof input.sharedLogger === 'boolean') {
+        settings.sharedLogger = input.sharedLogger;
     }
 
     return settings;
