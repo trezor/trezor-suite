@@ -8,8 +8,6 @@ import {
 } from 'react-hook-form';
 
 import BigNumber from 'bignumber.js';
-import { Common, Chain, Hardfork } from '@ethereumjs/common';
-import { LegacyTxData, TransactionFactory } from '@ethereumjs/tx';
 import { fromWei, padLeft, toHex, toWei } from 'web3-utils';
 
 import { fiatCurrencies } from '@suite-common/suite-config';
@@ -146,31 +144,6 @@ export const prepareEthereumTransaction = (txInfo: EthTransactionData) => {
     }
 
     return result;
-};
-
-export const serializeEthereumTx = (tx: LegacyTxData & EthereumTransaction) => {
-    // @ethereumjs/tx doesn't support ETC (chain 61) by default
-    // and it needs to be declared as custom chain
-    // see: https://github.com/ethereumjs/ethereumjs-tx/blob/master/examples/custom-chain-tx.ts
-    const options =
-        tx.chainId === 61
-            ? {
-                  common: Common.custom(
-                      {
-                          name: 'ethereum-classic',
-                          networkId: 1,
-                          chainId: 61,
-                      },
-                      { baseChain: Chain.Mainnet, hardfork: Hardfork.Petersburg },
-                  ),
-              }
-            : {
-                  chain: tx.chainId,
-              };
-
-    const ethTx = TransactionFactory.fromTxData(tx, options);
-    const hexEthTx = Buffer.from(ethTx.serialize()).toString('hex');
-    return `0x${hexEthTx}`;
 };
 
 export const getFeeLevels = (networkType: Network['networkType'], feeInfo: FeeInfo) => {
