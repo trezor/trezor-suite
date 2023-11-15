@@ -163,14 +163,18 @@ const init = async (settings: Partial<ConnectSettings> = {}): Promise<void> => {
         _popupManager = initPopupManager();
     }
 
-    // connect-web is running in third-party domain so we use iframe to pass logs to shared worker.
-    iframe.initIframeLogger();
     _log.enabled = !!_settings.debug;
 
     window.addEventListener('message', handleMessage);
     window.addEventListener('unload', dispose);
 
     await iframe.init(_settings);
+
+    // sharedLogger can be disable but it is enable by default.
+    if (_settings.sharedLogger !== false) {
+        // connect-web is running in third-party domain so we use iframe to pass logs to shared worker.
+        iframe.initIframeLogger();
+    }
 };
 
 const call: CallMethod = async params => {
