@@ -6016,7 +6016,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sideway/formula@npm:^3.0.0":
+"@sideway/formula@npm:^3.0.1":
   version: 3.0.1
   resolution: "@sideway/formula@npm:3.0.1"
   checksum: 3fe81fa9662efc076bf41612b060eb9b02e846ea4bea5bd114f1662b7f1541e9dedcf98aff0d24400bcb92f113964a50e0290b86e284edbdf6346fa9b7e2bf2c
@@ -9244,7 +9244,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/suite-desktop-api@workspace:packages/suite-desktop-api"
   dependencies:
-    electron: "npm:26.4.2"
+    electron: "npm:27.0.4"
     jest: "npm:^26.6.3"
     rimraf: "npm:^5.0.5"
     typescript: "npm:4.9.5"
@@ -9278,7 +9278,7 @@ __metadata:
     "@types/electron-localshortcut": "npm:^3.1.3"
     chalk: "npm:^4.1.2"
     cross-fetch: "npm:^4.0.0"
-    electron: "npm:26.4.2"
+    electron: "npm:27.0.4"
     electron-localshortcut: "npm:^3.2.1"
     electron-store: "npm:^8.1.0"
     electron-updater: "npm:6.1.4"
@@ -9333,7 +9333,7 @@ __metadata:
   dependencies:
     "@electron/notarize": "npm:2.1.0"
     blake-hash: "npm:^2.0.0"
-    electron: "npm:26.4.2"
+    electron: "npm:27.0.4"
     electron-builder: "npm:24.6.4"
     electron-localshortcut: "npm:^3.2.1"
     electron-store: "npm:^8.1.0"
@@ -12679,14 +12679,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.5.1":
-  version: 1.6.1
-  resolution: "axios@npm:1.6.1"
+"axios@npm:^1.5.1, axios@npm:^1.6.1":
+  version: 1.6.2
+  resolution: "axios@npm:1.6.2"
   dependencies:
     follow-redirects: "npm:^1.15.0"
     form-data: "npm:^4.0.0"
     proxy-from-env: "npm:^1.1.0"
-  checksum: ca2c6f56659a7f19e4a99082f549fe151952f6fd8aa72ed148559ab2d6a32ce37cd5dc72ce6d4d3cd91f0c1e2617c7c95c20077e5e244a79f319a6c0ce41204f
+  checksum: 9b77e030e85e4f9cbcba7bb52fbff67d6ce906c92d213e0bd932346a50140faf83733bf786f55bd58301bd92f9973885c7b87d6348023e10f7eaf286d0791a1d
   languageName: node
   linkType: hard
 
@@ -14895,6 +14895,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"concurrently@npm:^8.2.2":
+  version: 8.2.2
+  resolution: "concurrently@npm:8.2.2"
+  dependencies:
+    chalk: "npm:^4.1.2"
+    date-fns: "npm:^2.30.0"
+    lodash: "npm:^4.17.21"
+    rxjs: "npm:^7.8.1"
+    shell-quote: "npm:^1.8.1"
+    spawn-command: "npm:0.0.2"
+    supports-color: "npm:^8.1.1"
+    tree-kill: "npm:^1.2.2"
+    yargs: "npm:^17.7.2"
+  bin:
+    conc: dist/bin/concurrently.js
+    concurrently: dist/bin/concurrently.js
+  checksum: 0e9683196fe9c071d944345d21d8f34aa6c0cc50c0dd897e95619f2f1c9eb4871dca851b2569da17888235b7335b4c821ca19deed35bebcd9a131ee5d247f34c
+  languageName: node
+  linkType: hard
+
 "conf@npm:^10.2.0":
   version: 10.2.0
   resolution: "conf@npm:10.2.0"
@@ -14929,6 +14949,53 @@ __metadata:
   checksum: 475d0a284fa964a5182b519af5738b5b64bf7e413cfd703c1b3496bf6f4df9f827893a9b221c0ea5873c1476835beb1e0df569ba643eff0734010c1eb780589e
   languageName: node
   linkType: hard
+
+"connect-example-electron-main@workspace:packages/connect-examples/electron-main-process":
+  version: 0.0.0-use.local
+  resolution: "connect-example-electron-main@workspace:packages/connect-examples/electron-main-process"
+  dependencies:
+    "@trezor/connect": "workspace:*"
+    electron: "npm:27.0.4"
+    electron-builder: "npm:24.6.4"
+  languageName: unknown
+  linkType: soft
+
+"connect-example-electron-renderer-popup@workspace:packages/connect-examples/electron-renderer-with-popup":
+  version: 0.0.0-use.local
+  resolution: "connect-example-electron-renderer-popup@workspace:packages/connect-examples/electron-renderer-with-popup"
+  dependencies:
+    electron: "npm:27.0.4"
+    electron-builder: "npm:24.6.4"
+  languageName: unknown
+  linkType: soft
+
+"connect-example-electron-renderer-with-assets@workspace:packages/connect-examples/electron-renderer-with-assets":
+  version: 0.0.0-use.local
+  resolution: "connect-example-electron-renderer-with-assets@workspace:packages/connect-examples/electron-renderer-with-assets"
+  dependencies:
+    "@trezor/connect": "workspace:*"
+    babel-loader: "npm:^9.1.3"
+    concurrently: "npm:^8.2.2"
+    copy-webpack-plugin: "npm:^11.0.0"
+    electron: "npm:27.0.4"
+    electron-builder: "npm:24.6.4"
+    html-webpack-plugin: "npm:^5.5.3"
+    terser-webpack-plugin: "npm:^5.3.9"
+    wait-on: "npm:^7.0.1"
+    webpack: "npm:^5.89.0"
+    webpack-cli: "npm:^5.1.4"
+    webpack-dev-server: "npm:^4.15.1"
+    worker-loader: "npm:^3.0.8"
+  languageName: unknown
+  linkType: soft
+
+"connect-example-node@workspace:packages/connect-examples/node":
+  version: 0.0.0-use.local
+  resolution: "connect-example-node@workspace:packages/connect-examples/node"
+  dependencies:
+    "@trezor/connect": "workspace:*"
+  languageName: unknown
+  linkType: soft
 
 "connect-history-api-fallback@npm:^1.5.0":
   version: 1.6.0
@@ -16834,16 +16901,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron@npm:26.4.2":
-  version: 26.4.2
-  resolution: "electron@npm:26.4.2"
+"electron@npm:27.0.4":
+  version: 27.0.4
+  resolution: "electron@npm:27.0.4"
   dependencies:
     "@electron/get": "npm:^2.0.0"
     "@types/node": "npm:^18.11.18"
     extract-zip: "npm:^2.0.1"
   bin:
     electron: cli.js
-  checksum: 666d82ed2bb3334e0e570a845f4c0c07e96a8cbc5e60f56c12cbe5e2659dfe3524ecf66e2da83a87a91079ce67cff408f558d5fd18d86ef5b40053ff541c4d7f
+  checksum: ef8c45ec3e18e6c8616671bfb2adab9e6d4a58450a5bda6e862072cd4726b1d65b3949b3f4e3de1885b7af3a5105b05e66b0d9dc26745eb7ed429ce32a1a6654
   languageName: node
   linkType: hard
 
@@ -23253,16 +23320,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"joi@npm:^17.2.1":
-  version: 17.6.3
-  resolution: "joi@npm:17.6.3"
+"joi@npm:^17.11.0, joi@npm:^17.2.1":
+  version: 17.11.0
+  resolution: "joi@npm:17.11.0"
   dependencies:
     "@hapi/hoek": "npm:^9.0.0"
     "@hapi/topo": "npm:^5.0.0"
     "@sideway/address": "npm:^4.1.3"
-    "@sideway/formula": "npm:^3.0.0"
+    "@sideway/formula": "npm:^3.0.1"
     "@sideway/pinpoint": "npm:^2.0.0"
-  checksum: 80bf893e5c97445aa50222f7546b98e9559de72b8d4acac7c89085428b377bb922d06a70bfb964cc75fc03937a0722382415d44d24bb0d2199c429adc0ae38fa
+  checksum: c41c86fe772828b88fbdbcaef2e41235ccbb107c22523a377f9a2fd39829f203213f37a352589f49d9a9b38bf1c645846defede8b81d8c1f3123117c1a600010
   languageName: node
   linkType: hard
 
@@ -30874,12 +30941,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rxjs@npm:^7.5.1":
-  version: 7.5.7
-  resolution: "rxjs@npm:7.5.7"
+"rxjs@npm:^7.5.1, rxjs@npm:^7.8.1":
+  version: 7.8.1
+  resolution: "rxjs@npm:7.8.1"
   dependencies:
     tslib: "npm:^2.1.0"
-  checksum: 283620b3c90b85467c3549f7cda0dd768bc18719cccbbdd9aacadb0f0946827ab20d036f1a00d78066d769764e73070bfee8706091d77b8d971975598f6cbbd4
+  checksum: 3c49c1ecd66170b175c9cacf5cef67f8914dcbc7cd0162855538d365c83fea631167cacb644b3ce533b2ea0e9a4d0b12175186985f89d75abe73dbd8f7f06f68
   languageName: node
   linkType: hard
 
@@ -31384,10 +31451,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"shell-quote@npm:^1.6.1, shell-quote@npm:^1.7.3":
-  version: 1.7.3
-  resolution: "shell-quote@npm:1.7.3"
-  checksum: cf997c325f49c4393a859074f1ee9ca3da7d9e1940225bab24a86f0266504c7d7e356b83f13c74932cb243d53125b5c8c57b714017c53490bf1fe10540422014
+"shell-quote@npm:^1.6.1, shell-quote@npm:^1.7.3, shell-quote@npm:^1.8.1":
+  version: 1.8.1
+  resolution: "shell-quote@npm:1.8.1"
+  checksum: 8cec6fd827bad74d0a49347057d40dfea1e01f12a6123bf82c4649f3ef152fc2bc6d6176e6376bffcd205d9d0ccb4f1f9acae889384d20baff92186f01ea455a
   languageName: node
   linkType: hard
 
@@ -31825,6 +31892,13 @@ __metadata:
   version: 2.0.1
   resolution: "space-separated-tokens@npm:2.0.1"
   checksum: 7a3c91fc643586792effda74a40eec795fb68ff82e7d83c6936668693b0caa3ad29756b1d1e5af6c87e305b5c80f00f97b98f14f40b76da5a3e12b47efdf9cee
+  languageName: node
+  linkType: hard
+
+"spawn-command@npm:0.0.2":
+  version: 0.0.2
+  resolution: "spawn-command@npm:0.0.2"
+  checksum: b22f2d71239e6e628a400831861ba747750bbb40c0a53323754cf7b84330b73d81e40ff1f9055e6d1971818679510208a9302e13d9ff3b32feb67e74d7a1b3ef
   languageName: node
   linkType: hard
 
@@ -33362,6 +33436,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tree-kill@npm:^1.2.2":
+  version: 1.2.2
+  resolution: "tree-kill@npm:1.2.2"
+  bin:
+    tree-kill: cli.js
+  checksum: 7b1b7c7f17608a8f8d20a162e7957ac1ef6cd1636db1aba92f4e072dc31818c2ff0efac1e3d91064ede67ed5dc57c565420531a8134090a12ac10cf792ab14d2
+  languageName: node
+  linkType: hard
+
 "trezor-address-validator@npm:^0.4.4":
   version: 0.4.4
   resolution: "trezor-address-validator@npm:0.4.4"
@@ -34767,6 +34850,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"wait-on@npm:^7.0.1":
+  version: 7.2.0
+  resolution: "wait-on@npm:7.2.0"
+  dependencies:
+    axios: "npm:^1.6.1"
+    joi: "npm:^17.11.0"
+    lodash: "npm:^4.17.21"
+    minimist: "npm:^1.2.8"
+    rxjs: "npm:^7.8.1"
+  bin:
+    wait-on: bin/wait-on
+  checksum: 1eff2189b3e4b0975889f3e480c75ca2a0d4275072779a6329e7cae8b729620594aa044509ddd89967de6ab2162169501b67b8d9562c16cac517837ffce17337
+  languageName: node
+  linkType: hard
+
 "walker@npm:^1.0.7, walker@npm:^1.0.8, walker@npm:~1.0.5":
   version: 1.0.8
   resolution: "walker@npm:1.0.8"
@@ -35715,7 +35813,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yargs@npm:17.7.2, yargs@npm:^17.3.1, yargs@npm:^17.5.1, yargs@npm:^17.6.2":
+"yargs@npm:17.7.2, yargs@npm:^17.3.1, yargs@npm:^17.5.1, yargs@npm:^17.6.2, yargs@npm:^17.7.2":
   version: 17.7.2
   resolution: "yargs@npm:17.7.2"
   dependencies:
