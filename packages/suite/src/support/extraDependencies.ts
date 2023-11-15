@@ -40,6 +40,7 @@ const connectInitSettings = {
         email: 'info@trezor.io',
         appUrl: '@trezor/suite',
     },
+    sharedLogger: false,
 };
 
 export const extraDependencies: ExtraDependencies = {
