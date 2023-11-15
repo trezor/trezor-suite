@@ -5,6 +5,7 @@ import AssetsCard from './components/AssetsCard';
 import PortfolioCard from './components/PortfolioCard';
 import SecurityFeatures from './components/SecurityFeatures';
 import { PromoBanner } from './components/PromoBanner';
+import { AppNavigationPanel } from 'src/components/suite';
 
 const Wrapper = styled.div`
     width: 100%;
@@ -22,8 +23,11 @@ const Divider = styled.div`
     margin-bottom: 64px;
 `;
 
-const Dashboard = () => {
-    useLayout();
+export const Dashboard = () => {
+    // temporary navigation panel
+    const Nav = () => <AppNavigationPanel title="Home" maxWidth="default" />;
+
+    useLayout('Home', Nav);
 
     return (
         <Wrapper data-test="@dashboard/index">
@@ -37,5 +41,3 @@ const Dashboard = () => {
         </Wrapper>
     );
 };
-
-export default Dashboard;

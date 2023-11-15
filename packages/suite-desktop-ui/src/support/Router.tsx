@@ -2,7 +2,7 @@ import { memo, ComponentType } from 'react';
 import { Switch, Route } from 'react-router-dom';
 
 import routes from 'src/constants/suite/routes';
-import Index from 'src/views/dashboard';
+import { Dashboard } from 'src/views/dashboard';
 import Notification from 'src/views/suite/notifications';
 import { Transactions } from 'src/views/wallet/transactions/Transactions';
 import WalletReceive from 'src/views/wallet/receive';
@@ -36,7 +36,7 @@ import { SettingsDebug } from 'src/views/settings/SettingsDebug/SettingsDebug';
 import { SettingsDevice } from 'src/views/settings/SettingsDevice/SettingsDevice';
 
 const components: { [key: string]: ComponentType<any> } = {
-    'suite-index': Index,
+    'suite-index': Dashboard,
     'notifications-index': Notification,
 
     'wallet-index': Transactions,
