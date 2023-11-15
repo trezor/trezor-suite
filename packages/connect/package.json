@@ -49,6 +49,8 @@
         "prepublish": "yarn tsx ../../scripts/prepublish.js"
     },
     "dependencies": {
+        "@ethereumjs/common": "^3.1.2",
+        "@ethereumjs/tx": "^4.1.2",
         "@fivebinaries/coin-selection": "2.2.0",
         "@trezor/blockchain-link": "workspace:*",
         "@trezor/blockchain-link-types": "workspace:*",
@@ -83,6 +85,7 @@
         "ts-node": "^10.9.1",
         "tsx": "^3.14.0",
         "typescript": "5.3.2",
+        "web3-utils": "^1.10.0",
         "webpack": "^5.89.0",
         "ws": "7.5.9"
     },
