@@ -31,6 +31,7 @@ const qrCodeContainerStyle = prepareNativeStyle(_ => ({
 export const QRCode = ({ data }: QRCodeProps) => {
     const { applyStyle } = useNativeStyles();
     const [originalBrightnessValue, setOriginalBrightnessValue] = useState<number>();
+    const [permissionResponse, requestPermission] = Brightness.usePermissions();
 
     useEffect(() => {
         const subscription = AppState.addEventListener('change', nextAppState => {
@@ -52,6 +53,16 @@ export const QRCode = ({ data }: QRCodeProps) => {
     }, [originalBrightnessValue]);
 
     useEffect(() => {
+        // We need to ask permission on Android devices, granted on ios
+        if (permissionResponse?.status === 'undetermined') {
+            requestPermission();
+        }
+    }, [permissionResponse, requestPermission]);
+
+    useEffect(() => {
+        // Only set brightness to maximum when permission is granted and the original value is not stored yet.
+        if (permissionResponse?.status !== 'granted' || originalBrightnessValue) return;
+
         const storeBrightnessValue = async () => {
             const brightnessValue = await Brightness.getBrightnessAsync();
             setOriginalBrightnessValue(brightnessValue);
@@ -60,7 +71,7 @@ export const QRCode = ({ data }: QRCodeProps) => {
         // Set brightness to maximum and store the original value.
         storeBrightnessValue();
         Brightness.setBrightnessAsync(1);
-    }, []);
+    }, [permissionResponse, originalBrightnessValue]);
 
     useEffect(
         // Restore the original brightness value when the QR code is unmounted.
