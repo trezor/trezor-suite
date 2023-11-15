@@ -36,8 +36,8 @@ export const QRCode = ({ data }: QRCodeProps) => {
         const subscription = AppState.addEventListener('change', nextAppState => {
             if (!originalBrightnessValue) return;
 
-            // When app goes to background, restore the original brightness value.
-            if (nextAppState === 'background') {
+            // When app goes to background (or inactive to work on iOS), restore the original brightness value.
+            if (['inactive', 'background'].includes(nextAppState)) {
                 Brightness.setBrightnessAsync(originalBrightnessValue);
             }
             // When app goes to foreground set full brightness.
