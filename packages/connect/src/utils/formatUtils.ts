@@ -57,3 +57,22 @@ export const messageToHex = (message: string) => {
     }
     return buffer.toString('hex');
 };
+
+export const deepTransform = (transform: (str: string) => string) => {
+    const recursion = <T>(value: T): T => {
+        if (typeof value === 'string') {
+            return transform(value) as T;
+        }
+        if (Array.isArray(value)) {
+            return value.map(recursion) as T;
+        }
+        if (value && typeof value === 'object') {
+            return Object.entries(value).reduce(
+                (obj, [k, v]) => ({ ...obj, [k]: recursion(v) }),
+                {},
+            ) as T;
+        }
+        return value;
+    };
+    return recursion;
+};
