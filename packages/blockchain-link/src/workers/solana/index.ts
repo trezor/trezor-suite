@@ -420,7 +420,7 @@ const unsubscribe = (request: Request<MessageTypes.Unsubscribe>) => {
             throw new CustomError('worker_unknown_request', `+${request.type}`);
     }
     return {
-        type: RESPONSES.SUBSCRIBE,
+        type: RESPONSES.UNSUBSCRIBE,
         payload: { subscribed: false },
     } as const;
 };
