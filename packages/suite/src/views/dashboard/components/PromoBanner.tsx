@@ -16,13 +16,14 @@ const Container = styled.div`
     bottom: 0;
     left: 0;
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     width: 100%;
     height: 70px;
     border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
 
-    ${variables.SCREEN_QUERY.MOBILE} {
+    ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
         height: 110px;
         border-radius: 20px;
         box-shadow: 0 -4px 6px -4px ${({ theme }) => theme.BOX_SHADOW_OPTION_CARD};
@@ -40,10 +41,15 @@ const promoContainerCss = css`
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
         padding: 0 ${MOBILE_HORIZONTAL_PADDINGS};
     }
+
+    span {
+        min-width: 100px;
+    }
 `;
 
 const DesktopPromoContainer = styled.div`
     ${promoContainerCss}
+    min-width: 50%;
     border-right: 1px solid ${({ theme }) => theme.STROKE_GREY};
 `;
 
