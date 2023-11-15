@@ -159,7 +159,7 @@ export const getRootReducer = (selectedAccount = BTC_ACCOUNT, fees = DEFAULT_FEE
             },
             () => ({}),
         ),
-        device: createReducer({ selectedDevice: DEVICE }, () => {}),
+        device: createReducer({ selectedDevice: DEVICE, devices: [DEVICE] }, () => {}),
         wallet: combineReducers({
             send: sendFormReducer,
             accounts: createReducer(
@@ -589,6 +589,10 @@ export const setMax = [
             },
         },
         actions: [
+            {
+                type: 'click',
+                element: 'coin-control-button',
+            },
             {
                 type: 'hover',
                 element: 'outputs.0.amount',
