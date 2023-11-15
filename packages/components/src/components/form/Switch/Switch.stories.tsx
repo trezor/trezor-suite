@@ -1,12 +1,13 @@
 import { useArgs } from '@storybook/client-api';
+import { Meta, StoryObj } from '@storybook/react';
 
-import { Switch as SwitchComponent } from './Switch';
+import { Switch as SwitchComponent, SwitchProps } from './Switch';
 
 export default {
     title: 'Form/Switch',
-};
+} as Meta;
 
-export const Switch = {
+export const Switch: StoryObj<SwitchProps> = {
     render: ({ ...args }) => {
         // eslint-disable-next-line
         const [{ isChecked }, updateArgs] = useArgs();

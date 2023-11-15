@@ -1,8 +1,8 @@
 import { ChangeEvent } from 'react';
 import { useArgs } from '@storybook/client-api';
+import { Meta, StoryObj } from '@storybook/react';
 
 import { Input as InputComponent, InputProps } from './Input';
-import { StoryObj } from '@storybook/react';
 
 export default {
     title: 'Form/Input',
@@ -39,7 +39,7 @@ export default {
             },
         },
     },
-};
+} as Meta;
 
 export const Input: StoryObj<InputProps> = {
     render: ({ ...args }) => {
