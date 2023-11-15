@@ -166,6 +166,15 @@ export default class EthereumSignTransaction extends AbstractMethod<
                       definitions,
                   );
 
-        return signature;
+        const serializedTx = helper.serializeEthereumTx(
+            {
+                ...tx,
+                ...signature,
+                type: type === 'legacy' ? 0 : 2,
+            },
+            tx.chainId,
+        );
+
+        return { ...signature, serializedTx };
     }
 }
