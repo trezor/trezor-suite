@@ -26,8 +26,7 @@ export type UseRbfProps = {
 };
 
 const getBitcoinFeeInfo = (info: FeeInfo, feeRate: string) => {
-    // increase FeeLevels for visual purpose (old rate + defined rate)
-    // it will be decreased in sendFormAction before composing
+    // increase FeeLevels (old rate + defined rate)
     const levels = getFeeLevels('bitcoin', info).map(l => ({
         ...l,
         feePerUnit: new BigNumber(l.feePerUnit).plus(feeRate).toString(),
@@ -141,10 +140,12 @@ const useRbfState = ({ selectedAccount, rbfParams, finalize, chainedTxs }: UseRb
             availableUtxo.length < 1
                 ? outputs.findIndex(o => o.type === 'payment')
                 : undefined;
-
-        let { baseFee } = rbfParams;
+        // set baseFee only if chainedTxs are present.
+        // try to overprice them. offer fee higher than sum of both:
+        // - current tx with higher feeRate
+        // - sum of all fees of all chainedTxs
+        let baseFee = 0;
         if (chainedTxs.length > 0) {
-            // increase baseFee, pay for all child chained transactions
             baseFee = chainedTxs.reduce((f, ctx) => f + parseFloat(ctx.fee), baseFee);
         }
 
@@ -162,10 +163,8 @@ const useRbfState = ({ selectedAccount, rbfParams, finalize, chainedTxs }: UseRb
                 setMaxOutputId,
                 options: finalize ? ['broadcast'] : ['bitcoinRBF', 'broadcast'],
                 ethereumDataHex: rbfParams.ethereumData,
-                rbfParams: {
-                    ...rbfParams,
-                    baseFee,
-                },
+                rbfParams,
+                baseFee,
             } as FormState, // TODO: remove type casting (options string[])
         };
     }, [

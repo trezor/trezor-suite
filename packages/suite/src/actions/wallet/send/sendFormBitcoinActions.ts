@@ -42,26 +42,13 @@ export const composeTransaction =
         const composeOutputs = getBitcoinComposeOutputs(formValues, account.symbol, isSatoshis);
         if (composeOutputs.length < 1) return;
 
-        // clone FeeLevels in rbf, the will be modified later
-        const levels = formValues.rbfParams ? feeInfo.levels.map(l => ({ ...l })) : feeInfo.levels;
-        const predefinedLevels = levels.filter(l => l.label !== 'custom');
+        const predefinedLevels = feeInfo.levels.filter(l => l.label !== 'custom');
         // in case when selectedFee is set to 'custom' construct this FeeLevel from values
         if (formValues.selectedFee === 'custom') {
             predefinedLevels.push({
                 label: 'custom',
                 feePerUnit: formValues.feePerUnit,
                 blocks: -1,
-            });
-        }
-
-        // FeeLevels in rbf form are increased by original/prev rate
-        // decrease it since the calculation (in connect) is based on the baseFee not the prev rate
-        const origRate = formValues.rbfParams
-            ? parseFloat(formValues.rbfParams.feeRate)
-            : undefined;
-        if (origRate) {
-            predefinedLevels.forEach(l => {
-                l.feePerUnit = Number(parseFloat(l.feePerUnit) - origRate).toString();
             });
         }
 
@@ -73,8 +60,6 @@ export const composeTransaction =
             // locktime is set, add sequence to inputs
             sequence = BTC_LOCKTIME_SEQUENCE;
         }
-
-        const baseFee = formValues.rbfParams ? formValues.rbfParams.baseFee : 0;
 
         // exclude unspendable utxos if coin control is not enabled
         // unspendable utxos are defined in `useSendForm` hook
@@ -101,10 +86,10 @@ export const composeTransaction =
                 utxo,
             },
             feeLevels: predefinedLevels,
-            baseFee,
+            baseFee: formValues.baseFee,
             sequence,
             outputs: composeOutputs,
-            skipPermutation: baseFee > 0,
+            skipPermutation: !!formValues.rbfParams,
             coin: account.symbol,
         };
 
