@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { Meta, StoryObj } from '@storybook/react';
 import { CoinLogo, CoinType, variables } from '../../../index';
 import { StoryColumn } from '../../../support/Story';
 
@@ -24,9 +25,9 @@ const Icon = styled.div`
 
 export default {
     title: 'Assets/CoinLogos',
-};
+} as Meta;
 
-export const All = {
+export const All: StoryObj = {
     render: () => (
         <StoryColumn minWidth={700}>
             <WrapperIcons>

@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react';
 import { H1, H2, H3 } from '../../../index';
 
 const Wrapper = styled.div`
@@ -9,7 +9,7 @@ const Wrapper = styled.div`
 
 export default {
     title: 'Typography/Heading',
-};
+} as Meta;
 
 export const Heading: StoryObj = {
     render: () => (

@@ -1,10 +1,10 @@
-import { StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react';
 import { TrezorLogo as TrezorLogoComponent, TrezorLogoProps } from '../../../index';
 
 export default {
     title: 'Assets/TrezorLogo',
     component: TrezorLogoComponent,
-};
+} as Meta;
 
 export const TrezorLogo: StoryObj<TrezorLogoProps> = {
     args: {

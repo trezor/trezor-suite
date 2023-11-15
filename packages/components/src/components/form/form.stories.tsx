@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { Meta, StoryObj } from '@storybook/react';
 
 import { Input, Textarea, Select, Checkbox, Radio, Switch, Button, Range } from '../../index';
 import { StoryColumn } from '../../support/Story';
@@ -28,9 +29,9 @@ const SELECT_OPTIONS = [
 
 export default {
     title: 'Form/All',
-};
+} as Meta;
 
-export const All = {
+export const All: StoryObj = {
     render: () => (
         <>
             <StoryColumn minWidth={520}>

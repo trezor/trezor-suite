@@ -1,10 +1,10 @@
+import { Meta, StoryObj } from '@storybook/react';
 import { Icon as IconComponent, IconProps, variables } from '../../../index';
-import { StoryObj } from '@storybook/react';
 
 export default {
     title: 'Assets/Icons',
     component: IconComponent,
-};
+} as Meta;
 
 export const Icon: StoryObj<IconProps> = {
     args: {
