@@ -11,6 +11,7 @@
     "workspaces": {
         "packages": [
             "packages/*",
+            "packages/connect-examples/*",
             "suite-native/*",
             "suite-common/*",
             "scripts"
