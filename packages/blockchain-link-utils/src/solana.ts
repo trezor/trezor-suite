@@ -2,6 +2,7 @@ import { A, D, F, pipe } from '@mobily/ts-belt';
 import BigNumber from 'bignumber.js';
 import { Target, TokenTransfer, Transaction } from 'packages/blockchain-link-types/lib';
 
+import { arrayPartition } from '@trezor/utils';
 import type {
     AccountInfo,
     ParsedAccountData,
@@ -23,6 +24,10 @@ export const TOKEN_PROGRAM_PUBLIC_KEY = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623V
 export const ASSOCIATED_TOKEN_PROGRAM_PUBLIC_KEY = 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL';
 // System program docs: https://docs.solana.com/developing/runtime-facilities/programs#system-program
 export const SYSTEM_PROGRAM_PUBLIC_KEY = '11111111111111111111111111111111';
+// WSOL transfers are denoted as transfers of SOL as well as WSOL, so we use this to filter out SOL values
+// when parsing tx effects.
+const WSOL_MINT = 'So11111111111111111111111111111111111111112';
+export const WSOL_MINT_LOWERCASE = WSOL_MINT.toLowerCase();
 
 export const getTokenNameAndSymbol = (mint: string, tokenDetailByMint: TokenDetailByMint) => {
     const tokenDetail = tokenDetailByMint[mint.toLowerCase()];
@@ -132,11 +137,7 @@ export const extractAccountBalanceDiff = (
 };
 
 const isWSolTransfer = (ixs: (ParsedInstruction | PartiallyDecodedInstruction)[]) =>
-    ixs.find(
-        ix =>
-            'parsed' in ix &&
-            ix.parsed.info?.mint === 'So11111111111111111111111111111111111111112',
-    );
+    ixs.find(ix => 'parsed' in ix && ix.parsed.info?.mint === WSOL_MINT);
 
 type TransactionEffect = {
     address: string;
@@ -231,13 +232,11 @@ const getNativeTransferTxType = (
         return 'self';
     }
 
-    const senders = effects.filter(({ amount }) => amount.isNegative());
+    const [senders, receivers] = arrayPartition(effects, ({ amount }) => amount.isNegative());
 
     if (senders.find(({ address }) => address === accountAddress)) {
         return 'sent';
     }
-
-    const receivers = effects.filter(({ amount }) => amount.isPositive());
 
     if (receivers.find(({ address }) => address === accountAddress)) {
         return 'recv';
