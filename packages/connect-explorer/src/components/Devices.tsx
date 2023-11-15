@@ -20,7 +20,7 @@ const DeviceList = styled.ul`
 const DeviceItem = styled.li`
     position: relative;
     cursor: pointer;
-    padding: 10px 15px;
+    padding: 5px 5px;
     white-space: nowrap;
     width: 25%;
     display: inline-block;
