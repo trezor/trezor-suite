@@ -6,11 +6,13 @@ import { selectDevice } from '@suite-common/wallet-core';
 import { useSelector } from 'src/hooks/suite';
 
 const Wrapper = styled.div`
-    display: flex;
+    display: grid;
+    grid-template-columns: 260px 1fr;
     gap: 24px;
     width: 100%;
 
     @media only screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
+        grid-template-columns: 1fr;
         flex-direction: column;
     }
 `;
