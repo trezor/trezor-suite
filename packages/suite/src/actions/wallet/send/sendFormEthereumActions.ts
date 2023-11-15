@@ -7,7 +7,6 @@ import {
     calculateTotal,
     calculateMax,
     calculateEthFee,
-    serializeEthereumTx,
     getEthereumEstimateFeeParams,
     prepareEthereumTransaction,
     getExternalComposeOutput,
@@ -294,8 +293,5 @@ export const signTransaction =
             return;
         }
 
-        return serializeEthereumTx({
-            ...transaction,
-            ...signedTx.payload,
-        });
+        return signedTx.payload.serializedTx;
     };
