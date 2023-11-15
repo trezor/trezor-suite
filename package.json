@@ -85,7 +85,7 @@
         "type-fest": "2.12.2",
         "bcrypto": "5.4.0",
         "react": "18.2.0",
-        "electron": "26.4.2",
+        "electron": "27.0.4",
         "@jest/types": "27.5.1",
         "webpack": "^5.89.0",
         "css-loader": "^6.8.1",
