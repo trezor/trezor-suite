@@ -50,6 +50,7 @@ export interface EthereumSignedTx {
     v: string;
     r: string;
     s: string;
+    serializedTx: string;
 }
 
 // ethereumSignTypedData
