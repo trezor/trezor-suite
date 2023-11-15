@@ -31,6 +31,7 @@ export interface FormState {
     feePerUnit: string; // bitcoin/ethereum/ripple custom fee field (satB/gasPrice/drops)
     feeLimit: string; // ethereum only (gasLimit)
     estimatedFeeLimit?: string; // ethereum only (gasLimit)
+    baseFee?: number; // used by RBF from. pay for related transactions
     // advanced form inputs
     options: FormOptions[];
     bitcoinLockTime?: string; // bitcoin RBF/schedule
