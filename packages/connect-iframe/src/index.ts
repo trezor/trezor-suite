@@ -32,16 +32,14 @@ import { suggestUdevInstaller } from '@trezor/connect/src/data/udevInfo';
 import { storage, getSystemInfo, getInstallerPackage } from '@trezor/connect-common';
 import { parseConnectSettings, isOriginWhitelisted } from './connectSettings';
 import { analytics, EventType } from '@trezor/connect-analytics';
-import { logWriterFactory } from './logWriter';
+import { initLogWriter } from './logWriter';
+import { LogWriter } from 'packages/connect/lib/utils/debug';
 
 let _core: Core | undefined;
 
 // custom log
 const _log = initLog('IFrame');
-// `logWriterProxy` is used here to pass to shared logger worker logs from
-// environments that do not have access to it, like connect-web, webextension.
-// It does not log anything in this environment, just used as proxy.
-const logWriterProxy = logWriterFactory();
+let logWriterProxy: LogWriter | undefined;
 
 let _popupMessagePort: (MessagePort | BroadcastChannel) | undefined;
 
@@ -304,6 +302,15 @@ const init = async (payload: IFrameInit['payload'], origin: string) => {
         } catch (error) {
             // tell the popup to use MessageChannel fallback communication (thru IFRAME.LOADED > POPUP.INIT)
         }
+    }
+
+    let logWriterFactory;
+    if (parsedSettings.sharedLogger !== false) {
+        logWriterFactory = await initLogWriter();
+        // `logWriterProxy` is used here to pass to shared logger worker logs from
+        // environments that do not have access to it, like connect-web, webextension.
+        // It does not log anything in this environment, just used as proxy.
+        logWriterProxy = logWriterFactory();
     }
 
     _log.enabled = !!parsedSettings.debug;
