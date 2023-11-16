@@ -7436,6 +7436,7 @@ __metadata:
     "@trezor/styles": "workspace:*"
     bignumber.js: "npm:^9.1.1"
     jest: "npm:^26.6.3"
+    jotai: "npm:1.9.1"
     proxy-memoize: "npm:2.0.2"
     react: "npm:^18.2.0"
     react-native: "npm:0.71.8"

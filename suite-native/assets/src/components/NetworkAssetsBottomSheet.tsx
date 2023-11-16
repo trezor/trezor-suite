@@ -4,9 +4,13 @@ import { G } from '@mobily/ts-belt';
 
 import { BottomSheet } from '@suite-native/atoms';
 import { AccountsListGroup } from '@suite-native/accounts';
-import { NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { selectAccountsByNetworkSymbol } from '@suite-common/wallet-core';
+import {
+    AccountsRootState,
+    DeviceRootState,
+    selectAccountsByNetworkSymbol,
+} from '@suite-common/wallet-core';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 
 type NetworkAssetsBottomSheetProps = {
     networkSymbol: NetworkSymbol | null;
@@ -19,7 +23,7 @@ export const NetworkAssetsBottomSheet = ({
     onSelectAccount,
     onClose,
 }: NetworkAssetsBottomSheetProps) => {
-    const selectedAccounts = useSelector((state: any) =>
+    const selectedAccounts = useSelector((state: AccountsRootState & DeviceRootState) =>
         selectAccountsByNetworkSymbol(state, networkSymbol),
     );
 
@@ -27,9 +31,7 @@ export const NetworkAssetsBottomSheet = ({
 
     return (
         <BottomSheet title="Select Account" isVisible onClose={onClose}>
-            {networkSymbol && (
-                <AccountsListGroup accounts={selectedAccounts} onSelectAccount={onSelectAccount} />
-            )}
+            <AccountsListGroup accounts={selectedAccounts} onSelectAccount={onSelectAccount} />
         </BottomSheet>
     );
 };

@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { Card, VStack, TextButton } from '@suite-native/atoms';
 import {
     AccountsStackRoutes,
@@ -13,15 +14,14 @@ import {
     TabToStackCompositeNavigationProp,
 } from '@suite-native/navigation';
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { selectIsDeviceDiscoveryActive } from '@suite-common/wallet-core';
 import { useTranslate } from '@suite-native/intl';
 
 import { DiscoveryAssetsLoader } from './DiscoveryAssetsLoader';
 import { selectAssetsWithBalances } from '../assetsSelectors';
 import { calculateAssetsPercentage } from '../utils';
-import { NetworkAssetsBottomSheet } from './NetworkAssetsBottomSheet';
 import { AssetItem } from './AssetItem';
+import { NetworkAssetsBottomSheet } from './NetworkAssetsBottomSheet';
 
 type NavigationProp = TabToStackCompositeNavigationProp<
     AppTabsParamList,
@@ -35,15 +35,22 @@ type AssetsProps = {
 
 export const Assets = ({ maximumAssetsVisible }: AssetsProps) => {
     const navigation = useNavigation<NavigationProp>();
+
     const { translate } = useTranslate();
+
     const assetsData = useSelector(selectAssetsWithBalances);
     const isDiscoveryActive = useSelector(selectIsDeviceDiscoveryActive);
+
     const [selectedAssetSymbol, setSelectedAssetSymbol] = useState<NetworkSymbol | null>(null);
 
     const assetsDataWithPercentage = useMemo(
         () => calculateAssetsPercentage(assetsData),
         [assetsData],
     );
+
+    const navigateToAssets = () => {
+        navigation.navigate(AppTabsRoutes.AccountsStack, { screen: AccountsStackRoutes.Accounts });
+    };
 
     const handleSelectAssetsAccount = useCallback(
         (accountKey: AccountKey, tokenContract?: TokenAddress) => {
@@ -53,18 +60,14 @@ export const Assets = ({ maximumAssetsVisible }: AssetsProps) => {
             });
             setSelectedAssetSymbol(null);
         },
-        [navigation],
+        [navigation, setSelectedAssetSymbol],
     );
 
     const handleCloseBottomSheet = useCallback(() => {
         setSelectedAssetSymbol(null);
-    }, []);
+    }, [setSelectedAssetSymbol]);
 
-    const navigateToAssets = () => {
-        navigation.navigate(AppTabsRoutes.AccountsStack, { screen: AccountsStackRoutes.Accounts });
-    };
-
-    const isViewMoreButtonVisible = assetsDataWithPercentage.length > 3;
+    const isViewMoreButtonVisible = assetsDataWithPercentage.length > maximumAssetsVisible;
 
     return (
         <>
@@ -93,11 +96,13 @@ export const Assets = ({ maximumAssetsVisible }: AssetsProps) => {
                     )}
                 </VStack>
             </Card>
-            <NetworkAssetsBottomSheet
-                networkSymbol={selectedAssetSymbol}
-                onSelectAccount={handleSelectAssetsAccount}
-                onClose={handleCloseBottomSheet}
-            />
+            {selectedAssetSymbol && (
+                <NetworkAssetsBottomSheet
+                    networkSymbol={selectedAssetSymbol}
+                    onSelectAccount={handleSelectAssetsAccount}
+                    onClose={handleCloseBottomSheet}
+                />
+            )}
         </>
     );
 };

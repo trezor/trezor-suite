@@ -54,6 +54,12 @@ const iconStyle = prepareNativeStyle(() => ({
     marginRight: 6,
 }));
 
+type NavigationType = TabToStackCompositeNavigationProp<
+    AppTabsParamList,
+    AppTabsRoutes.HomeStack,
+    RootStackParamList
+>;
+
 export const AssetItem = memo(
     ({
         cryptoCurrencySymbol,
@@ -66,14 +72,9 @@ export const AssetItem = memo(
         onPress,
     }: AssetItemProps) => {
         const { applyStyle } = useNativeStyles();
-        const navigation =
-            useNavigation<
-                TabToStackCompositeNavigationProp<
-                    AppTabsParamList,
-                    AppTabsRoutes.HomeStack,
-                    RootStackParamList
-                >
-            >();
+
+        const navigation = useNavigation<NavigationType>();
+
         const accountsPerAsset = useSelector((state: AccountsRootState & DeviceRootState) =>
             selectAccountsAmountPerSymbol(state, cryptoCurrencySymbol),
         );

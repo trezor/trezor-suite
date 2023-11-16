@@ -167,10 +167,10 @@ export const selectHasAccountTransactions = (state: AccountsRootState, accountKe
 };
 
 export const selectAccountsByNetworkSymbol = memoizeWithArgs(
-    (state: AccountsRootState, networkSymbol: NetworkSymbol | null) => {
+    (state: AccountsRootState & DeviceRootState, networkSymbol: NetworkSymbol | null) => {
         if (G.isNull(networkSymbol)) return [];
 
-        const accounts = selectAccounts(state);
+        const accounts = selectDeviceAccounts(state);
 
         return A.filter(accounts, account => account.symbol === networkSymbol);
     },
