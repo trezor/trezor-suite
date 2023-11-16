@@ -6,7 +6,7 @@ import { ScrollView, PanGestureHandler } from 'react-native-gesture-handler';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { BlurredScreenOverlay } from '@suite-native/screen-overlay';
 
-import { Box } from '../Box';
+import { Box, BoxProps } from '../Box';
 import { BottomSheetContainer } from './BottomSheetContainer';
 import { useBottomSheetAnimation } from './useBottomSheetAnimation';
 import { BottomSheetHeader } from './BottomSheetHeader';
@@ -18,7 +18,7 @@ export type BottomSheetProps = {
     children: ReactNode;
     title?: string;
     subtitle?: string;
-};
+} & BoxProps;
 
 type WrapperStyleProps = {
     insetBottom: number;
@@ -46,6 +46,7 @@ export const BottomSheet = ({
     title,
     subtitle,
     children,
+    ...boxProps
 }: BottomSheetProps) => {
     const { applyStyle } = useNativeStyles();
     const insets = useSafeAreaInsets();
@@ -113,7 +114,9 @@ export const BottomSheet = ({
                             keyboardShouldPersistTaps="handled"
                         >
                             <Animated.View>
-                                <Box paddingHorizontal="medium">{children}</Box>
+                                <Box paddingHorizontal="medium" {...boxProps}>
+                                    {children}
+                                </Box>
                             </Animated.View>
                         </ScrollView>
                     </Animated.View>

@@ -41,7 +41,9 @@ export const ReceiveAccount = ({ accountKey, tokenContract }: AccountReceiveProp
                     />
                 )}
                 <ReceiveAddressCard
+                    networkSymbol={account.symbol}
                     address={address}
+                    isEthereumTokenAddress={!!tokenContract}
                     isReceiveApproved={isReceiveApproved}
                     isUnverifiedAddressRevealed={isUnverifiedAddressRevealed}
                     onShowAddress={handleShowAddress}

@@ -12,6 +12,20 @@ type BottomSheetHeaderProps = {
     isCloseDisplayed: boolean;
     onCloseSheet: () => void;
 };
+type SheetHeaderWrapperStyleProps = { isHeaderDisplayed: boolean };
+
+const sheetHeaderWrapperStyle = prepareNativeStyle<SheetHeaderWrapperStyleProps>(
+    (utils, { isHeaderDisplayed }) => ({
+        marginBottom: utils.spacings.large,
+
+        extend: {
+            condition: isHeaderDisplayed,
+            style: {
+                marginBottom: 0,
+            },
+        },
+    }),
+);
 
 const sheetHeaderStyle = prepareNativeStyle<{ isCloseDisplayed: boolean }>(
     (utils, { isCloseDisplayed }) => ({
@@ -53,12 +67,15 @@ export const BottomSheetHeader = ({
 }: BottomSheetHeaderProps) => {
     const { applyStyle } = useNativeStyles();
 
-    const showHeaderContent = title || subtitle || isCloseDisplayed;
+    const isHeaderDisplayed = !!(title || subtitle || isCloseDisplayed);
 
     return (
-        <Box marginVertical="small">
+        <Box
+            marginVertical="small"
+            style={applyStyle(sheetHeaderWrapperStyle, { isHeaderDisplayed })}
+        >
             <BottomSheetGrabber />
-            {showHeaderContent && (
+            {isHeaderDisplayed && (
                 <View style={applyStyle(sheetHeaderStyle, { isCloseDisplayed })}>
                     <View style={applyStyle(titlesContainer)}>
                         {title && <Text variant="titleSmall">{title}</Text>}

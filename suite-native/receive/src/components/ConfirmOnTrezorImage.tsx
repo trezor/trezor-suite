@@ -1,9 +1,10 @@
 import { Image, Pressable } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { useToast } from '@suite-native/toasts';
+
+import { ConfirmOnTrezorBottomSheet } from './ConfirmOnTrezorBottomSheet';
 
 const imageContainerStyle = prepareNativeStyle(utils => ({
     position: 'absolute',
@@ -13,25 +14,32 @@ const imageContainerStyle = prepareNativeStyle(utils => ({
 }));
 
 export const ConfirmOnTrezorImage = () => {
+    const [isBottomSheetOpened, setIsBottomSheetOpened] = useState(false);
     const { applyStyle } = useNativeStyles();
 
-    const { showToast } = useToast();
+    const imageSource = useMemo(() => require('../../assets/confirmOnTrezor.png'), []);
 
-    // TODO: https://github.com/trezor/trezor-suite/issues/9776
-    const handlePress = () => {
-        showToast({
-            variant: 'default',
-            message: 'TODO: show informational modal',
-            icon: 'warningCircle',
-        });
+    const handleImagePress = () => {
+        setIsBottomSheetOpened(true);
+    };
+
+    const handleCloseBottomSheet = () => {
+        setIsBottomSheetOpened(false);
     };
 
     return (
-        // TODO: images will be revisited in issue: https://github.com/trezor/trezor-suite/issues/9777
-        <Animated.View entering={FadeIn} style={applyStyle(imageContainerStyle)}>
-            <Pressable onPress={handlePress}>
-                <Image source={require('../../assets/confirmOnTrezor.png')} />
-            </Pressable>
-        </Animated.View>
+        <>
+            {/* TODO: images will be revisited in issue:
+            https://github.com/trezor/trezor-suite/issues/9777 */}
+            <Animated.View entering={FadeIn} style={applyStyle(imageContainerStyle)}>
+                <Pressable onPress={handleImagePress}>
+                    <Image source={imageSource} />
+                </Pressable>
+            </Animated.View>
+            <ConfirmOnTrezorBottomSheet
+                isOpened={isBottomSheetOpened}
+                onClose={handleCloseBottomSheet}
+            />
+        </>
     );
 };

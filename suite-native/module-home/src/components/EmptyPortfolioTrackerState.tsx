@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { Text, AlertBox, Card, Image, VStack, Button } from '@suite-native/atoms';
+import { Text, Card, Image, VStack, Button } from '@suite-native/atoms';
 import { useActiveColorScheme } from '@suite-native/theme';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Translation, useTranslate } from '@suite-native/intl';
@@ -23,18 +23,6 @@ const SCREEN_HEIGHT = Dimensions.get('screen').height;
 const imageStyle = prepareNativeStyle(_ => ({
     maxHeight: SCREEN_HEIGHT * 0.25,
     width: '100%',
-    alignItems: 'center',
-}));
-
-const cardStyle = prepareNativeStyle(utils => ({
-    paddingTop: 0,
-    paddingBottom: utils.spacings.extraLarge,
-    paddingHorizontal: 0,
-}));
-
-const contentStyle = prepareNativeStyle(utils => ({
-    paddingHorizontal: utils.spacings.medium,
-    paddingTop: utils.spacings.extraLarge,
     alignItems: 'center',
 }));
 
@@ -67,12 +55,16 @@ export const EmptyPortfolioTrackerState = () => {
 
     return (
         <VStack spacing="extraLarge">
-            <Card style={applyStyle(cardStyle)}>
-                <AlertBox
-                    variant="info"
-                    title={translate('moduleHome.emptyState.portfolioTracker.alert')}
-                />
-                <VStack spacing="large" style={applyStyle(contentStyle)}>
+            <Card
+                alertVariant="info"
+                alertTitle={translate('moduleHome.emptyState.portfolioTracker.alert')}
+            >
+                <VStack
+                    spacing="large"
+                    paddingTop="medium"
+                    alignItems="center"
+                    justifyContent="center"
+                >
                     <Image source={image} resizeMode="contain" style={applyStyle(imageStyle)} />
                     <Text variant="titleSmall">
                         <Translation id="moduleHome.emptyState.portfolioTracker.title" />

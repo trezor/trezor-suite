@@ -4,6 +4,9 @@
     "references": [
         { "path": "../../suite-common/icons" },
         {
+            "path": "../../suite-common/wallet-config"
+        },
+        {
             "path": "../../suite-common/wallet-core"
         },
         {
@@ -23,6 +26,7 @@
         { "path": "../link" },
         { "path": "../navigation" },
         { "path": "../qr-code" },
+        { "path": "../storage" },
         { "path": "../toasts" },
         { "path": "../../packages/styles" }
     ]
