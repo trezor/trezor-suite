@@ -55,7 +55,6 @@ export enum AccountsStackRoutes {
 
 export enum ReceiveStackRoutes {
     ReceiveAccounts = 'ReceiveAccounts',
-    Receive = 'Receive',
 }
 
 export enum SettingsStackRoutes {
