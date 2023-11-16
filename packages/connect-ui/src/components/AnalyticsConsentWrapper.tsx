@@ -7,6 +7,10 @@ const Wrapper = styled.div`
     animation: ${animations.FADE_IN} 0.15s ease-in-out;
 `;
 
+const StyledDataAnalytics = styled(DataAnalytics)`
+    box-shadow: 0 0 6px 1px #e3e3e3;
+`;
+
 type AnalyticsConsentWrapperProps = {
     onAnalyticsConfirm: (enabled: boolean) => void;
 };
@@ -24,7 +28,7 @@ export const AnalyticsConsentWrapper = ({ onAnalyticsConfirm }: AnalyticsConsent
 
     return (
         <Wrapper>
-            <DataAnalytics onConfirm={onConfirm} />
+            <StyledDataAnalytics onConfirm={onConfirm} />
         </Wrapper>
     );
 };
