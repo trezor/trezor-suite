@@ -1,5 +1,11 @@
 import { encodeDataToQueryString, getRandomId, getUrl, reportEvent } from './utils';
-import type { InitOptions, Event as AnalyticsEvent, App, ReportConfig } from './types';
+import type {
+    InitOptions,
+    Event as AnalyticsEvent,
+    App,
+    ReportConfig,
+    AnalyticsOptions,
+} from './types';
 
 export class Analytics<T extends AnalyticsEvent> {
     private enabled = false;
@@ -17,9 +23,10 @@ export class Analytics<T extends AnalyticsEvent> {
 
     private callbacks?: InitOptions['callbacks'];
 
-    constructor(version: string, app: App) {
+    constructor({ version, app, useQueue = false }: AnalyticsOptions) {
         this.version = version;
         this.app = app;
+        this.useQueue = useQueue;
     }
 
     public init = (enabled: boolean, options: InitOptions) => {
