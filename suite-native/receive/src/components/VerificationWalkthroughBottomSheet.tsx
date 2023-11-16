@@ -24,7 +24,6 @@ export const VerificationWalkthroughBottomSheet = ({
 }) => {
     const { translate } = useTranslate();
     const setIsVerificationWalkthroughEnabled = useSetAtom(isVerificationWalkthroughEnabledAtom);
-    setIsVerificationWalkthroughEnabled(true);
     const [activeStep, setActiveStep] = useState<WalkthroughStep>(1);
 
     const handlePressContinue = () => {
