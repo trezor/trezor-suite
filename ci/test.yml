@@ -43,7 +43,7 @@
     # cypress open todo. temporarily turned off (messaging system)
     CYPRESS_SNAPSHOT: 0
     ## reporter url
-    TRACK_SUITE_URL: https://track-suite.herokuapp.com
+    TRACK_SUITE_URL: https://track-suite-ff9ad9f5b4f6.herokuapp.com
     ## when debugging or developing tests it does not make sense to have retries,
     ## in other cases retries are useful to avoid occasional failures due to flaky tests
     ALLOW_RETRY: 1
