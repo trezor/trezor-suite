@@ -12,7 +12,6 @@ import {
 import { VStack, Card, Button, Text, Pictogram } from '@suite-native/atoms';
 import { useNativeStyles, prepareNativeStyle } from '@trezor/styles';
 import { Translation, useTranslate } from '@suite-native/intl';
-import { useDeviceConnect } from '@suite-native/device';
 
 import { SettingsButtonLink } from './SettingsButtonLink';
 
@@ -30,7 +29,6 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 >;
 
 export const EmptyPortfolioCrossroads = () => {
-    useDeviceConnect();
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<NavigationProps>();
 

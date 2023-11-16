@@ -13,6 +13,7 @@ export const en = {
             continue: 'Continue',
             next: 'Next',
             dismiss: 'Dismiss',
+            eject: 'Eject',
         },
         unknownError: 'Something went wrong',
     },
@@ -113,15 +114,28 @@ export const en = {
         },
     },
     moduleDevice: {
+        installFirmware: {
+            title: 'How to update firmware:',
+            lines: {
+                1: '1. Connect Trezor to Desktop Suite',
+                2: '2. Navigate to Settings menu',
+                3: '3. Install new firmware',
+            },
+        },
         noSeedModal: {
-            title: 'No seed on device.',
-            description: 'Please set your device in desktop app first.',
-            button: 'Got it',
+            title: 'Connected Trezor device has no firmware installed',
+            description:
+                'Install current firmware version on your Trezor device so you can use it with this app.',
         },
         unacquiredDeviceModal: {
             title: 'We found your connected device in incorrect state.',
             description: 'Please reconnect your device or ...',
             button: 'Steal session',
+        },
+        unsupportedFirmware: {
+            title: 'Connected Trezor device uses outdated firmware',
+            description:
+                'Install current firmware version on your Trezor device so you can use it with this app.',
         },
     },
     moduleReceive: {

@@ -7529,6 +7529,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/device@workspace:suite-native/device"
   dependencies:
+    "@mobily/ts-belt": "npm:^3.13.1"
     "@react-navigation/native": "npm:^6.1.3"
     "@reduxjs/toolkit": "npm:1.9.5"
     "@suite-common/redux-utils": "workspace:*"
@@ -7536,7 +7537,9 @@ __metadata:
     "@suite-native/alerts": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"
+    "@suite-native/helpers": "workspace:*"
     "@suite-native/intl": "workspace:*"
+    "@suite-native/module-settings": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/styles": "workspace:*"
@@ -7560,6 +7563,7 @@ __metadata:
     "@suite-common/wallet-utils": "workspace:*"
     "@suite-native/accounts": "workspace:*"
     "@suite-native/config": "workspace:*"
+    "@suite-native/device": "workspace:*"
     "@trezor/connect": "workspace:*"
   languageName: unknown
   linkType: soft
@@ -7692,6 +7696,7 @@ __metadata:
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@suite-native/toasts": "workspace:*"
+    "@trezor/connect": "workspace:*"
     expo-clipboard: "npm:^4.1.1"
     jest: "npm:^26.6.3"
     react: "npm:18.2.0"
@@ -7922,7 +7927,6 @@ __metadata:
     "@suite-native/assets": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/biometrics": "workspace:*"
-    "@suite-native/device": "workspace:*"
     "@suite-native/device-manager": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"
     "@suite-native/formatters": "workspace:*"

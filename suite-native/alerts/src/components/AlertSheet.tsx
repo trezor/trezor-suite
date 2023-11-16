@@ -61,6 +61,7 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
         onPressSecondaryButton,
         secondaryButtonTitle,
         primaryButtonVariant = 'primary',
+        appendix,
     } = alert;
 
     const handlePressPrimaryButton = async () => {
@@ -90,7 +91,7 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
                                     subtitle={description}
                                     icon={icon}
                                 />
-
+                                {appendix}
                                 <VStack spacing="medium">
                                     <Button
                                         size="large"

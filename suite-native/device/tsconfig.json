@@ -11,7 +11,9 @@
         { "path": "../alerts" },
         { "path": "../atoms" },
         { "path": "../feature-flags" },
+        { "path": "../helpers" },
         { "path": "../intl" },
+        { "path": "../module-settings" },
         { "path": "../navigation" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/styles" }

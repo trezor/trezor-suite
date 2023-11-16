@@ -1,12 +1,10 @@
 import { Text, Image, VStack } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
-import { useDeviceConnect } from '@suite-native/device';
 
 import { ConnectDeviceBackground } from '../components/ConnectDeviceBackground';
 
 export const ConnectAndUnlockDeviceScreen = () => {
     const { translate } = useTranslate();
-    useDeviceConnect();
 
     return (
         <ConnectDeviceBackground>

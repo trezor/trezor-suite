@@ -17,6 +17,7 @@ export type Alert = RequireAllOrNone<
         onPressPrimaryButton?: () => void;
         secondaryButtonTitle?: string;
         onPressSecondaryButton?: () => void;
+        appendix?: ReactNode;
     },
     'secondaryButtonTitle' | 'onPressSecondaryButton'
 >;

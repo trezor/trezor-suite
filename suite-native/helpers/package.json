@@ -13,6 +13,7 @@
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
         "@suite-native/toasts": "workspace:*",
+        "@trezor/connect": "workspace:*",
         "expo-clipboard": "^4.1.1",
         "react": "18.2.0",
         "react-native": "0.71.8"
