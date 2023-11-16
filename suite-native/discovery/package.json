@@ -22,6 +22,7 @@
         "@suite-native/accounts": "workspace:*",
         "@suite-native/config": "workspace:*",
         "@suite-native/device": "workspace:*",
-        "@trezor/connect": "workspace:*"
+        "@trezor/connect": "workspace:*",
+        "@trezor/device-utils": "workspace:*"
     }
 }

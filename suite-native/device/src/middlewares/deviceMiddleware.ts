@@ -53,7 +53,10 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
             dispatch(authorizeDevice({ isUseEmptyPassphraseForced: true }));
         }
 
-        if (deviceActions.forgetDevice.match(action)) {
+        if (
+            deviceActions.forgetDevice.match(action) ||
+            deviceActions.forgetAndDisconnectDevice.match(action)
+        ) {
             dispatch(handleDeviceDisconnect(action.payload));
         }
 

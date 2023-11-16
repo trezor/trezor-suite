@@ -3,7 +3,11 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { Button, Text, VStack } from '@suite-native/atoms';
-import { selectDevices, selectIsSelectedDeviceImported } from '@suite-common/wallet-core';
+import {
+    selectDevices,
+    selectIsSelectedDeviceImported,
+    selectSelectedDeviceId,
+} from '@suite-common/wallet-core';
 import {
     ConnectDeviceStackRoutes,
     RootStackParamList,
@@ -29,6 +33,7 @@ export const DeviceManagerContent = () => {
     const { translate } = useTranslate();
 
     const devices = useSelector(selectDevices);
+    const selectedDeviceId = useSelector(selectSelectedDeviceId);
     const isPortfolioTrackerDevice = useSelector(selectIsSelectedDeviceImported);
 
     const { setIsDeviceManagerVisible } = useDeviceManager();
@@ -47,9 +52,12 @@ export const DeviceManagerContent = () => {
                 <Text variant="callout">
                     <Translation id="deviceManager.deviceList.sectionTitle" />
                 </Text>
-                {devices.map(device => (
-                    <DeviceItem key={device.path} id={device.id} />
-                ))}
+                {devices.map(device => {
+                    if (device.id !== selectedDeviceId) {
+                        return <DeviceItem key={device.path} id={device.id} />;
+                    }
+                    return null;
+                })}
             </VStack>
             {isPortfolioTrackerDevice && (
                 <VStack>

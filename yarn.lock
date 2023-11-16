@@ -7385,12 +7385,16 @@ __metadata:
     "@suite-native/feature-flags": "workspace:*"
     "@suite-native/helpers": "workspace:*"
     "@suite-native/intl": "workspace:*"
+    "@suite-native/link": "workspace:*"
     "@suite-native/module-settings": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@trezor/connect": "workspace:*"
+    "@trezor/device-utils": "workspace:*"
     "@trezor/styles": "workspace:*"
     react: "npm:18.2.0"
+    react-native: "npm:0.71.8"
     react-redux: "npm:8.0.7"
+    semver: "npm:^7.5.4"
   languageName: unknown
   linkType: soft
 
@@ -7411,6 +7415,7 @@ __metadata:
     "@suite-native/config": "workspace:*"
     "@suite-native/device": "workspace:*"
     "@trezor/connect": "workspace:*"
+    "@trezor/device-utils": "workspace:*"
   languageName: unknown
   linkType: soft
 

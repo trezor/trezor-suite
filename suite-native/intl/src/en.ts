@@ -305,6 +305,19 @@ export const en = {
     },
     deviceInfo: {
         installedFw: 'Installed firmware: {version}',
+        upToDateFw: 'The firmware is up to date.',
+        outdatedFw: 'The firmware is outdated.',
+        goToAccessories: 'Get accessories @ Trezor Shop',
+        updateHowTo: {
+            title: 'How to update firmware',
+            subtitle: 'Follow these steps:',
+            lines: {
+                1: '1. Connect Trezor to Desktop Suite',
+                2: '2. Navigate to Settings menu',
+                3: '3. Install new firmware',
+            },
+            button: 'Learn more @ Trezor.io',
+        },
     },
     qrCode: {
         addressCopied: 'Address copied',
