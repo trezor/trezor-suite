@@ -15,8 +15,8 @@ export type { Descriptor } from './types';
 export { TREZOR_USB_DESCRIPTORS, TRANSPORT } from './constants';
 
 export { AbstractTransport as Transport } from './transports/abstract';
-export { AbstractUsbTransport } from './transports/abstractUsb';
-export { UsbInterface } from './interfaces/usb';
+export { AbstractApiTransport } from './transports/abstractApi';
+export { UsbApi } from './api/usb';
 
 // messages are exported but there is no real need to use them elsewhere
 // transports have reference to this already

@@ -1,4 +1,4 @@
-import { AbstractInterface } from './abstract';
+import { AbstractApi, AbstractApiConstructorParams } from './abstract';
 import { AsyncResultWithTypedError } from '../types';
 import {
     CONFIGURATION_ID,
@@ -11,22 +11,22 @@ import { createTimeoutPromise } from '@trezor/utils';
 
 import * as ERRORS from '../errors';
 
-type ConstructorParams = ConstructorParameters<typeof AbstractInterface>[0] & {
+interface ConstructorParams extends AbstractApiConstructorParams {
     usbInterface: USB;
-};
+}
 
-type TransportInterfaceDevice = {
+interface TransportInterfaceDevice {
     session?: null | string;
     path: string;
     device: USBDevice;
-};
+}
 
 /**
  * Local error. We cast it to "device disconnected during action" from bridge as it means the same
  */
 const INTERFACE_DEVICE_DISCONNECTED = 'The device was disconnected.' as const;
 
-export class UsbInterface extends AbstractInterface {
+export class UsbApi extends AbstractApi {
     devices: TransportInterfaceDevice[] = [];
     usbInterface: ConstructorParams['usbInterface'];
 

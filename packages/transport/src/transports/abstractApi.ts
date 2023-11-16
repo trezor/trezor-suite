@@ -1,34 +1,34 @@
 import { createDeferred, Deferred } from '@trezor/utils';
 
 import { AbstractTransport, AbstractTransportParams, AcquireInput, ReleaseInput } from './abstract';
+import { AbstractApi } from '../api/abstract';
 import { buildAndSend } from '../utils/send';
 import { receiveAndParse } from '../utils/receive';
 import { SessionsClient } from '../sessions/client';
 import * as ERRORS from '../errors';
-import type { UsbInterface } from '../interfaces/usb';
 
-export type UsbTransportConstructorParams = AbstractTransportParams & {
-    usbInterface: UsbInterface;
+interface ConstructorParams extends AbstractTransportParams {
+    api: AbstractApi;
     sessionsClient: (typeof SessionsClient)['prototype'];
-};
+}
 
 /**
- * Abstract class for transports with direct usb access (webusb, nodeusb).
+ * Abstract class for transports with abstract api (webusb, nodeusb, udp, react-native).
  */
-export abstract class AbstractUsbTransport extends AbstractTransport {
+export abstract class AbstractApiTransport extends AbstractTransport {
     // sessions client is a standardized interface for communicating with sessions backend
     // which can live in couple of context (shared worker, local module, websocket server etc)
-    private sessionsClient: UsbTransportConstructorParams['sessionsClient'];
-    private transportInterface: UsbInterface;
+    private sessionsClient: ConstructorParams['sessionsClient'];
+    private api: AbstractApi;
     protected acquirePromise?: Deferred<void>;
 
-    constructor({ messages, usbInterface, sessionsClient, signal }: UsbTransportConstructorParams) {
+    constructor({ messages, api, sessionsClient, signal }: ConstructorParams) {
         super({ messages, signal });
         this.sessionsClient = sessionsClient;
-        this.transportInterface = usbInterface;
+        this.api = api;
     }
 
-    public init(): ReturnType<AbstractTransport['init']> {
+    public init() {
         return this.scheduleAction(async () => {
             const handshakeRes = await this.sessionsClient.handshake();
             return handshakeRes.success
@@ -44,8 +44,8 @@ export abstract class AbstractUsbTransport extends AbstractTransport {
 
         this.listening = true;
 
-        // 1. transport interface reports descriptors change
-        this.transportInterface.on('transport-interface-change', devices => {
+        // 1. transport api reports descriptors change
+        this.api.on('transport-interface-change', devices => {
             // 2. we signal this to sessions background
             this.sessionsClient.enumerateDone({
                 paths: devices,
@@ -67,8 +67,8 @@ export abstract class AbstractUsbTransport extends AbstractTransport {
         return this.scheduleAction(async () => {
             // notify sessions background that a client is going to access usb
             await this.sessionsClient.enumerateIntent();
-            // enumerate usb interface
-            const enumerateResult = await this.transportInterface.enumerate();
+            // enumerate usb api
+            const enumerateResult = await this.api.enumerate();
 
             if (!enumerateResult.success) {
                 return enumerateResult;
@@ -108,7 +108,7 @@ export abstract class AbstractUsbTransport extends AbstractTransport {
                 this.acquiredUnconfirmed[path] = acquireIntentResponse.payload.session;
 
                 const reset = !!input.previous;
-                const openDeviceResult = await this.transportInterface.openDevice(path, reset);
+                const openDeviceResult = await this.api.openDevice(path, reset);
 
                 if (!openDeviceResult.success) {
                     if (this.listenPromise) {
@@ -195,7 +195,7 @@ export abstract class AbstractUsbTransport extends AbstractTransport {
                     await buildAndSend(
                         this.messages,
                         (buffer: Buffer) =>
-                            this.transportInterface.write(path, buffer).then(result => {
+                            this.api.write(path, buffer).then(result => {
                                 if (!result.success) {
                                     // todo:
                                     throw new Error(result.error);
@@ -206,7 +206,7 @@ export abstract class AbstractUsbTransport extends AbstractTransport {
                     );
 
                     const message = await receiveAndParse(this.messages, () =>
-                        this.transportInterface.read(path).then(result => {
+                        this.api.read(path).then(result => {
                             if (result.success) {
                                 return result.payload;
                             }
@@ -255,7 +255,7 @@ export abstract class AbstractUsbTransport extends AbstractTransport {
                 await buildAndSend(
                     this.messages,
                     (buffer: Buffer) =>
-                        this.transportInterface.write(path, buffer).then(result => {
+                        this.api.write(path, buffer).then(result => {
                             if (!result.success) {
                                 throw new Error(result.error);
                             }
@@ -286,7 +286,7 @@ export abstract class AbstractUsbTransport extends AbstractTransport {
 
             try {
                 const message = await receiveAndParse(this.messages, () =>
-                    this.transportInterface.read(path).then(result => {
+                    this.api.read(path).then(result => {
                         if (!result.success) {
                             throw new Error(result.error);
                         }
@@ -306,11 +306,11 @@ export abstract class AbstractUsbTransport extends AbstractTransport {
     }
 
     releaseDevice(path: string) {
-        return this.transportInterface.closeDevice(path);
+        return this.api.closeDevice(path);
     }
 
     stop() {
-        this.transportInterface.on('transport-interface-change', () => {
+        this.api.on('transport-interface-change', () => {
             this.logger.debug('device connected after transport stopped');
         });
         this.stopped = true;

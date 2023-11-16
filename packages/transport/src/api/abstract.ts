@@ -4,9 +4,9 @@ import { success, error, unknownError } from '../utils/result';
 
 import * as ERRORS from '../errors';
 
-type ConstructorParams = {
+export interface AbstractApiConstructorParams {
     logger?: Logger;
-};
+}
 
 /**
  * This class defines unifying shape for native communication interfaces such as
@@ -14,13 +14,13 @@ type ConstructorParams = {
  * - navigator.usb
  * This is not public API. Only a building block which is used in src/transports
  */
-export abstract class AbstractInterface extends TypedEmitter<{
+export abstract class AbstractApi extends TypedEmitter<{
     'transport-interface-change': string[];
     'transport-interface-error': typeof ERRORS.DEVICE_NOT_FOUND | typeof ERRORS.DEVICE_UNREADABLE;
 }> {
     logger: Logger;
 
-    constructor({ logger }: ConstructorParams) {
+    constructor({ logger }: AbstractApiConstructorParams) {
         super();
 
         // some abstract inactive logger
@@ -34,7 +34,12 @@ export abstract class AbstractInterface extends TypedEmitter<{
     /**
      * enumerate connected devices
      */
-    abstract enumerate(): AsyncResultWithTypedError<string[], string>;
+    abstract enumerate(): AsyncResultWithTypedError<
+        string[],
+        | typeof ERRORS.ABORTED_BY_TIMEOUT
+        | typeof ERRORS.ABORTED_BY_SIGNAL
+        | typeof ERRORS.UNEXPECTED_ERROR
+    >;
 
     /**
      * read from device on path
