@@ -31,7 +31,7 @@ describe('analytics', () => {
         const sessionId = getRandomId();
         const commitId = 'abc';
 
-        const analytics = new Analytics('1.18', app);
+        const analytics = new Analytics({ version: '1.18', app });
 
         analytics.init(false, { environment, isDev, instanceId, sessionId, commitId });
 
@@ -81,7 +81,7 @@ describe('analytics', () => {
         const sessionId = getRandomId();
         const commitId = 'abc';
 
-        const analytics = new Analytics('1.18', app);
+        const analytics = new Analytics({ version: '1.18', app });
 
         analytics.init(true, { isDev, instanceId, sessionId, commitId });
 
@@ -107,7 +107,7 @@ describe('analytics', () => {
         const sessionId = getRandomId();
         const commitId = 'abc';
 
-        const analytics = new Analytics('1.18', app);
+        const analytics = new Analytics({ version: '1.18', app });
         analytics.init(false, {
             environment,
             isDev,
@@ -146,7 +146,7 @@ describe('analytics', () => {
         const sessionId = getRandomId();
         const commitId = 'abc';
 
-        const analytics = new Analytics('1.18', app);
+        const analytics = new Analytics({ version: '1.18', app, useQueue: true });
         analytics.init(false, {
             environment,
             isDev,

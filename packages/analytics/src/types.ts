@@ -2,6 +2,8 @@ import { Environment } from '@trezor/env-utils';
 
 export type App = 'suite' | 'connect';
 
+export type AnalyticsOptions = { version: string; app: App; useQueue?: boolean };
+
 export type InitOptions = {
     sessionId?: string;
     instanceId?: string;

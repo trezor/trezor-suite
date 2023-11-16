@@ -4,7 +4,10 @@ import { Analytics } from '@trezor/analytics';
 
 import { SuiteNativeAnalyticsEvent } from './events';
 
-export const analytics = new Analytics<SuiteNativeAnalyticsEvent>(getSuiteVersion(), 'suite');
+export const analytics = new Analytics<SuiteNativeAnalyticsEvent>({
+    version: getSuiteVersion(),
+    app: 'suite',
+});
 
 if (isDebugEnv()) {
     // Do not send analytics in development
