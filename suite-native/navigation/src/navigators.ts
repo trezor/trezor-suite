@@ -46,10 +46,6 @@ export type SettingsStackParamList = {
 
 export type ReceiveStackParamList = {
     [ReceiveStackRoutes.ReceiveAccounts]: undefined;
-    [ReceiveStackRoutes.Receive]: {
-        accountKey: AccountKey;
-        tokenContract?: TokenAddress;
-    };
 };
 
 export type AppTabsParamList = {
