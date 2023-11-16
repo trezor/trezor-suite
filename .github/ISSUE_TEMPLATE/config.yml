@@ -1,4 +1,4 @@
 contact_links:
   - name: General support and product feedback
-    url: https://support.trezor.io
+    url: https://trezor.io/support
     about: Please do not use this Github repository for technical support. Contact Trezor support directly or visit our community forum at forum.trezor.io.
