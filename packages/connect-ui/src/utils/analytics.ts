@@ -48,7 +48,7 @@ export const initAnalytics = () => {
 
     const userAllowedTracking = storage.load().tracking_enabled;
 
-    analytics.init(userAllowedTracking || false, {
+    analytics.init(userAllowedTracking, {
         instanceId: trackingId,
         commitId: process.env.COMMIT_HASH || '',
         isDev: process.env.NODE_ENV === 'development',
@@ -56,7 +56,6 @@ export const initAnalytics = () => {
             onEnable,
             onDisable,
         },
-        useQueue: true,
     });
 
     analytics.report({

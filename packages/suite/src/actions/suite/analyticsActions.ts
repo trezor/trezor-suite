@@ -60,7 +60,7 @@ export const init = () => (dispatch: Dispatch, getState: GetState) => {
         },
     });
 
-    allowSentryReport(userAllowedTracking);
+    allowSentryReport(!!userAllowedTracking);
     setSentryUser(instanceId);
 
     dispatch(
