@@ -105,19 +105,25 @@ const collectedData = [
     },
 ];
 
-type DataAnalyticsProps = {
+interface DataAnalyticsProps {
     onConfirm: (trackingEnabled: boolean) => void;
     analyticsLink?: (chunks: ReactNode[]) => JSX.Element;
     tosLink?: (chunks: ReactNode[]) => JSX.Element;
-};
+    className?: string;
+}
 
 // This component is used in connect-ui, therefore it's located in this library,
 // although in the future it should be moved elsewhere.
-export const DataAnalytics = ({ onConfirm, analyticsLink, tosLink }: DataAnalyticsProps) => {
+export const DataAnalytics = ({
+    onConfirm,
+    analyticsLink,
+    tosLink,
+    className,
+}: DataAnalyticsProps) => {
     const [trackingEnabled, setTrackingEnabled] = useState<boolean>(true);
 
     return (
-        <StyledCard data-test="@analytics/consent">
+        <StyledCard data-test="@analytics/consent" className={className}>
             <Wrapper>
                 <Heading>
                     <FormattedMessage

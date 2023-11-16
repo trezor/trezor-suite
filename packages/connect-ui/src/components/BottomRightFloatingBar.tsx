@@ -11,6 +11,7 @@ const Wrapper = styled.div`
     position: absolute;
     bottom: 16px;
     right: 16px;
+    z-index: 1;
 `;
 
 enum View {
