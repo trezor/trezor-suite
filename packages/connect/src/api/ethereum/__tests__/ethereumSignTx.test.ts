@@ -1,5 +1,6 @@
 import { Transaction } from '@ethereumjs/tx';
-import { sha3 } from 'web3-utils';
+import { keccak256 } from 'ethereum-cryptography/keccak';
+import { bytesToHex } from 'ethereum-cryptography/utils';
 
 import { serializeEthereumTx } from '../ethereumSignTx';
 
@@ -17,8 +18,8 @@ describe('helpers/ethereumSignTx', () => {
                     expect(`0x${hash1}`).toEqual(f.result);
                 }
                 const serialized = serializeEthereumTx({ ...f.tx, type: 0 }, f.tx.chainId);
-                const hash2 = sha3(serialized);
-                expect(hash2).toEqual(f.result);
+                const hash2 = bytesToHex(keccak256(Buffer.from(serialized.slice(2), 'hex')));
+                expect(`0x${hash2}`).toEqual(f.result);
             });
         });
     });
