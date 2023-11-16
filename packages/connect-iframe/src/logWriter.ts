@@ -5,17 +5,17 @@ import { LogMessage, LogWriter } from '@trezor/connect/src/utils/debug';
 let logWorker: SharedWorker | undefined;
 
 // Check for SharedWorker support
-if (SharedWorker) {
-    try {
-        // Initialize LogWorker
-        logWorker = new LogWorker();
-        logWorker?.port?.start();
-    } catch (error) {
-        console.warn('Failed to initialize LogWorker:', error);
-    }
-} else {
-    console.warn('SharedWorker is not supported');
+// if (SharedWorker) {
+try {
+    // Initialize LogWorker
+    logWorker = new LogWorker();
+    logWorker?.port?.start();
+} catch (error) {
+    console.warn('Failed to initialize LogWorker:', error);
 }
+// } else {
+//     console.warn('SharedWorker is not supported');
+// }
 
 const logWriterFactory = (): LogWriter | undefined => {
     if (logWorker) {
