@@ -1,18 +1,24 @@
 import { AbstractTransport } from '../src/transports/abstract';
-import { AbstractUsbTransport, UsbTransportConstructorParams } from '../src/transports/abstractUsb';
-import { UsbInterface } from '../src/interfaces/usb';
+import { AbstractApiTransport } from '../src/transports/abstractApi';
+import { UsbApi } from '../src/api/usb';
 import { SessionsClient } from '../src/sessions/client';
 import { SessionsBackground } from '../src/sessions/background';
 import * as messages from '@trezor/protobuf/messages.json';
 
 // we cant directly use abstract class (UsbTransport)
-class TestUsbTransport extends AbstractUsbTransport {
+
+class TestUsbTransport extends AbstractApiTransport {
     public name = 'WebUsbTransport' as const;
 
-    constructor({ messages, usbInterface, sessionsClient, signal }: UsbTransportConstructorParams) {
+    constructor({
+        messages,
+        api,
+        sessionsClient,
+        signal,
+    }: ConstructorParameters<typeof AbstractApiTransport>[0]) {
         super({
             messages,
-            usbInterface,
+            api,
             sessionsClient,
             signal,
         });
@@ -45,11 +51,12 @@ const createMockedDevice = (optional = {}) => ({
 });
 
 // mock of navigator.usb
-const createUsbMock = (optional = {}) => ({
-    getDevices: () =>
-        Promise.resolve([createMockedDevice(), createMockedDevice({ serialNumber: null })]),
-    ...optional,
-});
+const createUsbMock = (optional = {}) =>
+    ({
+        getDevices: () =>
+            Promise.resolve([createMockedDevice(), createMockedDevice({ serialNumber: null })]),
+        ...optional,
+    }) as unknown as UsbApi['usbInterface'];
 
 describe('Usb', () => {
     beforeEach(() => {
@@ -68,14 +75,13 @@ describe('Usb', () => {
                 registerBackgroundCallbacks: () => {},
             });
 
-            // create usb interface with navigator.usb mock
-            const testUsbInterface = new UsbInterface({
-                // @ts-expect-error
+            // create usb api with navigator.usb mock
+            const testUsbApi = new UsbApi({
                 usbInterface: createUsbMock(),
             });
 
             const transport = new TestUsbTransport({
-                usbInterface: testUsbInterface,
+                api: testUsbApi,
                 sessionsClient,
             });
 
@@ -96,9 +102,8 @@ describe('Usb', () => {
                 registerBackgroundCallbacks: () => {},
             });
 
-            // create usb interface with navigator.usb mock
-            const testUsbInterface = new UsbInterface({
-                // @ts-expect-error
+            // create usb api with navigator.usb mock
+            const testUsbApi = new UsbApi({
                 usbInterface: createUsbMock({
                     getDevices: () => {
                         throw new Error('crazy error nobody expects');
@@ -107,7 +112,7 @@ describe('Usb', () => {
             });
 
             const transport = new TestUsbTransport({
-                usbInterface: testUsbInterface,
+                api: testUsbApi,
                 sessionsClient,
             });
 
@@ -126,7 +131,7 @@ describe('Usb', () => {
         let sessionsBackground: SessionsBackground;
         let sessionsClient: SessionsClient;
         let transport: AbstractTransport;
-        let testUsbInterface: UsbInterface;
+        let testUsbApi: UsbApi;
         let abortController: AbortController;
 
         beforeEach(async () => {
@@ -145,16 +150,15 @@ describe('Usb', () => {
                 sessionsClient.emit('descriptors', descriptors);
             });
 
-            // create usb interface with navigator.usb mock
-            testUsbInterface = new UsbInterface({
-                // @ts-expect-error
+            // create usb api with navigator.usb mock
+            testUsbApi = new UsbApi({
                 usbInterface: createUsbMock(),
             });
 
             abortController = new AbortController();
 
             transport = new TestUsbTransport({
-                usbInterface: testUsbInterface,
+                api: testUsbApi,
                 sessionsClient,
                 messages,
                 signal: abortController.signal,

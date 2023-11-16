@@ -1,18 +1,16 @@
 import UDP from 'dgram';
 import { isNotUndefined } from '@trezor/utils';
 
-import { AbstractInterface } from './abstract';
+import { AbstractApi, AbstractApiConstructorParams } from './abstract';
 import { AsyncResultWithTypedError, ResultWithTypedError } from '../types';
 
 import * as ERRORS from '../errors';
 
-type ConstructorParams = ConstructorParameters<typeof AbstractInterface>[0];
-
-export class UdpInterface extends AbstractInterface {
+export class UdpApi extends AbstractApi {
     interface = UDP.createSocket('udp4');
     protected communicating = false;
 
-    constructor({ logger }: ConstructorParams) {
+    constructor({ logger }: AbstractApiConstructorParams) {
         super({ logger });
     }
 

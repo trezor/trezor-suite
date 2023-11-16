@@ -1,12 +1,12 @@
 import { AbstractTransportParams } from './abstract';
 
-import { UdpInterface } from '../interfaces/udp';
-import { AbstractUsbTransport } from './abstractUsb';
+import { UdpApi } from '../api/udp';
+import { AbstractApiTransport } from './abstractApi';
 
 import { SessionsClient } from '../sessions/client';
 import { SessionsBackground } from '../sessions/background';
 
-export class UdpTransport extends AbstractUsbTransport {
+export class UdpTransport extends AbstractApiTransport {
     public name = 'UdpTransport' as const;
 
     constructor(params?: AbstractTransportParams) {
@@ -25,10 +25,8 @@ export class UdpTransport extends AbstractUsbTransport {
 
         super({
             messages,
-            // @ts-expect-error
-            usbInterface: new UdpInterface({ logger }),
+            api: new UdpApi({ logger }),
             logger,
-
             sessionsClient,
         });
 

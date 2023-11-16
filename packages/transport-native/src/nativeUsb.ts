@@ -1,13 +1,13 @@
 import { WebUSB } from '@trezor/react-native-usb';
 import {
     Transport as AbstractTransport,
-    AbstractUsbTransport,
+    AbstractApiTransport,
     SessionsClient,
     SessionsBackground,
-    UsbInterface,
+    UsbApi,
 } from '@trezor/transport';
 
-export class NativeUsbTransport extends AbstractUsbTransport {
+export class NativeUsbTransport extends AbstractApiTransport {
     // TODO: Not sure how to solve this type correctly.
     public name = 'NativeUsbTransport' as any;
 
@@ -26,7 +26,7 @@ export class NativeUsbTransport extends AbstractUsbTransport {
 
         super({
             messages,
-            usbInterface: new UsbInterface({
+            api: new UsbApi({
                 usbInterface: new WebUSB(),
                 logger,
             }),
