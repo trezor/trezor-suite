@@ -101,14 +101,10 @@ const logInConsole = (logs: any[]) => {
 const useLogWorker = (setLogs: React.Dispatch<React.SetStateAction<any[]>>) => {
     let logWorker: SharedWorker | undefined;
 
-    if (SharedWorker) {
-        try {
-            logWorker = new SharedWorker('./workers/shared-logger-worker.js');
-        } catch (error) {
-            console.warn('Failed to initialize SharedWorker');
-        }
-    } else {
-        console.warn('SharedWorker is not supported in this browser');
+    try {
+        logWorker = new SharedWorker('./workers/shared-logger-worker.js');
+    } catch (error) {
+        console.warn('Failed to initialize SharedWorker');
     }
 
     useEffect(() => {
