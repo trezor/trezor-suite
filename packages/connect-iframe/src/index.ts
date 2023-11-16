@@ -124,13 +124,11 @@ const handleMessage = async (event: PostMessageEvent) => {
             // eslint-disable-next-line camelcase
             const { tracking_enabled, tracking_id } = storage.load();
 
-            // eslint-disable-next-line camelcase
-            analytics.init(tracking_enabled || false, {
+            analytics.init(tracking_enabled, {
                 // eslint-disable-next-line camelcase
                 instanceId: tracking_id,
                 commitId: process.env.COMMIT_HASH || '',
                 isDev: process.env.NODE_ENV === 'development',
-                useQueue: true,
             });
 
             analytics.report({

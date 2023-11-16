@@ -18,7 +18,6 @@ import {
     hasBitcoinOnlyFirmware,
     isDeviceInBootloaderMode,
 } from '@trezor/device-utils';
-import { analyticsActions } from '@suite-common/analytics';
 
 import { SUITE, ROUTER } from 'src/actions/suite/constants';
 import { COINJOIN } from 'src/actions/wallet/constants';
@@ -64,15 +63,6 @@ const analyticsMiddleware =
                     type: EventType.SuiteReady,
                     payload: getSuiteReadyPayload(state),
                 });
-                break;
-            case analyticsActions.enableAnalytics.type:
-                if (state.suite.flags.initialRun) {
-                    // suite-ready event was not reported on analytics initialization because analytics was not yet confirmed
-                    analytics.report({
-                        type: EventType.SuiteReady,
-                        payload: getSuiteReadyPayload(state),
-                    });
-                }
                 break;
             case TRANSPORT.START:
                 analytics.report({

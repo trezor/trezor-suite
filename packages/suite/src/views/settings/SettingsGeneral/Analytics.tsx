@@ -32,7 +32,7 @@ export const Analytics = () => {
                 <PositionedSwitch>
                     <Switch
                         dataTest="@analytics/toggle-switch"
-                        isChecked={userAllowedTracking}
+                        isChecked={!!userAllowedTracking}
                         onChange={() => {
                             if (userAllowedTracking) {
                                 analytics.disable();

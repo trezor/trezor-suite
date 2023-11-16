@@ -59,6 +59,11 @@ export const selectIsAnalyticsEnabled = (state: AnalyticsRootState): boolean => 
     return isAnalyticsConfirmed ? !!state.analytics.enabled : false;
 };
 
-// allow tracking only if user already confirmed data collection
-export const selectHasUserAllowedTracking = (state: AnalyticsRootState): boolean =>
-    !!state.analytics.confirmed && !!state.analytics.enabled;
+export const selectHasUserAllowedTracking = (state: AnalyticsRootState): boolean | undefined => {
+    // If the user has not yet confirmed analytics, return undefined.
+    // Otherwise, return true or false based on the 'confirmed' and 'enabled' flags.
+    if (!state.analytics.confirmed) {
+        return undefined;
+    }
+    return !!state.analytics.confirmed && !!state.analytics.enabled;
+};
