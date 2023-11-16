@@ -32,7 +32,7 @@ const parse = (versionArr: VersionArray) => ({
 const split = (version: string) => {
     const arr = version.split('.').map(v => Number(v));
     if (!isVersionArray(arr)) {
-        throw new Error('version string is in wrong format');
+        throw new Error(`version string is in wrong format: ${version}`);
     }
     return arr;
 };
