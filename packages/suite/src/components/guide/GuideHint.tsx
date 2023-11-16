@@ -2,10 +2,11 @@ import { Children, BlockquoteHTMLAttributes, cloneElement, isValidElement } from
 import styled from 'styled-components';
 
 import { Warning } from '@trezor/components';
+import { typography } from '@trezor/theme';
 
 const StyledWarning = styled(Warning)`
-    background: ${({ theme }) => theme.BG_GREY};
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    background: ${({ theme }) => theme.backgroundSurfaceElevation1};
+    color: ${({ theme }) => theme.textDefault};
     gap: 10px;
     padding: 10px;
 
@@ -15,6 +16,7 @@ const StyledWarning = styled(Warning)`
 
     a {
         display: inline; /* Allow linebreaks inside links as the space is quite narrow. */
+        ${typography.hint}
     }
 
     /* Provide a more specific selector to override paragraph style on parent. */
