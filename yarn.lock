@@ -9257,7 +9257,7 @@ __metadata:
     electron-store: "npm:^8.1.0"
     electron-updater: "npm:6.1.4"
     glob: "npm:^10.3.10"
-    jest: "npm:^26.6.3"
+    jest: "npm:29.5.0"
     openpgp: "npm:^5.11.0"
     rimraf: "npm:^5.0.5"
     systeminformation: "npm:^5.21.15"
