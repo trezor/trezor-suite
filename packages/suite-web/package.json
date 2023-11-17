@@ -51,7 +51,7 @@
         "cypress": "^13.4.0",
         "cypress-file-upload": "^5.0.8",
         "cypress-image-snapshot": "^4.0.1",
-        "jest": "^26.6.3",
+        "jest": "29.5.0",
         "rimraf": "^5.0.5",
         "stylelint": "^15.11.0",
         "stylelint-config-standard": "^34.0.0",
