@@ -7611,7 +7611,8 @@ __metadata:
     "@suite-native/toasts": "workspace:*"
     "@trezor/connect": "workspace:*"
     expo-clipboard: "npm:^4.1.1"
-    jest: "npm:^26.6.3"
+    jest: "npm:29.5.0"
+    jest-environment-jsdom: "npm:29.5.0"
     react: "npm:18.2.0"
     react-native: "npm:0.71.8"
   languageName: unknown
