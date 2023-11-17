@@ -130,6 +130,11 @@ export const setLogWriter = (logWriterFactory: () => LogWriter | undefined) => {
         writer = logWriterFactory();
         if (writer) {
             _logs[key].setWriter(writer);
+            const { messages } = _logs[key];
+            // If there are any messages in the log when init, add them to the writer.
+            messages.forEach(message => {
+                writer?.add(message);
+            });
         }
     });
 };
