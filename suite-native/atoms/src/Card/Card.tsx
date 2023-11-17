@@ -38,7 +38,7 @@ export const Card = ({ children, style, alertVariant, alertTitle }: CardProps) =
     const isAlertDisplayed = !!alertVariant;
 
     return (
-        <>
+        <View>
             {isAlertDisplayed && (
                 <AlertBox isStandalone={false} variant={alertVariant} title={alertTitle} />
             )}
@@ -46,6 +46,6 @@ export const Card = ({ children, style, alertVariant, alertTitle }: CardProps) =
             <View style={[applyStyle(cardContainerStyle, { isAlertDisplayed }), style]}>
                 {children}
             </View>
-        </>
+        </View>
     );
 };
