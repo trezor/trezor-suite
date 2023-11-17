@@ -8773,7 +8773,7 @@ __metadata:
   resolution: "@trezor/connect-plugin-ethereum@workspace:packages/connect-plugin-ethereum"
   dependencies:
     "@metamask/eth-sig-util": "npm:^7.0.0"
-    jest: "npm:^26.6.3"
+    jest: "npm:29.5.0"
     rimraf: "npm:^5.0.5"
     typescript: "npm:5.2.2"
   peerDependencies:
