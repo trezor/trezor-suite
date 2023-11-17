@@ -9127,7 +9127,7 @@ __metadata:
     fela-plugin-unit: "npm:^12.2.1"
     fela-sort-media-query-mobile-first: "npm:^12.2.1"
     fela-utils: "npm:^12.2.1"
-    jest: "npm:^26.6.3"
+    jest: "npm:29.5.0"
     polished: "npm:^4.2.2"
     react: "npm:18.2.0"
     react-fela: "npm:^12.2.1"
