@@ -22,7 +22,7 @@
         "react-hook-form": "^7.48.2"
     },
     "devDependencies": {
-        "jest": "^26.6.3",
+        "jest": "29.5.0",
         "typescript": "5.2.2"
     }
 }
