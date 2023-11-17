@@ -170,11 +170,18 @@ export const config: webpack.Configuration = {
     },
     // We are using WASM package - it's much faster (https://github.com/Emurgo/cardano-serialization-lib)
     // This option makes it possible
-    // Unfortunately Cardano Serialization Lib triggers webpack warning:
-    // "Critical dependency: the request of a dependency is an expression" due to require in generated wasm module
-    // https://github.com/Emurgo/cardano-serialization-lib/issues/119
     experiments: { asyncWebAssembly: true },
-    ignoreWarnings: [{ module: /cardano-serialization-lib-browser/ }],
+    ignoreWarnings: [
+        // Unfortunately Cardano Serialization Lib triggers webpack warning:
+        // "Critical dependency: the request of a dependency is an expression" due to require in generated wasm module
+        // https://github.com/Emurgo/cardano-serialization-lib/issues/119
+        { module: /cardano-serialization-lib-browser/ },
+        // checkAuthenticityProof (see comment on how subtle is used there), should be safe to suppress this message
+        warning =>
+            warning.message.includes(
+                "export 'subtle' (imported as 'crypto') was not found in 'crypto' ",
+            ),
+    ],
 };
 
 export default config;
