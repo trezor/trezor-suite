@@ -11,7 +11,7 @@
         "validate-config": "tsx ./scripts/validate-config.ts",
         "sign-config": "tsx ./scripts/sign-config.ts",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "test:unit": "jest -c ../../jest.config.base.js --passWithNoTests",
+        "test:unit": "jest",
         "type-check": "tsc --build"
     },
     "dependencies": {
@@ -34,7 +34,8 @@
     "devDependencies": {
         "@suite-common/test-utils": "workspace:*",
         "@types/fs-extra": "^11.0.3",
-        "jest": "^26.6.3",
+        "jest": "29.5.0",
+        "jest-environment-jsdom": "29.5.0",
         "tsx": "^3.14.0",
         "typescript": "5.2.2"
     },

@@ -6993,7 +6993,8 @@ __metadata:
     "@types/fs-extra": "npm:^11.0.3"
     ajv: "npm:^8.12.0"
     fs-extra: "npm:^11.1.1"
-    jest: "npm:^26.6.3"
+    jest: "npm:29.5.0"
+    jest-environment-jsdom: "npm:29.5.0"
     json-schema-to-typescript: "npm:^13.1.1"
     jws: "npm:^4.0.0"
     proxy-memoize: "npm:2.0.2"
@@ -22461,6 +22462,27 @@ __metadata:
     jest-util: "npm:^29.5.0"
     pretty-format: "npm:^29.5.0"
   checksum: 4e9426293bb42616e81d34e7ad810e17f0b81c6e58a388a786aa92e8076e4de8770668940e0976a61161df852decbeec0fa79f219c39a17ef6217db1ccb0486a
+  languageName: node
+  linkType: hard
+
+"jest-environment-jsdom@npm:29.5.0":
+  version: 29.5.0
+  resolution: "jest-environment-jsdom@npm:29.5.0"
+  dependencies:
+    "@jest/environment": "npm:^29.5.0"
+    "@jest/fake-timers": "npm:^29.5.0"
+    "@jest/types": "npm:^29.5.0"
+    "@types/jsdom": "npm:^20.0.0"
+    "@types/node": "npm:*"
+    jest-mock: "npm:^29.5.0"
+    jest-util: "npm:^29.5.0"
+    jsdom: "npm:^20.0.0"
+  peerDependencies:
+    canvas: ^2.5.0
+  peerDependenciesMeta:
+    canvas:
+      optional: true
+  checksum: a7cc3691389293ef282d9698f923cb38ff171763ae6bc125d292c12dfb025d659db9a34b8ec679a6b3b171a230af6bc27c734d6ff8e94dd93367b0a7865f27d4
   languageName: node
   linkType: hard
 
