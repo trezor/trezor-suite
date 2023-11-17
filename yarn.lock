@@ -7371,6 +7371,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-native/device-mutex@workspace:*, @suite-native/device-mutex@workspace:suite-native/device-mutex":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/device-mutex@workspace:suite-native/device-mutex"
+  dependencies:
+    "@mobily/ts-belt": "npm:^3.13.1"
+    jest: "npm:^26.6.3"
+  languageName: unknown
+  linkType: soft
+
 "@suite-native/device@workspace:*, @suite-native/device@workspace:suite-native/device":
   version: 0.0.0-use.local
   resolution: "@suite-native/device@workspace:suite-native/device"
@@ -7414,6 +7423,7 @@ __metadata:
     "@suite-native/accounts": "workspace:*"
     "@suite-native/config": "workspace:*"
     "@suite-native/device": "workspace:*"
+    "@suite-native/device-mutex": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
   languageName: unknown
@@ -7999,6 +8009,7 @@ __metadata:
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/device-manager": "workspace:*"
+    "@suite-native/device-mutex": "workspace:*"
     "@suite-native/ethereum-tokens": "workspace:*"
     "@suite-native/formatters": "workspace:*"
     "@suite-native/helpers": "workspace:*"

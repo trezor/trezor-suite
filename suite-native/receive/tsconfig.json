@@ -19,6 +19,7 @@
         { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../device-manager" },
+        { "path": "../device-mutex" },
         { "path": "../ethereum-tokens" },
         { "path": "../formatters" },
         { "path": "../helpers" },

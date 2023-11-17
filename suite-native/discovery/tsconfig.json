@@ -26,6 +26,7 @@
         { "path": "../accounts" },
         { "path": "../config" },
         { "path": "../device" },
+        { "path": "../device-mutex" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" }
     ]

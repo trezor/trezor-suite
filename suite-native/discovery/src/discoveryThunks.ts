@@ -19,8 +19,9 @@ import { getDerivationType } from '@suite-common/wallet-utils';
 import { Network } from '@suite-common/wallet-config';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import { supportedMainnetSymbols, supportedNetworkSymbols } from '@suite-native/config';
+import { requestDeviceAccess } from '@suite-native/device-mutex';
 
-import { DeviceAccessMutex, fetchBundleDescriptors } from './utils';
+import { fetchBundleDescriptors } from './utils';
 
 const DISCOVERY_BATCH_SIZE = 3;
 
@@ -105,13 +106,11 @@ const discoverNetworkBatchThunk = createThunk(
             device,
             round = 1,
             network,
-            mutex,
         }: {
             deviceState: string;
             device: TrezorDevice;
             round?: number;
             network: Network;
-            mutex: DeviceAccessMutex;
         },
         { dispatch, getState },
     ) => {
@@ -170,7 +169,6 @@ const discoverNetworkBatchThunk = createThunk(
                     deviceState,
                     device,
                     network,
-                    mutex,
                     round: round + 1,
                 }),
             );
@@ -178,9 +176,7 @@ const discoverNetworkBatchThunk = createThunk(
         }
 
         // Take exclusive access to the device and hold it until is the fetching of the descriptors done.
-        await mutex.lock();
-        const descriptorsBundle = await fetchBundleDescriptors(chunkBundle);
-        mutex.unlock();
+        const descriptorsBundle = await requestDeviceAccess(fetchBundleDescriptors, chunkBundle);
 
         const isFinished = await dispatch(
             discoverAccountsByDescriptorThunk({
@@ -195,7 +191,6 @@ const discoverNetworkBatchThunk = createThunk(
                     deviceState,
                     device,
                     network,
-                    mutex,
                     round: round + 1,
                 }),
             );
@@ -212,7 +207,11 @@ export const createDescriptorPreloadedDiscoveryThunk = createThunk(
             deviceState,
             device,
             areTestnetsEnabled,
-        }: { deviceState: string; device: TrezorDevice; areTestnetsEnabled: boolean },
+        }: {
+            deviceState: string;
+            device: TrezorDevice;
+            areTestnetsEnabled: boolean;
+        },
         { dispatch },
     ) => {
         const networks = areTestnetsEnabled ? supportedNetworkSymbols : supportedMainnetSymbols;
@@ -252,7 +251,6 @@ export const startDescriptorPreloadedDiscoveryThunk = createThunk(
         }: { deviceState: string; device: TrezorDevice; areTestnetsEnabled: boolean },
         { dispatch, getState },
     ) => {
-        const mutex = new DeviceAccessMutex();
         await dispatch(
             createDescriptorPreloadedDiscoveryThunk({
                 deviceState,
@@ -278,7 +276,7 @@ export const startDescriptorPreloadedDiscoveryThunk = createThunk(
 
         // Start discovery for every network account type.
         networks.forEach(network => {
-            dispatch(discoverNetworkBatchThunk({ deviceState, device, network, mutex }));
+            dispatch(discoverNetworkBatchThunk({ deviceState, device, network }));
         });
     },
 );
