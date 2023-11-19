@@ -1,0 +1,19 @@
+{
+    "name": "@suite-native/device-mutex",
+    "version": "1.0.0",
+    "main": "src/index",
+    "license": "See LICENSE.md in repo root",
+    "private": true,
+    "sideEffects": false,
+    "dependencies": {
+        "@mobily/ts-belt": "^3.13.1"
+    },
+    "scripts": {
+        "type-check": "tsc --build",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "jest -c ../../jest.config.base.js --passWithNoTests"
+    },
+    "devDependencies": {
+        "jest": "^26.6.3"
+    }
+}

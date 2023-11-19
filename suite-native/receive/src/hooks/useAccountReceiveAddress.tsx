@@ -14,6 +14,7 @@ import {
 import { AccountKey } from '@suite-common/wallet-types';
 import { getFirstFreshAddress } from '@suite-common/wallet-utils';
 import { analytics, EventType } from '@suite-native/analytics';
+import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 
 export const useAccountReceiveAddress = (accountKey: AccountKey) => {
     const dispatch = useDispatch();
@@ -43,9 +44,14 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
 
     const verifyAddressOnDevice = useCallback(async () => {
         if (accountKey && freshAddress) {
-            const { success } = await dispatch(
-                confirmAddressOnDeviceThunk({ accountKey, addressPath: freshAddress.path }),
-            ).unwrap();
+            const { success } = await requestPrioritizedDeviceAccess(() =>
+                dispatch(
+                    confirmAddressOnDeviceThunk({
+                        accountKey,
+                        addressPath: freshAddress.path,
+                    }),
+                ).unwrap(),
+            );
 
             return success;
         }
