@@ -32,6 +32,6 @@
         "react-redux": "8.0.7"
     },
     "devDependencies": {
-        "typescript": "4.9.5"
+        "typescript": "5.2.2"
     }
 }
