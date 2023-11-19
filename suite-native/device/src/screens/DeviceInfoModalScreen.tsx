@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
+import { G } from '@mobily/ts-belt';
 import { CommonActions, useNavigation } from '@react-navigation/native';
 
 import { DeviceModelInternal } from '@trezor/connect';
@@ -9,19 +10,26 @@ import {
     Box,
     Card,
     HStack,
+    VStack,
+    Button,
     IconButton,
     ScreenHeaderWrapper,
     Text,
 } from '@suite-native/atoms';
 import { HomeStackRoutes, RootStackRoutes, Screen } from '@suite-native/navigation';
 import {
-    selectDeviceFirmwareVersion,
+    selectDevice,
     selectDeviceModel,
+    selectDeviceReleaseInfo,
     selectIsSelectedDeviceImported,
     selectSelectedDeviceName,
 } from '@suite-common/wallet-core';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { useTranslate } from '@suite-native/intl';
+import { getFirmwareVersion } from '@trezor/device-utils';
+import { useOpenLink } from '@suite-native/link';
+
+import { HowToUpdateBottomSheet } from '../components/HowToUpdateBottomSheet';
 
 const deviceImage = {
     [DeviceModelInternal.T1B1]: require('../assets/t1.png'),
@@ -33,17 +41,43 @@ const emptyBoxStyle = prepareNativeStyle(() => ({
     width: 48,
 }));
 
+const contentStyle = prepareNativeStyle(() => ({
+    flexGrow: 1,
+}));
+
 export const DeviceInfoModalScreen = () => {
     const navigation = useNavigation();
-
     const { translate } = useTranslate();
+    const openLink = useOpenLink();
 
     const deviceModel = useSelector(selectDeviceModel);
     const deviceName = useSelector(selectSelectedDeviceName);
-    const deviceFirmwareVersion = useSelector(selectDeviceFirmwareVersion);
+    const device = useSelector(selectDevice);
     const isPortfolioTrackerDevice = useSelector(selectIsSelectedDeviceImported);
-
+    const deviceReleaseInfo = useSelector(selectDeviceReleaseInfo);
     const { applyStyle } = useNativeStyles();
+
+    const [isUpdateSheetOpen, setIsUpdateSheetOpen] = useState<boolean>(false);
+
+    const isUpgradable = deviceReleaseInfo?.isNewer ?? false;
+
+    const getCardAlertProps = () => {
+        if (G.isNotNullable(deviceReleaseInfo)) {
+            if (isUpgradable) {
+                return {
+                    alertTitle: translate('deviceInfo.outdatedFw'),
+                    alertVariant: 'warning',
+                } as const;
+            }
+            return {
+                alertTitle: translate('deviceInfo.upToDateFw'),
+                alertVariant: 'success',
+            } as const;
+        }
+
+        return { alertTitle: undefined, alertVariant: undefined } as const;
+    };
+    const cardAlertProps = getCardAlertProps();
 
     useEffect(() => {
         if (isPortfolioTrackerDevice) {
@@ -67,12 +101,17 @@ export const DeviceInfoModalScreen = () => {
 
     if (!deviceModel) return null;
 
+    const currentFwVersion = getFirmwareVersion(device);
+
     const handleGoBack = () => {
         navigation.goBack();
     };
 
-    const stringifiedFirmwareVersion = deviceFirmwareVersion?.join('.');
+    const handleAccessoriesClick = () => {
+        openLink('https://trezor.io/accessories');
+    };
 
+    const handleUpdateClick = () => setIsUpdateSheetOpen(true);
     return (
         <Screen
             screenHeader={
@@ -88,17 +127,40 @@ export const DeviceInfoModalScreen = () => {
                 </ScreenHeaderWrapper>
             }
         >
-            <Card>
-                <HStack spacing="large">
-                    <Image width={92} height={151} source={deviceImage[deviceModel]} />
-                    <Box justifyContent="center">
-                        <Text variant="titleSmall">{deviceName}</Text>
-                        <Text variant="hint">
-                            {translate('deviceInfo.installedFw', { stringifiedFirmwareVersion })}
-                        </Text>
-                    </Box>
-                </HStack>
-            </Card>
+            <Box style={applyStyle(contentStyle)}>
+                <Card {...cardAlertProps}>
+                    <HStack spacing="large">
+                        <Image width={92} height={151} source={deviceImage[deviceModel]} />
+                        <Box justifyContent="center">
+                            <Text variant="titleSmall">{deviceName}</Text>
+                            <Text variant="hint">
+                                {translate('deviceInfo.installedFw', {
+                                    version: currentFwVersion,
+                                })}
+                            </Text>
+                        </Box>
+                    </HStack>
+                </Card>
+            </Box>
+            <VStack spacing="medium">
+                <Button
+                    colorScheme="tertiaryElevation0"
+                    onPress={handleAccessoriesClick}
+                    iconRight="arrowUpRight"
+                >
+                    {translate('deviceInfo.goToAccessories')}
+                </Button>
+                {isUpgradable && (
+                    <Button colorScheme="primary" onPress={handleUpdateClick}>
+                        {translate('deviceInfo.updateHowTo.title')}
+                    </Button>
+                )}
+            </VStack>
+            <HowToUpdateBottomSheet
+                isVisible={isUpdateSheetOpen}
+                onClose={setIsUpdateSheetOpen}
+                title={translate('deviceInfo.updateHowTo.title')}
+            />
         </Screen>
     );
 };

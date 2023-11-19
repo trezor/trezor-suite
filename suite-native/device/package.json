@@ -21,11 +21,15 @@
         "@suite-native/feature-flags": "workspace:*",
         "@suite-native/helpers": "workspace:*",
         "@suite-native/intl": "workspace:*",
+        "@suite-native/link": "workspace:*",
         "@suite-native/module-settings": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@trezor/connect": "workspace:*",
+        "@trezor/device-utils": "workspace:*",
         "@trezor/styles": "workspace:*",
         "react": "18.2.0",
-        "react-redux": "8.0.7"
+        "react-native": "0.71.8",
+        "react-redux": "8.0.7",
+        "semver": "^7.5.4"
     }
 }

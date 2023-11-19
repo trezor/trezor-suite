@@ -13,9 +13,11 @@
         { "path": "../feature-flags" },
         { "path": "../helpers" },
         { "path": "../intl" },
+        { "path": "../link" },
         { "path": "../module-settings" },
         { "path": "../navigation" },
         { "path": "../../packages/connect" },
+        { "path": "../../packages/device-utils" },
         { "path": "../../packages/styles" }
     ]
 }

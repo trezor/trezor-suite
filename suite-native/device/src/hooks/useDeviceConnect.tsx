@@ -18,10 +18,10 @@ import {
     selectIsDeviceConnectedAndAuthorized,
     selectIsSelectedDeviceImported,
     selectIsUnacquiredDevice,
-    selectDeviceFirmwareVersion,
     selectDeviceModel,
     selectDevice,
     deviceActions,
+    selectDeviceFirmwareVersion,
 } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { Translation, useTranslate } from '@suite-native/intl';
@@ -56,15 +56,15 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 >;
 
 export const useDeviceConnect = () => {
+    const deviceModel = useSelector(selectDeviceModel);
+    const currentDevice = useSelector(selectDevice);
     const hasDeviceRequestedPin = useSelector(selectDeviceRequestedPin);
     const isDeviceConnectedAndAuthorized = useSelector(selectIsDeviceConnectedAndAuthorized);
     const isUnacquiredDevice = useSelector(selectIsUnacquiredDevice);
     const isConnectedDeviceUninitialized = useSelector(selectIsConnectedDeviceUninitialized);
     const isSelectedDeviceImported = useSelector(selectIsSelectedDeviceImported);
-    const firmwareVersion = useSelector(selectDeviceFirmwareVersion);
-    const deviceModel = useSelector(selectDeviceModel);
-    const currentDevice = useSelector(selectDevice);
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
+    const deviceFwVersion = useSelector(selectDeviceFirmwareVersion);
 
     const dispatch = useDispatch();
 
@@ -79,6 +79,8 @@ export const useDeviceConnect = () => {
             dispatch(deviceActions.deviceDisconnect(currentDevice));
         }
     }, [currentDevice, dispatch]);
+
+    const isFirmwareSupported = isFirmwareVersionSupported(deviceFwVersion, deviceModel);
 
     useEffect(() => {
         if (hasDeviceRequestedPin) {
@@ -106,7 +108,7 @@ export const useDeviceConnect = () => {
     }, [dispatch, hideAlert, isOnboardingFinished, isUnacquiredDevice, showAlert, translate]);
 
     useEffect(() => {
-        if (isOnboardingFinished && !isFirmwareVersionSupported(firmwareVersion, deviceModel)) {
+        if (isOnboardingFinished && !isFirmwareSupported && !isSelectedDeviceImported) {
             showAlert({
                 title: translate('moduleDevice.unsupportedFirmware.title'),
                 description: translate('moduleDevice.unsupportedFirmware.description'),
@@ -120,12 +122,12 @@ export const useDeviceConnect = () => {
         }
     }, [
         dispatch,
-        firmwareVersion,
-        deviceModel,
+        isFirmwareSupported,
         showAlert,
         translate,
         handleDisconnect,
         isOnboardingFinished,
+        isSelectedDeviceImported,
     ]);
 
     useEffect(() => {

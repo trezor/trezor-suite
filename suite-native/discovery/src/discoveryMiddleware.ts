@@ -2,8 +2,8 @@ import {
     deviceActions,
     selectDevice,
     discoveryActions,
-    selectDeviceFirmwareVersion,
     selectDeviceModel,
+    selectDeviceFirmwareVersion,
 } from '@suite-common/wallet-core';
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { isFirmwareVersionSupported } from '@suite-native/device';
@@ -19,12 +19,12 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
 
         const device = selectDevice(getState());
         const deviceModel = selectDeviceModel(getState());
-        const deviceFirmwareVersion = selectDeviceFirmwareVersion(getState());
+        const deviceFwVersion = selectDeviceFirmwareVersion(getState());
 
         const areTestnetsEnabled = selectAreTestnetsEnabled(getState());
 
         const isDeviceFirmwareVersionSupported = isFirmwareVersionSupported(
-            deviceFirmwareVersion,
+            deviceFwVersion,
             deviceModel,
         );
 

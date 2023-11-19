@@ -1,8 +1,10 @@
+import { memoize } from 'proxy-memoize';
+
 import * as deviceUtils from '@suite-common/suite-utils';
 import { getStatus } from '@suite-common/suite-utils';
 import { Device, Features, AuthenticateDeviceResult } from '@trezor/connect';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
-import { getFirmwareVersion } from '@trezor/device-utils';
+import { getFirmwareVersion, getFirmwareVersionArray } from '@trezor/device-utils';
 import { Network, networks } from '@suite-common/wallet-config';
 import { versionUtils } from '@trezor/utils';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
@@ -416,6 +418,11 @@ const forget = (draft: State, device: TrezorDevice) => {
     }
 };
 
+const forgetAndDisconnect = (draft: State, device: TrezorDevice) => {
+    forget(draft, device);
+    disconnectDevice(draft, device);
+};
+
 const addButtonRequest = (
     draft: State,
     device: TrezorDevice | undefined,
@@ -498,7 +505,10 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
             setDeviceAuthenticity(state, payload.device, payload.result);
         })
         .addCase(extra.actionTypes.setDeviceMetadata, extra.reducers.setDeviceMetadataReducer)
-        .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadDevices);
+        .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadDevices)
+        .addCase(deviceActions.forgetAndDisconnectDevice, (state, { payload }) => {
+            forgetAndDisconnect(state, payload);
+        });
 });
 
 export const selectDevices = (state: DeviceRootState) => state.device?.devices;
@@ -687,13 +697,22 @@ export const selectSelectedDeviceName = (state: DeviceRootState) => {
     return selectDeviceName(state, selectedDevice?.id);
 };
 
-export const selectDeviceFirmwareVersion = (state: DeviceRootState) => {
-    const device = selectDevice(state);
-
-    return device?.firmwareRelease?.release.version ?? null;
+export const selectSelectedDeviceId = (state: DeviceRootState) => {
+    const selectedDevice = selectDevice(state);
+    return selectedDevice?.id ?? null;
 };
 
 export const selectDeviceModel = (state: DeviceRootState) => {
     const features = selectDeviceFeatures(state);
     return features?.internal_model ?? null;
 };
+
+export const selectDeviceReleaseInfo = (state: DeviceRootState) => {
+    const device = selectDevice(state);
+    return device?.firmwareRelease ?? null;
+};
+
+export const selectDeviceFirmwareVersion = memoize((state: DeviceRootState) => {
+    const device = selectDevice(state);
+    return getFirmwareVersionArray(device);
+});

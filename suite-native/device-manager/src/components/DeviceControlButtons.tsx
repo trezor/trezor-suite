@@ -32,7 +32,7 @@ export const DeviceControlButtons = () => {
     if (!selectedDevice) return null;
 
     const handleEject = () => {
-        dispatch(deviceActions.forgetDevice(selectedDevice));
+        dispatch(deviceActions.deviceDisconnect(selectedDevice));
     };
 
     const handleDeviceRedirect = () => {
