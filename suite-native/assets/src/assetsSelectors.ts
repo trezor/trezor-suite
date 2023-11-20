@@ -30,7 +30,7 @@ type AssetsRootState = AccountsRootState & FiatRatesRootState & SettingsSliceRoo
 const sumBalance = (balances: string[]): BigNumber =>
     balances.reduce((prev, balance) => prev.plus(balance), new BigNumber(0));
 
-export const selectBalancesPerNetwork = memoize(
+export const selectDeviceBalancesPerNetwork = memoize(
     (state: AssetsRootState & DeviceRootState): FormattedAssets => {
         const accounts = selectDeviceAccounts(state);
 
@@ -53,37 +53,39 @@ export const selectBalancesPerNetwork = memoize(
     },
 );
 
-export const selectAssetsWithBalances = memoize((state: AssetsRootState & DeviceRootState) => {
-    const balancesPerNetwork = selectBalancesPerNetwork(state);
-    const networksWithAssets = Object.keys(balancesPerNetwork) as NetworkSymbol[];
+export const selectDeviceAssetsWithBalances = memoize(
+    (state: AssetsRootState & DeviceRootState) => {
+        const deviceBalancesPerNetwork = selectDeviceBalancesPerNetwork(state);
+        const deviceNetworksWithAssets = Object.keys(deviceBalancesPerNetwork) as NetworkSymbol[];
 
-    const fiatCurrencyCode = selectFiatCurrencyCode(state);
+        const fiatCurrencyCode = selectFiatCurrencyCode(state);
 
-    return networksWithAssets
-        .map((networkSymbol: NetworkSymbol) => {
-            const fiatRate = selectFiatRatesByFiatRateKey(
-                state,
-                getFiatRateKey(networkSymbol, fiatCurrencyCode),
-            );
+        return deviceNetworksWithAssets
+            .map((networkSymbol: NetworkSymbol) => {
+                const fiatRate = selectFiatRatesByFiatRateKey(
+                    state,
+                    getFiatRateKey(networkSymbol, fiatCurrencyCode),
+                );
 
-            // Note: This shouldn't be happening in a selector but rather in component itself.
-            // In future, we will probably have something like `CryptoAmountToFiatFormatter` in component just using value sent from this selector.
-            const fiatBalance =
-                toFiatCurrency(
-                    balancesPerNetwork[networkSymbol]?.toString() ?? '0',
-                    fiatCurrencyCode,
-                    { [fiatCurrencyCode]: fiatRate?.rate },
-                ) ?? '0';
+                // Note: This shouldn't be happening in a selector but rather in component itself.
+                // In future, we will probably have something like `CryptoAmountToFiatFormatter` in component just using value sent from this selector.
+                const fiatBalance =
+                    toFiatCurrency(
+                        deviceBalancesPerNetwork[networkSymbol]?.toString() ?? '0',
+                        fiatCurrencyCode,
+                        { [fiatCurrencyCode]: fiatRate?.rate },
+                    ) ?? '0';
 
-            const network = networks[networkSymbol];
+                const network = networks[networkSymbol];
 
-            const asset: AssetType = {
-                symbol: networkSymbol,
-                network,
-                assetBalance: balancesPerNetwork[networkSymbol] ?? new BigNumber(0),
-                fiatBalance,
-            };
-            return asset;
-        })
-        .filter(data => data !== undefined) as AssetType[];
-});
+                const asset: AssetType = {
+                    symbol: networkSymbol,
+                    network,
+                    assetBalance: deviceBalancesPerNetwork[networkSymbol] ?? new BigNumber(0),
+                    fiatBalance,
+                };
+                return asset;
+            })
+            .filter(data => data !== undefined) as AssetType[];
+    },
+);

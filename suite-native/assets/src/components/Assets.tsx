@@ -18,7 +18,7 @@ import { selectIsDeviceDiscoveryActive } from '@suite-common/wallet-core';
 import { useTranslate } from '@suite-native/intl';
 
 import { DiscoveryAssetsLoader } from './DiscoveryAssetsLoader';
-import { selectAssetsWithBalances } from '../assetsSelectors';
+import { selectDeviceAssetsWithBalances } from '../assetsSelectors';
 import { calculateAssetsPercentage } from '../utils';
 import { AssetItem } from './AssetItem';
 import { NetworkAssetsBottomSheet } from './NetworkAssetsBottomSheet';
@@ -38,14 +38,14 @@ export const Assets = ({ maximumAssetsVisible }: AssetsProps) => {
 
     const { translate } = useTranslate();
 
-    const assetsData = useSelector(selectAssetsWithBalances);
+    const deviceAssetsData = useSelector(selectDeviceAssetsWithBalances);
     const isDiscoveryActive = useSelector(selectIsDeviceDiscoveryActive);
 
     const [selectedAssetSymbol, setSelectedAssetSymbol] = useState<NetworkSymbol | null>(null);
 
     const assetsDataWithPercentage = useMemo(
-        () => calculateAssetsPercentage(assetsData),
-        [assetsData],
+        () => calculateAssetsPercentage(deviceAssetsData),
+        [deviceAssetsData],
     );
 
     const navigateToAssets = () => {
