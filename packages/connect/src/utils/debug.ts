@@ -159,3 +159,25 @@ export const getLog = () => {
     logs.sort((a, b) => a.timestamp - b.timestamp);
     return logs;
 };
+
+let logWorker: SharedWorker | undefined;
+
+export const initLogWriter = (workerSrc: string) => {
+    // Check for SharedWorker support
+    try {
+        // './workers/shared-logger-worker.js'
+        logWorker = new SharedWorker(workerSrc);
+        logWorker?.port?.start();
+    } catch (error) {
+        console.warn('Failed to initialize LogWorker:', error);
+    }
+
+    const logWriterFactory = (): LogWriter => ({
+        add: (message: LogMessage) => {
+            if (logWorker) {
+                logWorker.port.postMessage({ type: 'add-log', data: message });
+            }
+        },
+    });
+    return logWriterFactory;
+};
