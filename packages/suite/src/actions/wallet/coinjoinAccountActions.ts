@@ -513,7 +513,10 @@ export const fetchAndUpdateAccount =
                 // status must be set here already (instead of wait for endCoinjoinAccountSync)
                 // so it's potentially stored into db
                 dispatch(
-                    accountsActions.updateAccount({ ...account, status: 'ready' }, accountInfo),
+                    accountsActions.updateAccount(
+                        { ...account, status: 'ready' as const },
+                        accountInfo,
+                    ),
                 );
 
                 // update account in CoinjoinClient
@@ -661,7 +664,7 @@ export const rescanCoinjoinAccount =
         // reset account + unlock
         const { payload } = dispatch(
             accountsActions.updateAccount(
-                { ...account, status: 'initial' },
+                { ...account, status: 'initial' as const },
                 { ...EMPTY_ACCOUNT_INFO, descriptor: account.descriptor },
             ),
         );

@@ -218,7 +218,7 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
                 } else if (typeof memberData === 'object' && memberData !== null) {
                     const memberTypeDefinition = types[memberTypeName][index];
                     memberTypeName = memberTypeDefinition.type;
-                    memberData = memberData[memberTypeDefinition.name];
+                    memberData = memberData[memberTypeDefinition.name as keyof typeof memberData];
                 } else {
                     // TODO: what to do when the value is missing (for example in recursive types)?
                 }

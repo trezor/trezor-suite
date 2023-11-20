@@ -250,9 +250,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/helper-module-transforms@npm:^7.22.5, @babel/helper-module-transforms@npm:^7.23.0":
-  version: 7.23.0
-  resolution: "@babel/helper-module-transforms@npm:7.23.0"
+"@babel/helper-module-transforms@npm:^7.22.5, @babel/helper-module-transforms@npm:^7.23.0, @babel/helper-module-transforms@npm:^7.23.3":
+  version: 7.23.3
+  resolution: "@babel/helper-module-transforms@npm:7.23.3"
   dependencies:
     "@babel/helper-environment-visitor": "npm:^7.22.20"
     "@babel/helper-module-imports": "npm:^7.22.15"
@@ -261,7 +261,7 @@ __metadata:
     "@babel/helper-validator-identifier": "npm:^7.22.20"
   peerDependencies:
     "@babel/core": ^7.0.0
-  checksum: d72fe444f7b6c5aadaac8f393298d603eedd48e5dead67273a48e5c83a677cbccbd8a12a06c5bf5d97924666083279158a4bd0e799d28b86cbbfacba9e41f598
+  checksum: 583fa580f8e50e6f45c4f46aa76a8e49c2528deb84e25f634d66461b9a0e2420e13979b0a607b67aef67eaf8db8668eb9edc038b4514b16e3879fe09e8fd294b
   languageName: node
   linkType: hard
 
@@ -720,14 +720,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/plugin-syntax-jsx@npm:^7.0.0, @babel/plugin-syntax-jsx@npm:^7.17.12, @babel/plugin-syntax-jsx@npm:^7.22.5, @babel/plugin-syntax-jsx@npm:^7.7.2":
-  version: 7.22.5
-  resolution: "@babel/plugin-syntax-jsx@npm:7.22.5"
+"@babel/plugin-syntax-jsx@npm:^7.0.0, @babel/plugin-syntax-jsx@npm:^7.17.12, @babel/plugin-syntax-jsx@npm:^7.22.5, @babel/plugin-syntax-jsx@npm:^7.23.3, @babel/plugin-syntax-jsx@npm:^7.7.2":
+  version: 7.23.3
+  resolution: "@babel/plugin-syntax-jsx@npm:7.23.3"
   dependencies:
     "@babel/helper-plugin-utils": "npm:^7.22.5"
   peerDependencies:
     "@babel/core": ^7.0.0-0
-  checksum: 8829d30c2617ab31393d99cec2978e41f014f4ac6f01a1cecf4c4dd8320c3ec12fdc3ce121126b2d8d32f6887e99ca1a0bad53dedb1e6ad165640b92b24980ce
+  checksum: 89037694314a74e7f0e7a9c8d3793af5bf6b23d80950c29b360db1c66859d67f60711ea437e70ad6b5b4b29affe17eababda841b6c01107c2b638e0493bafb4e
   languageName: node
   linkType: hard
 
@@ -819,14 +819,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/plugin-syntax-typescript@npm:^7.22.5, @babel/plugin-syntax-typescript@npm:^7.3.3, @babel/plugin-syntax-typescript@npm:^7.7.2":
-  version: 7.22.5
-  resolution: "@babel/plugin-syntax-typescript@npm:7.22.5"
+"@babel/plugin-syntax-typescript@npm:^7.23.3, @babel/plugin-syntax-typescript@npm:^7.3.3, @babel/plugin-syntax-typescript@npm:^7.7.2":
+  version: 7.23.3
+  resolution: "@babel/plugin-syntax-typescript@npm:7.23.3"
   dependencies:
     "@babel/helper-plugin-utils": "npm:^7.22.5"
   peerDependencies:
     "@babel/core": ^7.0.0-0
-  checksum: 8ab7718fbb026d64da93681a57797d60326097fd7cb930380c8bffd9eb101689e90142c760a14b51e8e69c88a73ba3da956cb4520a3b0c65743aee5c71ef360a
+  checksum: abfad3a19290d258b028e285a1f34c9b8a0cbe46ef79eafed4ed7ffce11b5d0720b5e536c82f91cbd8442cde35a3dd8e861fa70366d87ff06fdc0d4756e30876
   languageName: node
   linkType: hard
 
@@ -1122,16 +1122,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/plugin-transform-modules-commonjs@npm:^7.0.0, @babel/plugin-transform-modules-commonjs@npm:^7.13.8, @babel/plugin-transform-modules-commonjs@npm:^7.23.0":
-  version: 7.23.0
-  resolution: "@babel/plugin-transform-modules-commonjs@npm:7.23.0"
+"@babel/plugin-transform-modules-commonjs@npm:^7.0.0, @babel/plugin-transform-modules-commonjs@npm:^7.13.8, @babel/plugin-transform-modules-commonjs@npm:^7.23.0, @babel/plugin-transform-modules-commonjs@npm:^7.23.3":
+  version: 7.23.3
+  resolution: "@babel/plugin-transform-modules-commonjs@npm:7.23.3"
   dependencies:
-    "@babel/helper-module-transforms": "npm:^7.23.0"
+    "@babel/helper-module-transforms": "npm:^7.23.3"
     "@babel/helper-plugin-utils": "npm:^7.22.5"
     "@babel/helper-simple-access": "npm:^7.22.5"
   peerDependencies:
     "@babel/core": ^7.0.0-0
-  checksum: 65085c8f2578b0c272b3969b78e54430ea3217fca8de7a21ded845a74ddf2d97aee284559da102d826fcb8aed5a79d09536a6e4610d868f539d7bc382eb319ff
+  checksum: a3bc082d0dfe8327a29263a6d721cea608d440bc8141ba3ec6ba80ad73d84e4f9bbe903c27e9291c29878feec9b5dee2bd0563822f93dc951f5d7fc36bdfe85b
   languageName: node
   linkType: hard
 
@@ -1485,17 +1485,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/plugin-transform-typescript@npm:^7.22.15, @babel/plugin-transform-typescript@npm:^7.5.0":
-  version: 7.22.15
-  resolution: "@babel/plugin-transform-typescript@npm:7.22.15"
+"@babel/plugin-transform-typescript@npm:^7.23.3, @babel/plugin-transform-typescript@npm:^7.5.0":
+  version: 7.23.3
+  resolution: "@babel/plugin-transform-typescript@npm:7.23.3"
   dependencies:
     "@babel/helper-annotate-as-pure": "npm:^7.22.5"
     "@babel/helper-create-class-features-plugin": "npm:^7.22.15"
     "@babel/helper-plugin-utils": "npm:^7.22.5"
-    "@babel/plugin-syntax-typescript": "npm:^7.22.5"
+    "@babel/plugin-syntax-typescript": "npm:^7.23.3"
   peerDependencies:
     "@babel/core": ^7.0.0-0
-  checksum: 95c35fbc823773058e9f077635fbe579d00b8f1762756b14a6fcae0c2db1aefddb93093fda4ca462e9e7d49edd49d71afe0a17422698d7418a6d156fc2dfba19
+  checksum: 74dff264701131e615e577d4080d8a1de99cf4b11f4a9cdf8228091456241529fa1f3ebbcbc8399b906972258c2d21088e361c569c76a06353561abdc8922d00
   languageName: node
   linkType: hard
 
@@ -1678,18 +1678,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/preset-typescript@npm:^7.13.0, @babel/preset-typescript@npm:^7.16.7, @babel/preset-typescript@npm:^7.23.2":
-  version: 7.23.2
-  resolution: "@babel/preset-typescript@npm:7.23.2"
+"@babel/preset-typescript@npm:^7.13.0, @babel/preset-typescript@npm:^7.16.7, @babel/preset-typescript@npm:^7.23.3":
+  version: 7.23.3
+  resolution: "@babel/preset-typescript@npm:7.23.3"
   dependencies:
     "@babel/helper-plugin-utils": "npm:^7.22.5"
     "@babel/helper-validator-option": "npm:^7.22.15"
-    "@babel/plugin-syntax-jsx": "npm:^7.22.5"
-    "@babel/plugin-transform-modules-commonjs": "npm:^7.23.0"
-    "@babel/plugin-transform-typescript": "npm:^7.22.15"
+    "@babel/plugin-syntax-jsx": "npm:^7.23.3"
+    "@babel/plugin-transform-modules-commonjs": "npm:^7.23.3"
+    "@babel/plugin-transform-typescript": "npm:^7.23.3"
   peerDependencies:
     "@babel/core": ^7.0.0-0
-  checksum: fab17c24f737928e6e399425463808b4c4d850ea2cbe751c98cc2da86314e48d2f910da0f10d72525dad72a68aced5bd74edacf76b0f06db25abab07bec64b32
+  checksum: c4add0f3fcbb3f4a305c48db9ccb32694f1308ed9971ccbc1a8a3c76d5a13726addb3c667958092287d7aa080186c5c83dbfefa55eacf94657e6cde39e172848
   languageName: node
   linkType: hard
 
@@ -6798,7 +6798,7 @@ __metadata:
     jest: "npm:^26.6.3"
     redux-mock-store: "npm:^1.5.4"
     redux-thunk: "npm:^2.4.2"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -6813,7 +6813,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     jest: "npm:^26.6.3"
     tsx: "npm:^3.14.0"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -6825,7 +6825,7 @@ __metadata:
     "@suite-common/wallet-types": "workspace:*"
     date-fns: "npm:^2.30.0"
     jest: "npm:^26.6.3"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -6849,7 +6849,7 @@ __metadata:
     react: "npm:18.2.0"
     react-intl: "npm:^6.5.1"
     react-redux: "npm:8.0.7"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -6890,7 +6890,7 @@ __metadata:
     react-native-reanimated: "npm:3.5.4"
     svgo: "npm:3.0.2"
     tsx: "npm:^3.14.0"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -6902,7 +6902,7 @@ __metadata:
     jest: "npm:^26.6.3"
     react: "npm:18.2.0"
     react-intl: "npm:^6.5.1"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -6910,7 +6910,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/invity@workspace:suite-common/invity"
   dependencies:
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -6949,7 +6949,7 @@ __metadata:
     proxy-memoize: "npm:2.0.2"
     semver: "npm:^7.5.4"
     tsx: "npm:^3.14.0"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -6958,7 +6958,7 @@ __metadata:
   resolution: "@suite-common/metadata-types@workspace:suite-common/metadata-types"
   dependencies:
     jest: "npm:^26.6.3"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -6976,7 +6976,7 @@ __metadata:
     react: "npm:18.2.0"
     react-redux: "npm:8.0.7"
     redux: "npm:^4.2.1"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -6989,7 +6989,7 @@ __metadata:
     "@suite-common/suite-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     jest: "npm:^26.6.3"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -6998,7 +6998,7 @@ __metadata:
   resolution: "@suite-common/suite-config@workspace:suite-common/suite-config"
   dependencies:
     jest: "npm:^26.6.3"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -7009,7 +7009,7 @@ __metadata:
     "@suite-common/wallet-config": "workspace:*"
     "@trezor/connect": "workspace:*"
     jest: "npm:^26.6.3"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -7028,7 +7028,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     bignumber.js: "npm:^9.1.1"
     jest: "npm:^26.6.3"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -7047,7 +7047,7 @@ __metadata:
     bignumber.js: "npm:^9.1.1"
     date-fns: "npm:^2.30.0"
     jest: "npm:^26.6.3"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -7069,7 +7069,7 @@ __metadata:
     jest: "npm:^26.6.3"
     redux: "npm:^4.2.1"
     redux-thunk: "npm:^2.4.2"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -7087,7 +7087,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     jest: "npm:^26.6.3"
     proxy-memoize: "npm:2.0.2"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -7099,7 +7099,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     jest: "npm:^26.6.3"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -7108,7 +7108,7 @@ __metadata:
   resolution: "@suite-common/wallet-constants@workspace:suite-common/wallet-constants"
   dependencies:
     jest: "npm:^26.6.3"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -7141,7 +7141,7 @@ __metadata:
     date-fns: "npm:^2.30.0"
     jest: "npm:^26.6.3"
     proxy-memoize: "npm:2.0.2"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -7160,7 +7160,7 @@ __metadata:
     jest: "npm:^26.6.3"
     react: "npm:18.2.0"
     react-hook-form: "npm:^7.48.2"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -7192,7 +7192,7 @@ __metadata:
     react: "npm:18.2.0"
     react-hook-form: "npm:^7.48.2"
     trezor-address-validator: "npm:^0.4.4"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
     web3-utils: "npm:^1.10.0"
   languageName: unknown
   linkType: soft
@@ -7314,7 +7314,7 @@ __metadata:
     react-native-root-toast: "npm:^3.3.1"
     react-native-safe-area-context: "npm:^4.5.0"
     react-redux: "npm:8.0.7"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -7343,7 +7343,7 @@ __metadata:
     "@suite-common/wallet-config": "workspace:*"
     jest: "npm:^26.6.3"
     react-native-config: "npm:^1.5.0"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -7547,7 +7547,7 @@ __metadata:
     react-native: "npm:0.71.8"
     react-native-reanimated: "npm:3.5.4"
     react-redux: "npm:8.0.7"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -7671,7 +7671,7 @@ __metadata:
     react-native: "npm:0.71.8"
     react-native-reanimated: "npm:3.5.4"
     react-redux: "npm:8.0.7"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -7771,7 +7771,7 @@ __metadata:
     react: "npm:18.2.0"
     react-native: "npm:0.71.8"
     react-redux: "npm:8.0.7"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -7804,7 +7804,7 @@ __metadata:
     react: "npm:18.2.0"
     react-native: "npm:0.71.8"
     react-redux: "npm:8.0.7"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -7862,7 +7862,7 @@ __metadata:
     react: "npm:18.2.0"
     react-native: "npm:0.71.8"
     react-redux: "npm:8.0.7"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -7897,7 +7897,7 @@ __metadata:
     react: "npm:18.2.0"
     react-native: "npm:0.71.8"
     react-redux: "npm:8.0.7"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -7927,7 +7927,7 @@ __metadata:
     react-native-keyboard-aware-scroll-view: "npm:^0.9.5"
     react-native-safe-area-context: "npm:^4.5.0"
     react-redux: "npm:8.0.7"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -8072,7 +8072,7 @@ __metadata:
     react-redux: "npm:8.0.7"
     redux-flipper: "npm:2.0.2"
     redux-persist: "npm:6.0.0"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -8091,7 +8091,7 @@ __metadata:
     react-native-mmkv: "npm:^2.7.0"
     react-native-restart: "npm:^0.0.27"
     redux-persist: "npm:6.0.0"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -8108,7 +8108,7 @@ __metadata:
     react-native-reanimated: "npm:3.5.4"
     react-native-safe-area-context: "npm:^4.5.0"
     react-redux: "npm:8.0.7"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -8462,7 +8462,7 @@ __metadata:
     "@trezor/env-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     jest: "npm:^26.6.3"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -8476,7 +8476,7 @@ __metadata:
     jest: "npm:^26.6.3"
     rimraf: "npm:^5.0.5"
     tsx: "npm:^3.14.0"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -8490,7 +8490,7 @@ __metadata:
     ripple-lib: "npm:^1.10.1"
     socks-proxy-agent: "npm:6.1.1"
     tsx: "npm:^3.14.0"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -8507,7 +8507,7 @@ __metadata:
     jest: "npm:^26.6.3"
     rimraf: "npm:^5.0.5"
     tsx: "npm:^3.14.0"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -8534,7 +8534,7 @@ __metadata:
     socks-proxy-agent: "npm:6.1.1"
     tiny-worker: "npm:^2.3.0"
     tsx: "npm:^3.14.0"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
     webpack: "npm:^5.89.0"
     webpack-cli: "npm:^5.1.4"
     webpack-dev-server: "npm:^4.15.1"
@@ -8559,7 +8559,7 @@ __metadata:
     jest: "npm:29.5.0"
     n64: "npm:^0.2.10"
     rimraf: "npm:^5.0.5"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -8605,7 +8605,7 @@ __metadata:
     stylelint: "npm:^15.11.0"
     stylelint-config-standard: "npm:^34.0.0"
     tippy.js: "npm:^6.3.7"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
     typescript-styled-plugin: "npm:^0.18.3"
     zxcvbn: "npm:^4.4.2"
   languageName: unknown
@@ -8616,7 +8616,7 @@ __metadata:
   resolution: "@trezor/connect-analytics@workspace:packages/connect-analytics"
   dependencies:
     "@trezor/analytics": "workspace:*"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -8628,7 +8628,7 @@ __metadata:
     jest: "npm:^26.6.3"
     rimraf: "npm:^5.0.5"
     tsx: "npm:^3.14.0"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -8644,7 +8644,7 @@ __metadata:
     react: "npm:^18.2.0"
     react-dom: "npm:^18.2.0"
     rimraf: "npm:^5.0.5"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
     webpack: "npm:^5.88.2"
     webpack-cli: "npm:^5.1.4"
     xvfb-maybe: "npm:^0.2.1"
@@ -8685,7 +8685,7 @@ __metadata:
     stylelint: "npm:^15.11.0"
     stylelint-config-standard: "npm:^34.0.0"
     terser-webpack-plugin: "npm:^5.3.9"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
     webpack: "npm:^5.89.0"
     webpack-cli: "npm:^5.1.4"
     webpack-dev-server: "npm:^4.15.1"
@@ -8708,7 +8708,7 @@ __metadata:
     jest: "npm:^26.6.3"
     rimraf: "npm:^5.0.5"
     terser-webpack-plugin: "npm:^5.3.9"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
     webpack: "npm:^5.89.0"
     webpack-cli: "npm:^5.1.4"
     webpack-merge: "npm:^5.10.0"
@@ -8723,7 +8723,7 @@ __metadata:
     "@metamask/eth-sig-util": "npm:^7.0.0"
     jest: "npm:^26.6.3"
     rimraf: "npm:^5.0.5"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   peerDependencies:
     "@metamask/eth-sig-util": ^7.0.0
   languageName: unknown
@@ -8738,7 +8738,7 @@ __metadata:
     rimraf: "npm:^5.0.5"
     stellar-base: "npm:v10.0.0-beta.2"
     stellar-sdk: "npm:^v11.0.0-beta.3"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   peerDependencies:
     "@trezor/connect": 9.x.x
     stellar-sdk: ^v11.0.0-beta.3
@@ -8773,7 +8773,7 @@ __metadata:
     react-dom: "npm:18.2.0"
     rimraf: "npm:^5.0.5"
     terser-webpack-plugin: "npm:^5.3.9"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
     webpack: "npm:^5.89.0"
     webpack-cli: "npm:^5.1.4"
     webpack-dev-server: "npm:^4.15.1"
@@ -8802,7 +8802,7 @@ __metadata:
     "@types/styled-components": "npm:^5.1.29"
     jest: "npm:^26.6.3"
     react-intl: "npm:^6.5.1"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   peerDependencies:
     react: 18.2.0
     styled-components: ^5.3.10
@@ -8830,7 +8830,7 @@ __metadata:
     selfsigned: "npm:^2.4.1"
     terser-webpack-plugin: "npm:^5.3.9"
     tsx: "npm:^3.14.0"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
     webpack: "npm:^5.89.0"
     webpack-cli: "npm:^5.1.4"
     webpack-merge: "npm:^5.10.0"
@@ -8889,7 +8889,7 @@ __metadata:
     rimraf: "npm:^5.0.5"
     ts-node: "npm:^10.9.1"
     tsx: "npm:^3.14.0"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
     webpack: "npm:^5.89.0"
     ws: "npm:7.5.9"
   peerDependencies:
@@ -8901,7 +8901,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/crypto-utils@workspace:packages/crypto-utils"
   dependencies:
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -8910,7 +8910,7 @@ __metadata:
   resolution: "@trezor/device-utils@workspace:packages/device-utils"
   dependencies:
     "@trezor/connect": "workspace:*"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -8919,7 +8919,7 @@ __metadata:
   resolution: "@trezor/dom-utils@workspace:packages/dom-utils"
   dependencies:
     jest: "npm:^26.6.3"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -8940,7 +8940,7 @@ __metadata:
   dependencies:
     rimraf: "npm:^5.0.5"
     tsx: "npm:^3.14.0"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
     ua-parser-js: "npm:^1.0.37"
   peerDependencies:
     expo-localization: ^14.1.1
@@ -8967,7 +8967,7 @@ __metadata:
   resolution: "@trezor/node-utils@workspace:packages/node-utils"
   dependencies:
     jest: "npm:^26.6.3"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -8982,7 +8982,7 @@ __metadata:
     protobufjs-cli: "npm:^1.1.2"
     rimraf: "npm:^5.0.5"
     tsx: "npm:^3.14.0"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -8994,7 +8994,7 @@ __metadata:
     jest: "npm:29.5.0"
     rimraf: "npm:^5.0.5"
     tsx: "npm:^3.14.0"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -9020,7 +9020,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     jest: "npm:^26.6.3"
     react: "npm:18.2.0"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -9034,7 +9034,7 @@ __metadata:
     rimraf: "npm:^5.0.5"
     socks-proxy-agent: "npm:6.1.1"
     ts-node: "npm:^10.9.1"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
     ws: "npm:7.5.9"
   languageName: unknown
   linkType: soft
@@ -9051,7 +9051,7 @@ __metadata:
     jest: "npm:^26.6.3"
     prettier: "npm:3.0.3"
     sort-package-json: "npm:^1.57.0"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
     yargs: "npm:17.7.2"
   languageName: unknown
   linkType: soft
@@ -9079,7 +9079,7 @@ __metadata:
     react: "npm:18.2.0"
     react-fela: "npm:^12.2.1"
     react-native: "npm:0.71.8"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -9089,7 +9089,7 @@ __metadata:
   dependencies:
     "@trezor/analytics": "workspace:*"
     jest: "npm:^26.6.3"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -9117,7 +9117,7 @@ __metadata:
     stream-browserify: "npm:^3.0.0"
     style-loader: "npm:^3.3.3"
     terser-webpack-plugin: "npm:^5.3.9"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
     webpack: "npm:^5.89.0"
     webpack-bundle-analyzer: "npm:^4.9.1"
     webpack-merge: "npm:^5.10.0"
@@ -9151,7 +9151,7 @@ __metadata:
     simple-git: "npm:^3.20.0"
     style-loader: "npm:^3.3.3"
     tsx: "npm:^3.14.0"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
     webpack: "npm:^5.89.0"
     webpack-cli: "npm:^5.1.4"
   languageName: unknown
@@ -9164,7 +9164,7 @@ __metadata:
     electron: "npm:27.0.4"
     jest: "npm:^26.6.3"
     rimraf: "npm:^5.0.5"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -9206,7 +9206,7 @@ __metadata:
     systeminformation: "npm:^5.21.15"
     terser-webpack-plugin: "npm:^5.3.9"
     tsx: "npm:^3.14.0"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
     webpack: "npm:^5.87.0"
     xvfb-maybe: "npm:^0.2.1"
   languageName: unknown
@@ -9240,7 +9240,7 @@ __metadata:
     styled-components: "npm:^5.3.10"
     stylelint: "npm:^15.11.0"
     stylelint-config-standard: "npm:^34.0.0"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -9356,7 +9356,7 @@ __metadata:
     react-test-renderer: "npm:18.2.0"
     redux-persist: "npm:6.0.0"
     simple-plist: "npm:1.3.1"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -9368,7 +9368,7 @@ __metadata:
     broadcast-channel: "npm:^6.0.0"
     idb: "npm:^7.1.1"
     jest: "npm:^26.6.3"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -9416,7 +9416,7 @@ __metadata:
     stylelint: "npm:^15.11.0"
     stylelint-config-standard: "npm:^34.0.0"
     tsx: "npm:^3.14.0"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
     webpack: "npm:^5.89.0"
     worker-loader: "npm:^3.0.8"
     ws: "npm:7.5.9"
@@ -9544,7 +9544,7 @@ __metadata:
     stylelint-config-standard: "npm:^34.0.0"
     trezor-address-validator: "npm:^0.4.4"
     tsx: "npm:^3.14.0"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
     typescript-styled-plugin: "npm:^0.18.3"
     uuid: "npm:^9.0.1"
     web3-utils: "npm:^1.10.0"
@@ -9561,7 +9561,7 @@ __metadata:
     jest: "npm:^26.6.3"
     prettier: "npm:3.0.3"
     tsx: "npm:^3.14.0"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -9595,7 +9595,7 @@ __metadata:
     rimraf: "npm:^5.0.5"
     ts-node: "npm:^10.9.1"
     tsx: "npm:^3.14.0"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
     usb: "npm:^2.11.0"
   languageName: unknown
   linkType: soft
@@ -9615,7 +9615,7 @@ __metadata:
   resolution: "@trezor/type-utils@workspace:packages/type-utils"
   dependencies:
     jest: "npm:^26.6.3"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -9625,7 +9625,7 @@ __metadata:
   dependencies:
     cross-fetch: "npm:^4.0.0"
     jest: "npm:^26.6.3"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -9636,7 +9636,7 @@ __metadata:
     jest: "npm:^26.6.3"
     rimraf: "npm:^5.0.5"
     tsx: "npm:^3.14.0"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -9670,7 +9670,7 @@ __metadata:
     tiny-secp256k1: "npm:^1.1.6"
     tsx: "npm:^3.14.0"
     typeforce: "npm:^1.18.0"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
     varuint-bitcoin: "npm:^1.1.2"
     wif: "npm:^4.0.0"
   languageName: unknown
@@ -9682,7 +9682,7 @@ __metadata:
   dependencies:
     "@trezor/utils": "workspace:*"
     jest: "npm:^26.6.3"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
     yup: "npm:^0.32.11"
   languageName: unknown
   linkType: soft
@@ -11128,15 +11128,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/eslint-plugin@npm:^6.0.0, @typescript-eslint/eslint-plugin@npm:^6.9.1":
-  version: 6.10.0
-  resolution: "@typescript-eslint/eslint-plugin@npm:6.10.0"
+"@typescript-eslint/eslint-plugin@npm:^6.0.0, @typescript-eslint/eslint-plugin@npm:^6.11.0":
+  version: 6.11.0
+  resolution: "@typescript-eslint/eslint-plugin@npm:6.11.0"
   dependencies:
     "@eslint-community/regexpp": "npm:^4.5.1"
-    "@typescript-eslint/scope-manager": "npm:6.10.0"
-    "@typescript-eslint/type-utils": "npm:6.10.0"
-    "@typescript-eslint/utils": "npm:6.10.0"
-    "@typescript-eslint/visitor-keys": "npm:6.10.0"
+    "@typescript-eslint/scope-manager": "npm:6.11.0"
+    "@typescript-eslint/type-utils": "npm:6.11.0"
+    "@typescript-eslint/utils": "npm:6.11.0"
+    "@typescript-eslint/visitor-keys": "npm:6.11.0"
     debug: "npm:^4.3.4"
     graphemer: "npm:^1.4.0"
     ignore: "npm:^5.2.4"
@@ -11149,25 +11149,25 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 54fd83cff912bae212934aae5abcb810cf182771778e1062f2aaf75989d300c5f23bdb03b8b3d587ece799dfabebfdc5cf6356e1ce07398011d728a3d0d0d381
+  checksum: c9c9e7a918e2f3ef8cb200c9158b70553a1014529867411b35e141c1d26713dd281907af1a231e640e8c4c73c3245a20cfc0e56a1cc95874889ce88c04706c78
   languageName: node
   linkType: hard
 
-"@typescript-eslint/parser@npm:^6.0.0, @typescript-eslint/parser@npm:^6.7.5, @typescript-eslint/parser@npm:^6.9.1":
-  version: 6.10.0
-  resolution: "@typescript-eslint/parser@npm:6.10.0"
+"@typescript-eslint/parser@npm:^6.0.0, @typescript-eslint/parser@npm:^6.11.0, @typescript-eslint/parser@npm:^6.7.5":
+  version: 6.11.0
+  resolution: "@typescript-eslint/parser@npm:6.11.0"
   dependencies:
-    "@typescript-eslint/scope-manager": "npm:6.10.0"
-    "@typescript-eslint/types": "npm:6.10.0"
-    "@typescript-eslint/typescript-estree": "npm:6.10.0"
-    "@typescript-eslint/visitor-keys": "npm:6.10.0"
+    "@typescript-eslint/scope-manager": "npm:6.11.0"
+    "@typescript-eslint/types": "npm:6.11.0"
+    "@typescript-eslint/typescript-estree": "npm:6.11.0"
+    "@typescript-eslint/visitor-keys": "npm:6.11.0"
     debug: "npm:^4.3.4"
   peerDependencies:
     eslint: ^7.0.0 || ^8.0.0
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: d24a981807ea1ee5e5bbd9be2996b06eb99908c717464c6274b596c094b0e2609c1d88fcb8bef3479a8e8d39bc61a7103651b23981e47a5d89f6dec77e3bec38
+  checksum: abb2aff0d4f06937337d1b2da77df4e1501d708b0bce1707c523206ee10e6aa732e1ae6548da56b9889459f23c375a6f0ae2e3a208e972dab8eb3b46680d839a
   languageName: node
   linkType: hard
 
@@ -11181,22 +11181,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/scope-manager@npm:6.10.0":
-  version: 6.10.0
-  resolution: "@typescript-eslint/scope-manager@npm:6.10.0"
+"@typescript-eslint/scope-manager@npm:6.11.0":
+  version: 6.11.0
+  resolution: "@typescript-eslint/scope-manager@npm:6.11.0"
   dependencies:
-    "@typescript-eslint/types": "npm:6.10.0"
-    "@typescript-eslint/visitor-keys": "npm:6.10.0"
-  checksum: 518cd60f9e9f5eef24f566f6a43d05241593a4520db6a93df714adac7b04b8bc2a1a89764f7a0aa23432e35e5f57ab2a3129f8f67ef211fa808c6bda29c28c78
+    "@typescript-eslint/types": "npm:6.11.0"
+    "@typescript-eslint/visitor-keys": "npm:6.11.0"
+  checksum: 60702ab23710c59ab0b52ffc66f77e24382cec8f684e3e43d4269cc17f414d3cb3a3bb85e232ea9f1e0f7e85506529978a5eea3c08945c01ed7aed4d4997b472
   languageName: node
   linkType: hard
 
-"@typescript-eslint/type-utils@npm:6.10.0":
-  version: 6.10.0
-  resolution: "@typescript-eslint/type-utils@npm:6.10.0"
+"@typescript-eslint/type-utils@npm:6.11.0":
+  version: 6.11.0
+  resolution: "@typescript-eslint/type-utils@npm:6.11.0"
   dependencies:
-    "@typescript-eslint/typescript-estree": "npm:6.10.0"
-    "@typescript-eslint/utils": "npm:6.10.0"
+    "@typescript-eslint/typescript-estree": "npm:6.11.0"
+    "@typescript-eslint/utils": "npm:6.11.0"
     debug: "npm:^4.3.4"
     ts-api-utils: "npm:^1.0.1"
   peerDependencies:
@@ -11204,7 +11204,7 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: e4e5b119730fe615a60fb9118ab408a471dab11304a70d469393a0aac6d06238377cd87693129160c600b7a03804e2552d3a7192d291ea3db10d2390983b3628
+  checksum: 478819bbbab39a0d11dc6276fc9b90e0b2576d7e32d761c811369657dc12bfaf95084bf951714ea82015259d736dec70770d229d6547b066ea0fc4133039082f
   languageName: node
   linkType: hard
 
@@ -11222,10 +11222,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/types@npm:6.10.0":
-  version: 6.10.0
-  resolution: "@typescript-eslint/types@npm:6.10.0"
-  checksum: bc8faf3d00f1d4eaad0760f64a7e428646e65adc5322f41dc9a2d15d5df23e53b09605d69126c373630851cb258c15ba82cf66d949897d3758844964b0e98087
+"@typescript-eslint/types@npm:6.11.0":
+  version: 6.11.0
+  resolution: "@typescript-eslint/types@npm:6.11.0"
+  checksum: 3ea55101325950d9594f839b38aa1c0958c3b8401ca9a8d2e4247997bb30dff7ac5e760e888de48a3ea9af3cb656eafb3e2cddc837a523a300ebccb63e150185
   languageName: node
   linkType: hard
 
@@ -11247,12 +11247,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/typescript-estree@npm:6.10.0":
-  version: 6.10.0
-  resolution: "@typescript-eslint/typescript-estree@npm:6.10.0"
+"@typescript-eslint/typescript-estree@npm:6.11.0":
+  version: 6.11.0
+  resolution: "@typescript-eslint/typescript-estree@npm:6.11.0"
   dependencies:
-    "@typescript-eslint/types": "npm:6.10.0"
-    "@typescript-eslint/visitor-keys": "npm:6.10.0"
+    "@typescript-eslint/types": "npm:6.11.0"
+    "@typescript-eslint/visitor-keys": "npm:6.11.0"
     debug: "npm:^4.3.4"
     globby: "npm:^11.1.0"
     is-glob: "npm:^4.0.3"
@@ -11261,7 +11261,7 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 41fc6dd0cfe8fb4c7ddc30d91e71d23ea1e0cbc261e8022ab089ddde6589eefdb89f66492d2ab4ae20dd45f51657022d9278bccc64aef7c6be0df756a081c0b5
+  checksum: 9d2333e517d50035f2c962b3966ebf8b35db0ac139c537cf4f1c4fd7b8d8914671671ad3bccdd59ef88fc4d29f441c0412a6c119ac6463bd2fbe8059d5209219
   languageName: node
   linkType: hard
 
@@ -11283,20 +11283,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/utils@npm:6.10.0":
-  version: 6.10.0
-  resolution: "@typescript-eslint/utils@npm:6.10.0"
+"@typescript-eslint/utils@npm:6.11.0":
+  version: 6.11.0
+  resolution: "@typescript-eslint/utils@npm:6.11.0"
   dependencies:
     "@eslint-community/eslint-utils": "npm:^4.4.0"
     "@types/json-schema": "npm:^7.0.12"
     "@types/semver": "npm:^7.5.0"
-    "@typescript-eslint/scope-manager": "npm:6.10.0"
-    "@typescript-eslint/types": "npm:6.10.0"
-    "@typescript-eslint/typescript-estree": "npm:6.10.0"
+    "@typescript-eslint/scope-manager": "npm:6.11.0"
+    "@typescript-eslint/types": "npm:6.11.0"
+    "@typescript-eslint/typescript-estree": "npm:6.11.0"
     semver: "npm:^7.5.4"
   peerDependencies:
     eslint: ^7.0.0 || ^8.0.0
-  checksum: acf55bc231483f8b8d2d64ad9a261d0499085277b5ce3506cf579297401f78d88253ae52a9afad35cc32a532b53794367e32449283c06b2e89602c63184f011e
+  checksum: 7b8c17bd191b06cc77fe341f32fb7b4126d47a6ec05e5112567d4424a1896cf851935ff867c825d7e3361c317a48fe5304f95e454089f9aecc182bd42b1e4176
   languageName: node
   linkType: hard
 
@@ -11338,13 +11338,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/visitor-keys@npm:6.10.0":
-  version: 6.10.0
-  resolution: "@typescript-eslint/visitor-keys@npm:6.10.0"
+"@typescript-eslint/visitor-keys@npm:6.11.0":
+  version: 6.11.0
+  resolution: "@typescript-eslint/visitor-keys@npm:6.11.0"
   dependencies:
-    "@typescript-eslint/types": "npm:6.10.0"
+    "@typescript-eslint/types": "npm:6.11.0"
     eslint-visitor-keys: "npm:^3.4.1"
-  checksum: 17a6962e10ffbcc286d202c7dfcc0dfa489c76ab7838b3522e90b3e87cbe2cdd7a24ffab434d9ca6dfed361801f11c3349ba01f808093c65c5365a9179ee5eb0
+  checksum: d89ef8579737f23a1a81506724e2c5cfec92fa4431232f93c4b6970a21382c6c0ad09ba21ffe8d25725d43aecce351fee2797c9170012ef0c00e5be7592e8233
   languageName: node
   linkType: hard
 
@@ -33455,15 +33455,15 @@ __metadata:
     "@babel/plugin-transform-runtime": "npm:^7.23.2"
     "@babel/preset-env": "npm:^7.23.2"
     "@babel/preset-react": "npm:^7.22.15"
-    "@babel/preset-typescript": "npm:^7.23.2"
+    "@babel/preset-typescript": "npm:^7.23.3"
     "@babel/runtime": "npm:^7.23.2"
     "@suite-common/wallet-types": "workspace:*"
     "@types/jest": "npm:^26.0.24"
     "@types/node": "npm:18.17.15"
     "@types/prettier": "npm:^3.0.0"
     "@types/semver": "npm:^7.5.4"
-    "@typescript-eslint/eslint-plugin": "npm:^6.9.1"
-    "@typescript-eslint/parser": "npm:^6.9.1"
+    "@typescript-eslint/eslint-plugin": "npm:^6.11.0"
+    "@typescript-eslint/parser": "npm:^6.11.0"
     babel-jest: "npm:^26.6.3"
     eslint: "npm:^8.53.0"
     eslint-config-airbnb: "npm:^18.2.1"
@@ -33493,7 +33493,7 @@ __metadata:
     ts-node: "npm:^10.9.1"
     tsconfig-paths: "npm:^4.2.0"
     tsx: "npm:^3.14.0"
-    typescript: "npm:4.9.5"
+    typescript: "npm:5.2.2"
     version-bump-prompt: "npm:^6.1.0"
   dependenciesMeta:
     core-js-pure:
@@ -33924,23 +33924,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:4.9.5":
-  version: 4.9.5
-  resolution: "typescript@npm:4.9.5"
+"typescript@npm:5.2.2":
+  version: 5.2.2
+  resolution: "typescript@npm:5.2.2"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 458f7220ab11e0fc191514cc41be1707645ec9a8c2d609448a448e18c522cef9646f58728f6811185a4c35613dacdf6c98cf8965c88b3541d0288c47291e4300
+  checksum: d65e50eb849bd21ff8677e5b9447f9c6e74777e346afd67754934264dcbf4bd59e7d2473f6062d9a015d66bd573311166357e3eb07fea0b52859cf9bb2b58555
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A4.9.5#optional!builtin<compat/typescript>":
-  version: 4.9.5
-  resolution: "typescript@patch:typescript@npm%3A4.9.5#optional!builtin<compat/typescript>::version=4.9.5&hash=289587"
+"typescript@patch:typescript@npm%3A5.2.2#optional!builtin<compat/typescript>":
+  version: 5.2.2
+  resolution: "typescript@patch:typescript@npm%3A5.2.2#optional!builtin<compat/typescript>::version=5.2.2&hash=f3b441"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 5659316360b5cc2d6f5931b346401fa534107b68b60179cf14970e27978f0936c1d5c46f4b5b8175f8cba0430f522b3ce355b4b724c0ea36ce6c0347fab25afd
+  checksum: f79cc2ba802c94c2b78dbb00d767a10adb67368ae764709737dc277273ec148aa4558033a03ce901406b35fddf4eac46dabc94a1e1d12d2587e2b9cfe5707b4a
   languageName: node
   linkType: hard
 

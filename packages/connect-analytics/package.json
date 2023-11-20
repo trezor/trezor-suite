@@ -17,6 +17,6 @@
         "@trezor/analytics": "workspace:*"
     },
     "devDependencies": {
-        "typescript": "4.9.5"
+        "typescript": "5.2.2"
     }
 }
