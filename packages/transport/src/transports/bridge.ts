@@ -1,9 +1,9 @@
 import { versionUtils, createDeferred, Deferred, createTimeoutPromise } from '@trezor/utils';
-import { PROTOCOL_MALFORMED } from '@trezor/protocol';
+import { PROTOCOL_MALFORMED, bridge as bridgeProtocol } from '@trezor/protocol';
 import { bridgeApiCall } from '../utils/bridgeApiCall';
 import * as bridgeApiResult from '../utils/bridgeApiResult';
-import { buildOne } from '../utils/send';
-import { receiveOne } from '../utils/receive';
+import { buildBuffers } from '../utils/send';
+import { receiveAndParse } from '../utils/receive';
 import { AbstractTransport, AbstractTransportParams, AcquireInput, ReleaseInput } from './abstract';
 
 import * as ERRORS from '../errors';
@@ -228,19 +228,21 @@ export class BridgeTransport extends AbstractTransport {
     }) {
         return this.scheduleAction(
             async signal => {
-                const { messages } = this;
-                const o = buildOne(messages, name, data);
-                const outData = o.toString('hex');
+                const [bytes] = buildBuffers(this.messages, name, data, bridgeProtocol.encode);
                 const response = await this._post(`/call`, {
                     params: session,
-                    body: outData,
+                    body: bytes.toString('hex'),
                     signal,
                 });
                 if (!response.success) {
                     return response;
                 }
-                const jsonData = receiveOne(this.messages, response.payload);
-                return this.success(jsonData);
+                const message = await receiveAndParse(
+                    this.messages,
+                    () => Promise.resolve(Buffer.from(response.payload, 'hex')),
+                    bridgeProtocol.decode,
+                );
+                return this.success(message);
             },
             { timeout: undefined },
         );
@@ -256,12 +258,10 @@ export class BridgeTransport extends AbstractTransport {
         name: string;
     }) {
         return this.scheduleAction(async signal => {
-            const { messages } = this;
-            const outData = buildOne(messages, name, data).toString('hex');
+            const [bytes] = buildBuffers(this.messages, name, data, bridgeProtocol.encode);
             const response = await this._post('/post', {
                 params: session,
-                body: outData,
-
+                body: bytes.toString('hex'),
                 signal,
             });
             if (!response.success) {
@@ -275,16 +275,18 @@ export class BridgeTransport extends AbstractTransport {
         return this.scheduleAction(async signal => {
             const response = await this._post('/read', {
                 params: session,
-
                 signal,
             });
 
             if (!response.success) {
                 return response;
             }
-            const jsonData = receiveOne(this.messages, response.payload);
-
-            return this.success(jsonData);
+            const message = await receiveAndParse(
+                this.messages,
+                () => Promise.resolve(Buffer.from(response.payload, 'hex')),
+                bridgeProtocol.decode,
+            );
+            return this.success(message);
         });
     }
 

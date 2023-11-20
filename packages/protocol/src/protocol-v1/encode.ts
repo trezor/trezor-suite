@@ -6,12 +6,9 @@ import {
     BUFFER_SIZE,
     MESSAGE_MAGIC_HEADER_BYTE,
 } from './constants';
+import { TransportProtocolEncode } from '../types';
 
-type Options = {
-    messageType: number;
-};
-
-export const encode = (data: ByteBuffer, options: Options): Buffer[] => {
+export const encode: TransportProtocolEncode = (data, options) => {
     const { messageType } = options;
     const fullSize = HEADER_SIZE + data.limit;
 
@@ -38,7 +35,7 @@ export const encode = (data: ByteBuffer, options: Options): Buffer[] => {
 
     // size with one reserved byte for header
 
-    const result = [];
+    const result: ByteBuffer[] = [];
     // How many pieces will there actually be
     // slice and dice
     for (let i = 0; i < chunkCount; i++) {
@@ -53,7 +50,7 @@ export const encode = (data: ByteBuffer, options: Options): Buffer[] => {
         slice.compact();
 
         buffer.append(slice);
-        result.push(buffer.buffer);
+        result.push(buffer);
     }
 
     return result;
