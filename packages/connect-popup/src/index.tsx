@@ -18,7 +18,6 @@ import {
     IFrameLogRequest,
     CoreMessage,
 } from '@trezor/connect/lib/exports';
-import { initLog } from '@trezor/connect/lib/utils/debug';
 import type { Core } from '@trezor/connect/lib/core';
 import { config } from '@trezor/connect/lib/data/config';
 import { parseConnectSettings } from '@trezor/connect-iframe/src/connectSettings';
@@ -38,11 +37,10 @@ import {
     showView,
 } from './view/common';
 import { isPhishingDomain } from './utils/isPhishingDomain';
-import { initSharedLogger, logWriterFactory } from './utils/debug';
+import { initLog, setLogWriter, initLogWriter, LogWriter } from '@trezor/connect/lib/utils/debug';
 
-const logWriter = initSharedLogger('./workers/shared-logger-worker.js');
-
-const log = initLog('@trezor/connect-popup', true, logWriter);
+const log = initLog('@trezor/connect-popup');
+let logWriterProxy: LogWriter | undefined;
 
 let handshakeTimeout: ReturnType<typeof setTimeout>;
 let renderConnectUIPromise: Promise<void> | undefined;
@@ -207,7 +205,9 @@ const handleInitMessage = (event: MessageEvent<PopupEvent | IFrameLogRequest>) =
     }
 
     if (data.type === IFRAME.LOG) {
-        logWriter.add(data.payload);
+        if (logWriterProxy) {
+            logWriterProxy.add(data.payload);
+        }
         return;
     }
 
@@ -288,7 +288,10 @@ const handleMessageInCoreMode = (
     if (disposed) return;
 
     if (data.type === IFRAME.LOG) {
-        logWriter.add(data.payload);
+        if (logWriterProxy) {
+            logWriterProxy.add(data.payload);
+        }
+
         return;
     }
 
@@ -348,9 +351,18 @@ const init = async (payload: PopupInit['payload']) => {
         await renderConnectUIPromise;
         log.debug('connect-ui rendered');
 
+        let logWriterFactory;
+        if (payload.settings.sharedLogger !== false) {
+            logWriterFactory = initLogWriter(
+                `${payload.settings.origin}/workers/shared-logger-worker.js`,
+            );
+            setLogWriter(logWriterFactory);
+            logWriterProxy = logWriterFactory();
+        }
+
         if (payload.useCore) {
             addWindowEventListener('message', handleMessageInCoreMode, false);
-            await initCoreInPopup(payload);
+            await initCoreInPopup(payload, logWriterFactory);
         } else {
             addWindowEventListener('message', handleMessageInIframeMode, false);
             await initCoreInIframe(payload);
@@ -360,7 +372,10 @@ const init = async (payload: PopupInit['payload']) => {
     }
 };
 
-const initCoreInPopup = async (payload: PopupInit['payload']) => {
+const initCoreInPopup = async (
+    payload: PopupInit['payload'],
+    logWriterFactory?: () => LogWriter | undefined,
+) => {
     // dynamically load core module
     reactEventBus.dispatch({ type: 'loading', message: 'loading core' });
 
