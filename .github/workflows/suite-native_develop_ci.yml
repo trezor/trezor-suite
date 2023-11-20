@@ -133,6 +133,9 @@ jobs:
         run: |
           echo $APPSTORE_CERTIFICATE_CONTENT | base64 -d > suite-native/app/TrezorDistributionCertificate.p12
 
+      - name: Install missing Python deps (to build bcrypto lib in Node)
+        run: pip install setuptools
+
       - name: Install dependecies
         run: |
           yarn install
