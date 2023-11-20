@@ -74,7 +74,7 @@ export const WalletLayout = ({
     }
 
     return (
-        <Wrapper>
+        <>
             <AccountBanners account={selectedAccount} />
             {showEmptyHeaderPlaceholder && <EmptyHeaderPlaceholder />}
             {status === 'exception' ? (
@@ -82,6 +82,6 @@ export const WalletLayout = ({
             ) : (
                 children
             )}
-        </Wrapper>
+        </>
     );
 };

@@ -70,10 +70,10 @@ const AppWrapper = styled.div`
     }
 `;
 
-const DefaultPaddings = styled.div`
+const ContentWrapper = styled.div`
     position: relative;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     flex: 1;
     width: 100%;
     max-width: ${MAX_WIDTH};
@@ -184,7 +184,8 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
                                 <AppWrapper data-test="@app" ref={appWrapperRef} id="layout-scroll">
                                     {isMobileLayout && <AccountsMenu isMenuInline />}
                                     {TopMenu && <TopMenu />}
-                                    <DefaultPaddings>{children}</DefaultPaddings>
+
+                                    <ContentWrapper>{children}</ContentWrapper>
                                 </AppWrapper>
 
                                 {!isGuideFullHeight && <GuideRouter />}
