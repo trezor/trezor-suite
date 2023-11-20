@@ -140,9 +140,9 @@ export const selectDeviceAccounts = (state: AccountsRootState & DeviceRootState)
         A.filter(account => account.deviceState === selectDevice(state)?.state),
     );
 
-export const selectMainnetAccounts = memoize((state: AccountsRootState) =>
+export const selectDeviceMainnetAccounts = memoize((state: AccountsRootState & DeviceRootState) =>
     pipe(
-        selectAccounts(state),
+        selectDeviceAccounts(state),
         A.filter(account => !isTestnet(account.symbol)),
     ),
 );

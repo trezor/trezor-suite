@@ -10,7 +10,7 @@ import {
 import {
     AccountsRootState,
     selectAccountByKey,
-    selectMainnetAccounts,
+    selectDeviceMainnetAccounts,
 } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
 import { analytics, EventType } from '@suite-native/analytics';
@@ -107,9 +107,9 @@ export const useGraphForSingleAccount = ({
     };
 };
 
-export const useGraphForAllAccounts = ({ fiatCurrency }: CommonUseGraphParams) => {
+export const useGraphForAllDeviceAccounts = ({ fiatCurrency }: CommonUseGraphParams) => {
     const dispatch = useDispatch();
-    const accounts = useSelector(selectMainnetAccounts);
+    const accounts = useSelector(selectDeviceMainnetAccounts);
     const portfolioGraphTimeframe = useSelector(selectPortfolioGraphTimeframe);
 
     const { startOfTimeFrameDate, endOfTimeFrameDate } =
