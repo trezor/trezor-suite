@@ -51,6 +51,12 @@ test('log page should contain logs from shared worker', async ({ page, context }
     await logsPage.waitForLoadState('load');
     log(`loaded: ${url}log.html`);
 
+    log('waiting for download-button to be visible');
+    await logsPage.waitForSelector("button[data-test='@log-container/download-button']", {
+        state: 'visible',
+        timeout: 40 * 1000,
+    });
+
     log('clicking download button and waiting for download to start');
     const [download] = await Promise.all([
         logsPage.waitForEvent('download'), // wait for download to start
