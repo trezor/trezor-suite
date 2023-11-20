@@ -35,6 +35,7 @@ const StyledModal = styled(Modal)`
 const Wrapper = styled.div`
     display: flex;
     align-items: center;
+    justify-content: space-around;
 
     ${variables.SCREEN_QUERY.MOBILE} {
         flex-direction: column;
@@ -46,10 +47,6 @@ const Content = styled.div`
     flex-direction: column;
     padding: 10px 14px;
     margin-left: 24px;
-
-    ${variables.SCREEN_QUERY.MOBILE} {
-        margin-left: 0;
-    }
 `;
 
 const BulletPointWrapper = styled.div`
@@ -258,6 +255,7 @@ export const ReconnectDevicePrompt = ({
     const { rebootPhase, rebootMethod } = useRebootRequest(device, requestedMode);
 
     const isRebootAutomatic = rebootMethod === 'automatic';
+    const isAnimationVisible = requestedMode === 'bootloader' && rebootPhase !== 'done';
     const deviceModelInternal = device?.features?.internal_model;
 
     return (
@@ -276,11 +274,13 @@ export const ReconnectDevicePrompt = ({
             {onClose && rebootPhase === 'initial' && <StyledAbortButton onAbort={onClose} />}
 
             <Wrapper data-test={`@firmware/reconnect-device/${requestedMode}`}>
-                <RebootDeviceGraphics
-                    device={expectedDevice}
-                    method={rebootMethod}
-                    requestedMode={requestedMode}
-                />
+                {isAnimationVisible && (
+                    <RebootDeviceGraphics
+                        device={expectedDevice}
+                        method={rebootMethod}
+                        requestedMode={requestedMode}
+                    />
+                )}
 
                 <Content>
                     <Heading>
