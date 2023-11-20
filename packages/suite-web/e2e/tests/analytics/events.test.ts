@@ -139,7 +139,8 @@ describe('Analytics Events', () => {
         // settings/analytics and suite-ready should be reported now
         // settings/analytics is logged 1st
         // suite-ready is logged 2nd
-        cy.wrap(requests).should('have.length', 2);
+        // other events are from queue
+        cy.wrap(requests).should('have.length.at.least', 2);
 
         cy.wrap(requests).its(0).should('have.property', 'c_type', EventType.SettingsAnalytics);
         cy.wrap(requests).its(1).should('have.property', 'c_type', EventType.SuiteReady);
