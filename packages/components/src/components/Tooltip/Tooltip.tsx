@@ -174,6 +174,7 @@ export const Tooltip = ({
                         variants={animationVariants}
                         animate={isShown ? 'shown' : 'hidden'}
                         transition={{ duration: 0.2, ease: 'easeInOut' }}
+                        onAnimationComplete={isShown ? () => {} : instance?.unmount}
                         {...attrs}
                     >
                         {(title || addon) && (
