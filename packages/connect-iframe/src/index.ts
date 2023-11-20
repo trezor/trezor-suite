@@ -25,15 +25,16 @@ import {
 import { Core, initCore, initTransport } from '@trezor/connect/src/core';
 import { DataManager } from '@trezor/connect/src/data/DataManager';
 import { config } from '@trezor/connect/src/data/config';
-import { initLog } from '@trezor/connect/src/utils/debug';
+import { initLog, LogWriter } from '@trezor/connect/src/utils/debug';
 import { getOrigin } from '@trezor/connect/src/utils/urlUtils';
 import { suggestBridgeInstaller } from '@trezor/connect/src/data/transportInfo';
 import { suggestUdevInstaller } from '@trezor/connect/src/data/udevInfo';
 import { storage, getSystemInfo, getInstallerPackage } from '@trezor/connect-common';
 import { parseConnectSettings, isOriginWhitelisted } from './connectSettings';
 import { analytics, EventType } from '@trezor/connect-analytics';
-import { initLogWriter } from './logWriter';
-import { LogWriter } from 'packages/connect/lib/utils/debug';
+// @ts-expect-error (typescript does not know this is worker constructor, this is done by webpack)
+import LogWorker from './sharedLoggerWorker';
+import { initLogWriterWithWorker } from './sharedLoggerUtils';
 
 let _core: Core | undefined;
 
@@ -306,7 +307,7 @@ const init = async (payload: IFrameInit['payload'], origin: string) => {
 
     let logWriterFactory;
     if (parsedSettings.sharedLogger !== false) {
-        logWriterFactory = await initLogWriter();
+        logWriterFactory = initLogWriterWithWorker(LogWorker);
         // `logWriterProxy` is used here to pass to shared logger worker logs from
         // environments that do not have access to it, like connect-web, webextension.
         // It does not log anything in this environment, just used as proxy.
