@@ -1,7 +1,7 @@
 import * as protobuf from 'protobufjs/light';
-
-import { buildOne, buildBuffers } from '../src/utils/send';
-import { receiveOne, receiveAndParse } from '../src/utils/receive';
+import { v1 as v1Protocol, bridge as bridgeProtocol } from '@trezor/protocol';
+import { buildBuffers } from '../src/utils/send';
+import { receiveAndParse } from '../src/utils/receive';
 
 const messages = {
     StellarPaymentOp: {
@@ -96,25 +96,44 @@ const parsedMessages = protobuf.Root.fromJSON({
 describe('encoding json -> protobuf -> json', () => {
     fixtures.forEach(f => {
         describe(`${f.name} - payload length ${f.in.source_account.length}`, () => {
-            test('buildOne - receiveOne', () => {
-                // encoded message
-                const encodedMessage = buildOne(parsedMessages, f.name, f.in);
+            test('bridgeProtocol: buildBuffers - receiveAndParse', async () => {
+                const result = buildBuffers(parsedMessages, f.name, f.in, bridgeProtocol.encode);
+                // bridgeProtocol returns only one big chunk
+                expect(result.length).toBe(1);
+                const [chunk] = result;
+                const { length } = Buffer.from(f.in.source_account);
+                // chunk length cannot be less than message header/constant (28) + variable source_account length
+                // additional bytes are expected (encoded Uint32) if message length is greater
+                expect(chunk.buffer.length).toBeGreaterThanOrEqual(28 + length);
+                let i = -1;
+                const decoded = await receiveAndParse(
+                    parsedMessages,
+                    () => {
+                        i++;
+                        return Promise.resolve(result[i].buffer);
+                    },
+                    bridgeProtocol.decode,
+                );
                 // then decode message and check, whether decoded message matches original json
-                const decodedMessage = receiveOne(parsedMessages, encodedMessage.toString('hex'));
-                expect(decodedMessage.type).toEqual(f.name);
-                expect(decodedMessage.message).toEqual(f.in);
+                expect(decoded.type).toEqual(f.name);
+                expect(decoded.message).toEqual(f.in);
             });
 
-            test('buildBuffers - receiveAndParse', async () => {
-                const result = buildBuffers(parsedMessages, f.name, f.in);
-                result.forEach(r => {
-                    expect(r.byteLength).toBeLessThanOrEqual(64);
+            test('v1Protocol: buildBuffers - receiveAndParse', async () => {
+                const result = buildBuffers(parsedMessages, f.name, f.in, v1Protocol.encode);
+                // each protocol chunks are equal 64 bytes
+                result.forEach(chunk => {
+                    expect(chunk.buffer.length).toEqual(64);
                 });
                 let i = -1;
-                const decoded = await receiveAndParse(parsedMessages, () => {
-                    i++;
-                    return Promise.resolve(result[i]);
-                });
+                const decoded = await receiveAndParse(
+                    parsedMessages,
+                    () => {
+                        i++;
+                        return Promise.resolve(result[i].buffer);
+                    },
+                    v1Protocol.decode,
+                );
                 // then decode message and check, whether decoded message matches original json
                 expect(decoded.type).toEqual(f.name);
                 expect(decoded.message).toEqual(f.in);

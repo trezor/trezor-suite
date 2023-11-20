@@ -8,17 +8,17 @@ describe('protocol-v1', () => {
         // encode only one chunk, message without data
         chunks = v1.encode(new ByteBuffer(0), { messageType: 55 });
         expect(chunks.length).toEqual(1);
-        expect(chunks[0].length).toEqual(64);
+        expect(chunks[0].limit).toEqual(64);
 
         // encode multiple chunks, message with data
         chunks = v1.encode(new ByteBuffer(371), { messageType: 55 });
         expect(chunks.length).toEqual(7);
         chunks.forEach((chunk, index) => {
-            expect(chunk.length).toEqual(64);
+            expect(chunk.limit).toEqual(64);
             if (index === 0) {
                 // first chunk with additional data
                 expect(chunk.slice(0, 9).toString('hex')).toEqual('3f2323003700000173');
-                expect(chunk.readUInt32BE(5)).toEqual(371);
+                expect(chunk.readUint32(5)).toEqual(371);
             } else {
                 // following chunk starts with MESSAGE_MAGIC_HEADER_BYTE
                 expect(chunk.slice(0, 5).toString('hex')).toEqual('3f00000000');
@@ -32,7 +32,7 @@ describe('protocol-v1', () => {
         data.fill(getFeatures, 0, 5);
         data.writeUint32BE(379, 5);
 
-        const read = v1.decodeChunked(data);
+        const read = v1.decode(data);
         expect(read.typeId).toEqual(55);
         expect(read.length).toEqual(379);
     });

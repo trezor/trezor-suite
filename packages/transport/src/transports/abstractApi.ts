@@ -1,8 +1,9 @@
 import { createDeferred, Deferred } from '@trezor/utils';
+import { v1 as v1Protocol } from '@trezor/protocol';
 
 import { AbstractTransport, AbstractTransportParams, AcquireInput, ReleaseInput } from './abstract';
 import { AbstractApi } from '../api/abstract';
-import { buildAndSend } from '../utils/send';
+import { buildBuffers } from '../utils/send';
 import { receiveAndParse } from '../utils/receive';
 import { SessionsClient } from '../sessions/client';
 import * as ERRORS from '../errors';
@@ -192,26 +193,25 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                 const { path } = getPathBySessionResponse.payload;
 
                 try {
-                    await buildAndSend(
-                        this.messages,
-                        (buffer: Buffer) =>
-                            this.api.write(path, buffer).then(result => {
-                                if (!result.success) {
-                                    // todo:
-                                    throw new Error(result.error);
-                                }
-                            }),
-                        name,
-                        data,
-                    );
-
-                    const message = await receiveAndParse(this.messages, () =>
-                        this.api.read(path).then(result => {
-                            if (result.success) {
-                                return result.payload;
+                    const buffers = buildBuffers(this.messages, name, data, v1Protocol.encode);
+                    for (const chunk of buffers) {
+                        this.api.write(path, chunk.buffer).then(result => {
+                            if (!result.success) {
+                                throw new Error(result.error);
                             }
-                            throw new Error(result.error);
-                        }),
+                        });
+                    }
+
+                    const message = await receiveAndParse(
+                        this.messages,
+                        () =>
+                            this.api.read(path).then(result => {
+                                if (result.success) {
+                                    return result.payload;
+                                }
+                                throw new Error(result.error);
+                            }),
+                        v1Protocol.decode,
                     );
 
                     return this.success(message);
@@ -252,17 +252,14 @@ export abstract class AbstractApiTransport extends AbstractTransport {
             const { path } = getPathBySessionResponse.payload;
 
             try {
-                await buildAndSend(
-                    this.messages,
-                    (buffer: Buffer) =>
-                        this.api.write(path, buffer).then(result => {
-                            if (!result.success) {
-                                throw new Error(result.error);
-                            }
-                        }),
-                    name,
-                    data,
-                );
+                const buffers = buildBuffers(this.messages, name, data, v1Protocol.encode);
+                for (const chunk of buffers) {
+                    this.api.write(path, chunk.buffer).then(result => {
+                        if (!result.success) {
+                            throw new Error(result.error);
+                        }
+                    });
+                }
                 return this.success(undefined);
             } catch (err) {
                 if (err.message === ERRORS.DEVICE_DISCONNECTED_DURING_ACTION) {
@@ -285,13 +282,16 @@ export abstract class AbstractApiTransport extends AbstractTransport {
             const { path } = getPathBySessionResponse.payload;
 
             try {
-                const message = await receiveAndParse(this.messages, () =>
-                    this.api.read(path).then(result => {
-                        if (!result.success) {
-                            throw new Error(result.error);
-                        }
-                        return result.payload;
-                    }),
+                const message = await receiveAndParse(
+                    this.messages,
+                    () =>
+                        this.api.read(path).then(result => {
+                            if (!result.success) {
+                                throw new Error(result.error);
+                            }
+                            return result.payload;
+                        }),
+                    v1Protocol.decode,
                 );
 
                 return this.success(message);
