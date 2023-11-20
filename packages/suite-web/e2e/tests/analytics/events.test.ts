@@ -153,7 +153,44 @@ describe('Analytics Events', () => {
             expect(deviceConnectEvent.value).to.equal('true');
         });
 
-        // suite-ready
+        // suite-ready reflects state when app was launched, does not include changes
+        cy.findAnalyticsEventByType<ExtractByEventType<EventType.SuiteReady>>(
+            requests,
+            EventType.SuiteReady,
+        ).then(suiteReadyEvent => {
+            expect(suiteReadyEvent.language).to.equal('en');
+            expect(suiteReadyEvent.enabledNetworks).to.equal('btc');
+            expect(suiteReadyEvent.customBackends).to.equal('');
+            expect(suiteReadyEvent.localCurrency).to.equal('usd');
+            expect(suiteReadyEvent.bitcoinUnit).to.equal('BTC');
+            expect(suiteReadyEvent.discreetMode).to.equal('false');
+            expect(suiteReadyEvent.screenWidth).to.exist.and.not.to.be.empty;
+            expect(suiteReadyEvent.screenHeight).to.exist.and.not.to.be.empty;
+            expect(suiteReadyEvent.platformLanguages).to.exist.and.not.to.be.empty;
+            expect(suiteReadyEvent.tor).to.equal('false');
+            expect(suiteReadyEvent.labeling).to.exist;
+            expect(suiteReadyEvent.rememberedStandardWallets).to.equal('0');
+            expect(suiteReadyEvent.rememberedHiddenWallets).to.equal('0');
+            expect(suiteReadyEvent.theme).to.equal('light');
+            expect(parseInt(suiteReadyEvent.suiteVersion, 10)).to.not.equal(NaN);
+            expect(suiteReadyEvent.earlyAccessProgram).to.equal('false');
+            expect(suiteReadyEvent.browserName).to.equal(Cypress.browser.name);
+            expect(parseInt(suiteReadyEvent.browserVersion, 10)).to.not.equal(NaN);
+            expect(suiteReadyEvent.osName).to.exist.and.not.to.be.empty;
+            expect(parseInt(suiteReadyEvent.osVersion, 10)).to.not.equal(NaN);
+            expect(suiteReadyEvent.windowWidth).to.equal(windowWidth.toString());
+            expect(suiteReadyEvent.windowHeight).to.equal(windowHeight.toString());
+            expect(suiteReadyEvent.autodetectLanguage).to.equal('true');
+            expect(suiteReadyEvent.autodetectTheme).to.equal('true');
+        });
+
+        requests = [];
+        cy.reload();
+        cy.interceptDataTrezorIo(requests);
+
+        cy.getTestElement('@onboarding/exit-app-button');
+
+        // suite-ready reflecting changes
         cy.findAnalyticsEventByType<ExtractByEventType<EventType.SuiteReady>>(
             requests,
             EventType.SuiteReady,
