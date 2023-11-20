@@ -305,6 +305,7 @@ const init = async (payload: IFrameInit['payload'], origin: string) => {
     let logWriterFactory;
     if (parsedSettings.sharedLogger !== false) {
         logWriterFactory = initLogWriter(
+            // Use shared logger worker from the same origin as iframe.html
             `${parsedSettings.origin}/workers/shared-logger-worker.js`,
         );
         // `logWriterProxy` is used here to pass to shared logger worker logs from
