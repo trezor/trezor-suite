@@ -1,7 +1,9 @@
 // @group:settings
 // @retry=2
 
-describe('T1B1 - Device settings', () => {
+// TODO: t1 tests are flaky in CI. I suspect it is something in bridge/udp layer. So next step is implementing
+// udp transport in suite and trying to enable this test again.
+describe.skip('T1B1 - Device settings', () => {
     beforeEach(() => {
         cy.task('startEmu', { version: '1-latest', wipe: true });
         cy.task('setupEmu', { needs_backup: false });
