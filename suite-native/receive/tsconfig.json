@@ -29,6 +29,8 @@
         { "path": "../qr-code" },
         { "path": "../storage" },
         { "path": "../toasts" },
-        { "path": "../../packages/styles" }
+        { "path": "../../packages/connect" },
+        { "path": "../../packages/styles" },
+        { "path": "../../packages/theme" }
     ]
 }

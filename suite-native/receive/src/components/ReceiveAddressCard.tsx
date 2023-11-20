@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { Box, Card } from '@suite-native/atoms';
 import { AddressQRCode } from '@suite-native/qr-code';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import { selectIsSelectedDeviceImported } from '@suite-common/wallet-core';
 import { useTranslate } from '@suite-native/intl';
 
@@ -28,6 +28,8 @@ export const ReceiveAddressCard = ({
 }: ReceiveAddressCardProps) => {
     const { translate } = useTranslate();
     const isPortfolioTracker = useSelector(selectIsSelectedDeviceImported);
+
+    const { networkType } = networks[networkSymbol];
 
     const getCardAlertProps = () => {
         if (isReceiveApproved && !isPortfolioTracker) {
@@ -64,6 +66,7 @@ export const ReceiveAddressCard = ({
                         <UnverifiedAddress
                             address={address}
                             isAddressRevealed={isUnverifiedAddressRevealed}
+                            isCardanoAddress={networkType === 'cardano'}
                             onShowAddress={onShowAddress}
                         />
                     )}

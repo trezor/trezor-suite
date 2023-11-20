@@ -10,12 +10,14 @@ import { UnverifiedAddressWarning } from './UnverifiedAddressWarning';
 type UnverifiedAddressSectionProps = {
     address: string;
     isAddressRevealed: boolean;
+    isCardanoAddress: boolean;
     onShowAddress: () => void;
 };
 
 export const UnverifiedAddress = ({
     address,
     isAddressRevealed,
+    isCardanoAddress,
     onShowAddress,
 }: UnverifiedAddressSectionProps) => {
     const isPortfolioTracker = useSelector(selectIsSelectedDeviceImported);
@@ -25,7 +27,11 @@ export const UnverifiedAddress = ({
             {isPortfolioTracker ? (
                 <UnverifiedAddressWarning />
             ) : (
-                <UnverifiedAddressDevice address={address} isAddressRevealed={isAddressRevealed} />
+                <UnverifiedAddressDevice
+                    address={address}
+                    isAddressRevealed={isAddressRevealed}
+                    isCardanoAddress={isCardanoAddress}
+                />
             )}
             {!isAddressRevealed && <ShowAddressButtons onShowAddress={onShowAddress} />}
         </VStack>

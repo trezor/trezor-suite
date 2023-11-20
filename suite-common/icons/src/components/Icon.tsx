@@ -46,7 +46,7 @@ export function isCSSColor(value: any): value is CSSColor {
     );
 }
 
-const getColorCode = (color: IconColor, themeColors: Colors) => {
+const getColorCode = (color: Exclude<IconColor, 'svgSource'>, themeColors: Colors) => {
     'worklet';
 
     if (isReanimatedSharedValue(color)) {
