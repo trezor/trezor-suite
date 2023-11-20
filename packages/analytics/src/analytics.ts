@@ -77,7 +77,9 @@ export class Analytics<T extends AnalyticsEvent> {
 
     public report = (data: T, config?: ReportConfig) => {
         // Add a timestamp to each event to track its actual occurrence time, considering possible queuing delays.
-        data.timestamp = Date.now().toString();
+        if (!data.timestamp) {
+            data.timestamp = Date.now().toString();
+        }
 
         const isMissingFields =
             !this.url || !this.instanceId || !this.sessionId || !this.commitId || !this.version;
