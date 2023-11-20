@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useSetAtom } from 'jotai';
 
-import { useGraphForAllAccounts, Graph, TimeSwitch } from '@suite-native/graph';
+import { useGraphForAllDeviceAccounts, Graph, TimeSwitch } from '@suite-native/graph';
 import { selectFiatCurrency } from '@suite-native/module-settings';
 import { VStack } from '@suite-native/atoms';
 import { selectIsDeviceDiscoveryActive, selectIsPortfolioEmpty } from '@suite-common/wallet-core';
@@ -19,7 +19,7 @@ export const PortfolioGraph = () => {
     const isDiscoveryActive = useSelector(selectIsDeviceDiscoveryActive);
     const isPortfolioEmpty = useSelector(selectIsPortfolioEmpty);
     const { graphPoints, error, isLoading, refetch, onSelectTimeFrame, timeframe } =
-        useGraphForAllAccounts({
+        useGraphForAllDeviceAccounts({
             fiatCurrency: fiatCurrency.label,
         });
     const setSelectedPoint = useSetAtom(selectedPointAtom);
