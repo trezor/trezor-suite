@@ -31,7 +31,7 @@
         "rimraf": "^5.0.5",
         "stellar-base": "v10.0.0-beta.2",
         "stellar-sdk": "^v11.0.0-beta.3",
-        "typescript": "5.2.2"
+        "typescript": "5.3.2"
     },
     "dependencies": {
         "bignumber.js": "^9.1.1"

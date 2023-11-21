@@ -11,13 +11,13 @@ type UserModalState = Extract<ModalState, { context: typeof MODAL.CONTEXT_USER }
 const hasGivenContext = <T extends ModalContext>(
     modal: ModalState,
     context: T[],
-): modal is Extract<ModalState, { context: T }> => context.includes(modal.context as any);
+): modal is Extract<ModalState, { context: T }> => context.includes(modal.context as T);
 
 const hasGivenUserModalType = <T extends UserModalType>(
     modal: UserModalState,
     type: T[],
 ): modal is Extract<UserModalState, { payload: { type: T } }> =>
-    type.includes(modal.payload.type as any);
+    type.includes(modal.payload.type as T);
 
 export const useFilteredModal = <T extends ModalContext>(
     context: T[],
@@ -29,8 +29,12 @@ export const useFilteredModal = <T extends ModalContext>(
         return null;
     }
 
-    if (modal.context === MODAL.CONTEXT_USER && type && !hasGivenUserModalType(modal, type)) {
-        return null;
+    if (modal.context === MODAL.CONTEXT_USER) {
+        const userModal = modal as UserModalState;
+
+        if (type && !hasGivenUserModalType(userModal, type)) {
+            return null;
+        }
     }
 
     return modal;
