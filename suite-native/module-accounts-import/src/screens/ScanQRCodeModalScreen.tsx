@@ -14,6 +14,7 @@ export const networkTypeToTitleMap: Record<NetworkType, string> = {
     cardano: 'Scan public key (XPUB)',
     ethereum: 'Scan receive address',
     ripple: 'Scan receive address',
+    solana: 'Scan receive address',
 };
 
 export const ScanQRCodeModalScreen = ({

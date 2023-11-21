@@ -2956,6 +2956,14 @@ export default defineMessages({
         defaultMessage: 'Coinjoin Regtest',
         id: 'TR_NETWORK_COINJOIN_BITCOIN_REGTEST',
     },
+    TR_NETWORK_SOLANA_MAINNET: {
+        defaultMessage: 'Solana',
+        id: 'TR_NETWORK_SOLANA_MAINNET',
+    },
+    TR_NETWORK_SOLANA_DEVNET: {
+        defaultMessage: 'Solana Devnet',
+        id: 'TR_NETWORK_SOLANA_DEVNET',
+    },
     TR_NEW_COMMUNICATION_TOOL: {
         defaultMessage:
             'New communication tool to facilitate the connection between your Trezor and your internet browser.',
@@ -3747,6 +3755,18 @@ export default defineMessages({
     TR_ACCOUNT_TYPE_BIP44_TECH: {
         id: 'TR_ACCOUNT_TYPE_BIP44_TECH',
         defaultMessage: 'BIP44, P2PKH, Base58',
+    },
+    TR_ACCOUNT_TYPE_SOLANA_BIP44_CHANGE_NAME: {
+        id: 'TR_ACCOUNT_TYPE_SOLANA_BIP44_CHANGE_NAME',
+        defaultMessage: 'Bip44Change',
+    },
+    TR_ACCOUNT_TYPE_SOLANA_BIP44_CHANGE_TECH: {
+        id: 'TR_ACCOUNT_TYPE_SOLANA_BIP44_CHANGE_TECH',
+        defaultMessage: 'BIP44, Base58',
+    },
+    TR_ACCOUNT_TYPE_SOLANA_BIP44_CHANGE_DESC: {
+        id: 'TR_ACCOUNT_TYPE_SOLANA_BIP44_CHANGE_DESC',
+        defaultMessage: 'Bip44Change account',
     },
     TR_ACCOUNT_TYPE_SLIP25_NAME: {
         id: 'TR_ACCOUNT_TYPE_SLIP25_NAME',

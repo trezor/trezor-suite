@@ -419,9 +419,52 @@ export const networks = {
             },
         },
     },
+    sol: {
+        name: 'Solana',
+        networkType: 'solana',
+        bip43Path: "m/44'/501'/i'/0'",
+        decimals: 9,
+        testnet: false,
+        features: ['tokens' /* , 'staking' */],
+        explorer: {
+            tx: 'https://explorer.solana.com/tx/',
+            account: 'https://explorer.solana.com/address/',
+            address: 'https://explorer.solana.com/address/',
+        },
+        support: {
+            [DeviceModelInternal.T2T1]: '2.4.3', // TODO(vl): revisit, for now just anything above 2.0.0
+        },
+        customBackends: [],
+        accountTypes: {},
+    },
+    dsol: {
+        name: 'Solana Devnet',
+        networkType: 'solana',
+        bip43Path: "m/44'/501'/i'/0'",
+        label: 'TR_TESTNET_COINS_LABEL',
+        decimals: 9,
+        testnet: true,
+        features: ['tokens' /* , 'staking' */],
+        explorer: {
+            tx: 'https://explorer.solana.com/tx/',
+            account: 'https://explorer.solana.com/address/',
+            address: 'https://explorer.solana.com/address/',
+        },
+        support: {
+            [DeviceModelInternal.T2T1]: '2.4.3', // TODO(vl): revisit, for now just anything above 2.0.0
+        },
+        customBackends: ['solana'],
+        accountTypes: {},
+    },
 } as const;
 
-export const TREZOR_CONNECT_BACKENDS = ['blockbook', 'electrum', 'ripple', 'blockfrost'] as const;
+export const TREZOR_CONNECT_BACKENDS = [
+    'blockbook',
+    'electrum',
+    'ripple',
+    'blockfrost',
+    'solana',
+] as const;
 export const NON_STANDARD_BACKENDS = ['coinjoin'] as const;
 
 export type BackendType =

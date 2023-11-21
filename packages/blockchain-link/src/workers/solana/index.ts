@@ -223,7 +223,6 @@ const getInfo = async (request: Request<MessageTypes.GetInfo>) => {
         await api.getLatestBlockhash('finalized');
     const isTestnet =
         (await api.getGenesisHash()) !== '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d';
-
     const serverInfo = {
         // genesisHash is reliable identifier of the network, for mainnet the genesis hash is 5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d
         testnet: isTestnet,

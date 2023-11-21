@@ -1,0 +1,19 @@
+<svg fill="none" viewBox="0 0 40 40">
+  <defs>
+    <radialGradient id="prefix__b" cx="0" cy="0" r="1" gradientTransform="matrix(0 12 -12 0 20 20)" gradientUnits="userSpaceOnUse">
+      <stop/>
+      <stop offset="1" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="prefix__a" x1="1.215" x2="42.729" y1="40.872" y2="3.51" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#9945FF"/>
+      <stop offset=".14" stop-color="#8A53F4"/>
+      <stop offset=".42" stop-color="#6377D6"/>
+      <stop offset=".79" stop-color="#24B0A7"/>
+      <stop offset=".99" stop-color="#00D18C"/>
+      <stop offset="1" stop-color="#00D18C"/>
+    </linearGradient>
+  </defs>
+  <circle cx="20" cy="20" r="20" fill="url(#prefix__a)"/>
+  <path fill="#fff" fill-rule="evenodd" d="M13.812 24.55a.678.678 0 0 1 .484-.217h15.187a.334.334 0 0 1 .324.387.33.33 0 0 1-.082.17l-3.22 3.56a.677.677 0 0 1-.483.217H10.825a.334.334 0 0 1-.324-.387.332.332 0 0 1 .082-.17l3.23-3.56Zm15.927-2.951a.33.33 0 0 1-.241.556l-15.193.012a.677.677 0 0 1-.483-.217l-3.243-3.549a.332.332 0 0 1 .241-.556l15.193-.012a.68.68 0 0 1 .483.217l3.243 3.549ZM13.812 11.55a.678.678 0 0 1 .484-.217l15.197.012a.335.335 0 0 1 .301.2.332.332 0 0 1-.06.357l-3.228 3.548a.677.677 0 0 1-.484.217H10.825a.334.334 0 0 1-.324-.387.332.332 0 0 1 .082-.17l3.23-3.56Z" clip-rule="evenodd"/>
+  <circle cx="20" cy="20" r="20" fill="url(#prefix__b)" fill-opacity=".6" style="mix-blend-mode:soft-light"/>
+</svg>

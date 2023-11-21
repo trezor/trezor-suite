@@ -213,9 +213,9 @@ export const subscribeBlockchainThunk = createThunk(
     ) => {
         const network = getNetwork(symbol);
         // fiat rates should be subscribed only once, after onConnect event
-        if (fiatRates && network?.networkType !== 'cardano') {
+        if (fiatRates && network?.networkType !== 'cardano' && network?.networkType !== 'solana') {
             // Note:
-            // Because Blockfrost worker for cardano doesn't provide fiat rates,
+            // Because Blockfrost worker for cardano and Solana worker for solana don't provide fiat rates,
             // calling blockchainSubscribeFiatRates will return res.success set to false.
             // That will cause skipping account subscription (because of return statement) which is called few lines below.
             // That is not expected as the original idea was to catch problem with subscribing and prevent

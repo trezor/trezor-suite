@@ -32,6 +32,7 @@ const networkTypeToInputLabelMap: Record<NetworkType, string> = {
     cardano: 'Enter public key (XPUB) manually',
     ethereum: 'Enter receive address manually',
     ripple: 'Enter receive address manually',
+    solana: 'Enter receive address manually',
 };
 
 const FORM_BUTTON_FADE_IN_DURATION = 200;

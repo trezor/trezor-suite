@@ -18,6 +18,8 @@ const getCoinFromTestnet = (symbol: Account['symbol']) => {
             return 'xrp';
         case 'tada':
             return 'ada';
+        case 'dsol':
+            return 'sol';
         case 'tsep':
         case 'tgor':
             return 'eth';
@@ -29,6 +31,7 @@ const getCoinFromTestnet = (symbol: Account['symbol']) => {
 export const isAddressValid = (address: string, symbol: Account['symbol']) => {
     const networkType = getNetworkType(symbol);
     const updatedSymbol = getCoinFromTestnet(symbol);
+
     return addressValidator.validate(address, updatedSymbol.toUpperCase(), networkType);
 };
 

@@ -20,7 +20,15 @@ export const mainnetsOrder: NetworkSymbol[] = [
     'dgb',
 ];
 
-export const testnetsOrder: NetworkSymbol[] = ['test', 'regtest', 'tsep', 'tgor', 'tada', 'txrp'];
+export const testnetsOrder: NetworkSymbol[] = [
+    'test',
+    'regtest',
+    'tsep',
+    'tgor',
+    'tada',
+    'txrp',
+    'dsol',
+];
 
 export const supportedNetworkSymbols = Object.keys(networks) as NetworkSymbol[];
 
