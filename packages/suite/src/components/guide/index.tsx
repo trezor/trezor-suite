@@ -9,7 +9,7 @@ import { GuideCategories } from './GuideCategories';
 import { GuideSearch } from './GuideSearch';
 import { Feedback } from './Feedback';
 import { SupportFeedbackSelection } from './SupportFeedbackSelection';
-import { GuideDefault } from './GuideDefault';
+import { Guide } from './Guide';
 import { GuidePage } from './GuidePage';
 import { GuideCategory } from './GuideCategory';
 import { OpenGuideFromTooltip } from './OpenGuideFromTooltip';
@@ -28,7 +28,7 @@ export {
     ContentScrolledContext,
     Feedback,
     SupportFeedbackSelection,
-    GuideDefault,
+    Guide,
     GuidePage,
     GuideCategory,
     OpenGuideFromTooltip,

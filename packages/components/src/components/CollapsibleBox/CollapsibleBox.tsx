@@ -73,6 +73,10 @@ const SubHeading = styled.span`
     color: ${({ theme }) => theme.textSubdued};
 `;
 
+const Flex = styled.div`
+    flex: 1;
+`;
+
 const easingValues = motionEasing.transition.join(', ');
 const ANIMATION_DURATION = 0.4;
 const StyledIcon = styled(Icon)<{ isCollapsed?: boolean }>`
@@ -140,10 +144,10 @@ const CollapsibleBox: FC<CollapsibleBoxProps> & CollapsibleBoxSubcomponents = ({
         <Wrapper variant={variant} {...rest}>
             <Header variant={variant} onClick={handleHeaderClick}>
                 {(heading || subHeading) && (
-                    <div>
+                    <Flex>
                         {heading && <Heading variant={variant}>{heading}</Heading>}
                         {subHeading && <SubHeading>{subHeading}</SubHeading>}
-                    </div>
+                    </Flex>
                 )}
 
                 <IconWrapper>
