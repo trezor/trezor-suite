@@ -8,10 +8,11 @@ import { useSelector } from 'src/hooks/suite/useSelector';
 import { AnonymitySet, TokenTransfer } from '@trezor/blockchain-link';
 import { Icon, useTheme, variables, CollapsibleBox } from '@trezor/components';
 import { UtxoAnonymity } from 'src/components/wallet';
-import { IOAddress } from '../../IOAddress';
-import { AnalyzeInBlockbookBanner } from './AnalyzeInBlockbookBanner';
+import { AnalyzeInExplorerBanner } from './AnalyzeInExplorerBanner';
 import { FormattedNftAmount } from 'src/components/suite/FormattedNftAmount';
 import { useExplorerTxUrl } from 'src/hooks/suite/useExplorerTxUrl';
+import { useExplorerTxUrlSuffix } from 'src/hooks/suite/useExplorerTxUrlSuffix';
+import { IOAddress } from '../../IOAddress';
 
 export const blurFix = css`
     margin-left: -10px;
@@ -153,12 +154,14 @@ const IOGridRow = ({
     const anonymity = addresses?.length && anonymitySet?.[addresses[0]];
 
     const explorerTxUrl = useExplorerTxUrl();
+    const urlSuffix = useExplorerTxUrlSuffix();
 
     return (
         <GridItem isAccountOwned={isAccountOwned}>
             <IOAddress
                 txAddress={addresses?.length ? addresses[0] : ''}
                 explorerUrl={explorerTxUrl}
+                urlSuffix={urlSuffix}
             />
 
             <br />
@@ -217,11 +220,12 @@ interface GridRowGroupComponentProps {
 const GridRowGroupComponent = ({ from, to, symbol, amount }: GridRowGroupComponentProps) => {
     const theme = useTheme();
     const explorerTxUrl = useExplorerTxUrl();
+    const urlSuffix = useExplorerTxUrlSuffix();
 
     return (
         <RowGrid>
             <RowGridItem>
-                <IOAddress txAddress={from} explorerUrl={explorerTxUrl} />
+                <IOAddress txAddress={from} explorerUrl={explorerTxUrl} urlSuffix={urlSuffix} />
                 <br />
                 {typeof amount === 'string' ? (
                     <StyledFormattedCryptoAmount value={amount} symbol={symbol} />
@@ -233,7 +237,7 @@ const GridRowGroupComponent = ({ from, to, symbol, amount }: GridRowGroupCompone
                 <Icon icon="ARROW_RIGHT" size={17} color={theme.TYPE_LIGHT_GREY} />
             </IconWrapper>
             <RowGridItem>
-                <IOAddress txAddress={to} explorerUrl={explorerTxUrl} />
+                <IOAddress txAddress={to} explorerUrl={explorerTxUrl} urlSuffix={urlSuffix} />
             </RowGridItem>
         </RowGrid>
     );
@@ -424,7 +428,7 @@ export const IODetails = ({ tx }: IODetailsProps) => {
     if (network?.networkType === 'ethereum') {
         return (
             <Wrapper>
-                <AnalyzeInBlockbookBanner txid={tx.txid} />
+                <AnalyzeInExplorerBanner txid={tx.txid} />
                 <BalanceDetailsRow tx={tx} />
                 <EthereumSpecificBalanceDetailsRow tx={tx} />
             </Wrapper>
@@ -434,7 +438,7 @@ export const IODetails = ({ tx }: IODetailsProps) => {
     if (tx.type === 'joint') {
         return (
             <Wrapper>
-                <AnalyzeInBlockbookBanner txid={tx.txid} />
+                <AnalyzeInExplorerBanner txid={tx.txid} />
                 <CollapsibleIOSection
                     heading={<Translation id="TR_MY_INPUTS_AND_OUTPUTS" />}
                     opened
@@ -454,7 +458,8 @@ export const IODetails = ({ tx }: IODetailsProps) => {
 
     return (
         <Wrapper>
-            <AnalyzeInBlockbookBanner txid={tx.txid} />
+            {/* solana is not supported by blockbook */}
+            <AnalyzeInExplorerBanner txid={tx.txid} />
             <IOSectionColumn tx={tx} inputs={tx.details.vin} outputs={tx.details.vout} />
         </Wrapper>
     );

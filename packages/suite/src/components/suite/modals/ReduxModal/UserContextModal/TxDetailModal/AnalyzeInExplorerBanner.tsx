@@ -52,11 +52,11 @@ const StyledButton = styled(Button)`
     }
 `;
 
-interface AnalyzeInBlockbookBannerProps {
+interface AnalyzeInExplorerBannerProps {
     txid: string;
 }
 
-export const AnalyzeInBlockbookBanner = ({ txid }: AnalyzeInBlockbookBannerProps) => {
+export const AnalyzeInExplorerBanner = ({ txid }: AnalyzeInExplorerBannerProps) => {
     const theme = useTheme();
 
     const { selectedAccount } = useSelector(state => state.wallet);
@@ -76,7 +76,10 @@ export const AnalyzeInBlockbookBanner = ({ txid }: AnalyzeInBlockbookBannerProps
                     </Description>
                 </TextWrapper>
             </Wrapper>
-            <Link variant="nostyle" href={`${explorerUrl}${txid}`}>
+            <Link
+                variant="nostyle"
+                href={`${explorerUrl}${txid}${network?.symbol === 'dsol' ? '?cluster=devnet' : ''}`}
+            >
                 <StyledButton variant="primary">
                     <Translation id="TR_ANALYZE_IN_BLOCKBOOK_OPEN" />
                     <Icon icon="EXTERNAL_LINK" color={theme.TYPE_WHITE} size={20} />
