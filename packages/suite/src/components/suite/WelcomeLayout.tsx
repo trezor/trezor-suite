@@ -13,7 +13,7 @@ import { MessageSystemBanner } from 'src/components/suite/banners';
 import { isWeb } from '@trezor/env-utils';
 import { TREZOR_URL, SUITE_URL } from '@trezor/urls';
 import { resolveStaticPath } from '@suite-common/suite-utils';
-import { GuideButton, GuidePanel } from 'src/components/guide';
+import { GuideButton, GuideRouter } from 'src/components/guide';
 import { useGuide } from 'src/hooks/guide';
 import { NavSettings } from 'src/components/suite/Preloader/SuiteLayout/NavigationBar/NavigationActions/NavSettings';
 
@@ -176,7 +176,7 @@ export const WelcomeLayout = ({ children }: WelcomeLayoutProps) => {
                 </Content>
 
                 <GuideButton />
-                <GuidePanel />
+                <GuideRouter />
             </Body>
         </Wrapper>
     );

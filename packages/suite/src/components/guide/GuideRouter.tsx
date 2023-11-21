@@ -59,7 +59,7 @@ const MotionGuide = styled(motion.div)`
     overflow-x: hidden;
 `;
 
-export const GuidePanel = () => {
+export const GuideRouter = () => {
     const activeView = useSelector(state => state.guide.view);
 
     const { isGuideOpen, closeGuide } = useGuide();

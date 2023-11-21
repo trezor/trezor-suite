@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { variables } from '@trezor/components';
 import { SuiteBanners } from 'src/components/suite/banners';
 import { Metadata } from 'src/components/suite';
-import { GuidePanel, GuideButton } from 'src/components/guide';
+import { GuideRouter, GuideButton } from 'src/components/guide';
 import {
     DESKTOP_HORIZONTAL_PADDINGS,
     MAX_WIDTH,
@@ -171,7 +171,7 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
                                     <DefaultPaddings>{children}</DefaultPaddings>
                                 </AppWrapper>
 
-                                {!isGuideFullHeight && <GuidePanel />}
+                                {!isGuideFullHeight && <GuideRouter />}
                             </Columns>
                         </Body>
                     </LayoutContext.Provider>
@@ -179,7 +179,7 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
                     {!isMobileLayout && <GuideButton />}
                 </ModalContextProvider>
             </PageWrapper>
-            {isGuideFullHeight && <GuidePanel />}
+            {isGuideFullHeight && <GuideRouter />}
         </Wrapper>
     );
 };

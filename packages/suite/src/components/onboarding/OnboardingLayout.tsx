@@ -8,7 +8,7 @@ import { OnboardingProgressBar } from 'src/components/onboarding';
 import { useSelector, useOnboarding } from 'src/hooks/suite';
 import { MAX_WIDTH } from 'src/constants/suite/layout';
 import steps from 'src/config/onboarding/steps';
-import { GuideButton, GuidePanel } from 'src/components/guide';
+import { GuideButton, GuideRouter } from 'src/components/guide';
 import { selectBannerMessage } from '@suite-common/message-system';
 import { MessageSystemBanner } from 'src/components/suite/banners';
 import { ModalContextProvider } from 'src/support/suite/ModalContext';
@@ -179,7 +179,7 @@ export const OnboardingLayout = ({ children }: OnboardingLayoutProps) => {
                 </ScrollingWrapper>
 
                 <GuideButton />
-                <GuidePanel />
+                <GuideRouter />
             </Body>
         </Wrapper>
     );
