@@ -74,7 +74,7 @@ export const DeviceAuthenticity = () => {
             setIsLoading(false);
             setIsSubmitted(true);
         };
-        const goToNext = () => (isOnboarding ? goToSuite() : goToNextStep());
+        const goToNext = () => (isOnboarding ? goToNextStep() : goToSuite());
         const handleClick = isCheckSuccessful ? goToNext : authenticateDevice;
 
         const buttonText = isCheckSuccessful ? 'TR_CONTINUE' : 'TR_START_CHECK';
