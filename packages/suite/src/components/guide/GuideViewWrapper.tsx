@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { variables } from '@trezor/components';
 
 const Wrapper = styled.div`
-    background: ${({ theme }) => theme.BG_WHITE};
+    background: ${({ theme }) => theme.backgroundSurfaceElevation0};
     display: flex;
     flex-direction: column;
     overflow: hidden scroll;

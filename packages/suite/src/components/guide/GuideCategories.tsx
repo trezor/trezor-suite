@@ -24,7 +24,7 @@ const Nodes = styled.div`
 
 type GuideCategoriesProps = {
     node: GuideCategory | null;
-    label: string | ReactNode;
+    label?: string | ReactNode;
 };
 
 export const GuideCategories = ({ node, label }: GuideCategoriesProps) => {
@@ -34,7 +34,7 @@ export const GuideCategories = ({ node, label }: GuideCategoriesProps) => {
 
     return (
         <Section>
-            <SectionHeading>{label}</SectionHeading>
+            {label && <SectionHeading>{label}</SectionHeading>}
             <Nodes data-test="@guide/nodes">
                 {node.children.map(child => (
                     <GuideNode key={child.id} node={child} />
