@@ -381,6 +381,7 @@ export class DeviceCommands {
             session: this.sessionId,
             name: type,
             data: msg,
+            protocol: this.device.protocol,
         });
         const res = await this.callPromise.promise;
         this.callPromise = undefined;
@@ -423,7 +424,10 @@ export class DeviceCommands {
         } catch (error) {
             // handle possible race condition
             // Bridge may have some unread message in buffer, read it
-            await this.transport.receive({ session: this.sessionId });
+            await this.transport.receive({
+                session: this.sessionId,
+                protocol: this.device.protocol,
+            });
             // throw error anyway, next call should be resolved properly
             throw error;
         }
@@ -751,6 +755,7 @@ export class DeviceCommands {
             }
         } else {
             await this.transport.send({
+                protocol: this.device.protocol,
                 session: this.sessionId,
                 name: 'Cancel',
                 data: {},

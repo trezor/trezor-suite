@@ -1,7 +1,11 @@
 import { createDeferred, Deferred } from '@trezor/utils';
 import { v1 as v1Protocol } from '@trezor/protocol';
 
-import { AbstractTransport, AbstractTransportParams, AcquireInput, ReleaseInput } from './abstract';
+import {
+    AbstractTransport,
+    AbstractTransportParams,
+    AbstractTransportMethodParams,
+} from './abstract';
 import { AbstractApi } from '../api/abstract';
 import { buildBuffers } from '../utils/send';
 import { receiveAndParse } from '../utils/receive';
@@ -85,7 +89,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
         });
     }
 
-    public acquire({ input }: { input: AcquireInput }) {
+    public acquire({ input }: AbstractTransportMethodParams<'acquire'>) {
         return this.scheduleAction(
             async () => {
                 const { path } = input;
@@ -133,7 +137,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
         );
     }
 
-    public release({ path, session, onClose }: ReleaseInput) {
+    public release({ path, session, onClose }: AbstractTransportMethodParams<'release'>) {
         return this.scheduleAction(async () => {
             if (this.listening) {
                 this.releasingSession = session;
@@ -169,15 +173,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
         });
     }
 
-    public call({
-        session,
-        name,
-        data,
-    }: {
-        session: string;
-        name: string;
-        data: Record<string, unknown>;
-    }) {
+    public call({ session, name, data, protocol }: AbstractTransportMethodParams<'call'>) {
         return this.scheduleAction(
             async () => {
                 const getPathBySessionResponse = await this.sessionsClient.getPathBySession({
@@ -193,7 +189,8 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                 const { path } = getPathBySessionResponse.payload;
 
                 try {
-                    const buffers = buildBuffers(this.messages, name, data, v1Protocol.encode);
+                    const { encode, decode } = protocol || v1Protocol;
+                    const buffers = buildBuffers(this.messages, name, data, encode);
                     for (const chunk of buffers) {
                         this.api.write(path, chunk.buffer).then(result => {
                             if (!result.success) {
@@ -211,7 +208,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                                 }
                                 throw new Error(result.error);
                             }),
-                        v1Protocol.decode,
+                        decode,
                     );
 
                     return this.success(message);
@@ -233,15 +230,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
         );
     }
 
-    public send({
-        data,
-        session,
-        name,
-    }: {
-        data: Record<string, unknown>;
-        session: string;
-        name: string;
-    }) {
+    public send({ data, session, name, protocol }: AbstractTransportMethodParams<'send'>) {
         return this.scheduleAction(async () => {
             const getPathBySessionResponse = await this.sessionsClient.getPathBySession({
                 session,
@@ -252,7 +241,8 @@ export abstract class AbstractApiTransport extends AbstractTransport {
             const { path } = getPathBySessionResponse.payload;
 
             try {
-                const buffers = buildBuffers(this.messages, name, data, v1Protocol.encode);
+                const { encode } = protocol || v1Protocol;
+                const buffers = buildBuffers(this.messages, name, data, encode);
                 for (const chunk of buffers) {
                     this.api.write(path, chunk.buffer).then(result => {
                         if (!result.success) {
@@ -271,7 +261,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
         });
     }
 
-    public receive({ session }: { session: string }) {
+    public receive({ session, protocol }: AbstractTransportMethodParams<'receive'>) {
         return this.scheduleAction(async () => {
             const getPathBySessionResponse = await this.sessionsClient.getPathBySession({
                 session,
@@ -282,6 +272,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
             const { path } = getPathBySessionResponse.payload;
 
             try {
+                const { decode } = protocol || v1Protocol;
                 const message = await receiveAndParse(
                     this.messages,
                     () =>
@@ -291,7 +282,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                             }
                             return result.payload;
                         }),
-                    v1Protocol.decode,
+                    decode,
                 );
 
                 return this.success(message);

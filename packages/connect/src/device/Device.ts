@@ -1,7 +1,7 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/Device.js
-
 import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
 import { createDeferred, Deferred, versionUtils } from '@trezor/utils';
+import { TransportProtocol, v1 as v1Protocol, bridge as bridgeProtocol } from '@trezor/protocol';
 import { DeviceCommands } from './DeviceCommands';
 import { PROTO, ERRORS, NETWORK } from '../constants';
 import { DEVICE, DeviceButtonRequestPayload, UI } from '../events';
@@ -79,6 +79,7 @@ export interface DeviceEvents {
  */
 export class Device extends TypedEmitter<DeviceEvents> {
     transport: Transport;
+    protocol: TransportProtocol;
 
     originalDescriptor: Descriptor;
 
@@ -129,6 +130,12 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
     constructor(transport: Transport, descriptor: Descriptor) {
         super();
+
+        if (transport.name === 'BridgeTransport') {
+            this.protocol = bridgeProtocol;
+        } else {
+            this.protocol = v1Protocol;
+        }
 
         // === immutable properties
         this.transport = transport;
