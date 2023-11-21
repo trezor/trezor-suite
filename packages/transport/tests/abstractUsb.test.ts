@@ -1,3 +1,4 @@
+import { v1 as v1Protocol } from '@trezor/protocol';
 import { AbstractTransport } from '../src/transports/abstract';
 import { AbstractApiTransport } from '../src/transports/abstractApi';
 import { UsbApi } from '../src/api/usb';
@@ -277,8 +278,12 @@ describe('Usb', () => {
         });
 
         it('call error - called without acquire.', async () => {
-            const res = await transport.call({ name: 'GetAddress', data: {}, session: '1' })
-                .promise;
+            const res = await transport.call({
+                name: 'GetAddress',
+                data: {},
+                session: '1',
+                protocol: v1Protocol,
+            }).promise;
             expect(res).toEqual({ success: false, error: 'device disconnected during action' });
         });
 
@@ -298,6 +303,7 @@ describe('Usb', () => {
                 name: 'GetAddress',
                 data: {},
                 session: acquireRes.payload,
+                protocol: v1Protocol,
             }).promise;
             expect(res).toEqual({
                 success: true,
@@ -324,6 +330,7 @@ describe('Usb', () => {
                 name: 'GetAddress',
                 data: {},
                 session: acquireRes.payload,
+                protocol: v1Protocol,
             }).promise;
             expect(sendRes).toEqual({
                 success: true,
@@ -331,6 +338,7 @@ describe('Usb', () => {
             });
             const receiveRes = await transport.receive({
                 session: acquireRes.payload,
+                protocol: v1Protocol,
             }).promise;
             expect(receiveRes).toEqual({
                 success: true,
@@ -374,6 +382,7 @@ describe('Usb', () => {
                 name: 'GetAddress',
                 data: {},
                 session: acquireRes.payload,
+                protocol: v1Protocol,
             });
             abort();
 
@@ -386,6 +395,7 @@ describe('Usb', () => {
                 name: 'GetAddress',
                 data: {},
                 session: acquireRes.payload,
+                protocol: v1Protocol,
             });
             // await promise2;
             expect(promise2).resolves.toEqual({

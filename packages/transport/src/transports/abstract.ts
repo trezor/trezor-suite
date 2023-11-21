@@ -1,7 +1,7 @@
 import * as protobuf from 'protobufjs/light';
 import { scheduleAction, ScheduleActionParams, ScheduledAction, Deferred } from '@trezor/utils';
 import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
-import { PROTOCOL_MALFORMED } from '@trezor/protocol';
+import { PROTOCOL_MALFORMED, TransportProtocol } from '@trezor/protocol';
 import { MessageFromTrezor } from '@trezor/protobuf';
 
 import {
@@ -245,16 +245,12 @@ export abstract class AbstractTransport extends TypedEmitter<{
     /**
      * Encode data and write it to transport layer
      */
-    abstract send({
-        path,
-        session,
-        data,
-        name,
-    }: {
+    abstract send(params: {
         path?: string;
-        session?: string;
+        session: string;
         name: string;
         data: Record<string, unknown>;
+        protocol?: TransportProtocol;
     }): AbortableCall<
         undefined,
         | typeof ERRORS.DEVICE_DISCONNECTED_DURING_ACTION
@@ -274,7 +270,11 @@ export abstract class AbstractTransport extends TypedEmitter<{
     /**
      * Only read from transport
      */
-    abstract receive({ path, session }: { path?: string; session?: string }): AbortableCall<
+    abstract receive(params: {
+        path?: string;
+        session: string;
+        protocol?: TransportProtocol;
+    }): AbortableCall<
         MessageFromTrezor,
         // bridge
         | typeof ERRORS.HTTP_ERROR
@@ -293,14 +293,11 @@ export abstract class AbstractTransport extends TypedEmitter<{
     /**
      * Send and read after that
      */
-    abstract call({
-        session,
-        name,
-        data,
-    }: {
+    abstract call(params: {
         session: string;
         name: string;
         data: Record<string, unknown>;
+        protocol?: TransportProtocol;
     }): AbortableCall<
         MessageFromTrezor,
         // bridge
@@ -499,3 +496,8 @@ export abstract class AbstractTransport extends TypedEmitter<{
         };
     };
 }
+
+export type AbstractTransportMethodParams<K extends keyof AbstractTransport> =
+    AbstractTransport[K] extends (...args: any[]) => any
+        ? Parameters<AbstractTransport[K]>[0]
+        : never;
