@@ -6798,7 +6798,7 @@ __metadata:
     jest: "npm:29.5.0"
     redux-mock-store: "npm:^1.5.4"
     redux-thunk: "npm:^2.4.2"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -6814,7 +6814,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     jest: "npm:29.5.0"
     tsx: "npm:^3.14.0"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -6826,7 +6826,7 @@ __metadata:
     "@suite-common/wallet-types": "workspace:*"
     date-fns: "npm:^2.30.0"
     jest: "npm:29.5.0"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -6850,7 +6850,7 @@ __metadata:
     react: "npm:18.2.0"
     react-intl: "npm:^6.5.1"
     react-redux: "npm:8.0.7"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -6891,7 +6891,7 @@ __metadata:
     react-native-reanimated: "npm:3.5.4"
     svgo: "npm:3.0.2"
     tsx: "npm:^3.14.0"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -6903,7 +6903,7 @@ __metadata:
     jest: "npm:29.5.0"
     react: "npm:18.2.0"
     react-intl: "npm:^6.5.1"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -6911,7 +6911,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/invity@workspace:suite-common/invity"
   dependencies:
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -6951,7 +6951,7 @@ __metadata:
     proxy-memoize: "npm:2.0.2"
     semver: "npm:^7.5.4"
     tsx: "npm:^3.14.0"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -6960,7 +6960,7 @@ __metadata:
   resolution: "@suite-common/metadata-types@workspace:suite-common/metadata-types"
   dependencies:
     jest: "npm:29.5.0"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -6978,7 +6978,7 @@ __metadata:
     react: "npm:18.2.0"
     react-redux: "npm:8.0.7"
     redux: "npm:^4.2.1"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -6991,7 +6991,7 @@ __metadata:
     "@suite-common/suite-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     jest: "npm:29.5.0"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -7000,7 +7000,7 @@ __metadata:
   resolution: "@suite-common/suite-config@workspace:suite-common/suite-config"
   dependencies:
     jest: "npm:29.5.0"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -7011,7 +7011,7 @@ __metadata:
     "@suite-common/wallet-config": "workspace:*"
     "@trezor/connect": "workspace:*"
     jest: "npm:29.5.0"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -7030,7 +7030,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     bignumber.js: "npm:^9.1.1"
     jest: "npm:29.5.0"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -7049,7 +7049,7 @@ __metadata:
     bignumber.js: "npm:^9.1.1"
     date-fns: "npm:^2.30.0"
     jest: "npm:29.5.0"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -7071,7 +7071,7 @@ __metadata:
     jest: "npm:29.5.0"
     redux: "npm:^4.2.1"
     redux-thunk: "npm:^2.4.2"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -7089,7 +7089,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     jest: "npm:29.5.0"
     proxy-memoize: "npm:2.0.2"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -7101,7 +7101,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     jest: "npm:29.5.0"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -7110,7 +7110,7 @@ __metadata:
   resolution: "@suite-common/wallet-constants@workspace:suite-common/wallet-constants"
   dependencies:
     jest: "npm:29.5.0"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -7143,7 +7143,7 @@ __metadata:
     date-fns: "npm:^2.30.0"
     jest: "npm:29.5.0"
     proxy-memoize: "npm:2.0.2"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -7162,7 +7162,7 @@ __metadata:
     jest: "npm:29.5.0"
     react: "npm:18.2.0"
     react-hook-form: "npm:^7.48.2"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -7194,7 +7194,7 @@ __metadata:
     react: "npm:18.2.0"
     react-hook-form: "npm:^7.48.2"
     trezor-address-validator: "npm:^0.4.4"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
     web3-utils: "npm:^1.10.0"
   languageName: unknown
   linkType: soft
@@ -7317,7 +7317,7 @@ __metadata:
     react-native-root-toast: "npm:^3.3.1"
     react-native-safe-area-context: "npm:^4.5.0"
     react-redux: "npm:8.0.7"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -7346,7 +7346,7 @@ __metadata:
     "@suite-common/wallet-config": "workspace:*"
     jest: "npm:29.5.0"
     react-native-config: "npm:^1.5.0"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -7550,7 +7550,7 @@ __metadata:
     react-native: "npm:0.71.8"
     react-native-reanimated: "npm:3.5.4"
     react-redux: "npm:8.0.7"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -7675,7 +7675,7 @@ __metadata:
     react-native: "npm:0.71.8"
     react-native-reanimated: "npm:3.5.4"
     react-redux: "npm:8.0.7"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -7775,7 +7775,7 @@ __metadata:
     react: "npm:18.2.0"
     react-native: "npm:0.71.8"
     react-redux: "npm:8.0.7"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -7808,7 +7808,7 @@ __metadata:
     react: "npm:18.2.0"
     react-native: "npm:0.71.8"
     react-redux: "npm:8.0.7"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -7866,7 +7866,7 @@ __metadata:
     react: "npm:18.2.0"
     react-native: "npm:0.71.8"
     react-redux: "npm:8.0.7"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -7901,7 +7901,7 @@ __metadata:
     react: "npm:18.2.0"
     react-native: "npm:0.71.8"
     react-redux: "npm:8.0.7"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -7931,7 +7931,7 @@ __metadata:
     react-native-keyboard-aware-scroll-view: "npm:^0.9.5"
     react-native-safe-area-context: "npm:^4.5.0"
     react-redux: "npm:8.0.7"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -8076,7 +8076,7 @@ __metadata:
     react-redux: "npm:8.0.7"
     redux-flipper: "npm:2.0.2"
     redux-persist: "npm:6.0.0"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -8096,7 +8096,7 @@ __metadata:
     react-native-mmkv: "npm:^2.7.0"
     react-native-restart: "npm:^0.0.27"
     redux-persist: "npm:6.0.0"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -8113,7 +8113,7 @@ __metadata:
     react-native-reanimated: "npm:3.5.4"
     react-native-safe-area-context: "npm:^4.5.0"
     react-redux: "npm:8.0.7"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -8467,7 +8467,7 @@ __metadata:
     "@trezor/env-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     jest: "npm:29.5.0"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -8481,7 +8481,7 @@ __metadata:
     jest: "npm:29.5.0"
     rimraf: "npm:^5.0.5"
     tsx: "npm:^3.14.0"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -8495,7 +8495,7 @@ __metadata:
     ripple-lib: "npm:^1.10.1"
     socks-proxy-agent: "npm:6.1.1"
     tsx: "npm:^3.14.0"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -8512,7 +8512,7 @@ __metadata:
     jest: "npm:29.5.0"
     rimraf: "npm:^5.0.5"
     tsx: "npm:^3.14.0"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -8539,7 +8539,7 @@ __metadata:
     socks-proxy-agent: "npm:6.1.1"
     tiny-worker: "npm:^2.3.0"
     tsx: "npm:^3.14.0"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
     webpack: "npm:^5.89.0"
     webpack-cli: "npm:^5.1.4"
     webpack-dev-server: "npm:^4.15.1"
@@ -8564,7 +8564,7 @@ __metadata:
     jest: "npm:29.5.0"
     n64: "npm:^0.2.10"
     rimraf: "npm:^5.0.5"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -8610,7 +8610,7 @@ __metadata:
     stylelint: "npm:^15.11.0"
     stylelint-config-standard: "npm:^34.0.0"
     tippy.js: "npm:^6.3.7"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
     typescript-styled-plugin: "npm:^0.18.3"
     zxcvbn: "npm:^4.4.2"
   languageName: unknown
@@ -8621,7 +8621,7 @@ __metadata:
   resolution: "@trezor/connect-analytics@workspace:packages/connect-analytics"
   dependencies:
     "@trezor/analytics": "workspace:*"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -8634,7 +8634,7 @@ __metadata:
     jest-environment-jsdom: "npm:29.5.0"
     rimraf: "npm:^5.0.5"
     tsx: "npm:^3.14.0"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -8650,7 +8650,7 @@ __metadata:
     react: "npm:^18.2.0"
     react-dom: "npm:^18.2.0"
     rimraf: "npm:^5.0.5"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
     webpack: "npm:^5.88.2"
     webpack-cli: "npm:^5.1.4"
     xvfb-maybe: "npm:^0.2.1"
@@ -8691,7 +8691,7 @@ __metadata:
     stylelint: "npm:^15.11.0"
     stylelint-config-standard: "npm:^34.0.0"
     terser-webpack-plugin: "npm:^5.3.9"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
     webpack: "npm:^5.89.0"
     webpack-cli: "npm:^5.1.4"
     webpack-dev-server: "npm:^4.15.1"
@@ -8715,7 +8715,7 @@ __metadata:
     jest-environment-jsdom: "npm:29.5.0"
     rimraf: "npm:^5.0.5"
     terser-webpack-plugin: "npm:^5.3.9"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
     webpack: "npm:^5.89.0"
     webpack-cli: "npm:^5.1.4"
     webpack-merge: "npm:^5.10.0"
@@ -8730,7 +8730,7 @@ __metadata:
     "@metamask/eth-sig-util": "npm:^7.0.0"
     jest: "npm:29.5.0"
     rimraf: "npm:^5.0.5"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   peerDependencies:
     "@metamask/eth-sig-util": ^7.0.0
   languageName: unknown
@@ -8745,7 +8745,7 @@ __metadata:
     rimraf: "npm:^5.0.5"
     stellar-base: "npm:v10.0.0-beta.2"
     stellar-sdk: "npm:^v11.0.0-beta.3"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   peerDependencies:
     "@trezor/connect": 9.x.x
     stellar-sdk: ^v11.0.0-beta.3
@@ -8781,7 +8781,7 @@ __metadata:
     react-dom: "npm:18.2.0"
     rimraf: "npm:^5.0.5"
     terser-webpack-plugin: "npm:^5.3.9"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
     webpack: "npm:^5.89.0"
     webpack-cli: "npm:^5.1.4"
     webpack-dev-server: "npm:^4.15.1"
@@ -8810,7 +8810,7 @@ __metadata:
     "@types/styled-components": "npm:^5.1.29"
     jest: "npm:29.5.0"
     react-intl: "npm:^6.5.1"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   peerDependencies:
     react: 18.2.0
     styled-components: ^5.3.10
@@ -8839,7 +8839,7 @@ __metadata:
     selfsigned: "npm:^2.4.1"
     terser-webpack-plugin: "npm:^5.3.9"
     tsx: "npm:^3.14.0"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
     webpack: "npm:^5.89.0"
     webpack-cli: "npm:^5.1.4"
     webpack-merge: "npm:^5.10.0"
@@ -8898,7 +8898,7 @@ __metadata:
     rimraf: "npm:^5.0.5"
     ts-node: "npm:^10.9.1"
     tsx: "npm:^3.14.0"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
     webpack: "npm:^5.89.0"
     ws: "npm:7.5.9"
   peerDependencies:
@@ -8910,7 +8910,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/crypto-utils@workspace:packages/crypto-utils"
   dependencies:
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -8919,7 +8919,7 @@ __metadata:
   resolution: "@trezor/device-utils@workspace:packages/device-utils"
   dependencies:
     "@trezor/connect": "workspace:*"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -8928,7 +8928,7 @@ __metadata:
   resolution: "@trezor/dom-utils@workspace:packages/dom-utils"
   dependencies:
     jest: "npm:29.5.0"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -8949,7 +8949,7 @@ __metadata:
   dependencies:
     rimraf: "npm:^5.0.5"
     tsx: "npm:^3.14.0"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
     ua-parser-js: "npm:^1.0.37"
   peerDependencies:
     expo-localization: ^14.1.1
@@ -8976,7 +8976,7 @@ __metadata:
   resolution: "@trezor/node-utils@workspace:packages/node-utils"
   dependencies:
     jest: "npm:29.5.0"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -8991,7 +8991,7 @@ __metadata:
     protobufjs-cli: "npm:^1.1.2"
     rimraf: "npm:^5.0.5"
     tsx: "npm:^3.14.0"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -9003,7 +9003,7 @@ __metadata:
     jest: "npm:29.5.0"
     rimraf: "npm:^5.0.5"
     tsx: "npm:^3.14.0"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -9029,7 +9029,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     jest: "npm:29.5.0"
     react: "npm:18.2.0"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -9043,7 +9043,7 @@ __metadata:
     rimraf: "npm:^5.0.5"
     socks-proxy-agent: "npm:6.1.1"
     ts-node: "npm:^10.9.1"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
     ws: "npm:7.5.9"
   languageName: unknown
   linkType: soft
@@ -9060,7 +9060,7 @@ __metadata:
     jest: "npm:29.5.0"
     prettier: "npm:3.0.3"
     sort-package-json: "npm:^1.57.0"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
     yargs: "npm:17.7.2"
   languageName: unknown
   linkType: soft
@@ -9088,7 +9088,7 @@ __metadata:
     react: "npm:18.2.0"
     react-fela: "npm:^12.2.1"
     react-native: "npm:0.71.8"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -9098,7 +9098,7 @@ __metadata:
   dependencies:
     "@trezor/analytics": "workspace:*"
     jest: "npm:29.5.0"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -9126,7 +9126,7 @@ __metadata:
     stream-browserify: "npm:^3.0.0"
     style-loader: "npm:^3.3.3"
     terser-webpack-plugin: "npm:^5.3.9"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
     webpack: "npm:^5.89.0"
     webpack-bundle-analyzer: "npm:^4.9.1"
     webpack-merge: "npm:^5.10.0"
@@ -9160,7 +9160,7 @@ __metadata:
     simple-git: "npm:^3.20.0"
     style-loader: "npm:^3.3.3"
     tsx: "npm:^3.14.0"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
     webpack: "npm:^5.89.0"
     webpack-cli: "npm:^5.1.4"
   languageName: unknown
@@ -9174,7 +9174,7 @@ __metadata:
     jest: "npm:29.5.0"
     jest-environment-jsdom: "npm:29.5.0"
     rimraf: "npm:^5.0.5"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -9216,7 +9216,7 @@ __metadata:
     systeminformation: "npm:^5.21.15"
     terser-webpack-plugin: "npm:^5.3.9"
     tsx: "npm:^3.14.0"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
     webpack: "npm:^5.87.0"
     xvfb-maybe: "npm:^0.2.1"
   languageName: unknown
@@ -9250,7 +9250,7 @@ __metadata:
     styled-components: "npm:^5.3.10"
     stylelint: "npm:^15.11.0"
     stylelint-config-standard: "npm:^34.0.0"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -9366,7 +9366,7 @@ __metadata:
     react-test-renderer: "npm:18.2.0"
     redux-persist: "npm:6.0.0"
     simple-plist: "npm:1.3.1"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -9378,7 +9378,7 @@ __metadata:
     broadcast-channel: "npm:^6.0.0"
     idb: "npm:^7.1.1"
     jest: "npm:29.5.0"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -9426,7 +9426,7 @@ __metadata:
     stylelint: "npm:^15.11.0"
     stylelint-config-standard: "npm:^34.0.0"
     tsx: "npm:^3.14.0"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
     webpack: "npm:^5.89.0"
     worker-loader: "npm:^3.0.8"
     ws: "npm:7.5.9"
@@ -9554,7 +9554,7 @@ __metadata:
     stylelint-config-standard: "npm:^34.0.0"
     trezor-address-validator: "npm:^0.4.4"
     tsx: "npm:^3.14.0"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
     typescript-styled-plugin: "npm:^0.18.3"
     uuid: "npm:^9.0.1"
     web3-utils: "npm:^1.10.0"
@@ -9571,7 +9571,7 @@ __metadata:
     jest: "npm:29.5.0"
     prettier: "npm:3.0.3"
     tsx: "npm:^3.14.0"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -9605,7 +9605,7 @@ __metadata:
     rimraf: "npm:^5.0.5"
     ts-node: "npm:^10.9.1"
     tsx: "npm:^3.14.0"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
     usb: "npm:^2.11.0"
   languageName: unknown
   linkType: soft
@@ -9625,7 +9625,7 @@ __metadata:
   resolution: "@trezor/type-utils@workspace:packages/type-utils"
   dependencies:
     jest: "npm:29.5.0"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -9635,7 +9635,7 @@ __metadata:
   dependencies:
     cross-fetch: "npm:^4.0.0"
     jest: "npm:29.5.0"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -9646,7 +9646,7 @@ __metadata:
     jest: "npm:29.5.0"
     rimraf: "npm:^5.0.5"
     tsx: "npm:^3.14.0"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -9680,7 +9680,7 @@ __metadata:
     tiny-secp256k1: "npm:^1.1.6"
     tsx: "npm:^3.14.0"
     typeforce: "npm:^1.18.0"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
     varuint-bitcoin: "npm:^1.1.2"
     wif: "npm:^4.0.0"
   languageName: unknown
@@ -9692,7 +9692,7 @@ __metadata:
   dependencies:
     "@trezor/utils": "workspace:*"
     jest: "npm:29.5.0"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
     yup: "npm:^0.32.11"
   languageName: unknown
   linkType: soft
@@ -33524,7 +33524,7 @@ __metadata:
     ts-node: "npm:^10.9.1"
     tsconfig-paths: "npm:^4.2.0"
     tsx: "npm:^3.14.0"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.3.2"
     version-bump-prompt: "npm:^6.1.0"
   dependenciesMeta:
     core-js-pure:
@@ -33955,23 +33955,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:5.2.2":
-  version: 5.2.2
-  resolution: "typescript@npm:5.2.2"
+"typescript@npm:5.3.2":
+  version: 5.3.2
+  resolution: "typescript@npm:5.3.2"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: d65e50eb849bd21ff8677e5b9447f9c6e74777e346afd67754934264dcbf4bd59e7d2473f6062d9a015d66bd573311166357e3eb07fea0b52859cf9bb2b58555
+  checksum: 415e5fb6611f5713e460bad48039f00bcfdbde53a2f911727862d5aa9c5d5edd250059a419df382d8f031709e15a169c41eb62b6a401da5eec7ac0f4e359d6ac
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A5.2.2#optional!builtin<compat/typescript>":
-  version: 5.2.2
-  resolution: "typescript@patch:typescript@npm%3A5.2.2#optional!builtin<compat/typescript>::version=5.2.2&hash=f3b441"
+"typescript@patch:typescript@npm%3A5.3.2#optional!builtin<compat/typescript>":
+  version: 5.3.2
+  resolution: "typescript@patch:typescript@npm%3A5.3.2#optional!builtin<compat/typescript>::version=5.3.2&hash=29ae49"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: f79cc2ba802c94c2b78dbb00d767a10adb67368ae764709737dc277273ec148aa4558033a03ce901406b35fddf4eac46dabc94a1e1d12d2587e2b9cfe5707b4a
+  checksum: 43c3346528a1b410b9ee7f218d709ce8d1336eb8e47b0f8bb43954f98ed43fd11e35de398c9a5f4a085b6889c89782362789b00db7aac862bd09d083058a01a2
   languageName: node
   linkType: hard
 

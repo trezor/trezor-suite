@@ -21,6 +21,6 @@
     },
     "devDependencies": {
         "jest": "29.5.0",
-        "typescript": "5.2.2"
+        "typescript": "5.3.2"
     }
 }
