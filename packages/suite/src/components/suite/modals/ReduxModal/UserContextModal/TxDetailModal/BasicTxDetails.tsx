@@ -163,6 +163,7 @@ interface BasicTxDetailsProps {
     network: Network;
     confirmations: number;
     explorerUrl: string;
+    explorerUrlQueryString: string;
 }
 
 export const BasicTxDetails = ({
@@ -170,6 +171,7 @@ export const BasicTxDetails = ({
     confirmations,
     network,
     explorerUrl,
+    explorerUrlQueryString,
 }: BasicTxDetailsProps) => {
     const theme = useTheme();
     const isConfirmed = confirmations > 0;
@@ -255,7 +257,7 @@ export const BasicTxDetails = ({
                     <IOAddress
                         txAddress={tx.txid}
                         explorerUrl={explorerUrl}
-                        urlSuffix={network.symbol === 'dsol' ? '?cluster=devnet' : undefined}
+                        explorerUrlQueryString={explorerUrlQueryString}
                     />
                 </TxidValue>
 
@@ -268,8 +270,8 @@ export const BasicTxDetails = ({
                         </Title>
 
                         <Value>
-                            {/* tx.feeRate was added in @trezor/blockchain-link 2.1.5 meaning that users 
-                            might have locally saved old transactions without this field. since we 
+                            {/* tx.feeRate was added in @trezor/blockchain-link 2.1.5 meaning that users
+                            might have locally saved old transactions without this field. since we
                             cant reliably migrate this data, we are keeping old way of displaying feeRate in place */}
                             {`${tx?.feeRate ? tx.feeRate : getFeeRate(tx)} ${getFeeUnits(
                                 'bitcoin',

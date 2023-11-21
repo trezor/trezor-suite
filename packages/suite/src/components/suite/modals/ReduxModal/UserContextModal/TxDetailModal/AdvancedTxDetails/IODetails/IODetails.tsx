@@ -11,7 +11,6 @@ import { UtxoAnonymity } from 'src/components/wallet';
 import { AnalyzeInExplorerBanner } from './AnalyzeInExplorerBanner';
 import { FormattedNftAmount } from 'src/components/suite/FormattedNftAmount';
 import { useExplorerTxUrl } from 'src/hooks/suite/useExplorerTxUrl';
-import { useExplorerTxUrlSuffix } from 'src/hooks/suite/useExplorerTxUrlSuffix';
 import { IOAddress } from '../../IOAddress';
 
 export const blurFix = css`
@@ -153,15 +152,14 @@ const IOGridRow = ({
 }: IOGridRow) => {
     const anonymity = addresses?.length && anonymitySet?.[addresses[0]];
 
-    const explorerTxUrl = useExplorerTxUrl();
-    const urlSuffix = useExplorerTxUrlSuffix();
+    const { explorerTxUrl, explorerUrlQueryString } = useExplorerTxUrl();
 
     return (
         <GridItem isAccountOwned={isAccountOwned}>
             <IOAddress
                 txAddress={addresses?.length ? addresses[0] : ''}
                 explorerUrl={explorerTxUrl}
-                urlSuffix={urlSuffix}
+                explorerUrlQueryString={explorerUrlQueryString}
             />
 
             <br />
@@ -219,13 +217,16 @@ interface GridRowGroupComponentProps {
 
 const GridRowGroupComponent = ({ from, to, symbol, amount }: GridRowGroupComponentProps) => {
     const theme = useTheme();
-    const explorerTxUrl = useExplorerTxUrl();
-    const urlSuffix = useExplorerTxUrlSuffix();
+    const { explorerTxUrl, explorerUrlQueryString } = useExplorerTxUrl();
 
     return (
         <RowGrid>
             <RowGridItem>
-                <IOAddress txAddress={from} explorerUrl={explorerTxUrl} urlSuffix={urlSuffix} />
+                <IOAddress
+                    txAddress={from}
+                    explorerUrl={explorerTxUrl}
+                    explorerUrlQueryString={explorerUrlQueryString}
+                />
                 <br />
                 {typeof amount === 'string' ? (
                     <StyledFormattedCryptoAmount value={amount} symbol={symbol} />
@@ -237,7 +238,11 @@ const GridRowGroupComponent = ({ from, to, symbol, amount }: GridRowGroupCompone
                 <Icon icon="ARROW_RIGHT" size={17} color={theme.TYPE_LIGHT_GREY} />
             </IconWrapper>
             <RowGridItem>
-                <IOAddress txAddress={to} explorerUrl={explorerTxUrl} urlSuffix={urlSuffix} />
+                <IOAddress
+                    txAddress={to}
+                    explorerUrl={explorerTxUrl}
+                    explorerUrlQueryString={explorerUrlQueryString}
+                />
             </RowGridItem>
         </RowGrid>
     );

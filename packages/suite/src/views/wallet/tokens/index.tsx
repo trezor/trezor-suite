@@ -15,12 +15,14 @@ export const Tokens = () => {
     const { account, network } = selectedAccount;
     const explorerUrl =
         network.networkType === 'cardano' ? network.explorer.token : network.explorer.account;
+    const explorerUrlQueryString = network.explorer.queryString;
 
     return (
         <WalletLayout title="TR_TOKENS" account={selectedAccount} showEmptyHeaderPlaceholder>
             <TokenList
                 isTestnet={isTestnet(account.symbol)}
                 explorerUrl={explorerUrl}
+                explorerUrlQueryString={explorerUrlQueryString}
                 tokens={account.tokens}
                 networkType={account.networkType}
             />

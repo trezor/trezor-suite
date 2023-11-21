@@ -77,6 +77,7 @@ const connect = (draft: BlockchainState, info: BlockchainInfo) => {
                     ? info.url + getBlockExplorerUrlSuffix(network.explorer.account)
                     : network.explorer.account
             }`,
+            queryString: network.explorer.queryString,
         },
         connected: true,
         blockHash: info.blockHash,

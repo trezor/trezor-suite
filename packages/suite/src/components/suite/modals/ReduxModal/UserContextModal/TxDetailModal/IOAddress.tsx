@@ -61,10 +61,10 @@ const SpanTextEnd = styled.span`
 interface IOAddressProps {
     explorerUrl?: string;
     txAddress?: string;
-    urlSuffix?: string;
+    explorerUrlQueryString?: string;
 }
 
-export const IOAddress = ({ txAddress, explorerUrl, urlSuffix }: IOAddressProps) => {
+export const IOAddress = ({ txAddress, explorerUrl, explorerUrlQueryString }: IOAddressProps) => {
     const [isClicked, setIsClicked] = useState(false);
     const theme = useTheme();
 
@@ -101,7 +101,7 @@ export const IOAddress = ({ txAddress, explorerUrl, urlSuffix }: IOAddressProps)
                         <Link
                             size="tiny"
                             variant="nostyle"
-                            href={`${explorerUrl}${txAddress}${urlSuffix}`}
+                            href={`${explorerUrl}${txAddress}${explorerUrlQueryString}`}
                         >
                             <Icon icon="EXTERNAL_LINK" size={12} color={theme.BG_WHITE} />
                         </Link>

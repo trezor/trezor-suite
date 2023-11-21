@@ -66,10 +66,17 @@ interface TokenListProps {
     tokens: Account['tokens'];
     networkType: Account['networkType'];
     explorerUrl: string;
+    explorerUrlQueryString: string;
     isTestnet?: boolean;
 }
 
-export const TokenList = ({ tokens, explorerUrl, isTestnet, networkType }: TokenListProps) => {
+export const TokenList = ({
+    tokens,
+    explorerUrl,
+    explorerUrlQueryString,
+    isTestnet,
+    networkType,
+}: TokenListProps) => {
     const theme = useTheme();
     const coins = useSelector(state => state.wallet.fiat.coins);
 
@@ -125,9 +132,7 @@ export const TokenList = ({ tokens, explorerUrl, isTestnet, networkType }: Token
                         )}
                         <Col isTestnet={isTestnet} justify="right">
                             <TrezorLink
-                                href={`${explorerUrl}${t.contract}${
-                                    networkType === 'solana' && isTestnet ? '?cluster=devnet' : ''
-                                }`}
+                                href={`${explorerUrl}${t.contract}${explorerUrlQueryString}`}
                             >
                                 <Icon
                                     icon="EXTERNAL_LINK"

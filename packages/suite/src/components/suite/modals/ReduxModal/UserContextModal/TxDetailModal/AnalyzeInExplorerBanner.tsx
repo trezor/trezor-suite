@@ -62,6 +62,7 @@ export const AnalyzeInExplorerBanner = ({ txid }: AnalyzeInExplorerBannerProps) 
     const { selectedAccount } = useSelector(state => state.wallet);
     const { network } = selectedAccount;
     const explorerUrl = network?.explorer.tx;
+    const explorerUrlQueryString = network?.explorer.queryString;
 
     return (
         <StyledWarning variant="info">
@@ -76,10 +77,7 @@ export const AnalyzeInExplorerBanner = ({ txid }: AnalyzeInExplorerBannerProps) 
                     </Description>
                 </TextWrapper>
             </Wrapper>
-            <Link
-                variant="nostyle"
-                href={`${explorerUrl}${txid}${network?.symbol === 'dsol' ? '?cluster=devnet' : ''}`}
-            >
+            <Link variant="nostyle" href={`${explorerUrl}${txid}${explorerUrlQueryString}`}>
                 <StyledButton variant="primary">
                     <Translation id="TR_ANALYZE_IN_BLOCKBOOK_OPEN" />
                     <Icon icon="EXTERNAL_LINK" color={theme.TYPE_WHITE} size={20} />

@@ -36,6 +36,7 @@ export interface Blockchain {
     explorer: {
         tx: string;
         account: string;
+        queryString: string;
     };
     connected: boolean;
     subscribed?: boolean;
