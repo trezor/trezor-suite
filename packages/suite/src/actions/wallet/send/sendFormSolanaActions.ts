@@ -86,6 +86,30 @@ const calculate = (
     return payloadData;
 };
 
+const fetchAccountOwnerAndTokenInfoForAddress = async (
+    address: string,
+    symbol: string,
+    mint: string,
+) => {
+    // Fetch data about recipient account owner if this is a token transfer
+    // We need this in order to validate the address and ensure transfers go through
+    let accountOwner: string | undefined;
+    let tokenInfo: TokenAccount[] | undefined;
+
+    const accountInfoResponse = await TrezorConnect.getAccountInfo({
+        coin: symbol,
+        descriptor: address,
+    });
+
+    if (accountInfoResponse.success) {
+        accountOwner = accountInfoResponse.payload?.misc?.owner;
+        tokenInfo = accountInfoResponse.payload?.tokens?.find(token => token.contract === mint)
+            ?.accounts;
+    }
+
+    return [accountOwner, tokenInfo] as const;
+};
+
 export const composeTransaction =
     (formValues: FormState, formState: ComposeActionContext) =>
     async (_dispatch: Dispatch, getState: GetState) => {
@@ -98,12 +122,37 @@ export const composeTransaction =
         let fetchedFee: string | undefined;
 
         const blockhash = getState().wallet.blockchain.sol.blockHash;
+
+        const [recipientAccountOwner, recipientTokenAccounts] = tokenInfo
+            ? await fetchAccountOwnerAndTokenInfoForAddress(
+                  formValues.outputs[0].address,
+                  account.symbol,
+                  tokenInfo.contract,
+              )
+            : [undefined, undefined];
+
+        // invalid token transfer -- should never happen
+        if (tokenInfo && !tokenInfo.accounts) return;
+
         // To estimate fees on Solana we need to turn a transaction into a message for which fees are estimated.
         // Since all the values don't have to be filled in the form at the time of this function call, we use dummy values
         // for the estimation, since these values don't affect the final fee.
         // The real transaction is constructed in `signTransaction`, this one is used solely for fee estimation and is never submitted.
         const transactionMessage = (
-                await buildTransferTransaction(
+            tokenInfo && tokenInfo.accounts
+                ? await buildTokenTransferTransaction(
+                      account.descriptor,
+                      formValues.outputs[0].address || account.descriptor,
+                      recipientAccountOwner || SYSTEM_PROGRAM_PUBLIC_KEY,
+                      tokenInfo.contract,
+                      formValues.outputs[0].amount || '0',
+                      tokenInfo.decimals,
+                      tokenInfo.accounts,
+                      recipientTokenAccounts,
+                      blockhash,
+                      50,
+                  )
+                : await buildTransferTransaction(
                       account.descriptor,
                       formValues.outputs[0].address || account.descriptor,
                       formValues.outputs[0].amount || '0',
@@ -111,6 +160,11 @@ export const composeTransaction =
                       50,
                   )
         ).compileMessage();
+
+        const isCreatingAccount =
+            tokenInfo &&
+            recipientTokenAccounts === undefined &&
+            recipientAccountOwner === SYSTEM_PROGRAM_PUBLIC_KEY;
 
         const estimatedFee = await TrezorConnect.blockchainEstimateFee({
             coin: account.symbol,
@@ -180,8 +234,19 @@ export const signTransaction =
         const { account } = selectedAccount;
 
         if (account.networkType !== 'solana') return;
+        const { token } = transactionInfo;
 
         const blockhash = getState().wallet.blockchain.sol.blockHash;
+
+        const [recipientAccountOwner, recipientTokenAccounts] = token
+            ? await fetchAccountOwnerAndTokenInfoForAddress(
+                  formValues.outputs[0].address,
+                  account.symbol,
+                  token.contract,
+              )
+            : [undefined, undefined];
+
+        if (token && !token.accounts && !recipientAccountOwner) return;
 
         // The last block height for which the transaction will be considered valid, after which it can no longer be processed.
         // The current block time is set to 800ms, meaning this transaction should be valid when submitted within for 40 seconds
@@ -189,7 +254,20 @@ export const signTransaction =
         const lastValidBlockHeight = 50;
 
         const tx =
-                await buildTransferTransaction(
+            token && token.accounts && recipientAccountOwner
+                ? await buildTokenTransferTransaction(
+                      account.descriptor,
+                      formValues.outputs[0].address,
+                      recipientAccountOwner,
+                      token.contract,
+                      formValues.outputs[0].amount,
+                      token.decimals,
+                      token.accounts,
+                      recipientTokenAccounts,
+                      blockhash,
+                      lastValidBlockHeight,
+                  )
+                : await buildTransferTransaction(
                       account.descriptor,
                       formValues.outputs[0].address,
                       formValues.outputs[0].amount,
