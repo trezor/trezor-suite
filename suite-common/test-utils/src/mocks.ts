@@ -5,7 +5,7 @@ import { AccountUtxo, Device, Features, DeviceModelInternal, FirmwareType } from
 import {
     TrezorDevice,
     GuideNode,
-    GuidePage,
+    GuideArticle,
     GuideCategory,
     MessageSystem,
     Action,
@@ -577,7 +577,7 @@ const getGuideNode = (type: string, id?: string): GuideNode => {
             title: {
                 en: 'Locktime',
             },
-        } as GuidePage;
+        } as GuideArticle;
     } else if (type === 'page' && id !== '/') {
         result = {
             type: 'page',
@@ -586,7 +586,7 @@ const getGuideNode = (type: string, id?: string): GuideNode => {
             title: {
                 en: 'Locktime',
             },
-        } as GuidePage;
+        } as GuideArticle;
     } else {
         result = {
             type: 'category',

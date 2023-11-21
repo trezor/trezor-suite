@@ -44,7 +44,7 @@ export const unsetNode = () => ({
 });
 
 export const setView = (payload: ActiveView) => (dispatch: Dispatch) => {
-    if (payload !== 'GUIDE_PAGE' && payload !== 'GUIDE_CATEGORY') {
+    if (payload !== 'GUIDE_ARTICLE' && payload !== 'GUIDE_CATEGORY') {
         dispatch(unsetNode());
     }
 
@@ -53,7 +53,7 @@ export const setView = (payload: ActiveView) => (dispatch: Dispatch) => {
 
 export const openNode = (payload: GuideNode) => (dispatch: Dispatch) => {
     if (payload.type === 'page') {
-        dispatch(setView('GUIDE_PAGE'));
+        dispatch(setView('GUIDE_ARTICLE'));
     } else {
         dispatch(setView('GUIDE_CATEGORY'));
     }

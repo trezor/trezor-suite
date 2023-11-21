@@ -8,7 +8,7 @@ export const loadPageMarkdownFile = async (id: string, language = 'en'): Promise
     return md;
 };
 
-export const useGuideLoadPage = (currentNode: GuideNode | null, language: Locale = 'en') => {
+export const useGuideLoadArticle = (currentNode: GuideNode | null, language: Locale = 'en') => {
     const [markdown, setMarkdown] = useState<string>();
     const [hasError, setHasError] = useState<boolean>(false);
 
@@ -18,7 +18,7 @@ export const useGuideLoadPage = (currentNode: GuideNode | null, language: Locale
             .catch(() => loadPageMarkdownFile(currentNode.id))
             .then(res => setMarkdown(res))
             .catch(e => {
-                console.error(`Loading of ${currentNode.id} page failed: ${e}`);
+                console.error(`Loading of ${currentNode.id} article failed: ${e}`);
                 setHasError(true);
             });
     }, [currentNode, language]);

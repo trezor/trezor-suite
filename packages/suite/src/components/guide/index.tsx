@@ -10,7 +10,7 @@ import { GuideSearch } from './GuideSearch';
 import { Feedback } from './Feedback';
 import { SupportFeedbackSelection } from './SupportFeedbackSelection';
 import { Guide } from './Guide';
-import { GuidePage } from './GuidePage';
+import { GuideArticle } from './GuideArticle';
 import { GuideCategory } from './GuideCategory';
 import { OpenGuideFromTooltip } from './OpenGuideFromTooltip';
 import { GuideMarkdown } from './GuideMarkdown';
@@ -29,7 +29,7 @@ export {
     Feedback,
     SupportFeedbackSelection,
     Guide,
-    GuidePage,
+    GuideArticle,
     GuideCategory,
     OpenGuideFromTooltip,
     GuideMarkdown,
