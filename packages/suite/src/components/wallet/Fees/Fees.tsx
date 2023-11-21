@@ -157,7 +157,12 @@ export const Fees = <TFieldValues extends FormState>({
     const error = errors.selectedFee;
     const selectedLevel = feeInfo.levels.find(level => level.label === selectedOption)!;
     const transactionInfo = composedLevels?.[selectedOption];
-    const feeOptions = buildFeeOptions(feeInfo.levels);
+    // Disable custom fees for solana, since the fee is deterministic
+    const levels =
+        symbol === 'sol' || symbol === 'dsol'
+            ? feeInfo.levels.filter(l => l.label !== 'custom')
+            : feeInfo.levels;
+    const feeOptions = buildFeeOptions(levels);
 
     const labelComponent =
         showLabel || label ? (

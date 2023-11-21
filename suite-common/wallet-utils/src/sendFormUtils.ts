@@ -225,6 +225,7 @@ export const getFeeUnits = (networkType: NetworkType) => {
     if (networkType === 'ethereum') return 'GWEI';
     if (networkType === 'ripple') return 'Drops';
     if (networkType === 'cardano') return 'Lovelaces/B';
+    if (networkType === 'solana') return 'Lamports';
     return 'sat/B';
 };
 
@@ -476,3 +477,8 @@ export const getExcludedUtxos = ({
     });
     return excludedUtxos;
 };
+
+// SOL Specific
+
+export const getLamportsFromSol = (amountInSol: string) =>
+    BigInt(new BigNumber(amountInSol).times(10 ** 9).toString());
