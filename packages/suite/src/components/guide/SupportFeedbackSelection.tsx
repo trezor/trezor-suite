@@ -1,4 +1,3 @@
-import { darken } from 'polished';
 import styled from 'styled-components';
 
 import { TREZOR_FORUM_URL, TREZOR_SUPPORT_URL } from '@trezor/urls';
@@ -37,14 +36,15 @@ const SectionButton = styled.button<{ hasBackground?: boolean }>`
     display: flex;
     align-items: center;
     padding: 13px;
-    background: ${({ hasBackground, theme }) => (hasBackground ? theme.BG_GREY_ALT : 'none')};
-    border: 2px solid ${({ theme }) => theme.BG_GREY_ALT};
+    background: ${({ hasBackground, theme }) =>
+        hasBackground ? theme.backgroundSurfaceElevation1 : 'none'};
+    border: 0;
 
     transition: ${({ theme }) =>
         `background ${theme.HOVER_TRANSITION_TIME} ${theme.HOVER_TRANSITION_EFFECT}`};
 
     &:hover {
-        background: ${({ theme }) => darken(theme.HOVER_DARKEN_FILTER, theme.BG_GREY_ALT)};
+        background: ${({ theme }) => theme.backgroundTertiaryPressedOnElevation1};
     }
 `;
 

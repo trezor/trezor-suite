@@ -7,9 +7,10 @@ import { GuideNode } from 'src/components/guide';
 import { useGuideSearch } from 'src/hooks/guide';
 
 import type { GuideCategory } from '@suite-common/suite-types';
+import { spacingsPx } from '@trezor/theme';
 
 const Wrapper = styled.div`
-    margin-bottom: 40px;
+    margin-bottom: ${spacingsPx.xs};
 `;
 
 const PageFoundList = styled.div`
@@ -43,7 +44,6 @@ const StyledInput = styled(Input)`
     input {
         background-color: ${({ theme }) => theme.BG_GREY_ALT};
         border-radius: 8px;
-        height: 40px;
         border-color: ${({ theme }) => theme.BG_GREY_ALT};
         transition: border-color 0.2s;
 
@@ -93,7 +93,7 @@ export const GuideSearch = ({ pageRoot, setSearchActive }: GuideSearchProps) => 
                 innerAddonAlign="left"
                 showClearButton="always"
                 onClear={() => setQuery('')}
-                innerAddon={loading ? <Spinner size={16} /> : <Icon icon="SEARCH" size={16} />}
+                innerAddon={loading ? <Spinner size={24} /> : <Icon icon="SEARCH" size={24} />}
                 data-test="@guide/search"
             />
 
