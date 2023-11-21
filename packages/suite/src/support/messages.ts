@@ -6618,10 +6618,6 @@ export default defineMessages({
         id: 'TR_GUIDE_SUPPORT_AND_FEEDBACK',
         defaultMessage: 'Support & Feedback',
     },
-    TR_GUIDE_CATEGORIES: {
-        id: 'TR_GUIDE_CATEGORIES',
-        defaultMessage: 'Categories',
-    },
     TR_GUIDE_ARTICLES: {
         id: 'TR_GUIDE_ARTICLES',
         defaultMessage: 'Articles',

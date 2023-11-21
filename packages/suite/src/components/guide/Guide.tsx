@@ -1,12 +1,11 @@
 import { useState } from 'react';
-import { darken } from 'polished';
 import styled, { useTheme } from 'styled-components';
 import { analytics, EventType } from '@trezor/suite-analytics';
-import { zIndices } from '@trezor/theme';
+import { spacingsPx, typography, zIndices } from '@trezor/theme';
 import { Translation } from 'src/components/suite';
 import { setView } from 'src/actions/suite/guideActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { Icon, variables } from '@trezor/components';
+import { Icon } from '@trezor/components';
 import {
     GuideHeader,
     GuideContent,
@@ -15,9 +14,13 @@ import {
     GuideSearch,
 } from 'src/components/guide';
 
+const FeedbackBorder = styled.div`
+    height: 1px;
+    background-color: ${({ theme }) => theme.borderOnElevation0};
+    margin: 0 ${spacingsPx.md};
+`;
 const FeedbackLinkWrapper = styled.div`
-    border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
-    padding: 11px 14px;
+    padding: ${spacingsPx.md};
 `;
 
 const FeedbackButton = styled.button`
@@ -27,7 +30,6 @@ const FeedbackButton = styled.button`
     border: 0;
     border-radius: 4px;
     cursor: pointer;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     text-align: left;
     padding: 11px;
     background: none;
@@ -40,7 +42,7 @@ const FeedbackButton = styled.button`
 
     :hover,
     :focus {
-        background: ${({ theme }) => darken(theme.HOVER_DARKEN_FILTER, theme.BG_WHITE)};
+        background: ${({ theme }) => theme.backgroundTertiaryPressedOnElevation1};
     }
 
     :last-child {
@@ -50,8 +52,7 @@ const FeedbackButton = styled.button`
 
 const FeedbackButtonLabel = styled.div`
     padding: 0 9px;
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    ${typography.body}
     width: 100%;
     white-space: nowrap;
 `;
@@ -60,7 +61,7 @@ const FeedbackButtonRightIcon = styled(Icon)`
     margin-top: -1px;
 `;
 
-export const GuideDefault = () => {
+export const Guide = () => {
     const theme = useTheme();
     const [searchActive, setSearchActive] = useState(false);
     const indexNode = useSelector(state => state.guide.indexNode);
@@ -79,26 +80,22 @@ export const GuideDefault = () => {
             <GuideHeader label={<Translation id="TR_GUIDE_VIEW_HEADLINE_LEARN_AND_DISCOVER" />} />
             <GuideContent>
                 <GuideSearch pageRoot={indexNode} setSearchActive={setSearchActive} />
-                {!searchActive && (
-                    <GuideCategories
-                        node={indexNode}
-                        label={<Translation id="TR_GUIDE_CATEGORIES" />}
-                    />
-                )}
+                {!searchActive && <GuideCategories node={indexNode} />}
             </GuideContent>
+            <FeedbackBorder />
             <FeedbackLinkWrapper>
                 <FeedbackButton
                     data-test="@guide/button-feedback"
                     onClick={handleFeedbackButtonClick}
                 >
-                    <Icon icon="FEEDBACK" size={16} color={theme.TYPE_LIGHT_GREY} />
+                    <Icon icon="USERS" size={24} color={theme.iconOnTertiary} />
                     <FeedbackButtonLabel>
                         <Translation id="TR_GUIDE_SUPPORT_AND_FEEDBACK" />
                     </FeedbackButtonLabel>
                     <FeedbackButtonRightIcon
-                        icon="ARROW_RIGHT"
-                        size={16}
-                        color={theme.TYPE_LIGHT_GREY}
+                        icon="ARROW_RIGHT_CIRCLE"
+                        size={24}
+                        color={theme.iconPrimaryDefault}
                     />
                 </FeedbackButton>
             </FeedbackLinkWrapper>

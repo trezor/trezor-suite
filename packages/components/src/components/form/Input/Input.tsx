@@ -150,7 +150,7 @@ const Input = ({
                         {hasShowClearButton && (
                             <Icon
                                 icon="CANCEL"
-                                size={12}
+                                size={16}
                                 onClick={onClear}
                                 color={theme.TYPE_DARK_GREY}
                                 useCursorPointer

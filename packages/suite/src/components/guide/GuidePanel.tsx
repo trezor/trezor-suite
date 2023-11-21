@@ -7,7 +7,7 @@ import { useOnce } from '@trezor/react-utils';
 import { useSelector } from 'src/hooks/suite';
 import {
     SupportFeedbackSelection,
-    GuideDefault,
+    Guide,
     GuidePage,
     GuideCategory,
     Feedback,
@@ -94,7 +94,7 @@ export const GuidePanel = () => {
                                 },
                             }}
                         >
-                            {activeView === 'GUIDE_DEFAULT' && <GuideDefault />}
+                            {activeView === 'GUIDE_DEFAULT' && <Guide />}
                             {activeView === 'GUIDE_PAGE' && <GuidePage />}
                             {activeView === 'GUIDE_CATEGORY' && <GuideCategory />}
                             {activeView === 'SUPPORT_FEEDBACK_SELECTION' && (

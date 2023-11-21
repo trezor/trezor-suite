@@ -1,12 +1,13 @@
 import { useContext } from 'react';
-import styled, { css, useTheme } from 'styled-components';
-import { darken, transparentize } from 'polished';
+import styled, { css } from 'styled-components';
+import { transparentize } from 'polished';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { close } from 'src/actions/suite/guideActions';
 import { useDispatch } from 'src/hooks/suite';
-import { Icon, variables } from '@trezor/components';
+import { IconButton, variables } from '@trezor/components';
 import { HeaderBreadcrumb, ContentScrolledContext } from 'src/components/guide';
+import { typography } from '@trezor/theme';
 
 const HeaderWrapper = styled.div<{ noLabel?: boolean; isScrolled: boolean }>`
     display: flex;
@@ -34,28 +35,9 @@ const HeaderWrapper = styled.div<{ noLabel?: boolean; isScrolled: boolean }>`
         `}
 `;
 
-const ActionButton = styled.button`
-    border: 0;
-    left: auto;
-    padding: 6px;
-    border-radius: 8px;
-    background: ${({ theme }) => theme.BG_WHITE};
-    transition: ${({ theme }) =>
-        `background ${theme.HOVER_TRANSITION_TIME} ${theme.HOVER_TRANSITION_EFFECT}`};
-    cursor: pointer;
-
-    :hover,
-    :focus {
-        background: ${({ theme }) => darken(theme.HOVER_DARKEN_FILTER, theme.BG_WHITE)};
-    }
-`;
-
 const MainLabel = styled.div`
-    font-size: ${variables.FONT_SIZE.BIG};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    text-align: left;
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
-    width: 100%;
+    ${typography.titleSmall};
+    flex: 1;
 `;
 
 const Label = styled.div`
@@ -67,14 +49,6 @@ const Label = styled.div`
     width: 100%;
 `;
 
-const StyledIcon = styled(Icon)`
-    width: 40px;
-    height: 40px;
-    flex-grow: 0;
-
-    margin: -8px;
-`;
-
 interface GuideHeaderProps {
     back?: () => void;
     label?: string | JSX.Element;
@@ -82,7 +56,6 @@ interface GuideHeaderProps {
 }
 
 export const GuideHeader = ({ back, label, useBreadcrumb }: GuideHeaderProps) => {
-    const theme = useTheme();
     const dispatch = useDispatch();
     const isScrolled = useContext(ContentScrolledContext);
 
@@ -109,13 +82,14 @@ export const GuideHeader = ({ back, label, useBreadcrumb }: GuideHeaderProps) =>
         <HeaderWrapper noLabel={!label} isScrolled={isScrolled}>
             {!useBreadcrumb && back && (
                 <>
-                    <ActionButton onClick={goBack} data-test="@guide/button-back">
-                        <StyledIcon
-                            icon="ARROW_LEFT_LONG"
-                            size={24}
-                            color={theme.TYPE_LIGHT_GREY}
-                        />
-                    </ActionButton>
+                    <IconButton
+                        size="medium"
+                        icon="ARROW_LEFT_LONG"
+                        onClick={goBack}
+                        variant="tertiary"
+                        data-test="@guide/button-back"
+                    />
+
                     {label && <Label data-test="@guide/label">{label}</Label>}
                 </>
             )}
@@ -123,9 +97,13 @@ export const GuideHeader = ({ back, label, useBreadcrumb }: GuideHeaderProps) =>
 
             {useBreadcrumb && <HeaderBreadcrumb />}
 
-            <ActionButton onClick={handleClose} data-test="@guide/button-close">
-                <StyledIcon icon="CROSS" size={20} color={theme.TYPE_LIGHT_GREY} />
-            </ActionButton>
+            <IconButton
+                icon="ARROW_RIGHT_LINE"
+                variant="tertiary"
+                onClick={handleClose}
+                data-test="@guide/button-close"
+                size="medium"
+            />
         </HeaderWrapper>
     );
 };
