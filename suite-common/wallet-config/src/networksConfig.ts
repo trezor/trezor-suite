@@ -72,7 +72,7 @@ export const networks = {
             address: 'https://eth1.trezor.io/address/',
             queryString: '',
         },
-        features: ['rbf', 'sign-verify', 'tokens'],
+        features: ['rbf', 'sign-verify', 'tokens', 'token-definitions'],
         label: 'TR_NETWORK_ETHEREUM_LABEL',
         tooltip: 'TR_NETWORK_ETHEREUM_TOOLTIP',
         customBackends: ['blockbook'],
@@ -338,7 +338,7 @@ export const networks = {
             address: 'https://sepolia1.trezor.io/address/',
             queryString: '',
         },
-        features: ['rbf', 'sign-verify', 'tokens'],
+        features: ['rbf', 'sign-verify', 'tokens', 'token-definitions'],
         customBackends: ['blockbook'],
         accountTypes: {},
     },
@@ -357,7 +357,7 @@ export const networks = {
             address: 'https://goerli1.trezor.io/address/',
             queryString: '',
         },
-        features: ['rbf', 'sign-verify', 'tokens'],
+        features: ['rbf', 'sign-verify', 'tokens', 'token-definitions'],
         customBackends: ['blockbook'],
         accountTypes: {},
     },
@@ -376,7 +376,7 @@ export const networks = {
             address: 'https://holesky1.trezor.io/address/',
             queryString: '',
         },
-        features: ['rbf', 'sign-verify', 'tokens'],
+        features: ['rbf', 'sign-verify', 'tokens', 'token-definitions'],
         customBackends: ['blockbook'],
         accountTypes: {},
     },
@@ -519,7 +519,13 @@ export type NetworkSymbol = keyof Networks;
 export type NetworkType = Network['networkType'];
 type NetworkValue = Networks[NetworkSymbol];
 export type AccountType = Keys<NetworkValue['accountTypes']> | 'imported' | 'taproot' | 'normal';
-export type NetworkFeature = 'rbf' | 'sign-verify' | 'amount-unit' | 'tokens' | 'staking';
+export type NetworkFeature =
+    | 'rbf'
+    | 'sign-verify'
+    | 'amount-unit'
+    | 'tokens'
+    | 'staking'
+    | 'token-definitions';
 export type Network = Without<NetworkValue, 'accountTypes'> & {
     symbol: NetworkSymbol;
     accountType?: AccountType;
