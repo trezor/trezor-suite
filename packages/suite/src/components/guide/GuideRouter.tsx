@@ -8,7 +8,7 @@ import { useSelector } from 'src/hooks/suite';
 import {
     SupportFeedbackSelection,
     Guide,
-    GuidePage,
+    GuideArticle,
     GuideCategory,
     Feedback,
 } from 'src/components/guide';
@@ -59,7 +59,7 @@ const MotionGuide = styled(motion.div)`
     overflow-x: hidden;
 `;
 
-export const GuidePanel = () => {
+export const GuideRouter = () => {
     const activeView = useSelector(state => state.guide.view);
 
     const { isGuideOpen, closeGuide } = useGuide();
@@ -95,7 +95,7 @@ export const GuidePanel = () => {
                             }}
                         >
                             {activeView === 'GUIDE_DEFAULT' && <Guide />}
-                            {activeView === 'GUIDE_PAGE' && <GuidePage />}
+                            {activeView === 'GUIDE_ARTICLE' && <GuideArticle />}
                             {activeView === 'GUIDE_CATEGORY' && <GuideCategory />}
                             {activeView === 'SUPPORT_FEEDBACK_SELECTION' && (
                                 <SupportFeedbackSelection />

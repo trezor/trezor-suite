@@ -1,9 +1,9 @@
-import { GuidePage, GuideCategory } from '@suite-common/suite-types';
 import { testMocks } from '@suite-common/test-utils';
+import { GuideArticle, GuideCategory } from '@suite-common/suite-types';
 
 const { getGuideNode } = testMocks;
 
-const GUIDE_PAGE_NODE = getGuideNode('page') as GuidePage;
+const GUIDE_ARTICLE_NODE = getGuideNode('page') as GuideArticle;
 const GUIDE_CATEGORY_NODE = getGuideNode('category') as GuideCategory;
 const GUIDE_CATEGORY_NODE_CHILD = GUIDE_CATEGORY_NODE.children.find(
     x => x.id === '/security',
@@ -13,7 +13,7 @@ export const getNodeTitle = [
     {
         description: 'existing title',
         input: {
-            node: GUIDE_PAGE_NODE,
+            node: GUIDE_ARTICLE_NODE,
             language: 'en',
         },
         result: 'Locktime',
@@ -21,7 +21,7 @@ export const getNodeTitle = [
     {
         description: 'missing title',
         input: {
-            node: GUIDE_PAGE_NODE,
+            node: GUIDE_ARTICLE_NODE,
             language: 'cz',
         },
         result: 'Locktime',
@@ -32,10 +32,10 @@ export const getNodeById = [
     {
         description: 'root node: Page',
         input: {
-            node: getGuideNode('page', '/') as GuidePage,
+            node: getGuideNode('page', '/') as GuideArticle,
             id: '/',
         },
-        result: getGuideNode('page', '/') as GuidePage,
+        result: getGuideNode('page', '/') as GuideArticle,
     },
     {
         description: 'root node: Category',
