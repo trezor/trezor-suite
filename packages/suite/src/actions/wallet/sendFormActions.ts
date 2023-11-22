@@ -8,6 +8,7 @@ import {
     replaceTransactionThunk,
     syncAccountsWithBlockchainThunk,
     selectDevice,
+    selectSpecificTokenDefinition,
 } from '@suite-common/wallet-core';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -386,7 +387,7 @@ export const signTransaction =
     ) =>
     async (dispatch: Dispatch, getState: GetState) => {
         const device = selectDevice(getState());
-        const { account, network } = getState().wallet.selectedAccount;
+        const { account } = getState().wallet.selectedAccount;
 
         if (!device || !account) return;
 
@@ -424,20 +425,17 @@ export const signTransaction =
         }
 
         if (
-            account.networkType === 'ethereum' &&
             !isCardanoTx(account, enhancedTxInfo) &&
-            enhancedTxInfo.token?.contract &&
-            network?.chainId
+            account.networkType === 'ethereum' &&
+            enhancedTxInfo.token?.contract
         ) {
-            const isTokenKnown = await fetch(
-                `https://data.trezor.io/firmware/eth-definitions/chain-id/${
-                    network.chainId
-                }/token-${enhancedTxInfo.token.contract.substring(2).toLowerCase()}.dat`,
-            )
-                .then(response => response.ok)
-                .catch(() => false);
+            const tokenDefinition = selectSpecificTokenDefinition(
+                getState(),
+                account.symbol,
+                enhancedTxInfo.token.contract,
+            );
 
-            enhancedTxInfo.isTokenKnown = isTokenKnown;
+            enhancedTxInfo.isTokenKnown = !!tokenDefinition?.isTokenKnown;
         }
 
         // store formValues and transactionInfo in send reducer to be used by TransactionReviewModal
