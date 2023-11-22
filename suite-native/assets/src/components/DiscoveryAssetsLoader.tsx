@@ -6,11 +6,10 @@ import { Icon } from '@suite-common/icons';
 import { useTranslate } from '@suite-native/intl';
 import { selectIsAccountsListEmpty } from '@suite-common/wallet-core';
 
-type DiscoveryAssetsLoaderProps = {
-    emptyListSkeletonCount: number;
-};
+const EMPTY_LIST_SKELETON_COUNT = 3;
+const NONEMPTY_LIST_SKELETON_COUNT = 1;
 
-export const DiscoveryAssetsLoader = ({ emptyListSkeletonCount }: DiscoveryAssetsLoaderProps) => {
+export const DiscoveryAssetsLoader = () => {
     const { translate } = useTranslate();
     const isListEmpty = useSelector(selectIsAccountsListEmpty);
 
@@ -20,7 +19,9 @@ export const DiscoveryAssetsLoader = ({ emptyListSkeletonCount }: DiscoveryAsset
             : 'assets.dashboard.discoveryProgress.stillWorking',
     );
 
-    const numberOfSkeletons = isListEmpty ? emptyListSkeletonCount : 1;
+    const numberOfSkeletons = isListEmpty
+        ? EMPTY_LIST_SKELETON_COUNT
+        : NONEMPTY_LIST_SKELETON_COUNT;
 
     return (
         <>

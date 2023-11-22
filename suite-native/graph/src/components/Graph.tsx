@@ -12,6 +12,7 @@ import {
     GroupedBalanceMovementEvent,
     GroupedBalanceMovementEventPayload,
 } from '@suite-common/graph';
+import { useTranslate } from '@suite-native/intl';
 
 import { getExtremaFromGraphPoints } from '../utils';
 import { AxisLabel, MAX_CLAMP_VALUE } from './AxisLabel';
@@ -89,9 +90,9 @@ export const Graph = <TGraphPoint extends FiatGraphPoint>({
         applyStyle,
         utils: { colors },
     } = useNativeStyles();
+    const { translate } = useTranslate();
 
     const isPointsEmpty = points.length <= 1;
-
     const nonEmptyPoints = isPointsEmpty ? emptyPoints : points;
     const extremaFromGraphPoints = useMemo(() => getExtremaFromGraphPoints(points), [points]);
     const axisLabels = useMemo(() => {
@@ -138,7 +139,7 @@ export const Graph = <TGraphPoint extends FiatGraphPoint>({
             />
             {loading && (
                 <Box style={applyStyle(graphMessageStyleContainer)}>
-                    <Loader title="Loading graph data..." />
+                    <Loader title={translate('graph.retrievingData')} />
                 </Box>
             )}
             {error && !loading && (

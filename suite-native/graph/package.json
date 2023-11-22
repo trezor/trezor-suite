@@ -24,6 +24,7 @@
         "@suite-native/analytics": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/formatters": "workspace:*",
+        "@suite-native/intl": "workspace:*",
         "@suite-native/react-native-graph": "workspace:*",
         "@suite-native/storage": "workspace:*",
         "@suite-native/theme": "workspace:*",

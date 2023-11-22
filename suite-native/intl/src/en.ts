@@ -75,7 +75,6 @@ export const en = {
     },
     assets: {
         dashboard: {
-            viewAllAssets: 'View all assets',
             discoveryProgress: { loading: 'Loading...', stillWorking: 'Still working...' },
         },
     },
@@ -324,6 +323,9 @@ export const en = {
         addressCopied: 'Address copied',
         copyButton: 'Copy',
         shareButton: 'Share',
+    },
+    graph: {
+        retrievingData: 'Retrieving data...',
     },
 };
 
