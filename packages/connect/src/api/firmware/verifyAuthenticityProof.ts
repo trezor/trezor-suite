@@ -4,7 +4,7 @@ import { bufferUtils } from '@trezor/utils';
 import { PROTO } from '../../constants';
 import { DeviceAuthenticityConfig } from '../../data/deviceAuthenticityConfig';
 import { AuthenticateDeviceResult } from '../../types/api/authenticateDevice';
-import { parseCertificate } from './x509certificate';
+import { parseCertificate, fixSignature } from './x509certificate';
 
 // There is incomparability in results between nodejs and window SubtleCrypto api.
 // window.crypto.subtle.importKey (CryptoKey) cannot be used by `crypto-browserify`.Verify
@@ -142,7 +142,7 @@ export const verifyAuthenticityProof = async ({
     const isSignatureValid = await verifySignature(
         Buffer.from(deviceCert.tbsCertificate.subjectPublicKeyInfo.bits.bytes),
         prefixedChallenge,
-        Buffer.from(signature, 'hex'),
+        fixSignature(Buffer.from(signature, 'hex')),
     );
 
     if (rootPubKey && isDeviceCertValid && isSignatureValid) {
