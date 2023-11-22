@@ -189,3 +189,10 @@ export const selectBlockchainExplorerBySymbol = memoizeWithArgs(
     },
     { size: 100 },
 );
+
+export const selectBlockchainBlockHashBySymbol = memoizeWithArgs(
+    (state: BlockchainRootState, symbol: NetworkSymbol) => {
+        const blockchain = selectNetworkBlockchainInfo(symbol)(state);
+        return blockchain.blockHash;
+    },
+);

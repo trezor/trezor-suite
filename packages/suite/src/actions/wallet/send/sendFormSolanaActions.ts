@@ -9,7 +9,7 @@ import {
     PrecomposedLevels,
 } from '@suite-common/wallet-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectBlockchainBlockHashBySymbol, selectDevice } from '@suite-common/wallet-core';
 import { Dispatch, GetState } from 'src/types/suite';
 import {
     amountToSatoshi,
@@ -120,7 +120,7 @@ export const composeTransaction =
 
         let fetchedFee: string | undefined;
 
-        const blockhash = getState().wallet.blockchain.sol.blockHash;
+        const blockhash = selectBlockchainBlockHashBySymbol(getState(), account.symbol);
 
         const [recipientAccountOwner, recipientTokenAccounts] = tokenInfo
             ? await fetchAccountOwnerAndTokenInfoForAddress(
@@ -235,7 +235,7 @@ export const signTransaction =
         if (account.networkType !== 'solana') return;
         const { token } = transactionInfo;
 
-        const blockhash = getState().wallet.blockchain.sol.blockHash;
+        const blockhash = selectBlockchainBlockHashBySymbol(getState(), account.symbol);
 
         const [recipientAccountOwner, recipientTokenAccounts] = token
             ? await fetchAccountOwnerAndTokenInfoForAddress(
