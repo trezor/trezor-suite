@@ -1,10 +1,12 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 
 import { useAtomValue } from 'jotai';
 
 import { VStack, TextButton, Button } from '@suite-native/atoms';
 import { useOpenLink } from '@suite-native/link';
 import { useTranslate } from '@suite-native/intl';
+import { selectIsSelectedDeviceImported } from '@suite-common/wallet-core';
 
 import {
     isVerificationWalkthroughEnabledAtom,
@@ -17,6 +19,7 @@ type ShowAddressButtonsProps = {
 
 export const ShowAddressButtons = ({ onShowAddress }: ShowAddressButtonsProps) => {
     const isVerificationWalkthroughEnabled = useAtomValue(isVerificationWalkthroughEnabledAtom);
+    const isPortfolioTracker = useSelector(selectIsSelectedDeviceImported);
 
     const openLink = useOpenLink();
     const { translate } = useTranslate();
@@ -28,7 +31,7 @@ export const ShowAddressButtons = ({ onShowAddress }: ShowAddressButtonsProps) =
     };
 
     const handlePressShowAddressButton = () => {
-        if (isVerificationWalkthroughEnabled) {
+        if (isVerificationWalkthroughEnabled && !isPortfolioTracker) {
             setIsWalkthroughSheetOpened(true);
             return;
         }
@@ -45,10 +48,12 @@ export const ShowAddressButtons = ({ onShowAddress }: ShowAddressButtonsProps) =
                     {translate('moduleReceive.receiveAddressCard.showAddress.learnMore')}
                 </TextButton>
             </VStack>
-            <VerificationWalkthroughBottomSheet
-                isOpened={isWalkthroughSheetOpened}
-                onClose={onShowAddress}
-            />
+            {!isPortfolioTracker && (
+                <VerificationWalkthroughBottomSheet
+                    isOpened={isWalkthroughSheetOpened}
+                    onClose={onShowAddress}
+                />
+            )}
         </>
     );
 };
