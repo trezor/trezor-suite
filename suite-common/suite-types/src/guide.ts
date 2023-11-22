@@ -22,7 +22,7 @@ export interface GuideCategory {
 }
 
 /** A single unit of Guide content. */
-export interface GuidePage {
+export interface GuideArticle {
     type: 'page';
     id: string;
     locales: string[];
@@ -31,9 +31,9 @@ export interface GuidePage {
     };
 }
 
-export type GuideNode = GuideCategory | GuidePage;
+export type GuideNode = GuideCategory | GuideArticle;
 
-export type GuideView = 'GUIDE_DEFAULT' | 'GUIDE_CATEGORY' | 'GUIDE_PAGE';
+export type GuideView = 'GUIDE_DEFAULT' | 'GUIDE_CATEGORY' | 'GUIDE_ARTICLE';
 
 export type FeedbackView = 'SUPPORT_FEEDBACK_SELECTION' | 'FEEDBACK_BUG' | 'FEEDBACK_SUGGESTION';
 
