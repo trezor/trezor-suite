@@ -6,6 +6,7 @@ import {
     prepareTransactionsReducer,
     prepareBlockchainReducer,
     prepareDiscoveryReducer,
+    prepareTokenDefinitionsReducer,
 } from '@suite-common/wallet-core';
 
 import { extraDependencies } from 'src/support/extraDependencies';
@@ -28,6 +29,7 @@ export const accountsReducer = prepareAccountsReducer(extraDependencies);
 export const blockchainReducer = prepareBlockchainReducer(extraDependencies);
 export const fiatRatesReducer = prepareFiatRatesReducer(extraDependencies);
 export const discoveryReducer = prepareDiscoveryReducer(extraDependencies);
+export const tokenDefinitionsReducer = prepareTokenDefinitionsReducer(extraDependencies);
 
 const WalletReducers = combineReducers({
     fiat: fiatRatesReducer,
@@ -47,6 +49,7 @@ const WalletReducers = combineReducers({
     cardanoStaking: cardanoStakingReducer,
     pollings: pollingReducer,
     coinjoin: coinjoinReducer,
+    tokenDefinitions: tokenDefinitionsReducer,
 });
 
 export default WalletReducers;
