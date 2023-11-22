@@ -1,6 +1,6 @@
-<svg width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g id="Right Icon">
-<path id="Vector" d="M13.9375 8.125L9.35156 12.5L7.0625 10.3125" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path id="Vector_2" d="M10.5 17.5C14.6421 17.5 18 14.1421 18 10C18 5.85786 14.6421 2.5 10.5 2.5C6.35786 2.5 3 5.85786 3 10C3 14.1421 6.35786 17.5 10.5 17.5Z" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</g>
+<svg fill="none" viewBox="0 0 21 20">
+  <g stroke="#FFF" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
+    <path d="M13.938 8.125 9.351 12.5l-2.29-2.188"/>
+    <path d="M10.5 17.5a7.5 7.5 0 1 0 0-15 7.5 7.5 0 0 0 0 15Z"/>
+  </g>
 </svg>

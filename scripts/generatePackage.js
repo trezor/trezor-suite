@@ -77,7 +77,7 @@ const exitWithErrorMessage = errorMessage => {
 
     try {
         fsExtra.copySync(templatePath, packagePath);
-        fs.writeFileSync(`${packagePath}/package.json`, serializeConfig(packageJson));
+        fs.writeFileSync(`${packagePath}/package.json`, await serializeConfig(packageJson));
     } catch (error) {
         exitWithErrorMessage(`${error}\n${chalk.bold.red('Package creation failed.')}`);
     }
