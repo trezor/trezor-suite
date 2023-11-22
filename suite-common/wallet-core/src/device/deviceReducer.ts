@@ -637,29 +637,37 @@ export const selectIsSelectedDeviceImported = (state: DeviceRootState) => {
     return device?.id === PORTFOLIO_TRACKER_DEVICE_ID;
 };
 
-export const selectDeviceLabel = (state: DeviceRootState, id: TrezorDevice['id']) => {
+export const selectDeviceLabelById = (state: DeviceRootState, id: TrezorDevice['id']) => {
     const device = selectDeviceById(state, id);
     return device?.label ?? null;
 };
 
-export const selectDeviceName = (state: DeviceRootState, id: TrezorDevice['id']): string | null => {
+export const selectDeviceNameById = (
+    state: DeviceRootState,
+    id: TrezorDevice['id'],
+): string | null => {
     const device = selectDeviceById(state, id);
     return device?.name ?? null;
 };
 
 export const selectSelectedDeviceName = (state: DeviceRootState) => {
     const selectedDevice = selectDevice(state);
-    return selectDeviceName(state, selectedDevice?.id);
+    return selectDeviceNameById(state, selectedDevice?.id);
 };
 
-export const selectSelectedDeviceId = (state: DeviceRootState) => {
+export const selectDeviceId = (state: DeviceRootState) => {
     const selectedDevice = selectDevice(state);
     return selectedDevice?.id ?? null;
 };
 
+export const selectDeviceModelById = (state: DeviceRootState, id: TrezorDevice['id']) => {
+    const device = selectDeviceById(state, id);
+    return device?.features?.internal_model ?? null;
+};
+
 export const selectDeviceModel = (state: DeviceRootState) => {
-    const features = selectDeviceFeatures(state);
-    return features?.internal_model ?? null;
+    const selectedDevice = selectDevice(state);
+    return selectDeviceModelById(state, selectedDevice?.id);
 };
 
 export const selectDeviceReleaseInfo = (state: DeviceRootState) => {

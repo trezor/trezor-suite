@@ -91,6 +91,8 @@ export const icons = {
     trashAlt: require('../assets/icons/trashAlt.svg'),
     treeStructure: require('../assets/icons/treeStructure.svg'),
     trezor: require('../assets/icons/trezor.svg'),
+    trezorConnectedDark: require('../assets/icons/trezorConnectedDark.svg'),
+    trezorConnectedLight: require('../assets/icons/trezorConnectedLight.svg'),
     trezorT: require('../assets/icons/trezorT.svg'),
     twitter: require('../assets/icons/twitter.svg'),
     userFocus: require('../assets/icons/userFocus.svg'),
