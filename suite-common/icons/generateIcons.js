@@ -113,7 +113,7 @@ const writeOptimizedAssets = assetTypesArray => {
         parser: 'babel-ts',
     };
 
-    const formattedIconTypesFileContent = prettier.format(iconsFileContent, prettierConfig);
+    const formattedIconTypesFileContent = await prettier.format(iconsFileContent, prettierConfig);
 
     fs.writeFileSync(path.resolve(iconsFilePath), formattedIconTypesFileContent);
 
