@@ -31,7 +31,7 @@
         "slip44": 1,
         "support": {
             "connect": true,
-            "suite": false,
+            "suite": true,
             "T1B1": "1.11.2",
             "T2T1": "2.5.2",
             "T2B1": "2.6.1"
@@ -50,6 +50,8 @@
         "slip44": 1,
         "support": {
             "connect": true,
+            "suite": true,
+            "T1B1": "1.11.2",
             "T2T1": "2.5.2",
             "T2B1": "2.6.1"
         },
@@ -67,7 +69,7 @@
         "slip44": 1,
         "support": {
             "connect": true,
-            "suite": false,
+            "suite": true,
             "T1B1": "1.11.2",
             "T2T1": "2.5.2",
             "T2B1": "2.6.1"
