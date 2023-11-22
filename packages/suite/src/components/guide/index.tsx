@@ -1,6 +1,6 @@
 import { GuideContent } from './GuideContent';
 import { GuideButton } from './GuideButton';
-import { GuidePanel } from './GuidePanel';
+import { GuideRouter } from './GuideRouter';
 import { GuideHeader } from './GuideHeader';
 import { HeaderBreadcrumb } from './HeaderBreadcrumb';
 import { GuideNode } from './GuideNode';
@@ -10,7 +10,7 @@ import { GuideSearch } from './GuideSearch';
 import { Feedback } from './Feedback';
 import { SupportFeedbackSelection } from './SupportFeedbackSelection';
 import { Guide } from './Guide';
-import { GuidePage } from './GuidePage';
+import { GuideArticle } from './GuideArticle';
 import { GuideCategory } from './GuideCategory';
 import { OpenGuideFromTooltip } from './OpenGuideFromTooltip';
 import { GuideMarkdown } from './GuideMarkdown';
@@ -18,7 +18,7 @@ import { GuideMarkdown } from './GuideMarkdown';
 export {
     GuideContent,
     GuideButton,
-    GuidePanel,
+    GuideRouter,
     GuideHeader,
     HeaderBreadcrumb,
     GuideNode,
@@ -29,7 +29,7 @@ export {
     Feedback,
     SupportFeedbackSelection,
     Guide,
-    GuidePage,
+    GuideArticle,
     GuideCategory,
     OpenGuideFromTooltip,
     GuideMarkdown,
