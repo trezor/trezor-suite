@@ -13,9 +13,9 @@ import { formattedAccountTypeMap } from './constants';
 import {
     DeviceRootState,
     selectDevice,
-    selectIsDeviceDiscoveryActive,
+    selectPersistedDevicesStates,
 } from '../device/deviceReducer';
-import { DiscoveryRootState } from '../discovery/discoveryReducer';
+import { DiscoveryRootState, selectIsDeviceDiscoveryActive } from '../discovery/discoveryReducer';
 
 export const accountsInitialState: Account[] = [];
 
@@ -134,11 +134,22 @@ export const prepareAccountsReducer = createReducerWithExtraDeps(
 
 export const selectAccounts = (state: AccountsRootState) => state.wallet.accounts;
 
-export const selectDeviceAccounts = (state: AccountsRootState & DeviceRootState) =>
+export const selectAccountsByDeviceState = (
+    state: AccountsRootState,
+    deviceState: string,
+): Account[] =>
     pipe(
         selectAccounts(state),
-        A.filter(account => account.deviceState === selectDevice(state)?.state),
-    );
+        A.filter(account => account.deviceState === deviceState),
+    ) as Account[];
+
+export const selectDeviceAccounts = (state: AccountsRootState & DeviceRootState) => {
+    const device = selectDevice(state);
+
+    if (!device?.state) return [];
+
+    return selectAccountsByDeviceState(state, device.state);
+};
 
 export const selectDeviceMainnetAccounts = memoize((state: AccountsRootState & DeviceRootState) =>
     pipe(
@@ -313,4 +324,13 @@ export const selectIsPortfolioEmpty = (
     const isDiscoveryActive = selectIsDeviceDiscoveryActive(state);
 
     return isAccountsListEmpty && !isDiscoveryActive;
+};
+
+export const selectDevicelessAccounts = (state: AccountsRootState & DeviceRootState) => {
+    const persistedDevicesStates = selectPersistedDevicesStates(state);
+
+    return pipe(
+        selectAccounts(state),
+        A.filter(account => !persistedDevicesStates.includes(account.deviceState)),
+    ) as Account[];
 };

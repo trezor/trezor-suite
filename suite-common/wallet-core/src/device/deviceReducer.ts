@@ -3,7 +3,6 @@ import { memoize } from 'proxy-memoize';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { getStatus } from '@suite-common/suite-utils';
 import { Device, Features } from '@trezor/connect';
-import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import { getFirmwareVersion, getFirmwareVersionArray } from '@trezor/device-utils';
 import { Network, networks } from '@suite-common/wallet-config';
 import { versionUtils } from '@trezor/utils';
@@ -15,8 +14,7 @@ import {
 } from '@suite-common/device-authenticity';
 
 import { deviceActions } from './deviceActions';
-import { DiscoveryRootState, selectDiscoveryByDeviceState } from '../discovery/discoveryReducer';
-import { PORTFOLIO_TRACKER_DEVICE_ID } from './deviceConstants';
+import { PORTFOLIO_TRACKER_DEVICE_ID, PORTFOLIO_TRACKER_DEVICE_STATE } from './deviceConstants';
 
 export type State = {
     devices: TrezorDevice[];
@@ -597,37 +595,6 @@ export const selectDeviceStatus = (state: DeviceRootState) => {
     return device && getStatus(device);
 };
 
-export const selectDiscoveryForDevice = (state: DiscoveryRootState & { device: State }) =>
-    selectDiscoveryByDeviceState(state, state.device.selectedDevice?.state);
-
-export const selectIsDeviceDiscoveryActive = (state: DiscoveryRootState & DeviceRootState) => {
-    const discovery = selectDiscoveryForDevice(state);
-
-    if (!discovery) return false;
-
-    return (
-        discovery.status === DiscoveryStatus.RUNNING ||
-        discovery.status === DiscoveryStatus.STOPPING
-    );
-};
-
-/**
- * Helper selector called from components
- * return `true` if discovery process is running/completed and `authConfirm` is required
- */
-export const selectIsDiscoveryAuthConfirmationRequired = (
-    state: DiscoveryRootState & DeviceRootState,
-) => {
-    const discovery = selectDiscoveryForDevice(state);
-
-    return (
-        discovery &&
-        discovery.authConfirm &&
-        (discovery.status < DiscoveryStatus.STOPPING ||
-            discovery.status === DiscoveryStatus.COMPLETED)
-    );
-};
-
 export const selectSupportedNetworks = (state: DeviceRootState) => {
     const device = selectDevice(state);
     const deviceModelInternal = device?.features?.internal_model;
@@ -704,3 +671,8 @@ export const selectDeviceFirmwareVersion = memoize((state: DeviceRootState) => {
     const device = selectDevice(state);
     return getFirmwareVersionArray(device);
 });
+
+export const selectPersistedDevicesStates = (state: DeviceRootState) => {
+    const devices = selectDevices(state);
+    return [...devices.map(d => d.id), PORTFOLIO_TRACKER_DEVICE_STATE];
+};

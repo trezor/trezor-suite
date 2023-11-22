@@ -8,6 +8,9 @@
         {
             "path": "../../suite-common/wallet-core"
         },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
         { "path": "../alerts" },
         { "path": "../atoms" },
         { "path": "../feature-flags" },

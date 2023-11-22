@@ -12,6 +12,8 @@ import {
 } from '@suite-common/wallet-core';
 import { selectIsDeviceConnectFeatureFlagEnabled } from '@suite-native/feature-flags';
 
+import { wipeDisconnectedDevicesDataThunk } from '../deviceThunks';
+
 const isActionDeviceRelated = (action: AnyAction): boolean => {
     if (
         isAnyOf(
@@ -73,6 +75,7 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
                 break;
             case DEVICE.DISCONNECT:
                 dispatch(handleDeviceDisconnect(action.payload));
+                dispatch(wipeDisconnectedDevicesDataThunk());
                 break;
             default:
                 break;

@@ -1,8 +1,16 @@
+import { A, pipe } from '@mobily/ts-belt';
+
 import { createDeferred } from '@trezor/utils';
 import { Discovery, PartialDiscovery } from '@suite-common/wallet-types';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
+import { DiscoveryStatus } from '@suite-common/wallet-constants';
 
 import { discoveryActions } from './discoveryActions';
+import {
+    DeviceRootState,
+    selectDevice,
+    selectPersistedDevicesStates,
+} from '../device/deviceReducer';
 
 export type DiscoveryState = Discovery[];
 
@@ -82,3 +90,45 @@ export const selectDiscoveryByDeviceState = (
     state: DiscoveryRootState,
     deviceState: string | undefined,
 ) => (deviceState ? state.wallet.discovery.find(d => d.deviceState === deviceState) : undefined);
+
+export const selectDiscoveryForDevice = (state: DiscoveryRootState & DeviceRootState) => {
+    const selectedDevice = selectDevice(state);
+    return selectDiscoveryByDeviceState(state, selectedDevice?.state);
+};
+
+export const selectIsDeviceDiscoveryActive = (state: DiscoveryRootState & DeviceRootState) => {
+    const discovery = selectDiscoveryForDevice(state);
+
+    if (!discovery) return false;
+
+    return (
+        discovery.status === DiscoveryStatus.RUNNING ||
+        discovery.status === DiscoveryStatus.STOPPING
+    );
+};
+
+/**
+ * Helper selector called from components
+ * return `true` if discovery process is running/completed and `authConfirm` is required
+ */
+export const selectIsDiscoveryAuthConfirmationRequired = (
+    state: DiscoveryRootState & DeviceRootState,
+) => {
+    const discovery = selectDiscoveryForDevice(state);
+
+    return (
+        discovery &&
+        discovery.authConfirm &&
+        (discovery.status < DiscoveryStatus.STOPPING ||
+            discovery.status === DiscoveryStatus.COMPLETED)
+    );
+};
+
+export const selectDevicelessDiscoveries = (state: DiscoveryRootState & DeviceRootState) => {
+    const persistedDevicesStates = selectPersistedDevicesStates(state);
+
+    return pipe(
+        selectDiscovery(state),
+        A.filter(discovery => !persistedDevicesStates.includes(discovery.deviceState)),
+    ) as Discovery[];
+};
