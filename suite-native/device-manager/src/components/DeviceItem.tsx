@@ -2,19 +2,18 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Pressable } from 'react-native';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { HStack, Text, VStack } from '@suite-native/atoms';
+import { HStack } from '@suite-native/atoms';
 import {
     DeviceRootState,
-    selectDevice,
     selectDeviceById,
-    selectDeviceLabel,
-    selectDeviceName,
+    selectDeviceId,
     selectDeviceThunk,
 } from '@suite-common/wallet-core';
 import { Icon } from '@suite-common/icons';
 import { TrezorDevice } from '@suite-common/suite-types';
 
 import { useDeviceManager } from '../hooks/useDeviceManager';
+import { DeviceItemContent } from './DeviceItemContent';
 
 type DeviceItemProps = {
     id: TrezorDevice['id'];
@@ -24,29 +23,24 @@ const deviceItemWrapperStyle = prepareNativeStyle(utils => ({
     justifyContent: 'space-between',
     alignItems: 'center',
     borderRadius: utils.borders.radii.medium,
-    backgroundColor: utils.colors.backgroundTertiaryDefaultOnElevation0,
+    backgroundColor: utils.colors.backgroundTertiaryDefaultOnElevation1,
     paddingHorizontal: utils.spacings.medium,
     paddingVertical: 12,
 }));
 
-export const DeviceItem = ({ id }: DeviceItemProps) => {
+export const DeviceItem = ({ id: deviceItemId }: DeviceItemProps) => {
     const dispatch = useDispatch();
-
-    const deviceLabel = useSelector((state: DeviceRootState) => selectDeviceLabel(state, id));
-    const deviceName = useSelector((state: DeviceRootState) => selectDeviceName(state, id));
-    const device = useSelector((state: DeviceRootState) => selectDeviceById(state, id));
-    const currentDevice = useSelector(selectDevice);
-
     const { applyStyle } = useNativeStyles();
 
-    const { setIsDeviceManagerVisible } = useDeviceManager();
+    const selectedDeviceId = useSelector(selectDeviceId);
+    const device = useSelector((state: DeviceRootState) => selectDeviceById(state, deviceItemId));
 
-    if (!deviceLabel) return null;
+    const { setIsDeviceManagerVisible } = useDeviceManager();
 
     const handleSelectDevice = () => {
         setIsDeviceManagerVisible(false);
 
-        if (device?.id === currentDevice?.id) return;
+        if (deviceItemId === selectedDeviceId) return;
 
         dispatch(selectDeviceThunk(device));
     };
@@ -54,14 +48,8 @@ export const DeviceItem = ({ id }: DeviceItemProps) => {
     return (
         <Pressable onPress={handleSelectDevice}>
             <HStack style={applyStyle(deviceItemWrapperStyle)}>
-                <HStack spacing="medium" alignItems="center">
-                    <Icon name="stack" />
-                    <VStack spacing="extraSmall">
-                        <Text>{deviceName}</Text>
-                        <Text>{deviceLabel}</Text>
-                    </VStack>
-                </HStack>
-                <Icon name="chevronRight" />
+                <DeviceItemContent deviceId={deviceItemId} />
+                <Icon name="chevronRight" color="iconDefault" />
             </HStack>
         </Pressable>
     );

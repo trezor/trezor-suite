@@ -1,22 +1,17 @@
-import { Pressable } from 'react-native';
+import { Pressable, TouchableOpacity } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import { Box, HStack, IconButton, Text } from '@suite-native/atoms';
-import { Icon, IconName } from '@suite-common/icons';
+import { Box, HStack } from '@suite-native/atoms';
+import { Icon } from '@suite-common/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import {
-    selectDeviceModel,
-    selectIsDeviceConnectedAndAuthorized,
-    selectIsSelectedDeviceImported,
-    selectSelectedDeviceName,
-} from '@suite-common/wallet-core';
-import { Translation } from '@suite-native/intl';
-import { DeviceModelInternal } from '@trezor/connect';
+import { selectDeviceId } from '@suite-common/wallet-core';
 
 import { SCREEN_HEADER_HEIGHT } from '../constants';
 import { useDeviceManager } from '../hooks/useDeviceManager';
+import { DeviceItemContent } from './DeviceItemContent';
 
 const switchStyle = prepareNativeStyle(utils => ({
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -33,55 +28,39 @@ const switchWrapperStyle = prepareNativeStyle(_ => ({
     flex: 1,
 }));
 
-const deviceIcon = {
-    [DeviceModelInternal.T1B1]: 'trezor',
-    [DeviceModelInternal.T2T1]: 'trezorT',
-    [DeviceModelInternal.T2B1]: 'trezor',
-} as const satisfies Record<DeviceModelInternal, IconName>;
-
 export const DeviceSwitch = () => {
-    const deviceName = useSelector(selectSelectedDeviceName);
-    const isPortfolioTrackerDevice = useSelector(selectIsSelectedDeviceImported);
-    const isDeviceConnectedAndAuthorized = useSelector(selectIsDeviceConnectedAndAuthorized);
-    const deviceModel = useSelector(selectDeviceModel);
-
     const { applyStyle } = useNativeStyles();
 
-    const { setIsDeviceManagerVisible, isDeviceManagerVisible } = useDeviceManager();
+    const deviceId = useSelector(selectDeviceId);
 
-    if (!deviceModel) return null;
+    const { setIsDeviceManagerVisible, isDeviceManagerVisible } = useDeviceManager();
 
     const toggleDeviceManager = () => {
         setIsDeviceManagerVisible(!isDeviceManagerVisible);
     };
+    if (!deviceId) return null;
 
     return (
-        <HStack alignItems="center">
-            <Pressable onPress={toggleDeviceManager} style={applyStyle(switchWrapperStyle)}>
+        <Pressable onPress={toggleDeviceManager} style={applyStyle(switchWrapperStyle)}>
+            <HStack justifyContent="space-between" alignItems="center" spacing="medium">
                 <Box style={applyStyle(switchStyle)}>
-                    <HStack alignItems="center" spacing="medium">
-                        <Icon
-                            name={isPortfolioTrackerDevice ? 'database' : deviceIcon[deviceModel]}
-                        />
-                        <Box>
-                            <Text variant="highlight">{deviceName}</Text>
-                            {!isPortfolioTrackerDevice && isDeviceConnectedAndAuthorized && (
-                                <Text variant="label" color="textSecondaryHighlight">
-                                    <Translation id="deviceManager.status.connected" />
-                                </Text>
-                            )}
-                        </Box>
-                    </HStack>
-                    <Icon name="chevronUpAndDown" />
+                    <DeviceItemContent
+                        deviceId={deviceId}
+                        deviceNameTextVariant="highlight"
+                        isPortfolioLabelDisplayed={false}
+                    />
+                    {!isDeviceManagerVisible && (
+                        <Icon name="chevronUpAndDown" color="iconDefault" />
+                    )}
                 </Box>
-            </Pressable>
-            {isDeviceManagerVisible && (
-                <IconButton
-                    colorScheme="tertiaryElevation0"
-                    iconName="close"
-                    onPress={toggleDeviceManager}
-                />
-            )}
-        </HStack>
+                {isDeviceManagerVisible && (
+                    <TouchableOpacity onPress={toggleDeviceManager}>
+                        <Box paddingHorizontal="medium">
+                            <Icon name="close" size="mediumLarge" />
+                        </Box>
+                    </TouchableOpacity>
+                )}
+            </HStack>
+        </Pressable>
     );
 };

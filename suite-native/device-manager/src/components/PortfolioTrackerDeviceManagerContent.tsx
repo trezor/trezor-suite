@@ -34,17 +34,17 @@ export const PortfolioTrackerDeviceManagerContent = () => {
 
     return (
         <DeviceManagerModal>
-            <Button colorScheme="tertiaryElevation0" onPress={handleSyncCoins}>
+            <Button colorScheme="tertiaryElevation1" onPress={handleSyncCoins}>
                 {translate('deviceManager.syncCoinsButton')}
             </Button>
             <VStack>
                 <Text variant="callout">
                     <Translation id="deviceManager.portfolioTracker.explore" />
                 </Text>
-                <Button colorScheme="tertiaryElevation0">
+                <Button colorScheme="tertiaryElevation1">
                     {translate('deviceManager.portfolioTracker.learnBasics')}
                 </Button>
-                <Button colorScheme="tertiaryElevation0">
+                <Button colorScheme="tertiaryElevation1">
                     {translate('deviceManager.portfolioTracker.readDocs')}
                 </Button>
             </VStack>
