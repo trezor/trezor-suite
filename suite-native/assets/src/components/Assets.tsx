@@ -4,9 +4,8 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { Card, VStack, TextButton } from '@suite-native/atoms';
+import { Card, VStack } from '@suite-native/atoms';
 import {
-    AccountsStackRoutes,
     AppTabsParamList,
     AppTabsRoutes,
     RootStackParamList,
@@ -15,7 +14,6 @@ import {
 } from '@suite-native/navigation';
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import { selectIsDeviceDiscoveryActive } from '@suite-common/wallet-core';
-import { useTranslate } from '@suite-native/intl';
 
 import { DiscoveryAssetsLoader } from './DiscoveryAssetsLoader';
 import { selectDeviceAssetsWithBalances } from '../assetsSelectors';
@@ -29,14 +27,8 @@ type NavigationProp = TabToStackCompositeNavigationProp<
     RootStackParamList
 >;
 
-type AssetsProps = {
-    maximumAssetsVisible: number;
-};
-
-export const Assets = ({ maximumAssetsVisible }: AssetsProps) => {
+export const Assets = () => {
     const navigation = useNavigation<NavigationProp>();
-
-    const { translate } = useTranslate();
 
     const deviceAssetsData = useSelector(selectDeviceAssetsWithBalances);
     const isDiscoveryActive = useSelector(selectIsDeviceDiscoveryActive);
@@ -47,10 +39,6 @@ export const Assets = ({ maximumAssetsVisible }: AssetsProps) => {
         () => calculateAssetsPercentage(deviceAssetsData),
         [deviceAssetsData],
     );
-
-    const navigateToAssets = () => {
-        navigation.navigate(AppTabsRoutes.AccountsStack, { screen: AccountsStackRoutes.Accounts });
-    };
 
     const handleSelectAssetsAccount = useCallback(
         (accountKey: AccountKey, tokenContract?: TokenAddress) => {
@@ -67,13 +55,11 @@ export const Assets = ({ maximumAssetsVisible }: AssetsProps) => {
         setSelectedAssetSymbol(null);
     }, [setSelectedAssetSymbol]);
 
-    const isViewMoreButtonVisible = assetsDataWithPercentage.length > maximumAssetsVisible;
-
     return (
         <>
             <Card>
                 <VStack spacing={19}>
-                    {assetsDataWithPercentage.slice(0, maximumAssetsVisible).map(asset => (
+                    {assetsDataWithPercentage.map(asset => (
                         <AssetItem
                             key={asset.symbol}
                             iconName={asset.symbol}
@@ -86,14 +72,7 @@ export const Assets = ({ maximumAssetsVisible }: AssetsProps) => {
                             onPress={setSelectedAssetSymbol}
                         />
                     ))}
-                    {isDiscoveryActive && (
-                        <DiscoveryAssetsLoader emptyListSkeletonCount={maximumAssetsVisible} />
-                    )}
-                    {isViewMoreButtonVisible && (
-                        <TextButton variant="tertiary" isUnderlined onPress={navigateToAssets}>
-                            {translate('assets.dashboard.viewAllAssets')}
-                        </TextButton>
-                    )}
+                    {isDiscoveryActive && <DiscoveryAssetsLoader />}
                 </VStack>
             </Card>
             {selectedAssetSymbol && (

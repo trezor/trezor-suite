@@ -22,6 +22,7 @@
         { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../formatters" },
+        { "path": "../intl" },
         { "path": "../react-native-graph" },
         { "path": "../storage" },
         { "path": "../theme" },
