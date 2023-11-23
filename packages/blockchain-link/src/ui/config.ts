@@ -454,9 +454,7 @@ export default [
             name: 'Solana Mainnet',
             // we do not use path to worker build here because its not used, we use it just to match this config to actual implementation of the worker
             worker: 'solana',
-            server: [
-                'wiser-green-owl.solana-mainnet.discover.quiknode.pro/c218d0c9e451f6c5c0bf8b7c7d8e5a72384c9570/',
-            ],
+            server: ['solana.trezor.io'],
             debug: true,
         },
         data: {
@@ -483,9 +481,7 @@ export default [
             name: 'Solana Devnet',
             // we do not use path to worker build here because its not used, we use it just to match this config to actual implementation of the worker
             worker: 'solana',
-            server: [
-                'cool-spring-gadget.solana-testnet.quiknode.pro/2224f3bca76cdcad9232ddedfd0852b2cb200813/',
-            ],
+            server: ['solana-dev.trezor.io'],
             debug: true,
         },
         data: {
