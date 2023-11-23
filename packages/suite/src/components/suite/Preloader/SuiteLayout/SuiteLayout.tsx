@@ -5,11 +5,7 @@ import { variables } from '@trezor/components';
 import { SuiteBanners } from 'src/components/suite/banners';
 import { Metadata } from 'src/components/suite';
 import { GuideRouter, GuideButton } from 'src/components/guide';
-import {
-    DESKTOP_HORIZONTAL_PADDINGS,
-    MAX_WIDTH,
-    MOBILE_HORIZONTAL_PADDINGS,
-} from 'src/constants/suite/layout';
+import { HORIZONTAL_LAYOUT_PADDINGS, MAX_CONTENT_WIDTH } from 'src/constants/suite/layout';
 import { DiscoveryProgress } from 'src/components/wallet';
 import { onAnchorChange } from 'src/actions/suite/routerActions';
 import { useLayoutSize, useSelector, useDevice, useDispatch } from 'src/hooks/suite';
@@ -21,6 +17,7 @@ import { ModalSwitcher } from '../../modals/ModalSwitcher/ModalSwitcher';
 import { MobileNavigation } from './NavigationBar/MobileNavigation';
 import { CoinjoinStatusBar } from './NavigationBar/CoinjoinStatusBar';
 import { Sidebar } from './Sidebar/Sidebar';
+import { spacingsPx } from '@trezor/theme';
 
 const Wrapper = styled.div`
     display: flex;
@@ -76,15 +73,11 @@ const ContentWrapper = styled.div`
     flex-direction: column;
     flex: 1;
     width: 100%;
-    max-width: ${MAX_WIDTH};
-    padding: 24px ${DESKTOP_HORIZONTAL_PADDINGS} 90px ${DESKTOP_HORIZONTAL_PADDINGS};
-
-    ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
-        padding: 24px ${MOBILE_HORIZONTAL_PADDINGS} 70px ${MOBILE_HORIZONTAL_PADDINGS};
-    }
+    max-width: ${MAX_CONTENT_WIDTH};
+    padding: ${spacingsPx.lg} ${HORIZONTAL_LAYOUT_PADDINGS} 90px ${HORIZONTAL_LAYOUT_PADDINGS};
 
     ${variables.SCREEN_QUERY.MOBILE} {
-        padding-bottom: 90px; /* including the mobile app banner */
+        padding-bottom: ${spacingsPx.xxxxl};
     }
 `;
 

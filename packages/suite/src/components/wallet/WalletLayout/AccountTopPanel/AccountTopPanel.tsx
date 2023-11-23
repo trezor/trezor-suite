@@ -41,7 +41,6 @@ interface AccountTopPanelSkeletonProps {
 
 const AccountTopPanelSkeleton = ({ animate, account, symbol }: AccountTopPanelSkeletonProps) => (
     <AppNavigationPanel
-        maxWidth="small"
         title={
             account ? (
                 <AccountLabeling account={account} />
@@ -78,7 +77,6 @@ export const AccountTopPanel = () => {
 
     return (
         <AppNavigationPanel
-            maxWidth="small"
             title={
                 <MetadataLabeling
                     defaultVisibleValue={<AccountLabeling account={account} />}

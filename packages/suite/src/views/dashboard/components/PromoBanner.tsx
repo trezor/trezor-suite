@@ -6,10 +6,7 @@ import { Button, Icon, Image, Tooltip, variables } from '@trezor/components';
 import { Translation, QrCode, TrezorLink } from 'src/components/suite';
 import { isWeb } from '@trezor/env-utils';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
-import {
-    DESKTOP_HORIZONTAL_PADDINGS,
-    MOBILE_HORIZONTAL_PADDINGS,
-} from 'src/constants/suite/layout';
+import { HORIZONTAL_LAYOUT_PADDINGS } from 'src/constants/suite/layout';
 
 const Container = styled.div`
     position: absolute;
@@ -36,11 +33,7 @@ const promoContainerCss = css`
     flex: 1;
     gap: 16px;
     height: 100%;
-    padding: 0 ${DESKTOP_HORIZONTAL_PADDINGS};
-
-    ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
-        padding: 0 ${MOBILE_HORIZONTAL_PADDINGS};
-    }
+    padding: 0 ${HORIZONTAL_LAYOUT_PADDINGS};
 
     span {
         min-width: 100px;

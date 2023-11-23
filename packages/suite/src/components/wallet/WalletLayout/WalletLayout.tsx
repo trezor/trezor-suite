@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { SkeletonRectangle } from 'src/components/suite';
-import { MAX_WIDTH_WALLET_CONTENT } from 'src/constants/suite/layout';
+import { MAX_CONTENT_WIDTH } from 'src/constants/suite/layout';
 import { AppState, ExtendedMessageDescriptor } from 'src/types/suite';
 import { useTranslation, useLayout } from 'src/hooks/suite';
 
@@ -15,7 +15,7 @@ const Wrapper = styled.div`
     display: flex;
     flex: 1;
     flex-direction: column;
-    max-width: ${MAX_WIDTH_WALLET_CONTENT};
+    max-width: ${MAX_CONTENT_WIDTH};
     width: 100%;
     height: 100%;
     margin-top: 8px;

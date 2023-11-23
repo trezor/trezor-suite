@@ -15,7 +15,7 @@ import { Route } from '@suite-common/suite-types';
 
 import { AccountFormCloseButton, HoverAnimation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
-import { MAX_WIDTH, MAX_WIDTH_WALLET_CONTENT } from 'src/constants/suite/layout';
+import { MAX_CONTENT_WIDTH } from 'src/constants/suite/layout';
 import { AccountStickyContent } from './AccountStickyContent';
 import { AppNavigationTooltip } from './AppNavigationTooltip';
 
@@ -55,14 +55,12 @@ const Wrapper = styled.div<{ subRoute: boolean | undefined; inView?: boolean }>`
         `}
 `;
 
-const MenuHolder = styled.div<{
-    maxWidth: string | undefined;
-}>`
+const MenuHolder = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    max-width: ${props => (props.maxWidth === 'default' ? MAX_WIDTH : MAX_WIDTH_WALLET_CONTENT)};
+    max-width: ${MAX_CONTENT_WIDTH};
     scrollbar-width: none; /* Firefox */
     position: relative;
     border-top: none;
@@ -74,13 +72,13 @@ const MenuHolder = styled.div<{
     }
 `;
 
-const KeepWidth = styled.div<{ maxWidth?: string; inView?: boolean }>`
+const KeepWidth = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
     background: ${({ theme }) => theme.BG_LIGHT_GREY};
     width: 100%;
-    max-width: ${props => (props.maxWidth === 'default' ? MAX_WIDTH : MAX_WIDTH_WALLET_CONTENT)};
+    max-width: ${MAX_CONTENT_WIDTH};
 `;
 
 const Primary = styled.div`
@@ -214,7 +212,7 @@ const isSubsection = (routeName: Route['name']): boolean =>
 const isSecondaryMenuOverflown = ({ primary, secondary, wrapper }: MenuWidths) =>
     primary + secondary >= wrapper;
 
-export const AppNavigation = ({ items, primaryContent, maxWidth, inView }: AppNavigationProps) => {
+export const AppNavigation = ({ items, primaryContent, inView }: AppNavigationProps) => {
     const [condensedSecondaryMenuVisible, setCondensedSecondaryMenuVisible] =
         useState<boolean>(false);
     const wrapper = useRef<HTMLDivElement>(null);
@@ -264,7 +262,7 @@ export const AppNavigation = ({ items, primaryContent, maxWidth, inView }: AppNa
         <Wrapper ref={wrapper} inView={inView} subRoute={routeName && isSubsection(routeName)}>
             {routeName && isSubsection(routeName) ? (
                 <InnerWrap>
-                    <MenuHolder maxWidth={maxWidth}>
+                    <MenuHolder>
                         <AccountStickyContent
                             routeName={routeName}
                             account={selectedAccount.account}
@@ -274,7 +272,7 @@ export const AppNavigation = ({ items, primaryContent, maxWidth, inView }: AppNa
                 </InnerWrap>
             ) : (
                 <InnerWrap>
-                    <KeepWidth inView={inView}>
+                    <KeepWidth>
                         <Primary ref={primary}>
                             {primaryContent ||
                                 itemsPrimary.map(item => {

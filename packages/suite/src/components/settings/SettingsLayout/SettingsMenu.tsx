@@ -98,7 +98,6 @@ export const SettingsMenu = () => {
 
     return (
         <AppNavigationPanel
-            maxWidth="small"
             title={
                 <span
                     aria-hidden="true"
