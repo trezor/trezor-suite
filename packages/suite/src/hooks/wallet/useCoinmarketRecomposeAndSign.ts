@@ -5,7 +5,7 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { DEFAULT_VALUES, DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
 import { FormState, UseSendFormState } from 'src/types/wallet/sendForm';
 import { getFeeLevels } from '@suite-common/wallet-utils';
-import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
+import type { FormOptions, SelectedAccountLoaded } from '@suite-common/wallet-types';
 
 export const useCoinmarketRecomposeAndSign = () => {
     const { translationString } = useTranslation();
@@ -24,6 +24,7 @@ export const useCoinmarketRecomposeAndSign = () => {
             ethereumDataHex?: string,
             recalcCustomLimit?: boolean,
             ethereumAdjustGasLimit?: string,
+            options: FormOptions[] = ['broadcast'],
         ) => {
             const { account, network } = selectedAccount;
 
@@ -52,7 +53,7 @@ export const useCoinmarketRecomposeAndSign = () => {
                 feePerUnit: composed.feePerByte,
                 feeLimit: composed.feeLimit || '',
                 estimatedFeeLimit: composed.estimatedFeeLimit,
-                options: ['broadcast'],
+                options,
                 rippleDestinationTag: destinationTag,
                 ethereumDataHex,
                 ethereumAdjustGasLimit,

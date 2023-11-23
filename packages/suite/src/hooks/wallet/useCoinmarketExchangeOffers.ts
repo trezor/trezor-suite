@@ -23,7 +23,7 @@ import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigatio
 import { InvityAPIReloadQuotesAfterSeconds } from 'src/constants/wallet/coinmarket/metadata';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 
-import { useCoinmarketRecomposeAndSign } from './useCoinmarketRecomposeAndSign ';
+import { useCoinmarketRecomposeAndSign } from './useCoinmarketRecomposeAndSign';
 
 const getReceiveAccountSymbol = (
     symbol?: string,
@@ -309,6 +309,10 @@ export const useOffers = ({ selectedAccount }: UseCoinmarketExchangeFormProps) =
                 selectedQuote.sendAddress,
                 sendStringAmount,
                 selectedQuote.partnerPaymentExtraId,
+                undefined,
+                undefined,
+                undefined,
+                ['broadcast', 'bitcoinRBF'],
             );
             // in case of not success, recomposeAndSign shows notification
             if (result?.success) {
