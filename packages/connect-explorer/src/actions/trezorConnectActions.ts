@@ -3,6 +3,7 @@ import TrezorConnect, { DEVICE, DEVICE_EVENT, TRANSPORT_EVENT } from '@trezor/co
 
 import { TrezorConnectDevice, Dispatch, Field, GetState } from '../types';
 import * as ACTIONS from './index';
+import { createWorkerProxy } from '../../worker-proxy/proxy';
 
 type ConnectOptions = Parameters<(typeof TrezorConnect)['init']>[0];
 export type TrezorConnectAction =
@@ -34,7 +35,20 @@ export const onConnectOptionChange = (option: string, value: any) => ({
 export const init =
     (options: Partial<Parameters<(typeof TrezorConnect)['init']>[0]> = {}) =>
     async (dispatch: Dispatch) => {
+        console.log('init in trezorConnectActions');
+        console.log('options', options);
         window.TrezorConnect = TrezorConnect;
+        console.log('window.TrezorConnect', window.TrezorConnect);
+
+        // Create proxy for TrezorConnect using worker-proxy
+        const proxy = await createWorkerProxy<typeof TrezorConnect>('TrezorConnect');
+        console.log('proxy', proxy);
+
+        // override each method of @trezor/connect using worker-proxy
+        Object.keys(TrezorConnect).forEach(method => {
+            console.log('method', method);
+            TrezorConnect[method] = proxy[method];
+        });
 
         TrezorConnect.on(DEVICE_EVENT, event => {
             dispatch({

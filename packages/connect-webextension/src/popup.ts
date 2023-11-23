@@ -1,6 +1,5 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/popup/PopupManager.js
 import EventEmitter from 'events';
-import { PopupEventMessage } from 'packages/connect/lib';
 
 import {
     // POPUP,
@@ -10,6 +9,7 @@ import { getOrigin } from '@trezor/connect/lib/utils/urlUtils';
 import { Log } from '@trezor/connect/lib/utils/debug';
 
 import { ServiceWorkerWindowChannel } from './channels/serviceworker-window';
+import { PopupEventMessage } from '@trezor/connect/lib/events';
 
 export class PopupManager extends EventEmitter {
     popupWindow: chrome.tabs.Tab | undefined;

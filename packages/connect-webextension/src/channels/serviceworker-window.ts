@@ -22,6 +22,7 @@ export class ServiceWorkerWindowChannel<
         super({
             channel,
             sendFn: (message: any) => {
+                console.log('message in ServiceWorkerWindowChannel sendFn', message);
                 if (!this.port) throw new Error('port not assigned');
                 this.port.postMessage(message);
             },
@@ -29,6 +30,8 @@ export class ServiceWorkerWindowChannel<
         });
 
         chrome.runtime.onConnect.addListener(port => {
+            console.log('addListener in ServiceWorkerWindowChannel');
+            console.log('port', port);
             if (port.name !== name) return;
             this.port = port;
 
@@ -39,6 +42,7 @@ export class ServiceWorkerWindowChannel<
                 }
 
                 const { origin } = sender;
+                console.log('origin', origin);
 
                 const whitelist = [
                     'https://connect.trezor.io',

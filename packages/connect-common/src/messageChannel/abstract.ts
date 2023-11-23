@@ -79,6 +79,7 @@ export abstract class AbstractMessageChannel<
      * initiates handshake sequence with peer. resolves after communication with peer is established
      */
     public async init() {
+        console.log('init in connect-common/src/messageChannel/abstract.ts');
         if (this.handshakeFinished?.promise) {
             await this.handshakeFinished.promise;
         } else {
@@ -91,6 +92,7 @@ export abstract class AbstractMessageChannel<
      * both parties initiate handshake procedure and keep asking over time in a loop until they time out or receive confirmation from peer
      */
     protected handshakeWithPeer(): Promise<void> {
+        console.log('handshakeWithPeer in connect-common/src/messageChannel/abstract.ts');
         this.logger?.log(this.channel.here, 'handshake, retry: ', this.handshakeCurrentRetry);
         this.handshakeFinished = createDeferred();
 
@@ -129,6 +131,8 @@ export abstract class AbstractMessageChannel<
      * should be handled by this common onMessage method
      */
     protected onMessage(message: Message<IncomingMessages>) {
+        console.log('onMessage in connect-common/src/messageChannel/abstract.ts');
+        console.log('message', message);
         const { channel, id, type, payload, success } = message;
 
         if (!channel?.peer || !channel.peer.includes(this.channel.here)) {
@@ -139,6 +143,10 @@ export abstract class AbstractMessageChannel<
         }
 
         if (type === 'channel-handshake-request') {
+            console.log(
+                'channel handshake request in connect-common/src/messageChannel/abstract.ts',
+            );
+            console.log('now we are going to send channel-handshake-confirm');
             this.sendFn({
                 type: 'channel-handshake-confirm',
                 channel: this.channel,
