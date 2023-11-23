@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { breakpointMediaQueries } from '@trezor/styles';
 import { useLayout } from 'src/hooks/suite';
-import AssetsCard from './components/AssetsCard';
+import { AssetsView } from './components/AssetsView';
 import PortfolioCard from './components/PortfolioCard';
 import SecurityFeatures from './components/SecurityFeatures';
 import { PromoBanner } from './components/PromoBanner';
@@ -29,7 +29,7 @@ export const Dashboard = () => {
         <Wrapper data-test="@dashboard/index">
             <PortfolioCard />
             <T2B1PromoBanner />
-            <AssetsCard />
+            <AssetsView />
             <SecurityFeatures />
             <PromoBanner />
         </Wrapper>
