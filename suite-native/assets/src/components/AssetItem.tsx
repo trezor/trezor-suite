@@ -5,16 +5,13 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { CryptoIconName, CryptoIconWithPercentage, Icon } from '@suite-common/icons';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { Box, Text } from '@suite-native/atoms';
 import {
     AccountsRootState,
-    selectAccountsAmountPerSymbol,
-    selectAccountsByNetworkAndDevice,
-    PORTFOLIO_TRACKER_DEVICE_STATE,
     DeviceRootState,
+    selectAccountsByNetworkSymbol,
 } from '@suite-common/wallet-core';
+import { Box, Text } from '@suite-native/atoms';
 import { CryptoAmountFormatter, FiatAmountFormatter } from '@suite-native/formatters';
 import {
     AppTabsParamList,
@@ -23,6 +20,7 @@ import {
     RootStackRoutes,
     TabToStackCompositeNavigationProp,
 } from '@suite-native/navigation';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type AssetItemProps = {
     cryptoCurrencySymbol: NetworkSymbol;
@@ -72,19 +70,12 @@ export const AssetItem = memo(
         onPress,
     }: AssetItemProps) => {
         const { applyStyle } = useNativeStyles();
-
         const navigation = useNavigation<NavigationType>();
 
-        const accountsPerAsset = useSelector((state: AccountsRootState & DeviceRootState) =>
-            selectAccountsAmountPerSymbol(state, cryptoCurrencySymbol),
+        const accountsForNetworkSymbol = useSelector((state: AccountsRootState & DeviceRootState) =>
+            selectAccountsByNetworkSymbol(state, cryptoCurrencySymbol),
         );
-        const accountsForNetworkSymbol = useSelector((state: AccountsRootState) =>
-            selectAccountsByNetworkAndDevice(
-                state,
-                PORTFOLIO_TRACKER_DEVICE_STATE,
-                cryptoCurrencySymbol,
-            ),
-        );
+        const accountsPerAsset = accountsForNetworkSymbol.length;
 
         const handleAssetPress = () => {
             if (accountsPerAsset === 1) {
