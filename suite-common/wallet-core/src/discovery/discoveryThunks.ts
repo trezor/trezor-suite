@@ -19,10 +19,14 @@ import {
     stopDiscovery,
     updateDiscovery,
 } from './discoveryActions';
-import { selectDiscoveryByDeviceState, selectDiscovery } from './discoveryReducer';
+import {
+    selectDiscoveryByDeviceState,
+    selectDiscovery,
+    selectDiscoveryForDevice,
+} from './discoveryReducer';
 import { selectAccounts } from '../accounts/accountsReducer';
 import { accountsActions } from '../accounts/accountsActions';
-import { selectDevice, selectDevices, selectDiscoveryForDevice } from '../device/deviceReducer';
+import { selectDevice, selectDevices } from '../device/deviceReducer';
 
 type ProgressEvent = BundleProgress<AccountInfo | null>['payload'];
 

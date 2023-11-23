@@ -16,6 +16,7 @@
         "@reduxjs/toolkit": "1.9.5",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
+        "@suite-common/wallet-types": "workspace:*",
         "@suite-native/alerts": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/feature-flags": "workspace:*",
