@@ -1,0 +1,2 @@
+export const DEVICE_TEXT_COLOR = '#FFFFFF';
+export const DEVICE_SCREEN_BACKGROUND_COLOR = '#000000';

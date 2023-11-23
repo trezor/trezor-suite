@@ -477,6 +477,7 @@ export const confirmAddressOnDeviceThunk = createThunk(
             unlockPath: account.unlockPath,
             useEmptyPassphrase: device.useEmptyPassphrase,
             coin: account.symbol,
+            chunkify: true,
         };
 
         let response;

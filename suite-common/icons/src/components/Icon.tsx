@@ -3,11 +3,11 @@ import { SharedValue, useDerivedValue } from 'react-native-reanimated';
 import { Canvas, ImageSVG, useSVG, Group, Skia, BlendMode } from '@shopify/react-native-skia';
 
 import { useNativeStyles } from '@trezor/styles';
-import { Color, CSSColor } from '@trezor/theme';
+import { Color, Colors, CSSColor } from '@trezor/theme';
 
 import { IconName, icons } from '../icons';
 
-export type IconColor = 'svgSource' | Color | SharedValue<CSSColor>;
+export type IconColor = 'svgSource' | Color | CSSColor | SharedValue<CSSColor>;
 
 type IconProps = {
     name: IconName;
@@ -34,6 +34,31 @@ const isReanimatedSharedValue = (value: IconColor): value is SharedValue<CSSColo
     return typeof value === 'object' && 'value' in value;
 };
 
+export function isCSSColor(value: any): value is CSSColor {
+    'worklet';
+
+    return (
+        typeof value === 'string' &&
+        (value.startsWith('#') ||
+            value.startsWith('rgb(') ||
+            value.startsWith('rgba(') ||
+            value === 'transparent')
+    );
+}
+
+const getColorCode = (color: Exclude<IconColor, 'svgSource'>, themeColors: Colors) => {
+    'worklet';
+
+    if (isReanimatedSharedValue(color)) {
+        return color.value;
+    }
+    if (isCSSColor(color)) {
+        return color;
+    }
+
+    return themeColors[color];
+};
+
 export const Icon = ({ name, customSize, size = 'large', color = 'iconDefault' }: IconProps) => {
     const svg = useSVG(icons[name]);
     const {
@@ -46,7 +71,7 @@ export const Icon = ({ name, customSize, size = 'large', color = 'iconDefault' }
         // If color is  set to 'svgSource', it means that the SVG file contains its own colors and we don't want to override them.
         if (color === 'svgSource') return undefined;
 
-        const colorCode = isReanimatedSharedValue(color) ? color.value : colors[color];
+        const colorCode = getColorCode(color, colors);
 
         const freshPaint = Skia.Paint();
         freshPaint.setColorFilter(
