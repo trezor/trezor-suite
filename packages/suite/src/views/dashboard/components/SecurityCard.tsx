@@ -9,6 +9,8 @@ const Wrapper = styled.div`
 
 const StyledCard = styled(Card)`
     align-items: center;
+    align-self: stretch;
+    flex: 1;
 `;
 
 const Header = styled.div`
@@ -134,6 +136,7 @@ export const SecurityCard = ({
                                 variant="secondary"
                                 isDisabled={cta.isDisabled}
                                 onClick={cta.action}
+                                size="small"
                                 {...(cta.dataTest
                                     ? {
                                           'data-test': `@dashboard/security-card/${cta.dataTest}/button`,
@@ -154,6 +157,7 @@ export const SecurityCard = ({
                                     onClick={cta.action}
                                     icon="ARROW_RIGHT"
                                     iconAlignment="right"
+                                    size="small"
                                     {...(cta.dataTest
                                         ? {
                                               'data-test': `@dashboard/security-card/${cta.dataTest}/button`,

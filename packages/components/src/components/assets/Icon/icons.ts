@@ -99,6 +99,7 @@ export const ICONS = {
     SEED_SINGLE: require('../../../images/icons/seed_single.svg'),
     SEND: require('../../../images/icons/send.svg'),
     SETTINGS: require('../../../images/icons/settings.svg'),
+    SHOPPING_CART: require('../../../images/icons/shopping_cart.svg'),
     SHIELD_CHECK: require('../../../images/icons/shield_check.svg'),
     SHIELD_CROSS: require('../../../images/icons/shield_cross.svg'),
     SHOW: require('../../../images/icons/show.svg'),
