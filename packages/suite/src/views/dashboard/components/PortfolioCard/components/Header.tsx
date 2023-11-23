@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import styled, { css } from 'styled-components';
 
 import { useFormatters } from '@suite-common/formatters';
-import { H2, Button, LoadingContent } from '@trezor/components';
+import { H1, Button, LoadingContent } from '@trezor/components';
 
 import { GraphRangeSelector, HiddenPlaceholder, Translation } from 'src/components/suite';
 import { updateGraphData } from 'src/actions/wallet/graphActions';
@@ -20,7 +20,7 @@ const Wrapper = styled.div<{ hideBorder: boolean }>`
         `}
 `;
 
-const ValueWrapper = styled(H2)`
+const ValueWrapper = styled(H1)`
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-variant-numeric: tabular-nums;
 `;

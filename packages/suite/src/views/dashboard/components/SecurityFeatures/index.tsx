@@ -188,6 +188,7 @@ const SecurityFeatures = () => {
                     variant="tertiary"
                     icon={securityStepsHidden ? 'ARROW_DOWN' : 'ARROW_UP'}
                     onClick={() => dispatch(setFlag('securityStepsHidden', !securityStepsHidden))}
+                    size="small"
                 >
                     {securityStepsHidden ? (
                         <Translation id="TR_SHOW_BUTTON" />

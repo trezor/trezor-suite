@@ -53,21 +53,32 @@ const shimmerEffect = css`
     background-size: 200%;
 `;
 
-interface SkeletonProps {
-    width?: string;
-    height?: string;
-    size?: string;
+type SkeletonBaseProps = {
     background?: string;
     animate?: boolean;
-    borderRadius?: string;
-    alignItems?: string;
-}
+};
 
-export const SkeletonRectangle = styled.div<SkeletonProps>`
-    width: ${props => props.width ?? '80px'};
-    height: ${props => props.height ?? '20px'};
+type SkeletonRectangleProps = SkeletonBaseProps & {
+    width?: string | number;
+    height?: string | number;
+    borderRadius?: string;
+};
+
+type SkeletonCircleProps = SkeletonBaseProps & {
+    size?: string | number;
+};
+
+const getValue = (value: string | number | undefined) => {
+    if (!value) return null;
+    if (typeof value === 'number') return `${value}px`;
+    return value;
+};
+
+export const SkeletonRectangle = styled.div<SkeletonRectangleProps>`
+    width: ${({ width }) => getValue(width) ?? '80px'};
+    height: ${({ height }) => getValue(height) ?? '20px'};
     background: ${({ background, theme }) => background ?? theme.BG_GREY_ALT};
-    border-radius: ${props => props.borderRadius ?? '4px'};
+    border-radius: ${({ borderRadius }) => getValue(borderRadius) ?? '4px'};
     background-size: 200%;
 
     ${props =>
@@ -77,10 +88,12 @@ export const SkeletonRectangle = styled.div<SkeletonProps>`
         `}
 `;
 
-export const SkeletonCircle = styled.div<SkeletonProps>`
-    width: ${props => props.size ?? '24px'};
-    height: ${props => props.size ?? '24px'};
-    border-radius: ${props => props.size ?? '24px'};
+export const SkeletonCircle = styled.div<SkeletonCircleProps>`
+    ${({ size }) => `
+        width: ${getValue(size) ?? '24px'};
+        height: ${getValue(size) ?? '24px'};
+        border-radius: ${getValue(size) ?? '24px'};
+    `}
     background: ${({ background, theme }) => background ?? theme.BG_GREY_ALT};
     background-size: 200%;
 

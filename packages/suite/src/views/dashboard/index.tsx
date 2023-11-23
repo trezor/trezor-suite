@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { useLayout } from 'src/hooks/suite';
-import AssetsCard from './components/AssetsCard';
+import { AssetsView } from './components/AssetsView';
 import PortfolioCard from './components/PortfolioCard';
 import SecurityFeatures from './components/SecurityFeatures';
 import { PromoBanner } from './components/PromoBanner';
@@ -27,7 +27,7 @@ export const Dashboard = () => {
     return (
         <Wrapper data-test="@dashboard/index">
             <PortfolioCard />
-            <AssetsCard />
+            <AssetsView />
             <SecurityFeatures />
             <PromoBanner />
         </Wrapper>
