@@ -28,7 +28,7 @@ import { getUnusedAddressFromAccount } from 'src/utils/wallet/coinmarket/coinmar
 import type { TradeSell } from 'src/types/wallet/coinmarketCommonTypes';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 
-import { useCoinmarketRecomposeAndSign } from './useCoinmarketRecomposeAndSign ';
+import { useCoinmarketRecomposeAndSign } from './useCoinmarketRecomposeAndSign';
 
 export const useOffers = ({ selectedAccount }: UseOffersProps) => {
     const timer = useTimer();
