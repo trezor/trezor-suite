@@ -127,7 +127,7 @@ interface AssetTableProps {
     isLastRow?: boolean;
 }
 
-export const AssetTable = memo(({ network, failed, cryptoValue, isLastRow }: AssetTableProps) => {
+export const AssetRow = memo(({ network, failed, cryptoValue, isLastRow }: AssetTableProps) => {
     const { symbol, name } = network;
     const dispatch = useDispatch();
     const theme = useTheme();
@@ -204,7 +204,7 @@ export const AssetTable = memo(({ network, failed, cryptoValue, isLastRow }: Ass
     );
 });
 
-export const AssetTableSkeleton = (props: { animate?: boolean }) => {
+export const AssetRowSkeleton = (props: { animate?: boolean }) => {
     const { shouldAnimate } = useLoadingSkeleton();
 
     const animate = props.animate ?? shouldAnimate;

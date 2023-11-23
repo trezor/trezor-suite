@@ -15,8 +15,8 @@ import { setFlag } from 'src/actions/suite/suiteActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { useEnabledNetworks } from 'src/hooks/settings/useEnabledNetworks';
 
-import { AssetGrid, AssetGridSkeleton } from './components/AssetGrid';
-import { AssetTable, AssetTableSkeleton } from './components/AssetTable';
+import { AssetCard, AssetCardSkeleton } from './components/AssetCard';
+import { AssetRow, AssetRowSkeleton } from './components/AssetRow';
 
 const StyledCard = styled(Card)`
     flex-direction: column;
@@ -64,7 +64,7 @@ const Grid = styled.div`
 const GridWrapper = styled.div`
     display: grid;
     grid-gap: 10px;
-    grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 `;
 
 const StyledAddAccountButton = styled(Button)`
@@ -82,7 +82,7 @@ interface assetType {
     assetFailed: boolean;
 }
 
-const AssetsCard = () => {
+export const AssetsView = () => {
     const theme = useTheme();
     const dispatch = useDispatch();
     const { discovery, getDiscoveryStatus, isDiscoveryRunning } = useDiscovery();
@@ -146,6 +146,7 @@ const AssetsCard = () => {
                         <StyledAddAccountButton
                             variant="tertiary"
                             icon="PLUS"
+                            size="small"
                             onClick={goToCoinsSettings}
                         >
                             <Translation id="TR_ENABLE_MORE_COINS" />
@@ -173,14 +174,14 @@ const AssetsCard = () => {
             {dashboardAssetsGridMode && (
                 <GridWrapper>
                     {assetsData.map(asset => (
-                        <AssetGrid
+                        <AssetCard
                             key={asset.symbol}
                             network={asset.network}
                             failed={asset.assetFailed}
                             cryptoValue={asset.assetBalance.toFixed()}
                         />
                     ))}
-                    {discoveryInProgress && <AssetGridSkeleton />}
+                    {discoveryInProgress && <AssetCardSkeleton />}
                 </GridWrapper>
             )}
             {!dashboardAssetsGridMode && (
@@ -199,7 +200,7 @@ const AssetsCard = () => {
                             {/* empty column */}
                             <Header />
                             {assetsData.map((asset, i) => (
-                                <AssetTable
+                                <AssetRow
                                     key={asset.symbol}
                                     network={asset.network}
                                     failed={asset.assetFailed}
@@ -207,7 +208,7 @@ const AssetsCard = () => {
                                     isLastRow={i === assetsData.length - 1}
                                 />
                             ))}
-                            {discoveryInProgress && <AssetTableSkeleton />}
+                            {discoveryInProgress && <AssetRowSkeleton />}
                         </Grid>
                     </AnimatePresence>
                     {isError && (
@@ -221,5 +222,3 @@ const AssetsCard = () => {
         </DashboardSection>
     );
 };
-
-export default AssetsCard;
