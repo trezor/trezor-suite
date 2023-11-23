@@ -14,12 +14,11 @@ export const spacings = {
 type SpacingSize = keyof typeof spacings;
 
 export const spacingsPx = (Object.keys(spacings) as Array<SpacingSize>).reduce(
-    (result: Record<SpacingSize, string>, key) => {
-        result[key] = `${spacings[key]}px`;
-
+    (result, key) => {
+        (result as Record<SpacingSize, string>)[key] = `${spacings[key]}px`;
         return result;
     },
-    {} as Record<SpacingSize, string>,
+    {} as { [K in SpacingSize]: `${(typeof spacings)[K]}px` },
 );
 
 export type Spacings = typeof spacings;
