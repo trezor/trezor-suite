@@ -453,7 +453,8 @@ export const networks = {
             queryString: '',
         },
         support: {
-            [DeviceModelInternal.T2T1]: '2.4.3', // TODO(vl): revisit, for now just anything above 2.0.0
+            [DeviceModelInternal.T2T1]: '2.6.1', // TODO(vl): revisit, for now just anything above 2.0.0
+            [DeviceModelInternal.T2B1]: '2.6.1',
         },
         customBackends: [],
         accountTypes: {},
@@ -473,7 +474,8 @@ export const networks = {
             queryString: '?cluster=devnet',
         },
         support: {
-            [DeviceModelInternal.T2T1]: '2.4.3', // TODO(vl): revisit, for now just anything above 2.0.0
+            [DeviceModelInternal.T2T1]: '2.6.1', // TODO(vl): revisit, for now just anything above 2.0.0
+            [DeviceModelInternal.T2B1]: '2.6.1',
         },
         customBackends: [],
         accountTypes: {},
