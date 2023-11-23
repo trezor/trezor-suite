@@ -7354,6 +7354,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/device-manager@workspace:suite-native/device-manager"
   dependencies:
+    "@mobily/ts-belt": "npm:^3.13.1"
     "@react-navigation/native": "npm:^6.1.3"
     "@reduxjs/toolkit": "npm:1.9.5"
     "@suite-common/icons": "workspace:*"
@@ -7364,8 +7365,10 @@ __metadata:
     "@suite-native/intl": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@suite-native/screen-overlay": "workspace:*"
+    "@suite-native/theme": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/styles": "workspace:*"
+    "@trezor/theme": "workspace:*"
     jotai: "npm:1.9.1"
     react: "npm:^18.2.0"
     react-native: "npm:0.71.8"

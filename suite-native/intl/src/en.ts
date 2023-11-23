@@ -299,6 +299,7 @@ export const en = {
             readDocs: 'Read the docs',
         },
         status: {
+            portfolioTracker: 'Sync & track coins',
             connected: 'Connected',
         },
         syncCoinsButton: 'Sync coins',

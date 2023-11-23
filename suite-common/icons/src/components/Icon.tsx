@@ -7,7 +7,7 @@ import { Color, CSSColor } from '@trezor/theme';
 
 import { IconName, icons } from '../icons';
 
-export type IconColor = Color | SharedValue<CSSColor>;
+export type IconColor = 'svgSource' | Color | SharedValue<CSSColor>;
 
 type IconProps = {
     name: IconName;
@@ -43,6 +43,9 @@ export const Icon = ({ name, customSize, size = 'large', color = 'iconDefault' }
 
     // Paint has to be Reanimated derived value, to allow color transition animation on the UI thread.
     const paint = useDerivedValue(() => {
+        // If color is  set to 'svgSource', it means that the SVG file contains its own colors and we don't want to override them.
+        if (color === 'svgSource') return undefined;
+
         const colorCode = isReanimatedSharedValue(color) ? color.value : colors[color];
 
         const freshPaint = Skia.Paint();

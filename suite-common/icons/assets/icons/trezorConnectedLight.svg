@@ -1,0 +1,12 @@
+<svg fill="none" viewBox="0 0 26 30">
+  <g clip-path="url(#prefix__a)">
+    <path stroke="#00854D" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 1.625V4.25m6.806.194L15.95 6.3m-9.9 9.9-1.855 1.855M4 11.25H1.375M6.05 6.3 4.195 4.445"/>
+  </g>
+  <path stroke="#333" stroke-width="2" d="M11 12.727c0-.866.804-1.727 2-1.727h10c1.196 0 2 .86 2 1.727v8.89c0 1.358-.493 2.69-1.422 3.789l-2.74 3.238a1.078 1.078 0 0 1-.823.356h-3.587c-.328 0-.616-.132-.795-.325l-3.008-3.232C11.567 24.306 11 22.883 11 21.427v-8.7Z"/>
+  <path stroke="#333" stroke-width="2" d="M14.5 20.636v-6h7v6h-7Z"/>
+  <defs>
+    <clipPath id="prefix__a">
+      <path d="M0 0h19v20H0z"/>
+    </clipPath>
+  </defs>
+</svg>

@@ -11,6 +11,7 @@
         "type-check": "tsc --build"
     },
     "dependencies": {
+        "@mobily/ts-belt": "^3.13.1",
         "@react-navigation/native": "^6.1.3",
         "@reduxjs/toolkit": "1.9.5",
         "@suite-common/icons": "workspace:*",
@@ -21,8 +22,10 @@
         "@suite-native/intl": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@suite-native/screen-overlay": "workspace:*",
+        "@suite-native/theme": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/styles": "workspace:*",
+        "@trezor/theme": "workspace:*",
         "jotai": "1.9.1",
         "react": "^18.2.0",
         "react-native": "0.71.8",

@@ -15,11 +15,11 @@ type DeviceManagerModalProps = {
 
 const modalWrapperStyle = prepareNativeStyle<{ insets: EdgeInsets }>((utils, { insets }) => ({
     paddingTop: Math.max(insets.top, utils.spacings.medium),
-    backgroundColor: utils.colors.backgroundSurfaceElevation0,
+    backgroundColor: utils.colors.backgroundSurfaceElevation1,
 }));
 
 const contentWrapperStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.backgroundTertiaryDefaultOnElevation1,
+    backgroundColor: utils.colors.backgroundSurfaceElevation1,
     borderBottomRadius: utils.borders.radii.large,
     paddingHorizontal: utils.spacings.medium,
     paddingBottom: utils.spacings.medium,
