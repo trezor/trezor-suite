@@ -193,15 +193,7 @@ export const postMessageToParent = (message: CoreMessage) => {
 
         // and electron (electron which uses connect hosted outside)
         // https://github.com/electron/electron/issues/7228
-        window.postMessage(
-            {
-                ...message,
-                channel: {
-                    here: '@trezor/connect-popup',
-                },
-            },
-            window.location.origin,
-        );
+        window.postMessage(message, window.location.origin);
     }
 };
 
