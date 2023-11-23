@@ -215,7 +215,7 @@ export const config = {
         {
             methods: ['solanaGetPublicKey', 'solanaGetAddress', 'solanaSignTransaction'],
             // TODO solana (vl/connect): set proper version
-            min: { T1B1: '0', T2T1: '2.7.0', T2B1: '2.7.0' },
+            min: { T1B1: '0', T2T1: '2.6.1', T2B1: '2.6.1' },
         },
     ],
 };
