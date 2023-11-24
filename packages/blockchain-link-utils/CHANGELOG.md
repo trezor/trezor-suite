@@ -1,3 +1,14 @@
+# 1.0.9
+
+-   chore(repo): Upgrade TS 5.3 (#10017) (7277f9d0f)
+-   chore(jest): update jest in packages without issues (7458ab20f)
+-   chore(repo): upgrade to TS 5.2 (#9989) (bf8d0fe80)
+-   fix(blockchain-link): PR review fixes (08d84dfe6)
+-   feat(blockchain-link): Solana tx history (9dff5e509)
+-   feat(blockchain-link): Solana tokens (9adc115ce)
+-   feat(deps): update deps without breaking changes (7e0584c51)
+-   chore(desktop): update deps related to desktop packages (af412cfb5)
+
 # 1.0.7
 
 -   chore: replace deprecated String.subst with Sting.substing (57f45d4cd)
