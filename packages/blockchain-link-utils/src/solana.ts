@@ -347,7 +347,6 @@ export const getTokens = (
             // left unimplemented.
             const uiType = parsed.info.authority === accountAddress ? 'sent' : 'recv';
 
-            // TODO(vl): get token name and symbol properly once token PR is merged
             return {
                 type: uiType,
                 standard: 'SPL',
