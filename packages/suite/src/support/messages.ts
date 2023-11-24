@@ -5300,6 +5300,10 @@ export default defineMessages({
         id: 'TR_ALL_TRANSACTIONS',
         defaultMessage: 'Transactions',
     },
+    TR_TOKEN: {
+        id: 'TR_TOKEN',
+        defaultMessage: 'Token',
+    },
     TR_TOKENS: {
         id: 'TR_TOKENS',
         defaultMessage: 'Tokens',

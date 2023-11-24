@@ -36,7 +36,11 @@ export const TransactionReviewOutput = (props: TransactionReviewOutputProps) => 
         outputLabel = <Translation id={networkType === 'ethereum' ? 'MAX_FEE' : 'FEE'} />;
     }
     if (type === 'contract') {
-        outputLabel = <Translation id="TR_CONTRACT" />;
+        if (networkType === 'solana') {
+            outputLabel = <Translation id="TR_TOKEN" />;
+        } else {
+            outputLabel = <Translation id="TR_CONTRACT" />;
+        }
     }
     if (type === 'address') {
         outputLabel = <Translation id="TR_ADDRESS" />;
