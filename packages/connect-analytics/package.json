@@ -1,6 +1,6 @@
 {
     "name": "@trezor/connect-analytics",
-    "version": "1.0.8",
+    "version": "1.0.9",
     "license": "See LICENSE.md in repo root",
     "sideEffects": false,
     "main": "lib/index",
