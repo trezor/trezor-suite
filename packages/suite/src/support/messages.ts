@@ -8485,4 +8485,78 @@ export default defineMessages({
         id: 'TR_TO',
         defaultMessage: 'To',
     },
+    TR_STAKE_ETH: {
+        id: 'TR_STAKE_ETH',
+        defaultMessage: 'Stake Ethereum',
+    },
+    TR_STAKE_ETH_BADGE: {
+        id: 'TR_STAKE_ETH_BADGE',
+        defaultMessage: 'New',
+    },
+    TR_STAKE_ETH_CARD_TITLE: {
+        id: 'TR_STAKE_ETH_CARD_TITLE',
+        defaultMessage: 'The easiest way to earn ETH.',
+    },
+    TR_STAKE_ETH_EARN_REPEAT: {
+        id: 'TR_STAKE_ETH_EARN_REPEAT',
+        defaultMessage: 'Stake. Earn rewards. Repeat.',
+    },
+    TR_STAKE_ETH_SEE_MONEY_DANCE: {
+        id: 'TR_STAKE_ETH_SEE_MONEY_DANCE',
+        defaultMessage: 'See your money dance',
+    },
+    TR_STAKE_ETH_SEE_MONEY_DANCE_DESC: {
+        id: 'TR_STAKE_ETH_SEE_MONEY_DANCE_DESC',
+        defaultMessage: 'Earn up to {apyPercent}% APY* by staking your Ethereum with Trezor.',
+    },
+    TR_APY_DESC: {
+        id: 'TR_APY_DESC',
+        defaultMessage: '*Annual Percentage Yield',
+    },
+    TR_STAKE_ETH_LOCK_FUNDS: {
+        id: 'TR_STAKE_ETH_LOCK_FUNDS',
+        defaultMessage: 'Lock in funds with flexibility',
+    },
+    TR_STAKE_ETH_LOCK_FUNDS_DESC: {
+        id: 'TR_STAKE_ETH_LOCK_FUNDS_DESC',
+        defaultMessage: 'Staking locks in your funds, but you can unstake them anytime.',
+    },
+    TR_STAKE_ETH_MAXIMIZE_REWARDS: {
+        id: 'TR_STAKE_ETH_MAXIMIZE_REWARDS',
+        defaultMessage: 'Maximize your rewards',
+    },
+    TR_STAKE_ETH_MAXIMIZE_REWARDS_DESC: {
+        id: 'TR_STAKE_ETH_MAXIMIZE_REWARDS_DESC',
+        defaultMessage: 'Soar high! Earn rewards on your rewards. Staking has never felt so good.',
+    },
+    TR_AVAILABLE_NOW_FOR: {
+        id: 'TR_AVAILABLE_NOW_FOR',
+        defaultMessage: 'Available now for',
+    },
+    TR_START_STAKING: {
+        id: 'TR_START_STAKING',
+        defaultMessage: 'Start staking',
+    },
+    TR_MAYBE_LATER: {
+        id: 'TR_MAYBE_LATER',
+        defaultMessage: 'Maybe later',
+    },
+    TR_WHAT_IS_STAKING: {
+        id: 'TR_WHAT_IS_STAKING',
+        defaultMessage: 'What is staking?',
+    },
+    TR_STAKING_IS: {
+        id: 'TR_STAKING_IS',
+        defaultMessage:
+            "Staking is like a friendly gesture where you temporarily lock your Ethereum assets to support the blockchain's operation. As a sweet reward, you'll actually earn more ETH in return!",
+    },
+    TR_STAKE_ANY_AMOUNT_ETH: {
+        id: 'TR_STAKE_ANY_AMOUNT_ETH',
+        defaultMessage:
+            'Stake any amount and watch that sweet ETH roll in. With up to 5% APY, your rewards earn too!',
+    },
+    TR_STAKE_ETH_LEARN_MORE: {
+        id: 'TR_STAKE_ETH_LEARN_MORE',
+        defaultMessage: 'Learn more',
+    },
 });

@@ -7,6 +7,7 @@ import SecurityFeatures from './components/SecurityFeatures';
 import { PromoBanner } from './components/PromoBanner';
 import { T2B1PromoBanner } from './components/T2B1PromoBanner';
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
+import { StakeEthCard } from './components/StakeEthCard';
 
 const Wrapper = styled.div`
     display: flex;
@@ -28,6 +29,7 @@ export const Dashboard = () => {
             <T2B1PromoBanner />
             <AssetsView />
             <SecurityFeatures />
+            <StakeEthCard />
             <PromoBanner />
         </Wrapper>
     );
