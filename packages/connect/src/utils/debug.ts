@@ -10,6 +10,7 @@ const colors: Record<string, string> = {
     // blue, npm package related
     '@trezor/connect': `color: ${blue}; background: #000;`,
     '@trezor/connect-web': `color: ${blue}; background: #000;`,
+    '@trezor/connect-webextension': `color: ${blue}; background: #000;`,
     // orange, api related
     IFrame: `color: ${orange}; background: #000;`,
     Core: `color: ${orange}; background: #000;`,
@@ -53,13 +54,16 @@ export class Log {
         }
     }
 
-    addMessage(level: string, prefix: string, ...args: any[]) {
+    addMessage(
+        { level, prefix, timestamp }: { level: string; prefix: string; timestamp?: number },
+        ...args: any[]
+    ) {
         const message = {
             level,
             prefix,
             css: this.css,
             message: args,
-            timestamp: Date.now(),
+            timestamp: timestamp || Date.now(),
         };
 
         this.messages.push(message);
@@ -83,28 +87,28 @@ export class Log {
     }
 
     log(...args: any[]) {
-        this.addMessage('log', this.prefix, ...args);
+        this.addMessage({ level: 'log', prefix: this.prefix }, ...args);
         if (this.enabled) {
             console.log(`%c${this.prefix}`, this.css, ...args);
         }
     }
 
     error(...args: any[]) {
-        this.addMessage('error', this.prefix, ...args);
+        this.addMessage({ level: 'error', prefix: this.prefix }, ...args);
         if (this.enabled) {
             console.error(`%c${this.prefix}`, this.css, ...args);
         }
     }
 
     warn(...args: any[]) {
-        this.addMessage('warn', this.prefix, ...args);
+        this.addMessage({ level: 'warn', prefix: this.prefix }, ...args);
         if (this.enabled) {
             console.warn(`%c${this.prefix}`, this.css, ...args);
         }
     }
 
     debug(...args: any[]) {
-        this.addMessage('debug', this.prefix, ...args);
+        this.addMessage({ level: 'debug', prefix: this.prefix }, ...args);
         if (this.enabled) {
             if (this.css) {
                 console.log(`%c${this.prefix}`, this.css, ...args);
