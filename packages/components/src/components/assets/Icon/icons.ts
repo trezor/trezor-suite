@@ -129,4 +129,8 @@ export const ICONS = {
     TWO_USERS: require('../../../images/icons/two_users.svg'),
     THREE_USERS: require('../../../images/icons/three_users.svg'),
     FOUR_USERS: require('../../../images/icons/four_users.svg'),
+    PIGGY_BANK: require('../../../images/icons/piggy_bank.svg'),
+    LOCK_LAMINATED_OPEN: require('../../../images/icons/lock_laminated_open.svg'),
+    TREND_UP_THIN: require('../../../images/icons/trend_up_thin.svg'),
+    QUESTION_FILLED: require('../../../images/icons/question_filled.svg'),
 };

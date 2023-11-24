@@ -9,6 +9,7 @@ import { AccountImported } from './AccountImported';
 import { AccountOutOfSync } from './AccountOutOfSync';
 import { TorDisconnected } from './TorDisconnected';
 import { CoinjoinContextMessage } from './CoinjoinContextMessage';
+import { StakeEthBanner } from './StakeEthBanner';
 
 const BannersWrapper = styled.div`
     display: flex;
@@ -33,5 +34,6 @@ export const AccountBanners = ({ account }: AccountBannersProps) => (
         <XRPReserve account={account} />
         <AccountImported account={account} />
         <AccountOutOfSync account={account} />
+        <StakeEthBanner />
     </BannersWrapper>
 );
