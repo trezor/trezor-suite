@@ -277,19 +277,6 @@ export const selectAccountKeyByDescriptorAndNetworkSymbol = (
     return account?.key ?? null;
 };
 
-export const selectAccountsAmountPerSymbol = (
-    state: AccountsRootState & DeviceRootState,
-    networkSymbol: NetworkSymbol,
-) => {
-    const accounts = selectDeviceAccounts(state);
-
-    return pipe(
-        accounts,
-        A.filter(account => account.symbol === networkSymbol),
-        A.length,
-    );
-};
-
 export const selectAccountsSymbols = memoize(
     (state: AccountsRootState): NetworkSymbol[] =>
         pipe(
