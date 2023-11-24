@@ -20,7 +20,7 @@ import {
     transformTokenInfo,
     TOKEN_PROGRAM_PUBLIC_KEY,
 } from '@trezor/blockchain-link-utils/lib/solana';
-import { getTokenMetadata, TOKEN_ACCOUNT_LAYOUT } from './tokenUtils';
+import { TOKEN_ACCOUNT_LAYOUT } from './tokenUtils';
 
 export type SolanaAPI = Connection;
 
@@ -128,12 +128,19 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
             {} as Record<number, number | null>,
         );
 
-        return transactionsPage
-            .filter(isValidTransaction)
-            .map(tx =>
-                solanaUtils.transformTransaction(tx, payload.descriptor, slotToBlockHeightMapping),
+        return (
+            await Promise.all(
+                transactionsPage
+                    .filter(isValidTransaction)
+                    .map(tx =>
+                        solanaUtils.transformTransaction(
+                            tx,
+                            payload.descriptor,
+                            slotToBlockHeightMapping,
+                        ),
+                    ),
             )
-            .filter((tx): tx is Transaction => !!tx);
+        ).filter((tx): tx is Transaction => !!tx);
     };
 
     const tokenAccounts = await api.getParsedTokenAccountsByOwner(publicKey, {
@@ -164,7 +171,7 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
     // Fetch token info only if the account owns tokens
     let tokens: TokenInfo[] = [];
     if (tokenAccounts.value.length > 0) {
-        const tokenMetadata = await getTokenMetadata();
+        const tokenMetadata = await solanaUtils.getTokenMetadata();
 
         tokens = transformTokenInfo(tokenAccounts.value, tokenMetadata);
     }
@@ -341,7 +348,7 @@ const subscribeAccounts = async (
                 return;
             }
 
-            const tx = solanaUtils.transformTransaction(
+            const tx = await solanaUtils.transformTransaction(
                 lastTx,
                 a.descriptor,
                 slotToBlockHeightMapping,

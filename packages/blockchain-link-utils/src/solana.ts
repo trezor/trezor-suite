@@ -26,11 +26,37 @@ export const ASSOCIATED_TOKEN_PROGRAM_PUBLIC_KEY = 'ATokenGPvbdGVxr1b2hvZbsiqW5x
 export const SYSTEM_PROGRAM_PUBLIC_KEY = '11111111111111111111111111111111';
 // WSOL transfers are denoted as transfers of SOL as well as WSOL, so we use this to filter out SOL values
 // when parsing tx effects.
-const WSOL_MINT = 'So11111111111111111111111111111111111111112';
-export const WSOL_MINT_LOWERCASE = WSOL_MINT.toLowerCase();
+export const WSOL_MINT = 'So11111111111111111111111111111111111111112';
+
+// https://github.com/viaprotocol/tokenlists
+// Aggregated token list with tokens listed on multiple exchanges
+const solanaTokenListUrl =
+    'https://cdn.jsdelivr.net/gh/viaprotocol/tokenlists/all_tokens/solana.json';
+
+export const getTokenMetadata = async (): Promise<TokenDetailByMint> => {
+    const tokenListResult: { address: string; name: string; symbol: string }[] = await (
+        await fetch(solanaTokenListUrl)
+    ).json();
+
+    const tokenMap = tokenListResult.reduce(
+        (acc, token) => ({
+            [token.address]: {
+                name: token.name,
+                symbol: token.symbol,
+            },
+            ...acc,
+        }),
+        {} as TokenDetailByMint,
+    );
+
+    // Explicitly set Wrapped SOL symbol to WSOL instead of the official 'SOL' which leads to confusion in UI
+    tokenMap[WSOL_MINT].symbol = 'WSOL';
+
+    return tokenMap;
+};
 
 export const getTokenNameAndSymbol = (mint: string, tokenDetailByMint: TokenDetailByMint) => {
-    const tokenDetail = tokenDetailByMint[mint.toLowerCase()];
+    const tokenDetail = tokenDetailByMint[mint];
 
     return tokenDetail
         ? { name: tokenDetail.name, symbol: tokenDetail.symbol }
@@ -328,10 +354,11 @@ export const getAmount = (
     return accountEffect.amount.toString();
 };
 
-export const getTokens = (
+export const getTokens = async (
     tx: ParsedTransactionWithMeta,
     accountAddress: string,
-): TokenTransfer[] => {
+): Promise<TokenTransfer[]> => {
+    const tokenDetailByMint = await getTokenMetadata();
     const effects = tx.transaction.message.instructions
         .filter((ix): ix is ParsedInstruction => 'parsed' in ix)
         .filter(
@@ -354,8 +381,7 @@ export const getTokens = (
                 to: parsed.info.destination,
                 contract: parsed.info.mint,
                 decimals: parsed.info.tokenAmount?.decimals || 0,
-                name: parsed.info.mint,
-                symbol: `${parsed.info.mint.slice(0, 3)}...`,
+                ...getTokenNameAndSymbol(parsed.info.mint, tokenDetailByMint),
                 amount: parsed.info.tokenAmount?.amount || '-1',
             };
         });
@@ -363,14 +389,14 @@ export const getTokens = (
     return effects;
 };
 
-export const transformTransaction = (
+export const transformTransaction = async (
     tx: SolanaValidParsedTxWithMeta,
     accountAddress: string,
     slotToBlockHeightMapping: Record<number, number | null>,
-): Transaction => {
+): Promise<Transaction> => {
     const nativeEffects = getNativeEffects(tx);
 
-    const tokens = getTokens(tx, accountAddress);
+    const tokens = await getTokens(tx, accountAddress);
 
     const type = getTxType(tx, nativeEffects, accountAddress, tokens);
 
