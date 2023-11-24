@@ -110,12 +110,12 @@ const Wrapper = styled.div<WrapperProps>`
         ${typography.body};
     }
 
-    ${({ isClean }) =>
+    ${({ isClean, size }) =>
         !isClean &&
         css`
             .${reactSelectClassNamePrefix}__indicators {
                 position: absolute;
-                top: ${spacingsPx.md};
+                top: ${size === 'small' ? spacingsPx.xs : spacingsPx.md};
                 right: ${spacingsPx.md};
             }
         `}

@@ -3,8 +3,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
 
 import { A } from '@mobily/ts-belt';
-import { Screen } from '@suite-native/navigation';
 
+import { Screen } from '@suite-native/navigation';
 import { Box, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import {
