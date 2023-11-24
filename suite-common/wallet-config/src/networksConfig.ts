@@ -456,7 +456,7 @@ export const networks = {
             [DeviceModelInternal.T2T1]: '2.6.1', // TODO(vl): revisit, for now just anything above 2.0.0
             [DeviceModelInternal.T2B1]: '2.6.1',
         },
-        customBackends: [],
+        customBackends: ['solana'],
         accountTypes: {},
     },
     dsol: {
@@ -477,7 +477,7 @@ export const networks = {
             [DeviceModelInternal.T2T1]: '2.6.1', // TODO(vl): revisit, for now just anything above 2.0.0
             [DeviceModelInternal.T2B1]: '2.6.1',
         },
-        customBackends: [],
+        customBackends: ['solana'],
         accountTypes: {},
     },
 } as const;
