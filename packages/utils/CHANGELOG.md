@@ -1,3 +1,14 @@
+# 9.0.15
+
+-   chore(repo): Upgrade TS 5.3 (#10017) (7277f9d0f)
+-   chore(jest): update jest in packages without issues (7458ab20f)
+-   chore(repo): upgrade to TS 5.2 (#9989) (bf8d0fe80)
+-   chore(connect): improve error message (07d504662)
+-   feat(deps): update deps without breaking changes (7e0584c51)
+-   feat(utils): addDashesToSpaces utils (116c3a927)
+-   chore: update prettier to v3 and reformat (4229fd483)
+-   chore(desktop): update deps related to desktop packages (af412cfb5)
+
 # 9.0.13
 
 -   test(utils): mock timer in createCooldown (99c6394f5)
