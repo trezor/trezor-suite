@@ -1,3 +1,18 @@
+# 1.1.18
+
+-   chore(repo): Upgrade TS 5.3 (#10017) (7277f9d0f)
+-   chore(repo): upgrade to TS 5.2 (#9989) (bf8d0fe80)
+-   refactor(transport): rename files (f5286f613)
+-   chore(tests): cleanup jets configs (#9869) (7b68bab05)
+-   feat(deps): update deps without breaking changes (7e0584c51)
+-   tests(transport): check presence of protobuf messages (60f1a8bf1)
+-   feat(transport): do not require protobuf messages (221573be2)
+-   tests(transport): fix type-check (ffcfde3bb)
+-   tests(transport): fix imports in e2e (1ffb1c05b)
+-   tests(transport): remove unused script/test (6feadb573)
+-   chore(desktop): update deps related to desktop packages (af412cfb5)
+-   feat(mobile): create react-native-usb library (#9689) (3be5f5015)
+
 # 1.1.17
 
 -   chore: edit links to trezor-firmware repo after renaming its main branch (2b0606371)
