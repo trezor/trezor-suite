@@ -454,7 +454,7 @@ export default [
             name: 'Solana Mainnet',
             // we do not use path to worker build here because its not used, we use it just to match this config to actual implementation of the worker
             worker: 'solana',
-            server: ['solana.trezor.io'],
+            server: ['https://solana.trezor.io'],
             debug: true,
         },
         data: {
@@ -481,7 +481,7 @@ export default [
             name: 'Solana Devnet',
             // we do not use path to worker build here because its not used, we use it just to match this config to actual implementation of the worker
             worker: 'solana',
-            server: ['solana-dev.trezor.io'],
+            server: ['https://solana-dev.trezor.io'],
             debug: true,
         },
         data: {

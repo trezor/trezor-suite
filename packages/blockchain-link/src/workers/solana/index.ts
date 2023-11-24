@@ -436,7 +436,7 @@ class SolanaWorker extends BaseWorker<SolanaAPI> {
     }
 
     tryConnect(url: string): Promise<SolanaAPI> {
-        const api = new Connection(`https://${url}`, { wsEndpoint: `wss://${url}` });
+        const api = new Connection(url, { wsEndpoint: url.replace('https', 'wss') });
         this.post({ id: -1, type: RESPONSES.CONNECTED });
         return Promise.resolve(api);
     }
