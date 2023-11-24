@@ -8,7 +8,7 @@ export TEST_FILE=$1
 
 DEV_SERVER_URL="https://suite.corp.sldev.cz"
 LOCAL_SERVER_URL="http://localhost:8088"
-CONNECT_VERSION="9.0.11"
+CONNECT_VERSION="9.0.10"
 URL="${DEV_SERVER_URL}/connect/npm-release/connect-${CONNECT_VERSION}/?trezor-connect-src=${LOCAL_SERVER_URL}/"
 echo "URL: ${URL}"
 export URL
