@@ -108,25 +108,6 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
 
     const accountInfo = await api.getAccountInfo(publicKey);
 
-    if (!accountInfo) {
-        // return empty account
-        const account: AccountInfo = {
-            descriptor: payload.descriptor,
-            balance: '0', // default balance
-            availableBalance: '0', // default balance
-            empty: true,
-            history: {
-                total: -1,
-                unconfirmed: 0,
-                transactions: undefined,
-            },
-        };
-        return Promise.resolve({
-            type: RESPONSES.GET_ACCOUNT_INFO,
-            payload: account,
-        } as const);
-    }
-
     const getTransactionPage = async (txIds: string[]) => {
         const transactionsPage = await fetchTransactionPage(api, txIds);
         const uniqueTransactionSlots = Array.from(new Set(transactionsPage.map(tx => tx.slot)));
@@ -188,10 +169,12 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
         tokens = transformTokenInfo(tokenAccounts.value, tokenMetadata);
     }
 
+    const balance = await api.getBalance(publicKey);
+
     const account: AccountInfo = {
         descriptor: payload.descriptor,
-        balance: accountInfo.lamports.toString(),
-        availableBalance: accountInfo.lamports.toString(),
+        balance: balance.toString(),
+        availableBalance: balance.toString(),
         empty: !allTxIds.length,
         history: {
             total: allTxIds.length,
@@ -207,9 +190,13 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
               }
             : undefined,
         tokens,
-        misc: {
-            owner: accountInfo.owner.toString(),
-        },
+        ...(accountInfo != null
+            ? {
+                  misc: {
+                      owner: accountInfo.owner.toString(),
+                  },
+              }
+            : {}),
     };
     return {
         type: RESPONSES.GET_ACCOUNT_INFO,
