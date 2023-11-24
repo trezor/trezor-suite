@@ -1,36 +1,36 @@
-# 2.0.0 (not released)
+# 2.0.1
 
 BREAKING CHANGES in `composeTx` module.
-
 renamed `composeTx` request parameters and response.
 
--   request `utxo.tsize` is removed
--   request `utxo.vsize` is removed
--   request `utxo.addressPath` is removed
--   request `utxo.height` > `utxo.confirmations`
--   request `utxo.value` > `utxo.amount`
--   request `utxo.index` > `utxo.vout`
--   request `utxo.transactionHash` > `utxo.txid`
--   request `output.type = 'complete'` > `output.type = 'payment'`
--   request `output.type = 'noaddress'` > `output.type = 'payment-noaddress'`
--   request `changeAddress: string` > `changeAddress: { address: string }`
--   request `height` is removed
--   request `basePath` is removed (not used)
--   request `changeId` is removed (not used)
-
--   response nested `transaction` object is removed. Final result contains fields `inputs`, `outputs` and `outputsPermutation`
--   response `nonfinal` result contains `inputs`
--   response `transaction.input.index` > `input.vout`
--   response `transaction.input.hash` > `input.txid`
--   response `transaction.output.value` > `output.amount`
--   response `transaction.output.opReturnData: Buffer` > `output.dataHex: string`
--   response `transaction.output.type` added (only for final output types: `payment`, `opreturn` and `send-max` which becomes `payment` after amount calculation)
--   response `transaction.output.type` added (only for final output types: `payment`, `opreturn` and `send-max` which becomes `payment` after amount calculation)
--   response `type = 'error'` is strongly typed
-
--   request `utxo` is generic and should be equal to `response.input` (ComposeInput)
--   request `output` is generic and should be equal to `response.output` (ComposeOutput + ComposeChangeAddress)
--   request `changeAddress` is generic and should be equal to `response.output.type = 'change'`
+-   chore(repo): Upgrade TS 5.3 (#10017) (7277f9d0f)
+-   chore(repo): upgrade to TS 5.2 (#9989) (bf8d0fe80)
+-   chore(tests): cleanup jets configs (#9869) (7b68bab05)
+-   feat(deps): update deps without breaking changes (7e0584c51)
+-   chore: update prettier to v3 and reformat (4229fd483)
+-   chore(desktop): update deps related to desktop packages (af412cfb5)
+-   chore(utxo-lib): export all ComposeResult types (993dbf628)
+-   chore(utxo-lib): version 2.0.0 (4d3495358)
+-   refactor(utxo-lib): `composeTx` nonfinal result with inputs (6107d8d82)
+-   refactor(utxo-lib): `composeTx` final result without nested transaction object (bb379b47d)
+-   chore(utxo-lib): `composeTx` remove `basePath` and `changeId` params (8a6dacfc6)
+-   refactor(utxo-lib): `composeTx` make changeAddress param generic (9f91c0911)
+-   refactor(utxo-lib): `composeTx` make ComposeOutput and ComposedTransaction.output generic (2e4b3563a)
+-   chore(utxo-lib): `composeTx` simplify processing result from `coinselect` (af7ca4837)
+-   refactor(utxo-lib): `composeTx` strongly typed errors (3d8ce504a)
+-   chore(utxo-lib): `composeUtils` simplify outputs sorting (e78afec83)
+-   chore(utxo-lib): `composeUtils` remove unnecessary function (a6d54e443)
+-   refactor(utxo-lib): `composeUtils` use payments module to create `script` used in `CoinSelectOutput` (2180ea28a)
+-   refactor(utxo-lib): `coinselect` add changeOutput to CoinSelectOptions (1ba5f0aad)
+-   refactor(utxo-lib): `composeTx` replace Permutation class with simple function (a1ccae45f)
+-   refactor(utxo-lib): `composeTx` ComposedTxOutput rename `opReturnData` to `dataHex` (6c36de145)
+-   refactor(utxo-lib): `composeTx` ComposeOutput rename `type` field (d3c6c82e0)
+-   refactor(utxo-lib): `composeTx` make ComposeInput and ComposedTransaction.input generic (3e3d2a601)
+-   refactor(utxo-lib): `composeTx` ComposeInput and ComposedTxInput rename `transactionHash` and `hash` to `txid` (939c153ff)
+-   refactor(utxo-lib): `composeTx` ComposeInput and ComposedTxInput rename `index` to `vout` (f0a434698)
+-   refactor(utxo-lib): `composeTx` ComposeInput and ComposedTxOutput rename `value` to `amount` (22414faaa)
+-   refactor(utxo-lib): `composeTx` ComposeInput: rename `height` to `confirmations` (070f3d06f)
+-   chore(utxo-lib): `composeTx` ComposeInput: remove `addressPath`, `tsize` and `vsize` fields (4e1d79151)
 
 # 1.0.11
 
