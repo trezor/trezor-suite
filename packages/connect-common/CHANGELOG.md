@@ -1,3 +1,14 @@
+# 0.0.23
+
+-   feat(connect): update solana backend urls (876f60939)
+-   chore(repo): Upgrade TS 5.3 (#10017) (7277f9d0f)
+-   chore(jest): update in connect-common package (5801d2595)
+-   chore(repo): upgrade to TS 5.2 (#9989) (bf8d0fe80)
+-   chore(tests): cleanup jets configs (#9869) (7b68bab05)
+-   feat(deps): update deps without breaking changes (7e0584c51)
+-   feat(connect-common): add T2T1 & T2B1 firmware binaries 2.6.3 bootloader 2.1.4 (9cca8b14f)
+-   chore(desktop): update deps related to desktop packages (af412cfb5)
+
 # 0.0.22
 
 -   chore(connect): update coins.json support format (95f270fec)
