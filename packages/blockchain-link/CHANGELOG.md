@@ -1,3 +1,24 @@
+# 2.1.19
+
+-   chore(repo): Upgrade TS 5.3 (#10017) (7277f9d0f)
+-   chore(repo): upgrade to TS 5.2 (#9989) (bf8d0fe80)
+-   fix(blockchain-link): PR review fixes (08d84dfe6)
+-   chore(suite): update lockfile (761aea82b)
+-   feat(blockchain-link): Solana tx history (9dff5e509)
+-   feat(blockchain-link): Solana pushTx (e63813bb6)
+-   feat(blockchain-link): Solana tokens (9adc115ce)
+-   feat(blockchain-link): Solana getAccountInfo (248913743)
+-   feat(blockchain-link): Solana estimateFee (34a2f28a0)
+-   feat(blockchain-link): Solana worker setup (662bc092a)
+-   feat(blockchain-link): Solana ui config (98407f35a)
+-   chore(tests): cleanup jets configs (#9869) (7b68bab05)
+-   feat(deps): update deps without breaking changes (7e0584c51)
+-   chore: update prettier to v3 and reformat (4229fd483)
+-   chore(connect): bl workers dynamic import (74fd08389)
+-   chore(build): update deps related to suite app build (6ab9e6322)
+-   chore(desktop): update deps related to desktop packages (af412cfb5)
+-   fix(blockchain-link): multiple workers initialization (#9766) (3208ea280)
+
 # 2.1.17
 
 -   feat(blockchain-link): add block filter methods (66606afc6)
