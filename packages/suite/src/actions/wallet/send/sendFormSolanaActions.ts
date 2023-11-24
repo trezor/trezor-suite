@@ -98,6 +98,7 @@ const fetchAccountOwnerAndTokenInfoForAddress = async (
     const accountInfoResponse = await TrezorConnect.getAccountInfo({
         coin: symbol,
         descriptor: address,
+        details: 'tokens'
     });
 
     if (accountInfoResponse.success) {
