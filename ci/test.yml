@@ -274,7 +274,7 @@ connect-popup manual:
     <<: *run_everything_rules
   when: manual
 
-connect-popup legacy npm package:
+.connect-popup legacy npm package base:
   extends: .e2e connect-popup
   stage: legacy testing
   needs:
@@ -289,11 +289,20 @@ connect-popup legacy npm package:
     TEST_FILE: $TEST_FILE
   parallel:
     matrix:
-      - CONNECT_VERSION: "9.0.11"
+      - CONNECT_VERSION: "9.0.10"
         TEST_FILE: ["methods.test", "browser-support.test", "popup-close-legacy.test"]
+
+connect-popup legacy npm package manual:
+  extends: .connect-popup legacy npm package base
   except:
     <<: *run_everything_rules
   when: manual
+
+connect-popup legacy npm package:
+  extends: .connect-popup legacy npm package base
+  only:
+    refs:
+      - schedules
 
 .e2e connect-popup-webextension:
   stage: integration testing
