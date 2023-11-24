@@ -1,3 +1,10 @@
+# 1.0.9
+
+-   chore(repo): Upgrade TS 5.3 (#10017) (7277f9d0f)
+-   chore(repo): upgrade to TS 5.2 (#9989) (bf8d0fe80)
+-   feat(deps): update deps without breaking changes (7e0584c51)
+-   chore(desktop): update deps related to desktop packages (af412cfb5)
+
 # 1.0.6
 
 -   chore(env-utils): build:lib (044490ef5)
