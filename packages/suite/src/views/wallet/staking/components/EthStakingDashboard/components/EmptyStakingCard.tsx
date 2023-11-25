@@ -1,6 +1,8 @@
 import styled from 'styled-components';
 import { Button, H2, Icon, P, useTheme } from '@trezor/components';
 import { Card, Translation, StakingFeature } from 'src/components/suite';
+import { openModal } from 'src/actions/suite/modalActions';
+import { useDispatch } from 'src/hooks/suite';
 
 const StyledCard = styled(Card)`
     padding: 26px 26px 36px;
@@ -48,6 +50,10 @@ const FlexRowChild = styled.div`
 
 export const EmptyStakingCard = () => {
     const theme = useTheme();
+
+    const dispatch = useDispatch();
+    const openStakingEthInANutshellModal = () =>
+        dispatch(openModal({ type: 'staking-eth-in-a-nutshell' }));
 
     const stakeEthFeatures = [
         {
@@ -112,7 +118,7 @@ export const EmptyStakingCard = () => {
                     </FlexRow>
 
                     {/* TODO: Add arrow line down icon. Export from Figma isn't handled as is it should by the strokes to fills online converter */}
-                    <Button>
+                    <Button onClick={openStakingEthInANutshellModal}>
                         <Translation id="TR_START_STAKING" />
                     </Button>
                 </Body>
