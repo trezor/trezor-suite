@@ -66,13 +66,13 @@ export const EmptyPortfolioTrackerState = () => {
                     justifyContent="center"
                 >
                     <Image source={image} resizeMode="contain" style={applyStyle(imageStyle)} />
-                    <Text variant="titleSmall">
+                    <Text variant="titleSmall" testID="@emptyHome/welcomeHeader">
                         <Translation id="moduleHome.emptyState.portfolioTracker.title" />
                     </Text>
                     <Text color="textSubdued" textAlign="center">
                         <Translation id="moduleHome.emptyState.portfolioTracker.subtitle" />
                     </Text>
-                    <Button onPress={handleSyncMyCoins}>
+                    <Button onPress={handleSyncMyCoins} testID="@emptyHome/sync-my-coin">
                         {translate('moduleHome.emptyState.portfolioTracker.primaryButton')}
                     </Button>
                 </VStack>

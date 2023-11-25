@@ -1,0 +1,11 @@
+appId: io.trezor.suite.${ENV}
+---
+- scrollUntilVisible:
+      element:
+          text: 'Confirm'
+      direction: DOWN
+- tapOn:
+      text: 'Confirm'
+- waitForAnimationToEnd:
+      timeout: 5000
+- assertVisible: 'My portfolio balance'

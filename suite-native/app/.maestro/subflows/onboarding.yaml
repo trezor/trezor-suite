@@ -1,0 +1,20 @@
+appId: io.trezor.suite.${ENV}
+---
+- assertVisible: 'Get started'
+- tapOn:
+      id: '@onboarding/Welcome/nextBtn'
+      retryTapIfNoChange: false
+- tapOn:
+      id: '@onboarding/TrackBalances/nextBtn'
+- tapOn:
+      id: '@onboarding/AboutReceiveCoinsFeature/nextBtn'
+- scrollUntilVisible:
+      element:
+          id: '@onboarding/UserDataConsent/allow'
+      direction: DOWN
+- tapOn:
+      id: '@onboarding/UserDataConsent/allow'
+- tapOn:
+      id: '@onboarding/reject-biometrics'
+- assertVisible:
+      id: '@emptyHome/sync-my-coin'

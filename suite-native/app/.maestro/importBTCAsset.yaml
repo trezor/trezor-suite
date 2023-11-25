@@ -1,0 +1,18 @@
+# Test case:
+# 1. Start the app
+# 2. Import BTC asset via text
+# 3. Verify that asset has been synced
+
+appId: io.trezor.suite.${ENV}
+env:
+    NETWORK: 'Bitcoin'
+    COIN_ADDRESS: 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT'
+---
+- launchApp:
+      clearState: true
+- runFlow: 'subflows/onboarding.yaml'
+- runFlow:
+      file: 'subflows/importNetworkByText.yaml'
+      env:
+          SYNC_COINS_BTN: '@emptyHome/sync-my-coin'
+- assertVisible: 'Coin Synced'

@@ -72,35 +72,6 @@ jobs:
           path: |
             suite-native/app/android/**/*.apk
 
-  maestro_tests:
-    needs: android_develop
-    runs-on: ubuntu-latest
-    environment: develop
-    timeout-minutes: 45
-    steps:
-      - name: install Maestro
-        run: |
-          curl -Ls "https://get.maestro.mobile.dev" | bash
-
-      - name: get android APK for tests
-        uses: actions/download-artifact@v2
-        with:
-          name: app-apk
-          path: suite-native/app/android
-
-      - name: install the apk via adb
-        run: |
-          adb install -r suite-native/app/android/app/build/outputs/apk/firebaseDevelop/release/app-firebaseDevelop-release.apk
-
-      - name: move to the tests directory
-        run: cd suite-native/app/.maestro
-
-      - name: run the tests on an emulator
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 33
-          script: maestro test importBTCviaText.yaml
-
   ios_develop:
     runs-on: macos-12
     environment: develop

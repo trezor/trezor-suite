@@ -24,7 +24,7 @@ export const AccountListItemInteractive = ({
 
     return (
         <Box padding="medium">
-            <TouchableOpacity onPress={() => onSelectAccount(account.key)}>
+            <TouchableOpacity onPress={() => onSelectAccount(account.key)} testID="@assetsList/btc">
                 <AccountListItem
                     key={account.key}
                     account={account}

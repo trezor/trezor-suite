@@ -37,12 +37,7 @@ const NetworkItemSection = ({
     <HeaderedCard title={title}>
         <VStack spacing="large">
             {networks.map(({ symbol }) => (
-                <SelectableNetworkItem
-                    key={symbol}
-                    symbol={symbol}
-                    data-testID={`@onboarding/select-coin/${symbol}`}
-                    onPress={onSelectItem}
-                />
+                <SelectableNetworkItem key={symbol} symbol={symbol} onPress={onSelectItem} />
             ))}
         </VStack>
     </HeaderedCard>

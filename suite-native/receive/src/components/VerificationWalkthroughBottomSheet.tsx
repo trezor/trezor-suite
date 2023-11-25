@@ -70,7 +70,7 @@ export const VerificationWalkthroughBottomSheet = ({
                                 )}
                             </Button>
                         )}
-                        <Button onPress={handlePressContinue}>
+                        <Button onPress={handlePressContinue} testID="@receive/continue">
                             {translate('generic.buttons.continue')}
                         </Button>
                     </VStack>
