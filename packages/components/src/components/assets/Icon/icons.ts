@@ -133,4 +133,7 @@ export const ICONS = {
     LOCK_LAMINATED_OPEN: require('../../../images/icons/lock_laminated_open.svg'),
     TREND_UP_THIN: require('../../../images/icons/trend_up_thin.svg'),
     QUESTION_FILLED: require('../../../images/icons/question_filled.svg'),
+    ARROW_BEND_DOUBLE_UP_LEFT: require('../../../images/icons/arrow_bend_double_up_left.svg'),
+    HAND_COINS: require('../../../images/icons/hand_coins.svg'),
+    LOCK_SIMPLE: require('../../../images/icons/lock_simple.svg'),
 };

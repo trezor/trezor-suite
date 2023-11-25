@@ -8559,4 +8559,21 @@ export default defineMessages({
         id: 'TR_STAKE_ETH_LEARN_MORE',
         defaultMessage: 'Learn more',
     },
+    TR_STAKING_IN_A_NUTSHELL: {
+        id: 'TR_STAKING_IN_A_NUTSHELL',
+        defaultMessage: 'Staking in a nutshell',
+    },
+    TR_STAKED_ETH_AMOUNT_LOCKED: {
+        id: 'TR_STAKED_ETH_AMOUNT_LOCKED',
+        defaultMessage: 'The staked amount of ETH is locked and can’t be traded or sent.',
+    },
+    TR_UNSTAKING_TAKES: {
+        id: 'TR_UNSTAKING_TAKES',
+        defaultMessage:
+            'Unstaking usually takes about 3 days. Once completed, you can trade or send it.',
+    },
+    TR_ETH_REWARDS_EARN: {
+        id: 'TR_ETH_REWARDS_EARN',
+        defaultMessage: 'Your rewards also earn. Keep them staked and watch your ETH rewards soar.',
+    },
 });

@@ -41,3 +41,4 @@ export { UnecoCoinjoinModal } from './ReduxModal/UserContextModal/UnecoCoinjoinM
 export { AuthenticateDeviceModal } from './ReduxModal/UserContextModal/AuthenticateDeviceModal';
 export { AuthenticateDeviceFailModal } from './ReduxModal/UserContextModal/AuthenticateDeviceFailModal';
 export { DeviceAuthenticityOptOutModal } from './ReduxModal/UserContextModal/DeviceAuthenticityOptOutModal';
+export { StakingEthInANutshellModal } from './ReduxModal/UserContextModal/StakingEthInANutshellModal';

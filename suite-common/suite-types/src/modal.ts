@@ -165,4 +165,7 @@ export type UserContextPayload =
       }
     | {
           type: 'authenticate-device-fail';
+      }
+    | {
+          type: 'staking-eth-in-a-nutshell';
       };
