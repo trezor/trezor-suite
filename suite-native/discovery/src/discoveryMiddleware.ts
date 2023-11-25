@@ -28,17 +28,19 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
             deviceModel,
         );
 
-        // On successful authorization, create discovery instance and run.
-        if (deviceActions.authDevice.match(action) && device) {
-            if (isDeviceFirmwareVersionSupported) {
-                dispatch(
-                    startDescriptorPreloadedDiscoveryThunk({
-                        deviceState: action.payload.state,
-                        device,
-                        areTestnetsEnabled,
-                    }),
-                );
-            }
+        // On successful authorization, create discovery instance and run it.
+        if (
+            deviceActions.authDevice.match(action) &&
+            device?.state &&
+            isDeviceFirmwareVersionSupported
+        ) {
+            dispatch(
+                startDescriptorPreloadedDiscoveryThunk({
+                    deviceState: action.payload.state,
+                    device,
+                    areTestnetsEnabled,
+                }),
+            );
         }
 
         // If user enables testnets discovery, run it.
