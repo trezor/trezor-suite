@@ -44,7 +44,7 @@ const finishNetworkTypeDiscoveryThunk = createThunk(
             }),
         );
 
-        if (finishedNetworksCount === discovery.networks.length) {
+        if (finishedNetworksCount >= discovery.total) {
             dispatch(removeDiscovery(discovery.deviceState));
         }
     },
@@ -224,13 +224,15 @@ export const createDescriptorPreloadedDiscoveryThunk = createThunk(
             }),
         ).unwrap();
 
+        const discoveryNetworksTotalCount = filterUnavailableNetworks(networks, device).length;
+
         dispatch(
             createDiscovery({
                 deviceState,
                 authConfirm: false,
                 index: 0,
                 status: DiscoveryStatus.IDLE,
-                total: networks.length,
+                total: discoveryNetworksTotalCount,
                 bundleSize: 0,
                 loaded: 0,
                 failed: [],
