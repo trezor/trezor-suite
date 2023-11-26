@@ -4,8 +4,11 @@ import { memoizeWithArgs } from 'proxy-memoize';
 import {
     AccountsRootState,
     DeviceRootState,
+    DiscoveryRootState,
     selectAccounts,
     selectDeviceAccounts,
+    selectIsNoPhysicalDeviceConnected,
+    selectIsPortfolioEmpty,
 } from '@suite-common/wallet-core';
 import { Account, TokenInfoBranded } from '@suite-common/wallet-types';
 import { getNetwork } from '@suite-common/wallet-utils';
@@ -94,3 +97,12 @@ export const selectIsAccountAlreadyDiscovered = (
                 account.deviceState === deviceState,
         ),
     );
+
+export const selectIsAppFreshStart = (
+    state: AccountsRootState & DeviceRootState & DiscoveryRootState,
+) => {
+    const isPortfolioEmpty = selectIsPortfolioEmpty(state);
+    const isNoPhysicalDeviceConnected = selectIsNoPhysicalDeviceConnected(state);
+
+    return isPortfolioEmpty && isNoPhysicalDeviceConnected;
+};
