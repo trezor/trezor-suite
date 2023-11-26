@@ -18,7 +18,7 @@
         "jotai": "1.9.1",
         "react": "18.2.0",
         "react-native": "0.71.8",
-        "react-native-mmkv": "^2.10.2",
+        "react-native-mmkv": "^2.11.0",
         "react-native-restart": "^0.0.27",
         "redux-persist": "6.0.0"
     },
