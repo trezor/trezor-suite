@@ -169,27 +169,6 @@ export default defineConfig({
 
                     return Promise.resolve(true);
                 },
-                activateHoverPseudo: async ({ selector }) => {
-                    client = client || (await CDP({ port }));
-                    await client.DOM.enable();
-                    await client.CSS.enable();
-                    // as the Window consists of two IFrames, we must retrieve the right one
-                    const allRootNodes = await client.DOM.getFlattenedDocument();
-                    const isIframe = (node: any) =>
-                        node.nodeName === 'IFRAME' && node.contentDocument;
-                    const filtered = allRootNodes.nodes.filter(isIframe);
-                    // The first IFrame is our App
-                    const root = filtered[0].contentDocument;
-                    const { nodeId } = await client.DOM.querySelector({
-                        nodeId: root.nodeId,
-                        selector,
-                    });
-
-                    return client.CSS.forcePseudoState({
-                        nodeId,
-                        forcedPseudoClasses: ['hover'],
-                    });
-                },
                 readDir: dir => fs.readdirSync(dir, { encoding: 'utf-8' }),
                 readFile: path => fs.readFileSync(path, { encoding: 'utf-8' }),
                 rmDir: (opts: {
