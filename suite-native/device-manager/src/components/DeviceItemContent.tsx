@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { Icon, IconName } from '@suite-common/icons';
 import { HStack, Box, Text } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
+import { Translation, useTranslate } from '@suite-native/intl';
 import {
     selectDeviceNameById,
     DeviceRootState,
@@ -14,19 +14,37 @@ import { TrezorDevice } from '@suite-common/suite-types';
 import { TypographyStyle } from '@trezor/theme';
 import { useActiveColorScheme } from '@suite-native/theme';
 
-type Props = {
-    deviceId: TrezorDevice['id'];
+type DeviceItemContentProps = {
+    deviceId?: TrezorDevice['id'];
     isPortfolioLabelDisplayed?: boolean;
-    deviceNameTextVariant?: TypographyStyle;
+    headerTextVariant?: TypographyStyle;
+};
+
+type DeviceItemIconProps = Pick<DeviceItemContentProps, 'deviceId'>;
+
+const DeviceItemIcon = ({ deviceId }: DeviceItemIconProps) => {
+    const activeColorScheme = useActiveColorScheme();
+
+    // TODO: when we enable remember mode, icon representing disconnected device have to be handled.
+    const connectedDeviceIcon: IconName =
+        activeColorScheme === 'standard' ? 'trezorConnectedLight' : 'trezorConnectedDark';
+
+    switch (deviceId) {
+        case undefined:
+            return <Icon name="trezor" color="iconDefault" />;
+        case PORTFOLIO_TRACKER_DEVICE_ID:
+            return <Icon name="database" color="iconDefault" />;
+        default:
+            return <Icon name={connectedDeviceIcon} color="svgSource" />;
+    }
 };
 
 export const DeviceItemContent = ({
     deviceId,
     isPortfolioLabelDisplayed = true,
-    deviceNameTextVariant = 'body',
-}: Props) => {
-    const activeColorScheme = useActiveColorScheme();
-
+    headerTextVariant = 'body',
+}: DeviceItemContentProps) => {
+    const { translate } = useTranslate();
     const deviceName = useSelector((state: DeviceRootState) =>
         selectDeviceNameById(state, deviceId),
     );
@@ -36,32 +54,30 @@ export const DeviceItemContent = ({
 
     const isPortfolioTrackerDevice = deviceId === PORTFOLIO_TRACKER_DEVICE_ID;
 
-    // TODO: when we enable remember mode, icon representing disconnected device have to be handled.
-    const trezorDeviceIcon: IconName =
-        activeColorScheme === 'standard' ? 'trezorConnectedLight' : 'trezorConnectedDark';
+    const deviceHeader =
+        (isPortfolioTrackerDevice ? deviceName : deviceLabel) ??
+        translate('deviceManager.defaultHeader');
 
     return (
         <HStack alignItems="center" spacing="medium">
-            {isPortfolioTrackerDevice ? (
-                <Icon name="database" color="iconDefault" />
-            ) : (
-                <Icon name={trezorDeviceIcon} color="svgSource" />
-            )}
+            <DeviceItemIcon deviceId={deviceId} />
             <Box>
-                <Text variant={deviceNameTextVariant}>
-                    {(isPortfolioTrackerDevice ? deviceName : deviceLabel) ?? deviceName}
-                </Text>
-                {isPortfolioTrackerDevice ? (
-                    isPortfolioLabelDisplayed && (
-                        <Text variant="label" color="textSubdued">
-                            <Translation id="deviceManager.status.portfolioTracker" />
-                        </Text>
-                    )
-                ) : (
-                    // TODO: when we enable remember mode, grey 'Disconnected' label has to be displayed.
-                    <Text variant="label" color="textSecondaryHighlight">
-                        <Translation id="deviceManager.status.connected" />
-                    </Text>
+                <Text variant={headerTextVariant}>{deviceHeader}</Text>
+                {deviceId && (
+                    <Box>
+                        {isPortfolioTrackerDevice ? (
+                            isPortfolioLabelDisplayed && (
+                                <Text variant="label" color="textSubdued">
+                                    <Translation id="deviceManager.status.portfolioTracker" />
+                                </Text>
+                            )
+                        ) : (
+                            // TODO: when we enable remember mode, grey 'Disconnected' label has to be displayed.
+                            <Text variant="label" color="textSecondaryHighlight">
+                                <Translation id="deviceManager.status.connected" />
+                            </Text>
+                        )}
+                    </Box>
                 )}
             </Box>
         </HStack>

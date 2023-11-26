@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { Box, HStack } from '@suite-native/atoms';
 import { Icon } from '@suite-common/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { selectDeviceId } from '@suite-common/wallet-core';
+import { selectDeviceId, selectIsAppFreshStarted } from '@suite-common/wallet-core';
 
 import { SCREEN_HEADER_HEIGHT } from '../constants';
 import { useDeviceManager } from '../hooks/useDeviceManager';
@@ -31,6 +31,7 @@ const switchWrapperStyle = prepareNativeStyle(_ => ({
 export const DeviceSwitch = () => {
     const { applyStyle } = useNativeStyles();
 
+    const isAppFreshStart = useSelector(selectIsAppFreshStarted);
     const deviceId = useSelector(selectDeviceId);
 
     const { setIsDeviceManagerVisible, isDeviceManagerVisible } = useDeviceManager();
@@ -38,15 +39,14 @@ export const DeviceSwitch = () => {
     const toggleDeviceManager = () => {
         setIsDeviceManagerVisible(!isDeviceManagerVisible);
     };
-    if (!deviceId) return null;
 
     return (
         <Pressable onPress={toggleDeviceManager} style={applyStyle(switchWrapperStyle)}>
             <HStack justifyContent="space-between" alignItems="center" spacing="medium">
                 <Box style={applyStyle(switchStyle)}>
                     <DeviceItemContent
-                        deviceId={deviceId}
-                        deviceNameTextVariant="highlight"
+                        deviceId={isAppFreshStart ? undefined : deviceId}
+                        headerTextVariant="highlight"
                         isPortfolioLabelDisplayed={false}
                     />
                     {!isDeviceManagerVisible && (

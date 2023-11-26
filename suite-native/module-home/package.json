@@ -31,6 +31,7 @@
         "@suite-native/receive": "workspace:*",
         "@suite-native/theme": "workspace:*",
         "@trezor/styles": "workspace:*",
+        "@suite-native/accounts": "workspace:*",
         "expo-local-authentication": "13.7.0",
         "jotai": "1.9.1",
         "react": "18.2.0",
