@@ -39,7 +39,7 @@ describe('Metadata - wallet labeling', () => {
             cy.passThroughInitialRun();
 
             cy.discoveryShouldFinish();
-            cy.getTestElement('@suite/menu/wallet-index').click();
+            cy.getTestElement('@account-menu/btc/normal/0').click();
 
             cy.getTestElement('@menu/switch-device').click();
             cy.getTestElement(

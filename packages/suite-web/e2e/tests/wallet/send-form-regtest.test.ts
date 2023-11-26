@@ -23,8 +23,8 @@ describe('Send form for bitcoin', () => {
                 },
             ],
         });
+        cy.getTestElement('@suite/menu/suite-index').click();
         // navigate to the send form
-        cy.getTestElement('@suite/menu/wallet-index').click();
         cy.getTestElement('@account-menu/regtest/normal/0/label').click();
         cy.getTestElement('@wallet/menu/wallet-send').click();
     });

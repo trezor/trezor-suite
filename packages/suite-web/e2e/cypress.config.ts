@@ -1,6 +1,6 @@
 import { defineConfig } from 'cypress';
 
-import CDP from 'chrome-remote-interface';
+// import CDP from 'chrome-remote-interface';
 import fs from 'fs';
 import path from 'path';
 import { addMatchImageSnapshotPlugin } from 'cypress-image-snapshot/plugin';
@@ -23,21 +23,21 @@ const mocked = {
     google: new GoogleMock(),
 };
 
-const ensureRdpPort = (args: any[]) => {
-    const existing = args.find(arg => arg.slice(0, 23) === '--remote-debugging-port');
+// const ensureRdpPort = (args: any[]) => {
+//     const existing = args.find(arg => arg.slice(0, 23) === '--remote-debugging-port');
 
-    if (existing) {
-        return Number(existing.split('=')[1]);
-    }
+//     if (existing) {
+//         return Number(existing.split('=')[1]);
+//     }
 
-    const port = 40000 + Math.round(Math.random() * 25000);
+//     const port = 40000 + Math.round(Math.random() * 25000);
 
-    args.push(`--remote-debugging-port=${port}`);
+//     args.push(`--remote-debugging-port=${port}`);
 
-    return port;
-};
+//     return port;
+// };
 
-let port = 0;
+// let port = 0;
 let client: any = null;
 let blockbook: BackendWebsocketServerMock | undefined;
 
@@ -74,9 +74,9 @@ export default defineConfig({
         chromeWebSecurity: false,
         experimentalFetchPolyfill: true,
         setupNodeEvents(on, config) {
-            on('before:browser:launch', (_browser, launchOptions) => {
-                const args = Array.isArray(launchOptions) ? launchOptions : launchOptions.args;
-                port = ensureRdpPort(args);
+            on('before:browser:launch', _browser => {
+                // const args = Array.isArray(launchOptions) ? launchOptions : launchOptions.args;
+                // port = ensureRdpPort(args);
                 addMatchImageSnapshotPlugin(on, config);
             });
             on('task', {

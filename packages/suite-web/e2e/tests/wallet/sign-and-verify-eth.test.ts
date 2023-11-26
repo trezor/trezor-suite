@@ -44,8 +44,10 @@ describe('Sign and verify ETH', () => {
         //
         // Test execution
         //
-        cy.getTestElement('@suite/menu/wallet-index').click();
+        cy.getTestElement('@suite/menu/suite-index').click();
         cy.discoveryShouldFinish();
+        cy.getTestElement('@account-menu/eth/normal/0').click();
+
         cy.getTestElement('@wallet/menu/extra-dropdown').click();
         cy.getTestElement('@wallet/menu/wallet-sign-verify').click();
         cy.getTestElement('@sign-verify/message').type(MESSAGE_SIGN);
@@ -70,8 +72,10 @@ describe('Sign and verify ETH', () => {
         //
         // Test execution
         //
-        cy.getTestElement('@suite/menu/wallet-index').click();
+        cy.getTestElement('@suite/menu/suite-index').click();
         cy.discoveryShouldFinish();
+        cy.getTestElement('@account-menu/eth/normal/0').click();
+
         cy.getTestElement('@wallet/menu/extra-dropdown').click();
         cy.getTestElement('@wallet/menu/wallet-sign-verify').click();
         cy.getTestElement('@sign-verify/navigation/verify').click();

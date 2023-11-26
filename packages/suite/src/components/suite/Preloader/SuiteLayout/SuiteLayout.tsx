@@ -26,7 +26,7 @@ export const Wrapper = styled.div`
     overflow: auto;
 `;
 
-const PageWrapper = styled.div`
+export const PageWrapper = styled.div`
     position: relative;
     display: flex;
     flex: 1;

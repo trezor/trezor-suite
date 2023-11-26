@@ -24,7 +24,7 @@ describe('Coinmarket buy', () => {
         cy.passThroughInitialRun();
         cy.discoveryShouldFinish();
         // navigate to buy
-        cy.getTestElement('@suite/menu/wallet-index').click();
+        cy.getTestElement('@account-menu/btc/normal/0').click();
         cy.getTestElement('@wallet/menu/wallet-coinmarket-buy').click();
     });
 

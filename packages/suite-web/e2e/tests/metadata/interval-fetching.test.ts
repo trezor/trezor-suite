@@ -58,7 +58,7 @@ describe('Metadata - suite is watching cloud provider and syncs periodically', (
                 'Wait for discovery to finish. There is "add label" button, but no actual metadata appeared',
             );
             cy.discoveryShouldFinish();
-            cy.getTestElement('@suite/menu/wallet-index').click();
+            cy.getTestElement('@account-menu/btc/normal/0').click();
 
             cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'/add-label-button").click({
                 force: true,
