@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -22,6 +22,9 @@ import {
     selectDevice,
     deviceActions,
     selectDeviceFirmwareVersion,
+    selectDevices,
+    selectDevicesCount,
+    selectIsNoPhysicalDeviceConnected,
 } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { Translation, useTranslate } from '@suite-native/intl';
@@ -56,6 +59,10 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 >;
 
 export const useDeviceConnect = () => {
+    const [wasConnectingScreenAlreadyTriggered, setWasConnectingScreenAlreadyTriggered] =
+        useState(false);
+
+    const isNoPhysicalDeviceConnected = useSelector(selectIsNoPhysicalDeviceConnected);
     const deviceModel = useSelector(selectDeviceModel);
     const currentDevice = useSelector(selectDevice);
     const hasDeviceRequestedPin = useSelector(selectDeviceRequestedPin);
@@ -153,7 +160,13 @@ export const useDeviceConnect = () => {
     ]);
 
     useEffect(() => {
-        if (isOnboardingFinished && isDeviceConnectedAndAuthorized && !isSelectedDeviceImported) {
+        if (
+            isOnboardingFinished &&
+            isDeviceConnectedAndAuthorized &&
+            !isSelectedDeviceImported &&
+            !wasConnectingScreenAlreadyTriggered
+        ) {
+            setWasConnectingScreenAlreadyTriggered(true);
             navigation.navigate(RootStackRoutes.ConnectDevice, {
                 screen: ConnectDeviceStackRoutes.ConnectingDevice,
             });
@@ -164,5 +177,14 @@ export const useDeviceConnect = () => {
         isSelectedDeviceImported,
         navigation,
         isOnboardingFinished,
+        wasConnectingScreenAlreadyTriggered,
     ]);
+
+    useEffect(() => {
+        // In case that the physical device is disconnected, set connecting screen to be displayed
+        // again on the next device connection (selecting in to the `selectedDevice` state).
+        if (isNoPhysicalDeviceConnected) {
+            setWasConnectingScreenAlreadyTriggered(false);
+        }
+    }, [isNoPhysicalDeviceConnected]);
 };
