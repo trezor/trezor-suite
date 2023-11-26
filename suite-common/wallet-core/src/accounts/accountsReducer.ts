@@ -13,6 +13,7 @@ import { formattedAccountTypeMap } from './constants';
 import {
     DeviceRootState,
     selectDevice,
+    selectIsNoPhysicalDeviceConnected,
     selectPersistedDevicesStates,
 } from '../device/deviceReducer';
 import { DiscoveryRootState, selectIsDeviceDiscoveryActive } from '../discovery/discoveryReducer';
@@ -320,4 +321,13 @@ export const selectDevicelessAccounts = (state: AccountsRootState & DeviceRootSt
         selectAccounts(state),
         A.filter(account => !persistedDevicesStates.includes(account.deviceState)),
     ) as Account[];
+};
+
+export const selectAreAllDevicesDisconnectedOrAccountless = (
+    state: AccountsRootState & DeviceRootState & DiscoveryRootState,
+) => {
+    const isPortfolioEmpty = selectIsPortfolioEmpty(state);
+    const isNoPhysicalDeviceConnected = selectIsNoPhysicalDeviceConnected(state);
+
+    return isPortfolioEmpty && isNoPhysicalDeviceConnected;
 };

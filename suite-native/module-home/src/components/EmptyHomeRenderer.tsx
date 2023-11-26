@@ -2,10 +2,10 @@ import { useSelector } from 'react-redux';
 
 import { useIsUsbDeviceConnectFeatureEnabled } from '@suite-native/feature-flags';
 import {
+    selectAreAllDevicesDisconnectedOrAccountless,
     selectIsSelectedDeviceAuthorized,
     selectIsSelectedDeviceImported,
 } from '@suite-common/wallet-core';
-import { selectIsAppFreshStart } from '@suite-native/accounts';
 
 import { EmptyPortfolioTrackerState } from './EmptyPortfolioTrackerState';
 import { EmptyConnectedDeviceState } from './EmptyConnectedDeviceState';
@@ -15,10 +15,12 @@ export const EmptyHomeRenderer = () => {
     const { isUsbDeviceConnectFeatureEnabled } = useIsUsbDeviceConnectFeatureEnabled();
     const isDeviceImported = useSelector(selectIsSelectedDeviceImported);
     const isDeviceAuthorized = useSelector(selectIsSelectedDeviceAuthorized);
-    const isAppFreshStart = useSelector(selectIsAppFreshStart);
+    const areAllDevicesDisconnectdOrAccountless = useSelector(
+        selectAreAllDevicesDisconnectedOrAccountless,
+    );
 
-    // crossroad should be displayed only if there is no real device connected.
-    if (isAppFreshStart) {
+    // Crossroads should be displayed only if there is no real device connected and portfolio tracker has no accounts.
+    if (areAllDevicesDisconnectdOrAccountless) {
         return <EmptyPortfolioCrossroads />;
     }
 
