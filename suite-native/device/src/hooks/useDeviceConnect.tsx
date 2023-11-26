@@ -22,8 +22,6 @@ import {
     selectDevice,
     deviceActions,
     selectDeviceFirmwareVersion,
-    selectDevices,
-    selectDevicesCount,
     selectIsNoPhysicalDeviceConnected,
 } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';

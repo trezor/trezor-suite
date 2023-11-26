@@ -4,7 +4,8 @@ import { useSelector } from 'react-redux';
 import { Box, HStack } from '@suite-native/atoms';
 import { Icon } from '@suite-common/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { selectDeviceId, selectIsAppFreshStarted } from '@suite-common/wallet-core';
+import { selectDeviceId } from '@suite-common/wallet-core';
+import { selectIsAppFreshStart } from '@suite-native/accounts';
 
 import { SCREEN_HEADER_HEIGHT } from '../constants';
 import { useDeviceManager } from '../hooks/useDeviceManager';
@@ -31,7 +32,7 @@ const switchWrapperStyle = prepareNativeStyle(_ => ({
 export const DeviceSwitch = () => {
     const { applyStyle } = useNativeStyles();
 
-    const isAppFreshStart = useSelector(selectIsAppFreshStarted);
+    const isAppFreshStart = useSelector(selectIsAppFreshStart);
     const deviceId = useSelector(selectDeviceId);
 
     const { setIsDeviceManagerVisible, isDeviceManagerVisible } = useDeviceManager();

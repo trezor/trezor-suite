@@ -10,6 +10,7 @@
         {
             "path": "../../suite-common/wallet-core"
         },
+        { "path": "../accounts" },
         { "path": "../assets" },
         { "path": "../atoms" },
         { "path": "../biometrics" },
