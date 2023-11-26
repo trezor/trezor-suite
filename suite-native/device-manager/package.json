@@ -20,6 +20,7 @@
         "@suite-native/atoms": "workspace:*",
         "@suite-native/feature-flags": "workspace:*",
         "@suite-native/intl": "workspace:*",
+        "@suite-native/link": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@suite-native/screen-overlay": "workspace:*",
         "@suite-native/theme": "workspace:*",
