@@ -14,6 +14,6 @@
         "@suite-native/toasts": "workspace:*",
         "expo-clipboard": "^4.1.1",
         "react": "18.2.0",
-        "react-native": "0.71.8"
+        "react-native": "0.71.14"
     }
 }

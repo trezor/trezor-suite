@@ -28,7 +28,7 @@
         "@suite-native/qr-code": "workspace:*",
         "@trezor/styles": "workspace:*",
         "react": "18.2.0",
-        "react-native": "0.71.8",
+        "react-native": "0.71.14",
         "react-redux": "8.0.7"
     }
 }

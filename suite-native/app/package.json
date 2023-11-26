@@ -91,7 +91,7 @@
         "node-libs-browser": "^2.2.1",
         "react": "18.2.0",
         "react-intl": "^6.4.4",
-        "react-native": "0.71.8",
+        "react-native": "0.71.14",
         "react-native-config": "^1.5.0",
         "react-native-flipper": "0.164.0",
         "react-native-gesture-handler": "^2.9.0",

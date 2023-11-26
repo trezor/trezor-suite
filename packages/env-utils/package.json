@@ -34,7 +34,7 @@
     },
     "peerDependencies": {
         "expo-localization": "^14.1.1",
-        "react-native": "0.71.8",
+        "react-native": "0.71.14",
         "react-native-config": "^1.5.0"
     },
     "peerDependenciesMeta": {
