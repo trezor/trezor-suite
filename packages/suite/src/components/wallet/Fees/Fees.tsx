@@ -78,6 +78,7 @@ const FeeAmount = styled.div`
     align-items: flex-end;
     padding-top: 5px;
     margin-left: auto;
+    justify-content: center;
 `;
 
 const FeeError = styled.div`
@@ -100,6 +101,8 @@ const Label = styled.div<Pick<FeesProps<FormState>, 'rbfForm'>>`
     text-transform: capitalize;
     font-size: ${variables.FONT_SIZE.NORMAL};
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    display: flex;
+    align-items: center;
 `;
 
 const FEE_LEVELS_TRANSLATIONS = {
