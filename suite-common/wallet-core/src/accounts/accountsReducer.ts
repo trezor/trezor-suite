@@ -14,6 +14,7 @@ import {
     DeviceRootState,
     selectDevice,
     selectIsNoPhysicalDeviceConnected,
+    selectIsSelectedDeviceImported,
     selectPersistedDevicesStates,
 } from '../device/deviceReducer';
 import { DiscoveryRootState, selectIsDeviceDiscoveryActive } from '../discovery/discoveryReducer';
@@ -330,4 +331,13 @@ export const selectAreAllDevicesDisconnectedOrAccountless = (
     const isNoPhysicalDeviceConnected = selectIsNoPhysicalDeviceConnected(state);
 
     return isPortfolioEmpty && isNoPhysicalDeviceConnected;
+};
+
+export const selectIsPortfolioTrackerEmpty = (
+    state: AccountsRootState & DeviceRootState & DiscoveryRootState,
+) => {
+    const isDeviceImported = selectIsSelectedDeviceImported(state);
+    const isPortfolioEmpty = selectIsPortfolioEmpty(state);
+
+    return isDeviceImported && isPortfolioEmpty;
 };
