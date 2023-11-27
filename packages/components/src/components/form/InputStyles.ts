@@ -25,6 +25,8 @@ export const getInputStateTextColor = (state: InputState | undefined, theme: Def
 
 export const getInputStateBorderColor = (state: InputState | undefined, theme: DefaultTheme) => {
     switch (state) {
+        case 'success':
+            return theme.borderSecondary;
         case 'warning':
             return theme.textAlertYellow;
         case 'error':

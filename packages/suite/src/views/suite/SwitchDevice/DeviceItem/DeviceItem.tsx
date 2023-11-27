@@ -24,6 +24,7 @@ import { DeviceHeaderButton } from './DeviceHeaderButton';
 
 import type { TrezorDevice, AcquiredDevice, ForegroundAppProps } from 'src/types/suite';
 import type { getBackgroundRoute } from 'src/utils/suite/router';
+import { typography, spacingsPx } from '@trezor/theme';
 
 const DeviceWrapper = styled.div`
     display: flex;
@@ -31,7 +32,7 @@ const DeviceWrapper = styled.div`
     width: 100%;
 
     & + & {
-        margin-top: 50px;
+        margin-top: ${spacingsPx.xxxl};
     }
 `;
 
@@ -47,11 +48,13 @@ const DeviceTitle = styled.span`
 `;
 
 const DeviceStatus = styled.span<{ color: string }>`
-    font-size: ${variables.FONT_SIZE.TINY};
-    font-weight: 600;
-    text-transform: uppercase;
+    ${typography.label}
     color: ${({ color }) => color};
-    margin-bottom: 2px;
+`;
+const DeviceStatusRow = styled.div`
+    display: flex;
+    align-items: center;
+    gap: ${spacingsPx.xxs};
 `;
 
 const DeviceActions = styled.div`
@@ -116,11 +119,9 @@ const ExpandIcon = styled(Icon)`
 `;
 
 // TODO: this is going to be a problem with different col headers length since they won't be aligned with the columns inside WalletInstance
-const ColRememberHeader = styled(ColHeader)`
-    margin: 0 24px;
-`;
+const ColRememberHeader = styled(ColHeader)``;
 const ColEjectHeader = styled(ColHeader)`
-    margin: 0 24px;
+    margin: 0 20px 0 32px;
 `;
 
 const StyledImage = styled(Image)`
@@ -222,8 +223,9 @@ export const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: Dev
                         </DeviceImageWrapper>
                     )}
                     <Col grow={1}>
+                        <DeviceTitle>{device.label}</DeviceTitle>
                         <DeviceStatus
-                            color={device.connected ? theme.TYPE_GREEN : theme.TYPE_RED}
+                            color={device.connected ? theme.iconPrimaryDefault : theme.iconAlertRed}
                             data-test={
                                 device.connected
                                     ? '@deviceStatus-connected'
@@ -231,12 +233,14 @@ export const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: Dev
                             }
                         >
                             {device.connected ? (
-                                <Translation id="TR_CONNECTED" />
+                                <DeviceStatusRow>
+                                    <Icon icon="LINK" size={12} color={theme.iconPrimaryDefault} />
+                                    <Translation id="TR_CONNECTED" />
+                                </DeviceStatusRow>
                             ) : (
                                 <Translation id="TR_DISCONNECTED" />
                             )}
                         </DeviceStatus>
-                        <DeviceTitle>{device.label}</DeviceTitle>
                     </Col>
 
                     <DeviceActions>
