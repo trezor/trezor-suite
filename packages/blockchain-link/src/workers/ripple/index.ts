@@ -174,13 +174,11 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
 
 const getTransaction = async ({ connect, payload }: Request<MessageTypes.GetTransaction>) => {
     const api = await connect();
-    const tx = await api.getTransaction(payload);
+    const rawtx = await api.request('tx', { transaction: payload, binary: false });
+    const tx = utils.transformTransaction(rawtx);
     return {
         type: RESPONSES.GET_TRANSACTION,
-        payload: {
-            type: 'ripple',
-            tx,
-        },
+        payload: tx,
     } as const;
 };
 

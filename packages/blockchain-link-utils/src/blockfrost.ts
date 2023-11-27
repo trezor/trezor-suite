@@ -174,10 +174,13 @@ export const filterTokenTransfers = (
 };
 
 export const transformTransaction = (
-    blockfrostTxData: BlockfrostTransaction,
+    blockfrostTxData: BlockfrostTransaction | Pick<BlockfrostTransaction, 'txData'>,
     // TODO does 'descriptor' branch make sense for Cardano or was it just copypaste from blockbook?
     addressesOrDescriptor?: AccountAddresses | string,
 ): Transaction => {
+    const fullData = ((data: typeof blockfrostTxData): data is BlockfrostTransaction =>
+        'txUtxos' in data)(blockfrostTxData);
+
     const [accountAddress, descriptor] =
         typeof addressesOrDescriptor === 'object'
             ? [addressesOrDescriptor, undefined]
@@ -201,8 +204,8 @@ export const transformTransaction = (
     // refundable fee for registering staking address (sent to self tx with stake registration cert)
     let deposit: string | undefined;
 
-    const inputs = transformInputOutput(blockfrostTxData.txUtxos.inputs);
-    const outputs = transformInputOutput(blockfrostTxData.txUtxos.outputs);
+    const inputs = fullData ? transformInputOutput(blockfrostTxData.txUtxos.inputs) : [];
+    const outputs = fullData ? transformInputOutput(blockfrostTxData.txUtxos.outputs) : [];
     const vinLength = Array.isArray(inputs) ? inputs.length : 0;
     const voutLength = Array.isArray(outputs) ? outputs.length : 0;
     const outgoing = filterTargets(myAddresses, inputs);
@@ -261,13 +264,14 @@ export const transformTransaction = (
         }
     }
 
-    const tokens = accountAddress
-        ? filterTokenTransfers(accountAddress, blockfrostTxData, type)
-        : [];
+    const tokens =
+        accountAddress && fullData
+            ? filterTokenTransfers(accountAddress, blockfrostTxData, type)
+            : [];
 
     return {
         type,
-        txid: blockfrostTxData.txHash,
+        txid: blockfrostTxData.txData.hash,
         blockTime: blockfrostTxData.txData.block_time,
         blockHeight: blockfrostTxData.txData.block_height || undefined,
         blockHash: blockfrostTxData.txData.block,

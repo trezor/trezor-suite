@@ -390,6 +390,5 @@ export type {
     InternalTransfer,
     Transaction,
     TransactionDetail,
-    TypedRawTransaction,
     Utxo,
 } from '@trezor/blockchain-link-types/lib/common';
