@@ -1,7 +1,6 @@
 import { ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
-import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import {
     RootStackParamList,
@@ -68,8 +67,7 @@ export const AccountSettingsScreen = ({
 
     return (
         <Screen
-            screenHeader={<DeviceManagerScreenHeader />}
-            subheader={
+            screenHeader={
                 <ScreenSubHeader
                     content={accountLabel}
                     rightIcon={<AccountRenameButton accountKey={accountKey} />}

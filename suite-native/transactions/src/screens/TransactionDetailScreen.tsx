@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Linking } from 'react-native';
 
-import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { Box, Button, Divider, VStack } from '@suite-native/atoms';
 import {
     RootStackParamList,
@@ -62,11 +61,7 @@ export const TransactionDetailScreen = ({
     const isTokenTransaction = !!tokenTransfer;
 
     return (
-        <Screen
-            screenHeader={<DeviceManagerScreenHeader />}
-            customHorizontalPadding={utils.spacings.small}
-            subheader={<ScreenSubHeader />}
-        >
+        <Screen customHorizontalPadding={utils.spacings.small} screenHeader={<ScreenSubHeader />}>
             <VStack spacing="large">
                 <TransactionDetailHeader
                     transaction={transaction}

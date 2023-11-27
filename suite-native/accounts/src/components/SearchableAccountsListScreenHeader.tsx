@@ -83,7 +83,7 @@ export const SearchableAccountsListScreenHeader = ({
                             <IconButton
                                 iconName="search"
                                 onPress={() => setIsSearchActive(true)}
-                                colorScheme="tertiaryElevation0"
+                                colorScheme="tertiaryElevation1"
                                 size="medium"
                             />
                         }
