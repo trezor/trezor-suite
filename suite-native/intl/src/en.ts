@@ -56,6 +56,10 @@ export const en = {
                 },
             },
         },
+        buttons: {
+            syncMyCoins: 'Sync my coins',
+            receive: 'Receive',
+        },
         biometricsModal: {
             title: {
                 faceId: 'Enable FaceID',
