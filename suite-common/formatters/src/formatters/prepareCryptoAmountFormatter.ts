@@ -49,8 +49,7 @@ export const prepareCryptoAmountFormatter = (config: FormatterConfig) =>
         ) => {
             const { bitcoinAmountUnit } = config;
 
-            // TS thinks that symbol is undefined, but it's required in type CryptoAmountFormatterDataContext so it's safe to use "!"
-            const { decimals } = networks[symbol!];
+            const decimals = networks[symbol!]?.decimals || 0;
 
             // const areAmountUnitsSupported = A.includes(features, 'amount-unit');
             const areAmountUnitsSupported = A.includes(COINS_WITH_SATS, symbol);
