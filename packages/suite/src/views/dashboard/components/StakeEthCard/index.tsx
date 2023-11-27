@@ -6,7 +6,7 @@ import { Translation, Card, StakingFeature } from 'src/components/suite';
 import { Footer } from './components/Footer';
 import { useDiscovery } from 'src/hooks/suite';
 import { useAccounts } from 'src/hooks/wallet';
-import { MIN_ETH_AMOUNT_FOR_STAKING } from 'src/constants/suite/ethStaking';
+import { MIN_ETH_BALANCE_FOR_STAKING } from 'src/constants/suite/ethStaking';
 
 const Flex = styled.div`
     display: flex;
@@ -68,7 +68,7 @@ export const StakeEthCard = () => {
     const { accounts } = useAccounts(discovery);
     const ethAccountWithSufficientBalanceForStaking = accounts.find(
         ({ symbol, formattedBalance }) =>
-            symbol === 'eth' && MIN_ETH_AMOUNT_FOR_STAKING.isLessThanOrEqualTo(formattedBalance),
+            symbol === 'eth' && MIN_ETH_BALANCE_FOR_STAKING.isLessThanOrEqualTo(formattedBalance),
     );
     const isSufficientEthForStaking = Boolean(
         ethAccountWithSufficientBalanceForStaking?.formattedBalance,

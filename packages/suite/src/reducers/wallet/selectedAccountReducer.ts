@@ -1,7 +1,7 @@
 import { accountsActions } from '@suite-common/wallet-core';
 import type { Action } from 'src/types/suite';
 import type { SelectedAccountStatus } from '@suite-common/wallet-types';
-import { MIN_ETH_AMOUNT_FOR_STAKING } from 'src/constants/suite/ethStaking';
+import { MIN_ETH_BALANCE_FOR_STAKING } from 'src/constants/suite/ethStaking';
 
 export type State = SelectedAccountStatus;
 
@@ -38,7 +38,7 @@ export const selectSelectedAccountHasSufficientEthForStaking = (
 
     if (typeof formattedBalance !== 'string' || symbol !== 'eth') return false;
 
-    return MIN_ETH_AMOUNT_FOR_STAKING.isLessThanOrEqualTo(formattedBalance);
+    return MIN_ETH_BALANCE_FOR_STAKING.isLessThanOrEqualTo(formattedBalance);
 };
 
 export default selectedAccountReducer;

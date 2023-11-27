@@ -43,7 +43,7 @@ export const validateInteger =
 
 interface ValidateLimitsOptions {
     amountLimits?: AmountLimits;
-    areSatsUsed: boolean;
+    areSatsUsed?: boolean;
     formatter: Formatter<string, string>;
 }
 
@@ -100,7 +100,7 @@ export const validateMin =
 
 interface ValidateReserveOrBalanceOptions {
     account: Account;
-    areSatsUsed: boolean;
+    areSatsUsed?: boolean;
     tokenAddress?: string | null;
 }
 
