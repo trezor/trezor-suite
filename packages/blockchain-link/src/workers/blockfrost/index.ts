@@ -52,13 +52,11 @@ const getAccountBalanceHistory = async (
 
 const getTransaction = async (request: Request<MessageTypes.GetTransaction>) => {
     const api = await request.connect();
-    const tx = await api.getTransaction(request.payload);
+    const txData = await api.getTransaction(request.payload);
+    const tx = transformTransaction({ txData });
     return {
         type: RESPONSES.GET_TRANSACTION,
-        payload: {
-            type: 'blockfrost',
-            tx,
-        },
+        payload: tx,
     } as const;
 };
 
