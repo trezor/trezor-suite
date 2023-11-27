@@ -24,17 +24,19 @@ export const DefaultRenderer = ({
                 isCancelable={isCancelable}
                 onCancel={onCancel}
                 headerComponent={
-                    <>
-                        {isMobileLayout && (
-                            <Icon
-                                icon="LIGHTBULB"
-                                size={20}
-                                hoverColor={colors.TYPE_ORANGE}
-                                onClick={openGuide}
-                            />
-                        )}
-                        {headerComponent}
-                    </>
+                    (isMobileLayout || headerComponent) && (
+                        <>
+                            {isMobileLayout && (
+                                <Icon
+                                    icon="LIGHTBULB"
+                                    size={20}
+                                    hoverColor={colors.TYPE_ORANGE}
+                                    onClick={openGuide}
+                                />
+                            )}
+                            {headerComponent}
+                        </>
+                    )
                 }
                 {...rest}
             />
