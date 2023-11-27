@@ -2,9 +2,7 @@ import { Page, test as testPlaywright } from '@playwright/test';
 
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
-import { launchSuite, waitForDataTestSelector } from '../support/common';
-
-const clickDataTest = (window: Page, selector: string) => window.click(`[data-test="${selector}"]`);
+import { clickDataTest, launchSuite, waitForDataTestSelector } from '../support/common';
 
 const toggleDebugModeInSettings = async (window: Page) => {
     const timesClickToSetDebugMode = 5;

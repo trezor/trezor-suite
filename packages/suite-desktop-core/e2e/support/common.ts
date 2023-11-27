@@ -1,14 +1,19 @@
 /* eslint-disable no-console */
 
-import path from 'path';
 import { Page, _electron as electron } from '@playwright/test';
+import path from 'path';
+import fs from 'fs';
 
 export const launchSuite = async () => {
     const appDir = path.join(__dirname, '../../../suite-desktop');
-
+    const desiredLogLevel = process.env.LOGLEVEL ?? 'error';
     const electronApp = await electron.launch({
         cwd: appDir,
-        args: [path.join(appDir, './dist/app.js'), '--log-level=debug', '--bridge-test'],
+        args: [
+            path.join(appDir, './dist/app.js'),
+            `--log-level=${desiredLogLevel}`,
+            '--bridge-test',
+        ],
         // when testing electron, video needs to be setup like this. it works locally but not in docker
         // recordVideo: { dir: 'test-results' },
     });
@@ -27,9 +32,28 @@ export const launchSuite = async () => {
     );
 
     const window = await electronApp.firstWindow();
+    const localDataDir = await electronApp.evaluate(({ app }) => app.getPath('userData'));
 
-    return { electronApp, window };
+    return { electronApp, window, localDataDir };
 };
 
 export const waitForDataTestSelector = (window: Page, selector: string, options = {}) =>
     window.waitForSelector(`[data-test="${selector}"]`, options);
+
+export const clickDataTest = (window: Page, selector: string) => {
+    window.click(`[data-test="${selector}"]`);
+};
+
+export const rmDirRecursive = (folder: string) => {
+    if (fs.existsSync(folder)) {
+        fs.readdirSync(folder).forEach(file => {
+            const curPath = `${folder}/${file}`;
+            if (fs.lstatSync(curPath).isDirectory()) {
+                rmDirRecursive(curPath);
+            } else {
+                fs.unlinkSync(curPath);
+            }
+        });
+        fs.rmdirSync(folder);
+    }
+};

@@ -9,9 +9,10 @@ const config: PlaywrightTestConfig = {
         trace: 'on',
         video: 'on',
         screenshot: 'on',
+        testIdAttribute: 'data-test',
     },
     reportSlowTests: null,
-    reporter: 'list',
+    reporter: [['list']],
     timeout: 1000 * 60 * 30,
     outputDir: path.join(__dirname, 'test-results'),
 };
