@@ -73,15 +73,9 @@ export const blockchainGetTransactions = async (api: TrezorConnect) => {
     const txs = await api.blockchainGetTransactions({ coin: 'btc', txs: ['txid'] });
     if (txs.success) {
         txs.payload.forEach(raw => {
-            if (raw.type === 'blockbook') {
-                raw.tx.blockHash?.toLowerCase();
-            }
-            if (raw.type === 'ripple') {
-                raw.tx.outcome.fee.toLowerCase();
-            }
-            if (raw.type === 'blockfrost') {
-                raw.tx.txHash.toLowerCase();
-            }
+            raw.txid.toLowerCase();
+            raw.amount.toLowerCase();
+            raw.blockHash?.toLowerCase();
         });
     }
 };

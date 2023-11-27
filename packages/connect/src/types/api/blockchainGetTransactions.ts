@@ -1,4 +1,4 @@
-import type { TypedRawTransaction } from '@trezor/blockchain-link';
+import type { Transaction } from '@trezor/blockchain-link';
 import type { CommonParamsWithCoin, Response } from '../params';
 
 export type BlockchainGetTransactions = CommonParamsWithCoin & {
@@ -7,4 +7,4 @@ export type BlockchainGetTransactions = CommonParamsWithCoin & {
 
 export declare function blockchainGetTransactions(
     params: BlockchainGetTransactions,
-): Response<TypedRawTransaction[]>;
+): Response<Transaction[]>;

@@ -141,6 +141,10 @@ export class Blockchain {
         return Promise.all(txs.map(id => this.link.getTransaction(id)));
     }
 
+    getTransactionHexes(txids: string[]) {
+        return Promise.all(txids.map(id => this.link.getTransactionHex(id)));
+    }
+
     getCurrentFiatRates(params: { currencies?: string[]; token?: string }) {
         return this.link.getCurrentFiatRates(params);
     }
