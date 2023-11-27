@@ -174,6 +174,15 @@ class BlockchainLink extends TypedEmitter<Events> {
         });
     }
 
+    getTransactionHex(
+        payload: MessageTypes.GetTransactionHex['payload'],
+    ): Promise<ResponseTypes.GetTransactionHex['payload']> {
+        return this.sendMessage({
+            type: MESSAGES.GET_TRANSACTION_HEX,
+            payload,
+        });
+    }
+
     /**
      * Get historical progression of given account's balance
      * Used for rendering a graph in Suite's dashboard.

@@ -12,6 +12,7 @@ export const GET_BLOCK = 'm_get_block';
 export const GET_ACCOUNT_INFO = 'm_get_account_info';
 export const GET_ACCOUNT_UTXO = 'm_get_account_utxo';
 export const GET_TRANSACTION = 'm_get_transaction';
+export const GET_TRANSACTION_HEX = 'm_get_transaction_hex';
 export const ESTIMATE_FEE = 'm_estimate_fee';
 export const SUBSCRIBE = 'm_subscribe';
 export const UNSUBSCRIBE = 'm_unsubscribe';

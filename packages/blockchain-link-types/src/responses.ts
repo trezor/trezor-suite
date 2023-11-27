@@ -57,6 +57,11 @@ export interface GetTransaction {
     payload: TypedRawTransaction;
 }
 
+export interface GetTransactionHex {
+    type: typeof RESPONSES.GET_TRANSACTION_HEX;
+    payload: string;
+}
+
 export interface GetAccountBalanceHistory {
     type: typeof RESPONSES.GET_ACCOUNT_BALANCE_HISTORY;
     payload: AccountBalanceHistory[];
@@ -163,6 +168,7 @@ export type Response =
     | ChannelMessage<GetAccountInfo>
     | ChannelMessage<GetAccountUtxo>
     | ChannelMessage<GetTransaction>
+    | ChannelMessage<GetTransactionHex>
     | ChannelMessage<GetAccountBalanceHistory>
     | ChannelMessage<GetCurrentFiatRates>
     | ChannelMessage<GetFiatRatesForTimestamps>

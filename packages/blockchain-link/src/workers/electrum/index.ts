@@ -29,6 +29,8 @@ type ResponseType<T extends MessageType> = T extends typeof MESSAGES.GET_INFO
     ? typeof RESPONSES.GET_ACCOUNT_UTXO
     : T extends typeof MESSAGES.GET_TRANSACTION
     ? typeof RESPONSES.GET_TRANSACTION
+    : T extends typeof MESSAGES.GET_TRANSACTION_HEX
+    ? typeof RESPONSES.GET_TRANSACTION_HEX
     : T extends typeof MESSAGES.GET_ACCOUNT_BALANCE_HISTORY
     ? typeof RESPONSES.GET_ACCOUNT_BALANCE_HISTORY
     : T extends typeof MESSAGES.ESTIMATE_FEE
@@ -71,6 +73,11 @@ const onRequest = async <T extends Message>(
             return {
                 type: RESPONSES.GET_TRANSACTION,
                 payload: await M.getTransaction(client, request.payload),
+            };
+        case MESSAGES.GET_TRANSACTION_HEX:
+            return {
+                type: RESPONSES.GET_TRANSACTION_HEX,
+                payload: await client.request('blockchain.transaction.get', request.payload, false),
             };
         case MESSAGES.GET_ACCOUNT_BALANCE_HISTORY:
             return {
