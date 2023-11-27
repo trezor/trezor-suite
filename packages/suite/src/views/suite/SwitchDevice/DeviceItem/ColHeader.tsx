@@ -1,7 +1,8 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
 
-import { Tooltip, TooltipProps, variables } from '@trezor/components';
+import { Tooltip, TooltipProps } from '@trezor/components';
+import { typography } from '@trezor/theme';
 
 const Wrapper = styled.div`
     display: flex;
@@ -12,9 +13,7 @@ const Wrapper = styled.div`
 
 const Text = styled.span`
     margin-right: 0.5ch;
-    font-weight: 600;
-    font-size: ${variables.FONT_SIZE.TINY};
-    text-transform: uppercase;
+    ${typography.label}
 `;
 
 interface ColHeaderProps {
