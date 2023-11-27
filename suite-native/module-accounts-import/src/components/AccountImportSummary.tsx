@@ -8,6 +8,7 @@ import {
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountInfo } from '@trezor/connect';
 import { supportedNetworkSymbols } from '@suite-native/config';
+import { useTranslate } from '@suite-native/intl';
 
 import { AccountImportSummaryForm } from './AccountImportSummaryForm';
 import { AccountAlreadyImported } from './AccountAlreadyImported';
@@ -18,6 +19,7 @@ type AccountImportDetailProps = {
 };
 
 export const AccountImportSummary = ({ networkSymbol, accountInfo }: AccountImportDetailProps) => {
+    const { translate } = useTranslate();
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByDescriptorAndNetworkSymbol(state, accountInfo.descriptor, networkSymbol),
     );
@@ -27,11 +29,19 @@ export const AccountImportSummary = ({ networkSymbol, accountInfo }: AccountImpo
     );
 
     if (!isAccountImportSupported) {
-        return <ErrorMessage errorMessage="Unsupported account network type." />;
+        return (
+            <ErrorMessage
+                errorMessage={translate('moduleAccountImport.error.unsupportedNetworkType')}
+            />
+        );
     }
 
-    const title = account ? 'Coin already synced' : 'Coin synced';
-    const subtitle = account ? "Here's what you have in your account." : undefined;
+    const title = translate(
+        account
+            ? 'moduleAccountImport.summaryScreen.title.alreadySynced'
+            : 'moduleAccountImport.summaryScreen.title.confirmToAdd',
+    );
+    const subtitle = account ? translate('moduleAccountImport.summaryScreen.subtitle') : undefined;
 
     return (
         <VStack spacing="extraLarge" flex={1}>
