@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { CommonActions, RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { G } from '@mobily/ts-belt';
 
-import { Text } from '@suite-native/atoms';
+import { HStack, Text } from '@suite-native/atoms';
 import {
     RootStackParamList,
     RootStackRoutes,
@@ -21,6 +21,7 @@ import {
     selectAccountNetworkSymbol,
 } from '@suite-common/wallet-core';
 import { selectEthereumAccountTokenSymbol } from '@suite-native/ethereum-tokens';
+import { CryptoIcon } from '@suite-common/icons';
 
 import { ReceiveAccount } from '../components/ReceiveAccount';
 
@@ -40,6 +41,7 @@ const ReceiveModalScreenSubHeader = ({ accountKey, tokenContract }: ScreenSubHea
         selectEthereumAccountTokenSymbol(state, accountKey, tokenContract),
     );
 
+    const iconName = tokenContract ?? networkSymbol;
     const coinSymbol = (ethereumTokenSymbol ?? networkSymbol)?.toUpperCase();
 
     return (
@@ -49,7 +51,10 @@ const ReceiveModalScreenSubHeader = ({ accountKey, tokenContract }: ScreenSubHea
                     <Text variant="highlight">
                         <Translation id="moduleReceive.screenTitle" values={{ coinSymbol }} />
                     </Text>
-                    {accountLabel && <Text variant="highlight">{accountLabel}</Text>}
+                    <HStack spacing="small" alignItems="center">
+                        {iconName && <CryptoIcon symbol={iconName} size="extraSmall" />}
+                        {accountLabel && <Text variant="highlight">{accountLabel}</Text>}
+                    </HStack>
                 </>
             }
         />
