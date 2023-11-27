@@ -1,7 +1,6 @@
 import { ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
-import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { analytics, EventType } from '@suite-native/analytics';
 import { Screen, ScreenSubHeader } from '@suite-native/navigation';
 import { selectIsAnalyticsEnabled } from '@suite-common/analytics';
@@ -112,8 +111,7 @@ export const SettingsPrivacyAndSecurity = () => {
 
     return (
         <Screen
-            screenHeader={<DeviceManagerScreenHeader />}
-            subheader={
+            screenHeader={
                 <ScreenSubHeader content={translate('moduleSettings.privacyAndSecurity.title')} />
             }
         >

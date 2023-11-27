@@ -14,7 +14,6 @@ import {
 import { AccountsList } from '@suite-native/accounts';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { Translation } from '@suite-native/intl';
-import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import {
     AccountsRootState,
     selectAccountLabel,
@@ -86,8 +85,7 @@ export const ReceiveModalScreen = () => {
     return (
         <Screen
             hasBottomInset={false}
-            screenHeader={<DeviceManagerScreenHeader />}
-            subheader={
+            screenHeader={
                 <ReceiveModalScreenSubHeader
                     accountKey={accountKey}
                     tokenContract={tokenContract}

@@ -1,7 +1,6 @@
 import { useRef, useState } from 'react';
 import { TextInput, View } from 'react-native';
 
-import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { Link } from '@suite-native/link';
 import {
     Text,
@@ -91,7 +90,7 @@ export const DemoScreen = () => {
     if (!isDevelopOrDebugEnv()) return null;
 
     return (
-        <Screen screenHeader={<DeviceManagerScreenHeader />} subheader={<ScreenSubHeader />}>
+        <Screen screenHeader={<ScreenSubHeader />}>
             <VStack spacing="medium">
                 <VStack>
                     <Text variant="titleSmall">Badge:</Text>

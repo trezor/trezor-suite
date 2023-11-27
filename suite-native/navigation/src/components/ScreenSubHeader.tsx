@@ -21,7 +21,7 @@ const headerStyle = prepareNativeStyle(utils => {
         justifyContent: 'space-between',
         alignItems: 'center',
         padding,
-        backgroundColor: utils.colors.backgroundSurfaceElevationNegative,
+        backgroundColor: utils.colors.backgroundSurfaceElevation0,
         height: ICON_SIZE + padding * 2,
     };
 });
