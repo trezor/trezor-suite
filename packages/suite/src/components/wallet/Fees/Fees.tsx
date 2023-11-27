@@ -157,12 +157,8 @@ export const Fees = <TFieldValues extends FormState>({
     const error = errors.selectedFee;
     const selectedLevel = feeInfo.levels.find(level => level.label === selectedOption)!;
     const transactionInfo = composedLevels?.[selectedOption];
-    // Disable custom fees for solana, since the fee is deterministic
-    const levels =
-        symbol === 'sol' || symbol === 'dsol'
-            ? feeInfo.levels.filter(l => l.label !== 'custom')
-            : feeInfo.levels;
-    const feeOptions = buildFeeOptions(levels);
+    // Solana has only `normal` fee level, so we do not display any feeOptions since there is nothing to choose from
+    const feeOptions = networkType === 'solana' ? [] : buildFeeOptions(feeInfo.levels);
 
     const labelComponent =
         showLabel || label ? (
@@ -171,15 +167,16 @@ export const Fees = <TFieldValues extends FormState>({
             </Label>
         ) : null;
 
-    const selectBarComponent = (
-        <SelectBarWrapper desktop={isDesktopLayout}>
-            <SelectBar
-                selectedOption={selectedOption}
-                options={feeOptions}
-                onChange={changeFeeLevel}
-            />
-        </SelectBarWrapper>
-    );
+    const selectBarComponent =
+        feeOptions.length > 0 ? (
+            <SelectBarWrapper desktop={isDesktopLayout}>
+                <SelectBar
+                    selectedOption={selectedOption}
+                    options={feeOptions}
+                    onChange={changeFeeLevel}
+                />
+            </SelectBarWrapper>
+        ) : null;
 
     return (
         <FeesWrapper desktop={isDesktopLayout}>
