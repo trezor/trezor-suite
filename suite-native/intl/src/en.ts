@@ -31,35 +31,36 @@ export const en = {
         },
         emptyState: {
             device: {
-                title: "We haven't discovered any coins in your wallet.",
-                subtitle: 'Get started by receiving coins',
+                title: 'Your wallet is empty',
+                subtitle:
+                    'You need to get some coins first in Trezor Suite Desktop or Web version.',
             },
             portfolioTracker: {
                 title: 'Get started',
                 subtitle: 'Sync your coin addresses and view your portfolio balance.',
-                primaryButton: 'Sync my coins',
+                primaryButton: 'Sync & Track',
                 secondaryButton: 'Settings',
-                alert: 'This requires your Trezor hardware wallet and access to Trezor Suite.',
+                alert: 'This requires access to Trezor Suite coin addresses.',
             },
             connectOrImportCrossroads: {
                 gotMyTrezor: {
-                    title: "I've got my Trezor",
-                    description: 'Connect to manage your assets',
+                    title: 'Connect my Trezor',
+                    description: 'Manage your coins with your Trezor connected.',
                     connectButton: 'Connect Trezor',
                 },
                 syncCoins: {
-                    title: 'Sync coins without your Trezor',
+                    title: 'Track my coins',
                     description:
-                        "Track your favorite coins anytime, anywhere, even when your Trezor isn't connected.",
-                    syncButton: 'Sync my coins',
+                        'Sync your favorite coins and track balances with portfolio tracker.',
+                    syncButton: 'Sync & Track',
                 },
             },
         },
         biometricsModal: {
             title: {
-                faceId: 'Enable Face Id',
+                faceId: 'Enable FaceID',
                 fingerprint: 'Enable fingerprint',
-                touchId: 'Enable Touch Id',
+                touchId: 'Enable TouchID',
                 unknown: 'Enable biometrics',
             },
             description: 'Use biometricts verification \nto unlock the app.',
@@ -75,11 +76,19 @@ export const en = {
     },
     assets: {
         dashboard: {
-            discoveryProgress: { loading: 'Loading...', stillWorking: 'Still working...' },
+            discoveryProgress: { loading: 'Loading...', stillWorking: 'Retrieving balances' },
         },
     },
     moduleAccountImport: {
         title: 'Sync my coins',
+        error: { unsupportedNetworkType: 'Unsupported account network type.' },
+        summaryScreen: {
+            title: {
+                confirmToAdd: 'Confirm to add coin',
+                alreadySynced: 'Coin already synced',
+            },
+            subtitle: "Here's what you have in your account.",
+        },
     },
     moduleConnectDevice: {
         connectAndUnlockScreen: {
@@ -90,13 +99,13 @@ export const en = {
                 title: 'Enter PIN',
                 entered: 'Entered',
                 digits: 'digits',
-                keypadInfo: 'The keypad is displayed on your Trezor',
+                keypadInfo: 'Follow the keypad layout on your Trezor',
                 enterPin: 'Enter pin',
             },
-            wrongPinModal: {
-                title: 'Entered wrong PIN',
+            wrongPinAlert: {
+                title: 'Incorrect PIN',
                 description: 'Enter up to 50 digits.',
-                button: 'Try again',
+                button: { tryAgain: 'Try again', help: 'Enter PIN Help' },
             },
         },
         connectingDeviceScreen: {
@@ -104,12 +113,21 @@ export const en = {
             hodlOn: 'Hodl on tight',
         },
         helpModal: {
-            title: 'Connecting Trezor',
-            subtitle: "Don't see your Trezor?",
-            stepsTitle: 'Follow these steps:',
-            step1: '1. Use a different USB data cable.',
-            step2: '2. Use a different USB port.',
-            step3: '3. Use a different device.',
+            connect: {
+                title: 'Connect my Trezor',
+                subtitle: "Don't see your Trezor?",
+                stepsTitle: 'Try these steps',
+                step1: '1. Reconnect your Trezor',
+                step2: '2. Use a different USB data cable',
+                step3: '3. Use a different mobile device',
+                step4: '4. Enable connection for Trezor Suite Lite via phone system message',
+            },
+            pinMatrix: {
+                title: 'Enter PIN',
+                subtitle: 'on your mobile display',
+                content:
+                    'Follow the keypad layout on your Trezor device to enter your PIN on your mobile display. Your PIN will be hidden on your mobile display for your security. <link>Learn more here</link>.',
+            },
         },
     },
     moduleDevice: {
@@ -118,13 +136,13 @@ export const en = {
             lines: {
                 1: '1. Connect Trezor to Desktop Suite',
                 2: '2. Navigate to Settings menu',
-                3: '3. Install new firmware',
+                3: { update: '3. Install update', setUp: '3. Set up your Trezor' },
             },
         },
         noSeedModal: {
-            title: 'Connected Trezor device has no firmware installed',
+            title: 'The connected Trezor device needs to be set up',
             description:
-                'Install current firmware version on your Trezor device so you can use it with this app.',
+                'To continue using your Trezor with this app, set it up with Trezor Suite for desktop or web.',
         },
         unacquiredDeviceModal: {
             title: 'We found your connected device in incorrect state.',
@@ -132,9 +150,9 @@ export const en = {
             button: 'Steal session',
         },
         unsupportedFirmware: {
-            title: 'Connected Trezor device uses outdated firmware',
+            title: 'The connected Trezor device needs an update',
             description:
-                'Install current firmware version on your Trezor device so you can use it with this app.',
+                'To continue using your Trezor with this app, update it with Trezor Suite for desktop or web.',
         },
     },
     moduleReceive: {
@@ -142,7 +160,7 @@ export const en = {
         accountNotFound: 'Account {accountKey} not found.',
         receiveAddressCard: {
             alert: {
-                success: 'Receive address confirmed on Trezor',
+                success: 'Receive address has been confirmed on your Trezor.',
                 longCardanoAddress:
                     'Cardano (ADA) address exceeds Trezor device’s screen. Scroll here and on the device to view it and confirm.',
                 ethereumToken: 'Your receive address is your Ethereum address',
@@ -153,8 +171,7 @@ export const en = {
                     'For an extra layer of security, use Trezor Suite with your Trezor hardware wallet to verify the receive address',
             },
             deviceHint: {
-                description:
-                    'The receive address shown above should match the one on your Trezor device.',
+                description: 'This receive address should match the one on your Trezor device.',
             },
             showAddress: {
                 button: 'Show address',
@@ -164,19 +181,19 @@ export const en = {
         bottomSheets: {
             verificationWalkthrough: {
                 title: {
-                    step1: 'Why is it important to verify?',
-                    step2: 'Why is it important to verify on device?',
+                    step1: 'How to verify address',
+                    step2: 'Why verify on your Trezor',
                 },
                 description: {
-                    step1: 'Confirm that the address on your Trezor display matches the one on the following screen.',
-                    step2: 'While hackers can put fake info in your mobile phone, your Trezor’s screen always tells the truth.',
+                    step1: 'Confirm that the address on your Trezor device matches the one on your mobile device.',
+                    step2: 'Your Trezor never lies. Mobile devices are vulnerable to hacks and malicious apps.',
                 },
                 dontShowAgainButton: 'Don’t show again and continue',
             },
             confirmOnTrezor: {
                 title: 'Confirm on Trezor',
                 description:
-                    'See the connected Trezor. The receive address shown here in the app should match the one on your Trezor device.',
+                    'Go to your device and verify that the receive address on your Trezor matches the one displayed here.',
             },
             addressMismatch: {
                 title: "Address doesn't match?",
@@ -240,7 +257,7 @@ export const en = {
             noUsb: {
                 title: 'Track balances',
                 subtitle:
-                    'Easily sync your coin addresses and keep up with the crypto on your hardware wallet without exposing your private data.',
+                    'Easily sync your coin addresses and keep up with the crypto on your hardware wallet.',
             },
             usb: {
                 title: 'Track balances',
@@ -249,23 +266,22 @@ export const en = {
             },
         },
         analyticsConsentScreen: {
-            title: 'Help us help you',
-            subtitle:
-                'We’re all about making the best, most user-friendly app for you. You can help us achieve this.',
+            title: 'Better with you',
+            subtitle: 'Improve Trezor Suite Lite with your anonymous data.',
             bulletPoints: {
                 privacy: {
-                    title: 'Your data is safe',
+                    title: 'Your data is private',
                     description:
-                        "Rest assured, we're all about respecting your privacy — no sensitive stuff like your balances, transactions, or profile specifics.",
+                        "We don't gather sensitive personal data like balances, transactions, or profile details.",
                 },
                 dataCollection: {
                     title: 'What we collect',
                     description:
-                        'We gather info on app performance, user interaction, and technical issues to create a better user experience for you.',
+                        'We collect data on app performance, user interaction, and potential technical issues to enhance the user experience.',
                 },
             },
             helpSwitchTitle: 'Help us anonymously',
-            learnMore: 'Learn more about our <securityLink>security protocols</securityLink>',
+            learnMore: '<securityLink>More</securityLink> about security',
         },
     },
     moduleAccounts: {
@@ -311,7 +327,7 @@ export const en = {
         installedFw: 'Installed firmware: {version}',
         upToDateFw: 'The firmware is up to date.',
         outdatedFw: 'The firmware is outdated.',
-        goToAccessories: 'Get accessories @ Trezor Shop',
+        goToAccessories: 'Get swag for your device @ Trezor Shop',
         updateHowTo: {
             title: 'How to update firmware',
             subtitle: 'Follow these steps:',

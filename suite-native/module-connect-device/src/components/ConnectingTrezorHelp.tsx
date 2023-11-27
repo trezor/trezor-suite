@@ -1,7 +1,12 @@
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import { BottomSheet, IconButton, Text, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
+import { Link } from '@suite-native/link';
+import { selectDeviceRequestedPin } from '@suite-common/wallet-core';
+
+import { PIN_HELP_URL } from '../constants/pinFormConstants';
 
 export const ConnectingTrezorHelp = () => {
     const { translate } = useTranslate();
@@ -9,6 +14,19 @@ export const ConnectingTrezorHelp = () => {
     const [isHelperBottomSheetVisible, setIsHelperBottomSheetVisible] = useState(false);
 
     const toggleBottomSheet = () => setIsHelperBottomSheetVisible(!isHelperBottomSheetVisible);
+
+    const hasDeviceRequestedPin = useSelector(selectDeviceRequestedPin);
+
+    const modalTitle = translate(
+        hasDeviceRequestedPin
+            ? 'moduleConnectDevice.helpModal.pinMatrix.title'
+            : 'moduleConnectDevice.helpModal.connect.title',
+    );
+    const modalSubtitle = translate(
+        hasDeviceRequestedPin
+            ? 'moduleConnectDevice.helpModal.pinMatrix.subtitle'
+            : 'moduleConnectDevice.helpModal.connect.subtitle',
+    );
 
     return (
         <>
@@ -20,23 +38,41 @@ export const ConnectingTrezorHelp = () => {
             />
             <BottomSheet
                 isVisible={isHelperBottomSheetVisible}
-                title={translate('moduleConnectDevice.helpModal.title')}
-                subtitle={translate('moduleConnectDevice.helpModal.subtitle')}
+                title={modalTitle}
+                subtitle={modalSubtitle}
                 onClose={toggleBottomSheet}
             >
                 <VStack padding="small">
-                    <Text variant="callout">
-                        <Translation id="moduleConnectDevice.helpModal.stepsTitle" />
-                    </Text>
-                    <Text>
-                        <Translation id="moduleConnectDevice.helpModal.step1" />
-                    </Text>
-                    <Text>
-                        <Translation id="moduleConnectDevice.helpModal.step2" />
-                    </Text>
-                    <Text>
-                        <Translation id="moduleConnectDevice.helpModal.step3" />
-                    </Text>
+                    {hasDeviceRequestedPin ? (
+                        <Text>
+                            <Translation
+                                id="moduleConnectDevice.helpModal.pinMatrix.content"
+                                values={{
+                                    link: linkChunk => (
+                                        <Link href={PIN_HELP_URL} label={linkChunk} />
+                                    ),
+                                }}
+                            />
+                        </Text>
+                    ) : (
+                        <>
+                            <Text variant="callout">
+                                <Translation id="moduleConnectDevice.helpModal.connect.stepsTitle" />
+                            </Text>
+                            <Text>
+                                <Translation id="moduleConnectDevice.helpModal.connect.step1" />
+                            </Text>
+                            <Text>
+                                <Translation id="moduleConnectDevice.helpModal.connect.step2" />
+                            </Text>
+                            <Text>
+                                <Translation id="moduleConnectDevice.helpModal.connect.step3" />
+                            </Text>
+                            <Text>
+                                <Translation id="moduleConnectDevice.helpModal.connect.step4" />
+                            </Text>
+                        </>
+                    )}
                 </VStack>
             </BottomSheet>
         </>

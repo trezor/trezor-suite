@@ -16,8 +16,9 @@ import {
 } from '@suite-native/navigation';
 import { selectIsDeviceUnlocked } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
+import { useOpenLink } from '@suite-native/link';
 
-import { PIN_FORM_MIN_LENGTH } from '../constants/pinFormConstants';
+import { PIN_FORM_MIN_LENGTH, PIN_HELP_URL } from '../constants/pinFormConstants';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     ConnectDeviceStackParamList,
@@ -26,6 +27,7 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 >;
 
 export const PinFormControlButtons = () => {
+    const openLink = useOpenLink();
     const { translate } = useTranslate();
     const navigation = useNavigation<NavigationProp>();
     const isDeviceUnlocked = useSelector(selectIsDeviceUnlocked);
@@ -45,14 +47,23 @@ export const PinFormControlButtons = () => {
 
     const handleInvalidPin = useCallback(() => {
         showAlert({
-            title: translate('moduleConnectDevice.pinScreen.wrongPinModal.title'),
-            description: translate('moduleConnectDevice.pinScreen.wrongPinModal.description'),
+            title: translate('moduleConnectDevice.pinScreen.wrongPinAlert.title'),
+            description: translate('moduleConnectDevice.pinScreen.wrongPinAlert.description'),
             icon: 'warningCircle',
             pictogramVariant: 'red',
-            primaryButtonTitle: translate('moduleConnectDevice.pinScreen.wrongPinModal.button'),
+            primaryButtonTitle: translate(
+                'moduleConnectDevice.pinScreen.wrongPinAlert.button.tryAgain',
+            ),
             onPressPrimaryButton: reset,
+            secondaryButtonTitle: translate(
+                'moduleConnectDevice.pinScreen.wrongPinAlert.button.help',
+            ),
+            onPressSecondaryButton: () => {
+                openLink(PIN_HELP_URL);
+                reset();
+            },
         });
-    }, [reset, showAlert, translate]);
+    }, [reset, showAlert, translate, openLink]);
 
     useEffect(() => {
         TrezorConnect.on(UI.INVALID_PIN, handleInvalidPin);

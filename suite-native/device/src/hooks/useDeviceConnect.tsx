@@ -31,24 +31,34 @@ import { selectIsOnboardingFinished } from '@suite-native/module-settings';
 
 import { isFirmwareVersionSupported } from '../utils';
 
-const InstallFirmwareAppendix = () => (
-    <VStack>
-        <Text variant="callout">
-            <Translation id="moduleDevice.installFirmware.title" />
-        </Text>
-        <Box>
-            <Text color="textSubdued">
-                <Translation id="moduleDevice.installFirmware.lines.1" />
+const InstallFirmwareAppendix = () => {
+    const isConnectedDeviceUninitialized = useSelector(selectIsConnectedDeviceUninitialized);
+
+    return (
+        <VStack>
+            <Text variant="callout">
+                <Translation id="moduleDevice.installFirmware.title" />
             </Text>
-            <Text color="textSubdued">
-                <Translation id="moduleDevice.installFirmware.lines.2" />
-            </Text>
-            <Text color="textSubdued">
-                <Translation id="moduleDevice.installFirmware.lines.3" />
-            </Text>
-        </Box>
-    </VStack>
-);
+            <Box>
+                <Text color="textSubdued">
+                    <Translation id="moduleDevice.installFirmware.lines.1" />
+                </Text>
+                <Text color="textSubdued">
+                    <Translation id="moduleDevice.installFirmware.lines.2" />
+                </Text>
+                <Text color="textSubdued">
+                    <Translation
+                        id={
+                            isConnectedDeviceUninitialized
+                                ? 'moduleDevice.installFirmware.lines.3.setUp'
+                                : 'moduleDevice.installFirmware.lines.3.update'
+                        }
+                    />
+                </Text>
+            </Box>
+        </VStack>
+    );
+};
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     HomeStackParamList,

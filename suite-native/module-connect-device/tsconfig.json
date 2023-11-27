@@ -11,6 +11,7 @@
         { "path": "../device" },
         { "path": "../forms" },
         { "path": "../intl" },
+        { "path": "../link" },
         { "path": "../navigation" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/styles" },
