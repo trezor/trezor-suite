@@ -8576,4 +8576,27 @@ export default defineMessages({
         id: 'TR_ETH_REWARDS_EARN',
         defaultMessage: 'Your rewards also earn. Keep them staked and watch your ETH rewards soar.',
     },
+    TR_STAKE_AVAILABLE: {
+        id: 'TR_STAKE_AVAILABLE',
+        defaultMessage: 'Available',
+    },
+    TR_STAKE_MAX_FEE_DESC: {
+        id: 'TR_STAKE_MAX_FEE_DESC',
+        defaultMessage:
+            'Maximum fee is the network transaction fee that you’re willing to pay on the network to ensure your transaction gets processed.',
+    },
+    TR_STAKE_MAX: {
+        id: 'TR_STAKE_MAX',
+        defaultMessage: 'Max',
+    },
+    TR_STAKE_LEFT_AMOUNT_FOR_WITHDRAWAL: {
+        id: 'TR_STAKE_LEFT_AMOUNT_FOR_WITHDRAWAL',
+        defaultMessage:
+            'We’ve left {amount} ETH out so you will be able to pay for withdrawal fees',
+    },
+    TR_STAKE_RECOMMENDED_AMOUNT_FOR_WITHDRAWALS: {
+        id: 'TR_STAKE_RECOMMENDED_AMOUNT_FOR_WITHDRAWALS',
+        defaultMessage:
+            'We recommend you to leave {amount} ETH so you will be able to pay for withdrawal fees',
+    },
 });

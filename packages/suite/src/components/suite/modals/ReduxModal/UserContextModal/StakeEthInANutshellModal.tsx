@@ -2,6 +2,8 @@ import styled from 'styled-components';
 import { Button, Icon, IconType, P, useTheme } from '@trezor/components';
 import { Modal, Translation } from 'src/components/suite';
 import { TranslationKey } from '@suite-common/intl-types';
+import { useDispatch } from 'src/hooks/suite';
+import { openModal } from 'src/actions/suite/modalActions';
 
 const StyledModal = styled(Modal)`
     width: 380px;
@@ -52,12 +54,18 @@ const STAKING_DETAILS: StakingDetails[] = [
     },
 ];
 
-interface StakingEthInANutshellModalProps {
+interface StakeEthInANutshellModalProps {
     onCancel: () => void;
 }
 
-export const StakingEthInANutshellModal = ({ onCancel }: StakingEthInANutshellModalProps) => {
+export const StakeEthInANutshellModal = ({ onCancel }: StakeEthInANutshellModalProps) => {
     const theme = useTheme();
+
+    const dispatch = useDispatch();
+    const proceedToStaking = () => {
+        onCancel();
+        dispatch(openModal({ type: 'stake' }));
+    };
 
     return (
         <StyledModal
@@ -68,7 +76,7 @@ export const StakingEthInANutshellModal = ({ onCancel }: StakingEthInANutshellMo
                 </HeadingContent>
             }
             bottomBar={
-                <Button fullWidth onClick={onCancel}>
+                <Button fullWidth onClick={proceedToStaking}>
                     <Translation id="TR_GOT_IT" />
                 </Button>
             }

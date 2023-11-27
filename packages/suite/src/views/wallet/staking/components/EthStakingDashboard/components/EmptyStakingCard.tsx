@@ -53,7 +53,7 @@ export const EmptyStakingCard = () => {
 
     const dispatch = useDispatch();
     const openStakingEthInANutshellModal = () =>
-        dispatch(openModal({ type: 'staking-eth-in-a-nutshell' }));
+        dispatch(openModal({ type: 'stake-eth-in-a-nutshell' }));
 
     const stakeEthFeatures = [
         {
