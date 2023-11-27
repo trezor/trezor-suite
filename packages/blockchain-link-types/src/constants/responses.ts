@@ -11,6 +11,7 @@ export const GET_ACCOUNT_INFO = 'r_account_info';
 export const GET_ACCOUNT_UTXO = 'r_get_account_utxo';
 export const GET_ACCOUNT_BALANCE_HISTORY = 'r_get_account_balance_history';
 export const GET_TRANSACTION = 'r_get_transaction';
+export const GET_TRANSACTION_HEX = 'r_get_transaction_hex';
 export const ESTIMATE_FEE = 'r_estimate_fee';
 export const SUBSCRIBE = 'r_subscribe';
 export const UNSUBSCRIBE = 'r_unsubscribe';

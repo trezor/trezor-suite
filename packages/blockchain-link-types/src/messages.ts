@@ -47,6 +47,11 @@ export interface GetTransaction {
     payload: string;
 }
 
+export interface GetTransactionHex {
+    type: typeof MESSAGES.GET_TRANSACTION_HEX;
+    payload: string;
+}
+
 export interface GetFiatRatesTickersList {
     type: typeof MESSAGES.GET_FIAT_RATES_TICKERS_LIST;
     payload: GetFiatRatesTickersListParams;
@@ -133,6 +138,7 @@ export type Message =
     | ChannelMessage<GetAccountInfo>
     | ChannelMessage<GetAccountUtxo>
     | ChannelMessage<GetTransaction>
+    | ChannelMessage<GetTransactionHex>
     | ChannelMessage<GetCurrentFiatRates>
     | ChannelMessage<GetFiatRatesForTimestamps>
     | ChannelMessage<GetAccountBalanceHistory>

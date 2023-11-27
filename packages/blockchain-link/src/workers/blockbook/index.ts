@@ -124,6 +124,16 @@ const getTransaction = async (request: Request<MessageTypes.GetTransaction>) => 
     } as const;
 };
 
+const getTransactionHex = async (request: Request<MessageTypes.GetTransactionHex>) => {
+    const api = await request.connect();
+    const { hex } = await api.getTransaction(request.payload);
+    if (!hex) throw new CustomError(`Missing hex of ${request.payload}`);
+    return {
+        type: RESPONSES.GET_TRANSACTION_HEX,
+        payload: hex,
+    } as const;
+};
+
 const pushTransaction = async (request: Request<MessageTypes.PushTransaction>) => {
     const api = await request.connect();
     const resp = await api.pushTransaction(request.payload);
@@ -372,6 +382,8 @@ const onRequest = (request: Request<MessageTypes.Message>) => {
             return getAccountUtxo(request);
         case MESSAGES.GET_TRANSACTION:
             return getTransaction(request);
+        case MESSAGES.GET_TRANSACTION_HEX:
+            return getTransactionHex(request);
         case MESSAGES.GET_ACCOUNT_BALANCE_HISTORY:
             return getAccountBalanceHistory(request);
         case MESSAGES.GET_CURRENT_FIAT_RATES:
