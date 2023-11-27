@@ -15,12 +15,12 @@ export const EmptyHomeRenderer = () => {
     const { isUsbDeviceConnectFeatureEnabled } = useIsUsbDeviceConnectFeatureEnabled();
     const isDeviceImported = useSelector(selectIsSelectedDeviceImported);
     const isDeviceAuthorized = useSelector(selectIsSelectedDeviceAuthorized);
-    const areAllDevicesDisconnectdOrAccountless = useSelector(
+    const areAllDevicesDisconnectedOrAccountless = useSelector(
         selectAreAllDevicesDisconnectedOrAccountless,
     );
 
     // Crossroads should be displayed only if there is no real device connected and portfolio tracker has no accounts.
-    if (areAllDevicesDisconnectdOrAccountless) {
+    if (areAllDevicesDisconnectedOrAccountless) {
         return <EmptyPortfolioCrossroads />;
     }
 

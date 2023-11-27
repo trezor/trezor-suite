@@ -5,8 +5,10 @@ import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box } from '@suite-native/atoms';
-import { selectIsPortfolioEmpty, selectIsSelectedDeviceImported } from '@suite-common/wallet-core';
-import { useIsUsbDeviceConnectFeatureEnabled } from '@suite-native/feature-flags';
+import {
+    selectAreAllDevicesDisconnectedOrAccountless,
+    selectIsPortfolioTrackerEmpty,
+} from '@suite-common/wallet-core';
 
 import { TabBarItem } from './TabBarItem';
 import { TabsOptions } from '../types';
@@ -35,14 +37,12 @@ const tabBarStyle = prepareNativeStyle<{
 export const TabBar = ({ state, navigation, tabItemOptions }: TabBarProps) => {
     const { applyStyle } = useNativeStyles();
     const insets = useSafeAreaInsets();
-    const { isUsbDeviceConnectFeatureEnabled } = useIsUsbDeviceConnectFeatureEnabled();
-    const isDeviceImported = useSelector(selectIsSelectedDeviceImported);
+    const areAllDevicesDisconnectedOrAccountless = useSelector(
+        selectAreAllDevicesDisconnectedOrAccountless,
+    );
+    const isPortfolioTrackerEmpty = useSelector(selectIsPortfolioTrackerEmpty);
 
-    const isPortfolioEmpty = useSelector(selectIsPortfolioEmpty);
-
-    const isConnectedDevice = isUsbDeviceConnectFeatureEnabled && !isDeviceImported;
-
-    if (isPortfolioEmpty && isConnectedDevice) return null;
+    if (areAllDevicesDisconnectedOrAccountless || isPortfolioTrackerEmpty) return null;
 
     return (
         <Box
