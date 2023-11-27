@@ -64,6 +64,7 @@ export const ICONS = {
     HOLOGRAM: require('../../../images/icons/hologram.svg'),
     INFO: require('../../../images/icons/info.svg'),
     KEY: require('../../../images/icons/key.svg'),
+    LINK: require('../../../images/icons/link.svg'),
     LIGHTBULB: require('../../../images/icons/lightbulb.svg'),
     LOCK_ACTIVE: require('../../../images/icons/lock_active.svg'),
     LOCK: require('../../../images/icons/lock.svg'),

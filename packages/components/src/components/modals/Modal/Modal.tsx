@@ -2,10 +2,12 @@ import { useCallback, useState, ReactNode, useEffect } from 'react';
 
 import styled, { css, useTheme } from 'styled-components';
 import { useEvent } from 'react-use';
-import { borders, boxShadows, spacings, spacingsPx, typography } from '@trezor/theme';
+import { boxShadows, spacings, spacingsPx, typography } from '@trezor/theme';
 
 import { Icon, IconType } from '../../assets/Icon/Icon';
 import { Stepper } from '../../loaders/Stepper/Stepper';
+import { IconButton } from '../../buttons/IconButton/IconButton';
+import { H3 } from '../../typography/Heading/Heading';
 
 const CLOSE_ICON_SIZE = spacings.xxl;
 const CLOSE_ICON_MARGIN = 16;
@@ -77,11 +79,7 @@ const HeadingContainer = styled.div<HeadingContainerProps>`
         `}
 `;
 
-const Heading = styled.h1<{ isWithIcon?: boolean }>`
-    display: flex;
-    align-items: baseline;
-    ${typography.titleSmall}
-
+const Heading = styled(H3)<{ isWithIcon?: boolean }>`
     ${({ isWithIcon }) =>
         isWithIcon &&
         css`
@@ -154,18 +152,6 @@ const BottomBarComponents = styled.div`
     display: flex;
     align-items: center;
     gap: ${spacingsPx.xs};
-`;
-
-const CloseIcon = styled(Icon)`
-    width: ${CLOSE_ICON_SIZE}px;
-    height: ${CLOSE_ICON_SIZE}px;
-    background: ${({ theme }) => theme.backgroundTertiaryDefaultOnElevation1};
-    border-radius: ${borders.radii.full};
-    transition: opacity 0.2s;
-
-    :hover {
-        opacity: 0.7;
-    }
 `;
 
 interface ModalProps {
@@ -289,12 +275,12 @@ const Modal = ({
                                 {headerComponent}
 
                                 {isCancelable && (
-                                    <CloseIcon
-                                        size={14}
-                                        color={theme.iconOnTertiary}
+                                    <IconButton
+                                        variant="tertiary"
                                         icon="CROSS"
                                         data-test="@modal/close-button"
                                         onClick={onCancel}
+                                        size="small"
                                     />
                                 )}
                             </HeaderComponentsContainer>

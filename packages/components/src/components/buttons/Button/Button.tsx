@@ -53,12 +53,21 @@ interface ContentProps {
     size: ButtonSize;
     disabled: boolean;
 }
+const getTypography = (size: ButtonSize) => {
+    switch (size) {
+        case 'tiny':
+            return typography.hint;
+        case 'small':
+            return typography.hint;
+        default:
+            return typography.body;
+    }
+};
 
 const Content = styled.span<ContentProps>`
-    height: ${({ size }) => (size === 'small' ? 20 : 24)}px;
     white-space: nowrap;
 
-    ${({ size }) => (size === 'small' ? typography.hint : typography.body)};
+    ${({ size }) => getTypography(size)};
 `;
 
 type SelectedHTMLButtonProps = Pick<
@@ -76,6 +85,7 @@ export interface ButtonProps extends SelectedHTMLButtonProps {
     iconSize?: number;
     iconAlignment?: IconAlignment;
     children: React.ReactNode;
+    title?: string;
     'data-test'?: string;
 }
 
