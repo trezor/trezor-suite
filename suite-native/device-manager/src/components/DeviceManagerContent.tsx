@@ -9,6 +9,7 @@ import {
     selectDevices,
     selectIsSelectedDeviceImported,
     selectDeviceId,
+    selectIsNoPhysicalDeviceConnected,
 } from '@suite-common/wallet-core';
 import {
     ConnectDeviceStackRoutes,
@@ -37,6 +38,7 @@ export const DeviceManagerContent = () => {
     const devices = useSelector(selectDevices);
     const selectedDeviceId = useSelector(selectDeviceId);
     const isPortfolioTrackerDevice = useSelector(selectIsSelectedDeviceImported);
+    const isNoPhysicalDeviceConnected = useSelector(selectIsNoPhysicalDeviceConnected);
 
     const { setIsDeviceManagerVisible } = useDeviceManager();
 
@@ -65,7 +67,7 @@ export const DeviceManagerContent = () => {
                     ))}
                 </VStack>
             )}
-            {isPortfolioTrackerDevice && (
+            {isNoPhysicalDeviceConnected && (
                 <VStack>
                     <Text variant="callout">
                         <Translation id="deviceManager.connectDevice.sectionTitle" />

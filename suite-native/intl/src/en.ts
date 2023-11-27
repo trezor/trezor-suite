@@ -302,6 +302,7 @@ export const en = {
             connected: 'Connected',
         },
         syncCoinsButton: 'Sync coins',
+        defaultHeader: 'Hi there!',
     },
     deviceInfo: {
         installedFw: 'Installed firmware: {version}',

@@ -32,6 +32,7 @@ export const DeviceControlButtons = () => {
     if (!selectedDevice) return null;
 
     const handleEject = () => {
+        setIsDeviceManagerVisible(false);
         dispatch(deviceActions.deviceDisconnect(selectedDevice));
     };
 
