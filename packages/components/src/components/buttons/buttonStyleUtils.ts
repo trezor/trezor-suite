@@ -2,7 +2,7 @@ import { css, DefaultTheme } from 'styled-components';
 import { spacings, spacingsPx } from '@trezor/theme';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'tertiary' | 'destructive';
-export type ButtonSize = 'large' | 'medium' | 'small';
+export type ButtonSize = 'large' | 'medium' | 'small' | 'tiny';
 export type IconAlignment = 'left' | 'right';
 
 export const getPadding = (size: ButtonSize, hasLabel?: boolean) => {
@@ -13,6 +13,8 @@ export const getPadding = (size: ButtonSize, hasLabel?: boolean) => {
             return hasLabel ? `${spacingsPx.sm} ${spacingsPx.lg}` : '14px';
         case 'small':
             return hasLabel ? `${spacingsPx.xs} ${spacingsPx.md}` : '10px';
+        case 'tiny':
+            return hasLabel ? `${spacingsPx.xxxs} ${spacingsPx.xs}` : '8px';
 
         default:
             break;
@@ -44,6 +46,8 @@ export const getIconSize = (size: ButtonSize) => {
         case 'medium':
             return spacings.lg;
         case 'small':
+            return spacings.md;
+        case 'tiny':
             return spacings.md;
 
         default:

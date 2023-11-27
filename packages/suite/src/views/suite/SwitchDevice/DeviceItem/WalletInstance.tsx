@@ -21,6 +21,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { TrezorDevice, AcquiredDevice } from 'src/types/suite';
 import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer';
 import { METADATA } from 'src/actions/suite/constants';
+import { spacingsPx } from '@trezor/theme';
 
 const InstanceType = styled.div`
     display: flex;
@@ -40,7 +41,7 @@ const Wrapper = styled(Box)`
     display: flex;
     width: 100%;
     align-items: center;
-    background: ${({ theme }) => theme.BG_WHITE};
+    background: ${({ theme }) => theme.backgroundSurfaceElevation1};
 
     & + & {
         margin-top: 10px;
@@ -48,7 +49,7 @@ const Wrapper = styled(Box)`
 
     :hover,
     :focus-within {
-        background: ${({ theme }) => theme.BG_WHITE_ALT_HOVER};
+        background: ${({ theme }) => theme.backgroundSurfaceElevation0};
 
         ${InstanceType} > span {
             text-decoration: underline;
@@ -80,12 +81,12 @@ const Col = styled.div<{ grow?: number; centerItems?: boolean }>`
 `;
 
 const ColEject = styled(Col)`
-    margin: 0 22px;
+    margin-left: ${spacingsPx.xxxl};
+    margin-right: ${spacingsPx.sm};
 `;
 
 const SwitchCol = styled.div`
     display: flex;
-    margin-right: 46px;
 `;
 
 const LockIcon = styled(Icon)`

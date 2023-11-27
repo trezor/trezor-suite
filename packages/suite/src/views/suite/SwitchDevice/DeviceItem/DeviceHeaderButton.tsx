@@ -1,7 +1,7 @@
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 
 import * as deviceUtils from '@suite-common/suite-utils';
-import { Icon } from '@trezor/components';
+import { IconButton } from '@trezor/components';
 
 import { NotificationCard, Translation } from 'src/components/suite';
 import { TrezorDevice } from 'src/types/suite';
@@ -23,8 +23,6 @@ export const DeviceHeaderButton = ({
     onDeviceSettingsClick,
     onSolveIssueClick,
 }: DeviceHeaderButtonProps) => {
-    const theme = useTheme();
-
     const deviceStatus = deviceUtils.getStatus(device);
     const deviceStatusMessage = deviceUtils.getDeviceNeedsAttentionMessage(deviceStatus);
     const isUnknown = device.type !== 'acquired';
@@ -44,14 +42,11 @@ export const DeviceHeaderButton = ({
                 </GrayNotificationCard>
             )}
             {!needsAttention && !isUnknown && (
-                // Device Settings button
-                <Icon
-                    useCursorPointer
-                    size={24}
+                <IconButton
+                    variant="tertiary"
                     icon="SETTINGS"
-                    color={theme.TYPE_LIGHT_GREY}
-                    hoverColor={theme.TYPE_LIGHTER_GREY}
                     onClick={onDeviceSettingsClick}
+                    size="small"
                 />
             )}
         </>
