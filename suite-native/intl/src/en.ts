@@ -295,13 +295,16 @@ export const en = {
         portfolioTracker: {
             explore: 'Explore Trezor',
             learnBasics: 'Learn the basics',
-            readDocs: 'Read the docs',
+            exploreShop: 'Explore Trezor Shop',
         },
         status: {
             portfolioTracker: 'Sync & track coins',
             connected: 'Connected',
         },
-        syncCoinsButton: 'Sync coins',
+        syncCoinsButton: {
+            syncMyCoins: 'Sync my coins',
+            syncAnother: 'Sync another coin',
+        },
         defaultHeader: 'Hi there!',
     },
     deviceInfo: {

@@ -3,7 +3,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
 
 import { A } from '@mobily/ts-belt';
-import { Screen } from '@suite-native/navigation';
 
 import { Box, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -42,7 +41,7 @@ export const MessageSystemRenderer = ({ children }: MessageSystemRendererProps) 
     const firstFeatureMessage = A.head(activeFeatureMessages);
 
     return (
-        <Screen>
+        <Box flex={1}>
             {children}
             <Box
                 style={applyStyle(messageBannerContainerStyle, {
@@ -61,6 +60,6 @@ export const MessageSystemRenderer = ({ children }: MessageSystemRendererProps) 
                     <MessageScreen message={firstFeatureMessage} />
                 </Box>
             )}
-        </Screen>
+        </Box>
     );
 };

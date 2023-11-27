@@ -13,7 +13,9 @@ import { SCREEN_HEADER_HEIGHT } from '../constants';
 import { useDeviceManager } from '../hooks/useDeviceManager';
 import { DeviceItemContent } from './DeviceItemContent';
 
-const switchStyle = prepareNativeStyle(utils => ({
+type SwitchStyleProps = { isDeviceManagerVisible: boolean };
+
+const switchStyle = prepareNativeStyle<SwitchStyleProps>((utils, { isDeviceManagerVisible }) => ({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
@@ -22,9 +24,16 @@ const switchStyle = prepareNativeStyle(utils => ({
     paddingVertical: utils.spacings.small,
     paddingHorizontal: utils.spacings.medium,
     borderColor: utils.colors.borderOnElevation1,
-    borderWidth: utils.borders.widths.large,
+    borderWidth: utils.borders.widths.small,
     borderRadius: utils.borders.radii.round,
     backgroundColor: utils.colors.backgroundSurfaceElevation1,
+
+    extends: {
+        condition: isDeviceManagerVisible,
+        style: {
+            borderWidth: utils.borders.widths.large,
+        },
+    },
 }));
 
 const switchWrapperStyle = prepareNativeStyle(_ => ({
@@ -48,7 +57,7 @@ export const DeviceSwitch = () => {
     return (
         <Pressable onPress={toggleDeviceManager} style={applyStyle(switchWrapperStyle)}>
             <HStack justifyContent="space-between" alignItems="center" spacing="medium">
-                <Box style={applyStyle(switchStyle)}>
+                <Box style={applyStyle(switchStyle, { isDeviceManagerVisible })}>
                     <DeviceItemContent
                         deviceId={areAllDevicesDisconnectedOrAccountless ? undefined : deviceId}
                         headerTextVariant="highlight"
