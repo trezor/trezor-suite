@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo, useRef } from 'react';
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 
-import { Button, DropdownMenuItemProps, Icon } from '@trezor/components';
+import { Button, DropdownMenuItemProps } from '@trezor/components';
 import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import { addMetadata, init, setEditing } from 'src/actions/suite/metadataActions';
 import { MetadataAddPayload } from 'src/types/suite/metadata';
@@ -62,16 +62,17 @@ const ActionButton = styled(Button)<{ isValueVisible?: boolean; isVisible?: bool
     width: ${({ isVisible }) => (isVisible ? 'auto' : '0')};
 `;
 
+// @TODO this shouldn't be Button
 const SuccessButton = styled(Button)`
     cursor: wait;
     margin-left: 12px;
     width: auto;
-    background-color: ${({ theme }) => theme.BG_LIGHT_GREEN};
-    color: ${({ theme }) => theme.BG_GREEN};
+    background-color: ${({ theme }) => theme.backgroundPrimarySubtleOnElevation0};
+    color: ${({ theme }) => theme.textPrimaryDefault};
 
     :hover {
-        color: ${({ theme }) => theme.BG_GREEN};
-        background-color: ${({ theme }) => theme.BG_LIGHT_GREEN};
+        color: ${({ theme }) => theme.textPrimaryDefault};
+        background-color: ${({ theme }) => theme.backgroundPrimarySubtleOnElevation0};
     }
 `;
 
@@ -219,7 +220,6 @@ export const MetadataLabeling = (props: Props) => {
     const { isDiscoveryRunning } = useDiscovery();
     const [showSuccess, setShowSuccess] = useState(false);
     const [pending, setPending] = useState(false);
-    const theme = useTheme();
 
     const l10nLabelling = getLocalizedActions(props.payload.type);
     const dataTestBase = `@metadata/${props.payload.type}/${props.payload.defaultValue}`;
@@ -363,7 +363,7 @@ export const MetadataLabeling = (props: Props) => {
                             isLoading={actionButtonsDisabled}
                             isDisabled={actionButtonsDisabled}
                             isVisible={isVisible}
-                            size="small"
+                            size="tiny"
                             isValueVisible={!!props.payload.value}
                             onClick={e => {
                                 e.stopPropagation();
@@ -398,7 +398,7 @@ export const MetadataLabeling = (props: Props) => {
                             isLoading={actionButtonsDisabled}
                             isDisabled={actionButtonsDisabled}
                             isVisible={isVisible}
-                            size="small"
+                            size="tiny"
                             onClick={e => {
                                 e.stopPropagation();
                                 activateEdit();
@@ -411,8 +411,13 @@ export const MetadataLabeling = (props: Props) => {
             )}
 
             {showSuccess && !editActive && (
-                <SuccessButton variant="tertiary" data-test={`${dataTestBase}/success`}>
-                    <Icon icon="CHECK" color={theme.TYPE_GREEN} size={12} /> {l10nLabelling.edited}
+                <SuccessButton
+                    variant="tertiary"
+                    data-test={`${dataTestBase}/success`}
+                    icon="CHECK"
+                    size="tiny"
+                >
+                    {l10nLabelling.edited}
                 </SuccessButton>
             )}
         </LabelContainer>
