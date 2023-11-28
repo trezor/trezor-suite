@@ -290,7 +290,12 @@ connect-popup manual:
   parallel:
     matrix:
       - CONNECT_VERSION: "9.0.10"
-        TEST_FILE: ["methods.test", "browser-support.test", "popup-close-legacy.test"]
+        TEST_FILE: [
+            "browser-support.test",
+            "popup-close-legacy.test",
+            # Test methods commented until we make it work with legacy connect due to trustHost in old connect-explorer
+            # "methods.test",
+          ]
 
 connect-popup legacy npm package manual:
   extends: .connect-popup legacy npm package base
