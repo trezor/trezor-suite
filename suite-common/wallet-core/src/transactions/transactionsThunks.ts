@@ -60,9 +60,8 @@ export const replaceTransactionThunk = createThunk<ReplaceTransactionThunkParams
                 // bitcoin-like: profile transaction for affected account
                 newTx = enhanceTransaction(
                     blockbookUtils.transformTransaction(
-                        affectedAccount.descriptor,
-                        affectedAccount.addresses,
                         signedTransaction,
+                        affectedAccount.addresses,
                     ),
                     affectedAccount,
                 );
@@ -141,9 +140,8 @@ export const addFakePendingTxThunk = createThunk<AddFakePendingTransactionParams
             if (!precomposedTx.prevTxid) {
                 // create and profile pending transaction for affected account if it's not a replacement tx
                 const affectedAccountTransaction = blockbookUtils.transformTransaction(
-                    affectedAccount.descriptor,
-                    affectedAccount.addresses,
                     transaction,
+                    affectedAccount.addresses ?? affectedAccount.descriptor,
                 );
                 const prependingTx = { ...affectedAccountTransaction, deadline: blockHeight + 2 };
                 dispatch(
