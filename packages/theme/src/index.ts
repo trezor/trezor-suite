@@ -1,6 +1,7 @@
 export * from './borders';
 export * from './boxShadows';
 export * from './colors';
+export * from './coinsColors';
 export * from './fontFamilies';
 export * from './fontWeights';
 export * from './typography';

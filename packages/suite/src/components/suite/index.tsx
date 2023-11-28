@@ -16,6 +16,8 @@ import { DeviceInvalidModeLayout } from './DeviceInvalidModeLayout';
 import { AppNavigationPanel } from './AppNavigationPanel';
 import { AppNavigation } from './AppNavigation/AppNavigation';
 import { Ticker } from './Ticker/Ticker';
+import { TrendTicker } from './Ticker/TrendTicker';
+import { PriceTicker } from './Ticker/PriceTicker';
 import { Translation } from './Translation';
 import { AccountLabeling, AddressLabeling, WalletLabeling, MetadataLabeling } from './labeling';
 import { FormattedCryptoAmount } from './FormattedCryptoAmount';
@@ -75,6 +77,8 @@ export {
     FormattedCryptoAmount,
     FormattedNftAmount,
     Ticker,
+    TrendTicker,
+    PriceTicker,
     Sign,
     ReadMoreLink,
     TrezorLink,
