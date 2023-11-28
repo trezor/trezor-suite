@@ -41,7 +41,7 @@ const logWriterFactory = (popupManager: popup.PopupManager): LogWriter => ({
                 type: IFRAME.LOG,
                 payload: message,
             },
-            false,
+            { usePromise: false, useQueue: true },
         );
     },
 });
@@ -75,9 +75,8 @@ const init = (settings: Partial<ConnectSettings> = {}): Promise<void> => {
     _settings = parseConnectSettings({ ..._settings, ...settings });
     if (!_popupManager) {
         _popupManager = new popup.PopupManager(_settings, { logger: popupManagerLogger });
+        setLogWriter(() => logWriterFactory(_popupManager));
     }
-
-    setLogWriter(() => logWriterFactory(_popupManager));
 
     logger.enabled = !!settings.debug;
 

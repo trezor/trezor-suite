@@ -92,7 +92,7 @@ export abstract class AbstractMessageChannel<
                         type: 'channel-handshake-request',
                         data: { success: true, payload: undefined },
                     },
-                    false,
+                    { usePromise: false, useQueue: false },
                 );
                 await this.handshakeFinished?.promise;
             },
@@ -103,7 +103,10 @@ export abstract class AbstractMessageChannel<
         )
             .then(() => {
                 this.logger?.log(this.channel.here, 'handshake confirmed');
-                this.messagesQueue.forEach(message => this.sendFn(message));
+                this.messagesQueue.forEach(message => {
+                    message.channel = this.channel;
+                    this.sendFn(message);
+                });
                 this.messagesQueue = [];
             })
             .catch(() => {
@@ -131,7 +134,7 @@ export abstract class AbstractMessageChannel<
                     type: 'channel-handshake-confirm',
                     data: { success: true, payload: undefined },
                 },
-                false,
+                { usePromise: false, useQueue: false },
             );
             return;
         }
@@ -155,13 +158,15 @@ export abstract class AbstractMessageChannel<
     }
 
     // todo: outgoing messages should be typed
-    postMessage(message: any, usePromise = true) {
+    postMessage(message: any, { usePromise = true, useQueue = true } = {}) {
         message.channel = this.channel;
         if (!usePromise) {
             try {
                 this.sendFn(message);
             } catch (err) {
-                console.error('postMessage error', err);
+                if (useQueue) {
+                    this.messagesQueue.push(message);
+                }
             }
             return;
         }
@@ -173,7 +178,9 @@ export abstract class AbstractMessageChannel<
         try {
             this.sendFn(message);
         } catch (err) {
-            this.messagesQueue.push(message);
+            if (useQueue) {
+                this.messagesQueue.push(message);
+            }
         }
 
         return this.messagePromises[message.id].promise;
