@@ -16,7 +16,7 @@ describe('blockbook/utils', () => {
         fixtures.transformTransaction.forEach(f => {
             it(f.description, () => {
                 // @ts-expect-error incorrect params
-                const tx = transformTransaction(f.descriptor, f.addresses, f.tx);
+                const tx = transformTransaction(f.tx, f.addresses ?? f.descriptor);
                 expect(tx).toMatchObject(f.parsed);
             });
         });

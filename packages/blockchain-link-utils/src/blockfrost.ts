@@ -174,15 +174,20 @@ export const filterTokenTransfers = (
 };
 
 export const transformTransaction = (
-    descriptor: string,
-    accountAddress: AccountAddresses | undefined,
     blockfrostTxData: BlockfrostTransaction,
+    // TODO does 'descriptor' branch make sense for Cardano or was it just copypaste from blockbook?
+    addressesOrDescriptor?: AccountAddresses | string,
 ): Transaction => {
+    const [accountAddress, descriptor] =
+        typeof addressesOrDescriptor === 'object'
+            ? [addressesOrDescriptor, undefined]
+            : [undefined, addressesOrDescriptor];
+
     const myAddresses = accountAddress
         ? accountAddress.change
               .concat(accountAddress.used, accountAddress.unused)
               .map(a => a.address)
-        : [descriptor];
+        : (descriptor && [descriptor]) || [];
 
     let type: Transaction['type'];
     let targets: VinVout[] = [];
@@ -298,7 +303,7 @@ export const transformAccountInfo = (info: BlockfrostAccountInfo): AccountInfo =
             transactions: !blockfrostTxs
                 ? []
                 : blockfrostTxs?.map(tx =>
-                      transformTransaction(info.descriptor, info.addresses, tx),
+                      transformTransaction(tx, info.addresses ?? info.descriptor),
                   ),
         },
     };

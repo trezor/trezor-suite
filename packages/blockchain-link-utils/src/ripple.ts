@@ -23,7 +23,7 @@ export const transformServerInfo = (payload: any) => ({
 // https://bitcoin.stackexchange.com/questions/23061/ripple-ledger-time-format/23065#23065
 const BLOCKTIME_OFFSET = 946684800;
 
-export const transformTransaction = (descriptor: string, tx: any): Transaction => {
+export const transformTransaction = (tx: any, descriptor?: string): Transaction => {
     const blockTime =
         typeof tx.date === 'number' && tx.date > 0 ? tx.date + BLOCKTIME_OFFSET : tx.date;
 

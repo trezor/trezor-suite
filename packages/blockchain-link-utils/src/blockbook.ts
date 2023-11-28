@@ -87,7 +87,7 @@ export const filterTokenTransfers = (
 };
 
 export const filterEthereumInternalTransfers = (
-    address: string,
+    address: string | undefined,
     ethereumSpecific: BlockbookTransaction['ethereumSpecific'],
 ): InternalTransfer[] => {
     const internalTransfers = ethereumSpecific?.internalTransfers;
@@ -135,14 +135,18 @@ export const isTxFailed = (tx: BlockbookTransaction) =>
     !(!tx.blockHeight || tx.blockHeight < 0) && tx.ethereumSpecific?.status === 0;
 
 export const transformTransaction = (
-    descriptor: string,
-    addresses: TransformAddresses | undefined,
     tx: BlockbookTransaction,
+    addressesOrDescriptor?: TransformAddresses | string,
 ): Transaction => {
+    const [addresses, descriptor] =
+        typeof addressesOrDescriptor === 'object'
+            ? [addressesOrDescriptor, undefined]
+            : [undefined, addressesOrDescriptor];
+
     // combine all addresses into array
     const myAddresses = addresses
         ? addresses.change.concat(addresses.used, addresses.unused).map(a => a.address)
-        : [descriptor];
+        : (descriptor && [descriptor]) || [];
 
     const inputs = Array.isArray(tx.vin) ? tx.vin : [];
     const totalInput = inputs.reduce(sumVinVout, 0);
@@ -375,7 +379,7 @@ export const transformAccountInfo = (payload: BlockbookAccountInfo): AccountInfo
                     : undefined,
             unconfirmed: payload.unconfirmedTxs,
             transactions: payload.transactions
-                ? payload.transactions.map(t => transformTransaction(descriptor, addresses, t))
+                ? payload.transactions.map(t => transformTransaction(t, addresses ?? descriptor))
                 : undefined,
         },
         misc,
