@@ -39,7 +39,7 @@ channel.init().then(() => {
             return;
         }
         if (event.source === window && event.data) {
-            channel.postMessage(event.data, false);
+            channel.postMessage(event.data, { usePromise: false });
         }
     });
 });
