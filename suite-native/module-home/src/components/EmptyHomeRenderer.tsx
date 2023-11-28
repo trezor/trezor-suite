@@ -19,13 +19,15 @@ export const EmptyHomeRenderer = () => {
         selectAreAllDevicesDisconnectedOrAccountless,
     );
 
-    // Crossroads should be displayed only if there is no real device connected and portfolio tracker has no accounts.
-    if (areAllDevicesDisconnectedOrAccountless) {
-        return <EmptyPortfolioCrossroads />;
-    }
+    if (isUsbDeviceConnectFeatureEnabled) {
+        // Crossroads should be displayed only if there is no real device connected and portfolio tracker has no accounts.
+        if (areAllDevicesDisconnectedOrAccountless) {
+            return <EmptyPortfolioCrossroads />;
+        }
 
-    if (isUsbDeviceConnectFeatureEnabled && !isDeviceImported && isDeviceAuthorized) {
-        return <EmptyConnectedDeviceState />;
+        if (!isDeviceImported && isDeviceAuthorized) {
+            return <EmptyConnectedDeviceState />;
+        }
     }
 
     return <EmptyPortfolioTrackerState />;
