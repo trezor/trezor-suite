@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 
-import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
+import { selectDevice } from '@suite-common/wallet-core';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { Onboarding } from 'src/views/onboarding';
 import { getPrerequisites } from 'src/utils/suite/prerequisites';
 import { ErrorPage } from 'src/views/suite/ErrorPage';
@@ -11,6 +12,8 @@ import { SuiteLayout } from './SuiteLayout/SuiteLayout';
 import { InitialLoading } from './InitialLoading';
 import { DatabaseUpgradeModal } from './DatabaseUpgradeModal';
 import { PrerequisiteScreen } from './PrerequisiteScreen';
+import { LoggedOutLayout } from './LoggedOutLayout';
+import { selectIsLoggedOut } from 'src/reducers/suite/suiteReducer';
 
 const getFullscreenApp = (route: AppState['router']['route']) => {
     switch (route?.app) {
@@ -31,9 +34,10 @@ export const Preloader = ({ children }: PreloaderProps) => {
     const lifecycle = useSelector(state => state.suite.lifecycle);
     const transport = useSelector(state => state.suite.transport);
     const router = useSelector(state => state.router);
-    const dispatch = useDispatch();
+    const device = useSelector(selectDevice);
+    const isLoggedOut = useSelector(selectIsLoggedOut);
 
-    const { device } = useDiscovery();
+    const dispatch = useDispatch();
 
     useEffect(() => {
         dispatch(init());
@@ -77,6 +81,10 @@ export const Preloader = ({ children }: PreloaderProps) => {
     // because if it is handled by Router it is wrapped in SuiteLayout
     if (!router.route) {
         return <ErrorPage />;
+    }
+
+    if (isLoggedOut) {
+        return <LoggedOutLayout>{children}</LoggedOutLayout>;
     }
 
     // everything is set.

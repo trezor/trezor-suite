@@ -8,6 +8,7 @@ import { setDebugMode } from 'src/actions/suite/suiteActions';
 import { FADE_IN } from '@trezor/components/src/config/animations';
 import { AppNavigationItem } from 'src/components/suite/AppNavigation/AppNavigation';
 import { desktopApi } from '@trezor/suite-desktop-api';
+import { selectIsLoggedOut } from 'src/reducers/suite/suiteReducer';
 
 const CloseButtonWrapper = styled.div<{ isAppNavigationPanelInView?: boolean }>`
     position: absolute;
@@ -32,6 +33,8 @@ export const SettingsMenu = () => {
     const settingsBackRoute = useSelector(state => state.router.settingsBackRoute);
     const showDebugMenu = useSelector(state => state.suite.settings.debug.showDebugMenu);
     const initialRun = useSelector(state => state.suite.flags.initialRun);
+    const isLoggedOut = useSelector(selectIsLoggedOut);
+
     const dispatch = useDispatch();
 
     const handleTitleClick = () => {
@@ -109,7 +112,7 @@ export const SettingsMenu = () => {
             }
             navigation={<AppNavigation maxWidth="default" items={appNavItems} />}
             titleContent={isAppNavigationPanelInView =>
-                initialRun && (
+                isLoggedOut && (
                     <CloseButtonWrapper isAppNavigationPanelInView={isAppNavigationPanelInView}>
                         <CloseButtonSticky
                             isAppNavigationPanelInView={isAppNavigationPanelInView}

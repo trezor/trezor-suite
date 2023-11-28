@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, ReactNode, useMemo, useLayoutEffect } from 'react';
+import { useEffect, useRef, useState, ReactNode, useMemo } from 'react';
 import styled from 'styled-components';
 
 import { variables } from '@trezor/components';
@@ -9,7 +9,6 @@ import { HORIZONTAL_LAYOUT_PADDINGS, MAX_CONTENT_WIDTH } from 'src/constants/sui
 import { DiscoveryProgress } from 'src/components/wallet';
 import { onAnchorChange } from 'src/actions/suite/routerActions';
 import { useLayoutSize, useSelector, useDevice, useDispatch } from 'src/hooks/suite';
-import { useGuide } from 'src/hooks/guide';
 import { LayoutContext, LayoutContextPayload } from 'src/support/suite/LayoutContext';
 import { ModalContextProvider } from 'src/support/suite/ModalContext';
 import { AccountsMenu } from 'src/components/wallet/WalletLayout/AccountsMenu/AccountsMenu';
@@ -18,8 +17,9 @@ import { MobileNavigation } from './NavigationBar/MobileNavigation';
 import { CoinjoinStatusBar } from './NavigationBar/CoinjoinStatusBar';
 import { Sidebar } from './Sidebar/Sidebar';
 import { spacingsPx } from '@trezor/theme';
+import { useResetScrollOnUrl } from 'src/hooks/suite/useResetScrollOnUrl';
 
-const Wrapper = styled.div`
+export const Wrapper = styled.div`
     display: flex;
     flex: 1;
     flex-direction: row;
@@ -35,7 +35,7 @@ const PageWrapper = styled.div`
     overflow-x: hidden;
 `;
 
-const Body = styled.div`
+export const Body = styled.div`
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -43,7 +43,7 @@ const Body = styled.div`
 `;
 
 // AppWrapper and MenuSecondary creates own scrollbars independently
-const Columns = styled.div`
+export const Columns = styled.div`
     display: flex;
     flex-direction: row;
     flex: 1 0 100%;
@@ -51,7 +51,7 @@ const Columns = styled.div`
     padding: 0;
 `;
 
-const AppWrapper = styled.div`
+export const AppWrapper = styled.div`
     display: flex;
     flex: 1;
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
@@ -67,7 +67,7 @@ const AppWrapper = styled.div`
     }
 `;
 
-const ContentWrapper = styled.div`
+export const ContentWrapper = styled.div`
     position: relative;
     display: flex;
     flex-direction: column;
@@ -86,30 +86,18 @@ type SuiteLayoutProps = {
 };
 
 export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
-    const url = useSelector(state => state.router.url);
     const anchor = useSelector(state => state.router.anchor);
     const initialRun = useSelector(state => state.suite.flags.initialRun);
     const coinjoinAccounts = useSelector(state => state.wallet.coinjoin.accounts);
 
-    const { isMobileLayout } = useLayoutSize();
-    const { isModalOpen } = useGuide();
-    const dispatch = useDispatch();
-    const { device } = useDevice();
-
     const [{ title, TopMenu }, setLayoutPayload] = useState<LayoutContextPayload>({});
 
+    const { isMobileLayout } = useLayoutSize();
+    const dispatch = useDispatch();
+    const { device } = useDevice();
     const wrapperRef = useRef<HTMLDivElement>(null);
-    const appWrapperRef = useRef<HTMLDivElement>(null);
 
-    // Reset scroll position on url change.
-    // note: if you want to remove anchor highlight on scroll. It has to be added here
-    useLayoutEffect(() => {
-        const { current } = appWrapperRef;
-
-        if (!current) return;
-
-        current.scrollTop = 0; // reset scroll position on url change
-    }, [url]);
+    const { scrollRef } = useResetScrollOnUrl();
 
     // Remove anchor highlight on click.
     useEffect(() => {
@@ -127,8 +115,6 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
     // Setting screens are available even if the device is not connected in normal mode
     // but then we need to hide NavigationBar so user can't navigate to Dashboard and Accounts.
     const isNavigationBarVisible = device?.mode === 'normal' && !initialRun;
-
-    const isGuideFullHeight = isMobileLayout || isModalOpen;
 
     let sessionCount = 0;
     coinjoinAccounts.forEach(({ session }) => {
@@ -174,14 +160,12 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
                             <Columns>
                                 {!isMobileLayout && <Sidebar />}
 
-                                <AppWrapper data-test="@app" ref={appWrapperRef} id="layout-scroll">
+                                <AppWrapper data-test="@app" ref={scrollRef} id="layout-scroll">
                                     {isMobileLayout && <AccountsMenu isMenuInline />}
                                     {TopMenu && <TopMenu />}
 
                                     <ContentWrapper>{children}</ContentWrapper>
                                 </AppWrapper>
-
-                                {!isGuideFullHeight && <GuideRouter />}
                             </Columns>
                         </Body>
                     </LayoutContext.Provider>
@@ -189,7 +173,8 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
                     {!isMobileLayout && <GuideButton />}
                 </ModalContextProvider>
             </PageWrapper>
-            {isGuideFullHeight && <GuideRouter />}
+
+            <GuideRouter />
         </Wrapper>
     );
 };
