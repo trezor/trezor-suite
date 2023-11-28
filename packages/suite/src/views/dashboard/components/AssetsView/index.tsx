@@ -107,6 +107,12 @@ export const AssetsView = () => {
         }
         assets[a.symbol].push(a);
     });
+
+    // const assetsDataWithPercentage = useMemo(
+    //     () => calculateAssetsPercentage(assetsData),
+    //     [assets],
+    // );
+
     const networks = Object.keys(assets);
 
     const assetsData: assetType[] = networks
