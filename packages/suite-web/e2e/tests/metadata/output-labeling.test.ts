@@ -15,7 +15,7 @@ describe('Metadata - Output labeling', () => {
     providers.forEach(provider => {
         it(provider, () => {
             const targetEl1 =
-                '@metadata/outputLabel/9f472739fa7034dfb9736fa4d98915f2e8ddf70a86ee5e0a9ac0634f8c1d0007-0/add-label-button';
+                '@metadata/outputLabel/1d7a8556bb5bda4895596c52017b98c9af29eda10770865e845d3848aa222d1c-0/add-label-button';
             // prepare test
             cy.task('startEmu', { wipe: true });
             cy.task('setupEmu', {
