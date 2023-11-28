@@ -48,7 +48,7 @@ export const txListener = (worker: BaseWorker<ElectrumAPI>) => {
                 type: 'notification',
                 payload: {
                     descriptor,
-                    tx: transformTransaction(descriptor, addresses, tx),
+                    tx: transformTransaction(tx, addresses ?? descriptor),
                 },
             },
         });

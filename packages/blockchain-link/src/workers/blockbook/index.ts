@@ -180,8 +180,8 @@ const onTransaction = ({ state, post }: Context, event: AddressNotification) => 
             payload: {
                 descriptor: account ? account.descriptor : descriptor,
                 tx: account
-                    ? utils.transformTransaction(account.descriptor, account.addresses, event.tx)
-                    : utils.transformTransaction(descriptor, undefined, event.tx),
+                    ? utils.transformTransaction(event.tx, account.addresses ?? account.descriptor)
+                    : utils.transformTransaction(event.tx, descriptor),
             },
         },
     });

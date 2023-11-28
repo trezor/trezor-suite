@@ -97,7 +97,7 @@ const getAccountBalanceHistory: Api<Req, Res> = async (
                     (from || 0) <= blockTime && blockTime <= (to || Number.MAX_SAFE_INTEGER),
             )
             .sort((a, b) => a.blockTime - b.blockTime)
-            .map(tx => ({ blockTime: -1, ...transformTransaction(descriptor, addresses, tx) })),
+            .map(tx => ({ blockTime: -1, ...transformTransaction(tx, addresses ?? descriptor) })),
     );
 
     return aggregateTransactions(txs, groupBy);
