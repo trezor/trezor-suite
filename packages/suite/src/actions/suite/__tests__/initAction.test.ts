@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 import {
     prepareMessageSystemReducer,
     messageSystemActions,
@@ -18,6 +17,7 @@ import {
     preloadFeeInfoThunk,
 } from '@suite-common/wallet-core';
 import { analyticsActions, prepareAnalyticsReducer } from '@suite-common/analytics';
+import TrezorConnect from '@trezor/connect';
 
 import { configureStore } from 'src/support/tests/configureStore';
 import { SUITE, ROUTER } from 'src/actions/suite/constants';
@@ -38,8 +38,6 @@ const analyticsReducer = prepareAnalyticsReducer(extraDependencies);
 const messageSystemReducer = prepareMessageSystemReducer(extraDependencies);
 
 process.env.JWS_PUBLIC_KEY = DEV_JWS_PUBLIC_KEY;
-jest.mock('@trezor/connect', () => global.JestMocks.getTrezorConnect({}));
-const TrezorConnect = require('@trezor/connect').default;
 
 global.fetch = jest.fn().mockImplementation(() =>
     Promise.resolve({
@@ -209,7 +207,7 @@ describe('Suite init action', () => {
             const store = initStore(getInitialState(options.initialRun));
 
             if (options?.initialPath) {
-                // eslint-disable-next-line global-require
+                // eslint-disable-next-line global-require, @typescript-eslint/no-var-requires
                 require('src/support/history').default.location.pathname = options.initialPath;
             }
 

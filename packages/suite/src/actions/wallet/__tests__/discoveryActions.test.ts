@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable global-require */
 // unit test for discovery actions
 // data provided by TrezorConnect are mocked
 
@@ -19,6 +17,7 @@ import { testMocks } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import * as discoveryActions from '@suite-common/wallet-core';
+import TrezorConnect from '@trezor/connect';
 
 import { configureStore, filterThunkActionTypes } from 'src/support/tests/configureStore';
 import walletSettingsReducer from 'src/reducers/wallet/settingsReducer';
@@ -38,29 +37,27 @@ const discoveryReducer = prepareDiscoveryReducer(extraDependencies);
 
 const { getSuiteDevice } = testMocks;
 
-type Fixture = ArrayElement<typeof fixtures>;
-type Bundle = { path: string; coin: string }[];
+type FixtureType = ArrayElement<typeof fixtures>;
+type Fixture = Partial<Omit<FixtureType, 'connect'>> & {
+    connect: Partial<FixtureType['connect']>;
+};
+type FixtureInput = Fixture | Promise<Fixture> | ((..._args: any[]) => any);
 
-jest.mock('@trezor/connect', () => {
-    let progressCallback = (_e: any): any => {};
-    // eslint-disable-next-line @typescript-eslint/ban-types
-    let fixture: Fixture | Promise<Fixture> | Function | typeof undefined;
+const setTrezorConnectFixtures = (input?: FixtureInput) => {
+    let progressCallback = (..._args: any[]): any => {};
 
-    // The module factory of `jest.mock()` is not allowed to reference any out-of-scope variables.
-    const scopedParamsError = (error: string, code?: string) => ({
-        success: false,
-        payload: {
-            error,
-            code,
-        },
-    });
+    let fixture = input;
+    const updateTrezorConnectFixtures = (input?: FixtureInput) => {
+        fixture = input;
+    };
 
     // mocked function
-    // eslint-disable-next-line require-await
-    const getAccountInfo = async (params: { bundle: Bundle }) => {
+    const mockedGetAccountInfo = (
+        params: Parameters<(typeof TrezorConnect)['getAccountInfo']>[0],
+    ) => {
         // this error applies only for tests
         if (typeof fixture === 'undefined') {
-            return scopedParamsError('Default error. Fixtures not set');
+            return paramsError('Default error. Fixtures not set');
         }
         // this promise will be resolved by TrezorConnect.cancel
         if (fixture instanceof Promise) {
@@ -76,22 +73,21 @@ jest.mock('@trezor/connect', () => {
             // error code is used in case where one of requested coins is not supported
             const { code, error } = connect.error;
             if (code) {
-                // @ts-expect-error The operand of a 'delete' operator must be optional.
                 delete connect.error; // reset this value, it shouldn't be used in next iteration
-                return scopedParamsError(error, code);
+                return paramsError(error, code);
             }
-            return scopedParamsError(error);
+            return paramsError(error);
         }
 
         // emit BUNDLE_PROGRESS
         for (let i = 0; i < params.bundle.length; i++) {
             const param = params.bundle[i];
-            const accountType = param.path.split('/').slice(0, 3).join('/');
+            const accountType = param.path!.split('/').slice(0, 3).join('/');
             let isEmpty = true;
             let isFailed = false;
 
             if (connect.interruption) {
-                const interrupted = connect.interruption.indexOf(param.path);
+                const interrupted = connect.interruption.indexOf(param.path!);
                 if (interrupted >= 0) {
                     connect.interruption[interrupted] = 'interruption-item-used';
                     return {
@@ -150,34 +146,22 @@ jest.mock('@trezor/connect', () => {
             };
         }
 
-        return scopedParamsError('Fixture response not defined');
+        return paramsError('Fixture response not defined');
     };
 
+    jest.spyOn(TrezorConnect, 'on').mockImplementation((_event, cb) => {
+        progressCallback = cb;
+    });
+    jest.spyOn(TrezorConnect, 'off').mockImplementation(() => {
+        progressCallback = () => {};
+    });
+    jest.spyOn(TrezorConnect, 'getAccountInfo').mockImplementation(mockedGetAccountInfo);
+
     return {
-        ...jest.requireActual('@trezor/connect'),
-        __esModule: true, // this property makes it work
-        default: {
-            blockchainSetCustomBackend: () => {},
-            getFeatures: () => {},
-            cipherKeyValue: () => {},
-            off: () => {
-                progressCallback = () => {};
-            },
-            on: (_event: string, cb: () => any) => {
-                progressCallback = cb;
-            },
-            getAccountInfo,
-            cancel: () => {},
-        },
-        BLOCKCHAIN: {},
-        UI: {
-            BUNDLE_PROGRESS: 'progress',
-        },
-        setTestFixtures: (f: Fixture) => {
-            fixture = f;
-        },
+        mockedGetAccountInfo,
+        updateTrezorConnectFixtures,
     };
-});
+};
 
 const SUITE_DEVICE = getSuiteDevice({ state: 'device-state', connected: true });
 export const getInitialState = (device = SUITE_DEVICE) => ({
@@ -217,10 +201,14 @@ const initStore = (state: State = getInitialState()) => {
 };
 
 describe('Discovery Actions', () => {
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
     fixtures.forEach(f => {
         it(f.description, async () => {
             // set fixtures in @trezor/connect
-            require('@trezor/connect').setTestFixtures(f);
+            setTrezorConnectFixtures(f);
             const store = initStore(getInitialState(f.device));
             if (f.enabledNetworks) {
                 store.dispatch(
@@ -252,7 +240,8 @@ describe('Discovery Actions', () => {
     // Detailed info about this test could be found in fixtures
     interruptionFixtures.forEach(f => {
         it(`Start/stop/change networks/start: ${f.description}`, async () => {
-            require('@trezor/connect').setTestFixtures(f);
+            // @ts-expect-error fixtures connect.interruption ...
+            setTrezorConnectFixtures(f);
             const store = initStore();
             // additional action listener for triggering "discovery.stop" action
             store.subscribe(() => {
@@ -302,7 +291,7 @@ describe('Discovery Actions', () => {
 
     changeNetworksFixtures.forEach(f => {
         it(`Change network: ${f.description}`, async () => {
-            require('@trezor/connect').setTestFixtures(f);
+            setTrezorConnectFixtures(f);
             const state = getInitialState();
             const store = initStore(state);
             // additional action listener for triggering "discovery.updateNetworkSettings" action
@@ -433,11 +422,11 @@ describe('Discovery Actions', () => {
     });
 
     it('Start/stop', done => {
-        const f = new Promise(resolve => {
+        const f = new Promise<any>(resolve => {
             setTimeout(() => resolve(paramsError('discovery_interrupted')), 100);
         });
         // set fixtures in @trezor/connect
-        require('@trezor/connect').setTestFixtures(f);
+        setTrezorConnectFixtures(f);
         const store = initStore();
         store.dispatch(
             createDiscoveryThunk({
@@ -469,7 +458,7 @@ describe('Discovery Actions', () => {
 
     it('Restart discovery (clear failed fields)', async () => {
         // fail on first account
-        require('@trezor/connect').setTestFixtures({
+        setTrezorConnectFixtures({
             connect: { success: true, failedAccounts: ["m/84'/0'/0'"] },
         });
         const state = getInitialState();
@@ -488,7 +477,7 @@ describe('Discovery Actions', () => {
         expect(store.getState().wallet.discovery[0].failed.length).toBeGreaterThan(0);
 
         // change fixtures, this time no fail
-        require('@trezor/connect').setTestFixtures({
+        setTrezorConnectFixtures({
             connect: { success: true },
         });
         // restart
@@ -505,11 +494,11 @@ describe('Discovery Actions', () => {
     });
 
     it(`TrezorConnect responded with success but discovery was removed`, async () => {
-        const f = new Promise(resolve => {
+        const f = new Promise<any>(resolve => {
             setTimeout(() => resolve({ success: true }), 100);
         });
         // set fixtures in @trezor/connect
-        require('@trezor/connect').setTestFixtures(f);
+        setTrezorConnectFixtures(f);
 
         const store = initStore();
         store.subscribe(() => {
@@ -532,11 +521,11 @@ describe('Discovery Actions', () => {
     });
 
     it(`TrezorConnect responded with success but discovery is not running`, async () => {
-        const f = new Promise(resolve => {
+        const f = new Promise<any>(resolve => {
             setTimeout(() => resolve({ success: true }), 100);
         });
         // set fixtures in @trezor/connect
-        require('@trezor/connect').setTestFixtures(f);
+        setTrezorConnectFixtures(f);
 
         const store = initStore();
         store.subscribe(() => {
@@ -564,10 +553,10 @@ describe('Discovery Actions', () => {
     });
 
     it('Discovery completed but device is not connected anymore', async () => {
-        require('@trezor/connect').setTestFixtures({
+        setTrezorConnectFixtures({
             connect: { success: true },
         });
-        const mockedGetFeatures = jest.spyOn(require('@trezor/connect').default, 'getFeatures');
+        const mockedGetFeatures = jest.spyOn(TrezorConnect, 'getFeatures');
         const store = initStore();
         store.dispatch(
             createDiscoveryThunk({
@@ -585,14 +574,14 @@ describe('Discovery Actions', () => {
     });
 
     it('First iteration malformed error (not a json)', async () => {
-        const f = new Promise(resolve => {
+        const f = new Promise<any>(resolve => {
             setTimeout(
                 () => resolve(paramsError('not-a-json', 'Method_Discovery_BundleException')),
                 100,
             );
         });
         // set fixtures in @trezor/connect
-        require('@trezor/connect').setTestFixtures(f);
+        setTrezorConnectFixtures(f);
 
         const store = initStore();
         store.dispatch(
@@ -607,11 +596,11 @@ describe('Discovery Actions', () => {
     });
 
     it('First iteration malformed error (invalid json not an array)', async () => {
-        const f = new Promise(resolve => {
+        const f = new Promise<any>(resolve => {
             setTimeout(() => resolve(paramsError('{}', 'Method_Discovery_BundleException')), 100);
         });
         // set fixtures in @trezor/connect
-        require('@trezor/connect').setTestFixtures(f);
+        setTrezorConnectFixtures(f);
 
         const store = initStore();
         store.dispatch(
@@ -626,12 +615,12 @@ describe('Discovery Actions', () => {
     });
 
     it('TrezorConnect did not emit any progress event', async () => {
-        // store original mocked function
-        const originalFn = require('@trezor/connect').default.getAccountInfo;
-        // set fixtures in @trezor/connect
-        require('@trezor/connect').default.getAccountInfo = () => ({
-            success: true,
-        });
+        jest.spyOn(TrezorConnect, 'getAccountInfo').mockImplementation(() =>
+            Promise.resolve({
+                success: true,
+                payload: [null],
+            }),
+        );
         const store = initStore();
         store.dispatch(
             createDiscoveryThunk({
@@ -641,32 +630,26 @@ describe('Discovery Actions', () => {
         );
         await store.dispatch(startDiscoveryThunk());
         const action = filterThunkActionTypes(store.getActions()).pop();
-        // restore original mocked fn
-        require('@trezor/connect').default.getAccountInfo = originalFn;
         const result = store.getState().wallet.discovery[0];
         expect(action?.type).toEqual(discoveryActions.completeDiscovery.type);
         expect(result.loaded).toEqual(0);
     });
 
     it('All accounts failed in runtime', async () => {
-        // store original mocked function
-        const originalFn = require('@trezor/connect').default.getAccountInfo;
-        // override mocked function
-        require('@trezor/connect').default.getAccountInfo = (params: { bundle: Bundle }) => {
+        // set empty fixtures in @trezor/connect, update them in custom mock below
+        const { mockedGetAccountInfo, updateTrezorConnectFixtures } = setTrezorConnectFixtures();
+        jest.spyOn(TrezorConnect, 'getAccountInfo').mockImplementation(params => {
             // prepare response (all failed)
-            const failedAccounts: string[] = [];
-            for (let i = 0; i < params.bundle.length; i++) {
-                failedAccounts.push(params.bundle[i].path);
-            }
-            require('@trezor/connect').setTestFixtures({
+            const failedAccounts = params.bundle.map(({ path }) => path as string);
+            updateTrezorConnectFixtures({
                 connect: {
                     success: true,
                     failedAccounts,
                 },
             });
-            // call original mocked fn
-            return originalFn(params);
-        };
+            return mockedGetAccountInfo(params);
+        });
+
         // run process
         const store = initStore();
         store.dispatch(
@@ -676,8 +659,6 @@ describe('Discovery Actions', () => {
             }),
         );
         await store.dispatch(startDiscoveryThunk());
-        // restore original mocked fn
-        require('@trezor/connect').default.getAccountInfo = originalFn;
         const action = filterThunkActionTypes(store.getActions()).pop();
         const result = store.getState().wallet.discovery[0];
         expect(action?.type).toEqual(discoveryActions.completeDiscovery.type);
@@ -686,10 +667,7 @@ describe('Discovery Actions', () => {
     });
 
     it('All accounts failed in first iteration', async () => {
-        // store original mocked function
-        const originalFn = require('@trezor/connect').default.getAccountInfo;
-        // override mocked function
-        require('@trezor/connect').default.getAccountInfo = (params: { bundle: Bundle }) => {
+        jest.spyOn(TrezorConnect, 'getAccountInfo').mockImplementation(params => {
             // prepare json response
             const failedAccounts: any[] = [];
             for (let i = 0; i < params.bundle.length; i++) {
@@ -700,8 +678,10 @@ describe('Discovery Actions', () => {
                 });
             }
             // return error
-            return paramsError(JSON.stringify(failedAccounts), 'Method_Discovery_BundleException');
-        };
+            return Promise.resolve(
+                paramsError(JSON.stringify(failedAccounts), 'Method_Discovery_BundleException'),
+            );
+        });
         // run process
         const store = initStore();
         store.dispatch(
@@ -711,8 +691,6 @@ describe('Discovery Actions', () => {
             }),
         );
         await store.dispatch(startDiscoveryThunk());
-        // restore original mocked fn
-        require('@trezor/connect').default.getAccountInfo = originalFn;
         const action = filterThunkActionTypes(store.getActions()).pop();
         const result = store.getState().wallet.discovery[0];
         expect(action?.type).toEqual(discoveryActions.completeDiscovery.type);
@@ -721,7 +699,7 @@ describe('Discovery Actions', () => {
     });
 
     it('selectIsDiscoveryAuthConfirmationRequired', async () => {
-        require('@trezor/connect').setTestFixtures({
+        setTrezorConnectFixtures({
             connect: { success: true },
         });
         const state = getInitialState();

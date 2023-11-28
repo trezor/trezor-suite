@@ -2,13 +2,14 @@ import { testMocks } from '@suite-common/test-utils';
 
 const { getSuiteDevice } = testMocks;
 
-export const paramsError = (error: string, code?: string) => ({
-    success: false,
-    payload: {
-        error,
-        code,
-    },
-});
+export const paramsError = (error: string, code?: string) =>
+    ({
+        success: false,
+        payload: {
+            error,
+            code,
+        },
+    }) as const;
 
 export const fixtures = [
     {

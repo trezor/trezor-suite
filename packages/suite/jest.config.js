@@ -16,9 +16,8 @@ const babelConfig = {
 };
 
 module.exports = {
-    roots: ['./src'],
+    roots: ['<rootDir>/src', '<rootDir>/../../suite-common/test-utils/__mocks__'],
     setupFiles: [
-        '<rootDir>/src/support/tests/setupJest.ts',
         '<rootDir>/src/support/tests/npmMocks.tsx',
         'jest-canvas-mock', // for lottie-react
     ],

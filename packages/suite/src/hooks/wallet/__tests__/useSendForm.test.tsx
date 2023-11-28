@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { DeepPartial } from 'react-hook-form';
 
-import { configureMockStore, initPreloadedState } from '@suite-common/test-utils';
+import { configureMockStore, initPreloadedState, testMocks } from '@suite-common/test-utils';
 import { PROTO } from '@trezor/connect';
 
 import { filterThunkActionTypes } from 'src/support/tests/configureStore';
@@ -27,10 +27,6 @@ jest.mock('react-svg', () => ({ ReactSVG: () => 'SVG' }));
 // render only Translation['id']
 jest.mock('src/components/suite/Translation', () => ({ Translation: ({ id }: any) => id }));
 
-jest.mock('@trezor/connect', () => global.JestMocks.getTrezorConnect({}));
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const TrezorConnect = require('@trezor/connect').default;
-
 type RootReducerState = ReturnType<ReturnType<typeof fixtures.getRootReducer>>;
 interface Args {
     send?: Partial<RootReducerState['wallet']['send']>;
@@ -39,6 +35,8 @@ interface Args {
     coinjoin?: any;
     bitcoinAmountUnit?: PROTO.AmountUnit;
 }
+
+const TrezorConnect = testMocks.getTrezorConnectMock();
 
 const initStore = ({ send, fees, selectedAccount, coinjoin, bitcoinAmountUnit }: Args = {}) => {
     const rootReducer = fixtures.getRootReducer(selectedAccount, fees);
@@ -229,7 +227,7 @@ describe('useSendForm hook', () => {
         it(
             f.description,
             async () => {
-                TrezorConnect.setTestFixtures(f.connect);
+                testMocks.setTrezorConnectFixtures(f.connect);
                 const store = initStore(f.store);
                 const callback: TestCallback = {};
                 const { unmount } = renderWithProviders(
@@ -258,7 +256,7 @@ describe('useSendForm hook', () => {
 
     fixtures.composeDebouncedTransaction.forEach(f => {
         it(f.description, async () => {
-            TrezorConnect.setTestFixtures(f.connect);
+            testMocks.setTrezorConnectFixtures(f.connect);
             const store = initStore();
             const callback: TestCallback = {};
             const { unmount } = renderWithProviders(
@@ -282,7 +280,7 @@ describe('useSendForm hook', () => {
 
     fixtures.signAndPush.forEach(f => {
         it(f.description, async () => {
-            TrezorConnect.setTestFixtures(f.connect);
+            testMocks.setTrezorConnectFixtures(f.connect);
             const store = initStore(f.store);
             const callback: TestCallback = {};
             const { unmount } = renderWithProviders(
@@ -317,7 +315,7 @@ describe('useSendForm hook', () => {
 
     fixtures.feeChange.forEach(f => {
         it(`changeFee: ${f.description}`, async () => {
-            TrezorConnect.setTestFixtures(f.connect);
+            testMocks.setTrezorConnectFixtures(f.connect);
             const store = initStore(f.store);
             const callback: TestCallback = {};
             const { unmount } = renderWithProviders(
@@ -342,7 +340,7 @@ describe('useSendForm hook', () => {
 
     fixtures.amountUnitChange.forEach(f => {
         it(f.description, async () => {
-            TrezorConnect.setTestFixtures(f.connect);
+            testMocks.setTrezorConnectFixtures(f.connect);
             const store = initStore(f.store);
             const callback: TestCallback = {};
             const { unmount } = renderWithProviders(

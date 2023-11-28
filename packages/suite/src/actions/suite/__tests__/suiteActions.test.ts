@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable global-require */
 // unit test for suite actions
 // data provided by TrezorConnect are mocked
 import { testMocks } from '@suite-common/test-utils';
@@ -40,53 +38,31 @@ const { getSuiteDevice } = testMocks;
 const firmwareReducer = prepareFirmwareReducer(extraDependencies);
 const deviceReducer = prepareDeviceReducer(extraDependencies);
 
-jest.mock('@trezor/connect', () => {
-    let fixture: any;
+const TrezorConnect = testMocks.getTrezorConnectMock();
 
-    const { PROTO } = jest.requireActual('@trezor/connect');
-
-    return {
-        __esModule: true, // this property makes it work
-        default: {
-            blockchainSetCustomBackend: () => {},
-            init: () => {},
-            on: () => {},
-            getFeatures: () =>
-                fixture || {
-                    success: true,
+const setTrezorConnectFixtures = (fixture: any) => {
+    jest.spyOn(TrezorConnect, 'getFeatures').mockImplementation(
+        () =>
+            fixture || {
+                success: true,
+            },
+    );
+    jest.spyOn(TrezorConnect, 'getDeviceState').mockImplementation(
+        ({ device }: any) =>
+            fixture || {
+                success: true,
+                payload: {
+                    state: `state@device-id:${device ? device.instance : undefined}`,
                 },
-            getDeviceState: ({ device }: any) =>
-                fixture || {
-                    success: true,
-                    payload: {
-                        state: `state@device-id:${device ? device.instance : undefined}`,
-                    },
-                },
-            applySettings: () =>
-                fixture || {
-                    success: true,
-                },
-        },
-        DEVICE: {
-            CHANGED: 'device-changed',
-            CONNECT: 'device-connect',
-            DISCONNECT: 'device-disconnect',
-        },
-        TRANSPORT: {
-            START: 'transport-start',
-            ERROR: 'transport-error',
-        },
-        BLOCKCHAIN: {},
-        UI: {},
-        PROTO,
-        setTestFixtures: (f: any) => {
-            fixture = f;
-        },
-        DeviceModelInternal: {
-            T2T1: 'T2T1',
-        },
-    };
-});
+            },
+    );
+    jest.spyOn(TrezorConnect, 'applySettings').mockImplementation(
+        () =>
+            fixture || {
+                success: true,
+            },
+    );
+};
 
 type SuiteState = ReturnType<typeof suiteReducer>;
 type DevicesState = ReturnType<typeof deviceReducer>;
@@ -247,7 +223,7 @@ describe('Suite Actions', () => {
 
     fixtures.acquireDevice.forEach(f => {
         it(`acquireDevice: ${f.description}`, async () => {
-            require('@trezor/connect').setTestFixtures(f.getFeatures);
+            setTrezorConnectFixtures(f.getFeatures);
             const state = getInitialState(undefined, f.state.device);
             const store = initStore(state);
             store.dispatch(connectInitThunk()); // trezorConnectActions.connectInitThunk needs to be called in order to wrap "getFeatures" with lockUi action
@@ -267,7 +243,7 @@ describe('Suite Actions', () => {
 
     fixtures.authorizeDevice.forEach(f => {
         it(`authorizeDevice: ${f.description}`, async () => {
-            require('@trezor/connect').setTestFixtures(f.getDeviceState);
+            setTrezorConnectFixtures(f.getDeviceState);
             const state = getInitialState(undefined, {
                 selectedDevice: f.suiteState?.selectedDevice,
                 devices: f.devicesState ?? [],
@@ -294,7 +270,7 @@ describe('Suite Actions', () => {
 
     fixtures.authConfirm.forEach(f => {
         it(`authConfirm: ${f.description}`, async () => {
-            require('@trezor/connect').setTestFixtures(f.getDeviceState);
+            setTrezorConnectFixtures(f.getDeviceState);
             const state = getInitialState(undefined, f.state);
             const store = initStore(state);
             await store.dispatch(authConfirm());
@@ -309,7 +285,7 @@ describe('Suite Actions', () => {
 
     fixtures.createDeviceInstance.forEach(f => {
         it(`createDeviceInstance: ${f.description}`, async () => {
-            require('@trezor/connect').setTestFixtures(f.applySettings);
+            setTrezorConnectFixtures(f.applySettings);
             const state = getInitialState(undefined, f.state.device);
             const store = initStore(state);
             await store.dispatch(createDeviceInstance({ device: f.state.device.selectedDevice }));

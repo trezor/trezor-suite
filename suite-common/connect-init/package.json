@@ -8,7 +8,7 @@
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "type-check": "tsc --build tsconfig.json",
-        "test:unit": "jest -c ../../jest.config.base.js",
+        "test:unit": "jest -c ./jest.config.js",
         "test-unit:watch": "jest -c ../../jest.config.base.js -o --watch"
     },
     "dependencies": {

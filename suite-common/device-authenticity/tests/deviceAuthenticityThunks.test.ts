@@ -1,24 +1,9 @@
 import { TrezorDevice } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { configureMockStore, testMocks } from '@suite-common/test-utils';
-import { AuthenticateDeviceResult, Response as ConnectResponse } from '@trezor/connect';
 
 import { deviceAuthenticityActions } from '../src/deviceAuthenticityActions';
 import { checkDeviceAuthenticityThunk } from '../src/deviceAuthenticityThunks';
-
-jest.mock('@trezor/connect', () => {
-    let fixture: ConnectResponse<AuthenticateDeviceResult>;
-    return {
-        ...jest.requireActual('@trezor/connect'),
-        __esModule: true,
-        default: {
-            authenticateDevice: () => fixture,
-        },
-        setTestFixtures: (f: ConnectResponse<AuthenticateDeviceResult>) => {
-            fixture = f;
-        },
-    };
-});
 
 const initStore = (device?: TrezorDevice) =>
     configureMockStore({
@@ -104,8 +89,7 @@ describe('Check device authenticity', () => {
     fixtures.forEach(f => {
         it(f.description, async () => {
             const store = initStore(f.device);
-            // eslint-disable-next-line
-            require('@trezor/connect').setTestFixtures(f.connectResponse);
+            testMocks.setTrezorConnectFixtures(f.connectResponse);
             await store.dispatch(
                 checkDeviceAuthenticityThunk({
                     allowDebugKeys: false,

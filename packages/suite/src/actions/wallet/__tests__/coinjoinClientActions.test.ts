@@ -24,10 +24,7 @@ import {
 } from '../coinjoinClientActions';
 import * as fixtures from '../__fixtures__/coinjoinClientActions';
 
-jest.mock('@trezor/connect', () => global.JestMocks.getTrezorConnect({}));
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const TrezorConnect = require('@trezor/connect').default;
-
+const TrezorConnect = testMocks.getTrezorConnectMock();
 jest.mock('src/services/coinjoin/coinjoinService', () => {
     const mock = jest.requireActual('../__fixtures__/mockCoinjoinService');
     return mock.mockCoinjoinService();
@@ -96,7 +93,7 @@ describe('coinjoinClientActions', () => {
     fixtures.onCoinjoinRoundChanged.forEach(f => {
         it(`onCoinjoinRoundChanged: ${f.description}`, async () => {
             const store = initStore(f.state as Wallet);
-            TrezorConnect.setTestFixtures(f.connect);
+            testMocks.setTrezorConnectFixtures(f.connect);
 
             if (Array.isArray(f.params)) {
                 await promiseAllSequence(
@@ -130,7 +127,7 @@ describe('coinjoinClientActions', () => {
     fixtures.getOwnershipProof.forEach(f => {
         it(`getOwnershipProof: ${f.description}`, async () => {
             const store = initStore(f.state as any); // params are incomplete
-            TrezorConnect.setTestFixtures(f.connect);
+            testMocks.setTrezorConnectFixtures(f.connect);
 
             const response = await store.dispatch(onCoinjoinClientRequest(f.params as any));
 
@@ -145,7 +142,7 @@ describe('coinjoinClientActions', () => {
     fixtures.signCoinjoinTx.forEach(f => {
         it(`signCoinjoinTx: ${f.description}`, async () => {
             const store = initStore(f.state as any);
-            TrezorConnect.setTestFixtures(f.connect);
+            testMocks.setTrezorConnectFixtures(f.connect);
 
             const [response] = await store.dispatch(
                 onCoinjoinClientRequest([f.params as any]), // params are incomplete
@@ -390,7 +387,7 @@ describe('coinjoinClientActions', () => {
             accounts: [{ key: 'account-A', symbol: 'btc' }],
         } as any);
 
-        TrezorConnect.setTestFixtures([{ success: false }]);
+        testMocks.setTrezorConnectFixtures([{ success: false }]);
 
         await store.dispatch(initCoinjoinService('btc'));
 
@@ -402,7 +399,9 @@ describe('coinjoinClientActions', () => {
             accounts: [{ key: 'account-A', symbol: 'btc', deviceState: 'device-state' }],
         } as any);
 
-        TrezorConnect.setTestFixtures([{ success: false, payload: { error: 'Firmware error' } }]);
+        testMocks.setTrezorConnectFixtures([
+            { success: false, payload: { error: 'Firmware error' } },
+        ]);
 
         await store.dispatch(initCoinjoinService('btc'));
 

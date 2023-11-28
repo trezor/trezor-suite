@@ -1,8 +1,6 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable global-require */
-
 import { mergeDeepObject } from '@trezor/utils';
 import { connectInitThunk } from '@suite-common/connect-init';
+import { testMocks } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { CommonParams, DeviceModelInternal } from '@trezor/connect';
 
@@ -10,36 +8,6 @@ import { configureStore } from 'src/support/tests/configureStore';
 import { SUITE } from 'src/actions/suite/constants';
 import { BACKUP } from 'src/actions/backup/constants';
 import * as backupActions from 'src/actions/backup/backupActions';
-
-jest.mock('@trezor/connect', () => {
-    let fixture: any;
-
-    const backupDevice = () => fixture;
-    const callbacks: { [key: string]: () => any } = {};
-
-    const { PROTO, DeviceModelInternal } = jest.requireActual('@trezor/connect');
-
-    return {
-        __esModule: true, // this property makes it work
-        default: {
-            init: () => true,
-            on: (event: string, cb: () => any) => {
-                callbacks[event] = cb;
-            },
-            getFeatures: () => {},
-            backupDevice,
-            blockchainSetCustomBackend: () => {},
-        },
-        DEVICE: {},
-        TRANSPORT: {},
-        BLOCKCHAIN: {},
-        setTestFixtures: (f: any) => {
-            fixture = f;
-        },
-        PROTO,
-        DeviceModelInternal,
-    };
-});
 
 export const getInitialState = (override: any) => {
     const defaults = {
@@ -82,7 +50,7 @@ describe('Backup Actions', () => {
     });
 
     it('backup success', async () => {
-        require('@trezor/connect').setTestFixtures({ success: true });
+        testMocks.setTrezorConnectFixtures({ success: true });
 
         const state = getInitialState({});
         const store = mockStore(state);
@@ -115,7 +83,7 @@ describe('Backup Actions', () => {
     });
 
     it('backup error', async () => {
-        require('@trezor/connect').setTestFixtures({
+        testMocks.setTrezorConnectFixtures({
             success: false,
             payload: { error: 'avadakedavra' },
         });
