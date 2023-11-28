@@ -72,6 +72,7 @@ suite-web build stable codesign:
 .build: &build
   stage: build
   script:
+    - apt-get update && apt-get install -y libudev-dev # required for rebuilding usb native module
     - yarn install --immutable
     - yarn workspace @trezor/suite-desktop build:${platform}
     - ls -la packages/suite-desktop/build-electron
