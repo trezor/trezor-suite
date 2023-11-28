@@ -1,4 +1,3 @@
-import { ReactNode } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
 
@@ -12,7 +11,6 @@ import {
 } from '@suite-common/message-system';
 
 import { MessageBanner } from './MessageBanner';
-import { MessageScreen } from './MessageScreen';
 
 const messageBannerContainerStyle = prepareNativeStyle<{ topSafeAreaInset: number }>(
     (_, { topSafeAreaInset }) => ({
@@ -20,19 +18,7 @@ const messageBannerContainerStyle = prepareNativeStyle<{ topSafeAreaInset: numbe
     }),
 );
 
-const messageFeatureContainerStyle = prepareNativeStyle(_ => ({
-    position: 'absolute',
-    left: 0,
-    top: 0,
-    right: 0,
-    bottom: 0,
-}));
-
-type MessageSystemRendererProps = {
-    children: ReactNode;
-};
-
-export const MessageSystemRenderer = ({ children }: MessageSystemRendererProps) => {
+export const MessageSystemRenderer = () => {
     const { applyStyle } = useNativeStyles();
     const { top: topSafeAreaInset } = useSafeAreaInsets();
 
@@ -41,25 +27,15 @@ export const MessageSystemRenderer = ({ children }: MessageSystemRendererProps) 
     const firstFeatureMessage = A.head(activeFeatureMessages);
 
     return (
-        <Box flex={1}>
-            {children}
-            <Box
-                style={applyStyle(messageBannerContainerStyle, {
-                    topSafeAreaInset,
-                })}
-            >
-                <VStack spacing="extraSmall">
-                    {activeBannerMessages.map(message => (
-                        <MessageBanner key={message.id} message={message} />
-                    ))}
-                </VStack>
-            </Box>
-            {/* Put feature screen over everything else */}
-            {firstFeatureMessage && (
-                <Box style={applyStyle(messageFeatureContainerStyle)}>
-                    <MessageScreen message={firstFeatureMessage} />
-                </Box>
-            )}
-        </Box>
+        <VStack
+            spacing={4}
+            style={applyStyle(messageBannerContainerStyle, {
+                topSafeAreaInset,
+            })}
+        >
+            {activeBannerMessages.map(message => (
+                <MessageBanner key={message.id} message={message} />
+            ))}
+        </VStack>
     );
 };
