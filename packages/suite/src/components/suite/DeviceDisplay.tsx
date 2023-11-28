@@ -123,7 +123,7 @@ export const DeviceDisplay = ({ address, network, valueDataTest }: DeviceDisplay
             >
                 {row.map((chunk, chunkIndex) => (
                     // eslint-disable-next-line react/no-array-index-key
-                    <Text isPixelType={isPixelType} key={chunkIndex}>
+                    <Text isPixelType={isPixelType} key={chunkIndex} data-test="chunk">
                         {chunk}
                     </Text>
                 ))}
@@ -167,7 +167,9 @@ export const DeviceDisplay = ({ address, network, valueDataTest }: DeviceDisplay
             const breakpoint = isPixelType ? 70 : 81;
             return (
                 <>
-                    <Text isPixelType={isPixelType}>{address.slice(0, breakpoint)}</Text>
+                    <Text isPixelType={isPixelType} data-test={valueDataTest}>
+                        {address.slice(0, breakpoint)}
+                    </Text>
                     <StyledNextIcon {...iconConfig} isPixelType={isPixelType} icon={iconNextName} />
                     <Wrapper>
                         <Divider areChunksUsed={areChunksUsed} />

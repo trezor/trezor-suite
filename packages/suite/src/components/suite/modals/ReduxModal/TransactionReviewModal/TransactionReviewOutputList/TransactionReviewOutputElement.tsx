@@ -144,6 +144,7 @@ export type TransactionReviewOutputElementProps = {
     token?: TokenInfo;
     account?: Account;
     state?: TransactionReviewStepIndicatorProps['state'];
+    valueDataTest?: string;
 };
 
 export const TransactionReviewOutputElement = forwardRef<
@@ -161,6 +162,7 @@ export const TransactionReviewOutputElement = forwardRef<
             fiatVisible = false,
             account,
             state,
+            valueDataTest,
         },
         ref,
     ) => {
@@ -195,9 +197,9 @@ export const TransactionReviewOutputElement = forwardRef<
                                     {isActive &&
                                     (line.id === 'address' || line.id === 'regular_legacy') ? (
                                         <DeviceDisplay
+                                            valueDataTest={valueDataTest}
                                             address={line.value}
                                             network={network}
-                                            valueDataTest={valueDataTest}
                                         />
                                     ) : (
                                         <OutputValueWrapper>
