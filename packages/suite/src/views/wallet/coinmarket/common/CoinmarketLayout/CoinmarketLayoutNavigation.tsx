@@ -1,10 +1,11 @@
 import styled from 'styled-components';
 import { goto } from 'src/actions/suite/routerActions';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { WalletLayoutNavigation, WalletLayoutNavLink } from 'src/components/wallet';
 import { getTitleForNetwork } from '@suite-common/wallet-utils';
 import { Translation } from 'src/components/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { FirmwareType } from '@trezor/connect';
 
 const SavingsWalletLayoutNavLinkWrapper = styled.div`
     display: flex;
@@ -29,6 +30,7 @@ export const CoinmarketLayoutNavigation = () => {
     const savingsProviders = useSelector(
         state => state.wallet.coinmarket.savings.savingsInfo?.savingsList?.providers,
     );
+    const { device } = useDevice();
     const dispatch = useDispatch();
 
     const showP2pTab = account && p2pSupportedCoins && p2pSupportedCoins.has(account.symbol);
@@ -52,15 +54,23 @@ export const CoinmarketLayoutNavigation = () => {
     return (
         <WalletLayoutNavigation>
             <>
-                {items.map(({ route, title }) => (
-                    <WalletLayoutNavLink
-                        data-test={`@coinmarket/menu/${route}`}
-                        key={route}
-                        title={title}
-                        active={routeName === route}
-                        onClick={() => dispatch(goto(route, { preserveParams: true }))}
-                    />
-                ))}
+                {items
+                    .filter(
+                        item =>
+                            !(
+                                item.route === 'wallet-coinmarket-exchange' &&
+                                device?.firmwareType === FirmwareType.BitcoinOnly
+                            ),
+                    )
+                    .map(({ route, title }) => (
+                        <WalletLayoutNavLink
+                            data-test={`@coinmarket/menu/${route}`}
+                            key={route}
+                            title={title}
+                            active={routeName === route}
+                            onClick={() => dispatch(goto(route, { preserveParams: true }))}
+                        />
+                    ))}
                 {showP2pTab && (
                     <WalletLayoutNavLink
                         key={p2pRoute}
