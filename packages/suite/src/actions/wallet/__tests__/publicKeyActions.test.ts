@@ -1,4 +1,3 @@
-/* eslint-disable global-require */
 import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
 import { configureMockStore, testMocks } from '@suite-common/test-utils';
@@ -7,8 +6,9 @@ import { State as DeviceState } from '@suite-common/wallet-core';
 
 import fixtures from '../__fixtures__/publicKeyActions';
 
-jest.mock('@trezor/connect', () => {
-    let fixture: any;
+const TrezorConnect = testMocks.getTrezorConnectMock();
+
+const setTrezorConnectFixtures = (fixture: any) => {
     let buttonRequest: ((e?: any) => any) | undefined;
 
     const getPublicKey = (_params: any) => {
@@ -29,41 +29,15 @@ jest.mock('@trezor/connect', () => {
         };
     };
 
-    const { PROTO } = jest.requireActual('@trezor/connect');
-
-    return {
-        __esModule: true, // this property makes it work
-        default: {
-            blockchainSetCustomBackend: () => {},
-            init: () => null,
-            on: (event: string, cb: () => any) => {
-                if (event === 'ui-button') buttonRequest = cb;
-            },
-            off: () => {
-                buttonRequest = undefined;
-            },
-            getPublicKey,
-            cardanoGetPublicKey: getPublicKey,
-        },
-        setTestFixtures: (f: any) => {
-            fixture = f;
-        },
-        DEVICE_EVENT: 'DEVICE_EVENT',
-        UI_EVENT: 'UI_EVENT',
-        TRANSPORT_EVENT: 'TRANSPORT_EVENT',
-        BLOCKCHAIN_EVENT: 'BLOCKCHAIN_EVENT',
-        DEVICE: {},
-        TRANSPORT: {},
-        BLOCKCHAIN: {},
-        UI: {
-            REQUEST_BUTTON: 'ui-button',
-        },
-        PROTO,
-        DeviceModelInternal: {
-            T2T1: 'T2T1',
-        },
-    };
-});
+    jest.spyOn(TrezorConnect, 'on').mockImplementation((event: string, cb) => {
+        if (event === 'ui-button') buttonRequest = cb;
+    });
+    jest.spyOn(TrezorConnect, 'off').mockImplementation(() => {
+        buttonRequest = undefined;
+    });
+    jest.spyOn(TrezorConnect, 'getPublicKey').mockImplementation(getPublicKey);
+    jest.spyOn(TrezorConnect, 'cardanoGetPublicKey').mockImplementation(getPublicKey);
+};
 
 const device = testMocks.getSuiteDevice({
     state: 'device-state',
@@ -115,8 +89,7 @@ const initStore = (stateOverrides?: StateOverrides) => {
 describe('PublicKeyActions', () => {
     fixtures.forEach(f => {
         it(f.description, async () => {
-            // eslint-disable-next-line @typescript-eslint/no-var-requires
-            require('@trezor/connect').setTestFixtures(f.mocks);
+            setTrezorConnectFixtures(f.mocks);
             const store = initStore(f.initialState);
             await store.dispatch(connectInitThunk());
             await store.dispatch(f.action());

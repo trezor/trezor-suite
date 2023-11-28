@@ -11,10 +11,6 @@ import * as coinjoinAccountActions from '../coinjoinAccountActions';
 import * as coinjoinClientActions from '../coinjoinClientActions';
 import * as fixtures from '../__fixtures__/coinjoinAccountActions';
 
-jest.mock('@trezor/connect', () => global.JestMocks.getTrezorConnect({}));
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const TrezorConnect = require('@trezor/connect').default;
-
 jest.mock('src/services/coinjoin/coinjoinService', () => {
     const mock = jest.requireActual('../__fixtures__/mockCoinjoinService');
     return mock.mockCoinjoinService();
@@ -67,7 +63,7 @@ describe('coinjoinAccountActions', () => {
     fixtures.createCoinjoinAccount.forEach(f => {
         it(`createCoinjoinAccount: ${f.description}`, async () => {
             const store = initStore();
-            TrezorConnect.setTestFixtures(f.connect);
+            testMocks.setTrezorConnectFixtures(f.connect);
             jest.spyOn(console, 'log').mockImplementation(() => {});
 
             await store.dispatch(coinjoinAccountActions.createCoinjoinAccount(f.params as any)); // params are incomplete
@@ -80,7 +76,7 @@ describe('coinjoinAccountActions', () => {
     fixtures.startCoinjoinSession.forEach(f => {
         it(`startCoinjoinSession: ${f.description}`, async () => {
             const store = initStore(f.state as Wallet);
-            TrezorConnect.setTestFixtures(f.connect);
+            testMocks.setTrezorConnectFixtures(f.connect);
             // @ts-expect-error params are incomplete
             await store.dispatch(coinjoinAccountActions.startCoinjoinSession(f.params, {}));
 

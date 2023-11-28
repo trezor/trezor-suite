@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable global-require */
 import { DEVICE_EVENT, UI_EVENT, TRANSPORT_EVENT, BLOCKCHAIN_EVENT } from '@trezor/connect';
 import { connectInitThunk } from '@suite-common/connect-init';
+import { testMocks } from '@suite-common/test-utils';
 import { prepareDeviceReducer } from '@suite-common/wallet-core';
 
 import { configureStore } from 'src/support/tests/configureStore';
@@ -10,55 +9,6 @@ import { SUITE } from 'src/actions/suite/constants';
 import { extraDependencies } from 'src/support/extraDependencies';
 
 const deviceReducer = prepareDeviceReducer(extraDependencies);
-
-jest.mock('@trezor/connect', () => {
-    let fixture: any;
-    const callbacks: { [key: string]: (e: any) => any } = {};
-
-    const { PROTO } = jest.requireActual('@trezor/connect');
-
-    return {
-        __esModule: true, // this property makes it work
-        default: {
-            blockchainSetCustomBackend: () => {},
-            init: () => {
-                if (typeof fixture === 'function') throw fixture();
-                return true;
-            },
-            on: (event: string, cb: (e: any) => any) => {
-                callbacks[event] = cb;
-            },
-            getFeatures: () => ({
-                success: true,
-            }),
-        },
-        DEVICE_EVENT: 'DEVICE_EVENT',
-        UI_EVENT: 'UI_EVENT',
-        TRANSPORT_EVENT: 'TRANSPORT_EVENT',
-        BLOCKCHAIN_EVENT: 'BLOCKCHAIN_EVENT',
-        DEVICE: {
-            CONNECT_UNACQUIRED: 'device-connect_unacquired',
-            CHANGED: 'device-changed',
-            DISCONNECT: 'device-disconnect',
-        },
-        TRANSPORT: {},
-        BLOCKCHAIN: {},
-        PROTO,
-        // custom method for test purpose
-        setTestFixtures: (f: any) => {
-            fixture = f;
-        },
-        emit: (event: string, data: any) => {
-            callbacks[event].call(undefined, {
-                event,
-                ...data,
-            });
-        },
-        DeviceModelInternal: {
-            T2T1: 'T2T1',
-        },
-    };
-});
 
 type SuiteState = ReturnType<typeof suiteReducer>;
 type DevicesState = ReturnType<typeof deviceReducer>;
@@ -99,7 +49,9 @@ describe('TrezorConnect Actions', () => {
     });
 
     it('Error', async () => {
-        require('@trezor/connect').setTestFixtures(() => new Error('Iframe error'));
+        testMocks.setTrezorConnectFixtures(() => {
+            throw new Error('Iframe error');
+        });
         const state = getInitialState();
         const store = initStore(state);
         try {
@@ -107,11 +59,10 @@ describe('TrezorConnect Actions', () => {
         } catch (error) {
             expect(error.message).toEqual('Iframe error');
         }
-        require('@trezor/connect').setTestFixtures(undefined);
     });
 
     it('TypedError', async () => {
-        require('@trezor/connect').setTestFixtures(() => ({
+        testMocks.setTrezorConnectFixtures(() => ({
             message: 'Iframe error',
             code: 'SomeCode',
         }));
@@ -122,11 +73,10 @@ describe('TrezorConnect Actions', () => {
         } catch (error) {
             expect(error.message).toEqual('SomeCode: Iframe error');
         }
-        require('@trezor/connect').setTestFixtures(undefined);
     });
 
     it('Error as string', async () => {
-        require('@trezor/connect').setTestFixtures(() => 'Iframe error');
+        testMocks.setTrezorConnectFixtures(() => 'Iframe error');
         const state = getInitialState();
         const store = initStore(state);
         try {
@@ -134,7 +84,6 @@ describe('TrezorConnect Actions', () => {
         } catch (error) {
             expect(error.message).toEqual('Iframe error');
         }
-        require('@trezor/connect').setTestFixtures(undefined);
     });
 
     it('Events', () => {
@@ -145,15 +94,15 @@ describe('TrezorConnect Actions', () => {
         expect(() => store.dispatch(connectInitThunk())).not.toThrow();
 
         const actions = store.getActions();
-        const { emit } = require('@trezor/connect');
+        const { emitTestEvent } = testMocks.getTrezorConnectMock();
 
-        emit(DEVICE_EVENT, { type: DEVICE_EVENT });
+        emitTestEvent(DEVICE_EVENT, { type: DEVICE_EVENT });
         expect(actions.pop()).toEqual({ type: DEVICE_EVENT });
-        emit(UI_EVENT, { type: UI_EVENT });
+        emitTestEvent(UI_EVENT, { type: UI_EVENT });
         expect(actions.pop()).toEqual({ type: UI_EVENT });
-        emit(TRANSPORT_EVENT, { type: TRANSPORT_EVENT });
+        emitTestEvent(TRANSPORT_EVENT, { type: TRANSPORT_EVENT });
         expect(actions.pop()).toEqual({ type: TRANSPORT_EVENT });
-        emit(BLOCKCHAIN_EVENT, { type: BLOCKCHAIN_EVENT });
+        emitTestEvent(BLOCKCHAIN_EVENT, { type: BLOCKCHAIN_EVENT });
         expect(actions.pop()).toEqual({ type: BLOCKCHAIN_EVENT });
 
         process.env.SUITE_TYPE = defaultSuiteType;
@@ -163,7 +112,7 @@ describe('TrezorConnect Actions', () => {
         const state = getInitialState();
         const store = initStore(state);
         await store.dispatch(connectInitThunk());
-        await require('@trezor/connect').default.getFeatures();
+        await testMocks.getTrezorConnectMock().getFeatures();
         const actions = store.getActions();
         // check actions in reversed order
         expect(actions.pop()).toEqual({

@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-
 import { testMocks } from '@suite-common/test-utils';
 import { prepareBlockchainMiddleware } from '@suite-common/wallet-core';
 
@@ -20,8 +18,7 @@ import * as fixtures from '../__fixtures__/walletMiddleware';
 
 const { getWalletAccount } = testMocks;
 
-jest.mock('@trezor/connect', () => global.JestMocks.getTrezorConnect({}));
-const TrezorConnect = require('@trezor/connect').default;
+const TrezorConnect = testMocks.getTrezorConnectMock();
 
 type AccountsState = ReturnType<typeof accountsReducer>;
 type SettingsState = ReturnType<typeof walletSettingsReducer>;

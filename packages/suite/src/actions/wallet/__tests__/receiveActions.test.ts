@@ -1,5 +1,3 @@
-/* eslint-disable global-require */
-
 import { connectInitThunk } from '@suite-common/connect-init';
 import { testMocks } from '@suite-common/test-utils';
 import { prepareDeviceReducer } from '@suite-common/wallet-core';
@@ -19,8 +17,9 @@ const { getSuiteDevice } = testMocks;
 
 const deviceReducer = prepareDeviceReducer(extraDependencies);
 
-jest.mock('@trezor/connect', () => {
-    let fixture: any;
+const TrezorConnect = testMocks.getTrezorConnectMock();
+
+const setTrezorConnectFixtures = (fixture?: any) => {
     let buttonRequest: ((e?: any) => any) | undefined;
 
     const getAddress = (_params: any) => {
@@ -44,46 +43,16 @@ jest.mock('@trezor/connect', () => {
         };
     };
 
-    const { PROTO } = jest.requireActual('@trezor/connect');
-
-    return {
-        __esModule: true, // this property makes it work
-        default: {
-            blockchainSetCustomBackend: () => {},
-            init: () => null,
-            on: (event: string, cb: () => any) => {
-                if (event === 'ui-button') buttonRequest = cb;
-            },
-            off: () => {
-                buttonRequest = undefined;
-            },
-            getAddress,
-            ethereumGetAddress: getAddress,
-            rippleGetAddress: getAddress,
-        },
-        setTestFixtures: (f: any) => {
-            fixture = f;
-        },
-        DEVICE_EVENT: 'DEVICE_EVENT',
-        UI_EVENT: 'UI_EVENT',
-        TRANSPORT_EVENT: 'TRANSPORT_EVENT',
-        BLOCKCHAIN_EVENT: 'BLOCKCHAIN_EVENT',
-        DEVICE: {
-            DISCONNECT: 'device-disconnect',
-            CONNECT_UNACQUIRED: 'device-connect-unacquired',
-            CHANGED: 'device-changed',
-        },
-        TRANSPORT: {},
-        BLOCKCHAIN: {},
-        UI: {
-            REQUEST_BUTTON: 'ui-button',
-        },
-        PROTO,
-        DeviceModelInternal: {
-            T2T1: 'T2T1',
-        },
-    };
-});
+    jest.spyOn(TrezorConnect, 'on').mockImplementation((event: string, cb) => {
+        if (event === 'ui-button') buttonRequest = cb;
+    });
+    jest.spyOn(TrezorConnect, 'off').mockImplementation(() => {
+        buttonRequest = undefined;
+    });
+    jest.spyOn(TrezorConnect, 'getAddress').mockImplementation(getAddress);
+    jest.spyOn(TrezorConnect, 'ethereumGetAddress').mockImplementation(getAddress);
+    jest.spyOn(TrezorConnect, 'rippleGetAddress').mockImplementation(getAddress);
+};
 
 type ReceiveState = ReturnType<typeof receiveReducer>;
 type SuiteState = ReturnType<typeof suiteReducer>;
@@ -163,8 +132,7 @@ const initStore = (state: State) => {
 describe('ReceiveActions', () => {
     fixtures.forEach(f => {
         it(f.description, async () => {
-            // eslint-disable-next-line @typescript-eslint/no-var-requires
-            require('@trezor/connect').setTestFixtures(f.mocks);
+            setTrezorConnectFixtures(f.mocks);
             const state = getInitialState(f.initialState as any);
             const store = initStore(state);
             await store.dispatch(connectInitThunk());
@@ -177,8 +145,7 @@ describe('ReceiveActions', () => {
     });
 
     it('show unverified address then verify', async () => {
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
-        require('@trezor/connect').setTestFixtures({});
+        setTrezorConnectFixtures();
         const state = getInitialState({});
         const store = initStore(state);
         await store.dispatch(connectInitThunk());

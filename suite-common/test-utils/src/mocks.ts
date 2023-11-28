@@ -1,7 +1,13 @@
 /* WARNING! This file should be imported ONLY in tests! */
-/* eslint-disable require-await */
 
-import { AccountUtxo, Device, Features, DeviceModelInternal, FirmwareType } from '@trezor/connect';
+import {
+    TrezorConnect,
+    AccountUtxo,
+    Device,
+    Features,
+    DeviceModelInternal,
+    FirmwareType,
+} from '@trezor/connect';
 import {
     TrezorDevice,
     GuideNode,
@@ -253,168 +259,6 @@ const getWalletTransaction = (t?: Partial<WalletAccountTransaction>): WalletAcco
     },
     ...t,
 });
-
-// Mocked TrezorConnect used in various tests
-const getTrezorConnect = <M>(methods?: M) => {
-    // event listeners
-    const listeners: { [key: string]: (e: any) => void } = {};
-    // methods response fixtures
-    let fixtures: Record<string, any> | Record<string, any>[] | undefined;
-    const getFixture = () => {
-        if (Array.isArray(fixtures)) {
-            return fixtures.shift();
-        }
-        return fixtures;
-    };
-
-    const originalModule = jest.requireActual('@trezor/connect');
-
-    return {
-        __esModule: true, // export as module
-        ...originalModule,
-        default: {
-            // define mocked TrezorConnect methods
-            init: () => {},
-            on: (event: string, cb: (e: any) => void) => {
-                listeners[event] = cb;
-            },
-            off: () => {},
-            applySettings: jest.fn(async _params => ({
-                success: true,
-                ...getFixture(),
-                _params,
-            })),
-            authorizeCoinjoin: jest.fn(async _params => ({
-                success: false,
-                ...getFixture(),
-                _params,
-            })),
-            cancelCoinjoinAuthorization: jest.fn(async _params => ({
-                success: true,
-                ...getFixture(),
-                _params,
-            })),
-            blockchainSetCustomBackend: jest.fn(async _params => ({
-                success: true,
-                ...getFixture(),
-                _params,
-            })),
-            blockchainSubscribe: jest.fn(async _params => ({
-                success: true,
-                ...getFixture(),
-                _params,
-            })),
-            blockchainSubscribeFiatRates: jest.fn(async _params => ({
-                success: true,
-                ...getFixture(),
-                _params,
-            })),
-            blockchainUnsubscribeFiatRates: jest.fn(async _params => ({
-                success: true,
-                ...getFixture(),
-                _params,
-            })),
-            blockchainEstimateFee: jest.fn(async _params => ({
-                success: true,
-                payload: { levels: [{}] },
-                ...getFixture(),
-                _params,
-            })),
-            blockchainGetTransactions: jest.fn(async _params => ({
-                success: true,
-                payload: { txid: 'foo' },
-                ...getFixture(),
-                _params,
-            })),
-            blockchainDisconnect: jest.fn(async _params => ({
-                success: true,
-                ...getFixture(),
-                _params,
-            })),
-            getAccountInfo: jest.fn(async _params => ({
-                success: false,
-                ...getFixture(),
-                _params,
-            })),
-            getPublicKey: jest.fn(async _params => ({
-                success: true,
-                ...getFixture(),
-                _params,
-            })),
-            getOwnershipProof: jest.fn(async _params => ({
-                success: false,
-                ...getFixture(),
-                _params,
-            })),
-            composeTransaction: jest.fn(async _params => {
-                const fixture = getFixture();
-                if (fixture && typeof fixture.delay === 'number') {
-                    await new Promise(resolve => setTimeout(resolve, fixture.delay));
-                }
-                return { success: false, payload: { error: 'error' }, ...fixture, _params };
-            }),
-            setBusy: jest.fn(async _params => ({
-                success: true,
-                ...getFixture(),
-                _params,
-            })),
-            signTransaction: jest.fn(async _params => ({
-                success: false,
-                payload: { error: 'error' },
-                ...getFixture(),
-                _params,
-            })),
-            showDeviceTutorial: jest.fn(async _params => ({
-                success: true,
-                ...getFixture(),
-                _params,
-            })),
-            ethereumSignTransaction: jest.fn(async _params => ({
-                success: false,
-                payload: { error: 'error' },
-                ...getFixture(),
-                _params,
-            })),
-            rippleSignTransaction: jest.fn(async _params => ({
-                success: false,
-                payload: { error: 'error' },
-                ...getFixture(),
-                _params,
-            })),
-            pushTransaction: jest.fn(async _params => ({
-                success: true,
-                payload: { txid: 'txid' },
-                ...getFixture(),
-                _params,
-            })),
-            unlockPath: jest.fn(async _params => ({
-                success: true,
-                payload: { address_n: [2147493673], mac: '0MaC' },
-                ...getFixture(),
-                _params,
-            })),
-            changePin: () => ({
-                success: true,
-                payload: {
-                    message: 'great success',
-                },
-            }),
-            // additional methods used by s
-
-            setTestFixtures: (f?: typeof fixtures) => {
-                fixtures = f;
-            },
-            getTestFixtures: () => fixtures,
-            emit: (event: string, data: any) => {
-                listeners[event].call(undefined, {
-                    event,
-                    ...data,
-                });
-            },
-            ...methods,
-        },
-    };
-};
 
 // Mocked @trezor/suite-analytics package used in various tests
 const getAnalytics = () => {
@@ -685,6 +529,26 @@ const mockedBlockchainNetworks = networksCompatibility.reduce((result, network) 
     return result;
 }, {} as BlockchainNetworks);
 
+// use mock from @suite-common/test-utils/__mocks__
+type MockTrezorConnect = jest.Mocked<TrezorConnect> & {
+    setTestFixtures: (...args: any[]) => void;
+    emitTestEvent: (event: string, data: any) => void;
+};
+
+const getTrezorConnectMock = () => {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires, global-require
+    const pkg = require('@trezor/connect');
+    return {
+        ...pkg.default,
+        setTestFixtures: pkg.setTestFixtures,
+        emitTestEvent: pkg.emitTestEvent,
+    } as MockTrezorConnect;
+};
+
+const setTrezorConnectFixtures = (f?: any) => {
+    getTrezorConnectMock().setTestFixtures(f);
+};
+
 export const testMocks = {
     getWalletAccount,
     getFirmwareRelease,
@@ -692,7 +556,6 @@ export const testMocks = {
     getConnectDevice,
     getSuiteDevice,
     getWalletTransaction,
-    getTrezorConnect,
     getAnalytics,
     getMessageSystemConfig,
     getGuideNode,
@@ -700,4 +563,6 @@ export const testMocks = {
     fee,
     intlMock,
     mockedBlockchainNetworks,
+    getTrezorConnectMock,
+    setTrezorConnectFixtures,
 };

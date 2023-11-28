@@ -1,6 +1,6 @@
 import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
-import { configureMockStore } from '@suite-common/test-utils';
+import { configureMockStore, testMocks } from '@suite-common/test-utils';
 import { prepareMessageSystemReducer } from '@suite-common/message-system';
 
 import { extraDependencies } from 'src/support/extraDependencies';
@@ -12,10 +12,6 @@ import { fixtures } from 'src/middlewares/wallet/__fixtures__/coinjoinMiddleware
 import { accountsReducer } from 'src/reducers/wallet';
 import { coinjoinReducer } from 'src/reducers/wallet/coinjoinReducer';
 import selectedAccountReducer from 'src/reducers/wallet/selectedAccountReducer';
-
-jest.mock('@trezor/connect', () => global.JestMocks.getTrezorConnect({}));
-// eslint-disable-next-line
-const TrezorConnect = require('@trezor/connect').default;
 
 jest.mock('src/services/coinjoin/coinjoinService', () => {
     const mock = jest.requireActual('../../../actions/wallet/__fixtures__/mockCoinjoinService');
@@ -91,7 +87,7 @@ describe('coinjoinMiddleware', () => {
             const store = initStore(f.state);
 
             if (f.connect) {
-                TrezorConnect.setTestFixtures(f.connect);
+                testMocks.setTrezorConnectFixtures(f.connect);
             }
 
             if (f.client) {

@@ -18,39 +18,16 @@ import * as fixtures from '../__fixtures__/metadataActions';
 
 const deviceReducer = prepareDeviceReducer(extraDependencies);
 
-jest.mock('@trezor/connect', () => {
-    let fixture: any;
+const TrezorConnect = testMocks.getTrezorConnectMock();
 
-    const { PROTO } = jest.requireActual('@trezor/connect');
-
-    return {
-        __esModule: true, // this property makes it work
-        default: {
-            cipherKeyValue: () =>
-                fixture || {
-                    success: true,
-                    payload: {
-                        value: '20c8bf0701213cdcf4c2f56fd0096c1772322d42fb9c4d0ddf6bb122d713d2f3',
-                    },
-                },
-        },
-        setTestFixtures: (f: any) => {
-            fixture = f;
-        },
-        DEVICE: {
-            CONNECT_UNACQUIRED: 'device-connect-unacquired',
-            CHANGED: 'device-changed',
-            DISCONNECT: 'device-disconnect',
-        },
-        BLOCKCHAIN: {},
-        TRANSPORT: {},
-        UI: {},
-        PROTO,
-        DeviceModelInternal: {
-            T2T1: 'T2T1',
-        },
-    };
-});
+jest.spyOn(TrezorConnect, 'cipherKeyValue').mockImplementation(() =>
+    Promise.resolve({
+        success: true,
+        payload: {
+            value: '20c8bf0701213cdcf4c2f56fd0096c1772322d42fb9c4d0ddf6bb122d713d2f3',
+        } as any, // typings expect bundle response
+    }),
+);
 
 jest.doMock('@trezor/suite-analytics', () => testMocks.getAnalytics());
 

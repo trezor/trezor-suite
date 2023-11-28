@@ -69,6 +69,9 @@ const initStore = (state: State) => {
     return store;
 };
 
+// do not mock
+jest.unmock('@trezor/connect');
+
 jest.doMock('@trezor/suite-analytics', () => testMocks.getAnalytics());
 jest.spyOn(console, 'warn').mockImplementation(() => {});
 
