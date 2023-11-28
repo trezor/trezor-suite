@@ -1,11 +1,12 @@
 import { Route } from '@suite-common/suite-types';
 import { Account } from '@suite-common/wallet-types';
 import { Button, variables } from '@trezor/components';
+import { FirmwareType } from '@trezor/connect';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { ReactNode } from 'react';
 import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite';
-import { useDispatch } from 'src/hooks/suite';
+import { useDevice, useDispatch } from 'src/hooks/suite';
 import styled, { css } from 'styled-components';
 
 const Wrapper = styled.div`
@@ -29,6 +30,7 @@ interface TradeBoxMenuProps {
 
 export const TradeBoxMenu = ({ account }: TradeBoxMenuProps) => {
     const dispatch = useDispatch();
+    const { device } = useDevice();
 
     const menuItems: {
         route: Route['name'];
@@ -56,26 +58,34 @@ export const TradeBoxMenu = ({ account }: TradeBoxMenuProps) => {
 
     return (
         <Wrapper>
-            {menuItems.map(item => (
-                <StyledButton
-                    isHideable={!!item.isHideable}
-                    key={item.route}
-                    variant="secondary"
-                    onClick={() => {
-                        analytics.report({
-                            type: EventType.AccountsTradeboxButton,
-                            payload: {
-                                symbol: account.symbol,
-                                type: item.type,
-                            },
-                        });
-                        dispatch(goto(item.route, { preserveParams: true }));
-                    }}
-                    data-test={`@coinmarket/menu/${item.route}`}
-                >
-                    {item.title}
-                </StyledButton>
-            ))}
+            {menuItems
+                .filter(
+                    item =>
+                        !(
+                            item.type === 'exchange' &&
+                            device?.firmwareType === FirmwareType.BitcoinOnly
+                        ),
+                )
+                .map(item => (
+                    <StyledButton
+                        isHideable={!!item.isHideable}
+                        key={item.route}
+                        variant="secondary"
+                        onClick={() => {
+                            analytics.report({
+                                type: EventType.AccountsTradeboxButton,
+                                payload: {
+                                    symbol: account.symbol,
+                                    type: item.type,
+                                },
+                            });
+                            dispatch(goto(item.route, { preserveParams: true }));
+                        }}
+                        data-test={`@coinmarket/menu/${item.route}`}
+                    >
+                        {item.title}
+                    </StyledButton>
+                ))}
         </Wrapper>
     );
 };
