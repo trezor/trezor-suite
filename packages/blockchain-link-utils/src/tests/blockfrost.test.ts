@@ -46,10 +46,10 @@ describe('blockfrost/utils', () => {
     describe('transformTransaction', () => {
         fixtures.transformTransaction.forEach(f => {
             it(f.description, () => {
-                // @ts-expect-error incorrect params
-                expect(transformTransaction(f.descriptor, f.accountAddress, f.data)).toMatchObject(
-                    f.result,
-                );
+                expect(
+                    // @ts-expect-error incorrect params
+                    transformTransaction(f.data, f.accountAddress ?? f.descriptor),
+                ).toMatchObject(f.result);
             });
         });
     });
