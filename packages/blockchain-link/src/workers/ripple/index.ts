@@ -160,7 +160,7 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
     const api = await request.connect();
     const transactionsData: RawTxData = await api.request('account_tx', requestOptions);
     account.history.transactions = transactionsData.transactions.map(raw =>
-        utils.transformTransaction(payload.descriptor, raw.tx),
+        utils.transformTransaction(raw.tx, payload.descriptor),
     );
 
     return {
@@ -247,7 +247,7 @@ const onTransaction = ({ state, post }: Context, event: any) => {
                 type: 'notification',
                 payload: {
                     descriptor,
-                    tx: utils.transformTransaction(descriptor, { ...event, ...tx }),
+                    tx: utils.transformTransaction({ ...event, ...tx }, descriptor),
                 },
             },
         });

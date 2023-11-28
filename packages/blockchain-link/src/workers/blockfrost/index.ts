@@ -128,8 +128,8 @@ const onTransaction = ({ state, post }: Context, event: BlockfrostTransaction) =
             payload: {
                 descriptor: account ? account.descriptor : descriptor,
                 tx: account
-                    ? transformTransaction(account.descriptor, account.addresses, event)
-                    : transformTransaction(descriptor, undefined, event),
+                    ? transformTransaction(event, account.addresses ?? account.descriptor)
+                    : transformTransaction(event, descriptor),
             },
         },
     });
