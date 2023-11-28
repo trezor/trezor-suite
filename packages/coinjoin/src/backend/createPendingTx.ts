@@ -38,5 +38,5 @@ export const createPendingTransaction = (
         })),
     };
 
-    return transformTransaction(descriptor, addresses, blockbookTx);
+    return transformTransaction(blockbookTx, addresses ?? descriptor);
 };

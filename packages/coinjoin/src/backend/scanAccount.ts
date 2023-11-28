@@ -15,10 +15,10 @@ import type {
 import { CHECKPOINT_COOLDOWN } from '../constants';
 
 const transformTx =
-    (xpub: string, { receive, change }: CoinjoinAddressController) =>
+    ({ receive, change }: CoinjoinAddressController) =>
     (tx: BlockbookTransaction) =>
         // It doesn't matter for transformTransaction which receive addrs are used and which are unused
-        transformTransaction(xpub, { used: receive, unused: [], change }, tx);
+        transformTransaction(tx, { used: receive, unused: [], change });
 
 export const scanAccount = async (
     params: ScanAccountParams & { checkpoints: ScanAccountCheckpoint[] },
@@ -59,7 +59,7 @@ export const scanAccount = async (
             );
         }
 
-        const transactions = Array.from(txs, transformTx(xpub, addresses));
+        const transactions = Array.from(txs, transformTx(addresses));
         checkpoint = {
             blockHash,
             blockHeight,
@@ -80,14 +80,14 @@ export const scanAccount = async (
             await mempool.start();
             pending = await mempool
                 .init(addresses, onProgressInfo)
-                .then(transactions => transactions.map(transformTx(xpub, addresses)))
+                .then(transactions => transactions.map(transformTx(addresses)))
                 .catch(err => {
                     mempool.stop();
                     throw err;
                 });
         } else {
             await mempool.update();
-            pending = mempool.getTransactions(addresses).map(transformTx(xpub, addresses));
+            pending = mempool.getTransactions(addresses).map(transformTx(addresses));
         }
 
         checkpoint = {
