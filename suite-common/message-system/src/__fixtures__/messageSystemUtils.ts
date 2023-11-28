@@ -1,7 +1,7 @@
 import { DeviceModelInternal, FirmwareType } from '@trezor/connect';
 import { testMocks } from '@suite-common/test-utils';
 
-const { getDeviceFeatures } = testMocks;
+const { getDeviceFeatures, getConnectDevice, getMessageSystemConfig } = testMocks;
 
 export const createVersionRange = [
     {
@@ -1336,9 +1336,9 @@ export const getValidMessages = [
         osName: 'macos',
         environment: '',
         suiteVersion: '',
-        config: testMocks.getMessageSystemConfig(),
+        config: getMessageSystemConfig(),
         options: {},
-        result: [testMocks.getMessageSystemConfig().actions[1].message],
+        result: [getMessageSystemConfig().actions[1].message],
     },
     {
         description: 'getValidMessages case 3',
@@ -1348,7 +1348,7 @@ export const getValidMessages = [
         osName: 'macos',
         environment: '',
         suiteVersion: '',
-        config: testMocks.getMessageSystemConfig(undefined, undefined, {
+        config: getMessageSystemConfig(undefined, undefined, {
             conditions: [
                 { duration: { from: '2021-03-01T12:10:00.000Z', to: '2021-03-05T12:10:00.000Z' } },
             ],
@@ -1364,13 +1364,13 @@ export const getValidMessages = [
         osName: 'macos',
         environment: '',
         suiteVersion: '',
-        config: testMocks.getMessageSystemConfig(undefined, undefined, {
+        config: getMessageSystemConfig(undefined, undefined, {
             conditions: [
                 { duration: { from: '2021-03-01T12:10:00.000Z', to: '2021-05-01T12:10:00.000Z' } },
             ],
         }),
         options: {},
-        result: [testMocks.getMessageSystemConfig().actions[1].message],
+        result: [getMessageSystemConfig().actions[1].message],
     },
     {
         description: 'getValidMessages case 5',
@@ -1380,13 +1380,13 @@ export const getValidMessages = [
         osName: 'macos',
         environment: '',
         suiteVersion: '',
-        config: testMocks.getMessageSystemConfig(undefined, undefined, {
+        config: getMessageSystemConfig(undefined, undefined, {
             conditions: [
                 { duration: { from: '2021-03-01T12:10:00.000Z', to: '2021-05-01T12:10:00.000Z' } },
             ],
         }),
         options: {},
-        result: [testMocks.getMessageSystemConfig().actions[1].message],
+        result: [getMessageSystemConfig().actions[1].message],
     },
     {
         description: 'getValidMessages case 6',
@@ -1396,7 +1396,7 @@ export const getValidMessages = [
         osName: 'macos',
         environment: 'web',
         suiteVersion: '1.4.5',
-        config: testMocks.getMessageSystemConfig(undefined, undefined, {
+        config: getMessageSystemConfig(undefined, undefined, {
             conditions: [
                 {
                     duration: { from: '2021-03-01T12:10:00.000Z', to: '2021-05-01T12:10:00.000Z' },
@@ -1409,7 +1409,7 @@ export const getValidMessages = [
             ],
         }),
         options: { settings: { tor: false, enabledNetworks: [] } },
-        result: [testMocks.getMessageSystemConfig().actions[1].message],
+        result: [getMessageSystemConfig().actions[1].message],
     },
     {
         description: 'getValidMessages case 7',
@@ -1419,7 +1419,7 @@ export const getValidMessages = [
         osName: 'macos',
         environment: 'web',
         suiteVersion: '2.4.5',
-        config: testMocks.getMessageSystemConfig(undefined, undefined, {
+        config: getMessageSystemConfig(undefined, undefined, {
             conditions: [
                 {
                     duration: { from: '2021-03-01T12:10:00.000Z', to: '2021-05-01T12:10:00.000Z' },
@@ -1442,7 +1442,7 @@ export const getValidMessages = [
         osName: 'macos',
         environment: '',
         suiteVersion: '',
-        config: testMocks.getMessageSystemConfig(undefined, undefined, {
+        config: getMessageSystemConfig(undefined, undefined, {
             conditions: [
                 {
                     os: {
@@ -1457,7 +1457,7 @@ export const getValidMessages = [
             ],
         }),
         options: {},
-        result: [testMocks.getMessageSystemConfig().actions[1].message],
+        result: [getMessageSystemConfig().actions[1].message],
     },
     {
         description: 'getValidMessages case 9',
@@ -1467,7 +1467,7 @@ export const getValidMessages = [
         osName: 'macos',
         environment: '',
         suiteVersion: '',
-        config: testMocks.getMessageSystemConfig(undefined, undefined, {
+        config: getMessageSystemConfig(undefined, undefined, {
             conditions: [
                 {
                     os: {
@@ -1492,7 +1492,7 @@ export const getValidMessages = [
         osName: 'macos',
         environment: 'web',
         suiteVersion: '',
-        config: testMocks.getMessageSystemConfig(undefined, undefined, {
+        config: getMessageSystemConfig(undefined, undefined, {
             conditions: [
                 {
                     browser: {
@@ -1504,7 +1504,7 @@ export const getValidMessages = [
             ],
         }),
         options: {},
-        result: [testMocks.getMessageSystemConfig().actions[1].message],
+        result: [getMessageSystemConfig().actions[1].message],
     },
     {
         description: 'getValidMessages case 11',
@@ -1514,7 +1514,7 @@ export const getValidMessages = [
         osName: 'macos',
         environment: 'desktop',
         suiteVersion: '',
-        config: testMocks.getMessageSystemConfig(undefined, undefined, {
+        config: getMessageSystemConfig(undefined, undefined, {
             conditions: [
                 {
                     browser: {
@@ -1526,7 +1526,7 @@ export const getValidMessages = [
             ],
         }),
         options: {},
-        result: [testMocks.getMessageSystemConfig().actions[1].message],
+        result: [getMessageSystemConfig().actions[1].message],
     },
     {
         description: 'getValidMessages case 12',
@@ -1536,7 +1536,7 @@ export const getValidMessages = [
         osName: 'macos',
         environment: 'web',
         suiteVersion: '',
-        config: testMocks.getMessageSystemConfig(undefined, undefined, {
+        config: getMessageSystemConfig(undefined, undefined, {
             conditions: [
                 {
                     browser: {
@@ -1558,7 +1558,7 @@ export const getValidMessages = [
         osName: 'macos',
         environment: '',
         suiteVersion: '',
-        config: testMocks.getMessageSystemConfig(undefined, undefined, {
+        config: getMessageSystemConfig(undefined, undefined, {
             conditions: [
                 {
                     settings: [{ tor: true }],
@@ -1576,7 +1576,7 @@ export const getValidMessages = [
         osName: 'macos',
         environment: '',
         suiteVersion: '',
-        config: testMocks.getMessageSystemConfig(undefined, undefined, {
+        config: getMessageSystemConfig(undefined, undefined, {
             conditions: [
                 {
                     settings: [{ tor: false, btc: true }],
@@ -1584,7 +1584,7 @@ export const getValidMessages = [
             ],
         }),
         options: { settings: { tor: false, enabledNetworks: ['btc'] } },
-        result: [testMocks.getMessageSystemConfig().actions[1].message],
+        result: [getMessageSystemConfig().actions[1].message],
     },
     {
         description: 'getValidMessages case 15',
@@ -1594,7 +1594,7 @@ export const getValidMessages = [
         osName: 'macos',
         environment: '',
         suiteVersion: '',
-        config: testMocks.getMessageSystemConfig(undefined, undefined, {
+        config: getMessageSystemConfig(undefined, undefined, {
             conditions: [
                 {
                     transport: {
@@ -1608,7 +1608,7 @@ export const getValidMessages = [
             settings: { tor: false, enabledNetworks: [] },
             transport: { type: 'bridge', version: '2.3.4' },
         },
-        result: [testMocks.getMessageSystemConfig().actions[1].message],
+        result: [getMessageSystemConfig().actions[1].message],
     },
     {
         description: 'getValidMessages case 16',
@@ -1618,7 +1618,7 @@ export const getValidMessages = [
         osName: 'macos',
         environment: '',
         suiteVersion: '',
-        config: testMocks.getMessageSystemConfig(undefined, undefined, {
+        config: getMessageSystemConfig(undefined, undefined, {
             conditions: [
                 {
                     transport: {
@@ -1642,7 +1642,7 @@ export const getValidMessages = [
         osName: 'macos',
         environment: '',
         suiteVersion: '',
-        config: testMocks.getMessageSystemConfig(undefined, undefined, {
+        config: getMessageSystemConfig(undefined, undefined, {
             conditions: [
                 {
                     devices: [
@@ -1668,9 +1668,9 @@ export const getValidMessages = [
         }),
         options: {
             settings: { tor: false, enabledNetworks: [] },
-            device: testMocks.getConnectDevice(),
+            device: getConnectDevice(),
         },
-        result: [testMocks.getMessageSystemConfig().actions[1].message],
+        result: [getMessageSystemConfig().actions[1].message],
     },
     {
         description: 'getValidMessages case 18',
@@ -1680,7 +1680,7 @@ export const getValidMessages = [
         osName: 'macos',
         environment: '',
         suiteVersion: '',
-        config: testMocks.getMessageSystemConfig(undefined, undefined, {
+        config: getMessageSystemConfig(undefined, undefined, {
             conditions: [
                 {
                     devices: [
@@ -1698,7 +1698,7 @@ export const getValidMessages = [
         }),
         options: {
             settings: { tor: false, enabledNetworks: [] },
-            device: testMocks.getConnectDevice(),
+            device: getConnectDevice(),
         },
         result: [],
     },
@@ -1710,7 +1710,7 @@ export const getValidMessages = [
         osName: 'macos',
         environment: '',
         suiteVersion: '',
-        config: testMocks.getMessageSystemConfig(undefined, undefined, {
+        config: getMessageSystemConfig(undefined, undefined, {
             conditions: [
                 {
                     devices: [
@@ -1729,12 +1729,12 @@ export const getValidMessages = [
         options: {
             settings: { tor: false, enabledNetworks: [] },
             device: {
-                ...testMocks.getConnectDevice(undefined, {
+                ...getConnectDevice(undefined, {
                     capabilities: ['Capability_Bitcoin'],
                 }),
             },
         },
-        result: [testMocks.getMessageSystemConfig().actions[1].message],
+        result: [getMessageSystemConfig().actions[1].message],
     },
     {
         description: 'getValidMessages case 20',
@@ -1744,7 +1744,7 @@ export const getValidMessages = [
         osName: 'macos',
         environment: '',
         suiteVersion: '',
-        config: testMocks.getMessageSystemConfig(undefined, undefined, {
+        config: getMessageSystemConfig(undefined, undefined, {
             conditions: [
                 {
                     devices: [
@@ -1763,12 +1763,12 @@ export const getValidMessages = [
         options: {
             settings: { tor: false, enabledNetworks: [] },
             device: {
-                ...testMocks.getConnectDevice(undefined, {
+                ...getConnectDevice(undefined, {
                     capabilities: ['Capability_Bitcoin_like'],
                 }),
             },
         },
-        result: [testMocks.getMessageSystemConfig().actions[1].message],
+        result: [getMessageSystemConfig().actions[1].message],
     },
     {
         description: 'getValidMessages case 21',
@@ -1778,13 +1778,13 @@ export const getValidMessages = [
         osName: 'macos',
         environment: 'web',
         suiteVersion: '2.0.0',
-        config: testMocks.getMessageSystemConfig(),
+        config: getMessageSystemConfig(),
         options: {
             settings: { tor: true, enabledNetworks: ['btc'] },
             transport: { type: 'bridge', version: '2.0.30' },
-            device: testMocks.getConnectDevice(),
+            device: getConnectDevice(),
         },
-        result: testMocks.getMessageSystemConfig().actions.map(action => action.message),
+        result: getMessageSystemConfig().actions.map(action => action.message),
     },
     {
         description: 'getValidMessages case 22',
@@ -1794,7 +1794,7 @@ export const getValidMessages = [
         osName: 'macos',
         environment: '',
         suiteVersion: '',
-        config: testMocks.getMessageSystemConfig(undefined, undefined, {
+        config: getMessageSystemConfig(undefined, undefined, {
             conditions: [
                 {
                     devices: [
@@ -1813,7 +1813,7 @@ export const getValidMessages = [
         options: {
             settings: { tor: false, enabledNetworks: [] },
             device: {
-                ...testMocks.getConnectDevice(undefined, {
+                ...getConnectDevice(undefined, {
                     capabilities: ['Capability_Bitcoin'],
                     revision: 'fae8ac',
                     bootloader_mode: true,
@@ -1824,6 +1824,6 @@ export const getValidMessages = [
                 }),
             },
         },
-        result: [testMocks.getMessageSystemConfig().actions[1].message],
+        result: [getMessageSystemConfig().actions[1].message],
     },
 ];

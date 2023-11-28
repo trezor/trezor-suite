@@ -1,9 +1,10 @@
+import { testMocks } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { deviceActions } from '@suite-common/wallet-core';
 
 import * as deviceSettingsActions from '../deviceSettingsActions';
 
-const { getSuiteDevice } = global.JestMocks;
+const { getSuiteDevice } = testMocks;
 
 export default [
     {

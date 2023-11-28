@@ -1,8 +1,10 @@
+import { testMocks } from '@suite-common/test-utils';
+
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
 import onboardingReducer from 'src/reducers/onboarding/onboardingReducer';
 import * as STEP from 'src/constants/onboarding/steps';
 
-const { getSuiteDevice } = global.JestMocks;
+const { getSuiteDevice } = testMocks;
 
 export default [
     {

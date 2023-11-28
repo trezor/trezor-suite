@@ -2,7 +2,7 @@
 /* eslint-disable global-require */
 // unit test for suite actions
 // data provided by TrezorConnect are mocked
-
+import { testMocks } from '@suite-common/test-utils';
 import {
     prepareDeviceReducer,
     selectDevice,
@@ -35,7 +35,7 @@ import { SUITE } from '../constants';
 import * as suiteActions from '../suiteActions';
 import fixtures from '../__fixtures__/suiteActions';
 
-const { getSuiteDevice } = global.JestMocks;
+const { getSuiteDevice } = testMocks;
 
 const firmwareReducer = prepareFirmwareReducer(extraDependencies);
 const deviceReducer = prepareDeviceReducer(extraDependencies);

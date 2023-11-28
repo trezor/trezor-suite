@@ -1,3 +1,4 @@
+import { testMocks } from '@suite-common/test-utils';
 import { discoveryActions, deviceActions } from '@suite-common/wallet-core';
 import { DEVICE, TRANSPORT } from '@trezor/connect';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -7,7 +8,7 @@ import { TorStatus } from 'src/types/suite';
 
 import * as suiteActions from '../suiteActions';
 
-const { getSuiteDevice, getConnectDevice } = global.JestMocks;
+const { getSuiteDevice, getConnectDevice } = testMocks;
 
 const SUITE_DEVICE = getSuiteDevice({ path: '1' });
 const SUITE_DEVICE_UNACQUIRED = getSuiteDevice({

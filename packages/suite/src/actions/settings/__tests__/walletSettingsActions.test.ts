@@ -1,3 +1,5 @@
+import { testMocks } from '@suite-common/test-utils';
+
 import { configureStore } from 'src/support/tests/configureStore';
 import settingsReducer from 'src/reducers/wallet/settingsReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
@@ -27,7 +29,7 @@ const initStore = (state: State) => {
     return store;
 };
 
-jest.mock('@trezor/suite-analytics', () => global.JestMocks.getAnalytics());
+jest.doMock('@trezor/suite-analytics', () => testMocks.getAnalytics());
 
 describe('walletSettings Actions', () => {
     fixtures.forEach(f => {

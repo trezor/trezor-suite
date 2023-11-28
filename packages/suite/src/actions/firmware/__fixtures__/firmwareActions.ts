@@ -1,7 +1,8 @@
+import { testMocks } from '@suite-common/test-utils';
 import { firmwareUpdate, firmwareActions, deviceActions } from '@suite-common/wallet-core';
 import { UI, DeviceModelInternal, FirmwareType } from '@trezor/connect';
 
-const { getSuiteDevice, getDeviceFeatures, getFirmwareRelease } = global.JestMocks;
+const { getSuiteDevice, getDeviceFeatures, getFirmwareRelease } = testMocks;
 
 const bootloaderDevice = getSuiteDevice({ mode: 'bootloader', connected: true });
 const bootloaderDeviceNeedsIntermediary = {

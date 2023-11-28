@@ -1,3 +1,4 @@
+import { testMocks } from '@suite-common/test-utils';
 import { configureStore } from 'src/support/tests/configureStore';
 
 import cardanoStakingReducer from 'src/reducers/wallet/cardanoStakingReducer';
@@ -8,13 +9,13 @@ import { BlockchainBlock } from '@trezor/connect';
 import { transactionsReducer } from 'src/reducers/wallet';
 import { getUnixTime } from 'date-fns';
 
-const { getSuiteDevice } = global.JestMocks;
-const cardanoAccount = global.JestMocks.getWalletAccount({
+const { getSuiteDevice } = testMocks;
+const cardanoAccount = testMocks.getWalletAccount({
     networkType: 'cardano',
     symbol: 'ada',
     descriptor: 'addr123',
 });
-const defaultAccount = global.JestMocks.getWalletAccount();
+const defaultAccount = testMocks.getWalletAccount();
 type CardanoStakingState = ReturnType<typeof cardanoStakingReducer>;
 const getInitialState = (cardanoStaking?: CardanoStakingState) => ({
     devices: [],

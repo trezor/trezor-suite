@@ -1,6 +1,7 @@
 import { GuidePage, GuideCategory } from '@suite-common/suite-types';
+import { testMocks } from '@suite-common/test-utils';
 
-const { getGuideNode } = global.JestMocks;
+const { getGuideNode } = testMocks;
 
 const GUIDE_PAGE_NODE = getGuideNode('page') as GuidePage;
 const GUIDE_CATEGORY_NODE = getGuideNode('category') as GuideCategory;

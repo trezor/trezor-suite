@@ -1,14 +1,16 @@
 import { testMocks } from '@suite-common/test-utils';
 
+const { getWalletTransaction } = testMocks;
+
 export const findAnchorTransactionPage = [
     {
         testName: 'no anchor',
         transactions: [
-            testMocks.getWalletTransaction({
+            getWalletTransaction({
                 txid: 'txid1',
                 symbol: 'btc',
             }),
-            testMocks.getWalletTransaction({
+            getWalletTransaction({
                 txid: 'txid2',
                 symbol: 'btc',
             }),
@@ -19,11 +21,11 @@ export const findAnchorTransactionPage = [
     {
         testName: 'tx on page 2',
         transactions: [
-            testMocks.getWalletTransaction({
+            getWalletTransaction({
                 txid: 'txid1',
                 symbol: 'btc',
             }),
-            testMocks.getWalletTransaction({
+            getWalletTransaction({
                 txid: 'txid2',
                 symbol: 'btc',
             }),
@@ -35,11 +37,11 @@ export const findAnchorTransactionPage = [
     {
         testName: 'tx not found',
         transactions: [
-            testMocks.getWalletTransaction({
+            getWalletTransaction({
                 txid: 'txid1',
                 symbol: 'btc',
             }),
-            testMocks.getWalletTransaction({
+            getWalletTransaction({
                 txid: 'txid2',
                 symbol: 'btc',
             }),

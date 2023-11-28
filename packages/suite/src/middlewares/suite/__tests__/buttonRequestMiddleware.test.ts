@@ -4,6 +4,7 @@
 import { deviceActions } from '@suite-common/wallet-core';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { UI_EVENT, UI } from '@trezor/connect';
+import { testMocks } from '@suite-common/test-utils';
 
 import { configureStore } from 'src/support/tests/configureStore';
 import { SUITE } from 'src/actions/suite/constants';
@@ -14,7 +15,7 @@ import suiteMiddleware from 'src/middlewares/suite/suiteMiddleware';
 import buttonRequestMiddleware from 'src/middlewares/suite/buttonRequestMiddleware';
 import { Action } from 'src/types/suite';
 
-const { getSuiteDevice } = global.JestMocks;
+const { getSuiteDevice } = testMocks;
 
 jest.mock('@trezor/connect', () => {
     const callbacks: { [key: string]: (e: string) => any } = {};

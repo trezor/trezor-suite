@@ -1,5 +1,6 @@
 import { Middleware } from 'redux';
 
+import { testMocks } from '@suite-common/test-utils';
 import {
     prepareDeviceReducer,
     selectDevices,
@@ -30,7 +31,7 @@ import { extraDependencies } from 'src/support/extraDependencies';
 import * as suiteActions from '../suiteActions';
 import * as storageActions from '../storageActions';
 
-const { getSuiteDevice, getWalletAccount, getWalletTransaction } = global.JestMocks;
+const { getSuiteDevice, getWalletAccount, getWalletTransaction } = testMocks;
 
 const discoveryReducer = prepareDiscoveryReducer(extraDependencies);
 const deviceReducer = prepareDeviceReducer(extraDependencies);

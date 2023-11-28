@@ -27,6 +27,8 @@ import {
 } from '../accountUtils';
 import * as fixtures from '../__fixtures__/accountUtils';
 
+const { getSuiteDevice, getWalletAccount } = testMocks;
+
 describe('account utils', () => {
     fixtures.getFirstFreshAddress.forEach(f => {
         it(`getFirstFreshAddress: ${f.description}`, () => {
@@ -113,23 +115,23 @@ describe('account utils', () => {
     it('findAccountDevice', () => {
         expect(
             findAccountDevice(
-                testMocks.getWalletAccount({
+                getWalletAccount({
                     deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
                     descriptor:
                         'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
                     symbol: 'btc',
                 }),
                 [
-                    testMocks.getSuiteDevice({
+                    getSuiteDevice({
                         state: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
                     }),
-                    testMocks.getSuiteDevice({
+                    getSuiteDevice({
                         state: '20f91883604899768ba21ffd38d0f5f35b07f14e65355f342e4442547c0ce45e',
                     }),
                 ],
             ),
         ).toEqual(
-            testMocks.getSuiteDevice({
+            getSuiteDevice({
                 state: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
             }),
         );
@@ -163,7 +165,7 @@ describe('account utils', () => {
     it('getAccountIdentifier', () => {
         expect(
             getAccountIdentifier(
-                testMocks.getWalletAccount({
+                getWalletAccount({
                     deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
                     descriptor:
                         'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
@@ -179,7 +181,7 @@ describe('account utils', () => {
     });
 
     it('accountSearchFn', () => {
-        const btcAcc = testMocks.getWalletAccount({
+        const btcAcc = getWalletAccount({
             deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
             descriptor:
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
@@ -225,20 +227,20 @@ describe('account utils', () => {
     });
 
     it('getNetworkFeatures', () => {
-        const btcAcc = testMocks.getWalletAccount({
+        const btcAcc = getWalletAccount({
             networkType: 'bitcoin',
             symbol: 'btc',
         });
 
-        const btcTaprootAcc = testMocks.getWalletAccount({
+        const btcTaprootAcc = getWalletAccount({
             networkType: 'bitcoin',
             symbol: 'btc',
             accountType: 'taproot',
         });
 
-        const ethAcc = testMocks.getWalletAccount();
+        const ethAcc = getWalletAccount();
 
-        const coinjoinAcc = testMocks.getWalletAccount({
+        const coinjoinAcc = getWalletAccount({
             networkType: 'bitcoin',
             symbol: 'regtest',
             accountType: 'coinjoin',
@@ -251,12 +253,12 @@ describe('account utils', () => {
     });
 
     it('hasNetworkFeatures', () => {
-        const btcAcc = testMocks.getWalletAccount({
+        const btcAcc = getWalletAccount({
             networkType: 'bitcoin',
             symbol: 'btc',
         });
 
-        const ethAcc = testMocks.getWalletAccount();
+        const ethAcc = getWalletAccount();
 
         expect(hasNetworkFeatures(btcAcc, 'amount-unit')).toEqual(true);
         expect(hasNetworkFeatures(btcAcc, ['amount-unit', 'sign-verify'])).toEqual(true);

@@ -4,6 +4,7 @@ import {
     prepareFirmwareReducer,
     firmwareActions,
 } from '@suite-common/wallet-core';
+import { testMocks } from '@suite-common/test-utils';
 
 import { configureStore, filterThunkActionTypes } from 'src/support/tests/configureStore';
 import routerReducer from 'src/reducers/suite/routerReducer';
@@ -11,7 +12,7 @@ import modalReducer from 'src/reducers/suite/modalReducer';
 import { prepareFirmwareMiddleware } from 'src/middlewares/firmware/firmwareMiddleware';
 import { extraDependencies } from 'src/support/extraDependencies';
 
-const { getSuiteDevice } = global.JestMocks;
+const { getSuiteDevice } = testMocks;
 
 const firmwareMiddleware = prepareFirmwareMiddleware(extraDependencies);
 
@@ -68,7 +69,7 @@ const initStore = (state: State) => {
     return store;
 };
 
-jest.mock('@trezor/suite-analytics', () => global.JestMocks.getAnalytics());
+jest.doMock('@trezor/suite-analytics', () => testMocks.getAnalytics());
 jest.spyOn(console, 'warn').mockImplementation(() => {});
 
 describe('firmware middleware', () => {

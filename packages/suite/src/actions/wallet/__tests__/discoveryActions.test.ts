@@ -15,6 +15,7 @@ import {
 } from '@suite-common/wallet-core';
 import { ArrayElement } from '@trezor/type-utils';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { testMocks } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import * as discoveryActions from '@suite-common/wallet-core';
@@ -35,7 +36,7 @@ import {
 
 const discoveryReducer = prepareDiscoveryReducer(extraDependencies);
 
-const { getSuiteDevice } = global.JestMocks;
+const { getSuiteDevice } = testMocks;
 
 type Fixture = ArrayElement<typeof fixtures>;
 type Bundle = { path: string; coin: string }[];

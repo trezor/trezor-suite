@@ -1,7 +1,8 @@
+import { testMocks } from '@suite-common/test-utils';
 import { deviceActions } from '@suite-common/wallet-core';
 import { DEVICE } from '@trezor/connect';
 
-const { getConnectDevice, getSuiteDevice } = global.JestMocks;
+const { getConnectDevice, getSuiteDevice } = testMocks;
 
 // Default devices
 const CONNECT_DEVICE = getConnectDevice();
