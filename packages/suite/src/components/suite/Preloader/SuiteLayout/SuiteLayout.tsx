@@ -1,23 +1,23 @@
-import { useEffect, useRef, useState, ReactNode, useMemo } from 'react';
+import { useRef, useState, ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { variables } from '@trezor/components';
+import { spacingsPx } from '@trezor/theme';
 import { SuiteBanners } from 'src/components/suite/banners';
 import { Metadata } from 'src/components/suite';
 import { GuideRouter, GuideButton } from 'src/components/guide';
 import { HORIZONTAL_LAYOUT_PADDINGS, MAX_CONTENT_WIDTH } from 'src/constants/suite/layout';
 import { DiscoveryProgress } from 'src/components/wallet';
-import { onAnchorChange } from 'src/actions/suite/routerActions';
-import { useLayoutSize, useSelector, useDevice, useDispatch } from 'src/hooks/suite';
+import { useLayoutSize, useSelector, useDevice } from 'src/hooks/suite';
 import { LayoutContext, LayoutContextPayload } from 'src/support/suite/LayoutContext';
+import { useResetScrollOnUrl } from 'src/hooks/suite/useResetScrollOnUrl';
+import { useClearAnchorHighlightOnClick } from 'src/hooks/suite/usecClearAncorHighlightOnClick';
 import { ModalContextProvider } from 'src/support/suite/ModalContext';
 import { AccountsMenu } from 'src/components/wallet/WalletLayout/AccountsMenu/AccountsMenu';
 import { ModalSwitcher } from '../../modals/ModalSwitcher/ModalSwitcher';
 import { MobileNavigation } from './NavigationBar/MobileNavigation';
-import { CoinjoinStatusBar } from './NavigationBar/CoinjoinStatusBar';
 import { Sidebar } from './Sidebar/Sidebar';
-import { spacingsPx } from '@trezor/theme';
-import { useResetScrollOnUrl } from 'src/hooks/suite/useResetScrollOnUrl';
+import { CoinjoinBars } from './CoinjoinBars/CoinjoinBars';
 
 export const Wrapper = styled.div`
     display: flex;
@@ -81,66 +81,24 @@ export const ContentWrapper = styled.div`
     }
 `;
 
-type SuiteLayoutProps = {
+interface SuiteLayoutProps {
     children: ReactNode;
-};
+}
 
 export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
-    const anchor = useSelector(state => state.router.anchor);
     const initialRun = useSelector(state => state.suite.flags.initialRun);
-    const coinjoinAccounts = useSelector(state => state.wallet.coinjoin.accounts);
-
     const [{ title, TopMenu }, setLayoutPayload] = useState<LayoutContextPayload>({});
 
     const { isMobileLayout } = useLayoutSize();
-    const dispatch = useDispatch();
     const { device } = useDevice();
     const wrapperRef = useRef<HTMLDivElement>(null);
-
     const { scrollRef } = useResetScrollOnUrl();
 
-    // Remove anchor highlight on click.
-    useEffect(() => {
-        // to assure propagation of click, which removes anchor highlight, work reliably
-        // click listener has to be added on react container
-        const parent = wrapperRef.current?.parentElement;
-        const removeAnchor = () => anchor && dispatch(onAnchorChange());
-
-        if (parent && anchor) {
-            parent.addEventListener('click', removeAnchor);
-            return () => parent.removeEventListener('click', removeAnchor);
-        }
-    }, [anchor, dispatch]);
+    useClearAnchorHighlightOnClick(wrapperRef);
 
     // Setting screens are available even if the device is not connected in normal mode
     // but then we need to hide NavigationBar so user can't navigate to Dashboard and Accounts.
     const isNavigationBarVisible = device?.mode === 'normal' && !initialRun;
-
-    let sessionCount = 0;
-    coinjoinAccounts.forEach(({ session }) => {
-        if (session) {
-            sessionCount++;
-        }
-    });
-
-    const coinjoinStatusBars = useMemo(
-        () =>
-            coinjoinAccounts?.map(({ key, session }) => {
-                if (!session) {
-                    return;
-                }
-
-                return (
-                    <CoinjoinStatusBar
-                        accountKey={key}
-                        session={session}
-                        isSingle={sessionCount === 1}
-                        key={key}
-                    />
-                );
-            }),
-        [coinjoinAccounts, sessionCount],
-    );
 
     return (
         <Wrapper ref={wrapperRef}>
@@ -150,7 +108,7 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
                     <ModalSwitcher />
 
                     <SuiteBanners />
-                    {coinjoinStatusBars}
+                    <CoinjoinBars />
                     {isNavigationBarVisible && isMobileLayout && <MobileNavigation />}
 
                     <DiscoveryProgress />

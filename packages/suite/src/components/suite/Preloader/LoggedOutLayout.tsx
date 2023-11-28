@@ -1,9 +1,10 @@
-import { ReactNode, useState } from 'react';
+import { ReactNode, useRef, useState } from 'react';
 import { LayoutContext, LayoutContextPayload } from 'src/support/suite/LayoutContext';
 import { ModalContextProvider } from 'src/support/suite/ModalContext';
 import { useResetScrollOnUrl } from 'src/hooks/suite/useResetScrollOnUrl';
 import { GuideButton, GuideRouter } from 'src/components/guide';
 import { useLayoutSize } from 'src/hooks/suite';
+import { useClearAnchorHighlightOnClick } from 'src/hooks/suite/usecClearAncorHighlightOnClick';
 import { Metadata } from '../Metadata';
 import { ModalSwitcher } from '../modals/ModalSwitcher/ModalSwitcher';
 import {
@@ -24,9 +25,12 @@ export const LoggedOutLayout = ({ children }: LoggedOutLayout) => {
 
     const { scrollRef } = useResetScrollOnUrl();
     const { isMobileLayout } = useLayoutSize();
+    const wrapperRef = useRef<HTMLDivElement>(null);
+
+    useClearAnchorHighlightOnClick(wrapperRef);
 
     return (
-        <Wrapper>
+        <Wrapper ref={wrapperRef}>
             <PageWrapper>
                 <ModalContextProvider>
                     <Metadata title={title} />

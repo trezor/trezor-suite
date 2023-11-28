@@ -25,7 +25,7 @@ const getFullscreenApp = (route: AppState['router']['route']) => {
 };
 
 interface PreloaderProps {
-    children: JSX.Element;
+    children: React.ReactNode;
 }
 
 // Preloader is a top level wrapper used in _app.tsx.
@@ -49,7 +49,6 @@ export const Preloader = ({ children }: PreloaderProps) => {
     if (lifecycle.status === 'error') {
         throw new Error(lifecycle.error);
     }
-
     if (lifecycle.status === 'db-error') {
         return <DatabaseUpgradeModal variant={lifecycle.error} />;
     }
@@ -83,6 +82,7 @@ export const Preloader = ({ children }: PreloaderProps) => {
         return <ErrorPage />;
     }
 
+    // if a device is not connected or initialized
     if (isLoggedOut) {
         return <LoggedOutLayout>{children}</LoggedOutLayout>;
     }
