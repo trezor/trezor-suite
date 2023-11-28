@@ -17,7 +17,6 @@ const animationVariants = {
 };
 
 const Wrapper = styled.div<Pick<CollapsibleBoxProps, 'variant'>>`
-    margin-bottom: 20px;
     background: ${({ theme }) => theme.backgroundSurfaceElevation1};
     border-radius: ${borders.radii.sm};
     /* when theme changes from light to dark */
