@@ -1,3 +1,5 @@
+import { testMocks } from '@suite-common/test-utils';
+
 import { configureStore } from 'src/support/tests/configureStore';
 import protocolReducer, { State as ProtocolState } from 'src/reducers/suite/protocolReducer';
 import { PROTOCOL_SCHEME } from 'src/constants/suite/protocol';
@@ -5,7 +7,7 @@ import { PROTOCOL_SCHEME } from 'src/constants/suite/protocol';
 import * as protocolActions from '../protocolActions';
 import * as protocolConstants from '../constants/protocolConstants';
 
-jest.mock('@trezor/suite-analytics', () => global.JestMocks.getAnalytics());
+jest.doMock('@trezor/suite-analytics', () => testMocks.getAnalytics());
 
 export const getInitialState = (state?: ProtocolState) => ({
     protocol: {

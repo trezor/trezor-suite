@@ -1,9 +1,11 @@
+import { testMocks } from '@suite-common/test-utils';
 import { deviceActions } from '@suite-common/wallet-core';
+
 import { METADATA } from 'src/actions/suite/constants';
 
 import * as metadataActions from '../metadataActions';
 
-const { getSuiteDevice } = global.JestMocks;
+const { getSuiteDevice } = testMocks;
 
 type Fixture<T extends (...a: any) => any> = {
     description: string;

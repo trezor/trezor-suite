@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable global-require */
 
+import { testMocks } from '@suite-common/test-utils';
 import { prepareDeviceReducer, deviceActions } from '@suite-common/wallet-core';
 
 import { configureStore } from 'src/support/tests/configureStore';
@@ -9,7 +10,7 @@ import { extraDependencies } from 'src/support/extraDependencies';
 
 import fixtures from '../__fixtures__/deviceSettings';
 
-const { getSuiteDevice } = global.JestMocks;
+const { getSuiteDevice } = testMocks;
 
 const deviceReducer = prepareDeviceReducer(extraDependencies);
 
@@ -54,7 +55,7 @@ jest.mock('@trezor/connect', () => {
     };
 });
 
-jest.mock('@trezor/suite-analytics', () => global.JestMocks.getAnalytics());
+jest.doMock('@trezor/suite-analytics', () => testMocks.getAnalytics());
 
 const DEVICE = getSuiteDevice({ path: '1', connected: true });
 

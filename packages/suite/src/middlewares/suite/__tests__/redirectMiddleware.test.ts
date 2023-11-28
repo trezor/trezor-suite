@@ -2,6 +2,7 @@ import { Middleware } from 'redux';
 
 import { deviceActions, prepareDeviceReducer } from '@suite-common/wallet-core';
 import { DEVICE } from '@trezor/connect';
+import { testMocks } from '@suite-common/test-utils';
 
 import { configureStore } from 'src/support/tests/configureStore';
 import * as routerActions from 'src/actions/suite/routerActions';
@@ -13,7 +14,7 @@ import redirectMiddleware from 'src/middlewares/suite/redirectMiddleware';
 import { Action } from 'src/types/suite';
 import { extraDependencies } from 'src/support/extraDependencies';
 
-const { getSuiteDevice } = global.JestMocks;
+const { getSuiteDevice } = testMocks;
 
 jest.mock('src/actions/suite/storageActions', () => ({ __esModule: true }));
 

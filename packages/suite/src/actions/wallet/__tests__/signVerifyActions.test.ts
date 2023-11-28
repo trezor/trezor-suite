@@ -1,3 +1,4 @@
+import { testMocks } from '@suite-common/test-utils';
 import { showAddress, sign, verify } from 'src/actions/wallet/signVerifyActions';
 
 import { configureStore } from 'src/support/tests/configureStore';
@@ -47,7 +48,7 @@ jest.mock('@trezor/connect', () => {
     };
 });
 
-const { getSuiteDevice } = global.JestMocks;
+const { getSuiteDevice } = testMocks;
 
 describe('Sign/Verify actions', () => {
     let store: any;

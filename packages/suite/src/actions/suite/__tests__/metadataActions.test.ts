@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 
 import { prepareDeviceReducer } from '@suite-common/wallet-core';
+import { testMocks } from '@suite-common/test-utils';
 
 import { configureStore } from 'src/support/tests/configureStore';
 import metadataReducer from 'src/reducers/suite/metadataReducer';
@@ -51,7 +52,7 @@ jest.mock('@trezor/connect', () => {
     };
 });
 
-jest.mock('@trezor/suite-analytics', () => global.JestMocks.getAnalytics());
+jest.doMock('@trezor/suite-analytics', () => testMocks.getAnalytics());
 
 jest.mock('dropbox', () => {
     const { Dropbox, DropboxAuth } = jest.requireActual('dropbox');

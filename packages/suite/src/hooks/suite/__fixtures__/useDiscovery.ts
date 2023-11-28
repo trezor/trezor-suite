@@ -1,7 +1,8 @@
+import { testMocks } from '@suite-common/test-utils';
 import { deviceActions, discoveryActions } from '@suite-common/wallet-core';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 
-const { getSuiteDevice } = global.JestMocks;
+const { getSuiteDevice } = testMocks;
 const DEV = getSuiteDevice();
 
 export const actions = [

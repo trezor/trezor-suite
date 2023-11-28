@@ -1,3 +1,4 @@
+import { testMocks } from '@suite-common/test-utils';
 import { discoveryActions } from '@suite-common/wallet-core';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 
@@ -10,13 +11,13 @@ import {
 } from 'src/utils/suite/logsUtils';
 
 describe('logsUtils', () => {
-    const account = global.JestMocks.getWalletAccount({
+    const account = testMocks.getWalletAccount({
         deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
         descriptor:
             'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
         symbol: 'btc',
     });
-    const device = global.JestMocks.getSuiteDevice();
+    const device = testMocks.getSuiteDevice();
     const discovery = {
         deviceState: 'n3G5TV6d5D8nMjWTDUdjLmyFv5LtycJxT6@1945380BFC121301C978931C:1',
         status: DiscoveryStatus.COMPLETED,

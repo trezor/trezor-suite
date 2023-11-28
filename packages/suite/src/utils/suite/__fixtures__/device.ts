@@ -1,8 +1,9 @@
+import { testMocks } from '@suite-common/test-utils';
 import type { TrezorDevice } from 'src/types/suite';
 import { DeviceModelInternal, type FirmwareRelease } from '@trezor/connect';
 import * as URLS from '@trezor/urls';
 
-const { getSuiteDevice } = global.JestMocks;
+const { getSuiteDevice } = testMocks;
 
 const SUITE_DEVICE = getSuiteDevice();
 const connected = { connected: true, available: true };

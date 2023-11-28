@@ -7,8 +7,9 @@ import {
 } from '@suite-common/wallet-core';
 import { configureStore } from '@reduxjs/toolkit';
 import { settingsCommonConfig } from '@suite-common/suite-config';
+import { testMocks } from '@suite-common/test-utils';
 
-const { getWalletTransaction } = global.JestMocks;
+const { getWalletTransaction } = testMocks;
 
 const initStore = (transactionsState?: TransactionsState) =>
     configureStore({
@@ -24,7 +25,7 @@ const initStore = (transactionsState?: TransactionsState) =>
 describe('Transaction Actions', () => {
     it('Add transaction for first page (used on account create)', () => {
         const store = initStore();
-        const account = global.JestMocks.getWalletAccount();
+        const account = testMocks.getWalletAccount();
         store.dispatch(
             transactionsActions.addTransaction({
                 transactions: [getWalletTransaction()],
@@ -39,8 +40,8 @@ describe('Transaction Actions', () => {
     });
 
     it('Remove txs for a given account', () => {
-        const account1 = global.JestMocks.getWalletAccount({ descriptor: 'xpub1' });
-        const account2 = global.JestMocks.getWalletAccount({ descriptor: 'xpub2' });
+        const account1 = testMocks.getWalletAccount({ descriptor: 'xpub1' });
+        const account2 = testMocks.getWalletAccount({ descriptor: 'xpub2' });
         const store = initStore({
             transactions: {
                 [account1.key]: [getWalletTransaction()],

@@ -1,6 +1,7 @@
 /* eslint-disable global-require */
 
 import { connectInitThunk } from '@suite-common/connect-init';
+import { testMocks } from '@suite-common/test-utils';
 import { prepareDeviceReducer } from '@suite-common/wallet-core';
 
 import { configureStore } from 'src/support/tests/configureStore';
@@ -14,7 +15,7 @@ import fixtures from '../__fixtures__/receiveActions';
 import { AccountKey } from '@suite-common/wallet-types';
 import { NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
 
-const { getSuiteDevice } = global.JestMocks;
+const { getSuiteDevice } = testMocks;
 
 const deviceReducer = prepareDeviceReducer(extraDependencies);
 

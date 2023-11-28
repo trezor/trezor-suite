@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable global-require */
 
+import { testMocks } from '@suite-common/test-utils';
 import { prepareFirmwareReducer, State as DeviceState } from '@suite-common/wallet-core';
 import { ArrayElement } from '@trezor/type-utils';
 import { DeviceModelInternal } from '@trezor/connect';
@@ -63,7 +64,7 @@ jest.mock('@trezor/connect', () => {
     };
 });
 
-jest.mock('@trezor/suite-analytics', () => global.JestMocks.getAnalytics());
+jest.doMock('@trezor/suite-analytics', () => testMocks.getAnalytics());
 
 export const getInitialState = (override?: InitialState): any => {
     const suite = override ? override.suite : undefined;

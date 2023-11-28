@@ -19,6 +19,8 @@ import {
     generateTransactionMonthKey,
 } from '../transactionUtils';
 
+const { getWalletTransaction } = testMocks;
+
 describe('transaction utils', () => {
     it('parseTransactionDateKey', () => {
         expect(parseTransactionDateKey('2019-10-05')).toEqual(new Date(2019, 9, 5));
@@ -40,27 +42,23 @@ describe('transaction utils', () => {
 
     it('groupTransactionsByDate - groupBy day', () => {
         const groupedTxs = groupTransactionsByDate([
-            testMocks.getWalletTransaction({ blockTime: 1565792979, blockHeight: 5 }),
-            testMocks.getWalletTransaction({ blockTime: 1565792379, blockHeight: 4 }),
-            testMocks.getWalletTransaction({ blockHeight: 0 }),
-            testMocks.getWalletTransaction({ blockTime: 1570147200, blockHeight: 2 }),
-            testMocks.getWalletTransaction({ blockTime: 1570127200, blockHeight: 3 }),
-            testMocks.getWalletTransaction({ blockHeight: undefined }),
+            getWalletTransaction({ blockTime: 1565792979, blockHeight: 5 }),
+            getWalletTransaction({ blockTime: 1565792379, blockHeight: 4 }),
+            getWalletTransaction({ blockHeight: 0 }),
+            getWalletTransaction({ blockTime: 1570147200, blockHeight: 2 }),
+            getWalletTransaction({ blockTime: 1570127200, blockHeight: 3 }),
+            getWalletTransaction({ blockHeight: undefined }),
         ]);
         expect(groupedTxs).toEqual({
             pending: [
-                testMocks.getWalletTransaction({ blockHeight: 0 }),
-                testMocks.getWalletTransaction({ blockHeight: undefined }),
+                getWalletTransaction({ blockHeight: 0 }),
+                getWalletTransaction({ blockHeight: undefined }),
             ],
-            '2019-10-4': [
-                testMocks.getWalletTransaction({ blockTime: 1570147200, blockHeight: 2 }),
-            ],
-            '2019-10-3': [
-                testMocks.getWalletTransaction({ blockTime: 1570127200, blockHeight: 3 }),
-            ],
+            '2019-10-4': [getWalletTransaction({ blockTime: 1570147200, blockHeight: 2 })],
+            '2019-10-3': [getWalletTransaction({ blockTime: 1570127200, blockHeight: 3 })],
             '2019-8-14': [
-                testMocks.getWalletTransaction({ blockTime: 1565792979, blockHeight: 5 }),
-                testMocks.getWalletTransaction({ blockTime: 1565792379, blockHeight: 4 }),
+                getWalletTransaction({ blockTime: 1565792979, blockHeight: 5 }),
+                getWalletTransaction({ blockTime: 1565792379, blockHeight: 4 }),
             ],
         });
     });
@@ -68,12 +66,12 @@ describe('transaction utils', () => {
     it('groupTransactionsByDate - groupBy month', () => {
         const groupedTxs = groupTransactionsByDate(
             [
-                testMocks.getWalletTransaction({ blockTime: 1565792979, blockHeight: 5 }),
-                testMocks.getWalletTransaction({ blockTime: 1565792379, blockHeight: 4 }),
-                testMocks.getWalletTransaction({ blockHeight: 0 }),
-                testMocks.getWalletTransaction({ blockTime: 1570147200, blockHeight: 2 }),
-                testMocks.getWalletTransaction({ blockTime: 1570127200, blockHeight: 3 }),
-                testMocks.getWalletTransaction({ blockHeight: undefined }),
+                getWalletTransaction({ blockTime: 1565792979, blockHeight: 5 }),
+                getWalletTransaction({ blockTime: 1565792379, blockHeight: 4 }),
+                getWalletTransaction({ blockHeight: 0 }),
+                getWalletTransaction({ blockTime: 1570147200, blockHeight: 2 }),
+                getWalletTransaction({ blockTime: 1570127200, blockHeight: 3 }),
+                getWalletTransaction({ blockHeight: undefined }),
             ],
             'month',
         );
@@ -84,16 +82,16 @@ describe('transaction utils', () => {
         const secondMonth = generateTransactionMonthKey(new Date(secondBlocktime * 1000));
         expect(groupedTxs).toEqual({
             pending: [
-                testMocks.getWalletTransaction({ blockHeight: 0 }),
-                testMocks.getWalletTransaction({ blockHeight: undefined }),
+                getWalletTransaction({ blockHeight: 0 }),
+                getWalletTransaction({ blockHeight: undefined }),
             ],
             [firstMonth]: [
-                testMocks.getWalletTransaction({ blockTime: firstBlocktime, blockHeight: 3 }),
-                testMocks.getWalletTransaction({ blockTime: 1570147200, blockHeight: 2 }),
+                getWalletTransaction({ blockTime: firstBlocktime, blockHeight: 3 }),
+                getWalletTransaction({ blockTime: 1570147200, blockHeight: 2 }),
             ],
             [secondMonth]: [
-                testMocks.getWalletTransaction({ blockTime: secondBlocktime, blockHeight: 5 }),
-                testMocks.getWalletTransaction({ blockTime: 1565792379, blockHeight: 4 }),
+                getWalletTransaction({ blockTime: secondBlocktime, blockHeight: 5 }),
+                getWalletTransaction({ blockTime: 1565792379, blockHeight: 4 }),
             ],
         });
     });
@@ -113,7 +111,7 @@ describe('transaction utils', () => {
                 'joint',
                 'joint',
             ] as const
-        ).map((type, blockHeight) => testMocks.getWalletTransaction({ type, blockHeight }));
+        ).map((type, blockHeight) => getWalletTransaction({ type, blockHeight }));
         const groupedTxs = groupJointTransactions([j1, r2, j3, j4, s5, s6, j7, f8, j9, j10, j11]);
         expect(groupedTxs).toEqual([
             { type: 'single-tx', tx: j1 },

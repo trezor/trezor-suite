@@ -1,4 +1,8 @@
+import { testMocks } from '@suite-common/test-utils';
+
 import * as accountUtils from '../accountUtils';
+
+const { getWalletAccount } = testMocks;
 
 describe('account utils', () => {
     it('getSelectedAccount null', () => {
@@ -11,13 +15,13 @@ describe('account utils', () => {
             accountUtils.getSelectedAccount(
                 '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
                 [
-                    global.JestMocks.getWalletAccount({
+                    getWalletAccount({
                         descriptor:
                             'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
                         symbol: 'btc',
                         index: 0,
                     }),
-                    global.JestMocks.getWalletAccount({
+                    getWalletAccount({
                         symbol: 'btc',
                         descriptor: '123',
                         accountType: 'normal',
@@ -31,7 +35,7 @@ describe('account utils', () => {
                 },
             ),
         ).toEqual(
-            global.JestMocks.getWalletAccount({
+            getWalletAccount({
                 symbol: 'btc',
                 descriptor: '123',
                 accountType: 'normal',
@@ -43,13 +47,13 @@ describe('account utils', () => {
             accountUtils.getSelectedAccount(
                 '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
                 [
-                    global.JestMocks.getWalletAccount({
+                    getWalletAccount({
                         descriptor:
                             'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
                         symbol: 'btc',
                         index: 0,
                     }),
-                    global.JestMocks.getWalletAccount({
+                    getWalletAccount({
                         symbol: 'btc',
                         descriptor: '123',
                         accountType: 'normal',
@@ -64,13 +68,13 @@ describe('account utils', () => {
             accountUtils.getSelectedAccount(
                 undefined,
                 [
-                    global.JestMocks.getWalletAccount({
+                    getWalletAccount({
                         descriptor:
                             'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
                         symbol: 'btc',
                         index: 0,
                     }),
-                    global.JestMocks.getWalletAccount({
+                    getWalletAccount({
                         symbol: 'btc',
                         descriptor: '123',
                         accountType: 'normal',
@@ -89,13 +93,13 @@ describe('account utils', () => {
             accountUtils.getSelectedAccount(
                 '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
                 [
-                    global.JestMocks.getWalletAccount({
+                    getWalletAccount({
                         descriptor:
                             'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
                         symbol: 'btc',
                         index: 0,
                     }),
-                    global.JestMocks.getWalletAccount({
+                    getWalletAccount({
                         symbol: 'btc',
                         descriptor: '123',
                         accountType: 'normal',
