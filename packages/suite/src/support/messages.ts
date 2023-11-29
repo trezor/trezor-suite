@@ -126,6 +126,14 @@ export default defineMessages({
         defaultMessage: 'Add account',
         id: 'TR_ADD_ACCOUNT',
     },
+    TR_ADD_NETWORK_ACCOUNT: {
+        defaultMessage: 'Add {networkName} account',
+        id: 'TR_ADD_NETWORK_ACCOUNT',
+    },
+    TR_SELECT_TYPE: {
+        defaultMessage: 'Select type',
+        id: 'TR_SELECT_TYPE',
+    },
     TR_ADD_HIDDEN_WALLET: {
         defaultMessage: 'Add hidden wallet',
         id: 'TR_ADD_HIDDEN_WALLET',
@@ -4349,9 +4357,13 @@ export default defineMessages({
         id: 'TR_ACCOUNT_TYPE',
         defaultMessage: 'Account type',
     },
-    TR_SELECT_COIN: {
-        id: 'TR_SELECT_COIN',
-        defaultMessage: 'Select coin',
+    TR_ACTIVATED_COINS: {
+        id: 'TR_ACTIVATED_COINS',
+        defaultMessage: 'Activated coins (you can create a new account COPY)',
+    },
+    TR_INACTIVE_COINS: {
+        id: 'TR_INACTIVE_COINS',
+        defaultMessage: 'Not activated yet (fix COPY)',
     },
     TR_ACTIVATE_COINS: {
         id: 'TR_ACTIVATE_COINS',
@@ -4374,10 +4386,6 @@ export default defineMessages({
         id: 'FW_CAPABILITY_CONNECT_OUTDATED',
         defaultMessage: 'Application update required',
         description: 'Firmware is too NEW use this coin (trezor-connect is outdated)',
-    },
-    MODAL_ADD_ACCOUNT_TITLE: {
-        id: 'MODAL_ADD_ACCOUNT_TITLE',
-        defaultMessage: 'New account',
     },
     MODAL_ADD_ACCOUNT_NO_ACCOUNT: {
         id: 'MODAL_ADD_ACCOUNT_NO_ACCOUNT',

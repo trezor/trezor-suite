@@ -117,6 +117,7 @@ export const AddCoinjoinAccountButton = ({ network }: AddCoinjoinAccountProps) =
             disabledMessage={disabledMessage}
             handleClick={onCreateCoinjoinAccountClick}
             isLoading={isLoading}
+            networkName={network.name}
         />
     );
 };

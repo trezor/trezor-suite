@@ -1,10 +1,12 @@
 import styled, { useTheme } from 'styled-components';
+import { spacingsPx, typography } from '@trezor/theme';
+import { Icon } from '@trezor/components';
+import { getFiatRateKey, localizeNumber } from '@suite-common/wallet-utils';
+import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
 import { FiatValue } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { NoRatesTooltip } from './NoRatesTooltip';
-import { spacingsPx, typography } from '@trezor/theme';
-import { Icon } from '@trezor/components';
-import { localizeNumber } from '@suite-common/wallet-utils';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 
 const PercentageWrapper = styled.div<{ isRateGoingUp: boolean }>`
     ${typography.hint}
@@ -15,21 +17,31 @@ const PercentageWrapper = styled.div<{ isRateGoingUp: boolean }>`
         isRateGoingUp ? theme.textPrimaryDefault : theme.textAlertRed};
 `;
 
+const calculatePercentageDifference = (a: number, b: number) => ((a - b) / b) * 100;
+
 interface TickerProps {
-    symbol: string;
+    symbol: NetworkSymbol;
 }
 export const TrendTicker = ({ symbol }: TickerProps) => {
-    const rates = useSelector(state => state.wallet.fiat.coins.find(r => r.symbol === symbol));
-    const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
     const locale = useSelector(state => state.suite.settings.language);
+    const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
+    const lastWeekRate = useSelector(state =>
+        selectFiatRatesByFiatRateKey(state, getFiatRateKey(symbol, localCurrency), 'lastWeek'),
+    );
+    const currentRate = useSelector(state =>
+        selectFiatRatesByFiatRateKey(state, getFiatRateKey(symbol, localCurrency), 'current'),
+    );
 
-    const lastWeekRates = rates?.lastWeek?.tickers ?? [];
-    const currentRate = rates?.current?.rates?.[localCurrency];
-    const lastWeekRate = lastWeekRates[0]?.rates?.[localCurrency];
-    const percentageChange =
-        currentRate && lastWeekRate ? (currentRate - lastWeekRate) / (lastWeekRate / 100) : null;
-    const isRateGoingUp = percentageChange !== null && percentageChange > 0;
     const theme = useTheme();
+
+    const isSuccessfullyFetched =
+        lastWeekRate?.lastSuccessfulFetchTimestamp && currentRate?.lastSuccessfulFetchTimestamp;
+
+    // TODO: create selectIsRateGoingUp selector when wallet.settings is moved to suite-common
+    const isRateGoingUp = isSuccessfullyFetched ? currentRate.rate! >= lastWeekRate.rate! : false;
+    const percentageChange = isSuccessfullyFetched
+        ? calculatePercentageDifference(currentRate.rate!, lastWeekRate.rate!)
+        : 0;
 
     return (
         <FiatValue amount="1" symbol={symbol}>
