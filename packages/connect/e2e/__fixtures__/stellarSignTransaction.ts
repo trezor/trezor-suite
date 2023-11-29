@@ -149,7 +149,7 @@ const legacyResultsMap: Record<string, LegacyResult[]> = {
             rules: ['<2.4.3'],
             payload: {
                 publicKey: '2f22b9c62f08b774f3ebe6dd6e7db93c3ec2cbde0279561a3d9c5225b8c32292',
-                // signature is different in 2.4.2 from what we get from 2-master
+                // signature is different in 2.4.2 from what we get from 2-main
                 signature:
                     '864eb69e7ecb30b0a27112742716ccfedf38167a78ffdb1890bd4d473f2ab4850f3e6e5523d88dfad7b7b308369406d69abb9ecaf8dfb7a87ed4e8b57bfc2201',
             },

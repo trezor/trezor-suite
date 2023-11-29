@@ -34,7 +34,7 @@ show_usage() {
   echo "  -d       Disable docker. Useful when running own instance of trezor-user-env. default: enabled"
   echo "  -D PATH  Set path to docker executable. Can be replaced with \`podman\`. default: docker"
   echo "  -e       All methods except excluded, example: applySettings,signTransaction"
-  echo "  -f       Use specific firmware version, example: 2.1.4, 1.8.0 default: 2-master"
+  echo "  -f       Use specific firmware version, example: 2.1.4, 1.8.0 default: 2-main"
   echo "  -i       Included methods only, example: applySettings,signTransaction"
   echo "  -s       actual test script. default: 'yarn test:integration'"
   echo "  -u       Firmware url"

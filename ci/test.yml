@@ -127,7 +127,7 @@ suite web canary fws:
     refs:
       - schedules
   variables:
-    FIRMWARE: 2-master
+    FIRMWARE: 2-main
 
 suite web canary fws manual:
   extends: .suite web base
@@ -137,7 +137,7 @@ suite web canary fws manual:
       - schedules
   when: manual
   variables:
-    FIRMWARE: 2-master
+    FIRMWARE: 2-main
 
 # TODO scheduled jobs against beta chrome channel
 # TODO scheduled jobs against suite.trezor.io
@@ -441,7 +441,7 @@ connect legacy fws manual:
   extends: .connect matrix
   stage: canary testing
   variables:
-    TESTS_FIRMWARE: "2-master"
+    TESTS_FIRMWARE: "2-main"
 
 connect canary fws:
   extends: .connect canary fws base

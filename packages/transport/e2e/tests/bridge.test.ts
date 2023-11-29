@@ -18,7 +18,7 @@ const emulatorSetupOpts = {
     needs_backup: true,
 };
 
-const emulatorStartOpts = { version: '2-master', wipe: true };
+const emulatorStartOpts = { version: '2-main', wipe: true };
 
 describe('bridge', () => {
     beforeAll(async () => {
