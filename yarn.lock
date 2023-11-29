@@ -8696,6 +8696,7 @@ __metadata:
     html-webpack-plugin: "npm:^5.5.3"
     jest: "npm:29.5.0"
     markdown-it: "npm:^13.0.2"
+    markdown-it-imsize: "npm:^2.0.1"
     markdown-it-link-attributes: "npm:^4.0.1"
     markdown-it-replace-link: "npm:^1.2.0"
     react: "npm:18.2.0"
@@ -24944,6 +24945,13 @@ __metadata:
     "@types/markdown-it": "*"
     markdown-it: "*"
   checksum: 1b061e9c8fb093dab6040725f9f3cedae7da1160a14ee8f29d144534be7ee5c788f02a4de4019f55eb8514cae5f12d350baaa7d08732c26a62abc60e5e66c7f7
+  languageName: node
+  linkType: hard
+
+"markdown-it-imsize@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "markdown-it-imsize@npm:2.0.1"
+  checksum: 620fc8fd50488b9352329489c8d8e5e6759d2af9e3b23a08f98647378b6c9dae3cab6299c8fd45ccfef20581127976ae59dae98e71bab73fbb90f1502b1c2e90
   languageName: node
   linkType: hard
 
