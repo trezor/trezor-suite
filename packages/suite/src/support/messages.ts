@@ -3759,14 +3759,17 @@ export default defineMessages({
     TR_ACCOUNT_TYPE_SOLANA_BIP44_CHANGE_NAME: {
         id: 'TR_ACCOUNT_TYPE_SOLANA_BIP44_CHANGE_NAME',
         defaultMessage: 'Bip44Change',
+        dynamic: true,
     },
     TR_ACCOUNT_TYPE_SOLANA_BIP44_CHANGE_TECH: {
         id: 'TR_ACCOUNT_TYPE_SOLANA_BIP44_CHANGE_TECH',
         defaultMessage: 'BIP44, Base58',
+        dynamic: true,
     },
     TR_ACCOUNT_TYPE_SOLANA_BIP44_CHANGE_DESC: {
         id: 'TR_ACCOUNT_TYPE_SOLANA_BIP44_CHANGE_DESC',
         defaultMessage: 'Bip44Change account',
+        dynamic: true,
     },
     TR_ACCOUNT_TYPE_SLIP25_NAME: {
         id: 'TR_ACCOUNT_TYPE_SLIP25_NAME',
