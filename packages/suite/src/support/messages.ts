@@ -127,7 +127,7 @@ export default defineMessages({
         id: 'TR_ADD_ACCOUNT',
     },
     TR_ADD_NETWORK_ACCOUNT: {
-        defaultMessage: 'Add {networkName} account',
+        defaultMessage: 'Add {network} account',
         id: 'TR_ADD_NETWORK_ACCOUNT',
     },
     TR_SELECT_TYPE: {
