@@ -13,13 +13,6 @@ interface ComponentProps {
     isDisabled?: boolean;
 }
 
-const Wrapper = styled.div`
-    display: flex;
-    flex: 1;
-    justify-content: center;
-    height: 100%;
-`;
-
 const MobileWrapper = styled.div`
     display: flex;
     flex-direction: column;
@@ -34,15 +27,6 @@ const StyledHoverAnimation = styled(HoverAnimation)`
             margin-left: 12px;
         }
     }
-`;
-
-const MenuItem = styled.div<ComponentProps>`
-    display: flex;
-    align-items: center;
-    height: 100%;
-    padding: 0 12px;
-    font-size: 16px;
-    cursor: ${({ isDisabled, isActive }) => (!isDisabled && !isActive ? 'pointer' : 'default')};
 `;
 
 const MobileMenuItem = styled.div<ComponentProps>`
@@ -100,29 +84,25 @@ const NewBadge = styled.span`
     }
 `;
 
-interface MainNavigationProps {
-    closeMainNavigation?: () => void;
-    isMobileLayout?: boolean;
+interface MobileNavigationProps {
+    closeMobileNavigation?: () => void;
 }
 
-export const MainNavigation = ({ isMobileLayout, closeMainNavigation }: MainNavigationProps) => {
+export const MobileNavigation = ({ closeMobileNavigation }: MobileNavigationProps) => {
     const activeApp = useSelector(state => state.router.app);
     const dispatch = useDispatch();
 
     const { setCoinFilter, setSearchString } = useAccountSearch();
 
-    const WrapperComponent = isMobileLayout ? MobileWrapper : Wrapper;
-    const MenuItemComponent = isMobileLayout ? MobileMenuItem : MenuItem;
-
     return (
-        <WrapperComponent>
+        <MobileWrapper>
             {MAIN_MENU_ITEMS.map(item => {
                 const { route, translationId, isDisabled } = item;
                 const routeObj = findRouteByName(route);
                 const isActive = routeObj ? routeObj.app === activeApp : false;
                 return (
                     <StyledHoverAnimation isHoverable={!isActive} key={route}>
-                        <MenuItemComponent
+                        <MobileMenuItem
                             data-test={`@suite/menu/${route}`}
                             onClick={() => {
                                 if (!isDisabled) {
@@ -131,7 +111,7 @@ export const MainNavigation = ({ isMobileLayout, closeMainNavigation }: MainNavi
                                         setSearchString(undefined);
                                     }
                                     dispatch(goto(route));
-                                    closeMainNavigation?.();
+                                    closeMobileNavigation?.();
                                 }
                             }}
                             isActive={isActive}
@@ -148,10 +128,10 @@ export const MainNavigation = ({ isMobileLayout, closeMainNavigation }: MainNavi
                                     </NewBadge>
                                 )}
                             </ItemTitleWrapper>
-                        </MenuItemComponent>
+                        </MobileMenuItem>
                     </StyledHoverAnimation>
                 );
             })}
-        </WrapperComponent>
+        </MobileWrapper>
     );
 };

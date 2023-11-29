@@ -4,8 +4,8 @@ import styled, { useTheme } from 'styled-components';
 import { zIndices } from '@trezor/theme';
 import { Icon, variables } from '@trezor/components';
 import { DeviceSelector } from '../DeviceSelector/DeviceSelector';
-import { MainNavigation } from './MainNavigation';
-import { NavigationActions } from './NavigationActions/NavigationActions';
+import { MobileNavigation } from './MobileNavigation';
+import { MobileMenuActions } from './MobileMenuActions';
 
 const Wrapper = styled.div`
     display: flex;
@@ -45,12 +45,12 @@ const ExpandedMobileNavigation = styled.div`
     height: 100%;
 `;
 
-export const MobileNavigation = () => {
+export const MobileMenu = () => {
     const [opened, setOpened] = useState(false);
 
     const theme = useTheme();
 
-    const closeMainNavigation = () => {
+    const closeMobileNavigation = () => {
         setOpened(false);
     };
 
@@ -71,11 +71,8 @@ export const MobileNavigation = () => {
             {opened && (
                 <MobileNavigationWrapper>
                     <ExpandedMobileNavigation>
-                        <MainNavigation isMobileLayout closeMainNavigation={closeMainNavigation} />
-                        <NavigationActions
-                            isMobileLayout
-                            closeMainNavigation={closeMainNavigation}
-                        />
+                        <MobileNavigation closeMobileNavigation={closeMobileNavigation} />
+                        <MobileMenuActions closeMobileNavigation={closeMobileNavigation} />
                     </ExpandedMobileNavigation>
                 </MobileNavigationWrapper>
             )}

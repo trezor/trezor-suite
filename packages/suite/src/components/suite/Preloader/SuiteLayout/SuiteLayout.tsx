@@ -8,14 +8,14 @@ import { Metadata } from 'src/components/suite';
 import { GuideRouter, GuideButton } from 'src/components/guide';
 import { HORIZONTAL_LAYOUT_PADDINGS, MAX_CONTENT_WIDTH } from 'src/constants/suite/layout';
 import { DiscoveryProgress } from 'src/components/wallet';
-import { useLayoutSize, useSelector, useDevice } from 'src/hooks/suite';
+import { useLayoutSize } from 'src/hooks/suite';
 import { LayoutContext, LayoutContextPayload } from 'src/support/suite/LayoutContext';
 import { useResetScrollOnUrl } from 'src/hooks/suite/useResetScrollOnUrl';
 import { useClearAnchorHighlightOnClick } from 'src/hooks/suite/usecClearAncorHighlightOnClick';
 import { ModalContextProvider } from 'src/support/suite/ModalContext';
 import { AccountsMenu } from 'src/components/wallet/WalletLayout/AccountsMenu/AccountsMenu';
 import { ModalSwitcher } from '../../modals/ModalSwitcher/ModalSwitcher';
-import { MobileNavigation } from './NavigationBar/MobileNavigation';
+import { MobileMenu } from './MobileMenu/MobileMenu';
 import { Sidebar } from './Sidebar/Sidebar';
 import { CoinjoinBars } from './CoinjoinBars/CoinjoinBars';
 
@@ -86,19 +86,13 @@ interface SuiteLayoutProps {
 }
 
 export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
-    const initialRun = useSelector(state => state.suite.flags.initialRun);
     const [{ title, TopMenu }, setLayoutPayload] = useState<LayoutContextPayload>({});
 
     const { isMobileLayout } = useLayoutSize();
-    const { device } = useDevice();
     const wrapperRef = useRef<HTMLDivElement>(null);
     const { scrollRef } = useResetScrollOnUrl();
 
     useClearAnchorHighlightOnClick(wrapperRef);
-
-    // Setting screens are available even if the device is not connected in normal mode
-    // but then we need to hide NavigationBar so user can't navigate to Dashboard and Accounts.
-    const isNavigationBarVisible = device?.mode === 'normal' && !initialRun;
 
     return (
         <Wrapper ref={wrapperRef}>
@@ -109,7 +103,7 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
 
                     <SuiteBanners />
                     <CoinjoinBars />
-                    {isNavigationBarVisible && isMobileLayout && <MobileNavigation />}
+                    {isMobileLayout && <MobileMenu />}
 
                     <DiscoveryProgress />
 
