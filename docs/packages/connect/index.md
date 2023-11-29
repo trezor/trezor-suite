@@ -1,60 +1,48 @@
-# Trezor Connect
+# Trezor javascript SDK
 
-## Installation
+There are couple of options how to integrate Trezor devices with your project. This page walks you through
+installation and lets you explore SDK API.
 
-### Node.js
+## Chose your SDK
 
-Install library as npm module:
+Depending on your environment you need to chose the right package.
+
+| package                                                                                                           | environment                       |
+| ----------------------------------------------------------------------------------------------------------------- | --------------------------------- |
+| [@trezor/connect](https://github.com/trezor/trezor-suite/tree/develop/packages/connect)                           | node.js                           |
+| [@trezor/connect-web](https://github.com/trezor/trezor-suite/tree/develop/packages/connect-web)                   | web based (DOM required)          |
+| [@trezor/connect-webextension](https://github.com/trezor/trezor-suite/tree/develop/packages/connect-webextension) | webextension using service worker |
+
+<details>
+    <summary>More examples</summary>
+
+If you are still unsure which package is the right one you may refer to the following table with a collection of examples.
+
+| env example                                                                                                                                         | package                      |
+| --------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
+| [node](https://github.com/trezor/trezor-suite/tree/develop/packages/connect-examples/node)                                                          | @trezor/connect              |
+| [web app](https://github.com/trezor/trezor-suite/tree/develop/packages/connect-examples/browser-inline-script)                                      | @trezor/connect-web          |
+| [web extension mv2 (foreground or background)](https://github.com/trezor/trezor-suite/tree/develop/packages/connect-examples/webextension-mv2)      | @trezor/connect-web          |
+| [web extension mv3 (foreground)](https://github.com/trezor/trezor-suite/tree/develop/packages/connect-examples/webextension-mv3)                    | @trezor/connect-web          |
+| [web extension mv3 (background)](https://github.com/trezor/trezor-suite/tree/develop/packages/connect-examples/webextension-mv3-sw)                 | @trezor/connect-webextension |
+| [electron in main layer](https://github.com/trezor/trezor-suite/tree/develop/packages/connect-examples/electron-main-process)                       | @trezor/connect              |
+| [electron in renderer layer with popup](https://github.com/trezor/trezor-suite/tree/develop/packages/connect-examples/electron-renderer-with-popup) | @trezor/connect-web          |
+| [Trezor Suite (desktop) electron app](https://github.com/trezor/trezor-suite/blob/develop/packages/suite-desktop/README.md)                         | @trezor/connect              |
+
+</details>
+
+## Quick start
+
+Import from your selected package
 
 ```javascript
-npm install @trezor/connect
-```
-
-or
-
-```javascript
-yarn add @trezor/connect
-```
-
-ES6
-
-```javascript
+// in node
 import TrezorConnect from '@trezor/connect';
-```
-
-### Web based environments
-
-Install library as npm module:
-
-```javascript
-npm install @trezor/connect-web
-```
-
-or
-
-```javascript
-yarn add @trezor/connect-web
-```
-
-Or include library as inline script:
-
-```javascript
-<script src="https://connect.trezor.io/9/trezor-connect.js"></script>
-```
-
-ES6
-
-```javascript
+// or in web based
 import TrezorConnect from '@trezor/connect-web';
+// or in webextension service worker
+import TrezorConnect from '@trezor/connect-webextension';
 ```
-
-Inline
-
-```javascript
-var TrezorConnect = window.TrezorConnect;
-```
-
-## How to use
 
 Initialize in project
 
@@ -89,27 +77,27 @@ If you need more customization, refer to [init method documentation](./methods/i
 
 -   [Events](events.md)
 
-## How it works in browser based environments
+## How it works under the hood
 
-After implementing Trezor Connect, a small file containing a declaration
-of methods is downloaded. Once the Trezor Connect [method](methods.md) is used,
-the connection to the trezor.io external webpage is established and the
-Trezor Connect library is going to be downloaded and injected as an
-invisible iframe into your application. Trezor Connect is open source,
-therefore it is provable that it is not saving any
-information about the device or account. Trezor Bridge has whitelisted
-domains set to "\*.trezor.io" and "localhost" and it is ignoring
-messages coming from other domains. This ensures that Connect is not
-providing any data without the user's consent. Trezor Connect works as a
-tunnel for messages sent from your application to Trezor device via
-transport layer (Trezor Bridge/WebUSB).
+There is a major difference between node.js based package (`@trezor/connect`) and web based packages (`@trezor/connect-web` and `@trezor/connect-webextension`).
+In the former the entire SDK logic is a module of the 3rd party application whereas in the latter, there is strict isolation between 3rd party application code and SDK core logic.
 
-![](connect_flowchart.png)
+### Node.js
 
-**Note** With the newest Trezor Connect API, the iframe element ensures that the communication after authentification with PIN and/or Passphrase persists until
+In node.js core SDK is loaded as a javascript module.
 
--   application is closed or reloaded
--   device is unplugged or used in another application
--   ten minutes of being idle
+<img src="./schema-connect.jpg" alt="schema node.js" style="height: 400px;"/>
 
-The advantages are that the session carries on, it is not necessary to re-enter your PIN and/or Passphrase and, furthermore, it is sending events to application when the device is connected, disconnected or used in another window (application). This feature makes it easier to use the Trezor device with applications.
+### Web
+
+`@trezor/connect-web` imports only a thin layer with API description into your 3rd party application. When initiated, it injects iframe containing core SDK logic from trezor.io
+into your app. User input, if needed, is served by popup.html page opened on trezor.io on behalf of your application. This way users input such as pin or passphrase is isolated from you and persistent connection between your app and core SDK is kept so events such as device connected/disconnected or blockchain subscriptions are available.
+
+<img src="./schema-connect-web.jpg" alt="schema web" style="height: 400px;"/>
+
+### Webextension
+
+In case of `@trezor/connect-webextension`, TrezorConnect object is created in a service worker. In this env we can't inject iframe so in order to uphold the same security model as with
+`@trezor/connect-wb` we open popup.html and load core SDK logic into it. This however does not build persistent connection between SDK and 3rd party application meaning that events cannot be used.
+
+<img src="./schema-connect-webextension.jpg" alt="schema webextension" style="height: 400px;"/>
