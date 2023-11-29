@@ -1,21 +1,24 @@
 import { memo, ComponentProps } from 'react';
 import styled, { css, useTheme } from 'styled-components';
 import { Network } from 'src/types/wallet';
-import { CoinLogo, Icon, variables, motionAnimation } from '@trezor/components';
+import { Icon, variables, motionAnimation } from '@trezor/components';
 import {
     AmountUnitSwitchWrapper,
     CoinBalance,
     FiatValue,
+    PriceTicker,
     SkeletonCircle,
     SkeletonRectangle,
-    Ticker,
     Translation,
+    TrendTicker,
 } from 'src/components/suite';
 import { CoinmarketBuyButton } from 'src/views/dashboard/components/CoinmarketBuyButton';
 import { isTestnet } from '@suite-common/wallet-utils';
 import { goto } from 'src/actions/suite/routerActions';
 import { useAccountSearch, useDispatch, useLoadingSkeleton } from 'src/hooks/suite';
 import { motion } from 'framer-motion';
+import { AssetInfo } from './AssetInfo';
+import { spacingsPx, typography } from '@trezor/theme';
 
 const LogoWrapper = styled.div`
     padding-right: 12px;
@@ -27,16 +30,6 @@ const Coin = styled.div`
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
-`;
-
-const Symbol = styled.div`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    display: flex;
-    align-items: center;
-    padding-top: 2px;
-    font-size: ${variables.FONT_SIZE.TINY};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    text-indent: 6px;
 `;
 
 const StyledCol = styled(motion.div)<{ $isLastRow?: boolean }>`
@@ -68,7 +61,6 @@ const CoinNameWrapper = styled(Col)`
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     margin-left: 25px;
     text-overflow: ellipsis;
-    cursor: pointer;
 
     ${variables.SCREEN_QUERY.MOBILE} {
         grid-column: 1 / 4;
@@ -81,6 +73,10 @@ const CoinNameWrapper = styled(Col)`
             text-decoration: underline;
         }
     }
+`;
+
+const CoinBalanceContainer = styled.div`
+    ${typography.hint}
 `;
 
 const FailedCol = styled(Col)`
@@ -97,6 +93,10 @@ const FailedCol = styled(Col)`
 const CryptoBalanceWrapper = styled(Col)`
     flex: 1;
     white-space: nowrap;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: ${spacingsPx.xxxs};
 
     ${variables.SCREEN_QUERY.MOBILE} {
         grid-column: 1 / 3;
@@ -104,9 +104,8 @@ const CryptoBalanceWrapper = styled(Col)`
     }
 `;
 
-const FiatBalanceWrapper = styled.span`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    margin-left: 0.5ch;
+const FiatBalanceWrapper = styled.div`
+    color: ${({ theme }) => theme.textSubdued};
 `;
 
 const ExchangeRateWrapper = styled(Col)`
@@ -128,7 +127,7 @@ interface AssetTableProps {
 }
 
 export const AssetRow = memo(({ network, failed, cryptoValue, isLastRow }: AssetTableProps) => {
-    const { symbol, name } = network;
+    const { symbol } = network;
     const dispatch = useDispatch();
     const theme = useTheme();
     const { setCoinFilter, setSearchString } = useAccountSearch();
@@ -150,14 +149,8 @@ export const AssetRow = memo(({ network, failed, cryptoValue, isLastRow }: Asset
 
     return (
         <>
-            <CoinNameWrapper isLastRow={isLastRow} onClick={handleLogoClick}>
-                <LogoWrapper>
-                    <CoinLogo symbol={symbol} size={24} />
-                </LogoWrapper>
-
-                <Coin>{name}</Coin>
-
-                <Symbol>{symbol.toUpperCase()}</Symbol>
+            <CoinNameWrapper isLastRow={isLastRow}>
+                <AssetInfo network={network} onClick={handleLogoClick} />
             </CoinNameWrapper>
 
             {!failed ? (
@@ -165,17 +158,15 @@ export const AssetRow = memo(({ network, failed, cryptoValue, isLastRow }: Asset
                     isLastRow={isLastRow}
                     data-test={`@asset-card/${symbol}/balance`}
                 >
-                    <AmountUnitSwitchWrapper symbol={symbol}>
-                        <CoinBalance value={cryptoValue} symbol={symbol} />
+                    <FiatBalanceWrapper>
+                        <FiatValue amount={cryptoValue} symbol={symbol} />
+                    </FiatBalanceWrapper>
 
-                        <FiatBalanceWrapper>
-                            <FiatValue
-                                amount={cryptoValue}
-                                symbol={symbol}
-                                showApproximationIndicator
-                            />
-                        </FiatBalanceWrapper>
-                    </AmountUnitSwitchWrapper>
+                    <CoinBalanceContainer>
+                        <AmountUnitSwitchWrapper symbol={symbol}>
+                            <CoinBalance value={cryptoValue} symbol={symbol} />
+                        </AmountUnitSwitchWrapper>
+                    </CoinBalanceContainer>
                 </CryptoBalanceWrapper>
             ) : (
                 <FailedCol isLastRow={isLastRow}>
@@ -190,7 +181,10 @@ export const AssetRow = memo(({ network, failed, cryptoValue, isLastRow }: Asset
                 </FailedCol>
             )}
             <ExchangeRateWrapper isLastRow={isLastRow}>
-                {!isTestnet(symbol) && <Ticker symbol={symbol} />}
+                {!isTestnet(symbol) && <PriceTicker symbol={symbol} />}
+            </ExchangeRateWrapper>
+            <ExchangeRateWrapper isLastRow={isLastRow}>
+                {!isTestnet(symbol) && <TrendTicker symbol={symbol} />}
             </ExchangeRateWrapper>
             <BuyButtonWrapper isLastRow={isLastRow}>
                 {!isTestnet(symbol) && (
