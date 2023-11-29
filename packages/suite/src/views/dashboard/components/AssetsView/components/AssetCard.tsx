@@ -7,7 +7,6 @@ import {
     CoinBalance,
     FiatValue,
     PriceTicker,
-    SkeletonCircle,
     SkeletonRectangle,
     Translation,
     TrendTicker,
@@ -15,11 +14,12 @@ import {
 import { isTestnet } from '@suite-common/wallet-utils';
 import { CoinmarketBuyButton } from 'src/views/dashboard/components/CoinmarketBuyButton';
 import { borders, boxShadows, spacingsPx, typography } from '@trezor/theme';
-import { selectAccountsByNetworkSymbol } from '@suite-common/wallet-core';
-import { H2, CoinLogo, Icon, variables } from '@trezor/components';
-import { useDispatch, useSelector } from 'react-redux';
+
+import { H2, Icon, variables } from '@trezor/components';
+import { useDispatch } from 'react-redux';
 import { useAccountSearch, useLoadingSkeleton } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
+import { AssetInfo, AssetInfoSkeleton } from './AssetInfo';
 
 type AssetCardProps = {
     network: Network;
@@ -44,10 +44,6 @@ const BuyMarginContainer = styled.div`
 
 const MarginContainer = styled.div`
     padding: ${spacingsPx.lg} ${spacingsPx.sm} ${spacingsPx.sm} ${spacingsPx.xl};
-    flex: 1;
-`;
-
-const WalletContent = styled.div`
     flex: 1;
 `;
 
@@ -84,41 +80,8 @@ const CoinAmount = styled.div`
     font-variant-numeric: tabular-nums;
     ${typography.hint};
 `;
-const ArrowIcon = styled(Icon)`
-    visibility: hidden;
-    margin-top: ${spacingsPx.xxxs};
-`;
-
-const WalletContainer = styled.div`
+const AssetContainer = styled.div`
     margin-bottom: ${spacingsPx.xxxl};
-    display: flex;
-    &:hover {
-        cursor: pointer;
-        ${ArrowIcon} {
-            visibility: visible;
-        }
-    }
-`;
-
-const CoinName = styled.div`
-    ${typography.body};
-`;
-const Wallets = styled.div`
-    display: flex;
-    align-items: center;
-    gap: ${spacingsPx.xxs};
-    margin-top: ${spacingsPx.xxs};
-`;
-const WalletNumber = styled.div`
-    color: ${({ theme }) => theme.textSubdued};
-    font-variant-numeric: tabular-nums;
-    ${typography.hint};
-`;
-
-const LogoWrapper = styled.div`
-    padding-right: ${spacingsPx.sm};
-
-    align-items: center;
 `;
 
 const BuyContainerLabel = styled.div`
@@ -138,7 +101,7 @@ const FailedContainer = styled.div`
 `;
 
 export const AssetCard = ({ network, failed, cryptoValue }: AssetCardProps) => {
-    const { symbol, name } = network;
+    const { symbol } = network;
     const dispatch = useDispatch();
     const theme = useTheme();
     const { setCoinFilter, setSearchString } = useAccountSearch();
@@ -158,31 +121,13 @@ export const AssetCard = ({ network, failed, cryptoValue }: AssetCardProps) => {
         setSearchString(undefined);
     };
 
-    const selectedAccounts = useSelector((state: any) =>
-        selectAccountsByNetworkSymbol(state, symbol),
-    );
-
     return (
         <>
             <Card>
                 <MarginContainer>
-                    <WalletContainer onClick={handleLogoClick}>
-                        <LogoWrapper>
-                            <CoinLogo symbol={symbol} size={24} />
-                        </LogoWrapper>
-                        <WalletContent>
-                            <CoinName>{name}</CoinName>
-                            <Wallets>
-                                <Icon icon="WALLET" />
-                                <WalletNumber>{selectedAccounts.length}</WalletNumber>
-                            </Wallets>
-                        </WalletContent>
-                        <ArrowIcon
-                            size={16}
-                            icon="ARROW_RIGHT_LONG"
-                            color={theme.iconPrimaryDefault}
-                        />
-                    </WalletContainer>
+                    <AssetContainer>
+                        <AssetInfo network={network} onClick={handleLogoClick} />
+                    </AssetContainer>
                     {!failed ? (
                         <>
                             <FiatAmount>
@@ -240,21 +185,7 @@ export const AssetCardSkeleton = (props: { animate?: boolean }) => {
         <Card>
             <MarginContainer>
                 <WalletContainer>
-                    <LogoWrapper>
-                        <SkeletonCircle size={44} />
-                    </LogoWrapper>
-                    <div>
-                        <CoinName>
-                            {' '}
-                            <SkeletonRectangle animate={animate} width={100} />
-                        </CoinName>
-                        <Wallets>
-                            <WalletNumber>
-                                {' '}
-                                <SkeletonRectangle animate={animate} width={60} />
-                            </WalletNumber>
-                        </Wallets>
-                    </div>
+                    <AssetInfoSkeleton animate={animate} />
                 </WalletContainer>
                 <FiatAmount>
                     <IntegerValue>
