@@ -1,68 +1,42 @@
-import styled, { css } from 'styled-components';
-import { Icon, Paragraph, variables } from '@trezor/components';
-import { FADE_IN } from '@trezor/components/src/config/animations';
-import { CoinList, Translation } from 'src/components/suite';
+import styled from 'styled-components';
+
+import { NetworkSymbol } from '@suite-common/wallet-config';
+import { Paragraph } from '@trezor/components';
+import { spacingsPx } from '@trezor/theme';
+
+import { CoinList } from 'src/components/suite';
 import type { Network } from 'src/types/wallet';
 
-const Header = styled.div<{ disabled: boolean }>`
-    display: flex;
-    justify-content: flex-start;
-    align-self: flex-start;
-    align-items: center;
-    margin-bottom: 18px;
-    text-align: left;
-
-    ${({ disabled }) =>
-        disabled
-            ? ''
-            : css`
-                  cursor: pointer;
-              `}
-`;
-
 const Title = styled(Paragraph)`
-    margin-right: 9px;
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-`;
-
-const IconAnimated = styled(Icon)`
-    @media (prefers-reduced-motion: no-preference) {
-        animation: ${FADE_IN} ease 0.3s;
-    }
+    color: ${({ theme }) => theme.textSubdued};
+    margin-bottom: ${spacingsPx.sm};
 `;
 
 type SelectNetworkProps = {
+    heading: React.ReactNode;
     networks: Network[];
-    networkCanChange: boolean;
-    selectedNetworks: Network['symbol'][];
-    handleNetworkSelection: (symbol?: Network['symbol']) => void;
+    selectedNetworks: NetworkSymbol[];
+    handleNetworkSelection: (symbol?: NetworkSymbol) => void;
 };
 
 export const SelectNetwork = ({
+    heading,
     networks,
-    networkCanChange,
     selectedNetworks,
     handleNetworkSelection,
 }: SelectNetworkProps) => {
-    const resetNetworkSelection = () => {
-        if (networkCanChange) {
-            handleNetworkSelection();
-        }
-    };
+    if (!networks.length) {
+        return null;
+    }
 
     return (
-        <>
-            <Header onClick={resetNetworkSelection} disabled={!networkCanChange}>
-                <Title>
-                    <Translation id="TR_SELECT_COIN" />
-                </Title>
-                {networkCanChange && <IconAnimated icon="PENCIL" size={12} useCursorPointer />}
-            </Header>
+        <div>
+            <Title type="hint">{heading}</Title>
             <CoinList
                 onToggle={handleNetworkSelection}
                 networks={networks}
                 selectedNetworks={selectedNetworks}
             />
-        </>
+        </div>
     );
 };
