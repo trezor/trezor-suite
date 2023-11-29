@@ -30,6 +30,7 @@ export const TrendTicker = ({ symbol }: TickerProps) => {
         currentRate && lastWeekRate ? (currentRate - lastWeekRate) / (lastWeekRate / 100) : null;
     const isRateGoingUp = percentageChange !== null && percentageChange > 0;
     const theme = useTheme();
+
     return (
         <FiatValue amount="1" symbol={symbol}>
             {({ rate, timestamp }) =>

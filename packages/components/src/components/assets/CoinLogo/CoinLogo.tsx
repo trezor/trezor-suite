@@ -1,20 +1,14 @@
 import { ImgHTMLAttributes } from 'react';
 import { ReactSVG } from 'react-svg';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 import { COINS } from './coins';
 import { coinsColors } from '@trezor/theme';
 
 export type CoinType = keyof typeof COINS;
 
-const LogoOuterBorder = styled.div<{ size: number; symbol?: CoinType }>`
+const LogoOuterBorder = styled.div<{ size: number; symbol?: string }>`
     background: ${({ symbol, theme }) =>
         symbol && coinsColors[symbol] ? coinsColors[symbol] : theme.iconSubdued};
-    /* background: conic-gradient(
-        ${({ symbol, theme }) =>
-        symbol && coinsColors[symbol] ? coinsColors[symbol] : theme.iconSubdued}
-            288deg,
-        ${({ theme }) => theme.backgroundSurfaceElevation2} 0deg
-    ); */
     transition: background 5s;
     border-radius: 50%;
     width: ${props => props.size + 12 * 2}px;
