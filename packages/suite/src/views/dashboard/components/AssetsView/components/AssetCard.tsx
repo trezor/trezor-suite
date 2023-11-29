@@ -158,11 +158,15 @@ export const AssetCard = ({ network, failed, cryptoValue }: AssetCardProps) => {
                     <BuyMarginContainer>
                         <BuyContainer>
                             <div>
-                                <BuyContainerLabel>Price</BuyContainerLabel>
+                                <BuyContainerLabel>
+                                    <Translation id="TR_EXCHANGE_RATE" />
+                                </BuyContainerLabel>
                                 <PriceTicker symbol={symbol} />
                             </div>
                             <div>
-                                <BuyContainerLabel>Last week</BuyContainerLabel>
+                                <BuyContainerLabel>
+                                    <Translation id="TR_LAST_WEEK" />
+                                </BuyContainerLabel>
                                 <TrendTicker symbol={symbol} />
                             </div>
                             <CoinmarketBuyButton
@@ -184,9 +188,7 @@ export const AssetCardSkeleton = (props: { animate?: boolean }) => {
     return (
         <Card>
             <MarginContainer>
-                <WalletContainer>
-                    <AssetInfoSkeleton animate={animate} />
-                </WalletContainer>
+                <AssetInfoSkeleton animate={animate} />
                 <FiatAmount>
                     <IntegerValue>
                         <SkeletonRectangle animate={animate} width={95} height={32} />
