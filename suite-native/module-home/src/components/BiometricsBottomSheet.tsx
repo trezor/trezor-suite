@@ -3,6 +3,7 @@ import { Platform } from 'react-native';
 
 import { AuthenticationType, supportedAuthenticationTypesAsync } from 'expo-local-authentication';
 
+import { analytics, EventType } from '@suite-native/analytics';
 import { BottomSheet, Box, Button, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import {
@@ -12,7 +13,7 @@ import {
     useBiometricsSettings,
 } from '@suite-native/biometrics';
 import { Translation, useTranslate } from '@suite-native/intl';
-import { Icon } from '@suite-common/icons/src';
+import { Icon } from '@suite-common/icons';
 
 const SHOW_TIMEOUT = 1500;
 const IMG_WRAPPER_DIMENSIONS = 88;
@@ -114,6 +115,13 @@ export const BiometricsBottomSheet = () => {
         if (result === 'enabled') {
             setIsVisible(false);
             setIsBiometricsInitialSetupFinished(true);
+            analytics.report({
+                type: EventType.SettingsBiometricsToggle,
+                payload: {
+                    enabled: true,
+                    origin: 'bottomSheet',
+                },
+            });
         }
     };
 

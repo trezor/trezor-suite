@@ -78,6 +78,7 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
         }
 
         setIsReceiveApproved(true);
+        analytics.report({ type: EventType.ConfirmedReceiveAdress });
     }, [networkSymbol, isPortfolioTracker, verifyAddressOnDevice]);
 
     return {

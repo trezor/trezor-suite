@@ -6,6 +6,7 @@ export enum EventType {
     WatchPortfolioTimeframeChange = 'watch_portfolio/timeframe_change',
     CreateReceiveAddress = 'create_receive_address',
     CreateReceiveAddressShowAddress = 'create_receive_address/show_address',
+    ConfirmedReceiveAdress = 'receiveAddress/confirm_on_trezor',
     AssetDetail = 'asset_detail',
     AssetDetailTimeframeChange = 'asset_detail/timeframe_change',
     TransactionDetail = 'transaction_detail',
@@ -19,4 +20,5 @@ export enum EventType {
     SettingsDiscreetToggle = 'settings/discreet_toggle',
     SettingsBiometricsToggle = 'settings/biometrics_toggle',
     SettingsDataPermission = 'settings/data_permission',
+    EmptyDashboardClick = 'empty_dashboard/click',
 }

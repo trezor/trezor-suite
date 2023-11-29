@@ -125,4 +125,9 @@ export type SuiteNativeAnalyticsEvent =
               analyticsPermission: boolean;
           };
       }
-    | { type: EventType.SettingsBiometricsToggle; payload: { enabled: boolean } };
+    | {
+          type: EventType.SettingsBiometricsToggle;
+          payload: { enabled: boolean; origin?: 'bottomSheet' };
+      }
+    | { type: EventType.ConfirmedReceiveAdress }
+    | { type: EventType.EmptyDashboardClick; payload: { target: 'syncCoins' | 'connectDevice' } };
