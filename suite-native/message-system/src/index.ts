@@ -1,2 +1,3 @@
 export * from './messageSystemMiddleware';
-export * from './components/MessageSystemRenderer';
+export * from './components/MessageSystemBannerRenderer';
+export * from './components/FeatureMessageScreen';

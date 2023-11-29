@@ -13,7 +13,7 @@ import { FormatterProvider } from '@suite-common/formatters';
 import { AlertRenderer } from '@suite-native/alerts';
 import { NavigationContainerWithAnalytics } from '@suite-native/navigation';
 import { AuthenticatorProvider } from '@suite-native/biometrics';
-import { MessageSystemRenderer } from '@suite-native/message-system';
+import { FeatureMessageScreen, MessageSystemBannerRenderer } from '@suite-native/message-system';
 import { IntlProvider } from '@suite-native/intl';
 import { ScreenshotProvider, ScreenshotCapturer } from '@suite-native/screen-overlay';
 
@@ -55,25 +55,28 @@ const AppComponent = () => {
     if (!isAppReady) return null;
 
     return (
-        <FormatterProvider config={formattersConfig}>
-            <ScreenshotProvider>
-                <AuthenticatorProvider>
-                    <AlertRenderer>
-                        <MessageSystemRenderer>
+        <>
+            <FormatterProvider config={formattersConfig}>
+                <ScreenshotProvider>
+                    <AuthenticatorProvider>
+                        <AlertRenderer>
                             {/* Notifications are disabled until the problem with after-import notifications flooding is solved. */}
                             {/* More here: https://github.com/trezor/trezor-suite/issues/7721  */}
                             {/* <NotificationRenderer> */}
                             <ToastRenderer>
                                 <ScreenshotCapturer>
+                                    <MessageSystemBannerRenderer />
                                     <RootStackNavigator />
                                 </ScreenshotCapturer>
                             </ToastRenderer>
                             {/* </NotificationRenderer> */}
-                        </MessageSystemRenderer>
-                    </AlertRenderer>
-                </AuthenticatorProvider>
-            </ScreenshotProvider>
-        </FormatterProvider>
+                        </AlertRenderer>
+                    </AuthenticatorProvider>
+                </ScreenshotProvider>
+            </FormatterProvider>
+            {/* NOTE: Rendered as last item so that it covers the whole app screen */}
+            <FeatureMessageScreen />
+        </>
     );
 };
 
