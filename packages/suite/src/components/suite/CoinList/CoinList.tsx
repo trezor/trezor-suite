@@ -4,7 +4,6 @@ import { getCoinUnavailabilityMessage } from '@suite-common/suite-utils';
 import { Tooltip } from '@trezor/components';
 import { getFirmwareVersion, isDeviceInBootloaderMode } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
-import { selectDeviceSupportedNetworks } from '@suite-common/wallet-core';
 
 import { Translation } from 'src/components/suite';
 import { useDevice, useSelector } from 'src/hooks/suite';
@@ -36,11 +35,6 @@ export const CoinList = ({
 }: CoinListProps) => {
     const { device, isLocked } = useDevice();
     const blockchain = useSelector(state => state.wallet.blockchain);
-    const deviceSupportedNetworkSymbols = useSelector(selectDeviceSupportedNetworks);
-
-    const supportedNetworks = networks.filter(network =>
-        deviceSupportedNetworkSymbols.includes(network.symbol),
-    );
 
     const isDeviceLocked = !!device && isLocked();
     const lockedTooltip = isDeviceLocked && 'TR_DISABLED_SWITCH_TOOLTIP';
@@ -52,7 +46,7 @@ export const CoinList = ({
 
     return (
         <Wrapper>
-            {supportedNetworks.map(network => {
+            {networks.map(network => {
                 const { symbol, label, tooltip, name, support } = network;
 
                 const firmwareSupportRestriction =
