@@ -49,6 +49,7 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
                     confirmAddressOnDeviceThunk({
                         accountKey,
                         addressPath: freshAddress.path,
+                        chunkify: true,
                     }),
                 ).unwrap(),
             );
