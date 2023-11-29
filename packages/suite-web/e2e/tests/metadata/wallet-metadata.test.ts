@@ -3,7 +3,7 @@
 
 import { rerouteMetadataToMockProvider, stubOpen } from '../../stubs/metadata';
 
-const firmwares = ['2.2.0', '2-master'] as const;
+const firmwares = ['2.2.0', '2-main'] as const;
 const provider = 'dropbox';
 
 const mnemonic = 'all all all all all all all all all all all all';

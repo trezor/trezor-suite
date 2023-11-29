@@ -34,7 +34,7 @@ const getDescriptor = (descriptor: any): Descriptor => ({
     ...descriptor,
 });
 
-const emulatorStartOpts = { version: '2-master', wipe: true };
+const emulatorStartOpts = { version: '2-main', wipe: true };
 
 describe('bridge', () => {
     let bridge1: BridgeTransport;

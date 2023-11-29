@@ -115,7 +115,7 @@ testPlaywright.describe('Coinjoin', () => {
         await TrezorUserEnvLink.api.trezorUserEnvConnect();
         await waitForCoinjoinBackend();
         await TrezorUserEnvLink.api.stopBridge();
-        await TrezorUserEnvLink.api.startEmu({ wipe: true, version: '2-master' });
+        await TrezorUserEnvLink.api.startEmu({ wipe: true, version: '2-main' });
         await TrezorUserEnvLink.api.setupEmu({
             needs_backup: false,
             passphrase_protection: true,

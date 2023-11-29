@@ -8,14 +8,14 @@ const fixtures = [
     {
         provider: 'dropbox',
         numberOfRequests: {
-            '2-master': [25, 27],
+            '2-main': [25, 27],
             legacy: [25, 26],
         },
     },
     {
         provider: 'google',
         numberOfRequests: {
-            '2-master': [9, 12],
+            '2-main': [9, 12],
             legacy: [9, 12],
         },
     },

@@ -132,7 +132,7 @@ const initTrezorConnect = async (TrezorUserEnvLink, options) => {
 const skipTest = rules => {
     if (!rules || !Array.isArray(rules)) return;
     const fwModel = firmware.substring(0, 1);
-    const fwMaster = firmware.includes('-master');
+    const fwMaster = firmware.includes('-main');
     const rule = rules
         .filter(skip => skip.substring(0, 1) === fwModel || skip.substring(1, 2) === fwModel) // filter rules only for current model
         .find(skip => {
