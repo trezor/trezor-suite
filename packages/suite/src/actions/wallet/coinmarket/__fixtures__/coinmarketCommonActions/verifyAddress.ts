@@ -16,6 +16,11 @@ export const VERIFY_BUY_ADDRESS_FIXTURES = [
             device: {
                 selectedDevice: AVAILABLE_DEVICE,
             },
+            suite: {
+                settings: {
+                    addressDisplayType: 'chunked',
+                },
+            },
         },
         params: {
             account: BTC_ACCOUNT,
@@ -38,6 +43,11 @@ export const VERIFY_BUY_ADDRESS_FIXTURES = [
         initialState: {
             device: {
                 selectedDevice: AVAILABLE_DEVICE,
+            },
+            suite: {
+                settings: {
+                    addressDisplayType: 'chunked',
+                },
             },
         },
         params: {
@@ -62,6 +72,11 @@ export const VERIFY_BUY_ADDRESS_FIXTURES = [
             device: {
                 selectedDevice: AVAILABLE_DEVICE,
             },
+            suite: {
+                settings: {
+                    addressDisplayType: 'chunked',
+                },
+            },
         },
         params: {
             account: XRP_ACCOUNT,
@@ -84,6 +99,11 @@ export const VERIFY_BUY_ADDRESS_FIXTURES = [
         initialState: {
             device: {
                 selectedDevice: UNAVAILABLE_DEVICE,
+            },
+            suite: {
+                settings: {
+                    addressDisplayType: 'chunked',
+                },
             },
         },
         params: {
@@ -114,6 +134,11 @@ export const VERIFY_EXCHANGE_ADDRESS_FIXTURES = [
         initialState: {
             device: {
                 selectedDevice: AVAILABLE_DEVICE,
+            },
+            suite: {
+                settings: {
+                    addressDisplayType: 'chunked',
+                },
             },
         },
         params: {
