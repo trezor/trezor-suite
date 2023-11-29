@@ -23,6 +23,6 @@ export const AddButton = ({
         data-test="@add-account"
         {...buttonProps}
     >
-        <Translation id="TR_ADD_NETWORK_ACCOUNT" values={{ networkName }} />
+        <Translation id="TR_ADD_NETWORK_ACCOUNT" values={{ network: networkName }} />
     </TooltipButton>
 );
