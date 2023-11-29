@@ -30,6 +30,7 @@ export const SVG_IMAGES = {
     APP_STORE_TITLE: 'app-store-title.svg',
     PLAY_STORE_TITLE: 'play-store-title.svg',
     STROKE_BORDER: 'stroke-border.svg',
+    TREZOR_SAFE_PROMO_UNDERLINE: 'trezor-safe-promo-underline.svg',
 } as const;
 
 export type PngImage = keyof typeof PNG_IMAGES;
@@ -89,4 +90,8 @@ export const PNG_IMAGES = {
     TREZOR_T2T1_GHOST_2x: 'trezor-t2t1-ghost@2x.png',
     TREZOR_T2B1_GHOST: 'trezor-t2b1-ghost.png',
     TREZOR_T2B1_GHOST_2x: 'trezor-t2b1-ghost@2x.png',
+    TREZOR_SAFE_PROMO_PRODUCTS: 'trezor-safe-promo-products.png',
+    TREZOR_SAFE_PROMO_PRODUCTS_2x: 'trezor-safe-promo-products@2x.png',
+    TREZOR_SAFE_PROMO_LOGO: 'trezor-safe-promo-logo.png',
+    TREZOR_SAFE_PROMO_LOGO_2x: 'trezor-safe-promo-logo@2x.png',
 } as const;

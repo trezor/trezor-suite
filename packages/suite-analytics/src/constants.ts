@@ -83,4 +83,5 @@ export enum EventType {
 
     GetDesktopApp = 'promo/desktop',
     GetMobileApp = 'promo/mobile',
+    T2B1DashboardPromo = 'promo/t2b1-dashboard',
 }

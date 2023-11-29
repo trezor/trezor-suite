@@ -11,12 +11,12 @@ import {
     selectDeviceThunk,
 } from '@suite-common/wallet-core';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { DEVICE } from '@trezor/connect';
+import { DEVICE, DeviceModelInternal } from '@trezor/connect';
 
 import { SUITE, ROUTER, METADATA } from 'src/actions/suite/constants';
 import { AppState, Action, Dispatch } from 'src/types/suite';
 import { handleProtocolRequest } from 'src/actions/suite/protocolActions';
-import { appChanged } from 'src/actions/suite/suiteActions';
+import { appChanged, setFlag } from 'src/actions/suite/suiteActions';
 
 const isActionDeviceRelated = (action: AnyAction): boolean => {
     if (
@@ -64,6 +64,16 @@ const suite =
 
         if (deviceActions.forgetDevice.match(action)) {
             api.dispatch(handleDeviceDisconnect(action.payload));
+        }
+
+        if (deviceActions.connectDevice.match(action)) {
+            const isT2B1 = action.payload?.features?.internal_model === DeviceModelInternal.T2B1;
+            const isT2B1DashboardPromoBannerActive =
+                api.getState().suite.flags.showDashboardT2B1PromoBanner;
+
+            if (isT2B1 && isT2B1DashboardPromoBannerActive) {
+                api.dispatch(setFlag('showDashboardT2B1PromoBanner', false));
+            }
         }
 
         switch (action.type) {
