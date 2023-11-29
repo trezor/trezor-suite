@@ -658,6 +658,9 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
 
                 // @ts-expect-error
                 switch (metadata.provider.type) {
+                    case 'evolu':
+                        clientId = 'evolu';
+                        break;
                     case 'dropbox':
                         clientId = 'wg0yz2pbgjyhoda';
                         break;

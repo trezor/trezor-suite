@@ -90,6 +90,16 @@ export const MetadataProviderModal = ({ onCancel, decision }: MetadataProviderMo
                 <>
                     <StyledButton
                         variant="tertiary"
+                        onClick={() => connect('evolu')}
+                        isLoading={isLoading === 'evolu'}
+                        isDisabled={!!isLoading}
+                        data-test="@modal/metadata-provider/evolu-button"
+                        icon="WARNING"
+                    >
+                        evolu
+                    </StyledButton>
+                    <StyledButton
+                        variant="tertiary"
                         onClick={() => connect('dropbox')}
                         isLoading={isLoading === 'dropbox'}
                         isDisabled={!!isLoading}

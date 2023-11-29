@@ -356,6 +356,7 @@ export type SuiteAnalyticsEvent =
                   | 'fileSystem'
                   | 'missing-provider'
                   | 'inMemoryTest'
+                  | 'evolu'
                   | ''; // Todo: 'sdCard' not implemented yet
           };
       }

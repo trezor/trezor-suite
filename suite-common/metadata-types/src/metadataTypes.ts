@@ -50,7 +50,7 @@ export type MetadataAddPayload =
 // }
 export type MetadataItem = string;
 
-export type MetadataProviderType = 'dropbox' | 'google' | 'fileSystem' | 'inMemoryTest'; // Todo: | 'sdCard'
+export type MetadataProviderType = 'dropbox' | 'google' | 'fileSystem' | 'inMemoryTest' | 'evolu'; // Todo: | 'sdCard'
 
 export type Tokens = {
     accessToken?: string;

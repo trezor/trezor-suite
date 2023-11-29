@@ -27,6 +27,7 @@ import {
 import { Account } from 'src/types/wallet';
 import * as metadataUtils from 'src/utils/suite/metadata';
 import * as modalActions from 'src/actions/suite/modalActions';
+import EvoluProvider from 'src/services/suite/metadata/EvoluProvider';
 import DropboxProvider from 'src/services/suite/metadata/DropboxProvider';
 import GoogleProvider from 'src/services/suite/metadata/GoogleProvider';
 import FileSystemProvider from 'src/services/suite/metadata/FileSystemProvider';
@@ -81,7 +82,12 @@ export type MetadataAction =
 // needs to be declared here in top level context because it's not recommended to keep classes instances in redux state (serialization)
 const providerInstance: Record<
     DataType,
-    DropboxProvider | GoogleProvider | FileSystemProvider | InMemoryTestProvider | undefined
+    | DropboxProvider
+    | EvoluProvider
+    | GoogleProvider
+    | FileSystemProvider
+    | InMemoryTestProvider
+    | undefined
 > = {
     labels: undefined,
     passwords: undefined,
@@ -108,6 +114,8 @@ const createProviderInstance = (
             return new FileSystemProvider();
         case 'inMemoryTest':
             return new InMemoryTestProvider();
+        case 'evolu':
+            return new EvoluProvider();
     }
 };
 
