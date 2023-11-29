@@ -43,6 +43,18 @@ const getLines = (
     const isUpdatedSendFlow = getIsUpdatedSendFlow(device);
     const isUpdatedEthereumSendFlow = getIsUpdatedEthereumSendFlow(device, networkType);
     const isEthereum = networkType === 'ethereum';
+    const isSolana = networkType === 'solana';
+    const showAmountWithoutFee = isEthereum || isSolana;
+    const feeLabel = ((network: TransactionReviewOutputListProps['account']['networkType']) => {
+        switch (network) {
+            case 'ethereum':
+                return 'MAX_FEE';
+            case 'solana':
+                return 'TR_TX_FEE';
+            default:
+                return 'TR_INCLUDING_FEE';
+        }
+    })(networkType);
     const tokenInfo = precomposedTx?.token;
     const amountWithoutFee = new BigNumber(precomposedTx.totalSpent)
         .minus(precomposedTx.fee)
@@ -68,17 +80,17 @@ const getLines = (
         return [
             {
                 id: 'total',
-                label: <Translation id={isEthereum ? 'AMOUNT' : 'TR_TOTAL_AMOUNT'} />,
+                label: <Translation id={showAmountWithoutFee ? 'AMOUNT' : 'TR_TOTAL_AMOUNT'} />,
                 value: tokenInfo
                     ? formatAmount(precomposedTx.totalSpent, tokenInfo.decimals)
                     : formatNetworkAmount(
-                          isEthereum ? amountWithoutFee : precomposedTx.totalSpent,
+                          showAmountWithoutFee ? amountWithoutFee : precomposedTx.totalSpent,
                           symbol,
                       ),
             },
             {
                 id: 'fee',
-                label: <Translation id={isEthereum ? 'MAX_FEE' : 'TR_INCLUDING_FEE'} />,
+                label: <Translation id={feeLabel} />,
                 value: formatNetworkAmount(precomposedTx.fee, symbol),
             },
         ];
