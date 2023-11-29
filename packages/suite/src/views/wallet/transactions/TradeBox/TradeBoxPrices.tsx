@@ -1,7 +1,7 @@
 import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
 import { getFiatRateKey, localizeNumber } from '@suite-common/wallet-utils';
 import { Icon, variables } from '@trezor/components';
-import { FONT_SIZE, FONT_WEIGHT } from '@trezor/components/src/config/variables';
+import { spacingsPx, typography } from '@trezor/theme';
 import { PropsWithChildren, ReactNode } from 'react';
 import { FiatValue, Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
@@ -17,14 +17,16 @@ const Wrapper = styled.div`
     }
 `;
 
-const Name = styled.div`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    font-size: ${FONT_SIZE.TINY};
-    margin-bottom: 3px;
+const CardContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: ${spacingsPx.xxxs};
 `;
 
-const Value = styled.div`
-    font-weight: ${FONT_WEIGHT.MEDIUM};
+const Name = styled.div`
+    color: ${({ theme }) => theme.textSubdued};
+    ${typography.label}
+    margin-bottom: 3px;
 `;
 
 const ChangeWrapper = styled.div<{ color: string }>`
@@ -42,10 +44,10 @@ interface TradeBoxHeadCardProps extends PropsWithChildren {
 }
 
 const TradeBoxHeadCard = ({ name, children }: TradeBoxHeadCardProps) => (
-    <div>
+    <CardContainer>
         <Name>{name}</Name>
-        <Value>{children}</Value>
-    </div>
+        <div>{children}</div>
+    </CardContainer>
 );
 
 const calculatePercentageDifference = (a: number, b: number) => ((a - b) / b) * 100;
@@ -94,11 +96,13 @@ export const TradeBoxPrices = ({ account }: TradeBoxPricesProps) => {
 
             <TradeBoxHeadCard name={<Translation id="TR_7D_CHANGE" />}>
                 {isSuccessfullyFetched ? (
-                    <ChangeWrapper color={rateGoingUp ? theme.TYPE_GREEN : theme.TYPE_RED}>
+                    <ChangeWrapper
+                        color={rateGoingUp ? theme.textPrimaryDefault : theme.textAlertRed}
+                    >
                         <Icon
                             icon={rateGoingUp ? 'TREND_UP' : 'TREND_DOWN'}
                             size={16}
-                            color={rateGoingUp ? theme.TYPE_GREEN : theme.TYPE_RED}
+                            color={rateGoingUp ? theme.iconPrimaryDefault : theme.iconAlertRed}
                         />
                         {localizeNumber(percentChange, locale, 1, 1)}%
                     </ChangeWrapper>

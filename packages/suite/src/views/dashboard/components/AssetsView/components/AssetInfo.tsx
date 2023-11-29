@@ -4,9 +4,9 @@ import styled, { useTheme } from 'styled-components';
 import { CoinLogo, Icon } from '@trezor/components';
 import { useSelector } from 'react-redux';
 
-import { selectAccountsByNetworkSymbol } from '@suite-common/wallet-core';
 import { SkeletonCircle, SkeletonRectangle } from 'src/components/suite';
 import { spacingsPx, typography } from '@trezor/theme';
+import { selectDeviceAccountsByNetworkSymbol } from '@suite-common/wallet-core';
 
 type Props = {
     network: Network;
@@ -23,7 +23,8 @@ const ArrowIcon = styled(Icon)`
 `;
 const Container = styled.div`
     display: flex;
-    &:hover {
+
+    :hover {
         cursor: pointer;
         ${ArrowIcon} {
             visibility: visible;
@@ -58,7 +59,7 @@ const LogoWrapper = styled.div`
 export const AssetInfo = ({ network, onClick }: Props) => {
     const { symbol, name } = network;
     const selectedAccounts = useSelector((state: any) =>
-        selectAccountsByNetworkSymbol(state, symbol),
+        selectDeviceAccountsByNetworkSymbol(state, symbol),
     );
     const theme = useTheme();
 
