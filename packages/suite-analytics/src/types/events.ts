@@ -398,4 +398,10 @@ export type SuiteAnalyticsEvent =
           payload: {
               platform: 'ios' | 'android';
           };
+      }
+    | {
+          type: EventType.T2B1DashboardPromo;
+          payload: {
+              action: 'shop' | 'close';
+          };
       };

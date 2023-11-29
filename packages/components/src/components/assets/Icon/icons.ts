@@ -33,6 +33,7 @@ export const ICONS = {
     COOKIE: require('../../../images/icons/cookie.svg'),
     COPY: require('../../../images/icons/copy.svg'),
     CROSS: require('../../../images/icons/cross.svg'),
+    CROSS_LIGHT: require('../../../images/icons/cross_light.svg'),
     CSV: require('../../../images/icons/csv.svg'),
     CUBE: require('../../../images/icons/cube.svg'),
     DASHBOARD: require('../../../images/icons/dashboard.svg'),

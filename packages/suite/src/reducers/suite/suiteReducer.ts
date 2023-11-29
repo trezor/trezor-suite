@@ -62,6 +62,7 @@ export interface Flags {
     securityStepsHidden: boolean; // dashboard UI
     dashboardGraphHidden: boolean; // dashboard UI
     dashboardAssetsGridMode: boolean; // dashboard UI
+    showDashboardT2B1PromoBanner: boolean;
 }
 
 export interface SuiteSettings {
@@ -107,6 +108,7 @@ const initialState: SuiteState = {
         dashboardGraphHidden: false,
         dashboardAssetsGridMode:
             getWindowWidth() < getNumberFromPixelString(variables.SCREEN_SIZE.SM),
+        showDashboardT2B1PromoBanner: true,
     },
     settings: {
         theme: {
@@ -309,5 +311,8 @@ export const selectPrerequisite = (state: SuiteRootState & RouterRootState & Dev
 
     return prerequisite;
 };
+
+export const selectIsDashboardT2B1PromoBannerShown = (state: SuiteRootState) =>
+    state.suite.flags.showDashboardT2B1PromoBanner;
 
 export default suiteReducer;

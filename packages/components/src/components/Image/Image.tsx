@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import { PngImage, SvgImage, PNG_IMAGES, SVG_IMAGES } from './images';
 import { resolveStaticPath } from '../../utils/resolveStaticPath';
 
-const PNG_PATH = 'images/png';
-const SVG_PATH = 'images/svg';
+export const PNG_PATH = 'images/png';
+export const SVG_PATH = 'images/svg';
 
 const StyledImage = styled.img`
     /* should not overflow it's container */

@@ -767,6 +767,10 @@ export default defineMessages({
         defaultMessage: 'Required',
         id: 'TR_REQUIRED_FIELD',
     },
+    TR_SHOP_NOW: {
+        defaultMessage: 'Shop Now',
+        id: 'TR_SHOP_NOW',
+    },
     TR_SELL_VALIDATION_ERROR_MINIMUM_FIAT: {
         defaultMessage: 'Minimum is {minimum} {currency}',
         id: 'TR_SELL_VALIDATION_ERROR_MINIMUM_FIAT',
