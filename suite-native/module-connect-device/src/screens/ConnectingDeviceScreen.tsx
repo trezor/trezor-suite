@@ -1,12 +1,7 @@
-import { useEffect } from 'react';
-
-import { useNavigation } from '@react-navigation/native';
-import { CommonActions } from '@react-navigation/core';
-
 import { Text, VStack } from '@suite-native/atoms';
-import { RootStackRoutes, HomeStackRoutes } from '@suite-native/navigation';
 import { Icon } from '@suite-common/icons';
 import { useNativeStyles, prepareNativeStyle } from '@trezor/styles';
+import { useAuthorizeDevice, useDetectDeviceError } from '@suite-native/device';
 import { useTranslate } from '@suite-native/intl';
 
 import { ConnectDeviceBackground } from '../components/ConnectDeviceBackground';
@@ -16,32 +11,11 @@ const screenStyle = prepareNativeStyle(() => ({
     alignItems: 'center',
 }));
 
-const LOADING_TIMEOUT = 2500;
-
 export const ConnectingDeviceScreen = () => {
+    useDetectDeviceError();
+    useAuthorizeDevice();
     const { applyStyle } = useNativeStyles();
     const { translate } = useTranslate();
-    const navigation = useNavigation();
-
-    useEffect(() => {
-        const timerId = setTimeout(() => {
-            navigation.dispatch(
-                CommonActions.reset({
-                    index: 0,
-                    routes: [
-                        {
-                            name: RootStackRoutes.AppTabs,
-                            params: {
-                                screen: HomeStackRoutes.Home,
-                            },
-                        },
-                    ],
-                }),
-            );
-        }, LOADING_TIMEOUT);
-
-        return () => clearTimeout(timerId);
-    }, [navigation]);
 
     return (
         <ConnectDeviceBackground style={applyStyle(screenStyle)}>
