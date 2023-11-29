@@ -58,7 +58,7 @@ const Header = styled.div`
 const Grid = styled.div`
     display: grid;
     overflow: hidden;
-    grid-template-columns: 2fr 2fr 1fr 1fr;
+    grid-template-columns: 2fr 2fr 1fr 1fr 1fr;
 `;
 
 const GridWrapper = styled.div`
@@ -203,6 +203,7 @@ export const AssetsView = () => {
                             <Header>
                                 <Translation id="TR_EXCHANGE_RATE" />
                             </Header>
+                            <Header>Last week</Header>
                             {/* empty column */}
                             <Header />
                             {assetsData.map((asset, i) => (
