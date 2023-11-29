@@ -22,20 +22,20 @@ export const getPubKeyFromAddress = async (address: string) => {
     return new PublicKey(address);
 };
 
-// To transfer Solana tokens we need to manually encode a buffer with the correct layout
-// according to the instruction standard.
-const LAYOUT = BufferLayout.union(BufferLayout.u8('instruction'));
-LAYOUT.addVariant(
-    12,
-    BufferLayout.struct([BufferLayout.nu64('amount'), BufferLayout.u8('decimals')]),
-    'transferChecked',
-);
-
-const instructionMaxSpan = Math.max(...Object.values(LAYOUT.registry).map((r: any) => r.span));
-
 const encodeTokenTransferInstructionData = (instruction: {
     transferChecked: { amount: BigNumber; decimals: number };
 }): Buffer => {
+    // To transfer Solana tokens we need to manually encode a buffer with the correct layout
+    // according to the instruction standard.
+    const LAYOUT = BufferLayout.union(BufferLayout.u8('instruction'));
+    LAYOUT.addVariant(
+        12,
+        BufferLayout.struct([BufferLayout.nu64('amount'), BufferLayout.u8('decimals')]),
+        'transferChecked',
+    );
+
+    const instructionMaxSpan = Math.max(...Object.values(LAYOUT.registry).map((r: any) => r.span));
+
     const b = Buffer.alloc(instructionMaxSpan);
     const span = LAYOUT.encode(instruction, b);
 
