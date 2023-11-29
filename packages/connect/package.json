@@ -51,7 +51,7 @@
     "dependencies": {
         "@ethereumjs/common": "^3.1.2",
         "@ethereumjs/tx": "^4.1.2",
-        "@fivebinaries/coin-selection": "2.2.0",
+        "@fivebinaries/coin-selection": "2.2.1",
         "@trezor/blockchain-link": "workspace:*",
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/connect-analytics": "workspace:*",
