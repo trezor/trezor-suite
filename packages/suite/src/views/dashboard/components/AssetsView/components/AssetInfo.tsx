@@ -23,6 +23,7 @@ const ArrowIcon = styled(Icon)`
 `;
 const Container = styled.div`
     display: flex;
+
     &:hover {
         cursor: pointer;
         ${ArrowIcon} {
