@@ -15,4 +15,3 @@ export const TOKEN_ACCOUNT_LAYOUT = BufferLayout.struct<TokenAccountLayout>([
     BufferLayout.nu64('amount'),
     BufferLayout.blob(93),
 ]);
-

@@ -77,7 +77,7 @@ describe('solana utils', () => {
                     input.blockhash,
                     input.lastValidBlockHeight,
                 );
-                const message = tx.compileMessage().serialize().toString('hex');
+                const message = tx.transaction.compileMessage().serialize().toString('hex');
 
                 expect(message).toEqual(expectedOutput);
             });

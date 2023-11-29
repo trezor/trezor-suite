@@ -31,6 +31,8 @@ const calculate = (
     output: ExternalOutput,
     feeLevel: FeeLevel,
     token?: TokenInfo,
+    destinationAddress?: string,
+    isCreatingAccount?: boolean,
 ): PrecomposedTransaction => {
     const feeInLamports = feeLevel.feePerUnit;
     let amount: string;
@@ -74,7 +76,13 @@ const calculate = (
             outputsPermutation: [0],
             outputs: [
                 {
-                    address: output.address,
+                    // TODO: internationalise this!
+                    address:
+                        destinationAddress && destinationAddress !== output.address
+                            ? `${destinationAddress} (Token account for: ${output.address} ${
+                                  isCreatingAccount && ', Account will be created.'
+                              })`
+                            : output.address,
                     amount,
                     script_type: 'PAYTOADDRESS',
                 },
@@ -98,7 +106,7 @@ const fetchAccountOwnerAndTokenInfoForAddress = async (
     const accountInfoResponse = await TrezorConnect.getAccountInfo({
         coin: symbol,
         descriptor: address,
-        details: 'tokens'
+        details: 'tokens',
     });
 
     if (accountInfoResponse.success) {
@@ -134,11 +142,7 @@ export const composeTransaction =
         // invalid token transfer -- should never happen
         if (tokenInfo && !tokenInfo.accounts) return;
 
-        // To estimate fees on Solana we need to turn a transaction into a message for which fees are estimated.
-        // Since all the values don't have to be filled in the form at the time of this function call, we use dummy values
-        // for the estimation, since these values don't affect the final fee.
-        // The real transaction is constructed in `signTransaction`, this one is used solely for fee estimation and is never submitted.
-        const transactionMessage = (
+        const tokenTransferTxAndDestinationAddress =
             tokenInfo && tokenInfo.accounts
                 ? await buildTokenTransferTransaction(
                       account.descriptor,
@@ -152,6 +156,15 @@ export const composeTransaction =
                       blockhash,
                       50,
                   )
+                : undefined;
+
+        // To estimate fees on Solana we need to turn a transaction into a message for which fees are estimated.
+        // Since all the values don't have to be filled in the form at the time of this function call, we use dummy values
+        // for the estimation, since these values don't affect the final fee.
+        // The real transaction is constructed in `signTransaction`, this one is used solely for fee estimation and is never submitted.
+        const transactionMessage = (
+            tokenTransferTxAndDestinationAddress != null
+                ? tokenTransferTxAndDestinationAddress.transaction
                 : await buildTransferTransaction(
                       account.descriptor,
                       formValues.outputs[0].address || account.descriptor,
@@ -192,7 +205,14 @@ export const composeTransaction =
 
         const wrappedResponse: PrecomposedLevels = {};
         const response = predefinedLevels.map(level =>
-            calculate(account.availableBalance, output, level, tokenInfo),
+            calculate(
+                account.availableBalance,
+                output,
+                level,
+                tokenInfo,
+                tokenTransferTxAndDestinationAddress?.destinationAddress,
+                isCreatingAccount,
+            ),
         );
         response.forEach((tx, index) => {
             const feeLabel = predefinedLevels[index].label as FeeLevel['label'];
@@ -253,20 +273,25 @@ export const signTransaction =
         // For more information see: https://docs.solana.com/cluster/synchronization
         const lastValidBlockHeight = 50;
 
-        const tx =
-            token && token.accounts && recipientAccountOwner
+        const tokenTransferTxAndDestinationAddress =
+            token && token.accounts
                 ? await buildTokenTransferTransaction(
                       account.descriptor,
-                      formValues.outputs[0].address,
-                      recipientAccountOwner,
+                      formValues.outputs[0].address || account.descriptor,
+                      recipientAccountOwner || SYSTEM_PROGRAM_PUBLIC_KEY,
                       token.contract,
-                      formValues.outputs[0].amount,
+                      formValues.outputs[0].amount || '0',
                       token.decimals,
                       token.accounts,
                       recipientTokenAccounts,
                       blockhash,
-                      lastValidBlockHeight,
+                      50,
                   )
+                : undefined;
+
+        const tx =
+            tokenTransferTxAndDestinationAddress && recipientAccountOwner
+                ? tokenTransferTxAndDestinationAddress.transaction
                 : await buildTransferTransaction(
                       account.descriptor,
                       formValues.outputs[0].address,

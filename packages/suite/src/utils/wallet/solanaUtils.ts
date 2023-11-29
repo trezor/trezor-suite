@@ -8,6 +8,7 @@ import {
     SYSTEM_PROGRAM_PUBLIC_KEY,
 } from '@trezor/blockchain-link-utils/lib/solana';
 import BigNumber from 'bignumber.js';
+import type { Transaction } from '@solana/web3.js';
 
 const loadSolanaLib = async () => {
     const lib = await import('@solana/web3.js');
@@ -121,7 +122,7 @@ export const buildCreateAssociatedTokenAccountInstruction = async (
     newOwnerAddress: string,
     tokenMintAddress: string,
 ) => {
-    const { TransactionInstruction, PublicKey, SYSVAR_RENT_PUBKEY } = await loadSolanaLib();
+    const { TransactionInstruction, PublicKey } = await loadSolanaLib();
 
     const associatedTokenAccountAddress = PublicKey.findProgramAddressSync(
         [
@@ -164,11 +165,6 @@ export const buildCreateAssociatedTokenAccountInstruction = async (
             isSigner: false,
             isWritable: false,
         },
-        {
-            pubkey: SYSVAR_RENT_PUBKEY,
-            isSigner: false,
-            isWritable: false,
-        },
     ];
 
     const txInstruction = new TransactionInstruction({
@@ -177,6 +173,11 @@ export const buildCreateAssociatedTokenAccountInstruction = async (
         data: Buffer.from([]),
     });
     return [txInstruction, associatedTokenAccountAddress] as const;
+};
+
+type TokenTransferTxWithDestinationAddress = {
+    transaction: Transaction;
+    destinationAddress: string;
 };
 
 export const buildTokenTransferTransaction = async (
@@ -190,7 +191,7 @@ export const buildTokenTransferTransaction = async (
     toTokenAccounts: TokenAccount[] | undefined,
     blockhash: string,
     lastValidBlockHeight: number,
-) => {
+): Promise<TokenTransferTxWithDestinationAddress> => {
     const { Transaction, PublicKey } = await loadSolanaLib();
 
     const transaction = new Transaction({
@@ -256,5 +257,8 @@ export const buildTokenTransferTransaction = async (
     await Promise.all(instructionPromises);
 
     // Step 7: Return the transaction
-    return transaction;
+    return {
+        transaction,
+        destinationAddress: finalReceiverAddress,
+    };
 };
