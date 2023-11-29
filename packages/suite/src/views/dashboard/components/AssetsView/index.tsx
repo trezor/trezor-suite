@@ -203,7 +203,9 @@ export const AssetsView = () => {
                             <Header>
                                 <Translation id="TR_EXCHANGE_RATE" />
                             </Header>
-                            <Header>Last week</Header>
+                            <Header>
+                                <Translation id="TR_LAST_WEEK" />
+                            </Header>
                             {/* empty column */}
                             <Header />
                             {assetsData.map((asset, i) => (
