@@ -12,6 +12,7 @@
             "path": "../../suite-common/wallet-types"
         },
         { "path": "../alerts" },
+        { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../feature-flags" },
         { "path": "../helpers" },

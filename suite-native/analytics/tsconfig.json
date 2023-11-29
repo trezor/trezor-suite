@@ -22,6 +22,7 @@
         },
         { "path": "../config" },
         { "path": "../../packages/analytics" },
+        { "path": "../../packages/connect" },
         { "path": "../../packages/env-utils" }
     ]
 }

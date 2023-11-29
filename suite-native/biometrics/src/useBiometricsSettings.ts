@@ -47,8 +47,8 @@ export const useBiometricsSettings = () => {
             setIsBiometricsOptionEnabled(false);
             setIsUserAuthenticated(false);
             analytics.report({
-                type: EventType.SettingsBiometricsToggle,
-                payload: { enabled: false },
+                type: EventType.BiometricsChange,
+                payload: { enabled: false, origin: 'settingsToggle' },
             });
             return 'disabled';
         }
@@ -56,8 +56,8 @@ export const useBiometricsSettings = () => {
         setIsUserAuthenticated(true);
         setIsBiometricsOptionEnabled(true);
         analytics.report({
-            type: EventType.SettingsBiometricsToggle,
-            payload: { enabled: true },
+            type: EventType.BiometricsChange,
+            payload: { enabled: true, origin: 'settingsToggle' },
         });
         return 'enabled';
     }, [

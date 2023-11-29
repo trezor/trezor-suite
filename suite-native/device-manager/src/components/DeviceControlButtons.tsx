@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { analytics, EventType } from '@suite-native/analytics';
 import { Box, Button, HStack } from '@suite-native/atoms';
 import { deviceActions, selectDevice } from '@suite-common/wallet-core';
 import { useTranslate } from '@suite-native/intl';
@@ -34,11 +35,16 @@ export const DeviceControlButtons = () => {
     const handleEject = () => {
         setIsDeviceManagerVisible(false);
         dispatch(deviceActions.deviceDisconnect(selectedDevice));
+        analytics.report({
+            type: EventType.EjectDeviceClick,
+            payload: { origin: 'deviceManager' },
+        });
     };
 
     const handleDeviceRedirect = () => {
         setIsDeviceManagerVisible(false);
         navigation.navigate(RootStackRoutes.DeviceInfo);
+        analytics.report({ type: EventType.DeviceManagerClick, payload: { action: 'deviceInfo' } });
     };
 
     return (

@@ -2,6 +2,7 @@ import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { UNIT_ABBREVIATION } from '@suite-common/suite-constants';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { TokenSymbol } from '@suite-common/wallet-types';
+import { DeviceModelInternal, VersionArray } from '@trezor/connect';
 
 import { EventType } from './constants';
 
@@ -125,4 +126,44 @@ export type SuiteNativeAnalyticsEvent =
               analyticsPermission: boolean;
           };
       }
-    | { type: EventType.SettingsBiometricsToggle; payload: { enabled: boolean } };
+    | {
+          type: EventType.BiometricsChange;
+          payload: { enabled: boolean; origin: 'bottomSheet' | 'settingsToggle' };
+      }
+    | { type: EventType.ConfirmedReceiveAdress }
+    | { type: EventType.EmptyDashboardClick; payload: { action: 'syncCoins' | 'connectDevice' } }
+    | {
+          type: EventType.DeviceManagerClick;
+          payload: {
+              action:
+                  | 'deviceItem'
+                  | 'portfolioTracker'
+                  | 'connectDeviceButton'
+                  | 'syncCoinsButton'
+                  | 'educationLink'
+                  | 'eshopLink'
+                  | 'deviceInfo';
+          };
+      }
+    | {
+          type: EventType.EjectDeviceClick;
+          payload: {
+              origin: 'deviceManager' | 'deviceNotReadyModal';
+          };
+      }
+    | {
+          type: EventType.ConnectDevice;
+          payload: {
+              firmwareVersion: VersionArray | null;
+              pinProtection: boolean;
+              deviceModel: DeviceModelInternal | null;
+              isBitcoinOnly: boolean;
+              deviceLanguage: string | null;
+          };
+      }
+    | {
+          type: EventType.UnsupportedDevice;
+          payload: {
+              deviceState: 'unsupportedFirmware' | 'noSeed' | 'bootloaderMode';
+          };
+      };

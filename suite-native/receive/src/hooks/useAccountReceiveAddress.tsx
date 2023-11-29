@@ -73,6 +73,7 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
             setIsUnverifiedAddressRevealed(true);
             const wasVerificationSuccessful = await verifyAddressOnDevice();
 
+            analytics.report({ type: EventType.ConfirmedReceiveAdress });
             // In case that user cancels the verification or device is disconnected, navigate out of the receive flow.
             if (!wasVerificationSuccessful) {
                 navigation.goBack();

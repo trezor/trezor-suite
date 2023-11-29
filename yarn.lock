@@ -7203,6 +7203,7 @@ __metadata:
     "@suite-common/wallet-types": "workspace:*"
     "@suite-native/config": "workspace:*"
     "@trezor/analytics": "workspace:*"
+    "@trezor/connect": "workspace:*"
     "@trezor/env-utils": "workspace:*"
   languageName: unknown
   linkType: soft
@@ -7303,6 +7304,7 @@ __metadata:
     "@suite-common/icons": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
+    "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"
     "@suite-native/intl": "workspace:*"
@@ -7340,6 +7342,7 @@ __metadata:
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-native/alerts": "workspace:*"
+    "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"
     "@suite-native/helpers": "workspace:*"
@@ -7738,6 +7741,7 @@ __metadata:
     "@suite-common/graph": "workspace:*"
     "@suite-common/icons": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
+    "@suite-native/analytics": "workspace:*"
     "@suite-native/assets": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/biometrics": "workspace:*"

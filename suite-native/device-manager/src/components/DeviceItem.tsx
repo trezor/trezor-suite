@@ -1,10 +1,12 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { Pressable } from 'react-native';
 
+import { analytics, EventType } from '@suite-native/analytics';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { HStack } from '@suite-native/atoms';
 import {
     DeviceRootState,
+    PORTFOLIO_TRACKER_DEVICE_ID,
     selectDeviceById,
     selectDeviceId,
     selectDeviceThunk,
@@ -43,6 +45,16 @@ export const DeviceItem = ({ id: deviceItemId }: DeviceItemProps) => {
         if (deviceItemId === selectedDeviceId) return;
 
         dispatch(selectDeviceThunk(device));
+
+        analytics.report({
+            type: EventType.DeviceManagerClick,
+            payload: {
+                action:
+                    deviceItemId === PORTFOLIO_TRACKER_DEVICE_ID
+                        ? 'portfolioTracker'
+                        : 'connectDeviceButton',
+            },
+        });
     };
 
     return (

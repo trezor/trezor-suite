@@ -12,6 +12,7 @@ import {
 import { VStack, Card, Button, Text, Pictogram } from '@suite-native/atoms';
 import { useNativeStyles, prepareNativeStyle } from '@trezor/styles';
 import { Translation, useTranslate } from '@suite-native/intl';
+import { analytics, EventType } from '@suite-native/analytics';
 
 import { SettingsButtonLink } from './SettingsButtonLink';
 
@@ -38,11 +39,16 @@ export const EmptyPortfolioCrossroads = () => {
         navigation.navigate(RootStackRoutes.AccountsImport, {
             screen: AccountsImportStackRoutes.SelectNetwork,
         });
+        analytics.report({ type: EventType.EmptyDashboardClick, payload: { action: 'syncCoins' } });
     };
 
     const handleConnectDevice = () => {
         navigation.navigate(RootStackRoutes.ConnectDevice, {
             screen: ConnectDeviceStackRoutes.ConnectAndUnlockDevice,
+        });
+        analytics.report({
+            type: EventType.EmptyDashboardClick,
+            payload: { action: 'connectDevice' },
         });
     };
 

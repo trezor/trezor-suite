@@ -1,15 +1,16 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
+import { analytics, EventType } from '@suite-native/analytics';
 import {
-    selectIsUnacquiredDevice,
-    selectIsConnectedDeviceUninitialized,
-    selectIsSelectedDeviceImported,
     acquireDevice,
-    selectDevice,
     deviceActions,
+    selectDevice,
+    selectIsConnectedDeviceUninitialized,
     selectIsNoPhysicalDeviceConnected,
     selectIsDeviceInBootloader,
+    selectIsUnacquiredDevice,
+    selectIsSelectedDeviceImported,
 } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { useTranslate } from '@suite-native/intl';
@@ -38,6 +39,11 @@ export const useDetectDeviceError = () => {
     const handleDisconnect = useCallback(() => {
         if (selectedDevice) {
             dispatch(deviceActions.deviceDisconnect(selectedDevice));
+
+            analytics.report({
+                type: EventType.EjectDeviceClick,
+                payload: { origin: 'deviceNotReadyModal' },
+            });
 
             // it takes some time until the device disconnect action makes changes to the state,
             // so we need to make sure that the error alert won't reappear again before it happens.
@@ -73,7 +79,13 @@ export const useDetectDeviceError = () => {
                 primaryButtonTitle: translate('generic.buttons.eject'),
                 primaryButtonVariant: 'tertiaryElevation1',
                 appendix: <IncompatibleDeviceModalAppendix />,
-                onPressPrimaryButton: handleDisconnect,
+                onPressPrimaryButton: () => {
+                    handleDisconnect();
+                    analytics.report({
+                        type: EventType.UnsupportedDevice,
+                        payload: { deviceState: 'unsupportedFirmware' },
+                    });
+                },
             });
         }
     }, [
@@ -96,7 +108,13 @@ export const useDetectDeviceError = () => {
                 primaryButtonVariant: 'tertiaryElevation1',
                 primaryButtonTitle: translate('generic.buttons.eject'),
                 appendix: <IncompatibleDeviceModalAppendix />,
-                onPressPrimaryButton: handleDisconnect,
+                onPressPrimaryButton: () => {
+                    handleDisconnect();
+                    analytics.report({
+                        type: EventType.UnsupportedDevice,
+                        payload: { deviceState: 'noSeed' },
+                    });
+                },
             });
         }
     }, [
@@ -118,7 +136,13 @@ export const useDetectDeviceError = () => {
                 primaryButtonVariant: 'tertiaryElevation1',
                 primaryButtonTitle: translate('generic.buttons.eject'),
                 appendix: <BootloaderModalAppendix />,
-                onPressPrimaryButton: handleDisconnect,
+                onPressPrimaryButton: () => {
+                    handleDisconnect();
+                    analytics.report({
+                        type: EventType.UnsupportedDevice,
+                        payload: { deviceState: 'bootloaderMode' },
+                    });
+                },
             });
         }
     }, [isDeviceInBootloader, wasDeviceEjectedByUser, showAlert, translate, handleDisconnect]);
