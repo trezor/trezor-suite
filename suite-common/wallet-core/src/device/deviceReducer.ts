@@ -650,9 +650,9 @@ export const selectDeviceNameById = (
     return device?.name ?? null;
 };
 
-export const selectSelectedDeviceName = (state: DeviceRootState) => {
+export const selectSelectedDeviceLabel = (state: DeviceRootState) => {
     const selectedDevice = selectDevice(state);
-    return selectDeviceNameById(state, selectedDevice?.id);
+    return selectDeviceLabelById(state, selectedDevice?.id);
 };
 
 export const selectDeviceId = (state: DeviceRootState) => {

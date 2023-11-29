@@ -22,7 +22,7 @@ import {
     selectDeviceModel,
     selectDeviceReleaseInfo,
     selectIsSelectedDeviceImported,
-    selectSelectedDeviceName,
+    selectSelectedDeviceLabel,
 } from '@suite-common/wallet-core';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { useTranslate } from '@suite-native/intl';
@@ -51,7 +51,7 @@ export const DeviceInfoModalScreen = () => {
     const openLink = useOpenLink();
 
     const deviceModel = useSelector(selectDeviceModel);
-    const deviceName = useSelector(selectSelectedDeviceName);
+    const deviceLabel = useSelector(selectSelectedDeviceLabel);
     const device = useSelector(selectDevice);
     const isPortfolioTrackerDevice = useSelector(selectIsSelectedDeviceImported);
     const deviceReleaseInfo = useSelector(selectDeviceReleaseInfo);
@@ -132,7 +132,7 @@ export const DeviceInfoModalScreen = () => {
                     <HStack spacing="large">
                         <Image width={92} height={151} source={deviceImage[deviceModel]} />
                         <Box justifyContent="center">
-                            <Text variant="titleSmall">{deviceName}</Text>
+                            <Text variant="titleSmall">{deviceLabel}</Text>
                             <Text variant="hint">
                                 {translate('deviceInfo.installedFw', {
                                     version: currentFwVersion,
