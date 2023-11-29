@@ -153,6 +153,7 @@ describe('utils/deviceFeaturesUtils', () => {
                 tgor: 'update-required',
                 coinjoin: 'update-required',
                 signMessageNoScriptType: 'update-required',
+                chunkify: 'no-support',
             });
         });
 
@@ -172,6 +173,7 @@ describe('utils/deviceFeaturesUtils', () => {
                 signMessageNoScriptType: 'update-required',
                 sol: 'no-capability',
                 dsol: 'no-capability',
+                chunkify: 'update-required',
             });
         });
 
@@ -192,6 +194,7 @@ describe('utils/deviceFeaturesUtils', () => {
                 dsol: 'no-capability',
                 vtc: 'no-support',
                 xem: 'no-support',
+                chunkify: 'update-required',
             });
         });
 
