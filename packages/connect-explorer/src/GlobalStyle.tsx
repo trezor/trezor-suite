@@ -98,10 +98,6 @@ const GlobalStyle = createGlobalStyle`
             color: #0366d6;
             text-decoration: none;
         }
-
-        img {
-            width: 100%;
-        }
     }
 
 `;
