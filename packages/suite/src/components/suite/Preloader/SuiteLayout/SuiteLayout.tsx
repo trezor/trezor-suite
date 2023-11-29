@@ -54,11 +54,10 @@ export const Columns = styled.div`
 export const AppWrapper = styled.div`
     display: flex;
     flex: 1;
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
-    background: ${({ theme }) => theme.BG_GREY};
     flex-direction: column;
     overflow: auto scroll;
     width: 100%;
+    background: ${({ theme }) => theme.backgroundSurfaceElevation0};
     align-items: center;
     position: relative;
 
@@ -99,10 +98,12 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
             <PageWrapper>
                 <ModalContextProvider>
                     <Metadata title={title} />
+
                     <ModalSwitcher />
 
                     <SuiteBanners />
                     <CoinjoinBars />
+
                     {isMobileLayout && <MobileMenu />}
 
                     <DiscoveryProgress />

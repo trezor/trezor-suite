@@ -1,6 +1,6 @@
 import { useMemo, ReactNode, HTMLAttributes } from 'react';
 import styled, { useTheme } from 'styled-components';
-import { Icon, IconProps, variables, Spinner } from '@trezor/components';
+import { Icon, IconProps, variables } from '@trezor/components';
 import { FADE_IN } from '@trezor/components/src/config/animations';
 
 const MobileWrapper = styled.div<Pick<MobileActionItemProps, 'isActive'>>`
@@ -10,7 +10,7 @@ const MobileWrapper = styled.div<Pick<MobileActionItemProps, 'isActive'>>`
     align-items: center;
 
     & + & {
-        border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
+        border-top: 1px solid ${({ theme }) => theme.borderOnElevation1};
     }
 `;
 
@@ -24,9 +24,7 @@ const MobileIconWrapper = styled.div`
 
 const Label = styled.span`
     padding: 16px 8px;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    font-size: ${variables.FONT_SIZE.NORMAL};
+    color: ${({ theme }) => theme.textSubdued};
 `;
 
 const AlertDotWrapper = styled.div`
@@ -39,7 +37,7 @@ const AlertDotWrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    background: ${({ theme }) => theme.BG_WHITE};
+    background: ${({ theme }) => theme.backgroundSurfaceElevation1};
     animation: ${FADE_IN} 0.2s ease-out;
 
     ${variables.SCREEN_QUERY.BELOW_TABLET} {
@@ -53,11 +51,11 @@ const AlertDot = styled.div`
     width: 5px;
     height: 5px;
     border-radius: 50%;
-    background: ${({ theme }) => theme.TYPE_ORANGE};
+    background: ${({ theme }) => theme.iconAlertYellow};
 `;
 
 const Indicator = styled.div`
-    background: ${({ theme }) => theme.BG_WHITE};
+    background: ${({ theme }) => theme.backgroundSurfaceElevation1};
     display: flex;
     align-items: center;
     justify-content: center;
@@ -78,7 +76,7 @@ const Indicator = styled.div`
     }
 `;
 
-export type IndicatorStatus = 'check' | 'alert' | 'loading';
+export type IndicatorStatus = 'check' | 'alert';
 
 interface CommonProps extends Pick<HTMLAttributes<HTMLDivElement>, 'onClick'> {
     label: ReactNode;
@@ -133,11 +131,6 @@ export const MobileActionItem = ({
                     <AlertDotWrapper>
                         <AlertDot />
                     </AlertDotWrapper>
-                )}
-                {indicator === 'loading' && (
-                    <Indicator>
-                        <Spinner size={6} />
-                    </Indicator>
                 )}
                 {indicator === 'check' && (
                     <Indicator>

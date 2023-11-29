@@ -16,6 +16,11 @@ import { FailedBackup } from './FailedBackupBanner';
 import { SafetyChecksBanner } from './SafetyChecksBanner';
 import { TranslationMode } from './TranslationModeBanner';
 import { FirmwareHashMismatch } from './FirmwareHashMismatchBanner';
+import styled from 'styled-components';
+
+const Container = styled.div`
+    background: ${({ theme }) => theme.backgroundSurfaceElevation0};
+`;
 
 export const SuiteBanners = () => {
     const transport = useSelector(state => state.suite.transport);
@@ -82,12 +87,12 @@ export const SuiteBanners = () => {
     const useMessageSystemBanner = bannerMessage && bannerMessage.priority >= priority;
 
     return (
-        <div>
+        <Container>
             {useMessageSystemBanner && <MessageSystemBanner message={bannerMessage} />}
             {isTranslationMode() && <TranslationMode />}
             <OnlineStatus isOnline={online} />
             {!useMessageSystemBanner && banner}
             {/* TODO: add Pin not set */}
-        </div>
+        </Container>
     );
 };

@@ -15,8 +15,8 @@ const Wrapper = styled.div`
     z-index: ${zIndices.navigationBar};
     padding: 6px 8px;
     align-items: center;
-    background: ${({ theme }) => theme.BG_WHITE};
-    border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
+    background: ${({ theme }) => theme.backgroundSurfaceElevation1};
+    border-bottom: 1px solid ${({ theme }) => theme.borderOnElevation1};
 
     ${variables.SCREEN_QUERY.ABOVE_LAPTOP} {
         padding: 10px 16px;
@@ -40,7 +40,7 @@ const ExpandedMobileNavigation = styled.div`
     display: flex;
     position: absolute;
     flex-direction: column;
-    background: ${({ theme }) => theme.BG_WHITE};
+    background: ${({ theme }) => theme.backgroundSurfaceElevation1};
     width: 100%;
     height: 100%;
 `;
