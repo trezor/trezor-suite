@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { accountsActions, selectSupportedNetworks } from '@suite-common/wallet-core';
-import { Button, CollapsibleBox } from '@trezor/components';
+import { Button, CoinLogo, CollapsibleBox } from '@trezor/components';
 import { FirmwareType } from '@trezor/connect';
 import { spacingsPx } from '@trezor/theme';
 import { arrayPartition } from '@trezor/utils';
