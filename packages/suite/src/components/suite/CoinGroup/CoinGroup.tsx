@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 
-import { useDispatch } from 'src/hooks/suite';
+import { selectDeviceSupportedNetworks } from '@suite-common/wallet-core';
+
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
 import { CoinList } from 'src/components/suite';
 import type { Network } from 'src/types/wallet';
@@ -20,11 +22,18 @@ interface CoinGroupProps {
 }
 
 export const CoinGroup = ({ onToggle, networks, selectedNetworks, className }: CoinGroupProps) => {
-    const dispatch = useDispatch();
+    const deviceSupportedNetworkSymbols = useSelector(selectDeviceSupportedNetworks);
 
     const [settingsMode, setSettingsMode] = useState(false);
 
-    const isAtLeastOneActive = networks.some(({ symbol }) => selectedNetworks?.includes(symbol));
+    const dispatch = useDispatch();
+
+    const supportedNetworks = networks.filter(network =>
+        deviceSupportedNetworkSymbols.includes(network.symbol),
+    );
+    const isAtLeastOneActive = supportedNetworks.some(
+        ({ symbol }) => selectedNetworks?.includes(symbol),
+    );
 
     const onSettings = (symbol: Network['symbol']) => {
         setSettingsMode(false);
@@ -45,7 +54,7 @@ export const CoinGroup = ({ onToggle, networks, selectedNetworks, className }: C
                 toggleSettingsMode={toggleSettingsMode}
             />
             <CoinList
-                networks={networks}
+                networks={supportedNetworks}
                 selectedNetworks={selectedNetworks}
                 settingsMode={settingsMode}
                 onToggle={settingsMode ? onSettings : onToggle}
