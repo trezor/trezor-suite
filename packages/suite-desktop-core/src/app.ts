@@ -1,5 +1,5 @@
 import path from 'path';
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, session } from 'electron';
 
 import { isDevEnv } from '@suite-common/suite-utils';
 import type { HandshakeClient } from '@trezor/suite-desktop-api';
@@ -41,6 +41,19 @@ const createMainWindow = (winBounds: WinBounds) => {
             sandbox: false,
         },
         icon: path.join(global.resourcesPath, 'images', 'icons', '512x512.png'),
+    });
+
+    // // Modify COOP and COEP headers
+    session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+        const responseHeaders = { ...details.responseHeaders };
+
+        // @ts-expect-error Set COOP header
+        responseHeaders['Cross-Origin-Opener-Policy'] = 'same-origin';
+
+        // @ts-expect-error Set COEP header
+        responseHeaders['Cross-Origin-Embedder-Policy'] = 'require-corp';
+
+        callback({ responseHeaders });
     });
 
     let resizeDebounce: ReturnType<typeof setTimeout> | null = null;

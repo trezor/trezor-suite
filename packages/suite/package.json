@@ -19,6 +19,11 @@
         "test-unit:watch": "jest -o --watch"
     },
     "dependencies": {
+        "@effect/schema": "^0.60.7",
+        "@evolu/common": "^3.0.13",
+        "@evolu/common-react": "^4.0.4",
+        "@evolu/common-web": "^4.0.5",
+        "@evolu/react": "^4.0.2",
         "@formatjs/intl": "2.9.6",
         "@hookform/resolvers": "3.3.2",
         "@mobily/ts-belt": "^3.13.1",
@@ -26,6 +31,7 @@
         "@sentry/core": "7.81.1",
         "@solana/buffer-layout": "^4.0.1",
         "@solana/web3.js": "^1.87.6",
+        "@sqlite.org/sqlite-wasm": "3.45.0-build1",
         "@suite-common/analytics": "workspace:*",
         "@suite-common/connect-init": "workspace:*",
         "@suite-common/device-authenticity": "workspace:*",
@@ -74,6 +80,7 @@
         "bs58check": "^3.0.1",
         "date-fns": "^2.30.0",
         "dropbox": "^10.34.0",
+        "effect": "2.2.0",
         "file-saver": "^2.0.5",
         "framer-motion": "^10.16.4",
         "history": "^4.10.1",

@@ -18,6 +18,10 @@ export const init: Module = () => {
         callback({
             responseHeaders: {
                 'Content-Security-Policy': [config.cspRules.join(';')],
+                // Set COOP header
+                'Cross-Origin-Opener-Policy': 'same-origin',
+                // Set COEP header
+                'Cross-Origin-Embedder-Policy': 'require-corp',
                 ...details.responseHeaders,
             },
         });
