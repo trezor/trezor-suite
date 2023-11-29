@@ -73,6 +73,7 @@ const DecimalValue = styled.div<{ withLeftMargin?: boolean }>`
     letter-spacing: 0.565px;
     margin-left: ${({ withLeftMargin }) => `${withLeftMargin ? '4px' : 0}`};
 `;
+
 const CoinAmount = styled.div`
     color: ${({ theme }) => theme.textSubdued};
     display: inline-block;
@@ -165,7 +166,7 @@ export const AssetCard = ({ network, failed, cryptoValue }: AssetCardProps) => {
                             </div>
                             <div>
                                 <BuyContainerLabel>
-                                    <Translation id="TR_LAST_WEEK" />
+                                    <Translation id="TR_7D_CHANGE" />
                                 </BuyContainerLabel>
                                 <TrendTicker symbol={symbol} />
                             </div>

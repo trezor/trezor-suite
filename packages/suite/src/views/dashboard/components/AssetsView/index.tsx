@@ -204,7 +204,7 @@ export const AssetsView = () => {
                                 <Translation id="TR_EXCHANGE_RATE" />
                             </Header>
                             <Header>
-                                <Translation id="TR_LAST_WEEK" />
+                                <Translation id="TR_7D_CHANGE" />
                             </Header>
                             {/* empty column */}
                             <Header />
