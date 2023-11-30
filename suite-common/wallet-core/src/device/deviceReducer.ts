@@ -556,6 +556,12 @@ export const selectIsUnacquiredDevice = (state: DeviceRootState) => {
     return deviceType === 'unacquired';
 };
 
+export const selectIsDeviceInBootloader = (state: DeviceRootState) => {
+    const mode = selectDeviceMode(state);
+
+    return mode === 'bootloader';
+};
+
 export const selectIsDeviceInitialized = (state: DeviceRootState) => {
     const features = selectDeviceFeatures(state);
     const mode = selectDeviceMode(state);
