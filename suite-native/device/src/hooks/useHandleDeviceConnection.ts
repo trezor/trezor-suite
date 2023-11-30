@@ -23,7 +23,7 @@ export const useHandleDeviceConnection = () => {
 
     const navigation = useNavigation();
 
-    // At the moment when is an unauthorized physical device selected,
+    // At the moment when unauthorized physical device is selected,
     // redirect to the Connecting screen where is handled the connection logic.
     useEffect(() => {
         if (isOnboardingFinished && !isSelectedDeviceImported && !isDeviceConnectedAndAuthorized) {
