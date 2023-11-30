@@ -14,8 +14,5 @@ export const Note: StoryObj<NoteProps> = {
         className: {
             control: false,
         },
-        color: {
-            control: 'color',
-        },
     },
 };

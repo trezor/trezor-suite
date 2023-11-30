@@ -1,38 +1,38 @@
 import { ReactNode } from 'react';
 import styled, { useTheme } from 'styled-components';
 
+import { spacingsPx } from '@trezor/theme';
+
 import { Icon } from '../assets/Icon/Icon';
-import { typography } from '@trezor/theme';
+import { Paragraph } from '../typography/Paragraph/Paragraph';
 
 const Row = styled.div`
     display: flex;
-    gap: 6px;
+    gap: ${spacingsPx.xs};
 `;
 
 const InfoIcon = styled(Icon)`
-    margin-top: 1px;
+    margin-top: 2px;
 `;
 
-const Text = styled.div<{ $color?: string }>`
+const StyledParagraph = styled(Paragraph)<{ $color?: string }>`
     color: ${({ $color }) => $color};
-    ${typography.hint}
 `;
 
 export interface NoteProps {
     children: ReactNode;
     className?: string;
-    color?: string;
 }
 
-export const Note = ({ children, className, color }: NoteProps) => {
+export const Note = ({ children, className }: NoteProps) => {
     const theme = useTheme();
-
-    const noteColor = color || theme.backgroundSurfaceElevation1;
 
     return (
         <Row className={className}>
-            <InfoIcon icon="INFO" size={14} color={noteColor} />
-            <Text $color={noteColor}>{children}</Text>
+            <InfoIcon icon="INFO" size={14} color={theme.textSubdued} />
+            <StyledParagraph type="hint" $color={theme.textSubdued}>
+                {children}
+            </StyledParagraph>
         </Row>
     );
 };
