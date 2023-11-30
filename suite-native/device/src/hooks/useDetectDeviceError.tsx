@@ -1,35 +1,20 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-
-import { useNavigation } from '@react-navigation/native';
+import { useSelector, useDispatch } from 'react-redux';
 
 import {
-    ConnectDeviceStackRoutes,
-    HomeStackParamList,
-    HomeStackRoutes,
-    RootStackParamList,
-    RootStackRoutes,
-    StackToStackCompositeNavigationProps,
-} from '@suite-native/navigation';
-import {
-    acquireDevice,
-    selectDeviceRequestedPin,
-    selectIsConnectedDeviceUninitialized,
-    selectIsDeviceConnectedAndAuthorized,
-    selectIsSelectedDeviceImported,
     selectIsUnacquiredDevice,
-    selectDeviceModel,
+    selectIsConnectedDeviceUninitialized,
+    selectIsSelectedDeviceImported,
+    acquireDevice,
     selectDevice,
     deviceActions,
-    selectDeviceFirmwareVersion,
     selectIsNoPhysicalDeviceConnected,
 } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import { Translation, useTranslate } from '@suite-native/intl';
-import { Box, Text, VStack } from '@suite-native/atoms';
-import { selectIsOnboardingFinished } from '@suite-native/module-settings';
+import { useTranslate, Translation } from '@suite-native/intl';
+import { VStack, Text, Box } from '@suite-native/atoms';
 
-import { isFirmwareVersionSupported } from '../utils';
+import { selectIsFirmwareSupported } from '../selectors';
 
 const InstallFirmwareAppendix = () => {
     const isConnectedDeviceUninitialized = useSelector(selectIsConnectedDeviceUninitialized);
@@ -60,55 +45,35 @@ const InstallFirmwareAppendix = () => {
     );
 };
 
-type NavigationProps = StackToStackCompositeNavigationProps<
-    HomeStackParamList,
-    HomeStackRoutes.Home,
-    RootStackParamList
->;
+export const useDetectDeviceError = () => {
+    const [wasDeviceEjectedByUser, setWasDeviceEjectedByUser] = useState(false);
 
-export const useDeviceConnect = () => {
-    const [wasConnectingScreenAlreadyTriggered, setWasConnectingScreenAlreadyTriggered] =
-        useState(false);
+    const dispatch = useDispatch();
+    const { hideAlert, showAlert } = useAlert();
+    const { translate } = useTranslate();
 
-    const isNoPhysicalDeviceConnected = useSelector(selectIsNoPhysicalDeviceConnected);
-    const deviceModel = useSelector(selectDeviceModel);
-    const currentDevice = useSelector(selectDevice);
-    const hasDeviceRequestedPin = useSelector(selectDeviceRequestedPin);
-    const isDeviceConnectedAndAuthorized = useSelector(selectIsDeviceConnectedAndAuthorized);
+    const selectedDevice = useSelector(selectDevice);
     const isUnacquiredDevice = useSelector(selectIsUnacquiredDevice);
     const isConnectedDeviceUninitialized = useSelector(selectIsConnectedDeviceUninitialized);
     const isSelectedDeviceImported = useSelector(selectIsSelectedDeviceImported);
-    const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
-    const deviceFwVersion = useSelector(selectDeviceFirmwareVersion);
+    const isNoPhysicalDeviceConnected = useSelector(selectIsNoPhysicalDeviceConnected);
 
-    const dispatch = useDispatch();
-
-    const navigation = useNavigation<NavigationProps>();
-
-    const { hideAlert, showAlert } = useAlert();
-
-    const { translate } = useTranslate();
+    const isFirmwareSupported = useSelector(selectIsFirmwareSupported);
 
     const handleDisconnect = useCallback(() => {
-        if (currentDevice) {
-            dispatch(deviceActions.deviceDisconnect(currentDevice));
-        }
-    }, [currentDevice, dispatch]);
+        if (selectedDevice) {
+            dispatch(deviceActions.deviceDisconnect(selectedDevice));
 
-    const isFirmwareSupported = isFirmwareVersionSupported(deviceFwVersion, deviceModel);
-
-    useEffect(() => {
-        if (hasDeviceRequestedPin) {
-            navigation.navigate(RootStackRoutes.ConnectDevice, {
-                screen: ConnectDeviceStackRoutes.PinMatrix,
-            });
+            // it takes some time until the device disconnect action makes changes to the state,
+            // so we need to make sure that the error alert won't reappear again before it happens.
+            setWasDeviceEjectedByUser(true);
         }
-    }, [hasDeviceRequestedPin, navigation]);
+    }, [selectedDevice, dispatch]);
 
     // If device is unacquired (restarted app, another app fetched device session, ...),
     // we cannot work with device anymore. Shouldn't happen on mobile app but just in case.
     useEffect(() => {
-        if (isOnboardingFinished && isUnacquiredDevice) {
+        if (isUnacquiredDevice) {
             showAlert({
                 title: translate('moduleDevice.unacquiredDeviceModal.title'),
                 description: translate('moduleDevice.unacquiredDeviceModal.description'),
@@ -120,10 +85,10 @@ export const useDeviceConnect = () => {
         } else {
             hideAlert();
         }
-    }, [dispatch, hideAlert, isOnboardingFinished, isUnacquiredDevice, showAlert, translate]);
+    }, [isUnacquiredDevice, translate, dispatch, hideAlert, showAlert]);
 
     useEffect(() => {
-        if (isOnboardingFinished && !isFirmwareSupported && !isSelectedDeviceImported) {
+        if (!isFirmwareSupported && !isSelectedDeviceImported && !wasDeviceEjectedByUser) {
             showAlert({
                 title: translate('moduleDevice.unsupportedFirmware.title'),
                 description: translate('moduleDevice.unsupportedFirmware.description'),
@@ -136,17 +101,17 @@ export const useDeviceConnect = () => {
             });
         }
     }, [
-        dispatch,
         isFirmwareSupported,
+        isSelectedDeviceImported,
+        wasDeviceEjectedByUser,
+        dispatch,
         showAlert,
         translate,
         handleDisconnect,
-        isOnboardingFinished,
-        isSelectedDeviceImported,
     ]);
 
     useEffect(() => {
-        if (isOnboardingFinished && isConnectedDeviceUninitialized) {
+        if (isConnectedDeviceUninitialized && !wasDeviceEjectedByUser && !isUnacquiredDevice) {
             showAlert({
                 title: translate('moduleDevice.noSeedModal.title'),
                 description: translate('moduleDevice.noSeedModal.description'),
@@ -155,44 +120,22 @@ export const useDeviceConnect = () => {
                 primaryButtonVariant: 'tertiaryElevation1',
                 primaryButtonTitle: translate('generic.buttons.eject'),
                 appendix: <InstallFirmwareAppendix />,
-                onPressPrimaryButton: () => handleDisconnect,
+                onPressPrimaryButton: handleDisconnect,
             });
         }
     }, [
         isConnectedDeviceUninitialized,
+        isUnacquiredDevice,
+        wasDeviceEjectedByUser,
         showAlert,
         translate,
-        dispatch,
         handleDisconnect,
-        isOnboardingFinished,
     ]);
 
     useEffect(() => {
-        if (
-            isOnboardingFinished &&
-            isDeviceConnectedAndAuthorized &&
-            !isSelectedDeviceImported &&
-            !wasConnectingScreenAlreadyTriggered
-        ) {
-            setWasConnectingScreenAlreadyTriggered(true);
-            navigation.navigate(RootStackRoutes.ConnectDevice, {
-                screen: ConnectDeviceStackRoutes.ConnectingDevice,
-            });
-        }
-    }, [
-        hideAlert,
-        isDeviceConnectedAndAuthorized,
-        isSelectedDeviceImported,
-        navigation,
-        isOnboardingFinished,
-        wasConnectingScreenAlreadyTriggered,
-    ]);
-
-    useEffect(() => {
-        // In case that the physical device is disconnected, set connecting screen to be displayed
-        // again on the next device connection (selecting in to the `selectedDevice` state).
+        // Hide the error alert on disconnect of the device
         if (isNoPhysicalDeviceConnected) {
-            setWasConnectingScreenAlreadyTriggered(false);
+            hideAlert();
         }
-    }, [isNoPhysicalDeviceConnected]);
+    }, [isNoPhysicalDeviceConnected, hideAlert]);
 };

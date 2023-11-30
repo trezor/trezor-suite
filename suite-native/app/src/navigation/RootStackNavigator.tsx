@@ -18,15 +18,16 @@ import { TransactionDetailScreen } from '@suite-native/transactions';
 import { OnboardingStackNavigator } from '@suite-native/module-onboarding';
 import { ReceiveModalScreen } from '@suite-native/receive';
 import { ConnectDeviceStackNavigator } from '@suite-native/module-connect-device';
-import { DeviceInfoModalScreen, useDeviceConnect } from '@suite-native/device';
+import { DeviceInfoModalScreen, useHandleDeviceConnection } from '@suite-native/device';
 
 import { AppTabNavigator } from './AppTabNavigator';
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 
 export const RootStackNavigator = () => {
+    useHandleDeviceConnection();
+
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
-    useDeviceConnect();
 
     const getInitialRouteName = () => {
         if (isOnboardingFinished) {

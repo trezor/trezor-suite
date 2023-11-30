@@ -13,6 +13,7 @@
         { "path": "../assets" },
         { "path": "../atoms" },
         { "path": "../biometrics" },
+        { "path": "../device" },
         { "path": "../device-manager" },
         { "path": "../feature-flags" },
         { "path": "../formatters" },
