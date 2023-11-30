@@ -19,7 +19,8 @@ type AssetInfoSkeletonProps = {
 
 const ArrowIcon = styled(Icon)`
     visibility: hidden;
-    margin-top: ${spacingsPx.xxxs};
+    margin-top: ${spacingsPx.xxs};
+    margin-left: ${spacingsPx.xs};
 `;
 const Container = styled.div`
     display: flex;
@@ -66,7 +67,7 @@ export const AssetInfo = ({ network, onClick }: Props) => {
     return (
         <Container onClick={onClick}>
             <LogoWrapper>
-                <CoinLogo symbol={symbol} size={24} />
+                <CoinLogo symbol={symbol} size={24} hasBorder />
             </LogoWrapper>
             <WalletContent>
                 <CoinName>{name}</CoinName>
