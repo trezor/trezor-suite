@@ -12,6 +12,7 @@ Run the commands below in order to get the webextension ready to be loaded in th
 -   `yarn build:libs`
 -   `yarn workspace @trezor/connect-webextension build`
 -   `node packages/connect-examples/update-webextensions-sw.js`
+-   `yarn workspace @trezor/connect-iframe build:core-module`
 -   `yarn workspace @trezor/connect-popup dev`
 
 This extension is super simple and only reacts to "reload" button.

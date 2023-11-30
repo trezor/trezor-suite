@@ -37,9 +37,6 @@ rootPaths.forEach(dir => {
     const buildPath = path.join(rootPath, buildFolder);
     const vendorPath = path.join(buildPath, 'vendor');
 
-    const contentScriptPath = path.join(vendorPath, 'trezor-content-script.js');
-    const backgroundScriptPath = path.join(rootPath, 'background.js');
-
     fs.rmSync(buildPath, { recursive: true, force: true });
     if (!fs.existsSync(buildPath)) {
         fs.mkdirSync(buildPath);
@@ -47,8 +44,6 @@ rootPaths.forEach(dir => {
     if (!fs.existsSync(vendorPath)) {
         fs.mkdirSync(vendorPath);
     }
-
-    const srcPath = path.join(__dirname, '../connect-web');
 
     if (npmSrc) {
         fetch(npmSrc).then(res => {
