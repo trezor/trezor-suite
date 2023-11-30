@@ -67,7 +67,7 @@ export const AccountImportLoadingScreen = ({
                 TrezorConnect.getAccountInfo({
                     coin: networkSymbol,
                     descriptor: xpubAddress,
-                    details: 'tokenBalances',
+                    details: 'txs',
                     suppressBackupWarning: true,
                 }),
                 dispatch(
