@@ -11,7 +11,7 @@ import styled from 'styled-components';
 import { Input, InputProps, variables } from '@trezor/components';
 
 const LevelContainer = styled.div`
-    width: 68px;
+    width: 64px;
 `;
 
 const Level = styled(Input)`
