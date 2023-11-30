@@ -16,16 +16,20 @@ const babelConfig = {
 };
 
 module.exports = {
-    roots: ['<rootDir>/src', '<rootDir>/../../suite-common/test-utils/__mocks__'],
+    roots: [
+        '<rootDir>/src',
+        '<rootDir>/__mocks__',
+        '<rootDir>/../../suite-common/test-utils/__mocks__',
+    ],
     setupFiles: [
-        '<rootDir>/src/support/tests/npmMocks.tsx',
         'jest-canvas-mock', // for lottie-react
     ],
     moduleNameMapper: {
         '^@suite-common/(.+)': '<rootDir>/../../suite-common/$1',
         '^@trezor/(.+)': '<rootDir>/../$1',
         '^src/(.+)': '<rootDir>/src/$1',
-        '\\.(mp4)$': '<rootDir>/__mocks__/file.js',
+        '\\.(mp4)$': '<rootDir>/__mocks__/import-mp4.js',
+        '\\.(svg)$': '<rootDir>/__mocks__/import-svg.js',
     },
     moduleFileExtensions: ['js', 'ts', 'tsx'],
     coverageDirectory: './coverage',
@@ -67,7 +71,6 @@ module.exports = {
     transform: {
         '(d3-|internmap).*\\.js$': ['babel-jest', babelConfig],
         '\\.(ts|tsx)$': ['babel-jest', babelConfig],
-        '\\.svg$': '<rootDir>/src/support/tests/svgTransform.js', // https://stackoverflow.com/questions/46791263/jest-test-fail-syntaxerror-unexpected-token
     },
     verbose: false,
     watchPlugins: ['jest-watch-typeahead/filename', 'jest-watch-typeahead/testname'],

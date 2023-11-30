@@ -31,17 +31,10 @@ jest.spyOn(TrezorConnect, 'cipherKeyValue').mockImplementation(() =>
 
 jest.doMock('@trezor/suite-analytics', () => testMocks.getAnalytics());
 
-jest.mock('dropbox', () => {
-    const { Dropbox, DropboxAuth } = jest.requireActual('dropbox');
-    return {
-        __esModule: true,
-        Dropbox,
-        DropboxAuth,
-    };
-});
-
-// @ts-expect-error declare fetch (used in Dropbox constructor)
-global.fetch = () => {};
+// use real package
+jest.unmock('dropbox');
+// use fetch mock (used in Dropbox constructor, requesting to https://api.dropboxapi.com/)
+jest.spyOn(global, 'fetch').mockImplementation(() => Promise.resolve<any>({}));
 
 type MetadataState = ReturnType<typeof metadataReducer>;
 interface InitialState {

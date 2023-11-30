@@ -5,8 +5,6 @@ import { renderWithProviders, findByTestId } from 'src/support/tests/hooksHelper
 
 import { Preloader } from '../Preloader';
 
-// react-svg will not work
-jest.mock('react-svg', () => ({ ReactSVG: () => 'SVG' }));
 // render only Translation.id in data-test attribute
 jest.mock('src/components/suite/Translation', () => ({
     Translation: ({ id }: any) => <div data-test={id}>{id}</div>,

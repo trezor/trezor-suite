@@ -22,8 +22,6 @@ jest.mock('src/actions/suite/routerActions', () => ({
     goto: () => ({ type: 'mock-redirect' }),
 }));
 
-jest.mock('react-svg', () => ({ ReactSVG: () => 'SVG' }));
-
 // render only Translation['id']
 jest.mock('src/components/suite/Translation', () => ({ Translation: ({ id }: any) => id }));
 
