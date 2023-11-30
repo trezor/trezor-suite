@@ -625,7 +625,6 @@ export const fixtures = {
             input: {
                 transaction: parsedTransactions.basic.transaction,
                 accountAddress: 'someAddress',
-                slotToBlockHeightMapping: {},
             },
             expectedOutput: [],
         },
@@ -687,7 +686,6 @@ export const fixtures = {
             input: {
                 transaction: parsedTransactions.basic.transaction,
                 accountAddress: effects.negative.address,
-                slotToBlockHeightMapping: { 5: 20 },
             },
             expectedOutput: {
                 type: 'sent',

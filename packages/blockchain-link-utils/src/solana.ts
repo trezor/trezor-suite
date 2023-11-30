@@ -392,7 +392,6 @@ export const getTokens = async (
 export const transformTransaction = async (
     tx: SolanaValidParsedTxWithMeta,
     accountAddress: string,
-    slotToBlockHeightMapping: Record<number, number | null>,
 ): Promise<Transaction> => {
     const nativeEffects = getNativeEffects(tx);
 
