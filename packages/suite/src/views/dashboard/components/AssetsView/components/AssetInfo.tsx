@@ -22,6 +22,10 @@ const ArrowIcon = styled(Icon)`
     margin-top: ${spacingsPx.xxs};
     margin-left: ${spacingsPx.xs};
 `;
+const Flex = styled.div`
+    display: flex;
+`;
+
 const Container = styled.div`
     display: flex;
 
@@ -82,7 +86,7 @@ export const AssetInfo = ({ network, onClick }: Props) => {
 };
 
 export const AssetInfoSkeleton = ({ animate }: AssetInfoSkeletonProps) => (
-    <>
+    <Flex>
         <LogoWrapper>
             <SkeletonCircle size={44} />
         </LogoWrapper>
@@ -98,5 +102,5 @@ export const AssetInfoSkeleton = ({ animate }: AssetInfoSkeletonProps) => (
                 </WalletNumber>
             </Wallets>
         </div>
-    </>
+    </Flex>
 );

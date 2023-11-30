@@ -32,7 +32,6 @@ const BuyContainer = styled.div`
     align-items: center;
     justify-content: space-between;
     margin-top: ${spacingsPx.lg};
-    padding-top: ${spacingsPx.sm};
     background-color: ${({ theme }) => theme.backgroundSurfaceElevation2};
     border-radius: 8px;
     padding: ${spacingsPx.sm} ${spacingsPx.sm} ${spacingsPx.sm} ${spacingsPx.md};
@@ -189,7 +188,9 @@ export const AssetCardSkeleton = (props: { animate?: boolean }) => {
     return (
         <Card>
             <MarginContainer>
-                <AssetInfoSkeleton animate={animate} />
+                <AssetContainer>
+                    <AssetInfoSkeleton animate={animate} />
+                </AssetContainer>
                 <FiatAmount>
                     <IntegerValue>
                         <SkeletonRectangle animate={animate} width={95} height={32} />
