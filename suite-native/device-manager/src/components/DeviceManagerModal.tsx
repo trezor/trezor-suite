@@ -4,7 +4,6 @@ import { useSafeAreaInsets, EdgeInsets } from 'react-native-safe-area-context';
 
 import { Box, ScreenHeaderWrapper, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { BlurredScreenOverlay } from '@suite-native/screen-overlay';
 
 import { DeviceSwitch } from './DeviceSwitch';
 import { useDeviceManager } from '../hooks/useDeviceManager';
@@ -13,14 +12,23 @@ type DeviceManagerModalProps = {
     children: ReactNode;
 };
 
-const modalWrapperStyle = prepareNativeStyle<{ insets: EdgeInsets }>((utils, { insets }) => ({
-    paddingTop: Math.max(insets.top, utils.spacings.medium),
-    backgroundColor: utils.colors.backgroundSurfaceElevation1,
+const MANAGER_MODAL_BOTTOM_RADIUS = 20;
+
+const modalBackgroundOverlayStyle = prepareNativeStyle(utils => ({
+    flex: 1,
+    backgroundColor: utils.transparentize(0.3, utils.colors.backgroundNeutralBold),
 }));
 
+const deviceManagerModalWrapperStyle = prepareNativeStyle<{ insets: EdgeInsets }>(
+    (utils, { insets }) => ({
+        paddingTop: Math.max(insets.top, utils.spacings.small),
+        backgroundColor: utils.colors.backgroundSurfaceElevation1,
+        borderBottomLeftRadius: MANAGER_MODAL_BOTTOM_RADIUS,
+        borderBottomRightRadius: MANAGER_MODAL_BOTTOM_RADIUS,
+    }),
+);
+
 const contentWrapperStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.backgroundSurfaceElevation1,
-    borderBottomRadius: utils.borders.radii.large,
     paddingHorizontal: utils.spacings.medium,
     paddingBottom: utils.spacings.medium,
 }));
@@ -37,15 +45,16 @@ export const DeviceManagerModal = ({ children }: DeviceManagerModalProps) => {
     };
 
     return (
-        <Modal onRequestClose={handleClose} visible={isDeviceManagerVisible}>
-            <BlurredScreenOverlay />
-            <Box style={applyStyle(modalWrapperStyle, { insets })}>
-                <ScreenHeaderWrapper>
-                    <DeviceSwitch />
-                </ScreenHeaderWrapper>
-                <VStack spacing="medium" style={applyStyle(contentWrapperStyle)}>
-                    {children}
-                </VStack>
+        <Modal transparent onRequestClose={handleClose} visible={isDeviceManagerVisible}>
+            <Box style={applyStyle(modalBackgroundOverlayStyle)}>
+                <Box style={applyStyle(deviceManagerModalWrapperStyle, { insets })}>
+                    <ScreenHeaderWrapper>
+                        <DeviceSwitch />
+                    </ScreenHeaderWrapper>
+                    <VStack spacing="medium" style={applyStyle(contentWrapperStyle)}>
+                        {children}
+                    </VStack>
+                </Box>
             </Box>
         </Modal>
     );
