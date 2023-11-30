@@ -8234,7 +8234,6 @@ export default defineMessages({
         id: 'TR_RESTART_TREZOR_DEVICE_TUTORIAL',
         defaultMessage: 'Restart tutorial',
     },
-<<<<<<< HEAD
     TR_HIDE_BALANCES: {
         id: 'TR_HIDE_BALANCES',
         defaultMessage: 'Hide balances',
@@ -8242,10 +8241,5 @@ export default defineMessages({
     TR_SHOW_BALANCES: {
         id: 'TR_SHOW_BALANCES',
         defaultMessage: 'Show balances',
-=======
-    TR_LAST_WEEK: {
-        id: 'TR_LAST_WEEK',
-        defaultMessage: 'Last week',
->>>>>>> e578eec498 (style(suite): Add translations)
     },
 });
