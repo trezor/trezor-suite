@@ -7,6 +7,7 @@ import {
     ChangeEventHandler,
 } from 'react';
 import styled, { css, CSSObject } from 'styled-components';
+
 import { borders, boxShadows, spacingsPx, typography } from '@trezor/theme';
 import { mediaQueries } from '@trezor/styles';
 
@@ -23,7 +24,7 @@ const thumb = css<Pick<RangeProps, 'disabled'>>`
     appearance: none;
     background: white;
     border-radius: ${borders.radii.full};
-    box-shadow: ${boxShadows.elevation1};
+    box-shadow: 0 0 4px 0 rgb(0 0 0 / 50%);
     margin-top: calc((${spacingsPx.xxs} - ${spacingsPx.xl}) / 2);
     width: ${spacingsPx.xl};
     height: ${spacingsPx.xl};
@@ -33,7 +34,7 @@ const thumb = css<Pick<RangeProps, 'disabled'>>`
         !disabled &&
         css`
             :active {
-                box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.04);
+                box-shadow: 0 0 2px 0 rgb(0 0 0 / 50%);
                 cursor: grabbing;
             }
         `}
