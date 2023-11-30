@@ -11,6 +11,7 @@ import { TransportProtocolEncode } from '../types';
 export const encode: TransportProtocolEncode = (data, options) => {
     const { messageType } = options;
     const fullSize = HEADER_SIZE + data.limit;
+    const chunkSize = options.chunkSize || BUFFER_SIZE;
 
     const encodedByteBuffer = new ByteBuffer(fullSize);
 
@@ -29,7 +30,7 @@ export const encode: TransportProtocolEncode = (data, options) => {
 
     encodedByteBuffer.reset();
 
-    const size = BUFFER_SIZE - 1;
+    const size = chunkSize - 1;
 
     const chunkCount = Math.ceil(encodedByteBuffer.limit / size) || 1;
 
@@ -42,7 +43,7 @@ export const encode: TransportProtocolEncode = (data, options) => {
         const start = i * size;
         const end = Math.min((i + 1) * size, encodedByteBuffer.limit);
 
-        const buffer = new ByteBuffer(BUFFER_SIZE);
+        const buffer = new ByteBuffer(chunkSize);
 
         buffer.writeByte(MESSAGE_MAGIC_HEADER_BYTE);
 

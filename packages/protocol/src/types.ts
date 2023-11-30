@@ -6,6 +6,7 @@ export type TransportProtocolDecode = (bytes: ArrayBuffer) => {
 
 export interface TransportProtocolEncodeOptions {
     messageType: number;
+    chunkSize?: number;
 }
 
 export type TransportProtocolEncode = (
