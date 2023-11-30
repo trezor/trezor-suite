@@ -42,8 +42,13 @@ export const getAccountTransactions = (
     transactions: Record<string, WalletAccountTransaction[]>,
 ) => transactions[accountKey] || [];
 
-export const isPending = (tx: WalletAccountTransaction | AccountTransaction) =>
-    !!tx && (!tx.blockHeight || tx.blockHeight < 0);
+export const isPending = (tx: WalletAccountTransaction | AccountTransaction) => {
+    if (tx.solanaSpecific?.status === 'confirmed') {
+        return false;
+    }
+
+    return !!tx && (!tx.blockHeight || tx.blockHeight < 0);
+};
 
 /* Convert date to string in YYYY-MM-DD format */
 const generateTransactionDateKey = (d: Date) =>
@@ -82,8 +87,9 @@ export const groupTransactionsByDate = (
             .filter(transaction => !!transaction)
             .sort(sortByBlockHeight)
             .reduce<{ [key: string]: WalletAccountTransaction[] }>((r, item) => {
+                const isTxPending = isPending(item);
                 const key =
-                    item.blockHeight && item.blockHeight > 0 && item.blockTime && item.blockTime > 0
+                    !isTxPending && item.blockTime && item.blockTime > 0
                         ? keyFormatter(new Date(item.blockTime * 1000))
                         : 'pending';
                 const prev = r[key] ?? [];
@@ -913,7 +919,7 @@ export const advancedSearchTransactions = (
 
 export const isTxFinal = (tx: WalletAccountTransaction, confirmations: number) =>
     // checks RBF status
-    !tx.rbf || confirmations > 0;
+    !tx.rbf || confirmations > 0 || tx.solanaSpecific?.status === 'confirmed';
 
 export const getTxHeaderSymbol = (transaction: WalletAccountTransaction) => {
     const isSingleTokenTransaction = transaction.tokens.length === 1;
