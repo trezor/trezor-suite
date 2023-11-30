@@ -26,6 +26,16 @@ export default [
                 value: true,
             },
             cardanoDerivationType,
+            {
+                name: 'details',
+                placeholder: 'Select details',
+                type: 'select',
+                optional: true,
+                data: [
+                    { value: 'basic', label: 'Basic' },
+                    { value: 'txs', label: 'Transactions' },
+                ],
+            },
         ],
     },
 ];
