@@ -2964,6 +2964,11 @@ export default defineMessages({
         defaultMessage: 'Solana Devnet',
         id: 'TR_NETWORK_SOLANA_DEVNET',
     },
+    TR_SOLANA_DEVNET_SHORTCUT_WARNING: {
+        defaultMessage:
+            "DSOL will show as 'SOL' on your Trezor due to network limitations.\nCheck the provided blockhash on devnet explorer if you want to verify the transaction network. ",
+        id: 'TR_SOLANA_DEVNET_SHORTCUT_WARNING',
+    },
     TR_NEW_COMMUNICATION_TOOL: {
         defaultMessage:
             'New communication tool to facilitate the connection between your Trezor and your internet browser.',
