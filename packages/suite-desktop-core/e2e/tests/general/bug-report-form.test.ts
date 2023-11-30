@@ -1,7 +1,7 @@
 import { test as testPlaywright, expect as expectPlaywright } from '@playwright/test';
 
-import { launchSuite, rmDirRecursive, waitForDataTestSelector } from '../../support/common';
-import { onSuiteGuide } from '../../support/pageActions/suiteGuideActions';
+import { launchSuite, rmDirRecursive } from '../../support/common';
+import { onSuiteGuidePage } from '../../support/pageActions/suiteGuideActions';
 
 /**
  * Test case:
@@ -19,17 +19,10 @@ testPlaywright('Send a bug report @debug', async () => {
     const { electronApp, window, localDataDir } = await launchSuite();
     rmDirRecursive(localDataDir);
 
-    await waitForDataTestSelector(window, '@welcome/title');
+    await onSuiteGuidePage.openSidePanel(window);
+    await onSuiteGuidePage.openFeedback(window);
+    await onSuiteGuidePage.sendBugreport(window, testData);
 
-    await onSuiteGuide.openSidePanel(window);
-    await onSuiteGuide.openFeedback(window);
-    await onSuiteGuide.sendBugreport(window, testData);
-
-    //
-    // Assert
-    //
-    const successToast = await waitForDataTestSelector(window, '@toast/user-feedback-send-success');
-    await expectPlaywright(successToast).toBeTruthy();
-
+    expectPlaywright(await onSuiteGuidePage.getSuccessToast(window)).toBeTruthy();
     electronApp.close();
 });
