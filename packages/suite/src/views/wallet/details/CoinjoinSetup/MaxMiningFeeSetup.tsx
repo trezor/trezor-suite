@@ -59,7 +59,7 @@ export const MaxMiningFeeSetup = ({ accountKey, maxMiningFee }: MaxMiningFeeSetu
             min={min}
             max={max}
             unit={unit}
-            inputWidth={116}
+            inputWidth={112}
             trackStyle={trackStyle}
             labels={labels}
         />
