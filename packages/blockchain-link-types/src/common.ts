@@ -124,6 +124,9 @@ export interface Transaction {
         withdrawal?: string;
         deposit?: string;
     };
+    solanaSpecific?: {
+        status: 'confirmed';
+    };
     details: TransactionDetail;
     vsize?: number;
     feeRate?: string;
