@@ -34,7 +34,7 @@ const BuyContainer = styled.div`
     margin-top: ${spacingsPx.lg};
     padding-top: ${spacingsPx.sm};
     background-color: ${({ theme }) => theme.backgroundSurfaceElevation2};
-    border-radius: 8px; // @TODO, we miss this border size
+    border-radius: 8px;
     padding: ${spacingsPx.sm} ${spacingsPx.sm} ${spacingsPx.sm} ${spacingsPx.md};
 `;
 
@@ -66,13 +66,13 @@ const IntegerValue = styled(H2)`
     letter-spacing: 0.565px;
 `;
 
-const DecimalValue = styled.div<{ withLeftMargin?: boolean }>`
-    ${typography.hint};
-    font-variant-numeric: tabular-nums;
-    align-self: flex-end;
-    letter-spacing: 0.565px;
-    margin-left: ${({ withLeftMargin }) => `${withLeftMargin ? '4px' : 0}`};
-`;
+// const DecimalValue = styled.div<{ withLeftMargin?: boolean }>`
+//     ${typography.hint};
+//     font-variant-numeric: tabular-nums;
+//     align-self: flex-end;
+//     letter-spacing: 0.565px;
+//     margin-left: ${({ withLeftMargin }) => `${withLeftMargin ? '4px' : 0}`};
+// `;
 
 const CoinAmount = styled.div`
     color: ${({ theme }) => theme.textSubdued};
@@ -135,7 +135,7 @@ export const AssetCard = ({ network, failed, cryptoValue }: AssetCardProps) => {
                                 <IntegerValue>
                                     <FiatValue amount={cryptoValue} symbol={symbol} />
                                 </IntegerValue>
-                                <DecimalValue>.92</DecimalValue>
+                                {/* <DecimalValue>.92</DecimalValue> */}
                             </FiatAmount>
                             <CoinAmount>
                                 <AmountUnitSwitchWrapper symbol={symbol}>
@@ -194,9 +194,9 @@ export const AssetCardSkeleton = (props: { animate?: boolean }) => {
                     <IntegerValue>
                         <SkeletonRectangle animate={animate} width={95} height={32} />
                     </IntegerValue>
-                    <DecimalValue withLeftMargin>
+                    {/* <DecimalValue withLeftMargin>
                         <SkeletonRectangle animate={animate} width={24} height={20} />
-                    </DecimalValue>
+                    </DecimalValue> */}
                 </FiatAmount>
                 <CoinAmount>
                     <SkeletonRectangle animate={animate} width={50} height={16} />

@@ -8407,8 +8407,4 @@ export default defineMessages({
         id: 'TR_SHOW_BALANCES',
         defaultMessage: 'Show balances',
     },
-    TR_LAST_WEEK: {
-        id: 'TR_LAST_WEEK',
-        defaultMessage: 'Last week',
-    },
 });
