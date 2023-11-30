@@ -156,7 +156,10 @@ export const handleUIAffectingMessage = (message: CoreMessage) => {
 
 const handleResponseEvent = (data: any) => {
     if (data.type === RESPONSE_EVENT) {
-        postMessageToParent(data);
+        if (getState().core) {
+            // If we send this event to parent when iframe mode it gets duplicated in connect-web.
+            postMessageToParent(data);
+        }
 
         // When success we can close popup.
         if (data.success) {
