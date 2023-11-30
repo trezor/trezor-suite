@@ -33,7 +33,13 @@ const useBackendOptions = (network: Network) =>
                         ) : (
                             <Translation
                                 id="TR_BACKEND_CUSTOM_SERVERS"
-                                values={{ type: <Capitalize>{backend}</Capitalize> }}
+                                values={{
+                                    type: (
+                                        <Capitalize data-test={`@settings/advance/${backend}`}>
+                                            {backend}
+                                        </Capitalize>
+                                    ),
+                                }}
                             />
                         ),
                     value: backend,

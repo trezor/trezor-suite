@@ -56,6 +56,11 @@ class SuiteGuide {
         await this.fillInSuggestionForm(window, reportText);
         await this.submitForm(window);
     }
+
+    // asserts
+    async getSuccessToast(window: Page) {
+        return (await waitForDataTestSelector(window, '@toast/user-feedback-send-success')) ?? true;
+    }
 }
 
-export const onSuiteGuide = new SuiteGuide();
+export const onSuiteGuidePage = new SuiteGuide();

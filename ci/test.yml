@@ -174,7 +174,7 @@ suite web canary fws manual:
   interruptible: true
   parallel:
     matrix:
-      - TEST_FILE: ["spawn-tor", "spawn-bridge"]
+      - TEST_FILE: ["spawn-tor", "spawn-bridge", "bug-report"]
         CONTAINERS: "trezor-user-env-unix"
       - TEST_FILE: ["electrum"]
         CONTAINERS: "trezor-user-env-unix electrum-regtest"
