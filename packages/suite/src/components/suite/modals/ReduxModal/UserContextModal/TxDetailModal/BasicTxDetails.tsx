@@ -174,7 +174,8 @@ export const BasicTxDetails = ({
     explorerUrlQueryString,
 }: BasicTxDetailsProps) => {
     const theme = useTheme();
-    const isConfirmed = confirmations > 0;
+    // all solana txs which are fetched are already confirmed
+    const isConfirmed = confirmations > 0 || tx.solanaSpecific?.status === 'confirmed';
     const isFinal = isTxFinal(tx, confirmations);
 
     return (
@@ -204,15 +205,17 @@ export const BasicTxDetails = ({
                             <ConfirmationStatus confirmed>
                                 <Translation id="TR_CONFIRMED_TX" />
                             </ConfirmationStatus>
-                            <Circle>&bull;</Circle>
 
-                            {confirmations && (
-                                <Confirmations>
-                                    <Translation
-                                        id="TR_TX_CONFIRMATIONS"
-                                        values={{ confirmationsCount: confirmations }}
-                                    />
-                                </Confirmations>
+                            {confirmations > 0 && (
+                                <>
+                                    <Circle>&bull;</Circle>
+                                    <Confirmations>
+                                        <Translation
+                                            id="TR_TX_CONFIRMATIONS"
+                                            values={{ confirmationsCount: confirmations }}
+                                        />
+                                    </Confirmations>
+                                </>
                             )}
                         </StatusWrapper>
                     ) : (
