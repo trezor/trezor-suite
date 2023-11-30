@@ -207,21 +207,24 @@ export const AssetRowSkeleton = (props: { animate?: boolean }) => {
         <>
             <CoinNameWrapper isLastRow>
                 <LogoWrapper>
-                    <SkeletonCircle />
+                    <SkeletonCircle size={48} />
                 </LogoWrapper>
                 <Coin>
-                    <SkeletonRectangle animate={animate} />
+                    <SkeletonRectangle animate={animate} width={150} />
                 </Coin>
             </CoinNameWrapper>
             <CryptoBalanceWrapper isLastRow>
-                <SkeletonRectangle animate={animate} width="160px" />
+                <SkeletonRectangle animate={animate} width={100} />
             </CryptoBalanceWrapper>
 
             <ExchangeRateWrapper isLastRow>
                 <SkeletonRectangle animate={animate} />
             </ExchangeRateWrapper>
+            <ExchangeRateWrapper isLastRow>
+                <SkeletonRectangle animate={animate} width={50} />
+            </ExchangeRateWrapper>
             <BuyButtonWrapper isLastRow>
-                <SkeletonRectangle animate={animate} />
+                <SkeletonRectangle animate={animate} width={58} height={38} borderRadius={19} />
             </BuyButtonWrapper>
         </>
     );
