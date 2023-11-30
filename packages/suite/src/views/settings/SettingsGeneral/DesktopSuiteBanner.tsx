@@ -7,7 +7,7 @@ import { analytics, EventType } from '@trezor/suite-analytics';
 import { SUITE_URL } from '@trezor/urls';
 
 import { useDispatch } from 'src/hooks/suite/useDispatch';
-import { hideDesktopSuitePromo } from 'src/actions/suite/suiteActions';
+import { setFlag } from 'src/actions/suite/suiteActions';
 import { Translation, TrezorLink } from 'src/components/suite';
 
 const Container = styled(motion.div)`
@@ -123,7 +123,9 @@ export const DesktopSuiteBanner = () => {
             {isVisible && (
                 <Container
                     key="container"
-                    onAnimationComplete={() => dispatch(hideDesktopSuitePromo())}
+                    onAnimationComplete={() =>
+                        dispatch(dispatch(setFlag('showSettingsDesktopAppPromoBanner', false)))
+                    }
                     {...animationConfig}
                 >
                     <CloseButton size={18} icon="CROSS" onClick={handleClose} />

@@ -63,6 +63,7 @@ export interface Flags {
     dashboardGraphHidden: boolean; // dashboard UI
     dashboardAssetsGridMode: boolean; // dashboard UI
     showDashboardT2B1PromoBanner: boolean;
+    showSettingsDesktopAppPromoBanner: boolean;
 }
 
 export interface SuiteSettings {
@@ -109,6 +110,7 @@ const initialState: SuiteState = {
         dashboardAssetsGridMode:
             getWindowWidth() < getNumberFromPixelString(variables.SCREEN_SIZE.SM),
         showDashboardT2B1PromoBanner: true,
+        showSettingsDesktopAppPromoBanner: true,
     },
     settings: {
         theme: {
@@ -231,9 +233,6 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
             case SUITE.COINJOIN_RECEIVE_WARNING:
                 draft.settings.isCoinjoinReceiveWarningHidden = action.payload;
                 break;
-            case SUITE.DESKTOP_SUITE_PROMO:
-                draft.settings.isDesktopSuitePromoHidden = action.payload;
-                break;
             case SUITE.DEVICE_AUTHENTICITY_OPT_OUT:
                 draft.settings.isDeviceAuthenticityCheckDisabled = action.payload;
                 break;
@@ -314,5 +313,8 @@ export const selectPrerequisite = (state: SuiteRootState & RouterRootState & Dev
 
 export const selectIsDashboardT2B1PromoBannerShown = (state: SuiteRootState) =>
     state.suite.flags.showDashboardT2B1PromoBanner;
+
+export const selectIsSettingsDesktopAppPromoBannerShown = (state: SuiteRootState) =>
+    state.suite.flags.showSettingsDesktopAppPromoBanner;
 
 export default suiteReducer;

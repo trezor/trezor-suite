@@ -3,7 +3,10 @@ import { isDesktop, isWeb } from '@trezor/env-utils';
 import { SettingsLayout, SettingsSection } from 'src/components/settings';
 import { Translation } from 'src/components/suite';
 import { useLayoutSize, useSelector } from 'src/hooks/suite';
-import { selectTorState } from 'src/reducers/suite/suiteReducer';
+import {
+    selectIsSettingsDesktopAppPromoBannerShown,
+    selectTorState,
+} from 'src/reducers/suite/suiteReducer';
 import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
 import { NETWORKS } from 'src/config/wallet';
 import { selectSelectedProviderForLabels } from 'src/reducers/suite/metadataReducer';
@@ -26,7 +29,10 @@ import { DesktopSuiteBanner } from './DesktopSuiteBanner';
 import { AddressDisplay } from './AddressDisplay';
 
 export const SettingsGeneral = () => {
-    const isPromoHidden = useSelector(state => state.suite.settings.isDesktopSuitePromoHidden);
+    const shouldShowSettingsDesktopAppPromoBanner = useSelector(
+        selectIsSettingsDesktopAppPromoBannerShown,
+    );
+
     const { isTorEnabled } = useSelector(selectTorState);
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const desktopUpdate = useSelector(state => state.desktopUpdate);
@@ -44,7 +50,9 @@ export const SettingsGeneral = () => {
 
     return (
         <SettingsLayout data-test="@settings/index">
-            {isWeb() && !isMobileLayout && !isPromoHidden && <DesktopSuiteBanner />}
+            {isWeb() && !isMobileLayout && shouldShowSettingsDesktopAppPromoBanner && (
+                <DesktopSuiteBanner />
+            )}
 
             <SettingsSection title={<Translation id="TR_LOCALIZATION" />} icon="FLAG">
                 <Language />
