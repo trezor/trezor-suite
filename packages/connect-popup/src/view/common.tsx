@@ -1,6 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/popup/view/common.js
 
-import { POPUP, ERRORS, PopupInit, CoreMessage, createUiResponse } from '@trezor/connect';
+import { POPUP, ERRORS, PopupInit, CoreMessage, createUiResponse, Log } from '@trezor/connect';
 import { createRoot } from 'react-dom/client';
 
 import { ConnectUI, State } from '@trezor/connect-ui';
@@ -80,6 +80,7 @@ export const getIframeElement = () => {
 export const initMessageChannelWithIframe = async (
     payload: PopupInit['payload'],
     handler: (e: MessageEvent) => void,
+    log: Log,
 ) => {
     // settings received from window.opener (POPUP.INIT) are not considered as safe (they could be injected/modified)
     // settings will be set later on, after POPUP.HANDSHAKE event from iframe
@@ -128,6 +129,7 @@ export const initMessageChannelWithIframe = async (
 
             // POPUP.HANDSHAKE successfully received back from the iframe
             if (await broadcastHandshake) {
+                log.debug('BroadcastChannel communication established');
                 setState({ broadcast, systemInfo, iframe });
                 return;
             }
@@ -158,10 +160,12 @@ export const initMessageChannelWithIframe = async (
 
     // POPUP.HANDSHAKE successfully received back from the iframe
     if (await iframeHandshake) {
+        log.debug('MessageChannel communication established');
         setState({ iframe, systemInfo });
         return;
     }
 
+    log.debug('No communication channel established');
     throw ERRORS.TypedError('Popup_ConnectionMissing');
 };
 
