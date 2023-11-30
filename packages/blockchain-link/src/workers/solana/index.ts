@@ -110,35 +110,12 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
 
     const getTransactionPage = async (txIds: string[]) => {
         const transactionsPage = await fetchTransactionPage(api, txIds);
-        const uniqueTransactionSlots = Array.from(new Set(transactionsPage.map(tx => tx.slot)));
-
-        // we do not get blockheight from the transaction history, we only get slot for each transaction.
-        // for this reason we have to fetch block for each slot and an create a dictionary
-        const slotToBlockHeightMapping = (
-            await Promise.all(
-                uniqueTransactionSlots.map(async slot => {
-                    const { blockHeight } = await api.getParsedBlock(slot, {
-                        maxSupportedTransactionVersion: 0,
-                    });
-                    return blockHeight;
-                }),
-            )
-        ).reduce(
-            (acc, curr, i) => ({ ...acc, [uniqueTransactionSlots[i]]: curr }),
-            {} as Record<number, number | null>,
-        );
 
         return (
             await Promise.all(
                 transactionsPage
                     .filter(isValidTransaction)
-                    .map(tx =>
-                        solanaUtils.transformTransaction(
-                            tx,
-                            payload.descriptor,
-                            slotToBlockHeightMapping,
-                        ),
-                    ),
+                    .map(tx => solanaUtils.transformTransaction(tx, payload.descriptor)),
             )
         ).filter((tx): tx is Transaction => !!tx);
     };
@@ -334,25 +311,12 @@ const subscribeAccounts = async (
                     commitment: 'finalized',
                 })
             )[0];
-            if (!lastTx) return;
-
-            const slotToBlockHeightMapping = {
-                [lastTx.slot]: (
-                    await api.getParsedBlock(lastTx.slot, {
-                        maxSupportedTransactionVersion: 0,
-                    })
-                ).blockHeight,
-            };
 
             if (!lastTx || !isValidTransaction(lastTx)) {
                 return;
             }
 
-            const tx = await solanaUtils.transformTransaction(
-                lastTx,
-                a.descriptor,
-                slotToBlockHeightMapping,
-            );
+            const tx = await solanaUtils.transformTransaction(lastTx, a.descriptor);
             post({
                 id: -1,
                 type: RESPONSES.NOTIFICATION,
