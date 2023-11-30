@@ -418,7 +418,9 @@ export const transformTransaction = async (
         tokens,
         internalTransfers: [], // not relevant for solana
         details,
-        blockHeight: slotToBlockHeightMapping[tx.slot] || undefined,
         blockHash: tx.transaction.message.recentBlockhash,
+        solanaSpecific: {
+            status: 'confirmed',
+        },
     };
 };
