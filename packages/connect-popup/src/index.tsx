@@ -61,6 +61,12 @@ const escapeHtml = (payload: any) => {
 export const handleUIAffectingMessage = (message: CoreMessage) => {
     switch (message.type) {
         case POPUP.METHOD_INFO:
+            setState({
+                method: message.payload.method,
+                info: message.payload.info,
+            });
+            reactEventBus.dispatch({ type: 'state-update', payload: getState() });
+            return;
         case UI_REQUEST.TRANSPORT:
         case UI_REQUEST.FIRMWARE_OUTDATED:
         case UI_REQUEST.DEVICE_NEEDS_BACKUP:
