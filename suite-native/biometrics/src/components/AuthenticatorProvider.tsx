@@ -15,7 +15,7 @@ export const AuthenticatorProvider = ({ children }: AuthenticatorProviderProps) 
     return (
         <>
             {children}
-            <BiometricOverlay isDisplayed={isBiometricsOverlayVisible} />
+            {isBiometricsOverlayVisible && <BiometricOverlay />}
         </>
     );
 };

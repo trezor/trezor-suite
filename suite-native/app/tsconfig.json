@@ -47,7 +47,6 @@
         { "path": "../navigation" },
         { "path": "../notifications" },
         { "path": "../receive" },
-        { "path": "../screen-overlay" },
         { "path": "../state" },
         { "path": "../storage" },
         { "path": "../theme" },
