@@ -1,6 +1,8 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { useNavigation } from '@react-navigation/native';
+
 import {
     AccountsRootState,
     selectAccountByKey,
@@ -18,6 +20,7 @@ import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 
 export const useAccountReceiveAddress = (accountKey: AccountKey) => {
     const dispatch = useDispatch();
+    const navigation = useNavigation();
     const [isReceiveApproved, setIsReceiveApproved] = useState(false);
     const [isUnverifiedAddressRevealed, setIsUnverifiedAddressRevealed] = useState(false);
 
@@ -70,15 +73,15 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
             setIsUnverifiedAddressRevealed(true);
             const wasVerificationSuccessful = await verifyAddressOnDevice();
 
+            // In case that user cancels the verification or device is disconnected, navigate out of the receive flow.
             if (!wasVerificationSuccessful) {
-                // TODO: handle the possibility that user declines on the trezor device
-                // https://github.com/trezor/trezor-suite/issues/9776
+                navigation.goBack();
                 return;
             }
         }
 
         setIsReceiveApproved(true);
-    }, [networkSymbol, isPortfolioTracker, verifyAddressOnDevice]);
+    }, [networkSymbol, isPortfolioTracker, verifyAddressOnDevice, navigation]);
 
     return {
         address: freshAddress?.address,
