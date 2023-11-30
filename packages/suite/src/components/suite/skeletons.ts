@@ -61,7 +61,7 @@ type SkeletonBaseProps = {
 type SkeletonRectangleProps = SkeletonBaseProps & {
     width?: string | number;
     height?: string | number;
-    borderRadius?: string;
+    borderRadius?: string | number;
 };
 
 type SkeletonCircleProps = SkeletonBaseProps & {
