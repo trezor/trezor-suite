@@ -135,8 +135,8 @@ export const en = {
         },
     },
     moduleDevice: {
-        installFirmware: {
-            title: 'How to update firmware:',
+        IncompatibleDeviceModalAppendix: {
+            title: 'Follow these steps',
             lines: {
                 1: '1. Connect Trezor to Desktop Suite',
                 2: '2. Navigate to Settings menu',
@@ -153,10 +153,31 @@ export const en = {
             description: 'Please reconnect your device or ...',
             button: 'Steal session',
         },
-        unsupportedFirmware: {
+        unsupportedFirmwareModal: {
             title: 'The connected Trezor device needs an update',
             description:
                 'To continue using your Trezor with this app, update it with Trezor Suite for desktop or web.',
+        },
+        bootloaderModal: {
+            title: 'The connected Trezor device is in bootloader mode',
+            description: 'To continue using your Trezor with this app, exit bootloader mode.',
+            appendix: {
+                exit: {
+                    title: 'Exit bootloader mode',
+                    lines: {
+                        1: '1. Disconnect your Trezor',
+                        2: '2. Reconnect your Trezor to your mobile device',
+                    },
+                },
+                continue: {
+                    title: 'Continue in bootloader mode',
+                    lines: {
+                        1: '1. Disconnect your Trezor',
+                        2: '2. Connect your Trezor to Trezor Suite for desktop or web',
+                        3: '3. Enter bootloader mode',
+                    },
+                },
+            },
         },
     },
     moduleReceive: {

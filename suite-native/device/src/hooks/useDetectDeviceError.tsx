@@ -9,41 +9,14 @@ import {
     selectDevice,
     deviceActions,
     selectIsNoPhysicalDeviceConnected,
+    selectIsDeviceInBootloader,
 } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import { useTranslate, Translation } from '@suite-native/intl';
-import { VStack, Text, Box } from '@suite-native/atoms';
+import { useTranslate } from '@suite-native/intl';
 
 import { selectIsFirmwareSupported } from '../selectors';
-
-const InstallFirmwareAppendix = () => {
-    const isConnectedDeviceUninitialized = useSelector(selectIsConnectedDeviceUninitialized);
-
-    return (
-        <VStack>
-            <Text variant="callout">
-                <Translation id="moduleDevice.installFirmware.title" />
-            </Text>
-            <Box>
-                <Text color="textSubdued">
-                    <Translation id="moduleDevice.installFirmware.lines.1" />
-                </Text>
-                <Text color="textSubdued">
-                    <Translation id="moduleDevice.installFirmware.lines.2" />
-                </Text>
-                <Text color="textSubdued">
-                    <Translation
-                        id={
-                            isConnectedDeviceUninitialized
-                                ? 'moduleDevice.installFirmware.lines.3.setUp'
-                                : 'moduleDevice.installFirmware.lines.3.update'
-                        }
-                    />
-                </Text>
-            </Box>
-        </VStack>
-    );
-};
+import { IncompatibleDeviceModalAppendix } from '../components/IncompatibleDeviceModalAppendix';
+import { BootloaderModalAppendix } from '../components/BootloaderModalAppendix';
 
 export const useDetectDeviceError = () => {
     const [wasDeviceEjectedByUser, setWasDeviceEjectedByUser] = useState(false);
@@ -57,6 +30,7 @@ export const useDetectDeviceError = () => {
     const isConnectedDeviceUninitialized = useSelector(selectIsConnectedDeviceUninitialized);
     const isSelectedDeviceImported = useSelector(selectIsSelectedDeviceImported);
     const isNoPhysicalDeviceConnected = useSelector(selectIsNoPhysicalDeviceConnected);
+    const isDeviceInBootloader = useSelector(selectIsDeviceInBootloader);
 
     const isFirmwareSupported = useSelector(selectIsFirmwareSupported);
 
@@ -90,13 +64,13 @@ export const useDetectDeviceError = () => {
     useEffect(() => {
         if (!isFirmwareSupported && !isSelectedDeviceImported && !wasDeviceEjectedByUser) {
             showAlert({
-                title: translate('moduleDevice.unsupportedFirmware.title'),
-                description: translate('moduleDevice.unsupportedFirmware.description'),
+                title: translate('moduleDevice.unsupportedFirmwareModal.title'),
+                description: translate('moduleDevice.unsupportedFirmwareModal.description'),
                 icon: 'warningCircle',
                 pictogramVariant: 'red',
                 primaryButtonTitle: translate('generic.buttons.eject'),
                 primaryButtonVariant: 'tertiaryElevation1',
-                appendix: <InstallFirmwareAppendix />,
+                appendix: <IncompatibleDeviceModalAppendix />,
                 onPressPrimaryButton: handleDisconnect,
             });
         }
@@ -119,7 +93,7 @@ export const useDetectDeviceError = () => {
                 pictogramVariant: 'red',
                 primaryButtonVariant: 'tertiaryElevation1',
                 primaryButtonTitle: translate('generic.buttons.eject'),
-                appendix: <InstallFirmwareAppendix />,
+                appendix: <IncompatibleDeviceModalAppendix />,
                 onPressPrimaryButton: handleDisconnect,
             });
         }
@@ -131,6 +105,21 @@ export const useDetectDeviceError = () => {
         translate,
         handleDisconnect,
     ]);
+
+    useEffect(() => {
+        if (isDeviceInBootloader && !wasDeviceEjectedByUser) {
+            showAlert({
+                title: translate('moduleDevice.bootloaderModal.title'),
+                description: translate('moduleDevice.bootloaderModal.description'),
+                icon: 'warningCircle',
+                pictogramVariant: 'red',
+                primaryButtonVariant: 'tertiaryElevation1',
+                primaryButtonTitle: translate('generic.buttons.eject'),
+                appendix: <BootloaderModalAppendix />,
+                onPressPrimaryButton: handleDisconnect,
+            });
+        }
+    }, [isDeviceInBootloader, wasDeviceEjectedByUser, showAlert, translate, handleDisconnect]);
 
     useEffect(() => {
         // Hide the error alert on disconnect of the device
