@@ -1,7 +1,7 @@
 {
     "name": "@trezor/connect-webextension",
     "version": "1.0.0",
-    "private": true,
+    "main": "build/trezor-connect-webextension.js",
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "test:e2e": "yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts",
