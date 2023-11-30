@@ -40,6 +40,7 @@ export const launchSuite = async () => {
 export const waitForDataTestSelector = (window: Page, selector: string, options = {}) =>
     window.waitForSelector(`[data-test="${selector}"]`, options);
 
+// TODO: usage of .click is discouraged by playwright devs. Refactor all usage to locator.click()
 export const clickDataTest = (window: Page, selector: string) => {
     window.click(`[data-test="${selector}"]`);
 };
