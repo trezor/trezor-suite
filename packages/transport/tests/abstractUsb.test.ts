@@ -351,6 +351,49 @@ describe('Usb', () => {
             });
         });
 
+        it('send protocol-v1 with custom chunkSize', async () => {
+            await transport.enumerate().promise;
+            const acquireRes = await transport.acquire({ input: { path: '123', previous: null } })
+                .promise;
+            expect(acquireRes.success).toEqual(true);
+            if (!acquireRes.success) return;
+
+            const writeSpy = jest
+                .spyOn(testUsbApi, 'write')
+                .mockImplementation(() => Promise.resolve({ success: true, payload: undefined }));
+
+            // override protocol options
+            const overrideProtocol = (protocol: typeof v1Protocol, chunkSize: number) =>
+                ({
+                    ...protocol,
+                    encode: (...[data, options]: Parameters<typeof protocol.encode>) =>
+                        protocol.encode(data, { ...options, chunkSize }),
+                }) as typeof protocol;
+
+            const send = (chunkSize: number) =>
+                transport.send({
+                    name: 'SignMessage',
+                    data: {
+                        message: '00'.repeat(200),
+                    },
+                    session: acquireRes.payload,
+                    protocol: overrideProtocol(v1Protocol, chunkSize),
+                }).promise;
+
+            // count encoded/sent chunks
+            await send(64); // default usb
+            expect(writeSpy).toBeCalledTimes(4);
+            writeSpy.mockClear();
+
+            await send(16); // smaller chunks
+            expect(writeSpy).toBeCalledTimes(15);
+            writeSpy.mockClear();
+
+            await send(128); // bigger chunks
+            expect(writeSpy).toBeCalledTimes(2);
+            writeSpy.mockClear();
+        });
+
         it('release', async () => {
             await transport.enumerate().promise;
             const acquireRes = await transport.acquire({ input: { path: '123', previous: null } })
