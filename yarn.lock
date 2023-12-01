@@ -5,10 +5,10 @@ __metadata:
   version: 8
   cacheKey: 10
 
-"7zip-bin@npm:~5.1.1":
-  version: 5.1.1
-  resolution: "7zip-bin@npm:5.1.1"
-  checksum: 853e636745131719b85650df93d1a3a9af0b0db1c0e2a0884451ec87e14c8b0f4fb911c04805984ece1211ff1235f7869547b780e06939469410f2da9b5e0da6
+"7zip-bin@npm:~5.2.0":
+  version: 5.2.0
+  resolution: "7zip-bin@npm:5.2.0"
+  checksum: 5339c7a56f57f8d7d16ac8d15f588d155e5705cd4822e0d161ea45e6fbfe4a5226b464a331ec555a1ec9376ad04e5f61c125656cf3a1507900c1968ccbcfe80b
   languageName: node
   linkType: hard
 
@@ -1962,6 +1962,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@electron/notarize@npm:2.2.0":
+  version: 2.2.0
+  resolution: "@electron/notarize@npm:2.2.0"
+  dependencies:
+    debug: "npm:^4.1.1"
+    fs-extra: "npm:^9.0.1"
+    promise-retry: "npm:^2.0.1"
+  checksum: 31639c9ee54d5ff2be7882c24916716b678b3c931b90cdea359262826b643c4291853cbaba8ecfc7cfddd75331117ef120fbd9c6a7b87c7d099ad54b6a2b0427
+  languageName: node
+  linkType: hard
+
 "@electron/osx-sign@npm:1.0.5":
   version: 1.0.5
   resolution: "@electron/osx-sign@npm:1.0.5"
@@ -3644,7 +3655,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jest/types@npm:^26.6.2":
+"@jest/types@npm:26.6.2":
   version: 26.6.2
   resolution: "@jest/types@npm:26.6.2"
   dependencies:
@@ -3654,19 +3665,6 @@ __metadata:
     "@types/yargs": "npm:^15.0.0"
     chalk: "npm:^4.0.0"
   checksum: 02d42749c8c6dc7e3184d0ff0293dd91c97233c2e6dc3708d61ef33d3162d4f07ad38d2d8a39abd94cf2fced69b92a87565c7099137c4529809242ca327254af
-  languageName: node
-  linkType: hard
-
-"@jest/types@npm:^27.5.1":
-  version: 27.5.1
-  resolution: "@jest/types@npm:27.5.1"
-  dependencies:
-    "@types/istanbul-lib-coverage": "npm:^2.0.0"
-    "@types/istanbul-reports": "npm:^3.0.0"
-    "@types/node": "npm:*"
-    "@types/yargs": "npm:^16.0.0"
-    chalk: "npm:^4.0.0"
-  checksum: d3ca1655673539c54665f3e9135dc70887feb6b667b956e712c38f42e513ae007d3593b8075aecea8f2db7119f911773010f17f93be070b1725fbc6225539b6e
   languageName: node
   linkType: hard
 
@@ -4121,41 +4119,41 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@playwright/browser-chromium@npm:^1.39.0":
-  version: 1.39.0
-  resolution: "@playwright/browser-chromium@npm:1.39.0"
+"@playwright/browser-chromium@npm:^1.40.1":
+  version: 1.40.1
+  resolution: "@playwright/browser-chromium@npm:1.40.1"
   dependencies:
-    playwright-core: "npm:1.39.0"
-  checksum: ede4af5bf1e36cd91089a4db4c4919eafde212df95b0b737a6fff767f79b2a7cbdf292a771a195fcff6edd920b3ae938b74626a8b4187bb29bced8fa42d86096
+    playwright-core: "npm:1.40.1"
+  checksum: 5b8c8ca97204507102dc48db68c0e0ae2022de8d49d580e967c366be6a9c5ca1857b550c5932bcc8165bce84cea1e6e58f8728d687afb65dd65867096ec90f42
   languageName: node
   linkType: hard
 
-"@playwright/browser-firefox@npm:^1.39.0":
-  version: 1.39.0
-  resolution: "@playwright/browser-firefox@npm:1.39.0"
+"@playwright/browser-firefox@npm:^1.40.1":
+  version: 1.40.1
+  resolution: "@playwright/browser-firefox@npm:1.40.1"
   dependencies:
-    playwright-core: "npm:1.39.0"
-  checksum: 1e23f746c5d2e1a18c009b780e7863fdbb4da7d00e0afafe50682462dbab469fc08f9c6ac8489addb735208c88450c5680410e754ebd2f7c5344f58541f9ad16
+    playwright-core: "npm:1.40.1"
+  checksum: ee503d2269a009c56cf9fbc9d84971e82bd088983298a431140545d739d9ab23891ea6d45023cef28ef38b9bd31b118d20c06ccbb90efdd6b7fe46ae35d89ffa
   languageName: node
   linkType: hard
 
-"@playwright/browser-webkit@npm:^1.39.0":
-  version: 1.39.0
-  resolution: "@playwright/browser-webkit@npm:1.39.0"
+"@playwright/browser-webkit@npm:^1.40.1":
+  version: 1.40.1
+  resolution: "@playwright/browser-webkit@npm:1.40.1"
   dependencies:
-    playwright-core: "npm:1.39.0"
-  checksum: 81676385cc29e4e3e24b86b636bd3fe456b864b1f766ad477a75abffcf77263f4d0937c2c6f8f3e350906eedbdbc947839a9989af28974be06e61633ea478d10
+    playwright-core: "npm:1.40.1"
+  checksum: 93ef0521f13ae564ca63f6159adb5b01d89524cf8b59b909a755256f0581e1a9637b87340995492d794683a4809a6da243956ed5af5776d283174dfd0caccd23
   languageName: node
   linkType: hard
 
-"@playwright/test@npm:^1.39.0":
-  version: 1.39.0
-  resolution: "@playwright/test@npm:1.39.0"
+"@playwright/test@npm:^1.40.1":
+  version: 1.40.1
+  resolution: "@playwright/test@npm:1.40.1"
   dependencies:
-    playwright: "npm:1.39.0"
+    playwright: "npm:1.40.1"
   bin:
     playwright: cli.js
-  checksum: 5d039234609395f3eab46b5954b259bdd80dacf79efe531369c1633647dcafce25a78d497e61e671d661274bf66076426a1bd46be585c44addf23bb5bfaa15a2
+  checksum: 77bfc3d4a101fd996309de3a67256117f671952764404727e520a4d512ba2e528d8f9e0b28ef9b2851664a651a5d002a0b05993e313077a2fa640bb430f38b25
   languageName: node
   linkType: hard
 
@@ -8478,8 +8476,8 @@ __metadata:
     react: "npm:^18.2.0"
     react-dom: "npm:^18.2.0"
     rimraf: "npm:^5.0.5"
-    typescript: "npm:5.3.2"
-    webpack: "npm:^5.88.2"
+    typescript: "npm:5.3.3"
+    webpack: "npm:^5.89.0"
     webpack-cli: "npm:^5.1.4"
     xvfb-maybe: "npm:^0.2.1"
   languageName: unknown
@@ -8586,10 +8584,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/connect-popup@workspace:packages/connect-popup"
   dependencies:
-    "@playwright/browser-chromium": "npm:^1.39.0"
-    "@playwright/browser-firefox": "npm:^1.39.0"
-    "@playwright/browser-webkit": "npm:^1.39.0"
-    "@playwright/test": "npm:^1.39.0"
+    "@playwright/browser-chromium": "npm:^1.40.1"
+    "@playwright/browser-firefox": "npm:^1.40.1"
+    "@playwright/browser-webkit": "npm:^1.40.1"
+    "@playwright/test": "npm:^1.40.1"
     "@trezor/components": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/connect-analytics": "workspace:*"
@@ -8653,10 +8651,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/connect-web@workspace:packages/connect-web"
   dependencies:
-    "@playwright/browser-chromium": "npm:^1.39.0"
-    "@playwright/browser-firefox": "npm:^1.39.0"
-    "@playwright/browser-webkit": "npm:^1.39.0"
-    "@playwright/test": "npm:^1.39.0"
+    "@playwright/browser-chromium": "npm:^1.40.1"
+    "@playwright/browser-firefox": "npm:^1.40.1"
+    "@playwright/browser-webkit": "npm:^1.40.1"
+    "@playwright/test": "npm:^1.40.1"
     "@trezor/connect": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/chrome": "npm:^0.0.250"
@@ -8683,10 +8681,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/connect-webextension@workspace:packages/connect-webextension"
   dependencies:
-    "@playwright/browser-chromium": "npm:^1.39.0"
-    "@playwright/browser-firefox": "npm:^1.39.0"
-    "@playwright/browser-webkit": "npm:^1.39.0"
-    "@playwright/test": "npm:^1.39.0"
+    "@playwright/browser-chromium": "npm:^1.40.1"
+    "@playwright/browser-firefox": "npm:^1.40.1"
+    "@playwright/browser-webkit": "npm:^1.40.1"
+    "@playwright/test": "npm:^1.40.1"
     "@trezor/connect": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     "@trezor/node-utils": "workspace:*"
@@ -8699,7 +8697,7 @@ __metadata:
     terser-webpack-plugin: "npm:^5.3.9"
     tsx: "npm:^4.6.2"
     typescript: "npm:^4.9.5"
-    webpack: "npm:^5.87.0"
+    webpack: "npm:^5.89.0"
     webpack-cli: "npm:^5.1.4"
     webpack-merge: "npm:^5.9.0"
     webpack-plugin-serve: "npm:^1.6.0"
@@ -9021,7 +9019,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/suite-desktop-api@workspace:packages/suite-desktop-api"
   dependencies:
-    electron: "npm:27.0.4"
+    electron: "npm:27.1.3"
     jest: "npm:29.5.0"
     rimraf: "npm:^5.0.5"
     typescript: "npm:5.3.2"
@@ -9032,11 +9030,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/suite-desktop-core@workspace:packages/suite-desktop-core"
   dependencies:
-    "@electron/notarize": "npm:2.1.0"
-    "@playwright/browser-chromium": "npm:^1.39.0"
-    "@playwright/browser-firefox": "npm:^1.39.0"
-    "@playwright/browser-webkit": "npm:^1.39.0"
-    "@playwright/test": "npm:^1.39.0"
+    "@electron/notarize": "npm:2.2.0"
+    "@playwright/browser-chromium": "npm:^1.40.1"
+    "@playwright/browser-firefox": "npm:^1.40.1"
+    "@playwright/browser-webkit": "npm:^1.40.1"
+    "@playwright/test": "npm:^1.40.1"
     "@sentry/electron": "npm:^4.14.0"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/sentry": "workspace:*"
@@ -9055,10 +9053,10 @@ __metadata:
     "@types/electron-localshortcut": "npm:^3.1.3"
     chalk: "npm:^4.1.2"
     cross-fetch: "npm:^4.0.0"
-    electron: "npm:27.0.4"
+    electron: "npm:27.1.3"
     electron-localshortcut: "npm:^3.2.1"
     electron-store: "npm:^8.1.0"
-    electron-updater: "npm:6.1.4"
+    electron-updater: "npm:6.1.7"
     glob: "npm:^10.3.10"
     jest: "npm:29.5.0"
     openpgp: "npm:^5.11.0"
@@ -9066,8 +9064,8 @@ __metadata:
     systeminformation: "npm:^5.21.15"
     terser-webpack-plugin: "npm:^5.3.9"
     tsx: "npm:^4.6.2"
-    typescript: "npm:5.3.2"
-    webpack: "npm:^5.87.0"
+    typescript: "npm:5.3.3"
+    webpack: "npm:^5.89.0"
     xvfb-maybe: "npm:^0.2.1"
   languageName: unknown
   linkType: soft
@@ -9108,13 +9106,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/suite-desktop@workspace:packages/suite-desktop"
   dependencies:
-    "@electron/notarize": "npm:2.1.0"
+    "@electron/notarize": "npm:2.2.0"
     blake-hash: "npm:^2.0.0"
-    electron: "npm:27.0.4"
-    electron-builder: "npm:24.6.4"
+    electron: "npm:27.1.3"
+    electron-builder: "npm:24.9.1"
     electron-localshortcut: "npm:^3.2.1"
     electron-store: "npm:^8.1.0"
-    electron-updater: "npm:6.1.4"
+    electron-updater: "npm:6.1.7"
     glob: "npm:^10.3.10"
     jest: "npm:29.5.0"
     rimraf: "npm:^5.0.5"
@@ -10981,24 +10979,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/yargs@npm:^16.0.0":
-  version: 16.0.4
-  resolution: "@types/yargs@npm:16.0.4"
-  dependencies:
-    "@types/yargs-parser": "npm:*"
-  checksum: b9db793ee501080c9dfec90f5af0c9d7892c214e54ea17ac4b316da99588022001826b8fd168a07b43dfb46b723c20597ccb30fdc3feea6321e8f55d62a16e64
-  languageName: node
-  linkType: hard
-
-"@types/yargs@npm:^17.0.8":
-  version: 17.0.32
-  resolution: "@types/yargs@npm:17.0.32"
-  dependencies:
-    "@types/yargs-parser": "npm:*"
-  checksum: 1e2b2673847011ce43607df690d392f137d95a2d6ea85aa319403eadda2ef4277365efd4982354d8843f2611ef3846c88599660aaeb537fa9ccddae83c2a89de
-  languageName: node
-  linkType: hard
-
 "@types/yauzl@npm:^2.9.1":
   version: 2.10.0
   resolution: "@types/yauzl@npm:2.10.0"
@@ -11936,11 +11916,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"app-builder-lib@npm:24.6.4":
-  version: 24.6.4
-  resolution: "app-builder-lib@npm:24.6.4"
+"app-builder-lib@npm:24.9.1":
+  version: 24.9.1
+  resolution: "app-builder-lib@npm:24.9.1"
   dependencies:
-    7zip-bin: "npm:~5.1.1"
+    7zip-bin: "npm:~5.2.0"
     "@develar/schema-utils": "npm:~2.6.5"
     "@electron/notarize": "npm:2.1.0"
     "@electron/osx-sign": "npm:1.0.5"
@@ -11949,12 +11929,12 @@ __metadata:
     "@types/fs-extra": "npm:9.0.13"
     async-exit-hook: "npm:^2.0.1"
     bluebird-lst: "npm:^1.0.9"
-    builder-util: "npm:24.5.0"
-    builder-util-runtime: "npm:9.2.1"
+    builder-util: "npm:24.8.1"
+    builder-util-runtime: "npm:9.2.3"
     chromium-pickle-js: "npm:^0.2.0"
     debug: "npm:^4.3.4"
     ejs: "npm:^3.1.8"
-    electron-publish: "npm:24.5.0"
+    electron-publish: "npm:24.8.1"
     form-data: "npm:^4.0.0"
     fs-extra: "npm:^10.1.0"
     hosted-git-info: "npm:^4.1.0"
@@ -11968,7 +11948,7 @@ __metadata:
     semver: "npm:^7.3.8"
     tar: "npm:^6.1.12"
     temp-file: "npm:^3.4.0"
-  checksum: 682b0ed778f69bbba59b1ff7376373120cd17c59c9c9b953bfc994f72e3938c38f2ad3ce415eadab8e0e13e2e2a8a48ac6aa63e1d0f48ddff86cfc34ec58d90b
+  checksum: 4592c348f370940a70bb844665b90c102bc7ebccde42cd9df340ffccfbbad13900a0f6f6da850ac7bf39d3a361acd4a9639acbbef11b998c16c989a2e6634d5c
   languageName: node
   linkType: hard
 
@@ -13651,25 +13631,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"builder-util-runtime@npm:9.2.1":
-  version: 9.2.1
-  resolution: "builder-util-runtime@npm:9.2.1"
+"builder-util-runtime@npm:9.2.3":
+  version: 9.2.3
+  resolution: "builder-util-runtime@npm:9.2.3"
   dependencies:
     debug: "npm:^4.3.4"
     sax: "npm:^1.2.4"
-  checksum: 23a4cc0e65d1547d022c9ec9b84958c811b3ef064baff58a103b985f902fd4bce043547126eb834227445fa7da915169069837ffed38631a59cd64385e45fe43
+  checksum: 15f9618af1a2224d0ade19fa7dca12f80bc2ceeb4fc89242f2505b44f58d13d3439bb08a5bec865bb0f8e930fa57bd112d9ee9024f22f1654925ffe2bed3925b
   languageName: node
   linkType: hard
 
-"builder-util@npm:24.5.0":
-  version: 24.5.0
-  resolution: "builder-util@npm:24.5.0"
+"builder-util@npm:24.8.1":
+  version: 24.8.1
+  resolution: "builder-util@npm:24.8.1"
   dependencies:
-    7zip-bin: "npm:~5.1.1"
+    7zip-bin: "npm:~5.2.0"
     "@types/debug": "npm:^4.1.6"
     app-builder-bin: "npm:4.0.0"
     bluebird-lst: "npm:^1.0.9"
-    builder-util-runtime: "npm:9.2.1"
+    builder-util-runtime: "npm:9.2.3"
     chalk: "npm:^4.1.2"
     cross-spawn: "npm:^7.0.3"
     debug: "npm:^4.3.4"
@@ -13681,7 +13661,7 @@ __metadata:
     source-map-support: "npm:^0.5.19"
     stat-mode: "npm:^1.0.0"
     temp-file: "npm:^3.4.0"
-  checksum: 10c922f516ee68aa8b2fbdfd968b201fc92de022cb978e5a8af3681d7a099b131e9de9a5ea07e4e6a3f51ce027c77a900d54cafb4b1e831d30eb4f5b1b836d44
+  checksum: 7adfeccdeaf873fcbf56934376b7ae11b169ff552b60e8b5e91c5afd785452fbbc7acab24eb2f3f505dd5d5611edb3be38fab2ef912d7848d6fb35b25f663541
   languageName: node
   linkType: hard
 
@@ -14740,8 +14720,8 @@ __metadata:
   resolution: "connect-example-electron-main@workspace:packages/connect-examples/electron-main-process"
   dependencies:
     "@trezor/connect": "workspace:*"
-    electron: "npm:27.0.4"
-    electron-builder: "npm:24.6.4"
+    electron: "npm:27.1.3"
+    electron-builder: "npm:24.9.1"
   languageName: unknown
   linkType: soft
 
@@ -14749,8 +14729,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "connect-example-electron-renderer-popup@workspace:packages/connect-examples/electron-renderer-with-popup"
   dependencies:
-    electron: "npm:27.0.4"
-    electron-builder: "npm:24.6.4"
+    electron: "npm:27.1.3"
+    electron-builder: "npm:24.9.1"
   languageName: unknown
   linkType: soft
 
@@ -14762,8 +14742,8 @@ __metadata:
     babel-loader: "npm:^9.1.3"
     concurrently: "npm:^8.2.2"
     copy-webpack-plugin: "npm:^11.0.0"
-    electron: "npm:27.0.4"
-    electron-builder: "npm:24.6.4"
+    electron: "npm:27.1.3"
+    electron-builder: "npm:24.9.1"
     html-webpack-plugin: "npm:^5.5.3"
     terser-webpack-plugin: "npm:^5.3.9"
     wait-on: "npm:^7.0.1"
@@ -16222,13 +16202,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dmg-builder@npm:24.6.4":
-  version: 24.6.4
-  resolution: "dmg-builder@npm:24.6.4"
+"dmg-builder@npm:24.9.1":
+  version: 24.9.1
+  resolution: "dmg-builder@npm:24.9.1"
   dependencies:
-    app-builder-lib: "npm:24.6.4"
-    builder-util: "npm:24.5.0"
-    builder-util-runtime: "npm:9.2.1"
+    app-builder-lib: "npm:24.9.1"
+    builder-util: "npm:24.8.1"
+    builder-util-runtime: "npm:9.2.3"
     dmg-license: "npm:^1.0.11"
     fs-extra: "npm:^10.1.0"
     iconv-lite: "npm:^0.6.2"
@@ -16236,7 +16216,7 @@ __metadata:
   dependenciesMeta:
     dmg-license:
       optional: true
-  checksum: b3c1401ddb8b260c81a309568b4cfa26a018506bd4d03aedf8b2edb64189eb71070075cfaa5df3a3f063700f340d872a2d2c1a745d36c0a684193deb2d27ca0d
+  checksum: 9a5725215e734b82bb06beb44380c4a8faabc26fb0dcb58cdd537ed69e1c3d51c32bcfa2a8730482a3f5525cc142febe3e48c07267021a68b6d03d5c35cb1033
   languageName: node
   linkType: hard
 
@@ -16570,15 +16550,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron-builder@npm:24.6.4":
-  version: 24.6.4
-  resolution: "electron-builder@npm:24.6.4"
+"electron-builder@npm:24.9.1":
+  version: 24.9.1
+  resolution: "electron-builder@npm:24.9.1"
   dependencies:
-    app-builder-lib: "npm:24.6.4"
-    builder-util: "npm:24.5.0"
-    builder-util-runtime: "npm:9.2.1"
+    app-builder-lib: "npm:24.9.1"
+    builder-util: "npm:24.8.1"
+    builder-util-runtime: "npm:9.2.3"
     chalk: "npm:^4.1.2"
-    dmg-builder: "npm:24.6.4"
+    dmg-builder: "npm:24.9.1"
     fs-extra: "npm:^10.1.0"
     is-ci: "npm:^3.0.0"
     lazy-val: "npm:^1.0.5"
@@ -16588,7 +16568,7 @@ __metadata:
   bin:
     electron-builder: cli.js
     install-app-deps: install-app-deps.js
-  checksum: 070563186394b78492032a56753f6386343b579a5f5c81f4ac06c8127232066cf1d97afa6a00b0704593a43970552660ab59597f2c905eee1ff675f8b99284d3
+  checksum: e29cf9e212626159ee8ff7ea1fd0fc7d8dcde2962bb1b28ccc375708f04c1a8e1b586c17a5becc2ef9ed55a88a5e29f7e18e12d8d5df0fa7f0c133c5da8c7a32
   languageName: node
   linkType: hard
 
@@ -16611,18 +16591,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron-publish@npm:24.5.0":
-  version: 24.5.0
-  resolution: "electron-publish@npm:24.5.0"
+"electron-publish@npm:24.8.1":
+  version: 24.8.1
+  resolution: "electron-publish@npm:24.8.1"
   dependencies:
     "@types/fs-extra": "npm:^9.0.11"
-    builder-util: "npm:24.5.0"
-    builder-util-runtime: "npm:9.2.1"
+    builder-util: "npm:24.8.1"
+    builder-util-runtime: "npm:9.2.3"
     chalk: "npm:^4.1.2"
     fs-extra: "npm:^10.1.0"
     lazy-val: "npm:^1.0.5"
     mime: "npm:^2.5.2"
-  checksum: 826a8c7b219f8ffcfa7274effbc8a83e4e0cad665298bf06ca4b9071f828224dfb3407b45cefac0c9dc40af1c6529473dabcb3e30ac951690c0d48d013c2b71e
+  checksum: 63990427370ac646eeaec599852529c47fa5836c322fceb3ee76b968602e57ea573240f280e796c1884313984eddc1b4baa26713964796ffdc08f87e457be228
   languageName: node
   linkType: hard
 
@@ -16643,11 +16623,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron-updater@npm:6.1.4":
-  version: 6.1.4
-  resolution: "electron-updater@npm:6.1.4"
+"electron-updater@npm:6.1.7":
+  version: 6.1.7
+  resolution: "electron-updater@npm:6.1.7"
   dependencies:
-    builder-util-runtime: "npm:9.2.1"
+    builder-util-runtime: "npm:9.2.3"
     fs-extra: "npm:^10.1.0"
     js-yaml: "npm:^4.1.0"
     lazy-val: "npm:^1.0.5"
@@ -16655,20 +16635,20 @@ __metadata:
     lodash.isequal: "npm:^4.5.0"
     semver: "npm:^7.3.8"
     tiny-typed-emitter: "npm:^2.1.0"
-  checksum: 278d8aa728690ca1cee8ec45cc657570b80da46ce2168ee191013d8ff4a109364f89156fd5268015b672861225c1784f460859909a2f60277190cba767b967cc
+  checksum: c6a5b566d70de550cd959a3af0bed98da868b997d7ef741ede488027a8c876af2e1bf981becfeac767c4dbf7af856ed4e53053e7fcd246dc2af5fc71fd5ef7cc
   languageName: node
   linkType: hard
 
-"electron@npm:27.0.4":
-  version: 27.0.4
-  resolution: "electron@npm:27.0.4"
+"electron@npm:27.1.3":
+  version: 27.1.3
+  resolution: "electron@npm:27.1.3"
   dependencies:
     "@electron/get": "npm:^2.0.0"
     "@types/node": "npm:^18.11.18"
     extract-zip: "npm:^2.0.1"
   bin:
     electron: cli.js
-  checksum: 71721b1b45f5d13400bf2b289591fbe511653487134699bf5cc9139c85f2ce2b63cdaa4b5716a0f878ecb626ea2edbf0091652ba45c80c041929cacfd95d0183
+  checksum: 2c68b664886acb4435c4a13143ddf03e22bd6ea88914192d147d13aa2dc5f0e296c972351cab258ac97ee4f263ffb820015bb3ab827d74e4804943089e8fb418
   languageName: node
   linkType: hard
 
@@ -27046,27 +27026,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright-core@npm:1.39.0":
-  version: 1.39.0
-  resolution: "playwright-core@npm:1.39.0"
+"playwright-core@npm:1.40.1":
+  version: 1.40.1
+  resolution: "playwright-core@npm:1.40.1"
   bin:
     playwright-core: cli.js
-  checksum: e4e01ddea024c7564bbfacdba5f545b004a4017b466af08ae90e5184da4f5bc61e74c96e37cc5e30b7d4f97341c0883cfb2038c8cfbfab65316d714f65b82d83
+  checksum: b8945a5eec68a2772be537219c81f74b8fbd1545650c908c41fdcb2b9eb40f488968d1fb59c61ca58afb923af1e390dd621bba3099521fcd3d9a63ef3645a203
   languageName: node
   linkType: hard
 
-"playwright@npm:1.39.0":
-  version: 1.39.0
-  resolution: "playwright@npm:1.39.0"
+"playwright@npm:1.40.1":
+  version: 1.40.1
+  resolution: "playwright@npm:1.40.1"
   dependencies:
     fsevents: "npm:2.3.2"
-    playwright-core: "npm:1.39.0"
+    playwright-core: "npm:1.40.1"
   dependenciesMeta:
     fsevents:
       optional: true
   bin:
     playwright: cli.js
-  checksum: 6f6b2f4381fccfbc560c4cd25e164f5093fec4e2046990587282e18618151d723b299b56c16741ce08e44a759c22e38c3e705b716d31238320e08e6ffcfa7319
+  checksum: 95cf79f1574accbff18fac4b876aa3811640314ee74cf4cd1c249398cd49824e55dc664039342a18d2d2fa4f5ad460ce91a97cb15942ab5d71c8ab04f442dc32
   languageName: node
   linkType: hard
 

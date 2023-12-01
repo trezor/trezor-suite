@@ -44,10 +44,10 @@
         "events": "^3.3.0"
     },
     "devDependencies": {
-        "@playwright/browser-chromium": "^1.39.0",
-        "@playwright/browser-firefox": "^1.39.0",
-        "@playwright/browser-webkit": "^1.39.0",
-        "@playwright/test": "^1.39.0",
+        "@playwright/browser-chromium": "^1.40.1",
+        "@playwright/browser-firefox": "^1.40.1",
+        "@playwright/browser-webkit": "^1.40.1",
+        "@playwright/test": "^1.40.1",
         "@types/chrome": "^0.0.250",
         "@types/w3c-web-usb": "^1.0.9",
         "html-webpack-plugin": "^5.5.3",
