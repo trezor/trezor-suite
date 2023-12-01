@@ -55,7 +55,12 @@ export const DisconnectLabelingProvider = () => {
                 <ActionButton
                     variant="secondary"
                     onClick={() =>
-                        dispatch(disconnectProvider({ clientId: metadata.selectedProvider.labels }))
+                        dispatch(
+                            disconnectProvider({
+                                clientId: metadata.selectedProvider.labels,
+                                dataType: 'labels',
+                            }),
+                        )
                     }
                     data-test="@settings/metadata/disconnect-provider-button"
                 >
