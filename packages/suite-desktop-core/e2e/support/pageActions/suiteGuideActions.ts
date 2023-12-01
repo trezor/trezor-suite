@@ -57,9 +57,30 @@ class SuiteGuide {
         await this.submitForm(window);
     }
 
+    async closeGuide(window: Page) {
+        // since there's a possibility of a notification, we first check for it
+        const suiteNotification = await window.locator('[data-test*="@toast"]').first();
+        if (await suiteNotification.isVisible()) {
+            await suiteNotification.locator('[data-test$="close"]').click();
+            await suiteNotification.waitFor({ state: 'detached' });
+        }
+        await window.getByTestId('@guide/button-close').click();
+        await window.getByTestId('@guide/panel').waitFor({ state: 'detached' });
+    }
+
+    async lookupArticle(window: Page, article: string) {
+        await window.getByTestId('@guide/search').fill(article);
+        await window.getByTestId('@guide/search/results').waitFor({ state: 'visible' });
+        await window.locator('[data-test^="@guide/node"]', { hasText: article }).click();
+    }
+
     // asserts
     async getSuccessToast(window: Page) {
         return (await waitForDataTestSelector(window, '@toast/user-feedback-send-success')) ?? true;
+    }
+
+    getArticleHeader(window: Page) {
+        return window.locator('[class^="GuideContent"]').locator('h1');
     }
 }
 

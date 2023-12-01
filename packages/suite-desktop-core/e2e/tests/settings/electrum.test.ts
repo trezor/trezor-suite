@@ -1,4 +1,9 @@
-import { test as testPlaywright, expect as expectPlaywright } from '@playwright/test';
+import {
+    test as testPlaywright,
+    expect as expectPlaywright,
+    ElectronApplication,
+    Page,
+} from '@playwright/test';
 
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
@@ -7,8 +12,14 @@ import { onTopBar } from '../../support/pageActions/topBarActions';
 import { onSettingsPage } from '../../support/pageActions/settingsActions';
 import { onDashboardPage } from '../../support/pageActions/dashboardActions';
 
+let electronApp: ElectronApplication;
+let window: Page;
+let localDataDir: string;
+
 testPlaywright.describe.serial('Suite works with Electrum server', () => {
     testPlaywright.beforeAll(async () => {
+        ({ electronApp, window, localDataDir } = await launchSuite());
+        rmDirRecursive(localDataDir);
         await TrezorUserEnvLink.api.trezorUserEnvConnect();
         await TrezorUserEnvLink.api.startEmu({ wipe: true });
         await TrezorUserEnvLink.api.setupEmu({
@@ -17,11 +28,12 @@ testPlaywright.describe.serial('Suite works with Electrum server', () => {
         });
     });
 
+    testPlaywright.afterAll(() => {
+        electronApp.close();
+    });
+
     testPlaywright('Electrum completes discovery successfully', async () => {
         const electrumUrl = '127.0.0.1:50001:t';
-
-        const { electronApp, window, localDataDir } = await launchSuite();
-        rmDirRecursive(localDataDir);
 
         await onDashboardPage.passThroughInitialRun(window);
         await onDashboardPage.discoveryShouldFinish(window);
