@@ -27,3 +27,7 @@ export const requestPrioritizedDeviceAccess = async <TParams extends unknown[], 
 
     return response;
 };
+
+export const clearAndUnlockDeviceAccessQueue = () => {
+    deviceAccessMutex.clearQueue();
+};

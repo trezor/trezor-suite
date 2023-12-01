@@ -5,6 +5,7 @@ import {
     selectDevicelessAccounts,
     selectDevicelessDiscoveries,
 } from '@suite-common/wallet-core';
+import { clearAndUnlockDeviceAccessQueue } from '@suite-native/device-mutex';
 
 const actionPrefix = '@suite-native/device';
 
@@ -18,5 +19,8 @@ export const wipeDisconnectedDevicesDataThunk = createThunk(
         devicelessDiscoveries.forEach(discovery =>
             dispatch(discoveryActions.removeDiscovery(discovery.deviceState)),
         );
+
+        // TODO: rename
+        clearAndUnlockDeviceAccessQueue();
     },
 );

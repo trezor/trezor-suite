@@ -14,6 +14,7 @@
         { "path": "../alerts" },
         { "path": "../analytics" },
         { "path": "../atoms" },
+        { "path": "../device-mutex" },
         { "path": "../feature-flags" },
         { "path": "../helpers" },
         { "path": "../intl" },

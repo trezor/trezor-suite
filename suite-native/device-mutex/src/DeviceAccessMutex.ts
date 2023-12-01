@@ -43,6 +43,11 @@ class DeviceAccessMutex {
             this.isLocked = false;
         }
     }
+
+    clearQueue() {
+        this.taskQueue = [];
+        this.isLocked = false;
+    }
 }
 
 export const deviceAccessMutex = new DeviceAccessMutex();
