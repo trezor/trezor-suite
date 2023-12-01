@@ -149,9 +149,13 @@ export const en = {
                 'To continue using your Trezor with this app, set it up with Trezor Suite for desktop or web.',
         },
         unacquiredDeviceModal: {
-            title: 'We found your connected device in incorrect state.',
-            description: 'Please reconnect your device or ...',
-            button: 'Steal session',
+            title: 'Connected Trezor is used by another application.',
+            description: "Trezor can't be used by multiple applications.",
+            button: 'Use Trezor here',
+            appendix: {
+                bullet1: `Close the other running applications that might be using your Trezor.`,
+                bullet2: `Reconnect your Trezor`,
+            },
         },
         unsupportedFirmwareModal: {
             title: 'The connected Trezor device needs an update',
