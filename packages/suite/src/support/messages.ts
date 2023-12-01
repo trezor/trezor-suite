@@ -8134,47 +8134,38 @@ export default defineMessages({
     TR_SESSION_PHASE_ROUND_SEARCH: {
         id: 'TR_SESSION_PHASE_ROUND_SEARCH',
         defaultMessage: 'Looking for a round',
-        description: '29 symbols max',
     },
     TR_SESSION_PHASE_COIN_SELECTION: {
         id: 'TR_SESSION_PHASE_COIN_SELECTION',
         defaultMessage: 'Choosing coins',
-        description: '29 symbols max',
     },
     TR_SESSION_PHASE_ROUND_PAIRING: {
         id: 'TR_SESSION_PHASE_ROUND_PAIRING',
         defaultMessage: 'Selecting coins for the next round',
-        description: '29 symbols max',
     },
     TR_SESSION_PHASE_COIN_REGISTRATION: {
         id: 'TR_SESSION_PHASE_COIN_REGISTRATION',
         defaultMessage: 'Registering coins',
-        description: '29 symbols max',
     },
     TR_SESSION_ERROR_PHASE_MISSING_UTXOS: {
         id: 'TR_SESSION_ERROR_PHASE_MISSING_UTXOS',
         defaultMessage: 'Looking for available coins',
-        description: '29 symbols max',
     },
     TR_SESSION_ERROR_PHASE_SKIPPING_ROUND: {
         id: 'TR_SESSION_ERROR_PHASE_SKIPPING_ROUND',
         defaultMessage: 'Skipping round',
-        description: '29 symbols max',
     },
     TR_SESSION_ERROR_PHASE_RETRYING_PAIRING: {
         id: 'TR_SESSION_ERROR_PHASE_RETRYING_PAIRING',
         defaultMessage: 'Retrying pairing',
-        description: '29 symbols max',
     },
     TR_SESSION_ERROR_PHASE_AFFILIATE_SERVERS_OFFLINE: {
         id: 'TR_SESSION_ERROR_PHASE_AFFILIATE_SERVERS_OFFLINE',
         defaultMessage: 'The coinjoin service is temporarily unavailable',
-        description: '29 symbols max',
     },
     TR_SESSION_ERROR_PHASE_CRITICAL_ERROR: {
         id: 'TR_SESSION_ERROR_PHASE_CRITICAL_ERROR',
         defaultMessage: 'Critical error, stopping coinjoin.',
-        description: '29 symbols max',
     },
     TR_SESSION_ERROR_PHASE_BLOCKED_UTXOS: {
         id: 'TR_SESSION_ERROR_PHASE_BLOCKED_UTXOS',
