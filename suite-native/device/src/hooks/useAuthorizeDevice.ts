@@ -1,21 +1,20 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useNavigation, CommonActions } from '@react-navigation/native';
+import { CommonActions, useNavigation } from '@react-navigation/native';
 
 import {
     selectDeviceRequestedPin,
-    selectIsDeviceConnectedAndAuthorized,
     selectIsDeviceUnlocked,
     selectIsNoPhysicalDeviceConnected,
 } from '@suite-common/wallet-core';
 import {
-    RootStackRoutes,
     ConnectDeviceStackRoutes,
     HomeStackRoutes,
+    RootStackRoutes,
 } from '@suite-native/navigation';
 
-import { selectIsDeviceReadyToUse } from '../selectors';
+import { selectIsDeviceReadyToUseAndAuthorized } from '../selectors';
 
 const LOADING_TIMEOUT = 2500;
 
@@ -25,8 +24,7 @@ export const useAuthorizeDevice = () => {
 
     const hasDeviceRequestedPin = useSelector(selectDeviceRequestedPin);
     const isDeviceUnlocked = useSelector(selectIsDeviceUnlocked);
-    const isDeviceReadyToUse = useSelector(selectIsDeviceReadyToUse);
-    const isDeviceConnectedAndAuthorized = useSelector(selectIsDeviceConnectedAndAuthorized);
+    const isDeviceReadyToUseAndAuthorized = useSelector(selectIsDeviceReadyToUseAndAuthorized);
     const isNoPhysicalDeviceConnected = useSelector(selectIsNoPhysicalDeviceConnected);
 
     // The connecting screen should be visible for at least 2.5 seconds before redirecting to HomeScreen.
@@ -59,7 +57,7 @@ export const useAuthorizeDevice = () => {
 
     // If Device is authorized and loading accounts, redirect to the Home screen.
     useEffect(() => {
-        if (isDeviceReadyToUse && isDeviceConnectedAndAuthorized && isTimeoutFinished) {
+        if (isDeviceReadyToUseAndAuthorized && isTimeoutFinished) {
             navigation.dispatch(
                 CommonActions.reset({
                     index: 0,
@@ -75,8 +73,7 @@ export const useAuthorizeDevice = () => {
             );
         }
     }, [
-        isDeviceReadyToUse,
-        isDeviceConnectedAndAuthorized,
+        isDeviceReadyToUseAndAuthorized,
         isNoPhysicalDeviceConnected,
         isTimeoutFinished,
         navigation,

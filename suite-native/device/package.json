@@ -18,6 +18,7 @@
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@suite-native/alerts": "workspace:*",
+        "@suite-native/analytics": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/feature-flags": "workspace:*",
         "@suite-native/helpers": "workspace:*",

@@ -1,7 +1,11 @@
 import { Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-common/icons';
 import { useNativeStyles, prepareNativeStyle } from '@trezor/styles';
-import { useAuthorizeDevice, useDetectDeviceError } from '@suite-native/device';
+import {
+    useAuthorizeDevice,
+    useDetectDeviceError,
+    useReportDeviceConnectToAnalytics,
+} from '@suite-native/device';
 import { useTranslate } from '@suite-native/intl';
 
 import { ConnectDeviceBackground } from '../components/ConnectDeviceBackground';
@@ -14,6 +18,7 @@ const screenStyle = prepareNativeStyle(() => ({
 export const ConnectingDeviceScreen = () => {
     useDetectDeviceError();
     useAuthorizeDevice();
+    useReportDeviceConnectToAnalytics();
     const { applyStyle } = useNativeStyles();
     const { translate } = useTranslate();
 

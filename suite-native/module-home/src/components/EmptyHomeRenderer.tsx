@@ -3,8 +3,8 @@ import { useSelector } from 'react-redux';
 import { useIsUsbDeviceConnectFeatureEnabled } from '@suite-native/feature-flags';
 import {
     selectAreAllDevicesDisconnectedOrAccountless,
-    selectIsSelectedDeviceAuthorized,
     selectIsSelectedDeviceImported,
+    selectIsSelectedDeviceAuthorized,
 } from '@suite-common/wallet-core';
 import { selectIsDeviceReadyToUse } from '@suite-native/device';
 
@@ -15,12 +15,11 @@ import { EmptyPortfolioCrossroads } from './EmptyPortfolioCrossroads';
 export const EmptyHomeRenderer = () => {
     const { isUsbDeviceConnectFeatureEnabled } = useIsUsbDeviceConnectFeatureEnabled();
 
-    const isDeviceImported = useSelector(selectIsSelectedDeviceImported);
     const isDeviceAuthorized = useSelector(selectIsSelectedDeviceAuthorized);
+    const isDeviceImported = useSelector(selectIsSelectedDeviceImported);
     const areAllDevicesDisconnectedOrAccountless = useSelector(
         selectAreAllDevicesDisconnectedOrAccountless,
     );
-
     const isDeviceReadyToUse = useSelector(selectIsDeviceReadyToUse);
 
     // This state is present only for a fraction of second while redirecting to the Connecting screen is already happening.

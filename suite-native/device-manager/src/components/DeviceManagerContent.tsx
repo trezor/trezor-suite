@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import { A } from '@mobily/ts-belt';
 import { useNavigation } from '@react-navigation/native';
 
+import { analytics, EventType } from '@suite-native/analytics';
 import { Button, Text, VStack } from '@suite-native/atoms';
 import {
     selectDevices,
@@ -46,6 +47,10 @@ export const DeviceManagerContent = () => {
         setIsDeviceManagerVisible(false);
         navigation.navigate(RootStackRoutes.ConnectDevice, {
             screen: ConnectDeviceStackRoutes.ConnectAndUnlockDevice,
+        });
+        analytics.report({
+            type: EventType.DeviceManagerClick,
+            payload: { action: 'connectDeviceButton' },
         });
     };
 
