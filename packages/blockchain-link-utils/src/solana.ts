@@ -354,11 +354,11 @@ export const getAmount = (
     return accountEffect.amount.toString();
 };
 
-export const getTokens = async (
+export const getTokens = (
     tx: ParsedTransactionWithMeta,
     accountAddress: string,
-): Promise<TokenTransfer[]> => {
-    const tokenDetailByMint = await getTokenMetadata();
+    tokenDetailByMint: TokenDetailByMint,
+): TokenTransfer[] => {
     const effects = tx.transaction.message.instructions
         .filter((ix): ix is ParsedInstruction => 'parsed' in ix)
         .filter(
@@ -393,9 +393,10 @@ export const transformTransaction = async (
     tx: SolanaValidParsedTxWithMeta,
     accountAddress: string,
 ): Promise<Transaction> => {
+    const tokenDetailByMint = await getTokenMetadata();
     const nativeEffects = getNativeEffects(tx);
 
-    const tokens = await getTokens(tx, accountAddress);
+    const tokens = getTokens(tx, accountAddress, tokenDetailByMint);
 
     const type = getTxType(tx, nativeEffects, accountAddress, tokens);
 
