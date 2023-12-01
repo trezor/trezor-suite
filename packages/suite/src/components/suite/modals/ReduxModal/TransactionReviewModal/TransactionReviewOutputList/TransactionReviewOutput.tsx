@@ -15,6 +15,17 @@ import {
 } from './TransactionReviewOutputElement';
 import type { Account } from 'src/types/wallet';
 
+const getFeeLabel = (networkType: Account['networkType']) => {
+    switch (networkType) {
+        case 'ethereum':
+            return 'MAX_FEE';
+        case 'solana':
+            return 'EXPECTED_FEE';
+        default:
+            return 'FEE';
+    }
+};
+
 export type TransactionReviewOutputProps = {
     state: TransactionReviewStepIndicatorProps['state'];
     symbol: Network['symbol'];
@@ -33,7 +44,7 @@ export const TransactionReviewOutput = (props: TransactionReviewOutputProps) => 
         );
     }
     if (type === 'fee') {
-        outputLabel = <Translation id={networkType === 'ethereum' ? 'MAX_FEE' : 'FEE'} />;
+        outputLabel = <Translation id={getFeeLabel(networkType)} />;
     }
     if (type === 'contract') {
         if (networkType === 'solana') {
