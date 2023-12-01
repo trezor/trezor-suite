@@ -1,7 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/ethereumSignTx.js
 
 import { Common, Chain, Hardfork } from '@ethereumjs/common';
-import { TxData, FeeMarketEIP1559TxData, TransactionFactory } from '@ethereumjs/tx';
+import { FeeMarketEIP1559TxData, TransactionFactory, LegacyTxData } from '@ethereumjs/tx';
 
 import { EthereumDefinitions } from '@trezor/protobuf/lib/messages';
 import { PROTO, ERRORS } from '../../constants';
@@ -57,7 +57,10 @@ const processTxRequest = async (
 
 const deepHexPrefix = deepTransform(addHexPrefix);
 
-export const serializeEthereumTx = (txData: TxData | FeeMarketEIP1559TxData, chainId: number) => {
+export const serializeEthereumTx = (
+    txData: LegacyTxData | FeeMarketEIP1559TxData,
+    chainId: number,
+) => {
     // @ethereumjs/tx doesn't support ETC (chain 61) by default
     // and it needs to be declared as custom chain
     // see: https://github.com/ethereumjs/ethereumjs-tx/blob/master/examples/custom-chain-tx.ts
