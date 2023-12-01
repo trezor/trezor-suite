@@ -78,19 +78,25 @@ export type MetadataAction =
     | ReturnType<typeof setAccountAdd>;
 
 // needs to be declared here in top level context because it's not recommended to keep classes instances in redux state (serialization)
-let providerInstance: DropboxProvider | GoogleProvider | FileSystemProvider | undefined;
+const providerInstance: Record<
+    DataType,
+    DropboxProvider | GoogleProvider | FileSystemProvider | undefined
+> = {
+    labels: undefined,
+};
 const fetchIntervals: { [deviceState: string]: any } = {}; // any because of native at the moment, otherwise number | undefined
 
 const createProviderInstance = (
     type: MetadataProvider['type'],
     tokens: Tokens = {},
     environment: OAuthServerEnvironment = 'production',
+    clientId?: string,
 ) => {
     switch (type) {
         case 'dropbox':
             return new DropboxProvider({
                 token: tokens?.refreshToken,
-                clientId: METADATA.DROPBOX_CLIENT_ID,
+                clientId: clientId || METADATA.DROPBOX_CLIENT_ID,
             });
         case 'google':
             return new GoogleProvider(tokens, environment);
@@ -147,7 +153,15 @@ export const disposeMetadata = (keys?: boolean) => (dispatch: Dispatch, getState
 };
 
 export const disconnectProvider =
-    ({ clientId, removeMetadata = true }: { clientId: string; removeMetadata?: boolean }) =>
+    ({
+        clientId,
+        dataType,
+        removeMetadata = true,
+    }: {
+        clientId: string;
+        dataType: DataType;
+        removeMetadata?: boolean;
+    }) =>
     async (dispatch: Dispatch) => {
         Object.values(fetchIntervals).forEach((deviceState, num) => {
             clearInterval(num);
@@ -160,10 +174,11 @@ export const disconnectProvider =
         }
 
         /* eslint-disable-next-line @typescript-eslint/no-use-before-define */
-        const provider = dispatch(getProviderInstance({ clientId }));
+        const provider = dispatch(getProviderInstance({ clientId, dataType }));
+
         if (provider) {
             await provider.disconnect();
-            providerInstance = undefined;
+            providerInstance[dataType] = undefined;
         }
         // flush reducer
         dispatch({
@@ -172,7 +187,7 @@ export const disconnectProvider =
         });
         dispatch({
             type: METADATA.SET_SELECTED_PROVIDER,
-            payload: { dataType: 'labels', clientId: undefined },
+            payload: { dataType, clientId: undefined },
         });
 
         analytics.report({
@@ -226,6 +241,7 @@ const handleProviderError =
                     dispatch(
                         disconnectProvider({
                             clientId,
+                            dataType: 'labels',
                         }),
                     );
                     break;
@@ -235,6 +251,7 @@ const handleProviderError =
                     dispatch(
                         disconnectProvider({
                             clientId,
+                            dataType: 'labels',
                         }),
                     );
                     break;
@@ -249,7 +266,7 @@ const handleProviderError =
  * Return already existing instance of AbstractProvider or recreate it from token;
  */
 const getProviderInstance =
-    ({ clientId }: { clientId: string }) =>
+    ({ clientId, dataType = 'labels' }: { clientId: string; dataType: DataType }) =>
     (_dispatch: Dispatch, getState: GetState) => {
         const state = getState();
         const { providers } = state.metadata;
@@ -259,19 +276,20 @@ const getProviderInstance =
         if (!provider) return;
 
         // instance already exists but user did not finish log in and decided to use another provider;
-        if (providerInstance && providerInstance.type !== provider.type) {
-            providerInstance = undefined;
+        if (providerInstance[dataType] && providerInstance[dataType]?.type !== provider.type) {
+            providerInstance[dataType] = undefined;
         }
 
-        if (providerInstance) return providerInstance;
+        if (providerInstance[dataType]) return providerInstance[dataType];
 
-        providerInstance = createProviderInstance(
+        providerInstance[dataType] = createProviderInstance(
             provider.type,
             provider.tokens,
             state.suite.settings.debug.oauthServerEnvironment,
+            clientId,
         );
 
-        return providerInstance;
+        return providerInstance[dataType];
     };
 
 export const enableMetadata = (): MetadataAction => ({
@@ -331,9 +349,12 @@ const fetchMetadata =
         encryptionVersion?: MetadataEncryptionVersion;
     }) =>
     async (dispatch: Dispatch) => {
+        const dataType = 'labels';
+
         const providerInstance = dispatch(
             getProviderInstance({
                 clientId: provider.clientId,
+                dataType,
             }),
         );
 
@@ -446,6 +467,7 @@ export const fetchAndSaveMetadata =
         const providerInstance = dispatch(
             getProviderInstance({
                 clientId: provider.clientId,
+                dataType: 'labels',
             }),
         );
         if (!providerInstance) {
@@ -503,7 +525,11 @@ export const fetchAndSaveMetadata =
             // already existing label
             if (device?.state && fetchIntervals[device.state]) {
                 return dispatch(
-                    disconnectProvider({ removeMetadata: false, clientId: provider.clientId }),
+                    disconnectProvider({
+                        removeMetadata: false,
+                        dataType: 'labels',
+                        clientId: provider.clientId,
+                    }),
                 );
             }
             // If there is no interval set, it means that error occurred in the first fetch
@@ -543,12 +569,21 @@ export const selectProvider =
     };
 
 export const connectProvider =
-    ({ type, dataType = 'labels' }: { type: MetadataProviderType; dataType?: DataType }) =>
+    ({
+        type,
+        dataType = 'labels',
+        clientId,
+    }: {
+        type: MetadataProviderType;
+        dataType?: DataType;
+        clientId?: string;
+    }) =>
     async (dispatch: Dispatch, getState: GetState) => {
         const providerInstance = createProviderInstance(
             type,
             {},
             getState().suite.settings.debug.oauthServerEnvironment,
+            clientId,
         );
 
         const isConnected = await providerInstance.isConnected();
@@ -604,7 +639,9 @@ const encryptAndSaveMetadata =
         provider: MetadataProvider;
     }) =>
     async (dispatch: Dispatch) => {
-        const providerInstance = dispatch(getProviderInstance({ clientId: provider.clientId }));
+        const providerInstance = dispatch(
+            getProviderInstance({ clientId: provider.clientId, dataType: 'labels' }),
+        );
 
         if (!providerInstance) {
             // provider should always be set here
@@ -832,13 +869,14 @@ export const addMetadata =
                         handleProviderError({
                             error: result,
                             action: ProviderErrorAction.SAVE,
-                            clientId: getState().metadata.providers[0]?.clientId,
+                            clientId: selectSelectedProviderForLabels(getState())!.clientId,
                         }),
                     );
                 } else {
                     const providerInstance = dispatch(
                         getProviderInstance({
-                            clientId: getState().metadata.providers[0].clientId,
+                            clientId: selectSelectedProviderForLabels(getState())!.clientId,
+                            dataType: 'labels',
                         }),
                     );
                     if (providerInstance) {
@@ -849,7 +887,7 @@ export const addMetadata =
                                     'error' in result ? result.error : '',
                                 ),
                                 action: ProviderErrorAction.SAVE,
-                                clientId: getState().metadata.providers[0]?.clientId,
+                                clientId: selectSelectedProviderForLabels(getState())!.clientId,
                             }),
                         );
                     }

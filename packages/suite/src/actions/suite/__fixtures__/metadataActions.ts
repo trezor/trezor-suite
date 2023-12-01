@@ -361,7 +361,7 @@ const addMetadata = [
                 },
                 providers: [
                     {
-                        client: 'clientId',
+                        clientId: 'clientId',
                         type: 'dropbox',
                         user: 'User Name',
                         tokens: { refreshToken: 'oauth-token' },
