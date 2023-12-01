@@ -616,6 +616,7 @@ export const selectSupportedNetworks = (state: DeviceRootState) => {
             const firmwareSupportRestriction =
                 deviceModelInternal && support?.[deviceModelInternal];
             const isSupportedByApp =
+                !firmwareVersion ||
                 !firmwareSupportRestriction ||
                 versionUtils.isNewerOrEqual(firmwareVersion, firmwareSupportRestriction);
 
@@ -623,7 +624,15 @@ export const selectSupportedNetworks = (state: DeviceRootState) => {
                 ? device?.unavailableCapabilities?.[symbol]
                 : 'update-required';
 
-            if (['no-support', 'no-capability'].includes(unavailableReason || '')) {
+            // if device does not have fw, do not show coins which are not supported by device in any case
+            if (!firmwareVersion && unavailableReason === 'no-support') {
+                return null;
+            }
+            // if device has fw, do not show coins which are not supported by current fw
+            if (
+                firmwareVersion &&
+                ['no-support', 'no-capability'].includes(unavailableReason || '')
+            ) {
                 return null;
             }
 
