@@ -5666,6 +5666,11 @@ export default defineMessages({
         description: 'Label in Send form for Ethereum network type',
         id: 'MAX_FEE',
     },
+    EXPECTED_FEE: {
+        defaultMessage: 'Expected Fee',
+        description: 'Label in Send form for Solana network type',
+        id: 'EXPECTED_FEE',
+    },
     FEE_LEVEL_CUSTOM: {
         defaultMessage: 'Custom',
         id: 'FEE_LEVEL_CUSTOM',

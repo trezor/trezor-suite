@@ -189,6 +189,7 @@ const constructNewFlow = ({
     const outputs: ReviewOutput[] = [];
 
     const isCardano = isCardanoTx(account, precomposedTx);
+    const isSolana = account.networkType === 'solana';
     const { networkType } = account;
 
     // used in the bumb fee flow
@@ -246,7 +247,7 @@ const constructNewFlow = ({
                     outputs.push({ type: 'contract', value: precomposedTx.token.contract });
                 }
                 outputs.push({ type: 'address', value: o.address });
-                if (!isUpdatedEthereumSendFlow) {
+                if (!isSolana && !isUpdatedEthereumSendFlow) {
                     outputs.push({
                         type: 'amount',
                         value: o.amount.toString(),
