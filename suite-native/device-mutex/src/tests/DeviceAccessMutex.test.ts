@@ -4,7 +4,12 @@
 import { A } from '@mobily/ts-belt';
 
 import { deviceAccessMutex } from '../DeviceAccessMutex';
-import { requestDeviceAccess, requestPrioritizedDeviceAccess } from '../requestDeviceAccess';
+import {
+    clearAndUnlockDeviceAccessQueue,
+    requestDeviceAccess,
+    requestPrioritizedDeviceAccess,
+} from '../requestDeviceAccess';
+import { DEVICE_ACCESS_ERROR } from '../constants';
 
 const deviceAccessCallbackMock = () =>
     new Promise(resolve => {
@@ -97,5 +102,30 @@ describe('RequestPrioritizedDeviceAccess', () => {
         // so there should be still the rest of the tasks in the queue.
         expect(deviceAccessMutex.isLocked).toBe(true);
         expect(deviceAccessMutex.taskQueue.length).toBe(2);
+    });
+});
+
+describe('clearAndUnlockDeviceAccessQueue', () => {
+    test('cleared tasks should not be executed', async () => {
+        const numberOfTasks = 5;
+
+        // Put multiple tasks in the queue.
+        const queuedTasks = A.makeWithIndex(numberOfTasks, () =>
+            requestDeviceAccess(deviceAccessCallbackMock),
+        );
+        expect(deviceAccessMutex.isLocked).toBe(true);
+
+        clearAndUnlockDeviceAccessQueue();
+
+        for (const index in queuedTasks) {
+            const response = await queuedTasks[index];
+
+            // All tasks should return access error, and stop the execution.
+            expect(response).toBe(DEVICE_ACCESS_ERROR);
+        }
+
+        // Mutex should be unlocked and empty after clearing the queue.
+        expect(deviceAccessMutex.isLocked).toBe(false);
+        expect(deviceAccessMutex.taskQueue.length).toBe(0);
     });
 });
