@@ -22,7 +22,6 @@
         "@suite-native/intl": "workspace:*",
         "@suite-native/link": "workspace:*",
         "@suite-native/navigation": "workspace:*",
-        "@suite-native/screen-overlay": "workspace:*",
         "@suite-native/theme": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/styles": "workspace:*",

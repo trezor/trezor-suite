@@ -6,7 +6,6 @@
         { "path": "../alerts" },
         { "path": "../analytics" },
         { "path": "../atoms" },
-        { "path": "../screen-overlay" },
         { "path": "../storage" },
         { "path": "../../packages/styles" }
     ]
