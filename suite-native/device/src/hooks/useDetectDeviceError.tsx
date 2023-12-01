@@ -17,6 +17,7 @@ import { useTranslate } from '@suite-native/intl';
 import { selectIsFirmwareSupported } from '../selectors';
 import { IncompatibleDeviceModalAppendix } from '../components/IncompatibleDeviceModalAppendix';
 import { BootloaderModalAppendix } from '../components/BootloaderModalAppendix';
+import { UnacquiredDeviceModalAppendix } from '../components/UnacquiredDeviceModalAppendix';
 
 export const useDetectDeviceError = () => {
     const [wasDeviceEjectedByUser, setWasDeviceEjectedByUser] = useState(false);
@@ -54,6 +55,7 @@ export const useDetectDeviceError = () => {
                 icon: 'warningCircle',
                 pictogramVariant: 'red',
                 primaryButtonTitle: translate('moduleDevice.unacquiredDeviceModal.button'),
+                appendix: <UnacquiredDeviceModalAppendix />,
                 onPressPrimaryButton: () => dispatch(acquireDevice()),
             });
         } else {
