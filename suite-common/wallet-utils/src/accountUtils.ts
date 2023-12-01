@@ -582,7 +582,10 @@ export const isAccountOutdated = (account: Account, freshInfo: AccountInfo) => {
                 freshInfo.misc!.reserve !== account.misc.reserve
             );
         case 'ethereum':
-            return freshInfo.misc!.nonce !== account.misc.nonce;
+            return (
+                freshInfo.misc!.nonce !== account.misc.nonce ||
+                freshInfo.balance !== account.balance // balance can change because of beacon chain txs (staking)
+            );
         case 'cardano':
             return (
                 // stake address (de)registration
