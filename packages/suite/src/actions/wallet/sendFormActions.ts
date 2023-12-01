@@ -399,13 +399,15 @@ export const signTransaction =
         }
 
         if (account.networkType === 'ethereum' && !isCardanoTx(account, enhancedTxInfo)) {
-            const response = await fetch(
+            const isTokenKnown = await fetch(
                 `https://data.trezor.io/firmware/eth-definitions/chain-id/${network?.chainId}/token-${enhancedTxInfo.token?.contract
                     .substring(2)
                     .toLowerCase()}.dat`,
-            );
+            )
+                .then(response => response.ok)
+                .catch(() => false);
 
-            enhancedTxInfo.isTokenKnown = response.ok;
+            enhancedTxInfo.isTokenKnown = isTokenKnown;
         }
 
         // store formValues and transactionInfo in send reducer to be used by TransactionReviewModal
