@@ -58,6 +58,7 @@ export const CoinList = ({
                 const firmwareSupportRestriction =
                     deviceModelInternal && support?.[deviceModelInternal];
                 const isSupportedByApp =
+                    !firmwareVersion ||
                     !firmwareSupportRestriction ||
                     versionUtils.isNewerOrEqual(firmwareVersion, firmwareSupportRestriction);
 
