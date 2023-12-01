@@ -25,8 +25,7 @@ jobs:
         with:
           lfs: true
       - name: Configure aws credentials
-        # todo: node16?
-        uses: aws-actions/configure-aws-credentials@v1-node16
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::538326561891:role/gh_actions_trezor_suite_prod_deploy
           aws-region: ${{ env.AWS_REGION }}
