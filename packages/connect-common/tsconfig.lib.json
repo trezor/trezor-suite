@@ -1,7 +1,6 @@
 {
     "extends": "../../tsconfig.lib.json",
     "compilerOptions": {
-        "target": "es5",
         "outDir": "./lib",
         "importHelpers": true,
         "esModuleInterop": false
