@@ -268,13 +268,16 @@ const filterDeviceEvent = (message: DeviceEvent) => {
     const features =
         'device' in message.payload ? message.payload.device.features : message.payload.features;
     if (features) {
-        const savedPermissions = storage.load().permissions || storage.load(true).permissions;
+        const origin = DataManager.getSettings('origin')!;
+
+        const savedPermissions =
+            storage.loadForOrigin(origin)?.permissions ||
+            storage.loadForOrigin(origin, true)?.permissions ||
+            [];
+
         if (savedPermissions) {
             const devicePermissions = savedPermissions.filter(
-                p =>
-                    p.origin === DataManager.getSettings('origin') &&
-                    p.type === 'read' &&
-                    p.device === features.device_id,
+                p => p.type === 'read' && p.device === features.device_id,
             );
             return devicePermissions.length > 0;
         }
