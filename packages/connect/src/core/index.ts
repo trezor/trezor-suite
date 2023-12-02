@@ -210,7 +210,20 @@ const initDevice = async (method: AbstractMethod<any>) => {
     const isWebUsb = _deviceList.transportType() === 'WebUsbTransport';
     let device: Device | typeof undefined;
     let showDeviceSelection = isWebUsb;
-    if (method.devicePath) {
+    const origin = DataManager.getSettings('origin')!;
+    const { preferredDevice } = storage.load().origin[origin] || {};
+    const preferredDeviceInList = preferredDevice && _deviceList.getDevice(preferredDevice.path);
+
+    // we detected that there is a preferred device (user stored previously) but it's not in the list anymore (disconnected now)
+    // we treat this situation as implicit forget
+    if (preferredDevice && !preferredDeviceInList) {
+        storage.save(store => {
+            store.origin[origin] = { ...store.origin[origin], preferredDevice: undefined };
+            return store;
+        });
+    }
+
+    if (method.devicePath && preferredDevice && preferredDeviceInList) {
         device = _deviceList.getDevice(method.devicePath);
         showDeviceSelection = !!device?.unreadableError;
     } else {
@@ -912,10 +925,6 @@ const handleDeviceSelectionChanges = (interruptDevice?: DeviceTyped) => {
                 shouldClosePopup = true;
             }
         });
-
-        if (_preferredDevice && _preferredDevice.path === path) {
-            _preferredDevice = undefined;
-        }
 
         if (shouldClosePopup) {
             closePopup();
