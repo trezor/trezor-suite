@@ -6,10 +6,10 @@ const validateAdditionalInfo = (additionalInfo: SolanaTxAdditionalInfo) => {
 
     additionalInfo.tokenAccountsInfos?.forEach(tokenAccountInfo => {
         validateParams(tokenAccountInfo, [
-            { name: 'baseAddress', type: 'string' },
-            { name: 'tokenProgram', type: 'string' },
-            { name: 'tokenMint', type: 'string' },
-            { name: 'tokenAccount', type: 'string' },
+            { name: 'baseAddress', type: 'string', required: true },
+            { name: 'tokenProgram', type: 'string', required: true },
+            { name: 'tokenMint', type: 'string', required: true },
+            { name: 'tokenAccount', type: 'string', required: true },
         ]);
     });
 };

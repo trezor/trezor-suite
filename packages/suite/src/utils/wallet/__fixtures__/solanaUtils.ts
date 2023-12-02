@@ -2,7 +2,6 @@ import {
     TOKEN_PROGRAM_PUBLIC_KEY,
     SYSTEM_PROGRAM_PUBLIC_KEY,
 } from '@trezor/blockchain-link-utils/lib/solana';
-import { SYSVAR_RENT_PUBKEY } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 
 export const fixtures = {
@@ -213,12 +212,10 @@ export const fixtures = {
                         balance: '12200000000',
                     },
                 ],
-                toTokenAccounts: [
-                    {
-                        publicKey: 'GrwHUG2U6Nmr2CHjQ2kesKzbjMwvCNytcMAbhQxq1Jyd',
-                        balance: '600000000',
-                    },
-                ],
+                toTokenAccount: {
+                    publicKey: 'GrwHUG2U6Nmr2CHjQ2kesKzbjMwvCNytcMAbhQxq1Jyd',
+                    balance: '600000000',
+                },
                 blockhash: '7xpT7BDE7q1ZWhe6Pg8PHRYbqgDwNK3L2v97rEfsjMkn',
                 lastValidBlockHeight: 50,
             },

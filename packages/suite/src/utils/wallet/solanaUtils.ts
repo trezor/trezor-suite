@@ -189,6 +189,12 @@ export const buildCreateAssociatedTokenAccountInstruction = async (
 type TokenTransferTxWithDestinationAddress = {
     transaction: Transaction;
     destinationAddress: string;
+    tokenAccountInfo?: {
+        baseAddress: string;
+        tokenProgram: string;
+        tokenMint: string;
+        tokenAccount: string;
+    };
 };
 
 export const buildTokenTransferTransaction = async (
@@ -271,5 +277,13 @@ export const buildTokenTransferTransaction = async (
     return {
         transaction,
         destinationAddress: finalReceiverAddress,
+        tokenAccountInfo: isReceiverAddressSystemAccount
+            ? {
+                  baseAddress: toAddress,
+                  tokenProgram: TOKEN_PROGRAM_PUBLIC_KEY,
+                  tokenMint,
+                  tokenAccount: finalReceiverAddress,
+              }
+            : undefined,
     };
 };

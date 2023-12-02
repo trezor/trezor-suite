@@ -314,6 +314,16 @@ export const signTransaction =
             },
             path: account.path,
             serializedTx,
+            additionalInfo:
+                tokenTransferTxAndDestinationAddress &&
+                recipientAccountOwner &&
+                tokenTransferTxAndDestinationAddress.tokenAccountInfo
+                    ? {
+                          tokenAccountsInfos: [
+                              tokenTransferTxAndDestinationAddress.tokenAccountInfo,
+                          ],
+                      }
+                    : undefined,
         });
 
         if (!signature.success) {
