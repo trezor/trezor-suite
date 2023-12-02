@@ -1,45 +1,104 @@
 // https://github.com/trezor/connect/blob/develop/src/js/storage/index.js
-const storageVersion = 1;
+
+import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
+
+const storageVersion = 2;
 const storageName = `storage_v${storageVersion}`;
 
-interface Permission {
+export interface Permission {
     type: string;
-    origin?: string;
     device?: string;
 }
 
-export interface Store {
-    browser?: boolean;
-    permissions?: Permission[];
-    tracking_enabled?: boolean;
-    tracking_id?: string;
+/**
+ * remembered:
+ *  - physical device from webusb pairing dialogue
+ *  - passphrase to be used
+ */
+export interface PreferredDevice {
+    path: string;
+    state?: string;
+    instance?: number;
 }
 
+export interface OriginBoundState {
+    permissions?: Permission[];
+    preferredDevice?: PreferredDevice;
+}
+
+export interface GlobalState {
+    tracking_enabled?: boolean;
+    tracking_id?: string;
+    browser?: boolean;
+}
+
+export type Store = GlobalState & {
+    origin: { [origin: string]: OriginBoundState };
+};
+
+// TODO: move storage somewhere else. Having it here brings couple of problems:
+// - We can not import types from connect (would cause cyclic dependency)
+// - it has here dependency on window object, not good
+
+const getEmptyState = (): Store => ({
+    origin: {},
+});
 type GetNewStateCallback = (currentState: Store) => Store;
 
-let memoryStorage: Store = {};
+let memoryStorage: Store = getEmptyState();
 
 const getPermanentStorage = () => {
     const ls = localStorage.getItem(storageName);
 
-    return ls ? JSON.parse(ls) : {};
+    return ls ? JSON.parse(ls) : getEmptyState();
 };
 
-export const save = (getNewState: GetNewStateCallback, temporary = false) => {
+const save = (getNewState: GetNewStateCallback, temporary = false) => {
     if (temporary || !global.window) {
         memoryStorage = getNewState(memoryStorage);
 
         return;
     }
 
-    const newState = getNewState(getPermanentStorage());
-    localStorage.setItem(storageName, JSON.stringify(newState));
+    try {
+        const newState = getNewState(getPermanentStorage());
+        localStorage.setItem(storageName, JSON.stringify(newState));
+    } catch (err) {
+        // memory storage is fallback of the last resort
+        console.warn('long term storage not awailable');
+        memoryStorage = getNewState(memoryStorage);
+    }
 };
 
-export const load = (temporary = false): Store => {
+const load = (temporary = false): Store => {
     if (temporary || !global?.window?.localStorage) {
         return memoryStorage;
     }
 
-    return getPermanentStorage();
+    try {
+        return getPermanentStorage();
+    } catch (err) {
+        // memory storage is fallback of the last resort
+        console.warn('long term storage not awailable');
+        return memoryStorage;
+    }
 };
+
+const loadForOrigin = (origin: string, temporary = false): OriginBoundState => {
+    const state = load(temporary);
+
+    return state.origin?.[origin] || {};
+};
+
+interface Events {
+    changed: Store;
+}
+
+class Storage extends TypedEmitter<Events> {
+    public save = save;
+    public load = load;
+    public loadForOrigin = loadForOrigin;
+}
+
+const storage = new Storage();
+export { storage };

@@ -1,15 +1,16 @@
 import { storage } from '..';
 
+const origin = 'foo.bar';
+
 describe('storage', () => {
     beforeEach(() => {
         window.localStorage?.clear();
     });
 
     test('window.localStorage', () => {
-        expect(storage.load().permissions).toBe(undefined);
-        storage.save(state => ({ ...state, permissions: [] }));
-        expect(storage.load().permissions).toStrictEqual([]);
-
+        expect(storage.load().origin[origin].permissions).toBe(undefined);
+        storage.save(state => ({ ...state }));
+        expect(storage.load().origin[origin].permissions).toStrictEqual([]);
         // @ts-expect-error
         expect(storage.load().random).toBe(undefined);
         storage.save(state => ({ ...state, random: {} }));
@@ -18,11 +19,10 @@ describe('storage', () => {
     });
 
     test('memoryStorage', () => {
-        expect(storage.load(true).permissions).toBe(undefined);
-        storage.save(state => ({ ...state, permissions: [] }), true);
-        expect(storage.load(true).permissions).toStrictEqual([]);
-        expect(storage.load().permissions).toBe(undefined);
-
+        expect(storage.load(true).origin[origin].permissions).toBe(undefined);
+        storage.save(state => ({ ...state }), true);
+        expect(storage.load(true).origin[origin].permissions).toStrictEqual([]);
+        expect(storage.load().origin[origin].permissions).toBe(undefined);
         // @ts-expect-error
         expect(storage.load(true).random).toBe(undefined);
         storage.save(state => ({ ...state, random: {} }), true);
@@ -36,9 +36,9 @@ describe('storage', () => {
         // @ts-expect-error
         global.window = undefined;
 
-        expect(storage.load().permissions).toBe(undefined);
+        expect(storage.load().origin[origin].permissions).toBe(undefined);
         storage.save(state => ({ ...state, permissions: [] }));
-        expect(storage.load().permissions).toStrictEqual([]);
+        expect(storage.load().origin[origin].permissions).toStrictEqual([]);
 
         // @ts-expect-error
         expect(storage.load().random).toBe(undefined);
