@@ -3,7 +3,7 @@
 import { POPUP, ERRORS, PopupInit, CoreMessage, createUiResponse } from '@trezor/connect';
 import { createRoot } from 'react-dom/client';
 
-import { ConnectUI, State } from '@trezor/connect-ui';
+import { ConnectUI, State, getDefaultState } from '@trezor/connect-ui';
 import { StyleSheetWrapper } from './react/StylesSheetWrapper';
 import { reactEventBus } from '@trezor/connect-ui/src/utils/eventBus';
 
@@ -11,7 +11,7 @@ export const header: HTMLElement = document.getElementsByTagName('header')[0];
 export const container: HTMLElement = document.getElementById('container')!;
 export const views: HTMLElement = document.getElementById('views')!;
 
-let state: State = {};
+let state: State = getDefaultState();
 
 export const setState = (newState: Partial<State>) => (state = { ...state, ...newState });
 export const getState = () => state;
