@@ -8,6 +8,7 @@ import {
     UI_REQUEST,
     POPUP,
     createPopupMessage,
+    createUiResponse,
 } from '@trezor/connect';
 import { storage, OriginBoundState } from '@trezor/connect-common';
 
@@ -162,6 +163,12 @@ export const ConnectUI = ({ postMessage, clearLegacyView }: ConnectUIProps) => {
                             origin={state?.settings?.origin}
                             hostLabel={state?.settings?.hostLabel}
                             topSlot={Object.values(Notifications)}
+                            preferredDevice={state?.preferredDevice}
+                            onEjectDevice={() => {
+                                postMessage(createUiResponse(UI.EJECT_DEVICE));
+                                postMessage({ type: POPUP.CLOSE_WINDOW });
+                                window.close();
+                            }}
                         />
                         {Component && (
                             <div

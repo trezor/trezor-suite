@@ -2,6 +2,10 @@ import { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
+import { Button } from '@trezor/components';
+
+import { State } from '../types';
+
 const Aside = styled.aside`
     display: flex;
     flex-flow: column;
@@ -70,13 +74,28 @@ interface InfoPanelProps {
     origin?: string;
     hostLabel?: string;
     topSlot?: ReactNode;
+    preferredDevice?: State['preferredDevice'];
+    onEjectDevice?: () => void;
 }
 
-export const InfoPanel = ({ method, origin, hostLabel, topSlot }: InfoPanelProps) => (
+export const InfoPanel = ({
+    method,
+    origin,
+    topSlot,
+    hostLabel,
+    preferredDevice,
+    onEjectDevice,
+}: InfoPanelProps) => (
     <>
         <Aside data-test="@info-panel">
             {/*  notifications appear hear */}
             {topSlot && topSlot}
+            {preferredDevice && onEjectDevice && (
+                <>
+                    <div>zpreferovany device: {JSON.stringify({ preferredDevice })}</div>
+                    <Button onClick={onEjectDevice}>eject</Button>
+                </>
+            )}
 
             <MainSlot>
                 <Header>
