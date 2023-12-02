@@ -179,6 +179,15 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         return false;
     }
 
+    private getOriginPermissions() {
+        const origin = DataManager.getSettings('origin');
+        if (!origin) {
+            return [];
+        }
+
+        return storage.loadForOrigin(origin)?.permissions || [];
+    }
+
     checkPermissions() {
         const savedPermissions = storage.load().permissions;
 
@@ -238,11 +247,13 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
             });
         }
 
-        storage.save(
+        const origin = DataManager.getSettings('origin')!;
+        storage.saveForOrigin(
             state => ({
                 ...state,
-                permissions: savedPermissions.concat(permissionsToSave),
+                permissions: [...(state.permissions || []), ...permissionsToSave],
             }),
+            origin,
             temporary,
         );
 

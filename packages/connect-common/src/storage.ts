@@ -1,45 +1,119 @@
 // https://github.com/trezor/connect/blob/develop/src/js/storage/index.js
-const storageVersion = 1;
+
+import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
+
+const storageVersion = 2;
 const storageName = `storage_v${storageVersion}`;
 
-interface Permission {
+export interface Permission {
     type: string;
-    origin?: string;
     device?: string;
 }
 
-export interface Store {
-    browser?: boolean;
-    permissions?: Permission[];
-    tracking_enabled?: boolean;
-    tracking_id?: string;
+/**
+ * remembered:
+ *  - physical device from webusb pairing dialogue
+ *  - passphrase to be used
+ */
+export interface PreferredDevice {
+    path: string;
+    state?: string;
+    instance?: number;
 }
 
-type GetNewStateCallback = (currentState: Store) => Store;
+export interface OriginBoundState {
+    permissions?: Permission[];
+    preferredDevice?: PreferredDevice;
+}
 
-let memoryStorage: Store = {};
+export interface GlobalState {
+    tracking_enabled?: boolean;
+    tracking_id?: string;
+    browser?: boolean;
+}
+
+export type Store = GlobalState & {
+    origin: { [origin: string]: OriginBoundState };
+};
+
+// TODO: move storage somewhere else. Having it here brings couple of problems:
+// - We can not import types from connect (would cause cyclic dependency)
+// - it has here dependency on window object, not good
+
+const getEmptyState = (): Store => ({
+    origin: {},
+});
+type GetNewStateCallback = (currentState: Store) => Store;
+type GetNewOriginBoundStateStateCallback = (currentState: OriginBoundState) => OriginBoundState;
+
+let memoryStorage: Store = getEmptyState();
 
 const getPermanentStorage = () => {
     const ls = localStorage.getItem(storageName);
 
-    return ls ? JSON.parse(ls) : {};
+    return ls ? JSON.parse(ls) : getEmptyState();
 };
 
-export const save = (getNewState: GetNewStateCallback, temporary = false) => {
-    if (temporary || !global.window) {
-        memoryStorage = getNewState(memoryStorage);
+interface Events {
+    changed: Store;
+}
 
-        return;
+class Storage extends TypedEmitter<Events> {
+    public save(getNewState: GetNewStateCallback, temporary = false) {
+        if (temporary || !global.window) {
+            memoryStorage = getNewState(memoryStorage);
+
+            return;
+        }
+
+        try {
+            const newState = getNewState(getPermanentStorage());
+            localStorage.setItem(storageName, JSON.stringify(newState));
+            this.emit('changed', newState);
+        } catch (err) {
+            // memory storage is fallback of the last resort
+            console.warn('long term storage not available');
+            memoryStorage = getNewState(memoryStorage);
+        }
     }
 
-    const newState = getNewState(getPermanentStorage());
-    localStorage.setItem(storageName, JSON.stringify(newState));
-};
-
-export const load = (temporary = false): Store => {
-    if (temporary || !global?.window?.localStorage) {
-        return memoryStorage;
+    public saveForOrigin(
+        getNewState: GetNewOriginBoundStateStateCallback,
+        origin: string,
+        temporary = false,
+    ) {
+        this.save(
+            state => ({
+                ...state,
+                origin: {
+                    ...state.origin,
+                    [origin]: getNewState(state.origin?.[origin] || {}),
+                },
+            }),
+            temporary,
+        );
     }
 
-    return getPermanentStorage();
-};
+    public load(temporary = false): Store {
+        if (temporary || !global?.window?.localStorage) {
+            return memoryStorage;
+        }
+
+        try {
+            return getPermanentStorage();
+        } catch (err) {
+            // memory storage is fallback of the last resort
+            console.warn('long term storage not available');
+            return memoryStorage;
+        }
+    }
+
+    public loadForOrigin(origin: string, temporary = false): OriginBoundState {
+        const state = this.load(temporary);
+
+        return state.origin?.[origin] || {};
+    }
+}
+
+const storage = new Storage();
+export { storage };
