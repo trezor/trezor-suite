@@ -189,32 +189,24 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
     }
 
     checkPermissions() {
-        const savedPermissions = storage.load().permissions;
-
+        const originPermissions = this.getOriginPermissions();
         let notPermitted = [...this.requiredPermissions];
-        if (savedPermissions) {
-            // find permissions for this origin
-            const originPermissions = savedPermissions.filter(
-                p => p.origin === DataManager.getSettings('origin'),
-            );
-            if (originPermissions.length > 0) {
-                // check if permission was granted
-                notPermitted = notPermitted.filter(np => {
-                    const granted = originPermissions.find(
-                        p => p.type === np && p.device === this.device.features.device_id,
-                    );
-                    return !granted;
-                });
-            }
+        if (originPermissions.length > 0) {
+            // check if permission was granted
+            notPermitted = notPermitted.filter(np => {
+                const granted = originPermissions.find(
+                    p => p.type === np && p.device === this.device.features.device_id,
+                );
+                return !granted;
+            });
         }
         this.requiredPermissions = notPermitted;
     }
 
     savePermissions(temporary = false) {
-        const savedPermissions = storage.load(temporary).permissions || [];
+        const originPermissions = this.getOriginPermissions();
 
         let permissionsToSave = this.requiredPermissions.map(p => ({
-            origin: DataManager.getSettings('origin'),
             type: p,
             device: this.device.features.device_id || undefined,
         }));
@@ -223,21 +215,14 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         // if so, emit "device_connect" event because this wasn't send before
         let emitEvent = false;
         if (this.requiredPermissions.indexOf('read') >= 0) {
-            const wasAlreadyGranted = savedPermissions.filter(
-                p =>
-                    p.origin === DataManager.getSettings('origin') &&
-                    p.type === 'read' &&
-                    p.device === this.device.features.device_id,
+            const wasAlreadyGranted = originPermissions.filter(
+                p => p.type === 'read' && p.device === this.device.features.device_id,
             );
             if (wasAlreadyGranted.length < 1) {
                 emitEvent = true;
             }
         }
 
-        // find permissions for this origin
-        const originPermissions = savedPermissions.filter(
-            p => p.origin === DataManager.getSettings('origin'),
-        );
         if (originPermissions.length > 0) {
             permissionsToSave = permissionsToSave.filter(p2s => {
                 const granted = originPermissions.find(

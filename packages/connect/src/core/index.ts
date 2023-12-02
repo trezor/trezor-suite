@@ -3,6 +3,7 @@ import EventEmitter from 'events';
 
 import { TRANSPORT, TRANSPORT_ERROR } from '@trezor/transport';
 import { createDeferred, Deferred } from '@trezor/utils/lib/createDeferred';
+import { storage } from '@trezor/connect-common';
 
 import { DataManager } from '../data/DataManager';
 import { DeviceList } from '../device/DeviceList';
@@ -34,14 +35,13 @@ import { initLog, enableLog, setLogWriter, LogWriter } from '../utils/debug';
 import { dispose as disposeBackend } from '../backend/BlockchainLink';
 import { InteractionTimeout } from '../utils/interactionTimeout';
 import type { DeviceEvents, Device } from '../device/Device';
-import type { ConnectSettings, CommonParams, Device as DeviceTyped } from '../types';
+import type { ConnectSettings, Device as DeviceTyped } from '../types';
 
 // Public variables
 let _core: Core; // Class with event emitter
 let _deviceList: DeviceList | undefined; // Instance of DeviceList
 let _popupPromise: Deferred<void> | undefined; // Waiting for popup handshake
 const _uiPromises: AnyUiPromise[] = []; // Waiting for ui response
-let _preferredDevice: CommonParams['device'];
 const _callMethods: AbstractMethod<any>[] = []; // generic type is irrelevant. only common functions are called at this level
 let _interactionTimeout: InteractionTimeout;
 let _deviceListInitTimeout: ReturnType<typeof setTimeout> | undefined;
@@ -261,7 +261,15 @@ const initDevice = async (method: AbstractMethod<any>) => {
             if (uiPromise) {
                 const { payload } = await uiPromise.promise;
                 if (payload.remember) {
-                    _preferredDevice = payload.device;
+                    const { path, state } = payload.device;
+                    storage.save(store => {
+                        store.origin[origin] = {
+                            ...store.origin[origin],
+                            preferredDevice: { path, state },
+                        };
+
+                        return store;
+                    });
                 }
                 device = _deviceList.getDevice(payload.device.path);
             }
@@ -292,9 +300,11 @@ export const onCall = async (message: CoreMessage) => {
     const responseID = message.id;
     const trustedHost = DataManager.getSettings('trustedHost');
     const isUsingPopup = DataManager.getSettings('popup');
+    const origin = DataManager.getSettings('origin')!;
 
-    if (_preferredDevice && !message.payload.device) {
-        message.payload.device = _preferredDevice;
+    const { preferredDevice } = storage.loadForOrigin(origin) || {};
+    if (preferredDevice && !message.payload.device) {
+        message.payload.device = preferredDevice;
     }
 
     // find method and parse incoming params
