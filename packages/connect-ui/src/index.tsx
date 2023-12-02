@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState, useMemo, ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { PostMessage, UI, UI_REQUEST, POPUP, createPopupMessage } from '@trezor/connect';
+import { storage, OriginBoundState } from '@trezor/connect-common';
 
 // views
 import { Transport } from './views/Transport';
@@ -67,7 +68,30 @@ export const ConnectUI = ({ postMessage, clearLegacyView }: ConnectUIProps) => {
     useEffect(() => {
         reactEventBus.dispatch({ type: 'connect-ui-rendered' });
         initAnalytics();
+
+        // subscribe to changes
+        storage.on('changed', storageNextState => {
+            setState(prevState => ({ ...prevState, ...storageNextState }));
+        });
     }, []);
+
+    useEffect(() => {
+        if (!state?.settings?.origin) return;
+
+        const data = storage.loadForOrigin(state.settings.origin);
+
+        const getNextState = (prevState: State, originBoundState: OriginBoundState) => ({
+            ...prevState,
+            ...originBoundState,
+        });
+
+        // load initial data
+        setState(prevState => getNextState(prevState, data));
+
+        return () => {
+            storage.removeAllListeners();
+        };
+    }, [state?.settings?.origin]);
 
     const [Component, Notifications] = useMemo(() => {
         let component: ReactNode | null;
