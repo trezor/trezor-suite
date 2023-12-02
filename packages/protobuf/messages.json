@@ -6545,6 +6545,44 @@
                 }
             }
         },
+        "SolanaTxAdditionalInfoType": {
+            "values": {
+                "ASSOCIATED_TOKEN_ACCOUNT": 0
+            }
+        },
+        "SolanaTxTokenAccountInfo": {
+            "fields": {
+                "base_address": {
+                    "rule": "required",
+                    "type": "string",
+                    "id": 1
+                },
+                "token_program": {
+                    "rule": "required",
+                    "type": "string",
+                    "id": 2
+                },
+                "token_mint": {
+                    "rule": "required",
+                    "type": "string",
+                    "id": 3
+                },
+                "token_account": {
+                    "rule": "required",
+                    "type": "string",
+                    "id": 4
+                }
+            }
+        },
+        "SolanaTxAdditionalInfo": {
+            "fields": {
+                "token_accounts_infos": {
+                    "rule": "repeated",
+                    "type": "SolanaTxTokenAccountInfo",
+                    "id": 1
+                }
+            }
+        },
         "SolanaSignTx": {
             "fields": {
                 "address_n": {

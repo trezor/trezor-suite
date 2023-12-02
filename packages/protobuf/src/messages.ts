@@ -1996,10 +1996,28 @@ export type SolanaAddress = {
     address: string;
 };
 
+export enum SolanaTxAdditionalInfoType {
+    ASSOCIATED_TOKEN_ACCOUNT = 0,
+}
+
+// SolanaTxTokenAccountInfo
+export type SolanaTxTokenAccountInfo = {
+    base_address: string;
+    token_program: string;
+    token_mint: string;
+    token_account: string;
+};
+
+// SolanaTxAdditionalInfo
+export type SolanaTxAdditionalInfo = {
+    token_accounts_infos: SolanaTxTokenAccountInfo[];
+};
+
 // SolanaSignTx
 export type SolanaSignTx = {
     address_n: number[];
     serialized_tx: string;
+    additional_info?: SolanaTxAdditionalInfo;
 };
 
 // SolanaTxSignature
@@ -2557,6 +2575,8 @@ export type MessageType = {
     SolanaPublicKey: SolanaPublicKey;
     SolanaGetAddress: SolanaGetAddress;
     SolanaAddress: SolanaAddress;
+    SolanaTxTokenAccountInfo: SolanaTxTokenAccountInfo;
+    SolanaTxAdditionalInfo: SolanaTxAdditionalInfo;
     SolanaSignTx: SolanaSignTx;
     SolanaTxSignature: SolanaTxSignature;
     StellarAsset: StellarAsset;

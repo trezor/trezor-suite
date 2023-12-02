@@ -3,6 +3,7 @@ import { AbstractMethod } from '../../../core/AbstractMethod';
 import { validateParams, getFirmwareRange } from '../../common/paramsValidator';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { validatePath } from '../../../utils/pathUtils';
+import { transformAdditionalInfo } from '../additionalInfo';
 
 export default class SolanaSignTransaction extends AbstractMethod<
     'solanaSignTransaction',
@@ -31,6 +32,7 @@ export default class SolanaSignTransaction extends AbstractMethod<
         this.params = {
             address_n: path,
             serialized_tx: payload.serializedTx,
+            additional_info: transformAdditionalInfo(payload.additionalInfo),
         };
     }
 
