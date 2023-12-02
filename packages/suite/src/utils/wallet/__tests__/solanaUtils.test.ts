@@ -73,7 +73,7 @@ describe('solana utils', () => {
                     input.tokenUiAmount,
                     input.tokenDecimals,
                     input.fromTokenAccounts,
-                    input.toTokenAccounts,
+                    input.toTokenAccount,
                     input.blockhash,
                     input.lastValidBlockHeight,
                 );

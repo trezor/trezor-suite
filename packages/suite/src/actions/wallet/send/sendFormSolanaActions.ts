@@ -23,6 +23,7 @@ import {
     getPubKeyFromAddress,
     buildTransferTransaction,
     buildTokenTransferTransaction,
+    getAssociatedTokenAccountAddress,
 } from 'src/utils/wallet/solanaUtils';
 import { SYSTEM_PROGRAM_PUBLIC_KEY } from '@trezor/blockchain-link-utils/lib/solana';
 
@@ -101,7 +102,7 @@ const fetchAccountOwnerAndTokenInfoForAddress = async (
     // Fetch data about recipient account owner if this is a token transfer
     // We need this in order to validate the address and ensure transfers go through
     let accountOwner: string | undefined;
-    let tokenInfo: TokenAccount[] | undefined;
+    let tokenInfo: TokenAccount | undefined;
 
     const accountInfoResponse = await TrezorConnect.getAccountInfo({
         coin: symbol,
@@ -110,9 +111,12 @@ const fetchAccountOwnerAndTokenInfoForAddress = async (
     });
 
     if (accountInfoResponse.success) {
+        const associatedTokenAccount = await getAssociatedTokenAccountAddress(address, mint);
+
         accountOwner = accountInfoResponse.payload?.misc?.owner;
-        tokenInfo = accountInfoResponse.payload?.tokens?.find(token => token.contract === mint)
-            ?.accounts;
+        tokenInfo = accountInfoResponse.payload?.tokens
+            ?.find(token => token.contract === mint)
+            ?.accounts?.find(account => associatedTokenAccount.toString() === account.publicKey);
     }
 
     return [accountOwner, tokenInfo] as const;
@@ -131,7 +135,7 @@ export const composeTransaction =
 
         const blockhash = selectBlockchainBlockHashBySymbol(getState(), account.symbol);
 
-        const [recipientAccountOwner, recipientTokenAccounts] = tokenInfo
+        const [recipientAccountOwner, recipientTokenAccount] = tokenInfo
             ? await fetchAccountOwnerAndTokenInfoForAddress(
                   formValues.outputs[0].address,
                   account.symbol,
@@ -152,7 +156,7 @@ export const composeTransaction =
                       formValues.outputs[0].amount || '0',
                       tokenInfo.decimals,
                       tokenInfo.accounts,
-                      recipientTokenAccounts,
+                      recipientTokenAccount,
                       blockhash,
                       50,
                   )
@@ -176,7 +180,7 @@ export const composeTransaction =
 
         const isCreatingAccount =
             tokenInfo &&
-            recipientTokenAccounts === undefined &&
+            recipientTokenAccount === undefined &&
             recipientAccountOwner === SYSTEM_PROGRAM_PUBLIC_KEY;
 
         const estimatedFee = await TrezorConnect.blockchainEstimateFee({

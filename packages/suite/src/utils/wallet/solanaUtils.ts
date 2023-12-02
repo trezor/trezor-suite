@@ -116,6 +116,21 @@ export const buildTokenTransferInstruction = async (
     });
 };
 
+export const getAssociatedTokenAccountAddress = async (
+    baseAddress: string,
+    tokenMintAddress: string,
+) => {
+    const { PublicKey } = await loadSolanaLib();
+    return PublicKey.findProgramAddressSync(
+        [
+            new PublicKey(baseAddress).toBuffer(),
+            new PublicKey(TOKEN_PROGRAM_PUBLIC_KEY).toBuffer(),
+            new PublicKey(tokenMintAddress).toBuffer(),
+        ],
+        new PublicKey(ASSOCIATED_TOKEN_PROGRAM_PUBLIC_KEY),
+    )[0];
+};
+
 // Construct an instruction to create an associated token account. Used in token transfers
 export const buildCreateAssociatedTokenAccountInstruction = async (
     funderAddress: string,
@@ -124,14 +139,10 @@ export const buildCreateAssociatedTokenAccountInstruction = async (
 ) => {
     const { TransactionInstruction, PublicKey } = await loadSolanaLib();
 
-    const associatedTokenAccountAddress = PublicKey.findProgramAddressSync(
-        [
-            new PublicKey(newOwnerAddress).toBuffer(),
-            new PublicKey(TOKEN_PROGRAM_PUBLIC_KEY).toBuffer(),
-            new PublicKey(tokenMintAddress).toBuffer(),
-        ],
-        new PublicKey(ASSOCIATED_TOKEN_PROGRAM_PUBLIC_KEY),
-    )[0];
+    const associatedTokenAccountAddress = await getAssociatedTokenAccountAddress(
+        newOwnerAddress,
+        tokenMintAddress,
+    );
 
     // key layout: https://github.com/solana-labs/solana-program-library/blob/master/associated-token-account/program/src/lib.rs#L58
     const keys = [
@@ -188,7 +199,7 @@ export const buildTokenTransferTransaction = async (
     tokenUiAmount: string,
     tokenDecimals: number,
     fromTokenAccounts: TokenAccount[],
-    toTokenAccounts: TokenAccount[] | undefined,
+    toTokenAccount: TokenAccount | undefined,
     blockhash: string,
     lastValidBlockHeight: number,
 ): Promise<TokenTransferTxWithDestinationAddress> => {
@@ -216,9 +227,9 @@ export const buildTokenTransferTransaction = async (
     let finalReceiverAddress = toAddress;
     if (isReceiverAddressSystemAccount) {
         // Step 3: If not, check if the receiver owns an associated token account
-        if (toTokenAccounts && toTokenAccounts.length > 0) {
+        if (toTokenAccount) {
             // If yes, use the first one.
-            finalReceiverAddress = toTokenAccounts[0].publicKey;
+            finalReceiverAddress = toTokenAccount.publicKey;
         } else {
             // Step 4: If not, create an associated token account for the receiver
             const [createAccountInstruction, associatedTokenAccountAddress] =
