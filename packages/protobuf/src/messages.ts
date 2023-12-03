@@ -874,7 +874,7 @@ export type CardanoTxCertificate = {
     pool_parameters?: CardanoPoolParametersType;
     script_hash?: string;
     key_hash?: string;
-    deposit?: number;
+    deposit?: UintType;
     drep?: CardanoDRep;
 };
 

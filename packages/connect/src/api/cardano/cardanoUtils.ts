@@ -47,6 +47,7 @@ export const prepareCertificates = (certs: CardanoCertificate[]) => {
                 convertedCerts.push({
                     type: cert.type,
                 });
+                // TODO conway certificates not supported by coin-selection lib yet
                 break;
             // no default
         }

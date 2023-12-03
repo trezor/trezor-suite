@@ -38,7 +38,8 @@ import { tokenBundleToProto } from '../cardanoTokenBundle';
 import { AssertWeak, Type } from '@trezor/schema-utils';
 
 const CardanoSignTransactionFeatures = Object.freeze({
-    // Minimum firmware (2.6.0) currently supports all features
+    // FW <2.6.0 is not supported by Connect at all
+    Conway: ['0', '2.6.5'],
 });
 
 export type CardanoSignTransactionParams = {
@@ -246,7 +247,17 @@ export default class CardanoSignTransaction extends AbstractMethod<
     }
 
     _ensureFirmwareSupportsParams() {
-        // Currently, there are no additional features to check for
+        const { params } = this;
+
+        params.certificatesWithPoolOwnersAndRelays.forEach(({ certificate }) => {
+            if (
+                certificate.type === PROTO.CardanoCertificateType.STAKE_REGISTRATION_CONWAY ||
+                certificate.type === PROTO.CardanoCertificateType.STAKE_DEREGISTRATION_CONWAY ||
+                certificate.type === PROTO.CardanoCertificateType.VOTE_DELEGATION
+            ) {
+                this._ensureFeatureIsSupported('Conway');
+            }
+        });
     }
 
     async _sign_tx(): Promise<CardanoSignedTxData> {

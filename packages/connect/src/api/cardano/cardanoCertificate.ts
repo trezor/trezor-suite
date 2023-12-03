@@ -7,6 +7,7 @@ import {
     CardanoPoolParameters,
     CardanoPoolOwner,
     CardanoPoolRelay,
+    CardanoDRep,
 } from '../../types/api/cardano';
 import { Assert } from '@trezor/schema-utils';
 
@@ -68,6 +69,21 @@ const validatePoolParameters = (poolParameters: CardanoPoolParameters) => {
     poolParameters.relays.forEach(validatePoolRelay);
 };
 
+const validateDRep = (dRep: CardanoDRep) => {
+    Assert(CardanoDRep, dRep);
+    if (dRep.type === PROTO.CardanoDRepType.KEY_HASH && !dRep.keyHash) {
+        throw ERRORS.TypedError(
+            'Method_InvalidParameter',
+            'keyHash must be supplied for KEY_HASH dRep type',
+        );
+    } else if (dRep.type === PROTO.CardanoDRepType.SCRIPT_HASH && !dRep.scriptHash) {
+        throw ERRORS.TypedError(
+            'Method_InvalidParameter',
+            'scriptHash must be supplied for SCRIPT_HASH dRep type',
+        );
+    }
+};
+
 export type CertificateWithPoolOwnersAndRelays = {
     certificate: PROTO.CardanoTxCertificate;
     poolOwners: PROTO.CardanoPoolOwner[];
@@ -118,6 +134,20 @@ const transformPoolParameters = (
     };
 };
 
+const transformDRep = (dRep: CardanoDRep | undefined): PROTO.CardanoDRep | undefined => {
+    if (!dRep) {
+        return undefined;
+    }
+
+    validateDRep(dRep);
+
+    return {
+        type: dRep.type,
+        key_hash: dRep.keyHash,
+        script_hash: dRep.scriptHash,
+    };
+};
+
 // transform incoming certificate object to protobuf messages format
 export const transformCertificate = (
     certificate: CardanoCertificate,
@@ -142,9 +172,32 @@ export const transformCertificate = (
         }
     }
 
+    if (
+        certificate.type === PROTO.CardanoCertificateType.STAKE_REGISTRATION_CONWAY ||
+        certificate.type === PROTO.CardanoCertificateType.STAKE_DEREGISTRATION_CONWAY
+    ) {
+        if (!certificate.deposit) {
+            throw ERRORS.TypedError(
+                'Method_InvalidParameter',
+                'deposit must be supplied for STAKE_REGISTRATION_CONWAY or STAKE_DEREGISTRATION_CONWAY',
+            );
+        }
+    }
+
+    if (certificate.type === PROTO.CardanoCertificateType.VOTE_DELEGATION) {
+        if (!certificate.dRep) {
+            throw ERRORS.TypedError(
+                'Method_InvalidParameter',
+                'dRep must be supplied for VOTE_DELEGATION',
+            );
+        }
+    }
+
     const { poolParameters, poolOwners, poolRelays } = transformPoolParameters(
         certificate.poolParameters,
     );
+
+    const dRep = transformDRep(certificate.dRep);
 
     return {
         certificate: {
@@ -154,6 +207,8 @@ export const transformCertificate = (
             key_hash: certificate.keyHash,
             pool: certificate.pool,
             pool_parameters: poolParameters,
+            deposit: certificate.deposit,
+            drep: dRep,
         },
         poolOwners,
         poolRelays,
