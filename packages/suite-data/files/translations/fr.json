@@ -1578,7 +1578,7 @@
   "TR_SWITCH_TO_BOOTLOADER_HOLD_LEFT_BUTTON": "Appuyez sur le bouton gauche et maintenez-le enfoncé tout en rebranchant le câble USB.",
   "TR_SWITCH_TO_BOOTLOADER_SWIPE_YOUR_FINGERS": "Faites glisser votre doigt sur l’écran tactile tout en rebranchant le câble USB.",
   "TR_SWITCH_TO_REGULAR": "Passer à {regular}",
-  "TR_TAKES_N_MINUTES": "Prend ~{n} minutes",
+  "TR_TAKES_N_MINUTES": "Prend ~20 minutes",
   "TR_TAKE_ME_BACK_TO_WALLET": "Ramenez-moi à Suite",
   "TR_TAPROOT_ACCOUNTS": "Comptes Taproot",
   "TR_TAPROOT_BANNER_POINT_1": "Lettres minuscules uniquement : moins de risques d’erreurs de relecture",
