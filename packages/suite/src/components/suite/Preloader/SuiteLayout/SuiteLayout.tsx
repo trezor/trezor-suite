@@ -11,7 +11,7 @@ import { DiscoveryProgress } from 'src/components/wallet';
 import { useLayoutSize } from 'src/hooks/suite';
 import { LayoutContext, LayoutContextPayload } from 'src/support/suite/LayoutContext';
 import { useResetScrollOnUrl } from 'src/hooks/suite/useResetScrollOnUrl';
-import { useClearAnchorHighlightOnClick } from 'src/hooks/suite/usecClearAncorHighlightOnClick';
+import { useClearAnchorHighlightOnClick } from 'src/hooks/suite/useClearAnchorHighlightOnClick';
 import { ModalContextProvider } from 'src/support/suite/ModalContext';
 import { AccountsMenu } from 'src/components/wallet/WalletLayout/AccountsMenu/AccountsMenu';
 import { ModalSwitcher } from '../../modals/ModalSwitcher/ModalSwitcher';

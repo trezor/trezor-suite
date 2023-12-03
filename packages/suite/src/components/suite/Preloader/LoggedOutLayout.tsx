@@ -4,7 +4,7 @@ import { ModalContextProvider } from 'src/support/suite/ModalContext';
 import { useResetScrollOnUrl } from 'src/hooks/suite/useResetScrollOnUrl';
 import { GuideButton, GuideRouter } from 'src/components/guide';
 import { useLayoutSize } from 'src/hooks/suite';
-import { useClearAnchorHighlightOnClick } from 'src/hooks/suite/usecClearAncorHighlightOnClick';
+import { useClearAnchorHighlightOnClick } from 'src/hooks/suite/useClearAnchorHighlightOnClick';
 import { Metadata } from '../Metadata';
 import { ModalSwitcher } from '../modals/ModalSwitcher/ModalSwitcher';
 import {

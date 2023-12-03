@@ -5,12 +5,7 @@ import { useSelector } from 'src/hooks/suite';
 export const CoinjoinBars = () => {
     const coinjoinAccounts = useSelector(state => state.wallet.coinjoin.accounts);
 
-    let sessionCount = 0;
-    coinjoinAccounts.forEach(({ session }) => {
-        if (session) {
-            sessionCount++;
-        }
-    });
+    const sessionCount = coinjoinAccounts.filter(account => account.session).length;
 
     const coinjoinStatusBars = useMemo(
         () =>
