@@ -3,7 +3,7 @@ import styled, { useTheme } from 'styled-components';
 import { Icon, IconProps, variables } from '@trezor/components';
 import { FADE_IN } from '@trezor/components/src/config/animations';
 
-const MobileWrapper = styled.div<Pick<MobileActionItemProps, 'isActive'>>`
+const MobileWrapper = styled.div`
     display: flex;
     position: relative;
     cursor: pointer;
