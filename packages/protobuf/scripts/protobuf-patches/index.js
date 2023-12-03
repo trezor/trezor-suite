@@ -129,6 +129,7 @@ const TYPE_PATCH = {
     'CardanoPoolParametersType.cost': UINT_TYPE,
     'CardanoPoolParametersType.margin_numerator': UINT_TYPE,
     'CardanoPoolParametersType.margin_denominator': UINT_TYPE,
+    'CardanoTxCertificate.deposit': UINT_TYPE,
     'CardanoSignTxInit.ttl': UINT_TYPE,
     'CardanoSignTxInit.validity_interval_start': UINT_TYPE,
     'CardanoSignTxInit.total_collateral': UINT_TYPE,

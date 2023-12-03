@@ -1208,7 +1208,7 @@ export const CardanoTxCertificate = Type.Object(
         pool_parameters: Type.Optional(CardanoPoolParametersType),
         script_hash: Type.Optional(Type.String()),
         key_hash: Type.Optional(Type.String()),
-        deposit: Type.Optional(Type.Number()),
+        deposit: Type.Optional(Type.Uint()),
         drep: Type.Optional(CardanoDRep),
     },
     { $id: 'CardanoTxCertificate' },

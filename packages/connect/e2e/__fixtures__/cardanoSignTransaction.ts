@@ -6,6 +6,7 @@ const {
     CardanoAddressType,
     CardanoCVoteRegistrationFormat,
     CardanoCertificateType,
+    CardanoDRepType,
     CardanoTxOutputSerializationFormat,
     CardanoTxSigningMode,
 } = MessagesSchema;
@@ -225,6 +226,11 @@ const SAMPLE_CERTIFICATES = {
         type: CardanoCertificateType.STAKE_REGISTRATION,
         path: "m/1852'/1815'/0'/2/0",
     },
+    stake_registration_conway: {
+        type: CardanoCertificateType.STAKE_REGISTRATION_CONWAY,
+        path: "m/1852'/1815'/0'/2/0",
+        deposit: '2000000',
+    },
     stake_registration_script: {
         type: CardanoCertificateType.STAKE_REGISTRATION,
         scriptHash: '29fb5fd4aa8cadd6705acc8263cee0fc62edca5ac38db593fec2f9fd',
@@ -232,6 +238,11 @@ const SAMPLE_CERTIFICATES = {
     stake_deregistration: {
         type: CardanoCertificateType.STAKE_DEREGISTRATION,
         path: "m/1852'/1815'/0'/2/0",
+    },
+    stake_deregistration_conway: {
+        type: CardanoCertificateType.STAKE_DEREGISTRATION_CONWAY,
+        path: "m/1852'/1815'/0'/2/0",
+        deposit: '2000000',
     },
     stake_deregistration_script: {
         type: CardanoCertificateType.STAKE_DEREGISTRATION,
@@ -327,6 +338,36 @@ const SAMPLE_CERTIFICATES = {
             metadata: null,
         },
     },
+    vote_delegation_key_hash: {
+        type: CardanoCertificateType.VOTE_DELEGATION,
+        path: "m/1852'/1815'/0'/2/0",
+        dRep: {
+            type: CardanoDRepType.KEY_HASH,
+            keyHash: '3a7f09d3df4cf66a7399c2b05bfa234d5a29560c311fc5db4c490711',
+        },
+    },
+    vote_delegation_script: {
+        type: CardanoCertificateType.VOTE_DELEGATION,
+        path: "m/1852'/1815'/0'/2/0",
+        dRep: {
+            type: CardanoDRepType.SCRIPT_HASH,
+            scriptHash: '29fb5fd4aa8cadd6705acc8263cee0fc62edca5ac38db593fec2f9fd',
+        },
+    },
+    vote_delegation_abstain: {
+        type: CardanoCertificateType.VOTE_DELEGATION,
+        path: "m/1852'/1815'/0'/2/0",
+        dRep: {
+            type: CardanoDRepType.ABSTAIN,
+        },
+    },
+    vote_delegation_no_confidence: {
+        type: CardanoCertificateType.VOTE_DELEGATION,
+        path: "m/1852'/1815'/0'/2/0",
+        dRep: {
+            type: CardanoDRepType.NO_CONFIDENCE,
+        },
+    },
 };
 
 const SAMPLE_WITHDRAWALS = {
@@ -395,6 +436,15 @@ const TTL = '10';
 const VALIDITY_INTERVAL_START = '47';
 const SCRIPT_DATA_HASH = 'd593fd793c377ac50a3169bb8378ffc257c944da31aa8f355dfa5a4f6ff89e02';
 const TOTAL_COLLATERAL = '1000';
+
+const legacyResults = {
+    // FW <2.6.0 is not supported by Connect at all
+    beforeConway: {
+        // older FW doesn't support Conway certificates
+        rules: ['<2.6.5', '1'],
+        payload: false,
+    },
+};
 
 export default {
     method: 'cardanoSignTransaction',
@@ -600,6 +650,41 @@ export default {
         },
 
         {
+            description: 'signStakeRegistrationConway',
+            params: {
+                inputs: [SAMPLE_INPUTS.shelley_input],
+                outputs: [SAMPLE_OUTPUTS.simple_shelley_output],
+                fee: FEE,
+                ttl: TTL,
+                certificates: [SAMPLE_CERTIFICATES.stake_registration_conway],
+                protocolMagic: PROTOCOL_MAGICS.mainnet,
+                networkId: NETWORK_IDS.mainnet,
+                signingMode: CardanoTxSigningMode.ORDINARY_TRANSACTION,
+            },
+            result: {
+                hash: 'e200b2c91f3493a1f3b9cfc8b6c141f70181741025e53941e9d57d22b1470c5c',
+                witnesses: [
+                    {
+                        type: 1,
+                        pubKey: '5d010cf16fdeff40955633d6c565f3844a288a24967cf6b76acbeb271b4f13c1',
+                        signature:
+                            '79a357517a08c7256b0fab1e93a92a477386f4c2d72cea7bc68527c0133c32472305f010350665d72e8017bb6c2080b5742680ce7700bbddda561c917f294a07',
+                        chainCode: null,
+                    },
+                    {
+                        type: 1,
+                        pubKey: 'bc65be1b0b9d7531778a1317c2aa6de936963c3f9ac7d5ee9e9eda25e0c97c5e',
+                        signature:
+                            'dca542910d0362fc22744e7a24732343db4e013495a7d9b47562886f09af8eb56ecaa105e20a9df3e4248fdab61dd91b6fb2a3bfc15d0d9a0442671c07e1ba02',
+                        chainCode: null,
+                    },
+                ],
+                auxiliaryDataSupplement: undefined,
+            },
+            legacyResults: [legacyResults.beforeConway],
+        },
+
+        {
             description: 'signStakeRegistrationNoOutputs',
             params: {
                 inputs: [SAMPLE_INPUTS.shelley_input],
@@ -695,6 +780,41 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
+        },
+
+        {
+            description: 'signStakeDeregistrationConway',
+            params: {
+                inputs: [SAMPLE_INPUTS.shelley_input],
+                outputs: [SAMPLE_OUTPUTS.simple_shelley_output],
+                fee: FEE,
+                ttl: TTL,
+                certificates: [SAMPLE_CERTIFICATES.stake_deregistration_conway],
+                protocolMagic: PROTOCOL_MAGICS.mainnet,
+                networkId: NETWORK_IDS.mainnet,
+                signingMode: CardanoTxSigningMode.ORDINARY_TRANSACTION,
+            },
+            result: {
+                hash: '564ad55097101e1ca85629cffe839f43a19bf33aa1940c99a62eb8f14392eebb',
+                witnesses: [
+                    {
+                        type: 1,
+                        pubKey: '5d010cf16fdeff40955633d6c565f3844a288a24967cf6b76acbeb271b4f13c1',
+                        signature:
+                            'a0fa6630498f57249b305824ad4d32157653820e7d651332a58af70a80364df882ee8b0471e76dd7a335eea84a18c52b12c02508779d46b193bc418c22e8a00f',
+                        chainCode: null,
+                    },
+                    {
+                        type: 1,
+                        pubKey: 'bc65be1b0b9d7531778a1317c2aa6de936963c3f9ac7d5ee9e9eda25e0c97c5e',
+                        signature:
+                            '5d282fcd2685ee47f3770f84b2badf4046e8e76bfdaa26f74e292ecd16bcf89fb330b99edff13bc9c81e8c6523864f69a3ac7cde29d5a648707724c5cb48730e',
+                        chainCode: null,
+                    },
+                ],
+                auxiliaryDataSupplement: undefined,
+            },
+            legacyResults: [legacyResults.beforeConway],
         },
 
         {
@@ -1175,6 +1295,146 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
+        },
+
+        {
+            description: 'signVoteDelegationKeyHash',
+            params: {
+                inputs: [SAMPLE_INPUTS.shelley_input],
+                outputs: [SAMPLE_OUTPUTS.simple_shelley_output],
+                fee: FEE,
+                ttl: TTL,
+                certificates: [SAMPLE_CERTIFICATES.vote_delegation_key_hash],
+                protocolMagic: PROTOCOL_MAGICS.mainnet,
+                networkId: NETWORK_IDS.mainnet,
+                signingMode: CardanoTxSigningMode.ORDINARY_TRANSACTION,
+            },
+            result: {
+                hash: '154e0164e1d06e11a569054309b02a2926c5af1de7832473120a96465713bdc5',
+                witnesses: [
+                    {
+                        type: 1,
+                        pubKey: '5d010cf16fdeff40955633d6c565f3844a288a24967cf6b76acbeb271b4f13c1',
+                        signature:
+                            '2bd248ab6172b1757bd28573a36839a08e189d032a34f0ecaafa421b31c76af2f1f48ecb9c12c4a225d52873f7390938ab442842c55f1196f6213e4e971e6903',
+                        chainCode: null,
+                    },
+                    {
+                        type: 1,
+                        pubKey: 'bc65be1b0b9d7531778a1317c2aa6de936963c3f9ac7d5ee9e9eda25e0c97c5e',
+                        signature:
+                            '4b4f43f599eb55b2a9489c6696d6d0812fd02bba1d0d4b2d68b2db8f1641e6cfdcfc1bc602428543a37abd981e0e3ba28516c2617396ec7675b361e3eb0bde0e',
+                        chainCode: null,
+                    },
+                ],
+                auxiliaryDataSupplement: undefined,
+            },
+            legacyResults: [legacyResults.beforeConway],
+        },
+
+        {
+            description: 'signVoteDelegationScript',
+            params: {
+                inputs: [SAMPLE_INPUTS.shelley_input],
+                outputs: [SAMPLE_OUTPUTS.simple_shelley_output],
+                fee: FEE,
+                ttl: TTL,
+                certificates: [SAMPLE_CERTIFICATES.vote_delegation_script],
+                protocolMagic: PROTOCOL_MAGICS.mainnet,
+                networkId: NETWORK_IDS.mainnet,
+                signingMode: CardanoTxSigningMode.ORDINARY_TRANSACTION,
+            },
+            result: {
+                hash: 'fccf753e4f96e20c880e5ea933041ed33509ec6c0dc1aee8b25a1fe3d562b7aa',
+                witnesses: [
+                    {
+                        type: 1,
+                        pubKey: '5d010cf16fdeff40955633d6c565f3844a288a24967cf6b76acbeb271b4f13c1',
+                        signature:
+                            'bde0242fee0de5b862d2f02847d789ebe10e8f82bf15837370f115c89c1b413f1b0fa5a470210127af92059c4d3ebff297d39e93143667d3823476f12f0f6f07',
+                        chainCode: null,
+                    },
+                    {
+                        type: 1,
+                        pubKey: 'bc65be1b0b9d7531778a1317c2aa6de936963c3f9ac7d5ee9e9eda25e0c97c5e',
+                        signature:
+                            'cd8a2fca634c1aa2c88609042de7e4fce232bf233b1271612b5edc7b806e11ff44e6b6b15feb5b6e76b7e16a8d703e7653d860c00981edf6fe3b1e4cbeaba406',
+                        chainCode: null,
+                    },
+                ],
+                auxiliaryDataSupplement: undefined,
+            },
+            legacyResults: [legacyResults.beforeConway],
+        },
+
+        {
+            description: 'signVoteDelegationAbstain',
+            params: {
+                inputs: [SAMPLE_INPUTS.shelley_input],
+                outputs: [SAMPLE_OUTPUTS.simple_shelley_output],
+                fee: FEE,
+                ttl: TTL,
+                certificates: [SAMPLE_CERTIFICATES.vote_delegation_abstain],
+                protocolMagic: PROTOCOL_MAGICS.mainnet,
+                networkId: NETWORK_IDS.mainnet,
+                signingMode: CardanoTxSigningMode.ORDINARY_TRANSACTION,
+            },
+            result: {
+                hash: '01d0f76fadc899087c5352befac56cbfdc2e868ac715fbfe00230bab3f7fa751',
+                witnesses: [
+                    {
+                        type: 1,
+                        pubKey: '5d010cf16fdeff40955633d6c565f3844a288a24967cf6b76acbeb271b4f13c1',
+                        signature:
+                            '52c57d9c0e06fc9883285db4eec1a1504e27726dc5afce943d6f54df22188f05c3eeee06d052375eceb55df83c314237b3718f07fccef6198bda8c20d794b102',
+                        chainCode: null,
+                    },
+                    {
+                        type: 1,
+                        pubKey: 'bc65be1b0b9d7531778a1317c2aa6de936963c3f9ac7d5ee9e9eda25e0c97c5e',
+                        signature:
+                            '6de4940ff99738aaf3659ffeb8e4f6f01ff88ddb65c24028d75a847ca684d07af000e32eaa4c915c8031f6d928b2bcbe8c6f57e389299d3eafe213bd0ab1190c',
+                        chainCode: null,
+                    },
+                ],
+                auxiliaryDataSupplement: undefined,
+            },
+            legacyResults: [legacyResults.beforeConway],
+        },
+
+        {
+            description: 'signVoteDelegationNoConfidence',
+            params: {
+                inputs: [SAMPLE_INPUTS.shelley_input],
+                outputs: [SAMPLE_OUTPUTS.simple_shelley_output],
+                fee: FEE,
+                ttl: TTL,
+                certificates: [SAMPLE_CERTIFICATES.vote_delegation_no_confidence],
+                protocolMagic: PROTOCOL_MAGICS.mainnet,
+                networkId: NETWORK_IDS.mainnet,
+                signingMode: CardanoTxSigningMode.ORDINARY_TRANSACTION,
+            },
+            result: {
+                hash: '567e9bd00787190f1ab51879dcf834002b76007130c526b2e4d1bf9a996f5ad0',
+                witnesses: [
+                    {
+                        type: 1,
+                        pubKey: '5d010cf16fdeff40955633d6c565f3844a288a24967cf6b76acbeb271b4f13c1',
+                        signature:
+                            '20e3f9ecc3a1b97cbda08cf610b2e72b45d0e0916af2be2ad472d4c8d2be4b13818497818961c8d27379754f0057b00fa286bce0d59f177f24eeee4e2b24940f',
+                        chainCode: null,
+                    },
+                    {
+                        type: 1,
+                        pubKey: 'bc65be1b0b9d7531778a1317c2aa6de936963c3f9ac7d5ee9e9eda25e0c97c5e',
+                        signature:
+                            '898fb2cef0c4b954f22c4218fc9a188a5da340ddb5c6d5bba01c67520bbf537f5743814b6d40dd7f299ece7e39d7efb16a1cb597e8d421649a9483f631371703',
+                        chainCode: null,
+                    },
+                ],
+                auxiliaryDataSupplement: undefined,
+            },
+            legacyResults: [legacyResults.beforeConway],
         },
 
         {
