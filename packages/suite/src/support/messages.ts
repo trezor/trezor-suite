@@ -3610,7 +3610,7 @@ export default defineMessages({
     },
     TR_XRP_RESERVE_INFO: {
         defaultMessage:
-            'Ripple addresses require a minimum balance of {minBalance} XRP to activate and maintain the account.',
+            'XRP addresses require a minimum balance of {minBalance} XRP to activate and maintain the account.',
         id: 'TR_XRP_RESERVE_INFO',
     },
     TR_YOU_WERE_DISCONNECTED_DOT: {
@@ -3701,7 +3701,7 @@ export default defineMessages({
     TR_ACCOUNT_DETAILS_PATH_DESC: {
         id: 'TR_ACCOUNT_DETAILS_PATH_DESC',
         defaultMessage:
-            'Derivation path is a parameter according to which the Hierarchical Deterministic (HD) wallet derives individual keys within the tree of keys.',
+            'The derivation path is a way to navigate and generate specific keys within the organized structure of an HD (Hierarchical Deterministic) wallet.',
     },
     TR_ACCOUNT_TYPE_BIP84_DESC: {
         id: 'TR_ACCOUNT_TYPE_BIP84_DESC',
@@ -4687,7 +4687,7 @@ export default defineMessages({
     },
     TR_REBOOT_INTO_BOOTLOADER: {
         id: 'TR_REBOOT_INTO_BOOTLOADER',
-        defaultMessage: 'Reboot your Trezor in bootloader mode',
+        defaultMessage: 'Restart your Trezor in bootloader mode',
     },
     TR_RECONNECT_IN_BOOTLOADER: {
         id: 'TR_RECONNECT_IN_BOOTLOADER',
@@ -6228,7 +6228,7 @@ export default defineMessages({
     },
     TR_UPDATE_MODAL_INSTALL_AND_RESTART: {
         id: 'TR_UPDATE_MODAL_INSTALL_AND_RESTART',
-        defaultMessage: 'Restart & Update',
+        defaultMessage: 'Restart & update',
     },
     TR_UPDATE_MODAL_UPDATE_ON_QUIT: {
         id: 'TR_UPDATE_MODAL_UPDATE_ON_QUIT',
@@ -6256,7 +6256,7 @@ export default defineMessages({
     },
     TR_UPDATE_MODAL_RESTART_NEEDED: {
         id: 'TR_UPDATE_MODAL_RESTART_NEEDED',
-        defaultMessage: 'This requires restarting Suite.',
+        defaultMessage: 'This requires restarting Trezor Suite.',
     },
     SETTINGS_UPDATE_CHECKING: {
         id: 'SETTINGS_UPDATE_CHECKING',
@@ -6620,7 +6620,7 @@ export default defineMessages({
     },
     TR_WAIT_FOR_REBOOT_WEBUSB_DESCRIPTION: {
         id: 'TR_WAIT_FOR_REBOOT_WEBUSB_DESCRIPTION',
-        defaultMessage: 'Please wait for Trezor to reboot and pair the device again.',
+        defaultMessage: 'Please wait for Trezor to restart and pair the device again.',
     },
     TR_BUG: {
         id: 'TR_BUG',
