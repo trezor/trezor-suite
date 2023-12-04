@@ -1,6 +1,22 @@
 import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyle = createGlobalStyle`
+
+@font-face {
+    font-family: 'TT Satoshi';
+    src: url('./fonts/TTSatoshi-Medium.otf') format('opentype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'TT Satoshi';
+    src: url('./fonts/TTSatoshi-DemiBold.otf') format('opentype');
+    font-weight: 600;
+    font-style: normal;
+}
+
+
     * , *::before , *::after {
         box-sizing: border-box;
     }
@@ -14,10 +30,12 @@ const GlobalStyle = createGlobalStyle`
         width: 100%;
         height: 100%;
         position: relative;
-        -moz-osx-font-smoothing: grayscale;
-        font-family: "TT Hoves", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+        font-family: "TT Satoshi", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
         font-size: 14px;
+        line-height: 1.42;
+        text-size-adjust: 100%;
         -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
     }
 
     #root, .app-container {
