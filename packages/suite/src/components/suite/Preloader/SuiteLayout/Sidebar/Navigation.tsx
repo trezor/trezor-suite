@@ -1,4 +1,4 @@
-import { FC, useMemo } from 'react';
+import { FC } from 'react';
 import styled from 'styled-components';
 import { spacingsPx } from '@trezor/theme';
 import { NavigationItem, NavigationItemProps } from './NavigationItem';
@@ -10,42 +10,30 @@ const Nav = styled.nav`
     gap: ${spacingsPx.xxs};
 `;
 
-export const Navigation = () => {
-    const navItems: Array<NavigationItemProps & { CustomComponent?: FC<NavigationItemProps> }> =
-        useMemo(
-            () => [
-                {
-                    id: 'dashboard',
-                    nameId: 'TR_DASHBOARD',
-                    icon: 'home',
-                    route: 'suite-index',
-                },
-                {
-                    id: 'notifications',
-                    nameId: 'TR_NOTIFICATIONS',
-                    icon: 'notifications',
-                    CustomComponent: NotificationDropdown,
-                },
-                {
-                    id: 'settings',
-                    nameId: 'TR_SETTINGS',
-                    icon: 'settings',
-                    route: 'settings-index',
-                    dataTest: 'settings',
-                },
-            ],
-            [],
-        );
+const navItems: Array<NavigationItemProps & { CustomComponent?: FC<NavigationItemProps> }> = [
+    {
+        nameId: 'TR_DASHBOARD',
+        icon: 'home',
+        route: 'suite-index',
+    },
+    {
+        nameId: 'TR_NOTIFICATIONS',
+        icon: 'notifications',
+        CustomComponent: NotificationDropdown,
+    },
+    {
+        nameId: 'TR_SETTINGS',
+        icon: 'settings',
+        route: 'settings-index',
+        dataTest: 'settings',
+    },
+];
 
-    return (
-        <Nav>
-            {navItems.map(item =>
-                item.CustomComponent ? (
-                    <item.CustomComponent key={item.nameId} {...item} />
-                ) : (
-                    <NavigationItem key={item.nameId} {...item} />
-                ),
-            )}
-        </Nav>
-    );
-};
+export const Navigation = () => (
+    <Nav>
+        {navItems.map(item => {
+            const Component = item.CustomComponent ? item.CustomComponent : NavigationItem;
+            return <Component key={item.nameId} {...item} />;
+        })}
+    </Nav>
+);

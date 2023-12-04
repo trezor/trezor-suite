@@ -11,6 +11,7 @@ import { findRouteByName } from 'src/utils/suite/router';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useCustomBackends } from 'src/hooks/settings/backends';
 import { useGuide } from 'src/hooks/guide/useGuide';
+import { selectIsDiscreteModeActive } from 'src/reducers/wallet/settingsReducer';
 
 import { MobileActionItem } from './MobileActionItem';
 
@@ -27,7 +28,7 @@ interface MobileMenuActionsProps {
 export const MobileMenuActions = ({ closeMobileNavigation }: MobileMenuActionsProps) => {
     const activeApp = useSelector(state => state.router.app);
     const notifications = useSelector(state => state.notifications);
-    const discreetMode = useSelector(state => state.wallet.settings.discreetMode);
+    const discreetMode = useSelector(selectIsDiscreteModeActive);
     const allowPrerelease = useSelector(state => state.desktopUpdate.allowPrerelease);
     const enabledNetworks = useSelector(state => state.wallet.settings.enabledNetworks);
     const dispatch = useDispatch();

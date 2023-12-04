@@ -7,6 +7,7 @@ import { goto } from 'src/actions/suite/routerActions';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { selectTorState } from 'src/reducers/suite/suiteReducer';
 import { setDiscreetMode } from 'src/actions/settings/walletSettingsActions';
+import { selectIsDiscreteModeActive } from 'src/reducers/wallet/settingsReducer';
 import { NavigationItemBase } from './NavigationItem';
 
 const WebContainer = styled.div`
@@ -73,18 +74,16 @@ const TorToggleContainer = styled.div`
 `;
 
 export const QuickActions = () => {
-    const isDiscreetModeActive = useSelector(state => state.wallet.settings.discreetMode);
+    const isDiscreetModeActive = useSelector(selectIsDiscreteModeActive);
     const { isTorEnabled, isTorLoading } = useSelector(selectTorState);
 
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
     const theme = useTheme();
 
-    const isDesktopp = isDesktop();
-
     const handleDicreetModeClick = () => dispatch(setDiscreetMode(!isDiscreetModeActive));
 
-    if (!isDesktopp) {
+    if (!isDesktop()) {
         const translationLabel = isDiscreetModeActive ? 'TR_SHOW_BALANCES' : 'TR_HIDE_BALANCES';
 
         return (
