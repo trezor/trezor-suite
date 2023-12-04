@@ -452,9 +452,15 @@ const handshake = (handshake: PopupHandshake, origin: string) => {
 
     clearTimeout(handshakeTimeout);
 
+    let thirdPartyOrigin = origin;
+    // `origin` is empty string when using `BroadcastChannel` in iframe popup mode,
+    // so when that happens we use origin from settings and validate it with `parseConnectSettings`.
+    if (origin === '' && payload.settings.origin) {
+        thirdPartyOrigin = payload.settings.origin;
+    }
     // when this message comes from iframe, settings is already validated.
     // when there is no iframe, we must validate it here
-    const trustedSettings = parseConnectSettings(payload.settings, origin);
+    const trustedSettings = parseConnectSettings(payload.settings, thirdPartyOrigin);
     setState({ settings: trustedSettings });
 
     if (isPhishingDomain(trustedSettings.origin || '')) {
