@@ -1,4 +1,6 @@
 import { deviceAccessMutex } from './DeviceAccessMutex';
+import { DEVICE_ACCESS_ERROR } from './constants';
+import { DeviceAccessResponse } from './types';
 
 /**
  * Puts the callback to the end of the queue and waits for its turn to execute.
@@ -6,12 +8,14 @@ import { deviceAccessMutex } from './DeviceAccessMutex';
 export const requestDeviceAccess = async <TParams extends unknown[], TReturnType>(
     deviceCallback: (...args: TParams) => TReturnType,
     ...callbackParams: TParams
-): Promise<TReturnType> => {
-    await deviceAccessMutex.lock();
+): DeviceAccessResponse<TReturnType> => {
+    const wasLockSuccessful = await deviceAccessMutex.lock();
+    if (!wasLockSuccessful) return DEVICE_ACCESS_ERROR;
+
     const response = await deviceCallback(...callbackParams);
     deviceAccessMutex.unlock();
 
-    return response;
+    return { success: true, payload: response };
 };
 
 /**
@@ -20,10 +24,16 @@ export const requestDeviceAccess = async <TParams extends unknown[], TReturnType
 export const requestPrioritizedDeviceAccess = async <TParams extends unknown[], TReturnType>(
     deviceCallback: (...args: TParams) => TReturnType,
     ...callbackParams: TParams
-): Promise<TReturnType> => {
-    await deviceAccessMutex.prioritizedLock();
+): DeviceAccessResponse<TReturnType> => {
+    const wasLockSuccessful = await deviceAccessMutex.prioritizedLock();
+    if (!wasLockSuccessful) return DEVICE_ACCESS_ERROR;
+
     const response = await deviceCallback(...callbackParams);
     deviceAccessMutex.unlock();
 
-    return response;
+    return { success: true, payload: response };
+};
+
+export const clearAndUnlockDeviceAccessQueue = () => {
+    deviceAccessMutex.clearQueue();
 };

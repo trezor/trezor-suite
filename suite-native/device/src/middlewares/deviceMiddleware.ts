@@ -8,9 +8,11 @@ import {
     forgetDisconnectedDevices,
     handleDeviceDisconnect,
     observeSelectedDevice,
+    selectDevice,
     selectDeviceThunk,
 } from '@suite-common/wallet-core';
 import { selectIsDeviceConnectFeatureFlagEnabled } from '@suite-native/feature-flags';
+import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 
 import { wipeDisconnectedDevicesDataThunk } from '../deviceThunks';
 
@@ -43,16 +45,17 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
          expect that the state was already changed by the action stored in the `action` variable. */
         next(action);
 
+        const device = selectDevice(getState());
+
         if (deviceActions.createDeviceInstance.match(action)) {
             dispatch(selectDeviceThunk(action.payload));
         }
 
         // Request authorization of a newly acquired device.
-        if (
-            deviceActions.selectDevice.match(action) ||
-            deviceActions.updateSelectedDevice.match(action)
-        ) {
-            dispatch(authorizeDevice({ isUseEmptyPassphraseForced: true }));
+        if (deviceActions.selectDevice.match(action) && !device?.state) {
+            requestPrioritizedDeviceAccess(() =>
+                dispatch(authorizeDevice({ isUseEmptyPassphraseForced: true })),
+            );
         }
 
         if (

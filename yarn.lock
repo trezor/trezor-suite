@@ -7344,6 +7344,7 @@ __metadata:
     "@suite-native/alerts": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
+    "@suite-native/device-mutex": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"
     "@suite-native/helpers": "workspace:*"
     "@suite-native/intl": "workspace:*"

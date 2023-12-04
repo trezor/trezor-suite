@@ -1,7 +1,6 @@
 import { A } from '@mobily/ts-belt';
 
 import { createThunk } from '@suite-common/redux-utils';
-import { TrezorDevice } from '@suite-common/suite-types';
 import {
     accountsActions,
     DISCOVERY_MODULE_PREFIX,
@@ -11,6 +10,7 @@ import {
     createDiscovery,
     removeDiscovery,
     getAvailableCardanoDerivationsThunk,
+    selectDeviceByState,
 } from '@suite-common/wallet-core';
 import { selectIsAccountAlreadyDiscovered } from '@suite-native/accounts';
 import TrezorConnect from '@trezor/connect';
@@ -103,12 +103,10 @@ const discoverNetworkBatchThunk = createThunk(
     async (
         {
             deviceState,
-            device,
             round = 1,
             network,
         }: {
             deviceState: string;
-            device: TrezorDevice;
             round?: number;
             network: Network;
         },
@@ -167,7 +165,6 @@ const discoverNetworkBatchThunk = createThunk(
             dispatch(
                 discoverNetworkBatchThunk({
                     deviceState,
-                    device,
                     network,
                     round: round + 1,
                 }),
@@ -176,11 +173,15 @@ const discoverNetworkBatchThunk = createThunk(
         }
 
         // Take exclusive access to the device and hold it until is the fetching of the descriptors done.
-        const descriptorsBundle = await requestDeviceAccess(fetchBundleDescriptors, chunkBundle);
+        const deviceAccessResponse = await requestDeviceAccess(fetchBundleDescriptors, chunkBundle);
+
+        if (!deviceAccessResponse.success) {
+            return;
+        }
 
         const isFinished = await dispatch(
             discoverAccountsByDescriptorThunk({
-                descriptorsBundle,
+                descriptorsBundle: deviceAccessResponse.payload,
                 deviceState,
             }),
         ).unwrap();
@@ -189,7 +190,6 @@ const discoverNetworkBatchThunk = createThunk(
             dispatch(
                 discoverNetworkBatchThunk({
                     deviceState,
-                    device,
                     network,
                     round: round + 1,
                 }),
@@ -205,24 +205,31 @@ export const createDescriptorPreloadedDiscoveryThunk = createThunk(
     async (
         {
             deviceState,
-            device,
             areTestnetsEnabled,
         }: {
             deviceState: string;
-            device: TrezorDevice;
             areTestnetsEnabled: boolean;
         },
-        { dispatch },
+        { dispatch, getState },
     ) => {
+        const device = selectDeviceByState(getState(), deviceState);
+
+        if (!device) {
+            return;
+        }
         const networks = areTestnetsEnabled ? supportedNetworkSymbols : supportedMainnetSymbols;
 
-        const availableCardanoDerivations = await dispatch(
-            getAvailableCardanoDerivationsThunk({
-                deviceState,
-                device,
-                isUseEmptyPassphraseForced: true,
-            }),
-        ).unwrap();
+        const deviceAccessResponse = await requestDeviceAccess(() =>
+            dispatch(
+                getAvailableCardanoDerivationsThunk({
+                    deviceState,
+                    device,
+                    isUseEmptyPassphraseForced: true,
+                }),
+            ).unwrap(),
+        );
+
+        if (!deviceAccessResponse.success) return false;
 
         const discoveryNetworksTotalCount = filterUnavailableNetworks(networks, device).length;
 
@@ -231,12 +238,12 @@ export const createDescriptorPreloadedDiscoveryThunk = createThunk(
                 deviceState,
                 authConfirm: false,
                 index: 0,
-                status: DiscoveryStatus.IDLE,
+                status: DiscoveryStatus.RUNNING,
                 total: discoveryNetworksTotalCount,
                 bundleSize: 0,
                 loaded: 0,
                 failed: [],
-                availableCardanoDerivations,
+                availableCardanoDerivations: deviceAccessResponse.payload,
                 networks,
             }),
         );
@@ -246,17 +253,18 @@ export const createDescriptorPreloadedDiscoveryThunk = createThunk(
 export const startDescriptorPreloadedDiscoveryThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/startDescriptorPreloadedDiscoveryThunk`,
     async (
-        {
-            deviceState,
-            device,
-            areTestnetsEnabled,
-        }: { deviceState: string; device: TrezorDevice; areTestnetsEnabled: boolean },
+        { deviceState, areTestnetsEnabled }: { deviceState: string; areTestnetsEnabled: boolean },
         { dispatch, getState },
     ) => {
+        const device = selectDeviceByState(getState(), deviceState);
+
+        if (!device) {
+            return;
+        }
+
         await dispatch(
             createDescriptorPreloadedDiscoveryThunk({
                 deviceState,
-                device,
                 areTestnetsEnabled,
             }),
         );
@@ -266,19 +274,12 @@ export const startDescriptorPreloadedDiscoveryThunk = createThunk(
             return;
         }
 
-        dispatch(
-            updateDiscovery({
-                ...discovery,
-                status: DiscoveryStatus.RUNNING,
-            }),
-        );
-
         // Get only device supported networks.
         const networks = filterUnavailableNetworks(discovery.networks, device);
 
         // Start discovery for every network account type.
         networks.forEach(network => {
-            dispatch(discoverNetworkBatchThunk({ deviceState, device, network }));
+            dispatch(discoverNetworkBatchThunk({ deviceState, network }));
         });
     },
 );
