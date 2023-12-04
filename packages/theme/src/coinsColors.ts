@@ -20,4 +20,4 @@ export const coinsColors: CoinsColors = {
     txrp: '#E75F5F',
     gnt: '#8A92B2',
     ada: '#3468D1',
-};
+} as const;
