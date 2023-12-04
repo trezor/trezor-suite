@@ -42,7 +42,7 @@ const Label = styled.span`
     display: flex;
 `;
 
-const Heading = styled(H2)`
+const Heading = styled.h2`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
