@@ -220,33 +220,18 @@ export const TransactionReviewOutputElement = forwardRef<
                                         </OutputValueWrapper>
                                     )}
                                     {/* temporary solution until fiat value for ERC20 tokens will be fixed  */}
-                                    {fiatVisible && !(line.id !== 'fee' && token) && (
+                                    {fiatSymbol && fiatVisible && !(line.id !== 'fee' && token) && (
                                         <>
+                                            <DotSeparatorWrapper>
+                                                <DotSeparator />
+                                            </DotSeparatorWrapper>
                                             <OutputValueWrapper>
-                                                {line.plainValue ? (
-                                                    line.value
-                                                ) : (
-                                                    <FormattedCryptoAmount
-                                                        disableHiddenPlaceholder
-                                                        value={line.value}
-                                                        symbol={cryptoSymbol}
-                                                    />
-                                                )}
+                                                <FiatValue
+                                                    disableHiddenPlaceholder
+                                                    amount={line.value}
+                                                    symbol={fiatSymbol}
+                                                />
                                             </OutputValueWrapper>
-                                            {fiatVisible && fiatSymbol && (
-                                                <>
-                                                    <DotSeparatorWrapper>
-                                                        <DotSeparator />
-                                                    </DotSeparatorWrapper>
-                                                    <OutputValueWrapper>
-                                                        <FiatValue
-                                                            disableHiddenPlaceholder
-                                                            amount={line.value}
-                                                            symbol={fiatSymbol}
-                                                        />
-                                                    </OutputValueWrapper>
-                                                </>
-                                            )}
                                         </>
                                     )}
                                 </TruncateWrapper>

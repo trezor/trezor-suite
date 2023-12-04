@@ -160,15 +160,6 @@ export const TransactionReviewOutput = (props: TransactionReviewOutputProps) => 
                 plainValue: true,
             },
         ];
-    } else if (type === 'amount') {
-        outputLines = [
-            {
-                id: 'amount',
-                label: outputLabel,
-                value: outputValue,
-            },
-        ];
-        fiatVisible = false;
     } else {
         outputLines = [
             {
