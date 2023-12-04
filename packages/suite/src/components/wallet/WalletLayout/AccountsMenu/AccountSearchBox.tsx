@@ -6,7 +6,6 @@ import { selectDevice } from '@suite-common/wallet-core';
 import { useSelector, useAccountSearch, useTranslation } from 'src/hooks/suite';
 
 const Wrapper = styled.div`
-    background: ${({ theme }) => theme.BG_WHITE};
     width: 100%;
     margin-top: 16px;
 `;

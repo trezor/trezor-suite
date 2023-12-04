@@ -4,7 +4,6 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { onAccountsPage } from '../../support/pageObjects/accountsObject';
 import { onSettingsCryptoPage } from '../../support/pageObjects/settingsCryptoObject';
-import { onTopBar } from '../../support/pageObjects/topBarObject';
 
 const downloadsFolder = Cypress.config('downloadsFolder');
 const coins: NetworkSymbol[] = ['btc', 'ltc', 'eth', 'ada'];
@@ -21,7 +20,7 @@ describe('Export transactions', () => {
         cy.viewport(1080, 1440).resetDb();
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
-        cy.getTestElement('@suite/menu/wallet-index').click();
+        cy.getTestElement('@account-menu/btc/normal/0').click();
         cy.discoveryShouldFinish();
     });
 
@@ -45,8 +44,9 @@ describe('Export transactions', () => {
                 onSettingsCryptoPage.activateCoin(coin);
             }
         });
-        onTopBar.openAccounts();
+        cy.getTestElement('@suite/menu/suite-index').click();
         cy.discoveryShouldFinish();
+
         coins.forEach((coin: NetworkSymbol) => {
             onAccountsPage.clickOnDesiredAccount(coin);
             cy.task('rmDir', { dir: downloadsFolder, recursive: true, force: true });

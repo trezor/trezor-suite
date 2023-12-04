@@ -1,5 +1,6 @@
 import './commands';
 import 'cypress-file-upload';
+import 'cypress-real-events';
 
 // Hide fetch/XHR requests
 const app: any = window.top;

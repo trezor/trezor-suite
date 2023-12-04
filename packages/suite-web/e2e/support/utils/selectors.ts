@@ -20,10 +20,4 @@ export const getTestElement = (selector: string, options?: Parameters<typeof cy.
 export const getConfirmActionOnDeviceModal = () =>
     cy.getTestElement('@suite/modal/confirm-action-on-device');
 
-export const hoverTestElement = (selector: string) => {
-    cy.getTestElement(selector);
-    cy.task('activateHoverPseudo', {
-        selector: `[data-test="${selector}"]`,
-    });
-    return cy.getTestElement(selector);
-};
+export const hoverTestElement = (selector: string) => cy.getTestElement(selector).realHover();

@@ -9,10 +9,11 @@ import type { AppState } from 'src/types/suite';
 import { SuiteLayout } from './SuiteLayout/SuiteLayout';
 import { InitialLoading } from './InitialLoading';
 import { DatabaseUpgradeModal } from './DatabaseUpgradeModal';
-import { selectPrerequisite } from 'src/reducers/suite/suiteReducer';
+import { selectPrerequisite, selectIsLoggedOut } from 'src/reducers/suite/suiteReducer';
 import { SuiteStart } from 'src/views/start/SuiteStart';
 import { PrerequisitesGuide } from '../PrerequisitesGuide/PrerequisitesGuide';
-import { WelcomeLayout } from '../WelcomeLayout';
+import { LoggedOutLayout } from './LoggedOutLayout';
+import { WelcomeLayout } from '../WelcomeLayout/WelcomeLayout';
 
 const getFullscreenApp = (route: AppState['router']['route']) => {
     switch (route?.app) {
@@ -26,7 +27,7 @@ const getFullscreenApp = (route: AppState['router']['route']) => {
 };
 
 interface PreloaderProps {
-    children: JSX.Element;
+    children: React.ReactNode;
 }
 
 // Preloader is a top level wrapper used in _app.tsx.
@@ -36,6 +37,7 @@ export const Preloader = ({ children }: PreloaderProps) => {
     const transport = useSelector(state => state.suite.transport);
     const router = useSelector(state => state.router);
     const prerequisite = useSelector(selectPrerequisite);
+    const isLoggedOut = useSelector(selectIsLoggedOut);
 
     const dispatch = useDispatch();
 
@@ -49,7 +51,6 @@ export const Preloader = ({ children }: PreloaderProps) => {
     if (lifecycle.status === 'error') {
         throw new Error(lifecycle.error);
     }
-
     if (lifecycle.status === 'db-error') {
         return <DatabaseUpgradeModal variant={lifecycle.error} />;
     }
@@ -60,7 +61,7 @@ export const Preloader = ({ children }: PreloaderProps) => {
         return <InitialLoading timeout={90} />;
     }
 
-    // TODO: murder the fullscreenapp logic, there must be a learer way
+    // TODO: murder the fullscreen app logic, there must be a better way
     // i don't like how it's not clear which layout is used
     // and that the prerequisite screen is handled multiple times
     const FullscreenApp = getFullscreenApp(router.route);
@@ -86,6 +87,11 @@ export const Preloader = ({ children }: PreloaderProps) => {
     // because if it is handled by Router it is wrapped in SuiteLayout
     if (!router.route) {
         return <ErrorPage />;
+    }
+
+    // if a device is not connected or initialized
+    if (isLoggedOut) {
+        return <LoggedOutLayout>{children}</LoggedOutLayout>;
     }
 
     // everything is set.

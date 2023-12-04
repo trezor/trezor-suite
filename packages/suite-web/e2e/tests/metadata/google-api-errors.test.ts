@@ -22,7 +22,7 @@ describe('Google api errors', () => {
         });
         cy.passThroughInitialRun();
         cy.discoveryShouldFinish();
-        cy.getTestElement('@suite/menu/wallet-index').click();
+        cy.getTestElement('@account-menu/btc/normal/0').click();
     });
 
     it('Malformed token', () => {

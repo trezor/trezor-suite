@@ -7,7 +7,15 @@ import { TREZOR_URL } from '@trezor/urls';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsDashboardT2B1PromoBannerShown } from 'src/reducers/suite/suiteReducer';
-import { Button, Image, SVG_IMAGES, SVG_PATH, motionEasing, variables } from '@trezor/components';
+import {
+    Button,
+    IconButton,
+    Image,
+    SVG_IMAGES,
+    SVG_PATH,
+    motionEasing,
+    variables,
+} from '@trezor/components';
 import { setFlag } from 'src/actions/suite/suiteActions';
 import { Translation, TrezorLink } from 'src/components/suite';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -18,7 +26,7 @@ const BannerWrapper = styled(motion.div)`
     grid-template-columns: 338px 1fr minmax(109px, 145px) 42px;
     grid-template-rows: 42px 1fr 0;
     column-gap: 8px;
-    background-color: #0f6148;
+    background-color: ${({ theme }) => theme.backgroundPrimaryDefault};
     height: 168px;
     width: 100%;
     border-radius: 12px;
@@ -83,12 +91,12 @@ const NextGenerationTextBlock = styled.span`
     color: ${({ theme }) => theme.TYPE_WHITE};
 `;
 
+const imgUrl = resolveStaticPath(`${SVG_PATH}/${SVG_IMAGES.TREZOR_SAFE_PROMO_UNDERLINE}`);
+
 const NextGenerationTextBlockHighlight = styled(NextGenerationTextBlock)`
     color: #9be887;
     white-space: nowrap;
-    background-image: url(${resolveStaticPath(
-        `${SVG_PATH}/${SVG_IMAGES.TREZOR_SAFE_PROMO_UNDERLINE}`,
-    )});
+    background-image: url(${imgUrl});
     display: inline-block;
     background-position: 0 100%;
     background-repeat: no-repeat;
@@ -163,7 +171,7 @@ const ButtonShopNow = styled(Button)`
     }
 `;
 
-const ButtonClose = styled(Button)`
+const ButtonClose = styled(IconButton)`
     grid-column: 4;
     grid-row: 2;
     margin-bottom: 24px;

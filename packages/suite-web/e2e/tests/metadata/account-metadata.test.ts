@@ -50,7 +50,7 @@ Hovering over fields that may be labeled shows "add label" button upon which is 
 
             cy.discoveryShouldFinish();
 
-            cy.getTestElement('@suite/menu/wallet-index').click();
+            cy.getTestElement('@account-menu/btc/normal/0').click();
 
             cy.log(
                 'Default label is "Bitcoin #1". Clicking it in accounts menu is not possible. User can click on label in accounts sections. This triggers metadata flow',
@@ -154,7 +154,7 @@ Hovering over fields that may be labeled shows "add label" button upon which is 
             // );
 
             // test labeling of a newly added account
-            cy.getTestElement('@suite/menu/wallet-index').click();
+            cy.getTestElement('@account-menu/btc/normal/0').click();
             cy.getTestElement('@account-menu/add-account').click();
             cy.getTestElement('@settings/wallet/network/btc').click();
             cy.getTestElement('@add-account').click();

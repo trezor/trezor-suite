@@ -31,9 +31,7 @@ describe('Assets', () => {
         cy.getTestElement('@settings/menu/close').click();
 
         cy.passThroughInitialRun();
-
-        // ugly bug which takes user to settings after initial run in case he was there before and had initialized device
-        cy.getTestElement('@settings/menu/close').click();
+        cy.getTestElement('@suite/menu/suite-index').click();
 
         cy.discoveryShouldFinish();
         cy.contains('Bitcoin').should('be.visible');

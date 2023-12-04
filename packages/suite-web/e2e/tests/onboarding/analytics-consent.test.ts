@@ -56,7 +56,7 @@ describe('Onboarding - analytics consent', () => {
         acceptAnalyticsConsentOnInitializedDevice();
 
         cy.getTestElement('@suite-layout/body').should('be.visible');
-        cy.getTestElement('@settings/menu/close').should('be.visible');
+        cy.getTestElement('@settings/menu/title').should('be.visible');
     });
 
     it('shows analytics consent when going to settings and back on initialized T2T1 device', () => {
@@ -70,7 +70,7 @@ describe('Onboarding - analytics consent', () => {
         acceptAnalyticsConsentOnInitializedDevice();
 
         cy.getTestElement('@suite-layout/body').should('be.visible');
-        cy.getTestElement('@settings/menu/close').should('be.visible');
+        cy.getTestElement('@settings/menu/title').should('be.visible');
     });
 
     it('shows analytics consent and then goes to /accounts on initialized T1B1 device', () => {

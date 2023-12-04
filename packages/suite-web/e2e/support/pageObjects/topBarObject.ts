@@ -1,11 +1,10 @@
 /// <reference types="cypress" />
 
-class TopBar {
-    openAccounts() {
-        cy.getTestElement('@suite/menu/wallet-index', { timeout: 30000 })
-            .should('be.visible')
-            .click();
-        cy.getTestElement('@account-menu/search-input', { timeout: 15000 }).should('be.visible');
+import { NetworkSymbol } from '@suite-common/wallet-config';
+
+class NavBar {
+    openDefaultAcccount(coin: NetworkSymbol = 'btc') {
+        cy.getTestElement(`@account-menu/${coin}/normal/0`).click();
     }
 
     openSettings() {
@@ -14,4 +13,4 @@ class TopBar {
     }
 }
 
-export const onTopBar = new TopBar();
+export const onNavBar = new NavBar();

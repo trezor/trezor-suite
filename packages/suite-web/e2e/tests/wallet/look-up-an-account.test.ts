@@ -32,7 +32,7 @@ describe('Look up a BTC account', () => {
         //
         // Test execution
         //
-        cy.getTestElement('@suite/menu/wallet-index').click();
+        cy.getTestElement('@suite/menu/suite-index').click();
         cy.discoveryShouldFinish();
         cy.getTestElement('@account-menu/search-input').type('bitcoin');
         //
