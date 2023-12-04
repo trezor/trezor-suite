@@ -153,6 +153,15 @@ export const selectDeviceAccounts = (state: AccountsRootState & DeviceRootState)
     return selectAccountsByDeviceState(state, device.state);
 };
 
+export const selectDeviceAccountsLengthPerNetwork = (state: AccountsRootState & DeviceRootState) =>
+    pipe(
+        selectDeviceAccounts(state),
+        A.groupBy(account => account.symbol),
+        Object.entries,
+        A.map(([symbol, accounts]) => [symbol, accounts.length]),
+        pairs => Object.fromEntries(pairs),
+    );
+
 export const selectDeviceMainnetAccounts = memoize((state: AccountsRootState & DeviceRootState) =>
     pipe(
         selectDeviceAccounts(state),

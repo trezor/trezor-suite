@@ -24,6 +24,7 @@
             "path": "../../suite-common/wallet-utils"
         },
         { "path": "../accounts" },
+        { "path": "../analytics" },
         { "path": "../config" },
         { "path": "../device" },
         { "path": "../device-mutex" },

@@ -5,6 +5,7 @@ import {
     accountsActions,
     DISCOVERY_MODULE_PREFIX,
     filterUnavailableNetworks,
+    selectDeviceAccountsLengthPerNetwork,
     selectDiscoveryForDevice,
     updateDiscovery,
     createDiscovery,
@@ -20,10 +21,14 @@ import { Network } from '@suite-common/wallet-config';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import { supportedMainnetSymbols, supportedNetworkSymbols } from '@suite-native/config';
 import { requestDeviceAccess } from '@suite-native/device-mutex';
+import { analytics, EventType } from '@suite-native/analytics';
 
 import { fetchBundleDescriptors } from './utils';
 
 const DISCOVERY_BATCH_SIZE = 3;
+
+// Note: This is for analytics purposes
+let discoveryStartTime: number | null = null;
 
 type DiscoveryDescriptorItem = DiscoveryItem & { descriptor: string };
 
@@ -46,6 +51,19 @@ const finishNetworkTypeDiscoveryThunk = createThunk(
 
         if (finishedNetworksCount >= discovery.total) {
             dispatch(removeDiscovery(discovery.deviceState));
+
+            // Discovery analytics duration tracking
+            if (discoveryStartTime !== null) {
+                const endTime = performance.now();
+                const duration = endTime - discoveryStartTime;
+                const accountsMap = selectDeviceAccountsLengthPerNetwork(getState());
+
+                analytics.report({
+                    type: EventType.CoinDiscovery,
+                    payload: { ...accountsMap, loadDuration: duration },
+                });
+                discoveryStartTime = null;
+            }
         }
     },
 );
@@ -261,6 +279,9 @@ export const startDescriptorPreloadedDiscoveryThunk = createThunk(
         if (!device) {
             return;
         }
+
+        // Start tracking duration for analytics purposes
+        discoveryStartTime = performance.now();
 
         await dispatch(
             createDescriptorPreloadedDiscoveryThunk({
