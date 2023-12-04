@@ -44,17 +44,23 @@ const Action = styled.div`
     height: 40px;
 `;
 
-const CheckIconWrapper = styled.div`
+const CheckIconContainer = styled.div`
     position: absolute;
-    display: flex;
     border-radius: 50%;
     width: 24px;
     height: 24px;
     top: ${spacingsPx.xs};
     right: ${spacingsPx.xs};
+    overflow: hidden;
+    box-shadow: inset 0px 0px 0px 1px ${({ theme }) => theme.borderOnElevation1};
+`;
+const CheckIconBackground = styled.div`
     background: ${({ theme }) => theme.backgroundPrimarySubtleOnElevation1};
+    display: flex;
     align-items: center;
     justify-content: center;
+    width: 100%;
+    height: 100%;
 `;
 
 const Line = styled.div`
@@ -92,11 +98,13 @@ export const SecurityCard = ({
             <StyledCard>
                 <Header>
                     <Icon icon={icon} size={32} color={theme.iconDefault} />
-                    {variant === 'secondary' && (
-                        <CheckIconWrapper>
-                            <Icon icon="CHECK" color={theme.iconPrimaryDefault} size={16} />
-                        </CheckIconWrapper>
-                    )}
+                    <CheckIconContainer>
+                        {variant === 'secondary' && (
+                            <CheckIconBackground>
+                                <Icon icon="CHECK" color={theme.iconPrimaryDefault} size={16} />
+                            </CheckIconBackground>
+                        )}
+                    </CheckIconContainer>
                 </Header>
                 <Title>{heading}</Title>
                 <Description>{description}</Description>
@@ -126,6 +134,7 @@ export const SecurityCard = ({
                             <Line />
                             <Action>
                                 <Button
+                                    isFullWidth
                                     variant="primary"
                                     isDisabled={cta.isDisabled}
                                     onClick={cta.action}

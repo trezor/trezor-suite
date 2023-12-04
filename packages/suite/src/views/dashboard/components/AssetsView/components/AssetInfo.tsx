@@ -8,17 +8,18 @@ import { SkeletonCircle, SkeletonRectangle } from 'src/components/suite';
 import { spacingsPx, typography } from '@trezor/theme';
 import { selectDeviceAccountsByNetworkSymbol } from '@suite-common/wallet-core';
 
-type Props = {
+interface AssetInfoProps {
     network: Network;
     onClick: () => void;
-};
+}
 
-type AssetInfoSkeletonProps = {
+interface AssetInfoSkeletonProps {
     animate?: boolean;
-};
+}
 
 const ArrowIcon = styled(Icon)`
-    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.1s;
     margin-top: ${spacingsPx.xxs};
     margin-left: ${spacingsPx.xs};
 `;
@@ -32,10 +33,11 @@ const Container = styled.div`
     :hover {
         cursor: pointer;
         ${ArrowIcon} {
-            visibility: visible;
+            opacity: 1;
         }
     }
 `;
+
 const WalletContent = styled.div`
     flex: 1;
 `;
@@ -57,11 +59,10 @@ const WalletNumber = styled.div`
 
 const LogoWrapper = styled.div`
     padding-right: ${spacingsPx.sm};
-
     align-items: center;
 `;
 
-export const AssetInfo = ({ network, onClick }: Props) => {
+export const AssetInfo = ({ network, onClick }: AssetInfoProps) => {
     const { symbol, name } = network;
     const selectedAccounts = useSelector((state: any) =>
         selectDeviceAccountsByNetworkSymbol(state, symbol),
@@ -71,12 +72,12 @@ export const AssetInfo = ({ network, onClick }: Props) => {
     return (
         <Container onClick={onClick}>
             <LogoWrapper>
-                <CoinLogo symbol={symbol} size={24} hasBorder />
+                <CoinLogo symbol={symbol} size={24} hasShareIndicator />
             </LogoWrapper>
             <WalletContent>
                 <CoinName>{name}</CoinName>
                 <Wallets>
-                    <Icon icon="WALLET" />
+                    <Icon icon="WALLET" size={16} />
                     <WalletNumber>{selectedAccounts.length}</WalletNumber>
                 </Wallets>
             </WalletContent>
@@ -92,12 +93,10 @@ export const AssetInfoSkeleton = ({ animate }: AssetInfoSkeletonProps) => (
         </LogoWrapper>
         <div>
             <CoinName>
-                {' '}
                 <SkeletonRectangle animate={animate} width={100} />
             </CoinName>
             <Wallets>
                 <WalletNumber>
-                    {' '}
                     <SkeletonRectangle animate={animate} width={60} />
                 </WalletNumber>
             </Wallets>

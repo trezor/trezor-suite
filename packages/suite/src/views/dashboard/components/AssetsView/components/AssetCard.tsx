@@ -31,18 +31,22 @@ const BuyContainer = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-top: ${spacingsPx.lg};
     background-color: ${({ theme }) => theme.backgroundSurfaceElevation2};
     border-radius: 8px;
     padding: ${spacingsPx.sm} ${spacingsPx.sm} ${spacingsPx.sm} ${spacingsPx.md};
 `;
 
+const WarningIcon = styled(Icon)`
+    padding-left: ${spacingsPx.xxs};
+    padding-bottom: ${spacingsPx.xxxs};
+`;
+
 const BuyMarginContainer = styled.div`
-    margin: ${spacingsPx.xs};
+    margin: 0 ${spacingsPx.xs} ${spacingsPx.xs} ${spacingsPx.xs};
 `;
 
 const MarginContainer = styled.div`
-    padding: ${spacingsPx.lg} ${spacingsPx.sm} ${spacingsPx.sm} ${spacingsPx.xl};
+    padding: ${spacingsPx.md} ${spacingsPx.sm} ${spacingsPx.sm} ${spacingsPx.md};
     flex: 1;
 `;
 
@@ -144,12 +148,7 @@ export const AssetCard = ({ network, failed, cryptoValue }: AssetCardProps) => {
                         </>
                     ) : (
                         <FailedContainer>
-                            <Icon
-                                style={{ paddingLeft: '4px', paddingBottom: '2px' }}
-                                icon="WARNING"
-                                color={theme.TYPE_RED}
-                                size={14}
-                            />
+                            <WarningIcon icon="WARNING" color={theme.TYPE_RED} size={14} />
                             <Translation id="TR_DASHBOARD_ASSET_FAILED" />
                         </FailedContainer>
                     )}
