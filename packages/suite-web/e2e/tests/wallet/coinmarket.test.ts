@@ -15,7 +15,7 @@ describe('Coinmarket', () => {
 
     it('Basic trade walkthrough', () => {
         cy.discoveryShouldFinish();
-        cy.getTestElement('@suite/menu/wallet-index').click();
+        cy.getTestElement('@account-menu/btc/normal/0').click();
         cy.getTestElement('@wallet/menu/wallet-coinmarket-buy').click();
 
         // basic walkthrough buy tab

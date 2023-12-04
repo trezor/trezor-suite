@@ -25,8 +25,9 @@ describe('Metadata - cancel metadata on device', () => {
         });
 
         // now go to accounts. application does not try to initiate metadata
-        cy.getTestElement('@suite/menu/wallet-index').click();
+        cy.getTestElement('@suite/menu/suite-index').click();
         cy.discoveryShouldFinish();
+        cy.getTestElement('@account-menu/btc/normal/0').click();
 
         // but even though metadata is disabled, on hover "add label" button appears
         cy.hoverTestElement("@metadata/accountLabel/m/84'/0'/0'/hover-container");

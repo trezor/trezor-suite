@@ -9,26 +9,27 @@ import {
 } from 'react';
 import styled from 'styled-components';
 import { H2, variables } from '@trezor/components';
-import { MAX_WIDTH, MAX_WIDTH_WALLET_CONTENT } from 'src/constants/suite/layout';
+import { HORIZONTAL_LAYOUT_PADDINGS, MAX_CONTENT_WIDTH } from 'src/constants/suite/layout';
 import { zIndices } from '@trezor/theme';
+import { breakpointMediaQueries } from '@trezor/styles';
 
 const Wrapper = styled.div`
     display: flex;
     width: 100%;
     justify-content: center;
     background: ${({ theme }) => theme.BG_LIGHT_GREY};
-    padding: 24px 32px 10px;
+    padding: 24px ${HORIZONTAL_LAYOUT_PADDINGS} 10px;
     z-index: ${zIndices.pageHeader};
 
-    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
-        padding: 24px 16px 20px;
+    ${breakpointMediaQueries.below_lg} {
+        padding-bottom: 20px;
     }
 `;
 
-const Content = styled.div<Pick<AppNavigationPanelProps, 'maxWidth'>>`
+const Content = styled.div`
     display: flex;
     width: 100%;
-    max-width: ${props => (props.maxWidth === 'default' ? MAX_WIDTH : MAX_WIDTH_WALLET_CONTENT)};
+    max-width: ${MAX_CONTENT_WIDTH};
     flex-direction: column;
 `;
 
@@ -69,7 +70,6 @@ const Delimeter = styled.div``;
 interface AppNavigationPanelProps {
     title: ReactNode;
     titleContent?: (isAppNavigationPanelInView: boolean) => ReactNode | undefined;
-    maxWidth: 'small' | 'default';
     navigation?: ReactElement<{ inView: boolean }>;
     children?: ReactNode;
     className?: string;
@@ -78,7 +78,6 @@ interface AppNavigationPanelProps {
 export const AppNavigationPanel = ({
     title,
     titleContent,
-    maxWidth,
     navigation,
     className,
     children,
@@ -109,7 +108,7 @@ export const AppNavigationPanel = ({
     return (
         <>
             <Wrapper ref={ref} className={className}>
-                <Content maxWidth={maxWidth}>
+                <Content>
                     <BasicInfo>
                         <TitleRow>
                             <Title>{title}</Title>

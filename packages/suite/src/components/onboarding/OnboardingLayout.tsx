@@ -6,7 +6,7 @@ import { TREZOR_SUPPORT_URL } from '@trezor/urls';
 import { TrezorLink, Translation } from 'src/components/suite';
 import { OnboardingProgressBar } from 'src/components/onboarding';
 import { useSelector, useOnboarding } from 'src/hooks/suite';
-import { MAX_WIDTH } from 'src/constants/suite/layout';
+import { MAX_ONBOARDING_WIDTH } from 'src/constants/suite/layout';
 import steps from 'src/config/onboarding/steps';
 import { GuideButton, GuideRouter } from 'src/components/guide';
 import { selectBannerMessage } from '@suite-common/message-system';
@@ -53,7 +53,7 @@ const Header = styled.div`
     justify-content: space-between;
     align-items: center;
     flex-direction: column;
-    max-width: ${MAX_WIDTH};
+    max-width: ${MAX_ONBOARDING_WIDTH};
     background: ${({ theme }) => theme.BG_LIGHT_GREY};
     box-shadow: 0 14px 10px 4px ${({ theme }) => theme.BG_LIGHT_GREY};
     margin-bottom: 14px;
@@ -101,7 +101,7 @@ const Content = styled.div`
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
     justify-content: center;
     align-items: center;
-    max-width: ${MAX_WIDTH};
+    max-width: ${MAX_ONBOARDING_WIDTH};
     width: 100%;
     padding-bottom: 48px;
 `;

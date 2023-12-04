@@ -5,7 +5,11 @@ import routes from 'src/constants/suite/routes';
 import { BundleLoader } from 'src/components/suite';
 
 const components: { [key: string]: LazyExoticComponent<any> } = {
-    'suite-index': lazy(() => import(/* webpackChunkName: "dashboard" */ 'src/views/dashboard')),
+    'suite-index': lazy(() =>
+        import(/* webpackChunkName: "dashboard" */ 'src/views/dashboard/index').then(
+            ({ Dashboard }) => ({ default: Dashboard }),
+        ),
+    ),
     'notifications-index': lazy(
         () => import(/* webpackChunkName: "notifications" */ 'src/views/suite/notifications'),
     ),

@@ -9459,6 +9459,7 @@ __metadata:
     cypress: "npm:^13.4.0"
     cypress-file-upload: "npm:^5.0.8"
     cypress-image-snapshot: "npm:^4.0.1"
+    cypress-real-events: "npm:^1.11.0"
     jest: "npm:^26.6.3"
     react: "npm:18.2.0"
     react-dom: "npm:18.2.0"
@@ -9495,6 +9496,7 @@ __metadata:
     "@suite-common/device-authenticity": "workspace:*"
     "@suite-common/fiat-services": "workspace:*"
     "@suite-common/formatters": "workspace:*"
+    "@suite-common/icons": "workspace:*"
     "@suite-common/intl-types": "workspace:*"
     "@suite-common/invity": "workspace:*"
     "@suite-common/logger": "workspace:*"
@@ -15680,6 +15682,15 @@ __metadata:
   peerDependencies:
     cypress: ^4.5.0
   checksum: 34e078f9263676663c289dc682d40ecc0ef6f0236e8bb41fcd4868f8e8167da0fb8252c2f1aeacf7bb45a7d7e2bdaf735225e88c35c5e883a33631c0a519e63a
+  languageName: node
+  linkType: hard
+
+"cypress-real-events@npm:^1.11.0":
+  version: 1.11.0
+  resolution: "cypress-real-events@npm:1.11.0"
+  peerDependencies:
+    cypress: ^4.x || ^5.x || ^6.x || ^7.x || ^8.x || ^9.x || ^10.x || ^11.x || ^12.x || ^13.x
+  checksum: b924b6f802f1a0675940d29edf67deb9da07cdbea9292ad3c87443c57810b7e85970ff2344fed6d83bb275fc467064dd2b5163065253dee2d5b6f3b470234c4a
   languageName: node
   linkType: hard
 

@@ -6,23 +6,21 @@ import { Button, Icon, Image, Tooltip, variables } from '@trezor/components';
 import { Translation, QrCode, TrezorLink } from 'src/components/suite';
 import { isWeb } from '@trezor/env-utils';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
-import {
-    DESKTOP_HORIZONTAL_PADDINGS,
-    MOBILE_HORIZONTAL_PADDINGS,
-} from 'src/constants/suite/layout';
+import { HORIZONTAL_LAYOUT_PADDINGS } from 'src/constants/suite/layout';
 
 const Container = styled.div`
     position: absolute;
     bottom: 0;
     left: 0;
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     width: 100%;
     height: 70px;
     border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
 
-    ${variables.SCREEN_QUERY.MOBILE} {
+    ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
         height: 110px;
         border-radius: 20px;
         box-shadow: 0 -4px 6px -4px ${({ theme }) => theme.BOX_SHADOW_OPTION_CARD};
@@ -35,15 +33,16 @@ const promoContainerCss = css`
     flex: 1;
     gap: 16px;
     height: 100%;
-    padding: 0 ${DESKTOP_HORIZONTAL_PADDINGS};
+    padding: 0 ${HORIZONTAL_LAYOUT_PADDINGS};
 
-    ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
-        padding: 0 ${MOBILE_HORIZONTAL_PADDINGS};
+    span {
+        min-width: 100px;
     }
 `;
 
 const DesktopPromoContainer = styled.div`
     ${promoContainerCss}
+    min-width: 50%;
     border-right: 1px solid ${({ theme }) => theme.STROKE_GREY};
 `;
 

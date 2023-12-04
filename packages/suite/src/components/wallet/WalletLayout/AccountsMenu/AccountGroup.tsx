@@ -5,14 +5,9 @@ import { Icon, variables } from '@trezor/components';
 import { Account } from 'src/types/wallet';
 import { AnimationWrapper } from './AnimationWrapper';
 
-const Wrapper = styled.div`
-    background: ${({ theme }) => theme.BG_WHITE};
-`;
-
 const HeaderWrapper = styled.div`
     position: sticky;
     top: 0;
-    background: ${({ theme }) => theme.BG_WHITE};
 `;
 
 const ChevronIcon = styled(Icon)`
@@ -87,7 +82,7 @@ export const AccountGroup = forwardRef((props: AccountGroupProps, _ref: Ref<HTML
 
     // Group needs to be wrapped into container (div)
     return (
-        <Wrapper ref={wrapperRef}>
+        <div ref={wrapperRef}>
             <HeaderWrapper>
                 <Header
                     isOpen={isOpen}
@@ -110,6 +105,6 @@ export const AccountGroup = forwardRef((props: AccountGroupProps, _ref: Ref<HTML
             <AnimationWrapper opened={isOpen} onUpdate={props.onUpdate}>
                 {props.children}
             </AnimationWrapper>
-        </Wrapper>
+        </div>
     );
 });

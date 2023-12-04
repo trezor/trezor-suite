@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { MAX_WIDTH } from 'src/constants/suite/layout';
+import { MAX_ONBOARDING_WIDTH } from 'src/constants/suite/layout';
 import PreOnboardingSetup from './components/PreOnboardingSetup';
 
 const Wrapper = styled.div`
@@ -9,7 +9,7 @@ const Wrapper = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    max-width: ${MAX_WIDTH};
+    max-width: ${MAX_ONBOARDING_WIDTH};
     width: 100%;
     margin-bottom: 66px;
 `;

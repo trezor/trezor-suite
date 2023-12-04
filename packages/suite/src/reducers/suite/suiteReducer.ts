@@ -1,6 +1,6 @@
 import produce from 'immer';
 
-import { discoveryActions } from '@suite-common/wallet-core';
+import { DeviceRootState, discoveryActions } from '@suite-common/wallet-core';
 import type { InvityServerEnvironment } from '@suite-common/invity';
 import { getNumberFromPixelString, versionUtils } from '@trezor/utils';
 import { isWeb, getWindowWidth } from '@trezor/env-utils';
@@ -276,5 +276,8 @@ export const selectIsActionAbortable = (state: SuiteRootState) =>
     state.suite.transport?.type === 'BridgeTransport'
         ? versionUtils.isNewerOrEqual(state.suite.transport?.version as string, '2.0.31')
         : true; // WebUSB
+
+export const selectIsLoggedOut = (state: SuiteRootState & DeviceRootState) =>
+    state.suite.flags.initialRun || state.device?.selectedDevice?.mode !== 'normal';
 
 export default suiteReducer;

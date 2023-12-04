@@ -12,6 +12,7 @@ import { setFlag } from 'src/actions/suite/suiteActions';
 import { applySettings, changePin } from 'src/actions/settings/deviceSettingsActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { selectIsDiscreteModeActive } from 'src/reducers/wallet/settingsReducer';
 
 import { SecurityCard, SecurityCardProps } from '../SecurityCard';
 
@@ -30,7 +31,7 @@ const Content = styled.div`
 `;
 
 const SecurityFeatures = () => {
-    const discreetMode = useSelector(state => state.wallet.settings.discreetMode);
+    const discreetMode = useSelector(selectIsDiscreteModeActive);
     const device = useSelector(selectDevice);
     const flags = useSelector(state => state.suite.flags);
     const dispatch = useDispatch();

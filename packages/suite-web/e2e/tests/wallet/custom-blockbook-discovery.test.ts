@@ -44,7 +44,7 @@ describe('Custom-blockbook-discovery', () => {
         cy.getTestElement('@settings/advance/select-type/option/blockbook').click();
         cy.getTestElement('@settings/advance/url').type(customBTCblockbook);
         cy.getTestElement('@settings/advance/button/save').click();
-        cy.getTestElement('@settings/menu/close').click();
+        cy.getTestElement('@suite/menu/suite-index').click();
 
         //
         // Assert
@@ -80,7 +80,7 @@ describe('Custom-blockbook-discovery', () => {
         cy.getTestElement('@settings/advance/select-type/option/blockbook').click();
         cy.getTestElement('@settings/advance/url').type(customBTCblockbook);
         cy.getTestElement('@settings/advance/button/save').click();
-        cy.getTestElement('@settings/menu/close').click();
+        cy.getTestElement('@suite/menu/suite-index').click();
 
         //
         // Assert

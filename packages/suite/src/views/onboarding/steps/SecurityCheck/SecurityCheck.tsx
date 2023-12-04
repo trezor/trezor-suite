@@ -10,7 +10,7 @@ import { useOnboarding, useSelector } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
 import { Hologram, OnboardingButtonSkip } from 'src/components/onboarding';
 import { CollapsibleOnboardingCard } from 'src/components/onboarding/CollapsibleOnboardingCard';
-import { MAX_WIDTH } from 'src/constants/suite/layout';
+import { MAX_ONBOARDING_WIDTH } from 'src/constants/suite/layout';
 import { SecurityCheckLayout } from './SecurityCheckLayout';
 import { SecurityChecklist } from './SecurityChecklist';
 import { SecurityCheckFail } from './SecurityCheckFail';
@@ -18,7 +18,7 @@ import { SecurityCheckButton } from './SecurityCheckButton';
 import { DeviceAuthenticity } from './DeviceAuthenticity';
 
 const StyledCard = styled(CollapsibleOnboardingCard)`
-    max-width: ${MAX_WIDTH};
+    max-width: ${MAX_ONBOARDING_WIDTH};
     padding: 16px;
 `;
 

@@ -1,17 +1,12 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
-
-import { variables } from '@trezor/components';
-
 import { useLayout } from 'src/hooks/suite';
-
 import { SettingsMenu } from './SettingsMenu';
 
 const Wrapper = styled.div`
     display: flex;
     flex: 1;
     flex-direction: column;
-    max-width: ${variables.SCREEN_SIZE.MD};
     margin-top: 8px;
 `;
 

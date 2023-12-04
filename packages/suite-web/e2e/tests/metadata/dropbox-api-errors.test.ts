@@ -42,7 +42,7 @@ describe('Dropbox api errors', () => {
 
         cy.passThroughInitMetadata('dropbox');
 
-        cy.getTestElement('@suite/menu/wallet-index').click();
+        cy.getTestElement('@account-menu/btc/normal/0').click();
 
         cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'").click({ force: true });
         cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'/edit-label-button").click({
@@ -136,7 +136,7 @@ describe('Dropbox api errors', () => {
                 'Content-Type': 'text/plain; charset=utf-8',
             },
         });
-        cy.getTestElement('@suite/menu/wallet-index').click();
+        cy.getTestElement('@account-menu/btc/normal/0').click();
 
         cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'").click({ force: true });
         cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'/edit-label-button").click({
@@ -182,7 +182,7 @@ describe('Dropbox api errors', () => {
         cy.passThroughInitMetadata('dropbox');
 
         // just enter some label, this indicates that app did not crash
-        cy.getTestElement('@suite/menu/wallet-index').click();
+        cy.getTestElement('@account-menu/btc/normal/0').click();
 
         cy.hoverTestElement("@metadata/accountLabel/m/84'/0'/0'/hover-container");
         cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'").click({ force: true });
