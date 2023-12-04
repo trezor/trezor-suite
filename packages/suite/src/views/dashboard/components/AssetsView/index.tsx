@@ -63,7 +63,7 @@ const Grid = styled.div`
 const GridWrapper = styled.div`
     display: grid;
     grid-gap: 10px;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(285px, 1fr));
 `;
 
 const StyledAddAccountButton = styled(Button)`
