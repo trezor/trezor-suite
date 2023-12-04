@@ -3,7 +3,7 @@ import { useDocs } from '../hooks/useDocs';
 
 export const Changelog = () => {
     const docs = useDocs(
-        'https://raw.githubusercontent.com/trezor/trezor-suite/develop/packages/connect/CHANGELOG.md',
+        `https://raw.githubusercontent.com/trezor/trezor-suite/${process.env.COMMIT_HASH}/packages/connect/CHANGELOG.md`,
     );
 
     return (
