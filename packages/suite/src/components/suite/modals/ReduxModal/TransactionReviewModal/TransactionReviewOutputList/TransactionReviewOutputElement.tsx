@@ -35,9 +35,10 @@ const OutputValue = styled.div`
     flex-wrap: wrap;
 `;
 
-const OutputLeft = styled.div`
+const OutputLeft = styled.div<{ isCentered: boolean }>`
     display: flex;
     width: 30px;
+    justify-content: ${({ isCentered }) => (isCentered ? 'center' : 'flex-start')};
     flex-direction: column;
 `;
 
@@ -169,11 +170,12 @@ export const TransactionReviewOutputElement = forwardRef<
         const network = account?.networkType;
         const cardanoFingerprint = getFingerprint(account?.tokens, token?.symbol);
         const isActive = state === 'active';
+        const hasMultipleLines = lines.length > 1;
 
         return (
             <OutputWrapper ref={ref}>
-                <OutputLeft>
-                    {lines.length > 1 ? (
+                <OutputLeft isCentered={hasMultipleLines}>
+                    {hasMultipleLines ? (
                         <MultiIndicatorWrapper linesCount={lines.length - 1}>
                             {indicator}
                         </MultiIndicatorWrapper>
