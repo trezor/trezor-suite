@@ -1,8 +1,9 @@
-import { Modal } from 'react-native';
+import { Modal, Pressable } from 'react-native';
 import { ReactNode } from 'react';
 import { useSafeAreaInsets, EdgeInsets } from 'react-native-safe-area-context';
+import Animated, { FadeIn, FadeOut, SlideInUp, SlideOutUp } from 'react-native-reanimated';
 
-import { Box, ScreenHeaderWrapper, VStack } from '@suite-native/atoms';
+import { ScreenHeaderWrapper, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { DeviceSwitch } from './DeviceSwitch';
@@ -33,6 +34,8 @@ const contentWrapperStyle = prepareNativeStyle(utils => ({
     paddingBottom: utils.spacings.medium,
 }));
 
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+
 export const DeviceManagerModal = ({ children }: DeviceManagerModalProps) => {
     const { applyStyle } = useNativeStyles();
 
@@ -46,16 +49,25 @@ export const DeviceManagerModal = ({ children }: DeviceManagerModalProps) => {
 
     return (
         <Modal transparent onRequestClose={handleClose} visible={isDeviceManagerVisible}>
-            <Box style={applyStyle(modalBackgroundOverlayStyle)}>
-                <Box style={applyStyle(deviceManagerModalWrapperStyle, { insets })}>
+            <AnimatedPressable
+                style={applyStyle(modalBackgroundOverlayStyle)}
+                entering={FadeIn}
+                exiting={FadeOut}
+                onPress={handleClose}
+            >
+                <Animated.View
+                    style={applyStyle(deviceManagerModalWrapperStyle, { insets })}
+                    entering={SlideInUp.springify().damping(50)}
+                    exiting={SlideOutUp}
+                >
                     <ScreenHeaderWrapper>
                         <DeviceSwitch />
                     </ScreenHeaderWrapper>
                     <VStack spacing="medium" style={applyStyle(contentWrapperStyle)}>
                         {children}
                     </VStack>
-                </Box>
-            </Box>
+                </Animated.View>
+            </AnimatedPressable>
         </Modal>
     );
 };
