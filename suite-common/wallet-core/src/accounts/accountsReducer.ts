@@ -172,7 +172,10 @@ export const selectAccountsByNetworkSymbol = memoizeWithArgs(
 
         const accounts = selectAccounts(state);
 
-        return A.filter(accounts, account => account.symbol === networkSymbol);
+        return A.filter(
+            accounts,
+            account => account.symbol === networkSymbol && (!account.empty || account.visible),
+        );
     },
     {
         size: Object.keys(networks).length,
