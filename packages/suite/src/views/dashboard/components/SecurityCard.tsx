@@ -52,8 +52,9 @@ const CheckIconContainer = styled.div`
     top: ${spacingsPx.xs};
     right: ${spacingsPx.xs};
     overflow: hidden;
-    box-shadow: inset 0px 0px 0px 1px ${({ theme }) => theme.borderOnElevation1};
+    box-shadow: inset 0 1px ${({ theme }) => theme.borderOnElevation1};
 `;
+
 const CheckIconBackground = styled.div`
     background: ${({ theme }) => theme.backgroundPrimarySubtleOnElevation1};
     display: flex;
@@ -114,6 +115,7 @@ export const SecurityCard = ({
                             <Line />
                             <Action>
                                 <Button
+                                    isFullWidth
                                     variant="primary"
                                     isDisabled={cta.isDisabled}
                                     onClick={cta.action}
