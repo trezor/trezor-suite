@@ -55,7 +55,7 @@ On disable, it throws away all metadata related records from memory.`, () => {
             cy.passThroughInitialRun();
             cy.discoveryShouldFinish();
 
-            cy.getTestElement('@suite/menu/wallet-index').click();
+            cy.getTestElement('@account-menu/btc/normal/0').click();
 
             cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'Bitcoin');
 
@@ -67,7 +67,7 @@ On disable, it throws away all metadata related records from memory.`, () => {
             cy.log(
                 'Now metadata is enabled, go to accounts and see what we got loaded from provider',
             );
-            cy.getTestElement('@suite/menu/wallet-index').click();
+            cy.getTestElement('@account-menu/btc/normal/0').click();
             cy.getTestElement('@account-menu/btc/normal/0/label').should(
                 'contain',
                 'already existing label',
@@ -80,7 +80,7 @@ On disable, it throws away all metadata related records from memory.`, () => {
             cy.getTestElement('@suite/menu/settings').click();
             cy.getTestElement('@settings/metadata/disconnect-provider-button').click();
             cy.getTestElement('@settings/metadata/connect-provider-button');
-            cy.getTestElement('@suite/menu/wallet-index').click();
+            cy.getTestElement('@account-menu/btc/normal/0').click();
             cy.getTestElement('@account-menu/btc/normal/0/label').should(
                 'not.contain',
                 'already existing label',
@@ -101,7 +101,7 @@ On disable, it throws away all metadata related records from memory.`, () => {
             // device not saved, disable metadata
             cy.getTestElement('@suite/menu/settings').click();
             cy.getTestElement('@settings/metadata-switch').click({ force: true });
-            cy.getTestElement('@suite/menu/wallet-index').click();
+            cy.getTestElement('@account-menu/btc/normal/0').click();
             cy.getTestElement('@account-menu/btc/normal/0/label').should('not.contain', 'label');
             cy.hoverTestElement("@metadata/accountLabel/m/84'/0'/0'/hover-container");
             cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'/add-label-button").click();
@@ -126,7 +126,7 @@ On disable, it throws away all metadata related records from memory.`, () => {
             cy.log('Now again, lets try disconnecting provider');
             cy.getTestElement('@suite/menu/settings').click();
             cy.getTestElement('@settings/metadata/disconnect-provider-button').click();
-            cy.getTestElement('@suite/menu/wallet-index').click();
+            cy.getTestElement('@account-menu/btc/normal/0').click();
             cy.log('Disconnecting removes labels');
             cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'Bitcoin');
 
@@ -140,7 +140,7 @@ On disable, it throws away all metadata related records from memory.`, () => {
             //  device saved, disable metadata
             cy.getTestElement('@suite/menu/settings').click();
             cy.getTestElement('@settings/metadata-switch').click({ force: true });
-            cy.getTestElement('@suite/menu/wallet-index').click();
+            cy.getTestElement('@account-menu/btc/normal/0').click();
             cy.log(
                 'Now it is not possible to add labels, keys are gone and device is not connected',
             );

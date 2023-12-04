@@ -28,11 +28,9 @@ describe('Metadata - address labeling', () => {
         });
 
         cy.passThroughInitialRun();
-
-        cy.getTestElement('@suite/menu/wallet-index').click();
-
         cy.discoveryShouldFinish();
 
+        cy.getTestElement('@account-menu/btc/normal/0').click();
         cy.getTestElement('@wallet/menu/wallet-receive').click();
         cy.getTestElement(`${metadataEl}/add-label-button`).click({ force: true });
         cy.passThroughInitMetadata(provider);

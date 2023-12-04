@@ -1,5 +1,4 @@
 import { goto } from 'src/actions/suite/routerActions';
-import { MAX_WIDTH } from 'src/constants/suite/layout';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { AccountLabeling } from 'src/components/suite';
 import { Icon, variables } from '@trezor/components';
@@ -19,7 +18,6 @@ const Content = styled.div`
     width: 100%;
     padding: 0 32px;
     min-height: 50px;
-    max-width: ${MAX_WIDTH};
     justify-content: space-between;
     align-items: center;
 

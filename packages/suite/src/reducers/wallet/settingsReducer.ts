@@ -57,5 +57,6 @@ const settingsReducer = (state: State = initialState, action: Action): State =>
 
 export const selectEnabledNetworks = (state: AppState) => state.wallet.settings.enabledNetworks;
 export const selectLocalCurrency = (state: AppState) => state.wallet.settings.localCurrency;
+export const selectIsDiscreteModeActive = (state: AppState) => state.wallet.settings.discreetMode;
 
 export default settingsReducer;

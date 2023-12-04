@@ -27,6 +27,7 @@
         {
             "path": "../../suite-common/formatters"
         },
+        { "path": "../../suite-common/icons" },
         {
             "path": "../../suite-common/intl-types"
         },

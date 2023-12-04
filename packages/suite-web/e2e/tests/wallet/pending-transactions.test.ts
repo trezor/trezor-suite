@@ -31,7 +31,7 @@ describe('Use regtest to test pending transactions', () => {
     });
 
     it('send couple of pending txs and check that they are pending until mined', () => {
-        cy.getTestElement('@suite/menu/wallet-index').click();
+        cy.getTestElement('@suite/menu/suite-index').click();
         cy.discoveryShouldFinish();
         cy.getTestElement('@account-menu/regtest/normal/0/label').click();
 

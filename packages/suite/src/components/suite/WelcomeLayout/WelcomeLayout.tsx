@@ -15,8 +15,8 @@ import { TREZOR_URL, SUITE_URL } from '@trezor/urls';
 import { resolveStaticPath } from '@suite-common/suite-utils';
 import { GuideButton, GuideRouter } from 'src/components/guide';
 import { useGuide } from 'src/hooks/guide';
-import { NavSettings } from 'src/components/suite/Preloader/SuiteLayout/NavigationBar/NavigationActions/NavSettings';
-import { MAX_WIDTH } from 'src/constants/suite/layout';
+import { MAX_ONBOARDING_WIDTH } from 'src/constants/suite/layout';
+import { NavSettings } from './NavSettings';
 
 const Wrapper = styled.div`
     display: flex;
@@ -109,7 +109,7 @@ const ChildrenWrapper = styled.div`
     align-items: center;
     justify-content: center;
     width: 100%;
-    max-width: ${MAX_WIDTH};
+    max-width: ${MAX_ONBOARDING_WIDTH};
 `;
 
 interface WelcomeLayoutProps {

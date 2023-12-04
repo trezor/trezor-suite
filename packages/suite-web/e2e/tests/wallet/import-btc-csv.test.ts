@@ -34,7 +34,6 @@ describe('Import a BTC csv file', () => {
         //
         // Test preparation
         //
-        cy.getTestElement('@suite/menu/wallet-index').click();
         cy.getTestElement('@account-menu/btc/normal/0').click();
         cy.hoverTestElement("@metadata/accountLabel/m/84'/0'/0'/hover-container");
         cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'/add-label-button")
