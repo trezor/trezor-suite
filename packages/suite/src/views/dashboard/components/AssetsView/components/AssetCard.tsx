@@ -56,6 +56,11 @@ const Card = styled.div`
     background-color: ${({ theme }) => theme.backgroundSurfaceElevation1};
     display: flex;
     flex-direction: column;
+    transition: box-shadow 0.2s;
+
+    :hover {
+        box-shadow: ${boxShadows.elevation3};
+    }
 `;
 
 const FiatAmount = styled.div`
