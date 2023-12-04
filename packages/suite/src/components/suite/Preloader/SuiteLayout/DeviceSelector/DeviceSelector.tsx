@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { DeviceStatus } from './DeviceStatus';
 import { transparentize } from 'polished';
 import { DeviceModelInternal } from '@trezor/connect';
+import { spacingsPx } from '@trezor/theme';
 
 const ArrowDown = styled(Icon)`
     margin-left: 4px;
@@ -22,13 +23,13 @@ const ArrowDown = styled(Icon)`
 `;
 
 const Wrapper = styled.div<{ isAnimationTriggered?: boolean }>`
-    display: flex;
     position: relative;
-    min-width: 200px;
-    height: 48px;
+    display: flex;
+    gap: ${spacingsPx.md};
+    width: 100%;
+    height: 54px;
     padding: 6px 12px;
     align-items: center;
-    margin-right: 24px;
     cursor: pointer;
 
     :hover {

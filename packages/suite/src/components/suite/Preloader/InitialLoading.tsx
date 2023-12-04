@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { Loading } from 'src/components/suite';
 
-const StyledLoading = styled(props => <Loading {...props} />)`
+const StyledLoading = styled(Loading)`
     height: 100%;
 `;
 
@@ -18,6 +18,7 @@ export const InitialLoading = ({ timeout }: InitialLoadingProps) => {
         const interval = setTimeout(() => {
             setTooLong(true);
         }, timeout * 1000);
+
         return () => {
             clearTimeout(interval);
         };

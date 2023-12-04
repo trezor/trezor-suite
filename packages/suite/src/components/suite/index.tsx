@@ -2,7 +2,7 @@ import { AccountLabel } from './AccountLabel';
 import { DeviceConfirmImage } from './DeviceConfirmImage';
 import { CheckItem } from './CheckItem';
 import { PrerequisitesGuide } from './PrerequisitesGuide/PrerequisitesGuide';
-import { WelcomeLayout } from './WelcomeLayout';
+import { WelcomeLayout } from './WelcomeLayout/WelcomeLayout';
 import { NotificationCard } from './NotificationCard';
 import { WordInput } from './WordInput';
 import { WordInputAdvanced } from './WordInputAdvanced';

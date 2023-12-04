@@ -7,53 +7,29 @@ import { HoverAnimation, Translation } from 'src/components/suite';
 import { MAIN_MENU_ITEMS } from 'src/constants/suite/menu';
 import { useAccountSearch, useSelector, useDispatch } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
+import { typography } from '@trezor/theme';
 
 interface ComponentProps {
     isActive: boolean;
     isDisabled?: boolean;
 }
 
-const Wrapper = styled.div`
-    display: flex;
-    flex: 1;
-    justify-content: center;
-    height: 100%;
-`;
-
-const MobileWrapper = styled.div`
+const Container = styled.div`
     display: flex;
     flex-direction: column;
-    padding: 0 16px;
+    padding: 16px;
     flex: 1;
-    border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
-`;
-
-const StyledHoverAnimation = styled(HoverAnimation)`
-    ${variables.SCREEN_QUERY.ABOVE_TABLET} {
-        & + & {
-            margin-left: 12px;
-        }
-    }
+    border-bottom: 1px solid ${({ theme }) => theme.borderOnElevation1};
 `;
 
 const MenuItem = styled.div<ComponentProps>`
     display: flex;
-    align-items: center;
-    height: 100%;
-    padding: 0 12px;
-    font-size: 16px;
-    cursor: ${({ isDisabled, isActive }) => (!isDisabled && !isActive ? 'pointer' : 'default')};
-`;
-
-const MobileMenuItem = styled.div<ComponentProps>`
-    display: flex;
     padding: 20px 24px;
-    font-size: ${({ isActive }) => (isActive ? '20px' : '16px')};
-    font-weight: ${({ isActive }) => isActive && variables.FONT_WEIGHT.DEMI_BOLD};
+    ${({ isActive }) => isActive && typography.titleSmall}
     cursor: ${({ isDisabled, isActive }) => (!isDisabled && !isActive ? 'pointer' : 'default')};
 
     & + & {
-        border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
+        border-top: 1px solid ${({ theme }) => theme.borderOnElevation1};
     }
 `;
 
@@ -63,15 +39,13 @@ const ItemTitleWrapper = styled.span`
 
 const ItemTitle = styled.span<ComponentProps>`
     color: ${({ theme }) => transparentize(0.3, theme.TYPE_DARK_GREY)};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    font-size: ${variables.FONT_SIZE.NORMAL};
     line-height: 24px;
 
     ${({ isActive }) =>
         isActive &&
         css`
-            color: ${({ theme }) => theme.TYPE_DARK_GREY};
-            font-size: ${variables.FONT_SIZE.H3};
+            color: ${({ theme }) => theme.textSecondaryHighlight};
+            ${typography.titleSmall};
         `}
 
     ${({ isDisabled }) =>
@@ -87,8 +61,8 @@ const NewBadge = styled.span`
         top: -14px;
         right: -30px;
         padding: 3px 3px 2px;
-        background: ${({ theme }) => theme.BG_LIGHT_GREEN};
-        color: ${({ theme }) => theme.TYPE_GREEN};
+        background: ${({ theme }) => theme.backgroundPrimarySubtleOnElevation1};
+        color: ${({ theme }) => theme.textPrimaryDefault};
         letter-spacing: 0.2px;
         text-transform: uppercase;
         font-size: 12px;
@@ -100,29 +74,26 @@ const NewBadge = styled.span`
     }
 `;
 
-interface MainNavigationProps {
-    closeMainNavigation?: () => void;
-    isMobileLayout?: boolean;
+interface MobileNavigationProps {
+    closeMobileNavigation?: () => void;
 }
 
-export const MainNavigation = ({ isMobileLayout, closeMainNavigation }: MainNavigationProps) => {
+export const MobileNavigation = ({ closeMobileNavigation }: MobileNavigationProps) => {
     const activeApp = useSelector(state => state.router.app);
     const dispatch = useDispatch();
 
     const { setCoinFilter, setSearchString } = useAccountSearch();
 
-    const WrapperComponent = isMobileLayout ? MobileWrapper : Wrapper;
-    const MenuItemComponent = isMobileLayout ? MobileMenuItem : MenuItem;
-
     return (
-        <WrapperComponent>
+        <Container>
             {MAIN_MENU_ITEMS.map(item => {
                 const { route, translationId, isDisabled } = item;
                 const routeObj = findRouteByName(route);
                 const isActive = routeObj ? routeObj.app === activeApp : false;
+
                 return (
-                    <StyledHoverAnimation isHoverable={!isActive} key={route}>
-                        <MenuItemComponent
+                    <HoverAnimation isHoverable={!isActive} key={route}>
+                        <MenuItem
                             data-test={`@suite/menu/${route}`}
                             onClick={() => {
                                 if (!isDisabled) {
@@ -131,7 +102,7 @@ export const MainNavigation = ({ isMobileLayout, closeMainNavigation }: MainNavi
                                         setSearchString(undefined);
                                     }
                                     dispatch(goto(route));
-                                    closeMainNavigation?.();
+                                    closeMobileNavigation?.();
                                 }
                             }}
                             isActive={isActive}
@@ -148,10 +119,10 @@ export const MainNavigation = ({ isMobileLayout, closeMainNavigation }: MainNavi
                                     </NewBadge>
                                 )}
                             </ItemTitleWrapper>
-                        </MenuItemComponent>
-                    </StyledHoverAnimation>
+                        </MenuItem>
+                    </HoverAnimation>
                 );
             })}
-        </WrapperComponent>
+        </Container>
     );
 };

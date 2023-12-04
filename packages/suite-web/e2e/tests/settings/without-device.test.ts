@@ -15,7 +15,7 @@ describe('Settings changes persist when device disconnected', () => {
 
     it('Settings navigation', () => {
         // Go to send form
-        cy.getTestElement('@suite/menu/wallet-index').click();
+        cy.getTestElement('@account-menu/btc/normal/0').click();
         cy.getTestElement('@wallet/menu/wallet-send').click();
 
         cy.task('stopEmu');
@@ -46,7 +46,6 @@ describe('Settings changes persist when device disconnected', () => {
 
         // Verify settings persistence
         cy.getTestElement('@settings/menu/close').click();
-        cy.getTestElement('@suite/menu/wallet-index').click();
         cy.getTestElement('@account-menu/eth/normal/0').should('be.visible');
     });
 });

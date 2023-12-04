@@ -59,7 +59,7 @@ describe('Passphrase', () => {
 
         cy.getTestElement('@dashboard/wallet-ready');
         // go to wallet
-        cy.getTestElement('@suite/menu/wallet-index').click();
+        cy.getTestElement('@account-menu/btc/normal/0').click();
         // go to receive
         cy.getTestElement('@wallet/menu/wallet-receive').click({ timeout: 10000 });
         // click reveal address

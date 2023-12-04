@@ -2,12 +2,11 @@ import { ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { SkeletonRectangle } from 'src/components/suite';
-import { MAX_WIDTH_WALLET_CONTENT } from 'src/constants/suite/layout';
+import { MAX_CONTENT_WIDTH } from 'src/constants/suite/layout';
 import { AppState, ExtendedMessageDescriptor } from 'src/types/suite';
 import { useTranslation, useLayout } from 'src/hooks/suite';
 
 import { AccountBanners } from './AccountBanners/AccountBanners';
-import { AccountsMenu } from './AccountsMenu/AccountsMenu';
 import { AccountException } from './AccountException/AccountException';
 import { AccountTopPanel } from './AccountTopPanel/AccountTopPanel';
 import { CoinjoinAccountDiscovery } from './CoinjoinAccountDiscovery/CoinjoinAccountDiscovery';
@@ -16,7 +15,7 @@ const Wrapper = styled.div`
     display: flex;
     flex: 1;
     flex-direction: column;
-    max-width: ${MAX_WIDTH_WALLET_CONTENT};
+    max-width: ${MAX_CONTENT_WIDTH};
     width: 100%;
     height: 100%;
     margin-top: 8px;
@@ -46,7 +45,7 @@ export const WalletLayout = ({
     const { translationString } = useTranslation();
     const l10nTitle = translationString(title);
 
-    useLayout(l10nTitle, AccountTopPanel, AccountsMenu);
+    useLayout(l10nTitle, AccountTopPanel);
 
     const { status, account: selectedAccount, loader, network } = account;
 
@@ -75,7 +74,7 @@ export const WalletLayout = ({
     }
 
     return (
-        <Wrapper>
+        <>
             <AccountBanners account={selectedAccount} />
             {showEmptyHeaderPlaceholder && <EmptyHeaderPlaceholder />}
             {status === 'exception' ? (
@@ -83,6 +82,6 @@ export const WalletLayout = ({
             ) : (
                 children
             )}
-        </Wrapper>
+        </>
     );
 };

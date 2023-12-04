@@ -27,9 +27,8 @@ describe(`Metadata - switching between cloud providers`, () => {
         });
         cy.passThroughInitialRun();
         cy.discoveryShouldFinish();
-        cy.getTestElement('@suite/menu/wallet-index').click();
+        cy.getTestElement('@account-menu/btc/normal/0').click();
 
-        cy.log('');
         cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'Bitcoin');
 
         cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'/add-label-button").click({
@@ -44,7 +43,7 @@ describe(`Metadata - switching between cloud providers`, () => {
         cy.getTestElement('@settings/metadata/disconnect-provider-button').click();
         cy.getTestElement('@settings/metadata/connect-provider-button').should('be.visible');
 
-        cy.getTestElement('@suite/menu/wallet-index').click();
+        cy.getTestElement('@account-menu/btc/normal/0').click();
         cy.log('Disconnecting removes labels');
         cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'Bitcoin');
 
