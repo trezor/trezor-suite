@@ -166,4 +166,12 @@ export type SuiteNativeAnalyticsEvent =
           payload: {
               deviceState: 'unsupportedFirmware' | 'noSeed' | 'bootloaderMode';
           };
+      }
+    | {
+          type: EventType.CoinDiscovery;
+          payload: {
+              loadDuration: number;
+          } & {
+              [key in NetworkSymbol]: number;
+          };
       };

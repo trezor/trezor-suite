@@ -25,4 +25,5 @@ export enum EventType {
     EjectDeviceClick = 'eject_device/click',
     ConnectDevice = 'device_connect',
     UnsupportedDevice = 'unsupported_device',
+    CoinDiscovery = 'coin_discovery',
 }
