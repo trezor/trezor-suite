@@ -2,6 +2,7 @@ import { forwardRef, Ref, MouseEventHandler } from 'react';
 import styled from 'styled-components';
 
 import { isTestnet } from '@suite-common/wallet-utils';
+import { spacingsPx } from '@trezor/theme';
 import { CoinLogo, variables } from '@trezor/components';
 
 import {
@@ -14,42 +15,24 @@ import {
 import { useDispatch, useLoadingSkeleton } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
 import { goto } from 'src/actions/suite/routerActions';
-
 import { TokensCount } from './TokensCount';
+import { NavigationItemBase } from 'src/components/suite/Preloader/SuiteLayout/Sidebar/NavigationItem';
 
-const activeClassName = 'selected';
 interface WrapperProps {
     selected: boolean;
     type: string;
 }
 
-// position: inherit - get position from parent (AccountGroup), it will be set after animation ends
-// sticky top: 34, sticky header
-const Wrapper = styled.div.attrs((props: WrapperProps) => ({
-    className: props.selected ? activeClassName : '',
-}))<WrapperProps>`
-    display: flex;
-    flex-direction: column;
-    transition: background 0.15s;
+const Wrapper = styled(NavigationItemBase)<WrapperProps>`
+    background: ${({ theme, selected }) => selected && theme.backgroundSurfaceElevation1};
 
     & + & {
-        margin-top: 3px;
+        margin-top: ${spacingsPx.xxs};
     }
 
-    &:first-of-type {
-        padding-top: 0;
-    }
-    &:hover,
-    &.${activeClassName} {
-        border-radius: 4px;
-        background: ${({ theme }) => theme.BG_GREY_ALT};
-        position: inherit;
-        top: ${({ type }) =>
-            type !== 'normal'
-                ? '50px'
-                : '0px'}; /* when scrolling keep some space above to fit account group (50px is the height of acc group container)  */
-        bottom: 0;
-        padding: 0;
+    :hover {
+        background: ${({ theme, selected }) =>
+            !selected && theme.backgroundTertiaryPressedOnElevation0};
     }
 `;
 
@@ -100,13 +83,6 @@ const FiatValueWrapper = styled.div`
     line-height: 1.57;
 `;
 
-export const AccountHeader = styled.div`
-    display: flex;
-    padding: 10px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-`;
-
 interface AccountItemProps {
     account: Account;
     accountLabel?: string;
@@ -152,73 +128,72 @@ export const AccountItem = forwardRef(
         const dataTestKey = `@account-menu/${symbol}/${accountType}/${index}`;
 
         return (
-            <Wrapper selected={selected} type={accountType} ref={ref}>
-                <AccountHeader onClick={handleHeaderClick} data-test={dataTestKey}>
-                    <Left>
-                        <CoinLogo size={16} symbol={symbol} />
-                    </Left>
-                    <Right>
-                        <Row>
-                            <AccountName data-test={`${dataTestKey}/label`}>
-                                <AccountLabel
-                                    accountLabel={accountLabel}
-                                    accountType={accountType}
+            <Wrapper
+                selected={selected}
+                type={accountType}
+                ref={ref}
+                onClick={handleHeaderClick}
+                data-test={dataTestKey}
+                tabIndex={0}
+            >
+                <Left>
+                    <CoinLogo size={16} symbol={symbol} />
+                </Left>
+                <Right>
+                    <Row>
+                        <AccountName data-test={`${dataTestKey}/label`}>
+                            <AccountLabel
+                                accountLabel={accountLabel}
+                                accountType={accountType}
+                                symbol={symbol}
+                                index={index}
+                            />
+                        </AccountName>
+                    </Row>
+                    {isBalanceShown && (
+                        <>
+                            <Row>
+                                <Balance>
+                                    <CoinBalance value={formattedBalance} symbol={symbol} />
+                                </Balance>
+                                {isTokensCountShown && (
+                                    <TokensCount
+                                        count={tokens.length}
+                                        onClick={handleClickOnTokens}
+                                    />
+                                )}
+                            </Row>
+                            <Row>
+                                <FiatValue
+                                    amount={formattedBalance}
                                     symbol={symbol}
-                                    index={index}
-                                />
-                            </AccountName>
-                        </Row>
-                        {isBalanceShown && (
-                            <>
-                                <Row>
-                                    <Balance>
-                                        <CoinBalance value={formattedBalance} symbol={symbol} />
-                                    </Balance>
-                                    {isTokensCountShown && (
-                                        <TokensCount
-                                            count={tokens.length}
-                                            onClick={handleClickOnTokens}
-                                        />
-                                    )}
-                                </Row>
-                                <Row>
-                                    <FiatValue
-                                        amount={formattedBalance}
-                                        symbol={symbol}
-                                        showApproximationIndicator
-                                    >
-                                        {({ value }) =>
-                                            value ? (
-                                                <FiatValueWrapper>{value}</FiatValueWrapper>
-                                            ) : null
-                                        }
-                                    </FiatValue>
-                                </Row>
-                            </>
-                        )}
-                        {!isBalanceShown && (
-                            <SkeletonStack
-                                col
-                                margin="6px 0px 0px 0px"
-                                childMargin="0px 0px 8px 0px"
-                            >
+                                    showApproximationIndicator
+                                >
+                                    {({ value }) =>
+                                        value ? <FiatValueWrapper>{value}</FiatValueWrapper> : null
+                                    }
+                                </FiatValue>
+                            </Row>
+                        </>
+                    )}
+                    {!isBalanceShown && (
+                        <SkeletonStack col margin="6px 0px 0px 0px" childMargin="0px 0px 8px 0px">
+                            <SkeletonRectangle
+                                width="100px"
+                                height="16px"
+                                animate={shouldAnimate}
+                            />
+
+                            {!isTestnet(account.symbol) && (
                                 <SkeletonRectangle
                                     width="100px"
                                     height="16px"
                                     animate={shouldAnimate}
                                 />
-
-                                {!isTestnet(account.symbol) && (
-                                    <SkeletonRectangle
-                                        width="100px"
-                                        height="16px"
-                                        animate={shouldAnimate}
-                                    />
-                                )}
-                            </SkeletonStack>
-                        )}
-                    </Right>
-                </AccountHeader>
+                            )}
+                        </SkeletonStack>
+                    )}
+                </Right>
             </Wrapper>
         );
     },

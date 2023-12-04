@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 import { useSelector } from 'src/hooks/suite';
+import { selectIsDiscreteModeActive } from 'src/reducers/wallet/settingsReducer';
 
 interface WrapperProps {
     intensity: number;
@@ -33,7 +34,7 @@ export const HiddenPlaceholder = ({
     className,
     ...rest
 }: HiddenPlaceholderProps) => {
-    const discreetMode = useSelector(state => state.wallet.settings.discreetMode);
+    const discreetMode = useSelector(selectIsDiscreteModeActive);
     return (
         <Wrapper
             discreetMode={discreetMode}

@@ -20,8 +20,9 @@ describe('Sign and verify', () => {
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
 
-        cy.getTestElement('@suite/menu/wallet-index').click();
         cy.discoveryShouldFinish();
+        cy.getTestElement('@account-menu/btc/normal/0').click();
+
         cy.getTestElement('@wallet/menu/extra-dropdown').click();
         cy.getTestElement('@wallet/menu/wallet-sign-verify').click();
     });

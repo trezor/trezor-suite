@@ -6,7 +6,11 @@ import { BundleLoader } from 'src/components/suite';
 import { PageName } from '@suite-common/suite-types';
 
 const components: Record<PageName, LazyExoticComponent<ComponentType<any>>> = {
-    'suite-index': lazy(() => import(/* webpackChunkName: "dashboard" */ 'src/views/dashboard')),
+    'suite-index': lazy(() =>
+        import(/* webpackChunkName: "dashboard" */ 'src/views/dashboard/index').then(
+            ({ Dashboard }) => ({ default: Dashboard }),
+        ),
+    ),
     'notifications-index': lazy(
         () => import(/* webpackChunkName: "notifications" */ 'src/views/suite/notifications'),
     ),
