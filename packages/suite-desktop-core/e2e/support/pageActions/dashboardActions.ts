@@ -1,4 +1,5 @@
-import { Page } from '@playwright/test';
+import { Page, Locator } from '@playwright/test';
+import { NetworkSymbol } from 'suite-common/wallet-config/src';
 
 import { waitForDataTestSelector } from '../common';
 
@@ -22,10 +23,37 @@ class DashboardActions {
         await waitForDataTestSelector(window, '@dashboard/graph', { timeout: 30000 });
     }
 
+    async openDeviceSwitcherAndReturnWindow(window: Page) {
+        await window.getByTestId('@menu/switch-device').click();
+        const deviceSwitcherModal = window.getByTestId('@modal');
+        await deviceSwitcherModal.waitFor({ state: 'visible' });
+        return deviceSwitcherModal;
+    }
+
+    async ejectWallet(deviceSwitcher: Locator, walletName: string) {
+        const wallet = await deviceSwitcher.locator(
+            '[data-test^="@switch-device/wallet-on-index"]',
+            {
+                hasText: walletName,
+            },
+        );
+        if (await wallet.isVisible()) {
+            await wallet.locator('[data-test$="eject-button"]').click();
+        }
+        await wallet.waitFor({ state: 'detached' });
+    }
+
+    async addStandardWallet(window: Page) {
+        const addStandardWallet = window.getByTestId('@switch-device/add-wallet-button');
+        await addStandardWallet.click();
+        await window.getByTestId('@modal').waitFor({ state: 'detached' });
+        await this.discoveryShouldFinish(window);
+    }
+
     // asserts
-    async getRegtestValue(window: Page) {
+    async getFirstNetworkValueOnDashboard(window: Page, network: NetworkSymbol) {
         return (
-            (await waitForDataTestSelector(window, '@wallet/coin-balance/value-regtest')) ?? true
+            (await window.getByTestId(`@wallet/coin-balance/value-${network}`).isVisible()) ?? true
         );
     }
 }

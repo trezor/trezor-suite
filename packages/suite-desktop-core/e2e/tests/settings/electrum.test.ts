@@ -18,14 +18,16 @@ let localDataDir: string;
 
 testPlaywright.describe.serial('Suite works with Electrum server', () => {
     testPlaywright.beforeAll(async () => {
-        ({ electronApp, window, localDataDir } = await launchSuite());
-        rmDirRecursive(localDataDir);
+        await TrezorUserEnvLink.api.stopBridge();
         await TrezorUserEnvLink.api.trezorUserEnvConnect();
         await TrezorUserEnvLink.api.startEmu({ wipe: true });
+        await TrezorUserEnvLink.api.startBridge();
         await TrezorUserEnvLink.api.setupEmu({
             needs_backup: true,
             mnemonic: 'all all all all all all all all all all all all',
         });
+        ({ electronApp, window, localDataDir } = await launchSuite());
+        rmDirRecursive(localDataDir);
     });
 
     testPlaywright.afterAll(() => {
@@ -47,7 +49,9 @@ testPlaywright.describe.serial('Suite works with Electrum server', () => {
         await onTopBar.openDashboard(window);
         await onDashboardPage.discoveryShouldFinish(window);
 
-        expectPlaywright(await onDashboardPage.getRegtestValue(window)).toBeTruthy();
+        expectPlaywright(
+            await onDashboardPage.getFirstNetworkValueOnDashboard(window, 'regtest'),
+        ).toBeTruthy();
         electronApp.close();
     });
 });
