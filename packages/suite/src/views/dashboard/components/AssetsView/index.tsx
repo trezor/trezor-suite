@@ -2,7 +2,7 @@ import styled, { useTheme } from 'styled-components';
 import BigNumber from 'bignumber.js';
 import { AnimatePresence } from 'framer-motion';
 
-import { variables, Icon, Button, colors, LoadingContent, Card } from '@trezor/components';
+import { Icon, Button, LoadingContent, Card } from '@trezor/components';
 import { selectDeviceSupportedNetworks } from '@suite-common/wallet-core';
 
 import { NETWORKS } from 'src/config/wallet';
@@ -17,6 +17,7 @@ import { useEnabledNetworks } from 'src/hooks/settings/useEnabledNetworks';
 
 import { AssetCard, AssetCardSkeleton } from './components/AssetCard';
 import { AssetRow, AssetRowSkeleton } from './components/AssetRow';
+import { spacingsPx, typography } from '@trezor/theme';
 
 const StyledCard = styled(Card)`
     flex-direction: column;
@@ -24,27 +25,25 @@ const StyledCard = styled(Card)`
 `;
 
 const InfoMessage = styled.div`
-    padding: 16px 25px;
+    padding: ${spacingsPx.md} ${spacingsPx.xl};
     display: flex;
-    color: ${({ theme }) => theme.TYPE_RED};
-    font-size: ${variables.FONT_SIZE.TINY};
-    font-weight: ${variables.FONT_WEIGHT.REGULAR};
+    color: ${({ theme }) => theme.textAlertRed};
+    ${typography.label}
 `;
 
 const ActionsWrapper = styled.div`
     display: flex;
     justify-content: space-around;
+    align-items: center;
 `;
 
 const Header = styled.div`
     display: flex;
-    font-size: ${variables.FONT_SIZE.SMALL};
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    font-weight: 500;
-    line-height: 1.57;
+    ${typography.hint}
+    color: ${({ theme }) => theme.textSubdued};
     align-items: center;
-    padding: 12px 0;
-    border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
+    padding: ${spacingsPx.sm} 0;
+    border-bottom: 1px solid ${({ theme }) => theme.borderOnElevation1};
 
     &:first-child {
         padding-left: 18px;
@@ -68,11 +67,11 @@ const GridWrapper = styled.div`
 `;
 
 const StyledAddAccountButton = styled(Button)`
-    margin-left: 20px;
+    margin-right: ${spacingsPx.sm};
 `;
 
 const StyledIcon = styled(Icon)`
-    margin-right: 4px;
+    margin-right: ${spacingsPx.xxs};
 `;
 
 interface assetType {
@@ -139,10 +138,12 @@ export const AssetsView = () => {
     return (
         <DashboardSection
             heading={
-                <>
-                    <LoadingContent isLoading={isDiscoveryRunning}>
-                        <Translation id="TR_MY_ASSETS" />
-                    </LoadingContent>
+                <LoadingContent isLoading={isDiscoveryRunning}>
+                    <Translation id="TR_MY_ASSETS" />
+                </LoadingContent>
+            }
+            actions={
+                <ActionsWrapper>
                     {hasMainnetNetworksToEnable && (
                         <StyledAddAccountButton
                             variant="tertiary"
@@ -153,21 +154,21 @@ export const AssetsView = () => {
                             <Translation id="TR_ENABLE_MORE_COINS" />
                         </StyledAddAccountButton>
                     )}
-                </>
-            }
-            actions={
-                <ActionsWrapper>
                     <Icon
                         icon="TABLE"
                         data-test="@dashboard/assets/table-icon"
                         onClick={setTable}
-                        color={!dashboardAssetsGridMode ? colors.BG_GREEN : colors.TYPE_LIGHT_GREY}
+                        color={
+                            !dashboardAssetsGridMode ? theme.textPrimaryDefault : theme.textSubdued
+                        }
                     />
                     <Icon
                         icon="GRID"
                         data-test="@dashboard/assets/grid-icon"
                         onClick={setGrid}
-                        color={dashboardAssetsGridMode ? colors.BG_GREEN : colors.TYPE_LIGHT_GREY}
+                        color={
+                            dashboardAssetsGridMode ? theme.textPrimaryDefault : theme.textSubdued
+                        }
                     />
                 </ActionsWrapper>
             }
@@ -217,7 +218,7 @@ export const AssetsView = () => {
                     </AnimatePresence>
                     {isError && (
                         <InfoMessage>
-                            <StyledIcon icon="WARNING" color={theme.TYPE_RED} size={14} />
+                            <StyledIcon icon="WARNING" color={theme.iconAlertRed} size={14} />
                             <Translation id="TR_DASHBOARD_ASSETS_ERROR" />
                         </InfoMessage>
                     )}
