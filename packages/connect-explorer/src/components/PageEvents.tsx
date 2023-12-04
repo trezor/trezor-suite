@@ -2,9 +2,7 @@
 import { useDocs } from '../hooks/useDocs';
 
 export const Events = () => {
-    const docs = useDocs(
-        'https://raw.githubusercontent.com/trezor/trezor-suite/develop/docs/packages/connect/events.md',
-    );
+    const docs = useDocs('./docs/events.md');
 
     return (
         <section>

@@ -3,8 +3,8 @@ import Markdown from 'markdown-it';
 import MarkdownReplaceLink from 'markdown-it-replace-link';
 import MarkdownReplaceLinkAttrs from 'markdown-it-link-attributes';
 
-const GITHUB = 'https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect';
-const CDN = 'https://raw.githubusercontent.com/trezor/trezor-suite/develop/docs/packages/connect/';
+const GITHUB = `https://github.com/trezor/trezor-suite/blob/${process.env.COMMIT_HASH}/docs/packages/connect`;
+const CDN = `https://raw.githubusercontent.com/trezor/trezor-suite/${process.env.COMMIT_HASH}/docs/packages/connect/`;
 
 export const useDocs = (url: string) => {
     const [docs, setDocs] = useState<string>();

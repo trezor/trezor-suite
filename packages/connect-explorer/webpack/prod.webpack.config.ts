@@ -3,6 +3,9 @@ import path from 'path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import TerserPlugin from 'terser-webpack-plugin';
 import CopyPlugin from 'copy-webpack-plugin';
+import { execSync } from 'child_process';
+
+const commitHash = execSync('git rev-parse HEAD').toString().trim();
 
 const DIST = path.resolve(__dirname, '../build');
 
@@ -74,12 +77,17 @@ const config: webpack.Configuration = {
         new webpack.DefinePlugin({
             // eslint-disable-next-line no-underscore-dangle
             'process.env.__TREZOR_CONNECT_SRC': JSON.stringify(process.env.__TREZOR_CONNECT_SRC),
+            'process.env.COMMIT_HASH': JSON.stringify(commitHash),
         }),
         new CopyPlugin({
             patterns: [
                 {
                     from: path.resolve(__dirname, '../src/images'),
                     to: path.resolve(DIST, 'images'),
+                },
+                {
+                    from: path.resolve(__dirname, '../../../docs/packages/connect'),
+                    to: path.resolve(DIST, 'docs'),
                 },
             ],
         }),
