@@ -53,12 +53,13 @@ body {
     position: relative;
     min-height: 500px;
     min-width: 328px;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial,
+    font-family: 'TT Satoshi', -apple-system, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial,
         sans-serif;
     font-weight: 400;
     font-size: 14px;
     color: #494949;
     background-color: #ffffff;
+    
 }
 main {
     width: 100%;
@@ -126,12 +127,6 @@ a:visited {
     text-decoration: none;
     transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out,
         border-color 0.3s ease-in-out;
-    /* &:hover,
-    &:active {
-        &:after {
-            border-color: @color_white;
-        }
-    } */
 }
 a:not(.button):after,
 a:visited:after {
@@ -538,6 +533,21 @@ input[type='password']:focus {
         height: 160px;
     }
 }
+
+@font-face {
+    font-family: 'TT Satoshi';
+    src: url('./fonts/TTSatoshi-Medium.otf') format('opentype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'TT Satoshi';
+    src: url('./fonts/TTSatoshi-DemiBold.otf') format('opentype');
+    font-weight: 600;
+    font-style: normal;
+}
+
 @font-face {
     font-family: 'Roboto Zero';
     src: url(./fonts/RobotoZeroc19ef375e09c0446ee38.eot) format('embedded-opentype'),
