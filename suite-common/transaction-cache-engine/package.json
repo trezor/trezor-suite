@@ -1,0 +1,24 @@
+{
+    "name": "@suite-common/transaction-cache-engine",
+    "version": "1.0.0",
+    "main": "src/index",
+    "license": "See LICENSE.md in repo root",
+    "private": true,
+    "sideEffects": false,
+    "scripts": {
+        "type-check": "tsc --build",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest -c ../../jest.config.base.js"
+    },
+    "dependencies": {
+        "@mobily/ts-belt": "^3.13.1",
+        "@suite-common/wallet-config": "workspace:*",
+        "@trezor/connect": "workspace:*",
+        "bignumber.js": "^9.1.1"
+    },
+    "devDependencies": {
+        "jest": "^29.7.0",
+        "tsx": "^4.1.4",
+        "typescript": "5.3.2"
+    }
+}
