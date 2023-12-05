@@ -41,6 +41,7 @@ export const showAddress =
     (path: string, address: string) => async (dispatch: Dispatch, getState: GetState) => {
         const device = selectDevice(getState());
         const { account } = getState().wallet.selectedAccount;
+
         if (!device || !account) return;
 
         const modalPayload = {

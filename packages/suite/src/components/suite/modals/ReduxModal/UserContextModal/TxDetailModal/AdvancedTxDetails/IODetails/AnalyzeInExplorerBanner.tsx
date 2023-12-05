@@ -52,11 +52,11 @@ const StyledButton = styled(Button)`
     }
 `;
 
-interface AnalyzeInBlockbookBannerProps {
+interface AnalyzeInExplorerBannerProps {
     txid: string;
 }
 
-export const AnalyzeInBlockbookBanner = ({ txid }: AnalyzeInBlockbookBannerProps) => {
+export const AnalyzeInExplorerBanner = ({ txid }: AnalyzeInExplorerBannerProps) => {
     const theme = useTheme();
 
     const { selectedAccount } = useSelector(state => state.wallet);

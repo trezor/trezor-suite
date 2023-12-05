@@ -58,7 +58,9 @@ export const DashboardGraph = memo(({ accounts }: DashboardGraphProps) => {
 
     const selectedDeviceState = selectedDevice?.state;
     const failedAccounts = error?.filter(a => a.deviceState === selectedDeviceState);
-    const allFailed = failedAccounts && failedAccounts.length === accounts.length;
+    const allFailed =
+        failedAccounts &&
+        failedAccounts.every(fa => accounts.some(a => a.descriptor === fa.descriptor));
 
     const onRefresh = useCallback(() => {
         dispatch(updateGraphData(accounts));

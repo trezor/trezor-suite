@@ -77,6 +77,8 @@
         },
         { "path": "../analytics" },
         { "path": "../blockchain-link" },
+        { "path": "../blockchain-link-types" },
+        { "path": "../blockchain-link-utils" },
         { "path": "../coinjoin" },
         { "path": "../components" },
         { "path": "../connect" },

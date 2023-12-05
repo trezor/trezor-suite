@@ -128,6 +128,7 @@ export const TxDetailModal = ({ tx, rbfForm, onCancel }: TxDetailModalProps) => 
 
             <BasicTxDetails
                 explorerUrl={blockchain.explorer.tx}
+                explorerUrlQueryString={blockchain.explorer.queryString}
                 tx={tx}
                 network={network!}
                 confirmations={confirmations}

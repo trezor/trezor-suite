@@ -42,6 +42,9 @@ export const showXpub = () => async (dispatch: Dispatch, getState: GetState) => 
         case 'cardano':
             response = await TrezorConnect.cardanoGetPublicKey(params);
             break;
+        case 'solana':
+            response = await TrezorConnect.solanaGetPublicKey(params);
+            break;
         default:
             response = {
                 success: false,

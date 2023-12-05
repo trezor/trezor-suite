@@ -20,7 +20,7 @@ import {
     transformTokenInfo,
     TOKEN_PROGRAM_PUBLIC_KEY,
 } from '@trezor/blockchain-link-utils/lib/solana';
-import { getTokenMetadata, TOKEN_ACCOUNT_LAYOUT } from './tokenUtils';
+import { TOKEN_ACCOUNT_LAYOUT } from './tokenUtils';
 
 export type SolanaAPI = Connection;
 
@@ -108,51 +108,16 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
 
     const accountInfo = await api.getAccountInfo(publicKey);
 
-    if (!accountInfo) {
-        // return empty account
-        const account: AccountInfo = {
-            descriptor: payload.descriptor,
-            balance: '0', // default balance
-            availableBalance: '0', // default balance
-            empty: true,
-            history: {
-                total: -1,
-                unconfirmed: 0,
-                transactions: undefined,
-            },
-        };
-        return Promise.resolve({
-            type: RESPONSES.GET_ACCOUNT_INFO,
-            payload: account,
-        } as const);
-    }
-
     const getTransactionPage = async (txIds: string[]) => {
         const transactionsPage = await fetchTransactionPage(api, txIds);
-        const uniqueTransactionSlots = Array.from(new Set(transactionsPage.map(tx => tx.slot)));
 
-        // we do not get blockheight from the transaction history, we only get slot for each transaction.
-        // for this reason we have to fetch block for each slot and an create a dictionary
-        const slotToBlockHeightMapping = (
+        return (
             await Promise.all(
-                uniqueTransactionSlots.map(async slot => {
-                    const { blockHeight } = await api.getParsedBlock(slot, {
-                        maxSupportedTransactionVersion: 0,
-                    });
-                    return blockHeight;
-                }),
+                transactionsPage
+                    .filter(isValidTransaction)
+                    .map(tx => solanaUtils.transformTransaction(tx, payload.descriptor)),
             )
-        ).reduce(
-            (acc, curr, i) => ({ ...acc, [uniqueTransactionSlots[i]]: curr }),
-            {} as Record<number, number | null>,
-        );
-
-        return transactionsPage
-            .filter(isValidTransaction)
-            .map(tx =>
-                solanaUtils.transformTransaction(tx, payload.descriptor, slotToBlockHeightMapping),
-            )
-            .filter((tx): tx is Transaction => !!tx);
+        ).filter((tx): tx is Transaction => !!tx);
     };
 
     const tokenAccounts = await api.getParsedTokenAccountsByOwner(publicKey, {
@@ -171,7 +136,7 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
 
     const pageNumber = payload.page ? payload.page - 1 : 0;
     // for the first page of txs, payload.page is undefined, for the second page is 2
-    const pageSize = payload.pageSize || 2;
+    const pageSize = payload.pageSize || 25;
 
     const pageStartIndex = pageNumber * pageSize;
     const pageEndIndex = Math.min(pageStartIndex + pageSize, allTxIds.length);
@@ -183,15 +148,17 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
     // Fetch token info only if the account owns tokens
     let tokens: TokenInfo[] = [];
     if (tokenAccounts.value.length > 0) {
-        const tokenMetadata = await getTokenMetadata();
+        const tokenMetadata = await solanaUtils.getTokenMetadata();
 
         tokens = transformTokenInfo(tokenAccounts.value, tokenMetadata);
     }
 
+    const balance = await api.getBalance(publicKey);
+
     const account: AccountInfo = {
         descriptor: payload.descriptor,
-        balance: accountInfo.lamports.toString(),
-        availableBalance: accountInfo.lamports.toString(),
+        balance: balance.toString(),
+        availableBalance: balance.toString(),
         empty: !allTxIds.length,
         history: {
             total: allTxIds.length,
@@ -207,9 +174,13 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
               }
             : undefined,
         tokens,
-        misc: {
-            owner: accountInfo.owner.toString(),
-        },
+        ...(accountInfo != null
+            ? {
+                  misc: {
+                      owner: accountInfo.owner.toString(),
+                  },
+              }
+            : {}),
     };
     return {
         type: RESPONSES.GET_ACCOUNT_INFO,
@@ -223,7 +194,6 @@ const getInfo = async (request: Request<MessageTypes.GetInfo>) => {
         await api.getLatestBlockhash('finalized');
     const isTestnet =
         (await api.getGenesisHash()) !== '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d';
-
     const serverInfo = {
         // genesisHash is reliable identifier of the network, for mainnet the genesis hash is 5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d
         testnet: isTestnet,
@@ -341,25 +311,12 @@ const subscribeAccounts = async (
                     commitment: 'finalized',
                 })
             )[0];
-            if (!lastTx) return;
-
-            const slotToBlockHeightMapping = {
-                [lastTx.slot]: (
-                    await api.getParsedBlock(lastTx.slot, {
-                        maxSupportedTransactionVersion: 0,
-                    })
-                ).blockHeight,
-            };
 
             if (!lastTx || !isValidTransaction(lastTx)) {
                 return;
             }
 
-            const tx = solanaUtils.transformTransaction(
-                lastTx,
-                a.descriptor,
-                slotToBlockHeightMapping,
-            );
+            const tx = await solanaUtils.transformTransaction(lastTx, a.descriptor);
             post({
                 id: -1,
                 type: RESPONSES.NOTIFICATION,
@@ -450,7 +407,7 @@ class SolanaWorker extends BaseWorker<SolanaAPI> {
     }
 
     tryConnect(url: string): Promise<SolanaAPI> {
-        const api = new Connection(`https://${url}`, { wsEndpoint: `wss://${url}` });
+        const api = new Connection(url, { wsEndpoint: url.replace('https', 'wss') });
         this.post({ id: -1, type: RESPONSES.CONNECTED });
         return Promise.resolve(api);
     }

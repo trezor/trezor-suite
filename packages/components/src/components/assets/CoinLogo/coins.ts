@@ -9,6 +9,7 @@ export const COINS = {
     dash: require('../../../images/coins/dash.svg'),
     dgb: require('../../../images/coins/dgb.svg'),
     doge: require('../../../images/coins/doge.svg'),
+    dsol: require('../../../images/coins/dsol.svg'),
     etc: require('../../../images/coins/etc.svg'),
     eth: require('../../../images/coins/eth.svg'),
     ltc: require('../../../images/coins/ltc.svg'),
@@ -21,4 +22,5 @@ export const COINS = {
     vtc: require('../../../images/coins/vtc.svg'),
     xrp: require('../../../images/coins/xrp.svg'),
     zec: require('../../../images/coins/zec.svg'),
+    sol: require('../../../images/coins/sol.svg'),
 };

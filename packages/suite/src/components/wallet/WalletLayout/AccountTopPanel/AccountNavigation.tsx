@@ -55,7 +55,7 @@ export const AccountNavigation = ({
             },
             title: <Translation id="TR_NAV_TOKENS" />,
             position: 'primary',
-            isHidden: !['cardano', 'ethereum'].includes(networkType),
+            isHidden: !['cardano', 'ethereum', 'solana'].includes(networkType),
         },
         {
             id: 'wallet-staking',

@@ -24,12 +24,14 @@ module.exports = {
     setupFiles: [
         'jest-canvas-mock', // for lottie-react
     ],
+    setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
     moduleNameMapper: {
         '^@suite-common/(.+)': '<rootDir>/../../suite-common/$1',
         '^@trezor/(.+)': '<rootDir>/../$1',
         '^src/(.+)': '<rootDir>/src/$1',
         '\\.(mp4)$': '<rootDir>/__mocks__/import-mp4.js',
         '\\.(svg)$': '<rootDir>/__mocks__/import-svg.js',
+        uuid: require.resolve('uuid'), // https://stackoverflow.com/questions/73203367/jest-syntaxerror-unexpected-token-export-with-uuid-library
     },
     moduleFileExtensions: ['js', 'ts', 'tsx'],
     coverageDirectory: './coverage',

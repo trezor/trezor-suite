@@ -104,6 +104,7 @@ const MISC_FEE_LEVELS: Record<string, FeeInfoWithLevels> = {
     ada: CARDANO_FEE_INFO,
     tada: CARDANO_FEE_INFO,
     sol: SOLANA_FEE_INFO,
+    dsol: SOLANA_FEE_INFO,
 };
 
 export const getMiscFeeLevels = (data: CoinsJsonData): FeeInfoWithLevels => {

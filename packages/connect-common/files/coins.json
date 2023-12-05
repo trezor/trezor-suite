@@ -2201,7 +2201,7 @@
         {
             "blockchain_link": {
                 "type": "solana",
-                "url": ["solana.trezor.io"]
+                "url": ["https://solana.trezor.io"]
             },
             "curve": "ed25519",
             "decimals": 9,
@@ -2360,7 +2360,7 @@
         {
             "blockchain_link": {
                 "type": "solana",
-                "url": ["solana-dev.trezor.io"]
+                "url": ["https://solana-dev.trezor.io"]
             },
             "curve": "ed25519",
             "decimals": 9,

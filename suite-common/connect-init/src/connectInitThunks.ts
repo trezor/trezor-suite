@@ -59,6 +59,7 @@ export const connectInitThunk = createThunk(
             'ethereumGetAddress',
             'rippleGetAddress',
             'cardanoGetAddress',
+            'solanaGetPublicKey',
             'applySettings',
             'changePin',
             'pushTransaction',
