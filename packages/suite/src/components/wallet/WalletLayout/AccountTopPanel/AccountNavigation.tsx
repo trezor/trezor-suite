@@ -7,6 +7,7 @@ import { getNetwork, hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { goto } from 'src/actions/suite/routerActions';
 import { openModal } from 'src/actions/suite/modalActions';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { EventType, analytics } from '@trezor/suite-analytics';
 
 interface AccountNavigationProps {
     filterPosition?: 'primary' | 'secondary';
@@ -29,11 +30,21 @@ export const AccountNavigation = ({
     const networkType = account?.networkType || network?.networkType || '';
     const accountType = account?.accountType || routerParams?.accountType || '';
 
+    const goToWithAnalytics = (...[routeName, options]: Parameters<typeof goto>) => {
+        if (account?.symbol) {
+            analytics.report({
+                type: EventType.AccountsActions,
+                payload: { symbol: account.symbol, action: routeName },
+            });
+        }
+        dispatch(goto(routeName, options));
+    };
+
     const ITEMS: AppNavigationItem[] = [
         {
             id: 'wallet-index',
             callback: () => {
-                dispatch(goto('wallet-index', { preserveParams: true }));
+                goToWithAnalytics('wallet-index', { preserveParams: true });
             },
             title: <Translation id="TR_NAV_TRANSACTIONS" />,
             position: 'primary',
@@ -42,7 +53,7 @@ export const AccountNavigation = ({
         {
             id: 'wallet-details',
             callback: () => {
-                dispatch(goto('wallet-details', { preserveParams: true }));
+                goToWithAnalytics('wallet-details', { preserveParams: true });
             },
             title: <Translation id="TR_NAV_DETAILS" />,
             position: 'primary',
@@ -51,7 +62,7 @@ export const AccountNavigation = ({
         {
             id: 'wallet-tokens',
             callback: () => {
-                dispatch(goto('wallet-tokens', { preserveParams: true }));
+                goToWithAnalytics('wallet-tokens', { preserveParams: true });
             },
             title: <Translation id="TR_NAV_TOKENS" />,
             position: 'primary',
@@ -60,7 +71,7 @@ export const AccountNavigation = ({
         {
             id: 'wallet-staking',
             callback: () => {
-                dispatch(goto('wallet-staking', { preserveParams: true }));
+                goToWithAnalytics('wallet-staking', { preserveParams: true });
             },
             title: <Translation id="TR_NAV_STAKING" />,
             position: 'primary',
@@ -69,7 +80,7 @@ export const AccountNavigation = ({
         {
             id: 'wallet-send',
             callback: () => {
-                dispatch(goto('wallet-send', { preserveParams: true }));
+                goToWithAnalytics('wallet-send', { preserveParams: true });
             },
             title: <Translation id="TR_NAV_SEND" />,
             position: 'secondary',
@@ -78,7 +89,7 @@ export const AccountNavigation = ({
         {
             id: 'wallet-receive',
             callback: () => {
-                dispatch(goto('wallet-receive', { preserveParams: true }));
+                goToWithAnalytics('wallet-receive', { preserveParams: true });
             },
             title: <Translation id="TR_NAV_RECEIVE" />,
             position: 'secondary',
@@ -87,7 +98,7 @@ export const AccountNavigation = ({
         {
             id: 'wallet-coinmarket-buy',
             callback: () => {
-                dispatch(goto('wallet-coinmarket-buy', { preserveParams: true }));
+                goToWithAnalytics('wallet-coinmarket-buy', { preserveParams: true });
             },
             title: <Translation id="TR_NAV_TRADE" />,
             position: 'secondary',
@@ -96,6 +107,12 @@ export const AccountNavigation = ({
         {
             id: 'wallet-add-token',
             callback: () => {
+                if (account?.symbol) {
+                    analytics.report({
+                        type: EventType.AccountsActions,
+                        payload: { symbol: account.symbol, action: 'add-token' },
+                    });
+                }
                 dispatch(openModal({ type: 'add-token' }));
             },
             title: <Translation id="TR_TOKENS_ADD" />,
@@ -106,7 +123,7 @@ export const AccountNavigation = ({
         {
             id: 'wallet-sign-verify',
             callback: () => {
-                dispatch(goto('wallet-sign-verify', { preserveParams: true }));
+                goToWithAnalytics('wallet-sign-verify', { preserveParams: true });
             },
             title: <Translation id="TR_NAV_SIGN_AND_VERIFY" />,
             icon: 'SIGNATURE',
