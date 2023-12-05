@@ -199,6 +199,17 @@ export const selectPendingAccountAddresses = memoizeWithArgs(
     { size: EXPECTED_MAX_NUMBER_OF_ACCOUNTS },
 );
 
+export const selectAllPendingTransactions = (state: TransactionsRootState) => {
+    const { transactions } = state.wallet.transactions;
+    return Object.keys(transactions).reduce(
+        (response, accountKey) => {
+            response[accountKey] = transactions[accountKey].filter(isPending);
+            return response;
+        },
+        {} as typeof transactions,
+    );
+};
+
 // Note: Account key is passed because there can be duplication of TXIDs if self transaction was sent.
 export const selectTransactionByTxidAndAccountKey = (
     state: TransactionsRootState,

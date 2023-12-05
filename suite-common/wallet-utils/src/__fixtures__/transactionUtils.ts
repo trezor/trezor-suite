@@ -846,107 +846,133 @@ export const searchTransactions = [
     },
 ];
 
+const CHAINED_TXS = {
+    'account1-key': [
+        {
+            descriptor: 'account1',
+            txid: 'ABCD-child-child-child',
+            type: 'received', // 3rd
+            details: {
+                vin: [{ txid: 'ABCD-child-child' }],
+            },
+        },
+        {
+            descriptor: 'account1',
+            txid: 'ABCD-child-child',
+            type: 'sent', // 2nd tx in chain to account 3
+            details: {
+                vin: [{ txid: 'ABCD-child' }],
+            },
+        },
+        {
+            descriptor: 'account1',
+            txid: 'ABCD-child',
+            type: 'received', // 1st
+            details: {
+                vin: [{ txid: 'ABCD' }],
+            },
+        },
+    ],
+    'account2-key': [
+        {
+            descriptor: 'account2',
+            txid: '4567',
+            details: {
+                vin: [{ txid: '8910' }],
+            },
+        },
+        {
+            descriptor: 'account2',
+            txid: 'ABCD-child', // 1st tx in chain to account 1
+            type: 'sent',
+            details: {
+                vin: [{ txid: 'ABCD' }],
+            },
+        },
+    ],
+    'account3-key': [
+        {
+            descriptor: 'account3',
+            txid: 'external_txid',
+            type: 'sent', // 4th tx in chain spend to somewhere else
+            details: {
+                vin: [{ txid: 'ABCD-child-child-child' }],
+            },
+        },
+        {
+            descriptor: 'account3',
+            txid: 'ABCD-child-child-child',
+            type: 'sent', // 3rd tx in chain back to account 1
+            details: {
+                vin: [{ txid: 'ABCD-child-child' }],
+            },
+        },
+        {
+            descriptor: 'account3',
+            txid: 'ABCD-child-child',
+            type: 'received', // 2nd
+            details: {
+                vin: [{ txid: 'ABCD-child' }],
+            },
+        },
+    ],
+};
+
 export const findChainedTransactions = [
     {
-        description: 'deeply chained transactions',
+        description: 'deeply chained transactions by account 1',
+        descriptor: 'account1',
         txid: 'ABCD',
-        transactions: {
-            'account1-key': [
-                {
-                    txid: 'ABCD-child',
-                    details: {
-                        vin: [{ txid: 'ABCD' }],
-                    },
-                },
-                {
-                    txid: 'ABCD-child-child',
-                    details: {
-                        vin: [{ txid: 'ABCD-child' }],
-                    },
-                },
-                {
-                    txid: 'ABCD-child-child-child',
-                    details: {
-                        vin: [{ txid: 'ABCD-child-child' }],
-                    },
-                },
+        transactions: CHAINED_TXS,
+        result: {
+            own: [
+                { txid: 'ABCD-child' },
+                { txid: 'ABCD-child-child' },
+                { txid: 'ABCD-child-child-child' },
             ],
-            'account2-key': [
-                {
-                    txid: '0123',
-                    details: {
-                        vin: [{ txid: '0012' }],
-                    },
-                },
-                {
-                    txid: 'XYZ0',
-                    details: {
-                        vin: [{ txid: 'ABCD-child-child-child' }],
-                    },
-                },
-                {
-                    txid: '4567',
-                    details: {
-                        vin: [{ txid: '8910' }],
-                    },
-                },
-            ],
-            'account3-key': [
-                {
-                    txid: 'XYZ1',
-                    details: {
-                        vin: [{ txid: 'ABCD-child' }],
-                    },
-                },
+            others: [{ txid: 'external_txid' }],
+        },
+    },
+    {
+        description: 'deeply chained transactions by account 2',
+        descriptor: 'account2',
+        txid: 'ABCD',
+        transactions: CHAINED_TXS,
+        result: {
+            own: [{ txid: 'ABCD-child' }],
+            others: [
+                { txid: 'ABCD-child-child' },
+                { txid: 'ABCD-child-child-child' },
+                { txid: 'external_txid' },
             ],
         },
-        result: [
-            {
-                key: 'account1-key',
-                txs: [
-                    {
-                        txid: 'ABCD-child',
-                        details: {
-                            vin: [{ txid: 'ABCD' }],
-                        },
-                    },
-                    {
-                        txid: 'ABCD-child-child',
-                        details: {
-                            vin: [{ txid: 'ABCD-child' }],
-                        },
-                    },
-                    {
-                        txid: 'ABCD-child-child-child',
-                        details: {
-                            vin: [{ txid: 'ABCD-child-child' }],
-                        },
-                    },
-                ],
-            },
-            {
-                key: 'account2-key',
-                txs: [
-                    {
-                        txid: 'XYZ0',
-                        details: {
-                            vin: [{ txid: 'ABCD-child-child-child' }],
-                        },
-                    },
-                ],
-            },
-            {
-                key: 'account3-key',
-                txs: [
-                    {
-                        txid: 'XYZ1',
-                        details: {
-                            vin: [{ txid: 'ABCD-child' }],
-                        },
-                    },
-                ],
-            },
-        ],
+    },
+    {
+        description: 'last from chained transactions by account 1',
+        descriptor: 'account2',
+        txid: 'ABCD-child-child-child',
+        transactions: CHAINED_TXS,
+        result: {
+            own: [],
+            others: [{ txid: 'external_txid' }],
+        },
+    },
+    {
+        description: 'last from chained transactions by account 3',
+        descriptor: 'account3',
+        txid: 'ABCD-child-child-child',
+        transactions: CHAINED_TXS,
+        result: {
+            own: [{ txid: 'external_txid' }],
+            others: [],
+        },
+    },
+    {
+        description: 'no results',
+        descriptor: 'account3',
+        txid: 'external_txid',
+        transactions: CHAINED_TXS,
+        result: undefined,
     },
 ];
 

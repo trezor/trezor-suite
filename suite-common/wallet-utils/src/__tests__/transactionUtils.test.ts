@@ -157,7 +157,22 @@ describe('transaction utils', () => {
 
     fixtures.findChainedTransactions.forEach(f => {
         it(`findChainedTransactions: ${f.description}`, () => {
-            expect(findChainedTransactions(f.txid, f.transactions as any)).toEqual(f.result);
+            const chained = findChainedTransactions(f.descriptor, f.txid, f.transactions as any);
+            if (!chained || !f.result) {
+                expect(chained).toEqual(f.result);
+                return;
+            }
+
+            expect(
+                chained.own.map(t => ({
+                    txid: t.txid,
+                })),
+            ).toEqual(f.result.own);
+            expect(
+                chained.others.map(t => ({
+                    txid: t.txid,
+                })),
+            ).toEqual(f.result.others);
         });
     });
 

@@ -9,7 +9,7 @@ import {
     SelectedAccountLoaded,
     Account,
     RbfTransactionParams,
-    WalletAccountTransaction,
+    ChainedTransactions,
 } from '@suite-common/wallet-types';
 import { FormState, FeeInfo } from 'src/types/wallet/sendForm';
 import { useFees } from './form/useFees';
@@ -22,7 +22,7 @@ export type UseRbfProps = {
     selectedAccount: SelectedAccountLoaded;
     rbfParams: RbfTransactionParams;
     finalize: boolean;
-    chainedTxs: WalletAccountTransaction[];
+    chainedTxs?: ChainedTransactions;
 };
 
 const getBitcoinFeeInfo = (info: FeeInfo, feeRate: string) => {
@@ -144,10 +144,9 @@ const useRbfState = ({ selectedAccount, rbfParams, finalize, chainedTxs }: UseRb
         // try to overprice them. offer fee higher than sum of both:
         // - current tx with higher feeRate
         // - sum of all fees of all chainedTxs
-        let baseFee = 0;
-        if (chainedTxs.length > 0) {
-            baseFee = chainedTxs.reduce((f, ctx) => f + parseFloat(ctx.fee), baseFee);
-        }
+        const baseFee =
+            chainedTxs &&
+            chainedTxs.own.concat(chainedTxs.others).reduce((f, ctx) => f + parseFloat(ctx.fee), 0);
 
         return {
             account: rbfAccount,

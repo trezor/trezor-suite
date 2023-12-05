@@ -112,7 +112,7 @@ interface ChangeFeeProps extends UseRbfProps {
 
 const ChangeFeeLoaded = (props: ChangeFeeProps) => {
     const contextValues = useRbf(props);
-    const { tx, chainedTxs, showChained, finalize, children } = props;
+    const { tx, showChained, finalize, children } = props;
     const { networkType } = contextValues.account;
     const feeRate =
         networkType === 'bitcoin' ? `${tx.rbfParams?.feeRate} ${getFeeUnits(networkType)}` : null;
@@ -152,7 +152,7 @@ const ChangeFeeLoaded = (props: ChangeFeeProps) => {
                         <RbfFees />
                     </Inner>
                     <DecreasedOutputs />
-                    {chainedTxs.length > 0 && <AffectedTransactions showChained={showChained} />}
+                    <AffectedTransactions showChained={showChained} />
                 </Box>
                 {finalize && (
                     <FinalizeWarning>

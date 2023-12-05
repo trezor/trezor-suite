@@ -3,7 +3,8 @@ import styled from 'styled-components';
 import { Translation } from 'src/components/suite';
 import { variables } from '@trezor/components';
 import { isTestnet } from '@suite-common/wallet-utils';
-import { Network, WalletAccountTransaction } from 'src/types/wallet';
+import { WalletAccountTransaction, ChainedTransactions } from '@suite-common/wallet-types';
+import { Network } from 'src/types/wallet';
 import { AmountDetails } from './AmountDetails';
 import { IODetails } from './IODetails/IODetails';
 import { ChainedTxs } from '../ChainedTxs';
@@ -50,7 +51,7 @@ interface AdvancedTxDetailsProps {
     defaultTab?: TabID;
     network: Network;
     tx: WalletAccountTransaction;
-    chainedTxs: WalletAccountTransaction[];
+    chainedTxs?: ChainedTransactions;
     explorerUrl: string;
 }
 
@@ -69,7 +70,7 @@ export const AdvancedTxDetails = ({
         content = <AmountDetails tx={tx} isTestnet={isTestnet(network.symbol)} />;
     } else if (selectedTab === 'io' && network.networkType !== 'ripple') {
         content = <IODetails tx={tx} />;
-    } else if (selectedTab === 'chained' && chainedTxs.length > 0) {
+    } else if (selectedTab === 'chained' && chainedTxs) {
         content = <ChainedTxs txs={chainedTxs} explorerUrl={explorerUrl} network={network} />;
     }
 
@@ -89,7 +90,7 @@ export const AdvancedTxDetails = ({
                     </TabButton>
                 )}
 
-                {chainedTxs.length > 0 && (
+                {chainedTxs && (
                     <TabButton
                         selected={selectedTab === 'chained'}
                         onClick={() => setSelectedTab('chained')}

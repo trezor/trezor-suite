@@ -182,6 +182,11 @@ export interface WalletAccountTransaction extends AccountTransaction {
     deadline?: number;
 }
 
+export interface ChainedTransactions {
+    own: WalletAccountTransaction[];
+    others: WalletAccountTransaction[];
+}
+
 export interface SignTransactionData {
     account: Account;
     address: string;

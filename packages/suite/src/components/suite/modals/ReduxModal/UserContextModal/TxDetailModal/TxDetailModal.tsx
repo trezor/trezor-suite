@@ -1,17 +1,20 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import styled from 'styled-components';
 import { variables, Button } from '@trezor/components';
 import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';
 import { getIsZeroValuePhishing } from '@suite-common/suite-utils';
 import {
-    getConfirmations,
     isPending,
     findChainedTransactions,
     getAccountKey,
     getAccountNetwork,
 } from '@suite-common/wallet-utils';
 import { useSelector } from 'src/hooks/suite';
-import { selectAccountByKey } from '@suite-common/wallet-core';
+import {
+    selectAccountByKey,
+    selectTransactionConfirmations,
+    selectAllPendingTransactions,
+} from '@suite-common/wallet-core';
 import { Translation, Modal, TrezorLink } from 'src/components/suite';
 import { WalletAccountTransaction } from 'src/types/wallet';
 import { BasicTxDetails } from './BasicTxDetails';
@@ -78,7 +81,7 @@ type TxDetailModalProps = {
 
 export const TxDetailModal = ({ tx, rbfForm, onCancel }: TxDetailModalProps) => {
     const blockchain = useSelector(state => state.wallet.blockchain[tx.symbol]);
-    const transactions = useSelector(state => state.wallet.transactions.transactions);
+    const transactions = useSelector(selectAllPendingTransactions);
 
     const [section, setSection] = useState<'CHANGE_FEE' | 'DETAILS'>(
         rbfForm ? 'CHANGE_FEE' : 'DETAILS',
@@ -86,21 +89,17 @@ export const TxDetailModal = ({ tx, rbfForm, onCancel }: TxDetailModalProps) => 
     const [tab, setTab] = useState<TabID | undefined>(undefined);
     const [finalize, setFinalize] = useState<boolean>(false);
 
-    const confirmations = getConfirmations(tx, blockchain.blockHeight);
+    // const confirmations = getConfirmations(tx, blockchain.blockHeight);
     // TODO: replace this part will be refactored after blockbook implementation:
     // https://github.com/trezor/blockbook/issues/555
-    // currently we are showing only txs related to this account
-    // const chainedTxs =  findChainedTransactions(tx.txid, transactions) : [];
-    const chainedTxs = isPending(tx)
-        ? findChainedTransactions(tx.txid, transactions)
-              .filter(t => t.key.indexOf(tx.descriptor) >= 0) // only for this account (this will change)
-              .reduce(
-                  (result, item) => result.concat(item.txs), // transforming results into array
-                  [] as WalletAccountTransaction[],
-              )
-        : [];
-
+    const chainedTxs = useMemo(() => {
+        if (!isPending(tx)) return;
+        return findChainedTransactions(tx.descriptor, tx.txid, transactions);
+    }, [tx, transactions]);
     const accountKey = getAccountKey(tx.descriptor, tx.symbol, tx.deviceState);
+    const confirmations = useSelector(state =>
+        selectTransactionConfirmations(state, tx.txid, accountKey),
+    );
     const account = useSelector(state => selectAccountByKey(state, accountKey));
     const network = account && getAccountNetwork(account);
     const isZeroValuePhishing = getIsZeroValuePhishing(tx);
