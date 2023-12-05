@@ -28,7 +28,7 @@ describe('Language and theme detection', () => {
                 });
             },
         });
-        cy.contains('Bienvenido/a').should('have.css', 'color', 'rgb(234, 235, 237)');
+        cy.contains('¡Te damos la bienvenida!').should('have.css', 'color', 'rgb(234, 235, 237)');
         cy.get('body').should('have.css', 'background-color', 'rgb(24, 25, 26)');
     });
 });
