@@ -1,0 +1,12 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "outDir": "libDev",
+        "noUncheckedIndexedAccess": true,
+        "noUnusedLocals": false
+    },
+    "references": [
+        { "path": "../wallet-config" },
+        { "path": "../../packages/connect" }
+    ]
+}

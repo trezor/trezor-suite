@@ -79,6 +79,7 @@ export const XpubScanScreen = ({
         if (
             xpubAddress &&
             networkType !== 'ethereum' &&
+            networkType !== 'ripple' &&
             isAddressValid(xpubAddress, networkSymbol)
         ) {
             // we need to set timeout to avoid showing alert during screen transition, otherwise it will freeze the app
