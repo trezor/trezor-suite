@@ -1,3 +1,5 @@
+import { useMemo } from 'react';
+
 import { useNavigation } from '@react-navigation/native';
 
 import {
@@ -9,10 +11,11 @@ import {
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { VStack, Card, Button, Text, Pictogram } from '@suite-native/atoms';
+import { VStack, Card, Button, Image, Text, Box } from '@suite-native/atoms';
 import { useNativeStyles, prepareNativeStyle } from '@trezor/styles';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { analytics, EventType } from '@suite-native/analytics';
+import { useActiveColorScheme } from '@suite-native/theme';
 
 import { SettingsButtonLink } from './SettingsButtonLink';
 
@@ -35,6 +38,15 @@ export const EmptyPortfolioCrossroads = () => {
 
     const { translate } = useTranslate();
 
+    const colorScheme = useActiveColorScheme();
+
+    const image = useMemo(() => {
+        if (colorScheme === 'dark') {
+            return require('../assets/darkConnectTrezor.svg');
+        }
+        return require('../assets/connectTrezor.svg');
+    }, [colorScheme]);
+
     const handleSyncMyCoins = () => {
         navigation.navigate(RootStackRoutes.AccountsImport, {
             screen: AccountsImportStackRoutes.SelectNetwork,
@@ -56,17 +68,19 @@ export const EmptyPortfolioCrossroads = () => {
         <VStack spacing="medium" flex={1}>
             <Card style={applyStyle(cardStyle, { flex: 2 })}>
                 <VStack spacing="large" justifyContent="center" alignItems="center">
-                    <Pictogram
-                        icon="trezor"
-                        variant="green"
-                        title={translate(
-                            'moduleHome.emptyState.connectOrImportCrossroads.gotMyTrezor.title',
-                        )}
-                        subtitle={translate(
-                            'moduleHome.emptyState.connectOrImportCrossroads.gotMyTrezor.description',
-                        )}
-                        size="large"
-                    />
+                    <VStack alignItems="center" spacing="large">
+                        <Image source={image} contentFit="contain" height={205} width={216} />
+                        <VStack alignItems="center">
+                            <Box>
+                                <Text variant="titleSmall" textAlign="center">
+                                    <Translation id="moduleHome.emptyState.connectOrImportCrossroads.gotMyTrezor.title" />
+                                </Text>
+                            </Box>
+                            <Text color="textSubdued" textAlign="center">
+                                <Translation id="moduleHome.emptyState.connectOrImportCrossroads.gotMyTrezor.description" />
+                            </Text>
+                        </VStack>
+                    </VStack>
                     <Button onPress={handleConnectDevice} size="large">
                         {translate(
                             'moduleHome.emptyState.connectOrImportCrossroads.gotMyTrezor.connectButton',

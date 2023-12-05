@@ -25,6 +25,12 @@ PODS:
     - ExpoModulesCore
   - ExpoHaptics (12.4.0):
     - ExpoModulesCore
+  - ExpoImage (1.5.1):
+    - ExpoModulesCore
+    - SDWebImage (~> 5.17.0)
+    - SDWebImageAVIFCoder (~> 0.10.1)
+    - SDWebImageSVGCoder (~> 1.7.0)
+    - SDWebImageWebPCoder (~> 0.13.0)
   - ExpoLinearGradient (12.5.0):
     - ExpoModulesCore
   - ExpoLocalAuthentication (13.7.0):
@@ -118,7 +124,28 @@ PODS:
   - hermes-engine (0.71.8):
     - hermes-engine/Pre-built (= 0.71.8)
   - hermes-engine/Pre-built (0.71.8)
+  - libaom (3.0.0):
+    - libvmaf (>= 2.2.0)
+  - libavif (0.11.1):
+    - libavif/libaom (= 0.11.1)
+  - libavif/core (0.11.1)
+  - libavif/libaom (0.11.1):
+    - libaom (>= 2.0.0)
+    - libavif/core
   - libevent (2.1.12)
+  - libvmaf (2.3.1)
+  - libwebp (1.3.2):
+    - libwebp/demux (= 1.3.2)
+    - libwebp/mux (= 1.3.2)
+    - libwebp/sharpyuv (= 1.3.2)
+    - libwebp/webp (= 1.3.2)
+  - libwebp/demux (1.3.2):
+    - libwebp/webp
+  - libwebp/mux (1.3.2):
+    - libwebp/demux
+  - libwebp/sharpyuv (1.3.2)
+  - libwebp/webp (1.3.2):
+    - libwebp/sharpyuv
   - lottie-ios (3.4.4)
   - lottie-react-native (5.1.5):
     - lottie-ios (~> 3.4.0)
@@ -502,6 +529,17 @@ PODS:
     - Sentry/HybridSDK (= 8.7.1)
   - RNSVG (13.8.0):
     - React-Core
+  - SDWebImage (5.17.0):
+    - SDWebImage/Core (= 5.17.0)
+  - SDWebImage/Core (5.17.0)
+  - SDWebImageAVIFCoder (0.10.1):
+    - libavif (>= 0.11.0)
+    - SDWebImage (~> 5.10)
+  - SDWebImageSVGCoder (1.7.0):
+    - SDWebImage/Core (~> 5.6)
+  - SDWebImageWebPCoder (0.13.0):
+    - libwebp (~> 1.0)
+    - SDWebImage/Core (~> 5.17)
   - Sentry/HybridSDK (8.7.1):
     - SentryPrivate (= 8.7.1)
   - SentryPrivate (8.7.1)
@@ -509,10 +547,10 @@ PODS:
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
     - Yoga (~> 1.14)
-  - ZXingObjC/Core (3.6.5)
-  - ZXingObjC/OneD (3.6.5):
+  - ZXingObjC/Core (3.6.9)
+  - ZXingObjC/OneD (3.6.9):
     - ZXingObjC/Core
-  - ZXingObjC/PDF417 (3.6.5):
+  - ZXingObjC/PDF417 (3.6.9):
     - ZXingObjC/Core
 
 DEPENDENCIES:
@@ -527,6 +565,7 @@ DEPENDENCIES:
   - ExpoClipboard (from `../../../node_modules/expo-clipboard/ios`)
   - ExpoDevice (from `../../../node_modules/expo-device/ios`)
   - ExpoHaptics (from `../../../node_modules/expo-haptics/ios`)
+  - ExpoImage (from `../../../node_modules/expo-image/ios`)
   - ExpoLinearGradient (from `../../../node_modules/expo-linear-gradient/ios`)
   - ExpoLocalAuthentication (from `../../../node_modules/expo-local-authentication/ios`)
   - ExpoLocalization (from `../../../node_modules/expo-localization/ios`)
@@ -620,11 +659,19 @@ SPEC REPOS:
     - Flipper-RSocket
     - FlipperKit
     - fmt
+    - libaom
+    - libavif
     - libevent
+    - libvmaf
+    - libwebp
     - lottie-ios
     - MMKV
     - MMKVCore
     - OpenSSL-Universal
+    - SDWebImage
+    - SDWebImageAVIFCoder
+    - SDWebImageSVGCoder
+    - SDWebImageWebPCoder
     - Sentry
     - SentryPrivate
     - SocketRocket
@@ -654,6 +701,8 @@ EXTERNAL SOURCES:
     :path: "../../../node_modules/expo-device/ios"
   ExpoHaptics:
     :path: "../../../node_modules/expo-haptics/ios"
+  ExpoImage:
+    :path: "../../../node_modules/expo-image/ios"
   ExpoLinearGradient:
     :path: "../../../node_modules/expo-linear-gradient/ios"
   ExpoLocalAuthentication:
@@ -776,6 +825,7 @@ SPEC CHECKSUMS:
   ExpoClipboard: 8a36a8376ab93df9050c14577e9e0fcb805e9114
   ExpoDevice: 4b9825263a3f996fd5a89ec26426e22e6cbc32d6
   ExpoHaptics: 360af6898407ee4e8265d30a1a8fb16491a660eb
+  ExpoImage: bbd451559f49f78d858592fe1d4d74aedb3d900b
   ExpoLinearGradient: 5d18293f89c063036121281175c4653d6a7c34a2
   ExpoLocalAuthentication: dd96886ee4c50a0ec5b73bae5e929ea082a2e53e
   ExpoLocalization: 2d5f47577d67ce991ebdd951edf14fe1db85fa06
@@ -798,7 +848,11 @@ SPEC CHECKSUMS:
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
   glog: 04b94705f318337d7ead9e6d17c019bd9b1f6b1b
   hermes-engine: 47986d26692ae75ee7a17ab049caee8864f855de
+  libaom: 144606b1da4b5915a1054383c3a4459ccdb3c661
+  libavif: 84bbb62fb232c3018d6f1bab79beea87e35de7b7
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
+  libvmaf: 27f523f1e63c694d14d534cd0fddd2fab0ae8711
+  libwebp: 1786c9f4ff8a279e4dac1e8f385004d5fc253009
   lottie-ios: 8f97d3271e155c2d688875c29cd3c74908aef5f8
   lottie-react-native: 3e722c63015fdb9c27638b0a77969fc412067c18
   MMKV: f21593c0af4b3f2a0ceb8f820f28bb639ea22bb7
@@ -844,12 +898,16 @@ SPEC CHECKSUMS:
   RNScreens: ea4cd3a853063cda19a4e3c28d2e52180c80f4eb
   RNSentry: 4fb2cd7d2d6cb94423c24884488206ef881da136
   RNSVG: c1e76b81c76cdcd34b4e1188852892dc280eb902
+  SDWebImage: 750adf017a315a280c60fde706ab1e552a3ae4e9
+  SDWebImageAVIFCoder: 8348fef6d0ec69e129c66c9fe4d74fbfbf366112
+  SDWebImageSVGCoder: 15a300a97ec1c8ac958f009c02220ac0402e936c
+  SDWebImageWebPCoder: af09429398d99d524cae2fe00f6f0f6e491ed102
   Sentry: 11776f6a25a128808d793d0d41bb7ad873b5ae4f
   SentryPrivate: b3c448eacdabe9eab7679a2e0af609c608f91572
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   Yoga: 065f0b74dba4832d6e328238de46eb72c5de9556
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
-  ZXingObjC: fdbb269f25dd2032da343e06f10224d62f537bdb
+  ZXingObjC: 8898711ab495761b2dbbdec76d90164a6d7e14c5
 
 PODFILE CHECKSUM: d37876aaf00e7f8309b694188119b139b8452ca1
 

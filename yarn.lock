@@ -7322,6 +7322,7 @@ __metadata:
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/utils": "workspace:*"
+    expo-image: "npm:1.5.1"
     jotai: "npm:1.9.1"
     react: "npm:18.2.0"
     react-native: "npm:0.71.8"
@@ -18491,6 +18492,15 @@ __metadata:
   peerDependencies:
     expo: "*"
   checksum: 6ea7d49148d9126a79f00b1e9a2e648884d208daf8ac54c663eb941a7524d229aa907d6d45704598168c7d1efcb891bdc0bd91f077a53d3a270b18c269d43d99
+  languageName: node
+  linkType: hard
+
+"expo-image@npm:1.5.1":
+  version: 1.5.1
+  resolution: "expo-image@npm:1.5.1"
+  peerDependencies:
+    expo: "*"
+  checksum: ea7a91f9795b01364080c4d7e4bf09a73c81963ea54770a64db79665c65ab4446d2f20f0a642b1d0b7e7377598c4528a4bff4cd28528e5f39e9f43660b127afc
   languageName: node
   linkType: hard
 

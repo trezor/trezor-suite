@@ -1,12 +1,12 @@
 import { ReactNode } from 'react';
-import { ImageBackground } from 'react-native';
 
+import { Box } from '@suite-native/atoms';
 import { Screen } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles, NativeStyleObject } from '@trezor/styles';
 
 import { ConnectDeviceScreenHeader } from './ConnectDeviceScreenHeader';
 
-type ConnectDeviceScreenProps = {
+type ConnectDeviceSreenViewProps = {
     children: ReactNode;
     style?: NativeStyleObject;
 };
@@ -15,7 +15,7 @@ const contentStyle = prepareNativeStyle(_ => ({
     flex: 1,
 }));
 
-export const ConnectDeviceBackground = ({ children, style }: ConnectDeviceScreenProps) => {
+export const ConnectDeviceSreenView = ({ children, style }: ConnectDeviceSreenViewProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
@@ -26,13 +26,7 @@ export const ConnectDeviceBackground = ({ children, style }: ConnectDeviceScreen
             hasBottomInset={false}
             isScrollable={false}
         >
-            <ImageBackground
-                source={require('../assets/connectDeviceScreenBackground.png')}
-                resizeMode="stretch"
-                style={[applyStyle(contentStyle), style]}
-            >
-                {children}
-            </ImageBackground>
+            <Box style={[applyStyle(contentStyle), style]}>{children}</Box>
         </Screen>
     );
 };

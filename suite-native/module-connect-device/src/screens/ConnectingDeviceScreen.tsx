@@ -1,4 +1,6 @@
-import { Text, VStack } from '@suite-native/atoms';
+import { ActivityIndicator } from 'react-native';
+
+import { Text, VStack, Box } from '@suite-native/atoms';
 import { Icon } from '@suite-common/icons';
 import { useNativeStyles, prepareNativeStyle } from '@trezor/styles';
 import {
@@ -6,13 +8,14 @@ import {
     useDetectDeviceError,
     useReportDeviceConnectToAnalytics,
 } from '@suite-native/device';
-import { useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 
-import { ConnectDeviceBackground } from '../components/ConnectDeviceBackground';
+import { ConnectDeviceSreenView } from '../components/ConnectDeviceSreenView';
 
 const screenStyle = prepareNativeStyle(() => ({
     justifyContent: 'center',
     alignItems: 'center',
+    paddingBottom: 150,
 }));
 
 export const ConnectingDeviceScreen = () => {
@@ -20,21 +23,21 @@ export const ConnectingDeviceScreen = () => {
     useAuthorizeDevice();
     useReportDeviceConnectToAnalytics();
     const { applyStyle } = useNativeStyles();
-    const { translate } = useTranslate();
 
     return (
-        <ConnectDeviceBackground style={applyStyle(screenStyle)}>
+        <ConnectDeviceSreenView style={applyStyle(screenStyle)}>
             <VStack spacing="medium" alignItems="center">
-                <VStack spacing="extraLarge" alignItems="center">
-                    <Icon name="trezor" size="extraLarge" />
-                    <Text variant="titleMedium">
-                        {translate('moduleConnectDevice.connectingDeviceScreen.title')}
-                    </Text>
-                </VStack>
+                <ActivityIndicator size="large" />
+                <Text variant="titleMedium">
+                    <Translation id="moduleConnectDevice.connectingDeviceScreen.title" />{' '}
+                    <Box paddingBottom="small">
+                        <Icon name="trezor" size="extraLarge" />
+                    </Box>
+                </Text>
                 <Text variant="highlight" color="textSubdued">
-                    {translate('moduleConnectDevice.connectingDeviceScreen.hodlOn')}
+                    <Translation id="moduleConnectDevice.connectingDeviceScreen.hodlOn" />
                 </Text>
             </VStack>
-        </ConnectDeviceBackground>
+        </ConnectDeviceSreenView>
     );
 };
