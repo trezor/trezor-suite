@@ -200,6 +200,8 @@
   "TR_ACCESS_HIDDEN_WALLET": "Hozzáférés rejtett tárcához",
   "TR_ACCESS_STANDARD_WALLET": "Hozzáférés a standard tárcához",
   "TR_ACCOUNT_DETAILS_HEADER": "Fiók részletei",
+  "TR_ACCOUNT_DETAILS_PATH_DESC": "A származtatási útvonal a HD (hierarchikusan determinisztikus) tárca rendezett struktúrájában való navigációra és konkrét kulcsok generálására szolgál.",
+  "TR_ACCOUNT_DETAILS_PATH_HEADER": "Származtatási útvonal",
   "TR_ACCOUNT_DETAILS_TYPE_HEADER": "Fiók típusa",
   "TR_ACCOUNT_DETAILS_XPUB": "Bánj óvatosan a publikus fiókkulccsal (xPUB). Ha hozzájut egy harmadik fél, a teljes tranzakciós történetedhez hozzáfér.",
   "TR_ACCOUNT_DETAILS_XPUB_BUTTON": "Publikus kulcs mutatása",

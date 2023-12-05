@@ -78,7 +78,6 @@
   "LOG_DESCRIPTION": "Em caso de comunicação com a nossa equipa de apoio, existe um registo contendo todas as informações técnicas necessárias",
   "LOG_INCLUDE_BALANCE_DESCRIPTION": "Caso a sua emissão não esteja relacionada com o seu saldo ou transações, você pode desligar isso. Os descritores da sua conta (XPubs) não serão incluídos no registo copiado.",
   "LOG_INCLUDE_BALANCE_TITLE": "Incluir saldo relacionado",
-  "MAX_FEE": "",
   "METADATA_MODAL_DESCRIPTION": "Por favor, selecione um provedor de nuvem para salvar suas etiquetas. Seus dados são criptografados por Trezor.",
   "METADATA_MODAL_HEADING": "Salvar etiquetas",
   "METADATA_PROVIDER_AUTH_ERROR": "Falha na sincronização dos dados de etiquetagem com o fornecedor da nuvem {provider}. O usuário foi desconectado.",
