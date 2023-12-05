@@ -8,7 +8,7 @@ const LANGUAGES = {
     ca: { name: 'Català', en: 'Catalan' },
     cs: { name: 'Čeština', en: 'Czech', type: 'community' },
     da: { name: 'Dansk', en: 'Danish' },
-    de: { name: 'Deutsch', en: 'German' },
+    de: { name: 'Deutsch', en: 'German', type: 'official' },
     el: { name: 'Ελληνικά', en: 'Greek' },
     fi: { name: 'Suomi', en: 'Finnish' },
     fr: { name: 'Français', en: 'French', type: 'official' },
