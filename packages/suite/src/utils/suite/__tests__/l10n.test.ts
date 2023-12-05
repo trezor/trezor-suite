@@ -15,7 +15,7 @@ describe('utils/suite/l10n', () => {
             expect(utils.getOsLocale('cs')).toBe('es');
             languagesGetter.mockReturnValue(['xx-XX', 'en-GB', 'es']);
             expect(utils.getOsLocale('cs')).toBe('en');
-            languagesGetter.mockReturnValue(['aa', 'de-AT']);
+            languagesGetter.mockReturnValue(['aa', 'xx-XX']);
             expect(utils.getOsLocale('cs')).toBe('cs');
         });
     });
