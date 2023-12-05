@@ -59,6 +59,8 @@ const MotionWelcome = styled(motion.div)`
 
 const WelcomeTitle = styled(H1)`
     font-size: 60px;
+    line-height: 1;
+    text-align: center;
     font-weight: bold;
     margin-top: 32px;
 `;
