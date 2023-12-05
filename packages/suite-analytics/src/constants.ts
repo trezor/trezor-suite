@@ -31,6 +31,7 @@ export enum EventType {
     AccountsTokensStatus = 'accounts/tokens-status',
     AccountsNonZeroBalance = 'accounts/non-zero-balance',
     AccountsNewAccount = 'accounts/new-account',
+    AccountsActions = 'accounts/actions',
     AddToken = 'add-token',
     AccountsEmptyAccountBuy = 'accounts/empty-account/buy',
     AccountsEmptyAccountReceive = 'accounts/empty-account/receive',
