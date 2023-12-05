@@ -7,6 +7,12 @@
         },
         { "path": "../../suite-common/icons" },
         {
+            "path": "../../suite-common/redux-utils"
+        },
+        {
+            "path": "../../suite-common/transaction-cache-engine"
+        },
+        {
             "path": "../../suite-common/wallet-config"
         },
         {

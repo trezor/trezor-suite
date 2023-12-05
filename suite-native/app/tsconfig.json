@@ -24,6 +24,7 @@
         {
             "path": "../../suite-common/wallet-core"
         },
+        { "path": "../accounts" },
         { "path": "../alerts" },
         { "path": "../analytics" },
         { "path": "../atoms" },
