@@ -24,12 +24,23 @@
 	<string>1</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>LSApplicationCategoryType</key>
+	<string></string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
 	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<false/>
 		<key>NSExceptionDomains</key>
 		<dict>
+			<key>data.trezor.io/config</key>
+			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+				<key>NSIncludesSubdomains</key>
+				<true/>
+			</dict>
 			<key>localhost</key>
 			<dict>
 				<key>NSExceptionAllowsInsecureHTTPLoads</key>
@@ -40,9 +51,11 @@
 	<key>NSCameraUsageDescription</key>
 	<string>$(PRODUCT_NAME) needs access to your Camera to scan your XPUB.</string>
 	<key>NSFaceIDUsageDescription</key>
-    <string>$(PRODUCT_NAME) needs Face ID and Touch ID to keep sensitive data about your portfolio private.</string>
+	<string>$(PRODUCT_NAME) needs Face ID and Touch ID to keep sensitive data about your portfolio private.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This app does not require access to the microphone.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>TTSatoshi-Bold.otf</string>
@@ -72,7 +85,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>NSMicrophoneUsageDescription</key>
-    <string>This app does not require access to the microphone.</string>
 </dict>
 </plist>

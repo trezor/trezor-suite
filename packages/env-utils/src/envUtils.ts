@@ -89,6 +89,8 @@ const isLinux = () => {
     return getPlatform().startsWith('Linux');
 };
 
+const isCodesignBuild = () => !!process.env.CODESIGN_BUILD;
+
 const getOsName = () => {
     if (isWindows()) return 'windows';
     if (isMacOs()) return 'macos';
@@ -143,6 +145,7 @@ export const envUtils: EnvUtils = {
     isWindows,
     isIOs,
     isLinux,
+    isCodesignBuild,
     getOsName,
     getOsNameWeb,
     getOsFamily,

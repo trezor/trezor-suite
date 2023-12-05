@@ -58,6 +58,8 @@ const isAndroid = () => getPlatform() === 'android';
 
 const isLinux = () => false;
 
+const isCodesignBuild = () => Config.CODESIGN_BUILD === 'true';
+
 const getPlatformLanguages = () => getLocales().map(language => language.languageTag);
 
 const getOsName = () => {
@@ -98,6 +100,7 @@ export const envUtils: EnvUtils = {
     isWindows,
     isIOs,
     isLinux,
+    isCodesignBuild,
     getOsName,
     getOsNameWeb,
     getOsFamily,
