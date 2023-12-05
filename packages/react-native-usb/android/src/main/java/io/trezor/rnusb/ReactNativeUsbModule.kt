@@ -1,17 +1,23 @@
 package io.trezor.rnusb
 
-import android.app.PendingIntent
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
 
 import android.content.Context
-import android.content.Intent
 import android.content.IntentFilter
 import android.hardware.usb.UsbDevice
 import android.hardware.usb.UsbDeviceConnection
 import android.hardware.usb.UsbManager
 import android.util.Log
 import expo.modules.kotlin.exception.Exceptions
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
+import expo.modules.kotlin.Promise
+import expo.modules.kotlin.exception.CodedException
+import expo.modules.core.errors.ModuleDestroyedException
+
 
 const val ON_DEVICE_CONNECT_EVENT_NAME = "onDeviceConnect"
 const val ON_DEVICE_DISCONNECT_EVENT_NAME = "onDeviceDisconnect"
@@ -20,6 +26,8 @@ const val ON_DEVICE_DISCONNECT_EVENT_NAME = "onDeviceDisconnect"
 const val INTERFACE_INDEX = 0
 
 class ReactNativeUsbModule : Module() {
+    private val moduleCoroutineScope = CoroutineScope(Dispatchers.IO)
+
     // Each module class must implement the definition function. The definition consists of components
     // that describes the module's functionality and behavior.
     // See https://docs.expo.dev/modules/module-api for more details about available components.
@@ -56,14 +64,28 @@ class ReactNativeUsbModule : Module() {
             return@AsyncFunction releaseInterface(deviceName, interfaceNumber)
         }
 
-        AsyncFunction("transferOut") { deviceName: String, endpointNumber: Int, data: String ->
-            // TODO: it's recommended to offload this to a separate thread
-            return@AsyncFunction transferOut(deviceName, endpointNumber, data)
+        AsyncFunction("transferOut") { deviceName: String, endpointNumber: Int, data: String, promise: Promise ->
+            withModuleScope(promise) {
+                try {
+                    val result = transferOut(deviceName, endpointNumber, data)
+                    promise.resolve(result)
+                } catch (e: Exception) {
+                    promise.reject("USB Write Error", e.message, e)
+                    Log.e("ReactNativeUsbModule", "Failed to transfer data to device $deviceName")
+                }
+            }
         }
 
-        AsyncFunction("transferIn") { deviceName: String, endpointNumber: Int, length: Int ->
-            // TODO: it's recommended to offload this to a separate thread
-            return@AsyncFunction transferIn(deviceName, endpointNumber, length)
+        AsyncFunction("transferIn") { deviceName: String, endpointNumber: Int, length: Int, promise: Promise ->
+            withModuleScope(promise) {
+                try {
+                    val result = transferIn(deviceName, endpointNumber, length)
+                    promise.resolve(result)
+                } catch (e: Exception) {
+                    promise.reject("USB Read Error", e.message, e)
+                    Log.e("ReactNativeUsbModule", "Failed to transfer data from device $deviceName")
+                }
+            }
         }
 
         OnCreate {
@@ -124,6 +146,12 @@ class ReactNativeUsbModule : Module() {
             openedConnections.forEach { (deviceName, _) ->
                 closeDevice(deviceName)
             }
+
+            try {
+                moduleCoroutineScope.cancel(ModuleDestroyedException())
+            } catch (e: IllegalStateException) {
+                Log.e("ReactNativeUsbModule", "The scope does not have a job in it")
+            }
         }
 
     }
@@ -131,6 +159,16 @@ class ReactNativeUsbModule : Module() {
     private val usbAttachedReceiver = ReactNativeUsbAttachedReceiver()
     private val usbDetachedReceiver = ReactNativeUsbDetachedReceiver()
 
+
+    private inline fun withModuleScope(promise: Promise, crossinline block: () -> Unit) = moduleCoroutineScope.launch {
+        try {
+            block()
+        } catch (e: CodedException) {
+            promise.reject(e)
+        } catch (e: ModuleDestroyedException) {
+            promise.reject("ReactNativeUsbModule", "React Native USB module destroyed", e)
+        }
+    }
     private val context: Context
         get() = appContext.reactContext ?: throw Exceptions.ReactContextLost()
 
