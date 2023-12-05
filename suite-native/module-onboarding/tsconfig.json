@@ -8,6 +8,7 @@
         { "path": "../../suite-common/icons" },
         { "path": "../analytics" },
         { "path": "../atoms" },
+        { "path": "../device" },
         { "path": "../feature-flags" },
         { "path": "../intl" },
         { "path": "../link" },

@@ -7,17 +7,17 @@ import {
     OnboardingStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
-import { Image } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { ConnectDeviceAnimation } from '@suite-native/device';
 
 import { OnboardingFooter } from '../components/OnboardingFooter';
 import { OnboardingScreen } from '../components/OnboardingScreen';
 
-const IMG_HEIGHT = Dimensions.get('screen').height * 0.35;
+const ANIMATION_HEIGHT = Dimensions.get('screen').height * 0.35;
 
-const imageStyle = prepareNativeStyle(() => ({
-    height: IMG_HEIGHT,
+const animationStyle = prepareNativeStyle(() => ({
+    height: ANIMATION_HEIGHT,
 }));
 
 export const ConnectTrezorScreen = () => {
@@ -47,11 +47,7 @@ export const ConnectTrezorScreen = () => {
                 />
             }
         >
-            <Image
-                source={require('../assets/trezorT.png')}
-                resizeMode="contain"
-                style={applyStyle(imageStyle)}
-            />
+            <ConnectDeviceAnimation style={applyStyle(animationStyle)} />
         </OnboardingScreen>
     );
 };
