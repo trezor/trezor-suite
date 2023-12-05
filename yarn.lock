@@ -159,22 +159,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/helper-create-class-features-plugin@npm:^7.18.6, @babel/helper-create-class-features-plugin@npm:^7.20.7, @babel/helper-create-class-features-plugin@npm:^7.22.11, @babel/helper-create-class-features-plugin@npm:^7.22.15, @babel/helper-create-class-features-plugin@npm:^7.22.5":
-  version: 7.22.15
-  resolution: "@babel/helper-create-class-features-plugin@npm:7.22.15"
+"@babel/helper-create-class-features-plugin@npm:^7.18.6, @babel/helper-create-class-features-plugin@npm:^7.22.11, @babel/helper-create-class-features-plugin@npm:^7.22.15, @babel/helper-create-class-features-plugin@npm:^7.22.5, @babel/helper-create-class-features-plugin@npm:^7.23.5":
+  version: 7.23.5
+  resolution: "@babel/helper-create-class-features-plugin@npm:7.23.5"
   dependencies:
     "@babel/helper-annotate-as-pure": "npm:^7.22.5"
-    "@babel/helper-environment-visitor": "npm:^7.22.5"
-    "@babel/helper-function-name": "npm:^7.22.5"
-    "@babel/helper-member-expression-to-functions": "npm:^7.22.15"
+    "@babel/helper-environment-visitor": "npm:^7.22.20"
+    "@babel/helper-function-name": "npm:^7.23.0"
+    "@babel/helper-member-expression-to-functions": "npm:^7.23.0"
     "@babel/helper-optimise-call-expression": "npm:^7.22.5"
-    "@babel/helper-replace-supers": "npm:^7.22.9"
+    "@babel/helper-replace-supers": "npm:^7.22.20"
     "@babel/helper-skip-transparent-expression-wrappers": "npm:^7.22.5"
     "@babel/helper-split-export-declaration": "npm:^7.22.6"
     semver: "npm:^6.3.1"
   peerDependencies:
     "@babel/core": ^7.0.0
-  checksum: 000d29f1df397b7fdcb97ad0e9a442781787e5cb0456a9b8da690d13e03549a716bf74348029d3bd3fa4837b35d143a535cad1006f9d552063799ecdd96df672
+  checksum: cd951e81b6a4ad79879f38edbe78d51cf29dfd5a7d33d7162aeaa3ac536dcc9a6679de8feb976bbd76d255a1654bf1742410517edd5c426fec66e0bf41eb8c45
   languageName: node
   linkType: hard
 
@@ -232,7 +232,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/helper-member-expression-to-functions@npm:^7.22.15":
+"@babel/helper-member-expression-to-functions@npm:^7.22.15, @babel/helper-member-expression-to-functions@npm:^7.23.0":
   version: 7.23.0
   resolution: "@babel/helper-member-expression-to-functions@npm:7.23.0"
   dependencies:
@@ -294,7 +294,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/helper-replace-supers@npm:^7.20.7, @babel/helper-replace-supers@npm:^7.22.5, @babel/helper-replace-supers@npm:^7.22.9":
+"@babel/helper-replace-supers@npm:^7.22.20, @babel/helper-replace-supers@npm:^7.22.5, @babel/helper-replace-supers@npm:^7.22.9":
   version: 7.22.20
   resolution: "@babel/helper-replace-supers@npm:7.22.20"
   dependencies:
@@ -325,7 +325,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/helper-split-export-declaration@npm:^7.18.6, @babel/helper-split-export-declaration@npm:^7.22.6":
+"@babel/helper-split-export-declaration@npm:^7.22.6":
   version: 7.22.6
   resolution: "@babel/helper-split-export-declaration@npm:7.22.6"
   dependencies:
@@ -465,18 +465,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/plugin-proposal-decorators@npm:^7.12.9":
-  version: 7.20.7
-  resolution: "@babel/plugin-proposal-decorators@npm:7.20.7"
+"@babel/plugin-proposal-decorators@npm:^7.12.9, @babel/plugin-proposal-decorators@npm:^7.23.3, @babel/plugin-proposal-decorators@npm:^7.23.5":
+  version: 7.23.5
+  resolution: "@babel/plugin-proposal-decorators@npm:7.23.5"
   dependencies:
-    "@babel/helper-create-class-features-plugin": "npm:^7.20.7"
-    "@babel/helper-plugin-utils": "npm:^7.20.2"
-    "@babel/helper-replace-supers": "npm:^7.20.7"
-    "@babel/helper-split-export-declaration": "npm:^7.18.6"
-    "@babel/plugin-syntax-decorators": "npm:^7.19.0"
+    "@babel/helper-create-class-features-plugin": "npm:^7.23.5"
+    "@babel/helper-plugin-utils": "npm:^7.22.5"
+    "@babel/helper-replace-supers": "npm:^7.22.20"
+    "@babel/helper-split-export-declaration": "npm:^7.22.6"
+    "@babel/plugin-syntax-decorators": "npm:^7.23.3"
   peerDependencies:
     "@babel/core": ^7.0.0-0
-  checksum: 7fd5eb5f8448db151f56d9763dc3d14bc308f66e89dec28f8de749c7966104e67d2e20a19bcc41799cdbc464c833ade2012cb1a8e72802e065516e78534dbd1f
+  checksum: 03d74af44cd332607e9ec0f78917bbcca5a0773175a87d614a8b5dd532a9accfa2bb203313bf962c7d4767b4e8161936ebe3b71de31986227bb6de5be4572860
   languageName: node
   linkType: hard
 
@@ -621,14 +621,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/plugin-syntax-decorators@npm:^7.19.0":
-  version: 7.19.0
-  resolution: "@babel/plugin-syntax-decorators@npm:7.19.0"
+"@babel/plugin-syntax-decorators@npm:^7.23.3":
+  version: 7.23.3
+  resolution: "@babel/plugin-syntax-decorators@npm:7.23.3"
   dependencies:
-    "@babel/helper-plugin-utils": "npm:^7.19.0"
+    "@babel/helper-plugin-utils": "npm:^7.22.5"
   peerDependencies:
     "@babel/core": ^7.0.0-0
-  checksum: 140c29d545214105e908d680f9c246cfe3052e5f8f1dc2a5c141b0e0b3a02406277ca2c6d5076368cd4aeb5c87646eb7c819194037d540416e3cebd0e93f6a2c
+  checksum: 5856e236f7ae15a58c839fd40df1aa4df31029048df01191b4870c34b1bff44c77fbee78ca5edd8eb3c81410005d8f9a36a9cf48094f2bb328592304a738648a
   languageName: node
   linkType: hard
 
@@ -914,16 +914,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/plugin-transform-class-static-block@npm:^7.22.11":
-  version: 7.22.11
-  resolution: "@babel/plugin-transform-class-static-block@npm:7.22.11"
+"@babel/plugin-transform-class-static-block@npm:^7.22.11, @babel/plugin-transform-class-static-block@npm:^7.23.4":
+  version: 7.23.4
+  resolution: "@babel/plugin-transform-class-static-block@npm:7.23.4"
   dependencies:
-    "@babel/helper-create-class-features-plugin": "npm:^7.22.11"
+    "@babel/helper-create-class-features-plugin": "npm:^7.22.15"
     "@babel/helper-plugin-utils": "npm:^7.22.5"
     "@babel/plugin-syntax-class-static-block": "npm:^7.14.5"
   peerDependencies:
     "@babel/core": ^7.12.0
-  checksum: 69f040506fad66f1c6918d288d0e0edbc5c8a07c8b4462c1184ad2f9f08995d68b057126c213871c0853ae0c72afc60ec87492049dfacb20902e32346a448bcb
+  checksum: c8bfaba19a674fc2eb54edad71e958647360474e3163e8226f1acd63e4e2dbec32a171a0af596c1dc5359aee402cc120fea7abd1fb0e0354b6527f0fc9e8aa1e
   languageName: node
   linkType: hard
 
@@ -6812,6 +6812,7 @@ __metadata:
     "@suite-common/suite-config": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
+    "@suite-common/transaction-cache-engine": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
@@ -7042,6 +7043,20 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/transaction-cache-engine@workspace:*, @suite-common/transaction-cache-engine@workspace:suite-common/transaction-cache-engine":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/transaction-cache-engine@workspace:suite-common/transaction-cache-engine"
+  dependencies:
+    "@mobily/ts-belt": "npm:^3.13.1"
+    "@suite-common/wallet-config": "workspace:*"
+    "@trezor/connect": "workspace:*"
+    bignumber.js: "npm:^9.1.1"
+    jest: "npm:29.5.0"
+    tsx: "npm:^3.14.0"
+    typescript: "npm:5.3.2"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/wallet-config@workspace:*, @suite-common/wallet-config@workspace:suite-common/wallet-config":
   version: 0.0.0-use.local
   resolution: "@suite-common/wallet-config@workspace:suite-common/wallet-config"
@@ -7153,6 +7168,8 @@ __metadata:
     "@react-navigation/native": "npm:^6.1.3"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/icons": "workspace:*"
+    "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/transaction-cache-engine": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
@@ -8005,6 +8022,7 @@ __metadata:
     "@suite-common/test-utils": "workspace:*"
     "@suite-common/toast-notifications": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
+    "@suite-native/accounts": "workspace:*"
     "@suite-native/config": "workspace:*"
     "@suite-native/device": "workspace:*"
     "@suite-native/discovery": "workspace:*"
@@ -9242,7 +9260,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/suite-native@workspace:suite-native/app"
   dependencies:
+    "@babel/plugin-proposal-decorators": "npm:^7.23.5"
     "@babel/plugin-proposal-export-namespace-from": "npm:^7.18.9"
+    "@babel/plugin-transform-class-static-block": "npm:^7.23.4"
     "@formatjs/intl-datetimeformat": "npm:^6.2.0"
     "@formatjs/intl-getcanonicallocales": "npm:^2.0.4"
     "@formatjs/intl-locale": "npm:^3.0.6"
@@ -9265,6 +9285,7 @@ __metadata:
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
+    "@suite-native/accounts": "workspace:*"
     "@suite-native/alerts": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
@@ -33450,6 +33471,7 @@ __metadata:
     "@babel/core": "npm:^7.23.2"
     "@babel/node": "npm:^7.22.19"
     "@babel/plugin-proposal-class-properties": "npm:^7.18.6"
+    "@babel/plugin-proposal-decorators": "npm:^7.23.3"
     "@babel/plugin-transform-runtime": "npm:^7.23.2"
     "@babel/preset-env": "npm:^7.23.2"
     "@babel/preset-react": "npm:^7.22.15"
