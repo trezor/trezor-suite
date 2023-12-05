@@ -11,13 +11,10 @@ const Header = styled.div`
     align-items: center;
 `;
 
-const IconWrapper = styled.div`
-    margin-right: 16px;
-`;
-
 const Body = styled.div`
     display: flex;
     flex: 1;
+    padding: 0 16px;
 `;
 
 interface WarnHeaderProps extends HTMLAttributes<HTMLDivElement> {
@@ -30,9 +27,7 @@ export const WarnHeader = ({ action, children, ...rest }: WarnHeaderProps) => {
 
     return (
         <Header {...rest}>
-            <IconWrapper>
-                <Icon size={16} icon="WARNING" color={theme.TYPE_ORANGE} />
-            </IconWrapper>
+            <Icon size={16} icon="WARNING" color={theme.TYPE_ORANGE} />
             <Body>{children}</Body>
             {action}
         </Header>

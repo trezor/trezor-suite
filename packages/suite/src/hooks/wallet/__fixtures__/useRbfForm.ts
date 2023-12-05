@@ -171,6 +171,61 @@ export const composeAndSign = [
         },
     },
     {
+        description: 'change-output reduced by fee + baseFee of chainedTransactions',
+        store: {
+            selectedAccount: {
+                ...BTC_ACCOUNT,
+            },
+        },
+        chainedTxs: {
+            own: [{ txid: 'aaaa', fee: '500' }],
+            others: [
+                { txid: 'bbbb', fee: '500' },
+                { txid: 'cccc', fee: '5000' },
+            ],
+        },
+        tx: PREPARE_TX({
+            outputs: [
+                {
+                    type: 'payment',
+                    address: '1MCgrVZjXRJJJhi2Z6SR11GpRjCyvNjscY',
+                    amount: '20000',
+                    formattedAmount: '0.0002',
+                },
+                {
+                    type: 'change',
+                    address: '1DyHzbQUoQEsLxJn6M7fMD8Xdt1XvNiwNE',
+                    amount: '10771',
+                    formattedAmount: '0.00010771',
+                },
+            ],
+        }),
+        composedLevels: {
+            normal: {
+                type: 'final',
+                fee: '7761', // 1761 + 6000 for chainedTxs
+                feePerByte: '34.34', // 3.79 (old) + 4 (new) + 26.55 for chainedTxs
+            },
+        },
+        composeTransactionCalls: 1,
+        signedTx: {
+            outputs: [
+                {
+                    address: '1MCgrVZjXRJJJhi2Z6SR11GpRjCyvNjscY',
+                    amount: '20000',
+                    orig_index: 0,
+                    orig_hash: 'ABCD',
+                },
+                {
+                    address_n: [2147483692, 2147483648, 2147483648, 1, 0],
+                    amount: '3239',
+                    orig_index: 1,
+                    orig_hash: 'ABCD',
+                },
+            ],
+        },
+    },
+    {
         description:
             'change-output reduced by fee. outputs needs reordering. change was moved by compose process.',
         store: {
@@ -998,4 +1053,3 @@ export const composeAndSign = [
 // TODO: finalize (check constants)
 // TODO: with locktime
 // TODO: ethereum cases
-// TODO: with chained txs

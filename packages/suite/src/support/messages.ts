@@ -6238,6 +6238,19 @@ export default defineMessages({
         id: 'TR_AFFECTED_TXS',
         defaultMessage: 'This operation will remove the following transactions from the mempool',
     },
+    TR_AFFECTED_TXS_HEADER: {
+        id: 'TR_AFFECTED_TXS_HEADER',
+        defaultMessage:
+            'Chained transactions are created from the output of this initial transaction',
+    },
+    TR_AFFECTED_TXS_OWN: {
+        id: 'TR_AFFECTED_TXS_OWN',
+        defaultMessage: 'Your transactions',
+    },
+    TR_AFFECTED_TXS_OTHERS: {
+        id: 'TR_AFFECTED_TXS_OTHERS',
+        defaultMessage: 'Transactions created from other accounts',
+    },
     TR_OUTPUTS: {
         id: 'TR_OUTPUTS',
         defaultMessage: 'Outputs',

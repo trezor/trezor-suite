@@ -6,6 +6,7 @@ import {
     Account,
     RbfTransactionParams,
     WalletAccountTransaction,
+    ChainedTransactions,
     PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
 import {
@@ -251,40 +252,43 @@ export const findTransactions = (
 
 // Find chained pending transactions
 export const findChainedTransactions = (
+    descriptor: string,
     txid: string,
-    transactions: { [key: string]: WalletAccountTransaction[] },
-) =>
-    Object.keys(transactions).flatMap(key => {
+    transactions: Record<string, WalletAccountTransaction[]>,
+    result: ChainedTransactions = { own: [], others: [] },
+) => {
+    Object.keys(transactions).forEach(key => {
+        const ownTxs = result.own.map(tx => tx.txid);
+        const othersTxs = result.others.map(tx => tx.txid);
         // check if any pending transaction is using the utxo/vin with requested txid
-        const txs = transactions[key]
-            .filter(isPending)
-            .filter(tx => tx.details.vin.find(i => i.txid === txid));
-        if (!txs.length) return [];
+        const txs = transactions[key].filter(tx => {
+            if (!isPending(tx) || !tx.details.vin.find(i => i.txid === txid)) {
+                return false;
+            }
 
-        const result = [{ key, txs }];
+            if (tx.descriptor === descriptor && !ownTxs.includes(tx.txid)) {
+                if (othersTxs.includes(tx.txid)) {
+                    result.others = result.others.filter(t => t.txid !== tx.txid);
+                }
+                result.own.push(tx);
+                return true;
+            }
+            if (!ownTxs.includes(tx.txid) && !othersTxs.includes(tx.txid)) {
+                result.others.push(tx);
+                return true;
+            }
+            return false;
+        });
+
         // each affected tx.vout can be used in another tx.vin
         // find recursively
         txs.forEach(tx => {
-            const deep = findChainedTransactions(tx.txid, transactions);
-            deep.forEach(dt => result.push(dt));
+            findChainedTransactions(descriptor, tx.txid, transactions, result);
         });
-        // merge result by key
-        return result.reduce(
-            (res, item) => {
-                const index = res.findIndex(t => t.key === item.key);
-                if (index >= 0) {
-                    // remove duplicates
-                    const unique = item.txs.filter(
-                        t => !res[index].txs.find(tt => tt.txid === t.txid),
-                    );
-                    res[index].txs = res[index].txs.concat(unique);
-                    return res;
-                }
-                return res.concat(item);
-            },
-            [] as typeof result,
-        );
     });
+
+    return result.own.concat(result.others).length > 0 ? result : undefined;
+};
 
 export const getConfirmations = (
     tx: WalletAccountTransaction | AccountTransaction,

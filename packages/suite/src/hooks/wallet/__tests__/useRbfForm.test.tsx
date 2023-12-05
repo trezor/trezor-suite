@@ -119,7 +119,7 @@ describe('useRbfForm hook', () => {
             const { unmount } = renderWithProviders(
                 store,
                 // @ts-expect-error f.tx is not exact
-                <ChangeFee tx={f.tx} finalize={false} chainedTxs={[]} showChained={() => {}}>
+                <ChangeFee tx={f.tx} chainedTxs={f.chainedTxs} showChained={() => {}}>
                     <Component callback={callback} />
                 </ChangeFee>,
             );
