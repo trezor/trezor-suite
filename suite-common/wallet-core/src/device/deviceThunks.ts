@@ -19,6 +19,7 @@ import {
     getProtocolMagic,
     getStakingPath,
 } from '@suite-common/wallet-utils';
+import { getEnvironment } from '@trezor/env-utils';
 
 import {
     selectDevice,
@@ -486,6 +487,8 @@ export const confirmAddressOnDeviceThunk = createThunk(
 
         let response;
 
+        const isCardanoAddressChunked = getEnvironment() === 'mobile';
+
         switch (account.networkType) {
             case 'ethereum':
                 response = await TrezorConnect.ethereumGetAddress(params);
@@ -502,7 +505,7 @@ export const confirmAddressOnDeviceThunk = createThunk(
                     protocolMagic: getProtocolMagic(account.symbol),
                     networkId: getNetworkId(account.symbol),
                     derivationType: getDerivationType(account.accountType),
-                    chunkify,
+                    chunkify: isCardanoAddressChunked,
                 });
                 break;
             case 'ripple':
