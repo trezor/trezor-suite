@@ -24,5 +24,6 @@
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/styles" }
-    ]
+    ],
+    "include": [".", "**/*.json"]
 }

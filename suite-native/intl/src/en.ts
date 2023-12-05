@@ -96,7 +96,7 @@ export const en = {
     },
     moduleConnectDevice: {
         connectAndUnlockScreen: {
-            title: 'Connect & unlock your Trezor',
+            title: 'Connect & unlock\nyour Trezor',
         },
         pinScreen: {
             form: {
