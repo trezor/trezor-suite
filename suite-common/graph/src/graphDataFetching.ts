@@ -3,11 +3,15 @@ import BigNumber from 'bignumber.js';
 import { fromUnixTime, getUnixTime } from 'date-fns';
 
 import { FiatCurrencyCode } from '@suite-common/suite-config';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { AccountBalanceHistory as AccountMovementHistory } from '@trezor/blockchain-link';
 import TrezorConnect from '@trezor/connect';
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
+import {
+    AccountBalanceHistory,
+    TransactionCacheEngine,
+} from '@suite-common/transaction-cache-engine';
 
 import { NUMBER_OF_POINTS } from './constants';
 import {
@@ -20,7 +24,7 @@ import {
 import { AccountItem, FiatGraphPoint, FiatGraphPointWithCryptoBalance } from './types';
 
 export const addBalanceForAccountMovementHistory = (
-    data: AccountMovementHistory[],
+    data: AccountMovementHistory[] | AccountBalanceHistory[],
     symbol: NetworkSymbol,
 ): AccountHistoryBalancePoint[] => {
     let balance = new BigNumber('0');
@@ -47,6 +51,34 @@ export const addBalanceForAccountMovementHistory = (
     return historyWithBalance;
 };
 
+export const getLatestAccountBalance = async ({
+    coin,
+    descriptor,
+}: {
+    coin: NetworkSymbol;
+    descriptor: string;
+}) => {
+    const networkType = getNetworkType(coin);
+
+    const accountInfo = await TrezorConnect.getAccountInfo({
+        coin,
+        descriptor,
+        suppressBackupWarning: true,
+    });
+
+    if (!accountInfo?.success) {
+        throw new Error(`Get account balance info error: ${accountInfo.payload.error}`);
+    }
+
+    switch (networkType) {
+        case 'ripple':
+            // On Ripple, if we use availableBalance, we will get higher balance, IDK why.
+            return accountInfo.payload.balance;
+        default:
+            return accountInfo.payload.availableBalance;
+    }
+};
+
 const accountBalanceHistoryCache: Record<string, AccountHistoryBalancePoint[]> = {};
 
 export const getAccountBalanceHistory = async ({
@@ -65,8 +97,14 @@ export const getAccountBalanceHistory = async ({
         return accountBalanceHistoryCache[cacheKey];
     }
 
-    const [accountMovementHistory, accountInfo] = await Promise.all([
-        TrezorConnect.blockchainGetAccountBalanceHistory({
+    const getBalanceHistory = async () => {
+        if (getNetworkType(coin) === 'ripple') {
+            return TransactionCacheEngine.getAccountBalanceHistory({
+                coin,
+                descriptor,
+            });
+        }
+        const connectBalanceHistory = await TrezorConnect.blockchainGetAccountBalanceHistory({
             coin,
             descriptor,
             to: endTimeFrameTimestamp,
@@ -75,30 +113,32 @@ export const getAccountBalanceHistory = async ({
             // TODO: doesn't work at all, fix it in connect or blockchain-link?
             // issue: https://github.com/trezor/trezor-suite/issues/8888
             currencies: ['usd'],
-        }),
-        TrezorConnect.getAccountInfo({ coin, descriptor, suppressBackupWarning: true }),
+        });
+
+        if (!connectBalanceHistory?.success) {
+            throw new Error(
+                `Get account balance movement error: ${connectBalanceHistory.payload.error}`,
+            );
+        }
+
+        return connectBalanceHistory.payload;
+    };
+
+    const [accountMovementHistory, latestAccountBalance] = await Promise.all([
+        getBalanceHistory(),
+        getLatestAccountBalance({ coin, descriptor }),
     ]);
 
-    if (!accountMovementHistory?.success) {
-        throw new Error(
-            `Get account balance movement error: ${accountMovementHistory.payload.error}`,
-        );
-    }
-
-    if (!accountInfo?.success) {
-        throw new Error(`Get account balance info error: ${accountInfo.payload.error}`);
-    }
-
     const accountMovementHistoryWithBalance = addBalanceForAccountMovementHistory(
-        accountMovementHistory.payload,
+        accountMovementHistory,
         coin,
     );
 
     // Last point must be balance from getAccountInfo because blockchainGetAccountBalanceHistory it's not always reliable for coins like ETH.
-    // TODO: We can get value from redux store instead of fetching it again?
+    // TODO: We can get value from Transaction Cache engine instead of fetching it again?
     accountMovementHistoryWithBalance.push({
         time: endTimeFrameTimestamp,
-        cryptoBalance: formatNetworkAmount(accountInfo.payload.availableBalance, coin),
+        cryptoBalance: formatNetworkAmount(latestAccountBalance, coin),
     });
 
     accountBalanceHistoryCache[cacheKey] = accountMovementHistoryWithBalance;

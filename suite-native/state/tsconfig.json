@@ -21,6 +21,7 @@
         {
             "path": "../../suite-common/wallet-core"
         },
+        { "path": "../accounts" },
         { "path": "../config" },
         { "path": "../device" },
         { "path": "../discovery" },

@@ -18,6 +18,7 @@ const devXpubs: Partial<Record<NetworkSymbol, string>> = {
     eth: '0x62270860B9a5337e46bE8563c512c9137AFa0384', // Public key, not xpub
     ada: '432505dc5010ec888c650319035dff62f964002f02473fa7fd65dd67f9bd80b327674cabf29c39a14c367dbae5ee01f967f8b4c3ad63a45468da8f28bb2e03d5',
     txrp: 'rJX2KwzaLJDyFhhtXKi3htaLfaUH2tptEX',
+    xrp: 'r9TCDt3HmszcsnPrUrnvpynvLgaGQom9x3',
 };
 
 export const DevXpub = ({ symbol, onSelect }: DevXpubProps) => {

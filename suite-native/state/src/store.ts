@@ -8,6 +8,7 @@ import { messageSystemMiddleware } from '@suite-native/message-system';
 import { prepareBlockchainMiddleware } from '@suite-common/wallet-core';
 import { prepareButtonRequestMiddleware, prepareDeviceMiddleware } from '@suite-native/device';
 import { prepareDiscoveryMiddleware } from '@suite-native/discovery';
+import { prepareTransactionCacheMiddleware } from '@suite-native/accounts';
 
 import { extraDependencies } from './extraDependencies';
 import { prepareRootReducers } from './reducers';
@@ -21,6 +22,7 @@ const middlewares: Middleware[] = [
     prepareDeviceMiddleware(extraDependencies),
     prepareButtonRequestMiddleware(extraDependencies),
     prepareDiscoveryMiddleware(extraDependencies),
+    prepareTransactionCacheMiddleware(extraDependencies),
 ];
 
 if (__DEV__) {

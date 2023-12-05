@@ -15,6 +15,8 @@
         "@react-navigation/native": "^6.1.3",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/icons": "workspace:*",
+        "@suite-common/redux-utils": "workspace:*",
+        "@suite-common/transaction-cache-engine": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
