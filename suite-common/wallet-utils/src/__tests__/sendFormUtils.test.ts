@@ -13,6 +13,7 @@ import {
     getExternalComposeOutput,
     getFiatRate,
     getInputState,
+    getLamportsFromSol,
     prepareEthereumTransaction,
     restoreOrigOutputsOrder,
 } from '../sendFormUtils';
@@ -392,5 +393,10 @@ describe('sendForm utils', () => {
         expect(excludedUtxos[getUtxoOutpoint(lowAnonymityDustUtxo)]).toBe('dust');
         expect(excludedUtxos[getUtxoOutpoint(lowAnonymityUtxo)]).toBe('low-anonymity');
         expect(excludedUtxos[getUtxoOutpoint(spendableUtxo)]).toBe(undefined);
+    });
+
+    it('getLamportsFromSol', () => {
+        expect(getLamportsFromSol('1')).toEqual(1000000000n);
+        expect(getLamportsFromSol('0.000000001')).toEqual(1n);
     });
 });

@@ -163,6 +163,7 @@ interface BasicTxDetailsProps {
     network: Network;
     confirmations: number;
     explorerUrl: string;
+    explorerUrlQueryString: string;
 }
 
 export const BasicTxDetails = ({
@@ -170,9 +171,11 @@ export const BasicTxDetails = ({
     confirmations,
     network,
     explorerUrl,
+    explorerUrlQueryString,
 }: BasicTxDetailsProps) => {
     const theme = useTheme();
-    const isConfirmed = confirmations > 0;
+    // all solana txs which are fetched are already confirmed
+    const isConfirmed = confirmations > 0 || tx.solanaSpecific?.status === 'confirmed';
     const isFinal = isTxFinal(tx, confirmations);
 
     return (
@@ -202,15 +205,17 @@ export const BasicTxDetails = ({
                             <ConfirmationStatus confirmed>
                                 <Translation id="TR_CONFIRMED_TX" />
                             </ConfirmationStatus>
-                            <Circle>&bull;</Circle>
 
-                            {confirmations && (
-                                <Confirmations>
-                                    <Translation
-                                        id="TR_TX_CONFIRMATIONS"
-                                        values={{ confirmationsCount: confirmations }}
-                                    />
-                                </Confirmations>
+                            {confirmations > 0 && (
+                                <>
+                                    <Circle>&bull;</Circle>
+                                    <Confirmations>
+                                        <Translation
+                                            id="TR_TX_CONFIRMATIONS"
+                                            values={{ confirmationsCount: confirmations }}
+                                        />
+                                    </Confirmations>
+                                </>
                             )}
                         </StatusWrapper>
                     ) : (
@@ -252,7 +257,11 @@ export const BasicTxDetails = ({
                 </Title>
 
                 <TxidValue>
-                    <IOAddress txAddress={tx.txid} explorerUrl={explorerUrl} />
+                    <IOAddress
+                        txAddress={tx.txid}
+                        explorerUrl={explorerUrl}
+                        explorerUrlQueryString={explorerUrlQueryString}
+                    />
                 </TxidValue>
 
                 {network.networkType === 'bitcoin' && (
@@ -264,8 +273,8 @@ export const BasicTxDetails = ({
                         </Title>
 
                         <Value>
-                            {/* tx.feeRate was added in @trezor/blockchain-link 2.1.5 meaning that users 
-                            might have locally saved old transactions without this field. since we 
+                            {/* tx.feeRate was added in @trezor/blockchain-link 2.1.5 meaning that users
+                            might have locally saved old transactions without this field. since we
                             cant reliably migrate this data, we are keeping old way of displaying feeRate in place */}
                             {`${tx?.feeRate ? tx.feeRate : getFeeRate(tx)} ${getFeeUnits(
                                 'bitcoin',

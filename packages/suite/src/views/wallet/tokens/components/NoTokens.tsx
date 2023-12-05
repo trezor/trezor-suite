@@ -14,12 +14,14 @@ export const NoTokens = () => {
 
     const handleButtonClick = () => dispatch(openModal({ type: 'add-token' }));
 
+    const allowAddToken = account.networkType !== 'cardano' && account.networkType !== 'solana';
+
     return (
         <AccountExceptionLayout
             title={<Translation id="TR_TOKENS_EMPTY" />}
             image="CLOUDY"
             actionComponent={
-                account.networkType !== 'cardano' ? (
+                allowAddToken ? (
                     <Button variant="primary" onClick={handleButtonClick}>
                         <Translation id="TR_TOKENS_ADD" />
                     </Button>

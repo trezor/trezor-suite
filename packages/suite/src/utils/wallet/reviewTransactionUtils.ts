@@ -186,6 +186,7 @@ const constructNewFlow = ({
     const outputs: ReviewOutput[] = [];
 
     const isCardano = isCardanoTx(account, precomposedTx);
+    const isSolana = account.networkType === 'solana';
     const { networkType } = account;
 
     // used in the bumb fee flow
@@ -237,17 +238,28 @@ const constructNewFlow = ({
     } else {
         precomposedTx.outputs.forEach(o => {
             if (typeof o.address === 'string') {
+                const tokenOutput: ReviewOutput = {
+                    type: 'contract',
+                    value: precomposedTx.token ? precomposedTx.token.contract : '',
+                };
+
                 // this is displayed only for tokens without definitions
-                if (precomposedTx.token && !precomposedTx.isTokenKnown) {
-                    outputs.push({ type: 'contract', value: precomposedTx.token.contract });
+                if (precomposedTx.token && !precomposedTx.isTokenKnown && !isSolana) {
+                    outputs.push(tokenOutput);
                 }
+
                 outputs.push({ type: 'address', value: o.address });
-                if (!isUpdatedEthereumSendFlow) {
+                if (!isSolana && !isUpdatedEthereumSendFlow) {
                     outputs.push({
                         type: 'amount',
                         value: o.amount.toString(),
                         token: precomposedTx.token,
                     });
+                }
+
+                // Solana tokens are displayed *after* the address
+                if (precomposedTx.token && !precomposedTx.isTokenKnown && isSolana) {
+                    outputs.push(tokenOutput);
                 }
             } else if (o.script_type === 'PAYTOOPRETURN') {
                 outputs.push({

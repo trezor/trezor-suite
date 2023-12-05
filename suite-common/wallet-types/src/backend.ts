@@ -10,7 +10,7 @@ export type BlockbookUrl = {
     tor?: boolean; // Added by TOR
 };
 
-export type BackendType = 'blockbook' | 'electrum' | 'ripple' | 'blockfrost';
+export type BackendType = 'blockbook' | 'electrum' | 'ripple' | 'blockfrost' | 'solana';
 
 export type CustomBackend = {
     coin: (typeof networksCompatibility)[number]['symbol'];
@@ -36,6 +36,7 @@ export interface Blockchain {
     explorer: {
         tx: string;
         account: string;
+        queryString: string;
     };
     connected: boolean;
     subscribed?: boolean;

@@ -28,6 +28,7 @@ export const testnetsOrder: NetworkSymbol[] = [
     'thol',
     'tada',
     'txrp',
+    'dsol',
 ];
 
 export const supportedNetworkSymbols = Object.keys(networks) as NetworkSymbol[];

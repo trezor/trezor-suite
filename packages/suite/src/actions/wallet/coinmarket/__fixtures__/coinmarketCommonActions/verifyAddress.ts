@@ -2,6 +2,7 @@ import { testMocks } from '@suite-common/test-utils';
 
 import { MODAL } from 'src/actions/suite/constants';
 import { COINMARKET_BUY, COINMARKET_EXCHANGE } from 'src/actions/wallet/constants';
+import { AddressDisplayOptions } from 'src/reducers/suite/suiteReducer';
 
 import { BTC_ACCOUNT, ETH_ACCOUNT, XRP_ACCOUNT } from './accounts';
 
@@ -18,8 +19,11 @@ export const VERIFY_BUY_ADDRESS_FIXTURES = [
             },
             suite: {
                 settings: {
-                    addressDisplayType: 'chunked',
+                    addressDisplayType: AddressDisplayOptions.CHUNKED,
                 },
+            },
+            wallet: {
+                accounts: [BTC_ACCOUNT],
             },
         },
         params: {
@@ -30,12 +34,10 @@ export const VERIFY_BUY_ADDRESS_FIXTURES = [
         },
         result: {
             value: BTC_ACCOUNT.addresses?.unused[0].address,
-            actions: [
-                {
-                    type: COINMARKET_BUY.VERIFY_ADDRESS,
-                    addressVerified: BTC_ACCOUNT.addresses?.unused[0].address,
-                },
-            ],
+            action: {
+                type: COINMARKET_BUY.VERIFY_ADDRESS,
+                addressVerified: BTC_ACCOUNT.addresses?.unused[0].address,
+            },
         },
     },
     {
@@ -46,8 +48,11 @@ export const VERIFY_BUY_ADDRESS_FIXTURES = [
             },
             suite: {
                 settings: {
-                    addressDisplayType: 'chunked',
+                    addressDisplayType: AddressDisplayOptions.CHUNKED,
                 },
+            },
+            wallet: {
+                accounts: [ETH_ACCOUNT],
             },
         },
         params: {
@@ -58,12 +63,10 @@ export const VERIFY_BUY_ADDRESS_FIXTURES = [
         },
         result: {
             value: ETH_ACCOUNT.descriptor,
-            actions: [
-                {
-                    type: COINMARKET_BUY.VERIFY_ADDRESS,
-                    addressVerified: ETH_ACCOUNT.descriptor,
-                },
-            ],
+            action: {
+                type: COINMARKET_BUY.VERIFY_ADDRESS,
+                addressVerified: ETH_ACCOUNT.descriptor,
+            },
         },
     },
     {
@@ -74,8 +77,11 @@ export const VERIFY_BUY_ADDRESS_FIXTURES = [
             },
             suite: {
                 settings: {
-                    addressDisplayType: 'chunked',
+                    addressDisplayType: AddressDisplayOptions.CHUNKED,
                 },
+            },
+            wallet: {
+                accounts: [XRP_ACCOUNT],
             },
         },
         params: {
@@ -86,12 +92,10 @@ export const VERIFY_BUY_ADDRESS_FIXTURES = [
         },
         result: {
             value: XRP_ACCOUNT.descriptor,
-            actions: [
-                {
-                    type: COINMARKET_BUY.VERIFY_ADDRESS,
-                    addressVerified: XRP_ACCOUNT.descriptor,
-                },
-            ],
+            action: {
+                type: COINMARKET_BUY.VERIFY_ADDRESS,
+                addressVerified: XRP_ACCOUNT.descriptor,
+            },
         },
     },
     {
@@ -102,8 +106,11 @@ export const VERIFY_BUY_ADDRESS_FIXTURES = [
             },
             suite: {
                 settings: {
-                    addressDisplayType: 'chunked',
+                    addressDisplayType: AddressDisplayOptions.CHUNKED,
                 },
+            },
+            wallet: {
+                accounts: [XRP_ACCOUNT],
             },
         },
         params: {
@@ -114,16 +121,14 @@ export const VERIFY_BUY_ADDRESS_FIXTURES = [
         },
         result: {
             value: undefined,
-            actions: [
-                {
-                    type: MODAL.OPEN_USER_CONTEXT,
-                    payload: {
-                        type: 'unverified-address',
-                        value: XRP_ACCOUNT.descriptor,
-                        addressPath: XRP_ACCOUNT.path,
-                    },
+            action: {
+                type: MODAL.OPEN_USER_CONTEXT,
+                payload: {
+                    type: 'unverified-address',
+                    value: XRP_ACCOUNT.descriptor,
+                    addressPath: XRP_ACCOUNT.path,
                 },
-            ],
+            },
         },
     },
 ];
@@ -137,8 +142,11 @@ export const VERIFY_EXCHANGE_ADDRESS_FIXTURES = [
             },
             suite: {
                 settings: {
-                    addressDisplayType: 'chunked',
+                    addressDisplayType: AddressDisplayOptions.CHUNKED,
                 },
+            },
+            wallet: {
+                accounts: [BTC_ACCOUNT],
             },
         },
         params: {
@@ -150,12 +158,10 @@ export const VERIFY_EXCHANGE_ADDRESS_FIXTURES = [
         },
         result: {
             value: BTC_ACCOUNT.addresses?.unused[0].address,
-            actions: [
-                {
-                    type: COINMARKET_EXCHANGE.VERIFY_ADDRESS,
-                    addressVerified: BTC_ACCOUNT.addresses?.unused[0].address,
-                },
-            ],
+            action: {
+                type: COINMARKET_EXCHANGE.VERIFY_ADDRESS,
+                addressVerified: BTC_ACCOUNT.addresses?.unused[0].address,
+            },
         },
     },
 ];

@@ -513,6 +513,10 @@
                 "no_script_type": {
                     "type": "bool",
                     "id": 5
+                },
+                "chunkify": {
+                    "type": "bool",
+                    "id": 6
                 }
             }
         },
@@ -553,6 +557,10 @@
                     "options": {
                         "default": "Bitcoin"
                     }
+                },
+                "chunkify": {
+                    "type": "bool",
+                    "id": 5
                 }
             }
         },
@@ -4190,6 +4198,10 @@
                 "encoded_network": {
                     "type": "bytes",
                     "id": 3
+                },
+                "chunkify": {
+                    "type": "bool",
+                    "id": 4
                 }
             }
         },
@@ -4223,6 +4235,10 @@
                     "rule": "required",
                     "type": "string",
                     "id": 4
+                },
+                "chunkify": {
+                    "type": "bool",
+                    "id": 5
                 }
             }
         },
@@ -4962,7 +4978,27 @@
             "fields": {}
         },
         "RebootToBootloader": {
-            "fields": {}
+            "fields": {
+                "boot_command": {
+                    "type": "BootCommand",
+                    "id": 1,
+                    "options": {
+                        "default": "STOP_AND_WAIT"
+                    }
+                },
+                "firmware_header": {
+                    "type": "bytes",
+                    "id": 2
+                }
+            },
+            "nested": {
+                "BootCommand": {
+                    "values": {
+                        "STOP_AND_WAIT": 0,
+                        "INSTALL_UPGRADE": 1
+                    }
+                }
+            }
         },
         "GetNonce": {
             "options": {
@@ -6533,6 +6569,10 @@
                 "show_display": {
                     "type": "bool",
                     "id": 2
+                },
+                "chunkify": {
+                    "type": "bool",
+                    "id": 3
                 }
             }
         },
@@ -6541,6 +6581,39 @@
                 "address": {
                     "rule": "required",
                     "type": "string",
+                    "id": 1
+                }
+            }
+        },
+        "SolanaTxTokenAccountInfo": {
+            "fields": {
+                "base_address": {
+                    "rule": "required",
+                    "type": "string",
+                    "id": 1
+                },
+                "token_program": {
+                    "rule": "required",
+                    "type": "string",
+                    "id": 2
+                },
+                "token_mint": {
+                    "rule": "required",
+                    "type": "string",
+                    "id": 3
+                },
+                "token_account": {
+                    "rule": "required",
+                    "type": "string",
+                    "id": 4
+                }
+            }
+        },
+        "SolanaTxAdditionalInfo": {
+            "fields": {
+                "token_accounts_infos": {
+                    "rule": "repeated",
+                    "type": "SolanaTxTokenAccountInfo",
                     "id": 1
                 }
             }
@@ -6559,6 +6632,10 @@
                     "rule": "required",
                     "type": "bytes",
                     "id": 2
+                },
+                "additional_info": {
+                    "type": "SolanaTxAdditionalInfo",
+                    "id": 3
                 }
             }
         },
@@ -8450,6 +8527,24 @@
                 },
                 "MessageType_WebAuthnRemoveResidentCredential": {
                     "(wire_in)": true
+                },
+                "MessageType_SolanaGetPublicKey": {
+                    "(wire_in)": true
+                },
+                "MessageType_SolanaPublicKey": {
+                    "(wire_out)": true
+                },
+                "MessageType_SolanaGetAddress": {
+                    "(wire_in)": true
+                },
+                "MessageType_SolanaAddress": {
+                    "(wire_out)": true
+                },
+                "MessageType_SolanaSignTx": {
+                    "(wire_in)": true
+                },
+                "MessageType_SolanaTxSignature": {
+                    "(wire_out)": true
                 }
             },
             "values": {

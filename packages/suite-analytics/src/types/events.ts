@@ -361,7 +361,14 @@ export type SuiteAnalyticsEvent =
           type: EventType.SettingsCoinsBackend;
           payload: {
               symbol: string;
-              type: 'blockbook' | 'electrum' | 'ripple' | 'blockfrost' | 'coinjoin' | 'default';
+              type:
+                  | 'blockbook'
+                  | 'electrum'
+                  | 'ripple'
+                  | 'blockfrost'
+                  | 'coinjoin'
+                  | 'default'
+                  | 'solana';
               totalRegular: number;
               totalOnion: number;
           };

@@ -5900,7 +5900,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@solana/web3.js@npm:1.87.6, @solana/web3.js@npm:^1.87.6":
+"@solana/web3.js@npm:^1.87.6":
   version: 1.87.6
   resolution: "@solana/web3.js@npm:1.87.6"
   dependencies:
@@ -8438,7 +8438,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/blockchain-link-types@workspace:packages/blockchain-link-types"
   dependencies:
-    "@solana/web3.js": "npm:1.87.6"
+    "@solana/web3.js": "npm:^1.87.6"
     "@trezor/utxo-lib": "workspace:*"
     rimraf: "npm:^5.0.5"
     ripple-lib: "npm:^1.10.1"
@@ -9407,8 +9407,11 @@ __metadata:
     "@formatjs/cli": "npm:^6.2.1"
     "@formatjs/intl": "npm:2.9.6"
     "@hookform/resolvers": "npm:3.1.0"
+    "@mobily/ts-belt": "npm:^3.13.1"
     "@reduxjs/toolkit": "npm:1.9.5"
     "@sentry/core": "npm:^7.77.0"
+    "@solana/buffer-layout": "npm:^4.0.1"
+    "@solana/web3.js": "npm:^1.87.6"
     "@suite-common/analytics": "workspace:*"
     "@suite-common/connect-init": "workspace:*"
     "@suite-common/device-authenticity": "workspace:*"
@@ -9436,6 +9439,8 @@ __metadata:
     "@testing-library/user-event": "npm:14.5.1"
     "@trezor/analytics": "workspace:*"
     "@trezor/blockchain-link": "workspace:*"
+    "@trezor/blockchain-link-types": "workspace:*"
+    "@trezor/blockchain-link-utils": "workspace:*"
     "@trezor/coinjoin": "workspace:*"
     "@trezor/components": "workspace:*"
     "@trezor/connect": "workspace:*"

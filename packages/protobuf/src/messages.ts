@@ -222,6 +222,7 @@ export type SignMessage = {
     coin_name?: string;
     script_type?: InputScriptType;
     no_script_type?: boolean;
+    chunkify?: boolean;
 };
 
 // MessageSignature
@@ -236,6 +237,7 @@ export type VerifyMessage = {
     signature: string;
     message: string;
     coin_name?: string;
+    chunkify?: boolean;
 };
 
 export type CoinJoinRequest = {
@@ -1447,6 +1449,7 @@ export type EthereumSignMessage = {
     address_n: number[];
     message: string;
     encoded_network?: ArrayBuffer;
+    chunkify?: boolean;
 };
 
 // EthereumMessageSignature
@@ -1460,6 +1463,7 @@ export type EthereumVerifyMessage = {
     signature: string;
     message: string;
     address: string;
+    chunkify?: boolean;
 };
 
 // EthereumSignTypedHash
@@ -1762,8 +1766,16 @@ export type PreauthorizedRequest = {};
 // CancelAuthorization
 export type CancelAuthorization = {};
 
+export enum BootCommand {
+    STOP_AND_WAIT = 0,
+    INSTALL_UPGRADE = 1,
+}
+
 // RebootToBootloader
-export type RebootToBootloader = {};
+export type RebootToBootloader = {
+    boot_command?: BootCommand;
+    firmware_header?: string;
+};
 
 // GetNonce
 export type GetNonce = {};
@@ -1989,6 +2001,7 @@ export type SolanaPublicKey = {
 export type SolanaGetAddress = {
     address_n: number[];
     show_display?: boolean;
+    chunkify?: boolean;
 };
 
 // SolanaAddress
@@ -1996,10 +2009,24 @@ export type SolanaAddress = {
     address: string;
 };
 
+// SolanaTxTokenAccountInfo
+export type SolanaTxTokenAccountInfo = {
+    base_address: string;
+    token_program: string;
+    token_mint: string;
+    token_account: string;
+};
+
+// SolanaTxAdditionalInfo
+export type SolanaTxAdditionalInfo = {
+    token_accounts_infos: SolanaTxTokenAccountInfo[];
+};
+
 // SolanaSignTx
 export type SolanaSignTx = {
     address_n: number[];
     serialized_tx: string;
+    additional_info?: SolanaTxAdditionalInfo;
 };
 
 // SolanaTxSignature
@@ -2557,6 +2584,8 @@ export type MessageType = {
     SolanaPublicKey: SolanaPublicKey;
     SolanaGetAddress: SolanaGetAddress;
     SolanaAddress: SolanaAddress;
+    SolanaTxTokenAccountInfo: SolanaTxTokenAccountInfo;
+    SolanaTxAdditionalInfo: SolanaTxAdditionalInfo;
     SolanaSignTx: SolanaSignTx;
     SolanaTxSignature: SolanaTxSignature;
     StellarAsset: StellarAsset;

@@ -514,6 +514,9 @@ export const confirmAddressOnDeviceThunk = createThunk(
             case 'bitcoin':
                 response = TrezorConnect.getAddress(params);
                 break;
+            case 'solana':
+                response = TrezorConnect.solanaGetAddress(params);
+                break;
             default:
                 response = {
                     success: false,

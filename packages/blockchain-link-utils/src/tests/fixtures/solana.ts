@@ -190,15 +190,15 @@ const effects = {
 };
 
 const sampleMintToDetailMap = {
-    so11111111111111111111111111111111111111112: {
+    So11111111111111111111111111111111111111112: {
         name: 'Wrapped SOL',
         symbol: 'WSOL',
     },
-    es9vmfrzacermJfrf4h2fyd4kconkY11mcce8benwnyb: {
+    Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB: {
         name: 'Tether',
         symbol: 'USDT',
     },
-    '4k3dyjzvzp8emzwuxbbcjevwskkk59s5icnly3qrkx6r': {
+    '4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R': {
         name: 'Raydium',
         symbol: 'RAY',
     },
@@ -625,7 +625,7 @@ export const fixtures = {
             input: {
                 transaction: parsedTransactions.basic.transaction,
                 accountAddress: 'someAddress',
-                slotToBlockHeightMapping: {},
+                map: sampleMintToDetailMap,
             },
             expectedOutput: [],
         },
@@ -634,6 +634,7 @@ export const fixtures = {
             input: {
                 transaction: parsedTransactions.singleTokenTransfer.transaction,
                 accountAddress: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
+                map: sampleMintToDetailMap,
             },
             expectedOutput: [
                 {
@@ -643,8 +644,8 @@ export const fixtures = {
                     to: '2SyRvfaD5abg8j4cRfHViFXRh5KThuBBEU24RX8Cgrm3',
                     contract: 'So11111111111111111111111111111111111111112',
                     decimals: 9,
-                    name: 'So11111111111111111111111111111111111111112',
-                    symbol: 'So1...',
+                    name: 'Wrapped SOL',
+                    symbol: 'WSOL',
                     amount: '2000000',
                 },
             ],
@@ -654,6 +655,7 @@ export const fixtures = {
             input: {
                 transaction: parsedTransactions.multiTokenTransfer.transaction,
                 accountAddress: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
+                map: sampleMintToDetailMap,
             },
             expectedOutput: [
                 {
@@ -663,8 +665,8 @@ export const fixtures = {
                     to: '2SyRvfaD5abg8j4cRfHViFXRh5KThuBBEU24RX8Cgrm3',
                     contract: 'So11111111111111111111111111111111111111112',
                     decimals: 9,
-                    name: 'So11111111111111111111111111111111111111112',
-                    symbol: 'So1...',
+                    name: 'Wrapped SOL',
+                    symbol: 'WSOL',
                     amount: '2000000',
                 },
                 {
@@ -687,15 +689,16 @@ export const fixtures = {
             input: {
                 transaction: parsedTransactions.basic.transaction,
                 accountAddress: effects.negative.address,
-                slotToBlockHeightMapping: { 5: 20 },
             },
             expectedOutput: {
                 type: 'sent',
                 txid: 'txid1',
                 blockTime: 1631753600,
-                blockHeight: 20,
                 amount: '-20',
                 fee: '10',
+                solanaSpecific: {
+                    status: 'confirmed',
+                },
                 targets: [
                     {
                         addresses: ['address2'],

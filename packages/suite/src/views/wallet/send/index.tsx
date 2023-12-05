@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
 
-import { Card } from 'src/components/suite';
+import { Card, Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { WalletLayout } from 'src/components/wallet';
 import { useSendForm, SendContext, UseSendFormProps } from 'src/hooks/wallet/useSendForm';
@@ -16,12 +16,17 @@ import {
     selectTargetAnonymityByAccountKey,
     selectRegisteredUtxosByAccountKey,
 } from 'src/reducers/wallet/coinjoinReducer';
+import { Warning } from '@trezor/components';
 
 const StyledCard = styled(Card)`
     display: flex;
     flex-direction: column;
     margin-bottom: 8px;
     padding: 0;
+`;
+
+const StyledWarning = styled(Warning)`
+    margin-top: 8px;
 `;
 
 interface SendProps {
@@ -49,6 +54,8 @@ const SendLoaded = ({ children, selectedAccount }: SendLoadedProps) => {
 
     const sendContextValues = useSendForm({ ...props, selectedAccount });
 
+    const { symbol } = selectedAccount.account;
+
     return (
         <WalletLayout title="TR_NAV_SEND" account={selectedAccount}>
             <SendContext.Provider value={sendContextValues}>
@@ -61,6 +68,11 @@ const SendLoaded = ({ children, selectedAccount }: SendLoadedProps) => {
                         </StyledCard>
                         <SendFees />
                         <TotalSent />
+                        {symbol === 'dsol' && (
+                            <StyledWarning withIcon>
+                                <Translation id="TR_SOLANA_DEVNET_SHORTCUT_WARNING" />
+                            </StyledWarning>
+                        )}
                         <ReviewButton />
                         {children}
                     </>
