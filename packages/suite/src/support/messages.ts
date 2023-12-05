@@ -7476,6 +7476,17 @@ export default defineMessages({
     TR_FEE_ROUNDING_WARNING: {
         id: 'TR_FEE_ROUNDING_WARNING',
         defaultMessage: 'Your Trezor may display a different rate caused by fee rounding.',
+        description:
+            'Removed in favor of TR_FEE_ROUNDING_DEFAULT_WARNING and TR_FEE_ROUNDING_BASEFEE_WARNING',
+    },
+    TR_FEE_ROUNDING_DEFAULT_WARNING: {
+        id: 'TR_FEE_ROUNDING_DEFAULT_WARNING',
+        defaultMessage: 'The fee rate of {feeRate} has been increased due to fee rounding',
+    },
+    TR_FEE_ROUNDING_BASEFEE_WARNING: {
+        id: 'TR_FEE_ROUNDING_BASEFEE_WARNING',
+        defaultMessage:
+            'The fee rate of {feeRate} has been increased to pay for the chained transactions within the mempool',
     },
     TR_FEE_RATE_CHANGED: {
         id: 'TR_FEE_RATE_CHANGED',

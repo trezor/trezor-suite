@@ -57,6 +57,10 @@ const Units = styled.div`
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
+const StyledNote = styled(Note)`
+    text-align: left;
+`;
+
 const FEE_PER_UNIT = 'feePerUnit';
 const FEE_LIMIT = 'feeLimit';
 
@@ -91,15 +95,31 @@ export const CustomFee = <TFieldValues extends FormState>({
 
     const feePerUnitValue = getValues(FEE_PER_UNIT);
     const feeLimitValue = getValues(FEE_LIMIT);
+    const feeUnits = getFeeUnits(networkType);
     const estimatedFeeLimit = getValues('estimatedFeeLimit') || ETH_DEFAULT_GAS_LIMIT;
-    const enteredFeeRate = getValues('feePerUnit');
 
     const feePerUnitError = errors.feePerUnit;
     const feeLimitError = errors.feeLimit;
 
     const useFeeLimit = networkType === 'ethereum';
     const isComposedFeeRateDifferent =
-        !feePerUnitError && composedFeePerByte && enteredFeeRate !== composedFeePerByte;
+        !feePerUnitError && composedFeePerByte && feePerUnitValue !== composedFeePerByte;
+    let feeDifferenceWarning;
+    if (isComposedFeeRateDifferent && networkType === 'bitcoin') {
+        const baseFee = getValues('baseFee');
+        feeDifferenceWarning = (
+            <Translation
+                id={baseFee ? 'TR_FEE_ROUNDING_BASEFEE_WARNING' : 'TR_FEE_ROUNDING_DEFAULT_WARNING'}
+                values={{
+                    feeRate: (
+                        <>
+                            <strong>{composedFeePerByte}</strong> {feeUnits}
+                        </>
+                    ),
+                }}
+            />
+        );
+    }
 
     const sharedRules = {
         required: translationString('CUSTOM_FEE_IS_NOT_SET'),
@@ -188,7 +208,7 @@ export const CustomFee = <TFieldValues extends FormState>({
                         isMonospace
                         variant="small"
                         inputState={getInputState(feePerUnitError, feePerUnitValue)}
-                        innerAddon={<Units>{getFeeUnits(networkType)}</Units>}
+                        innerAddon={<Units>{feeUnits}</Units>}
                         name={FEE_PER_UNIT}
                         data-test={FEE_PER_UNIT}
                         rules={feeRules}
@@ -197,11 +217,7 @@ export const CustomFee = <TFieldValues extends FormState>({
                 </Col>
             </Wrapper>
 
-            {isComposedFeeRateDifferent && networkType === 'bitcoin' && (
-                <Note>
-                    <Translation id="TR_FEE_ROUNDING_WARNING" />
-                </Note>
-            )}
+            {feeDifferenceWarning && <StyledNote>{feeDifferenceWarning}</StyledNote>}
         </>
     );
 };
