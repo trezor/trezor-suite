@@ -502,7 +502,7 @@ export const confirmAddressOnDeviceThunk = createThunk(
                     protocolMagic: getProtocolMagic(account.symbol),
                     networkId: getNetworkId(account.symbol),
                     derivationType: getDerivationType(account.accountType),
-                    chunkify: false,
+                    chunkify,
                 });
                 break;
             case 'ripple':

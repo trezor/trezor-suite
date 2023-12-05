@@ -20,7 +20,6 @@ export const wipeDisconnectedDevicesDataThunk = createThunk(
             dispatch(discoveryActions.removeDiscovery(discovery.deviceState)),
         );
 
-        // TODO: rename
         clearAndUnlockDeviceAccessQueue();
     },
 );
