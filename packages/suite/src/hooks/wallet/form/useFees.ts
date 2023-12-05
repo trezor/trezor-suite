@@ -64,6 +64,7 @@ export const useFees = <TFieldValues extends FormState>({
     // watch custom feePerUnit/feeLimit inputs change
     const feePerUnit = watch('feePerUnit');
     const feeLimit = watch('feeLimit');
+    const baseFee = watch('baseFee');
     useEffect(() => {
         if (selectedFeeRef.current !== 'custom') return;
 
@@ -126,9 +127,9 @@ export const useFees = <TFieldValues extends FormState>({
             )!;
             // set custom values from a previously selected composed transaction
             // or from previously selected FeeLevel
-            const transactionInfo = composedLevels && composedLevels[selectedFeeRef.current!];
+            const transactionInfo = composedLevels && composedLevels[currentLevel.label];
             feePerUnit =
-                transactionInfo && transactionInfo.type !== 'error'
+                !baseFee && transactionInfo && transactionInfo.type !== 'error'
                     ? transactionInfo.feePerByte
                     : currentLevel.feePerUnit;
             feeLimit = getValues('estimatedFeeLimit') || currentLevel.feeLimit || '';
