@@ -5790,11 +5790,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@shopify/react-native-skia@npm:0.1.214":
-  version: 0.1.214
-  resolution: "@shopify/react-native-skia@npm:0.1.214"
+"@shopify/react-native-skia@npm:0.1.225":
+  version: 0.1.225
+  resolution: "@shopify/react-native-skia@npm:0.1.225"
   dependencies:
-    canvaskit-wasm: "npm:0.38.2"
+    canvaskit-wasm: "npm:0.39.1"
     react-reconciler: "npm:^0.27.0"
   peerDependencies:
     react: ">=18.0"
@@ -5807,7 +5807,7 @@ __metadata:
       optional: true
   bin:
     setup-skia-web: scripts/setup-canvaskit.js
-  checksum: 8017b380a6b0c06047a0026493a4072e08325febc1ec72074a294f6eaa9b3c57a82b85231933b8e3e8fcbec757ed96da6540063c2742e3e8f732e341cad86685
+  checksum: b0a382b2f709ec787588cc1a87be79a91a4842b368b80d11d62ed6277f2a9abd2fafea883e75a19ae603024b65606ef87d205ba1684750912c87bacb5d3f7fcd
   languageName: node
   linkType: hard
 
@@ -6830,7 +6830,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/icons@workspace:suite-common/icons"
   dependencies:
-    "@shopify/react-native-skia": "npm:0.1.214"
+    "@shopify/react-native-skia": "npm:0.1.225"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/styles": "workspace:*"
@@ -6838,7 +6838,7 @@ __metadata:
     jest: "npm:29.5.0"
     react: "npm:18.2.0"
     react-native: "npm:0.71.8"
-    react-native-reanimated: "npm:3.5.4"
+    react-native-reanimated: "npm:3.6.1"
     svgo: "npm:3.0.2"
     tsx: "npm:^3.14.0"
     typescript: "npm:5.3.2"
@@ -7189,7 +7189,7 @@ __metadata:
     proxy-memoize: "npm:2.0.2"
     react: "npm:18.2.0"
     react-native: "npm:0.71.8"
-    react-native-reanimated: "npm:3.5.4"
+    react-native-reanimated: "npm:3.6.1"
     react-redux: "npm:8.0.7"
   languageName: unknown
   linkType: soft
@@ -7204,7 +7204,7 @@ __metadata:
     jotai: "npm:1.9.1"
     react: "npm:18.2.0"
     react-native: "npm:0.71.8"
-    react-native-reanimated: "npm:3.5.4"
+    react-native-reanimated: "npm:3.6.1"
   languageName: unknown
   linkType: soft
 
@@ -7261,7 +7261,7 @@ __metadata:
   resolution: "@suite-native/atoms@workspace:suite-native/atoms"
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
-    "@shopify/react-native-skia": "npm:0.1.214"
+    "@shopify/react-native-skia": "npm:0.1.225"
     "@suite-common/icons": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
@@ -7275,7 +7275,7 @@ __metadata:
     react: "npm:18.2.0"
     react-native: "npm:0.71.8"
     react-native-gesture-handler: "npm:^2.9.0"
-    react-native-reanimated: "npm:3.5.4"
+    react-native-reanimated: "npm:3.6.1"
     react-native-root-toast: "npm:^3.3.1"
     react-native-safe-area-context: "npm:^4.5.0"
     react-redux: "npm:8.0.7"
@@ -7494,7 +7494,7 @@ __metadata:
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@reduxjs/toolkit": "npm:1.9.5"
-    "@shopify/react-native-skia": "npm:0.1.214"
+    "@shopify/react-native-skia": "npm:0.1.225"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/graph": "workspace:*"
     "@suite-common/icons": "workspace:*"
@@ -7519,7 +7519,7 @@ __metadata:
     react: "npm:18.2.0"
     react-intl: "npm:^6.5.1"
     react-native: "npm:0.71.8"
-    react-native-reanimated: "npm:3.5.4"
+    react-native-reanimated: "npm:3.6.1"
     react-redux: "npm:8.0.7"
     typescript: "npm:5.3.2"
   languageName: unknown
@@ -7559,7 +7559,7 @@ __metadata:
     "@trezor/theme": "workspace:*"
     react: "npm:18.2.0"
     react-native: "npm:0.71.8"
-    react-native-reanimated: "npm:3.5.4"
+    react-native-reanimated: "npm:3.6.1"
   languageName: unknown
   linkType: soft
 
@@ -7596,7 +7596,7 @@ __metadata:
     proxy-memoize: "npm:2.0.2"
     react: "npm:18.2.0"
     react-native: "npm:0.71.8"
-    react-native-reanimated: "npm:3.5.4"
+    react-native-reanimated: "npm:3.6.1"
     react-native-safe-area-context: "npm:^4.5.0"
     react-redux: "npm:8.0.7"
   languageName: unknown
@@ -7611,7 +7611,7 @@ __metadata:
     "@react-navigation/native": "npm:^6.1.3"
     "@react-navigation/native-stack": "npm:^6.9.11"
     "@reduxjs/toolkit": "npm:1.9.5"
-    "@shopify/react-native-skia": "npm:0.1.214"
+    "@shopify/react-native-skia": "npm:0.1.225"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/icons": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
@@ -7644,7 +7644,7 @@ __metadata:
     lottie-react-native: "npm:^5.1.5"
     react: "npm:18.2.0"
     react-native: "npm:0.71.8"
-    react-native-reanimated: "npm:3.5.4"
+    react-native-reanimated: "npm:3.6.1"
     react-redux: "npm:8.0.7"
     typescript: "npm:5.3.2"
   languageName: unknown
@@ -7689,7 +7689,7 @@ __metadata:
     react: "npm:18.2.0"
     react-hook-form: "npm:^7.48.2"
     react-native: "npm:0.71.8"
-    react-native-reanimated: "npm:3.5.4"
+    react-native-reanimated: "npm:3.6.1"
     react-redux: "npm:8.0.7"
   languageName: unknown
   linkType: soft
@@ -7930,7 +7930,7 @@ __metadata:
     react: "npm:18.2.0"
     react-native: "npm:0.71.8"
     react-native-gesture-handler: "npm:^2.9.0"
-    react-native-reanimated: "npm:3.5.4"
+    react-native-reanimated: "npm:3.6.1"
     react-native-safe-area-context: "npm:^4.5.0"
     react-redux: "npm:8.0.7"
   languageName: unknown
@@ -7960,12 +7960,12 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/react-native-graph@workspace:suite-native/react-native-graph"
   dependencies:
-    "@shopify/react-native-skia": "npm:0.1.214"
+    "@shopify/react-native-skia": "npm:0.1.225"
     "@types/react": "npm:18.0.32"
     react: "npm:18.2.0"
     react-native: "npm:0.71.8"
     react-native-gesture-handler: "npm:^2.9.0"
-    react-native-reanimated: "npm:3.5.4"
+    react-native-reanimated: "npm:3.6.1"
   languageName: unknown
   linkType: soft
 
@@ -7977,7 +7977,7 @@ __metadata:
     "@react-navigation/native": "npm:^6.1.3"
     "@react-navigation/native-stack": "npm:^6.9.11"
     "@reduxjs/toolkit": "npm:1.9.5"
-    "@shopify/react-native-skia": "npm:0.1.214"
+    "@shopify/react-native-skia": "npm:0.1.225"
     "@suite-common/icons": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
@@ -8004,7 +8004,7 @@ __metadata:
     react: "npm:18.2.0"
     react-native: "npm:0.71.8"
     react-native-gesture-handler: "npm:^2.9.0"
-    react-native-reanimated: "npm:3.5.4"
+    react-native-reanimated: "npm:3.6.1"
     react-redux: "npm:8.0.7"
   languageName: unknown
   linkType: soft
@@ -8076,7 +8076,7 @@ __metadata:
     jest: "npm:29.5.0"
     react: "npm:18.2.0"
     react-native-gesture-handler: "npm:^2.9.0"
-    react-native-reanimated: "npm:3.5.4"
+    react-native-reanimated: "npm:3.6.1"
     react-native-safe-area-context: "npm:^4.5.0"
     react-redux: "npm:8.0.7"
     typescript: "npm:5.3.2"
@@ -8110,7 +8110,7 @@ __metadata:
     jotai: "npm:1.9.1"
     react: "npm:18.2.0"
     react-native-gesture-handler: "npm:^2.9.0"
-    react-native-reanimated: "npm:3.5.4"
+    react-native-reanimated: "npm:3.6.1"
     react-native-safe-area-context: "npm:^4.5.0"
   languageName: unknown
   linkType: soft
@@ -8122,7 +8122,7 @@ __metadata:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@react-navigation/native": "npm:^6.1.3"
     "@shopify/flash-list": "npm:^1.4.3"
-    "@shopify/react-native-skia": "npm:0.1.214"
+    "@shopify/react-native-skia": "npm:0.1.225"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/icons": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
@@ -8152,7 +8152,7 @@ __metadata:
     react: "npm:18.2.0"
     react-native: "npm:0.71.8"
     react-native-gesture-handler: "npm:^2.9.0"
-    react-native-reanimated: "npm:3.5.4"
+    react-native-reanimated: "npm:3.6.1"
     react-redux: "npm:8.0.7"
     web3-utils: "npm:^1.10.0"
   languageName: unknown
@@ -9275,7 +9275,7 @@ __metadata:
     "@rnx-kit/metro-config": "npm:^1.3.6"
     "@sentry/react-native": "npm:5.5.0"
     "@shopify/flash-list": "npm:^1.4.3"
-    "@shopify/react-native-skia": "npm:0.1.214"
+    "@shopify/react-native-skia": "npm:0.1.225"
     "@suite-common/analytics": "workspace:*"
     "@suite-common/connect-init": "workspace:*"
     "@suite-common/formatters": "workspace:*"
@@ -9341,7 +9341,7 @@ __metadata:
     react-native-flipper: "npm:0.164.0"
     react-native-gesture-handler: "npm:^2.9.0"
     react-native-mmkv: "npm:2.11.0"
-    react-native-reanimated: "npm:3.5.4"
+    react-native-reanimated: "npm:3.6.1"
     react-native-restart: "npm:^0.0.27"
     react-native-safe-area-context: "npm:^4.5.0"
     react-native-screens: "npm:^3.19.0"
@@ -11547,6 +11547,13 @@ __metadata:
     "@webassemblyjs/ast": "npm:1.11.6"
     "@xtuc/long": "npm:4.2.2"
   checksum: fd45fd0d693141d678cc2f6ff2d3a0d7a8884acb1c92fb0c63cf43b7978e9560be04118b12792638a39dd185640453510229e736f3049037d0c361f6435f2d5f
+  languageName: node
+  linkType: hard
+
+"@webgpu/types@npm:0.1.21":
+  version: 0.1.21
+  resolution: "@webgpu/types@npm:0.1.21"
+  checksum: 73fc5f2bebb1abf084b146c26c237c6450747b8119cdf3733643ff90968f6e7790d0ae0ad6aa6dc7b0783a502571d348a76d22c8e8466b3b7f7c9ee956da7e5b
   languageName: node
   linkType: hard
 
@@ -14130,10 +14137,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"canvaskit-wasm@npm:0.38.2":
-  version: 0.38.2
-  resolution: "canvaskit-wasm@npm:0.38.2"
-  checksum: ebcf1b60380182ac33154a4a0d5e4476b4e22065b50002e4700d72c071726e28c2ab07e4eff73b0a10f2cffadde56272eb388eec926fc035e87c027c81dc4c9f
+"canvaskit-wasm@npm:0.39.1":
+  version: 0.39.1
+  resolution: "canvaskit-wasm@npm:0.39.1"
+  dependencies:
+    "@webgpu/types": "npm:0.1.21"
+  checksum: 962f0ec74717eabd7de196a3397215f34fd6b8e9cfc1781c00d0f61695cc7521a77e7c80db061ec9cd6e92774db835edb7f6bed9ea69457ef7cceb08caad8aac
   languageName: node
   linkType: hard
 
@@ -29343,9 +29352,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-reanimated@npm:3.5.4":
-  version: 3.5.4
-  resolution: "react-native-reanimated@npm:3.5.4"
+"react-native-reanimated@npm:3.6.1":
+  version: 3.6.1
+  resolution: "react-native-reanimated@npm:3.6.1"
   dependencies:
     "@babel/plugin-transform-object-assign": "npm:^7.16.7"
     "@babel/preset-typescript": "npm:^7.16.7"
@@ -29360,7 +29369,7 @@ __metadata:
     "@babel/plugin-transform-template-literals": ^7.0.0-0
     react: "*"
     react-native: "*"
-  checksum: 9a083f5d764137dcb6cb0cfc4f403675a2c99f7154f5afb7949d1076534963e96cf456e956f219efc887d8ea0d97c1c64cca2edde3069798ed2972c04af524ee
+  checksum: 594a4ace054fdafa02ea2f126aeeda474f32306698b1d7c15ec8495b606b80e9e10a69eef2653d4b7f9cb743d0007ada1ab27e5f3064af1bfcc95291d70bb824
   languageName: node
   linkType: hard
 
