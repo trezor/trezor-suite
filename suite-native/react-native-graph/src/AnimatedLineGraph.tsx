@@ -16,13 +16,10 @@ import { GestureDetector } from 'react-native-gesture-handler';
 
 import {
     Canvas,
-    runSpring,
     SkPath,
     LinearGradient,
     Path,
     Skia,
-    useValue,
-    useComputedValue,
     vec,
     Group,
     PathCommand,
@@ -82,7 +79,7 @@ export function AnimatedLineGraph<TEventPayload extends object>({
 }: AnimatedLineGraphProps<TEventPayload>): ReactElement {
     const [width, setWidth] = useState(0);
     const [height, setHeight] = useState(0);
-    const interpolateProgress = useValue(0);
+    const interpolateProgress = useSharedValue(0);
 
     const [eventsWithCords, setEventsWithCords] = useState<
         GraphEventWithCords<TEventPayload>[] | null
@@ -148,8 +145,8 @@ export function AnimatedLineGraph<TEventPayload extends object>({
         return path;
     }, [height, width]);
 
-    const paths = useValue<{ from?: SkPath; to?: SkPath }>({});
-    const gradientPaths = useValue<{ from?: SkPath; to?: SkPath }>({});
+    const paths = useSharedValue<{ from?: SkPath; to?: SkPath }>({});
+    const gradientPaths = useSharedValue<{ from?: SkPath; to?: SkPath }>({});
     const commands = useSharedValue<PathCommand[]>([]);
     const [commandsChanged, setCommandsChanged] = useState(0);
     const pointSelectedIndex = useRef<number>();
@@ -180,6 +177,18 @@ export function AnimatedLineGraph<TEventPayload extends object>({
     const indicatorPulseColor = useMemo(() => hexToRgba(color, 0.4), [color]);
 
     const shouldFillGradient = gradientFillColors != null;
+
+    const calculateEventsPoints = useCallback(() => {
+        if (events) {
+            const eventsWithCords: GraphEventWithCords<TEventPayload>[] = [];
+            events.forEach(e => {
+                const eventX = getXInRange(drawingWidth, e.date, pathRange.x) + horizontalPadding;
+                const eventY = getYForX(commands.value, eventX) ?? 0;
+                eventsWithCords.push({ ...e, x: eventX, y: eventY });
+            });
+            setEventsWithCords(eventsWithCords);
+        }
+    }, [commands, drawingWidth, events, horizontalPadding, pathRange.x]);
 
     useEffect(() => {
         if (height < 1 || width < 1) {
@@ -216,36 +225,36 @@ export function AnimatedLineGraph<TEventPayload extends object>({
         commands.value = path.toCmds();
 
         if (gradientPath != null) {
-            const previous = gradientPaths.current;
+            const previous = gradientPaths.value;
             let from: SkPath = previous.to ?? straightLine;
-            if (previous.from != null && interpolateProgress.current < 1)
-                from = from.interpolate(previous.from, interpolateProgress.current) ?? from;
+            if (previous.from != null && interpolateProgress.value < 1)
+                from = from.interpolate(previous.from, interpolateProgress.value) ?? from;
 
             if (gradientPath.isInterpolatable(from)) {
-                gradientPaths.current = {
+                gradientPaths.value = {
                     from,
                     to: gradientPath,
                 };
             } else {
-                gradientPaths.current = {
+                gradientPaths.value = {
                     from: gradientPath,
                     to: gradientPath,
                 };
             }
         }
 
-        const previous = paths.current;
+        const previous = paths.value;
         let from: SkPath = previous.to ?? straightLine;
-        if (previous.from != null && interpolateProgress.current < 1)
-            from = from.interpolate(previous.from, interpolateProgress.current) ?? from;
+        if (previous.from != null && interpolateProgress.value < 1)
+            from = from.interpolate(previous.from, interpolateProgress.value) ?? from;
 
         if (path.isInterpolatable(from)) {
-            paths.current = {
+            paths.value = {
                 from,
                 to: path,
             };
         } else {
-            paths.current = {
+            paths.value = {
                 from: path,
                 to: path,
             };
@@ -254,9 +263,9 @@ export function AnimatedLineGraph<TEventPayload extends object>({
         setCommandsChanged(commandsChanged + 1);
         setEventsWithCords(null);
 
-        runSpring(
-            interpolateProgress,
-            { from: 0, to: 1 },
+        interpolateProgress.value = 0;
+        interpolateProgress.value = withSpring(
+            1,
             {
                 mass: 1,
                 stiffness: 500,
@@ -264,17 +273,7 @@ export function AnimatedLineGraph<TEventPayload extends object>({
                 velocity: 0,
             },
             () => {
-                // Calculate graph event coordinates when the interpolation ends.
-                if (events) {
-                    const eventsWithCords: GraphEventWithCords<TEventPayload>[] = [];
-                    events.forEach(e => {
-                        const eventX =
-                            getXInRange(drawingWidth, e.date, pathRange.x) + horizontalPadding;
-                        const eventY = getYForX(commands.value, eventX) ?? 0;
-                        eventsWithCords.push({ ...e, x: eventX, y: eventY });
-                    });
-                    setEventsWithCords(eventsWithCords);
-                }
+                runOnJS(calculateEventsPoints)();
             },
         );
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -291,7 +290,6 @@ export function AnimatedLineGraph<TEventPayload extends object>({
         straightLine,
         verticalPadding,
         width,
-        events,
     ]);
 
     const gradientColors = useMemo(() => {
@@ -307,27 +305,19 @@ export function AnimatedLineGraph<TEventPayload extends object>({
         return [color, color, color, `${getSixDigitHex(color)}33`, `${getSixDigitHex(color)}33`];
     }, [color, enableFadeInMask]);
 
-    const path = useComputedValue(
-        () => {
-            const from = paths.current.from ?? straightLine;
-            const to = paths.current.to ?? straightLine;
+    const path = useDerivedValue(() => {
+        const from = paths.value.from ?? straightLine;
+        const to = paths.value.to ?? straightLine;
 
-            return to.interpolate(from, interpolateProgress.current);
-        },
-        // RN Skia deals with deps differently. They are actually the required SkiaValues that the derived value listens to, not react values.
-        [interpolateProgress],
-    );
+        return to.interpolate(from, interpolateProgress.value);
+    }, [interpolateProgress, paths]);
 
-    const gradientPath = useComputedValue(
-        () => {
-            const from = gradientPaths.current.from ?? straightLine;
-            const to = gradientPaths.current.to ?? straightLine;
+    const gradientPath = useDerivedValue(() => {
+        const from = gradientPaths.value.from ?? straightLine;
+        const to = gradientPaths.value.to ?? straightLine;
 
-            return to.interpolate(from, interpolateProgress.current);
-        },
-        // RN Skia deals with deps differently. They are actually the required SkiaValues that the derived value listens to, not react values.
-        [interpolateProgress],
-    );
+        return to.interpolate(from, interpolateProgress.value);
+    });
 
     const stopPulsating = useCallback(() => {
         cancelAnimation(indicatorPulseAnimation);
