@@ -7950,7 +7950,6 @@ __metadata:
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
     expo-barcode-scanner: "npm:^12.3.1"
-    expo-brightness: "npm:^11.2.1"
     react: "npm:18.2.0"
     react-native: "npm:0.71.8"
     react-qr-code: "npm:2.0.8"
@@ -9322,7 +9321,6 @@ __metadata:
     buffer: "npm:^6.0.3"
     expo: "npm:48.0.1"
     expo-barcode-scanner: "npm:^12.3.1"
-    expo-brightness: "npm:^11.2.1"
     expo-clipboard: "npm:^4.1.1"
     expo-haptics: "npm:^12.4.0"
     expo-linear-gradient: "npm:^12.5.0"
@@ -18326,15 +18324,6 @@ __metadata:
   peerDependencies:
     expo: "*"
   checksum: 8c33bc7ab96b9da36081227f4b4354daf12eb4100cd7d3c57945256fc251d7b73f61bdfab7331ffdb50bbd2c4895f2142da4f2c0c0fbfaa9e5d8de77628c80b0
-  languageName: node
-  linkType: hard
-
-"expo-brightness@npm:^11.2.1":
-  version: 11.3.0
-  resolution: "expo-brightness@npm:11.3.0"
-  peerDependencies:
-    expo: "*"
-  checksum: b1930e197698c71fddd0baa378b82e142a444a23ac774b132f5f3d820fe1437ff70090845a054d7878ae5c34988ad0ec475308feaccc0117a1ac0e87f97a4cf1
   languageName: node
   linkType: hard
 

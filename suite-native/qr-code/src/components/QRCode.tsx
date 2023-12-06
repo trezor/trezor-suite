@@ -1,11 +1,8 @@
-import { useEffect, useState } from 'react';
-import { AppState, Dimensions, View } from 'react-native';
+import { Dimensions, View } from 'react-native';
 import ReactQRCode from 'react-qr-code';
 
-import * as Brightness from 'expo-brightness';
-
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box } from '@suite-native/atoms';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { colorVariants } from '@trezor/theme';
 
 type QRCodeProps = {
@@ -30,45 +27,6 @@ const qrCodeContainerStyle = prepareNativeStyle(_ => ({
 
 export const QRCode = ({ data }: QRCodeProps) => {
     const { applyStyle } = useNativeStyles();
-    const [originalBrightnessValue, setOriginalBrightnessValue] = useState<number>();
-
-    useEffect(() => {
-        const subscription = AppState.addEventListener('change', nextAppState => {
-            if (!originalBrightnessValue) return;
-
-            // When app goes to background (or inactive to work on iOS), restore the original brightness value.
-            if (['inactive', 'background'].includes(nextAppState)) {
-                Brightness.setBrightnessAsync(originalBrightnessValue);
-            }
-            // When app goes to foreground set full brightness.
-            if (nextAppState === 'active') {
-                Brightness.setBrightnessAsync(1);
-            }
-        });
-
-        return () => {
-            subscription.remove();
-        };
-    }, [originalBrightnessValue]);
-
-    useEffect(() => {
-        const storeBrightnessValue = async () => {
-            const brightnessValue = await Brightness.getBrightnessAsync();
-            setOriginalBrightnessValue(brightnessValue);
-        };
-
-        // Set brightness to maximum and store the original value.
-        storeBrightnessValue();
-        Brightness.setBrightnessAsync(1);
-    }, []);
-
-    useEffect(
-        // Restore the original brightness value when the QR code is unmounted.
-        () => () => {
-            if (originalBrightnessValue) Brightness.setBrightnessAsync(originalBrightnessValue);
-        },
-        [originalBrightnessValue],
-    );
 
     return (
         <Box alignItems="center">
