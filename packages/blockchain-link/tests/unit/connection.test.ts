@@ -42,7 +42,7 @@ workers.forEach(instance => {
         it('Handle connection timeout', async () => {
             try {
                 blockchain.settings.server = ['wss://google.com:11111', 'wss://google.com:22222'];
-                blockchain.settings.timeout = 4000;
+                blockchain.settings.timeout = 200;
                 await blockchain.connect();
                 fail('Did not throw');
             } catch (error) {
@@ -60,11 +60,11 @@ workers.forEach(instance => {
                         ripple: 'server_info',
                     }[instance.name],
                     response: undefined,
-                    delay: 8000, // wait 8 sec. to send response
+                    delay: 400, // wait 0.4 sec. to send response
                 },
             ]);
             try {
-                blockchain.settings.timeout = 4000;
+                blockchain.settings.timeout = 200;
                 await blockchain.getInfo();
                 fail('Did not throw');
             } catch (error) {
@@ -81,9 +81,9 @@ workers.forEach(instance => {
                 { method, response: undefined },
                 { method, response: undefined },
             ]);
-            blockchain.settings.pingTimeout = 2500; // ping message will be called 3 sec. after subscription
+            blockchain.settings.pingTimeout = 200; // ping message will be called 0.2 sec. after subscription
             await blockchain.subscribe({ type: 'block' });
-            await new Promise(resolve => setTimeout(resolve, 6000));
+            await new Promise(resolve => setTimeout(resolve, 500));
             expect(server.fixtures).toEqual([]);
         }, 7000);
 
@@ -95,12 +95,12 @@ workers.forEach(instance => {
                 { method, response: undefined },
             ]);
 
-            blockchain.settings.pingTimeout = 2500; // ping message will be called 3 sec. after subscription
+            blockchain.settings.pingTimeout = 200; // ping message will be called 0.2 sec. after subscription
             blockchain.settings.keepAlive = true;
             await blockchain.subscribe({ type: 'block' });
             await blockchain.unsubscribe({ type: 'block' });
 
-            await new Promise(resolve => setTimeout(resolve, 6000));
+            await new Promise(resolve => setTimeout(resolve, 500));
             expect(server.fixtures).toEqual([]);
         }, 7000);
 
@@ -117,11 +117,11 @@ workers.forEach(instance => {
             const callback = jest.fn();
             blockchain.on('disconnected', callback);
 
-            blockchain.settings.pingTimeout = 2500; // ping message will be called 3 sec. after subscription
+            blockchain.settings.pingTimeout = 200; // ping message will be called 0.2 sec. after subscription
             await blockchain.subscribe({ type: 'block' });
             await blockchain.unsubscribe({ type: 'block' });
 
-            await new Promise(resolve => setTimeout(resolve, 4000));
+            await new Promise(resolve => setTimeout(resolve, 500));
 
             expect(callback).toHaveBeenCalled();
             expect(server.getFixtures()!.length).toEqual(2);
@@ -142,7 +142,7 @@ workers.forEach(instance => {
                 // Error [ERR_UNHANDLED_ERROR]: Unhandled error. (websocket)
                 // at Connection.RippleAPI.connection.on (../../node_modules/ripple-lib/src/api.ts:133:14)
                 if (instance.name === 'ripple') {
-                    setTimeout(() => blockchain.disconnect(), 1000);
+                    setTimeout(() => blockchain.disconnect(), 100);
                 } else {
                     blockchain.disconnect();
                 }
@@ -216,7 +216,7 @@ workers.forEach(instance => {
         });
 
         it('Connect error (server field with invalid values)', async () => {
-            blockchain.settings.timeout = 4000;
+            blockchain.settings.timeout = 200;
             blockchain.settings.server = [
                 'gibberish',
                 'ws://gibberish',
