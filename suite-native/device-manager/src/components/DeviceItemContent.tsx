@@ -14,6 +14,8 @@ import { TrezorDevice } from '@suite-common/suite-types';
 import { TypographyStyle } from '@trezor/theme';
 import { useActiveColorScheme } from '@suite-native/theme';
 
+import { DeviceItemConnectionStatus } from './DeviceItemConnectionStatus';
+
 type DeviceItemContentProps = {
     deviceId?: TrezorDevice['id'];
     isPortfolioLabelDisplayed?: boolean;
@@ -72,10 +74,7 @@ export const DeviceItemContent = ({
                                 </Text>
                             )
                         ) : (
-                            // TODO: when we enable remember mode, grey 'Disconnected' label has to be displayed.
-                            <Text variant="label" color="textSecondaryHighlight">
-                                <Translation id="deviceManager.status.connected" />
-                            </Text>
+                            <DeviceItemConnectionStatus />
                         )}
                     </Box>
                 )}
