@@ -97,6 +97,8 @@ module.exports = {
                 includeTypes: true,
             },
         ],
+        // This promotes using default case, which is not always correct (explicit is better than implicit)
+        'default-case': 'off',
         // Does not work with TypeScript export type.
         'import/prefer-default-export': 'off',
         'import/no-named-as-default': 'off', // default export is forbidden anyway
