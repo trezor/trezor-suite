@@ -165,6 +165,7 @@ export const PassphraseModal = ({ device }: PassphraseModalProps) => {
     // show 2-column modal for selecting between standard and hidden wallets
     return (
         <SmallModal
+            headingSize="large"
             isCancelable
             onCancel={onCancel}
             heading={<Translation id="TR_SELECT_WALLET_TO_ACCESS" />}

@@ -8,6 +8,7 @@ import { Icon, IconType } from '../../assets/Icon/Icon';
 import { Stepper } from '../../loaders/Stepper/Stepper';
 import { IconButton } from '../../buttons/IconButton/IconButton';
 import { H3 } from '../../typography/Heading/Heading';
+import { ButtonSize } from '../../buttons/buttonStyleUtils';
 
 const CLOSE_ICON_SIZE = spacings.xxl;
 const CLOSE_ICON_MARGIN = 16;
@@ -79,7 +80,16 @@ const HeadingContainer = styled.div<HeadingContainerProps>`
         `}
 `;
 
-const Heading = styled(H3)<{ isWithIcon?: boolean }>`
+type HeadingSize = 'default' | 'large';
+
+const HEADING_SIZES: Record<HeadingSize, { css: string; buttonSize: ButtonSize }> = {
+    default: { css: typography.titleSmall, buttonSize: 'small' },
+    large: { css: typography.titleMedium, buttonSize: 'medium' },
+};
+
+type HeadingProps = { isWithIcon?: boolean; $headingSize: HeadingSize };
+
+const Heading = styled(H3)<HeadingProps>`
     ${({ isWithIcon }) =>
         isWithIcon &&
         css`
@@ -89,6 +99,7 @@ const Heading = styled(H3)<{ isWithIcon?: boolean }>`
                 margin-right: ${spacingsPx.xs};
             }
         `}
+    ${({ $headingSize }) => HEADING_SIZES[$headingSize].css};
 `;
 
 const Subheading = styled.span<{ isWithMargin: boolean }>`
@@ -161,6 +172,7 @@ interface ModalProps {
     subheading?: ReactNode;
     modalPrompt?: ReactNode;
     headerIcon?: IconType;
+    headingSize?: HeadingSize;
     isHeadingCentered?: boolean;
     description?: ReactNode;
     bottomBarComponents?: ReactNode;
@@ -181,6 +193,7 @@ const Modal = ({
     subheading,
     modalPrompt,
     headerIcon,
+    headingSize = 'default',
     isHeadingCentered,
     description, // LEGACY PROP
     bottomBarComponents,
@@ -251,7 +264,7 @@ const Modal = ({
                                     </Subheading>
                                 )}
 
-                                <Heading isWithIcon={!!headerIcon}>
+                                <Heading $headingSize={headingSize} isWithIcon={!!headerIcon}>
                                     {headerIcon && (
                                         <Icon
                                             icon={headerIcon}
@@ -280,7 +293,7 @@ const Modal = ({
                                         icon="CROSS"
                                         data-test="@modal/close-button"
                                         onClick={onCancel}
-                                        size="small"
+                                        size={HEADING_SIZES[headingSize].buttonSize}
                                     />
                                 )}
                             </HeaderComponentsContainer>
