@@ -8060,7 +8060,7 @@ __metadata:
     jotai: "npm:1.9.1"
     react: "npm:18.2.0"
     react-native: "npm:0.71.8"
-    react-native-mmkv: "npm:^2.7.0"
+    react-native-mmkv: "npm:2.11.0"
     react-native-restart: "npm:^0.0.27"
     redux-persist: "npm:6.0.0"
     typescript: "npm:5.3.2"
@@ -9342,7 +9342,7 @@ __metadata:
     react-native-config: "npm:^1.5.0"
     react-native-flipper: "npm:0.164.0"
     react-native-gesture-handler: "npm:^2.9.0"
-    react-native-mmkv: "npm:^2.7.0"
+    react-native-mmkv: "npm:2.11.0"
     react-native-reanimated: "npm:3.5.4"
     react-native-restart: "npm:^0.0.27"
     react-native-safe-area-context: "npm:^4.5.0"
@@ -29344,13 +29344,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-mmkv@npm:^2.7.0":
-  version: 2.7.0
-  resolution: "react-native-mmkv@npm:2.7.0"
+"react-native-mmkv@npm:2.11.0":
+  version: 2.11.0
+  resolution: "react-native-mmkv@npm:2.11.0"
   peerDependencies:
     react: "*"
     react-native: ">=0.71.0"
-  checksum: d606d50b10827d9a5575bc3c9aaed86db23ca3f9c4a397c02891fd9ec12a538f9f1f825766ae09ffe6442caafafd9d7ba04977a6a8ac1bd2bfe2baec8b08a56b
+  checksum: bdf2622ae2b579b8dad7ecb5e43e9698db11a2a4248dd1f5ef696e9af1b753b83a23e1e4e0e0cdc04b052dbef53813046348eb2b74ae1aa032ae33122bf200f5
   languageName: node
   linkType: hard
 
