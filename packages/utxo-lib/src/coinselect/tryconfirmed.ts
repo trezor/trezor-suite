@@ -33,13 +33,6 @@ export function tryConfirmed(
     const coinbase = options.coinbase || 100;
 
     return (utxosO, outputs, feeRate, optionsIn) => {
-        // TODO: move this to params validation
-        utxosO.forEach(utxo => {
-            if (utxo.coinbase == null || utxo.own == null || utxo.confirmations == null) {
-                throw new Error('Missing information.');
-            }
-        });
-
         const utxos = filterCoinbase(utxosO, coinbase);
 
         if (utxos.length === 0) {
