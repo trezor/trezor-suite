@@ -25,7 +25,7 @@ import { analytics, EventType } from '@suite-native/analytics';
 
 import { fetchBundleDescriptors } from './utils';
 
-const DISCOVERY_BATCH_SIZE = 3;
+const DISCOVERY_BATCH_SIZE = 2;
 
 // Note: This is for analytics purposes
 let discoveryStartTime: number | null = null;
