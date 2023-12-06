@@ -17,7 +17,7 @@ import { selectIsAccountAlreadyDiscovered } from '@suite-native/accounts';
 import TrezorConnect from '@trezor/connect';
 import { DiscoveryItem } from '@suite-common/wallet-types';
 import { getDerivationType } from '@suite-common/wallet-utils';
-import { Network } from '@suite-common/wallet-config';
+import { Network, NetworkSymbol } from '@suite-common/wallet-config';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import { supportedMainnetSymbols, supportedNetworkSymbols } from '@suite-native/config';
 import { requestDeviceAccess } from '@suite-native/device-mutex';
@@ -25,7 +25,25 @@ import { analytics, EventType } from '@suite-native/analytics';
 
 import { fetchBundleDescriptors } from './utils';
 
-const DISCOVERY_BATCH_SIZE = 2;
+const DISCOVERY_DEFAULT_BATCH_SIZE = 2;
+
+const DISCOVERY_BATCH_SIZE_PER_COIN: Partial<Record<NetworkSymbol, number>> = {
+    bch: 1,
+    dash: 1,
+    btg: 1,
+    dgb: 1,
+    nmc: 1,
+    vtc: 1,
+    zec: 1,
+    etc: 1,
+};
+
+const getBatchSizeByCoin = (coin: NetworkSymbol): number => {
+    if (coin in DISCOVERY_BATCH_SIZE_PER_COIN) {
+        return DISCOVERY_BATCH_SIZE_PER_COIN[coin]!;
+    }
+    return DISCOVERY_DEFAULT_BATCH_SIZE;
+};
 
 // Note: This is for analytics purposes
 let discoveryStartTime: number | null = null;
@@ -131,6 +149,7 @@ const discoverNetworkBatchThunk = createThunk(
         { dispatch, getState },
     ) => {
         const discovery = selectDiscoveryForDevice(getState());
+        const batchSize = getBatchSizeByCoin(network.symbol);
 
         if (!discovery || !deviceState) {
             return;
@@ -138,7 +157,7 @@ const discoverNetworkBatchThunk = createThunk(
 
         const accountType = network.accountType || 'normal';
 
-        const lastDiscoveredAccountIndex = (round - 1) * DISCOVERY_BATCH_SIZE;
+        const lastDiscoveredAccountIndex = (round - 1) * batchSize;
 
         // Skip Cardano legacy/ledger account types if device does not support it.
         const isIncompatibleCardanoType =
@@ -153,7 +172,7 @@ const discoverNetworkBatchThunk = createThunk(
 
         const chunkBundle: Array<DiscoveryItem> = [];
 
-        A.makeWithIndex(DISCOVERY_BATCH_SIZE, index => {
+        A.makeWithIndex(batchSize, index => {
             const accountPath = network.bip43Path.replace(
                 'i',
                 (lastDiscoveredAccountIndex + index).toString(),
