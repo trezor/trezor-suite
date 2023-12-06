@@ -44,7 +44,7 @@ const deviceToContentStyles = {
     [DeviceModelInternal.T2T1]: {
         fontSource: require('../../../../packages/theme/fonts/RobotoMono-Regular.ttf'),
         fontSize: 20,
-        lineWidth: 215,
+        lineWidth: 230,
         lineHeight: 25,
         pagerOffset: 60,
     },
