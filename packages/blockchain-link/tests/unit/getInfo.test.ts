@@ -28,14 +28,14 @@ workers.forEach(instance => {
         fixtures[instance.name].forEach(f => {
             it(f.description, async () => {
                 server.setFixtures(f.serverFixtures);
-                try {
-                    const response = await blockchain.getInfo();
-                    expect(response).toEqual({
+                const promise = blockchain.getInfo();
+                if (!f.error) {
+                    expect(await promise).toEqual({
                         ...f.response,
                         url: `ws://localhost:${server.options.port}`,
                     });
-                } catch (error) {
-                    expect(error.message).toEqual(f.error);
+                } else {
+                    await expect(promise).rejects.toThrow(f.error);
                 }
             });
         });

@@ -29,11 +29,11 @@ workers.forEach(instance => {
         fixtures[instance.name].forEach(f => {
             it(f.description, async () => {
                 server.setFixtures(f.serverFixtures);
-                try {
-                    const response = await blockchain.pushTransaction(f.params);
-                    expect(response).toEqual(f.response);
-                } catch (error) {
-                    expect(error.message).toEqual(f.error);
+                const promise = blockchain.pushTransaction(f.params);
+                if (!f.error) {
+                    expect(await promise).toEqual(f.response);
+                } else {
+                    await expect(promise).rejects.toThrow(f.error);
                 }
             });
         });

@@ -62,8 +62,8 @@ describe('Worker', () => {
     it('Worker error (invalid worker path)', async () => {
         try {
             blockchain.settings.worker = 'foo.bar';
-            const result = await blockchain.connect();
-            expect(result).toBe(true);
+            await blockchain.connect();
+            fail('Did not throw');
         } catch (error) {
             expect(error.code).toBe('blockchain_link/worker_not_found');
             expect(error.message).toBe('Worker not found');
@@ -74,6 +74,7 @@ describe('Worker', () => {
         try {
             blockchain.settings.worker = () => 1;
             await blockchain.connect();
+            fail('Did not throw');
         } catch (error) {
             expect(error.code).toBe('blockchain_link/worker_invalid');
             expect(error.message).toBe('Invalid worker object');
@@ -84,6 +85,7 @@ describe('Worker', () => {
         try {
             blockchain.settings.worker = () => {};
             await blockchain.connect();
+            fail('Did not throw');
         } catch (error) {
             expect(error.code).toBe('blockchain_link/worker_invalid');
             expect(error.message).toBe('Invalid worker object');
@@ -93,10 +95,9 @@ describe('Worker', () => {
     it('Worker error (handshake timeout)', async () => {
         try {
             blockchain.settings.timeout = 2500;
-            blockchain.settings.worker = () => ({
-                postMessage: () => {},
-            });
+            blockchain.settings.worker = () => ({ postMessage: () => {} });
             await blockchain.connect();
+            fail('Did not throw');
         } catch (error) {
             expect(error.code).toBe('blockchain_link/worker_timeout');
             expect(error.message).toBe('Worker timeout');
@@ -123,6 +124,7 @@ describe('Worker', () => {
                 });
             };
             await blockchain.connect();
+            fail('Did not throw');
         } catch (error) {
             expect(error.code).toBe('blockchain_link/worker_runtime');
         }
@@ -140,6 +142,7 @@ describe('Worker', () => {
         try {
             blockchain.settings.worker = 'foo.bar';
             await blockchain.connect();
+            fail('Did not throw');
         } catch (error) {
             expect(error.code).toBe('blockchain_link/worker_runtime');
         }
@@ -167,6 +170,7 @@ describe('Worker', () => {
                 });
             };
             await blockchain.connect();
+            fail('Did not throw');
         } catch (error) {
             expect(error.code).toBe('blockchain_link/worker_runtime');
         }
@@ -187,6 +191,7 @@ describe('Worker', () => {
         try {
             blockchain.settings.worker = 'foo.bar';
             await blockchain.connect();
+            fail('Did not throw');
         } catch (error) {
             expect(error.code).toBe('blockchain_link/worker_runtime');
         }

@@ -28,12 +28,12 @@ workers.forEach(instance => {
         fixtures[instance.name].forEach(f => {
             it(f.description, async () => {
                 server.setFixtures(f.serverFixtures);
-                try {
-                    // @ts-expect-error incorrect params
-                    const response = await blockchain.getAccountInfo(f.params);
-                    expect(response).toEqual(f.response);
-                } catch (error) {
-                    expect(error.message).toEqual(f.error);
+                // @ts-expect-error incorrect params
+                const promise = blockchain.getAccountInfo(f.params);
+                if (!f.error) {
+                    expect(await promise).toEqual(f.response);
+                } else {
+                    await expect(promise).rejects.toThrow(f.error);
                 }
             });
         });
