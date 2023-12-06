@@ -8,7 +8,7 @@ export default [
             },
         ],
         outputs: ['100000'],
-        expected: 'Missing information',
+        expected: 'Unexpected unreturned result',
         dustThreshold: 546,
     },
 ];

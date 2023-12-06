@@ -1,5 +1,4 @@
 import { composeTx } from '../src';
-import { convertFeeRate } from '../src/compose/composeUtils';
 import * as NETWORKS from '../src/networks';
 
 import { verifyTxBytes } from './compose.utils';
@@ -88,32 +87,5 @@ describe('composeTx addresses cross-check', () => {
                 });
             });
         });
-    });
-});
-
-describe('composeUtils', () => {
-    it('convertFeeRate', () => {
-        // valid
-        expect(convertFeeRate('1')).toEqual(1);
-        expect(convertFeeRate('1.1')).toEqual(1.1);
-        expect(convertFeeRate(1)).toEqual(1);
-        expect(convertFeeRate(1.1)).toEqual(1.1);
-
-        // invalid
-        expect(convertFeeRate(Number.MAX_SAFE_INTEGER + 1)).toBeUndefined();
-        expect(convertFeeRate('9007199254740992')).toBeUndefined(); // Number.MAX_SAFE_INTEGER + 1 as string
-        expect(convertFeeRate('-1')).toBeUndefined();
-        expect(convertFeeRate('-1')).toBeUndefined();
-        expect(convertFeeRate('aaa')).toBeUndefined();
-        expect(convertFeeRate('')).toBeUndefined();
-        expect(convertFeeRate(-1)).toBeUndefined();
-        expect(convertFeeRate(0)).toBeUndefined();
-        expect(convertFeeRate('0')).toBeUndefined();
-        expect(convertFeeRate(NaN)).toBeUndefined();
-        expect(convertFeeRate(Infinity)).toBeUndefined();
-        // @ts-expect-error invalid arg
-        expect(convertFeeRate()).toBeUndefined();
-        // @ts-expect-error invalid arg
-        expect(convertFeeRate(null)).toBeUndefined();
     });
 });

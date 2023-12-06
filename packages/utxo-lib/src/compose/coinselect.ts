@@ -1,66 +1,23 @@
 import BN from 'bn.js';
 import { split as bitcoinJsSplit } from '../coinselect/outputs/split';
 import { coinselect as bitcoinJsCoinselect } from '../coinselect';
-import { getFeePolicy, transactionBytes } from '../coinselect/coinselectUtils';
-import { convertInputs, convertOutputs } from './composeUtils';
-import {
-    ComposeInput,
-    ComposeOutput,
-    ComposeChangeAddress,
-    CoinSelectPaymentType,
-    CoinSelectOptions,
-    CoinSelectSuccess,
-    CoinSelectFailure,
-} from '../types';
-import type { Network } from '../networks';
+import { transactionBytes } from '../coinselect/coinselectUtils';
+import { CoinSelectRequest, CoinSelectSuccess, CoinSelectFailure } from '../types';
 
-export function coinselect(
-    txType: CoinSelectPaymentType,
-    utxos: ComposeInput[],
-    rOutputs: ComposeOutput[],
-    changeAddress: ComposeChangeAddress,
-    feeRate: number,
-    longTermFeeRate: number | undefined,
-    countMax: boolean,
-    countMaxId: number,
-    dustThreshold: number,
-    network: Network,
-    baseFee?: number,
-    floorBaseFee?: boolean,
-    skipPermutation?: boolean,
-): CoinSelectSuccess | CoinSelectFailure {
-    const inputs0 = convertInputs(utxos, txType);
-    const outputs0 = convertOutputs(rOutputs, network, txType);
-    const feePolicy = getFeePolicy(network);
-    // NOTE: use "send-max" to create CoinSelectOutput since we don't know the final amount yet
-    const [changeOutput] = convertOutputs(
-        [{ type: 'send-max', ...changeAddress }],
-        network,
-        txType,
-    );
-    const options: CoinSelectOptions = {
-        txType,
-        changeOutput,
-        dustThreshold,
-        longTermFeeRate,
-        baseFee,
-        floorBaseFee,
-        skipPermutation,
-        feePolicy,
-    };
-
-    const algorithm = countMax ? bitcoinJsSplit : bitcoinJsCoinselect;
+export function coinselect(request: CoinSelectRequest): CoinSelectSuccess | CoinSelectFailure {
+    const { sendMaxOutputIndex } = request;
+    const algorithm = sendMaxOutputIndex >= 0 ? bitcoinJsSplit : bitcoinJsCoinselect;
     // finalize using requested custom inputs or use coin select algorithm
-    const result = algorithm(inputs0, outputs0, feeRate, options);
+    const result = algorithm(request.inputs, request.outputs, request.feeRate, request);
     if (!result.inputs || !result.outputs) {
         return { success: false };
     }
 
     const { fee, inputs, outputs } = result;
-    const max = countMaxId !== -1 ? outputs[countMaxId].value : undefined;
+    const max = sendMaxOutputIndex >= 0 ? outputs[sendMaxOutputIndex].value : undefined;
 
     const totalSpent = outputs
-        .filter((_output, i) => i !== rOutputs.length)
+        .filter((_output, i) => i !== request.outputs.length)
         .map(o => o.value)
         .reduce((a, b) => a.add(new BN(b)), new BN(0))
         .add(new BN(fee))

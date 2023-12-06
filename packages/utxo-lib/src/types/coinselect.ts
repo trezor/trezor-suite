@@ -37,6 +37,13 @@ export interface CoinSelectOutputFinal {
     value: string;
 }
 
+export interface CoinSelectRequest extends CoinSelectOptions {
+    inputs: CoinSelectInput[];
+    outputs: CoinSelectOutput[];
+    sendMaxOutputIndex: number;
+    feeRate: number;
+}
+
 export type CoinSelectResult =
     | {
           fee: number;

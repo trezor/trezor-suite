@@ -111,9 +111,7 @@ export interface ComposedTransaction<
 export const COMPOSE_ERROR_TYPES = [
     'MISSING-UTXOS',
     'MISSING-OUTPUTS',
-    'INCORRECT-OUTPUT-TYPE',
     'INCORRECT-FEE-RATE',
-    'TWO-SEND-MAX',
     'NOT-ENOUGH-FUNDS',
 ] as const;
 
@@ -124,7 +122,7 @@ export type ComposeResultError =
       }
     | {
           type: 'error';
-          error: 'COINSELECT';
+          error: 'INCORRECT-UTXO' | 'INCORRECT-OUTPUT' | 'COINSELECT';
           message: string;
       };
 
