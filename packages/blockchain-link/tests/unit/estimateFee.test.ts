@@ -29,12 +29,12 @@ workers.forEach(instance => {
         fixtures[instance.name].forEach(f => {
             it(f.description, async () => {
                 server.setFixtures(f.serverFixtures);
-                try {
-                    // @ts-expect-error
-                    const response = await blockchain.estimateFee(f.params);
-                    expect(response).toEqual(f.response);
-                } catch (error) {
-                    expect(error.message).toEqual(f.error);
+                // @ts-expect-error
+                const promise = blockchain.estimateFee(f.params);
+                if (!f.error) {
+                    expect(await promise).toEqual(f.response);
+                } else {
+                    await expect(promise).rejects.toThrow(f.error);
                 }
             });
         });
