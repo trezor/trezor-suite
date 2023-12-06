@@ -33,8 +33,19 @@ const APP_STARTED_TIMESTAMP = Date.now();
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
 
+// NOTE: This is a workaround wrapper for connect methods to prevent sending useEmptyPassphrase as undefined until we will implement passphrase behavior in mobile.
 type ConnectKey = keyof typeof TrezorConnect;
-const wrappedMethods = ['getAccountInfo'];
+const wrappedMethods = [
+    'getAccountInfo',
+    'blockchainEstimateFee',
+    'blockchainSetCustomBackend',
+    'blockchainSubscribeFiatRates',
+    'blockchainGetCurrentFiatRates',
+    'blockchainUnsubscribe',
+    'cardanoGetPublicKey',
+    'getDeviceState',
+    'getAccountDescriptor',
+];
 
 const AppComponent = () => {
     const dispatch = useDispatch();
