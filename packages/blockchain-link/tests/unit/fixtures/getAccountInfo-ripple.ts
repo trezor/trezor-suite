@@ -96,8 +96,6 @@ export default [
                 transactions: [
                     {
                         type: 'unknown',
-                        amount: '0',
-                        fee: '0',
                         targets: [],
                         internalTransfers: [],
                         tokens: [],
