@@ -115,12 +115,7 @@ export interface Transaction {
     ethereumSpecific?: BlockbookTransaction['ethereumSpecific'];
     internalTransfers: InternalTransfer[];
     cardanoSpecific?: {
-        subtype:
-            | 'withdrawal'
-            | 'stake_delegation'
-            | 'stake_registration'
-            | 'stake_deregistration'
-            | null;
+        subtype?: 'withdrawal' | 'stake_delegation' | 'stake_registration' | 'stake_deregistration';
         withdrawal?: string;
         deposit?: string;
     };
