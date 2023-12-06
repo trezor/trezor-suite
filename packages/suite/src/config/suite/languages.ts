@@ -2,7 +2,7 @@ export const TRANSLATION_PSEUDOLANGUAGE = 'lol' as const;
 
 const LANGUAGES = {
     en: { name: 'English', en: 'English', type: 'official' },
-    es: { name: 'Español', en: 'Spanish', type: 'community' },
+    es: { name: 'Español', en: 'Spanish', type: 'official' },
     af: { name: 'Afrikaans', en: 'Afrikaans' },
     ar: { name: 'العربية‬', en: 'Arabic' },
     ca: { name: 'Català', en: 'Catalan' },
