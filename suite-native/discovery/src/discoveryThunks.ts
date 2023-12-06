@@ -257,13 +257,7 @@ export const createDescriptorPreloadedDiscoveryThunk = createThunk(
         const networks = areTestnetsEnabled ? supportedNetworkSymbols : supportedMainnetSymbols;
 
         const deviceAccessResponse = await requestDeviceAccess(() =>
-            dispatch(
-                getAvailableCardanoDerivationsThunk({
-                    deviceState,
-                    device,
-                    isUseEmptyPassphraseForced: true,
-                }),
-            ).unwrap(),
+            dispatch(getAvailableCardanoDerivationsThunk({ deviceState, device })).unwrap(),
         );
 
         if (!deviceAccessResponse.success) return false;

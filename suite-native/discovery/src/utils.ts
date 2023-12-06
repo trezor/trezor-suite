@@ -9,7 +9,6 @@ import { DiscoveryDescriptorItem } from './types';
 export const fetchBundleDescriptors = async (bundle: DiscoveryItem[]) => {
     const { success, payload } = await TrezorConnect.getAccountDescriptor({
         bundle,
-        useEmptyPassphrase: true,
     });
 
     if (success && payload)
