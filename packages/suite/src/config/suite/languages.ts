@@ -17,7 +17,7 @@ const LANGUAGES = {
     hu: { name: 'Magyar', en: 'Hungarian', type: 'community' },
     id: { name: 'Bahasa Indonesia', en: 'Indonesian' },
     it: { name: 'Italiano', en: 'Italian', type: 'community' },
-    ja: { name: '日本語（ベータ版）', en: 'Japanese (BETA)', type: 'community' },
+    ja: { name: '日本語（ベータ版）', en: 'Japanese', type: 'community' },
     jv: { name: 'Basa Jawa', en: 'Javanese' },
     ko: { name: '한국어', en: 'Korean' },
     nl: { name: 'Nederlands', en: 'Dutch' },
