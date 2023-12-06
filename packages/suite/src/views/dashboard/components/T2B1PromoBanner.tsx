@@ -154,7 +154,7 @@ const ButtonShopNow = styled(Button)`
     background-color: #9be887;
     width: 100%;
     height: 100%;
-
+    z-index: 1;
     color: black;
 
     :hover {
