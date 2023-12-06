@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import * as SplashScreen from 'expo-splash-screen';
 import * as Sentry from '@sentry/react-native';
 
+import TrezorConnect from '@trezor/connect';
 import { selectIsAppReady, selectIsConnectInitialized, StoreProvider } from '@suite-native/state';
 // import { NotificationRenderer } from '@suite-native/notifications';
 import { ToastRenderer } from '@suite-native/toasts';
@@ -32,6 +33,9 @@ const APP_STARTED_TIMESTAMP = Date.now();
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
 
+type ConnectKey = keyof typeof TrezorConnect;
+const wrappedMethods = ['getAccountInfo'];
+
 const AppComponent = () => {
     const dispatch = useDispatch();
     const formattersConfig = useFormattersConfig();
@@ -40,6 +44,18 @@ const AppComponent = () => {
 
     useReportAppInitToAnalytics(APP_STARTED_TIMESTAMP);
     useTransactionCache();
+
+    wrappedMethods.forEach(key => {
+        const original: any = TrezorConnect[key as ConnectKey];
+        if (!original) return;
+        (TrezorConnect[key as ConnectKey] as any) = async (params: any) => {
+            const result = await original({
+                ...params,
+                useEmptyPassphrase: true,
+            });
+            return result;
+        };
+    });
 
     useEffect(() => {
         if (!isConnectInitialized) {
