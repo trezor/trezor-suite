@@ -65,6 +65,7 @@ const getTypography = (size: ButtonSize) => {
 };
 
 const Content = styled.span<ContentProps>`
+    display: inline-flex;
     white-space: nowrap;
 
     ${({ size }) => getTypography(size)};
