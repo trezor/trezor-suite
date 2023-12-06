@@ -14,7 +14,7 @@ Welcome to the Trezor Suite repository! This repository contains the source code
 
 -   [NVM](https://github.com/nvm-sh/nvm)
 -   [Yarn](https://yarnpkg.com/lang/en/docs/install/)
--   [Git LFS](https://git-lfs.github.com/)
+-   [Git LFS](https://git-lfs.github.com/) (For Linux/Ubuntu, [after adding the repository](https://packagecloud.io/github/git-lfs/install) do `sudo apt-get install git-lfs`, more info [here](https://github.com/git-lfs/git-lfs/blob/main/INSTALLING.md))
 
 ### Getting started
 
