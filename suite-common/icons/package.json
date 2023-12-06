@@ -11,14 +11,14 @@
         "generate-icons": "yarn tsx generateIcons.js"
     },
     "dependencies": {
-        "@shopify/react-native-skia": "0.1.214",
+        "@shopify/react-native-skia": "0.1.225",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
         "react": "18.2.0",
         "react-native": "0.71.8",
-        "react-native-reanimated": "3.5.4"
+        "react-native-reanimated": "3.6.1"
     },
     "devDependencies": {
         "jest": "29.5.0",
