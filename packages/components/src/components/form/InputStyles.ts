@@ -124,5 +124,7 @@ export const Label = styled.label<{ $size?: InputSize; isDisabled?: boolean }>`
         transform 0.12s ${motionEasingStrings.enter},
         font-size 0.12s ${motionEasingStrings.enter};
     transform-origin: 0;
+
+    /* breaks tooltips at the moment – could be solved by building tooltip into the label component */
     pointer-events: none;
 `;
