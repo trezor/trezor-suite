@@ -238,6 +238,7 @@ export const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: AddAcc
         <StyledModal
             isCancelable
             onCancel={onCancel}
+            headingSize="large"
             bottomBarComponents={
                 selectedNetwork &&
                 (isSelectedNetworkEnabled ? (
