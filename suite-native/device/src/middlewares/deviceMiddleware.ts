@@ -53,9 +53,7 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
 
         // Request authorization of a newly acquired device.
         if (deviceActions.selectDevice.match(action) && !device?.state) {
-            requestPrioritizedDeviceAccess(() =>
-                dispatch(authorizeDevice({ isUseEmptyPassphraseForced: true })),
-            );
+            requestPrioritizedDeviceAccess(() => dispatch(authorizeDevice()));
         }
 
         if (
