@@ -1,16 +1,22 @@
 import { A, pipe } from '@mobily/ts-belt';
 import { fromUnixTime, getUnixTime } from 'date-fns';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import TrezorConnect from '@trezor/connect';
 import { AccountBalanceHistory as AccountMovementHistory } from '@trezor/blockchain-link';
+import {
+    AccountBalanceHistory,
+    TransactionCacheEngine,
+} from '@suite-common/transaction-cache-engine';
 
 import { BalanceMovementEvent, GroupedBalanceMovementEvent, AccountItem } from './types';
 
 /**
  * Calculates received and sent values of each balance movement point.
  */
-export const formatBalanceMovementEventsAmounts = (balanceMovements: AccountMovementHistory[]) =>
+export const formatBalanceMovementEventsAmounts = (
+    balanceMovements: Array<AccountMovementHistory | AccountBalanceHistory>,
+): readonly BalanceMovementEvent[] =>
     A.map(balanceMovements, balanceMovement => {
         const sentTotal = Number(balanceMovement.sent);
         const receivedTotal = Number(balanceMovement.received);
@@ -106,8 +112,14 @@ export const getAccountMovementEvents = async ({
 }) => {
     const { coin, descriptor } = account;
 
-    const { success, payload: accountHistoryMovements } =
-        await TrezorConnect.blockchainGetAccountBalanceHistory({
+    const getBalanceHistory = async () => {
+        if (getNetworkType(coin) === 'ripple') {
+            return TransactionCacheEngine.getAccountBalanceHistory({
+                coin,
+                descriptor,
+            });
+        }
+        const connectBalanceHistory = await TrezorConnect.blockchainGetAccountBalanceHistory({
             coin,
             descriptor,
             from: startOfTimeFrameDate ? getUnixTime(startOfTimeFrameDate) : undefined,
@@ -119,9 +131,16 @@ export const getAccountMovementEvents = async ({
             currencies: ['usd'],
         });
 
-    if (!success) {
-        throw new Error(`Get account balance movement error: ${accountHistoryMovements.error}`);
-    }
+        if (!connectBalanceHistory?.success) {
+            throw new Error(
+                `Get account balance movement error: ${connectBalanceHistory.payload.error}`,
+            );
+        }
+
+        return connectBalanceHistory.payload;
+    };
+
+    const accountHistoryMovements = await getBalanceHistory();
 
     /** Determines relative maximum distance of adjacent balance movements to be grouped together. */
     const GROUPING_THRESHOLD =

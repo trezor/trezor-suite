@@ -15,6 +15,7 @@ import { NavigationContainerWithAnalytics } from '@suite-native/navigation';
 import { AuthenticatorProvider } from '@suite-native/biometrics';
 import { FeatureMessageScreen, MessageSystemBannerRenderer } from '@suite-native/message-system';
 import { IntlProvider } from '@suite-native/intl';
+import { useTransactionCache } from '@suite-native/accounts';
 
 import { RootStackNavigator } from './navigation/RootStackNavigator';
 import { StylesProvider } from './StylesProvider';
@@ -38,6 +39,7 @@ const AppComponent = () => {
     const isConnectInitialized = useSelector(selectIsConnectInitialized);
 
     useReportAppInitToAnalytics(APP_STARTED_TIMESTAMP);
+    useTransactionCache();
 
     useEffect(() => {
         if (!isConnectInitialized) {
