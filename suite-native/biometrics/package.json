@@ -20,6 +20,6 @@
         "expo-local-authentication": "13.7.0",
         "jotai": "1.9.1",
         "react": "18.2.0",
-        "react-native": "0.71.7"
+        "react-native": "0.71.8"
     }
 }

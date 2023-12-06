@@ -29,7 +29,7 @@
         "@trezor/theme": "workspace:*",
         "expo-linear-gradient": "^12.5.0",
         "react": "18.2.0",
-        "react-native": "0.71.4",
+        "react-native": "0.71.8",
         "react-native-svg": "^13.8.0",
         "react-redux": "8.0.7"
     }
