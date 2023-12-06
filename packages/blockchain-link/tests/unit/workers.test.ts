@@ -94,7 +94,7 @@ describe('Worker', () => {
 
     it('Worker error (handshake timeout)', async () => {
         try {
-            blockchain.settings.timeout = 2500;
+            blockchain.settings.timeout = 200;
             blockchain.settings.worker = () => ({ postMessage: () => {} });
             await blockchain.connect();
             fail('Did not throw');
@@ -120,7 +120,7 @@ describe('Worker', () => {
                         // @ts-expect-error self is not typed
                         // eslint-disable-next-line no-restricted-globals
                         self.onerror(new Error('runtime error'));
-                    }, 1000);
+                    }, 100);
                 });
             };
             await blockchain.connect();
