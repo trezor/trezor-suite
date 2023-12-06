@@ -1,13 +1,20 @@
-import React from 'react';
-import { Easing } from 'react-native-reanimated';
+import React, { useEffect, useMemo } from 'react';
+import {
+    interpolate,
+    useDerivedValue,
+    useSharedValue,
+    withRepeat,
+    withTiming,
+} from 'react-native-reanimated';
 
 import {
     Canvas,
-    useComputedValue,
     vec,
-    useTiming,
     RoundedRect,
-    RadialGradient,
+    LinearGradient,
+    Group,
+    rrect,
+    rect,
 } from '@shopify/react-native-skia';
 
 import { useNativeStyles } from '@trezor/styles';
@@ -19,7 +26,6 @@ type BoxSkeletonProps = {
     borderRadius?: number;
 };
 
-const GRADIENT_OFFSET_DIVISOR = 8;
 const ANIMATION_DURATION = 1200;
 
 export const BoxSkeleton = ({
@@ -30,32 +36,45 @@ export const BoxSkeleton = ({
     const {
         utils: { colors },
     } = useNativeStyles();
+    const progress = useSharedValue(0);
 
-    // Offsetting the gradient center horizontally behind the rounded rect edges make the animations look smoother.
-    const gradientHorizontalOffset = width / GRADIENT_OFFSET_DIVISOR;
+    useEffect(() => {
+        progress.value = withRepeat(withTiming(width, { duration: ANIMATION_DURATION }), -1);
+    }, [width, progress]);
 
-    const gradientCenterHorizontalValue = useTiming(
-        { from: -gradientHorizontalOffset, to: width + gradientHorizontalOffset, loop: true },
-        { duration: ANIMATION_DURATION, easing: Easing.inOut(Easing.linear) },
-    );
+    const position = useDerivedValue(() => [
+        {
+            translateX: interpolate(progress.value, [0, width], [-width, width]),
+        },
+    ]);
 
-    const animatedGradientCenter = useComputedValue(
-        () => vec(gradientCenterHorizontalValue.current, height / 2),
-        [gradientCenterHorizontalValue],
+    const rct = useMemo(() => {
+        const coreRect = rect(0, 0, width, height);
+        return rrect(coreRect, borderRadius, borderRadius);
+    }, [width, height, borderRadius]);
+
+    const gradientColors = useMemo(
+        () => [
+            colors.backgroundSurfaceElevation1,
+            colors.backgroundSurfaceElevationNegative,
+            colors.backgroundSurfaceElevation1,
+        ],
+        [colors],
     );
 
     return (
         <Canvas style={{ width, height }}>
-            <RoundedRect x={0} y={0} width={width} height={height} r={borderRadius}>
-                <RadialGradient
-                    c={animatedGradientCenter}
-                    r={width}
-                    colors={[
-                        colors.backgroundSurfaceElevationNegative,
-                        colors.backgroundSurfaceElevation1,
-                    ]}
-                />
-            </RoundedRect>
+            <Group clip={rct}>
+                <Group transform={position}>
+                    <RoundedRect rect={rct}>
+                        <LinearGradient
+                            start={vec(0, height / 2)}
+                            end={vec(width, height / 2)}
+                            colors={gradientColors}
+                        />
+                    </RoundedRect>
+                </Group>
+            </Group>
         </Canvas>
     );
 };
