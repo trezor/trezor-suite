@@ -25,6 +25,7 @@
         "@reduxjs/toolkit": "1.9.5",
         "@sentry/core": "^7.77.0",
         "@suite-common/analytics": "workspace:*",
+        "@suite-common/assets": "workspace:*",
         "@suite-common/connect-init": "workspace:*",
         "@suite-common/device-authenticity": "workspace:*",
         "@suite-common/fiat-services": "workspace:*",

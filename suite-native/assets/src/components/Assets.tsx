@@ -16,10 +16,10 @@ import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { selectIsDeviceDiscoveryActive } from '@suite-common/wallet-core';
 import { useTranslate } from '@suite-native/intl';
+import { calculateAssetsPercentage } from '@suite-common/assets';
 
 import { DiscoveryAssetsLoader } from './DiscoveryAssetsLoader';
-import { selectAssetsWithBalances } from '../assetsSelectors';
-import { calculateAssetsPercentage } from '../utils';
+import { AssetType, selectAssetsWithBalances } from '../assetsSelectors';
 import { NetworkAssetsBottomSheet } from './NetworkAssetsBottomSheet';
 import { AssetItem } from './AssetItem';
 
@@ -41,7 +41,7 @@ export const Assets = ({ maximumAssetsVisible }: AssetsProps) => {
     const [selectedAssetSymbol, setSelectedAssetSymbol] = useState<NetworkSymbol | null>(null);
 
     const assetsDataWithPercentage = useMemo(
-        () => calculateAssetsPercentage(assetsData),
+        () => calculateAssetsPercentage<AssetType>(assetsData),
         [assetsData],
     );
 

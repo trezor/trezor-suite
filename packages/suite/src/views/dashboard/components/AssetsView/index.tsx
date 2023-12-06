@@ -3,11 +3,11 @@ import BigNumber from 'bignumber.js';
 import { AnimatePresence } from 'framer-motion';
 
 import { Icon, Button, LoadingContent, Card } from '@trezor/components';
-import { selectSupportedNetworks } from '@suite-common/wallet-core';
+import { selectCoins, selectSupportedNetworks } from '@suite-common/wallet-core';
 
 import { NETWORKS } from 'src/config/wallet';
 import { DashboardSection } from 'src/components/dashboard';
-import { Account, Network } from 'src/types/wallet';
+import { Account, CoinFiatRates } from 'src/types/wallet';
 import { Translation } from 'src/components/suite';
 import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import { useAccounts } from 'src/hooks/wallet';
@@ -18,6 +18,17 @@ import { useEnabledNetworks } from 'src/hooks/settings/useEnabledNetworks';
 import { AssetCard, AssetCardSkeleton } from './components/AssetCard';
 import { AssetRow, AssetRowSkeleton } from './components/AssetRow';
 import { spacingsPx, typography } from '@trezor/theme';
+import { AssetFiatBalance } from '@suite-common/assets';
+import { toFiatCurrency } from '@suite-common/wallet-utils';
+import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
+import { Network } from '@suite-common/wallet-config';
+
+interface AssetType {
+    symbol: string;
+    network: Network;
+    assetBalance: BigNumber;
+    assetFailed: boolean;
+}
 
 const StyledCard = styled(Card)`
     flex-direction: column;
@@ -74,22 +85,35 @@ const StyledIcon = styled(Icon)`
     margin-right: ${spacingsPx.xxs};
 `;
 
-interface assetType {
-    symbol: string;
-    network: Network;
-    assetBalance: BigNumber;
-    assetFailed: boolean;
-}
+const useAssetsFiatBalances = (assetsData: AssetType[], accounts: { [key: string]: Account[] }) => {
+    const localCurrency = useSelector(selectLocalCurrency);
+    const coins: CoinFiatRates[] = useSelector(selectCoins);
+
+    return assetsData.reduce<AssetFiatBalance[]>((acc, asset) => {
+        if (!asset) return acc;
+        const fiatRates = coins.find(item => item.symbol === asset.symbol);
+        const fiatBalance =
+            toFiatCurrency(
+                accounts[asset.symbol]
+                    .reduce((balance, account) => balance + Number(account.formattedBalance), 0)
+                    .toString() ?? '0',
+                localCurrency,
+                fiatRates?.current?.rates,
+            ) ?? '0';
+
+        return [...acc, { fiatBalance, symbol: asset.symbol }];
+    }, []);
+};
 
 export const AssetsView = () => {
+    const { dashboardAssetsGridMode } = useSelector(s => s.suite.flags);
+    const supportedNetworks = useSelector(selectSupportedNetworks);
+
     const theme = useTheme();
     const dispatch = useDispatch();
     const { discovery, getDiscoveryStatus, isDiscoveryRunning } = useDiscovery();
     const { accounts } = useAccounts(discovery);
-    const { dashboardAssetsGridMode } = useSelector(s => s.suite.flags);
-
     const { mainnets, enabledNetworks } = useEnabledNetworks();
-    const supportedNetworks = useSelector(selectSupportedNetworks);
 
     const mainnetSymbols = mainnets.map(mainnet => mainnet.symbol);
     const supportedMainnetNetworks = supportedNetworks.filter(network =>
@@ -109,7 +133,7 @@ export const AssetsView = () => {
 
     const networks = Object.keys(assets);
 
-    const assetsData: assetType[] = networks
+    const assetsData: AssetType[] = networks
         .map(symbol => {
             const network = NETWORKS.find(n => n.symbol === symbol && !n.accountType);
             if (!network) {
@@ -125,8 +149,9 @@ export const AssetsView = () => {
             const assetFailed = accounts.find(f => f.symbol === network.symbol && f.failed);
             return { symbol, network, assetFailed: !!assetFailed, assetBalance };
         })
-        .filter(data => data !== null) as assetType[];
+        .filter(data => data !== null) as AssetType[];
 
+    const assetsFiatBalances = useAssetsFiatBalances(assetsData, assets);
     const discoveryStatus = getDiscoveryStatus();
     const discoveryInProgress = discoveryStatus && discoveryStatus.status === 'loading';
     const isError = discoveryStatus && discoveryStatus.status === 'exception' && !networks.length;
@@ -175,12 +200,14 @@ export const AssetsView = () => {
         >
             {dashboardAssetsGridMode && (
                 <GridWrapper>
-                    {assetsData.map(asset => (
+                    {assetsData.map((asset, index) => (
                         <AssetCard
+                            index={index}
                             key={asset.symbol}
                             network={asset.network}
                             failed={asset.assetFailed}
                             cryptoValue={asset.assetBalance.toFixed()}
+                            assetsFiatBalances={assetsFiatBalances}
                         />
                     ))}
                     {discoveryInProgress && <AssetCardSkeleton />}
@@ -211,6 +238,7 @@ export const AssetsView = () => {
                                     failed={asset.assetFailed}
                                     cryptoValue={asset.assetBalance.toFixed()}
                                     isLastRow={i === assetsData.length - 1}
+                                    assetsFiatBalances={assetsFiatBalances}
                                 />
                             ))}
                             {discoveryInProgress && <AssetRowSkeleton />}

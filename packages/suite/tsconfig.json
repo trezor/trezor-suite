@@ -15,6 +15,7 @@
         {
             "path": "../../suite-common/analytics"
         },
+        { "path": "../../suite-common/assets" },
         {
             "path": "../../suite-common/connect-init"
         },

@@ -19,6 +19,7 @@ import { useAccountSearch, useDispatch, useLoadingSkeleton } from 'src/hooks/sui
 import { motion } from 'framer-motion';
 import { AssetInfo } from './AssetInfo';
 import { spacingsPx, typography } from '@trezor/theme';
+import { AssetFiatBalance } from '@suite-common/assets';
 
 const LogoWrapper = styled.div`
     padding-right: 12px;
@@ -124,79 +125,86 @@ interface AssetTableProps {
     failed: boolean;
     cryptoValue: string;
     isLastRow?: boolean;
+    assetsFiatBalances: AssetFiatBalance[];
 }
 
-export const AssetRow = memo(({ network, failed, cryptoValue, isLastRow }: AssetTableProps) => {
-    const { symbol } = network;
-    const dispatch = useDispatch();
-    const theme = useTheme();
-    const { setCoinFilter, setSearchString } = useAccountSearch();
+export const AssetRow = memo(
+    ({ network, failed, cryptoValue, isLastRow, assetsFiatBalances }: AssetTableProps) => {
+        const { symbol } = network;
+        const dispatch = useDispatch();
+        const theme = useTheme();
+        const { setCoinFilter, setSearchString } = useAccountSearch();
 
-    const handleLogoClick = () => {
-        dispatch(
-            goto('wallet-index', {
-                params: {
-                    symbol,
-                    accountIndex: 0,
-                    accountType: 'normal',
-                },
-            }),
-        );
-        // activate coin filter and reset account search string
-        setCoinFilter(symbol);
-        setSearchString(undefined);
-    };
+        const handleLogoClick = () => {
+            dispatch(
+                goto('wallet-index', {
+                    params: {
+                        symbol,
+                        accountIndex: 0,
+                        accountType: 'normal',
+                    },
+                }),
+            );
+            // activate coin filter and reset account search string
+            setCoinFilter(symbol);
+            setSearchString(undefined);
+        };
 
-    return (
-        <>
-            <CoinNameWrapper isLastRow={isLastRow}>
-                <AssetInfo network={network} onClick={handleLogoClick} />
-            </CoinNameWrapper>
-
-            {!failed ? (
-                <CryptoBalanceWrapper
-                    isLastRow={isLastRow}
-                    data-test={`@asset-card/${symbol}/balance`}
-                >
-                    <FiatBalanceWrapper>
-                        <FiatValue amount={cryptoValue} symbol={symbol} />
-                    </FiatBalanceWrapper>
-
-                    <CoinBalanceContainer>
-                        <AmountUnitSwitchWrapper symbol={symbol}>
-                            <CoinBalance value={cryptoValue} symbol={symbol} />
-                        </AmountUnitSwitchWrapper>
-                    </CoinBalanceContainer>
-                </CryptoBalanceWrapper>
-            ) : (
-                <FailedCol isLastRow={isLastRow}>
-                    <Translation id="TR_DASHBOARD_ASSET_FAILED" />
-
-                    <Icon
-                        style={{ paddingLeft: '4px', paddingBottom: '2px' }}
-                        icon="WARNING"
-                        color={theme.TYPE_RED}
-                        size={14}
+        return (
+            <>
+                <CoinNameWrapper isLastRow={isLastRow}>
+                    <AssetInfo
+                        network={network}
+                        onClick={handleLogoClick}
+                        assetsFiatBalances={assetsFiatBalances}
                     />
-                </FailedCol>
-            )}
-            <ExchangeRateWrapper isLastRow={isLastRow}>
-                {!isTestnet(symbol) && <PriceTicker symbol={symbol} />}
-            </ExchangeRateWrapper>
-            <ExchangeRateWrapper isLastRow={isLastRow}>
-                {!isTestnet(symbol) && <TrendTicker symbol={symbol} />}
-            </ExchangeRateWrapper>
-            <BuyButtonWrapper isLastRow={isLastRow}>
-                {!isTestnet(symbol) && (
-                    <CoinmarketBuyButton
-                        symbol={symbol}
-                        dataTest={`@dashboard/assets/table/${symbol}/buy-button`}
-                    />
+                </CoinNameWrapper>
+
+                {!failed ? (
+                    <CryptoBalanceWrapper
+                        isLastRow={isLastRow}
+                        data-test={`@asset-card/${symbol}/balance`}
+                    >
+                        <FiatBalanceWrapper>
+                            <FiatValue amount={cryptoValue} symbol={symbol} />
+                        </FiatBalanceWrapper>
+
+                        <CoinBalanceContainer>
+                            <AmountUnitSwitchWrapper symbol={symbol}>
+                                <CoinBalance value={cryptoValue} symbol={symbol} />
+                            </AmountUnitSwitchWrapper>
+                        </CoinBalanceContainer>
+                    </CryptoBalanceWrapper>
+                ) : (
+                    <FailedCol isLastRow={isLastRow}>
+                        <Translation id="TR_DASHBOARD_ASSET_FAILED" />
+
+                        <Icon
+                            style={{ paddingLeft: '4px', paddingBottom: '2px' }}
+                            icon="WARNING"
+                            color={theme.TYPE_RED}
+                            size={14}
+                        />
+                    </FailedCol>
                 )}
-            </BuyButtonWrapper>
-        </>
-    );
-});
+                <ExchangeRateWrapper isLastRow={isLastRow}>
+                    {!isTestnet(symbol) && <PriceTicker symbol={symbol} />}
+                </ExchangeRateWrapper>
+                <ExchangeRateWrapper isLastRow={isLastRow}>
+                    {!isTestnet(symbol) && <TrendTicker symbol={symbol} />}
+                </ExchangeRateWrapper>
+                <BuyButtonWrapper isLastRow={isLastRow}>
+                    {!isTestnet(symbol) && (
+                        <CoinmarketBuyButton
+                            symbol={symbol}
+                            dataTest={`@dashboard/assets/table/${symbol}/buy-button`}
+                        />
+                    )}
+                </BuyButtonWrapper>
+            </>
+        );
+    },
+);
 
 export const AssetRowSkeleton = (props: { animate?: boolean }) => {
     const { shouldAnimate } = useLoadingSkeleton();
