@@ -49,7 +49,7 @@ const hexToString = (input: string): string => {
     return str;
 };
 
-export const getSubtype = (tx: BlockfrostTransaction) => {
+const getSubtype = (tx: Pick<BlockfrostTransaction, 'txData'>) => {
     const withdrawal = tx.txData.withdrawal_count > 0;
     if (withdrawal) {
         return 'withdrawal';
@@ -57,7 +57,7 @@ export const getSubtype = (tx: BlockfrostTransaction) => {
 
     const registrations = tx.txData.stake_cert_count;
     const delegations = tx.txData.delegation_count;
-    if (registrations === 0 && delegations === 0) return null;
+    if (registrations === 0 && delegations === 0) return;
 
     if (registrations > 0) {
         if (new BigNumber(tx.txData.deposit).gt(0)) {
@@ -70,7 +70,6 @@ export const getSubtype = (tx: BlockfrostTransaction) => {
     if (delegations > 0) {
         return 'stake_delegation';
     }
-    return null;
 };
 
 export const parseAsset = (hex: string): ParseAssetResult => {

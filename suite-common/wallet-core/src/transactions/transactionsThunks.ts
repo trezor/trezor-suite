@@ -204,9 +204,7 @@ export const addFakePendingCardanoTxThunk = createThunk(
             targets: [],
             tokens: [],
             internalTransfers: [],
-            cardanoSpecific: {
-                subtype: null,
-            },
+            cardanoSpecific: {},
             details: {
                 vin: [],
                 vout: [],
