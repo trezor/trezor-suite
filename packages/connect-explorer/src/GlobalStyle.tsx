@@ -30,12 +30,11 @@ const GlobalStyle = createGlobalStyle`
         width: 100%;
         height: 100%;
         position: relative;
-        -moz-osx-font-smoothing: grayscale;
-        font-family: TT Satoshi, -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica Neue, Arial, sans-serif;
+        font-family: "TT Satoshi", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
         font-size: 14px;
-        -webkit-font-smoothing: antialiased;
-        line-height: 1.428571429;
+        line-height: 1.42;
         text-size-adjust: 100%;
+        -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
     }
 
