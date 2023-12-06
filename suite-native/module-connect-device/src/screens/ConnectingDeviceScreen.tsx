@@ -23,7 +23,7 @@ export const ConnectingDeviceScreen = () => {
     const { translate } = useTranslate();
 
     return (
-        <ConnectDeviceBackground style={applyStyle(screenStyle)}>
+        <ConnectDeviceBackground style={applyStyle(screenStyle)} shouldShowDeviceManager>
             <VStack spacing="medium" alignItems="center">
                 <VStack spacing="extraLarge" alignItems="center">
                     <Icon name="trezor" size="extraLarge" />

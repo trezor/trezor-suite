@@ -9,6 +9,7 @@
         { "path": "../alerts" },
         { "path": "../atoms" },
         { "path": "../device" },
+        { "path": "../device-manager" },
         { "path": "../forms" },
         { "path": "../intl" },
         { "path": "../link" },
