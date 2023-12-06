@@ -19,8 +19,6 @@ PODS:
     - React-Core
   - Expo (48.0.1):
     - ExpoModulesCore
-  - ExpoBrightness (11.3.0):
-    - ExpoModulesCore
   - ExpoClipboard (4.1.1):
     - ExpoModulesCore
   - ExpoDevice (5.6.0):
@@ -550,7 +548,6 @@ DEPENDENCIES:
   - EXConstants (from `../../../node_modules/expo-constants/ios`)
   - EXImageLoader (from `../../../node_modules/expo-image-loader/ios`)
   - Expo (from `../../../node_modules/expo`)
-  - ExpoBrightness (from `../../../node_modules/expo-brightness/ios`)
   - ExpoClipboard (from `../../../node_modules/expo-clipboard/ios`)
   - ExpoDevice (from `../../../node_modules/expo-device/ios`)
   - ExpoHaptics (from `../../../node_modules/expo-haptics/ios`)
@@ -675,8 +672,6 @@ EXTERNAL SOURCES:
     :path: "../../../node_modules/expo-image-loader/ios"
   Expo:
     :path: "../../../node_modules/expo"
-  ExpoBrightness:
-    :path: "../../../node_modules/expo-brightness/ios"
   ExpoClipboard:
     :path: "../../../node_modules/expo-clipboard/ios"
   ExpoDevice:
@@ -802,7 +797,6 @@ SPEC CHECKSUMS:
   EXConstants: 29269f841ed8786d483b753021953264ac04818f
   EXImageLoader: fd053169a8ee932dd83bf1fe5487a50c26d27c2b
   Expo: 79deb55f33fab1b232232868a74713772943238d
-  ExpoBrightness: 13a6108d77641ad310b7873438a0260f9eedfe5c
   ExpoClipboard: 8a36a8376ab93df9050c14577e9e0fcb805e9114
   ExpoDevice: 4b9825263a3f996fd5a89ec26426e22e6cbc32d6
   ExpoHaptics: 360af6898407ee4e8265d30a1a8fb16491a660eb
@@ -883,4 +877,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: d37876aaf00e7f8309b694188119b139b8452ca1
 
-COCOAPODS: 1.14.2
+COCOAPODS: 1.11.3
