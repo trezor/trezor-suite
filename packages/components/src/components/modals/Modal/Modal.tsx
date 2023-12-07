@@ -80,12 +80,12 @@ const HeadingContainer = styled.div<HeadingContainerProps>`
         `}
 `;
 
-type HeadingSize = 'default' | 'large';
-
-const HEADING_SIZES: Record<HeadingSize, { css: string; buttonSize: ButtonSize }> = {
+const HEADING_SIZES: Record<string, { css: string; buttonSize: ButtonSize }> = {
     default: { css: typography.titleSmall, buttonSize: 'small' },
     large: { css: typography.titleMedium, buttonSize: 'medium' },
 };
+
+type HeadingSize = keyof typeof HEADING_SIZES;
 
 type HeadingProps = { isWithIcon?: boolean; $headingSize: HeadingSize };
 
