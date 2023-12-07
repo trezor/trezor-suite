@@ -1,16 +1,19 @@
+import BN from 'bn.js';
+
+import { transactionBytes } from '../coinselect/coinselectUtils';
 import { createTransaction } from './transaction';
 import {
-    CoinSelectSuccess,
-    ComposedTransaction,
+    CoinSelectRequest,
+    CoinSelectResult,
     ComposeRequest,
     ComposeInput,
     ComposeOutput,
     ComposeChangeAddress,
     ComposeFinalOutput,
     ComposeNotFinalOutput,
-    ComposeResultError,
-    ComposeResultNonFinal,
+    ComposeResult,
     ComposeResultFinal,
+    ComposeResultError,
     COMPOSE_ERROR_TYPES,
 } from '../types';
 
@@ -21,44 +24,6 @@ export function getErrorResult(error: unknown): ComposeResultError {
         return { type: 'error', error: known };
     }
     return { type: 'error', error: 'COINSELECT', message };
-}
-
-function getNonfinalResult<Input extends ComposeInput>(
-    utxos: Input[],
-    result: CoinSelectSuccess,
-): ComposeResultNonFinal<Input> {
-    const { max, fee, feePerByte, bytes, totalSpent } = result.payload;
-    const inputs = result.payload.inputs.map(input => utxos[input.i]);
-    return {
-        type: 'nonfinal',
-        fee: fee.toString(),
-        feePerByte: feePerByte.toString(),
-        bytes,
-        max,
-        totalSpent,
-        inputs,
-    };
-}
-
-function getFinalResult<
-    Input extends ComposeInput,
-    Output extends ComposeOutput,
-    Change extends ComposeChangeAddress,
->(
-    result: CoinSelectSuccess,
-    transaction: ComposedTransaction<Input, Output, Change>,
-): ComposeResultFinal<Input, Output, Change> {
-    const { max, fee, feePerByte, bytes, totalSpent } = result.payload;
-
-    return {
-        type: 'final',
-        fee: fee.toString(),
-        feePerByte: feePerByte.toString(),
-        bytes,
-        max,
-        totalSpent,
-        ...transaction,
-    };
 }
 
 function splitByCompleteness(outputs: ComposeOutput[]) {
@@ -83,21 +48,50 @@ export function getResult<
     Input extends ComposeInput,
     Output extends ComposeOutput,
     Change extends ComposeChangeAddress,
->(request: ComposeRequest<Input, Output, Change>, result: CoinSelectSuccess) {
-    const splitOutputs = splitByCompleteness(request.outputs);
-
-    if (splitOutputs.incomplete.length > 0) {
-        return getNonfinalResult(request.utxos, result);
+>(
+    request: ComposeRequest<Input, Output, Change>,
+    { sendMaxOutputIndex }: CoinSelectRequest,
+    result: CoinSelectResult,
+): ComposeResult<Input, Output, Change> {
+    if (!result.inputs || !result.outputs) {
+        return { type: 'error', error: 'NOT-ENOUGH-FUNDS' };
     }
 
-    const transaction = createTransaction(
-        request.utxos,
-        result.payload.inputs,
-        splitOutputs.complete,
-        result.payload.outputs,
-        request.changeAddress,
-        request.skipPermutation,
-    );
+    const totalSpent = result.outputs.reduce((total, output, index) => {
+        if (request.outputs[index]) {
+            return total.add(new BN(output.value));
+        }
+        return total;
+    }, new BN(result.fee));
 
-    return getFinalResult(result, transaction) as ComposeResultFinal<Input, Output, Change>;
+    const max = sendMaxOutputIndex >= 0 ? result.outputs[sendMaxOutputIndex].value : undefined;
+    const bytes = transactionBytes(result.inputs, result.outputs);
+    const feePerByte = result.fee / bytes;
+
+    const { complete, incomplete } = splitByCompleteness(request.outputs);
+
+    if (incomplete.length > 0) {
+        const inputs = result.inputs.map(input => request.utxos[input.i]);
+        return {
+            type: 'nonfinal',
+            fee: result.fee.toString(),
+            feePerByte: feePerByte.toString(),
+            bytes,
+            max,
+            totalSpent: totalSpent.toString(),
+            inputs,
+        };
+    }
+
+    const transaction = createTransaction({ ...request, outputs: complete }, result);
+
+    return {
+        type: 'final',
+        fee: result.fee.toString(),
+        feePerByte: feePerByte.toString(),
+        bytes,
+        max,
+        totalSpent: totalSpent.toString(),
+        ...transaction,
+    } as ComposeResultFinal<Input, Output, Change>;
 }

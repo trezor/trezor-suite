@@ -19,16 +19,10 @@ export function composeTx<
         return coinselectRequest;
     }
 
-    let result: ReturnType<typeof coinselect> = { success: false };
     try {
-        result = coinselect(coinselectRequest);
+        const result = coinselect(coinselectRequest);
+        return getResult(request, coinselectRequest, result);
     } catch (error) {
         return getErrorResult(error);
     }
-
-    if (!result.success) {
-        return { type: 'error', error: 'NOT-ENOUGH-FUNDS' };
-    }
-
-    return getResult(request, result);
 }
