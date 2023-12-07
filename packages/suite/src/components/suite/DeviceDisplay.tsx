@@ -31,7 +31,11 @@ const Text = styled.div<{ isPixelType: boolean; isWithIndentation?: boolean }>`
     word-break: break-word;
     max-width: 216px;
     display: inline;
-    text-indent: ${({ isWithIndentation }) => (isWithIndentation ? '28px' : '0')};
+    ${({ isWithIndentation, isPixelType }) =>
+        isWithIndentation &&
+        `
+            text-indent: ${isPixelType ? '36px' : '28px'};
+    `}
 `;
 
 const Row = styled.div<{ isAlignedRight?: boolean }>`
@@ -84,7 +88,7 @@ const StyledNextIcon = styled(Icon)<{ isPixelType: boolean }>`
 const StyledContinuesIcon = styled(Icon)<{ isPixelType: boolean }>`
     position: relative;
     top: ${({ isPixelType }) => (isPixelType ? '10' : '25')}px;
-    right: ${({ isPixelType }) => (isPixelType ? '82' : '97')}px;
+    right: ${({ isPixelType }) => (isPixelType ? '84' : '97')}px;
 `;
 
 export interface DeviceDisplayProps {
