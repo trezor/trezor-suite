@@ -1,10 +1,11 @@
 import BN from 'bn.js';
 import {
+    ComposeRequest,
+    CoinSelectSuccess,
     ComposeInput,
     ComposeChangeAddress,
     ComposeFinalOutput,
     ComposedTransaction,
-    CoinSelectInput,
     CoinSelectOutputFinal,
 } from '../types';
 
@@ -44,20 +45,21 @@ function outputComparator(a: CoinSelectOutputFinal, b: CoinSelectOutputFinal) {
 }
 
 export function createTransaction<Input extends ComposeInput, Change extends ComposeChangeAddress>(
-    allInputs: Input[],
-    selectedInputs: CoinSelectInput[],
-    allOutputs: ComposeFinalOutput[],
-    selectedOutputs: CoinSelectOutputFinal[],
-    changeAddress: Change,
-    skipPermutation?: boolean,
+    request: ComposeRequest<Input, ComposeFinalOutput, Change>,
+    result: CoinSelectSuccess,
 ): ComposedTransaction<Input, ComposeFinalOutput, Change> {
-    const convertedInputs = selectedInputs.map(input => allInputs[input.i]);
-    const convertedOutputs = selectedOutputs.map((output, index) =>
-        convertOutput(output, allOutputs[index] || { type: 'change', ...changeAddress }),
-    );
-    const defaultPermutation = convertedOutputs.map((_, index) => index);
+    const convertedInputs = result.inputs.map(input => request.utxos[input.i]);
 
-    if (skipPermutation) {
+    const defaultPermutation: number[] = [];
+    const convertedOutputs = result.outputs.map((output, index) => {
+        defaultPermutation.push(index);
+        if (request.outputs[index]) {
+            return convertOutput(output, request.outputs[index]);
+        }
+        return convertOutput(output, { type: 'change', ...request.changeAddress });
+    });
+
+    if (request.skipPermutation) {
         return {
             inputs: convertedInputs,
             outputs: convertedOutputs,
@@ -66,7 +68,7 @@ export function createTransaction<Input extends ComposeInput, Change extends Com
     }
 
     const permutation = defaultPermutation.sort((a, b) =>
-        outputComparator(selectedOutputs[a], selectedOutputs[b]),
+        outputComparator(result.outputs[a], result.outputs[b]),
     );
     const sortedOutputs = permutation.map(index => convertedOutputs[index]);
 
