@@ -105,7 +105,8 @@ export const DeviceDisplay = ({ address, network, valueDataTest }: DeviceDisplay
         addressDisplayType === AddressDisplayOptions.CHUNKED &&
         !unavailableCapabilities?.chunkify &&
         valueDataTest !== '@xpub-modal/xpub-field' &&
-        network !== 'cardano';
+        network !== 'cardano' &&
+        (network !== 'solana' || valueDataTest === '@modal/confirm-address/address-field');
     const isPixelType = selectedDeviceInternalModel !== DeviceModelInternal.T2T1;
     const iconNextName = isPixelType ? 'ADDRESS_PIXEL_NEXT' : 'ADDRESS_NEXT';
     const iconContinuesName = isPixelType ? 'ADDRESS_PIXEL_CONTINUES' : 'ADDRESS_CONTINUES';
