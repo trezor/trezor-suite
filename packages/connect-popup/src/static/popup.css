@@ -53,13 +53,18 @@ body {
     position: relative;
     min-height: 500px;
     min-width: 328px;
-    font-family: 'TT Satoshi', -apple-system, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial,
+    font-family:
+        'TT Satoshi',
+        -apple-system,
+        'Segoe UI',
+        'Roboto',
+        'Helvetica Neue',
+        Arial,
         sans-serif;
     font-weight: 400;
     font-size: 14px;
     color: #494949;
     background-color: #ffffff;
-    
 }
 main {
     width: 100%;
@@ -125,7 +130,9 @@ a:visited {
     position: relative;
     color: #01b757;
     text-decoration: none;
-    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out,
+    transition:
+        background-color 0.3s ease-in-out,
+        color 0.3s ease-in-out,
         border-color 0.3s ease-in-out;
 }
 a:not(.button):after,
@@ -164,7 +171,9 @@ button {
     background: #01b757;
     color: #ffffff;
     border: 0px;
-    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out,
+    transition:
+        background-color 0.3s ease-in-out,
+        color 0.3s ease-in-out,
         border-color 0.3s ease-in-out;
 }
 a.button:hover,
@@ -197,7 +206,9 @@ button.transparent {
     background: transparent;
     border: 0px;
     color: #757575;
-    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out,
+    transition:
+        background-color 0.3s ease-in-out,
+        color 0.3s ease-in-out,
         border-color 0.3s ease-in-out;
 }
 a.button.transparent:hover,
@@ -398,7 +409,9 @@ input[type='password'] {
     background-color: #ffffff;
     border: 1px solid #e3e3e3;
     border-radius: 2px;
-    transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+    transition:
+        border-color ease-in-out 0.15s,
+        box-shadow ease-in-out 0.15s;
     padding: 6px 12px;
     width: 260px;
 }
@@ -448,7 +461,9 @@ input[type='password']:focus {
     -moz-osx-font-smoothing: grayscale;
     text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.004);
     content: '\e91c';
-    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out,
+    transition:
+        background-color 0.3s ease-in-out,
+        color 0.3s ease-in-out,
         border-color 0.3s ease-in-out;
     position: absolute;
     top: 0;
@@ -520,7 +535,9 @@ input[type='password']:focus {
 .loader .circular .path {
     stroke-dasharray: 1, 200;
     stroke-dashoffset: 0;
-    animation: dash 1.5s ease-in-out infinite, color 6s ease-in-out infinite;
+    animation:
+        dash 1.5s ease-in-out infinite,
+        color 6s ease-in-out infinite;
     stroke-linecap: round;
 }
 @media screen and (min-width: 768px) {
@@ -533,24 +550,22 @@ input[type='password']:focus {
         height: 160px;
     }
 }
-
 @font-face {
     font-family: 'TT Satoshi';
     src: url('./fonts/TTSatoshi-Medium.otf') format('opentype');
     font-weight: 500;
     font-style: normal;
 }
-
 @font-face {
     font-family: 'TT Satoshi';
     src: url('./fonts/TTSatoshi-DemiBold.otf') format('opentype');
     font-weight: 600;
     font-style: normal;
 }
-
 @font-face {
     font-family: 'Roboto Zero';
-    src: url(./fonts/RobotoZeroc19ef375e09c0446ee38.eot) format('embedded-opentype'),
+    src:
+        url(./fonts/RobotoZeroc19ef375e09c0446ee38.eot) format('embedded-opentype'),
         url(./fonts/RobotoZeroc19ef375e09c0446ee38.eot?#iefix) format('embedded-opentype'),
         url(./fonts/RobotoZero29cc77529672c0fd144d.woff) format('woff'),
         url(./fonts/RobotoZerof20cf957fc6f55b6b98b.ttf) format('truetype');
@@ -558,7 +573,8 @@ input[type='password']:focus {
 @font-face {
     font-family: 'Roboto Mono';
     font-style: normal;
-    src: url(./fonts/roboto-mono-v4-greek_cyrillic-ext_greek-ext_latin_cyrillic_vietnamese_latin-ext-regularc3820318b20a155142f6.eot)
+    src:
+        url(./fonts/roboto-mono-v4-greek_cyrillic-ext_greek-ext_latin_cyrillic_vietnamese_latin-ext-regularc3820318b20a155142f6.eot)
             format('embedded-opentype'),
         /* IE9 Compat Modes */
             url(./fonts/roboto-mono-v4-greek_cyrillic-ext_greek-ext_latin_cyrillic_vietnamese_latin-ext-regularc3820318b20a155142f6.eot?#iefix)
@@ -579,7 +595,8 @@ input[type='password']:focus {
 }
 @font-face {
     font-family: 'icomoon';
-    src: url(./fonts/icomoon78a0524c3a8df054cd5c.eot) format('embedded-opentype'),
+    src:
+        url(./fonts/icomoon78a0524c3a8df054cd5c.eot) format('embedded-opentype'),
         url(./fonts/icomoon78a0524c3a8df054cd5c.eot?#iefix) format('embedded-opentype'),
         url(./fonts/icomoon70a5709371d24d38b885.woff) format('woff'),
         url(./fonts/icomoone0e510584c12e6d42fe0.ttf) format('truetype'),
@@ -588,7 +605,8 @@ input[type='password']:focus {
 @font-face {
     font-family: 'text-security-disc';
     src: url(./fonts/text-security-discd3995fb5c90f4436a47a.eot);
-    src: url(./fonts/text-security-discd3995fb5c90f4436a47a.eot?#iefix) format('embedded-opentype'),
+    src:
+        url(./fonts/text-security-discd3995fb5c90f4436a47a.eot?#iefix) format('embedded-opentype'),
         url(./fonts/text-security-disc0020690534bc05d23144.woff) format('woff'),
         url(./fonts/text-security-disc5bd8137c2cc18e31a4a6.ttf) format('truetype'),
         url(./fonts/text-security-disc086a4dc87cc229bdfdff.svg#text-security) format('svg');
@@ -1157,7 +1175,9 @@ section > div .divider span:after {
     line-height: 1px;
     left: 0px;
     bottom: -1px;
-    transition: border-color 0.3s, color 0.3s;
+    transition:
+        border-color 0.3s,
+        color 0.3s;
 }
 .select-account .tab-selection:hover,
 .select-account .tab-selection:active,
@@ -1282,7 +1302,9 @@ section > div .divider span:after {
 .select-account .select-account-list p {
     color: #757575;
     fill: #757575;
-    transition: color 0.3s ease-in-out, fill 0.3s ease-in-out;
+    transition:
+        color 0.3s ease-in-out,
+        fill 0.3s ease-in-out;
 }
 .select-account .select-account-list:hover svg,
 .select-account .select-account-list:active svg,
@@ -1311,7 +1333,9 @@ section > div .divider span:after {
 .select-account .enable-labeling p {
     color: #757575;
     fill: #757575;
-    transition: color 0.3s ease-in-out, fill 0.3s ease-in-out;
+    transition:
+        color 0.3s ease-in-out,
+        fill 0.3s ease-in-out;
 }
 .select-account .enable-labeling:hover svg,
 .select-account .enable-labeling:active svg,
