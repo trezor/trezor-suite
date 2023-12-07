@@ -41,7 +41,6 @@ in
     ] ++ lib.optionals stdenv.isDarwin (with darwin.apple_sdk.frameworks; [
       Cocoa
       CoreServices
-      gcc
     ]);
 
     # used by patchelf for WabiSabiClientLibrary in dev mode (see webpack nixos-interpreter-plugin)
