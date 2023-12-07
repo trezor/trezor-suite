@@ -1,48 +1,42 @@
-import { networks, NetworkSymbol, getMainnets, getTestnets } from '@suite-common/wallet-config';
+import { A } from '@mobily/ts-belt';
+import { Network, NetworkSymbol, getMainnets, getTestnets } from '@suite-common/wallet-config';
 
-const deprecatedNetworks = ['dash', 'btg', 'dgb', 'nmc', 'vtc'];
+const discoveryBlacklist: NetworkSymbol[] = ['sol', 'dsol'];
 
-// ordering defined by product - it is done according to the data about the coins and usage of them in Desktop Suite
-export const mainnetsOrder: NetworkSymbol[] = [
-    'btc',
-    'eth',
-    'ltc',
-    'doge',
-    'etc',
-    'ada',
-    'bch',
-    'xrp',
-    'dash',
-    'zec',
-    'btg',
-    'vtc',
-    'nmc',
-    'dgb',
+export const supportedPortfolioTrackerNetworks = {
+    mainnet: ['btc', 'eth', 'ltc', 'doge', 'etc', 'ada', 'bch', 'xrp', 'zec'] as NetworkSymbol[],
+    testnet: ['test', 'regtest', 'tsep', 'tgor', 'thol', 'tada', 'txrp'] as NetworkSymbol[],
+} as const satisfies Record<string, NetworkSymbol[]>;
+
+export const supportedNetworkSymbols = [
+    ...supportedPortfolioTrackerNetworks.mainnet,
+    ...supportedPortfolioTrackerNetworks.testnet,
 ];
 
-export const testnetsOrder: NetworkSymbol[] = [
-    'test',
-    'regtest',
-    'tsep',
-    'tgor',
-    'thol',
-    'tada',
-    'txrp',
-    'dsol',
-];
+export const supportedMainnetSymbols = supportedPortfolioTrackerNetworks.mainnet;
 
-export const supportedNetworkSymbols = Object.keys(networks) as NetworkSymbol[];
+export const sortNetworks = (networks: readonly Network[]) =>
+    A.sort(networks, (a, b) => {
+        const aOrder = supportedNetworkSymbols.indexOf(a.symbol) ?? Number.MAX_SAFE_INTEGER;
+        const bOrder = supportedNetworkSymbols.indexOf(b.symbol) ?? Number.MAX_SAFE_INTEGER;
+        return aOrder - bOrder;
+    });
 
-export const supportedMainnetSymbols = getMainnets().map(network => network.symbol);
+export const filterBlacklistedNetworks = (networks: readonly Network[]) =>
+    A.filter(networks, network => !discoveryBlacklist.includes(network.symbol));
 
-// These networks are enabled for xpub/address import in portfolio tracker.
-export const importEnabledNetworkSymbols = supportedNetworkSymbols.filter(
-    network => !deprecatedNetworks.includes(network),
+export const portfolioTrackerMainnets = filterBlacklistedNetworks(
+    sortNetworks(
+        getMainnets().filter(network =>
+            supportedPortfolioTrackerNetworks.mainnet.includes(network.symbol),
+        ),
+    ),
 );
 
-export const importEnabledMainnets = getMainnets().filter(network =>
-    importEnabledNetworkSymbols.includes(network.symbol),
-);
-export const importEnabledTestnets = getTestnets().filter(network =>
-    importEnabledNetworkSymbols.includes(network.symbol),
+export const portfolioTrackerTestnets = filterBlacklistedNetworks(
+    sortNetworks(
+        getTestnets().filter(network =>
+            supportedPortfolioTrackerNetworks.testnet.includes(network.symbol),
+        ),
+    ),
 );

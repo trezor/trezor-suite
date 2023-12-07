@@ -1,4 +1,4 @@
-import { A } from '@mobily/ts-belt';
+import { A, flow } from '@mobily/ts-belt';
 
 import { createThunk } from '@suite-common/redux-utils';
 import {
@@ -19,7 +19,12 @@ import { DiscoveryItem } from '@suite-common/wallet-types';
 import { getDerivationType } from '@suite-common/wallet-utils';
 import { Network, NetworkSymbol } from '@suite-common/wallet-config';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
-import { supportedMainnetSymbols, supportedNetworkSymbols } from '@suite-native/config';
+import {
+    supportedMainnetSymbols,
+    supportedNetworkSymbols,
+    filterBlacklistedNetworks,
+    sortNetworks,
+} from '@suite-native/config';
 import { requestDeviceAccess } from '@suite-native/device-mutex';
 import { analytics, EventType } from '@suite-native/analytics';
 
@@ -38,6 +43,8 @@ const DISCOVERY_BATCH_SIZE_PER_COIN: Partial<Record<NetworkSymbol, number>> = {
     zec: 1,
     etc: 1,
 };
+
+const getAvailableNetworks = flow(filterUnavailableNetworks, filterBlacklistedNetworks);
 
 const getBatchSizeByCoin = (coin: NetworkSymbol): number => {
     if (coin in DISCOVERY_BATCH_SIZE_PER_COIN) {
@@ -261,7 +268,7 @@ export const createDescriptorPreloadedDiscoveryThunk = createThunk(
 
         if (!deviceAccessResponse.success) return false;
 
-        const discoveryNetworksTotalCount = filterUnavailableNetworks(networks, device).length;
+        const discoveryNetworksTotalCount = getAvailableNetworks(networks, device).length;
 
         dispatch(
             createDiscovery({
@@ -307,8 +314,8 @@ export const startDescriptorPreloadedDiscoveryThunk = createThunk(
             return;
         }
 
-        // Get only device supported networks.
-        const networks = filterUnavailableNetworks(discovery.networks, device);
+        // Get only device supported networks that are not blacklisted.
+        const networks = sortNetworks(getAvailableNetworks(discovery.networks, device));
 
         // Start discovery for every network account type.
         networks.forEach(network => {
