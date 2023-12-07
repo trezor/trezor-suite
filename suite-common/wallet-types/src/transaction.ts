@@ -119,22 +119,23 @@ export type TxFinalCardano = PrecomposedTransactionFinalCardano & {
     useDecreaseOutput?: undefined;
 };
 
-// strict distinction between normal and RBF type
-export type PrecomposedTransactionFinal =
-    | (TxFinal & {
-          prevTxid?: typeof undefined;
-          feeDifference?: typeof undefined;
-          useNativeRbf?: typeof undefined;
-          useDecreaseOutput?: typeof undefined;
-          isTokenKnown?: typeof undefined;
-      })
-    | (TxFinal & {
-          prevTxid: string;
-          feeDifference: string;
-          useNativeRbf: boolean;
-          useDecreaseOutput: boolean;
-          isTokenKnown?: boolean;
-      });
+type RbfTransaction = TxFinal & {
+    prevTxid: string;
+    feeDifference: string;
+    useNativeRbf: boolean;
+    useDecreaseOutput: boolean;
+    isTokenKnown?: boolean;
+};
+
+type NonRbfTransaction = TxFinal & {
+    prevTxid?: typeof undefined;
+    feeDifference?: typeof undefined;
+    useNativeRbf?: typeof undefined;
+    useDecreaseOutput?: typeof undefined;
+    isTokenKnown?: typeof undefined;
+};
+
+export type PrecomposedTransactionFinal = NonRbfTransaction | RbfTransaction;
 
 export type PrecomposedTransaction =
     | PrecomposedTransactionError

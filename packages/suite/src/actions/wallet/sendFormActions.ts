@@ -40,6 +40,7 @@ import * as sendFormEthereumActions from './send/sendFormEthereumActions';
 import * as sendFormRippleActions from './send/sendFormRippleActions';
 import * as sendFormSolanaActions from './send/sendFormSolanaActions';
 import * as sendFormCardanoActions from './send/sendFormCardanoActions';
+import { selectLabelingDataForAccount } from '../../reducers/suite/metadataReducer';
 
 export type SendFormAction =
     | {
@@ -211,6 +212,7 @@ const pushTransaction =
         const { signedTx, precomposedTx } = getState().wallet.send;
         const { account } = getState().wallet.selectedAccount;
         const device = selectDevice(getState());
+
         if (!signedTx || !precomposedTx || !account) return;
 
         const sentTx = await TrezorConnect.pushTransaction(signedTx);
@@ -250,7 +252,25 @@ const pushTransaction =
                 }),
             );
 
-            if (precomposedTx.prevTxid) {
+            const isRbf = precomposedTx.prevTxid !== undefined;
+
+            if (isRbf) {
+                const accountMetadata = selectLabelingDataForAccount(getState(), account.key);
+                const oldLabeling = accountMetadata?.outputLabels?.[precomposedTx.prevTxid];
+
+                Object.entries(oldLabeling).forEach(([outputIndex, value]) =>
+                    dispatch(
+                        metadataActions.addMetadata({
+                            type: 'outputLabel',
+                            entityKey: account.key,
+                            txid,
+                            outputIndex: Number(outputIndex),
+                            defaultValue: '',
+                            value,
+                        }),
+                    ),
+                );
+
                 // notification from the backend may be delayed.
                 // modify affected transaction(s) in the reducer until the real account update occurs.
                 // this will update transaction details (like time, fee etc.)
