@@ -47,7 +47,7 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
 
     const verifyAddressOnDevice = useCallback(async () => {
         if (accountKey && freshAddress) {
-            const { success } = await requestPrioritizedDeviceAccess(() =>
+            const response = await requestPrioritizedDeviceAccess(() =>
                 dispatch(
                     confirmAddressOnDeviceThunk({
                         accountKey,
@@ -57,7 +57,7 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
                 ).unwrap(),
             );
 
-            return success;
+            return response.payload.success;
         }
 
         return false;
