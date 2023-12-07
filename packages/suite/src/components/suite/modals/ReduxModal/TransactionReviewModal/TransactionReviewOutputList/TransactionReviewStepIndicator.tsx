@@ -3,7 +3,7 @@ import { useTheme, Icon } from '@trezor/components';
 
 const IndicatorWrapper = styled.div`
     width: 25px;
-    height: 25px;
+    height: 13px;
     display: flex;
     padding-right: 6px;
     justify-content: center;
