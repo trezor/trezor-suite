@@ -1,6 +1,6 @@
 import { validateAndParseRequest } from './request';
 import { getResult, getErrorResult } from './result';
-import { coinselect } from './coinselect';
+import { coinselect } from '../coinselect';
 import {
     ComposeRequest,
     ComposeInput,
