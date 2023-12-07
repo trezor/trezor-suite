@@ -3,11 +3,13 @@ import path from 'path';
 import webpack from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyPlugin from 'copy-webpack-plugin';
+import { execSync } from 'child_process';
 
 const DIST = path.resolve(__dirname, '../build');
 const CONNECT_WEB_PATH = path.join(__dirname, '..', '..', 'connect-web');
 
 const CONNECT_WEB_EXTENSION_PATH = path.join(CONNECT_WEB_PATH, 'src', 'webextension');
+const commitHash = execSync('git rev-parse HEAD').toString().trim();
 
 const config: webpack.Configuration = {
     target: 'web',
@@ -127,6 +129,7 @@ const config: webpack.Configuration = {
         new webpack.DefinePlugin({
             // eslint-disable-next-line no-underscore-dangle
             'process.env.__TREZOR_CONNECT_SRC': JSON.stringify(process.env.__TREZOR_CONNECT_SRC),
+            'process.env.COMMIT_HASH': JSON.stringify(commitHash),
         }),
     ],
 };
