@@ -7451,6 +7451,8 @@ __metadata:
     "@suite-native/device-mutex": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
+    react: "npm:18.2.0"
+    react-redux: "npm:8.0.7"
   languageName: unknown
   linkType: soft
 
