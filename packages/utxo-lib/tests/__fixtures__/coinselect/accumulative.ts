@@ -819,43 +819,6 @@ export default [
         dustThreshold: 546,
     },
     {
-        description: 'input with float values (NaN)',
-        feeRate: 10,
-        inputs: ['20000.5'],
-        outputs: ['10000', '1200'],
-        expected: {
-            fee: 2260,
-        },
-        dustThreshold: 546,
-    },
-    {
-        description: '2 outputs, with float values (NaN)',
-        feeRate: 10,
-        inputs: ['20000'],
-        outputs: ['10000.25', '1200.5'],
-        expected: {
-            fee: 2260,
-        },
-        dustThreshold: 546,
-    },
-    {
-        description: '2 outputs, number values (NaN)',
-        feeRate: 10,
-        inputs: ['20000'],
-        outputs: [
-            {
-                value: 100,
-            },
-            {
-                value: 204,
-            },
-        ],
-        expected: {
-            fee: 2260,
-        },
-        dustThreshold: 546,
-    },
-    {
         description: 'DOGE: 2 inputs, not enough to cover fee',
         feeRate: 100000,
         baseFee: 100000000,

@@ -1216,64 +1216,6 @@ export default [
         dustThreshold: 546,
     },
     {
-        description: 'input with float values (NaN)',
-        feeRate: 10,
-        inputs: [
-            {
-                value: 20000.5,
-                coinbase: false,
-                own: true,
-                confirmations: 100,
-            },
-        ],
-        outputs: ['10000', '1200'],
-        expected: {
-            fee: 2260,
-        },
-        dustThreshold: 546,
-    },
-    {
-        description: '2 outputs, with float values (NaN)',
-        feeRate: 10,
-        inputs: [
-            {
-                value: '20000',
-                coinbase: false,
-                own: true,
-                confirmations: 100,
-            },
-        ],
-        outputs: [10000.25, 1200.5],
-        expected: {
-            fee: 2260,
-        },
-        dustThreshold: 546,
-    },
-    {
-        description: '2 outputs, number values (NaN)',
-        feeRate: 10,
-        inputs: [
-            {
-                value: '20000',
-                coinbase: false,
-                own: true,
-                confirmations: 100,
-            },
-        ],
-        outputs: [
-            {
-                value: 100,
-            },
-            {
-                value: 204,
-            },
-        ],
-        expected: {
-            fee: 2260,
-        },
-        dustThreshold: 546,
-    },
-    {
         description: 'exhausting BnB',
         feeRate: 10,
         inputs: [

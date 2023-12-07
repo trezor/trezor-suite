@@ -87,7 +87,22 @@ describe('validateAndParseRequest', () => {
         // missing amount field
         expect(getRequest([{ ...UTXO, amount: undefined }])).toEqual({
             ...expectedError,
-            message: 'Missing amount at index 0',
+            message: 'Invalid amount at index 0',
+        });
+        // invalid amount field (NaN)
+        expect(getRequest([{ ...UTXO, amount: 'abcd' }])).toEqual({
+            ...expectedError,
+            message: 'Invalid amount at index 0',
+        });
+        // invalid amount field (float)
+        expect(getRequest([{ ...UTXO, amount: '0.1' }])).toEqual({
+            ...expectedError,
+            message: 'Invalid amount at index 0',
+        });
+        // invalid amount field (number)
+        expect(getRequest([{ ...UTXO, amount: 1 }])).toEqual({
+            ...expectedError,
+            message: 'Invalid amount at index 0',
         });
     });
 
@@ -124,7 +139,22 @@ describe('validateAndParseRequest', () => {
         // missing amount
         expect(getRequest([{ type: 'payment-noaddress' }])).toEqual({
             ...expectedError,
-            message: 'Missing output amount at index 0',
+            message: 'Invalid amount at index 0',
+        });
+        // invalid amount field (NaN)
+        expect(getRequest([{ type: 'payment-noaddress', amount: 'abcd' }])).toEqual({
+            ...expectedError,
+            message: 'Invalid amount at index 0',
+        });
+        // invalid amount field (float)
+        expect(getRequest([{ type: 'payment-noaddress', amount: '1.1' }])).toEqual({
+            ...expectedError,
+            message: 'Invalid amount at index 0',
+        });
+        // invalid amount field (number)
+        expect(getRequest([{ type: 'payment-noaddress', amount: 1 }])).toEqual({
+            ...expectedError,
+            message: 'Invalid amount at index 0',
         });
     });
 });

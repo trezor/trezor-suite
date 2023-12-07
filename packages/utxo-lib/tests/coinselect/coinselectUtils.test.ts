@@ -1,3 +1,4 @@
+import BN from 'bn.js';
 import { bignumberOrNaN, getFee, getDustAmount } from '../../src/coinselect/coinselectUtils';
 
 describe('coinselectUtils', () => {
@@ -43,8 +44,8 @@ describe('coinselectUtils', () => {
             getFee(
                 [],
                 [
-                    { value: '8', script: { length: 49 } },
-                    { value: '7', script: { length: 50 } },
+                    { value: new BN('8'), script: { length: 49 } },
+                    { value: new BN('7'), script: { length: 50 } },
                 ],
                 2,
                 { feePolicy: 'doge', baseFee: 1000, dustThreshold: 1000 },
@@ -54,8 +55,8 @@ describe('coinselectUtils', () => {
             getFee(
                 [],
                 [
-                    { value: '8', script: { length: 500 } },
-                    { value: '7', script: { length: 472 } },
+                    { value: new BN('8'), script: { length: 500 } },
+                    { value: new BN('7'), script: { length: 472 } },
                 ],
                 2,
                 { feePolicy: 'doge', baseFee: 1000, dustThreshold: 1000, floorBaseFee: true },
@@ -67,7 +68,7 @@ describe('coinselectUtils', () => {
         const IN = {
             type: 'p2pkh',
             i: 0,
-            value: '0',
+            value: new BN('1000'),
             confirmations: 0,
             script: { length: 108 },
         } as const;

@@ -140,12 +140,12 @@ export function bignumberOrNaN(v?: BN | string, forgiving = false) {
     }
 }
 
-export function sumOrNaN(range: { value?: string }[]): BN | undefined;
+export function sumOrNaN(range: { value?: BN }[]): BN | undefined;
 export function sumOrNaN<F extends boolean>(
-    range: { value?: string }[],
+    range: { value?: BN }[],
     forgiving: F,
 ): F extends true ? BN : BN | undefined;
-export function sumOrNaN(range: { value?: string }[], forgiving = false) {
+export function sumOrNaN(range: { value?: BN }[], forgiving = false) {
     return range.reduce((a: BN | undefined, x) => {
         if (!a) return a;
         const value = bignumberOrNaN(x.value);
@@ -187,7 +187,7 @@ function getDogeFee(
 
     // find all outputs below dust limit
     const limit = new BN(dustThreshold);
-    const dustOutputsCount = outputs.filter(({ value }) => value && new BN(value).lt(limit)).length;
+    const dustOutputsCount = outputs.filter(({ value }) => value && value.lt(limit)).length;
 
     // increase for every output below dustThreshold
     return fee + dustOutputsCount * dustThreshold;
@@ -261,7 +261,7 @@ export function finalize(
 
     const finalOutputs: CoinSelectOutputFinal[] = outputs.map(o =>
         Object.assign({}, o, {
-            value: o.value as string, // it's verified that output have value (sumOutputs) TODO: refactor sumOrNaN to return correct type (outputs with values)
+            value: o.value as BN, // it's verified that output have value (sumOutputs) TODO: refactor sumOrNaN to return correct type (outputs with values)
         }),
     );
 
@@ -269,7 +269,7 @@ export function finalize(
     if (remainderAfterExtraOutput.gte(new BN(dustAmount))) {
         finalOutputs.push({
             ...changeOutput,
-            value: remainderAfterExtraOutput.toString(),
+            value: remainderAfterExtraOutput,
         });
     }
 
@@ -297,7 +297,7 @@ export function anyOf(algorithms: CoinSelectAlgorithm[]): CoinSelectAlgorithm {
 }
 
 export function utxoScore(x: CoinSelectInput, feeRate: number) {
-    return new BN(x.value).sub(new BN(getFeeForBytes(feeRate, inputBytes(x))));
+    return x.value.sub(new BN(getFeeForBytes(feeRate, inputBytes(x))));
 }
 
 export function sortByScore(feeRate: number) {

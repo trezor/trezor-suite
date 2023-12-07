@@ -1,3 +1,4 @@
+import BN from 'bn.js';
 import { INPUT_SCRIPT_LENGTH, OUTPUT_SCRIPT_LENGTH } from '../../src/coinselect/coinselectUtils';
 
 function addScriptLength(values: any[], scriptLength: number) {
@@ -8,6 +9,21 @@ function addScriptLength(values: any[], scriptLength: number) {
         }
         return x;
     });
+}
+
+function valueToBN(vinVout: VinVoutFixture) {
+    if (typeof vinVout === 'string') return { value: new BN(vinVout) };
+    if (vinVout.value) {
+        return { ...vinVout, value: new BN(vinVout.value) };
+    }
+    return vinVout;
+}
+
+function valueToString(vinVout: VinVoutResult) {
+    if (vinVout.value) {
+        return { ...vinVout, value: vinVout.value.toString() };
+    }
+    return vinVout;
 }
 
 export function addScriptLengthToExpected(expected: { inputs?: any[]; outputs?: any[] }) {
@@ -36,42 +52,29 @@ export function addScriptLengthToExpected(expected: { inputs?: any[]; outputs?: 
     return newExpected;
 }
 
-type F = string | { value?: string };
+type VinVoutFixture = string | { value?: string };
 
-export function expand(values: F[], indices: boolean) {
+export function expand(values: VinVoutFixture[], indices: boolean) {
     if (indices) {
         return addScriptLength(
-            values.map((x, i) => {
-                if (typeof x === 'string') return { i, value: x, type: 'p2pkh' };
-
-                const y = Object.assign({ i, type: 'p2pkh' }, x);
-                return y;
-            }),
+            values.map((x, i) => ({
+                i,
+                type: 'p2pkh',
+                ...valueToBN(x),
+            })),
             INPUT_SCRIPT_LENGTH.p2pkh,
         );
     }
 
-    return addScriptLength(
-        values.map(x => (typeof x === 'object' ? x : { value: x })),
-        OUTPUT_SCRIPT_LENGTH.p2pkh,
-    );
+    return addScriptLength(values.map(valueToBN), OUTPUT_SCRIPT_LENGTH.p2pkh);
 }
 
-export function testValues(t: any, actual: any[], expected: any[]) {
-    t.equal(typeof actual, typeof expected, 'types match');
-    if (!expected) return;
+type VinVoutResult = { value: BN };
 
-    t.equal(actual.length, expected.length, 'lengths match');
-
-    actual.forEach((ai, i) => {
-        const ei = expected[i];
-
-        if (ai.i !== undefined) {
-            t.equal(ai.i, ei, 'indexes match');
-        } else if (typeof ei === 'number') {
-            t.equal(ai.value, ei, 'values match');
-        } else {
-            t.same(ai, ei, 'objects match');
-        }
-    });
+export function serialize(result: { inputs?: VinVoutResult[]; outputs?: VinVoutResult[] }) {
+    return {
+        ...result,
+        inputs: result.inputs?.map(valueToString),
+        outputs: result.outputs?.map(valueToString),
+    };
 }

@@ -53,7 +53,7 @@ export function split(
 
         // not user defined, but still copy over any non-value fields
         const y = Object.assign({}, x);
-        y.value = splitValue.toString();
+        y.value = splitValue;
         return y;
     });
 

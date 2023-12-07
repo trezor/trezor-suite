@@ -234,48 +234,6 @@ export default [
         dustThreshold: 546,
     },
     {
-        description: '2 outputs, some with float values (NaN)',
-        feeRate: 10,
-        inputs: ['20000'],
-        outputs: [
-            {
-                value: '4000.5',
-            },
-            {},
-        ],
-        expected: {
-            fee: 2260,
-        },
-        dustThreshold: 546,
-    },
-    {
-        description: '2 outputs, number values (NaN)',
-        feeRate: 11,
-        inputs: ['20000'],
-        outputs: [
-            {
-                value: 100,
-            },
-            {
-                value: 204,
-            },
-        ],
-        expected: {
-            fee: 2486,
-        },
-        dustThreshold: 546,
-    },
-    {
-        description: 'input with float values (NaN)',
-        feeRate: 10,
-        inputs: ['20000.5'],
-        outputs: [{}, {}],
-        expected: {
-            fee: 2260,
-        },
-        dustThreshold: 546,
-    },
-    {
         description: '1 to 1, not enough funds',
         feeRate: 1000,
         inputs: ['5000'],

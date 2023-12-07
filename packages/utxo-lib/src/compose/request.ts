@@ -6,6 +6,7 @@ import {
     inputWeight,
     outputWeight,
     getFeePolicy,
+    bignumberOrNaN,
 } from '../coinselect/coinselectUtils';
 import type {
     ComposeInput,
@@ -50,8 +51,10 @@ function transformInput(
     if (typeof utxo.confirmations !== 'number') {
         throw new Error('Missing confirmations');
     }
-    if (typeof utxo.amount !== 'string') {
-        throw new Error('Missing amount');
+
+    const value = bignumberOrNaN(utxo.amount);
+    if (!value) {
+        throw new Error('Invalid amount');
     }
 
     return {
@@ -59,7 +62,7 @@ function transformInput(
         type: txType,
         i,
         script: { length: INPUT_SCRIPT_LENGTH[txType] },
-        value: utxo.amount,
+        value,
     };
 }
 
@@ -99,20 +102,24 @@ function transformOutput(
 ): CoinSelectOutput {
     const script = { length: OUTPUT_SCRIPT_LENGTH[txType] };
     if (output.type === 'payment') {
+        const value = bignumberOrNaN(output.amount);
+        if (!value) throw new Error('Invalid amount');
         return {
-            value: output.amount,
+            value,
             script: toOutputScript(output.address, network),
         };
     }
     if (output.type === 'payment-noaddress') {
+        const value = bignumberOrNaN(output.amount);
+        if (!value) throw new Error('Invalid amount');
         return {
-            value: output.amount,
+            value,
             script,
         };
     }
     if (output.type === 'opreturn') {
         return {
-            value: '0',
+            value: bignumberOrNaN('0', true),
             script: p2data({ data: [Buffer.from(output.dataHex, 'hex')] }).output as Buffer,
         };
     }
@@ -158,13 +165,6 @@ function validateAndParseOutputs(
                 return incorrectOutputError(i, 'Multiple send-max');
             }
             sendMaxOutputIndex = i;
-        }
-
-        if (
-            (output.type === 'payment' || output.type === 'payment-noaddress') &&
-            typeof output.amount !== 'string'
-        ) {
-            return incorrectOutputError(i, 'Missing output amount');
         }
 
         try {
