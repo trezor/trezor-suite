@@ -376,7 +376,7 @@ export const en = {
     graph: {
         retrievingData: 'Retrieving data...',
         retrievengTakesLongerThanExpected:
-            'Retrieving balances takes longer than usual. It may be caused by unstable internet connection.',
+            'Retrieving balances takes longer than usual. \n It may be caused by unstable internet connection.',
     },
 };
 

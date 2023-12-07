@@ -15,17 +15,23 @@ export const useIsDiscoveryDurationTooLong = () => {
     const [loadingTakesLongerThanExpected, setLoadingTakesLongerThanExpected] = useState(false);
 
     useEffect(() => {
+        let interval: any;
         if (isDiscoveryActive && startDiscoveryTimestamp) {
-            const interval = setInterval(() => {
+            interval = setInterval(() => {
                 if (performance.now() - startDiscoveryTimestamp > DISCOVERY_DURATION_TRESHOLD) {
                     setLoadingTakesLongerThanExpected(true);
                     clearInterval(interval);
                 }
             }, DISCOVERY_LENGTH_CHECK_INTERVAL);
-
-            return () => clearInterval(interval);
+        } else {
+            setLoadingTakesLongerThanExpected(false);
         }
-        setLoadingTakesLongerThanExpected(false);
+
+        return () => {
+            if (interval) {
+                clearInterval(interval);
+            }
+        };
     }, [isDiscoveryActive, startDiscoveryTimestamp]);
 
     return loadingTakesLongerThanExpected;

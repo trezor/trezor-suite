@@ -16,6 +16,7 @@
         { "path": "../biometrics" },
         { "path": "../device" },
         { "path": "../device-manager" },
+        { "path": "../discovery" },
         { "path": "../feature-flags" },
         { "path": "../formatters" },
         { "path": "../graph" },
