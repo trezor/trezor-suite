@@ -10,9 +10,13 @@ describe('coinselect errors', () => {
             const outputs = utils.expand(f.outputs, false);
 
             expect(() =>
-                coinselect(inputs, outputs, f.feeRate, {
+                coinselect({
                     txType: 'p2pkh',
                     dustThreshold: f.dustThreshold,
+                    feeRate: f.feeRate,
+                    inputs,
+                    outputs,
+                    sendMaxOutputIndex: -1,
                 }),
             ).toThrowError(f.expected);
         });
@@ -26,16 +30,24 @@ describe('coinselect index', () => {
             const outputs = utils.expand(f.outputs as any, false);
             const expected = utils.addScriptLengthToExpected(f.expected);
 
-            const actual = coinselect(inputs, outputs, f.feeRate as number, {
+            const actual = coinselect({
                 txType: 'p2pkh',
                 dustThreshold: f.dustThreshold,
+                feeRate: f.feeRate,
+                inputs,
+                outputs,
+                sendMaxOutputIndex: -1,
             });
 
             expect(actual).toEqual(expected);
             if (actual.inputs) {
-                const feedback = coinselect(actual.inputs, actual.outputs, f.feeRate as number, {
+                const feedback = coinselect({
                     txType: 'p2pkh',
                     dustThreshold: f.dustThreshold,
+                    feeRate: f.feeRate,
+                    inputs: actual.inputs,
+                    outputs: actual.outputs,
+                    sendMaxOutputIndex: -1,
                 });
                 expect(feedback).toEqual(expected);
             }
