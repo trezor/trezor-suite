@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo, useRef } from 'react';
 import styled from 'styled-components';
 
-import { Button, DropdownMenuItemProps } from '@trezor/components';
+import { Badge, Button, DropdownMenuItemProps } from '@trezor/components';
 import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import { addMetadata, init, setEditing } from 'src/actions/suite/metadataActions';
 import { MetadataAddPayload } from 'src/types/suite/metadata';
@@ -14,6 +14,7 @@ import {
     selectIsLabelingInitPossible,
 } from 'src/reducers/suite/metadataReducer';
 import type { Timeout } from '@trezor/type-utils';
+import { borders, spacingsPx } from '@trezor/theme';
 
 const LabelValue = styled.div`
     overflow: hidden;
@@ -60,6 +61,14 @@ const ActionButton = styled(Button)<{ isValueVisible?: boolean; isVisible?: bool
 
     /* hack to keep button in place to prevent vertical jumping (if used display: none) */
     width: ${({ isVisible }) => (isVisible ? 'auto' : '0')};
+
+    gap: ${spacingsPx.xxs};
+    padding: ${({ size }) =>
+        size === 'small' ? `0 ${spacingsPx.xs}` : `${spacingsPx.xxxs} ${spacingsPx.xs}`};
+    border-radius: ${borders.radii.full};
+    border: 1px solid transparent;
+
+    background-color: red;
 `;
 
 // @TODO this shouldn't be Button
@@ -356,25 +365,28 @@ export const MetadataLabeling = (props: Props) => {
                         dropdownOptions={dropdownItems}
                     />
                     {showOutputLabelActionButton && (
-                        <ActionButton
-                            data-test={`${dataTestBase}/add-label-button`}
-                            variant="tertiary"
-                            icon={!actionButtonsDisabled ? 'TAG' : undefined}
-                            isLoading={actionButtonsDisabled}
-                            isDisabled={actionButtonsDisabled}
-                            isVisible={isVisible}
-                            size="tiny"
-                            isValueVisible={!!props.payload.value}
-                            onClick={e => {
-                                e.stopPropagation();
-                                // by clicking on add label button, metadata.editing field is set
-                                // to default value of whatever may be labeled (address, etc..)
-                                // this way we ensure that only one field may be active at time
-                                activateEdit();
-                            }}
-                        >
-                            {l10nLabelling.add}
-                        </ActionButton>
+                        <>
+                            <Badge>{l10nLabelling.add}</Badge>
+                            <ActionButton
+                                data-test={`${dataTestBase}/add-label-button`}
+                                variant="tertiary"
+                                icon={!actionButtonsDisabled ? 'TAG' : undefined}
+                                isLoading={actionButtonsDisabled}
+                                isDisabled={actionButtonsDisabled}
+                                isVisible={isVisible}
+                                size="tiny"
+                                isValueVisible={!!props.payload.value}
+                                onClick={e => {
+                                    e.stopPropagation();
+                                    // by clicking on add label button, metadata.editing field is set
+                                    // to default value of whatever may be labeled (address, etc..)
+                                    // this way we ensure that only one field may be active at time
+                                    activateEdit();
+                                }}
+                            >
+                                {l10nLabelling.add}
+                            </ActionButton>
+                        </>
                     )}
                 </>
             ) : (
@@ -387,25 +399,30 @@ export const MetadataLabeling = (props: Props) => {
                         {...props}
                     />
                     {showActionButton && (
-                        <ActionButton
-                            data-test={
-                                props.payload.value
-                                    ? `${dataTestBase}/edit-label-button`
-                                    : `${dataTestBase}/add-label-button`
-                            }
-                            variant="tertiary"
-                            icon={!actionButtonsDisabled ? 'TAG' : undefined}
-                            isLoading={actionButtonsDisabled}
-                            isDisabled={actionButtonsDisabled}
-                            isVisible={isVisible}
-                            size="tiny"
-                            onClick={e => {
-                                e.stopPropagation();
-                                activateEdit();
-                            }}
-                        >
-                            {props.payload.value ? l10nLabelling.edit : l10nLabelling.add}
-                        </ActionButton>
+                        <>
+                            <Badge>
+                                {props.payload.value ? l10nLabelling.edit : l10nLabelling.add}
+                            </Badge>
+                            <ActionButton
+                                data-test={
+                                    props.payload.value
+                                        ? `${dataTestBase}/edit-label-button`
+                                        : `${dataTestBase}/add-label-button`
+                                }
+                                variant="tertiary"
+                                icon={!actionButtonsDisabled ? 'TAG' : undefined}
+                                isLoading={actionButtonsDisabled}
+                                isDisabled={actionButtonsDisabled}
+                                isVisible={isVisible}
+                                size="tiny"
+                                onClick={e => {
+                                    e.stopPropagation();
+                                    activateEdit();
+                                }}
+                            >
+                                {props.payload.value ? l10nLabelling.edit : l10nLabelling.add}
+                            </ActionButton>
+                        </>
                     )}
                 </>
             )}
