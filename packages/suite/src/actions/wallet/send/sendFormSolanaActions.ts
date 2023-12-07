@@ -278,16 +278,15 @@ export const signTransaction =
                   )
                 : undefined;
 
-        const tx =
-            tokenTransferTxAndDestinationAddress && recipientAccountOwner
-                ? tokenTransferTxAndDestinationAddress.transaction
-                : await buildTransferTransaction(
-                      account.descriptor,
-                      formValues.outputs[0].address,
-                      formValues.outputs[0].amount,
-                      blockhash,
-                      lastValidBlockHeight,
-                  );
+        const tx = tokenTransferTxAndDestinationAddress
+            ? tokenTransferTxAndDestinationAddress.transaction
+            : await buildTransferTransaction(
+                  account.descriptor,
+                  formValues.outputs[0].address,
+                  formValues.outputs[0].amount,
+                  blockhash,
+                  lastValidBlockHeight,
+              );
 
         const serializedTx = tx.serializeMessage().toString('hex');
 
@@ -301,7 +300,6 @@ export const signTransaction =
             serializedTx,
             additionalInfo:
                 tokenTransferTxAndDestinationAddress &&
-                recipientAccountOwner &&
                 tokenTransferTxAndDestinationAddress.tokenAccountInfo
                     ? {
                           tokenAccountsInfos: [
