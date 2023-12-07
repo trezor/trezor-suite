@@ -47,6 +47,18 @@ const wrappedMethods = [
     'getAccountDescriptor',
 ];
 
+wrappedMethods.forEach(key => {
+    const original: any = TrezorConnect[key as ConnectKey];
+    if (!original) return;
+    (TrezorConnect[key as ConnectKey] as any) = async (params: any) => {
+        const result = await original({
+            ...params,
+            useEmptyPassphrase: true,
+        });
+        return result;
+    };
+});
+
 const AppComponent = () => {
     const dispatch = useDispatch();
     const formattersConfig = useFormattersConfig();
@@ -55,18 +67,6 @@ const AppComponent = () => {
 
     useReportAppInitToAnalytics(APP_STARTED_TIMESTAMP);
     useTransactionCache();
-
-    wrappedMethods.forEach(key => {
-        const original: any = TrezorConnect[key as ConnectKey];
-        if (!original) return;
-        (TrezorConnect[key as ConnectKey] as any) = async (params: any) => {
-            const result = await original({
-                ...params,
-                useEmptyPassphrase: true,
-            });
-            return result;
-        };
-    });
 
     useEffect(() => {
         if (!isConnectInitialized) {
