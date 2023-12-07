@@ -173,7 +173,8 @@ export const composeTransaction =
         const isCreatingAccount =
             tokenInfo &&
             recipientTokenAccount === undefined &&
-            recipientAccountOwner === SYSTEM_PROGRAM_PUBLIC_KEY;
+            // if the recipient account has no owner, it means it's a new account and needs the token account to be created
+            (recipientAccountOwner === SYSTEM_PROGRAM_PUBLIC_KEY || recipientAccountOwner == null);
 
         const estimatedFee = await TrezorConnect.blockchainEstimateFee({
             coin: account.symbol,
@@ -255,7 +256,7 @@ export const signTransaction =
               )
             : [undefined, undefined];
 
-        if (token && !token.accounts && !recipientAccountOwner) return;
+        if (token && !token.accounts) return;
 
         // The last block height for which the transaction will be considered valid, after which it can no longer be processed.
         // The current block time is set to 800ms, meaning this transaction should be valid when submitted within for 40 seconds
@@ -277,6 +278,8 @@ export const signTransaction =
                       50,
                   )
                 : undefined;
+
+        if (token && !tokenTransferTxAndDestinationAddress) return;
 
         const tx = tokenTransferTxAndDestinationAddress
             ? tokenTransferTxAndDestinationAddress.transaction
