@@ -1,4 +1,3 @@
-import BN from 'bn.js';
 import {
     ComposeRequest,
     CoinSelectSuccess,
@@ -16,7 +15,7 @@ function convertOutput(
     if (composeOutput.type === 'change') {
         return {
             ...composeOutput,
-            amount: selectedOutput.value,
+            amount: selectedOutput.value.toString(),
         };
     }
 
@@ -27,7 +26,7 @@ function convertOutput(
     return {
         ...composeOutput,
         type: 'payment' as const,
-        amount: selectedOutput.value,
+        amount: selectedOutput.value.toString(),
     };
 }
 
@@ -37,7 +36,7 @@ function inputComparator(a: ComposeInput, b: ComposeInput) {
 
 function outputComparator(a: CoinSelectOutputFinal, b: CoinSelectOutputFinal) {
     return (
-        new BN(a.value).cmp(new BN(b.value)) ||
+        a.value.cmp(b.value) ||
         (Buffer.isBuffer(a.script) && Buffer.isBuffer(b.script)
             ? a.script.compare(b.script)
             : a.script.length - b.script.length)

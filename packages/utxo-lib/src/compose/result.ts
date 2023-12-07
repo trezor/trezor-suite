@@ -59,12 +59,13 @@ export function getResult<
 
     const totalSpent = result.outputs.reduce((total, output, index) => {
         if (request.outputs[index]) {
-            return total.add(new BN(output.value));
+            return total.add(output.value);
         }
         return total;
     }, new BN(result.fee));
 
-    const max = sendMaxOutputIndex >= 0 ? result.outputs[sendMaxOutputIndex].value : undefined;
+    const max =
+        sendMaxOutputIndex >= 0 ? result.outputs[sendMaxOutputIndex].value.toString() : undefined;
     const bytes = transactionBytes(result.inputs, result.outputs);
     const feePerByte = result.fee / bytes;
 

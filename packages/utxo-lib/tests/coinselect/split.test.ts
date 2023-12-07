@@ -18,11 +18,11 @@ describe('coinselect split', () => {
             } as CoinSelectOptions;
 
             const actual = split(inputs, outputs, f.feeRate, options);
-            expect(actual).toEqual(expected);
+            expect(utils.serialize(actual)).toEqual(expected);
 
             if (actual.inputs) {
                 const feedback = split(actual.inputs, actual.outputs, f.feeRate, options);
-                expect(feedback).toEqual(expected);
+                expect(utils.serialize(feedback)).toEqual(expected);
             }
         });
     });

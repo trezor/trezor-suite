@@ -39,7 +39,7 @@ describe('coinselect index', () => {
                 sendMaxOutputIndex: -1,
             });
 
-            expect(actual).toEqual(expected);
+            expect(utils.serialize(actual)).toEqual(expected);
             if (actual.inputs) {
                 const feedback = coinselect({
                     txType: 'p2pkh',
@@ -49,7 +49,7 @@ describe('coinselect index', () => {
                     outputs: actual.outputs,
                     sendMaxOutputIndex: -1,
                 });
-                expect(feedback).toEqual(expected);
+                expect(utils.serialize(feedback)).toEqual(expected);
             }
         });
     });

@@ -1,3 +1,5 @@
+import BN from 'bn.js';
+
 export type CoinSelectPaymentType = 'p2pkh' | 'p2sh' | 'p2tr' | 'p2wpkh' | 'p2wsh';
 
 export interface CoinSelectOptions {
@@ -18,7 +20,7 @@ export interface CoinSelectInput {
     type: CoinSelectPaymentType;
     i: number;
     script: { length: number };
-    value: string;
+    value: BN;
     confirmations: number;
     coinbase?: boolean;
     required?: boolean;
@@ -28,13 +30,13 @@ export interface CoinSelectInput {
 
 export interface CoinSelectOutput {
     script: { length: number };
-    value?: string;
+    value?: BN;
     weight?: number;
 }
 
 export interface CoinSelectOutputFinal {
     script: { length: number };
-    value: string;
+    value: BN;
 }
 
 export interface CoinSelectRequest extends CoinSelectOptions {
