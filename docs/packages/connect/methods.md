@@ -63,6 +63,12 @@ Every method require an [`Object`](https://developer.mozilla.org/en-US/docs/Web/
 -   [TrezorConnect.rippleGetAddress](methods/rippleGetAddress.md)
 -   [TrezorConnect.rippleSignTransaction](methods/rippleSignTransaction.md)
 
+## Solana
+
+-   [TrezorConnect.solanaGetPublicKey](methods/solanaGetPublicKey.md)
+-   [TrezorConnect.solanaGetAddress](methods/solanaGetAddress.md)
+-   [TrezorConnect.solanaSignTransaction](methods/solanaSignTransaction.md)
+
 ## Tezos
 
 -   [TrezorConnect.tezosGetAddress](methods/tezosGetAddress.md)

@@ -1,7 +1,5 @@
 ## Solana: get public key
 
-⚠️ **BETA**: This api is unstable and may change!
-
 Display requested public key derived by given [BIP44 path](../path.md) on device and return it to the caller. User is presented with a description of the requested public key and asked to confirm the export on Trezor.
 
 ```javascript
