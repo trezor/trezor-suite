@@ -73,7 +73,7 @@ export const NavigationItem = ({
 
     const dispatch = useDispatch();
 
-    const hangleClick = (e: MouseEvent) => {
+    const handleClick = (e: MouseEvent) => {
         e.stopPropagation();
 
         if (route) {
@@ -86,7 +86,7 @@ export const NavigationItem = ({
     return (
         <Container
             isActive={isActive || isActiveRoute}
-            onClick={hangleClick}
+            onClick={handleClick}
             data-test={`@suite/menu/${dataTest || route}`}
             className={className}
             tabIndex={0}
