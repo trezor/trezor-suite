@@ -1,13 +1,13 @@
-import { useState, useRef, useCallback } from 'react';
+import { useRef, useCallback } from 'react';
 import styled, { css } from 'styled-components';
 import { breakpointMediaQueries } from '@trezor/styles';
+import { boxShadows } from '@trezor/theme';
 import { DropdownRef, Dropdown } from '@trezor/components';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { Notifications } from 'src/components/suite/notifications';
 import { useDispatch } from 'src/hooks/suite';
 import { NavigationItem, NavigationItemProps } from './NavigationItem';
-import { boxShadows } from '@trezor/theme';
 
 const NotificationsWrapper = styled.div`
     width: 450px;
@@ -32,19 +32,15 @@ const StyledDropdown = styled(Dropdown)`
 `;
 
 export const NotificationDropdown = (props: NavigationItemProps) => {
-    const [open, setOpen] = useState(false);
     const dropdownRef = useRef<DropdownRef>();
 
     const dispatch = useDispatch();
 
     const handleToggleChange = useCallback(
         (isToggled: boolean) => {
-            if (isToggled) {
-                setOpen(true);
-            } else {
+            if (!isToggled) {
                 // if the dropdown is going to be closed, mark all notifications as seen and "deactivate" ActionItem
                 dispatch(notificationsActions.resetUnseen());
-                setOpen(false);
             }
 
             analytics.report({
@@ -68,7 +64,7 @@ export const NotificationDropdown = (props: NavigationItemProps) => {
                 </NotificationsWrapper>
             }
         >
-            <StyledNavigationItem {...props} isActive={open} />
+            {isToggled => <StyledNavigationItem {...props} isActive={isToggled} />}
         </StyledDropdown>
     );
 };

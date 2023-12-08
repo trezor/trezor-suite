@@ -69,7 +69,7 @@ export type DropdownProps = Omit<MenuProps, 'setToggled'> & {
     renderOnClickPosition?: boolean;
     onToggle?: (isToggled: boolean) => void;
     className?: string;
-    children?: ReactElement<any>;
+    children?: ((isToggled: boolean) => ReactElement<any>) | ReactElement<any>;
 };
 
 export interface DropdownRef {
@@ -173,13 +173,15 @@ export const Dropdown = forwardRef(
             }
         };
 
-        const ToggleComponent = children ? (
-            cloneElement(children, {
+        const childComponent = typeof children === 'function' ? children(isToggled) : children;
+
+        const ToggleComponent = childComponent ? (
+            cloneElement(childComponent, {
                 isDisabled,
                 onClick: (e: MouseEvent) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    children?.props.onClick?.(e);
+                    childComponent?.props.onClick?.(e);
                 },
             })
         ) : (
