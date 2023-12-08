@@ -23,6 +23,7 @@ const SCREEN_HEIGHT = Dimensions.get('screen').height;
 const imageStyle = prepareNativeStyle(_ => ({
     maxHeight: SCREEN_HEIGHT * 0.25,
     width: '100%',
+    height: 180,
     alignItems: 'center',
 }));
 
@@ -60,18 +61,27 @@ export const EmptyPortfolioTrackerState = () => {
                 alertTitle={translate('moduleHome.emptyState.portfolioTracker.alert')}
             >
                 <VStack
-                    spacing="large"
+                    spacing="extraLarge"
                     paddingTop="medium"
+                    paddingBottom="medium"
                     alignItems="center"
                     justifyContent="center"
                 >
-                    <Image source={image} resizeMode="contain" style={applyStyle(imageStyle)} />
-                    <Text variant="titleSmall">
-                        <Translation id="moduleHome.emptyState.portfolioTracker.title" />
-                    </Text>
-                    <Text color="textSubdued" textAlign="center">
-                        <Translation id="moduleHome.emptyState.portfolioTracker.subtitle" />
-                    </Text>
+                    <VStack
+                        spacing="medium"
+                        paddingTop="small"
+                        paddingBottom="small"
+                        alignItems="center"
+                        justifyContent="center"
+                    >
+                        <Text variant="titleMedium">
+                            <Translation id="moduleHome.emptyState.portfolioTracker.title" />
+                        </Text>
+                        <Text color="textSubdued" textAlign="center">
+                            <Translation id="moduleHome.emptyState.portfolioTracker.subtitle" />
+                        </Text>
+                    </VStack>
+                    <Image source={image} contentFit="contain" style={applyStyle(imageStyle)} />
                     <Button onPress={handleSyncMyCoins}>
                         {translate('moduleHome.emptyState.portfolioTracker.primaryButton')}
                     </Button>

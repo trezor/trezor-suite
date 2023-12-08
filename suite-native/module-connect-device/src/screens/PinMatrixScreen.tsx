@@ -1,13 +1,13 @@
 import { Image, VStack } from '@suite-native/atoms';
 
-import { ConnectDeviceBackground } from '../components/ConnectDeviceBackground';
+import { ConnectDeviceSreenView } from '../components/ConnectDeviceSreenView';
 import { PinForm } from '../components/PinForm';
 
 export const PinMatrixScreen = () => (
-    <ConnectDeviceBackground>
+    <ConnectDeviceSreenView>
         <VStack spacing="medium" alignItems="center" flex={1} marginTop="large">
             <Image source={require('../assets/trezorPin.png')} width={161} height={194} />
             <PinForm />
         </VStack>
-    </ConnectDeviceBackground>
+    </ConnectDeviceSreenView>
 );

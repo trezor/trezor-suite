@@ -1,4 +1,4 @@
-import { Image as RNImage, ImageProps as RNImageProps } from 'react-native';
+import { Image as ExImage, ImageProps as ExImageProps } from 'expo-image';
 
 import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -6,7 +6,7 @@ type ImageProps = {
     width?: number;
     height?: number;
     style?: NativeStyleObject;
-} & Omit<RNImageProps, 'style'>;
+} & Omit<ExImageProps, 'style'>;
 
 const imageStyle = prepareNativeStyle<{ width?: number; height?: number }>(
     (_, { width, height }) => ({
@@ -19,7 +19,7 @@ export const Image = ({ width, height, source, style, ...otherProps }: ImageProp
     const { applyStyle } = useNativeStyles();
 
     return (
-        <RNImage
+        <ExImage
             {...otherProps}
             source={source}
             style={[applyStyle(imageStyle, { width, height }), style]}
