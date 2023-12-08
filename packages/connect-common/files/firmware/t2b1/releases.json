@@ -1,6 +1,19 @@
 [
     {
         "required": false,
+        "version": [2, 6, 4],
+        "min_bridge_version": [2, 0, 7],
+        "min_firmware_version": [2, 6, 1],
+        "min_bootloader_version": [2, 1, 1],
+        "bootloader_version": [2, 1, 4],
+        "url": "firmware/t2b1/trezor-t2b1-2.6.4.bin",
+        "url_bitcoinonly": "firmware/t2b1/trezor-t2b1-2.6.4-bitcoinonly.bin",
+        "fingerprint": "5ac16cb5002aa607908be376378a7fd1a1bc18f7b05e7a047cb1365840cc93ef",
+        "fingerprint_bitcoinonly": "013d595fc621c12324afd90721c6a37d055d853f6af54d5432e27e6a425656dd",
+        "changelog": "* Trezor Safe 3 now supports Solana, expanding the range of cryptocurrencies it can securely manage. [Universal fw only] \n* Ethereum fees are now uniformly presented in Gwei, enhancing clarity and consistency for users. [Universal fw only] \n* Issue with missing address confirmation screens is now fixed. [Universal fw only] \n* Resolved an issue related to the invalid encoding of signatures from the Optiga chip."
+    },
+    {
+        "required": false,
         "version": [2, 6, 3],
         "min_bridge_version": [2, 0, 7],
         "min_firmware_version": [2, 6, 1],
