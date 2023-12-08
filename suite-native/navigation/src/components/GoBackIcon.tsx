@@ -2,15 +2,27 @@ import { useNavigation } from '@react-navigation/native';
 
 import { IconButton } from '@suite-native/atoms';
 
-export const GoBackIcon = () => {
+type GoBackIconProps = {
+    customGoBackFunction?: () => void;
+};
+
+export const GoBackIcon = ({ customGoBackFunction }: GoBackIconProps) => {
     const navigation = useNavigation();
+
+    const handleGoBack = () => {
+        if (customGoBackFunction) {
+            customGoBackFunction();
+            return;
+        }
+        navigation.goBack();
+    };
 
     return (
         <IconButton
             iconName="chevronLeft"
             size="medium"
             colorScheme="tertiaryElevation0"
-            onPress={() => navigation.goBack()}
+            onPress={handleGoBack}
         />
     );
 };

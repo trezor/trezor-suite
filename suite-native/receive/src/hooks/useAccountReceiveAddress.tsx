@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import TrezorConnect from '@trezor/connect';
 import {
     AccountsRootState,
     selectAccountByKey,
@@ -74,12 +75,15 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
             setIsUnverifiedAddressRevealed(true);
             const wasVerificationSuccessful = await verifyAddressOnDevice();
 
-            analytics.report({ type: EventType.ConfirmedReceiveAdress });
             // In case that user cancels the verification or device is disconnected, navigate out of the receive flow.
             if (!wasVerificationSuccessful) {
+                TrezorConnect.cancel();
                 navigation.goBack();
+                setIsUnverifiedAddressRevealed(false);
                 return;
             }
+
+            analytics.report({ type: EventType.ConfirmedReceiveAdress });
         }
 
         setIsReceiveApproved(true);

@@ -3,8 +3,10 @@ import { useSelector } from 'react-redux';
 import { CommonActions, RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { G } from '@mobily/ts-belt';
 
+import TrezorConnect from '@trezor/connect';
 import { HStack, Text } from '@suite-native/atoms';
 import {
+    GoBackIcon,
     RootStackParamList,
     RootStackRoutes,
     Screen,
@@ -30,6 +32,7 @@ type ScreenSubHeaderContent = {
 };
 
 const ReceiveModalScreenSubHeader = ({ accountKey, tokenContract }: ScreenSubHeaderContent) => {
+    const navigation = useNavigation();
     const accountLabel = useSelector((state: AccountsRootState) =>
         selectAccountLabel(state, accountKey),
     );
@@ -43,8 +46,15 @@ const ReceiveModalScreenSubHeader = ({ accountKey, tokenContract }: ScreenSubHea
     const iconName = tokenContract ?? networkSymbol;
     const coinSymbol = (ethereumTokenSymbol ?? networkSymbol)?.toUpperCase();
 
+    const handleGoBack = () => {
+        navigation.goBack();
+        // Cancel any hanging address states on device when leaving.
+        TrezorConnect.cancel();
+    };
+
     return (
         <ScreenSubHeader
+            leftIcon={<GoBackIcon customGoBackFunction={handleGoBack} />}
             content={
                 <>
                     <Text variant="highlight">
