@@ -187,7 +187,10 @@ export const AnalyticsConsentScreen = () => {
                             id="moduleOnboarding.analyticsConsentScreen.learnMore"
                             values={{
                                 securityLink: chunks => (
-                                    <Link href="https://trezor.io/security" label={chunks} />
+                                    <Link
+                                        href="https://data.trezor.io/legal/privacy-policy.html"
+                                        label={chunks}
+                                    />
                                 ),
                             }}
                         />
