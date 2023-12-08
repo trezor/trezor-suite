@@ -27,6 +27,7 @@ import {
     TimestampWrapper,
     TxTypeIconWrapper,
 } from './CommonComponents';
+import { borders } from '@trezor/theme';
 
 const CryptoAmount = styled(StyledFormattedCryptoAmount)`
     width: unset;
@@ -36,7 +37,7 @@ const RoundRow = styled.div`
     display: flex;
     align-items: center;
     padding: 8px 16px;
-    border-radius: 8px;
+    border-radius: ${borders.radii.xs};
     cursor: pointer;
 
     :hover {

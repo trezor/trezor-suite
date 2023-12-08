@@ -1,4 +1,5 @@
 import { variables, H2, Card } from '@trezor/components';
+import { borders } from '@trezor/theme';
 import styled from 'styled-components';
 
 export const Heading = styled.div`
@@ -66,7 +67,7 @@ export const Value = styled.div`
     width: fit-content;
     background: ${({ theme }) => theme.BG_LIGHT_GREY};
     border: 1px solid ${({ theme }) => theme.STROKE_GREY};
-    border-radius: 8px;
+    border-radius: ${borders.radii.xs};
     word-break: break-all;
     padding: 10px;
 `;

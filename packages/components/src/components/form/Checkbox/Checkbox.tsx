@@ -73,7 +73,7 @@ export const CheckContainer = styled.div<{ variant: CheckboxVariant }>`
     align-items: center;
     width: ${spacingsPx.xl};
     height: ${spacingsPx.xl};
-    border-radius: ${borders.radii.xs};
+    border-radius: ${borders.radii.xxs};
     background: ${({ theme, variant }) => theme[variantStyles[variant].background]};
     border: 2px solid ${({ theme, variant }) => theme[variantStyles[variant].border]};
     transition:

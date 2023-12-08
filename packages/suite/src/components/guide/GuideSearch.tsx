@@ -7,7 +7,7 @@ import { GuideNode } from 'src/components/guide';
 import { useGuideSearch } from 'src/hooks/guide';
 
 import type { GuideCategory } from '@suite-common/suite-types';
-import { spacingsPx } from '@trezor/theme';
+import { borders, spacingsPx } from '@trezor/theme';
 
 const Wrapper = styled.div`
     margin-bottom: ${spacingsPx.xs};
@@ -43,7 +43,7 @@ const PreviewContent = styled.div`
 const StyledInput = styled(Input)`
     input {
         background-color: ${({ theme }) => theme.BG_GREY_ALT};
-        border-radius: 8px;
+        border-radius: ${borders.radii.xs};
         border-color: ${({ theme }) => theme.BG_GREY_ALT};
         transition: border-color 0.2s;
 

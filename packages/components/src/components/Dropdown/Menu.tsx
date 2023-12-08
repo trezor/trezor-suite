@@ -77,7 +77,7 @@ const MenuItemContainer = styled.li<MenuItemsProps>`
     justify-content: space-between;
     gap: ${spacingsPx.sm};
     padding: ${spacingsPx.xs} ${spacingsPx.sm};
-    border-radius: ${borders.radii.xs};
+    border-radius: ${borders.radii.xxs};
     background: ${({ isFocused, noHoverEffect, theme }) =>
         isFocused && !noHoverEffect && theme.backgroundSurfaceElevation0};
     color: ${({ isDisabled, theme }) => (!isDisabled ? theme.textDefault : theme.textDisabled)};
