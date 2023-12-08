@@ -1,7 +1,5 @@
 ## Solana: get address
 
-⚠️ **BETA**: This api is unstable and may change!
-
 Display requested address derived by given [BIP44 path](../path.md) on device and return it to the caller. User is presented with a description of the requested address and asked to confirm the export on Trezor.
 
 ```javascript
