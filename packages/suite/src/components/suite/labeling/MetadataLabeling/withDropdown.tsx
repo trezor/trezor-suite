@@ -20,7 +20,7 @@ type Props = RequiredKey<ExtendedProps, 'dropdownOptions'>;
  * Returns component wrapped into Dropdown.
  * ONLY for the MetadataLabeling component.
  */
-export const withDropdown = (WrappedComponent: FC<Props>) => (props: Props) => (
+export const withDropdown = (WrappedComponent: FC<ExtendedProps>) => (props: Props) => (
     <StyledDropdown
         isDisabled={props.editActive}
         alignMenu="left"
