@@ -9,6 +9,7 @@ export type ModalProps = TrezorModalProps & {
 export const Modal = ({ renderer: View = DefaultRenderer, ...props }: ModalProps) => (
     <View {...props} />
 );
+
 Modal.Header = TrezorModal.Header;
 Modal.Body = TrezorModal.Body;
 Modal.Description = TrezorModal.Description;
