@@ -7,6 +7,7 @@ import cardano from './cardano/index';
 import tezos from './tezos';
 import eos from './eos';
 import binance from './binance';
+import solana from './solana';
 import other from './other';
 
 import management from './management';
@@ -22,6 +23,7 @@ export default [
     ...tezos,
     ...eos,
     ...binance,
+    ...solana,
     ...other,
     ...management,
     ...blockchain,
