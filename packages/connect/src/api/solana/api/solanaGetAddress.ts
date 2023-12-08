@@ -15,8 +15,6 @@ export default class SolanaGetAddress extends AbstractMethod<'solanaGetAddress',
     confirmed?: boolean;
 
     init() {
-        console.warn('⚠️ BETA: This api is unstable and may change!');
-
         this.requiredPermissions = ['read'];
         this.firmwareRange = getFirmwareRange(
             this.name,

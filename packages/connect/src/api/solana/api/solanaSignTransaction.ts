@@ -10,8 +10,6 @@ export default class SolanaSignTransaction extends AbstractMethod<
     PROTO.SolanaSignTx
 > {
     init() {
-        console.warn('⚠️ BETA: This api is unstable and may change!');
-
         this.requiredPermissions = ['read', 'write'];
         this.firmwareRange = getFirmwareRange(
             this.name,
