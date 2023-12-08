@@ -446,6 +446,50 @@ export default [
         ],
     },
     {
+        name: 'Solana',
+        children: [
+            {
+                name: 'Get public key',
+                children: [
+                    {
+                        name: 'export public key',
+                        url: '/method/solanaGetPublicKey',
+                    },
+                    {
+                        name: 'export multiple public keys',
+                        url: '/method/solanaGetPublicKey-multiple',
+                    },
+                ],
+            },
+            {
+                name: 'Get address',
+                children: [
+                    {
+                        name: 'export address',
+                        url: '/method/solanaGetAddress',
+                    },
+                    {
+                        name: 'export multiple addresses',
+                        url: '/method/solanaGetAddress-multiple',
+                    },
+                ],
+            },
+            {
+                name: 'Sign transaction',
+                url: '/method/solanaSignTransaction',
+            },
+            {
+                name: 'Account info',
+                children: [
+                    {
+                        name: 'using discovery',
+                        url: '/method/getAccountInfo-discovery-solana',
+                    },
+                ],
+            },
+        ],
+    },
+    {
         name: 'Other methods',
         children: [
             {

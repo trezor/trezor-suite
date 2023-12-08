@@ -19,6 +19,8 @@ const select = [
     { value: 'tsep', label: 'Sepolia' },
     { value: 'tgor', label: 'Goerli' },
     { value: 'thol', label: 'Holesky' },
+    { value: 'sol', label: 'Solana' },
+    { value: 'dsol', label: 'Solana devnet' },
 ];
 
 const json = `[
