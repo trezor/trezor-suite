@@ -18,6 +18,12 @@ const SVG = styled(ReactSVG)`
         justify-content: center;
     }
 
+    path {
+        transition:
+            stroke 0.15s,
+            fill 0.15s;
+    }
+
     ${({ onClick }) =>
         onClick &&
         css`
@@ -26,7 +32,6 @@ const SVG = styled(ReactSVG)`
             :focus-visible {
                 svg {
                     transition: opacity 0.2s;
-
                     opacity: 0.5;
                 }
             }
