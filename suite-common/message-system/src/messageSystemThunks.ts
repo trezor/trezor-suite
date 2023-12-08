@@ -1,5 +1,6 @@
 import { decode, verify } from 'jws';
 
+import { isCodesignBuild } from '@trezor/env-utils';
 import { scheduleAction } from '@trezor/utils';
 import { createThunk } from '@suite-common/redux-utils';
 import { MessageSystem } from '@suite-common/suite-types';
@@ -19,8 +20,12 @@ import {
 } from './messageSystemSelectors';
 
 const getConfigJws = async () => {
+    const remoteConfigUrl = isCodesignBuild()
+        ? CONFIG_URL_REMOTE.stable
+        : CONFIG_URL_REMOTE.develop;
+
     try {
-        const response = await scheduleAction(signal => fetch(CONFIG_URL_REMOTE, { signal }), {
+        const response = await scheduleAction(signal => fetch(remoteConfigUrl, { signal }), {
             timeout: FETCH_TIMEOUT,
         });
 

@@ -29,6 +29,7 @@ export const {
     isWindows,
     isIOs,
     isLinux,
+    isCodesignBuild,
     getOsName,
     getOsNameWeb,
     getOsFamily,

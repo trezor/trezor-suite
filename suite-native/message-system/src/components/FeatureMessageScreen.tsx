@@ -126,7 +126,7 @@ export const FeatureMessageScreen = () => {
                     </Button>
                 )}
                 {isDismissable && (
-                    <Button size="large" onPress={handleDismiss}>
+                    <Button size="large" colorScheme="tertiaryElevation0" onPress={handleDismiss}>
                         {translate('generic.buttons.dismiss')}
                     </Button>
                 )}

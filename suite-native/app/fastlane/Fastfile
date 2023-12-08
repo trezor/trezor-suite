@@ -36,7 +36,6 @@ private_lane :replace_debug_info_environment_variables do |options|
   changelog_substitute = "s/^(CHANGELOG)=(.*)$/\\1=#{ENV["CHANGELOG"]}/"
   version_substitute = "s/^(VERSION)=(.*)$/\\1=#{ENV["VERSION"]}/"
   build_number_substitute = "s/^(BUILD_NUMBER)=(.*)$/\\1=#{ENV["BUILD_NUMBER"]}/"
-  codesign_build_substitute = "s/^(CODESIGN_BUILD)=(.*)$/\\1=#{ENV["CODESIGN_BUILD"]}/"
 
   if is_ci and platform == :ios
     sh(
@@ -45,7 +44,6 @@ private_lane :replace_debug_info_environment_variables do |options|
       sed -r -i '' '#{changelog_substitute}' '#{environment_file}'
       sed -r -i '' '#{version_substitute}' '#{environment_file}'
       sed -r -i '' '#{build_number_substitute}' '#{environment_file}'
-      sed -r -i '' '#{codesign_build_substitute}' '#{environment_file}'
       SHELL
     )
   elsif is_ci and platform == :android
@@ -55,7 +53,6 @@ private_lane :replace_debug_info_environment_variables do |options|
       sed -r -i '#{changelog_substitute}' '#{environment_file}'
       sed -r -i '#{version_substitute}' '#{environment_file}'
       sed -r -i '#{build_number_substitute}' '#{environment_file}'
-      sed -r -i '#{codesign_build_substitute}' '#{environment_file}'
       SHELL
     )
   end

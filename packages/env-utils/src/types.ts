@@ -27,6 +27,7 @@ export interface EnvUtils {
     isWindows: () => boolean | undefined;
     isIOs: () => boolean;
     isLinux: () => boolean | undefined;
+    isCodesignBuild: () => boolean;
     getOsName: () => '' | 'android' | 'linux' | 'windows' | 'macos' | 'chromeos' | 'ios';
     getOsNameWeb: () => string | undefined;
     getOsFamily: () => 'Windows' | 'MacOS' | 'Linux';

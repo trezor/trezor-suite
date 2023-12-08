@@ -16,6 +16,8 @@ export const FETCH_INTERVAL = 60_000; // 1 minute in milliseconds
 export const FETCH_CHECK_INTERVAL = 30_000;
 export const FETCH_TIMEOUT = 30_000;
 
-export const CONFIG_URL_REMOTE = `https://data.trezor.io/config/${
-    process.env.CODESIGN_BUILD ? 'stable' : 'develop'
-}/${JWS_CONFIG_FILENAME_REMOTE}`;
+export const CONFIG_URL_REMOTE_BASE = 'https://data.trezor.io/config';
+export const CONFIG_URL_REMOTE = {
+    stable: `${CONFIG_URL_REMOTE_BASE}/stable/${JWS_CONFIG_FILENAME_REMOTE}`,
+    develop: `${CONFIG_URL_REMOTE_BASE}/develop/${JWS_CONFIG_FILENAME_REMOTE}`,
+};
