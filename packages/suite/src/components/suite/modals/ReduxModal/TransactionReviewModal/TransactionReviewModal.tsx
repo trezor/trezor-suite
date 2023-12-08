@@ -7,12 +7,12 @@ import { UserContextPayload } from '@suite-common/suite-types';
 import { selectDevice } from '@suite-common/wallet-core';
 import { Translation, Modal } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { cancelSignTx } from 'src/actions/wallet/sendFormActions';
 import { isCardanoTx } from '@suite-common/wallet-utils';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import { constructOutputs } from 'src/utils/wallet/reviewTransactionUtils';
 import { TransactionReviewSummary } from './TransactionReviewSummary';
 import { TransactionReviewOutputList } from './TransactionReviewOutputList/TransactionReviewOutputList';
+import { cancelSignTx } from '../../../../../actions/wallet/sendFormActions/cancelSignTx';
 
 const StyledModal = styled(Modal)`
     ${Modal.Body} {
