@@ -4,7 +4,7 @@ import { NativeModulesProxy, EventEmitter, Subscription } from 'expo-modules-cor
 import { ReactNativeUsbModule } from './ReactNativeUsbModule';
 import { NativeDevice, OnConnectEvent, WebUSBDevice } from './ReactNativeUsb.types';
 
-const DEBUG_LOGS = true;
+const DEBUG_LOGS = false;
 
 const debugLog = (...args: any[]) => {
     if (DEBUG_LOGS) {
@@ -100,12 +100,24 @@ const createWebUSBDevice = (device: NativeDevice): WebUSBDevice => ({
     configurations: [],
 });
 
+// Native layer will send onConnect event everytime when application enter foreground, so we need to keep track of connected devices
+// and not send onConnect event if device is already connected.
+const connectedDevices = new Map<string, WebUSBDevice>();
+
 export function onDeviceConnected(listener: (event: OnConnectEvent) => void): Subscription {
     return emitter.addListener<NativeDevice>('onDeviceConnect', event => {
+        if (connectedDevices.has(event.deviceName)) {
+            debugLog('JS: USB onDeviceConnect: device already connected');
+            return;
+        }
+
         const eventPayload = {
             device: createWebUSBDevice(event as NativeDevice),
         };
+
         debugLog('JS: USB onDeviceConnect', eventPayload);
+
+        connectedDevices.set(event.deviceName, eventPayload.device);
         return listener(eventPayload as any);
     });
 }
@@ -115,7 +127,10 @@ export function onDeviceDisconnect(listener: (event: OnConnectEvent) => void): S
         const eventPayload = {
             device: createWebUSBDevice(event as NativeDevice),
         };
+
         debugLog('JS: USB onDeviceDisconnect', eventPayload);
+
+        connectedDevices.delete(event.deviceName);
         return listener(eventPayload as any);
     });
 }
