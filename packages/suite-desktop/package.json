@@ -20,7 +20,8 @@
         "build:linux": "yarn clean && yarn build:ui && yarn build:app && yarn build:app:electron --publish never --linux --x64 --arm64",
         "build:mac": "yarn clean && yarn build:ui && yarn build:app && yarn build:app:electron --publish never --mac --x64 --arm64",
         "build:win": "yarn clean && yarn build:ui && yarn build:app && yarn build:app:electron --publish never --win --x64",
-        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "postinstall": "electron-builder install-app-deps"
     },
     "dependencies": {
         "blake-hash": "^2.0.0",
