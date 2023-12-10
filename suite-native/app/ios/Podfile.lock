@@ -414,6 +414,14 @@ PODS:
   - react-native-mmkv (2.11.0):
     - MMKV (>= 1.2.13)
     - React-Core
+  - react-native-quick-base64 (2.0.7):
+    - React-Core
+  - react-native-quick-crypto (0.6.1):
+    - OpenSSL-Universal
+    - React
+    - React-callinvoker
+    - React-Core
+    - ReactCommon
   - react-native-restart (0.0.27):
     - React-Core
   - react-native-safe-area-context (4.5.0):
@@ -489,6 +497,26 @@ PODS:
     - ReactCommon/turbomodule/core (= 0.71.8)
   - React-runtimeexecutor (0.71.8):
     - React-jsi (= 0.71.8)
+  - ReactCommon (0.71.8):
+    - React-logger (= 0.71.8)
+    - ReactCommon/react_debug_core (= 0.71.8)
+    - ReactCommon/turbomodule (= 0.71.8)
+  - ReactCommon/react_debug_core (0.71.8):
+    - React-logger (= 0.71.8)
+  - ReactCommon/turbomodule (0.71.8):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2021.07.22.00)
+    - React-callinvoker (= 0.71.8)
+    - React-Core (= 0.71.8)
+    - React-cxxreact (= 0.71.8)
+    - React-jsi (= 0.71.8)
+    - React-logger (= 0.71.8)
+    - React-perflogger (= 0.71.8)
+    - ReactCommon/turbomodule/bridging (= 0.71.8)
+    - ReactCommon/turbomodule/core (= 0.71.8)
+    - ReactCommon/turbomodule/samples (= 0.71.8)
   - ReactCommon/turbomodule/bridging (0.71.8):
     - DoubleConversion
     - glog
@@ -511,6 +539,18 @@ PODS:
     - React-jsi (= 0.71.8)
     - React-logger (= 0.71.8)
     - React-perflogger (= 0.71.8)
+  - ReactCommon/turbomodule/samples (0.71.8):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2021.07.22.00)
+    - React-callinvoker (= 0.71.8)
+    - React-Core (= 0.71.8)
+    - React-cxxreact (= 0.71.8)
+    - React-jsi (= 0.71.8)
+    - React-logger (= 0.71.8)
+    - React-perflogger (= 0.71.8)
+    - ReactCommon/turbomodule/core (= 0.71.8)
   - ReactNativeUsb (1.0.0):
     - ExpoModulesCore
   - RNFlashList (1.4.3):
@@ -621,6 +661,8 @@ DEPENDENCIES:
   - react-native-config (from `../../../node_modules/react-native-config`)
   - react-native-flipper (from `../../../node_modules/react-native-flipper`)
   - react-native-mmkv (from `../../../node_modules/react-native-mmkv`)
+  - react-native-quick-base64 (from `../../../node_modules/react-native-quick-base64`)
+  - react-native-quick-crypto (from `../../../node_modules/react-native-quick-crypto`)
   - react-native-restart (from `../../../node_modules/react-native-restart`)
   - react-native-safe-area-context (from `../../../node_modules/react-native-safe-area-context`)
   - "react-native-skia (from `../../../node_modules/@shopify/react-native-skia`)"
@@ -763,6 +805,10 @@ EXTERNAL SOURCES:
     :path: "../../../node_modules/react-native-flipper"
   react-native-mmkv:
     :path: "../../../node_modules/react-native-mmkv"
+  react-native-quick-base64:
+    :path: "../../../node_modules/react-native-quick-base64"
+  react-native-quick-crypto:
+    :path: "../../../node_modules/react-native-quick-crypto"
   react-native-restart:
     :path: "../../../node_modules/react-native-restart"
   react-native-safe-area-context:
@@ -875,6 +921,8 @@ SPEC CHECKSUMS:
   react-native-config: 5330c8258265c1e5fdb8c009d2cabd6badd96727
   react-native-flipper: c33a4995958ef12a2b2f8290d63bed7adeed7634
   react-native-mmkv: e97c0c79403fb94577e5d902ab1ebd42b0715b43
+  react-native-quick-base64: a5dbe4528f1453e662fcf7351029500b8b63e7bb
+  react-native-quick-crypto: 82eedfdbd352c8fa861512f80f07d069c411c9b8
   react-native-restart: 7595693413fe3ca15893702f2c8306c62a708162
   react-native-safe-area-context: 39c2d8be3328df5d437ac1700f4f3a4f75716acc
   react-native-skia: 0af8dd48ce9332d1dedcb1bc8a648f7d57a04b6c
@@ -911,4 +959,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: d37876aaf00e7f8309b694188119b139b8452ca1
 
-COCOAPODS: 1.14.3
+COCOAPODS: 1.11.3

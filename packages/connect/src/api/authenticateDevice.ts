@@ -37,23 +37,34 @@ export default class AuthenticateDevice extends AbstractMethod<
     }
 
     async run() {
-        const challenge = getRandomChallenge();
+        try {
+            console.log('AuthenticateDevice.run()', this.params);
+            const challenge = getRandomChallenge();
+            console.log('challenge', challenge);
 
-        const { message } = await this.device
-            .getCommands()
-            .typedCall('AuthenticateDevice', 'AuthenticityProof', {
-                challenge: challenge.toString('hex'),
+            const { message } = await this.device
+                .getCommands()
+                .typedCall('AuthenticateDevice', 'AuthenticityProof', {
+                    challenge: challenge.toString('hex'),
+                });
+
+            console.log('message', message);
+
+            const config = this.params.config || deviceAuthenticityConfig;
+            const valid = await verifyAuthenticityProof({
+                ...message,
+                challenge,
+                config,
+                allowDebugKeys: this.params.allowDebugKeys,
+                deviceModel: this.device.features.internal_model,
             });
 
-        const config = this.params.config || deviceAuthenticityConfig;
-        const valid = await verifyAuthenticityProof({
-            ...message,
-            challenge,
-            config,
-            allowDebugKeys: this.params.allowDebugKeys,
-            deviceModel: this.device.features.internal_model,
-        });
+            console.log('valid', valid);
 
-        return valid;
+            return valid;
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
     }
 }

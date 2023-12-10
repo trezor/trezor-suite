@@ -14,12 +14,12 @@ module.exports = makeMetroConfig({
     resolver: {
         blockList: [/libDev/],
         extraNodeModules: {
-            // modules needed for trezor-connect
-            crypto: nodejs.crypto,
             stream: nodejs.stream,
             https: nodejs.https,
             http: nodejs.http,
             zlib: nodejs.zlib,
+            buffer: '@craftzdog/react-native-buffer',
+            crypto: nodejs.crypto,
         },
         resolveRequest: (context, moduleName, platform) => {
             if (moduleName.startsWith('@emurgo/cardano')) {
@@ -28,6 +28,14 @@ module.exports = makeMetroConfig({
                 // In future we will need JS implementation of Cardano libs or C++ implementation
                 return {
                     filePath: require.resolve('./cardanoPolyfills.js'),
+                    type: 'sourceFile',
+                };
+            }
+            if (moduleName === 'react-native-quick-crypto') {
+                return {
+                    filePath: require.resolve(
+                        '../../node_modules/react-native-quick-crypto/src/index.ts',
+                    ),
                     type: 'sourceFile',
                 };
             }
