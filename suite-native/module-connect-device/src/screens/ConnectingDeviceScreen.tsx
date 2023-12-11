@@ -28,12 +28,14 @@ export const ConnectingDeviceScreen = () => {
         <ConnectDeviceSreenView style={applyStyle(screenStyle)}>
             <VStack spacing="medium" alignItems="center">
                 <ActivityIndicator size="large" />
-                <Text variant="titleMedium">
-                    <Translation id="moduleConnectDevice.connectingDeviceScreen.title" />{' '}
-                    <Box paddingBottom="small">
+                <Box flexDirection="row" alignItems="center">
+                    <Text variant="titleMedium">
+                        <Translation id="moduleConnectDevice.connectingDeviceScreen.title" />
+                    </Text>
+                    <Box paddingBottom="small" paddingLeft="small">
                         <Icon name="trezor" size="extraLarge" />
                     </Box>
-                </Text>
+                </Box>
                 <Text variant="highlight" color="textSubdued">
                     <Translation id="moduleConnectDevice.connectingDeviceScreen.hodlOn" />
                 </Text>
