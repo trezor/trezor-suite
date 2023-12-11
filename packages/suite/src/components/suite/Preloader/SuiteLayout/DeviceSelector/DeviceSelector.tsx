@@ -2,47 +2,46 @@ import { useState, useEffect, useRef } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { variables, Image, Icon, DeviceAnimation } from '@trezor/components';
-import { selectDevicesCount, selectDevice, acquireDevice } from '@suite-common/wallet-core';
+import { Image, Icon, DeviceAnimation } from '@trezor/components';
+import { selectDevicesCount, selectDevice } from '@suite-common/wallet-core';
 import * as deviceUtils from '@suite-common/suite-utils';
 import type { Timeout } from '@trezor/type-utils';
 import { SHAKE } from 'src/support/suite/styles/animations';
-import { WalletLabeling } from 'src/components/suite';
 import { TrezorDevice } from 'src/types/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
-import { DeviceStatus } from './DeviceStatus';
-import { transparentize } from 'polished';
 import { DeviceModelInternal } from '@trezor/connect';
-import { spacingsPx } from '@trezor/theme';
+import { DeviceStatusText } from 'src/views/suite/SwitchDevice/DeviceItem/DeviceStatusText';
+import { borders, spacingsPx, typography } from '@trezor/theme';
+import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer';
+import { focusStyleTransition, getFocusShadowStyle } from '@trezor/components/src/utils/utils';
 
-const ArrowDown = styled(Icon)`
-    margin-left: 4px;
-    transition: transform 0.1s ease-in-out;
+const CaretContainer = styled.div`
+    background: transparent;
+    padding: 10px;
+    border-radius: 50%;
+    transition: background 0.15s;
 `;
 
 const Wrapper = styled.div<{ isAnimationTriggered?: boolean }>`
     position: relative;
     display: flex;
-    gap: ${spacingsPx.md};
+    gap: ${spacingsPx.xs};
     width: 100%;
     height: 54px;
-    padding: 6px 12px;
+    padding: ${spacingsPx.xs} ${spacingsPx.xxs} ${spacingsPx.xs} ${spacingsPx.xs};
     align-items: center;
     cursor: pointer;
+    border-radius: ${borders.radii.sm};
+    border: 1px solid transparent;
+    transition: ${focusStyleTransition};
+
+    ${getFocusShadowStyle()};
 
     :hover {
-        border-radius: 8px;
-        background-color: ${({ theme }) =>
-            transparentize(theme.HOVER_TRANSPARENTIZE_FILTER, theme.HOVER_PRIMER_COLOR)};
-
-        ${ArrowDown} {
-            transform: translateY(2px);
-
-            path {
-                fill: ${({ theme }) => theme.TYPE_DARK_GREY};
-            }
+        ${CaretContainer} {
+            background: ${({ theme }) => theme.backgroundTertiaryPressedOnElevation0};
         }
     }
 
@@ -57,18 +56,11 @@ const Wrapper = styled.div<{ isAnimationTriggered?: boolean }>`
 `;
 
 const DeviceLabel = styled.div`
-    align-items: center;
-    display: flex;
+    ${typography.body};
     min-width: 0;
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.textDefault};
     overflow: hidden;
     text-overflow: ellipsis;
-
-    > :first-child {
-        margin-right: 6px;
-    }
 `;
 
 const DeviceWrapper = styled.div<{ isLowerOpacity: boolean }>`
@@ -81,17 +73,6 @@ const StyledImage = styled(Image)`
 
     /* do not apply the darkening filter in dark mode on device images */
     filter: none;
-`;
-
-const WalletNameWrapper = styled.div`
-    display: flex;
-    min-width: 0;
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
 `;
 
 const DeviceDetail = styled.div`
@@ -116,12 +97,14 @@ const needsRefresh = (device?: TrezorDevice) => {
 
 export const DeviceSelector = () => {
     const selectedDevice = useSelector(selectDevice);
+    const { walletLabel } = useSelector(state =>
+        selectLabelingDataForWallet(state, selectedDevice?.state),
+    );
     const deviceCount = useSelector(selectDevicesCount);
     const dispatch = useDispatch();
 
     const [localCount, setLocalCount] = useState<number | null>(null);
     const [isAnimationTriggered, setIsAnimationTriggered] = useState(false);
-    const [showTextStatus, setShowTextStatus] = useState(false);
 
     const countChanged = localCount && localCount !== deviceCount;
     const shakeAnimationTimerRef = useRef<Timeout | undefined>(undefined);
@@ -129,8 +112,6 @@ export const DeviceSelector = () => {
 
     const deviceNeedsRefresh = needsRefresh(selectedDevice);
     const selectedDeviceModelInternal = selectedDevice?.features?.internal_model;
-
-    const connectState = selectedDevice?.connected;
 
     useEffect(
         () =>
@@ -159,14 +140,6 @@ export const DeviceSelector = () => {
         }
     }, [countChanged]);
 
-    useEffect(() => {
-        // if the device status changes, show wallet state (dis/connected) as text for 2 seconds
-        setShowTextStatus(true);
-        stateAnimationTimerRef.current = setTimeout(() => {
-            setShowTextStatus(false);
-        }, 2000);
-    }, [connectState]);
-
     const handleSwitchDeviceClick = () =>
         dispatch(
             goto('suite-switch-device', {
@@ -175,17 +148,13 @@ export const DeviceSelector = () => {
                 },
             }),
         );
-    const handleRefreshClick = () => {
-        if (deviceNeedsRefresh) {
-            dispatch(acquireDevice(selectedDevice));
-        }
-    };
 
     return (
         <Wrapper
             data-test="@menu/switch-device"
             onClick={handleSwitchDeviceClick}
             isAnimationTriggered={isAnimationTriggered}
+            tabIndex={0}
         >
             {selectedDevice && selectedDeviceModelInternal && (
                 <>
@@ -206,27 +175,12 @@ export const DeviceSelector = () => {
                         )}
                     </DeviceWrapper>
                     <DeviceDetail>
-                        <DeviceLabel>
-                            <span>{selectedDevice.label}</span>
-                            <DeviceStatus
-                                showTextStatus={showTextStatus}
-                                device={selectedDevice}
-                                onRefreshClick={handleRefreshClick}
-                                data-test={
-                                    selectedDevice.connected
-                                        ? '@deviceStatus-connected'
-                                        : '@deviceStatus-disconnected'
-                                }
-                            />
-                        </DeviceLabel>
-
-                        {selectedDevice.state && (
-                            <WalletNameWrapper>
-                                <WalletLabeling device={selectedDevice} />
-                                <ArrowDown icon="ARROW_DOWN" size={16} />
-                            </WalletNameWrapper>
-                        )}
+                        <DeviceLabel>{selectedDevice.label}</DeviceLabel>
+                        <DeviceStatusText device={selectedDevice} walletLabel={walletLabel} />
                     </DeviceDetail>
+                    <CaretContainer>
+                        <Icon size={20} icon="CARET_CIRCLE_DOWN" />
+                    </CaretContainer>
                 </>
             )}
         </Wrapper>
