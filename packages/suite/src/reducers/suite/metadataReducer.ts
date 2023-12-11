@@ -21,6 +21,7 @@ import {
 } from 'src/actions/suite/constants/metadataConstants';
 
 import { SuiteRootState } from './suiteReducer';
+import { AccountKey } from '@suite-common/wallet-types';
 
 export const initialState: MetadataState = {
     // is Suite trying to load metadata (get master key -> sync cloud)?
@@ -141,7 +142,7 @@ export const selectLabelingDataForSelectedAccount = (state: {
  */
 export const selectLabelingDataForAccount = (
     state: { metadata: MetadataState; wallet: { accounts: Account[] } },
-    accountKey: string,
+    accountKey: AccountKey,
 ) => {
     const provider = selectSelectedProviderForLabels(state);
     const account = selectAccountByKey(state, accountKey);
