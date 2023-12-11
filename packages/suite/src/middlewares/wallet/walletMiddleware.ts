@@ -9,6 +9,7 @@ import {
     transactionsActions,
     unsubscribeBlockchainThunk,
     deviceActions,
+    stakeActions,
 } from '@suite-common/wallet-core';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 
@@ -110,6 +111,7 @@ const walletMiddleware =
             api.dispatch(sendFormActions.dispose());
             api.dispatch(receiveActions.dispose());
             api.dispatch(coinmarketBuyActions.dispose());
+            api.dispatch(stakeActions.dispose());
         }
 
         if (action.type === WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS) {

@@ -10,9 +10,7 @@ import { isChanged } from '@suite-common/suite-utils';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { saveComposedTransactionInfo } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 import {
-    StakeEthFormState,
     UseStakeEthFormProps,
-    StakeEthContextValues,
     FIAT_INPUT,
     CRYPTO_INPUT,
     OUTPUT_AMOUNT,
@@ -23,19 +21,24 @@ import { AmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
 
 import { fromWei } from 'web3-utils';
 import { useStakeEthFormDefaultValues } from './useStakeEthFormDefaultValues';
-import { useCompose } from './form/useCompose';
+import { useStakeCompose } from './form/useStakeCompose';
 import {
     MIN_ETH_AMOUNT_FOR_STAKING,
     MIN_ETH_FOR_WITHDRAWALS,
 } from 'src/constants/suite/ethStaking';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 
-export const StakeEthFormContext = createContext<StakeEthContextValues | null>(null);
+import { signTransaction } from 'src/actions/wallet/stakeActions';
+import {
+    PrecomposedTransactionFinal,
+    StakeFormState,
+    StakeContextValues,
+} from '@suite-common/wallet-types';
+
+export const StakeEthFormContext = createContext<StakeContextValues | null>(null);
 StakeEthFormContext.displayName = 'StakeEthFormContext';
 
-export const useStakeEthForm = ({
-    selectedAccount,
-}: UseStakeEthFormProps): StakeEthContextValues => {
+export const useStakeEthForm = ({ selectedAccount }: UseStakeEthFormProps): StakeContextValues => {
     const dispatch = useDispatch();
 
     const fiat = useSelector(state => state.wallet.fiat);
@@ -56,7 +59,7 @@ export const useStakeEthForm = ({
         maxCrypto: Number(account.formattedBalance),
     };
 
-    const { saveDraft, getDraft, removeDraft } = useFormDraft<StakeEthFormState>('stake-eth');
+    const { saveDraft, getDraft, removeDraft } = useFormDraft<StakeFormState>('stake-eth');
     const draft = getDraft(account.key);
     const isDraft = !!draft;
 
@@ -77,7 +80,7 @@ export const useStakeEthForm = ({
         };
     }, [account, defaultValues, fees, network]);
 
-    const methods = useForm<StakeEthFormState>({
+    const methods = useForm<StakeFormState>({
         mode: 'onChange',
         defaultValues: isDraft ? draft : defaultValues,
     });
@@ -85,7 +88,7 @@ export const useStakeEthForm = ({
     const { register, control, formState, setValue, reset, clearErrors, getValues, setError } =
         methods;
 
-    const values = useWatch<StakeEthFormState>({ control });
+    const values = useWatch<StakeFormState>({ control });
 
     useEffect(() => {
         if (!isChanged(defaultValues, values)) {
@@ -110,7 +113,7 @@ export const useStakeEthForm = ({
         isLoading: isComposing,
         composeRequest,
         composedLevels,
-    } = useCompose({
+    } = useStakeCompose({
         ...methods,
         state,
     });
@@ -123,7 +126,7 @@ export const useStakeEthForm = ({
                 Object.keys(formState.errors).length === 0 &&
                 !isComposing
             ) {
-                saveDraft(selectedAccount.account.key, values as StakeEthFormState);
+                saveDraft(selectedAccount.account.key, values as StakeFormState);
             }
         },
         200,
@@ -299,17 +302,28 @@ export const useStakeEthForm = ({
         account.formattedBalance,
     ]);
 
+    // get response from TransactionReviewModal
+    const sign = useCallback(async () => {
+        const values = getValues();
+        const composedTx = composedLevels ? composedLevels[selectedFee] : undefined;
+        if (composedTx && composedTx.type === 'final') {
+            const result = await dispatch(
+                signTransaction(values, composedTx as PrecomposedTransactionFinal),
+            );
+
+            if (result?.success) {
+                clearForm();
+            }
+        }
+    }, [getValues, composedLevels, dispatch, clearForm]);
+
+    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+    const closeConfirmModal = () => {
+        setIsConfirmModalOpen(false);
+    };
+
     const onSubmit = () => {
-        const formValues = methods.getValues();
-        const fiatStringAmount = formValues.fiatInput;
-        const cryptoStringAmount = formValues.cryptoInput;
-
-        const payload = {
-            fiatStringAmount,
-            cryptoStringAmount,
-        };
-
-        console.log(payload);
+        setIsConfirmModalOpen(true);
     };
 
     return {
@@ -334,6 +348,9 @@ export const useStakeEthForm = ({
         isAdviceForWithdrawalWarningShown,
         selectedFee,
         clearForm,
+        isConfirmModalOpen,
+        closeConfirmModal,
+        signTx: sign,
     };
 };
 

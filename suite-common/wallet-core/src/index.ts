@@ -28,3 +28,5 @@ export * from './token-definitions/tokenDefinitionsReducer';
 export * from './token-definitions/tokenDefinitionsThunks';
 export * from './token-definitions/tokenDefinitionsMiddleware';
 export * from './token-definitions/tokenDefinitionsTypes';
+export * from './stake/stakeActions';
+export * from './stake/stakeReducer';

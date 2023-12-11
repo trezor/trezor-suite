@@ -5,6 +5,7 @@ import { analytics, EventType } from '@trezor/suite-analytics';
 import { Button, variables } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { TranslationKey } from '@suite-common/intl-types';
 import { copyToClipboard, download } from '@trezor/dom-utils';
 import { useDispatch } from 'src/hooks/suite';
 import { TransactionReviewDetails } from './TransactionReviewDetails';
@@ -19,6 +20,7 @@ import { getOutputState } from 'src/utils/wallet/reviewTransactionUtils';
 import { TransactionReviewTotalOutput } from './TransactionReviewTotalOutput';
 import { ReviewOutput } from 'src/types/wallet/transaction';
 import { spacingsPx } from '@trezor/theme';
+import { StakeFormState } from '@suite-common/wallet-types';
 
 const Content = styled.div`
     display: flex;
@@ -78,7 +80,7 @@ const StyledButton = styled(Button)`
 
 export interface TransactionReviewOutputListProps {
     account: Account;
-    precomposedForm: FormState;
+    precomposedForm: FormState | StakeFormState;
     precomposedTx: PrecomposedTransactionFinal | TxFinalCardano;
     signedTx?: { tx: string }; // send reducer
     decision?: { resolve: (success: boolean) => void }; // dfd
@@ -86,6 +88,7 @@ export interface TransactionReviewOutputListProps {
     outputs: ReviewOutput[];
     buttonRequestsCount: number;
     isRbfAction: boolean;
+    actionText: TranslationKey;
 }
 
 export const TransactionReviewOutputList = ({
@@ -98,6 +101,7 @@ export const TransactionReviewOutputList = ({
     outputs,
     buttonRequestsCount,
     isRbfAction,
+    actionText,
 }: TransactionReviewOutputListProps) => {
     const dispatch = useDispatch();
     const { networkType } = account;
@@ -219,7 +223,7 @@ export const TransactionReviewOutputList = ({
                             isDisabled={!signedTx}
                             onClick={handleSend}
                         >
-                            <Translation id={isRbfAction ? 'TR_REPLACE_TX' : 'SEND_TRANSACTION'} />
+                            <Translation id={actionText} />
                         </StyledButton>
                     ) : (
                         <Flex>

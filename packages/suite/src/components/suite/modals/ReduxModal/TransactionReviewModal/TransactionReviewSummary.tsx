@@ -1,9 +1,10 @@
 import styled, { useTheme } from 'styled-components';
 import BigNumber from 'bignumber.js';
 import { getFeeUnits, formatNetworkAmount, formatAmount } from '@suite-common/wallet-utils';
-import { Icon, CoinLogo, variables } from '@trezor/components';
+import { Icon, CoinLogo, variables, useTheme } from '@trezor/components';
 import { formatDuration, isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { borders, spacingsPx, typography } from '@trezor/theme';
+import { TranslationKey } from '@suite-common/intl-types';
 import { Translation, FormattedCryptoAmount, AccountLabel } from 'src/components/suite';
 import { Account, Network } from 'src/types/wallet';
 import { PrecomposedTransactionFinal, TxFinalCardano } from 'src/types/wallet/sendForm';
@@ -194,8 +195,8 @@ interface TransactionReviewSummaryProps {
     network: Network;
     broadcast?: boolean;
     detailsOpen: boolean;
-    isRbfAction?: boolean;
     onDetailsClick: () => void;
+    actionText: TranslationKey;
 }
 
 export const TransactionReviewSummary = ({
@@ -205,8 +206,8 @@ export const TransactionReviewSummary = ({
     network,
     broadcast,
     detailsOpen,
-    isRbfAction,
     onDetailsClick,
+    actionText,
 }: TransactionReviewSummaryProps) => {
     const drafts = useSelector(state => state.wallet.send.drafts);
     const { accountLabel } = useSelector(selectLabelingDataForSelectedAccount);
@@ -239,7 +240,7 @@ export const TransactionReviewSummary = ({
                 </IconWrapper>
 
                 <Headline>
-                    <Translation id={isRbfAction ? 'TR_REPLACE_TX' : 'SEND_TRANSACTION'} />
+                    <Translation id={actionText} />
                     <HeadlineAmount>
                         <FormattedCryptoAmount
                             disableHiddenPlaceholder
