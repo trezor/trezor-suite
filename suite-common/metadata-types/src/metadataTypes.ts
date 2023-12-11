@@ -50,7 +50,7 @@ export type MetadataAddPayload =
 // }
 export type MetadataItem = string;
 
-export type MetadataProviderType = 'dropbox' | 'google' | 'fileSystem' | 'sdCard';
+export type MetadataProviderType = 'dropbox' | 'google' | 'fileSystem' | 'inMemoryTest'; // Todo: | 'sdCard'
 
 export type Tokens = {
     accessToken?: string;
@@ -176,9 +176,11 @@ export abstract class AbstractMetadataProvider {
     }
 }
 
+export type AccountOutputLabels = { [index: string]: MetadataItem };
+
 export interface AccountLabels {
     accountLabel?: MetadataItem;
-    outputLabels: { [txid: string]: { [index: string]: MetadataItem } };
+    outputLabels: { [txid: string]: AccountOutputLabels };
     addressLabels: { [address: string]: MetadataItem };
 }
 

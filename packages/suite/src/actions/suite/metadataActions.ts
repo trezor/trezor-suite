@@ -35,6 +35,7 @@ import {
     selectMetadata,
     selectSelectedProviderForLabels,
 } from 'src/reducers/suite/metadataReducer';
+import { InMemoryTestProvider } from '../../services/suite/metadata/InMemoryTestProvider';
 
 export const setAccountAdd = createAction(METADATA.ACCOUNT_ADD, (payload: Account) => ({
     payload,
@@ -80,11 +81,12 @@ export type MetadataAction =
 // needs to be declared here in top level context because it's not recommended to keep classes instances in redux state (serialization)
 const providerInstance: Record<
     DataType,
-    DropboxProvider | GoogleProvider | FileSystemProvider | undefined
+    DropboxProvider | GoogleProvider | FileSystemProvider | InMemoryTestProvider | undefined
 > = {
     labels: undefined,
     passwords: undefined,
 };
+
 const fetchIntervals: { [deviceState: string]: any } = {}; // any because of native at the moment, otherwise number | undefined
 
 const createProviderInstance = (
@@ -93,6 +95,7 @@ const createProviderInstance = (
     environment: OAuthServerEnvironment = 'production',
     clientId?: string,
 ) => {
+    // eslint-disable-next-line default-case
     switch (type) {
         case 'dropbox':
             return new DropboxProvider({
@@ -103,8 +106,8 @@ const createProviderInstance = (
             return new GoogleProvider(tokens, environment);
         case 'fileSystem':
             return new FileSystemProvider();
-        default:
-            throw new Error(`provider of type ${type} is not implemented`);
+        case 'inMemoryTest':
+            return new InMemoryTestProvider();
     }
 };
 
@@ -803,8 +806,13 @@ export const addAccountMetadata =
 
         if (payload.type === 'outputLabel') {
             if (typeof payload.value !== 'string' || payload.value.length === 0) {
-                if (!nextMetadata.outputLabels[payload.txid])
-                    return Promise.resolve({ success: false });
+                if (!nextMetadata.outputLabels[payload.txid]) {
+                    // If we try to delete already deleted label it's ok.
+                    // No problem happened. ¯\_ (ツ)_/¯
+
+                    return Promise.resolve({ success: true });
+                }
+
                 delete nextMetadata.outputLabels[payload.txid][payload.outputIndex];
                 if (Object.keys(nextMetadata.outputLabels[payload.txid]).length === 0) {
                     delete nextMetadata.outputLabels[payload.txid];

@@ -26,7 +26,7 @@ import {
     PrecomposedTransactionFinal,
     PrecomposedTransactionFinalCardano,
 } from '@suite-common/wallet-types';
-import { cloneObject } from '@trezor/utils';
+import { cloneObject, getSynchronize } from '@trezor/utils';
 
 import * as modalActions from 'src/actions/suite/modalActions';
 import * as metadataActions from 'src/actions/suite/metadataActions';
@@ -40,6 +40,7 @@ import * as sendFormEthereumActions from './send/sendFormEthereumActions';
 import * as sendFormRippleActions from './send/sendFormRippleActions';
 import * as sendFormSolanaActions from './send/sendFormSolanaActions';
 import * as sendFormCardanoActions from './send/sendFormCardanoActions';
+import { findLabelsToBeMovedOrDeleted, moveLabelsForRbfAction } from './moveLabelsForRbfActions';
 
 export type SendFormAction =
     | {
@@ -213,6 +214,12 @@ const pushTransaction =
         const device = selectDevice(getState());
         if (!signedTx || !precomposedTx || !account) return;
 
+        const isRbf = precomposedTx.prevTxid !== undefined;
+
+        const toBeMovedOrDeletedList = isRbf
+            ? dispatch(findLabelsToBeMovedOrDeleted({ prevTxid: precomposedTx.prevTxid }))
+            : undefined;
+
         const sentTx = await TrezorConnect.pushTransaction(signedTx);
         // const sentTx = { success: true, payload: { txid: 'ABC ' } };
 
@@ -250,7 +257,16 @@ const pushTransaction =
                 }),
             );
 
-            if (precomposedTx.prevTxid) {
+            if (isRbf) {
+                if (toBeMovedOrDeletedList !== undefined) {
+                    await dispatch(
+                        moveLabelsForRbfAction({
+                            toBeMovedOrDeletedList,
+                            newTxid: txid,
+                        }),
+                    );
+                }
+
                 // notification from the backend may be delayed.
                 // modify affected transaction(s) in the reducer until the real account update occurs.
                 // this will update transaction details (like time, fee etc.)
@@ -317,6 +333,8 @@ const pushTransaction =
                     outputsPermutation = precomposedTx?.outputsPermutation;
                 }
 
+                const synchronize = getSynchronize();
+
                 precomposedForm?.outputs
                     // create array of metadata objects
                     .map((formOutput, index) => {
@@ -340,7 +358,10 @@ const pushTransaction =
                     // propagate metadata to reducers and persistent storage
                     .forEach((output, index, arr) => {
                         const isLast = index === arr.length - 1;
-                        dispatch(metadataActions.addAccountMetadata(output, isLast));
+
+                        synchronize(() =>
+                            dispatch(metadataActions.addAccountMetadata(output, isLast)),
+                        );
                     });
             }
         } else {

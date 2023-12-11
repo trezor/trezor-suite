@@ -26,3 +26,5 @@ export const getSynchronize = () => {
         return lock;
     };
 };
+
+export type Synchronize = ReturnType<typeof getSynchronize>;

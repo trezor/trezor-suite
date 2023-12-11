@@ -350,7 +350,13 @@ export type SuiteAnalyticsEvent =
     | {
           type: EventType.SettingsGeneralLabelingProvider;
           payload: {
-              provider: 'dropbox' | 'google' | 'fileSystem' | 'sdCard' | 'missing-provider' | '';
+              provider:
+                  | 'dropbox'
+                  | 'google'
+                  | 'fileSystem'
+                  | 'missing-provider'
+                  | 'inMemoryTest'
+                  | ''; // Todo: 'sdCard' not implemented yet
           };
       }
     | {

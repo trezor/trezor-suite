@@ -8,6 +8,7 @@ import {
     WalletAccountTransaction,
     ChainedTransactions,
     PrecomposedTransactionFinal,
+    AccountKey,
 } from '@suite-common/wallet-types';
 import {
     AccountAddress,
@@ -254,14 +255,14 @@ export const findTransactions = (
 export const findChainedTransactions = (
     descriptor: string,
     txid: string,
-    transactions: Record<string, WalletAccountTransaction[]>,
+    transactions: Record<AccountKey, WalletAccountTransaction[]>,
     result: ChainedTransactions = { own: [], others: [] },
 ) => {
-    Object.keys(transactions).forEach(key => {
+    Object.keys(transactions).forEach(accountKey => {
         const ownTxs = result.own.map(tx => tx.txid);
         const othersTxs = result.others.map(tx => tx.txid);
         // check if any pending transaction is using the utxo/vin with requested txid
-        const txs = transactions[key].filter(tx => {
+        const txs = transactions[accountKey].filter(tx => {
             if (!isPending(tx) || !tx.details.vin.find(i => i.txid === txid)) {
                 return false;
             }
@@ -273,10 +274,12 @@ export const findChainedTransactions = (
                 result.own.push(tx);
                 return true;
             }
+
             if (!ownTxs.includes(tx.txid) && !othersTxs.includes(tx.txid)) {
                 result.others.push(tx);
                 return true;
             }
+
             return false;
         });
 
