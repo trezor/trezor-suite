@@ -55,7 +55,6 @@
   "TR_ACQUIRE_DEVICE_DESCRIPTION": "يبدو أن تريزور مستخدم في نافذة أخرى. الرجاء إغلاق جميع النوافذ الأخرى أو علامات التبويب التي قد تستخدم تريزور الخاص بك.",
   "TR_ACTIVE": "مفعل",
   "TR_ADDITIONAL_SECURITY_FEATURES": "في غضون ذلك، تأكد من إكمال جميع الخطوات الأمنية أدناه.",
-  "TR_ADDRESS": "العنوان",
   "TR_ADDRESSES_FRESH": "عناوين جديدة",
   "TR_ADDRESSES_USED": "العناوين المستخدمة",
   "TR_ADDRESS_MODAL_CLIPBOARD": "نسخ العنوان",
