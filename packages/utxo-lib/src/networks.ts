@@ -4,7 +4,7 @@
 // - more specific networks (zcash/komodo, dash, peercoin, decred)
 // - network type validation function.
 
-import * as typeforce from 'typeforce';
+import { typeforce } from './types/typeforce';
 
 export interface Bip32 {
     public: number;

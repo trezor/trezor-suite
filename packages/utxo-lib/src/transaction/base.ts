@@ -1,5 +1,4 @@
 import * as varuint from 'varuint-bitcoin';
-import * as typeforce from 'typeforce';
 import { reverseBuffer, getChunkSize } from '../bufferutils';
 import * as bcrypto from '../crypto';
 import * as types from '../types';
@@ -20,7 +19,7 @@ export function vectorSize(someVector: Buffer[]) {
 }
 
 export function isCoinbaseHash(buffer: Buffer): boolean {
-    typeforce(types.Hash256bit, buffer);
+    types.typeforce(types.Hash256bit, buffer);
     for (let i = 0; i < 32; ++i) {
         if (buffer[i] !== 0) return false;
     }

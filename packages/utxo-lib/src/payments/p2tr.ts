@@ -2,13 +2,12 @@
 // https://github.com/bitcoin/bips/blob/master/bip-0341.mediawiki
 
 import * as ecc from 'tiny-secp256k1';
-import * as typef from 'typeforce';
 import { bech32m } from 'bech32';
 import { bitcoin as BITCOIN_NETWORK } from '../networks';
 import * as bcrypto from '../crypto';
 import * as bscript from '../script';
 import * as lazy from './lazy';
-import { Payment, PaymentOpts } from '../types';
+import { Payment, PaymentOpts, typeforce } from '../types';
 
 const { OPS } = bscript;
 
@@ -68,13 +67,13 @@ export function p2tr(a: Payment, opts?: PaymentOpts): Payment {
 
     const o: Payment = { name: 'p2tr', network };
 
-    typef(
+    typeforce(
         {
-            network: typef.maybe(typef.Object),
+            network: typeforce.maybe(typeforce.Object),
 
-            address: typef.maybe(typef.String),
-            output: typef.maybe(typef.BufferN(34)),
-            pubkey: typef.maybe(typef.anyOf(typef.BufferN(32), typef.BufferN(33))), // see liftX
+            address: typeforce.maybe(typeforce.String),
+            output: typeforce.maybe(typeforce.BufferN(34)),
+            pubkey: typeforce.maybe(typeforce.anyOf(typeforce.BufferN(32), typeforce.BufferN(33))), // see liftX
         },
         a,
     );

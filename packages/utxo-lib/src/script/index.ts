@@ -4,13 +4,12 @@
 
 import * as bip66 from 'bip66';
 import * as pushdata from 'pushdata-bitcoin';
-import * as typeforce from 'typeforce';
 import * as ecc from 'tiny-secp256k1';
 import * as scriptNumber from './scriptNumber';
 import * as scriptSignature from './scriptSignature';
 import { OPS, REVERSE_OPS } from './ops';
 import * as types from '../types';
-import type { Stack, StackElement } from '../types';
+import { Stack, StackElement, typeforce } from '../types';
 
 const OP_INT_BASE = OPS.OP_RESERVED; // OP_1 - 1
 
