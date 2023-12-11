@@ -24,6 +24,7 @@ import { requestDeviceAccess } from '@suite-native/device-mutex';
 import { analytics, EventType } from '@suite-native/analytics';
 
 import { fetchBundleDescriptors } from './utils';
+import { selectDiscoveryStartTimeStamp, setDiscoveryStartTimestamp } from './discoveryConfigSlice';
 
 const DISCOVERY_DEFAULT_BATCH_SIZE = 2;
 
@@ -44,9 +45,6 @@ const getBatchSizeByCoin = (coin: NetworkSymbol): number => {
     }
     return DISCOVERY_DEFAULT_BATCH_SIZE;
 };
-
-// Note: This is for analytics purposes
-let discoveryStartTime: number | null = null;
 
 type DiscoveryDescriptorItem = DiscoveryItem & { descriptor: string };
 
@@ -70,6 +68,7 @@ const finishNetworkTypeDiscoveryThunk = createThunk(
         if (finishedNetworksCount >= discovery.total) {
             dispatch(removeDiscovery(discovery.deviceState));
 
+            const discoveryStartTime = selectDiscoveryStartTimeStamp(getState());
             // Discovery analytics duration tracking
             if (discoveryStartTime !== null) {
                 const endTime = performance.now();
@@ -80,7 +79,7 @@ const finishNetworkTypeDiscoveryThunk = createThunk(
                     type: EventType.CoinDiscovery,
                     payload: { ...accountsMap, loadDuration: duration },
                 });
-                discoveryStartTime = null;
+                dispatch(setDiscoveryStartTimestamp(null));
             }
         }
     },
@@ -294,7 +293,7 @@ export const startDescriptorPreloadedDiscoveryThunk = createThunk(
         }
 
         // Start tracking duration for analytics purposes
-        discoveryStartTime = performance.now();
+        dispatch(setDiscoveryStartTimestamp(performance.now()));
 
         await dispatch(
             createDescriptorPreloadedDiscoveryThunk({

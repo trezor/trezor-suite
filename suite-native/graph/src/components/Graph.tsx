@@ -30,6 +30,7 @@ type GraphProps<TGraphPoint extends GraphPoint> = {
     error?: string | null;
     onTryAgain: () => void;
     events?: GroupedBalanceMovementEvent[];
+    loadingTakesLongerThanExpected?: boolean;
 };
 
 const GRAPH_HEIGHT = 250;
@@ -79,12 +80,13 @@ const triggerHaptics = () => {
 export const Graph = <TGraphPoint extends FiatGraphPoint>({
     onPointSelected,
     onGestureEnd,
-    points = [],
-    loading = false,
-    animated = true,
     onTryAgain,
     error,
     events,
+    points = [],
+    loading = false,
+    animated = true,
+    loadingTakesLongerThanExpected = false,
 }: GraphProps<TGraphPoint>) => {
     const {
         applyStyle,
@@ -139,7 +141,13 @@ export const Graph = <TGraphPoint extends FiatGraphPoint>({
             />
             {loading && (
                 <Box style={applyStyle(graphMessageStyleContainer)}>
-                    <Loader title={translate('graph.retrievingData')} />
+                    <Loader
+                        title={translate(
+                            loadingTakesLongerThanExpected
+                                ? 'graph.retrievengTakesLongerThanExpected'
+                                : 'graph.retrievingData',
+                        )}
+                    />
                 </Box>
             )}
             {error && !loading && (

@@ -23,6 +23,7 @@
         "@suite-native/biometrics": "workspace:*",
         "@suite-native/device": "workspace:*",
         "@suite-native/device-manager": "workspace:*",
+        "@suite-native/discovery": "workspace:*",
         "@suite-native/feature-flags": "workspace:*",
         "@suite-native/formatters": "workspace:*",
         "@suite-native/graph": "workspace:*",
