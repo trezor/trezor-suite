@@ -24,7 +24,8 @@ import { DeviceHeaderButton } from './DeviceHeaderButton';
 
 import type { TrezorDevice, AcquiredDevice, ForegroundAppProps } from 'src/types/suite';
 import type { getBackgroundRoute } from 'src/utils/suite/router';
-import { typography, spacingsPx } from '@trezor/theme';
+import { spacingsPx } from '@trezor/theme';
+import { DeviceStatusText } from './DeviceStatusText';
 
 const DeviceWrapper = styled.div`
     display: flex;
@@ -45,16 +46,6 @@ const DeviceTitle = styled.span`
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
-`;
-
-const DeviceStatus = styled.span<{ color: string }>`
-    ${typography.label}
-    color: ${({ color }) => color};
-`;
-const DeviceStatusRow = styled.div`
-    display: flex;
-    align-items: center;
-    gap: ${spacingsPx.xxs};
 `;
 
 const DeviceActions = styled.div`
@@ -224,23 +215,7 @@ export const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: Dev
                     )}
                     <Col grow={1}>
                         <DeviceTitle>{device.label}</DeviceTitle>
-                        <DeviceStatus
-                            color={device.connected ? theme.iconPrimaryDefault : theme.iconAlertRed}
-                            data-test={
-                                device.connected
-                                    ? '@deviceStatus-connected'
-                                    : '@deviceStatus-disconnected'
-                            }
-                        >
-                            {device.connected ? (
-                                <DeviceStatusRow>
-                                    <Icon icon="LINK" size={12} color={theme.iconPrimaryDefault} />
-                                    <Translation id="TR_CONNECTED" />
-                                </DeviceStatusRow>
-                            ) : (
-                                <Translation id="TR_DISCONNECTED" />
-                            )}
-                        </DeviceStatus>
+                        <DeviceStatusText device={device} />
                     </Col>
 
                     <DeviceActions>
