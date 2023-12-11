@@ -1,4 +1,4 @@
-import { A, G, pipe } from '@mobily/ts-belt';
+import { A, F, G, pipe } from '@mobily/ts-belt';
 
 import { EnhancedVinVout, Target } from '@trezor/blockchain-link-types';
 
@@ -30,6 +30,7 @@ export const mapTransactionInputsOutputsToAddresses = ({
         }),
         A.filter(G.isNotNullable),
         A.concatMany,
+        F.toMutable,
     );
 
 export const sortTargetAddressesToBeginning = (
