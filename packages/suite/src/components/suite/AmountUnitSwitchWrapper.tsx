@@ -23,6 +23,11 @@ const Container = styled.div`
     }
 `;
 
+const Flex = styled.div`
+    display: flex;
+    align-items: center;
+`;
+
 interface AmountUnitSwitchWrapperProps {
     symbol: NetworkSymbol;
     children: ReactNode;
@@ -33,7 +38,7 @@ export const AmountUnitSwitchWrapper = ({ symbol, children }: AmountUnitSwitchWr
         useBitcoinAmountUnit(symbol);
 
     if (!areUnitsSupportedByNetwork) {
-        return <>{children}</>;
+        return <Flex>{children}</Flex>;
     }
 
     const handleToggleBitcoinAmountUnits = (e: MouseEvent) => {

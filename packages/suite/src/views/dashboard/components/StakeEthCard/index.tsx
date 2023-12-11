@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { variables, H3, Icon, useTheme } from '@trezor/components';
 import { DashboardSection } from 'src/components/dashboard';
-import { Translation, Card, StakingFeature } from 'src/components/suite';
+import { Translation, Card, StakingFeature, Divider } from 'src/components/suite';
 import { Footer } from './components/Footer';
 import { useDiscovery } from 'src/hooks/suite';
 import { useAccounts } from 'src/hooks/wallet';
@@ -54,11 +54,6 @@ const FlexRow = styled.div`
 
 const FlexRowChild = styled.div`
     flex: 1 0 200px;
-`;
-
-const Divider = styled.div`
-    display: flex;
-    margin-bottom: 64px;
 `;
 
 export const StakeEthCard = () => {
