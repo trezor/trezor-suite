@@ -6,7 +6,7 @@ import {
     TransactionsState,
 } from '@suite-common/wallet-core';
 import { configureStore } from '@reduxjs/toolkit';
-import { settingsCommonConfig } from '@suite-common/suite-config';
+import { getTxsPerPage } from '@suite-common/suite-utils';
 import { testMocks } from '@suite-common/test-utils';
 
 const { getWalletTransaction } = testMocks;
@@ -31,7 +31,7 @@ describe('Transaction Actions', () => {
                 transactions: [getWalletTransaction()],
                 account,
                 page: 1,
-                perPage: settingsCommonConfig.TXS_PER_PAGE,
+                perPage: getTxsPerPage(account.networkType),
             }),
         );
         expect(

@@ -5,7 +5,7 @@ import TrezorConnect, { AccountInfo, BundleProgress, UI } from '@trezor/connect'
 import { TrezorDevice } from '@suite-common/suite-types';
 import { getDerivationType, isTrezorConnectBackendType } from '@suite-common/wallet-utils';
 import { Discovery, DiscoveryItem, PartialDiscovery } from '@suite-common/wallet-types';
-import { settingsCommonConfig } from '@suite-common/suite-config';
+import { getTxsPerPage } from '@suite-common/suite-utils';
 import { networksCompatibility, NetworkSymbol } from '@suite-common/wallet-config';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
@@ -228,7 +228,7 @@ const getBundleThunk = createThunk(
                     coin: configNetwork.symbol,
                     details: 'txs',
                     index,
-                    pageSize: settingsCommonConfig.TXS_PER_PAGE,
+                    pageSize: getTxsPerPage(configNetwork.networkType),
                     accountType,
                     networkType: configNetwork.networkType,
                     derivationType: getDerivationType(accountType),

@@ -11,12 +11,11 @@ import {
 import styled, { css } from 'styled-components';
 import { Input, Icon, useTheme, Tooltip, KEYBOARD_CODE } from '@trezor/components';
 import { useDispatch } from 'src/hooks/suite';
-import { SETTINGS } from 'src/config/suite';
 import { useTranslation } from 'src/hooks/suite/useTranslation';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { Account } from 'src/types/wallet';
 import { Translation } from 'src/components/suite';
-import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
+import { isFeatureFlagEnabled, getTxsPerPage } from '@suite-common/suite-utils';
 import { fetchTransactionsThunk } from '@suite-common/wallet-core';
 
 const Wrapper = styled.div<{ expanded: boolean }>`
@@ -96,7 +95,7 @@ export const SearchAction = ({ account, search, setSearch, setSelectedPage }: Se
                         fetchTransactionsThunk({
                             accountKey: account.key,
                             page: 2,
-                            perPage: SETTINGS.TXS_PER_PAGE,
+                            perPage: getTxsPerPage(account.networkType),
                             noLoading: true,
                             recursive: true,
                         }),
