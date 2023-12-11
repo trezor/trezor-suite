@@ -43,10 +43,15 @@ const config: webpack.Configuration = {
             },
         ],
     },
+    // todo: this block is identical in connect-web, connect-explorer, and connect-explorer-webextension
     resolve: {
         modules: ['node_modules'],
         mainFields: ['browser', 'module', 'main'],
         extensions: ['.ts', '.js'],
+        fallback: {
+            fs: false, // ignore "fs" import in markdown-it-imsize
+            path: false, // ignore "path" import in markdown-it-imsize
+        },
     },
     performance: {
         hints: false,
