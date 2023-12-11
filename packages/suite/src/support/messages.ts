@@ -8632,4 +8632,53 @@ export default defineMessages({
         id: 'TR_STAKE_CLAIM',
         defaultMessage: 'Claim',
     },
+    TR_STAKE_STAKED_AMOUNT: {
+        id: 'TR_STAKE_STAKED_AMOUNT',
+        defaultMessage: 'Staked amount',
+    },
+    TR_STAKE_APY: {
+        id: 'TR_STAKE_APY',
+        defaultMessage: 'Annual Percentage Yield',
+    },
+    TR_STAKE_DAYS_TO: {
+        id: 'TR_STAKE_DAYS_TO',
+        defaultMessage: '{days} days',
+    },
+    TR_STAKE_NEXT_PAYOUYT: {
+        id: 'TR_STAKE_NEXT_PAYOUYT',
+        defaultMessage: 'Next reward payout • Approx. {fiatAmount}',
+    },
+    TR_STAKE_STAKE_MORE: {
+        id: 'TR_STAKE_STAKE_MORE',
+        defaultMessage: 'Stake more',
+    },
+    TR_STAKE_UNSTAKE_TO_CLAIM: {
+        id: 'TR_STAKE_UNSTAKE_TO_CLAIM',
+        defaultMessage: 'Unstake to claim',
+    },
+    TR_STAKE_ETH_REWARDS_EARN_APY: {
+        id: 'TR_STAKE_ETH_REWARDS_EARN_APY',
+        defaultMessage:
+            'Your {symbol} rewards also earn the APY rate. Keep your funds staked or add more to increase your rewards.',
+    },
+    TR_STAKE_REWARDS: {
+        id: 'TR_STAKE_REWARDS',
+        defaultMessage: 'Rewards',
+    },
+    TR_STAKE_ETH_AT_THE_DOOR: {
+        id: 'TR_STAKE_ETH_AT_THE_DOOR',
+        defaultMessage: 'Your {symbol} is at the door, waiting to join the staking pool.',
+    },
+    TR_TX_CONFIRMED: {
+        id: 'TR_TX_CONFIRMED',
+        defaultMessage: 'Transaction confirmed',
+    },
+    TR_STAKE_ADDING_TO_POOL: {
+        id: 'TR_STAKE_ADDING_TO_POOL',
+        defaultMessage: 'Adding to staking pool',
+    },
+    TR_STAKE_STAKED_AND_EARNING: {
+        id: 'TR_STAKE_STAKED_AND_EARNING',
+        defaultMessage: 'Staked & earning rewards',
+    },
 });

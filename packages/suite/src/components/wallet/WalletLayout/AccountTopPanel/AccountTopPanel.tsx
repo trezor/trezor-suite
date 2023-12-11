@@ -31,6 +31,12 @@ const AccountCryptoBalance = styled.div`
     color: ${({ theme }) => theme.textSubdued};
 `;
 
+const AmountsWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+`;
+
 interface AccountTopPanelSkeletonProps {
     animate?: boolean;
     symbol?: NetworkSymbol;
