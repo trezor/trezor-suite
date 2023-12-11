@@ -3,4 +3,4 @@
 
 const createSocksProxyAgent = (_opts: string) => ({});
 
-export = createSocksProxyAgent;
+export default createSocksProxyAgent;
