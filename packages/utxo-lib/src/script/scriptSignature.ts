@@ -1,6 +1,6 @@
 // upstream: https://github.com/bitcoinjs/bitcoinjs-lib/blob/master/ts_src/script_signature.ts
 
-import * as bip66 from 'bip66';
+import bip66 from 'bip66';
 import * as types from '../types';
 
 const ZERO = Buffer.alloc(1, 0);

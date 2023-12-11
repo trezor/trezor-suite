@@ -1,7 +1,7 @@
 import { bitcoin as BITCOIN_NETWORK, isNetworkType } from './networks';
-import * as bchaddrjs from 'bchaddrjs';
-import * as bs58 from 'bs58';
-import * as bs58check from 'bs58check';
+import bchaddrjs from 'bchaddrjs';
+import bs58 from 'bs58';
+import bs58check from 'bs58check';
 import { blake256 } from './crypto';
 
 export function decodeBlake(buffer: Buffer) {

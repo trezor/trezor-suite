@@ -2,7 +2,6 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": {
         "skipLibCheck": false,
-        "esModuleInterop": false,
         "outDir": "./libDev"
     },
     "include": ["."],

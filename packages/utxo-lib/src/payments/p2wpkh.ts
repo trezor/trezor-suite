@@ -1,6 +1,6 @@
 // upstream: https://github.com/bitcoinjs/bitcoinjs-lib/blob/master/ts_src/payments/p2wpkh.ts
 
-import * as ecc from 'tiny-secp256k1';
+import ecc from 'tiny-secp256k1';
 import { bech32 } from 'bech32';
 import * as bcrypto from '../crypto';
 import { bitcoin as BITCOIN_NETWORK } from '../networks';

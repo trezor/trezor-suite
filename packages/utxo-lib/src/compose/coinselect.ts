@@ -1,4 +1,4 @@
-import * as BN from 'bn.js';
+import BN from 'bn.js';
 import { split as bitcoinJsSplit } from '../coinselect/outputs/split';
 import { coinselect as bitcoinJsCoinselect } from '../coinselect';
 import { getFeePolicy, transactionBytes } from '../coinselect/coinselectUtils';

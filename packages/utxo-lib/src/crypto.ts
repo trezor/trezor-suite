@@ -2,9 +2,9 @@
 // differences:
 // - added blake256 and hash160blake256 methods (decred)
 
-import * as blakeHash from 'blake-hash';
-import * as createHash from 'create-hash';
-import * as createHmac from 'create-hmac';
+import blakeHash from 'blake-hash';
+import createHash from 'create-hash';
+import createHmac from 'create-hmac';
 
 export function ripemd160(buffer: Buffer): Buffer {
     try {

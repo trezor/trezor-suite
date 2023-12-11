@@ -6,9 +6,9 @@
 // - `BufferWritter.writeUInt64` is accepting string or number.
 
 // eslint-disable-next-line max-classes-per-file
-import * as BN from 'bn.js';
-import * as pushdata from 'pushdata-bitcoin';
-import * as varuint from 'varuint-bitcoin';
+import BN from 'bn.js';
+import pushdata from 'pushdata-bitcoin';
+import varuint from 'varuint-bitcoin';
 import { Int64LE } from 'int64-buffer';
 import { bufferUtils } from '@trezor/utils';
 import * as types from './types';
