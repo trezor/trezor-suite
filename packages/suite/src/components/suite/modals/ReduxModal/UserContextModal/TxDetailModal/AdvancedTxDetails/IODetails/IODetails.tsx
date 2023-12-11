@@ -326,6 +326,24 @@ const EthereumSpecificBalanceDetailsRow = ({ tx }: EthereumSpecificBalanceDetail
     );
 };
 
+const SolanaSpecificBalanceDetailsRow = ({ tx }: { tx: WalletAccountTransaction }) => {
+    const { tokens } = tx;
+    return (
+        <>
+            {tokens.map((transfer, index) => (
+                <GridRowGroupComponent
+                    // eslint-disable-next-line react/no-array-index-key
+                    key={index}
+                    from={transfer.from}
+                    to={transfer.to}
+                    amount={formatAmount(transfer.amount, transfer.decimals)}
+                    symbol={transfer.symbol}
+                />
+            ))}
+        </>
+    );
+};
+
 interface BalanceDetailsRowProps {
     tx: WalletAccountTransaction;
 }
@@ -440,6 +458,16 @@ export const IODetails = ({ tx }: IODetailsProps) => {
         );
     }
 
+    if (network?.networkType === 'solana') {
+        return (
+            <Wrapper>
+                <AnalyzeInExplorerBanner txid={tx.txid} />
+                <IOSectionColumn tx={tx} inputs={tx.details.vin} outputs={tx.details.vout} />
+                <SolanaSpecificBalanceDetailsRow tx={tx} />
+            </Wrapper>
+        );
+    }
+
     if (tx.type === 'joint') {
         return (
             <Wrapper>
@@ -463,7 +491,6 @@ export const IODetails = ({ tx }: IODetailsProps) => {
 
     return (
         <Wrapper>
-            {/* solana is not supported by blockbook */}
             <AnalyzeInExplorerBanner txid={tx.txid} />
             <IOSectionColumn tx={tx} inputs={tx.details.vin} outputs={tx.details.vout} />
         </Wrapper>
