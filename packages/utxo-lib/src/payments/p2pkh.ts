@@ -3,7 +3,7 @@
 // - using bs58check.decodeAddress instead of bs58check.decode
 // - using bs58check.encodeAddress instead of bs58check.encode
 
-import * as ecc from 'tiny-secp256k1';
+import ecc from 'tiny-secp256k1';
 import * as bs58check from '../bs58check';
 import * as bcrypto from '../crypto';
 import { bitcoin as BITCOIN_NETWORK } from '../networks';

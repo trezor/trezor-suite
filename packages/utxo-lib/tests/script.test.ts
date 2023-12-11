@@ -3,7 +3,7 @@ import * as bscript from '../src/script';
 import { fixtures } from './__fixtures__/script';
 import { templates } from './__fixtures__/templates';
 
-import * as minimalData from 'minimaldata';
+import minimalData from 'minimaldata';
 
 describe('script', () => {
     // TODO

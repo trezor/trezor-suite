@@ -1,6 +1,6 @@
 // https://github.com/bitcoinjs/bitcoinjs-lib/blob/master/ts_src/payments/p2pk.ts
 
-import * as ecc from 'tiny-secp256k1';
+import ecc from 'tiny-secp256k1';
 import { bitcoin as BITCOIN_NETWORK } from '../networks';
 import * as bscript from '../script';
 import * as lazy from './lazy';

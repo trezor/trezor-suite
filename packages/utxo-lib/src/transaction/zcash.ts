@@ -1,7 +1,7 @@
 // https://zips.z.cash/zip-0243
 // https://zips.z.cash/zip-0225 version 5 format
 
-import * as varuint from 'varuint-bitcoin';
+import varuint from 'varuint-bitcoin';
 import { blake2b } from 'blakejs';
 import { BufferReader, BufferWriter, varIntSize } from '../bufferutils';
 import { TransactionBase, TransactionOptions, varSliceSize, EMPTY_SCRIPT } from './base';
