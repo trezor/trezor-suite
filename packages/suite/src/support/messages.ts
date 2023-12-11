@@ -8599,4 +8599,37 @@ export default defineMessages({
         defaultMessage:
             'We recommend you to leave {amount} ETH so you will be able to pay for withdrawal fees',
     },
+    TR_STAKE_CONFIRM_ENTRY_PERIOD: {
+        id: 'TR_STAKE_CONFIRM_ENTRY_PERIOD',
+        defaultMessage: 'Confirm entry period',
+    },
+    TR_STAKE_CONFIRM_AND_STAKE: {
+        id: 'TR_STAKE_CONFIRM_AND_STAKE',
+        defaultMessage: 'Confirm & stake',
+    },
+    TR_STAKE_ENTERING_POOL_MAY_TAKE: {
+        id: 'TR_STAKE_ENTERING_POOL_MAY_TAKE',
+        defaultMessage: 'Entering the staking pool may take up to {days} days',
+    },
+    TR_STAKE_ETH_WILL_BE_BLOCKED: {
+        id: 'TR_STAKE_ETH_WILL_BE_BLOCKED',
+        defaultMessage:
+            'Your ETH will be blocked during this period, and you can’t cancel this. <a>Learn more</a>',
+    },
+    TR_STAKE_ACKNOWLEDGE_ENTRY_PERIOD: {
+        id: 'TR_STAKE_ACKNOWLEDGE_ENTRY_PERIOD',
+        defaultMessage: 'I acknowledge the above entry period',
+    },
+    TR_STAKE_STAKE: {
+        id: 'TR_STAKE_STAKE',
+        defaultMessage: 'Stake',
+    },
+    TR_STAKE_UNSTAKE: {
+        id: 'TR_STAKE_UNSTAKE',
+        defaultMessage: 'Unstake',
+    },
+    TR_STAKE_CLAIM: {
+        id: 'TR_STAKE_CLAIM',
+        defaultMessage: 'Claim',
+    },
 });

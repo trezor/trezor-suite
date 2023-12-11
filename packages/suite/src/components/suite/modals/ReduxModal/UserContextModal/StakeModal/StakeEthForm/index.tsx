@@ -1,12 +1,13 @@
 import styled from 'styled-components';
 import { Button } from '@trezor/components';
+import { isZero } from '@suite-common/wallet-utils';
 import { Translation } from 'src/components/suite';
 import { useStakeEthFormContext } from 'src/hooks/wallet/useStakeEthForm';
 import { AvailableBalance } from '../AvailableBalance';
 import { FormFractionButtons } from 'src/components/suite/FormFractionButtons';
 import { Inputs } from './Inputs';
 import { Fees } from './Fees';
-import { isZero } from '@suite-common/wallet-utils';
+import { ConfirmStakeEthModal } from './ConfirmStakeEthModal';
 
 const Body = styled.div`
     margin-bottom: 26px;
@@ -35,6 +36,9 @@ export const StakeEthForm = () => {
         setMax,
         watch,
         clearForm,
+        isConfirmModalOpen,
+        closeConfirmModal,
+        signTx,
     } = useStakeEthFormContext();
     const { formattedBalance, symbol } = account;
     const hasValues = Boolean(watch('fiatInput') || watch('cryptoInput'));
@@ -43,39 +47,45 @@ export const StakeEthForm = () => {
     const areFractionButtonsDisabled = isZero(account.formattedBalance);
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)}>
-            <Body>
-                <AvailableBalance formattedBalance={formattedBalance} symbol={symbol} />
+        <>
+            {isConfirmModalOpen && (
+                <ConfirmStakeEthModal onConfirm={signTx} onCancel={closeConfirmModal} />
+            )}
 
-                <ButtonsWrapper>
-                    <FormFractionButtons
-                        isDisabled={areFractionButtonsDisabled}
-                        setRatioAmount={setRatioAmount}
-                        setMax={setMax}
-                    />
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <Body>
+                    <AvailableBalance formattedBalance={formattedBalance} symbol={symbol} />
 
-                    {isDirty && (
-                        <Button type="button" variant="tertiary" onClick={clearForm}>
-                            <Translation id="TR_CLEAR_ALL" />
-                        </Button>
-                    )}
-                </ButtonsWrapper>
+                    <ButtonsWrapper>
+                        <FormFractionButtons
+                            isDisabled={areFractionButtonsDisabled}
+                            setRatioAmount={setRatioAmount}
+                            setMax={setMax}
+                        />
 
-                <InputsWrapper>
-                    <Inputs />
-                </InputsWrapper>
+                        {isDirty && (
+                            <Button type="button" variant="tertiary" onClick={clearForm}>
+                                <Translation id="TR_CLEAR_ALL" />
+                            </Button>
+                        )}
+                    </ButtonsWrapper>
 
-                <Fees />
-            </Body>
+                    <InputsWrapper>
+                        <Inputs />
+                    </InputsWrapper>
 
-            <Button
-                fullWidth
-                isDisabled={!(formIsValid && hasValues) || isSubmitting}
-                isLoading={isComposing || isSubmitting}
-                onClick={handleSubmit(onSubmit)}
-            >
-                <Translation id="TR_CONTINUE" />
-            </Button>
-        </form>
+                    <Fees />
+                </Body>
+
+                <Button
+                    fullWidth
+                    isDisabled={!(formIsValid && hasValues) || isSubmitting}
+                    isLoading={isComposing || isSubmitting}
+                    onClick={handleSubmit(onSubmit)}
+                >
+                    <Translation id="TR_CONTINUE" />
+                </Button>
+            </form>
+        </>
     );
 };
