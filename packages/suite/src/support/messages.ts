@@ -768,7 +768,7 @@ export default defineMessages({
         id: 'TR_REQUIRED_FIELD',
     },
     TR_SHOP_NOW: {
-        defaultMessage: 'Shop Now',
+        defaultMessage: 'Shop now',
         id: 'TR_SHOP_NOW',
     },
     TR_SELL_VALIDATION_ERROR_MINIMUM_FIAT: {
@@ -2001,7 +2001,8 @@ export default defineMessages({
         id: 'TR_ADDRESS_DISPLAY',
     },
     TR_ADDRESS_DISPLAY_DESCRIPTION: {
-        defaultMessage: 'Show address in list: bc1wetes...v54d8d or chunks: bc1w etes ... v54d 8d.',
+        defaultMessage:
+            'Display address continuous (bc1wetes...v54d8d) or spaced (bc1w etes ... v54d 8d).',
         id: 'TR_ADDRESS_DISPLAY_DESCRIPTION',
     },
     TR_ORIGINAL_ADDRESS: {
@@ -3006,7 +3007,7 @@ export default defineMessages({
     },
     TR_SOLANA_DEVNET_SHORTCUT_WARNING: {
         defaultMessage:
-            "DSOL will show as 'SOL' on your Trezor due to network limitations.\nCheck the provided blockhash on devnet explorer if you want to verify the transaction network. ",
+            'DSOL will display SOL on your Trezor due to network limitations. Check the provided blockhash on devnet explorer if you want to verify the transaction network.',
         id: 'TR_SOLANA_DEVNET_SHORTCUT_WARNING',
     },
     TR_NEW_COMMUNICATION_TOOL: {
@@ -5286,7 +5287,7 @@ export default defineMessages({
     },
     TR_QR_RECEIVE_ADDRESS_CONFIRM: {
         id: 'TR_QR_RECEIVE_ADDRESS_CONFIRM',
-        defaultMessage: 'Confirm on device before scanning',
+        defaultMessage: 'Confirm on Trezor before scanning',
     },
     TR_MY_ASSETS: {
         id: 'TR_MY_ASSETS',
@@ -5715,7 +5716,7 @@ export default defineMessages({
         id: 'MAX_FEE',
     },
     EXPECTED_FEE: {
-        defaultMessage: 'Expected Fee',
+        defaultMessage: 'Expected fee',
         description: 'Label in Send form for Solana network type',
         id: 'EXPECTED_FEE',
     },
