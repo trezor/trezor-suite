@@ -93,6 +93,7 @@ describe('solana/utils', () => {
                     input.transaction as SolanaValidParsedTxWithMeta,
                     input.effects,
                     input.accountAddress,
+                    'sent',
                 );
                 expect(result).toEqual(expectedOutput);
             });
