@@ -1,29 +1,39 @@
 export class Throttler {
-    private delay: number;
-    private timeouts: { [id: string]: ReturnType<typeof setTimeout> };
+    private readonly delay: number;
+    private readonly intervals: { [id: string]: ReturnType<typeof setInterval> };
+    private readonly callbacks: { [id: string]: () => void };
 
     constructor(delay: number) {
         this.delay = delay;
-        this.timeouts = {};
+        this.intervals = {};
+        this.callbacks = {};
     }
 
     throttle(id: string, callback: () => void) {
-        const previousTimeout = this.timeouts[id];
-        if (previousTimeout) {
-            clearTimeout(previousTimeout);
-        }
-        this.timeouts[id] = setTimeout(() => {
+        if (this.intervals[id]) {
+            this.callbacks[id] = callback;
+        } else {
             callback();
+            this.intervals[id] = setInterval(() => this.tick(id), this.delay);
+        }
+    }
+
+    private tick(id: string) {
+        if (this.callbacks[id]) {
+            this.callbacks[id]();
+            delete this.callbacks[id];
+        } else {
             this.cancel(id);
-        }, this.delay);
+        }
     }
 
     cancel(id: string) {
-        clearTimeout(this.timeouts[id]);
-        delete this.timeouts[id];
+        clearInterval(this.intervals[id]);
+        delete this.intervals[id];
+        delete this.callbacks[id];
     }
 
     dispose() {
-        Object.keys(this.timeouts).forEach(this.cancel, this);
+        Object.keys(this.intervals).forEach(this.cancel, this);
     }
 }
