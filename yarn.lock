@@ -6813,7 +6813,7 @@ __metadata:
     "@suite-common/toast-notifications": "workspace:*"
     "@trezor/connect": "workspace:*"
     jest: "npm:29.5.0"
-    tsx: "npm:^3.14.0"
+    tsx: "npm:^4.6.2"
     typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
@@ -6891,7 +6891,7 @@ __metadata:
     react-native: "npm:0.71.8"
     react-native-reanimated: "npm:3.6.1"
     svgo: "npm:3.0.2"
-    tsx: "npm:^3.14.0"
+    tsx: "npm:^4.6.2"
     typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
@@ -6951,7 +6951,7 @@ __metadata:
     jws: "npm:^4.0.0"
     proxy-memoize: "npm:2.0.2"
     semver: "npm:^7.5.4"
-    tsx: "npm:^3.14.0"
+    tsx: "npm:^4.6.2"
     typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
@@ -7103,7 +7103,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     bignumber.js: "npm:^9.1.1"
     jest: "npm:29.5.0"
-    tsx: "npm:^3.14.0"
+    tsx: "npm:^4.6.2"
     typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
@@ -8220,7 +8220,7 @@ __metadata:
     prettier: "npm:3.0.3"
     react: "npm:18.2.0"
     react-native: "npm:0.71.8"
-    tsx: "npm:^3.14.0"
+    tsx: "npm:^4.6.2"
   languageName: unknown
   linkType: soft
 
@@ -8498,7 +8498,7 @@ __metadata:
     express: "npm:^4.18.2"
     jest: "npm:29.5.0"
     rimraf: "npm:^5.0.5"
-    tsx: "npm:^3.14.0"
+    tsx: "npm:^4.6.2"
     typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
@@ -8512,7 +8512,7 @@ __metadata:
     rimraf: "npm:^5.0.5"
     ripple-lib: "npm:^1.10.1"
     socks-proxy-agent: "npm:6.1.1"
-    tsx: "npm:^3.14.0"
+    tsx: "npm:^4.6.2"
     typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
@@ -8529,7 +8529,7 @@ __metadata:
     bignumber.js: "npm:^9.1.1"
     jest: "npm:29.5.0"
     rimraf: "npm:^5.0.5"
-    tsx: "npm:^3.14.0"
+    tsx: "npm:^4.6.2"
     typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
@@ -8556,7 +8556,7 @@ __metadata:
     ripple-lib: "npm:^1.10.1"
     socks-proxy-agent: "npm:6.1.1"
     tiny-worker: "npm:^2.3.0"
-    tsx: "npm:^3.14.0"
+    tsx: "npm:^4.6.2"
     typescript: "npm:5.3.2"
     webpack: "npm:^5.89.0"
     webpack-cli: "npm:^5.1.4"
@@ -8652,7 +8652,7 @@ __metadata:
     jest: "npm:29.5.0"
     jest-environment-jsdom: "npm:29.5.0"
     rimraf: "npm:^5.0.5"
-    tsx: "npm:^3.14.0"
+    tsx: "npm:^4.6.2"
     typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
@@ -8857,7 +8857,7 @@ __metadata:
     rimraf: "npm:^5.0.5"
     selfsigned: "npm:^2.4.1"
     terser-webpack-plugin: "npm:^5.3.9"
-    tsx: "npm:^3.14.0"
+    tsx: "npm:^4.6.2"
     typescript: "npm:5.3.2"
     webpack: "npm:^5.89.0"
     webpack-cli: "npm:^5.1.4"
@@ -8885,7 +8885,7 @@ __metadata:
     jest: "npm:^26.6.3"
     rimraf: "npm:^5.0.1"
     terser-webpack-plugin: "npm:^5.3.9"
-    tsx: "npm:^3.12.7"
+    tsx: "npm:^4.6.2"
     typescript: "npm:^4.9.5"
     webpack: "npm:^5.87.0"
     webpack-cli: "npm:^5.1.4"
@@ -8932,7 +8932,7 @@ __metadata:
     karma-webpack: "npm:^5.0.0"
     rimraf: "npm:^5.0.5"
     ts-node: "npm:^10.9.1"
-    tsx: "npm:^3.14.0"
+    tsx: "npm:^4.6.2"
     typescript: "npm:5.3.2"
     webpack: "npm:^5.89.0"
     ws: "npm:7.5.9"
@@ -8983,7 +8983,7 @@ __metadata:
   resolution: "@trezor/env-utils@workspace:packages/env-utils"
   dependencies:
     rimraf: "npm:^5.0.5"
-    tsx: "npm:^3.14.0"
+    tsx: "npm:^4.6.2"
     typescript: "npm:5.3.2"
     ua-parser-js: "npm:^1.0.37"
   peerDependencies:
@@ -9025,7 +9025,7 @@ __metadata:
     protobufjs: "npm:7.2.5"
     protobufjs-cli: "npm:^1.1.2"
     rimraf: "npm:^5.0.5"
-    tsx: "npm:^3.14.0"
+    tsx: "npm:^4.6.2"
     typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
@@ -9037,7 +9037,7 @@ __metadata:
     bytebuffer: "npm:^5.0.1"
     jest: "npm:29.5.0"
     rimraf: "npm:^5.0.5"
-    tsx: "npm:^3.14.0"
+    tsx: "npm:^4.6.2"
     typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
@@ -9194,7 +9194,7 @@ __metadata:
     postcss-modules-values: "npm:^4.0.0"
     simple-git: "npm:^3.20.0"
     style-loader: "npm:^3.3.3"
-    tsx: "npm:^3.14.0"
+    tsx: "npm:^4.6.2"
     typescript: "npm:5.3.2"
     webpack: "npm:^5.89.0"
     webpack-cli: "npm:^5.1.4"
@@ -9250,7 +9250,7 @@ __metadata:
     rimraf: "npm:^5.0.5"
     systeminformation: "npm:^5.21.15"
     terser-webpack-plugin: "npm:^5.3.9"
-    tsx: "npm:^3.14.0"
+    tsx: "npm:^4.6.2"
     typescript: "npm:5.3.2"
     webpack: "npm:^5.87.0"
     xvfb-maybe: "npm:^0.2.1"
@@ -9461,7 +9461,7 @@ __metadata:
     styled-components: "npm:^5.3.10"
     stylelint: "npm:^15.11.0"
     stylelint-config-standard: "npm:^34.0.0"
-    tsx: "npm:^3.14.0"
+    tsx: "npm:^4.6.2"
     typescript: "npm:5.3.2"
     webpack: "npm:^5.89.0"
     worker-loader: "npm:^3.0.8"
@@ -9593,7 +9593,7 @@ __metadata:
     stylelint: "npm:^15.11.0"
     stylelint-config-standard: "npm:^34.0.0"
     trezor-address-validator: "npm:^0.4.4"
-    tsx: "npm:^3.14.0"
+    tsx: "npm:^4.6.2"
     typescript: "npm:5.3.2"
     typescript-styled-plugin: "npm:^0.18.3"
     uuid: "npm:^9.0.1"
@@ -9610,7 +9610,7 @@ __metadata:
     csstype: "npm:^3.1.2"
     jest: "npm:29.5.0"
     prettier: "npm:3.0.3"
-    tsx: "npm:^3.14.0"
+    tsx: "npm:^4.6.2"
     typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
@@ -9644,7 +9644,7 @@ __metadata:
     protobufjs: "npm:7.2.5"
     rimraf: "npm:^5.0.5"
     ts-node: "npm:^10.9.1"
-    tsx: "npm:^3.14.0"
+    tsx: "npm:^4.6.2"
     typescript: "npm:5.3.2"
     usb: "npm:^2.11.0"
   languageName: unknown
@@ -9685,7 +9685,7 @@ __metadata:
   dependencies:
     jest: "npm:29.5.0"
     rimraf: "npm:^5.0.5"
-    tsx: "npm:^3.14.0"
+    tsx: "npm:^4.6.2"
     typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
@@ -9718,7 +9718,7 @@ __metadata:
     pushdata-bitcoin: "npm:^1.0.1"
     rimraf: "npm:^5.0.5"
     tiny-secp256k1: "npm:^1.1.6"
-    tsx: "npm:^3.14.0"
+    tsx: "npm:^4.6.2"
     typeforce: "npm:^1.18.0"
     typescript: "npm:5.3.2"
     varuint-bitcoin: "npm:^1.1.2"
@@ -31886,7 +31886,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"source-map-support@npm:^0.5.16, source-map-support@npm:^0.5.19, source-map-support@npm:^0.5.21, source-map-support@npm:^0.5.6, source-map-support@npm:~0.5.20":
+"source-map-support@npm:^0.5.16, source-map-support@npm:^0.5.19, source-map-support@npm:^0.5.6, source-map-support@npm:~0.5.20":
   version: 0.5.21
   resolution: "source-map-support@npm:0.5.21"
   dependencies:
@@ -33583,7 +33583,7 @@ __metadata:
     ts-jest: "npm:^26.5.6"
     ts-node: "npm:^10.9.1"
     tsconfig-paths: "npm:^4.2.0"
-    tsx: "npm:^3.14.0"
+    tsx: "npm:^4.6.2"
     typescript: "npm:5.3.2"
     version-bump-prompt: "npm:^6.1.0"
   dependenciesMeta:
@@ -33815,20 +33815,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsx@npm:^3.12.7, tsx@npm:^3.14.0":
-  version: 3.14.0
-  resolution: "tsx@npm:3.14.0"
+"tsx@npm:^4.6.2":
+  version: 4.6.2
+  resolution: "tsx@npm:4.6.2"
   dependencies:
     esbuild: "npm:~0.18.20"
     fsevents: "npm:~2.3.3"
     get-tsconfig: "npm:^4.7.2"
-    source-map-support: "npm:^0.5.21"
   dependenciesMeta:
     fsevents:
       optional: true
   bin:
     tsx: dist/cli.mjs
-  checksum: 7147970975344d779f495169c0246dff5110a3e110b0a89e8cec6403fcd6c03ede3abbf4c7ccc03dae7fb17d7f1a4c21992c5c6d7ab2130cb2f7a3ffaeae1ce1
+  checksum: 451b23ed999a3bf3592181f3411d67bfe6d4269f2171ca627c5acbe442fd08d8864585eb67095c0dc8462e35ee8427de37c9bb2b4f6ffc629d5a05f0c66983d4
   languageName: node
   linkType: hard
 
