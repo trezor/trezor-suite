@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires,global-require,import/no-extraneous-dependencies */
-import * as TinyWorker from 'tiny-worker';
+import TinyWorker from 'tiny-worker';
 
 const BlockbookWorkerModule = require('../../../build/module/blockbook-worker');
 const RippleWorkerModule = require('../../../build/module/ripple-worker');

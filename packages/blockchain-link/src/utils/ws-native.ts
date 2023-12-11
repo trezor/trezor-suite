@@ -60,4 +60,4 @@ class WSWrapper extends EventEmitter {
     }
 }
 
-export = WSWrapper;
+export default WSWrapper;
