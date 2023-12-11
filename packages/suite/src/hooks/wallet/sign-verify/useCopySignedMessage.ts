@@ -5,7 +5,10 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 type SignedMessageData = {
     message: string;
     address: string;
-    signature: string;
+
+    // Due to wrong abstraction in `useSignVerifyForm` this needs to be optional.
+    // If we ever separate Sign and Verify forms this shall be set to required.
+    signature?: string;
 };
 
 const format = (
