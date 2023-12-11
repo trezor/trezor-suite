@@ -5691,10 +5691,28 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@sinclair/typebox-codegen@npm:^0.8.13":
+  version: 0.8.13
+  resolution: "@sinclair/typebox-codegen@npm:0.8.13"
+  dependencies:
+    "@sinclair/typebox": "npm:^0.31.28"
+    prettier: "npm:^2.8.7"
+    typescript: "npm:^5.1.6"
+  checksum: db9467313529b98373327c29d2a138e5e5f5834dafaa5ccc42be8a2aebe2c3e02ab568288b7c6147ff732417a43d832c5171d0bec9bb3371674f0cd0b048ba64
+  languageName: node
+  linkType: hard
+
 "@sinclair/typebox@npm:^0.27.8":
   version: 0.27.8
   resolution: "@sinclair/typebox@npm:0.27.8"
   checksum: 297f95ff77c82c54de8c9907f186076e715ff2621c5222ba50b8d40a170661c0c5242c763cba2a4791f0f91cb1d8ffa53ea1d7294570cf8cd4694c0e383e484d
+  languageName: node
+  linkType: hard
+
+"@sinclair/typebox@npm:^0.31.28":
+  version: 0.31.28
+  resolution: "@sinclair/typebox@npm:0.31.28"
+  checksum: 27c3af5539a12af9b3cda4432959c69fb500920f1dd3739700a1437cfa9de809a292398a0b3b871c7471e96e4088d58406105bed5407d089c91c56090c526013
   languageName: node
   linkType: hard
 
@@ -8337,6 +8355,7 @@ __metadata:
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/blockchain-link-utils": "workspace:*"
     "@trezor/e2e-utils": "workspace:*"
+    "@trezor/schema-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
@@ -8886,6 +8905,19 @@ __metadata:
     ts-node: "npm:^10.9.1"
     typescript: "npm:5.3.2"
     ws: "npm:7.5.9"
+  languageName: unknown
+  linkType: soft
+
+"@trezor/schema-utils@workspace:*, @trezor/schema-utils@workspace:packages/schema-utils":
+  version: 0.0.0-use.local
+  resolution: "@trezor/schema-utils@workspace:packages/schema-utils"
+  dependencies:
+    "@sinclair/typebox": "npm:^0.31.28"
+    "@sinclair/typebox-codegen": "npm:^0.8.13"
+    jest: "npm:^26.6.3"
+    prettier: "npm:^3.1.0"
+    ts-mixer: "npm:^6.0.3"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -32712,6 +32744,13 @@ __metadata:
   bin:
     ts-jest: cli.js
   checksum: 59d7122ea1a861aec510b19d30517df81c09ce89b9c2e6d40425c97bd2006a437f169bd6ec965b5b239b82a0ad773ca8fc40cc51f956b380ffc3a964682e9260
+  languageName: node
+  linkType: hard
+
+"ts-mixer@npm:^6.0.3":
+  version: 6.0.3
+  resolution: "ts-mixer@npm:6.0.3"
+  checksum: ac9178bdac5e5f760472269ad4c461587a0f6793532ddbef1326bb01482425a6247be98f9bd11bf35a9fdd36b63b8c8dde393942b9b9ee52d154eef082fca39a
   languageName: node
   linkType: hard
 
