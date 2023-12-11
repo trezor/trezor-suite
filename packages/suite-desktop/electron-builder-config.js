@@ -19,6 +19,8 @@ module.exports = {
     directories: {
         output: 'build-electron',
     },
+    buildDependenciesFromSource: true,
+    nodeGypRebuild: false,
     files: [
         // defaults are https://www.electron.build/configuration/contents.html#files
         'build/**/*',
