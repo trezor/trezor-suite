@@ -166,7 +166,6 @@
   "TR_ACQUIRE_DEVICE_DESCRIPTION": "Wgląda na to, że Trezor jest używany w innym oknie. Zamknij wszystkie pozostałe okna lub karty, które mogą korzystać z Trezor.",
   "TR_ACQUIRE_DEVICE_TITLE": "Trwa inna sesja",
   "TR_ACTIVATE_COINS": "Aktywuj więcej monet",
-  "TR_ADDRESS": "Adres",
   "TR_ADDRESSES_FRESH": "Świeży adres",
   "TR_ADDRESSES_USED": "Używany adres",
   "TR_ADDRESS_FORMAT": "Poprawny format adresu",
