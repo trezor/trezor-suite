@@ -13,7 +13,6 @@ import { CoinjoinBatchItem } from 'src/components/wallet/TransactionItem/Coinjoi
 import { SkeletonStack, Translation } from 'src/components/suite';
 import { DashboardSection } from 'src/components/dashboard';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { SETTINGS } from 'src/config/suite';
 import { WalletAccountTransaction, Account } from 'src/types/wallet';
 import { TransactionListActions } from './TransactionListActions/TransactionListActions';
 import { TransactionItem } from 'src/components/wallet/TransactionItem/TransactionItem';
@@ -24,6 +23,7 @@ import { NoSearchResults } from './NoSearchResults';
 import { findAnchorTransactionPage } from 'src/utils/suite/anchor';
 import { TransactionCandidates } from './TransactionCandidates';
 import { selectLabelingDataForAccount } from 'src/reducers/suite/metadataReducer';
+import { getTxsPerPage } from '@suite-common/suite-utils';
 
 const StyledSection = styled(DashboardSection)`
     margin-bottom: 20px;
@@ -74,7 +74,7 @@ export const TransactionList = ({
                 fetchTransactionsThunk({
                     accountKey: account.key,
                     page: 2,
-                    perPage: SETTINGS.TXS_PER_PAGE,
+                    perPage: getTxsPerPage(account.networkType),
                     noLoading: true,
                     recursive: true,
                 }),
@@ -84,7 +84,7 @@ export const TransactionList = ({
     }, [anchor, account, dispatch, hasFetchedAll]);
 
     // Pagination
-    const perPage = SETTINGS.TXS_PER_PAGE;
+    const perPage = getTxsPerPage(account.networkType);
     const startPage = findAnchorTransactionPage(transactions, perPage, anchor);
     const [currentPage, setSelectedPage] = useState(startPage);
 

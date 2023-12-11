@@ -10,7 +10,7 @@ import {
     unsubscribeBlockchainThunk,
     deviceActions,
 } from '@suite-common/wallet-core';
-import { settingsCommonConfig } from '@suite-common/suite-config';
+import { getTxsPerPage } from '@suite-common/suite-utils';
 
 import { ROUTER } from 'src/actions/suite/constants';
 import { WALLET_SETTINGS } from 'src/actions/settings/constants';
@@ -45,7 +45,7 @@ const walletMiddleware =
                     transactions: account.history.transactions || [],
                     account,
                     page: 1,
-                    perPage: settingsCommonConfig.TXS_PER_PAGE,
+                    perPage: getTxsPerPage(account.networkType),
                 }),
             );
         }

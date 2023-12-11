@@ -3,14 +3,13 @@ import { Spinner, Dropdown } from '@trezor/components';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
-import { SETTINGS } from 'src/config/suite';
 import { useTranslation } from 'src/hooks/suite/useTranslation';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { exportTransactionsThunk, fetchTransactionsThunk } from '@suite-common/wallet-core';
 import { ExportFileType } from '@suite-common/wallet-types';
 import { Account } from 'src/types/wallet';
-import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
+import { isFeatureFlagEnabled, getTxsPerPage } from '@suite-common/suite-utils';
 import { getTitleForNetwork, getTitleForCoinjoinAccount } from '@suite-common/wallet-utils';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
 
@@ -55,7 +54,7 @@ export const ExportAction = ({ account }: ExportActionProps) => {
                     fetchTransactionsThunk({
                         accountKey: account.key,
                         page: 2,
-                        perPage: SETTINGS.TXS_PER_PAGE,
+                        perPage: getTxsPerPage(account.networkType),
                         noLoading: true,
                         recursive: true,
                     }),
