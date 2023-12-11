@@ -1,0 +1,140 @@
+name: "[Release] suite-desktop & suite-web prod"
+
+on:
+  push:
+    branches:
+      - desktop-github-workflows
+env:
+  IS_CODESIGN_BUILD: "true"
+  DESKTOP_APP_NAME: "Trezor-Suite"
+  ASSET_PREFIX: /web
+  STAGING_SUITE_SERVER_URL: "https://staging-suite.trezor.io"
+
+jobs:
+  suite-desktop-build-codesign:
+    runs-on: ${{ matrix.os }}
+    env:
+      artifacts: ${DESKTOP_APP_NAME}*
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        include:
+          - os: ubuntu-latest
+            platform: linux
+          - os: macos-latest
+            platform: mac
+          - os: windows-latest
+            platform: win
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+      - name: Install node and yarn
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Build ${{ matrix.platform }} suite-desktop
+        run: |
+          yarn install --immutable
+          yarn build:libs
+          yarn workspace @trezor/suite-desktop build:${{ matrix.platform }}
+          #bash packages/suite-desktop-core/scripts/gnupg-sign.sh
+          ls -la packages/suite-desktop/build-electron
+          mv packages/suite-desktop/build-electron/* .
+          more latest*.yml | cat
+
+      - name: Upload suite-desktop production artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: suite-desktop-${{ matrix.platform }}-prod-artifacts
+          path: |
+            ${{ env.artifacts }}
+            latest*.yml
+          retention-days: 7
+
+  suite-web-build-stable-codesign:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+      - name: Install node and yarn
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: ".nvmrc"
+      - name: Install dependencies
+        run: |
+          yarn install --immutable
+          yarn build:libs
+      - name: Build suite-web
+        run: yarn workspace @trezor/suite-web build
+
+      - name: Upload suite-web production artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: suite-web-prod-artifacts
+          path: |
+            packages/suite-web/scripts/s3sync.sh
+            packages/suite-web/build
+          retention-days: 7
+
+# release suite-desktop to github release draft
+  suite-desktop-release-github-draft:
+    runs-on: ubuntu-latest
+    needs:
+      - suite-desktop-build-codesign
+    steps:
+      - name: Download suite-desktop artifacts
+        uses: actions/download-artifact@v2
+      - name: List files
+        run: |
+          ls -la
+#       - name: Set up GitHub CLI
+#         run: |
+#           gh config set prompt disabled
+#       - name: Get version
+#         id: get_version
+#         run: |
+#           echo "::set-output name=VERSION::$(jq -r .suiteVersion packages/suite/package.json)"
+#       - name: Create GitHub release
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#         run: |
+#           gh release create --repo trezor/trezor-suite --draft v${{ steps.get_version.outputs.VERSION }}  --title "v${{ steps.get_version.outputs.VERSION }}" ./Trezor-Suite* latest*
+
+  # # Release suite-web to staging
+  # suite-web-release-staging:
+  #   runs-on: ubuntu-latest
+  #   env:
+  #     AWS_REGION: eu-central-1
+  #   needs:
+  #     - suite-web-build-stable-codesign
+  #     - suite-desktop-build-codesign
+  #   steps:
+  #     - name: Setup AWS credentials
+  #       uses: aws-actions/configure-aws-credentials@v4
+  #       with:
+  #         role-to-assume: arn:aws:iam::538326561891:role/gh_actions_trezor_suite_prod_deploy
+  #         aws-region: ${{ env.AWS_REGION }}
+  #     - name: Download suite-web artifacts
+  #       uses: actions/download-artifact@v2
+  #       with:
+  #         name: suite-web-prod-artifacts
+  #         path: suite-web-artifacts
+  #     - name: Download suite-desktop artifacts
+  #       uses: actions/download-artifact@v2
+  #     - name: Upload files to staging-suite
+  #       run: |
+  #         mkdir -p packages/suite-web/build/static/desktop
+  #         'rsync --delete -va "${DESKTOP_APP_NAME}"-*.AppImage ./packages/suite-web/build/static/desktop || :'
+  #         'rsync --delete -va "${DESKTOP_APP_NAME}"-*.AppImage.asc ./packages/suite-web/build/static/desktop || :'
+  #         'rsync --delete -va "${DESKTOP_APP_NAME}"-*.dmg ./packages/suite-web/build/static/desktop || :'
+  #         'rsync --delete -va "${DESKTOP_APP_NAME}"-*.dmg.asc ./packages/suite-web/build/static/desktop || :'
+  #         'rsync --delete -va "${DESKTOP_APP_NAME}"-*.exe ./packages/suite-web/build/static/desktop || :'
+  #         'rsync --delete -va "${DESKTOP_APP_NAME}"-*.exe.asc ./packages/suite-web/build/static/desktop || :'
+  #         cd packages/suite-web
+  #         ./scripts/s3sync.sh staging-suite
+  #         cd -
