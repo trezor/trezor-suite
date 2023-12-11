@@ -1,7 +1,30 @@
 {
     "name": "@trezor/connect-webextension",
-    "version": "1.0.0",
+    "version": "0.0.0-beta.0",
+    "author": "Trezor <info@trezor.io>",
+    "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/connect-webextension",
+    "description": "High-level javascript interface for Trezor hardware wallet in webextension serviceworker environment.",
+    "npmPublishAccess": "public",
+    "license": "SEE LICENSE IN LICENSE.md",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/trezor/trezor-suite.git"
+    },
+    "bugs": {
+        "url": "https://github.com/trezor/trezor-suite/issues"
+    },
+    "keywords": [
+        "Trezor",
+        "trezor-connect",
+        "javascript",
+        "serviceworker",
+        "webextension"
+    ],
     "main": "build/trezor-connect-webextension.js",
+    "files": [
+        "build/trezor-connect-webextension.js",
+        "build/trezor-connect-webextension.min.js"
+    ],
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "test:e2e": "yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts",

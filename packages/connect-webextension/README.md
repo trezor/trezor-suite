@@ -13,7 +13,25 @@ This package contains @trezor/connect implementation suitable for webextensions.
 
 ## Beta
 
-This package is currently in beta and has not yet been released into npm. You can use it locally however, following these steps:
+This package is currently in beta. If you find anything not working or not suiting your needs, please open an issue.
+
+## How to use
+
+At the moment only bundles `build/trezor-connect-webextension.js` and `build/trezor-connect-webextension.min.js` are published.
+
+One way how it can be used is
+
+```
+importScripts('<path>/trezor-connect-webextension.js');
+
+```
+
+There are still some open questions, let us know!
+
+-   should we publish also src? it would require some postinstall build steps however
+-   should we publish other build targets (now te)
+
+## Development
 
 -   `yarn`
 -   `yarn build:libs`
@@ -26,5 +44,5 @@ Now you should be able to import from this package, or use directly `build/trezo
 ## Roadmap
 
 -   [x] merge to develop branch
--   [ ] release to npm under beta channel
+-   [x] release to npm under beta channel
 -   [ ] public release
