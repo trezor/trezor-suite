@@ -6,7 +6,7 @@
     "license": "SEE LICENSE IN LICENSE.md",
     "engines": {
         "node": "18",
-        "yarn": ">=3"
+        "yarn": ">=4"
     },
     "workspaces": {
         "packages": [
@@ -145,5 +145,5 @@
             "built": false
         }
     },
-    "packageManager": "yarn@4.0.1"
+    "packageManager": "yarn@4.0.2"
 }
