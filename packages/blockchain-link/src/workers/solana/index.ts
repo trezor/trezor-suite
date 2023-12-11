@@ -128,11 +128,12 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
 
     const allTxIds = Array.from(
         new Set(
-            (await Promise.all(allAccounts.map(account => getAllSignatures(api, account)))).flat(),
+            (await Promise.all(allAccounts.map(account => getAllSignatures(api, account))))
+                .flat()
+                .sort((a, b) => b.slot - a.slot)
+                .map(it => it.signature),
         ),
-    )
-        .sort((a, b) => b.slot - a.slot)
-        .map(it => it.signature);
+    );
 
     const pageNumber = payload.page ? payload.page - 1 : 0;
     // for the first page of txs, payload.page is undefined, for the second page is 2
