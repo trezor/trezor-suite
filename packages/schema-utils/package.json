@@ -1,0 +1,26 @@
+{
+    "name": "@trezor/schema-utils",
+    "version": "1.0.0",
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "files": [
+        "src/"
+    ],
+    "scripts": {
+        "test:unit": "jest",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "type-check": "tsc --build",
+        "codegen": "ts-node --skip-project ./src/codegen.ts"
+    },
+    "devDependencies": {
+        "jest": "^26.6.3",
+        "prettier": "^3.1.0",
+        "typescript": "5.3.2"
+    },
+    "dependencies": {
+        "@sinclair/typebox": "^0.31.28",
+        "@sinclair/typebox-codegen": "^0.8.13",
+        "ts-mixer": "^6.0.3"
+    }
+}
