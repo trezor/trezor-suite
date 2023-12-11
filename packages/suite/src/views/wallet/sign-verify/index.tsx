@@ -85,7 +85,7 @@ const Divider = styled.div`
     background: ${({ theme }) => theme.STROKE_GREY};
 `;
 
-const Copybutton = styled(Button)`
+const CopyButton = styled(Button)`
     position: absolute;
     right: 0;
     top: -2px;
@@ -169,14 +169,14 @@ const SignVerify = () => {
     const onSubmit = async (data: SignVerifyFields) => {
         const { address, path, message, signature, hex, isElectrum } = data;
 
-        if (isSignPage) {
+        if (isSignPage && path !== undefined) {
             const result = await dispatch(sign(path, message, hex, isElectrum));
 
             if (result) {
                 formSetSignature(result);
                 setIsCompleted(true);
             }
-        } else {
+        } else if (signature !== undefined) {
             const result = await dispatch(verify(address, message, signature, hex));
 
             if (result) setIsCompleted(true);
@@ -272,14 +272,14 @@ const SignVerify = () => {
                         {isSignPage ? (
                             <>
                                 {canCopy && (
-                                    <Copybutton
+                                    <CopyButton
                                         type="button"
                                         variant="tertiary"
                                         onClick={copy}
                                         icon="COPY"
                                     >
                                         <Translation id="TR_COPY_SIGNED_MESSAGE" />
-                                    </Copybutton>
+                                    </CopyButton>
                                 )}
 
                                 <Input
@@ -297,7 +297,7 @@ const SignVerify = () => {
                             <Textarea
                                 maxLength={MAX_LENGTH_SIGNATURE}
                                 characterCount={{
-                                    current: formValues.signature.length,
+                                    current: formValues.signature?.length ?? 0,
                                     max: MAX_LENGTH_SIGNATURE,
                                 }}
                                 rows={4}

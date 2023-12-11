@@ -20,7 +20,7 @@
     },
     "dependencies": {
         "@formatjs/intl": "2.9.6",
-        "@hookform/resolvers": "3.1.0",
+        "@hookform/resolvers": "3.3.2",
         "@mobily/ts-belt": "^3.13.1",
         "@reduxjs/toolkit": "1.9.5",
         "@sentry/core": "^7.77.0",

@@ -3351,12 +3351,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hookform/resolvers@npm:3.1.0":
-  version: 3.1.0
-  resolution: "@hookform/resolvers@npm:3.1.0"
+"@hookform/resolvers@npm:3.3.2":
+  version: 3.3.2
+  resolution: "@hookform/resolvers@npm:3.3.2"
   peerDependencies:
     react-hook-form: ^7.0.0
-  checksum: 6598cc7f44614bc3a678fa06d361fd75e123d66f4978eb4817dfa3df37e57214da13a5720bd7902a195cbd794954374cf8be3672eadc6b573fb257a2e6295454
+  checksum: 354930674c708c8b1c974fc944ad8f3980f9fed99e97ae57cb288c23f398b49276458755b45a1014de6dd2a587270377c38057cb16fb65b16c72431b96a34f81
   languageName: node
   linkType: hard
 
@@ -7337,7 +7337,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/forms@workspace:suite-native/forms"
   dependencies:
-    "@hookform/resolvers": "npm:3.1.0"
+    "@hookform/resolvers": "npm:3.3.2"
     "@suite-native/atoms": "workspace:*"
     react: "npm:18.2.0"
     react-hook-form: "npm:^7.48.2"
@@ -9281,7 +9281,7 @@ __metadata:
     "@crowdin/cli": "npm:^3.15.0"
     "@formatjs/cli": "npm:^6.2.1"
     "@formatjs/intl": "npm:2.9.6"
-    "@hookform/resolvers": "npm:3.1.0"
+    "@hookform/resolvers": "npm:3.3.2"
     "@mobily/ts-belt": "npm:^3.13.1"
     "@reduxjs/toolkit": "npm:1.9.5"
     "@sentry/core": "npm:^7.77.0"

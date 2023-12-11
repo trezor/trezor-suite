@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useForm, useController } from 'react-hook-form';
-import { ValidationSchema, yup } from '@trezor/validation';
+import { yup } from '@trezor/validation';
 import { isAddressValid } from '@suite-common/wallet-utils';
 import { yupResolver } from '@hookform/resolvers/yup';
 
@@ -9,30 +9,12 @@ import type { Account, Network } from 'src/types/wallet';
 export const MAX_LENGTH_MESSAGE = 1024;
 export const MAX_LENGTH_SIGNATURE = 255;
 
-export type SignVerifyFields = {
-    message: string;
-    address: string;
-    isElectrum: boolean;
-    path: string;
-    signature: string;
-    hex: boolean;
-};
-
 type SignVerifyContext = {
     isSignPage: boolean;
     accountNetwork: Network['symbol'];
 };
 
-const DEFAULT_VALUES: SignVerifyFields = {
-    message: '',
-    address: '',
-    isElectrum: false,
-    path: '',
-    signature: '',
-    hex: false,
-};
-
-const signVerifySchema = yup.object<ValidationSchema<Omit<SignVerifyFields, 'isElectrum'>>>({
+const signVerifySchema = yup.object({
     message: yup
         .string()
         .max(MAX_LENGTH_MESSAGE, 'TR_TOO_LONG')
@@ -52,10 +34,7 @@ const signVerifySchema = yup.object<ValidationSchema<Omit<SignVerifyFields, 'isE
                 options.context?.accountNetwork &&
                 isAddressValid(value, options.context?.accountNetwork),
         )
-        .when('$isSignPage', {
-            is: false,
-            then: schema => schema.required(),
-        }),
+        .required(),
     path: yup.string().when('$isSignPage', {
         is: true,
         then: schema => schema.required(),
@@ -64,8 +43,20 @@ const signVerifySchema = yup.object<ValidationSchema<Omit<SignVerifyFields, 'isE
         is: false,
         then: schema => schema.required(),
     }),
-    hex: yup.boolean(),
+    hex: yup.boolean().required(),
+    isElectrum: yup.boolean(),
 });
+
+export type SignVerifyFields = yup.InferType<typeof signVerifySchema>;
+
+const DEFAULT_VALUES: SignVerifyFields = {
+    message: '',
+    address: '',
+    isElectrum: false,
+    path: '',
+    signature: '',
+    hex: false,
+};
 
 export const useSignVerifyForm = (isSignPage: boolean, account: Account) => {
     const {
