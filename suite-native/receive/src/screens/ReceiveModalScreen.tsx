@@ -1,8 +1,10 @@
 import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
 
 import { CommonActions, RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { G } from '@mobily/ts-belt';
 
+import TrezorConnect from '@trezor/connect';
 import { HStack, Text } from '@suite-native/atoms';
 import {
     RootStackParamList,
@@ -30,6 +32,7 @@ type ScreenSubHeaderContent = {
 };
 
 const ReceiveModalScreenSubHeader = ({ accountKey, tokenContract }: ScreenSubHeaderContent) => {
+    const navigation = useNavigation();
     const accountLabel = useSelector((state: AccountsRootState) =>
         selectAccountLabel(state, accountKey),
     );
@@ -39,6 +42,15 @@ const ReceiveModalScreenSubHeader = ({ accountKey, tokenContract }: ScreenSubHea
     const ethereumTokenSymbol = useSelector((state: AccountsRootState) =>
         selectEthereumAccountTokenSymbol(state, accountKey, tokenContract),
     );
+
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('beforeRemove', () => {
+            // When leaving the screen, cancel the request for address on trezor device
+            TrezorConnect.cancel();
+        });
+
+        return unsubscribe;
+    }, [navigation]);
 
     const iconName = tokenContract ?? networkSymbol;
     const coinSymbol = (ethereumTokenSymbol ?? networkSymbol)?.toUpperCase();

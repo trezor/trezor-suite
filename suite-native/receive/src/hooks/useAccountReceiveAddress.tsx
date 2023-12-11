@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import TrezorConnect from '@trezor/connect';
 import {
     AccountsRootState,
     selectAccountByKey,
@@ -47,7 +48,7 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
 
     const verifyAddressOnDevice = useCallback(async () => {
         if (accountKey && freshAddress) {
-            const { success } = await requestPrioritizedDeviceAccess(() =>
+            const response = await requestPrioritizedDeviceAccess(() =>
                 dispatch(
                     confirmAddressOnDeviceThunk({
                         accountKey,
@@ -57,7 +58,8 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
                 ).unwrap(),
             );
 
-            return success;
+            // @ts-expect-error due to missing types in suite-common return of confirmAddressOnDeviceThunk
+            return response.payload?.success ?? false;
         }
 
         return false;
@@ -74,12 +76,15 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
             setIsUnverifiedAddressRevealed(true);
             const wasVerificationSuccessful = await verifyAddressOnDevice();
 
-            analytics.report({ type: EventType.ConfirmedReceiveAdress });
             // In case that user cancels the verification or device is disconnected, navigate out of the receive flow.
             if (!wasVerificationSuccessful) {
+                TrezorConnect.cancel();
                 navigation.goBack();
+                setIsUnverifiedAddressRevealed(false);
                 return;
             }
+
+            analytics.report({ type: EventType.ConfirmedReceiveAdress });
         }
 
         setIsReceiveApproved(true);
