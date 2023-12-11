@@ -315,19 +315,28 @@ export const getDetails = (
     transaction: ParsedTransactionWithMeta,
     effects: TransactionEffect[],
     accountAddress: string,
+    txType: Transaction['type'],
 ): Transaction['details'] => {
     const senders = effects.filter(({ amount }) => amount.isNegative());
     const receivers = effects.filter(({ amount }) => amount.isPositive());
 
-    const getVin = (effect: TransactionEffect, i: number) => ({
+    const getVin = ({ address, amount }: { address: string; amount?: BigNumber }, i: number) => ({
         txid: transaction.transaction.signatures[0].toString(),
         version: transaction.version,
         isAddress: true,
-        isAccountOwned: effect.address === accountAddress,
+        isAccountOwned: address === accountAddress,
         n: i,
-        value: effect.amount.abs().toString(),
-        addresses: [effect.address],
+        value: amount?.abs().toString(),
+        addresses: [address],
     });
+
+    const vin = senders.map((sender, i) => getVin(sender, i));
+    const vout = receivers.map((receiver, i) => getVin(receiver, i));
+
+    // we add add vout for `self` transactions to be consistent with other coins
+    if (txType === 'self') {
+        vout.push(getVin({ address: accountAddress }, vout.length));
+    }
     return {
         size: transaction.meta?.computeUnitsConsumed || 0,
         totalInput: senders
@@ -336,8 +345,8 @@ export const getDetails = (
         totalOutput: receivers
             .reduce((acc, curr) => acc.plus(curr.amount.abs()), new BigNumber(0))
             .toString(),
-        vin: senders.map((sender, i) => getVin(sender, i)),
-        vout: receivers.map((receiver, i) => getVin(receiver, i)),
+        vin,
+        vout,
     };
 };
 
@@ -407,7 +416,7 @@ export const transformTransaction = async (
         type,
     );
 
-    const details = getDetails(tx, nativeEffects, accountAddress);
+    const details = getDetails(tx, nativeEffects, accountAddress, type);
 
     return {
         type,
