@@ -8,7 +8,7 @@ import {
     TransactionsRootState,
 } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { getNetworkType, NetworkSymbol } from '@suite-common/wallet-config';
 import { selectEthereumTokenHasFiatRates } from '@suite-native/ethereum-tokens';
 import { SettingsSliceRootState } from '@suite-native/module-settings';
 
@@ -43,6 +43,19 @@ export const selectTransactionAddresses = memoizeWithArgs(
 
         if (G.isNullable(transaction)) return [];
 
+        const networkType = getNetworkType(transaction.symbol);
+
+        if (networkType === 'ripple') {
+            // For ripple, we don't have inputs (input is always the same address - account descriptor)
+            if (addressesType === 'inputs') {
+                return [{ address: transaction.descriptor, isChangeAddress: false }];
+            }
+            // We have only one output so we don't need to sort it
+            return selectTransactionTargetAddresses(state, txid, accountKey);
+        }
+
+        const targetAddresses = selectTransactionTargetAddresses(state, txid, accountKey);
+
         const inputsOutputs =
             addressesType === 'inputs' ? transaction.details.vin : transaction.details.vout;
 
@@ -53,8 +66,6 @@ export const selectTransactionAddresses = memoizeWithArgs(
             addressesType,
             isSentTransactionType,
         });
-
-        const targetAddresses = selectTransactionTargetAddresses(state, txid, accountKey);
 
         return sortTargetAddressesToBeginning(addresses, targetAddresses);
     },
@@ -82,6 +93,20 @@ export const selectTransactionInputAndOutputTransfers = memoizeWithArgs(
         const transaction = selectTransactionByTxidAndAccountKey(state, txid, accountKey);
 
         if (G.isNullable(transaction)) return null;
+
+        const networkType = getNetworkType(transaction.symbol);
+
+        if (networkType === 'ripple') {
+            const externalTransfers: TransactionTranfer[] = [
+                {
+                    inputs: [{ address: transaction.descriptor }],
+                    outputs: [{ address: transaction.targets?.[0].addresses?.[0] ?? '' }],
+                    symbol: transaction.symbol,
+                },
+            ];
+
+            return { externalTransfers, internalTransfers: [], tokenTransfers: [] };
+        }
 
         const externalTransfers: TransactionTranfer[] = [
             {
