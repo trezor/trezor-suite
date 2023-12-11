@@ -10,3 +10,8 @@ export const CircleBorder = styled.div`
     justify-content: center;
     align-items: center;
 `;
+
+export const Divider = styled.div`
+    display: flex;
+    margin-bottom: 64px;
+`;

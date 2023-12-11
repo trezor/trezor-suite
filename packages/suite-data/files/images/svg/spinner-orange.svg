@@ -1,0 +1,52 @@
+<svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" width="160px" height="160px">
+    <g fill="#c19009">
+        <path d="M79.928 9a2.09 2.09 0 0 0-2.09 2.09l.002 12.184a2.09 2.09 0 1 0 4.18 0V11.09c0-1.154-.937-2.09-2.091-2.09z">
+            <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1.4492753623188404s" begin="-1.3586956521739129s" repeatCount="indefinite"/>
+        </path>
+        <path d="M104.342 15.528l-4.66 11.258a2.09 2.09 0 1 0 3.862 1.599l4.66-11.258a2.09 2.09 0 1 0-3.862-1.599z" opacity=".76">
+            <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1.4492753623188404s" begin="-1.2681159420289854s" repeatCount="indefinite"/>
+        </path>
+        <path d="M127.132 29.77l-8.613 8.618a2.09 2.09 0 1 0 2.956 2.956l8.614-8.618a2.092 2.092 0 0 0 0-2.957 2.092 2.092 0 0 0-2.957.001z" opacity=".12">
+            <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1.4492753623188404s" begin="-1.1775362318840579s" repeatCount="indefinite"/>
+        </path>
+        <path d="M142.739 51.651l-11.255 4.664a2.09 2.09 0 0 0 1.6 3.862l11.256-4.663a2.09 2.09 0 0 0-1.601-3.862v-.001z" opacity=".44">
+            <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1.4492753623188404s" begin="-1.0869565217391304s" repeatCount="indefinite"/>
+        </path>
+        <path d="M148.783 77.838l-12.184.002a2.09 2.09 0 1 0 .001 4.18l12.183-.001a2.09 2.09 0 0 0 0-4.181z" opacity=".92">
+            <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1.4492753623188404s" begin="-0.9963768115942028s" repeatCount="indefinite"/>
+        </path>
+        <path d="M130.357 100.813a2.09 2.09 0 0 0 1.132 2.731l11.258 4.66a2.089 2.089 0 1 0 1.599-3.862l-11.258-4.66a2.09 2.09 0 0 0-2.731 1.131z" opacity=".28">
+            <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1.4492753623188404s" begin="-0.9057971014492753s" repeatCount="indefinite"/>
+        </path>
+        <path d="M118.53 118.52a2.09 2.09 0 0 0 0 2.955l8.618 8.614a2.09 2.09 0 0 0 2.956-2.957l-8.618-8.613a2.09 2.09 0 0 0-2.956 0v.001z" opacity=".6">
+            <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1.4492753623188404s" begin="-0.8152173913043478s" repeatCount="indefinite"/>
+        </path>
+        <path d="M100.827 130.353a2.09 2.09 0 0 0-1.131 2.731l4.664 11.256a2.09 2.09 0 0 0 3.862-1.601l-4.664-11.255a2.09 2.09 0 0 0-2.731-1.131z" opacity=".36">
+            <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1.4492753623188404s" begin="-0.7246376811594202s" repeatCount="indefinite"/>
+        </path>
+        <path d="M79.943 134.51a2.09 2.09 0 0 0-2.09 2.09l.002 12.183a2.09 2.09 0 1 0 4.18 0l-.001-12.184a2.09 2.09 0 0 0-2.09-2.09l-.001.001z" opacity=".84">
+            <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1.4492753623188404s" begin="-0.6340579710144927s" repeatCount="indefinite"/>
+        </path>
+        <path d="M56.33 131.489l-4.663 11.258a2.09 2.09 0 1 0 3.862 1.6l4.663-11.259a2.09 2.09 0 1 0-3.862-1.599z" opacity=".2">
+            <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1.4492753623188404s" begin="-0.5434782608695652s" repeatCount="indefinite"/>
+        </path>
+        <path d="M38.398 118.53l-8.616 8.618a2.09 2.09 0 0 0 2.957 2.956l8.616-8.618a2.09 2.09 0 0 0-2.957-2.956z" opacity=".52">
+            <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1.4492753623188404s" begin="-0.45289855072463764s" repeatCount="indefinite"/>
+        </path>
+        <path d="M26.79 99.696l-11.256 4.664a2.088 2.088 0 0 0-1.13 2.731 2.088 2.088 0 0 0 2.73 1.131l11.256-4.664a2.09 2.09 0 0 0-1.6-3.862z" opacity=".68">
+            <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1.4492753623188404s" begin="-0.3623188405797101s" repeatCount="indefinite"/>
+        </path>
+        <path d="M23.274 77.853l-12.184.002a2.09 2.09 0 0 0 0 4.18l12.184-.001a2.09 2.09 0 1 0 0-4.18v-.001z">
+            <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1.4492753623188404s" begin="-0.2717391304347826s" repeatCount="indefinite"/>
+        </path>
+        <path d="M17.119 51.651l11.255 4.664a2.09 2.09 0 0 1-1.6 3.862l-11.256-4.663a2.09 2.09 0 0 1 1.601-3.862v-.001z">
+            <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1.4492753623188404s" begin="-0.18115942028985504s" repeatCount="indefinite"/>
+        </path>
+        <path d="M32.726 29.77l8.613 8.618a2.09 2.09 0 1 1-2.956 2.956l-8.614-8.618a2.092 2.092 0 0 1 0-2.957 2.092 2.092 0 0 1 2.957.001z">
+            <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1.4492753623188404s" begin="-0.09057971014492752s" repeatCount="indefinite"/>
+        </path>
+        <path d="M55.516 15.528l4.66 11.258a2.09 2.09 0 1 1-3.862 1.599l-4.66-11.258a2.09 2.09 0 1 1 3.862-1.599z">
+            <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1.4492753623188404s" begin="0s" repeatCount="indefinite"/>
+        </path>
+    </g>
+</svg>
