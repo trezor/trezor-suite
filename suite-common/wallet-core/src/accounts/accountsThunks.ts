@@ -12,7 +12,7 @@ import {
     isPending,
     isTrezorConnectBackendType,
 } from '@suite-common/wallet-utils';
-import { settingsCommonConfig } from '@suite-common/suite-config';
+import { getTxsPerPage } from '@suite-common/suite-utils';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
@@ -99,9 +99,9 @@ export const fetchAndUpdateAccountThunk = createThunk(
 
         // we need to fetch at least the number of unconfirmed txs
         const pageSize =
-            (account.history.unconfirmed || 0) > settingsCommonConfig.TXS_PER_PAGE
+            (account.history.unconfirmed || 0) > getTxsPerPage(account.networkType)
                 ? account.history.unconfirmed
-                : settingsCommonConfig.TXS_PER_PAGE;
+                : getTxsPerPage(account.networkType);
 
         const response = await TrezorConnect.getAccountInfo({
             coin: account.symbol,

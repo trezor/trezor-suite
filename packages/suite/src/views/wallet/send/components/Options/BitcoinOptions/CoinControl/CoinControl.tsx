@@ -5,7 +5,6 @@ import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 import { fetchTransactionsThunk } from '@suite-common/wallet-core';
 import { amountToSatoshi, formatNetworkAmount } from '@suite-common/wallet-utils';
 import { FormattedCryptoAmount, Translation } from 'src/components/suite';
-import { SETTINGS } from 'src/config/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { Pagination } from 'src/components/wallet';
 import { useTheme, Checkbox, Icon, Switch, variables } from '@trezor/components';
@@ -13,6 +12,7 @@ import { useSendFormContext } from 'src/hooks/wallet';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { selectCurrentTargetAnonymity } from 'src/reducers/wallet/coinjoinReducer';
 import { UtxoSelectionList } from './UtxoSelectionList';
+import { getTxsPerPage } from '@suite-common/suite-utils';
 
 const Row = styled.div`
     align-items: center;
@@ -124,7 +124,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
 
     // pagination
     const totalItems = account.utxo?.length || 0;
-    const utxosPerPage = SETTINGS.TXS_PER_PAGE;
+    const utxosPerPage = getTxsPerPage(account.networkType);
     const showPagination = totalItems > utxosPerPage;
 
     // UTXOs and categories displayed on page
@@ -151,7 +151,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
             fetchTransactionsThunk({
                 accountKey: account.key,
                 page: 2,
-                perPage: SETTINGS.TXS_PER_PAGE,
+                perPage: getTxsPerPage(account.networkType),
                 noLoading: true,
                 recursive: true,
             }),
