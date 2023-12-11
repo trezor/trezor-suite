@@ -1,4 +1,5 @@
 import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
 
 import { CommonActions, RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { G } from '@mobily/ts-belt';
@@ -6,7 +7,6 @@ import { G } from '@mobily/ts-belt';
 import TrezorConnect from '@trezor/connect';
 import { HStack, Text } from '@suite-native/atoms';
 import {
-    GoBackIcon,
     RootStackParamList,
     RootStackRoutes,
     Screen,
@@ -43,18 +43,20 @@ const ReceiveModalScreenSubHeader = ({ accountKey, tokenContract }: ScreenSubHea
         selectEthereumAccountTokenSymbol(state, accountKey, tokenContract),
     );
 
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('beforeRemove', () => {
+            // When leaving the screen, cancel the request for address on trezor device
+            TrezorConnect.cancel();
+        });
+
+        return unsubscribe;
+    }, [navigation]);
+
     const iconName = tokenContract ?? networkSymbol;
     const coinSymbol = (ethereumTokenSymbol ?? networkSymbol)?.toUpperCase();
 
-    const handleGoBack = () => {
-        navigation.goBack();
-        // Cancel any hanging address states on device when leaving.
-        TrezorConnect.cancel();
-    };
-
     return (
         <ScreenSubHeader
-            leftIcon={<GoBackIcon customGoBackFunction={handleGoBack} />}
             content={
                 <>
                     <Text variant="highlight">

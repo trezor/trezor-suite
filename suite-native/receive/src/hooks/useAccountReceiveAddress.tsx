@@ -58,7 +58,8 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
                 ).unwrap(),
             );
 
-            return response.payload.success;
+            // @ts-expect-error due to missing types in suite-common return of confirmAddressOnDeviceThunk
+            return response.payload?.success ?? false;
         }
 
         return false;
