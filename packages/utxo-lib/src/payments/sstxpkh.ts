@@ -1,9 +1,8 @@
-import * as typef from 'typeforce';
 import * as bs58check from '../bs58check';
 import { decred as DECRED_NETWORK } from '../networks';
 import * as bscript from '../script';
 import * as lazy from './lazy';
-import { Payment, PaymentOpts, Stack } from '../types';
+import { Payment, PaymentOpts, Stack, typeforce } from '../types';
 
 const { OPS } = bscript;
 
@@ -15,12 +14,12 @@ export function sstxpkh(a: Payment, opts?: PaymentOpts): Payment {
 
     opts = Object.assign({ validate: true }, opts || {});
 
-    typef(
+    typeforce(
         {
-            network: typef.maybe(typef.Object),
-            address: typef.maybe(typef.String),
-            hash: typef.maybe(typef.BufferN(20)),
-            output: typef.maybe(typef.Buffer),
+            network: typeforce.maybe(typeforce.Object),
+            address: typeforce.maybe(typeforce.String),
+            hash: typeforce.maybe(typeforce.BufferN(20)),
+            output: typeforce.maybe(typeforce.Buffer),
         },
         a,
     );

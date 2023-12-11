@@ -34,3 +34,5 @@ export const {
     Nil,
     anyOf,
 } = typeforce;
+
+export { typeforce };

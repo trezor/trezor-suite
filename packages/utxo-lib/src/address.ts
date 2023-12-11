@@ -5,7 +5,6 @@
 
 import { bech32, bech32m } from 'bech32';
 import * as bs58check from './bs58check';
-import * as typeforce from 'typeforce';
 import * as bscript from './script';
 import * as payments from './payments';
 import { bitcoin as BITCOIN_NETWORK, Network } from './networks';
@@ -54,7 +53,7 @@ export function fromBech32(address: string): Bech32Result {
 }
 
 export function toBase58Check(hash: Buffer, version: number, network = BITCOIN_NETWORK): string {
-    typeforce(types.tuple(types.Hash160bit, types.UInt16), [hash, version]);
+    types.typeforce(types.tuple(types.Hash160bit, types.UInt16), [hash, version]);
 
     return bs58check.encodeAddress(hash, version, network);
 }

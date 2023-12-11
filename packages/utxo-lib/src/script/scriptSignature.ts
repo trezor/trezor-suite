@@ -1,7 +1,6 @@
 // upstream: https://github.com/bitcoinjs/bitcoinjs-lib/blob/master/ts_src/script_signature.ts
 
 import * as bip66 from 'bip66';
-import * as typeforce from 'typeforce';
 import * as types from '../types';
 
 const ZERO = Buffer.alloc(1, 0);
@@ -38,7 +37,7 @@ export function decode(buffer: Buffer) {
 }
 
 export function encode(signature: Buffer, hashType: number) {
-    typeforce(
+    types.typeforce(
         {
             signature: types.BufferN(64),
             hashType: types.UInt8,

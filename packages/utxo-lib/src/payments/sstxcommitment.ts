@@ -1,10 +1,9 @@
-import * as typeforce from 'typeforce';
 import { BufferWriter } from '../bufferutils';
 import * as bs58check from '../bs58check';
 import { decred as DECRED_NETWORK } from '../networks';
 import * as bscript from '../script';
 import * as lazy from './lazy';
-import { Payment, PaymentOpts, Stack } from '../types';
+import { Payment, PaymentOpts, Stack, typeforce } from '../types';
 
 const { OPS } = bscript;
 

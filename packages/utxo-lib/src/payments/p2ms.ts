@@ -1,11 +1,10 @@
 // upstream: https://github.com/bitcoinjs/bitcoinjs-lib/blob/master/ts_src/payments/p2ms.ts
 
 import * as ecc from 'tiny-secp256k1';
-import * as typef from 'typeforce';
 import { bitcoin as BITCOIN_NETWORK } from '../networks';
 import * as bscript from '../script';
 import * as lazy from './lazy';
-import { Payment, PaymentOpts, Stack } from '../types';
+import { Payment, PaymentOpts, Stack, typeforce } from '../types';
 
 const { OPS } = bscript;
 
@@ -31,16 +30,16 @@ export function p2ms(a: Payment, opts?: PaymentOpts): Payment {
         );
     }
 
-    typef(
+    typeforce(
         {
-            network: typef.maybe(typef.Object),
-            m: typef.maybe(typef.Number),
-            n: typef.maybe(typef.Number),
-            output: typef.maybe(typef.Buffer),
-            pubkeys: typef.maybe(typef.arrayOf(ecc.isPoint)),
+            network: typeforce.maybe(typeforce.Object),
+            m: typeforce.maybe(typeforce.Number),
+            n: typeforce.maybe(typeforce.Number),
+            output: typeforce.maybe(typeforce.Buffer),
+            pubkeys: typeforce.maybe(typeforce.arrayOf(ecc.isPoint)),
 
-            signatures: typef.maybe(typef.arrayOf(isAcceptableSignature)),
-            input: typef.maybe(typef.Buffer),
+            signatures: typeforce.maybe(typeforce.arrayOf(isAcceptableSignature)),
+            input: typeforce.maybe(typeforce.Buffer),
         },
         a,
     );
@@ -107,8 +106,9 @@ export function p2ms(a: Payment, opts?: PaymentOpts): Payment {
     if (opts.validate) {
         if (a.output) {
             decode(a.output);
-            if (!typef.Number(chunks[0])) throw new TypeError('Output is invalid');
-            if (!typef.Number(chunks[chunks.length - 2])) throw new TypeError('Output is invalid');
+            if (!typeforce.Number(chunks[0])) throw new TypeError('Output is invalid');
+            if (!typeforce.Number(chunks[chunks.length - 2]))
+                throw new TypeError('Output is invalid');
             if (chunks[chunks.length - 1] !== OPS.OP_CHECKMULTISIG)
                 throw new TypeError('Output is invalid');
 
