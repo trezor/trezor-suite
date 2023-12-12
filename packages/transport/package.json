@@ -48,7 +48,6 @@
         "@types/sharedworker": "^0.0.105",
         "@types/w3c-web-usb": "^1.0.9",
         "jest": "29.5.0",
-        "jest-environment-jsdom": "^29.5.0",
         "rimraf": "^5.0.5",
         "ts-node": "^10.9.1",
         "tsx": "^4.6.2",

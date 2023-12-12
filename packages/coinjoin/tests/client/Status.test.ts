@@ -10,9 +10,7 @@ import {
 } from '../fixtures/round.fixture';
 
 // using fakeTimers and async callbacks
-const fastForward = (time: number) =>
-    // @ts-expect-error needs @types/jest update, related to https://github.com/trezor/trezor-suite/issues/6025
-    jest.advanceTimersByTimeAsync(time);
+const fastForward = (time: number) => jest.advanceTimersByTimeAsync(time);
 
 // use getters to allow mocking different values in each test case
 jest.mock('../../src/constants', () => {

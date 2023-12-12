@@ -113,7 +113,7 @@
         "@babel/plugin-proposal-decorators": "^7.23.5",
         "@babel/plugin-proposal-export-namespace-from": "^7.18.9",
         "@babel/plugin-transform-class-static-block": "^7.23.4",
-        "babel-jest": "^26.6.3",
+        "babel-jest": "29.5.0",
         "jest": "29.5.0",
         "metro-react-native-babel-preset": "0.73.9",
         "react-test-renderer": "18.2.0",

@@ -1,7 +1,7 @@
 import { createCooldown } from '../src/createCooldown';
 
 it('createCooldown', () => {
-    jest.useFakeTimers('modern');
+    jest.useFakeTimers();
 
     const cooldown = createCooldown(20);
     expect(cooldown()).toBe(true);

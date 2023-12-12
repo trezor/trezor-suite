@@ -2,32 +2,20 @@
  * Unit tests for source with coverage
  */
 
+const { testPathIgnorePatterns, ...baseConfig } = require('../../jest.config.base');
+
 module.exports = {
-    rootDir: './',
-    globals: {
-        'ts-jest': {
-            tsconfig: 'tsconfig.json',
-        },
-    },
-    moduleFileExtensions: ['js', 'ts', 'json'],
+    ...baseConfig,
     testMatch: ['**/tests/unit/**/*.ts'],
-    coverageDirectory: './coverage/',
     collectCoverage: true,
     collectCoverageFrom: ['**/src/**/*.ts'],
-    modulePathIgnorePatterns: [
-        'node_modules',
+    testPathIgnorePatterns: [
+        ...testPathIgnorePatterns,
         'src/types',
         'src/ui',
         'src/utils/ws.ts',
         'fixtures',
         'unit/worker/index.ts',
-        '<rootDir>/lib',
-        '<rootDir>/libDev',
     ],
     setupFiles: ['./tests/setup.js'],
-    transform: {
-        '^.+\\.js$': 'babel-jest',
-        '^.+\\.ts$': 'ts-jest',
-    },
-    watchPathIgnorePatterns: ['<rootDir>/libDev'],
 };
