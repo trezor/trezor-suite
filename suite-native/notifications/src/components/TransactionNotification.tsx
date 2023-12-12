@@ -8,8 +8,9 @@ import {
     TransactionsRootState,
     selectTransactionFirstTargetAddress,
     AccountsRootState,
-    selectAccountKeyByDescriptorAndNetworkSymbol,
+    selectDeviceAccountKeyByDescriptorAndNetworkSymbol,
     selectTransactionByTxidAndAccountKey,
+    DeviceRootState,
 } from '@suite-common/wallet-core';
 import {
     RootStackRoutes,
@@ -72,8 +73,8 @@ export const TransactionNotification = ({
         selectTransactionNotificationById(state, notificationId),
     );
 
-    const accountKey = useSelector((state: AccountsRootState) =>
-        selectAccountKeyByDescriptorAndNetworkSymbol(
+    const accountKey = useSelector((state: AccountsRootState & DeviceRootState) =>
+        selectDeviceAccountKeyByDescriptorAndNetworkSymbol(
             state,
             notification?.descriptor,
             notification?.symbol,
