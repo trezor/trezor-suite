@@ -6,7 +6,6 @@ import {
     selectDeviceModel,
     selectIsConnectedDeviceUninitialized,
     selectIsDeviceConnectedAndAuthorized,
-    selectIsPortfolioEmpty,
     selectIsUnacquiredDevice,
 } from '@suite-common/wallet-core';
 
@@ -22,14 +21,11 @@ export const selectIsFirmwareSupported = (state: DeviceRootState) => {
 export const selectIsDeviceReadyToUse = (
     state: DeviceRootState & AccountsRootState & DiscoveryRootState,
 ) => {
-    const isPortfolioEmpty = selectIsPortfolioEmpty(state);
     const isUnacquiredDevice = selectIsUnacquiredDevice(state);
     const isFirmwareSupported = selectIsFirmwareSupported(state);
     const isDeviceUninitialized = selectIsConnectedDeviceUninitialized(state);
 
-    return (
-        !isUnacquiredDevice && !isDeviceUninitialized && isFirmwareSupported && !isPortfolioEmpty
-    );
+    return !isUnacquiredDevice && !isDeviceUninitialized && isFirmwareSupported;
 };
 
 export const selectIsDeviceReadyToUseAndAuthorized = (
