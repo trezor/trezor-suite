@@ -40,7 +40,7 @@
         "**/public",
         "**/protobuf-patches",
         "**/trezor-common",
-        "**/jest.config.js"
+        "**/jest.config.*js"
     ],
     "references": [
         { "path": "suite-common/wallet-types" }

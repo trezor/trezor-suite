@@ -1,11 +1,9 @@
 {
-    "extends": "./tsconfig.lib.json",
+    "extends": "../../tsconfig.json",
     "compilerOptions": {
-        "rootDir": ".",
         "outDir": "libDev",
-        "composite": true,
-        "incremental": true,
-        "declarationMap": true
+        "lib": ["webworker"],
+        "types": ["jest", "node", "web"]
     },
     "include": [".", "**/*.json"],
     "references": [
