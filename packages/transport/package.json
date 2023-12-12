@@ -57,7 +57,6 @@
         "@trezor/protobuf": "workspace:*",
         "@trezor/protocol": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "bytebuffer": "^5.0.1",
         "cross-fetch": "^4.0.0",
         "json-stable-stringify": "^1.0.2",
         "long": "^4.0.0",

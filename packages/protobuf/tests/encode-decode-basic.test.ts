@@ -232,8 +232,7 @@ describe('basic concepts', () => {
         });
 
         test('Different protobuf between receiving ends', () => {
-            /* eslint-disable-next-line @typescript-eslint/no-shadow */
-            const messages = {
+            const customMessages = (fields?: any) => ({
                 nested: {
                     messages: {
                         nested: {
@@ -247,23 +246,24 @@ describe('basic concepts', () => {
                                         type: 'uint32',
                                         id: 2,
                                     },
+                                    ...fields,
                                 },
                             },
                         },
                     },
                 },
-            };
+            });
 
-            const SenderMessages = ProtoBuf.Root.fromJSON(messages);
+            const SenderMessages = ProtoBuf.Root.fromJSON(customMessages());
             const senderEncoded = encode(SenderMessages.lookupType('messages.ButtonRequest'), {
                 type: 'foo',
                 pages: 123,
             });
 
-            const receiverMessages = messages;
             // now change field type from uint32 to string
-            receiverMessages.nested.messages.nested.ButtonRequest.fields.pages.type = 'string';
-            const ReceiverMessages = ProtoBuf.Root.fromJSON(receiverMessages);
+            const ReceiverMessages = ProtoBuf.Root.fromJSON(
+                customMessages({ pages: { type: 'string', id: 2 } }),
+            );
 
             expect(() => {
                 decode(ReceiverMessages.lookupType('messages.ButtonRequest'), senderEncoded);

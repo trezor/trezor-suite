@@ -104,13 +104,13 @@ describe('encoding json -> protobuf -> json', () => {
                 const { length } = Buffer.from(f.in.source_account);
                 // chunk length cannot be less than message header/constant (28) + variable source_account length
                 // additional bytes are expected (encoded Uint32) if message length is greater
-                expect(chunk.buffer.length).toBeGreaterThanOrEqual(28 + length);
+                expect(chunk.length).toBeGreaterThanOrEqual(28 + length);
                 let i = -1;
                 const decoded = await receiveAndParse(
                     parsedMessages,
                     () => {
                         i++;
-                        return Promise.resolve(result[i].buffer);
+                        return Promise.resolve(result[i]);
                     },
                     bridgeProtocol.decode,
                 );
@@ -123,14 +123,14 @@ describe('encoding json -> protobuf -> json', () => {
                 const result = buildBuffers(parsedMessages, f.name, f.in, v1Protocol.encode);
                 // each protocol chunks are equal 64 bytes
                 result.forEach(chunk => {
-                    expect(chunk.buffer.length).toEqual(64);
+                    expect(chunk.length).toEqual(64);
                 });
                 let i = -1;
                 const decoded = await receiveAndParse(
                     parsedMessages,
                     () => {
                         i++;
-                        return Promise.resolve(result[i].buffer);
+                        return Promise.resolve(result[i]);
                     },
                     v1Protocol.decode,
                 );

@@ -1,4 +1,3 @@
-import ByteBuffer from 'bytebuffer';
 import { Type } from 'protobufjs/light';
 
 import { isPrimitiveField } from './utils';
@@ -70,9 +69,6 @@ export const encode = (Message: Type, data: Record<string, unknown>) => {
     const payload = patch(Message, data);
     const message = Message.fromObject(payload);
     // Encode a message to an Uint8Array (browser) or Buffer (node)
-    const buffer = Message.encode(message).finish();
-    const bytebuffer = new ByteBuffer(buffer.byteLength);
-    bytebuffer.append(buffer);
-    bytebuffer.reset();
-    return bytebuffer;
+    const bytes = Message.encode(message).finish();
+    return Buffer.from(bytes);
 };
