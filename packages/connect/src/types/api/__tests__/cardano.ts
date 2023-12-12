@@ -401,6 +401,7 @@ export const cardanoSignTransaction = async (api: TrezorConnect) => {
         networkId: 0,
         signingMode: CardanoTxSigningMode.ORDINARY_TRANSACTION,
         includeNetworkId: false,
+        tagCborSets: false,
     });
 
     if (sign.success) {
