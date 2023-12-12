@@ -53,6 +53,7 @@ export const RootStackNavigator = () => {
             <RootStack.Screen
                 name={RootStackRoutes.ConnectDevice}
                 component={ConnectDeviceStackNavigator}
+                options={{ ...stackNavigationOptionsConfig, animation: 'slide_from_bottom' }}
             />
             <RootStack.Screen
                 options={{ title: RootStackRoutes.AccountSettings }}

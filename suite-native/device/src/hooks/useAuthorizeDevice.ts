@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { CommonActions, useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
 import {
     selectDeviceRequestedPin,
@@ -9,18 +9,28 @@ import {
     selectIsNoPhysicalDeviceConnected,
 } from '@suite-common/wallet-core';
 import {
+    AppTabsRoutes,
+    ConnectDeviceStackParamList,
     ConnectDeviceStackRoutes,
     HomeStackRoutes,
+    RootStackParamList,
     RootStackRoutes,
+    StackToTabCompositeProps,
 } from '@suite-native/navigation';
 
 import { selectIsDeviceReadyToUseAndAuthorized } from '../selectors';
 
 const LOADING_TIMEOUT = 2500;
 
+type NavigationProp = StackToTabCompositeProps<
+    ConnectDeviceStackParamList,
+    ConnectDeviceStackRoutes.PinMatrix,
+    RootStackParamList
+>;
+
 export const useAuthorizeDevice = () => {
     const [isTimeoutFinished, setIsTimeoutFinished] = useState(false);
-    const navigation = useNavigation();
+    const navigation = useNavigation<NavigationProp>();
 
     const hasDeviceRequestedPin = useSelector(selectDeviceRequestedPin);
     const isDeviceUnlocked = useSelector(selectIsDeviceUnlocked);
@@ -39,38 +49,21 @@ export const useAuthorizeDevice = () => {
     // If device requests PIN, redirect to the PinMatrix screen.
     useEffect(() => {
         if (hasDeviceRequestedPin && !isDeviceUnlocked) {
-            navigation.dispatch(
-                CommonActions.reset({
-                    index: 0,
-                    routes: [
-                        {
-                            name: RootStackRoutes.ConnectDevice,
-                            params: {
-                                screen: ConnectDeviceStackRoutes.PinMatrix,
-                            },
-                        },
-                    ],
-                }),
-            );
+            navigation.navigate(RootStackRoutes.ConnectDevice, {
+                screen: ConnectDeviceStackRoutes.PinMatrix,
+            });
         }
     }, [hasDeviceRequestedPin, isDeviceUnlocked, navigation]);
 
     // If Device is authorized and loading accounts, redirect to the Home screen.
     useEffect(() => {
         if (isDeviceReadyToUseAndAuthorized && isTimeoutFinished) {
-            navigation.dispatch(
-                CommonActions.reset({
-                    index: 0,
-                    routes: [
-                        {
-                            name: RootStackRoutes.AppTabs,
-                            params: {
-                                screen: HomeStackRoutes.Home,
-                            },
-                        },
-                    ],
-                }),
-            );
+            navigation.navigate(RootStackRoutes.AppTabs, {
+                screen: AppTabsRoutes.HomeStack,
+                params: {
+                    screen: HomeStackRoutes.Home,
+                },
+            });
         }
     }, [
         isDeviceReadyToUseAndAuthorized,
