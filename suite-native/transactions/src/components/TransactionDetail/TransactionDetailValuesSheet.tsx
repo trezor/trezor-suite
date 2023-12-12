@@ -26,18 +26,12 @@ type TransactionDetailValuesSheetProps = {
 };
 
 type TodayHeaderCellProps = {
-    historicalPrice: string;
-    actualPrice: string;
+    cryptoValue: string;
     network: NetworkSymbol;
     historicalRates?: CurrentFiatRates['rates'];
 };
 
-const TodayHeaderCell = ({
-    historicalPrice,
-    actualPrice,
-    network,
-    historicalRates,
-}: TodayHeaderCellProps) => {
+const TodayHeaderCell = ({ cryptoValue, network, historicalRates }: TodayHeaderCellProps) => {
     const fiatCurrencyCode = useSelector(selectFiatCurrencyCode);
     const fiatRateKey = getFiatRateKey(network, fiatCurrencyCode);
     const currentRates = useSelector((state: FiatRatesRootState) =>
@@ -48,7 +42,7 @@ const TodayHeaderCell = ({
 
     const fiatTotalHistoryNumeric = pipe(
         convertCryptoToFiatAmount({
-            value: historicalPrice,
+            value: cryptoValue,
             rates: historicalRates,
             network,
             fiatCurrency: fiatCurrencyCode,
@@ -57,7 +51,7 @@ const TodayHeaderCell = ({
     );
     const fiatTotalActualNumeric = pipe(
         convertCryptoToFiatAmount({
-            value: actualPrice,
+            value: cryptoValue,
             rates: { [fiatCurrencyCode]: currentRates?.rate },
             network,
             fiatCurrency: fiatCurrencyCode,
@@ -81,98 +75,105 @@ export const TransactionDetailValuesSheet = ({
     isVisible,
     onSheetVisibilityChange,
     transaction,
-}: TransactionDetailValuesSheetProps) => (
-    <TransactionDetailSheet
-        isVisible={isVisible}
-        onVisibilityChange={onSheetVisibilityChange}
-        title="Compare values"
-        iconName="clockClockwise"
-        transactionId={transaction.txid}
-    >
-        <VStack>
-            <Card>
-                <Table>
-                    <Tr>
-                        <Th />
-                        <Th>Transaction</Th>
-                        <Th>
-                            <TodayHeaderCell
-                                historicalPrice={transaction.details.totalOutput}
-                                actualPrice={transaction.details.totalOutput}
-                                historicalRates={transaction.rates}
-                                network={transaction.symbol}
-                            />
-                        </Th>
-                    </Tr>
+}: TransactionDetailValuesSheetProps) => {
+    // Fallback to transaction.amount if totalInput is 0, which is the case for XRP transactions
+    const totalInput =
+        transaction.details.totalInput === '0'
+            ? transaction.amount
+            : transaction.details.totalInput;
 
-                    <Tr>
-                        <Th>Input</Th>
-                        <Td>
-                            <CryptoToFiatAmountFormatter
-                                variant="hint"
-                                value={transaction.details.totalInput}
-                                network={transaction.symbol}
-                                customRates={transaction.rates}
-                                numberOfLines={1}
-                                adjustsFontSizeToFit
-                            />
-                        </Td>
-                        <Td>
-                            <CryptoToFiatAmountFormatter
-                                variant="hint"
-                                value={transaction.details.totalInput}
-                                network={transaction.symbol}
-                                numberOfLines={1}
-                                adjustsFontSizeToFit
-                            />
-                        </Td>
-                    </Tr>
-                    <Tr>
-                        <Th>Fee</Th>
-                        <Td>
-                            <CryptoToFiatAmountFormatter
-                                variant="hint"
-                                value={transaction.fee}
-                                network={transaction.symbol}
-                                customRates={transaction.rates}
-                                numberOfLines={1}
-                                adjustsFontSizeToFit
-                            />
-                        </Td>
-                        <Td>
-                            <CryptoToFiatAmountFormatter
-                                variant="hint"
-                                value={transaction.fee}
-                                network={transaction.symbol}
-                                numberOfLines={1}
-                                adjustsFontSizeToFit
-                            />
-                        </Td>
-                    </Tr>
-                    <Tr>
-                        <Th>Total</Th>
-                        <Td>
-                            <CryptoToFiatAmountFormatter
-                                variant="hint"
-                                value={transaction.amount}
-                                network={transaction.symbol}
-                                customRates={transaction.rates}
-                                numberOfLines={1}
-                                adjustsFontSizeToFit
-                            />
-                        </Td>
-                        <Td>
-                            <CryptoToFiatAmountFormatter
-                                variant="hint"
-                                value={transaction.amount}
-                                network={transaction.symbol}
-                                numberOfLines={1}
-                                adjustsFontSizeToFit
-                            />
-                        </Td>
-                    </Tr>
-                </Table>
-            </Card>
-        </VStack>
-    </TransactionDetailSheet>
-);
+    return (
+        <TransactionDetailSheet
+            isVisible={isVisible}
+            onVisibilityChange={onSheetVisibilityChange}
+            title="Compare values"
+            iconName="clockClockwise"
+            transactionId={transaction.txid}
+        >
+            <VStack>
+                <Card>
+                    <Table>
+                        <Tr>
+                            <Th />
+                            <Th>Transaction</Th>
+                            <Th>
+                                <TodayHeaderCell
+                                    cryptoValue={transaction.amount}
+                                    historicalRates={transaction.rates}
+                                    network={transaction.symbol}
+                                />
+                            </Th>
+                        </Tr>
+
+                        <Tr>
+                            <Th>Input</Th>
+                            <Td>
+                                <CryptoToFiatAmountFormatter
+                                    variant="hint"
+                                    value={totalInput}
+                                    network={transaction.symbol}
+                                    customRates={transaction.rates}
+                                    numberOfLines={1}
+                                    adjustsFontSizeToFit
+                                />
+                            </Td>
+                            <Td>
+                                <CryptoToFiatAmountFormatter
+                                    variant="hint"
+                                    value={totalInput}
+                                    network={transaction.symbol}
+                                    numberOfLines={1}
+                                    adjustsFontSizeToFit
+                                />
+                            </Td>
+                        </Tr>
+                        <Tr>
+                            <Th>Fee</Th>
+                            <Td>
+                                <CryptoToFiatAmountFormatter
+                                    variant="hint"
+                                    value={transaction.fee}
+                                    network={transaction.symbol}
+                                    customRates={transaction.rates}
+                                    numberOfLines={1}
+                                    adjustsFontSizeToFit
+                                />
+                            </Td>
+                            <Td>
+                                <CryptoToFiatAmountFormatter
+                                    variant="hint"
+                                    value={transaction.fee}
+                                    network={transaction.symbol}
+                                    numberOfLines={1}
+                                    adjustsFontSizeToFit
+                                />
+                            </Td>
+                        </Tr>
+                        <Tr>
+                            <Th>Total</Th>
+                            <Td>
+                                <CryptoToFiatAmountFormatter
+                                    variant="hint"
+                                    value={transaction.amount}
+                                    network={transaction.symbol}
+                                    customRates={transaction.rates}
+                                    numberOfLines={1}
+                                    adjustsFontSizeToFit
+                                />
+                            </Td>
+                            <Td>
+                                <CryptoToFiatAmountFormatter
+                                    variant="hint"
+                                    value={transaction.amount}
+                                    network={transaction.symbol}
+                                    numberOfLines={1}
+                                    adjustsFontSizeToFit
+                                />
+                            </Td>
+                        </Tr>
+                    </Table>
+                </Card>
+            </VStack>
+        </TransactionDetailSheet>
+    );
+};
