@@ -13,6 +13,7 @@
     "dependencies": {
         "@react-navigation/native": "^6.1.3",
         "@react-navigation/native-stack": "^6.9.11",
+        "@reduxjs/toolkit": "1.9.5",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/graph": "workspace:*",
         "@suite-common/icons": "workspace:*",
@@ -21,6 +22,7 @@
         "@suite-native/assets": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/biometrics": "workspace:*",
+        "@suite-native/blockchain": "workspace:*",
         "@suite-native/device": "workspace:*",
         "@suite-native/device-manager": "workspace:*",
         "@suite-native/discovery": "workspace:*",

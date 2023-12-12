@@ -5,6 +5,7 @@ import {
     fetchAndUpdateAccountThunk,
     selectAccountByDescriptorAndNetworkSymbol,
     selectAccountsByNetworkSymbol,
+    selectAccountsSymbols,
     subscribeBlockchainThunk,
 } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
@@ -36,7 +37,9 @@ export const syncAccountsWithBlockchainThunk = createThunk(
             shouldRefetchAccount({ accountKey: key }),
         );
 
-        const accountPromises = accountForRefetch.map(a => dispatch(fetchAndUpdateAccountThunk(a)));
+        const accountPromises = accountForRefetch.map(a =>
+            dispatch(fetchAndUpdateAccountThunk({ accountKey: a.key })),
+        );
         accountForRefetch.forEach(a => {
             accountLastFetchTime[a.key] = Date.now();
         });
@@ -44,6 +47,19 @@ export const syncAccountsWithBlockchainThunk = createThunk(
         await Promise.all(accountPromises);
 
         dispatch(blockchainActions.synced({ symbol }));
+    },
+);
+
+export const syncAllAccountsWithBlockchainThunk = createThunk(
+    `${actionsPrefix}/syncAllAccountsThunk`,
+    async (_, { getState, dispatch }) => {
+        const accountsSymbols = selectAccountsSymbols(getState());
+
+        const accountPromises = accountsSymbols.map(symbol =>
+            dispatch(syncAccountsWithBlockchainThunk({ symbol })),
+        );
+
+        await Promise.all(accountPromises);
     },
 );
 
@@ -76,6 +92,6 @@ export const onBlockchainNotificationThunk = createThunk(
 
         // In fetchAndUpdateAccountThunk we are throttling per account, we don't want to fetch account too often
         // and sometimes we randomly get notifications for all transactions in account at once, which would trigger lot of fetches
-        dispatch(fetchAndUpdateAccountThunk(account));
+        dispatch(fetchAndUpdateAccountThunk({ accountKey: account.key }));
     },
 );

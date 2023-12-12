@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { RefreshControl } from 'react-native';
 
 import { FlashList } from '@shopify/flash-list';
 
-import { selectIsLoadingTransactions } from '@suite-common/wallet-core';
+import { fetchAndUpdateAccountThunk, selectIsLoadingTransactions } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { groupTransactionsByDate, MonthKey } from '@suite-common/wallet-utils';
 import { Box, Loader } from '@suite-native/atoms';
@@ -109,8 +110,13 @@ export const TransactionList = ({
     accountKey,
     tokenContract,
 }: AccountTransactionProps) => {
-    const { applyStyle } = useNativeStyles();
+    const {
+        applyStyle,
+        utils: { colors },
+    } = useNativeStyles();
     const isLoadingTransactions = useSelector(selectIsLoadingTransactions);
+    const dispatch = useDispatch();
+    const [isRefreshing, setIsRefreshing] = useState(false);
 
     const initialPageNumber = Math.ceil((transactions.length || 1) / TX_PER_PAGE);
     const [page, setPage] = useState(initialPageNumber);
@@ -129,6 +135,17 @@ export const TransactionList = ({
             // TODO handle error state (show retry button or something
         }
     }, [fetchMoreTransactions, page]);
+
+    const handleOnRefresh = useCallback(async () => {
+        try {
+            setIsRefreshing(true);
+            await dispatch(fetchAndUpdateAccountThunk({ accountKey }));
+        } catch (e) {
+            // Do nothing
+        }
+        // It's usually too fast so loading indicator only flashes for a moment, which is not nice
+        setTimeout(() => setIsRefreshing(false), 1500);
+    }, [dispatch, accountKey]);
 
     const data = useMemo((): TransactionListItem[] => {
         const accountTransactionsByMonth = groupTransactionsByDate(transactions, 'month');
@@ -201,6 +218,13 @@ export const TransactionList = ({
                 ListHeaderComponent={listHeaderComponent}
                 onEndReached={handleOnEndReached}
                 estimatedItemSize={70}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={isRefreshing}
+                        onRefresh={handleOnRefresh}
+                        colors={[colors.backgroundPrimaryDefault]}
+                    />
+                }
             />
         </Box>
     );

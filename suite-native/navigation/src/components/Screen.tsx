@@ -1,5 +1,5 @@
 import { useEffect, useContext, ReactNode } from 'react';
-import { Platform, StatusBar, View } from 'react-native';
+import { Platform, ScrollViewProps, StatusBar, View } from 'react-native';
 import { useSafeAreaInsets, EdgeInsets } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
 
@@ -26,6 +26,7 @@ type ScreenProps = {
     customHorizontalPadding?: number;
     extraKeyboardAvoidingViewHeight?: number;
     hasBottomInset?: boolean;
+    refreshControl?: ScrollViewProps['refreshControl'];
 };
 
 const screenContainerStyle = prepareNativeStyle<{
@@ -104,6 +105,7 @@ export const Screen = ({
     customHorizontalPadding = nativeSpacings.small,
     extraKeyboardAvoidingViewHeight = 0,
     hasBottomInset = true,
+    refreshControl,
 }: ScreenProps) => {
     const {
         applyStyle,
@@ -147,6 +149,7 @@ export const Screen = ({
             <ScreenContentWrapper
                 isScrollable={isScrollable}
                 extraKeyboardAvoidingViewHeight={extraKeyboardAvoidingViewHeight}
+                refreshControl={refreshControl}
             >
                 {subheader}
                 <Box
