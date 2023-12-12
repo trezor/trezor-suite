@@ -1,5 +1,4 @@
 import { memoizeWithArgs } from 'proxy-memoize';
-import { A, pipe } from '@mobily/ts-belt';
 
 import { Account, WalletAccountTransaction, AccountKey } from '@suite-common/wallet-types';
 import { findTransaction, getConfirmations, isPending } from '@suite-common/wallet-utils';
@@ -13,7 +12,6 @@ import {
     selectBlockchainHeightBySymbol,
     BlockchainRootState,
 } from '../blockchain/blockchainReducer';
-import { selectAccountByKey } from '../accounts/accountsReducer';
 
 export interface TransactionsState {
     isLoading: boolean;
