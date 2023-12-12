@@ -1,27 +1,25 @@
-import ByteBuffer from 'bytebuffer';
-
 import { v1 } from '../src/index';
 
 describe('protocol-v1', () => {
     it('encode', () => {
         let chunks;
         // encode only one chunk, message without data
-        chunks = v1.encode(new ByteBuffer(0), { messageType: 55 });
+        chunks = v1.encode(Buffer.alloc(0), { messageType: 55 });
         expect(chunks.length).toEqual(1);
-        expect(chunks[0].limit).toEqual(64);
+        expect(chunks[0].length).toEqual(64);
 
         // encode multiple chunks, message with data
-        chunks = v1.encode(new ByteBuffer(371), { messageType: 55 });
+        chunks = v1.encode(Buffer.alloc(371), { messageType: 55 });
         expect(chunks.length).toEqual(7);
         chunks.forEach((chunk, index) => {
-            expect(chunk.limit).toEqual(64);
+            expect(chunk.length).toEqual(64);
             if (index === 0) {
                 // first chunk with additional data
-                expect(chunk.slice(0, 9).toString('hex')).toEqual('3f2323003700000173');
-                expect(chunk.readUint32(5)).toEqual(371);
+                expect(chunk.subarray(0, 9).toString('hex')).toEqual('3f2323003700000173');
+                expect(chunk.readUint32BE(5)).toEqual(371);
             } else {
                 // following chunk starts with MESSAGE_MAGIC_HEADER_BYTE
-                expect(chunk.slice(0, 5).toString('hex')).toEqual('3f00000000');
+                expect(chunk.subarray(0, 5).toString('hex')).toEqual('3f00000000');
             }
         });
     });

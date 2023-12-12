@@ -24,9 +24,6 @@
         "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
         "prepublish": "yarn tsx ../../scripts/prepublish.js"
     },
-    "dependencies": {
-        "bytebuffer": "^5.0.1"
-    },
     "devDependencies": {
         "jest": "29.5.0",
         "rimraf": "^5.0.5",

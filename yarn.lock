@@ -8833,7 +8833,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/protobuf@workspace:packages/protobuf"
   dependencies:
-    bytebuffer: "npm:^5.0.1"
     jest: "npm:29.5.0"
     long: "npm:^4.0.0"
     protobufjs: "npm:7.2.5"
@@ -8850,7 +8849,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/protocol@workspace:packages/protocol"
   dependencies:
-    bytebuffer: "npm:^5.0.1"
     jest: "npm:29.5.0"
     rimraf: "npm:^5.0.5"
     tsx: "npm:^4.6.2"
@@ -9451,7 +9449,6 @@ __metadata:
     "@types/bytebuffer": "npm:^5.0.46"
     "@types/sharedworker": "npm:^0.0.105"
     "@types/w3c-web-usb": "npm:^1.0.9"
-    bytebuffer: "npm:^5.0.1"
     cross-fetch: "npm:^4.0.0"
     jest: "npm:29.5.0"
     json-stable-stringify: "npm:^1.0.2"
@@ -13699,15 +13696,6 @@ __metadata:
   version: 1.0.3
   resolution: "builtins@npm:1.0.3"
   checksum: 8f756616bd3d92611bcb5bcc3008308e7cdaadbc4603a5ce6fe709193198bc115351d138524d79e5269339ef7ba5ba73185da541c7b4bc076b00dd0124f938f6
-  languageName: node
-  linkType: hard
-
-"bytebuffer@npm:^5.0.1":
-  version: 5.0.1
-  resolution: "bytebuffer@npm:5.0.1"
-  dependencies:
-    long: "npm:~3"
-  checksum: f3e9739ed9ab30e19d985fc3dadfdbd631d030874bbb313feefddac756f21ac10957257737e630fd9959744318e6e8b7d8c35b797519693bf1897be16c560970
   languageName: node
   linkType: hard
 
@@ -23839,13 +23827,6 @@ __metadata:
   version: 5.2.3
   resolution: "long@npm:5.2.3"
   checksum: 9167ec6947a825b827c30da169a7384eec6c0c9ec2f0b9c74da2e93d81159bbe39fb09c3f13dae9721d4b807ccfa09797a7dd1012f5d478e3e33ca3c78b608e6
-  languageName: node
-  linkType: hard
-
-"long@npm:~3":
-  version: 3.2.0
-  resolution: "long@npm:3.2.0"
-  checksum: ffc685ec458ddf71a830d6deb62ff7dc551a736d47473350d9e077c22db96ec88c8a3554c11ffce7d7f2291b0c30da36629e4d0a97c29b5360dc977533c96d28
   languageName: node
   linkType: hard
 

@@ -1,21 +1,19 @@
-import ByteBuffer from 'bytebuffer';
-
 import { bridge } from '../src/index';
 
 describe('protocol-bridge', () => {
     it('encode', () => {
         let chunks;
         // encode small chunk, message without data
-        chunks = bridge.encode(new ByteBuffer(0), { messageType: 55 });
+        chunks = bridge.encode(Buffer.alloc(0), { messageType: 55 });
         expect(chunks.length).toEqual(1);
-        expect(chunks[0].limit).toEqual(6);
+        expect(chunks[0].length).toEqual(6);
 
         // encode big chunk, message with data
-        chunks = bridge.encode(new ByteBuffer(371), { messageType: 55 });
+        chunks = bridge.encode(Buffer.alloc(371), { messageType: 55 });
         expect(chunks.length).toEqual(1);
-        expect(chunks[0].slice(0, 6).toString('hex')).toEqual('003700000173');
-        expect(chunks[0].readUint32(2)).toEqual(371);
-        expect(chunks[0].buffer.length).toEqual(371 + 6);
+        expect(chunks[0].subarray(0, 6).toString('hex')).toEqual('003700000173');
+        expect(chunks[0].readUint32BE(2)).toEqual(371);
+        expect(chunks[0].length).toEqual(371 + 6);
     });
 
     it('decode', () => {

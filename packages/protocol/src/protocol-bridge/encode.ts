@@ -1,6 +1,4 @@
-import ByteBuffer from 'bytebuffer';
-
-import { HEADER_SIZE } from '../protocol-v1/constants';
+import { HEADER_SIZE } from './constants';
 import { TransportProtocolEncode } from '../types';
 
 // this file is basically combination of "trezor v1 protocol" and "bridge protocol"
@@ -8,22 +6,17 @@ import { TransportProtocolEncode } from '../types';
 // it is because bridge does some parts of the protocol itself (like chunking)
 export const encode: TransportProtocolEncode = (data, options) => {
     const { messageType } = options;
-    const fullSize = HEADER_SIZE - 2 + data.limit;
 
-    const encodedByteBuffer = new ByteBuffer(fullSize);
+    const encodedBuffer = Buffer.alloc(HEADER_SIZE + data.length);
 
     // 2 bytes
-    encodedByteBuffer.writeUint16(messageType);
+    encodedBuffer.writeUInt16BE(messageType);
 
     // 4 bytes
-    encodedByteBuffer.writeUint32(data.limit);
+    encodedBuffer.writeUInt32BE(data.length, 2);
 
     // then put in the actual message
-    encodedByteBuffer.append(data.buffer);
+    data.copy(encodedBuffer, HEADER_SIZE);
 
-    encodedByteBuffer.reset();
-
-    // todo: it would be nicer to return Buffer instead of ByteBuffer. The problem is that ByteBuffer.Buffer.toString behaves differently in web and node.
-    // anyway, for now we can keep this legacy behavior
-    return [encodedByteBuffer];
+    return [encodedBuffer];
 };

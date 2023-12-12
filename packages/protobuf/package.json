@@ -30,7 +30,6 @@
         "prepublish": "yarn tsx ../../scripts/prepublish.js"
     },
     "dependencies": {
-        "bytebuffer": "^5.0.1",
         "long": "^4.0.0",
         "protobufjs": "7.2.5"
     },

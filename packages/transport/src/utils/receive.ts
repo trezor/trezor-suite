@@ -1,15 +1,15 @@
-import ByteBuffer from 'bytebuffer';
 import { Root } from 'protobufjs/light';
 
 import { decode as decodeProtobuf, createMessageFromType } from '@trezor/protobuf';
 import { TransportProtocolDecode } from '@trezor/protocol';
 
 async function receiveRest(
-    parsedInput: ByteBuffer,
+    result: Buffer,
     receiver: () => Promise<ArrayBuffer>,
+    offset: number,
     expectedLength: number,
 ): Promise<void> {
-    if (parsedInput.offset >= expectedLength) {
+    if (offset >= expectedLength) {
         return;
     }
     const data = await receiver();
@@ -17,9 +17,10 @@ async function receiveRest(
     if (data == null) {
         throw new Error('Received no data.');
     }
-    parsedInput.append(data.slice(1));
+    const length = offset + data.byteLength - 1;
+    Buffer.from(data).copy(result, offset, 1, length);
 
-    return receiveRest(parsedInput, receiver, expectedLength);
+    return receiveRest(result, receiver, length, expectedLength);
 }
 
 async function receiveBuffer(
@@ -28,13 +29,14 @@ async function receiveBuffer(
 ) {
     const data = await receiver();
     const { length, typeId, buffer } = decoder(data);
-    const decoded = new ByteBuffer(length);
+    const result = Buffer.alloc(length);
 
     if (length) {
-        decoded.append(buffer);
+        buffer.copy(result);
     }
-    await receiveRest(decoded, receiver, length);
-    return { received: decoded, typeId };
+
+    await receiveRest(result, receiver, buffer.length, length);
+    return { received: result, typeId };
 }
 
 export async function receiveAndParse(
@@ -44,7 +46,6 @@ export async function receiveAndParse(
 ) {
     const { received, typeId } = await receiveBuffer(receiver, decoder);
     const { Message, messageName } = createMessageFromType(messages, typeId);
-    received.reset();
     const message = decodeProtobuf(Message, received);
     return {
         message,
