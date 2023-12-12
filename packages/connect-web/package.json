@@ -52,7 +52,6 @@
         "@types/w3c-web-usb": "^1.0.9",
         "html-webpack-plugin": "^5.5.3",
         "jest": "29.5.0",
-        "jest-environment-jsdom": "29.5.0",
         "rimraf": "^5.0.5",
         "selfsigned": "^2.4.1",
         "terser-webpack-plugin": "^5.3.9",

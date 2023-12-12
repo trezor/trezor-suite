@@ -25,7 +25,6 @@ workers.forEach(instance => {
         let blockchain: BlockchainLink;
 
         beforeEach(async () => {
-            jest.setTimeout(20000);
             server = await BackendWebsocketServerMock.create(instance.name);
             blockchain = new BlockchainLink({
                 ...instance,
@@ -49,7 +48,7 @@ workers.forEach(instance => {
                 expect(error.code).toEqual('blockchain_link/connect');
                 expect(error.message).toEqual('All backends are down');
             }
-        });
+        }, 9000);
 
         it('Handle message timeout', async () => {
             server.setFixtures([
@@ -80,7 +79,7 @@ workers.forEach(instance => {
             await blockchain.subscribe({ type: 'block' });
             await new Promise(resolve => setTimeout(resolve, 6000));
             expect(server.fixtures).toEqual([]);
-        });
+        }, 7000);
 
         it('Handle ping (keepAlive)', async () => {
             const method = getMethod(instance.name);
@@ -97,7 +96,7 @@ workers.forEach(instance => {
 
             await new Promise(resolve => setTimeout(resolve, 6000));
             expect(server.fixtures).toEqual([]);
-        });
+        }, 7000);
 
         it('Ping should not be called and websocket should be disconnected', async () => {
             const method = getMethod(instance.name);
@@ -122,24 +121,26 @@ workers.forEach(instance => {
             expect(server.getFixtures()!.length).toEqual(2);
         });
 
-        it('Handle connect event', async done => {
+        it('Handle connect event', done => {
             blockchain.on('connected', done);
-            const result = await blockchain.connect();
-            expect(result).toEqual(true);
+            blockchain.connect().then(result => {
+                expect(result).toEqual(true);
+            });
         });
 
-        it('Handle disconnect event', async done => {
+        it('Handle disconnect event', done => {
             blockchain.on('disconnected', done);
-            await blockchain.connect();
-            // TODO: ripple-lib throws error when disconnect is called immediately
-            // investigate more, use setTimeout as a workaround
-            // Error [ERR_UNHANDLED_ERROR]: Unhandled error. (websocket)
-            // at Connection.RippleAPI.connection.on (../../node_modules/ripple-lib/src/api.ts:133:14)
-            if (instance.name === 'ripple') {
-                setTimeout(() => blockchain.disconnect(), 1000);
-            } else {
-                blockchain.disconnect();
-            }
+            blockchain.connect().then(() => {
+                // TODO: ripple-lib throws error when disconnect is called immediately
+                // investigate more, use setTimeout as a workaround
+                // Error [ERR_UNHANDLED_ERROR]: Unhandled error. (websocket)
+                // at Connection.RippleAPI.connection.on (../../node_modules/ripple-lib/src/api.ts:133:14)
+                if (instance.name === 'ripple') {
+                    setTimeout(() => blockchain.disconnect(), 1000);
+                } else {
+                    blockchain.disconnect();
+                }
+            });
         });
 
         it('Connect (only one endpoint is valid)', async () => {
