@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 import { Button, Tooltip, Link } from '@trezor/components';
 import { getReleaseUrl } from 'src/services/github';
@@ -8,21 +8,6 @@ const VersionTooltip = styled(Tooltip)`
     display: inline-flex;
     margin-left: 5px;
     margin-right: 5px;
-`;
-
-const VersionButton = styled(Button)<{ isDev?: boolean }>`
-    ${({ isDev }) =>
-        isDev &&
-        css`
-            color: ${({ theme }) => theme.TYPE_WHITE};
-            background: ${({ theme }) => theme.BUTTON_RED};
-
-            :hover,
-            :active,
-            :focus {
-                background: ${({ theme }) => theme.BUTTON_RED_HOVER};
-            }
-        `};
 `;
 
 const GithubWrapper = styled.div`
@@ -46,16 +31,10 @@ export const VersionWithGithubTooltip = ({ appVersion, isDev }: VersionWithGithu
         }
     >
         <Link href={getReleaseUrl(appVersion)}>
-            <VersionButton
-                size="small"
-                variant="tertiary"
-                icon="EXTERNAL_LINK"
-                iconAlignment="right"
-                isDev={isDev}
-            >
+            <Button size="tiny" variant="destructive" icon="EXTERNAL_LINK" iconAlignment="right">
                 {appVersion}
                 {isDev && '-dev'}
-            </VersionButton>
+            </Button>
         </Link>
     </VersionTooltip>
 );

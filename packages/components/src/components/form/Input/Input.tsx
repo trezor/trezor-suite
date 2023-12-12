@@ -15,12 +15,12 @@ import { BOTTOM_TEXT_MIN_HEIGHT, BottomText } from '../BottomText';
 import { InputState, InputSize } from '../inputTypes';
 import { TopAddons } from '../TopAddons';
 
-const Wrapper = styled.div<Pick<InputProps, 'width'> & { withBottomPadding: boolean }>`
+const Wrapper = styled.div<Pick<InputProps, 'width'> & { hasBottomPadding: boolean }>`
     display: inline-flex;
     flex-direction: column;
     width: ${({ width }) => (width ? `${width}px` : '100%')};
-    padding-bottom: ${({ withBottomPadding }) =>
-        withBottomPadding ? `${BOTTOM_TEXT_MIN_HEIGHT}px` : '0'};
+    padding-bottom: ${({ hasBottomPadding }) =>
+        hasBottomPadding ? `${BOTTOM_TEXT_MIN_HEIGHT}px` : '0'};
 `;
 
 interface StyledInputProps extends BaseInputProps {
@@ -90,6 +90,7 @@ export interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 
     dataTest?: string;
     inputState?: InputState;
     innerAddonAlign?: innerAddonAlignment;
+    hasBottomPadding?: boolean;
     /**
      * @description the clear button replaces the addon on the right side
      */
@@ -113,6 +114,7 @@ const Input = ({
     showClearButton,
     placeholder,
     onClear,
+    hasBottomPadding = true,
     ...rest
 }: InputProps) => {
     const [isHovered, setIsHovered] = useState(false);
@@ -131,7 +133,7 @@ const Input = ({
         <Wrapper
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
-            withBottomPadding={bottomText === null}
+            hasBottomPadding={hasBottomPadding === true && bottomText === null}
             data-test={dataTest}
         >
             <TopAddons isHovered={isHovered} hoverAddon={labelHoverAddon} addonRight={labelRight} />
