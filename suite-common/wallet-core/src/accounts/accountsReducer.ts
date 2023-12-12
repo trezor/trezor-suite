@@ -258,12 +258,12 @@ export const selectIsTestnetAccount = (state: AccountsRootState, accountKey: Acc
     return account ? isTestnet(account.symbol) : false;
 };
 
-export const selectAccountByDescriptorAndNetworkSymbol = (
-    state: AccountsRootState,
+export const selectDeviceAccountByDescriptorAndNetworkSymbol = (
+    state: AccountsRootState & DeviceRootState,
     accountDescriptor: string,
     networkSymbol: NetworkSymbol,
 ) => {
-    const accounts = selectAccounts(state);
+    const accounts = selectDeviceAccounts(state);
 
     return (
         A.find(
@@ -273,13 +273,13 @@ export const selectAccountByDescriptorAndNetworkSymbol = (
     );
 };
 
-export const selectAccountKeyByDescriptorAndNetworkSymbol = (
-    state: AccountsRootState,
+export const selectDeviceAccountKeyByDescriptorAndNetworkSymbol = (
+    state: AccountsRootState & DeviceRootState,
     accountDescriptor?: string,
     networkSymbol?: NetworkSymbol,
 ): AccountKey | null => {
     if (!accountDescriptor || !networkSymbol) return null;
-    const account = selectAccountByDescriptorAndNetworkSymbol(
+    const account = selectDeviceAccountByDescriptorAndNetworkSymbol(
         state,
         accountDescriptor,
         networkSymbol,

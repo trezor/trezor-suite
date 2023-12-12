@@ -3,7 +3,8 @@ import { useSelector } from 'react-redux';
 import { Box, ErrorMessage, Pictogram, VStack, Text } from '@suite-native/atoms';
 import {
     AccountsRootState,
-    selectAccountByDescriptorAndNetworkSymbol,
+    DeviceRootState,
+    selectDeviceAccountByDescriptorAndNetworkSymbol,
 } from '@suite-common/wallet-core';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountInfo } from '@trezor/connect';
@@ -20,8 +21,12 @@ type AccountImportDetailProps = {
 
 export const AccountImportSummary = ({ networkSymbol, accountInfo }: AccountImportDetailProps) => {
     const { translate } = useTranslate();
-    const account = useSelector((state: AccountsRootState) =>
-        selectAccountByDescriptorAndNetworkSymbol(state, accountInfo.descriptor, networkSymbol),
+    const account = useSelector((state: AccountsRootState & DeviceRootState) =>
+        selectDeviceAccountByDescriptorAndNetworkSymbol(
+            state,
+            accountInfo.descriptor,
+            networkSymbol,
+        ),
     );
 
     const isAccountImportSupported = supportedNetworkSymbols.some(
