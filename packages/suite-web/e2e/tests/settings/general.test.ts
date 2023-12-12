@@ -28,8 +28,13 @@ describe('General settings', () => {
         // go to settings
         cy.getTestElement('@suite/menu/settings').click();
 
+        // close desktop banner
+        cy.getTestElement('@banner/install-desktop-suite/close-button').click({
+            scrollBehavior: false,
+        });
+
         // change fiat
-        cy.getTestElement('@settings/fiat-select/input').click();
+        cy.getTestElement('@settings/fiat-select/input').click({ scrollBehavior: false });
         cy.getTestElement('@settings/fiat-select/option/eur').click();
 
         cy.findAnalyticsEventByType<ExtractByEventType<EventType.SettingsGeneralChangeFiat>>(
@@ -67,7 +72,7 @@ describe('General settings', () => {
         cy.contains('You are currently running version');
 
         // change language
-        cy.getTestElement('@settings/language-select/input').click();
+        cy.getTestElement('@settings/language-select/input').click({ scrollBehavior: 'bottom' });
         cy.getTestElement('@settings/language-select/option/es').click();
         cy.getTestElement('@settings/language-select/input').should('contain', 'Español');
 

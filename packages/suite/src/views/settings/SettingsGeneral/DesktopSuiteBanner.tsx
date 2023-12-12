@@ -128,7 +128,12 @@ export const DesktopSuiteBanner = () => {
                     }
                     {...animationConfig}
                 >
-                    <CloseButton size={18} icon="CROSS" onClick={handleClose} />
+                    <CloseButton
+                        size={18}
+                        icon="CROSS"
+                        onClick={handleClose}
+                        data-test="@banner/install-desktop-suite/close-button"
+                    />
 
                     <StyledImage image="TREZOR_PATTERN" width={140} />
 
