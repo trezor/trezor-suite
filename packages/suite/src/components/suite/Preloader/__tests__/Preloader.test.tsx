@@ -10,6 +10,14 @@ jest.mock('src/components/suite/Translation', () => ({
     Translation: ({ id }: any) => <div data-test={id}>{id}</div>,
 }));
 
+// @trezor/connect fetching ethereum definitions
+
+// Preloader/LottieAnimation fetch videos
+jest.mock('cross-fetch', () => ({
+    __esModule: true,
+    default: () => Promise.resolve({ ok: false }),
+}));
+
 // jest.mock('@firmware-components/ReconnectDevicePrompt', () => ({
 //     __esModule: true, // export as module
 //     default: ({ children }: any) => <div data-test="box">{children}</div>,
