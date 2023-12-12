@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
 
-import { atom, useAtomValue } from 'jotai';
+import { atom, useAtomValue, useSetAtom } from 'jotai';
 
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 import { FiatBalanceFormatter } from '@suite-native/formatters';
@@ -35,6 +36,10 @@ const hasPriceIncreasedAtom = atom(get => {
 const Balance = () => {
     const point = useAtomValue(selectedPointAtom);
     const fiatValue = String(point.value);
+    const setPoint = useSetAtom(selectedPointAtom);
+
+    // Reset selected point on unmount so it doesn't display on device change
+    useEffect(() => () => setPoint(emptyGraphPoint), [setPoint]);
 
     return <FiatBalanceFormatter value={fiatValue} />;
 };
