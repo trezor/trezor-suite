@@ -71,7 +71,6 @@ const renderTransactionItem = ({
     areTokensIncluded,
 }: RenderTransactionItemParams) => (
     <TransactionListItem
-        key={item.txid}
         transaction={item}
         isFirst={isFirst}
         isLast={isLast}
@@ -88,7 +87,6 @@ const renderTokenTransferItem = ({
     txid,
 }: RenderTokenTransferItemParams) => (
     <TokenTransferListItem
-        key={tokenTransfer.symbol}
         tokenTransfer={tokenTransfer}
         txid={txid}
         accountKey={accountKey}

@@ -7139,6 +7139,19 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-native/blockchain@workspace:*, @suite-native/blockchain@workspace:suite-native/blockchain":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/blockchain@workspace:suite-native/blockchain"
+  dependencies:
+    "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@suite-common/wallet-utils": "workspace:*"
+    "@trezor/connect": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@suite-native/config@workspace:*, @suite-native/config@workspace:suite-native/config":
   version: 0.0.0-use.local
   resolution: "@suite-native/config@workspace:suite-native/config"
@@ -7865,6 +7878,7 @@ __metadata:
     "@suite-common/toast-notifications": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-native/accounts": "workspace:*"
+    "@suite-native/blockchain": "workspace:*"
     "@suite-native/config": "workspace:*"
     "@suite-native/device": "workspace:*"
     "@suite-native/discovery": "workspace:*"
