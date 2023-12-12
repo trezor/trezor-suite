@@ -1,9 +1,8 @@
 {
     "extends": "../../tsconfig.lib.json",
     "compilerOptions": {
-        "target": "es2017",
-        "lib": ["webworker", "es2019"],
         "outDir": "./lib",
+        "lib": ["webworker"],
         "types": ["jest", "node", "web"]
     },
     "include": ["./src"]
