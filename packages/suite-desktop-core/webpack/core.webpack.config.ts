@@ -41,9 +41,10 @@ const sentryRelease = `${suiteVersion}.${PROJECT}${
 const source = path.join(__dirname, '..', 'src');
 
 const threadPath = path.join(source, 'threads');
-const threads = sync(`${threadPath}/**/*.ts`).map(
-    u => `threads${u.replace(threadPath, '').replace('.ts', '')}`,
-);
+const threads = sync(`${threadPath}/**/*.ts`).map(u => {
+    const relativePath = path.relative(threadPath, u).replace(/\.ts$/, '');
+    return path.join('threads', ...relativePath.split(path.sep));
+});
 
 /* **** EXTERNALS **** */
 
