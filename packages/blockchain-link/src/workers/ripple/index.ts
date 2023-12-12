@@ -430,7 +430,8 @@ class RippleWorker extends BaseWorker<RippleAPI> {
     async tryConnect(url: string): Promise<RippleAPI> {
         const options: APIOptions = {
             server: url,
-            connectionTimeout: this.settings.timeout || DEFAULT_TIMEOUT,
+            timeout: this.settings.timeout || DEFAULT_TIMEOUT, // timeout is used for request and heartbeat (ping), see node_modules/ripple-lib/dist/npm/common/connection.js
+            connectionTimeout: this.settings.timeout || DEFAULT_TIMEOUT, // connectionTimeout is used only for connection
         };
         // proxy agent is available only in suite because of the patch.
         // it will fail in standalone trezor-connect implementation where this patch is not present.
