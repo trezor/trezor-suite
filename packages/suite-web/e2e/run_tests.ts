@@ -46,8 +46,8 @@ const grepForValue = (word: string, path: string) => {
     return res.stdout.replace(`// ${word}=`, '');
 };
 
-const getTestFiles = (): string[] => {
-    const { group } = argv;
+const getTestFiles = async (): Promise<string[]> => {
+    const { group } = await argv;
     let command;
     if (group) {
         // for arrays
@@ -91,14 +91,16 @@ const runTests = async () => {
         throw new Error('CYPRESS_TEST_URLS is not set');
     }
 
-    const { group } = argv;
+    const { group } = await argv;
 
     if (!TRACK_SUITE_URL || CYPRESS_updateSnapshots) {
         console.log(
             '[run_tests.js] TRACK_SUITE_URL env not specified or CYPRESS_updateSnapshots is set. No logs will be uploaded',
         );
     }
-    const finalTestFiles = getTestFiles().sort((a: string, b: string) => a.localeCompare(b));
+    const finalTestFiles = (await getTestFiles()).sort((a: string, b: string) =>
+        a.localeCompare(b),
+    );
 
     if (!finalTestFiles.length) {
         console.log('[run_tests.js] nothing to test!');
