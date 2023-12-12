@@ -52,19 +52,24 @@ const ReceiveModalScreenSubHeader = ({ accountKey, tokenContract }: ScreenSubHea
         return unsubscribe;
     }, [navigation]);
 
-    const iconName = tokenContract ?? networkSymbol;
-    const coinSymbol = (ethereumTokenSymbol ?? networkSymbol)?.toUpperCase();
-
     return (
         <ScreenSubHeader
             content={
                 <>
                     <Text variant="highlight">
-                        <Translation id="moduleReceive.screenTitle" values={{ coinSymbol }} />
+                        <Translation
+                            id="moduleReceive.screenTitle"
+                            values={{ coinSymbol: networkSymbol?.toUpperCase() }}
+                        />
                     </Text>
                     <HStack spacing="small" alignItems="center">
-                        {iconName && <CryptoIcon symbol={iconName} size="extraSmall" />}
-                        {accountLabel && <Text variant="highlight">{accountLabel}</Text>}
+                        {networkSymbol && <CryptoIcon symbol={networkSymbol} size="extraSmall" />}
+                        {accountLabel && (
+                            <Text variant="highlight">
+                                {accountLabel}
+                                {ethereumTokenSymbol && ` - ${ethereumTokenSymbol}`}
+                            </Text>
+                        )}
                     </HStack>
                 </>
             }
