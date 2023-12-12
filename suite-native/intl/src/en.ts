@@ -200,22 +200,22 @@ export const en = {
                     'For an extra layer of security, use Trezor Suite with your Trezor hardware wallet to verify the receive address',
             },
             deviceHint: {
-                description: 'This receive address should match the one on your Trezor device.',
+                description: 'This receive address should match the one\non your Trezor device.',
             },
             showAddress: {
-                button: 'Show address',
+                button: 'Show full address',
                 learnMore: 'Learn more about verifying addresses',
             },
         },
         bottomSheets: {
             verificationWalkthrough: {
                 title: {
-                    step1: 'How to verify address',
-                    step2: 'Why verify on your Trezor',
+                    step1: 'What should I do next?',
+                    step2: 'Why is it important?',
                 },
                 description: {
-                    step1: 'Confirm that the address on your Trezor device matches the one on your mobile device.',
-                    step2: 'Your Trezor never lies. Mobile devices are vulnerable to hacks and malicious apps.',
+                    step1: 'Confirm that the address on your Trezor display matches the one on the following screen.',
+                    step2: 'No one can hack the Trezor device and change what the display is showing you.',
                 },
                 dontShowAgainButton: 'Don’t show again and continue',
             },
@@ -243,6 +243,81 @@ export const en = {
             supportCard: {
                 title: 'Need more help?',
                 contact: 'Contact support',
+            },
+            usbEnabled: {
+                0: {
+                    question: 'Can I connect my Trezor to Trezor Suite Lite?',
+                    answer: 'Yes, you can connect your Trezor Hardware Wallet and use limited functionality. It is designed to work as a companion to the desktop/web version of Trezor Suite, but we will gradually add more features to make it a standalone application to manage your crypto funds with Trezor Hardware Wallet.',
+                },
+                1: {
+                    question:
+                        'What is the difference between Portfolio Tracker and Connected Trezor functionality?',
+                    answer: 'Portfolio Tracker helps you stay in touch with your portfolio balances without having to connect your Trezor device. Simply sync your coin addresses and you can keep track of your balances on the go. You can also combine coin addresses from multiple wallets or Trezor devices to track your whole portfolio in one place. Connected Trezor allows you to manage your funds associated with your Trezor device. You can verify receive addresses and check your balances and transactions. However, if you disconnect the Trezor, you will no longer see the data from the Trezor device.',
+                },
+                2: {
+                    question: 'What is public key? (XPUB) or a receive address?',
+                    answer: 'An XPUB is a master public key for hierarchical deterministic wallets like bitcoin, generating multiple child keys and receive addresses for improved privacy. Ethereum uses a single, unchanging address for all transactions. For Ethereum, share only your address, while keeping your private key secure.',
+                },
+                3: {
+                    question: 'My Trezor device can’t connect',
+                    answer: {
+                        0: 'Reconnect your Trezor',
+                        1: 'Use a different USB data cable',
+                        2: 'Use a different mobile device',
+                        3: 'Confirm connection via mobile device system message',
+                    },
+                },
+                4: {
+                    question: 'What version of Trezor device Firmware Trezor Suite Lite supports?',
+                    answer: {
+                        0: 'Trezor One: from version 1.12.1',
+                        1: 'Trezor T: from version 2.6.3',
+                        2: 'Trezor Safe 3: from version 2.6.3',
+                    },
+                },
+                5: {
+                    question: 'Why don’t I see my coin listed?',
+                    answer: 'Trezor Suite Lite currently supports a limited number of cryptocurrencies. If your coin is not listed, it may not be compatible with the app. However, Trezor regularly adds support for new coins, so check back periodically to see which coins have been added.',
+                },
+                6: {
+                    question: 'What does the graph display?',
+                    answer: 'The graph in Trezor Suite Lite displays the price history of your portfolio’s synced assets over specified time period. You can adjust the time period by selecting a different range on the bottom of the graph.',
+                },
+                7: {
+                    question: 'Are my data safe?',
+                    answer: 'Yes, the mobile app does not store any private keys or sensitive information on your mobile device. This means that even if your phone is lost or stolen, your cryptocurrency assets are still safe and protected.',
+                },
+            },
+            usbDisabled: {
+                0: {
+                    question: 'What is public key? (XPUB) or a receive address?',
+                    answer: 'An XPUB is a master public key for hierarchical deterministic wallets like bitcoin, generating multiple child keys and receive addresses for improved privacy. Ethereum uses a single, unchanging address for all transactions. For Ethereum, share only your address, while keeping your private key secure.',
+                },
+                1: {
+                    question: 'Can I connect my Trezor to Trezor Suite Lite?',
+                    answer: 'No, it is not possible. It is designed to work as a companion to the desktop/web version of Trezor Suite as a way to keep up with your Trezor portfolio on the go.',
+                },
+                2: {
+                    question: 'How do I send crypto in Trezor Suite Lite?',
+                    answer: 'Trezor Suite Lite is a watch-only portfolio tracker, which means it is designed to help you monitor your cryptocurrency holdings and transactions. Unfortunately, it is not currently possible to send crypto using Trezor Suite Lite. To send crypto, use the full version of Trezor Suite with your Trezor hardware wallet. This will provide you with the necessary security and functionality to manage and perform transactions with your cryptocurrencies.',
+                },
+                3: {
+                    question: 'Why don’t I see my coin listed?',
+                    answer: 'Trezor Suite Lite currently supports a limited number of cryptocurrencies. If your coin is not listed, it may not be compatible with the app. However, Trezor regularly adds support for new coins, so check back periodically to see which coins have been added.',
+                },
+                4: {
+                    question: 'What does the graph display?',
+                    answer: 'The graph in Trezor Suite Lite displays the price history of your portfolio’s synced assets over specified time period. You can adjust the time period by selecting a different range on the bottom of the graph.',
+                },
+                5: {
+                    question:
+                        'Why is the balance displayed in Trezor Suite different from the balance displayed in Trezor Suite Lite?',
+                    answer: 'Balances may mismatch due to improper syncing of all assets and account types, or pending transactions. Ensure you have synced all your assets correctly and check for any pending transactions to resolve the discrepancy.',
+                },
+                6: {
+                    question: 'Are my data safe?',
+                    answer: 'Yes, the mobile app does not store any private keys or sensitive information on your mobile device. This means that even if your phone is lost or stolen, your cryptocurrency assets are still safe and protected.',
+                },
             },
         },
         localizations: {
@@ -310,7 +385,7 @@ export const en = {
                 },
             },
             helpSwitchTitle: 'Help us anonymously',
-            learnMore: '<securityLink>More</securityLink> about security',
+            learnMore: '<securityLink>More</securityLink> about privacy',
         },
     },
     moduleAccounts: {

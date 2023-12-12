@@ -1,56 +1,134 @@
-import { Fragment, ReactNode } from 'react';
+import { Fragment } from 'react';
+import { FlatList } from 'react-native';
 
-import { AccordionItem, Text, VStack } from '@suite-native/atoms';
-import { Link } from '@suite-native/link';
+import { AccordionItem, Box, Text, VStack } from '@suite-native/atoms';
+import { useIsUsbDeviceConnectFeatureEnabled } from '@suite-native/feature-flags';
+import { useTranslate } from '@suite-native/intl';
 
-type FAQ = {
-    question: string;
-    answer: ReactNode;
+type BulletListProps = {
+    texts: string[];
 };
 
-const faqMap: FAQ[] = [
-    {
-        question: 'What is a public key (XPUB) or a receive address?',
-        answer: 'An XPUB is a master public key for hierarchical deterministic wallets like bitcoin, generating multiple child keys and receive addresses for improved privacy. Ethereum uses a single, unchanging address for all transactions. Sharing your XPUB is discouraged as it reveals all bitcoin addresses and transactions. For Ethereum, share only your address, while keeping your private key secure.',
-    },
-    {
-        question: 'How do I send crypto in Trezor Suite Lite?',
-        answer: (
-            <Text variant="label">
-                Trezor Suite Lite is a watch-only portfolio tracker, which means it is designed to
-                help you monitor your cryptocurrency holdings and transactions. Unfortunately, it is
-                not currently possible to send crypto using Trezor Suite Lite. To send crypto, use
-                the full version of{' '}
-                <Link
-                    href="https://trezor.io/learn/a/get-to-know-the-trezor-suite-app"
-                    label="Trezor Suite"
-                />{' '}
-                with your Trezor hardware wallet. This will provide you with the necessary security
-                and functionality to manage and perform transactions with your cryptocurrencies.
-            </Text>
-        ),
-    },
-    {
-        question: 'Why don’t I see my coin listed?',
-        answer: 'Trezor Suite Lite currently supports a limited number of cryptocurrencies. If your coin is not listed, it may not be compatible with the app. However, Trezor regularly adds support for new coins, so check back periodically to see which coins have been added.',
-    },
-    {
-        question: 'What does the graph display?',
-        answer: 'The graph in Trezor Suite Lite displays the price history of your portfolio’s synced assets over a specified time period. You can adjust the time period by selecting a different range on the bottom of the graph.',
-    },
-    {
-        question:
-            'Why is the balance displayed in Trezor Suite different from the balance displayed in Trezor Suite Lite?',
-        answer: 'Balances may mismatch due to improper syncing of all assets and account types, or pending transactions. Ensure you have synced all your assets correctly and check for any pending transactions to resolve the discrepancy.',
-    },
-];
+const BulletList = ({ texts }: BulletListProps) => {
+    const data = texts.map(text => ({ key: text }));
+    return (
+        <FlatList
+            data={data}
+            renderItem={({ item }) => (
+                <Box flexDirection="row">
+                    <Text variant="label"> • </Text>
+                    <Text variant="label">{item.key}</Text>
+                </Box>
+            )}
+        />
+    );
+};
 
-export const FAQInfoPanel = () => (
-    <VStack marginHorizontal="medium">
-        {faqMap.map(({ question, answer }) => (
-            <Fragment key={question}>
-                <AccordionItem title={question} content={answer} />
-            </Fragment>
-        ))}
-    </VStack>
-);
+type QuestionItemProps = {
+    question: string;
+    answer: string | string[];
+};
+
+const QuestionItem = ({ question, answer }: QuestionItemProps) => {
+    const txt = typeof answer === 'string' ? answer : <BulletList texts={answer} />;
+    return (
+        <Fragment key={question}>
+            <AccordionItem title={question} content={txt} />
+        </Fragment>
+    );
+};
+
+const EnabledUsbFAQ = () => {
+    const { translate } = useTranslate();
+    return (
+        <>
+            <QuestionItem
+                question={translate('moduleSettings.faq.usbEnabled.0.question')}
+                answer={translate('moduleSettings.faq.usbEnabled.0.answer')}
+            />
+            <QuestionItem
+                question={translate('moduleSettings.faq.usbEnabled.1.question')}
+                answer={translate('moduleSettings.faq.usbEnabled.1.answer')}
+            />
+            <QuestionItem
+                question={translate('moduleSettings.faq.usbEnabled.2.question')}
+                answer={translate('moduleSettings.faq.usbEnabled.2.answer')}
+            />
+            <QuestionItem
+                question={translate('moduleSettings.faq.usbEnabled.3.question')}
+                answer={[
+                    translate('moduleSettings.faq.usbEnabled.3.answer.0'),
+                    translate('moduleSettings.faq.usbEnabled.3.answer.1'),
+                    translate('moduleSettings.faq.usbEnabled.3.answer.2'),
+                    translate('moduleSettings.faq.usbEnabled.3.answer.3'),
+                ]}
+            />
+            <QuestionItem
+                question={translate('moduleSettings.faq.usbEnabled.4.question')}
+                answer={[
+                    translate('moduleSettings.faq.usbEnabled.4.answer.0'),
+                    translate('moduleSettings.faq.usbEnabled.4.answer.1'),
+                    translate('moduleSettings.faq.usbEnabled.4.answer.2'),
+                ]}
+            />
+            <QuestionItem
+                question={translate('moduleSettings.faq.usbEnabled.5.question')}
+                answer={translate('moduleSettings.faq.usbEnabled.5.answer')}
+            />
+            <QuestionItem
+                question={translate('moduleSettings.faq.usbEnabled.6.question')}
+                answer={translate('moduleSettings.faq.usbEnabled.6.answer')}
+            />
+            <QuestionItem
+                question={translate('moduleSettings.faq.usbEnabled.7.question')}
+                answer={translate('moduleSettings.faq.usbEnabled.7.answer')}
+            />
+        </>
+    );
+};
+
+const DisabledUsbFAQ = () => {
+    const { translate } = useTranslate();
+    return (
+        <>
+            <QuestionItem
+                question={translate('moduleSettings.faq.usbDisabled.0.question')}
+                answer={translate('moduleSettings.faq.usbDisabled.0.answer')}
+            />
+            <QuestionItem
+                question={translate('moduleSettings.faq.usbDisabled.1.question')}
+                answer={translate('moduleSettings.faq.usbDisabled.1.answer')}
+            />
+            <QuestionItem
+                question={translate('moduleSettings.faq.usbDisabled.2.question')}
+                answer={translate('moduleSettings.faq.usbDisabled.2.answer')}
+            />
+            <QuestionItem
+                question={translate('moduleSettings.faq.usbDisabled.3.question')}
+                answer={translate('moduleSettings.faq.usbDisabled.3.answer')}
+            />
+            <QuestionItem
+                question={translate('moduleSettings.faq.usbDisabled.4.question')}
+                answer={translate('moduleSettings.faq.usbDisabled.4.answer')}
+            />
+            <QuestionItem
+                question={translate('moduleSettings.faq.usbDisabled.5.question')}
+                answer={translate('moduleSettings.faq.usbDisabled.5.answer')}
+            />
+            <QuestionItem
+                question={translate('moduleSettings.faq.usbDisabled.6.question')}
+                answer={translate('moduleSettings.faq.usbDisabled.6.answer')}
+            />
+        </>
+    );
+};
+
+export const FAQInfoPanel = () => {
+    const { isUsbDeviceConnectFeatureEnabled } = useIsUsbDeviceConnectFeatureEnabled();
+
+    return (
+        <VStack marginHorizontal="medium">
+            {isUsbDeviceConnectFeatureEnabled ? <EnabledUsbFAQ /> : <DisabledUsbFAQ />}
+        </VStack>
+    );
+};

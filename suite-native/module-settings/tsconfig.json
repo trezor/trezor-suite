@@ -17,6 +17,7 @@
         { "path": "../biometrics" },
         { "path": "../config" },
         { "path": "../device-manager" },
+        { "path": "../feature-flags" },
         { "path": "../intl" },
         { "path": "../link" },
         { "path": "../navigation" },
