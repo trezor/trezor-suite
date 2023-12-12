@@ -62,5 +62,8 @@
         "webpack-merge": "^5.10.0",
         "webpack-plugin-serve": "^1.6.0",
         "xvfb-maybe": "^0.2.1"
+    },
+    "peerDependencies": {
+        "tslib": "^2.6.2"
     }
 }

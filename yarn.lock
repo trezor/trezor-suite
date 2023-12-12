@@ -8268,6 +8268,8 @@ __metadata:
     "@trezor/utils": "workspace:*"
     jest: "npm:29.5.0"
     typescript: "npm:5.3.2"
+  peerDependencies:
+    tslib: ^2.6.2
   languageName: unknown
   linkType: soft
 
@@ -8313,6 +8315,8 @@ __metadata:
     rimraf: "npm:^5.0.5"
     tsx: "npm:^4.6.2"
     typescript: "npm:5.3.2"
+  peerDependencies:
+    tslib: ^2.6.2
   languageName: unknown
   linkType: soft
 
@@ -8345,6 +8349,8 @@ __metadata:
     webpack-dev-server: "npm:^4.15.1"
     worker-loader: "npm:^3.0.8"
     ws: "npm:7.5.9"
+  peerDependencies:
+    tslib: ^2.6.2
   languageName: unknown
   linkType: soft
 
@@ -8422,6 +8428,8 @@ __metadata:
   dependencies:
     "@trezor/analytics": "workspace:*"
     typescript: "npm:5.3.2"
+  peerDependencies:
+    tslib: ^2.6.2
   languageName: unknown
   linkType: soft
 
@@ -8435,6 +8443,8 @@ __metadata:
     rimraf: "npm:^5.0.5"
     tsx: "npm:^4.6.2"
     typescript: "npm:5.3.2"
+  peerDependencies:
+    tslib: ^2.6.2
   languageName: unknown
   linkType: soft
 
@@ -8533,6 +8543,7 @@ __metadata:
     typescript: "npm:5.3.2"
   peerDependencies:
     "@metamask/eth-sig-util": ^7.0.0
+    tslib: ^2.6.2
   languageName: unknown
   linkType: soft
 
@@ -8549,6 +8560,7 @@ __metadata:
   peerDependencies:
     "@trezor/connect": 9.x.x
     stellar-sdk: ^v11.0.0-beta.3
+    tslib: ^2.6.2
   languageName: unknown
   linkType: soft
 
@@ -8644,6 +8656,8 @@ __metadata:
     webpack-merge: "npm:^5.10.0"
     webpack-plugin-serve: "npm:^1.6.0"
     xvfb-maybe: "npm:^0.2.1"
+  peerDependencies:
+    tslib: ^2.6.2
   languageName: unknown
   linkType: soft
 
@@ -8672,6 +8686,8 @@ __metadata:
     webpack-merge: "npm:^5.9.0"
     webpack-plugin-serve: "npm:^1.6.0"
     xvfb-maybe: "npm:^0.2.1"
+  peerDependencies:
+    tslib: ^2.6.2
   languageName: unknown
   linkType: soft
 
@@ -8769,6 +8785,7 @@ __metadata:
     expo-localization: ^14.1.1
     react-native: 0.71.8
     react-native-config: ^1.5.0
+    tslib: ^2.6.2
   peerDependenciesMeta:
     expo-localization:
       optional: true
@@ -8806,6 +8823,8 @@ __metadata:
     rimraf: "npm:^5.0.5"
     tsx: "npm:^4.6.2"
     typescript: "npm:5.3.2"
+  peerDependencies:
+    tslib: ^2.6.2
   languageName: unknown
   linkType: soft
 
@@ -8818,6 +8837,8 @@ __metadata:
     rimraf: "npm:^5.0.5"
     tsx: "npm:^4.6.2"
     typescript: "npm:5.3.2"
+  peerDependencies:
+    tslib: ^2.6.2
   languageName: unknown
   linkType: soft
 
@@ -9423,6 +9444,8 @@ __metadata:
     tsx: "npm:^4.6.2"
     typescript: "npm:5.3.2"
     usb: "npm:^2.11.0"
+  peerDependencies:
+    tslib: ^2.6.2
   languageName: unknown
   linkType: soft
 
@@ -9463,6 +9486,8 @@ __metadata:
     rimraf: "npm:^5.0.5"
     tsx: "npm:^4.6.2"
     typescript: "npm:5.3.2"
+  peerDependencies:
+    tslib: ^2.6.2
   languageName: unknown
   linkType: soft
 
@@ -9499,6 +9524,8 @@ __metadata:
     typescript: "npm:5.3.2"
     varuint-bitcoin: "npm:^1.1.2"
     wif: "npm:^4.0.0"
+  peerDependencies:
+    tslib: ^2.6.2
   languageName: unknown
   linkType: soft
 
