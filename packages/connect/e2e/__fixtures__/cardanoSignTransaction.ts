@@ -660,6 +660,7 @@ export default {
                 protocolMagic: PROTOCOL_MAGICS.mainnet,
                 networkId: NETWORK_IDS.mainnet,
                 signingMode: CardanoTxSigningMode.ORDINARY_TRANSACTION,
+                tagCborSets: false,
             },
             result: {
                 hash: 'e200b2c91f3493a1f3b9cfc8b6c141f70181741025e53941e9d57d22b1470c5c',
@@ -676,6 +677,42 @@ export default {
                         pubKey: 'bc65be1b0b9d7531778a1317c2aa6de936963c3f9ac7d5ee9e9eda25e0c97c5e',
                         signature:
                             'dca542910d0362fc22744e7a24732343db4e013495a7d9b47562886f09af8eb56ecaa105e20a9df3e4248fdab61dd91b6fb2a3bfc15d0d9a0442671c07e1ba02',
+                        chainCode: null,
+                    },
+                ],
+                auxiliaryDataSupplement: undefined,
+            },
+            legacyResults: [legacyResults.beforeConway],
+        },
+
+        {
+            description: 'signStakeRegistrationConwayWith258TaggedSets',
+            params: {
+                inputs: [SAMPLE_INPUTS.shelley_input],
+                outputs: [SAMPLE_OUTPUTS.simple_shelley_output],
+                fee: FEE,
+                ttl: TTL,
+                certificates: [SAMPLE_CERTIFICATES.stake_registration_conway],
+                protocolMagic: PROTOCOL_MAGICS.mainnet,
+                networkId: NETWORK_IDS.mainnet,
+                signingMode: CardanoTxSigningMode.ORDINARY_TRANSACTION,
+                tagCborSets: true,
+            },
+            result: {
+                hash: '5e27f8fba938603411452a8cb373462fb64305539573b7a9edc9155be5cd6473',
+                witnesses: [
+                    {
+                        type: 1,
+                        pubKey: '5d010cf16fdeff40955633d6c565f3844a288a24967cf6b76acbeb271b4f13c1',
+                        signature:
+                            '13c136487d8048ab7bbb081a324aa6b999e0b3237f956503b5446a4c409ec1062091b82e9e5459dee7ab0ba67ed874692d788872c8bbdb5ad4a3975c465fea09',
+                        chainCode: null,
+                    },
+                    {
+                        type: 1,
+                        pubKey: 'bc65be1b0b9d7531778a1317c2aa6de936963c3f9ac7d5ee9e9eda25e0c97c5e',
+                        signature:
+                            'f0674db7194d8e04d7df416af8ad9dcf1b1203ca4b78f14c1e394d47418c8f7e95fd41a8f01c43eeeb39df6264359c865a41621fc1e6b540819b25c7c4df5803',
                         chainCode: null,
                     },
                 ],
@@ -2422,6 +2459,56 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
+        },
+
+        {
+            description: 'plutusWithRequiredSignersAndReferenceInputAnd258TaggedSets',
+            params: {
+                inputs: [SAMPLE_INPUTS.shelley_input],
+                outputs: [SAMPLE_OUTPUTS.simple_shelley_output],
+                fee: FEE,
+                ttl: TTL,
+                protocolMagic: PROTOCOL_MAGICS.mainnet,
+                networkId: NETWORK_IDS.mainnet,
+                signingMode: CardanoTxSigningMode.PLUTUS_TRANSACTION,
+                scriptDataHash: SCRIPT_DATA_HASH,
+                collateralInputs: [SAMPLE_INPUTS.shelley_input_2],
+                requiredSigners: [
+                    { keyPath: "m/1852'/1815'/0'/0/0" },
+                    { keyPath: "m/1854'/1815'/0'/0/0" },
+                    { keyHash: '3a7f09d3df4cf66a7399c2b05bfa234d5a29560c311fc5db4c490711' },
+                ],
+                referenceInput: [SAMPLE_INPUTS.plutus_input],
+                tagCborSets: true,
+            },
+            result: {
+                hash: 'eee852948723773f059bbbc9f4378473e339a62ec518ac3aeb8ecdf27abf8581',
+                witnesses: [
+                    {
+                        type: 1,
+                        pubKey: '5d010cf16fdeff40955633d6c565f3844a288a24967cf6b76acbeb271b4f13c1',
+                        signature:
+                            'ccf25b4926d4ea953f9330196f881ec6974b3979a05fd679e846eb0fd90f5e5d64cdba51fad9354a50343a29c09dfda8177fd1717ca8d105c9d923a31071b909',
+                        chainCode: null,
+                    },
+                    {
+                        type: 1,
+                        pubKey: '36a8ef21d5b98fdf23a27325cf643deaac35e912c835e35037f23d1061ae5b16',
+                        signature:
+                            '39231ff0df125987c5a7583f307d74d3bdcb9702baafc8588aa16002d19d595725da64518603bb0617bfba851fe96f0cf75c19d75b0749443e09fdc8aebb4603',
+                        chainCode: null,
+                    },
+                    {
+                        type: 1,
+                        pubKey: 'b10be5c0d11ad8292bbe69e220ca0cfbe154610b3041a8e72f9d515c226ab3b1',
+                        signature:
+                            'e78e5a21c07ed5f613d01d20f9684a3b807b30ca211f69a2a0391ab3137d3b1260c51bdf08079e213e2487f3b8c36d6b42d7d15733113cf725ca3f162f030001',
+                        chainCode: null,
+                    },
+                ],
+                auxiliaryDataSupplement: undefined,
+            },
+            legacyResults: [legacyResults.beforeConway],
         },
 
         {

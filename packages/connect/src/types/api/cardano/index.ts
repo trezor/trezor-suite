@@ -262,6 +262,7 @@ export const CardanoSignTransaction = Type.Object({
     derivationType: Type.Optional(PROTO.EnumCardanoDerivationType),
     includeNetworkId: Type.Optional(Type.Boolean()),
     chunkify: Type.Optional(Type.Boolean()),
+    tagCborSets: Type.Optional(Type.Boolean()),
 });
 
 export type CardanoSignTransactionExtended = Static<typeof CardanoSignTransactionExtended>;
