@@ -329,8 +329,8 @@ const subscribeAccounts = async (
                     },
                 },
             });
-            state.addAccounts([{ ...a, subscriptionId }]);
         });
+        state.addAccounts([{ ...a, subscriptionId }]);
     });
     return { subscribed: true };
 };
@@ -433,6 +433,20 @@ class SolanaWorker extends BaseWorker<SolanaAPI> {
     }
 
     disconnect(): void {
+        if (!this.api) {
+            return;
+        }
+
+        this.state.accounts.forEach(
+            a => a.subscriptionId && this.api?.removeAccountChangeListener(a.subscriptionId),
+        );
+
+        if (this.state.getSubscription('block')) {
+            const interval = this.state.getSubscription('block') as NodeJS.Timer;
+            clearInterval(interval);
+            this.state.removeSubscription('block');
+        }
+
         this.api = undefined;
     }
 }
