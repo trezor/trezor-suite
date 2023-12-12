@@ -31,9 +31,10 @@ const NetworksWrapper = styled.div`
     gap: ${spacingsPx.md};
 `;
 
-const StyledCoinLogo = styled(CoinLogo)`
-    margin: 0 ${spacingsPx.xxs} ${spacingsPx.xxs} 0;
-    vertical-align: middle;
+const CoinLogoWrapper = styled.span`
+    display: inline;
+    margin-right: ${spacingsPx.xxs};
+    vertical-align: text-top;
 `;
 
 const StyledCollapsibleBox = styled(CollapsibleBox)`
@@ -183,7 +184,9 @@ export const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: AddAcc
                           values={{
                               network: (
                                   <>
-                                      <StyledCoinLogo size={24} symbol={selectedNetwork.symbol} />
+                                      <CoinLogoWrapper>
+                                          <CoinLogo size={24} symbol={selectedNetwork.symbol} />
+                                      </CoinLogoWrapper>
                                       {selectedNetwork.name}
                                   </>
                               ),
@@ -202,6 +205,7 @@ export const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: AddAcc
               }
             : {
                   heading: <Translation id="TR_ADD_ACCOUNT" />,
+                  headingSize: 'large',
                   children: (
                       <>
                           <NetworksWrapper>
@@ -238,7 +242,6 @@ export const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: AddAcc
         <StyledModal
             isCancelable
             onCancel={onCancel}
-            headingSize="large"
             bottomBarComponents={
                 selectedNetwork &&
                 (isSelectedNetworkEnabled ? (
