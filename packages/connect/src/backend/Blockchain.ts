@@ -83,6 +83,7 @@ export class Blockchain {
             server,
             debug: options.debug,
             proxy: options.proxy,
+            ...(blockchainLink.type === 'ripple' ? { throttleBlockEvent: 60 * 1000 } : {}),
         });
     }
 
