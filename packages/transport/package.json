@@ -63,5 +63,8 @@
         "long": "^4.0.0",
         "protobufjs": "7.2.5",
         "usb": "^2.11.0"
+    },
+    "peerDependencies": {
+        "tslib": "^2.6.2"
     }
 }

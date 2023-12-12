@@ -24,7 +24,8 @@
     ],
     "peerDependencies": {
         "@trezor/connect": "9.x.x",
-        "stellar-sdk": "^v11.0.0-beta.3"
+        "stellar-sdk": "^v11.0.0-beta.3",
+        "tslib": "^2.6.2"
     },
     "devDependencies": {
         "jest": "29.5.0",
