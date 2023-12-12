@@ -18,6 +18,7 @@ import { RenderingUtils } from '../components/RenderingUtils';
 import { CopyLogsButton } from '../components/CopyLogsButton';
 import { FeatureFlags } from '../components/FeatureFlags';
 import { TestnetsToggle } from '../components/TestnetsToggle';
+import { VerifyDeviceAuthenticity } from '../components/VerifyDeviceAuthenticity';
 
 export const DevUtilsScreen = ({
     navigation,
@@ -30,6 +31,7 @@ export const DevUtilsScreen = ({
                 <Card>
                     <VStack spacing="medium">
                         {!isDebugEnv() && <BuildInfo />}
+                        <VerifyDeviceAuthenticity />
                         {isDebugEnv() && (
                             <Button onPress={() => navigation.navigate(DevUtilsStackRoutes.Demo)}>
                                 See Component Demo

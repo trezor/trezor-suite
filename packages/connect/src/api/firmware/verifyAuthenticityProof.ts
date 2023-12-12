@@ -5,6 +5,7 @@ import { PROTO } from '../../constants';
 import { DeviceAuthenticityConfig } from '../../data/deviceAuthenticityConfig';
 import { AuthenticateDeviceResult } from '../../types/api/authenticateDevice';
 import { parseCertificate, fixSignature } from './x509certificate';
+import quickCrypto from 'react-native-quick-crypto';
 
 // There is incomparability in results between nodejs and window SubtleCrypto api.
 // window.crypto.subtle.importKey (CryptoKey) cannot be used by `crypto-browserify`.Verify
@@ -16,12 +17,14 @@ const verifySignature = async (rawKey: Buffer, data: Uint8Array, signature: Uint
     // use native SubtleCrypto api.
     // Unfortunately `crypto-browserify`.subtle polyfill is missing so needs to be referenced directly from window object (if exists)
     // https://github.com/browserify/crypto-browserify/issues/221
-    const SubtleCrypto = typeof window !== 'undefined' ? window.crypto.subtle : crypto.subtle;
+    const SubtleCrypto = quickCrypto.subtle;
+    console.log(1, SubtleCrypto);
     if (!SubtleCrypto) {
         throw new Error('SubtleCrypto not supported');
     }
 
     // get ECDSA P-256 (secp256r1) key from RAW key
+    console.log(2, rawKey);
     const ecPubKey = await SubtleCrypto.importKey(
         'raw',
         rawKey,
@@ -30,13 +33,19 @@ const verifySignature = async (rawKey: Buffer, data: Uint8Array, signature: Uint
         ['verify'],
     );
 
+    console.log(3, ecPubKey);
+
     // export ECDSA key as spki
     const spkiPubKey = await SubtleCrypto.exportKey('spki', ecPubKey);
+
+    console.log(4, spkiPubKey);
 
     // create PEM from spki
     const key = `-----BEGIN PUBLIC KEY-----\n${Buffer.from(spkiPubKey).toString(
         'base64',
     )}\n-----END PUBLIC KEY-----`;
+
+    console.log(5, key);
 
     // verify using PEM key
     return signer.verify({ key }, Buffer.from(signature));
@@ -49,7 +58,7 @@ interface AuthenticityProofData extends PROTO.AuthenticityProof {
     deviceModel: keyof typeof PROTO.DeviceModelInternal; // Device.features.internal_model
 }
 
-export const getRandomChallenge = () => crypto.randomBytes(32);
+export const getRandomChallenge = () => Buffer.from(quickCrypto.randomBytes(32));
 
 export const verifyAuthenticityProof = async ({
     certificates,

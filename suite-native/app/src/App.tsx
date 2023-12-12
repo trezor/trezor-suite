@@ -59,6 +59,8 @@ wrappedMethods.forEach(key => {
     };
 });
 
+console.log(crypto);
+
 const AppComponent = () => {
     const dispatch = useDispatch();
     const formattersConfig = useFormattersConfig();
