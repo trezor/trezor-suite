@@ -96,7 +96,7 @@ class AccountsPage {
         cy.getTestElement(`@wallet/accounts/export-transactions/${typeOfExport}`)
             .should('be.visible')
             .click({
-                scrollBehavior: false,
+                scrollBehavior: 'center',
             });
     }
 }
