@@ -6,6 +6,7 @@ const Container = styled.div`
     display: flex;
     flex: 1;
     padding-bottom: ${spacingsPx.md};
+    justify-content: space-between;
 
     :not(:first-child) {
         padding-top: ${spacingsPx.md};

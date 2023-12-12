@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-import { Select, variables, Button } from '@trezor/components';
+import { Select, variables, Button, SelectProps, ButtonProps } from '@trezor/components';
 
 const { SCREEN_SIZE } = variables;
 
@@ -16,7 +16,7 @@ export const ActionColumn = styled.div`
     }
 `;
 
-export const ActionSelect = styled(Select)`
+export const ActionSelect = styled((props: SelectProps) => <Select {...props} size="small" />)`
     width: 170px;
     margin: 4px 0 4px 4px;
 
@@ -30,8 +30,8 @@ export const ActionSelect = styled(Select)`
     }
 `;
 
-export const ActionButton = styled(Button)<{ isDisabled?: boolean }>`
-    min-width: 170px;
+export const ActionButton = styled((props: ButtonProps) => <Button {...props} size="small" />)`
+    min-width: 140px;
     margin: 4px 0 4px 4px;
 
     &:not(:first-child) {
