@@ -21,6 +21,12 @@ jest.mock('src/actions/suite/routerActions', () => ({
 // render only Translation['id']
 jest.mock('src/components/suite/Translation', () => ({ Translation: ({ id }: any) => id }));
 
+// since we are NOT(!) mocking @trezor/connect it fetch real bridge at init
+jest.mock('cross-fetch', () => ({
+    __esModule: true,
+    default: () => Promise.resolve({ ok: false }),
+}));
+
 // TrezorConnect.composeTransaction is trying to connect to blockchain, to get current block height.
 // Mock whole module to avoid internet connection.
 jest.mock('@trezor/blockchain-link', () => ({
