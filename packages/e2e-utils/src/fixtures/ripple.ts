@@ -66,4 +66,5 @@ export const ripple = {
         error_code: 29,
         error_message: 'Transaction not found.',
     },
+    ping: { status: 'success', type: 'response', result: {} },
 };
