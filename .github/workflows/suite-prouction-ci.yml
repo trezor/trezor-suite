@@ -5,7 +5,7 @@ on:
     branches:
       - desktop-github-workflows
 env:
-  IS_CODESIGN_BUILD: "true"
+  #IS_CODESIGN_BUILD: "true"
   DESKTOP_APP_NAME: "Trezor-Suite"
   ASSET_PREFIX: /web
   STAGING_SUITE_SERVER_URL: "https://staging-suite.trezor.io"
@@ -26,12 +26,12 @@ jobs:
           - os: windows-latest
             platform: win
     steps:
-      - name: Checkout code
+      - name: Checkout code2
         uses: actions/checkout@v4
         with:
           lfs: true
       - name: Install node and yarn
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version-file: ".nvmrc"
 
