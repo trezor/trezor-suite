@@ -1,31 +1,44 @@
 import { ReactNode, ReactElement } from 'react';
 import styled, { useTheme } from 'styled-components';
-import { Card, variables, Paragraph, Icon, IconType } from '@trezor/components';
+import { Card as CardComponent, Paragraph, Icon, IconType, H3 } from '@trezor/components';
+import { spacings, spacingsPx } from '@trezor/theme';
+import { breakpointMediaQueries } from '@trezor/styles';
 
 const Wrapper = styled.div`
-    margin-bottom: 40px;
+    margin-bottom: ${spacingsPx.xxxl};
+    display: flex;
+
+    ${breakpointMediaQueries.below_lg} {
+        display: block;
+    }
+`;
+const Card = styled(CardComponent)`
+    flex: 1;
 `;
 
 const Header = styled.div`
-    padding: 4px 12px 12px 0;
-    margin-bottom: 12px;
+    min-width: 250px;
+    max-width: 270px;
+    margin-right: ${spacingsPx.xxxl};
+    margin-bottom: ${spacingsPx.xs};
+    ${breakpointMediaQueries.below_lg} {
+        margin-bottom: ${spacingsPx.md};
+    }
 `;
 
 const Title = styled.div`
     display: flex;
     align-items: center;
-    font-size: ${variables.FONT_SIZE.TINY};
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    text-transform: uppercase;
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-`;
-
-const StyledIcon = styled(Icon)`
-    margin-right: 6px;
+    gap: ${spacingsPx.sm};
 `;
 
 const Description = styled(Paragraph)`
-    margin-top: 4px;
+    padding-left: ${spacings.xl + spacings.sm}px;
+    color: ${({ theme }) => theme.textSubdued};
+
+    ${breakpointMediaQueries.below_lg} {
+        margin-bottom: ${spacingsPx.lg};
+    }
 `;
 
 interface SettingsSectionProps {
@@ -51,8 +64,8 @@ export const SettingsSection = ({
                 {!title && customHeader}
                 {title && !customHeader && (
                     <Title>
-                        {icon && <StyledIcon icon={icon} size={16} color={theme.TYPE_LIGHT_GREY} />}
-                        {title}
+                        {icon && <Icon icon={icon} size={24} color={theme.iconDefault} />}
+                        <H3>{title}</H3>
                     </Title>
                 )}
                 {description && !customHeader && (
@@ -60,7 +73,7 @@ export const SettingsSection = ({
                 )}
             </Header>
 
-            <Card paddingType="none">{children}</Card>
+            <Card paddingType="large">{children}</Card>
         </Wrapper>
     );
 };

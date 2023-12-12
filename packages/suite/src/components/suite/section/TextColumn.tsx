@@ -56,7 +56,7 @@ export const TextColumn = ({ title, description, buttonLink, buttonTitle }: Text
             <TrezorLink variant="nostyle" href={buttonLink}>
                 <ButtonLink
                     variant="tertiary"
-                    size="small"
+                    size="tiny"
                     icon="EXTERNAL_LINK"
                     iconAlignment="right"
                 >
