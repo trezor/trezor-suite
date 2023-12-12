@@ -6,7 +6,7 @@ const { testPathIgnorePatterns, ...baseConfig } = require('../../jest.config.bas
 
 module.exports = {
     ...baseConfig,
-    testMatch: ['**/tests/unit/**/*.ts'],
+    testMatch: ['**/tests/unit/**/*.test.ts'],
     collectCoverage: true,
     collectCoverageFrom: ['**/src/**/*.ts'],
     testPathIgnorePatterns: [
