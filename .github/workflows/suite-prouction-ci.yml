@@ -16,6 +16,7 @@ jobs:
     env:
       artifacts: ${DESKTOP_APP_NAME}*
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
         include:
@@ -46,7 +47,7 @@ jobs:
           more latest*.yml | cat
 
       - name: Upload suite-desktop production artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: suite-desktop-${{ matrix.platform }}-prod-artifacts
           path: |
