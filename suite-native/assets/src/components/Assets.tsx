@@ -15,12 +15,12 @@ import {
 } from '@suite-native/navigation';
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import { selectIsDeviceDiscoveryActive } from '@suite-common/wallet-core';
+import { calculateAssetsPercentage } from '@suite-common/assets';
 
 import { DiscoveryAssetsLoader } from './DiscoveryAssetsLoader';
-import { selectDeviceAssetsWithBalances } from '../assetsSelectors';
-import { calculateAssetsPercentage } from '../utils';
-import { AssetItem } from './AssetItem';
+import { selectDeviceAssetsWithBalances, AssetType } from '../assetsSelectors';
 import { NetworkAssetsBottomSheet } from './NetworkAssetsBottomSheet';
+import { AssetItem } from './AssetItem';
 
 type NavigationProp = TabToStackCompositeNavigationProp<
     AppTabsParamList,
@@ -37,7 +37,7 @@ export const Assets = () => {
     const [selectedAssetSymbol, setSelectedAssetSymbol] = useState<NetworkSymbol | null>(null);
 
     const assetsDataWithPercentage = useMemo(
-        () => calculateAssetsPercentage(deviceAssetsData),
+        () => calculateAssetsPercentage<AssetType>(deviceAssetsData),
         [deviceAssetsData],
     );
 

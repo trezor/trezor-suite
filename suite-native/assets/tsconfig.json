@@ -2,6 +2,7 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../../suite-common/assets" },
         { "path": "../../suite-common/icons" },
         {
             "path": "../../suite-common/suite-config"

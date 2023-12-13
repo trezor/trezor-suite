@@ -20,12 +20,7 @@ import { useDispatch } from 'react-redux';
 import { useAccountSearch, useLoadingSkeleton } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { AssetInfo, AssetInfoSkeleton } from './AssetInfo';
-
-type AssetCardProps = {
-    network: Network;
-    failed: boolean;
-    cryptoValue: string;
-};
+import { AssetFiatBalance } from '@suite-common/assets';
 
 const BuyContainer = styled.div`
     display: flex;
@@ -109,7 +104,21 @@ const FailedContainer = styled.div`
     }
 `;
 
-export const AssetCard = ({ network, failed, cryptoValue }: AssetCardProps) => {
+interface AssetCardProps {
+    network: Network;
+    failed: boolean;
+    cryptoValue: string;
+    assetsFiatBalances: AssetFiatBalance[];
+    index?: number;
+}
+
+export const AssetCard = ({
+    network,
+    failed,
+    cryptoValue,
+    assetsFiatBalances,
+    index,
+}: AssetCardProps) => {
     const { symbol } = network;
     const dispatch = useDispatch();
     const theme = useTheme();
@@ -135,7 +144,12 @@ export const AssetCard = ({ network, failed, cryptoValue }: AssetCardProps) => {
             <Card>
                 <MarginContainer>
                     <AssetContainer>
-                        <AssetInfo network={network} onClick={handleLogoClick} />
+                        <AssetInfo
+                            network={network}
+                            onClick={handleLogoClick}
+                            assetsFiatBalances={assetsFiatBalances}
+                            index={index}
+                        />
                     </AssetContainer>
                     {!failed ? (
                         <>

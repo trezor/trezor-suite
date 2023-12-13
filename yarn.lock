@@ -6704,6 +6704,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/assets@workspace:*, @suite-common/assets@workspace:suite-common/assets":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/assets@workspace:suite-common/assets"
+  dependencies:
+    "@suite-common/wallet-config": "workspace:*"
+    bignumber.js: "npm:^9.1.1"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/connect-init@workspace:*, @suite-common/connect-init@workspace:suite-common/connect-init":
   version: 0.0.0-use.local
   resolution: "@suite-common/connect-init@workspace:suite-common/connect-init"
@@ -7303,6 +7312,7 @@ __metadata:
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@react-navigation/native": "npm:6.1.9"
+    "@suite-common/assets": "workspace:*"
     "@suite-common/icons": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
@@ -9459,6 +9469,7 @@ __metadata:
     "@solana/buffer-layout": "npm:^4.0.1"
     "@solana/web3.js": "npm:^1.87.6"
     "@suite-common/analytics": "workspace:*"
+    "@suite-common/assets": "workspace:*"
     "@suite-common/connect-init": "workspace:*"
     "@suite-common/device-authenticity": "workspace:*"
     "@suite-common/fiat-services": "workspace:*"
