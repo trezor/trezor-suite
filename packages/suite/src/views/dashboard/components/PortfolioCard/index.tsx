@@ -141,18 +141,20 @@ const PortfolioCard = memo(() => {
             }
         >
             <StyledCard noPadding>
-                <Header
-                    showGraphControls={showGraphControls}
-                    hideBorder={!body}
-                    portfolioValue={portfolioValue}
-                    localCurrency={localCurrency}
-                    isWalletEmpty={isWalletEmpty}
-                    isWalletLoading={isWalletLoading}
-                    isWalletError={isWalletError}
-                    isDiscoveryRunning={isDiscoveryRunning}
-                    receiveClickHandler={goToReceive}
-                    buyClickHandler={goToBuy}
-                />
+                {discoveryStatus && discoveryStatus.status === 'exception' ? null : (
+                    <Header
+                        showGraphControls={showGraphControls}
+                        hideBorder={!body}
+                        portfolioValue={portfolioValue}
+                        localCurrency={localCurrency}
+                        isWalletEmpty={isWalletEmpty}
+                        isWalletLoading={isWalletLoading}
+                        isWalletError={isWalletError}
+                        isDiscoveryRunning={isDiscoveryRunning}
+                        receiveClickHandler={goToReceive}
+                        buyClickHandler={goToBuy}
+                    />
+                )}
 
                 {body && <Body>{body}</Body>}
             </StyledCard>
