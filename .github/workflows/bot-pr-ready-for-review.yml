@@ -8,6 +8,10 @@ jobs:
   pr_set_status:
     name: Move PR to To be reviewed
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      repository-projects: write
     steps:
       - name: Generate token
         id: generate_token
