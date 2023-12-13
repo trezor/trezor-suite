@@ -3,7 +3,7 @@ import { NetworkSymbol, isNetworkSymbol } from '@suite-common/wallet-config';
 import {
     blockchainActions,
     fetchAndUpdateAccountThunk,
-    selectAccountByDescriptorAndNetworkSymbol,
+    selectDeviceAccountByDescriptorAndNetworkSymbol,
     selectAccountsByNetworkSymbol,
     selectAccountsSymbols,
     subscribeBlockchainThunk,
@@ -86,7 +86,11 @@ export const onBlockchainNotificationThunk = createThunk(
             return;
         }
 
-        const account = selectAccountByDescriptorAndNetworkSymbol(getState(), descriptor, symbol);
+        const account = selectDeviceAccountByDescriptorAndNetworkSymbol(
+            getState(),
+            descriptor,
+            symbol,
+        );
 
         if (!account) return;
         if (!shouldRefetchAccount({ accountKey: account.key })) return;
