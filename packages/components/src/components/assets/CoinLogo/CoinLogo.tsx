@@ -1,34 +1,23 @@
-import { ImgHTMLAttributes } from 'react';
+import { ImgHTMLAttributes, SVGProps } from 'react';
 import { ReactSVG } from 'react-svg';
-import styled from 'styled-components';
+import { motion, AnimationProps } from 'framer-motion';
+import styled, { useTheme } from 'styled-components';
+import { coinsColors } from '@trezor/theme';
 import { COINS } from './coins';
-import { coinsColors, spacings } from '@trezor/theme';
+import { motionEasing } from '../../../config/motion';
 
 export type CoinType = keyof typeof COINS;
 
-const BORDER_SIZE = spacings.sm;
-const MARGIN_SIZE = spacings.xs;
+const Container = styled.div`
+    position: relative;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+`;
 
-const ShareIndicator = styled.div<{ size: number; symbol?: string }>`
-    background: ${({ symbol, theme }) =>
-        symbol && coinsColors[symbol] ? coinsColors[symbol] : theme.iconSubdued};
-    transition: background 5s;
-    border-radius: 50%;
-    width: ${({ size }) => size + BORDER_SIZE * 2}px;
-    height: ${({ size }) => size + BORDER_SIZE * 2}px;
-    align-items: center;
-    display: flex;
-    justify-content: center;
-`;
-const LogoInnerBorder = styled.div<{ size: number; hasShareIndicator: boolean }>`
-    background-color: ${({ theme }) => theme.backgroundSurfaceElevation1};
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: ${props => props.size + (props.hasShareIndicator ? MARGIN_SIZE : 0)}px;
-    width: ${props => props.size + (props.hasShareIndicator ? MARGIN_SIZE : 0)}px;
-`;
 const SvgWrapper = styled.div<Omit<CoinLogoProps, 'symbol'>>`
     display: inline-block;
     height: ${props => props.size}px;
@@ -40,11 +29,87 @@ const SvgWrapper = styled.div<Omit<CoinLogoProps, 'symbol'>>`
     }
 `;
 
+interface ProgressCircleProps extends Pick<CoinLogoProps, 'symbol' | 'percentageShare' | 'index'> {
+    size: number;
+}
+
+const ProgressCircle = ({ symbol, size, percentageShare, index = 0 }: ProgressCircleProps) => {
+    const theme = useTheme();
+
+    const dimensions = size * 2;
+    const strokeColor = symbol && coinsColors[symbol] ? coinsColors[symbol] : theme.iconSubdued;
+    const viewBox = `0 0 ${dimensions} ${dimensions}`;
+
+    const strokeWidth = dimensions / 6;
+    const radius = (dimensions - strokeWidth) / 2;
+    const circumference = Math.ceil(2 * Math.PI * radius);
+    const fillPercents = percentageShare
+        ? Math.abs(Math.ceil((circumference / 100) * (percentageShare - 100)))
+        : undefined;
+
+    const svgProps: SVGProps<SVGSVGElement> = {
+        viewBox,
+        width: dimensions,
+        height: dimensions,
+    };
+
+    const circleConfig = {
+        cx: size,
+        cy: size,
+        r: radius,
+        fill: 'transparent',
+        strokeWidth,
+    };
+
+    const delayModifier = 0.13;
+    const transition: AnimationProps['transition'] = {
+        duration: 0.8,
+        ease: motionEasing.transition,
+        delay: index * delayModifier,
+    };
+
+    return (
+        <>
+            {/* background circle */}
+            <svg
+                {...svgProps}
+                style={{
+                    position: 'absolute',
+                }}
+            >
+                <motion.circle {...circleConfig} stroke={theme.backgroundSurfaceElevation0} />
+            </svg>
+
+            {/* moving circle */}
+            <svg
+                {...svgProps}
+                style={{
+                    position: 'absolute',
+                    transform: 'rotate(-90deg)',
+                }}
+            >
+                <motion.circle
+                    {...circleConfig}
+                    stroke={strokeColor}
+                    strokeDasharray={circumference}
+                    strokeDashoffset={circumference}
+                    animate={{
+                        strokeDashoffset: fillPercents,
+                    }}
+                    transition={transition}
+                />
+            </svg>
+        </>
+    );
+};
+
 export interface CoinLogoProps extends ImgHTMLAttributes<HTMLImageElement> {
     symbol: CoinType;
     className?: string;
     size?: number;
     hasShareIndicator?: boolean;
+    percentageShare?: number;
+    index?: number;
 }
 
 const Logo = ({
@@ -54,18 +119,16 @@ const Logo = ({
     hasShareIndicator = false,
     ...rest
 }: CoinLogoProps) => (
-    <LogoInnerBorder size={size} hasShareIndicator={hasShareIndicator}>
-        <SvgWrapper className={className} size={size} {...rest}>
-            <ReactSVG
-                src={COINS[symbol]}
-                beforeInjection={svg => {
-                    svg.setAttribute('width', `${size}px`);
-                    svg.setAttribute('height', `${size}px`);
-                }}
-                loading={() => <span className="loading" />}
-            />
-        </SvgWrapper>
-    </LogoInnerBorder>
+    <SvgWrapper className={className} size={size} {...rest}>
+        <ReactSVG
+            src={COINS[symbol]}
+            beforeInjection={svg => {
+                svg.setAttribute('width', `${size}px`);
+                svg.setAttribute('height', `${size}px`);
+            }}
+            loading={() => <span className="loading" />}
+        />
+    </SvgWrapper>
 );
 
 const CoinLogo = ({
@@ -73,12 +136,20 @@ const CoinLogo = ({
     className,
     size = 32,
     hasShareIndicator = false,
+    percentageShare,
+    index,
     ...rest
 }: CoinLogoProps) =>
     hasShareIndicator ? (
-        <ShareIndicator size={size} symbol={symbol}>
+        <Container>
             <Logo symbol={symbol} className={className} size={size} hasShareIndicator {...rest} />
-        </ShareIndicator>
+            <ProgressCircle
+                symbol={symbol}
+                size={size}
+                percentageShare={percentageShare}
+                index={index}
+            />
+        </Container>
     ) : (
         <Logo symbol={symbol} className={className} size={size} {...rest} />
     );
