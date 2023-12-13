@@ -1961,6 +1961,14 @@ export default defineMessages({
         defaultMessage: 'Custom delimiter',
         id: 'TR_IMPORT_CSV_MODAL_DELIMITER_CUSTOM',
     },
+    TR_IMPORT_CSV_FROM_FILE: {
+        defaultMessage: 'Import from file',
+        id: 'TR_IMPORT_CSV_FROM_FILE',
+    },
+    TR_IMPORT_CSV_FROM_TEXT: {
+        defaultMessage: 'Import as text',
+        id: 'TR_IMPORT_CSV_FROM_TEXT',
+    },
     TR_DROPZONE: {
         defaultMessage: 'Drag and drop file here or click to select from files',
         id: 'TR_DROPZONE',
