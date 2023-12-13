@@ -44,9 +44,9 @@ export const EmptyPortfolioTrackerState = () => {
 
     const image = useMemo(() => {
         if (colorScheme === 'dark') {
-            return require('../assets/darkDashboard.png');
+            return require('../../../assets/darkDashboard.png');
         }
-        return require('../assets/dashboard.png');
+        return require('../../../assets/dashboard.png');
     }, [colorScheme]);
 
     const handleSyncMyCoins = () => {
