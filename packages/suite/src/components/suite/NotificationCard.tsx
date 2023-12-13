@@ -10,6 +10,7 @@ import {
     variables,
     ButtonProps,
 } from '@trezor/components';
+import { borders } from '@trezor/theme';
 
 // TODO: move to components
 
@@ -59,7 +60,7 @@ const getIcon = (variant: NotificationCardProps['variant'], theme: SuiteThemeCol
 
 const Wrapper = styled.div`
     display: flex;
-    border-radius: 8px;
+    border-radius: ${borders.radii.xs};
     padding: 14px 18px;
     align-items: center;
     background: ${({ theme }) => theme.STROKE_GREY};

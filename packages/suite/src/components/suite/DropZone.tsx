@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Icon, IconType, Paragraph } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import type { ExtendedMessageDescriptor } from 'src/types/suite';
+import { borders } from '@trezor/theme';
 
 interface DropZoneProps {
     // 'accept' attribute for underlying HTML file input
@@ -144,7 +145,7 @@ const Wrapper = styled.div`
     justify-content: center;
     align-items: center;
     border: 2px dashed ${({ theme }) => theme.STROKE_GREY};
-    border-radius: 8px;
+    border-radius: ${borders.radii.xs};
     cursor: pointer;
     min-height: 250px;
     transition: background-color 0.3s;

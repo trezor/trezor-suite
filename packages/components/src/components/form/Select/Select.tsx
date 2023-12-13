@@ -148,7 +148,7 @@ const Wrapper = styled.div<WrapperProps>`
 
     .${reactSelectClassNamePrefix}__option {
         padding: ${spacingsPx.xs} ${spacingsPx.sm};
-        border-radius: ${borders.radii.xs};
+        border-radius: ${borders.radii.xxs};
         color: ${({ theme }) => theme.textDefault};
         ${typography.body};
         cursor: pointer;

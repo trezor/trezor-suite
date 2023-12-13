@@ -21,7 +21,7 @@ import { Coords, getAdjustedCoords } from './getAdjustedCoords';
 const MoreIcon = styled(Icon)<{ $isDisabled?: boolean; isToggled: boolean }>`
     background: ${({ $isDisabled, isToggled, theme }) =>
         !$isDisabled && isToggled && theme.backgroundNeutralSubdued};
-    border-radius: ${borders.radii.xs};
+    border-radius: ${borders.radii.xxs};
     transition: background 0.2s;
 
     :hover {

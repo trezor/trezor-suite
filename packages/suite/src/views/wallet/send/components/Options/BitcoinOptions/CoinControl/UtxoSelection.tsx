@@ -24,6 +24,7 @@ import {
     selectIsLabelingInitPossible,
     selectLabelingDataForSelectedAccount,
 } from 'src/reducers/suite/metadataReducer';
+import { borders } from '@trezor/theme';
 
 const VisibleOnHover = styled.div<{ alwaysVisible?: boolean }>`
     display: ${({ alwaysVisible }) => (alwaysVisible ? 'contents' : 'none')};
@@ -47,7 +48,7 @@ const StyledCheckbox = styled(Checkbox)<{ isChecked: boolean; $isGrey: boolean }
 
 const Wrapper = styled.div<{ isDisabled: boolean }>`
     align-items: flex-start;
-    border-radius: 8px;
+    border-radius: ${borders.radii.xs};
     display: flex;
     margin: 1px -12px;
     padding: 12px 12px 8px;

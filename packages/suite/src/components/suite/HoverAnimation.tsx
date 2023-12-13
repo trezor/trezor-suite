@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 import { transparentize } from 'polished';
-import { zIndices } from '@trezor/theme';
+import { borders, zIndices } from '@trezor/theme';
 
 const Wrapper = styled.div<{ size?: string; isHoverable?: boolean }>`
     position: relative;
@@ -15,7 +15,7 @@ const Wrapper = styled.div<{ size?: string; isHoverable?: boolean }>`
         width: 100%;
         height: 100%;
         transform: scale(0.5);
-        border-radius: 8px;
+        border-radius: ${borders.radii.xs};
         transition: ${({ theme }) =>
             `all ${theme.HOVER_TRANSITION_TIME} ${theme.HOVER_TRANSITION_EFFECT}`};
 

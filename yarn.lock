@@ -9227,6 +9227,7 @@ __metadata:
     cypress: "npm:^13.4.0"
     cypress-file-upload: "npm:^5.0.8"
     cypress-image-snapshot: "npm:^4.0.1"
+    cypress-real-events: "npm:^1.11.0"
     jest: "npm:29.5.0"
     react: "npm:18.2.0"
     react-dom: "npm:18.2.0"
@@ -15456,7 +15457,7 @@ __metadata:
   resolution: "cypress-real-events@npm:1.11.0"
   peerDependencies:
     cypress: ^4.x || ^5.x || ^6.x || ^7.x || ^8.x || ^9.x || ^10.x || ^11.x || ^12.x || ^13.x
-  checksum: b924b6f802f1a0675940d29edf67deb9da07cdbea9292ad3c87443c57810b7e85970ff2344fed6d83bb275fc467064dd2b5163065253dee2d5b6f3b470234c4a
+  checksum: ff1afe226a1ab0c8463436b2c9595dd6f89a950d436692ed1310348ad4562735c106ca8436675cbca5642b2c62203f486e9f80f8d78ceca2c38e147ba3cdba73
   languageName: node
   linkType: hard
 
