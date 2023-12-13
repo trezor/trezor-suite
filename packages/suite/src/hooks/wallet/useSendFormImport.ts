@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react';
+
 import { importRequest } from 'src/actions/wallet/sendFormActions';
 import { useDispatch } from 'src/hooks/suite';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
@@ -28,7 +30,7 @@ export const useSendFormImport = ({ network, tokens, localCurrencyOption, fiatRa
     const importTransaction = async () => {
         // open ImportTransactionModal and get parsed csv
         const result = await dispatch(importRequest());
-        if (!result) return; // cancelled
+        if (!result || result.length < 1) return; // cancelled
 
         const outputs = result.map(item => {
             // create default Output with address from csv
@@ -114,7 +116,21 @@ export const useSendFormImport = ({ network, tokens, localCurrencyOption, fiatRa
         return network.networkType === 'bitcoin' ? outputs : [outputs[0]];
     };
 
+    // successful importTransaction resets the form
+    // wait for data population (rerender) and trigger form validation
+    const [trigger, setTriggerFn] = useState<(() => Promise<void>) | undefined>(undefined);
+    useEffect(() => {
+        if (trigger) {
+            trigger();
+        }
+    }, [trigger]);
+
+    const validateImportedTransaction = (triggerFn: () => Promise<void>) => {
+        setTriggerFn(() => triggerFn);
+    };
+
     return {
         importTransaction,
+        validateImportedTransaction,
     };
 };
