@@ -27,6 +27,7 @@
         "@solana/buffer-layout": "^4.0.1",
         "@solana/web3.js": "^1.87.6",
         "@suite-common/analytics": "workspace:*",
+        "@suite-common/assets": "workspace:*",
         "@suite-common/connect-init": "workspace:*",
         "@suite-common/device-authenticity": "workspace:*",
         "@suite-common/fiat-services": "workspace:*",
