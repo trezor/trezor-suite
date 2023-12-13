@@ -45,7 +45,6 @@ jobs:
 
             console.log("itemId: " + itemId)
             return itemId;
-            
 
       - name: Update PR status
         uses: actions/github-script@v6
