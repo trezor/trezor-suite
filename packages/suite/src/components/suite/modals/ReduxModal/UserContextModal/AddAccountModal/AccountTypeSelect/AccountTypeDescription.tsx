@@ -1,9 +1,10 @@
 import styled from 'styled-components';
-import { Button, Paragraph } from '@trezor/components';
+import { Paragraph } from '@trezor/components';
 import { Network } from 'src/types/wallet';
-import { Translation, TrezorLink } from 'src/components/suite';
+import { Translation } from 'src/components/suite';
 import { getAccountTypeDesc, getAccountTypeUrl } from '@suite-common/wallet-utils';
 import { spacingsPx } from '@trezor/theme';
+import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 
 const Info = styled(Paragraph)`
     margin: ${spacingsPx.md} 0 ${spacingsPx.xs};
@@ -27,18 +28,7 @@ export const AccountTypeDescription = ({
             <Info>
                 <Translation id={accountTypeDesc} />
             </Info>
-            {accountTypeUrl && (
-                <TrezorLink variant="nostyle" href={accountTypeUrl}>
-                    <Button
-                        variant="tertiary"
-                        size="small"
-                        icon="EXTERNAL_LINK"
-                        iconAlignment="right"
-                    >
-                        <Translation id="TR_LEARN_MORE" />
-                    </Button>
-                </TrezorLink>
-            )}
+            {accountTypeUrl && <LearnMoreButton url={accountTypeUrl} />}
         </>
     );
 };
