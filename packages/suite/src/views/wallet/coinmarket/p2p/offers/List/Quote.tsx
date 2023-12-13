@@ -10,11 +10,12 @@ import { useCoinmarketP2pOffersContext } from 'src/hooks/wallet/useCoinmarketP2p
 import { CoinmarketFiatAmount, CoinmarketProviderInfo } from 'src/views/wallet/coinmarket/common';
 import { P2pQuote, P2pQuotesRequest } from 'invity-api';
 import { Avatar } from '../Avatar';
+import { borders } from '@trezor/theme';
 
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
-    border-radius: 8px;
+    border-radius: ${borders.radii.xs};
     flex: 1;
     width: 100%;
     min-height: 150px;

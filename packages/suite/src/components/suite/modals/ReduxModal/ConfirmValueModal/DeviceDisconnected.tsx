@@ -2,13 +2,14 @@ import styled from 'styled-components';
 
 import { Paragraph, Image, variables } from '@trezor/components';
 import { Translation } from 'src/components/suite';
+import { borders } from '@trezor/theme';
 
 const Wrapper = styled.div`
     display: flex;
     text-align: left;
     background: ${({ theme }) => theme.BG_GREY};
     align-items: center;
-    border-radius: 8px;
+    border-radius: ${borders.radii.xs};
     width: 100%;
     justify-content: space-between;
 `;

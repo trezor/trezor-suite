@@ -12,11 +12,12 @@ import {
 import { TransactionHeader } from 'src/components/wallet/TransactionItem/TransactionHeader';
 import { fromWei } from 'web3-utils';
 import { IOAddress } from './IOAddress';
+import { borders } from '@trezor/theme';
 
 const Wrapper = styled.div`
     background-color: ${({ theme }) => theme.BG_GREY};
     padding: 18px;
-    border-radius: 8px;
+    border-radius: ${borders.radii.xs};
 `;
 
 const Confirmations = styled.div`

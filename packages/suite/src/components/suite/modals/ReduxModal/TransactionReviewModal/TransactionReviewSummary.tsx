@@ -10,12 +10,13 @@ import { PrecomposedTransactionFinal, TxFinalCardano } from 'src/types/wallet/se
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
 import { mediaQueries } from '@trezor/styles';
+import { borders } from '@trezor/theme';
 
 const Wrapper = styled.div`
     padding: 20px 15px 12px;
     display: flex;
     flex-direction: column;
-    border-radius: 8px;
+    border-radius: ${borders.radii.xs};
     background: ${({ theme }) => theme.BG_GREY};
     min-width: 190px;
     width: 225px;

@@ -8,11 +8,12 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { openNode } from 'src/actions/suite/guideActions';
 import { GuideNode as GuideNodeType } from '@suite-common/suite-types';
 import { getNodeTitle } from 'src/utils/suite/guide';
+import { borders } from '@trezor/theme';
 
 const NodeButton = styled.button`
     display: flex;
     align-items: center;
-    border-radius: 8px;
+    border-radius: ${borders.radii.xs};
     border: 0;
     width: 100%;
     background: ${({ theme }) => theme.backgroundSurfaceElevation1};

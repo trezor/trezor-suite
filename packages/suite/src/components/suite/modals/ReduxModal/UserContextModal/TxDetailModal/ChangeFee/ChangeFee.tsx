@@ -10,6 +10,7 @@ import { RbfFees } from './RbfFees';
 import { AffectedTransactions } from './AffectedTransactions';
 import { DecreasedOutputs } from './DecreasedOutputs';
 import { ReplaceTxButton } from './ReplaceTxButton';
+import { borders } from '@trezor/theme';
 
 const Wrapper = styled.div`
     margin: 12px 0;
@@ -20,7 +21,7 @@ const Box = styled.div`
     flex-direction: column;
     padding: 18px 26px;
     border: 1px solid ${({ theme }) => theme.STROKE_GREY};
-    border-radius: 8px;
+    border-radius: ${borders.radii.xs};
 `;
 
 const Inner = styled.div`

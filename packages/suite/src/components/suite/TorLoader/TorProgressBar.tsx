@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Button, ProgressBar, Icon, variables } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
+import { borders } from '@trezor/theme';
 
 const IconWrapper = styled.div`
     width: 120px;
@@ -73,7 +74,7 @@ const ProgressWrapper = styled.div`
     display: flex;
     align-items: center;
     background: ${({ theme }) => theme.BG_GREY};
-    border-radius: 8px;
+    border-radius: ${borders.radii.xs};
     width: 100%;
     min-height: 45px;
 `;

@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 
 import { Image, PngImage, variables } from '@trezor/components';
+import { borders } from '@trezor/theme';
 
 const containerGridStyle = css`
     display: grid;
@@ -11,7 +12,7 @@ const containerGridStyle = css`
 
 const Container = styled.div`
     background: ${({ theme }) => theme.BG_GREY};
-    border-radius: 8px;
+    border-radius: ${borders.radii.xs};
     padding: 16px;
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
