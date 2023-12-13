@@ -10,7 +10,7 @@ import {
     Dropdown,
     DropdownMenuItemProps,
 } from '@trezor/components';
-import { zIndices } from '@trezor/theme';
+import { borders, zIndices } from '@trezor/theme';
 import { Route } from '@suite-common/suite-types';
 
 import { AccountFormCloseButton, HoverAnimation } from 'src/components/suite';
@@ -157,7 +157,7 @@ const StyledDropdown = styled(Dropdown)<{ isDisabled: boolean }>`
     background: ${({ isDisabled, theme }) => (isDisabled ? theme.BG_GREY : theme.BG_SECONDARY)};
     width: 38px;
     height: 38px;
-    border-radius: 8px;
+    border-radius: ${borders.radii.xs};
     transition: background 0.1s;
 
     > :first-child {

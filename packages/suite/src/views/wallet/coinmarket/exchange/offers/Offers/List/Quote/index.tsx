@@ -15,11 +15,12 @@ import {
     CoinmarketProviderInfo,
     CoinmarketTag,
 } from 'src/views/wallet/coinmarket/common';
+import { borders } from '@trezor/theme';
 
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
-    border-radius: 8px;
+    border-radius: ${borders.radii.xs};
     flex: 1;
     width: 100%;
     min-height: 150px;

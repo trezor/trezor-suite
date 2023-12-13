@@ -19,7 +19,7 @@ const TextButtonContainer = styled.button<{
     height: ${({ size }) => (size === 'small' ? 22 : 26)}px;
     padding: 4px;
     border: 1px solid transparent;
-    border-radius: ${borders.radii.xs};
+    border-radius: ${borders.radii.xxs};
     background: none;
     color: ${({ theme }) => theme.textPrimaryDefault};
     ${({ size }) => (size === 'small' ? typography.hint : typography.body)};

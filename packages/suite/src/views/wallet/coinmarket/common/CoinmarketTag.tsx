@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { variables } from '@trezor/components';
+import { borders } from '@trezor/theme';
 
 const TagRow = styled.div`
     display: flex;
@@ -8,7 +9,7 @@ const TagRow = styled.div`
 const Tag = styled.div`
     margin: 0 16px 2px;
     padding: 3px 8px 0;
-    border-radius: 8px;
+    border-radius: ${borders.radii.xs};
     background: ${({ theme }) => theme.TYPE_ORANGE};
     color: ${({ theme }) => theme.TYPE_WHITE};
     font-size: ${variables.FONT_SIZE.TINY};

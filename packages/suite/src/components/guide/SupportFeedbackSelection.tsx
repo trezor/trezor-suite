@@ -13,6 +13,7 @@ import { setView } from 'src/actions/suite/guideActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { GuideViewWrapper, GuideHeader, GuideContent } from 'src/components/guide';
 import { UpdateState } from 'src/reducers/suite/desktopUpdateReducer';
+import { borders } from '@trezor/theme';
 
 const Section = styled.div`
     & + & {
@@ -30,7 +31,7 @@ const SectionHeader = styled.h3`
 const SectionButton = styled.button<{ hasBackground?: boolean }>`
     left: auto;
     cursor: pointer;
-    border-radius: 8px;
+    border-radius: ${borders.radii.xs};
     width: 100%;
     margin: 0 0 10px;
     display: flex;

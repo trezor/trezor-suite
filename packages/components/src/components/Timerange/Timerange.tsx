@@ -463,7 +463,7 @@ const Calendar = styled.div`
     }
 
     .rdrDateDisplayItem {
-        border-radius: ${borders.radii.xs};
+        border-radius: ${borders.radii.xxs};
         background-color: transparent;
         border: 1px solid ${({ theme }) => theme.borderOnElevation1};
     }
@@ -583,7 +583,7 @@ const Calendar = styled.div`
         background: ${({ theme }) => theme.backgroundPrimaryDefault};
         color: ${({ theme }) => theme.textOnPrimary};
         box-shadow: ${boxShadows.focusedLight};
-        border-radius: ${borders.radii.xs};
+        border-radius: ${borders.radii.xxs};
         z-index: ${zIndices.base};
     }
 

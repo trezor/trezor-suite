@@ -1,11 +1,12 @@
 import { useEffect, useState, ReactNode } from 'react';
 import { Icon, ProgressBar, variables } from '@trezor/components';
 import styled, { useTheme } from 'styled-components';
+import { borders } from '@trezor/theme';
 
 const Wrapper = styled.div`
     display: flex;
     background: ${({ theme }) => theme.BG_GREY};
-    border-radius: 8px;
+    border-radius: ${borders.radii.xs};
     padding: 20px 24px;
     width: 100%;
     font-size: ${variables.FONT_SIZE.SMALL};

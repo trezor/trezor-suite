@@ -116,7 +116,7 @@ const Success = styled.div`
 const Step = styled.div<{ isActive: boolean }>`
     width: 18px;
     height: 4px;
-    border-radius: ${borders.radii.xs};
+    border-radius: ${borders.radii.xxs};
     margin-right: ${spacingsPx.xxs};
     background: ${({ theme }) => theme.backgroundNeutralSubdued};
 

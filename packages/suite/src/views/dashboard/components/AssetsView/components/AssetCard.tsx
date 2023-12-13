@@ -32,7 +32,7 @@ const BuyContainer = styled.div`
     align-items: center;
     justify-content: space-between;
     background-color: ${({ theme }) => theme.backgroundSurfaceElevation2};
-    border-radius: 8px;
+    border-radius: ${borders.radii.xs};
     padding: ${spacingsPx.sm} ${spacingsPx.sm} ${spacingsPx.sm} ${spacingsPx.md};
 `;
 

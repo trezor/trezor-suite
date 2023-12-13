@@ -12,6 +12,7 @@ import { Translation, Modal } from 'src/components/suite';
 import { MODAL } from 'src/actions/suite/constants';
 import { ThunkAction } from 'src/types/suite';
 import { DeviceDisconnected } from './DeviceDisconnected';
+import { borders } from '@trezor/theme';
 
 const Wrapper = styled.div`
     display: flex;
@@ -28,7 +29,7 @@ const Value = styled.div`
     width: 100%;
     background: ${({ theme }) => theme.BG_LIGHT_GREY};
     border: 1px solid ${({ theme }) => theme.STROKE_GREY};
-    border-radius: 8px;
+    border-radius: ${borders.radii.xs};
     word-break: break-all;
     padding: 10px;
     max-width: calc(${QRCODE_SIZE}px + ${QRCODE_PADDING * 2}px);

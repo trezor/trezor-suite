@@ -25,7 +25,7 @@ const Wrapper = styled.div<Pick<PassphraseTypeCardProps, 'type' | 'singleColModa
     display: flex;
     flex: 1;
     /* align-items: center; */
-    border-radius: 8px;
+    border-radius: ${borders.radii.xs};
     flex-direction: column;
     text-align: left;
     width: 100%;

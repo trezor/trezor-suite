@@ -8,7 +8,7 @@ const Container = styled.div`
     padding: ${spacingsPx.xxxs} ${spacingsPx.xxs};
     background: ${({ theme }) => theme.backgroundTertiaryDefaultOnElevation1};
     box-shadow: ${boxShadows.elevation1};
-    border-radius: ${borders.radii.xs};
+    border-radius: ${borders.radii.xxs};
     color: ${({ theme }) => theme.textSubdued};
     ${typography.label};
 `;
