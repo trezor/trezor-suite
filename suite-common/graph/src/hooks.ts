@@ -127,8 +127,6 @@ export function useGraphForAccounts(params: useGraphForAccountsParams): {
                         );
                     }
 
-                    setIsLoading(false);
-
                     // If the fetch was interrupted by a new fetch, do not set the values.
                     if (lastFetchTimestamp.current !== fetchTimestamp) return;
 

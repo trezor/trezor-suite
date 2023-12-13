@@ -15,11 +15,11 @@ import { BlockchainNotification } from '@trezor/connect';
 const actionsPrefix = '@native/blockchain';
 
 const accountLastFetchTime: Record<AccountKey, number> = {};
-const accountLastFetchTimeLimitMs = 1000 * 10; // 5 seconds
+const ACCOUNT_LAST_FETCH_TIME_LIMIT_MS = 1000 * 10;
 
 const shouldRefetchAccount = ({
     accountKey,
-    refetchLimitMs = accountLastFetchTimeLimitMs,
+    refetchLimitMs = ACCOUNT_LAST_FETCH_TIME_LIMIT_MS,
 }: {
     accountKey: AccountKey;
     refetchLimitMs?: number;
@@ -89,9 +89,11 @@ export const onBlockchainNotificationThunk = createThunk(
         const account = selectAccountByDescriptorAndNetworkSymbol(getState(), descriptor, symbol);
 
         if (!account) return;
+        if (!shouldRefetchAccount({ accountKey: account.key })) return;
 
-        // In fetchAndUpdateAccountThunk we are throttling per account, we don't want to fetch account too often
-        // and sometimes we randomly get notifications for all transactions in account at once, which would trigger lot of fetches
+        // Sometimes we randomly get notifications for all transactions in account at once, which would trigger lot of fetches.
+        // We are throttling per account, we don't want to fetch account too often to save resources.
         dispatch(fetchAndUpdateAccountThunk({ accountKey: account.key }));
+        accountLastFetchTime[account.key] = Date.now();
     },
 );

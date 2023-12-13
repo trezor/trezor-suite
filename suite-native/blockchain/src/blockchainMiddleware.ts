@@ -1,10 +1,8 @@
 /* eslint-disable no-case-declarations */
 import { createMiddleware } from '@suite-common/redux-utils';
 import {
-    AccountsRootState,
     TransactionsRootState,
     onBlockchainDisconnectThunk,
-    selectAccountByKey,
     selectAllPendingTransactions,
 } from '@suite-common/wallet-core';
 import { BlockchainEvent, BLOCKCHAIN as TREZOR_CONNECT_BLOCKCHAIN_ACTIONS } from '@trezor/connect';
@@ -16,15 +14,14 @@ import {
     syncAccountsWithBlockchainThunk,
 } from './blockchainThunks';
 
-export const selectNetworksWithPendingTransactions = (
-    state: TransactionsRootState & AccountsRootState,
-) => {
+export const selectNetworksWithPendingTransactions = (state: TransactionsRootState) => {
     const pendingTransactions = selectAllPendingTransactions(state);
     return Object.keys(pendingTransactions)
         .filter(accountKey => pendingTransactions[accountKey].length > 0)
-        .map(accountKey => selectAccountByKey(state, accountKey)?.symbol);
+        .map(accountKey => pendingTransactions[accountKey][0].symbol);
 };
 
+// Be very careful when adding new stuff here, it could affect performance a lot on mobile
 export const blockchainMiddleware = createMiddleware(
     (action: BlockchainEvent, { dispatch, next, getState }) => {
         switch (action.type) {
