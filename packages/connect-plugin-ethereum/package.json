@@ -30,7 +30,7 @@
         "@metamask/eth-sig-util": "^7.0.0",
         "jest": "29.5.0",
         "rimraf": "^5.0.5",
-        "typescript": "5.3.2"
+        "typescript": "5.3.3"
     },
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",

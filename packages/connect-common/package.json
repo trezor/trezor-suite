@@ -43,7 +43,7 @@
         "jest": "29.5.0",
         "rimraf": "^5.0.5",
         "tsx": "^4.6.2",
-        "typescript": "5.3.2"
+        "typescript": "5.3.3"
     },
     "peerDependencies": {
         "tslib": "^2.6.2"
