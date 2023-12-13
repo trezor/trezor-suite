@@ -2,16 +2,12 @@ import { MouseEventHandler } from 'react';
 import styled from 'styled-components';
 
 import { Button } from '@trezor/components';
-import { Translation, TrezorLink } from 'src/components/suite';
+import { LearnMoreButton } from '../suite/LearnMoreButton';
 
 const Wrapper = styled.div`
     display: flex;
+    align-items: center;
     gap: 8px;
-`;
-
-const StyledButton = styled(Button)`
-    padding-bottom: 0;
-    padding-top: 0;
 `;
 
 interface InputErrorProps {
@@ -24,15 +20,11 @@ export const InputError = ({ button, message }: InputErrorProps) => (
         {message}
         {button &&
             ('url' in button ? (
-                <TrezorLink variant="nostyle" href={button.url}>
-                    <StyledButton variant="tertiary" icon="EXTERNAL_LINK" iconAlignment="right">
-                        <Translation id="TR_LEARN_MORE" />
-                    </StyledButton>
-                </TrezorLink>
+                <LearnMoreButton url={button.url} />
             ) : (
-                <StyledButton variant="tertiary" onClick={button.onClick}>
+                <Button size="tiny" variant="tertiary" onClick={button.onClick}>
                     {button.text}
-                </StyledButton>
+                </Button>
             ))}
     </Wrapper>
 );
