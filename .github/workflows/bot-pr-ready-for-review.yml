@@ -21,7 +21,7 @@ jobs:
         id: find-pr-id
         uses: actions/github-script@v6
         env:
-          GITHUB_TOKEN: ${{ secrets.TREZOR_BOT_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
         with:
           result-encoding: string
           script: |
