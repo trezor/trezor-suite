@@ -9295,7 +9295,7 @@ __metadata:
     "@types/react-router-dom": "npm:^5.1.7"
     "@types/styled-components": "npm:5.1.32"
     chrome-remote-interface: "npm:^0.33.0"
-    cypress: "npm:^13.4.0"
+    cypress: "npm:^13.6.1"
     cypress-file-upload: "npm:^5.0.8"
     cypress-image-snapshot: "npm:^4.0.1"
     jest: "npm:^29.7.0"
@@ -15428,9 +15428,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cypress@npm:^13.4.0":
-  version: 13.4.0
-  resolution: "cypress@npm:13.4.0"
+"cypress@npm:^13.6.1":
+  version: 13.6.1
+  resolution: "cypress@npm:13.6.1"
   dependencies:
     "@cypress/request": "npm:^3.0.0"
     "@cypress/xvfb": "npm:^1.2.4"
@@ -15477,7 +15477,7 @@ __metadata:
     yauzl: "npm:^2.10.0"
   bin:
     cypress: bin/cypress
-  checksum: 25423cde87e40c739b5de97ca418102d7b3f12289e67de163e309a483dd6982420c077a80733aad73cbda73ffd69aaace59e604623e635bd7996f9680a5f0145
+  checksum: 22e3431faf87b31f57a1afbcb92eb8f2bf366468f0a47399545af772a89acc198df2ce80c3d3169e3a82649811ee60685fbd7a512e0ec9ffb9ddbe13f21ecfd0
   languageName: node
   linkType: hard
 

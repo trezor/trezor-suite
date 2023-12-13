@@ -1,6 +1,6 @@
 ## Use a proxy or fallback to no proxy at all (direct access to Docker Hub).
 ARG CI_DOCKER_PROXY=""
-FROM ${CI_DOCKER_PROXY}cypress/included:13.4.0
+FROM ${CI_DOCKER_PROXY}cypress/included:13.6.1
 
 RUN apt-get update && apt-get -y --no-install-recommends install \
     ca-certificates \
