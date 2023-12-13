@@ -1,3 +1,4 @@
+import { borders } from '@trezor/theme';
 import styled, { css } from 'styled-components';
 
 export type Shape = 'CIRCLE' | 'ROUNDED' | 'ROUNDED-SMALL';
@@ -28,6 +29,6 @@ export const AnimationWrapper = styled.div<{ size?: number; shape?: Shape }>`
     ${({ shape }) =>
         shape === 'ROUNDED-SMALL' &&
         css`
-            border-radius: 8px;
+            border-radius: ${borders.radii.xs};
         `};
 `;

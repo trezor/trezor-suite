@@ -15,6 +15,7 @@ import { DeviceDisconnected } from './DeviceDisconnected';
 import { TransactionReviewStepIndicator } from '../TransactionReviewModal/TransactionReviewOutputList/TransactionReviewStepIndicator';
 import { TransactionReviewOutputElement } from '../TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputElement';
 import { Account } from '@suite-common/wallet-types';
+import { borders } from '@trezor/theme';
 
 const Wrapper = styled.div`
     display: flex;
@@ -44,7 +45,7 @@ const Right = styled.div`
 `;
 
 const StyledQrCode = styled(QrCode)`
-    border-radius: 12px;
+    border-radius: ${borders.radii.sm};
     background: ${({ theme }) => theme.BG_GREY};
     padding: 32px;
     max-height: 100%;

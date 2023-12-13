@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import { Button, H2, variables, Link } from '@trezor/components';
 import { desktopApi, UpdateInfo } from '@trezor/suite-desktop-api';
+import { borders } from '@trezor/theme';
 
 import { Translation, Modal } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
@@ -18,7 +19,7 @@ const GreenH2 = styled(H2)`
 const ChangelogWrapper = styled.div`
     margin: 20px 0;
     background: ${({ theme }) => theme.BG_GREY};
-    border-radius: 8px;
+    border-radius: ${borders.radii.xs};
     max-height: 400px;
     overflow-y: auto;
     padding: 16px 20px;

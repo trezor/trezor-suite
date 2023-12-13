@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js';
 import styled, { useTheme } from 'styled-components';
 
 import { Button, variables, Icon, H2 } from '@trezor/components';
+import { borders } from '@trezor/theme';
 import { FormattedCryptoAmount, QuestionTooltip, Translation } from 'src/components/suite';
 import { useFormatters } from '@suite-common/formatters';
 import { ExchangeTrade } from 'invity-api';
@@ -20,7 +21,7 @@ import { selectCoinsLegacy } from '@suite-common/wallet-core';
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
-    border-radius: 8px;
+    border-radius: ${borders.radii.xs};
     flex: 1;
     width: 100%;
     min-height: 150px;

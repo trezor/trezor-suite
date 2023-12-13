@@ -12,11 +12,12 @@ import { useCoinmarketSellOffersContext } from 'src/hooks/wallet/useCoinmarketSe
 import { getTagAndInfoNote } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { CoinmarketCryptoAmount } from 'src/views/wallet/coinmarket/common/CoinmarketCryptoAmount';
 import { CoinmarketFiatAmount } from 'src/views/wallet/coinmarket/common/CoinmarketFiatAmount';
+import { borders } from '@trezor/theme';
 
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
-    border-radius: 8px;
+    border-radius: ${borders.radii.xs};
     flex: 1;
     width: 100%;
     min-height: 150px;
