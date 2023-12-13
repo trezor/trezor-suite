@@ -407,6 +407,8 @@ const forget = (draft: State, device: TrezorDevice) => {
     const others = deviceUtils.getDeviceInstances(device, draft.devices, true);
     if (device.connected && others.length < 1) {
         // do not forget the last instance, just reset state
+        draft.devices[index].authConfirm = false;
+        delete draft.devices[index].authFailed;
         draft.devices[index].state = undefined;
         draft.devices[index].walletNumber = undefined;
         draft.devices[index].useEmptyPassphrase = !device.features.passphrase_protection;
