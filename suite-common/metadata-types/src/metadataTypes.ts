@@ -200,7 +200,7 @@ type Data = Record<
  * in the future, it could be
  * 'labels' | 'passwords' | 'contacts'...
  */
-export type DataType = 'labels';
+export type DataType = 'labels' | 'passwords';
 
 /**
  * Representation of provider data stored in reducer
@@ -239,3 +239,6 @@ export interface MetadataState {
 
 export type OAuthServerEnvironment = 'production' | 'staging' | 'localhost';
 export type MetadataEncryptionVersion = 1 | 2;
+
+// todo: https://github.com/trezor/trezor-suite/issues/10408
+export type PasswordEntry = any;

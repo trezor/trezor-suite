@@ -643,6 +643,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             return device;
         });
 
+        // @ts-expect-error
         await updateAll(transaction, 'metadata', metadata => {
             const updatedMetadata = {
                 selectedProvider: { labels: '' },
@@ -698,6 +699,13 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             }
 
             return device;
+        });
+    }
+
+    if (oldVersion < 41) {
+        await updateAll(transaction, 'metadata', metadata => {
+            metadata.selectedProvider.passwords = '';
+            return metadata;
         });
     }
 };
