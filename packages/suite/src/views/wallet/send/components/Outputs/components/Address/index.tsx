@@ -39,6 +39,8 @@ const MetadataLabelingWrapper = styled.div`
     max-width: 200px;
 `;
 
+type AddressDeprecatedUrl = 'LTC_ADDRESS_INFO_URL' | 'HELP_CENTER_CASHADDR_URL';
+
 interface AddressProps {
     outputId: number;
     outputsCount: number;
@@ -46,7 +48,9 @@ interface AddressProps {
 }
 
 export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
-    const [addressDeprecatedUrl, setAddressDeprecatedUrl] = useState<string | undefined>(undefined);
+    const [addressDeprecatedUrl, setAddressDeprecatedUrl] = useState<
+        AddressDeprecatedUrl | undefined
+    >(undefined);
     const dispatch = useDispatch();
     const theme = useTheme();
     const { device } = useDevice();
@@ -125,7 +129,10 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         }
     }, [amountInputName, composeTransaction, dispatch, inputName, setValue, symbol]);
 
-    const getValidationButtonProps = () => {
+    const getValidationButtonProps = ():
+        | { url: AddressDeprecatedUrl }
+        | { onClick: () => void; text: string }
+        | undefined => {
         switch (addressError?.type) {
             case 'deprecated':
                 if (addressDeprecatedUrl) {
