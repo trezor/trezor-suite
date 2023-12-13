@@ -29,6 +29,7 @@ export const initialState: MetadataState = {
     providers: [],
     selectedProvider: {
         labels: '',
+        passwords: '',
     },
     error: {},
 };
@@ -57,6 +58,8 @@ const metadataReducer = (state = initialState, action: Action): MetadataState =>
                 draft.providers.push(action.payload);
                 break;
             case METADATA.REMOVE_PROVIDER:
+                // todo: identification should be dataType + clientId
+                // at the moment, it is not needed because each feature (passwords, labels) has distinct provider. In case we wanted to support 2 different features in 1 provider. we would need to add this?
                 draft.providers = draft.providers.filter(
                     p => p.clientId !== action.payload.clientId,
                 );
@@ -111,6 +114,9 @@ export const selectMetadata = (state: MetadataRootState) => state.metadata;
  */
 export const selectSelectedProviderForLabels = (state: { metadata: MetadataState }) =>
     state.metadata.providers.find(p => p.clientId === state.metadata.selectedProvider.labels);
+
+export const selectSelectedProviderForPasswords = (state: { metadata: MetadataState }) =>
+    state.metadata.providers.find(p => p.clientId === state.metadata.selectedProvider.passwords);
 
 /**
  * Select metadata of type 'labels' for currently selected account

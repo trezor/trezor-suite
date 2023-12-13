@@ -75,3 +75,5 @@ export const DEFAULT_ACCOUNT_METADATA: AccountLabels = {
 export const DEFAULT_WALLET_METADATA: WalletLabels = {
     walletLabel: '',
 };
+
+export const DROPBOX_PASSWORDS_CLIENT_ID = 's340kh3l0vla1nv';

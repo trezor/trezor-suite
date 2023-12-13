@@ -83,6 +83,7 @@ const providerInstance: Record<
     DropboxProvider | GoogleProvider | FileSystemProvider | undefined
 > = {
     labels: undefined,
+    passwords: undefined,
 };
 const fetchIntervals: { [deviceState: string]: any } = {}; // any because of native at the moment, otherwise number | undefined
 
@@ -402,6 +403,64 @@ const fetchMetadata =
             fileName,
             data: decryptedData,
         };
+    };
+
+export const fetchPasswords =
+    (fileName: string, key: Buffer) => async (dispatch: Dispatch, _getState: GetState) => {
+        const provider = dispatch(
+            getProviderInstance({
+                clientId: METADATA.DROPBOX_PASSWORDS_CLIENT_ID,
+                dataType: 'passwords',
+            }),
+        );
+        if (!provider) {
+            return;
+        }
+
+        // this triggers renewal of access token if needed. Otherwise multiple requests
+        // to renew access token are issued by every provider.getFileContent
+        const response = await provider.getProviderDetails();
+        if (!response.success) {
+            return dispatch(
+                handleProviderError({
+                    error: response,
+                    action: ProviderErrorAction.LOAD,
+                    clientId: provider.clientId,
+                }),
+            );
+        }
+
+        return new Promise<void>((resolve, reject) =>
+            provider.getFileContent(fileName).then(result => {
+                if (!result.success) {
+                    return reject(result);
+                }
+
+                if (result.payload) {
+                    try {
+                        const decrypted = metadataUtils.decrypt(
+                            metadataUtils.arrayBufferToBuffer(result.payload),
+                            key,
+                        );
+
+                        dispatch({
+                            type: METADATA.SET_DATA,
+                            payload: {
+                                provider,
+                                data: {
+                                    [fileName]: decrypted,
+                                },
+                            },
+                        });
+                    } catch (err) {
+                        const error = provider.error('OTHER_ERROR', err.message);
+                        return reject(error);
+                    }
+                }
+
+                resolve();
+            }),
+        );
     };
 
 export const setAccountMetadataKey =
