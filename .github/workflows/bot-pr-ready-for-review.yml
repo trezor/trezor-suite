@@ -15,6 +15,7 @@ jobs:
         with:
           app-id: ${{ secrets.TSPM_APP_ID }}
           private-key: ${{ secrets.TSPM_APP_SECRET }}
+          owner: ${{ github.repository_owner }}
 
       - name: Find ID of the Pull Request
         id: find-pr-id
