@@ -48,13 +48,12 @@ export function split(
     if (unspecified && splitValue.lt(new BN(dustAmount))) return { fee };
 
     // assign splitValue to outputs not user defined
-    const outputsSplit = outputs.map(x => {
-        if (x.value) return x;
-
-        // not user defined, but still copy over any non-value fields
-        const y = Object.assign({}, x);
-        y.value = splitValue;
-        return y;
+    const outputsSplit = outputs.map(output => {
+        if (output.value) return output;
+        return {
+            ...output,
+            value: splitValue,
+        };
     });
 
     return finalize(utxos, outputsSplit, feeRate, options);

@@ -42,10 +42,7 @@ class Transaction extends TransactionBase<dash.DashSpecific | zcash.ZcashSpecifi
     }
 
     static fromHex(hex: string, options: TransactionOptions = {}) {
-        return this.fromBuffer(
-            Buffer.from(hex, 'hex'),
-            Object.assign(options, { nostrict: false }),
-        );
+        return this.fromBuffer(Buffer.from(hex, 'hex'), { ...options, nostrict: false });
     }
 }
 

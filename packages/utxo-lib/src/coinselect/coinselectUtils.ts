@@ -259,11 +259,8 @@ export function finalize(
     const remainderAfterExtraOutput = sumInputs.sub(sumOutputs.add(new BN(feeAfterExtraOutput)));
     const dustAmount = getDustAmount(feeRate, options);
 
-    const finalOutputs: CoinSelectOutputFinal[] = outputs.map(o =>
-        Object.assign({}, o, {
-            value: o.value as BN, // it's verified that output have value (sumOutputs) TODO: refactor sumOrNaN to return correct type (outputs with values)
-        }),
-    );
+    // it's verified that output have value (sumOutputs)
+    const finalOutputs = [...(outputs as CoinSelectOutputFinal[])];
 
     // is it worth a change output?
     if (remainderAfterExtraOutput.gte(new BN(dustAmount))) {
@@ -276,7 +273,7 @@ export function finalize(
     return {
         inputs,
         outputs: finalOutputs,
-        fee: sumInputs.sub(sumOrNaN(finalOutputs, true)).toNumber(), // it's verified that output have value (sumOutputs) TODO: refactor sumOrNaN to return correct type (outputs with values)
+        fee: sumInputs.sub(sumOrNaN(finalOutputs, true)).toNumber(),
     };
 }
 
