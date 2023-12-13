@@ -402,11 +402,16 @@ export const signTransaction =
             enhancedTxInfo.useDecreaseOutput = hasDecreasedOutput;
         }
 
-        if (account.networkType === 'ethereum' && !isCardanoTx(account, enhancedTxInfo)) {
+        if (
+            account.networkType === 'ethereum' &&
+            !isCardanoTx(account, enhancedTxInfo) &&
+            enhancedTxInfo.token?.contract &&
+            network?.chainId
+        ) {
             const isTokenKnown = await fetch(
-                `https://data.trezor.io/firmware/eth-definitions/chain-id/${network?.chainId}/token-${enhancedTxInfo.token?.contract
-                    .substring(2)
-                    .toLowerCase()}.dat`,
+                `https://data.trezor.io/firmware/eth-definitions/chain-id/${
+                    network.chainId
+                }/token-${enhancedTxInfo.token.contract.substring(2).toLowerCase()}.dat`,
             )
                 .then(response => response.ok)
                 .catch(() => false);
