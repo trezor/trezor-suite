@@ -297,7 +297,7 @@ const SignVerify = () => {
                             <Textarea
                                 maxLength={MAX_LENGTH_SIGNATURE}
                                 characterCount={{
-                                    current: formValues.signature?.length ?? 0,
+                                    current: formValues.signature?.length,
                                     max: MAX_LENGTH_SIGNATURE,
                                 }}
                                 rows={4}

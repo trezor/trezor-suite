@@ -60,7 +60,7 @@ export interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElemen
     noTopLabel?: boolean;
     noError?: boolean;
     value?: string;
-    characterCount?: boolean | { current: number; max: number };
+    characterCount?: boolean | { current: number | undefined; max: number };
 }
 
 export const Textarea = ({
@@ -93,7 +93,7 @@ export const Textarea = ({
         }
         // uncontrolled component
         if (typeof characterCount === 'object') {
-            return `${characterCount.current} / ${characterCount.max}`;
+            return `${characterCount.current ?? 0} / ${characterCount.max}`;
         }
     };
 
