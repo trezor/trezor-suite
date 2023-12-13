@@ -5,6 +5,7 @@ import { Paragraph, Icon, variables, motionAnimation } from '@trezor/components'
 import { Translation } from 'src/components/suite';
 import { useSelector, useTranslation } from 'src/hooks/suite';
 import { selectIsLabelingAvailable } from 'src/reducers/suite/metadataReducer';
+import { borders } from '@trezor/theme';
 
 const Wrapper = styled.div`
     display: flex;
@@ -16,7 +17,7 @@ const Wrapper = styled.div`
 const ExpandWrapper = styled(motion.div)`
     width: 100%;
     background: ${({ theme }) => theme.BG_GREY};
-    border-radius: 8px;
+    border-radius: ${borders.radii.xs};
     overflow: hidden;
     margin-top: 8px;
     padding: 12px;

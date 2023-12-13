@@ -32,7 +32,7 @@ const Wrapper = styled.div<{ variant: Variant; withIcon?: boolean }>`
                 critical: theme.backgroundAlertRedSubtleOnElevation0,
             }),
         )};
-    border-radius: ${borders.radii.xs};
+    border-radius: ${borders.radii.xxs};
     color: ${({ variant, theme }) =>
         getColor(variant, {
             learn: theme.textPrimaryDefault,

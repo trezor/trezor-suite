@@ -5,7 +5,7 @@ import { useOnClickOutside } from '@trezor/react-utils';
 import { DATA_TOS_INVITY_URL, INVITY_URL } from '@trezor/urls';
 import { CoinmarketProvidedByInvity } from './CoinmarketProvidedByInvity';
 import { Translation } from 'src/components/suite';
-import { zIndices } from '@trezor/theme';
+import { borders, zIndices } from '@trezor/theme';
 
 const Wrapper = styled.div`
     display: flex;
@@ -36,7 +36,7 @@ const Right = styled.div`
 
 const FooterBox = styled.div`
     position: absolute;
-    border-radius: 8px;
+    border-radius: ${borders.radii.xs};
     padding: 10px;
     flex: 1;
     min-width: 345px;

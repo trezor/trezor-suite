@@ -7,6 +7,7 @@ import { Translation } from 'src/components/suite';
 import type { SavingsTradePlannedPayment } from 'invity-api';
 import type { ExtendedMessageDescriptor } from 'src/types/suite';
 import { useCoinmarketSavingsPaymentInfoCopy } from 'src/hooks/wallet/useCoinmarketSavingsPaymentInfoCopy';
+import { borders } from '@trezor/theme';
 
 const Wrapper = styled.div`
     margin-top: 18px;
@@ -29,7 +30,7 @@ const IconWrapper = styled.div`
 
 const PaymentItem = styled.div`
     border: 1px solid ${({ theme }) => theme.STROKE_GREY};
-    border-radius: 8px;
+    border-radius: ${borders.radii.xs};
     display: flex;
     flex-flow: column nowrap;
     align-items: stretch;

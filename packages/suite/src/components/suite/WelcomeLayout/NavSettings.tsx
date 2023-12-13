@@ -4,6 +4,7 @@ import { Icon, Tooltip } from '@trezor/components';
 import { HoverAnimation, Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
+import { borders } from '@trezor/theme';
 
 const Wrapper = styled.div`
     width: 44px;
@@ -13,7 +14,7 @@ const Wrapper = styled.div`
     cursor: pointer;
     align-items: center;
     justify-content: center;
-    border-radius: 8px;
+    border-radius: ${borders.radii.xs};
     transition: ${({ theme }) =>
         `background ${theme.HOVER_TRANSITION_TIME} ${theme.HOVER_TRANSITION_EFFECT}`};
 `;

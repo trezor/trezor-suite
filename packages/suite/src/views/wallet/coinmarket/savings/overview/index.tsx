@@ -21,6 +21,7 @@ import { AllFeesIncluded } from '../AllFeesIncluded';
 import { ProvidedBy } from '../ProvidedBy';
 import { CoinmarketReauthorizationCard } from '../CoinmarketReauthorizationCard';
 import { withCoinmarket, WithCoinmarketProps } from '../withCoinmarket';
+import { borders } from '@trezor/theme';
 
 const Wrapper = styled.div`
     display: flex;
@@ -52,7 +53,7 @@ const HeaderBlock = styled.div`
 const Setup = styled(HeaderBlock)`
     background-color: ${({ theme }) => theme.BG_GREY};
     padding: 21px;
-    border-radius: 8px;
+    border-radius: ${borders.radii.xs};
     margin-right: 12px;
     width: 100%;
 `;

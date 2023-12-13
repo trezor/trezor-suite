@@ -4,6 +4,7 @@ import { Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
 import { goto } from 'src/actions/suite/routerActions';
+import { borders } from '@trezor/theme';
 
 const Wrapper = styled.div`
     display: flex;
@@ -34,7 +35,7 @@ const FixedRate = styled.div`
     flex-direction: column;
     background-color: ${({ theme }) => theme.BG_GREY};
     padding: 14px 18px;
-    border-radius: 8px;
+    border-radius: ${borders.radii.xs};
     margin-bottom: 30px;
 `;
 const FixedRateHeader = styled.div`
