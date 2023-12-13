@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import { DATA_URL, HELP_CENTER_UDEV_URL } from '@trezor/urls';
-import { Translation, TrezorLink } from 'src/components/suite';
+import { Translation } from 'src/components/suite';
 import { variables, Button, Select, Link, Spinner } from '@trezor/components';
 import { useSelector } from 'src/hooks/suite';
+import { LearnMoreButton } from './LearnMoreButton';
 
 const Wrapper = styled.div`
     display: flex;
@@ -93,11 +94,7 @@ export const UdevDownload = () => {
             </Download>
             <Manual>
                 <Translation id="TR_UDEV_DOWNLOAD_MANUAL" />
-                <TrezorLink variant="nostyle" href={HELP_CENTER_UDEV_URL}>
-                    <Button variant="tertiary" icon="EXTERNAL_LINK" iconAlignment="right">
-                        <Translation id="TR_LEARN_MORE" />
-                    </Button>
-                </TrezorLink>
+                <LearnMoreButton url={HELP_CENTER_UDEV_URL} />
             </Manual>
         </Wrapper>
     );

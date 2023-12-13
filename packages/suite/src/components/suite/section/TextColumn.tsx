@@ -1,14 +1,10 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
-import { variables, Button } from '@trezor/components';
-import { Translation, TrezorLink } from 'src/components/suite';
 
-interface TextColumnProps {
-    title?: ReactNode;
-    description?: ReactNode;
-    buttonLink?: string;
-    buttonTitle?: ReactNode;
-}
+import { variables } from '@trezor/components';
+import { Url } from '@trezor/urls';
+
+import { LearnMoreButton } from '../LearnMoreButton';
 
 const Wrapper = styled.div`
     display: flex;
@@ -17,14 +13,6 @@ const Wrapper = styled.div`
     text-align: left;
     margin-right: 16px;
     max-width: 500px;
-`;
-
-const ButtonLink = styled(Button)`
-    max-width: fit-content;
-
-    svg {
-        margin-left: 6px;
-    }
 `;
 
 const Description = styled.div`
@@ -48,21 +36,17 @@ const Title = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
+interface TextColumnProps {
+    title?: ReactNode;
+    description?: ReactNode;
+    buttonLink?: Url;
+    buttonTitle?: ReactNode;
+}
+
 export const TextColumn = ({ title, description, buttonLink, buttonTitle }: TextColumnProps) => (
     <Wrapper>
         {title && <Title>{title}</Title>}
         {description && <Description>{description}</Description>}
-        {buttonLink && (
-            <TrezorLink variant="nostyle" href={buttonLink}>
-                <ButtonLink
-                    variant="tertiary"
-                    size="tiny"
-                    icon="EXTERNAL_LINK"
-                    iconAlignment="right"
-                >
-                    {buttonTitle || <Translation id="TR_LEARN_MORE" />}
-                </ButtonLink>
-            </TrezorLink>
-        )}
+        {buttonLink && <LearnMoreButton url={buttonLink}>{buttonTitle}</LearnMoreButton>}
     </Wrapper>
 );
