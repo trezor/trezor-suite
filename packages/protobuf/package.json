@@ -34,7 +34,7 @@
         "protobufjs": "7.2.5"
     },
     "devDependencies": {
-        "jest": "29.5.0",
+        "jest": "^29.7.0",
         "protobufjs-cli": "^1.1.2",
         "rimraf": "^5.0.5",
         "tsx": "^4.6.2",

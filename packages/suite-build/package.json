@@ -48,7 +48,7 @@
         "@types/copy-webpack-plugin": "^10.1.0",
         "@types/webpack-bundle-analyzer": "^4.6.3",
         "@types/webpack-plugin-serve": "^1.4.6",
-        "jest": "29.5.0",
+        "jest": "^29.7.0",
         "react-refresh": "^0.14.0",
         "typescript": "5.3.3"
     }

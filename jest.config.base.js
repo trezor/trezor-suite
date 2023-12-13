@@ -9,7 +9,10 @@ const babelConfig = {
             },
         ],
     ],
-    plugins: [['@babel/plugin-proposal-decorators', { version: '2023-05' }]],
+    plugins: [
+        '@babel/plugin-transform-export-namespace-from',
+        ['@babel/plugin-proposal-decorators', { version: '2023-05' }],
+    ],
 };
 
 module.exports = {

@@ -36,6 +36,6 @@
         "react-redux": "8.0.7"
     },
     "devDependencies": {
-        "jest": "29.5.0"
+        "jest": "^29.7.0"
     }
 }

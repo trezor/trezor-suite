@@ -48,7 +48,7 @@
         "@trezor/node-utils": "workspace:*",
         "@trezor/trezor-user-env-link": "workspace:*",
         "@types/chrome": "^0.0.254",
-        "jest": "29.5.0",
+        "jest": "^29.7.0",
         "rimraf": "^5.0.5",
         "terser-webpack-plugin": "^5.3.9",
         "tsx": "^4.6.2",
