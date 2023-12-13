@@ -1,8 +1,14 @@
 import { importRequest } from 'src/actions/wallet/sendFormActions';
 import { useDispatch } from 'src/hooks/suite';
+import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
 import { fiatCurrencies } from '@suite-common/suite-config';
-import { fromFiatCurrency, toFiatCurrency } from '@suite-common/wallet-utils';
+import {
+    fromFiatCurrency,
+    toFiatCurrency,
+    amountToSatoshi,
+    formatAmount,
+} from '@suite-common/wallet-utils';
 import { UseSendFormState, Output } from 'src/types/wallet/sendForm';
 import { CoinFiatRates } from '@suite-common/wallet-types';
 
@@ -17,6 +23,7 @@ type Props = {
 
 export const useSendFormImport = ({ network, tokens, localCurrencyOption, fiatRates }: Props) => {
     const dispatch = useDispatch();
+    const { shouldSendInSats } = useBitcoinAmountUnit(network.symbol);
 
     const importTransaction = async () => {
         // open ImportTransactionModal and get parsed csv
@@ -42,12 +49,22 @@ export const useSendFormImport = ({ network, tokens, localCurrencyOption, fiatRa
 
                 if (currency === network.symbol) {
                     // csv amount in crypto currency
-                    output.amount = item.amount || '';
+                    const cryptoAmount = item.amount || '';
+                    if (shouldSendInSats) {
+                        // try to convert to satoshis
+                        output.amount = amountToSatoshi(cryptoAmount, network.decimals);
+                    } else {
+                        output.amount = cryptoAmount;
+                    }
+
                     // calculate Fiat from Amount
                     if (fiatRates && fiatRates.current) {
+                        const cryptoValue = shouldSendInSats
+                            ? formatAmount(output.amount, network.decimals)
+                            : output.amount;
                         output.fiat =
                             toFiatCurrency(
-                                output.amount,
+                                cryptoValue,
                                 output.currency.value,
                                 fiatRates.current.rates,
                             ) || '';
@@ -62,13 +79,18 @@ export const useSendFormImport = ({ network, tokens, localCurrencyOption, fiatRa
                     output.currency = { value: currency, label: currency.toUpperCase() };
                     output.fiat = item.amount || '';
                     // calculate Amount from Fiat
-                    output.amount =
-                        fromFiatCurrency(
-                            output.fiat,
-                            currency,
-                            fiatRates.current.rates,
-                            network.decimals,
-                        ) || '';
+                    const cryptoValue = fromFiatCurrency(
+                        output.fiat,
+                        currency,
+                        fiatRates.current.rates,
+                        network.decimals,
+                    );
+                    const cryptoAmount =
+                        cryptoValue && shouldSendInSats
+                            ? amountToSatoshi(cryptoValue, network.decimals)
+                            : cryptoValue ?? '';
+
+                    output.amount = cryptoAmount;
                 } else if (tokens) {
                     // csv amount in ERC20 currency
                     const token = tokens.find(t => t.symbol === currency);

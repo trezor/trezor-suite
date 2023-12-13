@@ -21,6 +21,7 @@ const ExpandWrapper = styled(motion.div)`
     margin-top: 8px;
     padding: 12px;
     text-align: left;
+    word-break: break-word;
 `;
 
 const ExpandButton = styled.div`
