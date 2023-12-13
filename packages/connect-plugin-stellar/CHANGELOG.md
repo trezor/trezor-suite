@@ -1,3 +1,8 @@
+# UNRELEASED
+
+-   chore: update stellar-base to v10.0.0
+-   chore: update stellar-sdk to v11.0.1
+
 # 9.0.2
 
 -   chore: update stellar-base to v10.0.0-beta.2

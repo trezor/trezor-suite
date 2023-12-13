@@ -12,7 +12,7 @@
         "build": "rimraf ./build && yarn workspace @trezor/suite-build run build:web"
     },
     "dependencies": {
-        "@sentry/browser": "^7.77.0",
+        "@sentry/browser": "^7.87.0",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/sentry": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
@@ -25,7 +25,7 @@
         "react-redux": "8.0.7",
         "react-router": "^5.2.0",
         "react-router-dom": "^5.2.0",
-        "styled-components": "^5.3.10",
+        "styled-components": "^5.3.11",
         "worker-loader": "^3.0.8"
     },
     "devDependencies": {
@@ -39,14 +39,14 @@
         "@trezor/transport": "workspace:*",
         "@trezor/trezor-user-env-link": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "@types/chrome-remote-interface": "^0.31.12",
-        "@types/cypress-image-snapshot": "^3.1.8",
+        "@types/chrome-remote-interface": "^0.31.14",
+        "@types/cypress-image-snapshot": "^3.1.9",
         "@types/react": "18.0.32",
-        "@types/react-dom": "18.2.14",
-        "@types/react-helmet": "^6.1.8",
+        "@types/react-dom": "^18.2.17",
+        "@types/react-helmet": "^6.1.11",
         "@types/react-router": "^5.1.20",
         "@types/react-router-dom": "^5.1.7",
-        "@types/styled-components": "^5.1.29",
+        "@types/styled-components": "5.1.32",
         "chrome-remote-interface": "^0.33.0",
         "cypress": "^13.4.0",
         "cypress-file-upload": "^5.0.8",

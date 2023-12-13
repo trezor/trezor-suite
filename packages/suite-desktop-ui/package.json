@@ -13,7 +13,7 @@
         "test:unit": "jest -c ../../jest.config.base.js --passWithNoTests"
     },
     "dependencies": {
-        "@sentry/electron": "^4.14.0",
+        "@sentry/electron": "^4.15.1",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/sentry": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
@@ -27,15 +27,15 @@
         "@trezor/utils": "workspace:*",
         "react": "18.2.0",
         "react-dom": "18.2.0",
-        "react-markdown": "^9.0.0",
+        "react-markdown": "^9.0.1",
         "react-redux": "8.0.7",
         "react-router-dom": "^5.2.0",
-        "styled-components": "^5.3.10"
+        "styled-components": "^5.3.11"
     },
     "devDependencies": {
         "@types/react": "18.0.32",
-        "@types/react-dom": "18.2.14",
-        "@types/styled-components": "^5.1.29",
+        "@types/react-dom": "^18.2.17",
+        "@types/styled-components": "5.1.32",
         "jest": "29.5.0",
         "stylelint": "^15.11.0",
         "stylelint-config-standard": "^34.0.0",

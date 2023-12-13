@@ -13,7 +13,7 @@
     },
     "dependencies": {
         "react": "18.2.0",
-        "react-intl": "^6.5.1",
+        "react-intl": "^6.5.5",
         "react-native": "0.71.8"
     }
 }

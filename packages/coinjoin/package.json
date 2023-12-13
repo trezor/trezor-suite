@@ -29,7 +29,7 @@
         "@trezor/blockchain-link-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "@trezor/utxo-lib": "workspace:*",
-        "bignumber.js": "^9.1.1",
+        "bignumber.js": "^9.1.2",
         "cross-fetch": "^4.0.0",
         "events": "^3.3.0",
         "golomb": "1.2.0",

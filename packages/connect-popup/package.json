@@ -37,7 +37,7 @@
         "@trezor/utils": "workspace:*",
         "@types/react": "18.0.32",
         "copy-webpack-plugin": "^11.0.0",
-        "html-webpack-plugin": "^5.5.3",
+        "html-webpack-plugin": "^5.5.4",
         "jest": "29.5.0",
         "rimraf": "^5.0.5",
         "terser-webpack-plugin": "^5.3.9",
@@ -51,7 +51,7 @@
     },
     "peerDependencies": {
         "react": "18.2.0",
-        "styled-components": "^5.3.10",
+        "styled-components": "^5.3.11",
         "stylelint": "^15.11.0",
         "stylelint-config-standard": "^34.0.0"
     }

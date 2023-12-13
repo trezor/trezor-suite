@@ -95,7 +95,7 @@
         "lottie-react-native": "^5.1.5",
         "node-libs-browser": "^2.2.1",
         "react": "18.2.0",
-        "react-intl": "^6.5.1",
+        "react-intl": "^6.5.5",
         "react-native": "0.71.8",
         "react-native-config": "^1.5.0",
         "react-native-flipper": "0.164.0",

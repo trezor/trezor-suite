@@ -11,7 +11,6 @@
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
-        "csstype": "^3.1.2",
         "prettier": "3.1.1"
     },
     "devDependencies": {

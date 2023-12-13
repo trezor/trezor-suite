@@ -24,18 +24,18 @@
     ],
     "peerDependencies": {
         "@trezor/connect": "9.x.x",
-        "stellar-sdk": "^v11.0.0-beta.3",
+        "stellar-sdk": "^v11.0.1",
         "tslib": "^2.6.2"
     },
     "devDependencies": {
         "jest": "29.5.0",
         "rimraf": "^5.0.5",
-        "stellar-base": "v10.0.0-beta.2",
-        "stellar-sdk": "^v11.0.0-beta.3",
+        "stellar-base": "^10.0.0",
+        "stellar-sdk": "^11.0.1",
         "typescript": "5.3.3"
     },
     "dependencies": {
-        "bignumber.js": "^9.1.1"
+        "bignumber.js": "^9.1.2"
     },
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",

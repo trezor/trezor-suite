@@ -25,13 +25,13 @@
         "@trezor/connect": "workspace:*",
         "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "bignumber.js": "^9.1.1",
+        "bignumber.js": "^9.1.2",
         "date-fns": "^2.30.0",
-        "pdfmake": "^0.2.7",
+        "pdfmake": "^0.2.8",
         "react": "18.2.0",
         "react-hook-form": "^7.48.2",
         "trezor-address-validator": "^0.4.4",
-        "web3-utils": "^1.10.0"
+        "web3-utils": "^1.10.3"
     },
     "devDependencies": {
         "@types/pdfmake": "^0.2.8",

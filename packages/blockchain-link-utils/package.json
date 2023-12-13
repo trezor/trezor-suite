@@ -20,7 +20,7 @@
         "@mobily/ts-belt": "^3.13.1",
         "@solana/web3.js": "^1.87.6",
         "@trezor/utils": "workspace:*",
-        "bignumber.js": "^9.1.1"
+        "bignumber.js": "^9.1.2"
     },
     "devDependencies": {
         "@trezor/blockchain-link-types": "workspace:*",
