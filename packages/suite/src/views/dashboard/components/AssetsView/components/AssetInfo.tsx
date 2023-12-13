@@ -7,11 +7,11 @@ import { useSelector } from 'react-redux';
 import { selectAccountsByNetworkSymbol } from '@suite-common/wallet-core';
 import { SkeletonCircle, SkeletonRectangle } from 'src/components/suite';
 import { spacingsPx, typography } from '@trezor/theme';
-
-interface AssetInfoProps {
-    network: Network;
-    onClick: () => void;
-}
+import {
+    AssetFiatBalance,
+    AssetFiatBalanceWithPercentage,
+    calculateAssetsPercentage,
+} from '@suite-common/assets';
 
 interface AssetInfoSkeletonProps {
     animate?: boolean;
@@ -62,17 +62,37 @@ const LogoWrapper = styled.div`
     align-items: center;
 `;
 
-export const AssetInfo = ({ network, onClick }: AssetInfoProps) => {
+interface AssetInfoProps {
+    network: Network;
+    onClick: () => void;
+    assetsFiatBalances?: AssetFiatBalance[];
+    index?: number;
+}
+
+export const AssetInfo = ({ network, onClick, assetsFiatBalances, index }: AssetInfoProps) => {
     const { symbol, name } = network;
     const selectedAccounts = useSelector((state: any) =>
         selectAccountsByNetworkSymbol(state, symbol),
     );
+
+    const assetPercentage = assetsFiatBalances
+        ? calculateAssetsPercentage(assetsFiatBalances).find(
+              (asset: AssetFiatBalanceWithPercentage) => asset.symbol === symbol,
+          )?.fiatPercentage
+        : undefined;
+
     const theme = useTheme();
 
     return (
         <Container onClick={onClick}>
             <LogoWrapper>
-                <CoinLogo symbol={symbol} size={24} hasShareIndicator />
+                <CoinLogo
+                    symbol={symbol}
+                    size={24}
+                    percentageShare={assetPercentage}
+                    hasShareIndicator
+                    index={index}
+                />
             </LogoWrapper>
             <WalletContent>
                 <CoinName>{name}</CoinName>

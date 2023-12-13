@@ -1,6 +1,15 @@
-import { AssetType } from './assetsSelectors';
+export interface AssetFiatBalance {
+    fiatBalance: string;
+    symbol: string;
+}
+export interface AssetFiatBalanceWithPercentage extends AssetFiatBalance {
+    fiatPercentage: number;
+    fiatPercentageOffset: number;
+}
 
-export const calculateAssetsPercentage = (assetsData: AssetType[]) => {
+export const calculateAssetsPercentage = <T>(
+    assetsData: Array<AssetFiatBalance & T>,
+): Array<AssetFiatBalanceWithPercentage & T> => {
     const fiatTotal = assetsData.reduce((sum, next) => sum + Number(next.fiatBalance), 0);
     let previousPercentage = 0;
 
