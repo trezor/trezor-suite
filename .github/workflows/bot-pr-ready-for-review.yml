@@ -62,11 +62,15 @@ jobs:
             `;
 
 
-            await github.graphql(updateItemFieldMutation, {
-              projectId: "PVT_kwDOAD9FD84AB-s-", // Suite Pull Requests
-              itemId: process.env.PR_ID,
-              fieldId: "PVTSSF_lADOAD9FD84AB-s-zgBJWdk", // Status
-              value: {
-                  singleSelectOptionId: "49f430a3"  // To be reviewed
-                  }
-            });
+            try {
+              await github.graphql(updateItemFieldMutation, {
+                projectId: "PVT_kwDOAD9FD84AB-s-", // Suite Pull Requests
+                itemId: process.env.PR_ID,
+                fieldId: "PVTSSF_lADOAD9FD84AB-s-zgBJWdk", // Status
+                value: {
+                    singleSelectOptionId: "49f430a3"  // To be reviewed
+                    }
+              });
+            } catch (error) {
+              console.log(JSON.stringify(error, null, 2);
+            }
