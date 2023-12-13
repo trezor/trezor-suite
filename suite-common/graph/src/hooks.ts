@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { roundToNearestMinutes, subHours } from 'date-fns';
@@ -32,7 +32,7 @@ type CommonUseGraphReturnType = {
     graphEvents?: GroupedBalanceMovementEvent[];
     isLoading: boolean;
     error: string | null;
-    refetch: () => void;
+    refetch: () => Promise<void>;
 };
 
 // if start date is null we are fetching all data till first account movement
@@ -84,26 +84,22 @@ export function useGraphForAccounts(params: useGraphForAccountsParams): {
     const [graphEvents, setGraphEvents] = useState<GroupedBalanceMovementEvent[]>();
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [refetchToken, setRefetchToken] = useState(0);
     const isDiscoveryActive = useSelector(selectIsDeviceDiscoveryActive);
+    const lastFetchTimestamp = useRef<number | null>(null);
 
-    const refetch = useCallback(() => {
-        // this is used to trigger to force re-run of useEffect lower
-        setRefetchToken(previousRefetchToken => previousRefetchToken + 1);
-    }, []);
+    const fetchGraphValues = useCallback(
+        async ({ forceRefetch = false }: { forceRefetch?: boolean } = {}) => {
+            if (isPortfolioGraph && isDiscoveryActive) {
+                // The graph waits until the discovery is finished, before starting to fetch values.
+                setIsLoading(true);
+                setError(null);
+            } else if (A.isEmpty(accounts)) {
+                setIsLoading(false);
+                setError('Graph is not available for testnet coins.');
+            } else {
+                const fetchTimestamp = Date.now();
+                lastFetchTimestamp.current = fetchTimestamp;
 
-    useEffect(() => {
-        let shouldSetValues = true;
-
-        if (isPortfolioGraph && isDiscoveryActive) {
-            // The graph waits until the discovery is finished, before starting to fetch values.
-            setIsLoading(true);
-            setError(null);
-        } else if (A.isEmpty(accounts)) {
-            setIsLoading(false);
-            setError('Graph is not available for testnet coins.');
-        } else {
-            const getGraphValues = async () => {
                 setIsLoading(true);
                 try {
                     const points = await getMultipleAccountBalanceHistoryWithFiat({
@@ -111,6 +107,7 @@ export function useGraphForAccounts(params: useGraphForAccountsParams): {
                         fiatCurrency,
                         startOfTimeFrameDate,
                         endOfTimeFrameDate,
+                        forceRefetch,
                     });
 
                     let events;
@@ -130,33 +127,35 @@ export function useGraphForAccounts(params: useGraphForAccountsParams): {
                         );
                     }
 
-                    if (shouldSetValues) {
-                        setGraphPoints(points);
-                        setGraphEvents(events);
-                        setError(null);
-                    }
+                    // If the fetch was interrupted by a new fetch, do not set the values.
+                    if (lastFetchTimestamp.current !== fetchTimestamp) return;
+
+                    setError(null);
+                    setGraphPoints(points);
+                    setGraphEvents(events);
                 } catch (err) {
-                    setError(err?.message);
+                    // If the fetch was interrupted by a new fetch, do not set error.
+                    if (lastFetchTimestamp.current !== fetchTimestamp) return;
+                    setError(err.message);
                 }
-
                 setIsLoading(false);
-            };
+            }
+        },
+        [
+            accounts,
+            fiatCurrency,
+            endOfTimeFrameDate,
+            startOfTimeFrameDate,
+            isPortfolioGraph,
+            isDiscoveryActive,
+        ],
+    );
 
-            getGraphValues();
-        }
+    const refetch = useCallback(() => fetchGraphValues({ forceRefetch: true }), [fetchGraphValues]);
 
-        return () => {
-            shouldSetValues = false;
-        };
-    }, [
-        accounts,
-        fiatCurrency,
-        refetchToken,
-        endOfTimeFrameDate,
-        startOfTimeFrameDate,
-        isPortfolioGraph,
-        isDiscoveryActive,
-    ]);
+    useEffect(() => {
+        fetchGraphValues();
+    }, [fetchGraphValues]);
 
     return { graphPoints, graphEvents, isLoading, error, refetch };
 }

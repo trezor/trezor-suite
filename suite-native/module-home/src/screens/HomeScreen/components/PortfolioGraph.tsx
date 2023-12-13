@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { forwardRef, useCallback, useEffect, useImperativeHandle } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useSetAtom } from 'jotai';
@@ -15,7 +15,11 @@ import {
     selectedPointAtom,
 } from './PortfolioGraphHeader';
 
-export const PortfolioGraph = () => {
+export type PortfolioGraphRef = {
+    refetch: () => Promise<void>;
+};
+
+export const PortfolioGraph = forwardRef<PortfolioGraphRef>((_props, ref) => {
     const fiatCurrency = useSelector(selectFiatCurrency);
     const isDiscoveryActive = useSelector(selectIsDeviceDiscoveryActive);
     const isPortfolioEmpty = useSelector(selectIsPortfolioEmpty);
@@ -41,6 +45,14 @@ export const PortfolioGraph = () => {
 
     useEffect(setInitialSelectedPoints, [setInitialSelectedPoints]);
 
+    useImperativeHandle(
+        ref,
+        () => ({
+            refetch,
+        }),
+        [refetch],
+    );
+
     if (isPortfolioEmpty && isDiscoveryActive) return null;
 
     return (
@@ -58,4 +70,4 @@ export const PortfolioGraph = () => {
             <TimeSwitch selectedTimeFrame={timeframe} onSelectTimeFrame={onSelectTimeFrame} />
         </VStack>
     );
-};
+});

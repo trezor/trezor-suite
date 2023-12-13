@@ -85,15 +85,17 @@ export const getAccountBalanceHistory = async ({
     coin,
     descriptor,
     endOfTimeFrameDate,
+    forceRefetch,
 }: {
     coin: NetworkSymbol;
     descriptor: string;
     endOfTimeFrameDate: Date;
+    forceRefetch?: boolean;
 }): Promise<AccountHistoryBalancePoint[]> => {
     const endTimeFrameTimestamp = getUnixTime(endOfTimeFrameDate);
     const cacheKey = `${coin}-${descriptor}-${endTimeFrameTimestamp}`;
 
-    if (accountBalanceHistoryCache[cacheKey]) {
+    if (accountBalanceHistoryCache[cacheKey] && !forceRefetch) {
         return accountBalanceHistoryCache[cacheKey];
     }
 
@@ -155,22 +157,24 @@ type FiatRatesItem = {
 
 const fiatRatesCache: Record<string, FiatRatesItem[]> = {};
 
-export const getFiatRatesForNetworkInTimeFrame = async (
-    timestamps: number[],
-    networkSymbol: NetworkSymbol,
-    fiatCurrency: FiatCurrencyCode,
-) => {
-    const cacheKey = `${networkSymbol}-${fiatCurrency}-${JSON.stringify(timestamps)}`;
+export const getFiatRatesForNetworkInTimeFrame = async ({
+    timestamps,
+    coin,
+    fiatCurrency,
+    forceRefetch,
+}: {
+    timestamps: number[];
+    coin: NetworkSymbol;
+    fiatCurrency: FiatCurrencyCode;
+    forceRefetch?: boolean;
+}) => {
+    const cacheKey = `${coin}-${fiatCurrency}-${JSON.stringify(timestamps)}`;
 
-    if (fiatRatesCache[cacheKey]) {
+    if (fiatRatesCache[cacheKey] && !forceRefetch) {
         return fiatRatesCache[cacheKey];
     }
 
-    const fiatRates = await getFiatRatesForTimestamps(
-        { symbol: networkSymbol },
-        timestamps,
-        fiatCurrency,
-    );
+    const fiatRates = await getFiatRatesForTimestamps({ symbol: coin }, timestamps, fiatCurrency);
     if (G.isNullable(fiatRates)) return null;
 
     const formattedFiatRates = fiatRates.tickers.map((ticker, index) => ({
@@ -189,12 +193,14 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
     endOfTimeFrameDate,
     numberOfPoints = NUMBER_OF_POINTS,
     fiatCurrency,
+    forceRefetch,
 }: {
     accounts: AccountItem[];
     startOfTimeFrameDate: Date | null;
     endOfTimeFrameDate: Date;
     numberOfPoints?: number;
     fiatCurrency: FiatCurrencyCode;
+    forceRefetch?: boolean;
 }): Promise<FiatGraphPoint[] | FiatGraphPointWithCryptoBalance[]> => {
     const accountsWithBalanceHistory = await Promise.all(
         accounts.map(({ coin, descriptor }) =>
@@ -202,6 +208,7 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
                 coin,
                 descriptor,
                 endOfTimeFrameDate,
+                forceRefetch,
             }).then(balanceHistory => ({
                 coin,
                 descriptor,
@@ -236,7 +243,12 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
     const coinsFiatRates = D.fromPairs(
         await Promise.all(
             coins.map(coin =>
-                getFiatRatesForNetworkInTimeFrame(timestamps, coin, fiatCurrency).then(res => {
+                getFiatRatesForNetworkInTimeFrame({
+                    timestamps,
+                    coin,
+                    fiatCurrency,
+                    forceRefetch,
+                }).then(res => {
                     if (res === null)
                         throw new Error(`Unable to fetch fiat rates for defined timestamps.`);
 

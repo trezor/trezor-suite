@@ -6,7 +6,7 @@ import {
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
 
-import { HomeScreen } from '../screens/HomeScreen';
+import { HomeScreen } from '../screens/HomeScreen/HomeScreen';
 
 const HomeStack = createNativeStackNavigator<HomeStackParamList>();
 

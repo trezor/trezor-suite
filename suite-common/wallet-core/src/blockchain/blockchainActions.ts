@@ -29,7 +29,7 @@ const updateFee = createAction(`${actionsPrefix}/updateFee`, (payload: Partial<N
 
 const synced = createAction(
     `${actionsPrefix}/synced`,
-    (payload: { symbol: NetworkSymbol; timeout: Timeout }) => ({
+    (payload: { symbol: NetworkSymbol; timeout?: Timeout }) => ({
         payload,
     }),
 );

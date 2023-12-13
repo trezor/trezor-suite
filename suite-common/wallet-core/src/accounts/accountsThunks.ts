@@ -1,5 +1,5 @@
 import TrezorConnect, { AccountInfo, TokenInfo } from '@trezor/connect';
-import { Account } from '@suite-common/wallet-types';
+import { Account, AccountKey } from '@suite-common/wallet-types';
 import { networksCompatibility as NETWORKS } from '@suite-common/wallet-config';
 import {
     analyzeTransactions,
@@ -19,7 +19,7 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { transactionsActions } from '../transactions/transactionsActions';
 import { selectTransactions } from '../transactions/transactionsReducer';
 import { accountsActions } from './accountsActions';
-import { selectAccounts } from './accountsReducer';
+import { selectAccountByKey, selectAccounts } from './accountsReducer';
 import { actionPrefix } from './constants';
 import { selectBlockchainHeightBySymbol } from '../blockchain/blockchainReducer';
 
@@ -75,11 +75,13 @@ const fetchAccountTokens = async (account: Account, payloadTokens: AccountInfo['
 // as we usually want to update all accounts for a single coin at once
 export const fetchAndUpdateAccountThunk = createThunk(
     `${actionPrefix}/fetchAndUpdateAccountThunk`,
-    async (account: Account, { dispatch, extra, getState }) => {
+    async ({ accountKey }: { accountKey: AccountKey }, { dispatch, extra, getState }) => {
         const {
             selectors: { selectDevices, selectBitcoinAmountUnit },
         } = extra;
+        const account = selectAccountByKey(getState(), accountKey);
 
+        if (!account) return;
         if (!isTrezorConnectBackendType(account.backendType)) return; // skip unsupported backend type
         // first basic check, traffic optimization
         // basic check returns only small amount of data without full transaction history

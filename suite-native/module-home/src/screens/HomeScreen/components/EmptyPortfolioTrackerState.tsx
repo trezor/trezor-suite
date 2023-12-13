@@ -1,3 +1,4 @@
+/* eslint-disable import/extensions */
 import { Dimensions } from 'react-native';
 import { useMemo } from 'react';
 

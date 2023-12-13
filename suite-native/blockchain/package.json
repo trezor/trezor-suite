@@ -1,0 +1,20 @@
+{
+    "name": "@suite-native/blockchain",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "type-check": "tsc --build"
+    },
+    "dependencies": {
+        "@suite-common/redux-utils": "workspace:*",
+        "@suite-common/wallet-config": "workspace:*",
+        "@suite-common/wallet-core": "workspace:*",
+        "@suite-common/wallet-types": "workspace:*",
+        "@suite-common/wallet-utils": "workspace:*",
+        "@trezor/connect": "workspace:*"
+    }
+}

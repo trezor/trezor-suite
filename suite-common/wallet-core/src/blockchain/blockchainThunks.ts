@@ -288,7 +288,7 @@ export const syncAccountsWithBlockchainThunk = createThunk(
 
         await Promise.all(
             findAccountsByNetwork(symbol, accounts).map(a =>
-                dispatch(fetchAndUpdateAccountThunk(a)),
+                dispatch(fetchAndUpdateAccountThunk({ accountKey: a.key })),
             ),
         );
 

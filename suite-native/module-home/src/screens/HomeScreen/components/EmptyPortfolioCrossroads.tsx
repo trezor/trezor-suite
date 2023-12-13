@@ -1,3 +1,4 @@
+/* eslint-disable import/extensions */
 import { useMemo } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
