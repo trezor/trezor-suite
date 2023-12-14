@@ -33,6 +33,7 @@ import * as requestInterceptor from './request-interceptor';
 import * as coinjoin from './coinjoin';
 import * as csp from './csp';
 import * as fileProtocol from './file-protocol';
+import * as bluetooth from './bluetooth';
 
 // General modules (both dev & prod)
 const MODULES = [
@@ -61,6 +62,7 @@ const MODULES = [
     devTools,
     requestInterceptor,
     coinjoin,
+    bluetooth,
     // Modules used only in dev/prod mode
     ...(isDevEnv ? [] : [csp, fileProtocol]),
 ];

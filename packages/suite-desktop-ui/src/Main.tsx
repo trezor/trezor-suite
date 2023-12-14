@@ -34,6 +34,7 @@ import * as STORAGE from 'src/actions/suite/constants/storageConstants';
 import { DesktopUpdater } from './support/DesktopUpdater';
 import { AppRouter } from './support/Router';
 import { TorLoadingScreen } from './support/screens/TorLoadingScreen';
+import { Bluetooth } from './support/Bluetooth';
 
 const Main = () => {
     useTor();
@@ -52,6 +53,7 @@ const Main = () => {
                         <ConnectedIntlProvider>
                             <FormatterProvider config={formattersConfig}>
                                 <DesktopUpdater>
+                                    <Bluetooth />
                                     <Metadata />
                                     <ToastContainer />
                                     <Preloader>

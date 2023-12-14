@@ -34,6 +34,7 @@ const createMainWindow = (winBounds: WinBounds) => {
         minHeight: MIN_HEIGHT,
         webPreferences: {
             webSecurity: !isDevEnv,
+            // experimentalFeatures: true,
             allowRunningInsecureContent: isDevEnv,
             preload: path.join(__dirname, 'preload.js'),
             // https://www.electronjs.org/blog/electron-20-0#default-changed-renderers-without-nodeintegration-true-are-sandboxed-by-default

@@ -38,5 +38,9 @@ const validChannels: Array<keyof RendererChannels> = [
     'protocol/open',
     'handshake/event',
     'bridge/status',
+    'bluetooth/pairing-start',
+    'bluetooth/api-request',
+    'bluetooth/select-device-request',
+    'bluetooth/pair-device-request',
 ];
 export const isValidChannel = (channel: any) => validChannels.includes(channel);

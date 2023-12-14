@@ -29,6 +29,10 @@ export interface MainChannels {
     'update/download': void;
     'update/install': void;
     'logger/config': LoggerConfig;
+    'bluetooth/pairing-error': string;
+    'bluetooth/select-device-result': string;
+    'bluetooth/api-response': { success: boolean; messageId: number; payload: any };
+    'bluetooth/transport-update': any[]; // Descriptors
 }
 
 // Event messages from main to renderer process
@@ -60,6 +64,11 @@ export interface RendererChannels {
     'bridge/status': Status;
 
     'handshake/event': HandshakeEvent;
+    'bluetooth/handshake': string[]; // not needed?
+    'bluetooth/pairing-start': void;
+    'bluetooth/select-device-request': { deviceId: string; deviceName: string }[];
+    'bluetooth/pair-device-request': { messageId: number; method: string; args: any[] };
+    'bluetooth/api-request': { messageId: number; method: string; args: any[] };
 }
 
 // Invocation from renderer process
@@ -130,4 +139,8 @@ export interface DesktopApi {
     // Bridge
     getBridgeStatus: DesktopApiInvoke<'bridge/get-status'>;
     toggleBridge: DesktopApiInvoke<'bridge/toggle'>;
+    // Bluetooth
+    bluetoothSelectDeviceResponse: DesktopApiSend<'bluetooth/select-device-result'>;
+    bluetoothApiResponse: DesktopApiSend<'bluetooth/api-response'>;
+    bluetoothTransportUpdate: DesktopApiSend<'bluetooth/transport-update'>;
 }
