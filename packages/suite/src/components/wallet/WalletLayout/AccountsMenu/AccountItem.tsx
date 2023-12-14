@@ -2,8 +2,8 @@ import { forwardRef, Ref, MouseEventHandler } from 'react';
 import styled from 'styled-components';
 
 import { isTestnet } from '@suite-common/wallet-utils';
-import { spacingsPx } from '@trezor/theme';
-import { CoinLogo, variables } from '@trezor/components';
+import { spacingsPx, typography } from '@trezor/theme';
+import { CoinLogo } from '@trezor/components';
 
 import {
     AccountLabel,
@@ -25,29 +25,36 @@ interface WrapperProps {
 
 const Wrapper = styled(NavigationItemBase)<WrapperProps>`
     background: ${({ theme, selected }) => selected && theme.backgroundSurfaceElevation1};
+    gap: 0;
+    display: flex;
+    justify-content: space-between;
 
     & + & {
         margin-top: ${spacingsPx.xxs};
     }
 
     :hover {
+        position: relative;
+        z-index: 2;
         background: ${({ theme, selected }) =>
             !selected && theme.backgroundTertiaryPressedOnElevation0};
     }
 `;
 
 export const Left = styled.div`
-    display: flex;
     padding-top: 3px;
 `;
 
-export const Right = styled.div`
-    display: flex;
+export const Center = styled.div`
+    flex: 1;
     flex-direction: column;
-    padding-left: 8px;
+    padding-left: ${spacingsPx.md};
+    padding-right: ${spacingsPx.xxs};
     overflow: hidden;
-    padding-right: 10px;
-    margin-right: -10px;
+`;
+export const Right = styled.div`
+    overflow: hidden;
+    text-align: right;
 `;
 
 const Row = styled.div`
@@ -62,24 +69,21 @@ const AccountName = styled.div`
     overflow-x: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    ${typography.highlight};
+    color: ${({ theme }) => theme.textDefault};
     line-height: 1.5;
     font-variant-numeric: tabular-nums;
 `;
 
 const Balance = styled.div`
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    ${typography.hint};
+    color: ${({ theme }) => theme.textSubdued};
     line-height: 1.57;
 `;
 
 const FiatValueWrapper = styled.div`
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    ${typography.hint};
+    color: ${({ theme }) => theme.textSubdued};
     line-height: 1.57;
 `;
 
@@ -137,9 +141,9 @@ export const AccountItem = forwardRef(
                 tabIndex={0}
             >
                 <Left>
-                    <CoinLogo size={16} symbol={symbol} />
+                    <CoinLogo size={24} symbol={symbol} />
                 </Left>
-                <Right>
+                <Center>
                     <Row>
                         <AccountName data-test={`${dataTestKey}/label`}>
                             <AccountLabel
@@ -163,17 +167,6 @@ export const AccountItem = forwardRef(
                                     />
                                 )}
                             </Row>
-                            <Row>
-                                <FiatValue
-                                    amount={formattedBalance}
-                                    symbol={symbol}
-                                    showApproximationIndicator
-                                >
-                                    {({ value }) =>
-                                        value ? <FiatValueWrapper>{value}</FiatValueWrapper> : null
-                                    }
-                                </FiatValue>
-                            </Row>
                         </>
                     )}
                     {!isBalanceShown && (
@@ -193,6 +186,13 @@ export const AccountItem = forwardRef(
                             )}
                         </SkeletonStack>
                     )}
+                </Center>
+                <Right>
+                    <FiatValue amount={formattedBalance} symbol={symbol}>
+                        {({ value }) =>
+                            value ? <FiatValueWrapper>{value}</FiatValueWrapper> : null
+                        }
+                    </FiatValue>
                 </Right>
             </Wrapper>
         );

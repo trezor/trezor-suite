@@ -8,6 +8,7 @@ const Nav = styled.nav`
     display: flex;
     flex-direction: column;
     gap: ${spacingsPx.xxs};
+    margin: ${spacingsPx.xs};
 `;
 
 const navItems: Array<NavigationItemProps & { CustomComponent?: FC<NavigationItemProps> }> = [

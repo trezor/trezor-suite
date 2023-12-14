@@ -1,9 +1,9 @@
-import { useCallback, useState } from 'react';
+import { useRef, useState } from 'react';
 
 import styled, { css, useTheme } from 'styled-components';
 
-import { H2, variables, Icon, LoadingContent } from '@trezor/components';
-import { zIndices } from '@trezor/theme';
+import { H2, variables, Icon } from '@trezor/components';
+import { spacingsPx, zIndices } from '@trezor/theme';
 import { sortByCoin, getFailedAccounts, accountSearchFn } from '@suite-common/wallet-utils';
 import { selectDevice } from '@suite-common/wallet-core';
 
@@ -16,6 +16,7 @@ import { AccountGroup } from './AccountGroup';
 import { AccountItem } from './AccountItem';
 import { AccountItemSkeleton } from './AccountItemSkeleton';
 import { AddAccountButton } from './AddAccountButton';
+import { CoinsFilter } from './CoinsFilter';
 
 const Wrapper = styled.div<{ isInline?: boolean }>`
     display: flex;
@@ -34,6 +35,7 @@ const Wrapper = styled.div<{ isInline?: boolean }>`
 const MenuHeader = styled.div<{ isInline?: boolean }>`
     display: flex;
     flex-direction: column;
+    border-top: 1px solid ${({ theme }) => theme.borderOnElevation0};
 
     ${props =>
         props.isInline &&
@@ -44,7 +46,7 @@ const MenuHeader = styled.div<{ isInline?: boolean }>`
     ${props =>
         !props.isInline &&
         css`
-            padding: 20px 16px 8px;
+            padding: ${spacingsPx.xs} ${spacingsPx.xs} 0 ${spacingsPx.xs};
         `}
 `;
 
@@ -52,21 +54,21 @@ const Row = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: ${spacingsPx.xs};
 `;
 
 const AddAccountButtonWrapper = styled.div`
     display: flex;
-    margin-left: 16px;
+    margin-left: ${spacingsPx.xs};
     align-items: flex-start;
-    margin-top: 16px;
 `;
 
 const Search = styled.div`
     display: flex;
     justify-content: space-between;
-    padding: 8px 0;
+    padding: ${spacingsPx.xs};
 
-    background: ${({ theme }) => theme.BG_WHITE};
+    background: ${({ theme }) => theme.backgroundSurfaceElevationNegative};
 `;
 
 const Heading = styled(H2)<{ isInline?: boolean }>`
@@ -88,7 +90,7 @@ const ExpandedMobileWrapper = styled.div`
     display: flex;
     position: absolute;
     flex-direction: column;
-    background: ${({ theme }) => theme.BG_WHITE};
+    background: ${({ theme }) => theme.backgroundSurfaceElevationNegative};
     z-index: ${zIndices.expandableNavigation};
     width: 100%;
     max-height: 80vh;
@@ -96,8 +98,43 @@ const ExpandedMobileWrapper = styled.div`
     box-shadow: 0 4px 10px 0 ${({ theme }) => theme.BOX_SHADOW_BLACK_20};
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
-    padding: 0 16px;
     padding-bottom: 16px;
+`;
+
+const gradientBase = css<{ isVisible: boolean }>`
+    width: 100%;
+    height: 45px;
+    z-index: 1;
+    position: absolute;
+    pointer-events: none;
+    opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
+    transition: all 0.2s ease-in;
+`;
+
+const GradientBefore = styled.div`
+    ${gradientBase}
+    top: 0;
+    background: linear-gradient(
+        ${({ theme }) => theme.backgroundSurfaceElevationNegative},
+        rgba(0 0 0 / 0%)
+    );
+`;
+const GradientAfter = styled.div`
+    ${gradientBase}
+    bottom: 0;
+    background: linear-gradient(
+        rgba(0 0 0 / 0%),
+        ${({ theme }) => theme.backgroundSurfaceElevationNegative}
+    );
+`;
+
+const Gradients = styled.div`
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    width: 100%;
+    overflow: auto;
+    position: relative;
 `;
 
 const Scroll = styled.div`
@@ -125,19 +162,28 @@ export const AccountsMenu = ({ isMenuInline }: AccountsMenuProps) => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const coinjoinIsPreloading = useSelector(state => state.wallet.coinjoin.isPreloading);
 
+    const containerRef = useRef<HTMLDivElement>(null);
+
+    const [isScrolledToTop, setIsScrolledToTop] = useState(true);
+    const [isScrolledToBottom, setIsScrolledToBottom] = useState(false);
     const [isExpanded, setIsExpanded] = useState(false);
     const [animatedIcon, setAnimatedIcon] = useState(false);
     const { coinFilter, searchString } = useAccountSearch();
 
     const theme = useTheme();
-    const { discovery, getDiscoveryStatus, isDiscoveryRunning } = useDiscovery();
+    const { discovery, getDiscoveryStatus } = useDiscovery();
 
     const discoveryStatus = getDiscoveryStatus();
     const discoveryInProgress = discoveryStatus && discoveryStatus.status === 'loading';
 
-    const selectedItemRef = useCallback((_item: HTMLDivElement | null) => {
-        // TODO: scroll to selected item
-    }, []);
+    const handleScroll = () => {
+        if (containerRef?.current) {
+            const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
+
+            setIsScrolledToTop(scrollTop === 0);
+            setIsScrolledToBottom(Math.ceil(scrollTop + clientHeight) >= scrollHeight);
+        }
+    };
 
     const accountLabels = useSelector(selectAccountLabels);
 
@@ -147,10 +193,7 @@ export const AccountsMenu = ({ isMenuInline }: AccountsMenuProps) => {
             <Wrapper isInline={isMenuInline}>
                 <Scroll>
                     <MenuHeader isInline={isMenuInline}>
-                        <Heading isInline={isMenuInline}>
-                            <Translation id="TR_MY_ACCOUNTS" />
-                        </Heading>
-                        {!isMenuInline && <AccountSearchBox isMobile={isMenuInline} />}
+                        {!isMenuInline && <AccountSearchBox />}
                     </MenuHeader>
                     {!isMenuInline && <AccountItemSkeleton />}
                 </Scroll>
@@ -165,27 +208,19 @@ export const AccountsMenu = ({ isMenuInline }: AccountsMenuProps) => {
         searchString || coinFilter
             ? list.filter(a => accountSearchFn(a, searchString, coinFilter, accountLabels[a.key]))
             : list;
+
+    const filterAccountsByType = (type: Account['accountType']) =>
+        filteredAccounts.filter(a => a.accountType === type && (!a.empty || a.visible));
+
     // always show first "normal" account even if they are empty
     const normalAccounts = filteredAccounts.filter(
         a => a.accountType === 'normal' && (a.index === 0 || !a.empty || a.visible),
     );
-    const coinjoinAccounts = filteredAccounts.filter(
-        a => a.accountType === 'coinjoin' && (!a.empty || a.visible),
-    );
-    const taprootAccounts = filteredAccounts.filter(
-        a => a.accountType === 'taproot' && (!a.empty || a.visible),
-    );
-    const segwitAccounts = filteredAccounts.filter(
-        a => a.accountType === 'segwit' && (!a.empty || a.visible),
-    );
-    const legacyAccounts = filteredAccounts.filter(
-        a => a.accountType === 'legacy' && (!a.empty || a.visible),
-    );
-
-    // cardano ledger accounts
-    const ledgerAccounts = filteredAccounts.filter(
-        a => a.accountType === 'ledger' && (!a.empty || a.visible),
-    );
+    const coinjoinAccounts = filterAccountsByType('coinjoin');
+    const taprootAccounts = filterAccountsByType('taproot');
+    const segwitAccounts = filterAccountsByType('segwit');
+    const legacyAccounts = filterAccountsByType('legacy');
+    const ledgerAccounts = filterAccountsByType('ledger');
 
     const { params } = selectedAccount;
 
@@ -225,11 +260,9 @@ export const AccountsMenu = ({ isMenuInline }: AccountsMenuProps) => {
             >
                 {accounts.map(account => {
                     const selected = !!isSelected(account);
-                    const forwardedRef = selected ? selectedItemRef : undefined;
                     return (
                         <AccountItem
                             key={`${account.descriptor}-${account.symbol}`}
-                            ref={forwardedRef}
                             account={account}
                             selected={selected}
                             closeMenu={() => setIsExpanded(false)}
@@ -293,15 +326,16 @@ export const AccountsMenu = ({ isMenuInline }: AccountsMenuProps) => {
                     <MenuItemsWrapper>
                         <ExpandedMobileWrapper>
                             <Search>
-                                <AccountSearchBox isMobile />
+                                <AccountSearchBox />
                                 <AddAccountButtonWrapper>
                                     <AddAccountButton
                                         device={device}
                                         closeMenu={() => setIsExpanded(false)}
-                                        noButtonLabel
                                     />
                                 </AddAccountButtonWrapper>
                             </Search>
+                            <CoinsFilter />
+
                             {accountsComponent}
                         </ExpandedMobileWrapper>
                     </MenuItemsWrapper>
@@ -312,24 +346,20 @@ export const AccountsMenu = ({ isMenuInline }: AccountsMenuProps) => {
 
     return (
         <Wrapper>
-            <Scroll>
-                <MenuHeader>
-                    <Row>
-                        <Heading>
-                            <LoadingContent isLoading={isDiscoveryRunning}>
-                                <Translation id="TR_MY_ACCOUNTS" />
-                            </LoadingContent>
-                        </Heading>
-                        <AddAccountButton
-                            data-test="@account-menu/add-account"
-                            device={device}
-                            noButtonLabel
-                        />
-                    </Row>
+            <MenuHeader>
+                <Row>
                     <AccountSearchBox />
-                </MenuHeader>
-                {accountsComponent}
-            </Scroll>
+                    <AddAccountButton data-test="@account-menu/add-account" device={device} />
+                </Row>
+                <CoinsFilter />
+            </MenuHeader>
+            <Gradients>
+                <GradientBefore isVisible={!isScrolledToTop} />
+                <Scroll ref={containerRef} onScroll={handleScroll}>
+                    {accountsComponent}
+                </Scroll>
+                <GradientAfter isVisible={!isScrolledToBottom} />
+            </Gradients>
         </Wrapper>
     );
 };

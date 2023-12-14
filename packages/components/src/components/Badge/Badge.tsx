@@ -114,6 +114,7 @@ export interface BadgeProps {
     icon?: IconName;
     hasAlert?: boolean;
     onClick?: (e: any) => void;
+    className?: string;
     children?: React.ReactNode;
 }
 
@@ -124,6 +125,7 @@ export const Badge = ({
     icon,
     hasAlert,
     onClick,
+    className,
     children,
 }: BadgeProps) => (
     <Container
@@ -132,6 +134,7 @@ export const Badge = ({
         disabled={!!isDisabled}
         hasAlert={!!hasAlert}
         onClick={onClick}
+        className={className}
     >
         {icon && <Icon name={icon} color={getIconColor(variant, isDisabled)} />}
 

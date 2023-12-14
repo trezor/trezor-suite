@@ -295,6 +295,9 @@ export type MenuAlignment = 'left' | 'right' | 'top-left' | 'top-right';
 export interface MenuProps {
     items?: GroupedMenuItems[];
     content?: React.ReactNode;
+    /**
+     * @description first word is position of the dropdown from the toggle icon, the second one is an alignment on the dropdown itself related to this toggle icon
+     */
     alignMenu?: MenuAlignment;
     coords?: Coords;
     addon?: Omit<AddonProps, 'setToggled'>;
