@@ -164,7 +164,12 @@ export interface UiRequestPermission {
 export interface UiRequestConfirmation {
     type: typeof UI_REQUEST.REQUEST_CONFIRMATION;
     payload: {
-        view: string;
+        view:
+            | 'no-backup'
+            | 'export-xpub'
+            | 'export-address'
+            | 'export-account-info'
+            | 'device-management';
         label?: string;
         customConfirmButton?: {
             className: string;
