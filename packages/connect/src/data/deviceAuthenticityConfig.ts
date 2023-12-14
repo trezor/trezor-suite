@@ -14,6 +14,10 @@ export interface DeviceAuthenticityConfig extends ModelPubKeys {
     timestamp: string;
 }
 
+/**
+ * How to update this config or check Sentry "Device authenticity invalid!" error? Please read this internal description:
+ * https://www.notion.so/satoshilabs/Device-authenticity-check-b8656a0fe3ab4a0d84c61534a73de462?pvs=4
+ */
 export const deviceAuthenticityConfig: DeviceAuthenticityConfig = {
     version: 1,
     timestamp: '2023-12-14T12:00:00+00:00',
