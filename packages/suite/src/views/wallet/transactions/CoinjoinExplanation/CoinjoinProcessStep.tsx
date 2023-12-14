@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
-import { Image, ImageType, Paragraph, variables } from '@trezor/components';
+import { H3, Image, ImageType, Paragraph, variables } from '@trezor/components';
 import { Translation } from 'src/components/suite/Translation';
 
 const StyledImage = styled(Image)`
@@ -15,9 +15,7 @@ const StyledImage = styled(Image)`
 
 const StepNumber = styled(Paragraph)`
     margin: 24px 0 6px;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    font-size: ${variables.FONT_SIZE.TINY};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    color: ${({ theme }) => theme.textSubdued};
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
         grid-column: 2;
@@ -25,10 +23,8 @@ const StepNumber = styled(Paragraph)`
     }
 `;
 
-const StepTitle = styled(Paragraph)`
+const StepTitle = styled(H3)`
     margin-bottom: 20px;
-    font-size: ${variables.FONT_SIZE.H3};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
         align-self: center;
@@ -106,7 +102,7 @@ export const CoinjoinProcessStep = ({
 }: CoinjoinProcessStepProps) => (
     <Container>
         <StyledImage image={image} width={80} />
-        <StepNumber>
+        <StepNumber type="hint">
             <Translation id="TR_STEP" values={{ number }} />
         </StepNumber>
         <StepTitle>{title}</StepTitle>
