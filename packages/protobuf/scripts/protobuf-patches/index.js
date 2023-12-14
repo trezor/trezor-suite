@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 const UINT_TYPE = 'UintType';
+const SINT_TYPE = 'SintType';
 const DeviceModelInternal = 'DeviceModelInternal';
 
 // type rule fixes, ideally it should not be here
@@ -130,7 +131,7 @@ const TYPE_PATCH = {
     'CardanoSignTxInit.ttl': UINT_TYPE,
     'CardanoSignTxInit.validity_interval_start': UINT_TYPE,
     'CardanoSignTxInit.total_collateral': UINT_TYPE,
-    'CardanoToken.mint_amount': 'number | string', // TODO: Sint64 support
+    'CardanoToken.mint_amount': SINT_TYPE,
     'CardanoNativeScript.invalid_before': UINT_TYPE,
     'CardanoNativeScript.invalid_hereafter': UINT_TYPE,
     'EosAsset.symbol': 'string',
@@ -313,4 +314,5 @@ module.exports = {
     DEFINITION_PATCH,
     SKIP,
     UINT_TYPE,
+    SINT_TYPE,
 };

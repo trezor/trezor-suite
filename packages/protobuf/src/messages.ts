@@ -3,6 +3,9 @@
 // custom type uint32/64 may be represented as string
 export type UintType = string | number;
 
+// custom type sint32/64
+export type SintType = string | number;
+
 export enum DeviceModelInternal {
     T1B1 = 'T1B1',
     T2T1 = 'T2T1',
@@ -783,7 +786,7 @@ export type CardanoAssetGroup = {
 export type CardanoToken = {
     asset_name_bytes: string;
     amount?: UintType;
-    mint_amount?: UintType;
+    mint_amount?: SintType;
 };
 
 // CardanoTxInlineDatumChunk
@@ -2078,7 +2081,7 @@ export type StellarSignTx = {
     timebounds_end: number;
     memo_type: StellarMemoType;
     memo_text?: string;
-    memo_id?: string;
+    memo_id?: UintType;
     memo_hash?: Buffer | string;
     num_operations: number;
 };
