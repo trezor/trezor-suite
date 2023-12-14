@@ -65,4 +65,10 @@ describe('Assert', () => {
             );
         }
     });
+
+    it('should also accept null if optional', () => {
+        const schema = Type.Object({ type: Type.Optional(Type.String()) });
+        const value = { type: null };
+        expect(() => Assert(schema, value)).not.toThrow();
+    });
 });
