@@ -13,6 +13,7 @@ export function generate(code: string) {
         ArrayBuffer: 'Type.ArrayBuffer()',
         Buffer: 'Type.Buffer()',
         UintType: 'Type.Uint()',
+        SintType: 'Type.Uint({ allowNegative: true })',
     };
     const customTypePlaceholder = Object.keys(customTypesMapping).map(t => `type ${t} = any;`);
     // Run generator

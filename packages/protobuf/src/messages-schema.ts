@@ -871,7 +871,7 @@ export type CardanoToken = Static<typeof CardanoToken>;
 export const CardanoToken = Type.Object({
     asset_name_bytes: Type.String(),
     amount: Type.Optional(Type.Uint()),
-    mint_amount: Type.Optional(Type.Uint()),
+    mint_amount: Type.Optional(Type.Uint({ allowNegative: true })),
 });
 
 export type CardanoTxInlineDatumChunk = Static<typeof CardanoTxInlineDatumChunk>;
@@ -2279,7 +2279,7 @@ export const StellarSignTx = Type.Object({
     timebounds_end: Type.Number(),
     memo_type: EnumStellarMemoType,
     memo_text: Type.Optional(Type.String()),
-    memo_id: Type.Optional(Type.String()),
+    memo_id: Type.Optional(Type.Uint()),
     memo_hash: Type.Optional(Type.Union([Type.Buffer(), Type.String()])),
     num_operations: Type.Number(),
 });

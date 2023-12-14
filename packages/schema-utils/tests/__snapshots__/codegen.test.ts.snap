@@ -5,6 +5,12 @@ exports[`codegen should generate code for protobuf messages example 1`] = `
 import { Type, Static } from '@trezor/schema-utils';
 
 
+export type Type.Uint() = Static<typeof Type.Uint()>
+export const Type.Uint() = Type.Union([
+Type.String(),
+Type.Number()
+])
+
 export enum DeviceModelInternal { T1B1 = 'T1B1', T2T1 = 'T2T1', T2B1 = 'T2B1' }
 
 export type EnumDeviceModelInternal = Static<typeof EnumDeviceModelInternal>

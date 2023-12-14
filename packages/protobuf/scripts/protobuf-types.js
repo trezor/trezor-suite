@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 const json = require('../messages.json');
-const { RULE_PATCH, TYPE_PATCH, DEFINITION_PATCH, SKIP, UINT_TYPE } = require('./protobuf-patches');
+const { RULE_PATCH, TYPE_PATCH, DEFINITION_PATCH, SKIP, UINT_TYPE, SINT_TYPE } = require('./protobuf-patches');
 
 const INDENT = ' '.repeat(4);
 
@@ -160,6 +160,8 @@ const lines = []; // string[]
 lines.push('// This file is auto generated from data/messages/message.json', '');
 lines.push('// custom type uint32/64 may be represented as string');
 lines.push(`export type ${UINT_TYPE} = string | number;`, '');
+lines.push('// custom type sint32/64');
+lines.push(`export type ${SINT_TYPE} = string | number;`, '');
 lines.push(
     `export enum DeviceModelInternal {
     T1B1 = 'T1B1',
