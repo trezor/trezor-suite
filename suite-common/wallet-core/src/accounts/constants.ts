@@ -7,4 +7,5 @@ export const formattedAccountTypeMap: Partial<Record<AccountType, string>> = {
     legacySegwit: 'Legacy SegWit',
     segwit: 'SegWit',
     taproot: 'Taproot',
+    normal: 'SegWit Native',
 };

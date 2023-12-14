@@ -241,7 +241,8 @@ export const selectFormattedAccountType = (
     accountKey: AccountKey,
 ): string | null => {
     const account = selectAccountByKey(state, accountKey);
-    if (!account) return null;
+
+    if (!account || account?.networkType !== 'bitcoin') return null;
 
     return formattedAccountTypeMap[account.accountType] ?? null;
 };
