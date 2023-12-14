@@ -22,7 +22,7 @@ import { initLog } from '../utils/debug';
 import type { Device } from './Device';
 import type { CoinInfo, BitcoinNetworkInfo, Network } from '../types';
 import type { HDNodeResponse } from '../types/api/getPublicKey';
-import { Validate } from '@trezor/schema-utils';
+// import { Assert } from '@trezor/schema-utils';
 
 type MessageType = Messages.MessageType;
 type MessageKey = keyof MessageType;
@@ -43,7 +43,7 @@ export type PassphrasePromptResponse = {
 
 const logger = initLog('DeviceCommands');
 
-const assertType = (res: DefaultMessageResponse, resType: string | string[]) => {
+const assertType = (res: DefaultMessageResponse, resType: MessageKey | MessageKey[]) => {
     const splitResTypes = Array.isArray(resType) ? resType : resType.split('|');
     if (!splitResTypes.includes(res.type)) {
         throw ERRORS.TypedError(
@@ -420,6 +420,9 @@ export class DeviceCommands {
         if (this.disposed) {
             throw ERRORS.TypedError('Runtime', 'typedCall: DeviceCommands already disposed');
         }
+        // Assert message type
+        // msg is allowed to be undefined for some calls, in that case the schema is an empty object
+        // Assert(Messages.MessageType.properties[type], msg ?? {});
         const response = await this._commonCall(type, msg);
         try {
             assertType(response, resType);
@@ -434,15 +437,6 @@ export class DeviceCommands {
             throw error;
         }
         return response;
-    }
-
-    typedCallV2<T extends Messages.MessageKey, R extends Messages.MessageKey>(
-        type: T,
-        resType: R,
-        msg?: Messages.MessageType[T],
-    ): Promise<TypedResponseMessage<R>> {
-        Validate(Messages.MessageType.properties[type], msg);
-        return this.typedCall(type, resType, msg);
     }
 
     async _commonCall(type: MessageKey, msg?: DefaultMessageResponse['message']) {

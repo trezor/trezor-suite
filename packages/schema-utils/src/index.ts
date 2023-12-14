@@ -20,6 +20,10 @@ export function Assert<T extends TSchema>(schema: T, value: unknown): asserts va
     const errors = Value.Errors(schema, value);
     const error = errors.First();
     if (error) {
+        if (error.value == null && error.schema[Optional] === 'Optional') {
+            // Optional can also accept null values
+            return;
+        }
         throw new InvalidParameter(error.message, error.path, error.value);
     }
 }

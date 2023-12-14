@@ -130,7 +130,7 @@ const TYPE_PATCH = {
     'CardanoSignTxInit.ttl': UINT_TYPE,
     'CardanoSignTxInit.validity_interval_start': UINT_TYPE,
     'CardanoSignTxInit.total_collateral': UINT_TYPE,
-    'CardanoToken.mint_amount': UINT_TYPE,
+    'CardanoToken.mint_amount': 'number | string', // TODO: Sint64 support
     'CardanoNativeScript.invalid_before': UINT_TYPE,
     'CardanoNativeScript.invalid_hereafter': UINT_TYPE,
     'EosAsset.symbol': 'string',
@@ -169,9 +169,10 @@ const TYPE_PATCH = {
     'EosActionNewAccount.creator': 'string',
     'EosActionNewAccount.name': 'string',
     'ResetDevice.backup_type': 'string | number', // BackupType is a enum. in Features displayed as string, in resetDevice method param accepted as number
-    'StellarAssetType.type': '0 | 1 | 2',
+    //'StellarAssetType.type': '0 | 1 | 2', // TODO: test if this is correct
+    'StellarAssetType.type': '"NATIVE" | "ALPHANUM4" | "ALPHANUM12"',
     'StellarSignTx.sequence_number': UINT_TYPE,
-    'StellarSignTx.memo_id': 'string',
+    'StellarSignTx.memo_id': UINT_TYPE,
     'StellarSignTx.memo_hash': 'Buffer | string',
     'StellarCreateAccountOp.starting_balance': UINT_TYPE,
     'StellarPathPaymentStrictReceiveOp.send_max': UINT_TYPE,
