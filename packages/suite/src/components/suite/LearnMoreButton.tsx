@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
 
-import { Button } from '@trezor/components';
+import { Button, ButtonProps } from '@trezor/components';
 
 import { Translation, TrezorLink } from 'src/components/suite';
 import { Url } from '@trezor/urls';
@@ -11,14 +11,25 @@ const StyledTrezorLink = styled(TrezorLink)`
     width: fit-content;
 `;
 
-interface LearnMoreButtonProps {
-    children?: ReactNode;
+interface LearnMoreButtonProps extends Omit<ButtonProps, 'children'> {
     url: Url;
+    children?: ReactNode;
 }
 
-export const LearnMoreButton = ({ children, url }: LearnMoreButtonProps) => (
-    <StyledTrezorLink variant="nostyle" href={url}>
-        <Button variant="tertiary" size="tiny" icon="EXTERNAL_LINK" iconAlignment="right">
+export const LearnMoreButton = ({
+    children,
+    url,
+    className,
+    ...buttonProps
+}: LearnMoreButtonProps) => (
+    <StyledTrezorLink variant="nostyle" href={url} className={className}>
+        <Button
+            variant="tertiary"
+            size="tiny"
+            icon="EXTERNAL_LINK"
+            iconAlignment="right"
+            {...buttonProps}
+        >
             {children || <Translation id="TR_LEARN_MORE" />}
         </Button>
     </StyledTrezorLink>
