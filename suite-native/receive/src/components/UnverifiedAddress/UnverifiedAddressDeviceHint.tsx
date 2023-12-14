@@ -4,7 +4,7 @@ import Animated, { FadeIn } from 'react-native-reanimated';
 import { Box, VStack, Button, Text } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 
-import { AddressMismatchBottomSheet } from './AddressMismatchBottomSheet';
+import { AddressMismatchBottomSheet } from '../AddressMismatchBottomSheet';
 
 export const UnverifiedAddressDeviceHint = () => {
     const [isBottomSheetOpened, setIsBottomSheetOpened] = useState(false);
