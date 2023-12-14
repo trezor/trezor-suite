@@ -88,7 +88,7 @@ export default class SolanaGetPublicKey extends AbstractMethod<
         // request confirmation view
         this.postMessage(
             createUiMessage(UI.REQUEST_CONFIRMATION, {
-                view: 'get-public-key-no-backup',
+                view: 'no-backup',
             }),
         );
 
