@@ -1,8 +1,7 @@
 import { ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 
-import { Image, PngImage, variables } from '@trezor/components';
-import { borders } from '@trezor/theme';
+import { Card, Image, PngImage, variables } from '@trezor/components';
 
 const containerGridStyle = css`
     display: grid;
@@ -10,17 +9,13 @@ const containerGridStyle = css`
     gap: 0 14px;
 `;
 
-const Container = styled.div`
+const Container = styled(Card)`
     background: ${({ theme }) => theme.BG_GREY};
-    border-radius: ${borders.radii.xs};
-    padding: 16px;
+    box-shadow: none;
+    display: block;
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
         ${containerGridStyle}
-    }
-
-    ${variables.SCREEN_QUERY.BELOW_TABLET} {
-        display: block;
     }
 
     ${variables.SCREEN_QUERY.MOBILE} {

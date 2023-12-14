@@ -5,7 +5,18 @@ import styled from 'styled-components';
 import { Account } from '@suite-common/wallet-types';
 import { Translation, TrezorLink } from 'src/components/suite';
 import { Error } from 'src/components/suite/Error';
-import { Button, Card, Checkbox, Link, Note, Tooltip, variables } from '@trezor/components';
+import {
+    Button,
+    Card,
+    Checkbox,
+    H3,
+    Link,
+    Note,
+    Paragraph,
+    Tooltip,
+    variables,
+} from '@trezor/components';
+import { spacingsPx, typography } from '@trezor/theme';
 import { DATA_TOS_URL, ZKSNACKS_TERMS_URL } from '@trezor/urls';
 import { startCoinjoinSession } from 'src/actions/wallet/coinjoinAccountActions';
 import {
@@ -19,41 +30,32 @@ const StyledCard = styled(Card)`
     padding: 24px;
 `;
 
-const Row = styled.div`
+const TopRow = styled(H3)`
     display: flex;
+    justify-content: space-between;
+    margin-bottom: ${spacingsPx.xxl};
 `;
 
-const TopRow = styled(Row)`
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    font-size: ${variables.FONT_SIZE.H3};
+const TopFeeRow = styled.div`
+    display: flex;
     justify-content: space-between;
-    margin-bottom: 32px;
-`;
-
-const TopFeeRow = styled(Row)`
-    justify-content: space-between;
-    margin-bottom: 8px;
+    margin-bottom: ${spacingsPx.xs};
 `;
 
 const FeeWrapper = styled.div`
-    border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
-    border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
-    margin: 24px 0;
-    padding: 16px 0;
+    border-bottom: 1px solid ${({ theme }) => theme.borderOnElevation0};
+    border-top: 1px solid ${({ theme }) => theme.borderOnElevation0};
+    margin: ${spacingsPx.xl} 0;
+    padding: ${spacingsPx.md} 0;
 `;
 
-const FeeHeading = styled.div`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-`;
-
-const FeeValue = styled.div`
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+const FeeHeading = styled(Paragraph)`
+    color: ${({ theme }) => theme.textSubdued};
 `;
 
 const Tiles = styled.div`
     display: grid;
-    gap: 12px;
+    gap: ${spacingsPx.md};
     grid-template-columns: repeat(3, 1fr);
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
@@ -70,11 +72,11 @@ const Tiles = styled.div`
 `;
 
 const StyledCheckbox = styled(Checkbox)`
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    ${typography.highlight}
 `;
 
 const StyledButton = styled(Button)`
-    margin: 24px auto 0;
+    margin: ${spacingsPx.xl} auto 0;
 
     :disabled {
         background: ${({ theme }) => theme.STROKE_GREY};
@@ -159,10 +161,10 @@ export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => 
                 </Tiles>
                 <FeeWrapper>
                     <TopFeeRow>
-                        <FeeHeading>
+                        <FeeHeading type="highlight">
                             <Translation id="TR_SERVICE_FEE" />
                         </FeeHeading>
-                        <FeeValue>{coordinatorFeePercentage}</FeeValue>
+                        <Paragraph type="highlight">{coordinatorFeePercentage}</Paragraph>
                     </TopFeeRow>
                     <Note>
                         <Translation id="TR_SERVICE_FEE_NOTE" />
