@@ -179,14 +179,14 @@ export const init: Module = ({ mainWindow, store, mainThreadEmitter }) => {
 
     let unregisterProxies = () => {};
 
-    const registerProxies = () => {
-        const unregisterBackendProxy = createIpcProxyHandler(
+    const registerProxies = async () => {
+        const unregisterBackendProxy = await createIpcProxyHandler(
             ipcMain,
             BACKEND_CHANNEL,
             backendProxyOptions,
         );
 
-        const unregisterClientProxy = createIpcProxyHandler(
+        const unregisterClientProxy = await createIpcProxyHandler(
             ipcMain,
             CLIENT_CHANNEL,
             clientProxyOptions,

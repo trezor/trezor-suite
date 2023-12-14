@@ -1,5 +1,7 @@
 import { EventEmitter } from 'events';
 
+import { createProxyHandler } from './message-channel-handler';
+
 interface EventEmitterApi {
     on: (event: any, listener: (...args: any[]) => any) => any;
     off?: (event: any, listener: (...args: any[]) => any) => any;
@@ -69,7 +71,7 @@ const SERVICE_NAME = 'ipc-proxy';
  * Create proxy
  */
 
-export const createIpcProxyHandler = <Api extends EventEmitterApi>(
+const initMessageChannel = <Api extends EventEmitterApi>(
     ipcMain: ElectronIpcMain<Api>,
     channel: string,
     { onCreateInstance, debug }: IpcProxyHandlerOptions<Api>,
@@ -143,4 +145,25 @@ export const createIpcProxyHandler = <Api extends EventEmitterApi>(
         // ipcMain.removeHandler(`${instancePrefix}/invoke`); // TODO: filter unregistered to get instancePrefix
         // TODO remove all invoke handlers
     };
+};
+
+export const createIpcProxyHandler = async <Api extends EventEmitterApi>(
+    ipcMain: ElectronIpcMain<Api>,
+    channel: string,
+    options: IpcProxyHandlerOptions<Api>,
+) => {
+    initMessageChannel(ipcMain, channel, options);
+
+    await createProxyHandler(() =>
+        Promise.resolve({
+            api: {},
+            channel: {
+                channelName: channel,
+                handleMessage: () => {},
+                postMessage: () => {},
+            },
+        }),
+    );
+
+    return () => {};
 };
