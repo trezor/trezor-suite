@@ -1,6 +1,7 @@
 import { Modal } from 'react-native';
 import { ReactNode } from 'react';
 import { useSafeAreaInsets, EdgeInsets } from 'react-native-safe-area-context';
+import Animated, { SlideInUp } from 'react-native-reanimated';
 
 import { Box, ScreenHeaderWrapper, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -45,16 +46,25 @@ export const DeviceManagerModal = ({ children }: DeviceManagerModalProps) => {
     };
 
     return (
-        <Modal transparent onRequestClose={handleClose} visible={isDeviceManagerVisible}>
+        <Modal
+            transparent
+            onRequestClose={handleClose}
+            visible={isDeviceManagerVisible}
+            presentationStyle="overFullScreen"
+            animationType="fade"
+        >
             <Box style={applyStyle(modalBackgroundOverlayStyle)}>
-                <Box style={applyStyle(deviceManagerModalWrapperStyle, { insets })}>
+                <Animated.View
+                    entering={SlideInUp.damping(30)}
+                    style={applyStyle(deviceManagerModalWrapperStyle, { insets })}
+                >
                     <ScreenHeaderWrapper>
                         <DeviceSwitch />
                     </ScreenHeaderWrapper>
                     <VStack spacing="medium" style={applyStyle(contentWrapperStyle)}>
                         {children}
                     </VStack>
-                </Box>
+                </Animated.View>
             </Box>
         </Modal>
     );
