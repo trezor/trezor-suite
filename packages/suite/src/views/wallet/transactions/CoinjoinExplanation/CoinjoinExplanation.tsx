@@ -1,69 +1,73 @@
 import styled from 'styled-components';
 import { darken } from 'polished';
-import { Button, Icon, variables } from '@trezor/components';
+
+import { Card, Icon, variables } from '@trezor/components';
 import { HELP_CENTER_COINJOIN_URL } from '@trezor/urls';
-import { Translation, TrezorLink } from 'src/components/suite';
-import { CoinjoinProcessStep, CoinjoinProcessStepProps } from './CoinjoinProcessStep';
 import { mediaQueries } from '@trezor/styles';
 
-const Container = styled.div`
-    padding: 20px 20px 16px;
-    border-radius: 14px;
-    background: ${({ theme }) => theme.STROKE_GREY};
+import { Translation } from 'src/components/suite';
+import { CoinjoinProcessStep, CoinjoinProcessStepProps } from './CoinjoinProcessStep';
+import { spacingsPx, typography } from '@trezor/theme';
+import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
+
+const Container = styled(Card)`
+    background: ${({ theme }) => theme.backgroundTertiaryDefaultOnElevation0};
 `;
 
 const Heading = styled.div`
     display: flex;
     align-items: center;
-    margin-bottom: 18px;
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    margin-bottom: ${spacingsPx.md};
+    color: ${({ theme }) => theme.textSubdued};
+    ${typography.hint};
 `;
 
 const QuestionIcon = styled(Icon)`
     margin-right: 4px;
 `;
 
-const Steps = styled.div`
+const Steps = styled(Card)`
+    box-shadow: none;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     justify-content: space-between;
-    margin-bottom: 20px;
-    padding: 20px;
-    background: ${({ theme }) => theme.BG_WHITE};
-    border-radius: 12px;
+    margin-bottom: ${spacingsPx.xl};
+
+    ${mediaQueries.dark_theme} {
+        background: ${({ theme }) => theme.backgroundSurfaceElevation3};
+    }
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
         display: block;
     }
 `;
 
-const ButtonContainer = styled.div`
-    display: flex;
-    justify-content: center;
-`;
+const StyledLearnMoreButton = styled(LearnMoreButton)`
+    margin: 0 auto;
+    color: ${({ theme }) => theme.textSubdued};
 
-const StyledButton = styled(Button)`
-    margin-right: 12px;
-    background: #d9d9d9;
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
-
-    path {
-        fill: ${({ theme }) => theme.TYPE_DARK_GREY};
+    button {
+        background: #d9d9d9;
     }
 
-    :hover,
-    :focus {
+    path {
+        fill: ${({ theme }) => theme.iconSubdued};
+    }
+
+    button:hover,
+    button:focus {
         background: ${({ theme }) => darken(theme.HOVER_DARKEN_FILTER, '#d9d9d9')};
     }
 
     ${mediaQueries.dark_theme} {
-        background: ${({ theme }) => theme.BG_WHITE};
+        button {
+            background: ${({ theme }) => theme.backgroundSurfaceElevation0};
+        }
 
-        :hover,
-        :focus {
-            background: ${({ theme }) => darken(theme.HOVER_DARKEN_FILTER, theme.BG_WHITE)};
+        button:hover,
+        button:focus {
+            background: ${({ theme }) =>
+                darken(theme.HOVER_DARKEN_FILTER, theme.backgroundSurfaceElevation0)};
         }
     }
 `;
@@ -99,12 +103,6 @@ export const CoinjoinExplanation = () => (
             ))}
         </Steps>
 
-        <ButtonContainer>
-            <TrezorLink href={HELP_CENTER_COINJOIN_URL} variant="nostyle">
-                <StyledButton icon="EXTERNAL_LINK">
-                    <Translation id="TR_LEARN_MORE" />
-                </StyledButton>
-            </TrezorLink>
-        </ButtonContainer>
+        <StyledLearnMoreButton url={HELP_CENTER_COINJOIN_URL} />
     </Container>
 );
