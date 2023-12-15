@@ -5,7 +5,6 @@
 import {
     CORE_EVENT,
     RESPONSE_EVENT,
-    UI_EVENT,
     DEVICE_EVENT,
     TRANSPORT_EVENT,
     TRANSPORT,
@@ -19,8 +18,8 @@ import {
     createPopupMessage,
     IFrameInit,
     DeviceEvent,
-    CoreMessage,
-    PostMessageEvent,
+    CoreRequestMessage,
+    CoreEventMessage,
 } from '@trezor/connect';
 import { Core, initCore, initTransport } from '@trezor/connect/src/core';
 import { DataManager } from '@trezor/connect/src/data/DataManager';
@@ -48,12 +47,11 @@ let _popupMessagePort: (MessagePort | BroadcastChannel) | undefined;
 
 // since iframe.html needs to send message via window.postMessage
 // we need to listen to events from Core and convert it to simple objects possible to send over window.postMessage
-
-const handleMessage = async (event: PostMessageEvent) => {
+const handleMessage = async (event: MessageEvent<CoreRequestMessage>) => {
     // ignore messages from myself (chrome bug?)
     if (event.source === window || !event.data) return;
     const { data } = event;
-    const id = typeof data.id === 'number' ? data.id : 0;
+    const id = 'id' in data && typeof data.id === 'number' ? data.id : 0;
 
     const fail = (error: string) => {
         postMessage(createResponseMessage(id, false, { error }));
@@ -174,13 +172,13 @@ const handleMessage = async (event: PostMessageEvent) => {
     )
         return;
 
-    const message = parseMessage(data);
+    const message = parseMessage<CoreRequestMessage>(data);
 
     // prevent from passing event up
     event.preventDefault();
     event.stopImmediatePropagation();
 
-    const safeMessages: CoreMessage['type'][] = [
+    const safeMessages: CoreRequestMessage['type'][] = [
         IFRAME.CALL,
         POPUP.CLOSED,
         // UI.CHANGE_SETTINGS,
@@ -199,7 +197,7 @@ const handleMessage = async (event: PostMessageEvent) => {
 };
 
 // Communication with 3rd party window and Trezor Popup.
-const postMessage = (message: CoreMessage) => {
+const postMessage = (message: CoreEventMessage) => {
     _log.debug('postMessage', message);
 
     const usingPopup = DataManager.getSettings('popup');
@@ -209,7 +207,7 @@ const postMessage = (message: CoreMessage) => {
     // popup handshake is resolved automatically
     if (!usingPopup) {
         if (_core && message.type === UI.REQUEST_UI_WINDOW) {
-            _core.handleMessage({ event: UI_EVENT, type: POPUP.HANDSHAKE });
+            _core.handleMessage({ type: POPUP.HANDSHAKE });
             return;
         }
         if (message.type === POPUP.CANCEL_POPUP_REQUEST) {
@@ -243,9 +241,9 @@ const postMessage = (message: CoreMessage) => {
     }
 };
 
-const shouldUiEventBeSentToHost = (message: CoreMessage) => {
+const shouldUiEventBeSentToHost = (message: CoreEventMessage) => {
     // whitelistedMessages are messages that are sent to 3rd party/host/parent.
-    const whitelistedMessages: CoreMessage['type'][] = [
+    const whitelistedMessages: CoreEventMessage['type'][] = [
         IFRAME.LOADED,
         IFRAME.ERROR,
         POPUP.CANCEL_POPUP_REQUEST,

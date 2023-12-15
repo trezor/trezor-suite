@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState, useMemo, ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { PostMessage, UI, UI_REQUEST, POPUP, createPopupMessage } from '@trezor/connect';
+import { UI, UI_REQUEST, POPUP, CoreRequestMessage } from '@trezor/connect';
 import { storage, OriginBoundState } from '@trezor/connect-common';
 
 // views
@@ -39,7 +39,7 @@ const Layout = styled.div`
 `;
 
 type ConnectUIProps = {
-    postMessage: PostMessage;
+    postMessage: (message: CoreRequestMessage) => void;
     clearLegacyView: () => void;
 };
 
@@ -172,9 +172,10 @@ export const ConnectUI = ({ postMessage, clearLegacyView }: ConnectUIProps) => {
 
                         <BottomRightFloatingBar
                             onAnalyticsConfirm={enabled => {
-                                postMessage(
-                                    createPopupMessage(POPUP.ANALYTICS_RESPONSE, { enabled }),
-                                );
+                                postMessage({
+                                    type: POPUP.ANALYTICS_RESPONSE,
+                                    payload: { enabled },
+                                });
                             }}
                         />
                     </Layout>

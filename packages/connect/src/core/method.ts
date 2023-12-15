@@ -7,9 +7,7 @@ import type { AbstractMethod } from './AbstractMethod';
 const getMethodModule = (method: IFrameCallMessage['payload']['method']) =>
     MODULES.find(module => method.startsWith(module));
 
-export const getMethod = async (
-    message: IFrameCallMessage & { id?: number },
-): Promise<AbstractMethod<any>> => {
+export const getMethod = async (message: IFrameCallMessage): Promise<AbstractMethod<any>> => {
     const { method } = message.payload;
     if (typeof method !== 'string') {
         throw TypedError('Method_InvalidParameter', 'Message method is not set');
@@ -22,7 +20,7 @@ export const getMethod = async (
     const MethodConstructor = methods[method];
 
     if (MethodConstructor) {
-        return new MethodConstructor(message as any);
+        return new MethodConstructor(message);
     }
 
     throw TypedError('Method_InvalidParameter', `Method ${method} not found`);

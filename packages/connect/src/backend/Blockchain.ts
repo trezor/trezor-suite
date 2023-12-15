@@ -4,7 +4,7 @@ import BlockchainLink, {
     BlockchainLinkParams,
     BlockchainLinkResponse,
 } from '@trezor/blockchain-link';
-import { createBlockchainMessage, BLOCKCHAIN, PostMessage } from '../events';
+import { createBlockchainMessage, BLOCKCHAIN, CoreEventMessage } from '../events';
 import { ERRORS } from '../constants';
 import {
     BlockbookWorker,
@@ -35,7 +35,7 @@ const getWorker = (type: string) => {
 
 export type BlockchainOptions = {
     coinInfo: CoinInfo;
-    postMessage: PostMessage;
+    postMessage: (message: CoreEventMessage) => void;
     proxy?: Proxy;
     debug?: boolean;
     onConnected?: (url: string) => void;

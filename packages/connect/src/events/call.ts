@@ -47,7 +47,7 @@ export type CallMethodAnyResponse = ReturnType<CallMethodUnion>;
 export type CallMethod = (params: CallMethodPayload) => Promise<any>;
 
 export interface IFrameCallMessage {
-    event: typeof IFRAME.CALL;
+    id: number;
     type: typeof IFRAME.CALL;
     payload: CallMethodPayload;
 }

@@ -15,12 +15,10 @@ import {
     POPUP,
     IFRAME,
     createErrorMessage,
-    CoreMessage,
-    PostMessageEvent,
+    CoreEventMessage,
     UI,
     UiResponseEvent,
     CallMethod,
-    CallMethodAnyResponse,
 } from './events';
 import { ERRORS } from './constants';
 import type { ConnectSettings, Manifest } from './types';
@@ -51,14 +49,13 @@ const dispose = async () => {
 };
 
 // handle message received from iframe
-const handleMessage = (message: CoreMessage) => {
+const handleMessage = (message: CoreEventMessage) => {
     const { event, type, payload } = message;
-    const id = message.id || 0;
 
     if (!_core) return;
 
     if (type === UI.REQUEST_UI_WINDOW) {
-        _core.handleMessage({ event: UI_EVENT, type: POPUP.HANDSHAKE });
+        _core.handleMessage({ type: POPUP.HANDSHAKE });
         return;
     }
 
@@ -67,7 +64,8 @@ const handleMessage = (message: CoreMessage) => {
     _log.debug('handleMessage', message);
 
     switch (event) {
-        case RESPONSE_EVENT:
+        case RESPONSE_EVENT: {
+            const id = message.id || 0;
             if (messagePromises[id]) {
                 // resolve message promise (send result of call method)
                 messagePromises[id].resolve({
@@ -80,7 +78,7 @@ const handleMessage = (message: CoreMessage) => {
                 _log.warn(`Unknown message id ${id}`);
             }
             break;
-
+        }
         case DEVICE_EVENT:
             // pass DEVICE event up to html
             eventEmitter.emit(event, message);
@@ -107,24 +105,6 @@ const handleMessage = (message: CoreMessage) => {
             _log.warn('Undefined message', event, message);
     }
 };
-
-type PostMessage = Omit<CoreMessage, 'event' | 'id'>;
-function postMessage(message: PostMessage, usePromise?: true): CallMethodAnyResponse;
-function postMessage(message: PostMessage, usePromise: false): Promise<void>;
-function postMessage(message: PostMessage, usePromise = true) {
-    if (!_core) {
-        throw ERRORS.TypedError('Runtime', 'postMessage: _core not found');
-    }
-    if (usePromise) {
-        _messageID++;
-        messagePromises[_messageID] = createDeferred();
-        const { promise } = messagePromises[_messageID];
-        _core.handleMessage({ ...message, id: _messageID });
-        return promise;
-    }
-
-    _core.handleMessage(message);
-}
 
 const init = async (settings: Partial<ConnectSettings> = {}) => {
     if (_core) {
@@ -162,10 +142,20 @@ const call: CallMethod = async params => {
     }
 
     try {
-        const response = await postMessage({
+        if (!_core) {
+            throw ERRORS.TypedError('Runtime', 'postMessage: _core not found');
+        }
+
+        _messageID++;
+        messagePromises[_messageID] = createDeferred();
+        const { promise } = messagePromises[_messageID];
+        _core.handleMessage({
             type: IFRAME.CALL,
             payload: params,
+            id: _messageID,
         });
+        const response = await promise;
+
         if (response) {
             return response;
         }
@@ -180,8 +170,7 @@ const uiResponse = (response: UiResponseEvent) => {
     if (!_core) {
         throw ERRORS.TypedError('Init_NotInitialized');
     }
-    const { type, payload } = response;
-    _core.handleMessage({ event: UI_EVENT, type, payload });
+    _core.handleMessage(response);
 };
 
 const requestLogin = async (params: any) => {
@@ -189,19 +178,17 @@ const requestLogin = async (params: any) => {
         const { callback } = params;
 
         // TODO: set message listener only if _core is loaded correctly
-        const loginChallengeListener = async (event: PostMessageEvent) => {
+        const loginChallengeListener = async (event: MessageEvent<CoreEventMessage>) => {
             const { data } = event;
             if (data && data.type === UI.LOGIN_CHALLENGE_REQUEST) {
                 try {
                     const payload = await callback();
                     _core?.handleMessage({
-                        event: UI_EVENT,
                         type: UI.LOGIN_CHALLENGE_RESPONSE,
                         payload,
                     });
                 } catch (error) {
                     _core?.handleMessage({
-                        event: UI_EVENT,
                         type: UI.LOGIN_CHALLENGE_RESPONSE,
                         payload: error.message,
                     });
@@ -223,13 +210,14 @@ const requestLogin = async (params: any) => {
 };
 
 const cancel = (error?: string) => {
-    postMessage(
-        {
-            type: POPUP.CLOSED,
-            payload: error ? { error } : null,
-        },
-        false,
-    );
+    if (!_core) {
+        throw ERRORS.TypedError('Runtime', 'postMessage: _core not found');
+    }
+
+    _core.handleMessage({
+        type: POPUP.CLOSED,
+        payload: error ? { error } : null,
+    });
 };
 
 const renderWebUSBButton = (_className?: string) => {
