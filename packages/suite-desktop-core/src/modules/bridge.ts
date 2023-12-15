@@ -24,6 +24,16 @@ const handleBridgeStatus = async (
     return status;
 };
 
+const start = async (bridge: BridgeProcess) => {
+    if (bridgeDev) {
+        await bridge.startDev();
+    } else if (bridgeTest) {
+        await bridge.startTest();
+    } else {
+        await bridge.start();
+    }
+};
+
 const load = async ({ store, mainWindow }: Dependencies) => {
     const { logger } = global;
     const bridge = new BridgeProcess();
@@ -40,7 +50,7 @@ const load = async ({ store, mainWindow }: Dependencies) => {
                 await bridge.stop();
                 store.setBridgeSettings({ startOnStartup: false });
             } else {
-                await bridge.start();
+                await start(bridge);
                 store.setBridgeSettings({ startOnStartup: true });
             }
             return { success: true };
@@ -66,13 +76,7 @@ const load = async ({ store, mainWindow }: Dependencies) => {
 
     try {
         logger.info(SERVICE_NAME, `Starting (Dev: ${b2t(bridgeDev)})`);
-        if (bridgeDev) {
-            await bridge.startDev();
-        } else if (bridgeTest) {
-            await bridge.startTest();
-        } else {
-            await bridge.start();
-        }
+        await start(bridge);
         handleBridgeStatus(bridge, mainWindow);
     } catch (err) {
         logger.error(SERVICE_NAME, `Start failed: ${err.message}`);
