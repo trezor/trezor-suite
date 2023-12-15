@@ -230,10 +230,10 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
                 });
 
                 const events = [
-                    {
-                        d: diff.changedSessions,
-                        e: DEVICE.CHANGED,
-                    },
+                    // {
+                    //     d: diff.changedSessions,
+                    //     e: DEVICE.CHANGED,
+                    // },
                     {
                         d: diff.acquired,
                         e: DEVICE.ACQUIRED,
@@ -503,6 +503,9 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
 
     private async _takeAndCreateDevice(descriptor: Descriptor) {
         const device = Device.fromDescriptor(this.transport, descriptor);
+        device.on('device-changed', (changedDevice) => {
+            this.emit(DEVICE.CHANGED, changedDevice);
+        })
         const path = descriptor.path.toString();
         this.devices[path] = device;
         const promise = device.run();

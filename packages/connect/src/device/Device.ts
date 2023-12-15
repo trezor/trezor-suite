@@ -70,6 +70,8 @@ export interface DeviceEvents {
     [DEVICE.PASSPHRASE_ON_DEVICE]: () => void;
     [DEVICE.BUTTON]: (device: Device, payload: DeviceButtonRequestPayload) => void;
     [DEVICE.ACQUIRED]: () => void;
+    [DEVICE.CHANGED]: (device: DeviceTyped) => void;
+
 }
 
 /**
@@ -583,6 +585,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 this.color = (deviceInfo.colors as Record<string, string>)[deviceUnitColor];
             }
         }
+        this.emit(DEVICE.CHANGED, this.toMessageObject());
     }
 
     isUnacquired() {
