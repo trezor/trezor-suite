@@ -5,8 +5,8 @@ import { selectIsDeviceDiscoveryActive } from '@suite-common/wallet-core';
 
 import { selectDiscoveryStartTimeStamp } from './discoveryConfigSlice';
 
-const DISCOVERY_LENGTH_CHECK_INTERVAL = 1000;
-const DISCOVERY_DURATION_TRESHOLD = 20000;
+const DISCOVERY_LENGTH_CHECK_INTERVAL = 1_000;
+const DISCOVERY_DURATION_TRESHOLD = 50_000;
 
 export const useIsDiscoveryDurationTooLong = () => {
     const startDiscoveryTimestamp = useSelector(selectDiscoveryStartTimeStamp);
