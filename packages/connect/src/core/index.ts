@@ -22,11 +22,13 @@ import {
     createTransportMessage,
     createResponseMessage,
     TransportInfo,
-    CoreMessage,
     UiPromise,
     AnyUiPromise,
     UiPromiseCreator,
     UiPromiseResponse,
+    IFrameCallMessage,
+    CoreRequestMessage,
+    CoreEventMessage,
 } from '../events';
 import { getMethod } from './method';
 import { AbstractMethod } from './AbstractMethod';
@@ -58,7 +60,7 @@ const _log = initLog('Core');
  * @returns {void}
  * @memberof Core
  */
-const postMessage = (message: CoreMessage) => {
+const postMessage = (message: CoreEventMessage) => {
     if (message.event === RESPONSE_EVENT) {
         const index = _callMethods.findIndex(call => call && call.responseID === message.id);
         if (index >= 0) {
@@ -133,7 +135,7 @@ const removeUiPromise = (promise: Deferred<any>) => {
  * @returns {void}
  * @memberof Core
  */
-export const handleMessage = (message: CoreMessage) => {
+const handleMessage = (message: CoreRequestMessage) => {
     _log.debug('handleMessage', message);
 
     switch (message.type) {
@@ -143,10 +145,6 @@ export const handleMessage = (message: CoreMessage) => {
         case POPUP.CLOSED:
             onPopupClosed(message.payload ? message.payload.error : null);
             break;
-
-        // case UI.CHANGE_SETTINGS :
-        //     enableLog(parseSettings(message.payload).debug);
-        //     break;
 
         case TRANSPORT.DISABLE_WEBUSB:
             disableWebUSBTransport();
@@ -302,7 +300,7 @@ const initDevice = async (method: AbstractMethod<any>) => {
  * @returns {Promise<void>}
  * @memberof Core
  */
-export const onCall = async (message: CoreMessage) => {
+const onCall = async (message: IFrameCallMessage) => {
     if (!message.id || !message.payload || message.type !== IFRAME.CALL) {
         throw ERRORS.TypedError(
             'Method_InvalidParameter',
@@ -322,7 +320,7 @@ export const onCall = async (message: CoreMessage) => {
 
     // find method and parse incoming params
     let method: AbstractMethod<any>;
-    let messageResponse: CoreMessage;
+    let messageResponse: CoreEventMessage;
     try {
         _log.debug('loading method...');
         _getMethodPromise = getMethod(message);
@@ -400,7 +398,7 @@ export const onCall = async (message: CoreMessage) => {
         throw error;
     }
 
-    method.postMessage = (message: CoreMessage) =>
+    method.postMessage = (message: CoreEventMessage) =>
         enhancePostMessageWithAnalytics(postMessage, message, { device: device.toMessageObject() });
 
     method.setDevice(device);
@@ -1011,7 +1009,7 @@ const initDeviceList = async (settings: ConnectSettings) => {
  * @memberof Core
  */
 export class Core extends EventEmitter {
-    handleMessage(message: any) {
+    handleMessage(message: CoreRequestMessage) {
         handleMessage(message);
     }
 

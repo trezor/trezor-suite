@@ -16,9 +16,9 @@ import {
     parseMessage,
     createUiMessage,
     createErrorMessage,
-    PostMessageEvent,
     UiResponseEvent,
     CallMethod,
+    CoreEventMessage,
 } from '@trezor/connect/lib/events';
 import type { ConnectSettings, Manifest } from '@trezor/connect/lib/types';
 import { factory } from '@trezor/connect/lib/factory';
@@ -39,13 +39,10 @@ let _popupManager: popup.PopupManager | undefined;
 const initPopupManager = () => {
     const pm = new popup.PopupManager(_settings);
     pm.on(POPUP.CLOSED, (error?: string) => {
-        iframe.postMessage(
-            {
-                type: POPUP.CLOSED,
-                payload: error ? { error } : null,
-            },
-            false,
-        );
+        iframe.postMessage({
+            type: POPUP.CLOSED,
+            payload: error ? { error } : null,
+        });
     });
     return pm;
 };
@@ -74,17 +71,17 @@ const cancel = (error?: string) => {
 };
 
 // handle message received from iframe
-const handleMessage = (messageEvent: PostMessageEvent) => {
+const handleMessage = (messageEvent: MessageEvent<CoreEventMessage>) => {
     // ignore messages from domain other then iframe origin
     if (messageEvent.origin !== iframe.origin) return;
 
-    const message = parseMessage(messageEvent.data);
-    const id = message.id || 0;
+    const message = parseMessage<CoreEventMessage>(messageEvent.data);
 
     _log.log('handleMessage', message);
 
     switch (message.event) {
-        case RESPONSE_EVENT:
+        case RESPONSE_EVENT: {
+            const id = message.id || 0;
             if (iframe.messagePromises[id]) {
                 // resolve message promise (send result of call method)
                 iframe.messagePromises[id].resolve({
@@ -97,7 +94,7 @@ const handleMessage = (messageEvent: PostMessageEvent) => {
                 _log.warn(`Unknown message id ${id}`);
             }
             break;
-
+        }
         case DEVICE_EVENT:
             // pass DEVICE event up to html
             eventEmitter.emit(message.event, message);
@@ -132,7 +129,7 @@ const handleMessage = (messageEvent: PostMessageEvent) => {
             break;
 
         default:
-            _log.log('Undefined message', message.event, messageEvent.data);
+            _log.log('Undefined message', messageEvent.data);
     }
 };
 
@@ -222,7 +219,7 @@ const call: CallMethod = async params => {
 
     // post message to iframe
     try {
-        const response = await iframe.postMessage({ type: IFRAME.CALL, payload: params });
+        const response = await iframe.postMessageAsync({ type: IFRAME.CALL, payload: params });
         if (response) {
             if (
                 !response.success &&
@@ -250,8 +247,7 @@ const uiResponse = (response: UiResponseEvent) => {
     if (!iframe.instance) {
         throw ERRORS.TypedError('Init_NotInitialized');
     }
-    const { type, payload } = response;
-    iframe.postMessage({ event: UI_EVENT, type, payload });
+    iframe.postMessage(response);
 };
 
 const renderWebUSBButton = (className?: string) => {
@@ -263,19 +259,17 @@ const requestLogin = async (params: any) => {
         const { callback } = params;
 
         // TODO: set message listener only if iframe is loaded correctly
-        const loginChallengeListener = async (event: PostMessageEvent) => {
+        const loginChallengeListener = async (event: MessageEvent<CoreEventMessage>) => {
             const { data } = event;
             if (data && data.type === UI.LOGIN_CHALLENGE_REQUEST) {
                 try {
                     const payload = await callback();
                     iframe.postMessage({
-                        event: UI_EVENT,
                         type: UI.LOGIN_CHALLENGE_RESPONSE,
                         payload,
                     });
                 } catch (error) {
                     iframe.postMessage({
-                        event: UI_EVENT,
                         type: UI.LOGIN_CHALLENGE_RESPONSE,
                         payload: error.message,
                     });
@@ -301,10 +295,7 @@ const disableWebUSB = () => {
     if (!iframe.instance) {
         throw ERRORS.TypedError('Init_NotInitialized');
     }
-    iframe.postMessage({
-        event: UI_EVENT,
-        type: TRANSPORT.DISABLE_WEBUSB,
-    });
+    iframe.postMessage({ type: TRANSPORT.DISABLE_WEBUSB });
 };
 
 /**
@@ -313,10 +304,7 @@ const disableWebUSB = () => {
 const requestWebUSBDevice = async () => {
     try {
         await window.navigator.usb.requestDevice({ filters: config.webusb });
-        iframe.postMessage({
-            event: UI_EVENT,
-            type: TRANSPORT.REQUEST_DEVICE,
-        });
+        iframe.postMessage({ type: TRANSPORT.REQUEST_DEVICE });
     } catch (_err) {
         // user hits cancel gets "DOMException: No device selected."
         // no need to log this

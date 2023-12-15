@@ -20,7 +20,7 @@ const getMethodModule = (method: IFrameCallMessage['payload']['method']) =>
     MODULES.find(module => method.startsWith(module));
 
 // eslint-disable-next-line require-await
-export const getMethod = async (message: IFrameCallMessage & { id?: number }) => {
+export const getMethod = async (message: IFrameCallMessage) => {
     const { method } = message.payload;
     if (typeof method !== 'string') {
         throw TypedError('Method_InvalidParameter', 'Message method is not set');

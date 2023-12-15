@@ -16,7 +16,7 @@ import {
     CORE_EVENT,
     IFrameCallMessage,
     IFrameLogRequest,
-    CoreMessage,
+    CoreEventMessage,
 } from '@trezor/connect/lib/exports';
 import type { Core } from '@trezor/connect/lib/core';
 import { config } from '@trezor/connect/lib/data/config';
@@ -58,7 +58,7 @@ const escapeHtml = (payload: any) => {
     }
 };
 
-export const handleUIAffectingMessage = (message: CoreMessage) => {
+export const handleUIAffectingMessage = (message: CoreEventMessage) => {
     switch (message.type) {
         case POPUP.METHOD_INFO:
             setState({
@@ -154,20 +154,24 @@ export const handleUIAffectingMessage = (message: CoreMessage) => {
     }
 };
 
-const handleResponseEvent = (data: any) => {
-    if (data.type === RESPONSE_EVENT) {
-        if (getState().core) {
-            // If we send this event to parent when iframe mode it gets duplicated in connect-web.
-            postMessageToParent(data);
-        }
-
-        // When success we can close popup.
-        if (data.success) {
-            window.close();
-        }
+const handleResponseEvent = (data: MethodResponseMessage) => {
+    if (getState().core) {
+        // If we send this event to parent when iframe mode it gets duplicated in connect-web.
+        postMessageToParent(data);
     }
-    if (data.type === RESPONSE_EVENT && !data.success) {
-        switch (data.payload?.code) {
+
+    // When success we can close popup.
+    if (data.success) {
+        window.close();
+    }
+
+    if (
+        !data.success &&
+        typeof data.payload === 'object' &&
+        'code' in data.payload &&
+        typeof data.payload.code === 'string'
+    ) {
+        switch (data.payload.code) {
             case 'Device_CallInProgress':
                 // Ignoring when device call is in progress.
                 // User triggers new call but device call is in progress PopupManager will focus popup.
@@ -184,11 +188,11 @@ const handleResponseEvent = (data: any) => {
                 fail({
                     type: 'error',
                     detail: 'response-event-error',
-                    message: data.payload?.error || 'Unknown error',
+                    message: ('error' in data.payload && data.payload.error) || 'Unknown error',
                 });
                 analytics.report({
                     type: EventType.ViewChangeError,
-                    payload: { code: data.payload?.code || 'Code missing' },
+                    payload: { code: data.payload.code || 'Code missing' },
                 });
         }
     }
@@ -222,11 +226,7 @@ const handleInitMessage = (event: MessageEvent<PopupEvent | IFrameLogRequest>) =
 };
 
 const handleMessageInIframeMode = (
-    event: MessageEvent<
-        | PopupEvent
-        | UiEvent
-        | (Omit<MethodResponseMessage, 'payload'> & { payload?: { error: string; code?: string } })
-    >,
+    event: MessageEvent<PopupEvent | UiEvent | MethodResponseMessage>,
 ) => {
     const { data } = event;
 
@@ -235,7 +235,9 @@ const handleMessageInIframeMode = (
     if (disposed) return;
 
     log.debug('handleMessage', data);
-    handleResponseEvent(data);
+    if (data.type === RESPONSE_EVENT) {
+        handleResponseEvent(data);
+    }
 
     // This is message from the window.opener
     if (data.type === UI_REQUEST.IFRAME_FAILURE) {
@@ -259,7 +261,7 @@ const handleMessageInIframeMode = (
         return;
     }
 
-    const message = parseMessage(data);
+    const message = parseMessage<CoreEventMessage>(data);
 
     analytics.report({ type: EventType.ViewChange, payload: { nextView: message.type } });
 
@@ -277,11 +279,7 @@ const handleMessageInIframeMode = (
 
 const handleMessageInCoreMode = (
     event: MessageEvent<
-        | PopupEvent
-        | UiEvent
-        | IFrameLogRequest
-        | IFrameCallMessage
-        | (Omit<MethodResponseMessage, 'payload'> & { payload?: { error: string; code?: string } })
+        PopupEvent | UiEvent | IFrameLogRequest | IFrameCallMessage | MethodResponseMessage
     >,
 ) => {
     const { data } = event;
@@ -318,7 +316,7 @@ const handleMessageInCoreMode = (
         });
     }
 
-    const message = parseMessage(data);
+    const message = parseMessage<CoreEventMessage>(data);
 
     handleUIAffectingMessage(message);
 };
@@ -412,10 +410,11 @@ const initCoreInPopup = async (
     );
     if (disposed) return;
     core.on(CORE_EVENT, event => {
-        const message = parseMessage(event);
+        const message = parseMessage<CoreEventMessage>(event);
         handleUIAffectingMessage(message);
-
-        handleResponseEvent(message);
+        if (message.type === RESPONSE_EVENT) {
+            handleResponseEvent(message);
+        }
     });
     setState({ core });
     log.debug('initiated core');
@@ -444,7 +443,7 @@ const initCoreInIframe = async (payload: PopupInit['payload']) => {
 
 // handle POPUP.HANDSHAKE message from iframe or npm-client
 const handshake = (handshake: PopupHandshake, origin: string) => {
-    const { payload } = handshake;
+    const { payload, ...handshakeRest } = handshake;
     log.debug('handshake with origin: ', origin, 'payload: ', payload);
 
     if (!payload) return;
@@ -468,7 +467,7 @@ const handshake = (handshake: PopupHandshake, origin: string) => {
 
     if (getState().core) {
         const core = ensureCore();
-        core.handleMessage(handshake);
+        core.handleMessage(handshakeRest);
     }
     reactEventBus.dispatch({ type: 'state-update', payload: handshake.payload });
 

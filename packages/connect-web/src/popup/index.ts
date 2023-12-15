@@ -2,7 +2,7 @@
 
 import EventEmitter from 'events';
 import { createDeferred, Deferred } from '@trezor/utils/lib/createDeferred';
-import { POPUP, IFRAME, UI, CoreMessage, IFrameLoaded } from '@trezor/connect/lib/events';
+import { POPUP, IFRAME, UI, CoreEventMessage, IFrameLoaded } from '@trezor/connect/lib/events';
 import type { ConnectSettings } from '@trezor/connect/lib/types';
 import { getOrigin } from '@trezor/connect/lib/utils/urlUtils';
 import { showPopupRequest } from './showPopupRequest';
@@ -330,7 +330,7 @@ export class PopupManager extends EventEmitter {
         this.popupWindow = null;
     }
 
-    async postMessage(message: CoreMessage) {
+    async postMessage(message: CoreEventMessage) {
         // device needs interaction but there is no popup/ui
         // maybe popup request wasn't handled
         // ignore "ui_request_window" type

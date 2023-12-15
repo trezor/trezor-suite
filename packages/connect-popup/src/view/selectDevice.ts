@@ -41,10 +41,7 @@ const initWebUsbButton = (showLoader: boolean) => {
                 const channel = new BroadcastChannel(WEBEXTENSION.USB_PERMISSIONS_BROADCAST);
                 channel.onmessage = event => {
                     if (event.data.type === WEBEXTENSION.USB_PERMISSIONS_FINISHED) {
-                        postMessage({
-                            event: UI_EVENT,
-                            type: TRANSPORT.REQUEST_DEVICE,
-                        });
+                        postMessage({ type: TRANSPORT.REQUEST_DEVICE });
                     }
                 };
                 return;
