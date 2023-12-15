@@ -41,10 +41,13 @@ const wrappedMethods = [
     'blockchainSetCustomBackend',
     'blockchainSubscribeFiatRates',
     'blockchainGetCurrentFiatRates',
+    'blockchainSubscribe',
     'blockchainUnsubscribe',
     'cardanoGetPublicKey',
     'getDeviceState',
     'getAccountDescriptor',
+    'blockchainGetAccountBalanceHistory',
+    'blockchainUnsubscribeFiatRates',
 ];
 
 wrappedMethods.forEach(key => {
