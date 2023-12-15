@@ -7418,19 +7418,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-native/logger@workspace:*, @suite-native/logger@workspace:suite-native/logger":
-  version: 0.0.0-use.local
-  resolution: "@suite-native/logger@workspace:suite-native/logger"
-  dependencies:
-    "@reduxjs/toolkit": "npm:1.9.5"
-    "@suite-common/logger": "workspace:*"
-    "@suite-common/redux-utils": "workspace:*"
-    "@suite-common/wallet-core": "workspace:*"
-    "@suite-native/fiat-rates": "workspace:*"
-    "@suite-native/module-settings": "workspace:*"
-  languageName: unknown
-  linkType: soft
-
 "@suite-native/message-system@workspace:*, @suite-native/message-system@workspace:suite-native/message-system":
   version: 0.0.0-use.local
   resolution: "@suite-native/message-system@workspace:suite-native/message-system"
@@ -7888,7 +7875,6 @@ __metadata:
     "@suite-native/feature-flags": "workspace:*"
     "@suite-native/fiat-rates": "workspace:*"
     "@suite-native/graph": "workspace:*"
-    "@suite-native/logger": "workspace:*"
     "@suite-native/message-system": "workspace:*"
     "@suite-native/module-settings": "workspace:*"
     "@suite-native/storage": "workspace:*"

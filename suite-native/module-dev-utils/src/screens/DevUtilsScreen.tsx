@@ -15,7 +15,6 @@ import { clearStorage } from '@suite-native/storage';
 
 import { BuildInfo } from '../components/BuildInfo';
 import { RenderingUtils } from '../components/RenderingUtils';
-import { CopyLogsButton } from '../components/CopyLogsButton';
 import { FeatureFlags } from '../components/FeatureFlags';
 import { TestnetsToggle } from '../components/TestnetsToggle';
 
@@ -46,7 +45,6 @@ export const DevUtilsScreen = ({
                         >
                             Throw Sentry error
                         </Button>
-                        <CopyLogsButton />
                         <Button colorScheme="dangerElevation0" onPress={clearStorage}>
                             Wipe all data
                         </Button>
