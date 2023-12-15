@@ -86,11 +86,7 @@ In node.js core SDK is loaded as a javascript module without any specificities.
 `@trezor/connect-web` imports only a thin layer with API description into your 3rd party application. When initiated, it injects iframe containing core SDK logic from trezor.io
 into your app. User input, if needed, is served by popup.html page opened on trezor.io on behalf of your application. This way users input such as pin or passphrase is isolated from you and persistent connection between your app and core SDK is kept so events such as device connected/disconnected or blockchain subscriptions are available.
 
-![connect schema when used in web](./schema-connect-web.jpg =539x261).
-
 ### Webextension
 
 In case of `@trezor/connect-webextension`, TrezorConnect object is created in a service worker. In this env we can't inject iframe so in order to uphold the same security model as with
 `@trezor/connect-wb` we open popup.html and load core SDK logic into it. This however does not build persistent connection between SDK and 3rd party application meaning that events cannot be used.
-
-![connect schema when used in webextension](./schema-connect-webextension.jpg =523x269).
