@@ -104,7 +104,13 @@ export const DeviceDisplay = ({ address, network, valueDataTest }: DeviceDisplay
 
     if (!selectedDeviceInternalModel) return null;
 
-    const isPaginated = MAX_CHARACTERS_ON_SCREEN[selectedDeviceInternalModel] <= address.length;
+    // remove bitcoincash: prefix
+    const processedAddress = address.startsWith('bitcoincash:')
+        ? address.replace('bitcoincash:', '')
+        : address;
+
+    const isPaginated =
+        MAX_CHARACTERS_ON_SCREEN[selectedDeviceInternalModel] <= processedAddress.length;
     const areChunksUsed =
         addressDisplayType === AddressDisplayOptions.CHUNKED &&
         !unavailableCapabilities?.chunkify &&
@@ -196,5 +202,9 @@ export const DeviceDisplay = ({ address, network, valueDataTest }: DeviceDisplay
         return <Text isPixelType={isPixelType}>{address}</Text>;
     };
 
-    return <Display>{areChunksUsed ? renderChunks(address) : renderOriginal(address)}</Display>;
+    return (
+        <Display>
+            {areChunksUsed ? renderChunks(processedAddress) : renderOriginal(processedAddress)}
+        </Display>
+    );
 };
