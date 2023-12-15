@@ -1,16 +1,27 @@
-import { Text as RNText, TextProps as RNTextProps, TextStyle, PixelRatio } from 'react-native';
+import { TextProps as RNTextProps, Text as RNText, TextStyle, PixelRatio } from 'react-native';
+
+// @ts-expect-error This is not public RN API but I will make Text noticeable faster https://twitter.com/FernandoTheRojo/status/1707769877493121420
+import { NativeText } from 'react-native/Libraries/Text/TextNativeComponent';
 
 import { useNativeStyles, prepareNativeStyle, NativeStyleObject } from '@trezor/styles';
 import { Color, TypographyStyle } from '@trezor/theme';
 
 import { TestProps } from './types';
 
-export interface TextProps extends Omit<RNTextProps, 'style'>, TestProps {
+export interface PressableTextProps extends Omit<RNTextProps, 'style'>, TestProps {
     variant?: TypographyStyle;
     color?: Color;
     textAlign?: TextStyle['textAlign'];
     style?: NativeStyleObject;
 }
+type UnsupportedNativeTextProps =
+    | 'pressRetentionOffset'
+    | 'onLongPress'
+    | 'onPress'
+    | 'onPressIn'
+    | 'onPressOut';
+
+export type TextProps = Omit<PressableTextProps, UnsupportedNativeTextProps>;
 
 type TextStyleProps = {
     variant: TypographyStyle;
@@ -52,23 +63,27 @@ const textStyle = prepareNativeStyle<TextStyleProps>((utils, { variant, color, t
     textAlign,
 }));
 
-export const Text = ({
+export const BaseText = ({
     variant = 'body',
     color = 'textDefault',
     textAlign = 'left',
+    TextComponent = NativeText,
     style,
     children,
     ...otherProps
-}: TextProps) => {
+}: TextProps & { TextComponent: typeof RNText }) => {
     const { applyStyle } = useNativeStyles();
     const maxFontSizeMultiplier = variantToMaxFontSizeMultiplier[variant];
     return (
-        <RNText
+        <NativeText
             style={[applyStyle(textStyle, { variant, color, textAlign }), style]}
             maxFontSizeMultiplier={maxFontSizeMultiplier}
             {...otherProps}
         >
             {children}
-        </RNText>
+        </NativeText>
     );
 };
+
+export const Text = (props: TextProps) => <BaseText {...props} TextComponent={NativeText} />;
+Text.Pressable = (props: PressableTextProps) => <BaseText {...props} TextComponent={RNText} />;
