@@ -16,7 +16,7 @@ import {
 import { selectIsAccountAlreadyDiscovered } from '@suite-native/accounts';
 import TrezorConnect from '@trezor/connect';
 import { DiscoveryItem } from '@suite-common/wallet-types';
-import { getDerivationType } from '@suite-common/wallet-utils';
+import { getDerivationType, getNetwork } from '@suite-common/wallet-utils';
 import { Network, NetworkSymbol } from '@suite-common/wallet-config';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import {
@@ -92,6 +92,16 @@ const finishNetworkTypeDiscoveryThunk = createThunk(
     },
 );
 
+const getDetailsLevels = (coin: NetworkSymbol) => {
+    const network = getNetwork(coin);
+    if (!network) return { details: 'basic' } as const;
+    // Neccessary for ETH otherwise it won't show tokens in accounts details
+    if (network.networkType === 'ethereum') return { details: 'basic', pageSize: 1 } as const;
+    // For Cardano we need to fetch at least one tx otherwise it will not generate correctly new receive addresses (xpub instead of address)
+    if (network.networkType === 'cardano') return { details: 'txs', pageSize: 1 } as const;
+    return { details: 'basic' } as const;
+};
+
 const discoverAccountsByDescriptorThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/discoverAccountsByDescriptorThunk`,
     async (
@@ -117,8 +127,8 @@ const discoverAccountsByDescriptorThunk = createThunk(
                 coin: bundleItem.coin,
                 descriptor: bundleItem.descriptor,
                 useEmptyPassphrase: true,
-                details: 'basic',
                 skipFinalReload: true,
+                ...getDetailsLevels(bundleItem.coin),
             });
 
             if (success) {
@@ -300,6 +310,14 @@ export const startDescriptorPreloadedDiscoveryThunk = createThunk(
     ) => {
         const device = selectDeviceByState(getState(), deviceState);
 
+        const discovery1 = selectDiscoveryForDevice(getState());
+        if (discovery1) {
+            console.warn(
+                `Warning discovery for device ${deviceState} already exists. Skipping discovery.`,
+            );
+            return;
+        }
+
         if (!device) {
             return;
         }
@@ -318,9 +336,10 @@ export const startDescriptorPreloadedDiscoveryThunk = createThunk(
                 deviceSupportedNetworks,
             }),
         );
-        const discovery = selectDiscoveryForDevice(getState());
 
-        if (!discovery) {
+        // We need to check again here because it's possible that things changed in the meantime because async thunks
+        const discovery2 = selectDiscoveryForDevice(getState());
+        if (!discovery2) {
             return;
         }
 
