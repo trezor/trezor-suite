@@ -29,6 +29,8 @@ export const ConfirmXpubModal = (
                     />
                 )
             }
+            stepLabel={<Translation id="TR_XPUB" />}
+            confirmStepLabel={<Translation id="TR_XPUB_MATCH" />}
             validateOnDevice={showXpub}
             copyButtonText={<Translation id="TR_XPUB_MODAL_CLIPBOARD" />}
             value={account.descriptor}

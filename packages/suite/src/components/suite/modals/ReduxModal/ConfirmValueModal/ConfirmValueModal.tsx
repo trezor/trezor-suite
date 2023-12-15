@@ -75,6 +75,8 @@ const StyledModal = styled(Modal)`
 export interface ConfirmValueModalProps extends Pick<ModalProps, 'onCancel' | 'heading'> {
     account: Account;
     copyButtonText: ReactNode;
+    stepLabel: ReactNode;
+    confirmStepLabel: ReactNode;
     copyButtonDataTest?: string;
     isConfirmed?: boolean;
     validateOnDevice: () => ThunkAction;
@@ -86,6 +88,8 @@ export const ConfirmValueModal = ({
     account,
     copyButtonText,
     copyButtonDataTest,
+    stepLabel,
+    confirmStepLabel,
     heading,
     isConfirmed,
     onCancel,
@@ -106,10 +110,10 @@ export const ConfirmValueModal = ({
     const outputLines = [
         {
             id: 'address',
-            label: <Translation id="TR_RECEIVE_ADDRESS" />,
+            label: stepLabel,
             value,
             plainValue: true,
-            confirmLabel: <Translation id="TR_RECEIVE_ADDRESS_MATCH" />,
+            confirmLabel: confirmStepLabel,
         },
     ];
 
