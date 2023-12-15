@@ -30,6 +30,8 @@ export const ConfirmAddressModal = ({ addressPath, value, ...props }: ConfirmAdd
                     values={{ networkName: account.symbol.toUpperCase() }}
                 />
             }
+            stepLabel={<Translation id="TR_RECEIVE_ADDRESS" />}
+            confirmStepLabel={<Translation id="TR_RECEIVE_ADDRESS_MATCH" />}
             copyButtonText={<Translation id="TR_ADDRESS_MODAL_CLIPBOARD" />}
             validateOnDevice={validateAddress}
             value={value}
