@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
+import Animated, { FadeInDown } from 'react-native-reanimated';
 
 import { useNavigation } from '@react-navigation/native';
 
@@ -60,19 +61,23 @@ export const Assets = () => {
             <Card>
                 <VStack spacing={19}>
                     {assetsDataWithPercentage.map(asset => (
-                        <AssetItem
-                            key={asset.symbol}
-                            iconName={asset.symbol}
-                            cryptoCurrencyName={networks[asset.symbol].name}
-                            cryptoCurrencySymbol={asset.symbol}
-                            fiatBalance={asset.fiatBalance}
-                            fiatPercentage={asset.fiatPercentage}
-                            fiatPercentageOffset={asset.fiatPercentageOffset}
-                            cryptoCurrencyValue={asset.assetBalance.toFixed()}
-                            onPress={setSelectedAssetSymbol}
-                        />
+                        <Animated.View entering={isDiscoveryActive ? FadeInDown : undefined}>
+                            <AssetItem
+                                key={asset.symbol}
+                                iconName={asset.symbol}
+                                cryptoCurrencyName={networks[asset.symbol].name}
+                                cryptoCurrencySymbol={asset.symbol}
+                                fiatBalance={asset.fiatBalance}
+                                fiatPercentage={asset.fiatPercentage}
+                                fiatPercentageOffset={asset.fiatPercentageOffset}
+                                cryptoCurrencyValue={asset.assetBalance.toFixed()}
+                                onPress={setSelectedAssetSymbol}
+                            />
+                        </Animated.View>
                     ))}
-                    {isDiscoveryActive && <DiscoveryAssetsLoader />}
+                    {isDiscoveryActive && (
+                        <DiscoveryAssetsLoader numberOfAssets={assetsDataWithPercentage.length} />
+                    )}
                 </VStack>
             </Card>
             {selectedAssetSymbol && (
