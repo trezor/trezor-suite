@@ -1,4 +1,5 @@
 import { A } from '@mobily/ts-belt';
+
 import { Network, NetworkSymbol, getMainnets, getTestnets } from '@suite-common/wallet-config';
 
 const discoveryBlacklist: NetworkSymbol[] = ['sol', 'dsol'];

@@ -29,7 +29,6 @@
         { "path": "../feature-flags" },
         { "path": "../fiat-rates" },
         { "path": "../graph" },
-        { "path": "../logger" },
         { "path": "../message-system" },
         { "path": "../module-settings" },
         { "path": "../storage" },

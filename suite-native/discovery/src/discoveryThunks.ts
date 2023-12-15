@@ -117,7 +117,8 @@ const discoverAccountsByDescriptorThunk = createThunk(
                 coin: bundleItem.coin,
                 descriptor: bundleItem.descriptor,
                 useEmptyPassphrase: true,
-                details: 'txs',
+                details: 'basic',
+                skipFinalReload: true,
             });
 
             if (success) {
@@ -199,6 +200,7 @@ const discoverNetworkBatchThunk = createThunk(
                     networkType: network.networkType,
                     derivationType: getDerivationType(accountType),
                     suppressBackupWarning: true,
+                    skipFinalReload: true,
                 });
             }
         });
@@ -248,10 +250,10 @@ export const createDescriptorPreloadedDiscoveryThunk = createThunk(
     async (
         {
             deviceState,
-            areTestnetsEnabled,
+            deviceSupportedNetworks,
         }: {
             deviceState: string;
-            areTestnetsEnabled: boolean;
+            deviceSupportedNetworks: readonly Network[];
         },
         { dispatch, getState },
     ) => {
@@ -260,15 +262,18 @@ export const createDescriptorPreloadedDiscoveryThunk = createThunk(
         if (!device) {
             return;
         }
-        const networks = areTestnetsEnabled ? supportedNetworkSymbols : supportedMainnetSymbols;
 
-        const deviceAccessResponse = await requestDeviceAccess(() =>
-            dispatch(getAvailableCardanoDerivationsThunk({ deviceState, device })).unwrap(),
-        );
+        const supportedNetworksSymbols = deviceSupportedNetworks.map(network => network.symbol);
+        const discoveryNetworksTotalCount = supportedNetworksSymbols.length;
 
-        if (!deviceAccessResponse.success) return false;
+        let availableCardanoDerivationsResponse;
+        if (deviceSupportedNetworks.some(network => network.networkType === 'cardano')) {
+            availableCardanoDerivationsResponse = await requestDeviceAccess(() =>
+                dispatch(getAvailableCardanoDerivationsThunk({ deviceState, device })).unwrap(),
+            );
 
-        const discoveryNetworksTotalCount = getAvailableNetworks(networks, device).length;
+            if (!availableCardanoDerivationsResponse.success) return false;
+        }
 
         dispatch(
             createDiscovery({
@@ -280,8 +285,8 @@ export const createDescriptorPreloadedDiscoveryThunk = createThunk(
                 bundleSize: 0,
                 loaded: 0,
                 failed: [],
-                availableCardanoDerivations: deviceAccessResponse.payload,
-                networks,
+                availableCardanoDerivations: availableCardanoDerivationsResponse?.payload,
+                networks: supportedNetworksSymbols,
             }),
         );
     },
@@ -299,13 +304,18 @@ export const startDescriptorPreloadedDiscoveryThunk = createThunk(
             return;
         }
 
+        const enabledNetworks = areTestnetsEnabled
+            ? supportedNetworkSymbols
+            : supportedMainnetSymbols;
+        const deviceSupportedNetworks = sortNetworks(getAvailableNetworks(enabledNetworks, device));
+
         // Start tracking duration for analytics purposes
         dispatch(setDiscoveryStartTimestamp(performance.now()));
 
         await dispatch(
             createDescriptorPreloadedDiscoveryThunk({
                 deviceState,
-                areTestnetsEnabled,
+                deviceSupportedNetworks,
             }),
         );
         const discovery = selectDiscoveryForDevice(getState());
@@ -314,11 +324,8 @@ export const startDescriptorPreloadedDiscoveryThunk = createThunk(
             return;
         }
 
-        // Get only device supported networks that are not blacklisted.
-        const networks = sortNetworks(getAvailableNetworks(discovery.networks, device));
-
         // Start discovery for every network account type.
-        networks.forEach(network => {
+        deviceSupportedNetworks.forEach(network => {
             dispatch(discoverNetworkBatchThunk({ deviceState, network }));
         });
     },

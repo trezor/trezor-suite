@@ -40,6 +40,8 @@ export type DiscoveryItem = {
     details?: 'basic' | 'tokens' | 'tokenBalances' | 'txids' | 'txs';
     pageSize?: number;
     suppressBackupWarning?: boolean;
+    // Useful to skip additional getFeatures call which is redundant in discovery
+    skipFinalReload?: boolean;
     // wallet
     index: number;
     accountType: Account['accountType'];
