@@ -159,6 +159,14 @@ export default defineMessages({
         defaultMessage: 'Receive address',
         id: 'TR_RECEIVE_ADDRESS',
     },
+    TR_XPUB_MATCH: {
+        defaultMessage: 'XPUB match?',
+        id: 'TR_XPUB_MATCH',
+    },
+    TR_XPUB: {
+        defaultMessage: 'XPUB',
+        id: 'TR_XPUB',
+    },
     TR_ADDRESS: {
         id: 'TR_ADDRESSES',
         defaultMessage: 'Address',
