@@ -43,6 +43,7 @@ const Wrapper = styled(NavigationItemBase)<WrapperProps>`
 
 export const Left = styled.div`
     padding-top: 3px;
+    position: relative;
 `;
 
 export const Center = styled.div`
@@ -142,6 +143,9 @@ export const AccountItem = forwardRef(
             >
                 <Left>
                     <CoinLogo size={24} symbol={symbol} />
+                    {isTokensCountShown && (
+                        <TokensCount count={tokens.length} onClick={handleClickOnTokens} />
+                    )}
                 </Left>
                 <Center>
                     <Row>
@@ -160,12 +164,6 @@ export const AccountItem = forwardRef(
                                 <Balance>
                                     <CoinBalance value={formattedBalance} symbol={symbol} />
                                 </Balance>
-                                {isTokensCountShown && (
-                                    <TokensCount
-                                        count={tokens.length}
-                                        onClick={handleClickOnTokens}
-                                    />
-                                )}
                             </Row>
                         </>
                     )}

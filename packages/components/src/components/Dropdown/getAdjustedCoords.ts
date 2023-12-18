@@ -61,7 +61,7 @@ export const getAdjustedCoords = ({
             break;
         case 'right-bottom':
             x += offsetX;
-            y = offsetY - height;
+            y = y + offsetY - height;
             if (toggleDimensions) {
                 x += toggleDimensions.width + MENU_DEFAULT_OFFSET;
                 y += toggleDimensions.height + MENU_DEFAULT_OFFSET;

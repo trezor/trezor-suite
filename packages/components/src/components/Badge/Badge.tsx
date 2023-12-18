@@ -2,7 +2,7 @@ import React from 'react';
 import styled, { css, DefaultTheme } from 'styled-components';
 import { IconName } from '@suite-common/icons';
 import { Icon } from '@suite-common/icons/src/webComponents';
-import { borders, Color, spacingsPx, typography } from '@trezor/theme';
+import { borders, Color, spacings, spacingsPx, typography } from '@trezor/theme';
 import { focusStyleTransition, getFocusShadowStyle } from '../../utils/utils';
 
 const getBackgroundColor = (variant: BadgeVariant | undefined, theme: DefaultTheme) => {
@@ -59,14 +59,24 @@ const getIconColor = (variant: BadgeVariant, isDisabled: boolean | undefined): C
     }
 };
 
+const getPadding = (size: BadgeSize) => {
+    switch (size) {
+        case 'tiny':
+            return `0 ${spacings.xs - spacings.xxxs}px`;
+        case 'small':
+            return `0 ${spacingsPx.xs}`;
+        default:
+            return `${spacingsPx.xxxs} ${spacingsPx.xs}`;
+    }
+};
+
 type BadgeContainerProps = Required<Pick<BadgeProps, 'size' | 'variant' | 'hasAlert'>>;
 
 const Container = styled.button<BadgeContainerProps>`
     display: flex;
     align-items: center;
     gap: ${spacingsPx.xxs};
-    padding: ${({ size }) =>
-        size === 'small' ? `0 ${spacingsPx.xs}` : `${spacingsPx.xxxs} ${spacingsPx.xs}`};
+    padding: ${({ size }) => getPadding(size)};
     border-radius: ${borders.radii.full};
     border: 1px solid transparent;
     background: ${({ variant, theme }) => getBackgroundColor(variant, theme)};
@@ -101,10 +111,10 @@ const Container = styled.button<BadgeContainerProps>`
 
 const Content = styled.span<Required<Pick<BadgeProps, 'size' | 'variant' | 'isDisabled'>>>`
     color: ${({ variant, isDisabled, theme }) => getTextColor(variant, isDisabled, theme)};
-    ${({ size }) => (size === 'small' ? typography.label : typography.hint)};
+    ${({ size }) => (size === 'medium' ? typography.hint : typography.label)};
 `;
 
-type BadgeSize = 'small' | 'medium';
+type BadgeSize = 'tiny' | 'small' | 'medium';
 type BadgeVariant = 'neutral' | 'green' | 'red' | 'bold';
 
 export interface BadgeProps {
