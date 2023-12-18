@@ -11,29 +11,30 @@ import {
     useEffect,
 } from 'react';
 import { createPortal } from 'react-dom';
-import styled, { useTheme } from 'styled-components';
-import { borders } from '@trezor/theme';
+import styled from 'styled-components';
 import { useOnClickOutside } from '@trezor/react-utils';
-import { Icon } from '../assets/Icon/Icon';
 import { Menu, MenuProps, DropdownMenuItemProps } from './Menu';
 import { Coords, getAdjustedCoords } from './getAdjustedCoords';
+import { IconButton } from '../buttons/IconButton/IconButton';
+import { focusStyleTransition, getFocusShadowStyle } from '../../utils/utils';
 
-const MoreIcon = styled(Icon)<{ $isDisabled?: boolean; isToggled: boolean }>`
-    background: ${({ $isDisabled, isToggled, theme }) =>
-        !$isDisabled && isToggled && theme.backgroundNeutralSubdued};
-    border-radius: ${borders.radii.xxs};
-    transition: background 0.2s;
+const MoreIcon = styled(IconButton)<{ $isToggled: boolean }>`
+    background: ${({ isDisabled, $isToggled, theme }) =>
+        !isDisabled && $isToggled && theme.backgroundNeutralSubdued};
 
     :hover {
-        background: ${({ $isDisabled, theme }) => !$isDisabled && theme.backgroundNeutralSubdued};
+        background: ${({ theme, $isToggled }) => $isToggled && theme.backgroundNeutralSubdued};
     }
 `;
 
-const Container = styled.button<{ disabled?: boolean }>`
+const Container = styled.div<{ disabled?: boolean }>`
     all: unset;
     width: fit-content;
     height: fit-content;
-
+    border-radius: 50%;
+    transition: ${focusStyleTransition};
+    border: 1px solid transparent;
+    ${getFocusShadowStyle()};
     cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
 `;
 
@@ -69,6 +70,7 @@ export type DropdownProps = Omit<MenuProps, 'setToggled'> & {
     renderOnClickPosition?: boolean;
     onToggle?: (isToggled: boolean) => void;
     className?: string;
+    'data-test'?: string;
     children?: ((isToggled: boolean) => ReactElement<any>) | ReactElement<any>;
 };
 
@@ -93,17 +95,16 @@ export const Dropdown = forwardRef(
             onToggle,
             className,
             children,
-            ...rest
+            'data-test': dataTest,
         }: DropdownProps,
         ref,
     ) => {
         const [isToggled, setIsToggledState] = useState(false);
         const [coords, setCoords] = useState<Coords>();
-        const [clickPos, setclickPos] = useState<Coords>();
+        const [clickPos, setСlickPos] = useState<Coords>();
 
-        const theme = useTheme();
         const menuRef = useRef<HTMLUListElement>(null);
-        const toggleRef = useRef<HTMLButtonElement>(null);
+        const toggleRef = useRef<HTMLDivElement>(null);
 
         // when toggled, calculate the position of the menu
         // takes into account the toggle position, size and the menu alignment
@@ -161,6 +162,9 @@ export const Dropdown = forwardRef(
         });
 
         const onToggleClick = (e: MouseEvent) => {
+            e.stopPropagation();
+            e.preventDefault();
+
             if (isDisabled) {
                 return;
             }
@@ -173,7 +177,7 @@ export const Dropdown = forwardRef(
 
             setToggled(!isToggled);
             if (renderOnClickPosition) {
-                setclickPos({ x: e.pageX, y: e.pageY });
+                setСlickPos({ x: e.pageX, y: e.pageY });
             }
         };
 
@@ -190,12 +194,14 @@ export const Dropdown = forwardRef(
             })
         ) : (
             <MoreIcon
-                isToggled={isToggled}
-                size={24}
+                size="small"
+                variant="tertiary"
                 icon="MORE"
-                color={!isDisabled ? theme.TYPE_DARK_GREY : theme.TYPE_LIGHT_GREY}
-                $isDisabled={isDisabled}
-                {...rest}
+                tabIndex={-1}
+                onClick={e => e.stopPropagation()}
+                $isToggled={isToggled}
+                isDisabled={isDisabled}
+                data-test={dataTest}
             />
         );
 
@@ -216,7 +222,6 @@ export const Dropdown = forwardRef(
             <Container
                 ref={toggleRef}
                 className={className}
-                type="button"
                 tabIndex={renderOnClickPosition ? -1 : 0}
                 disabled={isDisabled}
                 onClick={onToggleClick}

@@ -73,7 +73,7 @@ const Content = styled.span<ContentProps>`
 
 type SelectedHTMLButtonProps = Pick<
     ButtonHTMLAttributes<HTMLButtonElement>,
-    'onClick' | 'onMouseOver' | 'onMouseLeave' | 'type'
+    'onClick' | 'onMouseOver' | 'onMouseLeave' | 'type' | 'tabIndex'
 >;
 
 export interface ButtonProps extends SelectedHTMLButtonProps {
