@@ -14,6 +14,7 @@ import { DeviceAuthenticity } from './DeviceAuthenticity';
 import { Devkit } from './Devkit';
 import { Transport } from './Transport';
 import { Processes } from './Processes';
+import { Metadata } from './Metadata';
 
 export const SettingsDebug = () => (
     <SettingsLayout>
@@ -50,6 +51,9 @@ export const SettingsDebug = () => (
         )}
         <SettingsSection title="Transports">
             <Transport />
+        </SettingsSection>
+        <SettingsSection title="Labeling viewer">
+            <Metadata />
         </SettingsSection>
     </SettingsLayout>
 );

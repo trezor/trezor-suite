@@ -13,6 +13,7 @@ interface DropZoneProps {
     // function which is called after the file is selected
     onSelect: (data: File, setError: (msg: ExtendedMessageDescriptor) => void) => void;
     className?: string;
+    placeholder?: string;
 }
 
 export const useDropZone = ({ accept, onSelect, className }: DropZoneProps) => {
@@ -181,7 +182,7 @@ export const DropZone = (props: DropZoneProps) => {
             <StyledInput {...getInputProps()} />
             <Label>
                 <StyledIcon icon={props.icon || 'BINARY'} />
-                {filename || <Translation id="TR_DROPZONE" />}
+                {filename || props.placeholder || <Translation id="TR_DROPZONE" />}
             </Label>
             {error && (
                 <P>
