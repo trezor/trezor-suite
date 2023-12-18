@@ -1,3 +1,14 @@
+# 1.1.19
+
+-   chore: remove `bytebuffer` dependency (9b2f9def0)
+-   chore(connect): use `tslib` as dependency in all public libs (606ecc63b)
+-   chore: update `jest` and related dependency (b8a321c83)
+-   feat(transport): allow custom chunkSize in protocol-v1.encode (ba855c980)
+-   feat(transport): accept encoding protocols as parameter of send, receive and call methods (b64af958e)
+-   feat(transport): unify protocol encode/decode functions (b4f08409c)
+-   chore(repo): update tsx (53de3e3a8)
+-   tests: switch to fw main branch (91c450631)
+
 # 1.1.18
 
 -   chore(repo): Upgrade TS 5.3 (#10017) (7277f9d0f)
