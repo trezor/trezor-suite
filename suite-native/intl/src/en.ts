@@ -67,7 +67,7 @@ export const en = {
                 touchId: 'Enable TouchID',
                 unknown: 'Enable biometrics',
             },
-            description: 'Use biometricts verification \nto unlock the app.',
+            description: 'Use biometrics verification \nto unlock the app.',
             button: {
                 later: 'I’ll do that later in Settings',
                 enable: 'Enable',
@@ -204,6 +204,7 @@ export const en = {
             },
             showAddress: {
                 button: 'Show full address',
+                buttonTracker: 'Show address',
                 learnMore: 'Learn more about verifying addresses',
             },
         },
