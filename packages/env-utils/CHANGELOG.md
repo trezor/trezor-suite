@@ -1,3 +1,9 @@
+# 1.0.10
+
+-   chore(connect): use `tslib` as dependency in all public libs (606ecc63b)
+-   chore(repo): update tsx (53de3e3a8)
+-   fix(suite-native): use correct message config on mobile (#10184) (082592a2b)
+
 # 1.0.9
 
 -   chore(repo): Upgrade TS 5.3 (#10017) (7277f9d0f)
