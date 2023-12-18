@@ -1,17 +1,15 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 
 import { ListItemSkeleton, HStack, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-common/icons';
 import { useTranslate } from '@suite-native/intl';
-import { selectIsAccountsListEmpty } from '@suite-common/wallet-core';
 
-const EMPTY_LIST_SKELETON_COUNT = 3;
-const NONEMPTY_LIST_SKELETON_COUNT = 1;
+const DEFAULT_LIST_SKELETON_COUNT = 3;
+const MINIMUM_LIST_SKELETON_COUNT = 1;
 
-export const DiscoveryAssetsLoader = () => {
+export const DiscoveryAssetsLoader = ({ numberOfAssets }: { numberOfAssets: number }) => {
     const { translate } = useTranslate();
-    const isListEmpty = useSelector(selectIsAccountsListEmpty);
+    const isListEmpty = numberOfAssets === 0;
 
     const discoveryProgressText = translate(
         isListEmpty
@@ -19,9 +17,11 @@ export const DiscoveryAssetsLoader = () => {
             : 'assets.dashboard.discoveryProgress.stillWorking',
     );
 
-    const numberOfSkeletons = isListEmpty
-        ? EMPTY_LIST_SKELETON_COUNT
-        : NONEMPTY_LIST_SKELETON_COUNT;
+    // There should always be
+    const numberOfSkeletons = Math.max(
+        DEFAULT_LIST_SKELETON_COUNT - numberOfAssets,
+        MINIMUM_LIST_SKELETON_COUNT,
+    );
 
     return (
         <>
