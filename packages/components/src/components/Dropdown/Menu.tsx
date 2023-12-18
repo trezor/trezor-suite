@@ -283,7 +283,7 @@ const flattenVisibleItems = (visibleItems: MenuProps['items'], addon: MenuProps[
 };
 
 const getDefaultFocusItemIndex = (items: MenuProps['items'], addon: MenuProps['addon']) => {
-    if (items?.length && items.length > 1) {
+    if (items?.length) {
         return addon ? 1 : 0;
     }
 

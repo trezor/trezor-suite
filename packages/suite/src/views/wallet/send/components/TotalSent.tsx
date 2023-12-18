@@ -3,23 +3,21 @@ import { Card, variables } from '@trezor/components';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { formatNetworkAmount, formatAmount } from '@suite-common/wallet-utils';
 import { Translation, FiatValue, FormattedCryptoAmount } from 'src/components/suite';
+import { ReviewButton } from './ReviewButton';
+import { spacingsPx } from '@trezor/theme';
 
 const StyledCard = styled(Card)`
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    min-height: 86px;
-    padding: 0 42px;
-
-    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
-        padding: 0 20px;
-    }
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: ${spacingsPx.md} 0;
+    align-items: start;
+    height: min-content;
+    background: transparent;
+    box-shadow: none;
+    border: 1px solid ${({ theme }) => theme.borderOnElevation0};
 `;
 
 const Left = styled.div`
-    display: flex;
-    flex: 1;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
@@ -38,7 +36,6 @@ const SecondaryLabel = styled.div`
 
 const Right = styled.div`
     display: flex;
-    flex: 1;
     justify-content: center;
     flex-direction: column;
     align-items: flex-end;
@@ -73,17 +70,19 @@ export const TotalSent = () => {
         transactionInfo && transactionInfo.type !== 'error' ? transactionInfo.token : undefined;
 
     return (
-        <StyledCard>
+        <StyledCard paddingType="large">
             <Left>
                 <Label>
                     <Translation id="TOTAL_SENT" />
                 </Label>
+
                 {!isTokenTransfer && (
                     <SecondaryLabel>
                         <Translation id="INCLUDING_FEE" />
                     </SecondaryLabel>
                 )}
             </Left>
+
             {transactionInfo && transactionInfo.type !== 'error' && (
                 <Right>
                     <TotalSentCoin>
@@ -97,6 +96,7 @@ export const TotalSent = () => {
                             symbol={tokenInfo ? tokenInfo.symbol : symbol}
                         />
                     </TotalSentCoin>
+
                     <TotalSentFiat>
                         {tokenInfo ? (
                             <>
@@ -118,6 +118,8 @@ export const TotalSent = () => {
                     </TotalSentFiat>
                 </Right>
             )}
+
+            <ReviewButton />
         </StyledCard>
     );
 };
