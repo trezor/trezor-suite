@@ -88,7 +88,7 @@ export const ExportAction = ({ account }: ExportActionProps) => {
 
     return (
         <Dropdown
-            alignMenu="right"
+            alignMenu="bottom-right"
             items={[
                 {
                     key: 'export',

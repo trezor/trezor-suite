@@ -46,7 +46,7 @@ export const Header = () => {
         <WalletLayoutHeader title="TR_NAV_SEND">
             <Clear />
             <Dropdown
-                alignMenu="right"
+                alignMenu="bottom-right"
                 data-test="@send/header-dropdown"
                 items={[
                     {

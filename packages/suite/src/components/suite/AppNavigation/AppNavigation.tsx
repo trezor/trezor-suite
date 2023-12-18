@@ -317,7 +317,7 @@ export const AppNavigation = ({ items, primaryContent, inView }: AppNavigationPr
                             {condensedSecondaryMenuVisible && (
                                 <AppNavigationTooltip>
                                     <StyledDropdown
-                                        alignMenu="right"
+                                        alignMenu="bottom-right"
                                         isDisabled={isAccountLoading}
                                         items={[
                                             {
@@ -360,7 +360,7 @@ export const AppNavigation = ({ items, primaryContent, inView }: AppNavigationPr
                                 {!!itemsSecondaryWithExtra.length && (
                                     <AppNavigationTooltip>
                                         <StyledDropdown
-                                            alignMenu="right"
+                                            alignMenu="bottom-right"
                                             isDisabled={isAccountLoading}
                                             data-test="@wallet/menu/extra-dropdown"
                                             items={[

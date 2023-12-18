@@ -32,11 +32,19 @@ const Wrapper = styled.div<{ isInline?: boolean }>`
         `}
 `;
 
-const MenuHeader = styled.div<{ isInline?: boolean }>`
+const MenuHeader = styled.div<{ isInline?: boolean; onClick?: () => void }>`
     display: flex;
     flex-direction: column;
     border-top: 1px solid ${({ theme }) => theme.borderOnElevation0};
 
+    ${({ onClick, theme }) =>
+        onClick
+            ? `
+    cursor: pointer;
+    :hover {
+        background-color: ${theme.backgroundSurfaceElevation2};
+    }`
+            : ''}
     ${props =>
         props.isInline &&
         css`
