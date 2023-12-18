@@ -1,6 +1,5 @@
 import { ReactNode } from 'react';
 import styled, { useTheme } from 'styled-components';
-import { transparentize } from 'polished';
 
 import { Icon } from '../assets/Icon/Icon';
 import { variables } from '../../config';
@@ -23,16 +22,13 @@ const getIcon = (variant: Variant) => {
 const Wrapper = styled.div<{ variant: Variant; withIcon?: boolean }>`
     align-items: center;
     background: ${({ variant, theme }) =>
-        transparentize(
-            0.9,
-            getColor(variant, {
-                learn: theme.backgroundPrimarySubtleOnElevation0,
-                info: theme.backgroundAlertBlueSubtleOnElevation0,
-                warning: theme.backgroundAlertYellowSubtleOnElevation0,
-                critical: theme.backgroundAlertRedSubtleOnElevation0,
-            }),
-        )};
-    border-radius: ${borders.radii.xxs};
+        getColor(variant, {
+            learn: theme.backgroundPrimarySubtleOnElevation0,
+            info: theme.backgroundAlertBlueSubtleOnElevation0,
+            warning: theme.backgroundAlertYellowSubtleOnElevation0,
+            critical: theme.backgroundAlertRedSubtleOnElevation0,
+        })};
+    border-radius: ${borders.radii.xs};
     color: ${({ variant, theme }) =>
         getColor(variant, {
             learn: theme.textPrimaryDefault,

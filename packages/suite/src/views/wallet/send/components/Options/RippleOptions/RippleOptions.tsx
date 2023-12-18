@@ -50,6 +50,7 @@ export const RippleOptions = () => {
                     >
                         <StyledButton
                             variant="tertiary"
+                            size="small"
                             icon="DATA"
                             onClick={() => {
                                 // open additional form
@@ -65,6 +66,7 @@ export const RippleOptions = () => {
                 <Tooltip content={<Translation id="BROADCAST_TOOLTIP" />} cursor="pointer">
                     <StyledButton
                         variant="tertiary"
+                        size="small"
                         icon="BROADCAST"
                         onClick={() => {
                             toggleOption('broadcast');

@@ -102,6 +102,7 @@ export const BitcoinOptions = () => {
                         >
                             <StyledButton
                                 variant="tertiary"
+                                size="small"
                                 icon="CALENDAR"
                                 onClick={() => {
                                     // open additional form
@@ -129,6 +130,7 @@ export const BitcoinOptions = () => {
                             >
                                 <StyledButton
                                     variant="tertiary"
+                                    size="small"
                                     icon="RBF"
                                     onClick={() => {
                                         toggleOption('bitcoinRBF');
@@ -143,6 +145,7 @@ export const BitcoinOptions = () => {
                     <Tooltip content={<Translation id="BROADCAST_TOOLTIP" />} cursor="pointer">
                         <StyledButton
                             variant="tertiary"
+                            size="small"
                             icon="BROADCAST"
                             onClick={() => {
                                 toggleOption('broadcast');
@@ -167,6 +170,7 @@ export const BitcoinOptions = () => {
                         >
                             <StyledButton
                                 variant="tertiary"
+                                size="small"
                                 icon="COIN_CONTROL"
                                 onClick={toggleUtxoSelection}
                                 data-test="coin-control-button"
@@ -180,6 +184,7 @@ export const BitcoinOptions = () => {
                 <Right>
                     <AddRecipientButton
                         variant="tertiary"
+                        size="small"
                         icon="PLUS"
                         data-test="add-output"
                         onClick={addOutput}
