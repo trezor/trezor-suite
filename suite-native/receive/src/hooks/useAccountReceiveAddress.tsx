@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { useAlert } from '@suite-native/alerts';
 import TrezorConnect from '@trezor/connect';
 import {
     AccountsRootState,
@@ -21,11 +22,12 @@ import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 
 export const useAccountReceiveAddress = (accountKey: AccountKey) => {
     const dispatch = useDispatch();
-    const navigation = useNavigation();
     const [isReceiveApproved, setIsReceiveApproved] = useState(false);
     const [isUnverifiedAddressRevealed, setIsUnverifiedAddressRevealed] = useState(false);
-
     const isPortfolioTracker = useSelector(selectIsSelectedDeviceImported);
+    const navigation = useNavigation();
+
+    const { showAlert } = useAlert();
 
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
@@ -46,49 +48,66 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
         }
     }, [account, pendingAddresses, isAccountUtxoBased]);
 
-    const verifyAddressOnDevice = useCallback(async () => {
+    const verifyAddressOnDevice = useCallback(async (): Promise<boolean> => {
         if (accountKey && freshAddress) {
-            const response = await requestPrioritizedDeviceAccess(() =>
-                dispatch(
+            const response = await requestPrioritizedDeviceAccess(() => {
+                const thunkResponse = dispatch(
                     confirmAddressOnDeviceThunk({
                         accountKey,
                         addressPath: freshAddress.path,
                         chunkify: true,
                     }),
-                ).unwrap(),
-            );
+                ).unwrap();
+                return thunkResponse;
+            });
 
-            // @ts-expect-error due to missing types in suite-common return of confirmAddressOnDeviceThunk
-            return response.payload?.success ?? false;
+            if (!response.success) {
+                // Wasn't able to get access to device
+                console.warn(response.error);
+                return false;
+            }
+
+            if (!response.payload.success) {
+                showAlert({
+                    title: response.payload.payload.code,
+                    description: response.payload.payload.error,
+                    icon: 'warningCircle',
+                    pictogramVariant: 'red',
+                    primaryButtonTitle: 'Cancel',
+                    onPressPrimaryButton: () => {
+                        navigation.goBack();
+                        TrezorConnect.cancel();
+                        setIsUnverifiedAddressRevealed(false);
+                    },
+                });
+                return false;
+            }
+
+            return response.payload.success;
         }
 
         return false;
-    }, [dispatch, accountKey, freshAddress]);
+    }, [accountKey, freshAddress, dispatch, showAlert, navigation]);
 
     const handleShowAddress = useCallback(async () => {
         if (isPortfolioTracker) {
-            if (networkSymbol)
+            if (networkSymbol) {
                 analytics.report({
                     type: EventType.CreateReceiveAddressShowAddress,
                     payload: { assetSymbol: networkSymbol },
                 });
+                setIsReceiveApproved(true);
+            }
         } else {
             setIsUnverifiedAddressRevealed(true);
             const wasVerificationSuccessful = await verifyAddressOnDevice();
 
-            // In case that user cancels the verification or device is disconnected, navigate out of the receive flow.
-            if (!wasVerificationSuccessful) {
-                TrezorConnect.cancel();
-                navigation.goBack();
-                setIsUnverifiedAddressRevealed(false);
-                return;
+            if (wasVerificationSuccessful) {
+                analytics.report({ type: EventType.ConfirmedReceiveAdress });
+                setIsReceiveApproved(true);
             }
-
-            analytics.report({ type: EventType.ConfirmedReceiveAdress });
         }
-
-        setIsReceiveApproved(true);
-    }, [networkSymbol, isPortfolioTracker, verifyAddressOnDevice, navigation]);
+    }, [isPortfolioTracker, networkSymbol, verifyAddressOnDevice]);
 
     return {
         address: freshAddress?.address,
