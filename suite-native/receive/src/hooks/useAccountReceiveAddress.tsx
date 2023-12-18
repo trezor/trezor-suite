@@ -19,13 +19,11 @@ import { AccountKey } from '@suite-common/wallet-types';
 import { getFirstFreshAddress } from '@suite-common/wallet-utils';
 import { analytics, EventType } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
-import { useTranslate } from '@suite-native/intl';
 
 export const useAccountReceiveAddress = (accountKey: AccountKey) => {
     const dispatch = useDispatch();
     const [isReceiveApproved, setIsReceiveApproved] = useState(false);
     const [isUnverifiedAddressRevealed, setIsUnverifiedAddressRevealed] = useState(false);
-    const { translate } = useTranslate();
     const isPortfolioTracker = useSelector(selectIsSelectedDeviceImported);
     const navigation = useNavigation();
 
@@ -64,7 +62,8 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
             });
 
             if (!response.success) {
-                console.log('unsuccesful device connection');
+                // Wasn't able to get access to device
+                console.warn(response.error);
                 return false;
             }
 
@@ -88,7 +87,7 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
         }
 
         return false;
-    }, [accountKey, freshAddress, dispatch, showAlert, translate]);
+    }, [accountKey, freshAddress, dispatch, showAlert, navigation]);
 
     const handleShowAddress = useCallback(async () => {
         if (isPortfolioTracker) {
