@@ -61,9 +61,11 @@ export const Assets = () => {
             <Card>
                 <VStack spacing={19}>
                     {assetsDataWithPercentage.map(asset => (
-                        <Animated.View entering={isDiscoveryActive ? FadeInDown : undefined}>
+                        <Animated.View
+                            entering={isDiscoveryActive ? FadeInDown : undefined}
+                            key={asset.symbol}
+                        >
                             <AssetItem
-                                key={asset.symbol}
                                 iconName={asset.symbol}
                                 cryptoCurrencyName={networks[asset.symbol].name}
                                 cryptoCurrencySymbol={asset.symbol}
