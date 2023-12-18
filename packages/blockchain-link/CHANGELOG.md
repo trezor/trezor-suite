@@ -1,3 +1,15 @@
+# 2.1.20
+
+-   chore(connect): use `tslib` as dependency in all public libs (606ecc63b)
+-   chore(blockchain-link): use extended top-level tsconfig (d17da1f35)
+-   chore: update `jest` and related dependency (b8a321c83)
+-   fix(blockchain-link): use timeout field of RippleApi.APIOptions (eafa4f308)
+-   chore(blockchain-link): use default imports from commonjs dependencies (9a81b0459)
+-   chore: Throttler throttling instead of debouncing in `@trezor/blockchain-link` (#10288) (f7ff0cf9f)
+-   fix(blockchain-link): consider only unique solana signatures when paginating (e00cf70ac)
+-   chore(repo): update tsx (53de3e3a8)
+-   feat(suite): add Solana support (f2a89b34f)
+
 # 2.1.19
 
 -   chore(repo): Upgrade TS 5.3 (#10017) (7277f9d0f)
