@@ -1,3 +1,10 @@
+# 1.0.4
+
+-   chore: remove `bytebuffer` dependency (9b2f9def0)
+-   chore(connect): use `tslib` as dependency in all public libs (606ecc63b)
+-   chore(repo): update tsx (53de3e3a8)
+-   feat(suite): add Solana support (f2a89b34f)
+
 # 1.0.3
 
 -   feat(connect): add support for solana FW interactions (3d9c703a5)
