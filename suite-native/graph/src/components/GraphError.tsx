@@ -10,8 +10,13 @@ export const GraphError = ({ error, onTryAgain }: GraphErrorProps) => (
         <Text variant="label" color="textSubdued" textAlign="center">
             There are some troubles with loading graph points: {error}
         </Text>
-        <Text variant="body" color="textSecondaryHighlight" textAlign="center" onPress={onTryAgain}>
+        <Text.Pressable
+            variant="body"
+            color="textSecondaryHighlight"
+            textAlign="center"
+            onPress={onTryAgain}
+        >
             Try again
-        </Text>
+        </Text.Pressable>
     </VStack>
 );
