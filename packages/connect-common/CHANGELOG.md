@@ -1,3 +1,15 @@
+# 0.0.24
+
+-   feat(connect-common): add more backend urls for solana (29f042470)
+-   chore(connect): use `tslib` as dependency in all public libs (606ecc63b)
+-   chore: update `jest` and related dependency (b8a321c83)
+-   chore(connect-common): update fw binaries to 2.6.4 (398509788)
+-   chore(repo): update tsx (53de3e3a8)
+-   feat(suite): add Solana support (f2a89b34f)
+-   chore(suite): unify support config for eth coins (8776bb79c)
+-   chore(suite): add Holesky (175707861)
+-   chore(connect-webextension): postMessage useQueue param (4e626e758)
+
 # 0.0.23
 
 -   feat(connect): update solana backend urls (876f60939)
