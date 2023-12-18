@@ -1,3 +1,9 @@
+# 9.0.16
+
+-   chore(connect): use `tslib` as dependency in all public libs (606ecc63b)
+-   chore: update `jest` and related dependency (b8a321c83)
+-   chore(repo): update tsx (53de3e3a8)
+
 # 9.0.15
 
 -   chore(repo): Upgrade TS 5.3 (#10017) (7277f9d0f)
