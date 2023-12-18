@@ -160,11 +160,11 @@ export default defineMessages({
         id: 'TR_RECEIVE_ADDRESS',
     },
     TR_XPUB_MATCH: {
-        defaultMessage: 'XPUB match?',
+        defaultMessage: 'Public key (XPUB) match?',
         id: 'TR_XPUB_MATCH',
     },
     TR_XPUB: {
-        defaultMessage: 'XPUB',
+        defaultMessage: 'Public key (XPUB)',
         id: 'TR_XPUB',
     },
     TR_ADDRESS: {
@@ -1929,7 +1929,7 @@ export default defineMessages({
         id: 'TR_ADDRESS_MODAL_TITLE',
     },
     TR_XPUB_MODAL_CLIPBOARD: {
-        defaultMessage: 'Copy public key',
+        defaultMessage: 'Copy public key (XPUB)',
         id: 'TR_XPUB_MODAL_CLIPBOARD',
     },
     TR_XPUB_MODAL_TITLE: {
