@@ -1,36 +1,23 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
-import { H2, variables } from '@trezor/components';
+import { H2 } from '@trezor/components';
 import type { ExtendedMessageDescriptor } from 'src/types/suite';
 import { Translation, AccountFormCloseButton } from 'src/components/suite';
+import { spacingsPx } from '@trezor/theme';
 
 const HeaderWrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 24px;
+    margin-bottom: ${spacingsPx.lg};
 `;
 
-const HeaderLeft = styled.div`
-    display: flex;
-    flex: 1;
-    align-items: center;
-`;
-
-const HeaderRight = styled.div`
+const HeaderActions = styled.div`
     display: flex;
     align-items: center;
     justify-content: flex-end;
+    gap: ${spacingsPx.xxs};
     flex: 1;
-
-    & > * + * {
-        margin-left: 5px;
-    }
-`;
-
-const StyledTitle = styled(H2)`
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
 `;
 
 type WalletLayoutHeaderProps = {
@@ -40,14 +27,13 @@ type WalletLayoutHeaderProps = {
 
 export const WalletLayoutHeader = ({ title, children }: WalletLayoutHeaderProps) => (
     <HeaderWrapper>
-        <HeaderLeft>
-            <StyledTitle>
-                <Translation id={title} />
-            </StyledTitle>
-        </HeaderLeft>
-        <HeaderRight>
+        <H2>
+            <Translation id={title} />
+        </H2>
+
+        <HeaderActions>
             {children}
             <AccountFormCloseButton />
-        </HeaderRight>
+        </HeaderActions>
     </HeaderWrapper>
 );

@@ -10,7 +10,7 @@ import {
     Dropdown,
     DropdownMenuItemProps,
 } from '@trezor/components';
-import { borders, zIndices } from '@trezor/theme';
+import { zIndices } from '@trezor/theme';
 import { Route } from '@suite-common/suite-types';
 
 import { AccountFormCloseButton, HoverAnimation } from 'src/components/suite';
@@ -151,23 +151,6 @@ const Text = styled.div`
 
 const StyledIcon = styled(Icon)`
     margin-right: 10px;
-`;
-
-const StyledDropdown = styled(Dropdown)<{ isDisabled: boolean }>`
-    background: ${({ isDisabled, theme }) => (isDisabled ? theme.BG_GREY : theme.BG_SECONDARY)};
-    width: 38px;
-    height: 38px;
-    border-radius: ${borders.radii.xs};
-    transition: background 0.1s;
-
-    > :first-child {
-        width: 100%;
-        height: 100%;
-
-        :hover {
-            background: ${({ isDisabled, theme }) => !isDisabled && theme.BG_SECONDARY_HOVER};
-        }
-    }
 `;
 
 const StyledButton = styled(Button)`
@@ -316,7 +299,7 @@ export const AppNavigation = ({ items, primaryContent, inView }: AppNavigationPr
                         <Secondary ref={secondary}>
                             {condensedSecondaryMenuVisible && (
                                 <AppNavigationTooltip>
-                                    <StyledDropdown
+                                    <Dropdown
                                         alignMenu="bottom-right"
                                         isDisabled={isAccountLoading}
                                         items={[
@@ -359,7 +342,7 @@ export const AppNavigation = ({ items, primaryContent, inView }: AppNavigationPr
                                 })}
                                 {!!itemsSecondaryWithExtra.length && (
                                     <AppNavigationTooltip>
-                                        <StyledDropdown
+                                        <Dropdown
                                             alignMenu="bottom-right"
                                             isDisabled={isAccountLoading}
                                             data-test="@wallet/menu/extra-dropdown"

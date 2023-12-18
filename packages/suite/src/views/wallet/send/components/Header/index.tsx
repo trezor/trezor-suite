@@ -1,9 +1,8 @@
-import { Dropdown, DropdownMenuItemProps } from '@trezor/components';
+import { Button, Dropdown, DropdownMenuItemProps } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { sendRaw } from 'src/actions/wallet/sendFormActions';
-import { Clear } from './components/Clear';
 import { WalletLayoutHeader } from 'src/components/wallet';
 
 export const Header = () => {
@@ -11,7 +10,10 @@ export const Header = () => {
     const {
         outputs,
         account: { networkType },
+        formState: { isDirty },
+
         addOpReturn,
+        resetContext,
         loadTransaction,
     } = useSendFormContext();
 
@@ -44,7 +46,17 @@ export const Header = () => {
 
     return (
         <WalletLayoutHeader title="TR_NAV_SEND">
-            <Clear />
+            {isDirty && (
+                <Button
+                    size="small"
+                    variant="tertiary"
+                    onClick={resetContext}
+                    data-test="clear-form"
+                >
+                    <Translation id="TR_CLEAR_ALL" />
+                </Button>
+            )}
+
             <Dropdown
                 alignMenu="bottom-right"
                 data-test="@send/header-dropdown"
