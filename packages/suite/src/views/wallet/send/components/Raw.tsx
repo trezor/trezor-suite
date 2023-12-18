@@ -36,7 +36,7 @@ interface RawProps {
     network: Network;
 }
 
-const Raw = ({ network }: RawProps) => {
+export const Raw = ({ network }: RawProps) => {
     const {
         register,
         getValues,
@@ -104,6 +104,7 @@ const Raw = ({ network }: RawProps) => {
                     {...inputField}
                 />
             </StyledCard>
+
             <ButtonWrapper>
                 <ButtonSend isDisabled={inputState !== 'success'} onClick={send}>
                     <Translation id="SEND_TRANSACTION" />
@@ -112,5 +113,3 @@ const Raw = ({ network }: RawProps) => {
         </>
     );
 };
-
-export default Raw;

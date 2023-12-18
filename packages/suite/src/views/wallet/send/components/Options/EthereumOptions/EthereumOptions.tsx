@@ -46,6 +46,7 @@ export const EthereumOptions = () => {
                     <Tooltip content={<Translation id="DATA_ETH_ADD_TOOLTIP" />} cursor="pointer">
                         <StyledButton
                             variant="tertiary"
+                            size="small"
                             icon="DATA"
                             data-test="send/open-ethereum-data"
                             onClick={toggleData}
@@ -57,6 +58,7 @@ export const EthereumOptions = () => {
                 <Tooltip content={<Translation id="BROADCAST_TOOLTIP" />} cursor="pointer">
                     <StyledButton
                         variant="tertiary"
+                        size="small"
                         icon="BROADCAST"
                         data-test="send/broadcast"
                         onClick={toggleBroadcast}

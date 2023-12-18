@@ -14,7 +14,6 @@ const WebContainer = styled.div`
     display: flex;
     align-items: center;
     padding: ${spacingsPx.xs};
-    border-top: 1px solid ${({ theme }) => theme.borderOnElevation0};
 `;
 
 const DescreetContainer = styled(NavigationItemBase)`

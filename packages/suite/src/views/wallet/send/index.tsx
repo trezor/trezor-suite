@@ -1,32 +1,48 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
-import { Card, Warning } from '@trezor/components';
+import { Warning } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
 import { WalletLayout } from 'src/components/wallet';
 import { useSendForm, SendContext, UseSendFormProps } from 'src/hooks/wallet/useSendForm';
 import { Header } from './components/Header';
-import Outputs from './components/Outputs';
+import { Outputs } from './components/Outputs';
 import { Options } from './components/Options/Options';
 import { SendFees } from './components/SendFees';
 import { TotalSent } from './components/TotalSent';
-import { ReviewButton } from './components/ReviewButton';
-import Raw from './components/Raw';
+import { Raw } from './components/Raw';
 import {
     selectTargetAnonymityByAccountKey,
     selectRegisteredUtxosByAccountKey,
 } from 'src/reducers/wallet/coinjoinReducer';
 import { Translation } from 'src/components/suite';
+import { spacingsPx } from '@trezor/theme';
+import { breakpointMediaQueries } from '@trezor/styles';
 
-const StyledCard = styled(Card)`
+const SendLayout = styled(WalletLayout)`
     display: flex;
     flex-direction: column;
-    margin-bottom: 8px;
-    padding: 0;
+    gap: ${spacingsPx.md};
 `;
 
-const StyledWarning = styled(Warning)`
-    margin-top: 8px;
+const FormGrid = styled.div`
+    display: grid;
+    grid-template-columns: minmax(500px, auto) minmax(400px, 420px);
+    gap: ${spacingsPx.md};
+
+    > :not(:last-child) {
+        grid-column: 1;
+    }
+
+    > :last-child {
+        grid-column: 2;
+        grid-row: 1;
+    }
+
+    ${breakpointMediaQueries.below_xl} {
+        display: flex;
+        flex-direction: column;
+    }
 `;
 
 interface SendProps {
@@ -56,30 +72,36 @@ const SendLoaded = ({ children, selectedAccount }: SendLoadedProps) => {
 
     const { symbol } = selectedAccount.account;
 
+    if (props.sendRaw) {
+        return (
+            <WalletLayout title="TR_NAV_SEND" account={selectedAccount}>
+                <Raw network={selectedAccount.network} />
+            </WalletLayout>
+        );
+    }
+
     return (
-        <WalletLayout title="TR_NAV_SEND" account={selectedAccount}>
+        <SendLayout title="TR_NAV_SEND" account={selectedAccount}>
             <SendContext.Provider value={sendContextValues}>
                 <Header />
-                {!props.sendRaw && (
-                    <>
-                        <StyledCard data-test="@wallet/send/outputs-and-options">
-                            <Outputs disableAnim={!!children} />
-                            <Options />
-                        </StyledCard>
-                        <SendFees />
-                        <TotalSent />
-                        {symbol === 'dsol' && (
-                            <StyledWarning withIcon>
-                                <Translation id="TR_SOLANA_DEVNET_SHORTCUT_WARNING" />
-                            </StyledWarning>
-                        )}
-                        <ReviewButton />
-                        {children}
-                    </>
-                )}
+
+                <FormGrid data-test="@wallet/send/outputs-and-options">
+                    <Outputs disableAnim={!!children} />
+                    <Options />
+                    <SendFees />
+
+                    {symbol === 'dsol' && (
+                        <Warning withIcon>
+                            <Translation id="TR_SOLANA_DEVNET_SHORTCUT_WARNING" />
+                        </Warning>
+                    )}
+
+                    <TotalSent />
+                </FormGrid>
+
+                {children}
             </SendContext.Provider>
-            {props.sendRaw && <Raw network={selectedAccount.network} />}
-        </WalletLayout>
+        </SendLayout>
     );
 };
 

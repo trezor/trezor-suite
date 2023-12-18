@@ -41,6 +41,7 @@ export const CardanoOptions = () => {
                 <Right>
                     <AddRecipientButton
                         variant="tertiary"
+                        size="small"
                         icon="PLUS"
                         data-test="add-output"
                         onClick={addOutput}

@@ -207,6 +207,14 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         },
     });
 
+    // required for the correct functionality of bottom text in the input
+    const addressLabelComponent = <AddressLabeling address={addressValue} knownOnly />;
+    const isAddressWithLabel = !!addressLabelComponent.type({
+        address: addressValue,
+        knownOnly: true,
+    });
+    const addressBottomText = isAddressWithLabel ? addressLabelComponent : null;
+
     return (
         <Input
             inputState={inputState}
@@ -244,7 +252,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                 </Text>
             }
             labelHoverAddon={
-                <Button variant="tertiary" icon="QR" onClick={handleQrClick}>
+                <Button variant="tertiary" size="tiny" icon="QR" onClick={handleQrClick}>
                     <Translation id="RECIPIENT_SCAN" />
                 </Button>
             }
@@ -271,7 +279,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                         button={getValidationButtonProps()}
                     />
                 ) : (
-                    <AddressLabeling address={addressValue} knownOnly />
+                    addressBottomText
                 )
             }
             data-test={inputName}

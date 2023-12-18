@@ -33,14 +33,16 @@ type WalletLayoutProps = {
     title: ExtendedMessageDescriptor['id'];
     account: AppState['wallet']['selectedAccount'];
     showEmptyHeaderPlaceholder?: boolean;
+    className?: string;
     children?: ReactNode;
 };
 
 export const WalletLayout = ({
     showEmptyHeaderPlaceholder = false,
     title,
-    children,
     account,
+    className,
+    children,
 }: WalletLayoutProps) => {
     const { translationString } = useTranslation();
     const l10nTitle = translationString(title);
@@ -80,7 +82,7 @@ export const WalletLayout = ({
             {status === 'exception' ? (
                 <AccountException loader={loader} network={network} />
             ) : (
-                children
+                <div className={className}>{children}</div>
             )}
         </>
     );
