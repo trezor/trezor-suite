@@ -1,3 +1,10 @@
+# 1.0.10
+
+-   fix(blockchain-link): add solana vout for self txs (ab6f0acf0)
+-   chore(connect): use `tslib` as dependency in all public libs (606ecc63b)
+-   chore(repo): update tsx (53de3e3a8)
+-   feat(suite): add Solana support (f2a89b34f)
+
 # 1.0.9
 
 -   chore(repo): Upgrade TS 5.3 (#10017) (7277f9d0f)
