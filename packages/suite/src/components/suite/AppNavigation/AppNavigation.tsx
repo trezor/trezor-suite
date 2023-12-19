@@ -1,14 +1,14 @@
 import { useRef, useLayoutEffect, useState, ReactNode } from 'react';
 
-import styled, { css, useTheme } from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import {
     variables,
     IconProps,
     Button,
-    Icon,
     Dropdown,
     DropdownMenuItemProps,
+    ButtonGroup,
 } from '@trezor/components';
 import { zIndices } from '@trezor/theme';
 import { Route } from '@suite-common/suite-types';
@@ -141,40 +141,26 @@ const InnerWrap = styled.div`
     background: ${({ theme }) => theme.BG_LIGHT_GREY};
 `;
 
-const IconWrapper = styled.div`
-    margin-right: 10px;
-`;
-
 const Text = styled.div`
     position: relative;
 `;
 
-const StyledIcon = styled(Icon)`
-    margin-right: 10px;
-`;
-
-const StyledButton = styled(Button)`
-    font-size: ${FONT_SIZE.NORMAL};
-    font-weight: ${FONT_WEIGHT.DEMI_BOLD};
-    padding-left: 20px;
-    padding-right: 20px;
-`;
-
-export type AppNavigationItem = {
+export type NavigationItem = {
     id: string;
     callback: () => void;
     title: JSX.Element;
-    position: 'primary' | 'secondary';
-    extra?: boolean;
-    icon?: IconProps['icon'];
     'data-test'?: string;
     isHidden?: boolean;
 };
+export type ActionItem = NavigationItem & {
+    icon?: IconProps['icon'];
+    extra?: boolean;
+};
 
 interface AppNavigationProps {
-    items: AppNavigationItem[];
+    items: NavigationItem[];
+    actions?: ActionItem[];
     primaryContent?: ReactNode;
-    maxWidth?: 'small' | 'default';
     inView?: boolean;
 }
 interface MenuWidths {
@@ -195,7 +181,7 @@ const isSubsection = (routeName: Route['name']): boolean =>
 const isSecondaryMenuOverflown = ({ primary, secondary, wrapper }: MenuWidths) =>
     primary + secondary >= wrapper;
 
-export const AppNavigation = ({ items, primaryContent, inView }: AppNavigationProps) => {
+export const AppNavigation = ({ items, actions, primaryContent, inView }: AppNavigationProps) => {
     const [condensedSecondaryMenuVisible, setCondensedSecondaryMenuVisible] =
         useState<boolean>(false);
     const wrapper = useRef<HTMLDivElement>(null);
@@ -205,8 +191,6 @@ export const AppNavigation = ({ items, primaryContent, inView }: AppNavigationPr
     const routeName = useSelector(state => state.router.route?.name);
     const screenWidth = useSelector(state => state.resize.screenWidth);
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-
-    const theme = useTheme();
 
     useLayoutEffect(() => {
         if (primary.current && secondary.current && wrapper.current) {
@@ -220,24 +204,16 @@ export const AppNavigation = ({ items, primaryContent, inView }: AppNavigationPr
         }
     }, [wrapper, primary, secondary, screenWidth]);
 
-    // Move staking tab from primary location to secondary if condensed dropdown menu is visible.
-    // It is ugly, byt it will save precious space and prevent menu overflow on smaller screens
-    const stakingIndex = items.findIndex(i => i.id === 'wallet-staking' && !i.isHidden);
-    const itemsToHideToDropdown = items[stakingIndex];
-    if (itemsToHideToDropdown) {
-        if (condensedSecondaryMenuVisible) {
-            itemsToHideToDropdown.position = 'secondary';
-        } else {
-            itemsToHideToDropdown.position = 'primary';
-        }
-    }
-
     const visibleItems = items.filter(item => !item.isHidden);
+    const visibleActions = actions?.filter(action => !action.isHidden);
 
-    const itemsPrimary = visibleItems.filter(item => item.position === 'primary');
-    const itemsSecondary = visibleItems.filter(item => item.position === 'secondary');
-    const itemsSecondaryWithExtra = itemsSecondary.filter(item => item.extra);
-    const itemsSecondaryWithoutExtra = itemsSecondary.filter(item => !item.extra);
+    const itemsSecondaryWithExtra = visibleActions?.filter(item => item.extra);
+
+    // a hack before a proper rewrite of the menu
+    const buyAction = visibleActions?.find(item => item.id === 'wallet-coinmarket-buy');
+    const otherActions = visibleActions?.filter(
+        item => !item.extra && item.id !== 'wallet-coinmarket-buy',
+    );
 
     const isAccountLoading = selectedAccount.status === 'loading';
 
@@ -258,7 +234,7 @@ export const AppNavigation = ({ items, primaryContent, inView }: AppNavigationPr
                     <KeepWidth>
                         <Primary ref={primary}>
                             {primaryContent ||
-                                itemsPrimary.map(item => {
+                                visibleItems.map(item => {
                                     const { id, title } = item;
                                     const isActive = isRouteActive(routeName, id);
                                     const isHoverable = !isActive && !isAccountLoading;
@@ -274,20 +250,6 @@ export const AppNavigation = ({ items, primaryContent, inView }: AppNavigationPr
                                                         onClick={onClick}
                                                         data-test={item['data-test']}
                                                     >
-                                                        {item.icon && (
-                                                            <IconWrapper>
-                                                                <StyledIcon
-                                                                    size={18}
-                                                                    icon={item.icon}
-                                                                    color={
-                                                                        isActive
-                                                                            ? theme.TYPE_DARK_GREY
-                                                                            : undefined
-                                                                    }
-                                                                />
-                                                            </IconWrapper>
-                                                        )}
-
                                                         <Text>{title}</Text>
                                                     </StyledNavLink>
                                                 </AppNavigationTooltip>
@@ -297,7 +259,7 @@ export const AppNavigation = ({ items, primaryContent, inView }: AppNavigationPr
                                 })}
                         </Primary>
                         <Secondary ref={secondary}>
-                            {condensedSecondaryMenuVisible && (
+                            {condensedSecondaryMenuVisible && actions && (
                                 <AppNavigationTooltip>
                                     <Dropdown
                                         alignMenu="bottom-right"
@@ -305,7 +267,7 @@ export const AppNavigation = ({ items, primaryContent, inView }: AppNavigationPr
                                         items={[
                                             {
                                                 key: 'all',
-                                                options: itemsSecondary.map(item => {
+                                                options: actions?.map(item => {
                                                     const { id, title } = item;
                                                     return {
                                                         key: id,
@@ -319,28 +281,48 @@ export const AppNavigation = ({ items, primaryContent, inView }: AppNavigationPr
                                 </AppNavigationTooltip>
                             )}
                             <SecondaryMenu visible={!condensedSecondaryMenuVisible}>
-                                {itemsSecondaryWithoutExtra.map(item => {
-                                    const { id, title } = item;
-                                    return (
-                                        <AppNavigationTooltip key={id}>
-                                            <StyledButton
-                                                variant={
-                                                    id === 'wallet-coinmarket-buy'
-                                                        ? 'primary'
-                                                        : 'secondary'
-                                                }
-                                                onClick={item.callback}
-                                                {...(item['data-test'] && {
-                                                    'data-test': item['data-test'],
-                                                })}
-                                                isDisabled={isAccountLoading}
-                                            >
-                                                <Text>{title}</Text>
-                                            </StyledButton>
-                                        </AppNavigationTooltip>
-                                    );
-                                })}
-                                {!!itemsSecondaryWithExtra.length && (
+                                {buyAction && (
+                                    <AppNavigationTooltip>
+                                        <Button
+                                            icon={buyAction?.icon}
+                                            key={buyAction?.id}
+                                            onClick={buyAction?.callback}
+                                            data-test={`@wallet/menu/${buyAction?.id}`}
+                                            variant="tertiary"
+                                            size="small"
+                                            isDisabled={isAccountLoading}
+                                        >
+                                            <Text>{buyAction?.title}</Text>
+                                        </Button>
+                                    </AppNavigationTooltip>
+                                )}
+
+                                {otherActions && (
+                                    <AppNavigationTooltip>
+                                        <ButtonGroup size="small" isDisabled={isAccountLoading}>
+                                            {otherActions?.map(item => {
+                                                const { id, title, icon } = item;
+
+                                                return (
+                                                    <Button
+                                                        icon={icon}
+                                                        key={id}
+                                                        onClick={item.callback}
+                                                        data-test={`@wallet/menu/${item.id}`}
+                                                        variant={
+                                                            id === 'wallet-coinmarket-buy'
+                                                                ? 'tertiary'
+                                                                : 'primary'
+                                                        }
+                                                    >
+                                                        <Text>{title}</Text>
+                                                    </Button>
+                                                );
+                                            })}
+                                        </ButtonGroup>
+                                    </AppNavigationTooltip>
+                                )}
+                                {!!itemsSecondaryWithExtra?.length && (
                                     <AppNavigationTooltip>
                                         <Dropdown
                                             alignMenu="bottom-right"
@@ -359,7 +341,7 @@ export const AppNavigation = ({ items, primaryContent, inView }: AppNavigationPr
                                                                         ? undefined
                                                                         : item.callback,
                                                                     label: title,
-                                                                    'data-test': item['data-test'],
+                                                                    'data-test': `@wallet/menu/${item.id}`,
                                                                 };
                                                             },
                                                         ),
