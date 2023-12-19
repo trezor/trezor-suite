@@ -11,6 +11,8 @@ import Reanimated, {
     withTiming,
     withDelay,
     withSpring,
+    FadeInUp,
+    FadeInDown,
 } from 'react-native-reanimated';
 import { GestureDetector } from 'react-native-gesture-handler';
 
@@ -44,6 +46,8 @@ import { getYForX } from './GetYForX';
 import { hexToRgba } from './utils/hexToRgba';
 import { DefaultGraphEvent } from './DefaultGraphEvent';
 import { useEventTooltipProps } from './hooks/useEventTooltipProps';
+import { LoadingLine } from './LoadingLine';
+import { BlurOverlay } from './BlurOverlay';
 
 const INDICATOR_RADIUS = 7;
 const INDICATOR_BORDER_MULTIPLIER = 1.3;
@@ -75,6 +79,10 @@ export function AnimatedLineGraph<TEventPayload extends object>({
     EventComponent = DefaultGraphEvent,
     EventTooltipComponent,
     onEventHover,
+    loading = false,
+    loadingLineColor = '#d9d9d9',
+    blurOverlay = false,
+    showPlaceholder = false,
     ...props
 }: AnimatedLineGraphProps<TEventPayload>): ReactElement {
     const [width, setWidth] = useState(0);
@@ -437,6 +445,16 @@ export function AnimatedLineGraph<TEventPayload extends object>({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [indicatorPulsating]);
 
+    const dashedLine = useDerivedValue(() => {
+        const line = Skia.Path.Make();
+        const y = path.value?.getPoint(0).y ?? height / 2;
+        line.moveTo(0, y);
+        line.lineTo(width, y);
+        line.dash(2, 5, 0);
+
+        return line;
+    });
+
     const axisLabelContainerStyle = {
         paddingTop: TopAxisLabel != null ? 20 : 0,
         paddingBottom: BottomAxisLabel != null ? 20 : 0,
@@ -450,9 +468,9 @@ export function AnimatedLineGraph<TEventPayload extends object>({
                 <Reanimated.View style={[styles.container, axisLabelContainerStyle]}>
                     {/* Top Label (max price) */}
                     {TopAxisLabel != null && (
-                        <View style={styles.axisRow}>
+                        <Reanimated.View style={styles.axisRow} entering={FadeInUp.delay(300)}>
                             <TopAxisLabel />
-                        </View>
+                        </Reanimated.View>
                     )}
 
                     {/* Actual Skia Graph */}
@@ -460,102 +478,128 @@ export function AnimatedLineGraph<TEventPayload extends object>({
                         {/* Fix for react-native-skia's incorrect type declarations */}
                         <Canvas style={styles.svg}>
                             <Group>
-                                <Path
-                                    // @ts-expect-error
-                                    path={path}
-                                    strokeWidth={lineThickness}
-                                    style="stroke"
-                                    strokeJoin="round"
-                                    strokeCap="round"
-                                >
-                                    <LinearGradient
-                                        start={vec(0, 0)}
-                                        end={vec(width, 0)}
-                                        colors={gradientColors}
-                                        positions={positions}
-                                    />
-                                </Path>
+                                <BlurOverlay isVisible={blurOverlay} />
 
-                                {shouldFillGradient && (
-                                    <Path
-                                        // @ts-expect-error
-                                        path={gradientPath}
-                                    >
-                                        <LinearGradient
-                                            start={vec(0, 0)}
-                                            end={vec(0, height)}
-                                            colors={gradientFillColors}
+                                {loading || showPlaceholder ? (
+                                    <LoadingLine
+                                        width={width}
+                                        height={height}
+                                        color={loadingLineColor}
+                                        isStatic={!loading}
+                                    />
+                                ) : (
+                                    <>
+                                        <Path
+                                            path={dashedLine}
+                                            color={loadingLineColor}
+                                            style="stroke"
+                                            strokeWidth={1}
                                         />
-                                    </Path>
+                                        <Group>
+                                            <Path
+                                                // @ts-expect-error
+                                                path={path}
+                                                strokeWidth={lineThickness}
+                                                style="stroke"
+                                                strokeJoin="round"
+                                                strokeCap="round"
+                                            >
+                                                <LinearGradient
+                                                    start={vec(0, 0)}
+                                                    end={vec(width, 0)}
+                                                    colors={gradientColors}
+                                                    positions={positions}
+                                                />
+                                            </Path>
+
+                                            {shouldFillGradient && (
+                                                <Path
+                                                    // @ts-expect-error
+                                                    path={gradientPath}
+                                                >
+                                                    <LinearGradient
+                                                        start={vec(0, 0)}
+                                                        end={vec(0, height)}
+                                                        colors={gradientFillColors}
+                                                    />
+                                                </Path>
+                                            )}
+                                        </Group>
+
+                                        {SelectionDot != null && (
+                                            <SelectionDot
+                                                isActive={isActive}
+                                                color={color}
+                                                lineThickness={lineThickness}
+                                                circleX={circleX}
+                                                circleY={circleY}
+                                            />
+                                        )}
+
+                                        {/* Render Event Component for every event. */}
+                                        {EventComponent != null && eventsWithCords && (
+                                            <Group>
+                                                {eventsWithCords?.map((event, index) => (
+                                                    <EventComponent
+                                                        key={event.date.getTime()}
+                                                        index={index}
+                                                        isGraphActive={isActive}
+                                                        fingerX={circleX}
+                                                        eventX={event.x}
+                                                        eventY={event.y}
+                                                        color={color}
+                                                        onEventHover={handleDisplayEventTooltip}
+                                                        {...event.payload}
+                                                    />
+                                                ))}
+                                            </Group>
+                                        )}
+
+                                        {indicatorVisible && (
+                                            <Group>
+                                                {indicatorPulsating && (
+                                                    <Circle
+                                                        cx={indicatorX}
+                                                        cy={indicatorY}
+                                                        r={indicatorPulseRadius}
+                                                        opacity={indicatorPulseOpacity}
+                                                        color={indicatorPulseColor}
+                                                        style="fill"
+                                                    />
+                                                )}
+
+                                                <Circle
+                                                    cx={indicatorX}
+                                                    cy={indicatorY}
+                                                    r={indicatorBorderRadius}
+                                                    color="#ffffff"
+                                                >
+                                                    <Shadow
+                                                        dx={2}
+                                                        dy={2}
+                                                        color="rgba(0,0,0,0.2)"
+                                                        blur={4}
+                                                    />
+                                                </Circle>
+                                                <Circle
+                                                    cx={indicatorX}
+                                                    cy={indicatorY}
+                                                    r={indicatorRadius}
+                                                    color={color}
+                                                />
+                                            </Group>
+                                        )}
+                                    </>
                                 )}
                             </Group>
-
-                            {SelectionDot != null && (
-                                <SelectionDot
-                                    isActive={isActive}
-                                    color={color}
-                                    lineThickness={lineThickness}
-                                    circleX={circleX}
-                                    circleY={circleY}
-                                />
-                            )}
-
-                            {/* Render Event Component for every event. */}
-                            {EventComponent != null && eventsWithCords && (
-                                <Group>
-                                    {eventsWithCords?.map((event, index) => (
-                                        <EventComponent
-                                            key={event.date.getTime()}
-                                            index={index}
-                                            isGraphActive={isActive}
-                                            fingerX={circleX}
-                                            eventX={event.x}
-                                            eventY={event.y}
-                                            color={color}
-                                            onEventHover={handleDisplayEventTooltip}
-                                            {...event.payload}
-                                        />
-                                    ))}
-                                </Group>
-                            )}
-
-                            {indicatorVisible && (
-                                <Group>
-                                    {indicatorPulsating && (
-                                        <Circle
-                                            cx={indicatorX}
-                                            cy={indicatorY}
-                                            r={indicatorPulseRadius}
-                                            opacity={indicatorPulseOpacity}
-                                            color={indicatorPulseColor}
-                                            style="fill"
-                                        />
-                                    )}
-
-                                    <Circle
-                                        cx={indicatorX}
-                                        cy={indicatorY}
-                                        r={indicatorBorderRadius}
-                                        color="#ffffff"
-                                    >
-                                        <Shadow dx={2} dy={2} color="rgba(0,0,0,0.2)" blur={4} />
-                                    </Circle>
-                                    <Circle
-                                        cx={indicatorX}
-                                        cy={indicatorY}
-                                        r={indicatorRadius}
-                                        color={color}
-                                    />
-                                </Group>
-                            )}
                         </Canvas>
                     </View>
 
                     {/* Bottom Label (min price) */}
                     {BottomAxisLabel != null && (
-                        <View style={styles.axisRow}>
+                        <Reanimated.View style={styles.axisRow} entering={FadeInDown.delay(300)}>
                             <BottomAxisLabel />
-                        </View>
+                        </Reanimated.View>
                     )}
                 </Reanimated.View>
             </GestureDetector>

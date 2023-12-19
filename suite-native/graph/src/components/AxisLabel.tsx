@@ -19,18 +19,20 @@ const SCREEN_WIDTH = Dimensions.get('screen').width;
 
 export const MAX_CLAMP_VALUE = 90;
 
-const axisLabelStyle = prepareNativeStyle<AxisLabelStyleProps>((_, { x, isOverflowing }) => ({
-    position: 'absolute',
-    left: `${x}%`,
-    extend: {
-        // Position the axis label from the right if it's overflowing the screen width.
-        condition: isOverflowing,
-        style: {
-            left: undefined,
-            right: 0,
+const axisLabelStyle = prepareNativeStyle<AxisLabelStyleProps>(
+    ({ spacings }, { x, isOverflowing }) => ({
+        position: 'absolute',
+        left: `${x}%`,
+        extend: {
+            // Position the axis label from the right if it's overflowing the screen width.
+            condition: isOverflowing,
+            style: {
+                left: undefined,
+                right: spacings.small,
+            },
         },
-    },
-}));
+    }),
+);
 
 export const AxisLabel = ({ x, value }: AxisLabelProps) => {
     const { applyStyle, utils } = useNativeStyles();

@@ -11,7 +11,7 @@
         "generate-icons": "yarn tsx generateIcons.js"
     },
     "dependencies": {
-        "@shopify/react-native-skia": "0.1.225",
+        "@shopify/react-native-skia": "0.1.230",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@trezor/styles": "workspace:*",

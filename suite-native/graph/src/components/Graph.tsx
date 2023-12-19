@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { N } from '@mobily/ts-belt';
 import * as Haptics from 'expo-haptics';
@@ -8,7 +8,6 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box, Loader } from '@suite-native/atoms';
 import {
     FiatGraphPoint,
-    FiatGraphPointWithCryptoBalance,
     GroupedBalanceMovementEvent,
     GroupedBalanceMovementEventPayload,
 } from '@suite-common/graph';
@@ -35,13 +34,13 @@ type GraphProps<TGraphPoint extends GraphPoint> = {
 
 const GRAPH_HEIGHT = 250;
 
-export const graphWrapperStyle = prepareNativeStyle(_ => ({
+const graphWrapperStyle = prepareNativeStyle(_ => ({
     justifyContent: 'center',
     height: GRAPH_HEIGHT,
     alignItems: 'center',
 }));
 
-export const graphMessageStyleContainer = prepareNativeStyle(_ => ({
+const graphMessageStyleContainer = prepareNativeStyle(_ => ({
     position: 'absolute',
     width: '100%',
     height: '90%',
@@ -49,27 +48,11 @@ export const graphMessageStyleContainer = prepareNativeStyle(_ => ({
     alignItems: 'center',
 }));
 
-type GraphStyleProps = {
-    loading: boolean;
-    error?: string | null;
-};
-const graphStyle = prepareNativeStyle<GraphStyleProps>((_, { loading, error }) => ({
+const graphStyle = prepareNativeStyle(_ => ({
     alignSelf: 'center',
     height: GRAPH_HEIGHT,
     width: '100%',
-    opacity: loading || !!error ? 0.1 : 1,
 }));
-
-export const emptyGraphPoint: FiatGraphPointWithCryptoBalance = {
-    value: 0,
-    date: new Date(0),
-    cryptoBalance: '0',
-};
-
-const emptyPoints: FiatGraphPointWithCryptoBalance[] = [
-    { ...emptyGraphPoint },
-    { ...emptyGraphPoint, date: new Date(1) },
-];
 
 // to avoid overflows from the screen
 const clampAxisLabels = (value: number) => N.clamp(value, 5, MAX_CLAMP_VALUE);
@@ -93,11 +76,32 @@ export const Graph = <TGraphPoint extends FiatGraphPoint>({
         utils: { colors },
     } = useNativeStyles();
     const { translate } = useTranslate();
+    const [delayedLoading, setDelayedLoading] = useState(false);
 
-    const isPointsEmpty = points.length <= 1;
-    const nonEmptyPoints = isPointsEmpty ? emptyPoints : points;
+    const arePointsEmpty = points.length <= 1;
+
+    const areLabelsHidden = loading || !!error || arePointsEmpty;
+    const showBlurredGraph = !loading && !!error && !loading;
+
+    useEffect(() => {
+        // We need to delay the loading a bit, because when switching between cached timeframes, it will break the
+        // path interpolation animation.
+        let timeout: ReturnType<typeof setTimeout>;
+        if (loading) {
+            timeout = setTimeout(() => {
+                setDelayedLoading(true);
+            }, 0);
+        } else {
+            setDelayedLoading(false);
+        }
+        return () => {
+            clearTimeout(timeout);
+        };
+    }, [loading]);
+
     const extremaFromGraphPoints = useMemo(() => getExtremaFromGraphPoints(points), [points]);
     const axisLabels = useMemo(() => {
+        if (areLabelsHidden) return;
         if (extremaFromGraphPoints?.max && extremaFromGraphPoints?.min) {
             return {
                 TopAxisLabel: () => (
@@ -114,7 +118,7 @@ export const Graph = <TGraphPoint extends FiatGraphPoint>({
                 ),
             };
         }
-    }, [extremaFromGraphPoints]);
+    }, [extremaFromGraphPoints, areLabelsHidden]);
 
     // For some reason, 16 feels better than 0
     const panGestureDelay = 16;
@@ -123,7 +127,7 @@ export const Graph = <TGraphPoint extends FiatGraphPoint>({
         <Box style={applyStyle(graphWrapperStyle)}>
             <LineGraph<GroupedBalanceMovementEventPayload>
                 style={applyStyle(graphStyle, { loading, error })}
-                points={nonEmptyPoints}
+                points={points}
                 color={colors.borderSecondary}
                 animated={animated}
                 verticalPadding={20}
@@ -138,6 +142,11 @@ export const Graph = <TGraphPoint extends FiatGraphPoint>({
                 EventComponent={TransactionEvent}
                 EventTooltipComponent={TransactionEventTooltip}
                 onEventHover={triggerHaptics}
+                lineThickness={2}
+                loading={delayedLoading}
+                loadingLineColor={colors.borderDashed}
+                blurOverlay={showBlurredGraph}
+                showPlaceholder={arePointsEmpty}
             />
             {loading && (
                 <Box style={applyStyle(graphMessageStyleContainer)}>

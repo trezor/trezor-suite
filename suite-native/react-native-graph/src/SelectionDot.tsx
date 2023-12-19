@@ -1,14 +1,13 @@
-import { useCallback, ReactElement } from 'react';
-import { runOnJS, useAnimatedReaction } from 'react-native-reanimated';
-
+import { ReactElement, useCallback } from 'react';
 import {
-    runSpring,
-    useValue,
-    useComputedValue,
-    Circle,
-    Group,
-    Shadow,
-} from '@shopify/react-native-skia';
+    runOnJS,
+    useAnimatedReaction,
+    useDerivedValue,
+    useSharedValue,
+    withSpring,
+} from 'react-native-reanimated';
+
+import { Circle, Group, Shadow } from '@shopify/react-native-skia';
 
 import type { SelectionDotProps } from './LineGraphProps';
 
@@ -21,15 +20,12 @@ export function SelectionDot({
     circleX,
     circleY,
 }: SelectionDotProps): ReactElement {
-    const circleRadius = useValue(0);
-    const circleStrokeRadius = useComputedValue(
-        () => circleRadius.current * CIRCLE_RADIUS_MULTIPLIER,
-        [circleRadius],
-    );
+    const circleRadius = useSharedValue(0);
+    const circleStrokeRadius = useDerivedValue(() => circleRadius.value * CIRCLE_RADIUS_MULTIPLIER);
 
     const setIsActive = useCallback(
         (active: boolean) => {
-            runSpring(circleRadius, active ? CIRCLE_RADIUS : 0, {
+            circleRadius.value = withSpring(active ? CIRCLE_RADIUS : 0, {
                 mass: 1,
                 stiffness: 1000,
                 damping: 50,
