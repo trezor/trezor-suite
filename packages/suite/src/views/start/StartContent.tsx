@@ -4,7 +4,6 @@ import { DataAnalytics } from '@trezor/components';
 import { analytics } from '@trezor/suite-analytics';
 import { DOCS_ANALYTICS_URL, DATA_TOS_URL } from '@trezor/urls';
 import { selectIsAnalyticsConfirmed } from '@suite-common/analytics';
-import { selectDevice } from '@suite-common/wallet-core';
 import { rerun } from 'src/actions/recovery/recoveryActions';
 import { PrerequisitesGuide, TrezorLink } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -19,7 +18,6 @@ export const StartContent = () => {
     const confirmed = useSelector(selectIsAnalyticsConfirmed);
     const recovery = useSelector(state => state.recovery);
     const prerequisite = useSelector(selectPrerequisite);
-    const device = useSelector(selectDevice);
 
     const dispatch = useDispatch();
 
@@ -52,12 +50,13 @@ export const StartContent = () => {
             />
         );
     }
-    if (device) {
-        return <SecurityCheck />;
-    }
-    if (prerequisite) {
+
+    if (
+        prerequisite &&
+        !['device-initialize', 'firmware-missing', 'device-recovery-mode'].includes(prerequisite)
+    ) {
         return <PrerequisitesGuide />;
     }
 
-    return null;
+    return <SecurityCheck />;
 };
