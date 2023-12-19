@@ -67,7 +67,19 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
                 return false;
             }
 
-            if (!response.payload.success) {
+            if (
+                !response.payload.success &&
+                response.payload.payload.code === 'Failure_ActionCancelled'
+            ) {
+                navigation.goBack();
+                return false;
+            }
+
+            if (
+                !response.payload.success &&
+                // Method_Interrupted is returned when user cancels actions in connect and we want to ignore it here
+                response.payload.payload.code !== 'Method_Interrupted'
+            ) {
                 showAlert({
                     title: response.payload.payload.code,
                     description: response.payload.payload.error,
@@ -75,8 +87,8 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
                     pictogramVariant: 'red',
                     primaryButtonTitle: 'Cancel',
                     onPressPrimaryButton: () => {
-                        navigation.goBack();
                         TrezorConnect.cancel();
+                        navigation.goBack();
                         setIsUnverifiedAddressRevealed(false);
                     },
                 });
