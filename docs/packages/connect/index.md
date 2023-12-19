@@ -89,8 +89,6 @@ In node.js core SDK is loaded as a javascript module without any specificities.
 
 ![connect schema when used on web](./schema-connect-web.jpg =950x379)
 
-![connect schema when used on web](./schema-connect-web.jpg =950x379)
-
 ### Webextension
 
 In case of `@trezor/connect-webextension`, TrezorConnect object is created in a service worker. In this env we can't inject iframe so in order to uphold the same security model as with
