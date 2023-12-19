@@ -85,7 +85,7 @@ In node.js core SDK is loaded as a javascript module without any specificities.
 
 ### Web
 
-`@trezor/connect-web` imports only a thin layer with API description into your 3rd party application. When initiated, it injects iframe containing core SDK logic from trezor.io
+`@trezor/connect-web` imports only a thin layer with API description into your 3rd party application. When initiated, it injects iframe containing core SDK logic from trezor.io into your app. User input, if needed, is served by popup.html page opened on trezor.io on behalf of your application. This way users input such as pin or passphrase is isolated from you and persistent connection between your app and core SDK is kept so events such as device connected/disconnected or blockchain subscriptions are available.
 
 ![connect schema when used on web](./schema-connect-web.jpg =950x379)
 
