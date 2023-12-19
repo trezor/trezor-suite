@@ -52,6 +52,7 @@ export interface HeaderProps {
     isWalletLoading: boolean;
     isWalletError: boolean;
     isDiscoveryRunning?: boolean;
+    isMissingFiatRate?: boolean;
     showGraphControls: boolean;
     hideBorder: boolean;
     receiveClickHandler: () => void;
@@ -98,7 +99,7 @@ export const Header = (props: HeaderProps) => {
     return (
         <Wrapper hideBorder={props.hideBorder}>
             <Left>
-                <LoadingContent isLoading={props.isDiscoveryRunning}>
+                <LoadingContent isLoading={props.isDiscoveryRunning || props.isMissingFiatRate}>
                     <ValueWrapper>
                         <HiddenPlaceholder intensity={7}>
                             <span>

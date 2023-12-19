@@ -1,5 +1,9 @@
 # Storage changelog
 
+## 42
+
+-   remove fiatRates table
+
 ## 41
 
 -   adds `metadata.selectedProvider.passwords` key

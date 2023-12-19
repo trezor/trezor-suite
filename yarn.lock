@@ -6612,6 +6612,8 @@ __metadata:
   dependencies:
     "@suite-common/suite-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
+    "@trezor/connect": "workspace:*"
+    "@trezor/utils": "workspace:*"
     date-fns: "npm:^2.30.0"
     jest: "npm:29.5.0"
     typescript: "npm:5.3.2"

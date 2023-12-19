@@ -1,12 +1,17 @@
 import { initMessageSystemThunk } from '@suite-common/message-system';
 import * as trezorConnectActions from '@suite-common/connect-init';
-import { initBlockchainThunk, initDevices } from '@suite-common/wallet-core';
+import {
+    initBlockchainThunk,
+    initDevices,
+    periodicFetchFiatRatesThunk,
+} from '@suite-common/wallet-core';
 
 import * as routerActions from 'src/actions/suite/routerActions';
 import * as analyticsActions from 'src/actions/suite/analyticsActions';
 import * as metadataActions from 'src/actions/suite/metadataActions';
 import * as languageActions from 'src/actions/settings/languageActions';
 import type { Dispatch, GetState } from 'src/types/suite';
+import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 
 import { SUITE } from './constants';
 import { onSuiteReady } from './suiteActions';
@@ -55,10 +60,24 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
         .unwrap()
         .catch(err => console.error(err));
 
-    // 7. dispatch initial location change
+    // 7. init periodic fetching of fiat rates
+    await dispatch(
+        periodicFetchFiatRatesThunk({
+            rateType: 'current',
+            localCurrency: selectLocalCurrency(getState()),
+        }),
+    );
+    await dispatch(
+        periodicFetchFiatRatesThunk({
+            rateType: 'lastWeek',
+            localCurrency: selectLocalCurrency(getState()),
+        }),
+    );
+
+    // 8. dispatch initial location change
     dispatch(routerActions.init());
 
-    // 8. fetch metadata. metadata is not saved together with other data in storage.
+    // 9. fetch metadata. metadata is not saved together with other data in storage.
     // historically it was saved in indexedDB together with devices and accounts and we did not need to load them
     // immediately after suite start.
     dispatch(metadataActions.fetchAndSaveMetadataForAllDevices());

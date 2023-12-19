@@ -11,10 +11,10 @@ import { getFirmwareVersion } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
 
 import {
+    DISCOVERY_MODULE_PREFIX,
     completeDiscovery,
     createDiscovery,
     interruptDiscovery,
-    DISCOVERY_MODULE_PREFIX,
     startDiscovery,
     stopDiscovery,
     updateDiscovery,

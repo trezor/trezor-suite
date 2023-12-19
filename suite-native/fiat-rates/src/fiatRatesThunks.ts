@@ -10,7 +10,7 @@ import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { Account } from '@suite-common/wallet-types';
 import { isTestnet } from '@suite-common/wallet-utils';
 import TrezorConnect, { AccountTransaction } from '@trezor/connect';
-import { fiatRatesActions as fiatRatesActionsLegacy } from '@suite-common/wallet-core';
+import { transactionsActions } from '@suite-common/wallet-core';
 import { networks } from '@suite-common/wallet-config';
 
 import { actionPrefix } from './fiatRatesActions';
@@ -48,8 +48,7 @@ export const updateTxsFiatRatesThunk = createThunk(
 
             if (results && 'tickers' in results) {
                 dispatch(
-                    // TODO: this action should be moved to transaction reducer since it's only used there and handled there
-                    fiatRatesActionsLegacy.updateTransactionFiatRate(
+                    transactionsActions.updateTransactionFiatRate(
                         txs.map((tx, i) => ({
                             txid: tx.txid,
                             updateObject: { rates: results.tickers[i]?.rates },
@@ -87,7 +86,7 @@ const fetchFiatRate = async (
         return null;
     }
 
-    return fetchCurrentFiatRates(ticker).then(res => res?.rates?.[fiatCurrency]);
+    return fetchCurrentFiatRates(ticker, fiatCurrency);
 };
 
 const fetchLastWeekRate = async (
@@ -115,9 +114,7 @@ const fetchLastWeekRate = async (
         return null;
     }
 
-    return fetchLastWeekFiatRates(ticker, fiatCurrency).then(
-        res => res?.tickers?.[0]?.rates?.[fiatCurrency],
-    );
+    return fetchLastWeekFiatRates(ticker, fiatCurrency);
 };
 
 const fetchFn: Record<RateType, typeof fetchFiatRate> = {

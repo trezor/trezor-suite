@@ -1,6 +1,8 @@
 import { saveAs } from 'file-saver';
 import { PayloadAction } from '@reduxjs/toolkit';
 
+import { resolveStaticPath } from '@suite-common/suite-utils';
+import { getAccountKey } from '@suite-common/wallet-utils';
 import {
     DeviceRootState,
     selectIsPendingTransportEvent,
@@ -10,9 +12,6 @@ import {
     selectDiscoveryByDeviceState,
     deviceActions,
 } from '@suite-common/wallet-core';
-import { resolveStaticPath } from '@suite-common/suite-utils';
-import { getAccountKey } from '@suite-common/wallet-utils';
-import type { FiatRatesState } from '@suite-common/wallet-core';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 
@@ -72,7 +71,6 @@ export const extraDependencies: ExtraDependencies = {
     actions: {
         setAccountAddMetadata: metadataActions.setAccountAdd,
         setWalletSettingsLocalCurrency: walletSettingsActions.setLocalCurrency,
-        changeWalletSettingsNetworks: walletSettingsActions.changeNetworks,
         lockDevice: suiteActions.lockDevice,
         appChanged: suiteActions.appChanged,
         setSelectedDevice: deviceActions.selectDevice,
@@ -109,9 +107,6 @@ export const extraDependencies: ExtraDependencies = {
             payload.accounts.map(acc =>
                 acc.backendType === 'coinjoin' ? fixLoadedCoinjoinAccount(acc) : acc,
             ),
-        storageLoadFiatRates: (state: FiatRatesState, { payload }: StorageLoadAction) => {
-            state.coins = payload.fiatRates;
-        },
         storageLoadFirmware: (state, { payload }: StorageLoadAction) => {
             if (payload.firmware?.firmwareHashInvalid) {
                 state.firmwareHashInvalid = payload.firmware.firmwareHashInvalid;

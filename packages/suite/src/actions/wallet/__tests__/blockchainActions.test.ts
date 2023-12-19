@@ -98,9 +98,6 @@ describe('Blockchain Actions', () => {
             const store = initStore(getInitialState(f.initialState as Args));
             await store.dispatch(initBlockchainThunk());
             expect(filterThunkActionTypes(store.getActions())).toMatchObject(f.actions);
-            expect(TrezorConnect.blockchainUnsubscribeFiatRates).toBeCalledTimes(
-                f.blockchainUnsubscribeFiatRates,
-            );
             expect(TrezorConnect.blockchainSetCustomBackend).toBeCalledTimes(
                 f.blockchainSetCustomBackend,
             );

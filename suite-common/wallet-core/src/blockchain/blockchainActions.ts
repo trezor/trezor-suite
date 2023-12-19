@@ -4,11 +4,14 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 import type { CustomBackend, NetworksFees } from '@suite-common/wallet-types';
 import type { Timeout } from '@trezor/type-utils';
 
-export const actionsPrefix = '@common/blockchain';
+export const blockchainActionsPrefix = '@common/wallet-core/blockchain';
 
-const connected = createAction(`${actionsPrefix}/connected`, (payload: NetworkSymbol) => ({
-    payload,
-}));
+const connected = createAction(
+    `${blockchainActionsPrefix}/connected`,
+    (payload: NetworkSymbol) => ({
+        payload,
+    }),
+);
 
 type ReconnectTimeoutStartPayload = {
     symbol: NetworkSymbol;
@@ -17,18 +20,21 @@ type ReconnectTimeoutStartPayload = {
     count: number;
 };
 const reconnectTimeoutStart = createAction(
-    `${actionsPrefix}/reconnectTimeoutStart`,
+    `${blockchainActionsPrefix}/reconnectTimeoutStart`,
     (payload: ReconnectTimeoutStartPayload) => ({
         payload,
     }),
 );
 
-const updateFee = createAction(`${actionsPrefix}/updateFee`, (payload: Partial<NetworksFees>) => ({
-    payload,
-}));
+const updateFee = createAction(
+    `${blockchainActionsPrefix}/updateFee`,
+    (payload: Partial<NetworksFees>) => ({
+        payload,
+    }),
+);
 
 const synced = createAction(
-    `${actionsPrefix}/synced`,
+    `${blockchainActionsPrefix}/synced`,
     (payload: { symbol: NetworkSymbol; timeout?: Timeout }) => ({
         payload,
     }),
@@ -37,9 +43,12 @@ const synced = createAction(
 export type SetBackendPayload =
     | CustomBackend
     | { coin: NetworkSymbol; type: 'default'; urls?: unknown };
-const setBackend = createAction(`${actionsPrefix}/setBackend`, (payload: SetBackendPayload) => ({
-    payload,
-}));
+const setBackend = createAction(
+    `${blockchainActionsPrefix}/setBackend`,
+    (payload: SetBackendPayload) => ({
+        payload,
+    }),
+);
 
 export const blockchainActions = {
     setBackend,

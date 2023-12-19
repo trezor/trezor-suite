@@ -14,7 +14,7 @@ import {
 import { useDidUpdate } from '@trezor/react-utils';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 import { isChanged } from '@suite-common/suite-utils';
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectDevice, selectCoinsLegacy } from '@suite-common/wallet-core';
 
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import invityAPI from 'src/services/suite/invityAPI';
@@ -87,8 +87,8 @@ export const useCoinmarketExchangeForm = ({
     const { exchangeInfo, quotesRequest, exchangeCoinInfo } = useSelector(
         state => state.wallet.coinmarket.exchange,
     );
-    const fiat = useSelector(state => state.wallet.fiat);
     const device = useSelector(selectDevice);
+    const coins = useSelector(selectCoinsLegacy);
     const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
     const fees = useSelector(state => state.wallet.fees);
     const dispatch = useDispatch();
@@ -106,7 +106,7 @@ export const useCoinmarketExchangeForm = ({
     const coinFees = fees[symbol];
     const levels = getFeeLevels(networkType, coinFees);
     const feeInfo = { ...coinFees, levels };
-    const fiatRates = fiat.coins.find(item => item.symbol === symbol);
+    const fiatRates = coins.find(item => item.symbol === symbol);
 
     const { getDraft, saveDraft, removeDraft } =
         useFormDraft<ExchangeFormState>('coinmarket-exchange');

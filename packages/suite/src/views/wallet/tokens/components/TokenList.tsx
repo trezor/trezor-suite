@@ -5,6 +5,8 @@ import { FiatValue, FormattedCryptoAmount, TrezorLink } from 'src/components/sui
 import { Account } from 'src/types/wallet';
 import { useSelector } from 'src/hooks/suite';
 import { enhanceTokensWithRates, sortTokensWithRates } from '@suite-common/wallet-utils';
+import { selectCoinsLegacy } from '@suite-common/wallet-core';
+import { NoRatesTooltip } from 'src/components/suite/Ticker/NoRatesTooltip';
 
 const Wrapper = styled(Card)<{ isTestnet?: boolean }>`
     display: grid;
@@ -62,6 +64,10 @@ const CryptoAmount = styled(FormattedCryptoAmount)`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
+const StyledNoRatesTooltip = styled(NoRatesTooltip)`
+    justify-content: flex-end;
+`;
+
 interface TokenListProps {
     tokens: Account['tokens'];
     networkType: Account['networkType'];
@@ -78,7 +84,7 @@ export const TokenList = ({
     networkType,
 }: TokenListProps) => {
     const theme = useTheme();
-    const coins = useSelector(state => state.wallet.fiat.coins);
+    const coins = useSelector(selectCoinsLegacy);
 
     const sortedTokens = useMemo(() => {
         const tokensWithRates = enhanceTokensWithRates(tokens, coins);
@@ -100,6 +106,8 @@ export const TokenList = ({
                     networkType === 'cardano' && t.symbol?.toLowerCase() === t.name?.toLowerCase();
                 const noSymbol = !t.symbol || symbolMatchesName;
 
+                const isTokenWithRate = Boolean(t.rates && Object.keys(t.rates).length);
+
                 return (
                     <Fragment key={t.contract}>
                         <Col isTestnet={isTestnet}>
@@ -119,15 +127,17 @@ export const TokenList = ({
                         </Col>
                         {!isTestnet && (
                             <Col isTestnet={isTestnet} justify="right">
-                                <FiatWrapper>
-                                    {t.balance && t.symbol && (
+                                {t.balance && t.symbol && isTokenWithRate ? (
+                                    <FiatWrapper>
                                         <FiatValue
                                             amount={t.balance}
                                             symbol={t.symbol}
                                             tokenAddress={t.contract}
                                         />
-                                    )}
-                                </FiatWrapper>
+                                    </FiatWrapper>
+                                ) : (
+                                    <StyledNoRatesTooltip />
+                                )}
                             </Col>
                         )}
                         <Col isTestnet={isTestnet} justify="right">

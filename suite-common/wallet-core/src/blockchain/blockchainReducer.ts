@@ -14,9 +14,6 @@ import {
 
 import { blockchainActions } from './blockchainActions';
 
-export type BlockchainState = BlockchainNetworks;
-export type BlockchainRootState = { wallet: { blockchain: BlockchainState } };
-
 /*
   get url suffix from default network and generate url for selected network
   regex source: https://www.oreilly.com/library/view/regular-expressions-cookbook/9780596802837/ch07s12.html
@@ -26,7 +23,11 @@ export const getBlockExplorerUrlSuffix = (url: string) =>
 
 export const isHttpProtocol = (url: string) => /^https?:\/\//.test(url);
 
+export type BlockchainState = BlockchainNetworks;
+
 const initialStatePredefined: Partial<BlockchainState> = {};
+
+export type BlockchainRootState = { wallet: { blockchain: BlockchainState } };
 
 // fill initial state, those values will be changed by BLOCKCHAIN.UPDATE_FEE action
 export const blockchainInitialState: BlockchainNetworks = networksCompatibility.reduce(

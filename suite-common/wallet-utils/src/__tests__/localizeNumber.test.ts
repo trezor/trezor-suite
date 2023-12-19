@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 
-import { localizeNumber } from '../localizeNumber';
+import { localizeNumber } from '../localizeNumberUtils';
 
 describe('localizeNumber', () => {
     it('formats with default locale', () => {

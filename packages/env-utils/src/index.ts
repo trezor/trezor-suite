@@ -5,6 +5,7 @@ export type { Environment } from './types';
 export const {
     isWeb,
     isDesktop,
+    isNative,
     getEnvironment,
     getUserAgent,
     isAndroid,

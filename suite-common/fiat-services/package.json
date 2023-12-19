@@ -13,6 +13,8 @@
     "dependencies": {
         "@suite-common/suite-config": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
+        "@trezor/connect": "workspace:*",
+        "@trezor/utils": "workspace:*",
         "date-fns": "^2.30.0"
     },
     "devDependencies": {

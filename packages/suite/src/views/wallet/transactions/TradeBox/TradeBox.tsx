@@ -10,6 +10,7 @@ import { getMainnets } from '@suite-common/wallet-config';
 import { useSelector } from 'src/hooks/suite';
 import { differenceInMinutes } from 'date-fns';
 import { FormattedRelativeTime } from 'react-intl';
+import { selectCoinsLegacy } from '@suite-common/wallet-core';
 
 const Wrapper = styled.div`
     display: flex;
@@ -104,15 +105,14 @@ interface TradeBoxProps {
 
 export const TradeBox = ({ account }: TradeBoxProps) => {
     const network = getMainnets().find(n => n.symbol === account.symbol);
-    const rates = useSelector(state =>
-        state.wallet.fiat.coins.find(r => r.symbol === network?.symbol),
-    );
+    const coins = useSelector(selectCoinsLegacy);
+    const fiatRates = coins.find(item => item.symbol === network?.symbol);
 
     if (!network) {
         return null;
     }
 
-    const currentRateTimestamp = rates?.current?.ts;
+    const currentRateTimestamp = fiatRates?.current?.ts;
     const getRateAge = (timestamp: number) => differenceInMinutes(new Date(timestamp), new Date());
 
     return (

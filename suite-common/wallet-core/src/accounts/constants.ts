@@ -1,6 +1,6 @@
 import { AccountType } from '@suite-common/wallet-types';
 
-export const actionPrefix = '@common/wallet-core/accounts';
+export const accountsActionsPrefix = '@common/wallet-core/accounts';
 
 export const formattedAccountTypeMap: Partial<Record<AccountType, string>> = {
     normal: 'SegWit', // represents the default Suite account type (`SegWit Native` at the moment).

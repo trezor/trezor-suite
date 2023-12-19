@@ -12,6 +12,7 @@ import {
     sortTokensWithRates,
 } from '@suite-common/wallet-utils';
 import { useSelector } from 'src/hooks/suite';
+import { selectCoinsLegacy } from '@suite-common/wallet-core';
 
 interface Option {
     label: string;
@@ -122,7 +123,7 @@ export const TokenSelect = ({ output, outputId }: TokenSelectProps) => {
         composeTransaction,
         watch,
     } = useSendFormContext();
-    const coins = useSelector(state => state.wallet.fiat.coins);
+    const coins = useSelector(selectCoinsLegacy);
 
     const sortedTokens = useMemo(() => {
         const tokensWithRates = enhanceTokensWithRates(account.tokens, coins);

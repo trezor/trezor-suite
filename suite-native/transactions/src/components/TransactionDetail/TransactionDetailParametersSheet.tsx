@@ -3,7 +3,11 @@ import { useSelector } from 'react-redux';
 import { AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { Box, Card, IconButton, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-common/icons';
-import { selectTransactionConfirmations, TransactionsRootState } from '@suite-common/wallet-core';
+import {
+    BlockchainRootState,
+    selectTransactionConfirmations,
+    TransactionsRootState,
+} from '@suite-common/wallet-core';
 import { useCopyToClipboard } from '@suite-native/helpers';
 import { FeeFormatter, TransactionIdFormatter } from '@suite-native/formatters';
 import { networks, NetworkType } from '@suite-common/wallet-config';
@@ -54,7 +58,7 @@ const EthereumParameters = ({ transaction }: EthereumParametersProps) => {
 };
 
 const ConfirmationsCount = ({ txid, accountKey }: { txid: string; accountKey: AccountKey }) => {
-    const confirmationsCount = useSelector((state: TransactionsRootState) =>
+    const confirmationsCount = useSelector((state: TransactionsRootState & BlockchainRootState) =>
         selectTransactionConfirmations(state, txid, accountKey),
     );
     return <>{confirmationsCount}</>;

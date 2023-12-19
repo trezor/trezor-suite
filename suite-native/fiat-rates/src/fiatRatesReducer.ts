@@ -11,7 +11,7 @@ export const fiatRatesInitialState: FiatRatesState = {
 
 export const prepareFiatRatesReducer = createReducerWithExtraDeps(
     fiatRatesInitialState,
-    (builder, extra) => {
+    builder => {
         builder
             .addCase(updateFiatRatesThunk.pending, (state, action) => {
                 const { ticker, localCurrency, rateType = 'current' } = action.meta.arg;
@@ -68,8 +68,6 @@ export const prepareFiatRatesReducer = createReducerWithExtraDeps(
                     error: action.error.message || `Failed to update ${ticker.symbol} fiat rate.`,
                     locale: localCurrency,
                 };
-            })
-            // TODO: migration for desktop?
-            .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadFiatRates);
+            });
     },
 );

@@ -64,10 +64,6 @@ export type ExtraDependencies = {
             | ActionCreatorWithPayload<{
                   localCurrency: FiatCurrencyCode;
               }>;
-        changeWalletSettingsNetworks: ActionCreatorWithPreparedPayload<
-            [payload: NetworkSymbol[]],
-            NetworkSymbol[]
-        >;
         lockDevice: ActionCreatorWithPreparedPayload<[payload: boolean], boolean>;
         appChanged: ActionCreatorWithPayload<unknown>;
         setSelectedDevice: ActionCreatorWithPayload<TrezorDevice | undefined>;
@@ -89,7 +85,6 @@ export type ExtraDependencies = {
         storageLoadBlockchain: StorageLoadReducer;
         storageLoadAccounts: StorageLoadReducer;
         storageLoadTransactions: StorageLoadTransactionsReducer;
-        storageLoadFiatRates: StorageLoadReducer;
         storageLoadFirmware: StorageLoadReducer;
         storageLoadDiscovery: StorageLoadReducer;
         addButtonRequestFirmware: AddButtonRequestReducer;
