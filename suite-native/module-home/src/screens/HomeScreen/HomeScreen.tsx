@@ -14,11 +14,11 @@ export const HomeScreen = () => {
     const isPortfolioEmpty = useSelector(selectIsPortfolioEmpty);
     const portfolioContentRef = useRef<PortfolioContentRef>(null);
     const refreshControl = useHomeRefreshControl({ isPortfolioEmpty, portfolioContentRef });
-
     return (
         <Screen
             screenHeader={<DeviceManagerScreenHeader hasBottomPadding />}
             refreshControl={refreshControl}
+            customHorizontalPadding={0}
         >
             {isPortfolioEmpty ? (
                 <EmptyHomeRenderer />
