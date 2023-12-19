@@ -94,12 +94,9 @@ const finishNetworkTypeDiscoveryThunk = createThunk(
 
 const getDetailsLevels = (coin: NetworkSymbol) => {
     const network = getNetwork(coin);
-    if (!network) return { details: 'basic' } as const;
-    // Neccessary for ETH otherwise it won't show tokens in accounts details
-    if (network.networkType === 'ethereum') return { details: 'basic', pageSize: 1 } as const;
     // For Cardano we need to fetch at least one tx otherwise it will not generate correctly new receive addresses (xpub instead of address)
-    if (network.networkType === 'cardano') return { details: 'txs', pageSize: 1 } as const;
-    return { details: 'basic' } as const;
+    if (network?.networkType === 'cardano') return { details: 'txs', pageSize: 1 } as const;
+    return { details: 'tokens' } as const;
 };
 
 const discoverAccountsByDescriptorThunk = createThunk(
