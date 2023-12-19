@@ -5,7 +5,7 @@ import { Button, ButtonProps } from '../Button/Button';
 import { ButtonSize, ButtonVariant } from '../buttonStyleUtils';
 import { IconButton, IconButtonProps } from '../IconButton/IconButton';
 
-const Container = styled.div<{ variant: Exclude<ButtonVariant, 'danger'> }>`
+const Container = styled.div<{ variant?: Exclude<ButtonVariant, 'danger'> }>`
     position: relative;
     display: flex;
     align-items: center;
@@ -53,8 +53,8 @@ interface ButtonGroupProps {
 }
 
 export const ButtonGroup = ({
-    variant = 'primary',
-    size = 'large',
+    variant,
+    size,
     isDisabled,
     className,
     children,
@@ -70,7 +70,11 @@ export const ButtonGroup = ({
     }
 
     const childrenWithProps = children.map(child =>
-        React.cloneElement(child, { variant, size, isDisabled }),
+        React.cloneElement(child, {
+            variant: child.props.variant || variant,
+            size: child.props.size || size,
+            isDisabled: child.props.isDisabled || isDisabled,
+        }),
     );
 
     return (
