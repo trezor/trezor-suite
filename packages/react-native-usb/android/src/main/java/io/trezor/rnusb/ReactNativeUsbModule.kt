@@ -8,7 +8,6 @@ import android.content.IntentFilter
 import android.hardware.usb.UsbDevice
 import android.hardware.usb.UsbDeviceConnection
 import android.hardware.usb.UsbManager
-import android.hardware.usb.UsbRequest
 import android.util.Log
 import expo.modules.kotlin.exception.Exceptions
 import kotlinx.coroutines.CoroutineScope
@@ -18,7 +17,6 @@ import kotlinx.coroutines.launch
 import expo.modules.kotlin.Promise
 import expo.modules.kotlin.exception.CodedException
 import expo.modules.core.errors.ModuleDestroyedException
-import java.nio.ByteBuffer
 
 
 const val ON_DEVICE_CONNECT_EVENT_NAME = "onDeviceConnect"
@@ -277,20 +275,15 @@ class ReactNativeUsbModule : Module() {
             throw Exception("Failed to get endpoint $endpointNumber for device ${device.deviceName}")
         }
 
-        val buffer = ByteBuffer.allocate(length)
-        val req = UsbRequest()
-        req.initialize(usbConnection, usbEndpoint)
-        req.queue(buffer)
-
-        val result = usbConnection.requestWait()
-
-        if (result == null) {
+        val buffer = ByteArray(length)
+        val result = usbConnection.bulkTransfer(usbEndpoint, buffer, length, 0)
+        if (result < 0) {
             Log.e("ReactNativeUsbModule", "Failed to transfer data from device ${device.deviceName}")
             throw Exception("Failed to transfer data from device ${device.deviceName}")
         }
-        Log.d("ReactNativeUsbModule", "Read data from device ${device.deviceName}: ${buffer.array()}")
+        Log.d("ReactNativeUsbModule", "Read data from device ${device.deviceName}: ${buffer.toList()}")
         // convert buffer to Array
-        val bufferArray = buffer.array()
+        val bufferArray = buffer.toTypedArray()
         Log.d("ReactNativeUsbModule", "bufferArray: ${bufferArray.toList()}")
         // convert Array to IntArray
         val bufferIntArray = bufferArray.map { it.toInt() }.toIntArray()
