@@ -21,6 +21,7 @@ import { backupDevice } from 'src/actions/backup/backupActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
+import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
 
 const StyledImage = styled(Image)`
     flex: 1;
@@ -113,6 +114,7 @@ export const BackupStep = () => {
                     innerActions={
                         <OnboardingButtonCta
                             onClick={() => {
+                                dispatch(onboardingActions.resetOnboarding());
                                 dispatch(
                                     goto('settings-device', { anchor: SettingsAnchor.WipeDevice }),
                                 );
