@@ -9,6 +9,8 @@ const isWeb = () => false;
 
 const isDesktop = () => false;
 
+const isNative = () => true;
+
 const getEnvironment = () => 'mobile' as const;
 
 const getUserAgent = () => '';
@@ -76,6 +78,7 @@ const getOsFamily = (): 'Linux' => 'Linux';
 export const envUtils: EnvUtils = {
     isWeb,
     isDesktop,
+    isNative,
     getEnvironment,
     getUserAgent,
     isAndroid,

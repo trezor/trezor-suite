@@ -1,4 +1,5 @@
-import { localizeNumber } from '@suite-common/wallet-utils';
+import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
+import { getFiatRateKey, localizeNumber } from '@suite-common/wallet-utils';
 import { Icon, variables } from '@trezor/components';
 import { FONT_SIZE, FONT_WEIGHT } from '@trezor/components/src/config/variables';
 import { PropsWithChildren, ReactNode } from 'react';
@@ -57,15 +58,31 @@ export const TradeBoxPrices = ({ account }: TradeBoxPricesProps) => {
     const theme = useTheme();
     const locale = useSelector(state => state.suite.settings.language);
     const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
-    const rates = useSelector(state =>
-        state.wallet.fiat.coins.find(r => r.symbol === account?.symbol),
+
+    const lastWeekRate = useSelector(state =>
+        selectFiatRatesByFiatRateKey(
+            state,
+            getFiatRateKey(account?.symbol, localCurrency),
+            'lastWeek',
+        ),
     );
 
-    const lastDayRate = rates?.lastWeek?.tickers[0]?.rates?.[localCurrency];
-    const currentRate = rates?.current?.rates?.[localCurrency];
-    const rateGoingUp = currentRate && lastDayRate ? currentRate >= lastDayRate : false;
-    const percentChange =
-        currentRate && lastDayRate ? calculatePercentageDifference(currentRate, lastDayRate) : 0;
+    const currentRate = useSelector(state =>
+        selectFiatRatesByFiatRateKey(
+            state,
+            getFiatRateKey(account?.symbol, localCurrency),
+            'current',
+        ),
+    );
+
+    const isSuccessfullyFetched =
+        lastWeekRate?.lastSuccessfulFetchTimestamp && currentRate?.lastSuccessfulFetchTimestamp;
+
+    // TODO: create selectIsRateGoingUp selector when wallet.settings is moved to suite-common
+    const rateGoingUp = isSuccessfullyFetched ? currentRate.rate! >= lastWeekRate.rate! : false;
+    const percentChange = isSuccessfullyFetched
+        ? calculatePercentageDifference(currentRate.rate!, lastWeekRate.rate!)
+        : 0;
 
     return (
         <Wrapper>
@@ -76,14 +93,16 @@ export const TradeBoxPrices = ({ account }: TradeBoxPricesProps) => {
             </TradeBoxHeadCard>
 
             <TradeBoxHeadCard name={<Translation id="TR_7D_CHANGE" />}>
-                <ChangeWrapper color={rateGoingUp ? theme.TYPE_GREEN : theme.TYPE_RED}>
-                    <Icon
-                        icon={rateGoingUp ? 'TREND_UP' : 'TREND_DOWN'}
-                        size={16}
-                        color={rateGoingUp ? theme.TYPE_GREEN : theme.TYPE_RED}
-                    />
-                    {localizeNumber(percentChange, locale, 1, 1)}%
-                </ChangeWrapper>
+                {isSuccessfullyFetched ? (
+                    <ChangeWrapper color={rateGoingUp ? theme.TYPE_GREEN : theme.TYPE_RED}>
+                        <Icon
+                            icon={rateGoingUp ? 'TREND_UP' : 'TREND_DOWN'}
+                            size={16}
+                            color={rateGoingUp ? theme.TYPE_GREEN : theme.TYPE_RED}
+                        />
+                        {localizeNumber(percentChange, locale, 1, 1)}%
+                    </ChangeWrapper>
+                ) : null}
             </TradeBoxHeadCard>
         </Wrapper>
     );

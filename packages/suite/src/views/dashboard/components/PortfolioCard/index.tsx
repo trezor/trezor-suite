@@ -13,7 +13,7 @@ import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import { useFastAccounts, useFiatValue } from 'src/hooks/wallet';
 import { goto } from 'src/actions/suite/routerActions';
 import { setFlag } from 'src/actions/suite/suiteActions';
-import * as accountUtils from '@suite-common/wallet-utils';
+import { getTotalFiatBalance } from '@suite-common/wallet-utils';
 
 import { Header } from './components/Header';
 import { Exception } from './components/Exception';
@@ -44,16 +44,14 @@ const Wrapper = styled.div`
 `;
 
 const PortfolioCard = memo(() => {
-    const { fiat, localCurrency } = useFiatValue();
+    const { coins, localCurrency } = useFiatValue();
     const { discovery, getDiscoveryStatus, isDiscoveryRunning } = useDiscovery();
     const accounts = useFastAccounts();
     const { dashboardGraphHidden } = useSelector(s => s.suite.flags);
     const dispatch = useDispatch();
 
     const isDeviceEmpty = useMemo(() => accounts.every(a => a.empty), [accounts]);
-    const portfolioValue = accountUtils
-        .getTotalFiatBalance(accounts, localCurrency, fiat.coins)
-        .toString();
+    const portfolioValue = getTotalFiatBalance(accounts, localCurrency, coins).toString();
 
     const discoveryStatus = getDiscoveryStatus();
 
@@ -155,7 +153,6 @@ const PortfolioCard = memo(() => {
                         buyClickHandler={goToBuy}
                     />
                 )}
-
                 {body && <Body>{body}</Body>}
             </StyledCard>
         </DashboardSection>

@@ -3,6 +3,7 @@ export type Environment = 'desktop' | 'web' | 'mobile';
 export interface EnvUtils {
     isWeb: () => boolean;
     isDesktop: () => boolean;
+    isNative: () => boolean;
     getEnvironment: () => Environment;
     getUserAgent: () => string;
     isAndroid: () => boolean;

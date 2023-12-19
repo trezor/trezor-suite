@@ -5,12 +5,11 @@ import {
     selectDevices,
     selectDevice,
     firmwareActions,
-    discoveryActions,
     selectDiscoveryByDeviceState,
+    discoveryActions,
     accountsActions,
     blockchainActions,
     transactionsActions,
-    fiatRatesActions,
     selectAccountByKey,
     deviceActions,
     selectDeviceByState,
@@ -68,22 +67,8 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 }
             }
 
-            if (fiatRatesActions.updateFiatRate.match(action)) {
-                api.dispatch(storageActions.saveFiatRates());
-            }
-
-            if (fiatRatesActions.removeFiatRate.match(action)) {
-                api.dispatch(
-                    storageActions.removeFiatRate(
-                        action.payload.symbol,
-                        action.payload.tokenAddress,
-                    ),
-                );
-            }
-
             if (walletSettingsActions.changeNetworks.match(action)) {
                 api.dispatch(storageActions.saveWalletSettings());
-                api.dispatch(storageActions.saveFiatRates());
             }
 
             if (transactionsActions.resetTransaction.match(action)) {

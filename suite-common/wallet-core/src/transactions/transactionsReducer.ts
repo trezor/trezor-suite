@@ -5,7 +5,6 @@ import { findTransaction, getConfirmations, isPending } from '@suite-common/wall
 import { getIsZeroValuePhishing } from '@suite-common/suite-utils';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 
-import { fiatRatesActions } from '../fiat-rates/fiatRatesActions';
 import { accountsActions } from '../accounts/accountsActions';
 import { transactionsActions } from './transactionsActions';
 import {
@@ -34,7 +33,7 @@ export type TransactionsRootState = {
             transactions: { [key: AccountKey]: (WalletAccountTransaction | null)[] };
         };
     };
-} & BlockchainRootState;
+};
 
 const initializeAccount = (state: TransactionsState, accountKey: AccountKey) => {
     // initialize an empty array at 'accountKey' index if not yet initialized
@@ -146,7 +145,7 @@ export const prepareTransactionsReducer = createReducerWithExtraDeps(
                     delete state.transactions[a.key];
                 });
             })
-            .addCase(fiatRatesActions.updateTransactionFiatRate, (state, { payload }) => {
+            .addCase(transactionsActions.updateTransactionFiatRate, (state, { payload }) => {
                 payload.forEach(u => {
                     updateTransaction(state, u.account, u.txid, u.updateObject);
                 });
@@ -260,7 +259,7 @@ export const selectIsTransactionPending = (
 };
 
 export const selectTransactionConfirmations = (
-    state: TransactionsRootState,
+    state: TransactionsRootState & BlockchainRootState,
     txid: string,
     accountKey: AccountKey,
 ) => {

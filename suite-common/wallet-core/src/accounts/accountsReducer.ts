@@ -7,7 +7,6 @@ import { enhanceHistory, isTestnet, isUtxoBased } from '@suite-common/wallet-uti
 import { Account, AccountKey } from '@suite-common/wallet-types';
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 
-import { selectCoins, FiatRatesRootState } from '../fiat-rates/fiatRatesReducer';
 import { accountsActions } from './accountsActions';
 import { formattedAccountTypeMap } from './constants';
 import {
@@ -297,21 +296,6 @@ export const selectAccountsSymbols = memoize(
             A.uniq,
         ) as NetworkSymbol[],
 );
-
-export const selectIsAccountWithRatesByKey = (
-    state: AccountsRootState & FiatRatesRootState,
-    accountKey: string,
-) => {
-    const account = selectAccountByKey(state, accountKey);
-
-    if (!account) {
-        return false;
-    }
-
-    const rates = selectCoins(state);
-
-    return !!rates.find(rate => rate.symbol === account.symbol);
-};
 
 export const selectIsAccountsListEmpty = (state: AccountsRootState & DeviceRootState) =>
     pipe(selectDeviceAccounts(state), A.isEmpty);

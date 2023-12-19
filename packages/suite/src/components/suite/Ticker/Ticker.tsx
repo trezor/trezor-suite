@@ -6,6 +6,9 @@ import { Tooltip, useTheme, variables, Icon } from '@trezor/components';
 import { FiatValue, Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { NoRatesTooltip } from './NoRatesTooltip';
+import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
+import { getFiatRateKey } from '@suite-common/wallet-utils/src/fiatRatesUtils';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 
 const FiatRateWrapper = styled.span`
     display: flex;
@@ -20,18 +23,27 @@ const LastUpdate = styled.div`
 `;
 
 interface TickerProps {
-    symbol: string;
+    symbol: NetworkSymbol;
     tooltipPos?: 'top' | 'bottom';
 }
+
 export const Ticker = ({ symbol, tooltipPos = 'top' }: TickerProps) => {
-    const rates = useSelector(state => state.wallet.fiat.coins.find(r => r.symbol === symbol));
     const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
     const theme = useTheme();
 
-    const lastWeekRates = rates?.lastWeek?.tickers ?? [];
-    const currentRate = rates?.current?.rates?.[localCurrency];
-    const lastWeekRate = lastWeekRates[0]?.rates?.[localCurrency];
-    const rateGoingUp = currentRate && lastWeekRate ? currentRate >= lastWeekRate : false;
+    const lastWeekRate = useSelector(state =>
+        selectFiatRatesByFiatRateKey(state, getFiatRateKey(symbol, localCurrency), 'lastWeek'),
+    );
+
+    const currentRate = useSelector(state =>
+        selectFiatRatesByFiatRateKey(state, getFiatRateKey(symbol, localCurrency), 'current'),
+    );
+
+    const isSuccessfullyFetched =
+        lastWeekRate?.lastSuccessfulFetchTimestamp && currentRate?.lastSuccessfulFetchTimestamp;
+
+    // TODO: create selectIsRateGoingUp selector when wallet.settings is moved to suite-common
+    const rateGoingUp = isSuccessfullyFetched ? currentRate.rate! >= lastWeekRate.rate! : false;
 
     const rateAge = (timestamp: number) => differenceInMinutes(new Date(timestamp), new Date());
 

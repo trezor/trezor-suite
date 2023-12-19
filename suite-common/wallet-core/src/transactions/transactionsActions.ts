@@ -4,32 +4,46 @@ import { Account, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { AccountTransaction } from '@trezor/connect';
 import { enhanceTransaction } from '@suite-common/wallet-utils';
 
-export const modulePrefix = '@common/wallet-core/transactions';
+export const transactionsActionsPrefix = '@common/wallet-core/transactions';
 
 const fetchError = createAction(
-    `${modulePrefix}/fetchError`,
+    `${transactionsActionsPrefix}/fetchError`,
     (payload: { error: string | null }) => ({ payload }),
 );
-const fetchSuccess = createAction(`${modulePrefix}/fetchSuccess`);
-const fetchInit = createAction(`${modulePrefix}/fetchInit`);
+const fetchSuccess = createAction(`${transactionsActionsPrefix}/fetchSuccess`);
+const fetchInit = createAction(`${transactionsActionsPrefix}/fetchInit`);
+
+type UpdateTransactionFiatRatePayload = Array<{
+    txid: string;
+    account: Account;
+    updateObject: Partial<WalletAccountTransaction>;
+    ts: number;
+}>;
+
+const updateTransactionFiatRate = createAction(
+    `${transactionsActionsPrefix}/updateTransactionFiatRate`,
+    (payload: UpdateTransactionFiatRatePayload) => ({
+        payload,
+    }),
+);
 
 const resetTransaction = createAction(
-    `${modulePrefix}/resetTransaction`,
+    `${transactionsActionsPrefix}/resetTransaction`,
     (payload: { account: Account }) => ({ payload }),
 );
 
 const replaceTransaction = createAction(
-    `${modulePrefix}/replaceTransaction`,
+    `${transactionsActionsPrefix}/replaceTransaction`,
     (payload: { key: string; txid: string; tx: WalletAccountTransaction }) => ({ payload }),
 );
 
 const removeTransaction = createAction(
-    `${modulePrefix}/removeTransaction`,
+    `${transactionsActionsPrefix}/removeTransaction`,
     (payload: { account: Account; txs: { txid: string }[] }) => ({ payload }),
 );
 
 const addTransaction = createAction(
-    `${modulePrefix}/addTransaction`,
+    `${transactionsActionsPrefix}/addTransaction`,
     ({
         transactions,
         account,
@@ -65,4 +79,5 @@ export const transactionsActions = {
     replaceTransaction,
     removeTransaction,
     resetTransaction,
+    updateTransactionFiatRate,
 } as const;

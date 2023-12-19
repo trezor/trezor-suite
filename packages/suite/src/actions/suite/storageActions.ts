@@ -281,22 +281,6 @@ export const saveBackend =
         );
     };
 
-export const removeFiatRate =
-    (symbol: string, tokenAddress?: string) => async (_dispatch: Dispatch, _getState: GetState) => {
-        if (!(await db.isAccessible())) return;
-        const key = tokenAddress ? `${symbol}-${tokenAddress}` : symbol;
-        return db.removeItemByPK('fiatRates', key);
-    };
-
-export const saveFiatRates = () => async (_dispatch: Dispatch, getState: GetState) => {
-    if (!(await db.isAccessible())) return;
-    const promises = getState().wallet.fiat.coins.map(c => {
-        const key = c.tokenAddress ? `${c.symbol}-${c.tokenAddress}` : c.symbol;
-        return db.addItem('fiatRates', c, key, true);
-    });
-    return Promise.all(promises);
-};
-
 export const saveSuiteSettings = () => async (_dispatch: Dispatch, getState: GetState) => {
     if (!(await db.isAccessible())) return;
     const { suite } = getState();

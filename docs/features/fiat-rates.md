@@ -4,13 +4,12 @@ Suite provides several types of fiat rates:
 
 -   Current fiat rate: Used on Dashboard, next to the account balance, for converting a crypto amount in send form to a fiat currency, etc...
 -   Weekly rates: In addition to current rate we also fetch 7 days old rate and based on the difference we either show green or red arrow next to an exchange rate (can be seen in assets table on Dashboard).
--   Historical fiat rate: Exchange rate at the time of facilitating a transaction. Used in list of transactions to calculate daily deltas and in transaction detail modal. Not supported for ERC20 tokens.
+-   Historical fiat rate: Exchange rate at the time of facilitating a transaction. Used in list of transactions to calculate daily deltas and in transaction detail modal. ERC-20 tokens are not yet implemented.
 
 ## Providers
 
--   Blockbook: For all main networks (BTC, LTC, ETH) except XRP and ERC20 tokens
--   Blockbook "live" updates: Apart from using Blockbook to manually fetch fiat rates, it also provides us with "live" fiat rate updates (basically push notifications via websocket) for all blockbook-supported coins (see above).
--   CoinGecko: Used for XRP, ERC20 tokens and as a fallback for failed requests to blockbook.
+-   Blockbook: For all main networks (BTC, LTC, ETH + ERC-20 tokens, ...) except XRP, SOL and ADA + ADA tokens
+-   CoinGecko: Used for XRP, SOL and ADA + ADA tokens and as a fallback for failed requests to blockbook.
 
 ## First fetch
 
@@ -18,9 +17,9 @@ Suite provides several types of fiat rates:
 
 For main networks: On app launch for enabled networks and then immediately after enabling new coin/network
 
-#### Current fiat rates for ERC20 tokens
+#### Current fiat rates for ERC-20 tokens
 
-ERC20 tokens: On `ACCOUNT.CREATE` which is triggered during account discovery (if account were not remembered), on `ACCOUNT.UPDATE` when `account.tokens` has some new items.
+ERC-20 tokens: On `ACCOUNT.CREATE` which is triggered during account discovery (if account were not remembered), on `ACCOUNT.UPDATE` when `account.tokens` has some new items.
 
 ### Weekly fiat rates
 
@@ -34,12 +33,12 @@ Historical rates for transactions: On `addTransaction` action, which means after
 
 ### Current fiat rates
 
-Every rate stored in `wallet.fiat` reducer is checked in 2-minute interval. If the rate is older then 10 minutes then it is refetched. Although this shouldn't really be necessary thanks to live updates from Blockbook, the same logic is also used for ERC20 tokens and XRP where we don't have a comfort of receiving these updates and we are relying on manual checks.
+Every rate stored in `wallet.fiat` reducer is checked in 2-minute interval. If the rate is older then 10 minutes then it is refetched. Although this shouldn't really be necessary thanks to live updates from Blockbook, the same logic is also used for ERC-20 tokens and XRP where we don't have a comfort of receiving these updates and we are relying on manual checks.
 
-#### Current fiat rates for ERC20 tokens
+#### Current fiat rates for ERC-20 tokens
 
 List of tokens is part of the account object (`account.tokens`).
-Fiat rates for ERC20 tokens are fetched on `ACCOUNT.CREATE` (fired during account discovery) and `ACCOUNT.UPDATE` (new token can appear after receiving a token transaction). These actions are intercepted in `fiatRatesMiddleware`.
+Fiat rates for ERC-20 tokens are fetched on `ACCOUNT.CREATE` (fired during account discovery) and `ACCOUNT.UPDATE` (new token can appear after receiving a token transaction). These actions are intercepted in `fiatRatesMiddleware`.
 
 ### Weekly fiat rates
 

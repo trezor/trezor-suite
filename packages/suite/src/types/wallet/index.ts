@@ -1,9 +1,4 @@
-import {
-    discoveryActions,
-    accountsActions,
-    fiatRatesActions,
-    blockchainActions,
-} from '@suite-common/wallet-core';
+import { discoveryActions, accountsActions, blockchainActions } from '@suite-common/wallet-core';
 import { ArrayElement } from '@trezor/type-utils';
 
 import { ReceiveAction } from 'src/actions/wallet/receiveActions';
@@ -59,7 +54,6 @@ this action union types are bad, we need it only for legacy reason.
 (old redux and redux/toolkit action type compatibility e.g. in middlewares)
  */
 type AccountsAction = ReturnType<(typeof accountsActions)[keyof typeof accountsActions]>;
-type FiatRatesAction = ReturnType<(typeof fiatRatesActions)[keyof typeof fiatRatesActions]>;
 type BlockchainAction = ReturnType<(typeof blockchainActions)[keyof typeof blockchainActions]>;
 type DiscoveryAction = ReturnType<(typeof discoveryActions)[keyof typeof discoveryActions]>;
 
@@ -67,7 +61,6 @@ export type WalletAction =
     | BlockchainAction
     | ReceiveAction
     | SignVerifyAction
-    | FiatRatesAction
     | GraphAction
     | DiscoveryAction
     | CoinmarketExchangeAction

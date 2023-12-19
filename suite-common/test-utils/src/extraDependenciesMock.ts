@@ -84,7 +84,6 @@ export const extraDependenciesMock: ExtraDependencies = {
     actions: {
         setAccountAddMetadata: mockAction('setAccountAddMetadata'),
         setWalletSettingsLocalCurrency: mockAction('setWalletSettingsLocalCurrency'),
-        changeWalletSettingsNetworks: mockAction('changeWalletSettingsNetworks'),
         lockDevice: mockAction('lockDevice'),
         appChanged: mockAction('appChanged'),
         setSelectedDevice: mockAction('setSelectedDevice'),
@@ -102,7 +101,6 @@ export const extraDependenciesMock: ExtraDependencies = {
         storageLoadBlockchain: mockReducer('storageLoadBlockchain'),
         storageLoadAccounts: mockReducer('storageLoadAccounts'),
         storageLoadTransactions: mockReducer('storageLoadTransactions'),
-        storageLoadFiatRates: mockReducer('storageLoadAccounts'),
         storageLoadFirmware: mockReducer('storageLoadFirmware'),
         storageLoadDiscovery: mockReducer('storageLoadDiscovery'),
         addButtonRequestFirmware: mockReducer('addButtonRequestFirmware'),

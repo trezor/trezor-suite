@@ -5,4 +5,5 @@ export const requestInit: RequestInit = {
     },
 };
 
-export const fetchUrl = (url: string) => fetch(url, requestInit);
+export const fetchUrl = (url: string, init?: RequestInit) =>
+    fetch(url, { ...requestInit, ...init });

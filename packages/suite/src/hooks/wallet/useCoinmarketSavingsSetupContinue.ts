@@ -20,12 +20,13 @@ import { SavingsTrade } from 'invity-api';
 import invityAPI from 'src/services/suite/invityAPI';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
+import { selectCoinsLegacy } from '@suite-common/wallet-core';
 
 export const useSavingsSetupContinue = ({
     selectedAccount,
 }: UseSavingsSetupContinueProps): SavingsSetupContinueContextValues => {
     const { account } = selectedAccount;
-    const fiat = useSelector(state => state.wallet.fiat);
+    const coins = useSelector(selectCoinsLegacy);
     const {
         isSavingsTradeLoading,
         isWatchingKYCStatus,
@@ -51,7 +52,7 @@ export const useSavingsSetupContinue = ({
         removeDraft(account.descriptor);
     }, [account.descriptor, dispatch, removeDraft]);
 
-    const fiatRates = fiat.coins.find(item => item.symbol === account.symbol);
+    const fiatRates = coins.find(item => item.symbol === account.symbol);
     // NOTE: There is only one fiat currency per provider.
     const fiatCurrency = selectedProvider?.tradedFiatCurrencies[0];
     const { address: unusedAddress } = getUnusedAddressFromAccount(account);

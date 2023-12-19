@@ -165,6 +165,7 @@ export const CoinjoinBatchItem = ({
     const amount = sumTransactions(transactions);
     const fiatAmount = sumTransactionsFiat(transactions, localCurrency);
     const { FiatAmountFormatter } = useFormatters();
+    const isMissingFiatRates = transactions.some(tx => !tx.rates?.[localCurrency]);
 
     return (
         <StyledCollapsibleBox
@@ -197,7 +198,7 @@ export const CoinjoinBatchItem = ({
                                         />
                                     }
                                     fiatAmount={
-                                        !isTestnet(lastTx.symbol) ? (
+                                        !isTestnet(lastTx.symbol) && !isMissingFiatRates ? (
                                             <HiddenPlaceholder>
                                                 <FiatAmountFormatter
                                                     currency={localCurrency}

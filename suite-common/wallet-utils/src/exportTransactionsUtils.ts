@@ -11,7 +11,7 @@ import { getIsZeroValuePhishing } from '@suite-common/suite-utils';
 
 import { formatNetworkAmount, formatAmount } from './accountUtils';
 import { getNftTokenId, isNftTokenTransfer } from './transactionUtils';
-import { localizeNumber } from './localizeNumber';
+import { localizeNumber } from './localizeNumberUtils';
 
 type AccountTransactionForExports = Omit<WalletAccountTransaction, 'targets'> & {
     targets: (TransactionTarget & { metadataLabel?: string })[];

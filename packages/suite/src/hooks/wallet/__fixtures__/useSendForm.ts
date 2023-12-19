@@ -219,29 +219,67 @@ export const getRootReducer = (selectedAccount = BTC_ACCOUNT, fees = DEFAULT_FEE
             fees: createReducer(fees, () => ({})),
             fiat: createReducer(
                 {
-                    coins: [
+                    current: [
                         {
-                            symbol: 'btc',
-                            current: {
+                            error: null,
+                            isLoading: false,
+                            lastSuccessfulFetchTimestamp: 1693235607743,
+                            locale: 'usd',
+                            rate: 1,
+                            ticker: {
                                 symbol: 'btc',
-                                ts: 0,
-                                rates: { usd: 1, eur: 1.2, czk: 22 },
                             },
                         },
                         {
-                            symbol: 'eth',
-                            current: {
+                            error: null,
+                            isLoading: false,
+                            lastSuccessfulFetchTimestamp: 1693235609465,
+                            locale: 'usd',
+                            rate: 1,
+                            ticker: {
                                 symbol: 'eth',
-                                ts: 0,
-                                rates: { usd: 1, eur: 1.2, czk: 22 },
                             },
                         },
                         {
-                            symbol: 'xrp',
-                            current: {
+                            error: null,
+                            isLoading: false,
+                            lastSuccessfulFetchTimestamp: 1693235609467,
+                            locale: 'usd',
+                            rate: 1,
+                            ticker: {
                                 symbol: 'xrp',
-                                ts: 0,
-                                rates: { usd: 1, eur: 1.2, czk: 22 },
+                            },
+                        },
+                    ],
+                    lastWeek: [
+                        {
+                            error: null,
+                            isLoading: false,
+                            lastSuccessfulFetchTimestamp: 1693235707743,
+                            locale: 'usd',
+                            rate: 1,
+                            ticker: {
+                                symbol: 'btc',
+                            },
+                        },
+                        {
+                            error: null,
+                            isLoading: false,
+                            lastSuccessfulFetchTimestamp: 1693235709465,
+                            locale: 'usd',
+                            rate: 1,
+                            ticker: {
+                                symbol: 'eth',
+                            },
+                        },
+                        {
+                            error: null,
+                            isLoading: false,
+                            lastSuccessfulFetchTimestamp: 1693235709467,
+                            locale: 'usd',
+                            rate: 1,
+                            ticker: {
+                                symbol: 'xrp',
                             },
                         },
                     ],

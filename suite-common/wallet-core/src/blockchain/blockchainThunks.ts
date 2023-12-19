@@ -25,7 +25,7 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 
 import { selectAccounts } from '../accounts/accountsReducer';
 import { fetchAndUpdateAccountThunk } from '../accounts/accountsThunks';
-import { actionsPrefix, blockchainActions } from './blockchainActions';
+import { blockchainActionsPrefix, blockchainActions } from './blockchainActions';
 import { selectBlockchainState, selectNetworkBlockchainInfo } from './blockchainReducer';
 
 const ACCOUNTS_SYNC_INTERVAL = 60 * 1000;
@@ -43,7 +43,7 @@ const sortLevels = (levels: FeeLevel[]) =>
 
 // shouldn't this be in fee thunks instead?
 export const preloadFeeInfoThunk = createThunk(
-    `${actionsPrefix}/preloadFeeInfoThunk`,
+    `${blockchainActionsPrefix}/preloadFeeInfoThunk`,
     async (_, { dispatch }) => {
         // Fetch default fee levels
         const networks = networksCompatibility.filter(n => !n.isHidden && !n.accountType);
@@ -79,7 +79,7 @@ export const preloadFeeInfoThunk = createThunk(
 
 // shouldn't this be in fee thunks instead?
 export const updateFeeInfoThunk = createThunk(
-    `${actionsPrefix}/updateFeeInfoThunk`,
+    `${blockchainActionsPrefix}/updateFeeInfoThunk`,
     async (symbol: string, { dispatch, getState, extra }) => {
         const {
             selectors: { selectFeeInfo },
@@ -147,7 +147,7 @@ export const updateFeeInfoThunk = createThunk(
 
 // call TrezorConnect.unsubscribe, it doesn't cost anything and should emit BLOCKCHAIN.CONNECT or BLOCKCHAIN.ERROR event
 export const reconnectBlockchainThunk = createThunk(
-    `${actionsPrefix}/reconnectBlockchainThunk`,
+    `${blockchainActionsPrefix}/reconnectBlockchainThunk`,
     (coin: NetworkSymbol) => TrezorConnect.blockchainUnsubscribeFiatRates({ coin }),
 );
 
@@ -165,7 +165,7 @@ const setBackendsToConnect = (backends: CustomBackend[]) =>
     );
 
 export const setCustomBackendThunk = createThunk(
-    `${actionsPrefix}/setCustomBackendThunk`,
+    `${blockchainActionsPrefix}/setCustomBackendThunk`,
     (coin: NetworkSymbol, { getState }) => {
         const blockchain = selectBlockchainState(getState());
         const backends = [getBackendFromSettings(coin, blockchain[coin].backends)];
@@ -174,7 +174,7 @@ export const setCustomBackendThunk = createThunk(
 );
 
 export const initBlockchainThunk = createThunk(
-    `${actionsPrefix}/initBlockchainThunk`,
+    `${blockchainActionsPrefix}/initBlockchainThunk`,
     async (_, { dispatch, getState }) => {
         await dispatch(preloadFeeInfoThunk());
 
@@ -206,33 +206,8 @@ export const initBlockchainThunk = createThunk(
 // called from WalletMiddleware after ACCOUNT.ADD/UPDATE action
 // or after BLOCKCHAIN.CONNECT event (blockchainActions.onConnect)
 export const subscribeBlockchainThunk = createThunk(
-    `${actionsPrefix}/subscribeBlockchainThunk`,
-    async (
-        { symbol, fiatRates = false }: { symbol: NetworkSymbol; fiatRates?: boolean },
-        { getState },
-    ) => {
-        const network = getNetwork(symbol);
-        // fiat rates should be subscribed only once, after onConnect event
-        if (fiatRates && network?.networkType !== 'cardano' && network?.networkType !== 'solana') {
-            // Note:
-            // Because Blockfrost worker for cardano and Solana worker for solana don't provide fiat rates,
-            // calling blockchainSubscribeFiatRates will return res.success set to false.
-            // That will cause skipping account subscription (because of return statement) which is called few lines below.
-            // That is not expected as the original idea was to catch problem with subscribing and prevent
-            // another call when we already know that something is not working (it used to cause spawning multiple websocket connections).
-
-            // Skipping account subscription has a problem (besides that you actually don't subscribe to all addresses),
-            // due to lack of subscriptions for the network, blockchain-link will close the connection
-            // after 50s thinking it is not needed anymore. https://github.com/trezor/trezor-suite/blob/6253be3f9f657a9a14f21941c76ae1db36e2193c/packages/blockchain-link/src/workers/blockfrost/websocket.ts#L104
-            // However if you do full discovery then everything seems to be normal. It is because
-            // subscribe func will be called, without fiatRates param, every time new account is added (from walletMiddleware), but if you have the device remembered
-            // subscribe function is called only once, after bl connects to a backend, with param fiatRates set to true,
-            // thus it will not subscribe the accounts addresses.
-            const { success } = await TrezorConnect.blockchainSubscribeFiatRates({ coin: symbol });
-            // if first subscription fails, do not run the second one
-            if (!success) return;
-        }
-
+    `${blockchainActionsPrefix}/subscribeBlockchainThunk`,
+    ({ symbol }: { symbol: NetworkSymbol; fiatRates?: boolean }, { getState }) => {
         // do NOT subscribe if there are no accounts
         // it leads to websocket disconnection
         const accountsToSubscribe = findAccountsByNetwork(
@@ -249,7 +224,7 @@ export const subscribeBlockchainThunk = createThunk(
 
 // called from WalletMiddleware after ACCOUNT.REMOVE action
 export const unsubscribeBlockchainThunk = createThunk(
-    `${actionsPrefix}/unsubscribeBlockchainThunk`,
+    `${blockchainActionsPrefix}/unsubscribeBlockchainThunk`,
     (removedAccounts: Account[], { getState }) => {
         // collect unique symbols
         const symbols = removedAccounts.map(({ symbol }) => symbol).filter(arrayDistinct);
@@ -279,7 +254,7 @@ const tryClearTimeout = (timeout?: Timeout) => {
 };
 
 export const syncAccountsWithBlockchainThunk = createThunk(
-    `${actionsPrefix}/syncAccountsThunk`,
+    `${blockchainActionsPrefix}/syncAccountsThunk`,
     async (symbol: NetworkSymbol, { getState, dispatch }) => {
         const accounts = selectAccounts(getState());
         const blockchain = selectBlockchainState(getState());
@@ -305,7 +280,7 @@ export const syncAccountsWithBlockchainThunk = createThunk(
 );
 
 export const onBlockchainConnectThunk = createThunk(
-    `${actionsPrefix}/onBlockchainConnectThunk`,
+    `${blockchainActionsPrefix}/onBlockchainConnectThunk`,
     async (symbol: string, { dispatch, getState }) => {
         const network = getNetwork(symbol.toLowerCase());
         if (!network) return;
@@ -321,7 +296,7 @@ export const onBlockchainConnectThunk = createThunk(
 );
 
 export const onBlockMinedThunk = createThunk(
-    `${actionsPrefix}/onBlockMinedThunk`,
+    `${blockchainActionsPrefix}/onBlockMinedThunk`,
     (block: BlockchainBlock, { dispatch }) => {
         const symbol = block.coin.shortcut.toLowerCase();
         if (isNetworkSymbol(symbol)) {
@@ -331,7 +306,7 @@ export const onBlockMinedThunk = createThunk(
 );
 
 export const onBlockchainNotificationThunk = createThunk(
-    `${actionsPrefix}/onNotificationThunk`,
+    `${blockchainActionsPrefix}/onNotificationThunk`,
     (payload: BlockchainNotification, { dispatch, getState, extra }) => {
         const {
             selectors: { selectBitcoinAmountUnit, selectDevices },
@@ -387,7 +362,7 @@ export const onBlockchainNotificationThunk = createThunk(
 );
 
 export const onBlockchainDisconnectThunk = createThunk(
-    `${actionsPrefix}/onBlockchainDisconnectThunk`,
+    `${blockchainActionsPrefix}/onBlockchainDisconnectThunk`,
     (error: BlockchainError, { dispatch, getState }) => {
         const network = getNetwork(error.coin.shortcut.toLowerCase());
         if (!network) return;

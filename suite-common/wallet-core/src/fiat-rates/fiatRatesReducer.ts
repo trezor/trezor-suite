@@ -1,91 +1,79 @@
-import {
-    CoinFiatRates,
-    CurrentFiatRates,
-    LastWeekRates,
-    TickerId,
-} from '@suite-common/wallet-types';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
+import { Timestamp } from '@suite-common/wallet-types';
+import { getFiatRateKeyFromTicker } from '@suite-common/wallet-utils';
 
-import { fiatRatesActions } from './fiatRatesActions';
-
-export interface FiatRatesState {
-    coins: CoinFiatRates[];
-}
+import { updateFiatRatesThunk } from './fiatRatesThunks';
+import { FiatRatesState } from './fiatRatesTypes';
 
 export const fiatRatesInitialState: FiatRatesState = {
-    coins: [],
-};
-
-export type FiatRatesRootState = {
-    wallet: {
-        fiat: FiatRatesState;
-    };
-};
-
-const remove = (state: CoinFiatRates[], payload: TickerId) => {
-    const index = state.findIndex(
-        f =>
-            f.symbol === payload.symbol &&
-            f.mainNetworkSymbol === payload.mainNetworkSymbol &&
-            f.tokenAddress === payload.tokenAddress,
-    );
-    state.splice(index, 1);
-};
-
-const updateCurrentRates = (
-    state: CoinFiatRates[],
-    ticker: TickerId,
-    payload: CurrentFiatRates,
-) => {
-    const { symbol, mainNetworkSymbol, tokenAddress } = ticker;
-    const affected = state.find(
-        f =>
-            f.symbol === symbol &&
-            f.mainNetworkSymbol === mainNetworkSymbol &&
-            f.tokenAddress === tokenAddress,
-    );
-
-    if (!affected) {
-        state.push({
-            ...ticker,
-            current: payload,
-            lastWeek: undefined,
-        });
-    } else {
-        affected.current = payload;
-    }
-};
-
-const updateLastWeekRates = (state: CoinFiatRates[], payload: LastWeekRates) => {
-    const affected = state.find(f => f.symbol === payload.symbol);
-
-    if (!affected) {
-        state.push({
-            symbol: payload.symbol,
-            current: undefined,
-            lastWeek: payload,
-        });
-    } else {
-        affected.lastWeek = payload;
-    }
+    current: {},
+    lastWeek: {},
 };
 
 export const prepareFiatRatesReducer = createReducerWithExtraDeps(
     fiatRatesInitialState,
-    (builder, extra) => {
+    builder => {
         builder
-            .addCase(fiatRatesActions.removeFiatRate, (state, action) => {
-                remove(state.coins, action.payload);
+            .addCase(updateFiatRatesThunk.pending, (state, action) => {
+                const { ticker, localCurrency, rateType } = action.meta.arg;
+                const fiatRateKey = getFiatRateKeyFromTicker(ticker, localCurrency);
+                let currentRate = state[rateType]?.[fiatRateKey];
+
+                if (currentRate) {
+                    currentRate = {
+                        ...currentRate,
+                        isLoading: true,
+                        error: null,
+                    };
+                } else {
+                    currentRate = {
+                        lastSuccessfulFetchTimestamp: 0 as Timestamp,
+                        isLoading: true,
+                        error: null,
+                        ticker,
+                        locale: localCurrency,
+                    };
+                }
+                state[rateType][fiatRateKey] = currentRate;
             })
-            .addCase(fiatRatesActions.updateFiatRate, (state, action) => {
-                const { ticker, payload } = action.payload;
-                updateCurrentRates(state.coins, ticker, payload);
+            .addCase(updateFiatRatesThunk.fulfilled, (state, action) => {
+                if (!action.payload) return;
+
+                const { ticker, localCurrency, rateType, lastSuccessfulFetchTimestamp } =
+                    action.meta.arg;
+                const fiatRateKey = getFiatRateKeyFromTicker(ticker, localCurrency);
+
+                const currentRate = state[rateType]?.[fiatRateKey];
+
+                // To prevent race condition someone will remove rate from state while fetching for example (during currency change etc.)
+                if (!currentRate) {
+                    return;
+                }
+
+                state[rateType][fiatRateKey] = {
+                    ...currentRate,
+                    rate: action.payload,
+                    lastSuccessfulFetchTimestamp,
+                    isLoading: false,
+                    error: null,
+                };
             })
-            .addCase(fiatRatesActions.updateLastWeekFiatRates, (state, action) => {
-                updateLastWeekRates(state.coins, action.payload);
-            })
-            .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadFiatRates);
+            .addCase(updateFiatRatesThunk.rejected, (state, action) => {
+                const { ticker, localCurrency, rateType } = action.meta.arg;
+                const fiatRateKey = getFiatRateKeyFromTicker(ticker, localCurrency);
+                const currentRate = state[rateType]?.[fiatRateKey];
+
+                // To prevent race condition someone will remove rate from state while fetching for example (during currency change etc.)
+                if (!currentRate) {
+                    return;
+                }
+
+                state[rateType][fiatRateKey] = {
+                    ...currentRate,
+                    isLoading: false,
+                    error: action.error.message || `Failed to update ${ticker.symbol} fiat rate.`,
+                    locale: localCurrency,
+                };
+            });
     },
 );
-
-export const selectCoins = (state: FiatRatesRootState) => state.wallet.fiat.coins;

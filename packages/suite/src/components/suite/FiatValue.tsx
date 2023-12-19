@@ -1,6 +1,6 @@
 import { ReactElement } from 'react';
 import styled from 'styled-components';
-import { selectCoins } from '@suite-common/wallet-core';
+import { selectCoinsLegacy } from '@suite-common/wallet-core';
 import { HiddenPlaceholder } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { Network } from 'src/types/wallet';
@@ -76,13 +76,13 @@ export const FiatValue = ({
 }: FiatValueProps) => {
     const { FiatAmountFormatter } = useFormatters();
     const localCurrency = useSelector(selectLocalCurrency);
-    const coins = useSelector(selectCoins);
+    const coins = useSelector(selectCoinsLegacy);
 
     const targetCurrency = fiatCurrency ?? localCurrency;
-    const currentFiatRates = coins.find(
-        f =>
-            f.symbol.toLowerCase() === symbol.toLowerCase() &&
-            f.tokenAddress?.toLowerCase() === tokenAddress?.toLowerCase(),
+    const currentFiatRates = coins.find(f =>
+        tokenAddress
+            ? f.tokenAddress?.toLowerCase() === tokenAddress?.toLowerCase()
+            : f.symbol.toLowerCase() === symbol.toLowerCase(),
     )?.current;
 
     const ratesSource = useCustomSource ? source : currentFiatRates?.rates;

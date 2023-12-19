@@ -8,13 +8,7 @@ import type { MetadataState } from 'src/types/suite/metadata';
 import type { Trade } from 'src/types/wallet/coinmarketCommonTypes';
 import type { MessageState } from '@suite-common/message-system';
 import type { MessageSystem } from '@suite-common/suite-types';
-import type {
-    Account,
-    Discovery,
-    Network,
-    CoinFiatRates,
-    WalletAccountTransaction,
-} from 'src/types/wallet';
+import type { Account, Discovery, Network, WalletAccountTransaction } from 'src/types/wallet';
 import type { CoinjoinAccount, CoinjoinDebugSettings } from 'src/types/wallet/coinjoin';
 
 import type { BackendSettings, WalletSettings } from '@suite-common/wallet-types';
@@ -80,10 +74,6 @@ export interface SuiteDBSchema extends DBSchema {
     discovery: {
         key: string;
         value: Discovery;
-    };
-    fiatRates: {
-        key: string;
-        value: CoinFiatRates;
     };
     analytics: {
         key: string;
