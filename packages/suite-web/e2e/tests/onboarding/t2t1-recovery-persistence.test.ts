@@ -66,6 +66,12 @@ describe('Onboarding - T2T1 in recovery mode', () => {
         cy.getTestElement('@onboarding/recovery/start-button').click();
         cy.getTestElement('@onboarding/confirm-on-device');
         cy.task('pressYes');
+        cy.wait(1000);
+        cy.task('pressYes');
+        cy.wait(1000);
+        cy.task('selectNumOfWordsEmu', 20);
+        cy.wait(1000);
+        cy.task('pressYes');
         cy.wait(501); // wait for device release
 
         // disconnect device, reload application
