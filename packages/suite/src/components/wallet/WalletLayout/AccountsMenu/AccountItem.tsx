@@ -142,9 +142,9 @@ export const AccountItem = forwardRef(
             dispatch(goto('wallet-index', { params: accountRouteParams }));
         };
 
-        // Tokens tab is available for ethereum and cardano accounts only, not yet implemented for XRP
+        // Tokens tab is available for ethereum, cardano and solana accounts only, not yet implemented for XRP
         const isTokensCountShown =
-            ['cardano', 'ethereum'].includes(networkType) && !!tokens?.length;
+            ['cardano', 'ethereum', 'solana'].includes(networkType) && !!tokens?.length;
 
         // Show skeleton instead of zero balance during coinjoin initial discovery
         const isBalanceShown = account.backendType !== 'coinjoin' || account.status !== 'initial';
