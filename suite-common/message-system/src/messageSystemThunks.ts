@@ -1,6 +1,6 @@
 import { decode, verify } from 'jws';
 
-import { isCodesignBuild } from '@trezor/env-utils';
+import { isCodesignBuild, getEnvironment } from '@trezor/env-utils';
 import { scheduleAction } from '@trezor/utils';
 import { createThunk } from '@suite-common/redux-utils';
 import { MessageSystem } from '@suite-common/suite-types';
@@ -9,15 +9,19 @@ import {
     VERSION,
     JWS_SIGN_ALGORITHM,
     CONFIG_URL_REMOTE,
-    FETCH_CHECK_INTERVAL,
-    FETCH_INTERVAL,
-    FETCH_TIMEOUT,
+    FETCH_INTERVAL_IN_MS,
+    FETCH_INTERVAL_IN_MS_MOBILE,
+    FETCH_TIMEOUT_IN_MS,
+    FETCH_CHECK_INTERVAL_IN_MS,
+    FETCH_CHECK_INTERVAL_IN_MS_MOBILE,
 } from './messageSystemConstants';
 import { ACTION_PREFIX, messageSystemActions } from './messageSystemActions';
 import {
     selectMessageSystemTimestamp,
     selectMessageSystemCurrentSequence,
 } from './messageSystemSelectors';
+
+const isMobile = () => getEnvironment() === 'mobile';
 
 const getConfigJws = async () => {
     const remoteConfigUrl = isCodesignBuild()
@@ -26,7 +30,7 @@ const getConfigJws = async () => {
 
     try {
         const response = await scheduleAction(signal => fetch(remoteConfigUrl, { signal }), {
-            timeout: FETCH_TIMEOUT,
+            timeout: FETCH_TIMEOUT_IN_MS,
         });
 
         if (!response.ok) {
@@ -57,7 +61,10 @@ export const fetchConfigThunk = createThunk(
         const timestamp = selectMessageSystemTimestamp(getState());
         const currentSequence = selectMessageSystemCurrentSequence(getState());
 
-        if (Date.now() >= timestamp + FETCH_INTERVAL) {
+        if (
+            Date.now() >=
+            timestamp + (isMobile() ? FETCH_INTERVAL_IN_MS_MOBILE : FETCH_INTERVAL_IN_MS)
+        ) {
             try {
                 const { configJws, isRemote } = await getConfigJws();
 
@@ -118,9 +125,12 @@ export const initMessageSystemThunk = createThunk(
         const checkConfig = async () => {
             await dispatch(fetchConfigThunk(jwsPublicKey));
 
-            setTimeout(() => {
-                checkConfig();
-            }, FETCH_CHECK_INTERVAL);
+            setTimeout(
+                () => {
+                    checkConfig();
+                },
+                isMobile() ? FETCH_CHECK_INTERVAL_IN_MS_MOBILE : FETCH_CHECK_INTERVAL_IN_MS,
+            );
         };
 
         await checkConfig();
