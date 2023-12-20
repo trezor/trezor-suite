@@ -1,5 +1,5 @@
 import { Image, Pressable } from 'react-native';
-import Animated, { FadeIn } from 'react-native-reanimated';
+import Animated, { SlideOutDown, SlideInDown } from 'react-native-reanimated';
 import React, { useMemo, useState } from 'react';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -29,9 +29,11 @@ export const ConfirmOnTrezorImage = () => {
 
     return (
         <>
-            {/* TODO: images will be revisited in issue:
-            https://github.com/trezor/trezor-suite/issues/9777 */}
-            <Animated.View entering={FadeIn} style={applyStyle(imageContainerStyle)}>
+            <Animated.View
+                entering={SlideInDown}
+                exiting={SlideOutDown}
+                style={applyStyle(imageContainerStyle)}
+            >
                 <Pressable onPress={handleImagePress}>
                     <Image source={imageSource} />
                 </Pressable>

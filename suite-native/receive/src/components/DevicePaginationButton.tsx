@@ -11,7 +11,7 @@ import { DEVICE_SCREEN_BACKGROUND_COLOR, DEVICE_TEXT_COLOR } from '../constants'
 type DeviceScreenPaginationProps = {
     activePage: DevicePaginationActivePage;
     deviceModel: PaginationCompatibleDeviceModel;
-    isAddressRevealed: boolean;
+    isVisible: boolean;
     onPress: () => void;
 };
 
@@ -23,7 +23,7 @@ const ICON_COLOR: CSSColor = DEVICE_TEXT_COLOR;
 
 type DeviceButtonStyleProps = {
     deviceModel: PaginationCompatibleDeviceModel;
-    isAddressRevealed: boolean;
+    isVisible: boolean;
 };
 
 const modelToStyles = {
@@ -40,7 +40,7 @@ const modelToStyles = {
 } as const satisfies Record<PaginationCompatibleDeviceModel, Readonly<NativeStyle>>;
 
 const deviceButtonStyle = prepareNativeStyle<DeviceButtonStyleProps>(
-    (_, { deviceModel, isAddressRevealed }) => ({
+    (_, { deviceModel, isVisible }) => ({
         height: BUTTON_HEIGHT,
         width: BUTTON_WIDTH,
         justifyContent: 'center',
@@ -53,7 +53,7 @@ const deviceButtonStyle = prepareNativeStyle<DeviceButtonStyleProps>(
         extend: [
             // IF is the address not yet revealed, The button should be hidden,
             // but should still take the same proportion of the device screen.
-            { condition: !isAddressRevealed, style: { opacity: 0 } },
+            { condition: !isVisible, style: { opacity: 0 } },
         ],
     }),
 );
@@ -61,16 +61,17 @@ const deviceButtonStyle = prepareNativeStyle<DeviceButtonStyleProps>(
 export const DevicePaginationButton = ({
     activePage,
     deviceModel,
-    isAddressRevealed,
+    isVisible,
     onPress,
 }: DeviceScreenPaginationProps) => {
     const { applyStyle } = useNativeStyles();
     const chevronIcon: Extract<IconName, 'chevronDown' | 'chevronUp'> =
         activePage === 1 ? 'chevronDown' : 'chevronUp';
+
     return (
         <Pressable
             onPress={onPress}
-            style={applyStyle(deviceButtonStyle, { deviceModel, isAddressRevealed })}
+            style={applyStyle(deviceButtonStyle, { deviceModel, isVisible })}
         >
             <Icon name={chevronIcon} color={ICON_COLOR} />
         </Pressable>
