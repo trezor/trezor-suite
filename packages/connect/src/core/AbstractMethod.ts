@@ -255,7 +255,9 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
             return;
         }
         const { device } = this;
-        if (!device.features) return;
+
+        // do not do fw range check for devices in BL mode as fw version of T1B1 in BL mode is not defined
+        if (!device.features || device.isBootloader()) return;
         const range = this.firmwareRange[device.features.internal_model];
 
         if (device.firmwareStatus === 'none') {
