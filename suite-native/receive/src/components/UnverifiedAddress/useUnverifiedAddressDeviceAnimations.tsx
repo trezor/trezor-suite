@@ -28,7 +28,6 @@ export const useUnverifiedAddressDeviceAnimations = ({
     const { utils } = useNativeStyles();
     const frameBorderColorProgress = useSharedValue(0);
     const deviceHeightDifference = useSharedValue(0);
-    const buttonsOpacity = useSharedValue(0);
     const [isHintVisible, setIsHintVisible] = useState(false);
 
     const deviceModel = useSelector(selectDeviceModel);
@@ -71,12 +70,6 @@ export const useUnverifiedAddressDeviceAnimations = ({
         }),
         [utils],
     );
-    const buttonsStyle = useAnimatedStyle(
-        () => ({
-            opacity: buttonsOpacity.value,
-        }),
-        [],
-    );
 
     useEffect(() => {
         frameBorderColorProgress.value = withTiming(
@@ -94,10 +87,8 @@ export const useUnverifiedAddressDeviceAnimations = ({
 
         if (isRevealedAddress) {
             if (isReceiveApproved) {
-                buttonsOpacity.value = 0;
                 setIsHintVisible(false);
             } else {
-                buttonsOpacity.value = 1;
                 setIsHintVisible(true);
             }
         }
@@ -108,7 +99,6 @@ export const useUnverifiedAddressDeviceAnimations = ({
     return {
         deviceScreenStyle,
         deviceFrameStyle,
-        buttonsStyle,
         isHintVisible,
         frameBorderColorProgress,
         deviceHeightDifference,
