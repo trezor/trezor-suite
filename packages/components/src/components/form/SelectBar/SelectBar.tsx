@@ -4,10 +4,11 @@ import { breakpointMediaQueries } from '@trezor/styles';
 import { borders, spacings, spacingsPx, typography } from '@trezor/theme';
 import { focusStyleTransition, getFocusShadowStyle } from '../../../utils/utils';
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ isFullWidth?: boolean }>`
     display: flex;
     align-items: center;
     gap: ${spacingsPx.sm};
+    width: ${({ isFullWidth }) => (isFullWidth ? '100%' : 'auto')};
 
     ${breakpointMediaQueries.below_sm} {
         flex-direction: column;
@@ -34,7 +35,7 @@ const getTranslateValue = (index: number) => {
 const getPuckWidth = (optionsCount: number) =>
     `calc((100% - 8px - ${(optionsCount - 1) * spacings.xxs}px) / ${optionsCount})`;
 
-const Options = styled.div<{ optionsCount: number }>`
+const Options = styled.div<{ optionsCount: number; isFullWidth?: boolean }>`
     position: relative;
     display: grid;
     grid-auto-columns: ${({ optionsCount }) => `minmax(${getPuckWidth(optionsCount)}, 1fr)`};
@@ -43,6 +44,7 @@ const Options = styled.div<{ optionsCount: number }>`
     padding: ${spacingsPx.xxs};
     background: ${({ theme }) => theme.backgroundSurfaceElevation0};
     border-radius: ${borders.radii.full};
+    width: ${({ isFullWidth }) => (isFullWidth ? '100%' : 'auto')};
 
     ${breakpointMediaQueries.below_sm} {
         grid-auto-flow: row;
@@ -132,6 +134,7 @@ export interface SelectBarProps<V extends ValueTypes> {
     selectedOption?: V;
     onChange?: (value: V) => void;
     isDisabled?: boolean;
+    isFullWidth?: boolean;
     className?: string;
 }
 
@@ -142,6 +145,7 @@ export const SelectBar: <V extends ValueTypes>(props: SelectBarProps<V>) => JSX.
     selectedOption,
     onChange,
     isDisabled,
+    isFullWidth,
     className,
     ...rest
 }) => {
@@ -197,10 +201,10 @@ export const SelectBar: <V extends ValueTypes>(props: SelectBarProps<V>) => JSX.
     const selectedIndex = options.findIndex(option => option.value === selectedOptionIn);
 
     return (
-        <Wrapper className={className} {...rest}>
+        <Wrapper className={className} isFullWidth={isFullWidth} {...rest}>
             {label && <Label>{label}</Label>}
 
-            <Options optionsCount={options.length}>
+            <Options optionsCount={options.length} isFullWidth={isFullWidth}>
                 <Puck
                     optionsCount={options.length}
                     selectedIndex={selectedIndex}
