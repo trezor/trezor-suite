@@ -532,6 +532,10 @@ export default [
                 url: '/method/changePin',
             },
             {
+                name: 'Change wipe code',
+                url: '/method/changeWipeCode',
+            },
+            {
                 name: 'Reboot to bootloader',
                 url: '/method/rebootToBootloader',
             },

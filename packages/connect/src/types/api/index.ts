@@ -24,6 +24,7 @@ import { cardanoGetPublicKey } from './cardanoGetPublicKey';
 import { cardanoSignTransaction } from './cardanoSignTransaction';
 import { cardanoComposeTransaction } from './cardanoComposeTransaction';
 import { changePin } from './changePin';
+import { changeWipeCode } from './changeWipeCode';
 import { cipherKeyValue } from './cipherKeyValue';
 import { composeTransaction } from './composeTransaction';
 import { disableWebUSB } from './disableWebUSB';
@@ -167,6 +168,9 @@ export interface TrezorConnect {
 
     // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/changePin.md
     changePin: typeof changePin;
+
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/changeWipeCode.md
+    changeWipeCode: typeof changeWipeCode;
 
     // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/cipherKeyValue.md
     cipherKeyValue: typeof cipherKeyValue;
