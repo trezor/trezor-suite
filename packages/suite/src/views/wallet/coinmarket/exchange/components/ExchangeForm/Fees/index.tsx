@@ -35,7 +35,6 @@ const ExchangeFees = () => {
                 account={account}
                 composedLevels={composedLevels}
                 changeFeeLevel={changeFeeLevel}
-                showLabel
             />
         </StyledCard>
     );

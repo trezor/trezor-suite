@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { spacingsPx, typography } from '@trezor/theme';
 import { FeeLevel } from '@trezor/connect';
-import { variables } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { getFeeUnits } from '@suite-common/wallet-utils';
 import { formatDuration } from '@suite-common/suite-utils';
@@ -15,24 +15,13 @@ import {
 const Wrapper = styled.div`
     display: flex;
     align-items: baseline;
-    flex-wrap: wrap;
-    min-width: 150px;
-
-    > * {
-        padding-right: 8px;
-    }
-`;
-
-const Item = styled.span`
-    font-size: ${variables.FONT_SIZE.TINY};
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    gap: ${spacingsPx.sm};
+    ${typography.hint}
 `;
 
 const Label = styled.span`
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    padding-right: 8px;
+    color: ${({ theme }) => theme.textSubdued};
+    padding-right: ${spacingsPx.xxs};
 `;
 
 // set min-width to prevent jumping when changing amount, width to fit 6 digits
@@ -41,7 +30,7 @@ const FeeItem = styled.span`
     display: inline-block;
 `;
 
-interface Props {
+interface DetailsProps {
     networkType: Network['networkType'];
     selectedLevel: FeeLevel;
     // fields below are validated as false-positives, eslint claims that they are not used...
@@ -51,31 +40,33 @@ interface Props {
     transactionInfo?: PrecomposedTransaction | PrecomposedTransactionCardano;
 }
 
-const BitcoinDetails = ({ networkType, feeInfo, selectedLevel, transactionInfo }: Props) => (
+const BitcoinDetails = ({ networkType, feeInfo, selectedLevel, transactionInfo }: DetailsProps) => (
     <Wrapper>
-        <Item>
+        <span>
             <Label>
-                <Translation id="ESTIMATED_TIME" />
+                <Translation id="ESTIMATED_TIME" />:
             </Label>
             {formatDuration(feeInfo.blockTime * selectedLevel.blocks * 60)}
-        </Item>
-        <Item>
+        </span>
+
+        <span>
             <Label>
-                <Translation id="TR_FEE_RATE" />
+                <Translation id="TR_FEE_RATE" />:
             </Label>
             {`${
                 transactionInfo && transactionInfo.type !== 'error'
                     ? transactionInfo.feePerByte
                     : selectedLevel.feePerUnit
             } ${getFeeUnits(networkType)}`}
-        </Item>
+        </span>
+
         {transactionInfo && transactionInfo.type !== 'error' && (
-            <Item>({transactionInfo.bytes} B)</Item>
+            <span>({transactionInfo.bytes} B)</span>
         )}
     </Wrapper>
 );
 
-const EthereumDetails = ({ networkType, selectedLevel, transactionInfo }: Props) => {
+const EthereumDetails = ({ networkType, selectedLevel, transactionInfo }: DetailsProps) => {
     const [fee, setFee] = useState<string | undefined>(selectedLevel.feeLimit);
 
     const isComposedTx = transactionInfo && transactionInfo.type !== 'error';
@@ -88,29 +79,30 @@ const EthereumDetails = ({ networkType, selectedLevel, transactionInfo }: Props)
 
     return (
         <Wrapper>
-            <Item>
+            <span>
                 <Label>
-                    <Translation id="TR_GAS_LIMIT" />
+                    <Translation id="TR_GAS_LIMIT" />:
                 </Label>
                 <FeeItem>{isComposedTx ? transactionInfo.feeLimit : fee}</FeeItem>
-            </Item>
-            <Item>
+            </span>
+
+            <span>
                 <Label>
-                    <Translation id="TR_GAS_PRICE" />
+                    <Translation id="TR_GAS_PRICE" />:
                 </Label>
                 <FeeItem>{`${selectedLevel.feePerUnit} ${getFeeUnits(networkType)}`}</FeeItem>
-            </Item>
+            </span>
         </Wrapper>
     );
 };
 
-const RippleDetails = ({ networkType, selectedLevel }: Props) => (
+const RippleDetails = ({ networkType, selectedLevel }: DetailsProps) => (
     <Wrapper>
-        <Item>{`${selectedLevel.feePerUnit} ${getFeeUnits(networkType)}`}</Item>
+        <span>{`${selectedLevel.feePerUnit}: ${getFeeUnits(networkType)}`}</span>
     </Wrapper>
 );
 
-export const FeeDetails = (props: Props) => {
+export const FeeDetails = (props: DetailsProps) => {
     const { networkType } = props;
     if (networkType === 'bitcoin') return <BitcoinDetails {...props} />;
     if (networkType === 'ethereum') return <EthereumDetails {...props} />;
