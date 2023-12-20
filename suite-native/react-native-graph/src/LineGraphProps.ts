@@ -157,6 +157,22 @@ export type AnimatedLineGraphProps<TEventPayload extends object> = BaseLineGraph
      * Called once the user hover on EventComponent element.
      */
     onEventHover?: () => void;
+
+    /**
+     * Show loading line growing from left to right
+     */
+    loading?: boolean;
+    loadingLineColor?: string;
+
+    /**
+     * Blur whole graph, for example in case of error or privacy mode
+     */
+    blurOverlay?: boolean;
+
+    /**
+     * Show placeholder line
+     */
+    showPlaceholder?: boolean;
 };
 
 export type LineGraphProps<TEventPayload extends object> =

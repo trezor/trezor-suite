@@ -52,7 +52,9 @@ export const PortfolioContent = forwardRef<PortfolioContentRef>((_props, ref) =>
     return (
         <VStack spacing="large" marginTop="small">
             <PortfolioGraph ref={graphRef} />
-            <Assets />
+            <Box marginHorizontal="medium">
+                <Assets />
+            </Box>
             {isDeviceImported && (
                 <Box marginHorizontal="medium">
                     <Button

@@ -2,14 +2,9 @@ import { useSelector } from 'react-redux';
 
 import { atom, useAtomValue } from 'jotai';
 
-import { HStack, VStack } from '@suite-native/atoms';
+import { HStack, Text, VStack } from '@suite-native/atoms';
 import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import {
-    emptyGraphPoint,
-    GraphDateFormatter,
-    percentageDiff,
-    PriceChangeIndicator,
-} from '@suite-native/graph';
+import { GraphDateFormatter, percentageDiff, PriceChangeIndicator } from '@suite-native/graph';
 import { FiatBalanceFormatter } from '@suite-native/formatters';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { FiatGraphPointWithCryptoBalance } from '@suite-common/graph';
@@ -20,14 +15,21 @@ type AccountBalanceProps = {
     accountKey: string;
 };
 
+const emptyGraphPoint: FiatGraphPointWithCryptoBalance = {
+    value: 0,
+    date: new Date(0),
+    cryptoBalance: '0',
+};
+
 export const selectedPointAtom = atom<FiatGraphPointWithCryptoBalance>(emptyGraphPoint);
 
 // reference is usually first point, same as Revolut does in their app
-export const referencePointAtom = atom<FiatGraphPointWithCryptoBalance>(emptyGraphPoint);
+export const referencePointAtom = atom<FiatGraphPointWithCryptoBalance | null>(null);
 
 const percentageChangeAtom = atom(get => {
     const selectedPoint = get(selectedPointAtom);
     const referencePoint = get(referencePointAtom);
+    if (!referencePoint) return 0;
     return percentageDiff(referencePoint.value, selectedPoint.value);
 });
 
@@ -57,7 +59,7 @@ export const AccountDetailGraphHeader = ({ accountKey }: AccountBalanceProps) =>
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-    const { date: firstPointDate } = useAtomValue(referencePointAtom);
+    const firstGraphPoint = useAtomValue(referencePointAtom);
 
     if (!account) return null;
 
@@ -66,14 +68,20 @@ export const AccountDetailGraphHeader = ({ accountKey }: AccountBalanceProps) =>
             <CryptoBalance accountSymbol={account.symbol} />
             <FiatBalance />
             <HStack alignItems="center">
-                <GraphDateFormatter
-                    firstPointDate={firstPointDate}
-                    selectedPointAtom={selectedPointAtom}
-                />
-                <PriceChangeIndicator
-                    hasPriceIncreasedAtom={hasPriceIncreasedAtom}
-                    percentageChangeAtom={percentageChangeAtom}
-                />
+                {firstGraphPoint ? (
+                    <>
+                        <GraphDateFormatter
+                            firstPointDate={firstGraphPoint.date}
+                            selectedPointAtom={selectedPointAtom}
+                        />
+                        <PriceChangeIndicator
+                            hasPriceIncreasedAtom={hasPriceIncreasedAtom}
+                            percentageChangeAtom={percentageChangeAtom}
+                        />
+                    </>
+                ) : (
+                    <Text>{' ' /* just placeholder to avoid layout shift */}</Text>
+                )}
             </HStack>
         </VStack>
     );
