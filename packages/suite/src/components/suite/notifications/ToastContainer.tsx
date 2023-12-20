@@ -35,7 +35,7 @@ const StyledContainer = styled(BaseToastContainer)`
         background: ${({ theme }) => theme.BG_WHITE};
         padding: 0;
         font-family:
-            'TT Hoves',
+            'TT Satoshi',
             -apple-system,
             BlinkMacSystemFont,
             'Segoe UI',
