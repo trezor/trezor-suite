@@ -1,6 +1,7 @@
+import { typography } from '@trezor/theme';
 import animations from './animations';
 import tooltips from './tooltips';
-import { variables, SuiteThemeColors } from '@trezor/components';
+import { SuiteThemeColors } from '@trezor/components';
 import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyle = createGlobalStyle<{ theme: SuiteThemeColors }>`
@@ -16,16 +17,16 @@ const GlobalStyle = createGlobalStyle<{ theme: SuiteThemeColors }>`
     }
 
     body, html {
-        background: ${({ theme }) => theme.BG_GREY};
-        font-size: ${variables.FONT_SIZE.NORMAL};
+        background: ${({ theme }) => theme.backgroundSurfaceElevation0};
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
-        color: ${({ theme }) => theme.TYPE_DARK_GREY};
+        ${typography.body}
+        color: ${({ theme }) => theme.textDefault};
         height: 100%;
         overflow-y: hidden;
 
         /* BlinkMacSystemFont, which is macOS Chrome/Electron suggested fallback font, breaks emojis (e.g. in Guide) so we omit it */
-        font-family: "TT Hoves", -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+        font-family: "TT Satoshi", -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
     }
 
     a {
@@ -37,7 +38,7 @@ const GlobalStyle = createGlobalStyle<{ theme: SuiteThemeColors }>`
         margin: 0;
         padding: 0;
         outline: none;
-        font-family: "TT Hoves", -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+        font-family: "TT Satoshi", -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
     }
 
     *,
