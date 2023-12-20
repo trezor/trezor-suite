@@ -1,48 +1,13 @@
 @font-face {
-    font-family: 'TT Hoves';
-    src: url('./TTHoves/TTHoves-Bold.woff2') format('woff2');
-    font-weight: bold;
+    font-family: 'TT Satoshi';
+    src: url('./TTSatoshi/TTSatoshi-Medium.otf') format('opentype');
+    font-weight: 500;
     font-style: normal;
 }
 
 @font-face {
-    font-family: 'TT Hoves';
-    src: url('./TTHoves/TTHoves-Regular.woff2') format('woff2');
-    font-weight: normal;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'TT Hoves';
-    src: url('./TTHoves/TTHoves-Light.woff2') format('woff2');
-    font-weight: 300;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'TT Hoves';
-    src: url('./TTHoves/TTHoves-DemiBold.woff2') format('woff2');
+    font-family: 'TT Satoshi';
+    src: url('./TTSatoshi/TTSatoshi-DemiBold.otf') format('opentype');
     font-weight: 600;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'TT Hoves';
-    src: url('./TTHoves/TTHoves-Medium.woff2') format('woff2');
-    font-weight: 500;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'PixelOperatorMono8';
-    src: url('./PixelOperatorMono8.woff2') format('woff2');
-    font-weight: 500;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'RobotoMono';
-    src: url('./RobotoMono-Medium.woff2') format('woff2');
-    font-weight: 500;
     font-style: normal;
 }
