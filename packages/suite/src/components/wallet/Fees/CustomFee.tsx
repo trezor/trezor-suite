@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import {
     Control,
     FieldErrors,
@@ -9,7 +9,7 @@ import {
     UseFormReturn,
     UseFormSetValue,
 } from 'react-hook-form';
-import { Note, variables } from '@trezor/components';
+import { Note, motionEasing, variables } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { NumberInput } from 'src/components/suite/NumberInput';
 import { getInputState, getFeeUnits, isInteger } from '@suite-common/wallet-utils';
@@ -20,6 +20,7 @@ import { NetworkType } from '@suite-common/wallet-config';
 import { useTranslation } from 'src/hooks/suite';
 import { InputError } from '../InputError';
 import { validateDecimals } from 'src/utils/suite/validation';
+import { motion } from 'framer-motion';
 
 const Wrapper = styled.div`
     display: flex;
@@ -31,25 +32,11 @@ const Wrapper = styled.div`
     }
 `;
 
-const Col = styled.div<{ singleCol?: boolean }>`
-    display: flex;
-    flex: 1;
-
-    ${({ singleCol }) =>
-        singleCol &&
-        css`
-            max-width: 300px;
-
-            ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
-                max-width: 100%;
-            }
-        `}
-`;
-
-const StyledNumberInput = styled(NumberInput)`
-    display: flex;
-    flex: 1;
-    width: 100%;
+const FeeInput = styled(NumberInput)`
+    input {
+        /* until the elevation context is implemented */
+        background: ${({ theme }) => theme.backgroundNeutralSubtleOnElevation1};
+    }
 `;
 
 const Units = styled.div`
@@ -175,46 +162,51 @@ export const CustomFee = <TFieldValues extends FormState>({
         feeLimitError?.type === 'feeLimit' ? feeLimitValidationProps : undefined;
 
     return (
-        <>
+        <motion.div
+            initial={{ opacity: 0, height: 0, marginTop: 0 }}
+            animate={{ opacity: 1, height: 'auto', marginTop: 20 }}
+            exit={{ opacity: 0, height: 0, marginTop: 0 }}
+            transition={{
+                opacity: { duration: 0.15, ease: motionEasing.transition },
+                height: { duration: 0.2, ease: motionEasing.transition },
+                marginTop: { duration: 0.25, ease: motionEasing.transition },
+            }}
+        >
             <Wrapper>
                 {useFeeLimit ? (
-                    <Col>
-                        <StyledNumberInput
-                            control={control}
-                            label={<Translation id="TR_GAS_LIMIT" />}
-                            size="small"
-                            inputState={getInputState(feeLimitError, feeLimitValue)}
-                            name={FEE_LIMIT}
-                            data-test={FEE_LIMIT}
-                            onChange={changeFeeLimit}
-                            rules={feeLimitRules}
-                            bottomText={
+                    <FeeInput
+                        control={control}
+                        label={<Translation id="TR_GAS_LIMIT" />}
+                        inputState={getInputState(feeLimitError, feeLimitValue)}
+                        name={FEE_LIMIT}
+                        data-test={FEE_LIMIT}
+                        onChange={changeFeeLimit}
+                        rules={feeLimitRules}
+                        bottomText={
+                            feeLimitError?.message ? (
                                 <InputError
                                     message={feeLimitError?.message}
                                     button={validationButtonProps}
                                 />
-                            }
-                        />
-                    </Col>
+                            ) : null
+                        }
+                    />
                 ) : (
                     <input type="hidden" {...register(FEE_LIMIT as FieldPath<TFieldValues>)} />
                 )}
-                <Col singleCol={!useFeeLimit}>
-                    <StyledNumberInput
-                        control={control}
-                        label={useFeeLimit ? <Translation id="TR_GAS_PRICE" /> : undefined}
-                        size="small"
-                        inputState={getInputState(feePerUnitError, feePerUnitValue)}
-                        innerAddon={<Units>{feeUnits}</Units>}
-                        name={FEE_PER_UNIT}
-                        data-test={FEE_PER_UNIT}
-                        rules={feeRules}
-                        bottomText={feePerUnitError?.message || null}
-                    />
-                </Col>
+                <FeeInput
+                    control={control}
+                    label={useFeeLimit ? <Translation id="TR_GAS_PRICE" /> : undefined}
+                    inputState={getInputState(feePerUnitError, feePerUnitValue)}
+                    innerAddon={<Units>{feeUnits}</Units>}
+                    name={FEE_PER_UNIT}
+                    data-test={FEE_PER_UNIT}
+                    rules={feeRules}
+                    bottomText={feePerUnitError?.message || null}
+                />
             </Wrapper>
 
             {feeDifferenceWarning && <StyledNote>{feeDifferenceWarning}</StyledNote>}
-        </>
+        </motion.div>
     );
 };

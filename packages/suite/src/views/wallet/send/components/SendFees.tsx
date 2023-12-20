@@ -28,7 +28,6 @@ export const SendFees = () => {
                 account={account}
                 composedLevels={composedLevels}
                 changeFeeLevel={changeFeeLevel}
-                showLabel
             />
         </Card>
     );
