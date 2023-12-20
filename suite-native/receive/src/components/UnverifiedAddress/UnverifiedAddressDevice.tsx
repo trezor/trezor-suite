@@ -4,7 +4,7 @@ import {
     PanGestureHandler,
     PanGestureHandlerEventPayload,
 } from 'react-native-gesture-handler';
-import Animated, { FadeOut } from 'react-native-reanimated';
+import Animated, { FadeOutUp } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import { VStack } from '@suite-native/atoms';
@@ -91,7 +91,7 @@ export const UnverifiedAddressDevice = ({
                 </PanGestureHandler>
             </Animated.View>
             {isHintVisible && (
-                <Animated.View style={buttonsStyle} exiting={FadeOut}>
+                <Animated.View style={buttonsStyle} exiting={FadeOutUp}>
                     <UnverifiedAddressDeviceHint />
                 </Animated.View>
             )}
