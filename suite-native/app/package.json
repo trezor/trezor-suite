@@ -1,7 +1,7 @@
 {
     "name": "@trezor/suite-native",
     "version": "1.0.0",
-    "suiteNativeVersion": "23.12.1",
+    "suiteNativeVersion": "23.12.2",
     "private": true,
     "scripts": {
         "android": "react-native run-android --no-packager --mode=devDebug --appIdSuffix=debug --active-arch-only",
