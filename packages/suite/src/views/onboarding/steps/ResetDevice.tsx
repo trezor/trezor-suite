@@ -11,13 +11,13 @@ import {
     OnboardingStepBox,
 } from 'src/components/onboarding';
 import { Translation } from 'src/components/suite';
-import { useDispatch, useSelector, useOnboarding } from 'src/hooks/suite';
+import { useDispatch, useSelector, useOnboarding, useDevice } from 'src/hooks/suite';
 import { resetDevice } from 'src/actions/settings/deviceSettingsActions';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 
 export const ResetDeviceStep = () => {
+    const { isLocked } = useDevice();
     const [submitted, setSubmitted] = useState(false);
-
     const { goToPreviousStep, goToNextStep, updateAnalytics } = useOnboarding();
 
     const device = useSelector(selectDevice);
@@ -35,6 +35,8 @@ export const ResetDeviceStep = () => {
             r => r.code === 'ButtonRequest_ResetDevice' || r.code === 'ButtonRequest_ProtectCall',
         ) && !submitted; // ButtonRequest_ResetDevice is for T2T1, ButtonRequest_ProtectCall for T1B1
 
+    const isDisabled = isLocked();
+
     const onResetDevice = async (params?: { backup_type?: 0 | 1 | undefined }) => {
         setSubmitted(false);
 
@@ -47,7 +49,7 @@ export const ResetDeviceStep = () => {
         }
     };
 
-    const handleSingleseedReset = async () => {
+    const handleSingleSeedReset = async () => {
         if (isShamirBackupAvailable) {
             await onResetDevice({ backup_type: 0 });
         } else {
@@ -60,10 +62,7 @@ export const ResetDeviceStep = () => {
     const handleShamirReset = async () => {
         await onResetDevice({ backup_type: 1 });
 
-        updateAnalytics({
-            recoveryType: undefined,
-            seedType: 'shamir',
-        });
+        updateAnalytics({ recoveryType: undefined, seedType: 'shamir' });
     };
 
     return (
@@ -90,7 +89,7 @@ export const ResetDeviceStep = () => {
                                 ? '@onboarding/button-standard-backup'
                                 : '@onboarding/only-backup-option-button'
                         }
-                        onClick={handleSingleseedReset}
+                        onClick={isDisabled ? undefined : handleSingleSeedReset}
                         heading={<Translation id="SINGLE_SEED" />}
                         description={<Translation id="SINGLE_SEED_DESCRIPTION" />}
                     />
@@ -101,7 +100,7 @@ export const ResetDeviceStep = () => {
                             <OnboardingOption
                                 icon="SEED_SHAMIR"
                                 data-test="@onboarding/shamir-backup-option-button"
-                                onClick={handleShamirReset}
+                                onClick={isDisabled ? undefined : handleShamirReset}
                                 heading={<Translation id="SHAMIR_SEED" />}
                                 description={<Translation id="SHAMIR_SEED_DESCRIPTION" />}
                             />
