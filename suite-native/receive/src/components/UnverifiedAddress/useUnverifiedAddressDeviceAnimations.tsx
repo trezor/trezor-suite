@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import {
     interpolateColor,
-    runOnJS,
     useAnimatedStyle,
     useSharedValue,
     withDelay,
