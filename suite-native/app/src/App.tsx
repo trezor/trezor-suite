@@ -20,6 +20,7 @@ import { useTransactionCache } from '@suite-native/accounts';
 
 import { RootStackNavigator } from './navigation/RootStackNavigator';
 import { StylesProvider } from './StylesProvider';
+import { Snow } from './snow/Snow';
 import { useFormattersConfig } from './hooks/useFormattersConfig';
 import { applicationInit } from './initActions';
 import { useReportAppInitToAnalytics } from './hooks/useReportAppInitToAnalytics';
@@ -99,6 +100,7 @@ const AppComponent = () => {
                         </ToastRenderer>
                         {/* </NotificationRenderer> */}
                     </AlertRenderer>
+                    <Snow />
                 </AuthenticatorProvider>
             </FormatterProvider>
             {/* NOTE: Rendered as last item so that it covers the whole app screen */}
