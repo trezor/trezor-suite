@@ -70,7 +70,7 @@ export const useUnverifiedAddressDeviceAnimations = ({
                 [utils.colors.borderOnElevation1, utils.colors.textSecondaryHighlight],
             ),
         }),
-        [utils, isReceiveApproved],
+        [utils],
     );
     const buttonsStyle = useAnimatedStyle(
         () => ({
@@ -93,30 +93,16 @@ export const useUnverifiedAddressDeviceAnimations = ({
             }),
         );
 
-        let timer: ReturnType<typeof setTimeout>;
-
         if (isRevealedAddress) {
             if (isReceiveApproved) {
-                buttonsOpacity.value = withDelay(
-                    1000,
-                    withTiming(
-                        0,
-                        {
-                            duration: 600,
-                        },
-                        isFinished => {
-                            if (isFinished) {
-                                runOnJS(setIsHintVisible)(false);
-                            }
-                        },
-                    ),
-                );
+                buttonsOpacity.value = 0;
+                setIsHintVisible(false);
             } else {
                 buttonsOpacity.value = 1;
                 setIsHintVisible(true);
             }
         }
-        return () => clearTimeout(timer);
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isReceiveApproved, isRevealedAddress]);
 
@@ -127,6 +113,5 @@ export const useUnverifiedAddressDeviceAnimations = ({
         isHintVisible,
         frameBorderColorProgress,
         deviceHeightDifference,
-        buttonsOpacity,
     };
 };

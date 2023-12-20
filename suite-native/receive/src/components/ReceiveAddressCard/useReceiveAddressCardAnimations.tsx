@@ -21,6 +21,7 @@ export const useReceiveAddressCardAnimations = ({
     const buttonsOpacity = useSharedValue(0);
     const addressPaddingTop = useSharedValue(DEVICE_MIN_PADING_TOP);
     const isShowingQRCode = useSharedValue(false);
+    const canShowAlertBox = useSharedValue(false);
     const isShowedDeviceQRStep = receiveProgressStep === ReceiveProgressStep.ApprovedOnTrezor;
     const isShowedPortfolioQRStep =
         receiveProgressStep === ReceiveProgressStep.ShownPortfolioAddress;
@@ -33,7 +34,8 @@ export const useReceiveAddressCardAnimations = ({
             qrOpacity.value = 1;
             buttonsOpacity.value = 1;
             addressPaddingTop.value = DEVICE_MIN_PADING_TOP;
-            const qrCodeRevealTimeMs = isShowedPortfolioQRStep ? 10 : 600;
+            canShowAlertBox.value = true;
+            const qrCodeRevealTimeMs = isShowedPortfolioQRStep ? 1 : 600;
             timer = setTimeout(() => {
                 isShowingQRCode.value = true;
             }, qrCodeRevealTimeMs);
@@ -60,6 +62,7 @@ export const useReceiveAddressCardAnimations = ({
         receiveProgressStep,
         isShowedDeviceQRStep,
         isShowedPortfolioQRStep,
+        canShowAlertBox,
     ]);
 
     const addressQRStyle = useAnimatedStyle(
@@ -90,5 +93,6 @@ export const useReceiveAddressCardAnimations = ({
         buttonsStyle,
         isShowedDeviceQRStep,
         isShowedPortfolioQRStep,
+        canShowAlertBox,
     };
 };
