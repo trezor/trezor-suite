@@ -241,6 +241,8 @@ export const factory = ({
 
         changePin: params => call({ ...params, method: 'changePin' }),
 
+        changeWipeCode: params => call({ ...params, method: 'changeWipeCode' }),
+
         firmwareUpdate: params => call({ ...params, method: 'firmwareUpdate' }),
 
         recoveryDevice: params => call({ ...params, method: 'recoveryDevice' }),

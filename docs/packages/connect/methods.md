@@ -87,3 +87,5 @@ Every method require an [`Object`](https://developer.mozilla.org/en-US/docs/Web/
 
 -   [TrezorConnect.firmwareUpdate](methods/firmwareUpdate.md)
 -   [TrezorConnect.getFirmwareHash](methods/getFirmwareHash.md)
+-   [TrezorConnect.changePin](methods/changePin.md)
+-   [TrezorConnect.changeWipeCode](methods/changeWipeCode.md)
