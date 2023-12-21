@@ -78,6 +78,10 @@ const FooterText = styled.span`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
+const StyledButton = styled(Button)`
+    margin: 0 20px 20px;
+`;
+
 interface Item {
     key: string;
     heading?: ReactNode;
@@ -135,13 +139,13 @@ export const TroubleshootingTips = ({
             {items.length > 0 && <Items>{memoizedItems}</Items>}
 
             {offerWebUsb && !isAndroid() && (
-                <Button
+                <StyledButton
                     variant="secondary"
                     data-test="@onboarding/try-bridge-button"
                     onClick={() => TrezorConnect.disableWebUSB()}
                 >
                     <Translation id="TR_DISABLE_WEBUSB_TRY_BRIDGE" />
-                </Button>
+                </StyledButton>
             )}
 
             <ContactSupport>
