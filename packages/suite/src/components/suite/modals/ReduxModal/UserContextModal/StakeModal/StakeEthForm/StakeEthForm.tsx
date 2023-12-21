@@ -6,8 +6,9 @@ import { useStakeEthFormContext } from 'src/hooks/wallet/useStakeEthForm';
 import { AvailableBalance } from '../AvailableBalance';
 import { FormFractionButtons } from 'src/components/suite/FormFractionButtons';
 import { Inputs } from './Inputs';
-import { Fees } from './Fees';
+import { FeesInfo } from 'src/components/wallet/FeesInfo';
 import { ConfirmStakeEthModal } from './ConfirmStakeEthModal';
+import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/wallet/stakeForms';
 
 const Body = styled.div`
     margin-bottom: 26px;
@@ -39,12 +40,15 @@ export const StakeEthForm = () => {
         isConfirmModalOpen,
         closeConfirmModal,
         signTx,
+        composedLevels,
+        selectedFee,
     } = useStakeEthFormContext();
     const { formattedBalance, symbol } = account;
-    const hasValues = Boolean(watch('fiatInput') || watch('cryptoInput'));
+    const hasValues = Boolean(watch(FIAT_INPUT) || watch(CRYPTO_INPUT));
     // used instead of formState.isValid, which is sometimes returning false even if there are no errors
     const formIsValid = Object.keys(errors).length === 0;
     const areFractionButtonsDisabled = isZero(account.formattedBalance);
+    const transactionInfo = composedLevels?.[selectedFee];
 
     return (
         <>
@@ -74,7 +78,7 @@ export const StakeEthForm = () => {
                         <Inputs />
                     </InputsWrapper>
 
-                    <Fees />
+                    <FeesInfo transactionInfo={transactionInfo} symbol={symbol} />
                 </Body>
 
                 <Button

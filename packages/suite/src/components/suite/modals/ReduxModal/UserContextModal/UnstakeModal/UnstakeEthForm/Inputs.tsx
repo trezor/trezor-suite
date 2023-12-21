@@ -1,31 +1,30 @@
 import styled from 'styled-components';
-import { Icon, Warning } from '@trezor/components';
+import { Icon } from '@trezor/components';
+import { NumberInput } from 'src/components/suite';
+import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/wallet/stakeForms';
+import { MAX_LENGTH } from 'src/constants/suite/inputs';
+import { useSelector, useTranslation } from 'src/hooks/suite';
+import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { variables } from '@trezor/components/src/config';
-import { getInputState } from '@suite-common/wallet-utils';
-import { useFormatters } from '@suite-common/formatters';
-import { NumberInput, Translation } from 'src/components/suite';
-import { useTranslation } from 'src/hooks/suite';
-import { useStakeEthFormContext } from 'src/hooks/wallet/useStakeEthForm';
 import {
     validateDecimals,
     validateInteger,
     validateLimits,
     validateMin,
-    validateReserveOrBalance,
 } from 'src/utils/suite/validation';
-import { MAX_LENGTH } from 'src/constants/suite/inputs';
-import { FIAT_INPUT, CRYPTO_INPUT } from 'src/types/wallet/stakeForms';
-import { MIN_ETH_FOR_WITHDRAWALS } from 'src/constants/suite/ethStaking';
+import { useUnstakeEthFormContext } from 'src/hooks/wallet/useUnstakeEthForm';
+import { useFormatters } from '@suite-common/formatters';
+import { getInputState } from '@suite-common/wallet-utils';
 
-const VStack = styled.div`
+const HStack = styled.div`
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    gap: 14px;
 `;
 
-const StyledIcon = styled(Icon)`
-    transform: rotate(90deg);
-    margin-bottom: 22px;
+const IconWrapper = styled.div`
+    height: 48px;
+    display: flex;
+    align-items: center;
 `;
 
 const InputAddon = styled.span`
@@ -34,17 +33,13 @@ const InputAddon = styled.span`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
-const StyledWarning = styled(Warning)`
-    margin-top: 12px;
-`;
-
 export const Inputs = () => {
     const { translationString } = useTranslation();
     const { CryptoAmountFormatter } = useFormatters();
+    const { symbol } = useSelector(selectSelectedAccount) ?? {};
 
     const {
         control,
-        account,
         network,
         formState: { errors },
         getValues,
@@ -52,9 +47,7 @@ export const Inputs = () => {
         onCryptoAmountChange,
         onFiatAmountChange,
         localCurrency,
-        isAmountForWithdrawalWarningShown,
-        isAdviceForWithdrawalWarningShown,
-    } = useStakeEthFormContext();
+    } = useUnstakeEthFormContext();
 
     const cryptoValue = getValues(CRYPTO_INPUT);
     const fiatValue = getValues(FIAT_INPUT);
@@ -74,9 +67,6 @@ export const Inputs = () => {
             min: validateMin(translationString),
             integer: validateInteger(translationString, { except: true }),
             decimals: validateDecimals(translationString, { decimals: network.decimals }),
-            reserveOrBalance: validateReserveOrBalance(translationString, {
-                account,
-            }),
             limits: validateLimits(translationString, {
                 amountLimits,
                 formatter: CryptoAmountFormatter,
@@ -85,7 +75,7 @@ export const Inputs = () => {
     };
 
     return (
-        <VStack>
+        <HStack>
             <NumberInput
                 noTopLabel
                 name={FIAT_INPUT}
@@ -100,8 +90,10 @@ export const Inputs = () => {
                 }}
             />
 
-            {/* TODO: Add new transfer icon. Export from Figma isn't handled as is it should by the strokes to fills online converter */}
-            <StyledIcon icon="TRANSFER" size={16} />
+            <IconWrapper>
+                {/* TODO: Add new transfer icon. Export from Figma isn't handled as is it should by the strokes to fills online converter */}
+                <Icon icon="TRANSFER" size={16} />
+            </IconWrapper>
 
             <NumberInput
                 noTopLabel
@@ -109,30 +101,13 @@ export const Inputs = () => {
                 control={control}
                 rules={cryptoInputRules}
                 maxLength={MAX_LENGTH.AMOUNT}
-                innerAddon={<InputAddon>{account.symbol}</InputAddon>}
+                innerAddon={<InputAddon>{symbol}</InputAddon>}
                 bottomText={errors[CRYPTO_INPUT]?.message}
                 inputState={getInputState(cryptoError || fiatError, cryptoValue)}
                 onChange={value => {
                     onCryptoAmountChange(value);
                 }}
             />
-
-            {isAmountForWithdrawalWarningShown && (
-                <StyledWarning variant="info">
-                    <Translation
-                        id="TR_STAKE_LEFT_AMOUNT_FOR_WITHDRAWAL"
-                        values={{ amount: MIN_ETH_FOR_WITHDRAWALS.toString() }}
-                    />
-                </StyledWarning>
-            )}
-            {isAdviceForWithdrawalWarningShown && (
-                <StyledWarning variant="info">
-                    <Translation
-                        id="TR_STAKE_RECOMMENDED_AMOUNT_FOR_WITHDRAWALS"
-                        values={{ amount: MIN_ETH_FOR_WITHDRAWALS.toString() }}
-                    />
-                </StyledWarning>
-            )}
-        </VStack>
+        </HStack>
     );
 };

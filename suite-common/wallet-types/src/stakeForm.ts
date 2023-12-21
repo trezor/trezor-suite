@@ -30,28 +30,31 @@ export interface StakeFormState {
     anonymityWarningChecked?: boolean;
 }
 
-export type StakeContextValues = UseFormReturn<StakeFormState> & {
-    onSubmit: () => void;
+export interface BaseStakeContextValues {
     account: Account;
     network: Network;
-    cryptoInputValue?: string;
-    removeDraft: (key: string) => void;
-    formState: ReactHookFormState<StakeFormState>;
-    isDraft: boolean;
-    amountLimits: AmountLimits;
-    onCryptoAmountChange: (amount: string) => void;
-    onFiatAmountChange: (amount: string) => void;
     localCurrency: FiatCurrencyCode;
     composedLevels?: PrecomposedLevels;
     isComposing: boolean;
-    setMax: () => void;
-    setRatioAmount: (divisor: number) => void;
-    isAmountForWithdrawalWarningShown: boolean;
-    isAdviceForWithdrawalWarningShown: boolean;
+    clearForm: () => void;
+    signTx: () => Promise<void>;
     // TODO: Implement fee switcher
     selectedFee: FeeLevel['label'];
-    clearForm: () => void;
-    isConfirmModalOpen: boolean;
-    closeConfirmModal: () => void;
-    signTx: () => Promise<void>;
-};
+}
+
+export type StakeContextValues = UseFormReturn<StakeFormState> &
+    BaseStakeContextValues & {
+        formState: ReactHookFormState<StakeFormState>;
+        removeDraft: (key: string) => void;
+        isDraft: boolean;
+        amountLimits: AmountLimits;
+        isAmountForWithdrawalWarningShown: boolean;
+        isAdviceForWithdrawalWarningShown: boolean;
+        isConfirmModalOpen: boolean;
+        onCryptoAmountChange: (amount: string) => void;
+        onFiatAmountChange: (amount: string) => void;
+        setMax: () => void;
+        setRatioAmount: (divisor: number) => void;
+        closeConfirmModal: () => void;
+        onSubmit: () => void;
+    };

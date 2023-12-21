@@ -8681,4 +8681,60 @@ export default defineMessages({
         id: 'TR_STAKE_STAKED_AND_EARNING',
         defaultMessage: 'Staked & earning rewards',
     },
+    TR_STAKE_CLAIM_AFTER_UNSTAKING: {
+        id: 'TR_STAKE_CLAIM_AFTER_UNSTAKING',
+        defaultMessage: 'You can claim once the unstaking period is complete.',
+    },
+    TR_STAKE_UNSTAKING_PERIOD: {
+        id: 'TR_STAKE_UNSTAKING_PERIOD',
+        defaultMessage: 'Unstaking period',
+    },
+    TR_UP_TO_DAYS: {
+        id: 'TR_UP_TO_DAYS',
+        defaultMessage: 'up to {days} days',
+    },
+    TR_STAKE_PAID_FROM_BALANCE: {
+        id: 'TR_STAKE_PAID_FROM_BALANCE',
+        defaultMessage: 'Paid from your balance',
+    },
+    TR_STAKE_OTHER_AMOUNT: {
+        id: 'TR_STAKE_OTHER_AMOUNT',
+        defaultMessage: 'Other amount',
+    },
+    TR_UP_TO: {
+        id: 'TR_UP_TO',
+        defaultMessage: 'up to',
+    },
+    TR_STAKE_ONLY_REWARDS: {
+        id: 'TR_STAKE_ONLY_REWARDS',
+        defaultMessage: 'Only rewards',
+    },
+    TR_STAKE_UNSTAKED_AND_READY_TO_CLAIM: {
+        id: 'TR_STAKE_UNSTAKED_AND_READY_TO_CLAIM',
+        defaultMessage: 'Unstaked and ready to claim',
+    },
+    TR_STAKE_TIME_TO_CLAIM: {
+        id: 'TR_STAKE_TIME_TO_CLAIM',
+        defaultMessage: 'Time to claim',
+    },
+    TR_STAKE_INSTANT: {
+        id: 'TR_STAKE_INSTANT',
+        defaultMessage: 'Instant',
+    },
+    TR_STAKE_CLAIM_PENDING: {
+        id: 'TR_STAKE_CLAIM_PENDING',
+        defaultMessage: 'Claim pending',
+    },
+    TR_STAKE_CLAIMED_AMOUNT_TRANSFERRED: {
+        id: 'TR_STAKE_CLAIMED_AMOUNT_TRANSFERRED',
+        defaultMessage: 'The claimed amount is transferred to your {symbol} account.',
+    },
+    TR_STAKE_CLAIMING_PERIOD: {
+        id: 'TR_STAKE_CLAIMING_PERIOD',
+        defaultMessage: 'Claiming period',
+    },
+    TR_NOT_ENOUGH_FUNDS_FOR_TX: {
+        id: 'TR_NOT_ENOUGH_FUNDS_FOR_TX',
+        defaultMessage: 'Not enough funds to execute the transaction',
+    },
 });

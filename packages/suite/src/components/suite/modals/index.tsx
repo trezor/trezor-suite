@@ -43,3 +43,5 @@ export { AuthenticateDeviceFailModal } from './ReduxModal/UserContextModal/Authe
 export { DeviceAuthenticityOptOutModal } from './ReduxModal/UserContextModal/DeviceAuthenticityOptOutModal';
 export { StakeEthInANutshellModal } from './ReduxModal/UserContextModal/StakeEthInANutshellModal';
 export { StakeModal } from './ReduxModal/UserContextModal/StakeModal/StakeModal';
+export { UnstakeModal } from './ReduxModal/UserContextModal/UnstakeModal/UnstakeModal';
+export { ClaimModal } from './ReduxModal/UserContextModal/ClaimModal/ClaimModal';
