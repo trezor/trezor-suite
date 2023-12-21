@@ -99,8 +99,10 @@ export const DeviceScreenContent = ({
 
     if (!deviceModel) return null;
 
+    const bchPrefixRemovedAddress = address.replace('bitcoincash:', '');
+
     const addressLines = parseAddressToDeviceLines({
-        address,
+        address: bchPrefixRemovedAddress,
         deviceModel,
         isPaginationEnabled,
         activePage,
