@@ -40,7 +40,6 @@ export const ReceiveAddressCard = ({
         buttonsStyle,
         isShowedDeviceQRStep,
         isShowedPortfolioQRStep,
-        canShowAlertBox,
     } = useReceiveAddressCardAnimations({
         receiveProgressStep,
     });
@@ -48,12 +47,6 @@ export const ReceiveAddressCard = ({
     const { networkType } = networks[networkSymbol];
 
     const getCardAlertProps = () => {
-        if (!canShowAlertBox) {
-            return {
-                alertTitle: undefined,
-                alertVariant: undefined,
-            } as const;
-        }
         if (receiveProgressStep === ReceiveProgressStep.ApprovedOnTrezor) {
             return {
                 alertTitle: translate('moduleReceive.receiveAddressCard.alert.success'),
