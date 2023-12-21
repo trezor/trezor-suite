@@ -122,6 +122,8 @@ export const DeviceScreenContent = ({
     const isPaginationDisplayed =
         isPaginationEnabled && isPaginationCompatibleDeviceModel(deviceModel);
 
+    const lines = addressLines.length + (isLoading ? 1 : 0);
+
     return (
         <Canvas
             style={applyStyle(contentCanvasStyle, {
@@ -129,7 +131,7 @@ export const DeviceScreenContent = ({
                 lineHeight,
                 isPaginationEnabled,
                 pagerOffset,
-                numberOfLines: addressLines.length,
+                numberOfLines: lines,
                 isLoading,
             })}
         >
@@ -176,7 +178,7 @@ export const DeviceScreenContent = ({
                     isLoading={isLoading}
                     font={deviceFont}
                     xOffset={lineWidth * 0.3}
-                    yOffset={(addressLines.length - 1 + 0.75) * lineHeight}
+                    yOffset={(lines - 1 + 0.75) * lineHeight}
                     text={translate('moduleReceive.receiveAddressCard.showAddress.loading')}
                 />
             </Group>
