@@ -13,11 +13,11 @@ import { LayoutContext, LayoutContextPayload } from 'src/support/suite/LayoutCon
 import { useResetScrollOnUrl } from 'src/hooks/suite/useResetScrollOnUrl';
 import { useClearAnchorHighlightOnClick } from 'src/hooks/suite/useClearAnchorHighlightOnClick';
 import { ModalContextProvider } from 'src/support/suite/ModalContext';
-import { AccountsMenu } from 'src/components/wallet/WalletLayout/AccountsMenu/AccountsMenu';
 import { ModalSwitcher } from '../../modals/ModalSwitcher/ModalSwitcher';
 import { MobileMenu } from './MobileMenu/MobileMenu';
 import { Sidebar } from './Sidebar/Sidebar';
 import { CoinjoinBars } from './CoinjoinBars/CoinjoinBars';
+import { MobileAccountsMenu } from 'src/components/wallet/WalletLayout/AccountsMenu/MobileAccountsMenu';
 
 export const Wrapper = styled.div`
     display: flex;
@@ -114,7 +114,7 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
                                 {!isMobileLayout && <Sidebar />}
 
                                 <AppWrapper data-test="@app" ref={scrollRef} id="layout-scroll">
-                                    {isMobileLayout && <AccountsMenu isMenuInline />}
+                                    {isMobileLayout && <MobileAccountsMenu />}
                                     {TopMenu && <TopMenu />}
 
                                     <ContentWrapper>{children}</ContentWrapper>

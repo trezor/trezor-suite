@@ -92,7 +92,7 @@ interface AccountItemProps {
     account: Account;
     accountLabel?: string;
     selected: boolean;
-    closeMenu: () => void;
+    closeMenu?: () => void;
 }
 
 // Using `forwardRef` to be able to pass `ref` (item) TO parent (Menu/index)
@@ -115,11 +115,11 @@ export const AccountItem = forwardRef(
 
         const handleClickOnTokens: MouseEventHandler = event => {
             event.stopPropagation();
-            closeMenu();
+            closeMenu?.();
             dispatch(goto('wallet-tokens', { params: accountRouteParams }));
         };
         const handleHeaderClick = () => {
-            closeMenu();
+            closeMenu?.();
             dispatch(goto('wallet-index', { params: accountRouteParams }));
         };
 
