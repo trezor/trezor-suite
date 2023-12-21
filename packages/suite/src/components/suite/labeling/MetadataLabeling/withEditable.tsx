@@ -51,6 +51,9 @@ const Editable = styled.div<{ value?: string; isButton?: boolean; touched: boole
         `}
 
     color: ${({ touched, theme }) => (!touched ? theme.TYPE_LIGHT_GREY : 'inherit')};
+
+    overflow: hidden;
+    justify-content: start;
 `;
 
 interface WithEditableProps {
