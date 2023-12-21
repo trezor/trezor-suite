@@ -171,4 +171,10 @@ export type UserContextPayload =
       }
     | {
           type: 'stake';
+      }
+    | {
+          type: 'unstake';
+      }
+    | {
+          type: 'claim';
       };

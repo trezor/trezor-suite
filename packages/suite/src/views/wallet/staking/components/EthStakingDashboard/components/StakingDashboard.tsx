@@ -5,6 +5,7 @@ import { DashboardSection } from 'src/components/dashboard';
 import { StakingCard } from './StakingCard';
 import { ApyCard } from './ApyCard';
 import { PayoutCard } from './PayoutCard';
+import { ClaimCard } from './claim/ClaimCard';
 
 const FlexCol = styled.div`
     display: flex;
@@ -34,6 +35,8 @@ const FlexRow = styled.div`
 export const StakingDashboard = () => (
     <>
         <DashboardSection heading={<Translation id="TR_STAKE_ETH" />}>
+            <ClaimCard />
+
             <FlexCol>
                 <StakingCard />
 

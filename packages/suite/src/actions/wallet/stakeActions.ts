@@ -33,7 +33,7 @@ export const composeTransaction =
 
 // this could be called at any time during signTransaction or pushTransaction process (from TransactionReviewModal)
 export const cancelSignTx = () => (dispatch: Dispatch, getState: GetState) => {
-    const { signedTx } = getState().wallet.stake;
+    const { signedTx, precomposedForm } = getState().wallet.stake;
     dispatch(stakeActions.requestSignTransaction());
     dispatch(stakeActions.requestPushTransaction());
     // if transaction is not signed yet interrupt signing in TrezorConnect
@@ -43,7 +43,11 @@ export const cancelSignTx = () => (dispatch: Dispatch, getState: GetState) => {
     }
     // otherwise just close modal and open stake modal
     dispatch(modalActions.onCancel());
-    dispatch(openModal({ type: 'stake' }));
+
+    const { ethereumStakeType } = precomposedForm ?? {};
+    if (ethereumStakeType) {
+        dispatch(openModal({ type: ethereumStakeType }));
+    }
 };
 
 // private, called from signTransaction only
@@ -154,7 +158,12 @@ export const signTransaction =
         if (!serializedTx) {
             // close modal manually since UI.CLOSE_UI.WINDOW was blocked
             dispatch(modalActions.onCancel());
-            dispatch(openModal({ type: 'stake' }));
+
+            const { ethereumStakeType } = formValues;
+            if (ethereumStakeType) {
+                dispatch(openModal({ type: ethereumStakeType }));
+            }
+
             return;
         }
 

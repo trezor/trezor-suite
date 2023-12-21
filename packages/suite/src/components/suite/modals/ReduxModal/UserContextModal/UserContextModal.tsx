@@ -36,6 +36,8 @@ import {
     DeviceAuthenticityOptOutModal,
     StakeEthInANutshellModal,
     StakeModal,
+    UnstakeModal,
+    ClaimModal,
 } from 'src/components/suite/modals';
 import type { AcquiredDevice } from 'src/types/suite';
 import { openXpubModal, showXpub } from 'src/actions/wallet/publicKeyActions';
@@ -209,6 +211,10 @@ export const UserContextModal = ({
             return <StakeEthInANutshellModal onCancel={onCancel} />;
         case 'stake':
             return <StakeModal onCancel={onCancel} />;
+        case 'unstake':
+            return <UnstakeModal onCancel={onCancel} />;
+        case 'claim':
+            return <ClaimModal onCancel={onCancel} />;
         default:
             return null;
     }

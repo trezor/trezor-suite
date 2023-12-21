@@ -117,6 +117,9 @@ export const StakingCard = () => {
     const openStakeModal = () => {
         dispatch(openModal({ type: 'stake' }));
     };
+    const openUnstakeModal = () => {
+        dispatch(openModal({ type: 'unstake' }));
+    };
 
     const progressLabelsData: ProgressLabelData[] = [
         {
@@ -231,7 +234,7 @@ export const StakingCard = () => {
                 <StyledButton onClick={openStakeModal}>
                     <Translation id="TR_STAKE_STAKE_MORE" />
                 </StyledButton>
-                <StyledButton isDisabled={!hasStake}>
+                <StyledButton isDisabled={!hasStake} onClick={openUnstakeModal}>
                     <Translation id="TR_STAKE_UNSTAKE_TO_CLAIM" />
                 </StyledButton>
             </ButtonsWrapper>
