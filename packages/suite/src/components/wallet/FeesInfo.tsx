@@ -1,9 +1,11 @@
+import { ReactNode } from 'react';
 import styled from 'styled-components';
 import { H3, Icon, P, Tooltip, variables } from '@trezor/components';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { FormattedCryptoAmount, FiatValue, Translation } from 'src/components/suite';
-import { useStakeEthFormContext } from 'src/hooks/wallet/useStakeEthForm';
 import { mapTestnetSymbol } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { NetworkSymbol } from '@suite-common/wallet-config';
+import { PrecomposedTransaction, PrecomposedTransactionCardano } from '@suite-common/wallet-types';
 
 const Flex = styled.div`
     display: flex;
@@ -31,13 +33,18 @@ const GreyP = styled(P)`
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
-export const Fees = () => {
-    const {
-        account: { symbol },
-        composedLevels,
-        selectedFee,
-    } = useStakeEthFormContext();
-    const transactionInfo = composedLevels?.[selectedFee];
+const HelperTextWrapper = styled(GreyP)`
+    font-size: ${variables.FONT_SIZE.SMALL};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+`;
+
+interface FeesInfoProps {
+    symbol: NetworkSymbol;
+    transactionInfo: PrecomposedTransaction | PrecomposedTransactionCardano | undefined;
+    helperText?: ReactNode;
+}
+
+export const FeesInfo = ({ symbol, transactionInfo, helperText }: FeesInfoProps) => {
     const isFeeShown = transactionInfo !== undefined && transactionInfo.type !== 'error';
     const symbolForFiat = mapTestnetSymbol(symbol);
 
@@ -54,6 +61,8 @@ export const Fees = () => {
                         <Icon icon="INFO" size={14} />
                     </Tooltip>
                 </StyledH3Wrapper>
+
+                {helperText && <HelperTextWrapper>{helperText}</HelperTextWrapper>}
             </div>
 
             <Right>
@@ -62,8 +71,8 @@ export const Fees = () => {
                         <P weight="medium">
                             <FormattedCryptoAmount
                                 disableHiddenPlaceholder
-                                value={formatNetworkAmount(transactionInfo.fee, symbolForFiat)}
-                                symbol={symbolForFiat}
+                                value={formatNetworkAmount(transactionInfo.fee, symbol)}
+                                symbol={symbol}
                             />
                         </P>
                         <GreyP size="small" weight="medium">

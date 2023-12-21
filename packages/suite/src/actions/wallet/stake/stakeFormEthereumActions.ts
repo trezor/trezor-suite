@@ -13,7 +13,7 @@ import {
     formatAmount,
     isPending,
 } from '@suite-common/wallet-utils';
-import { ETH_DEFAULT_GAS_LIMIT, ERC20_GAS_LIMIT } from '@suite-common/wallet-constants';
+import { ETH_DEFAULT_GAS_LIMIT } from '@suite-common/wallet-constants';
 import {
     StakeFormState,
     ComposeActionContext,
@@ -31,6 +31,7 @@ const calculate = (
     availableBalance: string,
     output: ExternalOutput,
     feeLevel: FeeLevel,
+    compareWithAmount = true,
 ): PrecomposedTransaction => {
     const feeInSatoshi = calculateEthFee(
         toWei(feeLevel.feePerUnit, 'gwei'),
@@ -50,7 +51,10 @@ const calculate = (
     // total ETH spent (amount + fee), in ERC20 only fee
     const totalSpent = new BigNumber(calculateTotal(amount, feeInSatoshi));
 
-    if (totalSpent.isGreaterThan(availableBalance)) {
+    if (
+        new BigNumber(feeInSatoshi).gt(availableBalance) ||
+        (compareWithAmount && totalSpent.isGreaterThan(availableBalance))
+    ) {
         const error = 'AMOUNT_IS_NOT_ENOUGH';
         // errorMessage declared later
         return { type: 'error', error, errorMessage: { id: error } } as const;
@@ -92,15 +96,11 @@ export const composeTransaction =
         const composeOutputs = getExternalComposeOutput(formValues, account, network);
         if (!composeOutputs) return; // no valid Output
 
-        const { output, tokenInfo, decimals } = composeOutputs;
+        const { output, decimals } = composeOutputs;
         const { availableBalance } = account;
         const { address, amount } = formValues.outputs[0];
 
         let customFeeLimit: string | undefined;
-        // set gasLimit based on ERC20 transfer
-        if (tokenInfo) {
-            customFeeLimit = ERC20_GAS_LIMIT;
-        }
 
         // gasLimit calculation based on address, amount and data size
         // amount in essential for a proper calculation of gasLimit (via blockbook/geth)
@@ -111,10 +111,9 @@ export const composeTransaction =
                 specific: {
                     from: account.descriptor,
                     ...getEthereumEstimateFeeParams(
-                        address || account.descriptor,
-                        // if amount is not set (set-max case) use max available balance
-                        amount || (tokenInfo ? tokenInfo.balance! : account.formattedBalance),
-                        tokenInfo,
+                        address,
+                        amount,
+                        undefined,
                         formValues.ethereumDataHex,
                     ),
                 },
@@ -151,7 +150,10 @@ export const composeTransaction =
 
         // wrap response into PrecomposedLevels object where key is a FeeLevel label
         const wrappedResponse: PrecomposedLevels = {};
-        const response = predefinedLevels.map(level => calculate(availableBalance, output, level));
+        const compareWithAmount = formValues.ethereumStakeType === 'stake';
+        const response = predefinedLevels.map(level =>
+            calculate(availableBalance, output, level, compareWithAmount),
+        );
         response.forEach((tx, index) => {
             const feeLabel = predefinedLevels[index].label as FeeLevel['label'];
             wrappedResponse[feeLabel] = tx;
@@ -177,7 +179,7 @@ export const composeTransaction =
 
             // check if any custom level is possible
             const customLevelsResponse = customLevels.map(level =>
-                calculate(availableBalance, output, level),
+                calculate(availableBalance, output, level, compareWithAmount),
             );
 
             const customValid = customLevelsResponse.findIndex(r => r.type !== 'error');

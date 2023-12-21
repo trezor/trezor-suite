@@ -10,19 +10,19 @@ import { isChanged } from '@suite-common/suite-utils';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { saveComposedTransactionInfo } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 import {
-    UseStakeEthFormProps,
+    UseStakeFormsProps,
     FIAT_INPUT,
     CRYPTO_INPUT,
     OUTPUT_AMOUNT,
-} from 'src/types/wallet/stakeEthForm';
+} from 'src/types/wallet/stakeForms';
 import { mapTestnetSymbol } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { useFormDraft } from './useFormDraft';
 import { AmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
 
 import { fromWei } from 'web3-utils';
-import { useStakeEthFormDefaultValues } from './useStakeEthFormDefaultValues';
 import { useStakeCompose } from './form/useStakeCompose';
 import {
+    CONTRACT_POOL_ADDRESS,
     MIN_ETH_AMOUNT_FOR_STAKING,
     MIN_ETH_FOR_WITHDRAWALS,
 } from 'src/constants/suite/ethStaking';
@@ -34,14 +34,24 @@ import {
     StakeFormState,
     StakeContextValues,
 } from '@suite-common/wallet-types';
+import { getStakeFormsDefaultValues } from 'src/utils/suite/stake';
+import { selectCoinsLegacy } from '@suite-common/wallet-core';
+
+const defaultValues = {
+    ...getStakeFormsDefaultValues({
+        address: CONTRACT_POOL_ADDRESS,
+        ethereumStakeType: 'stake',
+    }),
+    setMaxOutputId: undefined,
+} as StakeFormState;
 
 export const StakeEthFormContext = createContext<StakeContextValues | null>(null);
 StakeEthFormContext.displayName = 'StakeEthFormContext';
 
-export const useStakeEthForm = ({ selectedAccount }: UseStakeEthFormProps): StakeContextValues => {
+export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeContextValues => {
     const dispatch = useDispatch();
 
-    const fiat = useSelector(state => state.wallet.fiat);
+    const coins = useSelector(selectCoinsLegacy);
     const localCurrency = useSelector(selectLocalCurrency);
     const fees = useSelector(state => state.wallet.fees);
 
@@ -49,7 +59,7 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeEthFormProps): Stak
     const { symbol } = account;
 
     const symbolForFiat = mapTestnetSymbol(symbol);
-    const fiatRates = fiat.coins.find(item => item.symbol === symbolForFiat);
+    const fiatRates = coins.find(item => item.symbol === symbolForFiat);
     // TODO: Implement fee switcher
     const selectedFee = 'normal';
 
@@ -63,10 +73,6 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeEthFormProps): Stak
     const draft = getDraft(account.key);
     const isDraft = !!draft;
 
-    // TODO: Test address. Remove when not needed
-    const to = '0x057f0F0ba2e2f818c6fD4CA4A235F068495B6654';
-    const { defaultValues } = useStakeEthFormDefaultValues(to);
-
     const state = useMemo(() => {
         const coinFees = fees[account.symbol];
         const levels = getFeeLevels(account.networkType, coinFees);
@@ -78,7 +84,7 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeEthFormProps): Stak
             feeInfo,
             formValues: defaultValues,
         };
-    }, [account, defaultValues, fees, network]);
+    }, [account, fees, network]);
 
     const methods = useForm<StakeFormState>({
         mode: 'onChange',
@@ -94,7 +100,7 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeEthFormProps): Stak
         if (!isChanged(defaultValues, values)) {
             removeDraft(account.key);
         }
-    }, [defaultValues, values, removeDraft, account.key]);
+    }, [values, removeDraft, account.key]);
 
     // react-hook-form auto register custom form fields (without HTMLElement)
     useEffect(() => {
@@ -107,7 +113,7 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeEthFormProps): Stak
         if (!isDraft && defaultValues) {
             reset(defaultValues);
         }
-    }, [reset, isDraft, defaultValues]);
+    }, [reset, isDraft]);
 
     const {
         isLoading: isComposing,
@@ -239,8 +245,8 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeEthFormProps): Stak
                 .decimalPlaces(network.decimals)
                 .toString();
 
-            await onCryptoAmountChange(amount);
             setValue(CRYPTO_INPUT, amount, { shouldDirty: true, shouldValidate: true });
+            await onCryptoAmountChange(amount);
         },
         [account.formattedBalance, clearErrors, network.decimals, onCryptoAmountChange, setValue],
     );
@@ -259,7 +265,7 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeEthFormProps): Stak
         await composeRequest(CRYPTO_INPUT);
         setIsAdviceForWithdrawalWarningShown(false);
         setIsAmountForWithdrawalWarningShown(false);
-    }, [account.key, composeRequest, defaultValues, removeDraft, reset]);
+    }, [account.key, composeRequest, removeDraft, reset]);
 
     const { translationString } = useTranslation();
     useEffect(() => {
@@ -303,7 +309,7 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeEthFormProps): Stak
     ]);
 
     // get response from TransactionReviewModal
-    const sign = useCallback(async () => {
+    const signTx = useCallback(async () => {
         const values = getValues();
         const composedTx = composedLevels ? composedLevels[selectedFee] : undefined;
         if (composedTx && composedTx.type === 'final') {
@@ -331,7 +337,6 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeEthFormProps): Stak
         onSubmit,
         account,
         network,
-        cryptoInputValue: values.cryptoInput,
         removeDraft,
         formState,
         isDraft,
@@ -350,7 +355,7 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeEthFormProps): Stak
         clearForm,
         isConfirmModalOpen,
         closeConfirmModal,
-        signTx: sign,
+        signTx,
     };
 };
 
