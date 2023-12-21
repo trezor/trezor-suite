@@ -3,41 +3,37 @@ import { useSelector } from 'react-redux';
 import { selectIsSelectedDeviceImported } from '@suite-common/wallet-core';
 import { VStack } from '@suite-native/atoms';
 
-import { ShowAddressButtons } from '../ShowAddressButtons';
+import { ShowAddressButtons } from './ShowAddressButtons';
 import { UnverifiedAddressDevice } from './UnverifiedAddressDevice';
 import { UnverifiedAddressWarning } from './UnverifiedAddressWarning';
-import { ReceiveProgressStep } from '../../hooks/useReceiveProgressSteps';
 
 type UnverifiedAddressSectionProps = {
     address: string;
+    isAddressRevealed: boolean;
     isCardanoAddress: boolean;
     onShowAddress: () => void;
-    receiveProgressStep: ReceiveProgressStep;
 };
 
 export const UnverifiedAddress = ({
     address,
+    isAddressRevealed,
     isCardanoAddress,
     onShowAddress,
-    receiveProgressStep,
 }: UnverifiedAddressSectionProps) => {
     const isPortfolioTracker = useSelector(selectIsSelectedDeviceImported);
-    const isPortfolioAddressShown =
-        isPortfolioTracker && receiveProgressStep !== ReceiveProgressStep.ShownPortfolioAddress;
 
     return (
         <VStack spacing="medium">
-            {isPortfolioAddressShown && <UnverifiedAddressWarning />}
-            {!isPortfolioTracker && (
+            {isPortfolioTracker ? (
+                <UnverifiedAddressWarning />
+            ) : (
                 <UnverifiedAddressDevice
                     address={address}
+                    isAddressRevealed={isAddressRevealed}
                     isCardanoAddress={isCardanoAddress}
-                    receiveProgressStep={receiveProgressStep}
                 />
             )}
-            {receiveProgressStep === ReceiveProgressStep.ObfuscatedAddress && (
-                <ShowAddressButtons onShowAddress={onShowAddress} />
-            )}
+            {!isAddressRevealed && <ShowAddressButtons onShowAddress={onShowAddress} />}
         </VStack>
     );
 };

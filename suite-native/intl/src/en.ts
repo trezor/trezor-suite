@@ -206,7 +206,6 @@ export const en = {
                 button: 'Show full address',
                 buttonTracker: 'Show address',
                 learnMore: 'Learn more about verifying addresses',
-                loading: 'Loading',
             },
         },
         bottomSheets: {

@@ -14,9 +14,9 @@ import { useTranslate } from '@suite-native/intl';
 
 import { useAccountReceiveAddress } from '../hooks/useAccountReceiveAddress';
 import { ConfirmOnTrezorImage } from './ConfirmOnTrezorImage';
-import { ReceiveAddressCard } from './ReceiveAddressCard/ReceiveAddressCard';
+import { ReceiveAddressCard } from './ReceiveAddressCard';
 import { ReceiveAccountDetailsCard } from './ReceiveAccountDetailsCard';
-import { useReceiveProgressSteps } from '../hooks/useReceiveProgressSteps';
+import { hasReceiveAddressButtonRequest } from '../hooks/receiveSelectors';
 
 type AccountReceiveProps = {
     accountKey: AccountKey;
@@ -30,14 +30,10 @@ export const ReceiveAccount = ({ accountKey, tokenContract }: AccountReceiveProp
         selectAccountByKey(state, accountKey),
     );
     const device = useSelector(selectDevice);
+    const hasReceiveButtonRequest = useSelector(hasReceiveAddressButtonRequest);
 
     const { address, isReceiveApproved, isUnverifiedAddressRevealed, handleShowAddress } =
         useAccountReceiveAddress(accountKey);
-
-    const { receiveProgressStep, isConfirmOnTrezorReady } = useReceiveProgressSteps({
-        isUnverifiedAddressRevealed,
-        isReceiveApproved,
-    });
 
     const isAccountDetailVisible = !isUnverifiedAddressRevealed && !isReceiveApproved;
 
@@ -49,6 +45,9 @@ export const ReceiveAccount = ({ accountKey, tokenContract }: AccountReceiveProp
         if (!device) return;
         dispatch(removeButtonRequests({ device }));
     };
+
+    const isConfirmOnTrezorReady =
+        isUnverifiedAddressRevealed && !isReceiveApproved && hasReceiveButtonRequest;
 
     return (
         <Box flex={1}>
@@ -63,8 +62,9 @@ export const ReceiveAccount = ({ accountKey, tokenContract }: AccountReceiveProp
                     networkSymbol={account.symbol}
                     address={address}
                     isEthereumTokenAddress={!!tokenContract}
+                    isReceiveApproved={isReceiveApproved}
+                    isUnverifiedAddressRevealed={isUnverifiedAddressRevealed}
                     onShowAddress={handleShowAddressAndRemoveButtonRequests}
-                    receiveProgressStep={receiveProgressStep}
                 />
             </VStack>
 
