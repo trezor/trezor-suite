@@ -4,48 +4,65 @@ import {
     PanGestureHandler,
     PanGestureHandlerEventPayload,
 } from 'react-native-gesture-handler';
-import Animated, { FadeOut } from 'react-native-reanimated';
+import Animated from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
-import { VStack } from '@suite-native/atoms';
+import { Box, VStack } from '@suite-native/atoms';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { selectDeviceModel } from '@suite-common/wallet-core';
 
 import { UnverifiedAddressDeviceHint } from './UnverifiedAddressDeviceHint';
-import { DevicePaginationButton } from '../DevicePaginationButton';
-import { isPaginationCompatibleDeviceModel } from '../../types';
-import { DeviceScreenContent } from '../DeviceScreen/DeviceScreenContent';
-import { ReceiveProgressStep, isAddressRevealed } from '../../hooks/useReceiveProgressSteps';
-import { useUnverifiedAddressDeviceAnimations } from './useUnverifiedAddressDeviceAnimations';
+import { DEVICE_SCREEN_BACKGROUND_COLOR } from '../constants';
+import { DevicePaginationButton } from './DevicePaginationButton';
+import { isPaginationCompatibleDeviceModel } from '../types';
+import { DeviceScreenContent } from './DeviceScreenContent';
 
-type UnverifiedAddressDeviceProps = {
+type DeviceScreenAddressProps = {
     address: string;
+    isAddressRevealed: boolean;
     isCardanoAddress: boolean;
-    receiveProgressStep: ReceiveProgressStep;
 };
+
+const DEVICE_SCREEN_WIDTH = 340;
+const DEVICE_SCREEN_HEIGHT = 200;
 
 const PAN_GESTURE_THRESHOLD = 50;
 
+const deviceFrameStyle = prepareNativeStyle(utils => ({
+    width: DEVICE_SCREEN_WIDTH,
+    padding: utils.spacings.extraSmall,
+    borderWidth: utils.borders.widths.small,
+    borderRadius: utils.borders.radii.large / 2,
+    borderColor: utils.colors.borderOnElevation1,
+}));
+
+const deviceScreenStyle = prepareNativeStyle<{ isPaginationEnabled: boolean }>(
+    (utils, { isPaginationEnabled }) => ({
+        justifyContent: 'center',
+        alignItems: 'center',
+        minHeight: DEVICE_SCREEN_HEIGHT,
+        paddingVertical: isPaginationEnabled ? utils.spacings.large : 40,
+        maxWidth: DEVICE_SCREEN_WIDTH,
+        backgroundColor: DEVICE_SCREEN_BACKGROUND_COLOR,
+        borderRadius: utils.borders.radii.large / 2,
+    }),
+);
+
 export const UnverifiedAddressDevice = ({
     address,
+    isAddressRevealed,
     isCardanoAddress,
-    receiveProgressStep,
-}: UnverifiedAddressDeviceProps) => {
+}: DeviceScreenAddressProps) => {
+    const { applyStyle } = useNativeStyles();
     const [activePage, setActivePage] = useState<1 | 2>(1);
-    const { deviceFrameStyle, deviceScreenStyle, buttonsStyle, isHintVisible } =
-        useUnverifiedAddressDeviceAnimations({
-            receiveProgressStep,
-            isCardanoAddress,
-        });
 
     const deviceModel = useSelector(selectDeviceModel);
 
     const isPaginationEnabled = isCardanoAddress && isPaginationCompatibleDeviceModel(deviceModel);
 
-    const isRevealedAddress = isAddressRevealed(receiveProgressStep);
-
     const handlePaginationPanGesture = useCallback(
         (panEvent: GestureEvent<PanGestureHandlerEventPayload>) => {
-            if (!isPaginationEnabled || !isRevealedAddress) return;
+            if (!isPaginationEnabled || !isAddressRevealed) return;
 
             const { translationY } = panEvent.nativeEvent;
 
@@ -56,7 +73,7 @@ export const UnverifiedAddressDevice = ({
                 setActivePage(1);
             }
         },
-        [isRevealedAddress, isPaginationEnabled],
+        [isAddressRevealed, isPaginationEnabled],
     );
 
     if (!deviceModel) return null;
@@ -68,33 +85,33 @@ export const UnverifiedAddressDevice = ({
 
     return (
         <VStack spacing="medium" alignItems="center">
-            <Animated.View style={deviceFrameStyle}>
+            <Box style={applyStyle(deviceFrameStyle)}>
                 <PanGestureHandler onGestureEvent={handlePaginationPanGesture}>
                     <Animated.View>
-                        <Animated.View style={deviceScreenStyle}>
+                        <VStack
+                            spacing="large"
+                            style={applyStyle(deviceScreenStyle, { isPaginationEnabled })}
+                        >
                             <DeviceScreenContent
                                 address={address}
+                                isAddressRevealed={isAddressRevealed}
                                 activePage={activePage}
                                 isPaginationEnabled={isPaginationEnabled}
-                                receiveProgressStep={receiveProgressStep}
                             />
                             {isPaginationEnabled && (
                                 <DevicePaginationButton
-                                    isVisible={isRevealedAddress}
+                                    isAddressRevealed={isAddressRevealed}
                                     activePage={activePage}
                                     deviceModel={deviceModel}
                                     onPress={handlePaginationButtonPress}
                                 />
                             )}
-                        </Animated.View>
+                        </VStack>
                     </Animated.View>
                 </PanGestureHandler>
-            </Animated.View>
-            {isHintVisible && (
-                <Animated.View style={buttonsStyle} exiting={FadeOut}>
-                    <UnverifiedAddressDeviceHint />
-                </Animated.View>
-            )}
+            </Box>
+
+            {isAddressRevealed && <UnverifiedAddressDeviceHint />}
         </VStack>
     );
 };
