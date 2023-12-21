@@ -58,7 +58,6 @@ export const ReceiveAddressCard = ({
             return {
                 alertTitle: translate('moduleReceive.receiveAddressCard.alert.success'),
                 alertVariant: 'success',
-                isAlertAnimated: true,
             } as const;
         }
         if (

@@ -48,7 +48,7 @@ export const useReceiveAddressCardAnimations = ({
         } else if (isShowedPortfolioQRStep) {
             buttonsOpacity.value = 1;
         } else if (receiveProgressStep === ReceiveProgressStep.ShownUncheckedAddress) {
-            addressPaddingTop.value = DEVICE_MAX_PADING_TOP;
+            addressPaddingTop.value = DEVICE_MID_PADING_TOP;
         } else {
             addressPaddingTop.value = DEVICE_MID_PADING_TOP;
         }
