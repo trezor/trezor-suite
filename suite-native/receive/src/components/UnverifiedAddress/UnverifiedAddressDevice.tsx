@@ -31,7 +31,7 @@ export const UnverifiedAddressDevice = ({
     receiveProgressStep,
 }: UnverifiedAddressDeviceProps) => {
     const [activePage, setActivePage] = useState<1 | 2>(1);
-    const { deviceFrameStyle, deviceScreenStyle, isHintVisible } =
+    const { deviceFrameStyle, deviceScreenStyle, buttonsStyle, isHintVisible } =
         useUnverifiedAddressDeviceAnimations({
             receiveProgressStep,
             isCardanoAddress,
@@ -91,7 +91,7 @@ export const UnverifiedAddressDevice = ({
                 </PanGestureHandler>
             </Animated.View>
             {isHintVisible && (
-                <Animated.View exiting={FadeOutUp}>
+                <Animated.View style={buttonsStyle} exiting={FadeOutUp}>
                     <UnverifiedAddressDeviceHint />
                 </Animated.View>
             )}
