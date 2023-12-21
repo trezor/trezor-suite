@@ -35,6 +35,10 @@ const StyledIcon = styled(Icon)`
     display: flex;
 `;
 
+const MetadataLabelingWrapper = styled.div`
+    max-width: 200px;
+`;
+
 interface AddressProps {
     outputId: number;
     outputsCount: number;
@@ -206,24 +210,26 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
             isMonospace
             innerAddon={
                 metadataEnabled && broadcastEnabled ? (
-                    <MetadataLabeling
-                        defaultVisibleValue=""
-                        payload={{
-                            type: 'outputLabel',
-                            entityKey: account.key,
-                            // txid is not known at this moment. metadata is only saved
-                            // along with other sendForm data and processed in sendFormActions
-                            txid: 'will-be-replaced',
-                            outputIndex: outputId,
-                            defaultValue: `${outputId}`,
-                            value: label,
-                        }}
-                        onSubmit={(value: string | undefined) => {
-                            setValue(`outputs.${outputId}.label`, value || '');
-                            setDraftSaveRequest(true);
-                        }}
-                        visible
-                    />
+                    <MetadataLabelingWrapper>
+                        <MetadataLabeling
+                            defaultVisibleValue=""
+                            payload={{
+                                type: 'outputLabel',
+                                entityKey: account.key,
+                                // txid is not known at this moment. metadata is only saved
+                                // along with other sendForm data and processed in sendFormActions
+                                txid: 'will-be-replaced',
+                                outputIndex: outputId,
+                                defaultValue: `${outputId}`,
+                                value: label,
+                            }}
+                            onSubmit={(value: string | undefined) => {
+                                setValue(`outputs.${outputId}.label`, value || '');
+                                setDraftSaveRequest(true);
+                            }}
+                            visible
+                        />
+                    </MetadataLabelingWrapper>
                 ) : undefined
             }
             label={

@@ -102,6 +102,7 @@ const RelativeButton = styled(Button)`
     padding-bottom: 4px;
     padding-top: 4px;
     position: relative;
+    overflow: hidden;
 `;
 
 const RelativeLabel = styled(Label)<{ isVisible?: boolean }>`
