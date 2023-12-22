@@ -15,7 +15,6 @@ import {
 } from '@trezor/connect/lib/exports';
 import { factory } from '@trezor/connect/lib/factory';
 import { initLog, setLogWriter, LogMessage, LogWriter } from '@trezor/connect/lib/utils/debug';
-import { createDeferred } from '@trezor/utils/lib';
 
 import * as popup from './popup';
 import { parseConnectSettings } from './connectSettings';
@@ -68,8 +67,6 @@ const cancel = (error?: string) => {
     }
 };
 
-const handshakePromise = createDeferred();
-
 const init = (settings: Partial<ConnectSettings> = {}): Promise<void> => {
     logger.debug('initiating');
     _settings = parseConnectSettings({ ..._settings, ...settings });
@@ -96,7 +93,7 @@ const init = (settings: Partial<ConnectSettings> = {}): Promise<void> => {
                 // in this case, settings will be validated in popup
                 payload: { settings: _settings },
             });
-            handshakePromise.resolve();
+            _popupManager.handshakePromise.resolve();
         }
     });
 
@@ -115,7 +112,7 @@ const call: CallMethod = async params => {
 
     // request popup window it might be used in the future
     if (_settings.popup) {
-        _popupManager.request();
+        await _popupManager.request();
     }
 
     await _popupManager.channel.init();
@@ -127,7 +124,7 @@ const call: CallMethod = async params => {
         },
     });
 
-    await handshakePromise.promise;
+    await _popupManager.handshakePromise.promise;
 
     // post message to core in popup
     try {
@@ -139,6 +136,9 @@ const call: CallMethod = async params => {
         logger.debug('call: response: ', response);
 
         if (response) {
+            if (_popupManager) {
+                _popupManager.clear();
+            }
             return response;
         }
 
