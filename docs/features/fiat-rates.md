@@ -8,8 +8,8 @@ Suite provides several types of fiat rates:
 
 ## Providers
 
--   Blockbook: For all main networks (BTC, LTC, ETH + ERC-20 tokens, ...) except XRP, SOL and ADA + ADA tokens
--   CoinGecko: Used for XRP, SOL and ADA + ADA tokens and as a fallback for failed requests to blockbook.
+-   Blockbook: For all main networks (BTC, LTC, ETH + ERC-20 tokens, ...) except XRP, SOL + SOL tokens and ADA + ADA tokens
+-   CoinGecko: Used for XRP, SOL + SOL tokens and ADA + ADA tokens and as a fallback for failed requests to blockbook.
 
 ## First fetch
 
