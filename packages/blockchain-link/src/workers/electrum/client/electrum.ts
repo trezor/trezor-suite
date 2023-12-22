@@ -49,6 +49,14 @@ export class ElectrumClient extends BatchingJsonRpcClient implements ElectrumAPI
                 name,
                 protocolVersion,
             );
+            // Simplified version of BlueWallet's heuristics. Might be improved later.
+            // https://github.com/BlueWallet/BlueWallet/blob/509add5c59a4f84e0f49b4d3891ed5a650e2adb2/blue_modules/BlueElectrum.js#L146
+            if (
+                this.version[0]?.startsWith('ElectrumPersonalServer') ||
+                this.version[0]?.startsWith('electrs-esplora')
+            ) {
+                this.batchingDisabled = true;
+            }
             (this as ElectrumAPI).on('blockchain.headers.subscribe', this.onBlock.bind(this));
             this.lastBlock = await (this as ElectrumAPI).request('blockchain.headers.subscribe');
         } catch (err) {

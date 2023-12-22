@@ -16,6 +16,8 @@ export class BatchingJsonRpcClient extends JsonRpcClient {
     private timeoutMs: number;
     private maxQueueLength: number;
 
+    protected batchingDisabled = false;
+
     constructor(options?: Options) {
         super();
         this.timeoutMs = options?.timeoutMs || TIMEOUT_MS;
@@ -23,6 +25,10 @@ export class BatchingJsonRpcClient extends JsonRpcClient {
     }
 
     protected send(message: string) {
+        if (this.batchingDisabled) {
+            super.send(message);
+            return;
+        }
         const { queue } = this;
         queue.push(message);
         if (this.batchTimer) clearTimeout(this.batchTimer);
