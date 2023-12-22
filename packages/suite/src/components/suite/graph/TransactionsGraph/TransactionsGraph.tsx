@@ -120,7 +120,7 @@ export const TransactionsGraph = memo((props: TransactionsGraphProps) => {
         <Wrapper>
             {!props.hideToolbar && (
                 <Toolbar>
-                    <GraphRangeSelector align="right" />
+                    <GraphRangeSelector align="bottom-right" />
                     {props.onRefresh && <Icon size={14} icon="REFRESH" onClick={props.onRefresh} />}
                 </Toolbar>
             )}

@@ -92,7 +92,7 @@ export const Header = (props: HeaderProps) => {
                 </>
             );
         } else if (props.showGraphControls) {
-            actions = <GraphRangeSelector onSelectedRange={onSelectedRange} align="right" />;
+            actions = <GraphRangeSelector onSelectedRange={onSelectedRange} align="bottom-right" />;
         }
     }
 

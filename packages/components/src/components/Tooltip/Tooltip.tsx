@@ -62,6 +62,8 @@ const Addon = styled.div`
 `;
 
 const Content = styled.div<{ dashed: boolean; cursor: Cursor }>`
+    cursor: ${({ cursor }) => cursor};
+
     > * {
         border-bottom: ${({ dashed, theme }) =>
             dashed && `1.5px dashed ${transparentize(0.66, theme.TYPE_LIGHT_GREY)}`};

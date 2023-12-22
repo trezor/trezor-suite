@@ -108,7 +108,7 @@ export const ExportAction = ({ account, searchQuery, accountMetadata }: ExportAc
 
     return (
         <Dropdown
-            alignMenu="right"
+            alignMenu="bottom-right"
             items={[
                 {
                     key: 'export',

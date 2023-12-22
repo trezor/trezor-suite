@@ -206,7 +206,7 @@ export const FinalStep = () => {
                             >
                                 <Dropdown
                                     ref={dropdownRef}
-                                    alignMenu="right"
+                                    alignMenu="bottom-right"
                                     isDisabled={!shouldOfferChangeHomescreen || isWaitingForConfirm}
                                     content={
                                         <GalleryWrapper>
