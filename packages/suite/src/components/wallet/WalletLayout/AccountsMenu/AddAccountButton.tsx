@@ -1,18 +1,10 @@
-import styled from 'styled-components';
 import { Translation } from 'src/components/suite';
 import { TrezorDevice } from 'src/types/suite';
 import { useDiscovery, useDispatch } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
 
-import { Button, Tooltip, ButtonProps } from '@trezor/components';
+import { Tooltip, ButtonProps, IconButton } from '@trezor/components';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
-
-const StyledButton = styled(Button)`
-    path {
-        fill: ${({ theme, isDisabled }) =>
-            isDisabled ? theme.TYPE_LIGHT_GREY : theme.TYPE_SECONDARY_TEXT};
-    }
-`;
 
 const getExplanationMessage = (device: TrezorDevice | undefined, discoveryIsRunning: boolean) => {
     let message;
@@ -26,7 +18,6 @@ const getExplanationMessage = (device: TrezorDevice | undefined, discoveryIsRunn
 
 interface AddAccountButtonProps extends Omit<ButtonProps, 'children'> {
     device: TrezorDevice | undefined;
-    noButtonLabel?: boolean;
     closeMenu?: () => void;
     isDisabled?: boolean;
 }
@@ -34,7 +25,6 @@ interface AddAccountButtonProps extends Omit<ButtonProps, 'children'> {
 export const AddAccountButton = ({
     device,
     isDisabled,
-    noButtonLabel,
     closeMenu,
     ...rest
 }: AddAccountButtonProps) => {
@@ -54,7 +44,7 @@ export const AddAccountButton = ({
     const tooltipMessage = getExplanationMessage(device, discoveryIsRunning);
 
     const ButtonComponent = (
-        <StyledButton
+        <IconButton
             onClick={
                 device
                     ? () => {
@@ -69,17 +59,21 @@ export const AddAccountButton = ({
                     : undefined
             }
             icon="PLUS"
-            variant="secondary"
             isDisabled={addAccountDisabled || isDisabled}
+            size="small"
+            variant="tertiary"
             {...rest}
-        >
-            {!noButtonLabel && <Translation id="TR_ADD_ACCOUNT" />}
-        </StyledButton>
+        />
     );
 
     if (tooltipMessage) {
         return (
-            <Tooltip maxWidth={200} content={tooltipMessage} placement="bottom">
+            <Tooltip
+                maxWidth={200}
+                content={tooltipMessage}
+                placement="bottom"
+                cursor="not-allowed"
+            >
                 {ButtonComponent}
             </Tooltip>
         );

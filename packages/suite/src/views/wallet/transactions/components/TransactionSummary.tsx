@@ -111,7 +111,7 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
     return (
         <Wrapper>
             <Actions>
-                <GraphRangeSelector onSelectedRange={onSelectedRange} align="left" />
+                <GraphRangeSelector onSelectedRange={onSelectedRange} align="bottom-left" />
                 <TransactionSummaryDropdown />
             </Actions>
             <ContentWrapper>

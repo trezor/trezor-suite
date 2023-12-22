@@ -13,8 +13,8 @@ import { NavigationItemBase } from './NavigationItem';
 const WebContainer = styled.div`
     display: flex;
     align-items: center;
-    margin-top: ${spacingsPx.sm};
-    padding-top: ${spacingsPx.xs};
+    padding: ${spacingsPx.xs};
+    border-top: 1px solid ${({ theme }) => theme.borderOnElevation0};
 `;
 
 const DescreetContainer = styled(NavigationItemBase)`
@@ -30,15 +30,16 @@ const DesktopContainer = styled(WebContainer)`
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: ${spacingsPx.md};
+    padding: ${spacingsPx.xs};
     border-top: 1px solid ${({ theme }) => theme.borderOnElevation0};
 
     ::after {
         content: '';
         position: absolute;
         top: ${spacingsPx.xxs};
+        bottom: ${spacingsPx.xxs};
         right: 50%;
         width: 1px;
-        height: 100%;
         background: ${({ theme }) => theme.borderOnElevation0};
     }
 `;
