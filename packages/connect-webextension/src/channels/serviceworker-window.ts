@@ -76,5 +76,6 @@ export class ServiceWorkerWindowChannel<
 
     disconnect() {
         this.port?.disconnect();
+        this.clear();
     }
 }

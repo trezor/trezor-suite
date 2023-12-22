@@ -4,8 +4,23 @@ import EventEmitter from 'events';
 import { PopupEventMessage, ConnectSettings } from '@trezor/connect/lib/exports';
 import { getOrigin } from '@trezor/connect/lib/utils/urlUtils';
 import { Log } from '@trezor/connect/lib/utils/debug';
+import { createDeferred, Deferred } from '@trezor/utils/lib';
 
 import { ServiceWorkerWindowChannel } from './channels/serviceworker-window';
+
+const checkIfTabExists = (tabId: number | undefined) =>
+    new Promise(resolve => {
+        if (!tabId) return resolve(false);
+        function callback() {
+            if (chrome.runtime.lastError) {
+                resolve(false);
+            } else {
+                // Tab exists
+                resolve(true);
+            }
+        }
+        chrome.tabs.get(tabId, callback);
+    });
 
 export class PopupManager extends EventEmitter {
     popupWindow: chrome.tabs.Tab | undefined;
@@ -22,11 +37,14 @@ export class PopupManager extends EventEmitter {
 
     logger: Log;
 
+    handshakePromise: Deferred;
+
     constructor(settings: ConnectSettings, { logger }: { logger: Log }) {
         super();
         this.settings = settings;
         this.origin = getOrigin(settings.popupSrc);
         this.logger = logger;
+        this.handshakePromise = createDeferred();
         this.channel = new ServiceWorkerWindowChannel<PopupEventMessage>({
             name: 'trezor-connect',
             channel: {
@@ -38,7 +56,14 @@ export class PopupManager extends EventEmitter {
         this.channel.init();
     }
 
-    request() {
+    async request() {
+        if (this.popupWindow?.id) {
+            const currentPopupExists = await checkIfTabExists(this.popupWindow?.id);
+            if (!currentPopupExists) {
+                this.clear();
+            }
+        }
+
         // popup request
         // bring popup window to front
         if (this.locked) {
@@ -134,6 +159,8 @@ export class PopupManager extends EventEmitter {
 
     clear(focus = true) {
         this.locked = false;
+
+        this.handshakePromise = createDeferred();
 
         if (this.channel) {
             this.channel.disconnect();

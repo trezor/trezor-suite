@@ -185,4 +185,8 @@ export abstract class AbstractMessageChannel<
 
         return this.messagePromises[message.id].promise;
     }
+
+    clear() {
+        this.handshakeFinished = undefined;
+    }
 }
