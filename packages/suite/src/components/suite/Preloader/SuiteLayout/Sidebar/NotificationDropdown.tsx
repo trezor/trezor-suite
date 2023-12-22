@@ -57,7 +57,8 @@ export const NotificationDropdown = (props: NavigationItemProps) => {
         <StyledDropdown
             onToggle={handleToggleChange}
             ref={dropdownRef}
-            alignMenu="left"
+            alignMenu="right-top"
+            offsetY={-12}
             content={
                 <NotificationsWrapper>
                     <Notifications onCancel={() => dropdownRef.current!.close()} />

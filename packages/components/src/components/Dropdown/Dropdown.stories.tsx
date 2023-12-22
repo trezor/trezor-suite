@@ -7,7 +7,7 @@ const Center = styled.div`
     display: flex;
     justify-content: center;
     width: 100%;
-    padding: 100px 0px;
+    padding: 100px 0;
 `;
 
 export default {

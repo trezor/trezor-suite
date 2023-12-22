@@ -103,7 +103,7 @@ const getFormattedLabel = (rangeLabel: GraphRange['label']) => {
 interface GraphRangeSelectorProps {
     onSelectedRange?: (range: GraphRange) => void;
     className?: string;
-    align?: 'left' | 'right';
+    align?: 'bottom-left' | 'bottom-right';
 }
 
 export const GraphRangeSelector = ({

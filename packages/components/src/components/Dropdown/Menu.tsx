@@ -95,7 +95,7 @@ const MenuItemContainer = styled.li<MenuItemsProps>`
         css`
             margin-top: ${spacingsPx.md};
 
-            :after {
+            ::after {
                 position: absolute;
                 width: 100%;
                 top: -${spacingsPx.xs};
@@ -290,12 +290,25 @@ const getDefaultFocusItemIndex = (items: MenuProps['items'], addon: MenuProps['a
     return null;
 };
 
-export type MenuAlignment = 'left' | 'right' | 'top-left' | 'top-right';
+export type MenuAlignment =
+    | 'bottom-left'
+    | 'bottom-right'
+    | 'left-bottom'
+    | 'left-top'
+    | 'right-bottom'
+    | 'right-top'
+    | 'top-left'
+    | 'top-right';
 
 export interface MenuProps {
     items?: GroupedMenuItems[];
     content?: React.ReactNode;
+    /**
+     * @description first word is position of the dropdown from the toggle icon, the second one is an alignment on the dropdown itself related to this toggle icon
+     */
     alignMenu?: MenuAlignment;
+    offsetX?: number;
+    offsetY?: number;
     coords?: Coords;
     addon?: Omit<AddonProps, 'setToggled'>;
     setToggled: (toggled: boolean) => void;

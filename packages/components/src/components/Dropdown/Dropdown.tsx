@@ -47,21 +47,21 @@ const getPlacementData = (
     }
 
     let coordsToUse: Coords;
-    let toggleDimentions;
+    let toggleDimensions;
     if (clickPos) {
         coordsToUse = clickPos;
     } else {
         const { x, y, width, height } = toggleRef.current.getBoundingClientRect();
 
         coordsToUse = { x, y };
-        toggleDimentions = { width, height };
+        toggleDimensions = { width, height };
     }
 
     if (!coordsToUse) {
         return {};
     }
 
-    return { coordsToUse, toggleDimentions };
+    return { coordsToUse, toggleDimensions };
 };
 
 export type DropdownProps = Omit<MenuProps, 'setToggled'> & {
@@ -87,7 +87,9 @@ export const Dropdown = forwardRef(
             isDisabled,
             renderOnClickPosition,
             addon,
-            alignMenu = 'left',
+            alignMenu = 'bottom-left',
+            offsetX,
+            offsetY,
             onToggle,
             className,
             children,
@@ -106,7 +108,7 @@ export const Dropdown = forwardRef(
         // when toggled, calculate the position of the menu
         // takes into account the toggle position, size and the menu alignment
         useLayoutEffect(() => {
-            const { coordsToUse, toggleDimentions } = getPlacementData(
+            const { coordsToUse, toggleDimensions } = getPlacementData(
                 toggleRef,
                 menuRef,
                 clickPos,
@@ -118,15 +120,17 @@ export const Dropdown = forwardRef(
 
             const { width, height } = menuRef.current?.getBoundingClientRect();
 
-            const adjustedCoords = getAdjustedCoords(
-                coordsToUse,
+            const adjustedCoords = getAdjustedCoords({
+                coords: coordsToUse,
                 alignMenu,
-                { width, height },
-                toggleDimentions,
-            );
+                menuDimensions: { width, height },
+                toggleDimensions,
+                offsetX,
+                offsetY,
+            });
 
             setCoords(adjustedCoords);
-        }, [isToggled, clickPos, alignMenu]);
+        }, [isToggled, clickPos, alignMenu, offsetX, offsetY]);
 
         useEffect(() => {
             if (!isToggled) {
