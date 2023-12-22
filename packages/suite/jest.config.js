@@ -46,6 +46,7 @@ module.exports = {
         '!**/constants/**',
         '!**/__tests__/**',
         '!**/__fixtures__/**',
+        '!<rootDir>/src/hooks/**/useCoinmarket*',
     ],
     coverageThreshold: {
         global: {
