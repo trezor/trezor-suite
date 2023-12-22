@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { getTitleForNetwork, getTitleForCoinjoinAccount } from '@suite-common/wallet-utils';
 import { Translation } from 'src/components/suite';
 import { Account } from 'src/types/wallet';
+import { TruncateWithTooltip } from '@trezor/components';
 
 const TabularNums = styled.span`
     font-variant-numeric: tabular-nums;
@@ -23,20 +24,31 @@ export const AccountLabel = ({
     index = 0,
 }: AccountLabelProps) => {
     if (accountLabel) {
-        return <TabularNums>{accountLabel}</TabularNums>;
+        return (
+            <TruncateWithTooltip>
+                <TabularNums>{accountLabel}</TabularNums>
+            </TruncateWithTooltip>
+        );
     }
 
     if (accountType === 'coinjoin') {
-        return <Translation id={getTitleForCoinjoinAccount(symbol)} />;
+        return (
+            <TruncateWithTooltip>
+                <Translation id={getTitleForCoinjoinAccount(symbol)} />
+            </TruncateWithTooltip>
+        );
     }
 
     return (
-        <Translation
-            id="LABELING_ACCOUNT"
-            values={{
-                networkName: <Translation id={getTitleForNetwork(symbol)} />, // Bitcoin, Ethereum, ...
-                index: index + 1, // this is the number which shows after hash, e.g. Ethereum #3
-            }}
-        />
+        <TruncateWithTooltip>
+            <Translation
+                id="LABELING_ACCOUNT"
+                isNested
+                values={{
+                    networkName: <Translation id={getTitleForNetwork(symbol)} />, // Bitcoin, Ethereum, ...
+                    index: index + 1, // this is the number which shows after hash, e.g. Ethereum #3
+                }}
+            />
+        </TruncateWithTooltip>
     );
 };

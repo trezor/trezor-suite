@@ -1,7 +1,7 @@
 import { Network } from '@suite-common/wallet-config';
 import React from 'react';
 import styled, { useTheme } from 'styled-components';
-import { CoinLogo, Icon } from '@trezor/components';
+import { AssetShareIndicator, Icon } from '@trezor/components';
 import { useSelector } from 'react-redux';
 
 import { SkeletonCircle, SkeletonRectangle } from 'src/components/suite';
@@ -91,11 +91,10 @@ export const AssetInfo = ({ network, onClick, assetsFiatBalances, index }: Asset
     return (
         <Container onClick={onClick}>
             <LogoWrapper>
-                <CoinLogo
+                <AssetShareIndicator
                     symbol={symbol}
                     size={24}
                     percentageShare={assetPercentage}
-                    hasShareIndicator
                     index={index}
                 />
             </LogoWrapper>

@@ -29,8 +29,7 @@ const Wrapper = styled.div<{ isAnimationTriggered?: boolean }>`
     display: flex;
     gap: ${spacingsPx.xs};
     width: 100%;
-    height: 54px;
-    padding: ${spacingsPx.xs} ${spacingsPx.xxs} ${spacingsPx.xs} ${spacingsPx.xs};
+    padding: ${spacingsPx.md} ${spacingsPx.sm} ${spacingsPx.md} ${spacingsPx.md};
     align-items: center;
     cursor: pointer;
     border-radius: ${borders.radii.sm};

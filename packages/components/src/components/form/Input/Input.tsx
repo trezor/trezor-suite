@@ -54,10 +54,8 @@ const getInputAddonPadding = (size: InputSize) =>
 
 const InputAddon = styled.div<{ align: innerAddonAlignment; size: InputSize }>`
     position: absolute;
-    top: 0;
-    bottom: 0;
-    right: ${({ align, size }) => align === 'right' && getInputAddonPadding(size)};
-    left: ${({ align, size }) => align === 'left' && getInputAddonPadding(size)};
+    inset: 0 ${({ align, size }) => (align === 'right' ? getInputAddonPadding(size) : 'auto')} 0
+        ${({ align, size }) => (align === 'left' ? getInputAddonPadding(size) : 'auto')};
     display: flex;
     align-items: center;
 `;
