@@ -52,11 +52,6 @@ export const fetchCurrentFiatRates = async (
         return rateFromConnect;
     }
 
-    if (ticker.tokenAddress) {
-        // We don't want to fallback to coingecko for tokens because it returns nonsenses
-        return null;
-    }
-
     const responseBlockbookService = blockbookService.isTickerSupported(ticker)
         ? await blockbookService.fetchCurrentFiatRates(ticker.symbol, undefined, currency)
         : null;
@@ -85,11 +80,6 @@ export const fetchLastWeekFiatRates = async (
 
     if (rateFromConnect) {
         return rateFromConnect;
-    }
-
-    if (ticker.tokenAddress) {
-        // We don't want to fallback to coingecko for tokens because it returns nonsenses
-        return null;
     }
 
     const responseBlockbookService = blockbookService.isTickerSupported(ticker)
