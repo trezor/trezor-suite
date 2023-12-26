@@ -1,24 +1,22 @@
 import styled from 'styled-components';
-import { Select, variables } from '@trezor/components';
+import { Select } from '@trezor/components';
 import { Translation } from 'src/components/suite/Translation';
 import { getAccountTypeName, getAccountTypeTech } from '@suite-common/wallet-utils';
 import { AccountTypeDescription } from './AccountTypeDescription';
 import { Network } from 'src/types/wallet';
-import { spacingsPx } from '@trezor/theme';
+import { typography } from '@trezor/theme';
 
 const LabelWrapper = styled.div`
     display: flex;
-    align-items: center;
+    align-items: baseline;
 `;
 
 const TypeInfo = styled.div`
     display: flex;
     flex: 1;
-    padding-top: ${spacingsPx.xxxs};
-    align-items: center;
-    font-size: ${variables.FONT_SIZE.TINY};
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     margin-left: 1ch;
+    color: ${({ theme }) => theme.textSubdued};
+    ${typography.label}
 `;
 
 const buildAccountTypeOption = (network: Network) =>
@@ -32,6 +30,7 @@ type Option = ReturnType<typeof buildAccountTypeOption>;
 const formatLabel = (option: Option) => (
     <LabelWrapper>
         <Translation id={getAccountTypeName(option.value.bip43Path)} />
+
         <TypeInfo>
             <Translation id={getAccountTypeTech(option.value.bip43Path)} />
         </TypeInfo>
