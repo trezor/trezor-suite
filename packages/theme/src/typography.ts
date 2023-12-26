@@ -67,13 +67,13 @@ export const typographyStylesBase: Record<TypographyStyle, TypographyStyleDefini
     },
     callout: {
         fontSize: 14,
-        lineHeight: 21,
+        lineHeight: 20,
         fontWeight: fontWeights.semiBold,
         letterSpacing: -0.3,
     },
     hint: {
         fontSize: 14,
-        lineHeight: 21,
+        lineHeight: 20,
         fontWeight: fontWeights.medium,
         letterSpacing: -0.3,
     },
