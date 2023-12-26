@@ -14,7 +14,7 @@ export const getPadding = (size: ButtonSize, hasLabel?: boolean) => {
         case 'small':
             return hasLabel ? `${spacingsPx.xs} ${spacingsPx.md}` : '10px';
         case 'tiny':
-            return hasLabel ? `${spacingsPx.xxxs} ${spacingsPx.xs}` : '8px';
+            return hasLabel ? `${spacingsPx.xxxs} ${spacingsPx.xs}` : '6px';
 
         default:
             break;
@@ -48,7 +48,7 @@ export const getIconSize = (size: ButtonSize) => {
         case 'small':
             return spacings.md;
         case 'tiny':
-            return spacings.md;
+            return spacings.sm;
 
         default:
             return spacings.xl;
