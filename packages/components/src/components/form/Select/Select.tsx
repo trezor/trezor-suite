@@ -1,7 +1,15 @@
 import { useCallback, useRef, ReactNode } from 'react';
 import ReactSelect, { Props as ReactSelectProps, StylesConfig, SelectInstance } from 'react-select';
 import styled, { css, DefaultTheme, useTheme } from 'styled-components';
-import { borders, spacingsPx, typography, zIndices } from '@trezor/theme';
+import {
+    borders,
+    boxShadows,
+    spacings,
+    spacingsPx,
+    typography,
+    typographyStylesBase,
+    zIndices,
+} from '@trezor/theme';
 
 import { INPUT_HEIGHTS, LABEL_TRANSFORM, Label, baseInputStyle } from '../InputStyles';
 import { BottomText } from '../BottomText';
@@ -9,7 +17,7 @@ import { InputState, InputSize } from '../inputTypes';
 import { Control, GroupHeading, Option } from './customComponents';
 import { useOnKeyDown } from './useOnKeyDown';
 import { useDetectPortalTarget } from './useDetectPortalTarget';
-import { menuStyle } from '../../Dropdown/menuStyle';
+import { DROPDOWN_MENU, menuStyle } from '../../Dropdown/menuStyle';
 
 const reactSelectClassNamePrefix = 'react-select';
 
@@ -18,9 +26,61 @@ const createSelectStyle = (theme: DefaultTheme): StylesConfig<Option, boolean> =
         ...base,
         zIndex: zIndices.modal /* Necessary to be visible inside a Modal */,
     }),
+    // menu styles are here because of the portal
+    menu: base => ({
+        ...base,
+        // should be the same as menuStyle !!!
+        display: 'flex',
+        flexDirection: 'column',
+        flex: 1,
+        padding: spacings.sm,
+        minWidth: 140,
+        borderRadius: borders.radii.md,
+        background: theme.backgroundSurfaceElevation1,
+        boxShadow: boxShadows.elevation3,
+        zIndex: zIndices.modal,
+        animation: `${DROPDOWN_MENU.getName()} 0.15s ease-in-out`,
+        listStyleType: 'none',
+        overflow: 'hidden',
+        // when theme changes from light to dark
+        transition: 'background 0.3s',
+        border: 'none',
+    }),
+    groupHeading: base => ({
+        ...base,
+        margin: 0,
+        padding: spacings.xs,
+        ...{
+            ...typographyStylesBase.label,
+            lineHeight: `${typographyStylesBase.label.lineHeight}px`,
+        },
+        textTransform: 'initial',
+    }),
+    group: base => ({
+        ...base,
+        padding: 0,
+
+        '& + &': {
+            paddingTop: spacingsPx.xxs,
+            marginTop: spacingsPx.xxs,
+        },
+    }),
     option: (base, { isFocused }) => ({
         ...base,
+        padding: `${spacingsPx.xs} ${spacingsPx.sm}`,
+        borderRadius: borders.radii.xxs,
         background: isFocused ? theme.backgroundSurfaceElevation0 : 'transparent',
+
+        color: theme.textDefault,
+        ...{
+            ...typographyStylesBase.body,
+            lineHeight: `${typographyStylesBase.body.lineHeight}px`,
+        },
+        cursor: 'pointer',
+
+        ':active': {
+            background: theme.backgroundSurfaceElevation0,
+        },
     }),
 });
 
@@ -128,34 +188,6 @@ const Wrapper = styled.div<WrapperProps>`
         ${menuStyle}
         border: none;
         z-index: ${zIndices.base};
-    }
-
-    .${reactSelectClassNamePrefix}__group-heading {
-        margin: 0;
-        padding: ${spacingsPx.xs};
-        ${typography.label};
-        text-transform: initial;
-    }
-
-    .${reactSelectClassNamePrefix}__group {
-        padding: 0;
-
-        & + & {
-            padding-top: ${spacingsPx.xxs};
-            margin-top: ${spacingsPx.xxs};
-        }
-    }
-
-    .${reactSelectClassNamePrefix}__option {
-        padding: ${spacingsPx.xs} ${spacingsPx.sm};
-        border-radius: ${borders.radii.xxs};
-        color: ${({ theme }) => theme.textDefault};
-        ${typography.body};
-        cursor: pointer;
-
-        :active {
-            background: ${({ theme }) => theme.backgroundSurfaceElevation0};
-        }
     }
 `;
 
