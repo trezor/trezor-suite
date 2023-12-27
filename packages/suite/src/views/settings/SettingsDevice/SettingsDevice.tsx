@@ -1,29 +1,30 @@
+import { isDeviceRemembered } from '@suite-common/suite-utils';
 import { DeviceModelInternal, type TransportInfo } from '@trezor/connect';
 import { isBitcoinOnlyDevice, pickByDeviceModel } from '@trezor/device-utils';
-import { isDeviceRemembered } from '@suite-common/suite-utils';
 
 import { DeviceBanner, SettingsLayout, SettingsSection } from 'src/components/settings';
 import { Translation } from 'src/components/suite';
 import { useDevice, useSelector } from 'src/hooks/suite';
 import type { TrezorDevice } from 'src/types/suite';
 
-import { BackupRecoverySeed } from './BackupRecoverySeed';
-import { BackupFailed } from './BackupFailed';
-import { CheckRecoverySeed } from './CheckRecoverySeed';
-import { FirmwareVersion } from './FirmwareVersion';
-import { FirmwareTypeChange } from './FirmwareTypeChange';
-import { PinProtection } from './PinProtection';
-import { ChangePin } from './ChangePin';
-import { Passphrase } from './Passphrase';
-import { SafetyChecks } from './SafetyChecks';
-import { DeviceLabel } from './DeviceLabel';
-import { Homescreen } from './Homescreen';
-import { DisplayRotation } from './DisplayRotation';
-import { AutoLock } from './AutoLock';
-import { WipeDevice } from './WipeDevice';
-import { CustomFirmware } from './CustomFirmware';
 import { AuthenticateDevice } from './AuthenticateDevice';
+import { AutoLock } from './AutoLock';
+import { BackupFailed } from './BackupFailed';
+import { BackupRecoverySeed } from './BackupRecoverySeed';
+import { ChangePin } from './ChangePin';
+import { CheckRecoverySeed } from './CheckRecoverySeed';
+import { CustomFirmware } from './CustomFirmware';
 import { DeviceAuthenticityOptOut } from './DeviceAuthenticityOptOut';
+import { DeviceLabel } from './DeviceLabel';
+import { DisplayRotation } from './DisplayRotation';
+import { FirmwareTypeChange } from './FirmwareTypeChange';
+import { FirmwareVersion } from './FirmwareVersion';
+import { Homescreen } from './Homescreen';
+import { Passphrase } from './Passphrase';
+import { PinProtection } from './PinProtection';
+import { SafetyChecks } from './SafetyChecks';
+import { WipeCode } from './WipeCode';
+import { WipeDevice } from './WipeDevice';
 
 const deviceSettingsUnavailable = (device?: TrezorDevice, transport?: Partial<TransportInfo>) => {
     const noTransportAvailable = transport && !transport.type;
@@ -147,6 +148,7 @@ export const SettingsDevice = () => {
 
             <SettingsSection title={<Translation id="TR_ADVANCED" />} icon="GHOST">
                 <WipeDevice isDeviceLocked={isDeviceLocked} />
+                <WipeCode isDeviceLocked={isDeviceLocked} />
                 <CustomFirmware />
                 {supportsDeviceAuthentication && <DeviceAuthenticityOptOut />}
             </SettingsSection>

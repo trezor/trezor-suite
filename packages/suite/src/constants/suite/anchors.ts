@@ -22,6 +22,7 @@ export const enum SettingsAnchor {
     FirmwareType = '@device-settings/firmware-type',
     PinProtection = '@device-settings/pin-protection',
     ChangePin = '@device-settings/change-pin',
+    WipeCode = '@device-settings/wipe-code',
     Passphrase = '@device-settings/passphrase',
     SafetyChecks = '@device-settings/safety-checks',
     DeviceLabel = '@device-settings/device-label',

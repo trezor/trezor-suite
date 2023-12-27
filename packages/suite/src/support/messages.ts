@@ -2456,6 +2456,15 @@ export default defineMessages({
         defaultMessage: 'Change PIN',
         id: 'TR_DEVICE_SETTINGS_CHANGE_PIN_TITLE',
     },
+    TR_DEVICE_SETTINGS_WIPE_CODE_TITLE: {
+        defaultMessage: 'Setup wipe code',
+        id: 'TR_DEVICE_SETTINGS_WIPE_CODE_TITLE',
+    },
+    TR_DEVICE_SETTINGS_WIPE_CODE_DESC: {
+        defaultMessage:
+            'The wipe code is an advanced feature that allows the user to set, and later enter, a "self-destruct" PIN code.',
+        id: 'TR_DEVICE_SETTINGS_WIPE_CODE_DESC',
+    },
     TR_DEVICE_SETTINGS_AUTO_LOCK: {
         defaultMessage: 'Auto-lock time',
         id: 'TR_DEVICE_SETTINGS_AUTO_LOCK',
@@ -4550,6 +4559,10 @@ export default defineMessages({
         id: 'TR_CHANGE_PIN',
         defaultMessage: 'Change PIN',
         description: 'Button that initiates pin change',
+    },
+    TR_WIPE_CODE: {
+        id: 'TR_WIPE_CODE',
+        defaultMessage: 'Setup wipe code',
     },
     TR_DEVICE_PIN_PROTECTION_ENABLED: {
         id: 'TR_DEVICE_PIN_PROTECTION_ENABLED',

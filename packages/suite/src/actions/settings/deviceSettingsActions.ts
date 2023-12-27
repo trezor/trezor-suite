@@ -62,6 +62,39 @@ export const changePin =
         }
     };
 
+export const changeWipeCode =
+    (params: Parameters<typeof TrezorConnect.changeWipeCode>[0] = {}, skipSuccessToast?: boolean) =>
+    async (dispatch: Dispatch, getState: GetState) => {
+        const device = selectDevice(getState());
+
+        if (!device) return;
+
+        const result = await TrezorConnect.changeWipeCode({
+            device: {
+                path: device.path,
+            },
+            ...params,
+        });
+        if (result.success) {
+            if (!skipSuccessToast) {
+                dispatch(notificationsActions.addToast({ type: 'pin-changed' }));
+            }
+        } else if (result.payload.code === 'Failure_PinMismatch') {
+            dispatch(modalActions.openModal({ type: 'pin-mismatch' }));
+        } else if (result.payload.error.includes('string overflow')) {
+            // this is a workaround for FW < 1.10.0
+            // translate generic error from the device if the entered PIN is longer than 9 digits
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'error',
+                    error: 'Please upgrade your firmware to enable extended PIN format.',
+                }),
+            );
+        } else {
+            dispatch(notificationsActions.addToast({ type: 'error', error: result.payload.error }));
+        }
+    };
+
 export const wipeDevice = () => async (dispatch: Dispatch, getState: GetState) => {
     const device = selectDevice(getState());
     if (!device) return;
