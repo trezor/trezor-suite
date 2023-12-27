@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 import { checkAddressChecksum, toChecksumAddress } from 'web3-utils';
 import styled, { useTheme } from 'styled-components';
 import { capitalizeFirstLetter } from '@trezor/utils';
-import { Input, Icon, Button, Tooltip } from '@trezor/components';
+import { Input, Icon, Button, Tooltip, IconButton } from '@trezor/components';
 import { AddressLabeling, Translation, MetadataLabeling } from 'src/components/suite';
 import { scanQrRequest } from 'src/actions/wallet/sendFormActions';
 import { useDevice, useDispatch, useTranslation } from 'src/hooks/suite';
@@ -22,6 +22,22 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import type { Output } from 'src/types/wallet/sendForm';
 import { InputError } from 'src/components/wallet';
 
+const Container = styled.div`
+    position: relative;
+`;
+
+const Heading = styled.p`
+    position: absolute;
+`;
+
+const AddressInput = styled(Input)`
+    /* until the elevation context is implemented */
+    input {
+        background: ${({ theme }) => theme.backgroundNeutralSubtleOnElevation1};
+        border-color: ${({ theme }) => theme.borderOnElevation1};
+    }
+`;
+
 const Text = styled.span`
     display: flex;
     align-items: center;
@@ -29,10 +45,6 @@ const Text = styled.span`
     > div {
         margin-left: 4px;
     }
-`;
-
-const StyledIcon = styled(Icon)`
-    display: flex;
 `;
 
 const MetadataLabelingWrapper = styled.div`
@@ -220,79 +232,86 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     const addressBottomText = isAddressWithLabel ? addressLabelComponent : null;
 
     return (
-        <Input
-            inputState={inputState}
-            innerAddon={
-                metadataEnabled && broadcastEnabled ? (
-                    <MetadataLabelingWrapper>
-                        <MetadataLabeling
-                            defaultVisibleValue=""
-                            payload={{
-                                type: 'outputLabel',
-                                entityKey: account.key,
-                                // txid is not known at this moment. metadata is only saved
-                                // along with other sendForm data and processed in sendFormActions
-                                txid: 'will-be-replaced',
-                                outputIndex: outputId,
-                                defaultValue: `${outputId}`,
-                                value: label,
+        <Container>
+            <Heading>
+                <Translation
+                    id={outputsCount > 1 ? 'TR_SEND_RECIPIENT_ADDRESS' : 'TR_SEND_ADDRESS_SECTION'}
+                    values={{ index: recipientId }}
+                />
+            </Heading>
+
+            <AddressInput
+                inputState={inputState}
+                innerAddon={
+                    metadataEnabled && broadcastEnabled ? (
+                        <MetadataLabelingWrapper>
+                            <MetadataLabeling
+                                defaultVisibleValue=""
+                                payload={{
+                                    type: 'outputLabel',
+                                    entityKey: account.key,
+                                    // txid is not known at this moment. metadata is only saved
+                                    // along with other sendForm data and processed in sendFormActions
+                                    txid: 'will-be-replaced',
+                                    outputIndex: outputId,
+                                    defaultValue: `${outputId}`,
+                                    value: label,
+                                }}
+                                onSubmit={(value: string | undefined) => {
+                                    setValue(`outputs.${outputId}.label`, value || '');
+                                    setDraftSaveRequest(true);
+                                }}
+                                visible
+                            />
+                        </MetadataLabelingWrapper>
+                    ) : undefined
+                }
+                label={
+                    <Text>
+                        <Translation id="RECIPIENT_ADDRESS" />
+                        {inputState === 'success' && (
+                            <Tooltip content={<Translation id="TR_ADDRESS_FORMAT" />}>
+                                <Icon icon="CHECK" size={18} color={theme.TYPE_GREEN} />
+                            </Tooltip>
+                        )}
+                    </Text>
+                }
+                labelHoverAddon={
+                    <Button variant="tertiary" size="tiny" icon="QR" onClick={handleQrClick}>
+                        <Translation id="RECIPIENT_SCAN" />
+                    </Button>
+                }
+                labelRight={
+                    outputsCount > 1 ? (
+                        <IconButton
+                            icon="CROSS"
+                            size="tiny"
+                            variant="tertiary"
+                            data-test={`outputs.${outputId}.remove`}
+                            onClick={() => {
+                                removeOutput(outputId);
+                                // compose by first Output
+                                composeTransaction();
                             }}
-                            onSubmit={(value: string | undefined) => {
-                                setValue(`outputs.${outputId}.label`, value || '');
-                                setDraftSaveRequest(true);
-                            }}
-                            visible
                         />
-                    </MetadataLabelingWrapper>
-                ) : undefined
-            }
-            label={
-                <Text>
-                    {outputsCount > 1 && `${recipientId}.`} &nbsp;
-                    <Translation id="RECIPIENT_ADDRESS" />
-                    {inputState === 'success' && (
-                        <Tooltip content={<Translation id="TR_ADDRESS_FORMAT" />}>
-                            <Icon icon="CHECK" size={18} color={theme.TYPE_GREEN} />
-                        </Tooltip>
-                    )}
-                </Text>
-            }
-            labelHoverAddon={
-                <Button variant="tertiary" size="tiny" icon="QR" onClick={handleQrClick}>
-                    <Translation id="RECIPIENT_SCAN" />
-                </Button>
-            }
-            labelRight={
-                outputsCount > 1 ? (
-                    <StyledIcon
-                        size={16}
-                        color={theme.TYPE_LIGHT_GREY}
-                        icon="CROSS"
-                        useCursorPointer
-                        data-test={`outputs.${outputId}.remove`}
-                        onClick={() => {
-                            removeOutput(outputId);
-                            // compose by first Output
-                            composeTransaction();
-                        }}
-                    />
-                ) : undefined
-            }
-            bottomText={
-                addressError ? (
-                    <InputError
-                        message={addressError.message}
-                        button={getValidationButtonProps()}
-                    />
-                ) : (
-                    addressBottomText
-                )
-            }
-            data-test={inputName}
-            defaultValue={addressValue}
-            maxLength={formInputsMaxLength.address}
-            innerRef={inputRef}
-            {...inputField}
-        />
+                    ) : undefined
+                }
+                bottomText={
+                    addressError ? (
+                        <InputError
+                            message={addressError.message}
+                            button={getValidationButtonProps()}
+                        />
+                    ) : (
+                        addressBottomText
+                    )
+                }
+                data-test={inputName}
+                defaultValue={addressValue}
+                maxLength={formInputsMaxLength.address}
+                innerRef={inputRef}
+                {...inputField}
+            />
+        </Container>
     );
 };

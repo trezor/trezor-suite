@@ -22,10 +22,13 @@ export const useSendFormOutputs = ({
     composeRequest,
 }: Props) => {
     const addOutput = useCallback(() => {
-        outputsFieldArray.append({
-            ...DEFAULT_PAYMENT,
-            currency: localCurrencyOption,
-        });
+        outputsFieldArray.append(
+            {
+                ...DEFAULT_PAYMENT,
+                currency: localCurrencyOption,
+            },
+            { shouldFocus: true },
+        );
     }, [localCurrencyOption, outputsFieldArray]);
 
     const removeOutput = useCallback(

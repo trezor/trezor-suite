@@ -3,7 +3,6 @@ import ReactSelect, { Props as ReactSelectProps, StylesConfig, SelectInstance } 
 import styled, { css, DefaultTheme, useTheme } from 'styled-components';
 import {
     borders,
-    boxShadows,
     spacings,
     spacingsPx,
     typography,
@@ -37,7 +36,7 @@ const createSelectStyle = (theme: DefaultTheme): StylesConfig<Option, boolean> =
         minWidth: 140,
         borderRadius: borders.radii.md,
         background: theme.backgroundSurfaceElevation1,
-        boxShadow: boxShadows.elevation3,
+        boxShadow: theme.boxShadowElevation3,
         zIndex: zIndices.modal,
         animation: `${DROPDOWN_MENU.getName()} 0.15s ease-in-out`,
         listStyleType: 'none',
