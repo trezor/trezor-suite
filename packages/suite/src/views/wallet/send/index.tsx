@@ -27,7 +27,7 @@ const SendLayout = styled(WalletLayout)`
 
 const FormGrid = styled.div`
     display: grid;
-    grid-template-columns: minmax(500px, auto) minmax(400px, 420px);
+    grid-template-columns: minmax(500px, auto) minmax(340px, 420px);
     gap: ${spacingsPx.md};
 
     > :not(:last-child) {

@@ -9,10 +9,10 @@ import {
     focusStyleTransition,
 } from '../../../utils/utils';
 
-const Wrapper = styled.div<Pick<SwitchProps, 'labelPosition'>>`
+const Wrapper = styled.div<Pick<SwitchProps, 'labelPosition' | 'isSmall'>>`
     display: flex;
     align-items: center;
-    gap: ${spacingsPx.md};
+    gap: ${({ isSmall }) => (isSmall ? spacingsPx.sm : spacingsPx.md)};
     flex-direction: ${({ labelPosition }) => (labelPosition === 'left' ? 'row-reverse' : 'row')};
 `;
 
@@ -122,7 +122,7 @@ export const Switch = ({
     };
 
     return (
-        <Wrapper labelPosition={labelPosition}>
+        <Wrapper labelPosition={labelPosition} className={className}>
             <Container
                 isChecked={isChecked}
                 isDisabled={isDisabled}
@@ -131,7 +131,6 @@ export const Switch = ({
                     e.preventDefault();
                     handleChange();
                 }}
-                className={className}
                 data-test={dataTest}
                 isSmall={isSmall}
             >
@@ -152,6 +151,7 @@ export const Switch = ({
                     aria-checked={isChecked}
                 />
             </Container>
+
             {label && (
                 <Label isDisabled={isDisabled} isAlert={isAlert} isSmall={isSmall} htmlFor={id}>
                     {label}

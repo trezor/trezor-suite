@@ -1,9 +1,15 @@
+import styled from 'styled-components';
 import { Button, Dropdown, DropdownMenuItemProps } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { sendRaw } from 'src/actions/wallet/sendFormActions';
 import { WalletLayoutHeader } from 'src/components/wallet';
+import { FADE_IN } from '@trezor/components/src/config/animations';
+
+const ClearButton = styled(Button)`
+    animation: ${FADE_IN} 0.16s;
+`;
 
 export const Header = () => {
     const dispatch = useDispatch();
@@ -47,14 +53,14 @@ export const Header = () => {
     return (
         <WalletLayoutHeader title="TR_NAV_SEND">
             {isDirty && (
-                <Button
+                <ClearButton
                     size="small"
                     variant="tertiary"
                     onClick={resetContext}
                     data-test="clear-form"
                 >
                     <Translation id="TR_CLEAR_ALL" />
-                </Button>
+                </ClearButton>
             )}
 
             <Dropdown
