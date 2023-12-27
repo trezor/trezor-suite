@@ -25,29 +25,37 @@ import {
     validateMin,
     validateReserveOrBalance,
 } from 'src/utils/suite/validation';
+import { spacingsPx } from '@trezor/theme';
+import { breakpointMediaQueries } from '@trezor/styles';
 
 const Row = styled.div`
+    position: relative;
     display: flex;
     flex: 1;
 
-    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
+    ${breakpointMediaQueries.below_lg} {
         flex-direction: column;
+        gap: ${spacingsPx.sm};
     }
+`;
+
+const Heading = styled.p`
+    position: absolute;
 `;
 
 const Text = styled.div`
     margin-right: 3px;
 `;
 
-const SwitchWrapper = styled.div`
-    align-items: center;
-    display: flex;
-    gap: 4px;
-`;
-
-const StyledInput = styled(NumberInput)`
+const AmountInput = styled(NumberInput)`
     display: flex;
     flex: 1;
+
+    /* until the elevation context is implemented */
+    input {
+        background: ${({ theme }) => theme.backgroundNeutralSubtleOnElevation1};
+        border-color: ${({ theme }) => theme.borderOnElevation1};
+    }
 ` as typeof NumberInput; // Styled wrapper doesn't preserve type argument, see https://github.com/styled-components/styled-components/issues/1803#issuecomment-857092410
 
 const Label = styled.div`
@@ -72,17 +80,12 @@ const TokenBalanceValue = styled.span`
 `;
 
 const StyledTransferIcon = styled(Icon)`
-    @media all and (max-width: ${variables.SCREEN_SIZE.LG}) {
-        transform: rotate(90deg);
-    }
-`;
-const TransferIconWrapper = styled.div`
-    margin: 45px 20px 0;
+    margin: 50px 20px 0;
 
     @media all and (max-width: ${variables.SCREEN_SIZE.LG}) {
-        /* transform: rotate(90deg); */
         align-self: center;
         margin: 0;
+        transform: rotate(90deg);
     }
 `;
 
@@ -210,47 +213,38 @@ export const Amount = ({ output, outputId }: AmountProps) => {
         },
     };
 
+    const SendMaxSwitch = () => (
+        <Switch
+            labelPosition="left"
+            isChecked={isSetMaxActive}
+            dataTest={maxSwitchId}
+            isSmall
+            onChange={() => {
+                setMax(outputId, isSetMaxActive);
+                composeTransaction(inputName);
+            }}
+            label={<Translation id="AMOUNT_SEND_MAX" />}
+        />
+    );
+
     return (
         <>
             <Row>
+                <Heading>
+                    <Translation id="AMOUNT" />
+                </Heading>
+
                 <Left>
-                    <StyledInput
+                    <AmountInput
                         inputState={inputState}
-                        labelHoverAddon={
-                            !isSetMaxVisible ? (
-                                <SwitchWrapper>
-                                    <Switch
-                                        isChecked={isSetMaxActive}
-                                        dataTest={maxSwitchId}
-                                        onChange={() => {
-                                            setMax(outputId, isSetMaxActive);
-                                            composeTransaction(inputName);
-                                        }}
-                                        label={<Translation id="AMOUNT_SEND_MAX" />}
-                                    />
-                                </SwitchWrapper>
-                            ) : undefined
-                        }
-                        labelRight={
-                            isSetMaxVisible ? (
-                                <SwitchWrapper>
-                                    <Switch
-                                        isChecked={isSetMaxActive}
-                                        dataTest={maxSwitchId}
-                                        onChange={() => {
-                                            setMax(outputId, isSetMaxActive);
-                                            composeTransaction(inputName);
-                                        }}
-                                        label={<Translation id="AMOUNT_SEND_MAX" />}
-                                    />
-                                </SwitchWrapper>
-                            ) : undefined
-                        }
+                        labelHoverAddon={!isSetMaxVisible ? <SendMaxSwitch /> : undefined}
+                        labelRight={isSetMaxVisible ? <SendMaxSwitch /> : undefined}
                         label={
                             <Label>
                                 <Text>
                                     <Translation id="AMOUNT" />
                                 </Text>
+
                                 {tokenBalance && (
                                     <TokenBalance>
                                         <Translation
@@ -279,19 +273,16 @@ export const Amount = ({ output, outputId }: AmountProps) => {
                     />
                 </Left>
 
-                {/* TODO: token FIAT rates calculation */}
                 {!token && (
                     <FiatValue amount="1" symbol={symbol} fiatCurrency={localCurrencyOption.value}>
                         {({ rate }) =>
                             rate && (
                                 <>
-                                    <TransferIconWrapper>
-                                        <StyledTransferIcon
-                                            icon="TRANSFER"
-                                            size={16}
-                                            color={theme.TYPE_LIGHT_GREY}
-                                        />
-                                    </TransferIconWrapper>
+                                    <StyledTransferIcon
+                                        icon="TRANSFER"
+                                        size={16}
+                                        color={theme.TYPE_LIGHT_GREY}
+                                    />
 
                                     <Right>
                                         <Fiat output={output} outputId={outputId} />
@@ -302,6 +293,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
                     </FiatValue>
                 )}
             </Row>
+
             {isLowAnonymity && (
                 <StyledWarning withIcon>
                     <Translation id="TR_NOT_ENOUGH_ANONYMIZED_FUNDS_WARNING" />
