@@ -8414,4 +8414,13 @@ export default defineMessages({
         id: 'TR_SHOW_BALANCES',
         defaultMessage: 'Show balances',
     },
+    TR_SEND_ADDRESS_SECTION: {
+        id: 'TR_SEND_ADDRESS_SECTION',
+        defaultMessage: 'To',
+    },
+    TR_SEND_RECIPIENT_ADDRESS: {
+        id: 'TR_SEND_RECIPIENT_ADDRESS',
+        defaultMessage:
+            '{index, selectordinal, one {#st} two {#nd} few {#rd} other {#th} } Recipient',
+    },
 });
