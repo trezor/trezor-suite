@@ -77,7 +77,7 @@ export const changeWipeCode =
         });
         if (result.success) {
             if (!skipSuccessToast) {
-                dispatch(notificationsActions.addToast({ type: 'pin-changed' }));
+                dispatch(notificationsActions.addToast({ type: 'wipe-code-changed' }));
             }
         } else if (result.payload.code === 'Failure_PinMismatch') {
             dispatch(modalActions.openModal({ type: 'pin-mismatch' }));

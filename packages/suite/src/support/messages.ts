@@ -3903,6 +3903,10 @@ export default defineMessages({
         id: 'TOAST_PIN_CHANGED',
         defaultMessage: 'PIN changed successfully',
     },
+    TOAST_WIPE_CODE_CHANGED: {
+        id: 'TOAST_WIPE_CODE_CHANGED',
+        defaultMessage: 'Wipe code changed successfully',
+    },
     TOAST_DEVICE_WIPED: {
         id: 'TOAST_DEVICE_WIPED',
         defaultMessage: 'Device wiped successfully',

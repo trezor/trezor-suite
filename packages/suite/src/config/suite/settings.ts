@@ -7,6 +7,7 @@ const IMPORTANT_NOTIFICATION_TYPES: Array<NotificationEntry['type']> = [
     'tx-confirmed',
     'clear-storage',
     'pin-changed',
+    'wipe-code-changed',
     'device-wiped',
     'backup-success',
     'backup-failed',
