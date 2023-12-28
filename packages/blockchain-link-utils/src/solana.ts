@@ -66,6 +66,38 @@ export const getTokenNameAndSymbol = (mint: string, tokenDetailByMint: TokenDeta
           };
 };
 
+type SplTokenAccountData = {
+    /** Name of the program that owns this account */
+    program: 'spl-token';
+    /** Parsed account data */
+    parsed: {
+        info: {
+            mint: string;
+            tokenAmount: {
+                amount: string;
+                decimals: number;
+            };
+        };
+    };
+    /** Space used by account data */
+    space: number;
+};
+
+type SplTokenAccount = { account: AccountInfo<SplTokenAccountData>; pubkey: PublicKey };
+
+const isSplTokenAccount = (tokenAccount: ApiTokenAccount): tokenAccount is SplTokenAccount => {
+    const { parsed } = tokenAccount.account.data;
+    return (
+        tokenAccount.account.data.program === 'spl-token' &&
+        'info' in parsed &&
+        'mint' in parsed.info &&
+        typeof parsed.info.mint === 'string' &&
+        'tokenAmount' in parsed.info &&
+        typeof parsed.info.tokenAmount.amount === 'string' &&
+        typeof parsed.info.tokenAmount.decimals === 'number'
+    );
+};
+
 export const transformTokenInfo = (
     tokenAccounts: ApiTokenAccount[],
     tokenDetailByMint: TokenDetailByMint,
@@ -73,9 +105,10 @@ export const transformTokenInfo = (
     const tokens: TokenInfo[] = F.toMutable(
         pipe(
             tokenAccounts,
-            A.map((tokenAccount: ApiTokenAccount): TokenInfo & { address: string } => {
+            // since ApiTokenAccount type is not precise enough, we type-guard the account to make sure they contain all the necessary data
+            A.filter(isSplTokenAccount),
+            A.map(tokenAccount => {
                 const { info } = tokenAccount.account.data.parsed;
-
                 return {
                     type: 'SPL', // Designation for Solana tokens
                     contract: info.mint,
