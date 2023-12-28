@@ -5,6 +5,7 @@ export { default as cardanoGetAddressDerivations } from './cardanoGetAddressDeri
 export { default as cardanoGetNativeScriptHash } from './cardanoGetNativeScriptHash';
 export { default as cardanoGetPublicKey } from './cardanoGetPublicKey';
 export { default as cardanoSignTransaction } from './cardanoSignTransaction';
+export { default as cardanoSignMessage } from './cardanoSignMessage';
 export { default as changeLanguage } from './changeLanguage';
 export { default as composeTransaction } from './composeTransaction';
 export { default as eosGetPublicKey } from './eosGetPublicKey';

@@ -37,7 +37,7 @@ export const addHexPrefix = (str: string): `0x${string}` =>
     str !== undefined && !hasHexPrefix(str) ? `0x${str}` : (str as `0x${string}`);
 
 // from (isHexString) https://github.com/ethjs/ethjs-util/blob/master/src/index.js
-const isHexString = (value: string, length?: number) => {
+export const isHexString = (value: string, length?: number) => {
     if (typeof value !== 'string' || !value.match(/^(0x|0X)?[0-9A-Fa-f]*$/)) {
         return false;
     }

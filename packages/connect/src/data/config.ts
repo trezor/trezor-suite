@@ -311,6 +311,11 @@ export const config: Config = {
             comment: ['Since firmware 2.9.1 SLIP-24 is supported'],
         },
         {
+            methods: ['cardanoSignMessage'],
+            min: { T1B1: '0', T2T1: '2.9.1', T2B1: '2.9.1', T3B1: '2.9.1', T3T1: '2.9.1' },
+            comment: ['Cardano SignMessage call added in 2.9.1'],
+        },
+        {
             methods: ['evoluGetNode'],
             min: {
                 T1B1: '0',
