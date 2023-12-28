@@ -1,5 +1,5 @@
 import { Type, Static } from '@trezor/schema-utils';
-import { PROTO } from '../../../constants';
+import { PROTO, CARDANO } from '../../../constants';
 import { GetPublicKey, PublicKey, DerivationPath } from '../../params';
 
 // cardanoGetAddress
@@ -287,4 +287,41 @@ export const CardanoSignedTxData = Type.Object({
     hash: Type.String(),
     witnesses: Type.Array(CardanoSignedTxWitness),
     auxiliaryDataSupplement: Type.Optional(CardanoAuxiliaryDataSupplement),
+});
+
+export type CardanoSignMessage = Static<typeof CardanoSignMessage>;
+export const CardanoSignMessage = Type.Object({
+    signingPath: DerivationPath,
+    payload: Type.String(),
+    hashPayload: Type.Boolean(),
+    displayAscii: Type.Boolean(),
+    networkId: Type.Optional(Type.Number()),
+    protocolMagic: Type.Optional(Type.Number()),
+    addressParameters: Type.Optional(CardanoAddressParameters),
+    derivationType: Type.Optional(PROTO.EnumCardanoDerivationType),
+});
+
+export type CardanoMessageProtectedHeaders = Static<typeof CardanoMessageProtectedHeaders>;
+export const CardanoMessageProtectedHeaders = Type.Object({
+    1: Type.Literal(CARDANO.ALGORITHM_IDS.EdDSA),
+    address: Type.String(),
+});
+
+export type CardanoMessageUnprotectedHeaders = Static<typeof CardanoMessageUnprotectedHeaders>;
+export const CardanoMessageUnprotectedHeaders = Type.Object({
+    hashed: Type.Boolean(),
+    version: Type.Number(),
+});
+
+export type CardanoMessageHeaders = Static<typeof CardanoMessageHeaders>;
+export const CardanoMessageHeaders = Type.Object({
+    protected: CardanoMessageProtectedHeaders,
+    unprotected: CardanoMessageUnprotectedHeaders,
+});
+
+export type CardanoSignedMessage = Static<typeof CardanoSignedMessage>;
+export const CardanoSignedMessage = Type.Object({
+    headers: CardanoMessageHeaders,
+    payload: Type.String(),
+    signature: Type.String(),
 });

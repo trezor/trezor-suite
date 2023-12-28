@@ -8,6 +8,7 @@ import cardanoGetAddressDerivations from './cardanoGetAddressDerivations';
 import cardanoGetNativeScriptHash from './cardanoGetNativeScriptHash';
 import cardanoGetPublicKey from './cardanoGetPublicKey';
 import cardanoSignTransaction from './cardanoSignTransaction';
+import cardanoSignMessage from './cardanoSignMessage';
 import composeTransaction from './composeTransaction';
 import eosGetPublicKey from './eosGetPublicKey';
 import eosSignTransaction from './eosSignTransaction';
@@ -105,6 +106,7 @@ let fixtures = [
     cardanoGetNativeScriptHash,
     cardanoGetPublicKey,
     cardanoSignTransaction,
+    cardanoSignMessage,
     composeTransaction,
     eosGetPublicKey,
     eosSignTransaction,

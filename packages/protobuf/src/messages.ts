@@ -945,6 +945,35 @@ export type CardanoTxBodyHash = {
 // CardanoSignTxFinished
 export type CardanoSignTxFinished = {};
 
+// CardanoSignMessageInit
+export type CardanoSignMessageInit = {
+    protocol_magic?: number;
+    network_id?: number;
+    signing_path: number[];
+    payload_size: number;
+    hash_payload: boolean;
+    display_ascii: boolean;
+    address_parameters?: CardanoAddressParametersType;
+    derivation_type: CardanoDerivationType;
+};
+
+// CardanoMessageItemAck
+export type CardanoMessageItemAck = {};
+
+// CardanoMessagePayloadChunk
+export type CardanoMessagePayloadChunk = {
+    data: string;
+};
+
+// CardanoMessageItemHostAck
+export type CardanoMessageItemHostAck = {};
+
+// CardanoSignMessageFinished
+export type CardanoSignMessageFinished = {
+    signature: string;
+    address: string;
+};
+
 // Success
 export type Success = {
     message: string;
@@ -2488,6 +2517,11 @@ export type MessageType = {
     CardanoTxHostAck: CardanoTxHostAck;
     CardanoTxBodyHash: CardanoTxBodyHash;
     CardanoSignTxFinished: CardanoSignTxFinished;
+    CardanoSignMessageInit: CardanoSignMessageInit;
+    CardanoMessageItemAck: CardanoMessageItemAck;
+    CardanoMessagePayloadChunk: CardanoMessagePayloadChunk;
+    CardanoMessageItemHostAck: CardanoMessageItemHostAck;
+    CardanoSignMessageFinished: CardanoSignMessageFinished;
     Success: Success;
     Failure: Failure;
     ButtonRequest: ButtonRequest;

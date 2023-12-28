@@ -421,3 +421,39 @@ export const cardanoSignTransaction = async (api: TrezorConnect) => {
         }
     }
 };
+
+export const cardanoSignMessage = async (api: TrezorConnect) => {
+    const sign = await api.cardanoSignMessage({
+        signingPath: 'm/44',
+        payload: 'Test..',
+        hashPayload: true,
+        displayAscii: true,
+        networkId: 0,
+        protocolMagic: 0,
+        addressParameters: {
+            addressType: CardanoAddressType.BASE,
+            path: 'm/44',
+            stakingPath: 'm/44',
+            stakingKeyHash: 'aaff00..',
+            stakingScriptHash: 'aaff00..',
+            paymentScriptHash: 'aaff00..',
+            certificatePointer: {
+                blockIndex: 0,
+                txIndex: 0,
+                certificateIndex: 0,
+            },
+        },
+        derivationType: PROTO.CardanoDerivationType.ICARUS_TREZOR,
+    });
+
+    if (sign.success) {
+        const { payload } = sign;
+        payload.payload.toLowerCase();
+        payload.signature.toLowerCase();
+        const { headers } = payload;
+        headers.protected[1].toFixed();
+        headers.protected.address.toLowerCase();
+        [true, false].includes(headers.unprotected.hashed);
+        headers.unprotected.version.toFixed();
+    }
+};

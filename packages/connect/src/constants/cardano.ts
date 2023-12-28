@@ -10,3 +10,7 @@ export enum NETWORK_IDS {
     mainnet = 1,
     testnet = 0,
 }
+
+export enum ALGORITHM_IDS {
+    EdDSA = -8,
+}

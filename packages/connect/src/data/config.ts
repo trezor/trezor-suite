@@ -140,6 +140,11 @@ export const config = {
             comment: ['Cardano GetNativeScriptHash call added in 2.4.3'],
         },
         {
+            methods: ['cardanoSignMessage'],
+            min: { T1B1: '0', T2T1: '2.6.5' },
+            comment: ['Cardano SignMessage call added in 2.6.5'],
+        },
+        {
             methods: ['tezosSignTransaction'],
             min: { T1B1: '0', T2T1: '2.1.8' },
             comment: [
