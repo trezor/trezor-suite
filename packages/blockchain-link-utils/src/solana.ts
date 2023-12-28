@@ -30,12 +30,19 @@ export const WSOL_MINT = 'So11111111111111111111111111111111111111112';
 
 // https://github.com/viaprotocol/tokenlists
 // Aggregated token list with tokens listed on multiple exchanges
-const solanaTokenListUrl =
+const SOLANA_TOKEN_LIST_URL =
     'https://cdn.jsdelivr.net/gh/viaprotocol/tokenlists/all_tokens/solana.json';
+
+const LOCAL_TOKEN_METADATA: TokenDetailByMint = {
+    DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263: {
+        name: 'Bonk',
+        symbol: 'BONK',
+    },
+};
 
 export const getTokenMetadata = async (): Promise<TokenDetailByMint> => {
     const tokenListResult: { address: string; name: string; symbol: string }[] = await (
-        await fetch(solanaTokenListUrl)
+        await fetch(SOLANA_TOKEN_LIST_URL)
     ).json();
 
     const tokenMap = tokenListResult.reduce(
@@ -52,7 +59,7 @@ export const getTokenMetadata = async (): Promise<TokenDetailByMint> => {
     // Explicitly set Wrapped SOL symbol to WSOL instead of the official 'SOL' which leads to confusion in UI
     tokenMap[WSOL_MINT].symbol = 'WSOL';
 
-    return tokenMap;
+    return { ...LOCAL_TOKEN_METADATA, ...tokenMap };
 };
 
 export const getTokenNameAndSymbol = (mint: string, tokenDetailByMint: TokenDetailByMint) => {
