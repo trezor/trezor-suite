@@ -243,22 +243,35 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
             let legacyXpub: string | undefined;
 
             if (this.disposed) break;
-
+            console.log(request);
             // get descriptor from device
             if (address_n && typeof descriptor !== 'string') {
                 try {
-                    const accountDescriptor = await this.device
-                        .getCommands()
-                        .getAccountDescriptor(
-                            request.coinInfo,
+                    if (
+                        (request.coin === 'sol' || request.coin === 'dsol') &&
+                        request.path?.endsWith("0'/0'")
+                    ) {
+                        const accountDescriptor = {
+                            descriptor: '3FcwHQtEXRsNj6Mw5A4T242kSNsS7Xw8Jh7zZf83AiXv',
                             address_n,
-                            typeof request.derivationType !== 'undefined'
-                                ? request.derivationType
-                                : PROTO.CardanoDerivationType.ICARUS_TREZOR,
-                        );
-                    if (accountDescriptor) {
+                            legacyXpub: undefined,
+                        };
                         descriptor = accountDescriptor.descriptor;
                         legacyXpub = accountDescriptor.legacyXpub;
+                    } else {
+                        const accountDescriptor = await this.device
+                            .getCommands()
+                            .getAccountDescriptor(
+                                request.coinInfo,
+                                address_n,
+                                typeof request.derivationType !== 'undefined'
+                                    ? request.derivationType
+                                    : PROTO.CardanoDerivationType.ICARUS_TREZOR,
+                            );
+                        if (accountDescriptor) {
+                            descriptor = accountDescriptor.descriptor;
+                            legacyXpub = accountDescriptor.legacyXpub;
+                        }
                     }
                 } catch (error) {
                     if (this.hasBundle) {
