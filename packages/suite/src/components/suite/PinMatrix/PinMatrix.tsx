@@ -52,9 +52,11 @@ export const PinMatrix = ({ device, hideExplanation, invalid }: PinMatrixProps) 
         if (
             pinRequestType?.code &&
             [
+                'PinMatrixRequestType_Current',
                 'PinMatrixRequestType_NewFirst',
                 'PinMatrixRequestType_NewSecond',
-                'PinMatrixRequestType_Current',
+                'PinMatrixRequestType_WipeCodeFirst',
+                'PinMatrixRequestType_WipeCodeSecond',
             ].includes(pinRequestType.code)
         ) {
             setSubmitted(false);
