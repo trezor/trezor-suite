@@ -45,6 +45,20 @@ const logWriterFactory = (popupManager: popup.PopupManager): LogWriter => ({
     },
 });
 
+const checkIfTabExists = (tabId: number | undefined) =>
+    new Promise(resolve => {
+        if (!tabId) return resolve(false);
+        function callback() {
+            if (chrome.runtime.lastError) {
+                resolve(false);
+            } else {
+                // Tab exists
+                resolve(true);
+            }
+        }
+        chrome.tabs.get(tabId, callback);
+    });
+
 const manifest = (data: Manifest) => {
     _settings = parseConnectSettings({
         ..._settings,
@@ -109,6 +123,15 @@ const init = (settings: Partial<ConnectSettings> = {}): Promise<void> => {
  */
 const call: CallMethod = async params => {
     logger.debug('call', params);
+
+    if (_popupManager.popupWindow?.id) {
+        const currentPopupExists = await checkIfTabExists(_popupManager.popupWindow?.id);
+        if (!currentPopupExists) {
+            // popupWindow has reference but it does not exists so we clear it.
+            _popupManager.clear();
+            handshakePromise = createDeferred();
+        }
+    }
 
     // request popup window it might be used in the future
     if (_settings.popup) {
