@@ -79,17 +79,8 @@ export const changeWipeCode =
             if (!skipSuccessToast) {
                 dispatch(notificationsActions.addToast({ type: 'wipe-code-changed' }));
             }
-        } else if (result.payload.code === 'Failure_PinMismatch') {
+        } else if (result.payload.code === 'Failure_WipeCodeMismatch') {
             dispatch(modalActions.openModal({ type: 'pin-mismatch' }));
-        } else if (result.payload.error.includes('string overflow')) {
-            // this is a workaround for FW < 1.10.0
-            // translate generic error from the device if the entered PIN is longer than 9 digits
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'error',
-                    error: 'Please upgrade your firmware to enable extended PIN format.',
-                }),
-            );
         } else {
             dispatch(notificationsActions.addToast({ type: 'error', error: result.payload.error }));
         }

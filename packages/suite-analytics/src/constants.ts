@@ -61,6 +61,7 @@ export enum EventType {
     SettingsDeviceCheckSeed = 'settings/device/check-seed',
     SettingsDeviceChangePinProtection = 'settings/device/change-pin-protection',
     SettingsDeviceChangePin = 'settings/device/change-pin',
+    SettingsDeviceChangeWipeCode = 'settings/device/change-wipe-code',
     SettingsDeviceChangeLabel = 'settings/device/change-label',
     SettingsDeviceUpdateAutoLock = 'settings/device/update-auto-lock',
     SettingsDeviceBackground = 'settings/device/background',
