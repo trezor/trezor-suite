@@ -107,6 +107,7 @@ describe('solana/utils', () => {
                     input.transaction as ParsedTransactionWithMeta,
                     input.accountAddress,
                     input.map,
+                    input.tokenAccountsInfos,
                 );
                 expect(result).toEqual(expectedOutput);
             });
@@ -119,6 +120,7 @@ describe('solana/utils', () => {
                 const result = await transformTransaction(
                     input.transaction as SolanaValidParsedTxWithMeta,
                     input.accountAddress,
+                    input.tokenAccountsInfos,
                 );
                 expect(result).toEqual(expectedOutput);
             });
