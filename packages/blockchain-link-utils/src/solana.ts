@@ -9,6 +9,7 @@ import type {
     ParsedInstruction,
     ParsedTransactionWithMeta,
     SolanaValidParsedTxWithMeta,
+    SolanaTokenAccountInfo,
     PartiallyDecodedInstruction,
     TokenDetailByMint,
     PublicKey,
@@ -403,35 +404,126 @@ export const getAmount = (
     return accountEffect.amount.toString();
 };
 
+type TokenTransferInstruction = {
+    program: 'spl-token';
+    programId: PublicKey;
+    parsed: {
+        type: 'transferChecked' | 'transfer';
+        info: {
+            destination: string;
+            authority: string;
+            source: string;
+            mint?: string;
+            tokenAmount?: {
+                amount: string;
+                decimals: number;
+            };
+            amount?: string;
+        };
+    };
+};
+
+const isTokenTransferInstruction = (
+    ix: ParsedInstruction | PartiallyDecodedInstruction,
+): ix is TokenTransferInstruction => {
+    if (!('parsed' in ix)) {
+        return false;
+    }
+
+    const { parsed } = ix;
+
+    return (
+        'program' in ix &&
+        typeof ix.program === 'string' &&
+        ix.program === 'spl-token' &&
+        'type' in parsed &&
+        typeof parsed.type === 'string' &&
+        (parsed.type === 'transferChecked' || parsed.type === 'transfer') &&
+        'info' in parsed &&
+        typeof parsed.info === 'object' &&
+        'authority' in parsed.info &&
+        typeof parsed.info.authority === 'string' &&
+        'source' in parsed.info &&
+        typeof parsed.info.source === 'string' &&
+        'destination' in parsed.info &&
+        typeof parsed.info.destination === 'string' &&
+        (('tokenAmount' in parsed.info &&
+            typeof parsed.info.tokenAmount === 'object' &&
+            'amount' in parsed.info.tokenAmount &&
+            typeof parsed.info.tokenAmount.amount === 'string') ||
+            ('amount' in parsed.info && typeof parsed.info.amount === 'string'))
+    );
+};
+
 export const getTokens = (
     tx: ParsedTransactionWithMeta,
     accountAddress: string,
     tokenDetailByMint: TokenDetailByMint,
+    tokenAccountsInfos: SolanaTokenAccountInfo[],
 ): TokenTransfer[] => {
+    const getUiType = ({ parsed }: TokenTransferInstruction) => {
+        const accountAddresses = [
+            ...tokenAccountsInfos.map(({ address }) => address),
+            accountAddress,
+        ];
+        const isAccountDestination = accountAddresses.includes(parsed.info.destination);
+
+        const isAccountSource = accountAddresses.includes(
+            parsed.info.authority || parsed.info.source,
+        );
+
+        if (isAccountDestination && isAccountSource) {
+            return 'self';
+        }
+        if (isAccountDestination) {
+            return 'recv';
+        }
+        return 'sent';
+    };
+
+    const matchTokenAccountInfo = ({ parsed }: TokenTransferInstruction, address: string) =>
+        address === parsed.info?.source ||
+        address === parsed.info.destination ||
+        address === parsed.info?.authority;
+
     const effects = tx.transaction.message.instructions
-        .filter((ix): ix is ParsedInstruction => 'parsed' in ix)
-        .filter(
-            ix =>
-                ix.program === 'spl-token' &&
-                (ix.parsed.type === 'transfer' || ix.parsed.type === 'transferChecked'),
-        )
-        .map((ix): TokenTransfer => {
+        .filter(isTokenTransferInstruction)
+        .map<TokenTransfer>((ix): TokenTransfer => {
             const { parsed } = ix;
 
-            // Accounting for 'self' transfers would involve fetching owned token account data from RPC
-            // and comparing it with the destination address. This is overkill for most users and thus it is
-            // left unimplemented.
-            const uiType = parsed.info.authority === accountAddress ? 'sent' : 'recv';
+            // some data, like `mint` and `decimals` may not be present in the instruction, but can be found in the token account info
+            // so we try to find the token account info that matches the instruction and use it's data
+            const instructionTokenInfo = tokenAccountsInfos.find(tokenAccountInfo =>
+                matchTokenAccountInfo(ix, tokenAccountInfo.address),
+            );
+
+            // when sending tokens to associated token account, the instruction does not contain mint
+            const mint = parsed.info.mint || instructionTokenInfo?.mint || 'Unknown token contract';
+
+            const decimals =
+                parsed.info.tokenAmount?.decimals || instructionTokenInfo?.decimals || 0;
+            const amount = parsed.info.tokenAmount?.amount || parsed.info.amount || '-1';
+
+            const source = parsed.info.authority || parsed.info.source;
+
+            // if sending/receiving to associated token account, we replace the tokenAccount address with the associated token account address
+            // to simplify the information for the user since teh UI does not recognize the concept of associated token accounts
+            const from = source === instructionTokenInfo?.address ? accountAddress : source;
+
+            const to =
+                parsed.info.destination === instructionTokenInfo?.address
+                    ? accountAddress
+                    : parsed.info.destination;
 
             return {
-                type: uiType,
+                type: getUiType(ix),
                 standard: 'SPL',
-                from: parsed.info.authority,
-                to: parsed.info.destination,
-                contract: parsed.info.mint,
-                decimals: parsed.info.tokenAmount?.decimals || 0,
-                ...getTokenNameAndSymbol(parsed.info.mint, tokenDetailByMint),
-                amount: parsed.info.tokenAmount?.amount || '-1',
+                from,
+                to,
+                contract: mint,
+                decimals,
+                ...getTokenNameAndSymbol(mint, tokenDetailByMint),
+                amount,
             };
         });
 
@@ -441,11 +533,12 @@ export const getTokens = (
 export const transformTransaction = async (
     tx: SolanaValidParsedTxWithMeta,
     accountAddress: string,
+    tokenAccountsInfos: SolanaTokenAccountInfo[],
 ): Promise<Transaction> => {
     const tokenDetailByMint = await getTokenMetadata();
     const nativeEffects = getNativeEffects(tx);
 
-    const tokens = getTokens(tx, accountAddress, tokenDetailByMint);
+    const tokens = getTokens(tx, accountAddress, tokenDetailByMint, tokenAccountsInfos);
 
     const type = getTxType(tx, nativeEffects, accountAddress, tokens);
 

@@ -6,6 +6,12 @@ export type SolanaValidParsedTxWithMeta = ParsedTransactionWithMeta & {
     blockTime: Required<NonNullable<ParsedTransactionWithMeta['blockTime']>>;
 };
 
+export type SolanaTokenAccountInfo = {
+    address: string;
+    mint: string | undefined;
+    decimals: number | undefined;
+};
+
 export type {
     ParsedInstruction,
     ParsedTransactionWithMeta,

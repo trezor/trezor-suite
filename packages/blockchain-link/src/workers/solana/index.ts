@@ -8,6 +8,7 @@ import type {
 import type {
     SolanaValidParsedTxWithMeta,
     ParsedTransactionWithMeta,
+    SolanaTokenAccountInfo,
 } from '@trezor/blockchain-link-types/lib/solana';
 import type * as MessageTypes from '@trezor/blockchain-link-types/lib/messages';
 import { CustomError } from '@trezor/blockchain-link-types/lib/constants/errors';
@@ -108,14 +109,23 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
 
     const accountInfo = await api.getAccountInfo(publicKey);
 
-    const getTransactionPage = async (txIds: string[]) => {
+    const getTransactionPage = async (
+        txIds: string[],
+        tokenAccountsInfos: SolanaTokenAccountInfo[],
+    ) => {
         const transactionsPage = await fetchTransactionPage(api, txIds);
 
         return (
             await Promise.all(
                 transactionsPage
                     .filter(isValidTransaction)
-                    .map(tx => solanaUtils.transformTransaction(tx, payload.descriptor)),
+                    .map(tx =>
+                        solanaUtils.transformTransaction(
+                            tx,
+                            payload.descriptor,
+                            tokenAccountsInfos,
+                        ),
+                    ),
             )
         ).filter((tx): tx is Transaction => !!tx);
     };
@@ -144,7 +154,14 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
 
     const txIdPage = allTxIds.slice(pageStartIndex, pageEndIndex);
 
-    const transactionPage = details === 'txs' ? await getTransactionPage(txIdPage) : undefined;
+    const tokenAccountsInfos = tokenAccounts.value.map(a => ({
+        address: a.pubkey.toString(),
+        mint: a.account.data.parsed?.info?.mint as string | undefined,
+        decimals: a.account.data.parsed?.info?.tokenAmount?.decimals as number | undefined,
+    }));
+
+    const transactionPage =
+        details === 'txs' ? await getTransactionPage(txIdPage, tokenAccountsInfos) : undefined;
 
     // Fetch token info only if the account owns tokens
     let tokens: TokenInfo[] = [];
@@ -318,7 +335,7 @@ const subscribeAccounts = async (
                 return;
             }
 
-            const tx = await solanaUtils.transformTransaction(lastTx, a.descriptor);
+            const tx = await solanaUtils.transformTransaction(lastTx, a.descriptor, []);
             post({
                 id: -1,
                 type: RESPONSES.NOTIFICATION,
@@ -357,6 +374,7 @@ const subscribe = (request: Request<MessageTypes.Subscribe>) => {
             break;
         case 'accounts':
             // accounts subscription is currently disabled due to it possibly causing crashes
+            // TODO: it also need to be updated to take tokenAccounts into account
             // subscribeAccounts(request, request.payload.accounts);
             break;
         default:
@@ -375,6 +393,7 @@ const unsubscribe = (request: Request<MessageTypes.Unsubscribe>) => {
             break;
         case 'accounts': {
             // accounts subscription is currently disabled due to it possibly causing crashes
+            // TODO: it also need to be updated to take tokenAccounts into account
             // unsubscribeAccounts(request, request.payload.accounts);
             break;
         }
@@ -443,6 +462,7 @@ class SolanaWorker extends BaseWorker<SolanaAPI> {
         }
 
         // accounts subscription is currently disabled due to it possibly causing crashes
+        // TODO: it also need to be updated to take tokenAccounts into account
         // this.state.accounts.forEach(
         //     a => a.subscriptionId && this.api?.removeAccountChangeListener(a.subscriptionId),
         // );

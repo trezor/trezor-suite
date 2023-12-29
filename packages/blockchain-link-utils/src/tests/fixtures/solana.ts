@@ -52,6 +52,19 @@ const instructions = {
         },
         program: 'spl-token',
     },
+    // without mint and tokenAmount
+    tokenTransferToAssociated: {
+        parsed: {
+            info: {
+                amount: '1534951700',
+                authority: '5oPm4YqwfGceRoyAYJUZ3FqLb5KvhkLFTzRv92gXzCtz',
+                destination: 'CoWky2oRf1LEENrV7WsFFzFgrbs14y5PibvtetdfTvXg',
+                source: 'DaL2xPLQQ2rxHyqQxaE9E44Boa5bRpnfAZt9HaRMr9RY',
+            },
+            type: 'transfer',
+        },
+        program: 'spl-token',
+    },
 };
 
 const parsedTransactions = {
@@ -169,6 +182,24 @@ const parsedTransactions = {
                         { pubkey: { toString: () => 'address2' } },
                     ],
                     instructions: [instructions.tokenTransfer, instructions.secondTokenTransfer],
+                },
+            },
+            version: 'legacy',
+            blockTime: 1631753600,
+            slot: 5,
+        },
+    },
+    tokenTransferToAssociated: {
+        transaction: {
+            meta: {},
+            transaction: {
+                signatures: ['txid1'],
+                message: {
+                    accountKeys: [
+                        { pubkey: { toString: () => 'address1' } },
+                        { pubkey: { toString: () => 'address2' } },
+                    ],
+                    instructions: [instructions.tokenTransferToAssociated],
                 },
             },
             version: 'legacy',
@@ -626,15 +657,45 @@ export const fixtures = {
                 transaction: parsedTransactions.basic.transaction,
                 accountAddress: 'someAddress',
                 map: sampleMintToDetailMap,
+                tokenAccountsInfos: [],
             },
             expectedOutput: [],
         },
         {
             description: 'parses a single token transfer',
             input: {
+                transaction: parsedTransactions.tokenTransferToAssociated.transaction,
+                accountAddress: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
+                map: sampleMintToDetailMap,
+                tokenAccountsInfos: [
+                    {
+                        address: 'CoWky2oRf1LEENrV7WsFFzFgrbs14y5PibvtetdfTvXg',
+                        mint: 'So11111111111111111111111111111111111115555',
+                        decimals: 1,
+                    },
+                ],
+            },
+            expectedOutput: [
+                {
+                    type: 'recv',
+                    standard: 'SPL',
+                    from: '5oPm4YqwfGceRoyAYJUZ3FqLb5KvhkLFTzRv92gXzCtz',
+                    to: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
+                    contract: 'So11111111111111111111111111111111111115555',
+                    decimals: 1,
+                    name: 'So11111111111111111111111111111111111115555',
+                    symbol: 'So1...',
+                    amount: '1534951700',
+                },
+            ],
+        },
+        {
+            description: 'parses a token transfer to associated token account',
+            input: {
                 transaction: parsedTransactions.singleTokenTransfer.transaction,
                 accountAddress: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
                 map: sampleMintToDetailMap,
+                tokenAccountsInfos: [],
             },
             expectedOutput: [
                 {
@@ -656,6 +717,7 @@ export const fixtures = {
                 transaction: parsedTransactions.multiTokenTransfer.transaction,
                 accountAddress: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
                 map: sampleMintToDetailMap,
+                tokenAccountsInfos: [],
             },
             expectedOutput: [
                 {
@@ -689,6 +751,7 @@ export const fixtures = {
             input: {
                 transaction: parsedTransactions.basic.transaction,
                 accountAddress: effects.negative.address,
+                tokenAccountsInfos: [],
             },
             expectedOutput: {
                 type: 'sent',
