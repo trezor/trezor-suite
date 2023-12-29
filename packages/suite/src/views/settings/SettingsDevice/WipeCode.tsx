@@ -1,5 +1,6 @@
 import { analytics, EventType } from '@trezor/suite-analytics';
 
+import { HELP_CENTER_WIPE_CODE_URL } from '@trezor/urls';
 import { changeWipeCode } from 'src/actions/settings/deviceSettingsActions';
 import {
     ActionButton,
@@ -12,39 +13,34 @@ import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch } from 'src/hooks/suite';
 import { useAnchor } from 'src/hooks/suite/useAnchor';
 
-interface ChangePinProps {
+interface Props {
     isDeviceLocked: boolean;
 }
 
-export const WipeCode = ({ isDeviceLocked }: ChangePinProps) => {
+export const WipeCode = ({ isDeviceLocked }: Props) => {
     const dispatch = useDispatch();
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.WipeCode);
 
     const handleClick = () => {
         dispatch(changeWipeCode({ remove: false }));
         analytics.report({
-            type: EventType.SettingsDeviceChangePin,
+            type: EventType.SettingsDeviceChangeWipeCode,
         });
     };
 
     return (
         <SectionItem
-            data-test="@settings/device/wipe-code"
+            data-test="@settings/device/change-wipe-code"
             ref={anchorRef}
             shouldHighlight={shouldHighlight}
         >
             <TextColumn
                 title={<Translation id="TR_DEVICE_SETTINGS_WIPE_CODE_TITLE" />}
                 description={<Translation id="TR_DEVICE_SETTINGS_WIPE_CODE_DESC" />}
-                buttonLink="https://trezor.io/learn/a/create-wipe-code-to-erase-device"
+                buttonLink={HELP_CENTER_WIPE_CODE_URL}
             />
             <ActionColumn>
-                <ActionButton
-                    onClick={handleClick}
-                    isDisabled={isDeviceLocked}
-                    // TODO: Disable when pin is not set
-                    variant="danger"
-                >
+                <ActionButton onClick={handleClick} isDisabled={isDeviceLocked} variant="danger">
                     <Translation id="TR_WIPE_CODE" />
                 </ActionButton>
             </ActionColumn>

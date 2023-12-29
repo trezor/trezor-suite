@@ -53,6 +53,8 @@ export const HELP_CENTER_ADVANCED_RECOVERY_URL =
     'https://trezor.io/learn/a/advanced-recovery-on-trezor-model-one';
 export const HELP_CENTER_XPUB_URL = 'https://trezor.io/learn/a/trezor-suite-app-public-keys-xpub';
 export const HELP_CENTER_BIP32_URL = 'https://trezor.io/learn/a/what-is-bip32';
+export const HELP_CENTER_WIPE_CODE_URL =
+    'https://trezor.io/learn/a/create-wipe-code-to-erase-device';
 export const HELP_FIRMWARE_TYPE = 'https://trezor.io/learn/a/bitcoin-only-firmware-on-trezor';
 export const HELP_CENTER_ZERO_VALUE_ATTACKS =
     'https://trezor.io/support/a/address-poisoning-attacks';
