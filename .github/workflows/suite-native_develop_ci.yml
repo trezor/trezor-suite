@@ -6,7 +6,7 @@ on:
       - develop
     paths:
       - "suite-native/**"
-      - "packages/icons/**"
+      - "suite-common/**"
   workflow_dispatch:
 
 concurrency:
