@@ -68,9 +68,9 @@ const Footer = styled.div`
 const Action = styled.div`
     display: flex;
     width: 100%;
-    height: 40px;
     align-items: center;
     justify-content: center;
+    min-height: 40px;
 `;
 
 const CheckIconWrapper = styled.div`
@@ -94,6 +94,10 @@ const Line = styled.div`
     background: ${({ theme }) => theme.STROKE_GREY};
 
     /* border-top: 1px solid ${({ theme }) => theme.STROKE_GREY}; */
+`;
+
+const StyledButton = styled(Button)`
+    white-space: normal;
 `;
 
 export interface SecurityCardProps extends CardProps {
@@ -136,7 +140,7 @@ export const SecurityCard = ({
                 <Footer>
                     {cta && variant === 'primary' && (
                         <Action>
-                            <Button
+                            <StyledButton
                                 fullWidth
                                 variant="secondary"
                                 isDisabled={cta.isDisabled}
@@ -148,14 +152,14 @@ export const SecurityCard = ({
                                     : {})}
                             >
                                 {cta.label}
-                            </Button>
+                            </StyledButton>
                         </Action>
                     )}
                     {cta && variant === 'secondary' && (
                         <>
                             <Line />
                             <Action>
-                                <Button
+                                <StyledButton
                                     variant="tertiary"
                                     isDisabled={cta.isDisabled}
                                     onClick={cta.action}
@@ -168,7 +172,7 @@ export const SecurityCard = ({
                                         : {})}
                                 >
                                     {cta.label}
-                                </Button>
+                                </StyledButton>
                             </Action>
                         </>
                     )}
