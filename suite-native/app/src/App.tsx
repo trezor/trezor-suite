@@ -46,6 +46,7 @@ const wrappedMethods = [
     'blockchainUnsubscribe',
     'cardanoGetPublicKey',
     'getDeviceState',
+    'cardanoGetAddress',
     'getAccountDescriptor',
     'blockchainGetAccountBalanceHistory',
     'blockchainUnsubscribeFiatRates',
