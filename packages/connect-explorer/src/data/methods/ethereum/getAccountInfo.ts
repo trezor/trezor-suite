@@ -7,29 +7,13 @@ export const select = [
     { value: 'tsep', label: 'Sepolia', affectedValue: `m/44'/60'/0'/0/0` },
     { value: 'tgor', label: 'Goerli', affectedValue: `m/44'/60'/0'/0/0` },
     { value: 'thol', label: 'Holesky', affectedValue: `m/44'/60'/0'/0/0` },
-    { value: 'btc', label: 'Bitcoin', affectedValue: `m/84'/0'/0'` },
-    { value: 'test', label: 'Bitcoin Testnet', affectedValue: `m/49'/1'/0'` },
 ];
 
 const batch = [
     {
         name: 'coin',
         type: 'select',
-        value: 'tsep',
-        affect: 'path',
-        data: select,
-    },
-    {
-        name: 'coin',
-        type: 'select',
-        value: 'tgor',
-        affect: 'path',
-        data: select,
-    },
-    {
-        name: 'coin',
-        type: 'select',
-        value: 'thol',
+        value: 'eth',
         affect: 'path',
         data: select,
     },
@@ -49,63 +33,6 @@ const batch = [
     },
 ];
 
-const usingPath = [
-    {
-        name: 'coin',
-        type: 'select',
-        value: 'tsep',
-        affect: 'path',
-        data: select,
-    },
-    {
-        name: 'coin',
-        type: 'select',
-        value: 'tgor',
-        affect: 'path',
-        data: select,
-    },
-    {
-        name: 'coin',
-        type: 'select',
-        value: 'thol',
-        affect: 'path',
-        data: select,
-    },
-    {
-        name: 'path',
-        label: 'Bip44 path',
-        type: 'input',
-        value: `m/44'/144'/0'/0/0`,
-    },
-];
-
-const usingAddress = [
-    {
-        name: 'coin',
-        type: 'select',
-        value: 'tsep',
-        data: select,
-    },
-    {
-        name: 'coin',
-        type: 'select',
-        value: 'tgor',
-        data: select,
-    },
-    {
-        name: 'coin',
-        type: 'select',
-        value: 'thol',
-        data: select,
-    },
-    {
-        name: 'descriptor',
-        label: 'Ethereum address',
-        type: 'input-long',
-        value: ``,
-    },
-];
-
 export default [
     {
         url: '/method/ethereumGetAccountInfo',
@@ -113,7 +40,21 @@ export default [
         docs,
         submitButton: 'Get account info',
 
-        fields: usingPath,
+        fields: [
+            {
+                name: 'coin',
+                type: 'select',
+                value: 'eth',
+                affect: 'path',
+                data: select,
+            },
+            {
+                name: 'path',
+                label: 'Bip44 path',
+                type: 'input',
+                value: `m/44'/144'/0'/0/0`,
+            },
+        ],
     },
     {
         url: '/method/ethereumGetAccountInfo-address',
@@ -121,7 +62,20 @@ export default [
         docs,
         submitButton: 'Get account info',
 
-        fields: usingAddress,
+        fields: [
+            {
+                name: 'coin',
+                type: 'select',
+                value: 'eth',
+                data: select,
+            },
+            {
+                name: 'descriptor',
+                label: 'Ethereum address',
+                type: 'input-long',
+                value: ``,
+            },
+        ],
     },
     {
         url: '/method/ethereumGetAccountInfo-bundle',
@@ -153,19 +107,7 @@ export default [
             {
                 name: 'coin',
                 type: 'select',
-                value: 'tsep',
-                data: select,
-            },
-            {
-                name: 'coin',
-                type: 'select',
-                value: 'tgor',
-                data: select,
-            },
-            {
-                name: 'coin',
-                type: 'select',
-                value: 'thol',
+                value: 'eth',
                 data: select,
             },
         ],
