@@ -5,6 +5,5 @@
 gem 'fastlane-plugin-load_json'
 gem 'fastlane-plugin-versioning_android'
 gem 'fastlane-plugin-update_android_strings'
-gem 'fastlane-plugin-find_replace_string'
 gem 'fastlane-plugin-android_versioning'
 gem 'fastlane-plugin-firebase_app_distribution'

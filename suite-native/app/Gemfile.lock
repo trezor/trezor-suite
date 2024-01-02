@@ -155,7 +155,6 @@ GEM
       xcpretty (~> 0.3.0)
       xcpretty-travis-formatter (>= 0.0.3)
     fastlane-plugin-android_versioning (0.5.5)
-    fastlane-plugin-find_replace_string (0.1.0)
     fastlane-plugin-firebase_app_distribution (0.6.1)
     fastlane-plugin-load_json (0.0.1)
     fastlane-plugin-update_android_strings (0.1.0)
@@ -289,7 +288,6 @@ DEPENDENCIES
   cocoapods (>= 1.11.3)
   fastlane
   fastlane-plugin-android_versioning
-  fastlane-plugin-find_replace_string
   fastlane-plugin-firebase_app_distribution
   fastlane-plugin-load_json
   fastlane-plugin-update_android_strings
