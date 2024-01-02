@@ -1,9 +1,7 @@
 import { Alert, Share } from 'react-native';
 
-import { A, pipe } from '@mobily/ts-belt';
-
 import { Box, Text, Button, VStack, HStack } from '@suite-native/atoms';
-import { splitAddressToChunks, useCopyToClipboard } from '@suite-native/helpers';
+import { useCopyToClipboard } from '@suite-native/helpers';
 import { useTranslate } from '@suite-native/intl';
 
 import { QRCode } from './QRCode';
@@ -30,14 +28,12 @@ export const AddressQRCode = ({ address }: AddressQRCodeProps) => {
         }
     };
 
-    const formattedAddress = pipe(address, splitAddressToChunks, A.join(' '));
-
     return (
         <VStack spacing="large">
             <QRCode data={address} />
             <Box alignItems="center" justifyContent="center">
                 <Text variant="titleSmall" textAlign="center">
-                    {formattedAddress}
+                    {address}
                 </Text>
             </Box>
             <HStack spacing="small" justifyContent="center">
