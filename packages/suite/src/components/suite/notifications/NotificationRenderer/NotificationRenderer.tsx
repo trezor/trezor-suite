@@ -81,6 +81,8 @@ export const NotificationRenderer = ({ notification, render }: NotificationRende
             return success(render, notification, 'TOAST_PIN_CHANGED', 'SETTINGS');
         case 'wipe-code-changed':
             return success(render, notification, 'TOAST_WIPE_CODE_CHANGED', 'SETTINGS');
+        case 'wipe-code-removed':
+            return success(render, notification, 'TOAST_WIPE_CODE_REMOVED', 'SETTINGS');
         case 'device-wiped':
             return success(render, notification, 'TOAST_DEVICE_WIPED', 'SETTINGS');
         case 'copy-to-clipboard':

@@ -63,7 +63,7 @@ export const changePin =
     };
 
 export const changeWipeCode =
-    (params: Parameters<typeof TrezorConnect.changeWipeCode>[0] = {}, skipSuccessToast?: boolean) =>
+    ({ remove }: Parameters<typeof TrezorConnect.changeWipeCode>[0] = {}) =>
     async (dispatch: Dispatch, getState: GetState) => {
         const device = selectDevice(getState());
 
@@ -73,12 +73,14 @@ export const changeWipeCode =
             device: {
                 path: device.path,
             },
-            ...params,
+            remove,
         });
         if (result.success) {
-            if (!skipSuccessToast) {
-                dispatch(notificationsActions.addToast({ type: 'wipe-code-changed' }));
-            }
+            dispatch(
+                notificationsActions.addToast({
+                    type: remove ? 'wipe-code-removed' : 'wipe-code-changed',
+                }),
+            );
         } else if (result.payload.code === 'Failure_WipeCodeMismatch') {
             dispatch(modalActions.openModal({ type: 'pin-mismatch' }));
         } else {
