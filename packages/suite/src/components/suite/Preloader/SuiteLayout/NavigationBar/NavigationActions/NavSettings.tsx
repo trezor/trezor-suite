@@ -4,10 +4,12 @@ import { Translation } from 'src/components/suite';
 import { ActionItem } from './ActionItem';
 import { useDispatch } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
+import { variables } from '@trezor/components';
 
 const Wrapper = styled.div`
     margin-left: 8px;
     position: relative;
+    z-index: ${variables.Z_INDEX.ONBOARDING_FOREGROUND};
 `;
 
 interface NavSettingsProps {

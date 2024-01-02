@@ -14,7 +14,7 @@ import { TrezorDevice } from '@suite-common/suite-types';
 const ConfirmWrapper = styled.div`
     margin-bottom: 20px;
     height: 62px;
-    z-index: ${variables.Z_INDEX.ONNBOARDING_FOREGROUND};
+    z-index: ${variables.Z_INDEX.ONBOARDING_FOREGROUND};
 `;
 
 const InnerActions = styled.div`
@@ -29,7 +29,7 @@ const OuterActions = styled.div<{ smallMargin?: boolean }>`
     margin-top: ${({ smallMargin }) => (smallMargin ? '0px' : '20px')};
     width: 100%;
     justify-content: center;
-    z-index: ${variables.Z_INDEX.ONNBOARDING_FOREGROUND};
+    z-index: ${variables.Z_INDEX.ONBOARDING_FOREGROUND};
 `;
 
 export const StyledBackdrop = styled(Backdrop)<{ show: boolean }>`
