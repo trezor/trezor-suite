@@ -3,9 +3,8 @@ import { AccountType } from '@suite-common/wallet-types';
 export const actionPrefix = '@common/wallet-core/accounts';
 
 export const formattedAccountTypeMap: Partial<Record<AccountType, string>> = {
-    legacy: 'Legacy',
-    legacySegwit: 'Legacy SegWit',
-    segwit: 'SegWit',
+    normal: 'SegWit', // represents the default Suite account type (`SegWit Native` at the moment).
     taproot: 'Taproot',
-    normal: 'SegWit Native',
+    segwit: 'Legacy SegWit',
+    legacy: 'Legacy',
 };
