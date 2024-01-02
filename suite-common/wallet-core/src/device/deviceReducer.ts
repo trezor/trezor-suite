@@ -534,6 +534,11 @@ export const selectIsDeviceProtectedByPin = (state: DeviceRootState) => {
     return !!features?.pin_protection;
 };
 
+export const selectIsDeviceProtectedByWipeCode = (state: DeviceRootState) => {
+    const features = selectDeviceFeatures(state);
+    return !!features?.wipe_code_protection;
+};
+
 export const selectDeviceButtonRequests = (state: DeviceRootState) =>
     state.device.selectedDevice?.buttonRequests ?? [];
 

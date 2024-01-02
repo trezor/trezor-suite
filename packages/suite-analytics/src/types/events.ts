@@ -264,7 +264,9 @@ export type SuiteAnalyticsEvent =
     | {
           type: EventType.SettingsDeviceChangePin;
       }
+    | { type: EventType.SettingsDeviceSetupWipeCode }
     | { type: EventType.SettingsDeviceChangeWipeCode }
+    | { type: EventType.SettingsDeviceDisableWipeCode }
     | { type: EventType.SettingsDeviceChangeLabel }
     | {
           type: EventType.SettingsDeviceUpdateAutoLock;
