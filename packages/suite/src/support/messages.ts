@@ -3915,6 +3915,10 @@ export default defineMessages({
         id: 'TOAST_WIPE_CODE_CHANGED',
         defaultMessage: 'Wipe code changed successfully',
     },
+    TOAST_WIPE_CODE_REMOVED: {
+        id: 'TOAST_WIPE_CODE_REMOVED',
+        defaultMessage: 'Wipe code removed successfully',
+    },
     TOAST_DEVICE_WIPED: {
         id: 'TOAST_DEVICE_WIPED',
         defaultMessage: 'Device wiped successfully',
@@ -4572,9 +4576,17 @@ export default defineMessages({
         defaultMessage: 'Change PIN',
         description: 'Button that initiates pin change',
     },
-    TR_WIPE_CODE: {
-        id: 'TR_WIPE_CODE',
+    TR_SETUP_WIPE_CODE: {
+        id: 'TR_SETUP_WIPE_CODE',
         defaultMessage: 'Setup wipe code',
+    },
+    TR_CHANGE_WIPE_CODE: {
+        id: 'TR_CHANGE_WIPE_CODE',
+        defaultMessage: 'Change wipe code',
+    },
+    TR_REMOVE_WIPE_CODE: {
+        id: 'TR_REMOVE_WIPE_CODE',
+        defaultMessage: 'Remove wipe code',
     },
     TR_DEVICE_PIN_PROTECTION_ENABLED: {
         id: 'TR_DEVICE_PIN_PROTECTION_ENABLED',
