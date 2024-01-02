@@ -1,6 +1,9 @@
 // @group:passphrase
 // @retry=2
 
+// todo: this test is skipped because it does not work and it can't be debugged on MacArm
+// and currently there is nobody who would be able to debug it on a different platform
+// also 2.2.0 is very old and we might consider deprecating it soon
 describe.skip('Passphrase - legacy flow', () => {
     beforeEach(() => {
         cy.task('startEmu', { wipe: true, version: '2.2.0' });

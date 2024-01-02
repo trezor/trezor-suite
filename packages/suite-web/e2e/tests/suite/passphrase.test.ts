@@ -23,60 +23,6 @@ describe('Passphrase', () => {
         requests = [];
     });
 
-    // TODO: there is a problem with clearing our password input element -> cypress deletes only last char with {selectAll}{backspace} and totally ignores .clear() command
-    it.skip('just test passphrase input', () => {
-        cy.getTestElement('@menu/switch-device').click();
-        cy.getTestElement('@switch-device/add-hidden-wallet-button').click();
-        cy.task('pressYes');
-
-        // select whole text and delete it
-        cy.getTestElement('@passphrase/input').type('123456');
-        cy.getTestElement('@passphrase/input').type('{selectall}');
-        cy.getTestElement('@passphrase/input').type('1');
-        cy.getTestElement('@passphrase/input').type('{backspace}');
-        cy.getTestElement('@passphrase/input').should('have.value', '');
-
-        // leftarrow sets caret to correct position
-        cy.getTestElement('@passphrase/input').type('abcdef{leftarrow}{leftarrow}12');
-        cy.getTestElement('@passphrase/show-toggle').click();
-        cy.getTestElement('@passphrase/input').should('have.value', 'abcd12ef');
-        cy.getTestElement('@passphrase/show-toggle').click();
-        cy.getTestElement('@passphrase/input').type('{leftarrow}{leftarrow}{backspace}{backspace}');
-        cy.getTestElement('@passphrase/show-toggle').click();
-        cy.getTestElement('@passphrase/input').should('have.value', 'ab12ef');
-
-        // toggle hidden/visible keeps caret position
-        // cy.getTestElement('@passphrase/input').clear();
-        cy.getTestElement('@passphrase/input').type('{selectall}');
-        cy.getTestElement('@passphrase/input').type('1');
-        cy.getTestElement('@passphrase/input').type('{backspace}');
-        cy.getTestElement('@passphrase/input').type('123{leftarrow}');
-        cy.getTestElement('@passphrase/show-toggle').click();
-        cy.getTestElement('@passphrase/input').type('abc');
-        cy.getTestElement('@passphrase/show-toggle').click();
-        cy.getTestElement('@passphrase/input').should('have.value', '12abc3');
-        cy.getTestElement('@passphrase/show-toggle').click();
-        cy.getTestElement('@passphrase/input').type('{rightarrow}xyz');
-        cy.getTestElement('@passphrase/show-toggle').click();
-        cy.getTestElement('@passphrase/input').should('have.value', '12abc3xyz');
-
-        // when selectionStart===0 (looking at you nullish coalescing)
-        cy.getTestElement('@passphrase/input')
-            .clear()
-            .type('123{leftarrow}{leftarrow}{leftarrow}abc');
-        cy.getTestElement('@passphrase/input').should('have.value', 'abc123');
-        cy.getTestElement('@passphrase/input')
-            .clear()
-            .type('123{leftarrow}{leftarrow}{leftarrow}{backspace}{del}');
-        cy.getTestElement('@passphrase/input').should('have.value', '23');
-
-        // todo: make sure that setting caret position via mouse click works as well could not make it, click does not move caret using cypress?
-        // cy.getTestElement('@passphrase/input').clear().type('123456');
-        // cy.getTestElement('@passphrase/input').trigger('click', 40, 25);
-
-        // todo: select part of test + copy/paste
-    });
-
     it('add 1st hidden wallet (abc) -> fail to confirm passphrase -> try again from notification, succeed -> check 1st address -> switch to 2nd hidden wallet (def) -> check 1st address -> go back to 1st hidden wallet -> check confirm passphrase appears. ', () => {
         cy.log('passphrase abc for the first time');
         // add 1st hidden wallet
