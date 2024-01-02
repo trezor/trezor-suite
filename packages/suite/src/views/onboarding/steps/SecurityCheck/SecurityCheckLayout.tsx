@@ -7,7 +7,7 @@ import { useSelector } from 'src/hooks/suite';
 
 const Wrapper = styled.div`
     display: grid;
-    grid-template-columns: 260px 1fr;
+    grid-template-columns: minmax(230px, 260px) 1fr;
     gap: 24px;
     width: 100%;
 
