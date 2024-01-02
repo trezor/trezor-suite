@@ -517,7 +517,7 @@ PODS:
     - React-Core
   - RNGestureHandler (2.9.0):
     - React-Core
-  - RNReanimated (3.6.1):
+  - RNReanimated (3.7.0-nightly-20240101-9d365ae7b):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
     - ReactCommon/turbomodule/core
@@ -894,7 +894,7 @@ SPEC CHECKSUMS:
   ReactNativeUsb: 9a142098b76ab35afa7bb979d40e7f68ac482193
   RNFlashList: ade81b4e928ebd585dd492014d40fb8d0e848aab
   RNGestureHandler: 071d7a9ad81e8b83fe7663b303d132406a7d8f39
-  RNReanimated: 79f572a7903c60f5aa86cf1698049ab5f75ececd
+  RNReanimated: eabcc13f3292013ec2712b9662f8c0d001a0d8bf
   RNScreens: ea4cd3a853063cda19a4e3c28d2e52180c80f4eb
   RNSentry: 4fb2cd7d2d6cb94423c24884488206ef881da136
   RNSVG: c1e76b81c76cdcd34b4e1188852892dc280eb902
@@ -911,4 +911,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: d37876aaf00e7f8309b694188119b139b8452ca1
 
-COCOAPODS: 1.14.3
+COCOAPODS: 1.11.3

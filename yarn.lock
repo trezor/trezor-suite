@@ -6677,7 +6677,7 @@ __metadata:
     jest: "npm:29.5.0"
     react: "npm:18.2.0"
     react-native: "npm:0.71.8"
-    react-native-reanimated: "npm:3.6.1"
+    react-native-reanimated: "npm:3.7.0-nightly-20240101-9d365ae7b"
     svgo: "npm:3.0.2"
     tsx: "npm:^4.6.2"
     typescript: "npm:5.3.2"
@@ -7026,7 +7026,7 @@ __metadata:
     proxy-memoize: "npm:2.0.2"
     react: "npm:18.2.0"
     react-native: "npm:0.71.8"
-    react-native-reanimated: "npm:3.6.1"
+    react-native-reanimated: "npm:3.7.0-nightly-20240101-9d365ae7b"
     react-redux: "npm:8.0.7"
   languageName: unknown
   linkType: soft
@@ -7041,7 +7041,7 @@ __metadata:
     jotai: "npm:1.9.1"
     react: "npm:18.2.0"
     react-native: "npm:0.71.8"
-    react-native-reanimated: "npm:3.6.1"
+    react-native-reanimated: "npm:3.7.0-nightly-20240101-9d365ae7b"
   languageName: unknown
   linkType: soft
 
@@ -7089,7 +7089,7 @@ __metadata:
     proxy-memoize: "npm:2.0.2"
     react: "npm:^18.2.0"
     react-native: "npm:0.71.8"
-    react-native-reanimated: "npm:3.6.1"
+    react-native-reanimated: "npm:3.7.0-nightly-20240101-9d365ae7b"
     react-redux: "npm:8.0.7"
   languageName: unknown
   linkType: soft
@@ -7114,7 +7114,7 @@ __metadata:
     react: "npm:18.2.0"
     react-native: "npm:0.71.8"
     react-native-gesture-handler: "npm:^2.9.0"
-    react-native-reanimated: "npm:3.6.1"
+    react-native-reanimated: "npm:3.7.0-nightly-20240101-9d365ae7b"
     react-native-root-toast: "npm:^3.3.1"
     react-native-safe-area-context: "npm:^4.5.0"
     react-redux: "npm:8.0.7"
@@ -7187,7 +7187,7 @@ __metadata:
     jotai: "npm:1.9.1"
     react: "npm:^18.2.0"
     react-native: "npm:0.71.8"
-    react-native-reanimated: "npm:3.6.1"
+    react-native-reanimated: "npm:3.7.0-nightly-20240101-9d365ae7b"
     react-native-safe-area-context: "npm:^4.5.0"
     react-redux: "npm:8.0.7"
   languageName: unknown
@@ -7375,7 +7375,7 @@ __metadata:
     react: "npm:18.2.0"
     react-intl: "npm:^6.5.1"
     react-native: "npm:0.71.8"
-    react-native-reanimated: "npm:3.6.1"
+    react-native-reanimated: "npm:3.7.0-nightly-20240101-9d365ae7b"
     react-redux: "npm:8.0.7"
     typescript: "npm:5.3.2"
   languageName: unknown
@@ -7414,7 +7414,7 @@ __metadata:
     "@trezor/theme": "workspace:*"
     react: "npm:18.2.0"
     react-native: "npm:0.71.8"
-    react-native-reanimated: "npm:3.6.1"
+    react-native-reanimated: "npm:3.7.0-nightly-20240101-9d365ae7b"
   languageName: unknown
   linkType: soft
 
@@ -7438,7 +7438,7 @@ __metadata:
     proxy-memoize: "npm:2.0.2"
     react: "npm:18.2.0"
     react-native: "npm:0.71.8"
-    react-native-reanimated: "npm:3.6.1"
+    react-native-reanimated: "npm:3.7.0-nightly-20240101-9d365ae7b"
     react-native-safe-area-context: "npm:^4.5.0"
     react-redux: "npm:8.0.7"
   languageName: unknown
@@ -7486,7 +7486,7 @@ __metadata:
     lottie-react-native: "npm:^5.1.5"
     react: "npm:18.2.0"
     react-native: "npm:0.71.8"
-    react-native-reanimated: "npm:3.6.1"
+    react-native-reanimated: "npm:3.7.0-nightly-20240101-9d365ae7b"
     react-redux: "npm:8.0.7"
     typescript: "npm:5.3.2"
   languageName: unknown
@@ -7531,7 +7531,7 @@ __metadata:
     react: "npm:18.2.0"
     react-hook-form: "npm:^7.48.2"
     react-native: "npm:0.71.8"
-    react-native-reanimated: "npm:3.6.1"
+    react-native-reanimated: "npm:3.7.0-nightly-20240101-9d365ae7b"
     react-redux: "npm:8.0.7"
   languageName: unknown
   linkType: soft
@@ -7776,7 +7776,7 @@ __metadata:
     react: "npm:18.2.0"
     react-native: "npm:0.71.8"
     react-native-gesture-handler: "npm:^2.9.0"
-    react-native-reanimated: "npm:3.6.1"
+    react-native-reanimated: "npm:3.7.0-nightly-20240101-9d365ae7b"
     react-native-safe-area-context: "npm:^4.5.0"
     react-redux: "npm:8.0.7"
   languageName: unknown
@@ -7811,7 +7811,7 @@ __metadata:
     react: "npm:18.2.0"
     react-native: "npm:0.71.8"
     react-native-gesture-handler: "npm:^2.9.0"
-    react-native-reanimated: "npm:3.6.1"
+    react-native-reanimated: "npm:3.7.0-nightly-20240101-9d365ae7b"
   languageName: unknown
   linkType: soft
 
@@ -7851,7 +7851,7 @@ __metadata:
     react: "npm:18.2.0"
     react-native: "npm:0.71.8"
     react-native-gesture-handler: "npm:^2.9.0"
-    react-native-reanimated: "npm:3.6.1"
+    react-native-reanimated: "npm:3.7.0-nightly-20240101-9d365ae7b"
     react-redux: "npm:8.0.7"
   languageName: unknown
   linkType: soft
@@ -7922,7 +7922,7 @@ __metadata:
     jest: "npm:29.5.0"
     react: "npm:18.2.0"
     react-native-gesture-handler: "npm:^2.9.0"
-    react-native-reanimated: "npm:3.6.1"
+    react-native-reanimated: "npm:3.7.0-nightly-20240101-9d365ae7b"
     react-native-safe-area-context: "npm:^4.5.0"
     react-redux: "npm:8.0.7"
     typescript: "npm:5.3.2"
@@ -7956,7 +7956,7 @@ __metadata:
     jotai: "npm:1.9.1"
     react: "npm:18.2.0"
     react-native-gesture-handler: "npm:^2.9.0"
-    react-native-reanimated: "npm:3.6.1"
+    react-native-reanimated: "npm:3.7.0-nightly-20240101-9d365ae7b"
     react-native-safe-area-context: "npm:^4.5.0"
   languageName: unknown
   linkType: soft
@@ -7999,7 +7999,7 @@ __metadata:
     react: "npm:18.2.0"
     react-native: "npm:0.71.8"
     react-native-gesture-handler: "npm:^2.9.0"
-    react-native-reanimated: "npm:3.6.1"
+    react-native-reanimated: "npm:3.7.0-nightly-20240101-9d365ae7b"
     react-redux: "npm:8.0.7"
     web3-utils: "npm:^1.10.0"
   languageName: unknown
@@ -9197,7 +9197,7 @@ __metadata:
     react-native-flipper: "npm:0.164.0"
     react-native-gesture-handler: "npm:^2.9.0"
     react-native-mmkv: "npm:2.11.0"
-    react-native-reanimated: "npm:3.6.1"
+    react-native-reanimated: "npm:3.7.0-nightly-20240101-9d365ae7b"
     react-native-restart: "npm:^0.0.27"
     react-native-safe-area-context: "npm:^4.5.0"
     react-native-screens: "npm:^3.19.0"
@@ -28505,9 +28505,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-reanimated@npm:3.6.1":
-  version: 3.6.1
-  resolution: "react-native-reanimated@npm:3.6.1"
+"react-native-reanimated@npm:3.7.0-nightly-20240101-9d365ae7b":
+  version: 3.7.0-nightly-20240101-9d365ae7b
+  resolution: "react-native-reanimated@npm:3.7.0-nightly-20240101-9d365ae7b"
   dependencies:
     "@babel/plugin-transform-object-assign": "npm:^7.16.7"
     "@babel/preset-typescript": "npm:^7.16.7"
@@ -28522,7 +28522,7 @@ __metadata:
     "@babel/plugin-transform-template-literals": ^7.0.0-0
     react: "*"
     react-native: "*"
-  checksum: 594a4ace054fdafa02ea2f126aeeda474f32306698b1d7c15ec8495b606b80e9e10a69eef2653d4b7f9cb743d0007ada1ab27e5f3064af1bfcc95291d70bb824
+  checksum: 634988cef4c6208137b22c389fbfd420b0ae023a4c6af6c78a16619ff83986811c058c293e862641872525887cfb8abd703cb1e79d83b43314c77b2beed1210b
   languageName: node
   linkType: hard
 
