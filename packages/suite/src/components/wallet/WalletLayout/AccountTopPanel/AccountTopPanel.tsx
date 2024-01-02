@@ -17,7 +17,7 @@ import {
     SkeletonRectangle,
     SkeletonStack,
 } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
+import { useSelector, useTranslation } from 'src/hooks/suite';
 import { AccountNavigation } from './AccountNavigation';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
 

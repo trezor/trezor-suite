@@ -21,7 +21,7 @@ const LabelValue = styled.div`
 `;
 
 const LabelDefaultValue = styled(LabelValue)`
-    /* do not shrink when the expanded label does not fit the contener - shrink only the label value */
+    /* do not shrink when the expanded label does not fit the container - shrink only the label value */
     flex-shrink: 0;
     max-width: 0;
 
@@ -103,10 +103,12 @@ const RelativeButton = styled(Button)`
     padding-top: 4px;
     position: relative;
     overflow: hidden;
+    text-align: left;
 `;
 
 const RelativeLabel = styled(Label)<{ isVisible?: boolean }>`
     position: relative;
+    text-align: left;
 `;
 
 const ButtonLikeLabel = (props: ExtendedProps) => {
@@ -119,11 +121,9 @@ const ButtonLikeLabel = (props: ExtendedProps) => {
                 variant="tertiary"
                 icon="TAG"
                 data-test={props['data-test']}
-                originalValue={props.payload.value}
+                originalValue={props.payload.value ?? props.defaultEditableValue}
                 onSubmit={props.onSubmit}
                 onBlur={props.onBlur}
-                defaultVisibleValue={props.defaultVisibleValue}
-                isButton
             />
         );
     }
@@ -149,10 +149,9 @@ const TextLikeLabel = (props: ExtendedProps) => {
         return (
             <EditableLabel
                 data-test={props['data-test']}
-                originalValue={props.payload.value}
+                originalValue={props.payload.value ?? props.defaultEditableValue}
                 onSubmit={props.onSubmit}
                 onBlur={props.onBlur}
-                defaultVisibleValue={props.defaultVisibleValue}
             />
         );
     }
