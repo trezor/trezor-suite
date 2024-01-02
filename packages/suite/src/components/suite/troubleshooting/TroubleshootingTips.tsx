@@ -82,6 +82,10 @@ const StyledButton = styled(Button)`
     margin: 0 20px 20px;
 `;
 
+const StyledButtonContactSupport = styled(Button)`
+    white-space: normal;
+`;
+
 interface Item {
     key: string;
     heading?: ReactNode;
@@ -154,9 +158,9 @@ export const TroubleshootingTips = ({
                 </FooterText>
 
                 <TrezorLink variant="nostyle" href={TREZOR_SUPPORT_URL}>
-                    <Button variant="tertiary">
+                    <StyledButtonContactSupport variant="tertiary">
                         <Translation id="TR_CONTACT_SUPPORT" />
-                    </Button>
+                    </StyledButtonContactSupport>
                 </TrezorLink>
             </ContactSupport>
         </WhiteCollapsibleBox>

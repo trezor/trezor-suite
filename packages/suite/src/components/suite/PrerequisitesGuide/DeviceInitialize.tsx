@@ -4,6 +4,11 @@ import { Translation, TroubleshootingTips } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { enableOnboardingReducer, resetOnboarding } from 'src/actions/onboarding/onboardingActions';
+import styled from 'styled-components';
+
+const StyledButton = styled(Button)`
+    white-space: normal;
+`;
 
 export const DeviceInitialize = () => {
     const dispatch = useDispatch();
@@ -22,9 +27,9 @@ export const DeviceInitialize = () => {
         <TroubleshootingTips
             label={<Translation id="TR_DEVICE_NOT_INITIALIZED" />}
             cta={
-                <Button data-test="@button/go-to-onboarding" onClick={handleCtaClick}>
+                <StyledButton data-test="@button/go-to-onboarding" onClick={handleCtaClick}>
                     <Translation id="TR_GO_TO_ONBOARDING" />
-                </Button>
+                </StyledButton>
             }
             items={[
                 {
