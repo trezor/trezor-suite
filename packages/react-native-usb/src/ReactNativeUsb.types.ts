@@ -81,5 +81,5 @@ export interface WebUSBDevice {
 }
 
 export interface OnConnectEvent extends Event {
-    device: WebUSBDevice;
+    device: WebUSBDevice | null | undefined;
 }
