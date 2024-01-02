@@ -9,17 +9,17 @@ export const supportedPortfolioTrackerNetworks = {
     testnet: ['test', 'regtest', 'tsep', 'tgor', 'thol', 'tada', 'txrp'] as NetworkSymbol[],
 } as const satisfies Record<string, NetworkSymbol[]>;
 
-export const supportedNetworkSymbols = [
+export const supportedPortfolioTrackerNetworkSymbols = [
     ...supportedPortfolioTrackerNetworks.mainnet,
     ...supportedPortfolioTrackerNetworks.testnet,
 ];
 
-export const supportedMainnetSymbols = supportedPortfolioTrackerNetworks.mainnet;
-
 export const sortNetworks = (networks: readonly Network[]) =>
     A.sort(networks, (a, b) => {
-        const aOrder = supportedNetworkSymbols.indexOf(a.symbol) ?? Number.MAX_SAFE_INTEGER;
-        const bOrder = supportedNetworkSymbols.indexOf(b.symbol) ?? Number.MAX_SAFE_INTEGER;
+        const aOrder =
+            supportedPortfolioTrackerNetworkSymbols.indexOf(a.symbol) ?? Number.MAX_SAFE_INTEGER;
+        const bOrder =
+            supportedPortfolioTrackerNetworkSymbols.indexOf(b.symbol) ?? Number.MAX_SAFE_INTEGER;
         return aOrder - bOrder;
     });
 
