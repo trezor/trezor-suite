@@ -41,6 +41,7 @@ const StyledTrezorLink = styled(TrezorLink)`
 
 const StyledSecurityCheckButton = styled(SecurityCheckButton)`
     flex-grow: 1;
+    white-space: normal;
 `;
 
 const checklistItems = [
