@@ -418,12 +418,12 @@ export function AnimatedLineGraph<TEventPayload extends object>({
     useAnimatedReaction(
         () => x.value,
         fingerX => {
-            if (isActive.value || fingerX) {
+            if (!loading && (isActive.value || fingerX)) {
                 setFingerX(fingerX);
                 runOnJS(setFingerPoint)(fingerX);
             }
         },
-        [isActive, setFingerX, width, x],
+        [isActive, setFingerX, width, x, loading],
     );
 
     useAnimatedReaction(

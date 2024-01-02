@@ -106,6 +106,13 @@ const connectedDevices = new Map<string, WebUSBDevice>();
 
 export function onDeviceConnected(listener: (event: OnConnectEvent) => void): Subscription {
     return emitter.addListener<NativeDevice>('onDeviceConnect', event => {
+        if (!event) {
+            console.error('JS: USB onDeviceConnect: event is null');
+            // just for debugging purposes now
+            alert('JS: USB onDeviceConnect: event is null');
+            return;
+        }
+
         if (connectedDevices.has(event.deviceName)) {
             debugLog('JS: USB onDeviceConnect: device already connected');
             return;
@@ -124,6 +131,13 @@ export function onDeviceConnected(listener: (event: OnConnectEvent) => void): Su
 
 export function onDeviceDisconnect(listener: (event: OnConnectEvent) => void): Subscription {
     return emitter.addListener<NativeDevice>('onDeviceDisconnect', event => {
+        if (!event) {
+            console.error('JS: USB onDeviceConnect: event is null');
+            // just for debugging purposes now
+            alert('JS: USB onDeviceConnect: event is null');
+            return;
+        }
+
         const eventPayload = {
             device: createWebUSBDevice(event as NativeDevice),
         };
