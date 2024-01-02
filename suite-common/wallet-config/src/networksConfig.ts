@@ -518,15 +518,11 @@ type Networks = typeof networks;
 export type NetworkSymbol = keyof Networks;
 export type NetworkType = Network['networkType'];
 type NetworkValue = Networks[NetworkSymbol];
-export type AccountType =
-    | Keys<NetworkValue['accountTypes']>
-    | 'imported'
-    | 'taproot'
-    | 'legacySegwit';
+export type AccountType = Keys<NetworkValue['accountTypes']> | 'imported' | 'taproot' | 'normal';
 export type NetworkFeature = 'rbf' | 'sign-verify' | 'amount-unit' | 'tokens' | 'staking';
 export type Network = Without<NetworkValue, 'accountTypes'> & {
     symbol: NetworkSymbol;
-    accountType?: 'normal' | AccountType;
+    accountType?: AccountType;
     backendType?: BackendType;
     testnet?: boolean;
     isHidden?: boolean;
