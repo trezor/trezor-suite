@@ -149,6 +149,8 @@ export const TransactionReviewOutputList = ({
         reportTransactionCreatedEvent('downloaded');
     };
 
+    const outputRefs = useRef<(HTMLDivElement | null)[]>([]);
+
     const totalRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -156,8 +158,14 @@ export const TransactionReviewOutputList = ({
 
         if (isLastStep) {
             totalRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else {
+            const activeIndex = outputs.findIndex(
+                (_, index) => getOutputState(index, buttonRequestsCount) === 'active',
+            );
+
+            outputRefs.current[activeIndex]?.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
-    }, [buttonRequestsCount, outputs.length]);
+    }, [buttonRequestsCount, outputs]);
 
     return (
         <Content>
@@ -177,6 +185,7 @@ export const TransactionReviewOutputList = ({
                                     // it's safe to use array index since outputs do not change
                                     // eslint-disable-next-line react/no-array-index-key
                                     key={index}
+                                    ref={el => (outputRefs.current[index] = el)}
                                     {...output}
                                     state={state}
                                     symbol={symbol}
