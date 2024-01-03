@@ -444,7 +444,8 @@ export const signTransaction = async (api: TrezorConnect) => {
                 op_return_data: 'deadbeef',
                 script_type: 'PAYTOOPRETURN',
             },
-            // @ts-expect-error unexpected script_type
+            // NOTE: Previously there was a "@ts-expect-error unexpected script_type" directive here
+            // The type in TxOutputType was loosened to allow this (see issue #10474)
             {
                 address: 'abcd',
                 amount: '100',

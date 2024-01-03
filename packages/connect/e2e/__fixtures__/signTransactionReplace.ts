@@ -112,6 +112,7 @@ export default {
                 ],
                 outputs: [
                     {
+                        // NOTE: address_n should be correctly used instead of address (issue #10474)
                         address: 'tb1qkvwu9g3k2pdxewfqr7syz89r3gj557l3uuf9r9',
                         amount: '100000',
                         script_type: 'PAYTOWITNESS',
@@ -188,6 +189,7 @@ export default {
                     },
                 ],
                 outputs: [
+                    // NOTE: script_type should not be undefined (issue #10474)
                     {
                         address: 'moE1dVYvebvtaMuNdXQKvu4UxUftLmS1Gt',
                         amount: '100000000',
