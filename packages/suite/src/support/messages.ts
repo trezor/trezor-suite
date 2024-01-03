@@ -1929,7 +1929,7 @@ export default defineMessages({
         id: 'TR_ADDRESS_MODAL_TITLE',
     },
     TR_XPUB_MODAL_CLIPBOARD: {
-        defaultMessage: 'Copy public key (XPUB)',
+        defaultMessage: 'Copy public key',
         id: 'TR_XPUB_MODAL_CLIPBOARD',
     },
     TR_XPUB_MODAL_TITLE: {
@@ -4362,7 +4362,7 @@ export default defineMessages({
     },
     FW_CAPABILITY_UPDATE_REQUIRED: {
         id: 'FW_CAPABILITY_UPDATE_REQUIRED',
-        defaultMessage: 'Update required',
+        defaultMessage: 'Firmware update required',
         description: 'Firmware is too OLD use this coin',
     },
     FW_CAPABILITY_CONNECT_OUTDATED: {
