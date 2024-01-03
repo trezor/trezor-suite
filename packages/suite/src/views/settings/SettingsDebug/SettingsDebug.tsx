@@ -14,7 +14,7 @@ import { DeviceAuthenticity } from './DeviceAuthenticity';
 import { Devkit } from './Devkit';
 import { Transport } from './Transport';
 import { Processes } from './Processes';
-import { PasswordManager } from './Passwords';
+import { PasswordManager } from './PasswordManager/PasswordManager';
 
 export const SettingsDebug = () => (
     <SettingsLayout>
