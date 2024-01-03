@@ -7,9 +7,9 @@ import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { FiatRatesRootState } from '@suite-native/fiat-rates';
 import { SettingsSliceRootState } from '@suite-native/module-settings';
 
-import { AccountsListGroup } from './AccountsListGroup';
-import { selectFilteredAccountsGroupedByNetwork } from '../selectors';
+import { selectFilteredAccountsGroupedByNetworkAccountType } from '../selectors';
 import { AccountListPlaceholder } from './AccountListPlaceholder';
+import { GroupedAccountsList } from './GroupedAccountsList';
 
 type AccountsListProps = {
     onSelectAccount: (accountKey: AccountKey, tokenContract?: TokenAddress) => void;
@@ -17,26 +17,18 @@ type AccountsListProps = {
 };
 
 export const AccountsList = ({ onSelectAccount, filterValue = '' }: AccountsListProps) => {
-    const accounts = useSelector(
+    const groupedAccounts = useSelector(
         (
             state: AccountsRootState &
                 FiatRatesRootState &
                 SettingsSliceRootState &
                 DeviceRootState,
-        ) => selectFilteredAccountsGroupedByNetwork(state, filterValue),
+        ) => selectFilteredAccountsGroupedByNetworkAccountType(state, filterValue),
     );
 
-    if (D.isEmpty(accounts)) return <AccountListPlaceholder />;
+    if (D.isEmpty(groupedAccounts)) return <AccountListPlaceholder />;
 
     return (
-        <>
-            {Object.entries(accounts).map(([networkSymbol, networkAccounts]) => (
-                <AccountsListGroup
-                    key={networkSymbol}
-                    accounts={networkAccounts}
-                    onSelectAccount={onSelectAccount}
-                />
-            ))}
-        </>
+        <GroupedAccountsList groupedAccounts={groupedAccounts} onSelectAccount={onSelectAccount} />
     );
 };

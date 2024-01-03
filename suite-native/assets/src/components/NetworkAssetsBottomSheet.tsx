@@ -1,19 +1,14 @@
 import { useSelector } from 'react-redux';
 
-import { G } from '@mobily/ts-belt';
-
 import { BottomSheet } from '@suite-native/atoms';
-import { AccountsListGroup } from '@suite-native/accounts';
+import { selectNetworkAccountsGroupedByAccountType } from '@suite-native/accounts';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import {
-    AccountsRootState,
-    DeviceRootState,
-    selectAccountsByNetworkSymbol,
-} from '@suite-common/wallet-core';
+import { AccountsRootState, DeviceRootState } from '@suite-common/wallet-core';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { GroupedAccountsList } from '@suite-native/accounts/src/components/GroupedAccountsList';
 
 type NetworkAssetsBottomSheetProps = {
-    networkSymbol: NetworkSymbol | null;
+    networkSymbol: NetworkSymbol;
     onSelectAccount: (accountKey: AccountKey, tokenContract?: TokenAddress) => void;
     onClose: () => void;
 };
@@ -23,15 +18,16 @@ export const NetworkAssetsBottomSheet = ({
     onSelectAccount,
     onClose,
 }: NetworkAssetsBottomSheetProps) => {
-    const selectedAccounts = useSelector((state: AccountsRootState & DeviceRootState) =>
-        selectAccountsByNetworkSymbol(state, networkSymbol),
+    const groupedNetworkAccounts = useSelector((state: AccountsRootState & DeviceRootState) =>
+        selectNetworkAccountsGroupedByAccountType(state, networkSymbol),
     );
-
-    if (G.isNull(networkSymbol)) return null;
 
     return (
         <BottomSheet title="Select Account" isVisible onClose={onClose}>
-            <AccountsListGroup accounts={selectedAccounts} onSelectAccount={onSelectAccount} />
+            <GroupedAccountsList
+                groupedAccounts={groupedNetworkAccounts}
+                onSelectAccount={onSelectAccount}
+            />
         </BottomSheet>
     );
 };

@@ -8,7 +8,7 @@ import { Account, AccountKey } from '@suite-common/wallet-types';
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 
 import { accountsActions } from './accountsActions';
-import { formattedAccountTypeMap } from './constants';
+import { formattedBitcoinAccountTypeMap } from './constants';
 import {
     DeviceRootState,
     selectDevice,
@@ -85,14 +85,17 @@ export const prepareAccountsReducer = createReducerWithExtraDeps(
                 state.push(account);
             })
             .addCase(accountsActions.createIndexLabeledAccount, (state, action) => {
-                const { deviceState, symbol } = action.payload;
-                const deviceNetworkAccounts = state.filter(
-                    account => account.deviceState === deviceState && account.symbol === symbol,
+                const { deviceState, symbol, accountType } = action.payload;
+                const matchingNetworkAndTypeAccounts = state.filter(
+                    account =>
+                        account.deviceState === deviceState &&
+                        account.symbol === symbol &&
+                        account.accountType === accountType,
                 );
 
-                const indexOfLastAccount = deviceNetworkAccounts.length;
+                const indexOfPreviousAccount = matchingNetworkAndTypeAccounts.length;
                 const networkName = networks[symbol].name;
-                const accountLabel = `${networkName} #${indexOfLastAccount + 1}`;
+                const accountLabel = `${networkName} #${indexOfPreviousAccount + 1}`;
 
                 const account = {
                     ...action.payload,
@@ -187,7 +190,7 @@ export const selectHasAccountTransactions = (state: AccountsRootState, accountKe
     return !!account?.history.total;
 };
 
-export const selectAccountsByNetworkSymbol = memoizeWithArgs(
+export const selectDeviceAccountsByNetworkSymbol = memoizeWithArgs(
     (state: AccountsRootState & DeviceRootState, networkSymbol: NetworkSymbol | null) => {
         if (G.isNull(networkSymbol)) return [];
 
@@ -243,7 +246,7 @@ export const selectFormattedAccountType = (
 
     if (!account || account?.networkType !== 'bitcoin') return null;
 
-    return formattedAccountTypeMap[account.accountType] ?? null;
+    return formattedBitcoinAccountTypeMap[account.accountType] ?? null;
 };
 
 export const selectIsAccountUtxoBased = (state: AccountsRootState, accountKey: AccountKey) => {
