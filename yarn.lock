@@ -7160,6 +7160,7 @@ __metadata:
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-utils": "workspace:*"
     jest: "npm:29.5.0"
     react-native-config: "npm:^1.5.0"
     typescript: "npm:5.3.2"

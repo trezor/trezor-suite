@@ -4,7 +4,6 @@ import { createThunk } from '@suite-common/redux-utils';
 import {
     accountsActions,
     DISCOVERY_MODULE_PREFIX,
-    filterUnavailableNetworks,
     selectDeviceAccountsLengthPerNetwork,
     selectDiscoveryForDevice,
     updateDiscovery,
@@ -13,14 +12,15 @@ import {
     getAvailableCardanoDerivationsThunk,
     selectDeviceByState,
     selectSupportedNetworks,
+    filterUnavailableNetworks,
 } from '@suite-common/wallet-core';
 import { selectIsAccountAlreadyDiscovered } from '@suite-native/accounts';
 import TrezorConnect from '@trezor/connect';
 import { DiscoveryItem } from '@suite-common/wallet-types';
-import { getDerivationType, getNetwork, isTestnet } from '@suite-common/wallet-utils';
+import { getDerivationType, getNetwork } from '@suite-common/wallet-utils';
 import { Network, NetworkSymbol } from '@suite-common/wallet-config';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
-import { filterBlacklistedNetworks, sortNetworks } from '@suite-native/config';
+import { filterTestnetNetworks, sortNetworks } from '@suite-native/config';
 import { requestDeviceAccess } from '@suite-native/device-mutex';
 import { analytics, EventType } from '@suite-native/analytics';
 
@@ -315,12 +315,8 @@ export const startDescriptorPreloadedDiscoveryThunk = createThunk(
 
         const supportedNetworks = pipe(
             selectSupportedNetworks(getState()),
-            networkSymbols =>
-                areTestnetsEnabled
-                    ? networkSymbols
-                    : networkSymbols.filter(networkSymbol => !isTestnet(networkSymbol)),
+            networkSymbols => filterTestnetNetworks(networkSymbols, areTestnetsEnabled),
             filterUnavailableNetworks,
-            filterBlacklistedNetworks,
             sortNetworks,
         );
 
