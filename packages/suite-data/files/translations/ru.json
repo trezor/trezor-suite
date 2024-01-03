@@ -853,7 +853,6 @@
   "TR_FEEDBACK_CATEGORY_TRADE": "Торговля",
   "TR_FEE_RATE": "Комиссия",
   "TR_FEE_RATE_CHANGED": "Ставка комиссии изменилась для завершения транзакции.",
-  "TR_FEE_ROUNDING_WARNING": "Ваш Trezor может отображать другую сумму, возникшую в результате округления платы.",
   "TR_FIAT_RATES_NOT_AVAILABLE": "Нет данных",
   "TR_FIAT_RATES_NOT_AVAILABLE_TOOLTIP": "В настоящее время фиатные тарифы не доступны.",
   "TR_FINALIZE_TS_RBF_OFF_WARN": "Завершение транзакции <strong>выключит</strong> RBF",
