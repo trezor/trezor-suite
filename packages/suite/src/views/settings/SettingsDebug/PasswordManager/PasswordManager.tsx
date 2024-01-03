@@ -16,11 +16,19 @@ import {
 } from 'src/reducers/suite/metadataReducer';
 
 import { PasswordEntry as PasswordEntryComponent } from './PasswordEntry';
+import { Tag } from './Tag';
 
 const PasswordManagerBody = styled.div`
     display: flex;
     flex: 1;
     flex-direction: column;
+`;
+
+const TagsList = styled.div`
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 8px;
+    gap: 4px;
 `;
 
 const PasswordsList = styled.div`
@@ -51,12 +59,13 @@ const usePasswords = () => {
     const [fileName, setFileName] = useState('');
     const [providerConnecting, setProviderConnecting] = useState(false);
     const [fetchingPasswords, setFetchingPasswords] = useState(false);
+    const [selectedTags, setSelectedTags] = useState<Record<string, boolean>>({});
     const device = useSelector(selectDevice);
     const selectedProvider = useSelector(selectSelectedProviderForPasswords);
 
     const dispatch = useDispatch();
 
-    const { entries, extVersion } =
+    const { entries, tags, extVersion } =
         useSelector(state => selectPasswordManagerState(state, fileName)) ||
         DEFAULT_PASSWORD_MANAGER_STATE;
 
@@ -124,11 +133,24 @@ const usePasswords = () => {
         );
     }, [selectedProvider, dispatch]);
 
+    const entriesByTag = Object.values(entries).filter(value =>
+        value.tags.some(tag => selectedTags[tag]),
+    );
+
+    const isSomeTagSelected = Object.values(selectedTags).some(v => v);
+    const isAllTagSelected = selectedTags['0'];
+
     return {
         entries,
+        entriesByTag,
+        tags,
+        isSomeTagSelected,
+        isAllTagSelected,
         extVersion,
         fileName,
         fetchingPasswords,
+        selectedTags,
+        setSelectedTags,
         connect,
         disconnect,
         device,
@@ -140,9 +162,15 @@ const usePasswords = () => {
 export const PasswordManager = () => {
     const {
         entries,
+        entriesByTag,
+        tags,
+        isSomeTagSelected,
+        isAllTagSelected,
         extVersion,
         fileName,
         fetchingPasswords,
+        selectedTags,
+        setSelectedTags,
         connect,
         disconnect,
         selectedProvider,
@@ -187,8 +215,26 @@ export const PasswordManager = () => {
                     <>
                         {extVersion ? (
                             <PasswordManagerBody>
+                                <TagsList>
+                                    {Object.entries(tags).map(([key, value]) => (
+                                        <Tag
+                                            key={key}
+                                            title={value.title}
+                                            onClick={() => {
+                                                setSelectedTags({
+                                                    ...selectedTags,
+                                                    [key]: !selectedTags[key],
+                                                });
+                                            }}
+                                            isSelected={selectedTags[key]}
+                                        />
+                                    ))}
+                                </TagsList>
                                 <PasswordsList>
-                                    {Object.entries(entries).map(([key, entry]) => (
+                                    {(isSomeTagSelected && !isAllTagSelected
+                                        ? Object.entries(entriesByTag)
+                                        : Object.entries(entries)
+                                    ).map(([key, entry]) => (
                                         <PasswordEntryComponent
                                             {...entry}
                                             devicePath={device!.path}
