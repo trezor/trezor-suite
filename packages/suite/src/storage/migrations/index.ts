@@ -706,7 +706,14 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
 
     if (oldVersion < 41) {
         await updateAll(transaction, 'metadata', metadata => {
-            metadata.selectedProvider.passwords = '';
+            // although selectedProvider is added in version 39 I saw a report by QA that
+            // migration was trying to set 'passwords' of undefined here.
+            if (!metadata.selectedProvider) {
+                metadata.selectedProvider = { labels: '', passwords: '' };
+            }
+            if (!metadata.selectedProvider.passwords) {
+                metadata.selectedProvider.passwords = '';
+            }
             return metadata;
         });
     }
