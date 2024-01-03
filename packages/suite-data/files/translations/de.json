@@ -898,7 +898,6 @@
   "TR_FEEDBACK_CATEGORY_TRADE": "Handel",
   "TR_FEE_RATE": "Gebührensatz",
   "TR_FEE_RATE_CHANGED": "Der Gebührensatz wurde geändert, um die Transaktion abzuschließen.",
-  "TR_FEE_ROUNDING_WARNING": "Dein Trezor kann aufgrund der Rundung von Gebühren einen anderen Preis anzeigen.",
   "TR_FIAT_RATES_NOT_AVAILABLE": "Keine Daten verfügbar",
   "TR_FIAT_RATES_NOT_AVAILABLE_TOOLTIP": "Fiat-Preise sind derzeit nicht verfügbar.",
   "TR_FINALIZE_TS_RBF_OFF_WARN": "Der Abschluss der Transaktion schaltet RBF <strong>AUS</strong>",

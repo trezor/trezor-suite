@@ -821,7 +821,6 @@
   "TR_FEEDBACK_CATEGORY_TRADE": "Trocar",
   "TR_FEE_RATE": "Taxa",
   "TR_FEE_RATE_CHANGED": "A taxa de taxa mudou para concluir a transação.",
-  "TR_FEE_ROUNDING_WARNING": "Seu Trezor pode exibir uma taxa diferente causada por arredondamento de taxas.",
   "TR_FIAT_RATES_NOT_AVAILABLE": "Não há dados disponíveis",
   "TR_FIAT_RATES_NOT_AVAILABLE_TOOLTIP": "As taxas Fiat não estão disponíveis no momento.",
   "TR_FINALIZE_TS_RBF_OFF_WARN": "Finalizando a transação, o RBF <strong>OFF</strong>",
