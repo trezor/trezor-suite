@@ -8,9 +8,12 @@ import { selectDevice } from '@suite-common/wallet-core';
 import { SectionItem, TextColumn, ActionColumn } from 'src/components/suite';
 import { useSelector, useDispatch } from 'src/hooks/suite';
 import * as metadataActions from 'src/actions/suite/metadataActions';
-import type { PasswordEntry } from 'src/types/suite/metadata';
+import type { PasswordManagerState } from 'src/types/suite/metadata';
 import { METADATA } from 'src/actions/suite/constants';
-import { selectSelectedProviderForPasswords } from 'src/reducers/suite/metadataReducer';
+import {
+    selectPasswordManagerState,
+    selectSelectedProviderForPasswords,
+} from 'src/reducers/suite/metadataReducer';
 
 import { PasswordEntry as PasswordEntryComponent } from './PasswordEntry';
 
@@ -27,6 +30,14 @@ const PATH = [10016 + HD_HARDENED, 0];
 const DEFAULT_KEYPHRASE = 'Activate TREZOR Password Manager?';
 const DEFAULT_NONCE =
     '2d650551248d792eabf628f451200d7f51cb63e46aadcbb1038aacb05e8c8aee2d650551248d792eabf628f451200d7f51cb63e46aadcbb1038aacb05e8c8aee';
+const DEFAULT_PASSWORD_MANAGER_STATE: PasswordManagerState = {
+    config: {
+        orderType: 'date',
+    },
+    entries: {},
+    extVersion: '',
+    tags: {},
+};
 
 export const PasswordManager = () => {
     // todo: filename is saved only locally. for production grade state of this feature we will of course need to save it into app state.
@@ -39,17 +50,9 @@ export const PasswordManager = () => {
 
     const dispatch = useDispatch();
 
-    const passwordEntries: PasswordEntry[] = (() => {
-        if (!fileName || !selectedProvider || !selectedProvider?.data?.[fileName]) {
-            return [];
-        }
-
-        const data = selectedProvider?.data![fileName];
-        if ('entries' in data) {
-            return data.entries as PasswordEntry[];
-        }
-        return [];
-    })();
+    const { entries } =
+        useSelector(state => selectPasswordManagerState(state, fileName)) ||
+        DEFAULT_PASSWORD_MANAGER_STATE;
 
     const connect = useCallback(() => {
         setFileName('');
@@ -149,10 +152,10 @@ export const PasswordManager = () => {
             <SectionItem>
                 <PasswordsList>
                     {fetchingPasswords && <div>Fetching passwords...</div>}
-                    {Object.entries(passwordEntries).map(([key, entry]) => (
+                    {Object.entries(entries).map(([key, entry]) => (
                         <PasswordEntryComponent {...entry} devicePath={device!.path} key={key} />
                     ))}
-                    {!Object.entries(passwordEntries).length && !fetchingPasswords && (
+                    {!Object.entries(entries).length && !fetchingPasswords && (
                         <TextColumn description={`No passwords found in file ${fileName}`} />
                     )}
                 </PasswordsList>
