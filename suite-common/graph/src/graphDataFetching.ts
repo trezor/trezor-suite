@@ -39,9 +39,6 @@ export const addBalanceForAccountMovementHistory = (
 
         balance = new BigNumber(balance).plus(normalizedReceived).minus(normalizedSent);
 
-        // for some coins like ETH, simple sum of received and sent is not enough and could result in nonsense like negative balance
-        balance = balance.isNegative() ? new BigNumber('0') : balance;
-
         return {
             time: dataPoint.time,
             cryptoBalance: formatNetworkAmount(balance.toFixed(), symbol),
