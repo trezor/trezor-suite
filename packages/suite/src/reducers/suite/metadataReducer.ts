@@ -13,7 +13,12 @@ import {
 
 import { STORAGE, METADATA } from 'src/actions/suite/constants';
 import { Action, TrezorDevice } from 'src/types/suite';
-import { MetadataState, WalletLabels, AccountLabels } from 'src/types/suite/metadata';
+import {
+    MetadataState,
+    WalletLabels,
+    AccountLabels,
+    PasswordManagerState,
+} from 'src/types/suite/metadata';
 import { Account } from 'src/types/wallet';
 import {
     DEFAULT_ACCOUNT_METADATA,
@@ -286,6 +291,21 @@ export const selectIsLabelingAvailableForEntity = (
         entity &&
         entity?.[METADATA.ENCRYPTION_VERSION]?.fileName
     );
+};
+
+export const selectPasswordManagerState = (
+    state: {
+        metadata: MetadataState;
+    },
+    fileName?: string,
+) => {
+    const provider = selectSelectedProviderForPasswords(state);
+
+    if (!fileName || !provider || !provider?.data?.[fileName]) {
+        return;
+    }
+
+    return provider.data[fileName] as PasswordManagerState;
 };
 
 export default metadataReducer;
