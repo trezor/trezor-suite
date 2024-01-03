@@ -268,7 +268,10 @@ export const transformTransaction = (
         tokens: myTokens,
         internalTransfers: myInternalTransfers,
         rbf,
-        ethereumSpecific: tx.ethereumSpecific,
+        ethereumSpecific: tx.ethereumSpecific && {
+            ...tx.ethereumSpecific,
+            gasPrice: tx.ethereumSpecific.gasPrice ?? '0', // even if it shouldn't, `null` sometimes came from Erigon
+        },
         details: {
             vin: inputs.map(enhanceVinVout(myAddresses)),
             vout: outputs.map(enhanceVinVout(myAddresses)),
