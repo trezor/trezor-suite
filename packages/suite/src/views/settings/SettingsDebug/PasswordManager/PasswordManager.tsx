@@ -17,6 +17,12 @@ import {
 
 import { PasswordEntry as PasswordEntryComponent } from './PasswordEntry';
 
+const PasswordManagerBody = styled.div`
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+`;
+
 const PasswordsList = styled.div`
     display: flex;
     flex-direction: column;
@@ -39,18 +45,18 @@ const DEFAULT_PASSWORD_MANAGER_STATE: PasswordManagerState = {
     tags: {},
 };
 
-export const PasswordManager = () => {
+const usePasswords = () => {
     // todo: filename is saved only locally. for production grade state of this feature we will of course need to save it into app state.
+
     const [fileName, setFileName] = useState('');
     const [providerConnecting, setProviderConnecting] = useState(false);
     const [fetchingPasswords, setFetchingPasswords] = useState(false);
-
     const device = useSelector(selectDevice);
     const selectedProvider = useSelector(selectSelectedProviderForPasswords);
 
     const dispatch = useDispatch();
 
-    const { entries } =
+    const { entries, extVersion } =
         useSelector(state => selectPasswordManagerState(state, fileName)) ||
         DEFAULT_PASSWORD_MANAGER_STATE;
 
@@ -107,6 +113,43 @@ export const PasswordManager = () => {
             });
     }, [selectedProvider, device, dispatch]);
 
+    const disconnect = useCallback(() => {
+        if (!selectedProvider) return;
+        dispatch(
+            metadataActions.disconnectProvider({
+                clientId: selectedProvider.clientId,
+                dataType: 'passwords',
+                removeMetadata: false,
+            }),
+        );
+    }, [selectedProvider, dispatch]);
+
+    return {
+        entries,
+        extVersion,
+        fileName,
+        fetchingPasswords,
+        connect,
+        disconnect,
+        device,
+        selectedProvider,
+        providerConnecting,
+    };
+};
+
+export const PasswordManager = () => {
+    const {
+        entries,
+        extVersion,
+        fileName,
+        fetchingPasswords,
+        connect,
+        disconnect,
+        selectedProvider,
+        providerConnecting,
+    } = usePasswords();
+    const device = useSelector(selectDevice);
+
     if (providerConnecting) {
         return <SectionItem>Connecting...</SectionItem>;
     }
@@ -134,31 +177,36 @@ export const PasswordManager = () => {
                     description={`type: ${selectedProvider.type}, clientId: ${selectedProvider.clientId}, connected user: ${selectedProvider.user}`}
                 />
                 <ActionColumn>
-                    <Button
-                        onClick={() =>
-                            dispatch(
-                                metadataActions.disconnectProvider({
-                                    clientId: selectedProvider.clientId,
-                                    dataType: 'passwords',
-                                    removeMetadata: false,
-                                }),
-                            )
-                        }
-                    >
-                        Disconnect
-                    </Button>
+                    <Button onClick={disconnect}>Disconnect</Button>
                 </ActionColumn>
             </SectionItem>
             <SectionItem>
-                <PasswordsList>
-                    {fetchingPasswords && <div>Fetching passwords...</div>}
-                    {Object.entries(entries).map(([key, entry]) => (
-                        <PasswordEntryComponent {...entry} devicePath={device!.path} key={key} />
-                    ))}
-                    {!Object.entries(entries).length && !fetchingPasswords && (
-                        <TextColumn description={`No passwords found in file ${fileName}`} />
-                    )}
-                </PasswordsList>
+                {fetchingPasswords ? (
+                    <div>Fetching passwords...</div>
+                ) : (
+                    <>
+                        {extVersion ? (
+                            <PasswordManagerBody>
+                                <PasswordsList>
+                                    {Object.entries(entries).map(([key, entry]) => (
+                                        <PasswordEntryComponent
+                                            {...entry}
+                                            devicePath={device!.path}
+                                            key={key}
+                                        />
+                                    ))}
+                                    {!Object.entries(entries).length && (
+                                        <TextColumn
+                                            description={`No passwords found in file ${fileName}`}
+                                        />
+                                    )}
+                                </PasswordsList>
+                            </PasswordManagerBody>
+                        ) : (
+                            <div> no data</div>
+                        )}
+                    </>
+                )}
             </SectionItem>
         </>
     );
