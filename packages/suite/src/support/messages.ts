@@ -1929,7 +1929,7 @@ export default defineMessages({
         id: 'TR_ADDRESS_MODAL_TITLE',
     },
     TR_XPUB_MODAL_CLIPBOARD: {
-        defaultMessage: 'Copy public key (XPUB)',
+        defaultMessage: 'Copy public key',
         id: 'TR_XPUB_MODAL_CLIPBOARD',
     },
     TR_XPUB_MODAL_TITLE: {
@@ -2465,12 +2465,12 @@ export default defineMessages({
         id: 'TR_DEVICE_SETTINGS_CHANGE_PIN_TITLE',
     },
     TR_DEVICE_SETTINGS_WIPE_CODE_TITLE: {
-        defaultMessage: 'Setup wipe code',
+        defaultMessage: 'Set up wipe code',
         id: 'TR_DEVICE_SETTINGS_WIPE_CODE_TITLE',
     },
     TR_DEVICE_SETTINGS_WIPE_CODE_DESC: {
         defaultMessage:
-            'The wipe code is an advanced feature that allows the user to set, and later enter, a "self-destruct" PIN code.',
+            'The wipe code is an advanced feature that enables you to create a “self-destruct” code, which can be entered at a later time.',
         id: 'TR_DEVICE_SETTINGS_WIPE_CODE_DESC',
     },
     TR_DEVICE_SETTINGS_AUTO_LOCK: {
@@ -4366,7 +4366,7 @@ export default defineMessages({
     },
     FW_CAPABILITY_UPDATE_REQUIRED: {
         id: 'FW_CAPABILITY_UPDATE_REQUIRED',
-        defaultMessage: 'Update required',
+        defaultMessage: 'Firmware update required',
         description: 'Firmware is too OLD use this coin',
     },
     FW_CAPABILITY_CONNECT_OUTDATED: {

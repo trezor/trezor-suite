@@ -890,7 +890,6 @@
   "TR_FEEDBACK_CATEGORY_TRADE": "Commercio",
   "TR_FEE_RATE": "Tariffa commissione",
   "TR_FEE_RATE_CHANGED": "La tariffa della commissione è cambiata per completare la transazione.",
-  "TR_FEE_ROUNDING_WARNING": "Il tuo Trezor potrebbe mostrare un tasso differente, causato dall'arrotondamento della commissione.",
   "TR_FIAT_RATES_NOT_AVAILABLE": "Nessun dato disponibile",
   "TR_FIAT_RATES_NOT_AVAILABLE_TOOLTIP": "Le tariffe legali non sono correntemente disponibili.",
   "TR_FINALIZE_TS_RBF_OFF_WARN": "Finalizzare la transazione <strong>DISATTIVERÁ</strong> RBF",

@@ -26,6 +26,7 @@
   "TR_ADDRESS_MODAL_CLIPBOARD": "Kopiera adress",
   "TR_ADD_ACCOUNT": "Lägg till konto",
   "TR_ADD_TOKEN_ADDRESS_NOT_VALID": "Ogiltig adress",
+  "TR_AFFECTED_TXS_OWN": "Dina transaktioner",
   "TR_ALLOW_ANALYTICS": "Användningsdata",
   "TR_ALL_TRANSACTIONS": "Alla transaktioner",
   "TR_AUTHENTICATE_DEVICE_DESCRIPTION": "Vi vill bara vara säkra på att din Trezor är äkta.",

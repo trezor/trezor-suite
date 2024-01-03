@@ -900,7 +900,6 @@
   "TR_FEEDBACK_CATEGORY_TRADE": "Operar",
   "TR_FEE_RATE": "Comisión",
   "TR_FEE_RATE_CHANGED": "La comisión ha cambiado para completar la transacción.",
-  "TR_FEE_ROUNDING_WARNING": "Tu Trezor puede mostrar una comisión diferente a causa del redondeo.",
   "TR_FIAT_RATES_NOT_AVAILABLE": "No hay datos disponibles.",
   "TR_FIAT_RATES_NOT_AVAILABLE_TOOLTIP": "Las comisiones fiat no están disponibles actualmente.",
   "TR_FINALIZE_TS_RBF_OFF_WARN": "Al finalizar la transacción, RBF pasará a <strong>APAGADO</strong>.",

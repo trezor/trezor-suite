@@ -888,7 +888,6 @@
   "TR_FEEDBACK_CATEGORY_TRADE": "Trader",
   "TR_FEE_RATE": "Taux des frais",
   "TR_FEE_RATE_CHANGED": "Le taux de frais a été modifié pour terminer la transaction.",
-  "TR_FEE_ROUNDING_WARNING": "Votre Trezor peut afficher un taux différent en raison de l’arrondissement des frais.",
   "TR_FIAT_RATES_NOT_AVAILABLE": "Pas de données disponibles",
   "TR_FIAT_RATES_NOT_AVAILABLE_TOOLTIP": "Les tarifs Fiat ne sont pas disponibles actuellement.",
   "TR_FINALIZE_TS_RBF_OFF_WARN": "La finalisation de la transaction deviendra RBF <strong>OFF</strong>",
