@@ -1,4 +1,4 @@
-import { A, flow } from '@mobily/ts-belt';
+import { A, pipe } from '@mobily/ts-belt';
 
 import { createThunk } from '@suite-common/redux-utils';
 import {
@@ -12,19 +12,15 @@ import {
     removeDiscovery,
     getAvailableCardanoDerivationsThunk,
     selectDeviceByState,
+    selectSupportedNetworks,
 } from '@suite-common/wallet-core';
 import { selectIsAccountAlreadyDiscovered } from '@suite-native/accounts';
 import TrezorConnect from '@trezor/connect';
 import { DiscoveryItem } from '@suite-common/wallet-types';
-import { getDerivationType, getNetwork } from '@suite-common/wallet-utils';
+import { getDerivationType, getNetwork, isTestnet } from '@suite-common/wallet-utils';
 import { Network, NetworkSymbol } from '@suite-common/wallet-config';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
-import {
-    supportedMainnetSymbols,
-    supportedNetworkSymbols,
-    filterBlacklistedNetworks,
-    sortNetworks,
-} from '@suite-native/config';
+import { filterBlacklistedNetworks, sortNetworks } from '@suite-native/config';
 import { requestDeviceAccess } from '@suite-native/device-mutex';
 import { analytics, EventType } from '@suite-native/analytics';
 
@@ -43,8 +39,6 @@ const DISCOVERY_BATCH_SIZE_PER_COIN: Partial<Record<NetworkSymbol, number>> = {
     zec: 1,
     etc: 1,
 };
-
-const getAvailableNetworks = flow(filterUnavailableNetworks, filterBlacklistedNetworks);
 
 const getBatchSizeByCoin = (coin: NetworkSymbol): number => {
     if (coin in DISCOVERY_BATCH_SIZE_PER_COIN) {
@@ -257,10 +251,10 @@ export const createDescriptorPreloadedDiscoveryThunk = createThunk(
     async (
         {
             deviceState,
-            deviceSupportedNetworks,
+            supportedNetworks,
         }: {
             deviceState: string;
-            deviceSupportedNetworks: readonly Network[];
+            supportedNetworks: readonly Network[];
         },
         { dispatch, getState },
     ) => {
@@ -270,11 +264,11 @@ export const createDescriptorPreloadedDiscoveryThunk = createThunk(
             return;
         }
 
-        const supportedNetworksSymbols = deviceSupportedNetworks.map(network => network.symbol);
+        const supportedNetworksSymbols = supportedNetworks.map(network => network.symbol);
         const discoveryNetworksTotalCount = supportedNetworksSymbols.length;
 
         let availableCardanoDerivationsResponse;
-        if (deviceSupportedNetworks.some(network => network.networkType === 'cardano')) {
+        if (supportedNetworks.some(network => network.networkType === 'cardano')) {
             availableCardanoDerivationsResponse = await requestDeviceAccess(() =>
                 dispatch(getAvailableCardanoDerivationsThunk({ deviceState, device })).unwrap(),
             );
@@ -319,10 +313,16 @@ export const startDescriptorPreloadedDiscoveryThunk = createThunk(
             return;
         }
 
-        const enabledNetworks = areTestnetsEnabled
-            ? supportedNetworkSymbols
-            : supportedMainnetSymbols;
-        const deviceSupportedNetworks = sortNetworks(getAvailableNetworks(enabledNetworks, device));
+        const supportedNetworks = pipe(
+            selectSupportedNetworks(getState()),
+            networkSymbols =>
+                areTestnetsEnabled
+                    ? networkSymbols
+                    : networkSymbols.filter(networkSymbol => !isTestnet(networkSymbol)),
+            filterUnavailableNetworks,
+            filterBlacklistedNetworks,
+            sortNetworks,
+        );
 
         // Start tracking duration for analytics purposes
         dispatch(setDiscoveryStartTimestamp(performance.now()));
@@ -330,7 +330,7 @@ export const startDescriptorPreloadedDiscoveryThunk = createThunk(
         await dispatch(
             createDescriptorPreloadedDiscoveryThunk({
                 deviceState,
-                deviceSupportedNetworks,
+                supportedNetworks,
             }),
         );
 
@@ -341,7 +341,7 @@ export const startDescriptorPreloadedDiscoveryThunk = createThunk(
         }
 
         // Start discovery for every network account type.
-        deviceSupportedNetworks.forEach(network => {
+        supportedNetworks.forEach(network => {
             dispatch(discoverNetworkBatchThunk({ deviceState, network }));
         });
     },

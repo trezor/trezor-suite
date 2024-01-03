@@ -8,7 +8,7 @@ import {
 } from '@suite-common/wallet-core';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountInfo } from '@trezor/connect';
-import { supportedNetworkSymbols } from '@suite-native/config';
+import { supportedPortfolioTrackerNetworkSymbols } from '@suite-native/config';
 import { useTranslate } from '@suite-native/intl';
 
 import { AccountImportSummaryForm } from './AccountImportSummaryForm';
@@ -29,7 +29,7 @@ export const AccountImportSummary = ({ networkSymbol, accountInfo }: AccountImpo
         ),
     );
 
-    const isAccountImportSupported = supportedNetworkSymbols.some(
+    const isAccountImportSupported = supportedPortfolioTrackerNetworkSymbols.some(
         network => network === networkSymbol,
     );
 
