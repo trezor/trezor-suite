@@ -192,7 +192,7 @@ export type DeviceMetadata = DeviceEntityKeys;
 
 type Data = Record<
     LabelableEntityKeys['fileName'], // unique "id" for mapping with labelable entitties
-    Labels
+    Labels | PasswordManagerState
 >;
 
 /**
@@ -240,5 +240,31 @@ export interface MetadataState {
 export type OAuthServerEnvironment = 'production' | 'staging' | 'localhost';
 export type MetadataEncryptionVersion = 1 | 2;
 
-// todo: https://github.com/trezor/trezor-suite/issues/10408
-export type PasswordEntry = any;
+type Password = {
+    type: 'Buffer';
+    data: Buffer;
+};
+
+export type PasswordEntry = {
+    export: boolean;
+    key_value: string;
+    nonce: string;
+    note?: string;
+    password: Password;
+    safe_note?: Password;
+    success: boolean;
+    title: string;
+    username: string;
+    tags: number[];
+};
+
+export type PasswordTag = { title: string; icon: string };
+
+export type PasswordManagerState = {
+    config: {
+        orderType: string;
+    };
+    entries: Record<number, PasswordEntry>;
+    extVersion: string;
+    tags: Record<number, PasswordTag>;
+};
