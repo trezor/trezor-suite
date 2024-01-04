@@ -18,7 +18,7 @@ It's good to have some tools installed before you begin:
 1. Run packager - `yarn start`
 
 ### Optional:
-If you're using [Trezor User Env](https://github.com/trezor/trezor-user-env) while running the app, you might need to map the ports for data transport between Trezor emulator and Android device emulator by running `adb reverse tcp:21325 tcp:21325`
+If you're using [Trezor User Env](https://github.com/trezor/trezor-user-env) while running the app, you might need to map the ports for data transport between Trezor emulator and Android device emulator by running `adb reverse tcp:21325 tcp:21325`. If you're running the app from device over Wi-Fi, you will instead need to call `adb reverse tcp:8081 tcp:8081`.
 
 ## Running app on iOS
 
