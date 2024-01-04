@@ -467,8 +467,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             // ...and if it's not then unlock device and proceed to regular GetAddress flow
         }
 
-        const altMode = this._altModeChange(networkType);
-        const expectedState = altMode ? undefined : this.getExternalState();
+        const expectedState = this.getExternalState();
         const state = await this.getCommands().getDeviceState(networkType);
         const uniqueState = `${state}@${this.features.device_id || 'device_id'}:${this.instance}`;
         if (!this.useLegacyPassphrase() && this.features.session_id) {
@@ -750,33 +749,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
             features: this.features,
             unavailableCapabilities: this.unavailableCapabilities,
         };
-    }
-
-    _getNetworkTypeState() {
-        return this.networkTypeState[this.instance];
-    }
-
-    _setNetworkTypeState(networkType?: NETWORK.NetworkType) {
-        if (typeof networkType !== 'string') {
-            delete this.networkTypeState[this.instance];
-        } else {
-            this.networkTypeState[this.instance] = networkType;
-        }
-    }
-
-    _altModeChange(networkType?: NETWORK.NetworkType) {
-        const prevAltMode = this._isAltModeNetworkType(this._getNetworkTypeState());
-        const nextAltMode = this._isAltModeNetworkType(networkType);
-
-        // Update network type
-        this._setNetworkTypeState(networkType);
-
-        return prevAltMode !== nextAltMode;
-    }
-
-    // Is it a network type that requires the device to operate in an alternative state (ie: Cardano)
-    _isAltModeNetworkType(networkType?: keyof typeof NETWORK.TYPES) {
-        return networkType ? ['cardano'].includes(networkType) : false;
     }
 
     async legacyForceRelease() {
