@@ -1,10 +1,9 @@
-import { A, pipe } from '@mobily/ts-belt';
+import { A } from '@mobily/ts-belt';
 
 import { createThunk } from '@suite-common/redux-utils';
 import {
     accountsActions,
     DISCOVERY_MODULE_PREFIX,
-    filterUnavailableNetworks,
     selectDeviceAccountsLengthPerNetwork,
     selectDiscoveryForDevice,
     updateDiscovery,
@@ -12,20 +11,22 @@ import {
     removeDiscovery,
     getAvailableCardanoDerivationsThunk,
     selectDeviceByState,
-    selectSupportedNetworks,
 } from '@suite-common/wallet-core';
 import { selectIsAccountAlreadyDiscovered } from '@suite-native/accounts';
 import TrezorConnect from '@trezor/connect';
 import { DiscoveryItem } from '@suite-common/wallet-types';
-import { getDerivationType, getNetwork, isTestnet } from '@suite-common/wallet-utils';
+import { getDerivationType, getNetwork } from '@suite-common/wallet-utils';
 import { Network, NetworkSymbol } from '@suite-common/wallet-config';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
-import { filterBlacklistedNetworks, sortNetworks } from '@suite-native/config';
 import { requestDeviceAccess } from '@suite-native/device-mutex';
 import { analytics, EventType } from '@suite-native/analytics';
 
 import { fetchBundleDescriptors } from './utils';
-import { selectDiscoveryStartTimeStamp, setDiscoveryStartTimestamp } from './discoveryConfigSlice';
+import {
+    selectDiscoveryStartTimeStamp,
+    selectDiscoverySupportedNetworks,
+    setDiscoveryStartTimestamp,
+} from './discoveryConfigSlice';
 
 const DISCOVERY_DEFAULT_BATCH_SIZE = 2;
 
@@ -313,16 +314,7 @@ export const startDescriptorPreloadedDiscoveryThunk = createThunk(
             return;
         }
 
-        const supportedNetworks = pipe(
-            selectSupportedNetworks(getState()),
-            networkSymbols =>
-                areTestnetsEnabled
-                    ? networkSymbols
-                    : networkSymbols.filter(networkSymbol => !isTestnet(networkSymbol)),
-            filterUnavailableNetworks,
-            filterBlacklistedNetworks,
-            sortNetworks,
-        );
+        const supportedNetworks = selectDiscoverySupportedNetworks(getState(), areTestnetsEnabled);
 
         // Start tracking duration for analytics purposes
         dispatch(setDiscoveryStartTimestamp(performance.now()));

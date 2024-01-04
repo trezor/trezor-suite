@@ -1,4 +1,16 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { pipe } from '@mobily/ts-belt';
+
+import {
+    DeviceRootState,
+    filterUnavailableNetworks,
+    selectSupportedNetworks,
+} from '@suite-common/wallet-core';
+import {
+    filterBlacklistedNetworks,
+    filterTestnetNetworks,
+    sortNetworks,
+} from '@suite-native/config';
 
 type DiscoveryConfigState = {
     areTestnetsEnabled: boolean;
@@ -35,6 +47,18 @@ export const selectAreTestnetsEnabled = (state: DiscoveryConfigSliceRootState) =
     state.discoveryConfig.areTestnetsEnabled;
 export const selectDiscoveryStartTimeStamp = (state: DiscoveryConfigSliceRootState) =>
     state.discoveryConfig.discoveryStartTimeStamp;
+
+export const selectDiscoverySupportedNetworks = (
+    state: DeviceRootState,
+    areTestnetsEnabled: boolean,
+) =>
+    pipe(
+        selectSupportedNetworks(state),
+        networkSymbols => filterTestnetNetworks(networkSymbols, areTestnetsEnabled),
+        filterUnavailableNetworks,
+        filterBlacklistedNetworks,
+        sortNetworks,
+    );
 
 export const { toggleAreTestnetsEnabled, setDiscoveryStartTimestamp } =
     discoveryConfigSlice.actions;

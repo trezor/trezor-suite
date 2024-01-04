@@ -4,7 +4,7 @@ import * as Device from 'expo-device';
 
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { extraDependenciesMock } from '@suite-common/test-utils';
-import { supportedPortfolioTrackerNetworkSymbols } from '@suite-native/config';
+import { discoverySupportedNetworks } from '@suite-native/config';
 import { selectDevices } from '@suite-common/wallet-core';
 import { selectFiatCurrencyCode, setFiatCurrency } from '@suite-native/module-settings';
 import { PROTO } from '@trezor/connect';
@@ -25,7 +25,7 @@ const transports = transportsPerDeviceType[deviceType];
 
 export const extraDependencies: ExtraDependencies = mergeDeepObject(extraDependenciesMock, {
     selectors: {
-        selectEnabledNetworks: () => supportedPortfolioTrackerNetworkSymbols,
+        selectEnabledNetworks: () => discoverySupportedNetworks,
         selectBitcoinAmountUnit: () => PROTO.AmountUnit.BITCOIN,
         selectLocalCurrency: selectFiatCurrencyCode,
         selectDevices,
