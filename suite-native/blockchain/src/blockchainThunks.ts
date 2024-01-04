@@ -4,7 +4,7 @@ import {
     blockchainActions,
     fetchAndUpdateAccountThunk,
     selectDeviceAccountByDescriptorAndNetworkSymbol,
-    selectAccountsByNetworkSymbol,
+    selectDeviceAccountsByNetworkSymbol,
     selectAccountsSymbols,
     subscribeBlockchainThunk,
 } from '@suite-common/wallet-core';
@@ -32,7 +32,7 @@ const shouldRefetchAccount = ({
 export const syncAccountsWithBlockchainThunk = createThunk(
     `${actionsPrefix}/syncAccountsThunk`,
     async ({ symbol }: { symbol: NetworkSymbol }, { getState, dispatch }) => {
-        const accounts = selectAccountsByNetworkSymbol(getState(), symbol);
+        const accounts = selectDeviceAccountsByNetworkSymbol(getState(), symbol);
         const accountForRefetch = accounts.filter(({ key }) =>
             shouldRefetchAccount({ accountKey: key }),
         );

@@ -1,56 +1,23 @@
-import { A, pipe } from '@mobily/ts-belt';
+import { A, D, pipe } from '@mobily/ts-belt';
 import { memoizeWithArgs } from 'proxy-memoize';
 
 import {
     AccountsRootState,
     DeviceRootState,
     selectAccounts,
+    selectDeviceAccountsByNetworkSymbol,
     selectDeviceAccounts,
 } from '@suite-common/wallet-core';
-import { Account, TokenInfoBranded } from '@suite-common/wallet-types';
-import { getNetwork } from '@suite-common/wallet-utils';
+import { TokenInfoBranded } from '@suite-common/wallet-types';
 import { selectEthereumAccountsTokensWithFiatRates } from '@suite-native/ethereum-tokens';
 import { FiatRatesRootState } from '@suite-native/fiat-rates';
 import { SettingsSliceRootState } from '@suite-native/module-settings';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { NetworkSymbol, networks } from '@suite-common/wallet-config';
 
-/**
- * Returns true if account label, network name or account included token contains filter value as a substring.
- */
-export const isFilterValueMatchingAccount = (account: Account, filterValue: string) => {
-    const lowerCaseFilterValue = filterValue?.trim().toLowerCase();
+import { GroupedAccounts } from './types';
+import { filterAccountsByLabelAndNetworkNames, groupAccountsByNetworkAccountType } from './utils';
 
-    const isMatchingLabel = account.accountLabel?.toLowerCase().includes(lowerCaseFilterValue);
-
-    if (isMatchingLabel) return true;
-
-    const accountNetwork = getNetwork(account.symbol);
-    const isMatchingNetworkName = accountNetwork?.name.toLowerCase().includes(lowerCaseFilterValue);
-
-    if (isMatchingNetworkName) return true;
-
-    const isMatchingTokenName =
-        account.tokens?.some(token => token.name?.toLowerCase().includes(lowerCaseFilterValue)) ??
-        false;
-
-    if (isMatchingTokenName) return true;
-
-    return false;
-};
-
-/**
- * Filter accounts by labels, network names and included token names.
- */
-const filterAccountsByLabelAndNetworkNames = (
-    accounts: readonly Account[],
-    filterValue: string,
-) => {
-    if (!filterValue) return accounts;
-
-    return A.filter(accounts, account => isFilterValueMatchingAccount(account, filterValue));
-};
-
-export const selectFilteredAccountsGroupedByNetwork = memoizeWithArgs(
+export const selectFilteredAccountsGroupedByNetworkAccountType = memoizeWithArgs(
     (
         state: AccountsRootState & FiatRatesRootState & SettingsSliceRootState & DeviceRootState,
         filterValue: string,
@@ -69,11 +36,20 @@ export const selectFilteredAccountsGroupedByNetwork = memoizeWithArgs(
             })),
             accountsWithFiatRatedTokens =>
                 filterAccountsByLabelAndNetworkNames(accountsWithFiatRatedTokens, filterValue),
-            A.groupBy(account => account.symbol),
-        );
+            groupAccountsByNetworkAccountType,
+        ) as GroupedAccounts;
     },
     // This selector is used only in one search component, so cache size equal to 1 is enough.
     { size: 1 },
+);
+
+export const selectNetworkAccountsGroupedByAccountType = memoizeWithArgs(
+    (state: AccountsRootState & DeviceRootState, networkSymbol: NetworkSymbol) =>
+        pipe(
+            selectDeviceAccountsByNetworkSymbol(state, networkSymbol),
+            groupAccountsByNetworkAccountType,
+        ) as GroupedAccounts,
+    { size: D.keys(networks).length },
 );
 
 export const selectIsAccountAlreadyDiscovered = (
