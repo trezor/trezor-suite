@@ -4,10 +4,7 @@ import * as Device from 'expo-device';
 
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { extraDependenciesMock } from '@suite-common/test-utils';
-import {
-    discoverySupportedNetworks,
-    portfolioTrackerSupportedNetworks,
-} from '@suite-native/config';
+import { discoverySupportedNetworks } from '@suite-native/config';
 import { selectDevices } from '@suite-common/wallet-core';
 import { selectFiatCurrencyCode, setFiatCurrency } from '@suite-native/module-settings';
 import { PROTO } from '@trezor/connect';
