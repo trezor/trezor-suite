@@ -1,5 +1,5 @@
 // @group:passphrase
-// @retry=2
+// @retry=0
 
 const correctPassprhaseAddr =
     'addr1qx3ufjpwcx30ee73a7r29surauze6yt0jvr7c3rnahw0hnppg7qp5xvslcfucsqqayrtjhm4u66x';
