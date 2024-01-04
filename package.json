@@ -26,7 +26,7 @@
         "_______ Start Scripts _______": "Here are standalone scripts for running individual applications for development.",
         "suite:dev": "yarn workspace @trezor/suite-web dev",
         "suite:dev:desktop": "yarn workspace @trezor/suite-desktop dev",
-        "mobile:start": "cd suite-native/app && yarn start",
+        "native:start": "yarn workspace @trezor/suite-native start",
         "_______ Testing _______": "Testing, linting, type checking...",
         "type-check": "yarn nx run-many --target=type-check",
         "type-check:force": "rimraf -rf -- **/libDev && yarn type-check",
@@ -63,15 +63,15 @@
         "update-protobuf": "yarn workspace @trezor/protobuf update:protobuf",
         "update-coinjoin-middleware": "yarn workspace @trezor/suite-data update-coinjoin-middleware",
         "prepare-release": "./scripts/prepare-release.sh",
-        "mobile:android": "cd suite-native/app && yarn android",
-        "mobile:ios": "cd suite-native/app && yarn ios",
-        "mobile:android:clean": "cd suite-native/app && yarn android:clean",
-        "mobile:pods": "cd suite-native/app && yarn pods"
+        "native:android": "yarn workspace @trezor/suite-native android",
+        "native:ios": "yarn workspace @trezor/suite-native ios",
+        "native:android:clean": "yarn workspace @trezor/suite-native android:clean",
+        "native:pods": "yarn workspace @trezor/suite-native pods",
         "_______ Aliases _______": "Aliases for longer commands which we often have to run manually. Names don't have to be pretty or make total sense.",
         "refs": "yarn update-project-references",
         "types": "yarn type-check",
         "messages": "yarn message-system-sign-config",
-        "validate": "yarn verify-project-references && yarn nx:lint:js && yarn nx:lint:styles && yarn nx:build:libs && yarn nx:type-check && yarn nx:test-unit && yarn check-workspace-resolutions",
+        "validate": "yarn verify-project-references && yarn nx:lint:js && yarn nx:lint:styles && yarn nx:build:libs && yarn nx:type-check && yarn nx:test-unit && yarn check-workspace-resolutions"
     },
     "lint-staged": {
         "packages/**/*.{ts,tsx}": [
