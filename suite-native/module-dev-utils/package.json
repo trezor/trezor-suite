@@ -13,7 +13,7 @@
     "dependencies": {
         "@react-navigation/core": "^6.4.6",
         "@react-navigation/native-stack": "^6.9.11",
-        "@sentry/react-native": "5.5.0",
+        "@sentry/react-native": "5.15.2",
         "@suite-common/icons": "workspace:*",
         "@suite-common/logger": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
