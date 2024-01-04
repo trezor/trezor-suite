@@ -2,8 +2,6 @@ import { Platform } from 'react-native';
 
 import { createSlice } from '@reduxjs/toolkit';
 
-import { isDevelopOrDebugEnv } from '@suite-native/config';
-
 export interface FeatureFlagsState {
     isDeviceConnectEnabled: boolean;
 }
@@ -13,7 +11,7 @@ export type FeatureFlagsRootState = {
 };
 
 export const featureFlagsInitialState: FeatureFlagsState = {
-    isDeviceConnectEnabled: Platform.OS === 'android' && isDevelopOrDebugEnv(),
+    isDeviceConnectEnabled: Platform.OS === 'android',
 };
 
 export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = ['isDeviceConnectEnabled'];

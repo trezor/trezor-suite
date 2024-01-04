@@ -1,5 +1,5 @@
 {
     "extends": "../../tsconfig.json",
     "compilerOptions": { "outDir": "libDev" },
-    "references": [{ "path": "../config" }]
+    "references": []
 }
