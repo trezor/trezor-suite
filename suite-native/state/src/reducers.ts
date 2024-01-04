@@ -10,7 +10,11 @@ import {
 import { prepareFiatRatesReducer } from '@suite-native/fiat-rates';
 import { appSettingsReducer, appSettingsPersistWhitelist } from '@suite-native/module-settings';
 import { logsSlice } from '@suite-common/logger';
-import { migrateAccountLabel, preparePersistReducer } from '@suite-native/storage';
+import {
+    migrateAccountLabel,
+    deriveAccountTypeFromPaymentType,
+    preparePersistReducer,
+} from '@suite-native/storage';
 import { prepareAnalyticsReducer } from '@suite-common/analytics';
 import { prepareMessageSystemReducer } from '@suite-common/message-system';
 import { notificationsReducer } from '@suite-common/toast-notifications';
@@ -50,11 +54,19 @@ export const prepareRootReducers = async () => {
         reducer: walletReducers,
         persistedKeys: ['accounts', 'transactions'],
         key: 'wallet',
-        version: 2,
+        version: 3,
         migrations: {
             2: (oldState: any) => {
                 const oldAccountsState: { accounts: any } = { accounts: oldState.accounts };
                 const migratedAccounts = migrateAccountLabel(oldAccountsState.accounts);
+                const migratedState = { ...oldState, accounts: migratedAccounts };
+                return migratedState;
+            },
+            3: oldState => {
+                const oldAccountsState: { accounts: any } = { accounts: oldState.accounts };
+                const migratedAccounts = deriveAccountTypeFromPaymentType(
+                    oldAccountsState.accounts,
+                );
                 const migratedState = { ...oldState, accounts: migratedAccounts };
                 return migratedState;
             },

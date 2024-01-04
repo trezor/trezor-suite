@@ -12,6 +12,10 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "1.9.5",
+        "@suite-common/wallet-config": "workspace:*",
+        "@suite-common/wallet-types": "workspace:*",
+        "@trezor/utxo-lib": "workspace:*",
+        "bs58": "^5.0.0",
         "expo-random": "^13.1.1",
         "expo-secure-store": "^12.1.1",
         "expo-splash-screen": "0.18.1",

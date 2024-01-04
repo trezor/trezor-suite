@@ -1,5 +1,13 @@
 {
     "extends": "../../tsconfig.json",
     "compilerOptions": { "outDir": "libDev" },
-    "references": []
+    "references": [
+        {
+            "path": "../../suite-common/wallet-config"
+        },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
+        { "path": "../../packages/utxo-lib" }
+    ]
 }
