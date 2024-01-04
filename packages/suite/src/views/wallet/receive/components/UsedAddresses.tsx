@@ -9,7 +9,7 @@ import { Network } from 'src/types/wallet';
 import { AppState } from 'src/types/suite';
 import { MetadataAddPayload } from 'src/types/suite/metadata';
 import { showAddress } from 'src/actions/wallet/receiveActions';
-import { useDispatch, useTranslation } from 'src/hooks/suite/';
+import { useDispatch } from 'src/hooks/suite/';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
 
@@ -117,8 +117,6 @@ interface ItemProps {
 }
 
 const Item = ({ addr, locked, symbol, onClick, metadataPayload, index }: ItemProps) => {
-    const { translationString } = useTranslation();
-
     // Currently used addresses are always partially hidden
     // The only place where full address is shown is confirm-addr modal
     const [isHovered, setIsHovered] = useState(false);

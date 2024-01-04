@@ -14,7 +14,7 @@ import {
     MetadataLabeling,
     Translation,
 } from 'src/components/suite';
-import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { TransactionTimestamp, UtxoAnonymity } from 'src/components/wallet';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useCoinjoinUnavailableUtxos } from 'src/hooks/wallet/form/useCoinjoinUnavailableUtxos';
@@ -162,7 +162,6 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
     const { outputLabels } = useSelector(selectLabelingDataForSelectedAccount);
 
     const dispatch = useDispatch();
-    const { translationString } = useTranslation();
 
     const theme = useTheme();
 

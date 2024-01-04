@@ -10,7 +10,7 @@
         "outDir": "./libDev",
         "baseUrl": "."
     },
-    "include": [".", "**/*.json", "../components/src/components/AutoScalingInput/AutoScalingInput.tsx"],
+    "include": [".", "**/*.json"],
     "references": [
         {
             "path": "../../suite-common/analytics"

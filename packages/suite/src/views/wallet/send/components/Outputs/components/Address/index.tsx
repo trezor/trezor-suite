@@ -228,8 +228,6 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                                 setDraftSaveRequest(true);
                             }}
                             visible
-                            // intentionally no placeholder, there is not enough space to fit it in
-                            placeholder={undefined}
                         />
                     </MetadataLabelingWrapper>
                 ) : undefined
