@@ -12,7 +12,6 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "1.9.5",
-        "@suite-native/config": "workspace:*",
         "react-native": "0.71.8",
         "react-redux": "8.0.7"
     }
