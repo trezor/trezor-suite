@@ -66,12 +66,12 @@
         "mobile:android": "cd suite-native/app && yarn android",
         "mobile:ios": "cd suite-native/app && yarn ios",
         "mobile:android:clean": "cd suite-native/app && yarn android:clean",
-        "mobile:pods": "cd suite-native/app && yarn pods",
+        "mobile:pods": "cd suite-native/app && yarn pods"
         "_______ Aliases _______": "Aliases for longer commands which we often have to run manually. Names don't have to be pretty or make total sense.",
         "refs": "yarn update-project-references",
         "types": "yarn type-check",
         "messages": "yarn message-system-sign-config",
-        "validate": "yarn verify-project-references && yarn nx:lint:js && yarn nx:lint:styles && yarn nx:build:libs && yarn nx:type-check && yarn nx:test-unit && yarn check-workspace-resolutions"
+        "validate": "yarn verify-project-references && yarn nx:lint:js && yarn nx:lint:styles && yarn nx:build:libs && yarn nx:type-check && yarn nx:test-unit && yarn check-workspace-resolutions",
     },
     "lint-staged": {
         "packages/**/*.{ts,tsx}": [
