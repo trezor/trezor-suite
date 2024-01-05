@@ -17,7 +17,7 @@ import {
     EthereumNetworkInfo,
     EthereumSignTransaction as EthereumSignTransactionSchema,
 } from '../../../types';
-import type { EthereumDefinitions } from '@trezor/protobuf/lib/messages';
+import type { EthereumDefinitions } from '@trezor/protobuf/lib/messages-schema';
 import { Assert } from '@trezor/schema-utils';
 
 type Params = {

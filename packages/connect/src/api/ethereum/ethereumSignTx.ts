@@ -3,7 +3,7 @@
 import { Common, Chain, Hardfork } from '@ethereumjs/common';
 import { FeeMarketEIP1559TxData, TransactionFactory, LegacyTxData } from '@ethereumjs/tx';
 
-import { EthereumDefinitions } from '@trezor/protobuf/lib/messages';
+import { EthereumDefinitions } from '@trezor/protobuf/lib/messages-schema';
 import { PROTO, ERRORS } from '../../constants';
 import type { TypedCall } from '../../device/DeviceCommands';
 import type { EthereumAccessList } from '../../types/api/ethereum';

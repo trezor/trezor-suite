@@ -1,6 +1,6 @@
 import fetch from 'cross-fetch';
 
-import { EthereumDefinitions } from '@trezor/protobuf/lib/messages';
+import { EthereumDefinitions } from '@trezor/protobuf/lib/messages-schema';
 import { trzd } from '@trezor/protocol';
 import { parseConfigure, decode as decodeProtobuf } from '@trezor/protobuf';
 import { DataManager } from '../../data/DataManager';

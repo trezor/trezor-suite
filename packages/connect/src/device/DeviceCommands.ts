@@ -2,7 +2,7 @@
 
 import { randomBytes } from 'crypto';
 import { Transport } from '@trezor/transport';
-import * as Messages from '@trezor/protobuf/src/messages-schema';
+import * as Messages from '@trezor/protobuf/lib/messages-schema';
 import { versionUtils } from '@trezor/utils';
 import { ERRORS, NETWORK } from '../constants';
 import { DEVICE } from '../events';
