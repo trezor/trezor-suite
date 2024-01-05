@@ -30,6 +30,7 @@ export type TransactionReviewOutputProps = {
     state: TransactionReviewStepIndicatorProps['state'];
     symbol: Network['symbol'];
     account: Account;
+    isRbf: boolean;
 } & ReviewOutput;
 
 export const TransactionReviewOutput = forwardRef<HTMLDivElement, TransactionReviewOutputProps>(
@@ -124,7 +125,7 @@ export const TransactionReviewOutput = forwardRef<HTMLDivElement, TransactionRev
             outputLines = [
                 {
                     id: 'txid',
-                    label: <Translation id="TR_TXID" />,
+                    label: <Translation id={props.isRbf ? 'TR_TXID_RBF' : 'TR_TXID'} />,
                     value: outputValue,
                     plainValue: true,
                 },

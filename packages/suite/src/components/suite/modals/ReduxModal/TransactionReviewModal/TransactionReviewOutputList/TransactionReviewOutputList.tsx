@@ -190,6 +190,7 @@ export const TransactionReviewOutputList = ({
                                     state={state}
                                     symbol={symbol}
                                     account={account}
+                                    isRbf={isRbfAction}
                                 />
                             );
                         })}
