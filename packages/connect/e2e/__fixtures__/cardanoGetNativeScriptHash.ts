@@ -1,7 +1,7 @@
 import {
     CardanoNativeScriptHashDisplayFormat,
     CardanoNativeScriptType,
-} from '@trezor/protobuf/lib/messages';
+} from '@trezor/protobuf/lib/messages-schema';
 
 export default {
     method: 'cardanoGetNativeScriptHash',
