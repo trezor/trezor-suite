@@ -1,3 +1,8 @@
+# 2.0.3
+
+-   refactor(utxo-lib): use spread instead of Object.assign (55eecd28b)
+-   refactor(utxo-lib): coinselect VinVout values/amounts as BN (ab1dae3fd)
+
 # 2.0.2
 
 -   refactor(utxo-lib): composeTx merge `coinselect` modules (7a8dff467)
