@@ -1,11 +1,13 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/EosSignTransaction.js
 
 import { AbstractMethod } from '../../../core/AbstractMethod';
-import { validateParams, getFirmwareRange } from '../../common/paramsValidator';
+import { getFirmwareRange } from '../../common/paramsValidator';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { validatePath } from '../../../utils/pathUtils';
 import * as helper from '../eosSignTx';
 import type { PROTO } from '../../../constants';
+import { Assert } from '@trezor/schema-utils';
+import { EosSignTransaction as EosSignTransactionSchema } from '../../../types/api/eos';
 
 type Params = {
     path: number[];
@@ -22,11 +24,7 @@ export default class EosSignTransaction extends AbstractMethod<'eosSignTransacti
 
         const { payload } = this;
         // validate incoming parameters
-        validateParams(payload, [
-            { name: 'path', required: true },
-            { name: 'transaction', required: true },
-            { name: 'chunkify', type: 'boolean' },
-        ]);
+        Assert(EosSignTransactionSchema, payload);
 
         const path = validatePath(payload.path, 3);
         const { chain_id, header, ack } = helper.validate(payload.transaction);

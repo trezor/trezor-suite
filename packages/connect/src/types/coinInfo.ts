@@ -1,67 +1,102 @@
-import { Network } from '@trezor/utxo-lib';
+import { Type, Static } from '@trezor/schema-utils';
 import { FeeLevel } from './fees';
 
-export type { Network } from '@trezor/utxo-lib';
+// TODO: refactor in utxo-lib
+// import { Network } from '@trezor/utxo-lib';
+export type Bip32 = Static<typeof Bip32>;
+export const Bip32 = Type.Object({
+    public: Type.Number(),
+    private: Type.Number(),
+});
 
-export interface CoinSupport {
-    connect: boolean;
-    T1B1: string | false;
-    T2T1: string | false;
-    T2B1: string | false;
-}
+export type Network = Static<typeof Network>;
+export const Network = Type.Object({
+    messagePrefix: Type.String(),
+    bech32: Type.String(),
+    bip32: Bip32,
+    pubKeyHash: Type.Number(),
+    scriptHash: Type.Number(),
+    wif: Type.Number(),
+    forkId: Type.Optional(Type.Number()),
+});
 
-export interface BlockchainLink {
-    type: string;
-    url: string[];
-}
+export type CoinObj = Static<typeof CoinObj>;
+export const CoinObj = Type.Object({
+    coin: Type.String(),
+});
 
-interface Common {
-    label: string; // Human readable format, label != name
-    name: string; // Trezor readable format
-    shortcut: string;
-    slip44: number;
-    support: CoinSupport;
-    decimals: number;
-    blockchainLink?: BlockchainLink;
-    blockTime: number;
-    minFee: number;
-    maxFee: number;
-    defaultFees: FeeLevel[];
-}
+export type CoinSupport = Static<typeof CoinSupport>;
+export const CoinSupport = Type.Object({
+    connect: Type.Boolean(),
+    T1B1: Type.Union([Type.String(), Type.Literal(false)]),
+    T2T1: Type.Union([Type.String(), Type.Literal(false)]),
+    T2B1: Type.Union([Type.String(), Type.Literal(false)]),
+});
 
-export interface BitcoinNetworkInfo extends Common {
-    type: 'bitcoin';
-    cashAddrPrefix?: string;
-    curveName: string;
-    dustLimit: number;
-    forceBip143: boolean;
-    hashGenesisBlock: string;
-    maxAddressLength: number;
-    maxFeeSatoshiKb: number;
-    minAddressLength: number;
-    minFeeSatoshiKb: number;
-    segwit: boolean;
+export type BlockchainLink = Static<typeof BlockchainLink>;
+export const BlockchainLink = Type.Object({
+    type: Type.String(),
+    url: Type.Array(Type.String()),
+});
 
-    xPubMagic: number;
-    xPubMagicSegwitNative?: number;
-    xPubMagicSegwit?: number;
-    taproot?: boolean;
+type Common = Static<typeof Common>;
+const Common = Type.Object({
+    label: Type.String(),
+    name: Type.String(),
+    shortcut: Type.String(),
+    slip44: Type.Number(),
+    support: CoinSupport,
+    decimals: Type.Number(),
+    blockchainLink: Type.Optional(BlockchainLink),
+    blockTime: Type.Number(),
+    minFee: Type.Number(),
+    maxFee: Type.Number(),
+    defaultFees: Type.Array(FeeLevel),
+});
 
-    // custom
-    network: Network;
-    isBitcoin: boolean;
-}
+export type BitcoinNetworkInfo = Static<typeof BitcoinNetworkInfo>;
+export const BitcoinNetworkInfo = Type.Intersect([
+    Common,
+    Type.Object({
+        type: Type.Literal('bitcoin'),
+        cashAddrPrefix: Type.Optional(Type.String()),
+        curveName: Type.String(),
+        dustLimit: Type.Number(),
+        forceBip143: Type.Boolean(),
+        hashGenesisBlock: Type.String(),
+        maxAddressLength: Type.Number(),
+        maxFeeSatoshiKb: Type.Number(),
+        minAddressLength: Type.Number(),
+        minFeeSatoshiKb: Type.Number(),
+        segwit: Type.Boolean(),
+        xPubMagic: Type.Number(),
+        xPubMagicSegwitNative: Type.Optional(Type.Number()),
+        xPubMagicSegwit: Type.Optional(Type.Number()),
+        taproot: Type.Optional(Type.Boolean()),
+        network: Network,
+        isBitcoin: Type.Boolean(),
+    }),
+]);
 
-export interface EthereumNetworkInfo extends Common {
-    type: 'ethereum';
-    chainId: number;
-    network?: typeof undefined;
-}
+export type EthereumNetworkInfo = Static<typeof EthereumNetworkInfo>;
+export const EthereumNetworkInfo = Type.Intersect([
+    Common,
+    Type.Object({
+        type: Type.Literal('ethereum'),
+        chainId: Type.Number(),
+        network: Type.Optional(Type.Undefined()),
+    }),
+]);
 
-export interface MiscNetworkInfo extends Common {
-    type: 'misc' | 'nem';
-    curve: string;
-    network?: typeof undefined; // compatibility
-}
+export type MiscNetworkInfo = Static<typeof MiscNetworkInfo>;
+export const MiscNetworkInfo = Type.Intersect([
+    Common,
+    Type.Object({
+        type: Type.Union([Type.Literal('misc'), Type.Literal('nem')]),
+        curve: Type.String(),
+        network: Type.Optional(Type.Undefined()),
+    }),
+]);
 
-export type CoinInfo = BitcoinNetworkInfo | EthereumNetworkInfo | MiscNetworkInfo;
+export type CoinInfo = Static<typeof CoinInfo>;
+export const CoinInfo = Type.Union([BitcoinNetworkInfo, EthereumNetworkInfo, MiscNetworkInfo]);

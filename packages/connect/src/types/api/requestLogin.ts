@@ -5,21 +5,27 @@
  * visual challenge that will be shown on the device.
  */
 
+import { Static, Type } from '@trezor/schema-utils';
 import type { Params, Response } from '../params';
 
-export interface LoginChallenge {
-    challengeHidden: string;
-    challengeVisual: string;
-    callback?: undefined;
-    asyncChallenge?: undefined;
-}
+export type LoginChallenge = Static<typeof LoginChallenge>;
+export const LoginChallenge = Type.Object({
+    challengeHidden: Type.String(),
+    challengeVisual: Type.String(),
+    asyncChallenge: Type.Optional(Type.Undefined()),
+    callback: Type.Optional(Type.Undefined()),
+});
 
-export interface RequestLoginAsync {
-    callback: () => LoginChallenge;
-    asyncChallenge?: boolean;
-    challengeHidden?: undefined;
-    challengeVisual?: undefined;
-}
+export type RequestLoginAsync = Static<typeof RequestLoginAsync>;
+export const RequestLoginAsync = Type.Object({
+    challengeHidden: Type.Optional(Type.Undefined()),
+    challengeVisual: Type.Optional(Type.Undefined()),
+    asyncChallenge: Type.Optional(Type.Boolean()),
+    callback: Type.Function([], LoginChallenge),
+});
+
+export type RequestLoginSchema = Static<typeof RequestLoginSchema>;
+export const RequestLoginSchema = Type.Union([RequestLoginAsync, LoginChallenge]);
 
 export interface Login {
     address: string;
@@ -27,6 +33,4 @@ export interface Login {
     signature: string;
 }
 
-export declare function requestLogin(
-    params: Params<RequestLoginAsync | LoginChallenge>,
-): Response<Login>;
+export declare function requestLogin(params: Params<RequestLoginSchema>): Response<Login>;

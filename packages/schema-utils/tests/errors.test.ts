@@ -66,8 +66,35 @@ describe('Assert', () => {
         }
     });
 
+    it('should throw in case with unions of objects', () => {
+        const schema = Type.Union([
+            Type.Object({ type: Type.String() }),
+            Type.Object({ something: Type.String() }),
+        ]);
+        const value = { type: 'string' };
+        expect(() => Assert(schema, value)).not.toThrow();
+
+        const badValue = { type: 123 };
+        expect(() => Assert(schema, badValue)).toThrow(InvalidParameter);
+    });
+
     it('should also accept null if optional', () => {
         const schema = Type.Object({ type: Type.Optional(Type.String()) });
+        const value = { type: null };
+        expect(() => Assert(schema, value)).not.toThrow();
+    });
+
+    it('should also accept null if optional on nested object', () => {
+        const schema = Type.Object({ type: Type.Object({ deeper: Type.Optional(Type.String()) }) });
+        const value = { type: { deeper: null } };
+        expect(() => Assert(schema, value)).not.toThrow();
+    });
+
+    it('should also accept null if optional on union of objects', () => {
+        const schema = Type.Union([
+            Type.Object({ type: Type.Optional(Type.String()) }),
+            Type.Object({ something: Type.String() }),
+        ]);
         const value = { type: null };
         expect(() => Assert(schema, value)).not.toThrow();
     });

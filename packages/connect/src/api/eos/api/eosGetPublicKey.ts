@@ -1,11 +1,13 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/EosGetPublicKey.js
 
 import { AbstractMethod, MethodReturnType } from '../../../core/AbstractMethod';
-import { validateParams, getFirmwareRange } from '../../common/paramsValidator';
+import { getFirmwareRange } from '../../common/paramsValidator';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { validatePath, fromHardened, getSerializedPath } from '../../../utils/pathUtils';
 import { UI, createUiMessage } from '../../../events';
 import type { PROTO } from '../../../constants';
+import { Assert } from '@trezor/schema-utils';
+import { Bundle, GetPublicKey as GetPublicKeySchema } from '../../../types';
 
 export default class EosGetPublicKey extends AbstractMethod<
     'eosGetPublicKey',
@@ -25,16 +27,9 @@ export default class EosGetPublicKey extends AbstractMethod<
             : this.payload;
 
         // validate bundle type
-        validateParams(payload, [{ name: 'bundle', type: 'array' }]);
+        Assert(Bundle(GetPublicKeySchema), payload);
 
         this.params = payload.bundle.map(batch => {
-            // validate incoming parameters for each batch
-            validateParams(batch, [
-                { name: 'path', required: true },
-                { name: 'showOnTrezor', type: 'boolean' },
-                { name: 'chunkify', type: 'boolean' },
-            ]);
-
             const path = validatePath(batch.path, 3);
             return {
                 address_n: path,

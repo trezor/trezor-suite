@@ -1,9 +1,12 @@
 import { ERRORS, PROTO } from '../../../constants';
 import { AbstractMethod, MethodReturnType } from '../../../core/AbstractMethod';
-import { validateParams, getFirmwareRange } from '../../common/paramsValidator';
+import { getFirmwareRange } from '../../common/paramsValidator';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { validatePath, fromHardened, getSerializedPath } from '../../../utils/pathUtils';
 import { UI, createUiMessage } from '../../../events';
+import { Assert } from '@trezor/schema-utils';
+import { Bundle } from '../../../types';
+import { GetAddress as GetAddressSchema } from '../../../types/api/getAddress';
 
 type Params = PROTO.SolanaGetAddress & {
     address?: string;
@@ -29,17 +32,9 @@ export default class SolanaGetAddress extends AbstractMethod<'solanaGetAddress',
             : this.payload;
 
         // validate bundle type
-        validateParams(payload, [{ name: 'bundle', type: 'array' }]);
+        Assert(Bundle(GetAddressSchema), payload);
 
         this.params = payload.bundle.map(batch => {
-            // validate incoming parameters for each batch
-            validateParams(batch, [
-                { name: 'path', required: true },
-                { name: 'address', type: 'string' },
-                { name: 'showOnTrezor', type: 'boolean' },
-                { name: 'chunkify', type: 'boolean' },
-            ]);
-
             const path = validatePath(batch.path, 2);
             return {
                 address_n: path,

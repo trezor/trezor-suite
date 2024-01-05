@@ -3,12 +3,12 @@
 // allow for...of statements
 /* eslint-disable no-restricted-syntax */
 
-import { validateParams } from '../common/paramsValidator';
 import { addressParametersToProto, validateAddressParameters } from './cardanoAddressParameters';
-import { tokenBundleToProto } from './cardanoTokenBundle';
-import type { AssetGroupWithTokens } from './cardanoTokenBundle';
+import { tokenBundleToProto, AssetGroupWithTokens } from './cardanoTokenBundle';
 import { PROTO } from '../../constants';
 import { hexStringByteLength, sendChunkedHexString } from './cardanoUtils';
+import { CardanoAssetGroup, CardanoAddressParameters } from '../../types/api/cardano';
+import { Assert, Type } from '@trezor/schema-utils';
 
 export type OutputWithData = {
     output: PROTO.CardanoTxOutput;
@@ -17,16 +17,19 @@ export type OutputWithData = {
     referenceScript?: string;
 };
 
-export const transformOutput = (output: any): OutputWithData => {
-    validateParams(output, [
-        { name: 'address', type: 'string' },
-        { name: 'amount', type: 'uint', required: true },
-        { name: 'tokenBundle', type: 'array', allowEmpty: true },
-        { name: 'datumHash', type: 'string' },
-        { name: 'format', type: 'number' },
-        { name: 'inlineDatum', type: 'string' },
-        { name: 'referenceScript', type: 'string' },
-    ]);
+export const OutputValidation = Type.Object({
+    address: Type.Optional(Type.String()),
+    amount: Type.Uint(),
+    tokenBundle: Type.Optional(Type.Array(CardanoAssetGroup)),
+    datumHash: Type.Optional(Type.String()),
+    format: Type.Optional(Type.Number()),
+    inlineDatum: Type.Optional(Type.String()),
+    referenceScript: Type.Optional(Type.String()),
+    addressParameters: Type.Optional(CardanoAddressParameters),
+});
+
+export const transformOutput = (output: unknown): OutputWithData => {
+    Assert(OutputValidation, output);
 
     const result: OutputWithData = {
         output: {

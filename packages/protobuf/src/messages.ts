@@ -2045,7 +2045,7 @@ export enum StellarAssetType {
 
 // StellarAsset
 export type StellarAsset = {
-    type: StellarAssetType;
+    type: 0 | 1 | 2 | 'NATIVE' | 'ALPHANUM4' | 'ALPHANUM12';
     code?: string;
     issuer?: string;
 };

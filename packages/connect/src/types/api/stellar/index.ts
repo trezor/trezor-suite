@@ -1,223 +1,307 @@
 // Stellar types from stellar-sdk
 // https://github.com/stellar/js-stellar-base
 
-import type { PROTO } from '../../../constants';
-import type { DerivationPath } from '../../params';
+import { PROTO } from '../../../constants';
+import { DerivationPath } from '../../params';
+import { Type, Static } from '@trezor/schema-utils';
 
-export interface StellarAsset {
-    type: PROTO.StellarAssetType;
-    code?: string;
-    issuer?: string;
-}
+export type StellarAsset = Static<typeof StellarAsset>;
+export const StellarAsset = Type.Object({
+    type: Type.Union([PROTO.EnumStellarAssetType, Type.KeyOfEnum(PROTO.StellarAssetType)]),
+    code: Type.Optional(Type.String()),
+    issuer: Type.Optional(Type.String()),
+});
 
-export interface StellarCreateAccountOperation {
-    type: 'createAccount'; // Proto: "StellarCreateAccountOp"
-    source?: string; // Proto: "source_account"
-    destination: string; // Proto: "new_account",
-    startingBalance: string; // Proto: "starting_balance"
-}
+export type StellarCreateAccountOperation = Static<typeof StellarCreateAccountOperation>;
+export const StellarCreateAccountOperation = Type.Object({
+    type: Type.Literal('createAccount'), // Proto: "StellarCreateAccountOp"
+    source: Type.Optional(Type.String()), // Proto: "source_account"
+    destination: Type.String(), // Proto: "new_account",
+    startingBalance: Type.String(), // Proto: "starting_balance"
+});
 
-export interface StellarPaymentOperation {
-    type: 'payment'; // Proto: "StellarPaymentOp"
-    source?: string; // Proto: "source_account"
-    destination: string; // Proto: "destination_account"
-    asset: StellarAsset; // Proto: ok
-    amount: string; // Proto: ok
-}
+export type StellarPaymentOperation = Static<typeof StellarPaymentOperation>;
+export const StellarPaymentOperation = Type.Object({
+    type: Type.Literal('payment'), // Proto: "StellarPaymentOp"
+    source: Type.Optional(Type.String()), // Proto: "source_account"
+    destination: Type.String(), // Proto: "destination_account"
+    asset: StellarAsset, // Proto: ok
+    amount: Type.String(), // Proto: ok
+});
 
-export interface StellarPathPaymentStrictReceiveOperation {
-    type: 'pathPaymentStrictReceive'; // Proto: "StellarPathPaymentStrictReceiveOp"
-    source?: string; // Proto: "source_account"
-    sendAsset: StellarAsset; // Proto: "send_asset"
-    sendMax: string; // Proto: "send_max"
-    destination: string; // Proto: "destination_account"
-    destAsset: StellarAsset; // Proto: "destination_asset"
-    destAmount: string; // Proto "destination_amount"
-    path?: StellarAsset[]; // Proto: "paths"
-}
+export type StellarPathPaymentStrictReceiveOperation = Static<
+    typeof StellarPathPaymentStrictReceiveOperation
+>;
+export const StellarPathPaymentStrictReceiveOperation = Type.Object({
+    type: Type.Literal('pathPaymentStrictReceive'), // Proto: "StellarPathPaymentStrictReceiveOp"
+    source: Type.Optional(Type.String()), // Proto: "source_account"
+    sendAsset: StellarAsset, // Proto: "send_asset"
+    sendMax: Type.Uint(), // Proto: "send_max"
+    destination: Type.String(), // Proto: "destination_account"
+    destAsset: StellarAsset, // Proto: "destination_asset"
+    destAmount: Type.Uint(), // Proto "destination_amount"
+    path: Type.Optional(Type.Array(StellarAsset)), // Proto: "paths"
+});
 
-export interface StellarPathPaymentStrictSendOperation {
-    type: 'pathPaymentStrictSend'; // Proto: "StellarPathPaymentStrictSendOp"
-    source?: string; // Proto: "source_account"
-    sendAsset: StellarAsset; // Proto: "send_asset"
-    sendAmount: string; // Proto: "send_amount"
-    destination: string; // Proto: "destination_account"
-    destAsset: StellarAsset; // Proto: "destination_asset"
-    destMin: string; // Proto "destination_min"
-    path?: StellarAsset[]; // Proto: "paths"
-}
+export type StellarPathPaymentStrictSendOperation = Static<
+    typeof StellarPathPaymentStrictSendOperation
+>;
+export const StellarPathPaymentStrictSendOperation = Type.Object({
+    type: Type.Literal('pathPaymentStrictSend'), // Proto: "StellarPathPaymentStrictSendOp"
+    source: Type.Optional(Type.String()), // Proto: "source_account"
+    sendAsset: StellarAsset, // Proto: "send_asset"
+    sendAmount: Type.Uint(), // Proto: "send_amount"
+    destination: Type.String(), // Proto: "destination_account"
+    destAsset: StellarAsset, // Proto: "destination_asset"
+    destMin: Type.Uint(), // Proto "destination_min"
+    path: Type.Optional(Type.Array(StellarAsset)), // Proto: "paths"
+});
 
-export interface StellarPassiveSellOfferOperation {
-    type: 'createPassiveSellOffer'; // Proto: "StellarCreatePassiveSellOfferOp"
-    source?: string; // Proto: "source_account"
-    buying: StellarAsset; // Proto: "buying_asset"
-    selling: StellarAsset; // Proto: "selling_asset"
-    amount: string; // Proto: ok
-    price: { n: number; d: number }; // Proto: "price_n" and "price_d"
-}
+export type StellarPassiveSellOfferOperation = Static<typeof StellarPassiveSellOfferOperation>;
+export const StellarPassiveSellOfferOperation = Type.Object({
+    type: Type.Literal('createPassiveSellOffer'), // Proto: "StellarCreatePassiveSellOfferOp"
+    source: Type.Optional(Type.String()), // Proto: "source_account"
+    buying: StellarAsset, // Proto: "buying_asset"
+    selling: StellarAsset, // Proto: "selling_asset"
+    amount: Type.Uint(), // Proto: ok
+    price: Type.Object({
+        // Proto: "price_n" and "price_d"
+        n: Type.Number(),
+        d: Type.Number(),
+    }),
+});
 
-export interface StellarManageSellOfferOperation {
-    type: 'manageSellOffer'; // Proto: "StellarManageSellOfferOp"
-    source?: string; // Proto: "source_account"
-    buying: StellarAsset; // Proto: "buying_asset"
-    selling: StellarAsset; // Proto: "selling_asset"
-    amount: string; // Proto: ok
-    offerId?: string; // Proto: "offer_id" // not found in stellar-sdk
-    price: { n: number; d: number }; // Proto: "price_n" and "price_d"
-}
+export type StellarManageSellOfferOperation = Static<typeof StellarManageSellOfferOperation>;
+export const StellarManageSellOfferOperation = Type.Object({
+    type: Type.Literal('manageSellOffer'), // Proto: "StellarManageSellOfferOp"
+    source: Type.Optional(Type.String()), // Proto: "source_account"
+    buying: StellarAsset, // Proto: "buying_asset"
+    selling: StellarAsset, // Proto: "selling_asset"
+    amount: Type.Uint(), // Proto: ok
+    offerId: Type.Optional(Type.Uint()), // Proto: "offer_id" // not found in stellar-sdk
+    price: Type.Object({
+        // Proto: "price_n" and "price_d"
+        n: Type.Number(),
+        d: Type.Number(),
+    }),
+});
 
-export interface StellarManageBuyOfferOperation {
-    type: 'manageBuyOffer'; // Proto: "StellarManageBuyOfferOp"
-    source?: string; // Proto: "source_account"
-    buying: StellarAsset; // Proto: "buying_asset"
-    selling: StellarAsset; // Proto: "selling_asset"
-    amount: string; // Proto: ok
-    offerId?: string; // Proto: "offer_id" // not found in stellar-sdk
-    price: { n: number; d: number }; // Proto: "price_n" and "price_d"
-}
+export type StellarManageBuyOfferOperation = Static<typeof StellarManageBuyOfferOperation>;
+export const StellarManageBuyOfferOperation = Type.Object({
+    type: Type.Literal('manageBuyOffer'), // Proto: "StellarManageBuyOfferOp"
+    source: Type.Optional(Type.String()), // Proto: "source_account"
+    buying: StellarAsset, // Proto: "buying_asset"
+    selling: StellarAsset, // Proto: "selling_asset"
+    amount: Type.Uint(), // Proto: ok
+    offerId: Type.Optional(Type.Uint()), // Proto: "offer_id" // not found in stellar-sdk
+    price: Type.Object({
+        // Proto: "price_n" and "price_d"
+        n: Type.Number(),
+        d: Type.Number(),
+    }),
+});
 
-export interface StellarSetOptionsOperation {
-    type: 'setOptions'; // Proto: "StellarSetOptionsOp"
-    source?: string; // Proto: "source_account"
-    signer?: {
-        type: PROTO.StellarSignerType;
-        key: string | Buffer;
-        weight?: number;
-    };
-    inflationDest?: string; // Proto: "inflation_destination_account"
-    clearFlags?: number; // Proto: "clear_flags"
-    setFlags?: number; // Proto: "set_flags"
-    masterWeight?: PROTO.UintType; // Proto: "master_weight"
-    lowThreshold?: PROTO.UintType; // Proto: "low_threshold"
-    medThreshold?: PROTO.UintType; // Proto: "medium_threshold"
-    highThreshold?: PROTO.UintType; // Proto: "high_threshold"
-    homeDomain?: string; // Proto: "home_domain"
-}
+export type StellarSetOptionsOperation = Static<typeof StellarSetOptionsOperation>;
+export const StellarSetOptionsOperation = Type.Object({
+    type: Type.Literal('setOptions'), // Proto: "StellarSetOptionsOp"
+    source: Type.Optional(Type.String()), // Proto: "source_account"
+    signer: Type.Optional(
+        Type.Object({
+            type: PROTO.EnumStellarSignerType,
+            key: Type.Union([Type.String(), Type.Buffer()]),
+            weight: Type.Optional(Type.Number()),
+        }),
+    ),
+    inflationDest: Type.Optional(Type.String()), // Proto: "inflation_destination_account"
+    clearFlags: Type.Optional(Type.Number()), // Proto: "clear_flags"
+    setFlags: Type.Optional(Type.Number()), // Proto: "set_flags"
+    masterWeight: Type.Optional(Type.Uint()), // Proto: "master_weight"
+    lowThreshold: Type.Optional(Type.Uint()), // Proto: "low_threshold"
+    medThreshold: Type.Optional(Type.Uint()), // Proto: "medium_threshold"
+    highThreshold: Type.Optional(Type.Uint()), // Proto: "high_threshold"
+    homeDomain: Type.Optional(Type.String()), // Proto: "home_domain"
+});
 
-export interface StellarChangeTrustOperation {
-    type: 'changeTrust'; // Proto: "StellarChangeTrustOp"
-    source?: string; // Proto: "source_account"
-    line: StellarAsset; // Proto: ok
-    limit: string; // Proto: ok
-}
+export type StellarChangeTrustOperation = Static<typeof StellarChangeTrustOperation>;
+export const StellarChangeTrustOperation = Type.Object({
+    type: Type.Literal('changeTrust'), // Proto: "StellarChangeTrustOp"
+    source: Type.Optional(Type.String()), // Proto: "source_account"
+    line: StellarAsset, // Proto: ok
+    limit: Type.String(), // Proto: ok
+});
 
-export interface StellarAllowTrustOperation {
-    type: 'allowTrust'; // Proto: "StellarAllowTrustOp"
-    source?: string; // Proto: "source_account"
-    trustor: string; // Proto: "trusted_account"
-    assetCode: string; // Proto: "asset_code"
-    assetType: PROTO.StellarAssetType; // Proto: "asset_type"
-    authorize?: boolean | typeof undefined; // Proto: "is_authorized" > parse to number
-}
+export type StellarAllowTrustOperation = Static<typeof StellarAllowTrustOperation>;
+export const StellarAllowTrustOperation = Type.Object({
+    type: Type.Literal('allowTrust'), // Proto: "StellarAllowTrustOp"
+    source: Type.Optional(Type.String()), // Proto: "source_account"
+    trustor: Type.String(), // Proto: "trusted_account"
+    assetCode: Type.String(), // Proto: "asset_code"
+    assetType: PROTO.EnumStellarAssetType, // Proto: "asset_type"
+    authorize: Type.Optional(Type.Union([Type.Boolean(), Type.Undefined()])), // Proto: "is_authorized" > parse to number
+});
 
-export interface StellarAccountMergeOperation {
-    type: 'accountMerge'; // Proto: "StellarAccountMergeOp"
-    source?: string; // Proto: "source_account"
-    destination: string; // Proto: "destination_account"
-}
+export type StellarAccountMergeOperation = Static<typeof StellarAccountMergeOperation>;
+export const StellarAccountMergeOperation = Type.Object({
+    type: Type.Literal('accountMerge'), // Proto: "StellarAccountMergeOp"
+    source: Type.Optional(Type.String()), // Proto: "source_account"
+    destination: Type.String(), // Proto: "destination_account"
+});
 
-export interface StellarManageDataOperation {
-    type: 'manageData'; // Proto: "StellarManageDataOp"
-    source?: string; // Proto: "source_account"
-    name: string; // Proto: "key"
-    value?: string | Buffer; // Proto: "value"
-}
+export type StellarManageDataOperation = Static<typeof StellarManageDataOperation>;
+export const StellarManageDataOperation = Type.Object({
+    type: Type.Literal('manageData'), // Proto: "StellarManageDataOp"
+    source: Type.Optional(Type.String()), // Proto: "source_account"
+    name: Type.String(), // Proto: "key"
+    value: Type.Optional(Type.Union([Type.String(), Type.Buffer()])), // Proto: "value"
+});
 
 // (?) Missing in stellar API but present in Proto messages
-export interface StellarBumpSequenceOperation {
-    type: 'bumpSequence'; // Proto: "StellarBumpSequenceOp"
-    source?: string; // Proto: "source_account"
-    bumpTo: string; // Proto: "bump_to"
-}
+export type StellarBumpSequenceOperation = Static<typeof StellarBumpSequenceOperation>;
+export const StellarBumpSequenceOperation = Type.Object({
+    type: Type.Literal('bumpSequence'), // Proto: "StellarBumpSequenceOp"
+    source: Type.Optional(Type.String()), // Proto: "source_account"
+    bumpTo: Type.Uint(), // Proto: "bump_to"
+});
 
 // (?) Missing in Proto messages, but present in Stellar API
-export interface StellarInflationOperation {
-    type: 'inflation';
-    source?: string; // Proto: "source_account"
-}
+export type StellarInflationOperation = Static<typeof StellarInflationOperation>;
+export const StellarInflationOperation = Type.Object({
+    type: Type.Literal('inflation'), // Proto: "StellarInflationOp"
+    source: Type.Optional(Type.String()), // Proto: "source_account"
+});
 
-export type StellarOperation =
-    | StellarCreateAccountOperation
-    | StellarPaymentOperation
-    | StellarPathPaymentStrictReceiveOperation
-    | StellarPathPaymentStrictSendOperation
-    | StellarPassiveSellOfferOperation
-    | StellarManageSellOfferOperation
-    | StellarManageBuyOfferOperation
-    | StellarSetOptionsOperation
-    | StellarChangeTrustOperation
-    | StellarAllowTrustOperation
-    | StellarAccountMergeOperation
-    | StellarInflationOperation
-    | StellarManageDataOperation
-    | StellarBumpSequenceOperation;
+export type StellarOperation = Static<typeof StellarOperation>;
+export const StellarOperation = Type.Union([
+    StellarCreateAccountOperation,
+    StellarPaymentOperation,
+    StellarPathPaymentStrictReceiveOperation,
+    StellarPathPaymentStrictSendOperation,
+    StellarPassiveSellOfferOperation,
+    StellarManageSellOfferOperation,
+    StellarManageBuyOfferOperation,
+    StellarSetOptionsOperation,
+    StellarChangeTrustOperation,
+    StellarAllowTrustOperation,
+    StellarAccountMergeOperation,
+    StellarInflationOperation,
+    StellarManageDataOperation,
+    StellarBumpSequenceOperation,
+]);
 
-export interface StellarTransaction {
-    source: string; // Proto: "source_account"
-    fee: number; // Proto: ok
-    sequence: PROTO.UintType; // Proto: "sequence_number"
-    timebounds?: {
-        minTime: number; // Proto: "timebounds_start"
-        maxTime: number; // Proto: "timebounds_end"
-    };
-    memo?: {
-        type: PROTO.StellarMemoType; // Proto: "memo_type"
-        id?: string; // Proto: "memo_id"
-        text?: string; // Proto: "memo_text"
-        hash?: string | Buffer; // Proto: "memo_hash"
-    };
-    operations: StellarOperation[]; // Proto: calculated array length > "num_operations"
-}
+export type StellarTransaction = Static<typeof StellarTransaction>;
+export const StellarTransaction = Type.Object({
+    source: Type.String(), // Proto: "source_account"
+    fee: Type.Number(), // Proto: ok
+    sequence: Type.Uint(), // Proto: "sequence_number"
+    timebounds: Type.Optional(
+        Type.Object({
+            minTime: Type.Number(), // Proto: "timebounds_start"
+            maxTime: Type.Number(), // Proto: "timebounds_end"
+        }),
+    ),
+    memo: Type.Optional(
+        Type.Object({
+            type: PROTO.EnumStellarMemoType, // Proto: "memo_type"
+            id: Type.Optional(Type.Uint()), // Proto: "memo_id"
+            text: Type.Optional(Type.String()), // Proto: "memo_text"
+            hash: Type.Optional(Type.Union([Type.String(), Type.Buffer()])), // Proto: "memo_hash"
+        }),
+    ),
+    operations: Type.Array(StellarOperation), // Proto: calculated array length > "num_operations"
+});
 
-export interface StellarSignTransaction {
-    path: DerivationPath;
-    networkPassphrase: string;
-    transaction: StellarTransaction;
-}
+export type StellarSignTransaction = Static<typeof StellarSignTransaction>;
+export const StellarSignTransaction = Type.Object({
+    path: DerivationPath,
+    networkPassphrase: Type.String(),
+    transaction: StellarTransaction,
+});
 
-export interface StellarSignedTx {
-    publicKey: string;
-    signature: string;
-}
+export type StellarSignedTx = Static<typeof StellarSignedTx>;
+export const StellarSignedTx = Type.Object({
+    publicKey: Type.String(),
+    signature: Type.String(),
+});
 
 // NOTE: StellarOperation (stellar-sdk) transformed to type & payload from PROTO
-export type StellarOperationMessage =
-    | ({
-          type: 'StellarCreateAccountOp';
-      } & PROTO.StellarCreateAccountOp)
-    | ({
-          type: 'StellarPaymentOp';
-      } & PROTO.StellarPaymentOp)
-    | ({
-          type: 'StellarPathPaymentStrictReceiveOp';
-      } & PROTO.StellarPathPaymentStrictReceiveOp)
-    | ({
-          type: 'StellarPathPaymentStrictSendOp';
-      } & PROTO.StellarPathPaymentStrictSendOp)
-    | ({
-          type: 'StellarManageSellOfferOp';
-      } & PROTO.StellarManageSellOfferOp)
-    | ({
-          type: 'StellarManageBuyOfferOp';
-      } & PROTO.StellarManageBuyOfferOp)
-    | ({
-          type: 'StellarCreatePassiveSellOfferOp';
-      } & PROTO.StellarCreatePassiveSellOfferOp)
-    | ({
-          type: 'StellarSetOptionsOp';
-      } & PROTO.StellarSetOptionsOp)
-    | ({
-          type: 'StellarChangeTrustOp';
-      } & PROTO.StellarChangeTrustOp)
-    | ({
-          type: 'StellarAllowTrustOp';
-      } & PROTO.StellarAllowTrustOp)
-    | ({
-          type: 'StellarAccountMergeOp';
-      } & PROTO.StellarAccountMergeOp)
-    | ({
-          type: 'StellarManageDataOp';
-      } & PROTO.StellarManageDataOp)
-    | ({
-          type: 'StellarBumpSequenceOp';
-      } & PROTO.StellarBumpSequenceOp);
+export type StellarOperationMessage = Static<typeof StellarOperationMessage>;
+export const StellarOperationMessage = Type.Union([
+    Type.Intersect([
+        Type.Object({
+            type: Type.Literal('StellarCreateAccountOp'),
+        }),
+        PROTO.StellarCreateAccountOp,
+    ]),
+    Type.Intersect([
+        Type.Object({
+            type: Type.Literal('StellarPaymentOp'),
+        }),
+        PROTO.StellarPaymentOp,
+    ]),
+    Type.Intersect([
+        Type.Object({
+            type: Type.Literal('StellarPathPaymentStrictReceiveOp'),
+        }),
+        PROTO.StellarPathPaymentStrictReceiveOp,
+    ]),
+    Type.Intersect([
+        Type.Object({
+            type: Type.Literal('StellarPathPaymentStrictSendOp'),
+        }),
+        PROTO.StellarPathPaymentStrictSendOp,
+    ]),
+    Type.Intersect([
+        Type.Object({
+            type: Type.Literal('StellarManageSellOfferOp'),
+        }),
+        PROTO.StellarManageSellOfferOp,
+    ]),
+    Type.Intersect([
+        Type.Object({
+            type: Type.Literal('StellarManageBuyOfferOp'),
+        }),
+        PROTO.StellarManageBuyOfferOp,
+    ]),
+    Type.Intersect([
+        Type.Object({
+            type: Type.Literal('StellarCreatePassiveSellOfferOp'),
+        }),
+        PROTO.StellarCreatePassiveSellOfferOp,
+    ]),
+    Type.Intersect([
+        Type.Object({
+            type: Type.Literal('StellarSetOptionsOp'),
+        }),
+        PROTO.StellarSetOptionsOp,
+    ]),
+    Type.Intersect([
+        Type.Object({
+            type: Type.Literal('StellarChangeTrustOp'),
+        }),
+        PROTO.StellarChangeTrustOp,
+    ]),
+    Type.Intersect([
+        Type.Object({
+            type: Type.Literal('StellarAllowTrustOp'),
+        }),
+        PROTO.StellarAllowTrustOp,
+    ]),
+    Type.Intersect([
+        Type.Object({
+            type: Type.Literal('StellarAccountMergeOp'),
+        }),
+        PROTO.StellarAccountMergeOp,
+    ]),
+    Type.Intersect([
+        Type.Object({
+            type: Type.Literal('StellarManageDataOp'),
+        }),
+        PROTO.StellarManageDataOp,
+    ]),
+    Type.Intersect([
+        Type.Object({
+            type: Type.Literal('StellarBumpSequenceOp'),
+        }),
+        PROTO.StellarBumpSequenceOp,
+    ]),
+]);

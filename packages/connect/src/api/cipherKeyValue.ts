@@ -2,9 +2,12 @@
 
 import { UI, createUiMessage } from '../events';
 import { AbstractMethod } from '../core/AbstractMethod';
-import { validateParams, getFirmwareRange } from './common/paramsValidator';
+import { getFirmwareRange } from './common/paramsValidator';
 import { validatePath } from '../utils/pathUtils';
 import type { PROTO } from '../constants';
+import { Assert } from '@trezor/schema-utils';
+import { Bundle } from '../types/params';
+import { CipherKeyValue as CipherKeyValueSchema } from '../types/api/cipherKeyValue';
 
 export default class CipherKeyValue extends AbstractMethod<
     'cipherKeyValue',
@@ -26,30 +29,16 @@ export default class CipherKeyValue extends AbstractMethod<
             typeof payload.useEmptyPassphrase === 'boolean' ? payload.useEmptyPassphrase : true;
 
         // validate bundle type
-        validateParams(payload, [{ name: 'bundle', type: 'array' }]);
-
-        this.params = payload.bundle.map(batch => {
-            // validate incoming parameters for each batch
-            validateParams(batch, [
-                { name: 'path', required: true },
-                { name: 'key', type: 'string' },
-                { name: 'value', type: 'string' },
-                { name: 'encrypt', type: 'boolean' },
-                { name: 'askOnEncrypt', type: 'boolean' },
-                { name: 'askOnDecrypt', type: 'boolean' },
-                { name: 'iv', type: 'string' },
-            ]);
-
-            return {
-                address_n: validatePath(batch.path),
-                key: batch.key,
-                value: batch.value instanceof Buffer ? batch.value.toString('hex') : batch.value,
-                encrypt: batch.encrypt,
-                ask_on_encrypt: batch.askOnEncrypt,
-                ask_on_decrypt: batch.askOnDecrypt,
-                iv: batch.iv instanceof Buffer ? batch.iv.toString('hex') : batch.iv,
-            };
-        });
+        Assert(Bundle(CipherKeyValueSchema), payload);
+        this.params = payload.bundle.map(batch => ({
+            address_n: validatePath(batch.path),
+            key: batch.key,
+            value: batch.value instanceof Buffer ? batch.value.toString('hex') : batch.value,
+            encrypt: batch.encrypt,
+            ask_on_encrypt: batch.askOnEncrypt,
+            ask_on_decrypt: batch.askOnDecrypt,
+            iv: batch.iv instanceof Buffer ? batch.iv.toString('hex') : batch.iv,
+        }));
     }
 
     get info() {

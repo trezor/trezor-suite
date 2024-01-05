@@ -1,12 +1,14 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/RequestLogin.js
 
 import { AbstractMethod } from '../core/AbstractMethod';
-import { validateParams, getFirmwareRange } from './common/paramsValidator';
+import { getFirmwareRange } from './common/paramsValidator';
 import { ERRORS } from '../constants';
 import { UI, createUiMessage } from '../events';
 import { DataManager } from '../data/DataManager';
 import type { ConnectSettings } from '../types';
 import type { PROTO } from '../constants';
+import { Assert, Type } from '@trezor/schema-utils';
+import { RequestLoginSchema } from '../types/api/requestLogin';
 
 export default class RequestLogin extends AbstractMethod<'requestLogin', PROTO.SignIdentity> {
     asyncChallenge?: boolean;
@@ -31,11 +33,7 @@ export default class RequestLogin extends AbstractMethod<'requestLogin', PROTO.S
         }
 
         // validate incoming parameters
-        validateParams(payload, [
-            { name: 'challengeHidden', type: 'string' },
-            { name: 'challengeVisual', type: 'string' },
-            { name: 'asyncChallenge', type: 'boolean' },
-        ]);
+        Assert(RequestLoginSchema, payload);
 
         this.params = {
             identity,
@@ -67,10 +65,13 @@ export default class RequestLogin extends AbstractMethod<'requestLogin', PROTO.S
             }
 
             // validate incoming parameters
-            validateParams(payload, [
-                { name: 'challengeHidden', type: 'string', required: true },
-                { name: 'challengeVisual', type: 'string', required: true },
-            ]);
+            Assert(
+                Type.Object({
+                    challengeHidden: Type.String(),
+                    challengeVisual: Type.String(),
+                }),
+                payload,
+            );
 
             this.params.challenge_hidden = payload.challengeHidden;
             this.params.challenge_visual = payload.challengeVisual;

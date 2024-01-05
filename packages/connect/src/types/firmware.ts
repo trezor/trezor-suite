@@ -1,3 +1,5 @@
+import { Type } from '@trezor/schema-utils';
+
 export interface FirmwareRange {
     T1B1: {
         min: string;
@@ -32,6 +34,7 @@ export type FirmwareRelease = {
 };
 
 export type IntermediaryVersion = 1 | 2 | 3;
+export const IntermediaryVersion = Type.Union([Type.Literal(1), Type.Literal(2), Type.Literal(3)]);
 
 export type ReleaseInfo = {
     changelog: FirmwareRelease[] | null;

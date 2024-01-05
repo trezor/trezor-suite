@@ -8,7 +8,6 @@ import {
 } from '@trezor/utxo-lib';
 import { bufferUtils } from '@trezor/utils';
 import { getHDPath, getScriptType, getOutputScriptType } from '../../utils/pathUtils';
-import { validateParams } from '../common/paramsValidator';
 import { TypedError } from '../../constants/errors';
 import type {
     TxInput as BitcoinJsInput,
@@ -21,7 +20,8 @@ import type {
     BitcoinNetworkInfo,
 } from '../../types';
 import type { RefTransaction, TransactionOptions } from '../../types/api/bitcoin';
-import type { PROTO } from '../../constants';
+import { PROTO } from '../../constants';
+import { Assert, Type } from '@trezor/schema-utils';
 
 // Referenced transactions are not required if:
 // - all internal inputs script_type === SPENDTAPROOT
@@ -281,38 +281,38 @@ export const validateReferencedTransactions = ({
             return transformReferencedTransaction(srcTx);
         }
         // validate common fields
-        // TODO: detailed params validation will be addressed in https://github.com/trezor/connect/pull/782
-        // currently it's 1:1 with previous validation in SignTransaction.js method
-        validateParams(tx, [
-            { name: 'hash', type: 'string', required: true },
-            { name: 'inputs', type: 'array', required: true },
-            { name: 'version', type: 'number', required: true },
-            { name: 'lock_time', type: 'number', required: true },
-            { name: 'extra_data', type: 'string' },
-            { name: 'timestamp', type: 'number' },
-            { name: 'version_group_id', type: 'number' },
-        ]);
+        Assert(
+            Type.Object({
+                hash: Type.String(),
+                version: Type.Number(),
+                lock_time: Type.Number(),
+                extra_data: Type.Optional(Type.String()),
+                timestamp: Type.Optional(Type.Number()),
+                version_group_id: Type.Optional(Type.Number()),
+            }),
+            tx,
+        );
 
         // check if referenced transaction is in expected format (RBF)
         if (origTxs.includes(tx.hash)) {
             // validate specific fields of origTx
-            // protobuf.TxInput
-            validateParams(tx, [{ name: 'outputs', type: 'array', required: true }]);
-            // TODO: detailed validation will be addressed in #782
+            Assert(
+                Type.Object({
+                    inputs: Type.Array(PROTO.TxInput),
+                }),
+                tx,
+            );
             return tx;
         }
 
         // validate specific fields of refTx
-        validateParams(tx, [{ name: 'bin_outputs', type: 'array', required: true }]);
-        tx.inputs.forEach(input => {
-            validateParams(input, [
-                { name: 'prev_hash', type: 'string', required: true },
-                { name: 'prev_index', type: 'number', required: true },
-                { name: 'script_sig', type: 'string', required: true },
-                { name: 'sequence', type: 'number', required: true },
-                { name: 'decred_tree', type: 'number' },
-            ]);
-        });
+        Assert(
+            Type.Object({
+                inputs: Type.Array(PROTO.PrevInput),
+                bin_outputs: Type.Array(PROTO.TxOutputBinType),
+            }),
+            tx,
+        );
 
         return {
             hash: tx.hash,
@@ -322,19 +322,14 @@ export const validateReferencedTransactions = ({
             timestamp: tx.timestamp,
             version_group_id: tx.version_group_id,
             expiry: tx.expiry,
-            // make exact protobuf.PrevInput
             inputs: tx.inputs.map(input => ({
                 prev_hash: input.prev_hash,
                 prev_index: input.prev_index,
-                // TODO: https://github.com/trezor/trezor-suite/issues/5297
-                script_sig: input.script_sig!,
-                // TODO: https://github.com/trezor/trezor-suite/issues/5297
-                sequence: input.sequence!,
+                script_sig: input.script_sig,
+                sequence: input.sequence,
                 decred_tree: input.decred_tree,
             })),
-            // make exact protobuf.TxOutputBinType
-            // TODO: https://github.com/trezor/trezor-suite/issues/5297
-            bin_outputs: tx.bin_outputs!.map(output => ({
+            bin_outputs: tx.bin_outputs.map(output => ({
                 amount: output.amount,
                 script_pubkey: output.script_pubkey,
                 decred_script_version: output.decred_script_version,

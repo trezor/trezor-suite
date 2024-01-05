@@ -1,7 +1,8 @@
 import { AbstractMethod } from '../core/AbstractMethod';
 import { PROTO } from '../constants';
 import { UI } from '../events';
-import { getFirmwareRange, validateParams } from './common/paramsValidator';
+import { getFirmwareRange } from './common/paramsValidator';
+import { Assert } from '@trezor/schema-utils';
 
 export default class GetFirmwareHash extends AbstractMethod<
     'getFirmwareHash',
@@ -15,7 +16,7 @@ export default class GetFirmwareHash extends AbstractMethod<
 
         const { payload } = this;
 
-        validateParams(payload, [{ name: 'challenge', type: 'string' }]);
+        Assert(PROTO.GetFirmwareHash, payload);
 
         this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
 

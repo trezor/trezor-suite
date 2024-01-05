@@ -2,8 +2,9 @@
 
 import { AbstractMethod } from '../core/AbstractMethod';
 import { UI, createUiMessage } from '../events';
-import { validateParams } from './common/paramsValidator';
+import { Assert } from '@trezor/schema-utils';
 import type { PROTO } from '../constants';
+import { RecoveryDevice as RecoveryDeviceSchema } from '../types/api/recoveryDevice';
 
 export default class RecoveryDevice extends AbstractMethod<'recoveryDevice', PROTO.RecoveryDevice> {
     init() {
@@ -12,17 +13,7 @@ export default class RecoveryDevice extends AbstractMethod<'recoveryDevice', PRO
 
         const { payload } = this;
 
-        validateParams(payload, [
-            { name: 'word_count', type: 'number' },
-            { name: 'passphrase_protection', type: 'boolean' },
-            { name: 'pin_protection', type: 'boolean' },
-            { name: 'language', type: 'string' },
-            { name: 'label', type: 'string' },
-            { name: 'enforce_wordlist', type: 'boolean' },
-            { name: 'type', type: 'number' },
-            { name: 'u2f_counter', type: 'number' },
-            { name: 'dry_run', type: 'boolean' },
-        ]);
+        Assert(RecoveryDeviceSchema, payload);
         this.params = {
             word_count: payload.word_count,
             passphrase_protection: payload.passphrase_protection,

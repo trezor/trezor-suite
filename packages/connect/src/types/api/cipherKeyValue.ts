@@ -1,14 +1,16 @@
-import type { Params, BundledParams, Response, DerivationPath } from '../params';
+import { Params, BundledParams, Response, DerivationPath } from '../params';
+import { Static, Type } from '@trezor/schema-utils';
 
-export interface CipherKeyValue {
-    path: DerivationPath;
-    key: string;
-    value: string | Buffer;
-    encrypt?: boolean;
-    askOnEncrypt?: boolean;
-    askOnDecrypt?: boolean;
-    iv?: string | Buffer;
-}
+export type CipherKeyValue = Static<typeof CipherKeyValue>;
+export const CipherKeyValue = Type.Object({
+    path: DerivationPath,
+    key: Type.String(),
+    value: Type.Union([Type.String(), Type.Buffer()]),
+    encrypt: Type.Optional(Type.Boolean()),
+    askOnEncrypt: Type.Optional(Type.Boolean()),
+    askOnDecrypt: Type.Optional(Type.Boolean()),
+    iv: Type.Optional(Type.Union([Type.String(), Type.Buffer()])),
+});
 
 export interface CipheredValue {
     value: string;

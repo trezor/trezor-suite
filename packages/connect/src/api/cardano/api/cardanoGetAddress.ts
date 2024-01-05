@@ -1,7 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/CardanoGetAddress.js
 
 import { AbstractMethod, MethodReturnType } from '../../../core/AbstractMethod';
-import { validateParams, getFirmwareRange } from '../../common/paramsValidator';
+import { getFirmwareRange } from '../../common/paramsValidator';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { fromHardened, getSerializedPath } from '../../../utils/pathUtils';
 import {
@@ -12,6 +12,9 @@ import {
 } from '../cardanoAddressParameters';
 import { PROTO, ERRORS } from '../../../constants';
 import { UI, createUiMessage } from '../../../events';
+import { Assert } from '@trezor/schema-utils';
+import { Bundle } from '../../../types';
+import { CardanoGetAddress as CardanoGetAddressSchema } from '../../../types/api/cardano';
 
 type Params = PROTO.CardanoGetAddress & {
     address?: string;
@@ -37,23 +40,9 @@ export default class CardanoGetAddress extends AbstractMethod<'cardanoGetAddress
             : this.payload;
 
         // validate bundle type
-        validateParams(payload, [
-            { name: 'bundle', type: 'array' },
-            { name: 'useEventListener', type: 'boolean' },
-        ]);
+        Assert(Bundle(CardanoGetAddressSchema), payload);
 
         this.params = payload.bundle.map(batch => {
-            // validate incoming parameters for each batch
-            validateParams(batch, [
-                { name: 'addressParameters', type: 'object', required: true },
-                { name: 'networkId', type: 'number', required: true },
-                { name: 'protocolMagic', type: 'number', required: true },
-                { name: 'derivationType', type: 'number' },
-                { name: 'address', type: 'string' },
-                { name: 'showOnTrezor', type: 'boolean' },
-                { name: 'chunkify', type: 'boolean' },
-            ]);
-
             validateAddressParameters(batch.addressParameters);
 
             return {

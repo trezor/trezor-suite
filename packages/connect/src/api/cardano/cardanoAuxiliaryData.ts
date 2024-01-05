@@ -5,15 +5,15 @@ import {
     modifyAddressParametersForBackwardsCompatibility,
     validateAddressParameters,
 } from './cardanoAddressParameters';
-import { validateParams } from '../common/paramsValidator';
 import { validatePath } from '../../utils/pathUtils';
 import type { Device } from '../../device/Device';
 import { ERRORS, PROTO } from '../../constants';
-import type {
+import {
     CardanoAuxiliaryData,
     CardanoCVoteRegistrationDelegation,
     CardanoCVoteRegistrationParameters,
 } from '../../types/api/cardano';
+import { Assert } from '@trezor/schema-utils';
 
 const MAX_DELEGATION_COUNT = 32;
 
@@ -27,10 +27,7 @@ const transformDelegation = (
         delegation.votePublicKey = delegation.votingPublicKey;
     }
 
-    validateParams(delegation, [
-        { name: 'votePublicKey', type: 'string', required: true },
-        { name: 'weight', type: 'uint', required: true },
-    ]);
+    Assert(CardanoCVoteRegistrationDelegation, delegation);
 
     return {
         vote_public_key: delegation.votePublicKey,
@@ -57,15 +54,7 @@ const transformCvoteRegistrationParameters = (
             cVoteRegistrationParameters.rewardAddressParameters;
     }
 
-    validateParams(cVoteRegistrationParameters, [
-        { name: 'votePublicKey', type: 'string' },
-        { name: 'stakingPath', required: true },
-        { name: 'nonce', type: 'uint', required: true },
-        { name: 'format', type: 'number' },
-        { name: 'delegations', type: 'array', allowEmpty: true },
-        { name: 'votingPurpose', type: 'uint' },
-        { name: 'address', type: 'string' },
-    ]);
+    Assert(CardanoCVoteRegistrationParameters, cVoteRegistrationParameters);
     const { paymentAddressParameters } = cVoteRegistrationParameters;
     if (paymentAddressParameters) {
         validateAddressParameters(paymentAddressParameters);
@@ -96,12 +85,7 @@ const transformCvoteRegistrationParameters = (
 export const transformAuxiliaryData = (
     auxiliaryData: CardanoAuxiliaryData,
 ): PROTO.CardanoTxAuxiliaryData => {
-    validateParams(auxiliaryData, [
-        {
-            name: 'hash',
-            type: 'string',
-        },
-    ]);
+    Assert(CardanoAuxiliaryData, auxiliaryData);
 
     let cVoteRegistrationParameters;
     if (auxiliaryData.cVoteRegistrationParameters) {

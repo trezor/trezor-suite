@@ -1,34 +1,14 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/cardanoTokenBundle.js
 
-import { validateParams } from '../common/paramsValidator';
-import type { PROTO } from '../../constants';
-import type { CardanoAssetGroup, CardanoToken } from '../../types/api/cardano';
+import { PROTO } from '../../constants';
+import { CardanoAssetGroup, CardanoToken } from '../../types/api/cardano';
+import { Assert, Type, Static } from '@trezor/schema-utils';
 
-export type AssetGroupWithTokens = {
-    policyId: string;
-    tokens: PROTO.CardanoToken[];
-};
-
-const validateTokens = (tokenAmounts: CardanoToken[]) => {
-    tokenAmounts.forEach(tokenAmount => {
-        validateParams(tokenAmount, [
-            { name: 'assetNameBytes', type: 'string', required: true },
-            { name: 'amount', type: 'uint' },
-            { name: 'mintAmount', type: 'uint', allowNegative: true },
-        ]);
-    });
-};
-
-const validateTokenBundle = (tokenBundle: CardanoAssetGroup[]) => {
-    tokenBundle.forEach(tokenGroup => {
-        validateParams(tokenGroup, [
-            { name: 'policyId', type: 'string', required: true },
-            { name: 'tokenAmounts', type: 'array', required: true },
-        ]);
-
-        validateTokens(tokenGroup.tokenAmounts);
-    });
-};
+export type AssetGroupWithTokens = Static<typeof AssetGroupWithTokens>;
+export const AssetGroupWithTokens = Type.Object({
+    policyId: Type.String(),
+    tokens: Type.Array(PROTO.CardanoToken),
+});
 
 const tokenAmountsToProto = (tokenAmounts: CardanoToken[]): PROTO.CardanoToken[] =>
     tokenAmounts.map(tokenAmount => ({
@@ -38,7 +18,7 @@ const tokenAmountsToProto = (tokenAmounts: CardanoToken[]): PROTO.CardanoToken[]
     }));
 
 export const tokenBundleToProto = (tokenBundle: CardanoAssetGroup[]): AssetGroupWithTokens[] => {
-    validateTokenBundle(tokenBundle);
+    Assert(Type.Array(CardanoAssetGroup), tokenBundle);
     return tokenBundle.map(tokenGroup => ({
         policyId: tokenGroup.policyId,
         tokens: tokenAmountsToProto(tokenGroup.tokenAmounts),

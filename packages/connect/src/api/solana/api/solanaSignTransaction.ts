@@ -1,9 +1,11 @@
 import { PROTO } from '../../../constants';
 import { AbstractMethod } from '../../../core/AbstractMethod';
-import { validateParams, getFirmwareRange } from '../../common/paramsValidator';
+import { getFirmwareRange } from '../../common/paramsValidator';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { validatePath } from '../../../utils/pathUtils';
 import { transformAdditionalInfo } from '../additionalInfo';
+import { Assert } from '@trezor/schema-utils';
+import { SolanaSignTransaction as SolanaSignTransactionSchema } from '../../../types/api/solana';
 
 export default class SolanaSignTransaction extends AbstractMethod<
     'solanaSignTransaction',
@@ -20,10 +22,7 @@ export default class SolanaSignTransaction extends AbstractMethod<
         const { payload } = this;
 
         // validate bundle type
-        validateParams(payload, [
-            { name: 'path', required: true },
-            { name: 'serializedTx', type: 'string', required: true },
-        ]);
+        Assert(SolanaSignTransactionSchema, payload);
 
         const path = validatePath(payload.path, 2);
 

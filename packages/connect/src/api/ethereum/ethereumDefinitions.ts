@@ -4,9 +4,9 @@ import { EthereumDefinitions } from '@trezor/protobuf/lib/messages';
 import { trzd } from '@trezor/protocol';
 import { parseConfigure, decode as decodeProtobuf } from '@trezor/protobuf';
 import { DataManager } from '../../data/DataManager';
-import { validateParams } from '../common/paramsValidator';
 import { EthereumNetworkInfo } from '../../types';
 import { ethereumNetworkInfoBase } from '../../data/coinInfo';
+import { Type, Static, Assert } from '@trezor/schema-utils';
 
 interface GetEthereumDefinitions {
     chainId?: number;
@@ -70,28 +70,31 @@ export const getEthereumDefinitions = async ({
 /**
  * decoded content of data retrieved from https://data.trezor.io/firmware/eth-definitions/...
  */
-export interface EthereumNetworkDefinitionDecoded {
-    chain_id: number;
-    name: string;
-    slip44: number;
-    symbol: string;
-}
+export type EthereumNetworkDefinitionDecoded = Static<typeof EthereumNetworkDefinitionDecoded>;
+export const EthereumNetworkDefinitionDecoded = Type.Object({
+    chain_id: Type.Number(),
+    name: Type.String(),
+    slip44: Type.Number(),
+    symbol: Type.String(),
+});
 
 /**
  * decoded content of data retreived from https://data.trezor.io/firmware/eth-definitions/...
  */
-export interface EthereumTokenDefinitionDecoded {
-    address: string; // dac17f958d2ee523a2206206994597c13d831ec7
-    chain_id: number; // 1
-    decimals: number; // 6
-    name: string; // Tether
-    symbol: string; // USDT
-}
+export type EthereumTokenDefinitionDecoded = Static<typeof EthereumTokenDefinitionDecoded>;
+export const EthereumTokenDefinitionDecoded = Type.Object({
+    address: Type.String(), // dac17f958d2ee523a2206206994597c13d831ec7
+    chain_id: Type.Number(), // 1
+    decimals: Type.Number(), // 6
+    name: Type.String(), // Tether
+    symbol: Type.String(), // USDT
+});
 
-export interface EthereumDefinitionDecoded {
-    network?: EthereumNetworkDefinitionDecoded;
-    token?: EthereumTokenDefinitionDecoded;
-}
+export type EthereumDefinitionDecoded = Static<typeof EthereumDefinitionDecoded>;
+export const EthereumDefinitionDecoded = Type.Object({
+    network: Type.Optional(EthereumNetworkDefinitionDecoded),
+    token: Type.Optional(EthereumTokenDefinitionDecoded),
+});
 
 export const decodeEthereumDefinition = (
     encodedDefinition: EthereumDefinitions,
@@ -122,23 +125,11 @@ export const decodeEthereumDefinition = (
         const decodedDefinition = decodeProtobuf(Message, protobufPayload);
 
         if (key === 'encoded_network') {
-            validateParams(decodedDefinition, [
-                { name: 'chain_id', type: 'number', required: true },
-                { name: 'name', type: 'string', required: true },
-                { name: 'slip44', type: 'number', required: true },
-                { name: 'symbol', type: 'string', required: true },
-            ]);
-
-            decoded.network = decodedDefinition as EthereumNetworkDefinitionDecoded;
+            Assert(EthereumNetworkDefinitionDecoded, decodedDefinition);
+            decoded.network = decodedDefinition;
         } else if (key === 'encoded_token') {
-            validateParams(decodedDefinition, [
-                { name: 'address', type: 'string', required: true },
-                { name: 'chain_id', type: 'number', required: true },
-                { name: 'name', type: 'string', required: true },
-                { name: 'decimals', type: 'number', required: true },
-                { name: 'symbol', type: 'string', required: true },
-            ]);
-            decoded.token = decodedDefinition as EthereumTokenDefinitionDecoded;
+            Assert(EthereumTokenDefinitionDecoded, decodedDefinition);
+            decoded.token = decodedDefinition;
         }
     });
 

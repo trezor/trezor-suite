@@ -1,13 +1,16 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/GetPublicKey.js
 
 import { AbstractMethod, MethodReturnType } from '../core/AbstractMethod';
-import { validateParams, validateCoinPath, getFirmwareRange } from './common/paramsValidator';
+import { validateCoinPath, getFirmwareRange } from './common/paramsValidator';
 import { validatePath } from '../utils/pathUtils';
 import { UI, createUiMessage } from '../events';
 import { getBitcoinNetwork } from '../data/coinInfo';
 import { getPublicKeyLabel } from '../utils/accountUtils';
 import type { BitcoinNetworkInfo } from '../types';
 import type { PROTO } from '../constants';
+import { Assert } from '@trezor/schema-utils';
+import { Bundle } from '../types';
+import { GetPublicKey as GetPublicKeySchema } from '../types/api/getPublicKey';
 
 type Params = PROTO.GetPublicKey & {
     coinInfo?: BitcoinNetworkInfo;
@@ -29,29 +32,9 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
             : this.payload;
 
         // validate bundle type
-        validateParams(payload, [{ name: 'bundle', type: 'array' }]);
+        Assert(Bundle(GetPublicKeySchema), payload);
 
         this.params = payload.bundle.map(batch => {
-            // validate incoming parameters for each batch
-            validateParams(batch, [
-                { name: 'path', required: true },
-                { name: 'coin', type: 'string' },
-                { name: 'crossChain', type: 'boolean' },
-                { name: 'showOnTrezor', type: 'boolean' },
-                { name: 'scriptType', type: ['string', 'number'] },
-                { name: 'ignoreXpubMagic', type: 'boolean' },
-                { name: 'ecdsaCurveName', type: 'boolean' },
-                { name: 'unlockPath', type: 'object' },
-                { name: 'suppressBackupWarning', type: 'boolean' },
-            ]);
-
-            if (batch.unlockPath) {
-                validateParams(batch.unlockPath, [
-                    { name: 'address_n', required: true, type: 'array' },
-                    { name: 'mac', required: true, type: 'string' },
-                ]);
-            }
-
             let coinInfo: BitcoinNetworkInfo | undefined;
             if (batch.coin) {
                 coinInfo = getBitcoinNetwork(batch.coin);

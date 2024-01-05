@@ -6,7 +6,7 @@
 import { trezorUtils } from '@fivebinaries/coin-selection';
 
 import { AbstractMethod } from '../../../core/AbstractMethod';
-import { validateParams, getFirmwareRange } from '../../common/paramsValidator';
+import { getFirmwareRange } from '../../common/paramsValidator';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { validatePath } from '../../../utils/pathUtils';
 import {
@@ -26,14 +26,17 @@ import {
 import { sendOutput, transformOutput } from '../cardanoOutputs';
 import type { OutputWithData } from '../cardanoOutputs';
 import { PROTO, ERRORS } from '../../../constants';
-import type {
-    CardanoAuxiliaryDataSupplement,
-    CardanoSignedTxData,
-    CardanoSignedTxWitness,
+import {
+    CardanoSignTransaction as CardanoSignTransactionSchema,
+    CardanoSignTransactionExtended,
+    type CardanoAuxiliaryDataSupplement,
+    type CardanoSignedTxData,
+    type CardanoSignedTxWitness,
 } from '../../../types/api/cardano';
 import { gatherWitnessPaths } from '../cardanoWitnesses';
 import type { AssetGroupWithTokens } from '../cardanoTokenBundle';
 import { tokenBundleToProto } from '../cardanoTokenBundle';
+import { Assert, Type } from '@trezor/schema-utils';
 
 // todo: remove when listed firmwares become mandatory for cardanoSignTransaction
 const CardanoSignTransactionFeatures = Object.freeze({
@@ -131,30 +134,7 @@ export default class CardanoSignTransaction extends AbstractMethod<
         }
 
         // validate incoming parameters
-        validateParams(payload, [
-            { name: 'signingMode', type: 'number', required: true },
-            { name: 'inputs', type: 'array', required: true },
-            { name: 'outputs', type: 'array', required: true, allowEmpty: true },
-            { name: 'fee', type: 'uint', required: true },
-            { name: 'ttl', type: 'uint' },
-            { name: 'certificates', type: 'array', allowEmpty: true },
-            { name: 'withdrawals', type: 'array', allowEmpty: true },
-            { name: 'mint', type: 'array', allowEmpty: true },
-            { name: 'validityIntervalStart', type: 'uint' },
-            { name: 'scriptDataHash', type: 'string' },
-            { name: 'collateralInputs', type: 'array', allowEmpty: true },
-            { name: 'requiredSigners', type: 'array', allowEmpty: true },
-            { name: 'totalCollateral', type: 'uint' },
-            { name: 'referenceInputs', type: 'array', allowEmpty: true },
-            { name: 'protocolMagic', type: 'number', required: true },
-            { name: 'networkId', type: 'number', required: true },
-            { name: 'additionalWitnessRequests', type: 'array', allowEmpty: true },
-            { name: 'derivationType', type: 'number' },
-            { name: 'includeNetworkId', type: 'boolean' },
-            { name: 'unsignedTx', type: 'object' },
-            { name: 'testnet', type: 'boolean' },
-            { name: 'chunkify', type: 'boolean' },
-        ]);
+        Assert(Type.Union([CardanoSignTransactionSchema, CardanoSignTransactionExtended]), payload);
 
         const inputsWithPath = payload.inputs.map(transformInput);
 
@@ -167,19 +147,12 @@ export default class CardanoSignTransaction extends AbstractMethod<
 
         let withdrawals: PROTO.CardanoTxWithdrawal[] = [];
         if (payload.withdrawals) {
-            withdrawals = payload.withdrawals.map(withdrawal => {
-                validateParams(withdrawal, [
-                    { name: 'amount', type: 'uint', required: true },
-                    { name: 'scriptHash', type: 'string' },
-                    { name: 'keyHash', type: 'string' },
-                ]);
-                return {
-                    path: withdrawal.path ? validatePath(withdrawal.path, 5) : undefined,
-                    amount: withdrawal.amount,
-                    script_hash: withdrawal.scriptHash,
-                    key_hash: withdrawal.keyHash,
-                };
-            });
+            withdrawals = payload.withdrawals.map(withdrawal => ({
+                path: withdrawal.path ? validatePath(withdrawal.path, 5) : undefined,
+                amount: withdrawal.amount,
+                script_hash: withdrawal.scriptHash,
+                key_hash: withdrawal.keyHash,
+            }));
         }
 
         let mint: AssetGroupWithTokens[] = [];
@@ -206,15 +179,15 @@ export default class CardanoSignTransaction extends AbstractMethod<
 
         let requiredSigners: PROTO.CardanoTxRequiredSigner[] = [];
         if (payload.requiredSigners) {
-            requiredSigners = payload.requiredSigners.map(requiredSigner => {
-                validateParams(requiredSigner, [{ name: 'keyHash', type: 'string' }]);
-                return {
-                    key_path: requiredSigner.keyPath
-                        ? validatePath(requiredSigner.keyPath, 3)
-                        : undefined,
-                    key_hash: requiredSigner.keyHash,
-                } as PROTO.CardanoTxRequiredSigner;
-            });
+            requiredSigners = payload.requiredSigners.map(
+                requiredSigner =>
+                    ({
+                        key_path: requiredSigner.keyPath
+                            ? validatePath(requiredSigner.keyPath, 3)
+                            : undefined,
+                        key_hash: requiredSigner.keyHash,
+                    }) as PROTO.CardanoTxRequiredSigner,
+            );
         }
 
         const collateralReturnWithData = payload.collateralReturn

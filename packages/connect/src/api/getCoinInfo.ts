@@ -1,10 +1,10 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/GetCoinInfo.js
 
 import { AbstractMethod } from '../core/AbstractMethod';
-import { validateParams } from './common/paramsValidator';
 import { ERRORS } from '../constants';
 import { getCoinInfo } from '../data/coinInfo';
-import type { CoinInfo } from '../types';
+import { CoinObj, CoinInfo } from '../types';
+import { Assert } from '@trezor/schema-utils';
 
 type Params = {
     coinInfo: CoinInfo;
@@ -18,7 +18,7 @@ export default class GetCoinInfo extends AbstractMethod<'getCoinInfo', Params> {
 
         const { payload } = this;
 
-        validateParams(payload, [{ name: 'coin', type: 'string', required: true }]);
+        Assert(CoinObj, payload);
 
         const coinInfo = getCoinInfo(payload.coin);
         if (!coinInfo) {

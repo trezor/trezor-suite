@@ -1,11 +1,13 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/TezosSignTransaction.js
 
 import { AbstractMethod } from '../../../core/AbstractMethod';
-import { validateParams, getFirmwareRange } from '../../common/paramsValidator';
+import { getFirmwareRange } from '../../common/paramsValidator';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { validatePath } from '../../../utils/pathUtils';
 import * as helper from '../tezosSignTx';
 import type { PROTO } from '../../../constants';
+import { Assert } from '@trezor/schema-utils';
+import { TezosSignTransaction as TezosSignTransactionSchema } from '../../../types/api/tezos';
 
 export default class TezosSignTransaction extends AbstractMethod<
     'tezosSignTransaction',
@@ -22,11 +24,7 @@ export default class TezosSignTransaction extends AbstractMethod<
         const { payload } = this;
 
         // validate incoming parameters
-        validateParams(payload, [
-            { name: 'path', required: true },
-            { name: 'branch', type: 'string', required: true },
-            { name: 'operation', required: true },
-        ]);
+        Assert(TezosSignTransactionSchema, payload);
 
         const path = validatePath(payload.path, 3);
         this.params = helper.createTx(path, payload.branch, payload.operation);

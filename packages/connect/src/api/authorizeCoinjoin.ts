@@ -1,5 +1,5 @@
 import { AbstractMethod } from '../core/AbstractMethod';
-import { validateParams, getFirmwareRange } from './common/paramsValidator';
+import { getFirmwareRange } from './common/paramsValidator';
 import { validatePath, getScriptType } from '../utils/pathUtils';
 import { getBitcoinNetwork } from '../data/coinInfo';
 import { PROTO } from '../constants';

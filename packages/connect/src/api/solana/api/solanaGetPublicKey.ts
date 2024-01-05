@@ -1,9 +1,11 @@
 import { PROTO } from '../../../constants';
 import { AbstractMethod, MethodReturnType } from '../../../core/AbstractMethod';
-import { validateParams, getFirmwareRange } from '../../common/paramsValidator';
+import { getFirmwareRange } from '../../common/paramsValidator';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { validatePath, fromHardened, getSerializedPath } from '../../../utils/pathUtils';
 import { UI, createUiMessage } from '../../../events';
+import { Assert } from '@trezor/schema-utils';
+import { Bundle, GetPublicKey as GetPublicKeySchema } from '../../../types';
 
 export default class SolanaGetPublicKey extends AbstractMethod<
     'solanaGetPublicKey',
@@ -27,15 +29,9 @@ export default class SolanaGetPublicKey extends AbstractMethod<
             : this.payload;
 
         // validate bundle type
-        validateParams(payload, [{ name: 'bundle', type: 'array' }]);
+        Assert(Bundle(GetPublicKeySchema), payload);
 
         this.params = payload.bundle.map(batch => {
-            // validate incoming parameters for each batch
-            validateParams(batch, [
-                { name: 'path', required: true },
-                { name: 'showOnTrezor', type: 'boolean' },
-            ]);
-
             const path = validatePath(batch.path, 2);
             return {
                 address_n: path,

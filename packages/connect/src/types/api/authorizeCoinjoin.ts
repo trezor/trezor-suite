@@ -1,17 +1,21 @@
-import type { PROTO } from '../../constants';
-import type { Params, Response, DerivationPath } from '../params';
+import type { Params, Response } from '../params';
 
-export interface AuthorizeCoinjoin {
-    path: DerivationPath;
-    coordinator: string;
-    maxRounds: number;
-    maxCoordinatorFeeRate: number;
-    maxFeePerKvbyte: number;
-    coin?: string;
-    scriptType?: PROTO.InternalInputScriptType;
-    amountUnit?: PROTO.AmountUnit;
-    preauthorized?: boolean;
-}
+import { Static, Type } from '@trezor/schema-utils';
+import { DerivationPath } from '../params';
+import { PROTO } from '../../constants';
+
+export type AuthorizeCoinjoin = Static<typeof AuthorizeCoinjoin>;
+export const AuthorizeCoinjoin = Type.Object({
+    path: DerivationPath,
+    coordinator: Type.String(),
+    maxRounds: Type.Number(),
+    maxCoordinatorFeeRate: Type.Number(),
+    maxFeePerKvbyte: Type.Number(),
+    coin: Type.Optional(Type.String()),
+    scriptType: Type.Optional(PROTO.InternalInputScriptType),
+    amountUnit: Type.Optional(PROTO.EnumAmountUnit),
+    preauthorized: Type.Optional(Type.Boolean()),
+});
 
 export declare function authorizeCoinjoin(
     params: Params<AuthorizeCoinjoin>,

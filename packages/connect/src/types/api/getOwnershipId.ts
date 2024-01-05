@@ -1,12 +1,14 @@
-import type { PROTO } from '../../constants';
-import type { Params, BundledParams, Response, DerivationPath } from '../params';
+import { Static, Type } from '@trezor/schema-utils';
+import { PROTO } from '../../constants';
+import { Params, BundledParams, Response, DerivationPath } from '../params';
 
-export interface GetOwnershipId {
-    path: DerivationPath;
-    coin?: string;
-    multisig?: PROTO.MultisigRedeemScriptType;
-    scriptType?: PROTO.InternalInputScriptType;
-}
+export type GetOwnershipId = Static<typeof GetOwnershipId>;
+export const GetOwnershipId = Type.Object({
+    path: DerivationPath,
+    coin: Type.Optional(Type.String()),
+    multisig: Type.Optional(PROTO.MultisigRedeemScriptType),
+    scriptType: Type.Optional(PROTO.InternalInputScriptType),
+});
 
 export interface OwnershipId extends PROTO.OwnershipId {
     path: number[];

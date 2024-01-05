@@ -2,8 +2,9 @@
 
 import { AbstractMethod } from '../core/AbstractMethod';
 import { UI, createUiMessage } from '../events';
-import { validateParams } from './common/paramsValidator';
-import type { PROTO } from '../constants';
+import { PROTO } from '../constants';
+import { Assert } from '@trezor/schema-utils';
+import { ApplySettings as ApplySettingsSchema } from '../types/api/applySettings';
 
 export default class ApplySettings extends AbstractMethod<'applySettings', PROTO.ApplySettings> {
     init() {
@@ -11,18 +12,7 @@ export default class ApplySettings extends AbstractMethod<'applySettings', PROTO
         this.useDeviceState = false;
         const { payload } = this;
 
-        validateParams(payload, [
-            { name: 'language', type: 'string' },
-            { name: 'label', type: 'string' },
-            { name: 'use_passphrase', type: 'boolean' },
-            { name: 'homescreen', type: 'string' },
-            { name: 'passphrase_source', type: 'number' },
-            { name: 'passphrase_always_on_device', type: 'boolean' },
-            { name: 'auto_lock_delay_ms', type: 'number' },
-            { name: 'display_rotation', type: 'number' },
-            { name: 'safety_checks', type: 'string' },
-            { name: 'experimental_features', type: 'boolean' },
-        ]);
+        Assert(ApplySettingsSchema, payload);
 
         this.params = {
             language: payload.language,
@@ -34,7 +24,6 @@ export default class ApplySettings extends AbstractMethod<'applySettings', PROTO
             display_rotation: payload.display_rotation,
             safety_checks: payload.safety_checks,
             experimental_features: payload.experimental_features,
-            // @ts-expect-error passphrase_source is a legacy param
             _passphrase_source: payload.passphrase_source,
         };
     }

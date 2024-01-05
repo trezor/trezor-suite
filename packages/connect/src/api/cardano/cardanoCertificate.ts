@@ -1,52 +1,24 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/cardanoCertificate.js
 
-import { validateParams } from '../common/paramsValidator';
 import { validatePath } from '../../utils/pathUtils';
 import { PROTO, ERRORS } from '../../constants';
-import type {
+import {
     CardanoCertificate,
     CardanoPoolParameters,
-    CardanoPoolMargin,
     CardanoPoolOwner,
     CardanoPoolRelay,
-    CardanoPoolMetadata,
 } from '../../types/api/cardano';
+import { Assert } from '@trezor/schema-utils';
 
 const ipv4AddressToHex = (ipv4Address: string) =>
     Buffer.from(ipv4Address.split('.').map(ipPart => parseInt(ipPart, 10))).toString('hex');
 
 const ipv6AddressToHex = (ipv6Address: string) => ipv6Address.split(':').join('');
 
-const validatePoolMargin = (margin: CardanoPoolMargin) => {
-    validateParams(margin, [
-        { name: 'numerator', type: 'string', required: true },
-        { name: 'denominator', type: 'string', required: true },
-    ]);
-};
-
-const validatePoolMetadata = (metadata: CardanoPoolMetadata) => {
-    validateParams(metadata, [
-        { name: 'url', type: 'string', required: true },
-        { name: 'hash', type: 'string', required: true },
-    ]);
-};
-
 const validatePoolRelay = (relay: CardanoPoolRelay) => {
-    validateParams(relay, [{ name: 'type', type: 'number', required: true }]);
+    Assert(CardanoPoolRelay, relay);
 
     if (relay.type === PROTO.CardanoPoolRelayType.SINGLE_HOST_IP) {
-        const paramsToValidate: Parameters<typeof validateParams>[1] = [
-            { name: 'port', type: 'number', required: true },
-        ];
-        if (relay.ipv4Address) {
-            paramsToValidate.push({ name: 'ipv4Address', type: 'string', required: false });
-        }
-        if (relay.ipv6Address) {
-            paramsToValidate.push({ name: 'ipv6Address', type: 'string', required: false });
-        }
-
-        validateParams(relay, paramsToValidate);
-
         if (!relay.ipv4Address && !relay.ipv6Address) {
             throw ERRORS.TypedError(
                 'Method_InvalidParameter',
@@ -54,23 +26,21 @@ const validatePoolRelay = (relay: CardanoPoolRelay) => {
             );
         }
     } else if (relay.type === PROTO.CardanoPoolRelayType.SINGLE_HOST_NAME) {
-        validateParams(relay, [
-            { name: 'hostName', type: 'string', required: true },
-            { name: 'port', type: 'number', required: true },
-        ]);
+        if (!relay.hostName) {
+            throw ERRORS.TypedError('Method_InvalidParameter', 'hostName must be supplied');
+        }
+        if (!relay.port) {
+            throw ERRORS.TypedError('Method_InvalidParameter', 'port must be supplied');
+        }
     } else if (relay.type === PROTO.CardanoPoolRelayType.MULTIPLE_HOST_NAME) {
-        validateParams(relay, [{ name: 'hostName', type: 'string', required: true }]);
+        if (!relay.hostName) {
+            throw ERRORS.TypedError('Method_InvalidParameter', 'hostName must be supplied');
+        }
     }
 };
 
 const validatePoolOwners = (owners: CardanoPoolOwner[]) => {
     owners.forEach(owner => {
-        if (owner.stakingKeyHash) {
-            validateParams(owner, [
-                { name: 'stakingKeyHash', type: 'string', required: !owner.stakingKeyPath },
-            ]);
-        }
-
         if (owner.stakingKeyPath) {
             validatePath(owner.stakingKeyPath, 5);
         }
@@ -93,25 +63,9 @@ const validatePoolOwners = (owners: CardanoPoolOwner[]) => {
 };
 
 const validatePoolParameters = (poolParameters: CardanoPoolParameters) => {
-    validateParams(poolParameters, [
-        { name: 'poolId', type: 'string', required: true },
-        { name: 'vrfKeyHash', type: 'string', required: true },
-        { name: 'pledge', type: 'string', required: true },
-        { name: 'cost', type: 'string', required: true },
-        { name: 'margin', type: 'object', required: true },
-        { name: 'rewardAccount', type: 'string', required: true },
-        { name: 'owners', type: 'array', required: true },
-        { name: 'relays', type: 'array', required: true, allowEmpty: true },
-        { name: 'metadata', type: 'object' },
-    ]);
-
-    validatePoolMargin(poolParameters.margin);
+    Assert(CardanoPoolParameters, poolParameters);
     validatePoolOwners(poolParameters.owners);
     poolParameters.relays.forEach(validatePoolRelay);
-
-    if (poolParameters.metadata) {
-        validatePoolMetadata(poolParameters.metadata);
-    }
 };
 
 export type CertificateWithPoolOwnersAndRelays = {
@@ -168,24 +122,25 @@ const transformPoolParameters = (
 export const transformCertificate = (
     certificate: CardanoCertificate,
 ): CertificateWithPoolOwnersAndRelays => {
-    const paramsToValidate: Parameters<typeof validateParams>[1] = [
-        { name: 'type', type: 'number', required: true },
-    ];
-
-    if (certificate.type !== PROTO.CardanoCertificateType.STAKE_POOL_REGISTRATION) {
-        paramsToValidate.push({ name: 'scriptHash', type: 'string' });
-        paramsToValidate.push({ name: 'keyHash', type: 'string' });
-    }
+    Assert(CardanoCertificate, certificate);
 
     if (certificate.type === PROTO.CardanoCertificateType.STAKE_DELEGATION) {
-        paramsToValidate.push({ name: 'pool', type: 'string', required: true });
+        if (!certificate.pool) {
+            throw ERRORS.TypedError(
+                'Method_InvalidParameter',
+                'pool must be supplied for STAKE_DELEGATION',
+            );
+        }
     }
 
     if (certificate.type === PROTO.CardanoCertificateType.STAKE_POOL_REGISTRATION) {
-        paramsToValidate.push({ name: 'poolParameters', type: 'object', required: true });
+        if (!certificate.poolParameters) {
+            throw ERRORS.TypedError(
+                'Method_InvalidParameter',
+                'poolParameters must be supplied for STAKE_POOL_REGISTRATION',
+            );
+        }
     }
-
-    validateParams(certificate, paramsToValidate);
 
     const { poolParameters, poolOwners, poolRelays } = transformPoolParameters(
         certificate.poolParameters,

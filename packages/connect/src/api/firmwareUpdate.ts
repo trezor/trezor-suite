@@ -11,9 +11,10 @@ import {
     uploadFirmware,
     calculateFirmwareHash,
 } from './firmware';
-import { validateParams } from './common/paramsValidator';
 import { getReleases } from '../data/firmwareInfo';
 import { IntermediaryVersion } from '../types';
+import { Assert } from '@trezor/schema-utils';
+import { FirmwareUpdate as FirmwareUpdateSchema } from '../types/api/firmwareUpdate';
 
 type Params = {
     binary?: ArrayBuffer;
@@ -34,29 +35,20 @@ export default class FirmwareUpdate extends AbstractMethod<'firmwareUpdate', Par
 
         const { payload } = this;
 
-        validateParams(payload, [
-            { name: 'version', type: 'array' },
-            { name: 'btcOnly', type: 'boolean' },
-            { name: 'baseUrl', type: 'string' },
-            { name: 'binary', type: 'array-buffer' },
-            { name: 'intermediaryVersion', type: 'number' },
-        ]);
+        Assert(FirmwareUpdateSchema, payload);
 
-        if ('version' in payload) {
+        if (payload.binary) {
+            this.params = {
+                ...this.params,
+                binary: payload.binary,
+            };
+        } else {
             this.params = {
                 // either receive version and btcOnly
                 version: payload.version,
                 btcOnly: payload.btcOnly,
                 baseUrl: payload.baseUrl || 'https://data.trezor.io',
                 intermediaryVersion: payload.intermediaryVersion,
-            };
-        }
-
-        if ('binary' in payload) {
-            // or binary
-            this.params = {
-                ...this.params,
-                binary: payload.binary,
             };
         }
     }

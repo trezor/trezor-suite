@@ -7,7 +7,9 @@ export function generate(code: string) {
     code = code.replace(/typeof undefined/g, 'undefined');
     code = code.replace(/keyof typeof/g, 'keyof');
     // Ignore types added at end of message.ts, these are too complex for the generator
-    code = code.substring(0, code.indexOf('export type MessageKey = keyof MessageType'));
+    if (code.indexOf('export type MessageKey = keyof MessageType') >= 0) {
+        code = code.substring(0, code.indexOf('export type MessageKey = keyof MessageType'));
+    }
     // Make generator aware of custom types
     const customTypesMapping = {
         ArrayBuffer: 'Type.ArrayBuffer()',
