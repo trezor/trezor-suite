@@ -1,7 +1,9 @@
 import { AbstractMethod } from '../core/AbstractMethod';
 import { PROTO } from '../constants';
 import { validatePath } from '../utils/pathUtils';
-import { getFirmwareRange, validateParams } from './common/paramsValidator';
+import { getFirmwareRange } from './common/paramsValidator';
+import { Assert } from '@trezor/schema-utils';
+import { UnlockPathParams } from '../types/api/unlockPath';
 
 export default class UnlockPath extends AbstractMethod<'unlockPath', PROTO.UnlockPath> {
     init() {
@@ -11,10 +13,7 @@ export default class UnlockPath extends AbstractMethod<'unlockPath', PROTO.Unloc
 
         const { payload } = this;
 
-        validateParams(payload, [
-            { name: 'path', required: true },
-            { name: 'mac', type: 'string' },
-        ]);
+        Assert(UnlockPathParams, payload);
         const path = validatePath(payload.path, 1);
 
         this.params = {

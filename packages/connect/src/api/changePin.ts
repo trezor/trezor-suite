@@ -1,8 +1,8 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/ChangePin.js
 
 import { AbstractMethod } from '../core/AbstractMethod';
-import { validateParams } from './common/paramsValidator';
-import type { PROTO } from '../constants';
+import { Assert } from '@trezor/schema-utils';
+import { PROTO } from '../constants';
 
 export default class ChangePin extends AbstractMethod<'changePin', PROTO.ChangePin> {
     init() {
@@ -10,7 +10,7 @@ export default class ChangePin extends AbstractMethod<'changePin', PROTO.ChangeP
         this.useDeviceState = false;
 
         const { payload } = this;
-        validateParams(payload, [{ name: 'remove', type: 'boolean' }]);
+        Assert(PROTO.ChangePin, payload);
 
         this.params = {
             remove: payload.remove,

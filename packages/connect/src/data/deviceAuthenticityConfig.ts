@@ -1,18 +1,40 @@
+import { Static, Type } from '@trezor/schema-utils';
 import { PROTO } from '../constants';
 
-type CertPubKeys = {
-    rootPubKeys: string[];
-    caPubKeys: string[];
-};
+type CertPubKeys = Static<typeof CertPubKeys>;
+const CertPubKeys = Type.Object({
+    rootPubKeys: Type.Array(Type.String()),
+    caPubKeys: Type.Array(Type.String()),
+});
 
 // NOTE: only T2B1 model is required in config, other models should be optional and undefined
-type ModelPubKeys = Record<PROTO.DeviceModelInternal.T2B1, CertPubKeys & { debug?: CertPubKeys }> &
-    Partial<Record<Exclude<PROTO.DeviceModelInternal, 'T2B1'>, undefined>>;
+type ModelPubKeys = Static<typeof ModelPubKeys>;
+const ModelPubKeys = Type.Intersect([
+    Type.Record(
+        Type.Literal(PROTO.DeviceModelInternal.T2B1),
+        Type.Intersect([
+            CertPubKeys,
+            Type.Object({
+                debug: Type.Optional(CertPubKeys),
+            }),
+        ]),
+    ),
+    Type.Partial(
+        Type.Record(
+            Type.Exclude(Type.KeyOfEnum(PROTO.DeviceModelInternal), Type.Literal('T2B1')),
+            Type.Undefined(),
+        ),
+    ),
+]);
 
-export interface DeviceAuthenticityConfig extends ModelPubKeys {
-    version: number;
-    timestamp: string;
-}
+export type DeviceAuthenticityConfig = Static<typeof DeviceAuthenticityConfig>;
+export const DeviceAuthenticityConfig = Type.Intersect([
+    ModelPubKeys,
+    Type.Object({
+        version: Type.Number(),
+        timestamp: Type.String(),
+    }),
+]);
 
 /**
  * How to update this config or check Sentry "Device authenticity invalid!" error? Please read this internal description:

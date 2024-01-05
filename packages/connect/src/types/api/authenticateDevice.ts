@@ -1,10 +1,12 @@
-import type { DeviceAuthenticityConfig } from '../../data/deviceAuthenticityConfig';
+import { Static, Type } from '@trezor/schema-utils';
+import { DeviceAuthenticityConfig } from '../../data/deviceAuthenticityConfig';
 import type { Params, Response } from '../params';
 
-export interface AuthenticateDeviceParams {
-    config?: DeviceAuthenticityConfig;
-    allowDebugKeys?: boolean;
-}
+export type AuthenticateDeviceParams = Static<typeof AuthenticateDeviceParams>;
+export const AuthenticateDeviceParams = Type.Object({
+    config: Type.Optional(DeviceAuthenticityConfig),
+    allowDebugKeys: Type.Optional(Type.Boolean()),
+});
 
 export type AuthenticateDeviceResult =
     | {

@@ -1,9 +1,9 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/ApplyFlags.js
 
 import { AbstractMethod } from '../core/AbstractMethod';
-import { validateParams } from './common/paramsValidator';
 import { UI, createUiMessage } from '../events';
-import type { PROTO } from '../constants';
+import { PROTO } from '../constants';
+import { Assert } from '@trezor/schema-utils';
 
 export default class ApplyFlags extends AbstractMethod<'applyFlags', PROTO.ApplyFlags> {
     init() {
@@ -12,7 +12,7 @@ export default class ApplyFlags extends AbstractMethod<'applyFlags', PROTO.Apply
 
         const { payload } = this;
 
-        validateParams(payload, [{ name: 'flags', type: 'number', required: true }]);
+        Assert(PROTO.ApplyFlags, payload);
 
         this.params = {
             flags: payload.flags,

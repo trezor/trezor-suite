@@ -1,26 +1,34 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/cardanoInputs.js
 
-import { validateParams } from '../common/paramsValidator';
 import { validatePath } from '../../utils/pathUtils';
-import type { PROTO } from '../../constants';
+import { PROTO } from '../../constants';
+import { Assert, Type, Static } from '@trezor/schema-utils';
+import { DerivationPath } from '../../exports';
 
 export type Path = number[];
-
-export type InputWithPath = {
-    input: PROTO.CardanoTxInput;
-    path?: Path;
-};
+export const Path = Type.Array(Type.Number());
 
 export type CollateralInputWithPath = {
     collateralInput: PROTO.CardanoTxCollateralInput;
     path?: Path;
 };
 
-export const transformInput = (input: any): InputWithPath => {
-    validateParams(input, [
-        { name: 'prev_hash', type: 'string', required: true },
-        { name: 'prev_index', type: 'number', required: true },
-    ]);
+export type InputWithPath = Static<typeof InputWithPath>;
+export const InputWithPath = Type.Object({
+    input: PROTO.CardanoTxInput,
+    path: Type.Optional(Path),
+});
+
+export type InputWithPathParam = Static<typeof InputWithPath>;
+export const InputWithPathParam = Type.Composite([
+    PROTO.CardanoTxInput,
+    Type.Object({
+        path: Type.Optional(DerivationPath),
+    }),
+]);
+
+export const transformInput = (input: unknown): InputWithPath => {
+    Assert(InputWithPathParam, input);
     return {
         input: {
             prev_hash: input.prev_hash,
@@ -30,11 +38,8 @@ export const transformInput = (input: any): InputWithPath => {
     };
 };
 
-export const transformCollateralInput = (collateralInput: any): CollateralInputWithPath => {
-    validateParams(collateralInput, [
-        { name: 'prev_hash', type: 'string', required: true },
-        { name: 'prev_index', type: 'number', required: true },
-    ]);
+export const transformCollateralInput = (collateralInput: unknown): CollateralInputWithPath => {
+    Assert(InputWithPathParam, collateralInput);
     return {
         collateralInput: {
             prev_hash: collateralInput.prev_hash,
@@ -44,11 +49,8 @@ export const transformCollateralInput = (collateralInput: any): CollateralInputW
     };
 };
 
-export const transformReferenceInput = (referenceInput: any): PROTO.CardanoTxReferenceInput => {
-    validateParams(referenceInput, [
-        { name: 'prev_hash', type: 'string', required: true },
-        { name: 'prev_index', type: 'number', required: true },
-    ]);
+export const transformReferenceInput = (referenceInput: unknown): PROTO.CardanoTxReferenceInput => {
+    Assert(PROTO.CardanoTxInput, referenceInput);
     return {
         prev_hash: referenceInput.prev_hash,
         prev_index: referenceInput.prev_index,

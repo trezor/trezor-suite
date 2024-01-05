@@ -1,26 +1,31 @@
-import type { DerivationPath } from '../../params';
+import { DerivationPath } from '../../params';
+import { Type, Static } from '@trezor/schema-utils';
 
-export interface RipplePayment {
-    amount: string;
-    destination: string;
-    destinationTag?: number;
-}
+export type RipplePayment = Static<typeof RipplePayment>;
+export const RipplePayment = Type.Object({
+    amount: Type.String(),
+    destination: Type.String(),
+    destinationTag: Type.Optional(Type.Number()),
+});
 
-export interface RippleTransaction {
-    fee: string;
-    flags?: number;
-    sequence: number;
-    maxLedgerVersion?: number; // Proto: "last_ledger_sequence"
-    payment: RipplePayment;
-}
+export type RippleTransaction = Static<typeof RippleTransaction>;
+export const RippleTransaction = Type.Object({
+    fee: Type.String(),
+    flags: Type.Optional(Type.Number()),
+    sequence: Type.Number(),
+    maxLedgerVersion: Type.Optional(Type.Number()), // Proto: "last_ledger_sequence"
+    payment: RipplePayment,
+});
 
-export interface RippleSignTransaction {
-    path: DerivationPath;
-    transaction: RippleTransaction;
-    chunkify?: boolean;
-}
+export type RippleSignTransaction = Static<typeof RippleSignTransaction>;
+export const RippleSignTransaction = Type.Object({
+    path: DerivationPath,
+    transaction: RippleTransaction,
+    chunkify: Type.Optional(Type.Boolean()),
+});
 
-export interface RippleSignedTx {
-    serializedTx: string;
-    signature: string;
-}
+export type RippleSignedTx = Static<typeof RippleSignedTx>;
+export const RippleSignedTx = Type.Object({
+    serializedTx: Type.String(),
+    signature: Type.String(),
+});

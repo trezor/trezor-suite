@@ -1,15 +1,14 @@
 import type { Params, Response } from '../params';
-import type { CardanoSignTransaction, CardanoSignedTxData } from './cardano';
+import type {
+    CardanoSignTransaction,
+    CardanoSignTransactionExtended,
+    CardanoSignedTxData,
+} from './cardano';
 
 export declare function cardanoSignTransaction(
-    params: Params<CardanoSignTransaction>,
+    params: Params<CardanoSignTransaction & { unsignedTx?: undefined; testnet?: undefined }>, // Explicitly distinguish type
 ): Response<CardanoSignedTxData>;
 
 export declare function cardanoSignTransaction(
-    params: Params<
-        CardanoSignTransaction & {
-            unsignedTx: { body: string; hash: string };
-            testnet: boolean;
-        }
-    >,
+    params: Params<CardanoSignTransactionExtended>,
 ): Response<CardanoSignedTxData & { serializedTx: string }>;

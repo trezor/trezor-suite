@@ -2240,7 +2240,14 @@ export const EnumStellarAssetType = Type.Enum(StellarAssetType);
 
 export type StellarAsset = Static<typeof StellarAsset>;
 export const StellarAsset = Type.Object({
-    type: EnumStellarAssetType,
+    type: Type.Union([
+        Type.Literal(0),
+        Type.Literal(1),
+        Type.Literal(2),
+        Type.Literal('NATIVE'),
+        Type.Literal('ALPHANUM4'),
+        Type.Literal('ALPHANUM12'),
+    ]),
     code: Type.Optional(Type.String()),
     issuer: Type.Optional(Type.String()),
 });

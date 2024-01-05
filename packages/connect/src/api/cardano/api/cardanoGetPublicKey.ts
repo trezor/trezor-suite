@@ -2,10 +2,13 @@
 
 import { PROTO } from '../../../constants';
 import { AbstractMethod, MethodReturnType } from '../../../core/AbstractMethod';
-import { validateParams, getFirmwareRange } from '../../common/paramsValidator';
+import { getFirmwareRange } from '../../common/paramsValidator';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { validatePath, fromHardened, getSerializedPath } from '../../../utils/pathUtils';
 import { UI, createUiMessage } from '../../../events';
+import { Assert } from '@trezor/schema-utils';
+import { Bundle } from '../../../types';
+import { CardanoGetPublicKey as CardanoGetPublicKeySchema } from '../../../types/api/cardano';
 
 interface Params extends PROTO.CardanoGetPublicKey {
     suppressBackupWarning?: boolean;
@@ -30,17 +33,9 @@ export default class CardanoGetPublicKey extends AbstractMethod<'cardanoGetPubli
             : this.payload;
 
         // validate bundle type
-        validateParams(payload, [{ name: 'bundle', type: 'array' }]);
+        Assert(Bundle(CardanoGetPublicKeySchema), payload);
 
         this.params = payload.bundle.map(batch => {
-            // validate incoming parameters for each batch
-            validateParams(batch, [
-                { name: 'path', required: true },
-                { name: 'derivationType', type: 'number' },
-                { name: 'showOnTrezor', type: 'boolean' },
-                { name: 'suppressBackupWarning', type: 'boolean' },
-            ]);
-
             const path = validatePath(batch.path, 3);
             return {
                 address_n: path,

@@ -8498,10 +8498,8 @@ __metadata:
   resolution: "@trezor/connect-explorer@workspace:packages/connect-explorer"
   dependencies:
     "@trezor/components": "workspace:*"
-    "@trezor/connect": "workspace:*"
     "@trezor/connect-web": "workspace:*"
     "@trezor/protobuf": "workspace:*"
-    "@trezor/schema-utils": "workspace:*"
     "@types/markdown-it": "npm:^13.0.5"
     "@types/markdown-it-link-attributes": "npm:^3.0.3"
     "@types/react-router": "npm:^5.1.20"

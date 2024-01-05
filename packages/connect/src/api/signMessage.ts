@@ -1,12 +1,14 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/SignMessage.js
 
 import { AbstractMethod } from '../core/AbstractMethod';
-import { validateParams, validateCoinPath, getFirmwareRange } from './common/paramsValidator';
+import { validateCoinPath, getFirmwareRange } from './common/paramsValidator';
 import { validatePath, getLabel, getScriptType } from '../utils/pathUtils';
 import { getBitcoinNetwork } from '../data/coinInfo';
 import { messageToHex } from '../utils/formatUtils';
 import type { BitcoinNetworkInfo } from '../types';
 import type { PROTO } from '../constants';
+import { SignMessage as SignMessageSchema } from '../types';
+import { Assert } from '@trezor/schema-utils';
 
 export default class SignMessage extends AbstractMethod<'signMessage', PROTO.SignMessage> {
     init() {
@@ -15,13 +17,7 @@ export default class SignMessage extends AbstractMethod<'signMessage', PROTO.Sig
         const { payload } = this;
 
         // validate incoming parameters
-        validateParams(payload, [
-            { name: 'path', required: true },
-            { name: 'coin', type: 'string' },
-            { name: 'message', type: 'string', required: true },
-            { name: 'hex', type: 'boolean' },
-            { name: 'no_script_type', type: 'boolean' },
-        ]);
+        Assert(SignMessageSchema, payload);
 
         const path = validatePath(payload.path);
         let coinInfo: BitcoinNetworkInfo | undefined;

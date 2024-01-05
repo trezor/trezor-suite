@@ -2,8 +2,10 @@
 
 import { AbstractMethod } from '../core/AbstractMethod';
 import { UI, createUiMessage } from '../events';
-import { validateParams, getFirmwareRange } from './common/paramsValidator';
+import { getFirmwareRange } from './common/paramsValidator';
 import type { PROTO } from '../constants';
+import { Assert } from '@trezor/schema-utils';
+import { ResetDevice as ResetDeviceSchema } from '../types/api/resetDevice';
 
 export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.ResetDevice> {
     confirmed?: boolean;
@@ -16,18 +18,7 @@ export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.Res
 
         const { payload } = this;
         // validate bundle type
-        validateParams(payload, [
-            { name: 'display_random', type: 'boolean' },
-            { name: 'strength', type: 'number' },
-            { name: 'passphrase_protection', type: 'boolean' },
-            { name: 'pin_protection', type: 'boolean' },
-            { name: 'language', type: 'string' },
-            { name: 'label', type: 'string' },
-            { name: 'u2f_counter', type: 'number' },
-            { name: 'skip_backup', type: 'boolean' },
-            { name: 'no_backup', type: 'boolean' },
-            { name: 'backup_type', type: 'number' },
-        ]);
+        Assert(ResetDeviceSchema, payload);
 
         this.params = {
             display_random: payload.display_random,

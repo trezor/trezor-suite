@@ -1,9 +1,10 @@
 import { AbstractMethod } from '../core/AbstractMethod';
 import { UI } from '../events';
-import { validateParams, getFirmwareRange } from './common/paramsValidator';
+import { getFirmwareRange } from './common/paramsValidator';
 import { deviceAuthenticityConfig } from '../data/deviceAuthenticityConfig';
 import { AuthenticateDeviceParams } from '../types/api/authenticateDevice';
 import { getRandomChallenge, verifyAuthenticityProof } from './firmware/verifyAuthenticityProof';
+import { Assert } from '@trezor/schema-utils';
 
 export default class AuthenticateDevice extends AbstractMethod<
     'authenticateDevice',
@@ -18,17 +19,7 @@ export default class AuthenticateDevice extends AbstractMethod<
 
         const { payload } = this;
 
-        validateParams(payload, [
-            { name: 'config', type: 'object' },
-            { name: 'allowDebugKeys', type: 'boolean' },
-        ]);
-        if (payload.config) {
-            validateParams(payload.config, [{ name: 'timestamp', type: 'string', required: true }]);
-            validateParams(payload.config.T2B1, [
-                { name: 'rootPubKeys', type: 'array', required: true },
-                { name: 'caPubKeys', type: 'array', required: true },
-            ]);
-        }
+        Assert(AuthenticateDeviceParams, payload);
 
         this.params = {
             config: payload.config,

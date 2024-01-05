@@ -2,17 +2,19 @@ import type { AccountAddresses } from '@trezor/blockchain-link';
 import type { Transaction as BlockbookTransaction } from '@trezor/blockchain-link-types/lib/blockbook';
 import type { PROTO } from '../../../constants';
 import type { AccountTransaction } from '../../account';
-import type { DerivationPath, ProtoWithDerivationPath } from '../../params';
+import { DerivationPath, ProtoWithDerivationPath } from '../../params';
+import { Static, Type } from '@trezor/schema-utils';
 
 // signMessage
 
-export interface SignMessage {
-    path: DerivationPath;
-    coin: string;
-    message: string;
-    hex?: boolean;
-    no_script_type?: boolean;
-}
+export type SignMessage = Static<typeof SignMessage>;
+export const SignMessage = Type.Object({
+    path: DerivationPath,
+    coin: Type.Optional(Type.String()),
+    message: Type.String(),
+    hex: Type.Optional(Type.Boolean()),
+    no_script_type: Type.Optional(Type.Boolean()),
+});
 
 // signTransaction
 
@@ -100,10 +102,11 @@ export type SignedTransaction = {
 
 // verifyMessage
 
-export interface VerifyMessage {
-    address: string;
-    signature: string;
-    message: string;
-    coin: string;
-    hex?: boolean;
-}
+export type VerifyMessage = Static<typeof VerifyMessage>;
+export const VerifyMessage = Type.Object({
+    address: Type.String(),
+    signature: Type.String(),
+    message: Type.String(),
+    coin: Type.String(),
+    hex: Type.Optional(Type.Boolean()),
+});

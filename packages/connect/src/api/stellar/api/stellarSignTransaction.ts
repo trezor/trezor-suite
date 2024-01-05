@@ -1,12 +1,16 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/StellarSignTransaction.js
 
 import { AbstractMethod } from '../../../core/AbstractMethod';
-import { validateParams, getFirmwareRange } from '../../common/paramsValidator';
+import { getFirmwareRange } from '../../common/paramsValidator';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { validatePath } from '../../../utils/pathUtils';
 import * as helper from '../stellarSignTx';
 import { ERRORS } from '../../../constants';
-import { StellarTransaction } from '../../../types/api/stellar';
+import {
+    StellarTransaction,
+    StellarSignTransaction as StellarSignTransactionSchema,
+} from '../../../types/api/stellar';
+import { Assert } from '@trezor/schema-utils';
 
 type Params = {
     path: number[];
@@ -33,11 +37,7 @@ export default class StellarSignTransaction extends AbstractMethod<
 
         const { payload } = this;
         // validate incoming parameters
-        validateParams(payload, [
-            { name: 'path', required: true },
-            { name: 'networkPassphrase', type: 'string', required: true },
-            { name: 'transaction', required: true },
-        ]);
+        Assert(StellarSignTransactionSchema, payload);
 
         const path = validatePath(payload.path, 3);
         // incoming data should be in stellar-sdk format

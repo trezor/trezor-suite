@@ -1,29 +1,41 @@
-export interface FeeInfo {
-    blockTime: number;
-    minFee: number;
-    maxFee: number;
-    dustLimit: number;
-}
+import { Type, Static } from '@trezor/schema-utils';
 
-export interface FeeLevel {
-    label: 'high' | 'normal' | 'economy' | 'low' | 'custom';
-    feePerUnit: string;
-    blocks: number;
-    feeLimit?: string; // eth gas limit
-    feePerTx?: string; // fee for BlockchainEstimateFeeParams.request.specific
-}
+export type FeeInfo = Static<typeof FeeInfo>;
+export const FeeInfo = Type.Object({
+    blockTime: Type.Number(),
+    minFee: Type.Number(),
+    maxFee: Type.Number(),
+    dustLimit: Type.Number(),
+});
 
-export type SelectFeeLevel =
-    | {
-          name: string;
-          fee: '0';
-          feePerByte?: undefined;
-          disabled: true;
-      }
-    | {
-          name: string;
-          fee: string;
-          feePerByte: string;
-          minutes: number;
-          total: string;
-      };
+export type FeeLevel = Static<typeof FeeLevel>;
+export const FeeLevel = Type.Object({
+    label: Type.Union([
+        Type.Literal('high'),
+        Type.Literal('normal'),
+        Type.Literal('economy'),
+        Type.Literal('low'),
+        Type.Literal('custom'),
+    ]),
+    feePerUnit: Type.String(),
+    blocks: Type.Number(),
+    feeLimit: Type.Optional(Type.String()),
+    feePerTx: Type.Optional(Type.String()),
+});
+
+export type SelectFeeLevel = Static<typeof SelectFeeLevel>;
+export const SelectFeeLevel = Type.Union([
+    Type.Object({
+        name: Type.String(),
+        fee: Type.Literal('0'),
+        feePerByte: Type.Optional(Type.Undefined()),
+        disabled: Type.Literal(true),
+    }),
+    Type.Object({
+        name: Type.String(),
+        fee: Type.String(),
+        feePerByte: Type.String(),
+        minutes: Type.Number(),
+        total: Type.String(),
+    }),
+]);

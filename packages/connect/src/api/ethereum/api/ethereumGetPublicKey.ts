@@ -1,13 +1,15 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/EthereumGetPublicKey.js
 
 import { AbstractMethod, MethodReturnType } from '../../../core/AbstractMethod';
-import { validateParams, getFirmwareRange } from '../../common/paramsValidator';
+import { getFirmwareRange } from '../../common/paramsValidator';
 import { validatePath } from '../../../utils/pathUtils';
 import { getNetworkLabel } from '../../../utils/ethereumUtils';
 import { getEthereumNetwork, getUniqueNetworks } from '../../../data/coinInfo';
 import { UI, createUiMessage } from '../../../events';
 import type { PROTO } from '../../../constants';
 import type { EthereumNetworkInfo } from '../../../types';
+import { Assert } from '@trezor/schema-utils';
+import { Bundle, GetPublicKey as GetPublicKeySchema } from '../../../types';
 
 type Params = PROTO.EthereumGetPublicKey & {
     network?: EthereumNetworkInfo;
@@ -27,15 +29,9 @@ export default class EthereumGetPublicKey extends AbstractMethod<'ethereumGetPub
             : this.payload;
 
         // validate bundle type
-        validateParams(payload, [{ name: 'bundle', type: 'array' }]);
+        Assert(Bundle(GetPublicKeySchema), payload);
 
         this.params = payload.bundle.map(batch => {
-            // validate incoming parameters for each batch
-            validateParams(batch, [
-                { name: 'path', required: true },
-                { name: 'showOnTrezor', type: 'boolean' },
-            ]);
-
             const path = validatePath(batch.path, 3);
             const network = getEthereumNetwork(path);
             this.firmwareRange = getFirmwareRange(this.name, network, this.firmwareRange);

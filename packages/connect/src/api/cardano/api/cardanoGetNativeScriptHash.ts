@@ -2,10 +2,14 @@
 
 import { PROTO } from '../../../constants';
 import { AbstractMethod } from '../../../core/AbstractMethod';
-import { getFirmwareRange, validateParams } from '../../common/paramsValidator';
+import { getFirmwareRange } from '../../common/paramsValidator';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { validatePath } from '../../../utils/pathUtils';
-import type { CardanoNativeScript } from '../../../types/api/cardano';
+import {
+    CardanoGetNativeScriptHash as CardanoGetNativeScriptHashSchema,
+    CardanoNativeScript,
+} from '../../../types/api/cardano';
+import { Assert } from '@trezor/schema-utils';
 
 export default class CardanoGetNativeScriptHash extends AbstractMethod<
     'cardanoGetNativeScriptHash',
@@ -21,11 +25,7 @@ export default class CardanoGetNativeScriptHash extends AbstractMethod<
 
         const { payload } = this;
 
-        validateParams(payload, [
-            { name: 'script', type: 'object', required: true },
-            { name: 'displayFormat', type: 'number', required: true },
-            { name: 'derivationType', type: 'number' },
-        ]);
+        Assert(CardanoGetNativeScriptHashSchema, payload);
 
         this.validateScript(payload.script);
 
@@ -44,15 +44,6 @@ export default class CardanoGetNativeScriptHash extends AbstractMethod<
     }
 
     validateScript(script: CardanoNativeScript) {
-        validateParams(script, [
-            { name: 'type', type: 'number', required: true },
-            { name: 'scripts', type: 'array', allowEmpty: true },
-            { name: 'keyHash', type: 'string' },
-            { name: 'requiredSignaturesCount', type: 'number' },
-            { name: 'invalidBefore', type: 'uint' },
-            { name: 'invalidHereafter', type: 'uint' },
-        ]);
-
         if (script.keyPath) {
             validatePath(script.keyPath, 3);
         }

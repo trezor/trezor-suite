@@ -3,12 +3,12 @@
 /* eslint-disable no-restricted-syntax */
 
 import { AbstractMethod } from '../../../core/AbstractMethod';
-import { validateParams, getFirmwareRange } from '../../common/paramsValidator';
+import { getFirmwareRange } from '../../common/paramsValidator';
 import { getSlip44ByPath, validatePath } from '../../../utils/pathUtils';
 import { getEthereumNetwork } from '../../../data/coinInfo';
 import { getNetworkLabel } from '../../../utils/ethereumUtils';
 import { PROTO, ERRORS } from '../../../constants';
-import type {
+import {
     EthereumSignTypedDataTypes,
     EthereumSignTypedData as EthereumSignTypedDataParams,
     EthereumSignTypedHash as EthereumSignTypedHashParams,
@@ -16,9 +16,9 @@ import type {
 import { getFieldType, parseArrayType, encodeData } from '../ethereumSignTypedData';
 import { messageToHex } from '../../../utils/formatUtils';
 import { getEthereumDefinitions } from '../ethereumDefinitions';
-import type { EthereumNetworkInfo } from '../../../types';
-import type { EthereumDefinitions } from '@trezor/protobuf/lib/messages';
-import { DeviceModelInternal } from '../../../types';
+import { EthereumNetworkInfo, DeviceModelInternal } from '../../../types';
+import { EthereumDefinitions } from '@trezor/protobuf/lib/messages-schema';
+import { Assert, Type } from '@trezor/schema-utils';
 
 type Params = (
     | Omit<EthereumSignTypedDataParams<EthereumSignTypedDataTypes>, 'path'>
@@ -28,6 +28,18 @@ type Params = (
     network?: EthereumNetworkInfo;
     definitions?: EthereumDefinitions;
 };
+const Params = Type.Intersect([
+    Type.Union([
+        Type.Omit(EthereumSignTypedDataParams, Type.Literal('path')),
+        Type.Omit(EthereumSignTypedHashParams, Type.Literal('path')),
+    ]),
+    Type.Object({
+        address_n: Type.Array(Type.Number()),
+        network: Type.Optional(EthereumNetworkInfo),
+        definitions: Type.Optional(EthereumDefinitions),
+    }),
+]);
+
 export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignTypedData', Params> {
     init() {
         this.requiredPermissions = ['read', 'write'];
@@ -35,15 +47,7 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
         const { payload } = this;
 
         // validate incoming parameters
-        validateParams(payload, [
-            { name: 'path', required: true },
-            // T2T1
-            { name: 'metamask_v4_compat', type: 'boolean', required: true },
-            { name: 'data', type: 'object', required: true },
-            // T1B1 (optional params)
-            { name: 'domain_separator_hash', type: 'string' },
-            { name: 'message_hash', type: 'string' },
-        ]);
+        Assert(Type.Union([EthereumSignTypedDataParams, EthereumSignTypedHashParams]), payload);
 
         const path = validatePath(payload.path, 3);
         const network = getEthereumNetwork(path);
@@ -116,10 +120,13 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
         const cmd = this.device.getCommands();
         const { address_n, definitions } = this.params;
         if (this.device.features.internal_model === DeviceModelInternal.T1B1) {
-            validateParams(this.params, [
-                { name: 'domain_separator_hash', type: 'string', required: true },
-                { name: 'message_hash', type: 'string' },
-            ]);
+            Assert(
+                Type.Object({
+                    domain_separator_hash: Type.String(),
+                    message_hash: Type.Optional(Type.String()),
+                }),
+                this.params,
+            );
 
             const { domain_separator_hash, message_hash } = this.params;
 
@@ -129,7 +136,7 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
                 'EthereumTypedDataSignature',
                 {
                     address_n,
-                    domain_separator_hash: domain_separator_hash as string, // TODO: https://github.com/trezor/trezor-suite/issues/5297
+                    domain_separator_hash,
                     message_hash,
                     encoded_network: definitions?.encoded_network,
                 },

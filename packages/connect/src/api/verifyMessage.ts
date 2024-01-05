@@ -1,11 +1,13 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/VerifyMessage.js
 
 import { AbstractMethod } from '../core/AbstractMethod';
-import { validateParams, getFirmwareRange } from './common/paramsValidator';
+import { getFirmwareRange } from './common/paramsValidator';
 import { getBitcoinNetwork } from '../data/coinInfo';
 import { getLabel } from '../utils/pathUtils';
 import { messageToHex } from '../utils/formatUtils';
 import { PROTO, ERRORS } from '../constants';
+import { VerifyMessage as VerifyMessageSchema } from '../types';
+import { Assert } from '@trezor/schema-utils';
 
 export default class VerifyMessage extends AbstractMethod<'verifyMessage', PROTO.VerifyMessage> {
     init() {
@@ -14,13 +16,7 @@ export default class VerifyMessage extends AbstractMethod<'verifyMessage', PROTO
         const { payload } = this;
 
         // validate incoming parameters for each batch
-        validateParams(payload, [
-            { name: 'address', type: 'string', required: true },
-            { name: 'signature', type: 'string', required: true },
-            { name: 'message', type: 'string', required: true },
-            { name: 'coin', type: 'string', required: true },
-            { name: 'hex', type: 'boolean' },
-        ]);
+        Assert(VerifyMessageSchema, payload);
 
         const coinInfo = getBitcoinNetwork(payload.coin);
         if (!coinInfo) {

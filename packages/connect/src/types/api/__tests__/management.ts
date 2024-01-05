@@ -55,9 +55,9 @@ export const management = async (api: TrezorConnect) => {
         fwAuto.payload.hash.toLowerCase();
     }
 
-    // @ts-expect-error: cannot use both
     api.firmwareUpdate({
         binary: new ArrayBuffer(0),
+        // @ts-expect-error: cannot use both
         version: [2, 2, 0],
     });
 

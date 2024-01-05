@@ -1,30 +1,39 @@
-import type { PublicKey } from '../../params';
+import { PublicKey } from '../../params';
+import { Type, Static } from '@trezor/schema-utils';
 
 // solanaGetPublicKey
 
-export interface SolanaPublicKey extends PublicKey {
-    publicKey: string;
-}
+export type SolanaPublicKey = Static<typeof SolanaPublicKey>;
+export const SolanaPublicKey = Type.Intersect([
+    PublicKey,
+    Type.Object({
+        publicKey: Type.String(),
+    }),
+]);
 
 // solanaSignTransaction
 
-export interface SolanaTxTokenAccountInfo {
-    baseAddress: string;
-    tokenProgram: string;
-    tokenMint: string;
-    tokenAccount: string;
-}
+export type SolanaTxTokenAccountInfo = Static<typeof SolanaTxTokenAccountInfo>;
+export const SolanaTxTokenAccountInfo = Type.Object({
+    baseAddress: Type.String(),
+    tokenProgram: Type.String(),
+    tokenMint: Type.String(),
+    tokenAccount: Type.String(),
+});
 
-export interface SolanaTxAdditionalInfo {
-    tokenAccountsInfos?: SolanaTxTokenAccountInfo[];
-}
+export type SolanaTxAdditionalInfo = Static<typeof SolanaTxAdditionalInfo>;
+export const SolanaTxAdditionalInfo = Type.Object({
+    tokenAccountsInfos: Type.Optional(Type.Array(SolanaTxTokenAccountInfo)),
+});
 
-export interface SolanaSignTransaction {
-    path: string | number[];
-    serializedTx: string;
-    additionalInfo?: SolanaTxAdditionalInfo;
-}
+export type SolanaSignTransaction = Static<typeof SolanaSignTransaction>;
+export const SolanaSignTransaction = Type.Object({
+    path: Type.Union([Type.String(), Type.Array(Type.Number())]),
+    serializedTx: Type.String(),
+    additionalInfo: Type.Optional(SolanaTxAdditionalInfo),
+});
 
-export interface SolanaSignedTransaction {
-    signature: string;
-}
+export type SolanaSignedTransaction = Static<typeof SolanaSignedTransaction>;
+export const SolanaSignedTransaction = Type.Object({
+    signature: Type.String(),
+});

@@ -1,9 +1,12 @@
 import { AbstractMethod, MethodReturnType } from '../core/AbstractMethod';
-import { validateParams, getFirmwareRange } from './common/paramsValidator';
+import { getFirmwareRange } from './common/paramsValidator';
 import { validatePath, getScriptType, getSerializedPath } from '../utils/pathUtils';
 import { getBitcoinNetwork } from '../data/coinInfo';
 import { PROTO } from '../constants';
 import { UI, createUiMessage } from '../events';
+import { Assert } from '@trezor/schema-utils';
+import { Bundle } from '../exports';
+import { GetOwnershipProof as GetOwnershipProofSchema } from '../types/api/getOwnershipProof';
 
 export default class GetOwnershipProof extends AbstractMethod<
     'getOwnershipProof',
@@ -22,21 +25,9 @@ export default class GetOwnershipProof extends AbstractMethod<
             : this.payload;
 
         // validate bundle type
-        validateParams(payload, [{ name: 'bundle', type: 'array' }]);
+        Assert(Bundle(GetOwnershipProofSchema), payload);
 
         this.params = payload.bundle.map(batch => {
-            // validate incoming parameters for each batch
-            validateParams(batch, [
-                { name: 'path', required: true },
-                { name: 'coin', type: 'string' },
-                { name: 'multisig', type: 'object' },
-                { name: 'scriptType', type: 'string' },
-                { name: 'userConfirmation', type: 'boolean' },
-                { name: 'ownershipIds', type: 'array' },
-                { name: 'commitmentData', type: 'string' },
-                { name: 'preauthorized', type: 'boolean' },
-            ]);
-
             const address_n = validatePath(batch.path, 1);
             const coinInfo = getBitcoinNetwork(batch.coin || address_n);
             const script_type = batch.scriptType || getScriptType(address_n);

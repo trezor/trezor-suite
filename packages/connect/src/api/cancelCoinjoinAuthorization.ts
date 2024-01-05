@@ -1,6 +1,8 @@
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getFirmwareRange } from './common/paramsValidator';
 import { PROTO } from '../constants';
+import { Assert } from '@trezor/schema-utils';
+import { CancelCoinjoinAuthorization as CancelCoinjoinAuthorizationSchema } from '../types/api/cancelCoinjoinAuthorization';
 
 export default class CancelCoinjoinAuthorization extends AbstractMethod<
     'cancelCoinjoinAuthorization',
@@ -8,6 +10,8 @@ export default class CancelCoinjoinAuthorization extends AbstractMethod<
 > {
     init() {
         const { payload } = this;
+
+        Assert(CancelCoinjoinAuthorizationSchema, payload);
 
         this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
         this.preauthorized =

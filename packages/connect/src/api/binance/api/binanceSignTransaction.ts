@@ -1,10 +1,12 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/BinanceSignTransaction.js
 
 import { AbstractMethod } from '../../../core/AbstractMethod';
-import { validateParams, getFirmwareRange } from '../../common/paramsValidator';
+import { getFirmwareRange } from '../../common/paramsValidator';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { validatePath } from '../../../utils/pathUtils';
 import * as helper from '../binanceSignTx';
+import { BinanceSignTransaction as BinanceSignTransactionSchema } from '../../../types/api/binance';
+import { Assert } from '@trezor/schema-utils';
 
 import type { BinancePreparedTransaction } from '../../../types/api/binance';
 
@@ -24,11 +26,7 @@ export default class BinanceSignTransaction extends AbstractMethod<
 
         const { payload } = this;
         // validate incoming parameters
-        validateParams(payload, [
-            { name: 'path', type: 'string', required: true },
-            { name: 'transaction', required: true },
-            { name: 'chunkify', type: 'boolean' },
-        ]);
+        Assert(BinanceSignTransactionSchema, payload);
 
         const path = validatePath(payload.path, 3);
         const transaction = helper.validate(payload.transaction);
@@ -36,7 +34,7 @@ export default class BinanceSignTransaction extends AbstractMethod<
         this.params = {
             path,
             transaction,
-            chunkify: typeof payload.chunkify === 'boolean' ? payload.chunkify : false,
+            chunkify: payload.chunkify ?? false,
         };
     }
 

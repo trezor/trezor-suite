@@ -1,32 +1,19 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/cardanoAddressParameters.js
 
-import { validateParams } from '../common/paramsValidator';
 import { validatePath } from '../../utils/pathUtils';
 import { PROTO, ERRORS } from '../../constants';
 import type { Device } from '../../device/Device';
-import type { CardanoAddressParameters } from '../../types/api/cardano';
+import { CardanoAddressParameters } from '../../types/api/cardano';
+import { Assert } from '@trezor/schema-utils';
 
 export const validateAddressParameters = (addressParameters: CardanoAddressParameters) => {
-    validateParams(addressParameters, [
-        { name: 'addressType', type: 'number', required: true },
-        { name: 'stakingKeyHash', type: 'string' },
-        { name: 'paymentScriptHash', type: 'string' },
-        { name: 'stakingScriptHash', type: 'string' },
-    ]);
+    Assert(CardanoAddressParameters, addressParameters);
 
     if (addressParameters.path) {
         validatePath(addressParameters.path);
     }
     if (addressParameters.stakingPath) {
         validatePath(addressParameters.stakingPath);
-    }
-
-    if (addressParameters.certificatePointer) {
-        validateParams(addressParameters.certificatePointer, [
-            { name: 'blockIndex', type: 'number', required: true },
-            { name: 'txIndex', type: 'number', required: true },
-            { name: 'certificateIndex', type: 'number', required: true },
-        ]);
     }
 };
 

@@ -1,7 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/EthereumGetAddress.js
 
 import { AbstractMethod, MethodReturnType } from '../../../core/AbstractMethod';
-import { validateParams, getFirmwareRange } from '../../common/paramsValidator';
+import { getFirmwareRange } from '../../common/paramsValidator';
 import { validatePath, getSerializedPath, getSlip44ByPath } from '../../../utils/pathUtils';
 import { getNetworkLabel } from '../../../utils/ethereumUtils';
 import { getEthereumNetwork, getUniqueNetworks } from '../../../data/coinInfo';
@@ -14,6 +14,9 @@ import {
     decodeEthereumDefinition,
     ethereumNetworkInfoFromDefinition,
 } from '../ethereumDefinitions';
+import { Assert } from '@trezor/schema-utils';
+import { Bundle } from '../../../types';
+import { GetAddress as GetAddressSchema } from '../../../types/api/getAddress';
 
 type Params = PROTO.EthereumGetAddress & {
     address?: string;
@@ -36,20 +39,9 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
             : this.payload;
 
         // validate bundle type
-        validateParams(payload, [
-            { name: 'bundle', type: 'array' },
-            { name: 'useEventListener', type: 'boolean' },
-        ]);
+        Assert(Bundle(GetAddressSchema), payload);
 
         this.params = payload.bundle.map(batch => {
-            // validate incoming parameters for each batch
-            validateParams(batch, [
-                { name: 'path', required: true },
-                { name: 'address', type: 'string' },
-                { name: 'showOnTrezor', type: 'boolean' },
-                { name: 'chunkify', type: 'boolean' },
-            ]);
-
             const path = validatePath(batch.path, 3);
             const network = getEthereumNetwork(path);
             this.firmwareRange = getFirmwareRange(this.name, network, this.firmwareRange);

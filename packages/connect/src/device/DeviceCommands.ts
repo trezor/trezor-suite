@@ -22,7 +22,7 @@ import { initLog } from '../utils/debug';
 import type { Device } from './Device';
 import type { CoinInfo, BitcoinNetworkInfo, Network } from '../types';
 import type { HDNodeResponse } from '../types/api/getPublicKey';
-// import { Assert } from '@trezor/schema-utils';
+import { Assert } from '@trezor/schema-utils';
 
 type MessageType = Messages.MessageType;
 type MessageKey = keyof MessageType;
@@ -422,7 +422,7 @@ export class DeviceCommands {
         }
         // Assert message type
         // msg is allowed to be undefined for some calls, in that case the schema is an empty object
-        // Assert(Messages.MessageType.properties[type], msg ?? {});
+        Assert(Messages.MessageType.properties[type], msg ?? {});
         const response = await this._commonCall(type, msg);
         try {
             assertType(response, resType);

@@ -2,8 +2,8 @@
 
 import * as bs58check from 'bs58check';
 import { PROTO, ERRORS } from '../../constants';
-import type { TezosOperation } from '../../types/api/tezos';
-import { validateParams } from '../common/paramsValidator';
+import { TezosOperation } from '../../types/api/tezos';
+import { Assert } from '@trezor/schema-utils';
 
 const PREFIX = {
     B: new Uint8Array([1, 52]),
@@ -80,20 +80,11 @@ export const createTx = (
         chunkify: typeof chunkify === 'boolean' ? chunkify : false,
     };
 
+    Assert(TezosOperation, operation);
+
     // reveal public key
     if (operation.reveal) {
         const { reveal } = operation;
-
-        // validate reveal parameters
-        validateParams(reveal, [
-            { name: 'source', type: 'string', required: true },
-            { name: 'public_key', type: 'string', required: true },
-            { name: 'fee', type: 'uint', required: true },
-            { name: 'counter', type: 'number', required: true },
-            { name: 'gas_limit', type: 'number', required: true },
-            { name: 'storage_limit', type: 'number', required: true },
-        ]);
-
         message = {
             ...message,
             reveal: {
@@ -110,18 +101,6 @@ export const createTx = (
     // transaction
     if (operation.transaction) {
         const { transaction } = operation;
-
-        // validate transaction parameters
-        validateParams(transaction, [
-            { name: 'source', type: 'string', required: true },
-            { name: 'destination', type: 'string', required: true },
-            { name: 'amount', type: 'uint', required: true },
-            { name: 'counter', type: 'number', required: true },
-            { name: 'fee', type: 'uint', required: true },
-            { name: 'gas_limit', type: 'number', required: true },
-            { name: 'storage_limit', type: 'number', required: true },
-        ]);
-
         message = {
             ...message,
             transaction: {
@@ -151,13 +130,6 @@ export const createTx = (
 
         if (transaction.parameters_manager) {
             const { parameters_manager } = transaction;
-
-            validateParams(parameters_manager, [
-                { name: 'set_delegate', type: 'string', required: false },
-                { name: 'cancel_delegate', type: 'boolean', required: false },
-                { name: 'transfer', type: 'object', required: false },
-            ]);
-
             if (parameters_manager.set_delegate) {
                 message = {
                     ...message,
@@ -185,12 +157,6 @@ export const createTx = (
 
             if (parameters_manager.transfer) {
                 const { transfer } = parameters_manager;
-
-                validateParams(transfer, [
-                    { name: 'amount', type: 'uint', required: true },
-                    { name: 'destination', type: 'string', required: true },
-                ]);
-
                 message = {
                     ...message,
                     transaction: {
@@ -213,18 +179,6 @@ export const createTx = (
     // origination
     if (operation.origination) {
         const { origination } = operation;
-
-        // validate origination parameters
-        validateParams(origination, [
-            { name: 'source', type: 'string', required: true },
-            { name: 'balance', type: 'number', required: true },
-            { name: 'fee', type: 'uint', required: true },
-            { name: 'counter', type: 'number', required: true },
-            { name: 'gas_limit', type: 'number', required: true },
-            { name: 'storage_limit', type: 'number', required: true },
-            { name: 'script', type: 'string', required: true },
-        ]);
-
         message = {
             ...message,
             origination: {
@@ -252,17 +206,6 @@ export const createTx = (
     // delegation
     if (operation.delegation) {
         const { delegation } = operation;
-
-        // validate delegation parameters
-        validateParams(delegation, [
-            { name: 'source', type: 'string', required: true },
-            { name: 'delegate', type: 'string', required: true },
-            { name: 'fee', type: 'uint', required: true },
-            { name: 'counter', type: 'number', required: true },
-            { name: 'gas_limit', type: 'number', required: true },
-            { name: 'storage_limit', type: 'number', required: true },
-        ]);
-
         message = {
             ...message,
             delegation: {

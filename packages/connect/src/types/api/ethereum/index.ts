@@ -1,70 +1,86 @@
-import type { DerivationPath } from '../../params';
+import { Type, Static } from '@trezor/schema-utils';
+import { DerivationPath } from '../../params';
 
 // ethereumSignMessage
 
-export interface EthereumSignMessage {
-    path: DerivationPath;
-    message: string;
-    hex?: boolean;
-}
+export type EthereumSignMessage = Static<typeof EthereumSignMessage>;
+export const EthereumSignMessage = Type.Object({
+    path: DerivationPath,
+    message: Type.String(),
+    hex: Type.Optional(Type.Boolean()),
+});
 
 // ethereumSignTransaction
 
-export interface EthereumTransaction {
-    to: string;
-    value: string;
-    gasPrice: string;
-    gasLimit: string;
-    maxFeePerGas?: typeof undefined;
-    maxPriorityFeePerGas?: typeof undefined;
-    nonce: string;
-    data?: string;
-    chainId: number;
-    txType?: number;
-}
+export type EthereumTransaction = Static<typeof EthereumTransaction>;
+export const EthereumTransaction = Type.Object({
+    to: Type.String(),
+    value: Type.String(),
+    gasPrice: Type.String(),
+    gasLimit: Type.String(),
+    maxFeePerGas: Type.Optional(Type.Undefined()),
+    maxPriorityFeePerGas: Type.Optional(Type.Undefined()),
+    nonce: Type.String(),
+    data: Type.Optional(Type.String()),
+    chainId: Type.Number(),
+    txType: Type.Optional(Type.Number()),
+});
 
-export interface EthereumAccessList {
-    address: string;
-    storageKeys: string[];
-}
+export type EthereumAccessList = Static<typeof EthereumAccessList>;
+export const EthereumAccessList = Type.Object({
+    address: Type.String(),
+    storageKeys: Type.Array(Type.String()),
+});
 
-export interface EthereumTransactionEIP1559 {
-    to: string;
-    value: string;
-    gasLimit: string;
-    gasPrice?: typeof undefined;
-    nonce: string;
-    data?: string;
-    chainId: number;
-    maxFeePerGas: string;
-    maxPriorityFeePerGas: string;
-    accessList?: EthereumAccessList[];
-}
+export type EthereumTransactionEIP1559 = Static<typeof EthereumTransactionEIP1559>;
+export const EthereumTransactionEIP1559 = Type.Object({
+    to: Type.String(),
+    value: Type.String(),
+    gasLimit: Type.String(),
+    gasPrice: Type.Optional(Type.Undefined()),
+    nonce: Type.String(),
+    data: Type.Optional(Type.String()),
+    chainId: Type.Number(),
+    maxFeePerGas: Type.String(),
+    maxPriorityFeePerGas: Type.String(),
+    accessList: Type.Optional(Type.Array(EthereumAccessList)),
+});
 
-export interface EthereumSignTransaction {
-    path: DerivationPath;
-    transaction: EthereumTransaction | EthereumTransactionEIP1559;
-    chunkify?: boolean;
-}
+export type EthereumSignTransaction = Static<typeof EthereumSignTransaction>;
+export const EthereumSignTransaction = Type.Object({
+    path: DerivationPath,
+    transaction: Type.Union([EthereumTransaction, EthereumTransactionEIP1559]),
+    chunkify: Type.Optional(Type.Boolean()),
+});
 
-export interface EthereumSignedTx {
-    v: string;
-    r: string;
-    s: string;
-    serializedTx: string;
-}
+export type EthereumSignedTx = Static<typeof EthereumSignedTx>;
+export const EthereumSignedTx = Type.Object({
+    v: Type.String(),
+    r: Type.String(),
+    s: Type.String(),
+    serializedTx: Type.String(),
+});
 
 // ethereumSignTypedData
 
-interface EthereumSignTypedDataTypeProperty {
-    name: string;
-    type: string;
-}
+type EthereumSignTypedDataTypeProperty = Static<typeof EthereumSignTypedDataTypeProperty>;
+const EthereumSignTypedDataTypeProperty = Type.Object({
+    name: Type.String(),
+    type: Type.String(),
+});
 
 export interface EthereumSignTypedDataTypes {
     EIP712Domain: EthereumSignTypedDataTypeProperty[];
     [additionalProperties: string]: EthereumSignTypedDataTypeProperty[];
 }
+export const EthereumSignTypedDataTypes = Type.Object(
+    {
+        EIP712Domain: Type.Array(EthereumSignTypedDataTypeProperty),
+    },
+    {
+        additionalProperties: Type.Array(EthereumSignTypedDataTypeProperty),
+    },
+);
 
 export interface EthereumSignTypedDataMessage<T extends EthereumSignTypedDataTypes> {
     types: T;
@@ -74,10 +90,27 @@ export interface EthereumSignTypedDataMessage<T extends EthereumSignTypedDataTyp
         version?: string;
         chainId?: number | bigint;
         verifyingContract?: string;
-        salt?: ArrayBuffer;
+        salt?: ArrayBuffer | string;
     };
     message: { [fieldName: string]: any };
 }
+export const EthereumSignTypedDataMessage = Type.Object({
+    types: EthereumSignTypedDataTypes,
+    primaryType: Type.String(),
+    domain: Type.Object({
+        name: Type.Optional(Type.String()),
+        version: Type.Optional(Type.String()),
+        chainId: Type.Optional(Type.Union([Type.Number(), Type.BigInt()])),
+        verifyingContract: Type.Optional(Type.String()),
+        salt: Type.Optional(Type.Union([Type.ArrayBuffer(), Type.String()])),
+    }),
+    message: Type.Object(
+        {},
+        {
+            additionalProperties: Type.Any(),
+        },
+    ),
+});
 
 export interface EthereumSignTypedData<T extends EthereumSignTypedDataTypes> {
     path: DerivationPath;
@@ -86,6 +119,13 @@ export interface EthereumSignTypedData<T extends EthereumSignTypedDataTypes> {
     domain_separator_hash?: undefined;
     message_hash?: undefined;
 }
+export const EthereumSignTypedData = Type.Object({
+    path: DerivationPath,
+    data: EthereumSignTypedDataMessage,
+    metamask_v4_compat: Type.Boolean(),
+    domain_separator_hash: Type.Optional(Type.Undefined()),
+    message_hash: Type.Optional(Type.Undefined()),
+});
 
 /**
  * T1B1 cannot currently calculate EIP-712 hashes by itself,
@@ -101,12 +141,20 @@ export interface EthereumSignTypedHash<T extends EthereumSignTypedDataTypes> {
     /** Not required for domain-only signing, when EIP712Domain is the `primaryType` */
     message_hash?: string;
 }
+export const EthereumSignTypedHash = Type.Object({
+    path: DerivationPath,
+    data: EthereumSignTypedDataMessage,
+    metamask_v4_compat: Type.Boolean(),
+    domain_separator_hash: Type.String(),
+    message_hash: Type.Optional(Type.String()),
+});
 
 // ethereumVerifyMessage
 
-export interface EthereumVerifyMessage {
-    address: string;
-    message: string;
-    hex?: boolean;
-    signature: string;
-}
+export type EthereumVerifyMessage = Static<typeof EthereumVerifyMessage>;
+export const EthereumVerifyMessage = Type.Object({
+    address: Type.String(),
+    message: Type.String(),
+    hex: Type.Optional(Type.Boolean()),
+    signature: Type.String(),
+});

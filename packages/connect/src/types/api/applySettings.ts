@@ -1,4 +1,13 @@
-import type { PROTO } from '../../constants';
+import { Type, Static } from '@trezor/schema-utils';
+import { PROTO } from '../../constants';
 import type { Params, Response } from '../params';
 
-export declare function applySettings(params: Params<PROTO.ApplySettings>): Response<PROTO.Success>;
+export type ApplySettings = Static<typeof ApplySettings>;
+export const ApplySettings = Type.Composite([
+    PROTO.ApplySettings,
+    Type.Object({
+        passphrase_source: Type.Optional(Type.Number()),
+    }),
+]);
+
+export declare function applySettings(params: Params<ApplySettings>): Response<PROTO.Success>;

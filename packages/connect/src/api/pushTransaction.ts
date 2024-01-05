@@ -1,11 +1,12 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/PushTransaction.js
 
 import { AbstractMethod } from '../core/AbstractMethod';
-import { validateParams } from './common/paramsValidator';
 import { getCoinInfo } from '../data/coinInfo';
 import { ERRORS } from '../constants';
 import { isBackendSupported, initBlockchain } from '../backend/BlockchainLink';
 import type { CoinInfo } from '../types';
+import { Assert } from '@trezor/schema-utils';
+import { PushTransaction as PushTransactionSchema } from '../types/api/pushTransaction';
 
 type Params = {
     tx: string;
@@ -21,10 +22,7 @@ export default class PushTransaction extends AbstractMethod<'pushTransaction', P
         const { payload } = this;
 
         // validate incoming parameters
-        validateParams(payload, [
-            { name: 'tx', type: 'string', required: true },
-            { name: 'coin', type: 'string', required: true },
-        ]);
+        Assert(PushTransactionSchema, payload);
 
         const coinInfo = getCoinInfo(payload.coin);
         if (!coinInfo) {

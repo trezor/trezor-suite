@@ -1,9 +1,11 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/EthereumVerifyMessage.js
 
 import { AbstractMethod } from '../../../core/AbstractMethod';
-import { validateParams, getFirmwareRange } from '../../common/paramsValidator';
+import { getFirmwareRange } from '../../common/paramsValidator';
 import { stripHexPrefix, messageToHex } from '../../../utils/formatUtils';
 import type { PROTO } from '../../../constants';
+import { Assert } from '@trezor/schema-utils';
+import { EthereumVerifyMessage as EthereumVerifyMessageSchema } from '../../../types';
 
 export default class EthereumVerifyMessage extends AbstractMethod<
     'ethereumVerifyMessage',
@@ -16,12 +18,7 @@ export default class EthereumVerifyMessage extends AbstractMethod<
         const { payload } = this;
 
         // validate incoming parameters
-        validateParams(payload, [
-            { name: 'address', type: 'string', required: true },
-            { name: 'signature', type: 'string', required: true },
-            { name: 'message', type: 'string', required: true },
-            { name: 'hex', type: 'boolean' },
-        ]);
+        Assert(EthereumVerifyMessageSchema, payload);
 
         const messageHex = payload.hex
             ? messageToHex(payload.message)

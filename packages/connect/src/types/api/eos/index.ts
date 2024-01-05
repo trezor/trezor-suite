@@ -1,143 +1,201 @@
-import type { PROTO } from '../../../constants';
-import type { DerivationPath } from '../../params';
+import { PROTO } from '../../../constants';
+import { DerivationPath } from '../../params';
+import { Type, Static } from '@trezor/schema-utils';
 
 // eosGetPublicKey
 
-export interface EosPublicKey {
-    wifPublicKey: string;
-    rawPublicKey: string;
-    path: number[];
-    serializedPath: string;
-}
-
+export type EosPublicKey = Static<typeof EosPublicKey>;
+export const EosPublicKey = Type.Object({
+    wifPublicKey: Type.String(),
+    rawPublicKey: Type.String(),
+    path: Type.Array(Type.Number()),
+    serializedPath: Type.String(),
+});
 // eosSignTransaction
 
-export interface EosTxHeader {
-    expiration: PROTO.UintType;
-    refBlockNum: number;
-    refBlockPrefix: number;
-    maxNetUsageWords: number;
-    maxCpuUsageMs: number;
-    delaySec: number;
-}
+export type EosTxHeader = Static<typeof EosTxHeader>;
+export const EosTxHeader = Type.Object({
+    expiration: Type.Union([Type.Uint(), Type.String()]), // In tests expiration is a ISO date string
+    refBlockNum: Type.Number(),
+    refBlockPrefix: Type.Number(),
+    maxNetUsageWords: Type.Number(),
+    maxCpuUsageMs: Type.Number(),
+    delaySec: Type.Number(),
+});
 
-export interface EosAuthorization {
-    threshold: number;
-    keys: PROTO.EosAuthorizationKey[];
-    accounts: {
-        permission: PROTO.EosPermissionLevel;
-        weight: number;
-    }[];
-    waits: PROTO.EosAuthorizationWait[];
-}
+export type EosAuthorization = Static<typeof EosAuthorization>;
+export const EosAuthorization = Type.Object({
+    threshold: Type.Number(),
+    keys: Type.Array(PROTO.EosAuthorizationKey),
+    accounts: Type.Array(
+        Type.Object({
+            permission: PROTO.EosPermissionLevel,
+            weight: Type.Number(),
+        }),
+    ),
+    waits: Type.Array(PROTO.EosAuthorizationWait),
+});
 
-export interface EosTxActionCommon {
-    account: string;
-    authorization: PROTO.EosPermissionLevel[];
-}
+export type EosTxActionCommon = Static<typeof EosTxActionCommon>;
+export const EosTxActionCommon = Type.Object({
+    account: Type.String(),
+    authorization: Type.Array(PROTO.EosPermissionLevel),
+});
 
-export type EosTxAction =
-    | (EosTxActionCommon & {
-          name: 'transfer';
-          data: {
-              from: string;
-              to: string;
-              quantity: string;
-              memo: string;
-          };
-      })
-    | (EosTxActionCommon & {
-          name: 'delegatebw';
-          data: {
-              from: string;
-              receiver: string;
-              stake_net_quantity: string;
-              stake_cpu_quantity: string;
-              transfer: boolean;
-          };
-      })
-    | (EosTxActionCommon & {
-          name: 'undelegatebw';
-          data: {
-              from: string;
-              receiver: string;
-              unstake_net_quantity: string;
-              unstake_cpu_quantity: string;
-          };
-      })
-    | (EosTxActionCommon & {
-          name: 'buyram';
-          data: {
-              payer: string;
-              receiver: string;
-              quant: string;
-          };
-      })
-    | (EosTxActionCommon & {
-          name: 'buyrambytes';
-          data: PROTO.EosActionBuyRamBytes;
-      })
-    | (EosTxActionCommon & {
-          name: 'sellram';
-          data: PROTO.EosActionSellRam;
-      })
-    | (EosTxActionCommon & {
-          name: 'voteproducer';
-          data: {
-              voter: string;
-              proxy: string;
-              producers: string[];
-          };
-      })
-    | (EosTxActionCommon & {
-          name: 'refund';
-          data: PROTO.EosActionRefund;
-      })
-    | (EosTxActionCommon & {
-          name: 'updateauth';
-          data: {
-              account: string;
-              permission: string;
-              parent: string;
-              auth: EosAuthorization;
-          };
-      })
-    | (EosTxActionCommon & {
-          name: 'deleteauth';
-          data: PROTO.EosActionDeleteAuth;
-      })
-    | (EosTxActionCommon & {
-          name: 'linkauth';
-          data: PROTO.EosActionLinkAuth;
-      })
-    | (EosTxActionCommon & {
-          name: 'unlinkauth';
-          data: PROTO.EosActionUnlinkAuth;
-      })
-    | (EosTxActionCommon & {
-          name: 'newaccount';
-          data: {
-              creator: string;
-              name: string;
-              owner: EosAuthorization;
-              active: EosAuthorization;
-          };
-      });
-
+export type EosTxAction = Static<typeof EosTxAction>;
+export const EosTxAction = Type.Union([
+    Type.Intersect([
+        EosTxActionCommon,
+        Type.Object({
+            name: Type.Literal('transfer'),
+            data: Type.Object({
+                from: Type.String(),
+                to: Type.String(),
+                quantity: Type.String(),
+                memo: Type.String(),
+            }),
+        }),
+    ]),
+    Type.Intersect([
+        EosTxActionCommon,
+        Type.Object({
+            name: Type.Literal('delegatebw'),
+            data: Type.Object({
+                from: Type.String(),
+                receiver: Type.String(),
+                stake_net_quantity: Type.String(),
+                stake_cpu_quantity: Type.String(),
+                transfer: Type.Boolean(),
+            }),
+        }),
+    ]),
+    Type.Intersect([
+        EosTxActionCommon,
+        Type.Object({
+            name: Type.Literal('undelegatebw'),
+            data: Type.Object({
+                from: Type.String(),
+                receiver: Type.String(),
+                unstake_net_quantity: Type.String(),
+                unstake_cpu_quantity: Type.String(),
+            }),
+        }),
+    ]),
+    Type.Intersect([
+        EosTxActionCommon,
+        Type.Object({
+            name: Type.Literal('buyram'),
+            data: Type.Object({
+                payer: Type.String(),
+                receiver: Type.String(),
+                quant: Type.String(),
+            }),
+        }),
+    ]),
+    Type.Intersect([
+        EosTxActionCommon,
+        Type.Object({
+            name: Type.Literal('buyrambytes'),
+            data: PROTO.EosActionBuyRamBytes,
+        }),
+    ]),
+    Type.Intersect([
+        EosTxActionCommon,
+        Type.Object({
+            name: Type.Literal('sellram'),
+            data: PROTO.EosActionSellRam,
+        }),
+    ]),
+    Type.Intersect([
+        EosTxActionCommon,
+        Type.Object({
+            name: Type.Literal('voteproducer'),
+            data: Type.Object({
+                voter: Type.String(),
+                proxy: Type.String(),
+                producers: Type.Array(Type.String()),
+            }),
+        }),
+    ]),
+    Type.Intersect([
+        EosTxActionCommon,
+        Type.Object({
+            name: Type.Literal('refund'),
+            data: PROTO.EosActionRefund,
+        }),
+    ]),
+    Type.Intersect([
+        EosTxActionCommon,
+        Type.Object({
+            name: Type.Literal('updateauth'),
+            data: Type.Object({
+                account: Type.String(),
+                permission: Type.String(),
+                parent: Type.String(),
+                auth: EosAuthorization,
+            }),
+        }),
+    ]),
+    Type.Intersect([
+        EosTxActionCommon,
+        Type.Object({
+            name: Type.Literal('deleteauth'),
+            data: PROTO.EosActionDeleteAuth,
+        }),
+    ]),
+    Type.Intersect([
+        EosTxActionCommon,
+        Type.Object({
+            name: Type.Literal('linkauth'),
+            data: PROTO.EosActionLinkAuth,
+        }),
+    ]),
+    Type.Intersect([
+        EosTxActionCommon,
+        Type.Object({
+            name: Type.Literal('unlinkauth'),
+            data: PROTO.EosActionUnlinkAuth,
+        }),
+    ]),
+    Type.Intersect([
+        EosTxActionCommon,
+        Type.Object({
+            name: Type.Literal('newaccount'),
+            data: Type.Object({
+                creator: Type.String(),
+                name: Type.String(),
+                owner: EosAuthorization,
+                active: EosAuthorization,
+            }),
+        }),
+    ]),
+]);
 // | EosTxActionCommon & {
 //     name: string;
 //     data: string;
 // };
 
-export interface EosSDKTransaction {
-    chainId: string;
-    header: EosTxHeader;
-    actions: Array<EosTxAction | (EosTxActionCommon & { name: string; data: string })>;
-    // actions: EosTxAction[];
-}
+export type EosSDKTransaction = Static<typeof EosSDKTransaction>;
+export const EosSDKTransaction = Type.Object({
+    chainId: Type.String(),
+    header: EosTxHeader,
+    actions: Type.Array(
+        Type.Union([
+            EosTxAction,
+            Type.Intersect([
+                EosTxActionCommon,
+                Type.Object({
+                    name: Type.String(),
+                    data: Type.String(),
+                }),
+            ]),
+        ]),
+    ),
+});
 
-export interface EosSignTransaction {
-    path: DerivationPath;
-    transaction: EosSDKTransaction;
-    chunkify?: boolean;
-}
+export type EosSignTransaction = Static<typeof EosSignTransaction>;
+export const EosSignTransaction = Type.Object({
+    path: DerivationPath,
+    transaction: EosSDKTransaction,
+    chunkify: Type.Optional(Type.Boolean()),
+});

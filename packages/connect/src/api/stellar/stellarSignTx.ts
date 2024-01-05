@@ -1,13 +1,13 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/stellarSignTx.js
 
 import { PROTO, ERRORS } from '../../constants';
-import { validateParams } from '../common/paramsValidator';
 import type { TypedCall } from '../../device/DeviceCommands';
-import type {
+import {
     StellarTransaction,
     StellarOperation,
     StellarOperationMessage,
 } from '../../types/api/stellar';
+import { Assert } from '@trezor/schema-utils';
 
 const processTxRequest = async (
     typedCall: TypedCall,
@@ -59,12 +59,10 @@ const transformSignMessage = (tx: StellarTransaction) => {
 
 // transform incoming parameters to protobuf messages format
 const transformOperation = (op: StellarOperation): StellarOperationMessage | undefined => {
+    Assert(StellarOperation, op);
+
     switch (op.type) {
         case 'createAccount':
-            validateParams(op, [
-                { name: 'destination', type: 'string', required: true },
-                { name: 'startingBalance', type: 'uint', required: true },
-            ]);
             return {
                 type: 'StellarCreateAccountOp',
                 source_account: op.source,
@@ -73,10 +71,6 @@ const transformOperation = (op: StellarOperation): StellarOperationMessage | und
             };
 
         case 'payment':
-            validateParams(op, [
-                { name: 'destination', type: 'string', required: true },
-                { name: 'amount', type: 'uint', required: true },
-            ]);
             return {
                 type: 'StellarPaymentOp',
                 source_account: op.source,
@@ -86,7 +80,6 @@ const transformOperation = (op: StellarOperation): StellarOperationMessage | und
             };
 
         case 'pathPaymentStrictReceive':
-            validateParams(op, [{ name: 'destAmount', type: 'uint', required: true }]);
             return {
                 type: 'StellarPathPaymentStrictReceiveOp',
                 source_account: op.source,
@@ -99,7 +92,6 @@ const transformOperation = (op: StellarOperation): StellarOperationMessage | und
             };
 
         case 'pathPaymentStrictSend':
-            validateParams(op, [{ name: 'destMin', type: 'uint', required: true }]);
             return {
                 type: 'StellarPathPaymentStrictSendOp',
                 source_account: op.source,
@@ -112,7 +104,6 @@ const transformOperation = (op: StellarOperation): StellarOperationMessage | und
             };
 
         case 'createPassiveSellOffer':
-            validateParams(op, [{ name: 'amount', type: 'uint', required: true }]);
             return {
                 type: 'StellarCreatePassiveSellOfferOp',
                 source_account: op.source,
@@ -124,7 +115,6 @@ const transformOperation = (op: StellarOperation): StellarOperationMessage | und
             };
 
         case 'manageSellOffer':
-            validateParams(op, [{ name: 'amount', type: 'uint', required: true }]);
             return {
                 type: 'StellarManageSellOfferOp',
                 source_account: op.source,
@@ -137,7 +127,6 @@ const transformOperation = (op: StellarOperation): StellarOperationMessage | und
             };
 
         case 'manageBuyOffer':
-            validateParams(op, [{ name: 'amount', type: 'uint', required: true }]);
             return {
                 type: 'StellarManageBuyOfferOp',
                 source_account: op.source,
@@ -173,7 +162,6 @@ const transformOperation = (op: StellarOperation): StellarOperationMessage | und
         }
 
         case 'changeTrust':
-            validateParams(op, [{ name: 'limit', type: 'uint' }]);
             return {
                 type: 'StellarChangeTrustOp',
                 source_account: op.source,

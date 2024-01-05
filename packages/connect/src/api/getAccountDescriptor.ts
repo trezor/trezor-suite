@@ -1,15 +1,16 @@
 import { AbstractMethod, MethodReturnType, DEFAULT_FIRMWARE_RANGE } from '../core/AbstractMethod';
-import { validateParams, getFirmwareRange } from './common/paramsValidator';
+import { getFirmwareRange } from './common/paramsValidator';
 import { validatePath, getSerializedPath } from '../utils/pathUtils';
 import { getAccountLabel } from '../utils/accountUtils';
 import { getCoinInfo } from '../data/coinInfo';
 import { PROTO, ERRORS } from '../constants';
 import { UI, createUiMessage } from '../events';
-import type { CoinInfo, DerivationPath } from '../types';
-import type {
+import { Bundle, type CoinInfo, type DerivationPath } from '../types';
+import {
     GetAccountDescriptorParams,
     GetAccountDescriptorResponse,
 } from '../types/api/getAccountDescriptor';
+import { Assert } from '@trezor/schema-utils';
 
 type Request = GetAccountDescriptorParams & { address_n: number[]; coinInfo: CoinInfo };
 
@@ -32,17 +33,9 @@ export default class GetAccountDescriptor extends AbstractMethod<
             : this.payload;
 
         // validate bundle type
-        validateParams(payload, [{ name: 'bundle', type: 'array' }]);
+        Assert(Bundle(GetAccountDescriptorParams), payload);
 
         this.params = payload.bundle.map(batch => {
-            // validate incoming parameters
-            validateParams(batch, [
-                { name: 'coin', type: 'string', required: true },
-                { name: 'path', type: 'string', required: true },
-                { name: 'derivationType', type: 'number' },
-                { name: 'suppressBackupWarning', type: 'boolean' },
-            ]);
-
             // validate coin info
             const coinInfo = getCoinInfo(batch.coin);
             if (!coinInfo) {
