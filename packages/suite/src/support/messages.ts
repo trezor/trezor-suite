@@ -6640,6 +6640,10 @@ export default defineMessages({
         id: 'TR_TXID',
         defaultMessage: 'TX ID',
     },
+    TR_TXID_RBF: {
+        id: 'TR_TXID_RBF',
+        defaultMessage: 'Original TX ID to be replaced',
+    },
     TR_FINALIZE_TS_RBF_OFF_WARN: {
         id: 'TR_FINALIZE_TS_RBF_OFF_WARN',
         defaultMessage: 'Finalizing transaction will turn RBF <strong>OFF</strong>',
