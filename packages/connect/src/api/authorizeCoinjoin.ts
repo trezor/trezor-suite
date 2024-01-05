@@ -3,6 +3,8 @@ import { validateParams, getFirmwareRange } from './common/paramsValidator';
 import { validatePath, getScriptType } from '../utils/pathUtils';
 import { getBitcoinNetwork } from '../data/coinInfo';
 import { PROTO } from '../constants';
+import { Assert } from '@trezor/schema-utils';
+import { AuthorizeCoinjoin as AuthorizeCoinjoinSchema } from '../types/api/authorizeCoinjoin';
 
 export default class AuthorizeCoinjoin extends AbstractMethod<
     'authorizeCoinjoin',
@@ -11,18 +13,7 @@ export default class AuthorizeCoinjoin extends AbstractMethod<
     init() {
         const { payload } = this;
 
-        validateParams(payload, [
-            { name: 'path', required: true },
-            { name: 'coordinator', type: 'string', required: true },
-            { name: 'maxRounds', type: 'number', required: true },
-            { name: 'maxCoordinatorFeeRate', type: 'number', required: true },
-            { name: 'maxFeePerKvbyte', type: 'number', required: true },
-            { name: 'coin', type: 'string' },
-            { name: 'scriptType', type: 'string' },
-            { name: 'amountUnit', type: 'uint' },
-            { name: 'preauthorized', type: 'boolean' },
-        ]);
-
+        Assert(AuthorizeCoinjoinSchema, payload);
         const address_n = validatePath(payload.path, 3);
         const script_type = payload.scriptType || getScriptType(address_n);
         const coinInfo = getBitcoinNetwork(payload.coin || address_n);

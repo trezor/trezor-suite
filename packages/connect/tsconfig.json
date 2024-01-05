@@ -11,6 +11,7 @@
         { "path": "../connect-common" },
         { "path": "../protobuf" },
         { "path": "../protocol" },
+        { "path": "../schema-utils" },
         { "path": "../transport" },
         { "path": "../utils" },
         { "path": "../utxo-lib" },

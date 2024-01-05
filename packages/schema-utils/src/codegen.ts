@@ -52,6 +52,26 @@ export function generate(code: string) {
     output = `import { Type, Static } from '@trezor/schema-utils';\n\n${output}`;
     // Add eslint ignore for camelcase, since some type names use underscores
     output = `/* eslint-disable camelcase */\n${output}`;
+    // Add types for message schema
+    if (output.indexOf('export type MessageType =') > -1) {
+        output = `${output}\n
+// custom type uint32/64 may be represented as string
+export type UintType = string | number;
+
+export type MessageKey = keyof MessageType;
+
+export type MessageResponse<T extends MessageKey> = {
+    type: T;
+    message: MessageType[T];
+};
+
+export type TypedCall = <T extends MessageKey, R extends MessageKey>(
+    type: T,
+    resType: R,
+    message?: MessageType[T],
+) => Promise<MessageResponse<R>>;
+`;
+    }
     return output;
 }
 

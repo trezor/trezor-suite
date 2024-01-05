@@ -1,7 +1,8 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/DeviceCommands.js
 
 import { randomBytes } from 'crypto';
-import { Transport, Messages } from '@trezor/transport';
+import { Transport } from '@trezor/transport';
+import * as Messages from '@trezor/protobuf/src/messages-schema';
 import { versionUtils } from '@trezor/utils';
 import { ERRORS, NETWORK } from '../constants';
 import { DEVICE } from '../events';
@@ -21,6 +22,7 @@ import { initLog } from '../utils/debug';
 import type { Device } from './Device';
 import type { CoinInfo, BitcoinNetworkInfo, Network } from '../types';
 import type { HDNodeResponse } from '../types/api/getPublicKey';
+import { Validate } from '@trezor/schema-utils';
 
 type MessageType = Messages.MessageType;
 type MessageKey = keyof MessageType;
@@ -432,6 +434,15 @@ export class DeviceCommands {
             throw error;
         }
         return response;
+    }
+
+    typedCallV2<T extends Messages.MessageKey, R extends Messages.MessageKey>(
+        type: T,
+        resType: R,
+        msg?: Messages.MessageType[T],
+    ): Promise<TypedResponseMessage<R>> {
+        Validate(Messages.MessageType.properties[type], msg);
+        return this.typedCall(type, resType, msg);
     }
 
     async _commonCall(type: MessageKey, msg?: DefaultMessageResponse['message']) {

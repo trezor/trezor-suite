@@ -59,7 +59,7 @@
         "update-submodules": "./scripts/update-submodules.sh",
         "update-coins": "./scripts/update-coins.sh",
         "update-models": "./scripts/update-models.sh",
-        "update-protobuf": "yarn workspace @trezor/protobuf update:protobuf",
+        "update-protobuf": "yarn workspace @trezor/protobuf update:protobuf && yarn workspace @trezor/protobuf update:schema",
         "update-coinjoin-middleware": "yarn workspace @trezor/suite-data update-coinjoin-middleware",
         "prepare-release": "./scripts/prepare-release.sh",
         "_______ Aliases _______": "Aliases for longer commands which we often have to run manually. Names don't have to be pretty or make total sense.",
