@@ -14,13 +14,13 @@
         "codegen": "ts-node --skip-project ./src/codegen.ts"
     },
     "devDependencies": {
-        "jest": "^26.6.3",
-        "prettier": "^3.1.0",
+        "@sinclair/typebox-codegen": "^0.8.13",
+        "jest": "29.5.0",
+        "prettier": "^3.0.3",
         "typescript": "5.3.2"
     },
     "dependencies": {
         "@sinclair/typebox": "^0.31.28",
-        "@sinclair/typebox-codegen": "^0.8.13",
         "ts-mixer": "^6.0.3"
     }
 }

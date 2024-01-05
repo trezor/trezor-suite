@@ -2,5 +2,5 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": { "outDir": "libDev" },
     "include": ["src"],
-    "references": []
+    "references": [{ "path": "../schema-utils" }]
 }

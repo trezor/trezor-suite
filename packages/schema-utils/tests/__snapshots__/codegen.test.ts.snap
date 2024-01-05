@@ -5,10 +5,10 @@ exports[`codegen should generate code for protobuf messages example 1`] = `
 import { Type, Static } from '@trezor/schema-utils';
 
 
-export enum EnumDeviceModelInternal { T1B1 = 'T1B1', T2T1 = 'T2T1', T2B1 = 'T2B1' }
+export enum DeviceModelInternal { T1B1 = 'T1B1', T2T1 = 'T2T1', T2B1 = 'T2B1' }
 
-export type DeviceModelInternal = Static<typeof DeviceModelInternal>
-export const DeviceModelInternal = Type.Enum(EnumDeviceModelInternal)
+export type EnumDeviceModelInternal = Static<typeof EnumDeviceModelInternal>
+export const EnumDeviceModelInternal = Type.Enum(DeviceModelInternal)
 
 export type BinanceGetAddress = Static<typeof BinanceGetAddress>
 export const BinanceGetAddress = Type.Object({
@@ -69,31 +69,31 @@ outputs: Type.Array(BinanceInputOutput),
 chunkify: Type.Optional(Type.Boolean())
 })
 
-export enum EnumBinanceOrderType { OT_UNKNOWN = 0, MARKET = 1, LIMIT = 2, OT_RESERVED = 3 }
+export enum BinanceOrderType { OT_UNKNOWN = 0, MARKET = 1, LIMIT = 2, OT_RESERVED = 3 }
 
-export type BinanceOrderType = Static<typeof BinanceOrderType>
-export const BinanceOrderType = Type.Enum(EnumBinanceOrderType)
+export type EnumBinanceOrderType = Static<typeof EnumBinanceOrderType>
+export const EnumBinanceOrderType = Type.Enum(BinanceOrderType)
 
-export enum EnumBinanceOrderSide { SIDE_UNKNOWN = 0, BUY = 1, SELL = 2 }
+export enum BinanceOrderSide { SIDE_UNKNOWN = 0, BUY = 1, SELL = 2 }
 
-export type BinanceOrderSide = Static<typeof BinanceOrderSide>
-export const BinanceOrderSide = Type.Enum(EnumBinanceOrderSide)
+export type EnumBinanceOrderSide = Static<typeof EnumBinanceOrderSide>
+export const EnumBinanceOrderSide = Type.Enum(BinanceOrderSide)
 
-export enum EnumBinanceTimeInForce { TIF_UNKNOWN = 0, GTE = 1, TIF_RESERVED = 2, IOC = 3 }
+export enum BinanceTimeInForce { TIF_UNKNOWN = 0, GTE = 1, TIF_RESERVED = 2, IOC = 3 }
 
-export type BinanceTimeInForce = Static<typeof BinanceTimeInForce>
-export const BinanceTimeInForce = Type.Enum(EnumBinanceTimeInForce)
+export type EnumBinanceTimeInForce = Static<typeof EnumBinanceTimeInForce>
+export const EnumBinanceTimeInForce = Type.Enum(BinanceTimeInForce)
 
 export type BinanceOrderMsg = Static<typeof BinanceOrderMsg>
 export const BinanceOrderMsg = Type.Object({
 id: Type.Optional(Type.String()),
-ordertype: BinanceOrderType,
+ordertype: EnumBinanceOrderType,
 price: Type.Number(),
 quantity: Type.Number(),
 sender: Type.Optional(Type.String()),
-side: BinanceOrderSide,
+side: EnumBinanceOrderSide,
 symbol: Type.Optional(Type.String()),
-timeinforce: BinanceTimeInForce
+timeinforce: EnumBinanceTimeInForce
 })
 
 export type BinanceCancelMsg = Static<typeof BinanceCancelMsg>
@@ -109,31 +109,31 @@ signature: Type.String(),
 public_key: Type.String()
 })
 
-export enum EnumEnum_InputScriptType { SPENDADDRESS = 0, SPENDMULTISIG = 1, EXTERNAL = 2, SPENDWITNESS = 3, SPENDP2SHWITNESS = 4, SPENDTAPROOT = 5 }
+export enum Enum_InputScriptType { SPENDADDRESS = 0, SPENDMULTISIG = 1, EXTERNAL = 2, SPENDWITNESS = 3, SPENDP2SHWITNESS = 4, SPENDTAPROOT = 5 }
 
-export type Enum_InputScriptType = Static<typeof Enum_InputScriptType>
-export const Enum_InputScriptType = Type.Enum(EnumEnum_InputScriptType)
+export type EnumEnum_InputScriptType = Static<typeof EnumEnum_InputScriptType>
+export const EnumEnum_InputScriptType = Type.Enum(Enum_InputScriptType)
 
 export type InputScriptType = Static<typeof InputScriptType>
-export const InputScriptType = Type.KeyOfEnum(EnumEnum_InputScriptType)
+export const InputScriptType = Type.KeyOfEnum(Enum_InputScriptType)
 
-export enum EnumEnum_OutputScriptType { PAYTOADDRESS = 0, PAYTOSCRIPTHASH = 1, PAYTOMULTISIG = 2, PAYTOOPRETURN = 3, PAYTOWITNESS = 4, PAYTOP2SHWITNESS = 5, PAYTOTAPROOT = 6 }
+export enum Enum_OutputScriptType { PAYTOADDRESS = 0, PAYTOSCRIPTHASH = 1, PAYTOMULTISIG = 2, PAYTOOPRETURN = 3, PAYTOWITNESS = 4, PAYTOP2SHWITNESS = 5, PAYTOTAPROOT = 6 }
 
-export type Enum_OutputScriptType = Static<typeof Enum_OutputScriptType>
-export const Enum_OutputScriptType = Type.Enum(EnumEnum_OutputScriptType)
+export type EnumEnum_OutputScriptType = Static<typeof EnumEnum_OutputScriptType>
+export const EnumEnum_OutputScriptType = Type.Enum(Enum_OutputScriptType)
 
 export type OutputScriptType = Static<typeof OutputScriptType>
-export const OutputScriptType = Type.KeyOfEnum(EnumEnum_OutputScriptType)
+export const OutputScriptType = Type.KeyOfEnum(Enum_OutputScriptType)
 
-export enum EnumDecredStakingSpendType { SSGen = 0, SSRTX = 1 }
+export enum DecredStakingSpendType { SSGen = 0, SSRTX = 1 }
 
-export type DecredStakingSpendType = Static<typeof DecredStakingSpendType>
-export const DecredStakingSpendType = Type.Enum(EnumDecredStakingSpendType)
+export type EnumDecredStakingSpendType = Static<typeof EnumDecredStakingSpendType>
+export const EnumDecredStakingSpendType = Type.Enum(DecredStakingSpendType)
 
-export enum EnumAmountUnit { BITCOIN = 0, MILLIBITCOIN = 1, MICROBITCOIN = 2, SATOSHI = 3 }
+export enum AmountUnit { BITCOIN = 0, MILLIBITCOIN = 1, MICROBITCOIN = 2, SATOSHI = 3 }
 
-export type AmountUnit = Static<typeof AmountUnit>
-export const AmountUnit = Type.Enum(EnumAmountUnit)
+export type EnumAmountUnit = Static<typeof EnumAmountUnit>
+export const EnumAmountUnit = Type.Enum(AmountUnit)
 
 export type HDNodeType = Static<typeof HDNodeType>
 export const HDNodeType = Type.Object({
@@ -254,20 +254,20 @@ overwintered: Type.Optional(Type.Boolean()),
 version_group_id: Type.Optional(Type.Number()),
 timestamp: Type.Optional(Type.Number()),
 branch_id: Type.Optional(Type.Number()),
-amount_unit: Type.Optional(AmountUnit),
+amount_unit: Type.Optional(EnumAmountUnit),
 decred_staking_ticket: Type.Optional(Type.Boolean()),
 serialize: Type.Optional(Type.Boolean()),
 coinjoin_request: Type.Optional(CoinJoinRequest),
 chunkify: Type.Optional(Type.Boolean())
 })
 
-export enum EnumEnum_RequestType { TXINPUT = 0, TXOUTPUT = 1, TXMETA = 2, TXFINISHED = 3, TXEXTRADATA = 4, TXORIGINPUT = 5, TXORIGOUTPUT = 6, TXPAYMENTREQ = 7 }
+export enum Enum_RequestType { TXINPUT = 0, TXOUTPUT = 1, TXMETA = 2, TXFINISHED = 3, TXEXTRADATA = 4, TXORIGINPUT = 5, TXORIGOUTPUT = 6, TXPAYMENTREQ = 7 }
 
-export type Enum_RequestType = Static<typeof Enum_RequestType>
-export const Enum_RequestType = Type.Enum(EnumEnum_RequestType)
+export type EnumEnum_RequestType = Static<typeof EnumEnum_RequestType>
+export const EnumEnum_RequestType = Type.Enum(Enum_RequestType)
 
 export type RequestType = Static<typeof RequestType>
-export const RequestType = Type.KeyOfEnum(EnumEnum_RequestType)
+export const RequestType = Type.KeyOfEnum(Enum_RequestType)
 
 export type TxRequestDetailsType = Static<typeof TxRequestDetailsType>
 export const TxRequestDetailsType = Type.Object({
@@ -304,7 +304,7 @@ multisig: Type.Optional(MultisigRedeemScriptType),
 decred_tree: Type.Optional(Type.Number()),
 orig_hash: Type.Optional(Type.String()),
 orig_index: Type.Optional(Type.Number()),
-decred_staking_spend: Type.Optional(DecredStakingSpendType),
+decred_staking_spend: Type.Optional(EnumDecredStakingSpendType),
 script_pubkey: Type.Optional(Type.String()),
 coinjoin_flags: Type.Optional(Type.Number()),
 script_sig: Type.Optional(Type.String()),
@@ -563,7 +563,7 @@ max_fee_per_kvbyte: Type.Number(),
 address_n: Type.Array(Type.Number()),
 coin_name: Type.Optional(Type.String()),
 script_type: Type.Optional(InputScriptType),
-amount_unit: Type.Optional(AmountUnit)
+amount_unit: Type.Optional(EnumAmountUnit)
 })
 
 export type FirmwareErase = Static<typeof FirmwareErase>
@@ -591,60 +591,60 @@ export const SelfTest = Type.Object({
 payload: Type.Optional(Type.String())
 })
 
-export enum EnumCardanoDerivationType { LEDGER = 0, ICARUS = 1, ICARUS_TREZOR = 2 }
+export enum CardanoDerivationType { LEDGER = 0, ICARUS = 1, ICARUS_TREZOR = 2 }
 
-export type CardanoDerivationType = Static<typeof CardanoDerivationType>
-export const CardanoDerivationType = Type.Enum(EnumCardanoDerivationType)
+export type EnumCardanoDerivationType = Static<typeof EnumCardanoDerivationType>
+export const EnumCardanoDerivationType = Type.Enum(CardanoDerivationType)
 
-export enum EnumCardanoAddressType { BASE = 0, BASE_SCRIPT_KEY = 1, BASE_KEY_SCRIPT = 2, BASE_SCRIPT_SCRIPT = 3, POINTER = 4, POINTER_SCRIPT = 5, ENTERPRISE = 6, ENTERPRISE_SCRIPT = 7, BYRON = 8, REWARD = 14, REWARD_SCRIPT = 15 }
+export enum CardanoAddressType { BASE = 0, BASE_SCRIPT_KEY = 1, BASE_KEY_SCRIPT = 2, BASE_SCRIPT_SCRIPT = 3, POINTER = 4, POINTER_SCRIPT = 5, ENTERPRISE = 6, ENTERPRISE_SCRIPT = 7, BYRON = 8, REWARD = 14, REWARD_SCRIPT = 15 }
 
-export type CardanoAddressType = Static<typeof CardanoAddressType>
-export const CardanoAddressType = Type.Enum(EnumCardanoAddressType)
+export type EnumCardanoAddressType = Static<typeof EnumCardanoAddressType>
+export const EnumCardanoAddressType = Type.Enum(CardanoAddressType)
 
-export enum EnumCardanoNativeScriptType { PUB_KEY = 0, ALL = 1, ANY = 2, N_OF_K = 3, INVALID_BEFORE = 4, INVALID_HEREAFTER = 5 }
+export enum CardanoNativeScriptType { PUB_KEY = 0, ALL = 1, ANY = 2, N_OF_K = 3, INVALID_BEFORE = 4, INVALID_HEREAFTER = 5 }
 
-export type CardanoNativeScriptType = Static<typeof CardanoNativeScriptType>
-export const CardanoNativeScriptType = Type.Enum(EnumCardanoNativeScriptType)
+export type EnumCardanoNativeScriptType = Static<typeof EnumCardanoNativeScriptType>
+export const EnumCardanoNativeScriptType = Type.Enum(CardanoNativeScriptType)
 
-export enum EnumCardanoNativeScriptHashDisplayFormat { HIDE = 0, BECH32 = 1, POLICY_ID = 2 }
+export enum CardanoNativeScriptHashDisplayFormat { HIDE = 0, BECH32 = 1, POLICY_ID = 2 }
 
-export type CardanoNativeScriptHashDisplayFormat = Static<typeof CardanoNativeScriptHashDisplayFormat>
-export const CardanoNativeScriptHashDisplayFormat = Type.Enum(EnumCardanoNativeScriptHashDisplayFormat)
+export type EnumCardanoNativeScriptHashDisplayFormat = Static<typeof EnumCardanoNativeScriptHashDisplayFormat>
+export const EnumCardanoNativeScriptHashDisplayFormat = Type.Enum(CardanoNativeScriptHashDisplayFormat)
 
-export enum EnumCardanoTxOutputSerializationFormat { ARRAY_LEGACY = 0, MAP_BABBAGE = 1 }
+export enum CardanoTxOutputSerializationFormat { ARRAY_LEGACY = 0, MAP_BABBAGE = 1 }
 
-export type CardanoTxOutputSerializationFormat = Static<typeof CardanoTxOutputSerializationFormat>
-export const CardanoTxOutputSerializationFormat = Type.Enum(EnumCardanoTxOutputSerializationFormat)
+export type EnumCardanoTxOutputSerializationFormat = Static<typeof EnumCardanoTxOutputSerializationFormat>
+export const EnumCardanoTxOutputSerializationFormat = Type.Enum(CardanoTxOutputSerializationFormat)
 
-export enum EnumCardanoCertificateType { STAKE_REGISTRATION = 0, STAKE_DEREGISTRATION = 1, STAKE_DELEGATION = 2, STAKE_POOL_REGISTRATION = 3 }
+export enum CardanoCertificateType { STAKE_REGISTRATION = 0, STAKE_DEREGISTRATION = 1, STAKE_DELEGATION = 2, STAKE_POOL_REGISTRATION = 3 }
 
-export type CardanoCertificateType = Static<typeof CardanoCertificateType>
-export const CardanoCertificateType = Type.Enum(EnumCardanoCertificateType)
+export type EnumCardanoCertificateType = Static<typeof EnumCardanoCertificateType>
+export const EnumCardanoCertificateType = Type.Enum(CardanoCertificateType)
 
-export enum EnumCardanoPoolRelayType { SINGLE_HOST_IP = 0, SINGLE_HOST_NAME = 1, MULTIPLE_HOST_NAME = 2 }
+export enum CardanoPoolRelayType { SINGLE_HOST_IP = 0, SINGLE_HOST_NAME = 1, MULTIPLE_HOST_NAME = 2 }
 
-export type CardanoPoolRelayType = Static<typeof CardanoPoolRelayType>
-export const CardanoPoolRelayType = Type.Enum(EnumCardanoPoolRelayType)
+export type EnumCardanoPoolRelayType = Static<typeof EnumCardanoPoolRelayType>
+export const EnumCardanoPoolRelayType = Type.Enum(CardanoPoolRelayType)
 
-export enum EnumCardanoTxAuxiliaryDataSupplementType { NONE = 0, CVOTE_REGISTRATION_SIGNATURE = 1 }
+export enum CardanoTxAuxiliaryDataSupplementType { NONE = 0, CVOTE_REGISTRATION_SIGNATURE = 1 }
 
-export type CardanoTxAuxiliaryDataSupplementType = Static<typeof CardanoTxAuxiliaryDataSupplementType>
-export const CardanoTxAuxiliaryDataSupplementType = Type.Enum(EnumCardanoTxAuxiliaryDataSupplementType)
+export type EnumCardanoTxAuxiliaryDataSupplementType = Static<typeof EnumCardanoTxAuxiliaryDataSupplementType>
+export const EnumCardanoTxAuxiliaryDataSupplementType = Type.Enum(CardanoTxAuxiliaryDataSupplementType)
 
-export enum EnumCardanoCVoteRegistrationFormat { CIP15 = 0, CIP36 = 1 }
+export enum CardanoCVoteRegistrationFormat { CIP15 = 0, CIP36 = 1 }
 
-export type CardanoCVoteRegistrationFormat = Static<typeof CardanoCVoteRegistrationFormat>
-export const CardanoCVoteRegistrationFormat = Type.Enum(EnumCardanoCVoteRegistrationFormat)
+export type EnumCardanoCVoteRegistrationFormat = Static<typeof EnumCardanoCVoteRegistrationFormat>
+export const EnumCardanoCVoteRegistrationFormat = Type.Enum(CardanoCVoteRegistrationFormat)
 
-export enum EnumCardanoTxSigningMode { ORDINARY_TRANSACTION = 0, POOL_REGISTRATION_AS_OWNER = 1, MULTISIG_TRANSACTION = 2, PLUTUS_TRANSACTION = 3 }
+export enum CardanoTxSigningMode { ORDINARY_TRANSACTION = 0, POOL_REGISTRATION_AS_OWNER = 1, MULTISIG_TRANSACTION = 2, PLUTUS_TRANSACTION = 3 }
 
-export type CardanoTxSigningMode = Static<typeof CardanoTxSigningMode>
-export const CardanoTxSigningMode = Type.Enum(EnumCardanoTxSigningMode)
+export type EnumCardanoTxSigningMode = Static<typeof EnumCardanoTxSigningMode>
+export const EnumCardanoTxSigningMode = Type.Enum(CardanoTxSigningMode)
 
-export enum EnumCardanoTxWitnessType { BYRON_WITNESS = 0, SHELLEY_WITNESS = 1 }
+export enum CardanoTxWitnessType { BYRON_WITNESS = 0, SHELLEY_WITNESS = 1 }
 
-export type CardanoTxWitnessType = Static<typeof CardanoTxWitnessType>
-export const CardanoTxWitnessType = Type.Enum(EnumCardanoTxWitnessType)
+export type EnumCardanoTxWitnessType = Static<typeof EnumCardanoTxWitnessType>
+export const EnumCardanoTxWitnessType = Type.Enum(CardanoTxWitnessType)
 
 export type CardanoBlockchainPointerType = Static<typeof CardanoBlockchainPointerType>
 export const CardanoBlockchainPointerType = Type.Object({
@@ -655,7 +655,7 @@ certificate_index: Type.Number()
 
 export type CardanoNativeScript = Static<typeof CardanoNativeScript>
 export const CardanoNativeScript = Type.Recursive(This => Type.Object({
-type: CardanoNativeScriptType,
+type: EnumCardanoNativeScriptType,
 scripts: Type.Optional(Type.Array(This)),
 key_hash: Type.Optional(Type.String()),
 key_path: Type.Optional(Type.Array(Type.Number())),
@@ -667,8 +667,8 @@ invalid_hereafter: Type.Optional(Type.Uint())
 export type CardanoGetNativeScriptHash = Static<typeof CardanoGetNativeScriptHash>
 export const CardanoGetNativeScriptHash = Type.Object({
 script: CardanoNativeScript,
-display_format: CardanoNativeScriptHashDisplayFormat,
-derivation_type: CardanoDerivationType
+display_format: EnumCardanoNativeScriptHashDisplayFormat,
+derivation_type: EnumCardanoDerivationType
 })
 
 export type CardanoNativeScriptHash = Static<typeof CardanoNativeScriptHash>
@@ -678,7 +678,7 @@ script_hash: Type.String()
 
 export type CardanoAddressParametersType = Static<typeof CardanoAddressParametersType>
 export const CardanoAddressParametersType = Type.Object({
-address_type: CardanoAddressType,
+address_type: EnumCardanoAddressType,
 address_n: Type.Array(Type.Number()),
 address_n_staking: Type.Array(Type.Number()),
 staking_key_hash: Type.Optional(Type.String()),
@@ -693,7 +693,7 @@ show_display: Type.Optional(Type.Boolean()),
 protocol_magic: Type.Number(),
 network_id: Type.Number(),
 address_parameters: CardanoAddressParametersType,
-derivation_type: CardanoDerivationType,
+derivation_type: EnumCardanoDerivationType,
 chunkify: Type.Optional(Type.Boolean())
 })
 
@@ -706,7 +706,7 @@ export type CardanoGetPublicKey = Static<typeof CardanoGetPublicKey>
 export const CardanoGetPublicKey = Type.Object({
 address_n: Type.Array(Type.Number()),
 show_display: Type.Optional(Type.Boolean()),
-derivation_type: CardanoDerivationType
+derivation_type: EnumCardanoDerivationType
 })
 
 export type CardanoPublicKey = Static<typeof CardanoPublicKey>
@@ -717,7 +717,7 @@ node: HDNodeType
 
 export type CardanoSignTxInit = Static<typeof CardanoSignTxInit>
 export const CardanoSignTxInit = Type.Object({
-signing_mode: CardanoTxSigningMode,
+signing_mode: EnumCardanoTxSigningMode,
 protocol_magic: Type.Number(),
 network_id: Type.Number(),
 inputs_count: Type.Number(),
@@ -730,7 +730,7 @@ has_auxiliary_data: Type.Boolean(),
 validity_interval_start: Type.Optional(Type.Uint()),
 witness_requests_count: Type.Number(),
 minting_asset_groups_count: Type.Number(),
-derivation_type: CardanoDerivationType,
+derivation_type: EnumCardanoDerivationType,
 include_network_id: Type.Optional(Type.Boolean()),
 script_data_hash: Type.Optional(Type.String()),
 collateral_inputs_count: Type.Number(),
@@ -754,7 +754,7 @@ address_parameters: Type.Optional(CardanoAddressParametersType),
 amount: Type.Uint(),
 asset_groups_count: Type.Number(),
 datum_hash: Type.Optional(Type.String()),
-format: Type.Optional(CardanoTxOutputSerializationFormat),
+format: Type.Optional(EnumCardanoTxOutputSerializationFormat),
 inline_datum_size: Type.Optional(Type.Number()),
 reference_script_size: Type.Optional(Type.Number())
 })
@@ -790,7 +790,7 @@ staking_key_hash: Type.Optional(Type.String())
 
 export type CardanoPoolRelayParameters = Static<typeof CardanoPoolRelayParameters>
 export const CardanoPoolRelayParameters = Type.Object({
-type: CardanoPoolRelayType,
+type: EnumCardanoPoolRelayType,
 ipv4_address: Type.Optional(Type.String()),
 ipv6_address: Type.Optional(Type.String()),
 host_name: Type.Optional(Type.String()),
@@ -819,7 +819,7 @@ relays_count: Type.Number()
 
 export type CardanoTxCertificate = Static<typeof CardanoTxCertificate>
 export const CardanoTxCertificate = Type.Object({
-type: CardanoCertificateType,
+type: EnumCardanoCertificateType,
 path: Type.Optional(Type.Array(Type.Number())),
 pool: Type.Optional(Type.String()),
 pool_parameters: Type.Optional(CardanoPoolParametersType),
@@ -847,7 +847,7 @@ vote_public_key: Type.Optional(Type.String()),
 staking_path: Type.Array(Type.Number()),
 payment_address_parameters: Type.Optional(CardanoAddressParametersType),
 nonce: Type.Uint(),
-format: Type.Optional(CardanoCVoteRegistrationFormat),
+format: Type.Optional(EnumCardanoCVoteRegistrationFormat),
 delegations: Type.Optional(Type.Array(CardanoCVoteRegistrationDelegation)),
 voting_purpose: Type.Optional(Type.Uint()),
 payment_address: Type.Optional(Type.String())
@@ -889,7 +889,7 @@ export const CardanoTxItemAck = Type.Object({
 
 export type CardanoTxAuxiliaryDataSupplement = Static<typeof CardanoTxAuxiliaryDataSupplement>
 export const CardanoTxAuxiliaryDataSupplement = Type.Object({
-type: CardanoTxAuxiliaryDataSupplementType,
+type: EnumCardanoTxAuxiliaryDataSupplementType,
 auxiliary_data_hash: Type.Optional(Type.String()),
 cvote_registration_signature: Type.Optional(Type.String())
 })
@@ -901,7 +901,7 @@ path: Type.Array(Type.Number())
 
 export type CardanoTxWitnessResponse = Static<typeof CardanoTxWitnessResponse>
 export const CardanoTxWitnessResponse = Type.Object({
-type: CardanoTxWitnessType,
+type: EnumCardanoTxWitnessType,
 pub_key: Type.String(),
 signature: Type.String(),
 chain_code: Type.Optional(Type.String())
@@ -927,24 +927,24 @@ export const Success = Type.Object({
 message: Type.String()
 })
 
-export enum EnumFailureType { Failure_UnexpectedMessage = 1, Failure_ButtonExpected = 2, Failure_DataError = 3, Failure_ActionCancelled = 4, Failure_PinExpected = 5, Failure_PinCancelled = 6, Failure_PinInvalid = 7, Failure_InvalidSignature = 8, Failure_ProcessError = 9, Failure_NotEnoughFunds = 10, Failure_NotInitialized = 11, Failure_PinMismatch = 12, Failure_WipeCodeMismatch = 13, Failure_InvalidSession = 14, Failure_FirmwareError = 99 }
+export enum FailureType { Failure_UnexpectedMessage = 1, Failure_ButtonExpected = 2, Failure_DataError = 3, Failure_ActionCancelled = 4, Failure_PinExpected = 5, Failure_PinCancelled = 6, Failure_PinInvalid = 7, Failure_InvalidSignature = 8, Failure_ProcessError = 9, Failure_NotEnoughFunds = 10, Failure_NotInitialized = 11, Failure_PinMismatch = 12, Failure_WipeCodeMismatch = 13, Failure_InvalidSession = 14, Failure_FirmwareError = 99 }
 
-export type FailureType = Static<typeof FailureType>
-export const FailureType = Type.Enum(EnumFailureType)
+export type EnumFailureType = Static<typeof EnumFailureType>
+export const EnumFailureType = Type.Enum(FailureType)
 
 export type Failure = Static<typeof Failure>
 export const Failure = Type.Object({
-code: Type.Optional(FailureType),
+code: Type.Optional(EnumFailureType),
 message: Type.Optional(Type.String())
 })
 
-export enum EnumEnum_ButtonRequestType { ButtonRequest_Other = 1, ButtonRequest_FeeOverThreshold = 2, ButtonRequest_ConfirmOutput = 3, ButtonRequest_ResetDevice = 4, ButtonRequest_ConfirmWord = 5, ButtonRequest_WipeDevice = 6, ButtonRequest_ProtectCall = 7, ButtonRequest_SignTx = 8, ButtonRequest_FirmwareCheck = 9, ButtonRequest_Address = 10, ButtonRequest_PublicKey = 11, ButtonRequest_MnemonicWordCount = 12, ButtonRequest_MnemonicInput = 13, _Deprecated_ButtonRequest_PassphraseType = 14, ButtonRequest_UnknownDerivationPath = 15, ButtonRequest_RecoveryHomepage = 16, ButtonRequest_Success = 17, ButtonRequest_Warning = 18, ButtonRequest_PassphraseEntry = 19, ButtonRequest_PinEntry = 20 }
+export enum Enum_ButtonRequestType { ButtonRequest_Other = 1, ButtonRequest_FeeOverThreshold = 2, ButtonRequest_ConfirmOutput = 3, ButtonRequest_ResetDevice = 4, ButtonRequest_ConfirmWord = 5, ButtonRequest_WipeDevice = 6, ButtonRequest_ProtectCall = 7, ButtonRequest_SignTx = 8, ButtonRequest_FirmwareCheck = 9, ButtonRequest_Address = 10, ButtonRequest_PublicKey = 11, ButtonRequest_MnemonicWordCount = 12, ButtonRequest_MnemonicInput = 13, _Deprecated_ButtonRequest_PassphraseType = 14, ButtonRequest_UnknownDerivationPath = 15, ButtonRequest_RecoveryHomepage = 16, ButtonRequest_Success = 17, ButtonRequest_Warning = 18, ButtonRequest_PassphraseEntry = 19, ButtonRequest_PinEntry = 20 }
 
-export type Enum_ButtonRequestType = Static<typeof Enum_ButtonRequestType>
-export const Enum_ButtonRequestType = Type.Enum(EnumEnum_ButtonRequestType)
+export type EnumEnum_ButtonRequestType = Static<typeof EnumEnum_ButtonRequestType>
+export const EnumEnum_ButtonRequestType = Type.Enum(Enum_ButtonRequestType)
 
 export type ButtonRequestType = Static<typeof ButtonRequestType>
-export const ButtonRequestType = Type.KeyOfEnum(EnumEnum_ButtonRequestType)
+export const ButtonRequestType = Type.KeyOfEnum(Enum_ButtonRequestType)
 
 export type ButtonRequest = Static<typeof ButtonRequest>
 export const ButtonRequest = Type.Object({
@@ -957,13 +957,13 @@ export const ButtonAck = Type.Object({
 
 })
 
-export enum EnumEnum_PinMatrixRequestType { PinMatrixRequestType_Current = 1, PinMatrixRequestType_NewFirst = 2, PinMatrixRequestType_NewSecond = 3, PinMatrixRequestType_WipeCodeFirst = 4, PinMatrixRequestType_WipeCodeSecond = 5 }
+export enum Enum_PinMatrixRequestType { PinMatrixRequestType_Current = 1, PinMatrixRequestType_NewFirst = 2, PinMatrixRequestType_NewSecond = 3, PinMatrixRequestType_WipeCodeFirst = 4, PinMatrixRequestType_WipeCodeSecond = 5 }
 
-export type Enum_PinMatrixRequestType = Static<typeof Enum_PinMatrixRequestType>
-export const Enum_PinMatrixRequestType = Type.Enum(EnumEnum_PinMatrixRequestType)
+export type EnumEnum_PinMatrixRequestType = Static<typeof EnumEnum_PinMatrixRequestType>
+export const EnumEnum_PinMatrixRequestType = Type.Enum(Enum_PinMatrixRequestType)
 
 export type PinMatrixRequestType = Static<typeof PinMatrixRequestType>
-export const PinMatrixRequestType = Type.KeyOfEnum(EnumEnum_PinMatrixRequestType)
+export const PinMatrixRequestType = Type.KeyOfEnum(Enum_PinMatrixRequestType)
 
 export type PinMatrixRequest = Static<typeof PinMatrixRequest>
 export const PinMatrixRequest = Type.Object({
@@ -1051,15 +1051,15 @@ session_key: Type.String(),
 public_key: Type.Optional(Type.String())
 })
 
-export enum EnumDebugButton { NO = 0, YES = 1, INFO = 2 }
+export enum DebugButton { NO = 0, YES = 1, INFO = 2 }
 
-export type DebugButton = Static<typeof DebugButton>
-export const DebugButton = Type.Enum(EnumDebugButton)
+export type EnumDebugButton = Static<typeof EnumDebugButton>
+export const EnumDebugButton = Type.Enum(DebugButton)
 
-export enum EnumDebugPhysicalButton { LEFT_BTN = 0, MIDDLE_BTN = 1, RIGHT_BTN = 2 }
+export enum DebugPhysicalButton { LEFT_BTN = 0, MIDDLE_BTN = 1, RIGHT_BTN = 2 }
 
-export type DebugPhysicalButton = Static<typeof DebugPhysicalButton>
-export const DebugPhysicalButton = Type.Enum(EnumDebugPhysicalButton)
+export type EnumDebugPhysicalButton = Static<typeof EnumDebugPhysicalButton>
+export const EnumDebugPhysicalButton = Type.Enum(DebugPhysicalButton)
 
 export type DebugLinkResetDebugEvents = Static<typeof DebugLinkResetDebugEvents>
 export const DebugLinkResetDebugEvents = Type.Object({
@@ -1274,10 +1274,10 @@ export const EosSignedTx = Type.Object({
 signature: Type.String()
 })
 
-export enum EnumEthereumDefinitionType { NETWORK = 0, TOKEN = 1 }
+export enum EthereumDefinitionType { NETWORK = 0, TOKEN = 1 }
 
-export type EthereumDefinitionType = Static<typeof EthereumDefinitionType>
-export const EthereumDefinitionType = Type.Enum(EnumEthereumDefinitionType)
+export type EnumEthereumDefinitionType = Static<typeof EnumEthereumDefinitionType>
+export const EnumEthereumDefinitionType = Type.Enum(EthereumDefinitionType)
 
 export type EthereumNetworkInfo = Static<typeof EthereumNetworkInfo>
 export const EthereumNetworkInfo = Type.Object({
@@ -1315,14 +1315,14 @@ export const EthereumTypedDataStructRequest = Type.Object({
 name: Type.String()
 })
 
-export enum EnumEthereumDataType { UINT = 1, INT = 2, BYTES = 3, STRING = 4, BOOL = 5, ADDRESS = 6, ARRAY = 7, STRUCT = 8 }
+export enum EthereumDataType { UINT = 1, INT = 2, BYTES = 3, STRING = 4, BOOL = 5, ADDRESS = 6, ARRAY = 7, STRUCT = 8 }
 
-export type EthereumDataType = Static<typeof EthereumDataType>
-export const EthereumDataType = Type.Enum(EnumEthereumDataType)
+export type EnumEthereumDataType = Static<typeof EnumEthereumDataType>
+export const EnumEthereumDataType = Type.Enum(EthereumDataType)
 
 export type EthereumFieldType = Static<typeof EthereumFieldType>
 export const EthereumFieldType = Type.Recursive(This => Type.Object({
-data_type: EthereumDataType,
+data_type: EnumEthereumDataType,
 size: Type.Optional(Type.Number()),
 entry_type: Type.Optional(This),
 struct_name: Type.Optional(Type.String())
@@ -1461,29 +1461,29 @@ signature: Type.String(),
 address: Type.String()
 })
 
-export enum EnumEnum_BackupType { Bip39 = 0, Slip39_Basic = 1, Slip39_Advanced = 2 }
+export enum Enum_BackupType { Bip39 = 0, Slip39_Basic = 1, Slip39_Advanced = 2 }
 
-export type Enum_BackupType = Static<typeof Enum_BackupType>
-export const Enum_BackupType = Type.Enum(EnumEnum_BackupType)
+export type EnumEnum_BackupType = Static<typeof EnumEnum_BackupType>
+export const EnumEnum_BackupType = Type.Enum(Enum_BackupType)
 
 export type BackupType = Static<typeof BackupType>
-export const BackupType = Type.KeyOfEnum(EnumEnum_BackupType)
+export const BackupType = Type.KeyOfEnum(Enum_BackupType)
 
-export enum EnumEnum_SafetyCheckLevel { Strict = 0, PromptAlways = 1, PromptTemporarily = 2 }
+export enum Enum_SafetyCheckLevel { Strict = 0, PromptAlways = 1, PromptTemporarily = 2 }
 
-export type Enum_SafetyCheckLevel = Static<typeof Enum_SafetyCheckLevel>
-export const Enum_SafetyCheckLevel = Type.Enum(EnumEnum_SafetyCheckLevel)
+export type EnumEnum_SafetyCheckLevel = Static<typeof EnumEnum_SafetyCheckLevel>
+export const EnumEnum_SafetyCheckLevel = Type.Enum(Enum_SafetyCheckLevel)
 
 export type SafetyCheckLevel = Static<typeof SafetyCheckLevel>
-export const SafetyCheckLevel = Type.KeyOfEnum(EnumEnum_SafetyCheckLevel)
+export const SafetyCheckLevel = Type.KeyOfEnum(Enum_SafetyCheckLevel)
 
-export enum EnumEnum_HomescreenFormat { Toif = 1, Jpeg = 2, ToiG = 3 }
+export enum Enum_HomescreenFormat { Toif = 1, Jpeg = 2, ToiG = 3 }
 
-export type Enum_HomescreenFormat = Static<typeof Enum_HomescreenFormat>
-export const Enum_HomescreenFormat = Type.Enum(EnumEnum_HomescreenFormat)
+export type EnumEnum_HomescreenFormat = Static<typeof EnumEnum_HomescreenFormat>
+export const EnumEnum_HomescreenFormat = Type.Enum(Enum_HomescreenFormat)
 
 export type HomescreenFormat = Static<typeof HomescreenFormat>
-export const HomescreenFormat = Type.KeyOfEnum(EnumEnum_HomescreenFormat)
+export const HomescreenFormat = Type.KeyOfEnum(Enum_HomescreenFormat)
 
 export type Initialize = Static<typeof Initialize>
 export const Initialize = Type.Object({
@@ -1497,13 +1497,13 @@ export const GetFeatures = Type.Object({
 
 })
 
-export enum EnumEnum_Capability { Capability_Bitcoin = 1, Capability_Bitcoin_like = 2, Capability_Binance = 3, Capability_Cardano = 4, Capability_Crypto = 5, Capability_EOS = 6, Capability_Ethereum = 7, Capability_Lisk = 8, Capability_Monero = 9, Capability_NEM = 10, Capability_Ripple = 11, Capability_Stellar = 12, Capability_Tezos = 13, Capability_U2F = 14, Capability_Shamir = 15, Capability_ShamirGroups = 16, Capability_PassphraseEntry = 17, Capability_Solana = 18 }
+export enum Enum_Capability { Capability_Bitcoin = 1, Capability_Bitcoin_like = 2, Capability_Binance = 3, Capability_Cardano = 4, Capability_Crypto = 5, Capability_EOS = 6, Capability_Ethereum = 7, Capability_Lisk = 8, Capability_Monero = 9, Capability_NEM = 10, Capability_Ripple = 11, Capability_Stellar = 12, Capability_Tezos = 13, Capability_U2F = 14, Capability_Shamir = 15, Capability_ShamirGroups = 16, Capability_PassphraseEntry = 17, Capability_Solana = 18 }
 
-export type Enum_Capability = Static<typeof Enum_Capability>
-export const Enum_Capability = Type.Enum(EnumEnum_Capability)
+export type EnumEnum_Capability = Static<typeof EnumEnum_Capability>
+export const EnumEnum_Capability = Type.Enum(Enum_Capability)
 
 export type Capability = Static<typeof Capability>
-export const Capability = Type.KeyOfEnum(EnumEnum_Capability)
+export const Capability = Type.KeyOfEnum(Enum_Capability)
 
 export type Features = Static<typeof Features>
 export const Features = Type.Object({
@@ -1641,7 +1641,7 @@ Type.Null()
 busy: Type.Optional(Type.Boolean()),
 homescreen_format: Type.Optional(HomescreenFormat),
 hide_passphrase_from_host: Type.Optional(Type.Boolean()),
-internal_model: DeviceModelInternal,
+internal_model: EnumDeviceModelInternal,
 unit_color: Type.Optional(Type.Number()),
 unit_btconly: Type.Optional(Type.Boolean()),
 homescreen_width: Type.Optional(Type.Number()),
@@ -1694,14 +1694,14 @@ export const ChangeWipeCode = Type.Object({
 remove: Type.Optional(Type.Boolean())
 })
 
-export enum EnumSdProtectOperationType { DISABLE = 0, ENABLE = 1, REFRESH = 2 }
+export enum SdProtectOperationType { DISABLE = 0, ENABLE = 1, REFRESH = 2 }
 
-export type SdProtectOperationType = Static<typeof SdProtectOperationType>
-export const SdProtectOperationType = Type.Enum(EnumSdProtectOperationType)
+export type EnumSdProtectOperationType = Static<typeof EnumSdProtectOperationType>
+export const EnumSdProtectOperationType = Type.Enum(SdProtectOperationType)
 
 export type SdProtect = Static<typeof SdProtect>
 export const SdProtect = Type.Object({
-operation: SdProtectOperationType
+operation: EnumSdProtectOperationType
 })
 
 export type Ping = Static<typeof Ping>
@@ -1783,10 +1783,10 @@ export const EntropyAck = Type.Object({
 entropy: Type.String()
 })
 
-export enum EnumRecoveryDeviceType { RecoveryDeviceType_ScrambledWords = 0, RecoveryDeviceType_Matrix = 1 }
+export enum RecoveryDeviceType { RecoveryDeviceType_ScrambledWords = 0, RecoveryDeviceType_Matrix = 1 }
 
-export type RecoveryDeviceType = Static<typeof RecoveryDeviceType>
-export const RecoveryDeviceType = Type.Enum(EnumRecoveryDeviceType)
+export type EnumRecoveryDeviceType = Static<typeof EnumRecoveryDeviceType>
+export const EnumRecoveryDeviceType = Type.Enum(RecoveryDeviceType)
 
 export type RecoveryDevice = Static<typeof RecoveryDevice>
 export const RecoveryDevice = Type.Object({
@@ -1796,18 +1796,18 @@ pin_protection: Type.Optional(Type.Boolean()),
 language: Type.Optional(Type.String()),
 label: Type.Optional(Type.String()),
 enforce_wordlist: Type.Optional(Type.Boolean()),
-type: Type.Optional(RecoveryDeviceType),
+type: Type.Optional(EnumRecoveryDeviceType),
 u2f_counter: Type.Optional(Type.Number()),
 dry_run: Type.Optional(Type.Boolean())
 })
 
-export enum EnumEnum_WordRequestType { WordRequestType_Plain = 0, WordRequestType_Matrix9 = 1, WordRequestType_Matrix6 = 2 }
+export enum Enum_WordRequestType { WordRequestType_Plain = 0, WordRequestType_Matrix9 = 1, WordRequestType_Matrix6 = 2 }
 
-export type Enum_WordRequestType = Static<typeof Enum_WordRequestType>
-export const Enum_WordRequestType = Type.Enum(EnumEnum_WordRequestType)
+export type EnumEnum_WordRequestType = Static<typeof EnumEnum_WordRequestType>
+export const EnumEnum_WordRequestType = Type.Enum(Enum_WordRequestType)
 
 export type WordRequestType = Static<typeof WordRequestType>
-export const WordRequestType = Type.KeyOfEnum(EnumEnum_WordRequestType)
+export const WordRequestType = Type.KeyOfEnum(Enum_WordRequestType)
 
 export type WordRequest = Static<typeof WordRequest>
 export const WordRequest = Type.Object({
@@ -1885,10 +1885,10 @@ export const UnlockBootloader = Type.Object({
 
 })
 
-export enum EnumMoneroNetworkType { MAINNET = 0, TESTNET = 1, STAGENET = 2, FAKECHAIN = 3 }
+export enum MoneroNetworkType { MAINNET = 0, TESTNET = 1, STAGENET = 2, FAKECHAIN = 3 }
 
-export type MoneroNetworkType = Static<typeof MoneroNetworkType>
-export const MoneroNetworkType = Type.Enum(EnumMoneroNetworkType)
+export type EnumMoneroNetworkType = Static<typeof EnumMoneroNetworkType>
+export const EnumMoneroNetworkType = Type.Enum(MoneroNetworkType)
 
 export type NEMGetAddress = Static<typeof NEMGetAddress>
 export const NEMGetAddress = Type.Object({
@@ -1937,10 +1937,10 @@ sink: Type.String(),
 fee: Type.Uint()
 })
 
-export enum EnumNEMMosaicLevy { MosaicLevy_Absolute = 1, MosaicLevy_Percentile = 2 }
+export enum NEMMosaicLevy { MosaicLevy_Absolute = 1, MosaicLevy_Percentile = 2 }
 
-export type NEMMosaicLevy = Static<typeof NEMMosaicLevy>
-export const NEMMosaicLevy = Type.Enum(EnumNEMMosaicLevy)
+export type EnumNEMMosaicLevy = Static<typeof EnumNEMMosaicLevy>
+export const EnumNEMMosaicLevy = Type.Enum(NEMMosaicLevy)
 
 export type NEMMosaicDefinition = Static<typeof NEMMosaicDefinition>
 export const NEMMosaicDefinition = Type.Object({
@@ -1949,7 +1949,7 @@ ticker: Type.Optional(Type.String()),
 namespace: Type.String(),
 mosaic: Type.String(),
 divisibility: Type.Optional(Type.Number()),
-levy: Type.Optional(NEMMosaicLevy),
+levy: Type.Optional(EnumNEMMosaicLevy),
 fee: Type.Optional(Type.Uint()),
 levy_address: Type.Optional(Type.String()),
 levy_namespace: Type.Optional(Type.String()),
@@ -1968,27 +1968,27 @@ sink: Type.String(),
 fee: Type.Uint()
 })
 
-export enum EnumNEMSupplyChangeType { SupplyChange_Increase = 1, SupplyChange_Decrease = 2 }
+export enum NEMSupplyChangeType { SupplyChange_Increase = 1, SupplyChange_Decrease = 2 }
 
-export type NEMSupplyChangeType = Static<typeof NEMSupplyChangeType>
-export const NEMSupplyChangeType = Type.Enum(EnumNEMSupplyChangeType)
+export type EnumNEMSupplyChangeType = Static<typeof EnumNEMSupplyChangeType>
+export const EnumNEMSupplyChangeType = Type.Enum(NEMSupplyChangeType)
 
 export type NEMMosaicSupplyChange = Static<typeof NEMMosaicSupplyChange>
 export const NEMMosaicSupplyChange = Type.Object({
 namespace: Type.String(),
 mosaic: Type.String(),
-type: NEMSupplyChangeType,
+type: EnumNEMSupplyChangeType,
 delta: Type.Number()
 })
 
-export enum EnumNEMModificationType { CosignatoryModification_Add = 1, CosignatoryModification_Delete = 2 }
+export enum NEMModificationType { CosignatoryModification_Add = 1, CosignatoryModification_Delete = 2 }
 
-export type NEMModificationType = Static<typeof NEMModificationType>
-export const NEMModificationType = Type.Enum(EnumNEMModificationType)
+export type EnumNEMModificationType = Static<typeof EnumNEMModificationType>
+export const EnumNEMModificationType = Type.Enum(NEMModificationType)
 
 export type NEMCosignatoryModification = Static<typeof NEMCosignatoryModification>
 export const NEMCosignatoryModification = Type.Object({
-type: NEMModificationType,
+type: EnumNEMModificationType,
 public_key: Type.String()
 })
 
@@ -1998,14 +1998,14 @@ modifications: Type.Optional(Type.Array(NEMCosignatoryModification)),
 relative_change: Type.Optional(Type.Number())
 })
 
-export enum EnumNEMImportanceTransferMode { ImportanceTransfer_Activate = 1, ImportanceTransfer_Deactivate = 2 }
+export enum NEMImportanceTransferMode { ImportanceTransfer_Activate = 1, ImportanceTransfer_Deactivate = 2 }
 
-export type NEMImportanceTransferMode = Static<typeof NEMImportanceTransferMode>
-export const NEMImportanceTransferMode = Type.Enum(EnumNEMImportanceTransferMode)
+export type EnumNEMImportanceTransferMode = Static<typeof EnumNEMImportanceTransferMode>
+export const EnumNEMImportanceTransferMode = Type.Enum(NEMImportanceTransferMode)
 
 export type NEMImportanceTransfer = Static<typeof NEMImportanceTransfer>
 export const NEMImportanceTransfer = Type.Object({
-mode: NEMImportanceTransferMode,
+mode: EnumNEMImportanceTransferMode,
 public_key: Type.String()
 })
 
@@ -2111,14 +2111,14 @@ export const SolanaTxSignature = Type.Object({
 signature: Type.String()
 })
 
-export enum EnumStellarAssetType { NATIVE = 0, ALPHANUM4 = 1, ALPHANUM12 = 2 }
+export enum StellarAssetType { NATIVE = 0, ALPHANUM4 = 1, ALPHANUM12 = 2 }
 
-export type StellarAssetType = Static<typeof StellarAssetType>
-export const StellarAssetType = Type.Enum(EnumStellarAssetType)
+export type EnumStellarAssetType = Static<typeof EnumStellarAssetType>
+export const EnumStellarAssetType = Type.Enum(StellarAssetType)
 
 export type StellarAsset = Static<typeof StellarAsset>
 export const StellarAsset = Type.Object({
-type: StellarAssetType,
+type: EnumStellarAssetType,
 code: Type.Optional(Type.String()),
 issuer: Type.Optional(Type.String())
 })
@@ -2135,10 +2135,10 @@ export const StellarAddress = Type.Object({
 address: Type.String()
 })
 
-export enum EnumStellarMemoType { NONE = 0, TEXT = 1, ID = 2, HASH = 3, RETURN = 4 }
+export enum StellarMemoType { NONE = 0, TEXT = 1, ID = 2, HASH = 3, RETURN = 4 }
 
-export type StellarMemoType = Static<typeof StellarMemoType>
-export const StellarMemoType = Type.Enum(EnumStellarMemoType)
+export type EnumStellarMemoType = Static<typeof EnumStellarMemoType>
+export const EnumStellarMemoType = Type.Enum(StellarMemoType)
 
 export type StellarSignTx = Static<typeof StellarSignTx>
 export const StellarSignTx = Type.Object({
@@ -2149,7 +2149,7 @@ fee: Type.Uint(),
 sequence_number: Type.Uint(),
 timebounds_start: Type.Number(),
 timebounds_end: Type.Number(),
-memo_type: StellarMemoType,
+memo_type: EnumStellarMemoType,
 memo_text: Type.Optional(Type.String()),
 memo_id: Type.Optional(Type.String()),
 memo_hash: Type.Optional(Type.Union([
@@ -2233,10 +2233,10 @@ price_n: Type.Number(),
 price_d: Type.Number()
 })
 
-export enum EnumStellarSignerType { ACCOUNT = 0, PRE_AUTH = 1, HASH = 2 }
+export enum StellarSignerType { ACCOUNT = 0, PRE_AUTH = 1, HASH = 2 }
 
-export type StellarSignerType = Static<typeof StellarSignerType>
-export const StellarSignerType = Type.Enum(EnumStellarSignerType)
+export type EnumStellarSignerType = Static<typeof EnumStellarSignerType>
+export const EnumStellarSignerType = Type.Enum(StellarSignerType)
 
 export type StellarSetOptionsOp = Static<typeof StellarSetOptionsOp>
 export const StellarSetOptionsOp = Type.Object({
@@ -2249,7 +2249,7 @@ low_threshold: Type.Optional(Type.Uint()),
 medium_threshold: Type.Optional(Type.Uint()),
 high_threshold: Type.Optional(Type.Uint()),
 home_domain: Type.Optional(Type.String()),
-signer_type: Type.Optional(StellarSignerType),
+signer_type: Type.Optional(EnumStellarSignerType),
 signer_key: Type.Optional(Type.Union([
 Type.Buffer(),
 Type.String()
@@ -2268,7 +2268,7 @@ export type StellarAllowTrustOp = Static<typeof StellarAllowTrustOp>
 export const StellarAllowTrustOp = Type.Object({
 source_account: Type.Optional(Type.String()),
 trusted_account: Type.String(),
-asset_type: StellarAssetType,
+asset_type: EnumStellarAssetType,
 asset_code: Type.Optional(Type.String()),
 is_authorized: Type.Boolean()
 })
@@ -2325,10 +2325,10 @@ export const TezosPublicKey = Type.Object({
 public_key: Type.String()
 })
 
-export enum EnumTezosContractType { Implicit = 0, Originated = 1 }
+export enum TezosContractType { Implicit = 0, Originated = 1 }
 
-export type TezosContractType = Static<typeof TezosContractType>
-export const TezosContractType = Type.Enum(EnumTezosContractType)
+export type EnumTezosContractType = Static<typeof EnumTezosContractType>
+export const EnumTezosContractType = Type.Enum(TezosContractType)
 
 export type TezosContractID = Static<typeof TezosContractID>
 export const TezosContractID = Type.Object({
@@ -2407,17 +2407,17 @@ period: Type.Number(),
 proposals: Type.Array(Type.String())
 })
 
-export enum EnumTezosBallotType { Yay = 0, Nay = 1, Pass = 2 }
+export enum TezosBallotType { Yay = 0, Nay = 1, Pass = 2 }
 
-export type TezosBallotType = Static<typeof TezosBallotType>
-export const TezosBallotType = Type.Enum(EnumTezosBallotType)
+export type EnumTezosBallotType = Static<typeof EnumTezosBallotType>
+export const EnumTezosBallotType = Type.Enum(TezosBallotType)
 
 export type TezosBallotOp = Static<typeof TezosBallotOp>
 export const TezosBallotOp = Type.Object({
 source: Type.String(),
 period: Type.Number(),
 proposal: Type.String(),
-ballot: TezosBallotType
+ballot: EnumTezosBallotType
 })
 
 export type TezosSignTx = Static<typeof TezosSignTx>
@@ -2720,5 +2720,22 @@ TezosSignTx: TezosSignTx,
 TezosSignedTx: TezosSignedTx,
 experimental_message: experimental_message,
 experimental_field: experimental_field
-})"
+})
+
+// custom type uint32/64 may be represented as string
+export type UintType = string | number;
+
+export type MessageKey = keyof MessageType;
+
+export type MessageResponse<T extends MessageKey> = {
+    type: T;
+    message: MessageType[T];
+};
+
+export type TypedCall = <T extends MessageKey, R extends MessageKey>(
+    type: T,
+    resType: R,
+    message?: MessageType[T],
+) => Promise<MessageResponse<R>>;
+"
 `;
