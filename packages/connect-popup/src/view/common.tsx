@@ -81,6 +81,8 @@ export const initMessageChannelWithIframe = async (
     payload: PopupInit['payload'],
     handler: (e: MessageEvent) => void,
 ) => {
+    throw ERRORS.TypedError('Popup_ConnectionMissing');
+
     // settings received from window.opener (POPUP.INIT) are not considered as safe (they could be injected/modified)
     // settings will be set later on, after POPUP.HANDSHAKE event from iframe
     const { settings, systemInfo, useBroadcastChannel } = payload;
@@ -186,6 +188,10 @@ export const postMessage = (message: CoreMessage) => {
 export const postMessageToParent = (message: CoreMessage) => {
     if (window.opener) {
         // post message to parent and wait for POPUP.INIT message
+        message.channel = {
+            here: 'popup',
+            peer: 'connect-web',
+        };
         window.opener.postMessage(message, '*');
     } else {
         // webextensions doesn't have "window.opener" reference and expect this message in "content-script" above popup [see: packages/connect-web/src/webextension/trezor-content-script.js]

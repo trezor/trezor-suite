@@ -285,6 +285,8 @@ export class PopupManager extends EventEmitter {
             });
         } else if (data.type === POPUP.CANCEL_POPUP_REQUEST || data.type === UI.CLOSE_UI_WINDOW) {
             this.clear(false);
+        } else if (data.type === POPUP.CORE_LOADED) {
+            // handshakePromise.resolve();
         }
     }
 

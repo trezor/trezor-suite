@@ -20,6 +20,7 @@
     ],
     "references": [
         { "path": "../connect" },
+        { "path": "../connect-webextension" },
         { "path": "../utils" }
     ]
 }

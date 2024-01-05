@@ -5,7 +5,7 @@ import { PopupEventMessage, ConnectSettings } from '@trezor/connect/lib/exports'
 import { getOrigin } from '@trezor/connect/lib/utils/urlUtils';
 import { Log } from '@trezor/connect/lib/utils/debug';
 
-import { ServiceWorkerWindowChannel } from './channels/serviceworker-window';
+import { AbstractMessageChannel } from '@trezor/connect-common/src/messageChannel/abstract';
 
 export class PopupManager extends EventEmitter {
     popupWindow: chrome.tabs.Tab | undefined;
@@ -16,25 +16,21 @@ export class PopupManager extends EventEmitter {
 
     locked = false;
 
-    channel: ServiceWorkerWindowChannel<PopupEventMessage>;
+    channel: AbstractMessageChannel<PopupEventMessage>;
 
     extensionTabId = 0;
 
     logger: Log;
 
-    constructor(settings: ConnectSettings, { logger }: { logger: Log }) {
+    constructor(
+        settings: ConnectSettings,
+        { logger, channel }: { logger: Log; channel: AbstractMessageChannel<any> },
+    ) {
         super();
         this.settings = settings;
         this.origin = getOrigin(settings.popupSrc);
         this.logger = logger;
-        this.channel = new ServiceWorkerWindowChannel<PopupEventMessage>({
-            name: 'trezor-connect',
-            channel: {
-                here: '@trezor/connect-webextension',
-                peer: '@trezor/connect-content-script',
-            },
-            logger,
-        });
+        this.channel = channel;
         this.channel.init();
     }
 

@@ -12,11 +12,13 @@ import {
     Manifest,
     UiResponseEvent,
     CallMethod,
+    PopupEventMessage,
 } from '@trezor/connect/lib/exports';
 import { factory } from '@trezor/connect/lib/factory';
 import { initLog, setLogWriter, LogMessage, LogWriter } from '@trezor/connect/lib/utils/debug';
 import { createDeferred } from '@trezor/utils/lib';
 
+import { ServiceWorkerWindowChannel } from './channels/serviceworker-window';
 import * as popup from './popup';
 import { parseConnectSettings } from './connectSettings';
 
@@ -74,7 +76,17 @@ const init = (settings: Partial<ConnectSettings> = {}): Promise<void> => {
     logger.debug('initiating');
     _settings = parseConnectSettings({ ..._settings, ...settings });
     if (!_popupManager) {
-        _popupManager = new popup.PopupManager(_settings, { logger: popupManagerLogger });
+        _popupManager = new popup.PopupManager(_settings, {
+            logger: popupManagerLogger,
+            channel: new ServiceWorkerWindowChannel<PopupEventMessage>({
+                name: 'trezor-connect',
+                channel: {
+                    here: '@trezor/connect-webextension',
+                    peer: '@trezor/connect-content-script',
+                },
+                logger,
+            }),
+        });
         setLogWriter(() => logWriterFactory(_popupManager));
     }
 

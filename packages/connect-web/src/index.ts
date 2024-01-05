@@ -25,17 +25,24 @@ import {
 import { factory } from '@trezor/connect/lib/factory';
 import { initLog } from '@trezor/connect/lib/utils/debug';
 import { config } from '@trezor/connect/lib/data/config';
+import { createDeferred } from '@trezor/utils/lib';
 
 import * as iframe from './iframe';
 import * as popup from './popup';
 import webUSBButton from './webusb/button';
 import { parseConnectSettings } from './connectSettings';
 
+import { PopupManager as NewPopupManager } from '@trezor/connect-webextension/lib/popup';
+import { WindowWindowChannel } from './channels/window-window';
+
 const eventEmitter = new EventEmitter();
 const _log = initLog('@trezor/connect-web');
 
 let _settings = parseConnectSettings();
 let _popupManager: popup.PopupManager | undefined;
+
+let _useCoreInPopup = false;
+const handshakePromise = createDeferred();
 
 const initPopupManager = () => {
     const pm = new popup.PopupManager(_settings);
@@ -138,6 +145,7 @@ const handleMessage = (messageEvent: PostMessageEvent) => {
 };
 
 const init = async (settings: Partial<ConnectSettings> = {}): Promise<void> => {
+    console.log('init');
     if (iframe.instance) {
         throw ERRORS.TypedError('Init_AlreadyInitialized');
     }
@@ -156,6 +164,7 @@ const init = async (settings: Partial<ConnectSettings> = {}): Promise<void> => {
     if (_settings.lazyLoad) {
         // reset "lazyLoad" after first use
         _settings.lazyLoad = false;
+        console.log('return lazy');
         return;
     }
 
@@ -168,17 +177,102 @@ const init = async (settings: Partial<ConnectSettings> = {}): Promise<void> => {
     window.addEventListener('message', handleMessage);
     window.addEventListener('unload', dispose);
 
-    await iframe.init(_settings);
+    try {
+        console.log('iframe init');
+        await iframe.init(_settings);
+        console.log('iframe init done');
 
-    // sharedLogger can be disable but it is enable by default.
-    if (_settings.sharedLogger !== false) {
-        // connect-web is running in third-party domain so we use iframe to pass logs to shared worker.
-        iframe.initIframeLogger();
+        // sharedLogger can be disable but it is enable by default.
+        if (_settings.sharedLogger !== false) {
+            // connect-web is running in third-party domain so we use iframe to pass logs to shared worker.
+            iframe.initIframeLogger();
+        }
+    } catch (err) {
+        console.log('init err', err);
+
+        _useCoreInPopup = true;
+        iframe.dispose();
+        // @ts-ignore
+        _popupManager = new NewPopupManager(_settings, {
+            logger: _log,
+            channel: new WindowWindowChannel({
+                name: 'meow',
+                channel: {
+                    peer: 'popup',
+                    here: 'connect-web',
+                },
+            }),
+        });
+
+        // @ts-ignore
+        _popupManager!.channel.on('message', message => {
+            console.log('new popup manager message', message);
+            if (message.type === POPUP.CORE_LOADED) {
+                // @ts-ignore
+                _popupManager.channel.postMessage({
+                    type: POPUP.HANDSHAKE,
+                    // in this case, settings will be validated in popup
+                    payload: { settings: _settings },
+                });
+                // handshakePromise.resolve();
+            }
+        });
     }
 };
 
 const call: CallMethod = async params => {
+    console.log('call para', params)
+    if (_useCoreInPopup) {
+        _log.debug('call', params);
+
+        // request popup window it might be used in the future
+        if (_settings.popup) {
+            _popupManager!.request();
+        }
+
+        console.log('call, waiting channel init');
+
+        // @ts-ignore
+        await _popupManager!.channel.init();
+        // @ts-ignore
+        _popupManager!.channel.postMessage({
+            type: POPUP.INIT,
+            payload: {
+                settings: _settings,
+                useCore: true,
+            },
+        });
+
+        console.log('call, waiting ofr handsahke promise');
+
+        await handshakePromise.promise;
+
+        // post message to core in popup
+        try {
+            // @ts-ignore
+            const response = await _popupManager.channel.postMessage({
+                type: IFRAME.CALL,
+                payload: params,
+            });
+
+            _log.debug('call: response: ', response);
+
+            if (response) {
+                return response;
+            }
+
+            return createErrorMessage(ERRORS.TypedError('Method_NoResponse'));
+        } catch (error) {
+            _log.error('call: error', error);
+            // @ts-ignore
+
+            _popupManager.clear();
+
+            return createErrorMessage(error);
+        }
+    }
     if (!iframe.instance && !iframe.timeout) {
+        console.log('call using iframe');
         // init popup with lazy loading before iframe initialization
         _settings = parseConnectSettings(_settings);
 
@@ -193,8 +287,10 @@ const call: CallMethod = async params => {
 
         // auto init with default settings
         try {
+            console.log('call => init');
             await init(_settings);
         } catch (error) {
+            console.log('call -> init catch', error);
             if (_popupManager) {
                 // Catch fatal iframe errors (not loading)
                 if (['Init_IframeBlocked', 'Init_IframeTimeout'].includes(error.code)) {

@@ -368,12 +368,23 @@ const init = async (payload: PopupInit['payload']) => {
             setLogWriter(logWriterFactory);
         }
 
+        // useCore either
+        // - requested by client (@trezor/connect-webextension package, or possibly if client wants to support webusb?),
+        // - or as a fallback if iframe communication can't be established
         if (payload.useCore) {
-            addWindowEventListener('message', handleMessageInCoreMode, false);
             await initCoreInPopup(payload, logWriterFactory);
         } else {
-            addWindowEventListener('message', handleMessageInIframeMode, false);
-            await initCoreInIframe(payload);
+            console.log('initing iframe ');
+
+            return initCoreInIframe(payload).catch(err => {
+                console.log('initing iframe failed');
+
+                log.debug(
+                    `Failed to establish communication with iframe (${err.message}), loading core`,
+                );
+                removeAllEventListeners();
+                return initCoreInPopup(payload, logWriterFactory);
+            });
         }
     } catch (error) {
         postMessageToParent(createPopupMessage(POPUP.ERROR, { error: error.message }));
@@ -384,6 +395,9 @@ const initCoreInPopup = async (
     payload: PopupInit['payload'],
     logWriterFactory?: () => LogWriter | undefined,
 ) => {
+    console.log('init core in popup');
+    addWindowEventListener('message', handleMessageInCoreMode, false);
+
     // dynamically load core module
     reactEventBus.dispatch({ type: 'loading', message: 'loading core' });
 
@@ -438,6 +452,7 @@ const initCoreInPopup = async (
 };
 
 const initCoreInIframe = async (payload: PopupInit['payload']) => {
+    addWindowEventListener('message', handleMessageInIframeMode, false);
     reactEventBus.dispatch({ type: 'loading', message: 'waiting for iframe init' });
     await initMessageChannelWithIframe(payload, handleMessageInIframeMode);
     // done, popup is ready to handle incoming messages, waiting for handshake from iframe
@@ -513,16 +528,19 @@ const addWindowEventListener = <K extends keyof WindowEventMap>(
     window.addEventListener(type, listener, options);
 };
 
+const removeAllEventListeners = () => {
+    windowEventListeners.forEach(listener => {
+        window.removeEventListener(listener.type, listener.listener);
+    });
+};
+
 let disposed = false;
 const fail = (error: ErrorViewProps) => {
     log.debug('fail: ', error);
     renderConnectUIPromise?.then(() => {
         reactEventBus.dispatch(error);
     });
-    windowEventListeners.forEach(listener => {
-        window.removeEventListener(listener.type, listener.listener);
-    });
-
+    removeAllEventListeners();
     disposed = true;
 };
 
