@@ -12,17 +12,22 @@ interface TransactionListActionsProps extends SearchProps, ExportActionProps {}
 
 export const TransactionListActions = ({
     account,
-    search,
+    searchQuery,
     setSearch,
     setSelectedPage,
+    accountMetadata,
 }: TransactionListActionsProps) => (
     <Wrapper>
         <SearchAction
             account={account}
-            search={search}
+            searchQuery={searchQuery}
             setSearch={setSearch}
             setSelectedPage={setSelectedPage}
         />
-        <ExportAction account={account} />
+        <ExportAction
+            account={account}
+            searchQuery={searchQuery}
+            accountMetadata={accountMetadata}
+        />
     </Wrapper>
 );

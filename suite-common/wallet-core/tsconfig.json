@@ -4,6 +4,7 @@
     "references": [
         { "path": "../device-authenticity" },
         { "path": "../fiat-services" },
+        { "path": "../metadata-types" },
         { "path": "../redux-utils" },
         { "path": "../suite-config" },
         { "path": "../suite-types" },

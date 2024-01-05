@@ -44,12 +44,17 @@ const StyledInput = styled(Input)<{ expanded: boolean }>`
 `;
 export interface SearchProps {
     account: Account;
-    search: string;
+    searchQuery: string;
     setSearch: Dispatch<SetStateAction<string>>;
     setSelectedPage: Dispatch<SetStateAction<number>>;
 }
 
-export const SearchAction = ({ account, search, setSearch, setSelectedPage }: SearchProps) => {
+export const SearchAction = ({
+    account,
+    searchQuery: search,
+    setSearch,
+    setSelectedPage,
+}: SearchProps) => {
     const theme = useTheme();
     const wrapperRef = useRef<HTMLDivElement | null>(null);
     const inputRef = useRef<HTMLInputElement | null>(null);
