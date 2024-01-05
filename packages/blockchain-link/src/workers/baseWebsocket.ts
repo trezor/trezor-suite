@@ -88,6 +88,7 @@ export abstract class BaseWebsocket<T extends EventMap> extends TypedEmitter<T &
         if (ws.listenerCount('open') > 0) {
             ws.emit('error', new CustomError('websocket_timeout'));
             try {
+                ws.once('error', () => {}); // hack; ws throws uncaughtably when there's no error listener
                 ws.close();
             } catch (error) {
                 // empty
