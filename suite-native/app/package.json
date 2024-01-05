@@ -11,8 +11,6 @@
         "test": "jest",
         "lint:js": "yarn g:eslint .",
         "type-check": "tsc -b",
-        "build:android": "cd android && ./gradlew assembleDevDebug",
-        "build:ios:develop": "yarn react-native run-ios --configuration=debug --scheme=Develop",
         "pods": "npx pod-install"
     },
     "expo": {
