@@ -1,3 +1,13 @@
+# 1.0.11
+
+-   fix(blockchain-link): gasPrice null fallback (34d612a06)
+-   fix(blockchain-link): fix solana txs when sending to associated token account (5cb682078)
+-   feat(blockchain-link-utils): add meta for solana BONK token (c8e1762ed)
+-   fix(blockchain-link): filter out non-spl tokens (de631248e)
+-   feat(blockchain-link): remove `TypedRawTransaction` (34d405d12)
+-   refactor(blockchain-link-utils): improve `transformTransaction` params (a28a90142)
+-   chore(blockchain-link): remove ADA `null` subtype (07161b141)
+
 # 1.0.10
 
 -   fix(blockchain-link): add solana vout for self txs (ab6f0acf0)
