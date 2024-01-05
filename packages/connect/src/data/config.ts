@@ -113,6 +113,11 @@ export const config = {
             comment: ['There were protobuf backwards incompatible changes.'],
         },
         {
+            coin: ['ada', 'tada'],
+            min: { T1B1: '0', T2T1: '2.4.3' },
+            comment: ['Since 2.4.3 there is initialize.derive_cardano message'],
+        },
+        {
             methods: ['rippleGetAddress', 'rippleSignTransaction'],
             min: { T1B1: '0', T2T1: '2.1.0' },
             comment: [
