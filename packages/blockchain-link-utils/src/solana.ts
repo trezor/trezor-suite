@@ -275,11 +275,11 @@ export const getTargets = (
         });
 
 const getTokenTransferTxType = (transfers: TokenTransfer[]) => {
-    if (transfers.every(({ type }) => type === 'recv')) {
+    if (transfers.find(({ type }) => type === 'recv')) {
         return 'recv';
     }
 
-    if (transfers.every(({ type }) => type === 'sent')) {
+    if (transfers.find(({ type }) => type === 'sent')) {
         return 'sent';
     }
 
@@ -333,12 +333,13 @@ export const getTxType = (
 
     const isInstructionCreatingTokenAccount = (instruction: ParsedInstruction) =>
         instruction.program === 'spl-associated-token-account' &&
-        instruction.parsed.type === 'create';
+        (instruction.parsed.type === 'create' || instruction.parsed.type === 'createIdempotent');
 
     const isTransfer = parsedInstructions.every(
         instruction =>
             instruction.parsed.type === 'transfer' ||
             instruction.parsed.type === 'transferChecked' ||
+            (instruction.program === 'system' && instruction.parsed.type === 'advanceNonce') ||
             isInstructionCreatingTokenAccount(instruction),
     );
 
