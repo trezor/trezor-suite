@@ -1,3 +1,15 @@
+# 2.1.21
+
+-   fix(blockchain-link): fix solana txs when sending to associated token account (5cb682078)
+-   feat(electrum): support non-batching servers (e06b9375a)
+-   test(blockchain-link): remove `TypedRawTransaction` (d3354fdf2)
+-   feat(blockchain-link): remove `TypedRawTransaction` (34d405d12)
+-   feat(blockchain-link): add `getTransactionHex` method (cbca5dbfd)
+-   refactor(blockchain-link): adjust `transformTransaction` params (2d669d72e)
+-   chore(blockchain-link): remove ADA `null` subtype (07161b141)
+-   test(blockchain-link): smaller timeouts (cd83adc61)
+-   test(blockchain-link): fix error testing (7995e957e)
+
 # 2.1.20
 
 -   chore(connect): use `tslib` as dependency in all public libs (606ecc63b)
