@@ -181,11 +181,9 @@ const discoverNetworkBatchThunk = createThunk(
 
         const chunkBundle: Array<DiscoveryItem> = [];
 
-        A.makeWithIndex(batchSize, index => {
-            const accountPath = network.bip43Path.replace(
-                'i',
-                (lastDiscoveredAccountIndex + index).toString(),
-            );
+        A.makeWithIndex(batchSize, batchIndex => {
+            const index = lastDiscoveredAccountIndex + batchIndex;
+            const accountPath = network.bip43Path.replace('i', index.toString());
 
             const isAccountAlreadyDiscovered = selectIsAccountAlreadyDiscovered(getState(), {
                 deviceState,
