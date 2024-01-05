@@ -9,7 +9,7 @@ export const GetOwnershipProof = Type.Object({
     multisig: Type.Optional(PROTO.MultisigRedeemScriptType),
     scriptType: Type.Optional(PROTO.InternalInputScriptType),
     userConfirmation: Type.Optional(Type.Boolean()),
-    ownershipIds: Type.Optional(Type.Array(Type.String())),
+    ownershipIds: Type.Optional(Type.Array(Type.String(), { minItems: 1 })),
     commitmentData: Type.Optional(Type.String()),
     preauthorized: Type.Optional(Type.Boolean()),
 });

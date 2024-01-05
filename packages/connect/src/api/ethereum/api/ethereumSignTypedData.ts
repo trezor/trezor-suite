@@ -20,6 +20,7 @@ import { EthereumNetworkInfo, DeviceModelInternal } from '../../../types';
 import { EthereumDefinitions } from '@trezor/protobuf/lib/messages-schema';
 import { Assert, Type } from '@trezor/schema-utils';
 
+// This type is not inferred, because it internally uses types that are generic
 type Params = (
     | Omit<EthereumSignTypedDataParams<EthereumSignTypedDataTypes>, 'path'>
     | Omit<EthereumSignTypedHashParams<EthereumSignTypedDataTypes>, 'path'>

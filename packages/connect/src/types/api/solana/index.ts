@@ -23,7 +23,7 @@ export const SolanaTxTokenAccountInfo = Type.Object({
 
 export type SolanaTxAdditionalInfo = Static<typeof SolanaTxAdditionalInfo>;
 export const SolanaTxAdditionalInfo = Type.Object({
-    tokenAccountsInfos: Type.Optional(Type.Array(SolanaTxTokenAccountInfo)),
+    tokenAccountsInfos: Type.Optional(Type.Array(SolanaTxTokenAccountInfo, { minItems: 1 })),
 });
 
 export type SolanaSignTransaction = Static<typeof SolanaSignTransaction>;

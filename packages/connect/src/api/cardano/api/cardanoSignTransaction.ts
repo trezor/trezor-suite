@@ -179,15 +179,12 @@ export default class CardanoSignTransaction extends AbstractMethod<
 
         let requiredSigners: PROTO.CardanoTxRequiredSigner[] = [];
         if (payload.requiredSigners) {
-            requiredSigners = payload.requiredSigners.map(
-                requiredSigner =>
-                    ({
-                        key_path: requiredSigner.keyPath
-                            ? validatePath(requiredSigner.keyPath, 3)
-                            : undefined,
-                        key_hash: requiredSigner.keyHash,
-                    }) as PROTO.CardanoTxRequiredSigner,
-            );
+            requiredSigners = payload.requiredSigners.map(requiredSigner => ({
+                key_path: requiredSigner.keyPath
+                    ? validatePath(requiredSigner.keyPath, 3)
+                    : undefined,
+                key_hash: requiredSigner.keyHash,
+            }));
         }
 
         const collateralReturnWithData = payload.collateralReturn
