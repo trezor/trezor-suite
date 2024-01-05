@@ -1,8 +1,82 @@
 {
     "version": 1,
-    "timestamp": "2023-12-13T00:00:00+00:00",
-    "sequence": 49,
+    "timestamp": "2024-01-05T00:00:00+00:00",
+    "sequence": 50,
     "actions": [
+        {
+            "conditions": [
+                {
+                    "duration": {
+                        "from": "2024-01-05T00:00:00+00:00",
+                        "to": "2024-01-18T00:00:00+00:00"
+                    },
+                    "environment": {
+                        "desktop": "23.12.3",
+                        "mobile": "!",
+                        "web": "!"
+                    },
+                    "devices": [
+                        {
+                            "model": "T2B1",
+                            "firmware": ">=2.6.4",
+                            "bootloader": "*",
+                            "variant": "regular",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T2T1",
+                            "firmware": ">=2.6.4",
+                            "bootloader": "*",
+                            "variant": "regular",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        }
+                    ],
+                    "settings": [
+                        {
+                            "sol": true
+                        }
+                    ]
+                }
+            ],
+            "message": {
+                "id": "5e2f8b7e-1ca6-4e7e-a125-a9ec0acc8e06",
+                "priority": 90,
+                "dismissible": true,
+                "variant": "info",
+                "category": "banner",
+                "content": {
+                    "en-GB": "If you encounter any Solana discovery errors, we recommend updating to the Early Access Program version in Settings.",
+                    "en": "If you encounter any Solana discovery errors, we recommend updating to the Early Access Program version in Settings.",
+                    "es": "Si encuentra algún error de descubrimiento de Solana, le recomendamos que actualice a la versión del Programa de acceso anticipado en Configuración.",
+                    "cs": "Pokud se setkáte s chybami při detekci Solany, doporučujeme v Nastavení aktualizovat na verzi Early Access Program.",
+                    "ru": "Если вы столкнулись с ошибками при обнаружения Solana, рекомендуем обновить версию Программа раннего доступа в Настройках.",
+                    "ja": "Solanaの検出エラーが発生した場合は、設定から早期アクセスプログラムのバージョンに更新することをお勧めします   。",
+                    "hu": "Ha a Solana felderítési hibákkal találkozik, javasoljuk, hogy a Beállításokban frissítsen a Korai Hozzáférés Program verziójára.",
+                    "it": "Se si verificano errori di rilevamento di Solana, si consiglia di aggiornare la versione Programma di Accesso Anticipato in Impostazioni.",
+                    "fr": "Si vous rencontrez des erreurs de découverte de Solana, nous vous recommandons de mettre à jour la version du Programme Early Access dans les paramètres.",
+                    "de": "Wenn Sie Kontoentdeckungsfehler bei Solana feststellen, empfehlen wir Ihnen, in den Einstellungen auf die Version des Early Access-Program zu aktualisieren."
+                },
+                "cta": {
+                    "action": "internal-link",
+                    "link": "settings-index",
+                    "anchor": "@general-settings/early-access",
+                    "label": {
+                        "en-GB": "Go to Settings",
+                        "en": "Go to Settings",
+                        "es": "Ir a Configuración",
+                        "cs": "Přejít do nastavení",
+                        "ru": "Перейти к настройкам",
+                        "ja": "設定に移動",
+                        "hu": "Ugrás a Beállításokhoz",
+                        "it": "Vai alle impostazioni",
+                        "fr": "Accéder aux paramètres",
+                        "de": "Zu den Einstellungen"
+                    }
+                }
+            }
+        },
         {
             "conditions": [
                 {
