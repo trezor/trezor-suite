@@ -12,12 +12,15 @@ import { Account } from 'src/types/wallet';
 import { isFeatureFlagEnabled, getTxsPerPage } from '@suite-common/suite-utils';
 import { getTitleForNetwork, getTitleForCoinjoinAccount } from '@suite-common/wallet-utils';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
+import { AccountLabels } from '@suite-common/metadata-types';
 
 export interface ExportActionProps {
     account: Account;
+    searchQuery: string;
+    accountMetadata: AccountLabels;
 }
 
-export const ExportAction = ({ account }: ExportActionProps) => {
+export const ExportAction = ({ account, searchQuery, accountMetadata }: ExportActionProps) => {
     const [isExportRunning, setIsExportRunning] = useState(false);
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
@@ -60,7 +63,15 @@ export const ExportAction = ({ account }: ExportActionProps) => {
                     }),
                 );
                 const accountName = accountLabel || getAccountTitle();
-                await dispatch(exportTransactionsThunk({ account, accountName, type }));
+                await dispatch(
+                    exportTransactionsThunk({
+                        account,
+                        accountName,
+                        type,
+                        searchQuery,
+                        accountMetadata,
+                    }),
+                );
             } catch (error) {
                 console.error('Export transaction failed: ', error);
                 dispatch(
@@ -73,7 +84,16 @@ export const ExportAction = ({ account }: ExportActionProps) => {
                 setIsExportRunning(false);
             }
         },
-        [isExportRunning, account, dispatch, translationString, getAccountTitle, accountLabel],
+        [
+            isExportRunning,
+            account,
+            dispatch,
+            translationString,
+            getAccountTitle,
+            accountLabel,
+            searchQuery,
+            accountMetadata,
+        ],
     );
 
     if (!isFeatureFlagEnabled('EXPORT_TRANSACTIONS')) {

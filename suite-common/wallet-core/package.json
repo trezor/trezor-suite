@@ -15,6 +15,7 @@
         "@reduxjs/toolkit": "1.9.5",
         "@suite-common/device-authenticity": "workspace:*",
         "@suite-common/fiat-services": "workspace:*",
+        "@suite-common/metadata-types": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-config": "workspace:*",
         "@suite-common/suite-types": "workspace:*",

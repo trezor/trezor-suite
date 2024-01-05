@@ -17,7 +17,9 @@ import {
     enhanceTransaction,
     getRbfParams,
     replaceEthereumSpecific,
+    advancedSearchTransactions,
 } from '@suite-common/wallet-utils';
+import { AccountLabels } from '@suite-common/metadata-types';
 import TrezorConnect from '@trezor/connect';
 import { blockbookUtils } from '@trezor/blockchain-link-utils';
 import { Transaction } from '@trezor/blockchain-link-types/lib/blockbook';
@@ -223,10 +225,14 @@ export const exportTransactionsThunk = createThunk(
             account,
             accountName,
             type,
+            searchQuery,
+            accountMetadata,
         }: {
             account: Account;
             accountName: string;
             type: ExportFileType;
+            searchQuery: string;
+            accountMetadata: AccountLabels;
         },
         { getState, extra },
     ) => {
@@ -263,12 +269,17 @@ export const exportTransactionsThunk = createThunk(
                 })),
             }));
 
+        const filteredTransaction =
+            searchQuery.trim() !== ''
+                ? advancedSearchTransactions(transactions, accountMetadata, searchQuery)
+                : transactions;
+
         // Prepare data in right format
         const data = await formatData({
             coin: account.symbol,
             accountName,
             type,
-            transactions,
+            transactions: filteredTransaction,
             localCurrency,
         });
 

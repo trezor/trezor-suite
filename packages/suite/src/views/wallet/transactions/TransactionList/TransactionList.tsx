@@ -53,7 +53,7 @@ export const TransactionList = ({
     const network = getAccountNetwork(account);
 
     // Search
-    const [search, setSearch] = useState('');
+    const [searchQuery, setSearchQuery] = useState('');
     const [searchedTransactions, setSearchedTransactions] = useState(transactions);
     const [hasFetchedAll, setHasFetchedAll] = useState(false);
 
@@ -61,11 +61,11 @@ export const TransactionList = ({
 
     useDebounce(
         () => {
-            const results = advancedSearchTransactions(transactions, accountMetadata, search);
+            const results = advancedSearchTransactions(transactions, accountMetadata, searchQuery);
             setSearchedTransactions(results);
         },
         200,
-        [transactions, account.metadata, search, accountMetadata],
+        [transactions, account.metadata, searchQuery, accountMetadata],
     );
 
     useEffect(() => {
@@ -93,7 +93,7 @@ export const TransactionList = ({
         setSelectedPage(startPage);
     }, [account.descriptor, account.symbol, startPage]);
 
-    const isSearching = search !== '';
+    const isSearching = searchQuery.trim() !== '';
     const totalItems = isSearching ? searchedTransactions.length : account.history.total;
 
     const onPageSelected = (page: number) => {
@@ -176,9 +176,10 @@ export const TransactionList = ({
             actions={
                 <TransactionListActions
                     account={account}
-                    search={search}
-                    setSearch={setSearch}
+                    searchQuery={searchQuery}
+                    setSearch={setSearchQuery}
                     setSelectedPage={setSelectedPage}
+                    accountMetadata={accountMetadata}
                 />
             }
             data-test="@wallet/accounts/transaction-list"
