@@ -53,7 +53,8 @@ RUN apt-get update && apt-get install -y \
     zip \
     jq \
     rsync \
-    curl
+    curl \
+    bc
 
 RUN apt-get install -y \
     python3-dev \
