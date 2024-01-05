@@ -480,7 +480,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         return this.externalState[this.instance];
     }
 
-    async validateState(networkType?: NETWORK.NetworkType, preauthorized = false) {
+    async validateState(preauthorized = false) {
         if (!this.features) return;
 
         if (!this.features.unlocked && preauthorized) {
@@ -493,7 +493,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         }
 
         const expectedState = this.getExternalState();
-        const state = await this.getCommands().getDeviceState(networkType);
+        const state = await this.getCommands().getDeviceState();
         const uniqueState = `${state}@${this.features.device_id || 'device_id'}:${this.instance}`;
         if (!this.useLegacyPassphrase() && this.features.session_id) {
             this.setInternalState(this.features.session_id);

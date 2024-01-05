@@ -213,12 +213,11 @@ const MAX_PIN_TRIES = 3;
 /** Including up to 3 pin tries **/
 const getInvalidDeviceState = async (
     device: Device,
-    network: AbstractMethod<any>['network'],
     preauthorized?: boolean,
 ): Promise<string | undefined> => {
     for (let i = 0; i < MAX_PIN_TRIES - 1; ++i) {
         try {
-            return await device.validateState(network, preauthorized);
+            return await device.validateState(preauthorized);
         } catch (error) {
             if (error.message.includes('PIN invalid')) {
                 postMessage(createUiMessage(UI.INVALID_PIN, { device: device.toMessageObject() }));
@@ -228,7 +227,7 @@ const getInvalidDeviceState = async (
         }
     }
 
-    return device.validateState(network, preauthorized);
+    return device.validateState(preauthorized);
 };
 
 /**
@@ -392,11 +391,7 @@ const inner = async (method: AbstractMethod<any>, device: Device) => {
     const isDeviceUnlocked = device.features.unlocked;
     if (method.useDeviceState) {
         try {
-            let invalidDeviceState = await getInvalidDeviceState(
-                device,
-                method.network,
-                method.preauthorized,
-            );
+            let invalidDeviceState = await getInvalidDeviceState(device, method.preauthorized);
             if (isUsingPopup) {
                 while (invalidDeviceState) {
                     const uiPromise = uiPromises.create(UI.INVALID_PASSPHRASE_ACTION, device);
@@ -418,7 +413,6 @@ const inner = async (method: AbstractMethod<any>, device: Device) => {
 
                         invalidDeviceState = await getInvalidDeviceState(
                             device,
-                            method.network,
                             method.preauthorized,
                         );
                     } else {
