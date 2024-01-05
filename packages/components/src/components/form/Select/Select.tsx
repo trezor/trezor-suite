@@ -18,6 +18,10 @@ const createSelectStyle = (theme: DefaultTheme): StylesConfig<Option, boolean> =
         ...base,
         zIndex: zIndices.modal /* Necessary to be visible inside a Modal */,
     }),
+    menu: base => ({
+        ...base,
+        background: theme.backgroundSurfaceElevation1,
+    }),
     option: (base, { isFocused }) => ({
         ...base,
         background: isFocused ? theme.backgroundSurfaceElevation0 : 'transparent',
