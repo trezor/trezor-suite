@@ -23,7 +23,8 @@ export type Params<T> = CommonParams & T & { bundle?: undefined };
 interface Bundle<T> {
     bundle: T[];
 }
-export const Bundle = <T extends TSchema>(type: T) => Type.Object({ bundle: Type.Array(type) });
+export const Bundle = <T extends TSchema>(type: T) =>
+    Type.Object({ bundle: Type.Array(type, { minItems: 1 }) });
 
 export type BundledParams<T> = CommonParams & Bundle<T>;
 

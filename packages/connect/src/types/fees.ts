@@ -19,8 +19,8 @@ export const FeeLevel = Type.Object({
     ]),
     feePerUnit: Type.String(),
     blocks: Type.Number(),
-    feeLimit: Type.Optional(Type.String()),
-    feePerTx: Type.Optional(Type.String()),
+    feeLimit: Type.Optional(Type.String()), // eth gas limit
+    feePerTx: Type.Optional(Type.String()), // fee for BlockchainEstimateFeeParams.request.specific
 });
 
 export type SelectFeeLevel = Static<typeof SelectFeeLevel>;

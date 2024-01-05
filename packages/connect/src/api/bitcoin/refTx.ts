@@ -298,7 +298,8 @@ export const validateReferencedTransactions = ({
             // validate specific fields of origTx
             Assert(
                 Type.Object({
-                    inputs: Type.Array(PROTO.TxInput),
+                    inputs: Type.Array(PROTO.TxInput, { minItems: 1 }),
+                    outputs: Type.Array(PROTO.TxOutputType, { minItems: 1 }),
                 }),
                 tx,
             );
@@ -308,8 +309,8 @@ export const validateReferencedTransactions = ({
         // validate specific fields of refTx
         Assert(
             Type.Object({
-                inputs: Type.Array(PROTO.PrevInput),
-                bin_outputs: Type.Array(PROTO.TxOutputBinType),
+                inputs: Type.Array(PROTO.PrevInput, { minItems: 1 }),
+                bin_outputs: Type.Array(PROTO.TxOutputBinType, { minItems: 1 }),
             }),
             tx,
         );

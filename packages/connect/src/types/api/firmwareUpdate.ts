@@ -6,7 +6,7 @@ export type FirmwareUpdate = Static<typeof FirmwareUpdate>;
 export const FirmwareUpdate = Type.Union([
     Type.Object({
         binary: Type.Optional(Type.Undefined()),
-        version: Type.Array(Type.Number()),
+        version: Type.Array(Type.Number(), { minItems: 3, maxItems: 3 }),
         btcOnly: Type.Optional(Type.Boolean()),
         baseUrl: Type.Optional(Type.String()),
         intermediaryVersion: Type.Optional(IntermediaryVersion),

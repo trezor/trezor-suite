@@ -7,7 +7,7 @@ import { Assert, Type, Static } from '@trezor/schema-utils';
 export type AssetGroupWithTokens = Static<typeof AssetGroupWithTokens>;
 export const AssetGroupWithTokens = Type.Object({
     policyId: Type.String(),
-    tokens: Type.Array(PROTO.CardanoToken),
+    tokens: Type.Array(PROTO.CardanoToken, { minItems: 1 }),
 });
 
 const tokenAmountsToProto = (tokenAmounts: CardanoToken[]): PROTO.CardanoToken[] =>

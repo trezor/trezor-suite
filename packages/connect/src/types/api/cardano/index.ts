@@ -160,7 +160,7 @@ export const CardanoPoolParameters = Type.Object({
     cost: Type.String(),
     margin: CardanoPoolMargin,
     rewardAccount: Type.String(),
-    owners: Type.Array(CardanoPoolOwner),
+    owners: Type.Array(CardanoPoolOwner, { minItems: 1 }),
     relays: Type.Array(CardanoPoolRelay),
     metadata: Type.Optional(CardanoPoolMetadata),
 });

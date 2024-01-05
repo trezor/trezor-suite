@@ -16,7 +16,7 @@ export const GetAddress = Type.Composite([
         crossChain: Type.Optional(Type.Boolean()),
         multisig: Type.Optional(PROTO.MultisigRedeemScriptType),
         scriptType: Type.Optional(PROTO.InternalInputScriptType),
-        unlockPath: Type.Optional(Type.Object({ address_n: Type.Array(Type.Number()) })),
+        unlockPath: Type.Optional(PROTO.UnlockPath),
     }),
 ]);
 
