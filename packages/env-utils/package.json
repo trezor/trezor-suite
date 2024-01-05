@@ -1,6 +1,6 @@
 {
     "name": "@trezor/env-utils",
-    "version": "1.0.10",
+    "version": "1.0.11",
     "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/env-utils",
     "npmPublishAccess": "public",
     "license": "See LICENSE.md in repo root",
