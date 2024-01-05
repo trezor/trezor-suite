@@ -1,3 +1,13 @@
+# 9.1.8
+
+-   fix(connect-explorer): eth getAccountInfo coin fix (0108b96)
+-   fix(connect): do not check firmware range for devices in bootloader (ed53f9f)
+-   feat(connect): add changeWipeCode method (b85d957)
+-   deps(connect-plugin-ethereum): @metamask/eth-sig-util@^7.0.0->^7.0.1 (e24c80a)
+-   chore(connect): improve origTxs and refTxs (ffcb3ee)
+-   feat(connect): blockchain-link API adjusted (2df1416)
+-   chore(connect-explorer): add ADA params (9969d65)
+
 # 9.1.7
 
 -   fix(connect): correct UiRequestConfirmation type in solanaGetPublicKey (a93ea1890)
