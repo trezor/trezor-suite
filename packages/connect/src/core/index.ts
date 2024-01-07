@@ -179,6 +179,19 @@ const handleMessage = (message: CoreRequestMessage) => {
             }
             break;
         }
+        // todo: not sure about name UI group
+        case UI.EJECT_DEVICE: {
+            const origin = DataManager.getSettings('origin');
+            if (!origin) {
+                return;
+            }
+            storage.save(data => {
+                delete data.origin[origin]?.preferredDevice;
+                return data;
+            });
+
+            break;
+        }
 
         // message from index
         case IFRAME.CALL:
