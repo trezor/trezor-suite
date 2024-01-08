@@ -7,7 +7,7 @@ import { GuideNode } from 'src/components/guide';
 import { useGuideSearch } from 'src/hooks/guide';
 
 import type { GuideCategory } from '@suite-common/suite-types';
-import { borders, spacingsPx } from '@trezor/theme';
+import { spacingsPx } from '@trezor/theme';
 
 const Wrapper = styled.div`
     margin-bottom: ${spacingsPx.xs};
@@ -37,19 +37,6 @@ const PreviewContent = styled.div`
     & > em {
         font-style: inherit;
         color: ${({ theme }) => theme.TYPE_DARK_GREY};
-    }
-`;
-
-const StyledInput = styled(Input)`
-    input {
-        background-color: ${({ theme }) => theme.BG_GREY_ALT};
-        border-radius: ${borders.radii.xs};
-        border-color: ${({ theme }) => theme.BG_GREY_ALT};
-        transition: border-color 0.2s;
-
-        :focus {
-            border-color: ${({ theme }) => theme.STROKE_GREY_ALT};
-        }
     }
 `;
 
@@ -86,7 +73,7 @@ export const GuideSearch = ({ pageRoot, setSearchActive }: GuideSearchProps) => 
 
     return (
         <Wrapper>
-            <StyledInput
+            <Input
                 placeholder={translationString('TR_SEARCH')}
                 value={query}
                 onChange={e => setQuery(e.currentTarget.value)}
