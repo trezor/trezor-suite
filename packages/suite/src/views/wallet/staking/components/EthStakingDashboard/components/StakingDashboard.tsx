@@ -6,6 +6,7 @@ import { StakingCard } from './StakingCard';
 import { ApyCard } from './ApyCard';
 import { PayoutCard } from './PayoutCard';
 import { ClaimCard } from './claim/ClaimCard';
+import { Transactions } from './Transactions';
 
 const FlexCol = styled.div`
     display: flex;
@@ -49,6 +50,6 @@ export const StakingDashboard = () => (
 
         <Divider />
 
-        {/* TODO: Add transactions  */}
+        <Transactions />
     </>
 );
