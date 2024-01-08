@@ -126,7 +126,6 @@ export default class CardanoGetAddress extends AbstractMethod<'cardanoGetAddress
             const batch = this.params[i];
 
             batch.address_parameters = modifyAddressParametersForBackwardsCompatibility(
-                this.device,
                 batch.address_parameters,
             );
 
