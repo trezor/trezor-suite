@@ -11,7 +11,6 @@ import {
     CheckBox,
     Switch,
     ListItem,
-    SelectableListItem,
     IconButton,
     InputWrapper,
     Input,
@@ -267,27 +266,16 @@ export const DemoScreen = () => {
                             <Radio
                                 key="first"
                                 value="first"
+                                accessibilityLabel="First"
                                 onPress={handleRadioPress}
                                 isChecked={radioChecked === 'first'}
                             />
                             <Radio
                                 key="second"
                                 value="second"
+                                accessibilityLabel="First"
                                 onPress={handleRadioPress}
                                 isChecked={radioChecked === 'second'}
-                            />
-                            <Radio
-                                key="third"
-                                value="third"
-                                onPress={handleRadioPress}
-                                isDisabled
-                            />
-                            <Radio
-                                key="fourth"
-                                value="fourth"
-                                onPress={handleRadioPress}
-                                isChecked
-                                isDisabled
                             />
                         </Box>
                     </Box>
@@ -330,16 +318,6 @@ export const DemoScreen = () => {
                             subtitle="Description of that not wrapped example with long and I mean really long Headline"
                             hasRightArrow
                             isTextTruncated
-                        />
-                    </Box>
-                    <Box marginVertical="medium">
-                        <SelectableListItem
-                            iconName="placeholder"
-                            title="Headline"
-                            subtitle="Description of that headline"
-                            onPress={handleRadioPress}
-                            value="firstSelectable"
-                            isChecked={radioChecked === 'firstSelectable'}
                         />
                     </Box>
                     <Box marginTop="medium" marginBottom="medium">

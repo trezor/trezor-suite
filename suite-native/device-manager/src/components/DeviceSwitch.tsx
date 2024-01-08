@@ -68,7 +68,11 @@ export const DeviceSwitch = () => {
                     )}
                 </Box>
                 {isDeviceManagerVisible && (
-                    <TouchableOpacity onPress={toggleDeviceManager}>
+                    <TouchableOpacity
+                        onPress={toggleDeviceManager}
+                        accessibilityRole="button"
+                        accessibilityLabel="Close"
+                    >
                         <Box paddingHorizontal="medium">
                             <Icon name="close" size="mediumLarge" />
                         </Box>

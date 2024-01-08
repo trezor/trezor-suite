@@ -96,6 +96,8 @@ export const BottomSheetHeader = ({
                             onPress={onCloseSheet}
                             colorScheme="tertiaryElevation0"
                             size="medium"
+                            accessibilityRole="button"
+                            accessibilityLabel="Close"
                         />
                     )}
                 </View>

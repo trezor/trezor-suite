@@ -83,7 +83,7 @@ export const Switch = ({ isChecked, onChange, isDisabled = false }: SwitchProps)
     };
 
     return (
-        <Pressable onPress={handlePress}>
+        <Pressable onPress={handlePress} accessibilityRole="switch">
             <Animated.View style={[animatedSwitchContainerStyle, applyStyle(switchContainerStyle)]}>
                 <Animated.View style={[animatedSwitchCircleStyle, applyStyle(switchCircleStyle)]} />
             </Animated.View>

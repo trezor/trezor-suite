@@ -15,6 +15,8 @@ export const GoBackIcon = () => {
             size="medium"
             colorScheme="tertiaryElevation0"
             onPress={handleGoBack}
+            accessibilityRole="button"
+            accessibilityLabel="Go back"
         />
     );
 };

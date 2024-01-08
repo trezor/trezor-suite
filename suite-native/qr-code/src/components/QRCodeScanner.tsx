@@ -63,6 +63,7 @@ export const QRCodeScanner = ({ onCodeScanned }: QRCodeScannerProps) => {
                     barCodeTypes={barCodeTypes}
                     style={applyStyle(cameraStyle)}
                     type="back"
+                    accessibilityLabel="QR code scanner"
                 />
             );
 

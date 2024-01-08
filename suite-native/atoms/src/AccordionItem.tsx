@@ -76,7 +76,11 @@ export const AccordionItem = ({ title, content }: AccordionItemProps) => {
     const icon: IconName = isOpen ? 'minus' : 'plus';
 
     return (
-        <Pressable onPress={toggleOpen}>
+        <Pressable
+            onPress={toggleOpen}
+            accessibilityRole="button"
+            accessibilityLabel={`expand ${title}`}
+        >
             <VStack>
                 <Box>
                     <Box style={applyStyle(triggerStyle)}>

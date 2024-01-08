@@ -68,7 +68,13 @@ export const SelectItem = ({
     if (G.isNullable(value)) return null;
 
     return (
-        <TouchableOpacity style={applyStyle(selectItemStyle)} onPress={onSelect}>
+        <TouchableOpacity
+            style={applyStyle(selectItemStyle)}
+            onPress={onSelect}
+            accessibilityRole="radio"
+            accessibilityState={{ checked: isSelected }}
+            accessibilityLabel={label}
+        >
             {icon}
             <Box style={applyStyle(underlineSectionStyle, { isLastChild, isSelected })}>
                 <Text numberOfLines={1}>{label}</Text>

@@ -51,18 +51,24 @@ export const AboutUsBanners = () => {
                             size="large"
                             colorScheme="tertiaryElevation1"
                             iconName="facebook"
+                            accessibilityRole="link"
+                            accessibilityLabel="facebook"
                             onPress={() => openLink('https://www.facebook.com/trezor.io')}
                         />
                         <IconButton
                             size="large"
                             colorScheme="tertiaryElevation1"
                             iconName="twitter"
+                            accessibilityRole="link"
+                            accessibilityLabel="twitter"
                             onPress={() => openLink('https://twitter.com/Trezor')}
                         />
                         <IconButton
                             size="large"
                             colorScheme="tertiaryElevation1"
                             iconName="github"
+                            accessibilityRole="link"
+                            accessibilityLabel="github"
                             onPress={() => openLink('https://github.com/trezor')}
                         />
                     </HStack>

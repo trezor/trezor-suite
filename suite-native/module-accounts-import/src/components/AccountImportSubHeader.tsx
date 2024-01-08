@@ -43,6 +43,8 @@ export const AccountImportSubHeader = () => {
                         iconName="close"
                         colorScheme="tertiaryElevation0"
                         onPress={handleCloseOnboarding}
+                        accessibilityRole="button"
+                        accessibilityLabel="close"
                         size="medium"
                     />
                 ) : null

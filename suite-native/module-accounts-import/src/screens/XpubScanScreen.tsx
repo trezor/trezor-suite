@@ -167,6 +167,7 @@ export const XpubScanScreen = ({
                             testID="@accounts-import/sync-coins/xpub-input"
                             name="xpubAddress"
                             label={inputLabel}
+                            accessibilityLabel="input xpub"
                             multiline
                         />
                         {isXpubFormFilled && (
