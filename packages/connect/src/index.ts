@@ -1,7 +1,7 @@
 import EventEmitter from 'events';
 
 import { createDeferred, Deferred } from '@trezor/utils/lib/createDeferred';
-import { Core, initCore, initTransport } from './core';
+import { Core, initCore } from './core';
 import { factory } from './factory';
 import { parseConnectSettings } from './data/connectSettings';
 import { initLog } from './utils/debug';
@@ -127,9 +127,7 @@ const init = async (settings: Partial<ConnectSettings> = {}) => {
         return;
     }
 
-    _core = await initCore(_settings);
-    _core.on(CORE_EVENT, handleMessage);
-    await initTransport(_settings);
+    _core = await initCore(_settings, handleMessage);
 };
 
 const call: CallMethod = async params => {
