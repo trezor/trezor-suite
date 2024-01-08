@@ -18,6 +18,7 @@
             "env-utils",
             "protocol",
             "protobuf",
+            "schema-utils",
           ]
 
 .packages_matrix_connect: &packages_matrix_connect
