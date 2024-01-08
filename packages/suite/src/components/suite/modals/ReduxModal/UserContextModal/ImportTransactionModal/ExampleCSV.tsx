@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Paragraph, Icon, variables, motionAnimation } from '@trezor/components';
+import { Paragraph, Icon, motionAnimation } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { useSelector, useTranslation } from 'src/hooks/suite';
 import { selectIsLabelingAvailable } from 'src/reducers/suite/metadataReducer';
-import { borders } from '@trezor/theme';
+import { borders, spacingsPx, typography } from '@trezor/theme';
 
 const Wrapper = styled.div`
     display: flex;
@@ -26,11 +26,12 @@ const ExpandWrapper = styled(motion.div)`
 
 const ExpandButton = styled.div`
     display: flex;
-    cursor: pointer;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: 500;
+    align-items: center;
     justify-content: space-between;
+    gap: ${spacingsPx.xxs};
+    color: ${({ theme }) => theme.textSubdued};
+    ${typography.label}
+    cursor: pointer;
 `;
 
 export const ExampleCSV = () => {
@@ -64,6 +65,7 @@ export const ExampleCSV = () => {
                             : 'TR_IMPORT_CSV_MODAL_SHOW_EXAMPLE'
                     }
                 />
+
                 <Icon size={16} icon={!isExpanded ? 'ARROW_DOWN' : 'ARROW_UP'} />
             </ExpandButton>
 

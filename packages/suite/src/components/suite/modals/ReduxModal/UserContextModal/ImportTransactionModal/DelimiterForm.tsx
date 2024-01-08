@@ -6,7 +6,7 @@ import { Translation } from 'src/components/suite';
 const Wrapper = styled.div`
     display: flex;
     align-items: center;
-    min-height: 32px; /* Input height */
+    min-height: 36px; /* Input height */
     margin-top: 16px;
 `;
 
@@ -20,6 +20,11 @@ const Label = styled.span`
 
 const StyledInput = styled(Input)`
     width: 120px;
+
+    /* until the elevation context is implemented */
+    input {
+        background: ${({ theme }) => theme.backgroundNeutralSubtleOnElevation1};
+    }
 `;
 
 interface DelimiterFormProps {
