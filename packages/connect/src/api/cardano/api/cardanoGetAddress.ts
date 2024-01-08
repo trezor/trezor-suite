@@ -119,33 +119,12 @@ export default class CardanoGetAddress extends AbstractMethod<'cardanoGetAddress
         return response.message;
     }
 
-    _ensureFirmwareSupportsBatch(batch: Params) {
-        const SCRIPT_ADDRESSES_TYPES = [
-            PROTO.CardanoAddressType.BASE_SCRIPT_KEY,
-            PROTO.CardanoAddressType.BASE_KEY_SCRIPT,
-            PROTO.CardanoAddressType.BASE_SCRIPT_SCRIPT,
-            PROTO.CardanoAddressType.POINTER_SCRIPT,
-            PROTO.CardanoAddressType.ENTERPRISE_SCRIPT,
-            PROTO.CardanoAddressType.REWARD_SCRIPT,
-        ];
-
-        if (SCRIPT_ADDRESSES_TYPES.includes(batch.address_parameters.address_type)) {
-            if (!this.device.atLeast(['0', '2.4.3'])) {
-                throw ERRORS.TypedError(
-                    'Method_InvalidParameter',
-                    `Address type not supported by device firmware`,
-                );
-            }
-        }
-    }
-
     async run() {
         const responses: MethodReturnType<typeof this.name> = [];
 
         for (let i = 0; i < this.params.length; i++) {
             const batch = this.params[i];
 
-            this._ensureFirmwareSupportsBatch(batch);
             batch.address_parameters = modifyAddressParametersForBackwardsCompatibility(
                 this.device,
                 batch.address_parameters,
