@@ -3,15 +3,19 @@
     "version": "1.0.0",
     "license": "See LICENSE.md in repo root",
     "sideEffects": false,
-    "main": "src/index",
+    "main": "lib/index",
+    "npmPublishAccess": "public",
     "files": [
-        "src/"
+        "lib/"
     ],
     "scripts": {
         "test:unit": "jest",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "type-check": "tsc --build",
-        "codegen": "ts-node --skip-project ./src/codegen.ts"
+        "build:lib": "rimraf ./lib && yarn tsc --build tsconfig.lib.json",
+        "codegen": "ts-node --skip-project ./src/codegen.ts",
+        "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
+        "prepublish": "yarn tsx ../../scripts/prepublish.js"
     },
     "devDependencies": {
         "@sinclair/typebox-codegen": "^0.8.13",
