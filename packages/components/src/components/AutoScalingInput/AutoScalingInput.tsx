@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, forwardRef, useState, ChangeEvent } from 'react';
+import React, { useRef, useEffect, forwardRef, useState, ChangeEvent, useCallback } from 'react';
 import styled from 'styled-components';
 
 const HiddenInputToMeasurePlaceholderScrollableWidth = styled.input`
@@ -42,11 +42,14 @@ const createHandleOnChangeAndApplyNewWidth =
         onChange?.(event);
     };
 
-type Props = React.DetailedHTMLProps<
-    React.InputHTMLAttributes<HTMLInputElement>,
-    HTMLInputElement
-> & { minWidth: number };
+interface Props
+    extends React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> {
+    minWidth: number;
+}
 
+/**
+ * TODO: This is Labeling Input and this maybe consolidated with `withEditable`
+ */
 export const AutoScalingInput = forwardRef<HTMLInputElement, Props>(
     ({ value, minWidth, ...props }, ref) => {
         const [placeholderWidth, setPlaceholderWidth] = useState(0);
@@ -76,6 +79,20 @@ export const AutoScalingInput = forwardRef<HTMLInputElement, Props>(
             });
         }, [value, inputRef, calculatedMin]);
 
+        const innerRef = useCallback(
+            (e: HTMLInputElement) => {
+                if (ref && typeof ref === 'object') {
+                    ref.current = e;
+                }
+                if (ref && typeof ref === 'function') {
+                    ref(e);
+                }
+
+                inputRef.current = e;
+            },
+            [ref],
+        );
+
         return (
             <>
                 <HiddenInputToMeasurePlaceholderScrollableWidth
@@ -88,16 +105,7 @@ export const AutoScalingInput = forwardRef<HTMLInputElement, Props>(
                 />
                 <input
                     {...props}
-                    ref={e => {
-                        if (ref && typeof ref === 'object') {
-                            ref.current = e;
-                        }
-                        if (ref && typeof ref === 'function') {
-                            ref(e);
-                        }
-
-                        inputRef.current = e;
-                    }}
+                    ref={innerRef}
                     type="text"
                     value={value}
                     onChange={createHandleOnChangeAndApplyNewWidth({

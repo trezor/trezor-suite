@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { AutoScalingInput } from './AutoScalingInput';
+import { AutoScalingInput as Input } from './AutoScalingInput';
 
 const Wrapper = styled.div`
     display: flex;
@@ -7,14 +7,14 @@ const Wrapper = styled.div`
     flex-direction: column;
 `;
 
-const BorderAutoScalingInput = styled(AutoScalingInput)`
+const BorderAutoScalingInput = styled(Input)`
     padding: 1px 5px 1px 5px;
     border-radius: 3px;
     border-style: solid;
     border-width: 1px;
 `;
 
-const BorderlessAutoScalingInput = styled(AutoScalingInput)`
+const BorderlessAutoScalingInput = styled(Input)`
     padding: 1px 5px 1px 5px;
     border-style: solid;
     border-width: 0px;
@@ -22,10 +22,10 @@ const BorderlessAutoScalingInput = styled(AutoScalingInput)`
 `;
 
 export default {
-    title: 'Misc/AutoScalingInput',
+    title: 'Form/AutoScalingInput',
 };
 
-export const Box = {
+export const AutoScalingInput = {
     render: () => (
         <>
             <Wrapper>

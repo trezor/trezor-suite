@@ -31,6 +31,7 @@ const Editable = styled(AutoScalingInput)`
     all: inherit;
     margin: 0;
     padding: 0;
+    border-radius: 0;
     cursor: text;
 `;
 
@@ -55,11 +56,13 @@ export const withEditable =
 
         const submit = useCallback(
             (value?: string | null) => {
-                if (props.originalValue && value === props.originalValue) {
+                const trimmedValue = (value ?? '').trim();
+
+                if (props.originalValue && trimmedValue === props.originalValue.trim()) {
                     return onBlur();
                 }
 
-                onSubmit(value ?? '');
+                onSubmit(trimmedValue);
                 onBlur();
             },
             [props, onSubmit, onBlur],
@@ -85,10 +88,11 @@ export const withEditable =
             <>
                 <WrappedComponent {...props}>
                     <Editable
-                        minWidth={120}
+                        minWidth={20}
                         ref={divRef}
                         data-test="@metadata/input"
                         value={value}
+                        onBlur={onBlur}
                         onChange={event => {
                             setTouched(true);
                             setValue(event.target.value);
