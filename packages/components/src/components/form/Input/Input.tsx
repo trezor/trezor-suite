@@ -113,6 +113,7 @@ const Input = ({
     placeholder,
     onClear,
     hasBottomPadding = true,
+    className,
     ...rest
 }: InputProps) => {
     const [isHovered, setIsHovered] = useState(false);
@@ -133,6 +134,7 @@ const Input = ({
             onMouseLeave={() => setIsHovered(false)}
             hasBottomPadding={hasBottomPadding === true && bottomText === null}
             data-test={dataTest}
+            className={className}
         >
             <TopAddons isHovered={isHovered} hoverAddon={labelHoverAddon} addonRight={labelRight} />
 

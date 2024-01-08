@@ -10,16 +10,11 @@ const InputWrapper = styled.div<{ showCoinFilter: boolean }>`
 `;
 
 const StyledInput = styled(Input)`
-    padding-left: 46px;
-
     input {
-        background-color: ${({ theme }) => theme.backgroundSurfaceElevation1};
-        border-color: ${({ theme }) => theme.borderOnElevation1};
-        transition: border-color 0.2s;
-
-        :focus {
-            border-color: ${({ theme }) => theme.borderFocus};
-        }
+        /* to line up with the coin filter  */
+        padding-left: 46px;
+        background-color: ${({ theme }) => theme.backgroundSurfaceElevationNegative};
+        border-color: ${({ theme }) => theme.backgroundSurfaceElevationNegative};
     }
 `;
 
