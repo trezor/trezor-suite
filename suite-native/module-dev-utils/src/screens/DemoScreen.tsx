@@ -273,7 +273,7 @@ export const DemoScreen = () => {
                             <Radio
                                 key="second"
                                 value="second"
-                                accessibilityLabel="First"
+                                accessibilityLabel="Second"
                                 onPress={handleRadioPress}
                                 isChecked={radioChecked === 'second'}
                             />
