@@ -13,7 +13,6 @@ import {
     PopupInit,
     PopupHandshake,
     MethodResponseMessage,
-    CORE_EVENT,
     IFrameCallMessage,
     IFrameLogRequest,
     CoreEventMessage,
@@ -404,26 +403,30 @@ const initCoreInPopup = async (
     // init core
     log.debug('initiating core with settings: ', payload.settings);
     reactEventBus.dispatch({ type: 'loading', message: 'initiating core' });
-    const core: Core = await initCore(
-        { ...payload.settings, trustedHost: false },
-        logWriterFactory,
-    );
-    if (disposed) return;
-    core.on(CORE_EVENT, event => {
+    const onCoreEvent = (event: any) => {
         const message = parseMessage<CoreEventMessage>(event);
         handleUIAffectingMessage(message);
         if (message.type === RESPONSE_EVENT) {
             handleResponseEvent(message);
         }
-    });
+    };
+    const core: Core = await initCore(
+        { ...payload.settings, trustedHost: false },
+        onCoreEvent,
+        logWriterFactory,
+    );
+    if (disposed) return;
+
     setState({ core });
     log.debug('initiated core');
 
     // init transport
+    /*
     log.debug('initiating transport with settings: ', payload.settings);
     reactEventBus.dispatch({ type: 'loading', message: 'initiating transport' });
     await initTransport(payload.settings);
     if (disposed) return;
+    */
     log.debug('initiated transport');
 
     // done, in popup, we are ready to handle incoming messages

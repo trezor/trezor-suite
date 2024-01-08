@@ -3,7 +3,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/iframe/iframe.js
 
 import {
-    CORE_EVENT,
     RESPONSE_EVENT,
     DEVICE_EVENT,
     TRANSPORT_EVENT,
@@ -21,7 +20,7 @@ import {
     CoreRequestMessage,
     CoreEventMessage,
 } from '@trezor/connect';
-import { Core, initCore, initTransport } from '@trezor/connect/src/core';
+import { Core, initCore } from '@trezor/connect/src/core';
 import { DataManager } from '@trezor/connect/src/data/DataManager';
 import { config } from '@trezor/connect/src/data/config';
 import { initLog, LogWriter } from '@trezor/connect/src/utils/debug';
@@ -319,11 +318,7 @@ const init = async (payload: IFrameInit['payload'], origin: string) => {
 
     try {
         // initialize core
-        _core = await initCore(parsedSettings, logWriterFactory);
-        _core.on(CORE_EVENT, postMessage);
-
-        // initialize transport and wait for the first transport event (start or error)
-        await initTransport(parsedSettings);
+        _core = await initCore(parsedSettings, postMessage, logWriterFactory);
         postMessage(
             createIFrameMessage(IFRAME.LOADED, {
                 useBroadcastChannel: !!_popupMessagePort,
