@@ -1,10 +1,8 @@
 import { MouseEventHandler } from 'react';
-
 import styled, { css, useTheme } from 'styled-components';
-import { darken } from 'polished';
 
 import { formatNetworkAmount, isSameUtxo } from '@suite-common/wallet-utils';
-import { Checkbox, Spinner, Tooltip, variables } from '@trezor/components';
+import { Checkbox, Spinner, TextButton, Tooltip } from '@trezor/components';
 import type { AccountUtxo } from '@trezor/connect';
 
 import { openModal } from 'src/actions/suite/modalActions';
@@ -24,55 +22,59 @@ import {
     selectIsLabelingInitPossible,
     selectLabelingDataForSelectedAccount,
 } from 'src/reducers/suite/metadataReducer';
-import { borders } from '@trezor/theme';
+import { borders, spacingsPx, typography } from '@trezor/theme';
+
+const transitionSpeed = '0.16s';
 
 const VisibleOnHover = styled.div<{ alwaysVisible?: boolean }>`
-    display: ${({ alwaysVisible }) => (alwaysVisible ? 'contents' : 'none')};
+    display: flex;
+    align-items: center;
+    gap: ${spacingsPx.xs};
+    color: ${({ theme }) => theme.textSubdued};
+
+    ${({ alwaysVisible }) =>
+        !alwaysVisible &&
+        css`
+            opacity: 0;
+            transition: opacity ${transitionSpeed};
+        `};
 `;
 
 const StyledCheckbox = styled(Checkbox)<{ isChecked: boolean; $isGrey: boolean }>`
-    margin-top: 2px;
-    ${({ isChecked, $isGrey, theme }) =>
-        isChecked &&
-        $isGrey &&
-        css`
-            > div:first-child {
-                background: ${theme.TYPE_LIGHTER_GREY};
-            }
-
-            :not(:hover) > div:first-child {
-                border: 2px solid ${theme.TYPE_LIGHTER_GREY};
-            }
-        `};
+    margin-top: ${spacingsPx.xxxs};
+    margin-right: ${spacingsPx.xs};
 `;
 
 const Wrapper = styled.div<{ isDisabled: boolean }>`
     align-items: flex-start;
     border-radius: ${borders.radii.xs};
     display: flex;
-    margin: 1px -12px;
-    padding: 12px 12px 8px;
-    transition: background 0.25s ease-out;
+    margin: 1px -${spacingsPx.sm};
+    padding: ${spacingsPx.sm} ${spacingsPx.sm} ${spacingsPx.xs};
+    transition: background ${transitionSpeed};
     cursor: pointer;
+
     ${({ isDisabled }) =>
         isDisabled &&
         css`
-            color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+            color: ${({ theme }) => theme.textSubdued};
             cursor: default;
         `};
 
-    &:hover {
+    :hover,
+    :focus-within {
         ${({ isDisabled }) =>
             !isDisabled &&
             css`
-                background: ${({ theme }) => theme.BG_GREY};
+                background: ${({ theme }) => theme.backgroundSurfaceElevation2};
+
                 ${StyledCheckbox} > :first-child {
-                    border-color: ${({ theme }) =>
-                        darken(theme.HOVER_DARKEN_FILTER, theme.STROKE_GREY)};
+                    border-color: ${({ theme }) => theme.borderFocus};
                 }
             `};
+
         ${VisibleOnHover} {
-            display: contents;
+            opacity: 1;
         }
     }
 `;
@@ -87,19 +89,12 @@ const Body = styled.div`
 const Row = styled.div`
     align-items: center;
     display: flex;
-    gap: 6px;
+    gap: ${spacingsPx.xs};
 `;
 
 const BottomRow = styled(Row)`
     margin-top: 6px;
     min-height: 24px;
-`;
-
-const Dot = styled.div`
-    border-radius: 50%;
-    background: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    height: 3px;
-    width: 3px;
 `;
 
 const Address = styled.div`
@@ -109,37 +104,29 @@ const Address = styled.div`
 `;
 
 const StyledCryptoAmount = styled(FormattedCryptoAmount)`
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     margin-left: auto;
-    padding-left: 4px;
+    padding-left: ${spacingsPx.xxs};
     white-space: nowrap;
 `;
 
-const TransactionDetail = styled.button`
-    background: none;
-    border: none;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    cursor: pointer;
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    padding: 0;
-    text-decoration: underline;
+const TransactionDetailButton = styled(TextButton)`
+    color: ${({ theme }) => theme.textSubdued};
 
-    &:hover {
-        color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    :hover,
+    :focus {
+        color: ${({ theme }) => theme.textOnTertiary};
     }
 `;
 
 const StyledFluidSpinner = styled(Spinner)`
-    margin-right: 8px;
+    margin-right: ${spacingsPx.xs};
 `;
 
 const StyledFiatValue = styled(FiatValue)`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     margin-left: auto;
     padding-left: 4px;
+    color: ${({ theme }) => theme.textSubdued};
+    ${typography.hint}
 `;
 
 interface UtxoSelectionProps {
@@ -198,6 +185,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                     onClick={handleCheckbox}
                 />
             </Tooltip>
+
             <Body>
                 <Row>
                     {isPendingTransaction && (
@@ -207,6 +195,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                             iconColor={utxoTagIconColor}
                         />
                     )}
+
                     {coinjoinUnavailableMessage && (
                         <UtxoTag
                             tooltipMessage={coinjoinUnavailableMessage}
@@ -214,6 +203,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                             iconColor={utxoTagIconColor}
                         />
                     )}
+
                     {isChangeAddress && (
                         <UtxoTag
                             tooltipMessage={<Translation id="TR_CHANGE_ADDRESS_TOOLTIP" />}
@@ -221,12 +211,15 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                             iconColor={utxoTagIconColor}
                         />
                     )}
+
                     <Address>{utxo.address}</Address>
+
                     <StyledCryptoAmount
                         value={formatNetworkAmount(utxo.amount, account.symbol)}
                         symbol={account.symbol}
                     />
                 </Row>
+
                 <BottomRow>
                     {transaction ? (
                         <TransactionTimestamp showDate transaction={transaction} />
@@ -239,15 +232,17 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                             <StyledFluidSpinner size={14} />
                         </Tooltip>
                     )}
+
                     {anonymity && (
                         <>
-                            <Dot />
+                            <span>•</span>
                             <UtxoAnonymity anonymity={anonymity} />
                         </>
                     )}
+
                     {isLabelingPossible && (
                         <VisibleOnHover alwaysVisible={!!outputLabel}>
-                            <Dot />
+                            <span>•</span>
                             <MetadataLabeling
                                 visible
                                 payload={{
@@ -261,14 +256,16 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                             />
                         </VisibleOnHover>
                     )}
+
                     {transaction && (
                         <VisibleOnHover>
-                            <Dot />
-                            <TransactionDetail onClick={showTransactionDetail}>
+                            <span>•</span>
+                            <TransactionDetailButton size="small" onClick={showTransactionDetail}>
                                 <Translation id="TR_DETAIL" />
-                            </TransactionDetail>
+                            </TransactionDetailButton>
                         </VisibleOnHover>
                     )}
+
                     <StyledFiatValue
                         amount={formatNetworkAmount(utxo.amount, account.symbol, false)}
                         symbol={network.symbol}

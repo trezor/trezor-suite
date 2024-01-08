@@ -2,7 +2,8 @@ import { useWatch } from 'react-hook-form';
 import styled from 'styled-components';
 
 import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
-import { Button, Tooltip } from '@trezor/components';
+import { Button, Tooltip, variables } from '@trezor/components';
+import { spacingsPx } from '@trezor/theme';
 import { Translation } from 'src/components/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { OpenGuideFromTooltip } from 'src/components/guide';
@@ -14,6 +15,7 @@ const Wrapper = styled.div`
     display: flex;
     flex: 1;
     flex-direction: column;
+    gap: ${spacingsPx.md};
 `;
 
 const Row = styled.div`
@@ -21,6 +23,11 @@ const Row = styled.div`
     flex-flow: row wrap;
     flex: 1;
     justify-content: space-between;
+
+    ${variables.SCREEN_QUERY.BELOW_TABLET} {
+        flex-direction: column-reverse;
+        gap: ${spacingsPx.sm};
+    }
 `;
 
 const Left = styled.div`
@@ -73,20 +80,6 @@ export const BitcoinOptions = () => {
 
     return (
         <Wrapper>
-            {locktimeEnabled && (
-                <Locktime
-                    close={() => {
-                        resetDefaultValue('bitcoinLockTime');
-                        // close additional form
-                        if (!rbfEnabled) toggleOption('bitcoinRBF');
-                        if (!broadcastEnabled) toggleOption('broadcast');
-                        toggleOption('bitcoinLockTime');
-                        composeTransaction();
-                    }}
-                />
-            )}
-            {utxoSelectionEnabled && <CoinControl close={toggleUtxoSelection} />}
-
             <Row>
                 <Left>
                     {!locktimeEnabled && (
@@ -115,6 +108,7 @@ export const BitcoinOptions = () => {
                             </StyledButton>
                         </Tooltip>
                     )}
+
                     {isFeatureFlagEnabled('RBF') &&
                         network.features?.includes('rbf') &&
                         !locktimeEnabled && (
@@ -157,6 +151,7 @@ export const BitcoinOptions = () => {
                             <OnOffSwitcher isOn={broadcastEnabled} />
                         </StyledButton>
                     </Tooltip>
+
                     {!utxoSelectionEnabled && (
                         <Tooltip
                             addon={instance => (
@@ -181,6 +176,7 @@ export const BitcoinOptions = () => {
                         </Tooltip>
                     )}
                 </Left>
+
                 <Right>
                     <AddRecipientButton
                         variant="tertiary"
@@ -188,11 +184,27 @@ export const BitcoinOptions = () => {
                         icon="PLUS"
                         data-test="add-output"
                         onClick={addOutput}
+                        isFullWidth
                     >
                         <Translation id="RECIPIENT_ADD" />
                     </AddRecipientButton>
                 </Right>
             </Row>
+
+            {locktimeEnabled && (
+                <Locktime
+                    close={() => {
+                        resetDefaultValue('bitcoinLockTime');
+                        // close additional form
+                        if (!rbfEnabled) toggleOption('bitcoinRBF');
+                        if (!broadcastEnabled) toggleOption('broadcast');
+                        toggleOption('bitcoinLockTime');
+                        composeTransaction();
+                    }}
+                />
+            )}
+
+            {utxoSelectionEnabled && <CoinControl close={toggleUtxoSelection} />}
         </Wrapper>
     );
 };
