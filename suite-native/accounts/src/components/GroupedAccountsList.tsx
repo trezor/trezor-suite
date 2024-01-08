@@ -15,13 +15,12 @@ export const GroupedAccountsList = ({
     groupedAccounts,
     onSelectAccount,
 }: GroupedAccountsListProps) => (
-    <VStack spacing="large" paddingBottom="medium">
+    <VStack spacing="medium" paddingBottom="medium">
         {Object.entries(groupedAccounts).map(
             ([accountTypeHeader, networkAccounts]) =>
                 networkAccounts && (
                     <AccountsListGroup
                         key={accountTypeHeader}
-                        groupHeader={accountTypeHeader}
                         accounts={networkAccounts}
                         onSelectAccount={onSelectAccount}
                     />
