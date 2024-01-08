@@ -24,6 +24,7 @@ interface QuestionTooltipProps {
     className?: string;
 }
 
+// TODO: remove or refactor this
 export const QuestionTooltip = ({ label, tooltip, className }: QuestionTooltipProps) => (
     <Wrapper className={className}>
         {label &&
