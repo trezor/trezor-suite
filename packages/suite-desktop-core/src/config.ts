@@ -25,6 +25,9 @@ export const allowedDomains = [
     'trezor-cardano-mainnet.blockfrost.io',
     'trezor-cardano-preview.blockfrost.io',
     'blockfrost.dev',
+    'eth-goerli.public.blastapi.io',
+    'ethereum-holesky.publicnode.com',
+    'mainnet.infura.io',
 ];
 
 export const cspRules = [

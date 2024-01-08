@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import { Button } from '@trezor/components';
-import { isZero } from '@suite-common/wallet-utils';
 import { Translation } from 'src/components/suite';
 import { useStakeEthFormContext } from 'src/hooks/wallet/useStakeEthForm';
 import { AvailableBalance } from '../AvailableBalance';
@@ -29,6 +28,7 @@ const ButtonsWrapper = styled.div`
 export const StakeEthForm = () => {
     const {
         account,
+        network,
         onSubmit,
         handleSubmit,
         formState: { errors, isSubmitting, isDirty },
@@ -47,7 +47,6 @@ export const StakeEthForm = () => {
     const hasValues = Boolean(watch(FIAT_INPUT) || watch(CRYPTO_INPUT));
     // used instead of formState.isValid, which is sometimes returning false even if there are no errors
     const formIsValid = Object.keys(errors).length === 0;
-    const areFractionButtonsDisabled = isZero(account.formattedBalance);
     const transactionInfo = composedLevels?.[selectedFee];
 
     return (
@@ -62,12 +61,14 @@ export const StakeEthForm = () => {
 
                     <ButtonsWrapper>
                         <FormFractionButtons
-                            isDisabled={areFractionButtonsDisabled}
                             setRatioAmount={setRatioAmount}
                             setMax={setMax}
+                            symbol={symbol}
+                            totalAmount={account.formattedBalance}
+                            decimals={network.decimals}
                         />
 
-                        {isDirty && (
+                        {(isDirty || hasValues) && (
                             <Button type="button" variant="tertiary" onClick={clearForm}>
                                 <Translation id="TR_CLEAR_ALL" />
                             </Button>

@@ -32,7 +32,7 @@ export const composeTransaction =
     };
 
 // this could be called at any time during signTransaction or pushTransaction process (from TransactionReviewModal)
-export const cancelSignTx = () => (dispatch: Dispatch, getState: GetState) => {
+export const cancelSignTx = (isSuccessTx?: boolean) => (dispatch: Dispatch, getState: GetState) => {
     const { signedTx, precomposedForm } = getState().wallet.stake;
     dispatch(stakeActions.requestSignTransaction());
     dispatch(stakeActions.requestPushTransaction());
@@ -45,7 +45,7 @@ export const cancelSignTx = () => (dispatch: Dispatch, getState: GetState) => {
     dispatch(modalActions.onCancel());
 
     const { ethereumStakeType } = precomposedForm ?? {};
-    if (ethereumStakeType) {
+    if (ethereumStakeType && !isSuccessTx) {
         dispatch(openModal({ type: ethereumStakeType }));
     }
 };
@@ -114,7 +114,7 @@ const pushTransaction =
             );
         }
 
-        dispatch(cancelSignTx());
+        dispatch(cancelSignTx(sentTx.success));
 
         // resolve sign process
         return sentTx;
