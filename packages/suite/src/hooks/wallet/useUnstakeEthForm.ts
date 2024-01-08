@@ -1,7 +1,12 @@
 import { createContext, useCallback, useContext, useEffect, useMemo } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
-import { fromFiatCurrency, getFeeLevels, toFiatCurrency } from '@suite-common/wallet-utils';
+import {
+    fromFiatCurrency,
+    getFeeLevels,
+    getFiatRateKey,
+    toFiatCurrency,
+} from '@suite-common/wallet-utils';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import {
@@ -31,7 +36,7 @@ import { getStakeFormsDefaultValues } from 'src/utils/suite/stake';
 import { useFormDraft } from './useFormDraft';
 import useDebounce from 'react-use/lib/useDebounce';
 import { isChanged } from '@suite-common/suite-utils';
-import { selectCoinsLegacy } from '@suite-common/wallet-core';
+import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
 
 type UnstakeContextValues = UnstakeContextValuesBase & {
     amountLimits: AmountLimits;
@@ -50,7 +55,6 @@ export const useUnstakeEthForm = ({
 }: UseStakeFormsProps): UnstakeContextValues => {
     const dispatch = useDispatch();
 
-    const coins = useSelector(selectCoinsLegacy);
     const localCurrency = useSelector(selectLocalCurrency);
     const fees = useSelector(state => state.wallet.fees);
 
@@ -58,7 +62,13 @@ export const useUnstakeEthForm = ({
     const { symbol } = account;
 
     const symbolForFiat = mapTestnetSymbol(symbol);
-    const fiatRates = coins.find(item => item.symbol === symbolForFiat);
+    const currentRate = useSelector(state =>
+        selectFiatRatesByFiatRateKey(
+            state,
+            getFiatRateKey(symbolForFiat, localCurrency),
+            'current',
+        ),
+    );
     // TODO: Implement fee switcher
     const selectedFee = 'normal';
 
@@ -146,24 +156,27 @@ export const useUnstakeEthForm = ({
 
     const onCryptoAmountChange = useCallback(
         async (amount: string) => {
-            if (!fiatRates || !fiatRates.current) return;
+            if (!currentRate) return;
 
-            const fiatValue = toFiatCurrency(amount, localCurrency, fiatRates.current.rates);
+            const fiatValue = toFiatCurrency(amount, localCurrency, {
+                [currentRate.locale]: currentRate?.rate,
+            });
+
             setValue(FIAT_INPUT, fiatValue || '', { shouldValidate: true });
             setValue(OUTPUT_AMOUNT, amount || '', { shouldDirty: true });
             await composeRequest(CRYPTO_INPUT);
         },
-        [composeRequest, fiatRates, localCurrency, setValue],
+        [composeRequest, currentRate, localCurrency, setValue],
     );
 
     const onFiatAmountChange = useCallback(
         async (amount: string) => {
-            if (!fiatRates || !fiatRates.current) return;
+            if (!currentRate) return;
 
             const cryptoValue = fromFiatCurrency(
                 amount,
                 localCurrency,
-                fiatRates.current.rates,
+                { [currentRate.locale]: currentRate?.rate },
                 network.decimals,
             );
             setValue(CRYPTO_INPUT, cryptoValue || '', { shouldDirty: true, shouldValidate: true });
@@ -172,7 +185,7 @@ export const useUnstakeEthForm = ({
             });
             await composeRequest(FIAT_INPUT);
         },
-        [composeRequest, fiatRates, localCurrency, network.decimals, setValue],
+        [composeRequest, currentRate, localCurrency, network.decimals, setValue],
     );
 
     const onOptionChange = useCallback(

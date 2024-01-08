@@ -1,7 +1,6 @@
 import { useEffect, useRef, useCallback, useState } from 'react';
 import { FieldPath, UseFormReturn } from 'react-hook-form';
 
-import { FeeLevel } from '@trezor/connect';
 import { useAsyncDebounce } from '@trezor/react-utils';
 import { useDispatch, useTranslation } from 'src/hooks/suite';
 import { composeTransaction } from 'src/actions/wallet/stakeActions';
@@ -162,39 +161,40 @@ export const useStakeCompose = <TFieldValues extends StakeFormState>({
 
     const switchToNearestFee = useCallback(
         (composedLevels: NonNullable<StakeContextValues['composedLevels']>) => {
-            const { selectedFee, setMaxOutputId } = getValues();
-            let composed = composedLevels[selectedFee || 'normal'];
+            const { selectedFee } = getValues();
+            const composed = composedLevels[selectedFee || 'normal'];
 
+            // TODO: Implement fee switcher logic when custom fees are implemented.
             // selectedFee was not set yet (no interaction with Fees) and default (normal) fee tx is not valid
             // OR setMax option was used
             // try to switch to nearest possible composed transaction
-            const shouldSwitch =
-                !selectedFee || (typeof setMaxOutputId === 'number' && selectedFee !== 'custom');
-            if (shouldSwitch && composed.type === 'error') {
-                // find nearest possible tx
-                const nearest = Object.keys(composedLevels)
-                    .reverse()
-                    .find((key): key is FeeLevel['label'] => composedLevels[key].type !== 'error');
-                // switch to it
-                if (nearest) {
-                    composed = composedLevels[nearest];
-                    setValue('selectedFee', nearest);
-                    if (nearest === 'custom') {
-                        // @ts-expect-error: type = error already filtered above
-                        const { feePerByte, feeLimit } = composed;
-                        setValue('feePerUnit', feePerByte);
-                        setValue('feeLimit', feeLimit || '');
-                    }
-                }
-                // or do nothing, use default composed tx
-            }
+            // const shouldSwitch =
+            //     !selectedFee || (typeof setMaxOutputId === 'number' && selectedFee !== 'custom');
+            // if (shouldSwitch && composed.type === 'error') {
+            //     // find nearest possible tx
+            //     const nearest = Object.keys(composedLevels)
+            //         .reverse()
+            //         .find((key): key is FeeLevel['label'] => composedLevels[key].type !== 'error');
+            //     // switch to it
+            //     if (nearest) {
+            //         composed = composedLevels[nearest];
+            //         setValue('selectedFee', nearest);
+            //         if (nearest === 'custom') {
+            //             // @ts-expect-error: type = error already filtered above
+            //             const { feePerByte, feeLimit } = composed;
+            //             setValue('feePerUnit', feePerByte);
+            //             setValue('feeLimit', feeLimit || '');
+            //         }
+            //     }
+            //     // or do nothing, use default composed tx
+            // }
 
             // composed transaction does not exists (should never happen)
             if (!composed) return;
 
             updateComposedValues(composed);
         },
-        [getValues, setValue, updateComposedValues],
+        [getValues, updateComposedValues],
     );
 
     // trigger initial compose process

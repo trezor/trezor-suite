@@ -5,3 +5,4 @@ export * from './build';
 export * from './resolveStaticPath';
 export * from './comparison';
 export * from './txsPerPage';
+export * from './stake';

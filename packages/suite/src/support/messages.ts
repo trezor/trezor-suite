@@ -8737,4 +8737,8 @@ export default defineMessages({
         id: 'TR_NOT_ENOUGH_FUNDS_FOR_TX',
         defaultMessage: 'Not enough funds to execute the transaction',
     },
+    TR_STAKE_MIN_AMOUNT_TOOLTIP: {
+        id: 'TR_STAKE_MIN_AMOUNT_TOOLTIP',
+        defaultMessage: 'Minimum amount to stake is {amount} {symbol}',
+    },
 });

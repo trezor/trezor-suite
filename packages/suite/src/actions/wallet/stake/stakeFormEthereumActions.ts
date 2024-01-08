@@ -7,13 +7,10 @@ import {
     calculateTotal,
     calculateMax,
     calculateEthFee,
-    getEthereumEstimateFeeParams,
-    prepareEthereumTransaction,
     getExternalComposeOutput,
     formatAmount,
     isPending,
 } from '@suite-common/wallet-utils';
-import { ETH_DEFAULT_GAS_LIMIT } from '@suite-common/wallet-constants';
 import {
     StakeFormState,
     ComposeActionContext,
@@ -26,6 +23,11 @@ import { selectDevice } from '@suite-common/wallet-core';
 
 import { Dispatch, GetState } from 'src/types/suite';
 import { AddressDisplayOptions, selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
+
+import { getEthNetworkForWalletSdk, prepareStakeEthTx } from 'src/utils/suite/stake';
+// @ts-expect-error
+import { Ethereum } from '@everstake/wallet-sdk';
+import { MIN_ETH_FOR_WITHDRAWALS, WALLET_SDK_SOURCE } from 'src/constants/suite/ethStaking';
 
 const calculate = (
     availableBalance: string,
@@ -42,7 +44,9 @@ const calculate = (
     let max: string | undefined;
 
     if (output.type === 'send-max' || output.type === 'send-max-noaddress') {
-        max = calculateMax(availableBalance, feeInSatoshi);
+        max = new BigNumber(calculateMax(availableBalance, feeInSatoshi))
+            .minus(toWei(MIN_ETH_FOR_WITHDRAWALS.toString()))
+            .toString();
         amount = max;
     } else {
         amount = output.amount;
@@ -98,37 +102,35 @@ export const composeTransaction =
 
         const { output, decimals } = composeOutputs;
         const { availableBalance } = account;
-        const { address, amount } = formValues.outputs[0];
+        const { amount } = formValues.outputs[0];
 
         let customFeeLimit: string | undefined;
 
-        // gasLimit calculation based on address, amount and data size
-        // amount in essential for a proper calculation of gasLimit (via blockbook/geth)
-        const estimatedFee = await TrezorConnect.blockchainEstimateFee({
-            coin: account.symbol,
-            request: {
-                blocks: [2],
-                specific: {
-                    from: account.descriptor,
-                    ...getEthereumEstimateFeeParams(
-                        address,
-                        amount,
-                        undefined,
-                        formValues.ethereumDataHex,
-                    ),
-                },
+        // tx data with gasLimit calculation based on account.descriptor and amount
+        let txData;
+        const genericError: PrecomposedLevels = {
+            normal: {
+                error: 'INCORRECT-FEE-RATE',
+                errorMessage: { id: 'TR_GENERIC_ERROR_TITLE' },
+                type: 'error',
             },
-        });
+        };
+        try {
+            Ethereum.selectNetwork(getEthNetworkForWalletSdk(account.symbol));
+            // TODO: Implement tx type switcher
+            txData = await Ethereum.stake(account.descriptor, amount, WALLET_SDK_SOURCE);
+        } catch (e) {
+            console.error(e);
+            return genericError;
+        }
 
-        if (estimatedFee.success) {
-            customFeeLimit = estimatedFee.payload.levels[0].feeLimit;
-            if (formValues.ethereumAdjustGasLimit && customFeeLimit) {
-                customFeeLimit = new BigNumber(customFeeLimit)
-                    .multipliedBy(new BigNumber(formValues.ethereumAdjustGasLimit))
-                    .toFixed(0);
-            }
-        } else {
-            // TODO: catch error from blockbook/geth (invalid contract, not enough balance...)
+        if (!txData) return genericError;
+
+        customFeeLimit = txData.gas;
+        if (formValues.ethereumAdjustGasLimit && customFeeLimit) {
+            customFeeLimit = new BigNumber(customFeeLimit)
+                .multipliedBy(new BigNumber(formValues.ethereumAdjustGasLimit))
+                .toFixed(0);
         }
 
         // FeeLevels are read-only
@@ -159,34 +161,35 @@ export const composeTransaction =
             wrappedResponse[feeLabel] = tx;
         });
 
-        const hasAtLeastOneValid = response.find(r => r.type !== 'error');
+        // TODO: Implement adding custom fees.
+        // const hasAtLeastOneValid = response.find(r => r.type !== 'error');
         // there is no valid tx in predefinedLevels and there is no custom level
-        if (!hasAtLeastOneValid && !wrappedResponse.custom) {
-            const { minFee } = feeInfo;
-            const lastKnownFee = predefinedLevels[predefinedLevels.length - 1].feePerUnit;
-            let maxFee = new BigNumber(lastKnownFee).minus(1);
-            // generate custom levels in range from lastKnownFee - 1 to feeInfo.minFee (coinInfo in @trezor/connect)
-            const customLevels: FeeLevel[] = [];
-            while (maxFee.gte(minFee)) {
-                customLevels.push({
-                    feePerUnit: maxFee.toString(),
-                    feeLimit: predefinedLevels[0].feeLimit,
-                    label: 'custom',
-                    blocks: -1,
-                });
-                maxFee = maxFee.minus(1);
-            }
-
-            // check if any custom level is possible
-            const customLevelsResponse = customLevels.map(level =>
-                calculate(availableBalance, output, level, compareWithAmount),
-            );
-
-            const customValid = customLevelsResponse.findIndex(r => r.type !== 'error');
-            if (customValid >= 0) {
-                wrappedResponse.custom = customLevelsResponse[customValid];
-            }
-        }
+        // if (!hasAtLeastOneValid && !wrappedResponse.custom) {
+        //     const { minFee } = feeInfo;
+        //     const lastKnownFee = predefinedLevels[predefinedLevels.length - 1].feePerUnit;
+        //     let maxFee = new BigNumber(lastKnownFee).minus(1);
+        //     // generate custom levels in range from lastKnownFee - 1 to feeInfo.minFee (coinInfo in @trezor/connect)
+        //     const customLevels: FeeLevel[] = [];
+        //     while (maxFee.gte(minFee)) {
+        //         customLevels.push({
+        //             feePerUnit: maxFee.toString(),
+        //             feeLimit: predefinedLevels[0].feeLimit,
+        //             label: 'custom',
+        //             blocks: -1,
+        //         });
+        //         maxFee = maxFee.minus(1);
+        //     }
+        //
+        //     // check if any custom level is possible
+        //     const customLevelsResponse = customLevels.map(level =>
+        //         calculate(availableBalance, output, level, compareWithAmount),
+        //     );
+        //
+        //     const customValid = customLevelsResponse.findIndex(r => r.type !== 'error');
+        //     if (customValid >= 0) {
+        //         wrappedResponse.custom = customLevelsResponse[customValid];
+        //     }
+        // }
 
         // format max (calculate sends it as satoshi)
         // update errorMessage values (symbol)
@@ -245,16 +248,25 @@ export const signTransaction =
         }
 
         // transform to TrezorConnect.ethereumSignTransaction params
-        const transaction = prepareEthereumTransaction({
-            token: transactionInfo.token,
-            chainId: network.chainId,
-            to: formValues.outputs[0].address,
+        const txData = await prepareStakeEthTx({
+            symbol: account.symbol,
+            from: account.descriptor,
             amount: formValues.outputs[0].amount,
-            data: formValues.ethereumDataHex,
-            gasLimit: transactionInfo.feeLimit || ETH_DEFAULT_GAS_LIMIT,
             gasPrice: transactionInfo.feePerByte,
             nonce,
+            chainId: network.chainId,
         });
+
+        if (!txData.success) {
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'sign-tx-error',
+                    error: txData.errorMessage,
+                }),
+            );
+
+            return;
+        }
 
         const signedTx = await TrezorConnect.ethereumSignTransaction({
             device: {
@@ -264,7 +276,7 @@ export const signTransaction =
             },
             useEmptyPassphrase: device.useEmptyPassphrase,
             path: account.path,
-            transaction,
+            transaction: txData.tx,
             chunkify: addressDisplayType === AddressDisplayOptions.CHUNKED,
         });
 
