@@ -1,7 +1,6 @@
 import { ParsedTransactionWithMeta } from '@solana/web3.js';
-import { TokenTransfer } from 'packages/blockchain-link-types/lib';
 
-import { Transaction } from '@trezor/blockchain-link-types';
+import { TokenTransfer, Transaction } from '@trezor/blockchain-link-types/lib';
 import { SolanaValidParsedTxWithMeta } from '@trezor/blockchain-link-types/lib/solana';
 
 import {
