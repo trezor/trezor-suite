@@ -7889,6 +7889,14 @@ export default defineMessages({
         id: 'TR_LOADING_FUNDS',
         defaultMessage: 'Loading Funds...',
     },
+    TR_LOADING_ACCOUNTS: {
+        id: 'TR_LOADING_ACCOUNTS',
+        defaultMessage: 'Loading accounts...',
+    },
+    TR_LOADING_ACCOUNTS_DESCRIPTION: {
+        id: 'TR_LOADING_ACCOUNTS_DESCRIPTION',
+        defaultMessage: 'You can change these settings after accounts are loaded.',
+    },
     TR_LOADING_FACT_TITLE: {
         id: 'TR_LOADING_FACT_TITLE',
         defaultMessage: 'Did you know?',
@@ -8361,5 +8369,17 @@ export default defineMessages({
         id: 'TR_SEND_RECIPIENT_ADDRESS',
         defaultMessage:
             '{index, selectordinal, one {#st} two {#nd} few {#rd} other {#th} } Recipient',
+    },
+    TR_DISCOVERY_NEW_COINS: {
+        id: 'TR_DISCOVERY_NEW_COINS',
+        defaultMessage: 'Activate coins',
+    },
+    TR_DISCOVERY_NEW_COINS_TEXT: {
+        id: 'TR_DISCOVERY_NEW_COINS_TEXT',
+        defaultMessage: "Don't see an account after activating coin?",
+    },
+    TR_SIDEBAR_ADD_COIN: {
+        id: 'TR_SIDEBAR_ADD_COIN',
+        defaultMessage: 'Add a coin',
     },
 });

@@ -45,7 +45,8 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
         if (action.type === ROUTER.LOCATION_CHANGE) {
             interruptionIntent =
                 getApp(action.payload.url) !== 'wallet' &&
-                getApp(action.payload.url) !== 'dashboard';
+                getApp(action.payload.url) !== 'dashboard' &&
+                getApp(action.payload.url) !== 'settings';
         }
 
         // discovery interruption ends after DISCOVERY.STOP action
