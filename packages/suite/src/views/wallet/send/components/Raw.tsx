@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { analytics, EventType } from '@trezor/suite-analytics';
-import { Card, Textarea, Button, Icon, Tooltip, variables } from '@trezor/components';
+import { Card, Textarea, Button, Tooltip, H3, IconButton } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
 import { useDispatch, useTranslation } from 'src/hooks/suite';
@@ -9,27 +9,30 @@ import { pushRawTransaction, sendRaw } from 'src/actions/wallet/sendFormActions'
 import { getInputState, isHexValid } from '@suite-common/wallet-utils';
 import { Network } from 'src/types/wallet';
 import { OpenGuideFromTooltip } from 'src/components/guide';
+import { spacingsPx } from '@trezor/theme';
 
 const StyledCard = styled(Card)`
-    display: flex;
-    flex-direction: row;
-    place-items: center space-between;
-    padding: 32px 42px;
+    position: relative;
+`;
 
-    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
-        padding: 32px 20px;
+const CloseIcon = styled(IconButton)`
+    position: absolute;
+    right: ${spacingsPx.md};
+    top: ${spacingsPx.md};
+`;
+
+const StyledTextarea = styled(Textarea)`
+    margin: ${spacingsPx.md} 0 ${spacingsPx.lg};
+
+    > :first-child {
+        background-color: ${({ theme }) => theme.backgroundNeutralSubtleOnElevation1};
+        border-color: ${({ theme }) => theme.borderOnElevation1};
     }
 `;
 
-const ButtonWrapper = styled.div`
-    display: flex;
-    margin: 25px 0;
-    justify-content: center;
-`;
-
-const ButtonSend = styled(Button)`
-    min-width: 200px;
-    margin-bottom: 5px;
+const SendButton = styled(Button)`
+    margin: 0 auto;
+    min-width: 120px;
 `;
 
 interface RawProps {
@@ -78,38 +81,37 @@ export const Raw = ({ network }: RawProps) => {
     };
 
     return (
-        <>
-            <StyledCard>
-                <Textarea
-                    inputState={inputState}
-                    data-test={inputName}
-                    defaultValue={inputValue}
-                    bottomText={error?.message || null}
-                    label={
-                        <Tooltip
-                            addon={instance => (
-                                <OpenGuideFromTooltip
-                                    id="/3_send-and-receive/transactions-in-depth/send-raw.md"
-                                    instance={instance}
-                                />
-                            )}
-                            content={<Translation id="SEND_RAW_TRANSACTION_TOOLTIP" />}
-                            dashed
-                        >
-                            <Translation id="SEND_RAW_TRANSACTION" />
-                        </Tooltip>
-                    }
-                    labelRight={<Icon size={20} icon="CROSS" onClick={cancel} />}
-                    innerRef={inputRef}
-                    {...inputField}
-                />
-            </StyledCard>
+        <StyledCard paddingType="large">
+            <H3>
+                <Tooltip
+                    addon={instance => (
+                        <OpenGuideFromTooltip
+                            id="/3_send-and-receive/transactions-in-depth/send-raw.md"
+                            instance={instance}
+                        />
+                    )}
+                    content={<Translation id="SEND_RAW_TRANSACTION_TOOLTIP" />}
+                    dashed
+                >
+                    <Translation id="SEND_RAW" />
+                </Tooltip>
+            </H3>
 
-            <ButtonWrapper>
-                <ButtonSend isDisabled={inputState !== 'success'} onClick={send}>
-                    <Translation id="SEND_TRANSACTION" />
-                </ButtonSend>
-            </ButtonWrapper>
-        </>
+            <CloseIcon variant="tertiary" size="small" icon="CROSS" onClick={cancel} />
+
+            <StyledTextarea
+                inputState={inputState}
+                data-test={inputName}
+                defaultValue={inputValue}
+                bottomText={error?.message || null}
+                label={<Translation id="RAW_TRANSACTION" />}
+                innerRef={inputRef}
+                {...inputField}
+            />
+
+            <SendButton isDisabled={inputState !== 'success'} onClick={send}>
+                <Translation id="SEND_TRANSACTION" />
+            </SendButton>
+        </StyledCard>
     );
 };
