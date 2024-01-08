@@ -40,7 +40,6 @@ export const EthereumOptions = () => {
 
     return (
         <Wrapper>
-            {dataEnabled && <Data close={toggleData} />}
             <Left>
                 {!dataEnabled && !tokenValue && (
                     <Tooltip content={<Translation id="DATA_ETH_ADD_TOOLTIP" />} cursor="pointer">
@@ -55,6 +54,7 @@ export const EthereumOptions = () => {
                         </StyledButton>
                     </Tooltip>
                 )}
+
                 <Tooltip content={<Translation id="BROADCAST_TOOLTIP" />} cursor="pointer">
                     <StyledButton
                         variant="tertiary"
@@ -68,6 +68,8 @@ export const EthereumOptions = () => {
                     </StyledButton>
                 </Tooltip>
             </Left>
+
+            {dataEnabled && <Data close={toggleData} />}
         </Wrapper>
     );
 };

@@ -5617,11 +5617,6 @@ export default defineMessages({
         defaultMessage:
             'Destination tag is a unique code to identify the receiver of a transaction.',
     },
-    DESTINATION_TAG_EXPLAINED: {
-        defaultMessage:
-            'Destination tag is an arbitrary number which serves as a unique identifier of your transaction. Some services may require this to process your transaction.',
-        id: 'DESTINATION_TAG_EXPLAINED',
-    },
     DESTINATION_TAG_NOT_SET: {
         defaultMessage: 'Destination tag is not set',
         id: 'DESTINATION_TAG_NOT_SET',
@@ -5637,10 +5632,6 @@ export default defineMessages({
     DATA_ETH: {
         id: 'DATA_ETH',
         defaultMessage: 'Data',
-    },
-    DATA_ETH_TOOLTIP: {
-        id: 'DATA_ETH_TOOLTIP',
-        defaultMessage: 'Data is usually used when you send transactions to contracts.',
     },
     DATA_ETH_ADD: {
         id: 'DATA_ETH_ADD',

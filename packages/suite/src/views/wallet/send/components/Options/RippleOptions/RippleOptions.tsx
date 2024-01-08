@@ -32,16 +32,6 @@ export const RippleOptions = () => {
 
     return (
         <Wrapper>
-            {destinationEnabled && (
-                <DestinationTag
-                    close={() => {
-                        resetDefaultValue('rippleDestinationTag');
-                        // close additional form
-                        toggleOption('rippleDestinationTag');
-                        composeTransaction();
-                    }}
-                />
-            )}
             <Left>
                 {!destinationEnabled && (
                     <Tooltip
@@ -78,6 +68,17 @@ export const RippleOptions = () => {
                     </StyledButton>
                 </Tooltip>
             </Left>
+
+            {destinationEnabled && (
+                <DestinationTag
+                    close={() => {
+                        resetDefaultValue('rippleDestinationTag');
+                        // close additional form
+                        toggleOption('rippleDestinationTag');
+                        composeTransaction();
+                    }}
+                />
+            )}
         </Wrapper>
     );
 };
