@@ -12,6 +12,5 @@ export const MAX_LENGTH = {
     FIAT: 255,
     OP_RETURN: 255,
     ETH_DATA: 255,
-    BTC_LOCKTIME: 10, // max: 4294967294
     XRP_DESTINATION_TAG: 10, // max: 4294967295
 } as const;

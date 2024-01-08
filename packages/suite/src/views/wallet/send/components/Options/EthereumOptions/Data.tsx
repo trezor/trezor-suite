@@ -1,11 +1,12 @@
 import { useEffect } from 'react';
 import styled from 'styled-components';
 import { Textarea, Icon } from '@trezor/components';
-import { QuestionTooltip } from 'src/components/suite';
+import { Translation } from 'src/components/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { getInputState, isHexValid } from '@suite-common/wallet-utils';
 import { MAX_LENGTH } from 'src/constants/suite/inputs';
 import { useTranslation } from 'src/hooks/suite';
+import { spacingsPx } from '@trezor/theme';
 
 const inputAsciiName = 'ethereumDataAscii';
 const inputHexName = 'ethereumDataHex';
@@ -16,11 +17,14 @@ const Wrapper = styled.div`
     width: 100%;
     justify-content: space-between;
     align-items: center;
+    align-items: flex-end;
 `;
 
 const Space = styled.div`
     display: flex;
     justify-content: center;
+    align-self: center;
+    padding-top: ${spacingsPx.lg};
     min-width: 65px;
 `;
 
@@ -103,7 +107,7 @@ export const Data = ({ close }: DataProps) => {
                 defaultValue={asciiValue}
                 maxLength={MAX_LENGTH.ETH_DATA}
                 bottomText={asciiError?.message || null}
-                label={<QuestionTooltip label="DATA_ETH" tooltip="DATA_ETH_TOOLTIP" />}
+                label={<Translation id="DATA_ETH" />}
                 innerRef={asciiRef}
                 {...asciiField}
             />

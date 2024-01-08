@@ -1,14 +1,13 @@
 import styled from 'styled-components';
 import { FormattedDate } from 'src/components/suite';
-import { variables } from '@trezor/components';
 import { WalletAccountTransaction } from 'src/types/wallet';
+import { typography } from '@trezor/theme';
 
 const TimestampLink = styled.div`
     display: block;
     font-variant-numeric: tabular-nums;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    color: ${({ theme }) => theme.textSubdued};
+    ${typography.hint}
     white-space: nowrap;
 `;
 

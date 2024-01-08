@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { Input, Icon } from '@trezor/components';
-import { QuestionTooltip } from 'src/components/suite';
+import { Translation } from 'src/components/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { getInputState, isInteger } from '@suite-common/wallet-utils';
 import { U_INT_32 } from '@suite-common/wallet-constants';
@@ -44,7 +44,7 @@ export const DestinationTag = ({ close }: DestinationTagProps) => {
             data-test={inputName}
             defaultValue={inputValue}
             maxLength={MAX_LENGTH.XRP_DESTINATION_TAG}
-            label={<QuestionTooltip label="DESTINATION_TAG" tooltip="DESTINATION_TAG_EXPLAINED" />}
+            label={<Translation id="DESTINATION_TAG" />}
             labelRight={<Icon size={20} icon="CROSS" useCursorPointer onClick={close} />}
             bottomText={error?.message || null}
             innerRef={inputRef}
