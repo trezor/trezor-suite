@@ -12,7 +12,7 @@
         "build": "rimraf ./build && yarn workspace @trezor/suite-build run build:web"
     },
     "dependencies": {
-        "@sentry/browser": "^7.77.0",
+        "@sentry/browser": "7.81.1",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/sentry": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
