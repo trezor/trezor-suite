@@ -4,7 +4,7 @@ const child_process = require('child_process');
 const path = require('path');
 const fs = require('fs');
 
-const { checkPackageDependencies, exec, commit, comment } = require('./helpers');
+const { exec } = require('./helpers');
 
 const ROOT = path.join(__dirname, '..', '..');
 

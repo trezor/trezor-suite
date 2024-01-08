@@ -25,7 +25,7 @@ const [packageName] = args;
         throw new Error(`provided package name: ${packageName} must be one of ${packages}`);
     }
 
-    const checkResult = checkPackageDependencies(packageName);
+    const checkResult = await checkPackageDependencies(packageName);
 
     if (checkResult.errors.length > 0) {
         const errorMessage = `Deps error. one of the dependencies likely needs to be published for the first time: ${checkResult.errors.join(

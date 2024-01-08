@@ -107,7 +107,6 @@ const calculateChecksum = directoryPath => {
 const getLocalAndRemoteChecksums = async moduleName => {
     const ROOT = path.join(__dirname, '..', '..');
 
-    // const moduleName = '@trezor/protocol';
     const [_prefix, name] = moduleName.split('/');
     const PACKAGE_PATH = path.join(ROOT, 'packages', name);
     const tmpDir = path.join(__dirname, 'tmp');
@@ -148,7 +147,6 @@ const getLocalAndRemoteChecksums = async moduleName => {
     }
 };
 
-// getLocalAndRemoteChecksums('@trezor/protocol');
 module.exports = {
     getLocalAndRemoteChecksums,
 };
