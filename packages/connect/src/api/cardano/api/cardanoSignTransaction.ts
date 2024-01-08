@@ -407,7 +407,6 @@ export default class CardanoSignTransaction extends AbstractMethod<
             const { cvote_registration_parameters } = this.params.auxiliaryData;
             if (cvote_registration_parameters) {
                 this.params.auxiliaryData = modifyAuxiliaryDataForBackwardsCompatibility(
-                    this.device,
                     this.params.auxiliaryData,
                 );
             }
