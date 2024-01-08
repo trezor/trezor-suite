@@ -9044,6 +9044,7 @@ __metadata:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
+    "@trezor/connect": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
