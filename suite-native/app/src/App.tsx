@@ -17,6 +17,7 @@ import { AuthenticatorProvider } from '@suite-native/biometrics';
 import { FeatureMessageScreen, MessageSystemBannerRenderer } from '@suite-native/message-system';
 import { IntlProvider } from '@suite-native/intl';
 import { useTransactionCache } from '@suite-native/accounts';
+import { isDebugEnv } from '@suite-native/config';
 
 import { RootStackNavigator } from './navigation/RootStackNavigator';
 import { StylesProvider } from './StylesProvider';
@@ -133,4 +134,4 @@ const PureApp = () => (
     </GestureHandlerRootView>
 );
 
-export const App = Sentry.wrap(PureApp);
+export const App = isDebugEnv() ? PureApp : Sentry.wrap(PureApp);
