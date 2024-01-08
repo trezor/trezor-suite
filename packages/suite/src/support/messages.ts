@@ -5684,11 +5684,6 @@ export default defineMessages({
         description: 'item in dropdown menu',
         defaultMessage: 'Send raw',
     },
-    SEND_RAW_TRANSACTION: {
-        id: 'SEND_RAW_TRANSACTION',
-        description: 'Send raw form header',
-        defaultMessage: 'Send raw transaction',
-    },
     RAW_TRANSACTION: {
         id: 'RAW_TRANSACTION',
         defaultMessage: 'Raw transaction',
