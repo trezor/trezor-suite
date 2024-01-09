@@ -1,4 +1,10 @@
-import { TextProps as RNTextProps, Text as RNText, TextStyle, PixelRatio } from 'react-native';
+import {
+    TextProps as RNTextProps,
+    Text as RNText,
+    TextStyle,
+    PixelRatio,
+    Platform,
+} from 'react-native';
 
 // @ts-expect-error This is not public RN API but I will make Text noticeable faster https://twitter.com/FernandoTheRojo/status/1707769877493121420
 import { NativeText } from 'react-native/Libraries/Text/TextNativeComponent';
@@ -8,12 +14,21 @@ import { Color, TypographyStyle } from '@trezor/theme';
 
 import { TestProps } from './types';
 
+// NativeText improves the performance of the text rendering, but unfortunately it does not support iOS Accessibility font enlarging.
+// Since iOS devices have enough computational power and the text optimization is not crucial, the NativeText is used only for Android.
+const DefaultTextComponent: typeof RNText = Platform.select({
+    android: NativeText,
+    ios: RNText,
+});
+
 export interface PressableTextProps extends Omit<RNTextProps, 'style'>, TestProps {
     variant?: TypographyStyle;
     color?: Color;
     textAlign?: TextStyle['textAlign'];
     style?: NativeStyleObject;
 }
+
+// NativeText does not support all the props that are supported by the standard `react-native` Text.
 type UnsupportedNativeTextProps =
     | 'pressRetentionOffset'
     | 'onLongPress'
@@ -67,7 +82,7 @@ export const BaseText = ({
     variant = 'body',
     color = 'textDefault',
     textAlign = 'left',
-    TextComponent = NativeText,
+    TextComponent = DefaultTextComponent,
     style,
     children,
     ...otherProps
@@ -75,15 +90,17 @@ export const BaseText = ({
     const { applyStyle } = useNativeStyles();
     const maxFontSizeMultiplier = variantToMaxFontSizeMultiplier[variant];
     return (
-        <NativeText
+        <DefaultTextComponent
             style={[applyStyle(textStyle, { variant, color, textAlign }), style]}
             maxFontSizeMultiplier={maxFontSizeMultiplier}
             {...otherProps}
         >
             {children}
-        </NativeText>
+        </DefaultTextComponent>
     );
 };
 
-export const Text = (props: TextProps) => <BaseText {...props} TextComponent={NativeText} />;
+export const Text = (props: TextProps) => (
+    <BaseText {...props} TextComponent={DefaultTextComponent} />
+);
 Text.Pressable = (props: PressableTextProps) => <BaseText {...props} TextComponent={RNText} />;

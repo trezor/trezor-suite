@@ -62,6 +62,7 @@ const cardStyle = prepareNativeStyle(utils => ({
 const consentInfoStyle = prepareNativeStyle(utils => ({
     gap: utils.spacings.small,
     paddingVertical: utils.spacings.extraSmall,
+    alignItems: 'center',
 }));
 
 const analyticsConsentStyle = prepareNativeStyle(_ => ({
@@ -71,13 +72,14 @@ const analyticsConsentStyle = prepareNativeStyle(_ => ({
 }));
 
 const consentWrapperStyle = prepareNativeStyle(utils => ({
-    maxHeight: 64,
     paddingHorizontal: utils.spacings.medium,
-    paddingVertical: utils.spacings.small,
+    paddingVertical: utils.spacings.medium,
     marginBottom: utils.spacings.small,
     borderRadius: utils.spacings.medium,
     backgroundColor: utils.colors.backgroundTertiaryDefaultOnElevation1,
     width: '100%',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
 }));
 
 const reportAnalyticsOnboardingCompleted = (isTrackingAllowed: boolean) => {
@@ -165,7 +167,6 @@ export const AnalyticsConsentScreen = () => {
                     <Box
                         flexDirection="row"
                         alignItems="center"
-                        flex={1}
                         justifyContent="space-between"
                         style={applyStyle(consentWrapperStyle)}
                     >
@@ -175,12 +176,14 @@ export const AnalyticsConsentScreen = () => {
                                 <Translation id="moduleOnboarding.analyticsConsentScreen.helpSwitchTitle" />
                             </Text>
                         </Box>
-                        <Switch
-                            isChecked={isEnabled}
-                            onChange={enabled => {
-                                setIsEnabled(enabled);
-                            }}
-                        />
+                        <Box>
+                            <Switch
+                                isChecked={isEnabled}
+                                onChange={enabled => {
+                                    setIsEnabled(enabled);
+                                }}
+                            />
+                        </Box>
                     </Box>
                     <Text variant="hint" textAlign="center">
                         <Translation
