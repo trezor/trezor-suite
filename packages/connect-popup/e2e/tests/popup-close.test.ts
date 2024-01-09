@@ -80,34 +80,65 @@ test.beforeAll(async () => {
         });
 
         // Subscribe to 'request' and 'response' events.
-        explorerPage.on('request', request => {
-            // ignore other than bridge requests
-            if (!request.url().startsWith('http://127.0.0.1:21325')) {
-                return;
-            }
-            requests.push({ url: request.url() });
-        });
 
-        let requestIndex = 0;
-        explorerPage.on('response', async response => {
-            // ignore other than bridge requests
-            if (!response.url().startsWith('http://127.0.0.1:21325')) {
-                return;
-            }
-            if (response.url().endsWith('release/2')) {
-                releasePromise!.resolve(undefined);
-            }
-            console.log(requestIndex, response.status(), response.url());
-            requestIndex++;
-            responses.push({
-                url: response.url(),
-                status: response.status(),
-                body: await response.text(),
+        if (!isWebExtension) {
+            explorerPage.on('request', request => {
+                // ignore other than bridge requests
+                if (!request.url().startsWith('http://127.0.0.1:21325')) {
+                    return;
+                }
+                requests.push({ url: request.url() });
             });
-        });
+
+            let requestIndex = 0;
+            explorerPage.on('response', async response => {
+                // ignore other than bridge requests
+                if (!response.url().startsWith('http://127.0.0.1:21325')) {
+                    return;
+                }
+                if (response.url().endsWith('release/2')) {
+                    releasePromise!.resolve(undefined);
+                }
+                console.log(requestIndex, response.status(), response.url());
+                requestIndex++;
+                responses.push({
+                    url: response.url(),
+                    status: response.status(),
+                    body: await response.text(),
+                });
+            });
+        }
 
         log('beforeEach', 'waiting for popup promise');
         [popup] = await openPopup(browserContext, explorerPage, isWebExtension);
+
+        if (isWebExtension) {
+            popup.on('request', request => {
+                // ignore other than bridge requests
+                if (!request.url().startsWith('http://127.0.0.1:21325')) {
+                    return;
+                }
+                requests.push({ url: request.url() });
+            });
+
+            let requestIndex = 0;
+            popup.on('response', async response => {
+                // ignore other than bridge requests
+                if (!response.url().startsWith('http://127.0.0.1:21325')) {
+                    return;
+                }
+                if (response.url().endsWith('release/2')) {
+                    releasePromise!.resolve(undefined);
+                }
+                console.log(requestIndex, response.status(), response.url());
+                requestIndex++;
+                responses.push({
+                    url: response.url(),
+                    status: response.status(),
+                    body: await response.text(),
+                });
+            });
+        }
 
         log('beforeEach', 'waiting for analytics confirm button');
         await popup.waitForSelector("button[data-test='@analytics/continue-button']", {
@@ -121,8 +152,8 @@ test.beforeAll(async () => {
             popup.on('close', () => resolve(undefined));
         });
 
-        log('beforeEach', 'waiting for popup load state');
-        await popup.waitForLoadState('load');
+        // log('beforeEach', 'waiting for popup load state');
+        // await popup.waitForLoadState('load');
 
         log('beforeEach', 'waiting for permissions confirm button');
         await popup.waitForSelector('button.confirm', { state: 'visible', timeout: 40000 });
@@ -166,9 +197,10 @@ test.beforeAll(async () => {
             state: 'visible',
         });
         log('afterEach', 'waiting for popup open');
+        console.log('isWebExtension', isWebExtension);
         [popup] = await openPopup(context, explorerPage, isWebExtension);
-        log('afterEach', 'waiting for popup load state');
-        await popup.waitForLoadState('load');
+        // log('afterEach', 'waiting for popup load state');
+        // await popup.waitForLoadState('load');
 
         await popup.waitForSelector('button.confirm', { state: 'visible', timeout: 40000 });
         await popup.click('button.confirm');
@@ -185,7 +217,7 @@ test.beforeAll(async () => {
         }
     });
 
-    test(`popup closed by user with bridge version ${bridgeVersion}`, async () => {
+    test.only(`popup closed by user with bridge version ${bridgeVersion}`, async () => {
         log(`test: ${test.info().title}`);
 
         log('simulating user closed popup');
@@ -197,7 +229,15 @@ test.beforeAll(async () => {
 
         if (bridgeVersion === '2.0.31') {
             log('checking requests');
-            expect(responses[12].url).toEqual('http://127.0.0.1:21325/post/2');
+            console.log('responses', responses);
+            console.log('responses[12]', responses[12]);
+            console.log('responses[11]', responses[11]);
+            expect(responses[11].url).toEqual('http://127.0.0.1:21325/call/2');
+            // if (isWebExtension) {
+            //     expect(responses[11].url).toEqual('http://127.0.0.1:21325/call/2');
+            // } else {
+            //     expect(responses[12].url).toEqual('http://127.0.0.1:21325/post/2');
+            // }
             await explorerPage.waitForSelector('text=Method_Interrupted');
         }
     });

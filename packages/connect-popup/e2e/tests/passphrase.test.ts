@@ -20,6 +20,8 @@ test.beforeAll(async () => {
 });
 
 test.beforeEach(async () => {
+    log('beforeEach url', url);
+    log('beforeEach isWebExtension', `${isWebExtension}`);
     log('beforeEach', 'stopBridge');
     await TrezorUserEnvLink.api.stopBridge();
     log('beforeEach', 'stopEmu');
@@ -55,6 +57,7 @@ let popup: Page;
 // Debug mode does not have to be enable since it is default in connect-explorer
 test('input passphrase in popup and device accepts it', async ({ page }) => {
     log('start', test.info().title);
+    log('url', url);
     const { explorerPage, exploreUrl, browserContext } = await getContexts(
         page,
         url,
@@ -102,6 +105,8 @@ test('input passphrase in popup and device accepts it', async ({ page }) => {
 });
 
 test('introduce passphrase in popup and device rejects it', async ({ page }) => {
+    log('start', test.info().title);
+
     const { explorerPage, exploreUrl, browserContext } = await getContexts(
         page,
         url,
@@ -137,6 +142,8 @@ test('introduce passphrase in popup and device rejects it', async ({ page }) => 
 });
 
 test('introduce passphrase successfully next time should not ask for it', async ({ page }) => {
+    log('start', test.info().title);
+
     const { explorerPage, exploreUrl, browserContext } = await getContexts(
         page,
         url,
@@ -188,6 +195,8 @@ test('introduce passphrase successfully next time should not ask for it', async 
 test('introduce passphrase successfully reload 3rd party it should ask again for passphrase', async ({
     page,
 }) => {
+    log('start', test.info().title);
+
     const { explorerPage, exploreUrl, browserContext } = await getContexts(
         page,
         url,
@@ -240,6 +249,8 @@ test('introduce passphrase successfully reload 3rd party it should ask again for
 });
 
 test('passphrase mismatch', async ({ page }) => {
+    log('start', test.info().title);
+
     if (isWebExtension) {
         // This test uses addScriptTag so we cannot run it in web extension.
         test.skip();

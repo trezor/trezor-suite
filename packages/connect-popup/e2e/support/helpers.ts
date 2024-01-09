@@ -28,8 +28,8 @@ const getExtensionPage = async () => {
         '..',
         '..',
         '..',
-        'connect-explorer-webextension',
-        'build',
+        'connect-explorer',
+        'build-webextension',
     );
 
     const initialBrowserContext = await chromium.launchPersistentContext(
