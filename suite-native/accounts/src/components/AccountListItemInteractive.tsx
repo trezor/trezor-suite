@@ -5,6 +5,7 @@ import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { selectIsEthereumAccountWithTokensWithFiatRates } from '@suite-native/ethereum-tokens';
 import { SettingsSliceRootState } from '@suite-native/module-settings';
 import { FiatRatesRootState } from '@suite-native/fiat-rates';
+import { Box } from '@suite-native/atoms';
 
 import { TokenList } from './TokenList';
 import { AccountListItem, AccountListItemProps } from './AccountListItem';
@@ -22,7 +23,7 @@ export const AccountListItemInteractive = ({
     );
 
     return (
-        <>
+        <Box>
             <TouchableOpacity onPress={() => onSelectAccount(account.key)}>
                 <AccountListItem
                     key={account.key}
@@ -33,6 +34,6 @@ export const AccountListItemInteractive = ({
             {areTokensDisplayed && (
                 <TokenList accountKey={account.key} onSelectAccount={onSelectAccount} />
             )}
-        </>
+        </Box>
     );
 };

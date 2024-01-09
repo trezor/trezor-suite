@@ -87,7 +87,7 @@ const finishNetworkTypeDiscoveryThunk = createThunk(
     },
 );
 
-const getDetailsLevels = (coin: NetworkSymbol) => {
+const getAccountInfoDetailsLevel = (coin: NetworkSymbol) => {
     const networkType = getNetworkType(coin);
     // For Cardano we need to fetch at least one tx otherwise it will not generate correctly new receive addresses (xpub instead of address)
     if (networkType === 'cardano') return { details: 'txs', pageSize: 1 } as const;
@@ -95,7 +95,7 @@ const getDetailsLevels = (coin: NetworkSymbol) => {
     // For Ethereum we need to fetch token balances to be able to get their fiat rates and later display them in the UI.
     if (networkType === 'ethereum') return { details: 'tokenBalances' } as const;
 
-    return { details: 'tokens' } as const;
+    return { details: 'basic' } as const;
 };
 
 const discoverAccountsByDescriptorThunk = createThunk(
@@ -124,7 +124,7 @@ const discoverAccountsByDescriptorThunk = createThunk(
                 descriptor: bundleItem.descriptor,
                 useEmptyPassphrase: true,
                 skipFinalReload: true,
-                ...getDetailsLevels(bundleItem.coin),
+                ...getAccountInfoDetailsLevel(bundleItem.coin),
             });
 
             if (success) {
