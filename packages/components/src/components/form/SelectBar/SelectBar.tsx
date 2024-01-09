@@ -173,28 +173,28 @@ export const SelectBar: <V extends ValueTypes>(props: SelectBarProps<V>) => JSX.
     const handleKeyboardNav = (e: KeyboardEvent) => {
         const selectedOptionIndex = options.findIndex(option => option.value === selectedOptionIn);
 
-        switch (e.key) {
-            case 'ArrowLeft': {
-                const previoutIndex = selectedOptionIndex - 1;
-                if (previoutIndex >= 0) {
-                    setSelected(options[previoutIndex].value);
-                } else {
-                    setSelected(options[options.length - 1].value);
-                }
+        let option;
+        if (e.key === 'ArrowLeft') {
+            const previousIndex = selectedOptionIndex - 1;
 
-                break;
+            if (previousIndex >= 0) {
+                option = options[previousIndex];
+            } else {
+                option = options[options.length - 1];
             }
-            case 'ArrowRight': {
-                const previoutIndex = selectedOptionIndex + 1;
-                if (previoutIndex <= options.length - 1) {
-                    setSelected(options[previoutIndex].value);
-                } else {
-                    setSelected(options[0].value);
-                }
+        } else if (e.key === 'ArrowRight') {
+            const previousIndex = selectedOptionIndex + 1;
 
-                break;
+            if (previousIndex <= options.length - 1) {
+                option = options[previousIndex];
+            } else {
+                [option] = options;
             }
-            // no default
+        }
+
+        if (option) {
+            setSelected(option.value);
+            handleOptionClick(option)();
         }
     };
 
