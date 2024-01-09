@@ -125,7 +125,7 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
                         </ErrorMessage>
                     </GraphWrapper>
                 ) : (
-                    <HiddenPlaceholder intensity={7}>
+                    <HiddenPlaceholder enforceIntensity={8}>
                         <GraphWrapper>
                             <TransactionsGraph
                                 hideToolbar
