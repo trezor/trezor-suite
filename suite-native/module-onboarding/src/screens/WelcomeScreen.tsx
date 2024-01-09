@@ -91,7 +91,7 @@ export const WelcomeScreen = () => {
                 resizeMode="cover"
                 style={applyStyle(imageContainerStyle)}
             />
-            <Screen isScrollable={false} backgroundColor="transparent">
+            <Screen backgroundColor="transparent">
                 <LinearGradient
                     style={applyStyle(cardStyle)}
                     colors={[
@@ -99,8 +99,8 @@ export const WelcomeScreen = () => {
                         utils.colors.gradientNeutralBottomFadeSurfaceElevation1End,
                     ]}
                 >
-                    <Box flex={0.7} />
-                    <Box alignItems="center" flex={1}>
+                    <Box flex={1} />
+                    <Box alignItems="center" justifyContent="center">
                         <Box alignItems="center">
                             <Box marginBottom="large">
                                 <Icon size="extraLarge" name="trezor" color="iconDefault" />
@@ -116,16 +116,18 @@ export const WelcomeScreen = () => {
                             {translate('moduleOnboarding.welcomeScreen.subtitle')}
                         </Text>
                     </Box>
-                    <Text variant="hint" textAlign="center">
-                        <Translation
-                            id="moduleOnboarding.welcomeScreen.trezorLink"
-                            values={{
-                                trezorLink: chunks => (
-                                    <Link href="https://trezor.io" label={chunks} />
-                                ),
-                            }}
-                        />
-                    </Text>
+                    <Box flex={1} justifyContent="flex-end">
+                        <Text variant="hint" textAlign="center">
+                            <Translation
+                                id="moduleOnboarding.welcomeScreen.trezorLink"
+                                values={{
+                                    trezorLink: chunks => (
+                                        <Link href="https://trezor.io" label={chunks} />
+                                    ),
+                                }}
+                            />
+                        </Text>
+                    </Box>
                 </LinearGradient>
                 <Box alignItems="center" marginTop="large">
                     <OnboardingFooter

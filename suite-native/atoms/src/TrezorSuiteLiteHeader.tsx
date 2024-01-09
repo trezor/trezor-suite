@@ -10,7 +10,7 @@ type TrezorSuiteLiteHeaderProps = {
 export const TrezorSuiteLiteHeader = ({
     textVariant = 'titleSmall',
 }: TrezorSuiteLiteHeaderProps) => (
-    <Text variant={textVariant} color="textSecondaryHighlight">
+    <Text variant={textVariant} color="textSecondaryHighlight" textAlign="center">
         <Translation
             id="generic.header"
             values={{
