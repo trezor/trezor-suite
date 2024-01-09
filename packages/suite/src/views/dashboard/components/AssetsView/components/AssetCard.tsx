@@ -5,7 +5,6 @@ import { Network } from 'src/types/wallet';
 import {
     AmountUnitSwitchWrapper,
     CoinBalance,
-    FiatValue,
     PriceTicker,
     SkeletonRectangle,
     Translation,
@@ -21,6 +20,7 @@ import { useAccountSearch, useLoadingSkeleton } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { AssetInfo, AssetInfoSkeleton } from './AssetInfo';
 import { AssetFiatBalance } from '@suite-common/assets';
+import { FiatHeader } from '../../FiatHeader';
 
 const BuyContainer = styled.div`
     display: flex;
@@ -140,62 +140,61 @@ export const AssetCard = ({
     };
 
     return (
-        <>
-            <Card>
-                <MarginContainer>
-                    <AssetContainer>
-                        <AssetInfo
-                            network={network}
-                            onClick={handleLogoClick}
-                            assetsFiatBalances={assetsFiatBalances}
-                            index={index}
-                        />
-                    </AssetContainer>
-                    {!failed ? (
-                        <>
-                            <FiatAmount>
-                                <IntegerValue>
-                                    <FiatValue amount={cryptoValue} symbol={symbol} />
-                                </IntegerValue>
-                                {/* <DecimalValue>.92</DecimalValue> */}
-                            </FiatAmount>
-                            <CoinAmount>
-                                <AmountUnitSwitchWrapper symbol={symbol}>
-                                    <CoinBalance value={cryptoValue} symbol={symbol} />
-                                </AmountUnitSwitchWrapper>
-                            </CoinAmount>
-                        </>
-                    ) : (
-                        <FailedContainer>
-                            <WarningIcon icon="WARNING" color={theme.TYPE_RED} size={14} />
-                            <Translation id="TR_DASHBOARD_ASSET_FAILED" />
-                        </FailedContainer>
-                    )}
-                </MarginContainer>
-                {!isTestnet(symbol) && (
-                    <BuyMarginContainer>
-                        <BuyContainer>
-                            <div>
-                                <BuyContainerLabel>
-                                    <Translation id="TR_EXCHANGE_RATE" />
-                                </BuyContainerLabel>
-                                <PriceTicker symbol={symbol} />
-                            </div>
-                            <div>
-                                <BuyContainerLabel>
-                                    <Translation id="TR_7D_CHANGE" />
-                                </BuyContainerLabel>
-                                <TrendTicker symbol={symbol} />
-                            </div>
-                            <CoinmarketBuyButton
-                                symbol={symbol}
-                                dataTest={`@dashboard/assets/grid/${symbol}/buy-button`}
+        <Card>
+            <MarginContainer>
+                <AssetContainer>
+                    <AssetInfo
+                        network={network}
+                        onClick={handleLogoClick}
+                        assetsFiatBalances={assetsFiatBalances}
+                        index={index}
+                    />
+                </AssetContainer>
+                {!failed ? (
+                    <>
+                        <FiatAmount>
+                            <FiatHeader
+                                size="medium"
+                                portfolioValue={cryptoValue}
+                                localCurrency={symbol}
                             />
-                        </BuyContainer>
-                    </BuyMarginContainer>
+                        </FiatAmount>
+                        <CoinAmount>
+                            <AmountUnitSwitchWrapper symbol={symbol}>
+                                <CoinBalance value={cryptoValue} symbol={symbol} />
+                            </AmountUnitSwitchWrapper>
+                        </CoinAmount>
+                    </>
+                ) : (
+                    <FailedContainer>
+                        <WarningIcon icon="WARNING" color={theme.TYPE_RED} size={14} />
+                        <Translation id="TR_DASHBOARD_ASSET_FAILED" />
+                    </FailedContainer>
                 )}
-            </Card>
-        </>
+            </MarginContainer>
+            {!isTestnet(symbol) && (
+                <BuyMarginContainer>
+                    <BuyContainer>
+                        <div>
+                            <BuyContainerLabel>
+                                <Translation id="TR_EXCHANGE_RATE" />
+                            </BuyContainerLabel>
+                            <PriceTicker symbol={symbol} />
+                        </div>
+                        <div>
+                            <BuyContainerLabel>
+                                <Translation id="TR_7D_CHANGE" />
+                            </BuyContainerLabel>
+                            <TrendTicker symbol={symbol} />
+                        </div>
+                        <CoinmarketBuyButton
+                            symbol={symbol}
+                            dataTest={`@dashboard/assets/grid/${symbol}/buy-button`}
+                        />
+                    </BuyContainer>
+                </BuyMarginContainer>
+            )}
+        </Card>
     );
 };
 
