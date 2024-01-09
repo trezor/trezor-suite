@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
-import { variables } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import styled from 'styled-components';
+import { borders, spacingsPx, typography } from '@trezor/theme';
 
 const Wrapper = styled.div`
     display: flex;
@@ -11,17 +11,26 @@ const Wrapper = styled.div`
 
 const PageItem = styled.div<{ isActive?: boolean }>`
     cursor: pointer;
-    font-size: ${variables.FONT_SIZE.SMALL};
-    background: ${({ isActive, theme }) => (isActive ? theme.BG_GREEN : 'transparent')};
-    color: ${({ isActive, theme }) => (isActive ? theme.TYPE_WHITE : theme.TYPE_GREEN)};
-    padding: 4px 8px;
-    border-radius: 2px;
+    ${typography.hint};
+    background: ${({ isActive, theme }) =>
+        isActive ? theme.backgroundPrimaryDefault : 'transparent'};
+    min-width: 29px;
+    text-align: center;
+    margin: 0 2px;
+    color: ${({ isActive, theme }) => (isActive ? theme.textOnPrimary : theme.textPrimaryDefault)};
+    padding: ${spacingsPx.xxs} ${spacingsPx.xs};
+    border-radius: ${borders.radii.md};
+
+    :hover {
+        background: ${({ theme }) => theme.backgroundPrimaryPressed};
+        color: ${({ theme }) => theme.textOnPrimary};
+    }
 `;
 
 const Actions = styled.div<{ isActive: boolean }>`
     display: flex;
     visibility: ${props => (props.isActive ? 'auto' : 'hidden')};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    ${typography.callout};
 `;
 
 interface PaginationProps {
