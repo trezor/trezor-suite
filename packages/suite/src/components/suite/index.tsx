@@ -10,7 +10,7 @@ import { Loading } from './Loading';
 import { BundleLoader } from './BundleLoader';
 import { FiatValue } from './FiatValue';
 import { WebUsbButton } from './WebUsbButton';
-import { HiddenPlaceholder } from './HiddenPlaceholder';
+import { HiddenPlaceholder, HiddenTextPlaceholder } from './HiddenPlaceholder';
 import { QuestionTooltip } from './QuestionTooltip';
 import { DeviceInvalidModeLayout } from './DeviceInvalidModeLayout';
 import { AppNavigationPanel } from './AppNavigationPanel';
@@ -67,6 +67,7 @@ export {
     BundleLoader,
     WebUsbButton,
     HiddenPlaceholder,
+    HiddenTextPlaceholder,
     AccountLabeling,
     AddressLabeling,
     WalletLabeling,

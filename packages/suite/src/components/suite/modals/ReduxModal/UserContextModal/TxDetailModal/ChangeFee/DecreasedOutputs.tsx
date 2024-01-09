@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import styled from 'styled-components';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Icon, variables, Radio, motionAnimation } from '@trezor/components';
-import { FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';
+import { FormattedCryptoAmount, HiddenTextPlaceholder } from 'src/components/suite';
 import { Translation, TranslationKey } from 'src/components/suite/Translation';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { useRbfContext } from 'src/hooks/wallet/useRbfForm';
@@ -158,7 +158,7 @@ export const DecreasedOutputs = () => {
                                             {isChecked && reducedAmount}
                                         </OutputLabel>
                                         <OutputAddress isChecked={isChecked}>
-                                            <HiddenPlaceholder>{o.address}</HiddenPlaceholder>
+                                            <HiddenTextPlaceholder value={o.address} />
                                         </OutputAddress>
                                     </OutputInner>
                                 </Output>

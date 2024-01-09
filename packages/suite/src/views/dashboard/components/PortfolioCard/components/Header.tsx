@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components';
 import { useFormatters } from '@suite-common/formatters';
 import { H1, Button, LoadingContent } from '@trezor/components';
 
-import { GraphRangeSelector, HiddenPlaceholder, Translation } from 'src/components/suite';
+import { GraphRangeSelector, HiddenTextPlaceholder, Translation } from 'src/components/suite';
 import { updateGraphData } from 'src/actions/wallet/graphActions';
 import { useFastAccounts } from 'src/hooks/wallet';
 import { GraphRange } from 'src/types/wallet/graph';
@@ -100,14 +100,11 @@ export const Header = (props: HeaderProps) => {
             <Left>
                 <LoadingContent isLoading={props.isDiscoveryRunning}>
                     <ValueWrapper>
-                        <HiddenPlaceholder intensity={7}>
-                            <span>
-                                <FiatAmountFormatter
-                                    value={props.portfolioValue}
-                                    currency={props.localCurrency}
-                                />
-                            </span>
-                        </HiddenPlaceholder>
+                        <HiddenTextPlaceholder
+                            value={FiatAmountFormatter.format(props.portfolioValue, {
+                                currency: props.localCurrency,
+                            })}
+                        />
                     </ValueWrapper>
                 </LoadingContent>
             </Left>
