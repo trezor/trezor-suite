@@ -42,4 +42,14 @@ channel.init().then(() => {
             channel.postMessage(event.data, { usePromise: false });
         }
     });
+
+    window.addEventListener('beforeunload', () => {
+        window.postMessage(
+            {
+                type: 'popup-closed',
+                payload: { ...chrome.runtime.getManifest(), id: chrome.runtime.id },
+            },
+            window.location.origin,
+        );
+    });
 });

@@ -31,13 +31,15 @@
         "build:lib": "rimraf ./lib && yarn tsc --build tsconfig.lib.json",
         "build:content-script": "TS_NODE_PROJECT=\"tsconfig.lib.json\" webpack --config ./webpack/content-script.webpack.config.ts",
         "build:inline": "TS_NODE_PROJECT=\"tsconfig.lib.json\" webpack --config ./webpack/inline.webpack.config.ts",
+        "build:proxy": "TS_NODE_PROJECT=\"tsconfig.lib.json\" webpack --config ./webpack/proxy.webpack.config.ts",
         "build:webextension": "TS_NODE_PROJECT=\"tsconfig.lib.json\" yarn webpack --config ./webpack/prod.webpack.config.ts",
-        "build": "rimraf build && yarn build:content-script &&  yarn build:webextension && yarn build:inline && node ./webpack/inline-content-script.js"
+        "build": "rimraf build && yarn build:content-script &&  yarn build:webextension && yarn build:inline && node ./webpack/inline-content-script.js && yarn build:proxy"
     },
     "dependencies": {
         "@trezor/connect": "workspace:*",
         "@trezor/connect-common": "workspace:*",
         "@trezor/utils": "workspace:*",
+        "@trezor/worker-proxy": "workspace:^",
         "events": "^3.3.0"
     },
     "devDependencies": {
