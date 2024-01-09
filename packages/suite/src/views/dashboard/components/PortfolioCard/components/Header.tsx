@@ -1,28 +1,23 @@
 import { useCallback } from 'react';
 import styled, { css } from 'styled-components';
 
-import { useFormatters } from '@suite-common/formatters';
-import { H1, Button, LoadingContent } from '@trezor/components';
+import { Button, LoadingContent } from '@trezor/components';
 
 import { GraphRangeSelector, HiddenPlaceholder, Translation } from 'src/components/suite';
 import { updateGraphData } from 'src/actions/wallet/graphActions';
 import { useFastAccounts } from 'src/hooks/wallet';
 import { GraphRange } from 'src/types/wallet/graph';
+import { FiatHeader } from '../../FiatHeader';
 
 const Wrapper = styled.div<{ hideBorder: boolean }>`
     display: flex;
     flex-flow: row wrap;
     padding: 20px;
-    ${props =>
-        !props.hideBorder &&
+    ${({ hideBorder }) =>
+        !hideBorder &&
         css`
             border-bottom: solid 1px ${({ theme }) => theme.STROKE_GREY};
         `}
-`;
-
-const ValueWrapper = styled(H1)`
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
-    font-variant-numeric: tabular-nums;
 `;
 
 const Left = styled.div`
@@ -59,8 +54,19 @@ export interface HeaderProps {
     buyClickHandler: () => void;
 }
 
-export const Header = (props: HeaderProps) => {
-    const { FiatAmountFormatter } = useFormatters();
+export const Header = ({
+    portfolioValue,
+    localCurrency,
+    isWalletEmpty,
+    isWalletLoading,
+    isWalletError,
+    isDiscoveryRunning,
+    isMissingFiatRate,
+    showGraphControls,
+    hideBorder,
+    receiveClickHandler,
+    buyClickHandler,
+}: HeaderProps) => {
     const accounts = useFastAccounts();
 
     const onSelectedRange = useCallback(
@@ -71,45 +77,42 @@ export const Header = (props: HeaderProps) => {
     );
 
     let actions = null;
-    if (!props.isWalletLoading && !props.isWalletError) {
-        if (props.isWalletEmpty) {
+    if (!isWalletLoading && !isWalletError) {
+        if (isWalletEmpty) {
             actions = (
                 <>
                     <ActionButton
                         variant="secondary"
-                        onClick={props.receiveClickHandler}
+                        onClick={receiveClickHandler}
                         data-test="@dashboard/receive-button"
                     >
                         <Translation id="TR_RECEIVE" />
                     </ActionButton>
                     <ActionButton
                         variant="primary"
-                        onClick={props.buyClickHandler}
+                        onClick={buyClickHandler}
                         data-test="@dashboard/buy-button"
                     >
                         <Translation id="TR_BUY" />
                     </ActionButton>
                 </>
             );
-        } else if (props.showGraphControls) {
+        } else if (showGraphControls) {
             actions = <GraphRangeSelector onSelectedRange={onSelectedRange} align="bottom-right" />;
         }
     }
 
     return (
-        <Wrapper hideBorder={props.hideBorder}>
+        <Wrapper hideBorder={hideBorder}>
             <Left>
-                <LoadingContent isLoading={props.isDiscoveryRunning || props.isMissingFiatRate}>
-                    <ValueWrapper>
-                        <HiddenPlaceholder intensity={7}>
-                            <span>
-                                <FiatAmountFormatter
-                                    value={props.portfolioValue}
-                                    currency={props.localCurrency}
-                                />
-                            </span>
-                        </HiddenPlaceholder>
-                    </ValueWrapper>
+                <LoadingContent isLoading={isDiscoveryRunning || isMissingFiatRate}>
+                    <HiddenPlaceholder intensity={7}>
+                        <FiatHeader
+                            size="large"
+                            portfolioValue={portfolioValue}
+                            localCurrency={localCurrency}
+                        />
+                    </HiddenPlaceholder>
                 </LoadingContent>
             </Left>
             <Right>{actions}</Right>
