@@ -1,4 +1,4 @@
-import { versionUtils } from '@trezor/utils';
+import * as versionUtils from '@trezor/utils/lib/versionUtils';
 
 import { httpRequest } from '../../utils/assets';
 import { isStrictFeatures } from '../../utils/firmwareUtils';

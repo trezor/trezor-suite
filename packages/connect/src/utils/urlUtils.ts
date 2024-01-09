@@ -1,6 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/utils/urlUtils.js
 
-import { urlToOnion } from '@trezor/utils';
+import { urlToOnion } from '@trezor/utils/lib/urlToOnion';
 
 export const getOrigin = (url: unknown) => {
     if (typeof url !== 'string') return 'unknown';
