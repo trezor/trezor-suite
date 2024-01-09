@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import { Timestamp } from '@suite-common/wallet-types';
 import BigNumber from 'bignumber.js';
 import styled from 'styled-components';
 import { Controller } from 'react-hook-form';
@@ -8,7 +9,6 @@ import { useSendFormContext } from 'src/hooks/wallet';
 import {
     fromFiatCurrency,
     getInputState,
-    getFiatRate,
     findToken,
     isLowAnonymityWarning,
     amountToSatoshi,
@@ -21,6 +21,10 @@ import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { NumberInput } from 'src/components/suite';
 import { useTranslation } from 'src/hooks/suite';
 import { validateDecimals } from 'src/utils/suite/validation';
+import { NetworkSymbol } from '@suite-common/wallet-config';
+import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { updateFiatRatesThunk } from '@suite-common/wallet-core';
+import { useDispatch } from 'react-redux';
 
 const Wrapper = styled.div`
     display: flex;
@@ -44,13 +48,14 @@ export const Fiat = ({ output, outputId }: FiatProps) => {
         getDefaultValue,
         control,
         setValue,
-        localCurrencyOption,
         composeTransaction,
+        watch,
     } = useSendFormContext();
 
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
 
     const { translationString } = useTranslation();
+    const dispatch = useDispatch();
 
     const fiatInputName = `outputs.${outputId}.fiat` as const;
     const currencyInputName = `outputs.${outputId}.currency` as const;
@@ -62,9 +67,31 @@ export const Fiat = ({ output, outputId }: FiatProps) => {
     const error = outputError ? outputError.fiat : undefined;
     const fiatValue = getDefaultValue(fiatInputName, output.fiat || '');
     const tokenValue = getDefaultValue(tokenInputName, output.token);
-    const currencyValue =
-        getDefaultValue(currencyInputName, output.currency) || localCurrencyOption;
+    const amountValue = getDefaultValue(amountInputName, '');
     const token = findToken(account.tokens, tokenValue);
+
+    const currencyValue = watch(currencyInputName);
+
+    const recalculateFiat = (rate: number) => {
+        const formattedAmount = new BigNumber(
+            shouldSendInSats ? formatAmount(amountValue, network.decimals) : amountValue,
+        );
+
+        if (
+            rate &&
+            formattedAmount &&
+            !formattedAmount.isNaN() &&
+            formattedAmount.gt(0) // formatAmount() returns '-1' on error
+        ) {
+            const fiatValueBigNumber = formattedAmount.multipliedBy(rate);
+
+            setValue(fiatInputName, fiatValueBigNumber.toFixed(2), {
+                shouldValidate: true,
+            });
+            // call compose to store draft, precomposedTx should be the same
+            composeTransaction(amountInputName);
+        }
+    };
 
     // relation case:
     // Amount input has an error and Fiat has not (but it should)
@@ -97,7 +124,7 @@ export const Fiat = ({ output, outputId }: FiatProps) => {
 
             // calculate new Amount, Fiat input times currency rate
             // NOTE: get fresh values (currencyValue may be outdated)
-            const { value: fiatCurrency } = getDefaultValue(currencyInputName, localCurrencyOption);
+            const fiatCurrency = currencyValue.value;
 
             const decimals = token ? token.decimals : network.decimals;
 
@@ -120,19 +147,18 @@ export const Fiat = ({ output, outputId }: FiatProps) => {
             composeTransaction(amountInputName);
         },
         [
-            amountInputName,
-            clearErrors,
-            composeTransaction,
-            currencyInputName,
-            error,
-            fiatRates,
-            getDefaultValue,
             isSetMaxActive,
-            localCurrencyOption,
-            network.decimals,
-            setValue,
+            error,
+            currencyValue.value,
             token,
+            network.decimals,
+            fiatRates,
             shouldSendInSats,
+            composeTransaction,
+            amountInputName,
+            setValue,
+            getDefaultValue,
+            clearErrors,
         ],
     );
 
@@ -150,58 +176,37 @@ export const Fiat = ({ output, outputId }: FiatProps) => {
         };
     }
 
-    const renderCurrencySelect = useCallback(
-        ({ field: { onChange, value } }: CallbackParams) => (
-            <Select
-                options={buildCurrencyOptions(value)}
-                value={value}
-                isClearable={false}
-                isSearchable
-                hideTextCursor
-                minWidth="58px"
-                isClean
-                data-test={currencyInputName}
-                onChange={(selected: CurrencyOption) => {
-                    // propagate changes to FormState
-                    onChange(selected);
-                    // calculate Amount value
-                    const rate = getFiatRate(fiatRates, selected.value);
-                    const amountValue = getDefaultValue(amountInputName, '');
+    const renderCurrencySelect = ({ field: { onChange, value } }: CallbackParams) => (
+        <Select
+            options={buildCurrencyOptions(value)}
+            value={value}
+            isClearable={false}
+            isSearchable
+            hideTextCursor
+            minWidth="58px"
+            isClean
+            data-test={currencyInputName}
+            onChange={async (selected: CurrencyOption) => {
+                // propagate changes to FormState
+                onChange(selected);
 
-                    const formattedAmount = new BigNumber(
-                        shouldSendInSats
-                            ? formatAmount(amountValue, network.decimals)
-                            : amountValue,
-                    );
+                // Get (fresh) fiat rates for newly selected currency
+                const updateFiatRatesResult = await dispatch(
+                    updateFiatRatesThunk({
+                        ticker: { symbol: account.symbol as NetworkSymbol },
+                        localCurrency: selected.value as FiatCurrencyCode,
+                        rateType: 'current',
+                        lastSuccessfulFetchTimestamp: Date.now() as Timestamp,
+                    }),
+                );
 
-                    if (
-                        rate &&
-                        formattedAmount &&
-                        !formattedAmount.isNaN() &&
-                        formattedAmount.gt(0) // formatAmount() returns '-1' on error
-                    ) {
-                        const fiatValueBigNumber = formattedAmount.multipliedBy(rate);
+                if (updateFiatRatesResult.meta.requestStatus === 'fulfilled') {
+                    const rate = updateFiatRatesResult.payload as number;
 
-                        setValue(fiatInputName, fiatValueBigNumber.toFixed(2), {
-                            shouldValidate: true,
-                        });
-                        // call compose to store draft, precomposedTx should be the same
-                        composeTransaction(amountInputName);
-                    }
-                }}
-            />
-        ),
-        [
-            currencyInputName,
-            fiatRates,
-            amountInputName,
-            composeTransaction,
-            getDefaultValue,
-            fiatInputName,
-            setValue,
-            shouldSendInSats,
-            network.decimals,
-        ],
+                    recalculateFiat(rate);
+                }
+            }}
+        />
     );
 
     return (
