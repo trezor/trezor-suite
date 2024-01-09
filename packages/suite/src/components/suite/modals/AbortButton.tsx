@@ -5,6 +5,7 @@ import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import { Translation } from '..';
 import { mediaQueries } from '@trezor/styles';
+import { borders, typography } from '@trezor/theme';
 
 const collapsedStyle = css`
     width: 32px;
@@ -25,19 +26,19 @@ const expandedStyle = css`
 const AbortContainer = styled.div`
     position: relative;
     height: 32px;
-    border-radius: 20px;
-    background: ${({ theme }) => theme.STROKE_GREY};
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    border-radius: ${borders.radii.lg};
+    background: ${({ theme }) => theme.backgroundTertiaryDefaultOnElevation1};
+    color: ${({ theme }) => theme.textSubdued};
     overflow: hidden;
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    ${typography.hint};
     transition: width 0.15s ease-in-out;
     cursor: pointer;
+    display: flex;
+    align-items: center;
 
     span {
         position: absolute;
         right: 12px;
-        top: 8px;
         width: max-content;
         text-transform: uppercase;
         transition: opacity 0.25s ease-out;
@@ -62,8 +63,8 @@ const CloseIcon = styled(Icon)`
     left: 0;
     top: 0;
     padding: 15.5px;
-    border-radius: 20px;
-    background: ${({ theme }) => theme.STROKE_GREY};
+    border-radius: ${borders.radii.lg};
+    background: ${({ theme }) => theme.backgroundTertiaryDefaultOnElevation1};
 `;
 
 interface AbortButtonProps {
@@ -89,7 +90,7 @@ export const AbortButton = ({ onAbort, className }: AbortButtonProps) => {
             className={className}
         >
             <Translation id="TR_ABORT" />
-            <CloseIcon size={18} color={theme.TYPE_LIGHT_GREY} icon="CROSS" />
+            <CloseIcon size={18} color={theme.iconSubdued} icon="CROSS" />
         </AbortContainer>
     );
 };
