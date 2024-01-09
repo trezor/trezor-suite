@@ -5,6 +5,7 @@
     "scripts": {
         "dev": "rimraf build && TS_NODE_PROJECT=\"tsconfig.json\" yarn webpack --config ./webpack/dev.webpack.config.ts",
         "build": "rimraf build && TS_NODE_PROJECT=\"tsconfig.json\" yarn webpack --config ./webpack/prod.webpack.config.ts",
+        "build:webextension": "rimraf build-webextension && TS_NODE_PROJECT=\"tsconfig.json\" yarn webpack --config ./webpack/webextension.webpack.config.ts",
         "lint:js": "yarn g:eslint '**/*{.ts,.tsx}'",
         "lint:styles": "npx stylelint './src/**/*{.ts,.tsx}' --cache --config ../../.stylelintrc",
         "type-check": "tsc --build tsconfig.json"
@@ -12,7 +13,10 @@
     "dependencies": {
         "@trezor/components": "workspace:*",
         "@trezor/connect-web": "workspace:*",
+        "@trezor/connect-webextension": "workspace:^",
         "@trezor/protobuf": "workspace:*",
+        "@trezor/utils": "workspace:^",
+        "@trezor/worker-proxy": "workspace:^",
         "copy-webpack-plugin": "^11.0.0",
         "markdown-it": "^13.0.2",
         "markdown-it-imsize": "^2.0.1",
