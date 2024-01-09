@@ -79,6 +79,17 @@ platform :android do
       skip_upload_apk: true
     )
 
+    package_name = CredentialsManager::AppfileConfig.try_fetch_value(:package_name)
+    sentry_upload_sourcemap(
+      auth_token: ENV["SENTRY_AUTH_TOKEN"],
+      org_slug: 'satoshilabs',
+      project_slug: 'suite-native',
+      version: ENV["VERSION"],
+      app_identifier: package_name, 
+      build: ENV["BUILD_NUMBER"]
+      sourcemap: ['index.android.bundle', 'index.android.bundle.map'],
+      rewrite: true
+    )
   end
 
   desc "Build Debug build."
@@ -130,6 +141,18 @@ platform :android do
         release_notes: "#{ENV["COMMIT_HASH"]} - #{ENV["CHANGELOG"]}",
         groups: "develop-testers",
         debug: true
+    )
+
+    package_name = CredentialsManager::AppfileConfig.try_fetch_value(:package_name)
+    sentry_upload_sourcemap(
+      auth_token: ENV["SENTRY_AUTH_TOKEN"],
+      org_slug: 'satoshilabs',
+      project_slug: 'suite-native',
+      version: ENV["VERSION"],
+      app_identifier: package_name, 
+      build: ENV["BUILD_NUMBER"]
+      sourcemap: ['index.android.bundle', 'index.android.bundle.map'],
+      rewrite: true
     )
   end
 end
