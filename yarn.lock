@@ -10924,6 +10924,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/tar@npm:^6":
+  version: 6.1.10
+  resolution: "@types/tar@npm:6.1.10"
+  dependencies:
+    "@types/node": "npm:*"
+    minipass: "npm:^4.0.0"
+  checksum: da525415a9bac9e81a1498d0b684dd7fa34f69a8568b54ab19660e99d5e7dcdeb2527a40059e1cfc697fe4bbcc18cd03a50c96356d84ab865345c2c48a9d88f6
+  languageName: node
+  linkType: hard
+
 "@types/tough-cookie@npm:*":
   version: 4.0.2
   resolution: "@types/tough-cookie@npm:4.0.2"
@@ -25439,7 +25449,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minipass@npm:^4.2.4":
+"minipass@npm:^4.0.0, minipass@npm:^4.2.4":
   version: 4.2.8
   resolution: "minipass@npm:4.2.8"
   checksum: e148eb6dcb85c980234cad889139ef8ddf9d5bdac534f4f0268446c8792dd4c74f4502479be48de3c1cce2f6450f6da4d0d4a86405a8a12be04c1c36b339569a
@@ -32110,7 +32120,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tar@npm:^6.0.2, tar@npm:^6.0.5, tar@npm:^6.1.11, tar@npm:^6.1.12, tar@npm:^6.1.13, tar@npm:^6.1.2":
+"tar@npm:^6.0.2, tar@npm:^6.0.5, tar@npm:^6.1.11, tar@npm:^6.1.12, tar@npm:^6.1.13, tar@npm:^6.1.2, tar@npm:^6.2.0":
   version: 6.2.0
   resolution: "tar@npm:6.2.0"
   dependencies:
@@ -32664,9 +32674,11 @@ __metadata:
     "@types/node": "npm:18.17.15"
     "@types/prettier": "npm:^3.0.0"
     "@types/semver": "npm:^7.5.4"
+    "@types/tar": "npm:^6"
     "@typescript-eslint/eslint-plugin": "npm:^6.11.0"
     "@typescript-eslint/parser": "npm:^6.11.0"
     babel-jest: "npm:29.5.0"
+    cross-fetch: "npm:^4.0.0"
     eslint: "npm:^8.53.0"
     eslint-config-airbnb: "npm:^18.2.1"
     eslint-config-prettier: "npm:^9.0.0"
@@ -32689,6 +32701,7 @@ __metadata:
     prettier-eslint: "npm:^16.1.2"
     rimraf: "npm:^5.0.5"
     semver: "npm:^7.5.4"
+    tar: "npm:^6.2.0"
     ts-node: "npm:^10.9.1"
     tsconfig-paths: "npm:^4.2.0"
     tsx: "npm:^4.6.2"
