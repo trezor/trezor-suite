@@ -52,7 +52,7 @@ export const Fiat = ({ output, outputId }: FiatProps) => {
 
     const { translationString } = useTranslation();
 
-    const inputName = `outputs.${outputId}.fiat` as const;
+    const fiatInputName = `outputs.${outputId}.fiat` as const;
     const currencyInputName = `outputs.${outputId}.currency` as const;
     const amountInputName = `outputs.${outputId}.amount` as const;
     const tokenInputName = `outputs.${outputId}.token` as const;
@@ -60,7 +60,7 @@ export const Fiat = ({ output, outputId }: FiatProps) => {
 
     const outputError = errors.outputs ? errors.outputs[outputId] : undefined;
     const error = outputError ? outputError.fiat : undefined;
-    const fiatValue = getDefaultValue(inputName, output.fiat || '');
+    const fiatValue = getDefaultValue(fiatInputName, output.fiat || '');
     const tokenValue = getDefaultValue(tokenInputName, output.token);
     const currencyValue =
         getDefaultValue(currencyInputName, output.currency) || localCurrencyOption;
@@ -182,7 +182,7 @@ export const Fiat = ({ output, outputId }: FiatProps) => {
                     ) {
                         const fiatValueBigNumber = formattedAmount.multipliedBy(rate);
 
-                        setValue(inputName, fiatValueBigNumber.toFixed(2), {
+                        setValue(fiatInputName, fiatValueBigNumber.toFixed(2), {
                             shouldValidate: true,
                         });
                         // call compose to store draft, precomposedTx should be the same
@@ -197,7 +197,7 @@ export const Fiat = ({ output, outputId }: FiatProps) => {
             amountInputName,
             composeTransaction,
             getDefaultValue,
-            inputName,
+            fiatInputName,
             setValue,
             shouldSendInSats,
             network.decimals,
@@ -211,8 +211,8 @@ export const Fiat = ({ output, outputId }: FiatProps) => {
                 inputState={inputState}
                 isMonospace
                 onChange={handleChange}
-                name={inputName}
-                data-test={inputName}
+                name={fiatInputName}
+                data-test={fiatInputName}
                 defaultValue={fiatValue}
                 maxLength={MAX_LENGTH.FIAT}
                 rules={rules}
