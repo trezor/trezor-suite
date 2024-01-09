@@ -1,6 +1,7 @@
 import EventEmitter from 'events';
 
-import { createDeferred, Deferred } from '@trezor/utils/lib/createDeferred';
+import { createDeferredManager } from '@trezor/utils/lib/createDeferredManager';
+
 import { Core, initCore } from './core';
 import { factory } from './factory';
 import { parseConnectSettings } from './data/connectSettings';
@@ -29,8 +30,7 @@ const _log = initLog('@trezor/connect');
 let _settings = parseConnectSettings();
 let _core: Core | null = null;
 
-let _messageID = 0;
-export const messagePromises: { [key: number]: Deferred<any> } = {};
+const messagePromises = createDeferredManager({ initialId: 1 });
 
 const manifest = (data: Manifest) => {
     _settings = parseConnectSettings({
@@ -65,18 +65,9 @@ const handleMessage = (message: CoreEventMessage) => {
 
     switch (event) {
         case RESPONSE_EVENT: {
-            const id = message.id || 0;
-            if (messagePromises[id]) {
-                // resolve message promise (send result of call method)
-                messagePromises[id].resolve({
-                    id,
-                    success: message.success,
-                    payload,
-                });
-                delete messagePromises[id];
-            } else {
-                _log.warn(`Unknown message id ${id}`);
-            }
+            const { id = 0, success } = message;
+            const resolved = messagePromises.resolve(id, { id, success, payload });
+            if (!resolved) _log.warn(`Unknown message id ${id}`);
             break;
         }
         case DEVICE_EVENT:
@@ -144,13 +135,11 @@ const call: CallMethod = async params => {
             throw ERRORS.TypedError('Runtime', 'postMessage: _core not found');
         }
 
-        _messageID++;
-        messagePromises[_messageID] = createDeferred();
-        const { promise } = messagePromises[_messageID];
+        const { promiseId, promise } = messagePromises.create();
         _core.handleMessage({
             type: IFRAME.CALL,
             payload: params,
-            id: _messageID,
+            id: promiseId,
         });
         const response = await promise;
 

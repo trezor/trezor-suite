@@ -24,6 +24,7 @@ import type { ConnectSettings, Manifest } from '@trezor/connect/lib/types';
 import { factory } from '@trezor/connect/lib/factory';
 import { initLog } from '@trezor/connect/lib/utils/debug';
 import { config } from '@trezor/connect/lib/data/config';
+import { createDeferredManager } from '@trezor/utils/lib/createDeferredManager';
 
 import * as iframe from './iframe';
 import * as popup from './popup';
@@ -35,6 +36,8 @@ const _log = initLog('@trezor/connect-web');
 
 let _settings = parseConnectSettings();
 let _popupManager: popup.PopupManager | undefined;
+
+const messagePromises = createDeferredManager({ initialId: 1 });
 
 const initPopupManager = () => {
     const pm = new popup.PopupManager(_settings);
@@ -81,18 +84,9 @@ const handleMessage = (messageEvent: MessageEvent<CoreEventMessage>) => {
 
     switch (message.event) {
         case RESPONSE_EVENT: {
-            const id = message.id || 0;
-            if (iframe.messagePromises[id]) {
-                // resolve message promise (send result of call method)
-                iframe.messagePromises[id].resolve({
-                    id,
-                    success: message.success,
-                    payload: message.payload,
-                });
-                delete iframe.messagePromises[id];
-            } else {
-                _log.warn(`Unknown message id ${id}`);
-            }
+            const { id = 0, success, payload } = message;
+            const resolved = messagePromises.resolve(id, { id, success, payload });
+            if (!resolved) _log.warn(`Unknown message id ${id}`);
             break;
         }
         case DEVICE_EVENT:
@@ -219,7 +213,9 @@ const call: CallMethod = async params => {
 
     // post message to iframe
     try {
-        const response = await iframe.postMessageAsync({ type: IFRAME.CALL, payload: params });
+        const { promiseId, promise } = messagePromises.create();
+        iframe.postMessage({ id: promiseId, type: IFRAME.CALL, payload: params });
+        const response = await promise;
         if (response) {
             if (
                 !response.success &&
