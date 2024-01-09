@@ -9,9 +9,10 @@ import {
 } from 'src/types/wallet/sendForm';
 import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
+import { CoinFiatRates } from '@suite-common/wallet-types';
 
 type Props = UseFormReturn<FormState> & {
-    fiatRates: UseSendFormState['fiatRates'];
+    fiatRates?: CoinFiatRates;
     network: UseSendFormState['network'];
 };
 

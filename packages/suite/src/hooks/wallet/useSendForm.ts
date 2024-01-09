@@ -64,7 +64,6 @@ const getStateFromProps = (props: UseSendFormProps) => {
     const coinFees = props.fees[symbol];
     const levels = getFeeLevels(networkType, coinFees);
     const feeInfo = { ...coinFees, levels };
-    const fiatRates = props.coins.find(item => item.symbol === symbol);
     const localCurrencyOption = {
         value: props.localCurrency,
         label: props.localCurrency.toUpperCase(),
@@ -75,7 +74,6 @@ const getStateFromProps = (props: UseSendFormProps) => {
         network,
         coinFees,
         feeInfo,
-        fiatRates,
         localCurrencyOption,
         online: props.online,
         metadataEnabled: props.metadataEnabled,
@@ -90,6 +88,10 @@ const getStateFromProps = (props: UseSendFormProps) => {
 export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     // public variables, exported to SendFormContext
     const [isLoading, setLoading] = useState(false);
+    const fiatRates = props.coins.find(
+        item => item.symbol === props.selectedAccount.account.symbol,
+    );
+
     const [state, setState] = useState<UseSendFormState>(getStateFromProps(props));
     // private variables, used inside sendForm hook
     const draft = useRef<FormState | undefined>(undefined);
@@ -155,7 +157,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     // declare sendFormUtils, sub-hook of useSendForm
     const sendFormUtils = useSendFormFields({
         ...useFormMethods,
-        fiatRates: state.fiatRates,
+        fiatRates,
         network: state.network,
     });
 
@@ -220,7 +222,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     const { importTransaction } = useSendFormImport({
         network: state.network,
         tokens: state.account.tokens,
-        fiatRates: state.fiatRates,
+        fiatRates,
         localCurrencyOption,
     });
 
@@ -359,6 +361,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         ...useFormMethods,
         isLoading,
         register,
+        fiatRates,
         outputs: outputsFieldArray.fields,
         composedLevels,
         updateContext,

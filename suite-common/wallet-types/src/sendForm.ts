@@ -54,9 +54,8 @@ export type UseSendFormState = {
     account: Account;
     network: Network;
     coinFees: FeeInfo;
-    feeInfo: FeeInfo;
-    fiatRates: CoinFiatRates | undefined;
     localCurrencyOption: CurrencyOption;
+    feeInfo: FeeInfo;
     composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;
     online: boolean;
     metadataEnabled: boolean;
@@ -101,6 +100,7 @@ export type SendContextValues<TFormValues extends FormState = FormState> =
     UseFormReturn<TFormValues> &
         UseSendFormState & {
             isLoading: boolean;
+            fiatRates?: CoinFiatRates;
             // additional fields
             outputs: Partial<Output & { id: string }>[]; // useFieldArray fields
             updateContext: (value: Partial<UseSendFormState>) => void;
