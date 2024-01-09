@@ -2,7 +2,14 @@ const fs = require('fs');
 const path = require('path');
 
 const json = require('../messages.json');
-const { RULE_PATCH, TYPE_PATCH, DEFINITION_PATCH, SKIP, UINT_TYPE, SINT_TYPE } = require('./protobuf-patches');
+const {
+    RULE_PATCH,
+    TYPE_PATCH,
+    DEFINITION_PATCH,
+    SKIP,
+    UINT_TYPE,
+    SINT_TYPE,
+} = require('./protobuf-patches');
 
 const INDENT = ' '.repeat(4);
 
