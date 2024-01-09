@@ -15,8 +15,8 @@ import {
 import { selectIsAccountAlreadyDiscovered } from '@suite-native/accounts';
 import TrezorConnect from '@trezor/connect';
 import { DiscoveryItem } from '@suite-common/wallet-types';
-import { getDerivationType, getNetwork } from '@suite-common/wallet-utils';
-import { Network, NetworkSymbol } from '@suite-common/wallet-config';
+import { getDerivationType } from '@suite-common/wallet-utils';
+import { Network, NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import { requestDeviceAccess } from '@suite-native/device-mutex';
 import { analytics, EventType } from '@suite-native/analytics';
@@ -88,9 +88,13 @@ const finishNetworkTypeDiscoveryThunk = createThunk(
 );
 
 const getDetailsLevels = (coin: NetworkSymbol) => {
-    const network = getNetwork(coin);
+    const networkType = getNetworkType(coin);
     // For Cardano we need to fetch at least one tx otherwise it will not generate correctly new receive addresses (xpub instead of address)
-    if (network?.networkType === 'cardano') return { details: 'txs', pageSize: 1 } as const;
+    if (networkType === 'cardano') return { details: 'txs', pageSize: 1 } as const;
+
+    // For Ethereum we need to fetch token balances to be able to get their fiat rates and later display them in the UI.
+    if (networkType === 'ethereum') return { details: 'tokenBalances' } as const;
+
     return { details: 'tokens' } as const;
 };
 
