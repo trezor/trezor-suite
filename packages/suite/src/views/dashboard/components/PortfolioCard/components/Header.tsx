@@ -106,7 +106,7 @@ export const Header = ({
         <Wrapper hideBorder={hideBorder}>
             <Left>
                 <LoadingContent isLoading={isDiscoveryRunning || isMissingFiatRate}>
-                    <HiddenPlaceholder intensity={7}>
+                    <HiddenPlaceholder>
                         <FiatHeader
                             size="large"
                             portfolioValue={portfolioValue}
