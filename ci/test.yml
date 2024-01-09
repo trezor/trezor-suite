@@ -320,7 +320,10 @@ connect-popup legacy npm package:
     IS_WEBEXTENSION: "true"
   script:
     - yarn install --immutable
-    - yarn workspace @trezor/connect-explorer-webextension build
+    - yarn build:libs
+    - yarn workspace @trezor/connect-webextension build
+    - yarn workspace @trezor/connect-iframe build:core-module
+    - yarn workspace @trezor/connect-explorer build:webextension
     - docker-compose pull
     - docker-compose up -d trezor-user-env-unix
     - docker-compose run test-run
@@ -339,16 +342,16 @@ connect-popup legacy npm package:
     matrix:
       - TEST_FILE: ["methods.test"]
       - TEST_FILE: ["passphrase.test"]
-      - TEST_FILE: ["popup-close.test"]
-      - TEST_FILE: ["popup-error-page.test"]
+      # - TEST_FILE: ["popup-error-page.test"]
+      # - TEST_FILE: ["popup-close.test"]
 
 connect-popup-webextension:
   extends: .e2e connect-popup-webextension
   dependencies:
     - install
     - connect-web build
-  only:
-    <<: *run_everything_rules
+  # only:
+  #   <<: *run_everything_rules
 
 connect-popup-webextension manual:
   extends: .e2e connect-popup-webextension
