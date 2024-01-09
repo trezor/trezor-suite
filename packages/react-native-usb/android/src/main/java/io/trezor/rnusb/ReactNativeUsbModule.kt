@@ -262,7 +262,9 @@ class ReactNativeUsbModule : Module() {
             Log.e("ReactNativeUsbModule", "Failed to get endpoint $endpointNumber for device ${device.deviceName}")
             throw Exception("Failed to get endpoint $endpointNumber for device ${device.deviceName}")
         }
-        return usbConnection.bulkTransfer(usbEndpoint, dataByteArray, dataByteArray.size, 0)
+        val result = usbConnection.bulkTransfer(usbEndpoint, dataByteArray, dataByteArray.size, 0)
+        Log.d("ReactNativeUsbModule", "Transfered data to device ${device.deviceName}: $result")
+        return result
     }
 
     private fun transferIn(deviceName: String, endpointNumber: Int, length: Int): IntArray {
