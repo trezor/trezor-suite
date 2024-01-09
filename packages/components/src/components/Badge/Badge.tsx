@@ -88,17 +88,6 @@ const Container = styled.button<BadgeContainerProps>`
 
     ${getFocusShadowStyle()}
 
-    ${({ onClick }) =>
-        onClick &&
-        css`
-            transition: opacity 0.1s ease-out;
-            cursor: pointer;
-
-            :hover {
-                opacity: 0.8;
-            }
-        `}
-
     ${({ theme, hasAlert }) =>
         hasAlert &&
         css`
@@ -123,7 +112,6 @@ export interface BadgeProps {
     isDisabled?: boolean;
     icon?: IconName;
     hasAlert?: boolean;
-    onClick?: (e: any) => void;
     className?: string;
     children?: React.ReactNode;
 }
@@ -134,7 +122,6 @@ export const Badge = ({
     isDisabled,
     icon,
     hasAlert,
-    onClick,
     className,
     children,
 }: BadgeProps) => (
@@ -143,7 +130,6 @@ export const Badge = ({
         variant={variant}
         disabled={!!isDisabled}
         hasAlert={!!hasAlert}
-        onClick={onClick}
         className={className}
     >
         {icon && <Icon name={icon} color={getIconColor(variant, isDisabled)} />}
