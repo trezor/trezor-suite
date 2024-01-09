@@ -4,11 +4,12 @@ import { DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
 import { fiatCurrencies } from '@suite-common/suite-config';
 import { fromFiatCurrency, toFiatCurrency } from '@suite-common/wallet-utils';
 import { UseSendFormState, Output } from 'src/types/wallet/sendForm';
+import { CoinFiatRates } from '@suite-common/wallet-types';
 
 type Props = {
     network: UseSendFormState['network'];
     tokens: UseSendFormState['account']['tokens'];
-    fiatRates: UseSendFormState['fiatRates'];
+    fiatRates?: CoinFiatRates;
     localCurrencyOption: UseSendFormState['localCurrencyOption'];
 };
 
