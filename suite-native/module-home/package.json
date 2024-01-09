@@ -40,6 +40,7 @@
         "jotai": "1.9.1",
         "react": "18.2.0",
         "react-native": "0.71.8",
+        "react-native-svg": "^13.8.0",
         "react-redux": "8.0.7"
     },
     "devDependencies": {
