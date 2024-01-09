@@ -11,8 +11,8 @@
         "type-check": "tsc --build"
     },
     "dependencies": {
-        "@react-navigation/core": "^6.4.6",
-        "@react-navigation/native-stack": "^6.9.11",
+        "@react-navigation/core": "^6.4.10",
+        "@react-navigation/native-stack": "^6.9.17",
         "@sentry/react-native": "5.15.2",
         "@suite-common/icons": "workspace:*",
         "@suite-common/logger": "workspace:*",
