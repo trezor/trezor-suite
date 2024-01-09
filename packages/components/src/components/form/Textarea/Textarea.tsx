@@ -11,16 +11,18 @@ import {
     INPUT_PADDING_TOP,
     LABEL_TRANSFORM,
 } from '../InputStyles';
-import { BottomText } from '../BottomText';
+import { BOTTOM_TEXT_MIN_HEIGHT, BottomText } from '../BottomText';
 import { TopAddons } from '../TopAddons';
 import { CharacterCount } from './CharacterCount';
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ hasBottomPadding: boolean }>`
     width: 100%;
     position: relative;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
+    padding-bottom: ${({ hasBottomPadding }) =>
+        hasBottomPadding ? `${BOTTOM_TEXT_MIN_HEIGHT}px` : '0'};
 `;
 
 const TextareaWrapper = styled(InputWrapper)`
@@ -73,6 +75,7 @@ export interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElemen
      */
     bottomText?: ReactNode;
     inputState?: InputState;
+    hasBottomPadding?: boolean;
     value?: string;
     characterCount?: boolean | { current: number; max: number };
     'data-test'?: string;
@@ -92,6 +95,7 @@ export const Textarea = ({
     rows = 5,
     labelRight,
     characterCount,
+    hasBottomPadding = true,
     'data-test': dataTest,
     ...rest
 }: TextareaProps) => {
@@ -103,6 +107,7 @@ export const Textarea = ({
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
             data-test={dataTest}
+            hasBottomPadding={hasBottomPadding === true && bottomText === null}
         >
             <TopAddons isHovered={isHovered} hoverAddon={labelHoverAddon} addonRight={labelRight} />
 
