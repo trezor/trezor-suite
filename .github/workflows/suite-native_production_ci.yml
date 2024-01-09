@@ -53,6 +53,7 @@ jobs:
           SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS_PROD }}
           SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD_PROD }}
           GOOGLE_PLAY_JSON_KEY_FILE: ./android/google_play_key.json
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         # builds and publishes the app
         run: |
           bundle install
