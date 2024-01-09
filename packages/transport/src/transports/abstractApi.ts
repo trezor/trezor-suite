@@ -192,7 +192,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                     const { encode, decode } = protocol || v1Protocol;
                     const buffers = buildBuffers(this.messages, name, data, encode);
                     for (const chunk of buffers) {
-                        this.api.write(path, chunk).then(result => {
+                        await this.api.write(path, chunk).then(result => {
                             if (!result.success) {
                                 throw new Error(result.error);
                             }
