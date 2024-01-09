@@ -37,6 +37,8 @@ export const ConnectDeviceScreenHeader = () => {
                 iconName="close"
                 size="medium"
                 colorScheme="tertiaryElevation1"
+                accessibilityRole="button"
+                accessibilityLabel="close"
                 onPress={handleCancel}
             />
             <ConnectingTrezorHelp />

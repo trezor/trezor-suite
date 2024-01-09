@@ -36,7 +36,12 @@ export const TouchableSwitchRow = ({
     };
 
     return (
-        <TouchableOpacity onPress={handleChange}>
+        <TouchableOpacity
+            onPress={handleChange}
+            accessibilityRole="switch"
+            accessibilityLabel={text}
+            accessibilityState={{ checked: isChecked }}
+        >
             <Box
                 flexDirection="row"
                 justifyContent="space-between"

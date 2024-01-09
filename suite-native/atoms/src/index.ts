@@ -14,7 +14,6 @@ export * from './Chip';
 export * from './Switch';
 export * from './DiscreetText';
 export * from './ListItem/ListItem';
-export * from './ListItem/SelectableListItem';
 export * from './Sheet/BottomSheet';
 export * from './Sheet/useBottomSheetAnimation';
 export * from './Button/Button';

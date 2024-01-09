@@ -64,8 +64,6 @@ export const Radio = ({
         <TouchableOpacity
             disabled={isDisabled}
             onPress={() => onPress(value)}
-            accessibilityRole="radio"
-            accessibilityState={{ checked: isChecked, disabled: isDisabled }}
             style={[applyStyle(radioStyle, { isChecked, isDisabled }), style]}
             {...props}
         >
