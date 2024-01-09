@@ -1,4 +1,4 @@
-import { versionUtils } from '@trezor/utils';
+import * as versionUtils from '@trezor/utils/lib/versionUtils';
 import type { Features, StrictFeatures, FirmwareRelease, VersionArray } from '../types';
 
 export const isStrictFeatures = (extFeatures: Features): extFeatures is StrictFeatures =>

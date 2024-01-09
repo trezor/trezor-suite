@@ -2,7 +2,7 @@
 import EventEmitter from 'events';
 
 import { TRANSPORT, TRANSPORT_ERROR } from '@trezor/transport';
-import { createDeferred, Deferred } from '@trezor/utils';
+import { createDeferred, Deferred } from '@trezor/utils/lib/createDeferred';
 
 import { DataManager } from '../data/DataManager';
 import { DeviceList } from '../device/DeviceList';

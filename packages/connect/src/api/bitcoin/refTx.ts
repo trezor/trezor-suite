@@ -6,7 +6,7 @@ import {
     Transaction as BitcoinJsTransaction,
     Network,
 } from '@trezor/utxo-lib';
-import { bufferUtils } from '@trezor/utils';
+import * as bufferUtils from '@trezor/utils/lib/bufferUtils';
 import { getHDPath, getScriptType, getOutputScriptType } from '../../utils/pathUtils';
 import { TypedError } from '../../constants/errors';
 import type {

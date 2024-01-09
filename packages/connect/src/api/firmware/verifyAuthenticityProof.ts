@@ -1,5 +1,5 @@
 import * as crypto from 'crypto';
-import { bufferUtils } from '@trezor/utils';
+import * as bufferUtils from '@trezor/utils/lib/bufferUtils';
 
 import { PROTO } from '../../constants';
 import { DeviceAuthenticityConfig } from '../../data/deviceAuthenticityConfig';
