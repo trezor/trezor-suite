@@ -16,7 +16,7 @@ export type HttpRequestOptions = {
     timeout?: number;
 };
 
-const _isNode = typeof process !== 'undefined' && typeof window === 'undefined';
+const IS_NODE = typeof process !== 'undefined' && typeof window === 'undefined';
 
 function contentType(body: string | unknown) {
     if (typeof body === 'string') {
@@ -60,7 +60,7 @@ export async function bridgeApiCall(options: HttpRequestOptions) {
     });
 
     // Node applications must spoof origin for bridge CORS
-    if (_isNode) {
+    if (IS_NODE) {
         fetchOptions.headers = {
             ...fetchOptions.headers,
             Origin: 'https://node.trezor.io',
