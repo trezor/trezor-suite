@@ -1,7 +1,7 @@
 import { ReactNode, SyntheticEvent } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { Icon, IconProps, variables, Checkbox, Card } from '@trezor/components';
-import { boxShadows, spacingsPx, typography } from '@trezor/theme';
+import { spacingsPx, typography } from '@trezor/theme';
 
 const StyledCheckbox = styled(Checkbox)`
     /* so the entire card acts as a checkbox */
@@ -39,7 +39,7 @@ const Container = styled(Card)<{ checked: boolean }>`
     cursor: pointer;
 
     :hover {
-        box-shadow: ${boxShadows.elevation3};
+        box-shadow: ${({ theme }) => theme.boxShadowElevation3};
     }
 
     ${variables.SCREEN_QUERY.MOBILE} {

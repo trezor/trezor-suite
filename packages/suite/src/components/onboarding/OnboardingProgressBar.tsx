@@ -1,7 +1,7 @@
 import { ReactNode, Fragment } from 'react';
 import styled, { css, useTheme } from 'styled-components';
 import { Icon, variables } from '@trezor/components';
-import { boxShadows, spacingsPx, typography } from '@trezor/theme';
+import { spacingsPx, typography } from '@trezor/theme';
 
 const ProgressBarWrapper = styled.div`
     display: flex;
@@ -54,7 +54,7 @@ const IconWrapper = styled.div<{ stepCompleted?: boolean; active?: boolean }>`
         active &&
         css`
             background: ${theme.backgroundSurfaceElevation1};
-            box-shadow: ${boxShadows.elevation1};
+            box-shadow: ${({ theme }) => theme.boxShadowElevation1};
             color: ${theme.textPrimaryDefault};
         `}
 `;
