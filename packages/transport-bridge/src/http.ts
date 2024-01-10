@@ -149,4 +149,24 @@ export class TrezordNode {
     }
 
     public stop() {}
+
+    public async status() {
+        const running = await fetch(`http://127.0.0.1:${this.port}/`)
+            .then(resp => resp.ok)
+            .catch(() => false);
+        return {
+            service: running,
+            process: running,
+        };
+    }
+
+    // compatibility with "BridgeProcess" type
+    public startDev() {
+        return this.start();
+    }
+
+    // compatibility with "BridgeProcess" type
+    public startTest() {
+        return this.start();
+    }
 }
