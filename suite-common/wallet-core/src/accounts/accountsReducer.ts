@@ -8,7 +8,7 @@ import { Account, AccountKey } from '@suite-common/wallet-types';
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 
 import { accountsActions } from './accountsActions';
-import { formattedBitcoinAccountTypeMap } from './constants';
+import { formattedAccountTypeMap } from './constants';
 import {
     DeviceRootState,
     selectDevice,
@@ -243,10 +243,14 @@ export const selectFormattedAccountType = (
     accountKey: AccountKey,
 ): string | null => {
     const account = selectAccountByKey(state, accountKey);
+    if (!account) return null;
 
-    if (!account || account?.networkType !== 'bitcoin') return null;
+    const { networkType, accountType } = account;
+    const formattedType = formattedAccountTypeMap[networkType]?.[accountType];
 
-    return formattedBitcoinAccountTypeMap[account.accountType] ?? null;
+    if (!formattedType) return null;
+
+    return formattedType;
 };
 
 export const selectIsAccountUtxoBased = (state: AccountsRootState, accountKey: AccountKey) => {

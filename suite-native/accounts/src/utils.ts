@@ -1,7 +1,7 @@
 import { A, D, G } from '@mobily/ts-belt';
 
 import { AccountType, networks } from '@suite-common/wallet-config';
-import { formattedBitcoinAccountTypeMap } from '@suite-common/wallet-core/src/accounts/constants';
+import { formattedAccountTypeMap } from '@suite-common/wallet-core/src/accounts/constants';
 import { Account } from '@suite-common/wallet-types';
 import { getNetwork } from '@suite-common/wallet-utils';
 
@@ -30,12 +30,13 @@ export const isFilterValueMatchingAccount = (account: Account, filterValue: stri
 
     const isBitcoinNetworkType = networks[account.symbol].networkType === 'bitcoin';
     const lowercasedSectionHeader = accountTypeToSectionHeader[account.accountType]?.toLowerCase();
-    const lowercasedBitcoinAccountType =
-        formattedBitcoinAccountTypeMap[account.accountType]?.toLowerCase();
+
+    const lowerCasedAccountType =
+        formattedAccountTypeMap[account.networkType]?.[account.accountType]?.toLowerCase();
 
     const isMatchingAccountType =
         (lowercasedSectionHeader?.includes(filterValue) ||
-            (isBitcoinNetworkType && lowercasedBitcoinAccountType?.includes(filterValue))) ??
+            (isBitcoinNetworkType && lowerCasedAccountType?.includes(filterValue))) ??
         false;
 
     if (isMatchingAccountType) return true;
