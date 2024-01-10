@@ -336,3 +336,17 @@ components build-storybook-manual:
   when: manual
   except:
     <<: *run_components_rules
+
+transport-bridge build:
+  stage: build
+  interruptible: true
+  only:
+    refs:
+      - schedules
+  script:
+    - yarn install --immutable
+    - yarn workspace @trezor/transport-bridge build
+  artifacts:
+    expire_in: 7 days
+    paths:
+      - packages/transport-bridge/build
