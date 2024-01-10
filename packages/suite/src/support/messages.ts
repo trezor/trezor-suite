@@ -5928,6 +5928,10 @@ export default defineMessages({
         description:
             'Name of cloud provider. Intended to be translated only in languages that do not use latin script',
     },
+    TR_LOCAL_FILE_SYSTEM: {
+        defaultMessage: 'Local file system',
+        id: 'TR_LOCAL_FILE_SYSTEM',
+    },
     METADATA_MODAL_HEADING: {
         defaultMessage: 'Save labels',
         id: 'METADATA_MODAL_HEADING',
