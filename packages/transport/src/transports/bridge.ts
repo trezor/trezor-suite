@@ -81,7 +81,7 @@ export class BridgeTransport extends AbstractTransport {
 
     public init() {
         return this.scheduleAction(async signal => {
-            const response = await this._post('/', {
+            const response = await this.post('/', {
                 signal,
             });
 
@@ -106,17 +106,17 @@ export class BridgeTransport extends AbstractTransport {
         }
 
         this.listening = true;
-        this._listen();
+        this.listen2();
         return this.success(undefined);
     }
 
-    private async _listen(): Promise<void> {
+    private async listen2(): Promise<void> {
         if (this.stopped) {
             return;
         }
         const listenTimestamp = new Date().getTime();
 
-        const response = await this._post('/listen', {
+        const response = await this.post('/listen', {
             body: this.descriptors,
             signal: this.abortController.signal,
         });
@@ -125,7 +125,7 @@ export class BridgeTransport extends AbstractTransport {
             const time = new Date().getTime() - listenTimestamp;
             if (time > 1100) {
                 await createTimeoutPromise(1000);
-                return this._listen();
+                return this.listen2();
             }
             this.emit('transport-error', response.error);
             return;
@@ -136,12 +136,12 @@ export class BridgeTransport extends AbstractTransport {
         }
 
         this.handleDescriptorsChange(response.payload);
-        return this._listen();
+        return this.listen2();
     }
 
     // https://github.dev/trezor/trezord-go/blob/f559ee5079679aeb5f897c65318d3310f78223ca/core/core.go#L235
     public enumerate() {
-        return this.scheduleAction(signal => this._post('/enumerate', { signal }));
+        return this.scheduleAction(signal => this.post('/enumerate', { signal }));
     }
 
     // https://github.dev/trezor/trezord-go/blob/f559ee5079679aeb5f897c65318d3310f78223ca/core/core.go#L420
@@ -160,7 +160,7 @@ export class BridgeTransport extends AbstractTransport {
                 // for /acquire response before resolving listenPromise
                 this.acquirePromise = createDeferred();
 
-                const response = await this._post('/acquire', {
+                const response = await this.post('/acquire', {
                     params: `${input.path}/${previous}`,
                     timeout: true,
                     signal,
@@ -195,7 +195,7 @@ export class BridgeTransport extends AbstractTransport {
                 this.listenPromise[path] = createDeferred();
             }
 
-            const releasePromise = this._post('/release', {
+            const releasePromise = this.post('/release', {
                 params: session,
                 signal,
             });
@@ -226,7 +226,7 @@ export class BridgeTransport extends AbstractTransport {
             async signal => {
                 const { encode, decode } = protocol || bridgeProtocol;
                 const [bytes] = buildBuffers(this.messages, name, data, encode);
-                const response = await this._post(`/call`, {
+                const response = await this.post(`/call`, {
                     params: session,
                     body: bytes.toString('hex'),
                     signal,
@@ -249,7 +249,7 @@ export class BridgeTransport extends AbstractTransport {
         return this.scheduleAction(async signal => {
             const { encode } = protocol || bridgeProtocol;
             const [bytes] = buildBuffers(this.messages, name, data, encode);
-            const response = await this._post('/post', {
+            const response = await this.post('/post', {
                 params: session,
                 body: bytes.toString('hex'),
                 signal,
@@ -263,7 +263,7 @@ export class BridgeTransport extends AbstractTransport {
 
     public receive({ session, protocol }: AbstractTransportMethodParams<'receive'>) {
         return this.scheduleAction(async signal => {
-            const response = await this._post('/read', {
+            const response = await this.post('/read', {
                 params: session,
                 signal,
             });
@@ -291,11 +291,11 @@ export class BridgeTransport extends AbstractTransport {
      * All bridge endpoints use POST methods
      * For documentation, look here: https://github.com/trezor/trezord-go#api-documentation
      */
-    private async _post(
+    private async post(
         endpoint: '/',
         options: IncompleteRequestOptions,
     ): AsyncResultWithTypedError<{ version: string; configured: boolean }, BridgeCommonErrors>;
-    private async _post(
+    private async post(
         endpoint: '/acquire',
         options: IncompleteRequestOptions,
     ): AsyncResultWithTypedError<
@@ -305,7 +305,7 @@ export class BridgeTransport extends AbstractTransport {
         | typeof ERRORS.SESSION_WRONG_PREVIOUS
         | typeof ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE
     >;
-    private async _post(
+    private async post(
         endpoint: '/call',
         options: IncompleteRequestOptions,
     ): AsyncResultWithTypedError<
@@ -315,11 +315,11 @@ export class BridgeTransport extends AbstractTransport {
         | typeof PROTOCOL_MALFORMED
         | typeof ERRORS.OTHER_CALL_IN_PROGRESS
     >;
-    private async _post(
+    private async post(
         endpoint: '/release',
         options: IncompleteRequestOptions,
     ): AsyncResultWithTypedError<undefined, BridgeCommonErrors | typeof ERRORS.SESSION_NOT_FOUND>;
-    private async _post(
+    private async post(
         endpoint: '/post',
         options: IncompleteRequestOptions,
     ): AsyncResultWithTypedError<
@@ -329,7 +329,7 @@ export class BridgeTransport extends AbstractTransport {
         | typeof PROTOCOL_MALFORMED
         | typeof ERRORS.OTHER_CALL_IN_PROGRESS
     >;
-    private async _post(
+    private async post(
         endpoint: '/read',
         options: IncompleteRequestOptions,
     ): AsyncResultWithTypedError<
@@ -339,15 +339,15 @@ export class BridgeTransport extends AbstractTransport {
         | typeof PROTOCOL_MALFORMED
         | typeof ERRORS.OTHER_CALL_IN_PROGRESS
     >;
-    private async _post(
+    private async post(
         endpoint: '/listen',
         options?: IncompleteRequestOptions,
     ): AsyncResultWithTypedError<Descriptor[], BridgeCommonErrors>;
-    private async _post(
+    private async post(
         endpoint: '/enumerate',
         options: IncompleteRequestOptions,
     ): AsyncResultWithTypedError<Descriptor[], BridgeCommonErrors>;
-    private async _post(
+    private async post(
         endpoint: BridgeEndpoint,
         options: IncompleteRequestOptions,
     ): AsyncResultWithTypedError<R, AnyError> {

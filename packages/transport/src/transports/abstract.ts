@@ -340,7 +340,7 @@ export abstract class AbstractTransport extends TypedEmitter<{
      */
     abstract stop(): void;
 
-    private _getDiff(nextDescriptors: Descriptor[]): DeviceDescriptorDiff {
+    private getDiff(nextDescriptors: Descriptor[]): DeviceDescriptorDiff {
         const connected = nextDescriptors.filter(
             nextDescriptor =>
                 !this.descriptors.find(descriptor => descriptor.path === nextDescriptor.path),
@@ -406,7 +406,7 @@ export abstract class AbstractTransport extends TypedEmitter<{
         if (this.stopped) {
             return;
         }
-        const diff = this._getDiff(nextDescriptors);
+        const diff = this.getDiff(nextDescriptors);
         this.logger.debug('nextDescriptors', nextDescriptors, 'diff', diff);
 
         if (!diff.didUpdate) {

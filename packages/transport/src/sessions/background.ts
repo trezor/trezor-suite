@@ -203,7 +203,7 @@ export class SessionsBackground extends TypedEmitter<{
     }
 
     private async releaseIntent(payload: ReleaseIntentRequest) {
-        const path = this._getPathBySession({ session: payload.session });
+        const path = this.getPathFromSessions({ session: payload.session });
 
         if (!path) {
             return this.error(ERRORS.SESSION_NOT_FOUND);
@@ -227,14 +227,14 @@ export class SessionsBackground extends TypedEmitter<{
     }
 
     private getPathBySession({ session }: GetPathBySessionRequest) {
-        const path = this._getPathBySession({ session });
+        const path = this.getPathFromSessions({ session });
         if (!path) {
             return this.error(ERRORS.SESSION_NOT_FOUND);
         }
         return this.success({ path });
     }
 
-    private _getPathBySession({ session }: GetPathBySessionRequest) {
+    private getPathFromSessions({ session }: GetPathBySessionRequest) {
         let path: string | undefined;
         Object.keys(this.sessions).forEach(pathKey => {
             if (this.sessions[pathKey] === session) {
