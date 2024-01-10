@@ -1,9 +1,9 @@
-import express, { Express, Request, Response } from 'express';
+import express from 'express';
 import cors from 'cors';
 
+import { Descriptor } from '@trezor/transport/src/types';
 import { arrayPartition } from '@trezor/utils/lib/arrayPartition';
 
-import { Descriptor } from '../types';
 import { sessionsClient, enumerate, acquire, release, call, send, receive } from './core';
 
 const defaults = {
@@ -19,11 +19,11 @@ export class TrezordNode {
     /** pending /listen subscriptions that are supposed to be resolved whenever descriptors change is detected */
     listenSubscriptions: {
         descriptors: string;
-        req: Request;
-        res: Response;
+        req: express.Request;
+        res: express.Response;
     }[];
     port: number;
-    server: Express = express();
+    server = express();
 
     constructor({ port }: { port: number }) {
         this.port = port || defaults.port;
@@ -53,8 +53,6 @@ export class TrezordNode {
 
     public start() {
         return new Promise<void>(resolve => {
-            console.log(`starting ${this.serviceName}, version: ${this.version}}`);
-
             const app = express();
 
             // todo: limit to whitelisted domains
