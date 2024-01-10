@@ -2,7 +2,7 @@ import { useState } from 'react';
 import styled from 'styled-components';
 
 import { AccountAddress } from '@trezor/connect';
-import { Card, variables, Button } from '@trezor/components';
+import { Card, Button } from '@trezor/components';
 import { Translation, MetadataLabeling, FormattedCryptoAmount } from 'src/components/suite';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Network } from 'src/types/wallet';
@@ -12,46 +12,45 @@ import { showAddress } from 'src/actions/wallet/receiveActions';
 import { useDispatch } from 'src/hooks/suite/';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
+import { spacingsPx, typography } from '@trezor/theme';
 
 const StyledCard = styled(Card)`
     flex-direction: column;
-    margin-bottom: 40px;
-    padding: 0;
+    margin-bottom: ${spacingsPx.xxxl};
     overflow: hidden;
+    padding: ${spacingsPx.xl};
 `;
 
 const GridTable = styled.div`
     display: grid;
-    grid-template-columns: 0.65fr 0.35fr auto;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    font-size: ${variables.FONT_SIZE.SMALL};
+    grid-template-columns: auto 0.2fr 0.2fr;
+    ${typography.hint}
 `;
 
 // min-width: 0; // to resolve an issue with truncate text
-const GridItem = styled.div<{ revealed?: boolean; onClick?: () => void }>`
+const GridItem = styled.div<{ revealed?: boolean; onClick?: () => void; align?: 'left' | 'right' }>`
     min-width: 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
     white-space: nowrap;
-    padding: 16px 0 12px;
-    border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
+    padding: ${spacingsPx.md} 0 ${spacingsPx.sm};
     font-variant-numeric: tabular-nums;
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
-    font-weight: 500;
+    ${typography.hint}
+    ${({ align }) => (align === 'right' ? `justify-content:flex-end` : '')};
     cursor: ${({ onClick }) => onClick && 'pointer'};
 
-    :nth-child(1n) {
-        padding-left: 25px;
-    }
-
-    :nth-child(3n) {
-        padding-right: 25px;
+    :nth-child(3n + 2) {
+        padding-right: ${spacingsPx.md};
     }
 
     :nth-last-child(-n + 3) {
         border: 0;
     }
+`;
+
+const GridItemRevealAddress = styled(GridItem)`
+    justify-content: flex-end;
 `;
 
 const GridItemAddress = styled(GridItem)`
@@ -62,21 +61,20 @@ const GridItemAddress = styled(GridItem)`
     overflow: hidden;
 `;
 
-const AddressActions = styled.div<{ hide?: boolean }>`
-    opacity: ${({ hide }) => (hide ? '0' : '1')};
+const AddressActions = styled.div<{ isVisible?: boolean }>`
+    opacity: ${({ isVisible }) => (isVisible ? '1' : '0')};
 `;
 
 const Gray = styled.span`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.textSubdued};
 `;
 
 const HeaderItem = styled(GridItem)`
     position: sticky;
     top: 0;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    font-weight: 500;
-    padding: 12px 0;
-    background: ${({ theme }) => theme.BG_WHITE};
+    color: ${({ theme }) => theme.textSubdued};
+    border-bottom: 1px solid ${({ theme }) => theme.borderOnElevation1};
+    padding: 0 0 ${spacingsPx.sm};
 `;
 
 const Actions = styled.div`
@@ -101,7 +99,7 @@ const Overlay = styled.div`
     background-image: linear-gradient(
         to right,
         rgb(0 0 0 / 0%) 0%,
-        ${({ theme }) => theme.BG_WHITE} 120px
+        ${({ theme }) => theme.backgroundSurfaceElevation1} 120px
     );
 `;
 
@@ -119,7 +117,9 @@ interface ItemProps {
 const Item = ({ addr, locked, symbol, onClick, metadataPayload, index }: ItemProps) => {
     // Currently used addresses are always partially hidden
     // The only place where full address is shown is confirm-addr modal
+
     const [isHovered, setIsHovered] = useState(false);
+
     const amount = formatNetworkAmount(addr.received || '0', symbol);
     const fresh = !addr.transfers;
     const address = addr.address.substring(0, 20);
@@ -135,6 +135,7 @@ const Item = ({ addr, locked, symbol, onClick, metadataPayload, index }: ItemPro
                     payload={{
                         ...metadataPayload,
                     }}
+                    visible={isHovered}
                     // if metadata is present, confirm on device option will become available in dropdown
                     defaultVisibleValue={
                         <AddressWrapper>
@@ -144,10 +145,28 @@ const Item = ({ addr, locked, symbol, onClick, metadataPayload, index }: ItemPro
                     }
                 />
             </GridItemAddress>
+            <GridItemRevealAddress
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+            >
+                <AddressActions isVisible={isHovered}>
+                    <Button
+                        data-test={`@wallet/receive/reveal-address-button/${index}`}
+                        variant="tertiary"
+                        isDisabled={locked}
+                        isLoading={locked}
+                        onClick={onClick}
+                        size="tiny"
+                    >
+                        <Translation id="TR_REVEAL_ADDRESS" />
+                    </Button>
+                </AddressActions>
+            </GridItemRevealAddress>
 
             <GridItem
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
+                align="right"
             >
                 {!fresh && <FormattedCryptoAmount value={amount} symbol={symbol} />}
 
@@ -156,23 +175,6 @@ const Item = ({ addr, locked, symbol, onClick, metadataPayload, index }: ItemPro
                         <Translation id="RECEIVE_TABLE_NOT_USED" />
                     </Gray>
                 )}
-            </GridItem>
-
-            <GridItem
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
-            >
-                <AddressActions hide={!isHovered}>
-                    <Button
-                        data-test={`@wallet/receive/reveal-address-button/${index}`}
-                        variant="tertiary"
-                        isDisabled={locked}
-                        isLoading={locked}
-                        onClick={onClick}
-                    >
-                        <Translation id="TR_REVEAL_ADDRESS" />
-                    </Button>
-                </AddressActions>
             </GridItem>
         </>
     );
@@ -235,12 +237,11 @@ export const UsedAddresses = ({
                 <HeaderItem>
                     <Translation id="RECEIVE_TABLE_ADDRESS" />
                 </HeaderItem>
-
-                <HeaderItem>
+                <HeaderItem />
+                <HeaderItem align="right">
                     <Translation id="RECEIVE_TABLE_RECEIVED" />
                 </HeaderItem>
 
-                <HeaderItem />
                 {list.slice(0, limit).map((addr, index) => (
                     <Item
                         index={index}
