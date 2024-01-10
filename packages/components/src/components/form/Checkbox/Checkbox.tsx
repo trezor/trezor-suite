@@ -60,7 +60,7 @@ export const variantStyles: Record<CheckboxVariant, VariantStyles> = {
 
 export const Container = styled.div<Pick<CheckboxProps, 'isDisabled' | 'labelAlignment'>>`
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: ${spacingsPx.xs};
     flex-direction: ${({ labelAlignment }) => labelAlignment === 'left' && 'row-reverse'};
     pointer-events: ${({ isDisabled }) => isDisabled && 'none'};
