@@ -5334,6 +5334,11 @@ export default defineMessages({
         id: 'TR_QR_RECEIVE_ADDRESS_CONFIRM',
         defaultMessage: 'Confirm on Trezor before scanning',
     },
+    TR_QR_RECEIVE_ADDRESS_CONFIRM_EXPLANATION: {
+        id: 'TR_QR_RECEIVE_ADDRESS_CONFIRM_EXPLANATION',
+        defaultMessage:
+            "Please confirm the receiving address on your Trezor device first, as its trusted display can't be hacked.",
+    },
     TR_MY_ASSETS: {
         id: 'TR_MY_ASSETS',
         defaultMessage: 'Assets',
