@@ -4,6 +4,7 @@ import { MetadataAddPayload } from 'src/types/suite/metadata';
 
 export interface Props {
     defaultVisibleValue?: ReactNode;
+    defaultEditableValue?: string;
     payload: MetadataAddPayload;
     dropdownOptions?: DropdownMenuItemProps[];
     isDisabled?: boolean;
@@ -11,6 +12,7 @@ export interface Props {
     onSubmit?: (value: string | undefined) => void;
     // override default behavior of metadata labeling element visible only on hover
     visible?: boolean;
+    placeholder?: string;
 }
 
 export interface ExtendedProps extends Props {
