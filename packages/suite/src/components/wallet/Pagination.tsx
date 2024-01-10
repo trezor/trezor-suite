@@ -1,27 +1,47 @@
 import { useMemo } from 'react';
-import { variables } from '@trezor/components';
 import { Translation } from 'src/components/suite';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+import { borders, spacingsPx, typography } from '@trezor/theme';
 
 const Wrapper = styled.div`
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
+    gap: ${spacingsPx.xxxs};
 `;
 
 const PageItem = styled.div<{ isActive?: boolean }>`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: ${spacingsPx.xxl};
+    height: ${spacingsPx.xxl};
+    padding: ${spacingsPx.xxs} ${spacingsPx.xs};
+    background: ${({ isActive, theme }) =>
+        isActive ? theme.backgroundSecondaryDefault : 'transparent'};
+    text-align: center;
+    color: ${({ isActive, theme }) => isActive && theme.textOnSecondary};
+    border-radius: ${borders.radii.md};
+    transition:
+        background 0.15s ease-out,
+        color 0.15s ease-out;
+    ${typography.hint};
     cursor: pointer;
-    font-size: ${variables.FONT_SIZE.SMALL};
-    background: ${({ isActive, theme }) => (isActive ? theme.BG_GREEN : 'transparent')};
-    color: ${({ isActive, theme }) => (isActive ? theme.TYPE_WHITE : theme.TYPE_GREEN)};
-    padding: 4px 8px;
-    border-radius: 2px;
+
+    ${({ isActive, theme }) =>
+        !isActive &&
+        css`
+            :hover {
+                background: ${theme.backgroundTertiaryDefaultOnElevation0};
+                color: ${theme.textOnTertiary};
+            }
+        `};
 `;
 
 const Actions = styled.div<{ isActive: boolean }>`
     display: flex;
     visibility: ${props => (props.isActive ? 'auto' : 'hidden')};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    ${typography.callout};
 `;
 
 interface PaginationProps {
@@ -70,9 +90,10 @@ export const Pagination = ({
     return (
         <Wrapper {...rest}>
             <Actions isActive={showPrevious}>
-                <PageItem onClick={() => onPageSelected(1)}>«</PageItem>
+                {currentPage > 2 && <PageItem onClick={() => onPageSelected(1)}>«</PageItem>}
                 <PageItem onClick={() => onPageSelected(currentPage - 1)}>‹</PageItem>
             </Actions>
+
             {totalPages ? (
                 calculatedPages.map(i => (
                     <PageItem
@@ -105,9 +126,12 @@ export const Pagination = ({
                     </PageItem>
                 </>
             )}
+
             <Actions isActive={currentPage < (totalPages || 1)}>
                 <PageItem onClick={() => onPageSelected(currentPage + 1)}>›</PageItem>
-                {totalPages && <PageItem onClick={() => onPageSelected(totalPages)}>»</PageItem>}
+                {totalPages && totalPages > 2 && (
+                    <PageItem onClick={() => onPageSelected(totalPages)}>»</PageItem>
+                )}
             </Actions>
         </Wrapper>
     );
