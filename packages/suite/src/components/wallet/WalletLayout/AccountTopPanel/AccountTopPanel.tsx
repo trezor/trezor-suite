@@ -16,10 +16,12 @@ import {
     SkeletonCircle,
     SkeletonRectangle,
     SkeletonStack,
+    AccountLabel,
 } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { AccountNavigation } from './AccountNavigation';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
+import { useAccountLabel } from '../../../suite/AccountLabel';
 
 const Balance = styled(H2)`
     height: 32px;
@@ -63,6 +65,8 @@ const AccountTopPanelSkeleton = ({ animate, account, symbol }: AccountTopPanelSk
 export const AccountTopPanel = () => {
     const { account, loader, status } = useSelector(state => state.wallet.selectedAccount);
     const selectedAccountLabels = useSelector(selectLabelingDataForSelectedAccount);
+    const { defaultAccountLabelString } = useAccountLabel();
+
     if (status !== 'loaded' || !account) {
         return (
             <AccountTopPanelSkeleton
@@ -73,19 +77,27 @@ export const AccountTopPanel = () => {
         );
     }
 
-    const { symbol, formattedBalance } = account;
+    const { symbol, formattedBalance, index, accountType } = account;
 
     return (
         <AppNavigationPanel
             title={
                 <MetadataLabeling
-                    defaultVisibleValue={<AccountLabeling account={account} />}
+                    defaultVisibleValue={
+                        <AccountLabel
+                            accountLabel={selectedAccountLabels.accountLabel}
+                            accountType={accountType}
+                            symbol={symbol}
+                            index={index}
+                        />
+                    }
                     payload={{
                         type: 'accountLabel',
                         entityKey: account.key,
                         defaultValue: account.path,
                         value: selectedAccountLabels.accountLabel,
                     }}
+                    defaultEditableValue={defaultAccountLabelString({ accountType, symbol, index })}
                 />
             }
             navigation={<AccountNavigation />}
