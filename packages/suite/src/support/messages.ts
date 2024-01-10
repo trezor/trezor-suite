@@ -4578,7 +4578,7 @@ export default defineMessages({
     },
     TR_SETUP_WIPE_CODE: {
         id: 'TR_SETUP_WIPE_CODE',
-        defaultMessage: 'Setup wipe code',
+        defaultMessage: 'Set up wipe code',
     },
     TR_CHANGE_WIPE_CODE: {
         id: 'TR_CHANGE_WIPE_CODE',
@@ -5934,7 +5934,7 @@ export default defineMessages({
     },
     TR_YOUR_LABELING_IS_SYNCED: {
         defaultMessage:
-            'Your labeling is synced with a cloud storage provider. Your data are safe, as only your Trezor can decrypt them.',
+            'Your labeling is synced with a cloud storage provider. Your data is safe, as only your Trezor can decrypt it.',
         id: 'TR_YOUR_LABELING_IS_SYNCED',
     },
     TR_YOUR_LABELING_IS_SYNCED_LOCALLY: {
@@ -6155,7 +6155,7 @@ export default defineMessages({
     TR_GRAPH_MISSING_DATA: {
         id: 'TR_GRAPH_MISSING_DATA',
         defaultMessage:
-            'XRP and ERC20 token transactions are included in the balance, but not currently supported in the graph view',
+            'XRP and ERC20 token transactions are included in the balance, but not currently supported in the graph view.',
     },
     METADATA_PROVIDER_NOT_FOUND_ERROR: {
         id: 'METADATA_PROVIDER_NOT_FOUND_ERROR',
@@ -6558,7 +6558,7 @@ export default defineMessages({
     TR_TRANSACTIONS_SEARCH_TIP_2: {
         id: 'TR_TRANSACTIONS_SEARCH_TIP_2',
         defaultMessage:
-            'Tip: You can use the greater than (>) and lesser than (<) symbols on amount searches. For example <strong>> 1</strong> will show all transactions that have an amount of 1 or higher.',
+            'Tip: You can use the greater than (>) and less than (<) symbols on amount searches. For example <strong>> 1</strong> will show all transactions that have an amount of 1 or higher.',
     },
     TR_TRANSACTIONS_SEARCH_TIP_3: {
         id: 'TR_TRANSACTIONS_SEARCH_TIP_3',
