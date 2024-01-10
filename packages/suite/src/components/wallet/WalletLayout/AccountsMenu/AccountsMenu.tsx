@@ -118,8 +118,12 @@ export const AccountsMenu = () => {
         <Wrapper>
             <MenuHeader>
                 <Row>
-                    <AccountSearchBox />
-                    <AddAccountButton data-test="@account-menu/add-account" device={device} />
+                    {!isEmpty && <AccountSearchBox />}
+                    <AddAccountButton
+                        data-test="@account-menu/add-account"
+                        device={device}
+                        isFullWidth={isEmpty}
+                    />
                 </Row>
 
                 <CoinsFilter />
