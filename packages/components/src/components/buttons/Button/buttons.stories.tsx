@@ -4,7 +4,14 @@ import { capitalizeFirstLetter } from '@trezor/utils';
 import { StoryColumn } from '../../../support/Story';
 import { ButtonVariant } from '../buttonStyleUtils';
 
-const variants: Array<ButtonVariant> = ['primary', 'secondary', 'tertiary', 'destructive'];
+const variants: Array<ButtonVariant> = [
+    'primary',
+    'secondary',
+    'tertiary',
+    'info',
+    'warning',
+    'destructive',
+];
 
 export default {
     title: 'Buttons/Button/All',

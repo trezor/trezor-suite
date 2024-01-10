@@ -23,11 +23,9 @@ export const CoinmarketReauthorizationCard = ({
 
     return (
         <StyledNotificationCard
-            variant="critical"
+            variant="destructive"
             button={{
-                type: 'button',
                 children: <Translation id="TR_SAVINGS_AUTHORIZATION_ERROR_BUTTON_LABEL" />,
-                variant: 'destructive',
                 onClick: handleSubmit,
             }}
         >
