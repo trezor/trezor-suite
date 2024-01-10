@@ -120,6 +120,8 @@
   "TR_GUIDE_FEEDBACK_SEND_REPORT": "Skicka",
   "TR_HIDE_BUTTON": "Dölj",
   "TR_IMPORTANT": "Viktigt!",
+  "TR_IMPORT_CSV_FROM_FILE": "Importera från fil",
+  "TR_IMPORT_CSV_FROM_TEXT": "Importera som text",
   "TR_LABELING_ADD_ADDRESS": "Lägg till etikett",
   "TR_LABELING_ADD_LABEL": "Lägg till etikett",
   "TR_LABELING_ADD_OUTPUT": "Lägg till etikett",
