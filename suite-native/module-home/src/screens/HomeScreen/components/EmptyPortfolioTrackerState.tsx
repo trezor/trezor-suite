@@ -16,8 +16,6 @@ import {
     StackToTabCompositeNavigationProp,
 } from '@suite-native/navigation';
 
-import { SettingsButtonLink } from './SettingsButtonLink';
-
 const SCREEN_HEIGHT = Dimensions.get('screen').height;
 
 const imageStyle = prepareNativeStyle(_ => ({
@@ -87,7 +85,6 @@ export const EmptyPortfolioTrackerState = () => {
                     </Button>
                 </VStack>
             </Card>
-            <SettingsButtonLink />
         </VStack>
     );
 };

@@ -15,7 +15,6 @@ import { Translation, useTranslate } from '@suite-native/intl';
 import { analytics, EventType } from '@suite-native/analytics';
 import { useActiveColorScheme } from '@suite-native/theme';
 
-import { SettingsButtonLink } from './SettingsButtonLink';
 import { ConnectTrezorSvg } from '../../../assets/ConnectTrezorSvg';
 import { DarkConnectedTrezorSvg } from '../../../assets/DarkConnectedTrezorSvg';
 
@@ -102,7 +101,6 @@ export const EmptyPortfolioCrossroads = () => {
                     </Button>
                 </VStack>
             </Card>
-            <SettingsButtonLink />
         </VStack>
     );
 };

@@ -18,7 +18,6 @@
         "@suite-common/message-system": "workspace:*",
         "@suite-common/suite-constants": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
-        "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@suite-native/analytics": "workspace:*",
         "@suite-native/atoms": "workspace:*",
