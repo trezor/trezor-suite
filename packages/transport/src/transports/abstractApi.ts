@@ -193,6 +193,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                     const buffers = buildBuffers(this.messages, name, data, encode);
                     for (let i = 0; i < buffers.length; i++) {
                         const chunk = buffers[i];
+                        // eslint-disable-next-line no-await-in-loop
                         await this.api.write(path, chunk).then(result => {
                             if (!result.success) {
                                 throw new Error(result.error);
@@ -246,6 +247,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                 const buffers = buildBuffers(this.messages, name, data, encode);
                 for (let i = 0; i < buffers.length; i++) {
                     const chunk = buffers[i];
+                    // eslint-disable-next-line no-await-in-loop
                     await this.api.write(path, chunk).then(result => {
                         if (!result.success) {
                             throw new Error(result.error);
