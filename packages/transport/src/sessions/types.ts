@@ -7,10 +7,10 @@ type BackgroundResponse<T> = Success<T> & { id: number };
 
 export type Sessions = Record<string, Session | undefined>;
 
-export type HandshakeRequest = {};
+export type HandshakeRequest = Record<string, never>;
 export type HandshakeResponse = BackgroundResponse<undefined>;
 
-export type EnumerateIntentRequest = {};
+export type EnumerateIntentRequest = Record<string, never>;
 export type EnumerateIntentResponse = BackgroundResponse<{
     sessions: Sessions;
 }>;
@@ -56,7 +56,7 @@ export type ReleaseDoneResponse = BackgroundResponse<{
     descriptors: Descriptor[];
 }>;
 
-export type GetSessionsRequest = {};
+export type GetSessionsRequest = Record<string, never>;
 export type GetSessionsResponse = BackgroundResponse<{
     sessions: Sessions;
 }>;
