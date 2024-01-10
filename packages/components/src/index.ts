@@ -54,6 +54,7 @@ export * from './components/DataAnalytics';
 export * from './components/animations/DeviceAnimation';
 export * from './components/animations/LottieAnimation';
 export * from './components/Note/Note';
+export * from './components/AutoScalingInput/AutoScalingInput';
 
 export * from './constants/keyboardEvents';
 

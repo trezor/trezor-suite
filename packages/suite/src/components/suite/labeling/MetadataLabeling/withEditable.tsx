@@ -3,14 +3,13 @@ import {
     useState,
     useCallback,
     useRef,
-    ReactNode,
     FunctionComponent,
     PropsWithChildren,
 } from 'react';
-import styled, { css, useTheme } from 'styled-components';
-import { Icon, KEYBOARD_CODE } from '@trezor/components';
 
-import { moveCaretToEndOfContentEditable } from '@trezor/dom-utils';
+import styled, { useTheme } from 'styled-components';
+import { Icon } from '@trezor/components';
+import { AutoScalingInput } from '@trezor/components/src/components/AutoScalingInput/AutoScalingInput';
 
 const IconWrapper = styled.div<{ bgColor: string }>`
     display: flex;
@@ -22,43 +21,26 @@ const IconWrapper = styled.div<{ bgColor: string }>`
     padding: 4px;
 `;
 
-const IconsWrapper = styled.div`
+const IconListWrapper = styled.div`
     display: flex;
+    margin: 0 0 0 10px;
 `;
 
-const Placeholder = styled.div`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-`;
-
-const Editable = styled.div<{ value?: string; isButton?: boolean; touched: boolean }>`
-    padding-left: 1px;
-    margin-right: 1px;
-    text-align: left;
+// To inherit everything so the input looks like the text we want to edit
+// However, we need to reset some properties: for example margin and padding to not duplicate spacings
+const Editable = styled(AutoScalingInput)`
+    all: inherit;
+    margin: 0;
+    padding: 0;
+    border: 0 solid;
+    border-radius: 0;
     cursor: text;
-
-    ${({ value }) =>
-        value &&
-        css`
-            position: unset;
-        `}
-
-    ${({ value, isButton }) =>
-        !value &&
-        css`
-            left: ${isButton ? '22px' : '0px'};
-            right: 0;
-            position: absolute;
-        `}
-
-    color: ${({ touched, theme }) => (!touched ? theme.TYPE_LIGHT_GREY : 'inherit')};
 `;
 
 interface WithEditableProps {
     originalValue?: string;
-    defaultVisibleValue: ReactNode;
     onSubmit: (value: string | undefined) => void;
     onBlur: () => void;
-    isButton?: boolean;
 }
 
 /**
@@ -69,110 +51,66 @@ export const withEditable =
     (WrappedComponent: FunctionComponent<PropsWithChildren>) =>
     ({ onSubmit, onBlur, ...props }: WithEditableProps) => {
         const [touched, setTouched] = useState(false);
-        // value is used to mirror divRef.current.textContent so that its changes force react to render
         const [value, setValue] = useState('');
 
         const theme = useTheme();
-        const divRef = useRef<HTMLDivElement>(null);
+        const divRef = useRef<HTMLInputElement>(null);
 
         const submit = useCallback(
             (value?: string | null) => {
-                if (props.originalValue && value === props.originalValue) {
+                const trimmedValue = (value ?? '').trim();
+
+                if (props.originalValue && trimmedValue === props.originalValue.trim()) {
                     return onBlur();
                 }
 
-                if (!value) {
-                    value = '';
-                }
-
-                onSubmit(value);
+                onSubmit(trimmedValue);
                 onBlur();
             },
             [props, onSubmit, onBlur],
         );
 
         useEffect(() => {
-            // Set value of content editable element; set caret to correct position;
             if (!divRef?.current || touched) {
                 return;
             }
 
             if (props.originalValue) {
-                divRef.current.textContent = props.originalValue;
                 setValue(props.originalValue);
             }
-
-            divRef.current.focus();
         }, [props.originalValue, divRef, touched, setValue]);
 
         useEffect(() => {
-            const keyboardHandler = (event: KeyboardEvent) => {
-                event.stopPropagation();
-
-                switch (event.code) {
-                    case KEYBOARD_CODE.BACK_SPACE:
-                        if (!touched && divRef?.current) {
-                            divRef.current.textContent = '';
-                        }
-
-                        break;
-                    case KEYBOARD_CODE.ENTER:
-                    case KEYBOARD_CODE.NUMPAD_ENTER:
-                        submit(divRef?.current?.textContent);
-                        break;
-                    case KEYBOARD_CODE.ESCAPE:
-                        onBlur();
-                        break;
-                    case KEYBOARD_CODE.ARROW_RIGHT:
-                    case KEYBOARD_CODE.TAB: {
-                        event.preventDefault();
-                        if (divRef?.current) {
-                            moveCaretToEndOfContentEditable(divRef.current);
-                            setTouched(true);
-                        }
-
-                        break;
-                    }
-                    default:
-                        // any other button, just set input to "touched"
-                        if (!touched && divRef?.current) {
-                            divRef.current.textContent = '';
-                            setTouched(true);
-                        }
-                }
-            };
-
-            window.addEventListener('keydown', keyboardHandler, false);
-
-            return () => {
-                window.removeEventListener('keydown', keyboardHandler, false);
-            };
-        }, [submit, onBlur, props.originalValue, divRef, touched]);
+            if (!touched) {
+                divRef.current?.select();
+            }
+        }, [value, touched]);
 
         return (
             <>
                 <WrappedComponent {...props}>
                     <Editable
-                        contentEditable
-                        onKeyPress={e => setValue(e.key)}
-                        onKeyUp={() => {
-                            if (!divRef.current?.textContent) {
-                                setValue('');
-                            }
-                        }}
-                        onBlur={() => !value && onBlur()}
-                        onPaste={e => setValue(e.clipboardData.getData('text/plain'))}
+                        minWidth={20}
                         ref={divRef}
                         data-test="@metadata/input"
-                        touched={touched}
                         value={value}
-                        isButton={props.isButton}
+                        // onBlur={onBlur}
+                        onChange={event => {
+                            setTouched(true);
+                            setValue(event.target.value);
+                        }}
+                        onKeyDown={event => {
+                            if (event.key === 'Enter') {
+                                submit(value);
+                            }
+                            if (event.key === 'Escape') {
+                                onBlur();
+                            }
+                        }}
                     />
-                    {/* show default placeholder */}
-                    {!value && <Placeholder>{props.defaultVisibleValue}</Placeholder>}
                 </WrappedComponent>
 
-                <IconsWrapper>
+                <IconListWrapper>
                     <IconWrapper bgColor={theme.BG_LIGHT_GREEN}>
                         <Icon
                             useCursorPointer
@@ -181,7 +119,7 @@ export const withEditable =
                             icon="CHECK"
                             onClick={e => {
                                 e.stopPropagation();
-                                submit(divRef?.current?.textContent);
+                                submit(value);
                             }}
                             color={theme.TYPE_GREEN}
                         />
@@ -200,7 +138,7 @@ export const withEditable =
                             color={theme.TYPE_DARK_GREY}
                         />
                     </IconWrapper>
-                </IconsWrapper>
+                </IconListWrapper>
             </>
         );
     };
