@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import styled from 'styled-components';
 
 import { selectDevice } from '@suite-common/wallet-core';
 
@@ -9,6 +10,10 @@ import steps from 'src/config/onboarding/steps';
 import { selectPrerequisite } from 'src/reducers/suite/suiteReducer';
 
 import IsSameDevice from './components/IsSameDevice';
+
+const UnexpectedContainer = styled.div`
+    margin-top: 100px;
+`;
 
 interface UnexpectedStateProps {
     children: JSX.Element;
@@ -82,7 +87,7 @@ const UnexpectedState = ({ children }: UnexpectedStateProps) => {
         );
     }
     if (UnexpectedStateComponent) {
-        return UnexpectedStateComponent;
+        return <UnexpectedContainer>{UnexpectedStateComponent}</UnexpectedContainer>;
     }
 
     return children;

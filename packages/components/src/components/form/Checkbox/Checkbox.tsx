@@ -142,6 +142,7 @@ export interface CheckboxProps {
     labelAlignment?: LabelAlignment;
     onClick: EventHandler<SyntheticEvent>;
     'data-test'?: string;
+    className?: string;
     children?: ReactNode;
 }
 
@@ -152,6 +153,7 @@ export const Checkbox = ({
     labelAlignment = 'right',
     onClick,
     'data-test': dataTest,
+    className,
     children,
 }: CheckboxProps) => {
     const theme = useTheme();
@@ -169,6 +171,7 @@ export const Checkbox = ({
             onClick={onClick}
             onKeyUp={handleKeyUp}
             data-test={dataTest}
+            className={className}
         >
             <HiddenInput
                 checked={isChecked}
