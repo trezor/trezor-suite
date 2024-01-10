@@ -1,0 +1,9 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        { "path": "../protocol" },
+        { "path": "../transport" },
+        { "path": "../utils" }
+    ]
+}

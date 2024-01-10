@@ -9482,6 +9482,22 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@trezor/transport-bridge@workspace:packages/transport-bridge":
+  version: 0.0.0-use.local
+  resolution: "@trezor/transport-bridge@workspace:packages/transport-bridge"
+  dependencies:
+    "@trezor/protocol": "workspace:*"
+    "@trezor/transport": "workspace:*"
+    "@trezor/utils": "workspace:*"
+    "@types/cors": "npm:^2.8.15"
+    "@types/express": "npm:^4"
+    cors: "npm:^2.8.5"
+    express: "npm:^4.18.2"
+    typescript: "npm:4.9.5"
+    usb: "npm:^2.11.0"
+  languageName: unknown
+  linkType: soft
+
 "@trezor/transport-native@workspace:*, @trezor/transport-native@workspace:packages/transport-native":
   version: 0.0.0-use.local
   resolution: "@trezor/transport-native@workspace:packages/transport-native"
@@ -9500,13 +9516,9 @@ __metadata:
     "@trezor/trezor-user-env-link": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/bytebuffer": "npm:^5.0.46"
-    "@types/cors": "npm:^2.8.15"
-    "@types/express": "npm:^4"
     "@types/sharedworker": "npm:^0.0.105"
     "@types/w3c-web-usb": "npm:^1.0.9"
-    cors: "npm:^2.8.5"
     cross-fetch: "npm:^4.0.0"
-    express: "npm:^4.18.2"
     jest: "npm:29.5.0"
     json-stable-stringify: "npm:^1.0.2"
     long: "npm:^4.0.0"

@@ -1,0 +1,25 @@
+{
+    "name": "@trezor/transport-bridge",
+    "version": "1.0.0",
+    "main": "src/index",
+    "license": "See LICENSE.md in repo root",
+    "private": true,
+    "sideEffects": false,
+    "scripts": {
+        "type-check": "tsc --build",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
+    },
+    "devDependencies": {
+        "@types/cors": "^2.8.15",
+        "@types/express": "^4",
+        "typescript": "4.9.5"
+    },
+    "dependencies": {
+        "@trezor/protocol": "workspace:*",
+        "@trezor/transport": "workspace:*",
+        "@trezor/utils": "workspace:*",
+        "cors": "^2.8.5",
+        "express": "^4.18.2",
+        "usb": "^2.11.0"
+    }
+}

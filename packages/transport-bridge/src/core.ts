@@ -1,12 +1,11 @@
 import { WebUSB } from 'usb';
 
 import { v1 as protocolV1, bridge as protocolBridge } from '@trezor/protocol';
-
-import { receive as receiveUtil } from '../utils/receive';
-import { SessionsBackground } from '../sessions/background';
-import { SessionsClient } from '../sessions/client';
-import { UsbApi } from '../api/usb';
-import { AcquireInput, ReleaseInput } from '../transports/abstract';
+import { receive as receiveUtil } from '@trezor/transport/src/utils/receive';
+import { SessionsBackground } from '@trezor/transport/src/sessions/background';
+import { SessionsClient } from '@trezor/transport/src/sessions/client';
+import { UsbApi } from '@trezor/transport/src/api/usb';
+import { AcquireInput, ReleaseInput } from '@trezor/transport/src/transports/abstract';
 
 export const sessionsBackground = new SessionsBackground();
 
@@ -42,6 +41,7 @@ const writeUtil = async ({ path, data }: { path: string; data: string }) => {
 
     for (let i = 0; i < buffers.length; i++) {
         const bufferSegment = buffers[i];
+        // eslint-disable-next-line no-await-in-loop
         await api.write(path, bufferSegment);
     }
 };
