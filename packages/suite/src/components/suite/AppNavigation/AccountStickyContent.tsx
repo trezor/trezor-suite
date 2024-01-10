@@ -10,6 +10,7 @@ import {
     Translation,
 } from 'src/components/suite';
 import { Account } from 'src/types/wallet';
+import { spacingsPx, typography } from '@trezor/theme';
 
 const Main = styled.div`
     align-items: center;
@@ -26,10 +27,11 @@ const BalanceWrapperContainer = styled.div`
 const Balance = styled.div`
     white-space: nowrap;
     font-size: ${variables.FONT_SIZE.SMALL};
+    margin-left: ${spacingsPx.xxs};
 `;
 
 const FiatBalanceWrapper = styled.div`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.textSubdued};
     margin-left: 0.5ch;
 `;
 
@@ -37,8 +39,7 @@ const LabelWrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    ${typography.highlight}
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -103,7 +104,6 @@ export const AccountStickyContent = ({ account, routeName }: AccountStickyConten
 
     return (
         <Main>
-            <CoinLogo size={22} symbol={symbol} />
             <BalanceWrapperContainer>
                 <LabelWrapper>
                     <StyledFormTitle>{headerText()}</StyledFormTitle>
@@ -111,6 +111,7 @@ export const AccountStickyContent = ({ account, routeName }: AccountStickyConten
                     <AccountLabeling account={account} />
                 </LabelWrapper>
                 <BalanceInner>
+                    <CoinLogo size={16} symbol={symbol} />
                     <Balance>
                         <FormattedCryptoAmount value={formattedBalance} symbol={symbol} />
                     </Balance>

@@ -58,7 +58,8 @@ const Wrapper = styled.div<{ subRoute: boolean | undefined; inView?: boolean }>`
 const MenuHolder = styled.div`
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    gap: 16px;
+    justify-content: flex-start;
     width: 100%;
     max-width: ${MAX_CONTENT_WIDTH};
     scrollbar-width: none; /* Firefox */
@@ -263,11 +264,11 @@ export const AppNavigation = ({ items, primaryContent, inView }: AppNavigationPr
             {routeName && isSubsection(routeName) ? (
                 <InnerWrap>
                     <MenuHolder>
+                        <AccountFormCloseButton />
                         <AccountStickyContent
                             routeName={routeName}
                             account={selectedAccount.account}
                         />
-                        <AccountFormCloseButton />
                     </MenuHolder>
                 </InnerWrap>
             ) : (

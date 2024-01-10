@@ -17,22 +17,25 @@ import {
     SkeletonRectangle,
     SkeletonStack,
     AccountLabel,
+    AccountFormCloseButton,
 } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { AccountNavigation } from './AccountNavigation';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
 import { useAccountLabel } from '../../../suite/AccountLabel';
+import { spacingsPx, typography } from '@trezor/theme';
 
 const Balance = styled(H2)`
-    height: 32px;
+    ${typography.hint}
+    color: ${({ theme }) => theme.textSubdued};
     white-space: nowrap;
-    margin-left: 8px;
+    margin-left: ${spacingsPx.xxs};
 `;
 
 const FiatBalanceWrapper = styled(H3)`
-    height: 24px;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    margin-left: 1ch;
+    ${typography.hint}
+    color: ${({ theme }) => theme.textSubdued};
+    margin-left: 0.5ch;
 `;
 
 interface AccountTopPanelSkeletonProps {
@@ -53,7 +56,7 @@ const AccountTopPanelSkeleton = ({ animate, account, symbol }: AccountTopPanelSk
         navigation={<AccountNavigation />}
     >
         <SkeletonStack alignItems="center">
-            {symbol ? <CoinLogo size={24} symbol={symbol} /> : <SkeletonCircle size="24px" />}
+            {symbol ? <CoinLogo size={16} symbol={symbol} /> : <SkeletonCircle size="16px" />}
 
             <Balance>
                 <SkeletonRectangle width="160px" height="32px" animate={animate} />
@@ -66,6 +69,7 @@ export const AccountTopPanel = () => {
     const { account, loader, status } = useSelector(state => state.wallet.selectedAccount);
     const selectedAccountLabels = useSelector(selectLabelingDataForSelectedAccount);
     const { defaultAccountLabelString } = useAccountLabel();
+    const routeName = useSelector(state => state.router.route?.name);
 
     if (status !== 'loaded' || !account) {
         return (
@@ -104,9 +108,10 @@ export const AccountTopPanel = () => {
             titleContent={() =>
                 !isTestnet(symbol) ? <Ticker symbol={symbol} tooltipPos="bottom" /> : undefined
             }
+            backButton={routeName !== 'wallet-index' ? <AccountFormCloseButton /> : undefined}
         >
             <AmountUnitSwitchWrapper symbol={symbol}>
-                <CoinLogo size={24} symbol={symbol} />
+                <CoinLogo size={16} symbol={symbol} />
 
                 <Balance>
                     <FormattedCryptoAmount value={formattedBalance} symbol={symbol} />

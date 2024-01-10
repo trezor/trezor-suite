@@ -10,7 +10,7 @@ import {
 import styled from 'styled-components';
 import { H2, variables } from '@trezor/components';
 import { HORIZONTAL_LAYOUT_PADDINGS, MAX_CONTENT_WIDTH } from 'src/constants/suite/layout';
-import { zIndices } from '@trezor/theme';
+import { typography, zIndices } from '@trezor/theme';
 import { breakpointMediaQueries } from '@trezor/styles';
 
 const Wrapper = styled.div`
@@ -20,6 +20,7 @@ const Wrapper = styled.div`
     background: ${({ theme }) => theme.BG_LIGHT_GREY};
     padding: 24px ${HORIZONTAL_LAYOUT_PADDINGS} 10px;
     z-index: ${zIndices.pageHeader};
+    gap: 9px;
 
     ${breakpointMediaQueries.below_lg} {
         padding-bottom: 20px;
@@ -39,8 +40,7 @@ const BasicInfo = styled.div`
 `;
 
 const Title = styled(H2)`
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    ${typography.body};
     white-space: nowrap;
     overflow: hidden;
 `;
@@ -62,7 +62,6 @@ const Row = styled.div`
 
 const TitleRow = styled(Row)`
     justify-content: space-between;
-    margin-bottom: 6px;
 `;
 
 const Delimeter = styled.div``;
@@ -73,6 +72,7 @@ interface AppNavigationPanelProps {
     navigation?: ReactElement<{ inView: boolean }>;
     children?: ReactNode;
     className?: string;
+    backButton?: ReactNode;
 }
 
 export const AppNavigationPanel = ({
@@ -81,6 +81,7 @@ export const AppNavigationPanel = ({
     navigation,
     className,
     children,
+    backButton,
 }: AppNavigationPanelProps) => {
     const ref = useRef<HTMLDivElement | null>(null);
     const [inView, setInView] = useState(false);
@@ -108,6 +109,7 @@ export const AppNavigationPanel = ({
     return (
         <>
             <Wrapper ref={ref} className={className}>
+                {backButton}
                 <Content>
                     <BasicInfo>
                         <TitleRow>

@@ -45,9 +45,6 @@ export const WalletLayoutHeader = ({ title, children }: WalletLayoutHeaderProps)
                 <Translation id={title} />
             </StyledTitle>
         </HeaderLeft>
-        <HeaderRight>
-            {children}
-            <AccountFormCloseButton />
-        </HeaderRight>
+        <HeaderRight>{children}</HeaderRight>
     </HeaderWrapper>
 );
