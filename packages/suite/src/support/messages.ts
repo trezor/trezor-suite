@@ -6414,6 +6414,10 @@ export default defineMessages({
         id: 'TR_ACCOUNT_SEARCH_NO_RESULTS',
         defaultMessage: 'No results',
     },
+    TR_ACCOUNT_NO_ACCOUNTS: {
+        id: 'TR_ACCOUNT_NO_ACCOUNTS',
+        defaultMessage: 'No accounts',
+    },
     TR_COLOR_SCHEME: {
         id: 'TR_COLOR_SCHEME',
         defaultMessage: 'Color scheme',
