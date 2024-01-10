@@ -348,23 +348,23 @@ export const en = {
                 'Manage your portfolio with your Trezor hardware wallet connected directly to your mobile device.',
         },
         featureReceiveScreen: {
-            noUsb: {
+            portfolioTracker: {
                 title: 'Receive coins',
                 subtitle: 'Generate addresses and QR codes to receive crypto on the go.',
             },
-            usb: {
+            device: {
                 title: 'Receive',
                 subtitle:
                     'Generate and verify addresses directly on your Trezor to get paid and receive crypto on the go.',
             },
         },
         trackBalancesScreen: {
-            noUsb: {
+            portfolioTracker: {
                 title: 'Track balances',
                 subtitle:
                     'Easily sync your coin addresses and keep up with the crypto on your hardware wallet.',
             },
-            usb: {
+            device: {
                 title: 'Track balances',
                 subtitle:
                     'Keep up with your favorite coins even without your Trezor connected. Simply sync and track your crypto from anywhere.',

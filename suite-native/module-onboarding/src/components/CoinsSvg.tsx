@@ -17,6 +17,7 @@ const SVG_HEIGHT = Dimensions.get('screen').height * 0.35;
 
 export const CoinsSvg = (props: SvgProps) => {
     const { utils } = useNativeStyles();
+
     return (
         <Svg width={253} height={SVG_HEIGHT} viewBox="0 0 253 276" fill="none" {...props}>
             <G clipPath="url(#clip0_14548_55032)">

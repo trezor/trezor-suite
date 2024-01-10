@@ -1,5 +1,3 @@
-import { useMemo } from 'react';
-
 import { useNavigation } from '@react-navigation/native';
 
 import {
@@ -11,13 +9,15 @@ import {
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { VStack, Card, Button, Image, Text, Box } from '@suite-native/atoms';
+import { VStack, Card, Button, Text, Box } from '@suite-native/atoms';
 import { useNativeStyles, prepareNativeStyle } from '@trezor/styles';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { analytics, EventType } from '@suite-native/analytics';
 import { useActiveColorScheme } from '@suite-native/theme';
 
 import { SettingsButtonLink } from './SettingsButtonLink';
+import { ConnectTrezorSvg } from '../../../assets/ConnectTrezorSvg';
+import { DarkConnectedTrezorSvg } from '../../../assets/DarkConnectedTrezorSvg';
 
 const cardStyle = prepareNativeStyle<{ flex: 1 | 2 }>((utils, { flex }) => ({
     flex,
@@ -39,13 +39,6 @@ export const EmptyPortfolioCrossroads = () => {
     const { translate } = useTranslate();
 
     const colorScheme = useActiveColorScheme();
-
-    const image = useMemo(() => {
-        if (colorScheme === 'dark') {
-            return require('../../../assets/darkConnectTrezor.svg');
-        }
-        return require('../../../assets/connectTrezor.svg');
-    }, [colorScheme]);
 
     const handleSyncMyCoins = () => {
         navigation.navigate(RootStackRoutes.AccountsImport, {
@@ -69,7 +62,7 @@ export const EmptyPortfolioCrossroads = () => {
             <Card style={applyStyle(cardStyle, { flex: 2 })}>
                 <VStack spacing="large" justifyContent="center" alignItems="center">
                     <VStack alignItems="center" spacing="large">
-                        <Image source={image} contentFit="contain" height={205} width={216} />
+                        {colorScheme === 'dark' ? <DarkConnectedTrezorSvg /> : <ConnectTrezorSvg />}
                         <VStack alignItems="center">
                             <Box>
                                 <Text variant="titleSmall" textAlign="center">

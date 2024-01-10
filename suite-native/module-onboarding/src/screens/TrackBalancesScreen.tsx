@@ -1,3 +1,5 @@
+import { ReactNode } from 'react';
+
 import { useNavigation } from '@react-navigation/native';
 
 import { useIsUsbDeviceConnectFeatureEnabled } from '@suite-native/feature-flags';
@@ -7,78 +9,76 @@ import {
     StackNavigationProps,
 } from '@suite-native/navigation';
 import { Box } from '@suite-native/atoms';
-import { useTranslate } from '@suite-native/intl';
+import { TxKeyPath, useTranslate } from '@suite-native/intl';
 
 import { OnboardingFooter } from '../components/OnboardingFooter';
 import { OnboardingScreen } from '../components/OnboardingScreen';
 import { GraphSvg } from '../components/GraphSvg';
 
-const TrackBalancesScreenWithDevice = () => {
+type ScreenContent = {
+    title: TxKeyPath;
+    subtitle: TxKeyPath;
+    redirectTarget: OnboardingStackRoutes;
+};
+const trackBalancesScreenContentMap = {
+    device: {
+        title: 'moduleOnboarding.trackBalancesScreen.device.title',
+        subtitle: 'moduleOnboarding.trackBalancesScreen.device.subtitle',
+        redirectTarget: OnboardingStackRoutes.AnalyticsConsent,
+    },
+    portfolioTracker: {
+        title: 'moduleOnboarding.trackBalancesScreen.portfolioTracker.title',
+        subtitle: 'moduleOnboarding.trackBalancesScreen.portfolioTracker.subtitle',
+        redirectTarget: OnboardingStackRoutes.AboutReceiveCoinsFeature,
+    },
+} as const satisfies Record<'device' | 'portfolioTracker', ScreenContent>;
+
+type NavigationProp = StackNavigationProps<
+    OnboardingStackParamList,
+    OnboardingStackRoutes.TrackBalances
+>;
+
+const IconWrapper = ({ children }: { children: ReactNode }) => {
+    const { isUsbDeviceConnectFeatureEnabled } = useIsUsbDeviceConnectFeatureEnabled();
+
+    if (!isUsbDeviceConnectFeatureEnabled) return <>{children}</>;
+
+    return (
+        <Box alignSelf="center" flex={2} justifyContent="center" paddingHorizontal="small">
+            {children}
+        </Box>
+    );
+};
+
+export const TrackBalancesScreen = () => {
     const { translate } = useTranslate();
 
-    const navigation =
-        useNavigation<
-            StackNavigationProps<OnboardingStackParamList, OnboardingStackRoutes.TrackBalances>
-        >();
+    const { isUsbDeviceConnectFeatureEnabled } = useIsUsbDeviceConnectFeatureEnabled();
+
+    const navigation = useNavigation<NavigationProp>();
+
+    const content =
+        trackBalancesScreenContentMap[
+            isUsbDeviceConnectFeatureEnabled ? 'device' : 'portfolioTracker'
+        ];
 
     return (
         <OnboardingScreen
-            title={translate('moduleOnboarding.trackBalancesScreen.usb.title')}
-            subtitle={translate('moduleOnboarding.trackBalancesScreen.usb.subtitle')}
+            title={translate(content.title)}
+            subtitle={translate(content.subtitle)}
             activeStep={3}
             footer={
                 <OnboardingFooter
-                    redirectTarget={() =>
-                        navigation.navigate(OnboardingStackRoutes.AnalyticsConsent)
-                    }
+                    redirectTarget={() => navigation.navigate(content.redirectTarget)}
                     onBack={navigation.goBack}
                     backButtonTitle={translate('generic.buttons.back')}
                     nextButtonTitle={translate('generic.buttons.continue')}
                 />
             }
         >
-            <Box alignSelf="center" flex={2} justifyContent="center" paddingHorizontal="small">
+            <IconWrapper>
                 <GraphSvg />
-            </Box>
+            </IconWrapper>
         </OnboardingScreen>
-    );
-};
-
-const TrackBalancesScreenNoDevice = () => {
-    const { translate } = useTranslate();
-
-    const navigation =
-        useNavigation<
-            StackNavigationProps<OnboardingStackParamList, OnboardingStackRoutes.TrackBalances>
-        >();
-
-    return (
-        <OnboardingScreen
-            title={translate('moduleOnboarding.trackBalancesScreen.noUsb.title')}
-            subtitle={translate('moduleOnboarding.trackBalancesScreen.noUsb.subtitle')}
-            activeStep={1}
-            footer={
-                <OnboardingFooter
-                    redirectTarget={() =>
-                        navigation.navigate(OnboardingStackRoutes.AboutReceiveCoinsFeature)
-                    }
-                    onBack={navigation.goBack}
-                    backButtonTitle={translate('generic.buttons.back')}
-                    nextButtonTitle={translate('generic.buttons.next')}
-                />
-            }
-        >
-            <GraphSvg />
-        </OnboardingScreen>
-    );
-};
-
-export const TrackBalancesScreen = () => {
-    const { isUsbDeviceConnectFeatureEnabled } = useIsUsbDeviceConnectFeatureEnabled();
-
-    return isUsbDeviceConnectFeatureEnabled ? (
-        <TrackBalancesScreenWithDevice />
-    ) : (
-        <TrackBalancesScreenNoDevice />
     );
 };
