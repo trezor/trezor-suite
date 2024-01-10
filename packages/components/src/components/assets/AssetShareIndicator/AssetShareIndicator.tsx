@@ -1,5 +1,5 @@
 import { SVGProps } from 'react';
-import { motion, AnimationProps } from 'framer-motion';
+import { motion, AnimationProps, SVGMotionProps } from 'framer-motion';
 import styled, { useTheme } from 'styled-components';
 import { coinsColors } from '@trezor/theme';
 import { motionEasing } from '../../../config/motion';
@@ -34,9 +34,10 @@ const ProgressCircle = ({ symbol, size, percentageShare, index = 0 }: ProgressCi
     const strokeWidth = dimensions / 6;
     const radius = (dimensions - strokeWidth) / 2;
     const circumference = Math.ceil(2 * Math.PI * radius);
-    const fillPercents = percentageShare
-        ? Math.abs(Math.ceil((circumference / 100) * (percentageShare - 100)))
-        : undefined;
+    const fillPercents =
+        percentageShare !== undefined
+            ? Math.abs(Math.ceil((circumference / 100) * (percentageShare - 100)))
+            : undefined;
 
     const svgProps: SVGProps<SVGSVGElement> = {
         viewBox,
@@ -44,7 +45,7 @@ const ProgressCircle = ({ symbol, size, percentageShare, index = 0 }: ProgressCi
         height: dimensions,
     };
 
-    const circleConfig = {
+    const circleConfig: SVGMotionProps<SVGCircleElement> = {
         cx: size,
         cy: size,
         r: radius,
