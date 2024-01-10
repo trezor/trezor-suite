@@ -1,5 +1,7 @@
 import styled, { css, keyframes } from 'styled-components';
 
+const DEFAULT_ELEVATION = 1;
+
 interface SkeletonStackProps {
     col?: boolean;
     grow?: boolean;
@@ -48,7 +50,7 @@ const shimmerEffect = css`
     background: linear-gradient(
         90deg,
         ${({ theme }) =>
-            `${theme.GRADIENT_SKELETON_START}, ${theme.BG_GREY_ALT}, ${theme.GRADIENT_SKELETON_START}`}
+            `${theme.gradientNeutralBottomFadeSurfaceElevation1Start}, ${theme.gradientNeutralBottomFadeSurfaceElevation1End}, ${theme.gradientNeutralBottomFadeSurfaceElevation1Start}`}
     );
     background-size: 200%;
 `;
@@ -56,6 +58,7 @@ const shimmerEffect = css`
 type SkeletonBaseProps = {
     background?: string;
     animate?: boolean;
+    elevation?: 0 | 1 | 2 | 3;
 };
 
 type SkeletonRectangleProps = SkeletonBaseProps & {
@@ -77,7 +80,8 @@ const getValue = (value: string | number | undefined) => {
 export const SkeletonRectangle = styled.div<SkeletonRectangleProps>`
     width: ${({ width }) => getValue(width) ?? '80px'};
     height: ${({ height }) => getValue(height) ?? '20px'};
-    background: ${({ background, theme }) => background ?? theme.BG_GREY_ALT};
+    background: ${({ background, theme, elevation = DEFAULT_ELEVATION }) =>
+        background ?? theme[`backgroundSurfaceElevation${elevation}`]};
     border-radius: ${({ borderRadius }) => getValue(borderRadius) ?? '4px'};
     background-size: 200%;
 
@@ -94,7 +98,9 @@ export const SkeletonCircle = styled.div<SkeletonCircleProps>`
         height: ${getValue(size) ?? '24px'};
         border-radius: ${getValue(size) ?? '24px'};
     `}
-    background: ${({ background, theme }) => background ?? theme.BG_GREY_ALT};
+    background: ${({ background, theme, elevation = DEFAULT_ELEVATION }) =>
+        background ?? theme[`backgroundSurfaceElevation${elevation}`]};
+
     background-size: 200%;
 
     ${props =>

@@ -101,7 +101,7 @@ export const AccountsMenu = () => {
                     <MenuHeader>
                         <AccountSearchBox />
                     </MenuHeader>
-                    <AccountItemSkeleton />
+                    <AccountItemSkeleton elevation={0} />
                 </Scroll>
             </Wrapper>
         );

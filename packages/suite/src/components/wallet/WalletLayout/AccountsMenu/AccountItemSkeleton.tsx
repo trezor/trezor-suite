@@ -5,6 +5,7 @@ import { NavigationItemBase } from 'src/components/suite/Preloader/SuiteLayout/S
 
 interface AccountItemSkeletonProps {
     animate?: boolean;
+    elevation?: 0 | 1 | 2 | 3;
 }
 
 export const AccountItemSkeleton = (props: AccountItemSkeletonProps) => {
@@ -13,15 +14,30 @@ export const AccountItemSkeleton = (props: AccountItemSkeletonProps) => {
     return (
         <NavigationItemBase>
             <Left>
-                <SkeletonCircle size="18px" />
+                <SkeletonCircle elevation={props.elevation} size="18px" />
             </Left>
             <Right>
                 <SkeletonStack col childMargin="0px 0px 8px 0px">
-                    <SkeletonRectangle width="180px" height="20px" animate={animate} />
+                    <SkeletonRectangle
+                        elevation={props.elevation}
+                        width="180px"
+                        height="20px"
+                        animate={animate}
+                    />
 
-                    <SkeletonRectangle width="100px" height="16px" animate={animate} />
+                    <SkeletonRectangle
+                        elevation={props.elevation}
+                        width="100px"
+                        height="16px"
+                        animate={animate}
+                    />
 
-                    <SkeletonRectangle width="100px" height="16px" animate={animate} />
+                    <SkeletonRectangle
+                        elevation={props.elevation}
+                        width="100px"
+                        height="16px"
+                        animate={animate}
+                    />
                 </SkeletonStack>
             </Right>
         </NavigationItemBase>
