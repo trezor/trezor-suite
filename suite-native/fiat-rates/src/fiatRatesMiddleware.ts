@@ -2,9 +2,11 @@ import { isAnyOf } from '@reduxjs/toolkit';
 
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { transactionsActions, accountsActions, blockchainActions } from '@suite-common/wallet-core';
+import { TokenAddress } from '@suite-common/wallet-types';
 
 import {
     fetchFiatRatesThunk,
+    updateFiatRatesThunk,
     updateMissingTxFiatRatesThunk,
     updateTxsFiatRatesThunk,
 } from './fiatRatesThunks';
@@ -25,7 +27,28 @@ export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
                     localCurrency: selectLocalCurrency(getState()),
                 }),
             );
-            // dispatch(fetchFiatRatesThunk({ rateType: 'lastWeek' }));
+        }
+
+        // Fetch fiat rates for all tokens of newly discovered ETH account.
+        if (
+            accountsActions.createIndexLabeledAccount.match(action) &&
+            action.payload.symbol === 'eth'
+        ) {
+            const localCurrency = selectLocalCurrency(getState());
+
+            const { tokens } = action.payload;
+            tokens?.forEach(token => {
+                dispatch(
+                    updateFiatRatesThunk({
+                        ticker: {
+                            symbol: 'eth',
+                            tokenAddress: token.contract as TokenAddress,
+                        },
+                        rateType: 'current',
+                        localCurrency,
+                    }),
+                );
+            });
         }
 
         if (transactionsActions.addTransaction.match(action)) {
