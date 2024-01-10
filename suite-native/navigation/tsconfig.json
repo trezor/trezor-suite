@@ -13,9 +13,6 @@
             "path": "../../suite-common/wallet-config"
         },
         {
-            "path": "../../suite-common/wallet-core"
-        },
-        {
             "path": "../../suite-common/wallet-types"
         },
         { "path": "../analytics" },
