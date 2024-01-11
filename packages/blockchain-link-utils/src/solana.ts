@@ -275,11 +275,11 @@ export const getTargets = (
         });
 
 const getTokenTransferTxType = (transfers: TokenTransfer[]) => {
-    if (transfers.find(({ type }) => type === 'recv')) {
+    if (transfers.some(({ type }) => type === 'recv')) {
         return 'recv';
     }
 
-    if (transfers.find(({ type }) => type === 'sent')) {
+    if (transfers.some(({ type }) => type === 'sent')) {
         return 'sent';
     }
 
@@ -301,11 +301,11 @@ const getNativeTransferTxType = (
 
     const [senders, receivers] = arrayPartition(effects, ({ amount }) => amount.isNegative());
 
-    if (senders.find(({ address }) => address === accountAddress)) {
+    if (senders.some(({ address }) => address === accountAddress)) {
         return 'sent';
     }
 
-    if (receivers.find(({ address }) => address === accountAddress)) {
+    if (receivers.some(({ address }) => address === accountAddress)) {
         return 'recv';
     }
 
