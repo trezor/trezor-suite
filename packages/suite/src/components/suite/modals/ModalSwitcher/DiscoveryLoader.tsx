@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Image } from '@trezor/components';
+import { Spinner } from '@trezor/components';
 import { Translation, Modal } from 'src/components/suite';
 
 const Expand = styled.div`
@@ -20,7 +20,7 @@ export const DiscoveryLoader = () => (
         data-test="@discovery/loader"
     >
         <Expand>
-            <Image width={80} height={80} image="SPINNER" />
+            <Spinner size={80} isGrey={false} />
         </Expand>
     </StyledModal>
 );
