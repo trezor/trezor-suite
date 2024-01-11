@@ -92,10 +92,8 @@ const getAccountInfoDetailsLevel = (coin: NetworkSymbol) => {
     // For Cardano we need to fetch at least one tx otherwise it will not generate correctly new receive addresses (xpub instead of address)
     if (networkType === 'cardano') return { details: 'txs', pageSize: 1 } as const;
 
-    // For Ethereum we need to fetch token balances to be able to get their fiat rates and later display them in the UI.
-    if (networkType === 'ethereum') return { details: 'tokenBalances' } as const;
-
-    return { details: 'basic' } as const;
+    // CAUTION: the detail level has to be set to "tokenBalances" or higher. In other case we won't get account receive addresses from the backend.
+    return { details: 'tokenBalances' } as const;
 };
 
 const discoverAccountsByDescriptorThunk = createThunk(
