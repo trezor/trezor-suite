@@ -42,4 +42,13 @@ channel.init().then(() => {
             channel.postMessage(event.data, { usePromise: false });
         }
     });
+
+    window.addEventListener('beforeunload', () => {
+        window.postMessage(
+            {
+                type: 'popup-closed',
+            },
+            window.location.origin,
+        );
+    });
 });

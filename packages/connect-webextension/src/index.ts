@@ -45,20 +45,6 @@ const logWriterFactory = (popupManager: popup.PopupManager): LogWriter => ({
     },
 });
 
-const checkIfTabExists = (tabId: number | undefined) =>
-    new Promise(resolve => {
-        if (!tabId) return resolve(false);
-        function callback() {
-            if (chrome.runtime.lastError) {
-                resolve(false);
-            } else {
-                // Tab exists
-                resolve(true);
-            }
-        }
-        chrome.tabs.get(tabId, callback);
-    });
-
 const manifest = (data: Manifest) => {
     _settings = parseConnectSettings({
         ..._settings,
@@ -109,6 +95,15 @@ const init = (settings: Partial<ConnectSettings> = {}): Promise<void> => {
             });
             _popupManager.handshakePromise.resolve();
         }
+        if (message.type === POPUP.CLOSED) {
+            // When popup is closed we should create a not-real response as if the request was interrupted.
+            // Because when popup closes and TrezorConnect is living there it cannot respond, but we know
+            // it was interrupted so we safely fake it.
+            _popupManager.channel.resolveMessagePromises({
+                code: 'Method_Interrupted',
+                error: POPUP.CLOSED,
+            });
+        }
     });
 
     logger.debug('initiated');
@@ -123,15 +118,6 @@ const init = (settings: Partial<ConnectSettings> = {}): Promise<void> => {
  */
 const call: CallMethod = async params => {
     logger.debug('call', params);
-
-    if (_popupManager.popupWindow?.id) {
-        const currentPopupExists = await checkIfTabExists(_popupManager.popupWindow?.id);
-        if (!currentPopupExists) {
-            // popupWindow has reference but it does not exists so we clear it.
-            _popupManager.clear();
-            handshakePromise = createDeferred();
-        }
-    }
 
     // request popup window it might be used in the future
     if (_settings.popup) {
