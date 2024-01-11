@@ -6,6 +6,9 @@ import { DeviceModelInternal } from '@trezor/connect';
 
 import { DevicePaginationActivePage } from './types';
 
+const T1B1_SCREEN_LINE_LENGTH = 21;
+const LEGACY_SEGWIT_ADDRESS_LENGTH = 34;
+
 const filterAddressChunksByPagination = (
     addressChunks: readonly string[],
     activePage: DevicePaginationActivePage,
@@ -34,7 +37,14 @@ export const parseAddressToDeviceLines = ({
 >) => {
     // T1B1 does not have support fro address chunking
     if (deviceModel === DeviceModelInternal.T1B1) {
-        return pipe(address, S.toArray, A.splitEvery(21), A.map(A.join('')));
+        // Legacy Segwit address is only 34 characters long. T1B1 displays it in two lines, 17 characters each for a symmetric look.
+        // Any other address takes the full line length.
+        const charactersPerLine =
+            address.length === LEGACY_SEGWIT_ADDRESS_LENGTH
+                ? LEGACY_SEGWIT_ADDRESS_LENGTH / 2
+                : T1B1_SCREEN_LINE_LENGTH;
+
+        return pipe(address, S.toArray, A.splitEvery(charactersPerLine), A.map(A.join('')));
     }
 
     return pipe(
