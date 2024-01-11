@@ -174,8 +174,6 @@ export const TransactionReviewOutputElement = forwardRef<
         const isActive = state === 'active';
         const hasMultipleLines = lines.length > 1;
 
-        console.log('hasMultipleLines', hasMultipleLines);
-
         return (
             <OutputWrapper ref={ref}>
                 <OutputLeft isCentered={hasMultipleLines}>
