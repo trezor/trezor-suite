@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { Image } from '@trezor/components';
+import { Spinner } from '@trezor/components';
 import { FADE_IN } from '@trezor/components/src/config/animations';
 
 // displaying of a loader is delayed to avoid displaying to users with fast internet
@@ -15,6 +15,6 @@ const LoaderWrapper = styled.div`
 
 export const BundleLoader = () => (
     <LoaderWrapper data-test="@suite/bundle-loader">
-        <Image width={64} height={64} image="SPINNER" />
+        <Spinner size={64} isGrey={false} />
     </LoaderWrapper>
 );

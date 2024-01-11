@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Image } from '@trezor/components';
+import { Spinner } from '@trezor/components';
 
 const LoaderWrapper = styled.div`
     margin: auto;
@@ -16,6 +16,6 @@ type LoadingProps = {
 
 export const Loading = ({ className }: LoadingProps) => (
     <LoaderWrapper data-test="@suite/loading" className={className}>
-        <Image width={80} height={80} image="SPINNER" />
+        <Spinner size={80} isGrey={false} />
     </LoaderWrapper>
 );
