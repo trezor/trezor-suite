@@ -16,7 +16,7 @@ const MAIN_ITEM_HEIGHT = 48;
 const SUBITEM_HEIGHT = 20;
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
-const MAIN_ITEM_WIDTH = SCREEN_WIDTH * 0.6;
+const MAIN_ITEM_WIDTH = SCREEN_WIDTH * 0.56;
 const TOP_SUB_ITEM_WIDTH = SCREEN_WIDTH * 0.2;
 const BOTTOM_SUB_ITEM_WIDTH = SCREEN_WIDTH * 0.25;
 
