@@ -413,6 +413,7 @@ type TokenTransferInstruction = {
         info: {
             destination: string;
             authority: string;
+            multisigAuthority?: string;
             source: string;
             mint?: string;
             tokenAmount?: {
@@ -442,8 +443,9 @@ const isTokenTransferInstruction = (
         (parsed.type === 'transferChecked' || parsed.type === 'transfer') &&
         'info' in parsed &&
         typeof parsed.info === 'object' &&
-        'authority' in parsed.info &&
-        typeof parsed.info.authority === 'string' &&
+        (('authority' in parsed.info && typeof parsed.info.authority === 'string') ||
+            ('multisigAuthority' in parsed.info &&
+                typeof parsed.info.multisigAuthority === 'string')) &&
         'source' in parsed.info &&
         typeof parsed.info.source === 'string' &&
         'destination' in parsed.info &&
@@ -470,7 +472,7 @@ export const getTokens = (
         const isAccountDestination = accountAddresses.includes(parsed.info.destination);
 
         const isAccountSource = accountAddresses.includes(
-            parsed.info.authority || parsed.info.source,
+            parsed.info.multisigAuthority || parsed.info.authority || parsed.info.source,
         );
 
         if (isAccountDestination && isAccountSource) {
