@@ -40,6 +40,7 @@ const OutputLeft = styled.div<{ isCentered: boolean }>`
     display: flex;
     width: 30px;
     justify-content: ${({ isCentered }) => (isCentered ? 'center' : 'flex-start')};
+    padding-top: ${({ isCentered }) => (isCentered ? undefined : '5px')};
     flex-direction: column;
 `;
 
@@ -172,6 +173,8 @@ export const TransactionReviewOutputElement = forwardRef<
         const cardanoFingerprint = getFingerprint(account?.tokens, token?.symbol);
         const isActive = state === 'active';
         const hasMultipleLines = lines.length > 1;
+
+        console.log('hasMultipleLines', hasMultipleLines);
 
         return (
             <OutputWrapper ref={ref}>
