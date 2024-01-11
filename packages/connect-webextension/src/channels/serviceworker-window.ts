@@ -74,6 +74,19 @@ export class ServiceWorkerWindowChannel<
         });
     }
 
+    resolveMessagePromises() {
+        // This is useful when we know that the connection has been interrupted but there might be something waiting for it.x
+        Object.keys(this.messagePromises).forEach(id =>
+            this.messagePromises[id as any].resolve({
+                id,
+                payload: {
+                    code: 'Method_Interrupted',
+                    error: 'Popup closed',
+                },
+            }),
+        );
+    }
+
     disconnect() {
         this.port?.disconnect();
         this.clear();

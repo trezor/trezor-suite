@@ -86,6 +86,7 @@ const init = (settings: Partial<ConnectSettings> = {}): Promise<void> => {
     }
 
     _popupManager.channel.on('message', message => {
+        console.log('message in init connect-webextension TrezorConnect', message);
         if (message.type === POPUP.CORE_LOADED) {
             _popupManager.channel.postMessage({
                 type: POPUP.HANDSHAKE,
@@ -98,6 +99,8 @@ const init = (settings: Partial<ConnectSettings> = {}): Promise<void> => {
         // TODO: because when popup closes and TrezorConnect is leaving there it cannot respond, but we know
         // TODO: it was interrupted.
         if (message.type === 'popup-closed') {
+            console.log('calling resolveMessagePromises from service worker');
+            _popupManager.channel.resolveMessagePromises();
             // _popupManager.clear();
             // dispose();
         }
@@ -138,6 +141,8 @@ const call: CallMethod = async params => {
             type: IFRAME.CALL,
             payload: params,
         });
+
+        console.log('response after post message in call in webextension', response);
 
         logger.debug('call: response: ', response);
 
