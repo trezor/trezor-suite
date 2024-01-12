@@ -28,7 +28,6 @@
         { "path": "../link" },
         { "path": "../navigation" },
         { "path": "../qr-code" },
-        { "path": "../storage" },
         { "path": "../toasts" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/styles" },
