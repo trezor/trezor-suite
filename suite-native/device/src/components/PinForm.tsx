@@ -6,7 +6,7 @@ import { useTranslate } from '@suite-native/intl';
 
 import { PinMatrixButton } from './PinMatrixButton';
 import { PinFormProgress } from './PinFormProgress';
-import { PIN_FORM_MAX_LENGTH, PIN_FORM_MIN_LENGTH } from '../constants/pinFormConstants';
+import { PIN_FORM_MAX_LENGTH, PIN_FORM_MIN_LENGTH } from '../constants';
 import { PinFormControlButtons } from './PinFormControlButtons';
 
 const pinMatrix = [
@@ -45,9 +45,7 @@ export const PinForm = () => {
     return (
         <Form form={form}>
             <VStack spacing="small" alignItems="center">
-                <Text color="textSubdued">
-                    {translate('moduleConnectDevice.pinScreen.form.keypadInfo')}
-                </Text>
+                <Text color="textSubdued">{translate('device.pinScreen.form.keypadInfo')}</Text>
                 <Box style={applyStyle(pinProgressWrapperStyle)}>
                     <PinFormProgress />
                 </Box>

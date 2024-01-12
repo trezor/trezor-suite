@@ -1,7 +1,7 @@
 import { useFormContext } from '@suite-native/forms';
 import { NumPadButton } from '@suite-native/atoms';
 
-import { PIN_FORM_MAX_LENGTH } from '../constants/pinFormConstants';
+import { PIN_FORM_MAX_LENGTH } from '../constants';
 
 type PinItemProps = {
     value: number;

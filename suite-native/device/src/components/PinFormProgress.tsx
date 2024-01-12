@@ -29,23 +29,14 @@ export const PinFormProgress = () => {
     const pinLength = watch('pin').length;
 
     if (!pinLength)
-        return (
-            <Text variant="titleSmall">
-                {translate('moduleConnectDevice.pinScreen.form.title')}
-            </Text>
-        );
+        return <Text variant="titleSmall">{translate('device.pinScreen.form.title')}</Text>;
 
     if (pinLength > MAX_DIGITS_DISPLAYED_AS_DOTS)
         return (
             <Box flexDirection="row" style={applyStyle(enteredDigitsStyle)}>
-                <Text color="textSubdued">
-                    {translate('moduleConnectDevice.pinScreen.form.entered')}{' '}
-                </Text>
+                <Text color="textSubdued">{translate('device.pinScreen.form.entered')} </Text>
                 <Text variant="highlight">{pinLength}</Text>
-                <Text color="textSubdued">
-                    {' '}
-                    {translate('moduleConnectDevice.pinScreen.form.digits')}
-                </Text>
+                <Text color="textSubdued"> {translate('device.pinScreen.form.digits')}</Text>
             </Box>
         );
 

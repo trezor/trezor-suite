@@ -2,11 +2,10 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { BottomSheet, IconButton, Text, VStack } from '@suite-native/atoms';
+import { PIN_HELP_URL } from '@suite-native/device';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
 import { selectDeviceRequestedPin } from '@suite-common/wallet-core';
-
-import { PIN_HELP_URL } from '../constants/pinFormConstants';
 
 export const ConnectingTrezorHelp = () => {
     const { translate } = useTranslate();

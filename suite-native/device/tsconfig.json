@@ -16,6 +16,7 @@
         { "path": "../atoms" },
         { "path": "../device-mutex" },
         { "path": "../feature-flags" },
+        { "path": "../forms" },
         { "path": "../helpers" },
         { "path": "../intl" },
         { "path": "../link" },
@@ -23,7 +24,8 @@
         { "path": "../navigation" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },
-        { "path": "../../packages/styles" }
+        { "path": "../../packages/styles" },
+        { "path": "../../packages/validation" }
     ],
     "include": [".", "**/*.json"]
 }

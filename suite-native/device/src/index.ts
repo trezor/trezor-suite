@@ -6,6 +6,8 @@ export * from './hooks/useAuthorizeDevice';
 export * from './hooks/useReportDeviceConnectToAnalytics';
 export * from './screens/DeviceInfoModalScreen';
 export * from './components/ConnectDeviceAnimation';
+export * from './components/PinForm';
+export * from './constants';
 export * from './deviceThunks';
 export * from './utils';
 export * from './selectors';

@@ -98,20 +98,6 @@ export const en = {
         connectAndUnlockScreen: {
             title: 'Connect & unlock\nyour Trezor',
         },
-        pinScreen: {
-            form: {
-                title: 'Enter PIN',
-                entered: 'Entered',
-                digits: 'digits',
-                keypadInfo: 'Follow the keypad layout on your Trezor',
-                enterPin: 'Enter pin',
-            },
-            wrongPinAlert: {
-                title: 'Incorrect PIN',
-                description: 'Enter up to 50 digits.',
-                button: { tryAgain: 'Try again', help: 'Enter PIN Help' },
-            },
-        },
         connectingDeviceScreen: {
             title: 'Connecting',
             hodlOn: 'Hodl on tight',
@@ -422,6 +408,22 @@ export const en = {
             syncAnother: 'Sync another coin',
         },
         defaultHeader: 'Hi there!',
+    },
+    device: {
+        pinScreen: {
+            form: {
+                title: 'Enter PIN',
+                entered: 'Entered',
+                digits: 'digits',
+                keypadInfo: 'Follow the keypad layout on your Trezor',
+                enterPin: 'Enter pin',
+            },
+            wrongPinAlert: {
+                title: 'Incorrect PIN',
+                description: 'Enter up to 50 digits.',
+                button: { tryAgain: 'Try again', help: 'Enter PIN Help' },
+            },
+        },
     },
     deviceInfo: {
         installedFw: 'Installed firmware: {version}',

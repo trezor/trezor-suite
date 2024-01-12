@@ -1,7 +1,7 @@
 import { Image, VStack } from '@suite-native/atoms';
+import { PinForm } from '@suite-native/device';
 
 import { ConnectDeviceSreenView } from '../components/ConnectDeviceSreenView';
-import { PinForm } from '../components/PinForm';
 
 export const PinMatrixScreen = () => (
     <ConnectDeviceSreenView>

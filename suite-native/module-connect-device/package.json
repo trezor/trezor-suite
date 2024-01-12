@@ -19,13 +19,11 @@
         "@suite-native/alerts": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/device": "workspace:*",
-        "@suite-native/forms": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@suite-native/link": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/styles": "workspace:*",
-        "@trezor/validation": "workspace:*",
         "react": "18.2.0",
         "react-native": "0.71.8",
         "react-redux": "8.0.7"

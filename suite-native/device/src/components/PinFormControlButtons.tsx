@@ -18,7 +18,7 @@ import { selectIsDeviceUnlocked } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { useOpenLink } from '@suite-native/link';
 
-import { PIN_FORM_MIN_LENGTH, PIN_HELP_URL } from '../constants/pinFormConstants';
+import { PIN_FORM_MIN_LENGTH, PIN_HELP_URL } from '../constants';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     ConnectDeviceStackParamList,
@@ -47,17 +47,13 @@ export const PinFormControlButtons = () => {
 
     const handleInvalidPin = useCallback(() => {
         showAlert({
-            title: translate('moduleConnectDevice.pinScreen.wrongPinAlert.title'),
-            description: translate('moduleConnectDevice.pinScreen.wrongPinAlert.description'),
+            title: translate('device.pinScreen.wrongPinAlert.title'),
+            description: translate('device.pinScreen.wrongPinAlert.description'),
             icon: 'warningCircle',
             pictogramVariant: 'red',
-            primaryButtonTitle: translate(
-                'moduleConnectDevice.pinScreen.wrongPinAlert.button.tryAgain',
-            ),
+            primaryButtonTitle: translate('device.pinScreen.wrongPinAlert.button.tryAgain'),
             onPressPrimaryButton: reset,
-            secondaryButtonTitle: translate(
-                'moduleConnectDevice.pinScreen.wrongPinAlert.button.help',
-            ),
+            secondaryButtonTitle: translate('device.pinScreen.wrongPinAlert.button.help'),
             onPressSecondaryButton: () => {
                 openLink(PIN_HELP_URL);
                 reset();
@@ -93,7 +89,7 @@ export const PinFormControlButtons = () => {
             )}
             <Box flex={1}>
                 <Button isDisabled={pinLength < PIN_FORM_MIN_LENGTH} onPress={onSubmit}>
-                    {translate('moduleConnectDevice.pinScreen.form.enterPin')}
+                    {translate('device.pinScreen.form.enterPin')}
                 </Button>
             </Box>
         </HStack>
