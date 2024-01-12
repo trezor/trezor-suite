@@ -1,8 +1,13 @@
 /* eslint-disable camelcase */
 
 const fs = require('fs');
+const util = require('util');
 const path = require('path');
 const child_process = require('child_process');
+
+const readFile = util.promisify(fs.readFile);
+
+const { getLocalAndRemoteChecksums } = require('./checkNpmAndLocal');
 
 const rootPath = path.join(__dirname, '..', '..');
 const packagesPath = path.join(rootPath, 'packages');
@@ -16,10 +21,8 @@ const ROOT = path.join(__dirname, '..', '..');
 const updateNeeded = [];
 const errors = [];
 
-const checkPackageDependencies = packageName => {
-    const rawPackageJSON = fs.readFileSync(
-        path.join(ROOT, 'packages', packageName, 'package.json'),
-    );
+const checkPackageDependencies = async packageName => {
+    const rawPackageJSON = await readFile(path.join(ROOT, 'packages', packageName, 'package.json'));
 
     const packageJSON = JSON.parse(rawPackageJSON);
     const {
@@ -31,58 +34,42 @@ const checkPackageDependencies = packageName => {
         return;
     }
 
-    Object.entries(dependencies).forEach(([dependency, version]) => {
+    // eslint-disable-next-line no-restricted-syntax
+    for await (const [dependency, version] of Object.entries(dependencies)) {
         // is not a dependency released from monorepo. we don't care
         if (!dependency.startsWith('@trezor')) {
-            return;
+            // eslint-disable-next-line no-continue
+            continue;
         }
-
         const [_prefix, name] = dependency.split('/');
-        const PACKAGE_PATH = path.join(ROOT, 'packages', name);
-        // check local package
-        const packResultRaw = child_process.spawnSync('npm', ['pack', '--dry-run', '--json'], {
-            encoding: 'utf-8',
-            cwd: PACKAGE_PATH,
-        }).stdout;
-
-        const packResultJSON = JSON.parse(packResultRaw);
-        const localChecksum = packResultJSON[0].shasum;
-
-        // check remote package
-        const { stderr, stdout: viewResultRaw } = child_process.spawnSync(
-            'npm',
-            ['view', '--json'],
-            {
-                encoding: 'utf-8',
-                cwd: PACKAGE_PATH,
-            },
-        );
-
-        if (stderr) {
-            errors.push(name);
-            return;
-        }
-
-        const viewResultJSON = JSON.parse(viewResultRaw);
-        if (viewResultJSON.error) {
-            return;
-        }
-
-        const remoteChecksum = viewResultJSON[dependency].dist.shasum;
-
-        if (localChecksum !== remoteChecksum) {
-            // if the checked dependency is already in the array, remove it and push it to the end of array
-            // this way, the final array should be sorted in order in which that dependencies listed there
-            // should be released from the last to the first
-            const index = updateNeeded.findIndex(lib => lib === dependency);
+        const response = await getLocalAndRemoteChecksums(dependency);
+        if (!response.success) {
+            // If the package was not found it might be it has not been release yet or other issue, so we include it in errors.
+            const index = errors.findIndex(lib => lib === dependency);
+            console.log('index', index);
             if (index > -1) {
-                updateNeeded.splice(index, 1);
+                errors.splice(index, 1);
             }
-            updateNeeded.push(dependency);
-        }
 
-        checkPackageDependencies(name);
-    });
+            errors.push(dependency);
+        } else {
+            const { localChecksum, remoteChecksum } = response.data;
+            if (localChecksum !== remoteChecksum) {
+                // if the checked dependency is already in the array, remove it and push it to the end of array
+                // this way, the final array should be sorted in order in which that dependencies listed there
+                // should be released from the last to the first.
+
+                const index = updateNeeded.findIndex(lib => lib === dependency);
+                console.log('index', index);
+                if (index > -1) {
+                    updateNeeded.splice(index, 1);
+                }
+                updateNeeded.push(dependency);
+            }
+
+            await checkPackageDependencies(name);
+        }
+    }
 
     return {
         update: updateNeeded,

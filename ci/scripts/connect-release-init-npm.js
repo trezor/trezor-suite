@@ -34,8 +34,8 @@ const splitByNewlines = input => input.split('\n');
 const findIndexByCommit = (commitArr, searchString) =>
     commitArr.findIndex(commit => commit.includes(searchString));
 
-const initConnectRelease = () => {
-    const checkResult = checkPackageDependencies('connect');
+const initConnectRelease = async () => {
+    const checkResult = await checkPackageDependencies('connect');
 
     const update = checkResult.update.map(package => package.replace('@trezor/', ''));
     const errors = checkResult.errors.map(package => package.replace('@trezor/', ''));
@@ -58,7 +58,7 @@ const initConnectRelease = () => {
             const CHANGELOG_PATH = path.join(PACKAGE_PATH, 'CHANGELOG.md');
 
             const newCommits = [];
-            for (let commit of commitsArr) {
+            for (const commit of commitsArr) {
                 if (commit.includes(`npm-release: @trezor/${packageName}`)) {
                     break;
                 }
