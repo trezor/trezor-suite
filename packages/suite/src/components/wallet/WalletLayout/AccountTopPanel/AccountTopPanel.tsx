@@ -65,7 +65,7 @@ const AccountTopPanelSkeleton = ({ animate, account, symbol }: AccountTopPanelSk
     </AppNavigationPanel>
 );
 
-export const AccountTopPanel = () => {
+export const AccountTopPanel = ({ isWtfHackyHiddenTop }: { isWtfHackyHiddenTop?: boolean }) => {
     const { account, loader, status } = useSelector(state => state.wallet.selectedAccount);
     const selectedAccountLabels = useSelector(selectLabelingDataForSelectedAccount);
     const { defaultAccountLabelString } = useAccountLabel();
@@ -104,6 +104,7 @@ export const AccountTopPanel = () => {
                     defaultEditableValue={defaultAccountLabelString({ accountType, symbol, index })}
                 />
             }
+            isWtfHackyHiddenTop={isWtfHackyHiddenTop}
             navigation={<AccountNavigation />}
             titleContent={() =>
                 !isTestnet(symbol) ? <Ticker symbol={symbol} tooltipPos="bottom" /> : undefined

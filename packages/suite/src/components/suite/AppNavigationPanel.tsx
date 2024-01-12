@@ -8,7 +8,7 @@ import {
     cloneElement,
 } from 'react';
 import styled from 'styled-components';
-import { H2, variables } from '@trezor/components';
+import { H2 } from '@trezor/components';
 import { HORIZONTAL_LAYOUT_PADDINGS, MAX_CONTENT_WIDTH } from 'src/constants/suite/layout';
 import { typography, zIndices } from '@trezor/theme';
 import { breakpointMediaQueries } from '@trezor/styles';
@@ -64,7 +64,7 @@ const TitleRow = styled(Row)`
     justify-content: space-between;
 `;
 
-const Delimeter = styled.div``;
+const Delimiter = styled.div``;
 
 interface AppNavigationPanelProps {
     title: ReactNode;
@@ -73,6 +73,7 @@ interface AppNavigationPanelProps {
     children?: ReactNode;
     className?: string;
     backButton?: ReactNode;
+    isWtfHackyHiddenTop?: boolean;
 }
 
 export const AppNavigationPanel = ({
@@ -82,6 +83,7 @@ export const AppNavigationPanel = ({
     className,
     children,
     backButton,
+    isWtfHackyHiddenTop,
 }: AppNavigationPanelProps) => {
     const ref = useRef<HTMLDivElement | null>(null);
     const [inView, setInView] = useState(false);
@@ -108,22 +110,25 @@ export const AppNavigationPanel = ({
 
     return (
         <>
-            <Wrapper ref={ref} className={className}>
-                {backButton}
-                <Content>
-                    <BasicInfo>
-                        <TitleRow>
-                            <Title>{title}</Title>
-                            <Aside data-test="@app/navigation/aside">
-                                {titleContent?.(inView)}
-                            </Aside>
-                        </TitleRow>
-                        {children && <Row>{children}</Row>}
-                    </BasicInfo>
-                </Content>
-            </Wrapper>
-            {isValidElement(navigation) && cloneElement(navigation, { inView })}
-            <Delimeter />
+            {!isWtfHackyHiddenTop ? (
+                <Wrapper ref={ref} className={className}>
+                    {backButton}
+                    <Content>
+                        <BasicInfo>
+                            <TitleRow>
+                                <Title>{title}</Title>
+                                <Aside data-test="@app/navigation/aside">
+                                    {titleContent?.(inView)}
+                                </Aside>
+                            </TitleRow>
+                            {children && <Row>{children}</Row>}
+                        </BasicInfo>
+                    </Content>
+                </Wrapper>
+            ) : null}
+            {isValidElement(navigation) &&
+                cloneElement(navigation, { inView: !isWtfHackyHiddenTop || inView })}
+            <Delimiter />
         </>
     );
 };

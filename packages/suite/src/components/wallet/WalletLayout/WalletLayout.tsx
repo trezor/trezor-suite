@@ -34,6 +34,7 @@ type WalletLayoutProps = {
     account: AppState['wallet']['selectedAccount'];
     showEmptyHeaderPlaceholder?: boolean;
     children?: ReactNode;
+    isWtfHackyHiddenTop?: boolean;
 };
 
 export const WalletLayout = ({
@@ -41,11 +42,12 @@ export const WalletLayout = ({
     title,
     children,
     account,
+    isWtfHackyHiddenTop,
 }: WalletLayoutProps) => {
     const { translationString } = useTranslation();
     const l10nTitle = translationString(title);
 
-    useLayout(l10nTitle, AccountTopPanel);
+    useLayout(l10nTitle, () => <AccountTopPanel isWtfHackyHiddenTop={isWtfHackyHiddenTop} />);
 
     const { status, account: selectedAccount, loader, network } = account;
 

@@ -57,7 +57,7 @@ const SendLoaded = ({ children, selectedAccount }: SendLoadedProps) => {
     const { symbol } = selectedAccount.account;
 
     return (
-        <WalletLayout title="TR_NAV_SEND" account={selectedAccount}>
+        <WalletLayout title="TR_NAV_SEND" account={selectedAccount} isWtfHackyHiddenTop>
             <SendContext.Provider value={sendContextValues}>
                 <Header />
                 {!props.sendRaw && (
