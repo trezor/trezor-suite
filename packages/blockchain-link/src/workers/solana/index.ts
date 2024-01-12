@@ -21,7 +21,7 @@ import {
     transformTokenInfo,
     TOKEN_PROGRAM_PUBLIC_KEY,
 } from '@trezor/blockchain-link-utils/lib/solana';
-import { TOKEN_ACCOUNT_LAYOUT } from './tokenUtils';
+import { TOKEN_ACCOUNT_LAYOUT, fetchMetaplexMetadata } from './tokenUtils';
 
 export type SolanaAPI = Connection;
 
@@ -166,7 +166,10 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
     // Fetch token info only if the account owns tokens
     let tokens: TokenInfo[] = [];
     if (tokenAccounts.value.length > 0) {
-        const tokenMetadata = await solanaUtils.getTokenMetadata();
+        const tokenMetadata = await fetchMetaplexMetadata(
+            api,
+            tokenAccountsInfos.map(a => a.mint).filter((mint): mint is string => !!mint),
+        );
 
         tokens = transformTokenInfo(tokenAccounts.value, tokenMetadata);
     }
