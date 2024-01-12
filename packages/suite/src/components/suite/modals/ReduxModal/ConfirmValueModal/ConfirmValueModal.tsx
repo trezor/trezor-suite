@@ -154,7 +154,7 @@ export const ConfirmValueModal = ({
                     <StyledQrCode
                         value={value}
                         bgColor="transparent"
-                        fgColor={addressConfirmed ? theme.TYPE_DARK_GREY : theme.TYPE_LIGHT_GREY}
+                        fgColor={addressConfirmed ? theme.iconDefault : theme.iconSubdued}
                         showMessage={!addressConfirmed}
                     />
                     <Right>
