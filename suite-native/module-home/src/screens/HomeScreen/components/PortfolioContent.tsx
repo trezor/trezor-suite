@@ -52,36 +52,38 @@ export const PortfolioContent = forwardRef<PortfolioContentRef>((_props, ref) =>
     return (
         <VStack spacing="large" marginTop="small">
             <PortfolioGraph ref={graphRef} />
-            <Box marginHorizontal="medium">
-                <Assets />
-            </Box>
-            {isDeviceImported && (
-                <Box marginHorizontal="medium">
-                    <Button
-                        data-testID="@home/portfolio/sync-coins-button"
-                        colorScheme="tertiaryElevation0"
-                        size="large"
-                        onPress={handleImportAssets}
-                    >
-                        {translate('moduleHome.buttons.syncMyCoins')}
-                    </Button>
+            <VStack spacing="large" marginHorizontal="small">
+                <Box>
+                    <Assets />
                 </Box>
-            )}
-            {!isUsbDeviceConnectFeatureEnabled && (
-                <>
-                    <Divider />
-                    <Box marginHorizontal="medium">
+                {isDeviceImported && (
+                    <Box>
                         <Button
-                            data-testID="@home/portolio/recieve-button"
+                            data-testID="@home/portfolio/sync-coins-button"
+                            colorScheme="tertiaryElevation0"
                             size="large"
-                            onPress={handleReceive}
-                            iconLeft="receive"
+                            onPress={handleImportAssets}
                         >
-                            {translate('moduleHome.buttons.receive')}
+                            {translate('moduleHome.buttons.syncMyCoins')}
                         </Button>
                     </Box>
-                </>
-            )}
+                )}
+                {!isUsbDeviceConnectFeatureEnabled && (
+                    <>
+                        <Divider />
+                        <Box>
+                            <Button
+                                data-testID="@home/portolio/recieve-button"
+                                size="large"
+                                onPress={handleReceive}
+                                iconLeft="receive"
+                            >
+                                {translate('moduleHome.buttons.receive')}
+                            </Button>
+                        </Box>
+                    </>
+                )}
+            </VStack>
         </VStack>
     );
 });
