@@ -393,6 +393,10 @@ export const en = {
         accountDetail: {
             accountLabelBadge: 'Run on {accountLabel}',
         },
+        emptyState: {
+            title: 'No assets',
+            subtitle: 'Connect your Trezor or sync coins to view and track assets.',
+        },
     },
     transactions: {
         phishing: {

@@ -1,5 +1,6 @@
 import { Box, Pictogram } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { useTranslate } from '@suite-native/intl';
 
 const PLACEHOLDER_HEIGHT = 380;
 
@@ -10,6 +11,7 @@ const titleVariant = prepareNativeStyle(_ => ({
 }));
 
 export const AccountListPlaceholder = () => {
+    const { translate } = useTranslate();
     const { applyStyle } = useNativeStyles();
 
     return (
@@ -17,8 +19,8 @@ export const AccountListPlaceholder = () => {
             <Pictogram
                 variant="yellow"
                 icon="searchLight"
-                title="No assets found"
-                subtitle="Search again"
+                title={translate('moduleAccounts.emptyState.title')}
+                subtitle={translate('moduleAccounts.emptyState.subtitle')}
                 titleVariant="titleMedium"
             />
         </Box>
