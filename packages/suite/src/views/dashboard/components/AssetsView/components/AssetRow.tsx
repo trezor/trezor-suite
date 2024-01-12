@@ -41,7 +41,7 @@ const StyledCol = styled(motion.div)<{ $isLastRow?: boolean }>`
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
+    border-bottom: 1px solid ${({ theme }) => theme.borderOnElevation1};
     padding-right: 20px;
 
     ${({ $isLastRow }) =>
@@ -117,11 +117,6 @@ const ExchangeRateWrapper = styled(Col)`
 
 const BuyButtonWrapper = styled(Col)`
     justify-content: right;
-`;
-
-const ArrowIconWrapper = styled(Col)`
-    justify-content: right;
-    padding-right: 18px;
 `;
 
 interface AssetTableProps {

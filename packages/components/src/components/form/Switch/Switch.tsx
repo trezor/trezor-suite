@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import styled, { css } from 'styled-components';
-import { borders, boxShadows, spacingsPx, typography } from '@trezor/theme';
+import { borders, spacingsPx, typography } from '@trezor/theme';
 import { getWeakRandomId } from '@trezor/utils';
 import {
     getInputColor,
@@ -36,7 +36,7 @@ const Container = styled.div<Pick<SwitchProps, 'isChecked' | 'isDisabled' | 'isA
     border: 1px solid ${({ theme, isAlert }) => `${isAlert ? theme.borderAlertRed : 'transparent'}`};
 
     button {
-        box-shadow: ${boxShadows.elevation1};
+        box-shadow: ${({ theme }) => theme.boxShadowElevation1};
         opacity: ${({ isDisabled }) => isDisabled && 0.66};
     }
 
