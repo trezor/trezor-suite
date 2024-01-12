@@ -25,7 +25,8 @@ const Display = styled.div`
 `;
 
 const Text = styled.div<{ isPixelType: boolean; isWithIndentation?: boolean }>`
-    font-family: ${({ isPixelType }) => (isPixelType ? 'PixelOperatorMono8' : 'RobotoMono')};
+    font-family: ${({ isPixelType }) => (isPixelType ? 'PixelOperatorMono8' : 'RobotoMono')},
+        monospace;
     font-size: ${({ isPixelType }) => (isPixelType ? '12' : '18')}px;
     color: white;
     word-break: break-word;

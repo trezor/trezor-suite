@@ -60,12 +60,12 @@ const Col = (props: ComponentProps<typeof StyledCol>) => {
 const CoinNameWrapper = styled(Col)`
     overflow: hidden;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    margin-left: 25px;
+    padding-left: 25px;
     text-overflow: ellipsis;
 
     ${variables.SCREEN_QUERY.MOBILE} {
         grid-column: 1 / 4;
-        margin-left: 20px;
+        padding-left: 20px;
         border-bottom: none;
     }
 
@@ -116,8 +116,7 @@ const ExchangeRateWrapper = styled(Col)`
 
 const BuyButtonWrapper = styled(Col)`
     justify-content: right;
-    margin-right: 25px;
-    padding-right: 0;
+    padding-right: 25px;
 `;
 
 interface AssetTableProps {
