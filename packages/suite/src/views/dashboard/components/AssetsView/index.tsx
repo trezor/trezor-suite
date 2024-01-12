@@ -1,6 +1,5 @@
 import styled, { useTheme } from 'styled-components';
 import BigNumber from 'bignumber.js';
-import { AnimatePresence } from 'framer-motion';
 
 import { Icon, Button, LoadingContent, Card } from '@trezor/components';
 import { selectDeviceSupportedNetworks, selectCoinsLegacy } from '@suite-common/wallet-core';
@@ -16,19 +15,11 @@ import { goto } from 'src/actions/suite/routerActions';
 import { useEnabledNetworks } from 'src/hooks/settings/useEnabledNetworks';
 
 import { AssetCard, AssetCardSkeleton } from './components/AssetCard';
-import { AssetRow, AssetRowSkeleton } from './components/AssetRow';
 import { spacingsPx, typography } from '@trezor/theme';
 import { AssetFiatBalance } from '@suite-common/assets';
 import { toFiatCurrency } from '@suite-common/wallet-utils';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
-import { Network } from '@suite-common/wallet-config';
-
-interface AssetType {
-    symbol: string;
-    network: Network;
-    assetBalance: BigNumber;
-    assetFailed: boolean;
-}
+import { AssetTable, AssetTableRowType } from './components/AssetTable';
 
 const StyledCard = styled(Card)`
     flex-direction: column;
@@ -48,29 +39,6 @@ const ActionsWrapper = styled.div`
     align-items: center;
 `;
 
-const Header = styled.div`
-    display: flex;
-    ${typography.hint}
-    color: ${({ theme }) => theme.textSubdued};
-    align-items: center;
-    padding: ${spacingsPx.sm} 0;
-    border-bottom: 1px solid ${({ theme }) => theme.borderOnElevation1};
-
-    &:first-child {
-        padding-left: 18px;
-    }
-
-    &:last-child {
-        padding-right: 18px;
-    }
-`;
-
-const Grid = styled.div`
-    display: grid;
-    overflow: hidden;
-    grid-template-columns: 2fr 2fr 1fr 1fr 1fr;
-`;
-
 const GridWrapper = styled.div`
     display: grid;
     grid-gap: 10px;
@@ -85,7 +53,10 @@ const StyledIcon = styled(Icon)`
     margin-right: ${spacingsPx.xxs};
 `;
 
-const useAssetsFiatBalances = (assetsData: AssetType[], accounts: { [key: string]: Account[] }) => {
+const useAssetsFiatBalances = (
+    assetsData: AssetTableRowType[],
+    accounts: { [key: string]: Account[] },
+) => {
     const localCurrency = useSelector(selectLocalCurrency);
     const coins = useSelector(selectCoinsLegacy);
 
@@ -133,7 +104,7 @@ export const AssetsView = () => {
 
     const networks = Object.keys(assets);
 
-    const assetsData: AssetType[] = networks
+    const assetsData: AssetTableRowType[] = networks
         .map(symbol => {
             const network = NETWORKS.find(n => n.symbol === symbol && !n.accountType);
             if (!network) {
@@ -149,7 +120,7 @@ export const AssetsView = () => {
             const assetFailed = accounts.find(f => f.symbol === network.symbol && f.failed);
             return { symbol, network, assetFailed: !!assetFailed, assetBalance };
         })
-        .filter(data => data !== null) as AssetType[];
+        .filter(data => data !== null) as AssetTableRowType[];
 
     const assetsFiatBalances = useAssetsFiatBalances(assetsData, assets);
     const discoveryStatus = getDiscoveryStatus();
@@ -215,35 +186,11 @@ export const AssetsView = () => {
             )}
             {!dashboardAssetsGridMode && (
                 <StyledCard>
-                    <AnimatePresence initial={false}>
-                        <Grid>
-                            <Header>
-                                <Translation id="TR_ASSETS" />
-                            </Header>
-                            <Header>
-                                <Translation id="TR_VALUES" />
-                            </Header>
-                            <Header>
-                                <Translation id="TR_EXCHANGE_RATE" />
-                            </Header>
-                            <Header>
-                                <Translation id="TR_7D_CHANGE" />
-                            </Header>
-                            {/* empty column */}
-                            <Header />
-                            {assetsData.map((asset, i) => (
-                                <AssetRow
-                                    key={asset.symbol}
-                                    network={asset.network}
-                                    failed={asset.assetFailed}
-                                    cryptoValue={asset.assetBalance.toFixed()}
-                                    isLastRow={i === assetsData.length - 1}
-                                    assetsFiatBalances={assetsFiatBalances}
-                                />
-                            ))}
-                            {discoveryInProgress && <AssetRowSkeleton />}
-                        </Grid>
-                    </AnimatePresence>
+                    <AssetTable
+                        assetsData={assetsData}
+                        assetsFiatBalances={assetsFiatBalances}
+                        discoveryInProgress={discoveryInProgress}
+                    />
                     {isError && (
                         <InfoMessage>
                             <StyledIcon icon="WARNING" color={theme.iconAlertRed} size={14} />

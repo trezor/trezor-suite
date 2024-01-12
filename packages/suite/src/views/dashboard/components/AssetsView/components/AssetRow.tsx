@@ -17,9 +17,10 @@ import { isTestnet } from '@suite-common/wallet-utils';
 import { goto } from 'src/actions/suite/routerActions';
 import { useAccountSearch, useDispatch, useLoadingSkeleton } from 'src/hooks/suite';
 import { motion } from 'framer-motion';
-import { AssetInfo } from './AssetInfo';
+import { ArrowIcon, AssetInfo } from './AssetInfo';
 import { spacingsPx, typography } from '@trezor/theme';
 import { AssetFiatBalance } from '@suite-common/assets';
+import { AssetTableRowGrid } from './AssetTableRowGrid';
 
 const LogoWrapper = styled.div`
     padding-right: 12px;
@@ -60,7 +61,7 @@ const Col = (props: ComponentProps<typeof StyledCol>) => {
 const CoinNameWrapper = styled(Col)`
     overflow: hidden;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    padding-left: 25px;
+    padding-left: 18px;
     text-overflow: ellipsis;
 
     ${variables.SCREEN_QUERY.MOBILE} {
@@ -116,7 +117,11 @@ const ExchangeRateWrapper = styled(Col)`
 
 const BuyButtonWrapper = styled(Col)`
     justify-content: right;
-    padding-right: 25px;
+`;
+
+const ArrowIconWrapper = styled(Col)`
+    justify-content: right;
+    padding-right: 18px;
 `;
 
 interface AssetTableProps {
@@ -134,7 +139,7 @@ export const AssetRow = memo(
         const theme = useTheme();
         const { setCoinFilter, setSearchString } = useAccountSearch();
 
-        const handleLogoClick = () => {
+        const handleRowClick = () => {
             dispatch(
                 goto('wallet-index', {
                     params: {
@@ -150,13 +155,9 @@ export const AssetRow = memo(
         };
 
         return (
-            <>
+            <AssetTableRowGrid onClick={handleRowClick}>
                 <CoinNameWrapper isLastRow={isLastRow}>
-                    <AssetInfo
-                        network={network}
-                        onClick={handleLogoClick}
-                        assetsFiatBalances={assetsFiatBalances}
-                    />
+                    <AssetInfo network={network} assetsFiatBalances={assetsFiatBalances} />
                 </CoinNameWrapper>
 
                 {!failed ? (
@@ -199,8 +200,9 @@ export const AssetRow = memo(
                             dataTest={`@dashboard/assets/table/${symbol}/buy-button`}
                         />
                     )}
+                    <ArrowIcon size={16} icon="ARROW_RIGHT_LONG" color={theme.iconPrimaryDefault} />
                 </BuyButtonWrapper>
-            </>
+            </AssetTableRowGrid>
         );
     },
 );
@@ -211,7 +213,7 @@ export const AssetRowSkeleton = (props: { animate?: boolean }) => {
     const animate = props.animate ?? shouldAnimate;
 
     return (
-        <>
+        <AssetTableRowGrid>
             <CoinNameWrapper isLastRow>
                 <LogoWrapper>
                     <SkeletonCircle size={48} />
@@ -233,6 +235,6 @@ export const AssetRowSkeleton = (props: { animate?: boolean }) => {
             <BuyButtonWrapper isLastRow>
                 <SkeletonRectangle animate={animate} width={58} height={38} borderRadius={19} />
             </BuyButtonWrapper>
-        </>
+        </AssetTableRowGrid>
     );
 };
