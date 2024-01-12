@@ -1,4 +1,4 @@
-name: suite-native production release
+name: "[Release] suite-native production"
 
 on:
   workflow_dispatch:

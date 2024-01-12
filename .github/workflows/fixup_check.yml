@@ -1,4 +1,4 @@
-name: Fixup commit check
+name: "[Check] Fixup commit"
 
 on: [pull_request]
 

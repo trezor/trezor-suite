@@ -1,4 +1,4 @@
-name: "@trezor/blockchain-link"
+name: "[Test] @trezor/blockchain-link"
 
 on:
   push:

@@ -1,4 +1,4 @@
-name: connect-explorer build and deploy
+name: "[Deploy] connect-explorer"
 
 on:
   push:

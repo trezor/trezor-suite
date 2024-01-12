@@ -1,4 +1,4 @@
-name: pre-release-npm - connect v9 - init
+name: "[Release] connect npm init"
 
 on:
   workflow_dispatch:

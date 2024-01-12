@@ -1,4 +1,4 @@
-name: Validation check
+name: "[Check] Validation"
 
 on: [pull_request]
 
