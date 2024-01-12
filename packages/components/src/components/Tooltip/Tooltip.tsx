@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import Tippy, { TippyProps } from '@tippyjs/react/headless';
 import { Instance } from 'tippy.js';
 import { transparentize } from 'polished';
-import { borders, boxShadows, spacings, spacingsPx, typography, zIndices } from '@trezor/theme';
+import { borders, spacings, spacingsPx, typography, zIndices } from '@trezor/theme';
 
 import { Icon, IconType } from '../assets/Icon/Icon';
 
@@ -31,7 +31,7 @@ const TooltipContainer = styled(motion.div)<{
     color: ${({ theme }) => theme.textOnPrimary};
     border-radius: ${borders.radii.sm};
     text-align: left;
-    box-shadow: ${boxShadows.elevation3};
+    box-shadow: ${({ theme }) => theme.boxShadowElevation3};
     max-width: ${props => props.$maxWidth}px;
     ${typography.hint}
 

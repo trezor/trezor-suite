@@ -1,5 +1,5 @@
 import { css, keyframes } from 'styled-components';
-import { spacingsPx, borders, boxShadows, typography, zIndices } from '@trezor/theme';
+import { spacingsPx, borders, typography, zIndices } from '@trezor/theme';
 
 export const DROPDOWN_MENU = keyframes`
     0% {
@@ -21,7 +21,7 @@ export const menuStyle = css`
     min-width: 140px;
     border-radius: ${borders.radii.md};
     background: ${({ theme }) => theme.backgroundSurfaceElevation1};
-    box-shadow: ${boxShadows.elevation3};
+    box-shadow: ${({ theme }) => theme.boxShadowElevation3};
     z-index: ${zIndices.modal};
     animation: ${DROPDOWN_MENU} 0.15s ease-in-out;
     list-style-type: none;

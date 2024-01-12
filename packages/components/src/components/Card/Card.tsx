@@ -1,6 +1,6 @@
 import { forwardRef, ReactNode } from 'react';
 import styled from 'styled-components';
-import { borders, boxShadows, spacings } from '@trezor/theme';
+import { borders, Elevation, mapElevationToBoxShadow, spacings } from '@trezor/theme';
 
 const Wrapper = styled.div<{ $elevation: Elevation; $paddingSize: number }>`
     display: flex;
@@ -8,7 +8,11 @@ const Wrapper = styled.div<{ $elevation: Elevation; $paddingSize: number }>`
     padding: ${({ $paddingSize }) => $paddingSize}px;
     background: ${({ theme }) => theme.backgroundSurfaceElevation1};
     border-radius: ${borders.radii.md};
-    box-shadow: ${({ $elevation }) => $elevation && boxShadows[`elevation${$elevation}`]};
+    box-shadow: ${({ theme, $elevation }) => {
+        const boxShadow = mapElevationToBoxShadow[$elevation];
+
+        return boxShadow !== undefined ? theme[boxShadow] : undefined;
+    }};
     /* when theme changes from light to dark */
     transition: background 0.3s;
 `;
@@ -25,7 +29,6 @@ const getPaddingSize = (paddingType?: PaddingType) => {
     }
 };
 
-type Elevation = 0 | 1 | 3;
 type PaddingType = 'none' | 'normal' | 'large';
 
 export interface CardProps {

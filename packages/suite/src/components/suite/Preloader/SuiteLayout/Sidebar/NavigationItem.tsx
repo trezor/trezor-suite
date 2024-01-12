@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components';
 import { IconName } from '@suite-common/icons';
 import { Icon } from '@suite-common/icons/src/webComponents';
 import { TranslationKey } from '@suite-common/intl-types';
-import { borders, boxShadows, spacingsPx } from '@trezor/theme';
+import { borders, spacingsPx } from '@trezor/theme';
 import { getFocusShadowStyle } from '@trezor/components/src/utils/utils';
 import { Translation } from 'src/components/suite/Translation';
 import { Route } from '@suite-common/suite-types';
@@ -34,7 +34,7 @@ const Container = styled(NavigationItemBase)<Pick<NavigationItemProps, 'isActive
         isActive
             ? css`
                   background: ${theme.backgroundSurfaceElevation1};
-                  box-shadow: ${boxShadows.elevation1};
+                  box-shadow: ${theme.boxShadowElevation1};
                   color: ${theme.textDefault};
 
                   path {

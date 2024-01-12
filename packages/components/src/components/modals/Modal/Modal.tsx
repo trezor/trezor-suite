@@ -2,7 +2,7 @@ import { useCallback, useState, ReactNode, useEffect } from 'react';
 
 import styled, { css, useTheme } from 'styled-components';
 import { useEvent } from 'react-use';
-import { boxShadows, spacings, spacingsPx, typography } from '@trezor/theme';
+import { spacings, spacingsPx, typography } from '@trezor/theme';
 
 import { Icon, IconType } from '../../assets/Icon/Icon';
 import { Stepper } from '../../loaders/Stepper/Stepper';
@@ -30,7 +30,7 @@ const Container = styled.div`
     max-height: 90vh;
     width: 680px;
     background: ${({ theme }) => theme.backgroundSurfaceElevation1};
-    box-shadow: ${boxShadows.elevation3};
+    box-shadow: ${({ theme }) => theme.boxShadowElevation3};
 `;
 
 export interface HeaderProps {

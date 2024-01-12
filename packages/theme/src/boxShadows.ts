@@ -16,6 +16,14 @@ export const boxShadows = {
 export type BoxShadow = keyof typeof boxShadows.standard;
 export type BoxShadows = Record<BoxShadow, string>;
 
+export type Elevation = 0 | 1 | 3;
+
+export const mapElevationToBoxShadow: Record<Elevation, BoxShadow | undefined> = {
+    '0': undefined,
+    '1': 'boxShadowElevation1',
+    '3': 'boxShadowElevation3',
+};
+
 interface NativeBoxShadowDefinition {
     elevation: number;
     shadowColor: CSSColor;

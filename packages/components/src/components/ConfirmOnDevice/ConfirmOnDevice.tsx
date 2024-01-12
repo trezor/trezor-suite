@@ -3,7 +3,7 @@ import styled, { css, keyframes, useTheme } from 'styled-components';
 import { Image } from '../Image/Image';
 import { Icon } from '../assets/Icon/Icon';
 import { DeviceModelInternal } from '@trezor/connect';
-import { borders, spacingsPx, boxShadows, typography } from '@trezor/theme';
+import { borders, spacingsPx, typography } from '@trezor/theme';
 import { DeviceAnimation } from '../animations/DeviceAnimation';
 
 enum AnimationDirection {
@@ -38,7 +38,7 @@ const Wrapper = styled.div<{ animation?: AnimationDirection }>`
     padding: 0 ${spacingsPx.md} 0 ${spacingsPx.xxl};
     border-radius: ${borders.radii.full};
     background: ${({ theme }) => theme.backgroundSurfaceElevation1};
-    box-shadow: ${boxShadows.elevation1};
+    box-shadow: ${({ theme }) => theme.boxShadowElevation1};
     align-items: center;
 
     ${({ animation }) =>

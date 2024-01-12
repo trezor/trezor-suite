@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { borders, boxShadows, spacings, spacingsPx, typography } from '@trezor/theme';
+import { borders, spacings, spacingsPx, typography } from '@trezor/theme';
 
 const Container = styled.div`
     position: absolute;
@@ -7,7 +7,7 @@ const Container = styled.div`
     right: ${spacings.md}px;
     padding: ${spacingsPx.xxxs} ${spacingsPx.xxs};
     background: ${({ theme }) => theme.backgroundTertiaryDefaultOnElevation1};
-    box-shadow: ${boxShadows.elevation1};
+    box-shadow: ${({ theme }) => theme.boxShadowElevation1};
     border-radius: ${borders.radii.xxs};
     color: ${({ theme }) => theme.textSubdued};
     ${typography.label};
