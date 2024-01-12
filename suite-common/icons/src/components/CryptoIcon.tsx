@@ -5,6 +5,7 @@ import { TokenAddress } from '@suite-common/wallet-types';
 
 import { CryptoIconName, cryptoIcons } from '../icons';
 import { genericTokenIcon, TokenIconName, tokenIcons } from '../tokenIcons';
+import { useRerenderOnAppStateChange } from '../useRerenderOnAppState';
 
 export type CoinSymbol = CryptoIconName | TokenAddress;
 
@@ -30,6 +31,8 @@ const getIconFile = (symbol: CoinSymbol) => {
 };
 
 export const CryptoIcon = ({ symbol, size = 'small' }: CryptoIconProps) => {
+    useRerenderOnAppStateChange();
+
     const iconFile = getIconFile(symbol);
     const svg = useSVG(iconFile);
     const sizeNumber = cryptoIconSizes[size];
