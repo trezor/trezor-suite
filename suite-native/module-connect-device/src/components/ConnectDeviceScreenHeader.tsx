@@ -1,5 +1,3 @@
-import { useDispatch, useSelector } from 'react-redux';
-
 import { useNavigation } from '@react-navigation/native';
 
 import {
@@ -12,7 +10,6 @@ import {
     StackToTabCompositeProps,
 } from '@suite-native/navigation';
 import { Box, IconButton, ScreenHeaderWrapper } from '@suite-native/atoms';
-import { deviceActions, selectDevice } from '@suite-common/wallet-core';
 
 import { ConnectingTrezorHelp } from './ConnectingTrezorHelp';
 
@@ -29,12 +26,9 @@ type NavigationProp = StackToTabCompositeProps<
 export const ConnectDeviceScreenHeader = ({
     shouldDisplayCancelButton = true,
 }: ConnectDeviceScreenHeaderProps) => {
-    const dispatch = useDispatch();
-    const selectedDevice = useSelector(selectDevice);
     const navigation = useNavigation<NavigationProp>();
 
     const handleCancel = () => {
-        dispatch(deviceActions.deviceDisconnect(selectedDevice));
         navigation.navigate(RootStackRoutes.AppTabs, {
             screen: AppTabsRoutes.HomeStack,
             params: {
