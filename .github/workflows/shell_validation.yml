@@ -1,4 +1,4 @@
-name: Shell validation check
+name: "[Check]: Shell validation"
 
 on:
   pull_request:

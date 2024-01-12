@@ -1,4 +1,4 @@
-name: suite-native develop ci
+name: "[Release] suite-native develop"
 
 on:
   push:

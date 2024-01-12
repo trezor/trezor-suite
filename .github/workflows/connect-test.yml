@@ -1,4 +1,4 @@
-name: "@trezor/connect"
+name: "[Test] connect"
 
 # run only if there are changes in connect or related libs paths
 on:

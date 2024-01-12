@@ -1,4 +1,4 @@
-name: suite-native staging release
+name: "[Release]: suite-native staging"
 
 on:
   workflow_dispatch:

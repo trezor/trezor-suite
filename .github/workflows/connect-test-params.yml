@@ -1,4 +1,4 @@
-name: Test with trezor-user-env
+name: "[Test] connect"
 on:
   workflow_call:
     inputs:

@@ -1,4 +1,4 @@
-name: Crowdin translations update
+name: "[Bot] Crowdin translations update"
 
 on: [workflow_dispatch]
 
