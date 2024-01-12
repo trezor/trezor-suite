@@ -1,6 +1,6 @@
 import { Network } from '@suite-common/wallet-config';
 import React from 'react';
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 import { AssetShareIndicator, Icon } from '@trezor/components';
 import { useSelector } from 'react-redux';
 
@@ -74,8 +74,6 @@ export const AssetInfo = ({ network, onClick, assetsFiatBalances, index }: Asset
           )?.fiatPercentage
         : undefined;
 
-    const theme = useTheme();
-
     return (
         <Container onClick={onClick}>
             <LogoWrapper>
@@ -93,7 +91,6 @@ export const AssetInfo = ({ network, onClick, assetsFiatBalances, index }: Asset
                     <WalletNumber>{selectedAccounts.length}</WalletNumber>
                 </Wallets>
             </WalletContent>
-            <ArrowIcon size={16} icon="ARROW_RIGHT_LONG" color={theme.iconPrimaryDefault} />
         </Container>
     );
 };

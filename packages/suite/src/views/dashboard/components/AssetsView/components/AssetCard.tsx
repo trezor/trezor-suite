@@ -82,7 +82,11 @@ const CoinAmount = styled.div`
     font-variant-numeric: tabular-nums;
     ${typography.hint};
 `;
+
 const AssetContainer = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
     margin-bottom: ${spacingsPx.xxxl};
 `;
 
@@ -146,6 +150,7 @@ export const AssetCard = ({
                         assetsFiatBalances={assetsFiatBalances}
                         index={index}
                     />
+                    <ArrowIcon size={16} icon="ARROW_RIGHT_LONG" color={theme.iconPrimaryDefault} />
                 </AssetContainer>
                 {!failed ? (
                     <>
