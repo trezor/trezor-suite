@@ -6,5 +6,5 @@ export const mediaQueries = {
             : '@media print',
     touch: '@media (hover: none)',
     hover: '@media (hover: hover)',
-    dark_theme: '@media (prefers-color-scheme: dark)',
+    dark_theme: '@media (prefers-color-scheme: dark)', // Todo: remove this query as it shall be done via Theme
 };
