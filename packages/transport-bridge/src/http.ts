@@ -1,3 +1,4 @@
+import http from 'http';
 import express from 'express';
 import cors from 'cors';
 
@@ -23,7 +24,7 @@ export class TrezordNode {
         res: express.Response;
     }[];
     port: number;
-    server = express();
+    server?: http.Server<typeof http.IncomingMessage, typeof http.ServerResponse>;
 
     constructor({ port }: { port: number }) {
         this.port = port || defaults.port;
@@ -142,13 +143,17 @@ export class TrezordNode {
                 });
             });
 
-            app.listen(this.port, () => {
+            this.server = app.listen(this.port, () => {
                 resolve();
             });
         });
     }
 
-    public stop() {}
+    public stop() {
+        // send empty descriptors (imitate that all devices have disconnected)
+        this.resolveListenSubscriptions([]);
+        this.server?.close();
+    }
 
     public async status() {
         const running = await fetch(`http://127.0.0.1:${this.port}/`)
