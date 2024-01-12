@@ -1,7 +1,6 @@
 import { useRef, useCallback } from 'react';
 import styled, { css } from 'styled-components';
 import { breakpointMediaQueries } from '@trezor/styles';
-import { boxShadows } from '@trezor/theme';
 import { DropdownRef, Dropdown } from '@trezor/components';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -23,7 +22,7 @@ const StyledNavigationItem = styled(NavigationItem)`
         isActive &&
         css`
             background: ${theme.backgroundTertiaryPressedOnElevation0};
-            box-shadow: ${boxShadows.elevation1};
+            box-shadow: ${theme.boxShadowElevation1};
         `}
 `;
 

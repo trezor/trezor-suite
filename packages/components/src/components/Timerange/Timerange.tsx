@@ -2,7 +2,7 @@ import { useState, ReactNode } from 'react';
 import { DateRange } from 'react-date-range';
 import styled, { css } from 'styled-components';
 import { mediaQueries } from '@trezor/styles';
-import { borders, boxShadows, spacingsPx, zIndices } from '@trezor/theme';
+import { borders, spacingsPx, zIndices } from '@trezor/theme';
 
 import type { Locale } from 'date-fns';
 
@@ -582,7 +582,7 @@ const Calendar = styled.div`
     .rdrEndEdge {
         background: ${({ theme }) => theme.backgroundPrimaryDefault};
         color: ${({ theme }) => theme.textOnPrimary};
-        box-shadow: ${boxShadows.focusedLight};
+        box-shadow: ${({ theme }) => theme.boxShadowFocused};
         border-radius: ${borders.radii.xxs};
         z-index: ${zIndices.base};
     }

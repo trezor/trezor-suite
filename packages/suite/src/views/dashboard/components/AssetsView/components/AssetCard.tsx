@@ -126,7 +126,7 @@ export const AssetCard = ({
     const theme = useTheme();
     const { setCoinFilter, setSearchString } = useAccountSearch();
 
-    const handleGoToCoinDetailClick = () => {
+    const handleCardClick = () => {
         dispatch(
             goto('wallet-index', {
                 params: {
@@ -142,7 +142,7 @@ export const AssetCard = ({
     };
 
     return (
-        <Card onClick={handleGoToCoinDetailClick}>
+        <Card onClick={handleCardClick}>
             <MarginContainer>
                 <AssetContainer>
                     <AssetInfo

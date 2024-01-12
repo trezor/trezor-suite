@@ -8,8 +8,7 @@ import {
 } from 'react';
 import styled, { css, CSSObject } from 'styled-components';
 
-import { borders, boxShadows, spacingsPx, typography } from '@trezor/theme';
-import { mediaQueries } from '@trezor/styles';
+import { borders, spacingsPx, typography } from '@trezor/theme';
 
 const track = css<Pick<RangeProps, 'trackStyle' | 'disabled'>>`
     height: ${spacingsPx.xxs};
@@ -42,12 +41,7 @@ const thumb = css<Pick<RangeProps, 'disabled'>>`
 
 const focusStyle = css`
     border: ${({ theme }) => `1px solid ${theme.backgroundAlertBlueBold}`};
-    box-shadow: ${boxShadows.focusedLight};
-`;
-
-const darkFocusStyle = css`
-    border: ${({ theme }) => `1px solid ${theme.backgroundAlertBlueBold}`};
-    box-shadow: ${boxShadows.focusedDark};
+    box-shadow: ${({ theme }) => theme.boxShadowFocused};
 `;
 
 const Input = styled.input<Pick<RangeProps, 'disabled' | 'trackStyle'>>`
@@ -78,17 +72,6 @@ const Input = styled.input<Pick<RangeProps, 'disabled' | 'trackStyle'>>`
         }
         ::-moz-range-thumb {
             ${focusStyle}
-        }
-    }
-
-    ${mediaQueries.dark_theme} {
-        :focus-visible {
-            ::-webkit-slider-thumb {
-                ${darkFocusStyle}
-            }
-            ::-moz-range-thumb {
-                ${darkFocusStyle}
-            }
         }
     }
 `;

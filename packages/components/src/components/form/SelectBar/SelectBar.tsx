@@ -1,7 +1,7 @@
 import { useState, useEffect, ReactNode, useCallback, KeyboardEvent } from 'react';
 import styled, { css } from 'styled-components';
 import { breakpointMediaQueries } from '@trezor/styles';
-import { borders, boxShadows, spacings, spacingsPx, typography } from '@trezor/theme';
+import { borders, spacings, spacingsPx, typography } from '@trezor/theme';
 import { focusStyleTransition, getFocusShadowStyle } from '../../../utils/utils';
 
 const Wrapper = styled.div`
@@ -60,7 +60,7 @@ const Puck = styled.div<{ optionsCount: number; selectedIndex: number }>`
     padding: ${spacingsPx.xxs} ${spacingsPx.xl};
     background: ${({ theme }) => theme.backgroundSurfaceElevation1};
     border-radius: ${borders.radii.full};
-    box-shadow: ${boxShadows.elevation1};
+    box-shadow: ${({ theme }) => theme.boxShadowElevation1};
     transform: ${({ selectedIndex }) => `translateX(${getTranslateValue(selectedIndex)})`};
     transition:
         transform 0.175s cubic-bezier(1, 0.02, 0.38, 0.74),
