@@ -12,13 +12,13 @@ import {
 } from 'src/components/suite';
 import { isTestnet } from '@suite-common/wallet-utils';
 import { CoinmarketBuyButton } from 'src/views/dashboard/components/CoinmarketBuyButton';
-import { borders, boxShadows, spacingsPx, typography } from '@trezor/theme';
+import { borders, spacingsPx, typography } from '@trezor/theme';
 
 import { H2, Icon, variables } from '@trezor/components';
 import { useDispatch } from 'react-redux';
 import { useAccountSearch, useLoadingSkeleton } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
-import { AssetInfo, AssetInfoSkeleton } from './AssetInfo';
+import { ArrowIcon, AssetInfo, AssetInfoSkeleton } from './AssetInfo';
 import { AssetFiatBalance } from '@suite-common/assets';
 import { FiatHeader } from '../../FiatHeader';
 
@@ -47,15 +47,21 @@ const MarginContainer = styled.div`
 
 const Card = styled.div`
     border-radius: ${borders.radii.md};
-    box-shadow: ${boxShadows.elevation1};
+    box-shadow: ${({ theme }) => theme.boxShadowElevation1};
+
+    :hover {
+        box-shadow: ${({ theme }) => theme.boxShadowElevation3};
+        cursor: pointer;
+
+        ${ArrowIcon} {
+            opacity: 1;
+        }
+    }
+
     background-color: ${({ theme }) => theme.backgroundSurfaceElevation1};
     display: flex;
     flex-direction: column;
     transition: box-shadow 0.2s;
-
-    :hover {
-        box-shadow: ${boxShadows.elevation3};
-    }
 `;
 
 const FiatAmount = styled.div`
@@ -68,14 +74,6 @@ const IntegerValue = styled(H2)`
     line-height: 34px;
     letter-spacing: 0.565px;
 `;
-
-// const DecimalValue = styled.div<{ withLeftMargin?: boolean }>`
-//     ${typography.hint};
-//     font-variant-numeric: tabular-nums;
-//     align-self: flex-end;
-//     letter-spacing: 0.565px;
-//     margin-left: ${({ withLeftMargin }) => `${withLeftMargin ? '4px' : 0}`};
-// `;
 
 const CoinAmount = styled.div`
     color: ${({ theme }) => theme.textSubdued};
@@ -124,7 +122,7 @@ export const AssetCard = ({
     const theme = useTheme();
     const { setCoinFilter, setSearchString } = useAccountSearch();
 
-    const handleLogoClick = () => {
+    const handleGoToCoinDetailClick = () => {
         dispatch(
             goto('wallet-index', {
                 params: {
@@ -140,12 +138,11 @@ export const AssetCard = ({
     };
 
     return (
-        <Card>
+        <Card onClick={handleGoToCoinDetailClick}>
             <MarginContainer>
                 <AssetContainer>
                     <AssetInfo
                         network={network}
-                        onClick={handleLogoClick}
                         assetsFiatBalances={assetsFiatBalances}
                         index={index}
                     />
