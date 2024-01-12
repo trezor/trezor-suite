@@ -17,7 +17,7 @@ interface AssetInfoSkeletonProps {
     animate?: boolean;
 }
 
-const ArrowIcon = styled(Icon)`
+export const ArrowIcon = styled(Icon)`
     opacity: 0;
     transition: opacity 0.1s;
     margin-top: ${spacingsPx.xxs};
@@ -29,13 +29,6 @@ const Flex = styled.div`
 
 const Container = styled.div`
     display: flex;
-
-    :hover {
-        cursor: pointer;
-        ${ArrowIcon} {
-            opacity: 1;
-        }
-    }
 `;
 
 const WalletContent = styled.div`
@@ -64,7 +57,7 @@ const LogoWrapper = styled.div`
 
 interface AssetInfoProps {
     network: Network;
-    onClick: () => void;
+    onClick?: () => void;
     assetsFiatBalances?: AssetFiatBalance[];
     index?: number;
 }
