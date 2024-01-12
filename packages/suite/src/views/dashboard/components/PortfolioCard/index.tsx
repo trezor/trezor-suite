@@ -85,7 +85,11 @@ const PortfolioCard = memo(() => {
 
     const showMissingDataTooltip =
         showGraphControls &&
-        !!accounts.find(a => a.networkType === 'ethereum' || a.networkType === 'ripple');
+        !!accounts.some(
+            account =>
+                account.history &&
+                (account.tokens?.length || ['ripple', 'solana'].includes(account.networkType)),
+        );
 
     const goToReceive = () => dispatch(goto('wallet-receive'));
     const goToBuy = () => dispatch(goto('wallet-coinmarket-buy'));
