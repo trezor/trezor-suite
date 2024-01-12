@@ -96,6 +96,7 @@ Available flags:
 | `--open-devtools`     | Open DevTools on app launch.                                                                                                                                                           |
 | `--pre-release`       | Tells the auto-updater to fetch pre-release updates.                                                                                                                                   |
 | `--bridge-dev`        | Instruct Bridge to support emulator (starts Bridge with `-e 21324`).                                                                                                                   |
+| `--bridge-node`       | Instruct Suite to start alternative node-bridge implementation                                                                                                                         |
 | `--log-level=NAME`    | Set the logging level. Available levels are [name (value)]: error (1), warn (2), info(3), debug (4). All logs with a value equal or lower to the selected log level will be displayed. |
 | `--log-write`         | Write log to disk                                                                                                                                                                      |
 | `--log-ui`            | Enables printing of UI console messages in the console.                                                                                                                                |
