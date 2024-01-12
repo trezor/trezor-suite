@@ -9,6 +9,7 @@ import type {
     SolanaValidParsedTxWithMeta,
     ParsedTransactionWithMeta,
     SolanaTokenAccountInfo,
+    TokenDetailByMint,
 } from '@trezor/blockchain-link-types/lib/solana';
 import type * as MessageTypes from '@trezor/blockchain-link-types/lib/messages';
 import { CustomError } from '@trezor/blockchain-link-types/lib/constants/errors';
@@ -21,7 +22,7 @@ import {
     transformTokenInfo,
     TOKEN_PROGRAM_PUBLIC_KEY,
 } from '@trezor/blockchain-link-utils/lib/solana';
-import { TOKEN_ACCOUNT_LAYOUT } from './tokenUtils';
+import { TOKEN_ACCOUNT_LAYOUT, fetchCoingeckoTokenDetailByMint } from './tokenUtils';
 
 export type SolanaAPI = Connection;
 
@@ -112,6 +113,7 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
     const getTransactionPage = async (
         txIds: string[],
         tokenAccountsInfos: SolanaTokenAccountInfo[],
+        tokenDetailByMint: TokenDetailByMint,
     ) => {
         const transactionsPage = await fetchTransactionPage(api, txIds);
 
@@ -124,6 +126,7 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
                             tx,
                             payload.descriptor,
                             tokenAccountsInfos,
+                            tokenDetailByMint,
                         ),
                     ),
             )
@@ -160,16 +163,24 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
         decimals: a.account.data.parsed?.info?.tokenAmount?.decimals as number | undefined,
     }));
 
-    const transactionPage =
-        details === 'txs' ? await getTransactionPage(txIdPage, tokenAccountsInfos) : undefined;
-
     // Fetch token info only if the account owns tokens
+    const shouldFetchTokens =
+        tokenAccounts.value.length > 0 &&
+        (details === 'tokens' || details === 'txs' || details === 'tokenBalances');
     let tokens: TokenInfo[] = [];
-    if (tokenAccounts.value.length > 0) {
-        const tokenMetadata = await solanaUtils.getTokenMetadata();
+    let tokenDetailByMint: TokenDetailByMint = {};
+    if (shouldFetchTokens) {
+        tokenDetailByMint = await fetchCoingeckoTokenDetailByMint(
+            tokenAccountsInfos.map(a => a.mint).filter((mint): mint is string => !!mint),
+        );
 
-        tokens = transformTokenInfo(tokenAccounts.value, tokenMetadata);
+        tokens = transformTokenInfo(tokenAccounts.value, tokenDetailByMint);
     }
+
+    const transactionPage =
+        details === 'txs'
+            ? await getTransactionPage(txIdPage, tokenAccountsInfos, tokenDetailByMint)
+            : undefined;
 
     const balance = await api.getBalance(publicKey);
 
@@ -375,7 +386,7 @@ const subscribeAccounts = async (
                 return;
             }
 
-            const tx = await solanaUtils.transformTransaction(lastTx, a.descriptor, []);
+            const tx = await solanaUtils.transformTransaction(lastTx, a.descriptor, [], {});
 
             // For token accounts we need to emit an event with the owner account's descriptor
             // since we don't store token accounts in the user's accounts.
