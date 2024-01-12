@@ -9,6 +9,7 @@ import type {
     SolanaValidParsedTxWithMeta,
     ParsedTransactionWithMeta,
     SolanaTokenAccountInfo,
+    TokenDetailByMint,
 } from '@trezor/blockchain-link-types/lib/solana';
 import type * as MessageTypes from '@trezor/blockchain-link-types/lib/messages';
 import { CustomError } from '@trezor/blockchain-link-types/lib/constants/errors';
@@ -160,19 +161,23 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
         decimals: a.account.data.parsed?.info?.tokenAmount?.decimals as number | undefined,
     }));
 
-    const transactionPage =
-        details === 'txs' ? await getTransactionPage(txIdPage, tokenAccountsInfos) : undefined;
-
     // Fetch token info only if the account owns tokens
+    const shouldFetchTokens =
+        tokenAccounts.value.length > 0 &&
+        (details === 'tokens' || details === 'txs' || details === 'tokenBalances');
     let tokens: TokenInfo[] = [];
-    if (tokenAccounts.value.length > 0) {
-        const tokenMetadata = await fetchMetaplexMetadata(
+    let tokenMetadata: TokenDetailByMint = {};
+    if (shouldFetchTokens) {
+        tokenMetadata = await fetchMetaplexMetadata(
             api,
             tokenAccountsInfos.map(a => a.mint).filter((mint): mint is string => !!mint),
         );
 
         tokens = transformTokenInfo(tokenAccounts.value, tokenMetadata);
     }
+
+    const transactionPage =
+        details === 'txs' ? await getTransactionPage(txIdPage, tokenAccountsInfos) : undefined;
 
     const balance = await api.getBalance(publicKey);
 
