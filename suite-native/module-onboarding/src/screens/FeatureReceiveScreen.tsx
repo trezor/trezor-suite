@@ -27,13 +27,13 @@ type ScreenContent = {
 };
 const receiveScreenContentMap = {
     device: {
-        title: 'moduleOnboarding.featureReceiveScreen.portfolioTracker.title',
-        subtitle: 'moduleOnboarding.featureReceiveScreen.portfolioTracker.subtitle',
+        title: 'moduleOnboarding.featureReceiveScreen.device.title',
+        subtitle: 'moduleOnboarding.featureReceiveScreen.device.subtitle',
         redirectTarget: OnboardingStackRoutes.TrackBalances,
     },
     portfolioTracker: {
-        title: 'moduleOnboarding.featureReceiveScreen.device.title',
-        subtitle: 'moduleOnboarding.featureReceiveScreen.device.subtitle',
+        title: 'moduleOnboarding.featureReceiveScreen.portfolioTracker.title',
+        subtitle: 'moduleOnboarding.featureReceiveScreen.portfolioTracker.subtitle',
         redirectTarget: OnboardingStackRoutes.AnalyticsConsent,
     },
 } as const satisfies Record<'device' | 'portfolioTracker', ScreenContent>;
