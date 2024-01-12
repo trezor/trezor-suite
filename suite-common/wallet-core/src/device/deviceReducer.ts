@@ -555,7 +555,7 @@ export const selectDeviceRequestedPin = (state: DeviceRootState) => {
 
     if (!isDeviceProtectedByPin) return false;
 
-    return buttonRequestsCodes?.some(code => code?.startsWith('PinMatrixRequestType')) ?? false;
+    return buttonRequestsCodes?.includes('PinMatrixRequestType_Current') ?? false;
 };
 
 export const selectIsUnacquiredDevice = (state: DeviceRootState) => {

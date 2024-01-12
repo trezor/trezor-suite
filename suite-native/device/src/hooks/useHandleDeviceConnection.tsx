@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { DeviceModelInternal } from '@trezor/connect';
 import {
     AppTabsRoutes,
     ConnectDeviceStackParamList,
@@ -13,11 +14,17 @@ import {
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import {
-    selectIsSelectedDeviceImported,
-    selectIsNoPhysicalDeviceConnected,
+    selectDeviceInternalModel,
+    selectDeviceRequestedPin,
     selectIsDeviceConnectedAndAuthorized,
+    selectIsNoPhysicalDeviceConnected,
+    selectIsSelectedDeviceImported,
 } from '@suite-common/wallet-core';
+import { useAlert } from '@suite-native/alerts';
+import { useTranslate } from '@suite-native/intl';
 import { selectIsOnboardingFinished } from '@suite-native/module-settings';
+
+import { PinForm } from '../components/PinForm';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     ConnectDeviceStackParamList | RootStackParamList,
@@ -30,8 +37,12 @@ export const useHandleDeviceConnection = () => {
     const isSelectedDeviceImported = useSelector(selectIsSelectedDeviceImported);
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
     const isDeviceConnectedAndAuthorized = useSelector(selectIsDeviceConnectedAndAuthorized);
+    const deviceInternalModel = useSelector(selectDeviceInternalModel);
+    const hasDeviceRequestedPin = useSelector(selectDeviceRequestedPin);
 
     const navigation = useNavigation<NavigationProp>();
+    const { hideAlert, showAlert } = useAlert();
+    const { translate } = useTranslate();
 
     // At the moment when unauthorized physical device is selected,
     // redirect to the Connecting screen where is handled the connection logic.
@@ -69,4 +80,29 @@ export const useHandleDeviceConnection = () => {
             });
         }
     }, [isNoPhysicalDeviceConnected, isOnboardingFinished, navigation]);
+
+    // When T1 gets locked, it is necessary to display a PIN matrix for it so that it can be unlocked
+    // and then continue with the interaction.
+    useEffect(() => {
+        if (
+            isDeviceConnectedAndAuthorized &&
+            deviceInternalModel === DeviceModelInternal.T1B1 &&
+            hasDeviceRequestedPin
+        ) {
+            showAlert({
+                icon: 'trezorT',
+                pictogramVariant: 'yellow',
+                appendix: <PinForm />,
+            });
+        } else {
+            hideAlert();
+        }
+    }, [
+        deviceInternalModel,
+        hasDeviceRequestedPin,
+        hideAlert,
+        isDeviceConnectedAndAuthorized,
+        showAlert,
+        translate,
+    ]);
 };
