@@ -8,11 +8,11 @@ import { ButtonColorScheme, PictogramVariant } from '@suite-native/atoms';
 
 export type Alert = RequireAllOrNone<
     {
-        title: ReactNode;
-        description: string;
+        title?: ReactNode;
+        description?: string;
         icon: IconName;
         pictogramVariant: PictogramVariant;
-        primaryButtonTitle: string;
+        primaryButtonTitle?: string;
         primaryButtonVariant?: ButtonColorScheme;
         onPressPrimaryButton?: () => void;
         secondaryButtonTitle?: string;

@@ -94,24 +94,26 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
                                     icon={icon}
                                 />
                                 {appendix}
-                                <VStack spacing="medium">
-                                    <Button
-                                        size="large"
-                                        colorScheme={primaryButtonVariant}
-                                        onPress={handlePressPrimaryButton}
-                                    >
-                                        {primaryButtonTitle}
-                                    </Button>
-                                    {secondaryButtonTitle && (
+                                {primaryButtonTitle && (
+                                    <VStack spacing="medium">
                                         <Button
                                             size="large"
-                                            colorScheme="tertiaryElevation1"
-                                            onPress={handlePressSecondaryButton}
+                                            colorScheme={primaryButtonVariant}
+                                            onPress={handlePressPrimaryButton}
                                         >
-                                            {secondaryButtonTitle}
+                                            {primaryButtonTitle}
                                         </Button>
-                                    )}
-                                </VStack>
+                                        {secondaryButtonTitle && (
+                                            <Button
+                                                size="large"
+                                                colorScheme="tertiaryElevation1"
+                                                onPress={handlePressSecondaryButton}
+                                            >
+                                                {secondaryButtonTitle}
+                                            </Button>
+                                        )}
+                                    </VStack>
+                                )}
                             </VStack>
                         </Card>
                     </Animated.View>
