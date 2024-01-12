@@ -21,14 +21,13 @@ const Error = styled.div`
 // background-color is not even in components color palette
 const StyledButton = styled(Button)`
     padding: 10px;
-    margin: 0 16px;
     font-size: ${FONT_SIZE.NORMAL};
     background-color: ${({ theme }) => theme.BG_GREY};
     font-weight: ${FONT_WEIGHT.DEMI_BOLD};
     height: 42px;
 
     @media (min-width: ${SCREEN_SIZE.SM}) {
-        width: 210px;
+        width: 160px;
     }
 `;
 

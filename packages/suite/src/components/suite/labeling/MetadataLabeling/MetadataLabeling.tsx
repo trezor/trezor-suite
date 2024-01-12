@@ -54,7 +54,7 @@ const LabelButton = styled(Button)`
 
 const ActionButton = styled(Button)<{ isValueVisible?: boolean; isVisible?: boolean }>`
     margin-left: ${({ isValueVisible, isVisible, isLoading }) =>
-        (isValueVisible || !isVisible || isLoading) && '12px'};
+        isValueVisible || !isVisible || isLoading ? '12px' : '4px'};
     visibility: ${({ isVisible }) => (isVisible ? 'visible' : 'hidden')};
 
     /* hack to keep button in place to prevent vertical jumping (if used display: none) */
@@ -350,7 +350,7 @@ export const MetadataLabeling = ({
         return (
             <LabelContainer data-test={labelContainerDataTest}>
                 {defaultVisibleValue}
-                <ActionButton variant="tertiary" isDisabled isLoading>
+                <ActionButton variant="tertiary" isDisabled isLoading size="tiny">
                     <Translation id="TR_LOADING" />
                 </ActionButton>
             </LabelContainer>
