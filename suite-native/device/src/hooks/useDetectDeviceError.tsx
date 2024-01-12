@@ -11,6 +11,7 @@ import {
     selectIsDeviceInBootloader,
     selectIsUnacquiredDevice,
     selectIsSelectedDeviceImported,
+    selectHasDeviceFirmwareInstalled,
 } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { useTranslate } from '@suite-native/intl';
@@ -33,6 +34,7 @@ export const useDetectDeviceError = () => {
     const isSelectedDeviceImported = useSelector(selectIsSelectedDeviceImported);
     const isNoPhysicalDeviceConnected = useSelector(selectIsNoPhysicalDeviceConnected);
     const isDeviceInBootloader = useSelector(selectIsDeviceInBootloader);
+    const hasDeviceFirmwareInstalled = useSelector(selectHasDeviceFirmwareInstalled);
 
     const isFirmwareSupported = useSelector(selectIsFirmwareSupported);
 
@@ -127,7 +129,7 @@ export const useDetectDeviceError = () => {
     ]);
 
     useEffect(() => {
-        if (isDeviceInBootloader && !wasDeviceEjectedByUser) {
+        if (isDeviceInBootloader && hasDeviceFirmwareInstalled && !wasDeviceEjectedByUser) {
             showAlert({
                 title: translate('moduleDevice.bootloaderModal.title'),
                 description: translate('moduleDevice.bootloaderModal.description'),
@@ -145,7 +147,14 @@ export const useDetectDeviceError = () => {
                 },
             });
         }
-    }, [isDeviceInBootloader, wasDeviceEjectedByUser, showAlert, translate, handleDisconnect]);
+    }, [
+        isDeviceInBootloader,
+        hasDeviceFirmwareInstalled,
+        wasDeviceEjectedByUser,
+        showAlert,
+        translate,
+        handleDisconnect,
+    ]);
 
     useEffect(() => {
         // Hide the error alert on disconnect of the device

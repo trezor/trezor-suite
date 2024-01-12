@@ -723,3 +723,9 @@ export const selectDeviceLanguage = (state: DeviceRootState) => {
     const features = selectDeviceFeatures(state);
     return features?.language ?? null;
 };
+
+export const selectHasDeviceFirmwareInstalled = (state: DeviceRootState) => {
+    const device = selectDevice(state);
+
+    return device?.firmware !== 'none';
+};
