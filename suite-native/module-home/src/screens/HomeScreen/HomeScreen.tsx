@@ -22,14 +22,14 @@ export const HomeScreen = () => {
             refreshControl={refreshControl}
             customHorizontalPadding={0}
         >
-            <Box marginHorizontal="small">
-                {isPortfolioEmpty ? (
+            {isPortfolioEmpty ? (
+                <Box marginHorizontal="small">
                     <EmptyHomeRenderer />
-                ) : (
-                    <PortfolioContent ref={portfolioContentRef} />
-                )}
-                <BiometricsBottomSheet />
-            </Box>
+                </Box>
+            ) : (
+                <PortfolioContent ref={portfolioContentRef} />
+            )}
+            <BiometricsBottomSheet />
         </Screen>
     );
 };
