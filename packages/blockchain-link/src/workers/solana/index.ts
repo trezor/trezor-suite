@@ -113,6 +113,7 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
     const getTransactionPage = async (
         txIds: string[],
         tokenAccountsInfos: SolanaTokenAccountInfo[],
+        tokenDetailByMint: TokenDetailByMint,
     ) => {
         const transactionsPage = await fetchTransactionPage(api, txIds);
 
@@ -125,6 +126,7 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
                             tx,
                             payload.descriptor,
                             tokenAccountsInfos,
+                            tokenDetailByMint,
                         ),
                     ),
             )
@@ -166,18 +168,20 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
         tokenAccounts.value.length > 0 &&
         (details === 'tokens' || details === 'txs' || details === 'tokenBalances');
     let tokens: TokenInfo[] = [];
-    let tokenMetadata: TokenDetailByMint = {};
+    let tokenDetailByMint: TokenDetailByMint = {};
     if (shouldFetchTokens) {
-        tokenMetadata = await fetchMetaplexMetadata(
+        tokenDetailByMint = await fetchMetaplexMetadata(
             api,
             tokenAccountsInfos.map(a => a.mint).filter((mint): mint is string => !!mint),
         );
 
-        tokens = transformTokenInfo(tokenAccounts.value, tokenMetadata);
+        tokens = transformTokenInfo(tokenAccounts.value, tokenDetailByMint);
     }
 
     const transactionPage =
-        details === 'txs' ? await getTransactionPage(txIdPage, tokenAccountsInfos) : undefined;
+        details === 'txs'
+            ? await getTransactionPage(txIdPage, tokenAccountsInfos, tokenDetailByMint)
+            : undefined;
 
     const balance = await api.getBalance(publicKey);
 
@@ -343,7 +347,7 @@ const subscribeAccounts = async (
                 return;
             }
 
-            const tx = await solanaUtils.transformTransaction(lastTx, a.descriptor, []);
+            const tx = await solanaUtils.transformTransaction(lastTx, a.descriptor, [], {});
             post({
                 id: -1,
                 type: RESPONSES.NOTIFICATION,
