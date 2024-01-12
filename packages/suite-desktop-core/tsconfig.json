@@ -24,6 +24,7 @@
         { "path": "../node-utils" },
         { "path": "../request-manager" },
         { "path": "../suite-desktop-api" },
+        { "path": "../transport-bridge" },
         { "path": "../urls" },
         { "path": "../utils" },
         { "path": "../trezor-user-env-link" },
