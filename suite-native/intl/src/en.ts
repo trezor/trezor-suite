@@ -396,6 +396,7 @@ export const en = {
         emptyState: {
             title: 'No assets',
             subtitle: 'Connect your Trezor or sync coins to view and track assets.',
+            searchAgain: 'Search again',
         },
     },
     transactions: {
