@@ -3,15 +3,9 @@ import styled from 'styled-components';
 
 import { isTestnet } from '@suite-common/wallet-utils';
 import { spacingsPx, typography } from '@trezor/theme';
-import { CoinLogo } from '@trezor/components';
+import { CoinLogo, SkeletonRectangle, SkeletonStack } from '@trezor/components';
 
-import {
-    AccountLabel,
-    CoinBalance,
-    FiatValue,
-    SkeletonStack,
-    SkeletonRectangle,
-} from 'src/components/suite';
+import { AccountLabel, CoinBalance, FiatValue } from 'src/components/suite';
 import { useDispatch, useLoadingSkeleton } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
 import { goto } from 'src/actions/suite/routerActions';

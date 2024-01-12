@@ -1,11 +1,16 @@
-import { SkeletonCircle, SkeletonRectangle, SkeletonStack } from 'src/components/suite';
 import { useLoadingSkeleton } from 'src/hooks/suite';
 import { Left, Right } from './AccountItem';
 import { NavigationItemBase } from 'src/components/suite/Preloader/SuiteLayout/Sidebar/NavigationItem';
+import {
+    SkeletonCircle,
+    SkeletonStack,
+    SkeletonRectangle,
+    SkeletonElevation,
+} from '@trezor/components';
 
 interface AccountItemSkeletonProps {
     animate?: boolean;
-    elevation?: 0 | 1 | 2 | 3;
+    elevation?: SkeletonElevation;
 }
 
 export const AccountItemSkeleton = (props: AccountItemSkeletonProps) => {
