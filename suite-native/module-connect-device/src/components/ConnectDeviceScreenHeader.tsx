@@ -9,9 +9,13 @@ import {
     RootStackRoutes,
     StackToTabCompositeProps,
 } from '@suite-native/navigation';
-import { IconButton, ScreenHeaderWrapper } from '@suite-native/atoms';
+import { Box, IconButton, ScreenHeaderWrapper } from '@suite-native/atoms';
 
 import { ConnectingTrezorHelp } from './ConnectingTrezorHelp';
+
+type ConnectDeviceScreenHeaderProps = {
+    shouldDisplayCancelButton?: boolean;
+};
 
 type NavigationProp = StackToTabCompositeProps<
     ConnectDeviceStackParamList,
@@ -19,7 +23,9 @@ type NavigationProp = StackToTabCompositeProps<
     RootStackParamList
 >;
 
-export const ConnectDeviceScreenHeader = () => {
+export const ConnectDeviceScreenHeader = ({
+    shouldDisplayCancelButton = true,
+}: ConnectDeviceScreenHeaderProps) => {
     const navigation = useNavigation<NavigationProp>();
 
     const handleCancel = () => {
@@ -33,14 +39,18 @@ export const ConnectDeviceScreenHeader = () => {
 
     return (
         <ScreenHeaderWrapper>
-            <IconButton
-                iconName="close"
-                size="medium"
-                colorScheme="tertiaryElevation1"
-                accessibilityRole="button"
-                accessibilityLabel="close"
-                onPress={handleCancel}
-            />
+            <Box>
+                {shouldDisplayCancelButton && (
+                    <IconButton
+                        iconName="close"
+                        size="medium"
+                        colorScheme="tertiaryElevation1"
+                        accessibilityRole="button"
+                        accessibilityLabel="close"
+                        onPress={handleCancel}
+                    />
+                )}
+            </Box>
             <ConnectingTrezorHelp />
         </ScreenHeaderWrapper>
     );

@@ -20,7 +20,7 @@ export const ConnectDeviceSreenView = ({ children, style }: ConnectDeviceSreenVi
 
     return (
         <Screen
-            screenHeader={<ConnectDeviceScreenHeader />}
+            screenHeader={<ConnectDeviceScreenHeader shouldDisplayCancelButton={false} />}
             customHorizontalPadding={0}
             customVerticalPadding={0}
             hasBottomInset={false}
