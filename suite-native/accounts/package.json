@@ -26,6 +26,7 @@
         "@suite-native/fiat-rates": "workspace:*",
         "@suite-native/formatters": "workspace:*",
         "@suite-native/forms": "workspace:*",
+        "@suite-native/intl": "workspace:*",
         "@suite-native/module-settings": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@trezor/styles": "workspace:*",

@@ -26,7 +26,8 @@ export const AccountsList = ({ onSelectAccount, filterValue = '' }: AccountsList
         ) => selectFilteredAccountsGroupedByNetworkAccountType(state, filterValue),
     );
 
-    if (D.isEmpty(groupedAccounts)) return <AccountListPlaceholder />;
+    if (D.isEmpty(groupedAccounts))
+        return <AccountListPlaceholder isFilterEmpty={!filterValue?.length} />;
 
     return (
         <GroupedAccountsList groupedAccounts={groupedAccounts} onSelectAccount={onSelectAccount} />

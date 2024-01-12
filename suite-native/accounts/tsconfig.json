@@ -29,6 +29,7 @@
         { "path": "../fiat-rates" },
         { "path": "../formatters" },
         { "path": "../forms" },
+        { "path": "../intl" },
         { "path": "../module-settings" },
         { "path": "../navigation" },
         { "path": "../../packages/styles" },
