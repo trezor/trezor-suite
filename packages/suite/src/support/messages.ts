@@ -6155,7 +6155,7 @@ export default defineMessages({
     TR_GRAPH_MISSING_DATA: {
         id: 'TR_GRAPH_MISSING_DATA',
         defaultMessage:
-            'XRP and ERC20 token transactions are included in the balance, but not currently supported in the graph view.',
+            'XRP, SOL and any token transactions are included in the balance, but not currently supported in the graph view.',
     },
     METADATA_PROVIDER_NOT_FOUND_ERROR: {
         id: 'METADATA_PROVIDER_NOT_FOUND_ERROR',
