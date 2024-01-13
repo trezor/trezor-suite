@@ -12,7 +12,7 @@ import { useOpenLink } from '@suite-native/link';
 import { PIN_FORM_MIN_LENGTH, PIN_HELP_URL } from '../constants';
 
 export const PinFormControlButtons = () => {
-    const [isSubmitted, setIsSubmitted] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const dispatch = useDispatch();
     const openLink = useOpenLink();
@@ -22,7 +22,7 @@ export const PinFormControlButtons = () => {
     const device = useSelector(selectDevice) ?? null;
 
     const handleInvalidPin = useCallback(() => {
-        setIsSubmitted(false);
+        setIsSubmitting(false);
         showAlert({
             title: translate('device.pinScreen.wrongPinAlert.title'),
             description: translate('device.pinScreen.wrongPinAlert.description'),
@@ -45,7 +45,7 @@ export const PinFormControlButtons = () => {
     }, [handleInvalidPin]);
 
     const onSubmit = handleSubmit(values => {
-        setIsSubmitted(true);
+        setIsSubmitting(true);
         dispatch(removeButtonRequests({ device }));
         TrezorConnect.uiResponse({ type: UI.RECEIVE_PIN, payload: values.pin });
     });
@@ -67,8 +67,11 @@ export const PinFormControlButtons = () => {
                 />
             )}
             <Box flex={1}>
-                <Button isDisabled={pinLength < PIN_FORM_MIN_LENGTH} onPress={onSubmit}>
-                    {isSubmitted
+                <Button
+                    isDisabled={pinLength < PIN_FORM_MIN_LENGTH || isSubmitting}
+                    onPress={onSubmit}
+                >
+                    {isSubmitting
                         ? translate('device.pinScreen.form.submitting')
                         : translate('device.pinScreen.form.enterPin')}
                 </Button>

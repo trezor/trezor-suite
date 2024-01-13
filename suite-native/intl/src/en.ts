@@ -417,7 +417,7 @@ export const en = {
                 digits: 'digits',
                 keypadInfo: 'Follow the keypad layout on your Trezor',
                 enterPin: 'Enter pin',
-                submitting: 'Veryfying...',
+                submitting: 'Verifying...',
             },
             wrongPinAlert: {
                 title: 'Incorrect PIN',
