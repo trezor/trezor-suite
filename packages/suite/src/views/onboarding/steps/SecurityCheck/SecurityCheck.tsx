@@ -168,8 +168,10 @@ export const SecurityCheck = () => {
     const toggleView = () => setIsFailed(current => !current);
     const goToDeviceAuthentication = () => setIsDeviceAuthenticityCheck(true);
 
+    const isAuthenticityCheckSupported =
+        device?.features?.internal_model === DeviceModelInternal.T2B1;
     const isDeviceAuthenticationNeeded =
-        device?.features?.internal_model === DeviceModelInternal.T2B1 &&
+        isAuthenticityCheckSupported &&
         initialRun &&
         !isDeviceAuthenticityCheckDisabled &&
         (!isUnlockedBootloaderAllowed || device.features?.bootloader_locked !== false);
@@ -193,6 +195,15 @@ export const SecurityCheck = () => {
             });
         }
     }, [initialized, isRecoveryInProgress, updateAnalytics]);
+
+    // Edge case:
+    // Devices A and B are connected, only device A supports authenticity check.
+    // Device A disconnects while on the first screen of the check.
+    useEffect(() => {
+        if (!isAuthenticityCheckSupported) {
+            setIsDeviceAuthenticityCheck(false);
+        }
+    }, [isAuthenticityCheckSupported]);
 
     if (isDeviceAuthenticityCheck) {
         return <DeviceAuthenticity />;
