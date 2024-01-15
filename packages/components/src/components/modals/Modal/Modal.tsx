@@ -9,6 +9,7 @@ import { Stepper } from '../../loaders/Stepper/Stepper';
 import { IconButton } from '../../buttons/IconButton/IconButton';
 import { H3 } from '../../typography/Heading/Heading';
 import { ButtonSize } from '../../buttons/buttonStyleUtils';
+import { ElevationContext } from '../../ElevationContext/ElevationContext';
 
 const CLOSE_ICON_SIZE = spacings.xxl;
 const CLOSE_ICON_MARGIN = 16;
@@ -29,6 +30,7 @@ const Container = styled.div`
     min-width: 305px;
     max-height: 90vh;
     width: 680px;
+    /* Model has intentionally always Elevation = 1 (it resets the elevation) */
     background: ${({ theme }) => theme.backgroundSurfaceElevation1};
     box-shadow: ${({ theme }) => theme.boxShadowElevation3};
 `;
@@ -231,8 +233,9 @@ const Modal = ({
     const areStepsShown =
         totalProgressBarSteps !== undefined && currentProgressBarStep !== undefined;
 
+    // Model has intentionally always Elevation = 1 (it resets the elevation)
     return (
-        <>
+        <ElevationContext baseElevation={1}>
             {modalPrompt && <ModalPromptContainer>{modalPrompt}</ModalPromptContainer>}
 
             <Container
@@ -316,7 +319,7 @@ const Modal = ({
                     </BottomBar>
                 )}
             </Container>
-        </>
+        </ElevationContext>
     );
 };
 

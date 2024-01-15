@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { useState, Ref, ReactNode, TextareaHTMLAttributes } from 'react';
-import { Color, spacingsPx } from '@trezor/theme';
+import { spacingsPx } from '@trezor/theme';
 
 import { InputState } from '../inputTypes';
 import {
@@ -10,11 +10,12 @@ import {
     getInputStateBgColor,
     INPUT_PADDING_TOP,
     LABEL_TRANSFORM,
-    InputElevation,
 } from '../InputStyles';
 import { BOTTOM_TEXT_MIN_HEIGHT, BottomText } from '../BottomText';
 import { TopAddons } from '../TopAddons';
 import { CharacterCount } from './CharacterCount';
+import { useElevation } from '../../ElevationContext/ElevationContext';
+import { Elevation } from '@trezor/theme/src/elevation';
 
 const Wrapper = styled.div<{ hasBottomPadding: boolean }>`
     width: 100%;
@@ -39,13 +40,20 @@ const TextareaWrapper = styled(InputWrapper)`
         !disabled &&
         `
         :read-only:not(:disabled) {
-            background-color: ${getInputStateBgColor(inputState, theme, elevation)};
+            background-color: ${getInputStateBgColor(
+                inputState,
+                theme,
+                elevation,
+                'TextareaWrapper',
+            )};
             color: ${theme.textDefault};
         }
     `}
 `;
 
-const StyledTextarea = styled.textarea<Pick<TextareaProps, 'inputState' | 'elevation'>>`
+const StyledTextarea = styled.textarea<
+    Pick<TextareaProps, 'inputState'> & { elevation: Elevation }
+>`
     ${baseInputStyle}
     padding: 0 ${spacingsPx.md} 0;
     border: none;
@@ -80,7 +88,6 @@ export interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElemen
     value?: string;
     characterCount?: boolean | { current: number; max: number };
     'data-test'?: string;
-    elevation?: InputElevation;
 }
 
 export const Textarea = ({
@@ -99,10 +106,10 @@ export const Textarea = ({
     characterCount,
     hasBottomPadding = true,
     'data-test': dataTest,
-    elevation = 0,
     ...rest
 }: TextareaProps) => {
     const [isHovered, setIsHovered] = useState(false);
+    const { elevation } = useElevation();
 
     return (
         <Wrapper
