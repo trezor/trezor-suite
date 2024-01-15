@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import TrezorConnect from '@trezor/connect';
 import crypto from 'crypto';
@@ -69,7 +69,7 @@ const usePasswords = () => {
         useSelector(state => selectPasswordManagerState(state, fileName)) ||
         DEFAULT_PASSWORD_MANAGER_STATE;
 
-    const connect = useCallback(() => {
+    const connect = () => {
         setFileName('');
         setProviderConnecting(true);
         TrezorConnect.cipherKeyValue({
@@ -120,9 +120,9 @@ const usePasswords = () => {
             .finally(() => {
                 setProviderConnecting(false);
             });
-    }, [selectedProvider, device, dispatch]);
+    };
 
-    const disconnect = useCallback(() => {
+    const disconnect = () => {
         if (!selectedProvider) return;
         dispatch(
             metadataActions.disconnectProvider({
@@ -131,7 +131,7 @@ const usePasswords = () => {
                 removeMetadata: false,
             }),
         );
-    }, [selectedProvider, dispatch]);
+    };
 
     const entriesByTag = Object.values(entries).filter(value =>
         value.tags.some(tag => selectedTags[tag]),
