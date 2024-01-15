@@ -16,22 +16,16 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import { selectOnboardingTutorialStatus } from 'src/reducers/onboarding/onboardingReducer';
 import messages from 'src/support/messages';
+import { spacingsPx } from '@trezor/theme';
 
 const StyledOnboardingStepBox = styled(OnboardingStepBox)`
     padding: 40px 20px 0;
 `;
 
-const ActionButton = styled.p`
-    margin: 10px auto 0;
-
-    span {
-        text-decoration: underline;
-        cursor: pointer;
-
-        :hover {
-            text-decoration: none;
-        }
-    }
+const ButtonContainer = styled.div`
+    display: flex;
+    justify-content: center;
+    margin-top: ${spacingsPx.sm};
 `;
 
 export const DeviceTutorial = () => {
@@ -70,28 +64,35 @@ export const DeviceTutorial = () => {
         }
     };
     const getDescription = () => {
+        const handleSkipClick = () =>
+            TrezorConnect.cancel(intl.formatMessage(messages.TR_CANCELLED));
+
         switch (status) {
             case 'active':
                 return (
                     <>
                         <Translation id="TR_TREZOR_DEVICE_TUTORIAL_DESCRIPTION" />
-                        {isActionAbortable && (
-                            <ActionButton
-                                onClick={() =>
-                                    TrezorConnect.cancel(intl.formatMessage(messages.TR_CANCELLED))
-                                }
-                            >
-                                <Translation id="TR_SKIP" />
-                            </ActionButton>
-                        )}
+                        <ButtonContainer>
+                            {isActionAbortable && (
+                                <Button variant="tertiary" size="tiny" onClick={handleSkipClick}>
+                                    <Translation id="TR_SKIP" />
+                                </Button>
+                            )}
+                        </ButtonContainer>
                     </>
                 );
             case 'completed':
             case 'cancelled':
                 return (
-                    <ActionButton onClick={() => dispatch(beginOnboardingTutorial())}>
-                        <Translation id="TR_RESTART_TREZOR_DEVICE_TUTORIAL" />
-                    </ActionButton>
+                    <ButtonContainer>
+                        <Button
+                            variant="tertiary"
+                            size="tiny"
+                            onClick={() => dispatch(beginOnboardingTutorial())}
+                        >
+                            <Translation id="TR_RESTART_TREZOR_DEVICE_TUTORIAL" />
+                        </Button>
+                    </ButtonContainer>
                 );
             // no default
         }
