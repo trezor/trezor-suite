@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { useState, Ref, ReactNode, TextareaHTMLAttributes } from 'react';
-import { spacingsPx } from '@trezor/theme';
+import { Color, spacingsPx } from '@trezor/theme';
 
 import { InputState } from '../inputTypes';
 import {
@@ -10,6 +10,7 @@ import {
     getInputStateBgColor,
     INPUT_PADDING_TOP,
     LABEL_TRANSFORM,
+    InputElevation,
 } from '../InputStyles';
 import { BOTTOM_TEXT_MIN_HEIGHT, BottomText } from '../BottomText';
 import { TopAddons } from '../TopAddons';
@@ -34,17 +35,17 @@ const TextareaWrapper = styled(InputWrapper)`
     }
 
     /* overwrites :read-only:not(:disabled) since it's always true for div */
-    ${({ disabled, theme, inputState }) =>
+    ${({ disabled, theme, inputState, elevation }) =>
         !disabled &&
         `
         :read-only:not(:disabled) {
-            background-color: ${getInputStateBgColor(inputState, theme)};
+            background-color: ${getInputStateBgColor(inputState, theme, elevation)};
             color: ${theme.textDefault};
         }
     `}
 `;
 
-const StyledTextarea = styled.textarea<Pick<TextareaProps, 'inputState'>>`
+const StyledTextarea = styled.textarea<Pick<TextareaProps, 'inputState' | 'elevation'>>`
     ${baseInputStyle}
     padding: 0 ${spacingsPx.md} 0;
     border: none;
@@ -79,6 +80,7 @@ export interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElemen
     value?: string;
     characterCount?: boolean | { current: number; max: number };
     'data-test'?: string;
+    elevation?: InputElevation;
 }
 
 export const Textarea = ({
@@ -97,6 +99,7 @@ export const Textarea = ({
     characterCount,
     hasBottomPadding = true,
     'data-test': dataTest,
+    elevation = 0,
     ...rest
 }: TextareaProps) => {
     const [isHovered, setIsHovered] = useState(false);
@@ -111,8 +114,9 @@ export const Textarea = ({
         >
             <TopAddons isHovered={isHovered} hoverAddon={labelHoverAddon} addonRight={labelRight} />
 
-            <TextareaWrapper inputState={inputState} disabled={isDisabled}>
+            <TextareaWrapper inputState={inputState} disabled={isDisabled} elevation={elevation}>
                 <StyledTextarea
+                    elevation={elevation}
                     spellCheck={false}
                     autoCorrect="off"
                     autoCapitalize="off"
