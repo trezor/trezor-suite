@@ -1,11 +1,10 @@
 import { Network } from '@suite-common/wallet-config';
 import React from 'react';
 import styled from 'styled-components';
-import { AssetShareIndicator, Icon } from '@trezor/components';
+import { AssetShareIndicator, Icon, SkeletonCircle, SkeletonRectangle } from '@trezor/components';
 import { useSelector } from 'react-redux';
 
 import { selectAccountsByNetworkSymbol } from '@suite-common/wallet-core';
-import { SkeletonCircle, SkeletonRectangle } from 'src/components/suite';
 import { spacingsPx, typography } from '@trezor/theme';
 import {
     AssetFiatBalance,

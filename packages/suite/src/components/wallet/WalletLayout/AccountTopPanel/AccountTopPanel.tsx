@@ -2,7 +2,14 @@ import styled from 'styled-components';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { isTestnet } from '@suite-common/wallet-utils';
-import { CoinLogo, H2, H3 } from '@trezor/components';
+import {
+    CoinLogo,
+    H2,
+    H3,
+    SkeletonCircle,
+    SkeletonRectangle,
+    SkeletonStack,
+} from '@trezor/components';
 
 import { Account } from 'src/types/wallet';
 import {
@@ -13,9 +20,6 @@ import {
     FormattedCryptoAmount,
     MetadataLabeling,
     AmountUnitSwitchWrapper,
-    SkeletonCircle,
-    SkeletonRectangle,
-    SkeletonStack,
     AccountLabel,
 } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
