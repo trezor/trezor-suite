@@ -301,7 +301,6 @@ const unsubscribeBlock = ({ state }: Context) => {
     state.removeSubscription('block');
 };
 
-// @ts-expect-error
 const subscribeAccounts = async (
     { connect, state, post }: Context,
     accounts: SubscriptionAccountInfo[],
@@ -311,7 +310,7 @@ const subscribeAccounts = async (
     const newAccounts = accounts.filter(
         account =>
             !subscribedAccounts.some(
-                subscribeAccount => account.descriptor === subscribeAccount.descriptor,
+                subscribedAccount => account.descriptor === subscribedAccount.descriptor,
             ),
     );
     newAccounts.forEach(a => {
@@ -355,7 +354,6 @@ const subscribeAccounts = async (
     return { subscribed: newAccounts.length > 0 };
 };
 
-// @ts-expect-error
 const unsubscribeAccounts = async (
     { state, connect }: Context,
     accounts: SubscriptionAccountInfo[] | undefined = [],
@@ -376,7 +374,6 @@ const subscribe = async (request: Request<MessageTypes.Subscribe>) => {
             response = await subscribeBlock(request);
             break;
         case 'accounts':
-            // accounts subscription is currently disabled due to it possibly causing crashes
             // TODO: it also need to be updated to take tokenAccounts into account
             response = await subscribeAccounts(request, request.payload.accounts);
             break;
@@ -395,9 +392,8 @@ const unsubscribe = (request: Request<MessageTypes.Unsubscribe>) => {
             unsubscribeBlock(request);
             break;
         case 'accounts': {
-            // accounts subscription is currently disabled due to it possibly causing crashes
             // TODO: it also need to be updated to take tokenAccounts into account
-            // unsubscribeAccounts(request, request.payload.accounts);
+            unsubscribeAccounts(request, request.payload.accounts);
             break;
         }
         default:
@@ -434,8 +430,7 @@ class SolanaWorker extends BaseWorker<SolanaAPI> {
     }
 
     tryConnect(url: string): Promise<SolanaAPI> {
-        // websocket connection is currently disabled due to it possibly causing crashes
-        const api = new Connection(url /* , { wsEndpoint: url.replace('https', 'wss') } */);
+        const api = new Connection(url, { wsEndpoint: url.replace('https', 'wss') });
         this.post({ id: -1, type: RESPONSES.CONNECTED });
         return Promise.resolve(api);
     }
@@ -464,11 +459,11 @@ class SolanaWorker extends BaseWorker<SolanaAPI> {
             return;
         }
 
-        // accounts subscription is currently disabled due to it possibly causing crashes
-        // TODO: it also need to be updated to take tokenAccounts into account
-        // this.state.accounts.forEach(
-        //     a => a.subscriptionId && this.api?.removeAccountChangeListener(a.subscriptionId),
-        // );
+        this.state
+            .getAccounts()
+            .forEach(
+                a => a.subscriptionId && this.api?.removeAccountChangeListener(a.subscriptionId),
+            );
 
         if (this.state.getSubscription('block')) {
             const interval = this.state.getSubscription('block') as NodeJS.Timer;
