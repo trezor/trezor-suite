@@ -18,6 +18,7 @@ export { useFormattersConfig } from './useFormattersConfig';
 export { useAnonymityStatus } from './useAnonymityStatus';
 export { useCountdownTimer } from './useCountdownTimer';
 export { useDispatch } from './useDispatch';
+export { usePasswords } from './usePasswords';
 
 // replaced in suite-native
 export { useLocales } from 'src/hooks/suite/useLocales';
