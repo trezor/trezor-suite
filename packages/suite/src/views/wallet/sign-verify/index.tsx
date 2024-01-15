@@ -206,6 +206,7 @@ const SignVerify = () => {
                 <Form onSubmit={formSubmit(onSubmit)}>
                     <Row>
                         <Textarea
+                            elevation={3}
                             label={<Translation id="TR_MESSAGE" />}
                             labelRight={
                                 <SwitchWrapper>
