@@ -6,10 +6,10 @@ export const colorVariants = {
     standard: {
         transparent: '#00000000',
         backgroundSurfaceElevationNegative: '#eeeeeeff',
-        backgroundSurfaceElevation0: '#f6f6f6ff',
-        backgroundSurfaceElevation1: '#ffffffff',
-        backgroundSurfaceElevation2: '#f6f6f6ff',
-        backgroundSurfaceElevation3: '#ffffffff',
+        backgroundSurfaceElevation0: '#f6f6f6ff', // Never use directly, use ElevationContext.
+        backgroundSurfaceElevation1: '#ffffffff', // Never use directly, use ElevationContext.
+        backgroundSurfaceElevation2: '#f6f6f6ff', // Never use directly, use ElevationContext.
+        backgroundSurfaceElevation3: '#ffffffff', // Never use directly, use ElevationContext.
         backgroundPrimaryDefault: '#0f6148ff',
         backgroundPrimaryPressed: '#0a4231ff',
         backgroundPrimarySubtleOnElevation0: '#d6efe8ff',
@@ -73,10 +73,10 @@ export const colorVariants = {
     dark: {
         transparent: '#00000000',
         backgroundSurfaceElevationNegative: '#000000ff',
-        backgroundSurfaceElevation0: '#0a0a0aff',
-        backgroundSurfaceElevation1: '#161716ff',
-        backgroundSurfaceElevation2: '#1c1e1cff',
-        backgroundSurfaceElevation3: '#242524ff',
+        backgroundSurfaceElevation0: '#0a0a0aff', // Never use directly, use ElevationContext.
+        backgroundSurfaceElevation1: '#161716ff', // Never use directly, use ElevationContext.
+        backgroundSurfaceElevation2: '#1c1e1cff', // Never use directly, use ElevationContext.
+        backgroundSurfaceElevation3: '#242524ff', // Never use directly, use ElevationContext.
         backgroundPrimaryDefault: '#61dbb7ff',
         backgroundPrimaryPressed: '#a7f1dbff',
         backgroundPrimarySubtleOnElevation0: '#0d211bff',
