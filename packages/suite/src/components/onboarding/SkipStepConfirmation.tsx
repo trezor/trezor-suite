@@ -2,16 +2,16 @@ import styled from 'styled-components';
 
 import * as STEP from 'src/constants/onboarding/steps';
 import { AnyStepId } from 'src/types/onboarding';
-import { Button, variables } from '@trezor/components';
+import { Button } from '@trezor/components';
 import { Translation, Modal } from 'src/components/suite';
 import { useOnboarding } from 'src/hooks/suite';
+import { typography } from '@trezor/theme';
 
 const Wrapper = styled.div`
     display: flex;
     width: 100%;
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    color: ${({ theme }) => theme.textDefault};
+    ${typography.body};
     padding: 16px 0;
 `;
 
@@ -53,15 +53,15 @@ export const SkipStepConfirmation = ({ onCancel }: SkipStepConfirmationProps) =>
             onCancel={onCancel}
             bottomBarComponents={
                 <>
+                    <Button variant="primary" onClick={onCancel}>
+                        <Translation id="TR_DONT_SKIP" />
+                    </Button>
                     <Button
                         variant="destructive"
                         data-test="@onboarding/skip-button-confirm"
                         onClick={() => goToNextStep(nextStep)}
                     >
                         {text}
-                    </Button>
-                    <Button variant="secondary" onClick={onCancel}>
-                        <Translation id="TR_DONT_SKIP" />
                     </Button>
                 </>
             }

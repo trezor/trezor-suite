@@ -1,27 +1,27 @@
 import { ReactNode, Fragment } from 'react';
 import styled, { css, useTheme } from 'styled-components';
 import { Icon, variables } from '@trezor/components';
+import { spacingsPx, typography } from '@trezor/theme';
 
 const ProgressBarWrapper = styled.div`
     display: flex;
-    padding: 20px 0;
+    padding: ${spacingsPx.lg} 0;
     width: 100%;
 
     /* prevents jumping in completed state with check mark icon shown */
     height: 64px;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
 `;
 
 const StepWrapper = styled.div<{ active: boolean }>`
     display: flex;
     flex-direction: column;
-    padding: 0 20px;
+    padding: 0 ${spacingsPx.lg};
     align-items: center;
-    align-self: center;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    align-self: flex-start;
+    color: ${({ theme }) => theme.textSubdued};
+    ${typography.highlight};
 
     @media all and (max-width: ${variables.SCREEN_SIZE.LG}) {
         padding: 0;
@@ -30,7 +30,7 @@ const StepWrapper = styled.div<{ active: boolean }>`
     ${({ active, theme }) =>
         active &&
         css`
-            color: ${theme.TYPE_GREEN};
+            color: ${theme.textPrimaryDefault};
         `}
 `;
 
@@ -38,7 +38,7 @@ const IconWrapper = styled.div<{ stepCompleted?: boolean; active?: boolean }>`
     display: flex;
     width: 32px;
     height: 32px;
-    background: ${({ theme }) => theme.BG_GREY};
+    background: ${({ theme }) => theme.backgroundNeutralSubtleOnElevation1};
     align-items: center;
     justify-content: center;
     border-radius: 50%;
@@ -47,15 +47,15 @@ const IconWrapper = styled.div<{ stepCompleted?: boolean; active?: boolean }>`
     ${props =>
         props.stepCompleted &&
         css`
-            background: ${({ theme }) => theme.BG_LIGHT_GREY};
+            background: transparent;
         `}
 
     ${({ active, theme }) =>
         active &&
         css`
-            background: ${theme.BG_WHITE};
-            box-shadow: 0 2px 5px 0 ${theme.BOX_SHADOW_BLACK_20};
-            color: ${theme.TYPE_GREEN};
+            background: ${theme.backgroundSurfaceElevation1};
+            box-shadow: ${({ theme }) => theme.boxShadowElevation1};
+            color: ${theme.textPrimaryDefault};
         `}
 `;
 
@@ -64,8 +64,7 @@ const Label = styled.div`
     margin: 10px 0 0;
     display: block;
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    font-size: ${variables.FONT_SIZE.TINY};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    ${typography.label}
 
     @media (max-width: ${variables.SCREEN_SIZE.SM}) {
         display: none;
@@ -74,15 +73,15 @@ const Label = styled.div`
 
 const Divider = styled.div`
     flex-grow: 1;
-    border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
-    margin: 20px;
+    border-bottom: 1px solid ${({ theme }) => theme.borderOnElevation0};
+    margin: ${spacingsPx.md} ${spacingsPx.lg};
 
     @media (max-width: ${variables.SCREEN_SIZE.XL}) {
-        margin: 15px;
+        margin: ${spacingsPx.md};
     }
 
     @media (max-width: ${variables.SCREEN_SIZE.SM}) {
-        margin: 10px;
+        margin: ${spacingsPx.md} ${spacingsPx.sm};
     }
 `;
 
