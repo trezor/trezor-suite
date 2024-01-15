@@ -1,3 +1,5 @@
+import type { RequiredKey } from '@trezor/type-utils';
+
 import type {
     AccountBalanceHistoryParams,
     GetCurrentFiatRatesParams,
@@ -22,7 +24,6 @@ import type {
 } from './blockbook-api';
 
 type OptionalKey<M, K extends keyof M> = Omit<M, K> & Partial<Pick<M, K>>;
-type RequiredKey<M, K extends keyof M> = Omit<M, K> & Required<Pick<M, K>>;
 
 export type AccountUtxo = RequiredKey<BlockbookUtxo, 'address' | 'height' | 'value' | 'path'>[];
 
