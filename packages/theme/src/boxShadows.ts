@@ -1,3 +1,4 @@
+import { Elevation } from './elevation';
 import { CSSColor } from './types';
 
 export const boxShadows = {
@@ -16,11 +17,10 @@ export const boxShadows = {
 export type BoxShadow = keyof typeof boxShadows.standard;
 export type BoxShadows = Record<BoxShadow, string>;
 
-export type BoxShadowElevation = 0 | 1 | 3;
-
-export const mapElevationToBoxShadow: Record<BoxShadowElevation, BoxShadow | undefined> = {
+export const mapElevationToBoxShadow: Record<Elevation, BoxShadow | undefined> = {
     '0': undefined,
     '1': 'boxShadowElevation1',
+    '2': 'boxShadowElevation1', // Todo: ...
     '3': 'boxShadowElevation3',
 };
 
