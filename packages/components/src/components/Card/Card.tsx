@@ -1,8 +1,8 @@
 import { forwardRef, ReactNode } from 'react';
 import styled from 'styled-components';
-import { borders, spacings } from '@trezor/theme';
+import { borders, BoxShadowElevation, mapElevationToBoxShadow, spacings } from '@trezor/theme';
 
-const Wrapper = styled.div<{ $elevation: Elevation; $paddingSize: number }>`
+const Wrapper = styled.div<{ $elevation: BoxShadowElevation; $paddingSize: number }>`
     display: flex;
     flex-direction: column;
     padding: ${({ $paddingSize }) => $paddingSize}px;
@@ -27,11 +27,10 @@ const getPaddingSize = (paddingType?: PaddingType) => {
     }
 };
 
-type Elevation = 0 | 1 | 2 | 3;
 type PaddingType = 'none' | 'normal' | 'large';
 
 export interface CardProps {
-    elevation?: Elevation;
+    elevation?: BoxShadowElevation;
     paddingType?: PaddingType;
     onMouseEnter?: () => void;
     onMouseLeave?: () => void;
