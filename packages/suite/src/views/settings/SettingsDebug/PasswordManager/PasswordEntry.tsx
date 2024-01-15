@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import TrezorConnect from '@trezor/connect';
 import { Button } from '@trezor/components';
@@ -49,7 +49,7 @@ export const PasswordEntry = ({
     const [decodedPassword, setDecodedPassword] = useState('');
     const [inProgress, setInProgress] = useState(false);
 
-    const decode = useCallback(() => {
+    const decode = () => {
         if (inProgress) return;
         setInProgress(true);
         TrezorConnect.cipherKeyValue({
@@ -75,7 +75,7 @@ export const PasswordEntry = ({
             .finally(() => {
                 setInProgress(false);
             });
-    }, [username, title, inProgress, devicePath, nonce, password]);
+    };
 
     return (
         <>
