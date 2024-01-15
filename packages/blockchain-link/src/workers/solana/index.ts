@@ -265,12 +265,12 @@ const estimateFee = async (request: Request<MessageTypes.EstimateFee>) => {
 
 const BLOCK_SUBSCRIBE_INTERVAL_MS = 10000;
 const subscribeBlock = async ({ state, connect, post }: Context) => {
-    if (state.getSubscription('block')) return;
+    if (state.getSubscription('block')) return { subscribed: true };
     const api = await connect();
 
     // the solana RPC api has subscribe method, see here: https://www.quicknode.com/docs/solana/rootSubscribe
     // but solana block height is updated so often that it slows down the whole application and overloads the the api
-    // so we instead use setInterval to check for new blocks every 10 seconds
+    // so we instead use setInterval to check for new blocks every `BLOCK_SUBSCRIBE_INTERVAL_MS`
     const interval = setInterval(async () => {
         const { blockhash: blockHash, lastValidBlockHeight: blockHeight } =
             await api.getLatestBlockhash('finalized');
@@ -290,6 +290,8 @@ const subscribeBlock = async ({ state, connect, post }: Context) => {
     }, BLOCK_SUBSCRIBE_INTERVAL_MS);
     // we save the interval in the state so we can clear it later
     state.addSubscription('block', interval);
+
+    return { subscribed: true };
 };
 
 const unsubscribeBlock = ({ state }: Context) => {
@@ -350,7 +352,7 @@ const subscribeAccounts = async (
         });
         state.addAccounts([{ ...a, subscriptionId }]);
     });
-    return { subscribed: true };
+    return { subscribed: newAccounts.length > 0 };
 };
 
 // @ts-expect-error
@@ -367,22 +369,23 @@ const unsubscribeAccounts = async (
     });
 };
 
-const subscribe = (request: Request<MessageTypes.Subscribe>) => {
+const subscribe = async (request: Request<MessageTypes.Subscribe>) => {
+    let response: { subscribed: boolean };
     switch (request.payload.type) {
         case 'block':
-            subscribeBlock(request);
+            response = await subscribeBlock(request);
             break;
         case 'accounts':
             // accounts subscription is currently disabled due to it possibly causing crashes
             // TODO: it also need to be updated to take tokenAccounts into account
-            // subscribeAccounts(request, request.payload.accounts);
+            response = await subscribeAccounts(request, request.payload.accounts);
             break;
         default:
             throw new CustomError('worker_unknown_request', `+${request.type}`);
     }
     return {
         type: RESPONSES.SUBSCRIBE,
-        payload: { subscribed: true },
+        payload: response,
     } as const;
 };
 
@@ -402,7 +405,7 @@ const unsubscribe = (request: Request<MessageTypes.Unsubscribe>) => {
     }
     return {
         type: RESPONSES.UNSUBSCRIBE,
-        payload: { subscribed: false },
+        payload: { subscribed: request.state.getAccounts().length > 0 },
     } as const;
 };
 
