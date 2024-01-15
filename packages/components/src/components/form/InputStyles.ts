@@ -1,18 +1,10 @@
 import styled, { css, DefaultTheme } from 'styled-components';
-import { borders, Color, spacingsPx, typography } from '@trezor/theme';
+import { borders, spacingsPx, typography } from '@trezor/theme';
 
 import { FONT_WEIGHT, FONT_SIZE } from '../../config/variables';
 import { InputState, InputSize } from './inputTypes';
 import { motionEasingStrings } from '../../config/motion';
-
-export type InputElevation = 0 | 1 | 2 | 3;
-
-export const mapElevationToInputBackground: Record<InputElevation, Color> = {
-    0: 'backgroundSurfaceElevation0',
-    1: 'backgroundSurfaceElevation1',
-    2: 'backgroundSurfaceElevation2',
-    3: 'backgroundSurfaceElevation3',
-};
+import { Elevation, mapElevationToBackground } from '@trezor/theme/src/elevation';
 
 export const INPUT_HEIGHTS: Record<InputSize, number> = {
     small: 36,
@@ -48,7 +40,7 @@ export const getInputStateBorderColor = (state: InputState | undefined, theme: D
 export const getInputStateBgColor = (
     state: InputState | undefined,
     theme: DefaultTheme,
-    elevation?: InputElevation,
+    elevation: Elevation,
 ) => {
     switch (state) {
         case 'warning':
@@ -56,7 +48,7 @@ export const getInputStateBgColor = (
         case 'error':
             return theme.backgroundAlertRedSubtleOnElevation1;
         default:
-            return theme[mapElevationToInputBackground[elevation !== undefined ? elevation : 0]];
+            return theme[mapElevationToBackground[elevation]];
     }
 };
 
@@ -66,14 +58,14 @@ export interface BaseInputProps {
     inputState?: InputState;
     disabled?: boolean;
     isWithLabel?: boolean;
-    elevation?: InputElevation;
+    elevation: Elevation;
 }
 
 export const baseInputStyle = css<BaseInputProps>`
     width: 100%;
     padding-top: ${({ isWithLabel }) => isWithLabel && INPUT_PADDING_TOP};
     background-color: ${({ elevation, theme, inputState }) =>
-        getInputStateBgColor(inputState, theme, elevation !== undefined ? elevation : 0)};
+        getInputStateBgColor(inputState, theme, elevation)};
     border-radius: ${borders.radii.sm};
     border: solid ${INPUT_BORDER_WIDTH}px;
     border-color: ${({ inputState, theme }) => getInputStateBorderColor(inputState, theme)};

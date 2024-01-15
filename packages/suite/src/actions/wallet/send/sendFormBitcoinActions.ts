@@ -157,7 +157,6 @@ export const composeTransaction =
         // format errorMessage and catch unexpected error (other than AMOUNT_IS_NOT_ENOUGH)
         Object.keys(wrappedResponse).forEach(key => {
             const tx = wrappedResponse[key];
-            console.log(wrappedResponse);
 
             if (tx.type !== 'error') {
                 // round to

@@ -1,16 +1,24 @@
 import { forwardRef, ReactNode } from 'react';
 import styled from 'styled-components';
-import { borders, BoxShadowElevation, mapElevationToBoxShadow, spacings } from '@trezor/theme';
+import { borders, mapElevationToBoxShadow, spacings } from '@trezor/theme';
+import { ElevationContext, useElevation } from '../ElevationContext/ElevationContext';
+import { Elevation, mapElevationToBackground } from '@trezor/theme/src/elevation';
 
-const Wrapper = styled.div<{ $elevation: BoxShadowElevation; $paddingSize: number }>`
+const Wrapper = styled.div<{ $elevation: Elevation; $paddingSize: number }>`
     display: flex;
     flex-direction: column;
     padding: ${({ $paddingSize }) => $paddingSize}px;
-    background: ${({ theme }) => theme.backgroundSurfaceElevation1};
+    background: ${({ theme, $elevation }) => theme[mapElevationToBackground[$elevation]]};
     border-radius: ${borders.radii.md};
-    box-shadow: ${({ $elevation, theme }) =>
-        $elevation && theme[`boxShadowElevation${$elevation === 3 ? 3 : 1}`]};
+    box-shadow: ${({ theme, $elevation }) => {
+        if ($elevation === 1) {
+            const boxShadow = mapElevationToBoxShadow[$elevation];
 
+            return boxShadow !== undefined ? theme[boxShadow] : undefined;
+        }
+
+        return undefined;
+    }};
     /* when theme changes from light to dark */
     transition: background 0.3s;
 `;
@@ -30,7 +38,6 @@ const getPaddingSize = (paddingType?: PaddingType) => {
 type PaddingType = 'none' | 'normal' | 'large';
 
 export interface CardProps {
-    elevation?: BoxShadowElevation;
     paddingType?: PaddingType;
     onMouseEnter?: () => void;
     onMouseLeave?: () => void;
@@ -40,14 +47,18 @@ export interface CardProps {
 }
 
 export const Card = forwardRef<HTMLDivElement, CardProps>(
-    ({ elevation = 1, paddingType = 'normal', children, ...rest }, ref) => (
-        <Wrapper
-            ref={ref}
-            $elevation={elevation}
-            $paddingSize={getPaddingSize(paddingType)}
-            {...rest}
-        >
-            {children}
-        </Wrapper>
-    ),
+    ({ paddingType = 'normal', children, ...rest }, ref) => {
+        const { elevation } = useElevation();
+
+        return (
+            <Wrapper
+                ref={ref}
+                $elevation={elevation !== null ? elevation : 0}
+                $paddingSize={getPaddingSize(paddingType)}
+                {...rest}
+            >
+                <ElevationContext baseElevation={elevation}>{children}</ElevationContext>
+            </Wrapper>
+        );
+    },
 );
