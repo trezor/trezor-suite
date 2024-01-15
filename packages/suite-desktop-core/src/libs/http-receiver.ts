@@ -97,7 +97,7 @@ export class HttpReceiver extends TypedEmitter<Events> {
         return address;
     }
 
-    getRouteAddress(pathname: any) {
+    getRouteAddress(pathname: string) {
         const address = this.getServerAddress();
         const route = this.routes.find(r => r.pathname === pathname);
         if (!route) return;
