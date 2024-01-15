@@ -2,12 +2,11 @@ import * as http from 'http';
 import * as net from 'net';
 import * as url from 'url';
 
+import type { RequiredKey } from '@trezor/type-utils';
 import { xssFilters } from '@trezor/utils';
 import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
 
 import { HTTP_ORIGINS_DEFAULT } from './constants';
-
-export type RequiredKey<M, K extends keyof M> = Omit<M, K> & Required<Pick<M, K>>;
 
 type Request = RequiredKey<http.IncomingMessage, 'url'>;
 

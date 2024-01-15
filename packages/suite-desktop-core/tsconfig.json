@@ -25,6 +25,7 @@
         { "path": "../suite-desktop-api" },
         { "path": "../urls" },
         { "path": "../utils" },
-        { "path": "../trezor-user-env-link" }
+        { "path": "../trezor-user-env-link" },
+        { "path": "../type-utils" }
     ]
 }
