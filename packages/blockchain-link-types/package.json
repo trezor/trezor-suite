@@ -17,6 +17,7 @@
     },
     "devDependencies": {
         "@solana/web3.js": "^1.87.6",
+        "@trezor/type-utils": "workspace:*",
         "@trezor/utxo-lib": "workspace:*",
         "rimraf": "^5.0.5",
         "ripple-lib": "^1.10.1",
