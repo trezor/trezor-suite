@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
 
-import { SkeletonRectangle } from 'src/components/suite';
+import { SkeletonRectangle } from '@trezor/components';
 import { MAX_CONTENT_WIDTH } from 'src/constants/suite/layout';
 import { AppState, ExtendedMessageDescriptor } from 'src/types/suite';
 import { useTranslation, useLayout } from 'src/hooks/suite';

@@ -1,14 +1,18 @@
 import { memo, ComponentProps } from 'react';
 import styled, { css, useTheme } from 'styled-components';
 import { Network } from 'src/types/wallet';
-import { Icon, variables, motionAnimation } from '@trezor/components';
+import {
+    Icon,
+    variables,
+    motionAnimation,
+    SkeletonCircle,
+    SkeletonRectangle,
+} from '@trezor/components';
 import {
     AmountUnitSwitchWrapper,
     CoinBalance,
     FiatValue,
     PriceTicker,
-    SkeletonCircle,
-    SkeletonRectangle,
     Translation,
     TrendTicker,
 } from 'src/components/suite';

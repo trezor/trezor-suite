@@ -55,6 +55,11 @@ export * from './components/animations/DeviceAnimation';
 export * from './components/animations/LottieAnimation';
 export * from './components/Note/Note';
 export * from './components/AutoScalingInput/AutoScalingInput';
+export * from './components/skeletons/SkeletonCircle';
+export * from './components/skeletons/SkeletonRectangle';
+export * from './components/skeletons/SkeletonStack';
+export * from './components/skeletons/SkeletonSpread';
+export * from './components/skeletons/types';
 
 export * from './constants/keyboardEvents';
 

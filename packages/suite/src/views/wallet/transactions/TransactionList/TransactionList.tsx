@@ -10,7 +10,7 @@ import {
     getAccountNetwork,
 } from '@suite-common/wallet-utils';
 import { CoinjoinBatchItem } from 'src/components/wallet/TransactionItem/CoinjoinBatchItem';
-import { SkeletonStack, Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite';
 import { DashboardSection } from 'src/components/dashboard';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { WalletAccountTransaction, Account } from 'src/types/wallet';
@@ -24,6 +24,7 @@ import { findAnchorTransactionPage } from 'src/utils/suite/anchor';
 import { TransactionCandidates } from './TransactionCandidates';
 import { selectLabelingDataForAccount } from 'src/reducers/suite/metadataReducer';
 import { getTxsPerPage } from '@suite-common/suite-utils';
+import { SkeletonStack } from '@trezor/components';
 
 const StyledSection = styled(DashboardSection)`
     margin-bottom: 20px;

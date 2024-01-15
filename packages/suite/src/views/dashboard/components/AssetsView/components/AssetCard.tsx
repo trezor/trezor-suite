@@ -6,7 +6,6 @@ import {
     AmountUnitSwitchWrapper,
     CoinBalance,
     PriceTicker,
-    SkeletonRectangle,
     Translation,
     TrendTicker,
 } from 'src/components/suite';
@@ -14,7 +13,7 @@ import { isTestnet } from '@suite-common/wallet-utils';
 import { CoinmarketBuyButton } from 'src/views/dashboard/components/CoinmarketBuyButton';
 import { borders, spacingsPx, typography } from '@trezor/theme';
 
-import { H2, Icon, variables } from '@trezor/components';
+import { H2, Icon, SkeletonRectangle, variables } from '@trezor/components';
 import { useDispatch } from 'react-redux';
 import { useAccountSearch, useLoadingSkeleton } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
