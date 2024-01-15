@@ -200,6 +200,15 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
               }
             : {}),
     };
+
+    // Update token accounts of account stored by the worker since new accounts
+    // might have been created. We otherwise would not get proper updates for new
+    // token accounts.
+    const workerAccount = request.state.getAccount(payload.descriptor);
+    if (workerAccount) {
+        request.state.addAccounts([{ ...workerAccount, tokens }]);
+    }
+
     return {
         type: RESPONSES.GET_ACCOUNT_INFO,
         payload: account,
@@ -301,13 +310,43 @@ const unsubscribeBlock = ({ state }: Context) => {
     state.removeSubscription('block');
 };
 
+const extractTokenAccounts = (accounts: SubscriptionAccountInfo[]): SubscriptionAccountInfo[] =>
+    accounts
+        .map(account =>
+            (
+                account.tokens?.map(
+                    token =>
+                        token.accounts?.map(tokenAccount => ({
+                            descriptor: tokenAccount.publicKey.toString(),
+                        })) || [],
+                ) || []
+            ).flat(),
+        )
+        .flat();
+
+const findTokenAccountOwner = (
+    accounts: SubscriptionAccountInfo[],
+    accountDescriptor: string,
+): SubscriptionAccountInfo | undefined =>
+    accounts.find(
+        account =>
+            account.tokens?.find(
+                token =>
+                    token.accounts?.find(
+                        tokenAccount => tokenAccount.publicKey.toString() === accountDescriptor,
+                    ),
+            ),
+    );
+
 const subscribeAccounts = async (
     { connect, state, post }: Context,
     accounts: SubscriptionAccountInfo[],
 ) => {
     const api = await connect();
     const subscribedAccounts = state.getAccounts();
-    const newAccounts = accounts.filter(
+    const tokenAccounts = extractTokenAccounts(accounts);
+    // we have to subscribe to both system and token accounts
+    const newAccounts = [...accounts, ...tokenAccounts].filter(
         account =>
             !subscribedAccounts.some(
                 subscribedAccount => account.descriptor === subscribedAccount.descriptor,
@@ -337,13 +376,20 @@ const subscribeAccounts = async (
             }
 
             const tx = await solanaUtils.transformTransaction(lastTx, a.descriptor, []);
+
+            // For token accounts we need to emit an event with the owner account's descriptor
+            // since we don't store token accounts in the user's accounts.
+            const descriptor =
+                findTokenAccountOwner(state.getAccounts(), a.descriptor)?.descriptor ||
+                a.descriptor;
+
             post({
                 id: -1,
                 type: RESPONSES.NOTIFICATION,
                 payload: {
                     type: 'notification',
                     payload: {
-                        descriptor: a.descriptor,
+                        descriptor,
                         tx,
                     },
                 },
@@ -359,11 +405,27 @@ const unsubscribeAccounts = async (
     accounts: SubscriptionAccountInfo[] | undefined = [],
 ) => {
     const api = await connect();
+
+    const subscribedAccounts = state.getAccounts();
+
     accounts.forEach(a => {
         if (a.subscriptionId) {
             api.removeAccountChangeListener(a.subscriptionId);
             state.removeAccounts([a]);
         }
+
+        // unsubscribe token accounts as well
+        a.tokens?.forEach(t => {
+            t.accounts?.forEach(ta => {
+                const tokenAccount = subscribedAccounts.find(
+                    sa => sa.descriptor === ta.publicKey.toString(),
+                );
+                if (tokenAccount?.subscriptionId) {
+                    api.removeAccountChangeListener(tokenAccount.subscriptionId);
+                    state.removeAccounts([tokenAccount]);
+                }
+            });
+        });
     });
 };
 
@@ -374,7 +436,6 @@ const subscribe = async (request: Request<MessageTypes.Subscribe>) => {
             response = await subscribeBlock(request);
             break;
         case 'accounts':
-            // TODO: it also need to be updated to take tokenAccounts into account
             response = await subscribeAccounts(request, request.payload.accounts);
             break;
         default:
@@ -392,7 +453,6 @@ const unsubscribe = (request: Request<MessageTypes.Unsubscribe>) => {
             unsubscribeBlock(request);
             break;
         case 'accounts': {
-            // TODO: it also need to be updated to take tokenAccounts into account
             unsubscribeAccounts(request, request.payload.accounts);
             break;
         }

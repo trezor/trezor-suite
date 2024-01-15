@@ -215,6 +215,7 @@ export interface SubscriptionAccountInfo {
     descriptor: string;
     addresses?: AccountAddresses; // bitcoin addresses
     subscriptionId?: number;
+    tokens?: TokenInfo[]; // solana tokens
 }
 
 export type ChannelMessage<T> = T & { id: number };
