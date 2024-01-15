@@ -1,17 +1,39 @@
 {
     "name": "@trezor/node-utils",
     "version": "1.0.0",
-    "private": true,
-    "license": "See LICENSE.md in repo root",
+    "author": "Trezor <info@trezor.io>",
+    "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/utils",
+    "description": "A collection of typescript node-env only utils that are intended to be used across trezor-suite monorepo.",
+    "npmPublishAccess": "public",
+    "license": "SEE LICENSE IN LICENSE.md",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/trezor/trezor-suite.git"
+    },
+    "bugs": {
+        "url": "https://github.com/trezor/trezor-suite/issues"
+    },
     "sideEffects": false,
-    "main": "src/index",
+    "main": "lib/index",
+    "files": [
+        "lib/",
+        "!**/*.map"
+    ],
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "test:unit": "jest -c ../../jest.config.base.js --passWithNoTests",
-        "type-check": "tsc --build"
+        "test:unit": "jest --verbose -c ../../jest.config.base.js",
+        "type-check": "tsc --build tsconfig.json",
+        "build:lib": "rimraf ./lib && yarn tsc --build tsconfig.lib.json",
+        "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
+        "prepublish": "yarn tsx ../../scripts/prepublish.js"
     },
     "devDependencies": {
         "jest": "29.5.0",
+        "rimraf": "^5.0.5",
+        "tsx": "^4.6.2",
         "typescript": "5.3.2"
+    },
+    "peerDependencies": {
+        "tslib": "^2.6.2"
     }
 }

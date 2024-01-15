@@ -8383,6 +8383,7 @@ __metadata:
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/blockchain-link-utils": "workspace:*"
     "@trezor/e2e-utils": "workspace:*"
+    "@trezor/node-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
@@ -8415,6 +8416,7 @@ __metadata:
     "@trezor/blockchain-link": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/blockchain-link-utils": "workspace:*"
+    "@trezor/node-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
     bignumber.js: "npm:^9.1.1"
@@ -8492,6 +8494,7 @@ __metadata:
   resolution: "@trezor/connect-common@workspace:packages/connect-common"
   dependencies:
     "@trezor/env-utils": "workspace:*"
+    "@trezor/node-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     jest: "npm:29.5.0"
     rimraf: "npm:^5.0.5"
@@ -8756,6 +8759,7 @@ __metadata:
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/connect-analytics": "workspace:*"
     "@trezor/connect-common": "workspace:*"
+    "@trezor/node-utils": "workspace:*"
     "@trezor/protobuf": "workspace:*"
     "@trezor/protocol": "workspace:*"
     "@trezor/schema-utils": "workspace:*"
@@ -8862,7 +8866,11 @@ __metadata:
   resolution: "@trezor/node-utils@workspace:packages/node-utils"
   dependencies:
     jest: "npm:29.5.0"
+    rimraf: "npm:^5.0.5"
+    tsx: "npm:^4.6.2"
     typescript: "npm:5.3.2"
+  peerDependencies:
+    tslib: ^2.6.2
   languageName: unknown
   linkType: soft
 
@@ -9511,6 +9519,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/transport@workspace:packages/transport"
   dependencies:
+    "@trezor/node-utils": "workspace:*"
     "@trezor/protobuf": "workspace:*"
     "@trezor/protocol": "workspace:*"
     "@trezor/trezor-user-env-link": "workspace:*"

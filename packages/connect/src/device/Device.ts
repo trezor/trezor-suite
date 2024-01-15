@@ -1,5 +1,5 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/Device.js
-import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
+import { TypedEmitter } from '@trezor/node-utils/lib/typedEventEmitter';
 import { createDeferred, Deferred } from '@trezor/utils/lib/createDeferred';
 import * as versionUtils from '@trezor/utils/lib/versionUtils';
 import { TransportProtocol, v1 as v1Protocol, bridge as bridgeProtocol } from '@trezor/protocol';

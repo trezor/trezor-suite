@@ -54,6 +54,7 @@
         "typescript": "5.3.2"
     },
     "dependencies": {
+        "@trezor/node-utils": "workspace:*",
         "@trezor/protobuf": "workspace:*",
         "@trezor/protocol": "workspace:*",
         "@trezor/utils": "workspace:*",

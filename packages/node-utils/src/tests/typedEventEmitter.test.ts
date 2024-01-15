@@ -1,4 +1,4 @@
-import { TypedEmitter } from '../src/typedEventEmitter';
+import { TypedEmitter } from '../typedEventEmitter';
 
 type PayloadUnion = { foo: number } | { bar: string };
 

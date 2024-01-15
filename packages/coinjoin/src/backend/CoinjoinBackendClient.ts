@@ -1,5 +1,5 @@
 import { scheduleAction, arrayShuffle, urlToOnion } from '@trezor/utils';
-import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
+import { TypedEmitter } from '@trezor/node-utils/lib/typedEventEmitter';
 import type { BlockbookAPI } from '@trezor/blockchain-link/lib/workers/blockbook/websocket';
 
 import { RequestOptions, resetIdentityCircuit } from '../utils/http';

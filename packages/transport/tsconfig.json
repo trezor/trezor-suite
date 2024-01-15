@@ -5,6 +5,7 @@
         "types": ["w3c-web-usb", "jest", "node"]
     },
     "references": [
+        { "path": "../node-utils" },
         { "path": "../protobuf" },
         { "path": "../protocol" },
         { "path": "../utils" },

@@ -9,6 +9,7 @@
         { "path": "../blockchain-link-types" },
         { "path": "../connect-analytics" },
         { "path": "../connect-common" },
+        { "path": "../node-utils" },
         { "path": "../protobuf" },
         { "path": "../protocol" },
         { "path": "../schema-utils" },

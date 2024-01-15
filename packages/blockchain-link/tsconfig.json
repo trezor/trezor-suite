@@ -9,6 +9,7 @@
     "references": [
         { "path": "../blockchain-link-types" },
         { "path": "../blockchain-link-utils" },
+        { "path": "../node-utils" },
         { "path": "../utils" },
         { "path": "../utxo-lib" },
         { "path": "../e2e-utils" },

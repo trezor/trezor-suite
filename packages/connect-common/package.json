@@ -37,6 +37,7 @@
     },
     "dependencies": {
         "@trezor/env-utils": "workspace:*",
+        "@trezor/node-utils": "workspace:*",
         "@trezor/utils": "workspace:*"
     },
     "devDependencies": {

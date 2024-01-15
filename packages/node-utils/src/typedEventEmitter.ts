@@ -1,10 +1,7 @@
 /*
 
-This file should not be exported from index to prevent missing dependency/polyfill error.
-EventEmitter is accessible in nodejs but requires polyfills in web builds.
-
 use:
-import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
+import { TypedEmitter } from '@trezor/node-utils/lib/typedEventEmitter';
 
 example:
 type EventMap = {

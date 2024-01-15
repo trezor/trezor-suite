@@ -1,4 +1,4 @@
-import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
+import { TypedEmitter } from '@trezor/node-utils/lib/typedEventEmitter';
 
 import * as coordinator from './coordinator';
 import { transformStatus } from '../utils/roundUtils';

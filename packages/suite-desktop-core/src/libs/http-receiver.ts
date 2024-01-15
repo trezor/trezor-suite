@@ -3,7 +3,7 @@ import * as net from 'net';
 import * as url from 'url';
 
 import { xssFilters } from '@trezor/utils';
-import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
+import { TypedEmitter } from '@trezor/node-utils/lib/typedEventEmitter';
 
 import { HTTP_ORIGINS_DEFAULT } from './constants';
 

@@ -4,7 +4,7 @@
  */
 
 import { Deferred, createDeferred } from '@trezor/utils/lib/createDeferred';
-import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
+import { TypedEmitter } from '@trezor/node-utils/lib/typedEventEmitter';
 import { scheduleAction } from '@trezor/utils/lib/scheduleAction';
 
 // todo: I can't import Log from connect to connect-common (connect imports from connect-common).

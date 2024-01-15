@@ -56,6 +56,7 @@
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/connect-analytics": "workspace:*",
         "@trezor/connect-common": "workspace:*",
+        "@trezor/node-utils": "workspace:*",
         "@trezor/protobuf": "workspace:*",
         "@trezor/protocol": "workspace:*",
         "@trezor/schema-utils": "workspace:*",
