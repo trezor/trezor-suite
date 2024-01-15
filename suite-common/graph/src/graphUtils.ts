@@ -83,7 +83,8 @@ export const mapCryptoBalanceMovementToFixedTimeFrame = ({
             return {
                 date: fromUnixTime(fiatRatePoint.time),
                 cryptoBalance: cryptoBalance.toFixed(),
-                value: cryptoBalance.multipliedBy(fiatRate).toNumber(),
+                // We display only two decimal places in the graph. So if there is any value lower than that, we want to round it.
+                value: Number(cryptoBalance.multipliedBy(fiatRate).toFixed(2)),
             };
         }),
     );
