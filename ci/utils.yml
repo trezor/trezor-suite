@@ -78,3 +78,21 @@ install connect manual:
   when: manual
   except:
     <<: *run_everything_rules
+
+.test unit:
+  stage: utils
+  needs: []
+  script:
+    - yarn install --immutable
+    - yarn test:unit
+
+test unit nightly:
+  extends: .test unit
+  only:
+    <<: *run_everything_rules
+
+test unit manual:
+  extends: .test unit
+  when: manual
+  except:
+    <<: *run_everything_rules
