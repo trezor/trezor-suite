@@ -1,10 +1,9 @@
 import { ComponentProps } from 'react';
 import styled from 'styled-components';
 
-import { variables } from '@trezor/components';
+import { SkeletonRectangle, SkeletonSpread, SkeletonStack, variables } from '@trezor/components';
 
 import { useLoadingSkeleton } from 'src/hooks/suite';
-import { SkeletonRectangle, SkeletonSpread, SkeletonStack } from 'src/components/suite';
 
 const SkeletonWrapper = styled.div`
     display: flex;

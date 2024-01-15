@@ -111,5 +111,4 @@ export {
 export * from './graph';
 export * from './notifications';
 export * from './section';
-export * from './skeletons';
 export type { ModalProps, NumberInputProps };

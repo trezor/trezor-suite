@@ -109,7 +109,7 @@ export const AccountsList = ({ onItemClick }: AccountListProps) => {
                         />
                     );
                 })}
-                {isSkeletonShown && <AccountItemSkeleton />}
+                {isSkeletonShown && <AccountItemSkeleton elevation={0} />}
             </AccountGroup>
         );
     };
