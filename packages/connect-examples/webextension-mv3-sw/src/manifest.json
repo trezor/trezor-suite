@@ -5,6 +5,6 @@
     "background": {
         "service_worker": "serviceWorker.js"
     },
-    "permissions": ["tabs", "notifications", "scripting", "activeTab"],
-    "host_permissions": ["http://*/*", "https://*/*"]
+    "permissions": ["scripting"],
+    "host_permissions": ["*://connect.trezor.io/9/*"]
 }

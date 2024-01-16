@@ -1,15 +1,17 @@
 // import connect
 importScripts('vendor/trezor-connect-webextension.js');
 
+const connectSrc = 'https://connect.trezor.io/9/';
+
 // call connect once extension is started. and thats all
 chrome.runtime.onInstalled.addListener(details => {
     TrezorConnect.init({
         manifest: {
             email: 'meow',
-            appUrl: 'http://localhost:8088',
+            appUrl: 'https://yourAppUrl.com/',
         },
         transports: ['BridgeTransport', 'WebUsbTransport'],
-        connectSrc: 'http://localhost:8088/',
+        connectSrc,
     });
 
     TrezorConnect.on('DEVICE_EVENT', event => {
