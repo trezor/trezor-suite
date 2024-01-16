@@ -18,11 +18,14 @@ import { useOnKeyDown } from './useOnKeyDown';
 import { useDetectPortalTarget } from './useDetectPortalTarget';
 import { DROPDOWN_MENU, menuStyle } from '../../Dropdown/menuStyle';
 import { useElevation } from '../../ElevationContext/ElevationContext';
-import { Elevation } from '@trezor/theme/src/elevation';
+import { Elevation, mapElevationToBackground, nextElevation } from '@trezor/theme/src/elevation';
 
 const reactSelectClassNamePrefix = 'react-select';
 
-const createSelectStyle = (theme: DefaultTheme): StylesConfig<Option, boolean> => ({
+const createSelectStyle = (
+    theme: DefaultTheme,
+    elevation: Elevation,
+): StylesConfig<Option, boolean> => ({
     menuPortal: base => ({
         ...base,
         zIndex: zIndices.modal /* Necessary to be visible inside a Modal */,
@@ -70,7 +73,9 @@ const createSelectStyle = (theme: DefaultTheme): StylesConfig<Option, boolean> =
         ...base,
         padding: `${spacingsPx.xs} ${spacingsPx.sm}`,
         borderRadius: borders.radii.xxs,
-        background: isFocused ? theme.backgroundSurfaceElevation0 : 'transparent',
+        background: isFocused
+            ? theme[mapElevationToBackground[nextElevation[elevation]]]
+            : 'transparent',
 
         color: theme.textDefault,
         ...{
@@ -289,7 +294,7 @@ export const Select = ({
                 closeMenuOnScroll={closeMenuOnScroll}
                 menuPosition="fixed" // Required for closeMenuOnScroll to work properly when near page bottom
                 menuPortalTarget={menuPortalTarget}
-                styles={createSelectStyle(theme)}
+                styles={createSelectStyle(theme, elevation)}
                 onChange={handleOnChange}
                 isSearchable={isSearchable}
                 menuIsOpen={menuIsOpen}
