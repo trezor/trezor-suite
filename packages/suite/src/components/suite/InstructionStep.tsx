@@ -22,7 +22,6 @@ const Number = styled.div`
     flex-shrink: 0;
     width: 24px;
     height: 24px;
-    padding-top: 4px;
     background-color: ${({ theme }) => theme.STROKE_GREY};
     border-radius: 50%;
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};

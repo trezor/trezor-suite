@@ -15,6 +15,7 @@ const Container = styled.div<{ isVertical?: boolean }>`
     flex-direction: ${({ isVertical }) => (isVertical ? 'column' : 'row')};
     align-items: center;
     gap: ${spacingsPx.sm};
+    min-width: ${({ isVertical }) => isVertical && '200px'};
 `;
 
 interface ChangeDeviceLabelProps {
