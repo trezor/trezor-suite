@@ -50,8 +50,6 @@ const Inputs = () => {
         buyInfo,
         setAmountLimits,
         defaultCurrency,
-        cryptoInputValue,
-        getValues,
         exchangeCoinInfo,
     } = useCoinmarketBuyFormContext();
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
@@ -70,8 +68,6 @@ const Inputs = () => {
             trigger([cryptoInput, fiatInput]);
         }
     }, [amountLimits, trigger]);
-
-    const fiatInputValue = getValues(fiatInput);
 
     const fiatInputRules = {
         validate: {
@@ -118,7 +114,7 @@ const Inputs = () => {
                         setValue(cryptoInput, '');
                         clearErrors(cryptoInput);
                     }}
-                    inputState={getInputState(errors.fiatInput, fiatInputValue)}
+                    inputState={getInputState(errors.fiatInput)}
                     name={fiatInput}
                     maxLength={MAX_LENGTH.AMOUNT}
                     bottomText={errors[fiatInput]?.message || null}
@@ -159,7 +155,7 @@ const Inputs = () => {
                         setValue(fiatInput, '');
                         clearErrors(fiatInput);
                     }}
-                    inputState={getInputState(errors.cryptoInput, cryptoInputValue)}
+                    inputState={getInputState(errors.cryptoInput)}
                     name={cryptoInput}
                     maxLength={MAX_LENGTH.AMOUNT}
                     rules={cryptoInputRules}

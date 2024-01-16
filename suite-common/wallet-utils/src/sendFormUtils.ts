@@ -175,14 +175,9 @@ export const getFeeLevels = (networkType: Network['networkType'], feeInfo: FeeIn
 
 export const getInputState = (
     error?: FieldError | Merge<FieldError, FieldErrorsImpl<FieldValues>>,
-    value?: string,
 ) => {
     if (error) {
         return 'error';
-    }
-
-    if (value && value.length > 0 && !error) {
-        return 'success';
     }
 };
 

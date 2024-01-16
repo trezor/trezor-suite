@@ -38,14 +38,12 @@ export const Inputs = () => {
         formState: { errors },
         defaultCurrency,
         p2pInfo,
-        getValues,
     } = useCoinmarketP2pFormContext();
 
     const { translationString } = useTranslation();
 
     const fiatInput = 'fiatInput';
     const currencySelect = 'currencySelect';
-    const fiatInputValue = getValues(fiatInput);
 
     const fiatInputRules = {
         validate: {
@@ -60,7 +58,7 @@ export const Inputs = () => {
                 <NumberInput
                     control={control}
                     rules={fiatInputRules}
-                    inputState={getInputState(errors.fiatInput, fiatInputValue)}
+                    inputState={getInputState(errors.fiatInput)}
                     name={fiatInput}
                     maxLength={MAX_LENGTH.AMOUNT}
                     bottomText={errors[fiatInput]?.message || null}

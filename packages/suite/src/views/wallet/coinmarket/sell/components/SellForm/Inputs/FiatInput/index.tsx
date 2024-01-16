@@ -26,7 +26,6 @@ const FiatInput = () => {
 
     const { translationString } = useTranslation();
 
-    const fiatInputValue = getValues(FIAT_INPUT);
     const tokenAddress = getValues('outputs.0.token');
     const tokenData = account.tokens?.find(t => t.contract === tokenAddress);
 
@@ -61,7 +60,7 @@ const FiatInput = () => {
             rules={fiatInputRules}
             onChange={onFiatAmountChange}
             isDisabled={tokenData !== undefined}
-            inputState={getInputState(errors.fiatInput, fiatInputValue)}
+            inputState={getInputState(errors.fiatInput)}
             name={FIAT_INPUT}
             maxLength={MAX_LENGTH.AMOUNT}
             bottomText={errors[FIAT_INPUT]?.message || null}

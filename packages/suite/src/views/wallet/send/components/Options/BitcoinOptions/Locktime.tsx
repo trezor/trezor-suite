@@ -95,11 +95,11 @@ export const Locktime = ({ close }: LocktimeProps) => {
     };
 
     return (
-        <Card paddingType="large">
+        <Card>
             <NumberInput
                 control={control}
                 name={inputName}
-                inputState={getInputState(error, inputValue)}
+                inputState={getInputState(error)}
                 defaultValue={inputValue}
                 onChange={handleLocktimeChange}
                 rules={rules}
