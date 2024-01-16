@@ -4,6 +4,14 @@ import { TrezorLink } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
+import { typography } from '@trezor/theme';
+import styled from 'styled-components';
+
+const Wrapper = styled.div`
+    a {
+        ${typography.hint};
+    }
+`;
 
 // TODO: move it to separated components?
 
@@ -13,30 +21,38 @@ const UdevDescription = () => {
     const handleClick = () => dispatch(goto('suite-udev'));
 
     return (
+        <Wrapper>
+            <Translation
+                id="TR_TROUBLESHOOTING_TIP_UDEV_INSTALL_DESCRIPTION"
+                values={{
+                    a: chunks => (
+                        <TrezorLink
+                            variant="underline"
+                            onClick={handleClick}
+                            data-test="@goto/udev"
+                        >
+                            {chunks}
+                        </TrezorLink>
+                    ),
+                }}
+            />
+        </Wrapper>
+    );
+};
+
+const BridgeStatus = () => (
+    <Wrapper>
         <Translation
-            id="TR_TROUBLESHOOTING_TIP_UDEV_INSTALL_DESCRIPTION"
+            id="TR_TROUBLESHOOTING_TIP_BRIDGE_STATUS_DESCRIPTION"
             values={{
                 a: chunks => (
-                    <TrezorLink variant="underline" onClick={handleClick} data-test="@goto/udev">
+                    <TrezorLink variant="underline" href="http://127.0.0.1:21325/status/">
                         {chunks}
                     </TrezorLink>
                 ),
             }}
         />
-    );
-};
-
-const BridgeStatus = () => (
-    <Translation
-        id="TR_TROUBLESHOOTING_TIP_BRIDGE_STATUS_DESCRIPTION"
-        values={{
-            a: chunks => (
-                <TrezorLink variant="underline" href="http://127.0.0.1:21325/status/">
-                    {chunks}
-                </TrezorLink>
-            ),
-        }}
-    />
+    </Wrapper>
 );
 
 const BridgeInstall = () => {
@@ -45,16 +61,18 @@ const BridgeInstall = () => {
     const handleClick = () => dispatch(goto('suite-bridge'));
 
     return (
-        <Translation
-            id="TR_TROUBLESHOOTING_TIP_BRIDGE_INSTALL_DESCRIPTION"
-            values={{
-                a: chunks => (
-                    <TrezorLink variant="underline" onClick={handleClick}>
-                        {chunks}
-                    </TrezorLink>
-                ),
-            }}
-        />
+        <Wrapper>
+            <Translation
+                id="TR_TROUBLESHOOTING_TIP_BRIDGE_INSTALL_DESCRIPTION"
+                values={{
+                    a: chunks => (
+                        <TrezorLink variant="underline" onClick={handleClick}>
+                            {chunks}
+                        </TrezorLink>
+                    ),
+                }}
+            />
+        </Wrapper>
     );
 };
 
@@ -64,16 +82,18 @@ const BridgeUse = () => {
     const handleClick = () => dispatch(goto('suite-bridge'));
 
     return (
-        <Translation
-            id="TR_TROUBLESHOOTING_TIP_BRIDGE_USE_DESCRIPTION"
-            values={{
-                a: chunks => (
-                    <TrezorLink variant="underline" onClick={handleClick}>
-                        {chunks}
-                    </TrezorLink>
-                ),
-            }}
-        />
+        <Wrapper>
+            <Translation
+                id="TR_TROUBLESHOOTING_TIP_BRIDGE_USE_DESCRIPTION"
+                values={{
+                    a: chunks => (
+                        <TrezorLink variant="underline" onClick={handleClick}>
+                            {chunks}
+                        </TrezorLink>
+                    ),
+                }}
+            />
+        </Wrapper>
     );
 };
 

@@ -3,9 +3,11 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { CheckItem, Translation } from 'src/components/suite';
 import { ConfirmKey, toggleCheckboxByKey } from 'src/actions/backup/backupActions';
 import { variables } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
 const CheckboxWrapper = styled.div`
     margin-top: 38px;
+    gap: ${spacings.xs};
 
     @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
         max-width: 100%;

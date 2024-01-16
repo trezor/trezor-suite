@@ -9,9 +9,11 @@ import { PrerequisitesGuide, TrezorLink } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectPrerequisite } from 'src/reducers/suite/suiteReducer';
 import { SecurityCheck } from '../onboarding/steps/SecurityCheck/SecurityCheck';
+import { typography } from '@trezor/theme';
 
 const StyledTrezorLink = styled(TrezorLink)`
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    ${typography.hint}
 `;
 
 export const StartContent = () => {

@@ -8,13 +8,15 @@ import {
     SectionItem,
     TextColumn,
     Translation,
+    TrezorLink,
 } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { UpdateState } from 'src/reducers/suite/desktopUpdateReducer';
 import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 
-import { VersionWithGithubTooltip } from './VersionWithGithubTooltip';
+import { Button } from '@trezor/components';
+import { getReleaseUrl } from 'src/services/github';
 
 const getUpdateStateMessage = (state: UpdateState) => {
     switch (state) {
@@ -37,6 +39,8 @@ export const VersionWithUpdate = () => {
     const maximizeUpdater = () => dispatch(setUpdateWindow('maximized'));
     const install = () => dispatch(installUpdate());
 
+    const appVersion = process.env.VERSION || '';
+
     return (
         <SectionItem
             data-test="@settings/version"
@@ -51,10 +55,17 @@ export const VersionWithUpdate = () => {
                             id="TR_YOUR_CURRENT_VERSION"
                             values={{
                                 version: (
-                                    <VersionWithGithubTooltip
-                                        appVersion={process.env.VERSION || ''}
-                                        isDev={isDevEnv}
-                                    />
+                                    <TrezorLink href={getReleaseUrl(appVersion)} variant="nostyle">
+                                        <Button
+                                            variant="destructive"
+                                            size="tiny"
+                                            icon="EXTERNAL_LINK"
+                                            iconAlignment="right"
+                                        >
+                                            {appVersion}
+                                            {isDevEnv && '-dev'}
+                                        </Button>
+                                    </TrezorLink>
                                 ),
                             }}
                         />
@@ -70,9 +81,19 @@ export const VersionWithUpdate = () => {
                                         id={getUpdateStateMessage(desktopUpdate.state)}
                                         values={{
                                             version: (
-                                                <VersionWithGithubTooltip
-                                                    appVersion={desktopUpdate.latest.version}
-                                                />
+                                                <TrezorLink
+                                                    href={getReleaseUrl(appVersion)}
+                                                    variant="nostyle"
+                                                >
+                                                    <Button
+                                                        variant="destructive"
+                                                        size="tiny"
+                                                        icon="EXTERNAL_LINK"
+                                                        iconAlignment="right"
+                                                    >
+                                                        {desktopUpdate.latest.version}
+                                                    </Button>
+                                                </TrezorLink>
                                             ),
                                         }}
                                     />

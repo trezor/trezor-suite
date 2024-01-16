@@ -114,7 +114,7 @@ export const AccountsList = ({ onItemClick }: AccountListProps) => {
         );
     };
 
-    if (filteredAccounts.length > 0 || !searchString) {
+    if (filteredAccounts.length > 0) {
         return (
             <>
                 {buildGroup('coinjoin', coinjoinAccounts)}
@@ -129,7 +129,9 @@ export const AccountsList = ({ onItemClick }: AccountListProps) => {
 
     return (
         <NoResults>
-            <Translation id="TR_ACCOUNT_SEARCH_NO_RESULTS" />
+            <Translation
+                id={!searchString ? 'TR_ACCOUNT_NO_ACCOUNTS' : 'TR_ACCOUNT_SEARCH_NO_RESULTS'}
+            />
         </NoResults>
     );
 };

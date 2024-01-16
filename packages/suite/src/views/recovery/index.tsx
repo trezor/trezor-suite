@@ -8,7 +8,7 @@ import { pickByDeviceModel } from '@trezor/device-utils';
 import TrezorConnect, { DeviceModelInternal } from '@trezor/connect';
 
 import { SelectWordCount, SelectRecoveryType } from 'src/components/recovery';
-import { Loading, Translation, CheckItem, TrezorLink, Modal } from 'src/components/suite';
+import { Loading, Translation, CheckItem, Modal } from 'src/components/suite';
 import { ReduxModal } from 'src/components/suite/modals/ReduxModal/ReduxModal';
 import {
     checkSeed,
@@ -21,6 +21,7 @@ import type { ForegroundAppProps } from 'src/types/suite';
 import type { WordCount } from 'src/types/recovery';
 import { InstructionStep } from 'src/components/suite/InstructionStep';
 import messages from 'src/support/messages';
+import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 
 const StyledModal = styled(Modal)`
     min-height: 450px;
@@ -184,11 +185,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                             title={<Translation id="TR_DRY_RUN_CHECK_ITEM_TITLE" />}
                             description={<Translation id="TR_DRY_RUN_CHECK_ITEM_DESCRIPTION" />}
                             isChecked={understood}
-                            link={
-                                <TrezorLink icon="EXTERNAL_LINK" type="label" href={learnMoreUrl}>
-                                    <Translation id="TR_LEARN_MORE" />
-                                </TrezorLink>
-                            }
+                            link={<LearnMoreButton url={learnMoreUrl} />}
                             onClick={() => setUnderstood(!understood)}
                         />
                     </>
