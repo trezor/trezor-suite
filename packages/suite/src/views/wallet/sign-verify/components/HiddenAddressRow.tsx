@@ -5,11 +5,17 @@ import type { AddressItem } from 'src/hooks/wallet/sign-verify/useSignAddressOpt
 type OverlayVariant = 'option' | 'option-focused' | 'input';
 
 const getOverlayColor = ({ theme, variant }: { theme: DefaultTheme; variant: OverlayVariant }) => {
-    if (variant === 'option-focused') return theme.BG_WHITE_ALT_HOVER;
+    const result =
+        // eslint-disable-next-line no-nested-ternary
+        variant === 'option-focused'
+            ? theme.BG_WHITE_ALT_HOVER
+            : variant === 'option'
+            ? theme.BG_WHITE_ALT
+            : theme.BG_WHITE;
 
-    if (variant === 'option') return theme.BG_WHITE_ALT;
+    console.log(result);
 
-    return theme.BG_WHITE;
+    return result;
 };
 
 const Overlay = styled.div<{ variant: OverlayVariant }>`
