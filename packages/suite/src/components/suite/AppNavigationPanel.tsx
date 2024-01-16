@@ -65,7 +65,7 @@ const TitleRow = styled(Row)`
     margin-bottom: 6px;
 `;
 
-const Delimeter = styled.div``;
+const Delimiter = styled.div``;
 
 interface AppNavigationPanelProps {
     title: ReactNode;
@@ -121,7 +121,7 @@ export const AppNavigationPanel = ({
                 </Content>
             </Wrapper>
             {isValidElement(navigation) && cloneElement(navigation, { inView })}
-            <Delimeter />
+            <Delimiter />
         </>
     );
 };

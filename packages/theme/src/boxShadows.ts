@@ -18,6 +18,7 @@ export type BoxShadow = keyof typeof boxShadows.standard;
 export type BoxShadows = Record<BoxShadow, string>;
 
 export const mapElevationToBoxShadow: Record<Elevation, BoxShadow | undefined> = {
+    '-1': undefined,
     '0': undefined,
     '1': 'boxShadowElevation1',
     '2': 'boxShadowElevation1', // Todo: ...
