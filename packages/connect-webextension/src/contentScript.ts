@@ -47,7 +47,6 @@ channel.init().then(() => {
         window.postMessage(
             {
                 type: 'popup-closed',
-                payload: { ...chrome.runtime.getManifest(), id: chrome.runtime.id },
             },
             window.location.origin,
         );
