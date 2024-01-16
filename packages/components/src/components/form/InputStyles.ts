@@ -80,7 +80,7 @@ export const baseInputStyle = css<BaseInputProps>`
     }
 
     :read-only:not(:disabled) {
-        background: ${({ theme }) => theme.backgroundNeutralDisabled};
+        background: ${({ theme, elevation }) => theme[mapElevationToBackground[elevation]]};
         color: ${({ theme }) => theme.textDisabled};
     }
 

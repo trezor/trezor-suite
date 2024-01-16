@@ -14,6 +14,7 @@ import {
 import { BOTTOM_TEXT_MIN_HEIGHT, BottomText } from '../BottomText';
 import { InputState, InputSize } from '../inputTypes';
 import { TopAddons } from '../TopAddons';
+import { useElevation } from '../../ElevationContext/ElevationContext';
 
 const Wrapper = styled.div<Pick<InputProps, 'width'> & { hasBottomPadding: boolean }>`
     display: inline-flex;
@@ -119,6 +120,7 @@ const Input = ({
     const [isHovered, setIsHovered] = useState(false);
 
     const theme = useTheme();
+    const { elevation } = useElevation();
 
     const hasShowClearButton =
         (showClearButton === 'always' || (showClearButton === 'hover' && isHovered)) &&
@@ -162,6 +164,7 @@ const Input = ({
                 )}
 
                 <StyledInput
+                    elevation={elevation}
                     value={value}
                     autoComplete="off"
                     autoCorrect="off"
