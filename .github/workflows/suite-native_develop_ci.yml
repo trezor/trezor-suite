@@ -33,7 +33,6 @@ jobs:
         env:
           ENCODED_STRING_KEYSTORE: ${{ secrets.DEVELOP_KEYSTORE_FILE }}
           ENCODED_STRING_JSON_FILE: ${{secrets.GOOGLE_PLAY_JSON_KEY}}
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: |
           echo $ENCODED_STRING_KEYSTORE | base64 -d > suite-native/app/android/app/release.keystore
           echo $ENCODED_STRING_JSON_FILE > suite-native/app/android/firebase_key.json

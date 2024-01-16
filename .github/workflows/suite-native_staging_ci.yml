@@ -27,7 +27,6 @@ jobs:
         env:
           ENCODED_STRING_KEYSTORE: ${{ secrets.STAGING_KEYSTORE_FILE }}
           ENCODED_STRING_JSON_FILE: ${{secrets.GOOGLE_PLAY_JSON_KEY_STAGING}}
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: |
           echo $ENCODED_STRING_KEYSTORE | base64 -d > suite-native/app/android/app/stag-upload-key.keystore
           echo $ENCODED_STRING_JSON_FILE > suite-native/app/android/google_play_key.json
