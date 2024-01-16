@@ -19,6 +19,7 @@ import { DEFAULT_LABEL } from 'src/constants/suite/device';
 import { isHomescreenSupportedOnDevice } from 'src/utils/suite/homescreen';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import { ChangeDeviceLabel } from 'src/components/suite/ChangeDeviceLabel';
+import { spacingsPx } from '@trezor/theme';
 
 const StyledButton = styled(Button)`
     display: flex;
@@ -44,10 +45,10 @@ const StyledButton = styled(Button)`
 `;
 
 const StyledIcon = styled(Icon)`
-    margin-right: 16px;
     display: flex;
     justify-content: center;
     align-items: center;
+    margin: auto ${spacingsPx.md} auto 0;
 `;
 
 const Content = styled.div`
