@@ -17,6 +17,8 @@ import { Control, GroupHeading, Option } from './customComponents';
 import { useOnKeyDown } from './useOnKeyDown';
 import { useDetectPortalTarget } from './useDetectPortalTarget';
 import { DROPDOWN_MENU, menuStyle } from '../../Dropdown/menuStyle';
+import { useElevation } from '../../ElevationContext/ElevationContext';
+import { Elevation } from '@trezor/theme/src/elevation';
 
 const reactSelectClassNamePrefix = 'react-select';
 
@@ -86,7 +88,7 @@ const createSelectStyle = (theme: DefaultTheme): StylesConfig<Option, boolean> =
 type WrapperProps = Pick<
     SelectProps,
     'isClean' | 'isDisabled' | 'minValueWidth' | 'size' | 'menuIsOpen' | 'isSearchable'
-> & { isWithLabel: boolean; isWithPlaceholder: boolean };
+> & { isWithLabel: boolean; isWithPlaceholder: boolean; elevation: Elevation };
 
 const Wrapper = styled.div<WrapperProps>`
     position: relative;
@@ -246,6 +248,7 @@ export const Select = ({
     ...props
 }: SelectProps) => {
     const selectRef = useRef<SelectInstance<Option, boolean>>(null);
+    const { elevation } = useElevation();
 
     const theme = useTheme();
     const onKeyDown = useOnKeyDown(selectRef, useKeyPressScroll);
@@ -269,6 +272,7 @@ export const Select = ({
         <Wrapper
             className={className}
             isClean={isClean}
+            elevation={elevation}
             isSearchable={isSearchable}
             size={size}
             minValueWidth={minValueWidth}
