@@ -199,7 +199,7 @@ export const AssetRow = memo(
                             dataTest={`@dashboard/assets/table/${symbol}/buy-button`}
                         />
                     )}
-                    <ArrowIcon size={16} icon="ARROW_RIGHT_LONG" color={theme.iconPrimaryDefault} />
+                    <ArrowIcon size={16} icon="ARROW_RIGHT_LONG" color={theme.iconSubdued} />
                 </BuyButtonWrapper>
             </AssetTableRowGrid>
         );
