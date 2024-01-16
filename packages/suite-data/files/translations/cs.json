@@ -1769,7 +1769,7 @@
   "TR_TREZOR_BRIDGE_IS_NOT_RUNNING": "Trezor Bridge není spuštěn",
   "TR_TREZOR_DEVICE_TUTORIAL_CANCELED_HEADING": "Tutorial zrušen",
   "TR_TREZOR_DEVICE_TUTORIAL_COMPLETED_HEADING": "Tutorial dokončen",
-  "TR_TREZOR_DEVICE_TUTORIAL_DESCRIPTION": "Naučte se používat zařízení pomocí krátkého tutorialu",
+  "TR_TREZOR_DEVICE_TUTORIAL_DESCRIPTION": "Naučte se používat zařízení pomocí krátkého tutoriálu",
   "TR_TREZOR_DEVICE_TUTORIAL_HEADING": "Poznejte svůj Trezor",
   "TR_TROUBLESHOOTING_BRIDGE_IS_NOT_RUNNING": "Kroky k ověření, že Trezor Bridge je spuštěn",
   "TR_TROUBLESHOOTING_CLOSE_TABS": "Zavřít ostatní panely a okna, která mohou používat váš Trezor",
