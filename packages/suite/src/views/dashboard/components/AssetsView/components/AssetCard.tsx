@@ -53,7 +53,9 @@ const Card = styled.div`
         cursor: pointer;
 
         ${ArrowIcon} {
-            opacity: 1;
+            path {
+                fill: ${({ theme }) => theme.iconPrimaryDefault};
+            }
         }
     }
 
@@ -149,7 +151,7 @@ export const AssetCard = ({
                         assetsFiatBalances={assetsFiatBalances}
                         index={index}
                     />
-                    <ArrowIcon size={16} icon="ARROW_RIGHT_LONG" color={theme.iconPrimaryDefault} />
+                    <ArrowIcon size={16} icon="ARROW_RIGHT_LONG" color={theme.iconDisabled} />
                 </AssetContainer>
                 {!failed ? (
                     <>

@@ -17,7 +17,9 @@ export const AssetTableRowGrid = styled.div`
                       background: ${theme.backgroundSurfaceElevation2};
 
                       ${ArrowIcon} {
-                          opacity: 1;
+                          path {
+                              fill: ${({ theme }) => theme.iconPrimaryDefault};
+                          }
                       }
                   }
               `
