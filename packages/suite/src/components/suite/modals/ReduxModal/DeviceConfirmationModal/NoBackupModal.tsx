@@ -2,16 +2,13 @@ import styled from 'styled-components';
 
 import { onReceiveConfirmation } from 'src/actions/suite/modalActions';
 import { goto } from 'src/actions/suite/routerActions';
-import { Translation, Modal } from 'src/components/suite';
+import { Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite/useDispatch';
-import { Button, Image } from '@trezor/components';
+import { Button } from '@trezor/components';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { DialogModal } from '../../Modal/DialogRenderer';
 
-const ImageWrapper = styled.div`
-    padding: 60px 0;
-`;
-
-const StyledModal = styled(Modal)`
+const StyledModal = styled(DialogModal)`
     width: 600px;
 `;
 
@@ -29,12 +26,13 @@ export const NoBackupModal = () => {
         <StyledModal
             isCancelable
             onCancel={close}
-            heading={<Translation id="TR_YOUR_TREZOR_IS_NOT_BACKED_UP" />}
-            description={<Translation id="TR_IF_YOUR_DEVICE_IS_EVER_LOST" />}
+            icon="warningTriangleLight"
+            bodyHeading={<Translation id="TR_YOUR_TREZOR_IS_NOT_BACKED_UP" />}
+            text={<Translation id="TR_IF_YOUR_DEVICE_IS_EVER_LOST" />}
             bottomBarComponents={
                 <>
                     <Button
-                        variant="secondary"
+                        variant="destructive"
                         onClick={confirm}
                         data-test="@no-backup/take-risk-button"
                     >
@@ -45,10 +43,6 @@ export const NoBackupModal = () => {
                     </Button>
                 </>
             }
-        >
-            <ImageWrapper>
-                <Image image="UNI_ERROR" />
-            </ImageWrapper>
-        </StyledModal>
+        />
     );
 };
