@@ -107,39 +107,38 @@ const handleMessage = async (event: MessageEvent<CoreRequestMessage>) => {
         );
         _log.debug('loading current method');
         const method = await _core.getCurrentMethod();
-        (method.initAsyncPromise ? method.initAsyncPromise : Promise.resolve()).finally(() => {
-            if (method.info) {
-                postMessage(
-                    createPopupMessage(POPUP.METHOD_INFO, {
-                        method: method.name,
-                        info: method.info, // method.info might change based on initAsync
-                    }),
-                );
-            }
 
-            // eslint-disable-next-line camelcase
-            const { tracking_enabled, tracking_id } = storage.load();
-
-            analytics.init(tracking_enabled, {
-                // eslint-disable-next-line camelcase
-                instanceId: tracking_id,
-                commitId: process.env.COMMIT_HASH || '',
-                isDev: process.env.NODE_ENV === 'development',
-            });
-
-            analytics.report({
-                type: EventType.AppReady,
-                payload: {
-                    version: settings?.version,
-                    origin: settings?.origin,
-                    referrerApp: settings?.manifest?.appUrl,
-                    referrerEmail: settings?.manifest?.email,
+        if (method.info) {
+            postMessage(
+                createPopupMessage(POPUP.METHOD_INFO, {
                     method: method.name,
-                    payload: method.payload ? Object.keys(method.payload) : undefined,
-                    transportType: transport?.type,
-                    transportVersion: transport?.version,
-                },
-            });
+                    info: method.info, // method.info might change based on initAsync
+                }),
+            );
+        }
+
+        // eslint-disable-next-line camelcase
+        const { tracking_enabled, tracking_id } = storage.load();
+
+        analytics.init(tracking_enabled, {
+            // eslint-disable-next-line camelcase
+            instanceId: tracking_id,
+            commitId: process.env.COMMIT_HASH || '',
+            isDev: process.env.NODE_ENV === 'development',
+        });
+
+        analytics.report({
+            type: EventType.AppReady,
+            payload: {
+                version: settings?.version,
+                origin: settings?.origin,
+                referrerApp: settings?.manifest?.appUrl,
+                referrerEmail: settings?.manifest?.email,
+                method: method.name,
+                payload: method.payload ? Object.keys(method.payload) : undefined,
+                transportType: transport?.type,
+                transportVersion: transport?.version,
+            },
         });
     }
 

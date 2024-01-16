@@ -3,6 +3,7 @@ import EventEmitter from 'events';
 
 import { TRANSPORT, TRANSPORT_ERROR } from '@trezor/transport';
 import { createDeferred, Deferred } from '@trezor/utils/lib/createDeferred';
+import { getSynchronize } from '@trezor/utils/lib/getSynchronize';
 import { storage } from '@trezor/connect-common';
 
 import { DataManager } from '../data/DataManager';
@@ -48,7 +49,8 @@ const _callMethods: AbstractMethod<any>[] = []; // generic type is irrelevant. o
 let _interactionTimeout: InteractionTimeout;
 let _deviceListInitTimeout: ReturnType<typeof setTimeout> | undefined;
 let _overridePromise: Promise<void> | undefined;
-let _getMethodPromise: Promise<AbstractMethod<any>> | undefined;
+
+const methodSynchronize = getSynchronize();
 
 // custom log
 const _log = initLog('Core');
@@ -322,23 +324,20 @@ const onCall = async (message: IFrameCallMessage) => {
     let method: AbstractMethod<any>;
     let messageResponse: CoreEventMessage;
     try {
-        _log.debug('loading method...');
-        _getMethodPromise = getMethod(message);
-        method = await _getMethodPromise;
-        _log.debug('method selected', method.name);
-        // bind callbacks
-        method.postMessage = postMessage;
-        method.getPopupPromise = getPopupPromise;
-        method.createUiPromise = createUiPromise;
-        // start validation process
-        method.init();
-
+        method = await methodSynchronize(async () => {
+            _log.debug('loading method...');
+            const method = await getMethod(message);
+            _log.debug('method selected', method.name);
+            // bind callbacks
+            method.postMessage = postMessage;
+            method.getPopupPromise = getPopupPromise;
+            method.createUiPromise = createUiPromise;
+            // start validation process
+            method.init();
+            await method.initAsync?.();
+            return method;
+        });
         _callMethods.push(method);
-
-        if (method.initAsync) {
-            method.initAsyncPromise = method.initAsync();
-            await method.initAsyncPromise;
-        }
     } catch (error) {
         postMessage(createPopupMessage(POPUP.CANCEL_POPUP_REQUEST));
         postMessage(createResponseMessage(responseID, false, { error }));
@@ -1024,11 +1023,8 @@ export class Core extends EventEmitter {
         }
     }
 
-    async getCurrentMethod() {
-        if (_getMethodPromise) {
-            await _getMethodPromise;
-        }
-        return _callMethods[0];
+    getCurrentMethod() {
+        return methodSynchronize(() => _callMethods[0]);
     }
 
     getTransportInfo(): TransportInfo | undefined {
