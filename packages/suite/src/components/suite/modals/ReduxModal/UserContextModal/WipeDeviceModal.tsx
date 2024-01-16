@@ -4,6 +4,7 @@ import { Button, Image } from '@trezor/components';
 import { Translation, CheckItem, Modal } from 'src/components/suite';
 import { wipeDevice } from 'src/actions/settings/deviceSettingsActions';
 import { useDevice, useDispatch } from 'src/hooks/suite';
+import { spacings } from '@trezor/theme';
 
 const Row = styled.div`
     display: flex;
@@ -14,6 +15,7 @@ const Col = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: ${spacings.xs};
 `;
 
 const CheckItems = styled(Row)`

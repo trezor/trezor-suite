@@ -10,6 +10,7 @@ import { AccountItemSkeleton } from './AccountItemSkeleton';
 import { AddAccountButton } from './AddAccountButton';
 import { CoinsFilter } from './CoinsFilter';
 import { AccountsList } from './AccountsList';
+import { getFailedAccounts, sortByCoin } from '@suite-common/wallet-utils';
 
 const Wrapper = styled.div`
     display: flex;
@@ -77,6 +78,7 @@ const Scroll = styled.div`
 
 export const AccountsMenu = () => {
     const device = useSelector(selectDevice);
+    const accounts = useSelector(state => state.wallet.accounts);
 
     const [isScrolledToTop, setIsScrolledToTop] = useState(true);
     const [isScrolledToBottom, setIsScrolledToBottom] = useState(false);
@@ -107,12 +109,21 @@ export const AccountsMenu = () => {
         );
     }
 
+    const failed = getFailedAccounts(discovery);
+
+    const list = sortByCoin(accounts.filter(a => a.deviceState === device.state).concat(failed));
+
+    const isEmpty = list.length === 0;
     return (
         <Wrapper>
             <MenuHeader>
                 <Row>
-                    <AccountSearchBox />
-                    <AddAccountButton data-test="@account-menu/add-account" device={device} />
+                    {!isEmpty && <AccountSearchBox />}
+                    <AddAccountButton
+                        data-test="@account-menu/add-account"
+                        device={device}
+                        isFullWidth={isEmpty}
+                    />
                 </Row>
 
                 <CoinsFilter />

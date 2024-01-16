@@ -8,8 +8,15 @@ import { connectProvider } from 'src/actions/suite/metadataProviderActions';
 import type { Deferred } from '@trezor/utils';
 import { MetadataProviderType } from 'src/types/suite/metadata';
 import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
+import { spacingsPx } from '@trezor/theme';
 
-const { FONT_SIZE, FONT_WEIGHT, SCREEN_SIZE } = variables;
+const { FONT_SIZE, FONT_WEIGHT } = variables;
+
+const Wrapper = styled.div`
+    display: flex;
+    flex-wrap: wrap;
+    gap: ${spacingsPx.sm};
+`;
 
 const Error = styled.div`
     margin-top: 8px;
@@ -25,10 +32,6 @@ const StyledButton = styled(Button)`
     background-color: ${({ theme }) => theme.BG_GREY};
     font-weight: ${FONT_WEIGHT.DEMI_BOLD};
     height: 42px;
-
-    @media (min-width: ${SCREEN_SIZE.SM}) {
-        width: 160px;
-    }
 `;
 
 // todo: typography shall be unified and these ad hoc styles removed..
@@ -84,7 +87,7 @@ export const MetadataProviderModal = ({ onCancel, decision }: MetadataProviderMo
             heading={<Translation id="METADATA_MODAL_HEADING" />}
             data-test="@modal/metadata-provider"
             bottomBarComponents={
-                <>
+                <Wrapper>
                     <StyledButton
                         variant="tertiary"
                         onClick={() => connect('dropbox')}
@@ -118,10 +121,10 @@ export const MetadataProviderModal = ({ onCancel, decision }: MetadataProviderMo
                             isDisabled={!!isLoading}
                             data-test="@modal/metadata-provider/file-system-button"
                         >
-                            Local file system
+                            <Translation id="TR_LOCAL_FILE_SYSTEM" />
                         </StyledButton>
                     )}
-                </>
+                </Wrapper>
             }
         >
             <StyledP type="hint">

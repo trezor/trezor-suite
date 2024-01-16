@@ -1,4 +1,4 @@
-import { forwardRef, Ref, MouseEventHandler } from 'react';
+import { forwardRef, Ref } from 'react';
 import styled from 'styled-components';
 
 import { isTestnet } from '@suite-common/wallet-utils';
@@ -9,7 +9,6 @@ import { AccountLabel, CoinBalance, FiatValue } from 'src/components/suite';
 import { useDispatch, useLoadingSkeleton } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
 import { goto } from 'src/actions/suite/routerActions';
-import { TokensCount } from './TokensCount';
 import { NavigationItemBase } from 'src/components/suite/Preloader/SuiteLayout/Sidebar/NavigationItem';
 
 interface WrapperProps {
@@ -38,6 +37,9 @@ const Wrapper = styled(NavigationItemBase)<WrapperProps>`
 export const Left = styled.div`
     padding-top: 3px;
     position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 `;
 
 export const Center = styled.div`
@@ -82,6 +84,12 @@ const FiatValueWrapper = styled.div`
     line-height: 1.57;
 `;
 
+const TokensCount = styled.div`
+    ${typography.label};
+    color: ${({ theme }) => theme.textSubdued};
+    line-height: 1.57;
+`;
+
 interface AccountItemProps {
     account: Account;
     accountLabel?: string;
@@ -107,11 +115,6 @@ export const AccountItem = forwardRef(
             accountType,
         };
 
-        const handleClickOnTokens: MouseEventHandler = event => {
-            event.stopPropagation();
-            closeMenu?.();
-            dispatch(goto('wallet-tokens', { params: accountRouteParams }));
-        };
         const handleHeaderClick = () => {
             closeMenu?.();
             dispatch(goto('wallet-index', { params: accountRouteParams }));
@@ -137,9 +140,7 @@ export const AccountItem = forwardRef(
             >
                 <Left>
                     <CoinLogo size={24} symbol={symbol} />
-                    {isTokensCountShown && (
-                        <TokensCount count={tokens.length} onClick={handleClickOnTokens} />
-                    )}
+                    {isTokensCountShown && <TokensCount>{tokens.length}</TokensCount>}
                 </Left>
                 <Center>
                     <Row>

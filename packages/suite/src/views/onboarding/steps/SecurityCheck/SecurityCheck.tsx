@@ -61,10 +61,11 @@ const TimeEstimateWrapper = styled.div`
     justify-content: center;
     align-items: center;
     opacity: 0.66;
+    margin-top: 1px;
 `;
 
 const IconWrapper = styled.div`
-    margin-right: 6px;
+    margin: 0 1px 2px 6px;
 `;
 
 const Buttons = styled.div`

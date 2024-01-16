@@ -10,17 +10,4 @@ export const Badge: StoryObj<BadgeProps> = {
     args: {
         children: 'Badge label',
     },
-    argTypes: {
-        onClick: {
-            options: ['null', 'withClick'],
-            mapping: { null: null, withClick: () => console.log('click') },
-            control: {
-                type: 'select',
-                labels: {
-                    null: 'Null',
-                    withClick: 'with onClick',
-                },
-            },
-        },
-    },
 };

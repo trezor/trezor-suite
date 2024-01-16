@@ -5971,6 +5971,10 @@ export default defineMessages({
         description:
             'Name of cloud provider. Intended to be translated only in languages that do not use latin script',
     },
+    TR_LOCAL_FILE_SYSTEM: {
+        defaultMessage: 'Local file system',
+        id: 'TR_LOCAL_FILE_SYSTEM',
+    },
     METADATA_MODAL_HEADING: {
         defaultMessage: 'Save labels',
         id: 'METADATA_MODAL_HEADING',
@@ -6456,6 +6460,10 @@ export default defineMessages({
     TR_ACCOUNT_SEARCH_NO_RESULTS: {
         id: 'TR_ACCOUNT_SEARCH_NO_RESULTS',
         defaultMessage: 'No results',
+    },
+    TR_ACCOUNT_NO_ACCOUNTS: {
+        id: 'TR_ACCOUNT_NO_ACCOUNTS',
+        defaultMessage: 'No accounts',
     },
     TR_COLOR_SCHEME: {
         id: 'TR_COLOR_SCHEME',

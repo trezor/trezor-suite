@@ -21,7 +21,6 @@ const Container = styled.div`
     font-size: ${variables.FONT_SIZE.SMALL};
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
-        height: 110px;
         border-radius: 20px;
         box-shadow: 0 -4px 6px -4px ${({ theme }) => theme.BOX_SHADOW_OPTION_CARD};
     }
