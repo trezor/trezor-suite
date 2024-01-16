@@ -19,11 +19,43 @@ This package is currently in beta. If you find anything not working or not suiti
 
 At the moment only bundles `build/trezor-connect-webextension.js` and `build/trezor-connect-webextension.min.js` are published.
 
-One way how it can be used is
+### Option 1: Using Scripting Permissions
 
+Modify your `manifest.json` to include scripting permissions and specify host_permissions. Also, define your service worker script:
+
+```json
+    "permissions": ["scripting"],
+    "host_permissions": ["*://connect.trezor.io/9/*"]
+    "background": {
+        "service_worker": "serviceWorker.js"
+    },
 ```
-importScripts('<path>/trezor-connect-webextension.js');
 
+Import in Service Worker:
+
+In your serviceWorker.js, import the library `build/trezor-connect-webextension.js` using importScripts. Replace <path> with the actual path to the library file:
+
+```javascript
+importScripts('<path>/trezor-connect-webextension.js');
+```
+
+This method is recommended for a seamless integration with background processes of your extension.
+
+### Option 2: Manual Content Script Injection
+
+Bundle the Library:
+
+Include `build/content-script.js` from this package into your project's bundle.
+
+Update manifest.json and replace <path> with the actual path to the library file::
+
+```json
+  "content_scripts": [
+    {
+      "js": ["<path>/content-script.js"],
+      "matches": ["*://connect.trezor.io/9/*"]
+    }
+  ],
 ```
 
 There are still some open questions, let us know!
