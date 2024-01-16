@@ -1,24 +1,29 @@
 import styled, { DefaultTheme } from 'styled-components';
-import { variables } from '@trezor/components';
+import { useElevation, variables } from '@trezor/components';
 import type { AddressItem } from 'src/hooks/wallet/sign-verify/useSignAddressOptions';
+import { Elevation, mapElevationToBackground, nextElevation } from '@trezor/theme/src/elevation';
 
 type OverlayVariant = 'option' | 'option-focused' | 'input';
 
-const getOverlayColor = ({ theme, variant }: { theme: DefaultTheme; variant: OverlayVariant }) => {
-    const result =
-        // eslint-disable-next-line no-nested-ternary
-        variant === 'option-focused'
-            ? theme.BG_WHITE_ALT_HOVER
-            : variant === 'option'
-            ? theme.BG_WHITE_ALT
-            : theme.BG_WHITE;
+const getOverlayColor = ({
+    theme,
+    variant,
+    elevation,
+}: {
+    theme: DefaultTheme;
+    variant: OverlayVariant;
+    elevation: Elevation;
+}) => {
+    const map: Record<OverlayVariant, string> = {
+        option: theme[mapElevationToBackground[elevation]],
+        'option-focused': theme[mapElevationToBackground[nextElevation[elevation]]],
+        input: theme[mapElevationToBackground[elevation]],
+    };
 
-    console.log(result);
-
-    return result;
+    return map[variant];
 };
 
-const Overlay = styled.div<{ variant: OverlayVariant }>`
+const Overlay = styled.div<{ variant: OverlayVariant; elevation: Elevation }>`
     position: absolute;
     inset: 0;
     margin: -8px;
@@ -50,13 +55,17 @@ interface HiddenAddressRowProps {
     className?: string;
 }
 
-export const HiddenAddressRow = ({ item, variant, className }: HiddenAddressRowProps) => (
-    <Wrapper className={className}>
-        <DerivationPathColumn>/{item.value.split('/').pop()}</DerivationPathColumn>
+export const HiddenAddressRow = ({ item, variant, className }: HiddenAddressRowProps) => {
+    const { elevation } = useElevation();
 
-        <AddressColumn>
-            <Overlay variant={variant} />
-            {item.label}
-        </AddressColumn>
-    </Wrapper>
-);
+    return (
+        <Wrapper className={className}>
+            <DerivationPathColumn>/{item.value.split('/').pop()}</DerivationPathColumn>
+
+            <AddressColumn>
+                <Overlay variant={variant} elevation={elevation} />
+                {item.label}
+            </AddressColumn>
+        </Wrapper>
+    );
+};
