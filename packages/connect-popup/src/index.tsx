@@ -305,13 +305,12 @@ const handleMessageInCoreMode = (
 
         core.getCurrentMethod().then(method => {
             log.debug('handling method in popup', method.name);
-            (method.initAsyncPromise ? method.initAsyncPromise : Promise.resolve()).finally(() => {
-                setState({
-                    method: method.name,
-                    info: method.info,
-                });
-                reactEventBus.dispatch({ type: 'state-update', payload: getState() });
+
+            setState({
+                method: method.name,
+                info: method.info,
             });
+            reactEventBus.dispatch({ type: 'state-update', payload: getState() });
         });
     }
 
