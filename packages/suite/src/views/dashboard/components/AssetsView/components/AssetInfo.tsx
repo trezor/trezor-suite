@@ -17,7 +17,6 @@ interface AssetInfoSkeletonProps {
 }
 
 export const ArrowIcon = styled(Icon)`
-    opacity: 0;
     transition: opacity 0.1s;
     margin-top: ${spacingsPx.xxs};
     margin-left: ${spacingsPx.xs};
