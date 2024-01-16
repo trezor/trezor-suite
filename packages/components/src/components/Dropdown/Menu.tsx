@@ -4,6 +4,8 @@ import { borders, spacings, spacingsPx, typography } from '@trezor/theme';
 import { Icon, IconProps } from '../assets/Icon/Icon';
 import type { Coords } from './getAdjustedCoords';
 import { menuStyle } from './menuStyle';
+import { Elevation } from '@trezor/theme/src/elevation';
+import { useElevation } from '../ElevationContext/ElevationContext';
 
 const addonAnimation = keyframes`
     from {
@@ -42,7 +44,7 @@ const AddonContainer = styled.div<{ isFocused?: boolean }>`
     ${typography.label};
 `;
 
-const Container = styled.ul<Pick<MenuProps, 'coords' | 'alignMenu'>>`
+const Container = styled.ul<Pick<MenuProps, 'coords' | 'alignMenu'> & { elevation: Elevation }>`
     position: fixed;
     ${menuStyle};
 
@@ -316,6 +318,8 @@ export interface MenuProps {
 
 export const Menu = forwardRef<HTMLUListElement, MenuProps>(
     ({ items, content, setToggled, alignMenu, coords, addon }, ref) => {
+        const { elevation } = useElevation();
+
         const [focusedItemIndex, setFocusedItemIndex] = useState(
             getDefaultFocusItemIndex(items, addon),
         );
@@ -400,6 +404,7 @@ export const Menu = forwardRef<HTMLUListElement, MenuProps>(
 
         return (
             <Container
+                elevation={elevation}
                 ref={ref}
                 alignMenu={alignMenu}
                 coords={coords}
