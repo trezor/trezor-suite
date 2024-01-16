@@ -40,12 +40,7 @@ const TextareaWrapper = styled(InputWrapper)`
         !disabled &&
         `
         :read-only:not(:disabled) {
-            background-color: ${getInputStateBgColor(
-                inputState,
-                theme,
-                elevation,
-                'TextareaWrapper',
-            )};
+            background-color: ${getInputStateBgColor(inputState, theme, elevation)};
             color: ${theme.textDefault};
         }
     `}
