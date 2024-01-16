@@ -113,7 +113,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
 
     const actionButtons = (
         <>
-            {recovery.status === 'initial' && (
+            {recovery.status === 'initial' ? (
                 <StyledButton
                     onClick={() =>
                         deviceModelInternal === DeviceModelInternal.T1B1
@@ -124,6 +124,10 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                     data-test="@recovery/start-button"
                 >
                     <Translation id="TR_START" />
+                </StyledButton>
+            ) : (
+                <StyledButton onClick={() => onCancel()}>
+                    <Translation id="TR_CLOSE" />
                 </StyledButton>
             )}
         </>
