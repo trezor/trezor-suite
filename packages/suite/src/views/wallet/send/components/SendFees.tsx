@@ -17,7 +17,7 @@ export const SendFees = () => {
     } = useSendFormContext();
 
     return (
-        <Card paddingType="large">
+        <Card>
             <Fees
                 control={control}
                 errors={errors}

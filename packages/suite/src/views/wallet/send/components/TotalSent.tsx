@@ -70,7 +70,7 @@ export const TotalSent = () => {
         transactionInfo && transactionInfo.type !== 'error' ? transactionInfo.token : undefined;
 
     return (
-        <StyledCard paddingType="large">
+        <StyledCard>
             <Left>
                 <Label>
                     <Translation id="TOTAL_SENT" />
