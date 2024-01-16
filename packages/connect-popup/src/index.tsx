@@ -387,11 +387,10 @@ const initCoreInPopup = async (
     // dynamically load core module
     reactEventBus.dispatch({ type: 'loading', message: 'loading core' });
 
+    const { connectSrc } = payload.settings;
     // core is built in a separate build step.
     const { initCore, initTransport } = await import(
-        // @ts-expect-error
-        // eslint-disable-next-line import/extensions
-        /* webpackIgnore: true */ './js/core.js'
+        /* webpackIgnore: true */ `${connectSrc}js/core.js`
     ).catch(_err => {
         fail({
             type: 'error',
