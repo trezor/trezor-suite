@@ -14,6 +14,7 @@
         "@react-navigation/bottom-tabs": "^6.5.11",
         "@react-navigation/native": "^6.1.9",
         "@react-navigation/native-stack": "^6.9.17",
+        "@sentry/react-native": "5.15.2",
         "@suite-common/icons": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/suite-constants": "workspace:*",

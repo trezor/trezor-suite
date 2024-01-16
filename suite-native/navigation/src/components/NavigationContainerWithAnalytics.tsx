@@ -1,5 +1,7 @@
 import { useMemo, useRef, ReactNode } from 'react';
 
+import * as Sentry from '@sentry/react-native';
+
 import {
     NavigationContainer,
     useNavigationContainerRef,
@@ -59,6 +61,18 @@ export const NavigationContainerWithAnalytics = ({ children }: { children: React
                     currentScreen: currentRouteName,
                 },
             });
+
+            Sentry.addBreadcrumb({
+                category: EventType.ScreenChange,
+                message: 'screen changed',
+                level: 'info',
+                data: {
+                    previousScreen: previousRouteName,
+                    currentScreen: currentRouteName,
+                },
+            });
+
+            Sentry.setTag('route', currentRouteName);
         }
     };
 

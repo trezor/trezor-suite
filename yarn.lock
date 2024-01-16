@@ -7786,6 +7786,7 @@ __metadata:
     "@react-navigation/bottom-tabs": "npm:^6.5.11"
     "@react-navigation/native": "npm:^6.1.9"
     "@react-navigation/native-stack": "npm:^6.9.17"
+    "@sentry/react-native": "npm:5.15.2"
     "@suite-common/icons": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
