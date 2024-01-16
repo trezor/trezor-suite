@@ -85,8 +85,8 @@ platform :android do
       org_slug: 'satoshilabs',
       project_slug: 'suite-native',
       version: ENV["VERSION"],
-      app_identifier: package_name, 
-      build: ENV["BUILD_NUMBER"]
+      app_identifier: package_name,
+      build: ENV["BUILD_NUMBER"],
       sourcemap: ['index.android.bundle', 'index.android.bundle.map'],
       rewrite: true
     )
@@ -149,8 +149,8 @@ platform :android do
       org_slug: 'satoshilabs',
       project_slug: 'suite-native',
       version: ENV["VERSION"],
-      app_identifier: package_name, 
-      build: ENV["BUILD_NUMBER"]
+      app_identifier: package_name,
+      build: ENV["BUILD_NUMBER"],
       sourcemap: ['index.android.bundle', 'index.android.bundle.map'],
       rewrite: true
     )
