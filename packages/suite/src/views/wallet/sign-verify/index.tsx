@@ -30,6 +30,7 @@ import {
     MAX_LENGTH_SIGNATURE,
 } from 'src/hooks/wallet/sign-verify/useSignVerifyForm';
 import { getInputState } from '@suite-common/wallet-utils';
+import { spacingsPx } from '@trezor/theme';
 
 const SwitchWrapper = styled.label`
     display: flex;
@@ -61,21 +62,21 @@ const FormatDescription = styled.p`
 `;
 
 const StyledSelectBar = styled(SelectBar)`
-    margin: 12px 0 20px;
+    margin: ${spacingsPx.sm} 0 ${spacingsPx.lg};
 
     @media (min-width: ${variables.SCREEN_SIZE.SM}) {
         width: 320px;
-        margin: 0 0 0 20px;
+        margin: ${spacingsPx.sm} 0 0 ${spacingsPx.lg};
     }
 
     @media (min-width: ${variables.SCREEN_SIZE.MD}) and (max-width: ${variables.SCREEN_SIZE.LG}) {
         width: 100%;
-        margin: 12px 0 20px;
+        margin: ${spacingsPx.sm} 0 ${spacingsPx.lg};
     }
 
     @media (min-width: ${variables.SCREEN_SIZE.LG}) {
         width: 320px;
-        margin: 0 0 0 20px;
+        margin: ${spacingsPx.xs} 0 0 20px;
     }
 `;
 
@@ -108,6 +109,10 @@ const tooltipContent = (
         }}
     />
 );
+
+const MultilineRow = styled(Row)`
+    align-items: start;
+`;
 
 const SignVerify = () => {
     const [page, setPage] = useState<NavPages>('sign');
@@ -226,7 +231,7 @@ const SignVerify = () => {
                         />
                     </Row>
 
-                    <Row>
+                    <MultilineRow>
                         {isSignPage ? (
                             <SignAddressInput
                                 name="path"
@@ -262,7 +267,7 @@ const SignVerify = () => {
                                 {...isElectrumField}
                             />
                         )}
-                    </Row>
+                    </MultilineRow>
 
                     <Divider />
 
