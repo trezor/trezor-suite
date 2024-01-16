@@ -142,7 +142,7 @@ export const TroubleshootingTips = ({
                 </FooterText>
 
                 <TrezorLink variant="nostyle" href={TREZOR_SUPPORT_URL}>
-                    <Button variant="tertiary">
+                    <Button variant="tertiary" size="small">
                         <Translation id="TR_CONTACT_SUPPORT" />
                     </Button>
                 </TrezorLink>
