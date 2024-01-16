@@ -114,16 +114,22 @@ export class PopupManager extends EventEmitter {
     }
 
     private injectContentScript = (tabId: number) => {
-        chrome.scripting
-            .executeScript({
-                target: { tabId },
-                // content script is injected into body of func in build time.
-                func: () => {
-                    // <!--content-script-->
-                },
-            })
-            .then(() => this.logger.debug('content script injected'))
-            .catch(error => this.logger.error('content script injection error', error));
+        chrome.permissions.getAll(permissions => {
+            if (permissions.permissions?.includes('scripting')) {
+                chrome.scripting
+                    .executeScript({
+                        target: { tabId },
+                        // content script is injected into body of func in build time.
+                        func: () => {
+                            // <!--content-script-->
+                        },
+                    })
+                    .then(() => this.logger.debug('content script injected'))
+                    .catch(error => this.logger.error('content script injection error', error));
+            } else {
+                // When permissions for `scripting` are not provided 3rd party integrations have include content-script.js manually.
+            }
+        });
     };
 
     clear(focus = true) {
