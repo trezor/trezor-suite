@@ -3753,22 +3753,22 @@ export default defineMessages({
     TR_ACCOUNT_TYPE_BIP84_DESC: {
         id: 'TR_ACCOUNT_TYPE_BIP84_DESC',
         defaultMessage:
-            'Bech32 uses a modern address format that allows for smaller transaction fees. Be aware that it may not be compatible with old services.',
+            'SegWit is the default address type in Trezor Suite. It reduces transaction size, boosts capacity, and enhances scalability while enabling smaller transaction fees, but may not work with some older services.',
     },
     TR_ACCOUNT_TYPE_BIP86_DESC: {
         id: 'TR_ACCOUNT_TYPE_BIP86_DESC',
         defaultMessage:
-            'Taproot is a new account type that can enhance privacy and network efficiency. Some services may not yet support Taproot format addresses.',
+            'Taproot is a new address type that can enhance privacy and network efficiency. Note that some services may not support Taproot addresses yet.',
     },
     TR_ACCOUNT_TYPE_BIP49_DESC: {
         id: 'TR_ACCOUNT_TYPE_BIP49_DESC',
         defaultMessage:
-            'Pay to script hash (P2SH) is an advanced type of transaction used in bitcoin and other similar cryptocurrencies. Unlike P2PKH, it allows the sender to commit funds to a hash of an arbitrary valid script.',
+            'Legacy SegWit is universally supported, more efficient than Legacy, and is compatible with both Legacy and SegWit.',
     },
     TR_ACCOUNT_TYPE_BIP44_DESC: {
         id: 'TR_ACCOUNT_TYPE_BIP44_DESC',
         defaultMessage:
-            'Legacy Pay to Public Key Hash (P2PKH) is the basic type of transaction used in bitcoin and other similar cryptocurrencies.',
+            'Legacy uses simpler transaction formats but may result in higher transaction fees and lacks the efficiency and features found in newer address types.',
     },
     TR_ACCOUNT_DETAILS_XPUB_HEADER: {
         id: 'TR_ACCOUNT_DETAILS_XPUB_HEADER',
@@ -3852,7 +3852,8 @@ export default defineMessages({
     },
     TR_ACCOUNT_TYPE_SLIP25_DESC: {
         id: 'TR_ACCOUNT_TYPE_SLIP25_DESC',
-        defaultMessage: 'What is a coinjoin account?',
+        defaultMessage:
+            'Mix your assets with other coinjoin users, making it harder to track and analyze your transaction history.',
     },
     TOAST_QR_INCORRECT_ADDRESS: {
         id: 'TOAST_QR_INCORRECT_ADDRESS',
