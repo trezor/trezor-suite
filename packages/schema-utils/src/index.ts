@@ -1,5 +1,5 @@
 import { JavaScriptTypeBuilder, Static, TSchema, TObject, Optional } from '@sinclair/typebox';
-import { Value, ValueErrorType } from '@sinclair/typebox/value';
+import { ValueErrorType, Errors } from '@sinclair/typebox/errors';
 import { Mixin } from 'ts-mixer';
 
 import { ArrayBufferBuilder, BufferBuilder, KeyofEnumBuilder, UintBuilder } from './custom-types';
@@ -24,7 +24,7 @@ export function Validate<T extends TSchema>(schema: T, value: unknown): value is
 }
 
 export function Assert<T extends TSchema>(schema: T, value: unknown): asserts value is Static<T> {
-    const errors = [...Value.Errors(schema, value)];
+    const errors = [...Errors(schema, value)];
     let [error] = errors;
     while (error) {
         if (error.path === '/' && errors.length > 1) {
