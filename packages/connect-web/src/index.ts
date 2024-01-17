@@ -2,11 +2,11 @@ import EventEmitter from 'events';
 
 // NOTE: @trezor/connect part is intentionally not imported from the index due to NormalReplacementPlugin
 // in packages/suite-build/configs/web.webpack.config.ts
+import * as ERRORS from '@trezor/connect/lib/constants/errors';
 import {
     POPUP,
     IFRAME,
     UI,
-    ERRORS,
     UI_EVENT,
     DEVICE_EVENT,
     RESPONSE_EVENT,
@@ -16,12 +16,11 @@ import {
     parseMessage,
     createUiMessage,
     createErrorMessage,
-    ConnectSettings,
-    Manifest,
     PostMessageEvent,
     UiResponseEvent,
     CallMethod,
-} from '@trezor/connect/lib/exports';
+} from '@trezor/connect/lib/events';
+import type { ConnectSettings, Manifest } from '@trezor/connect/lib/types';
 import { factory } from '@trezor/connect/lib/factory';
 import { initLog } from '@trezor/connect/lib/utils/debug';
 import { config } from '@trezor/connect/lib/data/config';
