@@ -3,7 +3,6 @@ import ReactSelect, { Props as ReactSelectProps, StylesConfig, SelectInstance } 
 import styled, { css, DefaultTheme, useTheme } from 'styled-components';
 import {
     borders,
-    boxShadows,
     spacings,
     spacingsPx,
     typography,
@@ -205,9 +204,6 @@ const SelectLabel = styled(Label)`
     div:has(div.react-select__placeholder:not(:empty)) ~ & {
         transform: ${LABEL_TRANSFORM};
     }
-
-    /* The above code is not working for now just lets make it small.
-    transform: ${LABEL_TRANSFORM}; */
 `;
 
 // Prevent closing the menu when scrolling through options.
