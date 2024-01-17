@@ -4,7 +4,7 @@ import { borders, spacings, spacingsPx, typography } from '@trezor/theme';
 import { Icon, IconProps } from '../assets/Icon/Icon';
 import type { Coords } from './getAdjustedCoords';
 import { menuStyle } from './menuStyle';
-import { Elevation } from '@trezor/theme/src/elevation';
+import { Elevation, mapElevationToBackground, nextElevation } from '@trezor/theme/src/elevation';
 import { useElevation } from '../ElevationContext/ElevationContext';
 
 const addonAnimation = keyframes`
@@ -72,7 +72,7 @@ type MenuItemsProps = Pick<DropdownMenuItemProps, 'isDisabled' | 'separatorBefor
     isFocused: boolean;
 };
 
-const MenuItemContainer = styled.li<MenuItemsProps>`
+const MenuItemContainer = styled.li<MenuItemsProps & { elevation: Elevation }>`
     position: relative;
     display: flex;
     align-items: center;
@@ -80,8 +80,10 @@ const MenuItemContainer = styled.li<MenuItemsProps>`
     gap: ${spacingsPx.sm};
     padding: ${spacingsPx.xs} ${spacingsPx.sm};
     border-radius: ${borders.radii.xxs};
-    background: ${({ isFocused, noHoverEffect, theme }) =>
-        isFocused && !noHoverEffect && theme.backgroundSurfaceElevation0};
+    background: ${({ isFocused, noHoverEffect, theme, elevation }) =>
+        isFocused && !noHoverEffect
+            ? theme[mapElevationToBackground[nextElevation[elevation]]]
+            : undefined};
     color: ${({ isDisabled, theme }) => (!isDisabled ? theme.textDefault : theme.textDisabled)};
     white-space: nowrap;
     transition: background 0.2s ease;
@@ -161,6 +163,8 @@ const MenuItem = ({
     onMouseOver,
     ...rest
 }: MenuItemComponentProps) => {
+    const { elevation } = useElevation();
+
     const onMenuItemClick = () => {
         if (isDisabled) {
             return;
@@ -174,6 +178,7 @@ const MenuItem = ({
 
     return (
         <MenuItemContainer
+            elevation={elevation}
             onClick={onMenuItemClick}
             isDisabled={isDisabled}
             noHoverEffect={!onClick}

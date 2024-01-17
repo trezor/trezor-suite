@@ -41,23 +41,30 @@ export interface CardProps {
     paddingType?: PaddingType;
     onMouseEnter?: () => void;
     onMouseLeave?: () => void;
+    onClick?: () => void;
 
     children?: ReactNode;
     className?: string;
+
+    resetElevation?: Elevation;
 }
 
 export const Card = forwardRef<HTMLDivElement, CardProps>(
-    ({ paddingType = 'normal', children, ...rest }, ref) => {
+    ({ paddingType = 'normal', children, resetElevation, ...rest }, ref) => {
         const { elevation } = useElevation();
+
+        const adjustedElevation =
+            // eslint-disable-next-line no-nested-ternary
+            resetElevation !== undefined ? resetElevation : elevation !== null ? elevation : 0;
 
         return (
             <Wrapper
                 ref={ref}
-                $elevation={elevation !== null ? elevation : 0}
+                $elevation={adjustedElevation}
                 $paddingSize={getPaddingSize(paddingType)}
                 {...rest}
             >
-                <ElevationContext baseElevation={elevation}>{children}</ElevationContext>
+                <ElevationContext baseElevation={adjustedElevation}>{children}</ElevationContext>
             </Wrapper>
         );
     },
