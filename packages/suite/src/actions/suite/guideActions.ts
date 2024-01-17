@@ -1,8 +1,5 @@
 import { analytics, EventType } from '@trezor/suite-analytics';
 
-import { GUIDE } from './constants';
-import { Dispatch } from 'src/types/suite';
-
 import type {
     ActiveView,
     Feedback,
@@ -11,6 +8,10 @@ import type {
     GuideNode,
 } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { isCodesignBuild } from '@trezor/env-utils';
+
+import { Dispatch } from 'src/types/suite';
+import { GUIDE } from './constants';
 
 export type GuideAction =
     | { type: typeof GUIDE.OPEN }
@@ -68,7 +69,7 @@ const getUrl = (feedbackType: FeedbackType) => {
     const typeUri = feedbackType === 'BUG' ? 'bugs' : 'feedback';
     const base = `https://data.trezor.io/suite/${typeUri}`;
 
-    if (process.env.CODESIGN_BUILD) {
+    if (isCodesignBuild()) {
         return `${base}/stable.log`;
     }
 

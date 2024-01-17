@@ -1,12 +1,13 @@
 import url from 'url';
 
+import { isDevEnv } from '@suite-common/suite-utils';
 import { TOR_URLS } from '@trezor/urls';
-import { isDevEnv, isCodesignBuild } from '@suite-common/suite-utils';
+import { isCodesignBuild } from '@trezor/env-utils';
 
 const getAppName = () => {
     const appName = 'Trezor Suite';
 
-    if (!isCodesignBuild) {
+    if (!isCodesignBuild()) {
         return `${appName} ${isDevEnv ? 'Local' : 'Dev'}`;
     }
 
