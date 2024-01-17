@@ -4,6 +4,7 @@ import { Icon, variables } from '@trezor/components';
 import { showAddress } from 'src/actions/wallet/signVerifyActions';
 import { useDispatch } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
+import { spacingsPx } from '@trezor/theme';
 
 const RevealText = styled.div`
     max-width: 0;
@@ -13,12 +14,16 @@ const RevealText = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     white-space: nowrap;
     overflow: hidden;
-    transition: max-width 0.3s;
+    transition:
+        max-width 0.2s ease-out,
+        opacity 0.2s ease;
+    opacity: 0;
 `;
 
 const ButtonWrapper = styled.button`
     position: absolute;
-    right: 20px;
+    top: -${spacingsPx.xxs};
+    right: ${spacingsPx.xl};
     display: flex;
     align-items: center;
     margin-left: auto;
@@ -26,15 +31,13 @@ const ButtonWrapper = styled.button`
     border: none;
     border-radius: 4px;
     background-color: transparent;
-    transition: background-color 0.3s;
     pointer-events: all;
     cursor: pointer;
 
     :hover {
-        background-color: ${({ theme }) => theme.BG_WHITE_ALT_HOVER};
-
-        > div {
+        > ${RevealText} {
             max-width: 100px;
+            opacity: 1;
         }
     }
 `;
