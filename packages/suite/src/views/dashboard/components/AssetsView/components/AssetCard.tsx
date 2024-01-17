@@ -11,9 +11,9 @@ import {
 } from 'src/components/suite';
 import { isTestnet } from '@suite-common/wallet-utils';
 import { CoinmarketBuyButton } from 'src/views/dashboard/components/CoinmarketBuyButton';
-import { borders, spacingsPx, typography } from '@trezor/theme';
+import { spacingsPx, typography } from '@trezor/theme';
 
-import { H2, Icon, SkeletonRectangle, variables } from '@trezor/components';
+import { Card, H2, Icon, SkeletonRectangle, variables } from '@trezor/components';
 import { useDispatch } from 'react-redux';
 import { useAccountSearch, useLoadingSkeleton } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
@@ -21,13 +21,11 @@ import { ArrowIcon, AssetInfo, AssetInfoSkeleton } from './AssetInfo';
 import { AssetFiatBalance } from '@suite-common/assets';
 import { FiatHeader } from '../../FiatHeader';
 
-const BuyContainer = styled.div`
+const BuyContainerCard = styled(Card)`
     display: flex;
+    flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    background-color: ${({ theme }) => theme.backgroundSurfaceElevation2};
-    border-radius: ${borders.radii.xs};
-    padding: ${spacingsPx.sm} ${spacingsPx.sm} ${spacingsPx.sm} ${spacingsPx.md};
 `;
 
 const WarningIcon = styled(Icon)`
@@ -35,19 +33,12 @@ const WarningIcon = styled(Icon)`
     padding-bottom: ${spacingsPx.xxxs};
 `;
 
-const BuyMarginContainer = styled.div`
-    margin: 0 ${spacingsPx.xs} ${spacingsPx.xs} ${spacingsPx.xs};
-`;
-
 const MarginContainer = styled.div`
     padding: ${spacingsPx.md} ${spacingsPx.sm} ${spacingsPx.sm} ${spacingsPx.md};
     flex: 1;
 `;
 
-const Card = styled.div`
-    border-radius: ${borders.radii.md};
-    box-shadow: ${({ theme }) => theme.boxShadowElevation1};
-
+const StyledCard = styled(Card)`
     :hover {
         box-shadow: ${({ theme }) => theme.boxShadowElevation3};
         cursor: pointer;
@@ -58,10 +49,6 @@ const Card = styled.div`
             }
         }
     }
-
-    background-color: ${({ theme }) => theme.backgroundSurfaceElevation1};
-    display: flex;
-    flex-direction: column;
     transition: box-shadow 0.2s;
 `;
 
@@ -143,7 +130,7 @@ export const AssetCard = ({
     };
 
     return (
-        <Card onClick={handleCardClick}>
+        <StyledCard onClick={handleCardClick}>
             <MarginContainer>
                 <AssetContainer>
                     <AssetInfo
@@ -176,28 +163,26 @@ export const AssetCard = ({
                 )}
             </MarginContainer>
             {!isTestnet(symbol) && (
-                <BuyMarginContainer>
-                    <BuyContainer>
-                        <div>
-                            <BuyContainerLabel>
-                                <Translation id="TR_EXCHANGE_RATE" />
-                            </BuyContainerLabel>
-                            <PriceTicker symbol={symbol} />
-                        </div>
-                        <div>
-                            <BuyContainerLabel>
-                                <Translation id="TR_7D_CHANGE" />
-                            </BuyContainerLabel>
-                            <TrendTicker symbol={symbol} />
-                        </div>
-                        <CoinmarketBuyButton
-                            symbol={symbol}
-                            dataTest={`@dashboard/assets/grid/${symbol}/buy-button`}
-                        />
-                    </BuyContainer>
-                </BuyMarginContainer>
+                <BuyContainerCard>
+                    <div>
+                        <BuyContainerLabel>
+                            <Translation id="TR_EXCHANGE_RATE" />
+                        </BuyContainerLabel>
+                        <PriceTicker symbol={symbol} />
+                    </div>
+                    <div>
+                        <BuyContainerLabel>
+                            <Translation id="TR_7D_CHANGE" />
+                        </BuyContainerLabel>
+                        <TrendTicker symbol={symbol} />
+                    </div>
+                    <CoinmarketBuyButton
+                        symbol={symbol}
+                        dataTest={`@dashboard/assets/grid/${symbol}/buy-button`}
+                    />
+                </BuyContainerCard>
             )}
-        </Card>
+        </StyledCard>
     );
 };
 
@@ -206,7 +191,7 @@ export const AssetCardSkeleton = (props: { animate?: boolean }) => {
     const animate = props.animate ?? shouldAnimate;
 
     return (
-        <Card>
+        <StyledCard>
             <MarginContainer>
                 <AssetContainer>
                     <AssetInfoSkeleton animate={animate} />
@@ -223,9 +208,9 @@ export const AssetCardSkeleton = (props: { animate?: boolean }) => {
                     <SkeletonRectangle animate={animate} width={50} height={16} />
                 </CoinAmount>
             </MarginContainer>
-            <BuyMarginContainer>
+            <BuyContainerCard>
                 <SkeletonRectangle animate={animate} width="100%" height={66} />
-            </BuyMarginContainer>
-        </Card>
+            </BuyContainerCard>
+        </StyledCard>
     );
 };
