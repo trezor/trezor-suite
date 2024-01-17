@@ -1,6 +1,6 @@
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box, StepsProgressBar, Text } from '@suite-native/atoms';
-import { useIsUsbDeviceConnectFeatureEnabled } from '@suite-native/feature-flags';
+import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 
 type OnboardingScreenHeaderProps = {
     title: string;
@@ -30,7 +30,7 @@ export const OnboardingScreenHeader = ({
 }: OnboardingScreenHeaderProps) => {
     const { applyStyle } = useNativeStyles();
 
-    const { isUsbDeviceConnectFeatureEnabled } = useIsUsbDeviceConnectFeatureEnabled();
+    const [isUsbDeviceConnectFeatureEnabled] = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
 
     return (
         <Box alignItems="center" style={applyStyle(wrapperStyle)} alignSelf="center">

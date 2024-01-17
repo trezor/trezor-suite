@@ -2,7 +2,7 @@ import { Fragment } from 'react';
 import { FlatList } from 'react-native';
 
 import { AccordionItem, Box, Text, VStack } from '@suite-native/atoms';
-import { useIsUsbDeviceConnectFeatureEnabled } from '@suite-native/feature-flags';
+import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { useTranslate } from '@suite-native/intl';
 
 type BulletListProps = {
@@ -124,7 +124,7 @@ const DisabledUsbFAQ = () => {
 };
 
 export const FAQInfoPanel = () => {
-    const { isUsbDeviceConnectFeatureEnabled } = useIsUsbDeviceConnectFeatureEnabled();
+    const [isUsbDeviceConnectFeatureEnabled] = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
 
     return (
         <VStack marginHorizontal="medium">

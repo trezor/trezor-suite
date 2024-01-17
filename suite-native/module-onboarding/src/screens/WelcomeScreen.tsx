@@ -4,7 +4,7 @@ import { Dimensions, ImageBackground } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 
-import { useIsUsbDeviceConnectFeatureEnabled } from '@suite-native/feature-flags';
+import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { Link } from '@suite-native/link';
 import { Box, Text, TrezorSuiteLiteHeader } from '@suite-native/atoms';
 import {
@@ -13,7 +13,7 @@ import {
     Screen,
     StackNavigationProps,
 } from '@suite-native/navigation';
-import { useTranslate, Translation } from '@suite-native/intl';
+import { Translation, useTranslate } from '@suite-native/intl';
 import { Icon } from '@suite-common/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { useActiveColorScheme } from '@suite-native/theme';
@@ -56,7 +56,7 @@ const cardStyle = prepareNativeStyle(utils => ({
 export const WelcomeScreen = () => {
     const { translate } = useTranslate();
 
-    const { isUsbDeviceConnectFeatureEnabled } = useIsUsbDeviceConnectFeatureEnabled();
+    const [isUsbDeviceConnectFeatureEnabled] = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
 
     const navigation =
         useNavigation<

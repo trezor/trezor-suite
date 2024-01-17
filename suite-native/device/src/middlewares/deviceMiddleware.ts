@@ -11,7 +11,7 @@ import {
     selectDevice,
     selectDeviceThunk,
 } from '@suite-common/wallet-core';
-import { selectIsDeviceConnectFeatureFlagEnabled } from '@suite-native/feature-flags';
+import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 
 import { wipeDisconnectedDevicesDataThunk } from '../deviceThunks';
@@ -63,8 +63,9 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
             dispatch(handleDeviceDisconnect(action.payload));
         }
 
-        const isUsbDeviceConnectFeatureEnabled = selectIsDeviceConnectFeatureFlagEnabled(
+        const isUsbDeviceConnectFeatureEnabled = selectIsFeatureFlagEnabled(
             getState(),
+            FeatureFlag.IsDeviceConnectEnabled,
         );
 
         switch (action.type) {

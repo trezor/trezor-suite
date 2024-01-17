@@ -1,33 +1,41 @@
 import { Platform } from 'react-native';
 
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-export interface FeatureFlagsState {
-    isDeviceConnectEnabled: boolean;
-}
+export const FeatureFlag = {
+    IsDeviceConnectEnabled: 'isDeviceConnectEnabled',
+    IsPassphraseEnabled: 'isPassphraseEnabled',
+} as const;
+export type FeatureFlag = (typeof FeatureFlag)[keyof typeof FeatureFlag];
+
+export type FeatureFlagsState = Record<FeatureFlag, boolean>;
 
 export type FeatureFlagsRootState = {
     featureFlags: FeatureFlagsState;
 };
 
 export const featureFlagsInitialState: FeatureFlagsState = {
-    isDeviceConnectEnabled: Platform.OS === 'android',
+    [FeatureFlag.IsDeviceConnectEnabled]: Platform.OS === 'android',
+    [FeatureFlag.IsPassphraseEnabled]: false,
 };
 
-export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = ['isDeviceConnectEnabled'];
+export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
+    FeatureFlag.IsDeviceConnectEnabled,
+    FeatureFlag.IsPassphraseEnabled,
+];
 
 export const featureFlagsSlice = createSlice({
     name: 'featureFlags',
     initialState: featureFlagsInitialState,
     reducers: {
-        toggleIsDeviceConnectEnabled: state => {
-            state.isDeviceConnectEnabled = !state.isDeviceConnectEnabled;
+        toggleFeatureFlag: (state, { payload }: PayloadAction<{ featureFlag: FeatureFlag }>) => {
+            state[payload.featureFlag] = !state[payload.featureFlag];
         },
     },
 });
 
-export const selectIsDeviceConnectFeatureFlagEnabled = (state: FeatureFlagsRootState) =>
-    state.featureFlags.isDeviceConnectEnabled;
+export const selectIsFeatureFlagEnabled = (state: FeatureFlagsRootState, key: FeatureFlag) =>
+    state.featureFlags[key];
 
-export const { toggleIsDeviceConnectEnabled } = featureFlagsSlice.actions;
+export const { toggleFeatureFlag } = featureFlagsSlice.actions;
 export const featureFlagsReducer = featureFlagsSlice.reducer;

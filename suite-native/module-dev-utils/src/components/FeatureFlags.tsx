@@ -1,24 +1,31 @@
-import { Box, CheckBox, Text, VStack, Card } from '@suite-native/atoms';
-import { useIsUsbDeviceConnectFeatureEnabled } from '@suite-native/feature-flags';
+import { Box, Card, CheckBox, Text, VStack } from '@suite-native/atoms';
+import { FeatureFlag as FeatureFlagEnum, useFeatureFlag } from '@suite-native/feature-flags';
 
-export const FeatureFlags = () => {
-    const { isUsbDeviceConnectFeatureEnabled, toggleIsDeviceConnectFeatureFlagEnabled } =
-        useIsUsbDeviceConnectFeatureEnabled();
+const featureFlagsTitleMap = {
+    [FeatureFlagEnum.IsDeviceConnectEnabled]: 'Connect device',
+    [FeatureFlagEnum.IsPassphraseEnabled]: 'Passphrase',
+} as const satisfies Record<FeatureFlagEnum, string>;
+
+const FeatureFlag = ({ featureFlag }: { featureFlag: FeatureFlagEnum }) => {
+    const [value, setValue] = useFeatureFlag(featureFlag);
 
     return (
-        <Card>
-            <VStack spacing="small">
-                <Text variant="titleSmall">Feature Flags</Text>
-                <VStack>
-                    <Box flexDirection="row" justifyContent="space-between">
-                        <Text>Connect device</Text>
-                        <CheckBox
-                            isChecked={isUsbDeviceConnectFeatureEnabled}
-                            onChange={toggleIsDeviceConnectFeatureFlagEnabled}
-                        />
-                    </Box>
-                </VStack>
-            </VStack>
-        </Card>
+        <Box flexDirection="row" justifyContent="space-between">
+            <Text>{featureFlagsTitleMap[featureFlag]}</Text>
+            <CheckBox isChecked={value} onChange={setValue} />
+        </Box>
     );
 };
+
+export const FeatureFlags = () => (
+    <Card>
+        <VStack spacing="small">
+            <Text variant="titleSmall">Feature Flags</Text>
+            <VStack>
+                {Object.values(FeatureFlagEnum).map(featureFlag => (
+                    <FeatureFlag key={featureFlag} featureFlag={featureFlag} />
+                ))}
+            </VStack>
+        </VStack>
+    </Card>
+);

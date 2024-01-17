@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { useIsUsbDeviceConnectFeatureEnabled } from '@suite-native/feature-flags';
+import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import {
     OnboardingStackParamList,
     OnboardingStackRoutes,
@@ -39,7 +39,7 @@ const receiveScreenContentMap = {
 } as const satisfies Record<'device' | 'portfolioTracker', ScreenContent>;
 
 const IconWrapper = ({ children }: { children: ReactNode }) => {
-    const { isUsbDeviceConnectFeatureEnabled } = useIsUsbDeviceConnectFeatureEnabled();
+    const [isUsbDeviceConnectFeatureEnabled] = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
 
     if (!isUsbDeviceConnectFeatureEnabled) return <>{children}</>;
 
@@ -53,7 +53,7 @@ const IconWrapper = ({ children }: { children: ReactNode }) => {
 export const FeatureReceiveScreen = () => {
     const { translate } = useTranslate();
     const navigation = useNavigation<NavigationProps>();
-    const { isUsbDeviceConnectFeatureEnabled } = useIsUsbDeviceConnectFeatureEnabled();
+    const [isUsbDeviceConnectFeatureEnabled] = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
 
     const content =
         receiveScreenContentMap[isUsbDeviceConnectFeatureEnabled ? 'device' : 'portfolioTracker'];
