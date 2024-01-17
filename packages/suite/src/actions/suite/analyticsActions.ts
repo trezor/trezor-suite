@@ -4,7 +4,7 @@
  */
 
 import { allowSentryReport, setSentryUser } from 'src/utils/suite/sentry';
-import { getEnvironment, getCommitHash } from '@trezor/env-utils';
+import { getEnvironment, getCommitHash, isCodesignBuild } from '@trezor/env-utils';
 import type { Dispatch, GetState } from 'src/types/suite';
 
 import {
@@ -53,7 +53,7 @@ export const init = () => (dispatch: Dispatch, getState: GetState) => {
         sessionId,
         environment: getEnvironment(),
         commitId: getCommitHash(),
-        isDev: !process.env.CODESIGN_BUILD,
+        isDev: !isCodesignBuild(),
         callbacks: {
             onEnable: () => dispatch(enableAnalyticsThunk()),
             onDisable: () => dispatch(disableAnalyticsThunk()),

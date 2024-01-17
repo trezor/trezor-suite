@@ -9269,6 +9269,7 @@ __metadata:
     "@trezor/coinjoin": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/connect-common": "workspace:*"
+    "@trezor/env-utils": "workspace:*"
     "@trezor/ipc-proxy": "workspace:*"
     "@trezor/node-utils": "workspace:*"
     "@trezor/request-manager": "workspace:*"

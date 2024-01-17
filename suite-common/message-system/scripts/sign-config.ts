@@ -4,6 +4,8 @@ import * as fs from 'fs-extra';
 import * as jws from 'jws';
 import { join } from 'path';
 
+import { isCodesignBuild } from '@trezor/env-utils';
+
 import { CONFIG_PATH, PACKAGE_ROOT } from './constants';
 import {
     JWS_CONFIG_FILENAME_REMOTE,
@@ -19,9 +21,7 @@ MHQCAQEEINi7lfZE3Y5U9srS58A+AN7Ul7HeBXsHEfzVzijColOkoAcGBSuBBAAKoUQDQgAEbSUHJlr1
 const getPrivateKey = () => {
     /* Only CI jobs flagged with "codesign", sign message system config by production private key.
      * All other branches use development key. */
-    const isCodesignBuild = process.env.IS_CODESIGN_BUILD === 'true';
-
-    if (!isCodesignBuild) {
+    if (!isCodesignBuild()) {
         console.log('Signing config using develop private key!');
 
         return devPrivateKey;

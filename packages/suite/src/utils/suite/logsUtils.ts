@@ -17,6 +17,7 @@ import {
     getSuiteVersion,
     getWindowHeight,
     getWindowWidth,
+    isCodesignBuild,
 } from '@trezor/env-utils';
 import { LogEntry } from '@suite-common/logger';
 import { DEVICE } from '@trezor/connect';
@@ -179,7 +180,7 @@ export const getApplicationInfo = (state: AppState, hideSensitiveInfo: boolean) 
     suiteVersion: getSuiteVersion(),
     commitHash: getCommitHash(),
     startTime,
-    isDev: !process.env.CODESIGN_BUILD,
+    isDev: !isCodesignBuild(),
     debugMenu: state.suite.settings.debug.showDebugMenu,
     online: state.suite.online,
     browserName: getBrowserName(),

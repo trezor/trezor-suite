@@ -6,6 +6,7 @@ import { createLogger } from 'redux-logger';
 
 import { prepareFirmwareReducer } from '@suite-common/wallet-core';
 import { addLog } from '@suite-common/logger';
+import { isCodesignBuild } from '@trezor/env-utils';
 
 import suiteMiddlewares from 'src/middlewares/suite';
 import walletMiddlewares from 'src/middlewares/wallet';
@@ -54,7 +55,7 @@ const middleware = [
 
 const excludedActions = [addLog.type];
 
-if (!process.env.CODESIGN_BUILD) {
+if (!isCodesignBuild()) {
     const excludeLogger = (_getState: any, action: any): boolean =>
         // exclude generated lifecycle actions
         // https://redux-toolkit.js.org/api/createAsyncThunk#promise-lifecycle-actions

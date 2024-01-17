@@ -165,7 +165,7 @@ const config: webpack.Configuration = {
             'process.env.COMMITHASH': JSON.stringify(gitRevision),
             'process.env.ASSET_PREFIX': JSON.stringify(assetPrefix),
             'process.env.JWS_PUBLIC_KEY': JSON.stringify(jwsPublicKey),
-            'process.env.CODESIGN_BUILD': isCodesignBuild,
+            'process.env.IS_CODESIGN_BUILD': `"${isCodesignBuild}"`, // to keep it as string "true"/"false" and not boolean
             'process.env.SENTRY_RELEASE': JSON.stringify(sentryRelease),
             __SENTRY_DEBUG__: isDev,
             __SENTRY_TRACING__: false, // needs to be removed when we introduce performance monitoring in trezor-suite
