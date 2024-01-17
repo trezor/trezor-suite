@@ -50,12 +50,6 @@ const Text = styled.div`
 const AmountInput = styled(NumberInput)`
     display: flex;
     flex: 1;
-
-    /* until the elevation context is implemented */
-    input {
-        background: ${({ theme }) => theme.backgroundNeutralSubtleOnElevation1};
-        border-color: ${({ theme }) => theme.borderOnElevation1};
-    }
 ` as typeof NumberInput; // Styled wrapper doesn't preserve type argument, see https://github.com/styled-components/styled-components/issues/1803#issuecomment-857092410
 
 const Label = styled.div`

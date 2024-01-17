@@ -20,11 +20,6 @@ const Label = styled.span`
 
 const StyledInput = styled(Input)`
     width: 120px;
-
-    /* until the elevation context is implemented */
-    input {
-        background: ${({ theme }) => theme.backgroundNeutralSubtleOnElevation1};
-    }
 `;
 
 interface DelimiterFormProps {

@@ -1,3 +1,4 @@
+import { Elevation, mapElevationToBackground, nextElevation } from '@trezor/theme/src/elevation';
 import { css, keyframes } from 'styled-components';
 
 const SHINE = keyframes`
@@ -9,12 +10,16 @@ const SHINE = keyframes`
     }
 `;
 
-export const shimmerEffect = css`
+export const shimmerEffect = css<{ elevation: Elevation }>`
     animation: ${SHINE} 1.5s ease infinite;
     background: linear-gradient(
         90deg,
-        ${({ theme }) =>
-            `${theme.gradientNeutralBottomFadeSurfaceElevation1Start}, ${theme.gradientNeutralBottomFadeSurfaceElevation1End}, ${theme.gradientNeutralBottomFadeSurfaceElevation1Start}`}
+        ${({ theme, elevation }) => {
+            const start = theme[mapElevationToBackground[elevation]];
+            const end = theme[mapElevationToBackground[nextElevation[elevation]]];
+
+            return `${start}, ${end}, ${start}`;
+        }}
     );
     background-size: 200%;
 `;

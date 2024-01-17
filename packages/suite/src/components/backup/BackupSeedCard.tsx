@@ -39,7 +39,7 @@ const Container = styled(Card)<{ checked: boolean }>`
     cursor: pointer;
 
     :hover {
-        box-shadow: ${({ theme }) => theme.boxShadowElevation3};
+        box-shadow: ${({ theme }) => theme.boxShadowElevated};
     }
 
     ${variables.SCREEN_QUERY.MOBILE} {

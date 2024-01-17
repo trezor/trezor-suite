@@ -30,14 +30,6 @@ const Heading = styled.p`
     position: absolute;
 `;
 
-const AddressInput = styled(Input)`
-    /* until the elevation context is implemented */
-    input {
-        background: ${({ theme }) => theme.backgroundNeutralSubtleOnElevation1};
-        border-color: ${({ theme }) => theme.borderOnElevation1};
-    }
-`;
-
 const Text = styled.span`
     display: flex;
     align-items: center;
@@ -240,7 +232,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                 />
             </Heading>
 
-            <AddressInput
+            <Input
                 inputState={inputState}
                 innerAddon={
                     metadataEnabled && broadcastEnabled ? (

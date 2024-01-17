@@ -15,10 +15,19 @@ export const ElevationContext = ({
     </ElevationReactContext.Provider>
 );
 
-export const useElevation = () => {
+export const useElevation = (forceElevation?: Elevation) => {
     const elevation = useContext(ElevationReactContext);
 
-    const innerElevation = useMemo(() => nextElevation[elevation], [elevation]);
+    const innerElevation = useMemo(
+        () =>
+            // eslint-disable-next-line no-nested-ternary
+            forceElevation !== undefined
+                ? forceElevation
+                : elevation !== null
+                ? nextElevation[elevation]
+                : 0,
+        [elevation, forceElevation],
+    );
 
     return { elevation: innerElevation };
 };

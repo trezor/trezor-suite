@@ -32,7 +32,7 @@ const Container = styled.div`
     width: 680px;
     /* Model has intentionally always Elevation = 1 (it resets the elevation) */
     background: ${({ theme }) => theme.backgroundSurfaceElevation1};
-    box-shadow: ${({ theme }) => theme.boxShadowElevation3};
+    box-shadow: ${({ theme }) => theme.boxShadowElevated};
 `;
 
 export interface HeaderProps {
