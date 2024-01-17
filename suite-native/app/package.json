@@ -66,6 +66,7 @@
         "@suite-native/module-settings": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@suite-native/notifications": "workspace:*",
+        "@suite-native/passphrase": "workspace:*",
         "@suite-native/receive": "workspace:*",
         "@suite-native/state": "workspace:*",
         "@suite-native/storage": "workspace:*",
