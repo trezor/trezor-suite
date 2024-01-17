@@ -14,7 +14,11 @@ import { SUITE_BRIDGE_URL, SUITE_UDEV_URL, TREZOR_SUPPORT_URL } from '@trezor/ur
 import { container, getState, showView, postMessage } from './common';
 
 const initWebUsbButton = (showLoader: boolean) => {
-    const { usb } = window.navigator;
+    const { iframe } = getState();
+    console.log('getState();', getState());
+    // this is basically to detect that iframe was injected into mv2 extension background. it does not have navigator.usb
+    const usb = iframe ? iframe.navigator.usb : null;
+
     const webusbContainer = container.getElementsByClassName('webusb')[0] as HTMLElement;
     webusbContainer.style.display = 'flex';
     const button = webusbContainer.getElementsByTagName('button')[0];
@@ -32,7 +36,7 @@ const initWebUsbButton = (showLoader: boolean) => {
             });
 
             const { iframe, core } = getState();
-
+            console.log('selectDevice.getState()', getState);
             if (iframe) {
                 iframe.postMessage({
                     event: UI_EVENT,
