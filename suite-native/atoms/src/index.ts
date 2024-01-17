@@ -10,7 +10,6 @@ export * from './Input/InputWrapper';
 export * from './Input/SearchInput';
 export * from './Input/Input';
 export * from './CheckBox';
-export * from './Chip';
 export * from './Switch';
 export * from './DiscreetText';
 export * from './ListItem/ListItem';
