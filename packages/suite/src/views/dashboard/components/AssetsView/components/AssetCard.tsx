@@ -23,7 +23,7 @@ import { FiatHeader } from '../../FiatHeader';
 
 const StyledCard = styled(Card)`
     :hover {
-        box-shadow: ${({ theme }) => theme.boxShadowElevation3};
+        box-shadow: ${({ theme }) => theme.boxShadowElevated};
         cursor: pointer;
 
         ${ArrowIcon} {

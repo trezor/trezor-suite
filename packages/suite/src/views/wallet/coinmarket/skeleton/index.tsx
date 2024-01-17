@@ -62,6 +62,7 @@ const StyledRight = styled(Right)`
 
 export const CoinmarketSkeleton = () => {
     const { shouldAnimate } = useLoadingSkeleton();
+
     return (
         <Wrapper responsiveSize="LG">
             <SkeletonWrapper>

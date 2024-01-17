@@ -1,7 +1,8 @@
 import styled, { css } from 'styled-components';
-import { DEFAULT_ELEVATION } from './consts';
 import { SkeletonBaseProps } from './types';
 import { getValue, shimmerEffect } from './utils';
+import { Elevation, mapElevationToBackground } from '@trezor/theme/src/elevation';
+import { useElevation } from '../ElevationContext/ElevationContext';
 
 export type SkeletonRectangleProps = SkeletonBaseProps & {
     width?: string | number;
@@ -9,11 +10,11 @@ export type SkeletonRectangleProps = SkeletonBaseProps & {
     borderRadius?: string | number;
 };
 
-export const SkeletonRectangle = styled.div<SkeletonRectangleProps>`
+const StyledSkeletonRectangle = styled.div<SkeletonRectangleProps & { elevation: Elevation }>`
     width: ${({ width }) => getValue(width) ?? '80px'};
     height: ${({ height }) => getValue(height) ?? '20px'};
-    background: ${({ background, theme, elevation = DEFAULT_ELEVATION }) =>
-        background ?? theme[`backgroundSurfaceElevation${elevation}`]};
+    background: ${({ background, theme, elevation }) =>
+        background ?? theme[mapElevationToBackground[elevation]]};
     border-radius: ${({ borderRadius }) => getValue(borderRadius) ?? '4px'};
     background-size: 200%;
 
@@ -23,3 +24,9 @@ export const SkeletonRectangle = styled.div<SkeletonRectangleProps>`
             ${shimmerEffect}
         `}
 `;
+
+export const SkeletonRectangle = (props: SkeletonRectangleProps) => {
+    const { elevation } = useElevation();
+
+    return <StyledSkeletonRectangle {...props} elevation={elevation} />;
+};

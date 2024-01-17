@@ -8,13 +8,6 @@ import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { useTranslation } from 'src/hooks/suite';
 import { spacingsPx } from '@trezor/theme';
 
-const StyledNumberInput = styled(NumberInput)`
-    input {
-        /* until the elevation context is implemented */
-        background: ${({ theme }) => theme.backgroundNeutralSubtleOnElevation1};
-    }
-` as typeof NumberInput;
-
 const RbfIcon = styled(Icon)`
     padding-top: ${spacingsPx.xs};
 `;
@@ -103,7 +96,7 @@ export const Locktime = ({ close }: LocktimeProps) => {
 
     return (
         <Card paddingType="large">
-            <StyledNumberInput
+            <NumberInput
                 control={control}
                 name={inputName}
                 inputState={getInputState(error, inputValue)}

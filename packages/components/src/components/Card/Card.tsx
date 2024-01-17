@@ -1,6 +1,6 @@
 import { forwardRef, ReactNode } from 'react';
 import styled from 'styled-components';
-import { borders, mapElevationToBoxShadow, spacings } from '@trezor/theme';
+import { borders, spacings } from '@trezor/theme';
 import { ElevationContext, useElevation } from '../ElevationContext/ElevationContext';
 import { Elevation, mapElevationToBackground } from '@trezor/theme/src/elevation';
 
@@ -10,15 +10,7 @@ const Wrapper = styled.div<{ $elevation: Elevation; $paddingSize: number }>`
     padding: ${({ $paddingSize }) => $paddingSize}px;
     background: ${({ theme, $elevation }) => theme[mapElevationToBackground[$elevation]]};
     border-radius: ${borders.radii.md};
-    box-shadow: ${({ theme, $elevation }) => {
-        if ($elevation === 1) {
-            const boxShadow = mapElevationToBoxShadow[$elevation];
-
-            return boxShadow !== undefined ? theme[boxShadow] : undefined;
-        }
-
-        return undefined;
-    }};
+    box-shadow: ${({ theme, $elevation }) => $elevation === 1 && theme.boxShadowBase};
     /* when theme changes from light to dark */
     transition: background 0.3s;
 `;
@@ -51,20 +43,16 @@ export interface CardProps {
 
 export const Card = forwardRef<HTMLDivElement, CardProps>(
     ({ paddingType = 'normal', children, forceElevation, ...rest }, ref) => {
-        const { elevation } = useElevation();
-
-        const adjustedElevation =
-            // eslint-disable-next-line no-nested-ternary
-            forceElevation !== undefined ? forceElevation : elevation !== null ? elevation : 0;
+        const { elevation } = useElevation(forceElevation);
 
         return (
             <Wrapper
                 ref={ref}
-                $elevation={adjustedElevation}
+                $elevation={elevation}
                 $paddingSize={getPaddingSize(paddingType)}
                 {...rest}
             >
-                <ElevationContext baseElevation={adjustedElevation}>{children}</ElevationContext>
+                <ElevationContext baseElevation={elevation}>{children}</ElevationContext>
             </Wrapper>
         );
     },

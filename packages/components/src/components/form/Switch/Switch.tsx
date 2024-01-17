@@ -36,7 +36,7 @@ const Container = styled.div<Pick<SwitchProps, 'isChecked' | 'isDisabled' | 'isA
     border: 1px solid ${({ theme, isAlert }) => `${isAlert ? theme.borderAlertRed : 'transparent'}`};
 
     button {
-        box-shadow: ${({ theme }) => theme.boxShadowElevation1};
+        box-shadow: ${({ theme }) => theme.boxShadowBase};
         opacity: ${({ isDisabled }) => isDisabled && 0.66};
     }
 

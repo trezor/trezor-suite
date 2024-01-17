@@ -54,7 +54,7 @@ const IconWrapper = styled.div<{ stepCompleted?: boolean; active?: boolean }>`
         active &&
         css`
             background: ${theme.backgroundSurfaceElevation1};
-            box-shadow: ${({ theme }) => theme.boxShadowElevation1};
+            box-shadow: ${({ theme }) => theme.boxShadowBase};
             color: ${theme.textPrimaryDefault};
         `}
 `;

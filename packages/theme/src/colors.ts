@@ -59,8 +59,8 @@ export const colorVariants = {
         iconAlertRed: '#ac3939ff',
         iconAlertYellow: '#c28c00ff',
         iconAlertBlue: '#00597fff',
-        gradientNeutralBottomFadeSurfaceElevation1Start: '#FFFFFF33',
-        gradientNeutralBottomFadeSurfaceElevation1End: '#FFFFFF',
+        gradientNeutralBottomFadeSurfaceElevation1Start: '#FFFFFF33', // Don't use it, use elevation colors
+        gradientNeutralBottomFadeSurfaceElevation1End: '#FFFFFF', // Don't use it, use elevation colors
         borderFocus: '#e2e2e2ff',
         borderDashed: '#cbcbcbff',
         borderOnElevation0: '#e2e2e2ff',
@@ -126,8 +126,8 @@ export const colorVariants = {
         iconAlertRed: '#c66262ff',
         iconAlertYellow: '#c29729ff',
         iconAlertBlue: '#2290bfff',
-        gradientNeutralBottomFadeSurfaceElevation1Start: '#00000033',
-        gradientNeutralBottomFadeSurfaceElevation1End: '#000000',
+        gradientNeutralBottomFadeSurfaceElevation1Start: '#00000033', // Don't use it, use elevation colors
+        gradientNeutralBottomFadeSurfaceElevation1End: '#000000', // Don't use it, use elevation colors
         borderFocus: '#242524ff',
         borderDashed: '#242524ff',
         borderOnElevation0: '#1c1e1cff',
