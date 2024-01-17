@@ -11,7 +11,7 @@ import {
 } from 'src/components/suite';
 import { isTestnet } from '@suite-common/wallet-utils';
 import { CoinmarketBuyButton } from 'src/views/dashboard/components/CoinmarketBuyButton';
-import { spacingsPx, typography } from '@trezor/theme';
+import { borders, spacingsPx, typography } from '@trezor/theme';
 
 import { Card, H2, Icon, SkeletonRectangle, variables } from '@trezor/components';
 import { useDispatch } from 'react-redux';
@@ -20,23 +20,6 @@ import { goto } from 'src/actions/suite/routerActions';
 import { ArrowIcon, AssetInfo, AssetInfoSkeleton } from './AssetInfo';
 import { AssetFiatBalance } from '@suite-common/assets';
 import { FiatHeader } from '../../FiatHeader';
-
-const BuyContainerCard = styled(Card)`
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-`;
-
-const WarningIcon = styled(Icon)`
-    padding-left: ${spacingsPx.xxs};
-    padding-bottom: ${spacingsPx.xxxs};
-`;
-
-const MarginContainer = styled.div`
-    padding: ${spacingsPx.md} ${spacingsPx.sm} ${spacingsPx.sm} ${spacingsPx.md};
-    flex: 1;
-`;
 
 const StyledCard = styled(Card)`
     :hover {
@@ -50,6 +33,26 @@ const StyledCard = styled(Card)`
         }
     }
     transition: box-shadow 0.2s;
+    padding: ${spacingsPx.xs};
+`;
+
+const Content = styled.div`
+    padding: ${spacingsPx.xs};
+    flex: 1;
+`;
+
+const BuyContainerCard = styled(Card)`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: ${borders.radii.xs};
+    padding: ${spacingsPx.md};
+`;
+
+const WarningIcon = styled(Icon)`
+    padding-left: ${spacingsPx.xxs};
+    padding-bottom: ${spacingsPx.xxxs};
 `;
 
 const FiatAmount = styled.div`
@@ -131,7 +134,7 @@ export const AssetCard = ({
 
     return (
         <StyledCard onClick={handleCardClick}>
-            <MarginContainer>
+            <Content>
                 <AssetContainer>
                     <AssetInfo
                         network={network}
@@ -161,7 +164,7 @@ export const AssetCard = ({
                         <Translation id="TR_DASHBOARD_ASSET_FAILED" />
                     </FailedContainer>
                 )}
-            </MarginContainer>
+            </Content>
             {!isTestnet(symbol) && (
                 <BuyContainerCard>
                     <div>
@@ -192,7 +195,7 @@ export const AssetCardSkeleton = (props: { animate?: boolean }) => {
 
     return (
         <StyledCard>
-            <MarginContainer>
+            <Content>
                 <AssetContainer>
                     <AssetInfoSkeleton animate={animate} />
                 </AssetContainer>
@@ -200,14 +203,11 @@ export const AssetCardSkeleton = (props: { animate?: boolean }) => {
                     <IntegerValue>
                         <SkeletonRectangle animate={animate} width={95} height={32} />
                     </IntegerValue>
-                    {/* <DecimalValue withLeftMargin>
-                        <SkeletonRectangle animate={animate} width={24} height={20} />
-                    </DecimalValue> */}
                 </FiatAmount>
                 <CoinAmount>
                     <SkeletonRectangle animate={animate} width={50} height={16} />
                 </CoinAmount>
-            </MarginContainer>
+            </Content>
             <BuyContainerCard>
                 <SkeletonRectangle animate={animate} width="100%" height={66} />
             </BuyContainerCard>

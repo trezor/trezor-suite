@@ -101,7 +101,7 @@ export const BackupSeedCard = ({
     };
 
     return (
-        <Container checked={isChecked} data-test={dataTest}>
+        <Container forceElevation={2} checked={isChecked} data-test={dataTest}>
             <Content>
                 <IconWrapper>
                     <Icon icon={icon} color={theme.iconDefault} />
