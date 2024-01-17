@@ -31,7 +31,7 @@ const TooltipContainer = styled(motion.div)<{
     color: ${({ theme }) => theme.textOnPrimary};
     border-radius: ${borders.radii.sm};
     text-align: left;
-    box-shadow: ${({ theme }) => theme.boxShadowElevation3};
+    box-shadow: ${({ theme }) => theme.boxShadowElevated};
     max-width: ${props => props.$maxWidth}px;
     ${typography.hint}
 

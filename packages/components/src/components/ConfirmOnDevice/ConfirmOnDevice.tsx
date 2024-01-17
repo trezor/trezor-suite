@@ -38,7 +38,7 @@ const Wrapper = styled.div<{ animation?: AnimationDirection }>`
     padding: 0 ${spacingsPx.md} 0 ${spacingsPx.xxl};
     border-radius: ${borders.radii.full};
     background: ${({ theme }) => theme.backgroundSurfaceElevation1};
-    box-shadow: ${({ theme }) => theme.boxShadowElevation1};
+    box-shadow: ${({ theme }) => theme.boxShadowBase};
     align-items: center;
 
     ${({ animation }) =>

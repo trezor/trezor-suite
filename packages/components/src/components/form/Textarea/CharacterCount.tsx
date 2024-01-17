@@ -7,7 +7,7 @@ const Container = styled.div`
     right: ${spacings.md}px;
     padding: ${spacingsPx.xxxs} ${spacingsPx.xxs};
     background: ${({ theme }) => theme.backgroundTertiaryDefaultOnElevation1};
-    box-shadow: ${({ theme }) => theme.boxShadowElevation1};
+    box-shadow: ${({ theme }) => theme.boxShadowBase};
     border-radius: ${borders.radii.xxs};
     color: ${({ theme }) => theme.textSubdued};
     ${typography.label};

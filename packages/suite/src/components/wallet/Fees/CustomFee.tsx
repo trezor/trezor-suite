@@ -32,13 +32,6 @@ const Wrapper = styled.div`
     }
 `;
 
-const FeeInput = styled(NumberInput)`
-    input {
-        /* until the elevation context is implemented */
-        background: ${({ theme }) => theme.backgroundNeutralSubtleOnElevation1};
-    }
-`;
-
 const Units = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
@@ -174,7 +167,7 @@ export const CustomFee = <TFieldValues extends FormState>({
         >
             <Wrapper>
                 {useFeeLimit ? (
-                    <FeeInput
+                    <NumberInput
                         control={control}
                         label={<Translation id="TR_GAS_LIMIT" />}
                         inputState={getInputState(feeLimitError, feeLimitValue)}
@@ -194,7 +187,7 @@ export const CustomFee = <TFieldValues extends FormState>({
                 ) : (
                     <input type="hidden" {...register(FEE_LIMIT as FieldPath<TFieldValues>)} />
                 )}
-                <FeeInput
+                <NumberInput
                     control={control}
                     label={useFeeLimit ? <Translation id="TR_GAS_PRICE" /> : undefined}
                     inputState={getInputState(feePerUnitError, feePerUnitValue)}

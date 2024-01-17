@@ -86,7 +86,8 @@ export const baseInputStyle = css<BaseInputProps>`
 
     :focus,
     :focus-within {
-        border-color: ${({ theme }) => theme.borderOnElevation0};
+        border-color: ${({ theme }) =>
+            theme.borderOnElevation0}; /* Todo: make it based on elevation */
     }
 
     ${({ disabled }) =>

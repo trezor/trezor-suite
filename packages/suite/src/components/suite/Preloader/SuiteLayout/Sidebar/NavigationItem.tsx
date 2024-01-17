@@ -34,7 +34,7 @@ const Container = styled(NavigationItemBase)<Pick<NavigationItemProps, 'isActive
         isActive
             ? css`
                   background: ${theme.backgroundSurfaceElevation1};
-                  box-shadow: ${theme.boxShadowElevation1};
+                  box-shadow: ${theme.boxShadowBase};
                   color: ${theme.textDefault};
 
                   path {

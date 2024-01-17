@@ -22,7 +22,7 @@ const StyledNavigationItem = styled(NavigationItem)`
         isActive &&
         css`
             background: ${theme.backgroundTertiaryPressedOnElevation0};
-            box-shadow: ${theme.boxShadowElevation1};
+            box-shadow: ${theme.boxShadowBase};
         `}
 `;
 

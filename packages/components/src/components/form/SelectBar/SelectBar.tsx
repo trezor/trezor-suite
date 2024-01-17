@@ -62,7 +62,7 @@ const Puck = styled.div<{ optionsCount: number; selectedIndex: number }>`
     padding: ${spacingsPx.xxs} ${spacingsPx.xl};
     background: ${({ theme }) => theme.backgroundSurfaceElevation1};
     border-radius: ${borders.radii.full};
-    box-shadow: ${({ theme }) => theme.boxShadowElevation1};
+    box-shadow: ${({ theme }) => theme.boxShadowBase};
     transform: ${({ selectedIndex }) => `translateX(${getTranslateValue(selectedIndex)})`};
     transition:
         transform 0.175s cubic-bezier(1, 0.02, 0.38, 0.74),

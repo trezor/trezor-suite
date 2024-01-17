@@ -41,7 +41,7 @@ const createSelectStyle = (
         minWidth: 140,
         borderRadius: borders.radii.md,
         background: theme.backgroundSurfaceElevation1,
-        boxShadow: theme.boxShadowElevation3,
+        boxShadow: theme.boxShadowElevated,
         zIndex: zIndices.modal,
         animation: `${DROPDOWN_MENU.getName()} 0.15s ease-in-out`,
         listStyleType: 'none',
