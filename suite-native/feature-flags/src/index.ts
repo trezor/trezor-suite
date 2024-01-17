@@ -1,2 +1,2 @@
 export * from './featureFlagsSlice';
-export * from './useIsUsbDeviceConnectFeatureEnabled';
+export * from './useFeatureFlag';

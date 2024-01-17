@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { Box, Button, Divider, VStack } from '@suite-native/atoms';
 import { Assets } from '@suite-native/assets';
-import { useIsUsbDeviceConnectFeatureEnabled } from '@suite-native/feature-flags';
+import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import {
     AccountsImportStackRoutes,
     RootStackParamList,
@@ -29,7 +29,7 @@ export const PortfolioContent = forwardRef<PortfolioContentRef>((_props, ref) =>
 
     const isDeviceImported = useSelector(selectIsSelectedDeviceImported);
 
-    const { isUsbDeviceConnectFeatureEnabled } = useIsUsbDeviceConnectFeatureEnabled();
+    const [isUsbDeviceConnectFeatureEnabled] = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
 
     const handleImportAssets = () => {
         navigation.navigate(RootStackRoutes.AccountsImport, {

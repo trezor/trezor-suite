@@ -1,10 +1,10 @@
 import { useSelector } from 'react-redux';
 
-import { useIsUsbDeviceConnectFeatureEnabled } from '@suite-native/feature-flags';
+import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import {
     selectAreAllDevicesDisconnectedOrAccountless,
-    selectIsSelectedDeviceImported,
     selectIsSelectedDeviceAuthorized,
+    selectIsSelectedDeviceImported,
 } from '@suite-common/wallet-core';
 import { selectIsDeviceReadyToUse } from '@suite-native/device';
 
@@ -13,7 +13,7 @@ import { EmptyConnectedDeviceState } from './EmptyConnectedDeviceState';
 import { EmptyPortfolioCrossroads } from './EmptyPortfolioCrossroads';
 
 export const EmptyHomeRenderer = () => {
-    const { isUsbDeviceConnectFeatureEnabled } = useIsUsbDeviceConnectFeatureEnabled();
+    const [isUsbDeviceConnectFeatureEnabled] = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
 
     const isDeviceAuthorized = useSelector(selectIsSelectedDeviceAuthorized);
     const isDeviceImported = useSelector(selectIsSelectedDeviceImported);
