@@ -1,6 +1,7 @@
 import { Meta, StoryObj } from '@storybook/react';
 import { SkeletonStack as SkeletonStackComponent, SkeletonStackProps } from './SkeletonStack';
 import { SkeletonCircle } from './SkeletonCircle';
+import { ElevationContext } from '../ElevationContext/ElevationContext';
 
 export default {
     title: 'Skeletons/SkeletonStack',
@@ -10,9 +11,11 @@ export default {
 export const SkeletonStack: StoryObj<SkeletonStackProps> = {
     render: args => (
         <SkeletonStackComponent {...args}>
-            <SkeletonCircle size={50} />
-            <SkeletonCircle size={50} />
-            <SkeletonCircle size={50} />
+            <ElevationContext baseElevation={1}>
+                <SkeletonCircle size={50} />
+                <SkeletonCircle size={50} />
+                <SkeletonCircle size={50} />
+            </ElevationContext>
         </SkeletonStackComponent>
     ),
     args: {

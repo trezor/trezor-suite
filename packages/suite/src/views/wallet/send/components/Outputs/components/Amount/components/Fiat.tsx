@@ -31,12 +31,6 @@ const Wrapper = styled.div`
     width: 100%;
     flex-direction: row;
     justify-content: flex-start;
-
-    /* until the elevation context is implemented */
-    input {
-        background: ${({ theme }) => theme.backgroundNeutralSubtleOnElevation1};
-        border-color: ${({ theme }) => theme.borderOnElevation1};
-    }
 `;
 
 interface FiatProps {

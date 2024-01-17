@@ -4,6 +4,7 @@ import { DeviceSelector } from '../DeviceSelector/DeviceSelector';
 import { Navigation } from './Navigation';
 import { AccountsMenu } from 'src/components/wallet/WalletLayout/AccountsMenu/AccountsMenu';
 import { QuickActions } from './QuickActions';
+import { ElevationContext } from '@trezor/components';
 
 const Container = styled.nav`
     display: flex;
@@ -18,9 +19,11 @@ const Container = styled.nav`
 
 export const Sidebar = () => (
     <Container>
-        <DeviceSelector />
-        <Navigation />
-        <AccountsMenu />
-        <QuickActions />
+        <ElevationContext baseElevation={-1}>
+            <DeviceSelector />
+            <Navigation />
+            <AccountsMenu />
+            <QuickActions />
+        </ElevationContext>
     </Container>
 );

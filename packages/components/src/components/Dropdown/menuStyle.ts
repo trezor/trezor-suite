@@ -1,5 +1,5 @@
 import { css, keyframes } from 'styled-components';
-import { spacingsPx, borders, typography, zIndices, mapElevationToBoxShadow } from '@trezor/theme';
+import { spacingsPx, borders, typography, zIndices } from '@trezor/theme';
 import { Elevation, mapElevationToBackground } from '@trezor/theme/src/elevation';
 
 export const DROPDOWN_MENU = keyframes`
@@ -22,11 +22,7 @@ export const menuStyle = css<{ elevation: Elevation }>`
     min-width: 140px;
     border-radius: ${borders.radii.md};
     background: ${({ theme, elevation }) => theme[mapElevationToBackground[elevation]]};
-    box-shadow: ${({ theme, elevation }) => {
-        const boxShadow = mapElevationToBoxShadow[elevation];
-
-        return boxShadow !== undefined ? theme[boxShadow] : undefined;
-    }};
+    box-shadow: ${({ theme }) => theme.boxShadowElevated};
     z-index: ${zIndices.modal};
     animation: ${DROPDOWN_MENU} 0.15s ease-in-out;
     list-style-type: none;
