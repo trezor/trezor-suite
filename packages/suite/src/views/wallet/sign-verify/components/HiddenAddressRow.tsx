@@ -59,7 +59,7 @@ export const HiddenAddressRow = ({ item, variant, className }: HiddenAddressRowP
     const { elevation } = useElevation();
 
     return (
-        <Wrapper className={className}>
+        <Wrapper className={`${className} react-select__single-value`}>
             <DerivationPathColumn>/{item.value.split('/').pop()}</DerivationPathColumn>
 
             <AddressColumn>
