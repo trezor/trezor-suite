@@ -29,6 +29,7 @@ interface GraphSkeletonProps {
 export const GraphSkeleton = ({ animate, ...rest }: GraphSkeletonProps) => {
     const { shouldAnimate } = useLoadingSkeleton();
     const animationEnabled = animate ?? shouldAnimate;
+
     return (
         <SkeletonWrapper {...rest}>
             <SkeletonSpread grow alignItems="flex-end">
