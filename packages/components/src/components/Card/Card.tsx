@@ -46,16 +46,16 @@ export interface CardProps {
     children?: ReactNode;
     className?: string;
 
-    resetElevation?: Elevation;
+    forceElevation?: Elevation;
 }
 
 export const Card = forwardRef<HTMLDivElement, CardProps>(
-    ({ paddingType = 'normal', children, resetElevation, ...rest }, ref) => {
+    ({ paddingType = 'normal', children, forceElevation, ...rest }, ref) => {
         const { elevation } = useElevation();
 
         const adjustedElevation =
             // eslint-disable-next-line no-nested-ternary
-            resetElevation !== undefined ? resetElevation : elevation !== null ? elevation : 0;
+            forceElevation !== undefined ? forceElevation : elevation !== null ? elevation : 0;
 
         return (
             <Wrapper
