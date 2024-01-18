@@ -1,3 +1,7 @@
+# 9.1.9
+
+-   fix(connect-popup): webusb pairing in webextensions using manifest version 2 [#10709](https://github.com/trezor/trezor-suite/pull/10709).
+
 # 9.1.8
 
 -   fix(connect-explorer): eth getAccountInfo coin fix (0108b96)
