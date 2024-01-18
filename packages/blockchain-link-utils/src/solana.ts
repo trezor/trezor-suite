@@ -275,6 +275,10 @@ export const getTargets = (
         });
 
 const getTokenTransferTxType = (transfers: TokenTransfer[]) => {
+    if (transfers.some(transfer => transfer.to === transfer.from)) {
+        return 'self';
+    }
+
     if (transfers.some(({ type }) => type === 'recv')) {
         return 'recv';
     }
