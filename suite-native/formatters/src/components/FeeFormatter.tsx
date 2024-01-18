@@ -18,7 +18,7 @@ export const FeeFormatter = ({ transaction }: FeeFormatterProps) => {
         () =>
             networkType === 'ethereum'
                 ? fromWei(transaction.ethereumSpecific?.gasPrice ?? '0', 'gwei')
-                : getFeeRate(transaction),
+                : transaction.feeRate || getFeeRate(transaction),
         [networkType, transaction],
     );
 
