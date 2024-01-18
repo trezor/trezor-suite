@@ -17,14 +17,15 @@ import { Account } from 'src/types/wallet';
 import { Translation } from 'src/components/suite';
 import { isFeatureFlagEnabled, getTxsPerPage } from '@suite-common/suite-utils';
 import { fetchTransactionsThunk } from '@suite-common/wallet-core';
-import { spacingsPx } from '@trezor/theme';
+import { borders, spacingsPx } from '@trezor/theme';
 
 const Wrapper = styled.div<{ expanded: boolean }>`
-    margin-right: 20px;
-    width: 36px;
+    margin-right: ${spacingsPx.xs};
+    width: 38px;
     transition: width 0.4s ease-in-out;
     overflow: hidden;
     cursor: pointer;
+    border-radius: ${borders.radii.full};
 
     ${({ expanded }) =>
         expanded &&
@@ -36,6 +37,7 @@ const Wrapper = styled.div<{ expanded: boolean }>`
 
 const StyledInput = styled(Input)<{ expanded: boolean }>`
     input {
+        height: 38px;
         border: none;
         ${({ expanded }) =>
             !expanded &&

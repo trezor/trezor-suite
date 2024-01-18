@@ -1,5 +1,6 @@
 import { variables } from '@trezor/components';
 import { FONT_SIZE, FONT_WEIGHT } from '@trezor/components/src/config/variables';
+import { spacingsPx } from '@trezor/theme';
 import { PropsWithChildren, ReactNode } from 'react';
 import { PriceTicker, Translation, TrendTicker } from 'src/components/suite';
 import { Account } from 'src/types/wallet';
@@ -14,10 +15,15 @@ const Wrapper = styled.div`
     }
 `;
 
+const CardContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: ${spacingsPx.xxxs};
+`;
+
 const Name = styled.div`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.textSubdued};
     font-size: ${FONT_SIZE.TINY};
-    margin-bottom: 3px;
 `;
 
 const Value = styled.div`
@@ -29,10 +35,10 @@ interface TradeBoxHeadCardProps extends PropsWithChildren {
 }
 
 const TradeBoxHeadCard = ({ name, children }: TradeBoxHeadCardProps) => (
-    <div>
+    <CardContainer>
         <Name>{name}</Name>
         <Value>{children}</Value>
-    </div>
+    </CardContainer>
 );
 
 interface TradeBoxPricesProps {

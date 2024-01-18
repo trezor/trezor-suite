@@ -103,7 +103,7 @@ export const Header = ({
     return (
         <Wrapper hideBorder={hideBorder}>
             <Left>
-                <LoadingContent isLoading={isDiscoveryRunning}>
+                <LoadingContent size={24} isLoading={isDiscoveryRunning}>
                     <HiddenPlaceholder>
                         <FiatHeader
                             size="large"

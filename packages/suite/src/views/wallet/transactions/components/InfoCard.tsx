@@ -7,7 +7,6 @@ import BigNumber from 'bignumber.js';
 
 const Wrapper = styled(Card)`
     display: flex;
-    padding: 14px 16px;
     flex: 1;
     min-height: 100px;
 `;
