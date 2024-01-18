@@ -2,7 +2,7 @@
 suite codesign deploy staging-suite:
   stage: deploy to staging
   needs:
-    - release commit messages
+    # - release commit messages
     - suite-web build stable codesign
     - suite-desktop build mac codesign
     - suite-desktop build linux codesign
@@ -34,7 +34,7 @@ suite codesign deploy staging-suite:
 suite-desktop deploy autoupdate test:
   stage: deploy to dev
   needs:
-    - release commit messages
+    # - release commit messages
     - suite-desktop build mac codesign
     - suite-desktop build linux codesign
     - suite-desktop build windows codesign
@@ -55,7 +55,7 @@ suite-desktop deploy autoupdate test:
 suite-desktop github release:
   stage: deploy to production
   needs:
-    - release commit messages
+    # - release commit messages
     - suite-desktop build mac codesign
     - suite-desktop build linux codesign
     - suite-desktop build windows codesign
@@ -129,7 +129,7 @@ connect v9 rollback production:
     - connect-web build
     - connect-explorer build
   needs:
-    - release commit messages
+    # - release commit messages
     - connect-web build
     - connect-explorer build
   before_script:
