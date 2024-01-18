@@ -46,6 +46,7 @@ export default class BlockchainSetCustomBackend extends AbstractMethod<
 
     async run() {
         await reconnectAllBackends(this.params.coinInfo);
+
         return true;
     }
 }

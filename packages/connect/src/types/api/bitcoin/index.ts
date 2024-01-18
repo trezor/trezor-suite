@@ -75,6 +75,7 @@ export interface SignTransaction {
         transactions?: AccountTransaction[]; // refTxs in different format. see refTxs/validateReferencedTransactions
     };
     coin: string;
+    identity?: string;
     locktime?: number;
     timestamp?: number;
     version?: number;
