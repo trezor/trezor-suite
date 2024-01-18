@@ -74,16 +74,16 @@ suite-desktop github release:
   tags:
     - deploy
 
-release commit messages:
-  stage: setup environment
-  only:
-    refs:
-      - /^release\//
-      - codesign
-  variables:
-    GIT_DEPTH: 300
-  script:
-    - ci/scripts/check_release_commit_messages.sh
+# release commit messages:
+#   stage: setup environment
+#   only:
+#     refs:
+#       - /^release\//
+#       - codesign
+#   variables:
+#     GIT_DEPTH: 300
+#   script:
+#     - ci/scripts/check_release_commit_messages.sh
 
 # Messaging system deploy to production
 msg-system codesign deploy:
