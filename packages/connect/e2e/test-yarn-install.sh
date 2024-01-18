@@ -4,7 +4,7 @@
 
 set -e
 
-# trap "cd .. && rm -rf connect-implementation" EXIT
+trap "cd .. && rm -rf connect-implementation" EXIT
 
 npm --version
 node --version
@@ -22,4 +22,4 @@ echo import TrezorConnect from \"@trezor/connect\" > index.ts
 
 # compile with typescript
 yarn add typescript@5.3.2
-yarn tsc ./index.ts --types node
+yarn tsc ./index.ts --types node --esModuleInterop
