@@ -71,7 +71,7 @@ export const IconButtons: StoryObj = {
                     />
                     <IconButton
                         icon="PALETTE"
-                        label={<span>Label</span>}
+                        bottomLabel={<span>Bottom Label</span>}
                         variant={variant}
                         isDisabled
                         data-test={`button-${variant}-disabled`}
