@@ -29,7 +29,6 @@ const ignore = [
     'coverage',
     '.git',
     'suite-data',
-    'integration-tests',
     'connect-common',
     '.yarn',
     'screenshots',

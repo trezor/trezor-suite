@@ -29,4 +29,4 @@ Fixtures are located in [packages/connect-popup](https://github.com/trezor/trezo
 
 ## Test results
 
-Checkout [latest screenshots](https://gitlab.com/satoshilabs/trezor/trezor-suite/-/jobs/artifacts/develop/file/packages/integration-tests/connect-popup-overview.html?job=connect-popup)
+Checkout [latest screenshots](https://gitlab.com/satoshilabs/trezor/trezor-suite/-/jobs/artifacts/develop/file/packages/connect-popup/connect-popup-overview.html?job=connect-popup%3A%20%5Bmethods.test%5D)
