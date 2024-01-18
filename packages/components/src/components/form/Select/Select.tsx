@@ -11,7 +11,7 @@ import {
 } from '@trezor/theme';
 
 import { INPUT_HEIGHTS, LABEL_TRANSFORM, Label, baseInputStyle } from '../InputStyles';
-import { BottomText } from '../BottomText';
+import { BOTTOM_TEXT_MIN_HEIGHT, BottomText } from '../BottomText';
 import { InputState, InputSize } from '../inputTypes';
 import { Control, GroupHeading, Option } from './customComponents';
 import { useOnKeyDown } from './useOnKeyDown';
@@ -93,11 +93,18 @@ const createSelectStyle = (
 type WrapperProps = Pick<
     SelectProps,
     'isClean' | 'isDisabled' | 'minValueWidth' | 'size' | 'menuIsOpen' | 'isSearchable'
-> & { isWithLabel: boolean; isWithPlaceholder: boolean; elevation: Elevation };
+> & {
+    isWithLabel: boolean;
+    isWithPlaceholder: boolean;
+    hasBottomPadding: boolean;
+    elevation: Elevation;
+};
 
 const Wrapper = styled.div<WrapperProps>`
     position: relative;
     width: 100%;
+    padding-bottom: ${({ hasBottomPadding }) =>
+        hasBottomPadding ? `${BOTTOM_TEXT_MIN_HEIGHT}px` : '0'};
 
     ${({ isClean }) =>
         !isClean &&
@@ -220,6 +227,7 @@ interface CommonProps extends Omit<ReactSelectProps<Option>, 'onChange'> {
      * @description pass `null` if bottom text can be `undefined`
      */
     bottomText?: ReactNode;
+    hasBottomPadding?: boolean;
     minValueWidth?: string;
     inputState?: InputState;
     onChange?: (value: Option, ref?: SelectInstance<Option, boolean> | null) => void;
@@ -240,6 +248,7 @@ export const Select = ({
     label,
     size = 'large',
     bottomText,
+    hasBottomPadding = true,
     useKeyPressScroll,
     isSearchable = false,
     minValueWidth = 'initial',
@@ -285,6 +294,7 @@ export const Select = ({
             menuIsOpen={menuIsOpen}
             isWithLabel={!!label}
             isWithPlaceholder={!!placeholder}
+            hasBottomPadding={hasBottomPadding === true && bottomText === null}
         >
             <ReactSelect
                 ref={selectRef}
