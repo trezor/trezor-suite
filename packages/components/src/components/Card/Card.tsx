@@ -1,6 +1,6 @@
 import { forwardRef, ReactNode } from 'react';
-import styled from 'styled-components';
 import { borders, spacings } from '@trezor/theme';
+import styled, { css } from 'styled-components';
 import { ElevationContext, useElevation } from '../ElevationContext/ElevationContext';
 import { Elevation, mapElevationToBackground } from '@trezor/theme/src/elevation';
 
@@ -11,8 +11,20 @@ const Wrapper = styled.div<{ $elevation: Elevation; $paddingSize: number }>`
     background: ${({ theme, $elevation }) => theme[mapElevationToBackground[$elevation]]};
     border-radius: ${borders.radii.md};
     box-shadow: ${({ theme, $elevation }) => $elevation === 1 && theme.boxShadowBase};
+
+    ${({ onClick, theme }) =>
+        onClick !== undefined
+            ? css`
+                  :hover {
+                      cursor: pointer;
+
+                      box-shadow: ${() => theme.boxShadowElevated};
+                  }
+              `
+            : ''}
+
     /* when theme changes from light to dark */
-    transition: background 0.3s;
+    transition: background 0.3s, box-shadow 0.2s;
 `;
 
 const getPaddingSize = (paddingType?: PaddingType) => {

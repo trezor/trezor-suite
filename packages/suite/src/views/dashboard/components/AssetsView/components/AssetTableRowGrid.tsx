@@ -1,27 +1,36 @@
 import styled, { css } from 'styled-components';
-import { ArrowIcon } from './AssetInfo';
 import { borders } from '@trezor/theme';
+import { styledHoverOnParentOfArrowIcon } from './ArrowIcon';
+import { Elevation, mapElevationToBackground, nextElevation } from '@trezor/theme/src/elevation';
+import { useElevation } from '@trezor/components';
+import { HTMLAttributes } from 'react';
 
-export const AssetTableRowGrid = styled.div`
+const StyledAssetTableRowGrid = styled.div<{ elevation: Elevation }>`
     display: grid;
     overflow: hidden;
-    grid-template-columns: 2fr 2fr 1fr 1fr 1fr;
+    grid-template-columns: min-content 2fr 2fr 1fr 1fr 1fr;
     border-radius: ${borders.radii.xs};
 
-    ${({ onClick, theme }) =>
+    ${({ theme, elevation, onClick }) =>
         onClick !== undefined
             ? css`
                   cursor: pointer;
 
-                  :hover {
-                      background: ${theme.backgroundSurfaceElevation2};
+                  ${styledHoverOnParentOfArrowIcon}
 
-                      ${ArrowIcon} {
-                          path {
-                              fill: ${({ theme }) => theme.iconPrimaryDefault};
-                          }
-                      }
+                  :hover {
+                      background: ${theme[mapElevationToBackground[nextElevation[elevation]]]};
                   }
               `
             : ''};
 `;
+
+export const AssetTableRowGrid = ({ children, ...props }: HTMLAttributes<HTMLDivElement>) => {
+    const { elevation } = useElevation();
+
+    return (
+        <StyledAssetTableRowGrid {...props} elevation={elevation}>
+            {children}
+        </StyledAssetTableRowGrid>
+    );
+};
