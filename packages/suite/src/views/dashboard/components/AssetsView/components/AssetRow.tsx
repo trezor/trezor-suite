@@ -21,10 +21,12 @@ import { isTestnet } from '@suite-common/wallet-utils';
 import { goto } from 'src/actions/suite/routerActions';
 import { useAccountSearch, useDispatch, useLoadingSkeleton } from 'src/hooks/suite';
 import { motion } from 'framer-motion';
-import { ArrowIcon, AssetInfo } from './AssetInfo';
 import { spacingsPx, typography } from '@trezor/theme';
 import { AssetFiatBalance } from '@suite-common/assets';
 import { AssetTableRowGrid } from './AssetTableRowGrid';
+import { ArrowIcon } from './ArrowIcon';
+import { AssetCoinLogo } from './AssetCoinLogo';
+import { AssetCoinName } from './AssetCoinName';
 
 const LogoWrapper = styled.div`
     padding-right: 12px;
@@ -62,14 +64,13 @@ const Col = (props: ComponentProps<typeof StyledCol>) => {
     return <StyledCol {...motionAnimation.expand} {...newProps} $isLastRow={props.isLastRow} />;
 };
 
-const CoinNameWrapper = styled(Col)`
-    overflow: hidden;
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+const CoinLogoWrapper = styled(Col)`
     padding-left: 18px;
     text-overflow: ellipsis;
+    border: none;
 
     ${variables.SCREEN_QUERY.MOBILE} {
-        grid-column: 1 / 4;
+        grid-column: 1 / 2;
         padding-left: 20px;
         border-bottom: none;
     }
@@ -78,6 +79,18 @@ const CoinNameWrapper = styled(Col)`
         ${Coin} {
             text-decoration: underline;
         }
+    }
+`;
+
+const CoinNameWrapper = styled(Col)`
+    overflow: hidden;
+    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    text-overflow: ellipsis;
+
+    ${variables.SCREEN_QUERY.MOBILE} {
+        grid-column: 1 / 4;
+        padding-left: 20px;
+        border-bottom: none;
     }
 `;
 
@@ -155,8 +168,15 @@ export const AssetRow = memo(
 
         return (
             <AssetTableRowGrid onClick={handleRowClick}>
+                <CoinLogoWrapper>
+                    <AssetCoinLogo
+                        symbol={network.symbol}
+                        assetsFiatBalances={assetsFiatBalances}
+                    />
+                </CoinLogoWrapper>
+
                 <CoinNameWrapper isLastRow={isLastRow}>
-                    <AssetInfo network={network} assetsFiatBalances={assetsFiatBalances} />
+                    <AssetCoinName network={network} />
                 </CoinNameWrapper>
 
                 {!failed ? (
