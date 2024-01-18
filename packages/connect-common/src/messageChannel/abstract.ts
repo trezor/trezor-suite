@@ -186,6 +186,16 @@ export abstract class AbstractMessageChannel<
         return this.messagePromises[message.id].promise;
     }
 
+    resolveMessagePromises(resolvePayload: Record<string, any>) {
+        // This is used when we know that the connection has been interrupted but there might be something waiting for it.
+        Object.keys(this.messagePromises).forEach(id =>
+            this.messagePromises[id as any].resolve({
+                id,
+                payload: resolvePayload,
+            }),
+        );
+    }
+
     clear() {
         this.handshakeFinished = undefined;
     }
