@@ -5,6 +5,7 @@ import { variables, CoinLogo, Icon } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import type { ExtendedMessageDescriptor } from 'src/types/suite';
 import type { Network } from 'src/types/wallet';
+import { typography } from '@trezor/theme';
 
 const SettingsWrapper = styled.div<{
     toggled: boolean;
@@ -97,7 +98,7 @@ export const CoinWrapper = styled.button<{
         !disabled &&
         toggled &&
         css`
-            border-color: ${theme.BG_GREEN};
+            border-color: ${theme.backgroundPrimaryDefault};
             ${forceHover && ShiftToSettings}
             ${hasSettings &&
             css`
@@ -129,10 +130,9 @@ const NameLabeled = styled.div`
 `;
 
 const Label = styled.div`
-    font-size: ${variables.FONT_SIZE.TINY};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    line-height: 0.75;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    ${typography.label}
+
+    color: ${({ theme }) => theme.textSubdued};
 `;
 
 const Check = styled.div<{ visible: boolean }>`
@@ -140,7 +140,7 @@ const Check = styled.div<{ visible: boolean }>`
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    background: ${({ theme }) => theme.BG_GREEN};
+    background: ${({ theme }) => theme.backgroundPrimaryDefault};
     width: 12px;
     height: 12px;
     position: absolute;
