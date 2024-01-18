@@ -9,6 +9,7 @@ import type { CoinInfo } from '../types';
 
 type Params = {
     coinInfo: CoinInfo;
+    identity?: string;
 };
 
 export default class BlockchainUnsubscribeFiatRates extends AbstractMethod<
@@ -22,7 +23,10 @@ export default class BlockchainUnsubscribeFiatRates extends AbstractMethod<
         const { payload } = this;
 
         // validate incoming parameters
-        validateParams(payload, [{ name: 'coin', type: 'string', required: true }]);
+        validateParams(payload, [
+            { name: 'coin', type: 'string', required: true },
+            { name: 'identity', type: 'string' },
+        ]);
 
         const coinInfo = getCoinInfo(payload.coin);
         if (!coinInfo) {
@@ -33,11 +37,16 @@ export default class BlockchainUnsubscribeFiatRates extends AbstractMethod<
 
         this.params = {
             coinInfo,
+            identity: payload.identity,
         };
     }
 
     async run() {
-        const backend = await initBlockchain(this.params.coinInfo, this.postMessage);
+        const backend = await initBlockchain(
+            this.params.coinInfo,
+            this.postMessage,
+            this.params.identity,
+        );
 
         return backend.unsubscribeFiatRates();
     }

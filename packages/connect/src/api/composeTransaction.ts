@@ -38,6 +38,7 @@ import type { RefTransaction } from '../types/api/bitcoin';
 type Params = {
     outputs: ComposeOutput[];
     coinInfo: BitcoinNetworkInfo;
+    identity?: string;
     push: boolean;
     account?: PrecomposeParams['account'];
     feeLevels?: PrecomposeParams['feeLevels'];
@@ -59,6 +60,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         validateParams(payload, [
             { name: 'outputs', type: 'array', required: true },
             { name: 'coin', type: 'string', required: true },
+            { name: 'identity', type: 'string' },
             { name: 'push', type: 'boolean' },
             { name: 'account', type: 'object' },
             { name: 'feeLevels', type: 'array' },
@@ -107,6 +109,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         this.params = {
             outputs,
             coinInfo,
+            identity: payload.identity,
             account: payload.account,
             feeLevels: payload.feeLevels,
             baseFee: payload.baseFee,
@@ -126,6 +129,10 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         }
 
         return `Send ${formatAmount(this.params.total.toString(), this.params.coinInfo)}`;
+    }
+
+    private getBlockchain() {
+        return initBlockchain(this.params.coinInfo, this.postMessage, this.params.identity);
     }
 
     async precompose(
@@ -151,7 +158,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
 
         // This is mandatory, @trezor/utxo-lib/compose expects current block height
         // TODO: make it possible without it (offline composing)
-        const blockchain = await initBlockchain(this.params.coinInfo, this.postMessage);
+        const blockchain = await this.getBlockchain();
         await composer.init(blockchain);
 
         return feeLevels.map(level => {
@@ -203,7 +210,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
 
     async selectAccount() {
         const { coinInfo } = this.params;
-        const blockchain = await initBlockchain(coinInfo, this.postMessage);
+        const blockchain = await this.getBlockchain();
         const dfd = this.createUiPromise(UI.RECEIVE_ACCOUNT);
 
         if (this.discovery && this.discovery.completed) {
@@ -293,7 +300,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         const { coinInfo, outputs } = this.params;
 
         // get backend instance (it should be initialized before)
-        const blockchain = await initBlockchain(coinInfo, this.postMessage);
+        const blockchain = await this.getBlockchain();
         const composer = new TransactionComposer({
             account,
             utxos,
@@ -368,7 +375,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         const requiredRefTxs = requireReferencedTransactions(inputs, options, coinInfo);
         const refTxsIds = getReferencedTransactions(inputs);
         if (requiredRefTxs && refTxsIds.length > 0) {
-            refTxs = await initBlockchain(coinInfo, this.postMessage)
+            refTxs = await this.getBlockchain()
                 .then(blockchain => blockchain.getTransactionHexes(refTxsIds))
                 .then(parseTransactionHexes(coinInfo.network))
                 .then(transformReferencedTransactions);
@@ -395,7 +402,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         );
 
         if (this.params.push) {
-            const blockchain = await initBlockchain(coinInfo, this.postMessage);
+            const blockchain = await this.getBlockchain();
             const txid = await blockchain.pushTransaction(response.serializedTx);
 
             return {

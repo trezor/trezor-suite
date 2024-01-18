@@ -5,6 +5,7 @@ import type { AccountInfo, DiscoveryAccountType } from '../account';
 
 export interface GetAccountInfo extends Omit<BlockchainLinkParams<'getAccountInfo'>, 'descriptor'> {
     coin: string;
+    identity?: string;
     path?: string;
     descriptor?: string;
     defaultAccountType?: DiscoveryAccountType;

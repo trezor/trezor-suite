@@ -9,6 +9,7 @@ import type { CoinInfo } from '../types';
 
 type Params = {
     coinInfo: CoinInfo;
+    identity?: string;
     currencies: Payload<'blockchainGetCurrentFiatRates'>['currencies'];
     token: Payload<'blockchainGetCurrentFiatRates'>['token'];
 };
@@ -28,6 +29,7 @@ export default class BlockchainGetCurrentFiatRates extends AbstractMethod<
             { name: 'currencies', type: 'array', required: false },
             { name: 'token', type: 'string' },
             { name: 'coin', type: 'string', required: true },
+            { name: 'identity', type: 'string' },
         ]);
 
         const coinInfo = getCoinInfo(payload.coin);
@@ -41,11 +43,16 @@ export default class BlockchainGetCurrentFiatRates extends AbstractMethod<
             currencies: payload.currencies,
             token: payload.token,
             coinInfo,
+            identity: payload.identity,
         };
     }
 
     async run() {
-        const backend = await initBlockchain(this.params.coinInfo, this.postMessage);
+        const backend = await initBlockchain(
+            this.params.coinInfo,
+            this.postMessage,
+            this.params.identity,
+        );
 
         return backend.getCurrentFiatRates({
             currencies: this.params.currencies,

@@ -9,6 +9,7 @@ import type { CoinInfo } from '../types';
 
 type Params = {
     coinInfo: CoinInfo;
+    identity?: string;
     request: Omit<Payload<'blockchainGetAccountBalanceHistory'>, 'method' | 'coin'>;
 };
 
@@ -25,6 +26,7 @@ export default class BlockchainGetAccountBalanceHistory extends AbstractMethod<
         // validate incoming parameters
         validateParams(payload, [
             { name: 'coin', type: 'string', required: true },
+            { name: 'identity', type: 'string' },
             { name: 'descriptor', type: 'string', required: true },
             { name: 'from', type: 'number' },
             { name: 'to', type: 'number' },
@@ -40,6 +42,7 @@ export default class BlockchainGetAccountBalanceHistory extends AbstractMethod<
 
         this.params = {
             coinInfo,
+            identity: payload.identity,
             request: {
                 descriptor: payload.descriptor,
                 from: payload.from,
@@ -50,7 +53,11 @@ export default class BlockchainGetAccountBalanceHistory extends AbstractMethod<
     }
 
     async run() {
-        const backend = await initBlockchain(this.params.coinInfo, this.postMessage);
+        const backend = await initBlockchain(
+            this.params.coinInfo,
+            this.postMessage,
+            this.params.identity,
+        );
 
         return backend.getAccountBalanceHistory(this.params.request);
     }
