@@ -11,6 +11,7 @@ export * from './transport';
 export * from './ui-promise';
 export * from './ui-request';
 export * from './ui-response';
+export * from './webextension';
 
 // NOTE: for backward compatibility wrap ui const into one
 export const UI = {

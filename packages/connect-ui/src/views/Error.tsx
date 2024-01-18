@@ -164,7 +164,20 @@ const getTroubleshootingTips = (props: ErrorViewProps) => {
             icon: 'QUESTION',
             title: 'Could not communicate with the host website',
             detail: {
-                steps: [<Step>Please make sure Ad-blocker is not active</Step>],
+                steps: [
+                    <Step>Please make sure Ad-blocker is not active</Step>,
+                    <Step>
+                        Try downloading and setting up{' '}
+                        <a
+                            href="https://suite.trezor.io/web/bridge/"
+                            target="_blank"
+                            rel="noreferrer"
+                        >
+                            Trezor Bridge
+                        </a>{' '}
+                        for the best experience
+                    </Step>,
+                ],
             },
         });
     }
