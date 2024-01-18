@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import { useSelector } from 'react-redux';
 
-import { selectIsPortfolioEmpty } from '@suite-common/wallet-core';
+import { selectIsDeviceDiscoveryEmpty } from '@suite-common/wallet-core';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { Screen } from '@suite-native/navigation';
 import { Box } from '@suite-native/atoms';
@@ -12,9 +12,12 @@ import { PortfolioContent, PortfolioContentRef } from './components/PortfolioCon
 import { useHomeRefreshControl } from './useHomeRefreshControl';
 
 export const HomeScreen = () => {
-    const isPortfolioEmpty = useSelector(selectIsPortfolioEmpty);
+    const isDeviceDiscoveryEmpty = useSelector(selectIsDeviceDiscoveryEmpty);
     const portfolioContentRef = useRef<PortfolioContentRef>(null);
-    const refreshControl = useHomeRefreshControl({ isPortfolioEmpty, portfolioContentRef });
+    const refreshControl = useHomeRefreshControl({
+        isPortfolioEmpty: isDeviceDiscoveryEmpty,
+        portfolioContentRef,
+    });
 
     return (
         <Screen
@@ -22,7 +25,7 @@ export const HomeScreen = () => {
             refreshControl={refreshControl}
             customHorizontalPadding={0}
         >
-            {isPortfolioEmpty ? (
+            {isDeviceDiscoveryEmpty ? (
                 <Box marginHorizontal="small">
                     <EmptyHomeRenderer />
                 </Box>

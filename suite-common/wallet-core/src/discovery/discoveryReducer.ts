@@ -9,7 +9,7 @@ import { discoveryActions } from './discoveryActions';
 import {
     DeviceRootState,
     selectDevice,
-    selectPersistedDevicesStates,
+    selectPersistedDeviceStates,
 } from '../device/deviceReducer';
 
 export type DiscoveryState = Discovery[];
@@ -91,13 +91,13 @@ export const selectDiscoveryByDeviceState = (
     deviceState: string | undefined,
 ) => (deviceState ? state.wallet.discovery.find(d => d.deviceState === deviceState) : undefined);
 
-export const selectDiscoveryForDevice = (state: DiscoveryRootState & DeviceRootState) => {
+export const selectDeviceDiscovery = (state: DiscoveryRootState & DeviceRootState) => {
     const selectedDevice = selectDevice(state);
     return selectDiscoveryByDeviceState(state, selectedDevice?.state);
 };
 
 export const selectIsDeviceDiscoveryActive = (state: DiscoveryRootState & DeviceRootState) => {
-    const discovery = selectDiscoveryForDevice(state);
+    const discovery = selectDeviceDiscovery(state);
 
     if (!discovery) return false;
 
@@ -114,7 +114,7 @@ export const selectIsDeviceDiscoveryActive = (state: DiscoveryRootState & Device
 export const selectIsDiscoveryAuthConfirmationRequired = (
     state: DiscoveryRootState & DeviceRootState,
 ) => {
-    const discovery = selectDiscoveryForDevice(state);
+    const discovery = selectDeviceDiscovery(state);
 
     return (
         discovery &&
@@ -125,10 +125,10 @@ export const selectIsDiscoveryAuthConfirmationRequired = (
 };
 
 export const selectDevicelessDiscoveries = (state: DiscoveryRootState & DeviceRootState) => {
-    const persistedDevicesStates = selectPersistedDevicesStates(state);
+    const persistedDeviceStates = selectPersistedDeviceStates(state);
 
     return pipe(
         selectDiscovery(state),
-        A.filter(discovery => !persistedDevicesStates.includes(discovery.deviceState)),
+        A.filter(discovery => !persistedDeviceStates.includes(discovery.deviceState)),
     ) as Discovery[];
 };

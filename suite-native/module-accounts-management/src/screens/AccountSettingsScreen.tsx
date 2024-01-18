@@ -15,7 +15,7 @@ import {
     selectAccountByKey,
     selectAccountLabel,
     selectFormattedAccountType,
-    selectIsSelectedDeviceImported,
+    selectIsPortfolioTrackerDevice,
 } from '@suite-common/wallet-core';
 import { CryptoIcon } from '@suite-common/icons';
 
@@ -49,7 +49,7 @@ export const AccountSettingsScreen = ({
 }: StackProps<RootStackParamList, RootStackRoutes.AccountSettings>) => {
     const { accountKey } = route.params;
 
-    const isSelectedDevicePortfolioTracker = useSelector(selectIsSelectedDeviceImported);
+    const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
 
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
@@ -89,7 +89,7 @@ export const AccountSettingsScreen = ({
                 </Card>
                 <VStack marginHorizontal="medium" spacing="medium">
                     <AccountSettingsShowXpubButton accountKey={account.key} />
-                    {isSelectedDevicePortfolioTracker && (
+                    {isPortfolioTrackerDevice && (
                         <AccountSettingsRemoveCoinButton accountKey={account.key} />
                     )}
                 </VStack>

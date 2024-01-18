@@ -4,7 +4,7 @@ import { getCoinUnavailabilityMessage } from '@suite-common/suite-utils';
 import { Tooltip } from '@trezor/components';
 import { getFirmwareVersion, isDeviceInBootloaderMode } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
-import { selectSupportedNetworks } from '@suite-common/wallet-core';
+import { selectDeviceSupportedNetworks } from '@suite-common/wallet-core';
 
 import { Translation } from 'src/components/suite';
 import { useDevice, useSelector } from 'src/hooks/suite';
@@ -36,10 +36,10 @@ export const CoinList = ({
 }: CoinListProps) => {
     const { device, isLocked } = useDevice();
     const blockchain = useSelector(state => state.wallet.blockchain);
-    const supportedNetworkSymbols = useSelector(selectSupportedNetworks);
+    const deviceSupportedNetworkSymbols = useSelector(selectDeviceSupportedNetworks);
 
     const supportedNetworks = networks.filter(network =>
-        supportedNetworkSymbols.includes(network.symbol),
+        deviceSupportedNetworkSymbols.includes(network.symbol),
     );
 
     const isDeviceLocked = !!device && isLocked();

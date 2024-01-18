@@ -5,7 +5,7 @@ import {
     accountsActions,
     DISCOVERY_MODULE_PREFIX,
     selectDeviceAccountsLengthPerNetwork,
-    selectDiscoveryForDevice,
+    selectDeviceDiscovery,
     updateDiscovery,
     createDiscovery,
     removeDiscovery,
@@ -53,7 +53,7 @@ type DiscoveryDescriptorItem = DiscoveryItem & { descriptor: string };
 const finishNetworkTypeDiscoveryThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/finishNetworkTypeDiscoveryThunk`,
     (_, { dispatch, getState }) => {
-        const discovery = selectDiscoveryForDevice(getState());
+        const discovery = selectDeviceDiscovery(getState());
 
         if (!discovery) {
             return;
@@ -159,7 +159,7 @@ const discoverNetworkBatchThunk = createThunk(
         },
         { dispatch, getState },
     ) => {
-        const discovery = selectDiscoveryForDevice(getState());
+        const discovery = selectDeviceDiscovery(getState());
         const batchSize = getBatchSizeByCoin(network.symbol);
 
         if (!discovery || !deviceState) {
@@ -302,7 +302,7 @@ export const startDescriptorPreloadedDiscoveryThunk = createThunk(
     ) => {
         const device = selectDeviceByState(getState(), deviceState);
 
-        const discovery1 = selectDiscoveryForDevice(getState());
+        const discovery1 = selectDeviceDiscovery(getState());
         if (discovery1) {
             console.warn(
                 `Warning discovery for device ${deviceState} already exists. Skipping discovery.`,
@@ -327,7 +327,7 @@ export const startDescriptorPreloadedDiscoveryThunk = createThunk(
         );
 
         // We need to check again here because it's possible that things changed in the meantime because async thunks
-        const discovery2 = selectDiscoveryForDevice(getState());
+        const discovery2 = selectDeviceDiscovery(getState());
         if (!discovery2) {
             return;
         }

@@ -2,7 +2,7 @@ import {
     authorizeDevice,
     deviceActions,
     selectDevice,
-    selectDiscoveryForDevice,
+    selectDeviceDiscovery,
     accountsActions,
     disableAccountsThunk,
     createDiscoveryThunk,
@@ -22,7 +22,7 @@ import { getApp } from 'src/utils/suite/router';
 export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
     async (action, { dispatch, next, getState }) => {
         const prevState = getState();
-        const prevDiscovery = selectDiscoveryForDevice(prevState);
+        const prevDiscovery = selectDeviceDiscovery(prevState);
         const discoveryIsRunning =
             prevDiscovery &&
             prevDiscovery.status > DiscoveryStatus.IDLE &&
@@ -141,7 +141,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
             walletSettingsActions.changeNetworks.match(action) ||
             accountsActions.changeAccountVisibility.match(action)
         ) {
-            const discovery = selectDiscoveryForDevice(getState());
+            const discovery = selectDeviceDiscovery(getState());
             if (
                 device &&
                 device.connected &&

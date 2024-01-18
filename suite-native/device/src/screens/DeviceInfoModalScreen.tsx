@@ -28,8 +28,8 @@ import {
     selectDevice,
     selectDeviceModel,
     selectDeviceReleaseInfo,
-    selectIsSelectedDeviceImported,
-    selectSelectedDeviceLabel,
+    selectIsPortfolioTrackerDevice,
+    selectDeviceLabel,
 } from '@suite-common/wallet-core';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { useTranslate } from '@suite-native/intl';
@@ -66,9 +66,9 @@ export const DeviceInfoModalScreen = () => {
     const openLink = useOpenLink();
 
     const deviceModel = useSelector(selectDeviceModel);
-    const deviceLabel = useSelector(selectSelectedDeviceLabel);
+    const deviceLabel = useSelector(selectDeviceLabel);
     const device = useSelector(selectDevice);
-    const isPortfolioTrackerDevice = useSelector(selectIsSelectedDeviceImported);
+    const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const deviceReleaseInfo = useSelector(selectDeviceReleaseInfo);
     const { applyStyle } = useNativeStyles();
 

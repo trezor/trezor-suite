@@ -8,7 +8,7 @@ import { analytics, EventType } from '@suite-native/analytics';
 import { Button, Text, VStack } from '@suite-native/atoms';
 import {
     selectDevices,
-    selectIsSelectedDeviceImported,
+    selectIsPortfolioTrackerDevice,
     selectDeviceId,
     selectIsNoPhysicalDeviceConnected,
 } from '@suite-common/wallet-core';
@@ -38,7 +38,7 @@ export const DeviceManagerContent = () => {
 
     const devices = useSelector(selectDevices);
     const selectedDeviceId = useSelector(selectDeviceId);
-    const isPortfolioTrackerDevice = useSelector(selectIsSelectedDeviceImported);
+    const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const isNoPhysicalDeviceConnected = useSelector(selectIsNoPhysicalDeviceConnected);
 
     const { setIsDeviceManagerVisible } = useDeviceManager();

@@ -14,7 +14,7 @@ import { AccountsList, SearchableAccountsListScreenHeader } from '@suite-native/
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import {
     selectAreAllDevicesDisconnectedOrAccountless,
-    selectIsSelectedDeviceImported,
+    selectIsPortfolioTrackerDevice,
 } from '@suite-common/wallet-core';
 
 import { AddAccountButton } from '../components/AddAccountsButton';
@@ -23,7 +23,7 @@ export const AccountsScreen = () => {
     const navigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AccountDetail>>();
 
-    const isSelectedDevicePortfolioTracker = useSelector(selectIsSelectedDeviceImported);
+    const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const areAllDevicesDisconnectedOrAccountless = useSelector(
         selectAreAllDevicesDisconnectedOrAccountless,
     );
@@ -49,7 +49,7 @@ export const AccountsScreen = () => {
                     title="My assets"
                     onSearchInputChange={handleFilterChange}
                     rightIcon={
-                        isSelectedDevicePortfolioTracker &&
+                        isPortfolioTrackerDevice &&
                         !areAllDevicesDisconnectedOrAccountless && <AddAccountButton />
                     }
                 />

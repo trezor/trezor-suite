@@ -13,7 +13,7 @@ import {
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import {
-    selectIsSelectedDeviceImported,
+    selectIsPortfolioTrackerDevice,
     selectIsNoPhysicalDeviceConnected,
     selectIsDeviceConnectedAndAuthorized,
 } from '@suite-common/wallet-core';
@@ -27,7 +27,7 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 
 export const useHandleDeviceConnection = () => {
     const isNoPhysicalDeviceConnected = useSelector(selectIsNoPhysicalDeviceConnected);
-    const isSelectedDeviceImported = useSelector(selectIsSelectedDeviceImported);
+    const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
     const isDeviceConnectedAndAuthorized = useSelector(selectIsDeviceConnectedAndAuthorized);
 
@@ -36,14 +36,14 @@ export const useHandleDeviceConnection = () => {
     // At the moment when unauthorized physical device is selected,
     // redirect to the Connecting screen where is handled the connection logic.
     useEffect(() => {
-        if (isOnboardingFinished && !isSelectedDeviceImported && !isDeviceConnectedAndAuthorized) {
+        if (isOnboardingFinished && !isPortfolioTrackerDevice && !isDeviceConnectedAndAuthorized) {
             navigation.navigate(RootStackRoutes.ConnectDevice, {
                 screen: ConnectDeviceStackRoutes.ConnectingDevice,
             });
         }
     }, [
         isOnboardingFinished,
-        isSelectedDeviceImported,
+        isPortfolioTrackerDevice,
         isNoPhysicalDeviceConnected,
         isDeviceConnectedAndAuthorized,
         navigation,

@@ -4,7 +4,7 @@ import { pipe } from '@mobily/ts-belt';
 import {
     DeviceRootState,
     filterUnavailableNetworks,
-    selectSupportedNetworks,
+    selectDeviceSupportedNetworks,
 } from '@suite-common/wallet-core';
 import {
     filterBlacklistedNetworks,
@@ -53,7 +53,7 @@ export const selectDiscoverySupportedNetworks = (
     areTestnetsEnabled: boolean,
 ) =>
     pipe(
-        selectSupportedNetworks(state),
+        selectDeviceSupportedNetworks(state),
         networkSymbols => filterTestnetNetworks(networkSymbols, areTestnetsEnabled),
         filterUnavailableNetworks,
         filterBlacklistedNetworks,

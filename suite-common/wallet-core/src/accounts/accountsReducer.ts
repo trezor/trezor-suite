@@ -13,8 +13,8 @@ import {
     DeviceRootState,
     selectDevice,
     selectIsNoPhysicalDeviceConnected,
-    selectIsSelectedDeviceImported,
-    selectPersistedDevicesStates,
+    selectIsPortfolioTrackerDevice,
+    selectPersistedDeviceStates,
 } from '../device/deviceReducer';
 import { DiscoveryRootState, selectIsDeviceDiscoveryActive } from '../discovery/discoveryReducer';
 
@@ -203,7 +203,7 @@ export const selectDeviceAccountsByNetworkSymbol = memoizeWithArgs(
     },
 );
 
-export const selectAccountsByNetworkAndDevice = memoizeWithArgs(
+export const selectAccountsByNetworkAndDeviceState = memoizeWithArgs(
     (state: AccountsRootState, deviceState: string, networkSymbol: NetworkSymbol) => {
         const accounts = selectAccounts(state);
 
@@ -304,20 +304,20 @@ export const selectAccountsSymbols = memoize(
         ) as NetworkSymbol[],
 );
 
-export const selectIsAccountsListEmpty = (state: AccountsRootState & DeviceRootState) =>
+export const selectIsDeviceAccountless = (state: AccountsRootState & DeviceRootState) =>
     pipe(selectDeviceAccounts(state), A.isEmpty);
 
-export const selectIsPortfolioEmpty = (
+export const selectIsDeviceDiscoveryEmpty = (
     state: AccountsRootState & DeviceRootState & DiscoveryRootState,
 ) => {
-    const isAccountsListEmpty = selectIsAccountsListEmpty(state);
-    const isDiscoveryActive = selectIsDeviceDiscoveryActive(state);
+    const isDeviceAccountless = selectIsDeviceAccountless(state);
+    const isDeviceDiscoveryActive = selectIsDeviceDiscoveryActive(state);
 
-    return isAccountsListEmpty && !isDiscoveryActive;
+    return isDeviceAccountless && !isDeviceDiscoveryActive;
 };
 
 export const selectDevicelessAccounts = (state: AccountsRootState & DeviceRootState) => {
-    const persistedDevicesStates = selectPersistedDevicesStates(state);
+    const persistedDevicesStates = selectPersistedDeviceStates(state);
 
     return pipe(
         selectAccounts(state),
@@ -328,17 +328,17 @@ export const selectDevicelessAccounts = (state: AccountsRootState & DeviceRootSt
 export const selectAreAllDevicesDisconnectedOrAccountless = (
     state: AccountsRootState & DeviceRootState & DiscoveryRootState,
 ) => {
-    const isPortfolioEmpty = selectIsPortfolioEmpty(state);
+    const isDeviceDiscoveryEmpty = selectIsDeviceDiscoveryEmpty(state);
     const isNoPhysicalDeviceConnected = selectIsNoPhysicalDeviceConnected(state);
 
-    return isPortfolioEmpty && isNoPhysicalDeviceConnected;
+    return isDeviceDiscoveryEmpty && isNoPhysicalDeviceConnected;
 };
 
 export const selectIsPortfolioTrackerEmpty = (
     state: AccountsRootState & DeviceRootState & DiscoveryRootState,
 ) => {
-    const isDeviceImported = selectIsSelectedDeviceImported(state);
-    const isPortfolioEmpty = selectIsPortfolioEmpty(state);
+    const isPortfolioTrackerDevice = selectIsPortfolioTrackerDevice(state);
+    const isDeviceDiscoveryEmpty = selectIsDeviceDiscoveryEmpty(state);
 
-    return isDeviceImported && isPortfolioEmpty;
+    return isPortfolioTrackerDevice && isDeviceDiscoveryEmpty;
 };

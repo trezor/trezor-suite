@@ -14,7 +14,7 @@ import {
     StackToTabCompositeProps,
 } from '@suite-native/navigation';
 import { Translation } from '@suite-native/intl';
-import { selectIsAccountsListEmpty } from '@suite-common/wallet-core';
+import { selectIsDeviceAccountless } from '@suite-common/wallet-core';
 
 type NavigationProp = StackToTabCompositeProps<
     AccountsImportStackParamList,
@@ -24,7 +24,7 @@ type NavigationProp = StackToTabCompositeProps<
 
 export const AccountImportSubHeader = () => {
     const navigation = useNavigation<NavigationProp>();
-    const isAccountsListEmpty = useSelector(selectIsAccountsListEmpty);
+    const isDeviceAccountless = useSelector(selectIsDeviceAccountless);
 
     const handleCloseOnboarding = () => {
         navigation.navigate(RootStackRoutes.AppTabs, {
@@ -38,7 +38,7 @@ export const AccountImportSubHeader = () => {
     return (
         <ScreenSubHeader
             leftIcon={
-                !isAccountsListEmpty ? (
+                !isDeviceAccountless ? (
                     <IconButton
                         iconName="close"
                         colorScheme="tertiaryElevation0"

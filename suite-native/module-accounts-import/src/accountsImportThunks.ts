@@ -2,7 +2,7 @@ import { createThunk } from '@suite-common/redux-utils';
 import {
     accountsActions,
     PORTFOLIO_TRACKER_DEVICE_STATE,
-    selectAccountsByNetworkAndDevice,
+    selectAccountsByNetworkAndDeviceState,
 } from '@suite-common/wallet-core';
 import { AccountInfo } from '@trezor/connect';
 import { networks, NetworkSymbol, AccountType } from '@suite-common/wallet-config';
@@ -34,7 +34,7 @@ export const importAccountThunk = createThunk(
     ({ accountInfo, accountLabel, coin }: ImportAssetThunkPayload, { dispatch, getState }) => {
         const deviceState = PORTFOLIO_TRACKER_DEVICE_STATE;
 
-        const deviceNetworkAccounts = selectAccountsByNetworkAndDevice(
+        const deviceNetworkAccounts = selectAccountsByNetworkAndDeviceState(
             getState(),
             deviceState,
             coin,

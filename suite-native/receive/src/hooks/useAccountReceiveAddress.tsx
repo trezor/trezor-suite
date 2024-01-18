@@ -12,7 +12,7 @@ import {
     selectPendingAccountAddresses,
     selectIsAccountUtxoBased,
     selectAccountNetworkSymbol,
-    selectIsSelectedDeviceImported,
+    selectIsPortfolioTrackerDevice,
     confirmAddressOnDeviceThunk,
 } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
@@ -24,7 +24,7 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
     const dispatch = useDispatch();
     const [isReceiveApproved, setIsReceiveApproved] = useState(false);
     const [isUnverifiedAddressRevealed, setIsUnverifiedAddressRevealed] = useState(false);
-    const isPortfolioTracker = useSelector(selectIsSelectedDeviceImported);
+    const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const navigation = useNavigation();
 
     const { showAlert } = useAlert();
@@ -102,7 +102,7 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
     }, [accountKey, freshAddress, dispatch, showAlert, navigation]);
 
     const handleShowAddress = useCallback(async () => {
-        if (isPortfolioTracker) {
+        if (isPortfolioTrackerDevice) {
             if (networkSymbol) {
                 analytics.report({
                     type: EventType.CreateReceiveAddressShowAddress,
@@ -119,7 +119,7 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
                 setIsReceiveApproved(true);
             }
         }
-    }, [isPortfolioTracker, networkSymbol, verifyAddressOnDevice]);
+    }, [isPortfolioTrackerDevice, networkSymbol, verifyAddressOnDevice]);
 
     return {
         address: freshAddress?.address,

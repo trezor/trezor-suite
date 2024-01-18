@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { Box, Card } from '@suite-native/atoms';
 import { AddressQRCode } from '@suite-native/qr-code';
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
-import { selectIsSelectedDeviceImported } from '@suite-common/wallet-core';
+import { selectIsPortfolioTrackerDevice } from '@suite-common/wallet-core';
 import { useTranslate } from '@suite-native/intl';
 
 import { UnverifiedAddress } from './UnverifiedAddress';
@@ -27,12 +27,12 @@ export const ReceiveAddressCard = ({
     isEthereumTokenAddress = false,
 }: ReceiveAddressCardProps) => {
     const { translate } = useTranslate();
-    const isPortfolioTracker = useSelector(selectIsSelectedDeviceImported);
+    const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
 
     const { networkType } = networks[networkSymbol];
 
     const getCardAlertProps = () => {
-        if (isReceiveApproved && !isPortfolioTracker) {
+        if (isReceiveApproved && !isPortfolioTrackerDevice) {
             return {
                 alertTitle: translate('moduleReceive.receiveAddressCard.alert.success'),
                 alertVariant: 'success',

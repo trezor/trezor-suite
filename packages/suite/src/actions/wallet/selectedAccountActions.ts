@@ -1,5 +1,5 @@
 import {
-    selectDiscoveryForDevice,
+    selectDeviceDiscovery,
     selectDevice,
     accountsActions,
     blockchainActions,
@@ -35,7 +35,7 @@ const getAccountState = (state: AppState): SelectedAccountStatus => {
     }
 
     // waiting for discovery
-    const discovery = selectDiscoveryForDevice(state);
+    const discovery = selectDeviceDiscovery(state);
     if (!device.state || !discovery) {
         return {
             status: 'loading',
