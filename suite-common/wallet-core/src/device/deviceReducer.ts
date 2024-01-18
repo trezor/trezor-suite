@@ -706,7 +706,7 @@ export const selectDeviceFirmwareVersion = memoize((state: DeviceRootState) => {
 
 export const selectPersistedDevicesStates = (state: DeviceRootState) => {
     const devices = selectDevices(state);
-    return [...devices.map(d => d.id), PORTFOLIO_TRACKER_DEVICE_STATE];
+    return [...devices.map(d => d.state), PORTFOLIO_TRACKER_DEVICE_STATE];
 };
 
 export const selectIsNoPhysicalDeviceConnected = (state: DeviceRootState) => {
