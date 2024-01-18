@@ -8,7 +8,6 @@ packages/suite-data/files/bin/tor/mac-*/*.dylib filter=lfs diff=lfs merge=lfs -t
 packages/suite-data/files/bin/tor/mac-*/tor filter=lfs diff=lfs merge=lfs -text
 packages/suite-data/files/bin/tor/win-*/*.dll filter=lfs diff=lfs merge=lfs -text
 packages/suite-data/files/bin/tor/win-*/tor.exe filter=lfs diff=lfs merge=lfs -text
-packages/integration-tests/projects/suite-web/snapshots/** filter=lfs diff=lfs merge=lfs -text
 packages/connect-common/files/firmware/t1b1/*.bin filter=lfs diff=lfs merge=lfs -text
 packages/connect-common/files/firmware/t2b1/*.bin filter=lfs diff=lfs merge=lfs -text
 packages/connect-common/files/firmware/t2t1/*.bin filter=lfs diff=lfs merge=lfs -text

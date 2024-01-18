@@ -40,8 +40,6 @@ services:
       - LOCAL_USER_ID=$LOCAL_USER_ID
     working_dir: /e2e
     command: bash -c "docker/wait-for-200.sh http://localhost:8000 && cypress open --project /e2e/packages/suite-web/e2e"
-    # if you want to debug run_tests.js (which runs tests in CI) locally
-    # command: bash -c "node ./packages/integration-tests/projects/suite-web/run_tests.js"
     volumes:
       - ../:/e2e
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
