@@ -8,6 +8,6 @@
     "background": {
         "service_worker": "serviceWorker.bundle.js"
     },
-    "permissions": ["tabs", "notifications", "scripting", "activeTab"],
+    "permissions": ["scripting"],
     "host_permissions": ["http://*/*", "https://*/*"]
 }
