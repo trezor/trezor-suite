@@ -8,25 +8,45 @@ import {
     UiRequestSelectDevice,
     UI_EVENT,
     TRANSPORT,
+    WEBEXTENSION,
 } from '@trezor/connect';
 import { TREZOR_USB_DESCRIPTORS } from '@trezor/transport/lib/constants';
 import { SUITE_BRIDGE_URL, SUITE_UDEV_URL, TREZOR_SUPPORT_URL } from '@trezor/urls';
 import { container, getState, showView, postMessage } from './common';
+import { reactEventBus } from '@trezor/connect-ui/src/utils/eventBus';
 
 const initWebUsbButton = (showLoader: boolean) => {
-    const { usb } = window.navigator;
     const webusbContainer = container.getElementsByClassName('webusb')[0] as HTMLElement;
     webusbContainer.style.display = 'flex';
     const button = webusbContainer.getElementsByTagName('button')[0];
+    const { iframe, settings } = getState();
+    const usb = iframe ? iframe.navigator.usb : null;
 
     button.innerHTML = '<span class="plus"></span><span class="text">Pair devices</span>';
 
     const onClick = async () => {
-        if (!usb) {
-            window.postMessage({ type: POPUP.EXTENSION_USB_PERMISSIONS }, window.location.origin);
-            return;
-        }
         try {
+            if (!usb) {
+                if (settings?.env !== 'webextension') {
+                    throw ERRORS.TypedError('Popup_ConnectionMissing');
+                }
+                window.postMessage(
+                    { type: POPUP.EXTENSION_USB_PERMISSIONS },
+                    window.location.origin,
+                );
+
+                // Broadcast channel to receive update from permissions page
+                const channel = new BroadcastChannel(WEBEXTENSION.USB_PERMISSIONS_BROADCAST);
+                channel.onmessage = event => {
+                    if (event.data.type === WEBEXTENSION.USB_PERMISSIONS_FINISHED) {
+                        postMessage({
+                            event: UI_EVENT,
+                            type: TRANSPORT.REQUEST_DEVICE,
+                        });
+                    }
+                };
+                return;
+            }
             await window.navigator.usb.requestDevice({
                 filters: TREZOR_USB_DESCRIPTORS,
             });
@@ -47,8 +67,11 @@ const initWebUsbButton = (showLoader: boolean) => {
                 throw ERRORS.TypedError('Popup_ConnectionMissing');
             }
         } catch (error) {
-            // empty, do nothing, should not happen anyway
             console.error(error);
+            reactEventBus.dispatch({
+                type: 'error',
+                detail: 'iframe-failure',
+            });
         }
     };
 
