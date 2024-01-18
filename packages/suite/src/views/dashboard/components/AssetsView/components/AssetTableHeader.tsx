@@ -22,6 +22,7 @@ const Header = styled.div`
 
 export const AssetTableHeader = () => (
     <AssetTableRowGrid>
+        <Header /> {/* Logo */}
         <Header>
             <Translation id="TR_ASSETS" />
         </Header>

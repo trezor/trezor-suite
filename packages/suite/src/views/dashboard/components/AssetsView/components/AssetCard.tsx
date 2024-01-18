@@ -17,22 +17,20 @@ import { Card, H2, Icon, SkeletonRectangle, variables } from '@trezor/components
 import { useDispatch } from 'react-redux';
 import { useAccountSearch, useLoadingSkeleton } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
-import { ArrowIcon, AssetInfo, AssetInfoSkeleton } from './AssetInfo';
 import { AssetFiatBalance } from '@suite-common/assets';
 import { FiatHeader } from '../../FiatHeader';
+import { ArrowIcon, styledHoverOnParentOfArrowIcon } from './ArrowIcon';
+import { AssetCardInfo, AssetCardInfoSkeleton } from './AssetCardInfo';
 
 const StyledCard = styled(Card)`
     :hover {
         box-shadow: ${({ theme }) => theme.boxShadowElevated};
         cursor: pointer;
-
-        ${ArrowIcon} {
-            path {
-                fill: ${({ theme }) => theme.iconPrimaryDefault};
-            }
-        }
     }
     transition: box-shadow 0.2s;
+
+    ${styledHoverOnParentOfArrowIcon}
+
     padding: ${spacingsPx.xs};
 `;
 
@@ -136,7 +134,7 @@ export const AssetCard = ({
         <StyledCard onClick={handleCardClick}>
             <Content>
                 <AssetContainer>
-                    <AssetInfo
+                    <AssetCardInfo
                         network={network}
                         assetsFiatBalances={assetsFiatBalances}
                         index={index}
@@ -197,7 +195,7 @@ export const AssetCardSkeleton = (props: { animate?: boolean }) => {
         <StyledCard>
             <Content>
                 <AssetContainer>
-                    <AssetInfoSkeleton animate={animate} />
+                    <AssetCardInfoSkeleton animate={animate} />
                 </AssetContainer>
                 <FiatAmount>
                     <IntegerValue>
