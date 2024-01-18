@@ -12,7 +12,7 @@ import {
     RootStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
-import { selectIsSelectedDeviceImported } from '@suite-common/wallet-core';
+import { selectIsPortfolioTrackerDevice } from '@suite-common/wallet-core';
 import { useTranslate } from '@suite-native/intl';
 
 import { PortfolioGraph, PortfolioGraphRef } from './PortfolioGraph';
@@ -27,7 +27,7 @@ export const PortfolioContent = forwardRef<PortfolioContentRef>((_props, ref) =>
 
     const navigation = useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
 
-    const isDeviceImported = useSelector(selectIsSelectedDeviceImported);
+    const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
 
     const [isUsbDeviceConnectFeatureEnabled] = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
 
@@ -56,7 +56,7 @@ export const PortfolioContent = forwardRef<PortfolioContentRef>((_props, ref) =>
                 <Box>
                     <Assets />
                 </Box>
-                {isDeviceImported && (
+                {isPortfolioTrackerDevice && (
                     <Box>
                         <Button
                             data-testID="@home/portfolio/sync-coins-button"

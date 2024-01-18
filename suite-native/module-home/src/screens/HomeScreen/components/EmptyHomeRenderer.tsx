@@ -3,8 +3,8 @@ import { useSelector } from 'react-redux';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import {
     selectAreAllDevicesDisconnectedOrAccountless,
-    selectIsSelectedDeviceAuthorized,
-    selectIsSelectedDeviceImported,
+    selectIsDeviceAuthorized,
+    selectIsPortfolioTrackerDevice,
 } from '@suite-common/wallet-core';
 import { selectIsDeviceReadyToUse } from '@suite-native/device';
 
@@ -15,8 +15,8 @@ import { EmptyPortfolioCrossroads } from './EmptyPortfolioCrossroads';
 export const EmptyHomeRenderer = () => {
     const [isUsbDeviceConnectFeatureEnabled] = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
 
-    const isDeviceAuthorized = useSelector(selectIsSelectedDeviceAuthorized);
-    const isDeviceImported = useSelector(selectIsSelectedDeviceImported);
+    const isDeviceAuthorized = useSelector(selectIsDeviceAuthorized);
+    const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const areAllDevicesDisconnectedOrAccountless = useSelector(
         selectAreAllDevicesDisconnectedOrAccountless,
     );
@@ -24,7 +24,7 @@ export const EmptyHomeRenderer = () => {
 
     // This state is present only for a fraction of second while redirecting to the Connecting screen is already happening.
     // Because the animation takes some time, this makes sure that the screen content of newly selected device does not flash during the redirect.
-    if (!isDeviceImported && !isDeviceReadyToUse) {
+    if (!isPortfolioTrackerDevice && !isDeviceReadyToUse) {
         return null;
     }
 
@@ -34,7 +34,7 @@ export const EmptyHomeRenderer = () => {
             return <EmptyPortfolioCrossroads />;
         }
 
-        if (!isDeviceImported && isDeviceAuthorized) {
+        if (!isPortfolioTrackerDevice && isDeviceAuthorized) {
             return <EmptyConnectedDeviceState />;
         }
     }

@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { BottomSheet } from '@suite-native/atoms';
-import { selectNetworkAccountsGroupedByAccountType } from '@suite-native/accounts';
+import { selectDeviceNetworkAccountsGroupedByAccountType } from '@suite-native/accounts';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { AccountsRootState, DeviceRootState } from '@suite-common/wallet-core';
 import { NetworkSymbol } from '@suite-common/wallet-config';
@@ -19,7 +19,7 @@ export const NetworkAssetsBottomSheet = ({
     onClose,
 }: NetworkAssetsBottomSheetProps) => {
     const groupedNetworkAccounts = useSelector((state: AccountsRootState & DeviceRootState) =>
-        selectNetworkAccountsGroupedByAccountType(state, networkSymbol),
+        selectDeviceNetworkAccountsGroupedByAccountType(state, networkSymbol),
     );
 
     return (

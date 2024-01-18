@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { selectIsSelectedDeviceImported } from '@suite-common/wallet-core';
+import { selectIsPortfolioTrackerDevice } from '@suite-common/wallet-core';
 import { VStack } from '@suite-native/atoms';
 
 import { ShowAddressButtons } from './ShowAddressButtons';
@@ -20,11 +20,11 @@ export const UnverifiedAddress = ({
     isCardanoAddress,
     onShowAddress,
 }: UnverifiedAddressSectionProps) => {
-    const isPortfolioTracker = useSelector(selectIsSelectedDeviceImported);
+    const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
 
     return (
         <VStack spacing="medium">
-            {isPortfolioTracker ? (
+            {isPortfolioTrackerDevice ? (
                 <UnverifiedAddressWarning />
             ) : (
                 <UnverifiedAddressDevice

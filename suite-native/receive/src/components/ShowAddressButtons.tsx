@@ -4,14 +4,14 @@ import { useSelector } from 'react-redux';
 import { VStack, TextButton, Button } from '@suite-native/atoms';
 import { useOpenLink } from '@suite-native/link';
 import { useTranslate } from '@suite-native/intl';
-import { selectIsSelectedDeviceImported } from '@suite-common/wallet-core';
+import { selectIsPortfolioTrackerDevice } from '@suite-common/wallet-core';
 
 type ShowAddressButtonsProps = {
     onShowAddress: () => void;
 };
 
 export const ShowAddressButtons = ({ onShowAddress }: ShowAddressButtonsProps) => {
-    const isPortfolioTracker = useSelector(selectIsSelectedDeviceImported);
+    const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
 
     const openLink = useOpenLink();
     const { translate } = useTranslate();
@@ -24,7 +24,7 @@ export const ShowAddressButtons = ({ onShowAddress }: ShowAddressButtonsProps) =
         <VStack spacing="large">
             <Button iconLeft="eye" size="large" onPress={onShowAddress}>
                 {translate(
-                    isPortfolioTracker
+                    isPortfolioTrackerDevice
                         ? 'moduleReceive.receiveAddressCard.showAddress.buttonTracker'
                         : 'moduleReceive.receiveAddressCard.showAddress.button',
                 )}

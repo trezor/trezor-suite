@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js';
 import { AnimatePresence } from 'framer-motion';
 
 import { variables, Icon, Button, colors, LoadingContent } from '@trezor/components';
-import { selectSupportedNetworks } from '@suite-common/wallet-core';
+import { selectDeviceSupportedNetworks } from '@suite-common/wallet-core';
 
 import { NETWORKS } from 'src/config/wallet';
 import { DashboardSection } from 'src/components/dashboard';
@@ -90,10 +90,10 @@ const AssetsCard = () => {
     const { dashboardAssetsGridMode } = useSelector(s => s.suite.flags);
 
     const { mainnets, enabledNetworks } = useEnabledNetworks();
-    const supportedNetworks = useSelector(selectSupportedNetworks);
+    const deviceSupportedNetworks = useSelector(selectDeviceSupportedNetworks);
 
     const mainnetSymbols = mainnets.map(mainnet => mainnet.symbol);
-    const supportedMainnetNetworks = supportedNetworks.filter(network =>
+    const supportedMainnetNetworks = deviceSupportedNetworks.filter(network =>
         mainnetSymbols.includes(network),
     );
     const hasMainnetNetworksToEnable = supportedMainnetNetworks.some(

@@ -7,7 +7,7 @@ import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { FiatRatesRootState } from '@suite-native/fiat-rates';
 import { SettingsSliceRootState } from '@suite-native/module-settings';
 
-import { selectFilteredAccountsGroupedByNetworkAccountType } from '../selectors';
+import { selectFilteredDeviceAccountsGroupedByNetworkAccountType } from '../selectors';
 import { AccountListPlaceholder } from './AccountListPlaceholder';
 import { GroupedAccountsList } from './GroupedAccountsList';
 
@@ -23,7 +23,7 @@ export const AccountsList = ({ onSelectAccount, filterValue = '' }: AccountsList
                 FiatRatesRootState &
                 SettingsSliceRootState &
                 DeviceRootState,
-        ) => selectFilteredAccountsGroupedByNetworkAccountType(state, filterValue),
+        ) => selectFilteredDeviceAccountsGroupedByNetworkAccountType(state, filterValue),
     );
 
     if (D.isEmpty(groupedAccounts))

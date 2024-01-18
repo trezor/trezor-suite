@@ -62,7 +62,7 @@ export const extraDependencies: ExtraDependencies = {
         selectDesktopBinDir: (state: AppState) => state.desktop?.paths?.binDir,
         selectDevice: (state: AppState) => state.device.selectedDevice,
         selectMetadata: (state: AppState) => state.metadata,
-        selectDiscoveryForDevice: (state: DiscoveryRootState & DeviceRootState) =>
+        selectDeviceDiscovery: (state: DiscoveryRootState & DeviceRootState) =>
             selectDiscoveryByDeviceState(state, state.device.selectedDevice?.state),
         selectRouterApp: (state: AppState) => state.router.app,
         selectCheckFirmwareAuthenticity: (state: AppState) =>

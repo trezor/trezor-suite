@@ -17,7 +17,7 @@ import { NetworkSymbol, networks } from '@suite-common/wallet-config';
 import { GroupedAccounts } from './types';
 import { filterAccountsByLabelAndNetworkNames, groupAccountsByNetworkAccountType } from './utils';
 
-export const selectFilteredAccountsGroupedByNetworkAccountType = memoizeWithArgs(
+export const selectFilteredDeviceAccountsGroupedByNetworkAccountType = memoizeWithArgs(
     (
         state: AccountsRootState & FiatRatesRootState & SettingsSliceRootState & DeviceRootState,
         filterValue: string,
@@ -43,7 +43,7 @@ export const selectFilteredAccountsGroupedByNetworkAccountType = memoizeWithArgs
     { size: 1 },
 );
 
-export const selectNetworkAccountsGroupedByAccountType = memoizeWithArgs(
+export const selectDeviceNetworkAccountsGroupedByAccountType = memoizeWithArgs(
     (state: AccountsRootState & DeviceRootState, networkSymbol: NetworkSymbol) =>
         pipe(
             selectDeviceAccountsByNetworkSymbol(state, networkSymbol),

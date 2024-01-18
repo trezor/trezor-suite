@@ -11,7 +11,7 @@ import {
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { selectIsPortfolioEmpty } from '@suite-common/wallet-core';
+import { selectIsDeviceDiscoveryEmpty } from '@suite-common/wallet-core';
 import { useOpenLink } from '@suite-native/link';
 
 import { DeviceManagerModal } from './DeviceManagerModal';
@@ -27,7 +27,7 @@ export const PortfolioTrackerDeviceManagerContent = () => {
     const { translate } = useTranslate();
     const openLink = useOpenLink();
 
-    const isPortfolioEmpty = useSelector(selectIsPortfolioEmpty);
+    const isDeviceDiscoveryEmpty = useSelector(selectIsDeviceDiscoveryEmpty);
 
     const navigation = useNavigation<NavigationProp>();
 
@@ -61,7 +61,7 @@ export const PortfolioTrackerDeviceManagerContent = () => {
     };
 
     const syncButtonTitle = translate(
-        isPortfolioEmpty
+        isDeviceDiscoveryEmpty
             ? 'deviceManager.syncCoinsButton.syncMyCoins'
             : 'deviceManager.syncCoinsButton.syncAnother',
     );

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import styled from 'styled-components';
 
 import { Button } from '@trezor/components';
-import { accountsActions, selectSupportedNetworks } from '@suite-common/wallet-core';
+import { accountsActions, selectDeviceSupportedNetworks } from '@suite-common/wallet-core';
 import { arrayPartition } from '@trezor/utils';
 import { FirmwareType } from '@trezor/connect';
 import { Translation, Modal } from 'src/components/suite';
@@ -47,7 +47,7 @@ export const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: AddAcc
     const mainnetSymbols = mainnets.map(mainnet => mainnet.symbol);
     const testnetSymbols = testnets.map(testnet => testnet.symbol);
 
-    const supportedNetworks = useSelector(selectSupportedNetworks);
+    const supportedNetworks = useSelector(selectDeviceSupportedNetworks);
     const supportedMainnetNetworks = supportedNetworks.filter(network =>
         mainnetSymbols.includes(network),
     );

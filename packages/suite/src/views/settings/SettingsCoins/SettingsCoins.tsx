@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-utils';
-import { selectSupportedNetworks } from '@suite-common/wallet-core';
+import { selectDeviceSupportedNetworks } from '@suite-common/wallet-core';
 
 import { DeviceBanner, SettingsLayout, SettingsSection } from 'src/components/settings';
 import { CoinGroup, SectionItem, TooltipSymbol, Translation } from 'src/components/suite';
@@ -22,9 +22,9 @@ export const SettingsCoins = () => {
     const { firmwareTypeBannerClosed } = useSelector(state => state.suite.flags);
 
     const { mainnets, testnets, enabledNetworks, setEnabled } = useEnabledNetworks();
-    const supportedNetworks = useSelector(selectSupportedNetworks);
+    const deviceSupportedNetworks = useSelector(selectDeviceSupportedNetworks);
     const supportedEnabledNetworks = enabledNetworks.filter(enabledNetwork =>
-        supportedNetworks.includes(enabledNetwork),
+        deviceSupportedNetworks.includes(enabledNetwork),
     );
 
     const { anchorRef: anchorRefCrypto, shouldHighlight: shouldHighlightCrypto } = useAnchor(

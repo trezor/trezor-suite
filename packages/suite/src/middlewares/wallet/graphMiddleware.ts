@@ -4,7 +4,7 @@ import {
     discoveryActions,
     accountsActions,
     transactionsActions,
-    selectDiscoveryForDevice,
+    selectDeviceDiscovery,
 } from '@suite-common/wallet-core';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 
@@ -34,7 +34,7 @@ const graphMiddleware =
             const { account, transactions } = action.payload;
 
             // don't run during discovery and on unconfirmed txs
-            const discovery = selectDiscoveryForDevice(api.getState());
+            const discovery = selectDeviceDiscovery(api.getState());
             if (
                 discovery?.status === DiscoveryStatus.COMPLETED &&
                 transactions.some(t => (t.blockHeight ?? 0) > 0)
