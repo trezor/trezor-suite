@@ -19,8 +19,10 @@ const initWebUsbButton = (showLoader: boolean) => {
     const webusbContainer = container.getElementsByClassName('webusb')[0] as HTMLElement;
     webusbContainer.style.display = 'flex';
     const button = webusbContainer.getElementsByTagName('button')[0];
-    const { iframe, settings } = getState();
-    const usb = iframe ? iframe.navigator.usb : null;
+    const { core, iframe, settings } = getState();
+    let usb: USB | null = null;
+    if (core) usb = window.navigator.usb;
+    if (iframe) usb = iframe.navigator.usb;
 
     button.innerHTML = '<span class="plus"></span><span class="text">Pair devices</span>';
 
