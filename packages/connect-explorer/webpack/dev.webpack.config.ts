@@ -25,6 +25,7 @@ const dev: webpack.Configuration = {
                 path.join(__dirname, '../build'),
                 path.join(__dirname, '../../connect-popup/build'),
                 path.join(__dirname, '../../connect-iframe/build'),
+                path.join(__dirname, '../../connect-web/build'),
             ],
         }),
     ],
