@@ -23,6 +23,7 @@ export const Network = Type.Object({
 export type CoinObj = Static<typeof CoinObj>;
 export const CoinObj = Type.Object({
     coin: Type.String(),
+    identity: Type.Optional(Type.String()),
 });
 
 export type CoinSupport = Static<typeof CoinSupport>;

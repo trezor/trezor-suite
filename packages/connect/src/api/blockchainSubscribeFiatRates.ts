@@ -10,6 +10,7 @@ import type { CoinInfo } from '../types';
 type Params = {
     currency: Payload<'blockchainSubscribeFiatRates'>['currency'];
     coinInfo: CoinInfo;
+    identity?: string;
 };
 
 export default class BlockchainSubscribeFiatRates extends AbstractMethod<
@@ -26,6 +27,7 @@ export default class BlockchainSubscribeFiatRates extends AbstractMethod<
         validateParams(payload, [
             { name: 'currency', type: 'string', required: false },
             { name: 'coin', type: 'string', required: true },
+            { name: 'identity', type: 'string' },
         ]);
 
         const coinInfo = getCoinInfo(payload.coin);
@@ -38,11 +40,16 @@ export default class BlockchainSubscribeFiatRates extends AbstractMethod<
         this.params = {
             currency: payload.currency,
             coinInfo,
+            identity: payload.identity,
         };
     }
 
     async run() {
-        const backend = await initBlockchain(this.params.coinInfo, this.postMessage);
+        const backend = await initBlockchain(
+            this.params.coinInfo,
+            this.postMessage,
+            this.params.identity,
+        );
 
         return backend.subscribeFiatRates(this.params.currency);
     }

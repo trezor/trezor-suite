@@ -23,6 +23,7 @@ export type ComposeOutput = Exclude<ComposeOutputBase, { type: 'payment' }> | Co
 export interface ComposeParams {
     outputs: ComposeOutput[];
     coin: string;
+    identity?: string;
     account?: undefined;
     feeLevels?: undefined;
     push?: boolean;
@@ -44,6 +45,7 @@ export type ComposeUtxo = AccountUtxo & Partial<ComposeInputBase>;
 export interface PrecomposeParams {
     outputs: ComposeOutput[];
     coin: string;
+    identity?: string;
     account: {
         path: string;
         addresses: AccountAddresses;

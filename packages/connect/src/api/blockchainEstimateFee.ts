@@ -10,6 +10,7 @@ import type { CoinInfo } from '../types';
 
 type Params = {
     coinInfo: CoinInfo;
+    identity?: string;
     request: Payload<'blockchainEstimateFee'>['request'];
 };
 
@@ -23,10 +24,11 @@ export default class BlockchainEstimateFee extends AbstractMethod<'blockchainEst
         // validate incoming parameters
         validateParams(payload, [
             { name: 'coin', type: 'string', required: true },
+            { name: 'identity', type: 'string' },
             { name: 'request', type: 'object' },
         ]);
 
-        const { request } = payload;
+        const { request, identity } = payload;
 
         if (request) {
             validateParams(request, [
@@ -54,12 +56,13 @@ export default class BlockchainEstimateFee extends AbstractMethod<'blockchainEst
 
         this.params = {
             coinInfo,
+            identity,
             request,
         };
     }
 
     async run() {
-        const { coinInfo, request } = this.params;
+        const { coinInfo, identity, request } = this.params;
         const feeInfo: MethodReturnType<typeof this.name> = {
             blockTime: coinInfo.blockTime,
             minFee: coinInfo.minFee,
@@ -72,12 +75,12 @@ export default class BlockchainEstimateFee extends AbstractMethod<'blockchainEst
             // TODO: https://github.com/trezor/trezor-suite/issues/5340
             // smart fees for DOGE are not relevant since their fee policy changed, see @trezor/utxo-lib/compose: baseFee
             if (request.feeLevels === 'smart' && coinInfo.shortcut !== 'DOGE') {
-                const backend = await initBlockchain(coinInfo, this.postMessage);
+                const backend = await initBlockchain(coinInfo, this.postMessage, identity);
                 await fees.load(backend);
             }
             feeInfo.levels = fees.levels;
         } else {
-            const backend = await initBlockchain(coinInfo, this.postMessage);
+            const backend = await initBlockchain(coinInfo, this.postMessage, identity);
             feeInfo.levels = await backend.estimateFee(request || {});
         }
 

@@ -11,6 +11,7 @@ import { PushTransaction as PushTransactionSchema } from '../types/api/pushTrans
 type Params = {
     tx: string;
     coinInfo: CoinInfo;
+    identity?: string;
 };
 
 export default class PushTransaction extends AbstractMethod<'pushTransaction', Params> {
@@ -38,11 +39,16 @@ export default class PushTransaction extends AbstractMethod<'pushTransaction', P
         this.params = {
             tx: payload.tx,
             coinInfo,
+            identity: payload.identity,
         };
     }
 
     async run() {
-        const backend = await initBlockchain(this.params.coinInfo, this.postMessage);
+        const backend = await initBlockchain(
+            this.params.coinInfo,
+            this.postMessage,
+            this.params.identity,
+        );
         const txid = await backend.pushTransaction(this.params.tx);
 
         return {

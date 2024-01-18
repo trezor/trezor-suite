@@ -10,6 +10,7 @@ import type { CoinInfo } from '../types';
 type Params = {
     accounts: Payload<'blockchainUnsubscribe'>['accounts'];
     coinInfo: CoinInfo;
+    identity?: string;
 };
 
 export default class BlockchainUnsubscribe extends AbstractMethod<'blockchainUnsubscribe', Params> {
@@ -23,6 +24,7 @@ export default class BlockchainUnsubscribe extends AbstractMethod<'blockchainUns
         validateParams(payload, [
             { name: 'accounts', type: 'array', allowEmpty: true },
             { name: 'coin', type: 'string', required: true },
+            { name: 'identity', type: 'string' },
         ]);
 
         if (payload.accounts) {
@@ -41,11 +43,16 @@ export default class BlockchainUnsubscribe extends AbstractMethod<'blockchainUns
         this.params = {
             accounts: payload.accounts,
             coinInfo,
+            identity: payload.identity,
         };
     }
 
     async run() {
-        const backend = await initBlockchain(this.params.coinInfo, this.postMessage);
+        const backend = await initBlockchain(
+            this.params.coinInfo,
+            this.postMessage,
+            this.params.identity,
+        );
 
         return backend.unsubscribe(this.params.accounts);
     }
