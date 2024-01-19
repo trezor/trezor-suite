@@ -129,21 +129,29 @@ const getLocalAndRemoteChecksums = async moduleName => {
         console.log(`File downloaded!: ${fileName}`);
 
         const extractRemotePath = path.join(__dirname, 'tmp', 'remote', name);
+        console.log(`extracting remote tarball from ${tarballDestination} to ${extractRemotePath}`);
         await extractTarball(tarballDestination, extractRemotePath);
 
+        console.log(`packaging local npm module from ${PACKAGE_PATH} to ${tmpDir}`);
         const tarballPath = packModule(PACKAGE_PATH, tmpDir);
 
         const extractLocalPath = path.join(__dirname, 'tmp', 'local', name);
 
+        console.log(`extracting local tarball  from ${tarballPath} to ${extractLocalPath}`);
         await extractTarball(tarballPath, extractLocalPath);
 
+        console.log('calculating remote package checksum');
         const remoteChecksum = calculateChecksum(`${extractRemotePath}/package/lib`);
+        console.log('remoteChecksum', remoteChecksum);
 
+        console.log('calculating local package checksum');
         const localChecksum = calculateChecksum(`${extractLocalPath}/package/lib`);
+        console.log('localChecksum', localChecksum);
 
         return { success: true, data: { localChecksum, remoteChecksum } };
     } catch (error) {
-        console.error('error', error);
+        console.error('error getting local and remote checksums:', error);
+        return { success: false, error };
     }
 };
 
