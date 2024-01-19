@@ -3,16 +3,25 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { useFormContext } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 
+import { useAtomValue } from 'jotai';
+
+import { isPinFormSubmittingAtom } from '../isPinFormSubmittingAtom';
+
 const MAX_DIGITS_DISPLAYED_AS_DOTS = 6;
 
-const dotStyle = prepareNativeStyle(utils => ({
-    width: utils.spacings.small,
-    height: utils.spacings.small,
-    borderRadius: utils.borders.radii.round,
-    borderColor: utils.colors.textDefault,
-    borderWidth: utils.borders.widths.small,
-    backgroundColor: utils.colors.textDefault,
-}));
+const dotStyle = prepareNativeStyle<{ isPinFormSubmitting: boolean }>(
+    (utils, { isPinFormSubmitting }) => {
+        const color = isPinFormSubmitting ? utils.colors.textDisabled : utils.colors.textDefault;
+        return {
+            width: utils.spacings.small,
+            height: utils.spacings.small,
+            borderRadius: utils.borders.radii.round,
+            borderColor: color,
+            borderWidth: utils.borders.widths.small,
+            backgroundColor: color,
+        };
+    },
+);
 
 const enteredDigitsStyle = prepareNativeStyle(utils => ({
     borderRadius: utils.borders.radii.round,
@@ -22,32 +31,33 @@ const enteredDigitsStyle = prepareNativeStyle(utils => ({
 }));
 
 export const PinFormProgress = () => {
+    const isPinFormSubmitting = useAtomValue(isPinFormSubmittingAtom);
     const { applyStyle } = useNativeStyles();
     const { translate } = useTranslate();
     const { watch } = useFormContext();
 
     const pinLength = watch('pin').length;
 
-    if (!pinLength)
+    if (!pinLength) {
         return (
             <Text variant="titleSmall">
                 {translate('moduleConnectDevice.pinScreen.form.title')}
             </Text>
         );
+    }
 
-    if (pinLength > MAX_DIGITS_DISPLAYED_AS_DOTS)
+    if (pinLength > MAX_DIGITS_DISPLAYED_AS_DOTS) {
+        const color = isPinFormSubmitting ? 'textDisabled' : 'textSubdued';
         return (
             <Box flexDirection="row" style={applyStyle(enteredDigitsStyle)}>
-                <Text color="textSubdued">
+                <Text color={color}>
                     {translate('moduleConnectDevice.pinScreen.form.entered')}{' '}
                 </Text>
                 <Text variant="highlight">{pinLength}</Text>
-                <Text color="textSubdued">
-                    {' '}
-                    {translate('moduleConnectDevice.pinScreen.form.digits')}
-                </Text>
+                <Text color={color}> {translate('moduleConnectDevice.pinScreen.form.digits')}</Text>
             </Box>
         );
+    }
 
     // Create array of digits indexes, so we map them for dots to be displayed.
     const progress = Array.from({ length: pinLength }, (_, index) => index);
@@ -55,7 +65,7 @@ export const PinFormProgress = () => {
     return (
         <HStack justifyContent="center">
             {progress.map((_, index) => (
-                <Box style={applyStyle(dotStyle)} key={index} />
+                <Box style={applyStyle(dotStyle, { isPinFormSubmitting })} key={index} />
             ))}
         </HStack>
     );

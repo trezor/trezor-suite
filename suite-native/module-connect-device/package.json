@@ -25,6 +25,7 @@
         "@suite-native/navigation": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/styles": "workspace:*",
+        "jotai": "1.9.1",
         "react": "18.2.0",
         "react-native": "0.73.2",
         "react-redux": "8.0.7"

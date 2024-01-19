@@ -8406,6 +8406,7 @@ __metadata:
     "@suite-native/navigation": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/styles": "workspace:*"
+    jotai: "npm:1.9.1"
     react: "npm:18.2.0"
     react-native: "npm:0.73.2"
     react-redux: "npm:8.0.7"
