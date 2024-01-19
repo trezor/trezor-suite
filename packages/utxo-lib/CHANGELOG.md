@@ -1,3 +1,7 @@
+# 2.0.4
+
+-   chore(utxo-lib): replace global.d.ts with global.ts (57b9b4fee)
+
 # 2.0.3
 
 -   refactor(utxo-lib): use spread instead of Object.assign (55eecd28b)
