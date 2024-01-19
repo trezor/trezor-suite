@@ -1,7 +1,7 @@
 import styled, { DefaultTheme } from 'styled-components';
 import { useElevation, variables } from '@trezor/components';
 import type { AddressItem } from 'src/hooks/wallet/sign-verify/useSignAddressOptions';
-import { Elevation, mapElevationToBackground, nextElevation } from '@trezor/theme/src/elevation';
+import { Elevation, mapElevationToBackground, nextElevation } from '@trezor/theme';
 
 type OverlayVariant = 'option' | 'option-focused' | 'input';
 
