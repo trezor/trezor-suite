@@ -1,6 +1,7 @@
 // If you want to add of modify colors, please read README.md to find out more.
 
 import { CSSColor } from './types';
+import { standardSkeletonColors, darkSkeletonColors } from './skeleton';
 
 export const colorVariants = {
     standard: {
@@ -69,6 +70,7 @@ export const colorVariants = {
         borderSecondary: '#00854dff',
         borderAlertRed: '#cd4949ff',
         borderSubtleInverted: '#ffffff99',
+        ...standardSkeletonColors,
     },
     dark: {
         transparent: '#00000000',
@@ -136,8 +138,10 @@ export const colorVariants = {
         borderSecondary: '#2fbc81ff',
         borderAlertRed: '#ac3e3eff',
         borderSubtleInverted: '#00000099',
+        ...darkSkeletonColors,
     },
 } as const;
+
 export type Color = keyof typeof colorVariants.standard;
 export type Colors = Record<Color, CSSColor>;
 export type ThemeColorVariant = keyof typeof colorVariants;
