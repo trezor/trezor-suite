@@ -8,6 +8,9 @@ import {
     typography,
     typographyStylesBase,
     zIndices,
+    Elevation,
+    mapElevationToBackground,
+    nextElevation,
 } from '@trezor/theme';
 
 import { INPUT_HEIGHTS, LABEL_TRANSFORM, Label, baseInputStyle } from '../InputStyles';
@@ -18,7 +21,6 @@ import { useOnKeyDown } from './useOnKeyDown';
 import { useDetectPortalTarget } from './useDetectPortalTarget';
 import { DROPDOWN_MENU, menuStyle } from '../../Dropdown/menuStyle';
 import { useElevation } from '../../ElevationContext/ElevationContext';
-import { Elevation, mapElevationToBackground, nextElevation } from '@trezor/theme/src/elevation';
 
 const reactSelectClassNamePrefix = 'react-select';
 

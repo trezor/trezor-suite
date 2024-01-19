@@ -1,10 +1,17 @@
 import React, { forwardRef, useEffect, useState } from 'react';
 import styled, { css, keyframes, useTheme } from 'styled-components';
-import { borders, spacings, spacingsPx, typography } from '@trezor/theme';
+import {
+    borders,
+    spacings,
+    spacingsPx,
+    typography,
+    Elevation,
+    mapElevationToBackground,
+    nextElevation,
+} from '@trezor/theme';
 import { Icon, IconProps } from '../assets/Icon/Icon';
 import type { Coords } from './getAdjustedCoords';
 import { menuStyle } from './menuStyle';
-import { Elevation, mapElevationToBackground, nextElevation } from '@trezor/theme/src/elevation';
 import { useElevation } from '../ElevationContext/ElevationContext';
 
 const addonAnimation = keyframes`

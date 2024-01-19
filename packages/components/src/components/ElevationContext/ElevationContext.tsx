@@ -1,4 +1,4 @@
-import { Elevation, nextElevation } from '@trezor/theme/src/elevation';
+import { Elevation, nextElevation } from '@trezor/theme';
 import { ReactNode, createContext, useContext, useMemo } from 'react';
 
 const ElevationReactContext = createContext<Elevation>(0);
