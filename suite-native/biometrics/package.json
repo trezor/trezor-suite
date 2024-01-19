@@ -7,10 +7,11 @@
     "main": "src/index",
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "test:unit": "jest -c ../../jest.config.base.js --passWithNoTests",
+        "test:unit": "jest -c ../../jest.config.native.js --passWithNoTests",
         "type-check": "tsc --build"
     },
     "dependencies": {
+        "@mobily/ts-belt": "^3.13.1",
         "@suite-common/icons": "workspace:*",
         "@suite-native/alerts": "workspace:*",
         "@suite-native/analytics": "workspace:*",
@@ -21,5 +22,8 @@
         "jotai": "1.9.1",
         "react": "18.2.0",
         "react-native": "0.71.8"
+    },
+    "devDependencies": {
+        "jest": "29.5.0"
     }
 }

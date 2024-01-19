@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Platform } from 'react-native';
 
 import { AuthenticationType, supportedAuthenticationTypesAsync } from 'expo-local-authentication';
@@ -11,32 +11,24 @@ import {
     getIsBiometricsFeatureAvailable,
     useIsBiometricsInitialSetupFinished,
     useBiometricsSettings,
+    getIsFacialBiometricEnabled,
+    getIsFingerprintBiometricEnabled,
 } from '@suite-native/biometrics';
-import { Translation, useTranslate } from '@suite-native/intl';
-import { Icon } from '@suite-common/icons';
+import { Translation, TxKeyPath, useTranslate } from '@suite-native/intl';
+
+import { BiometricsBottomSheetIcons } from './BiometricsBottomSheetIcons';
 
 const SHOW_TIMEOUT = 1500;
-const IMG_WRAPPER_DIMENSIONS = 88;
 
 const cardStyle = prepareNativeStyle(utils => ({
     alignItems: 'center',
     textAlign: 'center',
     borderRadius: utils.borders.radii.medium,
     backgroundColor: utils.colors.backgroundSurfaceElevation1,
-    paddingVertical: utils.spacings.large,
+    padding: utils.spacings.large,
     marginBottom: utils.spacings.large,
     gap: utils.spacings.large,
 }));
-
-const imageWrapperStyle = prepareNativeStyle(utils => ({
-    padding: 12,
-    borderRadius: utils.borders.radii.round,
-    backgroundColor: utils.colors.backgroundSurfaceElevation2,
-    color: utils.colors.iconPrimaryDefault,
-    width: IMG_WRAPPER_DIMENSIONS,
-    height: IMG_WRAPPER_DIMENSIONS,
-}));
-
 const textContentStyle = prepareNativeStyle(utils => ({
     gap: utils.spacings.small,
 }));
@@ -45,6 +37,50 @@ const buttonWrapperStyle = prepareNativeStyle(utils => ({
     gap: utils.spacings.medium,
     paddingHorizontal: utils.spacings.small,
 }));
+
+const getBottomSheetTranslations = ({
+    isFacialEnabled,
+    isFingerprintEnabled,
+}: {
+    isFacialEnabled: boolean;
+    isFingerprintEnabled: boolean;
+}): { titleTransKey: TxKeyPath; descriptionTransKey: TxKeyPath } => {
+    if (Platform.OS === 'ios') {
+        return isFacialEnabled
+            ? {
+                  titleTransKey: 'moduleHome.biometricsModal.title.ios.faceId',
+                  descriptionTransKey: 'moduleHome.biometricsModal.description.ios.faceId',
+              }
+            : {
+                  titleTransKey: 'moduleHome.biometricsModal.title.ios.touchId',
+                  descriptionTransKey: 'moduleHome.biometricsModal.description.ios.touchId',
+              };
+    }
+
+    if (Platform.OS === 'android') {
+        if (isFingerprintEnabled && isFacialEnabled)
+            return {
+                titleTransKey: 'moduleHome.biometricsModal.title.android.combined',
+                descriptionTransKey: 'moduleHome.biometricsModal.description.android.combined',
+            };
+        if (isFingerprintEnabled)
+            return {
+                titleTransKey: 'moduleHome.biometricsModal.title.android.fingerprint',
+                descriptionTransKey: 'moduleHome.biometricsModal.description.android.fingerprint',
+            };
+
+        if (isFacialEnabled)
+            return {
+                titleTransKey: 'moduleHome.biometricsModal.title.android.facial',
+                descriptionTransKey: 'moduleHome.biometricsModal.description.android.facial',
+            };
+    }
+
+    return {
+        titleTransKey: 'moduleHome.biometricsModal.title.unknown',
+        descriptionTransKey: 'moduleHome.biometricsModal.description.unknown',
+    };
+};
 
 export const BiometricsBottomSheet = () => {
     const { applyStyle } = useNativeStyles();
@@ -57,24 +93,13 @@ export const BiometricsBottomSheet = () => {
     const [isVisible, setIsVisible] = useState(false);
     const [biometricsTypes, setBiometricsTypes] = useState<AuthenticationType[]>([]);
 
-    const isFace = biometricsTypes.some(biometricsType =>
-        [AuthenticationType.FACIAL_RECOGNITION, AuthenticationType.IRIS].includes(biometricsType),
-    );
+    const isFacialEnabled = getIsFacialBiometricEnabled(biometricsTypes);
+    const isFingerprintEnabled = getIsFingerprintBiometricEnabled(biometricsTypes);
 
-    const iconName = isFace ? 'faceId' : 'fingerprint';
-
-    const title = useMemo(() => {
-        if (biometricsTypes.length === 0) {
-            return <Translation id="moduleHome.biometricsModal.title.unknown" />;
-        }
-        if (isFace) {
-            return <Translation id="moduleHome.biometricsModal.title.faceId" />;
-        }
-        if (Platform.OS === 'android') {
-            return <Translation id="moduleHome.biometricsModal.title.fingerprint" />;
-        }
-        return <Translation id="moduleHome.biometricsModal.title.touchId" />;
-    }, [biometricsTypes, isFace]);
+    const { titleTransKey, descriptionTransKey } = getBottomSheetTranslations({
+        isFacialEnabled,
+        isFingerprintEnabled,
+    });
 
     useEffect(() => {
         const getSupportedTypes = async () => {
@@ -132,15 +157,16 @@ export const BiometricsBottomSheet = () => {
     return (
         <BottomSheet isVisible={isVisible} onClose={handleClose} isCloseDisplayed={false}>
             <Box style={applyStyle(cardStyle)}>
-                <Box style={applyStyle(imageWrapperStyle)}>
-                    <Icon name={iconName} color="iconPrimaryDefault" customSize={64} />
-                </Box>
+                <BiometricsBottomSheetIcons
+                    isFacialEnabled={isFacialEnabled}
+                    isFingerprintEnabled={isFingerprintEnabled}
+                />
                 <Box style={applyStyle(textContentStyle)}>
                     <Text variant="titleSmall" textAlign="center">
-                        {title}
+                        <Translation id={titleTransKey} />
                     </Text>
-                    <Text variant="body" textAlign="center">
-                        <Translation id="moduleHome.biometricsModal.description" />
+                    <Text textAlign="center" color="textSubdued">
+                        <Translation id={descriptionTransKey} />
                     </Text>
                 </Box>
             </Box>
