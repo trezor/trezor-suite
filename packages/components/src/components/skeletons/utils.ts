@@ -1,4 +1,9 @@
-import { Elevation, mapElevationToBackground, nextElevation } from '@trezor/theme/src/elevation';
+import {
+    Elevation,
+    mapElevationToSkeletonBackground,
+    mapElevationToSkeletonForeground,
+    nextElevation,
+} from '@trezor/theme';
 import { css, keyframes } from 'styled-components';
 
 const SHINE = keyframes`
@@ -15,8 +20,8 @@ export const shimmerEffect = css<{ elevation: Elevation }>`
     background: linear-gradient(
         90deg,
         ${({ theme, elevation }) => {
-            const start = theme[mapElevationToBackground[elevation]];
-            const end = theme[mapElevationToBackground[nextElevation[elevation]]];
+            const start = theme[mapElevationToSkeletonBackground[elevation]];
+            const end = theme[mapElevationToSkeletonForeground[nextElevation[elevation]]];
 
             return `${start}, ${end}, ${start}`;
         }}
