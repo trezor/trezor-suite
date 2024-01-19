@@ -9,7 +9,7 @@ const args = process.argv.slice(2);
 
 if (args.length < 3)
     throw new Error(
-        'Version check script requires 3 parameters: current npm version, branch name and dist tag (beta | latest)',
+        'Version check script requires 3 parameters: package name, branch name and dist tag (beta | latest)',
     );
 
 const [packageName, branch, distTag] = args;
@@ -35,6 +35,11 @@ const npmInfoRaw = child_process.spawnSync('npm', ['view', '--json'], {
 }).stdout;
 
 const npmInfo = JSON.parse(npmInfoRaw);
+if (npmInfo && npmInfo.error && npmInfo.error.code === 'E404') {
+    // exit 0, its ok, we probably did not publish it yet
+    process.exit(0);
+}
+
 const npmVersion = npmInfo[packageJSON.name]['dist-tags'][distTag];
 
 const PRODUCTION = ['npm-release'];
