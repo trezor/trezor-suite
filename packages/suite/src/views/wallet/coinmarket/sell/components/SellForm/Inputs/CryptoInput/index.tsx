@@ -6,7 +6,7 @@ import { Controller } from 'react-hook-form';
 import { useCoinmarketSellFormContext } from 'src/hooks/wallet/useCoinmarketSellForm';
 import { getEthereumTypeNetworkSymbols } from '@suite-common/wallet-config';
 import { getInputState } from '@suite-common/wallet-utils';
-import { MAX_LENGTH } from 'src/constants/suite/inputs';
+import { formInputsMaxLength } from '@suite-common/wallet-constants';
 import {
     CRYPTO_CURRENCY_SELECT,
     CRYPTO_INPUT,
@@ -95,7 +95,7 @@ const CryptoInput = () => {
             inputState={getInputState(errors.cryptoInput, cryptoInputValue)}
             name={CRYPTO_INPUT}
             noTopLabel
-            maxLength={MAX_LENGTH.AMOUNT}
+            maxLength={formInputsMaxLength.amount}
             rules={cryptoInputRules}
             bottomText={errors[CRYPTO_INPUT]?.message}
             innerAddon={

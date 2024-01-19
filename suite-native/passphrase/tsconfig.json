@@ -2,6 +2,9 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        {
+            "path": "../../suite-common/wallet-constants"
+        },
         { "path": "../atoms" },
         { "path": "../forms" },
         { "path": "../intl" },

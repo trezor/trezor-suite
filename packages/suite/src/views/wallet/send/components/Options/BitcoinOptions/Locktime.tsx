@@ -4,7 +4,7 @@ import { Translation } from 'src/components/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { Icon, Input, Switch, variables } from '@trezor/components';
 import { getInputState, isInteger } from '@suite-common/wallet-utils';
-import { MAX_LENGTH } from 'src/constants/suite/inputs';
+import { formInputsMaxLength } from '@suite-common/wallet-constants';
 import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { useTranslation } from 'src/hooks/suite';
 
@@ -113,7 +113,7 @@ export const Locktime = ({ close }: LocktimeProps) => {
                 inputState={getInputState(error, inputValue)}
                 isMonospace
                 defaultValue={inputValue}
-                maxLength={MAX_LENGTH.BTC_LOCKTIME}
+                maxLength={formInputsMaxLength.btcLocktime}
                 label={
                     <Label>
                         <Icon size={16} icon="CALENDAR" />

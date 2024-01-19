@@ -3,8 +3,7 @@ import { Input, Icon } from '@trezor/components';
 import { QuestionTooltip } from 'src/components/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { getInputState, isInteger } from '@suite-common/wallet-utils';
-import { U_INT_32 } from '@suite-common/wallet-constants';
-import { MAX_LENGTH } from 'src/constants/suite/inputs';
+import { U_INT_32, formInputsMaxLength } from '@suite-common/wallet-constants';
 import { useTranslation } from 'src/hooks/suite';
 
 interface DestinationTagProps {
@@ -44,7 +43,7 @@ export const DestinationTag = ({ close }: DestinationTagProps) => {
             isMonospace
             data-test={inputName}
             defaultValue={inputValue}
-            maxLength={MAX_LENGTH.XRP_DESTINATION_TAG}
+            maxLength={formInputsMaxLength.xrpDestinationTag}
             label={<QuestionTooltip label="DESTINATION_TAG" tooltip="DESTINATION_TAG_EXPLAINED" />}
             labelRight={<Icon size={20} icon="CROSS" useCursorPointer onClick={close} />}
             bottomText={error?.message}

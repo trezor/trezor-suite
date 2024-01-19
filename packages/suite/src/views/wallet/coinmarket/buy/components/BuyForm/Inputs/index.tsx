@@ -9,7 +9,7 @@ import { Select, CoinLogo } from '@trezor/components';
 import { buildOption } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { useCoinmarketBuyFormContext } from 'src/hooks/wallet/useCoinmarketBuyForm';
 import { getInputState } from '@suite-common/wallet-utils';
-import { MAX_LENGTH } from 'src/constants/suite/inputs';
+import { formInputsMaxLength } from '@suite-common/wallet-constants';
 import { Wrapper, Left, Middle, Right, StyledIcon } from 'src/views/wallet/coinmarket';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { useTranslation } from 'src/hooks/suite';
@@ -121,7 +121,7 @@ const Inputs = () => {
                     }}
                     inputState={getInputState(errors.fiatInput, fiatInputValue)}
                     name={fiatInput}
-                    maxLength={MAX_LENGTH.AMOUNT}
+                    maxLength={formInputsMaxLength.amount}
                     bottomText={errors[fiatInput]?.message}
                     innerAddon={
                         <Controller
@@ -164,7 +164,7 @@ const Inputs = () => {
                     inputState={getInputState(errors.cryptoInput, cryptoInputValue)}
                     name={cryptoInput}
                     noTopLabel
-                    maxLength={MAX_LENGTH.AMOUNT}
+                    maxLength={formInputsMaxLength.amount}
                     rules={cryptoInputRules}
                     bottomText={errors[cryptoInput]?.message}
                     innerAddon={

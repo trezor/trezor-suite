@@ -8,6 +8,9 @@
     },
     "include": ["."],
     "references": [
+        {
+            "path": "../../suite-common/wallet-constants"
+        },
         { "path": "../connect" },
         { "path": "../dom-utils" },
         { "path": "../env-utils" },

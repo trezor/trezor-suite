@@ -14,7 +14,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { Output } from 'src/types/wallet/sendForm';
-import { MAX_LENGTH } from 'src/constants/suite/inputs';
+import { formInputsMaxLength } from '@suite-common/wallet-constants';
 import { TokenSelect } from './components/TokenSelect';
 import { Fiat } from './components/Fiat';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
@@ -260,7 +260,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
                         name={inputName}
                         data-test={inputName}
                         defaultValue={amountValue}
-                        maxLength={MAX_LENGTH.AMOUNT}
+                        maxLength={formInputsMaxLength.amount}
                         rules={cryptoAmountRules}
                         control={control}
                         innerAddon={

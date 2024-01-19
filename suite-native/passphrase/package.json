@@ -11,6 +11,7 @@
         "type-check": "tsc --build"
     },
     "dependencies": {
+        "@suite-common/wallet-constants": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/forms": "workspace:*",
         "@suite-native/intl": "workspace:*",

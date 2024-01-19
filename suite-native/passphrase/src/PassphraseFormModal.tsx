@@ -8,17 +8,17 @@ import { yup } from '@trezor/validation';
 import { Box, Button, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { useTranslate } from '@suite-native/intl';
+import { formInputsMaxLength } from '@suite-common/wallet-constants';
 
 import { isPassphraseModalVisibleAtom } from './isPassphraseModalVisibleAtom';
 
 const PASSPHRASE_MIN_LENGTH = 1;
-const PASSPHRASE_MAX_LENGTH = 50;
 
 const passphraseFormSchema = yup.object({
     passphrase: yup
         .string()
         .required('Empty passphrase.')
-        .max(PASSPHRASE_MAX_LENGTH)
+        .max(formInputsMaxLength.passphrase)
         .min(PASSPHRASE_MIN_LENGTH),
 });
 
@@ -71,7 +71,7 @@ export const PassphraseFormModal = () => {
                             ref={passphraseInputRef}
                             label="Passphrase"
                             name="passphrase"
-                            maxLength={PASSPHRASE_MAX_LENGTH}
+                            maxLength={formInputsMaxLength.passphrase}
                             accessibilityLabel="passphrase input"
                         />
                         <VStack>

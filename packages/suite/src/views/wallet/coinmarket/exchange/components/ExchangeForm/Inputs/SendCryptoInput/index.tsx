@@ -5,7 +5,7 @@ import { getInputState } from '@suite-common/wallet-utils';
 import { useCoinmarketExchangeFormContext } from 'src/hooks/wallet/useCoinmarketExchangeForm';
 import { NumberInput, NumberInputProps } from 'src/components/suite';
 import SendCryptoSelect from './SendCryptoSelect';
-import { MAX_LENGTH } from 'src/constants/suite/inputs';
+import { formInputsMaxLength } from '@suite-common/wallet-constants';
 import { CRYPTO_INPUT, CRYPTO_TOKEN, FIAT_INPUT } from 'src/types/wallet/coinmarketExchangeForm';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { useTranslation } from 'src/hooks/suite';
@@ -92,7 +92,7 @@ const SendCryptoInput = () => {
             inputState={getInputState(amountError || fiatError, amount)}
             name={CRYPTO_INPUT}
             noTopLabel
-            maxLength={MAX_LENGTH.AMOUNT}
+            maxLength={formInputsMaxLength.amount}
             isToken={!!tokenData}
             rules={cryptoInputRules}
             bottomText={amountError?.message}
