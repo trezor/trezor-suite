@@ -1,8 +1,7 @@
 import { forwardRef, ReactNode } from 'react';
-import { borders, spacings } from '@trezor/theme';
 import styled, { css } from 'styled-components';
+import { borders, spacings, Elevation, mapElevationToBackground } from '@trezor/theme';
 import { ElevationContext, useElevation } from '../ElevationContext/ElevationContext';
-import { Elevation, mapElevationToBackground } from '@trezor/theme/src/elevation';
 
 const Wrapper = styled.div<{ $elevation: Elevation; $paddingSize: number }>`
     display: flex;
