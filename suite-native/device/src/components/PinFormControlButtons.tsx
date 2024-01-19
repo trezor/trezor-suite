@@ -1,13 +1,21 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { useNavigation } from '@react-navigation/native';
+
 import { Box, Button, HStack, IconButton } from '@suite-native/atoms';
 import { useFormContext } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
-import TrezorConnect, { UI } from '@trezor/connect';
-import { selectDevice, removeButtonRequests } from '@suite-common/wallet-core';
+import TrezorConnect, { UI, DEVICE } from '@trezor/connect';
+import {
+    selectDevice,
+    selectDeviceAuthFailed,
+    removeButtonRequests,
+    authorizeDevice,
+} from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { useOpenLink } from '@suite-native/link';
+import { useToast } from '@suite-native/toasts';
 
 import { PIN_FORM_MIN_LENGTH, PIN_HELP_URL } from '../constants';
 
@@ -15,28 +23,58 @@ export const PinFormControlButtons = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const dispatch = useDispatch();
+    const navigation = useNavigation();
     const openLink = useOpenLink();
     const { translate } = useTranslate();
-    const { showAlert } = useAlert();
+    const { showAlert, hideAlert } = useAlert();
+    const { showToast } = useToast();
     const { handleSubmit, getValues, watch, setValue, reset } = useFormContext();
     const device = useSelector(selectDevice) ?? null;
+    const hasDeviceAuthFailed = useSelector(selectDeviceAuthFailed);
+
+    const handleSuccess = useCallback(() => {
+        if (isSubmitting && !hasDeviceAuthFailed) {
+            setIsSubmitting(false);
+            navigation.goBack();
+        }
+    }, [hasDeviceAuthFailed, navigation, isSubmitting]);
 
     const handleInvalidPin = useCallback(() => {
         setIsSubmitting(false);
-        showAlert({
-            title: translate('device.pinScreen.wrongPinAlert.title'),
-            description: translate('device.pinScreen.wrongPinAlert.description'),
-            icon: 'warningCircle',
-            pictogramVariant: 'red',
-            primaryButtonTitle: translate('device.pinScreen.wrongPinAlert.button.tryAgain'),
-            onPressPrimaryButton: reset,
-            secondaryButtonTitle: translate('device.pinScreen.wrongPinAlert.button.help'),
-            onPressSecondaryButton: () => {
-                openLink(PIN_HELP_URL);
-                reset();
-            },
+        reset();
+        showToast({
+            variant: 'warning',
+            icon: 'lock',
+            message: translate('device.pinScreen.form.error.invalidPin'),
         });
-    }, [reset, showAlert, translate, openLink]);
+    }, [reset, translate, showToast]);
+
+    useEffect(() => {
+        TrezorConnect.on(DEVICE.CHANGED, handleSuccess);
+
+        return () => TrezorConnect.off(DEVICE.CHANGED, handleSuccess);
+    }, [handleSuccess]);
+
+    useEffect(() => {
+        if (hasDeviceAuthFailed) {
+            setIsSubmitting(false);
+            reset();
+            showAlert({
+                title: translate('device.pinScreen.wrongPinAlert.title'),
+                description: translate('device.pinScreen.wrongPinAlert.description'),
+                icon: 'warningCircle',
+                pictogramVariant: 'red',
+                primaryButtonTitle: translate('device.pinScreen.wrongPinAlert.button.tryAgain'),
+                onPressPrimaryButton: () => {
+                    dispatch(authorizeDevice());
+                },
+                secondaryButtonTitle: translate('device.pinScreen.wrongPinAlert.button.help'),
+                onPressSecondaryButton: () => {
+                    openLink(PIN_HELP_URL);
+                },
+            });
+        }
+    }, [dispatch, hasDeviceAuthFailed, hideAlert, openLink, reset, showAlert, translate]);
 
     useEffect(() => {
         TrezorConnect.on(UI.INVALID_PIN, handleInvalidPin);

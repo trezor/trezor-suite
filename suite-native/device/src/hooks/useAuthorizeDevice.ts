@@ -71,15 +71,4 @@ export const useAuthorizeDevice = () => {
         isTimeoutFinished,
         navigation,
     ]);
-
-    useEffect(() => {
-        // Connect doesn't have an event for correct pin entry,
-        // but we can subscribe to this property change instead
-        // which gets changed after succesfull auth
-        if (isDeviceUnlocked) {
-            navigation.navigate(RootStackRoutes.ConnectDevice, {
-                screen: ConnectDeviceStackRoutes.ConnectingDevice,
-            });
-        }
-    }, [isDeviceUnlocked, navigation]);
 };

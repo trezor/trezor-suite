@@ -524,6 +524,9 @@ export const selectDevice = (state: DeviceRootState) => state.device.selectedDev
 export const selectIsDeviceUnlocked = (state: DeviceRootState) =>
     !!state.device.selectedDevice?.features?.unlocked;
 
+export const selectDeviceAuthFailed = (state: DeviceRootState) =>
+    !!state.device.selectedDevice?.authFailed;
+
 export const selectDeviceType = (state: DeviceRootState) => state.device.selectedDevice?.type;
 
 export const selectDeviceFeatures = (state: DeviceRootState) =>

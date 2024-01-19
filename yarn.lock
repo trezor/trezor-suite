@@ -7269,6 +7269,7 @@ __metadata:
     "@suite-native/link": "workspace:*"
     "@suite-native/module-settings": "workspace:*"
     "@suite-native/navigation": "workspace:*"
+    "@suite-native/toasts": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/styles": "workspace:*"
