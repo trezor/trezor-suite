@@ -1,3 +1,8 @@
+# 0.0.26
+
+-   feat(connect-common): add resolve messages promises to abstract (f9e6f304f)
+-   fix(connect-common): when init always create new deferred (70c6c0048)
+
 # 0.0.24
 
 -   feat(connect-common): add more backend urls for solana (29f042470)
