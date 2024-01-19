@@ -20,9 +20,11 @@ import { Network, NetworkSymbol, getNetworkType } from '@suite-common/wallet-con
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import { requestDeviceAccess } from '@suite-native/device-mutex';
 import { analytics, EventType } from '@suite-native/analytics';
+import { isDebugEnv } from '@suite-native/config';
 
 import { fetchBundleDescriptors } from './utils';
 import {
+    selectDisabledDiscoveryNetworkSymbolsForDevelopment,
     selectDiscoveryStartTimeStamp,
     selectDiscoverySupportedNetworks,
     setDiscoveryStartTimestamp,
@@ -314,7 +316,17 @@ export const startDescriptorPreloadedDiscoveryThunk = createThunk(
             return;
         }
 
-        const supportedNetworks = selectDiscoverySupportedNetworks(getState(), areTestnetsEnabled);
+        let supportedNetworks = selectDiscoverySupportedNetworks(getState(), areTestnetsEnabled);
+
+        // For development purposes, you can disable some networks to have quicker discovery in dev utils
+        if (isDebugEnv()) {
+            const disabledNetworkSymbols = selectDisabledDiscoveryNetworkSymbolsForDevelopment(
+                getState(),
+            );
+            supportedNetworks = supportedNetworks.filter(
+                n => !disabledNetworkSymbols.includes(n.symbol),
+            );
+        }
 
         // Start tracking duration for analytics purposes
         dispatch(setDiscoveryStartTimestamp(performance.now()));

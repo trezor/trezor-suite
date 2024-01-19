@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { pipe } from '@mobily/ts-belt';
 
 import {
@@ -11,10 +11,12 @@ import {
     filterTestnetNetworks,
     sortNetworks,
 } from '@suite-native/config';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 
 type DiscoveryConfigState = {
     areTestnetsEnabled: boolean;
     discoveryStartTimeStamp: number | null;
+    disabledDiscoveryNetworkSymbolsForDevelopment: NetworkSymbol[];
 };
 
 type DiscoveryConfigSliceRootState = {
@@ -24,10 +26,12 @@ type DiscoveryConfigSliceRootState = {
 const discoveryConfigInitialState: DiscoveryConfigState = {
     areTestnetsEnabled: false,
     discoveryStartTimeStamp: null,
+    disabledDiscoveryNetworkSymbolsForDevelopment: [],
 };
 
 export const discoveryConfigPersistWhitelist: Array<keyof DiscoveryConfigState> = [
     'areTestnetsEnabled',
+    'disabledDiscoveryNetworkSymbolsForDevelopment',
 ];
 
 export const discoveryConfigSlice = createSlice({
@@ -37,8 +41,24 @@ export const discoveryConfigSlice = createSlice({
         toggleAreTestnetsEnabled: state => {
             state.areTestnetsEnabled = !state.areTestnetsEnabled;
         },
-        setDiscoveryStartTimestamp: (state, { payload }) => {
+        setDiscoveryStartTimestamp: (state, { payload }: PayloadAction<number | null>) => {
             state.discoveryStartTimeStamp = payload;
+        },
+        toggleDisabledDiscoveryNetworkSymbolsForDevelopment: (
+            state,
+            { payload }: PayloadAction<NetworkSymbol>,
+        ) => {
+            const networkSymbol = payload;
+            const index =
+                state.disabledDiscoveryNetworkSymbolsForDevelopment.indexOf(networkSymbol);
+
+            if (index !== -1) {
+                // If the network is already in the list, remove it
+                state.disabledDiscoveryNetworkSymbolsForDevelopment.splice(index, 1);
+            } else {
+                // If the network is not in the list, add it
+                state.disabledDiscoveryNetworkSymbolsForDevelopment.push(networkSymbol);
+            }
         },
     },
 });
@@ -47,6 +67,9 @@ export const selectAreTestnetsEnabled = (state: DiscoveryConfigSliceRootState) =
     state.discoveryConfig.areTestnetsEnabled;
 export const selectDiscoveryStartTimeStamp = (state: DiscoveryConfigSliceRootState) =>
     state.discoveryConfig.discoveryStartTimeStamp;
+export const selectDisabledDiscoveryNetworkSymbolsForDevelopment = (
+    state: DiscoveryConfigSliceRootState,
+) => state.discoveryConfig.disabledDiscoveryNetworkSymbolsForDevelopment;
 
 export const selectDiscoverySupportedNetworks = (
     state: DeviceRootState,
@@ -60,6 +83,9 @@ export const selectDiscoverySupportedNetworks = (
         sortNetworks,
     );
 
-export const { toggleAreTestnetsEnabled, setDiscoveryStartTimestamp } =
-    discoveryConfigSlice.actions;
+export const {
+    toggleAreTestnetsEnabled,
+    setDiscoveryStartTimestamp,
+    toggleDisabledDiscoveryNetworkSymbolsForDevelopment,
+} = discoveryConfigSlice.actions;
 export const discoveryConfigReducer = discoveryConfigSlice.reducer;
