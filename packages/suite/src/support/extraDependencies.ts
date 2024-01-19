@@ -53,7 +53,6 @@ export const extraDependencies: ExtraDependencies = {
         selectFeeInfo: (networkSymbol: NetworkSymbol) => (state: AppState) =>
             state.wallet.fees[networkSymbol],
         selectDevices: (state: AppState) => state.device.devices,
-        selectCurrentDevice: (state: AppState) => state.device.selectedDevice,
         selectBitcoinAmountUnit: (state: AppState) => state.wallet.settings.bitcoinAmountUnit,
         selectEnabledNetworks: (state: AppState) => state.wallet.settings.enabledNetworks,
         selectLocalCurrency: (state: AppState) => state.wallet.settings.localCurrency,
