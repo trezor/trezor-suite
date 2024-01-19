@@ -23,8 +23,6 @@ export const ConnectDeviceSreenView = ({ children, style }: ConnectDeviceSreenVi
             screenHeader={<ConnectDeviceScreenHeader shouldDisplayCancelButton={false} />}
             customHorizontalPadding={0}
             customVerticalPadding={0}
-            hasBottomInset={false}
-            isScrollable={false}
         >
             <Box style={[applyStyle(contentStyle), style]}>{children}</Box>
         </Screen>

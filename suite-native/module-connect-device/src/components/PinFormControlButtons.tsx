@@ -46,6 +46,7 @@ export const PinFormControlButtons = () => {
     }, [isDeviceUnlocked, navigation]);
 
     const handleInvalidPin = useCallback(() => {
+        reset();
         showAlert({
             title: translate('moduleConnectDevice.pinScreen.wrongPinAlert.title'),
             description: translate('moduleConnectDevice.pinScreen.wrongPinAlert.description'),
@@ -54,16 +55,14 @@ export const PinFormControlButtons = () => {
             primaryButtonTitle: translate(
                 'moduleConnectDevice.pinScreen.wrongPinAlert.button.tryAgain',
             ),
-            onPressPrimaryButton: reset,
             secondaryButtonTitle: translate(
                 'moduleConnectDevice.pinScreen.wrongPinAlert.button.help',
             ),
             onPressSecondaryButton: () => {
                 openLink(PIN_HELP_URL);
-                reset();
             },
         });
-    }, [reset, showAlert, translate, openLink]);
+    }, [openLink, reset, showAlert, translate]);
 
     useEffect(() => {
         TrezorConnect.on(UI.INVALID_PIN, handleInvalidPin);
@@ -92,7 +91,7 @@ export const PinFormControlButtons = () => {
                 />
             )}
             <Box flex={1}>
-                <Button isDisabled={pinLength < 1} onPress={onSubmit}>
+                <Button onPress={onSubmit}>
                     {translate('moduleConnectDevice.pinScreen.form.enterPin')}
                 </Button>
             </Box>
