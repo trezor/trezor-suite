@@ -14,7 +14,7 @@ const initStore = ({ preloadedState }: InitStoreArgs = {}) => {
     const store = configureMockStore({
         extra: {
             selectors: {
-                selectCurrentDevice: () => undefined,
+                selectDevice: () => undefined,
             },
         },
         reducer: { notifications: notificationsReducer },

@@ -30,7 +30,7 @@ export const addToast = createActionWithExtraDeps(
     (payload: ToastPayload, { getState, extra }): NotificationEntry => ({
         context: 'toast',
         id: new Date().getTime(),
-        device: extra.selectors.selectCurrentDevice(getState()),
+        device: extra.selectors.selectDevice(getState()),
         seen: true,
         ...payload,
     }),
@@ -53,7 +53,7 @@ export const addEvent = createActionWithExtraDeps(
     (payload: NotificationEventPayload, { getState, extra }): NotificationEntry => ({
         context: 'event',
         id: new Date().getTime(),
-        device: extra.selectors.selectCurrentDevice(getState()),
+        device: extra.selectors.selectDevice(getState()),
         ...payload,
     }),
 );
