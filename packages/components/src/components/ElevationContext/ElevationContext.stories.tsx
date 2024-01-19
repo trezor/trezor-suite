@@ -4,7 +4,7 @@ import { Modal } from '../modals/Modal/Modal';
 import styled from 'styled-components';
 import { Textarea } from '../form/Textarea/Textarea';
 import { useElevation } from './ElevationContext';
-import { Elevation, mapElevationToBackground } from '@trezor/theme/src/elevation';
+import { Elevation, mapElevationToBackground } from '@trezor/theme';
 import { ReactNode } from 'react';
 
 export default {

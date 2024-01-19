@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { useState, Ref, ReactNode, TextareaHTMLAttributes } from 'react';
-import { spacingsPx } from '@trezor/theme';
+import { spacingsPx, Elevation } from '@trezor/theme';
 
 import { InputState } from '../inputTypes';
 import {
@@ -15,7 +15,6 @@ import { BOTTOM_TEXT_MIN_HEIGHT, BottomText } from '../BottomText';
 import { TopAddons } from '../TopAddons';
 import { CharacterCount, CharacterCountProps } from './CharacterCount';
 import { useElevation } from '../../ElevationContext/ElevationContext';
-import { Elevation } from '@trezor/theme/src/elevation';
 
 const Wrapper = styled.div<{ hasBottomPadding: boolean }>`
     width: 100%;

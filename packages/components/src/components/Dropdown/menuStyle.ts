@@ -1,6 +1,12 @@
 import { css, keyframes } from 'styled-components';
-import { spacingsPx, borders, typography, zIndices } from '@trezor/theme';
-import { Elevation, mapElevationToBackground } from '@trezor/theme/src/elevation';
+import {
+    spacingsPx,
+    borders,
+    typography,
+    zIndices,
+    Elevation,
+    mapElevationToBackground,
+} from '@trezor/theme';
 
 export const DROPDOWN_MENU = keyframes`
     0% {
