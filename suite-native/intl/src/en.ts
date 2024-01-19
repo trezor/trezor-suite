@@ -224,6 +224,7 @@ export const en = {
                 keypadInfo: 'Follow the keypad layout on your Trezor',
                 enterPin: 'Enter pin',
                 submitting: 'Verifying your PIN',
+                error: { invalidPin: 'Wrong PIN' },
             },
             wrongPinAlert: {
                 title: 'Incorrect PIN',

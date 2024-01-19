@@ -14,8 +14,9 @@ import {
 } from '@suite-native/navigation';
 import {
     selectIsPortfolioTrackerDevice,
-    selectIsNoPhysicalDeviceConnected,
+    selectDeviceRequestedPin,
     selectIsDeviceConnectedAndAuthorized,
+    selectIsNoPhysicalDeviceConnected,
 } from '@suite-common/wallet-core';
 import { selectIsOnboardingFinished } from '@suite-native/module-settings';
 
@@ -30,6 +31,7 @@ export const useHandleDeviceConnection = () => {
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
     const isDeviceConnectedAndAuthorized = useSelector(selectIsDeviceConnectedAndAuthorized);
+    const hasDeviceRequestedPin = useSelector(selectDeviceRequestedPin);
 
     const navigation = useNavigation<NavigationProp>();
 
@@ -69,4 +71,14 @@ export const useHandleDeviceConnection = () => {
             });
         }
     }, [isNoPhysicalDeviceConnected, isOnboardingFinished, navigation]);
+
+    // When T1 gets locked, it is necessary to display a PIN matrix for it so that it can be unlocked
+    // and then continue with the interaction.
+    useEffect(() => {
+        if (isDeviceConnectedAndAuthorized && hasDeviceRequestedPin) {
+            navigation.navigate(RootStackRoutes.ConnectDevice, {
+                screen: ConnectDeviceStackRoutes.PinMatrix,
+            });
+        }
+    }, [hasDeviceRequestedPin, isDeviceConnectedAndAuthorized, navigation]);
 };
