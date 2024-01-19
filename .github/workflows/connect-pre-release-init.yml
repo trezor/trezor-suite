@@ -25,7 +25,7 @@ jobs:
           node-version-file: ".nvmrc"
       - name: Run @trezor/connect create npm release branch
         run: |
-          npm install -g yarn && yarn install
+          npm install -g yarn && yarn install && yarn build:libs
           git config --global user.name "trezor-ci"
           git config --global user.email "${{ secrets.TREZOR_BOT_EMAIL }}"
           gh config set prompt disabled
