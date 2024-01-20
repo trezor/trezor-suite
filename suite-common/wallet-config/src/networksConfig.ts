@@ -563,3 +563,7 @@ export const getEthereumTypeNetworkSymbols = () =>
 export const getTestnetSymbols = () => getTestnets().map(n => n.symbol);
 
 export const getNetworkType = (symbol: NetworkSymbol) => networks[symbol]?.networkType;
+
+export const getEthereumChainId = (symbol: NetworkSymbol) =>
+    networksCompatibility.filter(n => n.networkType === 'ethereum').find(n => n.symbol === symbol)
+        ?.chainId;

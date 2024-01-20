@@ -12,6 +12,7 @@
     },
     "dependencies": {
         "@suite-common/suite-config": "workspace:*",
+        "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/utils": "workspace:*",

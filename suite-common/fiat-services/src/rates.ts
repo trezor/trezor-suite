@@ -1,6 +1,7 @@
 import { getUnixTime, subWeeks } from 'date-fns';
 
 import type { TickerId, LastWeekRates } from '@suite-common/wallet-types';
+import { getEthereumChainId } from '@suite-common/wallet-config';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import TrezorConnect from '@trezor/connect';
 import { scheduleAction } from '@trezor/utils';
@@ -34,6 +35,22 @@ export const fetchCurrentFiatRates = async (
     ticker: TickerId,
     currency: FiatCurrencyCode,
 ): Promise<number | null | undefined> => {
+    const chainId = getEthereumChainId(ticker.symbol);
+
+    if (ticker.tokenAddress && chainId) {
+        const isTokenKnown = await fetch(
+            `https://data.trezor.io/firmware/eth-definitions/chain-id/${chainId}/token-${ticker.tokenAddress
+                ?.substring(2)
+                .toLowerCase()}.dat`,
+        )
+            .then(response => response.ok)
+            .catch(() => false);
+
+        if (!isTokenKnown) {
+            return null;
+        }
+    }
+
     const responseConnect = await scheduleAction(
         () =>
             TrezorConnect.blockchainGetCurrentFiatRates({
