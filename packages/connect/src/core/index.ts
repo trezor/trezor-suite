@@ -648,17 +648,16 @@ export const onCall = async (message: CoreMessage) => {
         const response = messageResponse;
 
         if (response) {
-            if (method.name === 'rebootToBootloader' && response.success) {
-                // Wait for device to switch to bootloader
-                // This delay is crucial see https://github.com/trezor/trezor-firmware/issues/1983
+            // Wait for device to switch to bootloader
+            // This delay is crucial see https://github.com/trezor/trezor-firmware/issues/1983
+            if (method.device.isT1() && method.name === 'rebootToBootloader' && response.success) {
                 await resolveAfter(1000).promise;
                 // call Device.run with empty function to fetch new Features
                 // (acquire > Initialize > nothing > release)
                 try {
                     await device.run(() => Promise.resolve(), { skipFinalReload: true });
                 } catch (err) {
-                    // ignore. on model T, this block of code is probably not needed at all. but I am keeping it here for
-                    // backwards compatibility
+                    // empty
                 }
             }
 
