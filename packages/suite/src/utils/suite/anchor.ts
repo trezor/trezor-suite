@@ -29,13 +29,12 @@ export const findAnchorTransactionPage = (
 export const anchorOutlineStyles = css<{ shouldHighlight?: boolean }>`
     transition: all 0.3s;
     transition-delay: 0.3s;
-    outline: solid 3px transparent;
-    border-radius: ${borders.radii.xs};
-    ${props =>
-        props.shouldHighlight &&
+    outline: solid ${borders.widths.large} transparent;
+
+    ${({ shouldHighlight }) =>
+        shouldHighlight &&
         css`
-            outline: solid 3px ${({ theme }) => theme.TYPE_ORANGE};
-            background: ${({ theme }) => theme.TYPE_LIGHT_ORANGE};
-            padding: 10px;
+            outline: solid ${borders.widths.large} ${({ theme }) => theme.backgroundAlertYellowBold};
+            background: ${({ theme }) => theme.backgroundAlertYellowSubtleOnElevation1};
         `};
 `;
