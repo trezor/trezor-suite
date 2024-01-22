@@ -37,14 +37,7 @@ const Wrapper = styled(Card)<{
     shouldHighlight: boolean;
     isZeroValuePhishing: boolean;
 }>`
-    display: flex;
-    flex-direction: row;
-    padding: 0 24px;
     opacity: ${({ isZeroValuePhishing }) => isZeroValuePhishing && 0.6};
-
-    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
-        padding: 0 16px;
-    }
 
     ${({ isPending }) =>
         isPending &&
@@ -66,7 +59,6 @@ const Wrapper = styled(Card)<{
 const Body = styled.div`
     display: flex;
     width: 100%;
-    padding: 12px 0;
 `;
 
 const ExpandButton = styled(Button)`

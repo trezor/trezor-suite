@@ -15,7 +15,7 @@ const Wrapper = styled.div<{ size?: string; isHoverable?: boolean }>`
         width: 100%;
         height: 100%;
         transform: scale(0.5);
-        border-radius: ${borders.radii.xs};
+        border-radius: ${borders.radii.sm};
         transition: ${({ theme }) =>
             `all ${theme.HOVER_TRANSITION_TIME} ${theme.HOVER_TRANSITION_EFFECT}`};
 
