@@ -14,7 +14,7 @@ import { SECONDARY_PANEL_HEIGHT } from 'src/components/suite/AppNavigation/AppNa
 const Wrapper = styled.div`
     display: flex;
     position: sticky;
-    background: ${({ theme }) => theme.BG_GREY};
+    background: ${({ theme }) => theme.backgroundSurfaceElevation0};
     top: ${SECONDARY_PANEL_HEIGHT};
     align-items: center;
     justify-content: space-between;
@@ -29,7 +29,6 @@ const Col = styled(HiddenPlaceholder)`
     font-size: ${variables.FONT_SIZE.SMALL};
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    text-transform: uppercase;
 `;
 
 const ColDate = styled(Col)`

@@ -57,6 +57,10 @@ const StyledCard = styled(Card)`
     }
 `;
 
+const StyledActionButton = styled(ActionButton)`
+    min-width: 170px;
+`;
+
 const NoWrap = styled.span`
     white-space: nowrap;
 `;
@@ -144,7 +148,7 @@ const Details = () => {
                                 buttonLink={HELP_CENTER_XPUB_URL}
                             />
                             <ActionColumn>
-                                <ActionButton
+                                <StyledActionButton
                                     variant="secondary"
                                     data-test="@wallets/details/show-xpub-button"
                                     onClick={handleXpubClick}
@@ -152,7 +156,7 @@ const Details = () => {
                                     isLoading={locked}
                                 >
                                     <Translation id="TR_ACCOUNT_DETAILS_XPUB_BUTTON" />
-                                </ActionButton>
+                                </StyledActionButton>
                             </ActionColumn>
                         </Row>
                     ) : (

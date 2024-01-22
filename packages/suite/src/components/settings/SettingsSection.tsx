@@ -12,6 +12,7 @@ const Wrapper = styled.div`
         display: block;
     }
 `;
+
 const Card = styled(CardComponent)`
     flex: 1;
 `;
@@ -39,6 +40,10 @@ const Description = styled(Paragraph)`
     ${breakpointMediaQueries.below_lg} {
         margin-bottom: ${spacingsPx.lg};
     }
+`;
+
+const StyledCard = styled(Card)`
+    gap: ${spacingsPx.xxl};
 `;
 
 interface SettingsSectionProps {
@@ -73,7 +78,7 @@ export const SettingsSection = ({
                 )}
             </Header>
 
-            <Card paddingType="large">{children}</Card>
+            <StyledCard paddingType="large">{children}</StyledCard>
         </Wrapper>
     );
 };

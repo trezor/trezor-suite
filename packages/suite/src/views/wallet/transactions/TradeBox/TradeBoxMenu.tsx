@@ -3,6 +3,7 @@ import { Account } from '@suite-common/wallet-types';
 import { Button, variables } from '@trezor/components';
 import { FirmwareType } from '@trezor/connect';
 import { EventType, analytics } from '@trezor/suite-analytics';
+import { spacingsPx } from '@trezor/theme';
 import { ReactNode } from 'react';
 import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite';
@@ -11,7 +12,7 @@ import styled, { css } from 'styled-components';
 
 const Wrapper = styled.div`
     display: flex;
-    gap: 12px;
+    gap: ${spacingsPx.sm};
 `;
 
 const StyledButton = styled(Button)<{ isHideable: boolean }>`
@@ -70,7 +71,8 @@ export const TradeBoxMenu = ({ account }: TradeBoxMenuProps) => {
                     <StyledButton
                         isHideable={!!item.isHideable}
                         key={item.route}
-                        variant="secondary"
+                        variant="tertiary"
+                        size="small"
                         onClick={() => {
                             analytics.report({
                                 type: EventType.AccountsTradeboxButton,
