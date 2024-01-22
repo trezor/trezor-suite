@@ -33,8 +33,12 @@ export const DevUtilsScreen = ({
                         </Button>
                     )}
                     {!isProduction() && <RenderingUtils />}
-                    {isDevelopOrDebugEnv() && <FeatureFlags />}
-                    {isDebugEnv() && <DiscoveryCoinsFilter />}
+                    {isDevelopOrDebugEnv() && (
+                        <>
+                            <FeatureFlags />
+                            <DiscoveryCoinsFilter />
+                        </>
+                    )}
                     <Button
                         onPress={() => {
                             const errorMessage = `Sentry test error - ${Date.now()}`;
