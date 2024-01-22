@@ -1,3 +1,7 @@
+# 9.0.18
+
+-   fix(suite): fix label drop for RBG transactions (96d12a424)
+
 # 9.0.16
 
 -   chore(connect): use `tslib` as dependency in all public libs (606ecc63b)
