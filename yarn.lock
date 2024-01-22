@@ -6945,6 +6945,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/validators@workspace:*, @suite-common/validators@workspace:suite-common/validators":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/validators@workspace:suite-common/validators"
+  dependencies:
+    "@trezor/utils": "workspace:*"
+    yup: "npm:^0.32.11"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/wallet-config@workspace:*, @suite-common/wallet-config@workspace:suite-common/wallet-config":
   version: 0.0.0-use.local
   resolution: "@suite-common/wallet-config@workspace:suite-common/wallet-config"
@@ -7059,6 +7068,7 @@ __metadata:
     "@suite-common/icons": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/transaction-cache-engine": "workspace:*"
+    "@suite-common/validators": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
@@ -7073,7 +7083,6 @@ __metadata:
     "@suite-native/navigation": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
-    "@trezor/validation": "workspace:*"
     jest: "npm:29.5.0"
     proxy-memoize: "npm:2.0.2"
     react: "npm:18.2.0"
@@ -7512,6 +7521,7 @@ __metadata:
     "@suite-common/formatters": "workspace:*"
     "@suite-common/icons": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/validators": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
@@ -7536,7 +7546,6 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
-    "@trezor/validation": "workspace:*"
     jest: "npm:29.5.0"
     lottie-react-native: "npm:^5.1.5"
     react: "npm:18.2.0"
@@ -7558,6 +7567,7 @@ __metadata:
     "@suite-common/fiat-services": "workspace:*"
     "@suite-common/graph": "workspace:*"
     "@suite-common/icons": "workspace:*"
+    "@suite-common/validators": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
@@ -7580,7 +7590,6 @@ __metadata:
     "@suite-native/transactions": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
-    "@trezor/validation": "workspace:*"
     date-fns: "npm:^2.30.0"
     jotai: "npm:1.9.1"
     react: "npm:18.2.0"
@@ -7599,7 +7608,7 @@ __metadata:
     "@react-navigation/native": "npm:^6.1.9"
     "@react-navigation/native-stack": "npm:^6.9.17"
     "@suite-common/icons": "workspace:*"
-    "@suite-common/wallet-constants": "workspace:*"
+    "@suite-common/validators": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-native/alerts": "workspace:*"
     "@suite-native/atoms": "workspace:*"
@@ -7610,7 +7619,6 @@ __metadata:
     "@suite-native/navigation": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/styles": "workspace:*"
-    "@trezor/validation": "workspace:*"
     react: "npm:18.2.0"
     react-native: "npm:0.71.8"
     react-redux: "npm:8.0.7"
@@ -7845,12 +7853,12 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/passphrase@workspace:suite-native/passphrase"
   dependencies:
+    "@suite-common/validators": "workspace:*"
     "@suite-common/wallet-constants": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/forms": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@trezor/styles": "workspace:*"
-    "@trezor/validation": "workspace:*"
     jotai: "npm:1.9.1"
     react: "npm:18.2.0"
     react-native: "npm:0.71.8"
@@ -8472,7 +8480,7 @@ __metadata:
     "@storybook/client-api": "npm:^7.5.3"
     "@storybook/react": "npm:^7.5.3"
     "@storybook/react-webpack5": "npm:^7.5.3"
-    "@suite-common/wallet-constants": "workspace:*"
+    "@suite-common/validators": "workspace:*"
     "@tippyjs/react": "npm:^4.2.6"
     "@trezor/connect": "workspace:*"
     "@trezor/dom-utils": "workspace:*"
@@ -9404,6 +9412,7 @@ __metadata:
     "@suite-common/suite-utils": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
     "@suite-common/toast-notifications": "workspace:*"
+    "@suite-common/validators": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-constants": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
@@ -9431,7 +9440,6 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
-    "@trezor/validation": "workspace:*"
     "@types/file-saver": "npm:^2.0.6"
     "@types/invity-api": "npm:^1.0.17"
     "@types/jws": "npm:^3.2.7"
@@ -9645,17 +9653,6 @@ __metadata:
     wif: "npm:^4.0.0"
   peerDependencies:
     tslib: ^2.6.2
-  languageName: unknown
-  linkType: soft
-
-"@trezor/validation@workspace:*, @trezor/validation@workspace:packages/validation":
-  version: 0.0.0-use.local
-  resolution: "@trezor/validation@workspace:packages/validation"
-  dependencies:
-    "@trezor/utils": "workspace:*"
-    jest: "npm:29.5.0"
-    typescript: "npm:5.3.2"
-    yup: "npm:^0.32.11"
   languageName: unknown
   linkType: soft
 

@@ -15,7 +15,7 @@ import {
     isBech32AddressUppercase,
     getInputState,
 } from '@suite-common/wallet-utils';
-import { formInputsMaxLength } from '@suite-common/wallet-constants';
+import { formInputsMaxLength } from '@suite-common/validators';
 import { PROTOCOL_TO_NETWORK } from 'src/constants/suite/protocol';
 import { notificationsActions } from '@suite-common/toast-notifications';
 

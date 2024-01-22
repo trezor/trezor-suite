@@ -2,7 +2,7 @@ import { Controller } from 'react-hook-form';
 import styled from 'styled-components';
 import { fiatCurrencies } from '@suite-common/suite-config';
 import { Translation, NumberInput } from 'src/components/suite';
-import { formInputsMaxLength } from '@suite-common/wallet-constants';
+import { formInputsMaxLength } from '@suite-common/validators';
 import { getInputState } from '@suite-common/wallet-utils';
 import { CoinLogo, Select } from '@trezor/components';
 import { useCoinmarketP2pFormContext } from 'src/hooks/wallet/useCoinmarketP2pForm';

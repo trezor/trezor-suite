@@ -4,7 +4,7 @@ import { Textarea, Icon } from '@trezor/components';
 import { QuestionTooltip } from 'src/components/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { getInputState, isHexValid } from '@suite-common/wallet-utils';
-import { formInputsMaxLength } from '@suite-common/wallet-constants';
+import { formInputsMaxLength } from '@suite-common/validators';
 import { useTranslation } from 'src/hooks/suite';
 
 const inputAsciiName = 'ethereumDataAscii';

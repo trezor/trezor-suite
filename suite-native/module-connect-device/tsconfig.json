@@ -4,7 +4,7 @@
     "references": [
         { "path": "../../suite-common/icons" },
         {
-            "path": "../../suite-common/wallet-constants"
+            "path": "../../suite-common/validators"
         },
         {
             "path": "../../suite-common/wallet-core"
@@ -17,7 +17,6 @@
         { "path": "../link" },
         { "path": "../navigation" },
         { "path": "../../packages/connect" },
-        { "path": "../../packages/styles" },
-        { "path": "../../packages/validation" }
+        { "path": "../../packages/styles" }
     ]
 }

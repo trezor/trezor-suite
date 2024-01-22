@@ -4,7 +4,7 @@ import { Translation } from 'src/components/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { Icon, Input, Switch, variables } from '@trezor/components';
 import { getInputState, isInteger } from '@suite-common/wallet-utils';
-import { formInputsMaxLength } from '@suite-common/wallet-constants';
+import { formInputsMaxLength } from '@suite-common/validators';
 import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { useTranslation } from 'src/hooks/suite';
 

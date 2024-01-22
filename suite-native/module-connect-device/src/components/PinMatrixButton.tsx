@@ -1,6 +1,6 @@
 import { useFormContext } from '@suite-native/forms';
 import { NumPadButton } from '@suite-native/atoms';
-import { formInputsMaxLength } from '@suite-common/wallet-constants';
+import { formInputsMaxLength } from '@suite-common/validators';
 
 type PinItemProps = {
     value: number;

@@ -4,7 +4,7 @@ import { Translation } from 'src/components/suite';
 import { Textarea, Icon, Tooltip } from '@trezor/components';
 import { getInputState, isHexValid } from '@suite-common/wallet-utils';
 import { OpenGuideFromTooltip } from 'src/components/guide';
-import { formInputsMaxLength } from '@suite-common/wallet-constants';
+import { formInputsMaxLength } from '@suite-common/validators';
 import { useTranslation } from 'src/hooks/suite';
 
 const Wrapper = styled.div`

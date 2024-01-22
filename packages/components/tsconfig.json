@@ -9,7 +9,7 @@
     "include": ["."],
     "references": [
         {
-            "path": "../../suite-common/wallet-constants"
+            "path": "../../suite-common/validators"
         },
         { "path": "../connect" },
         { "path": "../dom-utils" },

@@ -14,7 +14,7 @@ import {
     StackProps,
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { yup } from '@trezor/validation';
+import { yup } from '@suite-common/validators';
 import { NetworkType, networks } from '@suite-common/wallet-config';
 import { isAddressValid } from '@suite-common/wallet-utils';
 import { useAlert } from '@suite-native/alerts';

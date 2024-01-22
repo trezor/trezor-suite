@@ -3,12 +3,14 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
+            "path": "../../suite-common/validators"
+        },
+        {
             "path": "../../suite-common/wallet-constants"
         },
         { "path": "../atoms" },
         { "path": "../forms" },
         { "path": "../intl" },
-        { "path": "../../packages/styles" },
-        { "path": "../../packages/validation" }
+        { "path": "../../packages/styles" }
     ]
 }

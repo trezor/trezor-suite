@@ -3,8 +3,9 @@ import { Input, Icon } from '@trezor/components';
 import { QuestionTooltip } from 'src/components/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { getInputState, isInteger } from '@suite-common/wallet-utils';
-import { U_INT_32, formInputsMaxLength } from '@suite-common/wallet-constants';
+import { U_INT_32 } from '@suite-common/wallet-constants';
 import { useTranslation } from 'src/hooks/suite';
+import { formInputsMaxLength } from '@suite-common/validators';
 
 interface DestinationTagProps {
     close: () => void;

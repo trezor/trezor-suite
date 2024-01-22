@@ -8,6 +8,9 @@
         { "path": "../../suite-common/graph" },
         { "path": "../../suite-common/icons" },
         {
+            "path": "../../suite-common/validators"
+        },
+        {
             "path": "../../suite-common/wallet-config"
         },
         {
@@ -36,7 +39,6 @@
         { "path": "../receive" },
         { "path": "../transactions" },
         { "path": "../../packages/styles" },
-        { "path": "../../packages/theme" },
-        { "path": "../../packages/validation" }
+        { "path": "../../packages/theme" }
     ]
 }

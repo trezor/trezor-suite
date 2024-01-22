@@ -16,7 +16,7 @@
         "storybook-build": "storybook build -c .storybook -o .build-storybook"
     },
     "dependencies": {
-        "@suite-common/wallet-constants": "workspace:*",
+        "@suite-common/validators": "workspace:*",
         "@tippyjs/react": "^4.2.6",
         "@trezor/connect": "workspace:*",
         "@trezor/dom-utils": "workspace:*",

@@ -61,6 +61,9 @@
             "path": "../../suite-common/toast-notifications"
         },
         {
+            "path": "../../suite-common/validators"
+        },
+        {
             "path": "../../suite-common/wallet-config"
         },
         {
@@ -94,7 +97,6 @@
         { "path": "../suite-storage" },
         { "path": "../type-utils" },
         { "path": "../urls" },
-        { "path": "../utils" },
-        { "path": "../validation" }
+        { "path": "../utils" }
     ]
 }

@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useForm, useController } from 'react-hook-form';
-import { yup } from '@trezor/validation';
+import { yup } from '@suite-common/validators';
 import { isAddressValid } from '@suite-common/wallet-utils';
 import { yupResolver } from '@hookform/resolvers/yup';
 

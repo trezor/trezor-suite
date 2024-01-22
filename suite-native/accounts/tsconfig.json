@@ -13,6 +13,9 @@
             "path": "../../suite-common/transaction-cache-engine"
         },
         {
+            "path": "../../suite-common/validators"
+        },
+        {
             "path": "../../suite-common/wallet-config"
         },
         {
@@ -33,7 +36,6 @@
         { "path": "../module-settings" },
         { "path": "../navigation" },
         { "path": "../../packages/styles" },
-        { "path": "../../packages/theme" },
-        { "path": "../../packages/validation" }
+        { "path": "../../packages/theme" }
     ]
 }

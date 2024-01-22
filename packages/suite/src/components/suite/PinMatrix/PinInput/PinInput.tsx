@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 
 import { Button, PinButton, KEYBOARD_CODE } from '@trezor/components';
 import { Translation } from 'src/components/suite';
-import { formInputsMaxLength } from '@suite-common/wallet-constants';
+import { formInputsMaxLength } from '@suite-common/validators';
 import { InputPin } from './InputPin';
 
 const Wrapper = styled.div`

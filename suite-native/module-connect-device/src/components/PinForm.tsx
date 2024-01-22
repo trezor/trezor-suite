@@ -1,9 +1,8 @@
 import { Form, useForm } from '@suite-native/forms';
 import { Card, HStack, VStack, Box, Text } from '@suite-native/atoms';
-import { yup } from '@trezor/validation';
+import { yup, formInputsMaxLength } from '@suite-common/validators';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { useTranslate } from '@suite-native/intl';
-import { formInputsMaxLength } from '@suite-common/wallet-constants';
 
 import { PinMatrixButton } from './PinMatrixButton';
 import { PinFormProgress } from './PinFormProgress';

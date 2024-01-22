@@ -4,11 +4,10 @@ import { Modal, TextInput } from 'react-native';
 import { useSetAtom } from 'jotai';
 
 import { Form, TextInputField, useForm } from '@suite-native/forms';
-import { yup } from '@trezor/validation';
+import { yup, formInputsMaxLength } from '@suite-common/validators';
 import { Box, Button, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { useTranslate } from '@suite-native/intl';
-import { formInputsMaxLength } from '@suite-common/wallet-constants';
 
 import { isPassphraseModalVisibleAtom } from './isPassphraseModalVisibleAtom';
 

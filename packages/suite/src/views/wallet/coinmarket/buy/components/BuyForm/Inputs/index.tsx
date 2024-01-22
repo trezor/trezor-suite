@@ -9,7 +9,7 @@ import { Select, CoinLogo } from '@trezor/components';
 import { buildOption } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { useCoinmarketBuyFormContext } from 'src/hooks/wallet/useCoinmarketBuyForm';
 import { getInputState } from '@suite-common/wallet-utils';
-import { formInputsMaxLength } from '@suite-common/wallet-constants';
+import { formInputsMaxLength } from '@suite-common/validators';
 import { Wrapper, Left, Middle, Right, StyledIcon } from 'src/views/wallet/coinmarket';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { useTranslation } from 'src/hooks/suite';

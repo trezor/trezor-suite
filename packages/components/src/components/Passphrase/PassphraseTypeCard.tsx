@@ -9,7 +9,7 @@ import styled, { css, useTheme } from 'styled-components';
 
 import { countBytesInString } from '@trezor/utils';
 import { isAndroid } from '@trezor/env-utils';
-import { formInputsMaxLength } from '@suite-common/wallet-constants';
+import { formInputsMaxLength } from '@suite-common/validators';
 
 import { PasswordStrengthIndicator } from './PasswordStrengthIndicator';
 import { variables, motion as motionConfig } from '../../config';

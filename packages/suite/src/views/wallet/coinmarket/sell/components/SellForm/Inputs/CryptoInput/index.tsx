@@ -6,7 +6,7 @@ import { Controller } from 'react-hook-form';
 import { useCoinmarketSellFormContext } from 'src/hooks/wallet/useCoinmarketSellForm';
 import { getEthereumTypeNetworkSymbols } from '@suite-common/wallet-config';
 import { getInputState } from '@suite-common/wallet-utils';
-import { formInputsMaxLength } from '@suite-common/wallet-constants';
+import { formInputsMaxLength } from '@suite-common/validators';
 import {
     CRYPTO_CURRENCY_SELECT,
     CRYPTO_INPUT,
