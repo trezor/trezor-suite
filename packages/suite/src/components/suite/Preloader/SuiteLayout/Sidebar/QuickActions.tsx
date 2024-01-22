@@ -1,5 +1,5 @@
 import styled, { useTheme } from 'styled-components';
-import { Icon, IconButton } from '@trezor/components';
+import { Icon, Tooltip } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 import { borders, spacingsPx, typography } from '@trezor/theme';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
@@ -9,12 +9,9 @@ import { selectTorState } from 'src/reducers/suite/suiteReducer';
 import { setDiscreetMode } from 'src/actions/settings/walletSettingsActions';
 import { selectIsDiscreteModeActive } from 'src/reducers/wallet/settingsReducer';
 import { NavigationItemBase } from './NavigationItem';
-
-const WebContainer = styled.div`
-    display: flex;
-    align-items: center;
-    padding: ${spacingsPx.xs};
-`;
+import { useCustomBackends } from 'src/hooks/settings/backends';
+import { ActionButton } from './ActionButton';
+import { NavBackends } from './NavBackends';
 
 const DescreetContainer = styled(NavigationItemBase)`
     width: 100%;
@@ -24,28 +21,34 @@ const DescreetContainer = styled(NavigationItemBase)`
     }
 `;
 
-const DesktopContainer = styled(WebContainer)`
+const ActionsContainer = styled.div<{ numberOfColumns: number }>`
     position: relative;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: ${({ numberOfColumns }) => '1fr '.repeat(numberOfColumns)};
     gap: ${spacingsPx.md};
     padding: ${spacingsPx.xs};
     border-top: 1px solid ${({ theme }) => theme.borderOnElevation0};
-
-    ::after {
-        content: '';
-        position: absolute;
-        top: ${spacingsPx.xxs};
-        bottom: ${spacingsPx.xxs};
-        right: 50%;
-        width: 1px;
-        background: ${({ theme }) => theme.borderOnElevation0};
-    }
+    align-items: stretch;
 `;
 
-const ActionButton = styled(IconButton)`
-    width: 100%;
-    border-radius: ${borders.radii.sm};
+const Column = styled.div`
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    &:not(:last-child)::after {
+        background: ${({ theme }) => theme.borderOnElevation0};
+        width: 1px;
+        content: '';
+        display: block;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        height: 100%;
+        margin-right: -9px;
+    }
 `;
 
 const Label = styled.span`
@@ -53,7 +56,7 @@ const Label = styled.span`
     color: ${({ theme }) => theme.textSubdued};
 `;
 
-const ActiveTorIcon = styled(Icon)`
+const StyledCheckIcon = styled(Icon)`
     position: absolute;
     bottom: 50%;
     left: 50%;
@@ -67,7 +70,7 @@ const TorToggleContainer = styled.div`
 
     :hover,
     :focus-within {
-        ${ActiveTorIcon} {
+        ${StyledCheckIcon} {
             background-color: ${({ theme }) => theme.backgroundTertiaryPressedOnElevation0};
         }
     }
@@ -76,48 +79,76 @@ const TorToggleContainer = styled.div`
 export const QuickActions = () => {
     const isDiscreetModeActive = useSelector(selectIsDiscreteModeActive);
     const { isTorEnabled, isTorLoading } = useSelector(selectTorState);
+    const enabledNetworks = useSelector(state => state.wallet.settings.enabledNetworks);
 
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
     const theme = useTheme();
 
     const handleDicreetModeClick = () => dispatch(setDiscreetMode(!isDiscreetModeActive));
+    const customBackends = useCustomBackends().filter(backend =>
+        enabledNetworks.includes(backend.coin),
+    );
+    const translationLabel = isDiscreetModeActive ? 'TR_SHOW_BALANCES' : 'TR_HIDE_BALANCES';
+    const isCustomBackendIconVisible = customBackends.length > 0;
+    const isTorIconVisible = isDesktop();
+    const numberOfColumns = [isCustomBackendIconVisible, isTorIconVisible, true].filter(
+        Boolean,
+    ).length;
 
-    if (!isDesktop()) {
-        const translationLabel = isDiscreetModeActive ? 'TR_SHOW_BALANCES' : 'TR_HIDE_BALANCES';
-
-        return (
-            <WebContainer onClick={handleDicreetModeClick}>
-                <DescreetContainer>
-                    <Icon size={16} icon={isDiscreetModeActive ? 'HIDE' : 'SHOW'} />
-                    <Label>{translationString(translationLabel)} </Label>
-                </DescreetContainer>
-            </WebContainer>
-        );
-    }
+    const CheckIcon = () => (
+        <StyledCheckIcon icon="CHECK_ACTIVE" size={12} color={theme.iconPrimaryDefault} />
+    );
 
     return (
-        <DesktopContainer>
-            <TorToggleContainer>
-                <ActionButton
-                    icon="TOR"
-                    isLoading={isTorLoading}
-                    onClick={() => dispatch(goto('settings-index', { anchor: SettingsAnchor.Tor }))}
-                    size="small"
-                    variant="tertiary"
-                />
+        <ActionsContainer numberOfColumns={numberOfColumns}>
+            {isCustomBackendIconVisible && (
+                <Column>
+                    <Tooltip content={translationString('TR_CUSTOM_BACKEND')} cursor="pointer">
+                        <>
+                            <NavBackends customBackends={customBackends} />
 
-                {isTorEnabled && (
-                    <ActiveTorIcon icon="CHECK_ACTIVE" size={12} color={theme.iconPrimaryDefault} />
+                            <CheckIcon />
+                        </>
+                    </Tooltip>
+                </Column>
+            )}
+            {isTorIconVisible && (
+                <Column>
+                    <Tooltip content={translationString('TR_TOR')} cursor="pointer">
+                        <TorToggleContainer>
+                            <ActionButton
+                                icon="TOR"
+                                isLoading={isTorLoading}
+                                onClick={() =>
+                                    dispatch(goto('settings-index', { anchor: SettingsAnchor.Tor }))
+                                }
+                                size="small"
+                                variant="tertiary"
+                            />
+
+                            {isTorEnabled && <CheckIcon />}
+                        </TorToggleContainer>
+                    </Tooltip>
+                </Column>
+            )}
+            <Column>
+                {numberOfColumns === 1 ? (
+                    <DescreetContainer onClick={handleDicreetModeClick}>
+                        <Icon size={16} icon={isDiscreetModeActive ? 'HIDE' : 'SHOW'} />
+                        <Label>{translationString(translationLabel)} </Label>
+                    </DescreetContainer>
+                ) : (
+                    <Tooltip content={translationString(translationLabel)} cursor="pointer">
+                        <ActionButton
+                            icon={isDiscreetModeActive ? 'HIDE' : 'SHOW'}
+                            onClick={handleDicreetModeClick}
+                            variant="tertiary"
+                            size="small"
+                        />
+                    </Tooltip>
                 )}
-            </TorToggleContainer>
-
-            <ActionButton
-                icon={isDiscreetModeActive ? 'HIDE' : 'SHOW'}
-                onClick={handleDicreetModeClick}
-                variant="tertiary"
-                size="small"
-            />
-        </DesktopContainer>
+            </Column>
+        </ActionsContainer>
     );
 };
