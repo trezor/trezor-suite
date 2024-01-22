@@ -32,7 +32,6 @@ const ContentWrapper = styled.div`
 const GraphWrapper = styled(Card)`
     flex-direction: row;
     display: flex;
-    padding: 14px 16px;
     height: 320px;
 `;
 

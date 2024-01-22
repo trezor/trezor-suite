@@ -44,7 +44,7 @@ const Action = styled.div`
     height: 40px;
 `;
 
-const CheckIconContainer = styled.div`
+const CheckIconContainer = styled.div<{ isDone: boolean }>`
     position: absolute;
     border-radius: 50%;
     width: 24px;
@@ -52,7 +52,9 @@ const CheckIconContainer = styled.div`
     top: ${spacingsPx.xs};
     right: ${spacingsPx.xs};
     overflow: hidden;
-    box-shadow: inset 0 1px ${({ theme }) => theme.borderOnElevation1};
+    border: 1px solid
+        ${({ theme, isDone }) =>
+            isDone ? theme.backgroundPrimarySubtleOnElevation1 : theme.borderOnElevation1};
 `;
 
 const CheckIconBackground = styled.div`
@@ -94,13 +96,15 @@ export const SecurityCard = ({
     ...rest
 }: SecurityCardProps) => {
     const theme = useTheme();
+
+    const isDone = variant === 'secondary';
     return (
         <Wrapper {...rest}>
             <StyledCard>
                 <Header>
                     <Icon icon={icon} size={32} color={theme.iconDefault} />
-                    <CheckIconContainer>
-                        {variant === 'secondary' && (
+                    <CheckIconContainer isDone={isDone}>
+                        {isDone && (
                             <CheckIconBackground>
                                 <Icon icon="CHECK" color={theme.iconPrimaryDefault} size={16} />
                             </CheckIconBackground>
@@ -131,7 +135,7 @@ export const SecurityCard = ({
                             </Action>
                         </>
                     )}
-                    {cta && variant === 'secondary' && (
+                    {cta && isDone && (
                         <>
                             <Line />
                             <Action>
