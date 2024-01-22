@@ -17,11 +17,9 @@ const Wrapper = styled.button<{ $isGuideOpen: boolean }>`
     height: 40px;
     border-radius: 50%;
     cursor: pointer;
-    border: solid 1px ${({ theme }) => theme.STROKE_GREY_ALT};
-    background: ${({ theme }) => theme.BG_WHITE_ALT};
-    box-shadow:
-        0 2px 7px 0 ${({ theme }) => theme.BOX_SHADOW_BLACK_15},
-        0 2px 3px 0 ${({ theme }) => theme.BOX_SHADOW_BLACK_5};
+    border: solid 1px ${({ theme }) => theme.borderOnElevation1};
+    background: ${({ theme }) => theme.backgroundSurfaceElevation1};
+    box-shadow: ${({ theme }) => theme.boxShadowBase};
     transition: opacity 0.3s ease 0.3s;
     opacity: ${({ $isGuideOpen }) => ($isGuideOpen ? 0 : 1)};
 
