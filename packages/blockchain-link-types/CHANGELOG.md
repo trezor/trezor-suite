@@ -1,3 +1,8 @@
+# 1.0.11
+
+-   fix(suite): subscribe to Solana token accounts as well (b2f85ac9e)
+-   chore(blokchain-link-types): import type from @trezor/type-utils (a2087ebf7)
+
 # 1.0.10
 
 -   fix(blockchain-link): fix solana txs when sending to associated token account (5cb682078)
