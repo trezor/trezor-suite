@@ -1,15 +1,9 @@
 # 9.1.10
 
--   feat(connect-common): add resolve messages promises to message channels abstract (f9e6f30)
--   fix(connect-popup): core (mv3) support in select device (104c3ae)
--   chore(connect): bump ADA support version (7937fea3ec)
+-   chore(connect): bump ADA support version, min required version is now 2.4.3 (7937fea3ec)
 -   fix(connect): always check ADA passphrase (42c28cc95d)
 -   chore(connect): decrease build size by using lib of utils which is not treeshaken (b4ab48b25f)
--   chore(connect): import `messages-schema` instead of `messages` (c5e9d50bf4)
--   fix(connect): check arrays not empty, minor schema fixes (e9aea38433)
--   fix(protobuf): inaccuracy in `TxOutputType` (c78cd9ad28)
--   refactor(connect): validation in API methods (0c035c26a6)
--   feat(connect): assert message schema in every typedCall (44430e47ff)
+-   refactor(connect): rework validation of input params (0c035c26a6, 44430e47ff, c78cd9ad28, c5e9d50bf4)
 
 # 9.1.9
 
