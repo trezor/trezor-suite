@@ -1,8 +1,37 @@
 // If you want to add of modify colors, please read README.md to find out more.
 
+import { Elevation } from './elevation';
 import { CSSColor } from './types';
-import { standardSkeletonColors, darkSkeletonColors } from './skeleton';
-import { standardBackgroundElevationColors, darkBackgroundElevationColors } from './background';
+
+/**
+ * Never use directly, use ElevationContext.
+ */
+const backgroundElevationColors = {
+    standard: {
+        backgroundSurfaceElevationNegative: '#eeeeeeff',
+        backgroundSurfaceElevation0: '#f6f6f6ff',
+        backgroundSurfaceElevation1: '#ffffffff',
+        backgroundSurfaceElevation2: '#f6f6f6ff',
+        backgroundSurfaceElevation3: '#ffffffff',
+    },
+    dark: {
+        backgroundSurfaceElevationNegative: '#000000ff',
+        backgroundSurfaceElevation0: '#0a0a0aff',
+        backgroundSurfaceElevation1: '#161716ff',
+        backgroundSurfaceElevation2: '#1c1e1cff',
+        backgroundSurfaceElevation3: '#242524ff',
+    },
+} as const;
+
+export type BackgroundElevationColor = keyof typeof backgroundElevationColors.standard;
+
+export const mapElevationToBackground: Record<Elevation, BackgroundElevationColor> = {
+    '-1': 'backgroundSurfaceElevationNegative', // For example left menu is negative elevation
+    0: 'backgroundSurfaceElevation0',
+    1: 'backgroundSurfaceElevation1',
+    2: 'backgroundSurfaceElevation2',
+    3: 'backgroundSurfaceElevation3',
+};
 
 export const colorVariants = {
     standard: {
@@ -66,8 +95,7 @@ export const colorVariants = {
         borderSecondary: '#00854dff',
         borderAlertRed: '#cd4949ff',
         borderSubtleInverted: '#ffffff99',
-        ...standardBackgroundElevationColors,
-        ...standardSkeletonColors,
+        ...backgroundElevationColors.standard,
     },
     dark: {
         transparent: '#00000000',
@@ -130,8 +158,7 @@ export const colorVariants = {
         borderSecondary: '#2fbc81ff',
         borderAlertRed: '#ac3e3eff',
         borderSubtleInverted: '#00000099',
-        ...darkBackgroundElevationColors,
-        ...darkSkeletonColors,
+        ...backgroundElevationColors.dark,
     },
 } as const;
 
