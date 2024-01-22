@@ -1,3 +1,5 @@
+import { useSelector } from 'react-redux';
+
 import { useNavigation } from '@react-navigation/native';
 
 import {
@@ -7,8 +9,10 @@ import {
     StackNavigationProps,
 } from '@suite-native/navigation';
 import { IconButton } from '@suite-native/atoms';
+import { selectIsPortfolioTrackerDevice } from '@suite-common/wallet-core';
 
 export const AddAccountButton = () => {
+    const isSelectedDevicePortfolioTracker = useSelector(selectIsPortfolioTrackerDevice);
     const navigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AccountsImport>>();
 
@@ -18,10 +22,14 @@ export const AddAccountButton = () => {
         });
     };
 
+    const navigateToAddCoinAccount = () => navigation.navigate(RootStackRoutes.AddCoinAccountStack);
+
     return (
         <IconButton
             iconName="plus"
-            onPress={navigateToImportScreen}
+            onPress={
+                isSelectedDevicePortfolioTracker ? navigateToImportScreen : navigateToAddCoinAccount
+            }
             colorScheme="tertiaryElevation0"
             size="medium"
         />

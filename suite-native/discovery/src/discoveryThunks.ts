@@ -11,12 +11,16 @@ import {
     removeDiscovery,
     getAvailableCardanoDerivationsThunk,
     selectDeviceByState,
+    selectDeviceAccountByDescriptorAndNetworkSymbol,
+    selectDevice,
+    LIMIT,
+    selectDeviceAccountsForNetworkSymbolAndAccountType,
 } from '@suite-common/wallet-core';
 import { selectIsAccountAlreadyDiscovered } from '@suite-native/accounts';
 import TrezorConnect from '@trezor/connect';
-import { DiscoveryItem } from '@suite-common/wallet-types';
+import { Account, DiscoveryItem } from '@suite-common/wallet-types';
 import { getDerivationType } from '@suite-common/wallet-utils';
-import { Network, NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
+import { AccountType, Network, NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import { requestDeviceAccess } from '@suite-native/device-mutex';
 import { analytics, EventType } from '@suite-native/analytics';
@@ -31,6 +35,8 @@ import {
 } from './discoveryConfigSlice';
 
 const DISCOVERY_DEFAULT_BATCH_SIZE = 2;
+
+export const NORMAL_ACCOUNT_TYPE: AccountType = 'normal';
 
 const DISCOVERY_BATCH_SIZE_PER_COIN: Partial<Record<NetworkSymbol, number>> = {
     bch: 1,
@@ -98,6 +104,62 @@ const getAccountInfoDetailsLevel = (coin: NetworkSymbol) => {
     return { details: 'tokenBalances' } as const;
 };
 
+const getCardanoSupportedAccountTypesThunk = createThunk(
+    `${DISCOVERY_MODULE_PREFIX}/addAccountsByDescriptorThunk`,
+    async (
+        {
+            deviceState,
+        }: {
+            deviceState: string;
+        },
+        { dispatch, getState },
+    ) => {
+        const device = selectDevice(getState());
+        if (!device) {
+            return undefined;
+        }
+        const availableCardanoDerivationsResponse = await requestDeviceAccess(() =>
+            dispatch(getAvailableCardanoDerivationsThunk({ deviceState, device })).unwrap(),
+        );
+
+        if (availableCardanoDerivationsResponse.success) {
+            return availableCardanoDerivationsResponse.payload;
+        }
+    },
+);
+
+const addAccountsByDescriptorThunk = createThunk(
+    `${DISCOVERY_MODULE_PREFIX}/addAccountsByDescriptorThunk`,
+    async (
+        {
+            deviceState,
+            bundleItem,
+        }: {
+            deviceState: string;
+            bundleItem: DiscoveryDescriptorItem;
+        },
+        { dispatch },
+    ) => {
+        const { success, payload: accountInfo } = await TrezorConnect.getAccountInfo({
+            coin: bundleItem.coin,
+            descriptor: bundleItem.descriptor,
+            useEmptyPassphrase: true,
+            skipFinalReload: true,
+            ...getAccountInfoDetailsLevel(bundleItem.coin),
+        });
+
+        if (success) {
+            dispatch(
+                accountsActions.createIndexLabeledAccount({
+                    discoveryItem: bundleItem,
+                    deviceState,
+                    accountInfo,
+                }),
+            );
+        }
+    },
+);
+
 const discoverAccountsByDescriptorThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/discoverAccountsByDescriptorThunk`,
     async (
@@ -147,6 +209,75 @@ const discoverAccountsByDescriptorThunk = createThunk(
     },
 );
 
+export const addAndDiscoverNetworkAccountThunk = createThunk(
+    `${DISCOVERY_MODULE_PREFIX}/addAndDiscoverNetworkAccountThunk`,
+    async (
+        {
+            network,
+            accountType,
+            deviceState,
+        }: {
+            network: Network;
+            accountType: AccountType;
+            deviceState: string;
+        },
+        { dispatch, getState },
+    ): Promise<Account | undefined> => {
+        const accounts = selectDeviceAccountsForNetworkSymbolAndAccountType(
+            getState(),
+            network.symbol,
+            accountType,
+        );
+
+        const index = accounts.length + 1;
+
+        if (index > LIMIT) {
+            return undefined;
+        }
+
+        const accountPath = network.bip43Path.replace('i', index.toString());
+
+        // Take exclusive access to the device and hold it until is the fetching of the descriptors done.
+        const deviceAccessResponse = await requestDeviceAccess(fetchBundleDescriptors, [
+            {
+                path: accountPath,
+                coin: network.symbol,
+                index,
+                accountType,
+                networkType: network.networkType,
+                derivationType: getDerivationType(accountType),
+                suppressBackupWarning: true,
+                skipFinalReload: true,
+            },
+        ]);
+
+        if (!deviceAccessResponse.success) {
+            return undefined;
+        }
+
+        if (deviceAccessResponse.payload.length < 1) {
+            return undefined;
+        }
+
+        const descriptor = deviceAccessResponse.payload[0];
+
+        await dispatch(
+            addAccountsByDescriptorThunk({
+                bundleItem: descriptor,
+                deviceState,
+            }),
+        ).unwrap();
+
+        const account = selectDeviceAccountByDescriptorAndNetworkSymbol(
+            getState(),
+            descriptor.descriptor,
+            network.symbol,
+        );
+
+        return account ?? undefined;
+    },
+);
+
 const discoverNetworkBatchThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/discoverNetworkBatchThunk`,
     async (
@@ -168,7 +299,7 @@ const discoverNetworkBatchThunk = createThunk(
             return;
         }
 
-        const accountType = network.accountType || 'normal';
+        const accountType = network.accountType || NORMAL_ACCOUNT_TYPE;
 
         const lastDiscoveredAccountIndex = (round - 1) * batchSize;
 
@@ -270,13 +401,13 @@ export const createDescriptorPreloadedDiscoveryThunk = createThunk(
         const supportedNetworksSymbols = supportedNetworks.map(network => network.symbol);
         const discoveryNetworksTotalCount = supportedNetworksSymbols.length;
 
-        let availableCardanoDerivationsResponse;
+        let availableCardanoDerivations: ('normal' | 'legacy' | 'ledger')[] | undefined;
         if (supportedNetworks.some(network => network.networkType === 'cardano')) {
-            availableCardanoDerivationsResponse = await requestDeviceAccess(() =>
-                dispatch(getAvailableCardanoDerivationsThunk({ deviceState, device })).unwrap(),
-            );
-
-            if (!availableCardanoDerivationsResponse.success) return false;
+            availableCardanoDerivations = await dispatch(
+                getCardanoSupportedAccountTypesThunk({
+                    deviceState,
+                }),
+            ).unwrap();
         }
 
         dispatch(
@@ -289,7 +420,7 @@ export const createDescriptorPreloadedDiscoveryThunk = createThunk(
                 bundleSize: 0,
                 loaded: 0,
                 failed: [],
-                availableCardanoDerivations: availableCardanoDerivationsResponse?.payload,
+                availableCardanoDerivations,
                 networks: supportedNetworksSymbols,
             }),
         );

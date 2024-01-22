@@ -15,6 +15,7 @@ import {
     DevUtilsStackRoutes,
     OnboardingStackRoutes,
     ConnectDeviceStackRoutes,
+    AddCoinAccountStackRoutes,
 } from './routes';
 
 type ReceiveAccountsParams = {
@@ -82,6 +83,10 @@ export type AccountsImportStackParamList = {
     };
 };
 
+export type AddCoinAccountStackParamList = {
+    [AddCoinAccountStackRoutes.AddCoinAccount]: undefined;
+};
+
 export type ConnectDeviceStackParamList = {
     [ConnectDeviceStackRoutes.ConnectAndUnlockDevice]: undefined;
     [ConnectDeviceStackRoutes.PinMatrix]: undefined;
@@ -106,4 +111,5 @@ export type RootStackParamList = {
         tokenContract?: TokenAddress;
     };
     [RootStackRoutes.DeviceInfo]: undefined;
+    [RootStackRoutes.AddCoinAccountStack]: undefined;
 };

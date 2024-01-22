@@ -7305,6 +7305,7 @@ __metadata:
     "@suite-native/message-system": "workspace:*"
     "@suite-native/module-accounts-import": "workspace:*"
     "@suite-native/module-accounts-management": "workspace:*"
+    "@suite-native/module-add-accounts": "workspace:*"
     "@suite-native/module-connect-device": "workspace:*"
     "@suite-native/module-dev-utils": "workspace:*"
     "@suite-native/module-home": "workspace:*"
@@ -7556,6 +7557,7 @@ __metadata:
     "@suite-native/device-mutex": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
+    proxy-memoize: "npm:2.0.2"
     react: "npm:18.2.0"
     react-redux: "npm:8.0.7"
   languageName: unknown
@@ -7837,6 +7839,31 @@ __metadata:
     react-native: "npm:0.73.2"
     react-native-reanimated: "npm:3.7.0-nightly-20240101-9d365ae7b"
     react-redux: "npm:8.0.7"
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/module-add-accounts@workspace:*, @suite-native/module-add-accounts@workspace:suite-native/module-add-accounts":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/module-add-accounts@workspace:suite-native/module-add-accounts"
+  dependencies:
+    "@mobily/ts-belt": "npm:^3.13.1"
+    "@react-navigation/native": "npm:6.1.9"
+    "@react-navigation/native-stack": "npm:6.9.17"
+    "@reduxjs/toolkit": "npm:1.9.5"
+    "@suite-common/suite-types": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@suite-native/accounts": "workspace:*"
+    "@suite-native/alerts": "workspace:*"
+    "@suite-native/atoms": "workspace:*"
+    "@suite-native/discovery": "workspace:*"
+    "@suite-native/intl": "workspace:*"
+    "@suite-native/link": "workspace:*"
+    "@suite-native/navigation": "workspace:*"
+    react: "npm:18.2.0"
+    react-redux: "npm:8.0.7"
+    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 

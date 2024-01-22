@@ -1,11 +1,11 @@
 import { isAnyOf } from '@reduxjs/toolkit';
-import { A, G, pipe } from '@mobily/ts-belt';
+import { A, D, G, pipe } from '@mobily/ts-belt';
 import { memoize, memoizeWithArgs } from 'proxy-memoize';
 
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { enhanceHistory, isTestnet, isUtxoBased } from '@suite-common/wallet-utils';
 import { Account, AccountKey } from '@suite-common/wallet-types';
-import { networks, NetworkSymbol } from '@suite-common/wallet-config';
+import { AccountType, networks, NetworkSymbol } from '@suite-common/wallet-config';
 
 import { accountsActions } from './accountsActions';
 import { formattedAccountTypeMap } from './constants';
@@ -138,14 +138,15 @@ export const prepareAccountsReducer = createReducerWithExtraDeps(
 
 export const selectAccounts = (state: AccountsRootState) => state.wallet.accounts;
 
-export const selectAccountsByDeviceState = (
-    state: AccountsRootState,
-    deviceState: string,
-): Account[] =>
-    pipe(
-        selectAccounts(state),
-        A.filter(account => account.deviceState === deviceState),
-    ) as Account[];
+export const selectAccountsByDeviceState = memoizeWithArgs(
+    (state: AccountsRootState, deviceState: string): Account[] =>
+        pipe(
+            selectAccounts(state),
+            A.filter(account => account.deviceState === deviceState),
+        ) as Account[],
+    // cache up to 3 devices to make sure it works correctly
+    { size: 3 },
+);
 
 export const selectDeviceAccounts = (state: AccountsRootState & DeviceRootState) => {
     const device = selectDevice(state);
@@ -154,6 +155,22 @@ export const selectDeviceAccounts = (state: AccountsRootState & DeviceRootState)
 
     return selectAccountsByDeviceState(state, device.state);
 };
+
+export const selectDeviceAccountsForNetworkSymbolAndAccountType = memoizeWithArgs(
+    (
+        state: AccountsRootState & DeviceRootState,
+        networkSymbol: NetworkSymbol,
+        accountType: AccountType,
+    ) => {
+        const accounts = selectDeviceAccounts(state);
+
+        return accounts.filter(
+            account => account.symbol === networkSymbol && account.accountType === accountType,
+        );
+    },
+    // memoize data for every network
+    { size: D.keys(networks).length },
+);
 
 export const selectDeviceAccountsLengthPerNetwork = (state: AccountsRootState & DeviceRootState) =>
     pipe(

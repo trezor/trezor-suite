@@ -153,6 +153,25 @@ export const en = {
             confirmButton: 'Got it',
         },
     },
+    moduleAddAccounts: {
+        addCoinAccountScreen: {
+            title: 'Add new',
+        },
+        alerts: {
+            tooManyAccounts: {
+                title: 'You have reached maximum number of accounts',
+                description: 'You can create up to 10 accounts of a type for each coin.',
+                actionPrimary: 'Close',
+            },
+            anotherEmptyAccount: {
+                title: 'Can’t create another fresh account',
+                description: 'The last account you created for this coin has no transactions yet.',
+                actionPrimary: 'Close',
+                actionSecondary: 'Learn more',
+                actionSecondaryUrl: 'https://trezor.io/learn/a/multiple-accounts-in-trezor-suite',
+            },
+        },
+    },
     moduleConnectDevice: {
         connectAndUnlockScreen: {
             title: 'Connect & unlock\nyour Trezor',

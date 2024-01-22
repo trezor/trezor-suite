@@ -124,7 +124,7 @@ const selectAccountTransactionsWithTokensWithFiatRates = memoizeWithArgs(
             A.map(transaction => ({
                 ...transaction,
                 tokens: pipe(
-                    transaction.tokens,
+                    transaction?.tokens ?? [],
                     A.filter(isNotZeroAmountTranfer),
                     A.filter(token =>
                         selectEthereumTokenHasFiatRates(

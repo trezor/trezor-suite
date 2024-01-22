@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { pipe } from '@mobily/ts-belt';
+import { memoizeWithArgs } from 'proxy-memoize';
 
 import {
     DeviceRootState,
@@ -71,17 +72,18 @@ export const selectDisabledDiscoveryNetworkSymbolsForDevelopment = (
     state: DiscoveryConfigSliceRootState,
 ) => state.discoveryConfig.disabledDiscoveryNetworkSymbolsForDevelopment;
 
-export const selectDiscoverySupportedNetworks = (
-    state: DeviceRootState,
-    areTestnetsEnabled: boolean,
-) =>
-    pipe(
-        selectDeviceSupportedNetworks(state),
-        networkSymbols => filterTestnetNetworks(networkSymbols, areTestnetsEnabled),
-        filterUnavailableNetworks,
-        filterBlacklistedNetworks,
-        sortNetworks,
-    );
+export const selectDiscoverySupportedNetworks = memoizeWithArgs(
+    (state: DeviceRootState, areTestnetsEnabled: boolean) =>
+        pipe(
+            selectDeviceSupportedNetworks(state),
+            networkSymbols => filterTestnetNetworks(networkSymbols, areTestnetsEnabled),
+            filterUnavailableNetworks,
+            filterBlacklistedNetworks,
+            sortNetworks,
+        ),
+    // for all areTestnetsEnabled states
+    { size: 2 },
+);
 
 export const {
     toggleAreTestnetsEnabled,

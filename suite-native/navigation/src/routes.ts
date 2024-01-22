@@ -9,6 +9,7 @@ export enum RootStackRoutes {
     TransactionDetail = 'TransactionDetail',
     ReceiveModal = 'ReceiveModal',
     DeviceInfo = 'DeviceInfo',
+    AddCoinAccountStack = 'AddCoinAccountStack',
 }
 
 export enum AppTabsRoutes {
@@ -55,6 +56,10 @@ export enum AccountsStackRoutes {
 
 export enum ReceiveStackRoutes {
     ReceiveAccounts = 'ReceiveAccounts',
+}
+
+export enum AddCoinAccountStackRoutes {
+    AddCoinAccount = 'AddCoinAccount',
 }
 
 export enum SettingsStackRoutes {
