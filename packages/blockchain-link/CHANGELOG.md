@@ -1,3 +1,11 @@
+# 2.1.22
+
+-   fix(suite): subscribe to Solana token accounts as well (b2f85ac9e)
+-   fix(suite): re-enable Solana account subscriptions (still without token accounts support) (e05f8c9ed)
+-   fix(suite): fix subscription return values (149903f8e)
+-   fix(blockchain-link): no throw from ws.close (7e6e79b1c)
+-   chore: bump `ws` to 8.16.0 (bd1e5ec81)
+
 # 2.1.21
 
 -   fix(blockchain-link): fix solana txs when sending to associated token account (5cb682078)
