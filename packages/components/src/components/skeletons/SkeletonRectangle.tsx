@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components';
 import { SkeletonBaseProps } from './types';
 import { getValue, shimmerEffect } from './utils';
-import { Elevation, mapElevationToSkeletonBackground } from '@trezor/theme';
+import { Elevation, mapElevationToBackground } from '@trezor/theme';
 import { useElevation } from '../ElevationContext/ElevationContext';
 
 export type SkeletonRectangleProps = SkeletonBaseProps & {
@@ -14,7 +14,7 @@ const StyledSkeletonRectangle = styled.div<SkeletonRectangleProps & { elevation:
     width: ${({ width }) => getValue(width) ?? '80px'};
     height: ${({ height }) => getValue(height) ?? '20px'};
     background: ${({ background, theme, elevation }) =>
-        background ?? theme[mapElevationToSkeletonBackground[elevation]]};
+        background ?? theme[mapElevationToBackground[elevation]]};
     border-radius: ${({ borderRadius }) => getValue(borderRadius) ?? '4px'};
     background-size: 200%;
 
