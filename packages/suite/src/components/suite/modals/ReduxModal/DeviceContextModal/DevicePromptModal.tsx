@@ -17,7 +17,6 @@ import { useDevice } from 'src/hooks/suite';
 import { useModalTarget } from 'src/support/suite/ModalContext';
 import { ModalEnvironment } from '../../ModalEnvironment';
 import { Modal } from '../../Modal/Modal';
-import { AbortButton } from '../../AbortButton';
 
 const StyledTrezorModal = styled(TrezorModal)`
     ${Modal.Header} {
@@ -76,10 +75,10 @@ const DevicePromptModalRenderer = ({
                             deviceModelInternal={deviceModelInternal}
                             deviceUnitColor={device?.features?.unit_color}
                             isConfirmed={isConfirmed}
+                            onCancel={isActionAbortable ? onAbort : undefined}
                         />
                     )
                 }
-                headerComponent={isActionAbortable ? <AbortButton onAbort={onAbort} /> : undefined}
                 {...rest}
             />
         </ModalEnvironment>
