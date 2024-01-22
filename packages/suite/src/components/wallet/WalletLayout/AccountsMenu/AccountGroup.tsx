@@ -20,10 +20,11 @@ const ChevronContainer = styled.div`
     width: 30px;
 `;
 
-const ChevronIcon = styled(Icon)`
+const ChevronIcon = styled(Icon)<{ isActive: boolean }>`
     padding: ${spacingsPx.sm};
     border-radius: 50%;
     transition: background 0.2s;
+    transform: ${({ isActive }) => (isActive ? 'rotate(180deg)' : 'rotate(0)')};
 `;
 
 const Header = styled.header<{ isOpen: boolean; onClick?: () => void }>`
@@ -80,7 +81,6 @@ export const AccountGroup = forwardRef(
         const [isOpen, setIsOpen] = useState(hasBalance || keepOpen);
         const [previouslyOpen, setPreviouslyOpen] = useState(isOpen); // used to follow props changes without unnecessary rerenders
         const [previouslyHasBalance, setPreviouslyHasBalance] = useState(hasBalance); // used to follow props changes without unnecessary rerenders
-        const [animatedIcon, setAnimatedIcon] = useState(false);
 
         if (keepOpen && !previouslyOpen) {
             setPreviouslyOpen(true);
@@ -94,7 +94,6 @@ export const AccountGroup = forwardRef(
 
         const onClick = () => {
             setIsOpen(!isOpen);
-            setAnimatedIcon(true);
             if (isOpen) {
                 setPreviouslyOpen(false);
             }
@@ -116,7 +115,6 @@ export const AccountGroup = forwardRef(
                                 {!keepOpen && (
                                     <ChevronIcon
                                         data-test="@account-menu/arrow"
-                                        canAnimate={animatedIcon}
                                         isActive={isOpen}
                                         size={16}
                                         color={theme.iconSubdued}
