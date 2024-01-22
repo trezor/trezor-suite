@@ -5,6 +5,7 @@ import { HELP_CENTER_LABELING } from '@trezor/urls';
 import { ActionColumn, SectionItem, TextColumn, Translation } from 'src/components/suite';
 import { useSelector, useDispatch, useDevice } from 'src/hooks/suite';
 import * as metadataActions from 'src/actions/suite/metadataActions';
+import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
 import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 
@@ -19,7 +20,7 @@ export const Labeling = () => {
         if (metadata.enabled) {
             dispatch(metadataActions.disableMetadata());
         } else {
-            dispatch(metadataActions.init(true));
+            dispatch(metadataLabelingActions.init(true));
         }
 
         analytics.report({

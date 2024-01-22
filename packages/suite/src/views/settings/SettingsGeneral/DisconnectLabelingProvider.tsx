@@ -8,7 +8,7 @@ import {
     Translation,
 } from 'src/components/suite';
 import { useSelector, useDispatch } from 'src/hooks/suite';
-import { disconnectProvider } from 'src/actions/suite/metadataActions';
+import { disconnectProvider } from 'src/actions/suite/metadataProviderActions';
 import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { selectSelectedProviderForLabels } from 'src/reducers/suite/metadataReducer';

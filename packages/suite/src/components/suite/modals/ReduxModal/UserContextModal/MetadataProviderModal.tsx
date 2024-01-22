@@ -4,7 +4,7 @@ import { P, Button, variables } from '@trezor/components';
 
 import { Translation, Modal } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
-import { connectProvider } from 'src/actions/suite/metadataActions';
+import { connectProvider } from 'src/actions/suite/metadataProviderActions';
 import type { Deferred } from '@trezor/utils';
 import { MetadataProviderType } from 'src/types/suite/metadata';
 import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
