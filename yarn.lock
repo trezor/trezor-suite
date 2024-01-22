@@ -7235,6 +7235,7 @@ __metadata:
     "@suite-native/intl": "workspace:*"
     "@suite-native/link": "workspace:*"
     "@suite-native/navigation": "workspace:*"
+    "@suite-native/passphrase": "workspace:*"
     "@suite-native/theme": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/styles": "workspace:*"
@@ -7836,6 +7837,21 @@ __metadata:
     react-native-reanimated: "npm:3.7.0-nightly-20240101-9d365ae7b"
     react-native-safe-area-context: "npm:^4.5.0"
     react-redux: "npm:8.0.7"
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/passphrase@workspace:*, @suite-native/passphrase@workspace:suite-native/passphrase":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/passphrase@workspace:suite-native/passphrase"
+  dependencies:
+    "@suite-native/atoms": "workspace:*"
+    "@suite-native/forms": "workspace:*"
+    "@suite-native/intl": "workspace:*"
+    "@trezor/styles": "workspace:*"
+    "@trezor/validation": "workspace:*"
+    jotai: "npm:1.9.1"
+    react: "npm:18.2.0"
+    react-native: "npm:0.71.8"
   languageName: unknown
   linkType: soft
 
@@ -9239,6 +9255,7 @@ __metadata:
     "@suite-native/module-settings": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@suite-native/notifications": "workspace:*"
+    "@suite-native/passphrase": "workspace:*"
     "@suite-native/receive": "workspace:*"
     "@suite-native/state": "workspace:*"
     "@suite-native/storage": "workspace:*"

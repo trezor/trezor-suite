@@ -417,6 +417,7 @@ export const en = {
         deviceButtons: {
             eject: 'Eject',
             deviceInfo: 'Device info',
+            addHiddenWallet: 'Add hidden wallet',
         },
         deviceList: {
             sectionTitle: 'Open',
@@ -465,6 +466,11 @@ export const en = {
         retrievingData: 'Retrieving data...',
         retrievengTakesLongerThanExpected:
             'Retrieving balances takes longer than usual. \n It may be caused by unstable internet connection.',
+    },
+    passphrase: {
+        modal: {
+            enterWallet: 'Enter passphrase',
+        },
     },
 };
 

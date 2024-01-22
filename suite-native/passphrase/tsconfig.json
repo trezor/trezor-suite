@@ -1,0 +1,11 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        { "path": "../atoms" },
+        { "path": "../forms" },
+        { "path": "../intl" },
+        { "path": "../../packages/styles" },
+        { "path": "../../packages/validation" }
+    ]
+}

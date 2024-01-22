@@ -15,6 +15,7 @@
         { "path": "../intl" },
         { "path": "../link" },
         { "path": "../navigation" },
+        { "path": "../passphrase" },
         { "path": "../theme" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/styles" },
