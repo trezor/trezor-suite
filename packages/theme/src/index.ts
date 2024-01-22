@@ -1,4 +1,3 @@
-export * from './background';
 export * from './borders';
 export * from './boxShadows';
 export * from './coinsColors';
@@ -8,7 +7,6 @@ export * from './fontFamilies';
 export * from './fontWeights';
 export * from './prepareTheme';
 export * from './sizes';
-export * from './skeleton';
 export * from './spacings';
 export * from './types';
 export * from './typography';
