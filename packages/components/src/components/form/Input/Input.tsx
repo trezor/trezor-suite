@@ -87,7 +87,7 @@ export interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 
     size?: InputSize;
     className?: string;
     dataTest?: string;
-    inputState?: InputState;
+    inputState?: InputState; // TODO: do we need this? we only have the error state right now
     innerAddonAlign?: innerAddonAlignment;
     hasBottomPadding?: boolean;
     /**

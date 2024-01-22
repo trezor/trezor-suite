@@ -24,7 +24,7 @@ export const FirmwareButtonsRow = ({
 }: FirmwareButtonsRowProps) => (
     <Row>
         {withCancelButton && onClose && (
-            <StyledFirmwareCloseButton variant="secondary" onClick={onClose} />
+            <StyledFirmwareCloseButton variant="tertiary" onClick={onClose} />
         )}
         {children}
     </Row>

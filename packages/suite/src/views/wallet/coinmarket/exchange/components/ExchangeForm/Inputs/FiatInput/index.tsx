@@ -22,16 +22,12 @@ const FiatInput = () => {
         formState: { errors },
         updateSendCryptoValue,
         setValue,
-        getValues,
     } = useCoinmarketExchangeFormContext();
 
     const { translationString } = useTranslation();
 
     const amountError = errors.outputs?.[0]?.amount;
     const fiatError = errors.outputs?.[0]?.fiat;
-
-    const { outputs } = getValues();
-    const fiat = outputs?.[0]?.fiat;
 
     const fiatInputRules = {
         validate: {
@@ -52,7 +48,7 @@ const FiatInput = () => {
                     clearErrors(FIAT_INPUT);
                 }
             }}
-            inputState={getInputState(fiatError || amountError, fiat)}
+            inputState={getInputState(fiatError || amountError)}
             name={FIAT_INPUT}
             maxLength={formInputsMaxLength.amount}
             rules={fiatInputRules}

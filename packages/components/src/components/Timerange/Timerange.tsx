@@ -646,7 +646,7 @@ const Timerange = (props: TimerangeProps) => {
                 />
             </Calendar>
             <Buttons>
-                <Button variant="secondary" onClick={onCancel} isFullWidth>
+                <Button variant="tertiary" onClick={onCancel} isFullWidth>
                     {props.ctaCancel}
                 </Button>
                 <Button

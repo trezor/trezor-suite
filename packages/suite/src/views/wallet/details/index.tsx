@@ -110,7 +110,7 @@ const Details = () => {
                     </>
                 )}
 
-                <StyledCard paddingType="large">
+                <StyledCard>
                     <Row>
                         <TextColumn
                             title={<Translation id="TR_ACCOUNT_DETAILS_TYPE_HEADER" />}
