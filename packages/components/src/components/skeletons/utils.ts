@@ -1,6 +1,6 @@
 import {
     Elevation,
-    mapElevationToSkeletonBackground,
+    mapElevationToBackground,
     mapElevationToSkeletonForeground,
 } from '@trezor/theme';
 import { css, keyframes } from 'styled-components';
@@ -20,7 +20,7 @@ export const shimmerEffect = css<{ elevation: Elevation }>`
         90deg,
         ${({ theme, elevation }) => {
             const start = theme[mapElevationToSkeletonForeground[elevation]];
-            const end = theme[mapElevationToSkeletonBackground[elevation]];
+            const end = theme[mapElevationToBackground[elevation]];
 
             return `${start}, ${end}, ${start}`;
         }}
