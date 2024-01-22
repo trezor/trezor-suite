@@ -9,6 +9,7 @@ import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { MAX_LABEL_LENGTH } from 'src/constants/suite/device';
 import { isAscii } from '@trezor/utils';
 import { spacingsPx } from '@trezor/theme';
+import { breakpointMediaQueries } from '@trezor/styles';
 
 const Container = styled.div<{ isVertical?: boolean }>`
     display: flex;
@@ -16,6 +17,10 @@ const Container = styled.div<{ isVertical?: boolean }>`
     align-items: center;
     gap: ${spacingsPx.sm};
     min-width: ${({ isVertical }) => isVertical && '200px'};
+
+    ${breakpointMediaQueries.below_sm} {
+        min-width: ${({ isVertical }) => isVertical && '100%'};
+    }
 `;
 
 interface ChangeDeviceLabelProps {
