@@ -74,7 +74,6 @@ export const CustomFee = <TFieldValues extends FormState>({
     const { maxFee, minFee } = feeInfo;
 
     const feePerUnitValue = getValues(FEE_PER_UNIT);
-    const feeLimitValue = getValues(FEE_LIMIT);
     const feeUnits = getFeeUnits(networkType);
     const estimatedFeeLimit = getValues('estimatedFeeLimit') || ETH_DEFAULT_GAS_LIMIT;
 
@@ -170,7 +169,7 @@ export const CustomFee = <TFieldValues extends FormState>({
                     <NumberInput
                         control={control}
                         label={<Translation id="TR_GAS_LIMIT" />}
-                        inputState={getInputState(feeLimitError, feeLimitValue)}
+                        inputState={getInputState(feeLimitError)}
                         name={FEE_LIMIT}
                         data-test={FEE_LIMIT}
                         onChange={changeFeeLimit}
@@ -190,7 +189,7 @@ export const CustomFee = <TFieldValues extends FormState>({
                 <NumberInput
                     control={control}
                     label={useFeeLimit ? <Translation id="TR_GAS_PRICE" /> : undefined}
-                    inputState={getInputState(feePerUnitError, feePerUnitValue)}
+                    inputState={getInputState(feePerUnitError)}
                     innerAddon={<Units>{feeUnits}</Units>}
                     name={FEE_PER_UNIT}
                     data-test={FEE_PER_UNIT}

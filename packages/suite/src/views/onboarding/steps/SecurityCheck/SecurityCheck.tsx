@@ -17,6 +17,7 @@ import { SecurityCheckFail } from './SecurityCheckFail';
 import { SecurityCheckButton } from './SecurityCheckButton';
 import { DeviceAuthenticity } from './DeviceAuthenticity';
 import { selectIsOnboadingActive } from 'src/reducers/onboarding/onboardingReducer';
+import { typography } from '@trezor/theme';
 
 const StyledCard = styled(CollapsibleOnboardingCard)`
     max-width: 840px;
@@ -37,9 +38,8 @@ const DeviceNameSection = styled.div`
 `;
 
 const DeviceName = styled.div`
-    font-size: ${variables.FONT_SIZE.H1};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ theme }) => theme.TYPE_GREEN};
+    ${typography.titleMedium}
+    color: ${({ theme }) => theme.backgroundPrimaryDefault};
     margin-top: 12px;
 `;
 
@@ -237,7 +237,7 @@ export const SecurityCheck = () => {
                         <SecurityChecklist items={checklistItems} />
                     </Content>
                     <Buttons>
-                        <StyledSecurityCheckButton variant="secondary" onClick={toggleView}>
+                        <StyledSecurityCheckButton variant="tertiary" onClick={toggleView}>
                             <Translation id={secondaryButtonText} />
                         </StyledSecurityCheckButton>
                         {initialized ? (
@@ -258,7 +258,7 @@ export const SecurityCheck = () => {
                                         <Icon
                                             size={12}
                                             icon="CLOCK_ACTIVE"
-                                            color={theme.TYPE_WHITE}
+                                            color={theme.iconOnPrimary}
                                         />
                                     </IconWrapper>
                                     <Translation id="TR_TAKES_N_MINUTES" />

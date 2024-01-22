@@ -117,7 +117,7 @@ const FiatAmount = ({
                         name="customFiatAmount"
                         size="small"
                         autoFocus
-                        inputState={customFiatAmountError ? 'error' : 'success'}
+                        inputState={customFiatAmountError && 'error'}
                         rules={rules}
                     />
                 )}

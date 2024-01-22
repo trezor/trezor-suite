@@ -12,6 +12,7 @@ import { BackendTypeSelect } from './BackendTypeSelect';
 import { TorModal, TorResult } from './TorModal';
 import type { Network } from 'src/types/wallet';
 import { selectTorState } from 'src/reducers/suite/suiteReducer';
+import { spacingsPx } from '@trezor/theme';
 
 const Wrapper = styled.div`
     display: flex;
@@ -47,18 +48,11 @@ const SaveButton = styled(Button)`
 `;
 
 const TransparentCollapsibleBox = styled(CollapsibleBox)`
-    background: transparent;
+    margin-top: ${spacingsPx.md};
+    background: ${({ theme }) => theme.backgroundSurfaceElevation2};
+
+    /* to be removed when elevation context is added to the CollapsibleBox */
     box-shadow: none;
-    margin-top: 16px;
-
-    > div:first-child {
-        padding: 12px 0;
-        border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
-
-        :hover {
-            background-color: ${({ theme }) => theme.BG_LIGHT_GREY};
-        }
-    }
 `;
 
 interface CustomBackendsProps {
@@ -112,7 +106,7 @@ export const CustomBackends = ({ network, onCancel }: CustomBackendsProps) => {
         }
     };
 
-    const defaultUrls = useDefaultUrls(coin);
+    const { defaultUrls, isLoading } = useDefaultUrls(coin);
     const editable = type !== 'default';
     const { ref: inputRef, ...inputField } = register(name, { validate });
 
@@ -148,7 +142,8 @@ export const CustomBackends = ({ network, onCancel }: CustomBackendsProps) => {
                     <BackendInput
                         key={url}
                         url={url}
-                        active={url === blockchain[coin]?.url}
+                        isActive={url === blockchain[coin]?.url}
+                        isLoading={isLoading}
                         onRemove={editable ? () => removeUrl(url) : undefined}
                     />
                 ))}

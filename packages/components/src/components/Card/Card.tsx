@@ -29,17 +29,17 @@ const Wrapper = styled.div<{ $elevation: Elevation; $paddingSize: number }>`
 
 const getPaddingSize = (paddingType?: PaddingType) => {
     switch (paddingType) {
+        case 'small':
+            return spacings.sm;
         case 'none':
             return 0;
-        case 'large':
-            return spacings.lg;
         case 'normal':
         default:
-            return spacings.sm;
+            return spacings.lg;
     }
 };
 
-type PaddingType = 'none' | 'normal' | 'large';
+type PaddingType = 'small' | 'none' | 'normal';
 
 export interface CardProps {
     paddingType?: PaddingType;

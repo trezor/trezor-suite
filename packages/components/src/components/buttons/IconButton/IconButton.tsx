@@ -4,6 +4,7 @@ import { Icon, IconType } from '../../assets/Icon/Icon';
 import { Spinner } from '../../loaders/Spinner/Spinner';
 import { ButtonContainer, ButtonProps } from '../Button/Button';
 import { ButtonVariant, getIconColor, getIconSize, getPadding } from '../buttonStyleUtils';
+import { Tooltip } from '../../Tooltip/Tooltip';
 
 const IconButtonContainer = styled(ButtonContainer)`
     position: relative;
@@ -23,14 +24,16 @@ export interface IconButtonProps
         'isFullWidth' | 'iconAlignment' | 'iconSize' | 'variant' | 'children'
     > {
     icon: IconType;
+    label?: React.ReactNode;
     iconSize?: number;
     variant?: Exclude<ButtonVariant, 'danger'>;
-    label?: React.ReactNode;
+    bottomLabel?: React.ReactNode;
 }
 
 export const IconButton = ({
     icon,
-    label,
+    label = null,
+    bottomLabel,
     variant = 'primary',
     size = 'large',
     iconSize,
@@ -51,16 +54,18 @@ export const IconButton = ({
     const Loader = <Spinner size={getIconSize(size)} />;
 
     return (
-        <IconButtonContainer
-            variant={variant}
-            size={size}
-            disabled={isDisabled || isLoading}
-            {...rest}
-        >
-            {!isLoading && icon && IconComponent}
-            {isLoading && Loader}
+        <Tooltip content={label} delay={[600, 0]} cursor="default">
+            <IconButtonContainer
+                variant={variant}
+                size={size}
+                disabled={isDisabled || isLoading}
+                {...rest}
+            >
+                {!isLoading && icon && IconComponent}
+                {isLoading && Loader}
 
-            {label && <Label isDisabled={isDisabled}>{label}</Label>}
-        </IconButtonContainer>
+                {bottomLabel && <Label isDisabled={isDisabled}>{bottomLabel}</Label>}
+            </IconButtonContainer>
+        </Tooltip>
     );
 };

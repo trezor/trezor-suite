@@ -102,7 +102,7 @@ export const Data = ({ close }: DataProps) => {
     return (
         <Wrapper>
             <Textarea
-                inputState={getInputState(asciiError, asciiValue)}
+                inputState={getInputState(asciiError)}
                 data-test={inputAsciiName}
                 defaultValue={asciiValue}
                 maxLength={formInputsMaxLength.ethData}
@@ -113,7 +113,7 @@ export const Data = ({ close }: DataProps) => {
             />
             <Space> = </Space>
             <Textarea
-                inputState={getInputState(hexError, hexValue)}
+                inputState={getInputState(hexError)}
                 data-test={inputHexName}
                 defaultValue={hexValue}
                 maxLength={formInputsMaxLength.ethData}

@@ -63,6 +63,7 @@ export const AddAccountButton = ({
             size="small"
             variant="tertiary"
             {...rest}
+            label={!tooltipMessage && <Translation id="TR_ADD_ACCOUNT" />}
         />
     );
 

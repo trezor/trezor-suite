@@ -1,8 +1,8 @@
 import { useCallback, useState } from 'react';
 import { checkAddressChecksum, toChecksumAddress } from 'web3-utils';
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 import { capitalizeFirstLetter } from '@trezor/utils';
-import { Input, Icon, Button, Tooltip, IconButton } from '@trezor/components';
+import { Input, Button, IconButton } from '@trezor/components';
 import { AddressLabeling, Translation, MetadataLabeling } from 'src/components/suite';
 import { scanQrRequest } from 'src/actions/wallet/sendFormActions';
 import { useDevice, useDispatch, useTranslation } from 'src/hooks/suite';
@@ -56,7 +56,6 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         AddressDeprecatedUrl | undefined
     >(undefined);
     const dispatch = useDispatch();
-    const theme = useTheme();
     const { device } = useDevice();
     const {
         account,
@@ -86,7 +85,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     const address = watch(inputName);
     const options = getDefaultValue('options', []);
     const broadcastEnabled = options.includes('broadcast');
-    const inputState = getInputState(addressError, addressValue);
+    const inputState = getInputState(addressError);
 
     const handleQrClick = useCallback(async () => {
         const uri = await dispatch(scanQrRequest());
@@ -261,11 +260,6 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                 label={
                     <Text>
                         <Translation id="RECIPIENT_ADDRESS" />
-                        {inputState === 'success' && (
-                            <Tooltip content={<Translation id="TR_ADDRESS_FORMAT" />}>
-                                <Icon icon="CHECK" size={18} color={theme.TYPE_GREEN} />
-                            </Tooltip>
-                        )}
                     </Text>
                 }
                 labelHoverAddon={
