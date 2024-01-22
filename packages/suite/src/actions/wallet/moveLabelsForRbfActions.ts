@@ -1,7 +1,7 @@
 import { selectLabelingDataForAccount } from '../../reducers/suite/metadataReducer';
 import { findChainedTransactions, findTransactions } from '@suite-common/wallet-utils';
 import { Dispatch, GetState } from 'src/types/suite';
-import * as metadataActions from 'src/actions/suite/metadataActions';
+import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
 import { AccountLabels, AccountOutputLabels } from '@suite-common/metadata-types';
 import { AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';
 
@@ -22,7 +22,7 @@ const deleteDanglingLabels = async ({
     for (const outputIndex of Object.keys(labels)) {
         // eslint-disable-next-line no-await-in-loop
         await dispatch(
-            metadataActions.addMetadata({
+            metadataLabelingActions.addMetadata({
                 type: 'outputLabel',
                 entityKey: accountKey,
                 txid,
@@ -52,7 +52,7 @@ export const copyLabelToNewTransaction = async ({
         const value = accountOutputLabels[outputIndex];
         // eslint-disable-next-line no-await-in-loop
         await dispatch(
-            metadataActions.addMetadata({
+            metadataLabelingActions.addMetadata({
                 type: 'outputLabel',
                 entityKey: accountKey,
                 txid: newTxid,

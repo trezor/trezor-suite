@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { Button, Icon, useTheme } from '@trezor/components';
 import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
-import { addMetadata, init, setEditing } from 'src/actions/suite/metadataActions';
+import { addMetadata, init, setEditing } from 'src/actions/suite/metadataLabelingActions';
 import { MetadataAddPayload } from 'src/types/suite/metadata';
 import { Translation } from 'src/components/suite';
 import { Props, ExtendedProps, DropdownMenuItem } from './definitions';

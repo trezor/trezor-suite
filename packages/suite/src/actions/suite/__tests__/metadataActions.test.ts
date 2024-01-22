@@ -14,6 +14,8 @@ import { extraDependencies } from 'src/support/extraDependencies';
 
 import { STORAGE, MODAL } from '../constants';
 import * as metadataActions from '../metadataActions';
+import * as metadataProviderActions from '../metadataProviderActions';
+import * as metadataLabelingActions from '../metadataLabelingActions';
 import * as fixtures from '../__fixtures__/metadataActions';
 
 const deviceReducer = prepareDeviceReducer(extraDependencies);
@@ -91,7 +93,9 @@ const initStore = (state: State) => {
             // automatically resolve modal decision
             switch (action.payload.type) {
                 case 'metadata-provider':
-                    await store.dispatch(metadataActions.connectProvider({ type: 'dropbox' }));
+                    await store.dispatch(
+                        metadataProviderActions.connectProvider({ type: 'dropbox' }),
+                    );
                     action.payload.decision.resolve(true);
                     break;
                 default:
@@ -150,7 +154,7 @@ describe('Metadata Actions', () => {
     fixtures.setDeviceMetadataKey.forEach(f => {
         it(`setDeviceMetadataKey - ${f.description}`, async () => {
             const store = initStore(getInitialState(f.initialState));
-            await store.dispatch(metadataActions.setDeviceMetadataKey(...f.params));
+            await store.dispatch(metadataLabelingActions.setDeviceMetadataKey(...f.params));
             if (!f.result) {
                 expect(store.getActions().length).toEqual(0);
             } else {
@@ -165,7 +169,7 @@ describe('Metadata Actions', () => {
             const store = initStore(getInitialState(f.initialState));
             const account = await store.dispatch(
                 // @ts-expect-error Account is not complete
-                metadataActions.setAccountMetadataKey(...f.params),
+                metadataLabelingActions.setAccountMetadataKey(...f.params),
             );
             expect(account).toMatchObject(f.result);
         });
@@ -176,7 +180,7 @@ describe('Metadata Actions', () => {
             // @ts-expect-error
             const store = initStore(getInitialState(f.initialState));
             // @ts-expect-error, params
-            await store.dispatch(metadataActions.addDeviceMetadata(f.params));
+            await store.dispatch(metadataLabelingActions.addDeviceMetadata(f.params));
             if (!f.result) {
                 expect(store.getActions().length).toEqual(0);
             }
@@ -188,7 +192,7 @@ describe('Metadata Actions', () => {
             // @ts-expect-error
             const store = initStore(getInitialState(f.initialState));
             // @ts-expect-error, params
-            await store.dispatch(metadataActions.addAccountMetadata(f.params));
+            await store.dispatch(metadataLabelingActions.addAccountMetadata(f.params));
 
             const result = store.getActions();
             if (!f.result) {
@@ -204,7 +208,7 @@ describe('Metadata Actions', () => {
             // @ts-expect-error
             const store = initStore(getInitialState(f.initialState));
             // @ts-expect-error, params
-            const result = await store.dispatch(metadataActions.connectProvider(f.params));
+            const result = await store.dispatch(metadataProviderActions.connectProvider(f.params));
 
             if (!f.result) {
                 expect(store.getActions().length).toEqual(0);
@@ -220,7 +224,7 @@ describe('Metadata Actions', () => {
             const store = initStore(getInitialState(f.initialState));
 
             // @ts-expect-error, params
-            const result = await store.dispatch(metadataActions.addMetadata(f.params));
+            const result = await store.dispatch(metadataLabelingActions.addMetadata(f.params));
 
             if (!f.result) {
                 expect(store.getActions().length).toEqual(0);
@@ -262,7 +266,7 @@ describe('Metadata Actions', () => {
         it(`initMetadata - ${f.description}`, async () => {
             // @ts-expect-error
             const store = initStore(getInitialState(f.initialState));
-            await store.dispatch(metadataActions.init(false));
+            await store.dispatch(metadataLabelingActions.init(false));
             if (!f.result) {
                 expect(store.getActions().length).toEqual(0);
             } else {
@@ -276,6 +280,17 @@ describe('Metadata Actions', () => {
             // @ts-expect-error
             const store = initStore(getInitialState(f.initialState));
             await store.dispatch(metadataActions.disposeMetadata(...f.params));
+            if (f.result) {
+                expect(store.getState()).toMatchObject(f.result);
+            }
+        });
+    });
+
+    fixtures.disposeMetadataKeys.forEach(f => {
+        it(`disposeMetadataKeys - ${f.description}`, async () => {
+            // @ts-expect-error
+            const store = initStore(getInitialState(f.initialState));
+            await store.dispatch(metadataActions.disposeMetadataKeys(...f.params));
             if (f.result) {
                 expect(store.getState()).toMatchObject(f.result);
             }

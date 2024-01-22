@@ -5,7 +5,8 @@ import TrezorConnect from '@trezor/connect';
 import { selectDevice } from '@suite-common/wallet-core';
 
 import { useSelector, useDispatch } from 'src/hooks/suite';
-import * as metadataActions from 'src/actions/suite/metadataActions';
+import * as metadataProviderActions from 'src/actions/suite/metadataProviderActions';
+import * as metadataPasswordsActions from 'src/actions/suite/metadataPasswordsActions';
 import type { PasswordManagerState } from 'src/types/suite/metadata';
 import { METADATA } from 'src/actions/suite/constants';
 import {
@@ -80,7 +81,7 @@ export const usePasswords = () => {
 
                 if (!selectedProvider) {
                     await dispatch(
-                        metadataActions.connectProvider({
+                        metadataProviderActions.connectProvider({
                             type: 'dropbox',
                             dataType: 'passwords',
                             clientId: METADATA.DROPBOX_PASSWORDS_CLIENT_ID,
@@ -89,7 +90,7 @@ export const usePasswords = () => {
                 }
 
                 setFetchingPasswords(true);
-                await dispatch(metadataActions.fetchPasswords(fname, encryptionKey));
+                await dispatch(metadataPasswordsActions.fetchPasswords(fname, encryptionKey));
                 setFetchingPasswords(false);
             })
             .finally(() => {
@@ -100,7 +101,7 @@ export const usePasswords = () => {
     const disconnect = () => {
         if (!selectedProvider) return;
         dispatch(
-            metadataActions.disconnectProvider({
+            metadataProviderActions.disconnectProvider({
                 clientId: selectedProvider.clientId,
                 dataType: 'passwords',
                 removeMetadata: false,

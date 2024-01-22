@@ -3,7 +3,7 @@ import { deviceActions } from '@suite-common/wallet-core';
 
 import { METADATA } from 'src/actions/suite/constants';
 
-import * as metadataActions from '../metadataActions';
+import * as metadataLabelingActions from '../metadataLabelingActions';
 
 const { getSuiteDevice } = testMocks;
 
@@ -14,7 +14,7 @@ type Fixture<T extends (...a: any) => any> = {
     result?: any;
 };
 
-const setDeviceMetadataKey: Fixture<(typeof metadataActions)['setDeviceMetadataKey']>[] = [
+const setDeviceMetadataKey: Fixture<(typeof metadataLabelingActions)['setDeviceMetadataKey']>[] = [
     {
         description: `Metadata not enabled`,
         params: [getSuiteDevice({ state: 'a' }), METADATA.ENCRYPTION_VERSION],
@@ -560,7 +560,7 @@ const disposeMetadata = [
                 selectedProvider: { labels: 'clientId' },
             },
         },
-        params: [],
+        params: [] as const,
         result: {
             metadata: {
                 providers: [
@@ -576,30 +576,15 @@ const disposeMetadata = [
             },
         },
     },
+];
+
+const disposeMetadataKeys = [
     {
         description: 'keys',
         initialState: {
             device: {
                 state: 'device-state',
                 metadata: { 1: { fileName: 'foo', aesKey: 'bar' } },
-            },
-            metadata: {
-                providers: [
-                    {
-                        type: 'dropbox',
-                        data: {
-                            'filename-123': {
-                                outputLabels: {
-                                    TXID: {
-                                        0: 'Foo',
-                                    },
-                                },
-                            },
-                        },
-                        clientId: 'clientId',
-                    },
-                ],
-                selectedProvider: { labels: 'clientId' },
             },
             accounts: [
                 {
@@ -614,7 +599,7 @@ const disposeMetadata = [
                 },
             ],
         },
-        params: [true],
+        params: [] as const,
         result: {
             device: { selectedDevice: { state: 'device-state', metadata: {} } },
             wallet: {
@@ -633,4 +618,5 @@ export {
     addMetadata,
     init,
     disposeMetadata,
+    disposeMetadataKeys,
 };

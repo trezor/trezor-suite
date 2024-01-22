@@ -29,7 +29,7 @@ import {
 import { cloneObject, getSynchronize } from '@trezor/utils';
 
 import * as modalActions from 'src/actions/suite/modalActions';
-import * as metadataActions from 'src/actions/suite/metadataActions';
+import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
 import { SEND } from 'src/actions/wallet/constants';
 import { Dispatch, GetState } from 'src/types/suite';
 import { Account } from 'src/types/wallet';
@@ -360,7 +360,7 @@ const pushTransaction =
                         const isLast = index === arr.length - 1;
 
                         synchronize(() =>
-                            dispatch(metadataActions.addAccountMetadata(output, isLast)),
+                            dispatch(metadataLabelingActions.addAccountMetadata(output, isLast)),
                         );
                     });
             }

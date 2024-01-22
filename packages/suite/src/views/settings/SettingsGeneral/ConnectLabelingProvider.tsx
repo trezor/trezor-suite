@@ -6,7 +6,7 @@ import {
     Translation,
 } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
-import * as metadataActions from 'src/actions/suite/metadataActions';
+import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
 import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 
@@ -27,7 +27,7 @@ export const ConnectLabelingProvider = () => {
             <ActionColumn>
                 <ActionButton
                     variant="secondary"
-                    onClick={() => dispatch(metadataActions.init(true))}
+                    onClick={() => dispatch(metadataLabelingActions.init(true))}
                     data-test="@settings/metadata/connect-provider-button"
                 >
                     <Translation id="TR_CONNECT" />

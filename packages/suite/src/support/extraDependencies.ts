@@ -16,6 +16,7 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 
 import { StorageLoadAction } from 'src/actions/suite/storageActions';
+import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
 import * as metadataActions from 'src/actions/suite/metadataActions';
 import * as cardanoStakingActions from 'src/actions/wallet/cardanoStakingActions';
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
@@ -46,8 +47,8 @@ export const extraDependencies: ExtraDependencies = {
     thunks: {
         cardanoValidatePendingTxOnBlock: cardanoStakingActions.validatePendingTxOnBlock,
         cardanoFetchTrezorPools: cardanoStakingActions.fetchTrezorPools,
-        initMetadata: metadataActions.init,
-        fetchAndSaveMetadata: metadataActions.fetchAndSaveMetadata,
+        initMetadata: metadataLabelingActions.init,
+        fetchAndSaveMetadata: metadataLabelingActions.fetchAndSaveMetadata,
     },
     selectors: {
         selectFeeInfo: (networkSymbol: NetworkSymbol) => (state: AppState) =>
