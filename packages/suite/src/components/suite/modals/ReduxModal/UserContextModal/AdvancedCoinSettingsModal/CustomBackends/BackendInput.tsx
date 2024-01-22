@@ -1,7 +1,7 @@
-import { Input, Tooltip } from '@trezor/components';
+import { Input, Spinner, Tooltip } from '@trezor/components';
 import { Translation, StatusLight } from 'src/components/suite';
 
-const InputAddon = (
+const ActiveStatus = (
     <Tooltip content={<Translation id="TR_ACTIVE" />}>
         <StatusLight status="ok" />
     </Tooltip>
@@ -9,21 +9,29 @@ const InputAddon = (
 
 type BackendInputProps = {
     url: string;
-    active: boolean;
+    isActive: boolean;
+    isLoading?: boolean;
     onRemove?: () => void;
 };
 
-export const BackendInput = ({ url, active, onRemove }: BackendInputProps) => {
-    const innerAddon = active ? InputAddon : undefined;
-    const showClearButton = onRemove ? 'hover' : undefined;
+export const BackendInput = ({ url, isActive, isLoading, onRemove }: BackendInputProps) => {
+    const getInnerAddon = () => {
+        if (isLoading) {
+            return <Spinner size={18} />;
+        }
+        if (isActive) {
+            return ActiveStatus;
+        }
+        return undefined;
+    };
 
     return (
         <Input
             value={url}
             isDisabled
-            showClearButton={showClearButton}
+            showClearButton={onRemove && 'hover'}
             onClear={onRemove}
-            innerAddon={innerAddon}
+            innerAddon={getInnerAddon()}
         />
     );
 };

@@ -11,4 +11,12 @@ export const IconButton: StoryObj<IconButtonProps> = {
         label: 'label',
         icon: 'ARROW_RIGHT_LONG',
     },
+    argTypes: {
+        label: {
+            type: 'string',
+        },
+        bottomLabel: {
+            type: 'string',
+        },
+    },
 };

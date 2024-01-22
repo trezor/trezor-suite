@@ -61,11 +61,6 @@ export const All: StoryObj = {
                     value="Input with warning"
                     dataTest="input-default-warning"
                 />
-                <Input
-                    inputState="success"
-                    value="Input with success"
-                    dataTest="input-default-success"
-                />
                 <Input isDisabled value="Disabled input" dataTest="input-default-disabled" />
                 <SubHeading>Monospace with button</SubHeading>
                 <Input
@@ -103,25 +98,6 @@ export const All: StoryObj = {
                     }
                 />
                 <Input
-                    inputState="success"
-                    value="Input label with success"
-                    dataTest="input-success-label"
-                    bottomText="bottom text"
-                    label={<Label>Label left</Label>}
-                    labelRight={<Label>Label right</Label>}
-                    labelHoverAddon={
-                        <Button
-                            variant="tertiary"
-                            icon="QR"
-                            onClick={() => {
-                                console.log('aaa');
-                            }}
-                        >
-                            Scan QR code
-                        </Button>
-                    }
-                />
-                <Input
                     isDisabled
                     value="Disabled input label"
                     dataTest="input-disabled-label"
@@ -133,12 +109,6 @@ export const All: StoryObj = {
                 <Heading>Textarea</Heading>
                 <SubHeading>Default</SubHeading>
                 <Textarea value="test value" />
-                <Textarea
-                    value="test value"
-                    inputState="success"
-                    label="Top label"
-                    bottomText="bottom text"
-                />
                 <Textarea
                     value="test value"
                     inputState="warning"

@@ -30,6 +30,14 @@ const Wrapper = styled.div<Pick<CollapsibleBoxProps, 'variant'>>`
         `}
 `;
 
+const IconWrapper = styled.div`
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    overflow: hidden;
+    transition: opacity 0.15s;
+`;
+
 const Header = styled.div<Pick<CollapsibleBoxProps, 'variant'>>`
     display: flex;
     justify-content: space-between;
@@ -42,17 +50,10 @@ const Header = styled.div<Pick<CollapsibleBoxProps, 'variant'>>`
     cursor: pointer;
 
     :hover {
-        svg {
+        ${IconWrapper} {
             opacity: 0.5;
         }
     }
-`;
-
-const IconWrapper = styled.div`
-    display: flex;
-    align-items: center;
-    margin-left: auto;
-    overflow: hidden;
 `;
 
 const IconLabel = styled.div`
@@ -80,6 +81,7 @@ const easingValues = motionEasing.transition.join(', ');
 const ANIMATION_DURATION = 0.4;
 const StyledIcon = styled(Icon)<{ isCollapsed?: boolean }>`
     transform: ${({ isCollapsed }) => (isCollapsed ? 'rotate(0deg)' : 'rotate(180deg)')};
+    /* to sync with the expand animation */
     transition: transform ${ANIMATION_DURATION}s cubic-bezier(${easingValues});
     transform-origin: center;
 `;
@@ -164,7 +166,13 @@ const CollapsibleBox: FC<CollapsibleBoxProps> & CollapsibleBoxSubcomponents = ({
                 initial={false} // Prevents animation on mount when expanded === false
                 variants={animationVariants}
                 animate={!isCollapsed ? 'expanded' : 'closed'}
-                transition={{ duration: ANIMATION_DURATION, ease: motionEasing.transition }}
+                transition={{
+                    duration: ANIMATION_DURATION,
+                    ease: motionEasing.transition,
+                    opacity: {
+                        ease: isCollapsed ? motionEasing.enter : motionEasing.exit,
+                    },
+                }}
                 data-test="@collapsible-box/body"
             >
                 <Content variant={variant}>{children}</Content>

@@ -28,7 +28,7 @@ export const Box: StoryObj = {
                 <StyledRow>
                     <Text>No state</Text>
                 </StyledRow>
-                <StyledRow state="success">
+                <StyledRow>
                     <Text>Success</Text>
                 </StyledRow>
                 <StyledRow state="error">

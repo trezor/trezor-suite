@@ -96,7 +96,6 @@ export const AddTokenModal = ({ onCancel }: AddTokenModalProps) => {
     };
     const getInputState = () => {
         if (error) return 'error';
-        if (contractAddress && !isFetching) return 'success';
         return undefined;
     };
     const handleAddTokenButtonClick = () => {

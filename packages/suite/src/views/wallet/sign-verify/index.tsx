@@ -156,9 +156,7 @@ const SignVerify = () => {
 
     const signatureProps = {
         label: translationString('TR_SIGNATURE'),
-        inputState: getInputState(formErrors.signature, formValues.signature) as ReturnType<
-            typeof getInputState
-        >,
+        inputState: getInputState(formErrors.signature) as ReturnType<typeof getInputState>,
         bottomText: signatureError,
         'data-test': '@sign-verify/signature',
         innerRef: signatureRef,
@@ -218,7 +216,7 @@ const SignVerify = () => {
                                     <Switch {...hexField} />
                                 </SwitchWrapper>
                             }
-                            inputState={getInputState(formErrors.message, formValues.message)}
+                            inputState={getInputState(formErrors.message)}
                             characterCount={{
                                 current: formValues.message?.length,
                                 max: MAX_LENGTH_MESSAGE,
@@ -238,7 +236,7 @@ const SignVerify = () => {
                                 label={<Translation id="TR_ADDRESS" />}
                                 account={selectedAccount.account}
                                 revealedAddresses={revealedAddresses}
-                                inputState={getInputState(formErrors.path, formValues.path)}
+                                inputState={getInputState(formErrors.path)}
                                 bottomText={pathError || null}
                                 data-test="@sign-verify/sign-address"
                                 {...pathField}
@@ -248,7 +246,7 @@ const SignVerify = () => {
                                 name="address"
                                 label={<Translation id="TR_ADDRESS" />}
                                 type="text"
-                                inputState={getInputState(formErrors.address, formValues.address)}
+                                inputState={getInputState(formErrors.address)}
                                 bottomText={addressError || null}
                                 data-test="@sign-verify/select-address"
                                 {...addressField}

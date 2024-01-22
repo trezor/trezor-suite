@@ -168,7 +168,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
     };
 
     return (
-        <Card paddingType="large">
+        <Card>
             <Row>
                 <Translation id="TR_COIN_CONTROL" />
                 <StyledSwitch isChecked={!!isCoinControlEnabled} onChange={toggleCoinControl} />

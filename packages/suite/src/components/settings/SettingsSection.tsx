@@ -78,7 +78,7 @@ export const SettingsSection = ({
                 )}
             </Header>
 
-            <StyledCard paddingType="large">{children}</StyledCard>
+            <Card>{children}</Card>
         </Wrapper>
     );
 };

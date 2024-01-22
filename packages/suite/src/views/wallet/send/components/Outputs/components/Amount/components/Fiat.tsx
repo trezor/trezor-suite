@@ -74,7 +74,7 @@ export const Fiat = ({ output, outputId }: FiatProps) => {
     const errorToDisplay = !error && fiatValue && amountError ? amountError : error;
 
     const isLowAnonymity = isLowAnonymityWarning(outputError);
-    const inputState = isLowAnonymity ? 'warning' : getInputState(errorToDisplay, fiatValue);
+    const inputState = isLowAnonymity ? 'warning' : getInputState(errorToDisplay);
     const bottomText = isLowAnonymity ? null : errorToDisplay?.message;
 
     const handleChange = useCallback(

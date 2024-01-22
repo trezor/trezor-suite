@@ -49,7 +49,7 @@ const MotionWelcome = styled(motion.div)`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background: ${({ theme }) => theme.BG_LIGHT_GREY};
+    background: ${({ theme }) => theme.backgroundSurfaceElevation0};
     display: flex;
     height: 100%;
     overflow: hidden;
@@ -78,13 +78,12 @@ const Content = styled.div`
     flex-direction: column;
     flex: 3;
     padding: 20px;
-    background-color: ${({ theme }) => theme.BG_GREY};
+    background-color: ${({ theme }) => theme.backgroundSurfaceElevation1};
     background-image: url(${resolveStaticPath(`images/svg/${SVG_IMAGES.ONBOARDING_WELCOME_BG}`)});
     background-repeat: no-repeat;
     background-position: center;
     background-attachment: local;
     background-size: 570px 570px;
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     align-items: center;
     overflow-y: auto;
 

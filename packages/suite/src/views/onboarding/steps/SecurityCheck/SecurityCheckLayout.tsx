@@ -11,7 +11,7 @@ const Wrapper = styled.div`
     gap: 24px;
     width: 100%;
 
-    @media only screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
+    @media only screen and (max-width: ${variables.SCREEN_SIZE.XL}) {
         grid-template-columns: 1fr;
         flex-direction: column;
     }

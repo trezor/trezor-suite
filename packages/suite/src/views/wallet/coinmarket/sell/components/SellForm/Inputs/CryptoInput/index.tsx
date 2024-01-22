@@ -50,7 +50,6 @@ const CryptoInput = () => {
         control,
         amountLimits,
         onCryptoAmountChange,
-        getValues,
         sellInfo,
         setValue,
         setAmountLimits,
@@ -70,7 +69,6 @@ const CryptoInput = () => {
     };
 
     const { tokens } = account;
-    const cryptoInputValue = getValues(CRYPTO_INPUT);
 
     const cryptoInputRules = {
         validate: {
@@ -92,7 +90,7 @@ const CryptoInput = () => {
             control={control}
             onChange={onCryptoAmountChange}
             defaultValue=""
-            inputState={getInputState(errors.cryptoInput, cryptoInputValue)}
+            inputState={getInputState(errors.cryptoInput)}
             name={CRYPTO_INPUT}
             maxLength={MAX_LENGTH.AMOUNT}
             rules={cryptoInputRules}

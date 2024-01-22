@@ -294,7 +294,7 @@ const SendSwapTransactionComponent = () => {
                                 <StyledInput
                                     value={customSlippage}
                                     size="small"
-                                    inputState={customSlippageError ? 'error' : 'success'}
+                                    inputState={customSlippageError && 'error'}
                                     name="CustomSlippage"
                                     data-test="CustomSlippage"
                                     onChange={changeCustomSlippage}
