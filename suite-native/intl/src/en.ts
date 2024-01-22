@@ -62,12 +62,29 @@ export const en = {
         },
         biometricsModal: {
             title: {
-                faceId: 'Enable FaceID',
-                fingerprint: 'Enable fingerprint',
-                touchId: 'Enable TouchID',
+                ios: {
+                    faceId: 'Enable FaceID',
+                    touchId: 'Enable TouchID',
+                },
+                android: {
+                    fingerprint: 'Enable fingerprint',
+                    facial: 'Enable facial recognition',
+                    combined: 'Enable biometrics',
+                },
                 unknown: 'Enable biometrics',
             },
-            description: 'Use biometrics verification \nto unlock the app.',
+            description: {
+                ios: {
+                    faceId: 'Use FaceID to unlock the app.',
+                    touchId: 'Use TouchID to unlock the app.',
+                },
+                android: {
+                    fingerprint: 'Use your fingerprint to unlock the app.',
+                    facial: 'Use facial recognition to unlock the app.',
+                    combined: 'Use facial recognition or fingerprint to unlock the app.',
+                },
+                unknown: 'Use biometrics to unlock the app.',
+            },
             button: {
                 later: 'I’ll do that later in Settings',
                 enable: 'Enable',
