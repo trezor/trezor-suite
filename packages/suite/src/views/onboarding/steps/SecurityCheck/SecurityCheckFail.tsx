@@ -97,9 +97,9 @@ export const SecurityCheckFail = ({ goBack }: SecurityCheckFailProps) => {
             <SecurityChecklist items={items} />
             <Buttons>
                 {goBack && (
-                    <SecurityCheckButton variant="secondary" onClick={goBack}>
+                    <StyledSecurityCheckButton variant="tertiary" onClick={goBack}>
                         <Translation id="TR_BACK" />
-                    </SecurityCheckButton>
+                    </StyledSecurityCheckButton>
                 )}
                 <StyledTrezorLink variant="nostyle" href={supportChatUrl}>
                     <StyledSecurityCheckButton>

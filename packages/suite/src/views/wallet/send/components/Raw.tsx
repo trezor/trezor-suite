@@ -57,7 +57,7 @@ export const Raw = ({ network }: RawProps) => {
     const inputName = 'rawTx';
     const inputValue = getValues(inputName) || '';
     const error = errors[inputName];
-    const inputState = getInputState(error, inputValue);
+    const inputState = getInputState(error);
     const prefix = network.networkType === 'ethereum' ? '0x' : undefined;
     const { ref: inputRef, ...inputField } = register(inputName, {
         required: translationString('RAW_TX_NOT_SET'),
@@ -81,7 +81,7 @@ export const Raw = ({ network }: RawProps) => {
     };
 
     return (
-        <StyledCard paddingType="large">
+        <StyledCard>
             <H3>
                 <Tooltip
                     addon={instance => (
@@ -109,7 +109,7 @@ export const Raw = ({ network }: RawProps) => {
                 {...inputField}
             />
 
-            <SendButton isDisabled={inputState !== 'success'} onClick={send}>
+            <SendButton isDisabled={inputState === 'error' || !inputValue} onClick={send}>
                 <Translation id="SEND_TRANSACTION" />
             </SendButton>
         </StyledCard>

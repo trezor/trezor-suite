@@ -68,7 +68,7 @@ export const Outputs = ({ disableAnim }: OutputsProps) => {
                             ease: motionEasing.transition,
                         }}
                     >
-                        <StyledCard paddingType="large">
+                        <StyledCard>
                             {output.type === 'opreturn' ? (
                                 <OpReturn outputId={index} />
                             ) : (
