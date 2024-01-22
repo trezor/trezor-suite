@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components';
 import { getValue, shimmerEffect } from './utils';
 import { SkeletonBaseProps } from './types';
-import { Elevation, mapElevationToSkeletonBackground } from '@trezor/theme';
+import { Elevation, mapElevationToBackground } from '@trezor/theme';
 import { useElevation } from '../ElevationContext/ElevationContext';
 
 export type SkeletonCircleProps = SkeletonBaseProps & {
@@ -15,7 +15,7 @@ const StyledSkeletonCircle = styled.div<SkeletonCircleProps & { elevation: Eleva
         border-radius: ${getValue(size) ?? '24px'};
     `}
     background: ${({ background, theme, elevation }) =>
-        background ?? theme[mapElevationToSkeletonBackground[elevation]]};
+        background ?? theme[mapElevationToBackground[elevation]]};
 
     background-size: 200%;
 
