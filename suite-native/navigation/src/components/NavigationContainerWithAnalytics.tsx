@@ -1,7 +1,6 @@
 import { useMemo, useRef, ReactNode } from 'react';
 
 import * as Sentry from '@sentry/react-native';
-
 import {
     NavigationContainer,
     useNavigationContainerRef,
