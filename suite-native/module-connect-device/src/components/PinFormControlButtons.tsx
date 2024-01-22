@@ -18,7 +18,7 @@ import { selectIsDeviceUnlocked } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { useOpenLink } from '@suite-native/link';
 
-import { PIN_FORM_MIN_LENGTH, PIN_HELP_URL } from '../constants/pinFormConstants';
+import { PIN_HELP_URL } from '../constants/pinFormConstants';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     ConnectDeviceStackParamList,
@@ -92,7 +92,7 @@ export const PinFormControlButtons = () => {
                 />
             )}
             <Box flex={1}>
-                <Button isDisabled={pinLength < PIN_FORM_MIN_LENGTH} onPress={onSubmit}>
+                <Button isDisabled={pinLength < 1} onPress={onSubmit}>
                     {translate('moduleConnectDevice.pinScreen.form.enterPin')}
                 </Button>
             </Box>

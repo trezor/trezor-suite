@@ -4,24 +4,16 @@ import { Modal, TextInput } from 'react-native';
 import { useSetAtom } from 'jotai';
 
 import { Form, TextInputField, useForm } from '@suite-native/forms';
-import { yup, formInputsMaxLength } from '@suite-common/validators';
+import {
+    passphraseFormSchema,
+    PassphraseFormValues,
+    formInputsMaxLength,
+} from '@suite-common/validators';
 import { Box, Button, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { useTranslate } from '@suite-native/intl';
 
 import { isPassphraseModalVisibleAtom } from './isPassphraseModalVisibleAtom';
-
-const PASSPHRASE_MIN_LENGTH = 1;
-
-const passphraseFormSchema = yup.object({
-    passphrase: yup
-        .string()
-        .required('Empty passphrase.')
-        .max(formInputsMaxLength.passphrase)
-        .min(PASSPHRASE_MIN_LENGTH),
-});
-
-type PassphraseFormValues = yup.InferType<typeof passphraseFormSchema>;
 
 const modalBackgroundOverlayStyle = prepareNativeStyle(utils => ({
     flex: 1,
