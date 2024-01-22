@@ -1,3 +1,10 @@
+# 1.0.12
+
+-   fix(blockchain-link-utils): support `multisigAuthority` in solana txs (dfd96d23b)
+-   fix(blockchain-link-utils): use `some` instead of `find` in solana tx type predcicates (1d58f980d)
+-   fix(blockchain-link-utils): parse solana transfers originating from exchanges (58b125fb2)
+-   fix(blockchain-link): correct import in solana using @trezor/ prefix (3a4895d6b)
+
 # 1.0.11
 
 -   fix(blockchain-link): gasPrice null fallback (34d612a06)
