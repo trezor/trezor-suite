@@ -1,8 +1,14 @@
 import styled, { css } from 'styled-components';
 import { IconName } from '@suite-common/icons';
 import { Icon } from '@suite-common/icons/src/webComponents';
-import { TranslationKey } from '@suite-common/intl-types';
-import { borders, spacingsPx } from '@trezor/theme';
+import { ExtendedMessageDescriptor, TranslationKey } from '@suite-common/intl-types';
+import {
+    Elevation,
+    borders,
+    mapElevationToBackground,
+    nextElevation,
+    spacingsPx,
+} from '@trezor/theme';
 import { getFocusShadowStyle } from '@trezor/components/src/utils/utils';
 import { Translation } from 'src/components/suite/Translation';
 import { Route } from '@suite-common/suite-types';
@@ -10,6 +16,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { MouseEvent } from 'react';
 import { selectRouteName } from 'src/reducers/suite/routerReducer';
+import { useElevation } from '@trezor/components';
 
 export const NavigationItemBase = styled.div.attrs(() => ({
     tabIndex: 0,
@@ -29,11 +36,13 @@ export const NavigationItemBase = styled.div.attrs(() => ({
     ${getFocusShadowStyle()}
 `;
 
-const Container = styled(NavigationItemBase)<Pick<NavigationItemProps, 'isActive'>>`
-    ${({ theme, isActive }) =>
+const Container = styled(NavigationItemBase)<
+    Pick<NavigationItemProps, 'isActive'> & { elevation: Elevation }
+>`
+    ${({ theme, isActive, elevation }) =>
         isActive
             ? css`
-                  background: ${theme.backgroundSurfaceElevation1};
+                  background: ${theme[mapElevationToBackground[nextElevation[elevation]]]};
                   box-shadow: ${theme.boxShadowBase};
                   color: ${theme.textDefault};
 
@@ -59,6 +68,7 @@ export interface NavigationItemProps {
     isActive?: boolean;
     dataTest?: string;
     className?: string;
+    values?: ExtendedMessageDescriptor['values'];
 }
 
 export const NavigationItem = ({
@@ -68,9 +78,10 @@ export const NavigationItem = ({
     isActive,
     dataTest,
     className,
+    values,
 }: NavigationItemProps) => {
     const activeRoute = useSelector(selectRouteName);
-
+    const { elevation } = useElevation();
     const dispatch = useDispatch();
 
     const handleClick = (e: MouseEvent) => {
@@ -87,12 +98,13 @@ export const NavigationItem = ({
         <Container
             isActive={isActive || isActiveRoute}
             onClick={handleClick}
-            data-test={`@suite/menu/${dataTest || route}`}
+            data-test={dataTest! !== undefined ? dataTest : `@suite/menu/${route}`}
             className={className}
             tabIndex={0}
+            elevation={elevation}
         >
             <Icon name={icon} size="large" color="iconSubdued" />
-            <Translation id={nameId} />
+            <Translation id={nameId} values={values} />
         </Container>
     );
 };
