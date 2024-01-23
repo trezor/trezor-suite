@@ -1,13 +1,20 @@
 import { ReactElement } from 'react';
 import styled from 'styled-components';
-import { variables, Spinner } from '@trezor/components';
+import { variables, Spinner, ProgressPie } from '@trezor/components';
+import { spacingsPx } from '@trezor/theme';
 
 const Wrapper = styled.div`
     display: flex;
     justify-self: flex-end;
     flex: 1;
     align-items: center;
+    justify-content: center;
     font-size: ${variables.FONT_SIZE.SMALL};
+    gap: ${spacingsPx.sm};
+`;
+
+const TimerText = styled.div`
+    display: flex;
 `;
 
 const RefreshLabel = styled.div`
@@ -17,7 +24,7 @@ const RefreshLabel = styled.div`
 `;
 
 const RefreshTime = styled.div`
-    margin-left: 4px;
+    margin-left: ${spacingsPx.xxs};
     font-variant-numeric: tabular-nums;
     text-align: right;
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
@@ -37,17 +44,23 @@ export const CoinmarketRefreshTime = ({
     seconds,
     refetchInterval,
     label,
-}: CoinmarketRefreshTimeProps) => (
-    <Wrapper>
-        {!isLoading && <RefreshLabel>{label}</RefreshLabel>}
-        <RefreshTime>
+}: CoinmarketRefreshTimeProps) => {
+    const remaining = refetchInterval - seconds;
+    const progress = (remaining / refetchInterval) * 100;
+
+    return (
+        <>
             {isLoading ? (
                 <Spinner size={15} />
             ) : (
-                <span>
-                    {`0:${refetchInterval - seconds < 10 ? '0' : ''}${refetchInterval - seconds}`}
-                </span>
+                <Wrapper>
+                    <ProgressPie valueInPercents={progress} />
+                    <TimerText>
+                        <RefreshLabel>{label}</RefreshLabel>
+                        <RefreshTime>{`0:${remaining < 10 ? '0' : ''}${remaining}`}</RefreshTime>
+                    </TimerText>
+                </Wrapper>
             )}
-        </RefreshTime>
-    </Wrapper>
-);
+        </>
+    );
+};
