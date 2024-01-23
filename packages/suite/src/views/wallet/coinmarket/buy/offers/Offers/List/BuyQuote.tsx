@@ -188,7 +188,7 @@ export function getQuoteError(quote: BuyTrade, wantCrypto: boolean) {
     return '';
 }
 
-export const Quote = ({ className, quote, wantCrypto }: QuoteProps) => {
+export const BuyQuote = ({ className, quote, wantCrypto }: QuoteProps) => {
     const theme = useTheme();
     const { selectQuote, providersInfo } = useCoinmarketBuyOffersContext();
     const { tag, infoNote } = getTagAndInfoNote(quote);
