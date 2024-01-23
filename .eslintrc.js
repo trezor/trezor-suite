@@ -10,6 +10,8 @@ module.exports = {
         ecmaFeatures: {
             jsx: true,
         },
+        project: ['./tsconfig.json'],
+        tsconfigRootDir: __dirname,
     },
     plugins: [
         'import',
@@ -56,10 +58,23 @@ module.exports = {
         'packages/connect-examples',
         'ci/',
         'eslint-local-rules/*',
+        '*.config.js',
+        '.eslintrc.js',
     ],
     rules: {
+<<<<<<< HEAD
         '@typescript-eslint/no-empty-object-type': 'off',
         '@typescript-eslint/no-require-imports': 'off',
+=======
+        '@typescript-eslint/strict-boolean-expressions': [
+            'warn',
+            {
+                allowString: false,
+                allowNumber: false,
+                allowNullableObject: false,
+            },
+        ],
+>>>>>>> 05cf6923bf (chore(suite): add @typescript-eslint/strict-boolean-expressions rule as warning)
         '@typescript-eslint/prefer-ts-expect-error': 'error',
         // I believe type is enforced by callers.
         '@typescript-eslint/explicit-function-return-type': 'off',

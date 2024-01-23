@@ -1,4 +1,7 @@
 module.exports = {
+    parserOptions: {
+        tsconfigRootDir: __dirname,
+    },
     rules: {
         'no-bitwise': 'off', // airbnb-base: used in hardending
         'no-underscore-dangle': 'off', // underscore is used
