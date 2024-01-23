@@ -1,20 +1,19 @@
 import styled from 'styled-components';
+import { SellFiatTrade } from 'invity-api';
+
 import { CoinLogo, variables, Icon, H2 } from '@trezor/components';
-import { BuyTrade } from 'invity-api';
-import { useCoinmarketBuyOffersContext } from 'src/hooks/wallet/useCoinmarketBuyOffers';
+import { useCoinmarketSellOffersContext } from 'src/hooks/wallet/useCoinmarketSellOffers';
 import { Translation } from 'src/components/suite';
-import {
-    CoinmarketCryptoAmount,
-    CoinmarketFiatAmount,
-    CoinmarketRefreshTime,
-} from 'src/views/wallet/coinmarket/common';
+import { CoinmarketRefreshTime } from 'src/views/wallet/coinmarket/common';
 import { InvityAPIReloadQuotesAfterSeconds } from 'src/constants/wallet/coinmarket/metadata';
-import { Quote } from './Quote';
+import { CoinmarketCryptoAmount } from 'src/views/wallet/coinmarket/common/CoinmarketCryptoAmount';
+import { CoinmarketFiatAmount } from 'src/views/wallet/coinmarket/common/CoinmarketFiatAmount';
+import { SellQuote } from './SellQuote';
 
 const Wrapper = styled.div``;
 const Quotes = styled.div``;
 
-const StyledQuote = styled(Quote)`
+const StyledSellQuote = styled(SellQuote)`
     margin-bottom: 20px;
 `;
 
@@ -41,9 +40,10 @@ const Right = styled.div`
     }
 `;
 
-const SummaryRow = styled.div`
+const SummaryRow = styled(H2)`
     display: flex;
     align-items: center;
+    font-weight: ${variables.FONT_WEIGHT.REGULAR};
 `;
 
 const OrigAmount = styled.div`
@@ -58,12 +58,13 @@ const StyledIcon = styled(Icon)`
 
 const Send = styled(H2)`
     padding-top: 3px;
+    padding-left: 10px;
     font-weight: ${variables.FONT_WEIGHT.REGULAR};
 `;
 
 const Receive = styled(H2)`
     padding-top: 3px;
-    padding-left: 10px;
+    padding-right: 10px;
     font-weight: ${variables.FONT_WEIGHT.REGULAR};
 `;
 
@@ -77,36 +78,36 @@ const NoQuotes = styled.div`
 
 interface ListProps {
     isAlternative?: boolean;
-    quotes: BuyTrade[];
+    quotes: SellFiatTrade[];
 }
 
-export const QuoteList = ({ isAlternative, quotes }: ListProps) => {
-    const { account, quotesRequest, timer } = useCoinmarketBuyOffersContext();
+export const SellQuoteList = ({ isAlternative, quotes }: ListProps) => {
+    const { account, quotesRequest, timer } = useCoinmarketSellOffersContext();
 
     if (!quotesRequest) return null;
-    const { fiatStringAmount, fiatCurrency, wantCrypto } = quotesRequest;
+    const { fiatStringAmount, fiatCurrency, amountInCrypto } = quotesRequest;
 
     return (
-        <Wrapper data-test="@coinmarket/buy/offers-list">
+        <Wrapper>
             <Header>
                 <Left>
                     <SummaryRow>
+                        <CoinLogo size={21} symbol={account.symbol} />
                         <Send>
-                            <CoinmarketFiatAmount
-                                amount={!wantCrypto ? quotes[0].fiatStringAmount : ''}
-                                currency={quotes[0].fiatCurrency}
+                            <CoinmarketCryptoAmount
+                                amount={amountInCrypto ? quotes[0].cryptoStringAmount : ''}
+                                symbol={account.symbol}
                             />
                         </Send>
                         <StyledIcon icon="ARROW_RIGHT_LONG" />
-                        <CoinLogo size={21} symbol={account.symbol} />
                         <Receive>
-                            <CoinmarketCryptoAmount
-                                amount={wantCrypto ? quotes[0].receiveStringAmount : ''}
-                                symbol={account.symbol}
+                            <CoinmarketFiatAmount
+                                amount={!amountInCrypto ? quotes[0].fiatStringAmount : ''}
+                                currency={quotes[0].fiatCurrency}
                             />
                         </Receive>
                     </SummaryRow>
-                    {isAlternative && !wantCrypto && (
+                    {isAlternative && !amountInCrypto && (
                         <OrigAmount>
                             ≈{' '}
                             <CoinmarketFiatAmount
@@ -122,7 +123,7 @@ export const QuoteList = ({ isAlternative, quotes }: ListProps) => {
                             isLoading={timer.isLoading}
                             refetchInterval={InvityAPIReloadQuotesAfterSeconds}
                             seconds={timer.timeSpend.seconds}
-                            label={<Translation id="TR_BUY_OFFERS_REFRESH" />}
+                            label={<Translation id="TR_SELL_OFFERS_REFRESH" />}
                         />
                     </Right>
                 )}
@@ -130,13 +131,13 @@ export const QuoteList = ({ isAlternative, quotes }: ListProps) => {
             <Quotes>
                 {quotes?.length === 0 ? (
                     <NoQuotes>
-                        <Translation id="TR_BUY_NO_OFFERS" />
+                        <Translation id="TR_SELL_NO_OFFERS" />
                     </NoQuotes>
                 ) : (
                     quotes.map(quote => (
-                        <StyledQuote
-                            wantCrypto={wantCrypto}
-                            key={`${quote.exchange}-${quote.paymentMethod}-${quote.receiveCurrency}`}
+                        <StyledSellQuote
+                            amountInCrypto={amountInCrypto}
+                            key={`${quote.exchange}-${quote.paymentMethod}-${quote.fiatCurrency}`}
                             quote={quote}
                         />
                     ))

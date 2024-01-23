@@ -233,7 +233,7 @@ interface QuoteProps {
     amountInCrypto: boolean;
 }
 
-const Quote = ({ className, quote, amountInCrypto }: QuoteProps) => {
+export const SellQuote = ({ className, quote, amountInCrypto }: QuoteProps) => {
     const theme = useTheme();
     const { selectQuote, sellInfo, needToRegisterOrVerifyBankAccount } =
         useCoinmarketSellOffersContext();
@@ -338,4 +338,3 @@ const Quote = ({ className, quote, amountInCrypto }: QuoteProps) => {
     );
 };
 
-export default Quote;
