@@ -2,7 +2,6 @@ import styled from 'styled-components';
 import { CoinLogo, variables, Icon, H2 } from '@trezor/components';
 import { BuyTrade } from 'invity-api';
 import { useCoinmarketBuyOffersContext } from 'src/hooks/wallet/useCoinmarketBuyOffers';
-import Quote from './Quote';
 import { Translation } from 'src/components/suite';
 import {
     CoinmarketCryptoAmount,
@@ -10,6 +9,7 @@ import {
     CoinmarketRefreshTime,
 } from 'src/views/wallet/coinmarket/common';
 import { InvityAPIReloadQuotesAfterSeconds } from 'src/constants/wallet/coinmarket/metadata';
+import { Quote } from './Quote';
 
 const Wrapper = styled.div``;
 const Quotes = styled.div``;
@@ -80,7 +80,7 @@ interface ListProps {
     quotes: BuyTrade[];
 }
 
-const List = ({ isAlternative, quotes }: ListProps) => {
+export const QuoteList = ({ isAlternative, quotes }: ListProps) => {
     const { account, quotesRequest, timer } = useCoinmarketBuyOffersContext();
 
     if (!quotesRequest) return null;
@@ -145,5 +145,3 @@ const List = ({ isAlternative, quotes }: ListProps) => {
         </Wrapper>
     );
 };
-
-export default List;
