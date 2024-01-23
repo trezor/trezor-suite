@@ -57,7 +57,8 @@ export const PassphraseFormModal = () => {
         passphraseInputRef.current?.focus();
     }, [passphraseInputRef]);
 
-    const handleCreateHiddenWallet = handleSubmit(() => {
+    const handleCreateHiddenWallet = handleSubmit(values => {
+        console.warn(values);
         setIsPassphraseModalVisible(false);
         // TODO create wallet
     });
@@ -73,6 +74,8 @@ export const PassphraseFormModal = () => {
                             name="passphrase"
                             maxLength={PASSPHRASE_MAX_LENGTH}
                             accessibilityLabel="passphrase input"
+                            autoCapitalize="none"
+                            secureTextEntry
                         />
                         <VStack>
                             <Button
