@@ -8,7 +8,7 @@ export default {
 
 export const ProgressPie: StoryObj<ProgressPieProps> = {
     args: {
-        value: 21,
+        valueInPercents: 21,
     },
     argTypes: {
         backgroundColor: { control: 'color' },
