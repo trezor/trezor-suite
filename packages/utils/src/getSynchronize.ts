@@ -11,9 +11,9 @@
  * ```
  */
 export const getSynchronize = () => {
-    let lock: Promise<any> | undefined;
+    let lock: Promise<unknown> | undefined;
 
-    return <T>(action: () => T | Promise<T>): Promise<T> => {
+    return <T>(action: () => T): T extends Promise<unknown> ? T : Promise<T> => {
         const newLock = (lock ?? Promise.resolve())
             .catch(() => {})
             .then(action)
@@ -23,7 +23,7 @@ export const getSynchronize = () => {
                 }
             });
         lock = newLock;
-        return lock;
+        return lock as any;
     };
 };
 
