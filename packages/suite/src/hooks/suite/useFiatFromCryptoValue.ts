@@ -7,10 +7,11 @@ import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
 import { TimestampedRates } from 'src/types/wallet/fiatRates';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { TokenAddress } from '@suite-common/wallet-types';
+import { TokenTransfer } from '@trezor/blockchain-link-types';
 
 interface CommonOwnProps {
     amount: string;
-    symbol: Network['symbol'] | string;
+    symbol: Network['symbol'] | TokenTransfer['symbol'];
     tokenAddress?: string;
     fiatCurrency?: string;
 }

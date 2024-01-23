@@ -7,6 +7,7 @@ import {
     AccountTransaction,
     AccountUtxo,
     PrecomposedTransactionFinalCardano,
+    TokenTransfer,
 } from '@trezor/connect';
 import { arrayDistinct, bufferUtils } from '@trezor/utils';
 import {
@@ -351,6 +352,13 @@ export const formatNetworkAmount = (
     }
 
     return formattedAmount;
+};
+
+export const formatTokenAmount = (tokenTransfer: TokenTransfer) => {
+    const formattedAmount = formatAmount(tokenTransfer.amount, tokenTransfer.decimals);
+    const formattedTokenSymbol = tokenTransfer.symbol?.toUpperCase();
+
+    return formattedTokenSymbol ? `${formattedAmount} ${formattedTokenSymbol}` : formattedAmount;
 };
 
 export const sortByCoin = (accounts: Account[]) =>

@@ -4,8 +4,8 @@ import {
     findAccountDevice,
     findAccountsByDescriptor,
     findAccountsByNetwork,
-    formatAmount,
     formatNetworkAmount,
+    formatTokenAmount,
     getAreSatoshisUsed,
     getBackendFromSettings,
     getCustomBackends,
@@ -349,7 +349,7 @@ export const onBlockchainNotificationThunk = createThunk(
             );
 
             const formattedAmount = token
-                ? `${formatAmount(token.amount, token.decimals)} ${token.symbol.toUpperCase()}`
+                ? formatTokenAmount(token)
                 : formatNetworkAmount(tx.amount, account.symbol, true, areSatoshisUsed);
 
             dispatch(

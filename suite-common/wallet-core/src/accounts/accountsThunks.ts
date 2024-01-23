@@ -4,8 +4,8 @@ import { networksCompatibility as NETWORKS } from '@suite-common/wallet-config';
 import {
     analyzeTransactions,
     findAccountDevice,
-    formatAmount,
     formatNetworkAmount,
+    formatTokenAmount,
     getAccountTransactions,
     getAreSatoshisUsed,
     isAccountOutdated,
@@ -143,8 +143,9 @@ export const fetchAndUpdateAccountThunk = createThunk(
                 const areSatoshisUsed = getAreSatoshisUsed(bitcoinAmountUnit, account);
 
                 const formattedAmount = token
-                    ? `${formatAmount(token.amount, token.decimals)} ${token.symbol.toUpperCase()}`
+                    ? formatTokenAmount(token)
                     : formatNetworkAmount(tx.amount, account.symbol, true, areSatoshisUsed);
+
                 dispatch(
                     notificationsActions.addEvent({
                         type: 'tx-confirmed',
