@@ -146,7 +146,7 @@ export const CoinjoinStatusBar = ({ accountKey, session, isSingle }: CoinjoinSta
             onClick={isStatusBarClickable ? handleViewAccount : undefined}
             isClickable={isStatusBarClickable}
         >
-            <StyledProgressPie value={sessionProgress} />
+            <StyledProgressPie valueInPercents={sessionProgress} />
 
             <StatusText>
                 {getSessionStatusMessage()}
