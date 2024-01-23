@@ -61,11 +61,19 @@ rootPaths.forEach(dir => {
 
     const srcPath = path.join(__dirname, '../connect-web');
 
-    ['trezor-content-script.js', 'trezor-usb-permissions.js'].forEach(p => {
+    ['trezor-content-script.js'].forEach(p => {
         fs.copyFileSync(
             path.join(srcPath, 'src', 'webextension', p),
             path.join(rootPath, buildFolder, 'vendor', p),
         );
+    });
+
+    ['trezor-usb-permissions.js'].forEach(p => {
+        let content = fs.readFileSync(path.join(srcPath, 'src', 'webextension', p), 'utf-8');
+        if (trezorConnectSrc !== DEFAULT_SRC) {
+            content = content.replace(/^const url = .*$/gm, `const url = '${trezorConnectSrc}';`);
+        }
+        fs.writeFileSync(path.join(rootPath, buildFolder, 'vendor', p), content, 'utf-8');
     });
 
     ['trezor-usb-permissions.html'].forEach(p => {
