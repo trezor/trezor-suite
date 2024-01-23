@@ -31,6 +31,10 @@ const Layout = styled.div`
     display: flex;
     flex-direction: row;
     gap: 60px;
+
+    ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
+        flex-direction: column;
+    }
 `;
 
 interface CoinmarketLayoutProps {
@@ -47,7 +51,12 @@ export const CoinmarketLayout = ({
     <WalletLayout title="TR_NAV_TRADE" account={selectedAccount}>
         <WalletLayoutHeader title="TR_NAV_TRADE">
             {onClearFormButtonClick && (
-                <Button type="button" variant="tertiary" onClick={onClearFormButtonClick}>
+                <Button
+                    size="small"
+                    type="button"
+                    variant="tertiary"
+                    onClick={onClearFormButtonClick}
+                >
                     <Translation id="TR_CLEAR_ALL" />
                 </Button>
             )}

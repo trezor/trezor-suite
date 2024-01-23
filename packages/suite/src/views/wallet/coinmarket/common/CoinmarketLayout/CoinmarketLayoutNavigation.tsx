@@ -10,12 +10,23 @@ import { Route } from '@suite-common/suite-types';
 import { borders, spacingsPx } from '@trezor/theme';
 import { NavigationItem } from '../../../../../components/suite/Preloader/SuiteLayout/Sidebar/NavigationItem';
 import { IconName } from '@suite-common/icons';
+import { variables } from '@trezor/components';
 
 const List = styled.div`
     display: flex;
     flex-direction: column;
     width: 171px;
     gap: ${spacingsPx.xxs};
+
+    ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
+        width: 100%;
+        flex-direction: row;
+        overflow: scroll;
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+    }
 `;
 
 const NavListItem = styled(NavigationItem)`
@@ -31,10 +42,17 @@ const NavListItem = styled(NavigationItem)`
             : ''}
 `;
 
-const HorizontalDivider = styled.div`
+const Divider = styled.div`
     margin: ${spacingsPx.xxs} 0; /* gap xxs + margin xxs = spacing xs around divider */
     width: 100%;
     border-bottom: 1px solid ${({ theme }) => theme.textDefault};
+
+    ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
+        margin: 0 ${spacingsPx.xxs}; /* gap xxs + margin xxs = spacing xs around divider */
+        flex-direction: row;
+        border-bottom: 0;
+        border-right: 1px solid ${({ theme }) => theme.textDefault};
+    }
 `;
 
 export const CoinmarketLayoutNavigation = () => {
@@ -87,7 +105,7 @@ export const CoinmarketLayoutNavigation = () => {
                 <Item route="wallet-coinmarket-exchange" title="TR_NAV_EXCHANGE" icon="trade" />
             ) : null}
 
-            <HorizontalDivider />
+            <Divider />
 
             {showSavingsTab && (
                 <NavListItem
