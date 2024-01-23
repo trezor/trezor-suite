@@ -28,8 +28,6 @@ export const Divider = styled.div`
 `;
 
 export const ImageWrapper = styled.div`
-    margin-left: auto;
-    margin-right: auto;
     top: 50px;
     left: 0;
     right: 0;
