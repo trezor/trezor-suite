@@ -1,6 +1,6 @@
 import styled, { useTheme } from 'styled-components';
 
-import { Button, variables, Icon, H2 } from '@trezor/components';
+import { Button, variables, Icon, Card, H3 } from '@trezor/components';
 import {
     CoinmarketCryptoAmount,
     CoinmarketFiatAmount,
@@ -12,47 +12,6 @@ import { QuestionTooltip, Translation } from 'src/components/suite';
 import { BuyTrade } from 'invity-api';
 import { useCoinmarketBuyOffersContext } from 'src/hooks/wallet/useCoinmarketBuyOffers';
 import { getTagAndInfoNote } from 'src/utils/wallet/coinmarket/coinmarketUtils';
-import { borders } from '@trezor/theme';
-
-const Wrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    border-radius: ${borders.radii.xs};
-    flex: 1;
-    width: 100%;
-    min-height: 150px;
-    padding-bottom: 16px;
-    background: ${({ theme }) => theme.BG_WHITE};
-`;
-
-const Main = styled.div`
-    display: flex;
-    margin: 0 30px;
-    justify-content: space-between;
-    padding: 20px 0;
-    border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
-
-    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
-        flex-direction: column;
-        margin: 0 20px;
-    }
-`;
-
-const Left = styled(H2)`
-    display: flex;
-    align-items: center;
-    font-weight: ${variables.FONT_WEIGHT.REGULAR};
-`;
-
-const Right = styled.div`
-    display: flex;
-    justify-content: flex-end;
-
-    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
-        justify-content: center;
-        padding-top: 10px;
-    }
-`;
 
 const Details = styled.div`
     display: flex;
@@ -229,49 +188,36 @@ export function getQuoteError(quote: BuyTrade, wantCrypto: boolean) {
     return '';
 }
 
-const Quote = ({ className, quote, wantCrypto }: QuoteProps) => {
+export const Quote = ({ className, quote, wantCrypto }: QuoteProps) => {
     const theme = useTheme();
     const { selectQuote, providersInfo } = useCoinmarketBuyOffersContext();
     const { tag, infoNote } = getTagAndInfoNote(quote);
     const { paymentMethod, paymentMethodName, exchange, error } = quote;
 
     return (
-        <Wrapper className={className}>
-            <Main>
-                {error && <Left>N/A</Left>}
-                {!error && (
-                    <Left>
-                        {wantCrypto ? (
-                            <CoinmarketFiatAmount
-                                amount={quote.fiatStringAmount}
-                                currency={quote.fiatCurrency}
-                            />
-                        ) : (
-                            <CoinmarketCryptoAmount
-                                amount={quote.receiveStringAmount}
-                                symbol={quote.receiveCurrency}
-                            />
-                        )}
-                        <CoinmarketTag tag={tag} />
-                    </Left>
-                )}
-                <Right>
-                    {quote.status === 'LOGIN_REQUEST' ? (
-                        <StyledButton onClick={() => selectQuote(quote)}>
-                            <Translation id="TR_LOGIN_PROCEED" />
-                        </StyledButton>
-                    ) : (
-                        <StyledButton
-                            isDisabled={!!quote.error}
-                            onClick={() => selectQuote(quote)}
-                            data-test="@coinmarket/buy/offers/get-this-deal-button"
-                        >
-                            <Translation id="TR_BUY_GET_THIS_OFFER" />
-                        </StyledButton>
-                    )}
-                </Right>
-            </Main>
+        <Card className={className}>
             <Details>
+                <Column>
+                    <Value>
+                        {error && <H3>N/A</H3>}
+                        {!error && (
+                            <H3>
+                                {wantCrypto ? (
+                                    <CoinmarketFiatAmount
+                                        amount={quote.fiatStringAmount}
+                                        currency={quote.fiatCurrency}
+                                    />
+                                ) : (
+                                    <CoinmarketCryptoAmount
+                                        amount={quote.receiveStringAmount}
+                                        symbol={quote.receiveCurrency}
+                                    />
+                                )}
+                                <CoinmarketTag tag={tag} />
+                            </H3>
+                        )}
+                    </Value>
+                </Column>
                 <Column>
                     <Heading>
                         <Translation id="TR_BUY_PROVIDER" />
@@ -300,6 +246,23 @@ const Quote = ({ className, quote, wantCrypto }: QuoteProps) => {
                         <Translation id="TR_BUY_ALL_FEES_INCLUDED" />
                     </Value>
                 </Column>
+                <Column>
+                    <Value>
+                        {quote.status === 'LOGIN_REQUEST' ? (
+                            <StyledButton onClick={() => selectQuote(quote)}>
+                                <Translation id="TR_LOGIN_PROCEED" />
+                            </StyledButton>
+                        ) : (
+                            <StyledButton
+                                isDisabled={!!quote.error}
+                                onClick={() => selectQuote(quote)}
+                                data-test="@coinmarket/buy/offers/get-this-deal-button"
+                            >
+                                <Translation id="TR_BUY_GET_THIS_OFFER" />
+                            </StyledButton>
+                        )}
+                    </Value>
+                </Column>
             </Details>
             {error && (
                 <ErrorFooter>
@@ -311,8 +274,6 @@ const Quote = ({ className, quote, wantCrypto }: QuoteProps) => {
             )}
 
             {infoNote && !error && <Footer>{infoNote}</Footer>}
-        </Wrapper>
+        </Card>
     );
 };
-
-export default Quote;
