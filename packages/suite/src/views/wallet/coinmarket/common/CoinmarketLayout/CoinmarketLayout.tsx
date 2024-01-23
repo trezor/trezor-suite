@@ -17,10 +17,20 @@ const Content = styled.div`
     }
 `;
 
+const StyledCard = styled(Card)`
+    flex: 1;
+`;
+
 const BottomContent = styled.div`
     flex: 1;
     display: flex;
     flex-direction: column;
+`;
+
+const Layout = styled.div`
+    display: flex;
+    flex-direction: row;
+    gap: 60px;
 `;
 
 interface CoinmarketLayoutProps {
@@ -43,10 +53,13 @@ export const CoinmarketLayout = ({
             )}
         </WalletLayoutHeader>
 
-        <Card paddingType="none">
+        <Layout>
             <CoinmarketLayoutNavigation />
-            <Content>{children}</Content>
-        </Card>
+
+            <StyledCard paddingType="none">
+                <Content>{children}</Content>
+            </StyledCard>
+        </Layout>
 
         <BottomContent>
             <CoinmarketAccountTransactions />
