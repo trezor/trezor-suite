@@ -55,6 +55,7 @@ type InputLabelStyleProps = {
 
 type InputStyleProps = {
     isIconDisplayed: boolean;
+    isFocused: boolean;
 };
 
 const inputWrapperStyle = prepareNativeStyle<InputWrapperStyleProps>(
@@ -99,8 +100,11 @@ const inputWrapperStyle = prepareNativeStyle<InputWrapperStyleProps>(
     }),
 );
 
-const inputStyle = prepareNativeStyle<InputStyleProps>((utils, { isIconDisplayed }) => ({
+const inputStyle = prepareNativeStyle<InputStyleProps>((utils, { isIconDisplayed, isFocused }) => ({
     ...utils.typography.body,
+    // letterSpacing from `typography.body` is making strange layout jumps on Android while filling the input.
+    // This resets it to the default TextInput value.
+    letterSpacing: 0,
     alignItems: 'center',
     justifyContent: 'center',
     minHeight: INPUT_TEXT_HEIGHT,
@@ -109,7 +113,7 @@ const inputStyle = prepareNativeStyle<InputStyleProps>((utils, { isIconDisplayed
     borderWidth: 0,
     flex: 1,
     // Make the text input uniform on both platforms (https://stackoverflow.com/a/68458803/1281305)
-    paddingTop: 0,
+    paddingTop: isFocused ? utils.spacings.large : 0,
     paddingBottom: utils.spacings.extraSmall,
 }));
 
@@ -247,7 +251,7 @@ export const Input = forwardRef<TextInput, InputProps>(
                     <Box flexDirection="row" alignItems="center">
                         <TextInput
                             ref={ref}
-                            style={applyStyle(inputStyle, { isIconDisplayed })}
+                            style={applyStyle(inputStyle, { isIconDisplayed, isFocused })}
                             onFocus={handleOnFocus}
                             onBlur={handleOnBlur}
                             hitSlop={inputHitSlop}
