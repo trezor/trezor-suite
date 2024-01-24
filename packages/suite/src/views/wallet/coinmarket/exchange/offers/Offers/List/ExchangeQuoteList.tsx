@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import { variables } from '@trezor/components';
-import Quote from './Quote';
 import { ExchangeTrade } from 'invity-api';
 import {
     FiatValue,
@@ -11,11 +10,12 @@ import {
 import { useCoinmarketExchangeOffersContext } from 'src/hooks/wallet/useCoinmarketExchangeOffers';
 import { useSelector } from 'src/hooks/suite';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
+import { ExchangeQuote } from './ExchangeQuote';
 
 const Wrapper = styled.div``;
 const Quotes = styled.div``;
 
-const StyledQuote = styled(Quote)`
+const StyledQuote = styled(ExchangeQuote)`
     margin-bottom: 20px;
 `;
 
@@ -70,7 +70,7 @@ interface ListProps {
     type: 'float' | 'fixed' | 'dex';
 }
 
-const List = ({ quotes, type }: ListProps) => {
+export const ExchangeQuoteList = ({ quotes, type }: ListProps) => {
     const {
         quotesRequest,
         account: { symbol },
@@ -144,5 +144,3 @@ const List = ({ quotes, type }: ListProps) => {
         </Wrapper>
     );
 };
-
-export default List;
