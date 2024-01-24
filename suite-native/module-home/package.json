@@ -11,8 +11,8 @@
         "type-check": "tsc --build"
     },
     "dependencies": {
-        "@react-navigation/native": "^6.1.9",
-        "@react-navigation/native-stack": "^6.9.17",
+        "@react-navigation/native": "6.1.9",
+        "@react-navigation/native-stack": "6.9.17",
         "@reduxjs/toolkit": "1.9.5",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/graph": "workspace:*",
@@ -39,8 +39,8 @@
         "expo-local-authentication": "13.7.0",
         "jotai": "1.9.1",
         "react": "18.2.0",
-        "react-native": "0.71.8",
-        "react-native-svg": "^13.8.0",
+        "react-native": "0.73.2",
+        "react-native-svg": "14.1.0",
         "react-redux": "8.0.7"
     },
     "devDependencies": {

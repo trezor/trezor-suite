@@ -16,14 +16,14 @@
         "@suite-common/wallet-types": "workspace:*",
         "@trezor/utxo-lib": "workspace:*",
         "bs58": "^5.0.0",
-        "expo-random": "^13.1.1",
-        "expo-secure-store": "^12.1.1",
+        "expo-random": "13.6.0",
+        "expo-secure-store": "12.8.1",
         "expo-splash-screen": "0.18.1",
         "jotai": "1.9.1",
         "react": "18.2.0",
-        "react-native": "0.71.8",
+        "react-native": "0.73.2",
         "react-native-mmkv": "2.11.0",
-        "react-native-restart": "^0.0.27",
+        "react-native-restart": "0.0.27",
         "redux-persist": "6.0.0"
     },
     "devDependencies": {

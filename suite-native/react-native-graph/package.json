@@ -11,11 +11,11 @@
         "type-check": "tsc --build"
     },
     "dependencies": {
-        "@shopify/react-native-skia": "0.1.233",
+        "@shopify/react-native-skia": "0.1.234",
         "@types/react": "18.0.32",
         "react": "18.2.0",
-        "react-native": "0.71.8",
-        "react-native-gesture-handler": "^2.9.0",
+        "react-native": "0.73.2",
+        "react-native-gesture-handler": "2.14.1",
         "react-native-reanimated": "3.7.0-nightly-20240101-9d365ae7b"
     }
 }

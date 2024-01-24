@@ -13,8 +13,10 @@
         "@suite-native/toasts": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
-        "react": "18.2.0",
-        "react-native": "0.71.8",
-        "react-native-reanimated": "3.7.0-nightly-20240101-9d365ae7b"
+        "react": "18.2.0"
+    },
+    "peerDependencies": {
+        "react-native": "*",
+        "react-native-reanimated": "*"
     }
 }
