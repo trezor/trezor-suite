@@ -50,7 +50,7 @@ const LeftColumn = styled.div`
     display: flex;
     flex: 1;
     font-size: ${variables.FONT_SIZE.SMALL};
-    text-transform: uppercase;
+    text-transform: capitalize;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
