@@ -8,12 +8,21 @@ import {
     AccountLabeling,
     FormattedCryptoAmount,
 } from 'src/components/suite';
-import { Input, Button, variables, CoinLogo } from '@trezor/components';
+import {
+    Input,
+    Button,
+    variables,
+    CoinLogo,
+    useElevation,
+    baseInputStyle,
+} from '@trezor/components';
 import { useCoinmarketBuyOffersContext } from 'src/hooks/wallet/useCoinmarketBuyOffers';
 import { AddressOptions } from 'src/views/wallet/coinmarket/common';
 import { useAccountAddressDictionary } from 'src/hooks/wallet/useAccounts';
 import { ConfirmedOnTrezor } from 'src/views/wallet/coinmarket/common/ConfirmedOnTrezor';
 import { AddressOptionsFormState } from 'src/types/wallet/coinmarketBuyOffers';
+import { Elevation, mapElevationToBackground } from '@trezor/theme';
+import { HTMLAttributes } from 'react';
 
 const Wrapper = styled.div`
     display: flex;
@@ -75,16 +84,20 @@ const AccountName = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
-const FakeInput = styled.div`
+const StyledFakeInput = styled.div<HTMLAttributes<HTMLDivElement> & { elevation: Elevation }>`
+    ${baseInputStyle}
     display: flex;
     margin-bottom: 20px;
     padding: 5px;
     min-height: 61px;
     align-items: center;
-    border-radius: 4px;
-    border: solid 2px ${({ theme }) => theme.STROKE_GREY};
-    background: ${({ theme }) => theme.BG_WHITE};
 `;
+
+const FakeInput = (props: HTMLAttributes<HTMLDivElement>) => {
+    const { elevation } = useElevation();
+
+    return <StyledFakeInput {...props} elevation={elevation} />;
+};
 
 const ButtonWrapper = styled.div`
     display: flex;
