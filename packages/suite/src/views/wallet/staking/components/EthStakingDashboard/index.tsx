@@ -1,16 +1,19 @@
-import { WalletLayout } from 'src/components/wallet';
+import { selectAccountStakeTransactions } from '@suite-common/wallet-core';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { WalletLayout } from 'src/components/wallet';
+import { useSelector } from 'src/hooks/suite';
 import { EmptyStakingCard } from './components/EmptyStakingCard';
 import { StakingDashboard } from './components/StakingDashboard';
-import { STAKED_ETH_WITH_REWARDS } from 'src/constants/suite/ethStaking';
 
 interface EthStakingDashboardProps {
     selectedAccount: SelectedAccountLoaded;
 }
 
 export const EthStakingDashboard = ({ selectedAccount }: EthStakingDashboardProps) => {
-    // TODO: Replace with real data
-    const hasStaked = STAKED_ETH_WITH_REWARDS.gt(0);
+    const stakeTxs = useSelector(state =>
+        selectAccountStakeTransactions(state, selectedAccount.account?.key || ''),
+    );
+    const hasStaked = stakeTxs.length > 0;
 
     return (
         <WalletLayout title="TR_STAKE_ETH" account={selectedAccount}>

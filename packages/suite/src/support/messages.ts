@@ -8741,4 +8741,16 @@ export default defineMessages({
         id: 'TR_STAKE_MIN_AMOUNT_TOOLTIP',
         defaultMessage: 'Minimum amount to stake is {amount} {symbol}',
     },
+    TOAST_TX_STAKED: {
+        id: 'TOAST_TX_STAKED',
+        defaultMessage: '{amount} staked from {account}',
+    },
+    TOAST_TX_UNSTAKED: {
+        id: 'TOAST_TX_UNSTAKED',
+        defaultMessage: '{amount} unstaked',
+    },
+    TOAST_TX_CLAIMED: {
+        id: 'TOAST_TX_CLAIMED',
+        defaultMessage: '{amount} claimed',
+    },
 });

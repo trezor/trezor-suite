@@ -27,6 +27,18 @@ type ReceivedTransactionNotification = {
     type: 'tx-received' | 'tx-confirmed';
 } & TransactionNotificationPayload;
 
+type StakedTransactionNotification = {
+    type: 'tx-staked';
+} & TransactionNotificationPayload;
+
+type UnstakedTransactionNotification = {
+    type: 'tx-unstaked';
+} & TransactionNotificationPayload;
+
+type ClaimedTransactionNotification = {
+    type: 'tx-claimed';
+} & TransactionNotificationPayload;
+
 export type ToastPayload = (
     | {
           type: 'acquire-error';
@@ -136,6 +148,9 @@ export type ToastPayload = (
     | {
           type: 'coinjoin-interrupted';
       }
+    | StakedTransactionNotification
+    | UnstakedTransactionNotification
+    | ClaimedTransactionNotification
 ) &
     NotificationOptions;
 

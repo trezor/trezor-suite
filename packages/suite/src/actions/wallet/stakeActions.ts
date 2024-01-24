@@ -14,6 +14,7 @@ import {
     StakeFormState,
     PrecomposedTransactionFinal,
     ComposeActionContext,
+    StakeType,
 } from '@suite-common/wallet-types';
 
 import * as modalActions from '../suite/modalActions';
@@ -52,7 +53,7 @@ export const cancelSignTx = (isSuccessTx?: boolean) => (dispatch: Dispatch, getS
 
 // private, called from signTransaction only
 const pushTransaction =
-    (signedTransaction: SignedTransaction['signedTransaction']) =>
+    (signedTransaction: SignedTransaction['signedTransaction'], stakeType?: StakeType) =>
     async (dispatch: Dispatch, getState: GetState) => {
         const { signedTx, precomposedTx } = getState().wallet.stake;
         const { account } = getState().wallet.selectedAccount;
@@ -74,9 +75,15 @@ const pushTransaction =
 
         if (sentTx.success) {
             const { txid } = sentTx.payload;
+            const toastType: Record<StakeType, 'tx-staked' | 'tx-unstaked' | 'tx-claimed'> = {
+                stake: 'tx-staked',
+                unstake: 'tx-unstaked',
+                claim: 'tx-claimed',
+            };
+
             dispatch(
                 notificationsActions.addToast({
-                    type: 'tx-sent',
+                    type: stakeType ? toastType[stakeType] : 'tx-sent',
                     formattedAmount,
                     device,
                     descriptor: account.descriptor,
@@ -181,6 +188,6 @@ export const signTransaction =
         );
         if (decision) {
             // push tx to the network
-            return dispatch(pushTransaction(signedTransaction));
+            return dispatch(pushTransaction(signedTransaction, formValues.ethereumStakeType));
         }
     };
