@@ -20,13 +20,14 @@ import { setFlag } from 'src/actions/suite/suiteActions';
 import { Translation, TrezorLink } from 'src/components/suite';
 import { AnimatePresence, motion } from 'framer-motion';
 import { resolveStaticPath } from '@suite-common/suite-utils';
+import { colorVariants } from '@trezor/theme';
 
 const BannerWrapper = styled(motion.div)`
     display: grid;
     grid-template-columns: 338px 1fr minmax(109px, 145px) 42px;
     grid-template-rows: 42px 1fr 0;
     column-gap: 8px;
-    background-color: ${({ theme }) => theme.backgroundPrimaryDefault};
+    background-color: ${colorVariants.standard.backgroundPrimaryDefault};
     height: 168px;
     width: 100%;
     border-radius: 12px;
@@ -88,7 +89,7 @@ const NextGenerationText = styled.p`
 `;
 
 const NextGenerationTextBlock = styled.span`
-    color: ${({ theme }) => theme.TYPE_WHITE};
+    color: ${colorVariants.standard.textOnPrimary};
 `;
 
 const imgUrl = resolveStaticPath(`${SVG_PATH}/${SVG_IMAGES.TREZOR_SAFE_PROMO_UNDERLINE}`);
@@ -179,7 +180,7 @@ const ButtonClose = styled(IconButton)`
     z-index: 1;
 
     /* stylelint-disable color-function-notation */
-    background: ${({ theme }) => rgba(theme.TYPE_WHITE, 0.16)};
+    background: ${rgba(colorVariants.standard.textOnPrimary, 0.16)};
     /* stylelint-enable color-function-notation */
     height: 42px;
     width: 42px;
@@ -192,7 +193,7 @@ const ButtonClose = styled(IconButton)`
     svg {
         height: 24px;
         width: 24px;
-        fill: ${({ theme }) => theme.TYPE_WHITE};
+        fill: ${colorVariants.standard.textOnPrimary};
     }
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
