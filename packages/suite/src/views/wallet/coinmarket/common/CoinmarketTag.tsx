@@ -14,7 +14,7 @@ const Tag = styled.div`
     color: ${({ theme }) => theme.TYPE_WHITE};
     font-size: ${variables.FONT_SIZE.TINY};
     line-height: 21px;
-    text-transform: uppercase;
+    text-transform: capitalize;
 `;
 
 interface CoinmarketTagProps {
