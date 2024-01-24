@@ -3,7 +3,7 @@ import { cloneObject } from '@trezor/utils';
 
 import { selectDevices, selectDevice, selectDeviceByState } from '@suite-common/wallet-core';
 
-import { METADATA } from 'src/actions/suite/constants';
+import { METADATA, METADATA_LABELING } from 'src/actions/suite/constants';
 import { Dispatch, GetState, TrezorDevice } from 'src/types/suite';
 import {
     MetadataProvider,
@@ -35,7 +35,7 @@ const fetchMetadata =
     ({
         provider,
         entity,
-        encryptionVersion = METADATA.ENCRYPTION_VERSION,
+        encryptionVersion = METADATA_LABELING.ENCRYPTION_VERSION,
     }: {
         provider: MetadataProvider;
         entity: LabelableEntity;
@@ -98,7 +98,7 @@ const fetchMetadata =
     };
 
 export const setAccountMetadataKey =
-    (account: Account, encryptionVersion = METADATA.ENCRYPTION_VERSION) =>
+    (account: Account, encryptionVersion = METADATA_LABELING.ENCRYPTION_VERSION) =>
     (dispatch: Dispatch, getState: GetState) => {
         const device = selectDeviceByState(getState(), account.deviceState);
         const deviceMetaKey = device?.metadata[encryptionVersion]?.key;
@@ -134,9 +134,9 @@ export const setAccountMetadataKey =
  * Fill any record in reducer that may have metadata with metadata keys (not values).
  */
 const syncMetadataKeys =
-    (device: TrezorDevice, encryptionVersion = METADATA.ENCRYPTION_VERSION) =>
+    (device: TrezorDevice, encryptionVersion = METADATA_LABELING.ENCRYPTION_VERSION) =>
     (dispatch: Dispatch, getState: GetState) => {
-        if (!device.metadata[METADATA.ENCRYPTION_VERSION]) {
+        if (!device.metadata[METADATA_LABELING.ENCRYPTION_VERSION]) {
             return;
         }
         const targetAccounts = getState().wallet.accounts.filter(
@@ -160,7 +160,7 @@ export const fetchAndSaveMetadata =
             ? selectDeviceByState(getState(), deviceStateArg)
             : selectDevice(getState());
 
-        if (!device?.state || !device?.metadata?.[METADATA.ENCRYPTION_VERSION]) return;
+        if (!device?.state || !device?.metadata?.[METADATA_LABELING.ENCRYPTION_VERSION]) return;
 
         const providerInstance = dispatch(
             metadataProviderActions.getProviderInstance({
@@ -180,7 +180,7 @@ export const fetchAndSaveMetadata =
             device = deviceStateArg
                 ? selectDeviceByState(getState(), deviceStateArg)
                 : selectDevice(getState());
-            if (!device?.state || !device?.metadata?.[METADATA.ENCRYPTION_VERSION]) return;
+            if (!device?.state || !device?.metadata?.[METADATA_LABELING.ENCRYPTION_VERSION]) return;
 
             dispatch(syncMetadataKeys(device));
 
@@ -197,7 +197,7 @@ export const fetchAndSaveMetadata =
             }
 
             // device is disconnected or something is wrong with it
-            if (!device?.metadata?.[METADATA.ENCRYPTION_VERSION]) {
+            if (!device?.metadata?.[METADATA_LABELING.ENCRYPTION_VERSION]) {
                 if (metadataProviderActions.fetchIntervals[device.state]) {
                     clearInterval(metadataProviderActions.fetchIntervals[device.state]);
                     delete metadataProviderActions.fetchIntervals[device.state];
@@ -249,7 +249,7 @@ export const fetchAndSaveMetadataForAllDevices = () => (dispatch: Dispatch, getS
     }
     const devices = selectDevices(getState());
     devices.forEach(device => {
-        if (!device.state || !device.metadata[METADATA.ENCRYPTION_VERSION]) return;
+        if (!device.state || !device.metadata[METADATA_LABELING.ENCRYPTION_VERSION]) return;
         dispatch(fetchAndSaveMetadata(device.state));
     });
 };
@@ -267,7 +267,7 @@ export const addDeviceMetadata =
                 error: 'provider missing',
             });
 
-        const { fileName, aesKey } = device?.metadata[METADATA.ENCRYPTION_VERSION] || {};
+        const { fileName, aesKey } = device?.metadata[METADATA_LABELING.ENCRYPTION_VERSION] || {};
         if (!fileName || !aesKey) {
             return Promise.resolve({
                 success: false as const,
@@ -279,7 +279,7 @@ export const addDeviceMetadata =
         const metadata = fileName ? provider.data[fileName] : undefined;
 
         const nextMetadata = cloneObject(
-            metadata ?? METADATA.DEFAULT_WALLET_METADATA,
+            metadata ?? METADATA_LABELING.DEFAULT_WALLET_METADATA,
         ) as WalletLabels;
 
         const walletLabel =
@@ -335,18 +335,18 @@ export const addAccountMetadata =
         }
 
         // todo: not danger overwrite empty?
-        const { fileName, aesKey } = account.metadata?.[METADATA.ENCRYPTION_VERSION] || {};
+        const { fileName, aesKey } = account.metadata?.[METADATA_LABELING.ENCRYPTION_VERSION] || {};
 
         if (!fileName || !aesKey) {
             return Promise.resolve({
                 success: false as const,
-                error: `filename of version ${METADATA.ENCRYPTION_VERSION} does not exist for account ${account.path}`,
+                error: `filename of version ${METADATA_LABELING.ENCRYPTION_VERSION} does not exist for account ${account.path}`,
             });
         }
         const data = provider.data[fileName];
 
         const nextMetadata = cloneObject(
-            data ?? METADATA.DEFAULT_ACCOUNT_METADATA,
+            data ?? METADATA_LABELING.DEFAULT_ACCOUNT_METADATA,
         ) as AccountLabels;
 
         if (payload.type === 'outputLabel') {
@@ -433,7 +433,7 @@ export const addAccountMetadata =
  * Generate device master-key
  * */
 export const setDeviceMetadataKey =
-    (device: TrezorDevice, encryptionVersion = METADATA.ENCRYPTION_VERSION) =>
+    (device: TrezorDevice, encryptionVersion = METADATA_LABELING.ENCRYPTION_VERSION) =>
     async (dispatch: Dispatch, getState: GetState) => {
         if (!device.state || !device.connected) return;
 
@@ -444,7 +444,7 @@ export const setDeviceMetadataKey =
                 instance: device.instance,
             },
             useEmptyPassphrase: device.useEmptyPassphrase,
-            ...METADATA.ENCRYPTION_VERSION_CONFIGS[encryptionVersion],
+            ...METADATA_LABELING.ENCRYPTION_VERSION_CONFIGS[encryptionVersion],
         });
 
         if (result.success) {
@@ -561,9 +561,9 @@ export const init =
             dispatch(metadataActions.enableMetadata());
         }
 
-        if (!device.metadata?.[METADATA.ENCRYPTION_VERSION]) {
+        if (!device.metadata?.[METADATA_LABELING.ENCRYPTION_VERSION]) {
             const result = await dispatch(
-                setDeviceMetadataKey(device, METADATA.ENCRYPTION_VERSION),
+                setDeviceMetadataKey(device, METADATA_LABELING.ENCRYPTION_VERSION),
             );
             if (!result?.success) {
                 dispatch({ type: METADATA.SET_INITIATING, payload: false });
@@ -580,7 +580,7 @@ export const init =
         }
 
         // 3. we have master key. use it to derive account keys
-        dispatch(syncMetadataKeys(device, METADATA.ENCRYPTION_VERSION));
+        dispatch(syncMetadataKeys(device, METADATA_LABELING.ENCRYPTION_VERSION));
 
         device = deviceState
             ? selectDeviceByState(getState(), deviceState)
@@ -618,7 +618,7 @@ export const init =
                     return;
                 }
                 dispatch(fetchAndSaveMetadata(device.state));
-            }, METADATA.FETCH_INTERVAL);
+            }, METADATA_LABELING.FETCH_INTERVAL);
         }
 
         return true;

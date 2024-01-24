@@ -1,7 +1,7 @@
 import { testMocks } from '@suite-common/test-utils';
 import { deviceActions } from '@suite-common/wallet-core';
 
-import { METADATA } from 'src/actions/suite/constants';
+import { METADATA, METADATA_LABELING } from 'src/actions/suite/constants/';
 
 import * as metadataLabelingActions from '../metadataLabelingActions';
 
@@ -17,14 +17,14 @@ type Fixture<T extends (...a: any) => any> = {
 const setDeviceMetadataKey: Fixture<(typeof metadataLabelingActions)['setDeviceMetadataKey']>[] = [
     {
         description: `Metadata not enabled`,
-        params: [getSuiteDevice({ state: 'a' }), METADATA.ENCRYPTION_VERSION],
+        params: [getSuiteDevice({ state: 'a' }), METADATA_LABELING.ENCRYPTION_VERSION],
         initialState: {
             metadata: { enabled: false, providers: [] },
         },
     },
     {
         description: `Device without state`,
-        params: [getSuiteDevice({ state: undefined }), METADATA.ENCRYPTION_VERSION],
+        params: [getSuiteDevice({ state: undefined }), METADATA_LABELING.ENCRYPTION_VERSION],
         initialState: {
             metadata: { enabled: true, providers: [] },
         },
@@ -33,7 +33,7 @@ const setDeviceMetadataKey: Fixture<(typeof metadataLabelingActions)['setDeviceM
         description: `Device not connected (remembered)`,
         params: [
             getSuiteDevice({ state: 'device-state', connected: false, metadata: {} }),
-            METADATA.ENCRYPTION_VERSION,
+            METADATA_LABELING.ENCRYPTION_VERSION,
         ],
         initialState: {
             metadata: { enabled: true, providers: [] },
@@ -43,7 +43,7 @@ const setDeviceMetadataKey: Fixture<(typeof metadataLabelingActions)['setDeviceM
         description: `Master key successfully generated`,
         params: [
             getSuiteDevice({ state: 'device-state', connected: true, metadata: {} }),
-            METADATA.ENCRYPTION_VERSION,
+            METADATA_LABELING.ENCRYPTION_VERSION,
         ],
         initialState: {
             metadata: {
@@ -195,7 +195,7 @@ const addAccountMetadata = [
             accounts: [
                 {
                     metadata: {
-                        [METADATA.ENCRYPTION_VERSION]: {
+                        [METADATA_LABELING.ENCRYPTION_VERSION]: {
                             aesKey: '9bc3736f0b45cd681854a724b5bba67b9da1e50bc9983fd2dd56e53e74b75480',
                             fileName: 'a',
                         },

@@ -1,7 +1,7 @@
 // @group:metadata
 // @retry=2
 
-import * as METADATA from '@trezor/suite/src/actions/suite/constants/metadataConstants';
+import * as METADATA_LABELING from '@trezor/suite/src/actions/suite/constants/metadataLabelingConstants';
 
 import { rerouteMetadataToMockProvider, stubOpen } from '../../stubs/metadata';
 
@@ -85,7 +85,7 @@ describe('Metadata - suite is watching cloud provider and syncs periodically', (
             });
 
             // and this does the time travel to trigger fetch
-            cy.tick(METADATA.FETCH_INTERVAL);
+            cy.tick(METADATA_LABELING.FETCH_INTERVAL);
             cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', f.content);
         });
     });
