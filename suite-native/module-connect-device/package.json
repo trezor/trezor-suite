@@ -15,6 +15,7 @@
         "@react-navigation/native": "^6.1.9",
         "@react-navigation/native-stack": "^6.9.17",
         "@suite-common/icons": "workspace:*",
+        "@suite-common/validators": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-native/alerts": "workspace:*",
         "@suite-native/atoms": "workspace:*",
@@ -25,7 +26,6 @@
         "@suite-native/navigation": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/styles": "workspace:*",
-        "@trezor/validation": "workspace:*",
         "react": "18.2.0",
         "react-native": "0.71.8",
         "react-redux": "8.0.7"

@@ -16,7 +16,7 @@ import {
     buildCurrencyOptions,
 } from '@suite-common/wallet-utils';
 import { CurrencyOption, Output } from 'src/types/wallet/sendForm';
-import { MAX_LENGTH } from 'src/constants/suite/inputs';
+import { formInputsMaxLength } from '@suite-common/validators';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { NumberInput } from 'src/components/suite';
 import { useTranslation } from 'src/hooks/suite';
@@ -219,7 +219,7 @@ export const Fiat = ({ output, outputId }: FiatProps) => {
                 name={fiatInputName}
                 data-test={fiatInputName}
                 defaultValue={fiatValue}
-                maxLength={MAX_LENGTH.FIAT}
+                maxLength={formInputsMaxLength.fiat}
                 rules={rules}
                 bottomText={bottomText}
                 innerAddon={

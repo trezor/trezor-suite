@@ -5,7 +5,7 @@ import { buildOption } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { Controller } from 'react-hook-form';
 import { useCoinmarketSellFormContext } from 'src/hooks/wallet/useCoinmarketSellForm';
 import { getInputState } from '@suite-common/wallet-utils';
-import { MAX_LENGTH } from 'src/constants/suite/inputs';
+import { formInputsMaxLength } from '@suite-common/validators';
 import { FIAT_CURRENCY_SELECT, FIAT_INPUT } from 'src/types/wallet/coinmarketSellForm';
 import { useTranslation } from 'src/hooks/suite';
 import { validateDecimals, validateMin } from 'src/utils/suite/validation';
@@ -64,7 +64,7 @@ const FiatInput = () => {
             isDisabled={tokenData !== undefined}
             inputState={getInputState(errors.fiatInput, fiatInputValue)}
             name={FIAT_INPUT}
-            maxLength={MAX_LENGTH.AMOUNT}
+            maxLength={formInputsMaxLength.amount}
             bottomText={errors[FIAT_INPUT]?.message}
             innerAddon={
                 <Controller

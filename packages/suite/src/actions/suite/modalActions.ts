@@ -3,10 +3,9 @@ import { createAction } from '@reduxjs/toolkit';
 import TrezorConnect, { UI } from '@trezor/connect';
 import { createDeferred, DeferredResponse } from '@trezor/utils';
 import { UserContextPayload } from '@suite-common/suite-types';
-import { deviceActions, selectDevice } from '@suite-common/wallet-core';
 
 import { MODAL } from 'src/actions/suite/constants';
-import { Dispatch, GetState } from 'src/types/suite';
+import { Dispatch } from 'src/types/suite';
 
 export type ModalAction =
     | { type: typeof MODAL.CLOSE }
@@ -32,39 +31,6 @@ export const preserve = () => ({ type: MODAL.PRESERVE });
 export const onPinSubmit = (payload: string) => () => {
     TrezorConnect.uiResponse({ type: UI.RECEIVE_PIN, payload });
 };
-
-/**
- * Called from <PassphraseModal /> component
- * Sends passphrase to `@trezor/connect`
- * @param {string} value
- * @param {boolean} passphraseOnDevice
- * @param {boolean} hasEmptyPassphraseWallet
- */
-export const onPassphraseSubmit =
-    (value: string, passphraseOnDevice: boolean) => (dispatch: Dispatch, getState: GetState) => {
-        const device = selectDevice(getState());
-        if (!device) return;
-
-        if (!device.state) {
-            // call SUITE.UPDATE_PASSPHRASE_MODE action to set or remove walletNumber
-            dispatch(
-                deviceActions.updatePassphraseMode({
-                    device,
-                    hidden: passphraseOnDevice || !!value,
-                    alwaysOnDevice: passphraseOnDevice,
-                }),
-            );
-        }
-
-        TrezorConnect.uiResponse({
-            type: UI.RECEIVE_PASSPHRASE,
-            payload: {
-                value,
-                save: true,
-                passphraseOnDevice,
-            },
-        });
-    };
 
 export const onReceiveConfirmation = (confirmation: boolean) => (dispatch: Dispatch) => {
     TrezorConnect.uiResponse({

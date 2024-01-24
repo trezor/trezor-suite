@@ -4,7 +4,7 @@ import { Translation } from 'src/components/suite';
 import { Textarea, Icon, Tooltip } from '@trezor/components';
 import { getInputState, isHexValid } from '@suite-common/wallet-utils';
 import { OpenGuideFromTooltip } from 'src/components/guide';
-import { MAX_LENGTH } from 'src/constants/suite/inputs';
+import { formInputsMaxLength } from '@suite-common/validators';
 import { useTranslation } from 'src/hooks/suite';
 
 const Wrapper = styled.div`
@@ -78,7 +78,7 @@ const OpReturn = ({ outputId }: { outputId: number }) => {
                 isMonospace
                 data-test={inputAsciiName}
                 defaultValue={asciiValue}
-                maxLength={MAX_LENGTH.OP_RETURN}
+                maxLength={formInputsMaxLength.opReturn}
                 bottomText={asciiError?.message}
                 label={
                     <Label>
@@ -105,7 +105,7 @@ const OpReturn = ({ outputId }: { outputId: number }) => {
                 isMonospace
                 data-test={inputHexName}
                 defaultValue={hexValue}
-                maxLength={MAX_LENGTH.OP_RETURN}
+                maxLength={formInputsMaxLength.opReturn}
                 bottomText={hexError?.message}
                 labelRight={
                     <Icon size={20} icon="CROSS" onClick={() => removeOpReturn(outputId)} />

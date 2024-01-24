@@ -1,4 +1,4 @@
-import { yup } from '@trezor/validation';
+import { yup } from '@suite-common/validators';
 import { useForm } from '@suite-native/forms';
 
 export const MAX_ACCOUNT_LABEL_LENGTH = 30;

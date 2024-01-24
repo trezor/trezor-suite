@@ -4,7 +4,7 @@ import { getInputState } from '@suite-common/wallet-utils';
 import { useCoinmarketExchangeFormContext } from 'src/hooks/wallet/useCoinmarketExchangeForm';
 import { NumberInput } from 'src/components/suite';
 import FiatSelect from './FiatSelect';
-import { MAX_LENGTH } from 'src/constants/suite/inputs';
+import { formInputsMaxLength } from '@suite-common/validators';
 import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/wallet/coinmarketExchangeForm';
 import { useTranslation } from 'src/hooks/suite';
 import { validateDecimals, validateMin } from 'src/utils/suite/validation';
@@ -55,7 +55,7 @@ const FiatInput = () => {
             inputState={getInputState(fiatError || amountError, fiat)}
             name={FIAT_INPUT}
             noTopLabel
-            maxLength={MAX_LENGTH.AMOUNT}
+            maxLength={formInputsMaxLength.amount}
             rules={fiatInputRules}
             bottomText={fiatError?.message}
             innerAddon={<FiatSelect />}

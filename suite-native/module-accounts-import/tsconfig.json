@@ -10,6 +10,9 @@
             "path": "../../suite-common/redux-utils"
         },
         {
+            "path": "../../suite-common/validators"
+        },
+        {
             "path": "../../suite-common/wallet-config"
         },
         {
@@ -44,8 +47,7 @@
         },
         { "path": "../../packages/connect" },
         { "path": "../../packages/styles" },
-        { "path": "../../packages/utxo-lib" },
-        { "path": "../../packages/validation" }
+        { "path": "../../packages/utxo-lib" }
     ],
     "include": [".", "**/*.json"]
 }

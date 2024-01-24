@@ -2,7 +2,7 @@ import { Controller } from 'react-hook-form';
 import styled from 'styled-components';
 import { fiatCurrencies } from '@suite-common/suite-config';
 import { Translation, NumberInput } from 'src/components/suite';
-import { MAX_LENGTH } from 'src/constants/suite/inputs';
+import { formInputsMaxLength } from '@suite-common/validators';
 import { getInputState } from '@suite-common/wallet-utils';
 import { CoinLogo, Select } from '@trezor/components';
 import { useCoinmarketP2pFormContext } from 'src/hooks/wallet/useCoinmarketP2pForm';
@@ -63,7 +63,7 @@ export const Inputs = () => {
                     rules={fiatInputRules}
                     inputState={getInputState(errors.fiatInput, fiatInputValue)}
                     name={fiatInput}
-                    maxLength={MAX_LENGTH.AMOUNT}
+                    maxLength={formInputsMaxLength.amount}
                     bottomText={errors[fiatInput]?.message}
                     innerAddon={
                         <Controller

@@ -1,7 +1,6 @@
 import { useFormContext } from '@suite-native/forms';
 import { NumPadButton } from '@suite-native/atoms';
-
-import { PIN_FORM_MAX_LENGTH } from '../constants/pinFormConstants';
+import { formInputsMaxLength } from '@suite-common/validators';
 
 type PinItemProps = {
     value: number;
@@ -19,7 +18,7 @@ export const PinMatrixButton = ({ value }: PinItemProps) => {
 
     return (
         <NumPadButton
-            disabled={pinLength === PIN_FORM_MAX_LENGTH}
+            disabled={pinLength === formInputsMaxLength.pin}
             onPress={handlePress}
             value={value}
         />

@@ -4,7 +4,7 @@ import { Textarea, Icon } from '@trezor/components';
 import { QuestionTooltip } from 'src/components/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { getInputState, isHexValid } from '@suite-common/wallet-utils';
-import { MAX_LENGTH } from 'src/constants/suite/inputs';
+import { formInputsMaxLength } from '@suite-common/validators';
 import { useTranslation } from 'src/hooks/suite';
 
 const inputAsciiName = 'ethereumDataAscii';
@@ -102,7 +102,7 @@ export const Data = ({ close }: DataProps) => {
                 isMonospace
                 data-test={inputAsciiName}
                 defaultValue={asciiValue}
-                maxLength={MAX_LENGTH.ETH_DATA}
+                maxLength={formInputsMaxLength.ethData}
                 bottomText={asciiError?.message}
                 label={<QuestionTooltip label="DATA_ETH" tooltip="DATA_ETH_TOOLTIP" />}
                 innerRef={asciiRef}
@@ -114,7 +114,7 @@ export const Data = ({ close }: DataProps) => {
                 isMonospace
                 data-test={inputHexName}
                 defaultValue={hexValue}
-                maxLength={MAX_LENGTH.ETH_DATA}
+                maxLength={formInputsMaxLength.ethData}
                 bottomText={hexError?.message}
                 labelRight={
                     <Icon

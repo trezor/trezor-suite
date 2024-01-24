@@ -9,10 +9,10 @@ import * as deviceUtils from '@suite-common/suite-utils';
 import {
     selectIsDiscoveryAuthConfirmationRequired,
     selectDevices,
+    onPassphraseSubmit,
 } from '@suite-common/wallet-core';
 
 import { useSelector, useDispatch } from 'src/hooks/suite';
-import { onPassphraseSubmit } from 'src/actions/suite/modalActions';
 import { Translation, Modal } from 'src/components/suite';
 import type { TrezorDevice } from 'src/types/suite';
 import { OpenGuideFromTooltip } from 'src/components/guide';
@@ -78,7 +78,7 @@ export const PassphraseModal = ({ device }: PassphraseModalProps) => {
     const onSubmit = useCallback(
         (value: string, passphraseOnDevice?: boolean) => {
             setSubmitted(true);
-            dispatch(onPassphraseSubmit(value, !!passphraseOnDevice));
+            dispatch(onPassphraseSubmit({ value, passphraseOnDevice: !!passphraseOnDevice }));
         },
         [setSubmitted, dispatch],
     );

@@ -15,7 +15,7 @@ import {
     isBech32AddressUppercase,
     getInputState,
 } from '@suite-common/wallet-utils';
-import { MAX_LENGTH } from 'src/constants/suite/inputs';
+import { formInputsMaxLength } from '@suite-common/validators';
 import { PROTOCOL_TO_NETWORK } from 'src/constants/suite/protocol';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
@@ -276,7 +276,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
             }
             data-test={inputName}
             defaultValue={addressValue}
-            maxLength={MAX_LENGTH.ADDRESS}
+            maxLength={formInputsMaxLength.address}
             innerRef={inputRef}
             {...inputField}
         />

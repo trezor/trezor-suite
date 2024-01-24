@@ -9,6 +9,7 @@ import styled, { css, useTheme } from 'styled-components';
 
 import { countBytesInString } from '@trezor/utils';
 import { isAndroid } from '@trezor/env-utils';
+import { formInputsMaxLength } from '@suite-common/validators';
 
 import { PasswordStrengthIndicator } from './PasswordStrengthIndicator';
 import { variables, motion as motionConfig } from '../../config';
@@ -17,8 +18,6 @@ import { Checkbox } from '../form/Checkbox/Checkbox';
 import { Input } from '../form/Input/Input';
 import { Icon } from '../assets/Icon/Icon';
 import { TooltipProps, Tooltip } from '../Tooltip/Tooltip';
-
-const MAX_LENGTH = 50;
 
 const Wrapper = styled.div<Pick<PassphraseTypeCardProps, 'type' | 'singleColModal'>>`
     display: flex;
@@ -182,7 +181,7 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardProps) => {
     const ref = useRef<HTMLInputElement>(null);
     const caretRef = useRef<number>(0);
 
-    const isTooLong = countBytesInString(value) > MAX_LENGTH;
+    const isTooLong = countBytesInString(value) > formInputsMaxLength.passphrase;
 
     const { onSubmit } = props;
     const submit = useCallback(
