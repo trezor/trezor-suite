@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-  <item android:drawable="@color/splashscreen_background"/>
-  <item android:gravity="center" android:drawable="@drawable/splash_icon"
-      android:left="170dp" android:right="170dp" android:top="170dp" android:bottom="170dp">
-  </item>
-</layer-list>
