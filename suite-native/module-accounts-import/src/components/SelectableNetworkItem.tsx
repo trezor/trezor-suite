@@ -48,7 +48,10 @@ export const SelectableNetworkItem = ({ symbol, onPress }: SelectableAssetItemPr
                         <Text variant="body">{networkName}</Text>
                         <HStack alignItems="center" justifyContent="center">
                             <Text variant="hint" color="textSubdued">
-                                <NetworkSymbolFormatter value={symbol} />
+                                <NetworkSymbolFormatter
+                                    value={symbol}
+                                    areAmountUnitsEnabled={false}
+                                />
                             </Text>
                             {isEthereumNetwork && (
                                 <Box style={applyStyle(erc20BadgeStyle)}>

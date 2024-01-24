@@ -21,7 +21,10 @@ import { SignValueFormatter } from './formatters/SignValueFormatter';
 import { prepareDateFormatter } from './formatters/prepareDateFormatter';
 import { prepareTimeFormatter } from './formatters/prepareTimeFormatter';
 import { prepareDateTimeFormatter } from './formatters/prepareDateTimeFormatter';
-import { prepareNetworkSymbolFormatter } from './formatters/prepareNetworkSymbolFormatter';
+import {
+    NetworkSymbolFormatterDataContext,
+    prepareNetworkSymbolFormatter,
+} from './formatters/prepareNetworkSymbolFormatter';
 import { MonthNameFormatter } from './formatters/prepareMonthNameFormatter';
 
 type FormatterProviderProps = {
@@ -35,7 +38,7 @@ export type Formatters = {
         string,
         CryptoAmountFormatterDataContext
     >;
-    NetworkSymbolFormatter: Formatter<NetworkSymbol, string>;
+    NetworkSymbolFormatter: Formatter<NetworkSymbol, string, NetworkSymbolFormatterDataContext>;
     SignValueFormatter: Formatter<SignValue | undefined, string>;
     FiatAmountFormatter: Formatter<
         string | number,
