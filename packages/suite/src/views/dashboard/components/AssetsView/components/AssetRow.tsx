@@ -1,13 +1,7 @@
 import { memo, ComponentProps } from 'react';
 import styled, { css, useTheme } from 'styled-components';
 import { Network } from 'src/types/wallet';
-import {
-    Icon,
-    variables,
-    motionAnimation,
-    SkeletonCircle,
-    SkeletonRectangle,
-} from '@trezor/components';
+import { Icon, variables, motionAnimation, SkeletonRectangle } from '@trezor/components';
 import {
     AmountUnitSwitchWrapper,
     CoinBalance,
@@ -25,14 +19,8 @@ import { spacingsPx, typography } from '@trezor/theme';
 import { AssetFiatBalance } from '@suite-common/assets';
 import { AssetTableRowGrid } from './AssetTableRowGrid';
 import { ArrowIcon } from './ArrowIcon';
-import { AssetCoinLogo } from './AssetCoinLogo';
+import { AssetCoinLogo, AssetCoinLogoSkeleton } from './AssetCoinLogo';
 import { AssetCoinName } from './AssetCoinName';
-
-const LogoWrapper = styled.div`
-    padding-right: 12px;
-    display: flex;
-    align-items: center;
-`;
 
 const Coin = styled.div`
     white-space: nowrap;
@@ -48,7 +36,6 @@ const StyledCol = styled(motion.div)<{ $isLastRow?: boolean }>`
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     border-bottom: 1px solid ${({ theme }) => theme.borderOnElevation1};
-    padding-right: 20px;
 
     ${({ $isLastRow }) =>
         $isLastRow &&
@@ -136,6 +123,13 @@ const BuyButtonWrapper = styled(Col)`
     justify-content: right;
 `;
 
+const StyledArrowIcon = styled(ArrowIcon)`
+    margin: 0 ${spacingsPx.md};
+`;
+const SkeletonRectangleLast = styled(SkeletonRectangle)`
+    margin-right: ${spacingsPx.md};
+`;
+
 interface AssetTableProps {
     network: Network;
     failed: boolean;
@@ -219,7 +213,7 @@ export const AssetRow = memo(
                             dataTest={`@dashboard/assets/table/${symbol}/buy-button`}
                         />
                     )}
-                    <ArrowIcon size={16} icon="ARROW_RIGHT_LONG" color={theme.iconSubdued} />
+                    <StyledArrowIcon size={16} icon="ARROW_RIGHT_LONG" color={theme.iconSubdued} />
                 </BuyButtonWrapper>
             </AssetTableRowGrid>
         );
@@ -233,10 +227,10 @@ export const AssetRowSkeleton = (props: { animate?: boolean }) => {
 
     return (
         <AssetTableRowGrid>
+            <CoinLogoWrapper>
+                <AssetCoinLogoSkeleton />
+            </CoinLogoWrapper>
             <CoinNameWrapper isLastRow>
-                <LogoWrapper>
-                    <SkeletonCircle size={48} />
-                </LogoWrapper>
                 <Coin>
                     <SkeletonRectangle animate={animate} width={150} />
                 </Coin>
@@ -252,7 +246,7 @@ export const AssetRowSkeleton = (props: { animate?: boolean }) => {
                 <SkeletonRectangle animate={animate} width={50} />
             </ExchangeRateWrapper>
             <BuyButtonWrapper isLastRow>
-                <SkeletonRectangle animate={animate} width={58} height={38} borderRadius={19} />
+                <SkeletonRectangleLast animate={animate} width={58} height={38} borderRadius={19} />
             </BuyButtonWrapper>
         </AssetTableRowGrid>
     );
