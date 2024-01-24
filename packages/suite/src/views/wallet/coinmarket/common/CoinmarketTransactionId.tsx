@@ -23,7 +23,7 @@ const Left = styled.div`
 const Right = styled.div``;
 
 const Label = styled.div`
-    text-transform: uppercase;
+    text-transform: capitalize;
     font-size: ${variables.FONT_SIZE.TINY};
     padding-right: 3px;
     white-space: nowrap;

@@ -45,7 +45,7 @@ const Column = styled.div<ColumnProps>`
 
 const Heading = styled.div`
     display: flex;
-    text-transform: uppercase;
+    text-transform: capitalize;
     align-items: center;
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
