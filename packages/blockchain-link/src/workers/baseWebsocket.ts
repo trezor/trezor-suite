@@ -1,5 +1,6 @@
 import WebSocket from 'ws';
-import { createDeferred, Deferred } from '@trezor/utils/lib/createDeferred';
+import { createDeferred } from '@trezor/utils/lib/createDeferred';
+import { createDeferredManager } from '@trezor/utils/lib/createDeferredManager';
 import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
 
 import { CustomError } from '@trezor/blockchain-link-types/lib/constants/errors';
@@ -34,14 +35,12 @@ type WsEvents = {
 export abstract class BaseWebsocket<T extends EventMap> extends TypedEmitter<T & WsEvents> {
     readonly options: Options;
 
-    private readonly messages: Deferred<any>[] = [];
+    private readonly messages;
     private readonly subscriptions: Subscription<keyof T>[] = [];
     private readonly emitter: TypedEmitter<WsEvents> = this;
 
-    private messageID = 0;
     private ws?: WebSocket;
     private pingTimeout?: ReturnType<typeof setTimeout>;
-    private connectionTimeout?: ReturnType<typeof setTimeout>;
     private connectPromise?: Promise<void>;
 
     protected abstract ping(): Promise<unknown>;
@@ -50,21 +49,10 @@ export abstract class BaseWebsocket<T extends EventMap> extends TypedEmitter<T &
     constructor(options: Options) {
         super();
         this.options = options;
-    }
-
-    private setConnectionTimeout(timeout?: number) {
-        this.clearConnectionTimeout();
-        this.connectionTimeout = setTimeout(
-            this.onTimeout.bind(this),
-            timeout || this.options.timeout || DEFAULT_TIMEOUT,
-        );
-    }
-
-    private clearConnectionTimeout() {
-        if (this.connectionTimeout) {
-            clearTimeout(this.connectionTimeout);
-            this.connectionTimeout = undefined;
-        }
+        this.messages = createDeferredManager({
+            timeout: this.options.timeout || DEFAULT_TIMEOUT,
+            onTimeout: this.onTimeout.bind(this),
+        });
     }
 
     private setPingTimeout() {
@@ -77,26 +65,11 @@ export abstract class BaseWebsocket<T extends EventMap> extends TypedEmitter<T &
         );
     }
 
-    private rejectAllPending(code: string, message?: string) {
-        this.messages.forEach(m => m.reject(new CustomError(code, message)));
-        this.messages.splice(0, this.messages.length);
-    }
-
     private onTimeout() {
         const { ws } = this;
         if (!ws) return;
-        if (ws.listenerCount('open') > 0) {
-            ws.emit('error', new CustomError('websocket_timeout'));
-            try {
-                ws.once('error', () => {}); // hack; ws throws uncaughtably when there's no error listener
-                ws.close();
-            } catch (error) {
-                // empty
-            }
-        } else {
-            this.rejectAllPending('websocket_timeout');
-            ws.close();
-        }
+        this.messages.rejectAll(new CustomError('websocket_timeout'));
+        ws.close();
     }
 
     private async onPing() {
@@ -121,36 +94,31 @@ export abstract class BaseWebsocket<T extends EventMap> extends TypedEmitter<T &
     protected sendMessage(message: Record<string, any>) {
         const { ws } = this;
         if (!ws) throw new CustomError('websocket_not_initialized');
-        const id = this.messageID.toString();
+        const { promiseId, promise } = this.messages.create();
 
-        const dfd = createDeferred(id);
-        const req = { id, ...message };
+        const req = { id: promiseId.toString(), ...message };
 
-        this.messageID++;
-        this.messages.push(dfd);
-
-        this.setConnectionTimeout();
         this.setPingTimeout();
 
         this.options.onSending?.(message);
 
         ws.send(JSON.stringify(req));
-        return dfd.promise as Promise<any>;
+        return promise;
     }
 
     protected onMessage(message: string) {
         try {
             const resp = JSON.parse(message);
             const { id, data } = resp;
-            const dfd = this.messages.find(m => m.id === id);
-            if (dfd) {
-                if (data.error) {
-                    dfd.reject(new CustomError('websocket_error_message', data.error.message));
-                } else {
-                    dfd.resolve(data);
-                }
-                this.messages.splice(this.messages.indexOf(dfd), 1);
-            } else {
+
+            const messageSettled = data.error
+                ? this.messages.reject(
+                      Number(id),
+                      new CustomError('websocket_error_message', data.error.message),
+                  )
+                : this.messages.resolve(Number(id), data);
+
+            if (!messageSettled) {
                 const subs = this.subscriptions.find(s => s.id === id);
                 if (subs) {
                     subs.callback(data);
@@ -160,14 +128,11 @@ export abstract class BaseWebsocket<T extends EventMap> extends TypedEmitter<T &
             // empty
         }
 
-        if (this.messages.length === 0) {
-            this.clearConnectionTimeout();
-        }
         this.setPingTimeout();
     }
 
     protected addSubscription<E extends keyof T>(type: E, callback: (result: T[E]) => void) {
-        const id = this.messageID.toString();
+        const id = this.messages.nextId().toString();
         this.subscriptions.push({ id, type, callback });
     }
 
@@ -190,21 +155,33 @@ export abstract class BaseWebsocket<T extends EventMap> extends TypedEmitter<T &
             await new Promise<void>(resolve => this.emitter.once('disconnected', resolve));
         }
 
-        // set connection timeout before WebSocket initialization
-        // it will be be cancelled by this.init or this.dispose after the error
-        this.setConnectionTimeout(this.options.connectionTimeout);
-
         // create deferred promise
         const dfd = createDeferred(-1);
         this.connectPromise = dfd.promise;
 
         const ws = this.createWebsocket();
 
+        // set connection timeout before WebSocket initialization
+        const connectionTimeout = setTimeout(
+            () => {
+                ws.emit('error', new CustomError('websocket_timeout'));
+                try {
+                    ws.once('error', () => {}); // hack; ws throws uncaughtably when there's no error listener
+                    ws.close();
+                } catch (error) {
+                    // empty
+                }
+            },
+            this.options.connectionTimeout || this.options.timeout || DEFAULT_TIMEOUT,
+        );
+
         ws.once('error', error => {
+            clearTimeout(connectionTimeout);
             this.onClose();
             dfd.reject(new CustomError('websocket_runtime_error', error.message));
         });
         ws.on('open', () => {
+            clearTimeout(connectionTimeout);
             this.init();
             dfd.resolve();
         });
@@ -222,8 +199,6 @@ export abstract class BaseWebsocket<T extends EventMap> extends TypedEmitter<T &
         if (!ws || !this.isConnected()) {
             throw Error('Websocket init cannot be called');
         }
-        // clear timeout from this.connect
-        this.clearConnectionTimeout();
 
         // remove previous listeners and add new listeners
         ws.removeAllListeners();
@@ -247,16 +222,14 @@ export abstract class BaseWebsocket<T extends EventMap> extends TypedEmitter<T &
         if (this.pingTimeout) {
             clearTimeout(this.pingTimeout);
         }
-        if (this.connectionTimeout) {
-            clearTimeout(this.connectionTimeout);
-        }
 
         if (this.isConnected()) {
             this.disconnect();
         }
         this.ws?.removeAllListeners();
-
-        this.rejectAllPending('websocket_runtime_error', 'Websocket closed unexpectedly');
+        this.messages.rejectAll(
+            new CustomError('websocket_runtime_error', 'Websocket closed unexpectedly'),
+        );
     }
 
     dispose() {
