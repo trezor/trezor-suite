@@ -11,7 +11,7 @@ A collection of example implementations of @trezor/connect in various environmen
 | [Browser inline script](./browser-inline-script/)                 | [@trezor/connect-web](../connect-web/README.md) | Yes   |
 | [Browser with webpack](../connect-explorer/README.md)             | [@trezor/connect-web](../connect-web/README.md) | Yes   |
 | [Webextension](./webextension/)                                   | [@trezor/connect-web](../connect-web/README.md) | Yes   |
-
+adfvsgggfgfsfsd
 Also you may explorer 3rd party @trezor/connect integrations.
 
 -   https://github.com/stellar/laboratory
