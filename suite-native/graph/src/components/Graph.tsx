@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
 
-import { N } from '@mobily/ts-belt';
 import * as Haptics from 'expo-haptics';
 
 import { GraphPoint, LineGraph } from '@suite-native/react-native-graph';
@@ -14,7 +13,7 @@ import {
 import { useTranslate } from '@suite-native/intl';
 
 import { getExtremaFromGraphPoints } from '../utils';
-import { AxisLabel, MAX_CLAMP_VALUE } from './AxisLabel';
+import { AxisLabel } from './AxisLabel';
 import { GraphError } from './GraphError';
 import { TransactionEventTooltip } from './TransactionEventTooltip';
 import { SelectionDotWithLine } from './SelectionDotWithLine';
@@ -54,8 +53,6 @@ const graphStyle = prepareNativeStyle(_ => ({
     width: '100%',
 }));
 
-// to avoid overflows from the screen
-const clampAxisLabels = (value: number) => N.clamp(value, 5, MAX_CLAMP_VALUE);
 const triggerHaptics = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 };
@@ -106,13 +103,13 @@ export const Graph = <TGraphPoint extends FiatGraphPoint>({
             return {
                 TopAxisLabel: () => (
                     <AxisLabel
-                        x={clampAxisLabels(extremaFromGraphPoints.max.x)}
+                        x={extremaFromGraphPoints.max.x}
                         value={extremaFromGraphPoints.max.value}
                     />
                 ),
                 BottomAxisLabel: () => (
                     <AxisLabel
-                        x={clampAxisLabels(extremaFromGraphPoints.min.x)}
+                        x={extremaFromGraphPoints.min.x}
                         value={extremaFromGraphPoints.min.value}
                     />
                 ),

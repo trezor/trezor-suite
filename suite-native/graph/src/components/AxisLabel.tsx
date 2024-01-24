@@ -17,8 +17,6 @@ type AxisLabelStyleProps = {
 
 const SCREEN_WIDTH = Dimensions.get('screen').width;
 
-export const MAX_CLAMP_VALUE = 90;
-
 const axisLabelStyle = prepareNativeStyle<AxisLabelStyleProps>(
     ({ spacings }, { x, isOverflowing }) => ({
         position: 'absolute',
