@@ -1,8 +1,30 @@
 {
     "version": 1,
-    "timestamp": "2024-01-05T00:00:00+00:00",
-    "sequence": 50,
+    "timestamp": "2024-01-24T00:00:00+00:00",
+    "sequence": 51,
     "actions": [
+        {
+            "conditions": [],
+            "message": {
+                "id": "57fc962f-30d4-4e5d-a908-ea7a7349b6cf ",
+                "priority": 99,
+                "dismissible": true,
+                "variant": "critical",
+                "category": "banner",
+                "content": {
+                    "en-GB": "Stay alert for unsolicited emails seeking sensitive information, never share your recovery seed.",
+                    "en": "Stay alert for unsolicited emails seeking sensitive information, never share your recovery seed.",
+                    "es": "Mantente alerta ante correos electrónicos no solicitados que buscan información sensible, nunca compartas tu semilla de recuperación.",
+                    "cs": "Dávejte si pozor na nevyžádané e-maily, které požadují citlivé informace, a nikdy nesdělujte svůj recovery seed.",
+                    "ru": "Будьте бдительны при получении нежелательных писем с просьбой предоставить конфиденциальную информацию, никогда не сообщайте свои данные для восстановления.",
+                    "ja": "機密情報を求める迷惑メールに注意し、決してリカバリーシードを共有しないこと",
+                    "hu": "Legyen résen az érzékeny információkat kérő kéretlen e-mailekkel szemben, és soha ne ossza meg a helyreállító seed.",
+                    "it": "State attenti alle e-mail non richieste che richiedono informazioni sensibili, non condividete mai il vostro seed di ripristino.",
+                    "fr": "Restez vigilant face aux courriels non sollicités qui vous demandent des informations sensibles, ne communiquez jamais vos seed de récupération.",
+                    "de": "Seien Sie auf der Hut vor unaufgeforderten E-Mails, die nach sensiblen Informationen fragen, und geben Sie niemals Ihren Recovery Seed weiter."
+                }
+            }
+        },
         {
             "conditions": [
                 {
