@@ -1,6 +1,8 @@
 import { useCallback, useRef, useState } from 'react';
 import { Dimensions, View } from 'react-native';
 
+import { useFocusEffect } from '@react-navigation/native';
+
 import { useDiscreetMode } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { FiatAmountFormatter } from '@suite-native/formatters';
@@ -14,6 +16,9 @@ type AxisLabelStyleProps = {
     x: number;
     isOverflowing: boolean;
 };
+// Default react-navigation screen transition animation duration is equal to 350.
+// https://reactnavigation.org/docs/native-stack-navigator/#animationduration
+const SCREEN_TRANSITION_ANIMATION_DURATION = 350;
 
 const SCREEN_WIDTH = Dimensions.get('screen').width;
 
@@ -49,6 +54,14 @@ export const AxisLabel = ({ x, value }: AxisLabelProps) => {
             });
         }
     }, [utils]);
+
+    // We need to check the axis overflow on every return to a already rendered graph screen, because it might be shifted by the previous screen transition animation.
+    // The timeout is needed because the calculation has to be started after the screen transition animation is finished.
+    useFocusEffect(() => {
+        const timeoutId = setTimeout(handleLayoutOverflow, SCREEN_TRANSITION_ANIMATION_DURATION);
+
+        return () => clearTimeout(timeoutId);
+    });
 
     if (isDiscreetMode) return null;
 
