@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 /* eslint-disable no-underscore-dangle */
 import React, { useCallback, useEffect } from 'react';
-import { StyleSheet, Dimensions, TextStyle } from 'react-native';
+import { StyleSheet, Dimensions, TextStyle, DimensionValue } from 'react-native';
 import Animated, {
     Easing,
     interpolate,
@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
 export const Snowflake: React.FC<{
     glyph: React.ReactNode;
     size: number;
-    offset: string;
+    offset: DimensionValue;
     amplitude?: number;
     fallDuration?: number;
     shakeDuration?: number;

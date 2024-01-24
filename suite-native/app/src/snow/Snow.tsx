@@ -31,7 +31,7 @@ const lightSnowflakes = [
     { glyph: '❆', size: 24, offset: '25%', fallDelay: 8000, shakeDelay: 3000 },
 
     { glyph: 'btc', size: 18, offset: '8%', fallDelay: 20000, shakeDelay: 5000 },
-];
+] as const;
 
 const isChristmas = () => {
     const date = new Date();
