@@ -233,22 +233,8 @@ suite-desktop build windows codesign:
     paths:
       - packages/connect-explorer/build
 
-connect-explorer build:
-  extends: .connect-explorer build base
-  # only:
-  #   <<: *run_connect_rules
-
-# connect-explorer build manual:
-#   extends: .connect-explorer build base
-#   except:
-#     <<: *run_everything_rules
-#   # when: manual
-
-# connect-web build
-connect-web build:
+.connect-web build base:
   stage: build
-  # only:
-  #   <<: *run_connect_rules
   interruptible: true
   variables:
     GIT_STRATEGY: clone
@@ -281,6 +267,38 @@ connect-web build:
       - packages/connect-examples/webextension-mv3/build-legacy
       - packages/connect-examples/webextension-mv3-sw/build
       - packages/connect-explorer-webextension/build
+
+connect-explorer build:
+  extends: .connect-explorer build base
+  except:
+    refs:
+      - /^release\/connect\//
+  variables:
+    NODE_ENV: "development"
+
+connect-web build:
+  extends: .connect-web build base
+  except:
+    refs:
+      - /^release\/connect\//
+  variables:
+    NODE_ENV: "development"
+
+connect-explorer build production:
+  extends: .connect-explorer build base
+  only:
+    refs:
+      - /^release\/connect/\//
+  variables:
+    NODE_ENV: "production"
+
+connect-web build production:
+  extends: .connect-web build base
+  only:
+    refs:
+      - /^release\/connect/\//
+  variables:
+    NODE_ENV: "production"
 
 # Build components
 

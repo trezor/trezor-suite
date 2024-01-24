@@ -126,12 +126,12 @@ connect v9 rollback production:
 .connect v9 deploy:
   stage: deploy to production
   dependencies:
-    - connect-web build
-    - connect-explorer build
+    - connect-web build production
+    - connect-explorer build production
   needs:
     - release commit messages
-    - connect-web build
-    - connect-explorer build
+    - connect-web build production
+    - connect-explorer build production
   before_script:
     - source ${CONNECT_DEPLOY_KEYFILE}
   tags:
