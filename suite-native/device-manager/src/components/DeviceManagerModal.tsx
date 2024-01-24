@@ -1,9 +1,9 @@
-import { Modal } from 'react-native';
+import { GestureResponderEvent, Modal, Pressable } from 'react-native';
 import { ReactNode } from 'react';
 import { useSafeAreaInsets, EdgeInsets } from 'react-native-safe-area-context';
 import Animated, { SlideInUp } from 'react-native-reanimated';
 
-import { Box, ScreenHeaderWrapper, VStack } from '@suite-native/atoms';
+import { ScreenHeaderWrapper, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { DeviceSwitch } from './DeviceSwitch';
@@ -45,6 +45,10 @@ export const DeviceManagerModal = ({ children }: DeviceManagerModalProps) => {
         setIsDeviceManagerVisible(false);
     };
 
+    const handlePressOutside = (event: GestureResponderEvent) => {
+        if (event.target === event.currentTarget) handleClose();
+    };
+
     return (
         <Modal
             transparent
@@ -53,7 +57,7 @@ export const DeviceManagerModal = ({ children }: DeviceManagerModalProps) => {
             presentationStyle="overFullScreen"
             animationType="fade"
         >
-            <Box style={applyStyle(modalBackgroundOverlayStyle)}>
+            <Pressable style={applyStyle(modalBackgroundOverlayStyle)} onPress={handlePressOutside}>
                 <Animated.View
                     entering={SlideInUp.damping(30)}
                     style={applyStyle(deviceManagerModalWrapperStyle, { insets })}
@@ -65,7 +69,7 @@ export const DeviceManagerModal = ({ children }: DeviceManagerModalProps) => {
                         {children}
                     </VStack>
                 </Animated.View>
-            </Box>
+            </Pressable>
         </Modal>
     );
 };
