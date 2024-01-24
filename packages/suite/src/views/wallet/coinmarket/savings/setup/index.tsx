@@ -128,7 +128,7 @@ const CoinmarketSavingsSetup = (props: WithSelectedAccountLoadedProps) => {
     }
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form>
             <Header>
                 <Translation id="TR_SAVINGS_SETUP_HEADER" />
             </Header>
@@ -222,7 +222,11 @@ const CoinmarketSavingsSetup = (props: WithSelectedAccountLoadedProps) => {
                         fiatCurrency={fiatCurrency}
                     />
 
-                    <ConfirmButton isDisabled={!canConfirmSetup} isLoading={isSubmitting}>
+                    <ConfirmButton
+                        isDisabled={!canConfirmSetup}
+                        isLoading={isSubmitting}
+                        onClick={handleSubmit(onSubmit)}
+                    >
                         <Translation id="TR_SAVINGS_SETUP_CONFIRM_BUTTON" />
                     </ConfirmButton>
                 </>
