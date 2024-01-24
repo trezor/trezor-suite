@@ -2,7 +2,7 @@ import { createAction } from '@reduxjs/toolkit';
 
 import { selectDevices } from '@suite-common/wallet-core';
 
-import { METADATA } from 'src/actions/suite/constants';
+import { METADATA, METADATA_LABELING } from 'src/actions/suite/constants';
 import { Dispatch, GetState } from 'src/types/suite';
 import {
     MetadataProvider,
@@ -86,7 +86,7 @@ export const disposeMetadataKeys = () => (dispatch: Dispatch, getState: GetState
     getState().wallet.accounts.forEach(account => {
         const updatedAccount = JSON.parse(JSON.stringify(account));
 
-        delete updatedAccount.metadata[METADATA.ENCRYPTION_VERSION];
+        delete updatedAccount.metadata[METADATA_LABELING.ENCRYPTION_VERSION];
         dispatch(setAccountAdd(updatedAccount));
     });
 
@@ -152,7 +152,7 @@ export const encryptAndSaveMetadata = async ({
 }) => {
     const encrypted = await metadataUtils.encrypt(
         {
-            version: METADATA.FORMAT_VERSION,
+            version: METADATA_LABELING.FORMAT_VERSION,
             ...data,
         },
         aesKey,

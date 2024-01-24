@@ -11,7 +11,7 @@ import {
     deviceActions,
 } from '@suite-common/wallet-core';
 
-import { STORAGE, METADATA } from 'src/actions/suite/constants';
+import { STORAGE, METADATA, METADATA_LABELING } from 'src/actions/suite/constants';
 import { Action, TrezorDevice } from 'src/types/suite';
 import {
     MetadataState,
@@ -23,7 +23,7 @@ import { Account } from 'src/types/wallet';
 import {
     DEFAULT_ACCOUNT_METADATA,
     DEFAULT_WALLET_METADATA,
-} from 'src/actions/suite/constants/metadataConstants';
+} from 'src/actions/suite/constants/metadataLabelingConstants';
 
 import { SuiteRootState } from './suiteReducer';
 import { AccountKey } from '@suite-common/wallet-types';
@@ -134,7 +134,7 @@ export const selectLabelingDataForSelectedAccount = (state: {
     const provider = selectSelectedProviderForLabels(state);
     const { selectedAccount } = state.wallet;
 
-    const metadataKeys = selectedAccount?.account?.metadata[METADATA.ENCRYPTION_VERSION];
+    const metadataKeys = selectedAccount?.account?.metadata[METADATA_LABELING.ENCRYPTION_VERSION];
     if (!metadataKeys || !metadataKeys.fileName || !provider?.data[metadataKeys.fileName]) {
         return DEFAULT_ACCOUNT_METADATA;
     }
@@ -151,7 +151,7 @@ export const selectLabelingDataForAccount = (
 ) => {
     const provider = selectSelectedProviderForLabels(state);
     const account = selectAccountByKey(state, accountKey);
-    const metadataKeys = account?.metadata?.[METADATA.ENCRYPTION_VERSION];
+    const metadataKeys = account?.metadata?.[METADATA_LABELING.ENCRYPTION_VERSION];
 
     if (!metadataKeys || !metadataKeys?.fileName || !provider?.data[metadataKeys.fileName]) {
         return DEFAULT_ACCOUNT_METADATA;
@@ -171,7 +171,7 @@ export const selectAccountLabels = (state: {
 
     return state.wallet.accounts.reduce(
         (dict, account) => {
-            const metadataKeys = account?.metadata?.[METADATA.ENCRYPTION_VERSION];
+            const metadataKeys = account?.metadata?.[METADATA_LABELING.ENCRYPTION_VERSION];
             if (
                 !metadataKeys ||
                 !metadataKeys?.fileName ||
@@ -199,10 +199,10 @@ export const selectLabelingDataForWallet = (
     const provider = selectSelectedProviderForLabels(state);
     const devices = selectDevices(state);
     const device = devices.find(d => d.state === deviceState);
-    if (!device?.metadata[METADATA.ENCRYPTION_VERSION]) {
+    if (!device?.metadata[METADATA_LABELING.ENCRYPTION_VERSION]) {
         return DEFAULT_WALLET_METADATA;
     }
-    const metadataKeys = device?.metadata[METADATA.ENCRYPTION_VERSION];
+    const metadataKeys = device?.metadata[METADATA_LABELING.ENCRYPTION_VERSION];
 
     if (metadataKeys && metadataKeys.fileName && provider?.data[metadataKeys.fileName]) {
         return provider.data[metadataKeys.fileName] as WalletLabels;
@@ -257,7 +257,7 @@ export const selectIsLabelingAvailable = (state: MetadataRootState) => {
 
     return (
         enabled &&
-        device?.metadata?.[METADATA.ENCRYPTION_VERSION] &&
+        device?.metadata?.[METADATA_LABELING.ENCRYPTION_VERSION] &&
         !!provider &&
         device.state &&
         !error?.[device.state]
@@ -272,7 +272,8 @@ export const selectIsLabelingInitPossible = (state: MetadataRootState) => {
 
     return (
         // device already has keys or it is at least connected and authorized
-        (device?.metadata?.[METADATA.ENCRYPTION_VERSION] || (device?.connected && device.state)) &&
+        (device?.metadata?.[METADATA_LABELING.ENCRYPTION_VERSION] ||
+            (device?.connected && device.state)) &&
         // storage provider is connected or we are at least able to connect to it
         (selectSelectedProviderForLabels(state) || state.suite.online)
     );
@@ -289,7 +290,7 @@ export const selectIsLabelingAvailableForEntity = (
     return (
         selectIsLabelingAvailable(state) &&
         entity &&
-        entity?.[METADATA.ENCRYPTION_VERSION]?.fileName
+        entity?.[METADATA_LABELING.ENCRYPTION_VERSION]?.fileName
     );
 };
 

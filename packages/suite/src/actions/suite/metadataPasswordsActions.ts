@@ -1,4 +1,4 @@
-import { METADATA } from 'src/actions/suite/constants';
+import { METADATA, METADATA_PROVIDER } from 'src/actions/suite/constants';
 import { Dispatch, GetState } from 'src/types/suite';
 import { ProviderErrorAction } from 'src/types/suite/metadata';
 import * as metadataUtils from 'src/utils/suite/metadata';
@@ -9,7 +9,7 @@ export const fetchPasswords =
     (fileName: string, key: Buffer) => async (dispatch: Dispatch, _getState: GetState) => {
         const provider = dispatch(
             metadataProviderActions.getProviderInstance({
-                clientId: METADATA.DROPBOX_PASSWORDS_CLIENT_ID,
+                clientId: METADATA_PROVIDER.DROPBOX_PASSWORDS_CLIENT_ID,
                 dataType: 'passwords',
             }),
         );

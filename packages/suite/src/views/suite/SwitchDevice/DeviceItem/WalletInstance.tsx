@@ -21,8 +21,8 @@ import {
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { TrezorDevice, AcquiredDevice } from 'src/types/suite';
 import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer';
-import { METADATA } from 'src/actions/suite/constants';
 import { useWalletLabeling } from '../../../../components/suite/labeling/WalletLabeling';
+import { METADATA_LABELING } from 'src/actions/suite/constants';
 
 const InstanceType = styled.div`
     display: flex;
@@ -166,7 +166,7 @@ export const WalletInstance = ({
                                     type: 'walletLabel',
                                     entityKey: instance.state,
                                     defaultValue: instance.state,
-                                    value: instance?.metadata[METADATA.ENCRYPTION_VERSION]
+                                    value: instance?.metadata[METADATA_LABELING.ENCRYPTION_VERSION]
                                         ? walletLabel
                                         : '',
                                 }}

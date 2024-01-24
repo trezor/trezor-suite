@@ -4,7 +4,7 @@ import { accountsActions, deviceActions } from '@suite-common/wallet-core';
 
 import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
 import { AppState, Action, Dispatch } from 'src/types/suite';
-import { METADATA, ROUTER } from 'src/actions/suite/constants';
+import { METADATA_LABELING, ROUTER } from 'src/actions/suite/constants';
 
 const metadata =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -23,7 +23,7 @@ const metadata =
             if (
                 action.payload.success &&
                 api.getState().metadata.enabled &&
-                !action.payload.device.metadata[METADATA.ENCRYPTION_VERSION]
+                !action.payload.device.metadata[METADATA_LABELING.ENCRYPTION_VERSION]
             ) {
                 api.dispatch(metadataLabelingActions.init(false));
             }

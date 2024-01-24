@@ -2,7 +2,7 @@ import { analytics, EventType } from '@trezor/suite-analytics';
 import { createDeferred } from '@trezor/utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
-import { METADATA } from 'src/actions/suite/constants';
+import { METADATA, METADATA_PROVIDER } from 'src/actions/suite/constants';
 import { Dispatch, GetState } from 'src/types/suite';
 import {
     MetadataProviderType,
@@ -54,7 +54,7 @@ const createProviderInstance = (
         case 'dropbox':
             return new DropboxProvider({
                 token: tokens?.refreshToken,
-                clientId: clientId || METADATA.DROPBOX_CLIENT_ID,
+                clientId: clientId || METADATA_PROVIDER.DROPBOX_CLIENT_ID,
             });
         case 'google':
             return new GoogleProvider(tokens, environment);
