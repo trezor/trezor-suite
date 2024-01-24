@@ -3,7 +3,6 @@ import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/su
 import { Button, Icon, P, variables } from '@trezor/components';
 import { openModal } from 'src/actions/suite/modalActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { UNSTAKED_ETH } from 'src/constants/suite/ethStaking';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { mapTestnetSymbol } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { FiatValueWrapper, FormattedCryptoAmountWrapper } from './styled';
@@ -62,7 +61,11 @@ const StyledP = styled(P)`
 // TODO: Move to theme.
 const iconColor = '#0F6148';
 
-export const ClaimReadyCard = () => {
+interface ClaimReadyCardProps {
+    claimAmount: string;
+}
+
+export const ClaimReadyCard = ({ claimAmount }: ClaimReadyCardProps) => {
     const { symbol } = useSelector(selectSelectedAccount) ?? {};
     const mappedSymbol = mapTestnetSymbol(symbol ?? 'eth');
     const dispatch = useDispatch();
@@ -94,16 +97,13 @@ export const ClaimReadyCard = () => {
                         </InfoHeading>
 
                         <FormattedCryptoAmountWrapper>
-                            <FormattedCryptoAmount
-                                value={UNSTAKED_ETH.toString()}
-                                symbol={symbol}
-                            />
+                            <FormattedCryptoAmount value={claimAmount} symbol={symbol} />
                         </FormattedCryptoAmountWrapper>
 
                         <FiatValueWrapper>
                             <FiatValue
                                 showApproximationIndicator
-                                amount={UNSTAKED_ETH.toString()}
+                                amount={claimAmount}
                                 symbol={mappedSymbol}
                             />
                         </FiatValueWrapper>

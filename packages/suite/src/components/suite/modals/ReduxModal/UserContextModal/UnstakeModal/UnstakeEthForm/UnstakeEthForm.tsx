@@ -67,12 +67,7 @@ export const UnstakeEthForm = () => {
                 helperText={<Translation id="TR_STAKE_PAID_FROM_BALANCE" />}
             />
 
-            {errors[CRYPTO_INPUT]?.type === 'compose' && (
-                <StyledWarning variant="critical">
-                    <Translation id="TR_NOT_ENOUGH_FUNDS_FOR_TX" />
-                </StyledWarning>
-            )}
-            {errors[CRYPTO_INPUT]?.type === 'limits' && (
+            {errors[CRYPTO_INPUT] && (
                 <StyledWarning variant="critical">{errors[CRYPTO_INPUT]?.message}</StyledWarning>
             )}
 

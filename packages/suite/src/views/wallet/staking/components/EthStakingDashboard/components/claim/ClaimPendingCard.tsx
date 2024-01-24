@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import { Image } from '@trezor/components';
 import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
-import { UNSTAKED_ETH } from 'src/constants/suite/ethStaking';
 import { FiatValueWrapper, FormattedCryptoAmountWrapper } from './styled';
 import { useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
@@ -42,7 +41,11 @@ const Heading = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
-export const ClaimPendingCard = () => {
+interface ClaimPendingCardProps {
+    claimAmount: string;
+}
+
+export const ClaimPendingCard = ({ claimAmount }: ClaimPendingCardProps) => {
     const { symbol } = useSelector(selectSelectedAccount) ?? {};
     const mappedSymbol = mapTestnetSymbol(symbol ?? 'eth');
 
@@ -57,13 +60,13 @@ export const ClaimPendingCard = () => {
                     </Heading>
 
                     <FormattedCryptoAmountWrapper>
-                        <FormattedCryptoAmount value={UNSTAKED_ETH.toString()} symbol={symbol} />
+                        <FormattedCryptoAmount value={claimAmount} symbol={symbol} />
                     </FormattedCryptoAmountWrapper>
 
                     <FiatValueWrapper>
                         <FiatValue
                             showApproximationIndicator
-                            amount={UNSTAKED_ETH.toString()}
+                            amount={claimAmount}
                             symbol={mappedSymbol}
                         />
                     </FiatValueWrapper>

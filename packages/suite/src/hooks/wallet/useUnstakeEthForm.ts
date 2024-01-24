@@ -20,11 +20,7 @@ import { AmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
 
 import { useStakeCompose } from './form/useStakeCompose';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
-import {
-    CONTRACT_POOL_ADDRESS,
-    MIN_ETH_AMOUNT_FOR_STAKING,
-    STAKED_ETH_WITH_REWARDS,
-} from 'src/constants/suite/ethStaking';
+import { MIN_ETH_AMOUNT_FOR_STAKING } from 'src/constants/suite/ethStaking';
 
 import { signTransaction } from 'src/actions/wallet/stakeActions';
 import {
@@ -32,20 +28,18 @@ import {
     UnstakeContextValues as UnstakeContextValuesBase,
     UnstakeFormState,
 } from '@suite-common/wallet-types';
-import { getStakeFormsDefaultValues } from 'src/utils/suite/stake';
+import { getEthNetworkForWalletSdk, getStakeFormsDefaultValues } from 'src/utils/suite/stake';
 import { useFormDraft } from './useFormDraft';
 import useDebounce from 'react-use/lib/useDebounce';
 import { isChanged } from '@suite-common/suite-utils';
 import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
+import { useStakeAndRewards } from './useStakeAndRewards';
+// @ts-expect-error
+import { Ethereum } from '@everstake/wallet-sdk';
 
 type UnstakeContextValues = UnstakeContextValuesBase & {
     amountLimits: AmountLimits;
 };
-
-const defaultValues = getStakeFormsDefaultValues({
-    address: CONTRACT_POOL_ADDRESS,
-    ethereumStakeType: 'unstake',
-}) as UnstakeFormState;
 
 export const UnstakeEthFormContext = createContext<UnstakeContextValues | null>(null);
 UnstakeEthFormContext.displayName = 'UnstakeEthFormContext';
@@ -72,11 +66,25 @@ export const useUnstakeEthForm = ({
     // TODO: Implement fee switcher
     const selectedFee = 'normal';
 
+    const { stakeWithRewards } = useStakeAndRewards();
     const amountLimits: AmountLimits = {
         currency: symbol,
         minCrypto: MIN_ETH_AMOUNT_FOR_STAKING.toNumber(),
-        maxCrypto: STAKED_ETH_WITH_REWARDS.toNumber(),
+        maxCrypto: stakeWithRewards.toNumber(),
     };
+
+    const defaultValues = useMemo(() => {
+        const { address_pool: poolAddress } = Ethereum.selectNetwork(
+            getEthNetworkForWalletSdk(account.symbol),
+        );
+
+        return {
+            ...getStakeFormsDefaultValues({
+                address: poolAddress,
+                ethereumStakeType: 'unstake',
+            }),
+        } as UnstakeFormState;
+    }, [account.symbol]);
 
     const { saveDraft, getDraft, removeDraft } = useFormDraft<UnstakeFormState>('unstake-eth');
     const draft = getDraft(account.key);
@@ -93,7 +101,7 @@ export const useUnstakeEthForm = ({
             feeInfo,
             formValues: defaultValues,
         };
-    }, [account, fees, network]);
+    }, [account, defaultValues, fees, network]);
 
     const methods = useForm<UnstakeFormState>({
         mode: 'onChange',
@@ -108,7 +116,7 @@ export const useUnstakeEthForm = ({
         if (!isChanged(defaultValues, values)) {
             removeDraft(account.key);
         }
-    }, [values, removeDraft, account.key]);
+    }, [values, removeDraft, account.key, defaultValues]);
 
     // react-hook-form auto register custom form fields (without HTMLElement)
     useEffect(() => {
@@ -120,7 +128,7 @@ export const useUnstakeEthForm = ({
         if (!isDraft && defaultValues) {
             reset(defaultValues);
         }
-    }, [reset, isDraft]);
+    }, [reset, isDraft, defaultValues]);
 
     const {
         isLoading: isComposing,
@@ -204,7 +212,7 @@ export const useUnstakeEthForm = ({
         removeDraft(account.key);
         reset(defaultValues);
         await composeRequest(CRYPTO_INPUT);
-    }, [account.key, composeRequest, removeDraft, reset]);
+    }, [account.key, composeRequest, defaultValues, removeDraft, reset]);
 
     // get response from TransactionReviewModal
     const signTx = useCallback(async () => {
