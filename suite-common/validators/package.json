@@ -3,7 +3,9 @@
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
-    "sideEffects": false,
+    "sideEffects": [
+      "src/config.ts"
+    ],
     "main": "src/index",
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
