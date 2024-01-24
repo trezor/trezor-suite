@@ -1,7 +1,7 @@
 import styled, { useTheme } from 'styled-components';
 import { SellFiatTrade } from 'invity-api';
 
-import { Button, variables, Icon, H2 } from '@trezor/components';
+import { Button, variables, Icon, H3, Card } from '@trezor/components';
 import {
     CoinmarketPaymentType,
     CoinmarketProviderInfo,
@@ -12,47 +12,6 @@ import { useCoinmarketSellOffersContext } from 'src/hooks/wallet/useCoinmarketSe
 import { getTagAndInfoNote } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { CoinmarketCryptoAmount } from 'src/views/wallet/coinmarket/common/CoinmarketCryptoAmount';
 import { CoinmarketFiatAmount } from 'src/views/wallet/coinmarket/common/CoinmarketFiatAmount';
-import { borders } from '@trezor/theme';
-
-const Wrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    border-radius: ${borders.radii.xs};
-    flex: 1;
-    width: 100%;
-    min-height: 150px;
-    padding-bottom: 16px;
-    background: ${({ theme }) => theme.BG_WHITE};
-`;
-
-const Main = styled.div`
-    display: flex;
-    margin: 0 30px;
-    justify-content: space-between;
-    padding: 20px 0;
-    border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
-
-    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
-        flex-direction: column;
-        margin: 0 20px;
-    }
-`;
-
-const Left = styled(H2)`
-    display: flex;
-    align-items: center;
-    font-weight: ${variables.FONT_WEIGHT.REGULAR};
-`;
-
-const Right = styled.div`
-    display: flex;
-    justify-content: flex-end;
-
-    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
-        justify-content: center;
-        padding-top: 10px;
-    }
-`;
 
 const Details = styled.div`
     display: flex;
@@ -248,44 +207,27 @@ export const SellQuote = ({ className, quote, amountInCrypto }: QuoteProps) => {
         sellInfo.providerInfos[exchange]?.flow === 'BANK_ACCOUNT';
 
     return (
-        <Wrapper className={className}>
-            <Main>
-                {error && <Left>N/A</Left>}
-                {!error && (
-                    <Left>
-                        {amountInCrypto ? (
-                            <CoinmarketFiatAmount
-                                amount={quote.fiatStringAmount}
-                                currency={quote.fiatCurrency}
-                            />
-                        ) : (
-                            <CoinmarketCryptoAmount
-                                amount={quote.cryptoStringAmount}
-                                symbol={quote.cryptoCurrency}
-                            />
-                        )}
-                        <CoinmarketTag tag={tag} />
-                    </Left>
-                )}
-                <Right>
-                    {quote.status === 'LOGIN_REQUEST' ? (
-                        <StyledButton onClick={() => selectQuote(quote)}>
-                            <Translation id="TR_LOGIN_PROCEED" />
-                        </StyledButton>
-                    ) : (
-                        <StyledButton isDisabled={!!quote.error} onClick={() => selectQuote(quote)}>
-                            <Translation
-                                id={
-                                    needToRegisterOrVerifyBankAccount(quote)
-                                        ? 'TR_SELL_REGISTER'
-                                        : 'TR_SELL_GET_THIS_OFFER'
-                                }
-                            />
-                        </StyledButton>
-                    )}
-                </Right>
-            </Main>
+        <Card className={className}>
             <Details>
+                <Column>
+                    {error && <H3>N/A</H3>}
+                    {!error && (
+                        <H3>
+                            {amountInCrypto ? (
+                                <CoinmarketFiatAmount
+                                    amount={quote.fiatStringAmount}
+                                    currency={quote.fiatCurrency}
+                                />
+                            ) : (
+                                <CoinmarketCryptoAmount
+                                    amount={quote.cryptoStringAmount}
+                                    symbol={quote.cryptoCurrency}
+                                />
+                            )}
+                            <CoinmarketTag tag={tag} />
+                        </H3>
+                    )}
+                </Column>
                 <Column>
                     <Heading>
                         <Translation id="TR_SELL_PROVIDER" />
@@ -323,6 +265,23 @@ export const SellQuote = ({ className, quote, amountInCrypto }: QuoteProps) => {
                         <Translation id="TR_SELL_ALL_FEES_INCLUDED" />
                     </Value>
                 </Column>
+                <Column>
+                    {quote.status === 'LOGIN_REQUEST' ? (
+                        <StyledButton onClick={() => selectQuote(quote)}>
+                            <Translation id="TR_LOGIN_PROCEED" />
+                        </StyledButton>
+                    ) : (
+                        <StyledButton isDisabled={!!quote.error} onClick={() => selectQuote(quote)}>
+                            <Translation
+                                id={
+                                    needToRegisterOrVerifyBankAccount(quote)
+                                        ? 'TR_SELL_REGISTER'
+                                        : 'TR_SELL_GET_THIS_OFFER'
+                                }
+                            />
+                        </StyledButton>
+                    )}
+                </Column>
             </Details>
             {error && (
                 <ErrorFooter>
@@ -334,7 +293,6 @@ export const SellQuote = ({ className, quote, amountInCrypto }: QuoteProps) => {
             )}
 
             {infoNote && !error && <Footer>{infoNote}</Footer>}
-        </Wrapper>
+        </Card>
     );
 };
-
