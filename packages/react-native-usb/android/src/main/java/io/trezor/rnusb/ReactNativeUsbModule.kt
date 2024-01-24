@@ -108,7 +108,11 @@ class ReactNativeUsbModule : Module() {
             val onDeviceDisconnect: OnDeviceDisconnect = { deviceName ->
                 Log.d("ReactNativeUsbModule", "onDeviceDisconnected: ${devicesHistory[deviceName]}")
 
-                sendEvent(ON_DEVICE_DISCONNECT_EVENT_NAME, devicesHistory[deviceName])
+                if (devicesHistory[deviceName] == null) {
+                    Log.e("ReactNativeUsbModule", "Device $deviceName not found in history.")
+                }
+
+                devicesHistory[deviceName]?.let { sendEvent(ON_DEVICE_DISCONNECT_EVENT_NAME, it) }
                 Log.d("ReactNativeUsbModule", "Disconnect event sent for device ${devicesHistory[deviceName]}")
 
                 openedConnections.remove(deviceName)
