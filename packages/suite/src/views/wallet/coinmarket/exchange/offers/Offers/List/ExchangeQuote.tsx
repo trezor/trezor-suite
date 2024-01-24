@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
 import styled, { useTheme } from 'styled-components';
 
-import { Button, variables, Icon, H2 } from '@trezor/components';
+import { Button, variables, Icon, H3, Card } from '@trezor/components';
 import { FormattedCryptoAmount, QuestionTooltip, Translation } from 'src/components/suite';
 import { useFormatters } from '@suite-common/formatters';
 import { ExchangeTrade } from 'invity-api';
@@ -15,46 +15,6 @@ import {
     CoinmarketProviderInfo,
     CoinmarketTag,
 } from 'src/views/wallet/coinmarket/common';
-import { borders } from '@trezor/theme';
-
-const Wrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    border-radius: ${borders.radii.xs};
-    flex: 1;
-    width: 100%;
-    min-height: 150px;
-    background: ${({ theme }) => theme.BG_WHITE};
-`;
-
-const Main = styled.div`
-    display: flex;
-    margin: 0 30px;
-    justify-content: space-between;
-    padding: 20px 0;
-    border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
-
-    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
-        flex-direction: column;
-        margin: 0 20px;
-    }
-`;
-
-const Left = styled(H2)`
-    display: flex;
-    align-items: center;
-    font-weight: ${variables.FONT_WEIGHT.REGULAR};
-`;
-
-const Right = styled.div`
-    display: flex;
-    justify-content: flex-end;
-
-    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
-        justify-content: center;
-        padding-top: 10px;
-    }
-`;
 
 const Details = styled.div`
     display: flex;
@@ -184,7 +144,7 @@ interface QuoteProps {
     quote: ExchangeTrade;
 }
 
-const Quote = ({ className, quote }: QuoteProps) => {
+export const ExchangeQuote = ({ className, quote }: QuoteProps) => {
     const { FiatAmountFormatter } = useFormatters();
 
     const theme = useTheme();
@@ -236,27 +196,17 @@ const Quote = ({ className, quote }: QuoteProps) => {
     }
 
     return (
-        <Wrapper className={className}>
-            <Main>
-                {errorQuote && !noFundsForFeesError && <Left>N/A</Left>}
-                {(!errorQuote || noFundsForFeesError) && (
-                    <Left>
-                        <FormattedCryptoAmount value={receiveStringAmount} symbol={receive} />
-                        <CoinmarketTag tag={tag} />
-                    </Left>
-                )}
-                <Right>
-                    <StyledButton
-                        isLoading={callInProgress}
-                        isDisabled={errorQuote || callInProgress}
-                        onClick={() => selectQuote(quote)}
-                        data-test="@coinmarket/exchange/offers/get-this-deal-button"
-                    >
-                        <Translation id="TR_EXCHANGE_GET_THIS_OFFER" />
-                    </StyledButton>
-                </Right>
-            </Main>
+        <Card className={className}>
             <Details>
+                <Column maxWidth="250px">
+                    {errorQuote && !noFundsForFeesError && <H3>N/A</H3>}
+                    {(!errorQuote || noFundsForFeesError) && (
+                        <H3>
+                            <FormattedCryptoAmount value={receiveStringAmount} symbol={receive} />
+                            <CoinmarketTag tag={tag} />
+                        </H3>
+                    )}
+                </Column>
                 <Column maxWidth="250px">
                     <Heading>
                         <Translation id="TR_EXCHANGE_PROVIDER" />
@@ -274,6 +224,16 @@ const Quote = ({ className, quote }: QuoteProps) => {
                         <StyledQuestionTooltip tooltip="TR_EXCHANGE_KYC_INFO" />
                     </Heading>
                     <Value>{provider?.kycPolicy}</Value>
+                </Column>
+                <Column>
+                    <StyledButton
+                        isLoading={callInProgress}
+                        isDisabled={errorQuote || callInProgress}
+                        onClick={() => selectQuote(quote)}
+                        data-test="@coinmarket/exchange/offers/get-this-deal-button"
+                    >
+                        <Translation id="TR_EXCHANGE_GET_THIS_OFFER" />
+                    </StyledButton>
                 </Column>
             </Details>
             {approvalFee && swapFee && localCurrency && (
@@ -325,8 +285,6 @@ const Quote = ({ className, quote }: QuoteProps) => {
             )}
 
             {infoNote && !errorQuote && <Footer>{infoNote}</Footer>}
-        </Wrapper>
+        </Card>
     );
 };
-
-export default Quote;

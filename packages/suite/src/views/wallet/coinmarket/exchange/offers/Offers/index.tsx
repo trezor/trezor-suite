@@ -12,8 +12,8 @@ import { useLayout } from 'src/hooks/suite';
 import { useCoinmarketExchangeOffersContext } from 'src/hooks/wallet/useCoinmarketExchangeOffers';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 import { InvityAPIReloadQuotesAfterSeconds } from 'src/constants/wallet/coinmarket/metadata';
-import List from './List';
 import SelectedOffer from './SelectedOffer';
+import { ExchangeQuoteList } from './List/ExchangeQuoteList';
 
 const Wrapper = styled.div`
     padding: 0 32px 32px;
@@ -148,9 +148,15 @@ const Offers = () => {
                                     )}
                                 </SummaryRow>
                             </Header>
-                            {dexQuotes.length > 0 && <List quotes={dexQuotes} type="dex" />}
-                            {fixedQuotes.length > 0 && <List quotes={fixedQuotes} type="fixed" />}
-                            {floatQuotes.length > 0 && <List quotes={floatQuotes} type="float" />}
+                            {dexQuotes.length > 0 && (
+                                <ExchangeQuoteList quotes={dexQuotes} type="dex" />
+                            )}
+                            {fixedQuotes.length > 0 && (
+                                <ExchangeQuoteList quotes={fixedQuotes} type="fixed" />
+                            )}
+                            {floatQuotes.length > 0 && (
+                                <ExchangeQuoteList quotes={floatQuotes} type="float" />
+                            )}
                         </>
                     )}
                 </>
