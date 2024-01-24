@@ -117,6 +117,7 @@ export const useBottomSheetAnimation = ({
         },
         onActive: (event, context) => {
             const { translationY } = event;
+            if (translationY < 0) return;
             translatePanY.value = translationY + context.translatePanY;
         },
         onEnd: event => {
