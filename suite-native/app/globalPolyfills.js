@@ -1,22 +1,16 @@
 /* eslint-disable no-bitwise */
-/**
- * Inject global objects to react-native app
- */
-import '@formatjs/intl-getcanonicallocales/polyfill';
-import '@formatjs/intl-locale/polyfill';
-import '@formatjs/intl-pluralrules/polyfill';
-import '@formatjs/intl-pluralrules/locale-data/en';
-import '@formatjs/intl-numberformat/polyfill';
-import '@formatjs/intl-numberformat/locale-data/en';
-import '@formatjs/intl-datetimeformat/polyfill';
-import '@formatjs/intl-datetimeformat/locale-data/en';
-import '@formatjs/intl-datetimeformat/add-all-tz';
 
 global.Buffer = require('buffer').Buffer;
-global.process = require('process');
+
+global.process = {
+    ...require('process'),
+    // necessary to prevent overriding env variables
+    env: process.env,
+};
 
 // There is bug in buffer polyfill that when you call subarray it returns Uint8Array instead of Buffer, this fixes it
 // It's basically copy pasted slice method from buffer polyfill with one change in line `const newBuf...`
+// TODO: replace with @craftzdog/react-native-buffer so we can remove this override
 Buffer.prototype.subarray = function subarray(start, end) {
     const len = this.length;
     start = ~~start;
@@ -45,7 +39,5 @@ Buffer.prototype.subarray = function subarray(start, end) {
 
     return newBuf;
 };
-
-// global.IntlLocales = require('intl/locale-data/jsonp/en');
 
 global.process.env.NODE_ENV = __DEV__ ? 'development' : 'production';

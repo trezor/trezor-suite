@@ -1,15 +1,11 @@
 import 'react-native-gesture-handler';
 import './globalPolyfills';
-import { AppRegistry } from 'react-native';
 
-import { name as appName } from './app.json';
+import { registerRootComponent } from 'expo';
+
 import { App } from './src/App';
 
-if (__DEV__) {
-    // Flipper plugin for debugging websocket traffic.
-    // more: https://github.com/Matju-M/flipper-plugin-basil-ws
-    // eslint-disable-next-line chai-friendly/no-unused-expressions
-    require('basil-ws-flipper').wsDebugPlugin;
-}
-
-AppRegistry.registerComponent(appName, () => App);
+// registerRootComponent calls AppRegistry.registerComponent('main', () => App);
+// It also ensures that whether you load the app in Expo Go or in a native build,
+// the environment is set up appropriately
+registerRootComponent(App);

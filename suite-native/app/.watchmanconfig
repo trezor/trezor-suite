@@ -1,3 +1,4 @@
 {
-    "prefer_split_fsevents_watcher": true
+    "prefer_split_fsevents_watcher": true,
+    "suppress_recrawl_warnings": true
 }

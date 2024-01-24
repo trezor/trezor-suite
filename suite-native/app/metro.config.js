@@ -1,8 +1,16 @@
 /* eslint-disable require-await */
 const nodejs = require('node-libs-browser');
-const { makeMetroConfig } = require('@rnx-kit/metro-config');
+// Learn more https://docs.expo.io/guides/customizing-metro
+const { getDefaultConfig } = require('expo/metro-config');
+const { mergeConfig } = require('@react-native/metro-config');
 
-module.exports = makeMetroConfig({
+/**
+ * Metro configuration
+ * https://facebook.github.io/metro/docs/configuration
+ *
+ * @type {import('metro-config').MetroConfig}
+ */
+const config = {
     transformer: {
         getTransformOptions: async () => ({
             transform: {
@@ -19,7 +27,6 @@ module.exports = makeMetroConfig({
             stream: nodejs.stream,
             https: nodejs.https,
             http: nodejs.http,
-            zlib: nodejs.zlib,
         },
         resolveRequest: (context, moduleName, platform) => {
             if (moduleName.startsWith('@emurgo/cardano')) {
@@ -35,4 +42,5 @@ module.exports = makeMetroConfig({
             return context.resolveRequest(context, moduleName, platform);
         },
     },
-});
+};
+module.exports = mergeConfig(getDefaultConfig(__dirname), config);

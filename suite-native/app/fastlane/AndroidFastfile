@@ -1,0 +1,135 @@
+skip_docs
+
+# Paths
+APP_GRADLE_PATH = File.join(ANDROID_PATH, 'app/build.gradle').freeze
+
+platform :android do
+
+  before_all do |lane|
+    if lane == :develop
+      fetch_and_bump_firebase_version
+    elsif lane == :staging
+      TRACK = "internal"
+      fetch_and_bump_play_version
+    elsif lane == :production
+      TRACK = "internal"
+      fetch_and_bump_play_version
+    end
+
+    ENV["ENVFILE"] = ".env"
+    replace_debug_info_environment_variables
+  end
+
+  desc "Android: Increments internal build number and version number"
+  private_lane :fetch_and_bump_play_version do
+    google_play_json_key_file = CredentialsManager::AppfileConfig.try_fetch_value(:json_key_file)
+    package_name = CredentialsManager::AppfileConfig.try_fetch_value(:package_name)
+
+    previous_build_number = google_play_track_version_codes(
+      package_name: package_name,
+      track: TRACK,
+      json_key: google_play_json_key_file,
+    )[0]
+
+    build_number_int = previous_build_number + 1
+    ENV["EXPO_PUBLIC_BUILD_NUMBER"] = "#{build_number_int}"
+
+    android_set_version_code(gradle_file: APP_GRADLE_PATH, version_code: build_number_int)
+    android_set_version_name(gradle_file: APP_GRADLE_PATH, version_name: ENV["EXPO_PUBLIC_VERSION"])
+  end
+
+  private_lane :fetch_and_bump_firebase_version do
+    google_play_json_key_file = CredentialsManager::AppfileConfig.try_fetch_value(:json_key_file)
+    latest_release = firebase_app_distribution_get_latest_release(
+      app: ANDROID_FIREBASE_APP_ID,
+      service_credentials_file: google_play_json_key_file,
+    )
+
+    build_number_int = latest_release[:buildVersion].to_i + 1
+    ENV["EXPO_PUBLIC_BUILD_NUMBER"] = "#{build_number_int}"
+
+    # when there are no Firebase releases yet
+    unless latest_release.nil?
+      android_set_version_code(gradle_file: APP_GRADLE_PATH, version_code: build_number_int)
+    end
+    android_set_version_name(gradle_file: APP_GRADLE_PATH, version_name: ENV["EXPO_PUBLIC_VERSION"])
+  end
+
+  desc "Build and upload the app to Google Play Store."
+  private_lane :deploy_android_play_store do |options|
+    productFlavor = options[:flavor]
+
+    gradle(task: 'clean', project_dir: ANDROID_PATH)
+
+    gradle(
+      task: 'bundle',
+      flavor: productFlavor,
+      print_command: true,
+      build_type: 'Release',
+      project_dir: ANDROID_PATH
+    )
+
+    # Upload Android App Bundle to PlayStore like Internal testing Release
+    upload_to_play_store(
+      track: TRACK,
+      # set as "draft" to complete the release at some other time in PlayStore
+      release_status: 'draft', # <http://docs.fastlane.tools/actions/upload_to_play_store/#parameters>
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+      skip_upload_apk: true
+    )
+
+  end
+
+  desc "Build Debug build."
+  lane :debugging do |options|
+    gradle(task: 'clean', project_dir: ANDROID_PATH)
+
+    gradle(
+      task: 'assemble',
+      flavor: 'Dev',
+      build_type: 'Debug',
+      project_dir: ANDROID_PATH
+    )
+  end
+
+  desc "Deploy staging build to Google Play Store."
+  lane :staging do |options|
+    deploy_android_play_store(flavor: "Stag")
+  end
+
+  desc "Deploy production build to Google Play Store."
+  lane :production do |options|
+    deploy_android_play_store(flavor: "Prod")
+  end
+
+  desc "Build and deploy the app to Firebase App Distribution for develop build."
+  lane :develop do |options|
+    google_play_json_key_file = CredentialsManager::AppfileConfig.try_fetch_value(:json_key_file)
+
+    gradle(task: 'clean', project_dir: ANDROID_PATH)
+
+    gradle(
+      task: 'assemble',
+      flavor: 'FirebaseDevelop',
+      build_type: 'Release',
+      project_dir: ANDROID_PATH
+    )
+
+    # find apk path
+    output_path = File.join(ANDROID_PATH, 'android/app/build/outputs/apk/').freeze
+    output_json_path = output_path + "output-metadata.json"
+    build_output = load_json(json_path: output_json_path)
+    elements = build_output["elements"][0]
+    apk_path = output_path + elements["outputFile"]
+
+    firebase_app_distribution(
+        app: ANDROID_FIREBASE_APP_ID,
+        apk_path: apk_path,
+        service_credentials_file: google_play_json_key_file,
+        release_notes: "#{ENV["EXPO_PUBLIC_COMMIT_HASH"]} - #{ENV["EXPO_PUBLIC_CHANGELOG"]}",
+        groups: "develop-testers",
+        debug: true
+    )
+  end
+end

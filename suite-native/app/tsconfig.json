@@ -1,6 +1,6 @@
 {
     "extends": "../../tsconfig.json",
-    "compilerOptions": { "outDir": "libDev" },
+    "compilerOptions": { "outDir": "../libDev" },
     "references": [
         {
             "path": "../../suite-common/analytics"
@@ -47,7 +47,6 @@
         { "path": "../module-settings" },
         { "path": "../navigation" },
         { "path": "../notifications" },
-        { "path": "../passphrase" },
         { "path": "../receive" },
         { "path": "../state" },
         { "path": "../storage" },
