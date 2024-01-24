@@ -93,6 +93,7 @@ export const CoinmarketLayoutNavigation = () => {
             isActive={routeName === route}
             icon={icon}
             route={route}
+            preserveParams
         />
     );
 
@@ -118,6 +119,7 @@ export const CoinmarketLayoutNavigation = () => {
                     values={{
                         cryptoCurrencyName: <Translation id={getTitleForNetwork(account.symbol)} />,
                     }}
+                    preserveParams
                 />
             )}
 
