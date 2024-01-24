@@ -11,7 +11,7 @@ import { CoinmarketExchangeOfferInfo } from '../../../components/ExchangeForm/Co
 
 const Wrapper = styled.div`
     display: flex;
-    margin-top: 20px;
+    margin: 20px 0;
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
         flex-direction: column;
