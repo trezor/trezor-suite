@@ -2,32 +2,60 @@
 
 import { AbstractMetadataProvider } from 'src/types/suite/metadata';
 import * as S from '@effect/schema/Schema';
-import * as Evolu from '@evolu/react';
-import * as EvoluCommon from '@evolu/common-react';
+import { String, createEvolu, id, table, database, Owner, parseMnemonic } from '@evolu/react';
+import { Evolu } from '@evolu/common';
+import { createHash } from 'crypto';
+import * as bip39 from '@scure/bip39';
+import { wordlist } from '@scure/bip39/wordlists/english';
+import { Effect, Exit } from 'effect';
 
-const FileId = Evolu.id('File');
+const FileId = id('File');
 type FileId = S.Schema.To<typeof FileId>;
 
-const MetadataTable = S.struct({
+const MetadataTable = table({
     id: FileId,
-    fileName: Evolu.String,
-    content: Evolu.String,
+    fileName: String,
+    content: String,
 });
 type MetadataTable = S.Schema.To<typeof MetadataTable>;
 
-const Database = S.struct({
+const Database = database({
     file: MetadataTable,
 });
 
+const deriveMnemonic = (metadataKey: string) => {
+    const keyBuffer = Buffer.from(metadataKey, 'hex');
+    const hash = createHash('sha256').update(keyBuffer).digest('hex').slice(0, 32);
+    const mnemonic = bip39.entropyToMnemonic(new Uint8Array(Buffer.from(hash, 'hex')), wordlist);
+    return mnemonic;
+};
+
 class EvoluProvider extends AbstractMetadataProvider {
     isCloud = true;
-    evolu: EvoluCommon.EvoluReact<any>;
+    evolu: Evolu<any>;
+    owner: Owner | null = null;
+    deviceToken: string;
+    deviceMnemonic: string;
+    connected = false;
+    unsubscribe: () => void;
 
-    constructor() {
+    constructor(deviceToken: string) {
         super('evolu');
-        console.log('init evolu provider');
-        this.evolu = Evolu.create(Database);
-        console.log('evolu', this.evolu);
+        this.evolu = createEvolu(Database, { reloadUrl: '#' /* workaround to disable reload */ });
+
+        this.deviceToken = deviceToken;
+        this.deviceMnemonic = deriveMnemonic(this.deviceToken);
+
+        this.owner = this.evolu.getOwner();
+
+        this.unsubscribe = this.evolu.subscribeOwner(() => {
+            this.owner = this.evolu.getOwner();
+            this.connected = this.deviceMnemonic === this.owner?.mnemonic;
+
+            if (!this.connected) {
+                this.connect();
+            }
+        });
     }
 
     get clientId() {
@@ -35,14 +63,34 @@ class EvoluProvider extends AbstractMetadataProvider {
     }
 
     isConnected() {
-        return true;
+        return this.connected;
     }
 
     connect() {
-        return Promise.resolve(this.ok());
+        if (this.isConnected()) return Promise.resolve(this.ok());
+
+        return parseMnemonic(this.deviceMnemonic)
+            .pipe(Effect.runPromiseExit)
+            .then(
+                Exit.match({
+                    onFailure: error => {
+                        console.error(JSON.stringify(error, null, 2));
+                        this.connected = false;
+                        return this.error('OTHER_ERROR', 'Failed to parse mnemonic');
+                    },
+                    onSuccess: mnemonic => {
+                        if (this.owner?.mnemonic && mnemonic !== this.owner?.mnemonic) {
+                            this.evolu.restoreOwner(mnemonic);
+                            this.connected = true;
+                        }
+                        return this.ok();
+                    },
+                }),
+            );
     }
 
     disconnect() {
+        this.connected = false;
         return Promise.resolve(this.ok());
     }
 
@@ -85,14 +133,14 @@ class EvoluProvider extends AbstractMetadataProvider {
 
     // eslint-disable-next-line
     async getProviderDetails() {
-        const owner = this.evolu.getOwner();
         return this.ok({
             type: this.type,
             isCloud: this.isCloud,
             tokens: {
-                accessToken: owner?.mnemonic || '',
+                accessToken: this.owner?.mnemonic || '',
+                deviceToken: this.deviceToken,
             },
-            user: owner?.id || '',
+            user: this.owner?.id || '',
             clientId: this.clientId,
         });
     }

@@ -55,6 +55,7 @@ export type MetadataProviderType = 'dropbox' | 'google' | 'fileSystem' | 'inMemo
 export type Tokens = {
     accessToken?: string;
     refreshToken?: string;
+    deviceToken?: string;
 };
 
 /**

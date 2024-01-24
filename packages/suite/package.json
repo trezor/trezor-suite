@@ -28,6 +28,7 @@
         "@hookform/resolvers": "3.3.2",
         "@mobily/ts-belt": "^3.13.1",
         "@reduxjs/toolkit": "1.9.5",
+        "@scure/bip39": "^1.2.1",
         "@sentry/core": "7.81.1",
         "@solana/buffer-layout": "^4.0.1",
         "@solana/web3.js": "^1.87.6",

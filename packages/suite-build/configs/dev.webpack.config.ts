@@ -36,6 +36,12 @@ const config: webpack.Configuration = {
                 address: `localhost:${DEV_PORTS[project]}`,
                 protocol: 'ws',
             },
+            middleware: app =>
+                app.use(async (ctx, next) => {
+                    await next();
+                    ctx.set('Cross-Origin-Opener-Policy', 'same-origin');
+                    ctx.set('Cross-Origin-Embedder-Policy', 'require-corp');
+                }),
         }),
         new ReactRefreshWebpackPlugin({
             overlay: false,

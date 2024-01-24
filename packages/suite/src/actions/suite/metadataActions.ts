@@ -115,7 +115,7 @@ const createProviderInstance = (
         case 'inMemoryTest':
             return new InMemoryTestProvider();
         case 'evolu':
-            return new EvoluProvider();
+            return new EvoluProvider(tokens.deviceToken);
     }
 };
 
@@ -649,9 +649,11 @@ export const connectProvider =
         clientId?: string;
     }) =>
     async (dispatch: Dispatch, getState: GetState) => {
+        const device = selectDevice(getState());
+        const deviceToken = device?.metadata[1]?.key;
         const providerInstance = createProviderInstance(
             type,
-            {},
+            { deviceToken },
             getState().suite.settings.debug.oauthServerEnvironment,
             clientId,
         );

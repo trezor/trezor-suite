@@ -5350,7 +5350,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@scure/bip39@npm:1.2.1":
+"@scure/bip39@npm:1.2.1, @scure/bip39@npm:^1.2.1":
   version: 1.2.1
   resolution: "@scure/bip39@npm:1.2.1"
   dependencies:
@@ -9508,6 +9508,7 @@ __metadata:
     "@hookform/resolvers": "npm:3.3.2"
     "@mobily/ts-belt": "npm:^3.13.1"
     "@reduxjs/toolkit": "npm:1.9.5"
+    "@scure/bip39": "npm:^1.2.1"
     "@sentry/core": "npm:7.81.1"
     "@solana/buffer-layout": "npm:^4.0.1"
     "@solana/web3.js": "npm:^1.87.6"
