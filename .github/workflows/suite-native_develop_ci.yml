@@ -43,6 +43,10 @@ jobs:
       - name: Build JS libs
         run: yarn build:libs
 
+      - name: Expo Prebuild
+        working-directory: suite-native/app/
+        run: yarn expo prebuild --platform android
+
       - name: Ruby Setup for Fastlane
         uses: ruby/setup-ruby@v1
         with:
@@ -111,7 +115,10 @@ jobs:
         run: |
           yarn install
           yarn build:libs
-          yarn workspace @trezor/suite-native pods
+
+      - name: Expo Prebuild
+        working-directory: suite-native/app/
+        run: yarn expo prebuild --platform ios
 
       - name: Ruby Setup for Fastlane
         uses: ruby/setup-ruby@v1
