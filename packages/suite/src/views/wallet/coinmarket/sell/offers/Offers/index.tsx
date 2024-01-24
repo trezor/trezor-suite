@@ -44,7 +44,7 @@ const DividerRight = styled(DividerLine)``;
 
 const Currency = styled.div`
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
-    text-transform: uppercase;
+    text-transform: capitalize;
     padding-left: 3px;
 `;
 
