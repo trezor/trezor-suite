@@ -99,7 +99,7 @@ const CoinmarketSavingsSetupContinue = (props: WithSelectedAccountLoadedProps) =
     }
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form>
             {reauthorizationUrl && (
                 <CoinmarketReauthorizationCard reauthorizationUrl={reauthorizationUrl} />
             )}
@@ -162,7 +162,11 @@ const CoinmarketSavingsSetupContinue = (props: WithSelectedAccountLoadedProps) =
                 )}
             </AddressOptionsWrapper>
             <Footer>
-                <Button isDisabled={!canConfirmSetup} isLoading={isSubmitting}>
+                <Button
+                    isDisabled={!canConfirmSetup}
+                    isLoading={isSubmitting}
+                    onClick={handleSubmit(onSubmit)}
+                >
                     <Translation id="TR_SAVINGS_SETUP_CONFIRM_BUTTON" />
                 </Button>
                 <ProvidedBy providerName={selectedProviderName} />

@@ -21,7 +21,7 @@ import { AddressOptions } from 'src/views/wallet/coinmarket/common';
 import { useAccountAddressDictionary } from 'src/hooks/wallet/useAccounts';
 import { ConfirmedOnTrezor } from 'src/views/wallet/coinmarket/common/ConfirmedOnTrezor';
 import { AddressOptionsFormState } from 'src/types/wallet/coinmarketBuyOffers';
-import { Elevation, mapElevationToBackground } from '@trezor/theme';
+import { Elevation } from '@trezor/theme';
 import { HTMLAttributes } from 'react';
 
 const Wrapper = styled.div`
