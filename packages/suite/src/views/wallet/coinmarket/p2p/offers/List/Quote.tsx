@@ -67,7 +67,7 @@ const MainHeading = styled.div`
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    text-transform: uppercase;
+    text-transform: capitalize;
 `;
 
 const MainValue = styled(H3)`
@@ -114,7 +114,7 @@ const DetailColumn = styled.div`
 
 const DetailHeading = styled.div`
     display: flex;
-    text-transform: uppercase;
+    text-transform: capitalize;
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     padding-bottom: 9px;
