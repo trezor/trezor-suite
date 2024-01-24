@@ -65,6 +65,7 @@ export interface NavigationItemProps {
     nameId: TranslationKey;
     icon: IconName;
     route?: Route['name'];
+    preserveParams?: boolean;
     isActive?: boolean;
     dataTest?: string;
     className?: string;
@@ -79,6 +80,7 @@ export const NavigationItem = ({
     dataTest,
     className,
     values,
+    preserveParams,
 }: NavigationItemProps) => {
     const activeRoute = useSelector(selectRouteName);
     const { elevation } = useElevation();
@@ -88,7 +90,7 @@ export const NavigationItem = ({
         e.stopPropagation();
 
         if (route) {
-            dispatch(goto(route));
+            dispatch(goto(route, preserveParams === true ? { preserveParams: true } : undefined));
         }
     };
 
