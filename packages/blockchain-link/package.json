@@ -67,6 +67,7 @@
         "worker-loader": "^3.0.8"
     },
     "dependencies": {
+        "@metaplex-foundation/mpl-token-metadata": "2.5.2",
         "@solana/buffer-layout": "^4.0.1",
         "@solana/web3.js": "^1.87.6",
         "@trezor/blockchain-link-types": "workspace:*",

@@ -1,7 +1,6 @@
 import { Canvas, ImageSVG, useSVG } from '@shopify/react-native-skia';
 
 import { FlagIconName, flagIcons } from '../icons';
-import { useRerenderOnAppStateChange } from '../useRerenderOnAppState';
 
 type FlagIconProps = {
     name: FlagIconName;
@@ -17,8 +16,6 @@ const flagIconSizes = {
 type FlagIconSize = keyof typeof flagIconSizes;
 
 export const FlagIcon = ({ name, size = 'medium' }: FlagIconProps) => {
-    useRerenderOnAppStateChange();
-
     const svg = useSVG(flagIcons[name]);
     const sizeNumber = flagIconSizes[size];
     return (

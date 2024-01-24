@@ -6,7 +6,6 @@ import { useNativeStyles } from '@trezor/styles';
 import { Color, Colors, CSSColor } from '@trezor/theme';
 
 import { IconName, icons } from '../icons';
-import { useRerenderOnAppStateChange } from '../useRerenderOnAppState';
 
 export type IconColor = 'svgSource' | Color | CSSColor | SharedValue<CSSColor>;
 
@@ -35,7 +34,7 @@ const isReanimatedSharedValue = (value: IconColor): value is SharedValue<CSSColo
     return typeof value === 'object' && 'value' in value;
 };
 
-function isCSSColor(value: any): value is CSSColor {
+export function isCSSColor(value: any): value is CSSColor {
     'worklet';
 
     return (
@@ -61,8 +60,6 @@ const getColorCode = (color: Exclude<IconColor, 'svgSource'>, themeColors: Color
 };
 
 export const Icon = ({ name, customSize, size = 'large', color = 'iconDefault' }: IconProps) => {
-    useRerenderOnAppStateChange();
-
     const svg = useSVG(icons[name]);
     const {
         utils: { colors },
