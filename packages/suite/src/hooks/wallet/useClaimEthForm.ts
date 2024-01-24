@@ -8,7 +8,6 @@ import { CRYPTO_INPUT, OUTPUT_AMOUNT, UseStakeFormsProps } from 'src/types/walle
 
 import { useStakeCompose } from './form/useStakeCompose';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
-import { CONTRACT_ACCOUNTING_ADDRESS } from 'src/constants/suite/ethStaking';
 
 import { signTransaction } from 'src/actions/wallet/stakeActions';
 import {
@@ -16,12 +15,9 @@ import {
     ClaimFormState,
     PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
-import { getStakeFormsDefaultValues } from 'src/utils/suite/stake';
-
-const defaultValues = getStakeFormsDefaultValues({
-    address: CONTRACT_ACCOUNTING_ADDRESS,
-    ethereumStakeType: 'claim',
-}) as ClaimFormState;
+import { getEthNetworkForWalletSdk, getStakeFormsDefaultValues } from 'src/utils/suite/stake';
+// @ts-expect-error
+import { Ethereum } from '@everstake/wallet-sdk';
 
 export const ClaimEthFormContext = createContext<ClaimContextValues | null>(null);
 ClaimEthFormContext.displayName = 'ClaimEthFormContext';
@@ -36,6 +32,18 @@ export const useClaimEthForm = ({ selectedAccount }: UseStakeFormsProps): ClaimC
 
     // TODO: Implement fee switcher
     const selectedFee = 'normal';
+    const defaultValues = useMemo(() => {
+        const { address_accounting: accountingAddress } = Ethereum.selectNetwork(
+            getEthNetworkForWalletSdk(account.symbol),
+        );
+
+        return {
+            ...getStakeFormsDefaultValues({
+                address: accountingAddress,
+                ethereumStakeType: 'claim',
+            }),
+        } as ClaimFormState;
+    }, [account.symbol]);
 
     const state = useMemo(() => {
         const coinFees = fees[account.symbol];
@@ -48,7 +56,7 @@ export const useClaimEthForm = ({ selectedAccount }: UseStakeFormsProps): ClaimC
             feeInfo,
             formValues: defaultValues,
         };
-    }, [account, fees, network]);
+    }, [account, defaultValues, fees, network]);
 
     const methods = useForm<ClaimFormState>({
         mode: 'onChange',
@@ -95,7 +103,7 @@ export const useClaimEthForm = ({ selectedAccount }: UseStakeFormsProps): ClaimC
     const clearForm = useCallback(async () => {
         reset(defaultValues);
         await composeRequest(CRYPTO_INPUT);
-    }, [composeRequest, reset]);
+    }, [composeRequest, defaultValues, reset]);
 
     // get response from TransactionReviewModal
     const signTx = useCallback(async () => {

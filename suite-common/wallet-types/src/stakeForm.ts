@@ -10,6 +10,7 @@ import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { Output, PrecomposedLevels, RbfTransactionParams } from './transaction';
 import { FormOptions } from './sendForm';
 import { Account } from './account';
+import { StakeType } from './stake';
 
 export interface StakeFormState {
     fiatInput?: string;
@@ -25,7 +26,7 @@ export interface StakeFormState {
     ethereumNonce?: string; // TODO: ethereum RBF
     ethereumDataAscii?: string;
     ethereumAdjustGasLimit?: string; // if used, final gas limit = estimated limit * ethereumAdjustGasLimit
-    ethereumStakeType?: 'stake' | 'unstake' | 'claim';
+    ethereumStakeType?: StakeType;
     options: FormOptions[];
     anonymityWarningChecked?: boolean;
 }

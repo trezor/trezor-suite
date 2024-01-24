@@ -3,10 +3,10 @@ import styled from 'styled-components';
 import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { P, RadioButton, variables } from '@trezor/components';
 import { Inputs } from './Inputs';
-import { REWARDS_ETH, STAKED_ETH, STAKED_ETH_WITH_REWARDS } from 'src/constants/suite/ethStaking';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { mapTestnetSymbol } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { useUnstakeEthFormContext } from 'src/hooks/wallet/useUnstakeEthForm';
+import { useStakeAndRewards } from 'src/hooks/wallet/useStakeAndRewards';
 
 // Extract?
 const GreyP = styled(P)`
@@ -72,6 +72,8 @@ export const Options = ({ symbol }: OptionsProps) => {
     const mappedSymbol = mapTestnetSymbol(symbol);
     const { onOptionChange } = useUnstakeEthFormContext();
 
+    const { stakeWithRewards, originalStake, rewards } = useStakeAndRewards();
+
     return (
         <div>
             <StyledRadioButton
@@ -80,7 +82,7 @@ export const Options = ({ symbol }: OptionsProps) => {
                     if (isRewardsSelected) return;
 
                     setUnstakeOption('rewards');
-                    await onOptionChange(REWARDS_ETH.toString());
+                    await onOptionChange(rewards.toString());
                 }}
             >
                 <RadioButtonLabelContent>
@@ -91,11 +93,11 @@ export const Options = ({ symbol }: OptionsProps) => {
                     <TxtRight>
                         <P weight="medium">
                             <GreenTxt>
-                                <FiatValue amount={REWARDS_ETH.toString()} symbol={mappedSymbol} />
+                                <FiatValue amount={rewards.toString()} symbol={mappedSymbol} />
                             </GreenTxt>
                         </P>
                         <GreyP size="small" weight="medium">
-                            <FormattedCryptoAmount value={REWARDS_ETH.toString()} symbol={symbol} />
+                            <FormattedCryptoAmount value={rewards.toString()} symbol={symbol} />
                         </GreyP>
                     </TxtRight>
                 </RadioButtonLabelContent>
@@ -107,7 +109,7 @@ export const Options = ({ symbol }: OptionsProps) => {
                     if (isAllSelected) return;
 
                     setUnstakeOption('all');
-                    await onOptionChange(STAKED_ETH_WITH_REWARDS.toString());
+                    await onOptionChange(stakeWithRewards.toString());
                 }}
             >
                 <RadioButtonLabelContent>
@@ -117,14 +119,14 @@ export const Options = ({ symbol }: OptionsProps) => {
 
                     <TxtRight>
                         <P weight="medium">
-                            <FiatValue amount={STAKED_ETH.toString()} symbol={mappedSymbol} /> +{' '}
+                            <FiatValue amount={originalStake.toString()} symbol={mappedSymbol} /> +{' '}
                             <GreenTxt>
-                                <FiatValue amount={REWARDS_ETH.toString()} symbol={mappedSymbol} />
+                                <FiatValue amount={rewards.toString()} symbol={mappedSymbol} />
                             </GreenTxt>
                         </P>
                         <GreyP size="small" weight="medium">
                             <FormattedCryptoAmount
-                                value={STAKED_ETH_WITH_REWARDS.toString()}
+                                value={stakeWithRewards.toString()}
                                 symbol={symbol}
                             />
                         </GreyP>
@@ -148,14 +150,11 @@ export const Options = ({ symbol }: OptionsProps) => {
                     <TxtRight>
                         <P weight="medium">
                             <Translation id="TR_UP_TO" />{' '}
-                            <FiatValue
-                                amount={STAKED_ETH_WITH_REWARDS.toString()}
-                                symbol={mappedSymbol}
-                            />
+                            <FiatValue amount={stakeWithRewards.toString()} symbol={mappedSymbol} />
                         </P>
                         <GreyP size="small" weight="medium">
                             <FormattedCryptoAmount
-                                value={STAKED_ETH_WITH_REWARDS.toString()}
+                                value={stakeWithRewards.toString()}
                                 symbol={symbol}
                             />
                         </GreyP>

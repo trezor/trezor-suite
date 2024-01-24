@@ -24,10 +24,15 @@ import { selectDevice } from '@suite-common/wallet-core';
 import { Dispatch, GetState } from 'src/types/suite';
 import { AddressDisplayOptions, selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
 
-import { getEthNetworkForWalletSdk, prepareStakeEthTx } from 'src/utils/suite/stake';
+import {
+    getStakeTxGasLimit,
+    prepareClaimEthTx,
+    prepareStakeEthTx,
+    prepareUnstakeEthTx,
+} from 'src/utils/suite/stake';
 // @ts-expect-error
 import { Ethereum } from '@everstake/wallet-sdk';
-import { MIN_ETH_FOR_WITHDRAWALS, WALLET_SDK_SOURCE } from 'src/constants/suite/ethStaking';
+import { MIN_ETH_FOR_WITHDRAWALS } from 'src/constants/suite/ethStaking';
 
 const calculate = (
     availableBalance: string,
@@ -106,27 +111,18 @@ export const composeTransaction =
 
         let customFeeLimit: string | undefined;
 
-        // tx data with gasLimit calculation based on account.descriptor and amount
-        let txData;
-        const genericError: PrecomposedLevels = {
-            normal: {
-                error: 'INCORRECT-FEE-RATE',
-                errorMessage: { id: 'TR_GENERIC_ERROR_TITLE' },
-                type: 'error',
-            },
-        };
-        try {
-            Ethereum.selectNetwork(getEthNetworkForWalletSdk(account.symbol));
-            // TODO: Implement tx type switcher
-            txData = await Ethereum.stake(account.descriptor, amount, WALLET_SDK_SOURCE);
-        } catch (e) {
-            console.error(e);
-            return genericError;
-        }
+        // gasLimit calculation based on account.descriptor and amount
+        const { ethereumStakeType } = formValues;
+        const stakeTxGasLimit = await getStakeTxGasLimit({
+            ethereumStakeType,
+            from: account.descriptor,
+            amount,
+            symbol: account.symbol,
+        });
 
-        if (!txData) return genericError;
+        if (!stakeTxGasLimit.success) return stakeTxGasLimit.error;
 
-        customFeeLimit = txData.gas;
+        customFeeLimit = stakeTxGasLimit.gasLimit;
         if (formValues.ethereumAdjustGasLimit && customFeeLimit) {
             customFeeLimit = new BigNumber(customFeeLimit)
                 .multipliedBy(new BigNumber(formValues.ethereumAdjustGasLimit))
@@ -248,14 +244,49 @@ export const signTransaction =
         }
 
         // transform to TrezorConnect.ethereumSignTransaction params
-        const txData = await prepareStakeEthTx({
-            symbol: account.symbol,
-            from: account.descriptor,
-            amount: formValues.outputs[0].amount,
-            gasPrice: transactionInfo.feePerByte,
-            nonce,
-            chainId: network.chainId,
-        });
+        const { ethereumStakeType } = formValues;
+        let txData;
+        if (ethereumStakeType === 'stake') {
+            txData = await prepareStakeEthTx({
+                symbol: account.symbol,
+                from: account.descriptor,
+                amount: formValues.outputs[0].amount,
+                gasPrice: transactionInfo.feePerByte,
+                nonce,
+                chainId: network.chainId,
+            });
+        }
+        if (ethereumStakeType === 'unstake') {
+            txData = await prepareUnstakeEthTx({
+                symbol: account.symbol,
+                from: account.descriptor,
+                amount: formValues.outputs[0].amount,
+                gasPrice: transactionInfo.feePerByte,
+                nonce,
+                chainId: network.chainId,
+                interchanges: 0,
+            });
+        }
+        if (ethereumStakeType === 'claim') {
+            txData = await prepareClaimEthTx({
+                symbol: account.symbol,
+                from: account.descriptor,
+                gasPrice: transactionInfo.feePerByte,
+                nonce,
+                chainId: network.chainId,
+            });
+        }
+
+        if (!txData) {
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'sign-tx-error',
+                    error: 'Unknown stake action',
+                }),
+            );
+
+            return;
+        }
 
         if (!txData.success) {
             dispatch(

@@ -5,10 +5,11 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { mapTestnetSymbol } from 'src/utils/wallet/coinmarket/coinmarketUtils';
-import { REWARDS_ETH, STAKED_ETH } from 'src/constants/suite/ethStaking';
+import { MIN_ETH_AMOUNT_FOR_STAKING } from 'src/constants/suite/ethStaking';
 import { InfoBox, ProgressBar } from './styled';
 import { ProgressLabels } from './ProgressLabels';
 import { ProgressLabelData } from './ProgressLabels/types';
+import { useStakeAndRewards } from 'src/hooks/wallet/useStakeAndRewards';
 
 const StyledCard = styled(Card)`
     padding: 16px;
@@ -106,8 +107,9 @@ const StyledButton = styled(Button).attrs(props => ({
 `;
 
 export const StakingCard = () => {
+    const { stakeWithRewards, originalStake, rewards, totalPendingStake } = useStakeAndRewards();
+    const canUnstake = MIN_ETH_AMOUNT_FOR_STAKING.lt(stakeWithRewards);
     // TODO: Replace with real data
-    const hasStake = Boolean(STAKED_ETH);
     const daysToAddToPool = 35;
 
     const { symbol } = useSelector(selectSelectedAccount) ?? {};
@@ -162,11 +164,14 @@ export const StakingCard = () => {
                     />
 
                     <EnteringAmountsWrapper>
-                        <FormattedCryptoAmount value={STAKED_ETH.toString()} symbol={symbol} />{' '}
+                        <FormattedCryptoAmount
+                            value={totalPendingStake.toString()}
+                            symbol={symbol}
+                        />{' '}
                         <EnteringFiatValueWrapper>
                             (
                             <FiatValue
-                                amount={STAKED_ETH.toString()}
+                                amount={totalPendingStake.toString()}
                                 symbol={mappedSymbol}
                                 showApproximationIndicator
                             />
@@ -185,10 +190,10 @@ export const StakingCard = () => {
                         <Translation id="TR_STAKE_STAKE" />
                     </AmountHeading>
 
-                    <StyledFormattedCryptoAmount value={STAKED_ETH.toString()} symbol={symbol} />
+                    <StyledFormattedCryptoAmount value={originalStake.toString()} symbol={symbol} />
 
                     <StyledFiatValue
-                        amount={STAKED_ETH.toString()}
+                        amount={originalStake.toString()}
                         symbol={mappedSymbol}
                         showApproximationIndicator
                     >
@@ -204,12 +209,12 @@ export const StakingCard = () => {
 
                     <StyledFormattedCryptoAmount
                         $isRewards
-                        value={REWARDS_ETH.toString()}
+                        value={rewards.toString()}
                         symbol={symbol}
                     />
 
                     <StyledFiatValue
-                        amount={REWARDS_ETH.toString()}
+                        amount={rewards.toString()}
                         symbol={mappedSymbol}
                         showApproximationIndicator
                     >
@@ -219,7 +224,7 @@ export const StakingCard = () => {
             </AmountsWrapper>
 
             <ProgressBarWrapper>
-                <ProgressBar $staked={STAKED_ETH.toNumber()} $rewards={REWARDS_ETH.toNumber()} />
+                <ProgressBar $staked={originalStake.toNumber()} $rewards={rewards.toNumber()} />
             </ProgressBarWrapper>
 
             <Info>
@@ -234,7 +239,7 @@ export const StakingCard = () => {
                 <StyledButton onClick={openStakeModal}>
                     <Translation id="TR_STAKE_STAKE_MORE" />
                 </StyledButton>
-                <StyledButton isDisabled={!hasStake} onClick={openUnstakeModal}>
+                <StyledButton isDisabled={!canUnstake} onClick={openUnstakeModal}>
                     <Translation id="TR_STAKE_UNSTAKE_TO_CLAIM" />
                 </StyledButton>
             </ButtonsWrapper>

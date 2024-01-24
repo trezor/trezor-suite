@@ -27,7 +27,9 @@ import { getTxAnchor } from 'src/utils/suite/anchor';
 import { isStakeTx } from '@suite-common/suite-utils';
 
 type TransactionRendererProps = NotificationViewProps &
-    NotificationRendererProps<'tx-sent' | 'tx-received' | 'tx-confirmed'>;
+    NotificationRendererProps<
+        'tx-sent' | 'tx-received' | 'tx-confirmed' | 'tx-staked' | 'tx-unstaked' | 'tx-claimed'
+    >;
 
 export const TransactionRenderer = ({ render: View, ...props }: TransactionRendererProps) => {
     const accounts = useSelector(selectAccounts);

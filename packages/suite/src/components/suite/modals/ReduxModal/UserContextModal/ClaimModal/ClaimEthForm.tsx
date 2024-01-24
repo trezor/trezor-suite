@@ -2,11 +2,11 @@ import { useEffect } from 'react';
 import styled from 'styled-components';
 import { Button, P, variables, Warning } from '@trezor/components';
 import { Translation, FiatValue, FormattedCryptoAmount } from 'src/components/suite';
-import { UNSTAKED_ETH } from 'src/constants/suite/ethStaking';
 import { FeesInfo } from 'src/components/wallet/FeesInfo';
 import { mapTestnetSymbol } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { useClaimEthFormContext } from 'src/hooks/wallet/useClaimEthForm';
 import { CRYPTO_INPUT } from 'src/types/wallet/stakeForms';
+import { useClaim } from 'src/hooks/wallet/useClaim';
 
 const AmountInfo = styled.div`
     display: flex;
@@ -62,13 +62,16 @@ export const ClaimEthForm = () => {
     // used instead of formState.isValid, which is sometimes returning false even if there are no errors
     const formIsValid = Object.keys(errors).length === 0;
     const transactionInfo = composedLevels?.[selectedFee];
+    const {
+        claim: { readyForClaim },
+    } = useClaim();
 
     // TODO: Replace with real data.
     const claimingPeriod = 'in the next block';
 
     useEffect(() => {
-        onClaimChange(UNSTAKED_ETH.toString());
-    }, [onClaimChange]);
+        onClaimChange(readyForClaim.toString());
+    }, [onClaimChange, readyForClaim]);
 
     return (
         <form onSubmit={handleSubmit(signTx)}>
@@ -78,11 +81,11 @@ export const ClaimEthForm = () => {
                 <TxtRight>
                     <P weight="medium">
                         <GreenTxt>
-                            <FiatValue amount={UNSTAKED_ETH.toString()} symbol={mappedSymbol} />
+                            <FiatValue amount={readyForClaim.toString()} symbol={mappedSymbol} />
                         </GreenTxt>
                     </P>
                     <GreyP size="small" weight="medium">
-                        <FormattedCryptoAmount value={UNSTAKED_ETH.toString()} symbol={symbol} />
+                        <FormattedCryptoAmount value={readyForClaim.toString()} symbol={symbol} />
                     </GreyP>
                 </TxtRight>
             </AmountInfo>
@@ -93,10 +96,8 @@ export const ClaimEthForm = () => {
                 helperText={<Translation id="TR_STAKE_PAID_FROM_BALANCE" />}
             />
 
-            {errors[CRYPTO_INPUT]?.type === 'compose' && (
-                <StyledWarning variant="critical">
-                    <Translation id="TR_NOT_ENOUGH_FUNDS_FOR_TX" />
-                </StyledWarning>
+            {errors[CRYPTO_INPUT] && (
+                <StyledWarning variant="critical">{errors[CRYPTO_INPUT]?.message}</StyledWarning>
             )}
 
             <ClaimingPeriodWrapper>
