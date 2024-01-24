@@ -79,7 +79,7 @@ export const FormattedCryptoAmount = ({
         formattedValue = localizeNumber(formattedValue, locale);
     }
 
-    // output as a string, mostly for compatability with graphs
+    // output as a string, mostly for compatibility with graphs
     if (isRawString) {
         const displayedSignValue = signValue ? `${isSignValuePositive(signValue) ? '+' : '-'}` : '';
         return <>{`${displayedSignValue} ${formattedValue} ${formattedSymbol}`}</>;
