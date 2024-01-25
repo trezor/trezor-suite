@@ -1,6 +1,6 @@
 import fetch from 'cross-fetch';
 
-import { HttpReceiver } from '../libs/http-receiver';
+import { createHttpReceiver } from '../libs/http-receiver';
 import { fixtures } from '../__fixtures__/http';
 import { Logger } from '../libs/logger';
 
@@ -8,7 +8,7 @@ global.logger = new Logger('mute');
 
 describe('http receiver', () => {
     it('start should emit started event', async () => {
-        const receiver = new HttpReceiver();
+        const receiver = createHttpReceiver();
 
         const spy = jest.spyOn(receiver, 'emit');
         await receiver.start();
@@ -22,7 +22,7 @@ describe('http receiver', () => {
 
     fixtures.forEach(f => {
         it(`${f.method}: ${f.path}`, async () => {
-            const receiver = new HttpReceiver();
+            const receiver = createHttpReceiver();
             const spy = jest.spyOn(receiver, 'emit');
 
             await receiver.start();

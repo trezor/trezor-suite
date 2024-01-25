@@ -2,7 +2,7 @@
  * Local web server for handling requests to app
  */
 import { app, ipcMain } from '../typed-electron';
-import { HttpReceiver } from '../libs/http-receiver';
+import { createHttpReceiver } from '../libs/http-receiver';
 
 import type { Module } from './index';
 
@@ -10,13 +10,13 @@ export const SERVICE_NAME = 'http-receiver';
 
 export const init: Module = ({ mainWindow }) => {
     const { logger } = global;
-    let httpReceiver: HttpReceiver | null = null;
+    let httpReceiver: ReturnType<typeof createHttpReceiver> | null = null;
     return async () => {
         if (httpReceiver) {
             return httpReceiver.getInfo();
         }
         // External request handler
-        const receiver = new HttpReceiver();
+        const receiver = createHttpReceiver();
         httpReceiver = receiver;
 
         // wait for httpReceiver to start accepting connections then register event handlers
