@@ -1,7 +1,8 @@
 import Bignumber from 'bignumber.js';
-import { NotificationCard, Translation, ReadMoreLink } from 'src/components/suite';
+import { NotificationCard, Translation } from 'src/components/suite';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import type { Account } from 'src/types/wallet/index';
+import { HELP_CENTER_XRP_URL } from '@trezor/urls';
 
 interface XRPReserveProps {
     account: Account | undefined;
@@ -13,9 +14,10 @@ export const XRPReserve = ({ account }: XRPReserveProps) => {
     const bigReserve = new Bignumber(account.misc.reserve);
     return bigBalance.isLessThan(bigReserve) ? (
         <NotificationCard
-            variant="info"
+            variant="warning"
             button={{
-                children: <ReadMoreLink url="HELP_CENTER_XRP_URL" />,
+                children: <Translation id="TR_LEARN_MORE" />,
+                href: HELP_CENTER_XRP_URL,
             }}
         >
             <Translation

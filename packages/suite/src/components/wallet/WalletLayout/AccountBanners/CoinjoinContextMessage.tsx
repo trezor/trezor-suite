@@ -28,7 +28,7 @@ export const CoinjoinContextMessage = ({ account }: CoinjoinContextMessageProps)
                       }
                     : undefined
             }
-            variant={message.variant}
+            variant={message.variant === 'critical' ? 'destructive' : message.variant}
         >
             {message.content}
         </NotificationCard>

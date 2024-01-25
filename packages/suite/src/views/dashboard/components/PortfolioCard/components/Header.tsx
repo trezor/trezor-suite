@@ -1,13 +1,14 @@
 import { useCallback } from 'react';
 import styled, { css } from 'styled-components';
 
-import { Button, ButtonGroup, LoadingContent } from '@trezor/components';
+import { Button, LoadingContent } from '@trezor/components';
 
 import { GraphRangeSelector, Translation } from 'src/components/suite';
 import { updateGraphData } from 'src/actions/wallet/graphActions';
 import { useFastAccounts } from 'src/hooks/wallet';
 import { GraphRange } from 'src/types/wallet/graph';
 import { FiatHeader } from '../../FiatHeader';
+import { spacingsPx } from '@trezor/theme';
 
 const Wrapper = styled.div<{ hideBorder: boolean }>`
     display: flex;
@@ -32,7 +33,10 @@ const Right = styled.div`
     align-items: center;
 `;
 
-const StyledButtonGroup = styled(ButtonGroup)`
+const Buttons = styled.div`
+    display: flex;
+    gap: ${spacingsPx.md};
+
     > * {
         min-width: 120px;
     }
@@ -77,14 +81,18 @@ export const Header = ({
         if (isWalletEmpty) {
             actions = (
                 <>
-                    <StyledButtonGroup variant="primary">
+                    <Buttons>
                         <Button onClick={receiveClickHandler} data-test="@dashboard/receive-button">
                             <Translation id="TR_RECEIVE" />
                         </Button>
-                        <Button onClick={buyClickHandler} data-test="@dashboard/buy-button">
+                        <Button
+                            onClick={buyClickHandler}
+                            data-test="@dashboard/buy-button"
+                            variant="tertiary"
+                        >
                             <Translation id="TR_BUY" />
                         </Button>
-                    </StyledButtonGroup>
+                    </Buttons>
                 </>
             );
         } else if (showGraphControls) {

@@ -14,6 +14,10 @@ export const FailedBackup = () => {
     };
 
     return (
-        <Banner variant="critical" body={<Translation id="TR_FAILED_BACKUP" />} action={action} />
+        <Banner
+            variant="destructive"
+            body={<Translation id="TR_FAILED_BACKUP" />}
+            action={action}
+        />
     );
 };

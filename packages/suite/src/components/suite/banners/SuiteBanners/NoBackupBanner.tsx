@@ -17,5 +17,5 @@ export const NoBackup = () => {
         'TR_YOUR_TREZOR_IS_NOT_BACKED_UP',
     )} ${translationString('TR_IF_YOUR_DEVICE_IS_EVER_LOST')}`;
 
-    return <Banner variant="critical" body={translation} action={action} />;
+    return <Banner variant="destructive" body={translation} action={action} />;
 };
