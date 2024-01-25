@@ -26,7 +26,7 @@ export interface StakeFormState {
     ethereumNonce?: string; // TODO: ethereum RBF
     ethereumDataAscii?: string;
     ethereumAdjustGasLimit?: string; // if used, final gas limit = estimated limit * ethereumAdjustGasLimit
-    ethereumStakeType?: StakeType;
+    ethereumStakeType: StakeType;
     options: FormOptions[];
     anonymityWarningChecked?: boolean;
 }

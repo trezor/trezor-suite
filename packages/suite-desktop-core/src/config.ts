@@ -28,6 +28,8 @@ export const allowedDomains = [
     'eth-goerli.public.blastapi.io',
     'ethereum-holesky.publicnode.com',
     'mainnet.infura.io',
+    'eth-api-b2c-stage.everstake.one',
+    'eth-api-b2c.everstake.one',
 ];
 
 export const cspRules = [
