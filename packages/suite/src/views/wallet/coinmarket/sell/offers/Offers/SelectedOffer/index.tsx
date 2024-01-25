@@ -6,10 +6,11 @@ import { SendTransaction } from './components/SendTransaction';
 import { useCoinmarketSellOffersContext } from 'src/hooks/wallet/useCoinmarketSellOffers';
 import { Translation } from 'src/components/suite';
 import { CoinmarketSellOfferInfo } from '../../../components/CoinmarketSellOfferInfo';
+import { spacingsPx } from '@trezor/theme';
 
 const Wrapper = styled.div`
     display: flex;
-    margin: 20px 0;
+    margin: ${spacingsPx.lg} 0;
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
         flex-direction: column;

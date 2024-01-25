@@ -26,7 +26,7 @@ const StyledInput = styled(NumberInput)<{ isToken: boolean }>`
             input {
                 border-top-right-radius: 0;
                 border-bottom-right-radius: 0;
-                border-right: ${spacingsPx.xxxs} solid transparent;
+                border-right: ${spacingsPx.xxxs} solid ${({ theme }) => theme.borderOnElevation1};
             }
         `}
 ` as <T extends FieldValues>(props: NumberInputProps<T> & { isToken: boolean }) => ReactElement; // Styled wrapper doesn't preserve type argument, see https://github.com/styled-components/styled-components/issues/1803#issuecomment-1181765843

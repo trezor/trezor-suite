@@ -14,6 +14,7 @@ import {
 } from 'src/components/suite';
 import { ExchangeInfo } from 'src/actions/wallet/coinmarketExchangeActions';
 import invityAPI from 'src/services/suite/invityAPI';
+import { typography } from '@trezor/theme';
 
 const Wrapper = styled.div`
     margin: 0 0 0 30px;
@@ -24,7 +25,7 @@ const Wrapper = styled.div`
 `;
 
 const AccountText = styled.div`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.textSubdued};
     padding-left: 7px;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
@@ -49,10 +50,9 @@ const Info = styled.div`
 const LeftColumn = styled.div`
     display: flex;
     flex: 1;
-    font-size: ${variables.FONT_SIZE.SMALL};
+    ${typography.label}
     text-transform: capitalize;
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.textSubdued};
 `;
 
 const RightColumn = styled.div`
@@ -60,7 +60,7 @@ const RightColumn = styled.div`
     justify-content: flex-end;
     flex: 1;
     font-size: ${variables.FONT_SIZE.TINY};
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.textSubdued};
 `;
 
 const Row = styled.div`
@@ -99,7 +99,7 @@ const Middle = styled.div`
     justify-content: center;
     align-items: center;
     flex: 1;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.textSubdued};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
@@ -116,7 +116,7 @@ const InvityCoinLogo = styled.img`
 `;
 
 const AccountType = styled.span`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.textSubdued};
     padding-left: 5px;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;

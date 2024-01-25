@@ -19,6 +19,7 @@ const Content = styled.div`
 
 const StyledCard = styled(Card)`
     flex: 1;
+    align-self: flex-start;
 `;
 
 const BottomContent = styled.div`
