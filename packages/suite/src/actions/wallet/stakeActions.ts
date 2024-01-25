@@ -53,7 +53,7 @@ export const cancelSignTx = (isSuccessTx?: boolean) => (dispatch: Dispatch, getS
 
 // private, called from signTransaction only
 const pushTransaction =
-    (signedTransaction: SignedTransaction['signedTransaction'], stakeType?: StakeType) =>
+    (signedTransaction: SignedTransaction['signedTransaction'], stakeType: StakeType) =>
     async (dispatch: Dispatch, getState: GetState) => {
         const { signedTx, precomposedTx } = getState().wallet.stake;
         const { account } = getState().wallet.selectedAccount;
@@ -83,7 +83,7 @@ const pushTransaction =
 
             dispatch(
                 notificationsActions.addToast({
-                    type: stakeType ? toastType[stakeType] : 'tx-sent',
+                    type: toastType[stakeType],
                     formattedAmount,
                     device,
                     descriptor: account.descriptor,

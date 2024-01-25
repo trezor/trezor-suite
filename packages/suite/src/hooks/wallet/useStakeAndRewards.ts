@@ -1,12 +1,12 @@
-import { useDispatch, useSelector } from '../suite';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import BigNumber from 'bignumber.js';
+import { notificationsActions } from '@suite-common/toast-notifications';
 // @ts-expect-error
 import { Ethereum } from '@everstake/wallet-sdk';
+import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { getEthNetworkForWalletSdk } from 'src/utils/suite/stake';
-import { notificationsActions } from '@suite-common/toast-notifications';
-import BigNumber from 'bignumber.js';
 import { STAKE_SYMBOLS } from 'src/constants/suite/staking';
+import { useDispatch, useSelector } from '../suite';
 
 // TODO: Move to Redux. For demo and testing purposes only, since it requests data every time it's called.
 //  This data should be retrieved either via Blockbook or added to account info in Redux in some other way.
@@ -140,7 +140,10 @@ export const useStakeAndRewards = () => {
         getRewards();
     }, [canStake, dispatch, selectedAccount, selectedAccount?.descriptor]);
 
-    const totalPendingStake = pendingStake.plus(pendingDepositedStake);
+    const totalPendingStake = useMemo(
+        () => pendingStake.plus(pendingDepositedStake),
+        [pendingDepositedStake, pendingStake],
+    );
 
     return {
         stakeWithRewards,

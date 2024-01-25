@@ -8753,4 +8753,12 @@ export default defineMessages({
         id: 'TOAST_TX_CLAIMED',
         defaultMessage: '{amount} claimed',
     },
+    TR_STAKE_TOTAL_PENDING: {
+        id: 'TR_STAKE_TOTAL_PENDING',
+        defaultMessage: 'Total stake pending:',
+    },
+    TR_STAKE_LAST_STAKE_REQUEST_STATE: {
+        id: 'TR_STAKE_LAST_STAKE_REQUEST_STATE',
+        defaultMessage: 'Last stake request state',
+    },
 });

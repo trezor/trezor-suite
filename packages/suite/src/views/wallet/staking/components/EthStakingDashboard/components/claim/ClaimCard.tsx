@@ -1,10 +1,20 @@
+import { useMemo } from 'react';
+import { isPending } from '@suite-common/wallet-utils';
+import { selectAccountClaimTransactions } from '@suite-common/wallet-core';
+import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { useSelector } from 'src/hooks/suite';
+import { useClaim } from 'src/hooks/wallet/useClaim';
 import { ClaimReadyCard } from './ClaimReadyCard';
 import { ClaimPendingCard } from './ClaimPendingCard';
-import { useClaim } from 'src/hooks/wallet/useClaim';
 
 export const ClaimCard = () => {
-    // TODO: Replace with real data
-    const isClaimPending = false;
+    const selectedAccount = useSelector(selectSelectedAccount);
+    const claimTxs = useSelector(state =>
+        selectAccountClaimTransactions(state, selectedAccount?.key || ''),
+    );
+
+    const isClaimPending = useMemo(() => claimTxs.some(tx => isPending(tx)), [claimTxs]);
+
     const { canClaim, claim } = useClaim();
 
     if (!canClaim) return null;
