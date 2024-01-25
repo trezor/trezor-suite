@@ -1,41 +1,73 @@
 import { ReactNode } from 'react';
-import styled, { useTheme } from 'styled-components';
-import { Button, Icon, SuiteThemeColors, variables } from '@trezor/components';
+import styled, { DefaultTheme, useTheme } from 'styled-components';
+import { Button, Icon, variables } from '@trezor/components';
+import { borders, spacingsPx, typography } from '@trezor/theme';
+import { ButtonVariant } from '@trezor/components/src/components/buttons/buttonStyleUtils';
 
-const getBgColor = (variant: BannerProps['variant'], theme: SuiteThemeColors) => {
+export type BannerVariant = Extract<ButtonVariant, 'info' | 'warning' | 'destructive'>;
+
+interface BannerProps {
+    body: ReactNode;
+    variant: BannerVariant;
+    action?: {
+        label: ReactNode | string;
+        onClick: () => void;
+        'data-test': string;
+    };
+    dismissal?: {
+        onClick: () => void;
+        'data-test': string;
+    };
+    className?: string;
+}
+
+const getBackgroundColor = (variant: BannerVariant, theme: DefaultTheme) => {
     switch (variant) {
         case 'info':
-            return theme.TYPE_BLUE;
+            return theme.backgroundAlertBlueBold;
         case 'warning':
-            return theme.TYPE_ORANGE;
-        case 'critical':
-            return theme.BG_RED;
+            return theme.backgroundAlertYellowBold;
+        case 'destructive':
+            return theme.backgroundAlertRedBold;
         default:
-            return 'transparent';
+            return theme.backgroundAlertBlueBold;
     }
 };
 
-const getIcon = (variant: BannerProps['variant'], theme: SuiteThemeColors) => {
+const getForegroundColor = (variant: BannerVariant, theme: DefaultTheme) => {
     switch (variant) {
         case 'info':
-            return <Icon icon="INFO" size={18} color={theme.TYPE_WHITE} />;
+            return theme.textDefaultInverse;
         case 'warning':
-        case 'critical':
-            return <Icon icon="WARNING" size={18} color={theme.TYPE_WHITE} />;
+            return theme.textDefaultInverse;
+        case 'destructive':
+            return theme.textDefaultInverse;
+        default:
+            return theme.textDefaultInverse;
+    }
+};
+const getIcon = (variant: BannerVariant, theme: DefaultTheme) => {
+    switch (variant) {
+        case 'info':
+            return <Icon icon="INFO" size={22} color={theme.textDefaultInverse} />; // @TODO iconDefaultInverse
+        case 'warning':
+            return <Icon icon="WARNING" size={22} color={theme.textDefaultInverse} />; // @TODO iconDefaultInverse
+        case 'destructive':
+            return <Icon icon="WARNING" size={22} color={theme.textDefaultInverse} />; // @TODO iconDefaultInverse
         default:
             return null;
     }
 };
 
-const Wrapper = styled.div<{ variant: BannerProps['variant'] }>`
+const Wrapper = styled.div<{ variant: BannerVariant }>`
     display: flex;
-    background: ${({ theme, variant }) => getBgColor(variant, theme)};
-    color: ${({ theme }) => theme.TYPE_WHITE};
-    padding: 7px 9px;
-    font-weight: 600;
-    border-radius: 10px;
-    margin: 6px 6px 4px;
-    line-height: 1.5;
+    gap: ${spacingsPx.xs};
+    background: ${({ theme, variant }) => getBackgroundColor(variant, theme)};
+    color: ${({ theme, variant }) => getForegroundColor(variant, theme)};
+    padding: ${spacingsPx.xs} ${spacingsPx.sm};
+    ${typography.highlight}
+    border-radius: ${borders.radii.sm};
+    margin: ${spacingsPx.xs};
     align-items: center;
 
     @media (max-width: ${variables.SCREEN_SIZE.SM}) {
@@ -44,7 +76,7 @@ const Wrapper = styled.div<{ variant: BannerProps['variant'] }>`
 `;
 
 const IconWrapper = styled.div`
-    margin: auto 8px auto 4px;
+    margin: auto ${spacingsPx.xxs};
 
     @media (max-width: ${variables.SCREEN_SIZE.SM}) {
         display: none;
@@ -59,6 +91,7 @@ const BlankLeft = styled.div`
 
 const Body = styled.div`
     display: flex;
+    gap: ${spacingsPx.xs};
     width: 100%;
     position: relative;
     justify-content: left;
@@ -77,7 +110,7 @@ const ActionsWrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    right: 14px;
+    right: ${spacingsPx.sm};
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.XL}) {
         position: relative;
@@ -85,8 +118,8 @@ const ActionsWrapper = styled.div`
     }
 
     @media (max-width: ${variables.SCREEN_SIZE.SM}) {
-        padding-left: 18px;
-        padding-right: 18px;
+        padding-left: ${spacingsPx.lg};
+        padding-right: ${spacingsPx.lg};
     }
 
     @media (min-width: ${variables.SCREEN_SIZE.XL}) {
@@ -94,39 +127,14 @@ const ActionsWrapper = styled.div`
     }
 `;
 
-const ActionButton = styled(Button)<{ color: BannerProps['variant'] }>`
-    height: 24px;
-    margin-right: 4px;
-    margin-left: 10px;
-
-    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
-        margin-top: 5px;
-    }
-`;
-
 const CancelWrapper = styled.div`
-    margin-left: 5px;
+    margin-left: ${spacingsPx.xs};
 `;
-
-interface BannerProps {
-    body: ReactNode;
-    variant: 'info' | 'warning' | 'critical';
-    action?: {
-        label: ReactNode | string;
-        onClick: () => void;
-        'data-test': string;
-    };
-    dismissal?: {
-        onClick: () => void;
-        'data-test': string;
-    };
-    className?: string;
-}
 
 export const Banner = ({ body, variant, action, dismissal, className }: BannerProps) => {
     const theme = useTheme();
-    const iconElement = getIcon(variant, theme);
 
+    const iconElement = getIcon(variant, theme);
     return (
         <Wrapper variant={variant} className={className}>
             <BlankLeft />
@@ -136,21 +144,21 @@ export const Banner = ({ body, variant, action, dismissal, className }: BannerPr
             </Body>
             <ActionsWrapper>
                 {action && (
-                    <ActionButton
-                        color={variant}
+                    <Button
+                        size="tiny"
                         variant="tertiary"
                         onClick={action.onClick}
                         data-test={action['data-test']}
                     >
                         {action.label}
-                    </ActionButton>
+                    </Button>
                 )}
                 {dismissal && (
                     <CancelWrapper>
                         <Icon
                             size={20}
                             icon="CROSS"
-                            color={theme.TYPE_WHITE}
+                            color={getForegroundColor(variant, theme)}
                             onClick={dismissal.onClick}
                             data-test={dismissal['data-test']}
                         />

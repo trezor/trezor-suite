@@ -52,6 +52,8 @@ export const mapElevationToBackground: Record<Elevation, BackgroundElevationColo
     3: 'backgroundSurfaceElevation3',
 };
 
+// @TODO create iconDefaultInverse (packages/suite/src/components/suite/banners/Banner.tsx)
+
 export const colorVariants = {
     standard: {
         transparent: '#00000000',
@@ -141,7 +143,7 @@ export const colorVariants = {
         backgroundAlertBlueSubtleOnElevation1: '#092734ff',
         backGroundOnboardingCard: '#000000BD',
         textDefault: '#ffffffff',
-        textDefaultInverse: '#ffffffff',
+        textDefaultInverse: '#000000ff',
         textSubdued: '#a2a4a3ff',
         textSecondaryHighlight: '#2fbc81ff',
         textOnPrimary: '#000000ff',
