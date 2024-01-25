@@ -1,6 +1,6 @@
 import { ButtonHTMLAttributes } from 'react';
 import styled, { useTheme } from 'styled-components';
-import { borders, spacingsPx, typography } from '@trezor/theme';
+import { Elevation, borders, spacingsPx, typography } from '@trezor/theme';
 import { Icon, IconType } from '../../assets/Icon/Icon';
 import { Spinner } from '../../loaders/Spinner/Spinner';
 import {
@@ -13,6 +13,7 @@ import {
     IconAlignment,
 } from '../buttonStyleUtils';
 import { focusStyleTransition, getFocusShadowStyle } from '../../../utils/utils';
+import { useElevation } from '../../ElevationContext/ElevationContext';
 
 interface ButtonContainerProps {
     variant: ButtonVariant;
@@ -20,6 +21,7 @@ interface ButtonContainerProps {
     iconAlignment?: IconAlignment;
     hasIcon?: boolean;
     isFullWidth?: boolean;
+    elevation: Elevation;
 }
 
 export const ButtonContainer = styled.button<ButtonContainerProps>`
@@ -39,7 +41,7 @@ export const ButtonContainer = styled.button<ButtonContainerProps>`
     border: 1px solid transparent;
 
     ${getFocusShadowStyle()}
-    ${({ variant }) => getVariantStyle(variant)}
+    ${({ variant, elevation }) => getVariantStyle(variant, elevation)}
 
     :disabled {
         background: ${({ theme }) => theme.BG_GREY};
@@ -105,6 +107,7 @@ export const Button = ({
     ...rest
 }: ButtonProps) => {
     const theme = useTheme();
+    const { elevation } = useElevation();
 
     const IconComponent = icon ? (
         <Icon
@@ -125,6 +128,7 @@ export const Button = ({
             isFullWidth={isFullWidth}
             type={type}
             hasIcon={!!icon || isLoading}
+            elevation={elevation}
             {...rest}
         >
             {!isLoading && icon && IconComponent}

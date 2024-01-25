@@ -5,6 +5,7 @@ import { Spinner } from '../../loaders/Spinner/Spinner';
 import { ButtonContainer, ButtonProps } from '../Button/Button';
 import { ButtonVariant, getIconColor, getIconSize, getPadding } from '../buttonStyleUtils';
 import { Tooltip } from '../../Tooltip/Tooltip';
+import { useElevation } from '../../ElevationContext/ElevationContext';
 
 const IconButtonContainer = styled(ButtonContainer)`
     position: relative;
@@ -42,6 +43,7 @@ export const IconButton = ({
     ...rest
 }: IconButtonProps) => {
     const theme = useTheme();
+    const { elevation } = useElevation();
 
     const IconComponent = (
         <Icon
@@ -59,6 +61,7 @@ export const IconButton = ({
                 variant={variant}
                 size={size}
                 disabled={isDisabled || isLoading}
+                elevation={elevation}
                 {...rest}
             >
                 {!isLoading && icon && IconComponent}
