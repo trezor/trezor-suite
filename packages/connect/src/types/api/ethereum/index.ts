@@ -88,7 +88,7 @@ export interface EthereumSignTypedDataMessage<T extends EthereumSignTypedDataTyp
     domain: {
         name?: string;
         version?: string;
-        chainId?: number | bigint;
+        chainId?: number | bigint | string;
         verifyingContract?: string;
         salt?: ArrayBuffer | string;
     };
@@ -100,7 +100,8 @@ export const EthereumSignTypedDataMessage = Type.Object({
     domain: Type.Object({
         name: Type.Optional(Type.String()),
         version: Type.Optional(Type.String()),
-        chainId: Type.Optional(Type.Union([Type.Number(), Type.BigInt()])),
+        // loosened to support string due to issue #10793
+        chainId: Type.Optional(Type.Union([Type.Number(), Type.BigInt(), Type.String()])),
         verifyingContract: Type.Optional(Type.String()),
         salt: Type.Optional(Type.Union([Type.ArrayBuffer(), Type.String()])),
     }),

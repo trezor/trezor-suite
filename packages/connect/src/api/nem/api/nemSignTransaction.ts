@@ -19,6 +19,11 @@ export default class NEMSignTransaction extends AbstractMethod<
 
         const { payload } = this;
         // validate incoming parameters
+
+        // Workaround for NEM timestamp case-sensitivity issue (issue #10793)
+        if ((payload?.transaction as any)?.timestamp) {
+            payload.transaction.timeStamp = (payload.transaction as any).timestamp;
+        }
         Assert(NEMSignTransactionSchema, payload);
 
         const path = validatePath(payload.path, 3);
