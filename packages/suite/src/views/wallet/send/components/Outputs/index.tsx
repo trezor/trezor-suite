@@ -8,6 +8,7 @@ import { Address } from './components/Address';
 import { Amount } from './components/Amount';
 import { OpReturn } from './components/OpReturn';
 import { motionEasingStrings } from '@trezor/components/src/config/motion';
+import { useLayoutSize } from '../../../../../hooks/suite';
 
 const Container = styled.div<{ $height: number }>`
     height: ${({ $height }) => ($height ? `${$height}px` : 'auto')};
@@ -31,6 +32,7 @@ interface OutputsProps {
 export const Outputs = ({ disableAnim }: OutputsProps) => {
     const [height, setHeight] = useState(0);
     const [hasRenderedOutputs, setHasRenderedOutputs] = useState(false);
+    const size = useLayoutSize();
 
     const {
         outputs,
@@ -40,7 +42,7 @@ export const Outputs = ({ disableAnim }: OutputsProps) => {
 
     useLayoutEffect(() => {
         setHeight(ref.current?.offsetHeight || 0);
-    }, [outputs, errors.outputs]);
+    }, [outputs, errors.outputs, size]);
 
     // needed to have no entrance animation on the first render
     // for some reason the first render does not have all the outputs
