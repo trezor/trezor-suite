@@ -63,7 +63,7 @@ export const MessageSystemBanner = ({ message }: MessageSystemBannerProps) => {
 
     return (
         <BannerOnTop
-            variant={variant}
+            variant={variant === 'critical' ? 'destructive' : variant}
             body={content[language] || content.en}
             action={actionConfig}
             dismissal={dismissalConfig}

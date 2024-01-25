@@ -7,7 +7,13 @@ import {
     nextElevation,
 } from '@trezor/theme';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'tertiary' | 'destructive';
+export type ButtonVariant =
+    | 'primary'
+    | 'secondary'
+    | 'tertiary'
+    | 'info'
+    | 'warning'
+    | 'destructive';
 export type ButtonSize = 'large' | 'medium' | 'small' | 'tiny';
 export type IconAlignment = 'left' | 'right';
 
@@ -48,6 +54,10 @@ export const getIconColor = (variant: ButtonVariant, isDisabled: boolean, theme:
             return theme.iconOnSecondary;
         case 'tertiary':
             return theme.iconOnTertiary;
+        case 'info':
+            return theme.iconAlertBlue;
+        case 'warning':
+            return theme.iconAlertYellow;
         case 'destructive':
             return theme.iconAlertRed;
         // no default
@@ -104,6 +114,26 @@ export const getVariantStyle = (variant: ButtonVariant, elevation: Elevation) =>
                 :active {
                     background: ${({ theme }) =>
                         theme[mapElevationToBackgroundTertiary[nextElevation[elevation]]]};
+                }
+            `;
+        case 'info':
+            return css`
+                background: ${({ theme }) => theme.backgroundAlertBlueSubtleOnElevation0};
+                color: ${({ theme }) => theme.textAlertBlue};
+
+                :hover,
+                :active {
+                    background: ${({ theme }) => theme.backgroundAlertBlueSubtleOnElevation1};
+                }
+            `;
+        case 'warning':
+            return css`
+                background: ${({ theme }) => theme.backgroundAlertYellowSubtleOnElevation0};
+                color: ${({ theme }) => theme.textAlertYellow};
+
+                :hover,
+                :active {
+                    background: ${({ theme }) => theme.backgroundAlertYellowSubtleOnElevation1};
                 }
             `;
         case 'destructive':

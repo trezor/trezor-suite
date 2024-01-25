@@ -34,8 +34,8 @@ const Container = styled.div<{ isClickable: boolean }>`
     align-items: center;
     height: 28px;
     padding: 0 ${SPACING}px;
-    background: ${({ theme }) => theme.BG_WHITE};
-    border-bottom: 1px solid ${({ theme }) => theme.STROKE_LIGHT_GREY};
+    background: ${({ theme }) => theme.backgroundSurfaceElevationNegative};
+    border-bottom: 1px solid ${({ theme }) => theme.borderOnElevation0};
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     transition: background 0.15s;
