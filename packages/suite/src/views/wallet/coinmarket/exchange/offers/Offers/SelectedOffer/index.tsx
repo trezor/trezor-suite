@@ -8,10 +8,11 @@ import { Translation } from 'src/components/suite';
 import SendApprovalTransaction from './components/SendApprovalTransaction';
 import SendSwapTransaction from './components/SendSwapTransaction';
 import { CoinmarketExchangeOfferInfo } from '../../../components/ExchangeForm/CoinmarketExchangeOfferInfo';
+import { spacingsPx } from '@trezor/theme';
 
 const Wrapper = styled.div`
     display: flex;
-    margin: 20px 0;
+    margin: ${spacingsPx.lg} 0;
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
         flex-direction: column;

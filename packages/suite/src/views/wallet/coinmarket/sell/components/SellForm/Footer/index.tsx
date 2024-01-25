@@ -11,6 +11,7 @@ import { Translation } from 'src/components/suite';
 
 import { CountryOption } from 'src/types/wallet/coinmarketCommonTypes';
 import { FooterWrapper, Left, Right } from 'src/views/wallet/coinmarket';
+import { spacingsPx } from '@trezor/theme';
 
 const OptionLabel = styled.div`
     display: flex;
@@ -19,12 +20,6 @@ const OptionLabel = styled.div`
 
 const FlagWrapper = styled.div`
     padding-right: 10px;
-`;
-
-const LabelText = styled.div`
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
 `;
 
 const StyledRight = styled(Right)`
@@ -38,8 +33,8 @@ const Label = styled.div`
     align-items: center;
     white-space: nowrap;
     padding-top: 1px;
+    margin-right: ${spacingsPx.sm};
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
 const StyledButton = styled(Button)`
@@ -102,13 +97,12 @@ const Footer = () => {
                                         <FlagWrapper>
                                             <Flag country={option.value} />
                                         </FlagWrapper>
-                                        <LabelText>{labelParts.text}</LabelText>
+                                        <div>{labelParts.text}</div>
                                     </OptionLabel>
                                 );
                             }}
                             isClearable={false}
                             minValueWidth="160px"
-                            isClean
                             onChange={(selected: any) => {
                                 onChange(selected);
                                 setAmountLimits(undefined);
