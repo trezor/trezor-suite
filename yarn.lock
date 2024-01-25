@@ -7569,7 +7569,7 @@ __metadata:
   resolution: "@suite-native/graph@workspace:suite-native/graph"
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
-    "@react-navigation/native": "npm:^6.1.9"
+    "@react-navigation/native": "npm:6.1.9"
     "@reduxjs/toolkit": "npm:1.9.5"
     "@shopify/react-native-skia": "npm:0.1.234"
     "@suite-common/formatters": "workspace:*"
