@@ -8,6 +8,7 @@ import { desktopApi } from '@trezor/suite-desktop-api';
 import { Button, Image } from '@trezor/components';
 
 import { Translation, Modal, TrezorLink } from 'src/components/suite';
+import { DialogModal } from 'src/components/suite/modals/Modal/DialogRenderer';
 
 import { ImageWrapper, Description, Title } from './styles';
 
@@ -49,11 +50,11 @@ export const EarlyAccessDisable = ({ hideWindow }: EarlyAccessDisableProps) => {
         <StyledModal
             bottomBarComponents={
                 <>
-                    <Button onClick={hideWindow} variant="secondary">
-                        <Translation id="TR_EARLY_ACCESS_STAY_IN" />
-                    </Button>
                     <Button onClick={allowPrerelease}>
                         <Translation id="TR_EARLY_ACCESS_DISABLE" />
+                    </Button>
+                    <Button onClick={hideWindow} variant="tertiary">
+                        <Translation id="TR_EARLY_ACCESS_STAY_IN" />
                     </Button>
                 </>
             }
@@ -69,29 +70,22 @@ export const EarlyAccessDisable = ({ hideWindow }: EarlyAccessDisableProps) => {
             </Description>
         </StyledModal>
     ) : (
-        <StyledModal
+        <DialogModal
+            icon="check"
+            bodyHeading={<Translation id="TR_EARLY_ACCESS_LEFT_TITLE" />}
+            text={<Translation id="TR_EARLY_ACCESS_LEFT_DESCRIPTION" />}
             bottomBarComponents={
                 <>
-                    <Button onClick={hideWindow} variant="secondary">
-                        <Translation id="TR_EARLY_ACCESS_SKIP_REINSTALL" />
-                    </Button>
                     <Link variant="nostyle" href={SUITE_URL}>
                         <LinkButton icon="EXTERNAL_LINK" iconAlignment="right">
                             <Translation id="TR_EARLY_ACCESS_REINSTALL" />
                         </LinkButton>
                     </Link>
+                    <Button onClick={hideWindow} variant="tertiary">
+                        <Translation id="TR_EARLY_ACCESS_SKIP_REINSTALL" />
+                    </Button>
                 </>
             }
-        >
-            <ImageWrapper>
-                <Image image="UNI_SUCCESS" />
-            </ImageWrapper>
-            <Title>
-                <Translation id="TR_EARLY_ACCESS_LEFT_TITLE" />
-            </Title>
-            <Description>
-                <Translation id="TR_EARLY_ACCESS_LEFT_DESCRIPTION" />
-            </Description>
-        </StyledModal>
+        />
     );
 };
