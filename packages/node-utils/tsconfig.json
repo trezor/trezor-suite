@@ -5,5 +5,8 @@
         "outDir": "libDev"
     },
     "include": ["."],
-    "references": []
+    "references": [
+        { "path": "../type-utils" },
+        { "path": "../utils" }
+    ]
 }
