@@ -38,6 +38,8 @@ jobs:
 
       - name: Expo Prebuild
         working-directory: suite-native/app/
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: yarn expo prebuild --platform android
 
       - name: Ruby Setup for Fastlane
@@ -104,6 +106,8 @@ jobs:
 
       - name: Expo Prebuild
         working-directory: suite-native/app/
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: yarn expo prebuild --platform ios
 
       - name: Ruby Setup for Fastlane
