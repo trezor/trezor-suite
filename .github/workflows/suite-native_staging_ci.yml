@@ -1,4 +1,4 @@
-name: "[Release]: suite-native staging"
+name: "[Release] suite-native production"
 
 on:
   workflow_dispatch:
@@ -8,9 +8,9 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  android_staging:
+  android_production:
     runs-on: ubuntu-latest
-    environment: staging
+    environment: production
     timeout-minutes: 45
     steps:
       - name: Checkout code
@@ -25,16 +25,20 @@ jobs:
         run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
       - name: Decode files
         env:
-          ENCODED_STRING_KEYSTORE: ${{ secrets.STAGING_KEYSTORE_FILE }}
-          ENCODED_STRING_JSON_FILE: ${{secrets.GOOGLE_PLAY_JSON_KEY_STAGING}}
+          ENCODED_STRING_KEYSTORE: ${{ secrets.PRODUCTION_KEYSTORE_FILE }}
+          ENCODED_STRING_JSON_FILE: ${{secrets.PRODUCTION_GOOGLE_PLAY_JSON_KEY}}
         run: |
-          echo $ENCODED_STRING_KEYSTORE | base64 -d > suite-native/app/android/app/stag-upload-key.keystore
+          echo $ENCODED_STRING_KEYSTORE |  base64 -d > suite-native/app/android/app/prod-upload-key.keystore
           echo $ENCODED_STRING_JSON_FILE > suite-native/app/android/google_play_key.json
 
       - name: Install dependecies
         run: |
           yarn install
           yarn build:libs
+
+      - name: Expo Prebuild
+        working-directory: suite-native/app/
+        run: yarn expo prebuild --platform android
 
       - name: Ruby Setup for Fastlane
         uses: ruby/setup-ruby@v1
@@ -48,19 +52,19 @@ jobs:
       - name: Fastlane build and deploy
         working-directory: suite-native/app/
         env:
-          SIGNING_KEY_FILE: stag-upload-key.keystore
-          SIGNING_KEY_STORE_PASSWORD: ${{ secrets.SIGNING_KEY_STORE_PASSWORD_STAGING }}
-          SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS_STAGING }}
-          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD_STAGING }}
+          SIGNING_KEY_FILE: prod-upload-key.keystore
+          SIGNING_KEY_STORE_PASSWORD: ${{ secrets.SIGNING_KEY_STORE_PASSWORD_PROD }}
+          SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS_PROD }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD_PROD }}
           GOOGLE_PLAY_JSON_KEY_FILE: ./android/google_play_key.json
         # builds and publishes the app
         run: |
           bundle install
-          bundle exec fastlane android staging
+          bundle exec fastlane android production
 
-  ios_staging:
+  ios_production:
     runs-on: macos-12
-    environment: staging
+    environment: production
     timeout-minutes: 75
     steps:
       - name: Checkout code
@@ -86,15 +90,21 @@ jobs:
 
       - name: Decode files
         env:
-          APPSTORE_CERTIFICATE_CONTENT: ${{ secrets.APPSTORE_CERTIFICATE_CONTENT_STAGING }}
+          APPSTORE_CERTIFICATE_CONTENT: ${{ secrets.APPSTORE_CERTIFICATE_CONTENT_PROD }}
         run: |
           echo $APPSTORE_CERTIFICATE_CONTENT | base64 -d > suite-native/app/TrezorDistributionCertificate.p12
+
+      - name: Install missing Python deps (to build bcrypto lib in Node)
+        run: pip install setuptools
 
       - name: Install dependecies
         run: |
           yarn install
           yarn build:libs
-          yarn workspace @trezor/suite-native pods
+
+      - name: Expo Prebuild
+        working-directory: suite-native/app/
+        run: yarn expo prebuild --platform ios
 
       - name: Ruby Setup for Fastlane
         uses: ruby/setup-ruby@v1

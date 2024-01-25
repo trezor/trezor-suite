@@ -64,7 +64,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     name: appName,
     slug: appSlug,
     version: suiteNativeVersion,
-    // assetBundlePatterns: ['**/*'],
     splash: {
         image: './assets/splash_icon.png',
         backgroundColor: '#25292E',
