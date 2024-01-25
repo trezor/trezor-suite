@@ -23,7 +23,26 @@ const backgroundElevationColors = {
     },
 } as const;
 
+const backgroundTertiaryElevationColors = {
+    standard: {
+        backgroundTertiaryElevationNegative: '#f6f6f6ff', // @TODO
+        backgroundTertiaryDefaultOnElevation0: '#eeeeeeff',
+        backgroundTertiaryDefaultOnElevation1: '#f6f6f6ff',
+        backgroundTertiaryDefaultOnElevation2: '#eeeeeeff', // @TODO
+        backgroundTertiaryDefaultOnElevation3: '#f6f6f6ff', // @TODO
+    },
+    dark: {
+        backgroundTertiaryElevationNegative: '#1c1e1cff', // @TODO
+        backgroundTertiaryDefaultOnElevation0: '#161716ff',
+        backgroundTertiaryDefaultOnElevation1: '#1c1e1cff',
+        backgroundTertiaryDefaultOnElevation2: '#161716ff', // @TODO
+        backgroundTertiaryDefaultOnElevation3: '#1c1e1cff', // @TODO
+    },
+} as const;
+
 export type BackgroundElevationColor = keyof typeof backgroundElevationColors.standard;
+export type BackgroundTertiaryElevationColor =
+    keyof typeof backgroundTertiaryElevationColors.standard;
 
 export const mapElevationToBackground: Record<Elevation, BackgroundElevationColor> = {
     '-1': 'backgroundSurfaceElevationNegative', // For example left menu is negative elevation
@@ -42,8 +61,6 @@ export const colorVariants = {
         backgroundPrimarySubtleOnElevation1: '#f0f9f6ff',
         backgroundSecondaryDefault: '#00854dff',
         backgroundSecondaryPressed: '#004d2dff',
-        backgroundTertiaryDefaultOnElevation0: '#eeeeeeff',
-        backgroundTertiaryDefaultOnElevation1: '#f6f6f6ff',
         backgroundTertiaryPressedOnElevation0: '#e2e2e2ff',
         backgroundTertiaryPressedOnElevation1: '#eeeeeeff',
         backgroundNeutralBold: '#171717ff',
@@ -96,6 +113,7 @@ export const colorVariants = {
         borderAlertRed: '#cd4949ff',
         borderSubtleInverted: '#ffffff99',
         ...backgroundElevationColors.standard,
+        ...backgroundTertiaryElevationColors.standard,
     },
     dark: {
         transparent: '#00000000',
@@ -105,8 +123,6 @@ export const colorVariants = {
         backgroundPrimarySubtleOnElevation1: '#0e2f25ff',
         backgroundSecondaryDefault: '#2fbc81ff',
         backgroundSecondaryPressed: '#74dcb1ff',
-        backgroundTertiaryDefaultOnElevation0: '#161716ff',
-        backgroundTertiaryDefaultOnElevation1: '#1c1e1cff',
         backgroundTertiaryPressedOnElevation0: '#1c1e1cff',
         backgroundTertiaryPressedOnElevation1: '#242524ff',
         backgroundNeutralBold: '#ffffffff',
@@ -159,6 +175,7 @@ export const colorVariants = {
         borderAlertRed: '#ac3e3eff',
         borderSubtleInverted: '#00000099',
         ...backgroundElevationColors.dark,
+        ...backgroundTertiaryElevationColors.dark,
     },
 } as const;
 
