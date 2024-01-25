@@ -1,19 +1,19 @@
 {
     "version": 1,
-    "timestamp": "2024-01-24T00:00:00+00:00",
-    "sequence": 51,
+    "timestamp": "2024-01-25T00:00:00+00:00",
+    "sequence": 52,
     "actions": [
         {
             "conditions": [],
             "message": {
-                "id": "57fc962f-30d4-4e5d-a908-ea7a7349b6cf ",
+                "id": "88ce29be-f797-4274-82dc-9c5e9696fa4d",
                 "priority": 99,
                 "dismissible": true,
                 "variant": "critical",
                 "category": "banner",
                 "content": {
-                    "en-GB": "Stay alert for unsolicited emails seeking sensitive information, never share your recovery seed.",
-                    "en": "Stay alert for unsolicited emails seeking sensitive information, never share your recovery seed.",
+                    "en-GB": "Stay alert for unexpected emails asking for sensitive info. Never share your 12, 24, or other word-count backup with anyone, not even Trezor Support.",
+                    "en": "Stay alert for unexpected emails asking for sensitive info. Never share your 12, 24, or other word-count backup with anyone, not even Trezor Support.",
                     "es": "Mantente alerta ante correos electrónicos no solicitados que buscan información sensible, nunca compartas tu semilla de recuperación.",
                     "cs": "Dávejte si pozor na nevyžádané e-maily, které požadují citlivé informace, a nikdy nesdělujte svůj recovery seed.",
                     "ru": "Будьте бдительны при получении нежелательных писем с просьбой предоставить конфиденциальную информацию, никогда не сообщайте свои данные для восстановления.",
@@ -22,6 +22,22 @@
                     "it": "State attenti alle e-mail non richieste che richiedono informazioni sensibili, non condividete mai il vostro seed di ripristino.",
                     "fr": "Restez vigilant face aux courriels non sollicités qui vous demandent des informations sensibles, ne communiquez jamais vos seed de récupération.",
                     "de": "Seien Sie auf der Hut vor unaufgeforderten E-Mails, die nach sensiblen Informationen fragen, und geben Sie niemals Ihren Recovery Seed weiter."
+                },
+                "cta": {
+                    "action": "external-link",
+                    "link": "https://blog.trezor.io/trezor-security-alert-stay-vigilant-against-an-unauthorized-email-and-continued-phishing-attacks-1b4982c2f53c",
+                    "label": {
+                        "en-GB": "Read more",
+                        "en": "Read more",
+                        "es": "Seguir leyendo",
+                        "cs": "Přečtěte si více",
+                        "ru": "Читать далее",
+                        "ja": "もっと読む",
+                        "hu": "Bővebben",
+                        "it": "Per saperne di più",
+                        "fr": "En savoir plus",
+                        "de": "Mehr lesen"
+                    }
                 }
             }
         },
