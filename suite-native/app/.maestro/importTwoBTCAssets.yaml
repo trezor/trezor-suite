@@ -1,0 +1,30 @@
+# Test case:
+# 1. Start the app
+# 2. Import BTC asset via text
+# 3. Import another BTC asset via text again
+# 4. Verify that both assets have been synced once before
+
+appId: io.trezor.suite.${ENV}
+env:
+    NETWORK: 'Bitcoin'
+---
+- launchApp:
+      clearState: true
+- runFlow: 'subflows/onboarding.yaml'
+- runFlow:
+      file: 'subflows/importNetworkByText.yaml'
+      env:
+          SYNC_COINS_BTN: '@emptyHome/sync-my-coin'
+          COIN_ADDRESS: 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT'
+- runFlow: 'subflows/finishCoinSyncAndMoveToPortfolio.yaml'
+# manually scroll down from the timeswitch element due to graph being pressable
+- swipe:
+      from:
+          id: 'TimeSwitchItem_24'
+      direction: UP
+- runFlow:
+      file: 'subflows/importNetworkByText.yaml'
+      env:
+          SYNC_COINS_BTN: '@home/portfolio/sync-coins-button'
+          COIN_ADDRESS: zpub6rszzdAK6RuaiJMjZ9A1D6kvYcvHWUCMAB62jsG2NxrovRusioeC74YqX6ZebKDPKYayqt6JD8ncRYcnMkrJWb8LzTj8a3jW7mViAjJmVT9
+- assertVisible: 'Coin synced'
