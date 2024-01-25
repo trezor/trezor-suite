@@ -12,11 +12,6 @@ const Content = styled.div<{ shouldHighlight?: boolean }>`
     margin: -${spacingsPx.md};
     border-radius: ${({ shouldHighlight }) => shouldHighlight && borders.radii.xs};
 
-    /*
-        so that the borders underneath are hidden - used for anchor highlighting
-        @TODO it causes following bug: https://github.com/trezor/trezor-suite/issues/10792
-    */
-    z-index: 1;
     ${anchorOutlineStyles}
 
     @media all and (max-width: ${variables.SCREEN_SIZE.SM}) {
