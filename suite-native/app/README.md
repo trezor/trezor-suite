@@ -1,4 +1,4 @@
-# @trezor/suite-native
+# @suite-native/app
 
 Trezor Suite native application.
 

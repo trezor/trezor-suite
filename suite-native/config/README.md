@@ -4,7 +4,7 @@ This package contains helper functions based on configuration variables for diff
 
 ## Config variables
 
-Config variables are defined in the root of the mobile app (**@trezor/suite-native**) in different files for every environment: .env.staging, .env.production, etc.
+Config variables are defined in the root of the mobile app (**@suite-native/app**) in different files for every environment: .env.staging, .env.production, etc.
 
 Add any new environment variable here.
 

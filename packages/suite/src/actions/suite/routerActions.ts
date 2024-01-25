@@ -1,5 +1,5 @@
 /**
- * Use override for react-native (@trezor/suite-native/src/actions)
+ * Use override for react-native (@suite-native/app/src/actions)
  */
 import { Route } from '@suite-common/suite-types';
 
