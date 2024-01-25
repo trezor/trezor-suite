@@ -8,6 +8,12 @@ import {
     getIsPhishingTransaction,
 } from '@suite-common/wallet-utils';
 import { isStakeTx } from '@suite-common/suite-utils';
+import { findTransaction, getConfirmations, isPending } from '@suite-common/wallet-utils';
+import {
+    isClaimTx,
+    isStakeTx,
+    isStakeTypeTx,
+} from '@suite-common/suite-utils';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 
 import { accountsActions } from '../accounts/accountsActions';
@@ -304,10 +310,26 @@ export const selectIsPhishingTransaction = (
     return getIsPhishingTransaction(transaction, tokenDefinitions);
 };
 
+export const selectAccountStakeTypeTransactions = (
+    state: TransactionsRootState,
+    accountKey: AccountKey,
+) => {
+    const transactions = selectAccountTransactions(state, accountKey);
+    return transactions.filter(tx => isStakeTypeTx(tx.ethereumSpecific?.parsedData?.methodId));
+};
+
 export const selectAccountStakeTransactions = (
     state: TransactionsRootState,
     accountKey: AccountKey,
 ) => {
     const transactions = selectAccountTransactions(state, accountKey);
     return transactions.filter(tx => isStakeTx(tx.ethereumSpecific?.parsedData?.methodId));
+};
+
+export const selectAccountClaimTransactions = (
+    state: TransactionsRootState,
+    accountKey: AccountKey,
+) => {
+    const transactions = selectAccountTransactions(state, accountKey);
+    return transactions.filter(tx => isClaimTx(tx.ethereumSpecific?.parsedData?.methodId));
 };

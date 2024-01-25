@@ -3,6 +3,7 @@ import { Icon, Warning } from '@trezor/components';
 import { variables } from '@trezor/components/src/config';
 import { getInputState } from '@suite-common/wallet-utils';
 import { useFormatters } from '@suite-common/formatters';
+import { formInputsMaxLength } from '@suite-common/validators';
 import { NumberInput, Translation } from 'src/components/suite';
 import { useTranslation } from 'src/hooks/suite';
 import { useStakeEthFormContext } from 'src/hooks/wallet/useStakeEthForm';
@@ -13,7 +14,6 @@ import {
     validateMin,
     validateReserveOrBalance,
 } from 'src/utils/suite/validation';
-import { MAX_LENGTH } from 'src/constants/suite/inputs';
 import { FIAT_INPUT, CRYPTO_INPUT } from 'src/types/wallet/stakeForms';
 import { MIN_ETH_FOR_WITHDRAWALS } from 'src/constants/suite/ethStaking';
 
@@ -91,7 +91,7 @@ export const Inputs = () => {
                 name={FIAT_INPUT}
                 control={control}
                 rules={fiatInputRules}
-                maxLength={MAX_LENGTH.FIAT}
+                maxLength={formInputsMaxLength.fiat}
                 innerAddon={<InputAddon>{localCurrency}</InputAddon>}
                 bottomText={errors[FIAT_INPUT]?.message}
                 inputState={getInputState(fiatError || cryptoError, fiatValue)}
@@ -108,7 +108,7 @@ export const Inputs = () => {
                 name={CRYPTO_INPUT}
                 control={control}
                 rules={cryptoInputRules}
-                maxLength={MAX_LENGTH.AMOUNT}
+                maxLength={formInputsMaxLength.amount}
                 innerAddon={<InputAddon>{account.symbol}</InputAddon>}
                 bottomText={errors[CRYPTO_INPUT]?.message}
                 inputState={getInputState(cryptoError || fiatError, cryptoValue)}

@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { Icon } from '@trezor/components';
 import { NumberInput } from 'src/components/suite';
 import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/wallet/stakeForms';
-import { MAX_LENGTH } from 'src/constants/suite/inputs';
+import { formInputsMaxLength } from '@suite-common/validators';
 import { useSelector, useTranslation } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { variables } from '@trezor/components/src/config';
@@ -81,7 +81,7 @@ export const Inputs = () => {
                 name={FIAT_INPUT}
                 control={control}
                 rules={fiatInputRules}
-                maxLength={MAX_LENGTH.FIAT}
+                maxLength={formInputsMaxLength.fiat}
                 innerAddon={<InputAddon>{localCurrency}</InputAddon>}
                 bottomText={errors[FIAT_INPUT]?.message}
                 inputState={getInputState(fiatError || cryptoError, fiatValue)}
@@ -100,7 +100,7 @@ export const Inputs = () => {
                 name={CRYPTO_INPUT}
                 control={control}
                 rules={cryptoInputRules}
-                maxLength={MAX_LENGTH.AMOUNT}
+                maxLength={formInputsMaxLength.amount}
                 innerAddon={<InputAddon>{symbol}</InputAddon>}
                 bottomText={errors[CRYPTO_INPUT]?.message}
                 inputState={getInputState(cryptoError || fiatError, cryptoValue)}
