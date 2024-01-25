@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 
 import { Button, LoadingContent } from '@trezor/components';
 
-import { GraphRangeSelector, HiddenPlaceholder, Translation } from 'src/components/suite';
+import { GraphRangeSelector, Translation } from 'src/components/suite';
 import { updateGraphData } from 'src/actions/wallet/graphActions';
 import { useFastAccounts } from 'src/hooks/wallet';
 import { GraphRange } from 'src/types/wallet/graph';
@@ -106,13 +106,11 @@ export const Header = ({
         <Wrapper hideBorder={hideBorder}>
             <Left>
                 <LoadingContent size={24} isLoading={isDiscoveryRunning || isMissingFiatRate}>
-                    <HiddenPlaceholder>
-                        <FiatHeader
-                            size="large"
-                            portfolioValue={portfolioValue}
-                            localCurrency={localCurrency}
-                        />
-                    </HiddenPlaceholder>
+                    <FiatHeader
+                        size="large"
+                        portfolioValue={portfolioValue}
+                        localCurrency={localCurrency}
+                    />
                 </LoadingContent>
             </Left>
             <Right>{actions}</Right>

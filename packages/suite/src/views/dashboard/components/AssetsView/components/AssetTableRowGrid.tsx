@@ -8,7 +8,7 @@ import { HTMLAttributes } from 'react';
 const StyledAssetTableRowGrid = styled.div<{ elevation: Elevation }>`
     display: grid;
     overflow: hidden;
-    grid-template-columns: min-content 2fr 2fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 2fr 2fr 1fr 1fr 1fr;
     border-radius: ${borders.radii.xs};
 
     ${({ theme, elevation, onClick }) =>

@@ -15,12 +15,13 @@ import { borders, spacingsPx, typography } from '@trezor/theme';
 
 import { Card, H2, Icon, SkeletonRectangle, variables } from '@trezor/components';
 import { useDispatch } from 'react-redux';
-import { useAccountSearch, useLoadingSkeleton } from 'src/hooks/suite';
+import { useAccountSearch, useLoadingSkeleton, useSelector } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { AssetFiatBalance } from '@suite-common/assets';
 import { FiatHeader } from '../../FiatHeader';
 import { ArrowIcon, styledHoverOnParentOfArrowIcon } from './ArrowIcon';
 import { AssetCardInfo, AssetCardInfoSkeleton } from './AssetCardInfo';
+import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 
 const StyledCard = styled(Card)`
     :hover {
@@ -114,7 +115,7 @@ export const AssetCard = ({
     const dispatch = useDispatch();
     const theme = useTheme();
     const { setCoinFilter, setSearchString } = useAccountSearch();
-
+    const localCurrency = useSelector(selectLocalCurrency);
     const handleCardClick = () => {
         dispatch(
             goto('wallet-index', {
@@ -147,7 +148,7 @@ export const AssetCard = ({
                             <FiatHeader
                                 size="medium"
                                 portfolioValue={cryptoValue}
-                                localCurrency={symbol}
+                                localCurrency={localCurrency}
                             />
                         </FiatAmount>
                         <CoinAmount>
