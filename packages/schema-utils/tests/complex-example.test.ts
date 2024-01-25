@@ -1,4 +1,4 @@
-import { Type, Validate } from '../src';
+import { Assert, Type, Validate } from '../src';
 
 describe('complex-example', () => {
     it('should work with a schema like StellarSignTx', () => {
@@ -75,5 +75,57 @@ describe('complex-example', () => {
             encoded_network: 'invalid',
         };
         expect(Validate(schema, invalidValue)).toBe(false);
+    });
+
+    it('should work with union types', () => {
+        const schemaA = Type.Object({
+            type: Type.Literal('A'),
+            a: Type.String(),
+        });
+
+        const schemaA2 = Type.Object({
+            type: Type.Literal('A'),
+            b: Type.Number(),
+            c: Type.Number(),
+        });
+
+        const schemaB = Type.Object({
+            type: Type.Literal('B'),
+            b: Type.String(),
+        });
+
+        const schema = Type.Union([schemaA, schemaA2, schemaB]);
+
+        const invalidSchema = {
+            type: 'C',
+        };
+        expect(() => Assert(schema, invalidSchema)).toThrow(
+            'Invalid parameter "" (= {"type":"C"}): Expected union value',
+        );
+
+        const invalidSchema2 = {
+            type: 'A',
+            a: 123,
+        };
+        expect(() => Assert(schema, invalidSchema2)).toThrow(
+            'Invalid parameter "a" (= 123): Expected string',
+        );
+
+        const invalidSchema3 = {
+            type: 'A',
+            b: 123,
+            c: 'str',
+        };
+        expect(() => Assert(schema, invalidSchema3)).toThrow(
+            'Invalid parameter "c" (= "str"): Expected number',
+        );
+
+        const invalidSchema4 = {
+            type: 'B',
+            a: 123,
+        };
+        expect(() => Assert(schema, invalidSchema4)).toThrow(
+            'Invalid parameter "b" (= undefined): Required property',
+        );
     });
 });
