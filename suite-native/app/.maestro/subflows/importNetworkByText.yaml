@@ -1,0 +1,21 @@
+appId: io.trezor.suite.${ENV}
+---
+- scrollUntilVisible:
+      element:
+          id: ${SYNC_COINS_BTN}
+      centerElement: true
+      direction: DOWN
+- tapOn:
+      id: ${SYNC_COINS_BTN}
+- tapOn:
+      id: '@onboarding/select-coin/${NETWORK}'
+- scrollUntilVisible:
+      element:
+          id: '@accounts-import/sync-coins/xpub-input'
+      direction: DOWN
+# type in the first all seed btc XPUB
+- tapOn:
+      id: '@accounts-import/sync-coins/xpub-input'
+- inputText: ${COIN_ADDRESS}
+- tapOn:
+      id: '@accounts-import/sync-coins/xpub-submit'
