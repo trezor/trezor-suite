@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { darken } from 'polished';
 
 import { KycError, KycFailed, KycInProgress } from 'src/views/wallet/coinmarket/common';
-import { Icon, variables } from '@trezor/components';
+import { Card, Icon, variables } from '@trezor/components';
 import {
     FiatValue,
     FormattedCryptoAmount,
@@ -21,7 +21,7 @@ import { AllFeesIncluded } from '../AllFeesIncluded';
 import { ProvidedBy } from '../ProvidedBy';
 import { CoinmarketReauthorizationCard } from '../CoinmarketReauthorizationCard';
 import { withCoinmarket, WithCoinmarketProps } from '../withCoinmarket';
-import { borders } from '@trezor/theme';
+import { spacingsPx } from '@trezor/theme';
 
 const Wrapper = styled.div`
     display: flex;
@@ -43,22 +43,15 @@ const Right = styled.div`
     width: 100%;
 `;
 
-const HeaderBlock = styled.div`
+const StyledCard = styled(Card)`
+    width: 100%;
+    margin-right: ${spacingsPx.sm};
     display: flex;
     flex-flow: row nowrap;
     place-content: stretch space-between;
     align-items: stretch;
     height: 120px;
 `;
-const Setup = styled(HeaderBlock)`
-    background-color: ${({ theme }) => theme.BG_GREY};
-    padding: 21px;
-    border-radius: ${borders.radii.xs};
-    margin-right: 12px;
-    width: 100%;
-`;
-
-const SetupValues = styled.div``;
 
 const StyledFiatValue = styled(FiatValue)`
     font-size: 30px;
@@ -215,8 +208,8 @@ const Overview = (props: WithCoinmarketProps) => {
                 )}
                 <HeaderWrapper>
                     <Left>
-                        <Setup>
-                            <SetupValues>
+                        <StyledCard>
+                            <div>
                                 <StyledFiatValue
                                     shouldConvert={false}
                                     amount={savingsTrade.fiatStringAmount || '0'}
@@ -237,13 +230,13 @@ const Overview = (props: WithCoinmarketProps) => {
                                     )}
                                 </Period>
                                 <AllFeesIncluded />
-                            </SetupValues>
+                            </div>
                             <StyledIcon
                                 icon="PENCIL"
                                 size={13}
                                 onClick={handleEditSetupButtonClick}
                             />
-                        </Setup>
+                        </StyledCard>
                     </Left>
                     <Right>
                         {renderSavingsStatus(

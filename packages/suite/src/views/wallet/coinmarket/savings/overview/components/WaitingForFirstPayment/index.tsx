@@ -1,17 +1,16 @@
 import styled from 'styled-components';
 import { Translation } from 'src/components/suite';
 import { SavingsPaymentMethod } from 'invity-api';
+import { Card } from '@trezor/components';
 
-const StyledCard = styled.div`
+const StyledCard = styled(Card)`
     background: rgb(239 201 65 / 10%);
     color: #ba9924;
-    border-radius: 6px;
     display: flex;
     flex-direction: column;
     width: 100%;
     height: 100%;
     justify-content: center;
-    padding: 12px 20px;
 `;
 
 const Header = styled.div`
