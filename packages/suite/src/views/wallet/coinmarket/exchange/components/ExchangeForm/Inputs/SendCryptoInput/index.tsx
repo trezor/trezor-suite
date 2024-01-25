@@ -1,5 +1,5 @@
 import { useEffect, ReactElement } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { FieldValues } from 'react-hook-form';
 import { getInputState } from '@suite-common/wallet-utils';
 import { useCoinmarketExchangeFormContext } from 'src/hooks/wallet/useCoinmarketExchangeForm';
@@ -17,14 +17,18 @@ import {
     validateReserveOrBalance,
 } from 'src/utils/suite/validation';
 import { useFormatters } from '@suite-common/formatters';
+import { spacingsPx } from '@trezor/theme';
 
 const StyledInput = styled(NumberInput)<{ isToken: boolean }>`
     ${({ isToken }) =>
-        !isToken && {
-            'border-top-right-radius': 0,
-            'border-bottom-right-radius': 0,
-            'padding-right': '105px',
-        }}
+        !isToken &&
+        css`
+            input {
+                border-top-right-radius: 0;
+                border-bottom-right-radius: 0;
+                border-right: ${spacingsPx.xxxs} solid transparent;
+            }
+        `}
 ` as <T extends FieldValues>(props: NumberInputProps<T> & { isToken: boolean }) => ReactElement; // Styled wrapper doesn't preserve type argument, see https://github.com/styled-components/styled-components/issues/1803#issuecomment-1181765843
 
 const SendCryptoInput = () => {
