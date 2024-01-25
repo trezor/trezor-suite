@@ -4,6 +4,7 @@ import { copyToClipboard } from '@trezor/dom-utils';
 import { useDispatch } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { typography } from '@trezor/theme';
 
 const Wrapper = styled.div`
     display: flex;
@@ -24,7 +25,7 @@ const Right = styled.div``;
 
 const Label = styled.div`
     text-transform: capitalize;
-    font-size: ${variables.FONT_SIZE.TINY};
+    ${typography.label}
     padding-right: 3px;
     white-space: nowrap;
 `;
