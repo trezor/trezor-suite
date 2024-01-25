@@ -1,9 +1,24 @@
 import { css, DefaultTheme } from 'styled-components';
-import { spacings, spacingsPx } from '@trezor/theme';
+import {
+    BackgroundTertiaryElevationColor,
+    Elevation,
+    spacings,
+    spacingsPx,
+    nextElevation,
+} from '@trezor/theme';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'tertiary' | 'destructive';
 export type ButtonSize = 'large' | 'medium' | 'small' | 'tiny';
 export type IconAlignment = 'left' | 'right';
+
+export const mapElevationToBackgroundTertiary: Record<Elevation, BackgroundTertiaryElevationColor> =
+    {
+        '-1': 'backgroundTertiaryElevationNegative', // For example left menu is negative elevation
+        0: 'backgroundTertiaryDefaultOnElevation0',
+        1: 'backgroundTertiaryDefaultOnElevation1',
+        2: 'backgroundTertiaryDefaultOnElevation2',
+        3: 'backgroundTertiaryDefaultOnElevation3',
+    };
 
 export const getPadding = (size: ButtonSize, hasLabel?: boolean) => {
     switch (size) {
@@ -55,7 +70,7 @@ export const getIconSize = (size: ButtonSize) => {
     }
 };
 
-export const getVariantStyle = (variant: ButtonVariant) => {
+export const getVariantStyle = (variant: ButtonVariant, elevation: Elevation) => {
     switch (variant) {
         case 'primary':
             return css`
@@ -82,12 +97,13 @@ export const getVariantStyle = (variant: ButtonVariant) => {
             `;
         case 'tertiary':
             return css`
-                background: ${({ theme }) => theme.backgroundTertiaryDefaultOnElevation0};
+                background: ${({ theme }) => theme[mapElevationToBackgroundTertiary[elevation]]};
                 color: ${({ theme }) => theme.textOnTertiary};
 
                 :hover,
                 :active {
-                    background: ${({ theme }) => theme.backgroundTertiaryPressedOnElevation0};
+                    background: ${({ theme }) =>
+                        theme[mapElevationToBackgroundTertiary[nextElevation[elevation]]]};
                 }
             `;
         case 'destructive':
