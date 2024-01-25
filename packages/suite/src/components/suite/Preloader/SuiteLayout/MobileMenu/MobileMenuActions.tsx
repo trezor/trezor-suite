@@ -9,11 +9,11 @@ import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite';
 import { findRouteByName } from 'src/utils/suite/router';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useCustomBackends } from 'src/hooks/settings/backends';
 import { useGuide } from 'src/hooks/guide/useGuide';
 import { selectIsDiscreteModeActive } from 'src/reducers/wallet/settingsReducer';
 
 import { MobileActionItem } from './MobileActionItem';
+import { useEnabledBackends } from '../utils';
 
 const MobileWrapper = styled.div`
     display: flex;
@@ -30,7 +30,7 @@ export const MobileMenuActions = ({ closeMobileNavigation }: MobileMenuActionsPr
     const notifications = useSelector(state => state.notifications);
     const discreetMode = useSelector(selectIsDiscreteModeActive);
     const allowPrerelease = useSelector(state => state.desktopUpdate.allowPrerelease);
-    const enabledNetworks = useSelector(state => state.wallet.settings.enabledNetworks);
+    const enabledBackends = useEnabledBackends();
     const dispatch = useDispatch();
 
     const { openGuide } = useGuide();
@@ -52,10 +52,6 @@ export const MobileMenuActions = ({ closeMobileNavigation }: MobileMenuActionsPr
 
     const unseenNotifications = useMemo(() => notifications.some(n => !n.seen), [notifications]);
 
-    const customBackends = useCustomBackends().filter(backend =>
-        enabledNetworks.includes(backend.coin),
-    );
-
     return (
         <MobileWrapper>
             <MobileActionItem
@@ -65,7 +61,7 @@ export const MobileMenuActions = ({ closeMobileNavigation }: MobileMenuActionsPr
                 icon={discreetMode ? 'HIDE' : 'SHOW'}
             />
 
-            {!!customBackends.length && (
+            {!!enabledBackends.length && (
                 <MobileActionItem
                     onClick={() => action('settings-coins')}
                     label={<Translation id="TR_BACKENDS" />}
