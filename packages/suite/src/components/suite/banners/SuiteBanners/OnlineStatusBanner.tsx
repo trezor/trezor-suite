@@ -8,5 +8,7 @@ interface OnlineStatusProps {
 export const OnlineStatus = ({ isOnline }: OnlineStatusProps) => {
     if (isOnline) return null;
 
-    return <Banner variant="critical" body={<Translation id="TR_YOU_WERE_DISCONNECTED_DOT" />} />;
+    return (
+        <Banner variant="destructive" body={<Translation id="TR_YOU_WERE_DISCONNECTED_DOT" />} />
+    );
 };

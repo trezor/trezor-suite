@@ -19,7 +19,8 @@ import { FirmwareHashMismatch } from './FirmwareHashMismatchBanner';
 import styled from 'styled-components';
 
 const Container = styled.div`
-    background: ${({ theme }) => theme.backgroundSurfaceElevation0};
+    background: ${({ theme }) => theme.backgroundSurfaceElevationNegative};
+    border-bottom: solid 1px ${({ theme }) => theme.borderOnElevation0};
 `;
 
 export const SuiteBanners = () => {
