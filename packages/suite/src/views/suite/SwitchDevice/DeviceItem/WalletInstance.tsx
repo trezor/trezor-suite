@@ -157,7 +157,11 @@ export const WalletInstance = ({
                         )}
                         {instance.state ? (
                             <MetadataLabeling
-                                defaultVisibleValue={walletLabel ?? defaultWalletLabel}
+                                defaultVisibleValue={
+                                    walletLabel === undefined || walletLabel.trim() === ''
+                                        ? defaultWalletLabel
+                                        : walletLabel
+                                }
                                 payload={{
                                     type: 'walletLabel',
                                     entityKey: instance.state,
