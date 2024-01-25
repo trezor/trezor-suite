@@ -18,6 +18,9 @@ const ANIMATION_HEIGHT = Dimensions.get('screen').height * 0.35;
 
 const animationStyle = prepareNativeStyle(() => ({
     height: ANIMATION_HEIGHT,
+    // This is very strange bug, if you remove this border, the animation will not be displayed
+    borderWidth: 1,
+    borderColor: 'transparent',
 }));
 
 export const ConnectTrezorScreen = () => {
