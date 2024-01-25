@@ -7248,6 +7248,7 @@ __metadata:
     babel-plugin-transform-remove-console: "npm:^6.9.4"
     buffer: "npm:^6.0.3"
     expo: "npm:50.0.3"
+    expo-av: "npm:13.10.3"
     expo-barcode-scanner: "npm:12.9.2"
     expo-build-properties: "npm:^0.11.0"
     expo-clipboard: "npm:5.0.1"
@@ -8253,7 +8254,7 @@ __metadata:
   dependencies:
     "@suite-native/atoms": "workspace:*"
     "@trezor/styles": "workspace:*"
-    expo-av: "npm:13.2.1"
+    expo-av: "npm:13.10.3"
     prettier: "npm:3.0.3"
     react: "npm:18.2.0"
     react-native: "npm:0.73.2"
@@ -17852,12 +17853,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-av@npm:13.2.1":
-  version: 13.2.1
-  resolution: "expo-av@npm:13.2.1"
+"expo-av@npm:13.10.3":
+  version: 13.10.3
+  resolution: "expo-av@npm:13.10.3"
   peerDependencies:
     expo: "*"
-  checksum: 195d90007d4f54519eda56277a5da785aff61e4d57e599c824f38d179bbb580ffaf5ca217dce504d577e2e1ea12ddbb65be0a3f07d66f8aa357f4b81d7d5e91b
+  checksum: 207ff414dff7902a38fa566b88f85128e6bc79bfc134f33b231fd53e5edf31f5f871be2ebe8be8cebb422839d6a1ae3a1da3c86c20cd3c11894192c4ec7cf28b
   languageName: node
   linkType: hard
 
