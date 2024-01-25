@@ -9034,6 +9034,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/node-utils@workspace:packages/node-utils"
   dependencies:
+    "@trezor/type-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
     jest: "npm:29.5.0"
     typescript: "npm:5.3.2"
   languageName: unknown
