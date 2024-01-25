@@ -1,7 +1,10 @@
-export class InvalidParameter extends Error {
-    field?: string;
+import { ValueErrorType } from '@sinclair/typebox/errors';
 
-    constructor(reason: string, field: string, value?: any) {
+export class InvalidParameter extends Error {
+    field: string;
+    type: ValueErrorType;
+
+    constructor(reason: string, field: string, type: ValueErrorType, value?: any) {
         let message = `Invalid parameter`;
         message += ` "${field.substring(1)}"`;
         message += ` (= ${JSON.stringify(value)})`;
@@ -9,5 +12,6 @@ export class InvalidParameter extends Error {
         super(message);
         this.name = 'InvalidParameter';
         this.field = field;
+        this.type = type;
     }
 }
