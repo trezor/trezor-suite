@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
 import styled, { css } from 'styled-components';
 
-import { Button, LoadingContent } from '@trezor/components';
+import { Button, ButtonGroup, LoadingContent } from '@trezor/components';
 
-import { GraphRangeSelector, HiddenPlaceholder, Translation } from 'src/components/suite';
+import { GraphRangeSelector, Translation } from 'src/components/suite';
 import { updateGraphData } from 'src/actions/wallet/graphActions';
 import { useFastAccounts } from 'src/hooks/wallet';
 import { GraphRange } from 'src/types/wallet/graph';
@@ -32,11 +32,9 @@ const Right = styled.div`
     align-items: center;
 `;
 
-const ActionButton = styled(Button)`
-    min-width: 150px;
-
-    & + & {
-        margin-left: 20px;
+const StyledButtonGroup = styled(ButtonGroup)`
+    > * {
+        min-width: 120px;
     }
 `;
 
@@ -79,20 +77,14 @@ export const Header = ({
         if (isWalletEmpty) {
             actions = (
                 <>
-                    <ActionButton
-                        variant="secondary"
-                        onClick={receiveClickHandler}
-                        data-test="@dashboard/receive-button"
-                    >
-                        <Translation id="TR_RECEIVE" />
-                    </ActionButton>
-                    <ActionButton
-                        variant="primary"
-                        onClick={buyClickHandler}
-                        data-test="@dashboard/buy-button"
-                    >
-                        <Translation id="TR_BUY" />
-                    </ActionButton>
+                    <StyledButtonGroup variant="primary">
+                        <Button onClick={receiveClickHandler} data-test="@dashboard/receive-button">
+                            <Translation id="TR_RECEIVE" />
+                        </Button>
+                        <Button onClick={buyClickHandler} data-test="@dashboard/buy-button">
+                            <Translation id="TR_BUY" />
+                        </Button>
+                    </StyledButtonGroup>
                 </>
             );
         } else if (showGraphControls) {
