@@ -5,6 +5,7 @@ export const borders = {
         large: '2px',
     },
     radii: {
+        xxxs: '2px',
         xxs: '4px',
         xs: '8px',
         sm: '12px',

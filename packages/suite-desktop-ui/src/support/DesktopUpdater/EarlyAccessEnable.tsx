@@ -7,8 +7,9 @@ import { desktopApi } from '@trezor/suite-desktop-api';
 import { Button, Paragraph, Tooltip, Image } from '@trezor/components';
 
 import { CheckItem, Translation, Modal } from 'src/components/suite';
+import { DialogModal } from 'src/components/suite/modals/Modal/DialogRenderer';
 
-import { ImageWrapper, Description, Divider, Title } from './styles';
+import { Description, Divider } from './styles';
 
 const DescriptionWrapper = styled.div`
     display: flex;
@@ -26,14 +27,6 @@ const DescriptionTextWrapper = styled.div`
 // Checkbox has 80% max-width by default but it's nicer full width here.
 const Checkbox = styled(CheckItem)`
     max-width: 100%;
-`;
-
-const StyledModal = styled(Modal)`
-    ${Modal.BottomBar} {
-        > * {
-            flex: 1;
-        }
-    }
 `;
 
 interface EarlyAccessEnableProps {
@@ -58,28 +51,21 @@ export const EarlyAccessEnable = ({ hideWindow }: EarlyAccessEnableProps) => {
     const checkForUpdates = useCallback(() => desktopApi.checkForUpdates(true), []);
 
     return enabled ? (
-        <StyledModal
+        <DialogModal
+            icon="check"
+            bodyHeading={<Translation id="TR_EARLY_ACCESS_JOINED_TITLE" />}
+            text={<Translation id="TR_EARLY_ACCESS_JOINED_DESCRIPTION" />}
             bottomBarComponents={
                 <>
-                    <Button onClick={hideWindow} variant="secondary">
-                        <Translation id="TR_EARLY_ACCESS_SKIP_CHECK" />
-                    </Button>
                     <Button onClick={checkForUpdates}>
                         <Translation id="TR_EARLY_ACCESS_CHECK_UPDATE" />
                     </Button>
+                    <Button onClick={hideWindow} variant="tertiary">
+                        <Translation id="TR_EARLY_ACCESS_SKIP_CHECK" />
+                    </Button>
                 </>
             }
-        >
-            <ImageWrapper>
-                <Image image="UNI_SUCCESS" />
-            </ImageWrapper>
-            <Title>
-                <Translation id="TR_EARLY_ACCESS_JOINED_TITLE" />
-            </Title>
-            <Description>
-                <Translation id="TR_EARLY_ACCESS_JOINED_DESCRIPTION" />
-            </Description>
-        </StyledModal>
+        />
     ) : (
         <Modal
             heading={<Translation id="TR_EARLY_ACCESS" />}
