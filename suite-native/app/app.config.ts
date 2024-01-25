@@ -72,7 +72,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     },
     android: {
         package: bundleIdentifier,
-        versionCode: 28,
+        versionCode: 1,
         adaptiveIcon: {
             foregroundImage: './assets/appIcon_android.png',
             monochromeImage: './assets/appIcon_android.png',
@@ -112,7 +112,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
             'expo-build-properties',
             {
                 android: {
-                    minSdkVersion: 28,
+                    minSdkVersion: 1,
                 },
                 ios: {
                     deploymentTarget: '14.0',
