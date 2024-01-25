@@ -4,10 +4,9 @@ import { getTitleForNetwork } from '@suite-common/wallet-utils';
 import { Translation } from 'src/components/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { FirmwareType } from '@trezor/connect';
-import { FONT_SIZE, FONT_WEIGHT } from '@trezor/components/src/config/variables';
 import { TranslationKey } from '@suite-common/intl-types';
 import { Route } from '@suite-common/suite-types';
-import { borders, spacingsPx } from '@trezor/theme';
+import { borders, spacingsPx, typography } from '@trezor/theme';
 import { NavigationItem } from '../../../../../components/suite/Preloader/SuiteLayout/Sidebar/NavigationItem';
 import { IconName } from '@suite-common/icons';
 import { variables } from '@trezor/components';
@@ -21,18 +20,13 @@ const List = styled.div`
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
         width: 100%;
         flex-direction: row;
-        overflow: scroll;
-
-        ::-webkit-scrollbar {
-            display: none;
-        }
+        overflow-x: auto;
     }
 `;
 
 const NavListItem = styled(NavigationItem)`
     white-space: nowrap;
-    font-size: ${FONT_SIZE.NORMAL};
-    font-weight: ${FONT_WEIGHT.MEDIUM};
+    ${typography.body}
 
     ${({ isActive }) =>
         isActive
@@ -45,13 +39,13 @@ const NavListItem = styled(NavigationItem)`
 const Divider = styled.div`
     margin: ${spacingsPx.xxs} 0; /* gap xxs + margin xxs = spacing xs around divider */
     width: 100%;
-    border-bottom: 1px solid ${({ theme }) => theme.textDefault};
+    border-bottom: 1px solid ${({ theme }) => theme.borderOnElevation0};
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
         margin: 0 ${spacingsPx.xxs}; /* gap xxs + margin xxs = spacing xs around divider */
         flex-direction: row;
         border-bottom: 0;
-        border-right: 1px solid ${({ theme }) => theme.textDefault};
+        border-right: 1px solid ${({ theme }) => theme.borderOnElevation0};
     }
 `;
 

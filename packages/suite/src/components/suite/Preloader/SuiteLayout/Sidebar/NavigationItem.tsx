@@ -90,7 +90,7 @@ export const NavigationItem = ({
         e.stopPropagation();
 
         if (route) {
-            dispatch(goto(route, preserveParams === true ? { preserveParams: true } : undefined));
+            dispatch(goto(route, preserveParams === true ? { preserveParams } : undefined));
         }
     };
 

@@ -14,7 +14,7 @@ const Wrapper = styled.div`
     justify-content: center;
     padding-top: 20px;
     margin-top: auto;
-    border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
+    border-top: 1px solid ${({ theme }) => theme.borderOnElevation0};
 `;
 
 const Left = styled.div`
@@ -30,7 +30,6 @@ const Right = styled.div`
     align-items: center;
     flex: 1;
     position: relative;
-    font-size: ${variables.FONT_SIZE.SMALL};
     justify-content: flex-end;
 `;
 
