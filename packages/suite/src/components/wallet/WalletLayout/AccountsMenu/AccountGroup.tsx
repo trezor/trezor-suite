@@ -48,12 +48,15 @@ interface AccountGroupProps {
     hasBalance: boolean;
     children?: ReactNode;
     onUpdate?: () => void;
+    hideLabel?: boolean;
 }
 
-const getGroupLabel = (type: AccountGroupProps['type']) => {
+const getGroupLabel = (type: AccountGroupProps['type'], hideLabel?: boolean) => {
+    if (hideLabel) return null;
+
     switch (type) {
         case 'normal':
-            return null;
+            return 'TR_NORMAL_ACCOUNTS';
         case 'coinjoin':
             return 'TR_COINJOIN_ACCOUNTS';
         case 'taproot':
@@ -67,63 +70,68 @@ const getGroupLabel = (type: AccountGroupProps['type']) => {
     }
 };
 
-export const AccountGroup = forwardRef((props: AccountGroupProps, _ref: Ref<HTMLDivElement>) => {
-    const theme = useTheme();
-    const wrapperRef = useRef<HTMLDivElement>(null);
-    const [isOpen, setIsOpen] = useState(props.hasBalance || props.keepOpen);
-    const [previouslyOpen, setPreviouslyOpen] = useState(isOpen); // used to follow props changes without unnecessary rerenders
-    const [previouslyHasBalance, setPreviouslyHasBalance] = useState(props.hasBalance); // used to follow props changes without unnecessary rerenders
-    const [animatedIcon, setAnimatedIcon] = useState(false);
+export const AccountGroup = forwardRef(
+    (
+        { hasBalance, keepOpen, type, hideLabel, onUpdate, children }: AccountGroupProps,
+        _ref: Ref<HTMLDivElement>,
+    ) => {
+        const theme = useTheme();
+        const wrapperRef = useRef<HTMLDivElement>(null);
+        const [isOpen, setIsOpen] = useState(hasBalance || keepOpen);
+        const [previouslyOpen, setPreviouslyOpen] = useState(isOpen); // used to follow props changes without unnecessary rerenders
+        const [previouslyHasBalance, setPreviouslyHasBalance] = useState(hasBalance); // used to follow props changes without unnecessary rerenders
+        const [animatedIcon, setAnimatedIcon] = useState(false);
 
-    if (props.keepOpen && !previouslyOpen) {
-        setPreviouslyOpen(true);
-        setIsOpen(true);
-    }
-
-    if (props.hasBalance && !previouslyHasBalance) {
-        setPreviouslyHasBalance(true);
-        setIsOpen(true);
-    }
-
-    const onClick = () => {
-        setIsOpen(!isOpen);
-        setAnimatedIcon(true);
-        if (isOpen) {
-            setPreviouslyOpen(false);
+        if (keepOpen && !previouslyOpen) {
+            setPreviouslyOpen(true);
+            setIsOpen(true);
         }
-    };
 
-    // Group needs to be wrapped into container (div)
+        if (hasBalance && !previouslyHasBalance) {
+            setPreviouslyHasBalance(true);
+            setIsOpen(true);
+        }
 
-    const heading = getGroupLabel(props.type);
-    return (
-        <Container ref={wrapperRef}>
-            <HeaderWrapper>
-                {heading !== null && (
-                    <Header
-                        isOpen={isOpen}
-                        onClick={!props.keepOpen ? onClick : undefined}
-                        data-test={`@account-menu/${props.type}`}
-                    >
-                        <ChevronContainer>
-                            {!props.keepOpen && (
-                                <ChevronIcon
-                                    data-test="@account-menu/arrow"
-                                    canAnimate={animatedIcon}
-                                    isActive={isOpen}
-                                    size={16}
-                                    color={theme.iconSubdued}
-                                    icon="ARROW_DOWN"
-                                />
-                            )}
-                        </ChevronContainer>
-                        <Translation id={heading} />
-                    </Header>
-                )}
-            </HeaderWrapper>
-            <AnimationWrapper opened={isOpen} onUpdate={props.onUpdate}>
-                {props.children}
-            </AnimationWrapper>
-        </Container>
-    );
-});
+        const onClick = () => {
+            setIsOpen(!isOpen);
+            setAnimatedIcon(true);
+            if (isOpen) {
+                setPreviouslyOpen(false);
+            }
+        };
+
+        // Group needs to be wrapped into container (div)
+
+        const heading = getGroupLabel(type, hideLabel);
+        return (
+            <Container ref={wrapperRef}>
+                <HeaderWrapper>
+                    {heading !== null && (
+                        <Header
+                            isOpen={isOpen}
+                            onClick={!keepOpen ? onClick : undefined}
+                            data-test={`@account-menu/${type}`}
+                        >
+                            <ChevronContainer>
+                                {!keepOpen && (
+                                    <ChevronIcon
+                                        data-test="@account-menu/arrow"
+                                        canAnimate={animatedIcon}
+                                        isActive={isOpen}
+                                        size={16}
+                                        color={theme.iconSubdued}
+                                        icon="ARROW_DOWN"
+                                    />
+                                )}
+                            </ChevronContainer>
+                            <Translation id={heading} />
+                        </Header>
+                    )}
+                </HeaderWrapper>
+                <AnimationWrapper opened={isOpen} onUpdate={onUpdate}>
+                    {children}
+                </AnimationWrapper>
+            </Container>
+        );
+    },
+);
