@@ -75,7 +75,7 @@ export const AccountsList = ({ onItemClick }: AccountListProps) => {
         account.accountType === params.accountType &&
         account.index === params.accountIndex;
 
-    const buildGroup = (type: Account['accountType'], accounts: Account[]) => {
+    const buildGroup = (type: Account['accountType'], accounts: Account[], hideLabel?: boolean) => {
         const groupHasBalance = accounts.some(account => account.availableBalance !== '0');
 
         if (
@@ -94,6 +94,7 @@ export const AccountsList = ({ onItemClick }: AccountListProps) => {
             <AccountGroup
                 key={`${device.state}-${type}`}
                 type={type}
+                hideLabel={hideLabel}
                 hasBalance={groupHasBalance}
                 keepOpen={keepOpen(type)}
             >
@@ -118,7 +119,7 @@ export const AccountsList = ({ onItemClick }: AccountListProps) => {
         return (
             <>
                 {buildGroup('coinjoin', coinjoinAccounts)}
-                {buildGroup('normal', normalAccounts)}
+                {buildGroup('normal', normalAccounts, coinjoinAccounts.length === null)}
                 {buildGroup('taproot', taprootAccounts)}
                 {buildGroup('segwit', segwitAccounts)}
                 {buildGroup('legacy', legacyAccounts)}
