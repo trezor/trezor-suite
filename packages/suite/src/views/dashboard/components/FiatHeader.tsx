@@ -1,5 +1,6 @@
 import { useFormatters } from '@suite-common/formatters';
 import { typography } from '@trezor/theme';
+import { HiddenPlaceholder } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import styled from 'styled-components';
 
@@ -43,12 +44,14 @@ export const FiatHeader = ({ size, portfolioValue, localCurrency }: FiatHeaderPr
         : formattedFiatValue.split(/(,)/);
 
     return (
-        <ValueWrapper>
-            <WholeValue size={size}>{whole}</WholeValue>
-            <DecimalValue size={size}>
-                {separator}
-                {fractional}
-            </DecimalValue>
-        </ValueWrapper>
+        <HiddenPlaceholder enforceIntensity={10}>
+            <ValueWrapper>
+                <WholeValue size={size}>{whole}</WholeValue>
+                <DecimalValue size={size}>
+                    {separator}
+                    {fractional}
+                </DecimalValue>
+            </ValueWrapper>
+        </HiddenPlaceholder>
     );
 };

@@ -38,7 +38,7 @@ export const AssetTable = ({
                 network={asset.network}
                 failed={asset.assetFailed}
                 cryptoValue={asset.assetBalance.toFixed()}
-                isLastRow={i === assetsData.length - 1}
+                isLastRow={i === assetsData.length - 1 && !discoveryInProgress}
                 assetsFiatBalances={assetsFiatBalances}
             />
         ))}

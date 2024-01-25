@@ -11,12 +11,8 @@ const Header = styled.div`
     padding: ${spacingsPx.sm} 0;
     border-bottom: 1px solid ${({ theme }) => theme.borderOnElevation1};
 
-    :first-child {
-        padding-left: 18px;
-    }
-
     :last-child {
-        padding-right: 18px;
+        padding-right: ${spacingsPx.md};
     }
 `;
 

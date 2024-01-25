@@ -104,13 +104,11 @@ export const Header = ({
         <Wrapper hideBorder={hideBorder}>
             <Left>
                 <LoadingContent size={24} isLoading={isDiscoveryRunning}>
-                    <HiddenPlaceholder>
-                        <FiatHeader
-                            size="large"
-                            portfolioValue={portfolioValue}
-                            localCurrency={localCurrency}
-                        />
-                    </HiddenPlaceholder>
+                    <FiatHeader
+                        size="large"
+                        portfolioValue={portfolioValue}
+                        localCurrency={localCurrency}
+                    />
                 </LoadingContent>
             </Left>
             <Right>{actions}</Right>
