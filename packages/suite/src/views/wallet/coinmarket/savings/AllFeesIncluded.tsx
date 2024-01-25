@@ -2,10 +2,12 @@ import styled from 'styled-components';
 import { Link, Tooltip, variables } from '@trezor/components';
 import { INVITY_SCHEDULE_OF_FEES } from '@trezor/urls';
 import { Translation } from 'src/components/suite';
+import { typography } from '@trezor/theme';
 
 const StyledTooltip = styled(Tooltip)`
     display: inline-block;
-    font-size: ${variables.FONT_SIZE.SMALL};
+    ${typography.label}
+    color: ${({ theme }) => theme.textSubdued}
 `;
 
 const StyledLink = styled(Link)`

@@ -27,7 +27,7 @@ const RefreshTime = styled.div`
     margin-left: ${spacingsPx.xxs};
     font-variant-numeric: tabular-nums;
     text-align: right;
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.textSubdued};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 `;
