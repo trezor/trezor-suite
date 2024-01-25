@@ -59,6 +59,10 @@ export const init =
             window.__TREZOR_CONNECT_SRC = `${window.location.origin}/`;
         }
 
+        if (options.connectSrc) {
+            window.__TREZOR_CONNECT_SRC = options.connectSrc;
+        }
+
         if (!window.__TREZOR_CONNECT_SRC) {
             console.log('using production @trezor/connect');
         } else {
