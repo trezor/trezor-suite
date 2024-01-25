@@ -59,7 +59,7 @@ export const Message = Type.Object({
 
 export type TransactionCommon = Static<typeof TransactionCommon>;
 export const TransactionCommon = Type.Object({
-    version: NEM.EnumTxVersion,
+    version: Type.Union([NEM.EnumTxVersion, Type.Number()]), // users may potentially want to use any arbitrary chain
     timeStamp: Type.Number(),
     fee: Type.Number(),
     deadline: Type.Number(),
