@@ -1,6 +1,6 @@
 {
     "name": "@trezor/transport",
-    "version": "1.1.21",
+    "version": "1.1.22",
     "description": "Low level library facilitating protocol buffers based communication with Trezor devices",
     "npmPublishAccess": "public",
     "license": "SEE LICENSE IN LICENSE.md",
