@@ -9,8 +9,8 @@ describe('Language and theme detection', () => {
     // TODO: [low prio] extend the test to work even when the user has dark settings
     it('Light English', () => {
         cy.prefixedVisit('/');
-        cy.contains('Welcome').should('have.css', 'color', 'rgb(31, 31, 31)');
-        cy.get('body').should('have.css', 'background-color', 'rgb(244, 244, 244)');
+        cy.contains('Welcome').should('have.css', 'color', 'rgb(23, 23, 23)');
+        cy.get('body').should('have.css', 'background-color', 'rgb(246, 246, 246)');
     });
 
     it('Dark Spanish', () => {
@@ -28,8 +28,8 @@ describe('Language and theme detection', () => {
                 });
             },
         });
-        cy.contains('¡Te damos la bienvenida!').should('have.css', 'color', 'rgb(234, 235, 237)');
-        cy.get('body').should('have.css', 'background-color', 'rgb(24, 25, 26)');
+        cy.contains('¡Te damos la bienvenida!').should('have.css', 'color', 'rgb(255, 255, 255)');
+        cy.get('body').should('have.css', 'background-color', 'rgb(10, 10, 10)');
     });
 });
 
