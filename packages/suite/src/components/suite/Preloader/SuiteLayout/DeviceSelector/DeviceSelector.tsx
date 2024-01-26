@@ -16,6 +16,7 @@ import { DeviceStatusText } from 'src/views/suite/SwitchDevice/DeviceItem/Device
 import { borders, spacingsPx, typography } from '@trezor/theme';
 import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer';
 import { focusStyleTransition, getFocusShadowStyle } from '@trezor/components/src/utils/utils';
+import { useWalletLabeling } from '../../../labeling/WalletLabeling';
 
 const CaretContainer = styled.div`
     background: transparent;
@@ -112,6 +113,12 @@ export const DeviceSelector = () => {
     const deviceNeedsRefresh = needsRefresh(selectedDevice);
     const selectedDeviceModelInternal = selectedDevice?.features?.internal_model;
 
+    const { defaultAccountLabelString } = useWalletLabeling();
+    const defaultWalletLabel =
+        selectedDevice !== undefined
+            ? defaultAccountLabelString({ device: selectedDevice })
+            : undefined;
+
     useEffect(
         () =>
             // clear animation timers on unmount
@@ -175,7 +182,14 @@ export const DeviceSelector = () => {
                     </DeviceWrapper>
                     <DeviceDetail>
                         <DeviceLabel>{selectedDevice.label}</DeviceLabel>
-                        <DeviceStatusText device={selectedDevice} walletLabel={walletLabel} />
+                        <DeviceStatusText
+                            device={selectedDevice}
+                            walletLabel={
+                                walletLabel === undefined || walletLabel.trim() === ''
+                                    ? defaultWalletLabel
+                                    : walletLabel
+                            }
+                        />
                     </DeviceDetail>
                     <CaretContainer>
                         <Icon size={20} icon="CARET_CIRCLE_DOWN" />
