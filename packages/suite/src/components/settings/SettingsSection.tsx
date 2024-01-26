@@ -48,15 +48,17 @@ interface SettingsSectionProps {
     title?: string | ReactElement;
     icon?: IconType;
     description?: string | ReactElement;
+    className?: string;
     children?: ReactNode;
 }
 
 export const SettingsSection = ({
-    children,
     title,
     icon,
     description,
     customHeader,
+    className,
+    children,
 }: SettingsSectionProps) => {
     const theme = useTheme();
 
@@ -75,7 +77,7 @@ export const SettingsSection = ({
                 )}
             </Header>
 
-            <StyledCard>{children}</StyledCard>
+            <StyledCard className={className}>{children}</StyledCard>
         </Wrapper>
     );
 };

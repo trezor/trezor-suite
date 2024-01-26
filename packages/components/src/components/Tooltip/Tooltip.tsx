@@ -22,6 +22,10 @@ const getContainerPadding = (isLarge: boolean, isWithHeader: boolean) => {
     return spacingsPx.xs;
 };
 
+const Wrapper = styled.div<{ isFullWidth: boolean }>`
+    width: ${({ isFullWidth }) => (isFullWidth ? '100%' : 'auto')};
+`;
+
 const TooltipContainer = styled(motion.div)<{
     $maxWidth: string | number;
     $isLarge: boolean;
@@ -98,6 +102,7 @@ export type TooltipProps = Omit<TippyProps, 'offset'> & {
     addon?: (instance: Instance) => ReactElement | ReactElement;
     title?: ReactElement;
     headerIcon?: IconType;
+    isFullWidth?: boolean;
 };
 
 export const Tooltip = ({
@@ -119,6 +124,7 @@ export const Tooltip = ({
     onShow,
     onHide,
     className,
+    isFullWidth = false,
     ...rest
 }: TooltipProps) => {
     const [isShown, setIsShown] = useState(false);
@@ -151,7 +157,7 @@ export const Tooltip = ({
     }
 
     return (
-        <div className={className}>
+        <Wrapper isFullWidth={isFullWidth} className={className}>
             <Tippy
                 zIndex={zIndices.tooltip}
                 placement={placement}
@@ -204,6 +210,6 @@ export const Tooltip = ({
                     {children}
                 </Content>
             </Tippy>
-        </div>
+        </Wrapper>
     );
 };

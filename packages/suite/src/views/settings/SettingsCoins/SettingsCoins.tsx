@@ -1,26 +1,76 @@
 import styled from 'styled-components';
-
+import { AnimatePresence, MotionProps, motion } from 'framer-motion';
 import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-utils';
-import { selectDeviceSupportedNetworks } from '@suite-common/wallet-core';
+import { selectDeviceSupportedNetworks, startDiscoveryThunk } from '@suite-common/wallet-core';
+import { Button, motionEasing } from '@trezor/components';
 
 import { DeviceBanner, SettingsLayout, SettingsSection } from 'src/components/settings';
 import { CoinGroup, SectionItem, TooltipSymbol, Translation } from 'src/components/suite';
 import { useEnabledNetworks } from 'src/hooks/settings/useEnabledNetworks';
 import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
-import { useDevice, useSelector } from 'src/hooks/suite';
+import {
+    useDevice,
+    useRediscoveryNeeded,
+    useDispatch,
+    useSelector,
+    useDiscovery,
+} from 'src/hooks/suite';
 
 import { FirmwareTypeSuggestion } from './FirmwareTypeSuggestion';
+import { spacingsPx } from '@trezor/theme';
 
-const StyledSettingsLayout = styled(SettingsLayout)`
-    & > * + * {
-        margin-top: 16px;
-    }
+const StyledButton = styled(Button)`
+    margin: ${spacingsPx.md} 0 0 ${spacingsPx.sm};
 `;
+const StyledSettingsSection = styled(SettingsSection)`
+    overflow: hidden;
+`;
+
+const getDiscoveryButtonAnimationConfig = (isConfirmed: boolean): MotionProps => ({
+    initial: {
+        height: 0,
+        opacity: 0,
+        translateY: 16,
+        translateX: -28,
+        scale: 0.96,
+    },
+    animate: {
+        height: 'auto',
+        opacity: 1,
+        translateY: 0,
+        translateX: 0,
+        scale: 1,
+        transition: {
+            ease: motionEasing.transition,
+            duration: 0.2,
+            opacity: {
+                duration: 0.35,
+                ease: motionEasing.transition,
+            },
+        },
+    },
+    exit: {
+        height: 0,
+        opacity: 0,
+        translateY: 16,
+        translateX: isConfirmed ? 0 : -24,
+        scale: 0.96,
+        transformOrigin: 'bottom left',
+        transition: {
+            ease: motionEasing.transition,
+            duration: 0.2,
+            opacity: {
+                ease: motionEasing.enter,
+            },
+        },
+    },
+});
 
 export const SettingsCoins = () => {
     const { firmwareTypeBannerClosed } = useSelector(state => state.suite.flags);
 
+    const isDiscoveryButtonVisible = useRediscoveryNeeded();
     const { mainnets, testnets, enabledNetworks, setEnabled } = useEnabledNetworks();
     const deviceSupportedNetworks = useSelector(selectDeviceSupportedNetworks);
     const supportedEnabledNetworks = enabledNetworks.filter(enabledNetwork =>
@@ -34,6 +84,8 @@ export const SettingsCoins = () => {
         useAnchor(SettingsAnchor.TestnetCrypto);
 
     const { device } = useDevice();
+    const dispatch = useDispatch();
+    const { isDiscoveryRunning } = useDiscovery();
 
     const bitcoinOnlyFirmware = hasBitcoinOnlyFirmware(device);
     const bitcoinNetworks = ['btc', 'test', 'regtest'];
@@ -51,8 +103,14 @@ export const SettingsCoins = () => {
         !bitcoinOnlyDevice &&
         (bitcoinOnlyFirmware || (!bitcoinOnlyFirmware && onlyBitcoinNetworksEnabled));
 
+    const startDiscovery = () => {
+        dispatch(startDiscoveryThunk());
+    };
+
+    const animation = getDiscoveryButtonAnimationConfig(!!isDiscoveryRunning);
+
     return (
-        <StyledSettingsLayout>
+        <SettingsLayout>
             {showDeviceBanner && (
                 <DeviceBanner
                     title={
@@ -60,8 +118,10 @@ export const SettingsCoins = () => {
                     }
                 />
             )}
+
             {showFirmwareTypeBanner && <FirmwareTypeSuggestion />}
-            <SettingsSection title={<Translation id="TR_COINS" />} icon="COIN">
+
+            <StyledSettingsSection title={<Translation id="TR_COINS" />} icon="COIN">
                 <SectionItem ref={anchorRefCrypto} shouldHighlight={shouldHighlightCrypto}>
                     <CoinGroup
                         networks={mainnets}
@@ -69,7 +129,17 @@ export const SettingsCoins = () => {
                         selectedNetworks={enabledNetworks}
                     />
                 </SectionItem>
-            </SettingsSection>
+
+                <AnimatePresence>
+                    {isDiscoveryButtonVisible && (
+                        <motion.div {...animation} key="discover-button">
+                            <StyledButton onClick={startDiscovery}>
+                                <Translation id="TR_DISCOVERY_NEW_COINS" />
+                            </StyledButton>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            </StyledSettingsSection>
 
             <SettingsSection
                 title={
@@ -93,6 +163,6 @@ export const SettingsCoins = () => {
                     />
                 </SectionItem>
             </SettingsSection>
-        </StyledSettingsLayout>
+        </SettingsLayout>
     );
 };
