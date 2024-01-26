@@ -36,7 +36,7 @@ describe('DesktopApi', () => {
             ipcRenderer.emit('oauth/response', new Event('ipc'), {});
             ipcRenderer.emit('oauth/response', new Event('ipc'), {});
 
-            expect(spy).toBeCalledTimes(1); // Only one event is processed
+            expect(spy).toHaveBeenCalledTimes(1); // Only one event is processed
         });
 
         it('DesktopApi.on invalid channel', () => {
@@ -47,7 +47,7 @@ describe('DesktopApi', () => {
             api.once('invalid-2', spy);
             ipcRenderer.emit('invalid-1', new Event('ipc'), true);
             ipcRenderer.emit('invalid-2', new Event('ipc'), true);
-            expect(spy).toBeCalledTimes(0);
+            expect(spy).toHaveBeenCalledTimes(0);
         });
     });
 
@@ -55,7 +55,7 @@ describe('DesktopApi', () => {
         it('DesktopApi.appRestart', () => {
             const spy = jest.spyOn(ipcRenderer, 'send');
             api.appRestart();
-            expect(spy).toBeCalledWith('app/restart');
+            expect(spy).toHaveBeenCalledWith('app/restart');
 
             // @ts-expect-error no expected params
             api.appRestart(true);
@@ -64,7 +64,7 @@ describe('DesktopApi', () => {
         it('DesktopApi.appFocus', () => {
             const spy = jest.spyOn(ipcRenderer, 'send');
             api.appFocus();
-            expect(spy).toBeCalledWith('app/focus');
+            expect(spy).toHaveBeenCalledWith('app/focus');
 
             // @ts-expect-error no expected params
             api.appFocus(true);
@@ -73,19 +73,19 @@ describe('DesktopApi', () => {
         it('DesktopApi.checkForUpdates', () => {
             const spy = jest.spyOn(ipcRenderer, 'send');
             api.checkForUpdates();
-            expect(spy).toBeCalledWith('update/check', undefined);
+            expect(spy).toHaveBeenCalledWith('update/check', undefined);
             api.checkForUpdates(true);
-            expect(spy).toBeCalledWith('update/check', true);
+            expect(spy).toHaveBeenCalledWith('update/check', true);
 
             // @ts-expect-error invalid param
             api.checkForUpdates('string');
-            expect(spy).toBeCalledTimes(2); // invalid param not processed
+            expect(spy).toHaveBeenCalledTimes(2); // invalid param not processed
         });
 
         it('DesktopApi.downloadUpdate', () => {
             const spy = jest.spyOn(ipcRenderer, 'send');
             api.downloadUpdate();
-            expect(spy).toBeCalledWith('update/download');
+            expect(spy).toHaveBeenCalledWith('update/download');
 
             // @ts-expect-error no expected params
             api.downloadUpdate(true);
@@ -94,7 +94,7 @@ describe('DesktopApi', () => {
         it('DesktopApi.installUpdate', () => {
             const spy = jest.spyOn(ipcRenderer, 'send');
             api.installUpdate();
-            expect(spy).toBeCalledWith('update/install');
+            expect(spy).toHaveBeenCalledWith('update/install');
 
             // @ts-expect-error no expected params
             api.installUpdate(true);
@@ -103,7 +103,7 @@ describe('DesktopApi', () => {
         it('DesktopApi.cancelUpdate', () => {
             const spy = jest.spyOn(ipcRenderer, 'send');
             api.cancelUpdate();
-            expect(spy).toBeCalledWith('update/cancel');
+            expect(spy).toHaveBeenCalledWith('update/cancel');
 
             // @ts-expect-error no expected params
             api.cancelUpdate(true);
@@ -112,23 +112,23 @@ describe('DesktopApi', () => {
         it('DesktopApi.allowPrerelease', () => {
             const spy = jest.spyOn(ipcRenderer, 'send');
             api.allowPrerelease(true);
-            expect(spy).toBeCalledWith('update/allow-prerelease', true);
+            expect(spy).toHaveBeenCalledWith('update/allow-prerelease', true);
 
             // @ts-expect-error invalid param
             api.allowPrerelease('string');
-            expect(spy).toBeCalledTimes(1); // invalid param not processed
+            expect(spy).toHaveBeenCalledTimes(1); // invalid param not processed
         });
 
         it('DesktopApi.themeChange', () => {
             const spy = jest.spyOn(ipcRenderer, 'send');
             api.themeChange('dark');
-            expect(spy).toBeCalledWith('theme/change', 'dark');
+            expect(spy).toHaveBeenCalledWith('theme/change', 'dark');
 
             // @ts-expect-error invalid theme
             api.themeChange('foo');
             // @ts-expect-error param is required
             api.themeChange();
-            expect(spy).toBeCalledTimes(1); // invalid param not processed
+            expect(spy).toHaveBeenCalledTimes(1); // invalid param not processed
         });
 
         it('DesktopApi.metadataWrite', async () => {
@@ -137,7 +137,7 @@ describe('DesktopApi', () => {
                 .mockImplementation(() => Promise.resolve({ success: true }));
             const content = { file: 'file.txt', content: 'bar' };
             const result = await api.metadataWrite(content);
-            expect(spy).toBeCalledWith('metadata/write', content);
+            expect(spy).toHaveBeenCalledWith('metadata/write', content);
             expect(result.success).toBe(true);
             if (result.success) {
                 expect(result.payload).toBe(undefined);
@@ -148,7 +148,7 @@ describe('DesktopApi', () => {
             // @ts-expect-error invalid params
             const fail = await api.metadataWrite({ file: 'file.txt' });
             expect(fail.success).toBe(false);
-            expect(spy).toBeCalledTimes(1); // invalid param not processed
+            expect(spy).toHaveBeenCalledTimes(1); // invalid param not processed
         });
 
         it('DesktopApi.metadataRead', async () => {
@@ -160,7 +160,7 @@ describe('DesktopApi', () => {
             );
             const content = { file: 'file.txt' };
             const result = await api.metadataRead(content);
-            expect(spy).toBeCalledWith('metadata/read', content);
+            expect(spy).toHaveBeenCalledWith('metadata/read', content);
             expect(result.success).toBe(true);
             if (result.success) {
                 expect(result.payload).toBe('file-content');
@@ -175,7 +175,7 @@ describe('DesktopApi', () => {
             api.metadataRead({ file: null });
             // @ts-expect-error invalid params
             api.metadataRead(null);
-            expect(spy).toBeCalledTimes(1); // invalid params not processed
+            expect(spy).toHaveBeenCalledTimes(1); // invalid params not processed
         });
 
         it('DesktopApi.getHttpReceiverAddress', async () => {
@@ -183,19 +183,19 @@ describe('DesktopApi', () => {
                 .spyOn(ipcRenderer, 'invoke')
                 .mockImplementation(() => Promise.resolve('prefixed/coinmarket'));
             const result = await api.getHttpReceiverAddress('/coinmarket');
-            expect(spy).toBeCalledWith('server/request-address', '/coinmarket');
+            expect(spy).toHaveBeenCalledWith('server/request-address', '/coinmarket');
             expect(result).toBe('prefixed/coinmarket');
 
             // @ts-expect-error invalid params
             const fail = await api.getHttpReceiverAddress(true);
             expect(fail).toBe(undefined);
-            expect(spy).toBeCalledTimes(1); // invalid param not processed
+            expect(spy).toHaveBeenCalledTimes(1); // invalid param not processed
         });
 
         it('DesktopApi.getTorStatus', () => {
             const spy = jest.spyOn(ipcRenderer, 'send');
             api.getTorStatus();
-            expect(spy).toBeCalledWith('tor/get-status');
+            expect(spy).toHaveBeenCalledWith('tor/get-status');
 
             // @ts-expect-error no expected params
             api.getTorStatus(true);
@@ -204,17 +204,17 @@ describe('DesktopApi', () => {
         it('DesktopApi.toggleTor', () => {
             const spy = jest.spyOn(ipcRenderer, 'invoke');
             api.toggleTor(true);
-            expect(spy).toBeCalledWith('tor/toggle', true);
+            expect(spy).toHaveBeenCalledWith('tor/toggle', true);
 
             // @ts-expect-error no expected params
             api.toggleTor('string');
-            expect(spy).toBeCalledTimes(1); // invalid param not processed
+            expect(spy).toHaveBeenCalledTimes(1); // invalid param not processed
         });
 
         it('DesktopApi.clearStore', () => {
             const spy = jest.spyOn(ipcRenderer, 'send');
             api.clearStore();
-            expect(spy).toBeCalledWith('store/clear');
+            expect(spy).toHaveBeenCalledWith('store/clear');
 
             // @ts-expect-error no expected params
             api.clearStore(true);
@@ -225,7 +225,7 @@ describe('DesktopApi', () => {
                 .spyOn(ipcRenderer, 'invoke')
                 .mockImplementation(() => Promise.resolve({ success: true }));
             const result = await api.clearUserData();
-            expect(spy).toBeCalledWith('user-data/clear');
+            expect(spy).toHaveBeenCalledWith('user-data/clear');
             expect(result.success).toBe(true);
             if (result.success) {
                 expect(result.payload).toBe(undefined);
@@ -243,12 +243,12 @@ describe('DesktopApi', () => {
                 .mockImplementation(() => Promise.resolve({ success: true }));
 
             const result = await api.openUserDataDirectory();
-            expect(spy).toBeCalledWith('user-data/open', '');
+            expect(spy).toHaveBeenCalledWith('user-data/open', '');
             expect(result.success).toBe(true);
 
             const existingDirectory = '/metadata';
             api.openUserDataDirectory(existingDirectory);
-            expect(spy).toBeCalledWith('user-data/open', existingDirectory);
+            expect(spy).toHaveBeenCalledWith('user-data/open', existingDirectory);
         });
 
         it('DesktopApi.installUdevRules', async () => {
@@ -256,7 +256,7 @@ describe('DesktopApi', () => {
                 .spyOn(ipcRenderer, 'invoke')
                 .mockImplementation(() => Promise.resolve({ success: true }));
             const result = await api.installUdevRules();
-            expect(spy).toBeCalledWith('udev/install');
+            expect(spy).toHaveBeenCalledWith('udev/install');
             expect(result.success).toBe(true);
             if (result.success) {
                 expect(result.payload).toBe(undefined);
@@ -273,7 +273,7 @@ describe('DesktopApi', () => {
                 .spyOn(ipcRenderer, 'invoke')
                 .mockImplementation(() => Promise.resolve());
             await api.handshake();
-            expect(spy).toBeCalledWith('handshake/client');
+            expect(spy).toHaveBeenCalledWith('handshake/client');
         });
 
         it('DesktopApi.loadModules', async () => {
@@ -281,7 +281,7 @@ describe('DesktopApi', () => {
                 .spyOn(ipcRenderer, 'invoke')
                 .mockImplementation(() => Promise.resolve({ success: true }));
             const data = await api.loadModules(null);
-            expect(spy).toBeCalledWith('handshake/load-modules', null);
+            expect(spy).toHaveBeenCalledWith('handshake/load-modules', null);
             expect(data.success).toBe(true);
 
             // @ts-expect-error param expected

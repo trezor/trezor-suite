@@ -239,7 +239,7 @@ describe('TrezorConnect.authorizeCoinjoin', () => {
             useEmptyPassphrase: true,
         });
 
-        expect(spy).toBeCalledTimes(1 * confirmationScreensCount);
+        expect(spy).toHaveBeenCalledTimes(1 * confirmationScreensCount);
 
         // re-authorize
         await TrezorConnect.authorizeCoinjoin({
@@ -249,7 +249,7 @@ describe('TrezorConnect.authorizeCoinjoin', () => {
             preauthorized: true,
         });
 
-        expect(spy).toBeCalledTimes(1 * confirmationScreensCount); // no more button requests
+        expect(spy).toHaveBeenCalledTimes(1 * confirmationScreensCount); // no more button requests
 
         // authorize passphrase wallet
         await TrezorConnect.authorizeCoinjoin({
@@ -257,7 +257,7 @@ describe('TrezorConnect.authorizeCoinjoin', () => {
             device: { instance: 1, state: walletA.payload.state },
         });
 
-        expect(spy).toBeCalledTimes(2 * confirmationScreensCount);
+        expect(spy).toHaveBeenCalledTimes(2 * confirmationScreensCount);
 
         // re-authorize passphrase wallet
         await TrezorConnect.authorizeCoinjoin({
@@ -281,7 +281,7 @@ describe('TrezorConnect.authorizeCoinjoin', () => {
             preauthorized: true,
         });
 
-        expect(spy).toBeCalledTimes(2 * confirmationScreensCount); // no more button requests
+        expect(spy).toHaveBeenCalledTimes(2 * confirmationScreensCount); // no more button requests
 
         // disable passphrase for future tests
         await TrezorConnect.applySettings({ use_passphrase: false });

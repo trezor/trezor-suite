@@ -8,10 +8,10 @@ describe('scheduleAction', () => {
     it('delay', done => {
         const spy = jest.fn(() => Promise.resolve());
         scheduleAction(spy, { delay: 1000 });
-        expect(spy).toBeCalledTimes(0);
+        expect(spy).toHaveBeenCalledTimes(0);
 
         setTimeout(() => {
-            expect(spy).toBeCalledTimes(1);
+            expect(spy).toHaveBeenCalledTimes(1);
             done();
         }, 1005);
     });
@@ -21,7 +21,7 @@ describe('scheduleAction', () => {
         const spy = jest.fn(() => Promise.resolve());
         scheduleAction(spy, { delay: 1000, signal: aborter.signal }).catch(e => {
             expect(e.message).toMatch(ERR_SIGNAL);
-            expect(spy).toBeCalledTimes(0);
+            expect(spy).toHaveBeenCalledTimes(0);
             done();
         });
 
@@ -59,7 +59,7 @@ describe('scheduleAction', () => {
             scheduleAction(spy, { deadline: Date.now() + 1000, signal: aborter.signal }),
         ).rejects.toThrow(ERR_SIGNAL);
 
-        expect(spy).toBeCalledTimes(3);
+        expect(spy).toHaveBeenCalledTimes(3);
     });
 
     it('deadline resolved after 3rd attempt', async () => {
@@ -77,7 +77,7 @@ describe('scheduleAction', () => {
 
         expect(result).toEqual('Foo');
 
-        expect(spy).toBeCalledTimes(3);
+        expect(spy).toHaveBeenCalledTimes(3);
     });
 
     it('attempt timeout', async () => {
@@ -88,7 +88,7 @@ describe('scheduleAction', () => {
                 }),
         );
         await expect(() => scheduleAction(spy, { timeout: 500 })).rejects.toThrow(ERR_TIMEOUT);
-        expect(spy).toBeCalledTimes(1);
+        expect(spy).toHaveBeenCalledTimes(1);
     });
 
     it('attempt timeout aborted', done => {
@@ -103,7 +103,7 @@ describe('scheduleAction', () => {
         const start = Date.now();
         scheduleAction(spy, { timeout: 300, signal: aborter.signal }).catch(e => {
             expect(e.message).toMatch(ERR_SIGNAL);
-            expect(spy).toBeCalledTimes(1);
+            expect(spy).toHaveBeenCalledTimes(1);
             expect(Date.now() - start).toBeLessThanOrEqual(305);
 
             done();
@@ -123,7 +123,7 @@ describe('scheduleAction', () => {
         await expect(() =>
             scheduleAction(spy, { deadline: Date.now() + 2000, timeout: 500 }),
         ).rejects.toThrow(ERR_DEADLINE);
-        expect(spy).toBeCalledTimes(4); // 4 attempts till deadline, each timeouted after 500 ms
+        expect(spy).toHaveBeenCalledTimes(4); // 4 attempts till deadline, each timeouted after 500 ms
     });
 
     it('max attempts', async () => {
@@ -135,7 +135,7 @@ describe('scheduleAction', () => {
             /Runtime error/,
         );
 
-        expect(spy).toBeCalledTimes(2);
+        expect(spy).toHaveBeenCalledTimes(2);
     });
 
     it("don't abort after success", async () => {

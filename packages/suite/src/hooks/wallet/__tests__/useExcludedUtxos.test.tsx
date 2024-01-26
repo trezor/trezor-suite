@@ -85,7 +85,7 @@ describe('useExcludedUtxos', () => {
         if (!props.account.addresses) throw new Error('invalid props');
 
         const { unmount, rerender } = render(<Component {...props} />);
-        expect(walletUtils.getExcludedUtxos).toBeCalledTimes(1);
+        expect(walletUtils.getExcludedUtxos).toHaveBeenCalledTimes(1);
         expect(screen.getAllByTestId('utxo').length).toBe(1);
         expect(getRenders()).toBe(1);
 
@@ -100,25 +100,25 @@ describe('useExcludedUtxos', () => {
         ];
 
         rerender(<Component {...props} />);
-        expect(walletUtils.getExcludedUtxos).toBeCalledTimes(2);
+        expect(walletUtils.getExcludedUtxos).toHaveBeenCalledTimes(2);
         expect(screen.getAllByTestId('utxo').length).toBe(2);
         expect(getRenders()).toBe(2);
 
         props.account.addresses.anonymitySet = { AA01: 10, AA02: 10, AA03: 10 };
         rerender(<Component {...props} />);
-        expect(walletUtils.getExcludedUtxos).toBeCalledTimes(3);
+        expect(walletUtils.getExcludedUtxos).toHaveBeenCalledTimes(3);
         expect(getRenders()).toBe(3);
         expect(() => screen.getAllByTestId('utxo')).toThrow('Unable to find an element');
 
         delete props.account.addresses.anonymitySet;
         rerender(<Component {...props} />);
-        expect(walletUtils.getExcludedUtxos).toBeCalledTimes(4);
+        expect(walletUtils.getExcludedUtxos).toHaveBeenCalledTimes(4);
         expect(getRenders()).toBe(4);
         expect(screen.getAllByTestId('utxo').length).toBe(3); // default anonymitySet is used
 
         props.account.balance = '1000';
         rerender(<Component {...props} />);
-        expect(walletUtils.getExcludedUtxos).toBeCalledTimes(4); // changing balance should not trigger calculation
+        expect(walletUtils.getExcludedUtxos).toHaveBeenCalledTimes(4); // changing balance should not trigger calculation
         expect(getRenders()).toBe(4);
 
         unmount();
@@ -129,13 +129,13 @@ describe('useExcludedUtxos', () => {
         if (!props.targetAnonymity) throw new Error('invalid props');
 
         const { unmount, rerender } = render(<Component {...props} />);
-        expect(walletUtils.getExcludedUtxos).toBeCalledTimes(1);
+        expect(walletUtils.getExcludedUtxos).toHaveBeenCalledTimes(1);
         expect(screen.getAllByText('low-anonymity').length).toBe(1);
         expect(getRenders()).toBe(1);
 
         props.targetAnonymity = 1;
         rerender(<Component {...props} />);
-        expect(walletUtils.getExcludedUtxos).toBeCalledTimes(2);
+        expect(walletUtils.getExcludedUtxos).toHaveBeenCalledTimes(2);
         expect(getRenders()).toBe(2);
         expect(() => screen.getAllByTestId('utxo')).toThrow('Unable to find an element');
 
@@ -148,13 +148,13 @@ describe('useExcludedUtxos', () => {
         props.dustLimit = 20000;
 
         const { unmount, rerender } = render(<Component {...props} />);
-        expect(walletUtils.getExcludedUtxos).toBeCalledTimes(1);
+        expect(walletUtils.getExcludedUtxos).toHaveBeenCalledTimes(1);
         expect(getRenders()).toBe(1);
         expect(screen.getAllByText('dust').length).toBe(2);
 
         props.dustLimit = 100;
         rerender(<Component {...props} />);
-        expect(walletUtils.getExcludedUtxos).toBeCalledTimes(2);
+        expect(walletUtils.getExcludedUtxos).toHaveBeenCalledTimes(2);
         expect(getRenders()).toBe(2);
         expect(() => screen.getAllByText('dust')).toThrow('Unable to find an element');
 

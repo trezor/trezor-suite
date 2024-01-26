@@ -92,8 +92,10 @@ describe(`CoinjoinRound`, () => {
 
         await round.process([]);
 
-        expect(logger.error).toBeCalledTimes(1);
-        expect(logger.error).toBeCalledWith(expect.stringMatching(/Missing affiliate request/));
+        expect(logger.error).toHaveBeenCalledTimes(1);
+        expect(logger.error).toHaveBeenCalledWith(
+            expect.stringMatching(/Missing affiliate request/),
+        );
     });
 
     it('catch failed Round', async () => {
@@ -125,8 +127,10 @@ describe(`CoinjoinRound`, () => {
         // process phase (will throw error Missing credentials to join)
         await round.process([]);
 
-        expect(logger.error).toBeCalledTimes(1);
-        expect(logger.error).toBeCalledWith(expect.stringMatching(/Output registration failed/));
+        expect(logger.error).toHaveBeenCalledTimes(1);
+        expect(logger.error).toHaveBeenCalledWith(
+            expect.stringMatching(/Output registration failed/),
+        );
     });
 
     it('end Round if any input-registration fails and there is only one account', async () => {
@@ -222,7 +226,7 @@ describe(`CoinjoinRound`, () => {
         // input-registration is now set with delay ~0.8 sec.
         // we want to change phase earlier
         await new Promise(resolve => setTimeout(resolve, 500));
-        expect(registrationSpy).toBeCalledTimes(0); // no registrations yet
+        expect(registrationSpy).toHaveBeenCalledTimes(0); // no registrations yet
 
         // change Round phase before input-registration was called
         await round.onPhaseChange({ ...DEFAULT_ROUND, Phase: 1 });
@@ -235,15 +239,15 @@ describe(`CoinjoinRound`, () => {
             expect(input.registrationData).not.toBeUndefined();
             expect(input.getConfirmationInterval).not.toBeUndefined();
         });
-        expect(registrationSpy).toBeCalledTimes(2); // two registrations
-        expect(confirmationSpy).toBeCalledTimes(0); // no confirmations yet
+        expect(registrationSpy).toHaveBeenCalledTimes(2); // two registrations
+        expect(confirmationSpy).toHaveBeenCalledTimes(0); // no confirmations yet
 
         await round.process([]);
         round.inputs.forEach(input => {
             expect(input.error).toBeUndefined();
             expect(input.confirmationData).not.toBeUndefined();
         });
-        expect(confirmationSpy).toBeCalledTimes(2); // two confirmations
+        expect(confirmationSpy).toHaveBeenCalledTimes(2); // two confirmations
 
         delayMock.mockRestore();
         constantsMock.mockRestore();
@@ -339,7 +343,7 @@ describe(`CoinjoinRound`, () => {
         expect(round.inputs.length).toBe(0); // no valid inputs, requests aborted
         expect(round.failed.length).toBe(0); // no errored inputs, inputs with errors in inputRegistration are not passed further
 
-        expect(spy).toBeCalledTimes(2); // two registrations called
+        expect(spy).toHaveBeenCalledTimes(2); // two registrations called
     });
 
     it('unregisterAccount not in critical phase', () => {
@@ -359,11 +363,11 @@ describe(`CoinjoinRound`, () => {
         round.on('changed', spyChanged);
 
         round.unregisterAccount('account-A');
-        expect(spyEnded).toBeCalledTimes(0); // not called because there is also account-B input in round
+        expect(spyEnded).toHaveBeenCalledTimes(0); // not called because there is also account-B input in round
 
         round.unregisterAccount('account-B');
-        expect(spyEnded).toBeCalledTimes(1);
-        expect(spyChanged).toBeCalledTimes(1);
+        expect(spyEnded).toHaveBeenCalledTimes(1);
+        expect(spyChanged).toHaveBeenCalledTimes(1);
     });
 
     it('unregisterAccount in critical phase', () => {
@@ -384,8 +388,8 @@ describe(`CoinjoinRound`, () => {
         round.on('changed', spyChanged);
 
         round.unregisterAccount('account-A');
-        expect(spyEnded).toBeCalledTimes(1); // called immediately event if there is account-B input in round
-        expect(spyChanged).toBeCalledTimes(1);
+        expect(spyEnded).toHaveBeenCalledTimes(1); // called immediately event if there is account-B input in round
+        expect(spyChanged).toHaveBeenCalledTimes(1);
     });
 
     it('unregisterAccount when round is locked', async () => {
@@ -415,8 +419,8 @@ describe(`CoinjoinRound`, () => {
 
         // process but not wait for the result
         round.process([]).then(() => {
-            expect(spyEnded).toBeCalledTimes(1);
-            expect(spyChanged).toBeCalledTimes(1);
+            expect(spyEnded).toHaveBeenCalledTimes(1);
+            expect(spyChanged).toHaveBeenCalledTimes(1);
         });
 
         // we want to unregister account before input-registration response
