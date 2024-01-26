@@ -244,6 +244,6 @@ platform :ios do
   end
   desc "Build production version of the app and upload to App Store Connect"
   lane :production do
-    build_to_app_store(scheme: "Trezor Suite", export_method: "app-store")
+    build_to_app_store(scheme: "TrezorSuite", export_method: "app-store")
   end
 end
