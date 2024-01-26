@@ -6,11 +6,13 @@ import { selectDevice } from '@suite-common/wallet-core';
 
 import { useDiscovery, useSelector } from 'src/hooks/suite';
 import { AccountSearchBox } from './AccountSearchBox';
-import { AccountItemSkeleton } from './AccountItemSkeleton';
 import { AddAccountButton } from './AddAccountButton';
 import { CoinsFilter } from './CoinsFilter';
 import { AccountsList } from './AccountsList';
+import { Translation } from 'src/components/suite';
+import { AccountsMenuNotice } from './AccountsMenuNotice';
 import { getFailedAccounts, sortByCoin } from '@suite-common/wallet-utils';
+import { RefreshAfterDiscoveryNeeded } from './RefreshAfterDiscoveryNeeded';
 
 const Wrapper = styled.div`
     display: flex;
@@ -99,30 +101,26 @@ export const AccountsMenu = () => {
     if (!device || !discovery) {
         return (
             <Wrapper>
-                <Scroll>
-                    <MenuHeader>
-                        <AccountSearchBox />
-                    </MenuHeader>
-                    <AccountItemSkeleton />
-                </Scroll>
+                <AccountsMenuNotice>
+                    <Translation id="TR_ACCOUNT_NO_ACCOUNTS" />
+                </AccountsMenuNotice>
             </Wrapper>
         );
     }
 
     const failed = getFailedAccounts(discovery);
-
     const list = sortByCoin(accounts.filter(a => a.deviceState === device.state).concat(failed));
-
     const isEmpty = list.length === 0;
+
     return (
         <Wrapper>
             <MenuHeader>
                 <Row>
                     {!isEmpty && <AccountSearchBox />}
                     <AddAccountButton
+                        isFullWidth={isEmpty}
                         data-test="@account-menu/add-account"
                         device={device}
-                        isFullWidth={isEmpty}
                     />
                 </Row>
 
@@ -133,6 +131,7 @@ export const AccountsMenu = () => {
                 <GradientBefore isVisible={!isScrolledToTop} />
                 <Scroll ref={containerRef} onScroll={handleScroll}>
                     <AccountsList />
+                    <RefreshAfterDiscoveryNeeded />
                 </Scroll>
                 <GradientAfter isVisible={!isScrolledToBottom} />
             </Gradients>
