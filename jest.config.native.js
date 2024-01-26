@@ -7,7 +7,7 @@ const {
 
 const babelConfig = {
     presets: [
-        'module:metro-react-native-babel-preset',
+        'react-native',
         ['@babel/preset-env', { targets: { node: 'current' }, modules: 'commonjs' }],
         '@babel/preset-typescript',
         [
