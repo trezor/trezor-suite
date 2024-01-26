@@ -23,7 +23,8 @@
     "main": "build/trezor-connect-webextension.js",
     "files": [
         "build/trezor-connect-webextension.js",
-        "build/trezor-connect-webextension.min.js"
+        "build/trezor-connect-webextension.min.js",
+        "build/content-script.js"
     ],
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
