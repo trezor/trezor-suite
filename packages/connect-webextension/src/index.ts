@@ -1,7 +1,6 @@
 import EventEmitter from 'events';
 
-// NOTE: @trezor/connect part is intentionally not imported from the index due to NormalReplacementPlugin
-// in packages/suite-build/configs/web.webpack.config.ts
+// NOTE: @trezor/connect part is intentionally not imported from the index so we do include the whole library.
 import {
     POPUP,
     IFRAME,
@@ -18,6 +17,7 @@ import { initLog, setLogWriter, LogMessage, LogWriter } from '@trezor/connect/li
 
 import * as popup from './popup';
 import { parseConnectSettings } from './connectSettings';
+import { ServiceWorkerWindowChannel } from './channels/serviceworker-window';
 
 const eventEmitter = new EventEmitter();
 let _settings = parseConnectSettings();
@@ -68,9 +68,9 @@ const cancel = (error?: string) => {
 };
 
 const init = (settings: Partial<ConnectSettings> = {}): Promise<void> => {
-    logger.debug('initiating');
+    const equalSettings = JSON.stringify(_settings) === JSON.stringify(settings);
     _settings = parseConnectSettings({ ..._settings, ...settings });
-    if (!_popupManager) {
+    if (!_popupManager || !equalSettings) {
         _popupManager = new popup.PopupManager(_settings, { logger: popupManagerLogger });
         setLogWriter(() => logWriterFactory(_popupManager));
     }
@@ -195,6 +195,49 @@ const TrezorConnect = factory({
     cancel,
     dispose,
 });
+
+const initProxyChannel = () => {
+    const channel = new ServiceWorkerWindowChannel<{
+        type: string;
+        method: keyof typeof TrezorConnect;
+        settings: { manifest: Manifest } & Partial<ConnectSettings>;
+    }>({
+        name: 'trezor-connect-proxy',
+        channel: {
+            here: '@trezor/connect-service-worker-proxy',
+            peer: '@trezor/connect-foreground-proxy',
+        },
+        lazyHandshake: true,
+        allowSelfOrigin: true,
+    });
+
+    let proxySettings: ConnectSettings = parseConnectSettings();
+
+    channel.init();
+    channel.on('message', message => {
+        const { id, payload, type } = message;
+        const { method, settings } = payload;
+
+        if (type === POPUP.INIT) {
+            proxySettings = parseConnectSettings({ ..._settings, ...settings });
+            return;
+        }
+
+        // Core is loaded in popup and initialized every time, so we send the settings from here.
+        TrezorConnect.init(proxySettings as { manifest: Manifest } & Partial<ConnectSettings>).then(
+            () => {
+                (TrezorConnect as any)[method](payload).then((response: any) => {
+                    channel.postMessage({
+                        id,
+                        payload: response.payload,
+                    });
+                });
+            },
+        );
+    });
+};
+
+initProxyChannel();
 
 // eslint-disable-next-line import/no-default-export
 export default TrezorConnect;

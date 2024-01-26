@@ -1,10 +1,10 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/popup/PopupManager.js
 import EventEmitter from 'events';
 
+import { Deferred, createDeferred } from '@trezor/utils/lib';
 import { PopupEventMessage, ConnectSettings } from '@trezor/connect/lib/exports';
 import { getOrigin } from '@trezor/connect/lib/utils/urlUtils';
 import { Log } from '@trezor/connect/lib/utils/debug';
-import { createDeferred, Deferred } from '@trezor/utils/lib';
 
 import { ServiceWorkerWindowChannel } from './channels/serviceworker-window';
 
@@ -23,7 +23,7 @@ const checkIfTabExists = (tabId: number | undefined) =>
     });
 
 export class PopupManager extends EventEmitter {
-    popupWindow: chrome.tabs.Tab | undefined;
+    popupWindow: chrome.tabs.Tab | null = null;
 
     settings: ConnectSettings;
 
@@ -93,6 +93,7 @@ export class PopupManager extends EventEmitter {
     // create a special content script to be injected into log.html and stop sending logs over popup
     open() {
         const url = `${this.settings.popupSrc}`;
+
         chrome.windows.getCurrent(currentWindow => {
             this.logger.debug('opening popup. currentWindow: ', currentWindow);
 
@@ -158,7 +159,7 @@ export class PopupManager extends EventEmitter {
     };
 
     clear(focus = true) {
-        this.locked = false;
+        this.unlock();
 
         this.handshakePromise = createDeferred();
 
@@ -188,5 +189,6 @@ export class PopupManager extends EventEmitter {
                 this.logger.error('closed with error', e);
             }
         });
+        this.popupWindow = null;
     }
 }
