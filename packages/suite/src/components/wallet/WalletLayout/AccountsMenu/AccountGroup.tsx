@@ -13,6 +13,9 @@ const Container = styled.div`
 const HeaderWrapper = styled.div`
     position: sticky;
     top: 0;
+
+    /* to not overlap with the Account's focus shadow */
+    margin-bottom: ${spacingsPx.xxs};
     z-index: 1;
 `;
 
@@ -126,6 +129,7 @@ export const AccountGroup = forwardRef(
                         </Header>
                     )}
                 </HeaderWrapper>
+
                 <AnimationWrapper opened={isOpen} onUpdate={onUpdate}>
                     {children}
                 </AnimationWrapper>
