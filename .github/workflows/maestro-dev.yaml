@@ -1,0 +1,53 @@
+name: Run maestro tests
+
+on:
+  pull_request:
+    types: [labeled]
+
+jobs:
+  build:
+    if: github.event.label.name == 'commence-maestro-tests'
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y --no-install-recommends openjdk-8-jdk wget unzip
+
+    - name: Set up Android SDK
+      run: |
+        wget https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip
+        unzip sdk-tools-linux-4333796.zip -d $HOME/sdk
+        yes | $HOME/sdk/tools/bin/sdkmanager --licenses
+        echo "y" | $HOME/sdk/tools/bin/sdkmanager "platform-tools" "platforms;android-28" "build-tools;28.0.3" "emulator" "system-images;android-28;default;x86"
+        echo "no" | $HOME/sdk/tools/bin/avdmanager create avd -n test -k "system-images;android-28;default;x86"
+      env:
+        JAVA_HOME: /usr/lib/jvm/java-8-openjdk-amd64
+
+    - name: Run emulator
+      uses: reactivecircus/android-emulator-runner@v2
+      with:
+        api-level: 28
+        target: default
+        arch: x86
+        script: echo "Emulator started"
+
+    - name: Wait for emulator to fully boot
+      run: |
+          timeout 180 adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done; input keyevent 82'
+
+    - name: Install APK
+      run: |
+        adb install trezor-suite/suite-native/app/android/testAPKFolder/*.apk
+
+    - name: Run Maestro tests
+      run: |
+        maestro test trezor-suite/suite-native/app/.maestro/importBTCAsset
