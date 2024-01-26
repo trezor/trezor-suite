@@ -40,6 +40,7 @@ const datepickerStyle = css`
         width: 0;
         text-align: center;
         color: inherit;
+        height: 26px;
     }
 
     .rdrDateDisplayItem + .rdrDateDisplayItem {
@@ -49,7 +50,7 @@ const datepickerStyle = css`
             display: block;
             position: absolute;
             left: -25px;
-            top: 7px;
+            top: 9px;
             font-size: 20px;
         }
     }

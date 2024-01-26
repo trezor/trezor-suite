@@ -85,10 +85,13 @@ const ExpandedMobileWrapper = styled.div`
     padding-bottom: 16px;
 `;
 
+const StyledIcon = styled(Icon)<{ isActive: boolean }>`
+    transform: ${({ isActive }) => (isActive ? 'rotate(0deg)' : 'rotate(180deg)')};
+`;
+
 export const MobileAccountsMenu = () => {
     const device = useSelector(selectDevice);
     const [isExpanded, setIsExpanded] = useState(false);
-    const [animatedIcon, setAnimatedIcon] = useState(false);
 
     const theme = useTheme();
 
@@ -111,21 +114,18 @@ export const MobileAccountsMenu = () => {
                 <MenuHeader
                     onClick={() => {
                         setIsExpanded(!isExpanded);
-                        setAnimatedIcon(true);
                     }}
                 >
                     <Row>
                         <Heading>
                             <Translation id="TR_MY_ACCOUNTS" />
                         </Heading>
-                        <Icon
-                            canAnimate={animatedIcon}
+                        <StyledIcon
                             isActive={isExpanded}
                             size={20}
                             color={theme.TYPE_LIGHT_GREY}
                             onClick={() => {
                                 setIsExpanded(!isExpanded);
-                                setAnimatedIcon(true);
                             }}
                             icon="ARROW_DOWN"
                         />

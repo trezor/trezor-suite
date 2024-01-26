@@ -13,6 +13,7 @@ const StyledInput = styled(Input)`
     input {
         /* to line up with the coin filter  */
         padding-left: 46px;
+        min-height: 38px;
         background-color: ${({ theme }) => theme.backgroundSurfaceElevationNegative};
         border-color: ${({ theme }) => theme.backgroundSurfaceElevationNegative};
     }
