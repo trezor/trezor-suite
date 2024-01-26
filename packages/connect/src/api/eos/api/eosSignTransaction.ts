@@ -6,7 +6,7 @@ import { getMiscNetwork } from '../../../data/coinInfo';
 import { validatePath } from '../../../utils/pathUtils';
 import * as helper from '../eosSignTx';
 import type { PROTO } from '../../../constants';
-import { Assert } from '@trezor/schema-utils';
+import { AssertWeak } from '@trezor/schema-utils';
 import { EosSignTransaction as EosSignTransactionSchema } from '../../../types/api/eos';
 
 type Params = {
@@ -24,7 +24,8 @@ export default class EosSignTransaction extends AbstractMethod<'eosSignTransacti
 
         const { payload } = this;
         // validate incoming parameters
-        Assert(EosSignTransactionSchema, payload);
+        // TODO: weak assert for compatibility purposes (issue #10841)
+        AssertWeak(EosSignTransactionSchema, payload);
 
         const path = validatePath(payload.path, 3);
         const { chain_id, header, ack } = helper.validate(payload.transaction);

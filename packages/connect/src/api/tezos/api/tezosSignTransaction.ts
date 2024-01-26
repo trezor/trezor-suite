@@ -6,7 +6,7 @@ import { getMiscNetwork } from '../../../data/coinInfo';
 import { validatePath } from '../../../utils/pathUtils';
 import * as helper from '../tezosSignTx';
 import type { PROTO } from '../../../constants';
-import { Assert } from '@trezor/schema-utils';
+import { AssertWeak } from '@trezor/schema-utils';
 import { TezosSignTransaction as TezosSignTransactionSchema } from '../../../types/api/tezos';
 
 export default class TezosSignTransaction extends AbstractMethod<
@@ -24,7 +24,8 @@ export default class TezosSignTransaction extends AbstractMethod<
         const { payload } = this;
 
         // validate incoming parameters
-        Assert(TezosSignTransactionSchema, payload);
+        // TODO: weak assert for compatibility purposes (issue #10841)
+        AssertWeak(TezosSignTransactionSchema, payload);
 
         const path = validatePath(payload.path, 3);
         this.params = helper.createTx(path, payload.branch, payload.operation);

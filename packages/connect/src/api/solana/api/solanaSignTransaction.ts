@@ -4,7 +4,7 @@ import { getFirmwareRange } from '../../common/paramsValidator';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { validatePath } from '../../../utils/pathUtils';
 import { transformAdditionalInfo } from '../additionalInfo';
-import { Assert } from '@trezor/schema-utils';
+import { AssertWeak } from '@trezor/schema-utils';
 import { SolanaSignTransaction as SolanaSignTransactionSchema } from '../../../types/api/solana';
 
 export default class SolanaSignTransaction extends AbstractMethod<
@@ -22,7 +22,8 @@ export default class SolanaSignTransaction extends AbstractMethod<
         const { payload } = this;
 
         // validate bundle type
-        Assert(SolanaSignTransactionSchema, payload);
+        // TODO: weak assert for compatibility purposes (issue #10841)
+        AssertWeak(SolanaSignTransactionSchema, payload);
 
         const path = validatePath(payload.path, 2);
 
