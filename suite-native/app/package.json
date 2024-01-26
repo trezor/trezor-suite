@@ -10,7 +10,9 @@
         "start": "expo start --dev-client",
         "lint:js": "yarn g:eslint .",
         "type-check": "tsc -b",
-        "pods": "expo prebuild --clean"
+        "pods": "npx pod-install",
+        "prebuild": "expo prebuild",
+        "prebuild:clean": "expo prebuild --clean"
     },
     "dependencies": {
         "@react-native/metro-config": "0.73.3",
