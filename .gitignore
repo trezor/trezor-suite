@@ -152,6 +152,9 @@ packages/suite-data/files/browser-detection
 packages/suite-data/files/guide
 packages/suite-data/files/translations/master.json
 
+# @trezor/connect-explorer
+packages/connect-explorer/build-webextension
+
 # cypress download folder
 
 packages/suite-web/e2e/downloads

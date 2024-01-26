@@ -8780,7 +8780,9 @@ __metadata:
   dependencies:
     "@trezor/components": "workspace:*"
     "@trezor/connect-web": "workspace:*"
+    "@trezor/connect-webextension": "workspace:^"
     "@trezor/protobuf": "workspace:*"
+    "@trezor/utils": "workspace:^"
     "@types/markdown-it": "npm:^13.0.5"
     "@types/markdown-it-link-attributes": "npm:^3.0.3"
     "@types/react-router": "npm:^5.1.20"
@@ -8968,7 +8970,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/connect-webextension@workspace:packages/connect-webextension":
+"@trezor/connect-webextension@workspace:^, @trezor/connect-webextension@workspace:packages/connect-webextension":
   version: 0.0.0-use.local
   resolution: "@trezor/connect-webextension@workspace:packages/connect-webextension"
   dependencies:
@@ -9721,7 +9723,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/utils@workspace:*, @trezor/utils@workspace:packages/utils":
+"@trezor/utils@workspace:*, @trezor/utils@workspace:^, @trezor/utils@workspace:packages/utils":
   version: 0.0.0-use.local
   resolution: "@trezor/utils@workspace:packages/utils"
   dependencies:
