@@ -1,5 +1,4 @@
 import { configureStore, Middleware } from '@reduxjs/toolkit';
-import createDebugger from 'redux-flipper';
 
 import { prepareFiatRatesMiddleware } from '@suite-native/fiat-rates';
 import { messageSystemMiddleware } from '@suite-native/message-system';
@@ -20,11 +19,6 @@ const middlewares: Middleware[] = [
     prepareDiscoveryMiddleware(extraDependencies),
     prepareTransactionCacheMiddleware(extraDependencies),
 ];
-
-if (__DEV__) {
-    const reduxFlipperDebugger = createDebugger();
-    middlewares.push(reduxFlipperDebugger);
-}
 
 export const initStore = async () =>
     configureStore({

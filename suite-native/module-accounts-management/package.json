@@ -12,8 +12,8 @@
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
-        "@react-navigation/native": "^6.1.9",
-        "@react-navigation/native-stack": "^6.9.17",
+        "@react-navigation/native": "6.1.9",
+        "@react-navigation/native-stack": "6.9.17",
         "@reduxjs/toolkit": "1.9.5",
         "@suite-common/fiat-services": "workspace:*",
         "@suite-common/graph": "workspace:*",
@@ -45,7 +45,7 @@
         "jotai": "1.9.1",
         "react": "18.2.0",
         "react-hook-form": "^7.48.2",
-        "react-native": "0.71.8",
+        "react-native": "0.73.2",
         "react-native-reanimated": "3.7.0-nightly-20240101-9d365ae7b",
         "react-redux": "8.0.7"
     }

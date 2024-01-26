@@ -43,7 +43,7 @@ Run a dev build:
 -   `yarn suite:dev` (web app)
 -   `yarn suite:dev:desktop` (electron app)
 
-## **Trezor Suite Lite** @trezor/suite-native
+## **Trezor Suite Lite** @suite-native/app
 
 > To set up your dev environment for a native platform (iOS/Android) follow [these additional steps](https://github.com/trezor/trezor-suite/tree/develop/suite-native/app#prerequisites).
 

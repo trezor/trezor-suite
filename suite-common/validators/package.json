@@ -4,7 +4,7 @@
     "private": true,
     "license": "See LICENSE.md in repo root",
     "sideEffects": [
-      "src/config.ts"
+        "src/config.ts"
     ],
     "main": "src/index",
     "scripts": {

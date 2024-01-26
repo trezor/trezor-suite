@@ -31,10 +31,11 @@ jobs:
           echo $ENCODED_STRING_KEYSTORE | base64 -d > suite-native/app/android/app/stag-upload-key.keystore
           echo $ENCODED_STRING_JSON_FILE > suite-native/app/android/google_play_key.json
 
-      - name: Install dependecies
-        run: |
-          yarn install
-          yarn build:libs
+      - name: Expo Prebuild
+        working-directory: suite-native/app/
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        run: yarn expo prebuild --platform android
 
       - name: Ruby Setup for Fastlane
         uses: ruby/setup-ruby@v1
@@ -90,11 +91,19 @@ jobs:
         run: |
           echo $APPSTORE_CERTIFICATE_CONTENT | base64 -d > suite-native/app/TrezorDistributionCertificate.p12
 
+      - name: Install missing Python deps (to build bcrypto lib in Node)
+        run: pip install setuptools
+
       - name: Install dependecies
         run: |
           yarn install
           yarn build:libs
-          yarn workspace @trezor/suite-native pods
+
+      - name: Expo Prebuild
+        working-directory: suite-native/app/
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        run: yarn expo prebuild --platform ios
 
       - name: Ruby Setup for Fastlane
         uses: ruby/setup-ruby@v1

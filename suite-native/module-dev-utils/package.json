@@ -12,8 +12,8 @@
     },
     "dependencies": {
         "@react-navigation/core": "^6.4.10",
-        "@react-navigation/native-stack": "^6.9.17",
-        "@sentry/react-native": "5.15.2",
+        "@react-navigation/native-stack": "6.9.17",
+        "@sentry/react-native": "5.17.0",
         "@suite-common/icons": "workspace:*",
         "@suite-common/logger": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
@@ -34,7 +34,7 @@
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
         "react": "18.2.0",
-        "react-native": "0.71.8",
+        "react-native": "0.73.2",
         "react-redux": "8.0.7"
     },
     "devDependencies": {

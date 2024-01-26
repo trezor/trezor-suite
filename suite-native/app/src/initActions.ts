@@ -7,8 +7,7 @@ import { selectFiatCurrencyCode } from '@suite-native/module-settings';
 import { getJWSPublicKey } from '@suite-native/config';
 import { initMessageSystemThunk } from '@suite-common/message-system';
 import { wipeDisconnectedDevicesDataThunk } from '@suite-native/device';
-
-import { setIsAppReady, setIsConnectInitialized } from '../../state/src/appSlice';
+import { setIsAppReady, setIsConnectInitialized } from '@suite-native/state/src/appSlice';
 
 let isAlreadyInitialized = false;
 

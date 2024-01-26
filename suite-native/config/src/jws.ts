@@ -1,3 +1,1 @@
-import Config from 'react-native-config';
-
-export const getJWSPublicKey = () => Config.JWS_PUBLIC_KEY;
+export const getJWSPublicKey = () => process.env.EXPO_PUBLIC_JWS_PUBLIC_KEY;

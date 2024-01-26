@@ -23,19 +23,19 @@ commit = last_git_commit
 commit_message = commit[:message]
 commit_hash = commit[:abbreviated_commit_hash]
 
-ENV["COMMIT_HASH"] = "#{commit_hash}"
-ENV["CHANGELOG"] = escape_slash "[#{git_branch}] - #{commit_message}".strip
-ENV["VERSION"] = load_json(json_path: "package.json")["suiteNativeVersion"]
+ENV["EXPO_PUBLIC_COMMIT_HASH"] = "#{commit_hash}"
+ENV["EXPO_PUBLIC_CHANGELOG"] = escape_slash "[#{git_branch}] - #{commit_message}".strip
+ENV["EXPO_PUBLIC_VERSION"] = load_json(json_path: "package.json")["suiteNativeVersion"]
 
 private_lane :replace_debug_info_environment_variables do |options|
   platform = lane_context[SharedValues::PLATFORM_NAME]
   environment_file_name = ENV["ENVFILE"]
   environment_file = File.join(SUITE_NATIVE_ROOT_PATH, environment_file_name)
 
-  commit_hash_substitute = "s/^(COMMIT_HASH)=(.*)$/\\1=#{ENV["COMMIT_HASH"]}/"
-  changelog_substitute = "s/^(CHANGELOG)=(.*)$/\\1=#{ENV["CHANGELOG"]}/"
-  version_substitute = "s/^(VERSION)=(.*)$/\\1=#{ENV["VERSION"]}/"
-  build_number_substitute = "s/^(BUILD_NUMBER)=(.*)$/\\1=#{ENV["BUILD_NUMBER"]}/"
+  commit_hash_substitute = "s/^(EXPO_PUBLIC_COMMIT_HASH)=(.*)$/\\1=#{ENV["EXPO_PUBLIC_COMMIT_HASH"]}/"
+  changelog_substitute = "s/^(EXPO_PUBLIC_CHANGELOG)=(.*)$/\\1=#{ENV["EXPO_PUBLIC_CHANGELOG"]}/"
+  version_substitute = "s/^(EXPO_PUBLIC_VERSION)=(.*)$/\\1=#{ENV["EXPO_PUBLIC_VERSION"]}/"
+  build_number_substitute = "s/^(EXPO_PUBLIC_BUILD_NUMBER)=(.*)$/\\1=#{ENV["EXPO_PUBLIC_BUILD_NUMBER"]}/"
 
   if is_ci and platform == :ios
     sh(
@@ -59,5 +59,5 @@ private_lane :replace_debug_info_environment_variables do |options|
 
 end
 
-import "../ios/fastlane/Fastfile"
-import "../android/fastlane/Fastfile"
+import "./IosFastfile"
+import "./AndroidFastfile"

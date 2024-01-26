@@ -1,5 +1,3 @@
-import Config from 'react-native-config';
+export const getBuildVersionNumber = () => process.env.EXPO_PUBLIC_BUILD_NUMBER || '';
 
-export const getBuildVersionNumber = () => Config.BUILD_NUMBER || '';
-
-export const getChangelog = () => Config.CHANGELOG || '';
+export const getChangelog = () => process.env.EXPO_PUBLIC_CHANGELOG || '';
