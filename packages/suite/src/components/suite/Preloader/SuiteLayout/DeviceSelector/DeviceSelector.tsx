@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import styled, { css } from 'styled-components';
 
 import { Image, Icon, DeviceAnimation } from '@trezor/components';
-import { selectDevicesCount, selectDevice } from '@suite-common/wallet-core';
+import { selectDevicesCount, selectDevice, acquireDevice } from '@suite-common/wallet-core';
 import * as deviceUtils from '@suite-common/suite-utils';
 import type { Timeout } from '@trezor/type-utils';
 import { SHAKE } from 'src/support/suite/styles/animations';
@@ -155,6 +155,12 @@ export const DeviceSelector = () => {
             }),
         );
 
+    const handleRefreshClick = () => {
+        if (deviceNeedsRefresh) {
+            dispatch(acquireDevice(selectedDevice));
+        }
+    };
+
     return (
         <Wrapper
             data-test="@menu/switch-device"
@@ -183,6 +189,7 @@ export const DeviceSelector = () => {
                     <DeviceDetail>
                         <DeviceLabel>{selectedDevice.label}</DeviceLabel>
                         <DeviceStatusText
+                            onRefreshClick={handleRefreshClick}
                             device={selectedDevice}
                             walletLabel={
                                 walletLabel === undefined || walletLabel.trim() === ''
@@ -191,9 +198,11 @@ export const DeviceSelector = () => {
                             }
                         />
                     </DeviceDetail>
-                    <CaretContainer>
-                        <Icon size={20} icon="CARET_CIRCLE_DOWN" />
-                    </CaretContainer>
+                    {selectedDevice.state && (
+                        <CaretContainer>
+                            <Icon size={20} icon="CARET_CIRCLE_DOWN" />
+                        </CaretContainer>
+                    )}
                 </>
             )}
         </Wrapper>
