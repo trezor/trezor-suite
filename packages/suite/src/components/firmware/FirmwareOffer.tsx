@@ -34,7 +34,7 @@ const FwVersion = styled.div`
 `;
 
 const Version = styled.div<{ isNew?: boolean }>`
-    color: ${({ isNew, theme }) => (isNew ? theme.TYPE_GREEN : theme.TYPE_LIGHT_GREY)};
+    color: ${({ isNew, theme }) => (isNew ? theme.backgroundPrimaryDefault : theme.textSubdued)};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-variant-numeric: tabular-nums;
     margin-top: 6px;

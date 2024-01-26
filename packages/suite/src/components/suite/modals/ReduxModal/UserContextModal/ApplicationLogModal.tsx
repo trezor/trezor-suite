@@ -8,6 +8,7 @@ import { ActionColumn, Modal, TextColumn, Translation } from 'src/components/sui
 import { SectionItem } from 'src/components/suite/section';
 import { useSelector } from 'src/hooks/suite';
 import { getApplicationInfo, getApplicationLog, prettifyLog } from 'src/utils/suite/logsUtils';
+import { spacingsPx } from '@trezor/theme';
 
 const LogWrapper = styled.pre`
     padding: 20px;
@@ -32,6 +33,7 @@ const LogWrapper = styled.pre`
 `;
 
 const BalanceInfoSection = styled(SectionItem)`
+    margin-top: ${spacingsPx.md};
     :not(:first-child) {
         > div {
             border-top: 0;

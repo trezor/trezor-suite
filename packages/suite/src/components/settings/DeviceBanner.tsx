@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
-import { LottieAnimation, Paragraph, variables } from '@trezor/components';
+import { Card, LottieAnimation, Paragraph, variables } from '@trezor/components';
 
 import { useDevice, useSelector } from 'src/hooks/suite';
 import { isWebUsb } from 'src/utils/suite/transport';
@@ -12,14 +12,8 @@ const StyledLottieAnimation = styled(LottieAnimation)`
     background: ${({ theme }) => theme.BG_GREY};
 `;
 
-const Wrapper = styled.div`
-    display: flex;
-    align-items: center;
-    background-color: ${({ theme }) => theme.STROKE_GREY};
-    border-radius: 12px;
-    margin-bottom: 24px;
-    padding: 8px 16px;
-    width: 100%;
+const Wrapper = styled(Card)`
+    flex-direction: row;
 `;
 
 const Description = styled(Paragraph)`

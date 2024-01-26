@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { AnimatePresence, motion } from 'framer-motion';
-import styled, { useTheme } from 'styled-components';
+import styled, { css, useTheme } from 'styled-components';
 import { variables, Icon, Image, motionAnimation, DeviceAnimation } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/connect';
 import * as deviceUtils from '@suite-common/suite-utils';
@@ -105,8 +105,10 @@ const DeviceImageWrapper = styled.div`
     margin-right: 16px;
 `;
 
-const ExpandIcon = styled(Icon)`
+const ExpandIcon = styled(Icon)<{ isActive: boolean }>`
     margin-left: 24px;
+
+    transform: ${({ isActive }) => (isActive ? 'rotate(0deg)' : 'rotate(180deg)')};
 `;
 
 // TODO: this is going to be a problem with different col headers length since they won't be aligned with the columns inside WalletInstance
@@ -232,7 +234,6 @@ export const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: Dev
                                 icon="ARROW_UP"
                                 color={theme.TYPE_LIGHT_GREY}
                                 hoverColor={theme.TYPE_LIGHTER_GREY}
-                                canAnimate={animateArrow}
                                 isActive={!isExpanded}
                                 onClick={() => {
                                     setIsExpanded(!isExpanded);
