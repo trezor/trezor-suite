@@ -42,8 +42,8 @@ describe('TransactionCacheEngine', () => {
         await engine.addAccount(account);
         expect(await engine.accountExists(account)).toBe(true);
         // should call getAccountInfo and blockchainSubscribe
-        expect(TrezorConnect.getAccountInfo).toBeCalled();
-        expect(TrezorConnect.blockchainSubscribe).toBeCalled();
+        expect(TrezorConnect.getAccountInfo).toHaveBeenCalled();
+        expect(TrezorConnect.blockchainSubscribe).toHaveBeenCalled();
     });
 
     it('should remove an account', async () => {
@@ -59,7 +59,7 @@ describe('TransactionCacheEngine', () => {
         await engine.removeAccount(account);
         expect(await engine.accountExists(account)).toBe(false);
         // should call blockchainUnsubscribe
-        expect(TrezorConnect.blockchainUnsubscribe).toBeCalled();
+        expect(TrezorConnect.blockchainUnsubscribe).toHaveBeenCalled();
     });
 
     it('should get transactions', async () => {

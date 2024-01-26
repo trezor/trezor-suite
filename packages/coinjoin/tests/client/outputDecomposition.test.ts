@@ -88,7 +88,7 @@ describe('outputRegistration', () => {
                 expect(r).toMatchObject(f.result[i]);
             });
             expect(availableVsize).toEqual(f.availableVsize);
-            expect(spy).toBeCalledTimes(f.credentialIssuanceCalls);
+            expect(spy).toHaveBeenCalledTimes(f.credentialIssuanceCalls);
         });
     });
 });

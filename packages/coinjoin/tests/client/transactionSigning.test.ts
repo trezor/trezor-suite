@@ -342,7 +342,7 @@ describe('transactionSigning', () => {
             server?.requestOptions,
         );
 
-        expect(spy).toBeCalledTimes(4); // called 4 times because witnessIndex 1 was repeated
+        expect(spy).toHaveBeenCalledTimes(4); // called 4 times because witnessIndex 1 was repeated
 
         response.inputs.forEach(input => {
             expect(input.error).toBe(undefined);

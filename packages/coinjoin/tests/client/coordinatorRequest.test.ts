@@ -90,7 +90,7 @@ describe('http', () => {
         ).rejects.toThrow('Forbidden');
 
         // 3 attempts with 3 identities
-        expect(requestListener).toBeCalledTimes(3);
+        expect(requestListener).toHaveBeenCalledTimes(3);
         expect(identities[0]).not.toEqual(identities[1]);
         expect(identities[1]).not.toEqual(identities[2]);
     });
@@ -115,7 +115,7 @@ describe('http', () => {
             { baseUrl, deadline: Date.now() + 3000, identity: 'abcd' },
         );
 
-        expect(spy).toBeCalledTimes(2);
+        expect(spy).toHaveBeenCalledTimes(2);
         expect(resp.RoundStates.length).toEqual(1);
     });
 

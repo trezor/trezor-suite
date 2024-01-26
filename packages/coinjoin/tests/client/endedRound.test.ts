@@ -50,8 +50,10 @@ describe('ended', () => {
 
         ended(round, options);
 
-        expect(logger.error).toBeCalledTimes(1);
-        expect(logger.error).toBeCalledWith(expect.stringMatching(/Missing confirmed inputs/));
+        expect(logger.error).toHaveBeenCalledTimes(1);
+        expect(logger.error).toHaveBeenCalledWith(
+            expect.stringMatching(/Missing confirmed inputs/),
+        );
         expect(round.prison.inmates.length).toEqual(1);
     });
 
@@ -81,8 +83,8 @@ describe('ended', () => {
 
         ended(round, options);
 
-        expect(logger.error).toBeCalledTimes(1);
-        expect(logger.error).toBeCalledWith(expect.stringMatching(/Missing outputs/));
+        expect(logger.error).toHaveBeenCalledTimes(1);
+        expect(logger.error).toHaveBeenCalledWith(expect.stringMatching(/Missing outputs/));
         expect(round.prison.inmates.length).toEqual(1);
     });
 
@@ -121,8 +123,10 @@ describe('ended', () => {
 
         ended(round, options);
 
-        expect(logger.error).toBeCalledTimes(1);
-        expect(logger.error).toBeCalledWith(expect.stringMatching(/Missing affiliate request/));
+        expect(logger.error).toHaveBeenCalledTimes(1);
+        expect(logger.error).toHaveBeenCalledWith(
+            expect.stringMatching(/Missing affiliate request/),
+        );
         expect(round.prison.inmates.length).toEqual(2); // input + output are detained
     });
 
@@ -162,8 +166,8 @@ describe('ended', () => {
 
         ended(round, options);
 
-        expect(logger.error).toBeCalledTimes(1);
-        expect(logger.error).toBeCalledWith(expect.stringMatching(/Missing signed inputs/));
+        expect(logger.error).toHaveBeenCalledTimes(1);
+        expect(logger.error).toHaveBeenCalledWith(expect.stringMatching(/Missing signed inputs/));
         expect(round.prison.inmates.length).toEqual(2); // input + output are detained
     });
 
@@ -203,8 +207,10 @@ describe('ended', () => {
 
         ended(round, options);
 
-        expect(logger.error).toBeCalledTimes(1);
-        expect(logger.error).toBeCalledWith(expect.stringMatching(/This should never happen/));
+        expect(logger.error).toHaveBeenCalledTimes(1);
+        expect(logger.error).toHaveBeenCalledWith(
+            expect.stringMatching(/This should never happen/),
+        );
         expect(round.prison.inmates.length).toEqual(2); // input + output are detained
     });
 
@@ -245,7 +251,7 @@ describe('ended', () => {
 
         ended(round, options);
 
-        expect(logger.error).toBeCalledTimes(0);
+        expect(logger.error).toHaveBeenCalledTimes(0);
         expect(round.prison.inmates.length).toEqual(0);
     });
 
@@ -286,7 +292,7 @@ describe('ended', () => {
 
         ended(round, options);
 
-        expect(logger.error).toBeCalledTimes(0);
+        expect(logger.error).toHaveBeenCalledTimes(0);
         expect(round.prison.inmates.length).toEqual(2); // input and address (output) detained
     });
 
@@ -322,7 +328,7 @@ describe('ended', () => {
 
         ended(round, options);
 
-        expect(logger.error).toBeCalledTimes(0);
+        expect(logger.error).toHaveBeenCalledTimes(0);
         expect(round.prison.inmates.length).toEqual(0); // input released from detention
     });
 
@@ -358,7 +364,7 @@ describe('ended', () => {
 
         ended(round, options);
 
-        expect(logger.error).toBeCalledTimes(0);
+        expect(logger.error).toHaveBeenCalledTimes(0);
         expect(round.prison.inmates.length).toEqual(2); // input and output detained forever
     });
 });
