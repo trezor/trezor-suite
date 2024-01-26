@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, ReactNode } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated from 'react-native-reanimated';
 import { ScrollView, PanGestureHandler } from 'react-native-gesture-handler';
+import { GestureResponderEvent, Pressable } from 'react-native';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -78,6 +79,10 @@ export const BottomSheet = ({
         closeSheetAnimated();
     };
 
+    const handlePressOutside = (event: GestureResponderEvent) => {
+        if (event.target === event.currentTarget) closeSheetAnimated();
+    };
+
     const insetBottom = Math.max(insets.bottom, DEFAULT_INSET_BOTTOM);
 
     return (
@@ -85,43 +90,47 @@ export const BottomSheet = ({
             <Animated.View
                 style={[animatedSheetWithOverlayStyle, applyStyle(sheetWithOverlayStyle)]}
             >
-                <PanGestureHandler
-                    enabled={isCloseScrollEnabled}
-                    ref={panGestureRef.current}
-                    activeOffsetY={5}
-                    failOffsetY={-5}
-                    onGestureEvent={panGestureEvent}
-                >
-                    <Animated.View
-                        style={[
-                            animatedSheetWrapperStyle,
-                            applyStyle(sheetWrapperStyle, {
-                                insetBottom,
-                            }),
-                        ]}
+                <Pressable style={applyStyle(sheetWithOverlayStyle)} onPress={handlePressOutside}>
+                    <PanGestureHandler
+                        enabled={isCloseScrollEnabled}
+                        ref={panGestureRef.current}
+                        activeOffsetY={5}
+                        failOffsetY={-5}
+                        onGestureEvent={panGestureEvent}
                     >
-                        <BottomSheetHeader
-                            title={title}
-                            subtitle={subtitle}
-                            isCloseDisplayed={isCloseDisplayed}
-                            onCloseSheet={closeSheetAnimated}
-                        />
-                        <ScrollView
-                            ref={scrollViewRef.current}
-                            waitFor={
-                                isCloseScrollEnabled ? panGestureRef.current : scrollViewRef.current
-                            }
-                            onScroll={scrollEvent}
-                            keyboardShouldPersistTaps="handled"
+                        <Animated.View
+                            style={[
+                                animatedSheetWrapperStyle,
+                                applyStyle(sheetWrapperStyle, {
+                                    insetBottom,
+                                }),
+                            ]}
                         >
-                            <Animated.View>
-                                <Box paddingHorizontal="medium" {...boxProps}>
-                                    {children}
-                                </Box>
-                            </Animated.View>
-                        </ScrollView>
-                    </Animated.View>
-                </PanGestureHandler>
+                            <BottomSheetHeader
+                                title={title}
+                                subtitle={subtitle}
+                                isCloseDisplayed={isCloseDisplayed}
+                                onCloseSheet={closeSheetAnimated}
+                            />
+                            <ScrollView
+                                ref={scrollViewRef.current}
+                                waitFor={
+                                    isCloseScrollEnabled
+                                        ? panGestureRef.current
+                                        : scrollViewRef.current
+                                }
+                                onScroll={scrollEvent}
+                                keyboardShouldPersistTaps="handled"
+                            >
+                                <Animated.View>
+                                    <Box paddingHorizontal="medium" {...boxProps}>
+                                        {children}
+                                    </Box>
+                                </Animated.View>
+                            </ScrollView>
+                        </Animated.View>
+                    </PanGestureHandler>
+                </Pressable>
             </Animated.View>
         </BottomSheetContainer>
     );
