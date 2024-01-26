@@ -59,72 +59,72 @@ jobs:
           bundle install
           bundle exec fastlane android staging
 
-ios_staging:
-  runs-on: macos-12
-  environment: staging
-  timeout-minutes: 75
-  steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+  ios_staging:
+    runs-on: macos-12
+    environment: staging
+    timeout-minutes: 75
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Setup node
-      uses: actions/setup-node@v3
-      with:
-        node-version-file: ".nvmrc"
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: ".nvmrc"
 
-    - name: Get yarn cache directory path
-      id: yarn-cache-dir-path
-      run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
 
-    - name: Restore yarn cache
-      uses: actions/cache@v3
-      id: yarn-cache
-      with:
-        path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-        key: yarn-cache-folder-${{ hashFiles('**/yarn.lock', '.yarnrc.yml') }}
-        restore-keys: |
-          yarn-cache-folder-
+      - name: Restore yarn cache
+        uses: actions/cache@v3
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: yarn-cache-folder-${{ hashFiles('**/yarn.lock', '.yarnrc.yml') }}
+          restore-keys: |
+            yarn-cache-folder-
 
-    - name: Decode files
-      env:
-        APPSTORE_CERTIFICATE_CONTENT: ${{ secrets.APPSTORE_CERTIFICATE_CONTENT_STAGING }}
-      run: |
-        echo $APPSTORE_CERTIFICATE_CONTENT | base64 -d > suite-native/app/TrezorDistributionCertificate.p12
+      - name: Decode files
+        env:
+          APPSTORE_CERTIFICATE_CONTENT: ${{ secrets.APPSTORE_CERTIFICATE_CONTENT_STAGING }}
+        run: |
+          echo $APPSTORE_CERTIFICATE_CONTENT | base64 -d > suite-native/app/TrezorDistributionCertificate.p12
 
-    - name: Install missing Python deps (to build bcrypto lib in Node)
-      run: pip install setuptools
+      - name: Install missing Python deps (to build bcrypto lib in Node)
+        run: pip install setuptools
 
-    - name: Install dependecies
-      run: |
-        yarn install
-        yarn build:libs
+      - name: Install dependecies
+        run: |
+          yarn install
+          yarn build:libs
 
-    - name: Expo Prebuild
-      working-directory: suite-native/app/
-      env:
-        SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-      run: yarn expo prebuild --platform ios
+      - name: Expo Prebuild
+        working-directory: suite-native/app/
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        run: yarn expo prebuild --platform ios
 
-    - name: Ruby Setup for Fastlane
-      uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: "3.2.1"
-        bundler-cache: true
-    - name: Install bundler
-      working-directory: suite-native/app/
-      run: gem install bundler
+      - name: Ruby Setup for Fastlane
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.2.1"
+          bundler-cache: true
+      - name: Install bundler
+        working-directory: suite-native/app/
+        run: gem install bundler
 
-    - name: Fastlane build and deploy
-      working-directory: suite-native/app/
-      env:
-        APPSTORE_KEY_ID: ${{ secrets.APPSTORE_KEY_ID_STAGING }}
-        APPSTORE_KEY_ISSUER_ID: ${{ secrets.APPSTORE_KEY_ISSUER_ID_STAGING }}
-        APPSTORE_KEY_FILE_CONTENT: ${{ secrets.APPSTORE_KEY_FILE_CONTENT_STAGING }}
-        APPSTORE_CERTIFICATE_PASSWORD: ${{ secrets.APPSTORE_CERTIFICATE_PASSWORD_STAGING }}
-        TMP_KEYCHAIN_NAME: ${{ secrets.APPSTORE_TMP_KEYCHAIN_NAME_STAGING }}
-        TMP_KEYCHAIN_PASSWORD: ${{ secrets.APPSTORE_TMP_KEYCHAIN_PASSWORD_STAGING }}
+      - name: Fastlane build and deploy
+        working-directory: suite-native/app/
+        env:
+          APPSTORE_KEY_ID: ${{ secrets.APPSTORE_KEY_ID_STAGING }}
+          APPSTORE_KEY_ISSUER_ID: ${{ secrets.APPSTORE_KEY_ISSUER_ID_STAGING }}
+          APPSTORE_KEY_FILE_CONTENT: ${{ secrets.APPSTORE_KEY_FILE_CONTENT_STAGING }}
+          APPSTORE_CERTIFICATE_PASSWORD: ${{ secrets.APPSTORE_CERTIFICATE_PASSWORD_STAGING }}
+          TMP_KEYCHAIN_NAME: ${{ secrets.APPSTORE_TMP_KEYCHAIN_NAME_STAGING }}
+          TMP_KEYCHAIN_PASSWORD: ${{ secrets.APPSTORE_TMP_KEYCHAIN_PASSWORD_STAGING }}
 
-      # builds and publishes the app
-      run: |
-        bundle install
-        bundle exec fastlane ios staging
+        # builds and publishes the app
+        run: |
+          bundle install
+          bundle exec fastlane ios staging
