@@ -40,9 +40,9 @@ jobs:
         arch: x86
         script: echo "Emulator started"
 
-    # - name: Wait for emulator to fully boot
-    #   run: |
-    #       timeout 180 adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done; input keyevent 82'
+    - name: Wait for emulator to fully boot
+      run: |
+          timeout 180 adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done; input keyevent 82'
 
     - name: Install APK
       run: |
