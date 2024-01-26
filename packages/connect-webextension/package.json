@@ -1,6 +1,6 @@
 {
     "name": "@trezor/connect-webextension",
-    "version": "0.0.0-beta.0",
+    "version": "0.0.0-beta.1",
     "author": "Trezor <info@trezor.io>",
     "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/connect-webextension",
     "description": "High-level javascript interface for Trezor hardware wallet in webextension serviceworker environment.",
