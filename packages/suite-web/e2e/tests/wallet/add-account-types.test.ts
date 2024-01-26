@@ -38,7 +38,7 @@ describe('Account types suite', () => {
      * 3. Get the number of accounts
      * 4. Create new account for each account type
      * 5. Get the number of accounts again
-     * 6. Verify that the current number is equeal to previous number + 1
+     * 6. Verify that the current number is equal to previous number + 1
      */
     it('Add-account-types-BTC', () => {
         //
@@ -101,7 +101,7 @@ describe('Account types suite', () => {
      * 5. Get the number of accounts
      * 6. Create new account for each account type
      * 7. Get the number of accounts again
-     * 8. Verify that the current number is equeal to previous number + 1
+     * 8. Verify that the current number is equal to previous number + 1
      */
     it('Add-account-types-LTC', () => {
         //
@@ -165,7 +165,7 @@ describe('Account types suite', () => {
      * 5. Get the number of accounts
      * 6. Create new account
      * 7. Get the number of accounts again
-     * 8. Verify that the current number is equeal to previous number + 1
+     * 8. Verify that the current number is equal to previous number + 1
      */
     it('Add-account-types-non-BTC-coins', () => {
         //
