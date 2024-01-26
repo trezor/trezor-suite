@@ -4359,11 +4359,11 @@ export default defineMessages({
     },
     TR_ACTIVATED_COINS: {
         id: 'TR_ACTIVATED_COINS',
-        defaultMessage: 'Activated coins (you can create a new account COPY)',
+        defaultMessage: 'Activated coins',
     },
     TR_INACTIVE_COINS: {
         id: 'TR_INACTIVE_COINS',
-        defaultMessage: 'Not activated yet (fix COPY)',
+        defaultMessage: 'Not activated yet',
     },
     TR_ACTIVATE_COINS: {
         id: 'TR_ACTIVATE_COINS',
