@@ -1,4 +1,3 @@
-import styled from 'styled-components';
 import { sortByCoin, getFailedAccounts, accountSearchFn } from '@suite-common/wallet-utils';
 import { Account } from '@suite-common/wallet-types';
 import { useAccountSearch, useDiscovery, useSelector } from 'src/hooks/suite';
@@ -8,15 +7,12 @@ import { Translation } from 'src/components/suite';
 import { AccountItemSkeleton } from './AccountItemSkeleton';
 import { AccountGroup } from './AccountGroup';
 import { AccountItem } from './AccountItem';
-import { typography } from '@trezor/theme';
+import { AccountsMenuNotice } from './AccountsMenuNotice';
+import styled from 'styled-components';
+import { spacingsPx } from '@trezor/theme';
 
-const NoResults = styled.div`
-    display: flex;
-    justify-content: center;
-    text-align: center;
-    margin-top: 36px;
-    color: ${({ theme }) => theme.textSubdued};
-    ${typography.hint}
+const SkeletonContainer = styled.div`
+    margin: ${spacingsPx.xs};
 `;
 
 interface AccountListProps {
@@ -128,11 +124,19 @@ export const AccountsList = ({ onItemClick }: AccountListProps) => {
         );
     }
 
+    if (discoveryInProgress) {
+        return (
+            <SkeletonContainer>
+                <AccountItemSkeleton />
+            </SkeletonContainer>
+        );
+    }
+
     return (
-        <NoResults>
+        <AccountsMenuNotice>
             <Translation
                 id={!searchString ? 'TR_ACCOUNT_NO_ACCOUNTS' : 'TR_ACCOUNT_SEARCH_NO_RESULTS'}
             />
-        </NoResults>
+        </AccountsMenuNotice>
     );
 };

@@ -1,5 +1,6 @@
 export { useDevice } from './useDevice';
 export { useDiscovery } from './useDiscovery';
+export { useRediscoveryNeeded } from './useRediscoveryNeeded';
 export { useActions } from './useActions';
 export { useLayout } from './useLayout';
 export { useLayoutSize } from './useLayoutSize';

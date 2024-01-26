@@ -3,7 +3,7 @@ import { LoadingContent, Switch, Tooltip } from '@trezor/components';
 import { HELP_CENTER_LABELING } from '@trezor/urls';
 
 import { ActionColumn, SectionItem, TextColumn, Translation } from 'src/components/suite';
-import { useSelector, useDispatch, useDevice } from 'src/hooks/suite';
+import { useSelector, useDispatch, useDevice, useDiscovery } from 'src/hooks/suite';
 import * as metadataActions from 'src/actions/suite/metadataActions';
 import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
 import { useAnchor } from 'src/hooks/suite/useAnchor';
@@ -15,6 +15,7 @@ export const Labeling = () => {
     const { device, isLocked } = useDevice();
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.Labeling);
     const dispatch = useDispatch();
+    const { isDiscoveryRunning } = useDiscovery();
 
     const handleSwitchClick = () => {
         if (metadata.enabled) {
@@ -40,7 +41,7 @@ export const Labeling = () => {
     // - Labeling enabled without any device connected
     // - Labeling enabled with the device connected inside Settings
     // The initialization of Labeling then start when user select a Wallet.
-    const isDisabled = (!!device && !metadata.enabled && isLocked()) || device?.mode !== 'normal';
+    const isDisabled = isLocked() || device?.mode !== 'normal';
 
     return (
         <SectionItem
@@ -62,7 +63,10 @@ export const Labeling = () => {
                     maxWidth={280}
                     offset={10}
                     placement="top"
-                    content={isDisabled && <Translation id="TR_DISABLED_SWITCH_TOOLTIP" />}
+                    content={
+                        isDisabled &&
+                        !isDiscoveryRunning && <Translation id="TR_DISABLED_SWITCH_TOOLTIP" />
+                    }
                 >
                     <Switch
                         isDisabled={isDisabled || metadata.initiating}
