@@ -17,13 +17,14 @@ describe('unacquired device', () => {
 
         // simulate stolen session from another window. device receives indicative button
         cy.task('stealBridgeSession');
-        cy.getTestElement('@menu/switch-device/refresh-button').click();
+        cy.getTestElement('@menu/switch-device').click();
+        cy.getTestElement('@switch-device/1/solve-issue-button').click();
         cy.getTestElement('@deviceStatus-connected');
 
         // when user reloads app while device is acquired, suite will not try to acquire device so that it
         // does not interferes with somebody else's session
         cy.task('stealBridgeSession');
-        cy.getTestElement('@menu/switch-device/refresh-button');
+        cy.getTestElement('@switch-device/1/solve-issue-button');
         cy.reload();
         cy.getTestElement('@device-acquire').click();
         cy.getTestElement('@passphrase-type/standard').click();
