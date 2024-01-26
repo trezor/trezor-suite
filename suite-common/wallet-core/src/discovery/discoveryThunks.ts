@@ -175,7 +175,7 @@ export const stopDiscoveryThunk = createThunk(
     },
 );
 
-const getBundleThunk = createThunk(
+export const getBundleThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/getBundle`,
     ({ discovery, device }: { discovery: Discovery; device: TrezorDevice }, { getState }) => {
         const bundle: DiscoveryItem[] = [];

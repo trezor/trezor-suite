@@ -3,7 +3,7 @@ import { TrezorDevice } from 'src/types/suite';
 import { useDiscovery, useDispatch } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
 
-import { Tooltip, ButtonProps, IconButton } from '@trezor/components';
+import { Tooltip, ButtonProps, IconButton, Button } from '@trezor/components';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 
 const getExplanationMessage = (device: TrezorDevice | undefined, discoveryIsRunning: boolean) => {
@@ -20,12 +20,14 @@ interface AddAccountButtonProps extends Omit<ButtonProps, 'children'> {
     device: TrezorDevice | undefined;
     closeMenu?: () => void;
     isDisabled?: boolean;
+    isFullWidth?: boolean;
 }
 
 export const AddAccountButton = ({
     device,
     isDisabled,
     closeMenu,
+    isFullWidth,
     ...rest
 }: AddAccountButtonProps) => {
     const { discovery } = useDiscovery();
@@ -43,21 +45,35 @@ export const AddAccountButton = ({
 
     const tooltipMessage = getExplanationMessage(device, discoveryIsRunning);
 
-    const ButtonComponent = (
+    const handleOnClick = () => {
+        if (!device) {
+            return;
+        }
+
+        dispatch(
+            openModal({
+                type: 'add-account',
+                device,
+            }),
+        );
+        if (closeMenu) closeMenu();
+    };
+
+    const ButtonComponent = isFullWidth ? (
+        <Button
+            onClick={device ? handleOnClick : undefined}
+            icon="PLUS"
+            isDisabled={addAccountDisabled || isDisabled}
+            size="small"
+            variant="tertiary"
+            isFullWidth
+            {...rest}
+        >
+            <Translation id="TR_SIDEBAR_ADD_COIN" />
+        </Button>
+    ) : (
         <IconButton
-            onClick={
-                device
-                    ? () => {
-                          dispatch(
-                              openModal({
-                                  type: 'add-account',
-                                  device,
-                              }),
-                          );
-                          if (closeMenu) closeMenu();
-                      }
-                    : undefined
-            }
+            onClick={device ? handleOnClick : undefined}
             icon="PLUS"
             isDisabled={addAccountDisabled || isDisabled}
             size="small"
@@ -70,6 +86,7 @@ export const AddAccountButton = ({
     if (tooltipMessage) {
         return (
             <Tooltip
+                isFullWidth={isFullWidth}
                 maxWidth={200}
                 content={tooltipMessage}
                 placement="bottom"

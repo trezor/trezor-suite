@@ -15,6 +15,7 @@ const StyledCard = styled(Card)`
     box-shadow: 0 2px 5px 0 ${({ theme }) => theme.boxShadowBase};
     flex-direction: row;
     justify-content: space-between;
+    margin-bottom: ${spacingsPx.lg};
 `;
 
 const StyledButton = styled(Button)`
