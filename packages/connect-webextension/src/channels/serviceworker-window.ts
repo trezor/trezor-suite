@@ -18,7 +18,12 @@ export class ServiceWorkerWindowChannel<
         name,
         channel,
         logger,
-    }: Pick<AbstractMessageChannelConstructorParams, 'channel' | 'logger'> & { name: string }) {
+        lazyHandshake,
+        allowSelfOrigin = false,
+    }: Pick<AbstractMessageChannelConstructorParams, 'channel' | 'logger' | 'lazyHandshake'> & {
+        name: string;
+        allowSelfOrigin?: boolean;
+    }) {
         super({
             channel,
             sendFn: (message: any) => {
@@ -26,6 +31,7 @@ export class ServiceWorkerWindowChannel<
                 this.port.postMessage(message);
             },
             logger,
+            lazyHandshake,
         });
 
         chrome.runtime.onConnect.addListener(port => {
@@ -39,13 +45,19 @@ export class ServiceWorkerWindowChannel<
                 }
 
                 const { origin } = sender;
-
                 const whitelist = [
                     'https://connect.trezor.io',
                     'https://staging-connect.trezor.io',
                     'https://suite.corp.sldev.cz',
                     'http://localhost:8088',
                 ];
+
+                // If service worker is running in web extension and other env of this webextension
+                // want to communicate with service worker it should be whitelisted.
+                const webextensionId = chrome?.runtime?.id;
+                if (webextensionId) {
+                    whitelist.push(`chrome-extension://${webextensionId}`);
+                }
 
                 if (!origin) {
                     this.logger?.error(
@@ -64,8 +76,9 @@ export class ServiceWorkerWindowChannel<
                     return;
                 }
 
+                // TODO: not completely sure that is necessary to prevent self origin communication sometimes.
                 // eslint-disable-next-line no-restricted-globals
-                if (origin === self.origin) {
+                if (origin === self.origin && !allowSelfOrigin) {
                     return;
                 }
 
