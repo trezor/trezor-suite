@@ -10,7 +10,7 @@ import {
     StellarTransaction,
     StellarSignTransaction as StellarSignTransactionSchema,
 } from '../../../types/api/stellar';
-import { Assert } from '@trezor/schema-utils';
+import { AssertWeak } from '@trezor/schema-utils';
 
 type Params = {
     path: number[];
@@ -37,7 +37,8 @@ export default class StellarSignTransaction extends AbstractMethod<
 
         const { payload } = this;
         // validate incoming parameters
-        Assert(StellarSignTransactionSchema, payload);
+        // TODO: weak assert for compatibility purposes (issue #10841)
+        AssertWeak(StellarSignTransactionSchema, payload);
 
         const path = validatePath(payload.path, 3);
         // incoming data should be in stellar-sdk format

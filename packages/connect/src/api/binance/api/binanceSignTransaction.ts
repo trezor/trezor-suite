@@ -6,7 +6,7 @@ import { getMiscNetwork } from '../../../data/coinInfo';
 import { validatePath } from '../../../utils/pathUtils';
 import * as helper from '../binanceSignTx';
 import { BinanceSignTransaction as BinanceSignTransactionSchema } from '../../../types/api/binance';
-import { Assert } from '@trezor/schema-utils';
+import { AssertWeak } from '@trezor/schema-utils';
 
 import type { BinancePreparedTransaction } from '../../../types/api/binance';
 
@@ -26,7 +26,8 @@ export default class BinanceSignTransaction extends AbstractMethod<
 
         const { payload } = this;
         // validate incoming parameters
-        Assert(BinanceSignTransactionSchema, payload);
+        // TODO: weak assert for compatibility purposes (issue #10841)
+        AssertWeak(BinanceSignTransactionSchema, payload);
 
         const path = validatePath(payload.path, 3);
         const transaction = helper.validate(payload.transaction);
