@@ -32,24 +32,10 @@ jobs:
       env:
         JAVA_HOME: /usr/lib/jvm/java-8-openjdk-amd64
 
-    # - name: Enable KVM
-    #   run: |
-    #     echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
-    #     sudo udevadm control --reload-rules
-    #     sudo udevadm trigger --name-match=kvm
-
     - name: Run emulator
       uses: reactivecircus/android-emulator-runner@v2
       with:
         api-level: 28
         target: default
         arch: x86
-        script: echo "Emulator started"
-
-    - name: Install APK
-      run: |
-        adb install trezor-suite/suite-native/app/android/testAPKFolder/*.apk
-
-    - name: Run Maestro tests
-      run: |
-        maestro test trezor-suite/suite-native/app/.maestro/importBTCAsset
+        script: adb install trezor-suite/suite-native/app/android/testAPKFolder/*.apk && maestro test trezor-suite/suite-native/app/.maestro/importBTCAsset
