@@ -30,7 +30,7 @@ export const SettingsLayout = ({
     return (
         <Wrapper className={className} data-test={dataTest}>
             <SettingsLoading isPresent={isDiscoveryRunning} />
-            {children}
+            <>{children}</>
         </Wrapper>
     );
 };
