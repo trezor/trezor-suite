@@ -5,6 +5,7 @@ import { Mixin } from 'ts-mixer';
 
 import { ArrayBufferBuilder, BufferBuilder, KeyofEnumBuilder, UintBuilder } from './custom-types';
 import { InvalidParameter } from './errors';
+import { setDeepValue } from './utils';
 
 class CustomTypeBuilder extends Mixin(
     JavaScriptTypeBuilder,
@@ -69,6 +70,17 @@ export function Assert<T extends TSchema>(schema: T, value: unknown): asserts va
         } else if (error.type === ValueErrorType.Union) {
             // Drill down into the union
             FindErrorInUnion(error);
+        } else if (error.type === ValueErrorType.Number && typeof error.value === 'string') {
+            // String instead of number, try to autocast
+            const currentValue = error.value;
+            const parsedNumber = Number(currentValue);
+            if (!Number.isNaN(parsedNumber) && currentValue === parsedNumber.toString()) {
+                // Autocast successful
+                const pathParts = error.path.slice(1).split('/');
+                setDeepValue(value, pathParts, parsedNumber);
+            } else {
+                throw new InvalidParameter(error.message, error.path, error.type, error.value);
+            }
         } else {
             throw new InvalidParameter(error.message, error.path, error.type, error.value);
         }
