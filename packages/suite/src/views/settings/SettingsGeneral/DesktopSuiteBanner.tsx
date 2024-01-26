@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import styled from 'styled-components';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, HTMLMotionProps, motion } from 'framer-motion';
 import { Button, H2, Icon, Image, Paragraph, motionEasing } from '@trezor/components';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { SUITE_URL } from '@trezor/urls';
@@ -8,13 +8,13 @@ import { SUITE_URL } from '@trezor/urls';
 import { useDispatch } from 'src/hooks/suite/useDispatch';
 import { setFlag } from 'src/actions/suite/suiteActions';
 import { Translation, TrezorLink } from 'src/components/suite';
+import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 
 const Container = styled(motion.div)`
     position: relative;
     display: flex;
     align-items: center;
     width: 100%;
-    height: 160px;
     margin-bottom: 40px;
     padding: 12px 20px;
     border-radius: 12px;
@@ -51,6 +51,10 @@ const CloseButton = styled(Icon)`
 
 const StyledImage = styled(Image)`
     margin-right: 24px;
+
+    ${SCREEN_QUERY.BELOW_LAPTOP} {
+        display: none;
+    }
 `;
 
 const Content = styled.div`
@@ -100,8 +104,8 @@ export const DesktopSuiteBanner = () => {
         setIsVisible(false);
     };
 
-    const animationConfig = {
-        initial: { opacity: 1, transform: 'scale(1)', marginBottom: 40, height: 160 },
+    const animationConfig: HTMLMotionProps<'div'> = {
+        initial: { opacity: 1, transform: 'scale(1)', marginBottom: 40, height: 'auto' },
         exit: { opacity: 0, transform: 'scale(0.7)', marginBottom: -60, height: 60 },
         transition: {
             duration: 0.33,
