@@ -2,7 +2,7 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": {
         "isolatedModules": false,
-        "noEmit": true,
+        "outDir": "./lib",
         "types": ["chrome", "w3c-web-usb"]
     },
     "include": ["**/*.ts", "**/*.js"],
