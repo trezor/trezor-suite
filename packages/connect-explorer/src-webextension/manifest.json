@@ -1,0 +1,13 @@
+{
+    "name": "@trezor/connect-explorer",
+    "version": "1.0.0",
+    "manifest_version": 3,
+    "action": {
+        "default_popup": "extension-popup.html"
+    },
+    "background": {
+        "service_worker": "serviceWorker.bundle.js"
+    },
+    "permissions": ["scripting"],
+    "host_permissions": ["http://*/*", "https://*/*"]
+}

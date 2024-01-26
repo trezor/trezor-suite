@@ -1,6 +1,7 @@
 {
     "extends": "../../tsconfig.json",
     "compilerOptions": {
+        "types": ["chrome"],
         "noImplicitAny": false,
         "outDir": "./libDev"
     },
@@ -12,7 +13,9 @@
     "references": [
         { "path": "../components" },
         { "path": "../connect-web" },
-        { "path": "../protobuf" }
+        { "path": "../connect-webextension" },
+        { "path": "../protobuf" },
+        { "path": "../utils" }
     ],
     "ts-node": {
         "compilerOptions": {
