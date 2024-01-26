@@ -1,3 +1,7 @@
+# 9.0.19
+
+-   fix(utils): correct `getSynchronize` return type (4bc47d794)
+
 # 9.0.18
 
 -   fix(suite): fix label drop for RBG transactions (96d12a424)
