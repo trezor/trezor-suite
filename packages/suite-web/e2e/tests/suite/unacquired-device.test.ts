@@ -1,7 +1,7 @@
 // @group:suite
 // @retry=2
 
-describe('unacquried device', () => {
+describe('unacquired device', () => {
     beforeEach(() => {
         cy.viewport(1080, 1440).resetDb();
         cy.task('startEmu', { wipe: true });
@@ -9,7 +9,7 @@ describe('unacquried device', () => {
         cy.task('startBridge');
     });
 
-    it('somone steals session, device status turns inactive', () => {
+    it('someone steals session, device status turns inactive', () => {
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
         cy.getTestElement('@passphrase-type/standard').click();
@@ -20,8 +20,8 @@ describe('unacquried device', () => {
         cy.getTestElement('@menu/switch-device/refresh-button').click();
         cy.getTestElement('@deviceStatus-connected');
 
-        // when user reloads app while device is ancquired, suite will not try to acquire device so that it
-        // does not interfers with somebody else's session
+        // when user reloads app while device is acquired, suite will not try to acquire device so that it
+        // does not interferes with somebody else's session
         cy.task('stealBridgeSession');
         cy.getTestElement('@menu/switch-device/refresh-button');
         cy.reload();
