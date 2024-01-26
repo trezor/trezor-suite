@@ -1,4 +1,4 @@
-import styled, { keyframes, css, useTheme } from 'styled-components';
+import styled, { css, useTheme } from 'styled-components';
 
 import { Ref, forwardRef, SVGAttributes } from 'react';
 import { ReactSVG } from 'react-svg';
@@ -6,39 +6,8 @@ import { ICONS } from './icons';
 
 export type IconType = keyof typeof ICONS;
 
-// TODO: make animation of icons better
-const rotate180up = keyframes`
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(180deg);
-    }
-`;
-
-const rotate180down = keyframes`
-    from {
-        transform: rotate(180deg);
-    }
-    to {
-        transform: rotate(0deg);
-    }
-`;
-
-const chooseIconAnimationType = (canAnimate?: boolean, isActive?: boolean) => {
-    if (canAnimate) {
-        if (isActive) {
-            return rotate180up;
-        }
-        return rotate180down;
-    }
-    return null;
-};
-
 const SvgWrapper = styled.div<{
-    $canAnimate: WrapperProps['canAnimate'];
     $color: WrapperProps['color'];
-    $isActive: WrapperProps['isActive'];
     $hoverColor: WrapperProps['hoverColor'];
     $size: WrapperProps['size'];
     $useCursorPointer: WrapperProps['useCursorPointer'];
@@ -48,8 +17,6 @@ const SvgWrapper = styled.div<{
     justify-content: center;
     height: ${({ $size }) => $size}px;
     width: ${({ $size }) => $size}px;
-    animation: ${({ $canAnimate, $isActive }) => chooseIconAnimationType($canAnimate, $isActive)}
-        0.2s linear 1 forwards;
 
     div {
         display: flex;
@@ -89,8 +56,6 @@ export interface IconProps extends SVGAttributes<HTMLDivElement> {
     icon: IconType;
     size?: number;
     color?: string;
-    isActive?: boolean;
-    canAnimate?: boolean;
     hoverColor?: string;
     useCursorPointer?: boolean;
     'data-test'?: string;
@@ -102,8 +67,6 @@ export const Icon = forwardRef(
             icon,
             size = 24,
             color,
-            isActive,
-            canAnimate,
             hoverColor,
             useCursorPointer,
             className,
@@ -120,12 +83,10 @@ export const Icon = forwardRef(
         return (
             <SvgWrapper
                 className={className}
-                $canAnimate={canAnimate}
                 $hoverColor={hoverColor}
                 onClick={onClick}
                 onMouseEnter={onMouseEnter}
                 onMouseLeave={onMouseLeave}
-                $isActive={isActive}
                 $size={size}
                 ref={ref}
                 $useCursorPointer={onClick !== undefined || useCursorPointer}

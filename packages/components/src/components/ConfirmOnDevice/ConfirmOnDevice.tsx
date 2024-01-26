@@ -91,7 +91,7 @@ const CloseWrapper = styled.div`
 const Close = styled.div`
     border-radius: 100%;
     cursor: pointer;
-    background: ${({ theme }) => theme.iconPrimaryDefault};
+    background: ${({ theme }) => theme.backgroundNeutralSubtleOnElevation1};
     width: 36px;
     height: 36px;
     display: flex;
@@ -211,7 +211,7 @@ export const ConfirmOnDevice = ({
                 <CloseWrapper>
                     {onCancel && (
                         <Close onClick={onCancel}>
-                            <Icon icon="CROSS" size={16} color={theme.textOnPrimary} />
+                            <Icon icon="CROSS" size={16} color={theme.textOnTertiary} />
                         </Close>
                     )}
                 </CloseWrapper>
