@@ -1,3 +1,7 @@
+# 1.0.13
+
+-   feat(blockchain-link); get sol token metadata from coingecko (5c901ea8f)
+
 # 1.0.12
 
 -   fix(blockchain-link-utils): support `multisigAuthority` in solana txs (dfd96d23b)
