@@ -26,7 +26,7 @@ const navItems: Array<NavigationItemProps & { CustomComponent?: FC<NavigationIte
         nameId: 'TR_SETTINGS',
         icon: 'settings',
         route: 'settings-index',
-        dataTest: 'settings',
+        dataTest: '@suite/menu/settings',
     },
 ];
 
