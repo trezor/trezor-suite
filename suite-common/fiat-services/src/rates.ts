@@ -8,8 +8,6 @@ import { scheduleAction } from '@trezor/utils';
 import * as coingeckoService from './coingecko';
 import * as blockbookService from './blockbook';
 
-export const { getTickerConfig, fetchCurrentTokenFiatRates } = coingeckoService;
-
 const CONNECT_FETCH_TIMEOUT = 10_000;
 
 const getConnectFiatRatesForTimestamp = (
