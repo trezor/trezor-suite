@@ -6,22 +6,29 @@ on:
 
 jobs:
   build:
-    if: github.event.label.name == 'commence-maestro-tests'
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
 
     - name: Set up Node.js
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
       with:
-        node-version: '14'
+          node-version-file: ".nvmrc"
+
+    - name: Install dependecies
+      run: yarn install
+
+    - name: Build JS libs
+      run: yarn build:libs
+      
+    # - name: Install Maestro
+    #   run: curl -Ls "https://get.maestro.mobile.dev" | bash && export PATH="$PATH":"$HOME/.maestro/bin"
 
     - name: Install system dependencies
       run: |
         sudo apt-get update
         sudo apt-get install -y --no-install-recommends openjdk-8-jdk wget unzip
-
     - name: Set up Android SDK
       run: |
         wget https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip
@@ -32,16 +39,17 @@ jobs:
       env:
         JAVA_HOME: /usr/lib/jvm/java-8-openjdk-amd64
 
+
     - name: Enable KVM
       run: |
         echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
         sudo udevadm control --reload-rules
         sudo udevadm trigger --name-match=kvm
 
+
     - name: Run emulator
       uses: reactivecircus/android-emulator-runner@v2
       with:
-        api-level: 28
-        target: default
-        arch: x86
-        script: adb install trezor-suite/suite-native/app/android/testAPKFolder/*.apk && maestro test trezor-suite/suite-native/app/.maestro/importBTCAsset
+        working-directory: suite-native/app/android
+        api-level: 29
+        script: ./gradlew assembleDebug && adb install ./app/build/outputs/apk/dev/debug/app-dev-debug.apk
