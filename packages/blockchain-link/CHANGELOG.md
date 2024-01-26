@@ -1,3 +1,7 @@
+# 2.1.23
+
+-   feat(blockchain-link); get sol token metadata from coingecko (5c901ea8f)
+
 # 2.1.22
 
 -   fix(suite): subscribe to Solana token accounts as well (b2f85ac9e)
