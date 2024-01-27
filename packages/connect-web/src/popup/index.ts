@@ -169,10 +169,7 @@ export class PopupManager extends EventEmitter {
         } else if (this.settings.env === 'electron') {
             this.popupWindow = window.open(url, 'modal');
         } else {
-            this.popupWindow = window.open('', '_blank');
-            if (this.popupWindow) {
-                this.popupWindow.location.href = url; // otherwise android/chrome loose window.opener reference
-            }
+            this.popupWindow = window.open(url, '_blank');
         }
     }
 
