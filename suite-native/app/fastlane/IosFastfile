@@ -132,7 +132,7 @@ platform :ios do
    # update the code signing identities to match profile name and app bundle identifier
    update_code_signing_settings(
      use_automatic_signing: false, # turn off automatic signing during build so correct code signing identity is guaranteed to be used
-     targets: ["TrezorSuite"],
+     targets: [build_scheme],
      code_sign_identity: code_sign_identity,
      bundle_identifier: app_identifier,
      profile_name: PROVISIONING_NAME,
@@ -215,7 +215,7 @@ platform :ios do
     # Configures Xcode's Codesigning options
     update_code_signing_settings(
       use_automatic_signing: true,
-      targets: ["TrezorSuite"],
+      targets: [build_scheme],
       code_sign_identity: code_sign_identity,
       bundle_identifier: app_identifier,
       build_configurations: [build_scheme], # only toggle code signing settings for Release configurations
