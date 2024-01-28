@@ -29,13 +29,6 @@ jobs:
 
       - name: Setup react-native kernel and increase watchers
         run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
-      - name: Decode files
-        env:
-          ENCODED_STRING_KEYSTORE: ${{ secrets.DEVELOP_KEYSTORE_FILE }}
-          ENCODED_STRING_JSON_FILE: ${{secrets.GOOGLE_PLAY_JSON_KEY}}
-        run: |
-          echo $ENCODED_STRING_KEYSTORE | base64 -d > suite-native/app/android/app/release.keystore
-          echo $ENCODED_STRING_JSON_FILE > suite-native/app/android/firebase_key.json
 
       - name: Install dependecies
         run: yarn install
@@ -48,6 +41,14 @@ jobs:
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: yarn expo prebuild --platform android
+
+      - name: Decode files
+        env:
+          ENCODED_STRING_KEYSTORE: ${{ secrets.DEVELOP_KEYSTORE_FILE }}
+          ENCODED_STRING_JSON_FILE: ${{secrets.GOOGLE_PLAY_JSON_KEY}}
+        run: |
+          echo $ENCODED_STRING_KEYSTORE | base64 -d > suite-native/app/android/app/release.keystore
+          echo $ENCODED_STRING_JSON_FILE > suite-native/app/android/firebase_key.json
 
       - name: Ruby Setup for Fastlane
         uses: ruby/setup-ruby@v1

@@ -23,6 +23,13 @@ jobs:
 
       - name: Setup react-native kernel and increase watchers
         run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
+
+      - name: Expo Prebuild
+        working-directory: suite-native/app/
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        run: yarn expo prebuild --platform android
+
       - name: Decode files
         env:
           ENCODED_STRING_KEYSTORE: ${{ secrets.STAGING_KEYSTORE_FILE }}
@@ -30,12 +37,6 @@ jobs:
         run: |
           echo $ENCODED_STRING_KEYSTORE | base64 -d > suite-native/app/android/app/stag-upload-key.keystore
           echo $ENCODED_STRING_JSON_FILE > suite-native/app/android/google_play_key.json
-
-      - name: Expo Prebuild
-        working-directory: suite-native/app/
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-        run: yarn expo prebuild --platform android
 
       - name: Ruby Setup for Fastlane
         uses: ruby/setup-ruby@v1
