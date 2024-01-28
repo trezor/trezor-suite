@@ -38,7 +38,6 @@ describe('Metadata - Output labeling', () => {
 
             cy.discoveryShouldFinish();
             cy.getTestElement('@account-menu/btc/normal/0').click();
-            cy.getTestElement('@wallet/accounts/pagination/2').click();
 
             cy.getTestElement(targetEl1).click({ force: true });
             cy.passThroughInitMetadata(provider);
