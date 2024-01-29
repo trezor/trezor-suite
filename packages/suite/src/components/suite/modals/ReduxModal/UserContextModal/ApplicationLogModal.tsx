@@ -34,6 +34,7 @@ const LogWrapper = styled.pre`
 
 const BalanceInfoSection = styled(SectionItem)`
     margin-top: ${spacingsPx.md};
+
     :not(:first-child) {
         > div {
             border-top: 0;
