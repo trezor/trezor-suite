@@ -117,6 +117,13 @@ const FiatBalanceWrapper = styled.div`
 const ExchangeRateWrapper = styled(Col)`
     font-variant-numeric: tabular-nums;
     padding-right: 0;
+    justify-content: right;
+    padding-right: ${spacingsPx.xxxl};
+`;
+
+const ExchangeRateWrapper7Days = styled(Col)`
+    font-variant-numeric: tabular-nums;
+    padding-right: 0;
 `;
 
 const BuyButtonWrapper = styled(Col)`
@@ -203,9 +210,9 @@ export const AssetRow = memo(
                 <ExchangeRateWrapper isLastRow={isLastRow}>
                     {!isTestnet(symbol) && <PriceTicker symbol={symbol} />}
                 </ExchangeRateWrapper>
-                <ExchangeRateWrapper isLastRow={isLastRow}>
+                <ExchangeRateWrapper7Days isLastRow={isLastRow}>
                     {!isTestnet(symbol) && <TrendTicker symbol={symbol} />}
-                </ExchangeRateWrapper>
+                </ExchangeRateWrapper7Days>
                 <BuyButtonWrapper isLastRow={isLastRow}>
                     {!isTestnet(symbol) && (
                         <CoinmarketBuyButton
