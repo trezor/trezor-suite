@@ -83,6 +83,7 @@ const CoinNameWrapper = styled(Col)`
 
 const CoinBalanceContainer = styled.div`
     ${typography.hint}
+    color: ${({ theme }) => theme.textSubdued};
 `;
 
 const FailedCol = styled(Col)`
@@ -110,9 +111,7 @@ const CryptoBalanceWrapper = styled(Col)`
     }
 `;
 
-const FiatBalanceWrapper = styled.div`
-    color: ${({ theme }) => theme.textSubdued};
-`;
+const FiatBalanceWrapper = styled.div``;
 
 const ExchangeRateWrapper = styled(Col)`
     font-variant-numeric: tabular-nums;

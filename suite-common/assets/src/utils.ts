@@ -27,6 +27,7 @@ export const calculateAssetsPercentage = <T>(
             fiatPercentageOffset: previousPercentage,
         };
         previousPercentage += fiatPercentage;
+
         return assetWithPercentage;
     });
 };
