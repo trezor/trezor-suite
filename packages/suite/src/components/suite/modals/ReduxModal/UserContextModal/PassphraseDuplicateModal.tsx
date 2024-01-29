@@ -53,7 +53,7 @@ export const PassphraseDuplicateModal = ({ device, duplicate }: PassphraseDuplic
                         <Translation id="TR_WALLET_DUPLICATE_SWITCH" />
                     </Button>
                     <Button
-                        variant="secondary"
+                        variant="tertiary"
                         onClick={handleAuthorizeDevice}
                         isDisabled={isDeviceLocked}
                     >

@@ -80,7 +80,7 @@ export const ConfirmUnverifiedModal = ({
             }
             bottomBarComponents={
                 <>
-                    <Button variant="secondary" onClick={continueUnverified}>
+                    <Button variant="tertiary" onClick={continueUnverified}>
                         <Translation id={showUnverifiedButtonText} />
                     </Button>
                     {isPassphraseRequired && (

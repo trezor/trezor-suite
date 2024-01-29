@@ -46,7 +46,7 @@ export const DisableTorStopCoinjoinModal = ({
                 heading={<Translation id="TR_TOR_DISABLE" />}
                 bottomBarComponents={
                     <>
-                        <Button variant="secondary" onClick={onStopRunningTor}>
+                        <Button variant="tertiary" onClick={onStopRunningTor}>
                             <Translation id="TR_TOR_STOP" />
                         </Button>
                         <Button variant="primary" onClick={onKeepRunningTor}>

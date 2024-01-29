@@ -68,14 +68,14 @@ export const RequestEnableTorModal = ({ onCancel, decision }: RequestEnableTorMo
                 <>
                     {(isDevEnv || coinjoinAllowNoTor) && (
                         <Button
-                            variant="secondary"
+                            variant="tertiary"
                             onClick={onSkip}
                             data-test="@request-enable-tor-modal/skip-button"
                         >
                             <Translation id="TR_TOR_SKIP" />
                         </Button>
                     )}
-                    <Button variant="secondary" onClick={onCancel}>
+                    <Button variant="tertiary" onClick={onCancel}>
                         <Translation id="TR_TOR_REQUEST_ENABLE_FOR_COIN_JOIN_LEAVE" />
                     </Button>
 
