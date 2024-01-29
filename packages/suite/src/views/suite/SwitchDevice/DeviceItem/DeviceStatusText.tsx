@@ -1,15 +1,24 @@
-import styled, { useTheme } from 'styled-components';
+import styled, { css, useTheme } from 'styled-components';
 import { TrezorDevice } from '@suite-common/suite-types';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { Icon } from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';
-import React from 'react';
+import React, { MouseEventHandler } from 'react';
 import { Translation, WalletLabeling } from 'src/components/suite';
 
-const Container = styled.span<{ color: string }>`
+const Container = styled.span<{ color: string; isAction?: boolean }>`
     ${typography.label}
     color: ${({ color }) => color};
+
+    ${({ isAction }) =>
+        isAction &&
+        css`
+            :hover {
+                opacity: 0.8;
+            }
+        `}
 `;
+
 const TextRow = styled.div`
     display: flex;
     align-items: center;
@@ -18,7 +27,7 @@ const TextRow = styled.div`
 
 type DeviceStatusTextProps = {
     device: TrezorDevice;
-    onRefreshClick?: () => void;
+    onRefreshClick?: MouseEventHandler;
     walletLabel?: string;
 };
 
@@ -34,7 +43,7 @@ export const DeviceStatusText = ({
 
     if (connected && needsAttention && onRefreshClick) {
         return (
-            <Container onClick={onRefreshClick} color={theme.textAlertYellow}>
+            <Container isAction onClick={onRefreshClick} color={theme.textAlertYellow}>
                 <TextRow>
                     <Icon icon="REFRESH" size={12} color={theme.textAlertYellow} />
                     <Translation id="TR_SOLVE_ISSUE" />

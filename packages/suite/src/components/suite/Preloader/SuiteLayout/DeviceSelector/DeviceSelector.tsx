@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, ChangeEvent, MouseEventHandler } from 'react';
 
 import styled, { css } from 'styled-components';
 
@@ -155,7 +155,8 @@ export const DeviceSelector = () => {
             }),
         );
 
-    const handleRefreshClick = () => {
+    const handleRefreshClick: MouseEventHandler = e => {
+        e.stopPropagation();
         if (deviceNeedsRefresh) {
             dispatch(acquireDevice(selectedDevice));
         }
