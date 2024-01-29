@@ -71,7 +71,9 @@ methods.off = jest.fn((event: string, _cb) => {
 methods.composeTransaction = jest.fn(async _params => {
     const fixture = getNextFixture('composeTransaction');
     if (fixture && typeof fixture.delay === 'number') {
-        await new Promise(resolve => setTimeout(resolve, fixture.delay));
+        await new Promise(resolve => {
+            setTimeout(resolve, fixture.delay);
+        });
     }
     return { success: false, payload: { error: 'error' }, ...fixture, _params };
 });

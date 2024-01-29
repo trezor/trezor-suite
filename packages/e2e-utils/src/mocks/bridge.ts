@@ -7,7 +7,10 @@ import { EventEmitter } from 'events';
 const port = 21325;
 const listenTimeout = 10000;
 
-const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+const delay = ms =>
+    new Promise(resolve => {
+        setTimeout(resolve, ms);
+    });
 
 /**
  * Mock implementation of Trezor Bridge service intended to be used in e2e tests.

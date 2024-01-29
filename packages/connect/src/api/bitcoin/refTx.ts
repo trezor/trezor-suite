@@ -28,8 +28,8 @@ import { Assert, Type } from '@trezor/schema-utils';
 // - zcash tx version is NU5 (or greater)
 export const requireReferencedTransactions = (
     inputs: PROTO.TxInputType[],
-    options: TransactionOptions = {},
     coinInfo?: CoinInfo,
+    options: TransactionOptions = {},
 ): boolean => {
     if (coinInfo?.shortcut === 'ZEC' || coinInfo?.shortcut === 'TAZ') {
         return !(options.version && options.version >= 5);

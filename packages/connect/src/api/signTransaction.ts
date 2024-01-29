@@ -180,7 +180,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
             params: { inputs, outputs, options, coinInfo, addresses },
         } = this;
 
-        const requiredRefTxs = requireReferencedTransactions(inputs, options, coinInfo);
+        const requiredRefTxs = requireReferencedTransactions(inputs, coinInfo, options);
         const refTxsIds = requiredRefTxs ? getReferencedTransactions(inputs) : [];
         const origTxsIds = !useLegacySignProcess ? getOrigTransactions(inputs, outputs) : [];
 

@@ -211,7 +211,7 @@ export default class GetAccountDescriptor extends AbstractMethod<
             }
         }
 
-        if (this.disposed) return new Promise<typeof responses>(() => []);
+        if (this.disposed) return new Promise<typeof responses>(() => {});
         return this.hasBundle ? responses : responses[0]!;
     }
 

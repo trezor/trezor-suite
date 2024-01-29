@@ -39,7 +39,9 @@ describe('TrezorConnect.setBusy', () => {
         expect(busy).toBe(true);
 
         // wait for expiry
-        await new Promise(resolve => setTimeout(resolve, 3000));
+        await new Promise(resolve => {
+            setTimeout(resolve, 3000);
+        });
 
         const features = await TrezorConnect.getFeatures();
         if (!features.success) throw new Error(features.payload.error);
@@ -68,7 +70,9 @@ describe('TrezorConnect.setBusy', () => {
     });
 
     conditionalTest(['1', '<2.5.3'], 'setBusy with autolock', async () => {
-        await new Promise(resolve => setTimeout(resolve, 11000)); // wait for auto-lock
+        await new Promise(resolve => {
+            setTimeout(resolve, 11000);
+        }); // wait for auto-lock
 
         let busy = false;
         TrezorConnect.on('DEVICE_EVENT', event => {
@@ -85,7 +89,9 @@ describe('TrezorConnect.setBusy', () => {
 
         expect(busy).toBe(true);
 
-        await new Promise(resolve => setTimeout(resolve, 1000)); // cool off
+        await new Promise(resolve => {
+            setTimeout(resolve, 1000);
+        }); // cool off
 
         // reset expiry
         await TrezorConnect.setBusy({});

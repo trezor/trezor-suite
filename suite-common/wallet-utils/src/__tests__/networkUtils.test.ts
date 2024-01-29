@@ -8,19 +8,20 @@ const setMock = (mock: any) => {
                 json: () =>
                     new Promise((resolve, reject) => {
                         if (mock.reject) {
-                            return reject(mock.reject);
+                            reject(mock.reject);
+                        } else {
+                            resolve(mock.response);
                         }
-                        return resolve(mock.response);
                     }),
                 text: () =>
                     new Promise((resolve, reject) => {
                         if (mock.reject) {
-                            return reject(mock.reject);
+                            reject(mock.reject);
+                        } else if (typeof mock.response === 'string') {
+                            resolve(mock.response);
+                        } else {
+                            resolve(JSON.stringify(mock.response));
                         }
-                        if (typeof mock.response === 'string') {
-                            return resolve(mock.response);
-                        }
-                        return resolve(JSON.stringify(mock.response));
                     }),
             });
         });

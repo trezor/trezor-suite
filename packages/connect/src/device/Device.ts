@@ -332,9 +332,9 @@ export class Device extends TypedEmitter<DeviceEvents> {
                     // next time device should be called together with "Initialize" (calling "acquireDevice" from the UI)
                     await Promise.race([
                         this.getFeatures(),
-                        new Promise((_resolve, reject) =>
-                            setTimeout(() => reject(new Error('GetFeatures timeout')), 3000),
-                        ),
+                        new Promise((_resolve, reject) => {
+                            setTimeout(() => reject(new Error('GetFeatures timeout')), 3000);
+                        }),
                     ]);
                 }
             } catch (error) {

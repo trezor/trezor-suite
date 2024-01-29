@@ -83,7 +83,9 @@ workers.forEach(instance => {
             ]);
             blockchain.settings.pingTimeout = 200; // ping message will be called 0.2 sec. after subscription
             await blockchain.subscribe({ type: 'block' });
-            await new Promise(resolve => setTimeout(resolve, 500));
+            await new Promise(resolve => {
+                setTimeout(resolve, 500);
+            });
             expect(server.fixtures).toEqual([]);
         }, 7000);
 
@@ -100,7 +102,9 @@ workers.forEach(instance => {
             await blockchain.subscribe({ type: 'block' });
             await blockchain.unsubscribe({ type: 'block' });
 
-            await new Promise(resolve => setTimeout(resolve, 500));
+            await new Promise(resolve => {
+                setTimeout(resolve, 500);
+            });
             expect(server.fixtures).toEqual([]);
         }, 7000);
 
@@ -121,7 +125,9 @@ workers.forEach(instance => {
             await blockchain.subscribe({ type: 'block' });
             await blockchain.unsubscribe({ type: 'block' });
 
-            await new Promise(resolve => setTimeout(resolve, 500));
+            await new Promise(resolve => {
+                setTimeout(resolve, 500);
+            });
 
             expect(callback).toHaveBeenCalled();
             expect(server.getFixtures()!.length).toEqual(2);

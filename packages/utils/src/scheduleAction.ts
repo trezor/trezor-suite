@@ -24,8 +24,14 @@ const abortedByTimeout = () => new Error('Aborted by timeout');
 
 const resolveAfterMs = (ms: number | undefined, clear: AbortSignal) =>
     new Promise<void>((resolve, reject) => {
-        if (clear.aborted) return reject();
-        if (ms === undefined) return resolve();
+        if (clear.aborted) {
+            reject();
+            return;
+        }
+        if (ms === undefined) {
+            resolve();
+            return;
+        }
         const timeout = setTimeout(resolve, ms);
         const onClear = () => {
             clearTimeout(timeout);
@@ -37,7 +43,10 @@ const resolveAfterMs = (ms: number | undefined, clear: AbortSignal) =>
 
 const rejectAfterMs = (ms: number | undefined, reason: () => Error, clear: AbortSignal) =>
     new Promise<never>((_, reject) => {
-        if (clear.aborted) return reject();
+        if (clear.aborted) {
+            reject();
+            return;
+        }
         const timeout = ms !== undefined ? setTimeout(() => reject(reason()), ms) : undefined;
         const onClear = () => {
             clearTimeout(timeout);
@@ -49,8 +58,14 @@ const rejectAfterMs = (ms: number | undefined, reason: () => Error, clear: Abort
 
 const rejectWhenAborted = (signal: AbortSignal | undefined, clear: AbortSignal) =>
     new Promise<never>((_, reject) => {
-        if (clear.aborted) return reject();
-        if (signal?.aborted) return reject(abortedBySignal());
+        if (clear.aborted) {
+            reject();
+            return;
+        }
+        if (signal?.aborted) {
+            reject(abortedBySignal());
+            return;
+        }
         const onAbort = () => reject(abortedBySignal());
         signal?.addEventListener('abort', onAbort);
         const onClear = () => {
@@ -67,7 +82,9 @@ const resolveAction = async <T>(action: ScheduledAction<T>, clear: AbortSignal) 
     if (clear.aborted) onClear();
     clear.addEventListener('abort', onClear);
     try {
-        return await new Promise<T>(resolve => resolve(action(aborter.signal)));
+        return await new Promise<T>(resolve => {
+            resolve(action(aborter.signal));
+        });
     } finally {
         clear.removeEventListener('abort', onClear);
     }

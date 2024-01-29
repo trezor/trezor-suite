@@ -56,7 +56,9 @@ describe('TrezorConnect.authorizeCoinjoin', () => {
         expect(auth.success).toBe(true);
         expect(auth.payload).toEqual({ message: 'Coinjoin authorized' });
 
-        await new Promise(resolve => setTimeout(resolve, 11000)); // wait for auto-lock
+        await new Promise(resolve => {
+            setTimeout(resolve, 11000);
+        }); // wait for auto-lock
 
         // remove all button listeners from initTrezorConnect (common.setup)
         // DebugLink decision SHOULD NOT! be required after authorization

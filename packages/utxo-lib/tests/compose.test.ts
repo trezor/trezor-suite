@@ -20,7 +20,7 @@ describe('composeTx', () => {
             expect(tx).toEqual(result);
 
             if (tx.type === 'final') {
-                verifyTxBytes(tx, f.request.txType as any, network);
+                verifyTxBytes(tx, network, f.request.txType as any);
             }
         });
     });
@@ -83,7 +83,7 @@ describe('composeTx addresses cross-check', () => {
 
                     expect(tx.inputs.length).toEqual(f.request.utxos.length);
 
-                    verifyTxBytes(tx, txType);
+                    verifyTxBytes(tx, undefined, txType);
                 });
             });
         });

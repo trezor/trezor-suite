@@ -29,7 +29,9 @@ export class RateLimiter {
             this.queued += 1;
             this.totalDelay += this.delayMs;
             // dummy wait for this.totalDelay before we fire next request
-            await new Promise(resolve => setTimeout(resolve, this.totalDelay)); // slow down firing next request
+            await new Promise(resolve => {
+                setTimeout(resolve, this.totalDelay);
+            }); // slow down firing next request
         }
 
         this.lastFetchTimestamp = new Date().getTime();

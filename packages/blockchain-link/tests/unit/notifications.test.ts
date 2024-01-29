@@ -86,9 +86,9 @@ workers.forEach(instance => {
                     await server.sendNotification(f.notifications as any);
 
                     // wait for block event throttling
-                    await new Promise(resolve =>
-                        setTimeout(resolve, blockchain.settings.throttleBlockEvent),
-                    );
+                    await new Promise(resolve => {
+                        setTimeout(resolve, blockchain.settings.throttleBlockEvent);
+                    });
 
                     if (f.result) {
                         expect(callback).toHaveBeenCalledTimes(f.notificationsCount);

@@ -5,12 +5,12 @@ describe('promiseAllSequence', () => {
         const actionInnerProcess = jest.fn();
 
         const action = (id: number, time: number) =>
-            new Promise(resolve =>
+            new Promise(resolve => {
                 setTimeout(() => {
                     actionInnerProcess(id);
                     resolve(id);
-                }, time),
-            );
+                }, time);
+            });
 
         const actions = [() => action(1, 500), () => action(2, 300), () => action(3, 100)];
 
@@ -28,15 +28,15 @@ describe('promiseAllSequence', () => {
 
     it('one failed', async () => {
         const action = (id: number, time: number) =>
-            new Promise((resolve, reject) =>
+            new Promise((resolve, reject) => {
                 setTimeout(() => {
                     if (id === 2) {
                         reject(new Error('Foo'));
                     } else {
                         resolve(id);
                     }
-                }, time),
-            );
+                }, time);
+            });
 
         const actions = [() => action(1, 500), () => action(2, 300), () => action(3, 100)];
 

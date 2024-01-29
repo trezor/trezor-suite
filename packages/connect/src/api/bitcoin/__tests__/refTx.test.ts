@@ -36,16 +36,24 @@ describe('core/methods/tx/refTx', () => {
 
         // zcash v5
         expect(
-            requireReferencedTransactions([], { version: 4 }, { shortcut: 'ZEC' } as any),
+            requireReferencedTransactions([], { shortcut: 'ZEC' } as any, {
+                version: 4,
+            }),
         ).toEqual(true);
         expect(
-            requireReferencedTransactions([], { version: 4 }, { shortcut: 'TAZ' } as any),
+            requireReferencedTransactions([], { shortcut: 'TAZ' } as any, {
+                version: 4,
+            }),
         ).toEqual(true);
         expect(
-            requireReferencedTransactions([], { version: 5 }, { shortcut: 'ZEC' } as any),
+            requireReferencedTransactions([], { shortcut: 'ZEC' } as any, {
+                version: 5,
+            }),
         ).toEqual(false);
         expect(
-            requireReferencedTransactions([], { version: 5 }, { shortcut: 'TAZ' } as any),
+            requireReferencedTransactions([], { shortcut: 'TAZ' } as any, {
+                version: 5,
+            }),
         ).toEqual(false);
     });
 

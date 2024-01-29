@@ -152,7 +152,9 @@ export abstract class BaseWebsocket<T extends EventMap> extends TypedEmitter<T &
         }
 
         if (this.ws?.readyState === WebSocket.CLOSING) {
-            await new Promise<void>(resolve => this.emitter.once('disconnected', resolve));
+            await new Promise<void>(resolve => {
+                this.emitter.once('disconnected', resolve);
+            });
         }
 
         // create deferred promise

@@ -192,8 +192,8 @@ export class TxWeightCalculator {
 
 export function verifyTxBytes(
     tx: ComposeResultFinal<ComposeInput, ComposeOutput, ComposeChangeAddress>,
-    txType: Exclude<CoinSelectPaymentType, 'p2wsh'> = 'p2pkh',
     network?: Network,
+    txType: Exclude<CoinSelectPaymentType, 'p2wsh'> = 'p2pkh',
 ) {
     const calc = new TxWeightCalculator();
     tx.inputs.forEach(() => {

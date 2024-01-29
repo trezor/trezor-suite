@@ -50,7 +50,7 @@ export const initBackgroundInBrowser = () => {
                         | { type: 'descriptors'; payload: Descriptor[] }
                     >,
                 ) => {
-                    if ('type' in e?.data) {
+                    if (e && 'type' in e.data) {
                         if (e.data.type === 'descriptors') {
                             onDescriptorsCallback(e.data.payload);
                         }

@@ -32,7 +32,9 @@ describe('TrezorConnect override param', () => {
                 expect(response.payload).toMatchObject({ code: 'Method_Override' });
             });
 
-            await new Promise(resolve => setTimeout(resolve, delay));
+            await new Promise(resolve => {
+                setTimeout(resolve, delay);
+            });
 
             const address = await TrezorConnect.getAddress({
                 path: "m/44'/1'/0'/0/0",
@@ -40,7 +42,9 @@ describe('TrezorConnect override param', () => {
                 showOnTrezor: false,
             });
             expect(address.success).toBe(true);
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            await new Promise(resolve => {
+                setTimeout(resolve, 1000);
+            });
         });
     }
 });

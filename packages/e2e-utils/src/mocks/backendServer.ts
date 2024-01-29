@@ -94,7 +94,9 @@ export class BackendWebsocketServerMock extends WebSocket.Server {
     }
 
     close() {
-        return new Promise(resolve => super.close.call(this, resolve));
+        return new Promise(resolve => {
+            super.close.call(this, resolve);
+        });
     }
 
     private processRequest(client: any, data: any) {

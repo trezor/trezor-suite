@@ -37,7 +37,10 @@ export interface Firmwares {
 
 /* eslint-disable no-await-in-loop,no-async-promise-executor */
 
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+const delay = (ms: number) =>
+    new Promise(resolve => {
+        setTimeout(resolve, ms);
+    });
 
 class TrezorUserEnvLinkClass extends EventEmitter {
     messageID: number;
@@ -294,7 +297,8 @@ class TrezorUserEnvLinkClass extends EventEmitter {
                     const res = await fetch(USER_ENV_URL.DASHBOARD);
                     if (res.status === 200) {
                         console.log('trezor-user-env is online');
-                        return resolve();
+                        resolve();
+                        return;
                     }
                 } catch (err) {
                     error = err.message;

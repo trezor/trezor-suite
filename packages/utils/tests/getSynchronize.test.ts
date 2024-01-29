@@ -1,6 +1,9 @@
 import { getSynchronize } from '../src/getSynchronize';
 
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+const delay = (ms: number) =>
+    new Promise(resolve => {
+        setTimeout(resolve, ms);
+    });
 
 const fail = (reason: string) => {
     throw new Error(reason);

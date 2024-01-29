@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-extraneous-dependencies, import/extensions
-const { rules: airbnbRules } = require('eslint-config-airbnb-base/rules/style.js');
+const { rules: airbnbRules } = require('eslint-config-airbnb-base/rules/style');
 
 module.exports = {
     root: true,
