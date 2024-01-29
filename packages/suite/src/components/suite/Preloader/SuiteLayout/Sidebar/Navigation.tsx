@@ -15,7 +15,8 @@ const navItems: Array<NavigationItemProps & { CustomComponent?: FC<NavigationIte
     {
         nameId: 'TR_DASHBOARD',
         icon: 'home',
-        route: 'suite-index',
+        goToRoute: 'suite-index',
+        routes: ['suite-index'],
     },
     {
         nameId: 'TR_NOTIFICATIONS',
@@ -25,7 +26,8 @@ const navItems: Array<NavigationItemProps & { CustomComponent?: FC<NavigationIte
     {
         nameId: 'TR_SETTINGS',
         icon: 'settings',
-        route: 'settings-index',
+        goToRoute: 'settings-index',
+        routes: ['settings-index', 'settings-device', 'settings-coins', 'settings-debug'],
         dataTest: '@suite/menu/settings',
     },
 ];

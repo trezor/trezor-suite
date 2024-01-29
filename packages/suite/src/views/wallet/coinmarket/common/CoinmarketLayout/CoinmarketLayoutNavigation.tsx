@@ -86,7 +86,7 @@ export const CoinmarketLayoutNavigation = () => {
             nameId={title}
             isActive={routeName === route}
             icon={icon}
-            route={route}
+            goToRoute={route}
             preserveParams
         />
     );
@@ -106,7 +106,7 @@ export const CoinmarketLayoutNavigation = () => {
                 <NavListItem
                     key="wallet-coinmarket-savings"
                     isActive={!!routeName?.startsWith('wallet-coinmarket-savings')}
-                    route="wallet-coinmarket-savings-setup"
+                    goToRoute="wallet-coinmarket-savings-setup"
                     icon="clock"
                     nameId="TR_NAV_SAVINGS"
                     dataTest="@coinmarket/menu/wallet-coinmarket-savings-setup"

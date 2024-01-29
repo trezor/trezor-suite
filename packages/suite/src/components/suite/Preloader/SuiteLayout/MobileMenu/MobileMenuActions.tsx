@@ -7,13 +7,13 @@ import type { Route } from '@suite-common/suite-types';
 import { setDiscreetMode } from 'src/actions/settings/walletSettingsActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite';
-import { findRouteByName } from 'src/utils/suite/router';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useGuide } from 'src/hooks/guide/useGuide';
 import { selectIsDiscreteModeActive } from 'src/reducers/wallet/settingsReducer';
 
 import { MobileActionItem } from './MobileActionItem';
 import { useEnabledBackends } from '../utils';
+import { selectRouteName } from 'src/reducers/suite/routerReducer';
 
 const MobileWrapper = styled.div`
     display: flex;
@@ -26,9 +26,9 @@ interface MobileMenuActionsProps {
 }
 
 export const MobileMenuActions = ({ closeMobileNavigation }: MobileMenuActionsProps) => {
-    const activeApp = useSelector(state => state.router.app);
     const notifications = useSelector(state => state.notifications);
     const discreetMode = useSelector(selectIsDiscreteModeActive);
+    const activeRoute = useSelector(selectRouteName);
     const allowPrerelease = useSelector(state => state.desktopUpdate.allowPrerelease);
     const enabledBackends = useEnabledBackends();
     const dispatch = useDispatch();
@@ -45,10 +45,8 @@ export const MobileMenuActions = ({ closeMobileNavigation }: MobileMenuActionsPr
         openGuide();
     };
     const toggleDiscreetMode = () => dispatch(setDiscreetMode(!discreetMode));
-    const getIfRouteIsActive = (route: Route['name']) => {
-        const routeObj = findRouteByName(route);
-        return routeObj ? routeObj.app === activeApp : false;
-    };
+    const getIfTabIsActive = (routes: Route['name'][]): boolean =>
+        routes?.some(route => route === activeRoute);
 
     const unseenNotifications = useMemo(() => notifications.some(n => !n.seen), [notifications]);
 
@@ -82,7 +80,7 @@ export const MobileMenuActions = ({ closeMobileNavigation }: MobileMenuActionsPr
                 label={<Translation id="TR_NOTIFICATIONS" />}
                 data-test="@suite/menu/notifications-index"
                 onClick={() => action('notifications-index')}
-                isActive={getIfRouteIsActive('notifications-index')}
+                isActive={getIfTabIsActive(['notifications-index'])}
                 icon="NOTIFICATION"
                 indicator={unseenNotifications ? 'alert' : undefined}
             />
@@ -98,7 +96,12 @@ export const MobileMenuActions = ({ closeMobileNavigation }: MobileMenuActionsPr
                 label={<Translation id="TR_SETTINGS" />}
                 data-test="@suite/menu/settings-index"
                 onClick={() => action('settings-index')}
-                isActive={getIfRouteIsActive('settings-index')}
+                isActive={getIfTabIsActive([
+                    'settings-index',
+                    'settings-device',
+                    'settings-coins',
+                    'settings-debug',
+                ])}
                 icon="SETTINGS"
             />
         </MobileWrapper>
