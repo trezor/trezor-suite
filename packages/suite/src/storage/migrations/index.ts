@@ -706,14 +706,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
 
     if (oldVersion < 41) {
         await updateAll(transaction, 'metadata', metadata => {
-            // although selectedProvider is added in version 39 I saw a report by QA that
-            // migration was trying to set 'passwords' of undefined here.
-            if (!metadata.selectedProvider) {
-                metadata.selectedProvider = { labels: '', passwords: '' };
-            }
-            if (!metadata.selectedProvider.passwords) {
-                metadata.selectedProvider.passwords = '';
-            }
+            metadata.selectedProvider.passwords = '';
             return metadata;
         });
     }
@@ -724,5 +717,19 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             // @ts-expect-error fiatRates doesn't exists anymore
             db.deleteObjectStore('fiatRates');
         }
+    }
+
+    if (oldVersion < 43) {
+        await updateAll(transaction, 'metadata', metadata => {
+            // although selectedProvider is added in version 39 I saw a report by QA that
+            // migration was trying to set 'passwords' of undefined in migration 41.
+            if (!metadata.selectedProvider) {
+                metadata.selectedProvider = { labels: '', passwords: '' };
+            }
+            if (!metadata.selectedProvider.passwords) {
+                metadata.selectedProvider.passwords = '';
+            }
+            return metadata;
+        });
     }
 };
