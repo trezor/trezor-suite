@@ -9118,6 +9118,7 @@ __metadata:
     jest: "npm:29.5.0"
     prettier: "npm:^3.0.3"
     ts-mixer: "npm:^6.0.3"
+    tsx: "npm:^4.6.2"
     typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
