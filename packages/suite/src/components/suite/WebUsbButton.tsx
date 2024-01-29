@@ -3,7 +3,7 @@ import { ButtonProps, Button } from '@trezor/components';
 import { Translation } from './Translation';
 
 export const WebUsbButton = (props: Omit<ButtonProps, 'children'>) => (
-    <div data-test="TR_CHECK_FOR_DEVICES">
+    <div data-test="web-usb-button">
         <Button
             {...props}
             icon="SEARCH"

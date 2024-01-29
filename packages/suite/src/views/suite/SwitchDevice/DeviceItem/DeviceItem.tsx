@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { AnimatePresence, motion } from 'framer-motion';
-import styled, { css, useTheme } from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 import { variables, Icon, Image, motionAnimation, DeviceAnimation } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/connect';
 import * as deviceUtils from '@suite-common/suite-utils';
@@ -137,7 +137,6 @@ export const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: Dev
 
     const theme = useTheme();
     const [isExpanded, setIsExpanded] = useState(true);
-    const [animateArrow, setAnimateArrow] = useState(false);
 
     const deviceStatus = deviceUtils.getStatus(device);
     const deviceModelInternal = device.features?.internal_model;
@@ -235,10 +234,7 @@ export const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: Dev
                                 color={theme.TYPE_LIGHT_GREY}
                                 hoverColor={theme.TYPE_LIGHTER_GREY}
                                 isActive={!isExpanded}
-                                onClick={() => {
-                                    setIsExpanded(!isExpanded);
-                                    setAnimateArrow(true);
-                                }}
+                                onClick={() => setIsExpanded(!isExpanded)}
                             />
                         )}
                     </DeviceActions>
