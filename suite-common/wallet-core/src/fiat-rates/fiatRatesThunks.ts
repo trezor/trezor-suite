@@ -8,11 +8,12 @@ import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { Account, TickerId, RateType, Timestamp } from '@suite-common/wallet-types';
 import { isTestnet } from '@suite-common/wallet-utils';
 import { AccountTransaction } from '@trezor/connect';
-import { networks } from '@suite-common/wallet-config';
+import { getNetworkFeatures, networks } from '@suite-common/wallet-config';
 
 import { fiatRatesActionsPrefix, REFETCH_INTERVAL } from './fiatRatesConstants';
 import { selectTickersToBeUpdated, selectTransactionsWithMissingRates } from './fiatRatesSelectors';
 import { transactionsActions } from '../transactions/transactionsActions';
+import { selectSpecificTokenDefinition } from '../token-definitions/tokenDefinitionsSelectors';
 
 type UpdateTxsFiatRatesThunkPayload = {
     account: Account;
@@ -86,7 +87,23 @@ type UpdateCurrentFiatRatesThunkPayload = {
 
 export const updateFiatRatesThunk = createThunk(
     `${fiatRatesActionsPrefix}/updateFiatRates`,
-    async ({ ticker, localCurrency, rateType }: UpdateCurrentFiatRatesThunkPayload) => {
+    async (
+        { ticker, localCurrency, rateType }: UpdateCurrentFiatRatesThunkPayload,
+        { getState },
+    ) => {
+        const networkFeatures = getNetworkFeatures(ticker.symbol);
+        if (ticker.tokenAddress && networkFeatures.includes('token-definitions')) {
+            const tokenDefinition = selectSpecificTokenDefinition(
+                getState(),
+                ticker.symbol,
+                ticker.tokenAddress,
+            );
+
+            if (!tokenDefinition?.isTokenKnown) {
+                return;
+            }
+        }
+
         const rate = await fetchFn[rateType](ticker, localCurrency);
 
         if (!rate) {

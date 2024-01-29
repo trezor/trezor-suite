@@ -569,3 +569,7 @@ export const getEthereumTypeNetworkSymbols = () =>
 export const getTestnetSymbols = () => getTestnets().map(n => n.symbol);
 
 export const getNetworkType = (symbol: NetworkSymbol) => networks[symbol]?.networkType;
+
+// takes into account just network features, not features for specific accountTypes
+export const getNetworkFeatures = (symbol: NetworkSymbol) =>
+    networks[symbol]?.features as unknown as NetworkFeature;
