@@ -81,7 +81,7 @@ export const StakeEthBanner = () => {
                             <Translation id="TR_STAKE_ETH_EARN_REPEAT" />
                         </Title>
                         <P weight="medium">
-                            <Translation id="TR_STAKE_ANY_AMOUNT_ETH" />
+                            <Translation id="TR_STAKE_ANY_AMOUNT_ETH" values={{ apyPercent: 5 }} />
                         </P>
                     </Text>
                 </Left>

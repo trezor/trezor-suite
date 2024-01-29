@@ -22,7 +22,6 @@ import {
 } from 'src/types/wallet/stakeForms';
 import { mapTestnetSymbol } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { useFormDraft } from './useFormDraft';
-import { AmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
 
 import { fromWei } from 'web3-utils';
 import { useStakeCompose } from './form/useStakeCompose';
@@ -37,6 +36,7 @@ import {
     PrecomposedTransactionFinal,
     StakeFormState,
     StakeContextValues,
+    AmountLimitsString,
 } from '@suite-common/wallet-types';
 import { getEthNetworkForWalletSdk, getStakeFormsDefaultValues } from 'src/utils/suite/stake';
 import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
@@ -66,10 +66,10 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
     // TODO: Implement fee switcher
     const selectedFee = 'normal';
 
-    const amountLimits: AmountLimits = {
+    const amountLimits: AmountLimitsString = {
         currency: symbol,
-        minCrypto: MIN_ETH_AMOUNT_FOR_STAKING.toNumber(),
-        maxCrypto: Number(account.formattedBalance),
+        minCrypto: MIN_ETH_AMOUNT_FOR_STAKING.toString(),
+        maxCrypto: account.formattedBalance,
     };
 
     const defaultValues = useMemo(() => {
@@ -169,7 +169,6 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
     const [isAdviceForWithdrawalWarningShown, setIsAdviceForWithdrawalWarningShown] =
         useState(false);
 
-    // TODO: Add more extra fee to ensure tx success when staking logic is implemented
     const composedFee = useMemo(() => {
         const transactionInfo = composedLevels?.[selectedFee];
         return transactionInfo !== undefined && transactionInfo.type !== 'error'
@@ -198,13 +197,15 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
         async (amount: string) => {
             setIsAmountForWithdrawalWarningShown(false);
             setIsAdviceForWithdrawalWarningShown(false);
-            if (!currentRate) return;
 
-            const fiatValue = toFiatCurrency(amount, localCurrency, {
-                [currentRate.locale]: currentRate?.rate,
-            });
+            if (currentRate) {
+                const fiatValue = toFiatCurrency(amount, localCurrency, {
+                    [currentRate.locale]: currentRate?.rate,
+                });
+                setValue(FIAT_INPUT, fiatValue || '', { shouldValidate: true });
+            }
+
             setValue('setMaxOutputId', undefined, { shouldDirty: true });
-            setValue(FIAT_INPUT, fiatValue || '', { shouldValidate: true });
             setValue(OUTPUT_AMOUNT, amount || '', { shouldDirty: true });
             await composeRequest(CRYPTO_INPUT);
 
@@ -383,6 +384,7 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
         isConfirmModalOpen,
         closeConfirmModal,
         signTx,
+        currentRate,
     };
 };
 

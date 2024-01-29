@@ -7,6 +7,9 @@
         { "path": "../suite-config" },
         { "path": "../wallet-config" },
         { "path": "../wallet-constants" },
+        {
+            "path": "../../packages/blockchain-link-types"
+        },
         { "path": "../../packages/connect" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" }
