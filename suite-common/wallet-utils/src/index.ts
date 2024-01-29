@@ -16,5 +16,6 @@ export * from './settingsUtils';
 export * from './tokenUtils';
 export * from './transactionUtils';
 export * from './validationUtils';
+export * from './antiFraud';
 
 export { analyzeTransactions as analyzeTransactionsFixtures } from './__fixtures__/transactionUtils';

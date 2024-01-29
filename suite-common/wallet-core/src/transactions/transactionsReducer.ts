@@ -1,8 +1,13 @@
 import { memoizeWithArgs } from 'proxy-memoize';
 
 import { Account, WalletAccountTransaction, AccountKey } from '@suite-common/wallet-types';
-import { findTransaction, getConfirmations, isPending } from '@suite-common/wallet-utils';
-import { getIsZeroValuePhishing } from '@suite-common/suite-utils';
+import {
+    findTransaction,
+    getConfirmations,
+    isPending,
+    getIsZeroValuePhishing,
+    getIsPhishingTransaction,
+} from '@suite-common/wallet-utils';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 
 import { accountsActions } from '../accounts/accountsActions';
@@ -11,6 +16,8 @@ import {
     selectBlockchainHeightBySymbol,
     BlockchainRootState,
 } from '../blockchain/blockchainReducer';
+import { selectTokenDefinitions } from '../token-definitions/tokenDefinitionsSelectors';
+import { TokenDefinitionsRootState } from '../token-definitions/tokenDefinitionsTypes';
 
 export interface TransactionsState {
     isLoading: boolean;
@@ -280,4 +287,15 @@ export const selectIsTransactionZeroValuePhishing = (
     if (!transaction) return false;
 
     return getIsZeroValuePhishing(transaction);
+};
+
+export const selectIsPhishingTransaction = (
+    state: TokenDefinitionsRootState,
+    transaction: WalletAccountTransaction,
+) => {
+    const tokenDefinitions = selectTokenDefinitions(state, transaction.symbol);
+
+    if (!tokenDefinitions) return false;
+
+    return getIsPhishingTransaction(transaction, tokenDefinitions);
 };

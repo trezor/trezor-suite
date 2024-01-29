@@ -28,11 +28,13 @@ interface BaseTransfer {
 interface TokenTransferProps extends BaseTransfer {
     transfer: ArrayElement<WalletAccountTransaction['tokens']>;
     transaction: WalletAccountTransaction;
+    isPhishingTransaction: boolean;
 }
 
 export const TokenTransfer = ({
     transfer,
     transaction,
+    isPhishingTransaction,
     ...baseLayoutProps
 }: TokenTransferProps) => {
     const operation = getTxOperation(transfer.type);
@@ -43,7 +45,7 @@ export const TokenTransfer = ({
             {...baseLayoutProps}
             addressLabel={
                 <TokenTransferAddressLabel
-                    isZeroValuePhishing={isZeroValuePhishing}
+                    isPhishingTransaction={isPhishingTransaction}
                     transfer={transfer}
                     type={transaction.type}
                 />
@@ -109,7 +111,7 @@ interface TransactionTargetProps extends BaseTransfer {
     accountKey: string;
     accountMetadata?: AccountLabels;
     isActionDisabled?: boolean;
-    isZeroValuePhishing: boolean;
+    isPhishingTransaction: boolean;
 }
 
 export const TransactionTarget = ({
@@ -118,7 +120,7 @@ export const TransactionTarget = ({
     accountMetadata,
     accountKey,
     isActionDisabled,
-    isZeroValuePhishing,
+    isPhishingTransaction,
     ...baseLayoutProps
 }: TransactionTargetProps) => {
     const dispatch = useDispatch();

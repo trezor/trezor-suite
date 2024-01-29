@@ -2,7 +2,6 @@ import { useState, useMemo } from 'react';
 import styled from 'styled-components';
 import { variables, Button } from '@trezor/components';
 import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';
-import { getIsZeroValuePhishing } from '@suite-common/suite-utils';
 import {
     isPending,
     findChainedTransactions,
@@ -14,6 +13,7 @@ import {
     selectAccountByKey,
     selectTransactionConfirmations,
     selectAllPendingTransactions,
+    selectIsPhishingTransaction,
 } from '@suite-common/wallet-core';
 import { Translation, Modal, TrezorLink } from 'src/components/suite';
 import { WalletAccountTransaction } from 'src/types/wallet';
@@ -32,7 +32,7 @@ const StyledModal = styled(Modal)`
 
 const PhishingBanner = styled.div`
     margin-bottom: 6px;
-    padding: 6px 0;
+    padding: 6px 10px;
     border-radius: ${borders.radii.xs};
     background: ${({ theme }) => theme.BG_RED};
     color: ${({ theme }) => theme.TYPE_WHITE};
@@ -42,6 +42,7 @@ const PhishingBanner = styled.div`
 
 const HelpLink = styled(TrezorLink)`
     color: ${({ theme }) => theme.TYPE_WHITE};
+    font-size: ${variables.FONT_SIZE.SMALL};
 `;
 
 const SectionActions = styled.div`
@@ -103,7 +104,7 @@ export const TxDetailModal = ({ tx, rbfForm, onCancel }: TxDetailModalProps) => 
     );
     const account = useSelector(state => selectAccountByKey(state, accountKey));
     const network = account && getAccountNetwork(account);
-    const isZeroValuePhishing = getIsZeroValuePhishing(tx);
+    const isPhishingTransaction = useSelector(state => selectIsPhishingTransaction(state, tx));
 
     return (
         <StyledModal
@@ -111,7 +112,7 @@ export const TxDetailModal = ({ tx, rbfForm, onCancel }: TxDetailModalProps) => 
             onCancel={onCancel}
             heading={<Translation id="TR_TRANSACTION_DETAILS" />}
         >
-            {isZeroValuePhishing && (
+            {isPhishingTransaction && (
                 <PhishingBanner>
                     <Translation
                         id="TR_ZERO_PHISHING_BANNER"
