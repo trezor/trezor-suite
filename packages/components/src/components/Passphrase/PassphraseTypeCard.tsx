@@ -118,7 +118,6 @@ const Actions = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
-    margin-top: ${spacingsPx.md};
 `;
 
 const ActionButton = styled(Button)`
@@ -334,6 +333,7 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardProps) => {
                                 })}
                                 onChange={onPassphraseChange}
                                 value={displayValue}
+                                hasBottomPadding={false}
                                 innerRef={ref}
                                 bottomText={
                                     isTooLong ? (
