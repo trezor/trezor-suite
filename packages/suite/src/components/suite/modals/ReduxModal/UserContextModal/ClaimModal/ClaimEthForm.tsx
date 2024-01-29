@@ -4,9 +4,10 @@ import { Button, P, variables, Warning } from '@trezor/components';
 import { Translation, FiatValue, FormattedCryptoAmount } from 'src/components/suite';
 import { FeesInfo } from 'src/components/wallet/FeesInfo';
 import { mapTestnetSymbol } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { useSelector } from 'src/hooks/suite';
 import { useClaimEthFormContext } from 'src/hooks/wallet/useClaimEthForm';
+import { selectSelectedAccountEverstakeStakingPool } from 'src/reducers/wallet/selectedAccountReducer';
 import { CRYPTO_INPUT } from 'src/types/wallet/stakeForms';
-import { useClaim } from 'src/hooks/wallet/useClaim';
 
 const AmountInfo = styled.div`
     display: flex;
@@ -62,16 +63,11 @@ export const ClaimEthForm = () => {
     // used instead of formState.isValid, which is sometimes returning false even if there are no errors
     const formIsValid = Object.keys(errors).length === 0;
     const transactionInfo = composedLevels?.[selectedFee];
-    const {
-        claim: { readyForClaim },
-    } = useClaim();
-
-    // TODO: Replace with real data.
-    const claimingPeriod = 'in the next block';
+    const { claimableAmount = '0' } = useSelector(selectSelectedAccountEverstakeStakingPool) ?? {};
 
     useEffect(() => {
-        onClaimChange(readyForClaim.toString());
-    }, [onClaimChange, readyForClaim]);
+        onClaimChange(claimableAmount);
+    }, [onClaimChange, claimableAmount]);
 
     return (
         <form onSubmit={handleSubmit(signTx)}>
@@ -81,11 +77,11 @@ export const ClaimEthForm = () => {
                 <TxtRight>
                     <P weight="medium">
                         <GreenTxt>
-                            <FiatValue amount={readyForClaim.toString()} symbol={mappedSymbol} />
+                            <FiatValue amount={claimableAmount} symbol={mappedSymbol} />
                         </GreenTxt>
                     </P>
                     <GreyP size="small" weight="medium">
-                        <FormattedCryptoAmount value={readyForClaim.toString()} symbol={symbol} />
+                        <FormattedCryptoAmount value={claimableAmount} symbol={symbol} />
                     </GreyP>
                 </TxtRight>
             </AmountInfo>
@@ -105,7 +101,7 @@ export const ClaimEthForm = () => {
                     <Translation id="TR_STAKE_CLAIMING_PERIOD" />
                 </GreyP>
 
-                <div>{claimingPeriod}</div>
+                <Translation id="TR_STAKE_CLAIM_IN_NEXT_BLOCK" />
             </ClaimingPeriodWrapper>
 
             <Button

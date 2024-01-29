@@ -8553,7 +8553,7 @@ export default defineMessages({
     TR_STAKE_ANY_AMOUNT_ETH: {
         id: 'TR_STAKE_ANY_AMOUNT_ETH',
         defaultMessage:
-            'Stake any amount and watch that sweet ETH roll in. With up to 5% APY, your rewards earn too!',
+            'Stake any amount and watch that sweet ETH roll in. With up to {apyPercent}% APY, your rewards earn too!',
     },
     TR_STAKE_ETH_LEARN_MORE: {
         id: 'TR_STAKE_ETH_LEARN_MORE',
@@ -8640,13 +8640,13 @@ export default defineMessages({
         id: 'TR_STAKE_APY',
         defaultMessage: 'Annual Percentage Yield',
     },
-    TR_STAKE_DAYS_TO: {
-        id: 'TR_STAKE_DAYS_TO',
+    TR_STAKE_DAYS: {
+        id: 'TR_STAKE_DAYS',
         defaultMessage: '{days} days',
     },
-    TR_STAKE_NEXT_PAYOUYT: {
-        id: 'TR_STAKE_NEXT_PAYOUYT',
-        defaultMessage: 'Next reward payout • Approx. {fiatAmount}',
+    TR_STAKE_NEXT_PAYOUT: {
+        id: 'TR_STAKE_NEXT_PAYOUT',
+        defaultMessage: 'Next reward payout',
     },
     TR_STAKE_STAKE_MORE: {
         id: 'TR_STAKE_STAKE_MORE',
@@ -8665,9 +8665,9 @@ export default defineMessages({
         id: 'TR_STAKE_REWARDS',
         defaultMessage: 'Rewards',
     },
-    TR_STAKE_ETH_AT_THE_DOOR: {
-        id: 'TR_STAKE_ETH_AT_THE_DOOR',
-        defaultMessage: 'Your {symbol} is at the door, waiting to join the staking pool.',
+    TR_STAKE_WAITING_TO_BE_ADDED: {
+        id: 'TR_STAKE_WAITING_TO_BE_ADDED',
+        defaultMessage: 'Your {symbol} is waiting to be added to the staking pool.',
     },
     TR_TX_CONFIRMED: {
         id: 'TR_TX_CONFIRMED',
@@ -8759,6 +8759,23 @@ export default defineMessages({
     },
     TR_STAKE_LAST_STAKE_REQUEST_STATE: {
         id: 'TR_STAKE_LAST_STAKE_REQUEST_STATE',
-        defaultMessage: 'Last stake request state',
+        defaultMessage: 'Last stake request',
+    },
+    TR_STAKE_UNSTAKING: {
+        id: 'TR_STAKE_UNSTAKING',
+        defaultMessage: 'Unstaking',
+    },
+    TR_STAKE_CAN_CLAIM_WARNING: {
+        id: 'TR_STAKE_CAN_CLAIM_WARNING',
+        defaultMessage:
+            'You can already claim {amount} {symbol}. {br}Please claim or wait until new unstake is processed',
+    },
+    TOAST_SUCCESSFUL_CLAIM: {
+        id: 'TOAST_SUCCESSFUL_CLAIM',
+        defaultMessage: '{symbol} claimed successfully',
+    },
+    TR_STAKE_CLAIM_IN_NEXT_BLOCK: {
+        id: 'TR_STAKE_CLAIM_IN_NEXT_BLOCK',
+        defaultMessage: 'in the next block',
     },
 });

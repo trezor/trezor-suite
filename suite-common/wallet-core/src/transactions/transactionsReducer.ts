@@ -13,6 +13,7 @@ import {
     isClaimTx,
     isStakeTx,
     isStakeTypeTx,
+    isUnstakeTx,
 } from '@suite-common/suite-utils';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 
@@ -324,6 +325,14 @@ export const selectAccountStakeTransactions = (
 ) => {
     const transactions = selectAccountTransactions(state, accountKey);
     return transactions.filter(tx => isStakeTx(tx.ethereumSpecific?.parsedData?.methodId));
+};
+
+export const selectAccountUnstakeTransactions = (
+    state: TransactionsRootState,
+    accountKey: AccountKey,
+) => {
+    const transactions = selectAccountTransactions(state, accountKey);
+    return transactions.filter(tx => isUnstakeTx(tx.ethereumSpecific?.parsedData?.methodId));
 };
 
 export const selectAccountClaimTransactions = (

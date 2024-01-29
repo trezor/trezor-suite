@@ -2,9 +2,12 @@ import styled from 'styled-components';
 import { Button, P, variables, Warning } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { FeesInfo } from 'src/components/wallet/FeesInfo';
+import { useSelector } from 'src/hooks/suite';
 import { useUnstakeEthFormContext } from 'src/hooks/wallet/useUnstakeEthForm';
-import { Options } from './Options';
+import { useValidatorsQueue } from 'src/hooks/wallet/useValidatorsQueue';
+import { selectSelectedAccountEverstakeStakingPool } from 'src/reducers/wallet/selectedAccountReducer';
 import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/wallet/stakeForms';
+import { Options } from './Options';
 
 const GreyP = styled(P)`
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
@@ -19,9 +22,18 @@ const MaxWidthDivider = styled.div`
 `;
 
 const StyledWarning = styled(Warning)`
-    margin-top: 12px;
-    color: ${({ theme }) => theme.TYPE_RED};
     justify-content: flex-start;
+`;
+
+const StyledCriticalWarning = styled(StyledWarning)`
+    color: ${({ theme }) => theme.TYPE_RED};
+`;
+
+const WarningsWrapper = styled.div`
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 `;
 
 const UpToDaysWrapper = styled.div`
@@ -35,8 +47,10 @@ const UpToDaysWrapper = styled.div`
 `;
 
 export const UnstakeEthForm = () => {
-    // TODO: Replace with real data
-    const unstakingPeriod = 7;
+    const {
+        validatorsQueue: { validatorWithdrawTime },
+    } = useValidatorsQueue();
+    const unstakingPeriod = Math.round(validatorWithdrawTime / 60 / 60 / 24);
 
     const {
         account,
@@ -55,6 +69,9 @@ export const UnstakeEthForm = () => {
     const formIsValid = Object.keys(errors).length === 0;
     const transactionInfo = composedLevels?.[selectedFee];
 
+    const { canClaim = false, claimableAmount = '0' } =
+        useSelector(selectSelectedAccountEverstakeStakingPool) ?? {};
+
     return (
         <form onSubmit={handleSubmit(signTx)}>
             <Options symbol={symbol} />
@@ -67,20 +84,41 @@ export const UnstakeEthForm = () => {
                 helperText={<Translation id="TR_STAKE_PAID_FROM_BALANCE" />}
             />
 
-            {errors[CRYPTO_INPUT] && (
-                <StyledWarning variant="critical">{errors[CRYPTO_INPUT]?.message}</StyledWarning>
-            )}
+            <WarningsWrapper>
+                {errors[CRYPTO_INPUT] && (
+                    <StyledCriticalWarning variant="critical">
+                        {errors[CRYPTO_INPUT]?.message}
+                    </StyledCriticalWarning>
+                )}
+
+                {canClaim && (
+                    <StyledWarning variant="info">
+                        <Translation
+                            id="TR_STAKE_CAN_CLAIM_WARNING"
+                            values={{
+                                amount: claimableAmount,
+                                symbol: symbol.toUpperCase(),
+                                br: <br />,
+                            }}
+                        />
+                    </StyledWarning>
+                )}
+            </WarningsWrapper>
 
             <UpToDaysWrapper>
-                <GreyP weight="medium">
-                    <Translation id="TR_STAKE_UNSTAKING_PERIOD" />
-                </GreyP>
-                <Translation
-                    id="TR_UP_TO_DAYS"
-                    values={{
-                        days: unstakingPeriod,
-                    }}
-                />
+                {!Number.isNaN(unstakingPeriod) && (
+                    <>
+                        <GreyP weight="medium">
+                            <Translation id="TR_STAKE_UNSTAKING_PERIOD" />
+                        </GreyP>
+                        <Translation
+                            id="TR_UP_TO_DAYS"
+                            values={{
+                                days: unstakingPeriod,
+                            }}
+                        />
+                    </>
+                )}
             </UpToDaysWrapper>
 
             <Button

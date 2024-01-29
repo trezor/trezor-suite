@@ -10,7 +10,7 @@ import { useStakeEthFormContext } from 'src/hooks/wallet/useStakeEthForm';
 import {
     validateDecimals,
     validateInteger,
-    validateLimits,
+    validateLimitsBigNum,
     validateMin,
     validateReserveOrBalance,
 } from 'src/utils/suite/validation';
@@ -54,6 +54,7 @@ export const Inputs = () => {
         localCurrency,
         isAmountForWithdrawalWarningShown,
         isAdviceForWithdrawalWarningShown,
+        currentRate,
     } = useStakeEthFormContext();
 
     const cryptoValue = getValues(CRYPTO_INPUT);
@@ -77,7 +78,7 @@ export const Inputs = () => {
             reserveOrBalance: validateReserveOrBalance(translationString, {
                 account,
             }),
-            limits: validateLimits(translationString, {
+            limits: validateLimitsBigNum(translationString, {
                 amountLimits,
                 formatter: CryptoAmountFormatter,
             }),
@@ -86,22 +87,26 @@ export const Inputs = () => {
 
     return (
         <VStack>
-            <NumberInput
-                noTopLabel
-                name={FIAT_INPUT}
-                control={control}
-                rules={fiatInputRules}
-                maxLength={formInputsMaxLength.fiat}
-                innerAddon={<InputAddon>{localCurrency}</InputAddon>}
-                bottomText={errors[FIAT_INPUT]?.message}
-                inputState={getInputState(fiatError || cryptoError, fiatValue)}
-                onChange={value => {
-                    onFiatAmountChange(value);
-                }}
-            />
+            {currentRate && (
+                <>
+                    <NumberInput
+                        noTopLabel
+                        name={FIAT_INPUT}
+                        control={control}
+                        rules={fiatInputRules}
+                        maxLength={formInputsMaxLength.fiat}
+                        innerAddon={<InputAddon>{localCurrency}</InputAddon>}
+                        bottomText={errors[FIAT_INPUT]?.message}
+                        inputState={getInputState(fiatError || cryptoError, fiatValue)}
+                        onChange={value => {
+                            onFiatAmountChange(value);
+                        }}
+                    />
 
-            {/* TODO: Add new transfer icon. Export from Figma isn't handled as is it should by the strokes to fills online converter */}
-            <StyledIcon icon="TRANSFER" size={16} />
+                    {/* TODO: Add new transfer icon. Export from Figma isn't handled as is it should by the strokes to fills online converter */}
+                    <StyledIcon icon="TRANSFER" size={16} />
+                </>
+            )}
 
             <NumberInput
                 noTopLabel

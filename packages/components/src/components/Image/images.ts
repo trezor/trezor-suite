@@ -9,6 +9,8 @@ export const SVG_IMAGES = {
     DEVICE_CONFIRM_TREZOR_T2T1: 'device-confirm-trezor-t2t1.svg',
     DEVICE_CONFIRM_TREZOR_T2B1: 'device-confirm-trezor-t2b1.svg',
     SPINNER: 'spinner.svg',
+    SPINNER_BLACK: 'spinner-black.svg',
+    SPINNER_GREY: 'spinner-grey.svg',
     SPINNER_ORANGE: 'spinner-orange.svg',
     DEVICE_ANOTHER_SESSION: 'device-another-session.svg',
     CONNECT_DEVICE: 'connect-device.svg',

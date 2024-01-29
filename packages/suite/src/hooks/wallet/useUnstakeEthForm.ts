@@ -16,7 +16,6 @@ import {
     UseStakeFormsProps,
 } from 'src/types/wallet/stakeForms';
 import { mapTestnetSymbol } from 'src/utils/wallet/coinmarket/coinmarketUtils';
-import { AmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
 
 import { useStakeCompose } from './form/useStakeCompose';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
@@ -24,6 +23,7 @@ import { MIN_ETH_AMOUNT_FOR_STAKING } from 'src/constants/suite/ethStaking';
 
 import { signTransaction } from 'src/actions/wallet/stakeActions';
 import {
+    AmountLimitsString,
     PrecomposedTransactionFinal,
     UnstakeContextValues as UnstakeContextValuesBase,
     UnstakeFormState,
@@ -33,12 +33,12 @@ import { useFormDraft } from './useFormDraft';
 import useDebounce from 'react-use/lib/useDebounce';
 import { isChanged } from '@suite-common/suite-utils';
 import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
-import { useStakeAndRewards } from './useStakeAndRewards';
 // @ts-expect-error
 import { Ethereum } from '@everstake/wallet-sdk';
+import { selectSelectedAccountAutocompoundBalance } from '../../reducers/wallet/selectedAccountReducer';
 
 type UnstakeContextValues = UnstakeContextValuesBase & {
-    amountLimits: AmountLimits;
+    amountLimits: AmountLimitsString;
 };
 
 export const UnstakeEthFormContext = createContext<UnstakeContextValues | null>(null);
@@ -66,11 +66,11 @@ export const useUnstakeEthForm = ({
     // TODO: Implement fee switcher
     const selectedFee = 'normal';
 
-    const { stakeWithRewards } = useStakeAndRewards();
-    const amountLimits: AmountLimits = {
+    const autocompoundBalance = useSelector(selectSelectedAccountAutocompoundBalance);
+    const amountLimits: AmountLimitsString = {
         currency: symbol,
-        minCrypto: MIN_ETH_AMOUNT_FOR_STAKING.toNumber(),
-        maxCrypto: stakeWithRewards.toNumber(),
+        minCrypto: MIN_ETH_AMOUNT_FOR_STAKING.toString(),
+        maxCrypto: autocompoundBalance,
     };
 
     const defaultValues = useMemo(() => {
@@ -164,13 +164,13 @@ export const useUnstakeEthForm = ({
 
     const onCryptoAmountChange = useCallback(
         async (amount: string) => {
-            if (!currentRate) return;
+            if (currentRate) {
+                const fiatValue = toFiatCurrency(amount, localCurrency, {
+                    [currentRate.locale]: currentRate?.rate,
+                });
+                setValue(FIAT_INPUT, fiatValue || '', { shouldValidate: true });
+            }
 
-            const fiatValue = toFiatCurrency(amount, localCurrency, {
-                [currentRate.locale]: currentRate?.rate,
-            });
-
-            setValue(FIAT_INPUT, fiatValue || '', { shouldValidate: true });
             setValue(OUTPUT_AMOUNT, amount || '', { shouldDirty: true });
             await composeRequest(CRYPTO_INPUT);
         },
@@ -246,6 +246,7 @@ export const useUnstakeEthForm = ({
         signTx,
         clearErrors,
         onOptionChange,
+        currentRate,
     };
 };
 

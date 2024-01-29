@@ -1,6 +1,7 @@
 import { Network, BackendType, NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountEntityKeys } from '@suite-common/metadata-types';
 import { AccountInfo, PROTO, TokenInfo } from '@trezor/connect';
+import { StakingPool } from '@trezor/blockchain-link-types';
 
 export type MetadataItem = string;
 export type XpubAddress = string;
@@ -91,6 +92,7 @@ export type Account = {
      * metadata/labeling feature which requires device for encryption. local accountLabel field was introduced.
      */
     accountLabel?: string;
+    stakingPools?: StakingPool[];
 } & AccountBackendSpecific &
     AccountNetworkSpecific;
 
@@ -108,4 +110,9 @@ export interface ReceiveInfo {
     path: string;
     address: string;
     isVerified: boolean;
+}
+
+export interface StakingPoolExtended extends StakingPool {
+    totalPendingStakeBalance: string;
+    canClaim: boolean;
 }
