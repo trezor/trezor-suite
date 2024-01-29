@@ -13,10 +13,10 @@
     },
     "include": [".", "**/*.json"],
     "references": [
+        { "path": "../../suite-common/icons" },
         {
             "path": "../../suite-common/validators"
         },
-        { "path": "../../suite-common/icons" },
         { "path": "../connect" },
         { "path": "../dom-utils" },
         { "path": "../env-utils" },
