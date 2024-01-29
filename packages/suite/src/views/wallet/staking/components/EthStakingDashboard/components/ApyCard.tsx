@@ -2,10 +2,12 @@ import { Icon, useTheme } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { AccentP, CardBottomContent, GreyP, StyledCard } from './styled';
 
-export const ApyCard = () => {
+interface ApyCardProps {
+    apy: string;
+}
+
+export const ApyCard = ({ apy }: ApyCardProps) => {
     const theme = useTheme();
-    // TODO: Replace with real data
-    const apy = 5;
 
     return (
         <StyledCard>

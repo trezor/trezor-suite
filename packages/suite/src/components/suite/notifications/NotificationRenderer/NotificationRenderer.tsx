@@ -279,6 +279,10 @@ export const NotificationRenderer = ({ notification, render }: NotificationRende
                     }}
                 />
             );
+        case 'successful-claim':
+            return success(render, notification, 'TOAST_SUCCESSFUL_CLAIM', 'CHECK', {
+                symbol: notification.symbol,
+            });
         default:
             return info(render, notification, 'TR_404_DESCRIPTION');
     }

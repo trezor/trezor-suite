@@ -61,7 +61,6 @@ const pushTransaction =
         if (!signedTx || !precomposedTx || !account) return;
 
         const sentTx = await TrezorConnect.pushTransaction(signedTx);
-        // const sentTx = { success: true, payload: { txid: 'ABC ' } };
 
         // close modal regardless result
         dispatch(modalActions.onCancel());
@@ -75,22 +74,38 @@ const pushTransaction =
 
         if (sentTx.success) {
             const { txid } = sentTx.payload;
-            const toastType: Record<StakeType, 'tx-staked' | 'tx-unstaked' | 'tx-claimed'> = {
-                stake: 'tx-staked',
-                unstake: 'tx-unstaked',
-                claim: 'tx-claimed',
+            const notificationPayload = {
+                formattedAmount,
+                device,
+                descriptor: account.descriptor,
+                symbol: account.symbol,
+                txid,
             };
 
-            dispatch(
-                notificationsActions.addToast({
-                    type: toastType[stakeType],
-                    formattedAmount,
-                    device,
-                    descriptor: account.descriptor,
-                    symbol: account.symbol,
-                    txid,
-                }),
-            );
+            if (stakeType === 'stake') {
+                dispatch(
+                    notificationsActions.addToast({
+                        type: 'tx-staked',
+                        ...notificationPayload,
+                    }),
+                );
+            }
+            if (stakeType === 'unstake') {
+                dispatch(
+                    notificationsActions.addToast({
+                        type: 'tx-unstaked',
+                        ...notificationPayload,
+                    }),
+                );
+            }
+            if (stakeType === 'claim') {
+                dispatch(
+                    notificationsActions.addToast({
+                        type: 'tx-claimed',
+                        ...notificationPayload,
+                    }),
+                );
+            }
 
             if (precomposedTx.prevTxid) {
                 // notification from the backend may be delayed.

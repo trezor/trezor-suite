@@ -1,18 +1,5 @@
 import { useEffect, useState } from 'react';
-
-interface ValidatorsQueue {
-    validatorsEnteringNum: number;
-    validatorsExitingNum: number;
-    validatorsTotalCount: number;
-    validatorsPerEpoch: number;
-    validatorActivationTime: number;
-    validatorExitTime: number;
-    validatorWithdrawTime: number;
-    validatorAddingDelay: number;
-    updatedAt: number;
-}
-
-type ValidatorsQueueState = ValidatorsQueue | Record<string, never>;
+import { ValidatorsQueueState } from 'src/types/wallet/stake';
 
 export const useValidatorsQueue = () => {
     const [validatorsQueue, setValidatorsQueue] = useState<ValidatorsQueueState>({});

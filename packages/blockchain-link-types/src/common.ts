@@ -164,6 +164,18 @@ export interface TokenInfo {
     // transfers: number, // total transactions?
 }
 
+export interface StakingPool {
+    autocompoundBalance: string;
+    claimableAmount: string;
+    contract: string;
+    depositedBalance: string;
+    name: string;
+    pendingBalance: string;
+    pendingDepositedBalance: string;
+    restakedReward: string;
+    withdrawTotalAmount: string;
+}
+
 export interface AccountInfo {
     descriptor: string;
     balance: string;
@@ -209,6 +221,7 @@ export interface AccountInfo {
         ledger: number;
         seq: number;
     };
+    stakingPools?: StakingPool[];
 }
 
 export interface SubscriptionAccountInfo {

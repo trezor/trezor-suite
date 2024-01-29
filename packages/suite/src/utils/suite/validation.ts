@@ -1,6 +1,6 @@
 import { Formatter } from '@suite-common/formatters';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
+import { Account, AmountLimitsString } from '@suite-common/wallet-types';
 import {
     findToken,
     formatNetworkAmount,
@@ -77,6 +77,56 @@ export const validateLimits =
                     : amountLimits.maxCrypto;
             }
             if (amountLimits.maxCrypto && Number(value) > maxCrypto) {
+                return translationString('TR_VALIDATION_ERROR_MAXIMUM_CRYPTO', {
+                    maximum: formatter.format(amountLimits.maxCrypto.toString(), {
+                        isBalance: true,
+                        symbol,
+                    }),
+                });
+            }
+        }
+    };
+
+interface ValidateLimitsOptionsBigNum {
+    amountLimits?: AmountLimitsString;
+    areSatsUsed?: boolean;
+    formatter: Formatter<string, string>;
+}
+
+export const validateLimitsBigNum =
+    (
+        translationString: TranslationFunction,
+        { amountLimits, areSatsUsed, formatter }: ValidateLimitsOptionsBigNum,
+    ) =>
+    (value: string) => {
+        if (value && amountLimits) {
+            const symbol = amountLimits.currency.toLowerCase() as NetworkSymbol;
+            let minCrypto = new BigNumber(0);
+            if (amountLimits.minCrypto) {
+                minCrypto = areSatsUsed
+                    ? new BigNumber(
+                          networkAmountToSatoshi(amountLimits.minCrypto.toString(), symbol),
+                      )
+                    : new BigNumber(amountLimits.minCrypto);
+            }
+            if (amountLimits.minCrypto && new BigNumber(value).lt(minCrypto)) {
+                return translationString('TR_VALIDATION_ERROR_MINIMUM_CRYPTO', {
+                    minimum: formatter.format(amountLimits.minCrypto.toString(), {
+                        isBalance: true,
+                        symbol,
+                    }),
+                });
+            }
+
+            let maxCrypto = new BigNumber(0);
+            if (amountLimits.maxCrypto) {
+                maxCrypto = areSatsUsed
+                    ? new BigNumber(
+                          networkAmountToSatoshi(amountLimits.maxCrypto.toString(), symbol),
+                      )
+                    : new BigNumber(amountLimits.maxCrypto);
+            }
+            if (amountLimits.maxCrypto && new BigNumber(value).gt(maxCrypto)) {
                 return translationString('TR_VALIDATION_ERROR_MAXIMUM_CRYPTO', {
                     maximum: formatter.format(amountLimits.maxCrypto.toString(), {
                         isBalance: true,

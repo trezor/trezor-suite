@@ -53,25 +53,49 @@ export const InfoBox = styled.div`
     }
 `;
 
-export const ProgressBar = styled.div<{ $staked?: number; $rewards?: number }>`
+export const ProgressBar = styled.div<{
+    $rewards?: number;
+    $unstaking?: number;
+    $total?: number;
+    $isPendingUnstakeShown?: boolean;
+}>`
     height: 6px;
     width: 100%;
-    background: ${({ theme, $staked }) => ($staked ? theme.STROKE_GREY : theme.BG_GREY)};
+    background: ${({ theme, $total }) => ($total ? theme.STROKE_GREY : theme.BG_GREY)};
     border-radius: 6px;
     position: relative;
+    overflow: hidden;
 
     &:after {
         content: '';
-        display: ${({ $rewards, $staked }) => ($rewards && $staked ? 'block' : 'none')};
+        display: ${({ $rewards = 0 }) => ($rewards ? 'block' : 'none')};
         min-width: 1%;
         max-width: 100%;
-        width: ${({ $staked = 0, $rewards = 0 }) => ($rewards * 100) / $staked}%;
+        width: ${({ $total = 0, $rewards = 0 }) => ($rewards * 100) / $total}%;
         background: ${({ theme }) => theme.BG_GREEN};
+        border-radius: ${({ $isPendingUnstakeShown }) =>
+            $isPendingUnstakeShown ? '6px 0 0 6px' : '6px'};
+        height: 6px;
+        position: absolute;
+        right: ${({ $total = 0, $unstaking = 0, $isPendingUnstakeShown }) =>
+            $isPendingUnstakeShown ? `${($unstaking * 100) / $total}%` : 0};
+        top: 0;
+        box-shadow: -2px 0 0 0 ${({ theme }) => theme.BG_WHITE};
+    }
+
+    &:before {
+        content: '';
+        display: ${({ $isPendingUnstakeShown }) => ($isPendingUnstakeShown ? 'block' : 'none')};
+        min-width: 1%;
+        max-width: 100%;
+        width: ${({ $total = 0, $unstaking = 0 }) => ($unstaking * 100) / $total}%;
+        background: ${({ theme }) => theme.TYPE_LIGHTER_GREY};
         border-radius: 6px;
         height: 6px;
         position: absolute;
         right: 0;
         top: 0;
         box-shadow: -2px 0 0 0 ${({ theme }) => theme.BG_WHITE};
+        z-index: 2;
     }
 `;

@@ -1,18 +1,33 @@
+import { useMemo } from 'react';
+import BigNumber from 'bignumber.js';
 import { Icon, useTheme } from '@trezor/components';
-import { FiatValue, Translation } from 'src/components/suite';
-import { AccentP, CardBottomContent, GreyP, StyledCard } from './styled';
+import { Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { mapTestnetSymbol } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { selectSelectedAccountEverstakeStakingPool } from 'src/reducers/wallet/selectedAccountReducer';
+import { AccentP, CardBottomContent, GreyP, StyledCard } from './styled';
 
-export const PayoutCard = () => {
+interface PayoutCardProps {
+    nextRewardPayout: number | null;
+    daysToAddToPool: number;
+}
+
+export const PayoutCard = ({ nextRewardPayout, daysToAddToPool }: PayoutCardProps) => {
     const theme = useTheme();
-    // TODO: Replace with real data
-    const daysToPayout = 6;
-    const payout = '0.001';
+    const { totalPendingStakeBalance = '0' } =
+        useSelector(selectSelectedAccountEverstakeStakingPool) ?? {};
+    const isStakePending = new BigNumber(totalPendingStakeBalance).gt(0);
 
-    const { symbol } = useSelector(selectSelectedAccount) ?? {};
-    const mappedSymbol = symbol ? mapTestnetSymbol(symbol) : '';
+    const payout = useMemo(() => {
+        if (!isStakePending) return nextRewardPayout || '--';
+
+        if (nextRewardPayout !== null && !Number.isNaN(daysToAddToPool)) {
+            if (daysToAddToPool <= nextRewardPayout) return nextRewardPayout;
+
+            return daysToAddToPool + nextRewardPayout;
+        }
+
+        return '--';
+    }, [daysToAddToPool, isStakePending, nextRewardPayout]);
 
     return (
         <StyledCard>
@@ -20,13 +35,10 @@ export const PayoutCard = () => {
 
             <CardBottomContent>
                 <AccentP>
-                    <Translation id="TR_STAKE_DAYS_TO" values={{ days: daysToPayout }} />
+                    <Translation id="TR_STAKE_DAYS" values={{ days: payout }} />
                 </AccentP>
                 <GreyP>
-                    <Translation
-                        id="TR_STAKE_NEXT_PAYOUYT"
-                        values={{ fiatAmount: <FiatValue symbol={mappedSymbol} amount={payout} /> }}
-                    />
+                    <Translation id="TR_STAKE_NEXT_PAYOUT" />
                 </GreyP>
             </CardBottomContent>
         </StyledCard>

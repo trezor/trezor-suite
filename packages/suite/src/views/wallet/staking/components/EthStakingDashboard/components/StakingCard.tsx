@@ -1,20 +1,21 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
 import BigNumber from 'bignumber.js';
 import styled from 'styled-components';
-import { Button, Card, Icon, variables } from '@trezor/components';
+import { Button, Card, Icon, Image, useTheme, variables } from '@trezor/components';
 import { selectAccountStakeTransactions } from '@suite-common/wallet-core';
 import { isPending } from '@suite-common/wallet-utils';
 import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import {
+    selectSelectedAccount,
+    selectSelectedAccountEverstakeStakingPool,
+} from 'src/reducers/wallet/selectedAccountReducer';
 import { mapTestnetSymbol } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { MIN_ETH_AMOUNT_FOR_STAKING } from 'src/constants/suite/ethStaking';
-import { useStakeAndRewards } from 'src/hooks/wallet/useStakeAndRewards';
 import { InfoBox, ProgressBar } from './styled';
 import { ProgressLabels } from './ProgressLabels';
-import { ProgressLabelData } from './ProgressLabels/types';
-import { useValidatorsQueue } from '../useValidatorsQueue';
+import { useProgressLabelsData } from '../hooks/useProgressLabelsData';
+import { useIsTxStatusShown } from '../hooks/useIsTxStatusShown';
 
 const StyledCard = styled(Card)`
     padding: 16px;
@@ -39,22 +40,16 @@ const EnteringFiatValueWrapper = styled.span`
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
-const DaysToAddToPool = styled.div`
-    font-size: ${variables.FONT_SIZE.TINY};
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-`;
-
-const AmountsWrapper = styled.div`
+const AmountsWrapper = styled.div<{ $isUnstakePending: boolean }>`
     display: flex;
-    gap: 8px;
+    column-gap: 8px;
+    row-gap: 12px;
     flex-wrap: wrap;
+    justify-content: ${({ $isUnstakePending }) =>
+        $isUnstakePending ? 'space-between' : 'flex-start'};
 
     & > div {
-        flex: 1 0 300px;
-    }
-
-    & > div:nth-child(2) {
-        flex: 1 0 25%;
+        flex: ${({ $isUnstakePending }) => ($isUnstakePending ? '' : '1 0 300px')};
     }
 `;
 
@@ -120,12 +115,51 @@ const StyledButton = styled(Button).attrs(props => ({
     font-size: ${variables.FONT_SIZE.NORMAL};
 `;
 
-export const StakingCard = () => {
-    const { stakeWithRewards, originalStake, rewards, totalPendingStake } = useStakeAndRewards();
-    const canUnstake = MIN_ETH_AMOUNT_FOR_STAKING.lt(stakeWithRewards);
+interface StakingCardProps {
+    isValidatorsQueueLoading: boolean;
+    daysToAddToPool: number;
+    daysToUnstake: number;
+}
 
-    const { symbol } = useSelector(selectSelectedAccount) ?? {};
+export const StakingCard = ({
+    isValidatorsQueueLoading,
+    daysToAddToPool,
+    daysToUnstake,
+}: StakingCardProps) => {
+    const theme = useTheme();
+    const { symbol, key: selectedAccountKey } = useSelector(selectSelectedAccount) ?? {};
     const mappedSymbol = symbol ? mapTestnetSymbol(symbol) : '';
+
+    const {
+        autocompoundBalance = '0',
+        depositedBalance = '0',
+        restakedReward = '0',
+        totalPendingStakeBalance = '0',
+        withdrawTotalAmount = '0',
+        claimableAmount = '0',
+    } = useSelector(selectSelectedAccountEverstakeStakingPool) ?? {};
+
+    const canUnstake = MIN_ETH_AMOUNT_FOR_STAKING.lt(autocompoundBalance);
+    const isStakePending = new BigNumber(totalPendingStakeBalance).gt(0);
+    const isUnstakePending = new BigNumber(withdrawTotalAmount).gt(0);
+    const { isTxStatusShown } = useIsTxStatusShown(new BigNumber(totalPendingStakeBalance));
+
+    const isDaysToAddToPoolShown = !Number.isNaN(daysToAddToPool) && !isValidatorsQueueLoading;
+    const isPendingUnstakeShown =
+        isUnstakePending && !new BigNumber(withdrawTotalAmount).eq(claimableAmount);
+    const isDaysToUnstakeShown = !Number.isNaN(daysToUnstake) && !isValidatorsQueueLoading;
+
+    const stakeTxs = useSelector(state =>
+        selectAccountStakeTransactions(state, selectedAccountKey || ''),
+    );
+    const isStakeConfirming = stakeTxs.some(tx => isPending(tx));
+
+    const { progressLabelsData } = useProgressLabelsData({
+        daysToAddToPool,
+        isDaysToAddToPoolShown,
+        isStakeConfirming,
+        isStakePending,
+    });
 
     const dispatch = useDispatch();
     const openStakeModal = () => {
@@ -135,119 +169,13 @@ export const StakingCard = () => {
         dispatch(openModal({ type: 'unstake' }));
     };
 
-    const selectedAccount = useSelector(selectSelectedAccount);
-    const stakeTxs = useSelector(state =>
-        selectAccountStakeTransactions(state, selectedAccount?.key || ''),
-    );
-    const { validatorsQueue, isValidatorsQueueLoading } = useValidatorsQueue();
-
-    const daysToAddToPool = useMemo(() => {
-        const lastTx = stakeTxs[0];
-
-        if (!lastTx?.blockTime) return 1;
-
-        const sevenDays = 7 * 24 * 60 * 60;
-        const now = Math.floor(Date.now() / 1000);
-        const secondsToWait =
-            lastTx.blockTime +
-            validatorsQueue.validatorAddingDelay +
-            validatorsQueue.validatorActivationTime +
-            sevenDays -
-            now;
-        const daysToWait = Math.round(secondsToWait / 60 / 60 / 24);
-
-        return daysToWait <= 0 ? 1 : daysToWait;
-    }, [stakeTxs, validatorsQueue.validatorActivationTime, validatorsQueue.validatorAddingDelay]);
-
-    const isDaysToAddToPoolShown = !Number.isNaN(daysToAddToPool) && !isValidatorsQueueLoading;
-
-    const isStakeConfirming = stakeTxs.some(tx => isPending(tx));
-    const isStakePending = totalPendingStake.gt(0);
-    // Handling the edge case, when a user can witness sudden change of pending stake deposit to 0.
-    // In this case they should see the "Adding to staking pool" progress label as complete and
-    // the "Staked & earning rewards" label as active for a few seconds.
-    const [isTxStatusShown, setIsTxStatusShown] = useState(false);
-    const prevTotalDeposited = useRef(totalPendingStake);
-    useEffect(() => {
-        if (totalPendingStake.gt(0)) {
-            prevTotalDeposited.current = totalPendingStake;
-            setIsTxStatusShown(true);
-            return;
-        }
-
-        const hideTxStatuses = () => {
-            prevTotalDeposited.current = new BigNumber(0);
-            setIsTxStatusShown(false);
-        };
-
-        if (prevTotalDeposited.current.gt(0)) {
-            const timeoutId = setTimeout(() => {
-                hideTxStatuses();
-            }, 7000);
-
-            return () => clearTimeout(timeoutId);
-        }
-
-        hideTxStatuses();
-    }, [totalPendingStake]);
-
-    const progressLabelsData: ProgressLabelData[] = useMemo(
-        () => [
-            {
-                id: 0,
-                progressState: (() => {
-                    if (isStakeConfirming) return 'active';
-                    return 'done';
-                })(),
-                children: <Translation id="TR_TX_CONFIRMED" />,
-            },
-            {
-                id: 1,
-                progressState: (() => {
-                    if (!isStakeConfirming && isStakePending) return 'active';
-                    if (!isStakeConfirming && !isStakePending) return 'done';
-
-                    return 'stale';
-                })(),
-                children: (
-                    <div>
-                        <Translation id="TR_STAKE_ADDING_TO_POOL" />
-                        {isDaysToAddToPoolShown && (
-                            <DaysToAddToPool>
-                                ~
-                                <Translation
-                                    id="TR_STAKE_DAYS_TO"
-                                    values={{
-                                        days: daysToAddToPool,
-                                    }}
-                                />
-                            </DaysToAddToPool>
-                        )}
-                    </div>
-                ),
-            },
-            {
-                id: 2,
-                progressState: (() => {
-                    if (!isStakeConfirming && !isStakePending) {
-                        return 'active';
-                    }
-
-                    return 'stale';
-                })(),
-                children: <Translation id="TR_STAKE_STAKED_AND_EARNING" />,
-            },
-        ],
-        [daysToAddToPool, isDaysToAddToPoolShown, isStakeConfirming, isStakePending],
-    );
-
     return (
         <StyledCard>
             {(isStakeConfirming || isTxStatusShown) && (
                 <InfoBox>
                     <EnteringAmountInfo>
                         <Translation
-                            id="TR_STAKE_ETH_AT_THE_DOOR"
+                            id="TR_STAKE_WAITING_TO_BE_ADDED"
                             values={{ symbol: symbol?.toUpperCase() }}
                         />
 
@@ -259,17 +187,17 @@ export const StakingCard = () => {
 
                             <div>
                                 <FormattedCryptoAmount
-                                    value={totalPendingStake.toString()}
+                                    value={totalPendingStakeBalance}
                                     symbol={symbol}
                                 />{' '}
                                 <EnteringFiatValueWrapper>
-                                    (
                                     <FiatValue
-                                        amount={totalPendingStake.toString()}
+                                        amount={totalPendingStakeBalance}
                                         symbol={mappedSymbol}
                                         showApproximationIndicator
-                                    />
-                                    )
+                                    >
+                                        {({ value }) => value && <span>({value})</span>}
+                                    </FiatValue>
                                 </EnteringFiatValueWrapper>
                             </div>
                         </EnteringAmountsWrapper>
@@ -283,17 +211,17 @@ export const StakingCard = () => {
                 </InfoBox>
             )}
 
-            <AmountsWrapper>
+            <AmountsWrapper $isUnstakePending={isPendingUnstakeShown}>
                 <div>
                     <AmountHeading>
                         <Icon icon="LOCK_SIMPLE" size={16} />
                         <Translation id="TR_STAKE_STAKE" />
                     </AmountHeading>
 
-                    <StyledFormattedCryptoAmount value={originalStake.toString()} symbol={symbol} />
+                    <StyledFormattedCryptoAmount value={depositedBalance} symbol={symbol} />
 
                     <StyledFiatValue
-                        amount={originalStake.toString()}
+                        amount={depositedBalance}
                         symbol={mappedSymbol}
                         showApproximationIndicator
                     >
@@ -309,22 +237,68 @@ export const StakingCard = () => {
 
                     <StyledFormattedCryptoAmount
                         $isRewards
-                        value={rewards.toString()}
+                        value={restakedReward}
                         symbol={symbol}
                     />
 
                     <StyledFiatValue
-                        amount={rewards.toString()}
+                        amount={restakedReward}
                         symbol={mappedSymbol}
                         showApproximationIndicator
                     >
                         {({ value }) => (value ? <span>{value}</span> : null)}
                     </StyledFiatValue>
                 </div>
+
+                {isPendingUnstakeShown && (
+                    <div>
+                        <AmountHeading>
+                            <Image
+                                width={18}
+                                height={18}
+                                image={theme.THEME === 'dark' ? 'SPINNER_GREY' : 'SPINNER_BLACK'}
+                            />
+                            <span>
+                                <Translation id="TR_STAKE_UNSTAKING" />{' '}
+                                {isDaysToUnstakeShown && (
+                                    <>
+                                        (~
+                                        <Translation
+                                            id="TR_STAKE_DAYS"
+                                            values={{
+                                                days: daysToUnstake,
+                                            }}
+                                        />
+                                        )
+                                    </>
+                                )}
+                            </span>
+                        </AmountHeading>
+
+                        <StyledFormattedCryptoAmount value={withdrawTotalAmount} symbol={symbol} />
+
+                        <StyledFiatValue
+                            amount={withdrawTotalAmount}
+                            symbol={mappedSymbol}
+                            showApproximationIndicator
+                        >
+                            {({ value }) => (value ? <span>{value}</span> : null)}
+                        </StyledFiatValue>
+                    </div>
+                )}
             </AmountsWrapper>
 
             <ProgressBarWrapper>
-                <ProgressBar $staked={originalStake.toNumber()} $rewards={rewards.toNumber()} />
+                <ProgressBar
+                    $rewards={Number(restakedReward)}
+                    $unstaking={Number(withdrawTotalAmount)}
+                    $total={
+                        Number(depositedBalance) +
+                        Number(restakedReward) +
+                        Number(withdrawTotalAmount)
+                    }
+                    $isPendingUnstakeShown={isPendingUnstakeShown}
+                />
             </ProgressBarWrapper>
 
             <Info>

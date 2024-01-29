@@ -5,6 +5,13 @@ export const isStakeTx = (signature: string | undefined) => {
     return signature === '0x3a29dbae';
 };
 
+export const isUnstakeTx = (signature: string | undefined) => {
+    if (!signature) return false;
+
+    // Unstake signature
+    return signature === '0x76ec871c';
+};
+
 export const isClaimTx = (signature: string | undefined) => {
     if (!signature) return false;
 
@@ -15,6 +22,5 @@ export const isClaimTx = (signature: string | undefined) => {
 export const isStakeTypeTx = (signature: string | undefined) => {
     if (!signature) return false;
 
-    // 0x76ec871c - Unstake signature
-    return isStakeTx(signature) || signature === '0x76ec871c' || isClaimTx(signature);
+    return isStakeTx(signature) || isUnstakeTx(signature) || isClaimTx(signature);
 };

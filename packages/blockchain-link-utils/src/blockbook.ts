@@ -392,6 +392,7 @@ export const transformAccountInfo = (payload: BlockbookAccountInfo): AccountInfo
         },
         misc,
         page,
+        stakingPools: payload?.stakingPools,
     };
 };
 

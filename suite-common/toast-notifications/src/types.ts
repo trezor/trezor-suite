@@ -148,6 +148,10 @@ export type ToastPayload = (
     | {
           type: 'coinjoin-interrupted';
       }
+    | {
+          type: 'successful-claim';
+          symbol: string;
+      }
     | StakedTransactionNotification
     | UnstakedTransactionNotification
     | ClaimedTransactionNotification

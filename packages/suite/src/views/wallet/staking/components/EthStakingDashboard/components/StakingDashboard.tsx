@@ -1,5 +1,8 @@
 import styled from 'styled-components';
 import { variables } from '@trezor/components';
+import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { useSelector } from 'src/hooks/suite';
+import { useValidatorsQueue } from 'src/hooks/wallet/useValidatorsQueue';
 import { Divider, Translation } from 'src/components/suite';
 import { DashboardSection } from 'src/components/dashboard';
 import { StakingCard } from './StakingCard';
@@ -7,6 +10,8 @@ import { ApyCard } from './ApyCard';
 import { PayoutCard } from './PayoutCard';
 import { ClaimCard } from './claim/ClaimCard';
 import { Transactions } from './Transactions';
+import { useEverstakePoolStats } from '../hooks/useEverstakePoolStats';
+import { useDaysTo } from '../hooks/useDaysTo';
 
 const FlexCol = styled.div`
     display: flex;
@@ -33,23 +38,41 @@ const FlexRow = styled.div`
     }
 `;
 
-export const StakingDashboard = () => (
-    <>
-        <DashboardSection heading={<Translation id="TR_STAKE_ETH" />}>
-            <ClaimCard />
+export const StakingDashboard = () => {
+    const { ethApy, nextRewardPayout } = useEverstakePoolStats();
+    const { validatorsQueue, isValidatorsQueueLoading } = useValidatorsQueue();
 
-            <FlexCol>
-                <StakingCard />
+    const { key: selectedAccountKey } = useSelector(selectSelectedAccount) ?? {};
+    const { daysToAddToPool, daysToUnstake } = useDaysTo({
+        selectedAccountKey: selectedAccountKey ?? '',
+        validatorsQueue,
+    });
 
-                <FlexRow>
-                    <ApyCard />
-                    <PayoutCard />
-                </FlexRow>
-            </FlexCol>
-        </DashboardSection>
+    return (
+        <>
+            <DashboardSection heading={<Translation id="TR_STAKE_ETH" />}>
+                <ClaimCard />
 
-        <Divider />
+                <FlexCol>
+                    <StakingCard
+                        isValidatorsQueueLoading={isValidatorsQueueLoading}
+                        daysToAddToPool={daysToAddToPool}
+                        daysToUnstake={daysToUnstake}
+                    />
 
-        <Transactions />
-    </>
-);
+                    <FlexRow>
+                        <ApyCard apy={ethApy} />
+                        <PayoutCard
+                            nextRewardPayout={nextRewardPayout}
+                            daysToAddToPool={daysToAddToPool}
+                        />
+                    </FlexRow>
+                </FlexCol>
+            </DashboardSection>
+
+            <Divider />
+
+            <Transactions />
+        </>
+    );
+};
