@@ -30,6 +30,14 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
             ? { ...this.payload, bundle: [this.payload] }
             : this.payload;
 
+        // Workaround to allow empty signature in multisig (issue #10841)
+        payload?.bundle.forEach(bundleElement => {
+            if (bundleElement.multisig && bundleElement.multisig?.signatures === undefined) {
+                bundleElement.multisig.signatures = Array(
+                    bundleElement.multisig?.pubkeys.length,
+                ).fill('');
+            }
+        });
         // validate bundle type
         Assert(Bundle(GetAddressSchema), payload);
 
