@@ -27,8 +27,10 @@ export const SVG_IMAGES = {
     HOLLOW_APP_LOGO: 'hollow-app-logo.svg',
     APP_STORE_BADGE: 'app-store-badge.svg',
     PLAY_STORE_BADGE: 'play-store-badge.svg',
-    APP_STORE_TITLE: 'app-store-title.svg',
-    PLAY_STORE_TITLE: 'play-store-title.svg',
+    APP_STORE_TITLE_WHITE: 'app-store-title-white.svg',
+    PLAY_STORE_TITLE_WHITE: 'play-store-title-white.svg',
+    APP_STORE_TITLE_BLACK: 'app-store-title-black.svg',
+    PLAY_STORE_TITLE_BLACK: 'play-store-title-black.svg',
     STROKE_BORDER: 'stroke-border.svg',
     TREZOR_SAFE_PROMO_UNDERLINE: 'trezor-safe-promo-underline.svg',
 } as const;

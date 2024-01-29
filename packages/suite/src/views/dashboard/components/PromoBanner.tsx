@@ -7,6 +7,7 @@ import { Translation, QrCode, TrezorLink } from 'src/components/suite';
 import { isWeb } from '@trezor/env-utils';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 import { HORIZONTAL_LAYOUT_PADDINGS } from 'src/constants/suite/layout';
+import { useSelector } from 'src/hooks/suite';
 
 const Container = styled.div`
     position: absolute;
@@ -140,13 +141,17 @@ const StoreBadge = ({
     shownQRState: [showQR, setShowQr],
 }: StoreBadgeProps) => {
     const { isMobileLayout } = useLayoutSize();
+    const currentTheme = useSelector(state => state.suite.settings.theme.variant);
 
     return (
         <StyledTooltip
             disabled={isMobileLayout}
             content={
                 <div>
-                    <StoreTitle image={`${image}_TITLE`} height={26} />
+                    <StoreTitle
+                        image={`${image}_TITLE_${currentTheme === 'dark' ? 'BLACK' : 'WHITE'}`}
+                        height={26}
+                    />
                     <QR value={url} />
                 </div>
             }
