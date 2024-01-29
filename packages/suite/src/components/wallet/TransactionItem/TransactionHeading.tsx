@@ -51,9 +51,9 @@ const ChevronIconWrapper = styled.div<{ show: boolean; animate: boolean }>`
     }
 `;
 
-const StyledCryptoAmount = styled(FormattedCryptoAmount)<{ isZeroValuePhishing: boolean }>`
-    color: ${({ theme, isZeroValuePhishing }) =>
-        isZeroValuePhishing ? theme.TYPE_LIGHT_GREY : theme.TYPE_DARK_GREY};
+const StyledCryptoAmount = styled(FormattedCryptoAmount)<{ isPhishingTransaction: boolean }>`
+    color: ${({ theme, isPhishingTransaction }) =>
+        isPhishingTransaction ? theme.TYPE_LIGHT_GREY : theme.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     white-space: nowrap;
@@ -75,7 +75,7 @@ interface TransactionHeadingProps {
     txItemIsHovered: boolean;
     nestedItemIsHovered: boolean;
     onClick: () => void;
-    isZeroValuePhishing: boolean;
+    isPhishingTransaction: boolean;
     dataTestBase: string;
 }
 
@@ -86,7 +86,7 @@ export const TransactionHeading = ({
     txItemIsHovered,
     nestedItemIsHovered,
     onClick,
-    isZeroValuePhishing,
+    isPhishingTransaction,
     dataTestBase,
 }: TransactionHeadingProps) => {
     const [headingIsHovered, setHeadingIsHovered] = useState(false);
@@ -118,7 +118,7 @@ export const TransactionHeading = ({
                 value={targetAmount}
                 symbol={targetSymbol}
                 signValue={operation}
-                isZeroValuePhishing={isZeroValuePhishing}
+                isPhishingTransaction={isPhishingTransaction}
             />
         );
     }
@@ -132,7 +132,7 @@ export const TransactionHeading = ({
                 value={formatNetworkAmount(abs, transaction.symbol)}
                 symbol={transaction.symbol}
                 signValue={transactionAmount}
-                isZeroValuePhishing={isZeroValuePhishing}
+                isPhishingTransaction={isPhishingTransaction}
             />
         );
     }
@@ -145,7 +145,7 @@ export const TransactionHeading = ({
                 onClick={onClick}
             >
                 <HeadingWrapper data-test={`${dataTestBase}/heading`}>
-                    {isZeroValuePhishing && (
+                    {isPhishingTransaction && (
                         <TooltipSymbol
                             content={
                                 <Translation

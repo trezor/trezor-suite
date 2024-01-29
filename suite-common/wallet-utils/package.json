@@ -12,6 +12,7 @@
         "test-unit:watch": "jest -c ../../jest.config.base.js -o --watch"
     },
     "dependencies": {
+        "@mobily/ts-belt": "^3.13.1",
         "@suite-common/fiat-services": "workspace:*",
         "@suite-common/metadata-types": "workspace:*",
         "@suite-common/suite-config": "workspace:*",
@@ -22,6 +23,7 @@
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-constants": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
+        "@trezor/blockchain-link": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*",

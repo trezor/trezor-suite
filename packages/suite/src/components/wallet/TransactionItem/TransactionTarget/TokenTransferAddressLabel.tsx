@@ -10,20 +10,24 @@ const BlurWrapper = styled.span<{ isBlurred: boolean }>`
 interface TokenTransferAddressLabelProps {
     transfer: ArrayElement<WalletAccountTransaction['tokens']>;
     type: WalletAccountTransaction['type'];
-    isZeroValuePhishing: boolean;
+    isPhishingTransaction: boolean;
 }
 
 export const TokenTransferAddressLabel = ({
     transfer,
     type,
-    isZeroValuePhishing,
+    isPhishingTransaction,
 }: TokenTransferAddressLabelProps) => {
     if (type === 'self') {
         return <Translation id="TR_SENT_TO_SELF" />;
     }
     if (type === 'sent') {
-        return <AddressLabeling address={transfer.to} />;
+        return (
+            <BlurWrapper isBlurred={isPhishingTransaction}>
+                <AddressLabeling address={transfer.to} />
+            </BlurWrapper>
+        );
     }
 
-    return <BlurWrapper isBlurred={isZeroValuePhishing}>{transfer.to}</BlurWrapper>;
+    return <BlurWrapper isBlurred={isPhishingTransaction}>{transfer.to}</BlurWrapper>;
 };

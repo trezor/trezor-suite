@@ -13,6 +13,9 @@
         { "path": "../wallet-config" },
         { "path": "../wallet-constants" },
         { "path": "../wallet-types" },
+        {
+            "path": "../../packages/blockchain-link"
+        },
         { "path": "../../packages/connect" },
         { "path": "../../packages/urls" },
         { "path": "../../packages/utils" }

@@ -3,9 +3,8 @@ import { memo, Fragment, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { AnimatePresence } from 'framer-motion';
 import { variables, Button, Card } from '@trezor/components';
-import { getIsZeroValuePhishing } from '@suite-common/suite-utils';
 import { Translation } from 'src/components/suite';
-import { useDispatch } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
 import { formatNetworkAmount, isTestnet, isTxFeePaid } from '@suite-common/wallet-utils';
 import { AccountLabels } from 'src/types/suite/metadata';
@@ -31,13 +30,14 @@ import { AccountTransactionBaseAnchor } from 'src/constants/suite/anchors';
 import { SECONDARY_PANEL_HEIGHT } from 'src/components/suite/AppNavigation/AppNavigation';
 import { anchorOutlineStyles } from 'src/utils/suite/anchor';
 import { TransactionTimestamp } from 'src/components/wallet/TransactionTimestamp';
+import { selectIsPhishingTransaction } from '@suite-common/wallet-core';
 
 const Wrapper = styled(Card)<{
     isPending: boolean;
     shouldHighlight: boolean;
-    isZeroValuePhishing: boolean;
+    isPhishingTransaction: boolean;
 }>`
-    opacity: ${({ isZeroValuePhishing }) => isZeroValuePhishing && 0.6};
+    opacity: ${({ isPhishingTransaction }) => isPhishingTransaction && 0.6};
 
     ${({ isPending }) =>
         isPending &&
@@ -145,8 +145,10 @@ export const TransactionItem = memo(
                 }),
             );
         };
+        const isPhishingTransaction = useSelector(state =>
+            selectIsPhishingTransaction(state, transaction),
+        );
 
-        const isZeroValuePhishing = getIsZeroValuePhishing(transaction);
         const dataTestBase = `@transaction-item/${index}${
             transaction.deadline ? '/prepending' : ''
         }`;
@@ -162,7 +164,7 @@ export const TransactionItem = memo(
                 isPending={isPending}
                 ref={anchorRef}
                 shouldHighlight={shouldHighlight}
-                isZeroValuePhishing={isZeroValuePhishing}
+                isPhishingTransaction={isPhishingTransaction}
                 className={className}
             >
                 <Body>
@@ -183,7 +185,7 @@ export const TransactionItem = memo(
                                 txItemIsHovered={txItemIsHovered}
                                 nestedItemIsHovered={nestedItemIsHovered}
                                 onClick={() => openTxDetailsModal()}
-                                isZeroValuePhishing={isZeroValuePhishing}
+                                isPhishingTransaction={isPhishingTransaction}
                                 dataTestBase={dataTestBase}
                             />
                         </Description>
@@ -215,7 +217,9 @@ export const TransactionItem = memo(
                                                         accountMetadata={accountMetadata}
                                                         accountKey={accountKey}
                                                         isActionDisabled={isActionDisabled}
-                                                        isZeroValuePhishing={isZeroValuePhishing}
+                                                        isPhishingTransaction={
+                                                            isPhishingTransaction
+                                                        }
                                                     />
                                                 )}
                                                 {t.type === 'token' && (
@@ -228,6 +232,9 @@ export const TransactionItem = memo(
                                                             limit > 0
                                                                 ? false
                                                                 : i === previewTargets.length - 1
+                                                        }
+                                                        isPhishingTransaction={
+                                                            isPhishingTransaction
                                                         }
                                                     />
                                                 )}
@@ -272,6 +279,9 @@ export const TransactionItem = memo(
                                                                         accountMetadata
                                                                     }
                                                                     accountKey={accountKey}
+                                                                    isPhishingTransaction={
+                                                                        isPhishingTransaction
+                                                                    }
                                                                 />
                                                             )}
                                                             {t.type === 'token' && (
@@ -284,6 +294,9 @@ export const TransactionItem = memo(
                                                                         allOutputs.length -
                                                                             DEFAULT_LIMIT -
                                                                             1
+                                                                    }
+                                                                    isPhishingTransaction={
+                                                                        isPhishingTransaction
                                                                     }
                                                                 />
                                                             )}
