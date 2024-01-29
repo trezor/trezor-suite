@@ -1,5 +1,9 @@
 # Storage changelog
 
+## 43
+
+-   fixes bug cannot set properties of undefined (setting 'passwords') introduced by migration 41
+
 ## 42
 
 -   remove fiatRates table
