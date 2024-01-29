@@ -15,13 +15,15 @@
         "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
         "prepublish": "yarn tsx ../../scripts/prepublish.js"
     },
-    "devDependencies": {
-        "@solana/web3.js": "^1.87.6",
+    "dependencies": {
         "@trezor/type-utils": "workspace:*",
         "@trezor/utxo-lib": "workspace:*",
+        "@solana/web3.js": "^1.87.6",
+        "socks-proxy-agent": "6.1.1"
+    },
+    "devDependencies": {
         "rimraf": "^5.0.5",
         "ripple-lib": "^1.10.1",
-        "socks-proxy-agent": "6.1.1",
         "tsx": "^4.6.2",
         "typescript": "5.3.2"
     }
