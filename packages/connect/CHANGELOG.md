@@ -1,3 +1,12 @@
+# 9.1.11
+
+-   fix(connect): use weak assert in altcoin signTransaction (86b3703279)
+-   fix(connect): rebootToBootloader misbehaviour (662543c429)
+-   feat(connect-explorer): add connectSrc to settings (053e9f0908)
+-   fix(connect): nem and eth signTx validation issues (a53937c2ea)
+-   fix(connect): allow empty signature in multisig in getAddress (3b356b5952)
+-   fix(connect-examples): webextensions example update usb permissions url (cfbdfc2469)
+
 # 9.1.10
 
 -   chore(connect): bump ADA support version, min required version is now 2.4.3 (7937fea3ec)
