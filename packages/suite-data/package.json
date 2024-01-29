@@ -40,7 +40,7 @@
         "postcss-modules-values": "^4.0.0",
         "simple-git": "^3.20.0",
         "style-loader": "^3.3.3",
-        "tsx": "^4.6.2",
+        "tsx": "^4.7.0",
         "typescript": "5.3.2",
         "webpack": "^5.89.0",
         "webpack-cli": "^5.1.4"

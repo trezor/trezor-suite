@@ -65,7 +65,7 @@
         "jest": "29.5.0",
         "minimaldata": "^1.0.2",
         "rimraf": "^5.0.5",
-        "tsx": "^4.6.2",
+        "tsx": "^4.7.0",
         "typescript": "5.3.2"
     },
     "peerDependencies": {

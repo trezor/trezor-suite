@@ -24,7 +24,7 @@
     "devDependencies": {
         "rimraf": "^5.0.5",
         "ripple-lib": "^1.10.1",
-        "tsx": "^4.6.2",
+        "tsx": "^4.7.0",
         "typescript": "5.3.2"
     }
 }
