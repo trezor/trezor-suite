@@ -1,4 +1,3 @@
-import { getIsZeroValuePhishing } from '@suite-common/suite-utils';
 import { notificationsActions, ToastPayload } from '@suite-common/toast-notifications';
 import {
     getTxOperation,
@@ -38,7 +37,6 @@ export const TokenTransfer = ({
 }: TokenTransferProps) => {
     const operation = getTxOperation(transfer.type);
     const isNft = isNftTokenTransfer(transfer);
-    const isZeroValuePhishing = getIsZeroValuePhishing(transaction);
 
     return (
         <TransactionTargetLayout
@@ -111,6 +109,7 @@ interface TransactionTargetProps extends BaseTransfer {
     accountKey: string;
     accountMetadata?: AccountLabels;
     isActionDisabled?: boolean;
+    isZeroValuePhishing: boolean;
 }
 
 export const TransactionTarget = ({
@@ -119,6 +118,7 @@ export const TransactionTarget = ({
     accountMetadata,
     accountKey,
     isActionDisabled,
+    isZeroValuePhishing,
     ...baseLayoutProps
 }: TransactionTargetProps) => {
     const dispatch = useDispatch();

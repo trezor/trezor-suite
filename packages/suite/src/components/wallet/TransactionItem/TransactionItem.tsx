@@ -183,6 +183,7 @@ export const TransactionItem = memo(
                                 txItemIsHovered={txItemIsHovered}
                                 nestedItemIsHovered={nestedItemIsHovered}
                                 onClick={() => openTxDetailsModal()}
+                                isZeroValuePhishing={isZeroValuePhishing}
                                 dataTestBase={dataTestBase}
                             />
                         </Description>
@@ -214,6 +215,7 @@ export const TransactionItem = memo(
                                                         accountMetadata={accountMetadata}
                                                         accountKey={accountKey}
                                                         isActionDisabled={isActionDisabled}
+                                                        isZeroValuePhishing={isZeroValuePhishing}
                                                     />
                                                 )}
                                                 {t.type === 'token' && (
