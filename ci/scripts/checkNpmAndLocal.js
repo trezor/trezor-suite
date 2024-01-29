@@ -65,18 +65,21 @@ const downloadFile = (url, filePath) =>
             });
     });
 
-const packModule = (modulePath, outputDirectory) => {
+const packModule = (moduleName, modulePath, outputDirectory) => {
     try {
         const currentPwd = __dirname;
         // Change the current working directory
-        process.chdir(outputDirectory);
+        process.chdir(modulePath);
 
         // Run npm pack
-        const result = execSync(`npm pack ${modulePath}`, { encoding: 'utf8' });
+        const fileName = `${moduleName}.tgz`;
+        const result = execSync(`yarn pack -o ${outputDirectory}/${fileName}`, {
+            encoding: 'utf8',
+        });
 
         process.chdir(currentPwd);
         // Return the path to the tarball
-        return path.join(outputDirectory, result.trim());
+        return path.join(outputDirectory, fileName);
     } catch (error) {
         console.error('Error during npm pack:', error);
     }
@@ -133,7 +136,7 @@ const getLocalAndRemoteChecksums = async moduleName => {
         await extractTarball(tarballDestination, extractRemotePath);
 
         console.log(`packaging local npm module from ${PACKAGE_PATH} to ${tmpDir}`);
-        const tarballPath = packModule(PACKAGE_PATH, tmpDir);
+        const tarballPath = packModule(name, PACKAGE_PATH, tmpDir);
 
         const extractLocalPath = path.join(__dirname, 'tmp', 'local', name);
 
@@ -141,11 +144,11 @@ const getLocalAndRemoteChecksums = async moduleName => {
         await extractTarball(tarballPath, extractLocalPath);
 
         console.log('calculating remote package checksum');
-        const remoteChecksum = calculateChecksum(`${extractRemotePath}/package/lib`);
+        const remoteChecksum = calculateChecksum(`${extractRemotePath}/package`);
         console.log('remoteChecksum', remoteChecksum);
 
         console.log('calculating local package checksum');
-        const localChecksum = calculateChecksum(`${extractLocalPath}/package/lib`);
+        const localChecksum = calculateChecksum(`${extractLocalPath}/package`);
         console.log('localChecksum', localChecksum);
 
         return { success: true, data: { localChecksum, remoteChecksum } };
