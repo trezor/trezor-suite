@@ -16,6 +16,11 @@ const Header = styled.div`
     }
 `;
 
+const HeaderRight = styled(Header)`
+    justify-content: right;
+    padding-right: ${spacingsPx.xxxl};
+`;
+
 export const AssetTableHeader = () => (
     <AssetTableRowGrid>
         <Header /> {/* Logo */}
@@ -25,9 +30,9 @@ export const AssetTableHeader = () => (
         <Header>
             <Translation id="TR_VALUES" />
         </Header>
-        <Header>
+        <HeaderRight>
             <Translation id="TR_EXCHANGE_RATE" />
-        </Header>
+        </HeaderRight>
         <Header>
             <Translation id="TR_7D_CHANGE" />
         </Header>
