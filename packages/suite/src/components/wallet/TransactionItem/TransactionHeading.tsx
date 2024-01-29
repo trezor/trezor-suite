@@ -2,7 +2,6 @@ import { useState } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { variables, Icon } from '@trezor/components';
 import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';
-import { getIsZeroValuePhishing } from '@suite-common/suite-utils';
 import {
     FormattedCryptoAmount,
     TooltipSymbol,
@@ -76,6 +75,7 @@ interface TransactionHeadingProps {
     txItemIsHovered: boolean;
     nestedItemIsHovered: boolean;
     onClick: () => void;
+    isZeroValuePhishing: boolean;
     dataTestBase: string;
 }
 
@@ -86,6 +86,7 @@ export const TransactionHeading = ({
     txItemIsHovered,
     nestedItemIsHovered,
     onClick,
+    isZeroValuePhishing,
     dataTestBase,
 }: TransactionHeadingProps) => {
     const [headingIsHovered, setHeadingIsHovered] = useState(false);
@@ -100,8 +101,6 @@ export const TransactionHeading = ({
     const transfer = transaction.tokens[0];
     const targetSymbol = transaction.type === 'self' ? transaction.symbol : symbol;
     let amount = null;
-
-    const isZeroValuePhishing = getIsZeroValuePhishing(transaction);
 
     if (useSingleRowLayout) {
         // For single token transaction instead of showing coin amount we rather show the token amount
