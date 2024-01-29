@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { Network } from '@suite-common/wallet-config';
-import { selectDeviceAccountsByNetworkSymbol } from '@suite-common/wallet-core';
+import { selectVisibleNonEmptyDeviceAccountsByNetworkSymbol } from '@suite-common/wallet-core';
 import { Icon, SkeletonRectangle } from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';
 import { useSelector } from 'src/hooks/suite';
@@ -31,7 +31,7 @@ interface AssetCoinNameProps {
 export const AssetCoinName = ({ network }: AssetCoinNameProps) => {
     const { symbol, name } = network;
     const selectedAccounts = useSelector((state: any) =>
-        selectDeviceAccountsByNetworkSymbol(state, symbol),
+        selectVisibleNonEmptyDeviceAccountsByNetworkSymbol(state, symbol),
     );
 
     return (

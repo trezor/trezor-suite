@@ -196,15 +196,20 @@ export const selectDeviceAccountsByNetworkSymbol = memoizeWithArgs(
 
         const accounts = selectDeviceAccounts(state);
 
-        return A.filter(
-            accounts,
-            account => account.symbol === networkSymbol && (!account.empty || account.visible),
-        );
+        return A.filter(accounts, account => account.symbol === networkSymbol);
     },
     {
         size: Object.keys(networks).length,
     },
 );
+
+export const selectVisibleNonEmptyDeviceAccountsByNetworkSymbol = (
+    state: AccountsRootState & DeviceRootState,
+    networkSymbol: NetworkSymbol | null,
+) =>
+    selectDeviceAccountsByNetworkSymbol(state, networkSymbol).filter(
+        account => !account.empty || account.visible,
+    );
 
 export const selectAccountsByNetworkAndDeviceState = memoizeWithArgs(
     (state: AccountsRootState, deviceState: string, networkSymbol: NetworkSymbol) => {
