@@ -115,7 +115,6 @@ const FiatBalanceWrapper = styled.div``;
 
 const ExchangeRateWrapper = styled(Col)`
     font-variant-numeric: tabular-nums;
-    padding-right: 0;
     justify-content: right;
     padding-right: ${spacingsPx.xxxl};
 `;

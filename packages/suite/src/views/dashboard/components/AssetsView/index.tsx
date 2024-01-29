@@ -8,7 +8,7 @@ import { NETWORKS } from 'src/config/wallet';
 import { DashboardSection } from 'src/components/dashboard';
 import { Account } from 'src/types/wallet';
 import { Translation } from 'src/components/suite';
-import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
+import { useDiscovery, useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { useAccounts } from 'src/hooks/wallet';
 import { setFlag } from 'src/actions/suite/suiteActions';
 import { goto } from 'src/actions/suite/routerActions';
@@ -53,6 +53,10 @@ const StyledIcon = styled(Icon)`
     margin-right: ${spacingsPx.xxs};
 `;
 
+const ErrorCard = styled(Card)`
+    width: 100%;
+`;
+
 const useAssetsFiatBalances = (
     assetsData: AssetTableRowType[],
     accounts: { [key: string]: Account[] },
@@ -85,6 +89,7 @@ export const AssetsView = () => {
     const { discovery, getDiscoveryStatus, isDiscoveryRunning } = useDiscovery();
     const { accounts } = useAccounts(discovery);
     const { mainnets, enabledNetworks } = useEnabledNetworks();
+    const { isMobileLayout } = useLayoutSize();
 
     const mainnetSymbols = mainnets.map(mainnet => mainnet.symbol);
     const supportedMainnetNetworks = deviceSupportedNetworks.filter(network =>
@@ -131,6 +136,8 @@ export const AssetsView = () => {
     const setTable = () => dispatch(setFlag('dashboardAssetsGridMode', false));
     const setGrid = () => dispatch(setFlag('dashboardAssetsGridMode', true));
 
+    const showCards = isMobileLayout || dashboardAssetsGridMode;
+
     return (
         <DashboardSection
             heading={
@@ -139,52 +146,69 @@ export const AssetsView = () => {
                 </LoadingContent>
             }
             actions={
-                <ActionsWrapper>
-                    {hasMainnetNetworksToEnable && (
-                        <StyledAddAccountButton
-                            variant="tertiary"
-                            icon="PLUS"
-                            size="small"
-                            onClick={goToCoinsSettings}
-                        >
-                            <Translation id="TR_ENABLE_MORE_COINS" />
-                        </StyledAddAccountButton>
-                    )}
-                    <Icon
-                        icon="TABLE"
-                        data-test="@dashboard/assets/table-icon"
-                        onClick={setTable}
-                        color={
-                            !dashboardAssetsGridMode ? theme.textPrimaryDefault : theme.textSubdued
-                        }
-                    />
-                    <Icon
-                        icon="GRID"
-                        data-test="@dashboard/assets/grid-icon"
-                        onClick={setGrid}
-                        color={
-                            dashboardAssetsGridMode ? theme.textPrimaryDefault : theme.textSubdued
-                        }
-                    />
-                </ActionsWrapper>
+                isMobileLayout ? (
+                    <></>
+                ) : (
+                    <ActionsWrapper>
+                        {hasMainnetNetworksToEnable && (
+                            <StyledAddAccountButton
+                                variant="tertiary"
+                                icon="PLUS"
+                                size="small"
+                                onClick={goToCoinsSettings}
+                            >
+                                <Translation id="TR_ENABLE_MORE_COINS" />
+                            </StyledAddAccountButton>
+                        )}
+                        <Icon
+                            icon="TABLE"
+                            data-test="@dashboard/assets/table-icon"
+                            onClick={setTable}
+                            color={
+                                !dashboardAssetsGridMode
+                                    ? theme.textPrimaryDefault
+                                    : theme.textSubdued
+                            }
+                        />
+                        <Icon
+                            icon="GRID"
+                            data-test="@dashboard/assets/grid-icon"
+                            onClick={setGrid}
+                            color={
+                                dashboardAssetsGridMode
+                                    ? theme.textPrimaryDefault
+                                    : theme.textSubdued
+                            }
+                        />
+                    </ActionsWrapper>
+                )
             }
         >
-            {dashboardAssetsGridMode && (
-                <GridWrapper>
-                    {assetsData.map((asset, index) => (
-                        <AssetCard
-                            index={index}
-                            key={asset.symbol}
-                            network={asset.network}
-                            failed={asset.assetFailed}
-                            cryptoValue={asset.assetBalance.toFixed()}
-                            assetsFiatBalances={assetsFiatBalances}
-                        />
-                    ))}
-                    {discoveryInProgress && <AssetCardSkeleton />}
-                </GridWrapper>
-            )}
-            {!dashboardAssetsGridMode && (
+            {showCards ? (
+                <>
+                    <GridWrapper>
+                        {assetsData.map((asset, index) => (
+                            <AssetCard
+                                index={index}
+                                key={asset.symbol}
+                                network={asset.network}
+                                failed={asset.assetFailed}
+                                cryptoValue={asset.assetBalance.toFixed()}
+                                assetsFiatBalances={assetsFiatBalances}
+                            />
+                        ))}
+                        {discoveryInProgress && <AssetCardSkeleton />}
+                    </GridWrapper>
+                    {isError && (
+                        <ErrorCard>
+                            <InfoMessage>
+                                <StyledIcon icon="WARNING" color={theme.iconAlertRed} size={14} />
+                                <Translation id="TR_DASHBOARD_ASSETS_ERROR" />
+                            </InfoMessage>
+                        </ErrorCard>
+                    )}
+                </>
+            ) : (
                 <StyledCard>
                     <AssetTable
                         assetsData={assetsData}
