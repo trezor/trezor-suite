@@ -78,11 +78,10 @@ const Wrapper = styled.div<{ elevation: Elevation; variant: NotificationCardVari
     align-items: center;
     background: ${({ theme, variant }) => getBackgroundColor(variant, theme)};
     margin-bottom: ${spacingsPx.xs};
+    gap: ${spacingsPx.md};
 `;
 
 const IconWrapper = styled.div`
-    margin-right: ${spacingsPx.md};
-
     @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
         display: none;
     }
