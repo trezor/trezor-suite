@@ -23,7 +23,8 @@ describe('Passphrase with cardano', () => {
         cy.getTestElement('@settings/wallet/network/ada').click();
 
         // starting discovery triggers passphrase dialogue
-        cy.getTestElement('@suite/menu/wallet-index').click();
+        cy.getTestElement('@menu/switch-device').click();
+        cy.getTestElement('@switch-device/add-wallet-button').click();
 
         // enter 'secret passphrase A'
         cy.getTestElement('@passphrase/input').type('secret passphrase A');

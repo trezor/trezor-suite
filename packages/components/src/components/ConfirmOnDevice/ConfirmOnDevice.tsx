@@ -210,7 +210,7 @@ export const ConfirmOnDevice = ({
             <Right>
                 <CloseWrapper>
                     {onCancel && (
-                        <Close onClick={onCancel}>
+                        <Close onClick={onCancel} data-test="@confirm-on-device/close-button">
                             <Icon icon="CROSS" size={16} color={theme.textOnTertiary} />
                         </Close>
                     )}

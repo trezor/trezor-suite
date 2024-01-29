@@ -23,7 +23,7 @@ describe('Passphrase cancel', () => {
             cy.getTestElement('@passphrase/hidden/submit-button').click();
             cy.getTestElement('@suite/modal/confirm-action-on-device');
 
-            cy.getTestElement('@modal/close-button').click();
+            cy.getTestElement('@confirm-on-device/close-button').click();
             cy.getTestElement('@toast/auth-failed');
             // todo: interesting fact is that T1B1 and T2T1 have different text in the toast notification
         });
