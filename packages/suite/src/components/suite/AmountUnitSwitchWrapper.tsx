@@ -47,7 +47,10 @@ export const AmountUnitSwitchWrapper = ({ symbol, children }: AmountUnitSwitchWr
             content={<Translation id={areSatsDisplayed ? 'TR_TO_BTC' : 'TR_TO_SATOSHIS'} />}
         >
             <Container
-                onClick={toggleBitcoinAmountUnits}
+                onClick={e => {
+                    toggleBitcoinAmountUnits();
+                    e.stopPropagation();
+                }}
                 data-test={`amount-unit-switch/${symbol}`}
             >
                 {children}
