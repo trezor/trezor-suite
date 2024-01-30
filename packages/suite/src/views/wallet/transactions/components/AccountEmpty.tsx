@@ -118,7 +118,7 @@ export const AccountEmpty = ({ account }: AccountEmptyProps) => {
                 <Actions>
                     <ActionButton
                         data-test="@accounts/empty-account/receive"
-                        variant="secondary"
+                        variant="primary"
                         onClick={handleNavigateToReceivePage}
                     >
                         <Translation id="TR_RECEIVE_NETWORK" values={{ network: networkSymbol }} />
