@@ -13,6 +13,8 @@ const config: webpack.Configuration = {
     entry: {
         'trezor-connect-webextension': path.resolve(__dirname, '../src/index.ts'),
         'trezor-connect-webextension.min': path.resolve(__dirname, '../src/index.ts'),
+        'trezor-connect-webextension-proxy': path.resolve(__dirname, '../src/proxy/index.ts'),
+        'trezor-connect-webextension-proxy.min': path.resolve(__dirname, '../src/proxy/index.ts'),
     },
     output: {
         filename: '[name].js',

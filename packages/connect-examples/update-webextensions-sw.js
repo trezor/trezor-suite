@@ -53,7 +53,7 @@ rootPaths.forEach(dir => {
             res.body.pipe(dest);
         });
     } else {
-        ['trezor-connect-webextension.js'].forEach(p => {
+        ['trezor-connect-webextension.js', 'trezor-connect-webextension-proxy.js'].forEach(p => {
             fs.copyFileSync(
                 path.join(__dirname, '../connect-webextension', 'build', p),
                 path.join(rootPath, buildFolder, 'vendor', p),
