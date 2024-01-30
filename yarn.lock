@@ -2524,9 +2524,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@expo/cli@npm:0.17.2":
-  version: 0.17.2
-  resolution: "@expo/cli@npm:0.17.2"
+"@expo/cli@npm:0.17.3":
+  version: 0.17.3
+  resolution: "@expo/cli@npm:0.17.3"
   dependencies:
     "@babel/runtime": "npm:^7.20.0"
     "@expo/code-signing-certificates": "npm:0.0.5"
@@ -2605,7 +2605,7 @@ __metadata:
     ws: "npm:^8.12.1"
   bin:
     expo-internal: build/bin/cli
-  checksum: 7eb743dba3ffa1bcff9a00e3295d7047e7b7fad2d38f92b57598de7e8523ec3028114d4565a661bcb01997f7769c42b224f4a34920acd2dc7b0c723bc41798b2
+  checksum: b64fc1da100ef90052c0b77c2e439fe7e38d26b8fc5cebdab2edea54247791849f86b77edb3624834c8cf4fa6b7d4e16b382b4e23cffbd45fe78b67110dcbc6a
   languageName: node
   linkType: hard
 
@@ -7321,7 +7321,7 @@ __metadata:
     "@trezor/theme": "workspace:*"
     babel-plugin-transform-remove-console: "npm:^6.9.4"
     buffer: "npm:^6.0.3"
-    expo: "npm:50.0.3"
+    expo: "npm:50.0.4"
     expo-av: "npm:13.10.3"
     expo-barcode-scanner: "npm:12.9.2"
     expo-build-properties: "npm:^0.11.0"
@@ -18193,12 +18193,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo@npm:50.0.3":
-  version: 50.0.3
-  resolution: "expo@npm:50.0.3"
+"expo@npm:50.0.4":
+  version: 50.0.4
+  resolution: "expo@npm:50.0.4"
   dependencies:
     "@babel/runtime": "npm:^7.20.0"
-    "@expo/cli": "npm:0.17.2"
+    "@expo/cli": "npm:0.17.3"
     "@expo/config": "npm:8.5.4"
     "@expo/config-plugins": "npm:7.8.4"
     "@expo/metro-config": "npm:0.17.3"
@@ -18214,7 +18214,7 @@ __metadata:
     whatwg-url-without-unicode: "npm:8.0.0-3"
   bin:
     expo: bin/cli
-  checksum: ebd7a5ca142655769904a8195d28d432f437139af9c9336fa72548f50c7e7c0c8f56178fd898e24134695535e67dd2aa1e6ecb85c03d9cbc466cb3cbb7be880e
+  checksum: 59b8a917290d35b2c614df2f2bc4942093731c30c787e3272b9b943349790cb2f29ce300668e2060d8c3e3697998babf623ac3db709fe0ca00e94e255881fdfa
   languageName: node
   linkType: hard
 
