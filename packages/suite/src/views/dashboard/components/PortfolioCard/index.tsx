@@ -27,6 +27,11 @@ const Body = styled.div`
     flex: 1;
 `;
 
+const StyledDropdown = styled(Dropdown)`
+    display: flex;
+    height: 38px;
+`;
+
 const SkeletonTransactionsGraphWrapper = styled.div`
     display: flex;
     flex-direction: column;
@@ -99,7 +104,7 @@ const PortfolioCard = memo(() => {
             }
             actions={
                 !isWalletEmpty && !isWalletLoading && !isWalletError ? (
-                    <Dropdown
+                    <StyledDropdown
                         alignMenu="bottom-right"
                         items={[
                             {
