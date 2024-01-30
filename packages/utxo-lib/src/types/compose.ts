@@ -90,8 +90,8 @@ export interface ComposeRequest<
 type ComposedTransactionOutputs<T> = T extends ComposeOutputSendMax
     ? Omit<T, 'type'> & ComposeOutputPayment // NOTE: replace ComposeOutputSendMax (no amount) with ComposeOutputPayment (with amount)
     : T extends ComposeFinalOutput
-    ? T
-    : never;
+      ? T
+      : never;
 
 export interface ComposedTransaction<
     Input extends ComposeInput,

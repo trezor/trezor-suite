@@ -148,8 +148,8 @@ const CoinmarketSavingsSetup = (props: WithSelectedAccountLoadedProps) => {
                     <StyledSelect
                         value={value}
                         label={<Translation id="TR_SAVINGS_UNSUPPORTED_COUNTRY_SELECT_LABEL" />}
-                        options={regional.countriesOptions.filter(
-                            item => supportedCountries?.has(item.value),
+                        options={regional.countriesOptions.filter(item =>
+                            supportedCountries?.has(item.value),
                         )}
                         isSearchable
                         formatOptionLabel={(option: CountryOption) => {

@@ -17,9 +17,10 @@ export type ExtractUndefined<U> = (U extends undefined ? (k: U) => void : never)
     ? I
     : never;
 
-type OptionalParams<C, P> = ExtractUndefined<P> extends undefined
-    ? (channel: C, payload?: P) => void
-    : (channel: C, payload: P) => void;
+type OptionalParams<C, P> =
+    ExtractUndefined<P> extends undefined
+        ? (channel: C, payload?: P) => void
+        : (channel: C, payload: P) => void;
 
 export type StrictChannel = { [name: string]: any };
 

@@ -102,6 +102,7 @@ export type Status = {
     process: boolean;
 };
 
-export type InvokeResult<Payload = undefined> = ExtractUndefined<Payload> extends undefined
-    ? { success: true; payload?: Payload } | { success: false; error: string; code?: string }
-    : { success: true; payload: Payload } | { success: false; error: string; code?: string };
+export type InvokeResult<Payload = undefined> =
+    ExtractUndefined<Payload> extends undefined
+        ? { success: true; payload?: Payload } | { success: false; error: string; code?: string }
+        : { success: true; payload: Payload } | { success: false; error: string; code?: string };

@@ -4,11 +4,8 @@ import type { TrezorConnect } from '../types/api';
 import type { CommonParams } from '../types/params';
 
 // conditionally unwrap TrezorConnect api method Success<T> response
-type UnwrappedResponse<T> = T extends Promise<infer R>
-    ? R extends { success: true; payload: infer P }
-        ? P
-        : never
-    : void;
+type UnwrappedResponse<T> =
+    T extends Promise<infer R> ? (R extends { success: true; payload: infer P } ? P : never) : void;
 
 // https://github.com/microsoft/TypeScript/issues/32164
 // there is no native way how to get Parameters<Fn> for overloaded function
@@ -19,8 +16,8 @@ type OverloadedMethod<T, E extends Record<string, string>> = T extends {
 }
     ? ((params: P1 & E) => R1) | ((params: P2 & E) => R2) // - method IS overloaded, result depends on params (example: getAddress)
     : T extends (...args: infer P) => infer R
-    ? (params: E & P[0]) => R // - method in NOT overloaded, one set of params and one set of result (example: signTransaction)
-    : never;
+      ? (params: E & P[0]) => R // - method in NOT overloaded, one set of params and one set of result (example: signTransaction)
+      : never;
 
 type UnwrappedMethod<T, M extends Record<string, string>> = T extends () => infer R
     ? (params: M & CommonParams) => R // - method doesn't have params (example: dispose, disableWebUSB)

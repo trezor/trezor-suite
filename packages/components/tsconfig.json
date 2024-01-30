@@ -7,7 +7,9 @@
             ]
         },
         "plugins": [
-            { "name": "typescript-styled-plugin" }
+            {
+                "name": "typescript-styled-plugin"
+            }
         ],
         "outDir": "./libDev"
     },

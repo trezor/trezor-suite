@@ -30,9 +30,8 @@ export const blockchainMiddleware = createMiddleware(
 
                 break;
             case TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.BLOCK:
-                const networksWithPendingTransactions = selectNetworksWithPendingTransactions(
-                    getState(),
-                );
+                const networksWithPendingTransactions =
+                    selectNetworksWithPendingTransactions(getState());
                 const symbol = action.payload.coin.shortcut.toLowerCase() as NetworkSymbol;
 
                 if (networksWithPendingTransactions.includes(symbol)) {

@@ -83,15 +83,15 @@ export const splitToQuoteCategories = (
         fixedOK.length > 0
             ? fixedOK.concat(fixedMinMax)
             : okLength > 0
-            ? []
-            : fixedMinMax.concat(fixedError);
+              ? []
+              : fixedMinMax.concat(fixedError);
     const floatQuotes =
         // eslint-disable-next-line no-nested-ternary
         floatOK.length > 0
             ? floatOK.concat(floatMinMax)
             : okLength > 0
-            ? []
-            : floatMinMax.concat(floatError);
+              ? []
+              : floatMinMax.concat(floatError);
     const dexQuotes =
         // eslint-disable-next-line no-nested-ternary
         dexOK.length > 0 ? dexOK.concat(dexMinMax) : okLength > 0 ? [] : dexMinMax.concat(dexError);
