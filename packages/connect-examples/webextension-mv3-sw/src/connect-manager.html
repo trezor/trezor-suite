@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    </head>
+    <body>
+        <button id="tab">New tab</button>
+        <button id="get-features" data-test="get-features">Get features</button>
+        <button id="get-address" data-test="get-address">Get address</button>
+        <div id="result"></div>
+        <!-- TODO: try to load changing content security policy -->
+        <!-- https://developer.chrome.com/docs/extensions/mv3/manifest/content_security_policy/ -->
+        <!-- https://stackoverflow.com/questions/67439012/chrome-extension-manifest-v3-content-security-policy -->
+        <!-- <script type="text/javascript" src="https://staging-connect.trezor.io/9/trezor-connect.js"></script> -->
+        <script src="./vendor/trezor-connect-webextension-proxy.js" type="text/javascript"></script>
+        <script src="./connect-manager.js" type="module"></script>
+    </body>
+</html>
