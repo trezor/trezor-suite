@@ -17,9 +17,9 @@ const result = await TrezorConnect.getAddress(params);
 -   `showOnTrezor` — _optional_ `boolean` determines if address will be displayed on device. Default is set to `true`
 -   `coin` - _optional_ `string` determines network definition specified in [coins.json](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/files/coins.json) file. Coin `shortcut`, `name` or `label` can be used. If `coin` is not set API will try to get network definition from `path`.
 -   `crossChain` — _optional_ `boolean` Advanced feature. Use it only if you are know what you are doing. Allows to generate address between chains. For example Bitcoin path on Litecoin network will display cross chain address in Litecoin format.
--   `multisig` - _optional_ [MultisigRedeemScriptType](https://github.com/trezor/trezor-suite/blob/develop/packages/transport/src/types/messages.ts), redeem script information (multisig addresses only)
--   `scriptType` - _optional_ [InputScriptType](https://github.com/trezor/trezor-suite/blob/develop/packages/transport/src/types/messages.ts), address script type
--   `unlockPath` - _optional_ [PROTO.UnlockPath](https://github.com/trezor/trezor-suite/blob/develop/packages/transport/src/types/messages.ts), the result of [TrezorConnect.unlockPath](./unlockPath.md) method.
+-   `multisig` - _optional_ [MultisigRedeemScriptType](https://github.com/trezor/trezor-suite/blob/develop/packages/protobuf/src/messages.ts), redeem script information (multisig addresses only)
+-   `scriptType` - _optional_ [InputScriptType](https://github.com/trezor/trezor-suite/blob/develop/packages/protobuf/src/messages.ts), address script type
+-   `unlockPath` - _optional_ [PROTO.UnlockPath](https://github.com/trezor/trezor-suite/blob/develop/packages/protobuf/src/messages.ts), the result of [TrezorConnect.unlockPath](./unlockPath.md) method.
 -   `chunkify` — _optional_ `boolean` determines if address will be displayed in chunks of 4 characters. Default is set to `false`
 
 #### Exporting bundle of addresses

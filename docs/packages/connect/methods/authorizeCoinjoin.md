@@ -54,7 +54,7 @@ TrezorConnect.authorizeCoinjoin({
 
 ### Result
 
-[Success type](https://github.com/trezor/trezor-suite/blob/develop/packages/transport/src/types/messages.ts)
+Success type
 
 ```javascript
 {

@@ -20,7 +20,7 @@ TrezorConnect.getFirmwareHash({
 
 ### Result
 
-[FirmwareHash type](https://github.com/trezor/trezor-suite/blob/develop/packages/transport/src/types/messages.ts)
+[FirmwareHash type](https://github.com/trezor/trezor-suite/blob/develop/packages/protobuf/src/messages.ts)
 
 ```javascript
 {
