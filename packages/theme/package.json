@@ -15,7 +15,6 @@
         "prettier": "3.0.3"
     },
     "devDependencies": {
-        "jest": "29.7.0",
         "tsx": "^4.7.0",
         "typescript": "5.3.2"
     }

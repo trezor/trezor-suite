@@ -7,7 +7,7 @@
     "main": "src/index",
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "test:unit": "jest -c ../../jest.config.base.js",
+        "test:unit": "yarn g:jest -c ../../jest.config.base.js",
         "type-check": "tsc --build"
     },
     "dependencies": {
@@ -42,7 +42,6 @@
         "react-redux": "8.0.7"
     },
     "devDependencies": {
-        "jest": "29.7.0",
         "typescript": "5.3.2"
     }
 }

@@ -8,8 +8,8 @@
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "type-check": "tsc --build tsconfig.json",
-        "test:unit": "jest -c ./jest.config.js",
-        "test-unit:watch": "jest -c ../../jest.config.base.js -o --watch"
+        "test:unit": "yarn g:jest -c ./jest.config.js",
+        "test-unit:watch": "yarn g:jest -c ../../jest.config.base.js -o --watch"
     },
     "dependencies": {
         "@reduxjs/toolkit": "1.9.5",
@@ -20,7 +20,6 @@
         "@trezor/utils": "workspace:*"
     },
     "devDependencies": {
-        "jest": "29.7.0",
         "redux-mock-store": "^1.5.4",
         "redux-thunk": "^2.4.2",
         "typescript": "5.3.2"

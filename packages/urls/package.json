@@ -8,11 +8,10 @@
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "type-check": "tsc --build",
-        "test:e2e": "jest -c ../../jest.config.base.js"
+        "test:e2e": "yarn g:jest -c ../../jest.config.base.js"
     },
     "devDependencies": {
         "cross-fetch": "^4.0.0",
-        "jest": "29.7.0",
         "typescript": "5.3.2"
     }
 }

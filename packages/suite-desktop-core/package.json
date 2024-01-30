@@ -10,7 +10,7 @@
         "build:core": "rimraf dist && TS_NODE_PROJECT=\"tsconfig.json\" yarn webpack --config ./webpack/core.webpack.config.ts",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "type-check": "tsc --build tsconfig.json",
-        "test:unit": "jest",
+        "test:unit": "yarn g:jest",
         "test:e2e": "yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts"
     },
     "dependencies": {
@@ -49,7 +49,6 @@
         "cross-fetch": "^4.0.0",
         "electron": "27.0.4",
         "glob": "^10.3.10",
-        "jest": "29.7.0",
         "rimraf": "^5.0.5",
         "terser-webpack-plugin": "^5.3.9",
         "tsx": "^4.7.0",

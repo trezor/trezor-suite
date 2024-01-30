@@ -8,8 +8,8 @@
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "type-check": "tsc --build",
-        "test:unit": "jest -c ../../jest.config.base.js",
-        "test-unit:watch": "jest -c ../../jest.config.base.js -o --watch"
+        "test:unit": "yarn g:jest -c ../../jest.config.base.js",
+        "test-unit:watch": "yarn g:jest -c ../../jest.config.base.js -o --watch"
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
@@ -37,7 +37,6 @@
     },
     "devDependencies": {
         "@types/pdfmake": "^0.2.8",
-        "jest": "29.7.0",
         "typescript": "5.3.2"
     }
 }
