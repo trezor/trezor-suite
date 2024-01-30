@@ -6,12 +6,20 @@ import { formatAmount, formatNetworkAmount, isNftTokenTransfer } from '@suite-co
 import { FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { AnonymitySet, TokenTransfer } from '@trezor/blockchain-link';
-import { Icon, variables, CollapsibleBox } from '@trezor/components';
+import { Icon, CollapsibleBox, useElevation } from '@trezor/components';
 import { UtxoAnonymity } from 'src/components/wallet';
 import { AnalyzeInExplorerBanner } from './AnalyzeInExplorerBanner';
 import { FormattedNftAmount } from 'src/components/suite/FormattedNftAmount';
 import { useExplorerTxUrl } from 'src/hooks/suite/useExplorerTxUrl';
 import { IOAddress } from '../../IOAddress';
+import {
+    Elevation,
+    borders,
+    mapElevationToBackground,
+    mapElevationToBorder,
+    spacingsPx,
+    typography,
+} from '@trezor/theme';
 
 export const blurFix = css`
     margin-left: -10px;
@@ -26,61 +34,61 @@ const Wrapper = styled.div`
     ${blurFix}
 `;
 
-const StyledCollapsibleBox = styled(CollapsibleBox)`
+const StyledCollapsibleBox = styled(CollapsibleBox)<{ elevation: Elevation }>`
     background: none;
     box-shadow: none;
     border-radius: 0;
     margin-bottom: 0;
-    padding-bottom: 16px;
+    padding-bottom: ${spacingsPx.md};
     text-align: left;
     overflow: auto;
     ${blurFix}
 
     & + & {
-        border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
-        padding-top: 16px;
+        border-top: 1px solid ${({ theme, elevation }) => theme[mapElevationToBorder[elevation]]};
+
+        padding-top: ${spacingsPx.md};
     }
 
     ${CollapsibleBox.Header} {
-        padding: 16px 0;
-        border-radius: 12px;
+        padding: ${spacingsPx.md} 0;
+        border-radius: ${borders.radii.sm};
         ${blurFix}
 
         :hover {
-            background-color: ${({ theme }) => theme.BG_GREY};
+            background-color: ${({ theme, elevation }) =>
+                theme[mapElevationToBackground[elevation]]};
         }
     }
 
     ${CollapsibleBox.Heading} {
-        color: ${({ theme }) => theme.TYPE_DARK_GREY};
-        font-size: ${variables.FONT_SIZE.NORMAL};
+        color: ${({ theme }) => theme.textDefault};
     }
 
     ${CollapsibleBox.Content} {
-        padding: 8px 0 0;
+        padding: ${spacingsPx.xs} 0 0;
         border: none;
     }
 `;
 
 const Grid = styled.div`
     display: grid;
-    gap: 12px 1%;
+    gap: ${spacingsPx.sm} 1%;
     grid-template-columns: 46% 6% 46%; /* address > address */
     ${blurFix}
 `;
 
 const RowGrid = styled(Grid)`
-    padding-bottom: 10px;
+    padding-bottom: ${spacingsPx.xs};
 `;
 
 const GridItem = styled.div<{ isAccountOwned?: boolean }>`
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    font-size: ${variables.FONT_SIZE.TINY};
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    ${typography.label}
+    color: ${({ theme }) => theme.textSubdued};
     max-width: 290px;
 
     & + & {
-        margin-top: 10px;
+        margin-top: ${spacingsPx.xs};
     }
 `;
 
@@ -88,7 +96,7 @@ const IOGridItem = styled(GridItem)`
     & + & {
         margin-top: 0;
     }
-    color: ${({ theme }) => theme.BG_GREEN};
+    color: ${({ theme }) => theme.textPrimaryDefault};
 `;
 
 const RowGridItem = styled(GridItem)`
@@ -100,34 +108,33 @@ const RowGridItem = styled(GridItem)`
 `;
 
 const GridGroupHeading = styled.div`
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    margin-bottom: 10px;
+    ${typography.hint}
+    color: ${({ theme }) => theme.textSubdued};
+    margin-bottom: ${spacingsPx.xs};
 `;
 
 const StyledFormattedCryptoAmount = styled(FormattedCryptoAmount)`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    margin-top: 4px;
+    color: ${({ theme }) => theme.textSubdued};
+    margin-top: ${spacingsPx.xxs};
     display: block;
 `;
 
 const StyledFormattedNftAmount = styled(FormattedNftAmount)`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    margin-top: 4px;
+    color: ${({ theme }) => theme.textSubdued};
+    margin-top: ${spacingsPx.xxs};
 `;
 
 const GridGroup = styled.div`
     &:not(:last-of-type) {
-        margin-bottom: 22px;
+        margin-bottom: ${spacingsPx.lg};
     }
 `;
 
 const AmountRow = styled.div`
     display: flex;
     align-items: center;
-    margin-top: 4px;
-    gap: 10px;
+    margin-top: ${spacingsPx.xxs};
+    gap: ${spacingsPx.xs};
 
     ${StyledFormattedCryptoAmount} {
         margin-top: 0;
@@ -432,12 +439,19 @@ const CollapsibleIOSection = ({
     outputs,
     heading,
     opened,
-}: CollapsibleIOSectionProps) =>
-    inputs?.length || outputs?.length ? (
-        <StyledCollapsibleBox heading={heading} isOpen={opened} variant="large">
+}: CollapsibleIOSectionProps) => {
+    const { elevation } = useElevation();
+    return inputs?.length || outputs?.length ? (
+        <StyledCollapsibleBox
+            elevation={elevation}
+            heading={heading}
+            isOpen={opened}
+            variant="large"
+        >
             <IOSectionColumn tx={tx} inputs={inputs} outputs={outputs} />
         </StyledCollapsibleBox>
     ) : null;
+};
 
 interface IODetailsProps {
     tx: WalletAccountTransaction;
