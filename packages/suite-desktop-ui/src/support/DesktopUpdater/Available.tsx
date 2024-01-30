@@ -121,7 +121,7 @@ export const Available = ({ hideWindow, isCancelable, latest }: AvailableProps) 
             onCancel={hideWindow}
             bottomBarComponents={
                 <>
-                    <Button onClick={hideWindow} variant="secondary">
+                    <Button onClick={hideWindow} variant="tertiary">
                         <Translation id="TR_UPDATE_MODAL_NOT_NOW" />
                     </Button>
                     <Button onClick={downloadUpdate} variant="primary">

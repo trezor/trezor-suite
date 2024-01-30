@@ -27,7 +27,7 @@ export const TorModal = ({ onResult }: TorModalProps) => {
             heading={<Translation id="TR_TOR_ENABLE" />}
             bottomBarComponents={
                 <>
-                    <Button variant="secondary" onClick={() => onResult('use-defaults')}>
+                    <Button variant="tertiary" onClick={() => onResult('use-defaults')}>
                         <Translation id="TR_USE_DEFAULT_BACKENDS" />
                     </Button>
 
