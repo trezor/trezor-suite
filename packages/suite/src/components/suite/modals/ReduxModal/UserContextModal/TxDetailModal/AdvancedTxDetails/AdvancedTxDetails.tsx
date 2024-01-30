@@ -1,47 +1,49 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import { Translation } from 'src/components/suite';
-import { variables } from '@trezor/components';
+import { useElevation, variables } from '@trezor/components';
 import { isTestnet } from '@suite-common/wallet-utils';
 import { WalletAccountTransaction, ChainedTransactions } from '@suite-common/wallet-types';
 import { Network } from 'src/types/wallet';
 import { AmountDetails } from './AmountDetails';
 import { IODetails } from './IODetails/IODetails';
 import { ChainedTxs } from '../ChainedTxs';
+import { Elevation, mapElevationToBorder, spacingsPx } from '@trezor/theme';
 
 const Wrapper = styled.div`
-    padding: 0 24px 10px;
+    padding: 0 ${spacingsPx.xl} ${spacingsPx.sm};
 
     ${variables.SCREEN_QUERY.MOBILE} {
-        padding-left: 10px;
-        padding-right: 10px;
+        padding-left: ${spacingsPx.sm};
+        padding-right: ${spacingsPx.sm};
     }
 `;
 
-const TabSelector = styled.div`
+const TabSelector = styled.div<{ elevation: Elevation }>`
     width: 100%;
     text-align: left;
-    margin-bottom: 16px;
-    border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
+    margin-bottom: ${spacingsPx.md};
+    border-bottom: 1px solid ${({ theme, elevation }) => theme[mapElevationToBorder[elevation]]};
 `;
 
-const TabButton = styled.button<{ selected: boolean }>`
+const TabButton = styled.button<{ selected: boolean; elevation: Elevation }>`
     border: none;
     background-color: inherit;
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    padding-top: 12px;
-    padding-bottom: 12px;
-    margin-right: 40px;
+    padding-top: ${spacingsPx.sm};
+    padding-bottom: ${spacingsPx.sm};
+    margin-right: ${spacingsPx.xxxl};
     cursor: pointer;
 
     /* change styles if the button is selected */
     color: ${({ selected, theme }) =>
-        selected ? `${theme.TYPE_GREEN}` : `${theme.TYPE_LIGHT_GREY}`};
-    border-bottom: ${({ selected, theme }) => (selected ? `2px solid ${theme.BG_GREEN}` : 'none')};
+        selected ? `${theme.textPrimaryDefault}` : `${theme.textSubdued}`};
+    border-bottom: ${({ selected, theme }) =>
+        selected ? `2px solid ${theme.borderSecondary}` : 'none'};
 
     :hover {
-        border-bottom: 2px solid ${({ theme, selected }) => !selected && theme.STROKE_GREY};
+        border-bottom: 2px solid
+            ${({ theme, selected, elevation }) =>
+                !selected && theme[mapElevationToBorder[elevation]]};
     }
 `;
 
@@ -73,11 +75,12 @@ export const AdvancedTxDetails = ({
     } else if (selectedTab === 'chained' && chainedTxs) {
         content = <ChainedTxs txs={chainedTxs} explorerUrl={explorerUrl} network={network} />;
     }
-
+    const { elevation } = useElevation();
     return (
         <Wrapper>
-            <TabSelector>
+            <TabSelector elevation={elevation}>
                 <TabButton
+                    elevation={elevation}
                     selected={selectedTab === 'amount'}
                     onClick={() => setSelectedTab('amount')}
                 >
@@ -85,13 +88,18 @@ export const AdvancedTxDetails = ({
                 </TabButton>
 
                 {network.networkType !== 'ripple' && (
-                    <TabButton selected={selectedTab === 'io'} onClick={() => setSelectedTab('io')}>
+                    <TabButton
+                        elevation={elevation}
+                        selected={selectedTab === 'io'}
+                        onClick={() => setSelectedTab('io')}
+                    >
                         <Translation id="TR_INPUTS_OUTPUTS" />
                     </TabButton>
                 )}
 
                 {chainedTxs && (
                     <TabButton
+                        elevation={elevation}
                         selected={selectedTab === 'chained'}
                         onClick={() => setSelectedTab('chained')}
                     >

@@ -24,7 +24,7 @@ export const Sign = ({
     grayscaleColor,
 }: SignProps) => {
     const theme = useTheme();
-    const defaultColor = grayscaleColor ?? theme.TYPE_DARK_GREY;
+    const defaultColor = grayscaleColor ?? theme.textDefault;
 
     if (value === undefined || value === null) {
         return null;
@@ -37,11 +37,13 @@ export const Sign = ({
     }
 
     if (isValuePositive) {
-        return <StyledSign color={grayscale ? defaultColor : theme.TYPE_GREEN}>+</StyledSign>;
+        return (
+            <StyledSign color={grayscale ? defaultColor : theme.textPrimaryDefault}>+</StyledSign>
+        );
     }
 
     if (!isValuePositive && showMinusSign) {
-        return <StyledSign color={grayscale ? defaultColor : theme.TYPE_RED}>–</StyledSign>;
+        return <StyledSign color={grayscale ? defaultColor : theme.textAlertRed}>–</StyledSign>;
     }
     return null;
 };

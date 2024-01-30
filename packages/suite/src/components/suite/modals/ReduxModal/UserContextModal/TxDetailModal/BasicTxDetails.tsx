@@ -1,5 +1,5 @@
 import styled, { useTheme } from 'styled-components';
-import { Icon, variables, CoinLogo, H3 } from '@trezor/components';
+import { Icon, variables, CoinLogo, H3, useElevation } from '@trezor/components';
 import { Translation, FormattedDateWithBullet } from 'src/components/suite';
 import { WalletAccountTransaction, Network } from 'src/types/wallet';
 import {
@@ -12,37 +12,42 @@ import {
 import { TransactionHeader } from 'src/components/wallet/TransactionItem/TransactionHeader';
 import { fromWei } from 'web3-utils';
 import { IOAddress } from './IOAddress';
-import { borders } from '@trezor/theme';
+import {
+    Elevation,
+    borders,
+    mapElevationToBackground,
+    mapElevationToBorder,
+    spacingsPx,
+    typography,
+} from '@trezor/theme';
 
-const Wrapper = styled.div`
-    background-color: ${({ theme }) => theme.BG_GREY};
-    padding: 18px;
+const Wrapper = styled.div<{ elevation: Elevation }>`
+    background: ${({ theme, elevation }) => theme[mapElevationToBackground[elevation]]};
+    padding: ${spacingsPx.lg};
     border-radius: ${borders.radii.xs};
 `;
 
 const Confirmations = styled.div`
     display: flex;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    color: ${({ theme }) => theme.textSubdued};
+    ${typography.hint}
 `;
 
 const StatusWrapper = styled.div`
     display: flex;
-    height: 20px;
+    height: ${spacingsPx.lg};
     align-items: center;
 `;
 
-const HeaderFirstRow = styled.div`
+const HeaderFirstRow = styled.div<{ elevation: Elevation }>`
     display: grid;
-    grid-gap: 10px;
+    grid-gap: ${spacingsPx.sm};
     grid-template-columns: minmax(55px, 70px) auto auto;
     align-items: center;
-    padding-bottom: 28px;
-    padding-right: 6px;
-    border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
+    padding-bottom: ${spacingsPx.xl};
+    padding-right: ${spacingsPx.xs};
+    border-bottom: 1px solid ${({ theme, elevation }) => theme[mapElevationToBorder[elevation]]};
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 
     ${variables.SCREEN_QUERY.MOBILE} {
         grid-template-columns: 55px 1fr fit-content(15px);
@@ -52,11 +57,10 @@ const HeaderFirstRow = styled.div`
 const Grid = styled.div<{ showRbfCols?: boolean }>`
     display: grid;
     border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
-    grid-gap: 12px;
+    grid-gap: ${spacingsPx.sm};
     grid-template-columns: 105px minmax(0, 2.5fr) 90px minmax(0, 2.5fr); /* title value title value */
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    padding: 28px 6px 10px;
+    ${typography.hint}
+    padding: ${spacingsPx.xxl} ${spacingsPx.xs} ${spacingsPx.sm};
     text-align: left;
     align-items: center;
 
@@ -68,28 +72,28 @@ const Grid = styled.div<{ showRbfCols?: boolean }>`
 const Title = styled.div`
     display: inline-flex;
     text-align: left;
-    font-size: ${variables.FONT_SIZE.TINY};
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    ${typography.label}
+    color: ${({ theme }) => theme.textSubdued};
     align-items: center;
 `;
 
 const Value = styled.div`
     display: inline-flex;
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
-    font-size: ${variables.FONT_SIZE.TINY};
+    color: ${({ theme }) => theme.textDefault};
+    ${typography.label}
     overflow: hidden;
     text-overflow: ellipsis;
     font-variant-numeric: tabular-nums;
 `;
 
 const TxidValue = styled.div`
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
-    font-size: ${variables.FONT_SIZE.TINY};
+    color: ${({ theme }) => theme.textDefault};
+    ${typography.label}
 `;
 
-const IconWrapper = styled.div`
-    background-color: ${({ theme }) => theme.BG_WHITE};
-    border-radius: 100px;
+const IconWrapper = styled.div<{ elevation: Elevation }>`
+    background-color: ${({ theme, elevation }) => theme[mapElevationToBorder[elevation]]};
+    border-radius: ${borders.radii.full};
     display: flex;
     align-items: center;
     justify-content: center;
@@ -112,7 +116,7 @@ const NestedIconWrapper = styled(IconWrapper)`
     position: absolute;
     top: 0;
     right: 0;
-    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 20%);
+    box-shadow: ${({ theme }) => theme.boxShadowElevated};
 `;
 
 const TxStatus = styled.div`
@@ -129,20 +133,19 @@ const ConfirmationStatusWrapper = styled.div`
 const TxSentStatus = styled(H3)`
     overflow: hidden;
     text-overflow: ellipsis;
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.textDefault};
 `;
 
 const ConfirmationStatus = styled.div<{ confirmed: boolean; tiny?: boolean }>`
-    color: ${({ confirmed, theme }) => (confirmed ? theme.TYPE_GREEN : theme.TYPE_ORANGE)};
-    font-weight: ${({ tiny }) =>
-        tiny ? variables.FONT_WEIGHT.MEDIUM : variables.FONT_WEIGHT.DEMI_BOLD};
-    font-size: ${({ tiny }) => (tiny ? variables.FONT_SIZE.TINY : variables.FONT_SIZE.SMALL)};
+    color: ${({ confirmed, theme }) =>
+        confirmed ? theme.textPrimaryDefault : theme.textAlertYellow};
+    ${({ tiny }) => (tiny ? typography.label : typography.callout)}
 `;
 
 const Circle = styled.div`
-    margin-left: 5px;
-    margin-right: 5px;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    margin-left: ${spacingsPx.xxs};
+    margin-right: ${spacingsPx.xxs};
+    color: ${({ theme }) => theme.textSubdued};
 `;
 
 const Timestamp = styled.span`
@@ -150,12 +153,12 @@ const Timestamp = styled.span`
 `;
 
 const StyledIcon = styled(Icon)`
-    margin-right: 6px;
+    margin-right: ${spacingsPx.xs};
 `;
 
 const IconPlaceholder = styled.span`
     min-width: 10px;
-    margin-right: 6px;
+    margin-right: ${spacingsPx.xs};
 `;
 
 interface BasicTxDetailsProps {
@@ -178,16 +181,17 @@ export const BasicTxDetails = ({
     const isConfirmed = confirmations > 0 || tx.solanaSpecific?.status === 'confirmed';
     const isFinal = isTxFinal(tx, confirmations);
 
+    const { elevation } = useElevation();
     return (
-        <Wrapper>
-            <HeaderFirstRow>
-                <MainIconWrapper>
+        <Wrapper elevation={elevation}>
+            <HeaderFirstRow elevation={elevation}>
+                <MainIconWrapper elevation={elevation}>
                     <CoinLogo symbol={tx.symbol} size={48} />
 
-                    <NestedIconWrapper>
+                    <NestedIconWrapper elevation={elevation}>
                         <Icon
                             size={14}
-                            color={tx.type === 'failed' ? theme.TYPE_RED : theme.TYPE_DARK_GREY}
+                            color={tx.type === 'failed' ? theme.iconAlertRed : theme.iconDefault}
                             icon={getTxIcon(tx.type)}
                         />
                     </NestedIconWrapper>

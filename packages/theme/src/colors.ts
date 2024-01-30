@@ -40,7 +40,25 @@ const backgroundTertiaryElevationColors = {
     },
 } as const;
 
+const borderElevationColors = {
+    standard: {
+        borderOnNegative: '#eeeeeeff',
+        borderOnElevation0: '#e2e2e2ff',
+        borderOnElevation1: '#eeeeeeff',
+        borderOnElevation2: '#e2e2e2ff',
+        borderOnElevation3: '#eeeeeeff',
+    },
+    dark: {
+        borderOnNegative: '#242524ff',
+        borderOnElevation0: '#1c1e1cff',
+        borderOnElevation1: '#242524ff',
+        borderOnElevation2: '#1c1e1cff',
+        borderOnElevation3: '#242524ff',
+    },
+} as const;
+
 export type BackgroundElevationColor = keyof typeof backgroundElevationColors.standard;
+export type BorderElevationColor = keyof typeof borderElevationColors.standard;
 export type BackgroundTertiaryElevationColor =
     keyof typeof backgroundTertiaryElevationColors.standard;
 
@@ -50,6 +68,13 @@ export const mapElevationToBackground: Record<Elevation, BackgroundElevationColo
     1: 'backgroundSurfaceElevation1',
     2: 'backgroundSurfaceElevation2',
     3: 'backgroundSurfaceElevation3',
+};
+export const mapElevationToBorder: Record<Elevation, BorderElevationColor> = {
+    '-1': 'borderOnNegative', // For example left menu is negative elevation
+    0: 'borderOnElevation0',
+    1: 'borderOnElevation1',
+    2: 'borderOnElevation2',
+    3: 'borderOnElevation3',
 };
 
 // @TODO create iconDefaultInverse (packages/suite/src/components/suite/banners/Banner.tsx)
@@ -108,14 +133,13 @@ export const colorVariants = {
         gradientNeutralBottomFadeSurfaceElevation1End: '#FFFFFF', // Don't use it, use elevation colors
         borderFocus: '#e2e2e2ff',
         borderDashed: '#cbcbcbff',
-        borderOnElevation0: '#e2e2e2ff',
-        borderOnElevation1: '#eeeeeeff',
         borderInverse: '#ffffffff',
         borderSecondary: '#00854dff',
         borderAlertRed: '#cd4949ff',
         borderSubtleInverted: '#ffffff99',
         ...backgroundElevationColors.standard,
         ...backgroundTertiaryElevationColors.standard,
+        ...borderElevationColors.standard,
     },
     dark: {
         transparent: '#00000000',
@@ -170,14 +194,13 @@ export const colorVariants = {
         gradientNeutralBottomFadeSurfaceElevation1End: '#000000', // Don't use it, use elevation colors
         borderFocus: '#242524ff',
         borderDashed: '#242524ff',
-        borderOnElevation0: '#1c1e1cff',
-        borderOnElevation1: '#242524ff',
         borderInverse: '#ffffffff',
         borderSecondary: '#2fbc81ff',
         borderAlertRed: '#ac3e3eff',
         borderSubtleInverted: '#00000099',
         ...backgroundElevationColors.dark,
         ...backgroundTertiaryElevationColors.dark,
+        ...borderElevationColors.dark,
     },
 } as const;
 
