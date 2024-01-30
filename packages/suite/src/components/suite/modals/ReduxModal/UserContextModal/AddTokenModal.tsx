@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState, ChangeEvent } from 'react';
-import styled from 'styled-components';
 import TrezorConnect, { TokenInfo } from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
@@ -11,12 +10,6 @@ import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { isAddressValid } from '@suite-common/wallet-utils';
 import { Account } from 'src/types/wallet';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-
-const Wrapper = styled.div`
-    display: flex;
-    justify-content: center;
-    margin: 24px 0;
-`;
 
 interface AddTokenModalProps {
     onCancel: () => void;
@@ -129,20 +122,19 @@ export const AddTokenModal = ({ onCancel }: AddTokenModalProps) => {
                 </Button>
             }
         >
-            <Wrapper>
-                <Input
-                    label={
-                        <Tooltip content={<Translation id="TR_ADD_TOKEN_TOOLTIP" />} dashed>
-                            <Translation id="TR_ADD_TOKEN_LABEL" />
-                        </Tooltip>
-                    }
-                    placeholder={translationString('TR_ADD_TOKEN_PLACEHOLDER')}
-                    value={contractAddress}
-                    bottomText={error || null}
-                    inputState={getInputState()}
-                    onChange={onChange}
-                />
-            </Wrapper>
+            <Input
+                label={
+                    <Tooltip content={<Translation id="TR_ADD_TOKEN_TOOLTIP" />} dashed>
+                        <Translation id="TR_ADD_TOKEN_LABEL" />
+                    </Tooltip>
+                }
+                placeholder={translationString('TR_ADD_TOKEN_PLACEHOLDER')}
+                value={contractAddress}
+                bottomText={error || null}
+                inputState={getInputState()}
+                onChange={onChange}
+                hasBottomPadding={false}
+            />
         </Modal>
     );
 };

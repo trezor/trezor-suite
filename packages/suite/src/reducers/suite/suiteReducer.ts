@@ -2,9 +2,8 @@ import produce from 'immer';
 
 import { discoveryActions, DeviceRootState, selectDevice } from '@suite-common/wallet-core';
 import type { InvityServerEnvironment } from '@suite-common/invity';
-import { getNumberFromPixelString, versionUtils } from '@trezor/utils';
-import { isWeb, getWindowWidth } from '@trezor/env-utils';
-import { variables } from '@trezor/components';
+import { versionUtils } from '@trezor/utils';
+import { isWeb } from '@trezor/env-utils';
 import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
 import { TRANSPORT, TransportInfo, ConnectSettings } from '@trezor/connect';
 
@@ -107,8 +106,7 @@ const initialState: SuiteState = {
         firmwareTypeBannerClosed: false,
         securityStepsHidden: false,
         dashboardGraphHidden: false,
-        dashboardAssetsGridMode:
-            getWindowWidth() < getNumberFromPixelString(variables.SCREEN_SIZE.SM),
+        dashboardAssetsGridMode: true,
         showDashboardT2B1PromoBanner: true,
         showSettingsDesktopAppPromoBanner: true,
     },

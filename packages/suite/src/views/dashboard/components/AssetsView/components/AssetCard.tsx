@@ -208,7 +208,7 @@ export const AssetCardSkeleton = (props: { animate?: boolean }) => {
                 </CoinAmount>
             </Content>
             <BuyContainerCard>
-                <SkeletonRectangle animate={animate} width="100%" height={66} />
+                <SkeletonRectangle animate={animate} width="100%" height={40} />
             </BuyContainerCard>
         </StyledCard>
     );

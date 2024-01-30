@@ -73,7 +73,7 @@ export const ContentWrapper = styled.div`
     flex: 1;
     width: 100%;
     max-width: ${MAX_CONTENT_WIDTH};
-    padding: ${spacingsPx.lg} ${HORIZONTAL_LAYOUT_PADDINGS} 90px ${HORIZONTAL_LAYOUT_PADDINGS};
+    padding: ${spacingsPx.lg} ${HORIZONTAL_LAYOUT_PADDINGS} 134px ${HORIZONTAL_LAYOUT_PADDINGS};
 
     ${variables.SCREEN_QUERY.MOBILE} {
         padding-bottom: ${spacingsPx.xxxxl};

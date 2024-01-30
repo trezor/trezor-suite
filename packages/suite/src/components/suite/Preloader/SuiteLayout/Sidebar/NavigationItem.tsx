@@ -64,7 +64,8 @@ const Container = styled(NavigationItemBase)<
 export interface NavigationItemProps {
     nameId: TranslationKey;
     icon: IconName;
-    route?: Route['name'];
+    routes?: Route['name'][];
+    goToRoute?: Route['name'];
     preserveParams?: boolean;
     isActive?: boolean;
     dataTest?: string;
@@ -75,7 +76,8 @@ export interface NavigationItemProps {
 export const NavigationItem = ({
     nameId,
     icon,
-    route,
+    routes,
+    goToRoute,
     isActive,
     dataTest,
     className,
@@ -89,18 +91,18 @@ export const NavigationItem = ({
     const handleClick = (e: MouseEvent) => {
         e.stopPropagation();
 
-        if (route) {
-            dispatch(goto(route, preserveParams === true ? { preserveParams } : undefined));
+        if (goToRoute !== undefined) {
+            dispatch(goto(goToRoute, preserveParams === true ? { preserveParams } : undefined));
         }
     };
 
-    const isActiveRoute = activeRoute === route;
+    const isActiveRoute = routes?.some(route => route === activeRoute);
 
     return (
         <Container
             isActive={isActive || isActiveRoute}
             onClick={handleClick}
-            data-test={dataTest! !== undefined ? dataTest : `@suite/menu/${route}`}
+            data-test={dataTest! !== undefined ? dataTest : `@suite/menu/${goToRoute}`}
             className={className}
             tabIndex={0}
             elevation={elevation}

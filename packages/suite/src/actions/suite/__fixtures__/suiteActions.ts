@@ -232,7 +232,7 @@ const initialRun = [
                 firmwareTypeBannerClosed: false,
                 dashboardGraphHidden: false,
                 securityStepsHidden: false,
-                dashboardAssetsGridMode: false,
+                dashboardAssetsGridMode: true,
                 showDashboardT2B1PromoBanner: false,
                 showSettingsDesktopAppPromoBanner: true,
             },

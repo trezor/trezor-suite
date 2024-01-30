@@ -37,7 +37,6 @@ const StyledButton = styled(Button)`
 // todo: typography shall be unified and these ad hoc styles removed..
 const StyledP = styled(Paragraph)`
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
-    margin-bottom: 25px;
 `;
 
 const StyledModal = styled(Modal)`
