@@ -31,7 +31,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "test:unit": "yarn g:jest --verbose -c jest.config.js",
         "type-check": "tsc --build tsconfig.json",
-        "build:lib": "rimraf lib && yarn tsc --build ./tsconfig.lib.json",
+        "build:lib": "yarn g:rimraf lib && yarn tsc --build ./tsconfig.lib.json",
         "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
         "prepublish": "yarn tsx ../../scripts/prepublish.js"
     },
@@ -63,7 +63,6 @@
         "@types/create-hmac": "^1.1.2",
         "@types/wif": "^2.0.4",
         "minimaldata": "^1.0.2",
-        "rimraf": "^5.0.5",
         "tsx": "^4.7.0",
         "typescript": "5.3.2"
     },

@@ -11,7 +11,7 @@
         "dev:run": "yarn electron .",
         "dev:prepare": "yarn build:app:dev",
         "dev:local": "yarn workspace @trezor/suite-build run dev:desktop",
-        "clean": "rimraf ./build-electron && yarn rimraf ./build && yarn rimraf ./dist",
+        "clean": "yarn g:rimraf ./build-electron && yarn g:rimraf ./build && yarn g:rimraf ./dist",
         "build:ui": "yarn workspace @trezor/suite-build run build:desktop",
         "build:core": "yarn workspace @trezor/suite-desktop-core run build:core",
         "build:app": "NODE_ENV=production yarn build:core",
@@ -33,7 +33,6 @@
         "@electron/notarize": "2.1.0",
         "electron": "27.0.4",
         "electron-builder": "24.6.4",
-        "glob": "^10.3.10",
-        "rimraf": "^5.0.5"
+        "glob": "^10.3.10"
     }
 }

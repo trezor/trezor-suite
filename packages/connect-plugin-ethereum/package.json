@@ -31,13 +31,12 @@
     },
     "devDependencies": {
         "@metamask/eth-sig-util": "^7.0.1",
-        "rimraf": "^5.0.5",
         "typescript": "5.3.2"
     },
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "test:unit": "yarn g:jest -c ../../jest.config.base.js",
         "type-check": "tsc --build tsconfig.json",
-        "build:lib": "rimraf ./lib && yarn tsc --build tsconfig.lib.json"
+        "build:lib": "yarn g:rimraf ./lib && yarn tsc --build tsconfig.lib.json"
     }
 }

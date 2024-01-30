@@ -28,7 +28,6 @@
         "tslib": "^2.6.2"
     },
     "devDependencies": {
-        "rimraf": "^5.0.5",
         "stellar-base": "v10.0.0-beta.2",
         "stellar-sdk": "^v11.0.0-beta.3",
         "typescript": "5.3.2"
@@ -40,6 +39,6 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "test:unit": "jest -c ../../jest.config.base.js",
         "type-check": "tsc --build tsconfig.json",
-        "build:lib": "rimraf ./lib && yarn tsc --build tsconfig.lib.json"
+        "build:lib": "yarn g:rimraf ./lib && yarn tsc --build tsconfig.lib.json"
     }
 }

@@ -30,11 +30,11 @@
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "test:e2e": "yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts",
-        "build:lib": "rimraf ./lib && yarn tsc --build tsconfig.lib.json",
+        "build:lib": "yarn g:rimraf ./lib && yarn tsc --build tsconfig.lib.json",
         "build:content-script": "TS_NODE_PROJECT=\"tsconfig.lib.json\" webpack --config ./webpack/content-script.webpack.config.ts",
         "build:inline": "TS_NODE_PROJECT=\"tsconfig.lib.json\" webpack --config ./webpack/inline.webpack.config.ts",
         "build:webextension": "TS_NODE_PROJECT=\"tsconfig.lib.json\" yarn webpack --config ./webpack/prod.webpack.config.ts",
-        "build": "rimraf build && yarn build:content-script &&  yarn build:webextension && yarn build:inline && node ./webpack/inline-content-script.js"
+        "build": "yarn g:rimraf build && yarn build:content-script &&  yarn build:webextension && yarn build:inline && node ./webpack/inline-content-script.js"
     },
     "dependencies": {
         "@trezor/connect": "workspace:*",
@@ -51,7 +51,6 @@
         "@trezor/trezor-user-env-link": "workspace:*",
         "@types/chrome": "latest",
         "copy-webpack-plugin": "^12.0.1",
-        "rimraf": "^5.0.1",
         "terser-webpack-plugin": "^5.3.9",
         "tsx": "^4.7.0",
         "typescript": "^4.9.5",

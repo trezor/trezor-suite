@@ -11,7 +11,7 @@
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "type-check": "tsc --build",
-        "build:lib": "rimraf ./lib && yarn tsc --build tsconfig.lib.json",
+        "build:lib": "yarn g:rimraf ./lib && yarn tsc --build tsconfig.lib.json",
         "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
         "prepublish": "yarn tsx ../../scripts/prepublish.js"
     },
@@ -22,7 +22,6 @@
         "socks-proxy-agent": "6.1.1"
     },
     "devDependencies": {
-        "rimraf": "^5.0.5",
         "ripple-lib": "^1.10.1",
         "tsx": "^4.7.0",
         "typescript": "5.3.2"

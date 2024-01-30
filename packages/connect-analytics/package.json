@@ -11,7 +11,7 @@
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "type-check": "tsc --build",
-        "build:lib": "rimraf lib && yarn tsc --build ./tsconfig.lib.json"
+        "build:lib": "yarn g:rimraf lib && yarn tsc --build ./tsconfig.lib.json"
     },
     "dependencies": {
         "@trezor/analytics": "workspace:*"
