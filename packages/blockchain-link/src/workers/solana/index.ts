@@ -328,14 +328,12 @@ const findTokenAccountOwner = (
     accounts: SubscriptionAccountInfo[],
     accountDescriptor: string,
 ): SubscriptionAccountInfo | undefined =>
-    accounts.find(
-        account =>
-            account.tokens?.find(
-                token =>
-                    token.accounts?.find(
-                        tokenAccount => tokenAccount.publicKey.toString() === accountDescriptor,
-                    ),
+    accounts.find(account =>
+        account.tokens?.find(token =>
+            token.accounts?.find(
+                tokenAccount => tokenAccount.publicKey.toString() === accountDescriptor,
             ),
+        ),
     );
 
 const subscribeAccounts = async (

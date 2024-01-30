@@ -90,9 +90,8 @@ export const initialState: CoinjoinState = {
     },
 };
 
-type ExtractActionPayload<A> = Extract<Action, { type: A }> extends { type: A; payload: infer P }
-    ? P
-    : never;
+type ExtractActionPayload<A> =
+    Extract<Action, { type: A }> extends { type: A; payload: infer P } ? P : never;
 
 const getAccount = (draft: CoinjoinState, accountKey: string) =>
     draft.accounts.find(a => a.key === accountKey);

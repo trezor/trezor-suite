@@ -31,8 +31,8 @@ export const CoinGroup = ({ onToggle, networks, selectedNetworks, className }: C
     const supportedNetworks = networks.filter(network =>
         deviceSupportedNetworkSymbols.includes(network.symbol),
     );
-    const isAtLeastOneActive = supportedNetworks.some(
-        ({ symbol }) => selectedNetworks?.includes(symbol),
+    const isAtLeastOneActive = supportedNetworks.some(({ symbol }) =>
+        selectedNetworks?.includes(symbol),
     );
 
     const onSettings = (symbol: Network['symbol']) => {

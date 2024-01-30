@@ -22,26 +22,26 @@ type MessageType = Message['type'];
 type ResponseType<T extends MessageType> = T extends typeof MESSAGES.GET_INFO
     ? typeof RESPONSES.GET_INFO
     : T extends typeof MESSAGES.GET_BLOCK_HASH
-    ? typeof RESPONSES.GET_BLOCK_HASH
-    : T extends typeof MESSAGES.GET_ACCOUNT_INFO
-    ? typeof RESPONSES.GET_ACCOUNT_INFO
-    : T extends typeof MESSAGES.GET_ACCOUNT_UTXO
-    ? typeof RESPONSES.GET_ACCOUNT_UTXO
-    : T extends typeof MESSAGES.GET_TRANSACTION
-    ? typeof RESPONSES.GET_TRANSACTION
-    : T extends typeof MESSAGES.GET_TRANSACTION_HEX
-    ? typeof RESPONSES.GET_TRANSACTION_HEX
-    : T extends typeof MESSAGES.GET_ACCOUNT_BALANCE_HISTORY
-    ? typeof RESPONSES.GET_ACCOUNT_BALANCE_HISTORY
-    : T extends typeof MESSAGES.ESTIMATE_FEE
-    ? typeof RESPONSES.ESTIMATE_FEE
-    : T extends typeof MESSAGES.PUSH_TRANSACTION
-    ? typeof RESPONSES.PUSH_TRANSACTION
-    : T extends typeof MESSAGES.SUBSCRIBE
-    ? typeof RESPONSES.SUBSCRIBE
-    : T extends typeof MESSAGES.UNSUBSCRIBE
-    ? typeof RESPONSES.UNSUBSCRIBE
-    : never;
+      ? typeof RESPONSES.GET_BLOCK_HASH
+      : T extends typeof MESSAGES.GET_ACCOUNT_INFO
+        ? typeof RESPONSES.GET_ACCOUNT_INFO
+        : T extends typeof MESSAGES.GET_ACCOUNT_UTXO
+          ? typeof RESPONSES.GET_ACCOUNT_UTXO
+          : T extends typeof MESSAGES.GET_TRANSACTION
+            ? typeof RESPONSES.GET_TRANSACTION
+            : T extends typeof MESSAGES.GET_TRANSACTION_HEX
+              ? typeof RESPONSES.GET_TRANSACTION_HEX
+              : T extends typeof MESSAGES.GET_ACCOUNT_BALANCE_HISTORY
+                ? typeof RESPONSES.GET_ACCOUNT_BALANCE_HISTORY
+                : T extends typeof MESSAGES.ESTIMATE_FEE
+                  ? typeof RESPONSES.ESTIMATE_FEE
+                  : T extends typeof MESSAGES.PUSH_TRANSACTION
+                    ? typeof RESPONSES.PUSH_TRANSACTION
+                    : T extends typeof MESSAGES.SUBSCRIBE
+                      ? typeof RESPONSES.SUBSCRIBE
+                      : T extends typeof MESSAGES.UNSUBSCRIBE
+                        ? typeof RESPONSES.UNSUBSCRIBE
+                        : never;
 type Reply<T extends MessageType> = Without<Extract<Response, { type: ResponseType<T> }>, 'id'>;
 
 const onRequest = async <T extends Message>(

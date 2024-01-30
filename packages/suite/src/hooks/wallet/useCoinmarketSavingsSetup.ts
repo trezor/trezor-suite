@@ -42,8 +42,8 @@ export const useSavingsSetup = ({
     const providers = useSelector(
         state => state.wallet.coinmarket.savings.savingsInfo?.savingsList?.providers,
     );
-    const userCountry = useSelector(
-        state => state.wallet.coinmarket.savings.savingsInfo?.country?.toUpperCase(),
+    const userCountry = useSelector(state =>
+        state.wallet.coinmarket.savings.savingsInfo?.country?.toUpperCase(),
     );
     const savingsTrade = useSelector(state => state.wallet.coinmarket.savings.savingsTrade);
     const isSavingsTradeLoading = useSelector(

@@ -4,8 +4,8 @@ import { AggregatedAccountHistory, AggregatedDashboardHistory } from 'src/types/
 export type ObjectType<T> = T extends 'account'
     ? AggregatedAccountHistory
     : T extends 'dashboard'
-    ? AggregatedDashboardHistory
-    : never;
+      ? AggregatedDashboardHistory
+      : never;
 
 export type TypeName = 'account' | 'dashboard';
 

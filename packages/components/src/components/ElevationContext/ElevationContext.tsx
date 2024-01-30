@@ -24,8 +24,8 @@ export const useElevation = (forceElevation?: Elevation) => {
             forceElevation !== undefined
                 ? forceElevation
                 : elevation !== null
-                ? nextElevation[elevation]
-                : 0,
+                  ? nextElevation[elevation]
+                  : 0,
         [elevation, forceElevation],
     );
 

@@ -451,9 +451,8 @@ export const startDescriptorPreloadedDiscoveryThunk = createThunk(
 
         // For development purposes, you can disable some networks to have quicker discovery in dev utils
         if (isDebugEnv()) {
-            const disabledNetworkSymbols = selectDisabledDiscoveryNetworkSymbolsForDevelopment(
-                getState(),
-            );
+            const disabledNetworkSymbols =
+                selectDisabledDiscoveryNetworkSymbolsForDevelopment(getState());
             supportedNetworks = supportedNetworks.filter(
                 n => !disabledNetworkSymbols.includes(n.symbol),
             );

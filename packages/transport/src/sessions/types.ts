@@ -93,8 +93,8 @@ export interface HandleMessageApi {
 type UnwrapParams<T, Fn> = Fn extends () => any
     ? Params & { type: T }
     : Fn extends (payload: infer P) => any
-    ? Params & { type: T; payload: P }
-    : never;
+      ? Params & { type: T; payload: P }
+      : never;
 
 type UnwrappedParams = {
     [K in keyof HandleMessageApi]: UnwrapParams<K, HandleMessageApi[K]>;

@@ -196,8 +196,8 @@ export const selectPendingAccountAddresses = memoizeWithArgs(
         const pendingAddresses: string[] = [];
         const pendingTxs = accountTransactions.filter(isPending);
         pendingTxs.forEach(t =>
-            t.targets.forEach(
-                target => target.addresses?.forEach(a => pendingAddresses.unshift(a)),
+            t.targets.forEach(target =>
+                target.addresses?.forEach(a => pendingAddresses.unshift(a)),
             ),
         );
         return pendingAddresses;
