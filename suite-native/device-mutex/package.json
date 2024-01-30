@@ -11,6 +11,6 @@
     "scripts": {
         "type-check": "tsc --build",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "test:unit": "yarn g:jest -c ../../jest.config.base.js --passWithNoTests"
+        "test:unit": "yarn g:jest -c ../../jest.config.base.js"
     }
 }
