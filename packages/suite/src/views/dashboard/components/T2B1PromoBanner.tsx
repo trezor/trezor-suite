@@ -31,7 +31,6 @@ const BannerWrapper = styled(motion.div)`
     height: 168px;
     width: 100%;
     border-radius: 12px;
-    margin-top: 16px;
     padding-left: 24px;
     padding-right: 24px;
     overflow: hidden;
@@ -242,7 +241,7 @@ export const T2B1PromoBanner = () => {
         });
 
     const promoBannerAnimationConfig = {
-        initial: { opacity: 1, transform: 'scale(1)', marginBottom: -18 },
+        initial: { opacity: 1, transform: 'scale(1)' },
         exit: { opacity: 0, transform: 'scale(0.7)', marginBottom: -184 },
         transition: {
             duration: 0.33,
