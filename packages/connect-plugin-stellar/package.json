@@ -38,7 +38,7 @@
     },
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "test:unit": "jest -c ../../jest.config.base.js --passWithNoTests",
+        "test:unit": "jest -c ../../jest.config.base.js",
         "type-check": "tsc --build tsconfig.json",
         "build:lib": "rimraf ./lib && yarn tsc --build tsconfig.lib.json"
     }

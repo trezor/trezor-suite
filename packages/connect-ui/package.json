@@ -8,7 +8,6 @@
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "lint:styles": "npx stylelint './src/**/*{.ts,.tsx}' --cache --config ../../.stylelintrc",
-        "test:unit": "yarn g:jest -c ../../jest.config.base.js --passWithNoTests",
         "type-check": "tsc --build"
     },
     "dependencies": {

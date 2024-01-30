@@ -7,7 +7,6 @@
     "main": "src/index",
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "test:unit": "jest -c ../../jest.config.native.js --passWithNoTests",
         "type-check": "tsc --build"
     },
     "dependencies": {
