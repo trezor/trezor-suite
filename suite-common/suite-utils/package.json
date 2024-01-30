@@ -24,7 +24,7 @@
         "date-fns": "^2.30.0"
     },
     "devDependencies": {
-        "jest": "29.6.4",
+        "jest": "29.7.0",
         "typescript": "5.3.2"
     }
 }
