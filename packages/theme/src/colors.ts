@@ -3,9 +3,8 @@
 import { Elevation } from './elevation';
 import { CSSColor } from './types';
 
-/**
- * Never use directly, use ElevationContext.
- */
+// --------- Background ---------
+
 const backgroundElevationColors = {
     standard: {
         backgroundSurfaceElevationNegative: '#eeeeeeff',
@@ -22,6 +21,18 @@ const backgroundElevationColors = {
         backgroundSurfaceElevation3: '#242524ff',
     },
 } as const;
+
+export type BackgroundElevationColor = keyof typeof backgroundElevationColors.standard;
+
+export const mapElevationToBackground: Record<Elevation, BackgroundElevationColor> = {
+    '-1': 'backgroundSurfaceElevationNegative', // For example left menu is negative elevation
+    0: 'backgroundSurfaceElevation0',
+    1: 'backgroundSurfaceElevation1',
+    2: 'backgroundSurfaceElevation2',
+    3: 'backgroundSurfaceElevation3',
+};
+
+// --------- Buttons ---------
 
 const backgroundTertiaryElevationColors = {
     standard: {
@@ -40,6 +51,11 @@ const backgroundTertiaryElevationColors = {
     },
 } as const;
 
+export type BackgroundTertiaryElevationColor =
+    keyof typeof backgroundTertiaryElevationColors.standard;
+
+// --------- Borders ---------
+
 const borderElevationColors = {
     standard: {
         borderOnNegative: '#eeeeeeff',
@@ -57,18 +73,8 @@ const borderElevationColors = {
     },
 } as const;
 
-export type BackgroundElevationColor = keyof typeof backgroundElevationColors.standard;
 export type BorderElevationColor = keyof typeof borderElevationColors.standard;
-export type BackgroundTertiaryElevationColor =
-    keyof typeof backgroundTertiaryElevationColors.standard;
 
-export const mapElevationToBackground: Record<Elevation, BackgroundElevationColor> = {
-    '-1': 'backgroundSurfaceElevationNegative', // For example left menu is negative elevation
-    0: 'backgroundSurfaceElevation0',
-    1: 'backgroundSurfaceElevation1',
-    2: 'backgroundSurfaceElevation2',
-    3: 'backgroundSurfaceElevation3',
-};
 export const mapElevationToBorder: Record<Elevation, BorderElevationColor> = {
     '-1': 'borderOnNegative', // For example left menu is negative elevation
     0: 'borderOnElevation0',
@@ -76,6 +82,8 @@ export const mapElevationToBorder: Record<Elevation, BorderElevationColor> = {
     2: 'borderOnElevation2',
     3: 'borderOnElevation3',
 };
+
+// ---------------------------
 
 // @TODO create iconDefaultInverse (packages/suite/src/components/suite/banners/Banner.tsx)
 
@@ -138,6 +146,7 @@ export const colorVariants = {
         borderAlertRed: '#cd4949ff',
         borderSubtleInverted: '#ffffff99',
         ...backgroundElevationColors.standard,
+        ...borderElevationColors.standard,
         ...backgroundTertiaryElevationColors.standard,
         ...borderElevationColors.standard,
     },
@@ -199,6 +208,7 @@ export const colorVariants = {
         borderAlertRed: '#ac3e3eff',
         borderSubtleInverted: '#00000099',
         ...backgroundElevationColors.dark,
+        ...borderElevationColors.dark,
         ...backgroundTertiaryElevationColors.dark,
         ...borderElevationColors.dark,
     },

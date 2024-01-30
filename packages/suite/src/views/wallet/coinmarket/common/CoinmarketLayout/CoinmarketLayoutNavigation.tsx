@@ -6,10 +6,10 @@ import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReduce
 import { FirmwareType } from '@trezor/connect';
 import { TranslationKey } from '@suite-common/intl-types';
 import { Route } from '@suite-common/suite-types';
-import { borders, spacingsPx, typography } from '@trezor/theme';
+import { Elevation, borders, spacingsPx, mapElevationToBorder, typography } from '@trezor/theme';
 import { NavigationItem } from '../../../../../components/suite/Preloader/SuiteLayout/Sidebar/NavigationItem';
 import { IconName } from '@suite-common/icons';
-import { variables } from '@trezor/components';
+import { useElevation, variables } from '@trezor/components';
 
 const List = styled.div`
     display: flex;
@@ -36,18 +36,24 @@ const NavListItem = styled(NavigationItem)`
             : ''}
 `;
 
-const Divider = styled.div`
+const StyledDivider = styled.div<{ elevation: Elevation }>`
     margin: ${spacingsPx.xxs} 0; /* gap xxs + margin xxs = spacing xs around divider */
     width: 100%;
-    border-bottom: 1px solid ${({ theme }) => theme.borderOnElevation0};
+    border-bottom: 1px solid ${({ theme, elevation }) => theme[mapElevationToBorder[elevation]]};
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
         margin: 0 ${spacingsPx.xxs}; /* gap xxs + margin xxs = spacing xs around divider */
         flex-direction: row;
         border-bottom: 0;
-        border-right: 1px solid ${({ theme }) => theme.borderOnElevation0};
+        border-right: 1px solid ${({ theme, elevation }) => theme[mapElevationToBorder[elevation]]};
     }
 `;
+
+const Divider = () => {
+    const { elevation } = useElevation();
+
+    return <StyledDivider elevation={elevation} />;
+};
 
 export const CoinmarketLayoutNavigation = () => {
     const routeName = useSelector(state => state.router.route?.name);
