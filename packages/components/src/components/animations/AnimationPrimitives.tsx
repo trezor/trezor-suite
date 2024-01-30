@@ -1,21 +1,21 @@
 import { borders } from '@trezor/theme';
-import styled, { css } from 'styled-components';
+import styled, { CSSProperties, css } from 'styled-components';
 
 export type Shape = 'CIRCLE' | 'ROUNDED' | 'ROUNDED-SMALL';
 
-export const AnimationWrapper = styled.div<{ size?: number; shape?: Shape }>`
-    width: 100%;
+export const AnimationWrapper = styled.div<{
+    height?: CSSProperties['height'];
+    width?: CSSProperties['width'];
+    shape?: Shape;
+}>`
     overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
 
-    ${({ size }) =>
-        size &&
-        css`
-            width: max-content;
-            height: ${size}px;
-        `}
+    width: ${({ width }) => width};
+    height: ${({ height }) => height};
+
     ${({ shape }) =>
         shape === 'CIRCLE' &&
         css`

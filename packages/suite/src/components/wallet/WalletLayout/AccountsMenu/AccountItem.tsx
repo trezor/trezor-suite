@@ -35,7 +35,6 @@ const Wrapper = styled(NavigationItemBase)<WrapperProps>`
 `;
 
 export const Left = styled.div`
-    padding-top: 3px;
     position: relative;
     display: flex;
     flex-direction: column;
@@ -66,8 +65,8 @@ const AccountName = styled.div`
     overflow-x: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    ${typography.highlight};
-    color: ${({ theme }) => theme.textDefault};
+    ${typography.hint};
+    color: ${({ theme }) => theme.textSubdued};
     line-height: 1.5;
     font-variant-numeric: tabular-nums;
 `;

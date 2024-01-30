@@ -34,7 +34,8 @@ export const ConfirmedOnTrezor = ({ device }: ConfirmedOnTrezorProps) => {
             {deviceModelInternal === DeviceModelInternal.T2B1 && (
                 <DeviceAnimation
                     type="ROTATE"
-                    size={34}
+                    height="34px"
+                    width="34px"
                     deviceModelInternal={deviceModelInternal}
                     deviceUnitColor={device?.features?.unit_color}
                 />
