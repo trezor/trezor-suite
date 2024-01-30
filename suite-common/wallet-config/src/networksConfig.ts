@@ -410,6 +410,7 @@ export const networks = {
             account: 'https://explorer.blockfrost.dev/account/',
             token: 'https://explorer.blockfrost.dev/token/',
             queryString: '',
+            address: 'https://explorer.blockfrost.dev/account/',
         },
         support: {
             [DeviceModelInternal.T2T1]: '2.4.3',
@@ -441,6 +442,7 @@ export const networks = {
             account: 'https://testnet-explorer.blockfrost.dev/account/',
             token: 'https://testnet-explorer.blockfrost.dev/token/',
             queryString: '',
+            address: 'https://testnet-explorer.blockfrost.dev/account/',
         },
         support: {
             [DeviceModelInternal.T2T1]: '2.4.3',

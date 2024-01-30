@@ -12,6 +12,7 @@ import { AnalyzeInExplorerBanner } from './AnalyzeInExplorerBanner';
 import { FormattedNftAmount } from 'src/components/suite/FormattedNftAmount';
 import { useExplorerTxUrl } from 'src/hooks/suite/useExplorerTxUrl';
 import { IOAddress } from '../../IOAddress';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 
 export const blurFix = css`
     margin-left: -10px;
@@ -152,7 +153,7 @@ const IOGridRow = ({
 }: IOGridRow) => {
     const anonymity = addresses?.length && anonymitySet?.[addresses[0]];
 
-    const { explorerTxUrl, explorerUrlQueryString } = useExplorerTxUrl();
+    const { explorerTxUrl, explorerUrlQueryString } = useExplorerTxUrl(symbol);
 
     return (
         <GridItem isAccountOwned={isAccountOwned}>
@@ -217,7 +218,7 @@ interface GridRowGroupComponentProps {
 
 const GridRowGroupComponent = ({ from, to, symbol, amount }: GridRowGroupComponentProps) => {
     const theme = useTheme();
-    const { explorerTxUrl, explorerUrlQueryString } = useExplorerTxUrl();
+    const { explorerTxUrl, explorerUrlQueryString } = useExplorerTxUrl(symbol as NetworkSymbol);
 
     return (
         <RowGrid>
@@ -451,7 +452,7 @@ export const IODetails = ({ tx }: IODetailsProps) => {
     if (network?.networkType === 'ethereum') {
         return (
             <Wrapper>
-                <AnalyzeInExplorerBanner txid={tx.txid} />
+                <AnalyzeInExplorerBanner txid={tx.txid} symbol={tx.symbol} />
                 <BalanceDetailsRow tx={tx} />
                 <EthereumSpecificBalanceDetailsRow tx={tx} />
             </Wrapper>
@@ -461,7 +462,7 @@ export const IODetails = ({ tx }: IODetailsProps) => {
     if (network?.networkType === 'solana') {
         return (
             <Wrapper>
-                <AnalyzeInExplorerBanner txid={tx.txid} />
+                <AnalyzeInExplorerBanner txid={tx.txid} symbol={tx.symbol} />
                 <IOSectionColumn tx={tx} inputs={tx.details.vin} outputs={tx.details.vout} />
                 <SolanaSpecificBalanceDetailsRow tx={tx} />
             </Wrapper>
@@ -471,7 +472,7 @@ export const IODetails = ({ tx }: IODetailsProps) => {
     if (tx.type === 'joint') {
         return (
             <Wrapper>
-                <AnalyzeInExplorerBanner txid={tx.txid} />
+                <AnalyzeInExplorerBanner txid={tx.txid} symbol={tx.symbol} />
                 <CollapsibleIOSection
                     heading={<Translation id="TR_MY_INPUTS_AND_OUTPUTS" />}
                     opened
@@ -491,7 +492,7 @@ export const IODetails = ({ tx }: IODetailsProps) => {
 
     return (
         <Wrapper>
-            <AnalyzeInExplorerBanner txid={tx.txid} />
+            <AnalyzeInExplorerBanner txid={tx.txid} symbol={tx.symbol} />
             <IOSectionColumn tx={tx} inputs={tx.details.vin} outputs={tx.details.vout} />
         </Wrapper>
     );

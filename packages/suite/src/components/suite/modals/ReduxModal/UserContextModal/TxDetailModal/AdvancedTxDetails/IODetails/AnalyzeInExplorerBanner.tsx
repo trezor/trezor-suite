@@ -4,6 +4,7 @@ import { darken } from 'polished';
 import { Button, Icon, Link, variables, Warning } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 
 const StyledWarning = styled(Warning)`
     margin-bottom: 16px;
@@ -54,14 +55,13 @@ const StyledButton = styled(Button)`
 
 interface AnalyzeInExplorerBannerProps {
     txid: string;
+    symbol: NetworkSymbol;
 }
 
-export const AnalyzeInExplorerBanner = ({ txid }: AnalyzeInExplorerBannerProps) => {
+export const AnalyzeInExplorerBanner = ({ txid, symbol }: AnalyzeInExplorerBannerProps) => {
     const theme = useTheme();
 
-    const { selectedAccount } = useSelector(state => state.wallet);
-    const { network } = selectedAccount;
-    const explorerUrl = network?.explorer.tx;
+    const explorerUrl = useSelector(state => state.wallet.blockchain[symbol].explorer.tx);
 
     return (
         <StyledWarning variant="info">
