@@ -209,7 +209,7 @@ TrezorConnect.tezosSignTransaction({
 
 ### Result
 
-[TezosSignedTx type](https://github.com/trezor/trezor-suite/blob/develop/packages/transport/src/types/messages.ts)
+[TezosSignedTx type](https://github.com/trezor/trezor-suite/blob/develop/packages/protobuf/src/messages.ts)
 
 ```javascript
 {
