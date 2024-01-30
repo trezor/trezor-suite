@@ -110,7 +110,6 @@ export const Textarea = ({
             className={className}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
-            data-test={dataTest}
             hasBottomPadding={hasBottomPadding === true && bottomText === null}
         >
             <TopAddons isHovered={isHovered} hoverAddon={labelHoverAddon} addonRight={labelRight} />
@@ -125,6 +124,7 @@ export const Textarea = ({
                     disabled={isDisabled}
                     inputState={inputState}
                     rows={rows}
+                    data-test={dataTest}
                     placeholder={placeholder || ''} // needed for uncontrolled inputs
                     ref={innerRef}
                     {...rest}

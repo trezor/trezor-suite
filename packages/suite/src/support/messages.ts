@@ -2207,11 +2207,6 @@ export default defineMessages({
         description: 'Prompt to user to reconnect his device.',
         id: 'TR_RECONNECT_YOUR_DEVICE',
     },
-    TR_WARNING: {
-        defaultMessage: 'Warning',
-        description: 'Device status',
-        id: 'TR_WARNING',
-    },
     TR_CONNECTED: {
         defaultMessage: 'Connected',
         description: 'Device status',
@@ -4365,10 +4360,6 @@ export default defineMessages({
         id: 'TR_INACTIVE_COINS',
         defaultMessage: 'Not activated yet',
     },
-    TR_ACTIVATE_COINS: {
-        id: 'TR_ACTIVATE_COINS',
-        defaultMessage: 'Activate more coins',
-    },
     TR_COIN_SETTINGS: {
         id: 'TR_COIN_SETTINGS',
         defaultMessage: 'Coin settings',
@@ -5392,10 +5383,6 @@ export default defineMessages({
         id: 'TR_NAV_SAVINGS',
         defaultMessage: 'Save {cryptoCurrencyName}',
     },
-    TR_NAV_SAVINGS_BADGE: {
-        id: 'TR_NAV_SAVINGS_BADGE',
-        defaultMessage: 'New',
-    },
     TR_NAV_INVITY: {
         id: 'TR_NAV_INVITY',
         defaultMessage: 'Invity',
@@ -5423,10 +5410,6 @@ export default defineMessages({
     TR_TOKENS: {
         id: 'TR_TOKENS',
         defaultMessage: 'Tokens',
-    },
-    TR_TOKENS_COUNT: {
-        id: 'TR_TOKENS_COUNT',
-        defaultMessage: '{count} {count, plural, one {token} other {tokens}}',
     },
     TR_TOKENS_ADD: {
         id: 'TR_TOKENS_ADD',
@@ -5624,10 +5607,6 @@ export default defineMessages({
     LOCKTIME_IS_NOT_SET: {
         id: 'LOCKTIME_IS_NOT_SET',
         defaultMessage: 'Locktime not set',
-    },
-    LOCKTIME_IS_NOT_NUMBER: {
-        id: 'LOCKTIME_IS_NOT_NUMBER',
-        defaultMessage: 'Locktime is not a number',
     },
     LOCKTIME_IS_NOT_INTEGER: {
         id: 'LOCKTIME_IS_NOT_INTEGER',
@@ -7470,10 +7449,6 @@ export default defineMessages({
     TR_EXCEEDS_MAX: {
         id: 'TR_EXCEEDS_MAX',
         defaultMessage: 'Exceeds max length',
-    },
-    TR_ADDRESS_FORMAT: {
-        id: 'TR_ADDRESS_FORMAT',
-        defaultMessage: 'Correct address format',
     },
     TR_ABORT: {
         id: 'TR_ABORT',
