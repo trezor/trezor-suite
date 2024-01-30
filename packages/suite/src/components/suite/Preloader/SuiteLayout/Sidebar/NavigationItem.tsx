@@ -2,13 +2,7 @@ import styled, { css } from 'styled-components';
 import { IconName } from '@suite-common/icons';
 import { Icon } from '@suite-common/icons/src/webComponents';
 import { ExtendedMessageDescriptor, TranslationKey } from '@suite-common/intl-types';
-import {
-    Elevation,
-    borders,
-    mapElevationToBackground,
-    nextElevation,
-    spacingsPx,
-} from '@trezor/theme';
+import { Elevation, borders, mapElevationToBackground, spacingsPx } from '@trezor/theme';
 import { getFocusShadowStyle } from '@trezor/components/src/utils/utils';
 import { Translation } from 'src/components/suite/Translation';
 import { Route } from '@suite-common/suite-types';
@@ -42,7 +36,7 @@ const Container = styled(NavigationItemBase)<
     ${({ theme, isActive, elevation }) =>
         isActive
             ? css`
-                  background: ${theme[mapElevationToBackground[nextElevation[elevation]]]};
+                  background-color: ${theme[mapElevationToBackground[elevation]]};
                   box-shadow: ${theme.boxShadowBase};
                   color: ${theme.textDefault};
 
