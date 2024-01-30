@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Link, Tooltip, variables } from '@trezor/components';
+import { Link, Tooltip } from '@trezor/components';
 import { INVITY_SCHEDULE_OF_FEES } from '@trezor/urls';
 import { Translation } from 'src/components/suite';
 import { typography } from '@trezor/theme';
@@ -11,20 +11,9 @@ const StyledTooltip = styled(Tooltip)`
 `;
 
 const StyledLink = styled(Link)`
-    background: none !important;
-    border: none;
-    padding: 0 !important;
-    cursor: pointer;
-    color: ${({ theme }) => theme.TYPE_LIGHTER_GREY};
-    font-size: ${variables.FONT_SIZE.TINY};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    display: inline;
-    align-items: center;
     text-decoration: underline;
-
-    :hover {
-        opacity: 0.8;
-    }
+    ${typography.hint}
+    color: ${({ theme }) => theme.textDefaultInverse};
 `;
 
 export const AllFeesIncluded = () => (
