@@ -18,25 +18,25 @@
 
 /packages/components @dahaca @matejkriz
 
-/packages/connect @mroz22 @szymonlesisz
+/packages/connect @mroz22 @szymonlesisz @martykan
 
-/packages/connect-common @mroz22 @szymonlesisz
+/packages/connect-common @mroz22 @szymonlesisz @martykan
 
-/packages/connect-examples @mroz22 @szymonlesisz
+/packages/connect-examples @mroz22 @szymonlesisz @martykan
 
-/packages/connect-explorer @mroz22 @szymonlesisz
+/packages/connect-explorer @mroz22 @szymonlesisz @martykan
 
-/packages/connect-iframe @mroz22 @szymonlesisz
+/packages/connect-iframe @mroz22 @szymonlesisz @martykan
 
-/packages/connect-plugin-ethereum @mroz22 @szymonlesisz
+/packages/connect-plugin-ethereum @mroz22 @szymonlesisz @martykan
 
-/packages/connect-plugin-stellar @mroz22 @szymonlesisz
+/packages/connect-plugin-stellar @mroz22 @szymonlesisz @martykan
 
-/packages/connect-popup @mroz22 @szymonlesisz
+/packages/connect-popup @mroz22 @szymonlesisz @martykan
 
-/packages/connect-web @mroz22 @szymonlesisz
+/packages/connect-web @mroz22 @szymonlesisz @martykan
 
-/packages/connect-webextension @mroz22 @karliatto
+/packages/connect-webextension @mroz22 @karliatto @martykan
 
 /packages/icons @trezor/suite-mobile
 
