@@ -15,7 +15,7 @@ describe('Database migration', () => {
      * 6. navigate to the wallet overview and verify that the remembered wallet is still present
      * 7. navigate to Accounts, click on the first btc account and verify that txs are still present
      * and the same as in the old app
-     * 8. click on the Recieve btn and verify that the address displays normally
+     * 8. click on the Receive btn and verify that the address displays normally
      * 9. click on the Send btn and verify that the form is not broken
      * 10. verify that a dark theme is still applied
      */
@@ -76,6 +76,11 @@ describe('Database migration', () => {
         cy.getTestElement('@discovery/loader').should('not.exist');
         cy.discoveryShouldFinish();
 
+        // TODO: After Suite Empower is released this line needs to be changed
+        //       to something like: `cy.getTestElement('@account-menu/btc/normal/0').click();`
+        //       The test currently still works with tagged release version that has old selectors
+        //       from before the redesign.
+        //
         cy.getTestElement('@suite/menu/wallet-index').click();
 
         // in the Send form, fill in a btc address
@@ -90,7 +95,7 @@ describe('Database migration', () => {
             .first()
             .invoke('text')
             .as('firstTxLabel');
-        // remember the walllet
+        // remember the wallet
         cy.getTestElement('@menu/switch-device').click();
         cy.contains(hiddenWalletSelector, 'Hidden wallet #1')
             .find('[data-test*="toggle-remember-switch"]')
@@ -103,7 +108,7 @@ describe('Database migration', () => {
         // TO:
         cy.visit(baseUrl + to, {});
         cy.getTestElement('@dashboard/graph', { timeout: 40000 }).should('be.visible');
-        cy.getTestElement('@suite/menu/wallet-index').click();
+        cy.getTestElement('@account-menu/btc/normal/0').click();
 
         cy.getTestElement('@menu/switch-device').click();
         cy.getTestElement('@deviceStatus-disconnected');
@@ -112,7 +117,7 @@ describe('Database migration', () => {
 
         cy.get('[data-test^="@metadata/outputLabel"]').first().should('be.visible');
 
-        // check the first tx and verify it agains the stored one
+        // check the first tx and verify it against the stored one
         cy.get('[data-test^="@metadata/outputLabel"]')
             .first()
             .invoke('text')
@@ -144,7 +149,7 @@ describe('Database migration', () => {
             .should('eq', testData.btcAddress);
         cy.getTestElement('@wallet/menu/close-button').last().click();
 
-        cy.get('body').should('have.css', 'background-color', 'rgb(24, 25, 26)');
+        cy.get('body').should('have.css', 'background-color', 'rgb(10, 10, 10)');
     });
 });
 
