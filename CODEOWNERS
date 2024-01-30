@@ -85,3 +85,5 @@
 /suite-common/graph @trezor/suite-mobile @Nodonisko
 
 /packages/connect/src/data/deviceAuthenticityConfig.ts @tsusanka
+
+/packages/schema-utils @martykan
