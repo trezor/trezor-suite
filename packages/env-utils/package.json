@@ -20,7 +20,7 @@
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "type-check": "tsc --build",
-        "build:lib": "rimraf ./lib && yarn tsc --build tsconfig.lib.json",
+        "build:lib": "yarn g:rimraf ./lib && yarn tsc --build tsconfig.lib.json",
         "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
         "prepublish": "yarn tsx ../../scripts/prepublish.js"
     },
@@ -28,7 +28,6 @@
         "ua-parser-js": "^1.0.37"
     },
     "devDependencies": {
-        "rimraf": "^5.0.5",
         "tsx": "^4.7.0",
         "typescript": "5.3.2"
     },

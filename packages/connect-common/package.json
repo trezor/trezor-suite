@@ -30,7 +30,7 @@
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "test:unit": "yarn g:jest",
-        "build:lib": "rimraf lib && yarn tsc --build ./tsconfig.lib.json",
+        "build:lib": "yarn g:rimraf lib && yarn tsc --build ./tsconfig.lib.json",
         "type-check": "tsc --build tsconfig.json",
         "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
         "prepublish": "yarn tsx ../../scripts/prepublish.js"
@@ -40,7 +40,6 @@
         "@trezor/utils": "workspace:*"
     },
     "devDependencies": {
-        "rimraf": "^5.0.5",
         "tsx": "^4.7.0",
         "typescript": "5.3.2"
     },

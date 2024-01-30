@@ -17,7 +17,6 @@
     },
     "devDependencies": {
         "cross-fetch": "^4.0.0",
-        "rimraf": "^5.0.5",
         "ts-node": "^10.9.1",
         "typescript": "5.3.2",
         "ws": "^8.16.0"

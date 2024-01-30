@@ -22,7 +22,6 @@
         "electron": "27.0.4"
     },
     "devDependencies": {
-        "rimraf": "^5.0.5",
         "typescript": "5.3.2"
     }
 }

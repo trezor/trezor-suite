@@ -8952,7 +8952,6 @@ __metadata:
     "@types/cors": "npm:^2.8.15"
     cors: "npm:^2.8.5"
     express: "npm:^4.18.2"
-    rimraf: "npm:^5.0.5"
     tsx: "npm:^4.7.0"
     typescript: "npm:5.3.2"
   languageName: unknown
@@ -8965,7 +8964,6 @@ __metadata:
     "@solana/web3.js": "npm:^1.87.6"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
-    rimraf: "npm:^5.0.5"
     ripple-lib: "npm:^1.10.1"
     socks-proxy-agent: "npm:6.1.1"
     tsx: "npm:^4.7.0"
@@ -8983,7 +8981,6 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     bignumber.js: "npm:^9.1.1"
-    rimraf: "npm:^5.0.5"
     tsx: "npm:^4.7.0"
     typescript: "npm:5.3.2"
   peerDependencies:
@@ -9008,7 +9005,6 @@ __metadata:
     events: "npm:^3.3.0"
     fs-extra: "npm:^11.1.1"
     html-webpack-plugin: "npm:^5.5.3"
-    rimraf: "npm:^5.0.5"
     ripple-lib: "npm:^1.10.1"
     socks-proxy-agent: "npm:6.1.1"
     tiny-worker: "npm:^2.3.0"
@@ -9038,7 +9034,6 @@ __metadata:
     events: "npm:^3.3.0"
     golomb: "npm:1.2.0"
     n64: "npm:^0.2.10"
-    rimraf: "npm:^5.0.5"
     typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
@@ -9110,7 +9105,6 @@ __metadata:
   dependencies:
     "@trezor/env-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
-    rimraf: "npm:^5.0.5"
     tsx: "npm:^4.7.0"
     typescript: "npm:5.3.2"
   peerDependencies:
@@ -9129,7 +9123,6 @@ __metadata:
     html-webpack-plugin: "npm:^5.5.3"
     react: "npm:^18.2.0"
     react-dom: "npm:^18.2.0"
-    rimraf: "npm:^5.0.5"
     typescript: "npm:5.3.2"
     webpack: "npm:^5.88.2"
     webpack-cli: "npm:^5.1.4"
@@ -9168,7 +9161,6 @@ __metadata:
     redux: "npm:^4.2.1"
     redux-logger: "npm:^3.0.6"
     redux-thunk: "npm:^2.4.2"
-    rimraf: "npm:^5.0.5"
     styled-components: "npm:^5.3.10"
     stylelint: "npm:^15.11.0"
     stylelint-config-standard: "npm:^34.0.0"
@@ -9193,7 +9185,6 @@ __metadata:
     copy-webpack-plugin: "npm:^11.0.0"
     es6-promise: "npm:^4.2.8"
     html-webpack-plugin: "npm:^5.5.3"
-    rimraf: "npm:^5.0.5"
     terser-webpack-plugin: "npm:^5.3.9"
     typescript: "npm:5.3.2"
     webpack: "npm:^5.89.0"
@@ -9208,7 +9199,6 @@ __metadata:
   resolution: "@trezor/connect-plugin-ethereum@workspace:packages/connect-plugin-ethereum"
   dependencies:
     "@metamask/eth-sig-util": "npm:^7.0.1"
-    rimraf: "npm:^5.0.5"
     typescript: "npm:5.3.2"
   peerDependencies:
     "@metamask/eth-sig-util": ^7.0.1
@@ -9221,7 +9211,6 @@ __metadata:
   resolution: "@trezor/connect-plugin-stellar@workspace:packages/connect-plugin-stellar"
   dependencies:
     bignumber.js: "npm:^9.1.1"
-    rimraf: "npm:^5.0.5"
     stellar-base: "npm:v10.0.0-beta.2"
     stellar-sdk: "npm:^v11.0.0-beta.3"
     typescript: "npm:5.3.2"
@@ -9258,7 +9247,6 @@ __metadata:
     eth-phishing-detect: "npm:^1.2.0"
     html-webpack-plugin: "npm:^5.5.3"
     react-dom: "npm:18.2.0"
-    rimraf: "npm:^5.0.5"
     terser-webpack-plugin: "npm:^5.3.9"
     typescript: "npm:5.3.2"
     webpack: "npm:^5.89.0"
@@ -9311,7 +9299,6 @@ __metadata:
     "@types/w3c-web-usb": "npm:^1.0.9"
     events: "npm:^3.3.0"
     html-webpack-plugin: "npm:^5.5.3"
-    rimraf: "npm:^5.0.5"
     selfsigned: "npm:^2.4.1"
     terser-webpack-plugin: "npm:^5.3.9"
     tsx: "npm:^4.7.0"
@@ -9342,7 +9329,6 @@ __metadata:
     "@types/chrome": "npm:latest"
     copy-webpack-plugin: "npm:^12.0.1"
     events: "npm:^3.3.0"
-    rimraf: "npm:^5.0.1"
     terser-webpack-plugin: "npm:^5.3.9"
     tsx: "npm:^4.7.0"
     typescript: "npm:^4.9.5"
@@ -9391,7 +9377,6 @@ __metadata:
     karma-jasmine-async: "npm:^0.0.1"
     karma-sourcemap-loader: "npm:^0.4.0"
     karma-webpack: "npm:^5.0.0"
-    rimraf: "npm:^5.0.5"
     ts-node: "npm:^10.9.1"
     tsx: "npm:^4.7.0"
     typescript: "npm:5.3.2"
@@ -9442,7 +9427,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/env-utils@workspace:packages/env-utils"
   dependencies:
-    rimraf: "npm:^5.0.5"
     tsx: "npm:^4.7.0"
     typescript: "npm:5.3.2"
     ua-parser-js: "npm:^1.0.37"
@@ -9482,7 +9466,6 @@ __metadata:
     long: "npm:^4.0.0"
     protobufjs: "npm:7.2.5"
     protobufjs-cli: "npm:^1.1.2"
-    rimraf: "npm:^5.0.5"
     tsx: "npm:^4.7.0"
     typescript: "npm:5.3.2"
   peerDependencies:
@@ -9494,7 +9477,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/protocol@workspace:packages/protocol"
   dependencies:
-    rimraf: "npm:^5.0.5"
     tsx: "npm:^4.7.0"
     typescript: "npm:5.3.2"
   peerDependencies:
@@ -9530,7 +9512,6 @@ __metadata:
   dependencies:
     "@trezor/utils": "workspace:*"
     cross-fetch: "npm:^4.0.0"
-    rimraf: "npm:^5.0.5"
     socks-proxy-agent: "npm:6.1.1"
     ts-node: "npm:^10.9.1"
     typescript: "npm:5.3.2"
@@ -9671,7 +9652,6 @@ __metadata:
   resolution: "@trezor/suite-desktop-api@workspace:packages/suite-desktop-api"
   dependencies:
     electron: "npm:27.0.4"
-    rimraf: "npm:^5.0.5"
     typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
@@ -9712,7 +9692,6 @@ __metadata:
     electron-updater: "npm:6.1.4"
     glob: "npm:^10.3.10"
     openpgp: "npm:^5.11.0"
-    rimraf: "npm:^5.0.5"
     systeminformation: "npm:^5.21.15"
     terser-webpack-plugin: "npm:^5.3.9"
     tsx: "npm:^4.7.0"
@@ -9766,7 +9745,6 @@ __metadata:
     electron-store: "npm:^8.1.0"
     electron-updater: "npm:6.1.4"
     glob: "npm:^10.3.10"
-    rimraf: "npm:^5.0.5"
     usb: "npm:^2.11.0"
   languageName: unknown
   linkType: soft
@@ -9821,7 +9799,6 @@ __metadata:
     react-redux: "npm:8.0.7"
     react-router: "npm:^5.2.0"
     react-router-dom: "npm:^5.2.0"
-    rimraf: "npm:^5.0.5"
     styled-components: "npm:^5.3.10"
     stylelint: "npm:^15.11.0"
     stylelint-config-standard: "npm:^34.0.0"
@@ -10020,7 +9997,6 @@ __metadata:
     json-stable-stringify: "npm:^1.0.2"
     long: "npm:^4.0.0"
     protobufjs: "npm:7.2.5"
-    rimraf: "npm:^5.0.5"
     ts-node: "npm:^10.9.1"
     tsx: "npm:^4.7.0"
     typescript: "npm:5.3.2"
@@ -10061,7 +10037,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/utils@workspace:packages/utils"
   dependencies:
-    rimraf: "npm:^5.0.5"
     tsx: "npm:^4.7.0"
     typescript: "npm:5.3.2"
   peerDependencies:
@@ -10094,7 +10069,6 @@ __metadata:
     int64-buffer: "npm:^1.0.1"
     minimaldata: "npm:^1.0.2"
     pushdata-bitcoin: "npm:^1.0.1"
-    rimraf: "npm:^5.0.5"
     tiny-secp256k1: "npm:^1.1.6"
     tsx: "npm:^4.7.0"
     typeforce: "npm:^1.18.0"
@@ -29693,7 +29667,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rimraf@npm:^5.0.1, rimraf@npm:^5.0.5":
+"rimraf@npm:^5.0.5":
   version: 5.0.5
   resolution: "rimraf@npm:5.0.5"
   dependencies:
