@@ -28,7 +28,7 @@
         "tslib": "^2.6.2"
     },
     "devDependencies": {
-        "jest": "29.5.0",
+        "jest": "29.6.4",
         "rimraf": "^5.0.5",
         "stellar-base": "v10.0.0-beta.2",
         "stellar-sdk": "^v11.0.0-beta.3",

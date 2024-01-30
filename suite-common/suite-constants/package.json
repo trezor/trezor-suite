@@ -14,7 +14,7 @@
         "@trezor/connect": "workspace:*"
     },
     "devDependencies": {
-        "jest": "29.5.0",
+        "jest": "29.6.4",
         "typescript": "5.3.2"
     }
 }
