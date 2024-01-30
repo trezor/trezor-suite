@@ -9544,7 +9544,6 @@ __metadata:
   dependencies:
     "@sinclair/typebox": "npm:^0.31.28"
     "@sinclair/typebox-codegen": "npm:^0.8.13"
-    prettier: "npm:3.2.4"
     ts-mixer: "npm:^6.0.3"
     tsx: "npm:^4.6.2"
     typescript: "npm:5.3.2"
@@ -9931,7 +9930,6 @@ __metadata:
     pako: "npm:^2.1.0"
     pdfmake: "npm:^0.2.7"
     polished: "npm:^4.2.2"
-    prettier: "npm:3.2.4"
     qrcode.react: "npm:^3.1.0"
     react: "npm:18.2.0"
     react-dom: "npm:18.2.0"
@@ -9975,7 +9973,6 @@ __metadata:
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
     csstype: "npm:^3.1.2"
-    prettier: "npm:3.2.4"
     tsx: "npm:^4.7.0"
     typescript: "npm:5.3.2"
   languageName: unknown
