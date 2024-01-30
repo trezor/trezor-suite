@@ -1,0 +1,57 @@
+{
+    "cli": {
+        "version": ">= 7.1.1",
+        "promptToConfigurePushNotifications": false,
+        "appVersionSource": "remote"
+    },
+    "build": {
+        "develop": {
+            "env": {
+                "ENVIRONMENT_EXPO": "develop"
+            },
+            "autoIncrement": true,
+            "ios": {
+                "distribution": "store"
+            },
+            "android": {
+                "distribution": "internal"
+            }
+        },
+        "production": {
+            "env": {
+                "ENVIRONMENT_EXPO": "production"
+            },
+            "autoIncrement": true,
+            "android": {
+                "credentialsSource": "remote"
+            },
+            "ios": {
+                "credentialsSource": "remote"
+            }
+        }
+    },
+    "submit": {
+        "develop": {
+            "android": {
+                "track": "internal",
+                "changesNotSentForReview": true
+            },
+            "ios": {
+                "bundleIdentifier": "io.trezor.suite.develop",
+                "ascAppId": "1631884497",
+                "appleTeamId": "C3P22XVH2C"
+            }
+        },
+        "production": {
+            "android": {
+                "track": "internal",
+                "changesNotSentForReview": true
+            },
+            "ios": {
+                "bundleIdentifier": "io.trezor.suite",
+                "ascAppId": "1631884497",
+                "appleTeamId": "C3P22XVH2C"
+            }
+        }
+    }
+}

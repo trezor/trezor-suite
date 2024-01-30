@@ -2,8 +2,8 @@ import { Alert } from 'react-native';
 
 import * as Sentry from '@sentry/react-native';
 
-import { isDebugEnv, isDevelopOrDebugEnv, isProduction } from '@suite-native/config';
-import { Button, Card, VStack } from '@suite-native/atoms';
+import { getEnv, isDebugEnv, isDevelopOrDebugEnv, isProduction } from '@suite-native/config';
+import { Button, Card, ListItem, VStack } from '@suite-native/atoms';
 import {
     Screen,
     StackProps,
@@ -12,8 +12,8 @@ import {
     ScreenSubHeader,
 } from '@suite-native/navigation';
 import { clearStorage } from '@suite-native/storage';
+import { getCommitHash, getSuiteVersion } from '@trezor/env-utils';
 
-import { BuildInfo } from '../components/BuildInfo';
 import { RenderingUtils } from '../components/RenderingUtils';
 import { FeatureFlags } from '../components/FeatureFlags';
 import { TestnetsToggle } from '../components/TestnetsToggle';
@@ -26,7 +26,12 @@ export const DevUtilsScreen = ({
         <VStack>
             <Card>
                 <VStack spacing="medium">
-                    {!isDebugEnv() && <BuildInfo />}
+                    {!isDebugEnv() && (
+                        <ListItem
+                            subtitle={`${getEnv()}-${getSuiteVersion()}, commit ${getCommitHash()}`}
+                            title="Build version"
+                        />
+                    )}
                     {isDebugEnv() && (
                         <Button onPress={() => navigation.navigate(DevUtilsStackRoutes.Demo)}>
                             See Component Demo

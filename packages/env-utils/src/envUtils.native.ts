@@ -1,6 +1,7 @@
 import { Dimensions, Platform } from 'react-native';
 
 import { getLocales } from 'expo-localization';
+import Constants from 'expo-constants';
 
 import { EnvUtils } from './types';
 
@@ -24,9 +25,9 @@ const getDeviceType = () => '';
 
 const getOsVersion = () => `${Platform.Version}`;
 
-const getSuiteVersion = () => process.env.EXPO_PUBLIC_VERSION || '';
+const getSuiteVersion = () => Constants.expoConfig?.version || '';
 
-const getCommitHash = () => process.env.EXPO_PUBLIC_COMMIT_HASH || '';
+const getCommitHash = () => Constants.expoConfig?.extra?.commitHash;
 
 const isFirefox = () => false;
 

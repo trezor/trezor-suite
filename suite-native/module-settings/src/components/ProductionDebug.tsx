@@ -5,6 +5,7 @@ import { useSetAtom } from 'jotai';
 
 import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { atomWithUnecryptedStorage } from '@suite-native/storage';
+import { useToast } from '@suite-native/toasts';
 
 type ProductionDebugProps = {
     children: ReactNode;
@@ -18,6 +19,7 @@ export const isDevButtonVisibleAtom = atomWithUnecryptedStorage<boolean>(
 
 export const ProductionDebug = ({ children }: ProductionDebugProps) => {
     const setIsDevButtonVisible = useSetAtom(isDevButtonVisibleAtom);
+    const { showToast } = useToast();
 
     const handleTapsCount = () => {
         if (tapsCount < 7) {
@@ -25,6 +27,11 @@ export const ProductionDebug = ({ children }: ProductionDebugProps) => {
         }
         if (tapsCount === 7) {
             setIsDevButtonVisible(true);
+            showToast({
+                variant: 'default',
+                message: 'Dev utils enabled.',
+                icon: 'check',
+            });
         }
     };
 
