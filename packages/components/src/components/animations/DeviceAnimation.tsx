@@ -1,5 +1,5 @@
 import styled, { useTheme } from 'styled-components';
-import { MouseEventHandler, forwardRef } from 'react';
+import { CSSProperties, MouseEventHandler, forwardRef } from 'react';
 import { DeviceModelInternal } from '@trezor/connect';
 import { AnimationWrapper, Shape } from './AnimationPrimitives';
 import { resolveStaticPath } from '../../utils/resolveStaticPath';
@@ -18,7 +18,8 @@ export type AnimationDeviceType =
     | 'ROTATE';
 
 type DeviceAnimationProps = {
-    size?: number;
+    height?: CSSProperties['height'];
+    width?: CSSProperties['width'];
     type: AnimationDeviceType;
     loop?: boolean;
     shape?: Shape;
@@ -31,7 +32,8 @@ type DeviceAnimationProps = {
 export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps>(
     (
         {
-            size,
+            height,
+            width,
             type,
             loop = false,
             shape,
@@ -49,14 +51,14 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
         const theme = deviceModelInternal === DeviceModelInternal.T2B1 ? '' : `_${THEME}`;
 
         return (
-            <AnimationWrapper size={size} shape={shape} {...props}>
+            <AnimationWrapper height={height} width={width} shape={shape} {...props}>
                 {['BOOTLOADER', 'SUCCESS'].includes(type) && (
                     <StyledVideo
                         loop={loop}
                         autoPlay
                         muted
-                        width={size}
-                        height={size}
+                        width={width}
+                        height={height}
                         ref={videoRef}
                         onMouseOver={onVideoMouseOver}
                     >
@@ -74,8 +76,8 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
                         loop={loop}
                         autoPlay
                         muted
-                        width={size}
-                        height={size}
+                        height={height}
+                        width={width}
                         ref={videoRef}
                         onMouseOver={onVideoMouseOver}
                     >
@@ -108,8 +110,8 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
                         loop={loop}
                         autoPlay
                         muted
-                        width={size}
-                        height={size}
+                        width={height}
+                        height={height}
                         ref={videoRef}
                         onMouseOver={onVideoMouseOver}
                     >

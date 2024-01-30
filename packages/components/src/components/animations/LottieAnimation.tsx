@@ -64,7 +64,7 @@ export const LottieAnimation = ({
     }, [type, deviceModelInternal]);
 
     return (
-        <AnimationWrapper size={size} shape={shape} {...props}>
+        <AnimationWrapper height={`${size}px`} width={`${size}px`} shape={shape} {...props}>
             <>
                 {lottieAnimationData && (
                     <StyledLottie animationData={lottieAnimationData} loop={loop} />

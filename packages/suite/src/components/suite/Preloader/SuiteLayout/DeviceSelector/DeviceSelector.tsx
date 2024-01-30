@@ -28,9 +28,9 @@ const CaretContainer = styled.div`
 const Wrapper = styled.div<{ isAnimationTriggered?: boolean }>`
     position: relative;
     display: flex;
-    gap: ${spacingsPx.xs};
+    gap: ${spacingsPx.md};
     width: 100%;
-    padding: ${spacingsPx.md} ${spacingsPx.sm} ${spacingsPx.md} ${spacingsPx.md};
+    padding: ${spacingsPx.md} ${spacingsPx.md} ${spacingsPx.md} ${spacingsPx.md};
     align-items: center;
     cursor: pointer;
     border-radius: ${borders.radii.sm};
@@ -64,12 +64,11 @@ const DeviceLabel = styled.div`
 `;
 
 const DeviceWrapper = styled.div<{ isLowerOpacity: boolean }>`
-    margin-right: 14px;
     opacity: ${({ isLowerOpacity }) => isLowerOpacity && 0.4};
 `;
 
 const StyledImage = styled(Image)`
-    height: 34px;
+    width: 24px;
 
     /* do not apply the darkening filter in dark mode on device images */
     filter: none;
@@ -175,7 +174,8 @@ export const DeviceSelector = () => {
                         {selectedDeviceModelInternal === DeviceModelInternal.T2B1 && (
                             <DeviceAnimation
                                 type="ROTATE"
-                                size={34}
+                                height="34px"
+                                width="24px"
                                 deviceModelInternal={selectedDeviceModelInternal}
                                 deviceUnitColor={selectedDevice?.features?.unit_color}
                             />
