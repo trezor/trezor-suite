@@ -29,7 +29,7 @@ export const AssetCoinLogo = ({ symbol, assetsFiatBalances, index }: CoinLogoPro
     return (
         <LogoWrapper>
             <Tooltip
-                content={<>{(assetPercentage ?? 0).toFixed(2)} %</>}
+                content={`${(assetPercentage ?? 0).toFixed(2)} %`}
                 cursor="pointer"
                 delay={1000}
             >
