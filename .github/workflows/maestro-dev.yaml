@@ -21,9 +21,9 @@ jobs:
 
     - name: Build JS libs
       run: yarn build:libs
-      
-    # - name: Install Maestro
-    #   run: curl -Ls "https://get.maestro.mobile.dev" | bash && export PATH="$PATH":"$HOME/.maestro/bin"
+
+    - name: Install Maestro
+      run: curl -Ls "https://get.maestro.mobile.dev" | bash && export PATH="$PATH":"$HOME/.maestro/bin"
 
     - name: Install system dependencies
       run: |
@@ -52,4 +52,7 @@ jobs:
       with:
         working-directory: suite-native/app/android
         api-level: 29
-        script: ./gradlew assembleDebug && adb install ./app/build/outputs/apk/dev/debug/app-dev-debug.apk
+        script: |
+            ./gradlew assembleDebug
+            adb install ./app/build/outputs/apk/dev/debug/app-dev-debug.apk
+            maestro test .maestro/importBTCviaText.yaml
