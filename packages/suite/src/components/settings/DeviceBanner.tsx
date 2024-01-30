@@ -5,6 +5,7 @@ import { Card, LottieAnimation, Paragraph, variables } from '@trezor/components'
 import { useDevice, useSelector } from 'src/hooks/suite';
 import { isWebUsb } from 'src/utils/suite/transport';
 import { WebUsbButton } from 'src/components/suite/WebUsbButton';
+import { spacingsPx } from '@trezor/theme';
 
 const StyledLottieAnimation = styled(LottieAnimation)`
     margin: 8px 16px 8px 0;
@@ -14,6 +15,7 @@ const StyledLottieAnimation = styled(LottieAnimation)`
 
 const Wrapper = styled(Card)`
     flex-direction: row;
+    margin-bottom: ${spacingsPx.lg};
 `;
 
 const Description = styled(Paragraph)`
