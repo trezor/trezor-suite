@@ -18,6 +18,7 @@ import {
     getCommitHash,
     getSuiteVersion,
 } from '@trezor/env-utils';
+import { spacingsPx } from '@trezor/theme';
 
 const Headline = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
@@ -77,6 +78,10 @@ const AnonymousDataItem = styled.li`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
+`;
+
+const StyledTextarea = styled(Textarea)`
+    margin-bottom: ${spacingsPx.md};
 `;
 
 type RatingItem = {
@@ -280,7 +285,7 @@ export const Feedback = ({ type }: FeedbackProps) => {
                     </Headline>
                 )}
 
-                <Textarea
+                <StyledTextarea
                     rows={8}
                     value={description}
                     onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
