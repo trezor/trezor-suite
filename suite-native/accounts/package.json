@@ -7,7 +7,7 @@
     "main": "src/index",
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "test:unit": "jest -c ../../jest.config.native.js --passWithNoTests",
+        "test:unit": "yarn g:jest -c ../../jest.config.native.js --passWithNoTests",
         "type-check": "tsc --build"
     },
     "dependencies": {
@@ -37,8 +37,5 @@
         "react-native": "0.73.2",
         "react-native-reanimated": "3.7.0-nightly-20240101-9d365ae7b",
         "react-redux": "8.0.7"
-    },
-    "devDependencies": {
-        "jest": "29.7.0"
     }
 }

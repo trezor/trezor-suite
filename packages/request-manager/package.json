@@ -7,7 +7,7 @@
     "main": "src/index.ts",
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "test:e2e": "jest --runInBand -c ../../jest.config.base.js",
+        "test:e2e": "yarn g:jest --runInBand -c ../../jest.config.base.js",
         "type-check": "tsc --build tsconfig.json",
         "test:stress": "ts-node  -O '{\"module\": \"commonjs\"}' ./e2e/identities-stress.ts"
     },
@@ -17,7 +17,6 @@
     },
     "devDependencies": {
         "cross-fetch": "^4.0.0",
-        "jest": "29.7.0",
         "rimraf": "^5.0.5",
         "ts-node": "^10.9.1",
         "typescript": "5.3.2",

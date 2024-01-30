@@ -10,7 +10,7 @@
         "___NOTE__": "iframe build is one of the prerequisites of suite-web. build:lib script provides it together with other libraries",
         "build:lib": "yarn build",
         "type-check": "tsc --build tsconfig.json",
-        "test:unit": "jest"
+        "test:unit": "yarn g:jest"
     },
     "dependencies": {
         "@trezor/connect": "workspace:*",
@@ -22,7 +22,6 @@
         "copy-webpack-plugin": "^11.0.0",
         "es6-promise": "^4.2.8",
         "html-webpack-plugin": "^5.5.3",
-        "jest": "29.7.0",
         "rimraf": "^5.0.5",
         "terser-webpack-plugin": "^5.3.9",
         "typescript": "5.3.2",

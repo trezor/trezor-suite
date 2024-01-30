@@ -35,8 +35,5 @@
         "react-native": "0.73.2",
         "react-native-reanimated": "3.7.0-nightly-20240101-9d365ae7b",
         "react-redux": "8.0.7"
-    },
-    "devDependencies": {
-        "jest": "29.7.0"
     }
 }

@@ -15,14 +15,13 @@
     "browser": "./src/renderer.ts",
     "scripts": {
         "lint:js": "yarn g:eslint '**/*{.ts,.tsx}'",
-        "test:unit": "jest --verbose -c jest.config.js",
+        "test:unit": "yarn g:jest --verbose -c jest.config.js",
         "type-check": "tsc --build tsconfig.json"
     },
     "dependencies": {
         "electron": "27.0.4"
     },
     "devDependencies": {
-        "jest": "29.7.0",
         "rimraf": "^5.0.5",
         "typescript": "5.3.2"
     }

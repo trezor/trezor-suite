@@ -11,7 +11,7 @@
         "build:popup": "TS_NODE_PROJECT=\"tsconfig.json\" yarn webpack --config ./webpack/prod.webpack.config.ts",
         "build": "rimraf build && yarn workspace @trezor/connect-popup build:popup",
         "test:e2e": "yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts",
-        "test:unit": "jest"
+        "test:unit": "yarn g:jest"
     },
     "dependencies": {
         "@trezor/components": "workspace:*",
@@ -38,7 +38,6 @@
         "@types/react": "18.0.32",
         "copy-webpack-plugin": "^11.0.0",
         "html-webpack-plugin": "^5.5.3",
-        "jest": "29.7.0",
         "rimraf": "^5.0.5",
         "terser-webpack-plugin": "^5.3.9",
         "typescript": "5.3.2",

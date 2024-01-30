@@ -8,7 +8,7 @@
     "scripts": {
         "type-check": "tsc --build",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "test:unit": "jest -c ../../jest.config.base.js"
+        "test:unit": "yarn g:jest -c ../../jest.config.base.js"
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
@@ -31,7 +31,6 @@
         "react-native": "0.73.2"
     },
     "devDependencies": {
-        "jest": "29.7.0",
         "typescript": "5.3.2"
     }
 }
