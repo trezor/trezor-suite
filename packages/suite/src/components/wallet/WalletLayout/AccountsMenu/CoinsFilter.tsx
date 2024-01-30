@@ -7,6 +7,7 @@ import { useSelector, useAccountSearch } from 'src/hooks/suite';
 import { spacingsPx } from '@trezor/theme';
 
 const StyledCoinLogo = styled(CoinLogo)<{ isSelected?: boolean }>`
+    display: block;
     ${({ isSelected }) => !isSelected && `filter: grayscale(100%);`}
 `;
 const Container = styled.div`
@@ -26,7 +27,8 @@ const Container = styled.div`
 `;
 
 const OuterCircle = styled.div<{ isSelected?: boolean }>`
-    height: 20px;
+    height: 19px;
+    width: 19px;
     border-radius: 50%;
     border: 2px solid
         ${({ isSelected, theme }) =>
