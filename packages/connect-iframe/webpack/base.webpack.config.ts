@@ -132,6 +132,7 @@ export const config: webpack.Configuration = {
                 env: {
                     VERSION: JSON.stringify(version),
                     COMMIT_HASH: JSON.stringify(commitHash),
+                    NODE_ENV: JSON.stringify(process.env.NODE_ENV),
                 },
             },
         }),

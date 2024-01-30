@@ -71,12 +71,9 @@ const config: webpack.Configuration = {
     },
     plugins: [
         new DefinePlugin({
-            process: {
-                env: {
-                    VERSION: JSON.stringify(version),
-                    COMMIT_HASH: JSON.stringify(commitHash),
-                },
-            },
+            'process.env.VERSION': JSON.stringify(version),
+            'process.env.COMMIT_HASH': JSON.stringify(commitHash),
+            'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
         }),
         new HtmlWebpackPlugin({
             chunks: ['popup'],
