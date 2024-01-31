@@ -1,4 +1,4 @@
-import { HttpServer, allowOrigins } from '../http';
+import { HttpServer, parseBodyJSON, parseBodyText, allowOrigins } from '../http';
 
 type Events = {
     foo: (arg: string) => void;
@@ -70,9 +70,9 @@ describe('HttpServer', () => {
     });
 
     test('set response headers in a custom middleware handler', async () => {
-        const middlewareHandler = jest.fn((_request, response, next) => {
+        const middlewareHandler = jest.fn((request, response, next) => {
             response.setHeader('foo', 'bar');
-            next();
+            next(request, response);
         });
         const handler = jest.fn((_request, response) => {
             response.end('ok');
@@ -155,11 +155,13 @@ describe('HttpServer', () => {
 
     test('handler order', async () => {
         const calledHandlers: string[] = [];
-        const handler = (name: string, end?: boolean) => (_: any, res: any, next: () => void) => {
-            calledHandlers.push(name);
-            if (end) res.end('ok');
-            else next();
-        };
+        const handler =
+            (name: string, end?: boolean) =>
+            (req: any, res: any, next: (req: any, res: any) => void) => {
+                calledHandlers.push(name);
+                if (end) res.end('ok');
+                else next(req, res);
+            };
 
         server.use([handler('use1'), handler('use2')]);
         server.post('/foo', [handler('post1', true)]);
@@ -171,5 +173,50 @@ describe('HttpServer', () => {
         await fetch(`http://${address}:${port}/foo`);
 
         expect(calledHandlers).toStrictEqual(['use1', 'use2', 'get1']);
+    });
+
+    test('endpoint with params returns params in response', async () => {
+        const handler = jest.fn((request, response) => {
+            response.end(JSON.stringify(request.params));
+        });
+        server.get('/foo/:id', [handler]);
+        await server.start();
+        const address = server.getServerAddress();
+        expect(address).toBeDefined();
+        const res = await fetch(`http://${address.address}:${address.port}/foo/123`);
+        expect(res.status).toEqual(200);
+        expect(await res.json()).toEqual({ id: '123' });
+    });
+
+    test('sending request body, parsing it as JSON using parseBodyJSON and returning it in response', async () => {
+        const handler = jest.fn((request, response) => {
+            response.end(JSON.stringify(request.body));
+        });
+        server.post('/foo', [parseBodyJSON, handler]);
+        await server.start();
+        const address = server.getServerAddress();
+        expect(address).toBeDefined();
+        const res = await fetch(`http://${address.address}:${address.port}/foo`, {
+            method: 'POST',
+            body: JSON.stringify({ foo: 'bar' }),
+        });
+        expect(res.status).toEqual(200);
+        expect(await res.json()).toEqual({ foo: 'bar' });
+    });
+
+    test('sending request body, parsing it as text using parseBodyText and returning it in response', async () => {
+        const handler = jest.fn((request, response) => {
+            response.end(request.body);
+        });
+        server.post('/foo', [parseBodyText, handler]);
+        await server.start();
+        const address = server.getServerAddress();
+        expect(address).toBeDefined();
+        const res = await fetch(`http://${address.address}:${address.port}/foo`, {
+            method: 'POST',
+            body: 'foo',
+        });
+        expect(res.status).toEqual(200);
+        expect(await res.text()).toEqual('foo');
     });
 });
