@@ -1,4 +1,3 @@
-import { ReactNode } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
 
@@ -7,10 +6,6 @@ import { selectOpenedTransactionNotifications } from '@suite-common/toast-notifi
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { TransactionNotification } from './TransactionNotification';
-
-type NotificationRendererProps = {
-    children: ReactNode;
-};
 
 const notificationContainerStyle = prepareNativeStyle<{ topSafeAreaInset: number }>(
     (utils, { topSafeAreaInset }) => ({
@@ -22,25 +17,22 @@ const notificationContainerStyle = prepareNativeStyle<{ topSafeAreaInset: number
     }),
 );
 
-export const NotificationRenderer = ({ children }: NotificationRendererProps) => {
+export const NotificationRenderer = () => {
     const { applyStyle } = useNativeStyles();
     const { top: topSafeAreaInset } = useSafeAreaInsets();
     const transactionNotifications = useSelector(selectOpenedTransactionNotifications);
 
     return (
-        <>
-            {children}
-            <Box
-                style={applyStyle(notificationContainerStyle, {
-                    topSafeAreaInset,
-                })}
-            >
-                <VStack flex={1}>
-                    {transactionNotifications.map(({ id }) => (
-                        <TransactionNotification notificationId={id} key={id} />
-                    ))}
-                </VStack>
-            </Box>
-        </>
+        <Box
+            style={applyStyle(notificationContainerStyle, {
+                topSafeAreaInset,
+            })}
+        >
+            <VStack flex={1}>
+                {transactionNotifications.map(({ id }) => (
+                    <TransactionNotification notificationId={id} key={id} />
+                ))}
+            </VStack>
+        </Box>
     );
 };

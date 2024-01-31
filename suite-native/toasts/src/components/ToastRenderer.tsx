@@ -1,4 +1,3 @@
-import { ReactNode } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useAtomValue } from 'jotai';
@@ -8,10 +7,6 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { toastsAtom } from '../toastsAtoms';
 import { Toast } from './Toast';
-
-type ToastRendererProps = {
-    children: ReactNode;
-};
 
 const toastsContainerStyle = prepareNativeStyle<{ topSafeAreaInset: number }>(
     (utils, { topSafeAreaInset }) => ({
@@ -23,26 +18,23 @@ const toastsContainerStyle = prepareNativeStyle<{ topSafeAreaInset: number }>(
     }),
 );
 
-export const ToastRenderer = ({ children }: ToastRendererProps) => {
+export const ToastRenderer = () => {
     const { applyStyle } = useNativeStyles();
     const { top: topSafeAreaInset } = useSafeAreaInsets();
     const toasts = useAtomValue(toastsAtom);
 
     return (
-        <>
-            {children}
-            <Box
-                pointerEvents="none"
-                style={applyStyle(toastsContainerStyle, {
-                    topSafeAreaInset,
-                })}
-            >
-                <VStack alignItems="center">
-                    {toasts.map(toast => (
-                        <Toast toast={toast} key={toast.id} />
-                    ))}
-                </VStack>
-            </Box>
-        </>
+        <Box
+            pointerEvents="none"
+            style={applyStyle(toastsContainerStyle, {
+                topSafeAreaInset,
+            })}
+        >
+            <VStack alignItems="center">
+                {toasts.map(toast => (
+                    <Toast toast={toast} key={toast.id} />
+                ))}
+            </VStack>
+        </Box>
     );
 };

@@ -8,25 +8,20 @@ import * as Sentry from '@sentry/react-native';
 
 import TrezorConnect from '@trezor/connect';
 import { selectIsAppReady, selectIsConnectInitialized, StoreProvider } from '@suite-native/state';
-// import { NotificationRenderer } from '@suite-native/notifications';
-import { ToastRenderer } from '@suite-native/toasts';
 import { FormatterProvider } from '@suite-common/formatters';
-import { AlertRenderer } from '@suite-native/alerts';
 import { NavigationContainerWithAnalytics } from '@suite-native/navigation';
-import { AuthenticatorProvider } from '@suite-native/biometrics';
 import { FeatureMessageScreen, MessageSystemBannerRenderer } from '@suite-native/message-system';
 import { IntlProvider } from '@suite-native/intl';
 import { useTransactionCache } from '@suite-native/accounts';
 import { isDebugEnv } from '@suite-native/config';
-import { PassphraseModalRenderer } from '@suite-native/passphrase';
 
 import { RootStackNavigator } from './navigation/RootStackNavigator';
 import { StylesProvider } from './StylesProvider';
-import { Snow } from './snow/Snow';
 import { useFormattersConfig } from './hooks/useFormattersConfig';
 import { applicationInit } from './initActions';
 import { useReportAppInitToAnalytics } from './hooks/useReportAppInitToAnalytics';
 import { SentryProvider } from './SentryProvider';
+import { ModalsRenderer } from './ModalsRenderer';
 
 // Base time to measure app loading time.
 // The constant has to be placed at the beginning of this file to be initialized as soon as possible.
@@ -95,27 +90,13 @@ const AppComponent = () => {
     if (!isAppReady) return null;
 
     return (
-        <>
-            <FormatterProvider config={formattersConfig}>
-                <AuthenticatorProvider>
-                    <AlertRenderer>
-                        <PassphraseModalRenderer>
-                            {/* Notifications are disabled until the problem with after-import notifications flooding is solved. */}
-                            {/* More here: https://github.com/trezor/trezor-suite/issues/7721  */}
-                            {/* <NotificationRenderer> */}
-                            <ToastRenderer>
-                                <MessageSystemBannerRenderer />
-                                <RootStackNavigator />
-                            </ToastRenderer>
-                            {/* </NotificationRenderer> */}
-                        </PassphraseModalRenderer>
-                    </AlertRenderer>
-                    <Snow />
-                </AuthenticatorProvider>
-            </FormatterProvider>
+        <FormatterProvider config={formattersConfig}>
+            <MessageSystemBannerRenderer />
+            <RootStackNavigator />
+            <ModalsRenderer />
             {/* NOTE: Rendered as last item so that it covers the whole app screen */}
             <FeatureMessageScreen />
-        </>
+        </FormatterProvider>
     );
 };
 
