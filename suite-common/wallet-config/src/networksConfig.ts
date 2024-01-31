@@ -499,6 +499,25 @@ export const networks = {
         customBackends: ['solana'],
         accountTypes: {},
     },
+    matic: {
+        name: 'Polygon',
+        networkType: 'ethereum',
+        chainId: 137,
+        bip43Path: "m/44'/60'/0'/0/i",
+        decimals: 18,
+        testnet: false,
+        label: 'TR_NETWORK_POLYGON_LABEL',
+        explorer: {
+            tx: 'https://matic2.trezor.io/tx/',
+            account: 'https://matic2.trezor.io/address/',
+            nft: 'https://matic2.trezor.io/nft/',
+            address: 'https://matic2.trezor.io/address/',
+            queryString: '',
+        },
+        features: ['rbf', 'sign-verify', 'tokens'],
+        customBackends: ['blockbook'],
+        accountTypes: {},
+    },
 } as const;
 
 export const TREZOR_CONNECT_BACKENDS = [
