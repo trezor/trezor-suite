@@ -4,6 +4,7 @@ import { Icon, Input } from '@trezor/components';
 import { selectDevice } from '@suite-common/wallet-core';
 
 import { useSelector, useAccountSearch, useTranslation } from 'src/hooks/suite';
+import { borders } from '@trezor/theme';
 
 const InputWrapper = styled.div<{ showCoinFilter: boolean }>`
     flex: 1;
@@ -15,11 +16,10 @@ const StyledInput = styled(Input)`
         padding-left: 46px;
         min-height: 38px;
         background-color: ${({ theme }) => theme.backgroundSurfaceElevationNegative};
+        border-radius: ${borders.radii.full};
         border-color: ${({ theme }) => theme.backgroundSurfaceElevationNegative};
     }
 `;
-
-const SearchIconWrapper = styled.div``;
 
 export const AccountSearchBox = () => {
     const theme = useTheme();
@@ -45,11 +45,7 @@ export const AccountSearchBox = () => {
                 onChange={e => {
                     setSearchString(e.target.value);
                 }}
-                innerAddon={
-                    <SearchIconWrapper>
-                        <Icon icon="SEARCH" size={16} color={theme.iconDefault} />
-                    </SearchIconWrapper>
-                }
+                innerAddon={<Icon icon="SEARCH" size={16} color={theme.iconDefault} />}
                 innerAddonAlign="left"
                 size="small"
                 placeholder={translationString('TR_SEARCH')}
