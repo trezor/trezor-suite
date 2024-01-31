@@ -2805,6 +2805,14 @@ export default defineMessages({
         defaultMessage: 'Community',
         id: 'TR_COMMUNITY_LANGUAGES',
     },
+    TR_TOKEN_UNRECOGNIZED_BY_TREZOR: {
+        defaultMessage: 'Unrecognized tokens',
+        id: 'TR_TOKEN_UNRECOGNIZED_BY_TREZOR',
+    },
+    TR_TOKEN_UNRECOGNIZED_BY_TREZOR_TOOLTIP: {
+        defaultMessage: 'Unrecognized tokens pose potential risks. Use caution.',
+        id: 'TR_TOKEN_UNRECOGNIZED_BY_TREZOR_TOOLTIP',
+    },
     TR_LEARN: {
         defaultMessage: 'Learn',
         description: 'Link to Suite Guide.',
