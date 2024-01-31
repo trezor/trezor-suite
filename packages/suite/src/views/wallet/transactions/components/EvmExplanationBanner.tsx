@@ -43,7 +43,7 @@ export const EvmExplanationBanner = ({ account }: EvmExplanationBannerProps) => 
 
     return (
         <Wrapper>
-            <StyledCard largePadding>
+            <StyledCard>
                 <Title>
                     <Translation
                         id="TR_EVM_EXPLANATION_TITLE"

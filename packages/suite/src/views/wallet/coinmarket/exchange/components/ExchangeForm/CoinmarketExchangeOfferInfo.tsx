@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { ExchangeTrade } from 'invity-api';
-import { variables, CoinLogo } from '@trezor/components';
+import { variables } from '@trezor/components';
 import {
     CoinmarketProviderInfo,
     CoinmarketTransactionId,
@@ -15,6 +15,7 @@ import {
 import { ExchangeInfo } from 'src/actions/wallet/coinmarketExchangeActions';
 import invityAPI from 'src/services/suite/invityAPI';
 import { typography } from '@trezor/theme';
+import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 
 const Wrapper = styled.div`
     margin: 0 0 0 30px;
@@ -151,9 +152,14 @@ export const CoinmarketExchangeOfferInfo = ({
                     </LeftColumn>
                     <RightColumn>
                         <Dark>
-                            <CoinLogo symbol={account.symbol} size={16} />
+                            <InvityCoinLogo
+                                src={invityAPI.getCoinLogoUrl(cryptoToCoinSymbol(send!))}
+                            />
                             <Amount>
-                                <FormattedCryptoAmount value={sendStringAmount} symbol={send} />
+                                <FormattedCryptoAmount
+                                    value={sendStringAmount}
+                                    symbol={cryptoToCoinSymbol(send!)}
+                                />
                             </Amount>
                         </Dark>
                     </RightColumn>
@@ -175,13 +181,13 @@ export const CoinmarketExchangeOfferInfo = ({
                     <RightColumn>
                         <Dark>
                             <InvityCoinLogo
-                                src={`${invityAPI.getApiServerUrl()}/images/coins/suite/${receive}.svg`}
+                                src={invityAPI.getCoinLogoUrl(cryptoToCoinSymbol(receive!))}
                             />
                             <Amount>
                                 {(!provider.isFixedRate || selectedQuote.isDex) && '≈ '}
                                 <FormattedCryptoAmount
                                     value={receiveStringAmount}
-                                    symbol={receive}
+                                    symbol={cryptoToCoinSymbol(receive!)}
                                 />
                             </Amount>
                         </Dark>

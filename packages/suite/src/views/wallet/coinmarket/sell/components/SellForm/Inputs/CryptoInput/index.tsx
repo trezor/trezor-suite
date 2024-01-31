@@ -26,6 +26,7 @@ import {
     validateLimits,
     validateMin,
 } from 'src/utils/suite/validation';
+import { networkToCryptoSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 
 const Option = styled.div`
     display: flex;
@@ -62,10 +63,11 @@ const CryptoInput = () => {
 
     const { translationString } = useTranslation();
 
-    const uppercaseSymbol = account.symbol.toUpperCase();
+    const cryptoSymbol = networkToCryptoSymbol(account.symbol)!;
     const cryptoOption = {
-        value: uppercaseSymbol,
-        label: uppercaseSymbol,
+        value: cryptoSymbol,
+        label: cryptoSymbol,
+        cryptoSymbol,
     };
 
     const { tokens } = account;
@@ -137,16 +139,14 @@ const CryptoInput = () => {
                             isClean
                             isDisabled={account.networkType !== 'ethereum'}
                             minValueWidth="100px"
-                            formatOptionLabel={(option: any) => (
+                            formatOptionLabel={(
+                                option: ReturnType<typeof getSendCryptoOptions>[number],
+                            ) => (
                                 <Option>
                                     {account.symbol === option.value.toLowerCase() ? (
                                         <CoinLogo size={18} symbol={account.symbol} />
                                     ) : (
-                                        <TokenLogo
-                                            src={`${invityAPI.getApiServerUrl()}/images/coins/suite/${
-                                                option.value
-                                            }.svg`}
-                                        />
+                                        <TokenLogo src={invityAPI.getCoinLogoUrl(option.value)} />
                                     )}
                                     <Label>{shouldSendInSats ? 'sat' : option.label}</Label>
                                 </Option>

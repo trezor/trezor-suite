@@ -7,7 +7,7 @@ import { getInputState } from '@suite-common/wallet-utils';
 import { CoinLogo, Select } from '@trezor/components';
 import { useCoinmarketP2pFormContext } from 'src/hooks/wallet/useCoinmarketP2pForm';
 import { Wrapper } from 'src/views/wallet/coinmarket';
-import { buildOption } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { buildFiatOption } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { useTranslation } from 'src/hooks/suite';
 import { validateDecimals, validateMin } from 'src/utils/suite/validation';
 
@@ -71,7 +71,7 @@ export const Inputs = () => {
                                 <Select
                                     options={Object.keys(fiatCurrencies)
                                         .filter(c => p2pInfo?.supportedCurrencies.has(c))
-                                        .map((currency: string) => buildOption(currency))}
+                                        .map((currency: string) => buildFiatOption(currency))}
                                     isSearchable
                                     value={value}
                                     isClearable={false}

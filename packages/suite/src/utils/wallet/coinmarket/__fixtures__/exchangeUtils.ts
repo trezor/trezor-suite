@@ -434,8 +434,8 @@ export const EXCHANGE_INFO: ExchangeInfo = {
             isRefundRequired: true,
         },
     },
-    buySymbols: new Set(''),
-    sellSymbols: new Set(''),
+    buySymbols: new Set(),
+    sellSymbols: new Set(),
 };
 export const MIN_MAX_QUOTES_OK: ExchangeTrade[] = [
     {

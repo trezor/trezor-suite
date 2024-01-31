@@ -5,7 +5,7 @@ import {
     ExchangeProviderInfo,
     ExchangeTradeQuoteRequest,
     ExchangeTrade,
-    ExchangeCoinInfo,
+    CryptoSymbol,
 } from 'invity-api';
 import invityAPI from 'src/services/suite/invityAPI';
 import { COINMARKET_EXCHANGE, COINMARKET_COMMON } from './constants';
@@ -15,8 +15,8 @@ import { verifyAddress as verifyExchangeAddress } from 'src/actions/wallet/coinm
 export interface ExchangeInfo {
     exchangeList?: ExchangeListResponse;
     providerInfos: { [name: string]: ExchangeProviderInfo };
-    buySymbols: Set<string>;
-    sellSymbols: Set<string>;
+    buySymbols: Set<CryptoSymbol>;
+    sellSymbols: Set<CryptoSymbol>;
 }
 
 export type CoinmarketExchangeAction =
@@ -24,10 +24,6 @@ export type CoinmarketExchangeAction =
     | { type: typeof COINMARKET_EXCHANGE.SAVE_QUOTE_REQUEST; request: ExchangeTradeQuoteRequest }
     | { type: typeof COINMARKET_EXCHANGE.SAVE_TRANSACTION_ID; transactionId: string }
     | { type: typeof COINMARKET_EXCHANGE.VERIFY_ADDRESS; addressVerified: string }
-    | {
-          type: typeof COINMARKET_EXCHANGE.SAVE_EXCHANGE_COIN_INFO;
-          exchangeCoinInfo: ExchangeCoinInfo[];
-      }
     | {
           type: typeof COINMARKET_EXCHANGE.SAVE_QUOTES;
           fixedQuotes: ExchangeTrade[];
@@ -49,68 +45,42 @@ export type CoinmarketExchangeAction =
           };
       };
 
-export const loadExchangeInfo = async (): Promise<[ExchangeInfo, ExchangeCoinInfo[]]> => {
-    const [exchangeList, exchangeCoinInfo] = await Promise.all([
-        invityAPI.getExchangeList(),
-        invityAPI.getExchangeCoins(),
-    ]);
+export const loadExchangeInfo = async (): Promise<ExchangeInfo> => {
+    const exchangeList = await invityAPI.getExchangeList();
 
-    if (
-        !exchangeList ||
-        exchangeList.length === 0 ||
-        !exchangeCoinInfo ||
-        exchangeCoinInfo.length === 0
-    ) {
-        return [{ providerInfos: {}, buySymbols: new Set(), sellSymbols: new Set() }, []];
+    if (!exchangeList || exchangeList.length === 0) {
+        return { providerInfos: {}, buySymbols: new Set(), sellSymbols: new Set() };
     }
 
     const providerInfos: { [name: string]: ExchangeProviderInfo } = {};
     exchangeList.forEach(e => (providerInfos[e.name] = e));
 
     // merge symbols supported by at least one partner
-    const buySymbolsArray: string[] = [];
-    const sellSymbolsArray: string[] = [];
+    const buySymbolsArray: CryptoSymbol[] = [];
+    const sellSymbolsArray: CryptoSymbol[] = [];
     exchangeList.forEach(p => {
         if (p.buyTickers) {
-            buySymbolsArray.push(...p.buyTickers.map(c => c.toLowerCase()));
+            buySymbolsArray.push(...p.buyTickers);
         }
         if (p.sellTickers) {
-            sellSymbolsArray.push(...p.sellTickers.map(c => c.toLowerCase()));
+            sellSymbolsArray.push(...p.sellTickers);
         }
     });
 
-    // allow only symbols which are supported by partners and at the same time in the list of supported coins by invityAPI
-    const allBuySymbols = new Set(buySymbolsArray);
-    const buySymbols = new Set<string>();
-    const allSellSymbols = new Set(sellSymbolsArray);
-    const sellSymbols = new Set<string>();
-    exchangeCoinInfo.forEach(ci => {
-        const symbol = ci.ticker.toLowerCase();
-        if (allBuySymbols.has(symbol)) buySymbols.add(symbol);
-        if (allSellSymbols.has(symbol)) sellSymbols.add(symbol);
-    });
+    const buySymbols = new Set<CryptoSymbol>(buySymbolsArray);
+    const sellSymbols = new Set<CryptoSymbol>(sellSymbolsArray);
 
-    return [
-        {
-            exchangeList,
-            providerInfos,
-            buySymbols,
-            sellSymbols,
-        },
-        exchangeCoinInfo,
-    ];
+    return {
+        exchangeList,
+        providerInfos,
+        buySymbols,
+        sellSymbols,
+    };
 };
 
 export const saveExchangeInfo = (exchangeInfo: ExchangeInfo): CoinmarketExchangeAction => ({
     type: COINMARKET_EXCHANGE.SAVE_EXCHANGE_INFO,
     exchangeInfo,
-});
-
-export const saveExchangeCoinInfo = (
-    exchangeCoinInfo: ExchangeCoinInfo[],
-): CoinmarketExchangeAction => ({
-    type: COINMARKET_EXCHANGE.SAVE_EXCHANGE_COIN_INFO,
-    exchangeCoinInfo,
 });
 
 // this is only a wrapper for `openDeferredModal` since it doesn't work with `bindActionCreators`

@@ -1,7 +1,7 @@
 import { fiatCurrencies } from '@suite-common/suite-config';
 import { NumberInput } from 'src/components/suite';
 import { Select } from '@trezor/components';
-import { buildOption } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { buildFiatOption } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { Controller } from 'react-hook-form';
 import { useCoinmarketSellFormContext } from 'src/hooks/wallet/useCoinmarketSellForm';
 import { getInputState } from '@suite-common/wallet-utils';
@@ -80,7 +80,7 @@ const FiatInput = () => {
                         <Select
                             options={Object.keys(fiatCurrencies)
                                 .filter(c => sellInfo?.supportedFiatCurrencies.has(c))
-                                .map((currency: string) => buildOption(currency))}
+                                .map((currency: string) => buildFiatOption(currency))}
                             isSearchable
                             value={value}
                             isClearable={false}

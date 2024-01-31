@@ -1,19 +1,32 @@
-import { Account, Network } from 'src/types/wallet';
+import { Account, Network, NetworkSymbol } from 'src/types/wallet';
 import { NETWORKS } from 'src/config/wallet';
 import TrezorConnect, { TokenInfo } from '@trezor/connect';
 import regional from 'src/constants/wallet/coinmarket/regional';
 import { TrezorDevice } from 'src/types/suite';
+import { CryptoSymbol } from 'invity-api';
+import {
+    networkToCryptoSymbol,
+    tokenToCryptoSymbol,
+} from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 
+/** @deprecated */
 const suiteToInvitySymbols: {
     suiteSymbol: string;
     invitySymbol: string;
 }[] = [];
 
-export const buildOption = (currency: string) => ({
+export const buildFiatOption = (currency: string) => ({
     value: currency,
     label: currency.toUpperCase(),
 });
 
+export const buildCryptoOption = (networkSymbol: NetworkSymbol) => ({
+    value: networkSymbol.toUpperCase(),
+    label: networkSymbol.toUpperCase(),
+    cryptoSymbol: networkToCryptoSymbol(networkSymbol),
+});
+
+/** @deprecated */
 export const invityApiSymbolToSymbol = (symbol?: string) => {
     if (!symbol) return 'UNKNOWN';
     const lowercaseSymbol = symbol.toLowerCase();
@@ -21,6 +34,7 @@ export const invityApiSymbolToSymbol = (symbol?: string) => {
     return result ? result.suiteSymbol : lowercaseSymbol;
 };
 
+/** @deprecated */
 export const symbolToInvityApiSymbol = (symbol?: string) => {
     if (!symbol) return 'UNKNOWN';
     const result = suiteToInvitySymbols.find(s => s.suiteSymbol === symbol.toLowerCase());
@@ -29,34 +43,47 @@ export const symbolToInvityApiSymbol = (symbol?: string) => {
 
 export const getSendCryptoOptions = (
     account: Account,
-    supportedCoins: Set<string>,
+    supportedSymbols: Set<CryptoSymbol>,
     tokensFiatValue?: Record<string, number>,
 ) => {
-    const uppercaseSymbol = account.symbol.toUpperCase();
-    const options: { value: string; label: string; token?: TokenInfo }[] = [
-        { value: uppercaseSymbol, label: uppercaseSymbol },
-    ];
+    const cryptoSymbol = networkToCryptoSymbol(account.symbol);
+    if (!cryptoSymbol) {
+        return [];
+    }
 
-    if (account.networkType === 'ethereum' && account.tokens) {
+    const options: {
+        value: string;
+        label: string;
+        token?: TokenInfo;
+        cryptoSymbol: CryptoSymbol;
+    }[] = [{ value: cryptoSymbol, label: cryptoSymbol, cryptoSymbol }];
+
+    if (account.tokens) {
         account.tokens.forEach(token => {
             if (!token.symbol) {
                 return;
             }
 
-            const invityToken = symbolToInvityApiSymbol(token.symbol);
-            if (!supportedCoins.has(invityToken)) {
+            const tokenCryptoSymbol = tokenToCryptoSymbol(token.symbol, account.symbol);
+            if (!tokenCryptoSymbol) {
                 return;
             }
 
+            if (!supportedSymbols.has(tokenCryptoSymbol)) {
+                return;
+            }
+
+            // exclude zero value tokens
             const isZeroValueToken = tokensFiatValue && tokensFiatValue[token.contract] === 0;
             if (isZeroValueToken) {
                 return;
             }
 
             options.push({
-                label: invityToken.toUpperCase(),
-                value: invityToken.toUpperCase(),
+                label: token.symbol.toUpperCase(),
+                value: token.symbol.toUpperCase(),
                 token,
+                cryptoSymbol: tokenCryptoSymbol,
             });
         });
     }
@@ -64,7 +91,7 @@ export const getSendCryptoOptions = (
     return options;
 };
 
-export const getTokensFiatValue = async (account: Account, supportedCoins: Set<string>) => {
+export const getTokensFiatValue = async (account: Account, supportedCoins: Set<CryptoSymbol>) => {
     const tokensFiatValue: Record<string, number> = {};
 
     await Promise.all(

@@ -4,7 +4,7 @@ import coinmarketReducer from 'src/reducers/wallet/coinmarketReducer';
 
 import * as coinmarketExchangeActions from '../coinmarketExchangeActions';
 import invityAPI from 'src/services/suite/invityAPI';
-import { ExchangeCoinInfo, ExchangeTrade, ExchangeTradeQuoteRequest } from 'invity-api';
+import { ExchangeTrade, ExchangeTradeQuoteRequest } from 'invity-api';
 
 export const getInitialState = () => ({
     wallet: {
@@ -96,35 +96,21 @@ describe('Coinmarket Exchange Actions', () => {
                 isRefundRequired: false,
             },
         ];
-        const exchangeCoinList: ExchangeCoinInfo[] = [
-            { ticker: 'BTC', name: 'Bitcoin', category: 'popular' },
-            { ticker: 'ETH', name: 'Ethereum', category: 'popular' },
-            { ticker: 'XMR', name: 'Ripple', category: 'popular' },
-        ];
 
         setFetchMock({
-            'https://exchange.trezor.io/api/exchange/list': { ok: true, response: exchangeList },
-            'https://exchange.trezor.io/api/exchange/coins': {
-                ok: true,
-                response: exchangeCoinList,
-            },
+            'https://exchange.trezor.io/api/v2/exchange/list': { ok: true, response: exchangeList },
         });
 
         const store = initStore(getInitialState());
 
-        coinmarketExchangeActions.loadExchangeInfo().then(([exchangeInfo, exchangeCoinInfo]) => {
+        coinmarketExchangeActions.loadExchangeInfo().then(exchangeInfo => {
             store.dispatch(coinmarketExchangeActions.saveExchangeInfo(exchangeInfo));
             expect(store.getState().wallet.coinmarket.exchange.exchangeInfo).toEqual({
                 exchangeList,
                 providerInfos: { changenow: exchangeList[0], changenowfr: exchangeList[1] },
-                buySymbols: new Set<string>(['xmr', 'btc', 'eth']),
-                sellSymbols: new Set<string>(['btc', 'eth']),
+                buySymbols: new Set<string>(['XMR', 'BTC', 'ETH', 'BCH']),
+                sellSymbols: new Set<string>(['BTC', 'ETH']),
             });
-
-            store.dispatch(coinmarketExchangeActions.saveExchangeCoinInfo(exchangeCoinInfo));
-            expect(store.getState().wallet.coinmarket.exchange.exchangeCoinInfo).toEqual(
-                exchangeCoinList,
-            );
         });
     });
 

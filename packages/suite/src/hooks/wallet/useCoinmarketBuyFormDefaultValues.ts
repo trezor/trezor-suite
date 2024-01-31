@@ -1,7 +1,11 @@
 import { BuyInfo } from 'src/actions/wallet/coinmarketBuyActions';
 import { useMemo } from 'react';
 import { Account } from 'src/types/wallet';
-import { buildOption, getDefaultCountry } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import {
+    buildCryptoOption,
+    buildFiatOption,
+    getDefaultCountry,
+} from 'src/utils/wallet/coinmarket/coinmarketUtils';
 
 export const useCoinmarketBuyFormDefaultValues = (
     accountSymbol: Account['symbol'],
@@ -12,16 +16,12 @@ export const useCoinmarketBuyFormDefaultValues = (
     const defaultCurrencyInfo = buyInfo?.buyInfo?.suggestedFiatCurrency;
     const defaultCurrency = useMemo(
         () =>
-            defaultCurrencyInfo ? buildOption(defaultCurrencyInfo) : { label: 'USD', value: 'usd' },
+            defaultCurrencyInfo
+                ? buildFiatOption(defaultCurrencyInfo)
+                : { label: 'USD', value: 'usd' },
         [defaultCurrencyInfo],
     );
-    const defaultCrypto = useMemo(
-        () => ({
-            value: accountSymbol.toUpperCase(),
-            label: accountSymbol.toUpperCase(),
-        }),
-        [accountSymbol],
-    );
+    const defaultCrypto = useMemo(() => buildCryptoOption(accountSymbol), [accountSymbol]);
     const defaultValues = useMemo(
         () =>
             buyInfo

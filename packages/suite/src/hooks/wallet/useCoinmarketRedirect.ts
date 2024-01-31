@@ -1,5 +1,5 @@
 import { Account } from 'src/types/wallet';
-import { BuyTradeQuoteRequest, SellFiatTradeQuoteRequest } from 'invity-api';
+import { BuyTradeQuoteRequest, CryptoSymbol, SellFiatTradeQuoteRequest } from 'invity-api';
 import { useDispatch } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import * as coinmarketBuyActions from 'src/actions/wallet/coinmarketBuyActions';
@@ -13,7 +13,7 @@ export interface OfferRedirectParams {
     accountType: Account['accountType'];
     wantCrypto: boolean;
     fiatCurrency: string;
-    receiveCurrency: string;
+    receiveCurrency: CryptoSymbol;
     amount: string;
     country: string;
 }
@@ -24,7 +24,7 @@ export interface SellOfferRedirectParams {
     accountType: Account['accountType'];
     amountInCrypto: boolean;
     fiatCurrency: string;
-    cryptoCurrency: string;
+    cryptoCurrency: CryptoSymbol;
     amount: string;
     country: string;
     orderId?: string;

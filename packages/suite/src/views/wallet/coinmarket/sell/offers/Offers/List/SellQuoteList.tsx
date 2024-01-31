@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { SellFiatTrade } from 'invity-api';
 
-import { CoinLogo, variables, Icon, H2 } from '@trezor/components';
+import { variables, Icon, H2 } from '@trezor/components';
 import { useCoinmarketSellOffersContext } from 'src/hooks/wallet/useCoinmarketSellOffers';
 import { Translation } from 'src/components/suite';
 import { CoinmarketRefreshTime } from 'src/views/wallet/coinmarket/common';
@@ -9,6 +9,8 @@ import { InvityAPIReloadQuotesAfterSeconds } from 'src/constants/wallet/coinmark
 import { CoinmarketCryptoAmount } from 'src/views/wallet/coinmarket/common/CoinmarketCryptoAmount';
 import { CoinmarketFiatAmount } from 'src/views/wallet/coinmarket/common/CoinmarketFiatAmount';
 import { SellQuote } from './SellQuote';
+import invityAPI from 'src/services/suite/invityAPI';
+import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 
 const Wrapper = styled.div``;
 const Quotes = styled.div``;
@@ -56,6 +58,12 @@ const StyledIcon = styled(Icon)`
     margin: 0 20px;
 `;
 
+const TokenLogo = styled.img`
+    display: flex;
+    align-items: center;
+    height: 21px;
+`;
+
 const Send = styled(H2)`
     padding-top: 3px;
     padding-left: 10px;
@@ -82,7 +90,7 @@ interface ListProps {
 }
 
 export const SellQuoteList = ({ isAlternative, quotes }: ListProps) => {
-    const { account, quotesRequest, timer } = useCoinmarketSellOffersContext();
+    const { quotesRequest, timer } = useCoinmarketSellOffersContext();
 
     if (!quotesRequest) return null;
     const { fiatStringAmount, fiatCurrency, amountInCrypto } = quotesRequest;
@@ -92,11 +100,15 @@ export const SellQuoteList = ({ isAlternative, quotes }: ListProps) => {
             <Header>
                 <Left>
                     <SummaryRow>
-                        <CoinLogo size={21} symbol={account.symbol} />
+                        <TokenLogo
+                            src={invityAPI.getCoinLogoUrl(
+                                cryptoToCoinSymbol(quotes[0].cryptoCurrency!),
+                            )}
+                        />
                         <Send>
                             <CoinmarketCryptoAmount
                                 amount={amountInCrypto ? quotes[0].cryptoStringAmount : ''}
-                                symbol={account.symbol}
+                                symbol={cryptoToCoinSymbol(quotes[0].cryptoCurrency!)}
                             />
                         </Send>
                         <StyledIcon icon="ARROW_RIGHT_LONG" />

@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 
-import { ExchangeCoinInfo, ExchangeTrade } from 'invity-api';
+import { ExchangeTrade } from 'invity-api';
 
 import { useTimer } from '@trezor/react-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -24,22 +24,7 @@ import { InvityAPIReloadQuotesAfterSeconds } from 'src/constants/wallet/coinmark
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 
 import { useCoinmarketRecomposeAndSign } from './useCoinmarketRecomposeAndSign';
-
-const getReceiveAccountSymbol = (
-    symbol?: string,
-    exchangeCoinInfo?: ExchangeCoinInfo[],
-): string | undefined => {
-    if (symbol) {
-        // check if the symbol is ETH token, in that case use ETH network as receiving account
-        const coinInfo = exchangeCoinInfo?.find(ci => ci.ticker === symbol);
-        if (coinInfo?.token === 'ETH') {
-            return 'eth';
-        }
-        return symbol.toLowerCase();
-    }
-
-    return symbol;
-};
+import { cryptoToNetworkSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 
 export const useOffers = ({ selectedAccount }: UseCoinmarketExchangeFormProps) => {
     const timer = useTimer();
@@ -74,15 +59,8 @@ export const useOffers = ({ selectedAccount }: UseCoinmarketExchangeFormProps) =
     );
     const accounts = useSelector(state => state.wallet.accounts);
     const device = useSelector(selectDevice);
-    const {
-        addressVerified,
-        dexQuotes,
-        exchangeCoinInfo,
-        exchangeInfo,
-        fixedQuotes,
-        floatQuotes,
-        quotesRequest,
-    } = useSelector(state => state.wallet.coinmarket.exchange);
+    const { addressVerified, dexQuotes, exchangeInfo, fixedQuotes, floatQuotes, quotesRequest } =
+        useSelector(state => state.wallet.coinmarket.exchange);
 
     const [innerFixedQuotes, setInnerFixedQuotes] = useState<ExchangeTrade[] | undefined>(
         fixedQuotes,
@@ -159,14 +137,14 @@ export const useOffers = ({ selectedAccount }: UseCoinmarketExchangeFormProps) =
         }
     };
 
-    const receiveSymbol = getReceiveAccountSymbol(selectedQuote?.receive, exchangeCoinInfo);
+    const receiveNetwork = selectedQuote?.receive && cryptoToNetworkSymbol(selectedQuote?.receive);
 
     useEffect(() => {
         if (selectedQuote && exchangeStep === 'RECEIVING_ADDRESS') {
             const unavailableCapabilities = device?.unavailableCapabilities ?? {};
             // is the symbol supported by the suite and the device natively
             const receiveNetworks = networks.filter(
-                n => n.symbol === receiveSymbol && !unavailableCapabilities[n.symbol],
+                n => n.symbol === receiveNetwork && !unavailableCapabilities[n.symbol],
             );
             if (receiveNetworks.length > 0) {
                 // get accounts of the current symbol belonging to the current device
@@ -174,7 +152,7 @@ export const useOffers = ({ selectedAccount }: UseCoinmarketExchangeFormProps) =
                     accounts.filter(
                         a =>
                             a.deviceState === device?.state &&
-                            a.symbol === receiveSymbol &&
+                            a.symbol === receiveNetwork &&
                             (!a.empty ||
                                 a.visible ||
                                 (a.accountType === 'normal' && a.index === 0)),
@@ -184,7 +162,7 @@ export const useOffers = ({ selectedAccount }: UseCoinmarketExchangeFormProps) =
             }
         }
         setSuiteReceiveAccounts(undefined);
-    }, [accounts, device, exchangeStep, receiveSymbol, selectedQuote]);
+    }, [accounts, device, exchangeStep, receiveNetwork, selectedQuote]);
 
     const confirmTrade = async (address: string, extraField?: string, trade?: ExchangeTrade) => {
         let ok = false;
@@ -348,7 +326,7 @@ export const useOffers = ({ selectedAccount }: UseCoinmarketExchangeFormProps) =
         dexQuotes: innerDexQuotes,
         selectQuote,
         account,
-        receiveSymbol,
+        receiveSymbol: receiveNetwork,
         receiveAccount,
         setReceiveAccount,
         getQuotes,

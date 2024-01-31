@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { CoinLogo, variables, Icon, H2 } from '@trezor/components';
+import { variables, Icon, H2 } from '@trezor/components';
 import { BuyTrade } from 'invity-api';
 import { useCoinmarketBuyOffersContext } from 'src/hooks/wallet/useCoinmarketBuyOffers';
 import { Translation } from 'src/components/suite';
@@ -10,6 +10,8 @@ import {
 } from 'src/views/wallet/coinmarket/common';
 import { InvityAPIReloadQuotesAfterSeconds } from 'src/constants/wallet/coinmarket/metadata';
 import { BuyQuote } from './BuyQuote';
+import invityAPI from 'src/services/suite/invityAPI';
+import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 
 const Wrapper = styled.div``;
 const Quotes = styled.div``;
@@ -56,6 +58,12 @@ const StyledIcon = styled(Icon)`
     margin: 0 20px;
 `;
 
+const TokenLogo = styled.img`
+    display: flex;
+    align-items: center;
+    height: 21px;
+`;
+
 const Send = styled(H2)`
     padding-top: 3px;
     font-weight: ${variables.FONT_WEIGHT.REGULAR};
@@ -81,7 +89,7 @@ interface ListProps {
 }
 
 export const BuyQuoteList = ({ isAlternative, quotes }: ListProps) => {
-    const { account, quotesRequest, timer } = useCoinmarketBuyOffersContext();
+    const { quotesRequest, timer } = useCoinmarketBuyOffersContext();
 
     if (!quotesRequest) return null;
     const { fiatStringAmount, fiatCurrency, wantCrypto } = quotesRequest;
@@ -98,11 +106,15 @@ export const BuyQuoteList = ({ isAlternative, quotes }: ListProps) => {
                             />
                         </Send>
                         <StyledIcon icon="ARROW_RIGHT_LONG" />
-                        <CoinLogo size={21} symbol={account.symbol} />
+                        <TokenLogo
+                            src={invityAPI.getCoinLogoUrl(
+                                cryptoToCoinSymbol(quotes[0].receiveCurrency!),
+                            )}
+                        />
                         <Receive>
                             <CoinmarketCryptoAmount
                                 amount={wantCrypto ? quotes[0].receiveStringAmount : ''}
-                                symbol={account.symbol}
+                                symbol={cryptoToCoinSymbol(quotes[0].receiveCurrency!)}
                             />
                         </Receive>
                     </SummaryRow>

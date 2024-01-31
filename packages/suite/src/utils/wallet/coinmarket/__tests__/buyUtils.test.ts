@@ -92,47 +92,52 @@ describe('coinmarket/buy utils', () => {
     });
 
     it('getCryptoOptions', () => {
-        expect(getCryptoOptions('btc', 'bitcoin', new Set(), undefined)).toStrictEqual([
+        expect(getCryptoOptions('btc', new Set())).toStrictEqual([
             {
                 value: 'BTC',
                 label: 'BTC',
+                cryptoSymbol: 'BTC',
             },
         ]);
+
+        expect(getCryptoOptions('btc', new Set(['BTC', 'ETH', 'USDT@ETH']))).toStrictEqual([
+            {
+                value: 'BTC',
+                label: 'BTC',
+                cryptoSymbol: 'BTC',
+            },
+        ]);
+
         expect(
             getCryptoOptions(
                 'eth',
-                'ethereum',
-                new Set(['eth', 'usdt20', 'usdt', 'usdc', 'dai', 'gusd', 'other']),
-                [
-                    { ticker: 'ETH', category: 'Popular', name: 'Ethereum' },
-                    { ticker: 'USDT20', category: 'Ethereum ERC20 tokens', name: 'Tether' },
-                    { ticker: 'USDT', category: 'Ethereum ERC20 tokens', name: 'Tether' },
-                    { ticker: 'USDC', category: 'Ethereum ERC20 tokens', name: 'Usdc' },
-                    { ticker: 'DAI', category: 'Ethereum ERC20 tokens', name: 'Dai' },
-                    { ticker: 'GUSD', category: 'Ethereum ERC20 tokens', name: 'GUsd' },
-                    { ticker: 'OTHER', category: 'Other coins', name: 'Other' },
-                ],
+                new Set(['ETH', 'USDT@ETH', 'USDC@ETH', 'DAI@ETH', 'GUSD@ETH']),
             ),
         ).toStrictEqual([
             {
                 value: 'ETH',
                 label: 'ETH',
+                cryptoSymbol: 'ETH',
             },
             {
                 value: 'USDT',
                 label: 'USDT',
+                cryptoSymbol: 'USDT@ETH',
             },
             {
                 label: 'USDC',
                 value: 'USDC',
+                cryptoSymbol: 'USDC@ETH',
             },
             {
                 value: 'DAI',
                 label: 'DAI',
+                cryptoSymbol: 'DAI@ETH',
             },
             {
                 value: 'GUSD',
                 label: 'GUSD',
+                cryptoSymbol: 'GUSD@ETH',
             },
         ]);
     });

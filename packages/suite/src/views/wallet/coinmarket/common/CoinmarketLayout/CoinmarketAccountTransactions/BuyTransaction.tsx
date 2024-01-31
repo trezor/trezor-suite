@@ -25,6 +25,7 @@ import { TradeBuy } from 'src/types/wallet/coinmarketCommonTypes';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 import { CoinmarketTransactionStatus } from './CoinmarketTransactionStatus';
+import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 
 const Wrapper = styled.div`
     display: flex;
@@ -151,7 +152,7 @@ export const BuyTransaction = ({ trade, providers, account }: BuyTransactionProp
         setIsGettingOffers(true);
         const request: BuyTradeQuoteRequest = {
             fiatCurrency: fiatCurrency || '',
-            receiveCurrency: receiveCurrency || '',
+            receiveCurrency: receiveCurrency!,
             fiatStringAmount: fiatStringAmount || '',
             wantCrypto: false,
             country,
@@ -185,7 +186,10 @@ export const BuyTransaction = ({ trade, providers, account }: BuyTransactionProp
                     <Arrow>
                         <Icon color={theme.TYPE_LIGHT_GREY} size={13} icon="ARROW_RIGHT" />
                     </Arrow>
-                    <FormattedCryptoAmount value={receiveStringAmount} symbol={receiveCurrency} />
+                    <FormattedCryptoAmount
+                        value={receiveStringAmount}
+                        symbol={cryptoToCoinSymbol(receiveCurrency!)}
+                    />
                     {/* TODO FIX THIS LOGO */}
                     {/* <StyledCoinLogo size={13} symbol={symbol} /> */}
                 </Row>

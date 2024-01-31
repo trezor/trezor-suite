@@ -1,5 +1,11 @@
 import { Account } from 'src/types/wallet';
-import { BuyListResponse, BuyProviderInfo, BuyTradeQuoteRequest, BuyTrade } from 'invity-api';
+import {
+    BuyListResponse,
+    BuyProviderInfo,
+    BuyTradeQuoteRequest,
+    BuyTrade,
+    CryptoSymbol,
+} from 'invity-api';
 import invityAPI from 'src/services/suite/invityAPI';
 import { COINMARKET_BUY, COINMARKET_COMMON } from './constants';
 import { Dispatch } from 'src/types/suite';
@@ -11,7 +17,7 @@ export interface BuyInfo {
     buyInfo?: BuyListResponse;
     providerInfos: { [name: string]: BuyProviderInfo };
     supportedFiatCurrencies: Set<string>;
-    supportedCryptoCurrencies: Set<string>;
+    supportedCryptoCurrencies: Set<CryptoSymbol>;
 }
 
 export type CoinmarketBuyAction =
@@ -64,10 +70,10 @@ export const loadBuyInfo = async (): Promise<BuyInfo> => {
     buyInfo.providers.forEach(e => (providerInfos[e.name] = e));
 
     const tradedFiatCurrencies: string[] = [];
-    const tradedCoins: string[] = [];
+    const tradedCoins: CryptoSymbol[] = [];
     buyInfo.providers.forEach(p => {
         tradedFiatCurrencies.push(...p.tradedFiatCurrencies.map(c => c.toLowerCase()));
-        tradedCoins.push(...p.tradedCoins.map(c => c.toLowerCase()));
+        tradedCoins.push(...p.tradedCoins);
     });
     const supportedFiatCurrencies = new Set(tradedFiatCurrencies);
     const supportedCryptoCurrencies = new Set(tradedCoins);

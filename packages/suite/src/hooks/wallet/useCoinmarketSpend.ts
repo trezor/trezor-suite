@@ -18,6 +18,7 @@ import { useForm } from 'react-hook-form';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import type { AppState } from 'src/types/suite';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
+import { networkToCryptoSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 
 export const SpendContext = createContext<SpendContextValues | null>(null);
 SpendContext.displayName = 'CoinmarketSpendContext';
@@ -77,18 +78,18 @@ export const useCoinmarketSpend = ({
     const provider = sellInfo?.sellList?.providers.filter(p => p.type === 'Voucher')[0];
     const noProviders =
         !provider ||
-        !provider.tradedCoins.includes(account.symbol.toUpperCase()) ||
+        !provider.tradedCoins.includes(networkToCryptoSymbol(account.symbol)!) ||
         !voucherSiteUrl ||
         voucherSiteUrl === 'error';
 
     useEffect(() => {
         if (provider) {
-            if (provider.tradedCoins.includes(account.symbol.toUpperCase())) {
+            if (provider.tradedCoins.includes(networkToCryptoSymbol(account.symbol)!)) {
                 setVoucherSiteUrl(undefined);
                 invityAPI
                     .getVoucherQuotes({
                         country,
-                        cryptoCurrency: account.symbol.toUpperCase(),
+                        cryptoCurrency: networkToCryptoSymbol(account.symbol),
                         language,
                         refundAddress: getUnusedAddressFromAccount(account).address,
                     })
@@ -192,7 +193,7 @@ export const useCoinmarketSpend = ({
                 if (provider && provider.voucherSiteOrigin === event.origin) {
                     const trade = await invityAPI.requestVoucherTrade({
                         exchange: provider.name,
-                        cryptoCurrency: account.symbol.toUpperCase(),
+                        cryptoCurrency: networkToCryptoSymbol(account.symbol)!,
                         data: event.data,
                     });
 

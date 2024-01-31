@@ -19,6 +19,7 @@ import { PollingAction } from 'src/actions/wallet/pollingActions';
 import { CoinjoinAccountAction } from 'src/actions/wallet/coinjoinAccountActions';
 import { CoinjoinClientAction } from 'src/actions/wallet/coinjoinClientActions';
 import { NETWORKS } from 'src/config/wallet';
+import { CoinmarketInfoAction } from 'src/actions/wallet/coinmarketInfoActions';
 
 export type Network = ArrayElement<typeof NETWORKS>;
 export type NetworkSymbol = Network['symbol'];
@@ -63,6 +64,7 @@ export type WalletAction =
     | SignVerifyAction
     | GraphAction
     | DiscoveryAction
+    | CoinmarketInfoAction
     | CoinmarketExchangeAction
     | CoinmarketBuyAction
     | CoinMarketSpendAction
