@@ -16,6 +16,7 @@ export { ConfirmXpubModal } from './ReduxModal/ConfirmXpubModal';
 export { NoBackupModal } from './ReduxModal/DeviceConfirmationModal/NoBackupModal';
 export { TransactionReviewModal } from './ReduxModal/TransactionReviewModal/TransactionReviewModal';
 export { ImportTransactionModal } from './ReduxModal/UserContextModal/ImportTransactionModal/ImportTransactionModal';
+export { ConfirmEvmExplanationModal } from './ConfirmEvmExplanationModal';
 export { ConfirmUnverifiedModal } from './ReduxModal/UserContextModal/ConfirmUnverifiedModal';
 export { ConfirmUnverifiedAddressModal } from './ReduxModal/UserContextModal/ConfirmUnverifiedAddressModal';
 export { AddAccountModal } from './ReduxModal/UserContextModal/AddAccountModal/AddAccountModal';

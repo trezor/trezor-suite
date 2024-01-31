@@ -13,6 +13,7 @@ import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import { constructOutputs } from 'src/utils/wallet/reviewTransactionUtils';
 import { TransactionReviewSummary } from './TransactionReviewSummary';
 import { TransactionReviewOutputList } from './TransactionReviewOutputList/TransactionReviewOutputList';
+import { TransactionReviewEvmExplanation } from './TransactionReviewEvmExplanation';
 
 const StyledModal = styled(Modal)`
     ${Modal.Body} {
@@ -21,7 +22,7 @@ const StyledModal = styled(Modal)`
     }
     ${Modal.Content} {
         @media (min-width: ${variables.SCREEN_SIZE.SM}) {
-            flex-direction: row;
+            flex-flow: row wrap;
         }
     }
 `;
@@ -142,6 +143,7 @@ export const TransactionReviewModal = ({ decision }: TransactionReviewModalProps
                 buttonRequestsCount={buttonRequestsCount}
                 isRbfAction={isRbfAction}
             />
+            <TransactionReviewEvmExplanation account={selectedAccount.account} />
         </StyledModal>
     );
 };

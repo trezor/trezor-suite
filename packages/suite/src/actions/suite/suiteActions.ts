@@ -15,6 +15,7 @@ import {
     DebugModeOptions,
     AutodetectSettings,
     selectTorState,
+    EvmSettings,
 } from 'src/reducers/suite/suiteReducer';
 import type { TranslationKey } from 'src/components/suite/Translation';
 
@@ -37,6 +38,7 @@ export type SuiteAction =
     | { type: typeof SUITE.ONION_LINKS; payload: boolean }
     | { type: typeof SUITE.COINJOIN_RECEIVE_WARNING; payload: boolean }
     | { type: typeof SUITE.DEVICE_AUTHENTICITY_OPT_OUT; payload: boolean }
+    | { type: typeof SUITE.COINJOIN_RECEIVE_WARNING; payload: boolean }
     | { type: typeof SUITE.LOCK_UI; payload: boolean }
     | ReturnType<typeof lockDevice>
     | { type: typeof SUITE.LOCK_ROUTER; payload: boolean }
@@ -44,6 +46,11 @@ export type SuiteAction =
           type: typeof SUITE.SET_FLAG;
           key: keyof AppState['suite']['flags'];
           value: boolean;
+      }
+    | {
+          type: typeof SUITE.EVM_CONFIRM_EXPLANATION_MODAL;
+          symbol: keyof EvmSettings['confirmExplanationModalClosed'];
+          route: string;
       }
     | { type: typeof SUITE.APP_CHANGED; payload: AppState['router']['app'] }
     | {

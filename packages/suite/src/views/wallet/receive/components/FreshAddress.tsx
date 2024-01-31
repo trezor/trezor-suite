@@ -9,6 +9,8 @@ import { useDispatch, useSelector } from 'src/hooks/suite/';
 import { Button, Card, variables, H2, Tooltip, GradientOverlay } from '@trezor/components';
 import { getFirstFreshAddress } from '@suite-common/wallet-utils';
 import { AccountsRootState, selectIsAccountUtxoBased } from '@suite-common/wallet-core';
+import { networks } from '@suite-common/wallet-config';
+import { EvmExplanationBox } from 'src/components/wallet/EvmExplanationBox';
 import { spacingsPx, typography } from '@trezor/theme';
 
 const StyledCard = styled(Card)`
@@ -56,6 +58,10 @@ const AddressLabel = styled.span`
     ${typography.label}
     text-transform: uppercase;
     font-variant-numeric: slashed-zero tabular-nums;
+`;
+
+const StyledEvmExplanationBox = styled(EvmExplanationBox)`
+    margin-top: 26px;
 `;
 
 const TooltipLabel = ({
@@ -174,6 +180,27 @@ export const FreshAddress = ({
                     <Translation id="RECEIVE_ADDRESS_REVEAL" />
                 </StyledButton>
             </Tooltip>
+            {account.networkType === 'ethereum' && (
+                <StyledEvmExplanationBox
+                    caret
+                    symbol={account.symbol}
+                    title={
+                        <Translation
+                            id="TR_EVM_EXPLANATION_TITLE"
+                            values={{
+                                network: networks[account.symbol].name,
+                            }}
+                        />
+                    }
+                >
+                    <Translation
+                        id="TR_EVM_EXPLANATION_RECEIVE_DESCRIPTION"
+                        values={{
+                            network: networks[account.symbol].name,
+                        }}
+                    />
+                </StyledEvmExplanationBox>
+            )}
         </StyledCard>
     );
 };

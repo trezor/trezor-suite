@@ -17,6 +17,7 @@ export const SET_AUTODETECT = '@suite/set-autodetect';
 export const COINJOIN_RECEIVE_WARNING = '@suite/coinjoin-receive-warning';
 export const DESKTOP_SUITE_PROMO = '@suite/desktop-suite-promo';
 export const DEVICE_AUTHENTICITY_OPT_OUT = '@suite/device-authenticity-opt-out';
+export const EVM_CONFIRM_EXPLANATION_MODAL = '@suite/evm-confirm-explanation-modal';
 export const LOCK_UI = '@suite/lock-ui';
 export const LOCK_DEVICE = '@suite/lock-device';
 export const LOCK_ROUTER = '@suite/lock-router';

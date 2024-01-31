@@ -6,6 +6,7 @@ import { useDevice, useSelector } from 'src/hooks/suite';
 import { FreshAddress } from './components/FreshAddress';
 import { UsedAddresses } from './components/UsedAddresses';
 import { CoinjoinReceiveWarning } from './components/CoinjoinReceiveWarning';
+import { ConfirmEvmExplanationModal } from 'src/components/suite/modals';
 
 const Receive = () => {
     const isCoinjoinReceiveWarningHidden = useSelector(
@@ -52,6 +53,8 @@ const Receive = () => {
                 locked={isDeviceLocked}
                 pendingAddresses={pendingAddresses}
             />
+
+            <ConfirmEvmExplanationModal account={account} route="wallet-receive" />
         </WalletLayout>
     );
 };

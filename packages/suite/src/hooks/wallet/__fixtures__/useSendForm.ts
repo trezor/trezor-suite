@@ -180,6 +180,7 @@ export const getRootReducer = (selectedAccount = BTC_ACCOUNT, fees = DEFAULT_FEE
                 locks: [],
                 online: true,
                 settings: { debug: {}, theme: { variant: 'light' } },
+                evmSettings: { confirmExplanationModalClosed: {} },
             },
             () => ({}),
         ),
