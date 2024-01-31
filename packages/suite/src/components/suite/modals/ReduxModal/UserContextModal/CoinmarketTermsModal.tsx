@@ -3,6 +3,8 @@ import { Modal, Translation } from 'src/components/suite';
 import styled from 'styled-components';
 import type { Deferred } from '@trezor/utils';
 import { DeviceModelInternal } from '@trezor/connect';
+import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
+import { CryptoSymbol } from 'invity-api';
 
 const ContentWrapper = styled.div`
     text-align: left;
@@ -67,9 +69,9 @@ export type CoinmarketTermsModalProps = {
     onCancel: () => void;
     type: 'BUY' | 'SELL' | 'EXCHANGE' | 'EXCHANGE_DEX' | 'SAVINGS' | 'P2P';
     provider?: string;
-    cryptoCurrency?: string;
-    toCryptoCurrency?: string;
-    fromCryptoCurrency?: string;
+    cryptoCurrency?: CryptoSymbol;
+    toCryptoCurrency?: CryptoSymbol;
+    fromCryptoCurrency?: CryptoSymbol;
 };
 export const CoinmarketTermsModal = ({
     decision,
@@ -91,9 +93,15 @@ export const CoinmarketTermsModal = ({
                     id={`TR_${type}_MODAL_FOR_YOUR_SAFETY`}
                     values={{
                         provider: providerName,
-                        cryptocurrency: cryptoCurrency,
-                        toCrypto: toCryptoCurrency,
-                        fromCrypto: fromCryptoCurrency,
+                        cryptocurrency: cryptoCurrency
+                            ? cryptoToCoinSymbol(cryptoCurrency)
+                            : undefined,
+                        toCrypto: toCryptoCurrency
+                            ? cryptoToCoinSymbol(toCryptoCurrency)
+                            : undefined,
+                        fromCrypto: fromCryptoCurrency
+                            ? cryptoToCoinSymbol(fromCryptoCurrency)
+                            : undefined,
                     }}
                 />
             }

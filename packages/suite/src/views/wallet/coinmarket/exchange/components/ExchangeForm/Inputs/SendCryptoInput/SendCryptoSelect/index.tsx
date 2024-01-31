@@ -80,11 +80,7 @@ const SendCryptoSelect = () => {
                             {account.symbol === option.value.toLowerCase() ? (
                                 <CoinLogo size={18} symbol={account.symbol} />
                             ) : (
-                                <TokenLogo
-                                    src={`${invityAPI.getApiServerUrl()}/images/coins/suite/${
-                                        option.value
-                                    }.svg`}
-                                />
+                                <TokenLogo src={invityAPI.getCoinLogoUrl(option.value)} />
                             )}
                             <Label>{shouldSendInSats ? 'sat' : option.label}</Label>
                         </Option>

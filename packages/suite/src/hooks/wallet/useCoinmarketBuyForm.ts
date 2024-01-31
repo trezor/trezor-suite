@@ -30,6 +30,7 @@ import { AmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
 
 import { useCoinmarketBuyFormDefaultValues } from './useCoinmarketBuyFormDefaultValues';
 import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
+import { networkToCryptoSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 
 export const BuyFormContext = createContext<BuyFormContextValues | null>(null);
 BuyFormContext.displayName = 'CoinmarketBuyContext';
@@ -38,9 +39,6 @@ export const useCoinmarketBuyForm = ({
     selectedAccount,
 }: UseCoinmarketBuyFormProps): BuyFormContextValues => {
     const buyInfo = useSelector(state => state.wallet.coinmarket.buy.buyInfo);
-    const exchangeCoinInfo = useSelector(
-        state => state.wallet.coinmarket.exchange.exchangeCoinInfo,
-    );
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -115,6 +113,11 @@ export const useCoinmarketBuyForm = ({
     useEffect(() => {
         if (!isChanged(defaultValues, values)) {
             removeDraft(account.key);
+            return;
+        }
+
+        if (values.cryptoSelect && !values.cryptoSelect?.cryptoSymbol) {
+            removeDraft(account.key);
         }
     }, [defaultValues, values, removeDraft, account.key]);
 
@@ -129,7 +132,7 @@ export const useCoinmarketBuyForm = ({
         const request: BuyTradeQuoteRequest = {
             wantCrypto,
             fiatCurrency: formValues.currencySelect.value.toUpperCase(),
-            receiveCurrency: formValues.cryptoSelect.value,
+            receiveCurrency: formValues.cryptoSelect.cryptoSymbol,
             country: formValues.countrySelect.value,
             fiatStringAmount,
             cryptoStringAmount,
@@ -156,7 +159,10 @@ export const useCoinmarketBuyForm = ({
     const noProviders =
         !isLoading &&
         (buyInfo?.buyInfo?.providers.length === 0 ||
-            !buyInfo?.supportedCryptoCurrencies.has(account.symbol));
+            !(
+                networkToCryptoSymbol(account.symbol) &&
+                buyInfo?.supportedCryptoCurrencies.has(networkToCryptoSymbol(account.symbol)!)
+            ));
 
     return {
         ...methods,
@@ -166,7 +172,6 @@ export const useCoinmarketBuyForm = ({
         defaultCurrency,
         register,
         buyInfo,
-        exchangeCoinInfo,
         amountLimits,
         setAmountLimits,
         isLoading,

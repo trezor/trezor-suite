@@ -4,6 +4,7 @@ import { COINMARKET_COMMON } from 'src/actions/wallet/constants';
 import { InvityAPIReloadDataAfterMs } from 'src/constants/wallet/coinmarket/metadata';
 import invityAPI from 'src/services/suite/invityAPI';
 import * as coinmarketCommonActions from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
+import * as coinmarketInfoAction from 'src/actions/wallet/coinmarketInfoActions';
 import * as coinmarketBuyActions from 'src/actions/wallet/coinmarketBuyActions';
 import * as coinmarketExchangeActions from 'src/actions/wallet/coinmarketExchangeActions';
 import * as coinmarketSellActions from 'src/actions/wallet/coinmarketSellActions';
@@ -17,8 +18,9 @@ const coinmarketMiddleware =
         if (action.type === COINMARKET_COMMON.LOAD_DATA) {
             const { isLoading, lastLoadedTimestamp } = api.getState().wallet.coinmarket;
             const { account, status } = api.getState().wallet.selectedAccount;
+            const { symbolsInfo } = api.getState().wallet.coinmarket.info;
             const { buyInfo } = api.getState().wallet.coinmarket.buy;
-            const { exchangeCoinInfo, exchangeInfo } = api.getState().wallet.coinmarket.exchange;
+            const { exchangeInfo } = api.getState().wallet.coinmarket.exchange;
             const { sellInfo } = api.getState().wallet.coinmarket.sell;
             const { p2pInfo } = api.getState().wallet.coinmarket.p2p;
             const { savingsInfo } = api.getState().wallet.coinmarket.savings;
@@ -44,6 +46,14 @@ const coinmarketMiddleware =
 
                 const loadPromises: Promise<void>[] = [];
 
+                if (isDifferentAccount || !symbolsInfo || symbolsInfo.length === 0) {
+                    loadPromises.push(
+                        coinmarketInfoAction.loadSymbolsInfo().then(symbolsInfo => {
+                            api.dispatch(coinmarketInfoAction.saveSymbolsInfo(symbolsInfo));
+                        }),
+                    );
+                }
+
                 if (isDifferentAccount || !buyInfo) {
                     loadPromises.push(
                         coinmarketBuyActions.loadBuyInfo().then(buyInfo => {
@@ -52,20 +62,11 @@ const coinmarketMiddleware =
                     );
                 }
 
-                if (isDifferentAccount || !exchangeInfo || !exchangeCoinInfo) {
+                if (isDifferentAccount || !exchangeInfo) {
                     loadPromises.push(
-                        coinmarketExchangeActions
-                            .loadExchangeInfo()
-                            .then(([exchangeInfo, exchangeCoinInfo]) => {
-                                api.dispatch(
-                                    coinmarketExchangeActions.saveExchangeInfo(exchangeInfo),
-                                );
-                                api.dispatch(
-                                    coinmarketExchangeActions.saveExchangeCoinInfo(
-                                        exchangeCoinInfo,
-                                    ),
-                                );
-                            }),
+                        coinmarketExchangeActions.loadExchangeInfo().then(exchangeInfo => {
+                            api.dispatch(coinmarketExchangeActions.saveExchangeInfo(exchangeInfo));
+                        }),
                     );
                 }
 

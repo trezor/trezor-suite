@@ -11,6 +11,7 @@ import { useWatchExchangeTrade } from 'src/hooks/wallet/useCoinmarket';
 import { Translation, FormattedDate, FormattedCryptoAmount } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 import { CoinmarketTransactionStatus } from './CoinmarketTransactionStatus';
+import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 
 const Wrapper = styled.div`
     display: flex;
@@ -137,7 +138,10 @@ export const ExchangeTransaction = ({ trade, providers, account }: ExchangeTrans
                     <Arrow>
                         <Icon color={theme.TYPE_LIGHT_GREY} size={13} icon="ARROW_RIGHT" />
                     </Arrow>
-                    <FormattedCryptoAmount value={receiveStringAmount} symbol={receive} />
+                    <FormattedCryptoAmount
+                        value={receiveStringAmount}
+                        symbol={cryptoToCoinSymbol(receive!)}
+                    />
                     {/* TODO FIX THIS LOGO */}
                     {/* <StyledCoinLogo size={13} symbol={symbol} /> */}
                 </Row>

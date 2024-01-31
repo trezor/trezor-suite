@@ -21,6 +21,7 @@ import {
 import { TradeSell } from 'src/types/wallet/coinmarketCommonTypes';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { CoinmarketTransactionStatus } from './CoinmarketTransactionStatus';
+import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 
 const Wrapper = styled.div`
     display: flex;
@@ -150,7 +151,7 @@ export const SellTransaction = ({ trade, providers, account }: SellTransactionPr
                 saveQuoteRequest({
                     amountInCrypto: amountInCrypto || false,
                     fiatCurrency: fiatCurrency || '',
-                    cryptoCurrency: cryptoCurrency || '',
+                    cryptoCurrency: cryptoCurrency!,
                 }),
             );
             dispatch(setIsFromRedirect(true));
@@ -190,7 +191,10 @@ export const SellTransaction = ({ trade, providers, account }: SellTransactionPr
         <Wrapper>
             <Column>
                 <Row>
-                    <FormattedCryptoAmount value={cryptoStringAmount} symbol={cryptoCurrency} />
+                    <FormattedCryptoAmount
+                        value={cryptoStringAmount}
+                        symbol={cryptoToCoinSymbol(cryptoCurrency!)}
+                    />
                     <Arrow>
                         <Icon color={theme.TYPE_LIGHT_GREY} size={13} icon="ARROW_RIGHT" />
                     </Arrow>

@@ -16,6 +16,10 @@ const EmptyDiv = styled.div`
     width: 100%;
 `;
 
+const StyledCoinmarketFractionButtons = styled(CoinmarketFractionButtons)`
+    width: 100%;
+`;
+
 const Inputs = () => {
     const {
         trigger,
@@ -92,7 +96,7 @@ const Inputs = () => {
             </Left>
             <Middle responsiveSize="LG">
                 {!isLargeLayoutSize && (
-                    <CoinmarketFractionButtons
+                    <StyledCoinmarketFractionButtons
                         disabled={isBalanceZero}
                         onFractionClick={setRatioAmount}
                         onAllClick={setAllAmount}
@@ -105,7 +109,7 @@ const Inputs = () => {
                 <FiatInput />
             </Right>
             {isLargeLayoutSize && (
-                <CoinmarketFractionButtons
+                <StyledCoinmarketFractionButtons
                     disabled={isBalanceZero}
                     onFractionClick={setRatioAmount}
                     onAllClick={setAllAmount}

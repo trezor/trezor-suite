@@ -2,7 +2,6 @@ import type { AppState } from 'src/types/suite';
 import type { FormState as ReactHookFormState, UseFormReturn } from 'react-hook-form';
 import type { Account, Network, CoinFiatRates } from 'src/types/wallet';
 import type { FeeLevel } from '@trezor/connect';
-import type { ExchangeCoinInfo } from 'invity-api';
 import type { ExchangeInfo } from 'src/actions/wallet/coinmarketExchangeActions';
 import type {
     FeeInfo,
@@ -13,6 +12,7 @@ import type {
 import type { AmountLimits, CryptoAmountLimits, Option } from './coinmarketCommonTypes';
 import type { WithSelectedAccountLoadedProps } from 'src/components/wallet';
 import { SendContextValues } from '@suite-common/wallet-types';
+import { CryptoSymbol, CryptoSymbolInfo } from 'invity-api';
 
 export const CRYPTO_INPUT = 'outputs.0.amount';
 export const CRYPTO_TOKEN = 'outputs.0.token';
@@ -23,8 +23,8 @@ export type UseCoinmarketExchangeFormProps = WithSelectedAccountLoadedProps;
 
 export type ExchangeFormState = FormState & {
     // NOTE: react-select value type cannot be undefined, but at least null works
-    receiveCryptoSelect: Option | null;
-    sendCryptoSelect: Option;
+    receiveCryptoSelect: (Option & { cryptoSymbol?: CryptoSymbol }) | null;
+    sendCryptoSelect: Option & { cryptoSymbol?: CryptoSymbol };
 };
 
 export interface ExchangeFormContextValues extends UseFormReturn<ExchangeFormState> {
@@ -33,7 +33,7 @@ export interface ExchangeFormContextValues extends UseFormReturn<ExchangeFormSta
     isComposing: boolean;
     changeFeeLevel: (level: FeeLevel['label']) => void;
     exchangeInfo?: ExchangeInfo;
-    exchangeCoinInfo?: ExchangeCoinInfo[];
+    symbolsInfo?: CryptoSymbolInfo[];
     defaultCurrency: Option;
     composeRequest: SendContextValues['composeTransaction'];
     updateFiatCurrency: (selectedCurrency: { value: string; label: string }) => void;

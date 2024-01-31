@@ -11,6 +11,7 @@ import { Account } from 'src/types/wallet';
 import { Translation, AccountLabeling } from 'src/components/suite';
 import { CoinmarketCryptoAmount } from 'src/views/wallet/coinmarket/common/CoinmarketCryptoAmount';
 import { CoinmarketFiatAmount } from 'src/views/wallet/coinmarket/common/CoinmarketFiatAmount';
+import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 
 const Wrapper = styled.div`
     display: flex;
@@ -57,6 +58,7 @@ const LeftColumn = styled.div`
     display: flex;
     flex: 1;
     text-transform: capitalize;
+    font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     align-self: center;
@@ -134,7 +136,7 @@ export const CoinmarketSellOfferInfo = ({
                         <Dark>
                             <CoinmarketCryptoAmount
                                 amount={cryptoStringAmount}
-                                symbol={cryptoCurrency}
+                                symbol={cryptoToCoinSymbol(cryptoCurrency!)}
                             />
                         </Dark>
                     </RightColumn>

@@ -6,7 +6,7 @@ import { fiatCurrencies } from '@suite-common/suite-config';
 import { NumberInput } from 'src/components/suite';
 import { getCryptoOptions } from 'src/utils/wallet/coinmarket/buyUtils';
 import { Select, CoinLogo } from '@trezor/components';
-import { buildOption } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { buildFiatOption } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { useCoinmarketBuyFormContext } from 'src/hooks/wallet/useCoinmarketBuyForm';
 import { getInputState } from '@suite-common/wallet-utils';
 import { formInputsMaxLength } from '@suite-common/validators';
@@ -20,6 +20,7 @@ import {
     validateLimits,
     validateMin,
 } from 'src/utils/suite/validation';
+import { networkToCryptoSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 
 const Option = styled.div`
     display: flex;
@@ -50,13 +51,11 @@ const Inputs = () => {
         buyInfo,
         setAmountLimits,
         defaultCurrency,
-        exchangeCoinInfo,
     } = useCoinmarketBuyFormContext();
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
     const { CryptoAmountFormatter } = useFormatters();
 
-    const { symbol } = account;
-    const uppercaseSymbol = symbol.toUpperCase();
+    const cryptoSymbol = networkToCryptoSymbol(account.symbol)!;
     const fiatInput = 'fiatInput';
     const cryptoInput = 'cryptoInput';
     const currencySelect = 'currencySelect';
@@ -127,7 +126,7 @@ const Inputs = () => {
                                 <Select
                                     options={Object.keys(fiatCurrencies)
                                         .filter(c => buyInfo?.supportedFiatCurrencies.has(c))
-                                        .map((currency: string) => buildOption(currency))}
+                                        .map((currency: string) => buildFiatOption(currency))}
                                     isSearchable
                                     data-test="@coinmarket/buy/fiat-currency-select"
                                     value={value}
@@ -165,8 +164,9 @@ const Inputs = () => {
                             control={control}
                             name={cryptoSelect}
                             defaultValue={{
-                                value: uppercaseSymbol,
-                                label: uppercaseSymbol,
+                                value: cryptoSymbol,
+                                label: cryptoSymbol,
+                                cryptoSymbol,
                             }}
                             render={({ field: { onChange, value } }) => (
                                 <Select
@@ -179,19 +179,17 @@ const Inputs = () => {
                                     data-test="@coinmarket/buy/crypto-currency-select"
                                     options={getCryptoOptions(
                                         account.symbol,
-                                        account.networkType,
                                         buyInfo?.supportedCryptoCurrencies || new Set(),
-                                        exchangeCoinInfo,
                                     )}
-                                    formatOptionLabel={(option: any) => (
+                                    formatOptionLabel={(
+                                        option: ReturnType<typeof getCryptoOptions>[number],
+                                    ) => (
                                         <Option>
                                             {account.symbol.toUpperCase() === option.value ? (
                                                 <CoinLogo size={18} symbol={account.symbol} />
                                             ) : (
                                                 <TokenLogo
-                                                    src={`${invityAPI.getApiServerUrl()}/images/coins/suite/${
-                                                        option.value
-                                                    }.svg`}
+                                                    src={invityAPI.getCoinLogoUrl(option.value)}
                                                 />
                                             )}
                                             <Label>{shouldSendInSats ? 'sat' : option.label}</Label>

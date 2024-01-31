@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { ExchangeInfo } from 'src/actions/wallet/coinmarketExchangeActions';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
-import { buildOption } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { buildCryptoOption, buildFiatOption } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { Account } from 'src/types/wallet';
 import { ExchangeFormState } from 'src/types/wallet/coinmarketExchangeForm';
 
@@ -11,7 +11,7 @@ export const useCoinmarketExchangeFormDefaultValues = (
     exchangeInfo?: ExchangeInfo,
     defaultAddress?: string,
 ) => {
-    const defaultCurrency = useMemo(() => buildOption(localCurrency), [localCurrency]);
+    const defaultCurrency = useMemo(() => buildFiatOption(localCurrency), [localCurrency]);
     const defaultValues = useMemo(
         () =>
             exchangeInfo
@@ -23,7 +23,7 @@ export const useCoinmarketExchangeFormDefaultValues = (
                       fiatInput: '',
                       cryptoInput: '',
                       receiveCryptoSelect: null,
-                      sendCryptoSelect: buildOption(symbol),
+                      sendCryptoSelect: buildCryptoOption(symbol),
                       options: ['broadcast'],
                       outputs: [
                           {

@@ -10,6 +10,8 @@ import { Account } from 'src/types/wallet';
 import { Translation, AccountLabeling } from 'src/components/suite';
 import { CoinmarketCryptoAmount } from 'src/views/wallet/coinmarket/common/CoinmarketCryptoAmount';
 import { CoinmarketFiatAmount } from 'src/views/wallet/coinmarket/common/CoinmarketFiatAmount';
+import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
+import invityAPI from 'src/services/suite/invityAPI';
 
 const Wrapper = styled.div`
     display: flex;
@@ -56,6 +58,8 @@ const LeftColumn = styled.div`
     display: flex;
     flex: 1;
     text-transform: capitalize;
+    font-size: ${variables.FONT_SIZE.SMALL};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     align-self: center;
 `;
@@ -73,6 +77,7 @@ const Row = styled.div`
 
 const Dark = styled.div`
     display: flex;
+    align-items: center;
     justify-content: flex-end;
     flex: 1;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
@@ -83,6 +88,14 @@ const RowWithBorder = styled(Row)`
     border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
     margin-bottom: 10px;
     padding-bottom: 10px;
+`;
+
+const Amount = styled.span`
+    padding-left: 5px;
+`;
+
+const InvityCoinLogo = styled.img`
+    height: 16px;
 `;
 
 const TransactionIdWrapper = styled.div`
@@ -143,10 +156,15 @@ export const CoinmarketBuyOfferInfo = ({
                     </LeftColumn>
                     <RightColumn>
                         <Dark>
-                            <CoinmarketCryptoAmount
-                                amount={receiveStringAmount}
-                                symbol={receiveCurrency}
+                            <InvityCoinLogo
+                                src={invityAPI.getCoinLogoUrl(cryptoToCoinSymbol(receiveCurrency!))}
                             />
+                            <Amount>
+                                <CoinmarketCryptoAmount
+                                    amount={receiveStringAmount}
+                                    symbol={cryptoToCoinSymbol(receiveCurrency!)}
+                                />
+                            </Amount>
                         </Dark>
                     </RightColumn>
                 </RowWithBorder>

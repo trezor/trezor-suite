@@ -5,6 +5,7 @@ import * as WALLET from './walletConstants';
 import * as GRAPH from './graphConstants';
 import * as COINMARKET_BUY from './coinmarketBuyConstants';
 import * as COINMARKET_EXCHANGE from './coinmarketExchangeConstants';
+import * as COINMARKET_INFO from './coinmarketInfoConstants';
 import * as COINMARKET_SELL from './coinmarketSellConstants';
 import * as COINMARKET_P2P from './coinmarketP2pConstants';
 import * as COINMARKET_SAVINGS from './coinmarketSavingsConstants';
@@ -23,6 +24,7 @@ export {
     GRAPH,
     COINMARKET_BUY,
     COINMARKET_EXCHANGE,
+    COINMARKET_INFO,
     COINMARKET_SELL,
     COINMARKET_P2P,
     COINMARKET_SAVINGS,

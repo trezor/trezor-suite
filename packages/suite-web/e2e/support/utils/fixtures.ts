@@ -4,8 +4,8 @@ export const fixtures = {
     '/api/exchange/quotes': '/invity/exchange/quotes.json',
     '/api/exchange/trade': '/invity/exchange/trade.json',
     '/api/exchange/watch/0': '/invity/exchange/watch.json',
-    '/api/buy/list': '/invity/buy/list.json',
-    '/api/buy/quotes': '/invity/buy/quotes.json',
-    '/api/buy/trade': '/invity/buy/trade.json',
-    '/api/buy/watch/0': '/invity/buy/watch.json',
+    '/api/v2/buy/list': '/invity/buy/list.json',
+    '/api/v2/buy/quotes': '/invity/buy/quotes.json',
+    '/api/v2/buy/trade': '/invity/buy/trade.json',
+    '/api/v2/buy/watch/0': '/invity/buy/watch.json',
 };

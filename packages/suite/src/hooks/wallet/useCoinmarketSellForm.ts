@@ -50,6 +50,7 @@ import { useCoinmarketSellFormDefaultValues } from './useCoinmarketSellFormDefau
 import { useCompose } from './form/useCompose';
 import { useFees } from './form/useFees';
 import { AddressDisplayOptions, selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
+import { networkToCryptoSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 
 export const SellFormContext = createContext<SellFormContextValues | null>(null);
 SellFormContext.displayName = 'CoinmarketSellContext';
@@ -94,9 +95,6 @@ export const useCoinmarketSellForm = ({
     const fees = useSelector(state => state.wallet.fees);
     const sellInfo = useSelector(state => state.wallet.coinmarket.sell.sellInfo);
     const quotesRequest = useSelector(state => state.wallet.coinmarket.sell.quotesRequest);
-    const exchangeCoinInfo = useSelector(
-        state => state.wallet.coinmarket.exchange.exchangeCoinInfo,
-    );
     const addressDisplayType = useSelector(selectAddressDisplayType);
 
     const { account, network } = selectedAccount;
@@ -176,6 +174,11 @@ export const useCoinmarketSellForm = ({
     useEffect(() => {
         if (!isChanged(defaultValues, values)) {
             removeDraft(account.key);
+            return;
+        }
+
+        if (values.cryptoCurrencySelect && !values.cryptoCurrencySelect?.cryptoSymbol) {
+            removeDraft(account.key);
         }
     }, [defaultValues, values, removeDraft, account.key]);
 
@@ -231,7 +234,10 @@ export const useCoinmarketSellForm = ({
     const isLoading = !sellInfo?.sellList || !state?.formValues?.outputs[0].address;
     const noProviders =
         sellInfo?.sellList?.providers.length === 0 ||
-        !sellInfo?.supportedCryptoCurrencies.has(account.symbol);
+        !(
+            networkToCryptoSymbol(account.symbol) &&
+            sellInfo?.supportedCryptoCurrencies.has(networkToCryptoSymbol(account.symbol)!)
+        );
 
     // sub-hook, FeeLevels handler
     const { changeFeeLevel, selectedFee } = useFees({
@@ -341,7 +347,7 @@ export const useCoinmarketSellForm = ({
         const amountInCrypto = !fiatStringAmount;
         const request: SellFiatTradeQuoteRequest = {
             amountInCrypto,
-            cryptoCurrency: formValues.cryptoCurrencySelect.value.toUpperCase(),
+            cryptoCurrency: formValues.cryptoCurrencySelect.cryptoSymbol,
             fiatCurrency: formValues.fiatCurrencySelect.value.toUpperCase(),
             country: formValues.countrySelect.value,
             cryptoStringAmount,
@@ -383,7 +389,6 @@ export const useCoinmarketSellForm = ({
         quotesRequest,
         composedLevels,
         localCurrencyOption,
-        exchangeCoinInfo,
         feeInfo,
         composeRequest,
         fiatRates,

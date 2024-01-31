@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useSelector } from 'src/hooks/suite';
-import { buildOption, getDefaultCountry } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { buildFiatOption, getDefaultCountry } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { P2pInfo } from 'src/actions/wallet/coinmarketP2pActions';
 
 export const useCoinmarketP2pFormDefaultValues = (p2pInfo?: P2pInfo) => {
@@ -11,7 +11,7 @@ export const useCoinmarketP2pFormDefaultValues = (p2pInfo?: P2pInfo) => {
 
     const defaultCountry = useMemo(() => getDefaultCountry(country), [country]);
     const defaultCurrency = useMemo(
-        () => buildOption(suggestedFiatCurrency),
+        () => buildFiatOption(suggestedFiatCurrency),
         [suggestedFiatCurrency],
     );
     const defaultValues = useMemo(

@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import BigNumber from 'bignumber.js';
 
 import { isZero, amountToSatoshi } from '@suite-common/wallet-utils';
@@ -9,11 +9,10 @@ import FiatInput from './FiatInput';
 import ReceiveCryptoSelect from './ReceiveCryptoSelect';
 import { CoinmarketFractionButtons } from 'src/views/wallet/coinmarket/common';
 import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/wallet/coinmarketExchangeForm';
-import { useLayoutSize } from 'src/hooks/suite';
-import { Wrapper, Left, Middle, Right, StyledIcon } from 'src/views/wallet/coinmarket';
+import { Wrapper, Left, Right } from 'src/views/wallet/coinmarket';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
-import { variables } from '@trezor/components';
+import { useElevation, variables } from '@trezor/components';
 import { EvmExplanationBox } from 'src/components/wallet/EvmExplanationBox';
 import { networks } from '@suite-common/wallet-config';
 import {
@@ -23,16 +22,30 @@ import {
 import { useSelector } from 'src/hooks/suite';
 import { selectDeviceAccounts } from '@suite-common/wallet-core';
 
-const StyledLeft = styled(Left)`
-    flex-basis: 50%;
-`;
-
-const StyledMiddle = styled(Middle)`
-    min-width: 35px;
-`;
-
-const EmptyDiv = styled.div`
+const Row = styled.div<{ spaceBefore?: boolean }>`
+    display: flex;
+    align-items: flex-start;
     width: 100%;
+
+    ${({ spaceBefore }) =>
+        spaceBefore &&
+        css`
+            margin-top: 24px;
+        `}
+`;
+
+const Balance = styled.div`
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    font-size: ${variables.FONT_SIZE.TINY};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+`;
+
+const StyledFiatValue = styled(FiatValue)`
+    margin-left: 1ch;
+`;
+
+const StyledEvmExplanationBox = styled(EvmExplanationBox)`
+    margin-bottom: 14px;
 `;
 
 const Inputs = () => {
@@ -49,8 +62,9 @@ const Inputs = () => {
     } = useCoinmarketExchangeFormContext();
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
     const deviceAccounts = useSelector(selectDeviceAccounts);
+    const { elevation } = useElevation();
 
-    const { outputs } = getValues();
+    const { outputs, receiveCryptoSelect } = getValues();
     const tokenAddress = outputs?.[0]?.token;
     const tokenData = account.tokens?.find(t => t.contract === tokenAddress);
 
@@ -58,9 +72,6 @@ const Inputs = () => {
     useEffect(() => {
         trigger([CRYPTO_INPUT]);
     }, [amountLimits, trigger]);
-
-    const { layoutSize } = useLayoutSize();
-    const isXLargeLayoutSize = layoutSize === 'XLARGE';
 
     const setRatioAmount = useCallback(
         (divisor: number) => {
@@ -101,34 +112,57 @@ const Inputs = () => {
         composeRequest();
     }, [clearErrors, composeRequest, setValue]);
 
-    const isBalanceZero = tokenData
-        ? isZero(tokenData.balance || '0')
-        : isZero(account.formattedBalance);
+    const balance = tokenData ? tokenData.balance || '0' : account.formattedBalance;
+    const symbol = tokenData?.symbol ?? account.symbol;
+    const isBalanceZero = isZero(balance);
+
+    const receiveCryptoNetworkSymbol =
+        receiveCryptoSelect?.cryptoSymbol &&
+        cryptoToNetworkSymbol(receiveCryptoSelect.cryptoSymbol);
+
+    const isReceiveTokenBalanceZero =
+        receiveCryptoSelect?.cryptoSymbol &&
+        isCryptoSymbolToken(receiveCryptoSelect?.cryptoSymbol) &&
+        receiveCryptoNetworkSymbol &&
+        deviceAccounts
+            .filter(ac => ac.networkType === 'ethereum' && ac.symbol === receiveCryptoNetworkSymbol)
+            .every(ac => new BigNumber(ac.balance).isZero());
 
     return (
         <Wrapper responsiveSize="XL">
-            <StyledLeft>
+            <Row>
                 <SendCryptoInput />
                 {!tokenData && <FiatInput />}
-            </StyledLeft>
-            <StyledMiddle responsiveSize="XL">
-                {!isXLargeLayoutSize && (
+            </Row>
+            <Row>
+                <Left>
+                    <Balance>
+                        <Translation id="TR_BALANCE" />:{' '}
+                        <FormattedCryptoAmount value={balance} symbol={symbol} />
+                        <StyledFiatValue
+                            amount={balance}
+                            symbol={symbol}
+                            showApproximationIndicator
+                        />
+                    </Balance>
+                </Left>
+                <Right>
                     <CoinmarketFractionButtons
                         disabled={isBalanceZero}
                         onFractionClick={setRatioAmount}
                         onAllClick={setAllAmount}
+                        data-test="@coinmarket/exchange/fiat-input"
                     />
-                )}
-                <StyledIcon responsiveSize="XL" icon="TRANSFER" size={16} />
-                {!isXLargeLayoutSize && <EmptyDiv />}
-            </StyledMiddle>
-            <Right>
+                </Right>
+            </Row>
+            <Row spaceBefore>
                 <ReceiveCryptoSelect />
             </Row>
             {isReceiveTokenBalanceZero && (
                 <Row spaceBefore>
                     <StyledEvmExplanationBox
                         caret
+                        elevation={elevation}
                         symbol={receiveCryptoNetworkSymbol}
                         title={<Translation id="TR_EVM_EXPLANATION_EXCHANGE_TITLE" />}
                     >

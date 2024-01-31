@@ -1,5 +1,6 @@
 import { Account } from 'src/types/wallet';
 import {
+    CryptoSymbol,
     SellFiatTrade,
     SellFiatTradeQuoteRequest,
     SellListResponse,
@@ -14,7 +15,7 @@ export interface SellInfo {
     sellList?: SellListResponse;
     providerInfos: { [name: string]: SellProviderInfo };
     supportedFiatCurrencies: Set<string>;
-    supportedCryptoCurrencies: Set<string>;
+    supportedCryptoCurrencies: Set<CryptoSymbol>;
 }
 
 export type CoinmarketSellAction =
@@ -48,18 +49,18 @@ export const loadSellInfo = async (): Promise<SellInfo> => {
 
     const providerInfos: { [name: string]: SellProviderInfo } = {};
     if (sellList?.providers) {
-        sellList.providers.forEach(e => (providerInfos[e.name] = e));
+        sellList.providers.forEach(provider => (providerInfos[provider.name] = provider));
     }
 
     const supportedFiatCurrencies = new Set<string>();
-    const supportedCryptoCurrencies = new Set<string>();
+    const supportedCryptoCurrencies = new Set<CryptoSymbol>();
     sellList?.providers.forEach(p => {
         if (p.tradedFiatCurrencies) {
             p.tradedFiatCurrencies
-                .map(c => c.toLowerCase())
-                .forEach(c => supportedFiatCurrencies.add(c));
+                .map(currency => currency.toLowerCase())
+                .forEach(currency => supportedFiatCurrencies.add(currency));
         }
-        p.tradedCoins.map(c => c.toLowerCase()).forEach(c => supportedCryptoCurrencies.add(c));
+        p.tradedCoins.forEach(coin => supportedCryptoCurrencies.add(coin));
     });
 
     return {
