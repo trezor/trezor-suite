@@ -73,6 +73,7 @@ export default defineConfig({
         trashAssetsBeforeRuns: false,
         chromeWebSecurity: false,
         experimentalFetchPolyfill: true,
+        experimentalRunAllSpecs: true,
         setupNodeEvents(on, config) {
             on('before:browser:launch', _browser => {
                 // const args = Array.isArray(launchOptions) ? launchOptions : launchOptions.args;
