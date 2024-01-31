@@ -18,9 +18,9 @@
     "scripts": {
         "lint:js": "eslint '**/*.{ts,js}'",
         "test:unit": "yarn g:jest",
-        "test:discovery": "tsx ./tests/tools/discovery-test.ts",
-        "test:anonymity": "tsx ./tests/tools/anonymity-test.ts",
-        "test:benchmark": "tsx ./tests/tools/benchmark-test.ts",
+        "test:discovery": "yarn g:tsx ./tests/tools/discovery-test.ts",
+        "test:anonymity": "yarn g:tsx ./tests/tools/anonymity-test.ts",
+        "test:benchmark": "yarn g:tsx ./tests/tools/benchmark-test.ts",
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {

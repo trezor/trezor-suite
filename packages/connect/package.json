@@ -39,14 +39,14 @@
         "test:unit": "jest --version && jest",
         "type-check": "yarn g:tsc --build",
         "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json",
-        "version:beta": "tsx scripts/bump-version.ts prerelease",
-        "version:patch": "tsx scripts/bump-version.ts patch",
-        "version:minor": "tsx scripts/bump-version.ts minor",
-        "version:major": "tsx scripts/bump-version.ts major",
+        "version:beta": "yarn g:tsx scripts/bump-version.ts prerelease",
+        "version:patch": "yarn g:tsx scripts/bump-version.ts patch",
+        "version:minor": "yarn g:tsx scripts/bump-version.ts minor",
+        "version:major": "yarn g:tsx scripts/bump-version.ts major",
         "test:e2e:web": "ts-node -O '{\"module\": \"commonjs\", \"moduleResolution\": \"node\"}' ./e2e/run.ts web",
         "test:e2e:node": "ts-node -O '{\"module\": \"commonjs\", \"moduleResolution\": \"node\"}' ./e2e/run.ts node",
-        "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
-        "prepublish": "yarn tsx ../../scripts/prepublish.js"
+        "prepublishOnly": "yarn g:tsx ../../scripts/prepublishNPM.js",
+        "prepublish": "yarn g:tsx ../../scripts/prepublish.js"
     },
     "dependencies": {
         "@ethereumjs/common": "^4.1.0",
@@ -83,7 +83,6 @@
         "karma-sourcemap-loader": "^0.4.0",
         "karma-webpack": "^5.0.0",
         "ts-node": "^10.9.1",
-        "tsx": "^4.7.0",
         "webpack": "^5.89.0",
         "ws": "^8.16.0"
     },

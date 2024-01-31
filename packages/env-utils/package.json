@@ -21,14 +21,11 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "type-check": "yarn g:tsc --build",
         "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json",
-        "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
-        "prepublish": "yarn tsx ../../scripts/prepublish.js"
+        "prepublishOnly": "yarn g:tsx ../../scripts/prepublishNPM.js",
+        "prepublish": "yarn g:tsx ../../scripts/prepublish.js"
     },
     "dependencies": {
         "ua-parser-js": "^1.0.37"
-    },
-    "devDependencies": {
-        "tsx": "^4.7.0"
     },
     "peerDependencies": {
         "expo-localization": "*",

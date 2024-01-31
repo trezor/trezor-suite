@@ -12,8 +12,8 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "type-check": "yarn g:tsc --build",
         "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json",
-        "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
-        "prepublish": "yarn tsx ../../scripts/prepublish.js"
+        "prepublishOnly": "yarn g:tsx ../../scripts/prepublishNPM.js",
+        "prepublish": "yarn g:tsx ../../scripts/prepublish.js"
     },
     "dependencies": {
         "@solana/web3.js": "^1.87.6",
@@ -22,7 +22,6 @@
         "socks-proxy-agent": "6.1.1"
     },
     "devDependencies": {
-        "ripple-lib": "^1.10.1",
-        "tsx": "^4.7.0"
+        "ripple-lib": "^1.10.1"
     }
 }

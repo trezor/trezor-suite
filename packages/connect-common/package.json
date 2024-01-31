@@ -32,15 +32,12 @@
         "test:unit": "yarn g:jest",
         "build:lib": "yarn g:rimraf lib && yarn g:tsc --build ./tsconfig.lib.json",
         "type-check": "yarn g:tsc --build tsconfig.json",
-        "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
-        "prepublish": "yarn tsx ../../scripts/prepublish.js"
+        "prepublishOnly": "yarn g:tsx ../../scripts/prepublishNPM.js",
+        "prepublish": "yarn g:tsx ../../scripts/prepublish.js"
     },
     "dependencies": {
         "@trezor/env-utils": "workspace:*",
         "@trezor/utils": "workspace:*"
-    },
-    "devDependencies": {
-        "tsx": "^4.7.0"
     },
     "peerDependencies": {
         "tslib": "^2.6.2"

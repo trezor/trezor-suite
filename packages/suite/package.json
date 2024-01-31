@@ -11,9 +11,9 @@
         "translations:extract": "formatjs extract src/support/messages.ts --format simple > ../suite-data/files/translations/master.json",
         "translations:upload": "crowdin upload",
         "translations:download": "crowdin download --all",
-        "translations:backport-en": "yarn tsx ../suite-data/src/translations/backport-en.ts && yarn g:prettier --write \"./src/support/messages.ts\"",
-        "translations:list-duplicates": "yarn tsx ../suite-data/src/translations/list-duplicates.ts",
-        "translations:list-unused": "yarn tsx ../suite-data/src/translations/list-unused.ts",
+        "translations:backport-en": "yarn g:tsx ../suite-data/src/translations/backport-en.ts && yarn g:prettier --write \"./src/support/messages.ts\"",
+        "translations:list-duplicates": "yarn g:tsx ../suite-data/src/translations/list-duplicates.ts",
+        "translations:list-unused": "yarn g:tsx ../suite-data/src/translations/list-unused.ts",
         "type-check": "yarn g:tsc --build tsconfig.json",
         "test:unit": "yarn g:jest",
         "test-unit:watch": "yarn g:jest -o --watch"
@@ -144,7 +144,6 @@
         "redux-mock-store": "^1.5.4",
         "stylelint": "^15.11.0",
         "stylelint-config-standard": "^34.0.0",
-        "tsx": "^4.7.0",
         "typescript-styled-plugin": "^0.18.3"
     }
 }

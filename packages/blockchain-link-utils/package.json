@@ -13,8 +13,8 @@
         "test:unit": "yarn g:jest -c ../../jest.config.base.js",
         "type-check": "yarn g:tsc --build",
         "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json",
-        "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
-        "prepublish": "yarn tsx ../../scripts/prepublish.js"
+        "prepublishOnly": "yarn g:tsx ../../scripts/prepublishNPM.js",
+        "prepublish": "yarn g:tsx ../../scripts/prepublish.js"
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
@@ -24,8 +24,7 @@
     },
     "devDependencies": {
         "@trezor/blockchain-link-types": "workspace:*",
-        "@trezor/type-utils": "workspace:*",
-        "tsx": "^4.7.0"
+        "@trezor/type-utils": "workspace:*"
     },
     "peerDependencies": {
         "tslib": "^2.6.2"

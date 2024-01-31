@@ -14,12 +14,11 @@
         "type-check": "yarn g:tsc --build",
         "build:lib": "rimraf ./lib && yarn g:tsc --build tsconfig.lib.json",
         "codegen": "ts-node --skip-project ./src/codegen.ts",
-        "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
-        "prepublish": "yarn tsx ../../scripts/prepublish.js"
+        "prepublishOnly": "yarn g:tsx ../../scripts/prepublishNPM.js",
+        "prepublish": "yarn g:tsx ../../scripts/prepublish.js"
     },
     "devDependencies": {
-        "@sinclair/typebox-codegen": "^0.8.13",
-        "tsx": "^4.6.2"
+        "@sinclair/typebox-codegen": "^0.8.13"
     },
     "dependencies": {
         "@sinclair/typebox": "^0.31.28",

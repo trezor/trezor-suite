@@ -8,7 +8,7 @@
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "type-check": "yarn g:tsc --build",
-        "dev": "tsx watch ./src/index.ts",
+        "dev": "yarn g:tsx watch ./src/index.ts",
         "build": "rimraf ./lib && yarn g:tsc --build tsconfig.lib.json",
         "start": "node ./lib/index.js"
     },
@@ -17,7 +17,6 @@
         "express": "^4.18.2"
     },
     "devDependencies": {
-        "@types/cors": "^2.8.15",
-        "tsx": "^4.7.0"
+        "@types/cors": "^2.8.15"
     }
 }

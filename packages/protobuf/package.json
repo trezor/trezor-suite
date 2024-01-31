@@ -27,8 +27,8 @@
         "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json",
         "update:schema": "yarn workspace @trezor/schema-utils codegen $(pwd)/src/messages.ts > src/messages-schema.ts && npx prettier --write src/messages-schema.ts && eslint --fix src/messages-schema.ts",
         "update:protobuf": "./scripts/protobuf-build.sh && npx prettier --write \"{messages.json,src/messages.ts}\"",
-        "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
-        "prepublish": "yarn tsx ../../scripts/prepublish.js"
+        "prepublishOnly": "yarn g:tsx ../../scripts/prepublishNPM.js",
+        "prepublish": "yarn g:tsx ../../scripts/prepublish.js"
     },
     "dependencies": {
         "@trezor/schema-utils": "workspace:*",
@@ -36,8 +36,7 @@
         "protobufjs": "7.2.5"
     },
     "devDependencies": {
-        "protobufjs-cli": "^1.1.2",
-        "tsx": "^4.7.0"
+        "protobufjs-cli": "^1.1.2"
     },
     "peerDependencies": {
         "tslib": "^2.6.2"
