@@ -29,8 +29,7 @@
     },
     "devDependencies": {
         "stellar-base": "v10.0.0-beta.2",
-        "stellar-sdk": "^v11.0.0-beta.3",
-        "typescript": "5.3.2"
+        "stellar-sdk": "^v11.0.0-beta.3"
     },
     "dependencies": {
         "bignumber.js": "^9.1.1"
@@ -38,7 +37,7 @@
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "test:unit": "jest -c ../../jest.config.base.js",
-        "type-check": "tsc --build tsconfig.json",
-        "build:lib": "yarn g:rimraf ./lib && yarn tsc --build tsconfig.lib.json"
+        "type-check": "yarn g:tsc --build tsconfig.json",
+        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json"
     }
 }

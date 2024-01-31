@@ -6,7 +6,7 @@
     "private": true,
     "sideEffects": false,
     "scripts": {
-        "type-check": "tsc --build",
+        "type-check": "yarn g:tsc --build",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "test:unit": "jest -c ../../jest.config.base.js"
     },

@@ -7,7 +7,7 @@
     "main": "src/index",
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "type-check": "tsc --build"
+        "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
         "@testing-library/react-native": "^11.0.0",
@@ -18,8 +18,5 @@
         "react-native-reanimated": "3.7.0-nightly-20240101-9d365ae7b",
         "react-native-safe-area-context": "4.8.2",
         "react-redux": "8.0.7"
-    },
-    "devDependencies": {
-        "typescript": "5.3.2"
     }
 }

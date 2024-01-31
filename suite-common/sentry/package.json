@@ -7,15 +7,12 @@
     "main": "src/index",
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "type-check": "tsc --build"
+        "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
         "@sentry/integrations": "7.81.1",
         "@sentry/types": "7.81.1",
         "@suite-common/suite-utils": "workspace:*",
         "@trezor/utils": "workspace:*"
-    },
-    "devDependencies": {
-        "typescript": "5.3.2"
     }
 }

@@ -6,7 +6,7 @@
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "lint:styles": "npx stylelint './src/**/*{.ts,.tsx}' --cache --config ../../.stylelintrc",
-        "type-check": "tsc --build",
+        "type-check": "yarn g:tsc --build",
         "dev": "yarn g:rimraf build && TS_NODE_PROJECT=\"tsconfig.json\" yarn webpack --config ./webpack/dev.webpack.config.ts",
         "build:popup": "TS_NODE_PROJECT=\"tsconfig.json\" yarn webpack --config ./webpack/prod.webpack.config.ts",
         "build": "yarn g:rimraf build && yarn workspace @trezor/connect-popup build:popup",
@@ -39,7 +39,6 @@
         "copy-webpack-plugin": "^11.0.0",
         "html-webpack-plugin": "^5.5.3",
         "terser-webpack-plugin": "^5.3.9",
-        "typescript": "5.3.2",
         "webpack": "^5.89.0",
         "webpack-cli": "^5.1.4",
         "webpack-dev-server": "^4.15.1",

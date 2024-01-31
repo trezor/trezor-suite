@@ -8,7 +8,7 @@
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "test:unit": "yarn g:jest -c ../../jest.config.native.js",
-        "type-check": "tsc --build"
+        "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
         "@reduxjs/toolkit": "1.9.5",
@@ -25,8 +25,5 @@
         "react-native-mmkv": "2.11.0",
         "react-native-restart": "0.0.27",
         "redux-persist": "6.0.0"
-    },
-    "devDependencies": {
-        "typescript": "5.3.2"
     }
 }

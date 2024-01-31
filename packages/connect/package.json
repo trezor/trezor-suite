@@ -37,8 +37,8 @@
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "test:unit": "jest --version && jest",
-        "type-check": "tsc --build",
-        "build:lib": "yarn g:rimraf ./lib && yarn tsc --build tsconfig.lib.json",
+        "type-check": "yarn g:tsc --build",
+        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json",
         "version:beta": "tsx scripts/bump-version.ts prerelease",
         "version:patch": "tsx scripts/bump-version.ts patch",
         "version:minor": "tsx scripts/bump-version.ts minor",
@@ -84,7 +84,6 @@
         "karma-webpack": "^5.0.0",
         "ts-node": "^10.9.1",
         "tsx": "^4.7.0",
-        "typescript": "5.3.2",
         "webpack": "^5.89.0",
         "ws": "^8.16.0"
     },

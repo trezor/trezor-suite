@@ -34,8 +34,8 @@
     ],
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "type-check": "tsc --build tsconfig.json",
-        "build:lib": "yarn g:rimraf -rf lib && yarn tsc --build ./tsconfig.lib.json",
+        "type-check": "yarn g:tsc --build tsconfig.json",
+        "build:lib": "yarn g:rimraf -rf lib && yarn g:tsc --build ./tsconfig.lib.json",
         "publish:lib": "./scripts/publish-lib.sh",
         "test:unit": "jest",
         "test:e2e": "ts-node -O '{\"module\": \"commonjs\", \"esModuleInterop\": true}' ./e2e/run.ts",
@@ -49,8 +49,7 @@
         "@types/w3c-web-usb": "^1.0.9",
         "jest": "29.7.0",
         "ts-node": "^10.9.1",
-        "tsx": "^4.7.0",
-        "typescript": "5.3.2"
+        "tsx": "^4.7.0"
     },
     "dependencies": {
         "@trezor/protobuf": "workspace:*",

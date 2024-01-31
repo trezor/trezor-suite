@@ -18,7 +18,7 @@
         "dev:desktop": "yarn run desktop",
         "build:desktop": "NODE_ENV=production yarn run desktop",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "type-check": "tsc --build tsconfig.json",
+        "type-check": "yarn g:tsc --build tsconfig.json",
         "type-check:watch": "yarn type-check -- --watch"
     },
     "dependencies": {
@@ -48,7 +48,6 @@
         "@types/copy-webpack-plugin": "^10.1.0",
         "@types/webpack-bundle-analyzer": "^4.6.2",
         "@types/webpack-plugin-serve": "^1.4.4",
-        "react-refresh": "^0.14.0",
-        "typescript": "5.3.2"
+        "react-refresh": "^0.14.0"
     }
 }

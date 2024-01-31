@@ -8,7 +8,7 @@
     "main": "src/index",
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "type-check": "tsc --build"
+        "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
@@ -39,8 +39,5 @@
         "react": "18.2.0",
         "react-native": "0.73.2",
         "react-redux": "8.0.7"
-    },
-    "devDependencies": {
-        "typescript": "5.3.2"
     }
 }

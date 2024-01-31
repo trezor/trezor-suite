@@ -16,12 +16,9 @@
     "scripts": {
         "lint:js": "yarn g:eslint '**/*{.ts,.tsx}'",
         "test:unit": "yarn g:jest --verbose -c jest.config.js",
-        "type-check": "tsc --build tsconfig.json"
+        "type-check": "yarn g:tsc --build tsconfig.json"
     },
     "dependencies": {
         "electron": "27.0.4"
-    },
-    "devDependencies": {
-        "typescript": "5.3.2"
     }
 }

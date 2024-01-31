@@ -9,7 +9,7 @@
         "ios": "expo run:ios",
         "start": "expo start --dev-client",
         "lint:js": "yarn g:eslint .",
-        "type-check": "tsc -b",
+        "type-check": "yarn g:tsc -b",
         "pods": "npx pod-install",
         "prebuild": "expo prebuild",
         "prebuild:clean": "expo prebuild --clean"

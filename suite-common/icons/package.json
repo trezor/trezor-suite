@@ -7,7 +7,7 @@
     "main": "src/index",
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "type-check": "tsc --build",
+        "type-check": "yarn g:tsc --build",
         "generate-icons": "yarn tsx generateIcons.js"
     },
     "dependencies": {
@@ -24,7 +24,6 @@
     },
     "devDependencies": {
         "svgo": "3.0.2",
-        "tsx": "^4.7.0",
-        "typescript": "5.3.2"
+        "tsx": "^4.7.0"
     }
 }
