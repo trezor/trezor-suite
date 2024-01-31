@@ -55,6 +55,7 @@ interface AdvancedTxDetailsProps {
     tx: WalletAccountTransaction;
     chainedTxs?: ChainedTransactions;
     explorerUrl: string;
+    isPhishingTransaction: boolean;
 }
 
 export const AdvancedTxDetails = ({
@@ -63,6 +64,7 @@ export const AdvancedTxDetails = ({
     tx,
     chainedTxs,
     explorerUrl,
+    isPhishingTransaction,
 }: AdvancedTxDetailsProps) => {
     const [selectedTab, setSelectedTab] = useState<TabID>(defaultTab ?? 'amount');
 
@@ -71,7 +73,7 @@ export const AdvancedTxDetails = ({
     if (selectedTab === 'amount') {
         content = <AmountDetails tx={tx} isTestnet={isTestnet(network.symbol)} />;
     } else if (selectedTab === 'io' && network.networkType !== 'ripple') {
-        content = <IODetails tx={tx} />;
+        content = <IODetails tx={tx} isPhishingTransaction={isPhishingTransaction} />;
     } else if (selectedTab === 'chained' && chainedTxs) {
         content = <ChainedTxs txs={chainedTxs} explorerUrl={explorerUrl} network={network} />;
     }
