@@ -42,6 +42,7 @@
         "g:prettier": "cd $INIT_CWD && prettier",
         "g:rimraf": "cd $INIT_CWD && rimraf",
         "g:tsc": "cd $INIT_CWD && tsc",
+        "g:tsx": "cd $INIT_CWD && tsx",
         "_______ Nx testing _______": "Nx wrapped commands for testing, linting, type checking...",
         "nx:build:libs": "yarn nx affected --target=build:lib",
         "nx:type-check": "yarn nx affected --target=type-check",

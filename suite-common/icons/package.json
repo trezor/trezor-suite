@@ -8,7 +8,7 @@
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "type-check": "yarn g:tsc --build",
-        "generate-icons": "yarn tsx generateIcons.js"
+        "generate-icons": "yarn g:tsx generateIcons.js"
     },
     "dependencies": {
         "@shopify/react-native-skia": "0.1.234",
@@ -23,7 +23,6 @@
         "styled-components": "^5.3.10"
     },
     "devDependencies": {
-        "svgo": "3.0.2",
-        "tsx": "^4.7.0"
+        "svgo": "3.0.2"
     }
 }

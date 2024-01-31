@@ -32,8 +32,8 @@
         "test:unit": "yarn g:jest --verbose -c jest.config.js",
         "type-check": "yarn g:tsc --build tsconfig.json",
         "build:lib": "yarn g:rimraf lib && yarn g:tsc --build ./tsconfig.lib.json",
-        "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
-        "prepublish": "yarn tsx ../../scripts/prepublish.js"
+        "prepublishOnly": "yarn g:tsx ../../scripts/prepublishNPM.js",
+        "prepublish": "yarn g:tsx ../../scripts/prepublish.js"
     },
     "dependencies": {
         "@trezor/utils": "workspace:*",
@@ -62,8 +62,7 @@
         "@types/create-hash": "^1.2.4",
         "@types/create-hmac": "^1.1.2",
         "@types/wif": "^2.0.4",
-        "minimaldata": "^1.0.2",
-        "tsx": "^4.7.0"
+        "minimaldata": "^1.0.2"
     },
     "peerDependencies": {
         "tslib": "^2.6.2"

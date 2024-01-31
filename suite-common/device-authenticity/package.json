@@ -17,8 +17,5 @@
         "@suite-common/test-utils": "workspace:*",
         "@suite-common/toast-notifications": "workspace:*",
         "@trezor/connect": "workspace:*"
-    },
-    "devDependencies": {
-        "tsx": "^4.7.0"
     }
 }
