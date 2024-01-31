@@ -9428,7 +9428,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/node-utils@workspace:*, @trezor/node-utils@workspace:packages/node-utils":
+"@trezor/node-utils@workspace:*, @trezor/node-utils@workspace:^, @trezor/node-utils@workspace:packages/node-utils":
   version: 0.0.0-use.local
   resolution: "@trezor/node-utils@workspace:packages/node-utils"
   dependencies:
@@ -9969,6 +9969,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/transport-bridge@workspace:packages/transport-bridge"
   dependencies:
+    "@trezor/node-utils": "workspace:^"
     "@trezor/protocol": "workspace:*"
     "@trezor/transport": "workspace:*"
     "@trezor/utils": "workspace:*"

@@ -1,7 +1,4 @@
-import http from 'http';
-import express from 'express';
-import cors from 'cors';
-
+import { HttpServer, parseBodyJSON, parseBodyText, Handler } from '@trezor/node-utils';
 import { Descriptor } from '@trezor/transport/src/types';
 import { arrayPartition } from '@trezor/utils/lib/arrayPartition';
 
@@ -10,6 +7,8 @@ import { sessionsClient, enumerate, acquire, release, call, send, receive } from
 const defaults = {
     port: 21325,
 };
+
+const str = (value: Record<string, any> | string) => JSON.stringify(value);
 
 export class TrezordNode {
     /** versioning, baked in by webpack */
@@ -20,11 +19,11 @@ export class TrezordNode {
     /** pending /listen subscriptions that are supposed to be resolved whenever descriptors change is detected */
     listenSubscriptions: {
         descriptors: string;
-        req: express.Request;
-        res: express.Response;
+        req: Parameters<Handler>[0];
+        res: Parameters<Handler>[1];
     }[];
     port: number;
-    server?: http.Server<typeof http.IncomingMessage, typeof http.ServerResponse>;
+    server?: HttpServer<never>;
 
     constructor({ port }: { port: number }) {
         this.port = port || defaults.port;
@@ -41,109 +40,145 @@ export class TrezordNode {
 
     private resolveListenSubscriptions(descriptors: Descriptor[]) {
         this.descriptors = JSON.stringify(descriptors);
-
         const [affected, unaffected] = arrayPartition(
             this.listenSubscriptions,
             subscription => subscription.descriptors !== this.descriptors,
         );
         affected.forEach(subscription => {
-            subscription.res.send(this.descriptors);
+            subscription.res.end(this.descriptors);
         });
         this.listenSubscriptions = unaffected;
     }
 
     public start() {
         return new Promise<void>(resolve => {
-            const app = express();
+            const app = new HttpServer({ port: this.port, logger: console });
 
-            // todo: limit to whitelisted domains
-            app.use(cors());
+            app.use([
+                (_req, res, next) => {
+                    // todo: limit to whitelisted domains
+                    res.setHeader('Access-Control-Allow-Origin', '*');
+                    next(_req, res);
+                },
+            ]);
 
-            app.get('/', (_req, res) => {
-                res.send(`hello, I am bridge in node, version: ${this.version}`);
-            });
+            app.post('/enumerate', [
+                (_req, res) => {
+                    res.setHeader('Content-Type', 'text/plain');
+                    enumerate()
+                        .then(result => {
+                            if (!result.success) {
+                                throw new Error(result.error);
+                            }
+                            res.end(str(result.payload.descriptors));
+                        })
+                        .catch(err => {
+                            res.end(str({ error: err.message }));
+                        });
+                },
+            ]);
 
-            app.post('/', (_req, res) => {
-                res.set('Content-Type', 'text/plain');
-
-                res.send({
-                    version: this.version,
-                });
-            });
-
-            app.post('/enumerate', (_req, res) => {
-                res.set('Content-Type', 'text/plain');
-                enumerate()
-                    .then(result => {
-                        if (!result.success) {
-                            throw new Error(result.error);
-                        }
-                        res.send(result.payload.descriptors);
-                    })
-                    .catch(err => {
-                        res.send({ error: err.message });
+            app.post('/listen', [
+                parseBodyJSON,
+                (req, res) => {
+                    res.setHeader('Content-Type', 'text/plain');
+                    this.listenSubscriptions.push({
+                        // todo: type in that if parseBodyText was called as previous handler, req.body is string. is that even possible
+                        // @ts-expect-error
+                        descriptors: req.body,
+                        req,
+                        res,
                     });
-            });
+                },
+            ]);
 
-            app.post('/listen', express.json(), (req, res) => {
-                res.set('Content-Type', 'text/plain');
+            app.post('/acquire/:path/:previous', [
+                (req, res) => {
+                    res.setHeader('Content-Type', 'text/plain');
+                    acquire({ path: req.params.path, previous: req.params.previous }).then(
+                        result => {
+                            if (!result.success) {
+                                return res.end(str({ error: result.error }));
+                            }
+                            res.end(str({ session: result.payload.session }));
+                        },
+                    );
+                },
+            ]);
 
-                this.listenSubscriptions.push({
-                    descriptors: JSON.stringify(req.body),
-                    req,
-                    res,
-                });
-            });
+            app.post('/release/:session', [
+                parseBodyText,
+                (req, res) => {
+                    // todo:
+                    // @ts-expect-error
+                    release({ session: req.params.session, path: req.body }).then(result => {
+                        if (!result.success) {
+                            return res.end(str({ error: result.error }));
+                        }
+                        res.end(str({ session: req.params.session }));
+                    });
+                },
+            ]);
 
-            app.post('/acquire/:path/:previous', express.json(), (req, res) => {
-                res.set('Content-Type', 'text/plain');
+            app.post('/call/:session', [
+                parseBodyText,
+                (req, res) => {
+                    // todo:
+                    // @ts-expect-error
+                    call({ session: req.params.session, data: req.body }).then(result => {
+                        if (!result.success) {
+                            return res.end(str({ error: result.error }));
+                        }
+                        res.end(str(result.payload));
+                    });
+                },
+            ]);
 
-                acquire({ path: req.params.path, previous: req.params.previous }).then(result => {
-                    if (!result.success) {
-                        return res.send({ error: result.error });
-                    }
-                    res.send({ session: result.payload.session });
-                });
-            });
+            app.post('/read/:session', [
+                parseBodyJSON,
+                (req, res) => {
+                    receive({ session: req.params.session }).then(result => {
+                        if (!result.success) {
+                            return res.end(str({ error: result.error }));
+                        }
+                        res.end(str(result.payload));
+                    });
+                },
+            ]);
 
-            app.post('/release/:session', express.json(), (req, res) => {
-                release({ session: req.params.session, path: req.body }).then(result => {
-                    if (!result.success) {
-                        return res.send({ error: result.error });
-                    }
-                    res.send({ session: req.params.session });
-                });
-            });
+            app.post('/post/:session', [
+                parseBodyJSON,
+                (req, res) => {
+                    // todo:
+                    // @ts-expect-error
+                    send({ session: req.params.session, data: req.body }).then(result => {
+                        if (!result.success) {
+                            return res.end(str({ error: result.error }));
+                        }
+                        res.end();
+                    });
+                },
+            ]);
 
-            app.post('/call/:session', express.text(), (req, res) => {
-                res.set('Content-Type', 'text/plain');
-                call({ session: req.params.session, data: req.body }).then(result => {
-                    if (!result.success) {
-                        return res.send({ error: result.error });
-                    }
-                    res.send(result.payload);
-                });
-            });
+            app.get('/', [
+                (_req, res) => {
+                    res.end(`hello, I am bridge in node, version: ${this.version}`);
+                },
+            ]);
 
-            app.post('/read/:session', (req, res) => {
-                receive({ session: req.params.session }).then(result => {
-                    if (!result.success) {
-                        return res.send({ error: result.error });
-                    }
-                    res.send(result.payload);
-                });
-            });
+            app.post('/', [
+                (_req, res) => {
+                    res.writeHead(200, { 'Content-Type': 'text/plain' });
+                    res.end(
+                        str({
+                            version: this.version,
+                        }),
+                    );
+                },
+            ]);
 
-            app.post('/post/:session', express.text(), (req, res) => {
-                send({ session: req.params.session, data: req.body }).then(result => {
-                    if (!result.success) {
-                        return res.send({ error: result.error });
-                    }
-                    res.send();
-                });
-            });
-
-            this.server = app.listen(this.port, () => {
+            app.start().then(() => {
+                this.server = app;
                 resolve();
             });
         });
@@ -152,7 +187,7 @@ export class TrezordNode {
     public stop() {
         // send empty descriptors (imitate that all devices have disconnected)
         this.resolveListenSubscriptions([]);
-        this.server?.close();
+        this.server?.stop();
     }
 
     public async status() {
