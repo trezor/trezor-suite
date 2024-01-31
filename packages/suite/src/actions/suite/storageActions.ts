@@ -73,6 +73,7 @@ const removeCoinjoinRelatedSetting = (state: AppState) => {
         {
             settings,
             flags: state.suite.flags,
+            evmSettings: state.suite.evmSettings,
         },
         'suite',
         true,
@@ -289,6 +290,7 @@ export const saveSuiteSettings = () => async (_dispatch: Dispatch, getState: Get
         {
             settings: suite.settings,
             flags: suite.flags,
+            evmSettings: suite.evmSettings,
         },
         'suite',
         true,

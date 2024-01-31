@@ -9,6 +9,9 @@ import { Amount } from './components/Amount';
 import { OpReturn } from './components/OpReturn';
 import { motionEasingStrings } from '@trezor/components/src/config/motion';
 import { useLayoutSize } from '../../../../../hooks/suite';
+import { EvmExplanationBox } from 'src/components/wallet/EvmExplanationBox';
+import { Translation } from 'src/components/suite';
+import { networks } from '@suite-common/wallet-config';
 
 const Container = styled.div<{ $height: number }>`
     height: ${({ $height }) => ($height ? `${$height}px` : 'auto')};
@@ -25,6 +28,10 @@ const StyledCard = styled(Card)`
     gap: ${spacingsPx.xs};
 `;
 
+const StyledEvmExplanationBox = styled(EvmExplanationBox)`
+    margin-bottom: ${spacingsPx.md};
+`;
+
 interface OutputsProps {
     disableAnim?: boolean; // used in tests, with animations enabled react-testing-library can't find output fields
 }
@@ -37,6 +44,7 @@ export const Outputs = ({ disableAnim }: OutputsProps) => {
     const {
         outputs,
         formState: { errors },
+        account,
     } = useSendFormContext();
     const ref = useRef<HTMLDivElement>(null);
 
@@ -75,6 +83,26 @@ export const Outputs = ({ disableAnim }: OutputsProps) => {
                                 <OpReturn outputId={index} />
                             ) : (
                                 <>
+                                    {account.networkType === 'ethereum' && (
+                                        <StyledEvmExplanationBox
+                                            symbol={account.symbol}
+                                            title={
+                                                <Translation
+                                                    id="TR_EVM_EXPLANATION_SEND_TITLE"
+                                                    values={{
+                                                        network: networks[account.symbol].name,
+                                                    }}
+                                                />
+                                            }
+                                        >
+                                            <Translation
+                                                id="TR_EVM_EXPLANATION_SEND_DESCRIPTION"
+                                                values={{
+                                                    network: networks[account.symbol].name,
+                                                }}
+                                            />
+                                        </StyledEvmExplanationBox>
+                                    )}
                                     <Address
                                         output={outputs[index]}
                                         outputId={index}

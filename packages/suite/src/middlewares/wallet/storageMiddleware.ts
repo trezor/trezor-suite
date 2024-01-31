@@ -170,6 +170,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 case SUITE.SET_ADDRESS_DISPLAY_TYPE:
                 case SUITE.SET_AUTODETECT:
                 case SUITE.DEVICE_AUTHENTICITY_OPT_OUT:
+                case SUITE.EVM_CONFIRM_EXPLANATION_MODAL:
                     api.dispatch(storageActions.saveSuiteSettings());
                     break;
                 case SUITE.COINJOIN_RECEIVE_WARNING: {

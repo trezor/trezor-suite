@@ -19,6 +19,7 @@ import { selectCoinsLegacy } from '@suite-common/wallet-core';
 import { Translation } from 'src/components/suite';
 import { spacingsPx } from '@trezor/theme';
 import { breakpointMediaQueries } from '@trezor/styles';
+import { ConfirmEvmExplanationModal } from 'src/components/suite/modals';
 
 const SendLayout = styled(WalletLayout)`
     display: flex;
@@ -103,6 +104,8 @@ const SendLoaded = ({ children, selectedAccount }: SendLoadedProps) => {
 
                 {children}
             </SendContext.Provider>
+
+            <ConfirmEvmExplanationModal account={selectedAccount.account} route="wallet-send" />
         </SendLayout>
     );
 };

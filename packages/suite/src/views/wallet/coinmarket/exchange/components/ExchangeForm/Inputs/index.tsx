@@ -12,6 +12,16 @@ import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/wallet/coinmarketExchangeFor
 import { useLayoutSize } from 'src/hooks/suite';
 import { Wrapper, Left, Middle, Right, StyledIcon } from 'src/views/wallet/coinmarket';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
+import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
+import { variables } from '@trezor/components';
+import { EvmExplanationBox } from 'src/components/wallet/EvmExplanationBox';
+import { networks } from '@suite-common/wallet-config';
+import {
+    cryptoToNetworkSymbol,
+    isCryptoSymbolToken,
+} from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
+import { useSelector } from 'src/hooks/suite';
+import { selectDeviceAccounts } from '@suite-common/wallet-core';
 
 const StyledLeft = styled(Left)`
     flex-basis: 50%;
@@ -38,6 +48,7 @@ const Inputs = () => {
         clearErrors,
     } = useCoinmarketExchangeFormContext();
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
+    const deviceAccounts = useSelector(selectDeviceAccounts);
 
     const { outputs } = getValues();
     const tokenAddress = outputs?.[0]?.token;
@@ -113,14 +124,24 @@ const Inputs = () => {
             </StyledMiddle>
             <Right>
                 <ReceiveCryptoSelect />
-            </Right>
-            {isXLargeLayoutSize && (
-                <CoinmarketFractionButtons
-                    disabled={isBalanceZero}
-                    onFractionClick={setRatioAmount}
-                    onAllClick={setAllAmount}
-                    data-test="@coinmarket/exchange/fiat-input"
-                />
+            </Row>
+            {isReceiveTokenBalanceZero && (
+                <Row spaceBefore>
+                    <StyledEvmExplanationBox
+                        caret
+                        symbol={receiveCryptoNetworkSymbol}
+                        title={<Translation id="TR_EVM_EXPLANATION_EXCHANGE_TITLE" />}
+                    >
+                        <Translation
+                            id="TR_EVM_EXPLANATION_EXCHANGE_DESCRIPTION"
+                            values={{
+                                coin: receiveCryptoSelect.label,
+                                network: networks[receiveCryptoNetworkSymbol].name,
+                                networkSymbol: receiveCryptoNetworkSymbol.toUpperCase(),
+                            }}
+                        />
+                    </StyledEvmExplanationBox>
+                </Row>
             )}
         </Wrapper>
     );
