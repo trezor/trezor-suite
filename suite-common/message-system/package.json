@@ -12,7 +12,7 @@
         "sign-config": "tsx ./scripts/sign-config.ts",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "test:unit": "yarn g:jest",
-        "type-check": "tsc --build"
+        "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
         "@reduxjs/toolkit": "1.9.5",
@@ -34,8 +34,7 @@
     "devDependencies": {
         "@suite-common/test-utils": "workspace:*",
         "@types/fs-extra": "^11.0.3",
-        "tsx": "^4.7.0",
-        "typescript": "5.3.2"
+        "tsx": "^4.7.0"
     },
     "nx": {
         "targets": {

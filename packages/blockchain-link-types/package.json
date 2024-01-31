@@ -10,8 +10,8 @@
     ],
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "type-check": "tsc --build",
-        "build:lib": "yarn g:rimraf ./lib && yarn tsc --build tsconfig.lib.json",
+        "type-check": "yarn g:tsc --build",
+        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json",
         "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
         "prepublish": "yarn tsx ../../scripts/prepublish.js"
     },
@@ -23,7 +23,6 @@
     },
     "devDependencies": {
         "ripple-lib": "^1.10.1",
-        "tsx": "^4.7.0",
-        "typescript": "5.3.2"
+        "tsx": "^4.7.0"
     }
 }

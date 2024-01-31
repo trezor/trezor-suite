@@ -11,7 +11,7 @@
     "description": "trezor suite storage",
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "type-check": "tsc --build tsconfig.json",
+        "type-check": "yarn g:tsc --build tsconfig.json",
         "type-check:watch": "yarn type-check -- --watch"
     },
     "main": "./src/web/index.ts",
@@ -21,8 +21,5 @@
         "@trezor/env-utils": "workspace:*",
         "broadcast-channel": "^6.0.0",
         "idb": "^7.1.1"
-    },
-    "devDependencies": {
-        "typescript": "5.3.2"
     }
 }

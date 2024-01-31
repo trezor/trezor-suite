@@ -8,13 +8,10 @@
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "test:unit": "jest -c ../../jest.config.base.js",
-        "type-check": "tsc --build"
+        "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*"
-    },
-    "devDependencies": {
-        "typescript": "5.3.2"
     }
 }

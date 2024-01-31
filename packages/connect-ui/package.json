@@ -8,7 +8,7 @@
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "lint:styles": "npx stylelint './src/**/*{.ts,.tsx}' --cache --config ../../.stylelintrc",
-        "type-check": "tsc --build"
+        "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
         "@trezor/components": "workspace:*",
@@ -21,8 +21,7 @@
     },
     "devDependencies": {
         "@types/react": "18.0.32",
-        "@types/styled-components": "^5.1.29",
-        "typescript": "5.3.2"
+        "@types/styled-components": "^5.1.29"
     },
     "peerDependencies": {
         "react": "18.2.0",

@@ -7,12 +7,9 @@
     "main": "src/index",
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "type-check": "tsc --build"
+        "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
         "@trezor/connect": "workspace:*"
-    },
-    "devDependencies": {
-        "typescript": "5.3.2"
     }
 }

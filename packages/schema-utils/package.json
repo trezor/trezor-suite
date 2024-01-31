@@ -11,16 +11,15 @@
     "scripts": {
         "test:unit": "yarn g:jest",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "type-check": "tsc --build",
-        "build:lib": "rimraf ./lib && yarn tsc --build tsconfig.lib.json",
+        "type-check": "yarn g:tsc --build",
+        "build:lib": "rimraf ./lib && yarn g:tsc --build tsconfig.lib.json",
         "codegen": "ts-node --skip-project ./src/codegen.ts",
         "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
         "prepublish": "yarn tsx ../../scripts/prepublish.js"
     },
     "devDependencies": {
         "@sinclair/typebox-codegen": "^0.8.13",
-        "tsx": "^4.6.2",
-        "typescript": "5.3.2"
+        "tsx": "^4.6.2"
     },
     "dependencies": {
         "@sinclair/typebox": "^0.31.28",

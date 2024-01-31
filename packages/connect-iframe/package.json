@@ -9,7 +9,7 @@
         "build": "yarn g:rimraf build && yarn build:iframe && yarn build:core-module",
         "___NOTE__": "iframe build is one of the prerequisites of suite-web. build:lib script provides it together with other libraries",
         "build:lib": "yarn build",
-        "type-check": "tsc --build tsconfig.json",
+        "type-check": "yarn g:tsc --build tsconfig.json",
         "test:unit": "yarn g:jest"
     },
     "dependencies": {
@@ -23,7 +23,6 @@
         "es6-promise": "^4.2.8",
         "html-webpack-plugin": "^5.5.3",
         "terser-webpack-plugin": "^5.3.9",
-        "typescript": "5.3.2",
         "webpack": "^5.89.0",
         "webpack-cli": "^5.1.4",
         "webpack-merge": "^5.10.0",

@@ -14,7 +14,7 @@
         "translations:backport-en": "yarn tsx ../suite-data/src/translations/backport-en.ts && yarn g:prettier --write \"./src/support/messages.ts\"",
         "translations:list-duplicates": "yarn tsx ../suite-data/src/translations/list-duplicates.ts",
         "translations:list-unused": "yarn tsx ../suite-data/src/translations/list-unused.ts",
-        "type-check": "tsc --build tsconfig.json",
+        "type-check": "yarn g:tsc --build tsconfig.json",
         "test:unit": "yarn g:jest",
         "test-unit:watch": "yarn g:jest -o --watch"
     },
@@ -145,7 +145,6 @@
         "stylelint": "^15.11.0",
         "stylelint-config-standard": "^34.0.0",
         "tsx": "^4.7.0",
-        "typescript": "5.3.2",
         "typescript-styled-plugin": "^0.18.3"
     }
 }

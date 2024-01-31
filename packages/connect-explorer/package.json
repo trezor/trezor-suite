@@ -8,7 +8,7 @@
         "build:webextension": "yarn g:rimraf build-webextension && TS_NODE_PROJECT=\"tsconfig.json\" yarn webpack --config ./webpack/webextension.webpack.config.ts",
         "lint:js": "yarn g:eslint '**/*{.ts,.tsx}'",
         "lint:styles": "npx stylelint './src/**/*{.ts,.tsx}' --cache --config ../../.stylelintrc",
-        "type-check": "tsc --build tsconfig.json"
+        "type-check": "yarn g:tsc --build tsconfig.json"
     },
     "dependencies": {
         "@trezor/components": "workspace:*",
@@ -44,7 +44,6 @@
         "stylelint": "^15.11.0",
         "stylelint-config-standard": "^34.0.0",
         "terser-webpack-plugin": "^5.3.9",
-        "typescript": "5.3.2",
         "webpack": "^5.89.0",
         "webpack-cli": "^5.1.4",
         "webpack-dev-server": "^4.15.1",

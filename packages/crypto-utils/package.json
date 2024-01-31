@@ -7,9 +7,6 @@
     "main": "src/index",
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "type-check": "tsc --build"
-    },
-    "devDependencies": {
-        "typescript": "5.3.2"
+        "type-check": "yarn g:tsc --build"
     }
 }

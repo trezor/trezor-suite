@@ -21,7 +21,7 @@
         "test:discovery": "tsx ./tests/tools/discovery-test.ts",
         "test:anonymity": "tsx ./tests/tools/anonymity-test.ts",
         "test:benchmark": "tsx ./tests/tools/benchmark-test.ts",
-        "type-check": "tsc --build"
+        "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
         "@trezor/blockchain-link": "workspace:*",
@@ -34,8 +34,5 @@
         "events": "^3.3.0",
         "golomb": "1.2.0",
         "n64": "^0.2.10"
-    },
-    "devDependencies": {
-        "typescript": "5.3.2"
     }
 }
