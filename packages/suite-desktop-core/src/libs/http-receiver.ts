@@ -41,9 +41,9 @@ export const createHttpReceiver = () => {
     const httpReceiver = new HttpServer<Events>({ logger: global.logger, port: 21335 });
 
     httpReceiver.use([
-        (_request, response, next) => {
+        (request, response, next) => {
             response.setHeader('Content-Type', 'text/html; charset=UTF-8');
-            next();
+            next(request, response);
         },
     ]);
 
