@@ -216,6 +216,7 @@ export const TxDetailModal = ({ tx, rbfForm, onCancel }: TxDetailModalProps) => 
                     network={network!}
                     tx={tx}
                     chainedTxs={chainedTxs}
+                    isPhishingTransaction={isPhishingTransaction}
                 />
             )}
         </StyledModal>

@@ -1,10 +1,16 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { ArrayElement } from '@trezor/type-utils';
 import { Translation, AddressLabeling } from 'src/components/suite';
 import { WalletAccountTransaction } from 'src/types/wallet';
 
 const BlurWrapper = styled.span<{ isBlurred: boolean }>`
-    filter: ${({ isBlurred }) => isBlurred && 'blur(2px)'};
+    ${({ isBlurred }) =>
+        isBlurred &&
+        css`
+            filter: blur(2px);
+            pointer-events: none;
+            user-select: none;
+        `};
 `;
 
 interface TokenTransferAddressLabelProps {
