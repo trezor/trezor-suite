@@ -11,13 +11,8 @@ import { Account } from 'src/types/wallet';
 import { goto } from 'src/actions/suite/routerActions';
 import { NavigationItemBase } from 'src/components/suite/Preloader/SuiteLayout/Sidebar/NavigationItem';
 
-interface WrapperProps {
-    selected: boolean;
-    type: string;
-}
-
-const Wrapper = styled(NavigationItemBase)<WrapperProps>`
-    background: ${({ theme, selected }) => selected && theme.backgroundSurfaceElevation1};
+const Wrapper = styled(NavigationItemBase)<{ isSelected: boolean }>`
+    background: ${({ theme, isSelected }) => isSelected && theme.backgroundSurfaceElevation1};
     gap: 0;
     display: flex;
     justify-content: space-between;
@@ -29,8 +24,8 @@ const Wrapper = styled(NavigationItemBase)<WrapperProps>`
     :hover {
         position: relative;
         z-index: 2;
-        background: ${({ theme, selected }) =>
-            !selected && theme.backgroundTertiaryPressedOnElevation0};
+        background: ${({ theme, isSelected }) =>
+            !isSelected && theme.backgroundTertiaryPressedOnElevation0};
     }
 `;
 
@@ -60,13 +55,13 @@ const Row = styled.div`
     white-space: nowrap;
 `;
 
-const AccountName = styled.div`
+const AccountName = styled.div<{ isSelected: boolean }>`
     display: flex;
     overflow-x: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     ${typography.hint};
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme, isSelected }) => (isSelected ? theme.textDefault : theme.textSubdued)};
     line-height: 1.5;
     font-variant-numeric: tabular-nums;
 `;
@@ -92,14 +87,14 @@ const TokensCount = styled.div`
 interface AccountItemProps {
     account: Account;
     accountLabel?: string;
-    selected: boolean;
+    isSelected: boolean;
     closeMenu?: () => void;
 }
 
 // Using `forwardRef` to be able to pass `ref` (item) TO parent (Menu/index)
 export const AccountItem = forwardRef(
     (
-        { account, accountLabel, selected, closeMenu }: AccountItemProps,
+        { account, accountLabel, isSelected, closeMenu }: AccountItemProps,
         ref: Ref<HTMLDivElement>,
     ) => {
         const dispatch = useDispatch();
@@ -130,8 +125,7 @@ export const AccountItem = forwardRef(
 
         return (
             <Wrapper
-                selected={selected}
-                type={accountType}
+                isSelected={isSelected}
                 ref={ref}
                 onClick={handleHeaderClick}
                 data-test={dataTestKey}
@@ -143,7 +137,7 @@ export const AccountItem = forwardRef(
                 </Left>
                 <Center>
                     <Row>
-                        <AccountName data-test={`${dataTestKey}/label`}>
+                        <AccountName isSelected={isSelected} data-test={`${dataTestKey}/label`}>
                             <AccountLabel
                                 accountLabel={accountLabel}
                                 accountType={accountType}

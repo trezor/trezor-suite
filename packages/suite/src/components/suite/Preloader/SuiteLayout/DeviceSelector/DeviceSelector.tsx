@@ -57,6 +57,7 @@ const Wrapper = styled.div<{ isAnimationTriggered?: boolean }>`
 
 const DeviceLabel = styled.div`
     ${typography.body};
+    margin-bottom: -${spacingsPx.xxs};
     min-width: 0;
     color: ${({ theme }) => theme.textDefault};
     overflow: hidden;
@@ -64,6 +65,7 @@ const DeviceLabel = styled.div`
 `;
 
 const DeviceWrapper = styled.div<{ isLowerOpacity: boolean }>`
+    display: flex;
     opacity: ${({ isLowerOpacity }) => isLowerOpacity && 0.4};
 `;
 
@@ -180,6 +182,7 @@ export const DeviceSelector = () => {
                                 deviceUnitColor={selectedDevice?.features?.unit_color}
                             />
                         )}
+
                         {selectedDeviceModelInternal !== DeviceModelInternal.T2B1 && (
                             <StyledImage
                                 alt="Trezor"
@@ -187,8 +190,10 @@ export const DeviceSelector = () => {
                             />
                         )}
                     </DeviceWrapper>
+
                     <DeviceDetail>
                         <DeviceLabel>{selectedDevice.label}</DeviceLabel>
+
                         <DeviceStatusText
                             onRefreshClick={handleRefreshClick}
                             device={selectedDevice}
@@ -199,6 +204,7 @@ export const DeviceSelector = () => {
                             }
                         />
                     </DeviceDetail>
+
                     {selectedDevice.state && (
                         <CaretContainer>
                             <Icon size={20} icon="CARET_CIRCLE_DOWN" />

@@ -15,7 +15,7 @@ const Container = styled.div`
     flex-wrap: wrap;
     align-items: center;
     gap: ${spacingsPx.xxs};
-    margin: ${spacingsPx.xs} ${spacingsPx.xs} ${spacingsPx.xs} 48px;
+    margin: ${spacingsPx.xxs} ${spacingsPx.xs} ${spacingsPx.xs} 48px;
     z-index: 2;
     position: relative;
 
