@@ -1,5 +1,6 @@
 import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
-import { createDeferred, Deferred } from '@trezor/utils/lib/createDeferred';
+import { createDeferred } from '@trezor/utils/lib/createDeferred';
+import { createDeferredManager } from '@trezor/utils/lib/createDeferredManager';
 import { CustomError } from '@trezor/blockchain-link-types/lib/constants/errors';
 import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/lib/constants';
 import { Throttler } from './workers/throttler';
@@ -62,11 +63,9 @@ const initWorker = async (settings: BlockchainSettings) => {
 class BlockchainLink extends TypedEmitter<Events> {
     settings: BlockchainSettings;
 
-    messageId = 0;
-
     worker: Worker | undefined;
 
-    deferred: Deferred<any>[] = [];
+    private deferred = createDeferredManager();
 
     private throttler: Throttler;
 
@@ -100,11 +99,9 @@ class BlockchainLink extends TypedEmitter<Events> {
     // Sending messages to worker
     async sendMessage<R>(message: any): Promise<R> {
         const worker = await this.getWorker();
-        const dfd = createDeferred(this.messageId);
-        this.deferred.push(dfd);
-        worker.postMessage({ id: this.messageId, ...message });
-        this.messageId++;
-        return dfd.promise as Promise<R>;
+        const { promiseId, promise } = this.deferred.create();
+        worker.postMessage({ id: promiseId, ...message });
+        return promise;
     }
 
     connect(): Promise<boolean> {
@@ -291,16 +288,11 @@ class BlockchainLink extends TypedEmitter<Events> {
             return;
         }
 
-        const dfd = this.deferred.find(d => d.id === data.id);
-        if (!dfd) {
-            return;
-        }
         if (data.type === RESPONSES.ERROR) {
-            dfd.reject(new CustomError(data.payload.code, data.payload.message));
+            this.deferred.reject(data.id, new CustomError(data.payload.code, data.payload.message));
         } else {
-            dfd.resolve(data.payload);
+            this.deferred.resolve(data.id, data.payload);
         }
-        this.deferred = this.deferred.filter(d => d !== dfd);
     };
 
     onEvent: (data: ResponseTypes.Response) => void = data => {
@@ -333,10 +325,7 @@ class BlockchainLink extends TypedEmitter<Events> {
             : 'Worker handshake error';
         const e = new CustomError('worker_runtime', message);
         // reject all pending responses
-        this.deferred.forEach(d => {
-            d.reject(e);
-        });
-        this.deferred = [];
+        this.deferred.rejectAll(e);
     };
 
     dispose() {
