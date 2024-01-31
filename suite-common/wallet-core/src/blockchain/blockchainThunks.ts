@@ -301,12 +301,19 @@ export const onBlockMinedThunk = createThunk(
         const symbol = block.coin.shortcut.toLowerCase();
         const network = getNetwork(symbol);
 
-        // Don't sync Solana because we emit a new block for Solana every 10 seconds.
-        // Solana accounts are updated via account subscription or also by the timer
-        // in syncAccountsWithBlockchainThunk.
-        if (isNetworkSymbol(symbol) && network?.networkType !== 'solana') {
-            return dispatch(syncAccountsWithBlockchainThunk(symbol));
+        if (!isNetworkSymbol(symbol)) {
+            return;
         }
+
+        // Don't sync fast networks because a new block is emitted every few seconds.
+        // Accounts are updated via account subscription or also by the timer in syncAccountsWithBlockchainThunk.
+        // Solana - new block every 10 seconds
+        // Polygon (matic) - new block every 2 seconds
+        if (network?.networkType === 'solana' || symbol === 'matic') {
+            return;
+        }
+
+        return dispatch(syncAccountsWithBlockchainThunk(symbol));
     },
 );
 

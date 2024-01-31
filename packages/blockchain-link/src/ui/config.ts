@@ -503,4 +503,26 @@ export default [
             tx: '016b6504fe0a54f4e30c13e4707fdea772496a932d3cb87cbf817ddad7a7924d6cae2aaf687dd57851829c2d884f1c135abad4a1a36167dcebdb28286c31d6d80b01000102c80f8b50107e9f3e3c16a661b8c806df454a6deb293d5e8730a9d28f2f4998c60000000000000000000000000000000000000000000000000000000000000000c41dc0c82a686ce8dfed732687b5869180d6239c026af160a5297506ad87ea5901010200000c0200000070ec9b0700000000',
         },
     },
+    {
+        blockchain: {
+            name: 'Polygon',
+            worker: 'js/blockbook-worker.js',
+            server: ['https://matic1.trezor.io', 'https://matic2.trezor.io'],
+            debug: true,
+        },
+        data: {
+            address: '',
+            accountInfoOptions: {
+                page: 1,
+                pageSize: 25,
+                contractFilter: undefined,
+            },
+            estimateFeeOptions: {
+                blocks: [1, 2, 10],
+            },
+            txid: '',
+            tx: '',
+            subscribe: '',
+        },
+    },
 ];
