@@ -17,6 +17,6 @@
         "express": "^4.18.2"
     },
     "devDependencies": {
-        "@types/cors": "^2.8.15"
+        "@types/cors": "^2.8.17"
     }
 }

@@ -25,7 +25,7 @@
         "fela-plugin-unit": "^12.2.1",
         "fela-sort-media-query-mobile-first": "^12.2.1",
         "fela-utils": "^12.2.1",
-        "polished": "^4.2.2",
+        "polished": "^4.3.1",
         "react": "18.2.0",
         "react-fela": "^12.2.1",
         "react-native": "0.73.2"

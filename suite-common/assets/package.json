@@ -12,6 +12,6 @@
     },
     "dependencies": {
         "@suite-common/wallet-config": "workspace:*",
-        "bignumber.js": "^9.1.1"
+        "bignumber.js": "^9.1.2"
     }
 }

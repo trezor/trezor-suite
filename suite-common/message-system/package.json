@@ -25,15 +25,15 @@
         "@trezor/env-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "ajv": "^8.12.0",
-        "fs-extra": "^11.1.1",
-        "json-schema-to-typescript": "^13.1.1",
+        "fs-extra": "^11.2.0",
+        "json-schema-to-typescript": "^13.1.2",
         "jws": "^4.0.0",
         "proxy-memoize": "2.0.2",
-        "semver": "^7.5.4"
+        "semver": "^7.6.0"
     },
     "devDependencies": {
         "@suite-common/test-utils": "workspace:*",
-        "@types/fs-extra": "^11.0.3"
+        "@types/fs-extra": "^11.0.4"
     },
     "nx": {
         "targets": {

@@ -19,10 +19,10 @@
         "react": "18.2.0",
         "react-native": "0.73.2",
         "react-native-reanimated": "3.7.0-nightly-20240101-9d365ae7b",
-        "react-svg": "^16.1.17",
+        "react-svg": "^16.1.33",
         "styled-components": "^5.3.10"
     },
     "devDependencies": {
-        "svgo": "3.0.2"
+        "svgo": "3.2.0"
     }
 }

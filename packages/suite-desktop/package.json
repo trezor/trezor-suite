@@ -26,13 +26,13 @@
         "blake-hash": "^2.0.0",
         "electron-localshortcut": "^3.2.1",
         "electron-store": "^8.1.0",
-        "electron-updater": "6.1.4",
+        "electron-updater": "6.1.7",
         "usb": "^2.11.0"
     },
     "devDependencies": {
-        "@electron/notarize": "2.1.0",
+        "@electron/notarize": "2.2.1",
         "electron": "27.0.4",
-        "electron-builder": "24.6.4",
+        "electron-builder": "24.9.1",
         "glob": "^10.3.10"
     }
 }

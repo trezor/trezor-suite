@@ -11,7 +11,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@formatjs/intl": "2.9.6",
+        "@formatjs/intl": "2.10.0",
         "@mobily/ts-belt": "^3.13.1",
         "@suite-common/suite-config": "workspace:*",
         "@suite-common/suite-constants": "workspace:*",
@@ -21,10 +21,10 @@
         "@suite-common/wallet-types": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",
         "@trezor/connect": "workspace:*",
-        "bignumber.js": "^9.1.1",
+        "bignumber.js": "^9.1.2",
         "date-fns": "^2.30.0",
         "react": "18.2.0",
-        "react-intl": "^6.5.1",
+        "react-intl": "^6.6.2",
         "react-redux": "8.0.7"
     }
 }

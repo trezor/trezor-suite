@@ -14,6 +14,6 @@
         "@mobily/ts-belt": "^3.13.1",
         "@suite-common/wallet-config": "workspace:*",
         "@trezor/connect": "workspace:*",
-        "bignumber.js": "^9.1.1"
+        "bignumber.js": "^9.1.2"
     }
 }
