@@ -122,6 +122,36 @@ export const en = {
             },
             subtitle: "Here's what you have in your account.",
         },
+        xpubScanScreen: {
+            alert: {
+                address: {
+                    title: 'This is your receive address',
+                    description: 'To check the balance of your coin, scan your public key (XPUB).',
+                    hintButton: 'Where to find it?',
+                },
+            },
+            input: {
+                label: {
+                    xpub: 'Enter public key (XPUB) manually',
+                    address: 'Enter address manually',
+                },
+                error: {
+                    address: 'Address is not valid',
+                },
+            },
+            hintBottomSheet: {
+                title: {
+                    xpub: 'Where is my public key (XPUB)?',
+                    address: 'Where is my receive address?',
+                },
+                text: {
+                    xpub: ' To view the public key (XPUB) of your account, open the Trezor Suite app, plug in your Trezor device, then select <emphasized>Details</emphasized>, then choose <emphasized>Show public key</emphasized>.',
+                    address:
+                        'To view the receive address of your account, open the Trezor Suite desktop app, plugin your Trezor device, select <emphasized>Accounts</emphasized>, choose <emphasized>Receive</emphasized>, and click on <emphasized>Show full address</emphasized>.',
+                },
+            },
+            confirmButton: 'Got it',
+        },
     },
     moduleConnectDevice: {
         connectAndUnlockScreen: {
@@ -405,6 +435,23 @@ export const en = {
             },
             helpSwitchTitle: 'Help us anonymously',
             learnMore: '<securityLink>More</securityLink> about privacy',
+        },
+    },
+    moduleAccountManagement: {
+        accountSettingsScreen: {
+            xpubBottomSheet: {
+                xpub: {
+                    title: 'Public key (XPUB)',
+                    showButton: 'Show public key (XPUB)',
+                    copyMessage: 'XPUB copied',
+                },
+                address: {
+                    title: 'Receive address',
+                    showButton: 'Show receive address',
+                    copyMessage: 'Public address copied',
+                },
+                copyButton: 'Copy',
+            },
         },
     },
     moduleAccounts: {

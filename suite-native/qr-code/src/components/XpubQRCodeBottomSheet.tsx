@@ -1,9 +1,11 @@
 import { useState } from 'react';
 
 import { Box, Button, BottomSheet, BottomSheetProps, VStack } from '@suite-native/atoms';
-import { networks, NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
+import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { useCopyToClipboard } from '@suite-native/helpers';
+import { isAddressBasedNetwork } from '@suite-common/wallet-utils';
+import { useTranslate } from '@suite-native/intl';
 
 import { XpubQRCodeCard } from './XpubQRCodeCard';
 
@@ -13,23 +15,9 @@ type XpubQRCodeBottomSheetProps = Pick<BottomSheetProps, 'isVisible'> & {
     networkSymbol: NetworkSymbol;
 };
 
-const networkTypeToSheetTitleMap: Record<NetworkType, string> = {
-    bitcoin: 'Public key (XPUB)',
-    cardano: 'Public key (XPUB)',
-    ethereum: 'Receive address',
-    ripple: 'Receive address',
-    solana: 'Receive address',
-};
-
 const buttonStyle = prepareNativeStyle(utils => ({
     paddingHorizontal: utils.spacings.medium,
 }));
-
-const networkSymbolHasXpub = (networkSymbol: NetworkSymbol) => {
-    // These coins don't have XPUB but public address instead
-    if (networkSymbol === 'eth' || networkSymbol === 'xrp' || networkSymbol === 'etc') return false;
-    return true;
-};
 
 export const XpubQRCodeBottomSheet = ({
     isVisible,
@@ -37,17 +25,32 @@ export const XpubQRCodeBottomSheet = ({
     qrCodeData,
     networkSymbol,
 }: XpubQRCodeBottomSheetProps) => {
+    const { translate } = useTranslate();
+    const { networkType } = networks[networkSymbol];
+    const isAddressBased = isAddressBasedNetwork(networkType);
     const { applyStyle } = useNativeStyles();
     const copyToClipboard = useCopyToClipboard();
-    const [isXpubShown, setIsXpubShown] = useState(!networkSymbolHasXpub(networkSymbol));
+    const [isXpubShown, setIsXpubShown] = useState(isAddressBased);
 
     if (!qrCodeData) return null;
 
-    const { networkType } = networks[networkSymbol];
+    const copyMessage = translate(
+        isAddressBased
+            ? 'moduleAccountManagement.accountSettingsScreen.xpubBottomSheet.address.copyMessage'
+            : 'moduleAccountManagement.accountSettingsScreen.xpubBottomSheet.xpub.copyMessage',
+    );
 
-    const copyMessage = networkSymbolHasXpub(networkSymbol)
-        ? 'XPUB copied'
-        : 'Public address copied';
+    const showButtonTitle = translate(
+        isAddressBased
+            ? 'moduleAccountManagement.accountSettingsScreen.xpubBottomSheet.address.showButton'
+            : 'moduleAccountManagement.accountSettingsScreen.xpubBottomSheet.xpub.showButton',
+    );
+
+    const sheetTitle = translate(
+        isAddressBased
+            ? 'moduleAccountManagement.accountSettingsScreen.xpubBottomSheet.address.title'
+            : 'moduleAccountManagement.accountSettingsScreen.xpubBottomSheet.xpub.title',
+    );
 
     const handleShowXpub = () => {
         setIsXpubShown(true);
@@ -59,22 +62,20 @@ export const XpubQRCodeBottomSheet = ({
     };
 
     return (
-        <BottomSheet
-            title={networkTypeToSheetTitleMap[networkType]}
-            isVisible={isVisible}
-            onClose={onClose}
-        >
+        <BottomSheet title={sheetTitle} isVisible={isVisible} onClose={onClose}>
             <VStack spacing="large">
                 <XpubQRCodeCard isXpubShown={isXpubShown} qrCodeData={qrCodeData} />
 
                 <Box style={applyStyle(buttonStyle)}>
                     {isXpubShown ? (
                         <Button size="large" onPress={handleCopyXpub}>
-                            Copy
+                            {translate(
+                                'moduleAccountManagement.accountSettingsScreen.xpubBottomSheet.copyButton',
+                            )}
                         </Button>
                     ) : (
                         <Button size="large" iconLeft="eye" onPress={handleShowXpub}>
-                            Show public key
+                            {showButtonTitle}
                         </Button>
                     )}
                 </Box>

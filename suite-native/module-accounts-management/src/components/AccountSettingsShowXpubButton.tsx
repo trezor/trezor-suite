@@ -3,21 +3,16 @@ import { useSelector } from 'react-redux';
 
 import { XpubQRCodeBottomSheet } from '@suite-native/qr-code';
 import { Button } from '@suite-native/atoms';
-import { networks, NetworkType } from '@suite-common/wallet-config';
+import { isAddressBasedNetwork } from '@suite-common/wallet-utils';
 import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-
-const networkTypeToButtonTitleMap: Record<NetworkType, string> = {
-    bitcoin: 'Show public key (XPUB)',
-    cardano: 'Show public key (XPUB)',
-    ethereum: 'Show receive address',
-    ripple: 'Show receive address',
-    solana: 'Show receive address',
-};
+import { useTranslate } from '@suite-native/intl';
 
 export const AccountSettingsShowXpubButton = ({ accountKey }: { accountKey: string }) => {
+    const { translate } = useTranslate();
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
+
     const [isXpubVisible, setIsXpubVisible] = useState(false);
 
     if (!account) return null;
@@ -25,8 +20,15 @@ export const AccountSettingsShowXpubButton = ({ accountKey }: { accountKey: stri
     const handleClose = () => {
         setIsXpubVisible(false);
     };
+    const isAddressBased = isAddressBasedNetwork(account.networkType);
 
-    const { networkType } = networks[account.symbol];
+    const buttonTitle = isAddressBased
+        ? translate(
+              'moduleAccountManagement.accountSettingsScreen.xpubBottomSheet.address.showButton',
+          )
+        : translate(
+              'moduleAccountManagement.accountSettingsScreen.xpubBottomSheet.xpub.showButton',
+          );
 
     return (
         <>
@@ -35,7 +37,7 @@ export const AccountSettingsShowXpubButton = ({ accountKey }: { accountKey: stri
                 onPress={() => setIsXpubVisible(true)}
                 colorScheme="tertiaryElevation0"
             >
-                {networkTypeToButtonTitleMap[networkType]}
+                {buttonTitle}
             </Button>
 
             <XpubQRCodeBottomSheet

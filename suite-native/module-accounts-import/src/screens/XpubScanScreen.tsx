@@ -15,9 +15,10 @@ import {
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { yup } from '@suite-common/validators';
-import { NetworkType, networks } from '@suite-common/wallet-config';
-import { isAddressValid } from '@suite-common/wallet-utils';
+import { networks } from '@suite-common/wallet-config';
+import { isAddressValid, isAddressBasedNetwork } from '@suite-common/wallet-utils';
 import { useAlert } from '@suite-native/alerts';
+import { useTranslate } from '@suite-native/intl';
 
 import { XpubImportSection } from '../components/XpubImportSection';
 import { AccountImportSubHeader } from '../components/AccountImportSubHeader';
@@ -25,14 +26,6 @@ import { DevXpub } from '../components/DevXpub';
 import { SelectableNetworkItem } from '../components/SelectableNetworkItem';
 import { XpubHint } from '../components/XpubHint';
 import { XpubHintBottomSheet } from '../components/XpubHintBottomSheet';
-
-const networkTypeToInputLabelMap: Record<NetworkType, string> = {
-    bitcoin: 'Enter public key (XPUB) manually',
-    cardano: 'Enter public key (XPUB) manually',
-    ethereum: 'Enter receive address manually',
-    ripple: 'Enter receive address manually',
-    solana: 'Enter receive address manually',
-};
 
 const FORM_BUTTON_FADE_IN_DURATION = 200;
 
@@ -54,6 +47,7 @@ export const XpubScanScreen = ({
     navigation,
     route,
 }: StackProps<AccountsImportStackParamList, AccountsImportStackRoutes.XpubScan>) => {
+    const { translate } = useTranslate();
     const { applyStyle } = useNativeStyles();
     const [_, setIsCameraRequested] = useState<boolean>(false);
     const { showAlert, hideAlert } = useAlert();
@@ -74,25 +68,34 @@ export const XpubScanScreen = ({
     useFocusEffect(resetToDefaultValues);
 
     const { networkType } = networks[networkSymbol];
-    const inputLabel = networkTypeToInputLabelMap[networkType];
+    const inputLabel = translate(
+        isAddressBasedNetwork(networkType)
+            ? 'moduleAccountImport.xpubScanScreen.input.label.address'
+            : 'moduleAccountImport.xpubScanScreen.input.label.xpub',
+    );
 
     const goToAccountImportScreen = ({ xpubAddress }: XpubFormValues) => {
         if (
             xpubAddress &&
-            networkType !== 'ethereum' &&
-            networkType !== 'ripple' &&
+            !isAddressBasedNetwork(networkType) &&
             isAddressValid(xpubAddress, networkSymbol)
         ) {
             // we need to set timeout to avoid showing alert during screen transition, otherwise it will freeze the app
             setTimeout(() => {
                 showAlert({
-                    title: 'This is your receive address',
-                    description: 'To check the balance of your coin, scan your public key (XPUB).',
+                    title: translate('moduleAccountImport.xpubScanScreen.alert.address.title'),
+                    description: translate(
+                        'moduleAccountImport.xpubScanScreen.alert.address.description',
+                    ),
                     icon: 'warningCircle',
                     pictogramVariant: 'red',
-                    primaryButtonTitle: 'Got it',
+                    primaryButtonTitle: translate(
+                        'moduleAccountImport.xpubScanScreen.confirmButton',
+                    ),
                     onPressPrimaryButton: () => null,
-                    secondaryButtonTitle: 'Where to find it?',
+                    secondaryButtonTitle: translate(
+                        'moduleAccountImport.xpubScanScreen.alert.address.hintButton',
+                    ),
                     onPressSecondaryButton: () => {
                         hideAlert();
                         setIsHintSheetVisible(true);
@@ -167,7 +170,7 @@ export const XpubScanScreen = ({
                             testID="@accounts-import/sync-coins/xpub-input"
                             name="xpubAddress"
                             label={inputLabel}
-                            accessibilityLabel="input xpub"
+                            accessibilityLabel={inputLabel}
                             multiline
                         />
                         {isXpubFormFilled && (

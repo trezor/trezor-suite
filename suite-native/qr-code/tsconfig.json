@@ -6,6 +6,9 @@
         {
             "path": "../../suite-common/wallet-config"
         },
+        {
+            "path": "../../suite-common/wallet-utils"
+        },
         { "path": "../atoms" },
         { "path": "../helpers" },
         { "path": "../intl" },
