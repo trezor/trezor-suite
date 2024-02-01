@@ -14,11 +14,15 @@ import {
     StackProps,
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { yup } from '@suite-common/validators';
-import { networks } from '@suite-common/wallet-config';
+import { getNetworkType } from '@suite-common/wallet-config';
 import { isAddressValid, isAddressBasedNetwork } from '@suite-common/wallet-utils';
 import { useAlert } from '@suite-native/alerts';
 import { useTranslate } from '@suite-native/intl';
+import {
+    XpubFormContext,
+    xpubFormValidationSchema,
+    XpubFormValues,
+} from '@suite-common/validators';
 
 import { XpubImportSection } from '../components/XpubImportSection';
 import { AccountImportSubHeader } from '../components/AccountImportSubHeader';
@@ -38,11 +42,6 @@ const cameraStyle = prepareNativeStyle(utils => ({
     marginBottom: utils.spacings.medium,
 }));
 
-const xpubFormValidationSchema = yup.object({
-    xpubAddress: yup.string().required(),
-});
-type XpubFormValues = yup.InferType<typeof xpubFormValidationSchema>;
-
 export const XpubScanScreen = ({
     navigation,
     route,
@@ -51,12 +50,16 @@ export const XpubScanScreen = ({
     const { applyStyle } = useNativeStyles();
     const [_, setIsCameraRequested] = useState<boolean>(false);
     const { showAlert, hideAlert } = useAlert();
-    const form = useForm<XpubFormValues>({
+
+    const { networkSymbol } = route.params;
+    const networkType = getNetworkType(networkSymbol);
+
+    const form = useForm<XpubFormValues, XpubFormContext>({
         validation: xpubFormValidationSchema,
+        context: { networkSymbol },
     });
     const { handleSubmit, setValue, watch, reset } = form;
     const watchXpubAddress = watch('xpubAddress');
-    const { networkSymbol } = route.params;
     const [isHintSheetVisible, setIsHintSheetVisible] = useState(false);
 
     const isXpubFormFilled = watchXpubAddress?.length > 0;
@@ -67,7 +70,6 @@ export const XpubScanScreen = ({
 
     useFocusEffect(resetToDefaultValues);
 
-    const { networkType } = networks[networkSymbol];
     const inputLabel = translate(
         isAddressBasedNetwork(networkType)
             ? 'moduleAccountImport.xpubScanScreen.input.label.address'

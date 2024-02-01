@@ -7091,6 +7091,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/validators@workspace:suite-common/validators"
   dependencies:
+    "@mobily/ts-belt": "npm:^3.13.1"
+    "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     yup: "npm:^0.32.11"
   languageName: unknown
