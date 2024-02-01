@@ -28,11 +28,4 @@ Opens an electron app controlled by the [playwright test runner](https://playwri
 
 2. **To debug test** add `await window.pause();` to place where you want test to stop. Debugger window will open.
 
-3. **To enable Debug Tools in the browser** go to `packages/suite-desktop-core/e2e/support/common.ts` and uncomment:
-
-    ```ts
-    const browserWindow = await electronApp.browserWindow(window);
-    browserWindow.evaluate((app: BrowserWindow) => {
-        app.webContents.openDevTools();
-    });
-    ```
+3. **To enable Debug Tools in the browser** press `Ctrl+Shift+I`
