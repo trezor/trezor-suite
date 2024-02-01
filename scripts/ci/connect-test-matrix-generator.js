@@ -51,7 +51,7 @@ const groups = {
         name: 'cardano',
         pattern: 'methods',
         includeFilter:
-            'cardanoGetAddress,cardanoGetNativeScriptHash,cardanoGetPublicKey,cardanoSignTransaction',
+            'cardanoGetAddress,cardanoGetNativeScriptHash,cardanoGetPublicKey,cardanoSignTransaction,cardanoSignMessage',
     },
     eos: {
         name: 'eos',
