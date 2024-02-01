@@ -30,7 +30,7 @@
 # @trezor/suite-web
 .e2e web:
   stage: integration testing
-  retry: 1
+  retry: 0
   dependencies:
     - install
   variables:
@@ -46,7 +46,7 @@
     TRACK_SUITE_URL: https://track-suite-ff9ad9f5b4f6.herokuapp.com
     ## when debugging or developing tests it does not make sense to have retries,
     ## in other cases retries are useful to avoid occasional failures due to flaky tests
-    ALLOW_RETRY: 1
+    ALLOW_RETRY: 0
     CYPRESS_TEST_URLS: ${CI_COMMIT_REF_NAME}
   before_script:
     - docker login $CI_DEPENDENCY_PROXY_SERVER -u $CI_DEPENDENCY_PROXY_USER -p $CI_DEPENDENCY_PROXY_PASSWORD
@@ -145,7 +145,7 @@ suite web canary fws manual:
 # @trezor/suite-desktop
 .e2e desktop:
   stage: integration testing
-  retry: 1
+  retry: 0
   dependencies:
     - install
   variables:
@@ -223,7 +223,7 @@ transport manual:
 # @trezor/connect-popup (via @trezor/connect-explorer)
 .e2e connect-popup:
   stage: integration testing
-  retry: 1
+  retry: 0
   variables:
     COMPOSE_PROJECT_NAME: $CI_JOB_ID
     COMPOSE_FILE: ./docker/docker-compose.connect-popup-ci.yml
@@ -311,7 +311,7 @@ connect-popup legacy npm package:
 
 .e2e connect-popup-webextension:
   stage: integration testing
-  retry: 1
+  retry: 0
   variables:
     COMPOSE_PROJECT_NAME: $CI_JOB_ID
     COMPOSE_FILE: ./docker/docker-compose.connect-popup-ci.yml
@@ -361,7 +361,7 @@ connect-popup-webextension manual:
 
 .connect:
   stage: integration testing
-  retry: 1
+  retry: 0
   dependencies:
     - install
   variables:
