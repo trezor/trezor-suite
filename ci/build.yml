@@ -254,6 +254,8 @@ suite-desktop build windows codesign:
     # build webextension example using @trezor/connect-webextension package
     - yarn workspace @trezor/connect-webextension build
     - node ./packages/connect-examples/update-webextensions-sw.js
+    # build webextension inside package @trezor/connect-explorer package
+    - yarn workspace @trezor/connect-explorer build:webextension
 
   artifacts:
     expire_in: 14 days
@@ -267,6 +269,7 @@ suite-desktop build windows codesign:
       - packages/connect-examples/webextension-mv3/build-legacy
       - packages/connect-examples/webextension-mv3-sw/build
       - packages/connect-explorer-webextension/build
+      - packages/connect-explorer/build-webextension
 
 connect-explorer build:
   extends: .connect-explorer build base
