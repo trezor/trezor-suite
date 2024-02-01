@@ -7,10 +7,14 @@ import { Deferred, createDeferred } from '@trezor/utils/lib/createDeferred';
 import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
 import { scheduleAction } from '@trezor/utils/lib/scheduleAction';
 
-// todo: I can't import Log from connect to connect-common (connect imports from connect-common).
-// so logger should be probably moved to connect common, or this file should be moved to connect
+// TODO: so logger should be probably moved to connect common, or this file should be moved to connect
 // import type { Log } from '@trezor/connect/lib/utils/debug';
-type Log = any;
+type Log = {
+    log: (...args: any[]) => void;
+    error: (...args: any[]) => void;
+    warn: (...args: any[]) => void;
+    debug: (...args: any[]) => void;
+};
 
 export interface AbstractMessageChannelConstructorParams {
     sendFn: (message: any) => void;
@@ -164,7 +168,7 @@ export abstract class AbstractMessageChannel<
         }
         const messagePromisesLength = Object.keys(this.messagePromises).length;
         if (messagePromisesLength > 5) {
-            this.logger.warn(
+            this.logger?.warn(
                 `too many message promises (${messagePromisesLength}). this feels unexpected!`,
             );
         }
