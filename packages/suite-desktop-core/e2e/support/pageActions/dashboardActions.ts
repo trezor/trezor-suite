@@ -1,4 +1,4 @@
-import { Page, Locator } from '@playwright/test';
+import { Page, Locator, expect as playwrightExpect } from '@playwright/test';
 import { NetworkSymbol } from 'suite-common/wallet-config/src';
 
 import { waitForDataTestSelector } from '../common';
@@ -51,10 +51,10 @@ class DashboardActions {
     }
 
     // asserts
-    async getFirstNetworkValueOnDashboard(window: Page, network: NetworkSymbol) {
-        return (
-            (await window.getByTestId(`@wallet/coin-balance/value-${network}`).isVisible()) ?? true
-        );
+    async assertHasVisibleBalanceOnFirstAccount(window: Page, network: NetworkSymbol) {
+        const locator = window.getByTestId(`@wallet/coin-balance/value-${network}`).first();
+
+        await playwrightExpect(locator).toBeVisible();
     }
 }
 

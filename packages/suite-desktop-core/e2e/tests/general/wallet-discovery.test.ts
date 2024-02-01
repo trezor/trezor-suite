@@ -1,9 +1,4 @@
-import {
-    test as testPlaywright,
-    expect as expectPlaywright,
-    ElectronApplication,
-    Page,
-} from '@playwright/test';
+import { test as testPlaywright, ElectronApplication, Page } from '@playwright/test';
 
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link/src';
 
@@ -32,7 +27,7 @@ testPlaywright.afterAll(() => {
 /**
  * Test case:
  * 1. Discover a standard wallet
- * 2. Veirfy disvovery by checking a the first btc value under the graph
+ * 2. Verify discovery by checking a the first btc value under the graph
  */
 testPlaywright('Discover a standard wallet', async () => {
     await onDashboardPage.passThroughInitialRun(window);
@@ -42,7 +37,5 @@ testPlaywright('Discover a standard wallet', async () => {
     await onDashboardPage.ejectWallet(deviceSwitcher, 'Standard wallet');
     await onDashboardPage.addStandardWallet(window);
 
-    expectPlaywright(await onDashboardPage.getFirstNetworkValueOnDashboard(window, 'btc')).toBe(
-        true,
-    );
+    await onDashboardPage.assertHasVisibleBalanceOnFirstAccount(window, 'btc');
 });
