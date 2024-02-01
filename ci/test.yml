@@ -110,12 +110,13 @@ suite web migrations:
 suite web:
   extends: .suite web base
 
-suite web snapshots:
-  extends: .suite web base
-  when: manual
-  variables:
-    CYPRESS_SNAPSHOT: 1
-    CYPRESS_updateSnapshots: 1
+# snapshots don't work at the moment, commenting them out
+# suite web snapshots:
+#   extends: .suite web base
+#   when: manual
+#   variables:
+#     CYPRESS_SNAPSHOT: 1
+#     CYPRESS_updateSnapshots: 1
 
 # Tests against latest trezor-firmware main
 suite web canary fws:
