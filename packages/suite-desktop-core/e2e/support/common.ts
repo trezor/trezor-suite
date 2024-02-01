@@ -35,15 +35,6 @@ export const launchSuite = async () => {
     const window = await electronApp.firstWindow();
     const localDataDir = await electronApp.evaluate(({ app }) => app.getPath('userData'));
 
-    /**
-     * Uncomment code below to enable the browser Debug Tools.
-     */
-
-    // const browserWindow = await electronApp.browserWindow(window);
-    // browserWindow.evaluate((app: BrowserWindow) => {
-    //     app.webContents.openDevTools();
-    // });
-
     return { electronApp, window, localDataDir };
 };
 
