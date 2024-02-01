@@ -16,6 +16,7 @@
         "@suite-native/alerts": "workspace:*",
         "@suite-native/analytics": "workspace:*",
         "@suite-native/atoms": "workspace:*",
+        "@suite-native/intl": "workspace:*",
         "@suite-native/storage": "workspace:*",
         "@trezor/styles": "workspace:*",
         "expo-local-authentication": "13.7.0",

@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Platform } from 'react-native';
 
-import { AuthenticationType, supportedAuthenticationTypesAsync } from 'expo-local-authentication';
-
 import { analytics, EventType } from '@suite-native/analytics';
 import { BottomSheet, Box, Button, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -11,12 +9,9 @@ import {
     getIsBiometricsFeatureAvailable,
     useIsBiometricsInitialSetupFinished,
     useBiometricsSettings,
-    getIsFacialBiometricEnabled,
-    getIsFingerprintBiometricEnabled,
+    BiometricsIcons,
 } from '@suite-native/biometrics';
 import { Translation, TxKeyPath, useTranslate } from '@suite-native/intl';
-
-import { BiometricsBottomSheetIcons } from './BiometricsBottomSheetIcons';
 
 const SHOW_TIMEOUT = 1500;
 
@@ -88,26 +83,15 @@ export const BiometricsBottomSheet = () => {
     const { isBiometricsInitialSetupFinished, setIsBiometricsInitialSetupFinished } =
         useIsBiometricsInitialSetupFinished();
     const { isBiometricsOptionEnabled } = useIsBiometricsEnabled();
-    const { toggleBiometricsOption } = useBiometricsSettings();
+    const { toggleBiometricsOption, isFacialEnabled, isFingerprintEnabled } =
+        useBiometricsSettings();
 
     const [isVisible, setIsVisible] = useState(false);
-    const [biometricsTypes, setBiometricsTypes] = useState<AuthenticationType[]>([]);
-
-    const isFacialEnabled = getIsFacialBiometricEnabled(biometricsTypes);
-    const isFingerprintEnabled = getIsFingerprintBiometricEnabled(biometricsTypes);
 
     const { titleTransKey, descriptionTransKey } = getBottomSheetTranslations({
         isFacialEnabled,
         isFingerprintEnabled,
     });
-
-    useEffect(() => {
-        const getSupportedTypes = async () => {
-            const biometricsTypesAvailable = await supportedAuthenticationTypesAsync();
-            setBiometricsTypes(biometricsTypesAvailable);
-        };
-        getSupportedTypes();
-    }, []);
 
     useEffect(() => {
         let isMounted = true;
@@ -157,10 +141,7 @@ export const BiometricsBottomSheet = () => {
     return (
         <BottomSheet isVisible={isVisible} onClose={handleClose} isCloseDisplayed={false}>
             <Box style={applyStyle(cardStyle)}>
-                <BiometricsBottomSheetIcons
-                    isFacialEnabled={isFacialEnabled}
-                    isFingerprintEnabled={isFingerprintEnabled}
-                />
+                <BiometricsIcons />
                 <Box style={applyStyle(textContentStyle)}>
                     <Text variant="titleSmall" textAlign="center">
                         <Translation id={titleTransKey} />
