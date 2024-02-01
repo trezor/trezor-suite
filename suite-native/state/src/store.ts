@@ -20,6 +20,11 @@ const middlewares: Middleware[] = [
     prepareTransactionCacheMiddleware(extraDependencies),
 ];
 
+if (__DEV__) {
+    const createDebugger = require('redux-flipper').default;
+    middlewares.push(createDebugger());
+}
+
 export const initStore = async () =>
     configureStore({
         reducer: await prepareRootReducers(),
