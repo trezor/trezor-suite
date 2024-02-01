@@ -14,6 +14,7 @@ import {
     Network,
     NetworkFeature,
     NetworkSymbol,
+    NetworkType,
 } from '@suite-common/wallet-config';
 import {
     Account,
@@ -962,3 +963,18 @@ export const readUtxoOutpoint = (outpoint: string) => {
 
 export const isSameUtxo = (a: AccountUtxo, b: AccountUtxo) =>
     a.txid === b.txid && a.vout === b.vout;
+
+/**
+ * Returns true if network uses receive address instead of XPUB.
+ */
+export const isAddressBasedNetwork = (networkType: NetworkType) => {
+    if (networkType === 'bitcoin') return false;
+    if (networkType === 'cardano') return false;
+    if (networkType === 'ethereum') return true;
+    if (networkType === 'ripple') return true;
+    if (networkType === 'solana') return true;
+
+    // Checks that all networkType options were handled.
+    const exhaustiveCheck: never = networkType;
+    return !!exhaustiveCheck;
+};
