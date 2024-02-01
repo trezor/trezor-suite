@@ -1,4 +1,4 @@
-// @group:browser
+// @group:other
 // @retry=2
 // @user-agent=Mozilla/5.0 (iPhone; CPU iPhone OS 16_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.5 Mobile/15E148 Safari/604.1
 

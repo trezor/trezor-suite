@@ -140,7 +140,6 @@ Assigning a @group allows run_tests.js script to sort the test files into groups
 -   `@group:metadata`
 -   `@group:device-management`
 -   `@group:suite`
--   `@group:onboarding`
 -   `@group:settings`
 
 #### @retry

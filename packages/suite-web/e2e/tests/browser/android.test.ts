@@ -1,4 +1,4 @@
-// @group:browser
+// @group:other
 // @retry=2
 // @user-agent=Mozilla/5.0 (Android 13; Mobile; LG-M255; rv:114.0) Gecko/114.0 Firefox/114.0
 
