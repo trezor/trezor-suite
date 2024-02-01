@@ -30,13 +30,13 @@
         "crypto-browserify": "^3.12.0",
         "css-loader": "^6.8.1",
         "css-minimizer-webpack-plugin": "^5.0.1",
-        "html-webpack-plugin": "^5.5.3",
+        "html-webpack-plugin": "^5.6.0",
         "raw-loader": "^4.0.2",
         "stream-browserify": "^3.0.0",
-        "style-loader": "^3.3.3",
+        "style-loader": "^3.3.4",
         "terser-webpack-plugin": "^5.3.9",
-        "webpack": "^5.89.0",
-        "webpack-bundle-analyzer": "^4.9.1",
+        "webpack": "^5.90.1",
+        "webpack-bundle-analyzer": "^4.10.1",
         "webpack-merge": "^5.10.0",
         "webpack-nano": "^1.1.1",
         "webpack-plugin-serve": "^1.6.0",
@@ -44,10 +44,10 @@
     },
     "devDependencies": {
         "@pmmmwh/react-refresh-webpack-plugin": "^0.5.11",
-        "@sentry/webpack-plugin": "^2.11.0",
+        "@sentry/webpack-plugin": "^2.14.0",
         "@types/copy-webpack-plugin": "^10.1.0",
-        "@types/webpack-bundle-analyzer": "^4.6.2",
-        "@types/webpack-plugin-serve": "^1.4.4",
+        "@types/webpack-bundle-analyzer": "^4.6.4",
+        "@types/webpack-plugin-serve": "^1.4.6",
         "react-refresh": "^0.14.0"
     }
 }

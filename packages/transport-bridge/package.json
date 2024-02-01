@@ -10,7 +10,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "devDependencies": {
-        "@types/cors": "^2.8.15",
+        "@types/cors": "^2.8.17",
         "@types/express": "^4"
     },
     "dependencies": {

@@ -14,8 +14,8 @@
     "dependencies": {
         "@suite-native/atoms": "workspace:*",
         "@trezor/styles": "workspace:*",
-        "expo-av": "13.10.3",
-        "prettier": "3.2.4",
+        "expo-av": "13.10.5",
+        "prettier": "3.2.5",
         "react": "18.2.0",
         "react-native": "0.73.2"
     }

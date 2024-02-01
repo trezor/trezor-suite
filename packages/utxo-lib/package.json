@@ -57,11 +57,11 @@
     },
     "devDependencies": {
         "@types/bchaddrjs": "^0.4.2",
-        "@types/bs58": "^4.0.3",
+        "@types/bs58": "^4.0.4",
         "@types/bs58check": "^2.1.1",
-        "@types/create-hash": "^1.2.4",
+        "@types/create-hash": "^1.2.6",
         "@types/create-hmac": "^1.1.2",
-        "@types/wif": "^2.0.4",
+        "@types/wif": "^2.0.5",
         "minimaldata": "^1.0.2"
     },
     "peerDependencies": {
