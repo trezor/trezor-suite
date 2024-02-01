@@ -9,10 +9,7 @@ let requests: Requests;
 describe('Dashboard', () => {
     beforeEach(() => {
         cy.task('startEmu', { wipe: true });
-        cy.task('setupEmu', {
-            needs_backup: true,
-            mnemonic: 'all all all all all all all all all all all all',
-        });
+        cy.task('setupEmu');
         cy.task('startBridge');
 
         cy.viewport(1080, 1440).resetDb();
@@ -40,8 +37,13 @@ describe('Dashboard', () => {
             .parent()
             .invoke('attr', 'class')
             .then(className => {
+                console.log('className', className);
                 expect(className).to.contain(discreetPartialClass);
             });
+
+        // could be that request was not yet intercepted.
+        // wait is not very nice, cy.findAnalyticsEventByType should implement some retry-ability mechanism internally
+        cy.wait(100);
 
         cy.findAnalyticsEventByType<ExtractByEventType<EventType.MenuToggleDiscreet>>(
             requests,
