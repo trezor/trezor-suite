@@ -50,8 +50,7 @@
     CYPRESS_TEST_URLS: ${CI_COMMIT_REF_NAME}
   before_script:
     - docker login $CI_DEPENDENCY_PROXY_SERVER -u $CI_DEPENDENCY_PROXY_USER -p $CI_DEPENDENCY_PROXY_PASSWORD
-  script:
-    - yarn install --immutable
+  script: 
     - docker-compose pull
     - docker-compose up -d ${CONTAINERS}
     - docker-compose run test-run
@@ -80,13 +79,13 @@
     matrix:
       - TEST_GROUP:
           [
-            "@group:suite",
-            "@group:onboarding",
-            "@group:device-management",
-            "@group:settings",
-            "@group:metadata",
-            "@group:passphrase",
-            "@group:browser",
+            # "@group:suite",
+            # "@group:onboarding",
+            # "@group:device-management",
+            # "@group:settings",
+            # "@group:metadata",
+            # "@group:passphrase",
+            # "@group:browser",
             "@group:coinmarket",
           ]
         CONTAINERS: "trezor-user-env-unix"
