@@ -7,7 +7,7 @@ import { AssetShareIndicator, SkeletonCircle, Tooltip } from '@trezor/components
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { spacingsPx } from '@trezor/theme';
 import styled from 'styled-components';
-import { localizeNumber } from '@suite-common/wallet-utils';
+import { localizePercentage } from '@suite-common/wallet-utils';
 import { useSelector } from '../../../../../hooks/suite';
 
 const LogoWrapper = styled.div`
@@ -33,7 +33,11 @@ export const AssetCoinLogo = ({ symbol, assetsFiatBalances, index }: CoinLogoPro
     return (
         <LogoWrapper>
             <Tooltip
-                content={`${localizeNumber(assetPercentage ?? 0, locale, 2, 2)}%`}
+                content={localizePercentage({
+                    valueInFraction: (assetPercentage ?? 0) / 100,
+                    locale,
+                    numDecimals: 2,
+                })}
                 cursor="pointer"
             >
                 <AssetShareIndicator
