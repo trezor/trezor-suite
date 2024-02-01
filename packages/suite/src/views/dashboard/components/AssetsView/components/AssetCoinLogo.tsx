@@ -7,6 +7,8 @@ import { AssetShareIndicator, SkeletonCircle, Tooltip } from '@trezor/components
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { spacingsPx } from '@trezor/theme';
 import styled from 'styled-components';
+import { localizeNumber } from '@suite-common/wallet-utils';
+import { useSelector } from '../../../../../hooks/suite';
 
 const LogoWrapper = styled.div`
     padding-right: ${spacingsPx.sm};
@@ -20,6 +22,8 @@ interface CoinLogoProps {
 }
 
 export const AssetCoinLogo = ({ symbol, assetsFiatBalances, index }: CoinLogoProps) => {
+    const locale = useSelector(state => state.suite.settings.language);
+
     const assetPercentage = assetsFiatBalances
         ? calculateAssetsPercentage(assetsFiatBalances).find(
               (asset: AssetFiatBalanceWithPercentage) => asset.symbol === symbol,
@@ -29,9 +33,8 @@ export const AssetCoinLogo = ({ symbol, assetsFiatBalances, index }: CoinLogoPro
     return (
         <LogoWrapper>
             <Tooltip
-                content={`${(assetPercentage ?? 0).toFixed(2)} %`}
+                content={`${localizeNumber(assetPercentage ?? 0, locale, 2, 2)}%`}
                 cursor="pointer"
-                delay={1000}
             >
                 <AssetShareIndicator
                     symbol={symbol}
