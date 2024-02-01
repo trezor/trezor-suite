@@ -1,7 +1,7 @@
 import styled, { useTheme } from 'styled-components';
 import { spacingsPx, typography } from '@trezor/theme';
 import { Icon } from '@trezor/components';
-import { getFiatRateKey, localizeNumber } from '@suite-common/wallet-utils';
+import { getFiatRateKey, localizePercentage } from '@suite-common/wallet-utils';
 import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
 import { FiatValue } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
@@ -17,7 +17,7 @@ const PercentageWrapper = styled.div<{ isRateGoingUp: boolean }>`
         isRateGoingUp ? theme.textPrimaryDefault : theme.textAlertRed};
 `;
 
-const calculatePercentageDifference = (a: number, b: number) => ((a - b) / b) * 100;
+const calculatePercentageDifference = (a: number, b: number) => (a - b) / b;
 
 interface TickerProps {
     symbol: NetworkSymbol;
@@ -53,7 +53,7 @@ export const TrendTicker = ({ symbol }: TickerProps) => {
                             color={isRateGoingUp ? theme.iconPrimaryDefault : theme.iconAlertRed}
                             size={16}
                         />
-                        {localizeNumber(percentageChange, locale, 1, 1)}%
+                        {localizePercentage({ valueInFraction: percentageChange, locale })}
                     </PercentageWrapper>
                 ) : (
                     <NoRatesTooltip />
