@@ -2274,12 +2274,6 @@ export type StellarBumpSequenceOp = {
     bump_to: UintType;
 };
 
-// StellarClaimClaimableBalanceOp
-export type StellarClaimClaimableBalanceOp = {
-    source_account?: string;
-    balance_id: string;
-};
-
 // StellarSignedTx
 export type StellarSignedTx = {
     public_key: string;
@@ -2682,7 +2676,6 @@ export type MessageType = {
     StellarAccountMergeOp: StellarAccountMergeOp;
     StellarManageDataOp: StellarManageDataOp;
     StellarBumpSequenceOp: StellarBumpSequenceOp;
-    StellarClaimClaimableBalanceOp: StellarClaimClaimableBalanceOp;
     StellarSignedTx: StellarSignedTx;
     TezosGetAddress: TezosGetAddress;
     TezosAddress: TezosAddress;

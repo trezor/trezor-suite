@@ -12,7 +12,7 @@
       "signTransaction",
       "getAccountInfo,getAccountDescriptor,getAddress,getPublicKey,signMessage,verifyMessage,composeTransaction,getOwnershipId,getOwnershipProof",
       "stellarGetAddress,stellarSignTransaction",
-      "cardanoGetAddress,cardanoGetNativeScriptHash,cardanoGetPublicKey,cardanoSignTransaction",
+      "cardanoGetAddress,cardanoGetNativeScriptHash,cardanoGetPublicKey,cardanoSignTransaction,cardanoSignMessage",
       "eosGetPublicKey,eosSignTransaction",
       "ethereumGetAddress,ethereumGetPublicKey,ethereumSignMessage,ethereumSignTransaction,ethereumVerifyMessage,ethereumSignTypedData",
       "nemGetAddress,nemSignTransaction",
