@@ -26,6 +26,7 @@ export const launchSuite = async () => {
             // This runs in the main Electron process.
             // override global variable defined in app.ts
             global.resourcesPath = resourcesPath;
+
             return global.resourcesPath;
         },
         [path.join(appDir, 'build/static')],
@@ -33,6 +34,15 @@ export const launchSuite = async () => {
 
     const window = await electronApp.firstWindow();
     const localDataDir = await electronApp.evaluate(({ app }) => app.getPath('userData'));
+
+    /**
+     * Uncomment code below to enable the browser Debug Tools.
+     */
+
+    // const browserWindow = await electronApp.browserWindow(window);
+    // browserWindow.evaluate((app: BrowserWindow) => {
+    //     app.webContents.openDevTools();
+    // });
 
     return { electronApp, window, localDataDir };
 };
