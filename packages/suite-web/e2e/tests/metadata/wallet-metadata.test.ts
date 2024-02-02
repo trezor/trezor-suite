@@ -110,7 +110,7 @@ describe('Metadata - wallet labeling', () => {
             cy.getTestElement('@switch-device/wallet-on-index/1/toggle-remember-switch').click({
                 force: true,
             });
-            cy.wait(200); // wait for data to save to persistent storage. currently this is not reflected in UI
+            cy.wait(1000); // wait for data to save to persistent storage. currently this is not reflected in UI
             cy.prefixedVisit('/', {
                 onBeforeLoad: (win: Window) => {
                     cy.stub(win, 'open').callsFake(stubOpen(win));
