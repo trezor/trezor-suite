@@ -100,6 +100,18 @@ export const en = {
             discoveryProgress: { loading: 'Loading...', stillWorking: 'Retrieving balances' },
         },
     },
+    biometrics: {
+        ios: {
+            faceId: 'Use FaceID',
+            touchId: 'Use TouchID',
+        },
+        android: {
+            fingerprint: 'Use fingerprint',
+            facial: 'Use facial recognition',
+            combined: 'Use biometrics',
+        },
+        unknown: 'Use biometrics',
+    },
     moduleAccountImport: {
         title: 'Sync my coins',
         error: { unsupportedNetworkType: 'Unsupported account network type.' },

@@ -60,7 +60,7 @@ export const DeviceStatusText = ({
                 <Icon
                     icon={connected ? 'LINK' : 'UNLINK'}
                     size={12}
-                    color={connected ? theme.textPrimaryDefault : theme.textSubdued}
+                    color={connected ? theme.iconPrimaryDefault : theme.textSubdued}
                 />
                 {walletLabel ? (
                     <WalletLabeling device={device} />

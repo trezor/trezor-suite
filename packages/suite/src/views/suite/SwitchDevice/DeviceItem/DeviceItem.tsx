@@ -204,7 +204,8 @@ export const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: Dev
                             {deviceModelInternal === DeviceModelInternal.T2B1 && (
                                 <DeviceAnimation
                                     type="ROTATE"
-                                    size={36}
+                                    height="36px"
+                                    width="36px"
                                     deviceModelInternal={deviceModelInternal}
                                     deviceUnitColor={device?.features?.unit_color}
                                 />

@@ -26,6 +26,7 @@ export const launchSuite = async () => {
             // This runs in the main Electron process.
             // override global variable defined in app.ts
             global.resourcesPath = resourcesPath;
+
             return global.resourcesPath;
         },
         [path.join(appDir, 'build/static')],

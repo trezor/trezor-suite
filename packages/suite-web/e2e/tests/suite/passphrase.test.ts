@@ -76,7 +76,9 @@ describe('Passphrase', () => {
             })
             .should('contain', abcAddr);
         cy.task('pressYes');
-        cy.getTestElement('@metadata/copy-address-button').should('exist');
+        cy.getTestElement('@metadata/copy-address-button')
+            .should('exist')
+            .should('not.be.disabled');
         // close modal
         cy.getTestElement('@modal/close-button').click();
 
@@ -127,7 +129,9 @@ describe('Passphrase', () => {
             })
             .should('contain', defAddr);
         cy.task('pressYes');
-        cy.getTestElement('@metadata/copy-address-button').should('exist');
+        cy.getTestElement('@metadata/copy-address-button')
+            .should('exist')
+            .should('not.be.disabled');
         // close modal
         cy.getTestElement('@modal/close-button').click();
 

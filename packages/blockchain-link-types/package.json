@@ -16,9 +16,9 @@
         "prepublish": "yarn tsx ../../scripts/prepublish.js"
     },
     "dependencies": {
+        "@solana/web3.js": "^1.87.6",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utxo-lib": "workspace:*",
-        "@solana/web3.js": "^1.87.6",
         "socks-proxy-agent": "6.1.1"
     },
     "devDependencies": {

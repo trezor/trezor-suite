@@ -40,7 +40,7 @@ describe('Discovery', () => {
         cy.getTestElement('@dashboard/loading', { timeout: 1000 * 10 });
         cy.getTestElement('@dashboard/loading', { timeout: DISCOVERY_LIMIT }).should('not.exist');
         ['btc', ...coinsToActivate].forEach(symbol => {
-            cy.getTestElement(`@asset-card/${symbol}/balance`);
+            cy.getTestElement(`@wallet/coin-balance/value-${symbol}`);
         });
     });
 });

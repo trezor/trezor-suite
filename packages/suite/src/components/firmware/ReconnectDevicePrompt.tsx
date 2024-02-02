@@ -229,7 +229,8 @@ const RebootDeviceGraphics = ({
     return (
         <StyledDeviceAnimation
             type={type}
-            size={220}
+            height="220px"
+            width="220px"
             shape="ROUNDED"
             deviceModelInternal={deviceModelInternal}
             loop

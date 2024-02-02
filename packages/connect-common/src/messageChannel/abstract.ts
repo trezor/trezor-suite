@@ -7,10 +7,14 @@ import { Deferred, createDeferred } from '@trezor/utils/lib/createDeferred';
 import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
 import { scheduleAction } from '@trezor/utils/lib/scheduleAction';
 
-// todo: I can't import Log from connect to connect-common (connect imports from connect-common).
-// so logger should be probably moved to connect common, or this file should be moved to connect
+// TODO: so logger should be probably moved to connect common, or this file should be moved to connect
 // import type { Log } from '@trezor/connect/lib/utils/debug';
-type Log = any;
+type Log = {
+    log: (...args: any[]) => void;
+    error: (...args: any[]) => void;
+    warn: (...args: any[]) => void;
+    debug: (...args: any[]) => void;
+};
 
 export interface AbstractMessageChannelConstructorParams {
     sendFn: (message: any) => void;
@@ -19,6 +23,7 @@ export interface AbstractMessageChannelConstructorParams {
         peer: string;
     };
     logger?: Log;
+    lazyHandshake?: boolean;
 }
 
 export type Message<IncomingMessages extends { type: string }> = {
@@ -50,6 +55,7 @@ export abstract class AbstractMessageChannel<
     private readonly handshakeRetryInterval = 2000;
     private handshakeFinished: Deferred<void> | undefined;
 
+    protected lazyHandshake?: boolean;
     protected logger?: Log;
 
     /**
@@ -61,10 +67,16 @@ export abstract class AbstractMessageChannel<
      */
     channel: AbstractMessageChannelConstructorParams['channel'];
 
-    constructor({ sendFn, channel, logger }: AbstractMessageChannelConstructorParams) {
+    constructor({
+        sendFn,
+        channel,
+        logger,
+        lazyHandshake = false,
+    }: AbstractMessageChannelConstructorParams) {
         super();
         this.channel = channel;
         this.sendFn = sendFn;
+        this.lazyHandshake = lazyHandshake;
         this.logger = logger;
     }
 
@@ -74,7 +86,10 @@ export abstract class AbstractMessageChannel<
     public init() {
         if (!this.handshakeFinished) {
             this.handshakeFinished = createDeferred();
-            this.handshakeWithPeer();
+            if (!this.lazyHandshake) {
+                // When `lazyHandshake` handshakeWithPeer will start when received channel-handshake-request.
+                this.handshakeWithPeer();
+            }
         }
         return this.handshakeFinished.promise;
     }
@@ -136,6 +151,10 @@ export abstract class AbstractMessageChannel<
                 },
                 { usePromise: false, useQueue: false },
             );
+            if (this.lazyHandshake) {
+                // When received channel-handshake-request in lazyHandshake mode we start from this side.
+                this.handshakeWithPeer();
+            }
             return;
         }
         if (type === 'channel-handshake-confirm') {
@@ -149,7 +168,7 @@ export abstract class AbstractMessageChannel<
         }
         const messagePromisesLength = Object.keys(this.messagePromises).length;
         if (messagePromisesLength > 5) {
-            this.logger.warn(
+            this.logger?.warn(
                 `too many message promises (${messagePromisesLength}). this feels unexpected!`,
             );
         }

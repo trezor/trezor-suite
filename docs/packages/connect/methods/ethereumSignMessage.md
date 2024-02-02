@@ -26,7 +26,7 @@ TrezorConnect.ethereumSignMessage({
 
 ### Result
 
-[MessageSignature type](https://github.com/trezor/trezor-suite/blob/develop/packages/transport/src/types/messages.ts)
+[MessageSignature type](https://github.com/trezor/trezor-suite/blob/develop/packages/protobuf/src/messages.ts)
 
 ```javascript
 {

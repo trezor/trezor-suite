@@ -1,4 +1,6 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+
+import { AuthenticationType, supportedAuthenticationTypesAsync } from 'expo-local-authentication';
 
 import { useAlert } from '@suite-native/alerts/src';
 import { analytics, EventType } from '@suite-native/analytics';
@@ -10,6 +12,7 @@ import {
 } from './biometricsAtoms';
 import { getIsBiometricsFeatureAvailable } from './isBiometricsFeatureAvailable';
 import { authenticate } from './useBiometrics';
+import { getIsFacialBiometricEnabled, getIsFingerprintBiometricEnabled } from './utils';
 
 export type BiometricsToggleResult = 'enabled' | 'disabled' | 'failed' | 'notAvailable';
 
@@ -18,6 +21,19 @@ export const useBiometricsSettings = () => {
     const { setIsUserAuthenticated } = useIsUserAuthenticated();
     const { isBiometricsOptionEnabled, setIsBiometricsOptionEnabled } = useIsBiometricsEnabled();
     const { setIsBiometricsOverlayVisible } = useIsBiometricsOverlayVisible();
+
+    const [biometricsTypes, setBiometricsTypes] = useState<AuthenticationType[]>([]);
+
+    const isFacialEnabled = getIsFacialBiometricEnabled(biometricsTypes);
+    const isFingerprintEnabled = getIsFingerprintBiometricEnabled(biometricsTypes);
+
+    useEffect(() => {
+        const getSupportedTypes = async () => {
+            const biometricsTypesAvailable = await supportedAuthenticationTypesAsync();
+            setBiometricsTypes(biometricsTypesAvailable);
+        };
+        getSupportedTypes();
+    }, []);
 
     const toggleBiometricsOption = useCallback(async (): Promise<BiometricsToggleResult> => {
         const isBiometricsAvailable = await getIsBiometricsFeatureAvailable();
@@ -67,5 +83,5 @@ export const useBiometricsSettings = () => {
         setIsUserAuthenticated,
         showAlert,
     ]);
-    return { toggleBiometricsOption };
+    return { toggleBiometricsOption, isFacialEnabled, isFingerprintEnabled };
 };

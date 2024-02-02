@@ -100,7 +100,7 @@ export const AccountsList = ({ onItemClick }: AccountListProps) => {
                         <AccountItem
                             key={`${account.descriptor}-${account.symbol}`}
                             account={account}
-                            selected={selected}
+                            isSelected={selected}
                             closeMenu={onItemClick}
                             accountLabel={accountLabels[account.key]}
                         />

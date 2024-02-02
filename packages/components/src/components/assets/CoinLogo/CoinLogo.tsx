@@ -14,12 +14,13 @@ export interface CoinLogoProps extends ImgHTMLAttributes<HTMLImageElement> {
 
 const SvgWrapper = styled.div<Omit<CoinLogoProps, 'symbol'>>`
     display: inline-block;
-    height: ${props => props.size}px;
-    width: ${props => props.size}px;
+    width: ${({ size }) => size}px;
+    height: ${({ size }) => size}px;
 
     div {
-        height: ${props => props.size}px;
-        line-height: ${props => props.size}px;
+        width: ${({ size }) => size}px;
+        height: ${({ size }) => size}px;
+        line-height: ${({ size }) => size}px;
     }
 `;
 

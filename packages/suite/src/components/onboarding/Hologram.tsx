@@ -46,6 +46,7 @@ export const Hologram = () => {
                     type="HOLOGRAM"
                     shape="ROUNDED-SMALL"
                     loop
+                    width="100%"
                     deviceModelInternal={device?.features?.internal_model}
                     onVideoMouseOver={() => {
                         // If the video is placed in tooltip it stops playing after tooltip minimizes and won't start again

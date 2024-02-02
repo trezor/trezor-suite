@@ -20,14 +20,16 @@ const HeaderWrapper = styled.div`
 `;
 
 const ChevronContainer = styled.div`
-    width: 30px;
+    width: ${spacingsPx.xxxl};
 `;
 
 const ChevronIcon = styled(Icon)<{ isActive: boolean }>`
     padding: ${spacingsPx.sm};
     border-radius: 50%;
-    transition: background 0.2s;
-    transform: ${({ isActive }) => (isActive ? 'rotate(180deg)' : 'rotate(0)')};
+    transition:
+        background 0.2s,
+        transform 0.2s ease-in-out;
+    transform: ${({ isActive }) => (isActive ? 'rotate(0)' : 'rotate(-90deg)')};
 `;
 
 const Header = styled.header<{ isOpen: boolean; onClick?: () => void }>`
@@ -119,7 +121,7 @@ export const AccountGroup = forwardRef(
                                     <ChevronIcon
                                         data-test="@account-menu/arrow"
                                         isActive={isOpen}
-                                        size={16}
+                                        size={18}
                                         color={theme.iconSubdued}
                                         icon="ARROW_DOWN"
                                     />

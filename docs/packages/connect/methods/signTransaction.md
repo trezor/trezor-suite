@@ -18,9 +18,9 @@ const result = await TrezorConnect.signTransaction(params);
     > Determines network definition specified in [coins.json](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/files/coins.json) file.
     > Coin `shortcut`, `name` or `label` can be used.
     > See [supported coins](../supported-coins.md)
--   `inputs` - _required_ `Array` of [PROTO.TxInputType](https://github.com/trezor/trezor-suite/blob/develop/packages/transport/src/types/messages.ts),
--   `outputs` - _required_ `Array` of [PROTO.TxOutputType](https://github.com/trezor/trezor-suite/blob/develop/packages/transport/src/types/messages.ts),
--   `paymentRequests` - _optional_ `Array` of [PROTO.TxAckPaymentRequest](https://github.com/trezor/trezor-suite/blob/develop/packages/transport/src/types/messages.ts). See [SLIP-24](https://github.com/satoshilabs/slips/blob/slip24/slip-0024.md)
+-   `inputs` - _required_ `Array` of [PROTO.TxInputType](https://github.com/trezor/trezor-suite/blob/develop/packages/protobuf/src/messages.ts),
+-   `outputs` - _required_ `Array` of [PROTO.TxOutputType](https://github.com/trezor/trezor-suite/blob/develop/packages/protobuf/src/messages.ts),
+-   `paymentRequests` - _optional_ `Array` of [PROTO.TxAckPaymentRequest](https://github.com/trezor/trezor-suite/blob/develop/packages/protobuf/src/messages.ts). See [SLIP-24](https://github.com/satoshilabs/slips/blob/slip24/slip-0024.md)
 -   `refTxs` - _optional_ `Array` of [RefTransaction](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/bitcoin/index.ts).
     > If you don't want to use build-in `blockbook` backend you can optionally provide those data from your own backend transformed to `Trezor` format.
     > Since Firmware 2.3.0/1.9.0 referenced transactions are required.
@@ -35,7 +35,7 @@ const result = await TrezorConnect.signTransaction(params);
 -   `push` - _optional_ `boolean` Broadcast signed transaction to blockchain. Default is set to false
 -   `amountUnit` — _optional_ `PROTO.AmountUnit`
     > show amounts in BTC, mBTC, uBTC, sat
--   `unlockPath` - _optional_ [PROTO.UnlockPath](https://github.com/trezor/trezor-suite/blob/develop/packages/transport/src/types/messages.ts), the result of [TrezorConnect.unlockPath](./unlockPath.md) method.
+-   `unlockPath` - _optional_ [PROTO.UnlockPath](https://github.com/trezor/trezor-suite/blob/develop/packages/protobuf/src/messages.ts), the result of [TrezorConnect.unlockPath](./unlockPath.md) method.
 -   `serialize` - _optional_ `boolean`, default `true` serialize the full transaction, as opposed to only outputting the signatures
 -   `chunkify` — _optional_ `boolean` determines if recipient address will be displayed in chunks of 4 characters. Default is set to `false`
 

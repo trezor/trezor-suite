@@ -176,7 +176,8 @@ export const FinalStep = () => {
                 <DeviceImageWrapper>
                     <DeviceAnimation
                         type="SUCCESS"
-                        size={400}
+                        height="400px"
+                        width="400px"
                         deviceModelInternal={deviceModelInternal}
                     />
                 </DeviceImageWrapper>

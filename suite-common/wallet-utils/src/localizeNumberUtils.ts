@@ -23,15 +23,15 @@ export const localizeNumber = (
     const { decimalSeparator, thousandsSeparator } = getLocaleSeparators(locale);
 
     const getDecimalsLength = () => {
-        const originalDecimalsLegth = amount.decimalPlaces() ?? 0;
-        if (originalDecimalsLegth < minDecimals) {
+        const originalDecimalsLength = amount.decimalPlaces() ?? 0;
+        if (originalDecimalsLength < minDecimals) {
             return minDecimals;
         }
-        if (maxDecimals !== undefined && originalDecimalsLegth > maxDecimals) {
+        if (maxDecimals !== undefined && originalDecimalsLength > maxDecimals) {
             // Remove trailing zeroes after formatting:
             return new BigNumber(amount.toFixed(maxDecimals)).decimalPlaces() ?? maxDecimals;
         }
-        return originalDecimalsLegth;
+        return originalDecimalsLength;
     };
 
     // In some locales (e.g. Spanish), thousands separator may not be used when the number has four digits.
