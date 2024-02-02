@@ -44,7 +44,7 @@
     },
     "devDependencies": {
         "@pmmmwh/react-refresh-webpack-plugin": "^0.5.11",
-        "@sentry/webpack-plugin": "^2.9.0",
+        "@sentry/webpack-plugin": "^2.11.0",
         "@types/copy-webpack-plugin": "^10.1.0",
         "@types/webpack-bundle-analyzer": "^4.6.2",
         "@types/webpack-plugin-serve": "^1.4.4",
