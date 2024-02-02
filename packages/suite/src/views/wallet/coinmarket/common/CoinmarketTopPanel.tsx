@@ -56,7 +56,7 @@ interface CoinmarketTopPanelProps {
     backRoute: Route['name'];
 }
 
-const CoinmarketTopPanel = ({ backRoute }: CoinmarketTopPanelProps) => {
+export const CoinmarketTopPanel = ({ backRoute }: CoinmarketTopPanelProps) => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const dispatch = useDispatch();
 
@@ -79,15 +79,3 @@ const CoinmarketTopPanel = ({ backRoute }: CoinmarketTopPanelProps) => {
         </Wrapper>
     );
 };
-
-export const CoinmarketBuyTopPanel = () => <CoinmarketTopPanel backRoute="wallet-coinmarket-buy" />;
-
-export const CoinmarketExchangeTopPanel = () => (
-    <CoinmarketTopPanel backRoute="wallet-coinmarket-exchange" />
-);
-
-export const CoinmarketSellTopPanel = () => (
-    <CoinmarketTopPanel backRoute="wallet-coinmarket-sell" />
-);
-
-export const CoinmarketP2pTopPanel = () => <CoinmarketTopPanel backRoute="wallet-coinmarket-p2p" />;
