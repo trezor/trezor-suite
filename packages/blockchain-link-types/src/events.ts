@@ -7,5 +7,4 @@ export interface Events {
     block: BlockEvent['payload'];
     mempool: MempoolEvent['payload'];
     fiatRates: FiatRatesEvent['payload'];
-    error: Error;
 }
