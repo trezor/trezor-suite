@@ -1,3 +1,8 @@
+# 1.0.12
+
+-   chore: unify isCodesignBuild condition (fb80938756)
+-   chore(mobile): Expo migration (#10769) (bb37005e6b)
+
 # 1.0.11
 
 -   chore(suite): add fiat rates to common (e2fb9ea19)
