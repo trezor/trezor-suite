@@ -20,13 +20,16 @@ on:
     #   - "docker"
     #   - "submodules/trezor-common"
 
+env:
+  DEV_SERVER_URL: "https://dev.suite.sldev.cz"
+  STAGING_SUITE_SERVER_URL: "https://staging-suite.trezor.io"
 
 jobs:
   build-web:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           lfs: true
       - name: Configure aws credentials
@@ -40,15 +43,13 @@ jobs:
         id: extract_branch
 
       - name: Setup node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version-file: ".nvmrc"
       - name: Build suite-web
         env:
           ASSET_PREFIX: /suite-web/${{ steps.extract_branch.outputs.branch }}/web
           CI_COMMIT_REF_NAME: ${{ steps.extract_branch.outputs.branch }}
-          DEV_SERVER_URL: "https://dev.suite.sldev.cz"
-          STAGING_SUITE_SERVER_URL: "https://staging-suite.trezor.io"
           DESKTOP_APP_NAME: "Trezor-Suite"
         run: |
           yarn install
@@ -66,22 +67,70 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - build-web
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - TEST_GROUP: ["@group:suite"]
+            CONTAINERS: "trezor-user-env-unix"
+            CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: "1"
+          - TEST_GROUP: "@group:wallet"
+            CONTAINERS: "trezor-user-env-unix bitcoin-regtest"
+            CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: "1"
+          - TEST_GROUP: "@group:firmware-update"
+            CONTAINERS: "trezor-user-env-unix"
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           lfs: true
       - name: Setup node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version-file: ".nvmrc"
+      - name: Extract branch name
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        id: extract_branch
       - name: Run e2e tests
         env:
-          ASSET_PREFIX: /suite-web/${{ steps.extract_branch.outputs.branch }}/web
           CI_COMMIT_REF_NAME: ${{ steps.extract_branch.outputs.branch }}
-          DEV_SERVER_URL: "https://dev.suite.sldev.cz"
-          STAGING_SUITE_SERVER_URL: "https://staging-suite.trezor.io"
-          DESKTOP_APP_NAME: "Trezor-Suite"
+          COMPOSE_FILE: ./docker/docker-compose.suite-ci.yml
+          ## Tells Cypress where is the index of application
+          CYPRESS_ASSET_PREFIX: /web
+          CYPRESS_baseUrl: ${DEV_SERVER_URL}/suite-web/
+          ## should tests do snapshot testing
+          # cypress open todo. temporarily turned off (messaging system)
+          CYPRESS_SNAPSHOT: 0
+          ## reporter url
+          TRACK_SUITE_URL: https://track-suite-ff9ad9f5b4f6.herokuapp.com
+          ## when debugging or developing tests it does not make sense to have retries,
+          ## in other cases retries are useful to avoid occasional failures due to flaky tests
+          ALLOW_RETRY: 1
+          TEST_GROUP: ${{ matrix.TEST_GROUP }}
+          CYPRESS_TEST_URLS: ${CI_COMMIT_REF_NAME}
+          CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: ${{ matrix.CYPRESS_USE_TREZOR_USER_ENV_BRIDGE }}
+          CYPRESS_updateSnapshots: 0
         run: |
-          echo "Running e2e tests"
+            yarn install --immutable
+            yarn build:libs
+            docker-compose pull
+            docker-compose up -d ${{ matrix.CONTAINERS }}
+            docker-compose run test-run
+      - name: Upload logs
+        run: |
+          docker cp trezor-user-env-unix_1:/trezor-user-env/logs/debugging.log trezor-user-env-debugging.log
+          docker cp trezor-user-env-unix_1:/trezor-user-env/logs/emulator_bridge.log tenv-emulator-bridge-debugging.log
+          docker cp trezor-user-env-unix_1:/trezor-user-env/docker/version.txt trezor-user-env-version.txt
 
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-artifacts
+          path: |
+            ./packages/suite-web/e2e/snapshots
+            ./packages/suite-web/e2e/screenshots
+            ./packages/suite-web/e2e/videos
+            download-snapshots.sh
+            trezor-user-env-debugging.log
+            tenv-emulator-bridge-debugging.log
+            trezor-user-env-version.txt
