@@ -29,7 +29,7 @@ const Option = ({ data, value, isFocused, innerProps, ...rest }: any) => (
         }}
         {...rest}
     >
-        {data && <HiddenAddressRow item={data} variant={isFocused ? 'option-focused' : 'option'} />}
+        {data && <HiddenAddressRow item={data} isElevated={isFocused} />}
     </components.Option>
 );
 
@@ -40,7 +40,7 @@ const Input = ({ selectProps, ...rest }: any) => (
     </>
 );
 
-const SingleValue = ({ data }: any) => <HiddenAddressSingleValue item={data} variant="input" />;
+const SingleValue = ({ data }: any) => <HiddenAddressSingleValue item={data} />;
 
 const optionToAddress = (option: AddressItem | null) =>
     option
