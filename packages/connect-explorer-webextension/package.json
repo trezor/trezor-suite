@@ -7,7 +7,7 @@
         "build": "yarn g:rimraf build && TS_NODE_PROJECT=\"tsconfig.json\" yarn webpack --config ./webpack/prod.webpack.config.ts"
     },
     "devDependencies": {
-        "@types/react": "18.0.32",
+        "@types/react": "18.2.51",
         "copy-webpack-plugin": "^11.0.0",
         "html-webpack-plugin": "^5.6.0",
         "webpack": "^5.90.1",
