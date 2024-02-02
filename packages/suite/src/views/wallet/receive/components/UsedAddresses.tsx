@@ -2,7 +2,7 @@ import { useState } from 'react';
 import styled from 'styled-components';
 
 import { AccountAddress } from '@trezor/connect';
-import { Card, Button } from '@trezor/components';
+import { Card, Button, GradientOverlay } from '@trezor/components';
 import { Translation, MetadataLabeling, FormattedCryptoAmount } from 'src/components/suite';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Network } from 'src/types/wallet';
@@ -93,16 +93,6 @@ const AddressWrapper = styled.span`
     position: relative;
 `;
 
-const Overlay = styled.div`
-    inset: 0;
-    position: absolute;
-    background-image: linear-gradient(
-        to right,
-        rgb(0 0 0 / 0%) 0%,
-        ${({ theme }) => theme.backgroundSurfaceElevation1} 120px
-    );
-`;
-
 const DEFAULT_LIMIT = 10;
 
 interface ItemProps {
@@ -139,7 +129,7 @@ const Item = ({ addr, locked, symbol, onClick, metadataPayload, index }: ItemPro
                     // if metadata is present, confirm on device option will become available in dropdown
                     defaultVisibleValue={
                         <AddressWrapper>
-                            <Overlay />
+                            <GradientOverlay hiddenFrom="120px" />
                             {address}
                         </AddressWrapper>
                     }

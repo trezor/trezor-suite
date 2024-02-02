@@ -29,5 +29,5 @@ export const useElevation = (forceElevation?: Elevation) => {
         [elevation, forceElevation],
     );
 
-    return { elevation: innerElevation };
+    return { elevation: innerElevation, parentElevation: elevation ?? -1 };
 };

@@ -60,6 +60,7 @@ export * from './components/skeletons/SkeletonRectangle';
 export * from './components/skeletons/SkeletonStack';
 export * from './components/skeletons/SkeletonSpread';
 export * from './components/skeletons/types';
+export * from './components/GradientOverlay/GradientOverlay';
 export * from './components/ElevationContext/ElevationContext';
 
 export * from './constants/keyboardEvents';

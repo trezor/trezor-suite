@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
 import { goto } from 'src/actions/suite/routerActions';
-import { Button, variables } from '@trezor/components';
+import { Button, GradientOverlay, variables } from '@trezor/components';
 import { useCoinmarketP2pOffersContext } from 'src/hooks/wallet/useCoinmarketP2pOffers';
 import { showAddress } from 'src/actions/wallet/receiveActions';
 import { getUnusedAddressFromAccount } from 'src/utils/wallet/coinmarket/coinmarketUtils';
@@ -42,16 +42,6 @@ const Address = styled.div`
     position: relative;
     cursor: default;
     pointer-events: none;
-`;
-
-const Overlay = styled.div`
-    inset: 0;
-    position: absolute;
-    background-image: linear-gradient(
-        to right,
-        rgb(0 0 0 / 0%) 0%,
-        ${({ theme }) => theme.BG_WHITE} 120px
-    );
 `;
 
 const HowToText = styled.div`
@@ -99,7 +89,7 @@ export const ReceivingAddressStep = () => {
                     <Value>
                         <Address>
                             {unusedAddress.substring(0, 20)}
-                            <Overlay />
+                            <GradientOverlay hiddenFrom="120px" />
                         </Address>
                         <StyledButton
                             variant="tertiary"
