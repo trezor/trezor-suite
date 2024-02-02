@@ -78,7 +78,8 @@ connect deploy to dev:
     - connect-web build
     - connect-explorer build
   except:
-    - v8
+    refs:
+      - /^release\/connect\//
   variables:
     GIT_STRATEGY: none
     DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/connect/${CI_COMMIT_REF_NAME}
