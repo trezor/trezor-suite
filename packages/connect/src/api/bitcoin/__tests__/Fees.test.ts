@@ -5,38 +5,6 @@ import { parseCoinsJson, getBitcoinNetwork } from '../../../data/coinInfo';
 import { initBlockchain } from '../../../backend/BlockchainLink';
 import { FeeLevels } from '../Fees';
 
-// mock blockchain-link module to spy/mock `estimateFee` method
-jest.mock('@trezor/blockchain-link', () => ({
-    __esModule: true,
-    default: class BlockchainLink {
-        name = 'jest-mocked-module';
-        listeners: Record<string, () => void> = {};
-        constructor(args: any) {
-            this.name = args.name;
-        }
-        on(...args: any[]) {
-            const [type, fn] = args;
-            this.listeners[type] = fn;
-        }
-        connect() {
-            this.listeners.connected();
-        }
-        disconnect() {}
-        removeAllListeners() {}
-        dispose() {}
-        getInfo() {
-            return {
-                url: this,
-                name: this.name,
-                shortcut: this.name,
-            };
-        }
-        estimateFee(params: { blocks: number[] }) {
-            return params.blocks.map(() => ({ feePerUnit: '-1' }));
-        }
-    },
-}));
-
 describe('api/bitcoin/Fees', () => {
     // load coin definitions
     parseCoinsJson({ ...coinsJSON, eth: ethereumCoinsJSON });
