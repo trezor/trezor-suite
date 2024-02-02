@@ -110,9 +110,14 @@ const Badge = styled(Image)<{ isHighlighted: boolean }>`
     cursor: pointer;
 `;
 
-const StoreTitle = styled(Image)`
+const StoreTitle = styled(Image)<{ isDark: boolean }>`
     display: block;
     margin: 2px auto 6px;
+    ${({ isDark }) =>
+        isDark &&
+        `
+            filter: invert(1);
+    `}
 `;
 
 const QR = styled(QrCode)`
@@ -149,7 +154,8 @@ const StoreBadge = ({
             content={
                 <div>
                     <StoreTitle
-                        image={`${image}_TITLE_${currentTheme === 'dark' ? 'BLACK' : 'WHITE'}`}
+                        isDark={currentTheme === 'dark'}
+                        image={`${image}_TITLE`}
                         height={26}
                     />
                     <QR value={url} />
