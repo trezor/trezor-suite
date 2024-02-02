@@ -33,12 +33,13 @@ describe('Onboarding - recover wallet T2T1', () => {
         }
 
         // pressing the final Continue button
-        cy.wait(1000);
+        cy.wait(1500);
         cy.task('pressYes');
 
         // pin is tested in create path, so here we test 'skipping' path instead
         cy.getTestElement('@onboarding/recovery/continue-button').click();
         cy.getTestElement('@onboarding/skip-button').click();
+        cy.getTestElement('@onboarding/skip-button-confirm').click();
     });
 });
 
