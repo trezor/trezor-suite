@@ -8529,7 +8529,7 @@ __metadata:
   resolution: "@suite-native/react-native-graph@workspace:suite-native/react-native-graph"
   dependencies:
     "@shopify/react-native-skia": "npm:0.1.234"
-    "@types/react": "npm:18.0.32"
+    "@types/react": "npm:18.2.51"
     react: "npm:18.2.0"
     react-native: "npm:0.73.2"
     react-native-gesture-handler: "npm:2.15.0"
@@ -9084,6 +9084,9 @@ __metadata:
 <<<<<<< HEAD
 <<<<<<< HEAD
     "@types/react": "npm:18.0.32"
+=======
+    "@types/react": "npm:18.2.51"
+>>>>>>> eee50b7aca (chore:update react types and remove them from resolutions)
     "@types/react-date-range": "npm:^1.4.7"
 =======
 =======
@@ -9143,7 +9146,7 @@ __metadata:
   dependencies:
     "@trezor/connect-explorer": "workspace:^"
     "@trezor/connect-web": "workspace:^"
-    "@types/react": "npm:18.0.32"
+    "@types/react": "npm:18.2.51"
     copy-webpack-plugin: "npm:^11.0.0"
     html-webpack-plugin: "npm:^5.6.0"
     react: "npm:^18.2.0"
@@ -9262,7 +9265,7 @@ __metadata:
     "@trezor/trezor-user-env-link": "workspace:*"
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
-    "@types/react": "npm:18.0.32"
+    "@types/react": "npm:18.2.51"
     copy-webpack-plugin: "npm:^11.0.0"
     eth-phishing-detect: "npm:^1.2.0"
     html-webpack-plugin: "npm:^5.6.0"
@@ -9292,7 +9295,7 @@ __metadata:
     "@trezor/connect-common": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/urls": "workspace:*"
-    "@types/react": "npm:18.0.32"
+    "@types/react": "npm:18.2.51"
     "@types/styled-components": "npm:^5.1.29"
     react-intl: "npm:^6.6.2"
   peerDependencies:
@@ -9708,8 +9711,8 @@ __metadata:
     "@trezor/theme": "workspace:*"
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
-    "@types/react": "npm:18.0.32"
-    "@types/react-dom": "npm:18.2.14"
+    "@types/react": "npm:18.2.51"
+    "@types/react-dom": "npm:18.2.18"
     "@types/styled-components": "npm:^5.1.29"
     react: "npm:18.2.0"
     react-dom: "npm:18.2.0"
@@ -9774,6 +9777,10 @@ __metadata:
 <<<<<<< HEAD
     "@types/react": "npm:18.0.32"
     "@types/react-dom": "npm:18.2.14"
+=======
+    "@types/react": "npm:18.2.51"
+    "@types/react-dom": "npm:18.2.18"
+>>>>>>> eee50b7aca (chore:update react types and remove them from resolutions)
     "@types/react-helmet": "npm:^6.1.8"
 =======
 =======
@@ -9884,12 +9891,15 @@ __metadata:
     "@types/pdfmake": "npm:^0.2.9"
 >>>>>>> cead5a385c (fixup! chore: update various dependencies (no major update))
     "@types/qrcode.react": "npm:^1.0.5"
-    "@types/react": "npm:18.0.32"
-    "@types/react-dom": "npm:18.2.14"
+    "@types/react": "npm:18.2.51"
+    "@types/react-dom": "npm:18.2.18"
     "@types/react-qr-reader": "npm:^2.1.7"
 <<<<<<< HEAD
 <<<<<<< HEAD
     "@types/react-test-renderer": "npm:^18.0.5"
+=======
+    "@types/react-test-renderer": "npm:^18.0.7"
+>>>>>>> eee50b7aca (chore:update react types and remove them from resolutions)
     "@types/react-window": "npm:^1.8.7"
 =======
 =======
@@ -11174,12 +11184,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:18.2.14, @types/react-dom@npm:^18.0.0":
-  version: 18.2.14
-  resolution: "@types/react-dom@npm:18.2.14"
+"@types/react-dom@npm:18.2.18, @types/react-dom@npm:^18.0.0":
+  version: 18.2.18
+  resolution: "@types/react-dom@npm:18.2.18"
   dependencies:
     "@types/react": "npm:*"
-  checksum: c7feb6542dbeb3de18c9c03260229377e0a0d47a3d2c0bb91861996e2353375a45c57de7216edb8b88448584e363677244bd4355ddec45c243e70e777c2a150b
+  checksum: 4ef7725b4cebd4a32e049097ddfdfd855a178e63ead97ab6d3084872e7d6c1acd71aa923488123cd1015f0e0b11489d2b44f674a1df8fe82d7827eabbec6dbf1
   languageName: node
   linkType: hard
 
@@ -11222,12 +11232,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-test-renderer@npm:^18.0.5":
-  version: 18.0.5
-  resolution: "@types/react-test-renderer@npm:18.0.5"
+"@types/react-test-renderer@npm:^18.0.7":
+  version: 18.0.7
+  resolution: "@types/react-test-renderer@npm:18.0.7"
   dependencies:
     "@types/react": "npm:*"
-  checksum: c0932fa6c99dc84df3f8132f728f4fad7aeb05ea667f1524384c083e62b90e3a91107d89d2e91b03bd0ca02cc6bbec8cfe9669c29a8394ae990af549ca16c0a3
+  checksum: 701d7d815fe7b921712ebdb2c4434e99b92403d37c51b33a01ce1b62fed7d1efbf9f749971d9031a5b137c6d5e194249c378106768aa69725a01f150fef0ec7f
   languageName: node
   linkType: hard
 
@@ -11258,14 +11268,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:18.0.32":
-  version: 18.0.32
-  resolution: "@types/react@npm:18.0.32"
+"@types/react@npm:*, @types/react@npm:16 || 17 || 18, @types/react@npm:18.2.51":
+  version: 18.2.51
+  resolution: "@types/react@npm:18.2.51"
   dependencies:
     "@types/prop-types": "npm:*"
     "@types/scheduler": "npm:*"
     csstype: "npm:^3.0.2"
-  checksum: 1fbd2670b6af22668be703e3f196d12493c39653532da89f65a61218c7949fd7aeab66c3ac3e37848935d10a0a46d31d7d78f27f67b7d4d4789c358bfd406eef
+  checksum: af2935027172ea40695b90b02e98520a097160fa8517f6022e2e2cf8518017e0b84991cc34ee8d72cd91dcb7c5404784d4bada7a4836edf2727c3d6703c16ff8
   languageName: node
   linkType: hard
 
