@@ -125,10 +125,6 @@ export class Blockchain {
             this.onError(ERRORS.TypedError('Backend_Disconnected'));
         });
 
-        this.link.on('error', error => {
-            this.onError(ERRORS.TypedError('Backend_Error', error.message));
-        });
-
         try {
             await this.link.connect();
         } catch (error) {

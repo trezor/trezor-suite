@@ -327,11 +327,6 @@ const handleConnectionEvent = (blockchain: BlockchainLink, status: boolean) => {
     );
 };
 
-const handleErrorEvent = (_blockchain: BlockchainLink, message: any) => {
-    const parent = document.getElementById('notification-status') as HTMLElement;
-    prepareResponse(parent, message, true);
-};
-
 // utils
 
 const onAccountInfoModeChange = (event: any) => {
@@ -392,7 +387,6 @@ CONFIG.forEach(i => {
 
     b.on('connected', handleConnectionEvent.bind(null, b, true));
     b.on('disconnected', handleConnectionEvent.bind(null, b, false));
-    b.on('error', handleErrorEvent.bind(null, b, false));
     b.on('block', handleBlockEvent.bind(null, b));
     b.on('mempool', handleMempoolEvent.bind(null, b));
     b.on('fiatRates', handleFiatRatesEvent.bind(null, b));
