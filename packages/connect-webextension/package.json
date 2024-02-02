@@ -1,6 +1,6 @@
 {
     "name": "@trezor/connect-webextension",
-    "version": "0.0.0-beta.2",
+    "version": "0.0.0-beta.3",
     "author": "Trezor <info@trezor.io>",
     "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/connect-webextension",
     "description": "High-level javascript interface for Trezor hardware wallet in webextension serviceworker environment.",
@@ -20,11 +20,12 @@
         "serviceworker",
         "webextension"
     ],
-    "main": "build/trezor-connect-webextension.js",
+    "main": "lib/index",
     "files": [
         "build/trezor-connect-webextension.js",
         "build/trezor-connect-webextension.min.js",
-        "build/content-script.js"
+        "build/content-script.js",
+        "lib/"
     ],
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
