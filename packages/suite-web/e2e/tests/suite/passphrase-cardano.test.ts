@@ -59,6 +59,7 @@ describe('Passphrase with cardano', () => {
         cy.getTestElement('@passphrase/input').type('secret passphrase A');
         cy.getTestElement('@passphrase/hidden/submit-button').click();
         cy.task('pressYes');
+        cy.wait(501);
         cy.task('pressYes');
         cy.getTestElement('@modal/confirm-address/address-field').should(
             'contain',
