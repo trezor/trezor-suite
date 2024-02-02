@@ -1,33 +1,6 @@
 import { enhanceSignTx } from '../enhanceSignTx';
 import { initBlockchain } from '../../../backend/BlockchainLink';
 
-// mock blockchain-link module to get consensusBranchId from ServerInfo
-jest.mock('@trezor/blockchain-link', () => ({
-    __esModule: true,
-    default: class BlockchainLink {
-        name = 'jest-mocked-module';
-        listeners: Record<string, any> = {};
-        constructor(args: any) {
-            this.name = args.name;
-        }
-        on(...args: any[]) {
-            const [type, fn] = args;
-            this.listeners[type] = fn;
-        }
-        connect() {
-            this.listeners.connected();
-        }
-        getInfo() {
-            return {
-                url: this,
-                name: this.name,
-                shortcut: this.name,
-                consensusBranchId: 1001,
-            };
-        }
-    },
-}));
-
 describe('api/bitcoin/enhanceSignTx', () => {
     it('zcash/zcash testnet', () => {
         ['ZEC', 'TAZ'].forEach(shortcut => {

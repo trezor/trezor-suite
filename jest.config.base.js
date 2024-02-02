@@ -38,4 +38,8 @@ module.exports = {
 
     // An array of regexp patterns that are matched against all source file paths before re-running tests in watch mode
     watchPathIgnorePatterns: ['libDev', 'lib'],
+
+    // An array of regexp pattern strings that are matched against all module paths before those paths are
+    // to be considered 'visible' to the module loader
+    modulePathIgnorePatterns: ['libDev'],
 };
