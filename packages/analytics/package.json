@@ -1,6 +1,6 @@
 {
     "name": "@trezor/analytics",
-    "version": "1.0.12",
+    "version": "1.0.13",
     "license": "See LICENSE.md in repo root",
     "sideEffects": false,
     "main": "lib/index",
