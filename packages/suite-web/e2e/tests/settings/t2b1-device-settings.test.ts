@@ -29,7 +29,7 @@ describe('T2B1 - Device settings', () => {
      * 6. enable the passphrase protection
      * 7. verify that the passphrase input is now enabled
      * 8. change the device's background
-     * 9. hange the device's rotation
+     * 9. change the device's rotation
      */
     it('change all possible device settings', () => {
         //
