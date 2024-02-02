@@ -2,9 +2,9 @@ import styled from 'styled-components';
 import invityAPI from 'src/services/suite/invityAPI';
 import { FormattedCryptoAmount, Translation } from 'src/components/suite';
 import {
-    CoinmarketExchangeTopPanel,
     CoinmarketFooter,
     CoinmarketRefreshTime,
+    CoinmarketTopPanel,
     NoOffers,
 } from 'src/views/wallet/coinmarket/common';
 import { variables, Icon, CoinLogo, H2 } from '@trezor/components';
@@ -95,7 +95,9 @@ const Offers = () => {
     } = useCoinmarketExchangeOffersContext();
     const { navigateToExchangeForm } = useCoinmarketNavigation(account);
 
-    useLayout('Trezor Suite | Trade', CoinmarketExchangeTopPanel);
+    useLayout('Trezor Suite | Trade', () => (
+        <CoinmarketTopPanel backRoute="wallet-coinmarket-exchange" />
+    ));
 
     if (!quotesRequest) return null;
     const hasLoadingFailed = !(fixedQuotes && floatQuotes && dexQuotes);

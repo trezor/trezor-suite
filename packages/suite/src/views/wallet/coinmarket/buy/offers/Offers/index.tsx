@@ -1,10 +1,6 @@
 import styled from 'styled-components';
 
-import {
-    CoinmarketFooter,
-    CoinmarketBuyTopPanel,
-    NoOffers,
-} from 'src/views/wallet/coinmarket/common';
+import { CoinmarketFooter, NoOffers, CoinmarketTopPanel } from 'src/views/wallet/coinmarket/common';
 import { variables } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { useLayout } from 'src/hooks/suite';
@@ -66,7 +62,9 @@ const Offers = () => {
         useCoinmarketBuyOffersContext();
     const { navigateToBuyForm } = useCoinmarketNavigation(account);
 
-    useLayout('Trezor Suite | Trade', CoinmarketBuyTopPanel);
+    useLayout('Trezor Suite | Trade', () => (
+        <CoinmarketTopPanel backRoute="wallet-coinmarket-buy" />
+    ));
 
     const hasLoadingFailed = !(quotes && alternativeQuotes);
     const noOffers = hasLoadingFailed || (quotes.length === 0 && alternativeQuotes.length === 0);

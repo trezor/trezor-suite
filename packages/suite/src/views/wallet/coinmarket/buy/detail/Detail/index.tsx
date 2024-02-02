@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { Card, variables } from '@trezor/components';
-import { CoinmarketBuyTopPanel } from 'src/views/wallet/coinmarket/common';
+import { CoinmarketTopPanel } from 'src/views/wallet/coinmarket/common';
 import { useCoinmarketBuyDetailContext } from 'src/hooks/wallet/useCoinmarketBuyDetail';
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useLayout } from 'src/hooks/suite';
@@ -25,7 +25,9 @@ const StyledCard = styled(Card)`
 `;
 
 const CoinmarketDetail = () => {
-    useLayout('Trezor Suite | Trade', CoinmarketBuyTopPanel);
+    useLayout('Trezor Suite | Trade', () => (
+        <CoinmarketTopPanel backRoute="wallet-coinmarket-buy" />
+    ));
 
     const { account, trade, buyInfo } = useCoinmarketBuyDetailContext();
     const dispatch = useDispatch();
