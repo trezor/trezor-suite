@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { variables, Card, Button } from '@trezor/components';
+import { Card, Button } from '@trezor/components';
 import { CoinjoinProgressWheel } from './CoinjoinProgressWheel';
 import { CoinjoinStatusMessage } from './CoinjoinStatusMessage';
 import { useSelector } from 'src/hooks/suite/useSelector';
@@ -7,6 +7,7 @@ import { selectCurrentCoinjoinWheelStates } from 'src/reducers/wallet/coinjoinRe
 import { Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 import { stopCoinjoinSession } from 'src/actions/wallet/coinjoinClientActions';
+import { typography } from '@trezor/theme';
 
 const Container = styled(Card)<{ isWide?: boolean }>`
     position: relative;
@@ -17,8 +18,8 @@ const Container = styled(Card)<{ isWide?: boolean }>`
     width: ${({ isWide }) => (isWide ? '240px' : '180px')};
     height: 100%;
     padding: 10px;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    color: ${({ theme }) => theme.textSubdued};
+    ${typography.callout}
     text-align: center;
 `;
 

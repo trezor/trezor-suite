@@ -1,25 +1,26 @@
 import styled, { useTheme } from 'styled-components';
 import { CoinjoinSession, SessionPhase } from 'src/types/wallet/coinjoin';
-import { Spinner, Icon, variables } from '@trezor/components';
+import { Spinner, Icon } from '@trezor/components';
 import { SESSION_PHASE_MESSAGES } from 'src/constants/suite/coinjoin';
 import { Translation } from 'src/components/suite/Translation';
 import { CountdownTimer } from 'src/components/suite/CountdownTimer';
 import { RoundPhase } from '@trezor/coinjoin';
+import { spacingsPx, typography } from '@trezor/theme';
 
 const Container = styled.div`
-    padding: 32px 38px 0;
+    padding: ${spacingsPx.xxl} ${spacingsPx.xxxl} 0;
 `;
 
 const Steps = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 8px;
-    margin-bottom: 26px;
+    gap: ${spacingsPx.xs};
+    margin-bottom: ${spacingsPx.xl};
 `;
 
 const Dot = styled.span`
-    color: ${({ theme }) => theme.STROKE_GREY};
+    color: ${({ theme }) => theme.iconSubdued};
     font-size: 28px;
     line-height: 1;
 `;
@@ -37,8 +38,8 @@ const StepConiainer = styled.div<{ isCurrent: boolean; isComplete: boolean }>`
 `;
 
 const Message = styled.p`
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ theme }) => theme.TYPE_LIGHTER_GREY};
+    color: ${({ theme }) => theme.textSubdued};
+    text-align: center;
 `;
 
 const Separator = styled.div`
@@ -48,10 +49,10 @@ const Separator = styled.div`
 `;
 
 const TimerCointainer = styled.p`
-    margin-top: 4px;
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ theme }) => theme.TYPE_LIGHTER_GREY};
+    text-align: center;
+    margin-top: ${spacingsPx.xxs};
+    ${typography.hint}
+    color: ${({ theme }) => theme.textSubdued};
     opacity: 0.9;
 `;
 

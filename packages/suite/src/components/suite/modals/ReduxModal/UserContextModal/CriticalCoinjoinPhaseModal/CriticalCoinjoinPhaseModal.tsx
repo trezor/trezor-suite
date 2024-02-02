@@ -7,6 +7,7 @@ import { CoinjoinPhaseProgress } from './CoinjoinPhaseProgress';
 import { ROUND_PHASE_MESSAGES } from 'src/constants/suite/coinjoin';
 import { useCoinjoinSessionPhase } from 'src/hooks/coinjoin';
 import { AutoStopButton } from './AutoStopButton';
+import { spacingsPx, typography } from '@trezor/theme';
 
 const StyledModal = styled(Modal)`
     width: 520px;
@@ -16,8 +17,8 @@ const Content = styled.div`
     display: flex;
     align-items: center;
     text-align: start;
-    gap: 36px;
-    padding: 22px 22px 32px 32px;
+    gap: ${spacingsPx.xxxl};
+    padding: ${spacingsPx.xl} ${spacingsPx.xl} ${spacingsPx.xxl} ${spacingsPx.xxl};
     border-bottom: 1px solid ${({ theme }) => theme.STROKE_LIGHT_GREY};
 `;
 
@@ -26,21 +27,20 @@ const TextContainer = styled.div`
 `;
 
 const CoinjoinText = styled.h3`
-    margin-bottom: 10px;
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    margin-bottom: ${spacingsPx.xs};
+    ${typography.hint}
     text-transform: uppercase;
 `;
 
 const DisconnectWarning = styled.p`
     font-size: 32px;
     line-height: 32px;
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ theme }) => theme.TYPE_DARK_ORANGE};
+    ${typography.highlight}
+    color: ${({ theme }) => theme.textAlertYellow};
 `;
 
 const Phase = styled.p`
-    margin-top: 16px;
+    margin-top: ${spacingsPx.md};
     color: ${({ theme }) => theme.TYPE_LIGHTER_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;

@@ -12,7 +12,6 @@ import { zIndices } from '@trezor/theme';
 
 const Header = styled.div`
     position: sticky;
-    background: ${({ theme }) => theme.BG_GREY};
     top: ${SECONDARY_PANEL_HEIGHT};
     padding-top: 8px;
     padding-bottom: 8px;

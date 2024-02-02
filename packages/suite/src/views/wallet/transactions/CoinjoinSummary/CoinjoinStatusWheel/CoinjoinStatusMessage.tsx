@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import { SESSION_PHASE_MESSAGES } from 'src/constants/suite/coinjoin';
-import { variables } from '@trezor/components';
 import { Translation } from 'src/components/suite/Translation';
 import { CountdownTimer } from 'src/components/suite';
 import { useCoinjoinSessionPhase } from 'src/hooks/coinjoin';
@@ -9,11 +8,12 @@ import {
     selectCurrentCoinjoinWheelStates,
     selectCurrentSessionDeadlineInfo,
 } from 'src/reducers/wallet/coinjoinReducer';
+import { typography } from '@trezor/theme';
 
 const Cointainer = styled.div`
     height: 30px;
     margin-top: 4px;
-    font-size: ${variables.FONT_SIZE.TINY};
+    ${typography.label}
 `;
 
 interface CoinjoinStatusMessageProps {
