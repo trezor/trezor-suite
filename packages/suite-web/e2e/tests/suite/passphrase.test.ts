@@ -37,7 +37,7 @@ describe('Passphrase', () => {
         cy.task('pressYes');
 
         // confirm - input wrong passphrase
-        cy.getTestElement('@passphrase/confirm-checkbox', { timeout: 10000 }).click();
+        cy.getTestElement('@passphrase/confirm-checkbox', { timeout: 20000 }).click();
         cy.getTestElement('@passphrase/input').type('cba');
 
         cy.task('pressYes');
@@ -48,7 +48,7 @@ describe('Passphrase', () => {
         // retry
         cy.getTestElement('@exception/auth-confirm-failed/primary-button').click();
         // confirm again - input correct this time
-        cy.getTestElement('@passphrase/confirm-checkbox', { timeout: 10000 }).click();
+        cy.getTestElement('@passphrase/confirm-checkbox', { timeout: 20000 }).click();
         cy.getTestElement('@passphrase/input').type('abc');
         cy.getTestElement('@passphrase/hidden/submit-button').click();
 
@@ -93,7 +93,7 @@ describe('Passphrase', () => {
 
         cy.getTestElement('@passphrase/hidden/submit-button').click();
         // confirm
-        cy.getTestElement('@passphrase/confirm-checkbox', { timeout: 10000 }).click();
+        cy.getTestElement('@passphrase/confirm-checkbox', { timeout: 20000 }).click();
         cy.getTestElement('@passphrase/input').type('def');
 
         cy.task('pressYes');

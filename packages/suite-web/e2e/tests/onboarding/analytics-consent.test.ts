@@ -1,4 +1,4 @@
-// @group:onboarding
+// @group:device-management
 // @retry=2
 
 const navigateToSettingsAndBack = () => {

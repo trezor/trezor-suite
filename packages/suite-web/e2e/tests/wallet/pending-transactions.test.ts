@@ -103,8 +103,9 @@ describe('Use regtest to test pending transactions', () => {
 
         // mine the "not-self" transaction
         cy.task('get', { key: ADDRESS_ACCOUNT_2_INDEX_1 }).then(txid => {
+            console.log('txid', txid);
             // time-to-time getting 'missing-or-spent' error from regtest without this wait
-            cy.wait(500);
+            cy.wait(2000);
             cy.task('generateBlock', {
                 address: ADDRESS_ACCOUNT_3_INDEX_1,
                 txids: [txid],

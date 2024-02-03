@@ -34,9 +34,16 @@ const prefixedVisit = (route: string, options?: Partial<Cypress.VisitOptions>) =
     const baseUrl = Cypress.config('baseUrl');
     const assetPrefix = Cypress.env('ASSET_PREFIX') || '';
     const testUrl = Cypress.env('TEST_URLS')?.[0] || '';
-
     cy.visit(baseUrl + testUrl + assetPrefix + route, options);
     return cy.document().its('fonts.status').should('equal', 'loaded');
+};
+
+const safeReload = () => {
+    // waiting for:
+    // - device is released
+    // - writes to indexedDB are finished
+    cy.wait(2000);
+    return cy.reload();
 };
 
 beforeEach(() => {
@@ -121,6 +128,7 @@ declare global {
                 eventType: T['type'],
             ) => Cypress.Chainable<NonNullable<EventPayload<T>>>;
             enterPinOnBlindMatrix: (entryPinNumber: string) => Cypress.Chainable<null>;
+            safeReload: typeof safeReload;
         }
     }
 }
@@ -137,6 +145,7 @@ if (Cypress.env('SNAPSHOT')) {
 }
 
 Cypress.Commands.add('prefixedVisit', prefixedVisit);
+Cypress.Commands.add('safeReload', safeReload);
 Cypress.Commands.add('resetDb', { prevSubject: false }, resetDb);
 // assertion helpers
 Cypress.Commands.add('onboardingShouldLoad', onboardingShouldLoad);

@@ -14,7 +14,7 @@ export const AccountItemSkeleton = () => {
     const { shouldAnimate } = useLoadingSkeleton();
 
     return (
-        <NavigationItemBase>
+        <NavigationItemBase data-test="@account-menu/account-item-skeleton">
             <Left>
                 <SkeletonCircle size="24px" />
             </Left>

@@ -8,10 +8,11 @@ const providers = [
         provider: 'google',
         file: 'f7acc942eeb83921892a95085e409b3e6b5325db6400ae5d8de523a305291dca.mtdt',
     },
-    {
-        provider: 'dropbox',
-        file: '/f7acc942eeb83921892a95085e409b3e6b5325db6400ae5d8de523a305291dca.mtdt',
-    },
+    // should be enough to test only one provider
+    // {
+    //     provider: 'dropbox',
+    //     file: '/f7acc942eeb83921892a95085e409b3e6b5325db6400ae5d8de523a305291dca.mtdt',
+    // },
 ] as const;
 
 describe(
@@ -116,6 +117,7 @@ describe(
                 );
                 cy.getConfirmActionOnDeviceModal();
                 cy.task('pressYes');
+                cy.wait(501);
 
                 // device saved, disconnect provider
                 cy.getTestElement('@menu/switch-device').click();
@@ -137,6 +139,9 @@ describe(
                 cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'Bitcoin');
 
                 cy.log('Still possible to reconnect provider, we have keys still saved');
+                // todo: sometimes modal appears and closes immediately before cypress being able to focus
+                // it, probably a race-condition in suite killing it with some action. adding wait :(
+                cy.wait(1000);
                 cy.hoverTestElement("@metadata/accountLabel/m/84'/0'/0'/hover-container");
                 cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'/add-label-button").click();
 

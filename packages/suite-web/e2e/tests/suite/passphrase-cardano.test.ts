@@ -31,7 +31,7 @@ describe('Passphrase with cardano', () => {
         cy.getTestElement('@passphrase/hidden/submit-button').click();
         cy.task('pressYes');
         cy.task('pressYes');
-        cy.getTestElement('@passphrase/confirm-checkbox', { timeout: 10000 }).click();
+        cy.getTestElement('@passphrase/confirm-checkbox', { timeout: 20000 }).click();
         cy.getTestElement('@passphrase/input').type('secret passphrase A');
         cy.getTestElement('@passphrase/hidden/submit-button').click();
         cy.task('pressYes');

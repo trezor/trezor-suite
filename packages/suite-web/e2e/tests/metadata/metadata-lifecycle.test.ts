@@ -39,16 +39,15 @@ describe('Metadata - cancel metadata on device', () => {
         cy.wait(501);
 
         // cancelling labeling on device actually enables labeling globally so when user reloads app,
-        // metadata dialogue will be propmted. now user cancels dialogue on device again and remembers device
-        cy.reload();
+        // metadata dialogue will be prompted. now user cancels dialogue on device again and remembers device
+        cy.safeReload();
         cy.getConfirmActionOnDeviceModal();
         cy.task('pressNo');
         cy.getTestElement('@menu/switch-device').click();
         cy.getTestElement('@switch-device/wallet-on-index/0/toggle-remember-switch').click({
             force: true,
         });
-        cy.wait(200); // wait for db write to finish :( sad
-        cy.reload();
+        cy.safeReload();
         cy.discoveryShouldFinish(); // no dialogue!
 
         // but when user tries to add another wallet, there is enable labeling dialogue again
@@ -64,28 +63,33 @@ describe('Metadata - cancel metadata on device', () => {
         cy.getConfirmActionOnDeviceModal();
         cy.task('pressYes');
         cy.getTestElement('@passphrase/input').type('abc');
-        cy.getTestElement('@passphrase/confirm-checkbox', { timeout: 10000 }).click();
+        cy.getTestElement('@passphrase/confirm-checkbox', { timeout: 20000 }).click();
         cy.getTestElement('@passphrase/hidden/submit-button').click();
         cy.getTestElement('@passphrase/input').should('not.exist');
+
         cy.getConfirmActionOnDeviceModal();
         cy.task('pressYes');
         cy.wait(501);
+
         cy.getConfirmActionOnDeviceModal();
         cy.task('pressYes');
         cy.wait(501);
+
         cy.getConfirmActionOnDeviceModal(); // <--- this is enable labeling dialogue
         cy.task('pressNo');
+        cy.wait(501);
         cy.getTestElement('@accounts/empty-account/receive');
 
-        // unremember device and reload -> enable labeling dialogue appers
+        // forget device and reload -> enable labeling dialogue appears
         // explanation: metadata.error is index by device.state and we treat this field as sensitive
-        // as keeping it might beat users pluasible deniability
+        // as keeping it might beat users plausible deniability
         cy.getTestElement('@menu/switch-device').click();
         cy.getTestElement('@switch-device/wallet-on-index/0/toggle-remember-switch').click({
             force: true,
         });
-        cy.wait(200); // wait for db write to finish :( sad
-        cy.reload();
+        cy.getTestElement('@modal/close-button').click();
+
+        cy.safeReload();
         cy.getTestElement('@passphrase-type/standard').click();
         cy.getConfirmActionOnDeviceModal();
         cy.task('pressNo');

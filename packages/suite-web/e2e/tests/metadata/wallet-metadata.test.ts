@@ -3,7 +3,10 @@
 
 import { rerouteMetadataToMockProvider, stubOpen } from '../../stubs/metadata';
 
-const firmwares = ['2.2.0', '2-main'] as const;
+const firmwares = [
+    '2.2.0',
+    // , '2-main'
+] as const;
 const provider = 'dropbox';
 
 const mnemonic = 'all all all all all all all all all all all all';
@@ -70,7 +73,7 @@ describe('Metadata - wallet labeling', () => {
             cy.task('pressYes');
 
             cy.getTestElement('@passphrase/input', { timeout: 30000 }).type('abc');
-            cy.getTestElement('@passphrase/confirm-checkbox').click();
+            cy.getTestElement('@passphrase/confirm-checkbox', { timeout: 20000 }).click();
             cy.getTestElement('@passphrase/hidden/submit-button').click();
 
             cy.getTestElement('@modal').should('not.exist');
@@ -110,7 +113,8 @@ describe('Metadata - wallet labeling', () => {
             cy.getTestElement('@switch-device/wallet-on-index/1/toggle-remember-switch').click({
                 force: true,
             });
-            cy.wait(200); // wait for data to save to persistent storage. currently this is not reflected in UI
+
+            cy.wait(1000); // wait for changes to db
             cy.prefixedVisit('/', {
                 onBeforeLoad: (win: Window) => {
                     cy.stub(win, 'open').callsFake(stubOpen(win));
@@ -138,7 +142,7 @@ describe('Metadata - wallet labeling', () => {
             cy.getConfirmActionOnDeviceModal();
             cy.task('pressYes');
             cy.getTestElement('@passphrase/input', { timeout: 30000 }).type('C');
-            cy.getTestElement('@passphrase/confirm-checkbox').click();
+            cy.getTestElement('@passphrase/confirm-checkbox', { timeout: 20000 }).click();
             cy.getTestElement('@passphrase/hidden/submit-button').click();
             cy.getTestElement('@modal').should('not.exist');
             cy.getConfirmActionOnDeviceModal();

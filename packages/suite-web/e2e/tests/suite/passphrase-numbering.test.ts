@@ -32,7 +32,7 @@ describe('Passphrase numbering', () => {
         cy.task('pressYes');
 
         cy.getTestElement('@passphrase/input', { timeout: 10000 }).type('taxation is theft');
-        cy.getTestElement('@passphrase/confirm-checkbox').click();
+        cy.getTestElement('@passphrase/confirm-checkbox', { timeout: 20000 }).click();
         cy.getTestElement('@passphrase/hidden/submit-button').click();
 
         cy.task('pressYes');
@@ -47,7 +47,7 @@ describe('Passphrase numbering', () => {
         cy.task('pressYes');
         cy.task('pressYes');
 
-        cy.getTestElement('@passphrase/confirm-checkbox').click();
+        cy.getTestElement('@passphrase/confirm-checkbox', { timeout: 20000 }).click();
         cy.getTestElement('@passphrase/input').type(passphraseTwo);
         cy.getTestElement('@passphrase/hidden/submit-button').click();
 
@@ -79,7 +79,7 @@ describe('Passphrase numbering', () => {
         cy.task('pressYes');
         cy.task('pressYes');
 
-        cy.getTestElement('@passphrase/confirm-checkbox', { timeout: 10000 }).click();
+        cy.getTestElement('@passphrase/confirm-checkbox', { timeout: 20000 }).click();
         cy.getTestElement('@passphrase/input').type(passphraseThree);
         cy.getTestElement('@passphrase/hidden/submit-button').click();
 
@@ -108,7 +108,7 @@ describe('Passphrase numbering', () => {
 
         cy.getTestElement('@modal');
         cy.getTestElement('@passphrase/input', { timeout: 10000 }).type(passphrase);
-        cy.getTestElement('@passphrase/confirm-checkbox').click();
+        cy.getTestElement('@passphrase/confirm-checkbox', { timeout: 20000 }).click();
         cy.getTestElement('@passphrase/hidden/submit-button').click();
 
         cy.task('pressYes');

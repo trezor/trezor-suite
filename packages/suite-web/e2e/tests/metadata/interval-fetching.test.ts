@@ -70,8 +70,7 @@ describe('Metadata - suite is watching cloud provider and syncs periodically', (
                 'contain',
                 'already existing label',
             );
-            cy.get('body').type('{enter}');
-
+            // now change data in provider and fast forward time, see if it updated
             cy.task('metadataSetFileContent', {
                 provider: f.provider,
                 file: f.file,

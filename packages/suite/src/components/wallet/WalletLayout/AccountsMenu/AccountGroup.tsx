@@ -132,7 +132,11 @@ export const AccountGroup = forwardRef(
                     )}
                 </HeaderWrapper>
 
-                <AnimationWrapper opened={isOpen} onUpdate={onUpdate}>
+                <AnimationWrapper
+                    opened={isOpen}
+                    onUpdate={onUpdate}
+                    dataTest={`@account-menu/${type}/group`}
+                >
                     {children}
                 </AnimationWrapper>
             </Container>

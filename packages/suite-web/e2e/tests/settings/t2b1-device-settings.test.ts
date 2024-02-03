@@ -16,7 +16,6 @@ describe('T2B1 - Device settings', () => {
 
     beforeEach(() => {
         cy.viewport(1080, 1440).resetDb();
-        cy.task('startBridge');
     });
 
     /*
@@ -40,6 +39,8 @@ describe('T2B1 - Device settings', () => {
 
         cy.task('startEmu', startEmuOpts);
         cy.task('setupEmu');
+        cy.task('startBridge');
+
         // navigate to device settings page
         cy.prefixedVisit('/settings/device');
         cy.passThroughInitialRun();
@@ -95,6 +96,7 @@ describe('T2B1 - Device settings', () => {
     it('backup in settings', () => {
         cy.task('startEmu', startEmuOpts);
         cy.task('setupEmu', { needs_backup: true });
+        cy.task('startBridge');
 
         // navigate to device settings page
         cy.prefixedVisit('/settings/device');
@@ -110,6 +112,7 @@ describe('T2B1 - Device settings', () => {
     it('wipe device', () => {
         cy.task('startEmu', startEmuOpts);
         cy.task('setupEmu');
+        cy.task('startBridge');
 
         // navigate to device settings page
         cy.prefixedVisit('/settings/device');
