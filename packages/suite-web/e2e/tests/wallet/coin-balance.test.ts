@@ -11,7 +11,10 @@ describe('Dashboard with regtest', () => {
             mnemonic: 'all all all all all all all all all all all all',
         });
         cy.task('startBridge');
-
+        cy.task('sendToAddressAndMineBlock', {
+            address: ADDRESS_INDEX_1,
+            btc_amount: 1,
+        });
         cy.viewport(1080, 1440).resetDb();
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
