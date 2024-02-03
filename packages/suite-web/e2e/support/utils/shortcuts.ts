@@ -19,6 +19,7 @@ export const passThroughAuthenticityCheck = () => {
     cy.enableDebugMode();
 
     cy.getTestElement('@authenticity-check/start-button').click();
+    cy.getTestElement('@prompts/confirm-on-device');
     cy.task('pressYes');
     cy.getTestElement('@authenticity-check/continue-button').click();
 };

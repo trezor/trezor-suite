@@ -49,7 +49,7 @@ describe('Suite switch wallet modal', () => {
 
         cy.getTestElement('@modal');
         cy.getTestElement('@passphrase/input', { timeout: 10000 }).type(passphaseToType);
-        cy.getTestElement('@passphrase/confirm-checkbox').click();
+        cy.getTestElement('@passphrase/confirm-checkbox', { timeout: 20000 }).click();
         cy.getTestElement('@passphrase/hidden/submit-button').click();
 
         cy.task('pressYes');

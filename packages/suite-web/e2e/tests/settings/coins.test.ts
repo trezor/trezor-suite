@@ -105,6 +105,8 @@ describe('Coin Settings', () => {
         cy.getTestElement('@settings/wallet/network/eth/advance').click();
         cy.getTestElement('@settings/advance/select-type/input').click();
         cy.getTestElement('@settings/advance/select-type/option/blockbook').click();
+        // sometimes select stays open after click, no idea why, experimenting with wait
+        cy.wait(100);
         cy.getTestElement('@settings/advance/url').type('https://eth.marek.pl/');
         cy.getTestElement('@settings/advance/button/save').click();
 

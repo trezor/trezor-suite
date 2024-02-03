@@ -44,7 +44,7 @@ describe('Recovery - dry run', () => {
             'On app reload, recovery process should auto start if app detects initialized device in recovery mode',
         );
 
-        cy.reload().task('stopBridge').task('startBridge');
+        cy.safeReload().task('stopBridge').task('startBridge');
         cy.wait(2000);
 
         cy.getTestElement('@suite/modal/confirm-action-on-device');
