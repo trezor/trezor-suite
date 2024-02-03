@@ -109,6 +109,16 @@ export interface FeeStats {
     averageFeePerKb: number;
     decilesFeePerKb: number[];
 }
+export interface StakingPool {
+    contract: string;
+    pendingBalance: string;
+    pendingDepositedBalance: string;
+    depositedBalance: string;
+    withdrawTotalAmount: string;
+    claimableAmount: string;
+    restakedReward: string;
+    autocompoundBalance: string;
+}
 export interface ContractInfo {
     type: string;
     contract: string;
@@ -161,6 +171,7 @@ export interface Address {
     contractInfo?: ContractInfo;
     erc20Contract?: ContractInfo;
     addressAliases?: { [key: string]: AddressAlias };
+    stakingPools?: StakingPool[];
 }
 export interface Utxo {
     txid: string;
@@ -264,6 +275,7 @@ export interface BlockbookInfo {
     currentFiatRatesTime?: string;
     historicalFiatRatesTime?: string;
     historicalTokenFiatRatesTime?: string;
+    stakingPoolContracts?: string[];
     dbSizeFromColumns?: number;
     dbColumns?: InternalStateColumn[];
     about: string;
@@ -358,11 +370,15 @@ export interface WsBlockReq {
     page?: number;
 }
 export interface WsBlockFilterReq {
+    scriptType: string;
     blockHash: string;
+    M?: number;
 }
 export interface WsBlockFiltersBatchReq {
+    scriptType: string;
     bestKnownBlockHash: string;
     pageSize?: number;
+    M?: number;
 }
 export interface WsAccountUtxoReq {
     descriptor: string;
@@ -423,7 +439,9 @@ export interface WsFiatRatesTickersListReq {
 export interface WsMempoolFiltersReq {
     scriptType: string;
     fromTimestamp: number;
+    M?: number;
 }
 export interface MempoolTxidFilterEntries {
     entries?: { [key: string]: string };
+    usedZeroedKey?: boolean;
 }
