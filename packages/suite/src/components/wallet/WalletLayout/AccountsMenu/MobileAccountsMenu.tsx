@@ -13,7 +13,6 @@ import { AccountsList } from './AccountsList';
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
-    flex: 1;
     z-index: ${zIndices.expandableNavigationHeader};
     width: 100%;
 `;
