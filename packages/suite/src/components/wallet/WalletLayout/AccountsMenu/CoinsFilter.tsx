@@ -1,10 +1,11 @@
 import styled from 'styled-components';
 
-import { CoinLogo, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
+import { CoinLogo, TOOLTIP_DELAY_NORMAL, Tooltip, motionEasing } from '@trezor/components';
+import { motion, AnimatePresence, MotionProps } from 'framer-motion';
+import { borders, spacingsPx } from '@trezor/theme';
 import { selectDevice } from '@suite-common/wallet-core';
 
 import { useSelector, useAccountSearch } from 'src/hooks/suite';
-import { borders, spacingsPx } from '@trezor/theme';
 
 const StyledCoinLogo = styled(CoinLogo)<{ isSelected?: boolean }>`
     display: block;
@@ -20,6 +21,7 @@ const StyledCoinLogo = styled(CoinLogo)<{ isSelected?: boolean }>`
         outline: 2px solid ${({ theme }) => theme.backgroundSecondaryDefault};
     }
 `;
+
 const Container = styled.div`
     position: relative;
     display: flex;
@@ -46,6 +48,24 @@ export const CoinsFilter = () => {
 
     const showCoinFilter = supportedNetworks.length > 1;
 
+    const coinAnimcationConfig: MotionProps = {
+        initial: {
+            opacity: 0,
+        },
+        animate: {
+            opacity: 1,
+        },
+        exit: {
+            opacity: 0,
+        },
+        transition: {
+            ease: motionEasing.transition,
+            layout: {
+                ease: motionEasing.transition,
+            },
+        },
+    };
+
     if (!showCoinFilter) {
         return null;
     }
@@ -56,30 +76,34 @@ export const CoinsFilter = () => {
                 setCoinFilter(undefined);
             }}
         >
-            {supportedNetworks.map(network => {
-                const isSelected = coinFilter === network;
-                return (
-                    <Tooltip
-                        key={network}
-                        content={network.toUpperCase()}
-                        cursor="pointer"
-                        delayShow={TOOLTIP_DELAY_NORMAL}
-                    >
-                        <StyledCoinLogo
-                            data-test={`@account-menu/filter/${network}`}
-                            symbol={network}
-                            size={16}
-                            data-test-activated={coinFilter === network}
-                            isSelected={isSelected}
-                            onClick={e => {
-                                e.stopPropagation();
-                                // select the coin or deactivate if it's already selected
-                                setCoinFilter(coinFilter === network ? undefined : network);
-                            }}
-                        />
-                    </Tooltip>
-                );
-            })}
+            <AnimatePresence initial={false}>
+                {supportedNetworks.map(network => {
+                    const isSelected = coinFilter === network;
+                    return (
+                        <Tooltip
+                            key={network}
+                            content={network.toUpperCase()}
+                            cursor="pointer"
+                            delayShow={TOOLTIP_DELAY_NORMAL}
+                        >
+                            <motion.div key={network} {...coinAnimcationConfig} layout>
+                                <StyledCoinLogo
+                                    data-test={`@account-menu/filter/${network}`}
+                                    symbol={network}
+                                    size={16}
+                                    data-test-activated={coinFilter === network}
+                                    isSelected={isSelected}
+                                    onClick={e => {
+                                        e.stopPropagation();
+                                        // select the coin or deactivate if it's already selected
+                                        setCoinFilter(coinFilter === network ? undefined : network);
+                                    }}
+                                />
+                            </motion.div>
+                        </Tooltip>
+                    );
+                })}
+            </AnimatePresence>
         </Container>
     );
 };
