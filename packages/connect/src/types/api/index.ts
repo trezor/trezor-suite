@@ -168,6 +168,7 @@ export interface TrezorConnect {
 
     cardanoComposeTransaction: typeof cardanoComposeTransaction;
 
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/cardanoSignMessage.md
     cardanoSignMessage: typeof cardanoSignMessage;
 
     // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/changeLanguage.md
