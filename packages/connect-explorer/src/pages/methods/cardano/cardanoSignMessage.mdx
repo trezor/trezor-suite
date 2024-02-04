@@ -1,0 +1,123 @@
+import { CardanoSignMessage } from '@trezor/connect/src/types/api/cardano';
+
+import { ApiPlayground } from '../../../components/ApiPlayground';
+import { CommonParamsLink } from '../../../components/CommonParamsLink';
+import { ParamsTable } from '../../../components/ParamsTable';
+import signMessage from '../../../data/methods/cardano/signMessage.ts';
+
+<ApiPlayground
+    options={[
+        { title: 'Sign message', legacyConfig: signMessage[0] },
+        { title: 'Sign message including address', legacyConfig: signMessage[1] },
+        {
+            title: 'Advanced schema',
+            method: 'cardanoSignMessage',
+            schema: CardanoSignMessage,
+        },
+    ]}
+/>
+
+export const paramDescriptions = {
+    path: 'minimum length is `5`. [read more](/details/path)',
+    payload: 'message bytes in hex',
+    hashPayload:
+        'if true, device will hash the payload before signing. Must be enabled if payload exceeds 1024 bytes',
+    preferHexDisplay: 'if true, device will always decode payload as hex bytes',
+    networkId: 'network identifier. Required if `addressParameters` are set',
+    protocolMagic: 'protocol magic. Required if `addressParameters` are set',
+    addressParameters:
+        '`CardanoAddressParameters` object. [read more](./cardanoGetAddress#address-parameters) Used to derive address for message header. If not set then the key hash given by `path` will be used instead.',
+    derivationType: 'enum. determines used derivation type. Default is set to ICARUS_TREZOR=2',
+};
+
+## Cardano: Sign message
+
+Asks device to sign given message. User is presented with the first few bytes of the message and the hash of the whole message. User is asked to confirm details on Trezor.
+
+```javascript
+const result = await TrezorConnect.cardanoSignMessage(params);
+```
+
+### Params
+
+<CommonParamsLink />
+
+<ParamsTable schema={CardanoSignMessage} descriptions={paramDescriptions} />
+
+### Displaying payload
+
+If `hashPayload` is `true`, the device will display just the first 56 bytes of the payload. Otherwise 1024 bytes are displayed.
+
+The payload is decoded as a hex string if `displayAscii` is set to `false`. Otherwise it is decoded as an ASCII string, which succeeds only given the following conditions are met:
+
+- The payload is a valid ASCII string.
+- It must be clear to the user what the contents of the payload are, specifically there is:
+    - At least one character
+    - No control characters
+    - No leading, trailing nor multiple consecutive spaces
+
+### Example
+
+Sign hash of "Hello Trezor!":
+
+```javascript
+TrezorConnect.cardanoSignMessage({
+    signingPath: "m/1852'/1815'/0'/0/0",
+    payload: '48656c6c6f205472657a6f7221', // "Hello Trezor!" in hex
+    hashPayload: true,
+    displayAscii: true,
+});
+```
+
+Sign hash of "Hello Trezor!" using address parameters for header:
+
+```javascript
+TrezorConnect.cardanoSignMessage({
+    signingPath: "m/1852'/1815'/0'/0/0",
+    payload: '48656c6c6f205472657a6f7221', // "Hello Trezor!" in hex
+    hashPayload: true,
+    displayAscii: true,
+    networkId: 1,
+    protocolMagic: 764824073,
+    addressParameters: {
+        addressType: 0,
+        path: "m/1852'/1815'/0'/0/0",
+        stakingPath: "m/1852'/1815'/0'/2/0",
+    },
+});
+```
+
+### Result
+
+[CardanoSignedMessage type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts)
+
+```javascript
+{
+    success: true,
+    payload: {
+      signature: string,
+      payload: string,
+      headers: {
+        protected: {
+          1: -8, // EdDSA algorithm
+          address: string,
+        },
+        unprotected: {
+          hashed: boolean,
+          version: number,
+        }
+      }
+    }
+}
+```
+
+Error
+
+```javascript
+{
+    success: false,
+    payload: {
+        error: string // error message
+    }
+}
+```
