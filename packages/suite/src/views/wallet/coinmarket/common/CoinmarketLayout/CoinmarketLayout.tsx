@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
 
-import { WalletLayout, WalletLayoutHeader } from 'src/components/wallet';
+import { WalletLayout, WalletSubpageHeading } from 'src/components/wallet';
 import { Card, Button, variables } from '@trezor/components';
 import { CoinmarketLayoutNavigation } from './CoinmarketLayoutNavigation';
 import { CoinmarketAccountTransactions } from './CoinmarketAccountTransactions/CoinmarketAccountTransactions';
@@ -49,8 +49,8 @@ export const CoinmarketLayout = ({
     selectedAccount,
     onClearFormButtonClick,
 }: CoinmarketLayoutProps) => (
-    <WalletLayout title="TR_NAV_TRADE" account={selectedAccount}>
-        <WalletLayoutHeader title="TR_NAV_TRADE">
+    <WalletLayout title="TR_NAV_TRADE" isSubpage account={selectedAccount}>
+        <WalletSubpageHeading title="TR_NAV_TRADE">
             {onClearFormButtonClick && (
                 <Button
                     size="small"
@@ -61,7 +61,7 @@ export const CoinmarketLayout = ({
                     <Translation id="TR_CLEAR_ALL" />
                 </Button>
             )}
-        </WalletLayoutHeader>
+        </WalletSubpageHeading>
 
         <Layout>
             <CoinmarketLayoutNavigation />

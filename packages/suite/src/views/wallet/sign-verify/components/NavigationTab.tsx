@@ -52,7 +52,7 @@ const Badge = styled.span`
     z-index: -1;
 `;
 
-export interface WalletLayoutNavLinkProps {
+export interface NavigationTabProps {
     active: boolean;
     title: ExtendedMessageDescriptor['id'];
     values?: ExtendedMessageDescriptor['values'];
@@ -61,7 +61,7 @@ export interface WalletLayoutNavLinkProps {
     'data-test'?: string;
 }
 
-export const WalletLayoutNavLink = (props: WalletLayoutNavLinkProps) => {
+export const NavigationTab = (props: NavigationTabProps) => {
     const { active, title, onClick, values, badge } = props;
 
     return (

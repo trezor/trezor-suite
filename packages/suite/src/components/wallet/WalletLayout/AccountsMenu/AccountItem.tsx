@@ -15,7 +15,7 @@ import { AccountLabel, CoinBalance, FiatValue } from 'src/components/suite';
 import { useDispatch, useLoadingSkeleton } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
 import { goto } from 'src/actions/suite/routerActions';
-import { NavigationItemBase } from 'src/components/suite/Preloader/SuiteLayout/Sidebar/NavigationItem';
+import { NavigationItemBase } from 'src/components/suite/layouts/SuiteLayout/Sidebar/NavigationItem';
 
 const Wrapper = styled(NavigationItemBase)<{ isSelected: boolean }>`
     background: ${({ theme, isSelected }) => isSelected && theme.backgroundSurfaceElevation1};

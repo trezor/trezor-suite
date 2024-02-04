@@ -7,7 +7,7 @@ import { FirmwareType } from '@trezor/connect';
 import { TranslationKey } from '@suite-common/intl-types';
 import { Route } from '@suite-common/suite-types';
 import { Elevation, borders, spacingsPx, mapElevationToBorder, typography } from '@trezor/theme';
-import { NavigationItem } from '../../../../../components/suite/Preloader/SuiteLayout/Sidebar/NavigationItem';
+import { NavigationItem } from '../../../../../components/suite/layouts/SuiteLayout/Sidebar/NavigationItem';
 import { IconName } from '@suite-common/icons';
 import { useElevation, variables } from '@trezor/components';
 

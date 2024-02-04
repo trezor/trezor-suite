@@ -5,12 +5,13 @@ import { Navigation } from './Navigation';
 import { AccountsMenu } from 'src/components/wallet/WalletLayout/AccountsMenu/AccountsMenu';
 import { QuickActions } from './QuickActions';
 import { ElevationContext } from '@trezor/components';
+import { SIDEBAR_WIDTH_NUMERIC } from 'src/constants/suite/layout';
 
 const Container = styled.nav`
     display: flex;
     flex-direction: column;
     flex: 0 0 auto;
-    width: 280px;
+    width: ${SIDEBAR_WIDTH_NUMERIC}px;
     resize: horizontal;
     min-width: 200px;
     max-width: 400px;

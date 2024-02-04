@@ -1,10 +1,10 @@
 import { forwardRef, HTMLAttributes } from 'react';
 import styled from 'styled-components';
 
-import { variables } from '@trezor/components';
-import { SECONDARY_PANEL_HEIGHT } from 'src/components/suite/AppNavigation/AppNavigation';
-import { anchorOutlineStyles } from 'src/utils/suite/anchor';
 import { borders, spacingsPx } from '@trezor/theme';
+import { variables } from '@trezor/components';
+import { anchorOutlineStyles } from 'src/utils/suite/anchor';
+import { SUBPAGE_NAV_HEIGHT } from 'src/constants/suite/layout';
 
 const Content = styled.div<{ shouldHighlight?: boolean }>`
     display: flex;
@@ -36,7 +36,7 @@ const Wrapper = styled.div`
     }
 
     /* height of secondary panel and a gap between sections */
-    scroll-margin-top: calc(${SECONDARY_PANEL_HEIGHT} + 79px);
+    scroll-margin-top: calc(${SUBPAGE_NAV_HEIGHT} + 79px);
 `;
 
 interface SectionItemProps extends HTMLAttributes<HTMLDivElement> {

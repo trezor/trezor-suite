@@ -6,14 +6,14 @@ import { ErrorPage } from 'src/views/suite/ErrorPage';
 import { useGuideKeyboard } from 'src/hooks/guide';
 import { init } from 'src/actions/suite/initAction';
 import type { AppState } from 'src/types/suite';
-import { SuiteLayout } from './SuiteLayout/SuiteLayout';
+import { SuiteLayout } from '../layouts/SuiteLayout/SuiteLayout';
 import { InitialLoading } from './InitialLoading';
 import { DatabaseUpgradeModal } from './DatabaseUpgradeModal';
 import { selectPrerequisite, selectIsLoggedOut } from 'src/reducers/suite/suiteReducer';
 import { SuiteStart } from 'src/views/start/SuiteStart';
 import { PrerequisitesGuide } from '../PrerequisitesGuide/PrerequisitesGuide';
-import { LoggedOutLayout } from './LoggedOutLayout';
-import { WelcomeLayout } from '../WelcomeLayout/WelcomeLayout';
+import { LoggedOutLayout } from '../layouts/LoggedOutLayout';
+import { WelcomeLayout } from '../layouts/WelcomeLayout/WelcomeLayout';
 
 const getFullscreenApp = (route: AppState['router']['route']) => {
     switch (route?.app) {

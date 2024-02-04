@@ -6,7 +6,7 @@ import PortfolioCard from './components/PortfolioCard';
 import SecurityFeatures from './components/SecurityFeatures';
 import { PromoBanner } from './components/PromoBanner';
 import { T2B1PromoBanner } from './components/T2B1PromoBanner';
-import { AppNavigationPanel } from 'src/components/suite';
+import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 
 const Wrapper = styled.div`
     display: flex;
@@ -20,10 +20,7 @@ const Wrapper = styled.div`
 `;
 
 export const Dashboard = () => {
-    // temporary navigation panel
-    const Nav = () => <AppNavigationPanel title="Home" />;
-
-    useLayout('Home', Nav);
+    useLayout('Home', PageHeader);
 
     return (
         <Wrapper data-test="@dashboard/index">

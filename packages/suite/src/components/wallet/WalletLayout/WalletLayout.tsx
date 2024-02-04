@@ -2,24 +2,15 @@ import { ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { SkeletonRectangle } from '@trezor/components';
-import { MAX_CONTENT_WIDTH } from 'src/constants/suite/layout';
 import { AppState, ExtendedMessageDescriptor } from 'src/types/suite';
 import { useTranslation, useLayout } from 'src/hooks/suite';
+import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 
 import { AccountBanners } from './AccountBanners/AccountBanners';
 import { AccountException } from './AccountException/AccountException';
-import { AccountTopPanel } from './AccountTopPanel/AccountTopPanel';
 import { CoinjoinAccountDiscovery } from './CoinjoinAccountDiscovery/CoinjoinAccountDiscovery';
-
-const Wrapper = styled.div`
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    max-width: ${MAX_CONTENT_WIDTH};
-    width: 100%;
-    height: 100%;
-    margin-top: 8px;
-`;
+import { AccountTopPanel } from './AccountTopPanel/AccountTopPanel';
+import { AccountNavigation } from './AccountTopPanel/AccountNavigation';
 
 // This placeholder makes the "Receive" and "Trade" tabs look aligned with other tabs in "Accounts" view,
 // which implement some kind of toolbar.
@@ -32,6 +23,7 @@ const EmptyHeaderPlaceholder = styled.div`
 type WalletLayoutProps = {
     title: ExtendedMessageDescriptor['id'];
     account: AppState['wallet']['selectedAccount'];
+    isSubpage?: boolean;
     showEmptyHeaderPlaceholder?: boolean;
     className?: string;
     children?: ReactNode;
@@ -41,49 +33,66 @@ export const WalletLayout = ({
     showEmptyHeaderPlaceholder = false,
     title,
     account,
+    isSubpage,
     className,
     children,
 }: WalletLayoutProps) => {
     const { translationString } = useTranslation();
     const l10nTitle = translationString(title);
 
-    useLayout(l10nTitle, AccountTopPanel);
+    useLayout(l10nTitle, PageHeader);
 
     const { status, account: selectedAccount, loader, network } = account;
 
-    if (status === 'loading') {
-        if (selectedAccount?.accountType === 'coinjoin') {
+    const getPageContent = () => {
+        if (status === 'loading') {
+            if (selectedAccount?.accountType === 'coinjoin') {
+                return (
+                    <>
+                        <AccountBanners account={selectedAccount} />
+                        {showEmptyHeaderPlaceholder && <EmptyHeaderPlaceholder />}
+                        <CoinjoinAccountDiscovery />
+                    </>
+                );
+            } else {
+                return (
+                    <>
+                        {showEmptyHeaderPlaceholder && <EmptyHeaderPlaceholder />}
+                        <SkeletonRectangle
+                            width="100%"
+                            height="300px"
+                            borderRadius="12px"
+                            animate={loader === 'account-loading'}
+                        />
+                    </>
+                );
+            }
+        } else {
             return (
-                <Wrapper>
+                <>
                     <AccountBanners account={selectedAccount} />
                     {showEmptyHeaderPlaceholder && <EmptyHeaderPlaceholder />}
-                    <CoinjoinAccountDiscovery />
-                </Wrapper>
+                    {status === 'exception' ? (
+                        <AccountException loader={loader} network={network} />
+                    ) : (
+                        <div className={className}>{children}</div>
+                    )}
+                </>
             );
         }
+    };
 
-        return (
-            <Wrapper>
-                {showEmptyHeaderPlaceholder && <EmptyHeaderPlaceholder />}
-                <SkeletonRectangle
-                    width="100%"
-                    height="300px"
-                    borderRadius="12px"
-                    animate={loader === 'account-loading'}
-                />
-            </Wrapper>
-        );
-    }
+    const pageContent = getPageContent();
 
     return (
         <>
-            <AccountBanners account={selectedAccount} />
-            {showEmptyHeaderPlaceholder && <EmptyHeaderPlaceholder />}
-            {status === 'exception' ? (
-                <AccountException loader={loader} network={network} />
-            ) : (
-                <div className={className}>{children}</div>
+            {!isSubpage && (
+                <>
+                    <AccountTopPanel />
+                    <AccountNavigation />
+                </>
             )}
+            {pageContent}
         </>
     );
 };
