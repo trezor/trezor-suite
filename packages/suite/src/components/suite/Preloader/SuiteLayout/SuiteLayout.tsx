@@ -8,7 +8,7 @@ import { Metadata } from 'src/components/suite';
 import { GuideRouter, GuideButton } from 'src/components/guide';
 import { HORIZONTAL_LAYOUT_PADDINGS, MAX_CONTENT_WIDTH } from 'src/constants/suite/layout';
 import { DiscoveryProgress } from 'src/components/wallet';
-import { useLayoutSize } from 'src/hooks/suite';
+import { useLayoutSize, useSelector } from 'src/hooks/suite';
 import { LayoutContext, LayoutContextPayload } from 'src/support/suite/LayoutContext';
 import { useResetScrollOnUrl } from 'src/hooks/suite/useResetScrollOnUrl';
 import { useClearAnchorHighlightOnClick } from 'src/hooks/suite/useClearAnchorHighlightOnClick';
@@ -18,6 +18,7 @@ import { MobileMenu } from './MobileMenu/MobileMenu';
 import { Sidebar } from './Sidebar/Sidebar';
 import { CoinjoinBars } from './CoinjoinBars/CoinjoinBars';
 import { MobileAccountsMenu } from 'src/components/wallet/WalletLayout/AccountsMenu/MobileAccountsMenu';
+import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
 export const Wrapper = styled.div`
     display: flex;
@@ -85,6 +86,8 @@ interface SuiteLayoutProps {
 }
 
 export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
+    const selectedAccount = useSelector(selectSelectedAccount);
+
     const [{ title, TopMenu }, setLayoutPayload] = useState<LayoutContextPayload>({});
 
     const { isMobileLayout } = useLayoutSize();
@@ -92,6 +95,8 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
     const { scrollRef } = useResetScrollOnUrl();
 
     useClearAnchorHighlightOnClick(wrapperRef);
+
+    const isAccountPage = !!selectedAccount;
 
     return (
         <Wrapper ref={wrapperRef}>
@@ -114,7 +119,7 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
                                 {!isMobileLayout && <Sidebar />}
 
                                 <AppWrapper data-test="@app" ref={scrollRef} id="layout-scroll">
-                                    {isMobileLayout && <MobileAccountsMenu />}
+                                    {isMobileLayout && isAccountPage && <MobileAccountsMenu />}
                                     {TopMenu && <TopMenu />}
 
                                     <ContentWrapper>{children}</ContentWrapper>
