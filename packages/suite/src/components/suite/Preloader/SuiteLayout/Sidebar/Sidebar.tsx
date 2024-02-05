@@ -10,7 +10,10 @@ const Container = styled.nav`
     display: flex;
     flex-direction: column;
     flex: 0 0 auto;
-    width: 240px;
+    width: 280px;
+    resize: horizontal;
+    min-width: 200px;
+    max-width: 400px;
     height: 100%;
     background: ${({ theme }) => theme.backgroundSurfaceElevationNegative};
     border-right: 1px solid ${({ theme }) => theme.borderOnElevation0};

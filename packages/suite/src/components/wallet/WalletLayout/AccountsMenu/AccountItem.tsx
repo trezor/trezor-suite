@@ -3,7 +3,13 @@ import styled from 'styled-components';
 
 import { isTestnet } from '@suite-common/wallet-utils';
 import { spacingsPx, typography } from '@trezor/theme';
-import { CoinLogo, SkeletonRectangle, SkeletonStack } from '@trezor/components';
+import {
+    CoinLogo,
+    SkeletonRectangle,
+    SkeletonStack,
+    TOOLTIP_DELAY_LONG,
+    TruncateWithTooltip,
+} from '@trezor/components';
 
 import { AccountLabel, CoinBalance, FiatValue } from 'src/components/suite';
 import { useDispatch, useLoadingSkeleton } from 'src/hooks/suite';
@@ -36,14 +42,14 @@ export const Left = styled.div`
     align-items: center;
 `;
 
-export const Center = styled.div`
+export const Right = styled.div`
     flex: 1;
     flex-direction: column;
     padding-left: ${spacingsPx.md};
     padding-right: ${spacingsPx.xxs};
     overflow: hidden;
 `;
-export const Right = styled.div`
+export const FiatAmount = styled.div`
     overflow: hidden;
     text-align: right;
 `;
@@ -57,6 +63,8 @@ const Row = styled.div`
 
 const AccountName = styled.div<{ isSelected: boolean }>`
     display: flex;
+    gap: ${spacingsPx.xxs};
+    width: 100%;
     overflow-x: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -82,6 +90,12 @@ const TokensCount = styled.div`
     ${typography.label};
     color: ${({ theme }) => theme.textSubdued};
     line-height: 1.57;
+`;
+const AccountLabelContainer = styled.div`
+    flex: 1;
+    min-width: 60px;
+    overflow: hidden;
+    color: ${({ theme }) => theme.textDefault};
 `;
 
 interface AccountItemProps {
@@ -135,15 +149,37 @@ export const AccountItem = forwardRef(
                     <CoinLogo size={24} symbol={symbol} />
                     {isTokensCountShown && <TokensCount>{tokens.length}</TokensCount>}
                 </Left>
-                <Center>
+                <Right>
                     <Row>
                         <AccountName isSelected={isSelected} data-test={`${dataTestKey}/label`}>
-                            <AccountLabel
-                                accountLabel={accountLabel}
-                                accountType={accountType}
-                                symbol={symbol}
-                                index={index}
-                            />
+                            <AccountLabelContainer>
+                                <AccountLabel
+                                    accountLabel={accountLabel}
+                                    accountType={accountType}
+                                    symbol={symbol}
+                                    index={index}
+                                />
+                            </AccountLabelContainer>
+                            <FiatAmount>
+                                <FiatValue
+                                    amount={formattedBalance}
+                                    symbol={symbol}
+                                    fiatAmountFormatterOptions={{
+                                        minimumFractionDigits: 0,
+                                        maximumFractionDigits: 0,
+                                    }}
+                                >
+                                    {({ value }) =>
+                                        value ? (
+                                            <FiatValueWrapper>
+                                                <TruncateWithTooltip delayShow={TOOLTIP_DELAY_LONG}>
+                                                    {value}
+                                                </TruncateWithTooltip>
+                                            </FiatValueWrapper>
+                                        ) : null
+                                    }
+                                </FiatValue>
+                            </FiatAmount>
                         </AccountName>
                     </Row>
                     {isBalanceShown && (
@@ -172,13 +208,6 @@ export const AccountItem = forwardRef(
                             )}
                         </SkeletonStack>
                     )}
-                </Center>
-                <Right>
-                    <FiatValue amount={formattedBalance} symbol={symbol}>
-                        {({ value }) =>
-                            value ? <FiatValueWrapper>{value}</FiatValueWrapper> : null
-                        }
-                    </FiatValue>
                 </Right>
             </Wrapper>
         );
