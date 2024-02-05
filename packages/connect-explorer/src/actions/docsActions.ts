@@ -62,6 +62,7 @@ export const loadDocs = () => async (dispatch: Dispatch, getState: GetState) => 
         const markdown = new Markdown({
             replaceLink: (link: any, _env: any) => `${GITHUB}${link}`,
         });
+        // @ts-expect-error
         markdown.use(MarkdownReplaceLink);
         markdown.use(MarkdownReplaceLinkAttrs, {
             attrs: {

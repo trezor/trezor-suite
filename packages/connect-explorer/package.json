@@ -20,7 +20,7 @@
         "markdown-it": "^13.0.2",
         "markdown-it-imsize": "^2.0.1",
         "markdown-it-link-attributes": "^4.0.1",
-        "markdown-it-replace-link": "^1.2.0",
+        "markdown-it-replace-link": "^1.2.1",
         "react": "18.2.0",
         "react-dom": "18.2.0",
         "react-infinity-menu": "^4.0.0",
