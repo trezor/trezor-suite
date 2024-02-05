@@ -4,6 +4,9 @@ import { Message, Category } from '@suite-common/suite-types';
 
 import { ContextDomain, FeatureDomain, MessageSystemRootState } from './messageSystemTypes';
 
+export const selectMessageSystemConfig = (state: MessageSystemRootState) =>
+    state.messageSystem.config;
+
 export const selectMessageSystemTimestamp = (state: MessageSystemRootState) =>
     state.messageSystem.timestamp;
 
