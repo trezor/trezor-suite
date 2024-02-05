@@ -3,11 +3,12 @@ import { useDispatch } from 'src/hooks/suite';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
 type SignedMessageData = {
-    message: string;
-    address: string;
+    message?: string;
+    address?: string;
 
-    // Due to wrong abstraction in `useSignVerifyForm` this needs to be optional.
-    // If we ever separate Sign and Verify forms this shall be set to required.
+    /* Due to wrong abstraction in `useSignVerifyForm` this needs to be optional.
+    If we ever separate Sign and Verify forms this shall be set to required.
+    EDIT: All fields are optional when using watch() since react-hook-form 7.50.0 */
     signature?: string;
 };
 
