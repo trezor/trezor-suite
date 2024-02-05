@@ -96,6 +96,7 @@
         "html-webpack-plugin": "^5.5.3",
         "@types/node": "18.17.15",
         "@sentry/types": "7.56.0",
+        "redux": "^5.0.0",
         "@types/react": "18.0.32"
     },
     "devDependencies": {
