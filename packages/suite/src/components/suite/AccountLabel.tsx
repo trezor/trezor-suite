@@ -58,14 +58,14 @@ export const AccountLabel = ({
 
     if (accountLabel) {
         return (
-            <TruncateWithTooltip>
+            <TruncateWithTooltip delay={1000}>
                 <TabularNums>{accountLabel}</TabularNums>
             </TruncateWithTooltip>
         );
     }
 
     return (
-        <TruncateWithTooltip>
+        <TruncateWithTooltip delay={1000}>
             {defaultAccountLabelString({ accountType, symbol, index })}
         </TruncateWithTooltip>
     );

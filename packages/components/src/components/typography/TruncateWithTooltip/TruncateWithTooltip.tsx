@@ -9,9 +9,10 @@ const EllipsisContainer = styled.div`
 
 export interface TruncateWithTooltipProps {
     children: React.ReactNode;
+    delay?: number;
 }
 
-export const TruncateWithTooltip = ({ children }: TruncateWithTooltipProps) => {
+export const TruncateWithTooltip = ({ children, delay }: TruncateWithTooltipProps) => {
     const [isTooltipVisible, setIsTooltipVisible] = useState(false);
     const containerRef = useRef(null);
 
@@ -28,7 +29,7 @@ export const TruncateWithTooltip = ({ children }: TruncateWithTooltipProps) => {
     return (
         <EllipsisContainer ref={containerRef}>
             {isTooltipVisible ? (
-                <Tooltip content={children}>
+                <Tooltip delay={delay} content={children}>
                     <EllipsisContainer>{children}</EllipsisContainer>
                 </Tooltip>
             ) : (

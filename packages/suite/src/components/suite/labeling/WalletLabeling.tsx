@@ -3,11 +3,16 @@ import { useTranslation } from 'src/hooks/suite/useTranslation';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer';
 import { useCallback } from 'react';
+import styled from 'styled-components';
 
 interface WalletLabellingProps {
     device: TrezorDevice;
     shouldUseDeviceLabel?: boolean;
 }
+
+const Container = styled.span`
+    white-space: nowrap;
+`;
 
 export const useWalletLabeling = () => {
     const { translationString } = useTranslation();
@@ -42,5 +47,5 @@ export const WalletLabeling = ({ device, shouldUseDeviceLabel }: WalletLabelling
 
     if (!label) return null;
 
-    return <span>{label}</span>;
+    return <Container>{label}</Container>;
 };
