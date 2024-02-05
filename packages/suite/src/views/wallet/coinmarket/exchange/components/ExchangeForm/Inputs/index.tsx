@@ -22,6 +22,11 @@ import {
 import { useSelector } from 'src/hooks/suite';
 import { selectDeviceAccounts } from '@suite-common/wallet-core';
 import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
+import { spacingsPx } from '@trezor/theme';
+
+const InputsContainer = styled(Wrapper)`
+    gap: ${spacingsPx.sm} 0;
+`;
 
 const Row = styled.div<{ spaceBefore?: boolean }>`
     display: flex;
@@ -131,7 +136,7 @@ const Inputs = () => {
             .every(ac => new BigNumber(ac.balance).isZero());
 
     return (
-        <Wrapper responsiveSize="XL">
+        <InputsContainer responsiveSize="XL">
             <Row>
                 <SendCryptoInput />
                 {!tokenData && <FiatInput />}
@@ -181,7 +186,7 @@ const Inputs = () => {
                         </StyledEvmExplanationBox>
                     </Row>
                 )}
-        </Wrapper>
+        </InputsContainer>
     );
 };
 
