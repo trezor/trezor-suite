@@ -38,6 +38,7 @@ export const useDocs = (url: string) => {
                         return `${baseUrl}/${link}`;
                     },
                 });
+                // @ts-expect-error
                 markdown.use(MarkdownReplaceLink);
                 markdown.use(MarkdownReplaceLinkAttrs, {
                     attrs: {

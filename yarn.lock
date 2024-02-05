@@ -6437,25 +6437,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/addon-actions@npm:^7.6.12":
-  version: 7.6.12
-  resolution: "@storybook/addon-actions@npm:7.6.12"
-  dependencies:
-    "@stellar/js-xdr": "npm:^3.0.1"
-    base32.js: "npm:^0.1.0"
-    bignumber.js: "npm:^9.1.2"
-    buffer: "npm:^6.0.3"
-    sha.js: "npm:^2.3.6"
-    sodium-native: "npm:^4.0.5"
-    tweetnacl: "npm:^1.0.3"
-    typescript: "npm:^5.3.3"
-  dependenciesMeta:
-    sodium-native:
-      optional: true
-  checksum: 30b6ebf9a0b39d7d5c116ee117274bea05623b3ad18c65c2d72d6db26d85e11d9f8336f2e299fd1b203854448744cd6c4f2df4abebb8d63131af623822521236
-  languageName: node
-  linkType: hard
-
 "@storybook/addon-actions@npm:^7.6.13":
   version: 7.6.13
   resolution: "@storybook/addon-actions@npm:7.6.13"
@@ -7533,27 +7514,7 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     react: "npm:18.2.0"
-<<<<<<< HEAD
     react-hook-form: "npm:^7.50.1"
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-    react-hook-form: "npm:^7.48.2"
-=======
-    react-hook-form: "npm:^7.50.1"
->>>>>>> 4bbaa875a0 (wip)
-=======
-<<<<<<< HEAD
-    react-hook-form: "npm:^7.50.1"
->>>>>>> 77f19341ed (fixup! chore: update blockchain-link and related dependecies)
-<<<<<<< HEAD
->>>>>>> 4d2895f67d (chore: update various dependencies (no major update))
-=======
-=======
-    react-hook-form: "npm:^7.50.0"
->>>>>>> 106881fbfd (chore: update react-hook-form and fix types)
->>>>>>> 02791bbe84 (chore: update react-hook-form and fix types)
->>>>>>> bf03199a7c (chore: update react-hook-form and fix types)
   languageName: unknown
   linkType: soft
 
@@ -7581,27 +7542,7 @@ __metadata:
     date-fns: "npm:^2.30.0"
     pdfmake: "npm:^0.2.9"
     react: "npm:18.2.0"
-<<<<<<< HEAD
     react-hook-form: "npm:^7.50.1"
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-    react-hook-form: "npm:^7.48.2"
-=======
-    react-hook-form: "npm:^7.50.1"
->>>>>>> 4bbaa875a0 (wip)
-=======
-<<<<<<< HEAD
-    react-hook-form: "npm:^7.50.1"
->>>>>>> 77f19341ed (fixup! chore: update blockchain-link and related dependecies)
-<<<<<<< HEAD
->>>>>>> 4d2895f67d (chore: update various dependencies (no major update))
-=======
-=======
-    react-hook-form: "npm:^7.50.0"
->>>>>>> 106881fbfd (chore: update react-hook-form and fix types)
->>>>>>> 02791bbe84 (chore: update react-hook-form and fix types)
->>>>>>> bf03199a7c (chore: update react-hook-form and fix types)
     trezor-address-validator: "npm:^0.4.4"
     web3-utils: "npm:^1.10.0"
   languageName: unknown
@@ -8037,27 +7978,7 @@ __metadata:
     "@hookform/resolvers": "npm:3.3.4"
     "@suite-native/atoms": "workspace:*"
     react: "npm:18.2.0"
-<<<<<<< HEAD
     react-hook-form: "npm:^7.50.1"
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-    react-hook-form: "npm:^7.48.2"
-=======
-    react-hook-form: "npm:^7.50.1"
->>>>>>> 4bbaa875a0 (wip)
-=======
-<<<<<<< HEAD
-    react-hook-form: "npm:^7.50.1"
->>>>>>> 77f19341ed (fixup! chore: update blockchain-link and related dependecies)
-<<<<<<< HEAD
->>>>>>> 4d2895f67d (chore: update various dependencies (no major update))
-=======
-=======
-    react-hook-form: "npm:^7.50.0"
->>>>>>> 106881fbfd (chore: update react-hook-form and fix types)
->>>>>>> 02791bbe84 (chore: update react-hook-form and fix types)
->>>>>>> bf03199a7c (chore: update react-hook-form and fix types)
     yup: "npm:^0.32.11"
   languageName: unknown
   linkType: soft
@@ -8244,27 +8165,7 @@ __metadata:
     date-fns: "npm:^2.30.0"
     jotai: "npm:1.9.1"
     react: "npm:18.2.0"
-<<<<<<< HEAD
     react-hook-form: "npm:^7.50.1"
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-    react-hook-form: "npm:^7.48.2"
-=======
-    react-hook-form: "npm:^7.50.1"
->>>>>>> 4bbaa875a0 (wip)
-=======
-<<<<<<< HEAD
-    react-hook-form: "npm:^7.50.1"
->>>>>>> 77f19341ed (fixup! chore: update blockchain-link and related dependecies)
-<<<<<<< HEAD
->>>>>>> 4d2895f67d (chore: update various dependencies (no major update))
-=======
-=======
-    react-hook-form: "npm:^7.50.0"
->>>>>>> 106881fbfd (chore: update react-hook-form and fix types)
->>>>>>> 02791bbe84 (chore: update react-hook-form and fix types)
->>>>>>> bf03199a7c (chore: update react-hook-form and fix types)
     react-native: "npm:0.73.2"
     react-native-reanimated: "npm:3.7.0-nightly-20240101-9d365ae7b"
     react-redux: "npm:8.0.7"
@@ -9130,19 +9031,6 @@ __metadata:
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/utils": "workspace:*"
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "@types/react": "npm:18.0.32"
-=======
-    "@types/react": "npm:18.2.51"
->>>>>>> eee50b7aca (chore:update react types and remove them from resolutions)
-    "@types/react-date-range": "npm:^1.4.7"
-=======
-=======
->>>>>>> 77f19341ed (fixup! chore: update blockchain-link and related dependecies)
->>>>>>> 4d2895f67d (chore: update various dependencies (no major update))
     "@types/react": "npm:18.2.51"
     "@types/react-date-range": "npm:^1.4.9"
     "@types/react-truncate": "npm:^2.3.7"
@@ -9228,7 +9116,7 @@ __metadata:
     markdown-it: "npm:^13.0.2"
     markdown-it-imsize: "npm:^2.0.1"
     markdown-it-link-attributes: "npm:^4.0.1"
-    markdown-it-replace-link: "npm:^1.2.0"
+    markdown-it-replace-link: "npm:^1.2.1"
     react: "npm:18.2.0"
     react-dom: "npm:18.2.0"
     react-infinity-menu: "npm:^4.0.0"
@@ -9824,18 +9712,6 @@ __metadata:
     "@trezor/utils": "workspace:*"
     "@types/chrome-remote-interface": "npm:^0.31.14"
     "@types/cypress-image-snapshot": "npm:^3.1.8"
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "@types/react": "npm:18.0.32"
-    "@types/react-dom": "npm:18.2.14"
-=======
-    "@types/react": "npm:18.2.51"
-    "@types/react-dom": "npm:18.2.18"
->>>>>>> eee50b7aca (chore:update react types and remove them from resolutions)
-    "@types/react-helmet": "npm:^6.1.8"
-=======
-=======
->>>>>>> 77f19341ed (fixup! chore: update blockchain-link and related dependecies)
     "@types/react": "npm:18.2.51"
     "@types/react-dom": "npm:18.2.18"
     "@types/react-helmet": "npm:^6.1.11"
@@ -9927,34 +9803,14 @@ __metadata:
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/file-saver": "npm:^2.0.6"
-<<<<<<< HEAD
     "@types/invity-api": "npm:^1.0.20"
-    "@types/jws": "npm:^3.2.7"
-    "@types/pako": "npm:^2.0.2"
-=======
-    "@types/invity-api": "npm:^1.0.17"
     "@types/jws": "npm:^3.2.9"
     "@types/pako": "npm:^2.0.3"
-<<<<<<< HEAD
->>>>>>> 6cd17ab7be (chore: update various dependencies (no major update))
-    "@types/pdfmake": "npm:^0.2.8"
-=======
     "@types/pdfmake": "npm:^0.2.9"
->>>>>>> cead5a385c (fixup! chore: update various dependencies (no major update))
     "@types/qrcode.react": "npm:^1.0.5"
     "@types/react": "npm:18.2.51"
     "@types/react-dom": "npm:18.2.18"
     "@types/react-qr-reader": "npm:^2.1.7"
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "@types/react-test-renderer": "npm:^18.0.5"
-=======
-    "@types/react-test-renderer": "npm:^18.0.7"
->>>>>>> eee50b7aca (chore:update react types and remove them from resolutions)
-    "@types/react-window": "npm:^1.8.7"
-=======
-=======
->>>>>>> 77f19341ed (fixup! chore: update blockchain-link and related dependecies)
     "@types/react-test-renderer": "npm:^18.0.7"
     "@types/react-window": "npm:^1.8.8"
     "@types/redux-logger": "npm:^3.0.11"
@@ -9984,20 +9840,7 @@ __metadata:
     react-dom: "npm:18.2.0"
     react-focus-lock: "npm:^2.9.7"
     react-helmet: "npm:^6.1.0"
-<<<<<<< HEAD
-<<<<<<< HEAD
-    react-hook-form: "npm:^7.48.2"
-=======
     react-hook-form: "npm:^7.50.1"
->>>>>>> 4bbaa875a0 (wip)
-=======
-<<<<<<< HEAD
-    react-hook-form: "npm:^7.50.1"
->>>>>>> 77f19341ed (fixup! chore: update blockchain-link and related dependecies)
-=======
-    react-hook-form: "npm:^7.50.0"
->>>>>>> 106881fbfd (chore: update react-hook-form and fix types)
->>>>>>> 02791bbe84 (chore: update react-hook-form and fix types)
     react-intl: "npm:^6.6.2"
     react-markdown: "npm:^9.0.1"
     react-qr-reader: "npm:^2.2.1"
@@ -24243,18 +24086,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"markdown-it-replace-link@npm:^1.2.0":
-  version: 1.2.0
-  resolution: "markdown-it-replace-link@npm:1.2.0"
+"markdown-it-replace-link@npm:^1.2.1":
+  version: 1.2.1
+  resolution: "markdown-it-replace-link@npm:1.2.1"
   dependencies:
     dom-serializer: "npm:^2.0.0"
     htmlparser2: "npm:^8.0.1"
+  peerDependencies:
+    "@types/markdown-it": "*"
+    markdown-it: "*"
   dependenciesMeta:
     dom-serializer:
       optional: true
     htmlparser2:
       optional: true
-  checksum: 87e9c1c3e2394172c5bc151ea82765c42ae6cac865963359801253ed7b7d6dfdafab7028c7a413b23264220bebfe6e6d747284c98bf5c68cafa19dabe03f589f
+  checksum: 0ab4e8f0ebd81dfdc8b471b884d8bd58b37a7c4b15866b403e049bc17c5a83a41b4503c493e68e88dfcd4b4798f73dc4ce0f29ad04512ee5c19324b632602070
   languageName: node
   linkType: hard
 
@@ -28236,37 +28082,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-"react-hook-form@npm:^7.48.2":
-  version: 7.48.2
-  resolution: "react-hook-form@npm:7.48.2"
-  peerDependencies:
-    react: ^16.8.0 || ^17 || ^18
-  checksum: 6cb494f359675e78c14c49a33d1c568df1a03db4c750eab18d6554e622fd64e04195c57efa138db03f8988587d132c57d2a7f5f3dd9157be996cc9acd4362170
-=======
-=======
->>>>>>> 77f19341ed (fixup! chore: update blockchain-link and related dependecies)
 "react-hook-form@npm:^7.50.1":
   version: 7.50.1
   resolution: "react-hook-form@npm:7.50.1"
   peerDependencies:
     react: ^16.8.0 || ^17 || ^18
   checksum: 54a9daa2143c601a9867e96a2159a0bbe98707b5bbeb5953bfdf3342d2f04bfcaa6169907ed167c5c1f3a044630860d4f43685f4ac4e15b9cd892d1b00d54dde
-<<<<<<< HEAD
->>>>>>> 4bbaa875a0 (wip)
-=======
-<<<<<<< HEAD
->>>>>>> 77f19341ed (fixup! chore: update blockchain-link and related dependecies)
-=======
-"react-hook-form@npm:^7.50.0":
-  version: 7.50.0
-  resolution: "react-hook-form@npm:7.50.0"
-  peerDependencies:
-    react: ^16.8.0 || ^17 || ^18
-  checksum: 3b85cc179053af72a2734f2e77767de8f9b3ecbefeee282b73e81141c4b7bb97308ec00da61fdc25a28299a2defb74bff66417bb85a66357f5ceddba7b697ae7
->>>>>>> 106881fbfd (chore: update react-hook-form and fix types)
->>>>>>> 02791bbe84 (chore: update react-hook-form and fix types)
   languageName: node
   linkType: hard
 
