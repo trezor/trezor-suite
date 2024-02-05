@@ -19,6 +19,12 @@ const initialState: MessageSystemState = {
     dismissedMessages: {},
 };
 
+export const messageSystemPersistedWhitelist: Array<keyof MessageSystemState> = [
+    'config',
+    'currentSequence',
+    'dismissedMessages',
+];
+
 const getMessageStateById = (draft: MessageSystemState, id: string): MessageState => {
     if (!draft.dismissedMessages[id]) {
         draft.dismissedMessages[id] = {

@@ -16,7 +16,10 @@ import {
     preparePersistReducer,
 } from '@suite-native/storage';
 import { prepareAnalyticsReducer } from '@suite-common/analytics';
-import { prepareMessageSystemReducer } from '@suite-common/message-system';
+import {
+    messageSystemPersistedWhitelist,
+    prepareMessageSystemReducer,
+} from '@suite-common/message-system';
 import { notificationsReducer } from '@suite-common/toast-notifications';
 import { graphReducer, graphPersistWhitelist } from '@suite-native/graph';
 import { discoveryConfigPersistWhitelist, discoveryConfigReducer } from '@suite-native/discovery';
@@ -30,7 +33,7 @@ const accountsReducer = prepareAccountsReducer(extraDependencies);
 const fiatRatesReducer = prepareFiatRatesReducer(extraDependencies);
 const blockchainReducer = prepareBlockchainReducer(extraDependencies);
 const analyticsReducer = prepareAnalyticsReducer(extraDependencies);
-const messageSystem = prepareMessageSystemReducer(extraDependencies);
+const messageSystemReducer = prepareMessageSystemReducer(extraDependencies);
 const deviceReducer = prepareDeviceReducer(extraDependencies);
 const discoveryReducer = prepareDiscoveryReducer(extraDependencies);
 
@@ -101,6 +104,13 @@ export const prepareRootReducers = async () => {
         version: 1,
     });
 
+    const messageSystemPersistedReducer = await preparePersistReducer({
+        reducer: messageSystemReducer,
+        persistedKeys: messageSystemPersistedWhitelist,
+        key: 'messageSystem',
+        version: 1,
+    });
+
     return combineReducers({
         app: appReducer,
         analytics: analyticsPersistedReducer,
@@ -112,6 +122,6 @@ export const prepareRootReducers = async () => {
         logs: logsSlice.reducer,
         notifications: notificationsReducer,
         discoveryConfig: discoveryConfigPersistedReducer,
-        messageSystem,
+        messageSystem: messageSystemPersistedReducer,
     });
 };
