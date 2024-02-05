@@ -98,7 +98,7 @@ window.addEventListener('load', () => {
     };
 
     const firefox = {
-        name: 'Firefox 78+',
+        name: 'Firefox 102+',
         urlDownload: FIREFOX_URL,
         urlUpdate: FIREFOX_UPDATE_URL,
         icon: iconFirefox,
