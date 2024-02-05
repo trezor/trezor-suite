@@ -13,6 +13,6 @@
     "dependencies": {
         "@reduxjs/toolkit": "1.9.5",
         "react-native": "0.73.2",
-        "react-redux": "8.0.7"
+        "react-redux": "9.1.0"
     }
 }

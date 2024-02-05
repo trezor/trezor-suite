@@ -39,7 +39,7 @@
         "react-intl": "^6.5.1",
         "react-native": "0.73.2",
         "react-native-reanimated": "3.7.0-nightly-20240101-9d365ae7b",
-        "react-redux": "8.0.7"
+        "react-redux": "9.1.0"
     },
     "devDependencies": {
         "jest": "29.5.0",

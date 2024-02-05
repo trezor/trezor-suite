@@ -32,7 +32,7 @@
         "react-native": "0.73.2",
         "react-native-keyboard-aware-scroll-view": "0.9.5",
         "react-native-safe-area-context": "4.8.2",
-        "react-redux": "8.0.7"
+        "react-redux": "9.1.0"
     },
     "devDependencies": {
         "typescript": "5.3.2"

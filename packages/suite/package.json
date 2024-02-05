@@ -96,7 +96,7 @@
         "react-intl": "^6.5.1",
         "react-markdown": "^9.0.0",
         "react-qr-reader": "^2.2.1",
-        "react-redux": "8.0.7",
+        "react-redux": "9.1.0",
         "react-router-dom": "^5.2.0",
         "react-select": "^5.8.0",
         "react-svg": "^16.1.29",

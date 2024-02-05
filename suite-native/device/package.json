@@ -33,7 +33,7 @@
         "lottie-react-native": "6.5.1",
         "react": "18.2.0",
         "react-native": "0.73.2",
-        "react-redux": "8.0.7",
+        "react-redux": "9.1.0",
         "semver": "^7.5.4"
     }
 }

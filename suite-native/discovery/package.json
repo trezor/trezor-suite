@@ -27,6 +27,6 @@
         "@trezor/connect": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "react": "18.2.0",
-        "react-redux": "8.0.7"
+        "react-redux": "9.1.0"
     }
 }

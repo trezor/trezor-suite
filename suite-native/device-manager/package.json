@@ -33,6 +33,6 @@
         "react-native": "0.73.2",
         "react-native-reanimated": "3.7.0-nightly-20240101-9d365ae7b",
         "react-native-safe-area-context": "4.8.2",
-        "react-redux": "8.0.7"
+        "react-redux": "9.1.0"
     }
 }
