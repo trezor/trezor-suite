@@ -231,7 +231,7 @@ interface CommonProps extends Omit<ReactSelectProps<Option>, 'onChange'> {
      */
     bottomText?: ReactNode;
     hasBottomPadding?: boolean;
-    minValueWidth?: string;
+    minValueWidth?: string; // TODO: should be probably removed
     inputState?: InputState;
     onChange?: (value: Option, ref?: SelectInstance<Option, boolean> | null) => void;
     'data-test'?: string;

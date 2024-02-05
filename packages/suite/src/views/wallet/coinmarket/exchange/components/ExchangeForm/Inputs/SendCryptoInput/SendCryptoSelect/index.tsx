@@ -89,7 +89,7 @@ const SendCryptoSelect = () => {
                     isClearable={false}
                     options={sendCryptoOptions}
                     isDisabled={account.networkType !== 'ethereum'}
-                    minValueWidth="100px"
+                    minValueWidth="58px"
                     isClean
                     data-test="@coinmarket/exchange/crypto-currency-select"
                 />
