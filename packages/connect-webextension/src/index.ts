@@ -14,10 +14,11 @@ import {
 } from '@trezor/connect/lib/exports';
 import { factory } from '@trezor/connect/lib/factory';
 import { initLog, setLogWriter, LogMessage, LogWriter } from '@trezor/connect/lib/utils/debug';
+// Import as src not lib due to webpack issues with inlining content script later
+import { ServiceWorkerWindowChannel } from '@trezor/connect-web/src/channels/serviceworker-window';
+import * as popup from '@trezor/connect-web/src/popup';
 
-import * as popup from './popup';
 import { parseConnectSettings } from './connectSettings';
-import { ServiceWorkerWindowChannel } from './channels/serviceworker-window';
 
 const eventEmitter = new EventEmitter();
 let _settings = parseConnectSettings();
@@ -71,6 +72,7 @@ const init = (settings: Partial<ConnectSettings> = {}): Promise<void> => {
     const equalSettings = JSON.stringify(_settings) === JSON.stringify(settings);
     _settings = parseConnectSettings({ ..._settings, ...settings });
     if (!_popupManager || !equalSettings) {
+        _settings.useCoreInPopup = true;
         _popupManager = new popup.PopupManager(_settings, { logger: popupManagerLogger });
         setLogWriter(() => logWriterFactory(_popupManager));
     }
@@ -85,26 +87,6 @@ const init = (settings: Partial<ConnectSettings> = {}): Promise<void> => {
     if (!_settings.transports?.length) {
         _settings.transports = ['BridgeTransport', 'WebUsbTransport'];
     }
-
-    _popupManager.channel.on('message', message => {
-        if (message.type === POPUP.CORE_LOADED) {
-            _popupManager.channel.postMessage({
-                type: POPUP.HANDSHAKE,
-                // in this case, settings will be validated in popup
-                payload: { settings: _settings },
-            });
-            _popupManager.handshakePromise.resolve();
-        }
-        if (message.type === POPUP.CLOSED) {
-            // When popup is closed we should create a not-real response as if the request was interrupted.
-            // Because when popup closes and TrezorConnect is living there it cannot respond, but we know
-            // it was interrupted so we safely fake it.
-            _popupManager.channel.resolveMessagePromises({
-                code: 'Method_Interrupted',
-                error: POPUP.CLOSED,
-            });
-        }
-    });
 
     logger.debug('initiated');
 
@@ -133,7 +115,7 @@ const call: CallMethod = async params => {
         },
     });
 
-    await _popupManager.handshakePromise.promise;
+    await _popupManager.handshakePromise?.promise;
 
     // post message to core in popup
     try {
@@ -216,6 +198,7 @@ const initProxyChannel = () => {
     channel.init();
     channel.on('message', message => {
         const { id, payload, type } = message;
+        if (!payload) return;
         const { method, settings } = payload;
 
         if (type === POPUP.INIT) {

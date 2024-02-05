@@ -11,8 +11,7 @@ import {
     CallMethod,
 } from '@trezor/connect/lib/exports';
 import { factory } from '@trezor/connect/lib/factory';
-
-import { WindowServiceWorkerChannel } from '../channels/window-serviceworker';
+import { WindowServiceWorkerChannel } from '@trezor/connect-web/lib/channels/window-serviceworker';
 
 const eventEmitter = new EventEmitter();
 let _channel: any;

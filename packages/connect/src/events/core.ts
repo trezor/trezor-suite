@@ -26,6 +26,7 @@ export type CoreRequestMessage =
 
 export type CoreEventMessage = {
     success?: boolean; // response status in ResponseMessage
+    channel?: { here: string; peer: string }; // channel name
 } & (
     | BlockchainEventMessage
     | DeviceEventMessage

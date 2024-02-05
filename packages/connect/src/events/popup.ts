@@ -82,6 +82,21 @@ export interface PopupContentScriptLoaded {
     payload: { id: string };
 }
 
+export interface PopupExtensionUsbPermissions {
+    type: typeof POPUP.EXTENSION_USB_PERMISSIONS;
+    payload: typeof undefined;
+}
+
+export interface PopupBootstrap {
+    type: typeof POPUP.BOOTSTRAP;
+    payload: typeof undefined;
+}
+
+export interface PopupCloseWindow {
+    type: typeof POPUP.CLOSE_WINDOW;
+    payload: typeof undefined;
+}
+
 export type PopupEvent =
     | {
           type: typeof POPUP.LOADED | typeof POPUP.CORE_LOADED | typeof POPUP.CANCEL_POPUP_REQUEST;
@@ -91,7 +106,11 @@ export type PopupEvent =
     | PopupHandshake
     | PopupError
     | PopupContentScriptLoaded
-    | PopupMethodInfo;
+    | PopupMethodInfo
+    | PopupExtensionUsbPermissions
+    | PopupBootstrap
+    | PopupCloseWindow
+    | PopupClosedMessage;
 
 export type PopupEventMessage = PopupEvent & { event: typeof UI_EVENT };
 
