@@ -233,6 +233,52 @@ suite-desktop build windows codesign:
     paths:
       - packages/connect-explorer/build
 
+.connect-webextension build base:
+  stage: build
+  interruptible: true
+  variables:
+    GIT_STRATEGY: clone
+    GIT_SUBMODULE_STRATEGY: recursive
+  script:
+    - git submodule update --init --recursive
+    - yarn install --immutable
+    - yarn build:libs
+    # build webextension inside package @trezor/connect-explorer package
+    - yarn workspace @trezor/connect-explorer build:webextension
+    # build webextension examples with latest trezor.io and latest npm package
+    - node ./packages/connect-examples/update-webextensions.js --trezor-connect-src "https://suite.corp.sldev.cz/connect/${CI_COMMIT_REF_NAME}/"
+    # build webextension examples with latest trezor.io and outdated npm package (current production)
+    - node ./packages/connect-examples/update-webextensions.js --trezor-connect-src "https://suite.corp.sldev.cz/connect/${CI_COMMIT_REF_NAME}/" --build-folder build-legacy --npm-src "https://connect.trezor.io/9/trezor-connect.js"
+    # build webextension example using @trezor/connect-webextension package
+    - yarn workspace @trezor/connect-webextension build
+    - node ./packages/connect-examples/update-webextensions-sw.js
+
+  artifacts:
+    expire_in: 14 days
+    paths:
+      - packages/connect-examples/webextension-mv2/build
+      - packages/connect-examples/webextension-mv2/build-legacy
+      - packages/connect-examples/webextension-mv3/build
+      - packages/connect-examples/webextension-mv3/build-legacy
+      - packages/connect-examples/webextension-mv3-sw/build
+      - packages/connect-explorer/build-webextension
+
+connect-webextension build:
+  extends: .connect-webextension build base
+  except:
+    refs:
+      - /^release\/connect\//
+  variables:
+    NODE_ENV: "development"
+
+connect-webextension build production:
+  extends: .connect-webextension build base
+  only:
+    refs:
+      - /^release\/connect\//
+  variables:
+    NODE_ENV: "production"
+
 .connect-web build base:
   stage: build
   interruptible: true
@@ -246,16 +292,6 @@ suite-desktop build windows codesign:
     - ./packages/connect-web/scripts/check-inline-build-size.sh
     - yarn workspace @trezor/connect-iframe build
     - yarn workspace @trezor/connect-popup build
-    - yarn workspace @trezor/connect-explorer-webextension build
-    # build webextension examples with latest trezor.io and latest npm package
-    - node ./packages/connect-examples/update-webextensions.js --trezor-connect-src "https://suite.corp.sldev.cz/connect/${CI_COMMIT_REF_NAME}/"
-    # build webextension examples with latest trezor.io and outdated npm package (current production)
-    - node ./packages/connect-examples/update-webextensions.js --trezor-connect-src "https://suite.corp.sldev.cz/connect/${CI_COMMIT_REF_NAME}/" --build-folder build-legacy --npm-src "https://connect.trezor.io/9/trezor-connect.js"
-    # build webextension example using @trezor/connect-webextension package
-    - yarn workspace @trezor/connect-webextension build
-    - node ./packages/connect-examples/update-webextensions-sw.js
-    # build webextension inside package @trezor/connect-explorer package
-    - yarn workspace @trezor/connect-explorer build:webextension
 
   artifacts:
     expire_in: 14 days
@@ -263,13 +299,6 @@ suite-desktop build windows codesign:
       - packages/connect-iframe/build
       - packages/connect-web/build
       - packages/connect-popup/build
-      - packages/connect-examples/webextension-mv2/build
-      - packages/connect-examples/webextension-mv2/build-legacy
-      - packages/connect-examples/webextension-mv3/build
-      - packages/connect-examples/webextension-mv3/build-legacy
-      - packages/connect-examples/webextension-mv3-sw/build
-      - packages/connect-explorer-webextension/build
-      - packages/connect-explorer/build-webextension
 
 connect-explorer build:
   extends: .connect-explorer build base
