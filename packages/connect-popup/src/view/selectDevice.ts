@@ -33,7 +33,13 @@ const initWebUsbButton = (showLoader: boolean) => {
                     throw ERRORS.TypedError('Popup_ConnectionMissing');
                 }
                 window.postMessage(
-                    { type: POPUP.EXTENSION_USB_PERMISSIONS },
+                    {
+                        type: POPUP.EXTENSION_USB_PERMISSIONS,
+                        channel: {
+                            here: '@trezor/connect-popup',
+                            peer: '@trezor/connect-web',
+                        },
+                    },
                     window.location.origin,
                 );
 

@@ -233,6 +233,7 @@ const postMessage = (message: CoreEventMessage) => {
     if (!usingPopup || shouldUiEventBeSentToHost(message)) {
         let origin = DataManager.getSettings('origin');
         if (!origin || origin.indexOf('file://') >= 0) origin = '*';
+        message.channel = { here: '@trezor/connect-iframe', peer: '@trezor/connect-web' };
         window.parent.postMessage(message, origin);
     }
 };
