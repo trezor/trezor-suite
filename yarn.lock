@@ -7543,9 +7543,17 @@ __metadata:
     react-hook-form: "npm:^7.50.1"
 >>>>>>> 4bbaa875a0 (wip)
 =======
+<<<<<<< HEAD
     react-hook-form: "npm:^7.50.1"
 >>>>>>> 77f19341ed (fixup! chore: update blockchain-link and related dependecies)
+<<<<<<< HEAD
 >>>>>>> 4d2895f67d (chore: update various dependencies (no major update))
+=======
+=======
+    react-hook-form: "npm:^7.50.0"
+>>>>>>> 106881fbfd (chore: update react-hook-form and fix types)
+>>>>>>> 02791bbe84 (chore: update react-hook-form and fix types)
+>>>>>>> bf03199a7c (chore: update react-hook-form and fix types)
   languageName: unknown
   linkType: soft
 
@@ -7583,9 +7591,17 @@ __metadata:
     react-hook-form: "npm:^7.50.1"
 >>>>>>> 4bbaa875a0 (wip)
 =======
+<<<<<<< HEAD
     react-hook-form: "npm:^7.50.1"
 >>>>>>> 77f19341ed (fixup! chore: update blockchain-link and related dependecies)
+<<<<<<< HEAD
 >>>>>>> 4d2895f67d (chore: update various dependencies (no major update))
+=======
+=======
+    react-hook-form: "npm:^7.50.0"
+>>>>>>> 106881fbfd (chore: update react-hook-form and fix types)
+>>>>>>> 02791bbe84 (chore: update react-hook-form and fix types)
+>>>>>>> bf03199a7c (chore: update react-hook-form and fix types)
     trezor-address-validator: "npm:^0.4.4"
     web3-utils: "npm:^1.10.0"
   languageName: unknown
@@ -8031,9 +8047,17 @@ __metadata:
     react-hook-form: "npm:^7.50.1"
 >>>>>>> 4bbaa875a0 (wip)
 =======
+<<<<<<< HEAD
     react-hook-form: "npm:^7.50.1"
 >>>>>>> 77f19341ed (fixup! chore: update blockchain-link and related dependecies)
+<<<<<<< HEAD
 >>>>>>> 4d2895f67d (chore: update various dependencies (no major update))
+=======
+=======
+    react-hook-form: "npm:^7.50.0"
+>>>>>>> 106881fbfd (chore: update react-hook-form and fix types)
+>>>>>>> 02791bbe84 (chore: update react-hook-form and fix types)
+>>>>>>> bf03199a7c (chore: update react-hook-form and fix types)
     yup: "npm:^0.32.11"
   languageName: unknown
   linkType: soft
@@ -8230,9 +8254,17 @@ __metadata:
     react-hook-form: "npm:^7.50.1"
 >>>>>>> 4bbaa875a0 (wip)
 =======
+<<<<<<< HEAD
     react-hook-form: "npm:^7.50.1"
 >>>>>>> 77f19341ed (fixup! chore: update blockchain-link and related dependecies)
+<<<<<<< HEAD
 >>>>>>> 4d2895f67d (chore: update various dependencies (no major update))
+=======
+=======
+    react-hook-form: "npm:^7.50.0"
+>>>>>>> 106881fbfd (chore: update react-hook-form and fix types)
+>>>>>>> 02791bbe84 (chore: update react-hook-form and fix types)
+>>>>>>> bf03199a7c (chore: update react-hook-form and fix types)
     react-native: "npm:0.73.2"
     react-native-reanimated: "npm:3.7.0-nightly-20240101-9d365ae7b"
     react-redux: "npm:8.0.7"
@@ -9959,8 +9991,13 @@ __metadata:
     react-hook-form: "npm:^7.50.1"
 >>>>>>> 4bbaa875a0 (wip)
 =======
+<<<<<<< HEAD
     react-hook-form: "npm:^7.50.1"
 >>>>>>> 77f19341ed (fixup! chore: update blockchain-link and related dependecies)
+=======
+    react-hook-form: "npm:^7.50.0"
+>>>>>>> 106881fbfd (chore: update react-hook-form and fix types)
+>>>>>>> 02791bbe84 (chore: update react-hook-form and fix types)
     react-intl: "npm:^6.6.2"
     react-markdown: "npm:^9.0.1"
     react-qr-reader: "npm:^2.2.1"
@@ -28219,7 +28256,17 @@ __metadata:
 <<<<<<< HEAD
 >>>>>>> 4bbaa875a0 (wip)
 =======
+<<<<<<< HEAD
 >>>>>>> 77f19341ed (fixup! chore: update blockchain-link and related dependecies)
+=======
+"react-hook-form@npm:^7.50.0":
+  version: 7.50.0
+  resolution: "react-hook-form@npm:7.50.0"
+  peerDependencies:
+    react: ^16.8.0 || ^17 || ^18
+  checksum: 3b85cc179053af72a2734f2e77767de8f9b3ecbefeee282b73e81141c4b7bb97308ec00da61fdc25a28299a2defb74bff66417bb85a66357f5ceddba7b697ae7
+>>>>>>> 106881fbfd (chore: update react-hook-form and fix types)
+>>>>>>> 02791bbe84 (chore: update react-hook-form and fix types)
   languageName: node
   linkType: hard
 
