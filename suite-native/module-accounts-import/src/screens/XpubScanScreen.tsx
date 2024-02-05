@@ -22,7 +22,9 @@ import {
     XpubFormContext,
     xpubFormValidationSchema,
     XpubFormValues,
-} from '@suite-common/validators';
+    // TODO: This direct import is needed to avoid importing the `@suite-common/wallet-utils`
+    // to the `connect` packages. Should be revisited soon when fixing the monorepo tree shaking problems.
+} from '@suite-common/validators/src/schemas/xpubSchema';
 
 import { XpubImportSection } from '../components/XpubImportSection';
 import { AccountImportSubHeader } from '../components/AccountImportSubHeader';

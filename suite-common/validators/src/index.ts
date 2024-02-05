@@ -5,4 +5,3 @@ export * from './inputsLengthConfig';
 
 export * from './schemas/pinSchema';
 export * from './schemas/passphraseSchema';
-export * from './schemas/xpubSchema';
