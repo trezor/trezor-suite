@@ -1,11 +1,5 @@
 import { css, DefaultTheme } from 'styled-components';
-import {
-    BackgroundTertiaryElevationColor,
-    Elevation,
-    spacings,
-    spacingsPx,
-    nextElevation,
-} from '@trezor/theme';
+import { Color, Elevation, spacings, spacingsPx } from '@trezor/theme';
 
 export type ButtonVariant =
     | 'primary'
@@ -17,14 +11,27 @@ export type ButtonVariant =
 export type ButtonSize = 'large' | 'medium' | 'small' | 'tiny';
 export type IconAlignment = 'left' | 'right';
 
-export const mapElevationToBackgroundTertiary: Record<Elevation, BackgroundTertiaryElevationColor> =
-    {
-        '-1': 'backgroundTertiaryElevationNegative', // For example left menu is negative elevation
-        0: 'backgroundTertiaryDefaultOnElevation0',
-        1: 'backgroundTertiaryDefaultOnElevation1',
-        2: 'backgroundTertiaryDefaultOnElevation2',
-        3: 'backgroundTertiaryDefaultOnElevation3',
-    };
+export const mapElevationToBackgroundTertiaryNormal: Record<Elevation, Color> = {
+    '-1': 'interactionBackgroundTertiaryDefaultHoverOnElevation3', // For example left menu is negative elevation
+
+    // Button lies always on elevation so for example Button that lies has elevation 0, lies on elevation -1.
+    // This is why the values here a shifted by 1.
+    0: 'interactionBackgroundTertiaryDefaultNormalOnElevationNegative',
+    1: 'interactionBackgroundTertiaryDefaultNormalOnElevation0',
+    2: 'interactionBackgroundTertiaryDefaultNormalOnElevation1',
+    3: 'interactionBackgroundTertiaryDefaultNormalOnElevation2',
+};
+
+export const mapElevationToBackgroundTertiaryHover: Record<Elevation, Color> = {
+    '-1': 'interactionBackgroundTertiaryDefaultHoverOnElevation3', // This is here just to satisfy Typescript mapping
+
+    // Button lies always on elevation so for example Button that lies has elevation 0, lies on elevation -1.
+    // This is why the values here a shifted by 1.
+    0: 'interactionBackgroundTertiaryDefaultHoverOnElevationNegative',
+    1: 'interactionBackgroundTertiaryDefaultHoverOnElevation0',
+    2: 'interactionBackgroundTertiaryDefaultHoverOnElevation1',
+    3: 'interactionBackgroundTertiaryDefaultHoverOnElevation2',
+};
 
 export const getPadding = (size: ButtonSize, hasLabel?: boolean) => {
     switch (size) {
@@ -107,13 +114,14 @@ export const getVariantStyle = (variant: ButtonVariant, elevation: Elevation) =>
             `;
         case 'tertiary':
             return css`
-                background: ${({ theme }) => theme[mapElevationToBackgroundTertiary[elevation]]};
+                background: ${({ theme }) =>
+                    theme[mapElevationToBackgroundTertiaryNormal[elevation]]};
                 color: ${({ theme }) => theme.textOnTertiary};
 
                 :hover,
                 :active {
                     background: ${({ theme }) =>
-                        theme[mapElevationToBackgroundTertiary[nextElevation[elevation]]]};
+                        theme[mapElevationToBackgroundTertiaryHover[elevation]]};
                 }
             `;
         case 'info':

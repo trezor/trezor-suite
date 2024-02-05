@@ -1,6 +1,6 @@
-import { BackgroundElevationColor, Elevation } from '@trezor/theme';
+import { Color, Elevation } from '@trezor/theme';
 
-export const mapElevationToSkeletonForeground: Record<Elevation, BackgroundElevationColor> = {
+export const mapElevationToSkeletonForeground: Record<Elevation, Color> = {
     '-1': 'backgroundSurfaceElevation0',
     0: 'backgroundSurfaceElevationNegative',
     1: 'backgroundSurfaceElevation0',
