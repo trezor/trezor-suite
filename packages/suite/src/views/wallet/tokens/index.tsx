@@ -25,6 +25,7 @@ export const Tokens = () => {
                 explorerUrlQueryString={explorerUrlQueryString}
                 tokens={account.tokens}
                 networkType={account.networkType}
+                networkSymbol={account.symbol}
             />
             {!account.tokens?.length && <NoTokens />}
         </WalletLayout>
