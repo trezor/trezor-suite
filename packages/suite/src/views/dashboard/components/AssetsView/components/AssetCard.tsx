@@ -22,6 +22,7 @@ import { FiatHeader } from '../../FiatHeader';
 import { ArrowIcon, styledHoverOnParentOfArrowIcon } from './ArrowIcon';
 import { AssetCardInfo, AssetCardInfoSkeleton } from './AssetCardInfo';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
+import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
 
 const StyledCard = styled(Card)`
     :hover {
@@ -131,6 +132,8 @@ export const AssetCard = ({
         setSearchString(undefined);
     };
 
+    const { fiatAmount } = useFiatFromCryptoValue({ amount: cryptoValue, symbol });
+
     return (
         <StyledCard onClick={handleCardClick}>
             <Content>
@@ -147,7 +150,7 @@ export const AssetCard = ({
                         <FiatAmount>
                             <FiatHeader
                                 size="medium"
-                                portfolioValue={cryptoValue}
+                                portfolioValue={fiatAmount ?? '0'}
                                 localCurrency={localCurrency}
                             />
                         </FiatAmount>
