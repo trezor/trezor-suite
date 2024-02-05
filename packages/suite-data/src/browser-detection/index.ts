@@ -90,7 +90,7 @@ window.addEventListener('load', () => {
     };
 
     const chrome = {
-        name: 'Chrome 84+',
+        name: 'Chrome 92+',
         urlDownload: CHROME_URL,
         urlUpdate: CHROME_UPDATE_URL,
         icon: iconChrome,
