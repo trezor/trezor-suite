@@ -1,6 +1,6 @@
 import { MouseEvent, ReactNode } from 'react';
 import styled from 'styled-components';
-import { Tooltip } from '@trezor/components';
+import { TOOLTIP_DELAY_NONE, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { NetworkSymbol } from 'src/types/wallet';
 import { Translation } from './Translation';
@@ -45,7 +45,8 @@ export const AmountUnitSwitchWrapper = ({ symbol, children }: AmountUnitSwitchWr
         <Tooltip
             cursor="default"
             maxWidth={200}
-            delay={[600, 0]}
+            delayShow={TOOLTIP_DELAY_NORMAL}
+            delayHide={TOOLTIP_DELAY_NONE}
             placement="bottom"
             interactive={false}
             hideOnClick={false}

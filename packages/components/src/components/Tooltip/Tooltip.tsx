@@ -8,6 +8,11 @@ import { borders, spacings, spacingsPx, typography, zIndices } from '@trezor/the
 
 import { Icon, IconType } from '../assets/Icon/Icon';
 
+export const TOOLTIP_DELAY_NONE = 0;
+export const TOOLTIP_DELAY_SHORT = 200;
+export const TOOLTIP_DELAY_NORMAL = 500;
+export const TOOLTIP_DELAY_LONG = 1000;
+
 type Cursor = 'inherit' | 'pointer' | 'help' | 'default' | 'not-allowed';
 
 const getContainerPadding = (isLarge: boolean, isWithHeader: boolean) => {
@@ -90,8 +95,15 @@ const getTranslateStyle = (placement: TippyProps['placement']) => {
             return '';
     }
 };
+export type TooltipDelay =
+    | typeof TOOLTIP_DELAY_NONE
+    | typeof TOOLTIP_DELAY_SHORT
+    | typeof TOOLTIP_DELAY_NORMAL
+    | typeof TOOLTIP_DELAY_LONG;
 
-export type TooltipProps = Omit<TippyProps, 'offset'> & {
+export type TooltipProps = Omit<TippyProps, 'offset' | 'delay'> & {
+    delayShow?: TooltipDelay;
+    delayHide?: TooltipDelay;
     /**
      *  @description Legacy prop
      */
@@ -112,7 +124,8 @@ export const Tooltip = ({
     isLarge = false,
     dashed = false,
     duration = 150,
-    delay = 200,
+    delayShow = TOOLTIP_DELAY_SHORT,
+    delayHide = TOOLTIP_DELAY_SHORT,
     maxWidth = 400,
     offset = 10,
     cursor = 'help',
@@ -165,7 +178,7 @@ export const Tooltip = ({
                 onShow={handleOnShow}
                 onHide={handleOnHide}
                 duration={duration}
-                delay={delay}
+                delay={[delayShow, delayHide]}
                 offset={[0, offset]}
                 interactive={interactive}
                 appendTo={() => document.body}

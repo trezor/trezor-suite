@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { CoinLogo, Tooltip } from '@trezor/components';
+import { CoinLogo, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
 import { selectDevice } from '@suite-common/wallet-core';
 
 import { useSelector, useAccountSearch } from 'src/hooks/suite';
@@ -63,7 +63,7 @@ export const CoinsFilter = () => {
                         key={network}
                         content={network.toUpperCase()}
                         cursor="pointer"
-                        delay={500}
+                        delayShow={TOOLTIP_DELAY_NORMAL}
                     >
                         <StyledCoinLogo
                             data-test={`@account-menu/filter/${network}`}

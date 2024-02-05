@@ -7,6 +7,7 @@ import {
     CoinLogo,
     SkeletonRectangle,
     SkeletonStack,
+    TOOLTIP_DELAY_LONG,
     TruncateWithTooltip,
 } from '@trezor/components';
 
@@ -171,7 +172,7 @@ export const AccountItem = forwardRef(
                                     {({ value }) =>
                                         value ? (
                                             <FiatValueWrapper>
-                                                <TruncateWithTooltip delay={1000}>
+                                                <TruncateWithTooltip delayShow={TOOLTIP_DELAY_LONG}>
                                                     {value}
                                                 </TruncateWithTooltip>
                                             </FiatValueWrapper>

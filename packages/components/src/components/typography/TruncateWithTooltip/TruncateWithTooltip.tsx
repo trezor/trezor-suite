@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { useEffect, useRef, useState } from 'react';
-import { Tooltip } from '../../Tooltip/Tooltip';
+import { TooltipDelay, Tooltip } from '../../Tooltip/Tooltip';
 
 const EllipsisContainer = styled.div`
     text-overflow: ellipsis;
@@ -9,10 +9,10 @@ const EllipsisContainer = styled.div`
 
 export interface TruncateWithTooltipProps {
     children: React.ReactNode;
-    delay?: number;
+    delayShow?: TooltipDelay;
 }
 
-export const TruncateWithTooltip = ({ children, delay }: TruncateWithTooltipProps) => {
+export const TruncateWithTooltip = ({ children, delayShow }: TruncateWithTooltipProps) => {
     const [isTooltipVisible, setIsTooltipVisible] = useState(false);
     const containerRef = useRef(null);
 
@@ -29,7 +29,7 @@ export const TruncateWithTooltip = ({ children, delay }: TruncateWithTooltipProp
     return (
         <EllipsisContainer ref={containerRef}>
             {isTooltipVisible ? (
-                <Tooltip delay={delay} content={children}>
+                <Tooltip delayShow={delayShow} content={children}>
                     <EllipsisContainer>{children}</EllipsisContainer>
                 </Tooltip>
             ) : (
