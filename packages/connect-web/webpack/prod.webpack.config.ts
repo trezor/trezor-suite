@@ -73,6 +73,7 @@ const config: webpack.Configuration = {
         }),
     ],
     optimization: {
+        minimize: false,
         minimizer: [
             new TerserPlugin({
                 extractComments: false,

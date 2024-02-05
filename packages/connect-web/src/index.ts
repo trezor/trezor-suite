@@ -40,7 +40,7 @@ let _popupManager: popup.PopupManager | undefined;
 const messagePromises = createDeferredManager({ initialId: 1 });
 
 const initPopupManager = () => {
-    const pm = new popup.PopupManager(_settings);
+    const pm = new popup.PopupManager(_settings, { logger: _log });
     pm.on(POPUP.CLOSED, (error?: string) => {
         iframe.postMessage({
             type: POPUP.CLOSED,

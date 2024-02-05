@@ -20,9 +20,11 @@ export class ServiceWorkerWindowChannel<
         logger,
         lazyHandshake,
         allowSelfOrigin = false,
+        currentId,
     }: Pick<AbstractMessageChannelConstructorParams, 'channel' | 'logger' | 'lazyHandshake'> & {
         name: string;
         allowSelfOrigin?: boolean;
+        currentId?: () => number | undefined;
     }) {
         super({
             channel,
@@ -36,8 +38,10 @@ export class ServiceWorkerWindowChannel<
 
         chrome.runtime.onConnect.addListener(port => {
             if (port.name !== name) return;
-            this.port = port;
+            // Ignore port if name does match, but port created by different popup
+            if (currentId?.() && currentId?.() !== port.sender?.tab?.id) return;
 
+            this.port = port;
             this.port.onMessage.addListener((message: Message<IncomingMessages>, { sender }) => {
                 if (!sender) {
                     this.logger?.error('service-worker-window', 'no sender');

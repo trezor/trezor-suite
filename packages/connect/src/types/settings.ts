@@ -36,4 +36,5 @@ export interface ConnectSettings {
     timestamp: number;
     proxy?: Proxy;
     sharedLogger?: boolean;
+    useCoreInPopup?: boolean;
 }

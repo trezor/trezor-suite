@@ -26,12 +26,11 @@ export interface AbstractMessageChannelConstructorParams {
     lazyHandshake?: boolean;
 }
 
-export type Message<IncomingMessages extends { type: string }> = {
+export type Message<IncomingMessages extends { type: string }> = IncomingMessages & {
     channel: AbstractMessageChannelConstructorParams['channel'];
     id: number;
-    type: IncomingMessages['type'];
-    payload: IncomingMessages;
     success: boolean;
+    payload: Extract<IncomingMessages, { type: IncomingMessages['type'] }> | undefined;
 };
 
 /**
@@ -137,9 +136,11 @@ export abstract class AbstractMessageChannel<
     protected onMessage(message: Message<IncomingMessages>) {
         const { channel, id, type, payload, success } = message;
         if (!channel?.peer || channel.peer !== this.channel.here) {
+            this.logger?.warn('to wrong peer', channel?.peer, 'should be', this.channel.here);
             return;
         }
         if (!channel?.here || this.channel.peer !== channel.here) {
+            this.logger?.warn('from wrong peer', channel?.here, 'should be', this.channel.peer);
             return;
         }
 
@@ -173,6 +174,7 @@ export abstract class AbstractMessageChannel<
             );
         }
 
+        // @ts-expect-error TS complains for odd reasons
         this.emit('message', message);
     }
 

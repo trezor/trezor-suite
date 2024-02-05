@@ -40,6 +40,7 @@
     },
     "dependencies": {
         "@trezor/connect": "workspace:*",
+        "@trezor/connect-common": "workspace:*",
         "@trezor/utils": "workspace:*",
         "events": "^3.3.0"
     },

@@ -1,4 +1,4 @@
-import { WindowServiceWorkerChannel } from './channels/window-serviceworker';
+import { WindowServiceWorkerChannel } from '@trezor/connect-web/lib/channels/window-serviceworker';
 
 /**
  * communication between service worker and both webextension and popup manager
