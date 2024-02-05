@@ -11,6 +11,14 @@ import { TransactionSummary } from './components/TransactionSummary';
 import { CoinjoinExplanation } from './CoinjoinExplanation/CoinjoinExplanation';
 import { CoinjoinSummary } from './CoinjoinSummary/CoinjoinSummary';
 import { TradeBox } from './TradeBox/TradeBox';
+import styled from 'styled-components';
+import { spacingsPx } from '@trezor/theme';
+
+const AccountLayout = styled(WalletLayout)`
+    display: flex;
+    flex-direction: column;
+    gap: ${spacingsPx.xxl};
+`;
 
 interface LayoutProps {
     selectedAccount: AppState['wallet']['selectedAccount'];
@@ -19,13 +27,13 @@ interface LayoutProps {
 }
 
 const Layout = ({ selectedAccount, showEmptyHeaderPlaceholder = false, children }: LayoutProps) => (
-    <WalletLayout
+    <AccountLayout
         title="TR_NAV_TRANSACTIONS"
         account={selectedAccount}
         showEmptyHeaderPlaceholder={showEmptyHeaderPlaceholder}
     >
         {children}
-    </WalletLayout>
+    </AccountLayout>
 );
 
 export const Transactions = () => {

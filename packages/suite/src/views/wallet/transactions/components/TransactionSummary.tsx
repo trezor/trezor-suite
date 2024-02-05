@@ -55,13 +55,6 @@ const ErrorMessage = styled.div`
     text-align: center;
 `;
 
-const Divider = styled.div`
-    width: 100%;
-    height: 1px;
-    background: ${({ theme }) => theme.STROKE_GREY};
-    margin: 24px 0;
-`;
-
 interface TransactionSummaryProps {
     account: Account;
 }
@@ -154,7 +147,6 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
                     isLoading={isLoading}
                 />
             </ContentWrapper>
-            <Divider />
         </Wrapper>
     );
 };

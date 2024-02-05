@@ -17,7 +17,6 @@ const StyledCard = styled(Card)`
     align-items: center;
     justify-content: space-between;
     gap: ${spacingsPx.lg};
-    margin-bottom: ${spacingsPx.lg};
 
     ${variables.SCREEN_QUERY.BELOW_TABLET} {
         flex-direction: column;
@@ -27,7 +26,7 @@ const StyledCard = styled(Card)`
 
 const Title = styled.div`
     ${typography.titleSmall}
-    margin-bottom: 10px;
+    margin-bottom: ${spacingsPx.md};
 `;
 
 const Left = styled.div`
@@ -88,7 +87,7 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
     const getRateAge = (timestamp: number) => differenceInMinutes(new Date(timestamp), new Date());
 
     return (
-        <>
+        <div>
             <Title>
                 <Translation id="TR_NAV_TRADE" />
             </Title>
@@ -125,6 +124,6 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
                     <TradeBoxMenu account={account} />
                 </Right>
             </StyledCard>
-        </>
+        </div>
     );
 };
