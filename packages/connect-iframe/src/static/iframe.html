@@ -19,6 +19,10 @@
                 {
                     event: 'UI_EVENT',
                     type: 'iframe-bootstrap',
+                    channel: {
+                        here: '@trezor/connect-iframe',
+                        peer: '@trezor/connect-web',
+                    },
                 },
                 '*',
             );

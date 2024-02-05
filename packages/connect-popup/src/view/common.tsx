@@ -191,6 +191,10 @@ export const postMessage = (message: CoreRequestMessage) => {
 };
 
 export const postMessageToParent = (message: CoreEventMessage) => {
+    message.channel = {
+        here: '@trezor/connect-popup',
+        peer: '@trezor/connect-web',
+    };
     if (window.opener) {
         // post message to parent and wait for POPUP.INIT message
         window.opener.postMessage(message, '*');

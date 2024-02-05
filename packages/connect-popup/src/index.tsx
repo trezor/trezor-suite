@@ -531,7 +531,16 @@ addWindowEventListener('message', handleLogMessage, false);
 // @ts-expect-error not defined in window
 window.closeWindow = () => {
     setTimeout(() => {
-        window.postMessage({ type: POPUP.CLOSE_WINDOW }, window.location.origin);
+        window.postMessage(
+            {
+                type: POPUP.CLOSE_WINDOW,
+                channel: {
+                    here: '@trezor/connect-popup',
+                    peer: '@trezor/connect-web',
+                },
+            },
+            window.location.origin,
+        );
         window.close();
     }, 100);
 };

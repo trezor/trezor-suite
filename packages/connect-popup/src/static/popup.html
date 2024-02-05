@@ -3234,10 +3234,17 @@
         </div>
 
         <script type="text/javascript" async="false">
+            const message = {
+                type: 'popup-bootstrap',
+                channel: {
+                    here: '@trezor/connect-popup',
+                    peer: '@trezor/connect-web',
+                },
+            };
             if (window.opener) {
-                window.opener.postMessage({ type: 'popup-bootstrap' }, '*');
+                window.opener.postMessage(message, '*');
             } else {
-                window.postMessage({ type: 'popup-bootstrap' }, '*');
+                window.postMessage(message, '*');
             }
 
             const popupScript = document.createElement('script');
