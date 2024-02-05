@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
 import { analytics, EventType } from '@trezor/suite-analytics';
@@ -102,6 +102,8 @@ export const TransactionReviewOutputList = ({
         precomposedForm;
     const broadcastEnabled = options.includes('broadcast');
 
+    const [isSending, setIsSending] = useState<boolean>(false);
+
     const reportTransactionCreatedEvent = (action: 'sent' | 'copied' | 'downloaded' | 'replaced') =>
         analytics.report({
             type: EventType.TransactionCreated,
@@ -125,6 +127,7 @@ export const TransactionReviewOutputList = ({
             },
         });
     const handleSend = () => {
+        setIsSending(true);
         if (decision) {
             decision.resolve(true);
 
@@ -211,7 +214,7 @@ export const TransactionReviewOutputList = ({
                     {broadcastEnabled ? (
                         <StyledButton
                             data-test="@modal/send"
-                            isDisabled={!signedTx}
+                            isDisabled={!signedTx || isSending}
                             onClick={handleSend}
                         >
                             <Translation id={isRbfAction ? 'TR_REPLACE_TX' : 'SEND_TRANSACTION'} />
