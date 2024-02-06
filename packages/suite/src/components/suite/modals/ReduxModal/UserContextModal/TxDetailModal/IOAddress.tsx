@@ -9,7 +9,7 @@ const IconWrapper = styled.div`
     padding: 1px;
     border-radius: 2px;
     margin-left: 4px;
-    background-color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    background-color: ${({ theme }) => theme.iconSubdued};
     height: 14px;
 
     :hover {
@@ -19,8 +19,8 @@ const IconWrapper = styled.div`
 
 const onHoverTextOverflowContainerHover = css`
     border-radius: 2px;
-    background-color: ${({ theme }) => theme.BG_GREY};
-    outline: 4px solid ${({ theme }) => theme.BG_GREY};
+    background-color: ${({ theme }) => theme.backgroundSurfaceElevation2};
+    outline: 4px solid ${({ theme }) => theme.backgroundSurfaceElevation2};
     z-index: 3;
 
     ${IconWrapper} {
@@ -31,9 +31,10 @@ const onHoverTextOverflowContainerHover = css`
 const TextOverflowContainer = styled.div<{ shouldAllowCopy?: boolean }>`
     position: relative;
     display: inline-flex;
+    align-items: center;
     max-width: 100%;
     overflow: hidden;
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.textSubdued};
     cursor: ${({ shouldAllowCopy }) => (shouldAllowCopy ? 'pointer' : 'cursor')};
     user-select: none;
 
@@ -113,7 +114,7 @@ export const IOAddress = ({
                         <Icon
                             icon={isClicked ? 'CHECK' : 'COPY'}
                             size={12}
-                            color={theme.BG_WHITE}
+                            color={theme.iconOnPrimary}
                         />
                     </IconWrapper>
                 ) : null}
@@ -124,7 +125,7 @@ export const IOAddress = ({
                             variant="nostyle"
                             href={`${explorerUrl}${txAddress}${explorerUrlQueryString}`}
                         >
-                            <Icon icon="EXTERNAL_LINK" size={12} color={theme.BG_WHITE} />
+                            <Icon icon="EXTERNAL_LINK" size={12} color={theme.iconOnPrimary} />
                         </Link>
                     </IconWrapper>
                 ) : null}

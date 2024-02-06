@@ -13,8 +13,8 @@ const TransactionDetailsWrapper = styled.div`
     width: calc(100% + 20px);
     height: calc(100% + 20px);
     position: absolute;
-    top: -15px;
-    left: -20px;
+    top: -18px;
+    left: -12px;
     border-radius: ${borders.radii.xs};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 
