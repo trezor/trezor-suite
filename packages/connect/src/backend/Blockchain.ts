@@ -38,8 +38,7 @@ export type BlockchainOptions = {
     postMessage: (message: CoreEventMessage) => void;
     proxy?: Proxy;
     debug?: boolean;
-    onConnected?: (url: string) => void;
-    onDisconnected?: () => void;
+    onDisconnected?: (backend: Blockchain, pendingSubscriptions?: boolean) => void;
 };
 
 export class Blockchain {
@@ -53,13 +52,12 @@ export class Blockchain {
 
     feeTimestamp = 0;
 
-    private onConnected: BlockchainOptions['onConnected'];
     private onDisconnected: BlockchainOptions['onDisconnected'];
+    private initPromise?: Promise<ServerInfo>;
 
     constructor(options: BlockchainOptions) {
         this.coinInfo = options.coinInfo;
         this.postMessage = options.postMessage;
-        this.onConnected = options.onConnected;
         this.onDisconnected = options.onDisconnected;
 
         const { blockchainLink } = options.coinInfo;
@@ -88,6 +86,11 @@ export class Blockchain {
     }
 
     onError(error: ERRORS.TrezorError) {
+        const pendingSubscriptions =
+            this.link.listenerCount('block') ||
+            this.link.listenerCount('notification') ||
+            this.link.listenerCount('fiatRates');
+
         this.link.dispose();
         this.postMessage(
             createBlockchainMessage(BLOCKCHAIN.ERROR, {
@@ -96,41 +99,58 @@ export class Blockchain {
                 code: error.code,
             }),
         );
-        this.onDisconnected?.();
+        this.onDisconnected?.(this, !!pendingSubscriptions);
     }
 
-    async init() {
-        this.link.on('connected', async () => {
-            const info = await this.link.getInfo();
-            this.serverInfo = info;
-            // There is no `rippled` setting that defines which network it uses neither mainnet or testnet
-            // see: https://xrpl.org/parallel-networks.html
-            const shortcut = this.coinInfo.shortcut === 'tXRP' ? 'XRP' : this.coinInfo.shortcut;
-            if (info.shortcut.toLowerCase() !== shortcut.toLowerCase()) {
-                this.onError(ERRORS.TypedError('Backend_Invalid'));
-                return;
-            }
+    /** should be called only once, from Blockchain.init() method */
+    private async initLink() {
+        let info;
+        try {
+            await this.link.connect();
+            info = await this.link.getInfo();
+        } catch (error) {
+            throw ERRORS.TypedError('Backend_Error', error.message);
+        }
 
-            this.onConnected?.(info.url);
+        this.serverInfo = info;
 
-            this.postMessage(
-                createBlockchainMessage(BLOCKCHAIN.CONNECT, {
-                    coin: this.coinInfo,
-                    ...info,
-                }),
-            );
-        });
+        // There is no `rippled` setting that defines which network it uses neither mainnet or testnet
+        // see: https://xrpl.org/parallel-networks.html
+        const shortcut = this.coinInfo.shortcut === 'tXRP' ? 'XRP' : this.coinInfo.shortcut;
+        if (info.shortcut.toLowerCase() !== shortcut.toLowerCase()) {
+            throw ERRORS.TypedError('Backend_Invalid');
+        }
+
+        this.postMessage(
+            createBlockchainMessage(BLOCKCHAIN.CONNECT, {
+                coin: this.coinInfo,
+                ...info,
+            }),
+        );
 
         this.link.on('disconnected', () => {
             this.onError(ERRORS.TypedError('Backend_Disconnected'));
         });
 
-        try {
-            await this.link.connect();
-        } catch (error) {
-            this.onError(ERRORS.TypedError('Backend_Error', error.message));
-            throw error;
+        return info;
+    }
+
+    /** Method is idempotent (only the first call really starts the init process, subsequent calls just return the promise) */
+    init() {
+        if (!this.initPromise) {
+            this.initPromise = this.initLink()
+                .then(info => {
+                    this.initPromise = Promise.resolve(info);
+                    return info;
+                })
+                .catch(error => {
+                    this.initPromise = Promise.reject(error);
+                    this.link.dispose();
+                    return this.initPromise;
+                });
         }
+
+        return this.initPromise;
     }
 
     getTransactions(txs: string[]) {
