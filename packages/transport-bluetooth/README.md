@@ -1,0 +1,1 @@
+# @trezor/transport-bluetooth
