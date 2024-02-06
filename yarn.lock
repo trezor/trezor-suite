@@ -12922,7 +12922,10 @@ __metadata:
   resolution: "@trezor/transport-bluetooth@workspace:packages/transport-bluetooth"
   dependencies:
     "@trezor/ipc-proxy": "workspace:*"
+    "@trezor/protocol": "workspace:*"
+    "@trezor/transport": "workspace:*"
     "@trezor/utils": "workspace:*"
+    "@trezor/websocket-client": "workspace:*"
   languageName: unknown
   linkType: soft
 

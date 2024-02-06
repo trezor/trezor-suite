@@ -1,16 +1,49 @@
 import type { TypedEmitter } from '@trezor/utils';
 
+export interface Logger {
+    debug(...args: any): void;
+    log(...args: any): void;
+    warn(...args: any): void;
+    error(...args: any): void;
+}
+
+export interface TrezorBleSettings {
+    logger?: Logger;
+    timeout?: number;
+}
+
+export type BluetoothInfo = {
+    powered: boolean;
+    api_version: string;
+    adapter_info: string;
+    adapter_version: number;
+};
+
+// see: ./src/server/device.rs impl serde::Serialize for TrezorDevice
 export interface BluetoothDevice {
     name: string;
-    id: string;
-    data: number[]; // advertisement data bytes
+    id: string; // changes after second connection (linux)
+    address: string; // changes after pairing (linux), unknown on macos
     connected: boolean;
-    timestamp?: number; // last know activity from the device (discovery, advertisements)
-    paired?: boolean; // known (linux, windows), unknown (macos)
+    lastUpdatedTimestamp: number;
+    rssi: number;
+    paired: boolean;
+    data: number[];
+}
+
+export interface NotificationEvent {
+    adapter_state_changed: { powered: boolean };
+    device_discovered: { id: string; devices: BluetoothDevice[] };
+    device_updated: { id: string; devices: BluetoothDevice[] };
+    device_connected: { id: string; devices: BluetoothDevice[] };
+    device_pairing: { id: string; paired: boolean; pin?: string };
+    device_connection_status: { id: string; phase: 'connecting' | 'connected' };
+    device_disconnected: { id: string; devices: BluetoothDevice[] };
+    device_read: { id: string; data: number[] };
 }
 
 // IpcApi related types
-export type DeviceConnectionStatus = { uuid: string } & (
+export type DeviceConnectionStatus = { id: string } & (
     | { type: 'pairing'; pin?: string }
     | { type: 'paired' }
     | { type: 'connecting' }
