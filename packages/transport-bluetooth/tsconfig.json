@@ -1,0 +1,14 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "outDir": "./libDev",
+        "types": ["jest", "node"]
+    },
+    "references": [
+        { "path": "../ipc-proxy" },
+        { "path": "../protocol" },
+        { "path": "../transport" },
+        { "path": "../utils" },
+        { "path": "../websocket-client" }
+    ]
+}
