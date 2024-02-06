@@ -514,7 +514,7 @@ export const networks = {
             address: 'https://matic2.trezor.io/address/',
             queryString: '',
         },
-        features: ['rbf', 'sign-verify', 'tokens'],
+        features: ['rbf', 'sign-verify', 'tokens', 'token-definitions'],
         customBackends: ['blockbook'],
         accountTypes: {},
     },
