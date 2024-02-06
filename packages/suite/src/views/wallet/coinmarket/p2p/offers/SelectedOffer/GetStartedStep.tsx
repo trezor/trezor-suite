@@ -82,7 +82,7 @@ export const GetStartedStep = () => {
             </CardContent>
             <ButtonWrapper>
                 <StyledButton
-                    variant={!providerVisited ? 'primary' : 'secondary'}
+                    variant={!providerVisited ? 'primary' : 'tertiary'}
                     isDisabled={callInProgress}
                     isLoading={callInProgress}
                     onClick={e => {
