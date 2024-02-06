@@ -41,8 +41,11 @@ jest.mock('@trezor/blockchain-link', () => ({
             const [type, fn] = args;
             this.listeners[type] = fn;
         }
+        listenerCount() {
+            return 0;
+        }
         connect() {
-            this.listeners.connected();
+            return true;
         }
         disconnect() {}
         removeAllListeners() {}
