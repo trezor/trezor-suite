@@ -8,7 +8,7 @@ describe('Test tooltip links', () => {
         cy.task('startBridge');
         cy.task('applySettings', { passphrase_always_on_device: false });
 
-        cy.viewport(1080, 1440).resetDb();
+        cy.viewport(1440, 2560).resetDb();
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
     });
@@ -30,7 +30,7 @@ describe('Test tooltip conditional rendering', () => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', { mnemonic: 'all all all all all all all all all all all all' });
         cy.task('startBridge');
-        cy.viewport(1080, 1440).resetDb();
+        cy.viewport(1440, 2560).resetDb();
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
         cy.discoveryShouldFinish();

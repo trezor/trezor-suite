@@ -6,7 +6,7 @@
 
 describe('Windows 10 with edge browser ', () => {
     before(() => {
-        cy.viewport(1080, 1440);
+        cy.viewport(1440, 2560);
         cy.resetDb();
     });
 

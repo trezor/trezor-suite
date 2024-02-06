@@ -19,7 +19,7 @@ const secondHiddenWalletState = 'mkx2Uqi3fmLHh8AHpQvAErTM3MZpzrmFr2@355C817510C0
 
 describe('Metadata - wallet labeling', () => {
     beforeEach(() => {
-        cy.viewport(1080, 1440).resetDb();
+        cy.viewport(1440, 2560).resetDb();
     });
 
     firmwares.forEach(firmware => {

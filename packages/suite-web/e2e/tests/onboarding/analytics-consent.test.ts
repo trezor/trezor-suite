@@ -22,7 +22,7 @@ const acceptAnalyticsConsentOnInitializedDevice = () => {
 describe('Onboarding - analytics consent', () => {
     beforeEach(() => {
         cy.task('startBridge');
-        cy.viewport(1080, 1440).resetDb();
+        cy.viewport(1440, 2560).resetDb();
     });
 
     it('shows analytics consent when going to settings and back on non-initialized T1B1 device', () => {

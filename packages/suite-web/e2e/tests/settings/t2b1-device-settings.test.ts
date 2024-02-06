@@ -15,7 +15,7 @@ describe('T2B1 - Device settings', () => {
     };
 
     beforeEach(() => {
-        cy.viewport(1080, 3200).resetDb();
+        cy.viewport(1440, 2560).resetDb();
     });
 
     /*

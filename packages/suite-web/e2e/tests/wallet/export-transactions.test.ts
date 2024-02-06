@@ -17,7 +17,7 @@ describe('Export transactions', () => {
                 'alcohol woman abuse must during monitor noble actual mixed trade anger aisle',
         });
         cy.task('startBridge');
-        cy.viewport(1080, 1440).resetDb();
+        cy.viewport(1440, 2560).resetDb();
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
         cy.getTestElement('@account-menu/btc/normal/0').click();

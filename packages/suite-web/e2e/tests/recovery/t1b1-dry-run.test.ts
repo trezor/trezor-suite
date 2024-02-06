@@ -6,7 +6,7 @@ describe.skip('Recovery - dry run', () => {
         cy.wait(2000);
         cy.task('setupEmu', { needs_backup: false });
         cy.task('startBridge');
-        cy.viewport(1080, 1440).resetDb();
+        cy.viewport(1440, 2560).resetDb();
         cy.prefixedVisit('/settings/device');
         cy.passThroughInitialRun();
     });

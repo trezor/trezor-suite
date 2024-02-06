@@ -4,7 +4,7 @@
 describe('Firmware', () => {
     beforeEach(() => {
         // use portrait mode monitor to prevent scrolling in settings
-        cy.viewport(1080, 1440).resetDb();
+        cy.viewport(1440, 2560).resetDb();
     });
 
     it(`Firmware 2.5.1 outdated notification banner should open firmware update modal`, () => {

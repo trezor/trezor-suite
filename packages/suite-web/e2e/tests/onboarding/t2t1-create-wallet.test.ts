@@ -4,7 +4,7 @@
 describe('Onboarding - create wallet', () => {
     beforeEach(() => {
         cy.task('startBridge');
-        cy.viewport(1080, 1440).resetDb();
+        cy.viewport(1440, 2560).resetDb();
         cy.prefixedVisit('/');
     });
 

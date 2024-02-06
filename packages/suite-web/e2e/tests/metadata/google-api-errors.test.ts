@@ -7,7 +7,7 @@ const provider = 'google';
 
 describe('Google api errors', () => {
     beforeEach(() => {
-        cy.viewport(1080, 1440).resetDb();
+        cy.viewport(1440, 2560).resetDb();
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', {
             mnemonic: 'all all all all all all all all all all all all',

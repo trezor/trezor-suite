@@ -12,7 +12,7 @@ describe('General settings', () => {
         cy.task('setupEmu', { needs_backup: false });
         cy.task('startBridge');
         // use portrait mode monitor to prevent scrolling in settings
-        cy.viewport(1080, 1440).resetDb();
+        cy.viewport(1440, 2560).resetDb();
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
         cy.discoveryShouldFinish();

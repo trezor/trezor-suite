@@ -32,7 +32,7 @@ describe('Database migration', () => {
         const btcAddressInputSelector = 'outputs[0].address';
         const workaroundBtcAddressInputSelector = 'outputs.0.address';
         const hiddenWalletSelector = '[data-test^="@switch-device/wallet-on-index"]';
-        cy.viewport(1080, 1440);
+        cy.viewport(1440, 2560);
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', {
             mnemonic: 'all all all all all all all all all all all all',

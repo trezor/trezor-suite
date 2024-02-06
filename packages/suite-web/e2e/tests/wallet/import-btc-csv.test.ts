@@ -10,7 +10,7 @@ describe('Import a BTC csv file', () => {
         cy.task('startBridge');
         cy.task('metadataStartProvider', 'dropbox');
 
-        cy.viewport(1080, 1440).resetDb();
+        cy.viewport(1440, 2560).resetDb();
         cy.prefixedVisit('/', {
             onBeforeLoad: (win: Window) => {
                 cy.stub(win, 'open').callsFake(stubOpen(win));
