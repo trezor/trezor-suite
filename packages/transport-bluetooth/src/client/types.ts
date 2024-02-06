@@ -1,5 +1,25 @@
 import type { TypedEmitter } from '@trezor/utils';
 
+export interface Logger {
+    debug(...args: any): void;
+    log(...args: any): void;
+    warn(...args: any): void;
+    error(...args: any): void;
+}
+
+export interface TrezorBluetoothSettings {
+    logger?: Logger;
+    timeout?: number;
+}
+
+export type BluetoothInfo = {
+    powered: boolean;
+    api_version: string;
+    adapter_info: string;
+    adapter_version: number;
+};
+
+// see: ./src/server/device.rs
 export interface BluetoothDevice {
     id: string;
     name: string;
@@ -12,7 +32,18 @@ export interface BluetoothDevice {
     rssi?: number; // signal strength
 }
 
+export interface NotificationEvent {
+    adapter_state_changed: { powered: boolean };
+    device_discovered: { id: string; devices: BluetoothDevice[] };
+    device_updated: { id: string; devices: BluetoothDevice[] };
+    device_connected: { id: string; devices: BluetoothDevice[] };
+    device_connection_status: BluetoothDevice;
+    device_disconnected: { id: string; devices: BluetoothDevice[] };
+    device_read: { id: string; data: number[] };
+}
+
 // IpcApi related types
+// see: .src/server/device.rs
 export type DeviceConnectionStatus =
     | { type: 'disconnected' }
     | { type: 'pairing'; pin?: string }
