@@ -67,6 +67,9 @@ const initWebUsbButton = (showLoader: boolean) => {
             }
         } catch (error) {
             console.error(error);
+            if (error instanceof DOMException && error.name === 'NotFoundError') {
+                return;
+            }
             reactEventBus.dispatch({
                 type: 'error',
                 detail: 'iframe-failure',
