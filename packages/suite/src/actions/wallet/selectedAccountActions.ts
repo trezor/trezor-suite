@@ -172,7 +172,6 @@ const actions = [
     blockchainActions.setBackend.type,
     blockchainActions.synced.type,
     blockchainActions.connected.type,
-    blockchainActions.reconnectTimeoutStart.type,
     blockchainActions.updateFee.type,
     discoveryActions.stopDiscovery.type,
     discoveryActions.interruptDiscovery.type,
