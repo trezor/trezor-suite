@@ -223,9 +223,9 @@ const initDevice = async (method: AbstractMethod<any>) => {
         });
     }
 
-    if (method.devicePath && preferredDevice && preferredDeviceInList) {
+    if (method.devicePath) {
         device = _deviceList.getDevice(method.devicePath);
-        showDeviceSelection = !!device?.unreadableError;
+        showDeviceSelection = !device || !!device?.unreadableError;
     } else {
         const devices = _deviceList.asArray();
         if (devices.length === 1 && !isWebUsb) {
