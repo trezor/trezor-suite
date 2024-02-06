@@ -18,11 +18,16 @@ import type {
 import { getOutputState } from 'src/utils/wallet/reviewTransactionUtils';
 import { TransactionReviewTotalOutput } from './TransactionReviewTotalOutput';
 import { ReviewOutput } from 'src/types/wallet/transaction';
+import { spacingsPx } from '@trezor/theme';
 
 const Content = styled.div`
     display: flex;
     padding: 0;
     flex: 1;
+`;
+const Flex = styled.div`
+    display: flex;
+    gap: ${spacingsPx.xxs};
 `;
 
 const Right = styled.div`
@@ -217,7 +222,7 @@ export const TransactionReviewOutputList = ({
                             <Translation id={isRbfAction ? 'TR_REPLACE_TX' : 'SEND_TRANSACTION'} />
                         </StyledButton>
                     ) : (
-                        <>
+                        <Flex>
                             <StyledButton
                                 isDisabled={!signedTx}
                                 onClick={handleCopy}
@@ -226,13 +231,13 @@ export const TransactionReviewOutputList = ({
                                 <Translation id="COPY_TRANSACTION_TO_CLIPBOARD" />
                             </StyledButton>
                             <StyledButton
-                                variant="secondary"
+                                variant="tertiary"
                                 isDisabled={!signedTx}
                                 onClick={handleDownload}
                             >
                                 <Translation id="DOWNLOAD_TRANSACTION" />
                             </StyledButton>
-                        </>
+                        </Flex>
                     )}
                 </RightBottom>
             </Right>
