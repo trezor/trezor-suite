@@ -14,7 +14,7 @@ describe.skip('T1B1 - Device settings', () => {
     });
 
     it('enable pin', () => {
-        cy.viewport(1080, 1440).resetDb();
+        cy.viewport(1440, 2560).resetDb();
         cy.prefixedVisit('/settings/device');
         cy.passThroughInitialRun();
 
@@ -32,7 +32,7 @@ describe.skip('T1B1 - Device settings', () => {
     });
 
     it('pin mismatch', () => {
-        cy.viewport(1080, 1440).resetDb();
+        cy.viewport(1440, 2560).resetDb();
         cy.prefixedVisit('/settings/device');
         cy.passThroughInitialRun();
 
@@ -65,7 +65,7 @@ describe.skip('T1B1 - Device settings', () => {
         // Test preparation
         //
 
-        cy.viewport(1080, 1440).resetDb();
+        cy.viewport(1440, 2560).resetDb();
         cy.prefixedVisit('/settings/device');
         cy.passThroughInitialRun();
 

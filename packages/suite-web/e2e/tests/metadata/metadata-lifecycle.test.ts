@@ -5,7 +5,7 @@ const mnemonic = 'all all all all all all all all all all all all';
 
 describe('Metadata - cancel metadata on device', () => {
     beforeEach(() => {
-        cy.viewport(1080, 1440).resetDb();
+        cy.viewport(1440, 2560).resetDb();
     });
 
     it('user cancels metadata on device, choice is respected on subsequent runs but only for the cancelled wallet', () => {

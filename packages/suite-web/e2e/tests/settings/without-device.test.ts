@@ -7,7 +7,7 @@ describe('Settings changes persist when device disconnected', () => {
         cy.task('setupEmu', { passphrase_protection: false });
         cy.task('startBridge');
 
-        cy.viewport(1080, 1440).resetDb();
+        cy.viewport(1440, 2560).resetDb();
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
         cy.discoveryShouldFinish();

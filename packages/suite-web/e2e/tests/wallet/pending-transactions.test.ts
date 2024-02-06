@@ -12,7 +12,7 @@ describe('Use regtest to test pending transactions', () => {
             mnemonic: 'all all all all all all all all all all all all',
         });
         cy.task('startBridge');
-        cy.viewport(1080, 1440).resetDb();
+        cy.viewport(1440, 2560).resetDb();
         cy.prefixedVisit('/settings/coins');
         cy.passThroughInitialRun();
         cy.toggleDebugModeInSettings();

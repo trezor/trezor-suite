@@ -15,7 +15,7 @@ describe('Dashboard with regtest', () => {
             address: ADDRESS_INDEX_1,
             btc_amount: 1,
         });
-        cy.viewport(1080, 1440).resetDb();
+        cy.viewport(1440, 2560).resetDb();
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
     });

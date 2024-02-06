@@ -3,7 +3,7 @@
 
 describe('unacquired device', () => {
     beforeEach(() => {
-        cy.viewport(1080, 1440).resetDb();
+        cy.viewport(1440, 2560).resetDb();
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', { passphrase_protection: true, pin_protection: false });
         cy.task('startBridge');

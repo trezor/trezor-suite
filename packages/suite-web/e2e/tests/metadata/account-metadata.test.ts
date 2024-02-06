@@ -8,7 +8,7 @@ const provider = 'dropbox';
 describe(`Metadata is by default disabled, this means, that application does not try to generate master key and connect to cloud.
 Hovering over fields that may be labeled shows "add label" button upon which is clicked, Suite initiates metadata flow`, () => {
     beforeEach(() => {
-        cy.viewport(1080, 1440).resetDb();
+        cy.viewport(1440, 2560).resetDb();
     });
 
     it(provider, () => {

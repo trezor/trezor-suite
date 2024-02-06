@@ -6,7 +6,7 @@ describe('Onboarding - recover wallet T1B1', () => {
         cy.task('startEmu', { version: '1-latest', wipe: true });
         cy.task('startBridge');
 
-        cy.viewport(1080, 1440).resetDb();
+        cy.viewport(1440, 2560).resetDb();
         cy.prefixedVisit('/');
     });
 

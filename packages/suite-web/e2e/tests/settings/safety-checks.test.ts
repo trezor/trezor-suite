@@ -6,7 +6,7 @@ describe('Safety Checks Settings', () => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu');
         cy.task('startBridge');
-        cy.viewport(1080, 1440).resetDb();
+        cy.viewport(1440, 2560).resetDb();
         cy.prefixedVisit('/settings/device');
         cy.passThroughInitialRun();
     });

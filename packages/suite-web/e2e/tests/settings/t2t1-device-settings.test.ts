@@ -3,7 +3,7 @@
 
 describe('T2T1 - Device settings', () => {
     beforeEach(() => {
-        cy.viewport(1080, 1440).resetDb();
+        cy.viewport(1440, 2560).resetDb();
         cy.task('startBridge');
     });
     // TODO: cypress open: seems like entering urls (/settings/device) directly does not work anymore?

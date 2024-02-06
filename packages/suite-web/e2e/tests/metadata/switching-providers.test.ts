@@ -6,7 +6,7 @@ import { rerouteMetadataToMockProvider, stubOpen } from '../../stubs/metadata';
 describe(`Metadata - switching between cloud providers`, () => {
     beforeEach(() => {
         // use portrait mode monitor to prevent scrolling in settings
-        cy.viewport(1080, 1440).resetDb();
+        cy.viewport(1440, 2560).resetDb();
     });
 
     it('Start with one and switch to another', () => {

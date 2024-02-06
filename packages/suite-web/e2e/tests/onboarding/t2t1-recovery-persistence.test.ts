@@ -51,7 +51,7 @@ describe('Onboarding - T2T1 in recovery mode', () => {
         cy.task('startBridge');
         cy.task('startEmu', { wipe: true, version: '2.4.3' });
         cy.resetDb();
-        cy.viewport(1080, 1440);
+        cy.viewport(1440, 2560);
         cy.prefixedVisit('/');
         cy.getTestElement('@analytics/continue-button').click();
         cy.getTestElement('@analytics/continue-button').click();

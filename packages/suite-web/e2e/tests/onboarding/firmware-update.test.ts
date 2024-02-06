@@ -60,7 +60,7 @@ describe('fw update from empty device bootloader 2.0.3 to firmware 2.5.1', () =>
             'foo-bar',
         );
 
-        cy.viewport(1080, 1440).resetDb();
+        cy.viewport(1440, 2560).resetDb();
         cy.prefixedVisit('/');
     });
 
