@@ -66,6 +66,8 @@
 
 /packages/transport @mroz22 @szymonlesisz
 
+/packages/transport-bluetooth @szymonlesisz
+
 /packages/transport-bridge @mroz22 @szymonlesisz
 
 /packages/transport-test @mroz22
