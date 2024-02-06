@@ -2,7 +2,7 @@ import { ipcMain } from 'electron';
 
 import { IpcProxyHandlerOptions, createIpcProxyHandler } from '@trezor/ipc-proxy';
 import { getFreePort } from '@trezor/node-utils';
-import { BluetoothIpc, BluetoothIpcApi } from '@trezor/transport-bluetooth';
+import { BluetoothIpc, BluetoothIpcApi, BluetoothTransport } from '@trezor/transport-bluetooth';
 
 import { BluetoothProcess } from '../libs/processes/BluetoothProcess';
 
@@ -31,14 +31,21 @@ export const init: ModuleInit = () => {
         }
     };
 
+    const desktopLogger: ConstructorParameters<typeof BluetoothTransport>[0]['logger'] = {
+        info: (...args) => logger.info(SERVICE_NAME, args),
+        debug: (...args) => logger.debug(SERVICE_NAME, args),
+        log: (...args) => logger.debug(SERVICE_NAME, args),
+        warn: (...args) => logger.warn(SERVICE_NAME, args),
+        error: (...args) => logger.error(SERVICE_NAME, args),
+    };
+
     const initBluetoothIpc = async () => {
         const btProcess = await getBluetoothProcess();
         await btProcess.start();
 
         return new BluetoothIpc({
-            // @ts-expect-error TODO BluetoothIpc params will be added in upcoming PR
             url: btProcess.getUrl(),
-            logger,
+            logger: desktopLogger,
         });
     };
 
