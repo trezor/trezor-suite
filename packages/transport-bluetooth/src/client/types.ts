@@ -75,7 +75,7 @@ export type DeviceConnectionStatus =
 
 type Success<P> = P extends unknown ? { success: true } : { success: true; payload: P };
 type Failure = { success: false; error: string };
-type IpcResponse<P = unknown> = Success<P> | Failure;
+export type IpcResponse<P = unknown> = Success<P> | Failure;
 
 export interface BluetoothIpcEvents {
     'adapter-event': BluetoothAdapterState;
