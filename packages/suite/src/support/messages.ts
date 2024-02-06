@@ -2994,7 +2994,7 @@ export default defineMessages({
         id: 'TR_NETWORK_NEM',
     },
     TR_NETWORK_POLYGON: {
-        defaultMessage: 'Polygon',
+        defaultMessage: 'Polygon PoS',
         id: 'TR_NETWORK_POLYGON',
     },
     TR_NETWORK_POLYGON_LABEL: {
