@@ -42,6 +42,9 @@ const Column = styled.div<ColumnProps>`
     justify-content: flex-start;
     max-width: ${({ maxWidth }) => maxWidth ?? '100%'};
 `;
+const ColumnButton = styled(Column)`
+    align-items: flex-end;
+`;
 
 const Heading = styled.div`
     display: flex;
@@ -227,7 +230,7 @@ export const ExchangeQuote = ({ className, quote }: QuoteProps) => {
                     </Heading>
                     <Value>{provider?.kycPolicy}</Value>
                 </Column>
-                <Column>
+                <ColumnButton>
                     <StyledButton
                         isLoading={callInProgress}
                         isDisabled={errorQuote || callInProgress}
@@ -236,7 +239,7 @@ export const ExchangeQuote = ({ className, quote }: QuoteProps) => {
                     >
                         <Translation id="TR_EXCHANGE_GET_THIS_OFFER" />
                     </StyledButton>
-                </Column>
+                </ColumnButton>
             </Details>
             {approvalFee && swapFee && localCurrency && (
                 <DexFooter>
