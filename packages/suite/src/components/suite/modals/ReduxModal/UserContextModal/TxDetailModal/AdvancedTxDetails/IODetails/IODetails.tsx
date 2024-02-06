@@ -1,6 +1,14 @@
 import { ReactElement, ReactNode } from 'react';
 import styled, { css, useTheme } from 'styled-components';
 
+import {
+    Elevation,
+    borders,
+    mapElevationToBackground,
+    mapElevationToBorder,
+    spacingsPx,
+    typography,
+} from '@trezor/theme';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { formatAmount, formatNetworkAmount, isNftTokenTransfer } from '@suite-common/wallet-utils';
 import { FormattedCryptoAmount, Translation } from 'src/components/suite';
@@ -12,14 +20,6 @@ import { AnalyzeInExplorerBanner } from './AnalyzeInExplorerBanner';
 import { FormattedNftAmount } from 'src/components/suite/FormattedNftAmount';
 import { useExplorerTxUrl } from 'src/hooks/suite/useExplorerTxUrl';
 import { IOAddress } from '../../IOAddress';
-import {
-    Elevation,
-    borders,
-    mapElevationToBackground,
-    mapElevationToBorder,
-    spacingsPx,
-    typography,
-} from '@trezor/theme';
 
 export const blurFix = css`
     margin-left: -10px;
@@ -172,6 +172,7 @@ const IOGridRow = ({
             />
 
             <br />
+
             <AmountRow>
                 {anonymity && <UtxoAnonymity anonymity={anonymity} />}
                 {value && (

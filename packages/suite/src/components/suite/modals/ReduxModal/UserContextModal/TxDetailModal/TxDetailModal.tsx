@@ -137,8 +137,8 @@ export const TxDetailModal = ({ tx, rbfForm, onCancel }: TxDetailModalProps) => 
                 confirmations={confirmations}
             />
 
-            <SectionActions>
-                {network?.features?.includes('rbf') && tx.rbfParams && !tx.deadline && (
+            {network?.features?.includes('rbf') && tx.rbfParams && !tx.deadline && (
+                <SectionActions>
                     <>
                         {section === 'CHANGE_FEE' && (
                             // Show back button and section title when bumping fee/finalizing txs
@@ -198,8 +198,8 @@ export const TxDetailModal = ({ tx, rbfForm, onCancel }: TxDetailModalProps) => 
                             )}
                         </Right>
                     </>
-                )}
-            </SectionActions>
+                </SectionActions>
+            )}
 
             {section === 'CHANGE_FEE' ? (
                 <ChangeFee
