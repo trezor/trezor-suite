@@ -281,12 +281,9 @@ export const syncAccountsWithBlockchainThunk = createThunk(
 
 export const onBlockchainConnectThunk = createThunk(
     `${blockchainActionsPrefix}/onBlockchainConnectThunk`,
-    async (symbol: string, { dispatch, getState }) => {
+    async (symbol: string, { dispatch }) => {
         const network = getNetwork(symbol.toLowerCase());
         if (!network) return;
-        const blockchainInfo = selectNetworkBlockchainInfo(network.symbol)(getState());
-        // reset previous timeout
-        tryClearTimeout(blockchainInfo.reconnection?.id);
         await dispatch(subscribeBlockchainThunk({ symbol: network.symbol, fiatRates: true }));
         await dispatch(updateFeeInfoThunk(network.symbol));
         // update accounts for connected network
@@ -375,34 +372,13 @@ export const onBlockchainNotificationThunk = createThunk(
 
 export const onBlockchainDisconnectThunk = createThunk(
     `${blockchainActionsPrefix}/onBlockchainDisconnectThunk`,
-    (error: BlockchainError, { dispatch, getState }) => {
+    (error: BlockchainError, { getState }) => {
         const network = getNetwork(error.coin.shortcut.toLowerCase());
         if (!network) return;
 
         const blockchain = selectBlockchainState(getState());
-        const accounts = selectAccounts(getState());
-        const { reconnection, syncTimeout } = blockchain[network.symbol];
+        const { syncTimeout } = blockchain[network.symbol];
         // reset previous timeout
-        tryClearTimeout(reconnection?.id);
         tryClearTimeout(syncTimeout);
-
-        // there is no need to reconnect since there are no accounts for this network
-        const a = findAccountsByNetwork(network.symbol, accounts);
-        if (!a.length) return;
-
-        const count = reconnection ? reconnection.count : 0;
-        const timeout = Math.min(2500 * count, 20000);
-        const time = new Date().getTime() + timeout;
-
-        const id = setTimeout(() => dispatch(reconnectBlockchainThunk(network.symbol)), timeout);
-
-        dispatch(
-            blockchainActions.reconnectTimeoutStart({
-                symbol: network.symbol,
-                id,
-                time,
-                count: count + 1,
-            }),
-        );
     },
 );

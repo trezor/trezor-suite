@@ -487,7 +487,7 @@ export const onDisconnect = [
             accounts: [{ symbol: 'btc' }],
         },
         symbol: 'btc',
-        actions: [{ type: blockchainActions.reconnectTimeoutStart.type }],
+        actions: [],
     },
     {
         description: 'with accounts, with reconnection, reconnection restarted',
@@ -503,7 +503,7 @@ export const onDisconnect = [
             },
         },
         symbol: 'btc',
-        actions: [{ type: blockchainActions.reconnectTimeoutStart.type }],
+        actions: [],
     },
 ];
 

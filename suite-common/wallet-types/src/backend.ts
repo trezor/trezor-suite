@@ -26,9 +26,7 @@ export type BackendSettings = Partial<{
 }>;
 
 interface BlockchainReconnection {
-    id: Timeout; // setTimeout id
     time: number; // timestamp when it will be resolved
-    count: number; // number of tries
 }
 
 export interface Blockchain {

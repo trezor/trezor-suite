@@ -13,19 +13,6 @@ const connected = createAction(
     }),
 );
 
-type ReconnectTimeoutStartPayload = {
-    symbol: NetworkSymbol;
-    id: Timeout;
-    time: number;
-    count: number;
-};
-const reconnectTimeoutStart = createAction(
-    `${blockchainActionsPrefix}/reconnectTimeoutStart`,
-    (payload: ReconnectTimeoutStartPayload) => ({
-        payload,
-    }),
-);
-
 const updateFee = createAction(
     `${blockchainActionsPrefix}/updateFee`,
     (payload: Partial<NetworksFees>) => ({
@@ -53,7 +40,6 @@ const setBackend = createAction(
 export const blockchainActions = {
     setBackend,
     connected,
-    reconnectTimeoutStart,
     updateFee,
     synced,
 };
