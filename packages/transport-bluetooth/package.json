@@ -1,0 +1,30 @@
+{
+    "name": "@trezor/transport-bluetooth",
+    "version": "1.0.0",
+    "private": true,
+    "description": "Rust websocket server for communication via bluetooth",
+    "license": "SEE LICENSE IN LICENSE.md",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/trezor/trezor-suite.git"
+    },
+    "bugs": {
+        "url": "https://github.com/trezor/trezor-suite/issues"
+    },
+    "keywords": [
+        "Trezor",
+        "transport"
+    ],
+    "main": "./src/index",
+    "scripts": {
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "type-check": "tsc --build tsconfig.json",
+        "test:unit": "jest"
+    },
+    "dependencies": {
+        "@trezor/protocol": "workspace:*",
+        "@trezor/transport": "workspace:*",
+        "@trezor/utils": "workspace:*",
+        "ws": "^8.18.0"
+    }
+}

@@ -1,0 +1,12 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "outDir": "./libDev",
+        "types": ["jest", "node"]
+    },
+    "references": [
+        { "path": "../protocol" },
+        { "path": "../transport" },
+        { "path": "../utils" }
+    ]
+}
