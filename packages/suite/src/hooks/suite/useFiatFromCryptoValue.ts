@@ -20,7 +20,7 @@ interface DefaultSourceProps extends CommonOwnProps {
 
 interface CustomSourceProps extends CommonOwnProps {
     source: TimestampedRates['rates'] | undefined | null;
-    useCustomSource: boolean;
+    useCustomSource?: boolean;
 }
 
 export type useFiatFromCryptoValueParams = DefaultSourceProps | CustomSourceProps;

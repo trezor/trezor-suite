@@ -150,7 +150,7 @@ export const AssetCard = ({
                         <FiatAmount>
                             <FiatHeader
                                 size="medium"
-                                portfolioValue={fiatAmount ?? '0'}
+                                fiatAmount={fiatAmount ?? '0'}
                                 localCurrency={localCurrency}
                             />
                         </FiatAmount>
