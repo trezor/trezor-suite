@@ -5,6 +5,7 @@ import type { MessageFactoryFn } from '../types/utils';
 export const BLOCKCHAIN_EVENT = 'BLOCKCHAIN_EVENT';
 export const BLOCKCHAIN = {
     CONNECT: 'blockchain-connect',
+    RECONNECTING: 'blockchain-reconnecting',
     ERROR: 'blockchain-error',
     BLOCK: 'blockchain-block',
     NOTIFICATION: 'blockchain-notification',
@@ -16,6 +17,11 @@ export interface BlockchainInfo extends ServerInfo {
     misc?: {
         reserve?: string;
     };
+}
+
+export interface BlockchainReconnecting {
+    coin: CoinInfo;
+    time: number;
 }
 
 export interface BlockchainError {
@@ -42,6 +48,10 @@ export type BlockchainEvent =
     | {
           type: typeof BLOCKCHAIN.CONNECT;
           payload: BlockchainInfo;
+      }
+    | {
+          type: typeof BLOCKCHAIN.RECONNECTING;
+          payload: BlockchainReconnecting;
       }
     | {
           type: typeof BLOCKCHAIN.ERROR;
