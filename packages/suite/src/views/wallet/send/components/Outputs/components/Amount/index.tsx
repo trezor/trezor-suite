@@ -41,21 +41,14 @@ const Row = styled.div`
 
 const Heading = styled.p`
     position: absolute;
-`;
-
-const Text = styled.div`
-    margin-right: 3px;
+    display: flex;
+    flex-direction: row;
 `;
 
 const AmountInput = styled(NumberInput)`
     display: flex;
     flex: 1;
 ` as typeof NumberInput; // Styled wrapper doesn't preserve type argument, see https://github.com/styled-components/styled-components/issues/1803#issuecomment-857092410
-
-const Label = styled.div`
-    display: flex;
-    align-items: center;
-`;
 
 const Left = styled.div`
     position: relative; /* for TokenBalance positioning */
@@ -226,6 +219,11 @@ export const Amount = ({ output, outputId }: AmountProps) => {
             <Row>
                 <Heading>
                     <Translation id="AMOUNT" />
+                    {tokenBalance && (
+                        <TokenBalance>
+                            (<Translation id="TOKEN_BALANCE" values={{ balance: tokenBalance }} />)
+                        </TokenBalance>
+                    )}
                 </Heading>
 
                 <Left>
@@ -233,22 +231,6 @@ export const Amount = ({ output, outputId }: AmountProps) => {
                         inputState={inputState}
                         labelHoverAddon={!isSetMaxVisible ? <SendMaxSwitch /> : undefined}
                         labelRight={isSetMaxVisible ? <SendMaxSwitch /> : undefined}
-                        label={
-                            <Label>
-                                <Text>
-                                    <Translation id="AMOUNT" />
-                                </Text>
-
-                                {tokenBalance && (
-                                    <TokenBalance>
-                                        <Translation
-                                            id="TOKEN_BALANCE"
-                                            values={{ balance: tokenBalance }}
-                                        />
-                                    </TokenBalance>
-                                )}
-                            </Label>
-                        }
                         bottomText={bottomText || null}
                         onChange={handleInputChange}
                         name={inputName}
