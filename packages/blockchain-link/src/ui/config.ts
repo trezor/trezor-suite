@@ -505,7 +505,7 @@ export default [
     },
     {
         blockchain: {
-            name: 'Polygon',
+            name: 'Polygon PoS',
             worker: 'js/blockbook-worker.js',
             server: ['https://matic1.trezor.io', 'https://matic2.trezor.io'],
             debug: true,

@@ -102,7 +102,7 @@
         },
         "chain": "matic",
         "chain_id": 6193,
-        "name": "Polygon",
+        "name": "Polygon PoS",
         "shortcut": "MATIC",
         "slip44": 1,
         "support": {

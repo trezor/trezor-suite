@@ -500,7 +500,7 @@ export const networks = {
         accountTypes: {},
     },
     matic: {
-        name: 'Polygon',
+        name: 'Polygon PoS',
         networkType: 'ethereum',
         chainId: 137,
         bip43Path: "m/44'/60'/0'/0/i",
