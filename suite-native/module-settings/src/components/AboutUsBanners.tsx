@@ -43,7 +43,7 @@ export const AboutUsBanners = () => {
             </Card>
             <Card style={applyStyle(cardStyle, { backgroundColor: 'backgroundSecondaryDefault' })}>
                 <VStack spacing="large" style={applyStyle(stackStyle)}>
-                    <Text color="textDefaultInverse" variant="titleMedium">
+                    <Text color="textDefaultInverted" variant="titleMedium">
                         Follow us
                     </Text>
                     <HStack spacing="large">

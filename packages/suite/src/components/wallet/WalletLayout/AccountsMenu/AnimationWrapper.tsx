@@ -7,6 +7,7 @@ interface AnimationWrapperProps {
     onAnimationStart?: () => void;
     onUpdate?: (latest: { [key: string]: ReactText }) => void;
     onAnimationComplete?: () => void;
+    dataTest?: string;
 }
 
 export const AnimationWrapper = ({
@@ -15,6 +16,7 @@ export const AnimationWrapper = ({
     onAnimationStart,
     onUpdate,
     onAnimationComplete,
+    dataTest,
 }: AnimationWrapperProps) => {
     const collapsed = { overflow: 'hidden', height: 0 };
 
@@ -36,6 +38,7 @@ export const AnimationWrapper = ({
                     onUpdate={onUpdate}
                     onAnimationComplete={onAnimationComplete}
                     transition={transition}
+                    data-test={dataTest}
                 >
                     {children}
                 </motion.div>

@@ -1,3 +1,7 @@
+# 9.0.20
+
+-   fix(mobile): fix broken formatting on iOS (#10893) (4e5d028907)
+
 # 9.0.19
 
 -   fix(utils): correct `getSynchronize` return type (4bc47d794)

@@ -50,8 +50,6 @@ export interface IFrameLogRequest {
 export type IFrameEvent =
     | { type: typeof IFRAME.BOOTSTRAP; payload?: typeof undefined }
     | IFrameLoaded
-    | IFrameInit
-    | IFrameLogRequest
     | IFrameError;
 
 export type IFrameEventMessage = IFrameEvent & { event: typeof UI_EVENT };

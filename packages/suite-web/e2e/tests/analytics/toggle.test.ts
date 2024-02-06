@@ -1,4 +1,4 @@
-// @group:suite
+// @group:other
 // @retry=2
 
 import { EventType } from '@trezor/suite-analytics';
@@ -49,7 +49,7 @@ describe('Analytics Toggle - Enablement and Disablement', () => {
         // reload app (important, app needs time to save initialRun flag into storage) to change session id
         cy.getTestElement('@suite/loading').should('not.exist');
         cy.discoveryShouldFinish();
-        cy.reload();
+        cy.safeReload();
         cy.discoveryShouldFinish();
 
         // go to settings, analytics should not enabled and no additional analytics requests should be fired

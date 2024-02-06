@@ -2,9 +2,16 @@
     "name": "@trezor/connect web extension mv3 example",
     "version": "1.0.0",
     "manifest_version": 3,
+    "action": {
+        "default_popup": "popup.html"
+    },
     "background": {
         "service_worker": "serviceWorker.js"
     },
     "permissions": ["scripting"],
-    "host_permissions": ["*://connect.trezor.io/9/*"]
+    "host_permissions": [
+        "*://connect.trezor.io/9/*",
+        "*://suite.corp.sldev.cz/*",
+        "*://localhost/*"
+    ]
 }

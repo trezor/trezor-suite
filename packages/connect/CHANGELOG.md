@@ -1,3 +1,11 @@
+# 9.1.12
+
+-   feat(connect-common): message channel to allow lazy handshake (79be923)
+-   chore(connect-ui): ui changes (dcb8e02, 03c6cc6, 936f6b5, 6b7ed69, 8f9f3e2, 4cc0cd6)
+-   fix(libs): changes in libs that should allow compiling connect with typescript option skipLibCheck: false
+-   chore(connect): split dev and prod builds. (535dd48)
+-   dependencies update: @trezor/blockchain-link, @trezor/blockchain-link-types, @trezor/type-utils, @trezor/analytics, @trezor/connect-common, @trezor/env-utils, @trezor/transport, @trezor/protobuf, @trezor/utxo-lib, @trezor/utils
+
 # 9.1.11
 
 -   fix(connect): use weak assert in altcoin signTransaction (86b3703279)

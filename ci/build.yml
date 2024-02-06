@@ -291,7 +291,7 @@ connect-explorer build production:
   extends: .connect-explorer build base
   only:
     refs:
-      - /^release\/connect/\//
+      - /^release\/connect\//
   variables:
     NODE_ENV: "production"
 
@@ -299,7 +299,7 @@ connect-web build production:
   extends: .connect-web build base
   only:
     refs:
-      - /^release\/connect/\//
+      - /^release\/connect\//
   variables:
     NODE_ENV: "production"
 

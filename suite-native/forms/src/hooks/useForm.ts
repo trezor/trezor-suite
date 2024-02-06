@@ -19,7 +19,7 @@ export const useForm = <TFieldValues extends FieldValues, TContext extends objec
     validation,
     ...otherArgs
 }: UseFormArgs<TFieldValues, TContext>): UseFormReturn<TFieldValues> => {
-    const form = hookFormUseForm<TFieldValues>({
+    const form = hookFormUseForm<TFieldValues, TContext>({
         resolver: yupResolver(validation),
         reValidateMode: 'onChange',
         mode: 'onTouched',

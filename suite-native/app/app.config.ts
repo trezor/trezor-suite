@@ -119,6 +119,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
             },
         ],
         '@trezor/react-native-usb/plugins/withUSBDevice.js',
+        // Define FLIPPER_VERSION
+        './plugins/withGradleProperties.js',
         // These should come last
         './plugins/withRemoveXcodeLocalEnv.js',
         ['./plugins/withEnvFile.js', { buildType }],

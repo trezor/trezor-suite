@@ -90,7 +90,7 @@ window.addEventListener('load', () => {
     };
 
     const chrome = {
-        name: 'Chrome 84+',
+        name: 'Chrome 92+',
         urlDownload: CHROME_URL,
         urlUpdate: CHROME_UPDATE_URL,
         icon: iconChrome,
@@ -98,7 +98,7 @@ window.addEventListener('load', () => {
     };
 
     const firefox = {
-        name: 'Firefox 78+',
+        name: 'Firefox 102+',
         urlDownload: FIREFOX_URL,
         urlUpdate: FIREFOX_UPDATE_URL,
         icon: iconFirefox,

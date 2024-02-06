@@ -35,6 +35,7 @@ export const Header = () => {
         },
         {
             key: 'import',
+            'data-test': '@send/header-dropdown/import',
             onClick: () => {
                 loadTransaction();
             },
@@ -43,6 +44,7 @@ export const Header = () => {
         },
         {
             key: 'raw',
+            'data-test': '@send/header-dropdown/raw',
             onClick: () => {
                 dispatch(sendRaw(true));
             },

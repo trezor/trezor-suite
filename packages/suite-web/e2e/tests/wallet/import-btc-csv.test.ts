@@ -47,7 +47,7 @@ describe('Import a BTC csv file', () => {
         // Test execution
         //
         cy.getTestElement('@send/header-dropdown').click();
-        cy.contains('Import').click();
+        cy.getTestElement('@send/header-dropdown/import').click();
         cy.getTestElement('@modal').then(fileUploadModal => {
             cy.wrap(fileUploadModal)
                 .find('input[type=file]')

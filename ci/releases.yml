@@ -114,8 +114,6 @@ connect v9 rollback production:
   when: manual
   before_script: []
   needs:
-    - connect-web build
-    - connect-explorer build
     - connect v9 deploy production
   script:
     - source ${CONNECT_DEPLOY_KEYFILE}

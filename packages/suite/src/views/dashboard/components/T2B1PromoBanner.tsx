@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { rgba } from 'polished';
 
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { TREZOR_URL } from '@trezor/urls';
@@ -21,6 +20,7 @@ import { Translation, TrezorLink } from 'src/components/suite';
 import { AnimatePresence, motion } from 'framer-motion';
 import { resolveStaticPath } from '@suite-common/suite-utils';
 import { colorVariants } from '@trezor/theme';
+import { rgba } from 'polished';
 
 const BannerWrapper = styled(motion.div)`
     display: grid;

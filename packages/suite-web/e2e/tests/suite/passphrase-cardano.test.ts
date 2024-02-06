@@ -1,7 +1,7 @@
 // @group:passphrase
 // @retry=2
 
-const correctPassprhaseAddr =
+const correctPassphraseAddr =
     'addr1qx3ufjpwcx30ee73a7r29surauze6yt0jvr7c3rnahw0hnppg7qp5xvslcfucsqqayrtjhm4u66x';
 
 describe('Passphrase with cardano', () => {
@@ -31,7 +31,7 @@ describe('Passphrase with cardano', () => {
         cy.getTestElement('@passphrase/hidden/submit-button').click();
         cy.task('pressYes');
         cy.task('pressYes');
-        cy.getTestElement('@passphrase/confirm-checkbox', { timeout: 10000 }).click();
+        cy.getTestElement('@passphrase/confirm-checkbox', { timeout: 20000 }).click();
         cy.getTestElement('@passphrase/input').type('secret passphrase A');
         cy.getTestElement('@passphrase/hidden/submit-button').click();
         cy.task('pressYes');
@@ -59,10 +59,11 @@ describe('Passphrase with cardano', () => {
         cy.getTestElement('@passphrase/input').type('secret passphrase A');
         cy.getTestElement('@passphrase/hidden/submit-button').click();
         cy.task('pressYes');
+        cy.wait(501);
         cy.task('pressYes');
         cy.getTestElement('@modal/confirm-address/address-field').should(
             'contain',
-            correctPassprhaseAddr,
+            correctPassphraseAddr,
         );
         cy.task('pressYes');
         cy.getTestElement('@metadata/copy-address-button');

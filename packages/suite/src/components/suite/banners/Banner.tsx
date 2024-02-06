@@ -37,23 +37,23 @@ const getBackgroundColor = (variant: BannerVariant, theme: DefaultTheme) => {
 const getForegroundColor = (variant: BannerVariant, theme: DefaultTheme) => {
     switch (variant) {
         case 'info':
-            return theme.textDefaultInverse;
+            return theme.textDefaultInverted;
         case 'warning':
-            return theme.textDefaultInverse;
+            return theme.textDefaultInverted;
         case 'destructive':
-            return theme.textDefaultInverse;
+            return theme.textDefaultInverted;
         default:
-            return theme.textDefaultInverse;
+            return theme.textDefaultInverted;
     }
 };
 const getIcon = (variant: BannerVariant, theme: DefaultTheme) => {
     switch (variant) {
         case 'info':
-            return <Icon icon="INFO" size={22} color={theme.textDefaultInverse} />; // @TODO iconDefaultInverse
+            return <Icon icon="INFO" size={22} color={theme.textDefaultInverted} />; // @TODO iconDefaultInverted;
         case 'warning':
-            return <Icon icon="WARNING" size={22} color={theme.textDefaultInverse} />; // @TODO iconDefaultInverse
+            return <Icon icon="WARNING" size={22} color={theme.textDefaultInverted} />; // @TODO iconDefaultInverted;
         case 'destructive':
-            return <Icon icon="WARNING" size={22} color={theme.textDefaultInverse} />; // @TODO iconDefaultInverse
+            return <Icon icon="WARNING" size={22} color={theme.textDefaultInverted} />; // @TODO iconDefaultInverted;
         default:
             return null;
     }

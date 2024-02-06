@@ -1,6 +1,6 @@
 {
     "name": "@trezor/blockchain-link-types",
-    "version": "1.0.11",
+    "version": "1.0.12",
     "license": "See LICENSE.md in repo root",
     "sideEffects": false,
     "main": "lib/index",

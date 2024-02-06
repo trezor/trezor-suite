@@ -216,6 +216,7 @@ const Text = styled.div`
 
 const TipsContainer = styled.div`
     margin-top: 40px;
+    margin-bottom: 20px;
 `;
 
 const StyledIcon = styled(Icon)`

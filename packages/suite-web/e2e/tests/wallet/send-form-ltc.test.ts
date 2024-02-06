@@ -44,6 +44,7 @@ describe('LTC send form with mocked blockbook', () => {
                 cy.getTestElement('@settings/advance/url').type(customBlockbook);
                 cy.getTestElement('@settings/advance/button/save').click();
 
+                cy.wait(1000);
                 cy.prefixedVisit('/accounts/send#/ltc/0');
                 cy.discoveryShouldFinish();
 

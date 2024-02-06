@@ -90,8 +90,6 @@ export type PopupEvent =
     | PopupInit
     | PopupHandshake
     | PopupError
-    | PopupClosedMessage
-    | PopupAnalyticsResponse
     | PopupContentScriptLoaded
     | PopupMethodInfo;
 

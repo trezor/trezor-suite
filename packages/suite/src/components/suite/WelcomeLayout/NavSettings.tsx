@@ -1,6 +1,6 @@
 import styled, { useTheme } from 'styled-components';
 
-import { Icon, Tooltip } from '@trezor/components';
+import { Icon, TOOLTIP_DELAY_NONE, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
 import { HoverAnimation, Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
@@ -33,7 +33,8 @@ export const NavSettings = ({ isActive }: NavSettingsProps) => {
         <Tooltip
             cursor="default"
             maxWidth={200}
-            delay={[600, 0]}
+            delayShow={TOOLTIP_DELAY_NORMAL}
+            delayHide={TOOLTIP_DELAY_NONE}
             placement="bottom"
             interactive={false}
             hideOnClick={false}

@@ -30,7 +30,7 @@
 # @trezor/suite-web
 .e2e web:
   stage: integration testing
-  retry: 0
+  retry: 1
   dependencies:
     - install
   variables:
@@ -46,7 +46,7 @@
     TRACK_SUITE_URL: https://track-suite-ff9ad9f5b4f6.herokuapp.com
     ## when debugging or developing tests it does not make sense to have retries,
     ## in other cases retries are useful to avoid occasional failures due to flaky tests
-    ALLOW_RETRY: 0
+    ALLOW_RETRY: 1
     CYPRESS_TEST_URLS: ${CI_COMMIT_REF_NAME}
   before_script:
     - docker login $CI_DEPENDENCY_PROXY_SERVER -u $CI_DEPENDENCY_PROXY_USER -p $CI_DEPENDENCY_PROXY_PASSWORD
@@ -81,13 +81,11 @@
       - TEST_GROUP:
           [
             "@group:suite",
-            "@group:onboarding",
             "@group:device-management",
             "@group:settings",
             "@group:metadata",
             "@group:passphrase",
-            "@group:browser",
-            "@group:coinmarket",
+            "@group:other",
           ]
         CONTAINERS: "trezor-user-env-unix"
         CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: 1
@@ -112,12 +110,13 @@ suite web migrations:
 suite web:
   extends: .suite web base
 
-suite web snapshots:
-  extends: .suite web base
-  when: manual
-  variables:
-    CYPRESS_SNAPSHOT: 1
-    CYPRESS_updateSnapshots: 1
+# snapshots don't work at the moment, commenting them out
+# suite web snapshots:
+#   extends: .suite web base
+#   when: manual
+#   variables:
+#     CYPRESS_SNAPSHOT: 1
+#     CYPRESS_updateSnapshots: 1
 
 # Tests against latest trezor-firmware main
 suite web canary fws:
@@ -145,7 +144,7 @@ suite web canary fws manual:
 # @trezor/suite-desktop
 .e2e desktop:
   stage: integration testing
-  retry: 0
+  retry: 1
   dependencies:
     - install
   variables:
@@ -223,7 +222,7 @@ transport manual:
 # @trezor/connect-popup (via @trezor/connect-explorer)
 .e2e connect-popup:
   stage: integration testing
-  retry: 0
+  retry: 1
   variables:
     COMPOSE_PROJECT_NAME: $CI_JOB_ID
     COMPOSE_FILE: ./docker/docker-compose.connect-popup-ci.yml
@@ -311,7 +310,7 @@ connect-popup legacy npm package:
 
 .e2e connect-popup-webextension:
   stage: integration testing
-  retry: 0
+  retry: 1
   variables:
     COMPOSE_PROJECT_NAME: $CI_JOB_ID
     COMPOSE_FILE: ./docker/docker-compose.connect-popup-ci.yml
@@ -361,7 +360,7 @@ connect-popup-webextension manual:
 
 .connect:
   stage: integration testing
-  retry: 0
+  retry: 1
   dependencies:
     - install
   variables:

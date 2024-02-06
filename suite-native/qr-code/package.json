@@ -14,6 +14,7 @@
         "@react-navigation/core": "^6.4.10",
         "@suite-common/icons": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
+        "@suite-common/wallet-utils": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/helpers": "workspace:*",
         "@suite-native/intl": "workspace:*",

@@ -1,3 +1,8 @@
+# 1.0.12
+
+-   feat(suite-native): modals renderer (#10801) (a9b4d1e8fe)
+-   chore(blockchain-link-types): move deps from dev to dependencies (b77caf9715)
+
 # 1.0.11
 
 -   fix(suite): subscribe to Solana token accounts as well (b2f85ac9e)

@@ -4,7 +4,7 @@ import { Icon, IconType } from '../../assets/Icon/Icon';
 import { Spinner } from '../../loaders/Spinner/Spinner';
 import { ButtonContainer, ButtonProps } from '../Button/Button';
 import { ButtonVariant, getIconColor, getIconSize, getPadding } from '../buttonStyleUtils';
-import { Tooltip } from '../../Tooltip/Tooltip';
+import { TOOLTIP_DELAY_NONE, TOOLTIP_DELAY_SHORT, Tooltip } from '../../Tooltip/Tooltip';
 import { useElevation } from '../../ElevationContext/ElevationContext';
 
 const IconButtonContainer = styled(ButtonContainer)`
@@ -56,7 +56,12 @@ export const IconButton = ({
     const Loader = <Spinner size={getIconSize(size)} />;
 
     return (
-        <Tooltip content={label} delay={[600, 0]} cursor="default">
+        <Tooltip
+            content={label}
+            delayShow={TOOLTIP_DELAY_SHORT}
+            delayHide={TOOLTIP_DELAY_NONE}
+            cursor="default"
+        >
             <IconButtonContainer
                 variant={variant}
                 size={size}

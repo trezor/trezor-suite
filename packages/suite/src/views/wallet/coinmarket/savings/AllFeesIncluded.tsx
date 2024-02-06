@@ -13,7 +13,7 @@ const StyledTooltip = styled(Tooltip)`
 const StyledLink = styled(Link)`
     text-decoration: underline;
     ${typography.hint}
-    color: ${({ theme }) => theme.textDefaultInverse};
+    color: ${({ theme }) => theme.textDefaultInverted};
 `;
 
 export const AllFeesIncluded = () => (

@@ -101,8 +101,6 @@ describe('T2T1 - Device settings', () => {
 
         cy.getTestElement('@settings/device/homescreen-gallery').click();
         cy.get('#original_t2t1').should('exist');
-
-        //
     });
 
     it('backup in settings', () => {

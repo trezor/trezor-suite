@@ -1,3 +1,7 @@
+# 1.0.13
+
+-   fix(connect): point analytics to lib (e5ae31f62b)
+
 # 1.0.11
 
 -   chore(connect): use `tslib` as dependency in all public libs (606ecc63b)

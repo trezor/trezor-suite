@@ -12,7 +12,7 @@ type QRCodeProps = {
 const SCREEN_WIDTH = Dimensions.get('screen').width;
 
 const MAX_QRCODE_SIZE = 250;
-const QRCODE_PADDING = 12;
+const QRCODE_PADDING = 24;
 
 const QRCODE_SIZE =
     SCREEN_WIDTH < MAX_QRCODE_SIZE + QRCODE_PADDING ? SCREEN_WIDTH : MAX_QRCODE_SIZE;

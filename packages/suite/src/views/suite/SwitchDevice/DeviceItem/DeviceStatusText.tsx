@@ -1,7 +1,7 @@
 import styled, { css, useTheme } from 'styled-components';
 import { TrezorDevice } from '@suite-common/suite-types';
 import * as deviceUtils from '@suite-common/suite-utils';
-import { Icon } from '@trezor/components';
+import { Icon, TOOLTIP_DELAY_LONG, TruncateWithTooltip } from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';
 import React, { MouseEventHandler } from 'react';
 import { Translation, WalletLabeling } from 'src/components/suite';
@@ -63,7 +63,9 @@ export const DeviceStatusText = ({
                     color={connected ? theme.iconPrimaryDefault : theme.textSubdued}
                 />
                 {walletLabel ? (
-                    <WalletLabeling device={device} />
+                    <TruncateWithTooltip delayShow={TOOLTIP_DELAY_LONG}>
+                        <WalletLabeling device={device} />
+                    </TruncateWithTooltip>
                 ) : (
                     <Translation id={connected ? 'TR_CONNECTED' : 'TR_DISCONNECTED'} />
                 )}

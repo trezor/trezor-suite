@@ -1,3 +1,7 @@
+# 0.0.27
+
+-   feat(connect-common): message channel to allow lazy handshake (79be923e67)
+
 # 0.0.26
 
 -   feat(connect-common): add resolve messages promises to abstract (f9e6f304f)

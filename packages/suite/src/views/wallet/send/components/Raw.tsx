@@ -39,27 +39,29 @@ interface RawProps {
     network: Network;
 }
 
+const INPUT_NAME = 'rawTx';
+
 export const Raw = ({ network }: RawProps) => {
     const {
         register,
-        getValues,
         setValue,
+        watch,
         formState: { errors },
     } = useForm({
         mode: 'onChange',
         defaultValues: {
-            rawTx: '',
+            [INPUT_NAME]: '',
         },
     });
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
 
-    const inputName = 'rawTx';
-    const inputValue = getValues(inputName) || '';
-    const error = errors[inputName];
+    const inputValue = watch(INPUT_NAME);
+    const error = errors[INPUT_NAME];
     const inputState = getInputState(error);
     const prefix = network.networkType === 'ethereum' ? '0x' : undefined;
-    const { ref: inputRef, ...inputField } = register(inputName, {
+
+    const { ref: inputRef, ...inputField } = register(INPUT_NAME, {
         required: translationString('RAW_TX_NOT_SET'),
         validate: (value: string) => {
             if (!isHexValid(value, prefix)) return translationString('DATA_NOT_VALID_HEX');
@@ -67,10 +69,12 @@ export const Raw = ({ network }: RawProps) => {
     });
 
     const cancel = () => dispatch(sendRaw(false));
+
     const send = async () => {
         const result = await dispatch(pushRawTransaction(inputValue, network.symbol));
+
         if (result) {
-            setValue(inputName, '');
+            setValue(INPUT_NAME, '');
             analytics.report({
                 type: EventType.SendRawTransaction,
                 payload: {
@@ -79,6 +83,8 @@ export const Raw = ({ network }: RawProps) => {
             });
         }
     };
+
+    const isSubmitDisabled = inputState === 'error' || !inputValue;
 
     return (
         <StyledCard>
@@ -101,7 +107,7 @@ export const Raw = ({ network }: RawProps) => {
 
             <StyledTextarea
                 inputState={inputState}
-                data-test={inputName}
+                data-test={INPUT_NAME}
                 defaultValue={inputValue}
                 bottomText={error?.message || null}
                 label={<Translation id="RAW_TRANSACTION" />}
@@ -109,7 +115,7 @@ export const Raw = ({ network }: RawProps) => {
                 {...inputField}
             />
 
-            <SendButton isDisabled={inputState === 'error' || !inputValue} onClick={send}>
+            <SendButton isDisabled={isSubmitDisabled} onClick={send}>
                 <Translation id="SEND_TRANSACTION" />
             </SendButton>
         </StyledCard>

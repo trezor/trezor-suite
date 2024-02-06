@@ -1,4 +1,4 @@
-// @group:onboarding
+// @group:device-management
 // @retry=2
 
 const shareOneOfThree = [
@@ -66,11 +66,11 @@ describe('Onboarding - T2T1 in recovery mode', () => {
         cy.getTestElement('@onboarding/recovery/start-button').click();
         cy.getTestElement('@onboarding/confirm-on-device');
         cy.task('pressYes');
-        cy.wait(1000);
+        cy.wait(501);
         cy.task('pressYes');
-        cy.wait(1000);
+        cy.wait(501);
         cy.task('selectNumOfWordsEmu', 20);
-        cy.wait(1000);
+        cy.wait(501);
         cy.task('pressYes');
         cy.wait(501); // wait for device release
 
@@ -79,7 +79,7 @@ describe('Onboarding - T2T1 in recovery mode', () => {
         cy.getTestElement('@connect-device-prompt', { timeout: 20000 });
         cy.wait(501);
         cy.resetDb();
-        cy.reload();
+        cy.safeReload();
 
         // now suite has reloaded. database is wiped.
         cy.task('startEmu', { wipe: false, version: '2.4.3' });
@@ -88,9 +88,9 @@ describe('Onboarding - T2T1 in recovery mode', () => {
         cy.getTestElement('@analytics/continue-button').click();
         // recovery device persisted reload
         cy.getTestElement('@onboarding/confirm-on-device');
-        cy.wait(1000);
+        cy.wait(501);
         cy.task('pressNo');
-        cy.wait(1000);
+        cy.wait(501);
         cy.task('pressYes');
     });
 
@@ -105,31 +105,34 @@ describe('Onboarding - T2T1 in recovery mode', () => {
         cy.getTestElement('@onboarding/recovery/start-button').click();
         cy.getTestElement('@onboarding/confirm-on-device');
         cy.task('pressYes');
-        cy.wait(1000);
+        cy.wait(501);
         cy.task('pressYes');
-        cy.wait(1000);
+        cy.wait(501);
         cy.task('selectNumOfWordsEmu', 20);
-        cy.wait(1000);
+        cy.wait(501);
         cy.task('pressYes');
+        cy.wait(501);
         for (let i = 0; i < shareOneOfThree.length; i++) {
             cy.task('inputEmu', shareOneOfThree[i]);
+            cy.wait(501);
         }
         cy.getTestElement('@onboarding/confirm-on-device');
         cy.wait(501);
         cy.task('stopEmu');
-        cy.wait(1000);
+        cy.wait(501);
         cy.getTestElement('@connect-device-prompt', { timeout: 30000 });
         cy.task('startEmu', { wipe: false, version: '2.4.3' });
         cy.getTestElement('@onboarding/confirm-on-device');
-        cy.wait(1000);
+        cy.wait(501);
         cy.task('pressYes');
-        cy.wait(1000);
+        cy.wait(501);
         cy.task('pressYes');
-        cy.wait(1000);
+        cy.wait(501);
         for (let i = 0; i < shareTwoOfThree.length; i++) {
             cy.task('inputEmu', shareTwoOfThree[i]);
+            cy.wait(501);
         }
-        cy.wait(1000);
+        cy.wait(501);
         cy.task('pressYes');
         cy.getTestElement('@onboarding/recovery/continue-button').click();
         cy.getTestElement('@onboarding/skip-button').click();

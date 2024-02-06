@@ -1,4 +1,4 @@
-// @group:coinmarket
+// @group:other
 
 describe('Coinmarket buy', () => {
     beforeEach(() => {
