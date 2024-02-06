@@ -111,6 +111,10 @@ const RelativeLabel = styled(Label)<{ isVisible?: boolean }>`
     text-align: left;
 `;
 
+const Inline = styled.span`
+    display: inline-flex;
+`;
+
 const ButtonLikeLabel = ({
     editActive,
     payload,
@@ -132,18 +136,21 @@ const ButtonLikeLabel = ({
                 originalValue={payload.value ?? defaultEditableValue}
                 onSubmit={onSubmit}
                 onBlur={onBlur}
+                size="tiny"
             />
         );
     }
 
     if (payload.value) {
         return (
-            <LabelButton variant="tertiary" icon="TAG" data-test={dataTest}>
-                <LabelValue>{payload.value} </LabelValue>
-                {/* This is the defaultVisibleValue which shows up after you hover over the label name: */}
-                {defaultVisibleValue && (
-                    <LabelDefaultValue>{defaultVisibleValue}</LabelDefaultValue>
-                )}
+            <LabelButton variant="tertiary" icon="TAG" data-test={dataTest} size="tiny">
+                <Inline>
+                    <LabelValue>{payload.value} </LabelValue>
+                    {/* This is the defaultVisibleValue which shows up after you hover over the label name: */}
+                    {defaultVisibleValue && (
+                        <LabelDefaultValue>{defaultVisibleValue}</LabelDefaultValue>
+                    )}
+                </Inline>
             </LabelButton>
         );
     }
