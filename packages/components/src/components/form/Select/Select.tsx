@@ -18,7 +18,6 @@ import { BOTTOM_TEXT_MIN_HEIGHT, BottomText } from '../BottomText';
 import { InputState, InputSize } from '../inputTypes';
 import { Control, GroupHeading, Option } from './customComponents';
 import { useOnKeyDown } from './useOnKeyDown';
-import { useDetectPortalTarget } from './useDetectPortalTarget';
 import { DROPDOWN_MENU, menuStyle } from '../../Dropdown/menuStyle';
 import { useElevation } from '../../ElevationContext/ElevationContext';
 
@@ -269,7 +268,6 @@ export const Select = ({
 
     const theme = useTheme();
     const onKeyDown = useOnKeyDown(selectRef, useKeyPressScroll);
-    const menuPortalTarget = useDetectPortalTarget(selectRef);
 
     const handleOnChange = useCallback<Required<ReactSelectProps>['onChange']>(
         (value, { action }) => {
@@ -305,7 +303,7 @@ export const Select = ({
                 classNamePrefix={reactSelectClassNamePrefix}
                 openMenuOnFocus
                 closeMenuOnScroll={closeMenuOnScroll}
-                menuPortalTarget={menuPortalTarget}
+                menuPosition="fixed" // Required for closeMenuOnScroll to work properly when near page bottom
                 styles={createSelectStyle(theme, elevation)}
                 onChange={handleOnChange}
                 isSearchable={isSearchable}
