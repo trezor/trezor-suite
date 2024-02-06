@@ -56,19 +56,20 @@ interface ContentProps {
     disabled: boolean;
 }
 const getTypography = (size: ButtonSize) => {
-    switch (size) {
-        case 'tiny':
-            return typography.hint;
-        case 'small':
-            return typography.hint;
-        default:
-            return typography.body;
-    }
+    const map: Record<ButtonSize, string> = {
+        large: typography.body,
+        medium: typography.body,
+        small: typography.hint,
+        tiny: typography.hint,
+    };
+
+    return map[size];
 };
 
-const Content = styled.span<ContentProps>`
-    display: inline-flex;
+const Content = styled.div<ContentProps>`
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
     ${({ size }) => getTypography(size)};
 `;
