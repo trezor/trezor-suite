@@ -94,13 +94,15 @@ export class WebsocketClient<Events extends Record<string, any>> extends TypedEm
     }
 
     private onTimeout() {
+        console.warn('WS onTimeout!');
         const { ws } = this;
         if (!ws) return;
         this.messages.rejectAll(new WebsocketError('websocket_timeout'));
-        ws.close();
+        // ws.close(); // <- this is suspicions, if single method/call timeouts it disconnect whole client
     }
 
     private onError() {
+        console.warn('WS on error!');
         this.onClose();
     }
 
@@ -190,6 +192,7 @@ export class WebsocketClient<Events extends Record<string, any>> extends TypedEm
         );
 
         ws.once('error', error => {
+            console.warn('WS error 1 trigger onClose', error);
             clearTimeout(connectionTimeout);
             this.onClose();
             dfd.reject(new WebsocketError(error.message));
@@ -219,6 +222,7 @@ export class WebsocketClient<Events extends Record<string, any>> extends TypedEm
         ws.on('error', _error => this.onError());
         ws.on('message', message => this.onMessage(message));
         ws.on('close', () => {
+            console.warn('disconnect close event');
             this.emitter.emit('disconnected');
             this.onClose();
         });
@@ -226,6 +230,7 @@ export class WebsocketClient<Events extends Record<string, any>> extends TypedEm
 
     disconnect() {
         if (this.isConnected()) {
+            console.warn('disconnect manually?');
             const disconnectPromise = new Promise<void>(resolve => {
                 this.ws?.once('close', resolve);
             });
@@ -244,6 +249,8 @@ export class WebsocketClient<Events extends Record<string, any>> extends TypedEm
     private onClose() {
         clearTimeout(this.pingTimeout);
 
+        console.warn('disconnect onClose method');
+
         this.ws?.removeAllListeners();
         this.ws?.on('error', () => {
             // Suppress errors after close
@@ -252,6 +259,8 @@ export class WebsocketClient<Events extends Record<string, any>> extends TypedEm
     }
 
     dispose() {
+        console.warn('disconnect dispose method');
+
         this.removeAllListeners();
         this.disconnect();
         this.onClose();
