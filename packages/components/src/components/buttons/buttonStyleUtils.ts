@@ -56,19 +56,14 @@ export const mapElevationToBackgroundInfoHover: Record<Elevation, Color> = {
 };
 
 export const getPadding = (size: ButtonSize, hasLabel?: boolean) => {
-    switch (size) {
-        case 'large':
-            return hasLabel ? `${spacingsPx.md} ${spacingsPx.xl}` : `${spacingsPx.md}`;
-        case 'medium':
-            return hasLabel ? `${spacingsPx.sm} ${spacingsPx.lg}` : '14px';
-        case 'small':
-            return hasLabel ? `${spacingsPx.xs} ${spacingsPx.md}` : '10px';
-        case 'tiny':
-            return hasLabel ? `${spacingsPx.xxxs} ${spacingsPx.xs}` : '6px';
+    const map: Record<ButtonSize, string> = {
+        small: hasLabel ? `${spacingsPx.xs} ${spacingsPx.md}` : '10px',
+        large: hasLabel ? `${spacingsPx.md} ${spacingsPx.xl}` : `${spacingsPx.md}`,
+        medium: hasLabel ? `${spacingsPx.sm} ${spacingsPx.lg}` : '14px',
+        tiny: hasLabel ? `${spacingsPx.xxxs} ${spacingsPx.xs}` : '6px',
+    };
 
-        default:
-            break;
-    }
+    return map[size];
 };
 
 export const getIconColor = (variant: ButtonVariant, isDisabled: boolean, theme: DefaultTheme) => {

@@ -49,6 +49,10 @@ const StyledButton = styled(Button)`
     margin: 4px 8px 4px 0;
 `;
 
+const Inline = styled.span`
+    display: inline-flex;
+`;
+
 export const BitcoinOptions = () => {
     const {
         network,
@@ -131,8 +135,10 @@ export const BitcoinOptions = () => {
                                         composeTransaction();
                                     }}
                                 >
-                                    <Translation id="RBF" />
-                                    <OnOffSwitcher isOn={rbfEnabled} />
+                                    <Inline>
+                                        <Translation id="RBF" />
+                                        <OnOffSwitcher isOn={rbfEnabled} />
+                                    </Inline>
                                 </StyledButton>
                             </Tooltip>
                         )}
@@ -147,8 +153,10 @@ export const BitcoinOptions = () => {
                             }}
                             data-test="broadcast-button"
                         >
-                            <Translation id="BROADCAST" />
-                            <OnOffSwitcher isOn={broadcastEnabled} />
+                            <Inline>
+                                <Translation id="BROADCAST" />
+                                <OnOffSwitcher isOn={broadcastEnabled} />
+                            </Inline>
                         </StyledButton>
                     </Tooltip>
 
@@ -170,8 +178,10 @@ export const BitcoinOptions = () => {
                                 onClick={toggleUtxoSelection}
                                 data-test="coin-control-button"
                             >
-                                <Translation id="TR_COIN_CONTROL" />
-                                {isCoinControlEnabled && <OnOffSwitcher isOn />}
+                                <Inline>
+                                    <Translation id="TR_COIN_CONTROL" />
+                                    {isCoinControlEnabled && <OnOffSwitcher isOn />}
+                                </Inline>
                             </StyledButton>
                         </Tooltip>
                     )}

@@ -31,7 +31,6 @@ const Container = styled.div<{ disabled?: boolean }>`
     all: unset;
     width: fit-content;
     height: fit-content;
-    border-radius: 50%;
     transition: ${focusStyleTransition};
     border: 1px solid transparent;
     ${getFocusShadowStyle()};

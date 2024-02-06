@@ -70,7 +70,7 @@ const SecurityFeatures = () => {
               heading: <Translation id="TR_BACKUP_YOUR_DEVICE" />,
               description: <Translation id="TR_RECOVERY_SEED_IS_OFFLINE" />,
               cta: {
-                  label: <Translation id="TR_BACKUP_NOW" />,
+                  label: <Translation id="TR_BACKUP_NOW" isNested />,
                   dataTest: 'backup',
                   action: () => dispatch(goto('backup-index')),
                   isDisabled: !!backupFailed,
@@ -81,7 +81,7 @@ const SecurityFeatures = () => {
               icon: 'BACKUP',
               heading: <Translation id="TR_BACKUP_SEED_CREATED_SUCCESSFULLY" />,
               cta: {
-                  label: <Translation id="TR_CHECK_SEED_IN_SETTINGS" />,
+                  label: <Translation id="TR_CHECK_SEED_IN_SETTINGS" isNested />,
                   dataTest: 'seed-link',
                   action: () =>
                       dispatch(

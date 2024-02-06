@@ -26,7 +26,15 @@ import { borders, spacingsPx, typography } from '@trezor/theme';
 
 const transitionSpeed = '0.16s';
 
-const VisibleOnHover = styled.div<{ alwaysVisible?: boolean }>`
+const LabelPart = styled.div`
+    display: flex;
+    align-items: center;
+    gap: ${spacingsPx.xs};
+    color: ${({ theme }) => theme.textSubdued};
+    overflow: hidden;
+`;
+
+const DetailPartVisibleOnHover = styled.div<{ alwaysVisible?: boolean }>`
     display: flex;
     align-items: center;
     gap: ${spacingsPx.xs};
@@ -73,7 +81,7 @@ const Wrapper = styled.div<{ isDisabled: boolean }>`
                 }
             `};
 
-        ${VisibleOnHover} {
+        ${DetailPartVisibleOnHover} {
             opacity: 1;
         }
     }
@@ -241,7 +249,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                     )}
 
                     {isLabelingPossible && (
-                        <VisibleOnHover alwaysVisible={!!outputLabel}>
+                        <LabelPart>
                             <span>•</span>
                             <MetadataLabeling
                                 visible
@@ -254,16 +262,16 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                                     value: outputLabel,
                                 }}
                             />
-                        </VisibleOnHover>
+                        </LabelPart>
                     )}
 
                     {transaction && (
-                        <VisibleOnHover>
+                        <DetailPartVisibleOnHover>
                             <span>•</span>
                             <TransactionDetailButton size="small" onClick={showTransactionDetail}>
                                 <Translation id="TR_DETAIL" />
                             </TransactionDetailButton>
-                        </VisibleOnHover>
+                        </DetailPartVisibleOnHover>
                     )}
 
                     <StyledFiatValue
