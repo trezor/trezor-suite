@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import styled, { css, useTheme } from 'styled-components';
-import { Icon, IconType, variables } from '@trezor/components';
+import { Icon, IconType } from '@trezor/components';
 import { TranslationKey } from '@suite-common/intl-types';
 import { Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectIsSessionAutostopped } from 'src/reducers/wallet/coinjoinReducer';
 import { useDispatch } from 'src/hooks/suite/useDispatch';
 import { toggleAutostopCoinjoin } from 'src/actions/wallet/coinjoinAccountActions';
+import { borders, typography } from '@trezor/theme';
 
 const TRANSITION_CONFIG = '0.1s ease';
 
@@ -54,10 +55,9 @@ const Container = styled.button<{
     margin: 14px auto 0;
     padding: 3px 8px 3px 26px;
     border: 1px solid ${({ theme }) => theme.STROKE_LIGHT_GREY};
-    border-radius: 20px;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    border-radius: ${borders.radii.lg};
+    color: ${({ theme }) => theme.textSubdued};
+    ${typography.hint}
     background: none;
     transition:
         background ${TRANSITION_CONFIG},
@@ -147,7 +147,7 @@ export const AutoStopButton = ({ relatedAccountKey }: AutoStopButtonProps) => {
                 isActivated={!!isActivated}
                 icon={icon}
                 size={iconSize}
-                color={isActivated ? theme.TYPE_GREEN : undefined}
+                color={isActivated ? theme.iconPrimaryDefault : undefined}
             />
 
             <Translation id={text} />

@@ -1,5 +1,5 @@
 import styled, { css, useTheme } from 'styled-components';
-import { Spinner, Icon, Tooltip, variables } from '@trezor/components';
+import { Spinner, Icon, Tooltip } from '@trezor/components';
 import { Translation } from 'src/components/suite/Translation';
 import { CountdownTimer } from 'src/components/suite/CountdownTimer';
 import { useSelector } from 'src/hooks/suite/useSelector';
@@ -10,6 +10,7 @@ import {
 } from 'src/reducers/wallet/coinjoinReducer';
 import { useCoinjoinSessionBlockers } from 'src/hooks/coinjoin/useCoinjoinSessionBlockers';
 import { FormattedNumber } from 'react-intl';
+import { spacingsPx, typography } from '@trezor/theme';
 
 export const Container = styled.div<{ isWide: boolean }>`
     width: ${({ isWide }) => `calc(100% - ${isWide ? 12 : 8}px)`};
@@ -35,13 +36,12 @@ const CenteringContainer = styled.div`
 `;
 
 const AllPrivateContent = styled.div`
-    padding-top: 2px;
-    color: ${({ theme }) => theme.TYPE_GREEN};
+    padding-top: ${spacingsPx.xxxs};
+    color: ${({ theme }) => theme.textPrimaryDefault};
 `;
 
 const ProgressPercentage = styled.p`
-    font-size: ${variables.FONT_SIZE.H2};
-    line-height: 1;
+    ${typography.titleMedium}
 `;
 
 const StyledLoader = styled(Spinner)`
@@ -56,18 +56,17 @@ const TooltipChildren = styled.div`
 
 const TimeLeft = styled.p`
     max-width: 80%;
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
-    font-size: ${variables.FONT_SIZE.H2};
-    line-height: 1;
+    color: ${({ theme }) => theme.textDefault};
+    ${typography.highlight}
 `;
 
 const iconBase = css`
-    margin-bottom: 4px;
+    margin-bottom: ${spacingsPx.xxs};
 `;
 
 const PlayIcon = styled(Icon)`
     ${iconBase}
-    margin-left: 4px;
+    margin-left: ${spacingsPx.xxs};
 `;
 
 const StyledIcon = styled(Icon)`
@@ -102,7 +101,7 @@ export const CoinjoinProgressContent = ({
     const getProgressContent = () => {
         const iconConfig = {
             size: 25,
-            color: theme.TYPE_DARK_GREY,
+            color: theme.iconDefault,
         };
 
         const isLoadingIndicatorShown =
@@ -116,7 +115,7 @@ export const CoinjoinProgressContent = ({
         }
 
         if (isLoadingIndicatorShown) {
-            return <StyledLoader size={40} />;
+            return <StyledLoader size={40} isGrey={false} />;
         }
 
         if (isAllPrivate && !isSessionActive) {
@@ -201,7 +200,7 @@ export const CoinjoinProgressContent = ({
 
         return (
             <>
-                <PlayIcon icon="PLAY" {...iconConfig} color={theme.TYPE_GREEN} />
+                <PlayIcon icon="PLAY" {...iconConfig} color={theme.iconPrimaryDefault} />
                 <Translation id="TR_START" />
             </>
         );
