@@ -47,7 +47,7 @@ export interface TokenTransfer {
     to: string;
     contract: string;
     name: string;
-    symbol: string;
+    symbol?: string;
     decimals: number;
     value?: string;
     multiTokenValues?: MultiTokenValue[];

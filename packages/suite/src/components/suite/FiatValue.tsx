@@ -26,7 +26,7 @@ interface Params {
 
 interface CommonOwnProps {
     amount: string;
-    symbol: Network['symbol'] | string;
+    symbol?: Network['symbol'] | string;
     tokenAddress?: string;
     fiatCurrency?: string;
     children?: (props: Params) => ReactElement | null;
@@ -82,7 +82,7 @@ export const FiatValue = ({
     const currentFiatRates = coins.find(f =>
         tokenAddress
             ? f.tokenAddress?.toLowerCase() === tokenAddress?.toLowerCase()
-            : f.symbol.toLowerCase() === symbol.toLowerCase(),
+            : f.symbol.toLowerCase() === symbol?.toLowerCase(),
     )?.current;
 
     const ratesSource = useCustomSource ? source : currentFiatRates?.rates;

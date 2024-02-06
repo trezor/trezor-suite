@@ -218,7 +218,7 @@ const IOGridGroupWrapper = ({
 interface GridRowGroupComponentProps {
     from?: string;
     to?: string;
-    symbol: string;
+    symbol?: string;
     amount?: string | ReactNode;
 }
 
