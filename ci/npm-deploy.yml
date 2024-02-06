@@ -24,7 +24,7 @@
 .packages_matrix_connect: &packages_matrix_connect
   parallel:
     matrix:
-      - PACKAGE: ["connect", "connect-web"]
+      - PACKAGE: ["connect", "connect-web", "connect-webextension"]
 
 .npm_registry_beta_rules: &npm_registry_beta_rules
   except:
