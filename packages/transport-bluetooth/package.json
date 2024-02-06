@@ -1,0 +1,27 @@
+{
+    "name": "@trezor/transport-bluetooth",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/trezor/trezor-suite.git"
+    },
+    "bugs": {
+        "url": "https://github.com/trezor/trezor-suite/issues"
+    },
+    "keywords": [
+        "Trezor",
+        "transport"
+    ],
+    "main": "./src/index.ts",
+    "browser": "./src/browser.ts",
+    "scripts": {
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@trezor/ipc-proxy": "workspace:*",
+        "@trezor/utils": "workspace:*"
+    }
+}
