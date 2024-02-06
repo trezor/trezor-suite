@@ -1,14 +1,12 @@
 import { ReactElement } from 'react';
 import styled from 'styled-components';
-import { selectCoinsLegacy } from '@suite-common/wallet-core';
 import { HiddenPlaceholder } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
-import { Network } from 'src/types/wallet';
-import { TimestampedRates } from 'src/types/wallet/fiatRates';
-import { toFiatCurrency } from '@suite-common/wallet-utils';
 import { useFormatters } from '@suite-common/formatters';
 import type { FormatNumberOptions } from '@formatjs/intl';
-import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
+import {
+    useFiatFromCryptoValue,
+    useFiatFromCryptoValueParams,
+} from 'src/hooks/suite/useFiatFromCryptoValue';
 
 const StyledHiddenPlaceholder = styled(props => <HiddenPlaceholder {...props} />)`
     font-variant-numeric: tabular-nums;
@@ -24,29 +22,14 @@ interface Params {
     timestamp: number | null;
 }
 
-interface CommonOwnProps {
-    amount: string;
-    symbol: Network['symbol'] | string;
-    tokenAddress?: string;
-    fiatCurrency?: string;
+type FiatValueProps = useFiatFromCryptoValueParams & {
     children?: (props: Params) => ReactElement | null;
     showApproximationIndicator?: boolean;
     disableHiddenPlaceholder?: boolean;
     fiatAmountFormatterOptions?: FormatNumberOptions;
     shouldConvert?: boolean;
-}
-
-interface DefaultSourceProps extends CommonOwnProps {
-    source?: never;
-    useCustomSource?: never;
-}
-
-interface CustomSourceProps extends CommonOwnProps {
-    source: TimestampedRates['rates'] | undefined | null;
-    useCustomSource: boolean;
-}
-
-type FiatValueProps = (DefaultSourceProps | CustomSourceProps) & { className?: string };
+    className?: string;
+};
 
 /**
  * If used without children prop it returns a value of an crypto assets in fiat currency.
@@ -74,30 +57,26 @@ export const FiatValue = ({
     fiatAmountFormatterOptions,
     shouldConvert = true,
 }: FiatValueProps) => {
+    const { targetCurrency, fiatAmount, ratesSource, currentFiatRates } = useFiatFromCryptoValue({
+        amount,
+        symbol,
+        tokenAddress,
+        fiatCurrency,
+        source,
+        useCustomSource,
+    });
+
     const { FiatAmountFormatter } = useFormatters();
-    const localCurrency = useSelector(selectLocalCurrency);
-    const coins = useSelector(selectCoinsLegacy);
+    const value = shouldConvert ? fiatAmount : amount;
 
-    const targetCurrency = fiatCurrency ?? localCurrency;
-    const currentFiatRates = coins.find(f =>
-        tokenAddress
-            ? f.tokenAddress?.toLowerCase() === tokenAddress?.toLowerCase()
-            : f.symbol.toLowerCase() === symbol.toLowerCase(),
-    )?.current;
-
-    const ratesSource = useCustomSource ? source : currentFiatRates?.rates;
-    let fiatAmount: string | null = amount;
-    if (shouldConvert) {
-        fiatAmount = ratesSource ? toFiatCurrency(amount, targetCurrency, ratesSource) : null;
-    }
     const WrapperComponent = disableHiddenPlaceholder ? SameWidthNums : StyledHiddenPlaceholder;
-    if (fiatAmount) {
+    if (value) {
         const fiatValueComponent = (
             <WrapperComponent className={className}>
                 {showApproximationIndicator && <>≈ </>}
                 <FiatAmountFormatter
                     currency={targetCurrency.toUpperCase()}
-                    value={fiatAmount}
+                    value={value}
                     {...fiatAmountFormatterOptions}
                 />
             </WrapperComponent>

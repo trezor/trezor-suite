@@ -43,7 +43,7 @@ const Buttons = styled.div`
 `;
 
 export interface HeaderProps {
-    portfolioValue: string;
+    fiatAmount: string;
     localCurrency: string;
     isWalletEmpty: boolean;
     isWalletLoading: boolean;
@@ -57,7 +57,7 @@ export interface HeaderProps {
 }
 
 export const Header = ({
-    portfolioValue,
+    fiatAmount,
     localCurrency,
     isWalletEmpty,
     isWalletLoading,
@@ -108,7 +108,7 @@ export const Header = ({
                 <LoadingContent size={24} isLoading={isDiscoveryRunning || isMissingFiatRate}>
                     <FiatHeader
                         size="large"
-                        portfolioValue={portfolioValue}
+                        fiatAmount={fiatAmount}
                         localCurrency={localCurrency}
                     />
                 </LoadingContent>

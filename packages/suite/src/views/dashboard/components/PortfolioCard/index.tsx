@@ -51,7 +51,7 @@ const PortfolioCard = memo(() => {
     const dispatch = useDispatch();
 
     const isDeviceEmpty = useMemo(() => accounts.every(a => a.empty), [accounts]);
-    const portfolioValue = getTotalFiatBalance(accounts, localCurrency, coins).toString();
+    const fiatAmount = getTotalFiatBalance(accounts, localCurrency, coins).toString();
 
     const discoveryStatus = getDiscoveryStatus();
 
@@ -145,7 +145,7 @@ const PortfolioCard = memo(() => {
                     <Header
                         showGraphControls={showGraphControls}
                         hideBorder={!body}
-                        portfolioValue={portfolioValue}
+                        fiatAmount={fiatAmount}
                         localCurrency={localCurrency}
                         isWalletEmpty={isWalletEmpty}
                         isWalletLoading={isWalletLoading}

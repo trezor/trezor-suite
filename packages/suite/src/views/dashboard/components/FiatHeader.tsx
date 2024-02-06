@@ -26,22 +26,22 @@ const DecimalValue = styled.div<{ size: 'large' | 'medium' }>`
 
 interface FiatHeaderProps {
     size: 'large' | 'medium';
-    portfolioValue: string;
+    fiatAmount: string;
     localCurrency: string;
 }
 
-export const FiatHeader = ({ size, portfolioValue, localCurrency }: FiatHeaderProps) => {
+export const FiatHeader = ({ size, fiatAmount, localCurrency }: FiatHeaderProps) => {
     const language = useSelector(state => state.suite.settings.language);
     const { FiatAmountFormatter } = useFormatters();
-    const formattedValue = FiatAmountFormatter({
-        value: portfolioValue,
+    const formattedAmount = FiatAmountFormatter({
+        value: fiatAmount,
         currency: localCurrency,
     });
 
-    const formattedFiatValue = formattedValue?.props.children;
+    const formattedFiatAmount = formattedAmount?.props.children;
     const [whole, separator, fractional] = ['en', 'ja'].includes(language)
-        ? formattedFiatValue.split(/(\.)/)
-        : formattedFiatValue.split(/(,)/);
+        ? formattedFiatAmount.split(/(\.)/)
+        : formattedFiatAmount.split(/(,)/);
 
     return (
         <HiddenPlaceholder enforceIntensity={10}>
