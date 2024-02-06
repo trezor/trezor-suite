@@ -164,13 +164,12 @@ const handleResponseEvent = (data: MethodResponseMessage) => {
         window.close();
     }
 
-    if (
-        !data.success &&
-        typeof data.payload === 'object' &&
-        'code' in data.payload &&
-        typeof data.payload.code === 'string'
-    ) {
-        switch (data.payload.code) {
+    if (!data.success && typeof data.payload === 'object') {
+        const code =
+            'code' in data.payload && typeof data.payload.code === 'string'
+                ? data.payload.code
+                : undefined;
+        switch (code) {
             case 'Device_CallInProgress':
                 // Ignoring when device call is in progress.
                 // User triggers new call but device call is in progress PopupManager will focus popup.
@@ -191,7 +190,7 @@ const handleResponseEvent = (data: MethodResponseMessage) => {
                 });
                 analytics.report({
                     type: EventType.ViewChangeError,
-                    payload: { code: data.payload.code || 'Code missing' },
+                    payload: { code: code || 'Code missing' },
                 });
         }
     }
