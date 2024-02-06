@@ -24,7 +24,6 @@ class BlockchainLink {
     }
 
     connect() {
-        this.emit('connected');
         return Promise.resolve(true);
     }
     disconnect() {
@@ -33,15 +32,18 @@ class BlockchainLink {
     }
     dispose() {}
     getInfo() {
-        return {
+        return Promise.resolve({
             url: this.name,
             name: this.name,
             shortcut: this.name,
             consensusBranchId: 1001,
-        };
+        });
     }
     estimateFee(params: { blocks: number[] }) {
-        return params.blocks.map(() => ({ feePerUnit: '-1' }));
+        return Promise.resolve(params.blocks.map(() => ({ feePerUnit: '-1' })));
+    }
+    subscribe() {
+        return Promise.resolve({ subscribed: true });
     }
 }
 
