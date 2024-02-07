@@ -69,6 +69,7 @@ export interface Flags {
 
 export interface EvmSettings {
     confirmExplanationModalClosed: Partial<Record<Network['symbol'], Record<string, boolean>>>;
+    explanationBannerClosed: Partial<Record<Network['symbol'], boolean>>;
 }
 
 export interface SuiteSettings {
@@ -120,6 +121,7 @@ const initialState: SuiteState = {
     },
     evmSettings: {
         confirmExplanationModalClosed: {},
+        explanationBannerClosed: {},
     },
     settings: {
         theme: {
@@ -210,6 +212,16 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
                             ...draft.evmSettings.confirmExplanationModalClosed[action.symbol],
                             [action.route]: true,
                         },
+                    },
+                };
+                break;
+
+            case SUITE.EVM_CLOSE_EXPLANATION_BANNER:
+                draft.evmSettings = {
+                    ...draft.evmSettings,
+                    explanationBannerClosed: {
+                        ...draft.evmSettings.explanationBannerClosed,
+                        [action.symbol]: true,
                     },
                 };
                 break;

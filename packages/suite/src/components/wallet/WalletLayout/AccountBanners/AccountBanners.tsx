@@ -11,6 +11,8 @@ import { TorDisconnected } from './TorDisconnected';
 import { CoinjoinContextMessage } from './CoinjoinContextMessage';
 import { StakeEthBanner } from './StakeEthBanner';
 import { spacingsPx } from '@trezor/theme';
+import { EvmExplanationBanner } from './EvmExplanationBanner';
+import { TaprootBanner } from './TaprootBanner';
 
 const BannersWrapper = styled.div`
     display: flex;
@@ -36,5 +38,7 @@ export const AccountBanners = ({ account }: AccountBannersProps) => (
         <AccountImported account={account} />
         <AccountOutOfSync account={account} />
         <StakeEthBanner />
+        <EvmExplanationBanner account={account} />
+        <TaprootBanner account={account} />
     </BannersWrapper>
 );

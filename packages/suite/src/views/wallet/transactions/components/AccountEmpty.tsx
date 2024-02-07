@@ -3,12 +3,9 @@ import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { variables, H2, Button, Card, Image } from '@trezor/components';
 import { Translation } from 'src/components/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useDispatch } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
-import { setFlag } from 'src/actions/suite/suiteActions';
 import { goto } from 'src/actions/suite/routerActions';
-import { TaprootBanner } from './TaprootBanner';
-import { getBip43Type } from '@suite-common/wallet-utils';
 
 const Wrapper = styled.div`
     display: flex;
@@ -68,10 +65,7 @@ interface AccountEmptyProps {
 }
 
 export const AccountEmpty = ({ account }: AccountEmptyProps) => {
-    const { taprootBannerClosed } = useSelector(state => state.suite.flags);
     const dispatch = useDispatch();
-
-    const bip43 = getBip43Type(account.path);
     const networkSymbol = account.symbol.toUpperCase();
 
     const handleNavigateToReceivePage = () => {
@@ -93,12 +87,9 @@ export const AccountEmpty = ({ account }: AccountEmptyProps) => {
             },
         });
     };
-    const closeBanner = () => dispatch(setFlag('taprootBannerClosed', true));
 
     return (
         <Wrapper>
-            {bip43 === 'bip86' && !taprootBannerClosed && <TaprootBanner onClose={closeBanner} />}
-
             <StyledCard>
                 <StyledImage image="CLOUDY" />
 
