@@ -1,7 +1,10 @@
 import { ipcMain } from 'electron';
 
 import { IpcProxyHandlerOptions, createIpcProxyHandler } from '@trezor/ipc-proxy';
+import { getFreePort } from '@trezor/node-utils';
 import { BluetoothIpc, BluetoothIpcApi } from '@trezor/transport-bluetooth';
+
+import { BluetoothProcess } from '../libs/processes/BluetoothProcess';
 
 import type { ModuleInit } from './index';
 
@@ -10,9 +13,28 @@ export const SERVICE_NAME = '@trezor/transport-bluetooth';
 export const init: ModuleInit = () => {
     const { logger } = global;
 
+    let bluetoothProcess: BluetoothProcess | undefined;
+
+    const getBluetoothProcess = async () => {
+        if (!bluetoothProcess) {
+            const port = await getFreePort();
+            bluetoothProcess = new BluetoothProcess(port);
+        }
+
+        return bluetoothProcess;
+    };
+
+    const killBluetoothProcess = () => {
+        if (bluetoothProcess) {
+            bluetoothProcess.stop();
+            bluetoothProcess = undefined;
+        }
+    };
+
     const proxyOptions: IpcProxyHandlerOptions<BluetoothIpcApi> = {
         onCreateInstance() {
-            const api = new BluetoothIpc();
+            // TODO: logger type
+            const api = new BluetoothIpc({ logger } as any);
 
             return {
                 onRequest: (method, params) => {
@@ -35,13 +57,15 @@ export const init: ModuleInit = () => {
     };
 
     const unregisterProxy = createIpcProxyHandler(ipcMain, 'Bluetooth', proxyOptions);
-    const onLoad = () => {
-        // TODO: start binary
+    const onLoad = async () => {
+        const btProcess = await getBluetoothProcess();
+        await btProcess.start();
     };
 
     const onQuit = () => {
         logger.info(SERVICE_NAME, 'Stopping (app quit)');
         unregisterProxy();
+        killBluetoothProcess();
     };
 
     return { onLoad, onQuit };
