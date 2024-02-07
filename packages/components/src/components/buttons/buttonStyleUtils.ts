@@ -1,5 +1,5 @@
-import { css, DefaultTheme } from 'styled-components';
-import { Color, Elevation, spacings, spacingsPx } from '@trezor/theme';
+import { css } from 'styled-components';
+import { Color, Colors, Elevation, spacings, spacingsPx } from '@trezor/theme';
 import { capitalizeFirstLetter } from '../../../../utils/src/capitalizeFirstLetter';
 
 export type ButtonVariant =
@@ -9,7 +9,9 @@ export type ButtonVariant =
     | 'info'
     | 'warning'
     | 'destructive';
+
 export type ButtonSize = 'large' | 'medium' | 'small' | 'tiny';
+export type ButtonState = 'normal' | 'hover';
 export type IconAlignment = 'left' | 'right';
 
 const mapElevationToButtonBackground = ({
@@ -19,8 +21,8 @@ const mapElevationToButtonBackground = ({
 }: {
     elevation: Elevation;
     variant: 'destructive' | 'tertiary' | 'info' | 'warning';
-    state: 'normal' | 'hover';
-}): Color => {
+    state: ButtonState;
+}) => {
     const capitalizedVariant = capitalizeFirstLetter(variant);
     const capitalizedState = capitalizeFirstLetter(state);
 
@@ -35,7 +37,7 @@ const mapElevationToButtonBackground = ({
         3: `interactionBackground${capitalizedVariant}Default${capitalizedState}OnElevation2`,
     };
 
-    return map[elevation];
+    return ({ theme }: { theme: Colors }) => theme[map[elevation]];
 };
 
 export const getPadding = (size: ButtonSize, hasLabel?: boolean) => {
@@ -49,7 +51,7 @@ export const getPadding = (size: ButtonSize, hasLabel?: boolean) => {
     return map[size];
 };
 
-export const getIconColor = (variant: ButtonVariant, isDisabled: boolean, theme: DefaultTheme) => {
+export const getIconColor = (variant: ButtonVariant, isDisabled: boolean, theme: Colors) => {
     if (isDisabled) {
         return theme.iconDisabled;
     }
@@ -117,30 +119,38 @@ export const getVariantStyle = (
             `;
         case 'tertiary':
             return css`
-                background: ${({ theme }) =>
-                    theme[mapElevationToButtonBackground({ elevation, variant, state: 'normal' })]};
+                background: ${mapElevationToButtonBackground({
+                    elevation,
+                    variant,
+                    state: 'normal',
+                })};
                 color: ${({ theme }) => theme.textOnTertiary};
 
                 :hover,
                 :active {
-                    background: ${({ theme }) =>
-                        theme[
-                            mapElevationToButtonBackground({ elevation, variant, state: 'hover' })
-                        ]};
+                    background: ${mapElevationToButtonBackground({
+                        elevation,
+                        variant,
+                        state: 'hover',
+                    })};
                 }
             `;
         case 'info':
             return css`
-                background: ${({ theme }) =>
-                    theme[mapElevationToButtonBackground({ elevation, variant, state: 'normal' })]};
+                background: ${mapElevationToButtonBackground({
+                    elevation,
+                    variant,
+                    state: 'normal',
+                })};
                 color: ${({ theme }) => theme.textAlertBlue};
 
                 :hover,
                 :active {
-                    background: ${({ theme }) =>
-                        theme[
-                            mapElevationToButtonBackground({ elevation, variant, state: 'hover' })
-                        ]};
+                    background: ${mapElevationToButtonBackground({
+                        elevation,
+                        variant,
+                        state: 'hover',
+                    })};
                 }
             `;
         case 'warning':

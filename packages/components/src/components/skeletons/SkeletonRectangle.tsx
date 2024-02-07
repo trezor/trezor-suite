@@ -13,8 +13,7 @@ export type SkeletonRectangleProps = SkeletonBaseProps & {
 const StyledSkeletonRectangle = styled.div<SkeletonRectangleProps & { elevation: Elevation }>`
     width: ${({ width }) => getValue(width) ?? '80px'};
     height: ${({ height }) => getValue(height) ?? '20px'};
-    background: ${({ background, theme, elevation }) =>
-        background ?? theme[mapElevationToBackground({ elevation })]};
+    background: ${({ background, ...props }) => background ?? mapElevationToBackground(props)};
     border-radius: ${({ borderRadius }) => getValue(borderRadius) ?? borders.radii.xs};
     background-size: 200%;
 
