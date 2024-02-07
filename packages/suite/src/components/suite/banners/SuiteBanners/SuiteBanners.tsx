@@ -18,9 +18,10 @@ import { TranslationMode } from './TranslationModeBanner';
 import { FirmwareHashMismatch } from './FirmwareHashMismatchBanner';
 import styled from 'styled-components';
 
-const Container = styled.div`
+const Container = styled.div<{ isVisible?: boolean }>`
     background: ${({ theme }) => theme.backgroundSurfaceElevationNegative};
-    border-bottom: solid 1px ${({ theme }) => theme.borderOnElevation0};
+    border-bottom: ${({ isVisible, theme }) =>
+        isVisible ? `solid 1px ${theme.borderOnElevation0}` : 'none'};
 `;
 
 export const SuiteBanners = () => {
@@ -47,7 +48,7 @@ export const SuiteBanners = () => {
         return transport?.outdated;
     };
 
-    let banner;
+    let banner = null;
     let priority = 0;
     if (device?.id && firmwareHashInvalid.includes(device.id)) {
         banner = <FirmwareHashMismatch />;
@@ -88,7 +89,7 @@ export const SuiteBanners = () => {
     const useMessageSystemBanner = bannerMessage && bannerMessage.priority >= priority;
 
     return (
-        <Container>
+        <Container isVisible={banner !== null}>
             {useMessageSystemBanner && <MessageSystemBanner message={bannerMessage} />}
             {isTranslationMode() && <TranslationMode />}
             <OnlineStatus isOnline={online} />

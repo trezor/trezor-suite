@@ -90,6 +90,7 @@ const ToastNotification = ({
             onClick={action.onClick}
             isFullWidth={action.position === 'bottom'}
             $action={action}
+            size="tiny"
         >
             <Translation id={action.label} />
         </StyledButton>
