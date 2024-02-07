@@ -59,7 +59,11 @@ export const EarlyAccess = () => {
                 }
             />
             <ActionColumn>
-                <ActionButton onClick={setupEarlyAccess} variant="secondary">
+                <ActionButton
+                    onClick={setupEarlyAccess}
+                    variant="secondary"
+                    data-test="@settings/early-access-join-button"
+                >
                     <Translation
                         id={
                             desktopUpdate.allowPrerelease

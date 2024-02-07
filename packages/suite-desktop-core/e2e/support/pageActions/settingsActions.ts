@@ -67,6 +67,19 @@ class SettingsActions {
         await electrumAddressInput.fill(backendUrl);
         await window.getByTestId('@settings/advance/button/save').click();
     }
+
+    async joinEarlyAccessProgram(window: Page) {
+        await window.getByTestId('@settings/early-access-join-button').scrollIntoViewIfNeeded();
+        await window.getByTestId('@settings/early-access-join-button').click();
+        const eapModal = window.getByTestId('@modal');
+        await eapModal.waitFor({ state: 'visible' });
+        await eapModal.getByTestId('@settings/early-access-confirm-check').click();
+        await eapModal.getByTestId('@settings/early-access-confirm-button').click();
+        await eapModal.getByTestId('@settings/early-access-skip-button').click();
+    }
+    getEarlyAccessButtonText(window: Page) {
+        return window.getByTestId('@settings/early-access-join-button').textContent();
+    }
 }
 
 export const onSettingsPage = new SettingsActions();
