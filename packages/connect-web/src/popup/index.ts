@@ -97,6 +97,7 @@ export class PopupManager extends EventEmitter {
                     peer: '@trezor/connect-popup',
                 },
                 logger,
+                origin: this.origin,
             });
         }
 
@@ -111,6 +112,7 @@ export class PopupManager extends EventEmitter {
                     peer: '@trezor/connect-iframe',
                 },
                 logger,
+                origin: this.origin,
             });
             this.channelIframe?.on('message', this.handleMessage.bind(this));
         }
