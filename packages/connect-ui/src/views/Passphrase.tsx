@@ -47,7 +47,7 @@ export const Passphrase = (props: PassphraseProps) => {
             payload: {
                 value,
                 passphraseOnDevice,
-                // todo: what is this param?
+                // see PassphrasePromptResponse type
                 save: true,
             },
         });
