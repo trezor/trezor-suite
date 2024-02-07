@@ -50,7 +50,7 @@
         "@trezor/node-utils": "workspace:*",
         "@trezor/trezor-user-env-link": "workspace:*",
         "@types/chrome": "^0.0.260",
-        "copy-webpack-plugin": "^12.0.1",
+        "copy-webpack-plugin": "^12.0.2",
         "terser-webpack-plugin": "^5.3.9",
         "webpack": "^5.90.1",
         "webpack-cli": "^5.1.4",
