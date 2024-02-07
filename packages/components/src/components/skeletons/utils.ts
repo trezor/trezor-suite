@@ -17,7 +17,7 @@ export const shimmerEffect = css<{ elevation: Elevation }>`
         90deg,
         ${({ theme, elevation }) => {
             const start = theme[mapElevationToSkeletonForeground[elevation]];
-            const end = theme[mapElevationToBackground[elevation]];
+            const end = theme[mapElevationToBackground({ elevation })];
 
             return `${start}, ${end}, ${start}`;
         }}

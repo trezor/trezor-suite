@@ -23,7 +23,7 @@ const TabSelector = styled.div<{ elevation: Elevation }>`
     width: 100%;
     text-align: left;
     margin-bottom: ${spacingsPx.md};
-    border-bottom: 1px solid ${({ theme, elevation }) => theme[mapElevationToBorder[elevation]]};
+    border-bottom: 1px solid ${({ theme, elevation }) => theme[mapElevationToBorder({ elevation })]};
 `;
 
 const TabButton = styled.button<{ selected: boolean; elevation: Elevation }>`
@@ -43,7 +43,7 @@ const TabButton = styled.button<{ selected: boolean; elevation: Elevation }>`
     :hover {
         border-bottom: 2px solid
             ${({ theme, selected, elevation }) =>
-                !selected && theme[mapElevationToBorder[elevation]]};
+                !selected && theme[mapElevationToBorder({ elevation })]};
     }
 `;
 

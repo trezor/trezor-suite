@@ -36,7 +36,7 @@ const Container = styled(NavigationItemBase)<
     ${({ theme, isActive, elevation }) =>
         isActive
             ? css`
-                  background-color: ${theme[mapElevationToBackground[elevation]]};
+                  background-color: ${theme[mapElevationToBackground({ elevation })]};
                   box-shadow: ${theme.boxShadowBase};
                   color: ${theme.textDefault};
 

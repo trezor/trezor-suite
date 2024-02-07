@@ -22,7 +22,7 @@ import {
 } from '@trezor/theme';
 
 const Wrapper = styled.div<{ elevation: Elevation }>`
-    background: ${({ theme, elevation }) => theme[mapElevationToBackground[elevation]]};
+    background: ${({ theme, elevation }) => theme[mapElevationToBackground({ elevation })]};
     padding: ${spacingsPx.lg};
     border-radius: ${borders.radii.xs};
 `;
@@ -46,7 +46,7 @@ const HeaderFirstRow = styled.div<{ elevation: Elevation }>`
     align-items: center;
     padding-bottom: ${spacingsPx.xl};
     padding-right: ${spacingsPx.xs};
-    border-bottom: 1px solid ${({ theme, elevation }) => theme[mapElevationToBorder[elevation]]};
+    border-bottom: 1px solid ${({ theme, elevation }) => theme[mapElevationToBorder({ elevation })]};
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
 
     ${variables.SCREEN_QUERY.MOBILE} {
@@ -92,7 +92,7 @@ const TxidValue = styled.div`
 `;
 
 const IconWrapper = styled.div<{ elevation: Elevation }>`
-    background-color: ${({ theme, elevation }) => theme[mapElevationToBorder[elevation]]};
+    background-color: ${({ theme, elevation }) => theme[mapElevationToBorder({ elevation })]};
     border-radius: ${borders.radii.full};
     display: flex;
     align-items: center;
