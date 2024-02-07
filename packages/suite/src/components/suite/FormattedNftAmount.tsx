@@ -8,6 +8,7 @@ import { HiddenPlaceholder, Sign } from 'src/components/suite';
 // importing directly, otherwise unit tests fail, seems to be a styled-components issue
 import { TrezorLink } from 'src/components/suite/TrezorLink';
 import { useSelector } from 'src/hooks/suite/useSelector';
+import { variables } from '@trezor/components';
 
 const Container = styled.div`
     max-width: 100%;
@@ -25,6 +26,9 @@ const StyledTrezorLink = styled(TrezorLink)`
     color: ${({ theme }) => theme.TYPE_GREEN};
     text-decoration: underline;
     display: flex;
+    font-size: ${variables.FONT_SIZE.TINY};
+    line-height: initial;
+    align-items: center;
 `;
 
 const NoLink = styled.div`
