@@ -132,7 +132,6 @@ export const ToastContainer = () => (
         draggable={false}
         closeButton={false}
         hideProgressBar
-        closeOnClick={false}
         position="top-right"
         transition={Slide}
     />
