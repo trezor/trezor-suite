@@ -18,7 +18,10 @@
     "browser": "./src/browser.ts",
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build",
+        "lint:rs": "cargo fmt --all -- --check",
+        "server:dev": "RUST_BACKTRACE=1 && RUST_LOG=debug && cargo run",
+        "server:build": "RUST_BACKTRACE=1 && RUST_LOG=debug && cargo run"
     },
     "dependencies": {
         "@trezor/ipc-proxy": "workspace:*",
