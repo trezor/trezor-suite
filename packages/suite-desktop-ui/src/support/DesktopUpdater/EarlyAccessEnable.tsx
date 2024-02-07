@@ -60,7 +60,11 @@ export const EarlyAccessEnable = ({ hideWindow }: EarlyAccessEnableProps) => {
                     <Button onClick={checkForUpdates}>
                         <Translation id="TR_EARLY_ACCESS_CHECK_UPDATE" />
                     </Button>
-                    <Button onClick={hideWindow} variant="tertiary">
+                    <Button
+                        onClick={hideWindow}
+                        variant="tertiary"
+                        data-test="@settings/early-access-skip-button"
+                    >
                         <Translation id="TR_EARLY_ACCESS_SKIP_CHECK" />
                     </Button>
                 </>
@@ -78,7 +82,11 @@ export const EarlyAccessEnable = ({ hideWindow }: EarlyAccessEnableProps) => {
                         !understood && <Translation id="TR_EARLY_ACCESS_ENABLE_CONFIRM_TOOLTIP" />
                     }
                 >
-                    <Button onClick={allowPrerelease} isDisabled={!understood}>
+                    <Button
+                        onClick={allowPrerelease}
+                        isDisabled={!understood}
+                        data-test="@settings/early-access-confirm-button"
+                    >
                         <Translation id="TR_EARLY_ACCESS_ENABLE_CONFIRM" />
                     </Button>
                 </Tooltip>
