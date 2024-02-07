@@ -609,7 +609,7 @@ export default defineMessages({
         id: 'TR_EXCHANGE_APPROVAL_TO_SWAP_BUTTON',
     },
     TR_EXCHANGE_SWAP_SEND_TO: {
-        defaultMessage: "{provider}'s contract",
+        defaultMessage: '{provider} contract address',
         id: 'TR_EXCHANGE_SWAP_SEND_TO',
     },
     TR_EXCHANGE_SWAP_DATA: {
@@ -5782,7 +5782,7 @@ export default defineMessages({
     },
     CUSTOM_FEE_IS_NOT_SET: {
         defaultMessage:
-            'How much do you want to spend on fees to make this transaction go through.',
+            'Enter the fee rate you want to spend in order to complete this transaction.',
         id: 'CUSTOM_FEE_IS_NOT_SET',
     },
     CUSTOM_FEE_IS_NOT_INTEGER: {
@@ -5919,25 +5919,25 @@ export default defineMessages({
         id: 'TR_CONNECTED_TO_PROVIDER',
     },
     TR_CONNECTED_TO_PROVIDER_LOCALLY: {
-        defaultMessage: 'Saving labels locally',
+        defaultMessage: 'Labels saved locally',
         id: 'TR_CONNECTED_TO_PROVIDER_LOCALLY',
     },
     TR_YOUR_LABELING_IS_SYNCED: {
         defaultMessage:
-            'Your labeling is synced with a cloud storage provider. Your data is safe, as only your Trezor can decrypt it.',
+            'Your labels are synced with a cloud storage provider. Your data is safe, as only your Trezor can decrypt it.',
         id: 'TR_YOUR_LABELING_IS_SYNCED',
     },
     TR_YOUR_LABELING_IS_SYNCED_LOCALLY: {
-        defaultMessage: 'Labels are saved locally on your machine.',
+        defaultMessage: 'Your labels are saved locally on your machine.',
         id: 'TR_YOUR_LABELING_IS_SYNCED_LOCALLY',
     },
     TR_LABELING_NOT_SYNCED: {
-        defaultMessage: 'Labeling not synced.',
+        defaultMessage: 'Labels not synced',
         id: 'TR_LABELING_NOT_SYNCED',
     },
     TR_TO_MAKE_YOUR_LABELS_PERSISTENT: {
         defaultMessage:
-            'To make your labels persistent and available on different devices connect to a cloud storage provider.',
+            'To make your labels consistent and available on different devices, connect to a cloud storage provider.',
         id: 'TR_TO_MAKE_YOUR_LABELS_PERSISTENT',
     },
     TR_DROPBOX: {
@@ -5962,7 +5962,7 @@ export default defineMessages({
     },
     METADATA_MODAL_DESCRIPTION: {
         defaultMessage:
-            'Please select a cloud provider for saving your labels. Your data is encrypted by Trezor.',
+            'Select a cloud storage provider to sync your labels or save them locally. Your data is encrypted by Trezor.',
         id: 'METADATA_MODAL_DESCRIPTION',
     },
     TR_DISABLED_SWITCH_TOOLTIP: {
@@ -6149,7 +6149,7 @@ export default defineMessages({
     TR_GRAPH_MISSING_DATA: {
         id: 'TR_GRAPH_MISSING_DATA',
         defaultMessage:
-            'XRP, SOL and any token transactions are included in the balance, but not currently supported in the graph view.',
+            "XRP, SOL, and other token transactions are included in portfolio balance, but aren't currently supported in graph view.",
     },
     METADATA_PROVIDER_NOT_FOUND_ERROR: {
         id: 'METADATA_PROVIDER_NOT_FOUND_ERROR',
@@ -6158,12 +6158,12 @@ export default defineMessages({
     METADATA_PROVIDER_AUTH_ERROR: {
         id: 'METADATA_PROVIDER_AUTH_ERROR',
         defaultMessage:
-            'Failed to sync labeling data with cloud provider {provider}. User was logged out.',
+            'Failed to sync labels with cloud provider {provider}. User was logged out.',
     },
     METADATA_PROVIDER_UNEXPECTED_ERROR: {
         id: 'METADATA_PROVIDER_UNEXPECTED_ERROR',
         defaultMessage:
-            'Failed to sync labeling data with cloud provider {provider}. User was logged out.',
+            'Failed to sync labels with cloud provider {provider}. User was logged out.',
     },
     TR_REVEAL_ADDRESS: {
         id: 'TR_REVEAL_ADDRESS',
@@ -6556,7 +6556,7 @@ export default defineMessages({
     TR_TRANSACTIONS_SEARCH_TIP_2: {
         id: 'TR_TRANSACTIONS_SEARCH_TIP_2',
         defaultMessage:
-            'Tip: You can use the greater than (>) and less than (<) symbols on amount searches. For example <strong>> 1</strong> will show all transactions that have an amount of 1 or higher.',
+            'Tip: Use the greater than (>) and less than (<) symbols for amount searches. For example <strong> 1</strong> will show all transactions that have an amount of 1 and higher.',
     },
     TR_TRANSACTIONS_SEARCH_TIP_3: {
         id: 'TR_TRANSACTIONS_SEARCH_TIP_3',
@@ -6576,7 +6576,7 @@ export default defineMessages({
     TR_TRANSACTIONS_SEARCH_TIP_6: {
         id: 'TR_TRANSACTIONS_SEARCH_TIP_6',
         defaultMessage:
-            'Tip: You can use greater than (>) and lesser than (<) symbols on date searches. For example <strong>> 2020-12-01<strong> will show all transactions on and after December 1st, 2020.',
+            'Tip: You can use greater than (>) and lesser than (<) symbols on date searches. For example <strong> 2020-12-01<strong> will show all transactions on and after December 1st, 2020.',
     },
     TR_TRANSACTIONS_SEARCH_TIP_7: {
         id: 'TR_TRANSACTIONS_SEARCH_TIP_7',
@@ -6591,12 +6591,12 @@ export default defineMessages({
     TR_TRANSACTIONS_SEARCH_TIP_9: {
         id: 'TR_TRANSACTIONS_SEARCH_TIP_9',
         defaultMessage:
-            'Tip: You can display results matching multiple searches by grouping them with the AND operator (&). For example <strong>> 2020-12-01 & < 2020-12-31 & > 0</strong> will show all incoming (amount higher than 0) transactions in December 2020.',
+            'Tip: You can display results matching multiple searches by grouping them with the AND operator (&). For example <strong> 2020-12-01 & < 2020-12-31 & > 0</strong> will show all incoming (amount higher than 0) transactions in December 2020.',
     },
     TR_TRANSACTIONS_SEARCH_TIP_10: {
         id: 'TR_TRANSACTIONS_SEARCH_TIP_10',
         defaultMessage:
-            'Tip: You can combine AND (&) and OR (|) operators for more complex searches. For example <strong>> 2022-01-01 & < 2022-01-31 | > 2022-12-01 & < 2022-12-31</strong> will show all transactions in January 2022 or December 2022.',
+            'Tip: You can combine AND (&) and OR (|) operators for more complex searches. For example <strong> 2022-01-01 & < 2022-01-31 | > 2022-12-01 & < 2022-12-31</strong> will show all transactions in January 2022 or December 2022.',
     },
     TR_INTERNAL_TRANSACTIONS: {
         id: 'TR_INTERNAL_TRANSACTIONS',
