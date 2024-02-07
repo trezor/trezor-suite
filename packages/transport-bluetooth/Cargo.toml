@@ -1,0 +1,22 @@
+[package]
+name = "trezor-ble"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+btleplug = { path="../../../btleplug", version = "0.11.5", features = ["serde"] }
+dashmap = "5.5.3"
+futures = "0.3.30"
+log = "0.4.8"
+pretty_env_logger = "0.5.0"
+tokio = { version = "1.35.1", features = ["sync", "rt", "macros", "rt-multi-thread", "io-util"] }
+tokio-tungstenite = "0.21.0"
+futures-util = { version = "0.3.28", default-features = false, features = ["sink", "std"] }
+uuid = "1.6.1"
+serde = {version = "1.0.113", features = ["derive"] }
+serde_json = "1.0.55"
+structopt = "0.3.15"
+
+
+[target.'cfg(target_os = "linux")'.dependencies]
+dbus = {version = "0.9.7", features = ["vendored"]}
