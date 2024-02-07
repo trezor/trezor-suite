@@ -4,20 +4,19 @@ import { Elevation } from './elevation';
 import { palette } from './palette';
 import { CSSColor } from './types';
 
-export const mapElevationToBackground: Record<Elevation, Color> = {
-    '-1': 'backgroundSurfaceElevationNegative', // For example left menu is negative elevation
-    0: 'backgroundSurfaceElevation0',
-    1: 'backgroundSurfaceElevation1',
-    2: 'backgroundSurfaceElevation2',
-    3: 'backgroundSurfaceElevation3',
-};
+export const mapElevationToBackground = ({ elevation }: { elevation: Elevation }): Color =>
+    `backgroundSurfaceElevation${elevation !== -1 ? elevation : 'Negative'}`;
 
-export const mapElevationToBorder: Record<Elevation, Color> = {
-    '-1': 'borderOnElevationNegative', // For example left menu is negative elevation
-    0: 'borderOnElevation0',
-    1: 'borderOnElevation1',
-    2: 'borderOnElevation0', // Todo: once we get tokens
-    3: 'borderOnElevation1', // Todo: once we get tokens
+export const mapElevationToBorder = ({ elevation }: { elevation: Elevation }): Color => {
+    const map: Record<Elevation, Color> = {
+        '-1': 'borderOnElevationNegative', // For example left menu is negative elevation
+        0: 'borderOnElevation0',
+        1: 'borderOnElevation1',
+        2: 'borderOnElevation0', // Todo: once we get tokens
+        3: 'borderOnElevation1', // Todo: once we get tokens
+    };
+
+    return map[elevation];
 };
 
 // ---------------------------

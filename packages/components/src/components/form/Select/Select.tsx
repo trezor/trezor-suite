@@ -76,7 +76,7 @@ const createSelectStyle = (
         padding: `${spacingsPx.xs} ${spacingsPx.sm}`,
         borderRadius: borders.radii.xxs,
         background: isFocused
-            ? theme[mapElevationToBackground[nextElevation[elevation]]]
+            ? theme[mapElevationToBackground({ elevation: nextElevation[elevation] })]
             : 'transparent',
 
         color: theme.textDefault,

@@ -25,7 +25,7 @@ const EvmExplanationBoxWrapper = styled(Card)<{ caret?: boolean; elevation: Elev
                 height: 0;
                 top: -9px;
                 left: 14px;
-                border-bottom: 10px solid ${() => theme[mapElevationToBackground[elevation]]};
+                border-bottom: 10px solid ${() => theme[mapElevationToBackground({ elevation })]};
                 border-left: 9px solid transparent;
                 border-right: 9px solid transparent;
             }

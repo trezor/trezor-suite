@@ -18,7 +18,7 @@ const Wrapper = styled.div`
 const TextareaExtenderStyled = styled.div<{ elevation: Elevation }>`
     padding: 20px;
     border: 1px solid red;
-    background-color: ${({ theme, elevation }) => theme[mapElevationToBackground[elevation]]};
+    background-color: ${({ theme, elevation }) => theme[mapElevationToBackground({ elevation })]};
 `;
 
 const TextareaExtender = ({ children }: { children: ReactNode }) => {

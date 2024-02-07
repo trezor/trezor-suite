@@ -51,7 +51,7 @@ export const getInputStateBgColor = (
         case 'error':
             return theme.backgroundAlertRedSubtleOnElevation1;
         default:
-            return theme[mapElevationToBackground[elevation]];
+            return theme[mapElevationToBackground({ elevation })];
     }
 };
 
@@ -83,7 +83,7 @@ export const baseInputStyle = css<BaseInputProps>`
     }
 
     :read-only:not(:disabled) {
-        background: ${({ theme, elevation }) => theme[mapElevationToBackground[elevation]]};
+        background: ${({ theme, elevation }) => theme[mapElevationToBackground({ elevation })]};
         color: ${({ theme }) => theme.textDisabled};
     }
 
