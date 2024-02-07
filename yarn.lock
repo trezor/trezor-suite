@@ -13370,6 +13370,7 @@ __metadata:
     "@trezor/suite": "workspace:*"
     "@trezor/suite-desktop-api": "workspace:*"
     "@trezor/transport": "workspace:*"
+    "@trezor/transport-bluetooth": "workspace:*"
     "@trezor/transport-bridge": "workspace:*"
     "@trezor/trezor-user-env-link": "workspace:*"
     "@trezor/type-utils": "workspace:*"

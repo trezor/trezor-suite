@@ -135,6 +135,11 @@ export abstract class BaseProcess {
         processEnv.LD_LIBRARY_PATH = processEnv.LD_LIBRARY_PATH
             ? `${processEnv.LD_LIBRARY_PATH}:${processDir}`
             : `${processDir}`;
+        // https://github.com/electron/electron/blob/ab2a4fd836d539194bc5cde5f0d665eddeb6a134/docs/api/environment-variables.md?plain=1#L190
+        // Electron sometimes modifies the value of XDG_CURRENT_DESKTOP
+        if (processEnv.ORIGINAL_XDG_CURRENT_DESKTOP) {
+            processEnv.XDG_CURRENT_DESKTOP = processEnv.ORIGINAL_XDG_CURRENT_DESKTOP;
+        }
 
         this.logger.info(this.logTopic, [
             'Starting process:',
