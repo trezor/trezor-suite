@@ -3,7 +3,7 @@ import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
 import { createDeferred, Deferred } from '@trezor/utils/lib/createDeferred';
 import * as versionUtils from '@trezor/utils/lib/versionUtils';
 import { TransportProtocol, v1 as v1Protocol, bridge as bridgeProtocol } from '@trezor/protocol';
-import { DeviceCommands } from './DeviceCommands';
+import { DeviceCommands, PassphrasePromptResponse } from './DeviceCommands';
 import { PROTO, ERRORS, NETWORK } from '../constants';
 import { DEVICE, DeviceButtonRequestPayload, UI } from '../events';
 import { getAllNetworks } from '../data/coinInfo';
@@ -67,7 +67,10 @@ export interface DeviceEvents {
         b: PROTO.WordRequestType,
         callback: (err: any, word: string) => void,
     ) => void;
-    [DEVICE.PASSPHRASE]: (device: Device, callback: (response: any) => void) => void;
+    [DEVICE.PASSPHRASE]: (
+        device: Device,
+        callback: (response: PassphrasePromptResponse) => void,
+    ) => void;
     [DEVICE.PASSPHRASE_ON_DEVICE]: () => void;
     [DEVICE.BUTTON]: (device: Device, payload: DeviceButtonRequestPayload) => void;
     [DEVICE.ACQUIRED]: () => void;
