@@ -1,0 +1,34 @@
+[package]
+name = "trezor-ble"
+version = "0.2.1"
+edition = "2021"
+
+[dependencies]
+hyper = {version="1.5.2",features = ["server", "http1"]}
+hyper-tungstenite = "0.17.0"
+hyper-util = "0.1.10"
+http-body-util = "0.1.2"
+
+# btleplug = { path="../../../btleplug", version = "0.11.5", features = ["serde"] }
+btleplug = { git = "https://github.com/deviceplug/btleplug.git", branch = "dev", features = ["serde"] }
+dashmap = "5.5.3"
+futures = "0.3.30"
+log = "0.4.8"
+pretty_env_logger = "0.5.0"
+tokio = { version = "1.35.1", features = ["sync", "rt", "macros", "rt-multi-thread", "io-util"] }
+futures-util = { version = "0.3.28", default-features = false, features = ["sink", "std"] }
+uuid = "1.6.1"
+serde = {version = "1.0.215", features = ["derive"] }
+serde_json = "1.0.132"
+structopt = "0.3.15"
+
+
+[target.'cfg(target_os = "linux")'.dependencies]
+dbus = {version = "0.9.7", features = ["vendored"]}
+dbus-tokio = "0.7.6"
+bluez-async = "0.7.2"
+# bluer ={ version = "0.17.3", features = ["full"] }
+
+[target.'cfg(target_os = "windows")'.dependencies]
+windows = { version = "0.57.0", features = ["Devices_Bluetooth", "Devices_Enumeration"] }
+
