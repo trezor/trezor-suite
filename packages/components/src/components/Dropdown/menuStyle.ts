@@ -27,7 +27,7 @@ export const menuStyle = css<{ elevation: Elevation }>`
     padding: ${spacingsPx.sm};
     min-width: 140px;
     border-radius: ${borders.radii.md};
-    background: ${({ theme, elevation }) => theme[mapElevationToBackground[elevation]]};
+    background: ${({ theme, elevation }) => theme[mapElevationToBackground({ elevation })]};
     box-shadow: ${({ theme }) => theme.boxShadowElevated};
     z-index: ${zIndices.modal};
     animation: ${DROPDOWN_MENU} 0.15s ease-in-out;

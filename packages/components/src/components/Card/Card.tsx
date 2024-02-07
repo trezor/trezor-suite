@@ -7,7 +7,8 @@ const Wrapper = styled.div<{ $elevation: Elevation; $paddingSize: number }>`
     display: flex;
     flex-direction: column;
     padding: ${({ $paddingSize }) => $paddingSize}px;
-    background: ${({ theme, $elevation }) => theme[mapElevationToBackground[$elevation]]};
+    background: ${({ theme, $elevation }) =>
+        theme[mapElevationToBackground({ elevation: $elevation })]};
     border-radius: ${borders.radii.md};
     box-shadow: ${({ theme, $elevation }) => $elevation === 1 && theme.boxShadowBase};
 

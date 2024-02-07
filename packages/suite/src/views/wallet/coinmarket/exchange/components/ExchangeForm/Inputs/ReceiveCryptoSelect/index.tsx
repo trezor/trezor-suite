@@ -56,7 +56,7 @@ const OptionNetwork = styled.div<{ elevation: Elevation }>`
     margin-left: 10px;
     font-size: ${variables.FONT_SIZE.TINY};
     background: ${({ theme, elevation }) =>
-        theme[mapElevationToBackground[nextElevation[elevation]]]};
+        theme[mapElevationToBackground({ elevation: nextElevation[elevation] })]};
     border-radius: 4px;
 `;
 
