@@ -33,10 +33,10 @@ export const NavigationItemBase = styled.div.attrs(() => ({
 const Container = styled(NavigationItemBase)<
     Pick<NavigationItemProps, 'isActive'> & { elevation: Elevation }
 >`
-    ${({ theme, isActive, elevation }) =>
+    ${({ theme, isActive }) =>
         isActive
             ? css`
-                  background-color: ${theme[mapElevationToBackground({ elevation })]};
+                  background-color: ${mapElevationToBackground};
                   box-shadow: ${theme.boxShadowBase};
                   color: ${theme.textDefault};
 

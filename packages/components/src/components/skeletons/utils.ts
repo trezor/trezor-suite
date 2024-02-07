@@ -16,8 +16,8 @@ export const shimmerEffect = css<{ elevation: Elevation }>`
     background: linear-gradient(
         90deg,
         ${({ theme, elevation }) => {
-            const start = theme[mapElevationToSkeletonForeground[elevation]];
-            const end = theme[mapElevationToBackground({ elevation })];
+            const start = mapElevationToSkeletonForeground({ theme, elevation });
+            const end = mapElevationToBackground({ theme, elevation });
 
             return `${start}, ${end}, ${start}`;
         }}

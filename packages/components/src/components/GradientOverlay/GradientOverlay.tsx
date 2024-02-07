@@ -16,8 +16,7 @@ export const Gradient = styled.div<{
     background-image: linear-gradient(
         to right,
         rgb(0 0 0 / 0%) 0%,
-        ${({ theme, elevation, hiddenFrom }) =>
-            `${theme[mapElevationToBackground({ elevation })]} ${hiddenFrom}`}
+        ${({ hiddenFrom, ...props }) => `${() => mapElevationToBackground(props)} ${hiddenFrom}`}
     );
 `;
 

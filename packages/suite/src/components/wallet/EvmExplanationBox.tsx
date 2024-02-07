@@ -15,7 +15,7 @@ const EvmExplanationBoxWrapper = styled(Card)<{ caret?: boolean; elevation: Elev
     border-radius: 8px;
     line-height: 1.25;
 
-    ${({ caret, theme, elevation }) =>
+    ${({ caret, ...props }) =>
         caret &&
         css`
             &::before {
@@ -25,7 +25,7 @@ const EvmExplanationBoxWrapper = styled(Card)<{ caret?: boolean; elevation: Elev
                 height: 0;
                 top: -9px;
                 left: 14px;
-                border-bottom: 10px solid ${() => theme[mapElevationToBackground({ elevation })]};
+                border-bottom: 10px solid ${() => mapElevationToBackground(props)};
                 border-left: 9px solid transparent;
                 border-right: 9px solid transparent;
             }

@@ -4,10 +4,21 @@ import { Elevation } from './elevation';
 import { palette } from './palette';
 import { CSSColor } from './types';
 
-export const mapElevationToBackground = ({ elevation }: { elevation: Elevation }): Color =>
-    `backgroundSurfaceElevation${elevation !== -1 ? elevation : 'Negative'}`;
+type StyledComponentElevationProps = {
+    theme: Colors; // this package does not depend on styled-components
+    elevation: Elevation;
+};
 
-export const mapElevationToBorder = ({ elevation }: { elevation: Elevation }): Color => {
+export const mapElevationToBackground = ({
+    theme,
+    elevation,
+}: StyledComponentElevationProps): CSSColor =>
+    theme[`backgroundSurfaceElevation${elevation !== -1 ? elevation : 'Negative'}`];
+
+export const mapElevationToBorder = ({
+    theme,
+    elevation,
+}: StyledComponentElevationProps): CSSColor => {
     const map: Record<Elevation, Color> = {
         '-1': 'borderOnElevationNegative', // For example left menu is negative elevation
         0: 'borderOnElevation0',
@@ -16,7 +27,7 @@ export const mapElevationToBorder = ({ elevation }: { elevation: Elevation }): C
         3: 'borderOnElevation1', // Todo: once we get tokens
     };
 
-    return map[elevation];
+    return theme[map[elevation]];
 };
 
 // ---------------------------
