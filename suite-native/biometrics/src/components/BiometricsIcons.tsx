@@ -3,6 +3,7 @@ import { Platform } from 'react-native';
 import { IconName, Icon } from '@suite-common/icons';
 import { HStack, Box } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+
 import { useBiometricsSettings } from '../useBiometricsSettings';
 
 const ICON_SIZE_DEFAULT = 64;
