@@ -1736,12 +1736,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:7.23.2":
-  version: 7.23.2
-  resolution: "@babel/runtime@npm:7.23.2"
+"@babel/runtime@npm:7.23.4":
+  version: 7.23.4
+  resolution: "@babel/runtime@npm:7.23.4"
   dependencies:
     regenerator-runtime: "npm:^0.14.0"
-  checksum: abdcbdd590c7e31762e1bdab94dd466823c8bcedd3ff2fde85eeb94dac7cccaef151ac37c428bda7018ededd27c9a82b4dfeb621f978ad934232475a902f8e3a
+  checksum: 6ef4f6dcc4ec4d74cb9f6c26a26e92d016b36debd167be48cae293fbd990b3157fb1d8d21c531285da15a5bda9ccb23e651b56234941e03d91c8af69d4c593a9
   languageName: node
   linkType: hard
 
@@ -9681,8 +9681,8 @@ __metadata:
   resolution: "@trezor/suite-storage@workspace:packages/suite-storage"
   dependencies:
     "@trezor/env-utils": "workspace:*"
-    broadcast-channel: "npm:^6.0.0"
-    idb: "npm:^7.1.1"
+    broadcast-channel: "npm:^7.0.0"
+    idb: "npm:^8.0.0"
   languageName: unknown
   linkType: soft
 
@@ -9823,7 +9823,7 @@ __metadata:
     file-saver: "npm:^2.0.5"
     framer-motion: "npm:^11.0.3"
     history: "npm:^4.10.1"
-    idb: "npm:^7.1.1"
+    idb: "npm:^8.0.0"
     immer: "npm:9.0.21"
     jest-canvas-mock: "npm:^2.5.2"
     jest-watch-typeahead: "npm:2.2.2"
@@ -13508,15 +13508,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"broadcast-channel@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "broadcast-channel@npm:6.0.0"
+"broadcast-channel@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "broadcast-channel@npm:7.0.0"
   dependencies:
-    "@babel/runtime": "npm:7.23.2"
+    "@babel/runtime": "npm:7.23.4"
     oblivious-set: "npm:1.4.0"
     p-queue: "npm:6.6.2"
     unload: "npm:2.4.1"
-  checksum: 1a5683b2c3b1b4885d7b30308fae617b8c3173f1a55a475a626616ffe649f4b5ec0088e5b503d1d2d80d912fef31066275d780ce824a9f3a8bf2bc2c279349d1
+  checksum: a7cafdd54df4cafc5c8627205001d0377e77afd7dfb8ae2969f779b1a0ae2085413d021db0ab53ec74c5a43c634687289aafa8f39d8dedfbf0b0324fc670ab18
   languageName: node
   linkType: hard
 
@@ -20657,10 +20657,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"idb@npm:^7.1.1":
-  version: 7.1.1
-  resolution: "idb@npm:7.1.1"
-  checksum: 8e33eaebf21055129864acb89932e0739b8c96788e559df24c253ce114d8c6deb977a3b30ea47a9bb8a2ae8a55964861c3df65f360d95745e341cee40d5c17f4
+"idb@npm:^8.0.0":
+  version: 8.0.0
+  resolution: "idb@npm:8.0.0"
+  checksum: 6ff47b46ead4bf02ac3a9145bb2f48bac707b950cf33282a72eec8efcda610ffb0a09aab6eea58450f6c87373060bf50998d307085830a302e9e231eee6cd37d
   languageName: node
   linkType: hard
 
