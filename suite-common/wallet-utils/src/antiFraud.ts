@@ -19,10 +19,16 @@ export const getIsFakeTokenPhishing = (
     transaction.tokens.every(tokenTx => !isNftTokenTransfer(tokenTx)) && // non-nfts
     !transaction.tokens.some(tokenTx => tokenDefinitions[tokenTx.contract]?.isTokenKnown); // all tokens are unknown
 
+// TEMP: solution to tag all NFT txs on Polygon PoS as scam before we introduce NFT definitions
+export const getIsPolygonNftTransaction = (transaction: WalletAccountTransaction) =>
+    transaction.symbol === 'matic' &&
+    transaction.tokens.some(tokenTx => isNftTokenTransfer(tokenTx));
+
 export const getIsPhishingTransaction = (
     transaction: WalletAccountTransaction,
     tokenDefinitions: TokenDefinitions,
 ) =>
     getIsZeroValuePhishing(transaction) ||
+    getIsPolygonNftTransaction(transaction) ||
     (D.isNotEmpty(tokenDefinitions) && // at least one token definition is available
         getIsFakeTokenPhishing(transaction, tokenDefinitions));
