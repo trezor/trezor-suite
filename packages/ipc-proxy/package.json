@@ -16,7 +16,7 @@
     "main": "src/index",
     "browser": "src/proxy",
     "scripts": {
-        "lint": "eslint '**/*.{ts,tsx,js}'",
+        "lint:js": "eslint '**/*.{ts,tsx,js}'",
         "test:unit": "jest -c ./jest.config.js",
         "type-check": "tsc --build"
     }

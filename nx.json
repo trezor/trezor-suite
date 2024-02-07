@@ -15,24 +15,24 @@
             "dependsOn": ["^build:lib"],
             "inputs": [
                 "^prod",
-                "{workspaceRoot}/tsconfig.json",
+                "{workspaceRoot}/tsconfig.base.json",
                 "{workspaceRoot}/tsconfig.lib.json"
             ],
             "outputs": ["{projectRoot}/lib", "{projectRoot}/build"],
             "cache": true
         },
         "type-check": {
-            "dependsOn": ["^build:lib", "^type-check"],
+            "dependsOn": ["^build:lib", "^type-check", "build:lib"],
             "inputs": [
                 "^prod",
-                "{workspaceRoot}/tsconfig.json",
+                "{workspaceRoot}/tsconfig.base.json",
                 "{workspaceRoot}/tsconfig.lib.json"
             ],
             "outputs": ["{projectRoot}/libDev"],
             "cache": true
         },
         "test:unit": {
-            "dependsOn": ["^build:lib"],
+            "dependsOn": ["^build:lib", "build:lib"],
             "inputs": [
                 "^prod",
                 "{workspaceRoot}/jest.config.base.js",
@@ -46,9 +46,6 @@
         },
         "lint:styles": {
             "inputs": ["default"],
-            "cache": true
-        },
-        "lint": {
             "cache": true
         }
     },

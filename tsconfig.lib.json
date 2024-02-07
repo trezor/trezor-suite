@@ -1,12 +1,15 @@
 {
-    "extends": "./tsconfig.json",
+    "extends": "./tsconfig.base.json",
     "compilerOptions": {
         "module": "commonjs",
+        "moduleResolution": "node",
         "target": "es6",
 
         "composite": false,
         "incremental": false,
-        "declarationMap": true
+        "declarationMap": true,
+        "noEmit": false,
+        "emitDeclarationOnly": false
     },
     "exclude": [
         "**/node_modules",

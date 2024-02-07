@@ -1,48 +1,186 @@
 {
-    "compilerOptions": {
-        "allowJs": true,
-        "allowSyntheticDefaultImports": true,
-        "allowUnreachableCode": false,
-        "baseUrl": ".",
-        "jsx": "preserve",
-        "module": "esnext",
-        "moduleResolution": "node",
-        "removeComments": true,
-        "noUnusedLocals": true,
-        "noUnusedParameters": true,
-        "skipLibCheck": true,
-        "sourceMap": true,
-        "strict": true,
-        "strictNullChecks": true,
-        "target": "esnext",
-        "noErrorTruncation": true,
-        "noFallthroughCasesInSwitch": true,
-        "useUnknownInCatchVariables": false,
-        "resolveJsonModule": true,
-        "forceConsistentCasingInFileNames": true,
-        "isolatedModules": true,
-        "types": ["jest", "node"],
-        "esModuleInterop": true,
-        "composite": true,
-        "declaration": true,
-        "declarationMap": true,
-        "incremental": true,
-        "noEmit": false
-    },
-    "exclude": [
-        "**/node_modules",
-        "**/lib",
-        "**/libDev",
-        "**/build",
-        "**/build-electron",
-        "**/dist",
-        "**/coverage",
-        "**/public",
-        "**/protobuf-patches",
-        "**/trezor-common",
-        "**/jest.config.*js"
-    ],
+    "extends": "./tsconfig.base.json",
+    "files": [],
     "references": [
-        { "path": "suite-common/wallet-types" }
+        { "path": "suite-common/analytics" },
+        { "path": "suite-common/assets" },
+        { "path": "suite-common/connect-init" },
+        {
+            "path": "suite-common/device-authenticity"
+        },
+        { "path": "suite-common/fiat-services" },
+        { "path": "suite-common/formatters" },
+        { "path": "suite-common/graph" },
+        { "path": "suite-common/icons" },
+        { "path": "suite-common/intl-types" },
+        { "path": "suite-common/invity" },
+        { "path": "suite-common/logger" },
+        { "path": "suite-common/message-system" },
+        { "path": "suite-common/metadata-types" },
+        { "path": "suite-common/redux-utils" },
+        { "path": "suite-common/sentry" },
+        { "path": "suite-common/suite-config" },
+        {
+            "path": "suite-common/suite-constants"
+        },
+        { "path": "suite-common/suite-types" },
+        { "path": "suite-common/suite-utils" },
+        { "path": "suite-common/test-utils" },
+        {
+            "path": "suite-common/toast-notifications"
+        },
+        {
+            "path": "suite-common/transaction-cache-engine"
+        },
+        { "path": "suite-common/validators" },
+        { "path": "suite-common/wallet-config" },
+        {
+            "path": "suite-common/wallet-constants"
+        },
+        { "path": "suite-common/wallet-core" },
+        { "path": "suite-common/wallet-types" },
+        { "path": "suite-common/wallet-utils" },
+        { "path": "suite-native/accounts" },
+        { "path": "suite-native/alerts" },
+        { "path": "suite-native/analytics" },
+        { "path": "suite-native/app" },
+        { "path": "suite-native/assets" },
+        { "path": "suite-native/atoms" },
+        { "path": "suite-native/biometrics" },
+        { "path": "suite-native/blockchain" },
+        { "path": "suite-native/config" },
+        { "path": "suite-native/device" },
+        { "path": "suite-native/device-manager" },
+        { "path": "suite-native/device-mutex" },
+        { "path": "suite-native/discovery" },
+        {
+            "path": "suite-native/ethereum-tokens"
+        },
+        { "path": "suite-native/feature-flags" },
+        { "path": "suite-native/fiat-rates" },
+        { "path": "suite-native/formatters" },
+        { "path": "suite-native/forms" },
+        { "path": "suite-native/graph" },
+        { "path": "suite-native/helpers" },
+        { "path": "suite-native/intl" },
+        { "path": "suite-native/link" },
+        { "path": "suite-native/message-system" },
+        {
+            "path": "suite-native/module-accounts-import"
+        },
+        {
+            "path": "suite-native/module-accounts-management"
+        },
+        {
+            "path": "suite-native/module-add-accounts"
+        },
+        {
+            "path": "suite-native/module-connect-device"
+        },
+        {
+            "path": "suite-native/module-dev-utils"
+        },
+        { "path": "suite-native/module-home" },
+        {
+            "path": "suite-native/module-onboarding"
+        },
+        { "path": "suite-native/module-receive" },
+        {
+            "path": "suite-native/module-settings"
+        },
+        { "path": "suite-native/navigation" },
+        { "path": "suite-native/notifications" },
+        { "path": "suite-native/passphrase" },
+        { "path": "suite-native/qr-code" },
+        {
+            "path": "suite-native/react-native-graph"
+        },
+        { "path": "suite-native/receive" },
+        { "path": "suite-native/state" },
+        { "path": "suite-native/storage" },
+        { "path": "suite-native/test-utils" },
+        { "path": "suite-native/theme" },
+        { "path": "suite-native/toasts" },
+        { "path": "suite-native/transactions" },
+        { "path": "suite-native/video-assets" },
+        { "path": "packages/analytics" },
+        { "path": "packages/auth-server" },
+        { "path": "packages/blockchain-link" },
+        {
+            "path": "packages/blockchain-link-types"
+        },
+        {
+            "path": "packages/blockchain-link-utils"
+        },
+        { "path": "packages/coinjoin" },
+        { "path": "packages/components" },
+        { "path": "packages/connect" },
+        { "path": "packages/connect-analytics" },
+        { "path": "packages/connect-common" },
+        { "path": "packages/connect-explorer" },
+        {
+            "path": "packages/connect-explorer-webextension"
+        },
+        { "path": "packages/connect-iframe" },
+        {
+            "path": "packages/connect-plugin-ethereum"
+        },
+        {
+            "path": "packages/connect-plugin-stellar"
+        },
+        { "path": "packages/connect-popup" },
+        { "path": "packages/connect-ui" },
+        { "path": "packages/connect-web" },
+        {
+            "path": "packages/connect-webextension"
+        },
+        { "path": "packages/crypto-utils" },
+        { "path": "packages/device-utils" },
+        { "path": "packages/dom-utils" },
+        { "path": "packages/e2e-utils" },
+        { "path": "packages/env-utils" },
+        { "path": "packages/ipc-proxy" },
+        { "path": "packages/node-utils" },
+        { "path": "packages/protobuf" },
+        { "path": "packages/protocol" },
+        { "path": "packages/react-native-usb" },
+        { "path": "packages/react-utils" },
+        { "path": "packages/request-manager" },
+        { "path": "packages/schema-utils" },
+        { "path": "scripts" },
+        { "path": "packages/styles" },
+        { "path": "packages/suite" },
+        { "path": "packages/suite-analytics" },
+        { "path": "packages/suite-build" },
+        { "path": "packages/suite-data" },
+        { "path": "packages/suite-desktop" },
+        { "path": "packages/suite-desktop-api" },
+        { "path": "packages/suite-desktop-core" },
+        { "path": "packages/suite-desktop-ui" },
+        { "path": "packages/suite-storage" },
+        { "path": "packages/suite-web" },
+        { "path": "packages/theme" },
+        { "path": "packages/transport" },
+        { "path": "packages/transport-bridge" },
+        { "path": "packages/transport-native" },
+        {
+            "path": "packages/trezor-user-env-link"
+        },
+        { "path": "packages/type-utils" },
+        { "path": "packages/urls" },
+        { "path": "packages/utils" },
+        { "path": "packages/utxo-lib" },
+        {
+            "path": "packages/connect-examples/electron-main-process"
+        },
+        {
+            "path": "packages/connect-examples/electron-renderer-with-popup"
+        },
+        {
+            "path": "packages/connect-examples/electron-renderer-with-assets"
+        },
+        {
+            "path": "packages/connect-examples/node"
+        }
     ]
 }

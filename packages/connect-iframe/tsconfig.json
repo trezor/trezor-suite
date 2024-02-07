@@ -1,5 +1,5 @@
 {
-    "extends": "../../tsconfig.json",
+    "extends": "../../tsconfig.base.json",
     "compilerOptions": {
         "outDir": "./libDev",
         "types": ["web", "w3c-web-usb", "jest"]
@@ -13,7 +13,8 @@
     ],
     "ts-node": {
         "compilerOptions": {
-            "module": "CommonJS"
+            "module": "CommonJS",
+            "moduleResolution": "node"
         }
     }
 }

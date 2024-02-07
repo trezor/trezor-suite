@@ -49,7 +49,7 @@
         "nx:lint:styles": "yarn nx affected --target=lint:styles",
         "_______ Commands _______": "Useful commands and scripts.",
         "patch": "yarn patch-package",
-        "update-project-references": "yarn tsx ./scripts/updateProjectReferences.js",
+        "update-project-references": "yarn tsx ./scripts/updateProjectReferences.ts",
         "verify-project-references": "yarn update-project-references --test",
         "check-workspace-resolutions": "yarn tsx ./scripts/check-workspace-resolutions.ts",
         "generate-package": "yarn tsx ./scripts/generatePackage.js",
