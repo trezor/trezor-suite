@@ -1,7 +1,15 @@
 import { ReactNode } from 'react';
 import styled, { DefaultTheme, useTheme } from 'styled-components';
 
-import { Icon, Button, Spinner, variables, ButtonProps, useElevation } from '@trezor/components';
+import {
+    Icon,
+    Button,
+    Spinner,
+    variables,
+    ButtonProps,
+    useElevation,
+    IconType,
+} from '@trezor/components';
 import { Elevation, borders, spacingsPx, typography } from '@trezor/theme';
 import { TrezorLink } from './TrezorLink';
 import { ButtonVariant } from '@trezor/components/src/components/buttons/buttonStyleUtils';
@@ -19,9 +27,10 @@ interface NotificationCardProps {
     button?: ButtonType;
     className?: string;
     ['data-test']?: string;
+    icon?: IconType;
 }
 
-const getIcon = (variant: NotificationCardVariant) => {
+const getIcon = (variant: NotificationCardVariant): IconType | null => {
     switch (variant) {
         case 'info':
             return 'INFO';
@@ -98,9 +107,11 @@ const Body = styled.div`
 
 const CardButton = ({ href, ...props }: ButtonType) => {
     if (href) {
-        <TrezorLink variant="nostyle" href={href}>
-            <Button {...props} />
-        </TrezorLink>;
+        return (
+            <TrezorLink variant="nostyle" href={href}>
+                <Button {...props} />
+            </TrezorLink>
+        );
     }
     return <Button {...props} />;
 };
@@ -111,14 +122,15 @@ export const NotificationCard = ({
     children,
     className,
     isLoading,
+    icon,
     ...props
 }: NotificationCardProps) => {
     const theme = useTheme();
     const { elevation } = useElevation();
 
     const buttonVariant = getButtonVariant(variant);
+    const iconElement = icon ?? getIcon(variant);
 
-    const iconElement = getIcon(variant);
     return (
         <Wrapper
             variant={variant}
@@ -136,7 +148,7 @@ export const NotificationCard = ({
                 )}
             </IconWrapper>
             <Body>{children}</Body>
-            {buttonProps && <CardButton {...buttonProps} size="tiny" variant={buttonVariant} />}
+            {buttonProps && <CardButton size="tiny" variant={buttonVariant} {...buttonProps} />}
         </Wrapper>
     );
 };
