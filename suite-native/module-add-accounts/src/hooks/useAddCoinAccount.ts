@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { useNavigation } from '@react-navigation/native';
+import { CommonActions, useNavigation } from '@react-navigation/native';
 import { A, pipe } from '@mobily/ts-belt';
 
 import { AccountType, NetworkSymbol, Network, networks } from '@suite-common/wallet-config';
@@ -19,13 +19,53 @@ import {
     selectDiscoverySupportedNetworks,
     NORMAL_ACCOUNT_TYPE,
 } from '@suite-native/discovery';
-import { useTranslate } from '@suite-native/intl';
+import { TxKeyPath, useTranslate } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import {
+    AppTabsRoutes,
     RootStackParamList,
     RootStackRoutes,
-    StackNavigationProps,
+    AddCoinAccountStackRoutes,
+    AddCoinAccountStackParamList,
+    StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+
+type NavigationProps = StackToStackCompositeNavigationProps<
+    AddCoinAccountStackParamList,
+    AddCoinAccountStackRoutes.AddCoinAccount,
+    RootStackParamList
+>;
+
+export const accountTypeTranslationKeys: Record<
+    Exclude<AccountType, 'coinjoin' | 'imported' | 'ledger'>,
+    { titleKey: TxKeyPath; subtitleKey: TxKeyPath; descKey: TxKeyPath }
+> = {
+    normal: {
+        titleKey: 'moduleAddAccounts.selectAccountTypeScreen.accountTypes.normal.title',
+        subtitleKey: 'moduleAddAccounts.selectAccountTypeScreen.accountTypes.normal.subtitle',
+        descKey: 'moduleAddAccounts.selectAccountTypeScreen.accountTypes.normal.desc',
+    },
+    taproot: {
+        titleKey: 'moduleAddAccounts.selectAccountTypeScreen.accountTypes.taproot.title',
+        subtitleKey: 'moduleAddAccounts.selectAccountTypeScreen.accountTypes.taproot.subtitle',
+        descKey: 'moduleAddAccounts.selectAccountTypeScreen.accountTypes.taproot.desc',
+    },
+    segwit: {
+        titleKey: 'moduleAddAccounts.selectAccountTypeScreen.accountTypes.segwit.title',
+        subtitleKey: 'moduleAddAccounts.selectAccountTypeScreen.accountTypes.segwit.subtitle',
+        descKey: 'moduleAddAccounts.selectAccountTypeScreen.accountTypes.segwit.desc',
+    },
+    legacy: {
+        titleKey: 'moduleAddAccounts.selectAccountTypeScreen.accountTypes.legacy.title',
+        subtitleKey: 'moduleAddAccounts.selectAccountTypeScreen.accountTypes.legacy.subtitle',
+        descKey: 'moduleAddAccounts.selectAccountTypeScreen.accountTypes.legacy.desc',
+    },
+};
+
+type NetworkWithAccountType = {
+    network: Network;
+    accountType?: AccountType;
+};
 
 export const useAddCoinAccount = () => {
     const dispatch = useDispatch();
@@ -40,9 +80,10 @@ export const useAddCoinAccount = () => {
     );
     const device = useSelector(selectDevice);
     const { showAlert, hideAlert } = useAlert();
-    const navigation =
-        useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AccountDetail>>();
-    const [isAddingCoinAccount, setIsAddingCoinAccount] = useState<boolean>(false);
+    const navigation = useNavigation<NavigationProps>();
+    const [networkWithTypeToBeAdded, setNetworkWithTypeToBeAdded] = useState<
+        [Network, AccountType] | null
+    >(null);
 
     const supportedNetworkSymbols = pipe(
         supportedNetworks,
@@ -52,20 +93,25 @@ export const useAddCoinAccount = () => {
 
     const availableNetworkAccountTypes = useMemo(() => {
         // first account type for every network is set to normal and represents default type
-        const availableTypes: Map<NetworkSymbol | undefined, AccountType[]> = new Map();
-        Object.keys(networks).forEach(symbol =>
+        const availableTypes: Map<NetworkSymbol, [AccountType, ...AccountType[]]> = new Map();
+
+        Object.keys(networks).forEach(symbol => {
+            // for Cardano only allow latest account type and coinjoin is not supported
+            const types = Object.keys(networks[symbol].accountTypes).filter(
+                t => !['coinjoin', 'imported', 'ledger'].includes(t),
+            ) as AccountType[];
+
             availableTypes.set(symbol as NetworkSymbol, [
                 NORMAL_ACCOUNT_TYPE,
-                ...(Object.keys(networks[symbol].accountTypes) as AccountType[]).filter(
-                    accountType => accountType !== 'coinjoin', // coinjoin is not supported
-                ),
-            ]),
-        );
+                ...(symbol === 'ada' ? [] : types),
+            ]);
+        });
+
         return availableTypes;
     }, []);
 
     const getAvailableAccountTypesForNetwork = ({ network }: { network: Network }) =>
-        availableNetworkAccountTypes.get(network.symbol) ?? [NORMAL_ACCOUNT_TYPE];
+        availableNetworkAccountTypes.get(network.symbol) ?? [NORMAL_ACCOUNT_TYPE as AccountType];
 
     const getDefaultAccountType = ({ network }: { network: Network }) =>
         getAvailableAccountTypesForNetwork({ network })[0];
@@ -127,15 +173,16 @@ export const useAddCoinAccount = () => {
             },
         });
 
-    const addCoinAccount = async ({ network, type }: { network: Network; type?: AccountType }) => {
-        if (!device?.state) {
-            return false;
-        }
+    const showAccountTypeBottomSheetWithDefaultAccount = (network: Network) => {
+        const defaultType = getAvailableAccountTypesForNetwork({ network })[0];
+        setNetworkWithTypeToBeAdded([network, defaultType]);
+    };
 
-        const accountType = type ?? getDefaultAccountType({ network });
+    const checkCanAddAccount = ({ network, accountType }: NetworkWithAccountType) => {
+        const selectedType = accountType ?? getDefaultAccountType({ network });
 
         const currentAccountTypeAccounts = accounts.filter(
-            account => account.symbol === network.symbol && account.accountType === accountType,
+            account => account.symbol === network.symbol && account.accountType === selectedType,
         );
 
         // Do not allow adding more than 10 accounts of the same type
@@ -151,19 +198,50 @@ export const useAddCoinAccount = () => {
             showAnotherEmptyAccountAlert();
             return false;
         }
+        return true;
+    };
 
-        setIsAddingCoinAccount(true);
+    const addCoinAccount = async ({ network, accountType }: NetworkWithAccountType) => {
+        if (!device?.state) {
+            setNetworkWithTypeToBeAdded(null);
+            return false;
+        }
+
+        const selectedType = accountType ?? getDefaultAccountType({ network });
+
+        const canAddAccount = checkCanAddAccount({
+            network,
+            accountType: selectedType,
+        });
+
+        if (!canAddAccount) {
+            return false;
+        }
+
         const account = await dispatch(
             addAndDiscoverNetworkAccountThunk({
                 network,
-                accountType,
+                accountType: selectedType,
                 deviceState: device.state,
             }),
         ).unwrap();
 
-        setIsAddingCoinAccount(false);
-
+        setNetworkWithTypeToBeAdded(null);
         if (account) {
+            // this will be revisited and updated in https://github.com/trezor/trezor-suite/issues/10677
+            navigation.dispatch(
+                CommonActions.reset({
+                    index: 0,
+                    routes: [
+                        {
+                            name: RootStackRoutes.AppTabs,
+                            params: {
+                                screen: AppTabsRoutes.AccountsStack,
+                            },
+                        },
+                    ],
+                }),
+            );
             navigation.navigate(RootStackRoutes.AccountDetail, {
                 accountKey: account.key,
                 tokenContract: undefined,
@@ -171,21 +249,39 @@ export const useAddCoinAccount = () => {
         }
     };
 
+    const navigateToAccountTypeSelectionScreen = (network: Network) => {
+        setNetworkWithTypeToBeAdded(null);
+        navigation.navigate(AddCoinAccountStackRoutes.SelectAccountType, {
+            accountType: network.accountType ?? NORMAL_ACCOUNT_TYPE,
+            network,
+        });
+    };
     const onSelectedNetworkItem = (networkSymbol: NetworkSymbol) => {
-        if (isAddingCoinAccount) {
-            return;
-        }
         const network = getNetworkToAdd({ networkSymbol });
+
+        const types = getAvailableAccountTypesForNetwork({ network });
+
         if (network) {
-            addCoinAccount({ network });
+            if (types.length > 1) {
+                showAccountTypeBottomSheetWithDefaultAccount(network);
+            } else {
+                addCoinAccount({ network });
+            }
         }
     };
 
+    const clearNetworkWithTypeToBeAdded = () => {
+        setNetworkWithTypeToBeAdded(null);
+    };
+
     return {
+        getNetworkToAdd,
         supportedNetworkSymbols,
-        isAddingCoinAccount,
         onSelectedNetworkItem,
         getAvailableAccountTypesForNetwork,
         addCoinAccount,
+        navigateToAccountTypeSelectionScreen,
+        networkWithTypeToBeAdded,
+        clearNetworkWithTypeToBeAdded,
     };
 };

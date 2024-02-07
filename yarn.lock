@@ -8183,7 +8183,12 @@ __metadata:
     "@suite-native/intl": "workspace:*"
     "@suite-native/link": "workspace:*"
     "@suite-native/navigation": "workspace:*"
+    "@trezor/styles": "workspace:*"
+    "@trezor/theme": "workspace:*"
+    expo-linear-gradient: "npm:12.7.1"
     react: "npm:18.2.0"
+    react-native: "npm:0.73.2"
+    react-native-safe-area-context: "npm:4.8.2"
     react-redux: "npm:8.0.7"
     typescript: "npm:5.3.2"
   languageName: unknown
@@ -27909,6 +27914,16 @@ __metadata:
   peerDependencies:
     react-native: ">=0.47.0"
   checksum: 248746df31a5ede2a042e6a04104599e259bfdefff48cc505492f201f591315f6f0aecfc637788d085b0e97090971e2b7f8a11590da200384135ac72ca3147ab
+  languageName: node
+  linkType: hard
+
+"react-native-safe-area-context@npm:4.8.2":
+  version: 4.8.2
+  resolution: "react-native-safe-area-context@npm:4.8.2"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: ea01a7e3bceec23273a7b2807816b917fae48030431c1d966ee912c5ef12b131620c10b909f2604a2f296fc84ab1a3bdd9e536701401bdca6452441e2a825b60
   languageName: node
   linkType: hard
 
