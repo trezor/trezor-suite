@@ -25,6 +25,7 @@ import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 
 import { useCoinmarketRecomposeAndSign } from './useCoinmarketRecomposeAndSign';
 import { cryptoToNetworkSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
+import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 
 export const useOffers = ({ selectedAccount }: UseCoinmarketExchangeFormProps) => {
     const timer = useTimer();
@@ -61,6 +62,7 @@ export const useOffers = ({ selectedAccount }: UseCoinmarketExchangeFormProps) =
     const device = useSelector(selectDevice);
     const { addressVerified, dexQuotes, exchangeInfo, fixedQuotes, floatQuotes, quotesRequest } =
         useSelector(state => state.wallet.coinmarket.exchange);
+    const isDebug = useSelector(selectIsDebugModeActive);
 
     const [innerFixedQuotes, setInnerFixedQuotes] = useState<ExchangeTrade[] | undefined>(
         fixedQuotes,
@@ -144,7 +146,10 @@ export const useOffers = ({ selectedAccount }: UseCoinmarketExchangeFormProps) =
             const unavailableCapabilities = device?.unavailableCapabilities ?? {};
             // is the symbol supported by the suite and the device natively
             const receiveNetworks = networks.filter(
-                n => n.symbol === receiveNetwork && !unavailableCapabilities[n.symbol],
+                n =>
+                    n.symbol === receiveNetwork &&
+                    !unavailableCapabilities[n.symbol] &&
+                    ((n.isDebugOnly && isDebug) || !n.isDebugOnly),
             );
             if (receiveNetworks.length > 0) {
                 // get accounts of the current symbol belonging to the current device
@@ -162,7 +167,7 @@ export const useOffers = ({ selectedAccount }: UseCoinmarketExchangeFormProps) =
             }
         }
         setSuiteReceiveAccounts(undefined);
-    }, [accounts, device, exchangeStep, receiveNetwork, selectedQuote]);
+    }, [accounts, device, exchangeStep, receiveNetwork, selectedQuote, isDebug]);
 
     const confirmTrade = async (address: string, extraField?: string, trade?: ExchangeTrade) => {
         let ok = false;
