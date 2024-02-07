@@ -322,6 +322,7 @@ export const networks = {
                 bip43Path: "m/44'/1'/i'",
             },
         },
+        isDebugOnly: true,
     },
     tsep: {
         name: 'Ethereum Sepolia',
@@ -582,7 +583,7 @@ export const getMainnets = (debug = false) =>
 
 export const getTestnets = (debug = false) =>
     networksCompatibility.filter(
-        n => !n.accountType && n.testnet === true && (n.symbol !== 'regtest' || debug),
+        n => !n.accountType && n.testnet === true && (!n.isDebugOnly || debug),
     );
 
 export const getEthereumTypeNetworkSymbols = () =>
