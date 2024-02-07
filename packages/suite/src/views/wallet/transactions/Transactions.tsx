@@ -11,7 +11,6 @@ import { TransactionSummary } from './components/TransactionSummary';
 import { CoinjoinExplanation } from './CoinjoinExplanation/CoinjoinExplanation';
 import { CoinjoinSummary } from './CoinjoinSummary/CoinjoinSummary';
 import { TradeBox } from './TradeBox/TradeBox';
-import { EvmExplanationBanner } from 'src/views/wallet/transactions/components/EvmExplanationBanner';
 import styled from 'styled-components';
 import { spacingsPx } from '@trezor/theme';
 
@@ -86,9 +85,7 @@ export const Transactions = () => {
                 {!networksWithoutTxSummary.includes(account.networkType) && (
                     <TransactionSummary account={account} />
                 )}
-
                 <TradeBox account={account} />
-
                 <TransactionList
                     account={account}
                     transactions={accountTransactions}
@@ -102,7 +99,6 @@ export const Transactions = () => {
     if (account.empty) {
         return (
             <Layout selectedAccount={selectedAccount} showEmptyHeaderPlaceholder>
-                <EvmExplanationBanner account={selectedAccount.account} />
                 <AccountEmpty account={selectedAccount.account} />
             </Layout>
         );

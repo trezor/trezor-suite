@@ -52,6 +52,10 @@ export type SuiteAction =
           symbol: keyof EvmSettings['confirmExplanationModalClosed'];
           route: string;
       }
+    | {
+          type: typeof SUITE.EVM_CLOSE_EXPLANATION_BANNER;
+          symbol: keyof EvmSettings['explanationBannerClosed'];
+      }
     | { type: typeof SUITE.APP_CHANGED; payload: AppState['router']['app'] }
     | {
           type: typeof SUITE.SET_THEME;
