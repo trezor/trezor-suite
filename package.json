@@ -94,7 +94,6 @@
         "react": "18.2.0",
         "electron": "27.0.4",
         "webpack": "^5.90.1",
-        "css-loader": "^6.8.1",
         "html-webpack-plugin": "^5.6.0",
         "@types/node": "18.17.15",
         "@sentry/types": "7.92.0"

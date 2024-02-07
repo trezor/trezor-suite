@@ -55,7 +55,7 @@
         "@types/react-date-range": "^1.4.9",
         "@types/react-truncate": "^2.3.7",
         "@types/styled-components": "^5.1.29",
-        "postcss-styled-syntax": "^0.5.0",
+        "postcss-styled-syntax": "^0.6.4",
         "storybook": "^7.6.13",
         "stylelint": "^15.11.0",
         "stylelint-config-standard": "^34.0.0",
