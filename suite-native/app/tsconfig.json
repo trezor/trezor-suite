@@ -39,6 +39,7 @@
         {
             "path": "../module-accounts-management"
         },
+        { "path": "../module-add-accounts" },
         { "path": "../module-connect-device" },
         { "path": "../module-dev-utils" },
         { "path": "../module-home" },

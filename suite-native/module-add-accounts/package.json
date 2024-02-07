@@ -1,9 +1,10 @@
 {
-    "name": "@suite-native/discovery",
+    "name": "@suite-native/module-add-accounts",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
     "sideEffects": false,
+    "type": "module",
     "main": "src/index",
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
@@ -11,23 +12,24 @@
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
+        "@react-navigation/native": "6.1.9",
+        "@react-navigation/native-stack": "6.9.17",
         "@reduxjs/toolkit": "1.9.5",
-        "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
-        "@suite-common/wallet-constants": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
-        "@suite-common/wallet-utils": "workspace:*",
         "@suite-native/accounts": "workspace:*",
-        "@suite-native/analytics": "workspace:*",
-        "@suite-native/config": "workspace:*",
-        "@suite-native/device": "workspace:*",
-        "@suite-native/device-mutex": "workspace:*",
-        "@trezor/connect": "workspace:*",
-        "@trezor/device-utils": "workspace:*",
-        "proxy-memoize": "2.0.2",
+        "@suite-native/alerts": "workspace:*",
+        "@suite-native/atoms": "workspace:*",
+        "@suite-native/discovery": "workspace:*",
+        "@suite-native/intl": "workspace:*",
+        "@suite-native/link": "workspace:*",
+        "@suite-native/navigation": "workspace:*",
         "react": "18.2.0",
         "react-redux": "8.0.7"
+    },
+    "devDependencies": {
+        "typescript": "5.3.2"
     }
 }

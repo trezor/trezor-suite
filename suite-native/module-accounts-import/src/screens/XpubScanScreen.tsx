@@ -25,11 +25,11 @@ import {
     // TODO: This direct import is needed to avoid importing the `@suite-common/wallet-utils`
     // to the `connect` packages. Should be revisited soon when fixing the monorepo tree shaking problems.
 } from '@suite-common/validators/src/schemas/xpubSchema';
+import { SelectableNetworkItem } from '@suite-native/accounts';
 
 import { XpubImportSection } from '../components/XpubImportSection';
 import { AccountImportSubHeader } from '../components/AccountImportSubHeader';
 import { DevXpub } from '../components/DevXpub';
-import { SelectableNetworkItem } from '../components/SelectableNetworkItem';
 import { XpubHint } from '../components/XpubHint';
 import { XpubHintBottomSheet } from '../components/XpubHintBottomSheet';
 

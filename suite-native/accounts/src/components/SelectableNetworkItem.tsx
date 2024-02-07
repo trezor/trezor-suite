@@ -1,12 +1,14 @@
 import { TouchableOpacity } from 'react-native';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Badge, Box, HStack, RoundedIcon, Text } from '@suite-native/atoms';
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import { useFormatters } from '@suite-common/formatters';
+import { Icon, IconName } from '@suite-common/icons';
+import { Badge, Box, HStack, RoundedIcon, Text } from '@suite-native/atoms';
 
 export type SelectableAssetItemProps = {
     symbol: NetworkSymbol;
+    rightIcon?: IconName;
     onPress?: (networkSymbol: NetworkSymbol) => void;
 };
 
@@ -22,7 +24,7 @@ const erc20BadgeStyle = prepareNativeStyle(utils => ({
     paddingBottom: utils.spacings.extraSmall / 2,
 }));
 
-export const SelectableNetworkItem = ({ symbol, onPress }: SelectableAssetItemProps) => {
+export const SelectableNetworkItem = ({ symbol, onPress, rightIcon }: SelectableAssetItemProps) => {
     const { applyStyle } = useNativeStyles();
     const { NetworkSymbolFormatter } = useFormatters();
 
@@ -61,6 +63,7 @@ export const SelectableNetworkItem = ({ symbol, onPress }: SelectableAssetItemPr
                         </HStack>
                     </Box>
                 </Box>
+                {rightIcon && <Icon name={rightIcon} color="iconDisabled" size="large" />}
             </Box>
         </TouchableOpacity>
     );
