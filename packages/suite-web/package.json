@@ -52,8 +52,8 @@
         "cypress": "^13.6.4",
         "cypress-file-upload": "^5.0.8",
         "cypress-image-snapshot": "^4.0.1",
-        "stylelint": "^15.11.0",
-        "stylelint-config-standard": "^34.0.0",
+        "stylelint": "^16.2.1",
+        "stylelint-config-standard": "^36.0.0",
         "webpack": "^5.90.1",
         "ws": "^8.16.0",
         "yargs": "17.7.2"
