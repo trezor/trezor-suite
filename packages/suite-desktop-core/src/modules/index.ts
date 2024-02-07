@@ -32,6 +32,7 @@ import * as coinjoin from './coinjoin';
 import * as csp from './csp';
 import * as fileProtocol from './file-protocol';
 import * as autoStart from './auto-start';
+import * as bluetooth from './bluetooth';
 import { MainWindowProxy } from '../libs/main-window-proxy';
 
 // General modules (both dev & prod)
@@ -61,6 +62,7 @@ const MODULES = [
     requestInterceptor,
     coinjoin,
     autoStart,
+    bluetooth,
     // Modules used only in dev/prod mode
     ...(isDevEnv ? [] : [csp, fileProtocol]),
 ];

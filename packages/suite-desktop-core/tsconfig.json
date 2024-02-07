@@ -31,6 +31,7 @@
         { "path": "../node-utils" },
         { "path": "../request-manager" },
         { "path": "../suite-desktop-api" },
+        { "path": "../transport-bluetooth" },
         { "path": "../transport-bridge" },
         { "path": "../urls" },
         { "path": "../utils" },
