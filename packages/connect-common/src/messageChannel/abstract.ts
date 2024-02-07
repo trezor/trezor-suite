@@ -48,6 +48,8 @@ export abstract class AbstractMessageChannel<
     protected messagesQueue: any[] = [];
     protected messageID = 0;
 
+    public isConnected = false;
+    abstract connect(): void;
     abstract disconnect(): void;
 
     private readonly handshakeMaxRetries = 5;

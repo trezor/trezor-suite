@@ -255,6 +255,10 @@ export class PopupManager extends EventEmitter {
             if (!windowResult) return;
             this.popupWindow = { mode: 'window', window: windowResult };
         }
+
+        if (!this.channel.isConnected) {
+            this.channel.connect();
+        }
     }
 
     private injectContentScript = (tabId: number) => {

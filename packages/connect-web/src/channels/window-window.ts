@@ -39,9 +39,9 @@ export class WindowWindowChannel<
             logger,
         });
 
-        this._windowHere = windowHere;
         this._listener = this.listener.bind(this);
-        this._windowHere.addEventListener('message', this._listener);
+        this._windowHere = windowHere;
+        this.connect();
     }
 
     listener(event: MessageEvent<Message<IncomingMessages>>) {
@@ -59,7 +59,14 @@ export class WindowWindowChannel<
         this.onMessage(message);
     }
 
+    connect() {
+        this._windowHere.addEventListener('message', this._listener);
+        this.isConnected = true;
+    }
+
     disconnect() {
+        if (!this.isConnected) return;
         this._windowHere.removeEventListener('message', this._listener);
+        this.isConnected = false;
     }
 }
