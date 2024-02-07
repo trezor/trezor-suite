@@ -90,6 +90,10 @@ module.exports = {
                 from: 'build/static/bin/coinjoin/mac-${arch}',
                 to: 'bin/coinjoin',
             },
+            {
+                from: 'build/static/bin/bluetooth/mac-${arch}',
+                to: 'bin/bluetooth',
+            },
         ],
         icon: 'build/static/images/desktop/512x512.icns',
         artifactName: 'Trezor-Suite-${version}-mac-${arch}.${ext}',
@@ -124,6 +128,10 @@ module.exports = {
                 from: 'build/static/bin/coinjoin/win-${arch}',
                 to: 'bin/coinjoin',
             },
+            {
+                from: 'build/static/bin/bluetooth/win-${arch}',
+                to: 'bin/bluetooth',
+            },
         ],
         icon: 'build/static/images/desktop/512x512.png',
         artifactName: 'Trezor-Suite-${version}-win-${arch}.${ext}',
@@ -148,6 +156,10 @@ module.exports = {
             {
                 from: 'build/static/bin/coinjoin/linux-${arch}',
                 to: 'bin/coinjoin',
+            },
+            {
+                from: 'build/static/bin/bluetooth/linux-${arch}',
+                to: 'bin/bluetooth',
             },
         ],
         icon: 'build/static/images/desktop/512x512.png',
