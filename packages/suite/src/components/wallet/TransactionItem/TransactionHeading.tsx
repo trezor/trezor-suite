@@ -18,6 +18,7 @@ import {
 import { TransactionHeader } from './TransactionHeader';
 import { WalletAccountTransaction } from 'src/types/wallet';
 import BigNumber from 'bignumber.js';
+import { BlurWrapper } from './TransactionItemBlurWrapper';
 
 const Wrapper = styled.span`
     display: flex;
@@ -166,7 +167,9 @@ export const TransactionHeading = ({
                             icon="WARNING"
                         />
                     )}
-                    <TransactionHeader transaction={transaction} isPending={isPending} />
+                    <BlurWrapper isBlurred={isPhishingTransaction}>
+                        <TransactionHeader transaction={transaction} isPending={isPending} />
+                    </BlurWrapper>
                 </HeadingWrapper>
 
                 <ChevronIconWrapper
