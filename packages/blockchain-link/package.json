@@ -69,7 +69,7 @@
         "@trezor/blockchain-link-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "@trezor/utxo-lib": "workspace:*",
-        "@types/web": "^0.0.137",
+        "@types/web": "^0.0.138",
         "bignumber.js": "^9.1.2",
         "events": "^3.3.0",
         "ripple-lib": "^1.10.1",
