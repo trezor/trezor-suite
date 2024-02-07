@@ -2,6 +2,7 @@ import { ipcMain } from 'electron';
 
 import TrezorConnect, { DEVICE_EVENT } from '@trezor/connect';
 import { createIpcProxyHandler, IpcProxyHandlerOptions } from '@trezor/ipc-proxy';
+import { BluetoothTransport } from '@trezor/transport-bluetooth';
 
 import { ModuleInit, ModuleInitBackground } from './index';
 
@@ -25,6 +26,13 @@ export const initBackground: ModuleInitBackground = ({ mainThreadEmitter, store 
             onRequest: async (method, params) => {
                 logger.debug(SERVICE_NAME, `call ${method}`);
                 if (method === 'init') {
+                    const transports = params[0].transports || [];
+                    if (transports.length === 0) {
+                        transports.push('BridgeTransport');
+                    }
+                    transports.push(new BluetoothTransport({ id: 'BT' }));
+                    params[0].transports = transports;
+
                     const response = await TrezorConnect[method](...params);
                     await setProxy(true);
 

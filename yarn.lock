@@ -12391,6 +12391,7 @@ __metadata:
     "@trezor/request-manager": "workspace:*"
     "@trezor/suite": "workspace:*"
     "@trezor/suite-desktop-api": "workspace:*"
+    "@trezor/transport-bluetooth": "workspace:*"
     "@trezor/transport-bridge": "workspace:*"
     "@trezor/trezor-user-env-link": "workspace:*"
     "@trezor/type-utils": "workspace:*"
