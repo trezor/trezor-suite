@@ -39,14 +39,13 @@ const NavListItem = styled(NavigationItem)`
 const StyledDivider = styled.div<{ elevation: Elevation }>`
     margin: ${spacingsPx.xxs} 0; /* gap xxs + margin xxs = spacing xs around divider */
     width: 100%;
-    border-bottom: 1px solid ${({ theme, elevation }) => theme[mapElevationToBorder({ elevation })]};
+    border-bottom: 1px solid ${mapElevationToBorder};
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
         margin: 0 ${spacingsPx.xxs}; /* gap xxs + margin xxs = spacing xs around divider */
         flex-direction: row;
         border-bottom: 0;
-        border-right: 1px solid
-            ${({ theme, elevation }) => theme[mapElevationToBorder({ elevation })]};
+        border-right: 1px solid ${mapElevationToBorder};
     }
 `;
 

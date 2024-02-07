@@ -3,14 +3,13 @@ import styled, { css } from 'styled-components';
 import { borders, spacings, Elevation, mapElevationToBackground } from '@trezor/theme';
 import { ElevationContext, useElevation } from '../ElevationContext/ElevationContext';
 
-const Wrapper = styled.div<{ $elevation: Elevation; $paddingSize: number }>`
+const Wrapper = styled.div<{ elevation: Elevation; $paddingSize: number }>`
     display: flex;
     flex-direction: column;
     padding: ${({ $paddingSize }) => $paddingSize}px;
-    background: ${({ theme, $elevation }) =>
-        theme[mapElevationToBackground({ elevation: $elevation })]};
+    background: ${mapElevationToBackground};
     border-radius: ${borders.radii.md};
-    box-shadow: ${({ theme, $elevation }) => $elevation === 1 && theme.boxShadowBase};
+    box-shadow: ${({ theme, elevation }) => elevation === 1 && theme.boxShadowBase};
 
     ${({ onClick, theme }) =>
         onClick !== undefined
@@ -60,7 +59,7 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
         return (
             <Wrapper
                 ref={ref}
-                $elevation={elevation}
+                elevation={elevation}
                 $paddingSize={getPaddingSize(paddingType)}
                 {...rest}
             >

@@ -45,8 +45,7 @@ const StyledCollapsibleBox = styled(CollapsibleBox)<{ elevation: Elevation }>`
     ${blurFix}
 
     & + & {
-        border-top: 1px solid
-            ${({ theme, elevation }) => theme[mapElevationToBorder({ elevation })]};
+        border-top: 1px solid ${mapElevationToBorder};
 
         padding-top: ${spacingsPx.md};
     }
@@ -57,8 +56,7 @@ const StyledCollapsibleBox = styled(CollapsibleBox)<{ elevation: Elevation }>`
         ${blurFix}
 
         :hover {
-            background-color: ${({ theme, elevation }) =>
-                theme[mapElevationToBackground({ elevation })]};
+            background-color: ${mapElevationToBackground};
         }
     }
 

@@ -14,8 +14,7 @@ const StyledSkeletonCircle = styled.div<SkeletonCircleProps & { elevation: Eleva
         height: ${getValue(size) ?? '24px'};
         border-radius: ${getValue(size) ?? '24px'};
     `}
-    background: ${({ background, theme, elevation }) =>
-        background ?? theme[mapElevationToBackground({ elevation })]};
+    background: ${({ background, ...props }) => background ?? mapElevationToBackground(props)};
 
     background-size: 200%;
 
