@@ -19,7 +19,9 @@
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "type-check": "tsc --build tsconfig.json",
-        "test:unit": "jest"
+        "test:unit": "jest",
+        "lint:rs": "cargo fmt --all -- --check",
+        "dev:server": "RUST_BACKTRACE=1 && RUST_LOG=debug && cargo run"
     },
     "dependencies": {
         "@trezor/protocol": "workspace:*",
