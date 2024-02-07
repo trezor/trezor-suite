@@ -50,7 +50,7 @@ const CloseButton = ({ onClick, variant }: CloseButtonProps) => (
     <StyledButton
         onClick={onClick}
         data-test="@backup/close-button"
-        variant="secondary"
+        variant="tertiary"
         icon="CROSS"
     >
         <Translation id={variant} />
@@ -156,7 +156,6 @@ export const Backup = ({ cancelable, onCancel }: ForegroundAppProps) => {
                 <>
                     {backup.status === 'initial' && (
                         <>
-                            <CloseButton onClick={onCancel} variant="TR_CANCEL" />
                             <StyledButton
                                 data-test="@backup/start-button"
                                 onClick={() => dispatch(backupDevice())}
@@ -164,6 +163,7 @@ export const Backup = ({ cancelable, onCancel }: ForegroundAppProps) => {
                             >
                                 <Translation id="TR_CREATE_BACKUP" />
                             </StyledButton>
+                            <CloseButton onClick={onCancel} variant="TR_CANCEL" />
                         </>
                     )}
 
