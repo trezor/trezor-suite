@@ -116,6 +116,7 @@ export const ConfirmEvmExplanationModal = ({
     const isVisible =
         account.empty &&
         network.networkType === 'ethereum' &&
+        account.symbol === 'matic' && // TODO: POLYGON DEBUG
         !confirmExplanationModalClosed[account.symbol]?.[route];
 
     if (!isVisible) {

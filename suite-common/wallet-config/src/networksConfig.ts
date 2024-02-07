@@ -517,6 +517,7 @@ export const networks = {
         features: ['rbf', 'sign-verify', 'tokens', 'token-definitions'],
         customBackends: ['blockbook'],
         accountTypes: {},
+        isDebugOnly: true, // TODO: POLYGON DEBUG
     },
 } as const;
 
@@ -558,6 +559,7 @@ export type Network = Without<NetworkValue, 'accountTypes'> & {
     support?: {
         [key in DeviceModelInternal]: string;
     };
+    isDebugOnly?: boolean;
 };
 
 // Transforms the network object into the previously used format so we don't have to change
@@ -575,7 +577,8 @@ export const networksCompatibility: Network[] = Object.entries(networks).flatMap
     ],
 );
 
-export const getMainnets = () => networksCompatibility.filter(n => !n.accountType && !n.testnet);
+export const getMainnets = (debug = false) =>
+    networksCompatibility.filter(n => !n.accountType && !n.testnet && (!n.isDebugOnly || debug));
 
 export const getTestnets = (debug = false) =>
     networksCompatibility.filter(

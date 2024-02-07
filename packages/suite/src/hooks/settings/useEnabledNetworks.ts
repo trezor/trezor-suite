@@ -15,7 +15,7 @@ export const useEnabledNetworks = (): EnabledNetworks => {
     const enabledNetworks = useSelector(state => state.wallet.settings.enabledNetworks);
     const isDebug = useSelector(state => state.suite.settings.debug.showDebugMenu);
 
-    const mainnets = getMainnets();
+    const mainnets = getMainnets(isDebug);
 
     const testnets = getTestnets(isDebug);
 

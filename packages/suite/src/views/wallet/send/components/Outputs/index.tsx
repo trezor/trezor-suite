@@ -83,26 +83,27 @@ export const Outputs = ({ disableAnim }: OutputsProps) => {
                                 <OpReturn outputId={index} />
                             ) : (
                                 <>
-                                    {account.networkType === 'ethereum' && (
-                                        <StyledEvmExplanationBox
-                                            symbol={account.symbol}
-                                            title={
+                                    {account.networkType === 'ethereum' &&
+                                        account.symbol === 'matic' && ( // TODO: POLYGON DEBUG
+                                            <StyledEvmExplanationBox
+                                                symbol={account.symbol}
+                                                title={
+                                                    <Translation
+                                                        id="TR_EVM_EXPLANATION_SEND_TITLE"
+                                                        values={{
+                                                            network: networks[account.symbol].name,
+                                                        }}
+                                                    />
+                                                }
+                                            >
                                                 <Translation
-                                                    id="TR_EVM_EXPLANATION_SEND_TITLE"
+                                                    id="TR_EVM_EXPLANATION_SEND_DESCRIPTION"
                                                     values={{
                                                         network: networks[account.symbol].name,
                                                     }}
                                                 />
-                                            }
-                                        >
-                                            <Translation
-                                                id="TR_EVM_EXPLANATION_SEND_DESCRIPTION"
-                                                values={{
-                                                    network: networks[account.symbol].name,
-                                                }}
-                                            />
-                                        </StyledEvmExplanationBox>
-                                    )}
+                                            </StyledEvmExplanationBox>
+                                        )}
                                     <Address
                                         output={outputs[index]}
                                         outputId={index}
