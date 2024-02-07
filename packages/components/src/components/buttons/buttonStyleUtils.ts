@@ -33,6 +33,28 @@ export const mapElevationToBackgroundTertiaryHover: Record<Elevation, Color> = {
     3: 'interactionBackgroundTertiaryDefaultHoverOnElevation2',
 };
 
+export const mapElevationToBackgroundInfoNormal: Record<Elevation, Color> = {
+    '-1': 'interactionBackgroundInfoDefaultHoverOnElevation3', // For example left menu is negative elevation
+
+    // Button lies always on elevation so for example Button that lies has elevation 0, lies on elevation -1.
+    // This is why the values here a shifted by 1.
+    0: 'interactionBackgroundInfoDefaultNormalOnElevationNegative',
+    1: 'interactionBackgroundInfoDefaultNormalOnElevation0',
+    2: 'interactionBackgroundInfoDefaultNormalOnElevation1',
+    3: 'interactionBackgroundInfoDefaultNormalOnElevation2',
+};
+
+export const mapElevationToBackgroundInfoHover: Record<Elevation, Color> = {
+    '-1': 'interactionBackgroundInfoDefaultHoverOnElevation3', // This is here just to satisfy Typescript mapping
+
+    // Button lies always on elevation so for example Button that lies has elevation 0, lies on elevation -1.
+    // This is why the values here a shifted by 1.
+    0: 'interactionBackgroundInfoDefaultHoverOnElevationNegative',
+    1: 'interactionBackgroundInfoDefaultHoverOnElevation0',
+    2: 'interactionBackgroundInfoDefaultHoverOnElevation1',
+    3: 'interactionBackgroundInfoDefaultHoverOnElevation2',
+};
+
 export const getPadding = (size: ButtonSize, hasLabel?: boolean) => {
     const map: Record<ButtonSize, string> = {
         small: hasLabel ? `${spacingsPx.xs} ${spacingsPx.md}` : '10px',
@@ -121,12 +143,13 @@ export const getVariantStyle = (variant: ButtonVariant, elevation: Elevation) =>
             `;
         case 'info':
             return css`
-                background: ${({ theme }) => theme.backgroundAlertBlueSubtleOnElevation0};
+                background: ${({ theme }) => theme[mapElevationToBackgroundInfoNormal[elevation]]};
                 color: ${({ theme }) => theme.textAlertBlue};
 
                 :hover,
                 :active {
-                    background: ${({ theme }) => theme.backgroundAlertBlueSubtleOnElevation1};
+                    background: ${({ theme }) =>
+                        theme[mapElevationToBackgroundInfoHover[elevation]]};
                 }
             `;
         case 'warning':
