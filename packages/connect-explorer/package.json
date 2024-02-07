@@ -17,7 +17,7 @@
         "@trezor/protobuf": "workspace:*",
         "@trezor/utils": "workspace:^",
         "copy-webpack-plugin": "^12.0.2",
-        "markdown-it": "^13.0.2",
+        "markdown-it": "^14.0.0",
         "markdown-it-imsize": "^2.0.1",
         "markdown-it-link-attributes": "^4.0.1",
         "markdown-it-replace-link": "^1.2.1",
