@@ -30,4 +30,6 @@ export enum KEYBOARD_CODE {
     LETTER_F = 'f',
 
     FUNCTION_KEY_ONE = 'F1',
+    FUNCTION_KEY_SEVEN = 'F7',
+    FUNCTION_KEY_NINE = 'F9',
 }

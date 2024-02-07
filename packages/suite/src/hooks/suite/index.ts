@@ -20,6 +20,7 @@ export { useAnonymityStatus } from './useAnonymityStatus';
 export { useCountdownTimer } from './useCountdownTimer';
 export { useDispatch } from './useDispatch';
 export { usePasswords } from './usePasswords';
+export { useDebugLanguageShortcut } from './useDebugLanguageShortcut';
 
 // replaced in suite-native
 export { useLocales } from 'src/hooks/suite/useLocales';

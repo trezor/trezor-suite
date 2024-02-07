@@ -22,6 +22,7 @@ import { useTor } from 'src/support/suite/useTor';
 import OnlineStatus from 'src/support/suite/OnlineStatus';
 import ErrorBoundary from 'src/support/suite/ErrorBoundary';
 import RouterHandler from 'src/support/suite/Router';
+import { Shortcuts } from 'src/support/suite/Shortcuts';
 import { ConnectedThemeProvider } from 'src/support/suite/ConnectedThemeProvider';
 import { LoadingScreen } from 'src/support/suite/screens/LoadingScreen';
 import { ErrorScreen } from 'src/support/suite/screens/ErrorScreen';
@@ -45,6 +46,7 @@ const Main = () => {
                 <ModalContextProvider>
                     <ErrorBoundary>
                         <Autodetect />
+                        <Shortcuts />
                         <Resize />
                         <Protocol />
                         <OnlineStatus />
