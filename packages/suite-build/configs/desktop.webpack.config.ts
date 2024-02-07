@@ -49,6 +49,33 @@ const config: webpack.Configuration = {
                         to: path.join(baseDir, 'build/static/bin/firmware'),
                     },
                 ])
+                // include bluetooth binaries from @trezor/transport-bluetooth
+                .concat([
+                    {
+                        from: path.join(__dirname, '../../', 'transport-bluetooth/bin/linux'),
+                        to: path.join(baseDir, 'build/static/bin/bluetooth/linux-x64'),
+                    },
+                    {
+                        from: path.join(__dirname, '../../', 'transport-bluetooth/bin/linux'),
+                        to: path.join(baseDir, 'build/static/bin/bluetooth/linux-arm64'),
+                    },
+                    {
+                        from: path.join(__dirname, '../../', 'transport-bluetooth/bin/macos'),
+                        to: path.join(baseDir, 'build/static/bin/bluetooth/mac-x64'),
+                    },
+                    {
+                        from: path.join(__dirname, '../../', 'transport-bluetooth/bin/macos'),
+                        to: path.join(baseDir, 'build/static/bin/bluetooth/mac-arm64'),
+                    },
+                    {
+                        from: path.join(__dirname, '../../', 'transport-bluetooth/bin/windows'),
+                        to: path.join(baseDir, 'build/static/bin/bluetooth/win-x64'),
+                    },
+                    {
+                        from: path.join(__dirname, '../../', 'transport-bluetooth/bin/windows'),
+                        to: path.join(baseDir, 'build/static/bin/bluetooth/win-arm64'),
+                    },
+                ])
                 .concat(
                     isCodesignBuild
                         ? []
