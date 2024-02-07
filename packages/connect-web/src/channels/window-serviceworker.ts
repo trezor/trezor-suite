@@ -29,8 +29,11 @@ export class WindowServiceWorkerChannel<
 
         const port = chrome.runtime.connect({ name });
         this.port = port;
+        this.connect();
+    }
 
-        this.port.onMessage.addListener(
+    connect() {
+        this.port?.onMessage.addListener(
             (
                 // note: portMessageEvent has message typed as any
                 message: Message<IncomingMessages>,
@@ -39,9 +42,12 @@ export class WindowServiceWorkerChannel<
                 this.onMessage(message);
             },
         );
+        this.isConnected = true;
     }
 
     disconnect() {
+        if (!this.isConnected) return;
         this.port?.disconnect();
+        this.isConnected = false;
     }
 }
