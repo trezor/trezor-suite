@@ -8,6 +8,7 @@ import { TypedEmitter, isNotUndefined } from '@trezor/utils';
 
 import * as autoStart from './auto-start';
 import * as autoUpdater from './auto-updater';
+import * as bluetooth from './bluetooth';
 import * as bridge from './bridge';
 import * as coinjoin from './coinjoin';
 import * as crashRecover from './crash-recover';
@@ -65,6 +66,7 @@ const MODULES: Module[] = [
     bridge,
     systemInformation,
     systemSettings,
+    bluetooth,
     // Modules used only in dev/prod mode
     ...(isDevEnv ? [] : [csp, fileProtocol]),
 ];

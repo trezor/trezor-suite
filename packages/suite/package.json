@@ -80,6 +80,7 @@
         "@trezor/suite-desktop-connect-popup": "workspace:*",
         "@trezor/suite-storage": "workspace:*",
         "@trezor/theme": "workspace:*",
+        "@trezor/transport-bluetooth": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*",

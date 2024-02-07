@@ -35,6 +35,7 @@
         "@trezor/suite": "workspace:*",
         "@trezor/suite-desktop-api": "workspace:*",
         "@trezor/transport": "workspace:*",
+        "@trezor/transport-bluetooth": "workspace:*",
         "@trezor/transport-bridge": "workspace:*",
         "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*",

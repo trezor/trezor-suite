@@ -12632,6 +12632,7 @@ __metadata:
     "@trezor/suite": "workspace:*"
     "@trezor/suite-desktop-api": "workspace:*"
     "@trezor/transport": "workspace:*"
+    "@trezor/transport-bluetooth": "workspace:*"
     "@trezor/transport-bridge": "workspace:*"
     "@trezor/trezor-user-env-link": "workspace:*"
     "@trezor/type-utils": "workspace:*"
@@ -12840,6 +12841,7 @@ __metadata:
     "@trezor/suite-desktop-connect-popup": "workspace:*"
     "@trezor/suite-storage": "workspace:*"
     "@trezor/theme": "workspace:*"
+    "@trezor/transport-bluetooth": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
@@ -12915,7 +12917,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/transport-bluetooth@workspace:packages/transport-bluetooth":
+"@trezor/transport-bluetooth@workspace:*, @trezor/transport-bluetooth@workspace:packages/transport-bluetooth":
   version: 0.0.0-use.local
   resolution: "@trezor/transport-bluetooth@workspace:packages/transport-bluetooth"
   dependencies:
