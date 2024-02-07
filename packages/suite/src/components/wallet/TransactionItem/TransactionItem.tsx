@@ -1,5 +1,5 @@
 /* eslint-disable react/no-array-index-key */
-import { memo, Fragment, useState } from 'react';
+import { memo, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { AnimatePresence } from 'framer-motion';
 import { variables, Button, Card } from '@trezor/components';
@@ -31,6 +31,7 @@ import { SECONDARY_PANEL_HEIGHT } from 'src/components/suite/AppNavigation/AppNa
 import { anchorOutlineStyles } from 'src/utils/suite/anchor';
 import { TransactionTimestamp } from 'src/components/wallet/TransactionTimestamp';
 import { selectIsPhishingTransaction } from '@suite-common/wallet-core';
+import { BlurWrapper } from './TransactionItemBlurWrapper';
 
 const Wrapper = styled(Card)<{
     isPending: boolean;
@@ -201,7 +202,7 @@ export const TransactionItem = memo(
                                 {!isUnknown && type !== 'failed' && previewTargets.length ? (
                                     <>
                                         {previewTargets.map((t, i) => (
-                                            <Fragment key={i}>
+                                            <BlurWrapper isBlurred={isPhishingTransaction} key={i}>
                                                 {t.type === 'target' && (
                                                     <TransactionTarget
                                                         // render first n targets, n = DEFAULT_LIMIT
@@ -251,14 +252,17 @@ export const TransactionItem = memo(
                                                         }
                                                     />
                                                 )}
-                                            </Fragment>
+                                            </BlurWrapper>
                                         ))}
                                         <AnimatePresence initial={false}>
                                             {limit > 0 &&
                                                 allOutputs
                                                     .slice(DEFAULT_LIMIT, DEFAULT_LIMIT + limit)
                                                     .map((t, i) => (
-                                                        <Fragment key={i}>
+                                                        <BlurWrapper
+                                                            isBlurred={isPhishingTransaction}
+                                                            key={i}
+                                                        >
                                                             {t.type === 'target' && (
                                                                 <TransactionTarget
                                                                     target={t.payload}
@@ -313,7 +317,7 @@ export const TransactionItem = memo(
                                                                     }
                                                                 />
                                                             )}
-                                                        </Fragment>
+                                                        </BlurWrapper>
                                                     ))}
                                         </AnimatePresence>
                                     </>
@@ -345,14 +349,16 @@ export const TransactionItem = memo(
                                 )}
 
                                 {showFeeRow && (
-                                    <StyledFeeRow
-                                        fee={fee}
-                                        transaction={transaction}
-                                        useFiatValues={useFiatValues}
-                                        $noInputsOutputs={noInputsOutputs}
-                                        isFirst
-                                        isLast
-                                    />
+                                    <BlurWrapper isBlurred={isPhishingTransaction}>
+                                        <StyledFeeRow
+                                            fee={fee}
+                                            transaction={transaction}
+                                            useFiatValues={useFiatValues}
+                                            $noInputsOutputs={noInputsOutputs}
+                                            isFirst
+                                            isLast
+                                        />
+                                    </BlurWrapper>
                                 )}
 
                                 {isExpandable && (
