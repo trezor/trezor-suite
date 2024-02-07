@@ -25,16 +25,18 @@ export class WindowWindowChannel<
         windowPeer,
         channel,
         logger,
+        origin,
     }: Pick<AbstractMessageChannelConstructorParams, 'channel' | 'logger'> & {
         windowHere: Window;
         // specific peer can change over time, for example when different popup is opened
         // therefore it's a function that returns the current peer
         windowPeer: () => Window | undefined;
+        origin: string;
     }) {
         super({
             channel,
             sendFn: (message: any) => {
-                windowPeer()?.postMessage(message);
+                windowPeer()?.postMessage(message, origin);
             },
             logger,
         });
