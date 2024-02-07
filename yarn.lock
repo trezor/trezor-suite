@@ -9036,7 +9036,7 @@ __metadata:
     "@types/react-truncate": "npm:^2.3.7"
     "@types/styled-components": "npm:^5.1.29"
     date-fns: "npm:^2.30.0"
-    framer-motion: "npm:^10.16.4"
+    framer-motion: "npm:^11.0.3"
     lottie-react: "npm:^2.4.0"
     polished: "npm:^4.3.1"
     postcss-styled-syntax: "npm:^0.6.4"
@@ -9825,7 +9825,7 @@ __metadata:
     date-fns: "npm:^2.30.0"
     dropbox: "npm:^10.34.0"
     file-saver: "npm:^2.0.5"
-    framer-motion: "npm:^10.16.4"
+    framer-motion: "npm:^11.0.3"
     history: "npm:^4.10.1"
     idb: "npm:^7.1.1"
     immer: "npm:9.0.21"
@@ -19331,9 +19331,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"framer-motion@npm:^10.16.4":
-  version: 10.16.4
-  resolution: "framer-motion@npm:10.16.4"
+"framer-motion@npm:^11.0.3":
+  version: 11.0.3
+  resolution: "framer-motion@npm:11.0.3"
   dependencies:
     "@emotion/is-prop-valid": "npm:^0.8.2"
     tslib: "npm:^2.4.0"
@@ -19348,7 +19348,7 @@ __metadata:
       optional: true
     react-dom:
       optional: true
-  checksum: 1ef5e1f4444316e531ea4c1c23f1ce01379fe59a29e859f865d8307fbda5f88cb0c54619f8a1d28b372309813271b92e67d2f5984ea0e64308245da47f2a617b
+  checksum: f1aaf7da810523ae0a4290f88dc7cb6c2fb1101443f20c4e5478dd6c155769573ffae0d0dc47a7ceaa63c4385aa8fd3e93d9835d257444cc99f741a5361eafb2
   languageName: node
   linkType: hard
 
