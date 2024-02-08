@@ -21,7 +21,7 @@
         "type-check": "yarn g:tsc --build",
         "lint:rs": "cargo fmt --all -- --check",
         "server:dev": "RUST_BACKTRACE=1 && RUST_LOG=debug && cargo run",
-        "server:build": "RUST_BACKTRACE=1 && RUST_LOG=debug && cargo run",
+        "server:build": "./scripts/build.sh",
         "ui:build": "webpack --config ./webpack/webpack.build.js"
     },
     "dependencies": {
