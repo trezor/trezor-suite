@@ -21,10 +21,17 @@ import { FirmwareTypeSuggestion } from './FirmwareTypeSuggestion';
 import { spacingsPx } from '@trezor/theme';
 
 const StyledButton = styled(Button)`
-    margin: ${spacingsPx.md} 0 0 ${spacingsPx.sm};
+    margin-top: ${spacingsPx.xl};
 `;
+
 const StyledSettingsSection = styled(SettingsSection)`
     overflow: hidden;
+`;
+
+const StyledSectionItem = styled(SectionItem)`
+    > div {
+        flex-direction: column;
+    }
 `;
 
 const getDiscoveryButtonAnimationConfig = (isConfirmed: boolean): MotionProps => ({
@@ -122,23 +129,23 @@ export const SettingsCoins = () => {
             {showFirmwareTypeBanner && <FirmwareTypeSuggestion />}
 
             <StyledSettingsSection title={<Translation id="TR_COINS" />} icon="COIN">
-                <SectionItem ref={anchorRefCrypto} shouldHighlight={shouldHighlightCrypto}>
+                <StyledSectionItem ref={anchorRefCrypto} shouldHighlight={shouldHighlightCrypto}>
                     <CoinGroup
                         networks={mainnets}
                         onToggle={setEnabled}
                         selectedNetworks={enabledNetworks}
                     />
-                </SectionItem>
 
-                <AnimatePresence>
-                    {isDiscoveryButtonVisible && (
-                        <motion.div {...animation} key="discover-button">
-                            <StyledButton onClick={startDiscovery}>
-                                <Translation id="TR_DISCOVERY_NEW_COINS" />
-                            </StyledButton>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
+                    <AnimatePresence>
+                        {isDiscoveryButtonVisible && (
+                            <motion.div {...animation} key="discover-button">
+                                <StyledButton onClick={startDiscovery}>
+                                    <Translation id="TR_DISCOVERY_NEW_COINS" />
+                                </StyledButton>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                </StyledSectionItem>
             </StyledSettingsSection>
 
             <SettingsSection
