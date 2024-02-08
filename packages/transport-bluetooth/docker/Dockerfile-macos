@@ -1,0 +1,8 @@
+# https://github.com/joseluisq/rust-linux-darwin-builder/blob/master/README.md
+# or https://github.com/autozimu/docker-rust-cross-for-macos/blob/master/Dockerfile
+
+FROM joseluisq/rust-linux-darwin-builder:1.75.0
+
+WORKDIR /app
+
+CMD /bin/bash
