@@ -10,7 +10,7 @@ import {
     CollapsibleOnboardingCardProps,
 } from './CollapsibleOnboardingCard';
 import { TrezorDevice } from '@suite-common/suite-types';
-import { zIndices } from '@trezor/theme';
+import { spacingsPx, zIndices } from '@trezor/theme';
 
 const ConfirmWrapper = styled.div`
     margin-bottom: 20px;
@@ -22,8 +22,8 @@ const InnerActions = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 32px;
-    margin-bottom: 32px;
+    margin-top: ${spacingsPx.xxl};
+    margin-bottom: ${spacingsPx.xxl};
 `;
 
 const OuterActions = styled.div<{ smallMargin?: boolean }>`

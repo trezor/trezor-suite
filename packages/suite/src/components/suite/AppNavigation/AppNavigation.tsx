@@ -216,6 +216,9 @@ export const AppNavigation = ({ items, actions, primaryContent, inView }: AppNav
     );
 
     const isAccountLoading = selectedAccount.status === 'loading';
+    const isAccountError = selectedAccount.status === 'exception';
+
+    const disabledButtonsDueDiscovery = isAccountLoading || isAccountError;
 
     return (
         <Wrapper ref={wrapper} inView={inView} subRoute={routeName && isSubsection(routeName)}>
@@ -263,7 +266,7 @@ export const AppNavigation = ({ items, actions, primaryContent, inView }: AppNav
                                 <AppNavigationTooltip>
                                     <Dropdown
                                         alignMenu="bottom-right"
-                                        isDisabled={isAccountLoading}
+                                        isDisabled={disabledButtonsDueDiscovery}
                                         items={[
                                             {
                                                 key: 'all',
@@ -290,7 +293,7 @@ export const AppNavigation = ({ items, actions, primaryContent, inView }: AppNav
                                             data-test={`@wallet/menu/${buyAction?.id}`}
                                             variant="tertiary"
                                             size="small"
-                                            isDisabled={isAccountLoading}
+                                            isDisabled={disabledButtonsDueDiscovery}
                                         >
                                             <Text>{buyAction?.title}</Text>
                                         </Button>
@@ -299,7 +302,10 @@ export const AppNavigation = ({ items, actions, primaryContent, inView }: AppNav
 
                                 {otherActions && (
                                     <AppNavigationTooltip>
-                                        <ButtonGroup size="small" isDisabled={isAccountLoading}>
+                                        <ButtonGroup
+                                            size="small"
+                                            isDisabled={disabledButtonsDueDiscovery}
+                                        >
                                             {otherActions?.map(item => {
                                                 const { id, title, icon } = item;
 
@@ -326,7 +332,7 @@ export const AppNavigation = ({ items, actions, primaryContent, inView }: AppNav
                                     <AppNavigationTooltip>
                                         <Dropdown
                                             alignMenu="bottom-right"
-                                            isDisabled={isAccountLoading}
+                                            isDisabled={disabledButtonsDueDiscovery}
                                             data-test="@wallet/menu/extra-dropdown"
                                             items={[
                                                 {
@@ -337,9 +343,10 @@ export const AppNavigation = ({ items, actions, primaryContent, inView }: AppNav
                                                                 const { id, title } = item;
                                                                 return {
                                                                     key: id,
-                                                                    onClick: isAccountLoading
-                                                                        ? undefined
-                                                                        : item.callback,
+                                                                    onClick:
+                                                                        disabledButtonsDueDiscovery
+                                                                            ? undefined
+                                                                            : item.callback,
                                                                     label: title,
                                                                     'data-test': `@wallet/menu/${item.id}`,
                                                                 };
