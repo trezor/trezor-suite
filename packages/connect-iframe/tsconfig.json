@@ -10,11 +10,5 @@
         { "path": "../connect-analytics" },
         { "path": "../connect-common" },
         { "path": "../env-utils" }
-    ],
-    "ts-node": {
-        "compilerOptions": {
-            "module": "CommonJS",
-            "moduleResolution": "node"
-        }
-    }
+    ]
 }

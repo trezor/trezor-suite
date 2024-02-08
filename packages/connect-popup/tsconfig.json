@@ -19,10 +19,5 @@
         { "path": "../node-utils" },
         { "path": "../trezor-user-env-link" },
         { "path": "../utils" }
-    ],
-    "ts-node": {
-        "compilerOptions": {
-            "module": "CommonJS"
-        }
-    }
+    ]
 }

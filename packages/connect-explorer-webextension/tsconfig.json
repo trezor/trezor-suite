@@ -8,10 +8,5 @@
     "references": [
         { "path": "../connect-explorer" },
         { "path": "../connect-web" }
-    ],
-    "ts-node": {
-        "compilerOptions": {
-            "module": "CommonJS"
-        }
-    }
+    ]
 }

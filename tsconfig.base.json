@@ -42,5 +42,11 @@
         "**/protobuf-patches",
         "**/trezor-common",
         "**/jest.config.*js"
-    ]
+    ],
+    "ts-node": {
+        "compilerOptions": {
+            "module": "CommonJS",
+            "moduleResolution": "node"
+        }
+    }
 }

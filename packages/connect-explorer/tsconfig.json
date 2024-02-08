@@ -16,10 +16,5 @@
         { "path": "../connect-webextension" },
         { "path": "../protobuf" },
         { "path": "../utils" }
-    ],
-    "ts-node": {
-        "compilerOptions": {
-            "module": "CommonJS"
-        }
-    }
+    ]
 }
