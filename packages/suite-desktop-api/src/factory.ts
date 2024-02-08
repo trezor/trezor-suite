@@ -184,5 +184,7 @@ export const factory = <R extends StrictIpcRenderer<any, IpcRendererEvent>>(
         connectPopupResponse: response => ipcRenderer.invoke('connect-popup/response', response),
 
         getSystemInformation: () => ipcRenderer.invoke('system/get-system-information'),
+        // Bluetooth
+        bluetoothOpenSettings: () => ipcRenderer.invoke('bluetooth/open-settings'),
     };
 };

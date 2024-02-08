@@ -6,7 +6,12 @@ import { getDesktopApi } from '@trezor/suite-desktop-api';
 import '@sentry/electron/preload'; // With this only IPCMode.Classic is ever taken into account
 
 contextBridge.exposeInMainWorld(
-    ...exposeIpcProxy(ipcRenderer, ['TrezorConnect', 'CoinjoinBackend', 'CoinjoinClient']),
+    ...exposeIpcProxy(ipcRenderer, [
+        'TrezorConnect',
+        'CoinjoinBackend',
+        'CoinjoinClient',
+        'Bluetooth',
+    ]),
 );
 
 const desktopApi = getDesktopApi(ipcRenderer);

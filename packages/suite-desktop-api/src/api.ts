@@ -109,6 +109,7 @@ export interface InvokeChannels {
     'connect-popup/ready': () => void;
     'connect-popup/response': (response: ConnectPopupResponse) => void;
     'system/get-system-information': () => InvokeResult<GetSystemInformationResponse>;
+    'bluetooth/open-settings': () => InvokeResult;
 }
 
 type DesktopApiListener = ListenerMethod<RendererChannels>;
@@ -177,4 +178,5 @@ export interface DesktopApi {
     connectPopupResponse: DesktopApiInvoke<'connect-popup/response'>;
     //system
     getSystemInformation: DesktopApiInvoke<'system/get-system-information'>;
+    bluetoothOpenSettings: DesktopApiInvoke<'bluetooth/open-settings'>;
 }
