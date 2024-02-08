@@ -1,0 +1,20 @@
+# FROM rust:1.59.0
+FROM rust:latest
+
+RUN apt update && apt upgrade -y
+RUN apt install -y \
+        libdbus-1-dev \
+        pkg-config \ 
+        g++-mingw-w64-x86-64 \
+        musl-dev \
+        musl-tools
+
+# RUN cargo build --target x86_64-unknown-linux-musl
+
+RUN rustup target add x86_64-unknown-linux-musl
+
+WORKDIR /app
+
+CMD /bin/bash
+
+# cargo build --target x86_64-unknown-linux-musl --release
