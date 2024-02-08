@@ -22,6 +22,7 @@ import {
     DisableTorModal,
     DisableTorStopCoinjoinModal,
     RequestEnableTorModal,
+    SelectBluetoothDeviceModal,
     TorLoadingModal,
     CancelCoinjoinModal,
     CriticalCoinjoinPhaseModal,
@@ -204,6 +205,8 @@ export const UserContextModal = ({
             return <UnhideTokenModal onCancel={onCancel} address={payload.address} />;
         case 'passphrase-mismatch-warning':
             return <PassphraseMismatchModal onCancel={onCancel} />;
+        case 'select-bluetooth-device':
+            return <SelectBluetoothDeviceModal onCancel={onCancel} />;
         default:
             return null;
     }

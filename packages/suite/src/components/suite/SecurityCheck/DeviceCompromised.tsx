@@ -4,7 +4,7 @@ import { Card } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 
-import { WelcomeLayout } from 'src/components/suite';
+import { WelcomeLayout } from 'src/components/suite/layouts/WelcomeLayout/WelcomeLayout';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { captureSentryMessage, withSentryScope } from 'src/utils/suite/sentry';
 import { SecurityCheckFail } from '../SecurityCheck/SecurityCheckFail';

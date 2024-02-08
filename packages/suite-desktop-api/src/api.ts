@@ -35,6 +35,8 @@ export interface MainChannels {
     'update/download': void;
     'update/install': void;
     'logger/config': LoggerConfig;
+    'bluetooth/request-device': void;
+    'bluetooth/select-device': string | undefined;
 }
 
 // Event messages from main to renderer process
@@ -67,6 +69,10 @@ export interface RendererChannels {
     'bridge/settings': BridgeSettings;
 
     'handshake/event': HandshakeEvent;
+    'bluetooth/event': any;
+    'bluetooth/adapter-event': boolean;
+    'bluetooth/select-device-event': { uuid: string; name: string }[];
+    'bluetooth/connect-device-event': any;
 }
 
 // Invocation from renderer process
@@ -148,4 +154,6 @@ export interface DesktopApi {
     toggleBridge: DesktopApiInvoke<'bridge/toggle'>;
     changeBridgeSettings: DesktopApiInvoke<'bridge/change-settings'>;
     getBridgeSettings: DesktopApiInvoke<'bridge/get-settings'>;
+    bluetoothRequestDevice: DesktopApiSend<'bluetooth/request-device'>;
+    bluetoothSelectDevice: DesktopApiSend<'bluetooth/select-device'>;
 }
