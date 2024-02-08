@@ -6,7 +6,7 @@
 
 use `bluetoothIpc` proxy
 
-```
+```typescript
 import { bluetoothIpc } from '@trezor/transport-bluetooth';
 
 await bluetoothIpc.init();
@@ -16,7 +16,7 @@ await bluetoothIpc.init();
 
 implement proxy handler and `BluetoothIpc`
 
-```
+```typescript
 import { BluetoothIpc } from '@trezor/transport-bluetooth';
 
 createIpcProxyHandler(ipcMain, 'Bluetooth', {
@@ -30,12 +30,17 @@ createIpcProxyHandler(ipcMain, 'Bluetooth', {
             onAddListener: (eventName, listener) => {
                 api.on(eventName, listener);
             },
-            onRemoveListener: (eventName) => {
-                api.removeAllListeners(eventName)
+            onRemoveListener: eventName => {
+                api.removeAllListeners(eventName);
             },
         };
     },
 });
+```
+
+### Server build:
+
+`yarn workspace @trezor/transport-bluetooth server:build`
 
 ### Server development
 
@@ -72,6 +77,8 @@ nix-shell ./packages/transport-bluetooth/shell.nix
 ```
 
 yarn workspace @trezor/transport-bluetooth server:dev
+
+```
 
 ```
 
