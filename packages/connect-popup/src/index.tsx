@@ -40,6 +40,9 @@ import {
 import { isPhishingDomain } from './utils/isPhishingDomain';
 import { initLog, setLogWriter, LogWriter } from '@trezor/connect/src/utils/debug';
 
+const INTERVAL_CHECK_PARENT_ALIVE_MS = 1000;
+const INTERVAL_HANDSHAKE_TIMEOUT_MS = 90 * 1000;
+
 const log = initLog('@trezor/connect-popup');
 const proxyLogger = initLog('@trezor/connect-webextension');
 
@@ -324,6 +327,20 @@ const handleMessageInCoreMode = (
     handleUIAffectingMessage(message);
 };
 
+const handleWindowBeforeUnload = (_e: BeforeUnloadEvent) => {
+    if (getState().core) {
+        const core = ensureCore();
+        core.handleMessage({
+            type: POPUP.CLOSED,
+            payload: null,
+        });
+    }
+};
+
+const handleParentClosed = () => {
+    window.close();
+};
+
 const handleLogMessage = (event: MessageEvent<IFrameLogRequest>) => {
     const { data } = event;
     if (!data) return;
@@ -382,6 +399,15 @@ const init = async (payload: PopupInit['payload']) => {
 
         if (payload.useCore) {
             addWindowEventListener('message', handleMessageInCoreMode, false);
+            addWindowEventListener('beforeunload', handleWindowBeforeUnload, false);
+            if (window.opener) {
+                // Most reliable way to detect parent close seems to be to check it periodically
+                setInterval(() => {
+                    if (!window.opener || window.opener.closed) {
+                        handleParentClosed();
+                    }
+                }, INTERVAL_CHECK_PARENT_ALIVE_MS);
+            }
             await initCoreInPopup(payload, logWriterFactory);
         } else {
             addWindowEventListener('message', handleMessageInIframeMode, false);
@@ -523,7 +549,7 @@ const onLoad = () => {
             type: 'error',
             detail: 'handshake-timeout',
         });
-    }, 90 * 1000);
+    }, INTERVAL_HANDSHAKE_TIMEOUT_MS);
 };
 
 /**

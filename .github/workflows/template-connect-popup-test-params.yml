@@ -21,6 +21,11 @@ on:
         type: "boolean"
         required: false
         default: true
+      run-core-in-popup:
+        description: "Flag to indicate whether to run the core-in-popup job"
+        type: "boolean"
+        required: false
+        default: false
       build-overview:
         description: "Flag to indicate whether to build connect-popup-overview.html"
         type: "boolean"
@@ -68,7 +73,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: ${{ inputs.build-overview }}
         with:
-          name: static-overview-${{ inputs.test-name }}-${{ github.run_attempt }}
+          name: core-in-popup-static-overview-${{ inputs.test-name }}-${{ github.run_attempt }}
           path: |
             tmp_overview_directory/
 
@@ -136,6 +141,67 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: webextension-test-artifacts-${{ inputs.test-name }}-${{ github.run_attempt }}-${{ github.run_id }}
+          path: |
+            packages/connect-popup/test-results
+
+      - name: Check Test Success
+        run: |
+          # If there is `test-results` it means it has failed.
+          if [ -f "packages/connect-popup/test-results" ]; then
+            echo "Tests failed"
+            exit 1
+          fi
+
+  core_in_popup:
+    name: core_in_popup
+    runs-on: ubuntu-latest
+    if: ${{ inputs.run-core-in-popup }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Extract branch name
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        id: extract_branch
+
+      - name: Install dependencies
+        run: |
+          echo -e "\nenableScripts: false" >> .yarnrc.yml
+          yarn workspaces focus @trezor/connect-popup
+
+      - name: Run connect popup test
+        env:
+          URL: https://${{ inputs.DEV_SERVER_HOSTNAME }}/connect/${{ steps.extract_branch.outputs.branch }}/?core-in-popup=true
+          CORE_IN_POPUP: true
+          # skip settings page, this url is set at build time anyway
+          #TREZOR_CONNECT_SRC: https://${{ inputs.DEV_SERVER_HOSTNAME }}/connect/${{ steps.extract_branch.outputs.branch }}/
+          CI_COMMIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
+          CI_JOB_NAME: ${{ inputs.test-name }}-${{ github.run_attempt }}
+        run: |
+          ./docker/docker-connect-popup-ci.sh ${{ inputs.test-name }}
+
+      - name: Prepare static overview
+        if: ${{ inputs.build-overview }}
+        run: |
+          echo "Preparing static overview"
+          mkdir -p tmp_overview_directory
+          cp -R ./packages/connect-popup/e2e/screenshots/* tmp_overview_directory/
+          cp packages/connect-popup/connect-popup-overview.html  tmp_overview_directory/connect-popup-overview.html
+
+      - name: Upload static overview artifact
+        uses: actions/upload-artifact@v4
+        if: ${{ inputs.build-overview }}
+        with:
+          name: static-overview-${{ inputs.test-name }}-${{ github.run_attempt }}
+          path: |
+            tmp_overview_directory/
+
+      - name: Upload artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: core-in-popup-test-artifacts-${{ inputs.test-name }}-${{ github.run_attempt }}-${{ github.run_id }}
           path: |
             packages/connect-popup/test-results
 

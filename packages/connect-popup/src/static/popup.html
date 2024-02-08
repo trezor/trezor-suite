@@ -3232,12 +3232,9 @@
         </div>
 
         <script type="text/javascript" async="false">
-            const message = {
-                type: 'popup-bootstrap',
-                channel: {
-                    here: '@trezor/connect-popup',
-                    peer: '@trezor/connect-web',
-                },
+            const channel = {
+                here: '@trezor/connect-popup',
+                peer: '@trezor/connect-web',
             };
 
             // Workaround for popup-content-script-loaded earlier than popup-loaded
@@ -3254,9 +3251,24 @@
             };
             window.addEventListener('message', handlePopupContentScriptLoaded);
 
+            // The handshake is sent after the bootstrap message, so we process it here to avoid delays loading popup.js
+            // In the future, channel handling should be done in popup.js directly.
+            // todo: connect10
+
+            window.addEventListener('message', event => {
+                if (event.data.type === 'channel-handshake-request') {
+                    const handshakeMessage = { type: 'channel-handshake-confirm', channel };
+                    if (window.opener) {
+                        window.opener.postMessage(handshakeMessage, '*');
+                    } else {
+                        window.postMessage(handshakeMessage, '*');
+                    }
+                }
+            });
+
             setTimeout(() => {
-                console.log('popup-bootstrap');
                 // Slight delay to ensure content script (if present) is initialized first
+                const message = { type: 'popup-bootstrap', channel };
                 if (window.opener) {
                     window.opener.postMessage(message, '*');
                 } else {

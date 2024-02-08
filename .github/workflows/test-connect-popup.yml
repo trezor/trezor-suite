@@ -72,6 +72,7 @@ jobs:
       test-name: methods.test
       DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
       run-webextension: ${{ github.event_name == 'schedule' }}
+      run-core-in-popup: true
       build-overview: true
 
   popup-close:
@@ -81,6 +82,7 @@ jobs:
       test-name: popup-close.test
       DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
       run-webextension: true
+      run-core-in-popup: true
 
   passphrase:
     needs: [build-deploy]
@@ -89,6 +91,7 @@ jobs:
       test-name: passphrase.test
       DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
       run-webextension: true
+      run-core-in-popup: true
 
   popup-pages:
     needs: [build-deploy]

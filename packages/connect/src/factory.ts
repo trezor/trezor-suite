@@ -3,7 +3,7 @@ import type { EventEmitter } from 'events';
 import type { TrezorConnect } from './types';
 import type { CallMethod } from './events/call';
 
-interface Dependencies {
+export interface ConnectFactoryDependencies {
     call: CallMethod;
     eventEmitter: EventEmitter;
     manifest: TrezorConnect['manifest'];
@@ -29,7 +29,7 @@ export const factory = ({
     requestWebUSBDevice,
     cancel,
     dispose,
-}: Dependencies): TrezorConnect => {
+}: ConnectFactoryDependencies): TrezorConnect => {
     const api: TrezorConnect = {
         manifest,
         init,
