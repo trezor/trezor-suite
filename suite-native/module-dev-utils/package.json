@@ -11,7 +11,7 @@
     },
     "dependencies": {
         "@react-navigation/core": "^6.4.10",
-        "@react-navigation/native-stack": "6.9.17",
+        "@react-navigation/native-stack": "6.9.18",
         "@sentry/react-native": "5.18.0",
         "@suite-common/icons": "workspace:*",
         "@suite-common/logger": "workspace:*",

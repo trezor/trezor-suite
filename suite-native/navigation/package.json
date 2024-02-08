@@ -11,9 +11,9 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@react-navigation/bottom-tabs": "6.5.11",
-        "@react-navigation/native": "6.1.9",
-        "@react-navigation/native-stack": "6.9.17",
+        "@react-navigation/bottom-tabs": "6.5.12",
+        "@react-navigation/native": "6.1.10",
+        "@react-navigation/native-stack": "6.9.18",
         "@sentry/react-native": "5.18.0",
         "@suite-common/icons": "workspace:*",
         "@suite-common/message-system": "workspace:*",

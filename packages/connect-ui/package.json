@@ -20,8 +20,8 @@
         "react-intl": "^6.6.2"
     },
     "devDependencies": {
-        "@types/react": "18.2.51",
-        "@types/styled-components": "^5.1.29"
+        "@types/react": "18.2.55",
+        "@types/styled-components": "^5.1.34"
     },
     "peerDependencies": {
         "react": "18.2.0",

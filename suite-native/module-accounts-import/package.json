@@ -13,8 +13,8 @@
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
         "@react-navigation/core": "^6.4.10",
-        "@react-navigation/native": "6.1.9",
-        "@react-navigation/native-stack": "6.9.17",
+        "@react-navigation/native": "6.1.10",
+        "@react-navigation/native-stack": "6.9.18",
         "@reduxjs/toolkit": "1.9.5",
         "@shopify/react-native-skia": "0.1.234",
         "@suite-common/formatters": "workspace:*",
