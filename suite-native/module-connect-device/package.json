@@ -11,8 +11,8 @@
     },
     "dependencies": {
         "@react-navigation/core": "^6.4.10",
-        "@react-navigation/native": "6.1.9",
-        "@react-navigation/native-stack": "6.9.17",
+        "@react-navigation/native": "6.1.10",
+        "@react-navigation/native-stack": "6.9.18",
         "@suite-common/icons": "workspace:*",
         "@suite-common/validators": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",

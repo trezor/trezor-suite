@@ -16,9 +16,9 @@
     },
     "dependencies": {
         "@react-native/metro-config": "0.73.4",
-        "@react-navigation/bottom-tabs": "6.5.11",
-        "@react-navigation/native": "6.1.9",
-        "@react-navigation/native-stack": "6.9.17",
+        "@react-navigation/bottom-tabs": "6.5.12",
+        "@react-navigation/native": "6.1.10",
+        "@react-navigation/native-stack": "6.9.18",
         "@reduxjs/toolkit": "1.9.5",
         "@sentry/react-native": "5.18.0",
         "@shopify/flash-list": "1.6.3",

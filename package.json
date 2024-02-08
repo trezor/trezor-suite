@@ -135,7 +135,7 @@
         "jest-expo": "^50.0.2",
         "metro-react-native-babel-preset": "0.77.0",
         "npm-run-all": "^4.1.5",
-        "nx": "^18.0.2",
+        "nx": "^18.0.3",
         "patch-package": "8.0.0",
         "prettier": "3.2.5",
         "prettier-eslint": "^16.3.0",

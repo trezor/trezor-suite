@@ -11,7 +11,7 @@
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
-        "@react-navigation/native": "6.1.9",
+        "@react-navigation/native": "6.1.10",
         "@suite-common/assets": "workspace:*",
         "@suite-common/icons": "workspace:*",
         "@suite-common/suite-config": "workspace:*",
