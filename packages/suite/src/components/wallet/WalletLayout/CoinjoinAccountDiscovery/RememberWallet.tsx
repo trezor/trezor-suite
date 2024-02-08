@@ -21,6 +21,10 @@ const Middle = styled.div`
     gap: ${spacingsPx.xxs};
 `;
 
+const StyledSwitch = styled(Switch)`
+    margin-left: auto;
+`;
+
 interface RememberWalletProps {
     isChecked: boolean;
     onChange: () => void;
@@ -40,7 +44,6 @@ export const RememberWallet = ({ isChecked, onChange }: RememberWalletProps) => 
                 <Translation id="TR_REMEMBER_WALLET_DESCRIPTION" />
             </Paragraph>
         </Middle>
-
-        <Switch isChecked={isChecked} onChange={onChange} />
+        <StyledSwitch isChecked={isChecked} onChange={onChange} />
     </Container>
 );

@@ -123,6 +123,7 @@ const Wrapper = styled.div<WrapperProps>`
         padding: 0;
         transition: transform 0.2s cubic-bezier(0.68, -0.02, 0.21, 1.1);
         cursor: pointer;
+        display: ${({ isDisabled }) => isDisabled && 'none'};
     }
 
     .${reactSelectClassNamePrefix}__control {

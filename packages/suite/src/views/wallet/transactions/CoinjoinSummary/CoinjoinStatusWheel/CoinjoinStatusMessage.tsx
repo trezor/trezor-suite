@@ -8,12 +8,16 @@ import {
     selectCurrentCoinjoinWheelStates,
     selectCurrentSessionDeadlineInfo,
 } from 'src/reducers/wallet/coinjoinReducer';
-import { typography } from '@trezor/theme';
+import { typography, spacingsPx } from '@trezor/theme';
 
 const Cointainer = styled.div`
-    height: 30px;
-    margin-top: 4px;
+    height: 40px;
+    margin-top: ${spacingsPx.xxs};
     ${typography.label}
+`;
+
+const CountdownWrapper = styled.p`
+    margin-top: ${spacingsPx.xxs};
 `;
 
 interface CoinjoinStatusMessageProps {
@@ -37,13 +41,13 @@ export const CoinjoinStatusMessage = ({ accountKey }: CoinjoinStatusMessageProps
                     <Translation id={SESSION_PHASE_MESSAGES[sessionPhase]} />
 
                     {roundPhase !== undefined && roundPhaseDeadline && (
-                        <p>
+                        <CountdownWrapper>
                             <CountdownTimer
                                 isApproximate
                                 deadline={roundPhaseDeadline}
                                 pastDeadlineMessage="TR_TIMER_PAST_DEADLINE"
                             />
-                        </p>
+                        </CountdownWrapper>
                     )}
                 </>
             );
