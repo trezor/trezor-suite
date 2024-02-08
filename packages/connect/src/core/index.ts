@@ -722,6 +722,11 @@ const onCall = async (message: IFrameCallMessage) => {
 
             await device.cleanup();
 
+            if (useCoreInPopup) {
+                // We need to send response before closing popup
+                postMessage(response);
+            }
+
             closePopup();
             cleanup();
 
@@ -734,7 +739,10 @@ const onCall = async (message: IFrameCallMessage) => {
                     _deviceList.removeAuthPenalty(device);
                 }
             }
-            postMessage(response);
+
+            if (!useCoreInPopup) {
+                postMessage(response);
+            }
         }
     }
 };

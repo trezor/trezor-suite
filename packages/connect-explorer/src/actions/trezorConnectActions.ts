@@ -100,7 +100,12 @@ export const init =
             console.log('using @trezor/connect hosted on: ', window.__TREZOR_CONNECT_SRC);
         }
 
+        // Get default useCoreInPopup from URL params (?core-in-popup=true)
+        const urlParams = new URLSearchParams(window.location.search);
+        const useCoreInPopup = urlParams.get('core-in-popup') === 'true';
+
         const connectOptions = {
+            useCoreInPopup,
             transportReconnect: true,
             popup: true,
             debug: true,

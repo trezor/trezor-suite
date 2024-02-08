@@ -1,37 +1,14 @@
-import EventEmitter from 'events';
-
 // NOTE: @trezor/connect part is intentionally not imported from the index so we do include the whole library.
-import {
-    POPUP,
-    IFRAME,
-    ERRORS,
-    UI_EVENT,
-    createErrorMessage,
-    ConnectSettings,
-    Manifest,
-    UiResponseEvent,
-    CallMethod,
-} from '@trezor/connect/src/exports';
+import { POPUP, ConnectSettings, Manifest } from '@trezor/connect/src/exports';
 import { factory } from '@trezor/connect/src/factory';
-import { initLog, setLogWriter, LogMessage, LogWriter } from '@trezor/connect/src/utils/debug';
+import { initLog } from '@trezor/connect/src/utils/debug';
 // Import as src not lib due to webpack issues with inlining content script later
 import { ServiceWorkerWindowChannel } from '@trezor/connect-web/src/channels/serviceworker-window';
-import * as popup from '@trezor/connect-web/src/popup';
+import { CoreInPopup } from '@trezor/connect-web/src/impl/core-in-popup';
 
 import { parseConnectSettings } from './connectSettings';
 
-const eventEmitter = new EventEmitter();
-let _settings = parseConnectSettings();
-
-/**
- * setup logger.
- * service worker cant communicate directly with sharedworker logger so the communication is as follows:
- * - service worker -> content script -> popup -> sharedworker
- * todo: this could be simplified by injecting additional content script into log.html
- */
-const logger = initLog('@trezor/connect-webextension');
-const popupManagerLogger = initLog('@trezor/connect-webextension/popupManager');
-let _popupManager: popup.PopupManager;
+const _settings = parseConnectSettings();
 
 const extendLifetime = () => {
     // Subscribing to runtime makes the Service Worker stay alive for 5 minutes instead of the default 30 seconds.
@@ -44,165 +21,44 @@ const extendLifetime = () => {
     });
 };
 
-const logWriterFactory = (popupManager: popup.PopupManager): LogWriter => ({
-    add: (message: LogMessage) => {
-        popupManager.channel.postMessage(
-            {
-                event: UI_EVENT,
-                type: IFRAME.LOG,
-                payload: message,
-            },
-            { usePromise: false, useQueue: true },
-        );
-    },
-});
+class CoreInPopupWebextension extends CoreInPopup {
+    public constructor() {
+        super();
+        this._settings = parseConnectSettings();
 
-const manifest = (data: Manifest) => {
-    _settings = parseConnectSettings({
-        ..._settings,
-        manifest: data,
-    });
-};
-
-const dispose = () => {
-    eventEmitter.removeAllListeners();
-    _settings = parseConnectSettings();
-    if (_popupManager) {
-        _popupManager.close();
+        /**
+         * setup logger.
+         * service worker cant communicate directly with sharedworker logger so the communication is as follows:
+         * - service worker -> content script -> popup -> sharedworker
+         * todo: this could be simplified by injecting additional content script into log.html
+         */
+        this.logger = initLog('@trezor/connect-webextension');
+        this.popupManagerLogger = initLog('@trezor/connect-webextension/popupManager');
     }
 
-    return Promise.resolve(undefined);
-};
-
-const cancel = (error?: string) => {
-    if (_popupManager) {
-        _popupManager.emit(POPUP.CLOSED, error);
-    }
-};
-
-const init = (settings: Partial<ConnectSettings> = {}): Promise<void> => {
-    const oldSettings = parseConnectSettings({
-        ..._settings,
-    });
-    const newSettings = parseConnectSettings({
-        ..._settings,
-        ...settings,
-    });
-
-    if (newSettings._extendWebextensionLifetime) {
-        extendLifetime();
-    }
-    // defaults for connect-webextension
-    if (!newSettings.transports?.length) {
-        newSettings.transports = ['BridgeTransport', 'WebUsbTransport'];
-    }
-    newSettings.useCoreInPopup = true;
-    const equalSettings = JSON.stringify(oldSettings) === JSON.stringify(newSettings);
-    _settings = newSettings;
-
-    if (!_popupManager || !equalSettings) {
-        if (_popupManager) _popupManager.close();
-        _popupManager = new popup.PopupManager(_settings, { logger: popupManagerLogger });
-        setLogWriter(() => logWriterFactory(_popupManager));
-    }
-
-    logger.enabled = !!settings.debug;
-
-    if (!_settings.manifest) {
-        throw ERRORS.TypedError('Init_ManifestMissing');
-    }
-
-    logger.debug('initiated');
-
-    return Promise.resolve();
-};
-
-/**
- * 1. opens popup
- * 2. sends request to popup where the request is handled by core
- * 3. returns response
- */
-const call: CallMethod = async params => {
-    logger.debug('call', params);
-
-    // request popup window it might be used in the future
-    if (_settings.popup) {
-        await _popupManager.request();
-    }
-
-    await _popupManager.channel.init();
-    await _popupManager.popupPromise?.promise;
-
-    _popupManager.channel.postMessage({
-        type: POPUP.INIT,
-        payload: {
-            settings: _settings,
-            useCore: true,
-        },
-    });
-
-    await _popupManager.handshakePromise?.promise;
-
-    // post message to core in popup
-    try {
-        const response = await _popupManager.channel.postMessage({
-            type: IFRAME.CALL,
-            payload: params,
-        });
-
-        logger.debug('call: response: ', response);
-
-        if (response) {
-            if (_popupManager && response.success) {
-                _popupManager.clear();
-            }
-
-            return response;
+    public init(settings: Partial<ConnectSettings> = {}): Promise<void> {
+        if (settings._extendWebextensionLifetime) {
+            extendLifetime();
         }
 
-        return createErrorMessage(ERRORS.TypedError('Method_NoResponse'));
-    } catch (error) {
-        logger.error('call: error', error);
-        _popupManager.clear(false);
-
-        return createErrorMessage(error);
+        return super.init(settings);
     }
-};
+}
 
-const uiResponse = (response: UiResponseEvent) => {
-    const { type, payload } = response;
-    _popupManager.channel.postMessage({ event: UI_EVENT, type, payload });
-};
-
-const renderWebUSBButton = () => {};
-
-const requestLogin = () => {
-    // todo: not supported yet
-    throw ERRORS.TypedError('Method_InvalidPackage');
-};
-
-const disableWebUSB = () => {
-    // todo: not supported yet, probably not needed
-    throw ERRORS.TypedError('Method_InvalidPackage');
-};
-
-const requestWebUSBDevice = () => {
-    // not needed - webusb pairing happens in popup
-    throw ERRORS.TypedError('Method_InvalidPackage');
-};
-
+const methods = new CoreInPopupWebextension();
+// Bind all methods due to shadowing `this`
 const TrezorConnect = factory({
-    eventEmitter,
-    manifest,
-    init,
-    call,
-    requestLogin,
-    uiResponse,
-    renderWebUSBButton,
-    disableWebUSB,
-    requestWebUSBDevice,
-    cancel,
-    dispose,
+    eventEmitter: methods.eventEmitter,
+    init: methods.init.bind(methods),
+    call: methods.call.bind(methods),
+    manifest: methods.manifest.bind(methods),
+    requestLogin: methods.requestLogin.bind(methods),
+    uiResponse: methods.uiResponse.bind(methods),
+    renderWebUSBButton: methods.renderWebUSBButton.bind(methods),
+    disableWebUSB: methods.disableWebUSB.bind(methods),
+    requestWebUSBDevice: methods.requestWebUSBDevice.bind(methods),
+    cancel: methods.cancel.bind(methods),
+    dispose: methods.dispose.bind(methods),
 });
 
 const initProxyChannel = () => {

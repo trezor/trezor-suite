@@ -16,6 +16,8 @@ import {
 
 const url = process.env.URL || 'http://localhost:8088/';
 const isWebExtension = process.env.IS_WEBEXTENSION === 'true';
+const isCoreInPopup = process.env.CORE_IN_POPUP === 'true';
+const skipCheck = isWebExtension || isCoreInPopup;
 const connectSrc = process.env.TREZOR_CONNECT_SRC;
 
 const WAIT_AFTER_TEST = 3000; // how long test should wait for more potential trezord requests
@@ -62,7 +64,7 @@ const setup = async ({ page, context }: { page: Page; context?: BrowserContext }
     explorerUrl = contexts.explorerUrl;
 
     const logPage = await browserContext!.newPage();
-    await logPage.goto(`${url}log.html`);
+    await logPage.goto(formatUrl(url, 'log.html'));
 
     await setConnectSettings(
         explorerPage,
@@ -100,7 +102,7 @@ const setup = async ({ page, context }: { page: Page; context?: BrowserContext }
     log('beforeEach', 'waiting for popup load state');
     await popup.waitForLoadState('load');
 
-    if (isWebExtension) {
+    if (isWebExtension || isCoreInPopup) {
         log('beforeEach', 'waiting for select device');
         await popup.waitForSelector('.select-device-list button.list', { state: 'visible' });
         await popup.click('.select-device-list button.list');
@@ -182,8 +184,12 @@ test(`device disconnected during device interaction`, async ({ page, context }) 
     await TrezorUserEnvLink.api.stopEmu();
     await explorerPage.waitForTimeout(WAIT_AFTER_TEST);
 
-    log('waiting to click @connect-ui/error-close-button');
-    await popup.click("button[data-test='@connect-ui/error-close-button']");
+    try {
+        log('waiting to click @connect-ui/error-close-button');
+        await popup.click("button[data-test='@connect-ui/error-close-button']");
+    } catch (error) {
+        // Sometimes this crashes with error that the page is already closed.
+    }
 
     log('waiting for popupClosedPromise to resolve');
     await popupClosedPromise;
@@ -224,6 +230,11 @@ test('when user cancels permissions in popup it closes automatically', async ({
 
     await popup.waitForLoadState('load');
 
+    if (isCoreInPopup) {
+        await popup.waitForSelector('.select-device-list button.list', { state: 'visible' });
+        await popup.click('.select-device-list button.list');
+    }
+
     await popup.waitForSelector('button.confirm', { state: 'visible', timeout: 40000 });
     await popup.waitForSelector("button[data-test='@permissions/confirm-button']");
     // We are testing that when cancel permissions, popup is closed automatically.
@@ -234,7 +245,7 @@ test('when user cancels permissions in popup it closes automatically', async ({
 
 test('device dialogue cancelled IN POPUP by user', async ({ page, context }) => {
     // TODO: this test should also work with webextension and for some reason it does not work in CI but it works locally.
-    test.skip(isWebExtension, 'todo: skip for now');
+    test.skip(skipCheck, 'todo: skip for now');
     log(`test: ${test.info().title}`);
     await setup({ page, context });
 
@@ -276,7 +287,7 @@ test('popup should close and open new one when popup is in error state and user 
     context,
 }) => {
     // TODO: this test should also work with webextension and for some reason it does not work in CI but it works locally.
-    test.skip(isWebExtension, 'todo: skip for now');
+    test.skip(skipCheck, 'todo: skip for now');
 
     log(`test: ${test.info().title}`);
     await setup({ page, context });
@@ -309,7 +320,7 @@ test('popup should be focused when a call is in progress and user triggers new c
     context,
 }) => {
     // TODO: this test should also work with webextension and for some reason it does not work in CI but it works locally.
-    test.skip(isWebExtension, 'todo: skip for now');
+    test.skip(skipCheck, 'todo: skip for now');
     log(`test: ${test.info().title}`);
     await setup({ page, context });
 
@@ -356,7 +367,7 @@ test('popup should be focused when a call is in progress and user triggers new c
 test('popup should close when third party is closed', async ({ page, context }) => {
     // This test should be skipped in webextension with service-worker, due to the fact that in that case
     // that serviceworker is persistent and does not necessarily has to be over if the page that initiated the call is closed.
-    test.skip(isWebExtension, 'test does not apply for webextension');
+    test.skip(skipCheck, 'test does not apply for webextension');
 
     log(`test: ${test.info().title}`);
     await setup({ page, context });

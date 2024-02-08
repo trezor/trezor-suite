@@ -15,6 +15,7 @@ let device = {};
 let context: any = null;
 
 const isWebExtension = process.env.IS_WEBEXTENSION === 'true';
+const isCoreInPopup = process.env.CORE_IN_POPUP === 'true';
 
 const screenshotEmu = async (path: string) => {
     const { response } = await TrezorUserEnvLink.send({
@@ -133,7 +134,7 @@ filteredFixtures.forEach(f => {
         });
         await popup.click("button[data-test='@analytics/continue-button']");
 
-        if (isWebExtension) {
+        if (isWebExtension || isCoreInPopup) {
             log(f.url, 'waiting for select device');
             await popup.waitForSelector('.select-device-list button.list', { state: 'visible' });
             await popup.click('.select-device-list button.list');

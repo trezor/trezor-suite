@@ -14,6 +14,8 @@ const url = process.env.URL || 'http://localhost:8088/';
 const bridgeVersion = '2.0.31';
 
 const isWebExtension = process.env.IS_WEBEXTENSION === 'true';
+const isCoreInPopup = process.env.CORE_IN_POPUP === 'true';
+const skipCheck = isWebExtension || isCoreInPopup;
 const connectSrc = process.env.TREZOR_CONNECT_SRC;
 
 let context: any = null;
@@ -103,7 +105,7 @@ test('input passphrase in popup and device accepts it', async () => {
     log('clicking on analytics continue button');
     await waitAndClick(popup, ['@analytics/continue-button']);
 
-    if (isWebExtension) {
+    if (isWebExtension || isCoreInPopup) {
         log('waiting for device list');
         await popup.waitForSelector('.select-device-list button.list');
         await popup.click('.select-device-list button.list');
@@ -151,7 +153,7 @@ test('introduce passphrase in popup and device rejects it', async () => {
     }
     await waitAndClick(popup, ['@analytics/continue-button']);
 
-    if (isWebExtension) {
+    if (isWebExtension || isCoreInPopup) {
         log('waiting for device list');
         await popup.waitForSelector('.select-device-list button.list');
         await popup.click('.select-device-list button.list');
@@ -176,7 +178,7 @@ test('introduce passphrase in popup and device rejects it', async () => {
 });
 
 test('introduce passphrase successfully next time should not ask for it', async () => {
-    test.skip(isWebExtension, 'test does not apply for webextension');
+    test.skip(skipCheck, 'test does not apply for webextension');
 
     log(`test: ${test.info().title}`);
 
@@ -223,7 +225,7 @@ test('introduce passphrase successfully next time should not ask for it', async 
 });
 
 test('introduce passphrase successfully reload 3rd party it should ask again for passphrase', async () => {
-    test.skip(isWebExtension, 'test does not apply for webextension');
+    test.skip(skipCheck, 'test does not apply for webextension');
 
     log(`test: ${test.info().title}`);
 
@@ -274,7 +276,7 @@ test('introduce passphrase successfully reload 3rd party it should ask again for
 
 test('passphrase mismatch', async ({ page }) => {
     // This test uses addScriptTag so we cannot run it in web extension.
-    test.skip(isWebExtension);
+    test.skip(skipCheck);
     log(`test: ${test.info().title}`);
 
     log('start', test.info().title);
@@ -359,6 +361,18 @@ test('passphrase mismatch', async ({ page }) => {
     });
 
     [popup] = await Promise.all([page.waitForEvent('popup')]);
+
+    // Acquire device if not acquired
+    try {
+        log('handling if unacquired');
+        await popup.waitForSelector('.explain.unacquired', {
+            state: 'visible',
+            timeout: 10000,
+        });
+        await popup.click('.explain.unacquired');
+    } catch (error) {
+        // May appear or not
+    }
 
     log('waiting and click confirm permissions button');
     await waitAndClick(popup, ['@permissions/confirm-button', '@export-address/confirm-button']);

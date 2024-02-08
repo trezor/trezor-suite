@@ -145,10 +145,11 @@ test('log page should contain logs from shared worker', async ({ page, context }
     // Open new tab to go to log.html
     const logsPage = await persistentContext.newPage();
 
-    log(`go to: ${url}log.html`);
-    await logsPage.goto(`${url}log.html`);
+    const logsUrl = `${url.split('?')[0]}log.html`;
+    log(`go to: ${logsUrl}`);
+    await logsPage.goto(logsUrl);
     await logsPage.waitForLoadState('load');
-    log(`loaded: ${url}log.html`);
+    log(`loaded: ${logsUrl}`);
 
     log('waiting for download-button to be visible');
     await logsPage.waitForSelector("button[data-test='@log-container/download-button']", {
