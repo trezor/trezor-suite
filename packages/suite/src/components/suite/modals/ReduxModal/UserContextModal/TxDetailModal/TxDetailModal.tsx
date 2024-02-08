@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import styled from 'styled-components';
-import { variables, Button } from '@trezor/components';
+import { Button } from '@trezor/components';
 import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';
 import {
     isPending,
@@ -20,7 +20,7 @@ import { WalletAccountTransaction } from 'src/types/wallet';
 import { BasicTxDetails } from './BasicTxDetails';
 import { AdvancedTxDetails, TabID } from './AdvancedTxDetails/AdvancedTxDetails';
 import { ChangeFee } from './ChangeFee/ChangeFee';
-import { borders } from '@trezor/theme';
+import { borders, spacingsPx, typography } from '@trezor/theme';
 
 const StyledModal = styled(Modal)`
     width: 755px;
@@ -31,18 +31,17 @@ const StyledModal = styled(Modal)`
 `;
 
 const PhishingBanner = styled.div`
-    margin-bottom: 6px;
-    padding: 6px 10px;
+    margin-bottom: ${spacingsPx.xs};
+    padding: ${spacingsPx.xs} ${spacingsPx.sm};
     border-radius: ${borders.radii.xs};
-    background: ${({ theme }) => theme.BG_RED};
-    color: ${({ theme }) => theme.TYPE_WHITE};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    background: ${({ theme }) => theme.backgroundAlertRedBold};
+    color: ${({ theme }) => theme.textDefault};
+    ${typography.hint};
 `;
 
 const HelpLink = styled(TrezorLink)`
-    color: ${({ theme }) => theme.TYPE_WHITE};
-    font-size: ${variables.FONT_SIZE.SMALL};
+    color: ${({ theme }) => theme.textDefault};
+    ${typography.hint}
 `;
 
 const SectionActions = styled.div`
@@ -53,9 +52,8 @@ const SectionActions = styled.div`
 `;
 
 const SectionTitle = styled.div`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    color: ${({ theme }) => theme.textSubdued};
+    ${typography.highlight}
 `;
 
 const Col = styled.div`
@@ -71,7 +69,7 @@ const Right = styled(Col)`
     justify-content: flex-end;
 
     > * + * {
-        margin-left: 12px;
+        margin-left: ${spacingsPx.sm};
     }
 `;
 
@@ -118,7 +116,11 @@ export const TxDetailModal = ({ tx, rbfForm, onCancel }: TxDetailModalProps) => 
                         id="TR_ZERO_PHISHING_BANNER"
                         values={{
                             a: chunks => (
-                                <HelpLink href={HELP_CENTER_ZERO_VALUE_ATTACKS} variant="underline">
+                                <HelpLink
+                                    type="hint"
+                                    href={HELP_CENTER_ZERO_VALUE_ATTACKS}
+                                    variant="underline"
+                                >
                                     {chunks}
                                 </HelpLink>
                             ),
