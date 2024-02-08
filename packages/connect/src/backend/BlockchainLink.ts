@@ -7,7 +7,7 @@ export { Blockchain } from './Blockchain';
 
 const backends = new BackendManager();
 
-export const findBackend = (coin: string) => backends.get(coin);
+export const findBackend = (coin: string, identity?: string) => backends.get(coin, identity);
 
 export const setCustomBackend = (coinInfo: CoinInfo, blockchainLink: CoinInfo['blockchainLink']) =>
     blockchainLink?.url.length
@@ -16,9 +16,12 @@ export const setCustomBackend = (coinInfo: CoinInfo, blockchainLink: CoinInfo['b
 
 export const isBackendSupported = (coinInfo: CoinInfo) => backends.isSupported(coinInfo);
 
-export const initBlockchain = (coinInfo: CoinInfo, postMessage: Options['postMessage']) =>
-    backends.getOrConnect(coinInfo, postMessage);
+export const initBlockchain = (
+    coinInfo: CoinInfo,
+    postMessage: Options['postMessage'],
+    identity?: string,
+) => backends.getOrConnect({ coinInfo, identity, postMessage });
 
-export const reconnectAllBackends = () => backends.reconnectAll();
+export const reconnectAllBackends = (coinInfo?: CoinInfo) => backends.reconnectAll(coinInfo);
 
 export const dispose = () => backends.dispose();

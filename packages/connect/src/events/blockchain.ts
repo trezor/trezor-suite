@@ -19,6 +19,7 @@ export const BLOCKCHAIN = {
 
 export interface BlockchainInfo extends ServerInfo {
     coin: CoinInfo;
+    identity?: string;
     misc?: {
         reserve?: string;
     };
@@ -26,11 +27,13 @@ export interface BlockchainInfo extends ServerInfo {
 
 export interface BlockchainReconnecting {
     coin: CoinInfo;
+    identity?: string;
     time: number;
 }
 
 export interface BlockchainError {
     coin: CoinInfo;
+    identity?: string;
     error: string;
     code?: string;
 }

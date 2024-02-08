@@ -6,38 +6,42 @@ import { createBlockchainMessage, BLOCKCHAIN } from '../events';
 import type { CoinInfo, BlockchainLink } from '../types';
 
 type CoinShortcut = CoinInfo['shortcut'];
+type Identity = string;
+type CoinShortcutIdentity = `${CoinShortcut}/${Identity}`;
 type Reconnect = { attempts: number; handle: ReturnType<typeof setTimeout> };
+type BackendParams = Pick<BlockchainOptions, 'coinInfo' | 'postMessage' | 'identity'>;
+
+const DEFAULT_IDENTITY = 'default';
 
 export class BackendManager {
-    private readonly instances: { [shortcut: CoinShortcut]: Blockchain } = {};
+    private readonly instances: { [shortcut: CoinShortcutIdentity]: Blockchain } = {};
+    private readonly reconnect: { [shortcut: CoinShortcutIdentity]: Reconnect } = {};
     private readonly custom: { [shortcut: CoinShortcut]: BlockchainLink } = {};
     private readonly preferred: { [shortcut: CoinShortcut]: string } = {};
-    private readonly reconnect: { [shortcut: CoinShortcut]: Reconnect } = {};
 
-    get(shortcut: CoinShortcut): Blockchain | null {
-        return this.instances[shortcut] ?? null;
+    get(shortcut: CoinShortcut, identity = DEFAULT_IDENTITY): Blockchain | null {
+        return this.instances[`${shortcut}/${identity}`] ?? null;
     }
 
-    async getOrConnect(
-        coinInfo: CoinInfo,
-        postMessage: BlockchainOptions['postMessage'],
-    ): Promise<Blockchain> {
-        let backend = this.instances[coinInfo.shortcut];
+    async getOrConnect({ coinInfo, postMessage, identity }: BackendParams): Promise<Blockchain> {
+        const coinIdentity = `${coinInfo.shortcut}/${identity ?? DEFAULT_IDENTITY}` as const;
+        let backend = this.instances[coinIdentity];
         if (!backend) {
             backend = new Blockchain({
                 coinInfo: this.patchCoinInfo(coinInfo),
-                postMessage,
+                identity,
                 debug: DataManager.getSettings('debug'),
                 proxy: DataManager.getSettings('proxy'),
+                postMessage,
                 onDisconnected: pendingSubscriptions => {
                     const reconnectAttempts = pendingSubscriptions ? 0 : undefined;
-                    this.onDisconnect(coinInfo, postMessage, reconnectAttempts);
+                    this.onDisconnect({ coinInfo, postMessage, identity }, reconnectAttempts);
                 },
             });
-            this.setInstance(coinInfo.shortcut, backend);
+            this.setInstance(coinIdentity, backend);
         }
 
-        const reconnect = this.clearReconnect(coinInfo.shortcut);
+        const reconnect = this.clearReconnect(coinIdentity);
 
         try {
             const info = await backend.init();
@@ -45,24 +49,28 @@ export class BackendManager {
 
             return backend;
         } catch (error) {
-            this.onDisconnect(coinInfo, postMessage, reconnect?.attempts);
+            this.onDisconnect({ coinInfo, postMessage, identity }, reconnect?.attempts);
             throw error;
         }
     }
 
     dispose() {
-        Object.keys(this.reconnect).forEach(this.clearReconnect, this);
+        Object.keys(this.reconnect)
+            .filter(this.getReconnectFilter())
+            .forEach(this.clearReconnect, this);
         Object.values(this.instances).forEach(i => i.disconnect());
     }
 
-    reconnectAll() {
-        // collect all running backends as parameters tuple
-        const params = Object.values(this.instances).map(i => [i.coinInfo, i.postMessage] as const);
-        // remove all backends
-        Object.values(this.instances).forEach(i => i.disconnect());
+    reconnectAll(coin?: CoinInfo) {
+        // collect all running backends
+        const backends = Object.values(this.instances).filter(
+            backend => !coin || coin.shortcut === backend.coinInfo.shortcut,
+        );
+        // disconnect and remove them
+        backends.forEach(i => i.disconnect());
 
-        // initialize again using params tuple
-        return Promise.all(params.map(p => this.getOrConnect(...p)));
+        // initialize again using old backends as params
+        return Promise.all(backends.map(this.getOrConnect, this));
     }
 
     isSupported(coinInfo: CoinInfo) {
@@ -82,9 +90,9 @@ export class BackendManager {
         delete this.custom[shortcut];
     }
 
-    private setInstance(shortcut: CoinShortcut, instance: Blockchain | undefined) {
-        if (!instance) delete this.instances[shortcut];
-        else this.instances[shortcut] = instance;
+    private setInstance(coinIdentity: CoinShortcutIdentity, instance: Blockchain | undefined) {
+        if (!instance) delete this.instances[coinIdentity];
+        else this.instances[coinIdentity] = instance;
     }
 
     // keep backend as a preferred once connection is successfully made
@@ -95,11 +103,11 @@ export class BackendManager {
     }
 
     private onDisconnect(
-        coinInfo: CoinInfo,
-        postMessage: BlockchainOptions['postMessage'],
+        { coinInfo, postMessage, identity }: BackendParams,
         reconnectAttempt: number | undefined,
     ) {
-        this.setInstance(coinInfo.shortcut, undefined);
+        const coinIdentity = `${coinInfo.shortcut}/${identity ?? DEFAULT_IDENTITY}` as const;
+        this.setInstance(coinIdentity, undefined);
 
         if (reconnectAttempt === undefined || reconnectAttempt === 4) {
             // Forget preferred backend when no reconnection is wanted
@@ -115,17 +123,19 @@ export class BackendManager {
         const timeout = Math.min(2500 * reconnectAttempt, 20000);
         const time = Date.now() + timeout;
         const handle = setTimeout(() => {
-            this.getOrConnect(coinInfo, postMessage).catch(() => {});
+            this.getOrConnect({ coinInfo, postMessage, identity }).catch(() => {});
         }, timeout);
-        clearTimeout(this.reconnect[coinInfo.shortcut]?.handle);
-        this.reconnect[coinInfo.shortcut] = { attempts: reconnectAttempt + 1, handle };
-        postMessage(createBlockchainMessage(BLOCKCHAIN.RECONNECTING, { coin: coinInfo, time }));
+        clearTimeout(this.reconnect[coinIdentity]?.handle);
+        this.reconnect[coinIdentity] = { attempts: reconnectAttempt + 1, handle };
+        postMessage(
+            createBlockchainMessage(BLOCKCHAIN.RECONNECTING, { coin: coinInfo, identity, time }),
+        );
     }
 
-    private clearReconnect(shortcut: CoinShortcut) {
-        const reconnect = this.reconnect[shortcut];
+    private clearReconnect(coinIdentity: CoinShortcutIdentity) {
+        const reconnect = this.reconnect[coinIdentity];
         clearTimeout(reconnect?.handle);
-        delete this.reconnect[shortcut];
+        delete this.reconnect[coinIdentity];
 
         return reconnect;
     }
@@ -143,5 +153,10 @@ export class BackendManager {
                 url,
             },
         };
+    }
+
+    private getReconnectFilter(coinInfo?: CoinInfo) {
+        return (key: string): key is CoinShortcutIdentity =>
+            !coinInfo || key.startsWith(`${coinInfo.shortcut}/`);
     }
 }
