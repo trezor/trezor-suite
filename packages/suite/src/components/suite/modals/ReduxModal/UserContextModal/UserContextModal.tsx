@@ -23,6 +23,7 @@ import {
     DisableTorModal,
     DisableTorStopCoinjoinModal,
     RequestEnableTorModal,
+    SelectBluetoothDeviceModal,
     TorLoadingModal,
     CancelCoinjoinModal,
     CriticalCoinjoinPhaseModal,
@@ -215,6 +216,8 @@ export const UserContextModal = ({
             return <UnstakeModal onCancel={onCancel} />;
         case 'claim':
             return <ClaimModal onCancel={onCancel} />;
+        case 'select-bluetooth-device':
+            return <SelectBluetoothDeviceModal onCancel={onCancel} />;
         default:
             return null;
     }

@@ -135,5 +135,8 @@ export const factory = <R extends StrictIpcRenderer<any, IpcRendererEvent>>(
         getBridgeStatus: () => ipcRenderer.invoke('bridge/get-status'),
 
         toggleBridge: () => ipcRenderer.invoke('bridge/toggle'),
+
+        bluetoothRequestDevice: () => ipcRenderer.send('bluetooth/request-device'),
+        bluetoothSelectDevice: device => ipcRenderer.send('bluetooth/select-device', device),
     };
 };
