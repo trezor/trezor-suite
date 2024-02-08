@@ -1,5 +1,5 @@
 import { memo, ComponentProps } from 'react';
-import styled, { css, useTheme } from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 import { Network } from 'src/types/wallet';
 import { Icon, variables, motionAnimation, SkeletonRectangle } from '@trezor/components';
 import {
@@ -14,7 +14,6 @@ import { CoinmarketBuyButton } from 'src/views/dashboard/components/CoinmarketBu
 import { isTestnet } from '@suite-common/wallet-utils';
 import { goto } from 'src/actions/suite/routerActions';
 import { useAccountSearch, useDispatch, useLoadingSkeleton } from 'src/hooks/suite';
-import { motion } from 'framer-motion';
 import { spacingsPx, typography } from '@trezor/theme';
 import { AssetFiatBalance } from '@suite-common/assets';
 import { AssetTableRowGrid } from './AssetTableRowGrid';
@@ -28,20 +27,12 @@ const Coin = styled.div`
     overflow: hidden;
 `;
 
-const StyledCol = styled(motion.div)<{ $isLastRow?: boolean }>`
+const StyledCol = styled.div<{ $isLastRow?: boolean }>`
     display: flex;
     align-items: center;
     padding: 16px 0;
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    border-bottom: 1px solid ${({ theme }) => theme.borderOnElevation1};
-
-    ${({ $isLastRow }) =>
-        $isLastRow &&
-        css`
-            border-bottom: none;
-        `}
+    border-bottom: ${({ $isLastRow, theme }) =>
+        $isLastRow ? 'none' : `1px solid ${theme.borderOnElevation1}`};
 `;
 
 const Col = (props: ComponentProps<typeof StyledCol>) => {
@@ -70,8 +61,8 @@ const CoinLogoWrapper = styled(Col)`
 `;
 
 const CoinNameWrapper = styled(Col)`
+    ${typography.highlight}
     overflow: hidden;
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     text-overflow: ellipsis;
 
     ${variables.SCREEN_QUERY.MOBILE} {
@@ -87,9 +78,8 @@ const CoinBalanceContainer = styled.div`
 `;
 
 const FailedCol = styled(Col)`
-    color: ${({ theme }) => theme.TYPE_RED};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.REGULAR};
+    color: ${({ theme }) => theme.textAlertRed};
+    ${typography.hint}
 
     ${variables.SCREEN_QUERY.MOBILE} {
         grid-column: 1 / 3;
@@ -131,6 +121,7 @@ const BuyButtonWrapper = styled(Col)`
 const StyledArrowIcon = styled(ArrowIcon)`
     margin: 0 ${spacingsPx.md};
 `;
+
 const SkeletonRectangleLast = styled(SkeletonRectangle)`
     margin-right: ${spacingsPx.md};
 `;
