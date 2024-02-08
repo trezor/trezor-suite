@@ -23,7 +23,7 @@
         "test:unit": "jest",
         "lint:rs": "cargo fmt --all -- --check",
         "server:dev": "RUST_BACKTRACE=1 && RUST_LOG=debug && cargo run",
-        "server:build": "RUST_BACKTRACE=1 && RUST_LOG=debug && cargo run",
+        "server:build": "./scripts/build.sh",
         "ui:dev": "webpack serve --config ./webpack/webpack.dev.js",
         "ui:build": "webpack --config ./webpack/webpack.build.js"
     },
