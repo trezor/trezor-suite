@@ -2,6 +2,8 @@ import TrezorConnect from '@trezor/connect';
 import type TrezorConnectWeb from '@trezor/connect-web';
 import { ButtonProps, Button, IconButton, Tooltip } from '@trezor/components';
 import { Translation, TranslationKey } from './Translation';
+import { openModal } from 'src/actions/suite/modalActions';
+import { useDispatch } from 'src/hooks/suite';
 
 interface WebUsbButtonProps extends Omit<ButtonProps, 'children' | 'icon'> {
     translationId?: TranslationKey;
@@ -19,19 +21,25 @@ export const WebUsbButton = ({
     size = 'tiny',
     variant = 'primary',
     ...rest
-}: WebUsbButtonProps) => (
-    <div data-testid="web-usb-button">
-        <Button
-            {...rest}
-            icon={icon === false ? undefined : icon}
-            size={size}
-            variant={variant}
-            onClick={handleClick}
-        >
-            <Translation id={translationId} />
-        </Button>
-    </div>
-);
+}: WebUsbButtonProps) => {
+    const dispatch = useDispatch();
+
+    return (
+        <div data-testid="web-usb-button">
+            <Button
+                {...rest}
+                icon={icon === false ? undefined : icon}
+                size={size}
+                variant={variant}
+                onClick={() => {
+                    dispatch(openModal({ type: 'select-bluetooth-device' }));
+                }}
+            >
+                <Translation id={translationId} />
+            </Button>
+        </div>
+    );
+};
 
 export const WebUsbIconButton = ({
     translationId = 'TR_CHECK_FOR_DEVICES',

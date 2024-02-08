@@ -170,6 +170,9 @@ export type UserContextPayload =
           type: 'claim';
       }
     | {
+          type: 'select-bluetooth-device';
+      }
+    | {
           type: 'everstake';
       }
     | {
