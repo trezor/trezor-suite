@@ -9,6 +9,7 @@ import {
     ButtonProps,
     useElevation,
     IconType,
+    ElevationContext,
 } from '@trezor/components';
 import { Elevation, borders, spacingsPx, typography } from '@trezor/theme';
 import { TrezorLink } from './TrezorLink';
@@ -67,14 +68,24 @@ const getMainColor = (variant: NotificationCardVariant, theme: DefaultTheme) => 
             return 'transparent';
     }
 };
-const getBackgroundColor = (variant: NotificationCardVariant, theme: DefaultTheme) => {
+const getBackgroundColor = ({
+    elevation,
+    variant,
+    theme,
+}: {
+    elevation: Elevation;
+    variant: NotificationCardVariant;
+    theme: DefaultTheme;
+}) => {
+    const elevationPart = elevation === -1 ? 'Negative' : elevation;
+
     switch (variant) {
         case 'info':
-            return theme.backgroundAlertBlueSubtleOnElevation0;
+            return theme[`backgroundAlertBlueSubtleOnElevation${elevationPart}`];
         case 'warning':
-            return theme.backgroundAlertYellowSubtleOnElevation0;
+            return theme[`backgroundAlertYellowSubtleOnElevation${elevationPart}`];
         case 'destructive':
-            return theme.backgroundAlertRedSubtleOnElevation0;
+            return theme[`backgroundAlertRedSubtleOnElevation${elevationPart}`];
         default:
             return 'transparent';
     }
@@ -85,7 +96,7 @@ const Wrapper = styled.div<{ elevation: Elevation; variant: NotificationCardVari
     border-radius: ${borders.radii.sm};
     padding: ${spacingsPx.sm} ${spacingsPx.lg};
     align-items: center;
-    background: ${({ theme, variant }) => getBackgroundColor(variant, theme)};
+    background: ${getBackgroundColor};
     margin-bottom: ${spacingsPx.xs};
     gap: ${spacingsPx.md};
 `;
@@ -138,17 +149,23 @@ export const NotificationCard = ({
             elevation={elevation}
             data-test={props['data-test']}
         >
-            <IconWrapper>
-                {isLoading ? (
-                    <Spinner size={22} />
-                ) : (
-                    iconElement && (
-                        <Icon icon={iconElement} size={22} color={getMainColor(variant, theme)} />
-                    )
-                )}
-            </IconWrapper>
-            <Body>{children}</Body>
-            {buttonProps && <CardButton size="tiny" variant={buttonVariant} {...buttonProps} />}
+            <ElevationContext baseElevation={elevation}>
+                <IconWrapper>
+                    {isLoading ? (
+                        <Spinner size={22} />
+                    ) : (
+                        iconElement && (
+                            <Icon
+                                icon={iconElement}
+                                size={22}
+                                color={getMainColor(variant, theme)}
+                            />
+                        )
+                    )}
+                </IconWrapper>
+                <Body>{children}</Body>
+                {buttonProps && <CardButton size="tiny" variant={buttonVariant} {...buttonProps} />}
+            </ElevationContext>
         </Wrapper>
     );
 };
