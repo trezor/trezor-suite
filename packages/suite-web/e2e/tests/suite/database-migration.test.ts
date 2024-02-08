@@ -149,7 +149,7 @@ describe('Database migration', () => {
             .should('eq', testData.btcAddress);
         cy.getTestElement('@wallet/menu/close-button').last().click();
 
-        cy.get('body').should('have.css', 'background-color', 'rgb(10, 10, 10)');
+        cy.get('body').should('have.css', 'background-color', 'rgb(22, 22, 22)');
     });
 });
 
