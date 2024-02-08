@@ -23,6 +23,7 @@ const InnerActions = styled.div`
     justify-content: center;
     align-items: center;
     margin-top: 32px;
+    margin-bottom: 32px;
 `;
 
 const OuterActions = styled.div<{ smallMargin?: boolean }>`
