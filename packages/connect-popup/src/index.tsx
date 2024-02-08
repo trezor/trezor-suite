@@ -393,9 +393,7 @@ const initCoreInPopup = async (
         });
     });
 
-    if (!initCore || !initTransport) {
-        return;
-    }
+    if (!initCore) return;
     if (disposed) return;
 
     // init core
@@ -418,13 +416,13 @@ const initCoreInPopup = async (
     setState({ core });
     log.debug('initiated core');
 
-    // init transport
-    /*
-    log.debug('initiating transport with settings: ', payload.settings);
-    reactEventBus.dispatch({ type: 'loading', message: 'initiating transport' });
-    await initTransport(payload.settings);
-    if (disposed) return;
-    */
+    // init transport - deprecated, here for backward compatibility
+    if (initTransport) {
+        log.debug('initiating transport with settings: ', payload.settings);
+        reactEventBus.dispatch({ type: 'loading', message: 'initiating transport' });
+        await initTransport(payload.settings);
+        if (disposed) return;
+    }
     log.debug('initiated transport');
 
     // done, in popup, we are ready to handle incoming messages
