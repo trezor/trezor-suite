@@ -1,5 +1,5 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { Network } from '@suite-common/wallet-config';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { selectSpecificTokenDefinition } from './tokenDefinitionsSelectors';
 
@@ -8,19 +8,19 @@ const actionsPrefix = '@common/wallet-core/token-definitions';
 export const getTokenDefinitionThunk = createThunk(
     `${actionsPrefix}/getTokenDefinition`,
     async (
-        params: { network: Network; contractAddress: string },
+        params: { networkSymbol: NetworkSymbol; chainId: number; contractAddress: string },
         { getState, fulfillWithValue, rejectWithValue },
     ) => {
-        const { network, contractAddress } = params;
+        const { networkSymbol, chainId, contractAddress } = params;
         const { isTokenKnown } =
-            selectSpecificTokenDefinition(getState(), network.symbol, contractAddress) || {};
+            selectSpecificTokenDefinition(getState(), networkSymbol, contractAddress) || {};
 
         if (isTokenKnown === undefined) {
             try {
                 const fetchedTokenDefinition = await fetch(
-                    `https://data.trezor.io/firmware/eth-definitions/chain-id/${
-                        network.chainId
-                    }/token-${contractAddress.substring(2).toLowerCase()}.dat`,
+                    `https://data.trezor.io/firmware/eth-definitions/chain-id/${chainId}/token-${contractAddress
+                        .substring(2)
+                        .toLowerCase()}.dat`,
                     { method: 'HEAD' },
                 );
 

@@ -10,13 +10,13 @@ export const prepareTokenDefinitionsReducer = createReducerWithExtraDeps(
     builder => {
         builder
             .addCase(getTokenDefinitionThunk.pending, (state, action) => {
-                const { network, contractAddress } = action.meta.arg;
+                const { networkSymbol, contractAddress } = action.meta.arg;
 
-                if (!state[network.symbol]) {
-                    state[network.symbol] = {};
+                if (!state[networkSymbol]) {
+                    state[networkSymbol] = {};
                 }
 
-                const networkDefinitions = state[network.symbol];
+                const networkDefinitions = state[networkSymbol];
 
                 if (networkDefinitions) {
                     networkDefinitions[contractAddress] = {
@@ -26,9 +26,9 @@ export const prepareTokenDefinitionsReducer = createReducerWithExtraDeps(
                 }
             })
             .addCase(getTokenDefinitionThunk.fulfilled, (state, action) => {
-                const { network, contractAddress } = action.meta.arg;
+                const { networkSymbol, contractAddress } = action.meta.arg;
 
-                const networkDefinitions = state[network.symbol];
+                const networkDefinitions = state[networkSymbol];
 
                 if (networkDefinitions) {
                     networkDefinitions[contractAddress] = {
@@ -38,9 +38,9 @@ export const prepareTokenDefinitionsReducer = createReducerWithExtraDeps(
                 }
             })
             .addCase(getTokenDefinitionThunk.rejected, (state, action) => {
-                const { network, contractAddress } = action.meta.arg;
+                const { networkSymbol, contractAddress } = action.meta.arg;
 
-                const networkDefinitions = state[network.symbol];
+                const networkDefinitions = state[networkSymbol];
 
                 if (networkDefinitions) {
                     networkDefinitions[contractAddress] = {
