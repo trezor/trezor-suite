@@ -5,9 +5,27 @@ import { Dropdown as DropdownComponent, DropdownProps } from './Dropdown';
 
 const Center = styled.div`
     display: flex;
+    flex-direction: column;
     justify-content: center;
     width: 100%;
     padding: 100px 0;
+    gap: 20px;
+`;
+
+const ClickableAreaTestWrapper = styled.div`
+    background: ${({ theme }) => theme.backgroundAlertRedSubtleOnElevation1};
+    width: fit-content;
+    display: flex;
+`;
+
+const ColoredBox = styled.div`
+    background-color: ${({ theme }) => theme.backgroundAlertBlueSubtleOnElevation1};
+`;
+
+// This will cause inner content to be "cut" by the container
+// This is the way how it may be used, if you want to swap custom component into dropdown.
+const StyledDropdown = styled(DropdownComponent)`
+    overflow: hidden;
 `;
 
 export default {
@@ -18,7 +36,19 @@ export default {
 export const Dropdown: StoryObj<DropdownProps> = {
     render: args => (
         <Center>
-            <DropdownComponent {...args} />
+            <h3>Default dots as content</h3>
+            <ClickableAreaTestWrapper>
+                <DropdownComponent {...args} />
+            </ClickableAreaTestWrapper>
+            <hr />
+            <h3>Custom children with overflow: hidden; on the Dropdown itself</h3>
+            <ClickableAreaTestWrapper>
+                <StyledDropdown {...args}>
+                    <ColoredBox>
+                        Everything the State says is a lie, and everything it has it has stolen.
+                    </ColoredBox>
+                </StyledDropdown>
+            </ClickableAreaTestWrapper>
         </Center>
     ),
     args: {
@@ -29,6 +59,7 @@ export const Dropdown: StoryObj<DropdownProps> = {
             label: 'some link',
             icon: 'ARROW_RIGHT_LONG',
         },
+        alignMenu: 'right-top',
         items: [
             {
                 key: '1',
