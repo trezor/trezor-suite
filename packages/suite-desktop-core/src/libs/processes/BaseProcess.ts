@@ -1,6 +1,6 @@
 import { app } from 'electron';
 import path from 'path';
-import { spawn, ChildProcess } from 'child_process';
+import { spawn, ChildProcess, IOType } from 'child_process';
 
 import { TimerId } from '@trezor/type-utils';
 
@@ -20,6 +20,7 @@ export type Options = {
     startupCooldown?: number;
     stopKillWait?: number;
     autoRestart?: number;
+    stdio?: [IOType, IOType, IOType];
 };
 
 const defaultOptions: Options = {
@@ -146,10 +147,18 @@ export abstract class BaseProcess {
             this.process = spawn(processPath, params, {
                 cwd: processDir,
                 env: processEnv,
-                stdio: ['ignore', 'ignore', 'ignore'],
+                stdio: this.options.stdio || ['ignore', 'ignore', 'ignore'],
             });
             this.process.on('error', err => this.onError(err));
             this.process.on('exit', code => this.onExit(code));
+            // if (this.options.stdio) {
+            //     this.process.stdout?.on('data', d => {
+            //         console.warn('STDOUT DATA', d.toString());
+            //     });
+            //     this.process.stderr?.on('data', d => {
+            //         console.warn('STDERR DATA', d.toString());
+            //     });
+            // }
 
             if (this.options.autoRestart && this.options.autoRestart > 0) {
                 // When process runs with `autoRestart`, restarting the process is managed by BaseProcess.
