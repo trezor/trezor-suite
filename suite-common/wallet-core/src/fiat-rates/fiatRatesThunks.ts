@@ -83,16 +83,21 @@ type UpdateCurrentFiatRatesThunkPayload = {
     localCurrency: FiatCurrencyCode;
     lastSuccessfulFetchTimestamp: Timestamp;
     rateType: RateType;
+    forceFetchToken?: boolean;
 };
 
 export const updateFiatRatesThunk = createThunk(
     `${fiatRatesActionsPrefix}/updateFiatRates`,
     async (
-        { ticker, localCurrency, rateType }: UpdateCurrentFiatRatesThunkPayload,
+        { ticker, localCurrency, rateType, forceFetchToken }: UpdateCurrentFiatRatesThunkPayload,
         { getState },
     ) => {
         const networkFeatures = getNetworkFeatures(ticker.symbol);
-        if (ticker.tokenAddress && networkFeatures.includes('token-definitions')) {
+        if (
+            ticker.tokenAddress &&
+            networkFeatures.includes('token-definitions') &&
+            !forceFetchToken
+        ) {
             const tokenDefinition = selectSpecificTokenDefinition(
                 getState(),
                 ticker.symbol,
