@@ -5437,11 +5437,16 @@ export default defineMessages({
     },
     TR_ADD_TOKEN_TITLE: {
         id: 'TR_ADD_TOKEN_TITLE',
-        defaultMessage: 'Add ERC20 token',
+        defaultMessage: 'Add token',
+    },
+    TR_ADD_TOKEN_DESCRIPTION: {
+        id: 'TR_ADD_TOKEN_DESCRIPTION',
+        defaultMessage:
+            "Enter a contract address of a token you wish to add to your wallet. This is typically a 42-character alphanumeric string starting with '0x'.",
     },
     TR_ADD_TOKEN_LABEL: {
         id: 'TR_ADD_TOKEN_LABEL',
-        defaultMessage: 'ERC20 token address',
+        defaultMessage: 'Token address',
     },
     TR_ADD_TOKEN_SUBMIT: {
         id: 'TR_ADD_TOKEN_SUBMIT',
@@ -5450,10 +5455,6 @@ export default defineMessages({
     TR_ADD_TOKEN_PLACEHOLDER: {
         id: 'TR_ADD_TOKEN_PLACEHOLDER',
         defaultMessage: 'Paste token address',
-    },
-    TR_ADD_TOKEN_TOOLTIP: {
-        id: 'TR_ADD_TOKEN_TOOLTIP',
-        defaultMessage: 'Enter an ERC20 token contract address',
     },
     TR_ADD_TOKEN_ADDRESS_NOT_VALID: {
         id: 'TR_ADD_TOKEN_ADDRESS_NOT_VALID',
