@@ -1,5 +1,20 @@
 # 9.1.12
 
+-   chore(connect): add new CA pubkeys and update timestamp (a4ca9b1)
+-   chore(connect): improve types, replace any with PassphrasePromptResponse (9a95962)
+-   feat: add Polygon (8c569ca)
+-   fix(connect-popup): display errors with no code (8b7cbfa)
+-   fix(connect-popup): don't show error when no device selected (f246369)
+-   fix(connect-ui): tipcontainer bottom margin (bb0379d)
+-   refactor(connect): unify message promises (b0d4b11)
+-   refactor(connect): remove initAsyncPromise (da48a71)
+-   refactor(connect): unify initCore and initTransport (00deffa, 027be4f)
+-   refactor(connect): CoreRequestMessage/CoreEventMessage separation (ea3afa2)
+-   chore(connect-ui): mirror store to local react state (b587a65)
+-   feat(connect): deal with disconnected && preferredDevice (40e9db8, 6e4ddb4)
+-   chore(connect): use preferred device from store (d1899e8)
+-   chore(connect-common): remove es5 target (fails with TypedEmitter) (0a19580)
+-   feat(connect-common): store is event emitter, saves permissions and preferred device (db0e963)
 -   feat(connect-common): message channel to allow lazy handshake (79be923)
 -   chore(connect-ui): ui changes (dcb8e02, 03c6cc6, 936f6b5, 6b7ed69, 8f9f3e2, 4cc0cd6)
 -   fix(libs): changes in libs that should allow compiling connect with typescript option skipLibCheck: false
