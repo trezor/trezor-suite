@@ -1,6 +1,9 @@
 # 0.0.27
 
 -   feat(connect-common): message channel to allow lazy handshake (79be923e67)
+-   feat: add Polygon (8c569ca580, 15a7fd38dc)
+-   chore(connect-common): remove es5 target (fails with TypedEmitter) (0a19580f63)
+-   feat(connect-common): store is event emitter, saves permissions and preferred device (db0e9631da)
 
 # 0.0.26
 
