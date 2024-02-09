@@ -22,9 +22,13 @@ export class ServiceWorkerWindowChannel<
         channel,
         logger,
         lazyHandshake,
+        legacyMode,
         allowSelfOrigin = false,
         currentId,
-    }: Pick<AbstractMessageChannelConstructorParams, 'channel' | 'logger' | 'lazyHandshake'> & {
+    }: Pick<
+        AbstractMessageChannelConstructorParams,
+        'channel' | 'logger' | 'lazyHandshake' | 'legacyMode'
+    > & {
         name: string;
         allowSelfOrigin?: boolean;
         currentId?: () => number | undefined;
@@ -37,6 +41,7 @@ export class ServiceWorkerWindowChannel<
             },
             logger,
             lazyHandshake,
+            legacyMode,
         });
         this.name = name;
         this.allowSelfOrigin = allowSelfOrigin;

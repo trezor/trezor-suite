@@ -24,6 +24,7 @@ export interface AbstractMessageChannelConstructorParams {
     };
     logger?: Log;
     lazyHandshake?: boolean;
+    legacyMode?: boolean;
 }
 
 export type Message<IncomingMessages extends { type: string }> = IncomingMessages & {
@@ -57,6 +58,7 @@ export abstract class AbstractMessageChannel<
     private handshakeFinished: Deferred<void> | undefined;
 
     protected lazyHandshake?: boolean;
+    protected legacyMode?: boolean;
     protected logger?: Log;
 
     /**
@@ -73,11 +75,13 @@ export abstract class AbstractMessageChannel<
         channel,
         logger,
         lazyHandshake = false,
+        legacyMode = false,
     }: AbstractMessageChannelConstructorParams) {
         super();
         this.channel = channel;
         this.sendFn = sendFn;
         this.lazyHandshake = lazyHandshake;
+        this.legacyMode = legacyMode;
         this.logger = logger;
     }
 
@@ -87,6 +91,13 @@ export abstract class AbstractMessageChannel<
     public init() {
         if (!this.handshakeFinished) {
             this.handshakeFinished = createDeferred();
+            if (this.legacyMode) {
+                // Bypass handshake for communication with legacy components
+                // We add a delay for enough time for the other side to be ready
+                setTimeout(() => {
+                    this.handshakeFinished?.resolve();
+                }, 500);
+            }
             if (!this.lazyHandshake) {
                 // When `lazyHandshake` handshakeWithPeer will start when received channel-handshake-request.
                 this.handshakeWithPeer();
@@ -135,15 +146,35 @@ export abstract class AbstractMessageChannel<
      * message received from communication channel in descendants of this class
      * should be handled by this common onMessage method
      */
-    protected onMessage(message: Message<IncomingMessages>) {
-        const { channel, id, type, payload, success } = message;
-        if (!channel?.peer || channel.peer !== this.channel.here) {
-            this.logger?.warn('to wrong peer', channel?.peer, 'should be', this.channel.here);
-            return;
+    protected onMessage(_message: Message<IncomingMessages>) {
+        // Older code used to send message as a data property of the message object.
+        // This is a workaround to keep backward compatibility.
+        let message = _message;
+        if (
+            this.legacyMode &&
+            message.type === undefined &&
+            'data' in message &&
+            typeof message.data === 'object' &&
+            message.data !== null &&
+            'type' in message.data &&
+            typeof message.data.type === 'string'
+        ) {
+            // @ts-expect-error
+            message = message.data;
         }
-        if (!channel?.here || this.channel.peer !== channel.here) {
-            this.logger?.warn('from wrong peer', channel?.here, 'should be', this.channel.peer);
-            return;
+
+        const { channel, id, type, payload, success } = message;
+
+        // Don't verify channel in legacy mode
+        if (!this.legacyMode) {
+            if (!channel?.peer || channel.peer !== this.channel.here) {
+                this.logger?.warn('to wrong peer', channel?.peer, 'should be', this.channel.here);
+                return;
+            }
+            if (!channel?.here || this.channel.peer !== channel.here) {
+                this.logger?.warn('from wrong peer', channel?.here, 'should be', this.channel.peer);
+                return;
+            }
         }
 
         if (type === 'channel-handshake-request') {
