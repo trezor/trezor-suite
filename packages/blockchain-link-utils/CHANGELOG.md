@@ -1,3 +1,7 @@
+# 1.0.14
+
+-   Revert feat(blockchain-link); get sol token metadata from coingecko (61cf93cd62)
+
 # 1.0.13
 
 -   feat(blockchain-link); get sol token metadata from coingecko (5c901ea8f)
