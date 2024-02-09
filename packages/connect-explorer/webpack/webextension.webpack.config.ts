@@ -144,6 +144,14 @@ const config: webpack.Configuration = {
         new CopyPlugin({
             patterns: [
                 {
+                    from: path.join(__dirname, '..', 'src', 'fonts'),
+                    to: `${DIST}/fonts/`,
+                },
+            ],
+        }),
+        new CopyPlugin({
+            patterns: [
+                {
                     from: path.join(
                         CONNECT_WEB_EXTENSION_PACKAGE_PATH,
                         'trezor-connect-webextension.js',
