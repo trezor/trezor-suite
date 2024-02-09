@@ -1,3 +1,7 @@
+# 1.0.11
+
+-   chore: libs update
+
 # 1.0.10
 
 -   chore(connect): use `tslib` as dependency in all public libs (606ecc63b)
