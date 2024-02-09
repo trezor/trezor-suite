@@ -1,3 +1,7 @@
+# 1.0.7
+
+-   chore: libs update
+
 # 1.0.6
 
 -   chore(protobuf): lint fix (cebcf0256)
