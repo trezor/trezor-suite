@@ -85,6 +85,7 @@ export class PopupManager extends EventEmitter {
                 currentId: () => {
                     if (this.popupWindow?.mode === 'tab') return this.popupWindow?.tab.id;
                 },
+                legacyMode: !this.settings.useCoreInPopup,
             });
         } else {
             this.channel = new WindowWindowChannel<CoreEventMessage>({
