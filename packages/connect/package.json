@@ -43,8 +43,8 @@
         "version:patch": "tsx scripts/bump-version.ts patch",
         "version:minor": "tsx scripts/bump-version.ts minor",
         "version:major": "tsx scripts/bump-version.ts major",
-        "test:e2e:web": "ts-node -O '{\"module\": \"commonjs\"}' ./e2e/run.ts web",
-        "test:e2e:node": "ts-node -O '{\"module\": \"commonjs\"}' ./e2e/run.ts node",
+        "test:e2e:web": "ts-node -O '{\"module\": \"commonjs\", \"moduleResolution\": \"node\"}' ./e2e/run.ts web",
+        "test:e2e:node": "ts-node -O '{\"module\": \"commonjs\", \"moduleResolution\": \"node\"}' ./e2e/run.ts node",
         "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
         "prepublish": "yarn tsx ../../scripts/prepublish.js"
     },

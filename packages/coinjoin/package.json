@@ -16,7 +16,7 @@
     "sideEffects": false,
     "main": "src/index.ts",
     "scripts": {
-        "lint": "eslint '**/*.{ts,js}'",
+        "lint:js": "eslint '**/*.{ts,js}'",
         "test:unit": "jest --version && jest",
         "test:discovery": "tsx ./tests/tools/discovery-test.ts",
         "test:anonymity": "tsx ./tests/tools/anonymity-test.ts",

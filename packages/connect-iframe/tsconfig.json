@@ -1,5 +1,5 @@
 {
-    "extends": "../../tsconfig.json",
+    "extends": "../../tsconfig.base.json",
     "compilerOptions": {
         "outDir": "./libDev",
         "types": ["web", "w3c-web-usb", "jest"]
@@ -10,10 +10,5 @@
         { "path": "../connect-analytics" },
         { "path": "../connect-common" },
         { "path": "../env-utils" }
-    ],
-    "ts-node": {
-        "compilerOptions": {
-            "module": "CommonJS"
-        }
-    }
+    ]
 }

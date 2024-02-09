@@ -1,7 +1,5 @@
-import tsBelt from '@mobily/ts-belt';
+import { A, D, pipe } from '@mobily/ts-belt';
 import { execSync } from 'child_process';
-
-const { A, D, pipe } = tsBelt;
 
 type WorkspacePackageName = string;
 type WorkspaceItem = {

@@ -1,5 +1,5 @@
 {
-    "extends": "../../tsconfig.json",
+    "extends": "../../tsconfig.base.json",
     "compilerOptions": {
         "outDir": "./libDev",
         "types": ["web", "w3c-web-usb", "jest"]
@@ -19,10 +19,5 @@
         { "path": "../node-utils" },
         { "path": "../trezor-user-env-link" },
         { "path": "../utils" }
-    ],
-    "ts-node": {
-        "compilerOptions": {
-            "module": "CommonJS"
-        }
-    }
+    ]
 }

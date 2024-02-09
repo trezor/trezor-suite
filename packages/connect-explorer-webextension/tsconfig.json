@@ -1,5 +1,5 @@
 {
-    "extends": "../../tsconfig.json",
+    "extends": "../../tsconfig.base.json",
     "compilerOptions": {
         "outDir": "./libDev",
         "types": ["web", "node"]
@@ -8,10 +8,5 @@
     "references": [
         { "path": "../connect-explorer" },
         { "path": "../connect-web" }
-    ],
-    "ts-node": {
-        "compilerOptions": {
-            "module": "CommonJS"
-        }
-    }
+    ]
 }

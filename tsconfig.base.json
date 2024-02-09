@@ -1,0 +1,52 @@
+{
+    "compilerOptions": {
+        "allowJs": true,
+        "allowSyntheticDefaultImports": true,
+        "allowUnreachableCode": false,
+        "baseUrl": ".",
+        "jsx": "preserve",
+        "module": "ESNext",
+        "moduleResolution": "Bundler",
+        "target": "esnext",
+        "removeComments": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "skipLibCheck": true,
+        "sourceMap": true,
+        "strict": true,
+        "strictNullChecks": true,
+        "noErrorTruncation": true,
+        "noFallthroughCasesInSwitch": true,
+        "useUnknownInCatchVariables": false,
+        "resolveJsonModule": true,
+        "forceConsistentCasingInFileNames": true,
+        "isolatedModules": true,
+        "types": ["jest", "node"],
+        "esModuleInterop": true,
+        "composite": true,
+        "declaration": true,
+        "declarationMap": true,
+        "incremental": true,
+        "noEmitOnError": true,
+        "emitDeclarationOnly": true
+    },
+    "exclude": [
+        "**/node_modules",
+        "**/lib",
+        "**/libDev",
+        "**/build",
+        "**/build-electron",
+        "**/dist",
+        "**/coverage",
+        "**/public",
+        "**/protobuf-patches",
+        "**/trezor-common",
+        "**/jest.config.*js"
+    ],
+    "ts-node": {
+        "compilerOptions": {
+            "module": "CommonJS",
+            "moduleResolution": "node"
+        }
+    }
+}

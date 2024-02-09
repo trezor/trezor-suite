@@ -1,5 +1,5 @@
 {
-    "extends": "../../../tsconfig.json",
+    "extends": "../../../tsconfig.base.json",
     "compilerOptions": {
         "watch": false,
         "preserveWatchOutput": true,
@@ -7,8 +7,6 @@
         "noEmit": false,
         "jsx": "preserve",
         "target": "esnext",
-        "module": "commonjs",
-        "moduleResolution": "node",
         "sourceMap": true,
         "lib": [
             "dom",

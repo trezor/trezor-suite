@@ -1,8 +1,7 @@
 {
-    "extends": "../../tsconfig.json",
+    "extends": "../../tsconfig.base.json",
     "compilerOptions": {
-        "outDir": "libDev",
-        "composite": true
+        "outDir": "libDev"
     },
     "references": [
         { "path": "../blockchain-link" },

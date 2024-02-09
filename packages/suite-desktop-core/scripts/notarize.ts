@@ -3,7 +3,6 @@
 
 const { notarize } = require('@electron/notarize');
 
-// @ts-expect-error cannot import AfterPackContext as type using require
 exports.default = context => {
     const { electronPlatformName, appOutDir } = context;
 

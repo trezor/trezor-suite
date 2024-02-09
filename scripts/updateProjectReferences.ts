@@ -9,23 +9,26 @@ import chalk from 'chalk';
 import { getWorkspacesList } from './utils/getWorkspacesList';
 import { getPrettierConfig } from './utils/getPrettierConfig';
 
+const rootTsConfigLocation = path.join(__dirname, '..', 'tsconfig.json');
+
 (async () => {
     const { argv } = yargs(hideBin(process.argv))
         .array('read-only')
         .array('ignore')
         .array('typings')
-        .boolean('test');
+        .boolean('test') as any;
 
     const readOnlyGlobs = argv.readOnly || [];
     const ignoreGlobs = argv.ignore || [];
     const typingPaths = argv.typings || [];
     const isTesting = argv.test || false;
 
-    const nextRootReferences = [];
+    const rootConfig = JSON.parse(fs.readFileSync(rootTsConfigLocation).toString());
+    const nextRootReferences: { path: string }[] = [];
 
     const prettierConfig = await getPrettierConfig();
 
-    const serializeConfig = config => {
+    const serializeConfig = (config: any) => {
         try {
             return prettier.format(JSON.stringify(config).replace(/\\\\/g, '/'), prettierConfig);
         } catch (error) {
@@ -42,7 +45,12 @@ import { getPrettierConfig } from './utils/getPrettierConfig';
         .forEach(async workspaceName => {
             const workspace = workspaces[workspaceName];
 
-            if (ignoreGlobs.some(path => minimatch(workspace.location, path))) {
+            if (workspace.location === '.') {
+                // Skip root workspace
+                return;
+            }
+
+            if (ignoreGlobs.some((path: string) => minimatch(workspace.location, path))) {
                 return;
             }
 
@@ -69,7 +77,7 @@ import { getPrettierConfig } from './utils/getPrettierConfig';
                 process.exit(1);
             }
 
-            const nextWorkspaceReferences = typingPaths.map(typingPath => ({
+            const nextWorkspaceReferences = typingPaths.map((typingPath: string) => ({
                 path: path.relative(workspacePath, path.resolve(process.cwd(), typingPath)),
             }));
 
@@ -108,8 +116,28 @@ import { getPrettierConfig } from './utils/getPrettierConfig';
 
             workspaceConfig.references = nextWorkspaceReferences;
 
-            if (!readOnlyGlobs.some(path => minimatch(workspace.location, path))) {
+            if (!readOnlyGlobs.some((path: string) => minimatch(workspace.location, path))) {
                 fs.writeFileSync(workspaceConfigPath, await serializeConfig(workspaceConfig));
             }
         });
+
+    if (isTesting) {
+        if (
+            (await serializeConfig(rootConfig.references)) !==
+            (await serializeConfig(nextRootReferences))
+        ) {
+            console.error(
+                `TypeScript project references in root tsconfig.json are inconsistent.`,
+                `Run "yarn update-project-references" to fix them.`,
+            );
+
+            process.exit(1);
+        }
+
+        return;
+    }
+
+    rootConfig.references = nextRootReferences;
+
+    fs.writeFileSync(rootTsConfigLocation, await serializeConfig(rootConfig));
 })();
