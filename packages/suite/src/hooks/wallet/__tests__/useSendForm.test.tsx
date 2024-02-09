@@ -18,6 +18,12 @@ import SendIndex from 'src/views/wallet/send';
 import * as fixtures from '../__fixtures__/useSendForm';
 import { useSendFormContext } from '../useSendForm';
 
+global.ResizeObserver = class MockedResizeObserver {
+    observe = jest.fn();
+    unobserve = jest.fn();
+    disconnect = jest.fn();
+};
+
 // sendFormActions.signTransaction fetch ethereum definitions
 jest.mock('cross-fetch', () => ({
     __esModule: true,
