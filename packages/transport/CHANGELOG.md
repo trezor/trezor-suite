@@ -1,3 +1,7 @@
+# 1.1.23
+
+-   chore: libs update
+
 # 1.1.21
 
 -   chore(transport): remove unused files (b69076a80)
