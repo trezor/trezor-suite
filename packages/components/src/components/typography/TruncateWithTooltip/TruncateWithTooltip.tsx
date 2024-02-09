@@ -17,13 +17,16 @@ export const TruncateWithTooltip = ({ children, delayShow }: TruncateWithTooltip
     const containerRef = useRef(null);
 
     useEffect(() => {
-        if (containerRef.current) {
-            const { scrollWidth, clientWidth } = containerRef.current;
+        if (!containerRef.current) return;
+        const { scrollWidth, scrollHeight } = containerRef.current;
+        const resizeObserver = new ResizeObserver(entries => {
+            const { inlineSize: elementWidth, blockSize: elementHeight } =
+                entries[0].borderBoxSize?.[0];
+            setIsTooltipVisible(scrollWidth > elementWidth || scrollHeight > elementHeight);
+        });
+        resizeObserver.observe(containerRef.current);
 
-            if (scrollWidth > clientWidth) {
-                setIsTooltipVisible(true);
-            }
-        }
+        return () => resizeObserver.disconnect();
     }, [children, containerRef]);
 
     return (
