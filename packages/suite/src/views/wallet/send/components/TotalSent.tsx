@@ -7,6 +7,8 @@ import { ReviewButton } from './ReviewButton';
 import { spacingsPx } from '@trezor/theme';
 
 const StyledCard = styled(Card)`
+    position: sticky;
+    top: 60px;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: ${spacingsPx.md} 0;
