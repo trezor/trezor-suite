@@ -1,3 +1,9 @@
+# 2.1.25
+
+-   feat(suite): Rename Polygon to Polygon PoS (15a7fd38dc)
+-   feat(suite): add Polygon (8c569ca580)
+-   Revert feat(blockchain-link); get sol token metadata from coingecko (61cf93cd62)
+
 # 2.1.23
 
 -   feat(blockchain-link); get sol token metadata from coingecko (5c901ea8f)
