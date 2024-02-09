@@ -1,3 +1,7 @@
+# 2.1.24
+
+-   feat(suite): add Polygon (8c569ca580, 15a7fd38dc)
+
 # 2.1.23
 
 -   feat(blockchain-link); get sol token metadata from coingecko (5c901ea8f)
