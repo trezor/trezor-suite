@@ -1,3 +1,7 @@
+# 9.0.21
+
+-   chore(suite): make better mapping for colors (481c82f56e)
+
 # 9.0.20
 
 -   fix(mobile): fix broken formatting on iOS (#10893) (4e5d028907)
