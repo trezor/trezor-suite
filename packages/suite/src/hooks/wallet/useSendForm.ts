@@ -88,9 +88,6 @@ const getStateFromProps = (props: UseSendFormProps) => {
 export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     // public variables, exported to SendFormContext
     const [isLoading, setLoading] = useState(false);
-    const fiatRates = props.coins.find(
-        item => item.symbol === props.selectedAccount.account.symbol,
-    );
 
     const [state, setState] = useState<UseSendFormState>(getStateFromProps(props));
     // private variables, used inside sendForm hook
@@ -106,6 +103,17 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     });
 
     const { control, reset, register, getValues, formState, setValue, trigger } = useFormMethods;
+
+    const values = getValues();
+    const token = values?.outputs?.[0]?.token;
+
+    const fiatRates = props.coins.find(item => {
+        const hasToken = !!token;
+        return (
+            item.symbol === props.selectedAccount.account.symbol &&
+            (!hasToken || item.tokenAddress === token)
+        );
+    });
 
     // register array fields (outputs array in react-hook-form)
     const outputsFieldArray = useFieldArray({

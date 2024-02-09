@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { Timestamp } from '@suite-common/wallet-types';
+import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import BigNumber from 'bignumber.js';
 import styled from 'styled-components';
 import { Controller } from 'react-hook-form';
@@ -192,7 +192,10 @@ export const Fiat = ({ output, outputId }: FiatProps) => {
                 // Get (fresh) fiat rates for newly selected currency
                 const updateFiatRatesResult = await dispatch(
                     updateFiatRatesThunk({
-                        ticker: { symbol: account.symbol as NetworkSymbol },
+                        ticker: {
+                            symbol: account.symbol as NetworkSymbol,
+                            tokenAddress: token?.contract as TokenAddress,
+                        },
                         localCurrency: selected.value as FiatCurrencyCode,
                         rateType: 'current',
                         lastSuccessfulFetchTimestamp: Date.now() as Timestamp,
