@@ -1,3 +1,7 @@
+# 2.0.5
+
+-   chore: libs update
+
 # 2.0.4
 
 -   chore(utxo-lib): replace global.d.ts with global.ts (57b9b4fee)
