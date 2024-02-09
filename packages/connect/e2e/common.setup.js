@@ -1,5 +1,4 @@
-/* eslint-disable import/no-named-as-default */
-
+// eslint-disable-next-line import/no-named-as-default
 import TrezorConnect from '../src';
 import { versionUtils } from '@trezor/utils';
 import { UI } from '../src/events';

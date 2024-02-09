@@ -1,6 +1,3 @@
-// eslint-disable-next-line import/no-extraneous-dependencies, import/extensions
-const { rules: airbnbRules } = require('eslint-config-airbnb-base/rules/style.js');
-
 module.exports = {
     root: true,
     parser: '@typescript-eslint/parser',
@@ -12,17 +9,18 @@ module.exports = {
             jsx: true,
         },
     },
-    plugins: ['import', '@typescript-eslint', 'react-hooks', 'prettier', 'jest', 'chai-friendly'],
+    plugins: ['import', '@typescript-eslint', 'react-hooks', 'jest', 'chai-friendly', 'react'],
     extends: [
-        'airbnb',
         'plugin:@typescript-eslint/recommended',
+        'plugin:react/recommended',
         'plugin:import/typescript',
-        'prettier',
+        'plugin:react-hooks/recommended',
     ],
     settings: {
         react: {
             version: 'detect',
         },
+        'import/ignore': ['node_modules', '\\.(coffee|scss|css|less|hbs|svg|json)$'],
     },
     env: {
         jest: true,
@@ -38,6 +36,8 @@ module.exports = {
         '**/node_modules/*',
         'packages/suite-data/files/*',
         'packages/protobuf/scripts/protobuf-patches/*',
+        'packages/connect-examples',
+        'ci/',
     ],
     rules: {
         '@typescript-eslint/prefer-ts-expect-error': 'error',
@@ -99,6 +99,7 @@ module.exports = {
         ],
         // Does not work with TypeScript export type.
         'import/prefer-default-export': 'off',
+        'import/no-named-as-default': 'error',
         'no-nested-ternary': 'error',
         // Does not work with Babel react-native to react-native-web
         'import/no-unresolved': 'off',
@@ -113,7 +114,8 @@ module.exports = {
                 },
             },
         ],
-        'import/no-cycle': 'error',
+        // Could be useful, but it's very very very slow
+        'import/no-cycle': 'off',
         'import/no-anonymous-default-export': [
             'error',
             {
@@ -148,7 +150,6 @@ module.exports = {
         '@typescript-eslint/explicit-member-accessibility': 'off',
         '@typescript-eslint/no-explicit-any': 'off',
         'react/destructuring-assignment': 'off',
-        'prettier/prettier': 'warn',
         'func-names': 'off',
         'react/require-default-props': 'off',
         '@typescript-eslint/no-non-null-assertion': 'off',
@@ -170,6 +171,24 @@ module.exports = {
         'no-use-before-define': 'off',
         '@typescript-eslint/no-use-before-define': ['error'],
         'require-await': ['error'],
+        'react/display-name': 'off',
+        'react/jsx-key': 'warn',
+        'prefer-destructuring': [
+            'error',
+            {
+                VariableDeclarator: {
+                    array: false,
+                    object: true,
+                },
+                AssignmentExpression: {
+                    array: false,
+                    object: false,
+                },
+            },
+            {
+                enforceForRenamedProperties: false,
+            },
+        ],
 
         // Node.js
         // These rules are specific to JavaScript running on Node.js.
@@ -186,7 +205,7 @@ module.exports = {
         // Variables
         // These rules have to do with variable declarations.
         'no-label-var': 'error', // disallow labels that share a name with a variable
-        'no-shadow': 'off',
+        'no-shadow': 'off', // @typescript-eslint/no-shadow will be used instead
         '@typescript-eslint/no-shadow': [
             'error',
             { builtinGlobals: true, allow: ['_', 'error', 'resolve', 'reject', 'fetch'] },
@@ -196,6 +215,7 @@ module.exports = {
         'no-undef-init': 'error', // disallow use of undefined when initializing variables
         'no-unused-vars': 'off',
         'no-unused-expressions': 0,
+        'prefer-const': 'off',
         'chai-friendly/no-unused-expressions': 2,
         '@typescript-eslint/no-unused-vars': [
             'error',
@@ -209,7 +229,7 @@ module.exports = {
             },
         ],
         'no-restricted-syntax': [
-            ...airbnbRules['no-restricted-syntax'],
+            'error',
             {
                 message:
                     "Please don't use createAsyncThunk. Use createThunk from @suite-common/redux-utils instead.",
@@ -282,7 +302,7 @@ module.exports = {
                 'react/jsx-no-undef': 'off',
                 'no-catch-shadow': 'off',
                 '@typescript-eslint/no-restricted-imports': 'off',
-                'no-restricted-syntax': airbnbRules['no-restricted-syntax'],
+                'no-restricted-syntax': 'off',
             },
         },
         {
@@ -290,6 +310,16 @@ module.exports = {
             rules: {
                 '@typescript-eslint/no-var-requires': 'off',
                 'global-require': 'off',
+            },
+        },
+        // tests
+        {
+            files: ['**/*.test.*', '**/__tests__/**/*'],
+            rules: {
+                'import/no-extraneous-dependencies': 'off',
+                'import/no-unresolved': 'off',
+                'import/no-default-export': 'off',
+                'import/no-named-as-default': 'off',
             },
         },
     ],

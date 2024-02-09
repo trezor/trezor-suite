@@ -71,7 +71,7 @@ const getReleasesT1 = (releases: Partial<FirmwareRelease>[]) => releases.map(r =
 const getReleasesT2 = (releases: Partial<FirmwareRelease>[]) => releases.map(r => getReleaseT2(r));
 
 declare global {
-    // eslint-disable-next-line no-var, vars-on-top
+    // eslint-disable-next-line no-var
     var JestMocks: {
         getDeviceFeatures: typeof getDeviceFeatures;
         getReleaseT1: typeof getReleaseT1;

@@ -20,7 +20,7 @@ export class Parser {
     }
 
     /** Returns if given path is a root Node. */
-    // eslint-disable-next-line arrow-body-style
+
     private isRootNode = (path: string): boolean => {
         // Handle the special case of the root of a locale
         // which doesn't contain a README.md.

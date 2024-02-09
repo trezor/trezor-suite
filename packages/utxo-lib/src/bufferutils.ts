@@ -5,7 +5,6 @@
 // - added `BufferWritter` "writeInt64", "writeUInt16" methods.
 // - `BufferWritter.writeUInt64` is accepting string or number.
 
-// eslint-disable-next-line max-classes-per-file
 import BN from 'bn.js';
 import pushdata from 'pushdata-bitcoin';
 import varuint from 'varuint-bitcoin';

@@ -129,7 +129,7 @@ const onRequest = async <T extends Message>(
         // @ts-expect-error this message is used in tests
         case 'raw':
             // @ts-expect-error
-            // eslint-disable-next-line
+
             const { method, params } = request.payload;
             return client
                 .request(method, ...params)

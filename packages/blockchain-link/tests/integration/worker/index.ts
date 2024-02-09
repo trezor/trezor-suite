@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-var-requires,global-require,import/no-extraneous-dependencies */
+/* eslint-disable @typescript-eslint/no-var-requires,import/no-extraneous-dependencies */
 import TinyWorker from 'tiny-worker';
 
 const BlockbookWorkerModule = require('../../../build/module/blockbook-worker');

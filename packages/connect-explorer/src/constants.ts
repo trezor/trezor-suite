@@ -1,5 +1,3 @@
-/* eslint-disable camelcase */
-
 // todo: use some trezor collor pallete, certainly exists
 
 export const color_white = '#ffffff';

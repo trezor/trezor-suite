@@ -125,7 +125,6 @@ const getWebsocket = async () => {
 
     let compressed = 0;
 
-    // eslint-disable-next-line no-underscore-dangle
     (ws as any)._socket.on('data', (chunk: Buffer) => (compressed += chunk.byteLength));
 
     let messageID = 0;
@@ -173,7 +172,6 @@ const getWebsocket = async () => {
 
     let batch = await filtersFromWasabi(bestKnownHash);
     while (batch.length === batchSize) {
-        // eslint-disable-next-line no-await-in-loop
         batch = await filtersFromWasabi(batch[batchSize - 1]);
     }
 
@@ -187,7 +185,6 @@ const getWebsocket = async () => {
 
     batch = await filtersFromBlockbook(bestKnownHash);
     while (batch.length === batchSize) {
-        // eslint-disable-next-line no-await-in-loop
         batch = await filtersFromBlockbook(batch[batchSize - 1]);
     }
 

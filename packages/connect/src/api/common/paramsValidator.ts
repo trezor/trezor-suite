@@ -83,7 +83,6 @@ export function validateParams<P extends Record<string, any>>(params: P, schema:
                     `Parameter "${name}" has invalid type. "ArrayBuffer" expected.`,
                 );
             }
-            // eslint-disable-next-line valid-typeof
         } else if (typeof value !== type) {
             // invalid type
             throw invalidParameter(`Parameter "${name}" has invalid type. "${type}" expected.`);

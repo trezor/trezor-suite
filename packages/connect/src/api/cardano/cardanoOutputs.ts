@@ -1,7 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/cardanoOutputs.js
 
 // allow for...of statements
-/* eslint-disable no-restricted-syntax */
 
 import { addressParametersToProto, validateAddressParameters } from './cardanoAddressParameters';
 import { tokenBundleToProto, AssetGroupWithTokens } from './cardanoTokenBundle';

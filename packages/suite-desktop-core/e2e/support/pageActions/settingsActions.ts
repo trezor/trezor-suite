@@ -9,7 +9,6 @@ class SettingsActions {
         await settingsHeader.waitFor({ state: 'visible', timeout: 10_000 });
         const timesClickToSetDebugMode = 5;
         for (let i = 0; i < timesClickToSetDebugMode; i++) {
-            // eslint-disable-next-line no-await-in-loop
             await settingsHeader.click();
         }
         await window.getByTestId('@settings/menu/debug').waitFor({ state: 'visible' });

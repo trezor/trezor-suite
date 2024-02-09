@@ -139,7 +139,6 @@ export class PopupManager extends EventEmitter {
                                 active: true,
                             },
                             tabs => {
-                                // eslint-disable-next-line prefer-destructuring
                                 this.popupWindow = tabs[0];
                             },
                         );

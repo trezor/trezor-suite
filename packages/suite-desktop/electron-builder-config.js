@@ -3,7 +3,7 @@ const schemes = require('./uriSchemes.json');
 
 const isCodesignBuild = process.env.IS_CODESIGN_BUILD === 'true';
 
-/* eslint-disable no-template-curly-in-string */ // to be able to use patterns like ${author} and ${arch}
+// to be able to use patterns like ${author} and ${arch}
 module.exports = {
     // distingush between dev and prod builds
     appId: `io.trezor.TrezorSuite${isCodesignBuild ? '' : '.dev'}`,

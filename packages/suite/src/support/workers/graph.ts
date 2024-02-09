@@ -1,5 +1,3 @@
-/* eslint-disable no-restricted-globals */
-
 /*
     It's crucial to import directly from the 'utilsWorker' file. 
     Otherwise, '@trezor/connect' would end up being bundled into the worker, which will break graph on dashboard.

@@ -1,4 +1,3 @@
-/* eslint-disable no-extend-native */
 import { merge } from 'webpack-merge';
 
 // Env utils

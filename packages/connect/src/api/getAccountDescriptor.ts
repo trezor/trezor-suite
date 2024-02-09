@@ -203,7 +203,7 @@ export default class GetAccountDescriptor extends AbstractMethod<
                 if (this.hasBundle) {
                     responses.push(null);
                     sendProgress(i, null, error.message);
-                    // eslint-disable-next-line no-continue
+
                     continue;
                 } else {
                     throw error;

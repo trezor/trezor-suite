@@ -304,7 +304,6 @@ const EthereumSpecificBalanceDetailsRow = ({
                     <IOGridGroupWrapper heading={<Translation id="TR_INTERNAL_TRANSACTIONS" />}>
                         {tx.internalTransfers.map((transfer, index) => (
                             <GridRowGroupComponent
-                                // eslint-disable-next-line react/no-array-index-key
                                 key={index}
                                 from={transfer.from}
                                 to={transfer.to}
@@ -329,7 +328,6 @@ const EthereumSpecificBalanceDetailsRow = ({
                     >
                         {tokens.map((transfer, index) => (
                             <GridRowGroupComponent
-                                // eslint-disable-next-line react/no-array-index-key
                                 key={index}
                                 from={transfer.from}
                                 to={transfer.to}
@@ -365,7 +363,6 @@ const SolanaSpecificBalanceDetailsRow = ({
         <>
             {tokens.map((transfer, index) => (
                 <GridRowGroupComponent
-                    // eslint-disable-next-line react/no-array-index-key
                     key={index}
                     from={transfer.from}
                     to={transfer.to}

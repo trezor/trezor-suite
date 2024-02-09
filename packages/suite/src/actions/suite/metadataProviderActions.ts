@@ -49,7 +49,6 @@ const createProviderInstance = (
     environment: OAuthServerEnvironment = 'production',
     clientId?: string,
 ) => {
-    // eslint-disable-next-line default-case
     switch (type) {
         case 'dropbox':
             return new DropboxProvider({

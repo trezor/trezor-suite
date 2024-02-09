@@ -1,4 +1,3 @@
-/* eslint-disable react/no-danger */
 import { useDocs } from '../hooks/useDocs';
 
 export const Changelog = () => {

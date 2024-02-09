@@ -1,4 +1,3 @@
-/* eslint-disable react/no-array-index-key */
 import { memo, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { AnimatePresence } from 'framer-motion';

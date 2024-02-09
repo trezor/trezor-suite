@@ -8,13 +8,11 @@ import { getOrigin } from '@trezor/connect/lib/utils/urlUtils';
 import { setLogWriter, LogMessage, LogWriter } from '@trezor/connect/lib/utils/debug';
 import css from './inlineStyles';
 
-/* eslint-disable import/no-mutable-exports */
 export let instance: HTMLIFrameElement | null;
 export let origin: string;
 export let initPromise = createDeferred();
 export let timeout = 0;
 export let error: ERRORS.TrezorError;
-/* eslint-enable import/no-mutable-exports */
 
 export const dispose = () => {
     if (instance && instance.parentNode) {

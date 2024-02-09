@@ -11,10 +11,9 @@ describe('getSynchronize', () => {
     let synchronize: ReturnType<typeof getSynchronize>;
 
     const sequence = async (...seq: [any, number][]) => {
-        // eslint-disable-next-line no-restricted-syntax
         for (const [str, ms] of seq) {
             state = str;
-            // eslint-disable-next-line no-await-in-loop
+
             await delay(ms);
             expect(state).toBe(str);
         }

@@ -77,7 +77,7 @@ export class ServiceWorkerWindowChannel<
                 }
 
                 // TODO: not completely sure that is necessary to prevent self origin communication sometimes.
-                // eslint-disable-next-line no-restricted-globals
+
                 if (origin === self.origin && !allowSelfOrigin) {
                     return;
                 }

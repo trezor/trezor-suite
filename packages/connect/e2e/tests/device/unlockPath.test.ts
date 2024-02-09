@@ -1,5 +1,3 @@
-/* eslint-disable import/no-named-as-default */
-
 import TrezorConnect from '../../../src';
 
 const { getController, setup, conditionalTest, initTrezorConnect } = global.Trezor;

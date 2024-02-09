@@ -1,5 +1,3 @@
-/* eslint-disable global-require */
-
 export const getAssetByUrl = (url: string) => {
     const fileUrl = url.split('?')[0];
     switch (fileUrl) {

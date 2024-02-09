@@ -37,7 +37,6 @@ function handleMessage(event: MessageEvent<LogMessage>, port: MessagePort) {
     }
 }
 
-// eslint-disable-next-line no-restricted-globals
 (self as unknown as SharedWorkerGlobalScope).addEventListener('connect', event => {
     const port = event.ports[0];
 

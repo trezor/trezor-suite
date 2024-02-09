@@ -1,7 +1,5 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/DeviceList.js
 
-/* eslint-disable no-restricted-syntax */
-
 import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
 import {
     BridgeTransport,

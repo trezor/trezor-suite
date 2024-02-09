@@ -1,5 +1,3 @@
-/* eslint-disable import/no-named-as-default */
-
 import TrezorConnect from '../../../src';
 import fixtures from '../../__fixtures__';
 

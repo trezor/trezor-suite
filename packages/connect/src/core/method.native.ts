@@ -1,4 +1,3 @@
-/* eslint-disable global-require */
 import * as Methods from '../api';
 import { TypedError } from '../constants/errors';
 import { ModuleName, MODULES } from '../constants/network';

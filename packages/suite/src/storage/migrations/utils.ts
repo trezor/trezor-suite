@@ -21,14 +21,11 @@ export const updateAll = async <
         const newObj = update(oldObj);
 
         if (newObj) {
-            // eslint-disable-next-line no-await-in-loop
             await cursor.update(newObj);
         } else if (newObj === null) {
-            // eslint-disable-next-line no-await-in-loop
             await cursor.delete();
         }
 
-        // eslint-disable-next-line no-await-in-loop
         cursor = await cursor.continue();
     }
 };

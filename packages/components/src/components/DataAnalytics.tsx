@@ -152,7 +152,6 @@ export const DataAnalytics = ({
                 >
                     <Category>
                         {collectedData.map((category, i) => (
-                            // eslint-disable-next-line react/no-array-index-key
                             <Fragment key={i}>
                                 <CategoryName>{category.name}</CategoryName>
                                 <CategoryItems>

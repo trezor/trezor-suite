@@ -343,7 +343,7 @@ class CommonDB<TDBStructure> {
         while (cursor) {
             cursor.delete();
             this.notify(store, cursor.value ? [cursor.value] : []);
-            // eslint-disable-next-line no-await-in-loop
+
             cursor = await cursor.continue();
         }
     };
@@ -374,7 +374,7 @@ class CommonDB<TDBStructure> {
                         while (cursor && (!filters.count || counter < filters.count)) {
                             // iterate unless cursor returns null or we have enough items (count param)
                             items.push(cursor.value);
-                            // eslint-disable-next-line no-await-in-loop
+
                             cursor = await cursor.continue();
                             counter++;
                         }
@@ -394,7 +394,7 @@ class CommonDB<TDBStructure> {
                 const items = [];
                 while (cursor) {
                     items.push(cursor.value);
-                    // eslint-disable-next-line no-await-in-loop
+
                     cursor = await cursor.continue();
                 }
                 return items;
@@ -414,7 +414,7 @@ class CommonDB<TDBStructure> {
                 key: cursor.key,
                 value: cursor.value,
             });
-            // eslint-disable-next-line no-await-in-loop
+
             cursor = await cursor.continue();
         }
         return resp;

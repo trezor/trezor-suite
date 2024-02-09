@@ -55,7 +55,6 @@ export const PinFormProgress = () => {
     return (
         <HStack justifyContent="center">
             {progress.map((_, index) => (
-                // eslint-disable-next-line react/no-array-index-key
                 <Box style={applyStyle(dotStyle)} key={index} />
             ))}
         </HStack>

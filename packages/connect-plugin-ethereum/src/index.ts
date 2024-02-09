@@ -1,5 +1,3 @@
-/* eslint-disable camelcase */
-
 import * as sigUtil from '@metamask/eth-sig-util';
 
 // Sanitization is used for T1B1 as eth-sig-util does not support BigInt

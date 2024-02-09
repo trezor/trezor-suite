@@ -17,7 +17,6 @@ export interface FlagProps {
 export const Flag = ({ size = 24, country, className }: FlagProps) => (
     <Wrapper>
         <img
-            // eslint-disable-next-line global-require, import/no-dynamic-require
             src={require(`../../../images/flags/${country.toLowerCase()}.svg`)}
             width={`${size}px`}
             alt={`flag-${country}`}

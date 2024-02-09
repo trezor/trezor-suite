@@ -1,4 +1,3 @@
-/* eslint-disable no-bitwise */
 import { TrezorDevice } from 'src/types/suite/index';
 import { DeviceModelInternal } from '@trezor/connect';
 import { deflateRaw } from 'pako';

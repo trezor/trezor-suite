@@ -1,4 +1,3 @@
-/* eslint-disable global-require */
 export const ICONS = {
     ANCHOR: require('../../../images/icons/anchor.svg'),
     APP: require('../../../images/icons/app.svg'),

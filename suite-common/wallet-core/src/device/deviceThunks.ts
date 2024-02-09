@@ -61,7 +61,7 @@ export const selectDeviceThunk = createThunk(
                 // requested device is a @trezor/connect Device type
                 // find all instances and select recently used
                 const instances = devices.filter(d => d.path === device.path);
-                // eslint-disable-next-line prefer-destructuring
+
                 payload = sortByTimestamp(instances)[0];
             }
         }

@@ -1,7 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/CardanoSignTransaction.js
 
 // allow for...of statements
-/* eslint-disable no-restricted-syntax */
 
 import { trezorUtils } from '@fivebinaries/coin-selection';
 

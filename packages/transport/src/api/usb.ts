@@ -162,12 +162,11 @@ export class UsbApi extends AbstractApi {
         // note: why for instead of scheduleAction from @trezor/utils with attempts param. this.openInternal does not throw
         // I would need to throw artificially which is not nice.
         for (let i = 0; i < 5; i++) {
-            // eslint-disable-next-line no-await-in-loop
             const res = await this.openInternal(path, first);
             if (res.success) {
                 return res;
             }
-            // eslint-disable-next-line no-await-in-loop
+
             await createTimeoutPromise(100 * i);
         }
         return this.openInternal(path, first);

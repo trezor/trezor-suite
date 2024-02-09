@@ -1,3 +1,4 @@
+/* eslint-disable prefer-destructuring */
 import * as electron from 'electron';
 
 import * as desktopApi from '@trezor/suite-desktop-api';
@@ -19,6 +20,5 @@ export type StrictBrowserWindow = desktopApi.StrictBrowserWindow<
 
 export const { app } = electron;
 
-/* eslint-disable prefer-destructuring */
 export const ipcMain: StrictIpcMain = electron.ipcMain;
 export const ipcRenderer: StrictIpcRenderer = electron.ipcRenderer;

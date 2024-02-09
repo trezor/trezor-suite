@@ -178,9 +178,7 @@ const discoverAccountsByDescriptorThunk = createThunk(
             isFinalRound = true;
         }
 
-        // eslint-disable-next-line no-restricted-syntax
         for (const bundleItem of descriptorsBundle) {
-            // eslint-disable-next-line no-await-in-loop
             const { success, payload: accountInfo } = await TrezorConnect.getAccountInfo({
                 coin: bundleItem.coin,
                 descriptor: bundleItem.descriptor,

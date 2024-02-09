@@ -1,4 +1,3 @@
-/* eslint-disable no-case-declarations */
 import { createMiddleware } from '@suite-common/redux-utils';
 import {
     TransactionsRootState,

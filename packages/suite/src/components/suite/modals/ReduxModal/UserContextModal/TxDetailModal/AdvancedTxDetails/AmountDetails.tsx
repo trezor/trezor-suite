@@ -157,7 +157,6 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                 )}
                 {tx.internalTransfers.map((transfer, i) => (
                     <AmountRow
-                        // eslint-disable-next-line react/no-array-index-key
                         key={i}
                         firstColumn={
                             !tx.targets.length && i === 0 ? <Translation id="AMOUNT" /> : undefined
@@ -187,7 +186,6 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                 ))}
                 {tx.tokens.map((transfer, i) => (
                     <AmountRow
-                        // eslint-disable-next-line react/no-array-index-key
                         key={i}
                         firstColumn={
                             !tx.targets.length && !tx.internalTransfers.length && i === 0 ? (

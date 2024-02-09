@@ -18,9 +18,7 @@ const deleteDanglingLabels = async ({
     accountKey,
     txid,
 }: DeleteAllOutputLabelsParams) => {
-    // eslint-disable-next-line no-restricted-syntax
     for (const outputIndex of Object.keys(labels)) {
-        // eslint-disable-next-line no-await-in-loop
         await dispatch(
             metadataLabelingActions.addMetadata({
                 type: 'outputLabel',
@@ -47,10 +45,9 @@ export const copyLabelToNewTransaction = async ({
     accountKey,
     newTxid,
 }: MoveLabelToNewTransactionParams) => {
-    // eslint-disable-next-line no-restricted-syntax,
     for (const outputIndex of Object.keys(accountOutputLabels)) {
         const value = accountOutputLabels[outputIndex];
-        // eslint-disable-next-line no-await-in-loop
+
         await dispatch(
             metadataLabelingActions.addMetadata({
                 type: 'outputLabel',
@@ -114,7 +111,6 @@ type MoveLabelsForRbfParams = {
 export const moveLabelsForRbfAction =
     ({ toBeMovedOrDeletedList, newTxid }: MoveLabelsForRbfParams) =>
     async (dispatch: Dispatch, getState: GetState) => {
-        // eslint-disable-next-line no-restricted-syntax
         for (const toBeMovedOrDeleted of Object.entries(toBeMovedOrDeletedList)) {
             const [accountKey, data] = toBeMovedOrDeleted;
 
@@ -122,7 +118,6 @@ export const moveLabelsForRbfAction =
             const accountOutputLabelsToBeMoved: AccountOutputLabels =
                 accountMetadata?.outputLabels?.[data.toBeMoved.txid] ?? {};
 
-            // eslint-disable-next-line no-await-in-loop
             await copyLabelToNewTransaction({
                 accountKey,
                 accountOutputLabels: accountOutputLabelsToBeMoved,
@@ -130,7 +125,6 @@ export const moveLabelsForRbfAction =
                 dispatch,
             });
 
-            // eslint-disable-next-line no-restricted-syntax
             for (const transactionToDrop of data.toBeDeleted) {
                 const accountOutputLabelsToBeDeleted: AccountOutputLabels =
                     accountMetadata?.outputLabels?.[transactionToDrop.txid] ?? {};
@@ -142,7 +136,6 @@ export const moveLabelsForRbfAction =
                     txid: transactionToDrop.txid,
                 };
 
-                // eslint-disable-next-line no-await-in-loop
                 await deleteDanglingLabels(deleteParams);
             }
         }

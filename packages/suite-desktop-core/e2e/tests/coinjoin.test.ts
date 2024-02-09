@@ -1,5 +1,3 @@
-/* eslint-disable no-await-in-loop */
-
 import { Page, test as testPlaywright } from '@playwright/test';
 
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';

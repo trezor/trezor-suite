@@ -1,4 +1,4 @@
-/* eslint-disable max-classes-per-file, no-console */
+/* eslint-disable no-console */
 
 import express, { Express } from 'express';
 import { v4 as uuidv4 } from 'uuid';
