@@ -1,3 +1,7 @@
+# 1.0.8
+
+-   fix(suite): navbar positioning (icons) (123882a387)
+
 # 1.0.6
 
 -   chore(protobuf): lint fix (cebcf0256)
