@@ -10,6 +10,7 @@ import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { isAddressValid } from '@suite-common/wallet-utils';
 import { Account } from 'src/types/wallet';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 
 interface AddTokenModalProps {
     onCancel: () => void;
@@ -21,6 +22,7 @@ export const AddTokenModal = ({ onCancel }: AddTokenModalProps) => {
     const [isFetching, setIsFetching] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const account = useSelector(selectSelectedAccount);
+    const localCurrency = useSelector(selectLocalCurrency);
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
 
@@ -91,9 +93,10 @@ export const AddTokenModal = ({ onCancel }: AddTokenModalProps) => {
         if (error) return 'error';
         return undefined;
     };
+
     const handleAddTokenButtonClick = () => {
         if (tokenInfo) {
-            dispatch(addToken(account, tokenInfo));
+            dispatch(addToken(account, tokenInfo, localCurrency));
             onCancel();
 
             analytics.report({
