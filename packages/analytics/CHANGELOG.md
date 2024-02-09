@@ -1,4 +1,4 @@
-# 1.0.13
+# 1.0.12
 
 -   fix(connect): point analytics to lib (e5ae31f62b)
 
