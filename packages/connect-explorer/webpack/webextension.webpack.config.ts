@@ -139,18 +139,10 @@ const config: webpack.Configuration = {
                     from: path.join(__dirname, '..', 'src-webextension', 'manifest.json'),
                     to: `${DIST}/`,
                 },
-            ],
-        }),
-        new CopyPlugin({
-            patterns: [
                 {
                     from: path.join(__dirname, '..', 'src', 'fonts'),
                     to: `${DIST}/fonts/`,
                 },
-            ],
-        }),
-        new CopyPlugin({
-            patterns: [
                 {
                     from: path.join(
                         CONNECT_WEB_EXTENSION_PACKAGE_PATH,
@@ -166,6 +158,10 @@ const config: webpack.Configuration = {
                 {
                     from: path.join(CONNECT_WEB_EXTENSION_PATH, 'trezor-usb-permissions.html'),
                     to: `${DIST}`,
+                },
+                {
+                    from: path.resolve(__dirname, '../../../docs/packages/connect'),
+                    to: path.resolve(DIST, 'docs'),
                 },
             ],
         }),
