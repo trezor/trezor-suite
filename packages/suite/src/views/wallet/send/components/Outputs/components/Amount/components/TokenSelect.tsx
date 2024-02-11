@@ -131,7 +131,6 @@ const CardanoOption = ({ tokenInputName, ...optionProps }: any) => (
                 {optionProps.data.fingerprint &&
                 optionProps.data.label.toLowerCase() ===
                     optionProps.data.fingerprint.toLowerCase() ? (
-                    // eslint-disable-next-line react/jsx-indent
                     <OptionEmptyName>No name</OptionEmptyName>
                 ) : (
                     optionProps.data.label

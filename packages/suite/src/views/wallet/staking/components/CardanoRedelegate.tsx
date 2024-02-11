@@ -71,7 +71,6 @@ export const CardanoRedelegate = () => {
                         (deviceAvailable.status &&
                             delegatingAvailable.status &&
                             !isFetchError) ? undefined : (
-                            // eslint-disable-next-line react/jsx-indent
                             <Translation id={reasonMessageId} />
                         )
                     }

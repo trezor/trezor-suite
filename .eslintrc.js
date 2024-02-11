@@ -34,6 +34,7 @@ module.exports = {
         '**/build/*',
         '**/build-electron/*',
         '**/node_modules/*',
+        '**/public/*',
         'packages/suite-data/files/*',
         'packages/protobuf/scripts/protobuf-patches/*',
         'packages/connect-examples',
