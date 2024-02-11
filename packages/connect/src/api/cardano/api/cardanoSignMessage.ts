@@ -13,13 +13,13 @@ import { validatePath } from '../../../utils/pathUtils';
 import { getFirmwareRange } from '../../common/paramsValidator';
 import { addressParametersToProto } from '../cardanoAddressParameters';
 import { Path } from '../cardanoInputs';
-import { hexStringByteLength, sendChunkedHexString } from '../cardanoUtils';
+import { hexStringByteLength } from '../cardanoUtils';
 
 export type CardanoSignMessageParams = {
     signingPath: Path;
     payload: string;
     hashPayload: boolean;
-    displayAscii: boolean;
+    preferHexDisplay: boolean;
     networkId?: number;
     protocolMagic?: number;
     addressParameters?: PROTO.CardanoAddressParametersType;
@@ -55,7 +55,7 @@ export default class CardanoSignMessage extends AbstractMethod<
             signingPath: validatePath(payload.signingPath, 5),
             payload: payload.payload,
             hashPayload: payload.hashPayload,
-            displayAscii: payload.displayAscii,
+            preferHexDisplay: payload.preferHexDisplay ?? false,
             networkId: payload.networkId,
             protocolMagic: payload.protocolMagic,
             addressParameters:
@@ -72,7 +72,7 @@ export default class CardanoSignMessage extends AbstractMethod<
             'CardanoSignMessageInit',
             ['CardanoMessageSignature', 'CardanoMessageDataRequest'],
             {
-                signing_path: this.params.path,
+                signing_path: this.params.signingPath,
                 payload_size: payloadSize,
                 network_id: this.params.networkId,
                 protocol_magic: this.params.protocolMagic,
@@ -96,6 +96,7 @@ export default class CardanoSignMessage extends AbstractMethod<
             signature,
             payload: this.params.payload,
             headers: this._createHeaders(address),
+            pubKey: pub_key,
         };
     }
 

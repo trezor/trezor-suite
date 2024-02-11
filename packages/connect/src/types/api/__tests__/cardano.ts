@@ -428,7 +428,7 @@ export const cardanoSignMessage = async (api: TrezorConnect) => {
         signingPath: 'm/44',
         payload: 'Test..',
         hashPayload: true,
-        displayAscii: true,
+        preferHexDisplay: false,
         networkId: 0,
         protocolMagic: 0,
         addressParameters: {
@@ -451,6 +451,7 @@ export const cardanoSignMessage = async (api: TrezorConnect) => {
         const { payload } = sign;
         payload.payload.toLowerCase();
         payload.signature.toLowerCase();
+        payload.pubKey.toLowerCase();
         const { headers } = payload;
         headers.protected[1].toFixed();
         headers.protected.address.toLowerCase();
