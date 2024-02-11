@@ -305,7 +305,7 @@ export const CardanoSignMessage = Type.Object({
     signingPath: DerivationPath,
     payload: Type.String(),
     hashPayload: Type.Boolean(),
-    displayAscii: Type.Boolean(),
+    preferHexDisplay: Type.Optional(Type.Boolean()),
     networkId: Type.Optional(Type.Number()),
     protocolMagic: Type.Optional(Type.Number()),
     addressParameters: Type.Optional(CardanoAddressParameters),
@@ -335,4 +335,7 @@ export const CardanoSignedMessage = Type.Object({
     headers: CardanoMessageHeaders,
     payload: Type.String(),
     signature: Type.String(),
+    pubKey: Type.String(),
+    coseSignature: Type.String(),
+    coseKey: Type.String(),
 });
