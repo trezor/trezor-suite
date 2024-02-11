@@ -58,7 +58,6 @@ module.exports = {
                 extensions: ['.tsx'],
             },
         ],
-        'react/jsx-indent': [2, 4],
         'import/order': [
             1,
             {
@@ -99,7 +98,7 @@ module.exports = {
         ],
         // Does not work with TypeScript export type.
         'import/prefer-default-export': 'off',
-        'import/no-named-as-default': 'error',
+        'import/no-named-as-default': 'off', // default export is forbidden anyway
         'no-nested-ternary': 'error',
         // Does not work with Babel react-native to react-native-web
         'import/no-unresolved': 'off',
@@ -173,6 +172,12 @@ module.exports = {
         'require-await': ['error'],
         'react/display-name': 'off',
         'react/jsx-key': 'warn',
+        'react/prefer-stateless-function': 'off', // we don't use classes at all
+        'react/no-deprecated': 'off', // checked by TS
+        'react/no-direct-mutation-state': 'off', // we don't use classes at all
+        'react/require-render-return': 'off', // we don't use classes at all
+        'react/no-is-mounted': 'off', // we don't use classes at all
+        'react/jsx-indent': 'off', // we use prettier
         'prefer-destructuring': [
             'error',
             {
@@ -319,7 +324,6 @@ module.exports = {
                 'import/no-extraneous-dependencies': 'off',
                 'import/no-unresolved': 'off',
                 'import/no-default-export': 'off',
-                'import/no-named-as-default': 'off',
             },
         },
     ],
