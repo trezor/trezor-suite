@@ -18,7 +18,7 @@ export type CardanoSignMessageParams = {
     signingPath: Path;
     payload: string;
     hashPayload: boolean;
-    displayAscii: boolean;
+    preferHexDisplay: boolean;
     networkId?: number;
     protocolMagic?: number;
     addressParameters?: PROTO.CardanoAddressParametersType;
@@ -54,7 +54,7 @@ export default class CardanoSignMessage extends AbstractMethod<
             signingPath: validatePath(payload.signingPath, 5),
             payload: payload.payload,
             hashPayload: payload.hashPayload,
-            displayAscii: payload.displayAscii,
+            preferHexDisplay: payload.preferHexDisplay ?? false,
             networkId: payload.networkId,
             protocolMagic: payload.protocolMagic,
             addressParameters:
@@ -76,7 +76,7 @@ export default class CardanoSignMessage extends AbstractMethod<
             network_id: this.params.networkId,
             protocol_magic: this.params.protocolMagic,
             address_parameters: this.params.addressParameters,
-            display_ascii: this.params.displayAscii,
+            prefer_hex_display: this.params.preferHexDisplay,
             derivation_type: this.params.derivationType,
         });
 
@@ -89,13 +89,14 @@ export default class CardanoSignMessage extends AbstractMethod<
         );
 
         const {
-            message: { signature, address },
+            message: { signature, address, pub_key },
         } = await typedCall('CardanoMessageItemHostAck', 'CardanoSignMessageFinished');
 
         return {
             signature,
             payload: this.params.payload,
             headers: this._createHeaders(address),
+            pubKey: pub_key,
         };
     }
 

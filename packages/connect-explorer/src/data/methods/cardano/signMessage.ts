@@ -24,8 +24,8 @@ const batch = [
         value: true,
     },
     {
-        name: 'displayAscii',
-        label: 'Display payload as ASCII on Trezor',
+        name: 'preferHexDisplay',
+        label: 'Display payload as hex bytes on Trezor even if it is valid ASCII',
         type: 'checkbox',
         value: false,
     },

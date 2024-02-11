@@ -2502,7 +2502,7 @@
                     "type": "bool",
                     "id": 5
                 },
-                "display_ascii": {
+                "prefer_hex_display": {
                     "rule": "required",
                     "type": "bool",
                     "id": 6
@@ -2544,6 +2544,11 @@
                     "rule": "required",
                     "type": "bytes",
                     "id": 2
+                },
+                "pub_key": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 3
                 }
             }
         },
