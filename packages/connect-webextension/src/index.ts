@@ -69,10 +69,23 @@ const cancel = (error?: string) => {
 };
 
 const init = (settings: Partial<ConnectSettings> = {}): Promise<void> => {
-    const equalSettings = JSON.stringify(_settings) === JSON.stringify(settings);
-    _settings = parseConnectSettings({ ..._settings, ...settings });
+    const oldSettings = parseConnectSettings({
+        ..._settings,
+    });
+    const newSettings = parseConnectSettings({
+        ..._settings,
+        ...settings,
+    });
+    // defaults for connect-webextension
+    if (!newSettings.transports?.length) {
+        newSettings.transports = ['BridgeTransport', 'WebUsbTransport'];
+    }
+    newSettings.useCoreInPopup = true;
+    const equalSettings = JSON.stringify(oldSettings) === JSON.stringify(newSettings);
+    _settings = newSettings;
+
     if (!_popupManager || !equalSettings) {
-        _settings.useCoreInPopup = true;
+        if (_popupManager) _popupManager.close();
         _popupManager = new popup.PopupManager(_settings, { logger: popupManagerLogger });
         setLogWriter(() => logWriterFactory(_popupManager));
     }
@@ -81,11 +94,6 @@ const init = (settings: Partial<ConnectSettings> = {}): Promise<void> => {
 
     if (!_settings.manifest) {
         throw ERRORS.TypedError('Init_ManifestMissing');
-    }
-
-    // defaults for connect-webextension
-    if (!_settings.transports?.length) {
-        _settings.transports = ['BridgeTransport', 'WebUsbTransport'];
     }
 
     logger.debug('initiated');
@@ -127,7 +135,7 @@ const call: CallMethod = async params => {
         logger.debug('call: response: ', response);
 
         if (response) {
-            if (_popupManager) {
+            if (_popupManager && response.success) {
                 _popupManager.clear();
             }
             return response;
@@ -136,7 +144,7 @@ const call: CallMethod = async params => {
         return createErrorMessage(ERRORS.TypedError('Method_NoResponse'));
     } catch (error) {
         logger.error('call: error', error);
-        _popupManager.clear();
+        _popupManager.clear(false);
 
         return createErrorMessage(error);
     }

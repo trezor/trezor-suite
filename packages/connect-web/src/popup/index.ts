@@ -71,7 +71,6 @@ export class PopupManager extends EventEmitter {
         super();
         this.settings = settings;
         this.origin = getOrigin(settings.popupSrc);
-        this.settings.origin = this.origin;
         this.logger = logger;
 
         if (this.settings.env === 'webextension') {
@@ -413,7 +412,7 @@ export class PopupManager extends EventEmitter {
                     }
                 });
             }
-        } else {
+        } else if (this.popupWindow.mode === 'window') {
             this.popupWindow.window.close();
         }
 

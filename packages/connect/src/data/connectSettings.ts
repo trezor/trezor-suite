@@ -133,5 +133,9 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
         settings.sharedLogger = input.sharedLogger;
     }
 
+    if (typeof input.useCoreInPopup === 'boolean') {
+        settings.useCoreInPopup = input.useCoreInPopup;
+    }
+
     return settings;
 };
