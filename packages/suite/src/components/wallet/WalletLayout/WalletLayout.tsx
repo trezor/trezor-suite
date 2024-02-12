@@ -23,7 +23,7 @@ const EmptyHeaderPlaceholder = styled.div`
 type WalletLayoutProps = {
     title: ExtendedMessageDescriptor['id'];
     account: AppState['wallet']['selectedAccount'];
-    showEmptyHeaderPlaceholder?: boolean;
+    showEmptyHeaderPlaceholder?: boolean; // TODO: remove this, it's not even used according to it's name (account details)
     className?: string;
     children?: ReactNode;
 };

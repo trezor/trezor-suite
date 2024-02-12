@@ -1,7 +1,5 @@
 import { WalletLayout } from './WalletLayout/WalletLayout';
 import { WalletLayoutHeader } from './WalletLayout/WalletLayoutHeader';
-import { WalletLayoutNavigation } from './WalletLayout/WalletLayoutNavigation';
-import { WalletLayoutNavLink } from './WalletLayout/WalletLayoutNavLink';
 import { InputError } from './InputError';
 import { AccountExceptionLayout } from './AccountExceptionLayout';
 import { DiscoveryProgress } from './DiscoveryProgress';
@@ -15,8 +13,6 @@ import { CoinjoinAccountDiscoveryProgress } from './CoinjoinAccountDiscoveryProg
 export {
     WalletLayout,
     WalletLayoutHeader,
-    WalletLayoutNavigation,
-    WalletLayoutNavLink,
     DiscoveryProgress,
     withSelectedAccountLoaded,
     InputError,

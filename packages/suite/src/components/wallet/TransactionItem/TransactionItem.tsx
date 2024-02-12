@@ -2,6 +2,7 @@
 import { memo, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { AnimatePresence } from 'framer-motion';
+import { selectIsPhishingTransaction } from '@suite-common/wallet-core';
 import { variables, Button, Card } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -27,10 +28,9 @@ import {
 } from './CommonComponents';
 import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { AccountTransactionBaseAnchor } from 'src/constants/suite/anchors';
-import { SECONDARY_PANEL_HEIGHT } from 'src/components/suite/AppNavigation/AppNavigation';
 import { anchorOutlineStyles } from 'src/utils/suite/anchor';
 import { TransactionTimestamp } from 'src/components/wallet/TransactionTimestamp';
-import { selectIsPhishingTransaction } from '@suite-common/wallet-core';
+import { SUBPAGE_NAV_HEIGHT } from 'src/constants/suite/layout';
 import { BlurWrapper } from './TransactionItemBlurWrapper';
 
 const Wrapper = styled(Card)<{
@@ -52,7 +52,7 @@ const Wrapper = styled(Card)<{
         `}
 
     /* height of secondary panel and a gap between transactions and graph */
-    scroll-margin-top: calc(${SECONDARY_PANEL_HEIGHT} + 115px);
+    scroll-margin-top: calc(${SUBPAGE_NAV_HEIGHT} + 115px);
 
     ${anchorOutlineStyles}
 `;

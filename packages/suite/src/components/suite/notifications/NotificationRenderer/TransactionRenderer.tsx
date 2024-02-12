@@ -27,10 +27,6 @@ import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { getTxAnchor } from 'src/utils/suite/anchor';
 
-const StyledHiddenPlaceholder = styled(HiddenPlaceholder)`
-    font-variant-numeric: tabular-nums;
-`;
-
 type TransactionRendererProps = NotificationViewProps &
     NotificationRendererProps<'tx-sent' | 'tx-received' | 'tx-confirmed'>;
 
@@ -59,7 +55,7 @@ export const TransactionRenderer = ({ render: View, ...props }: TransactionRende
         <View
             {...props}
             messageValues={{
-                amount: <StyledHiddenPlaceholder>{formattedAmount}</StyledHiddenPlaceholder>,
+                amount: <HiddenPlaceholder>{formattedAmount}</HiddenPlaceholder>,
                 account: <AccountLabeling account={found} />,
                 confirmations,
             }}

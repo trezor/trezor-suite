@@ -13,8 +13,6 @@ import { WebUsbButton } from './WebUsbButton';
 import { HiddenPlaceholder } from './HiddenPlaceholder';
 import { QuestionTooltip } from './QuestionTooltip';
 import { DeviceInvalidModeLayout } from './DeviceInvalidModeLayout';
-import { AppNavigationPanel } from './AppNavigationPanel';
-import { AppNavigation } from './AppNavigation/AppNavigation';
 import { Ticker } from './Ticker/Ticker';
 import { TrendTicker } from './Ticker/TrendTicker';
 import { PriceTicker } from './Ticker/PriceTicker';
@@ -72,8 +70,6 @@ export {
     WalletLabeling,
     MetadataLabeling,
     QuestionTooltip,
-    AppNavigationPanel,
-    AppNavigation,
     FormattedCryptoAmount,
     FormattedNftAmount,
     Ticker,
