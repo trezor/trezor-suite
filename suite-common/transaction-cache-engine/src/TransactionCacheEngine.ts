@@ -1,4 +1,3 @@
-/* eslint-disable no-await-in-loop */
 /* eslint-disable require-await */
 import { A, D, pipe } from '@mobily/ts-belt';
 
@@ -113,7 +112,7 @@ export class TransactionCacheEngine {
         // marker is used instead of page for ripple (cursor based pagination)
         let marker: AccountInfo['marker'] | undefined;
         const networkType = getNetworkType(coin);
-        // eslint-disable-next-line no-constant-condition
+
         while (true) {
             page += 1;
 

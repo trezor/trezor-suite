@@ -34,9 +34,9 @@ interface DetailsProps {
     networkType: Network['networkType'];
     selectedLevel: FeeLevel;
     // fields below are validated as false-positives, eslint claims that they are not used...
-    // eslint-disable-next-line react/no-unused-prop-types
+
     feeInfo: FeeInfo;
-    // eslint-disable-next-line react/no-unused-prop-types
+
     transactionInfo?: PrecomposedTransaction | PrecomposedTransactionCardano;
 }
 

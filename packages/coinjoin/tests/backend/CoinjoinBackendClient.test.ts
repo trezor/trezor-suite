@@ -30,7 +30,6 @@ describe('CoinjoinBackendClient', () => {
         expect(prevIndex).toBeGreaterThanOrEqual(0);
 
         for (let i = 0; i < 10; ++i) {
-            // eslint-disable-next-line no-await-in-loop
             await client.fetchBlock(123456);
             const index = shuffledBackends.indexOf(lastBackend);
             expect(index).toEqual((prevIndex + 1) % shuffledBackends.length);

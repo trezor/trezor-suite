@@ -61,7 +61,6 @@ export const CryptoIconWithPercentage = ({
                     cx={CANVAS_SIZE / 2}
                     cy={CANVAS_SIZE / 2}
                     r={RADIUS}
-                    // eslint-disable-next-line react/style-prop-object
                     style="stroke"
                     strokeWidth={8}
                     color={utils.colors.backgroundSurfaceElevation2}
@@ -70,7 +69,6 @@ export const CryptoIconWithPercentage = ({
                     path={path}
                     start={0}
                     end={percentageFill}
-                    // eslint-disable-next-line react/style-prop-object
                     style="stroke"
                     strokeWidth={8}
                     color={percentageColor}

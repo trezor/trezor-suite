@@ -30,7 +30,6 @@ const DEFAULT_TIMEBOUNDS = {
 };
 const DEFAULT_MEMO = Memo.text('trezor stellar');
 
-// eslint-disable-next-line camelcase
 function build_tx(
     source: any,
     sequence: any,

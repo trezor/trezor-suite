@@ -1,5 +1,3 @@
-/* eslint-disable no-underscore-dangle */
-
 import { Dropbox, DropboxAuth } from 'dropbox';
 import type { users } from 'dropbox';
 import { AbstractMetadataProvider } from 'src/types/suite/metadata';

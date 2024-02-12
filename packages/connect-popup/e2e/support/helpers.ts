@@ -1,11 +1,8 @@
-/* eslint-disable no-await-in-loop */
-
 import path from 'path';
 import { BrowserContext, chromium, Page } from '@playwright/test';
 
 // Waits and clicks for an array on buttons in serial order.
 export const waitAndClick = async (page: Page, buttons: string[]) => {
-    // eslint-disable-next-line no-restricted-syntax
     for (const button of buttons) {
         await page.waitForSelector(`[data-test='${button}']`, { state: 'visible' });
         await page.click(`[data-test='${button}']`);

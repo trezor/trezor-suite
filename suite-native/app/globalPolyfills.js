@@ -1,5 +1,3 @@
-/* eslint-disable no-bitwise */
-
 global.Buffer = require('buffer').Buffer;
 
 global.process = {

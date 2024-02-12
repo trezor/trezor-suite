@@ -1,4 +1,3 @@
-/* eslint-disable import/no-named-as-default */
 import TrezorConnect, { Success, PROTO, Unsuccessful } from '../../../src';
 
 const { ADDRESS_N } = global.TestUtils;

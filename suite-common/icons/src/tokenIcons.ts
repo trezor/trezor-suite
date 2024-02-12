@@ -1,5 +1,3 @@
-/* eslint-disable global-require */
-
 export const tokenIcons = {
     '0xa0b73e1ff0b80914ab6fe0444e65848c4c34450b': require('../assets/tokenIcons/cro.svg'),
     '0x6b175474e89094c44da98b954eedeac495271d0f': require('../assets/tokenIcons/dai.svg'),

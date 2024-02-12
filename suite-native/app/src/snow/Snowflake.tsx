@@ -1,7 +1,6 @@
-/* eslint-disable arrow-body-style */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-use-before-define */
-/* eslint-disable no-underscore-dangle */
+
 import React, { useCallback, useEffect } from 'react';
 import { StyleSheet, Dimensions, TextStyle, DimensionValue } from 'react-native';
 import Animated, {

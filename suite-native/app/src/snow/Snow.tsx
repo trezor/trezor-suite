@@ -1,4 +1,3 @@
-/* eslint-disable react/no-array-index-key */
 /*
 If you found yourself here, congratulations! You have found an easter egg.
 Merry Christmas and Happy New Year!

@@ -1,5 +1,3 @@
-/* eslint-disable no-underscore-dangle */
-
 import { AbstractMetadataProvider, OAuthServerEnvironment, Tokens } from 'src/types/suite/metadata';
 import GoogleClient from 'src/services/google';
 

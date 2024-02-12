@@ -63,7 +63,6 @@ export const TransactionIconSpinner = ({ radius, color }: TransactionIconSpinner
                         cx={radius}
                         cy={radius}
                         r={radius - STROKE_WIDTH / 2}
-                        // eslint-disable-next-line react/style-prop-object
                         style="stroke"
                         strokeWidth={STROKE_WIDTH}
                     >

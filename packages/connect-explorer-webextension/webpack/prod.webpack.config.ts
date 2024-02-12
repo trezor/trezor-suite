@@ -132,7 +132,6 @@ const config: webpack.Configuration = {
             ],
         }),
         new webpack.DefinePlugin({
-            // eslint-disable-next-line no-underscore-dangle
             'process.env.__TREZOR_CONNECT_SRC': JSON.stringify(process.env.__TREZOR_CONNECT_SRC),
             'process.env.COMMIT_HASH': JSON.stringify(commitHash),
         }),

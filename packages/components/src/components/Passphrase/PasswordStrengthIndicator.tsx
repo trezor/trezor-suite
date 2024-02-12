@@ -79,7 +79,6 @@ export const PasswordStrengthIndicator = ({ password }: PasswordStrengthIndicato
         <Wrapper>
             {[...Array(5)].map((_x, i) => (
                 <Line
-                    // eslint-disable-next-line react/no-array-index-key
                     key={i}
                     isFilled={score !== undefined && i <= score}
                     color={getColor(score, password)}

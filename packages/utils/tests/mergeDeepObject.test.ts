@@ -173,7 +173,6 @@ describe('mergeDeepObject', () => {
                 JSON.parse('{ "__proto__": { "hasProto": true } }'),
             );
 
-            // eslint-disable-next-line no-proto
             expect(merged.__proto__.hasProto).toBe(undefined);
         });
 

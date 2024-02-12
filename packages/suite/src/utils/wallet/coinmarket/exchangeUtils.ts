@@ -7,7 +7,7 @@ export const getAmountLimits = (quotes: ExchangeTrade[]): CryptoAmountLimits | u
     let min: number | undefined;
     let max: number | undefined;
     let currency = '';
-    // eslint-disable-next-line no-restricted-syntax
+
     for (const quote of quotes) {
         let noError = true;
         const amount = Number(quote.sendStringAmount);

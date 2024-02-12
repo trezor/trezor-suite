@@ -188,7 +188,7 @@ export const TransactionReviewOutputList = ({
                             return (
                                 <TransactionReviewOutput
                                     // it's safe to use array index since outputs do not change
-                                    // eslint-disable-next-line react/no-array-index-key
+
                                     key={index}
                                     ref={el => (outputRefs.current[index] = el)}
                                     {...output}

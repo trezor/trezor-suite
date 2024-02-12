@@ -8,7 +8,7 @@ const example = {
     recipient: 'TALICE2GMA34CXHD7XLJQ536NM5UNKQHTORNNT2J',
     type: 257,
     deadline: 74735615,
-    // eslint-disable-next-line no-bitwise
+
     version: (0x98 << 24) >> 0,
     message: {
         payload: '746573745f6e656d5f7472616e73616374696f6e5f7472616e73666572',

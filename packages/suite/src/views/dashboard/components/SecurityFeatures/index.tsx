@@ -208,7 +208,6 @@ const SecurityFeatures = () => {
 
                         return (
                             <SecurityCard
-                                // eslint-disable-next-line react/no-array-index-key
                                 key={`${i}`}
                                 variant={card.variant}
                                 icon={card.icon}

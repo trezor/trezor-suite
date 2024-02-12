@@ -20,7 +20,7 @@ import * as utils from './payments.utils';
 ).forEach(p => {
     describe(p, () => {
         const fn: PaymentCreator = PAYMENTS[p];
-        // eslint-disable-next-line import/no-dynamic-require, @typescript-eslint/no-var-requires, global-require
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
         const { fixtures } = require(`./__fixtures__/payments/${p}`);
 
         fixtures.valid.forEach((f: any) => {
@@ -79,9 +79,7 @@ import * as utils from './payments.utils';
                     disabled[k] = true;
                 });
 
-            // eslint-disable-next-line no-restricted-syntax
             for (const key in depends) {
-                // eslint-disable-next-line no-continue
                 if (key in disabled) continue;
                 const dependencies = depends[key];
 

@@ -79,7 +79,7 @@ describe('Suite Actions', () => {
         it(`initialRedirection: ${f.description}`, () => {
             const state = getInitialState(f.state as InitialState);
             const store = initStore(state);
-            // eslint-disable-next-line global-require
+
             require('src/support/history').default.location.pathname = f.pathname || '/';
             store.dispatch(routerActions.initialRedirection());
             expect(store.getState().router.app).toEqual(f.app);
@@ -90,7 +90,7 @@ describe('Suite Actions', () => {
         it(`goto: ${f.description}`, () => {
             const state = getInitialState(f.state as InitialState);
             const store = initStore(state);
-            // eslint-disable-next-line global-require
+
             require('src/support/history').default.location.hash = `#${f.hash}`;
             store.dispatch(routerActions.goto(f.url as any, { preserveParams: f.preserveHash }));
             if (f.result) {
@@ -117,7 +117,7 @@ describe('Suite Actions', () => {
         // @ts-expect-error this test is interested only in router.pathname, for better maintainability ignore other properties
         const state = getInitialState({ router: { pathname: '/firmware' } });
         const store = initStore(state);
-        // eslint-disable-next-line global-require
+
         require('src/support/history').default.location.pathname = '/accounts/send';
         store.dispatch(routerActions.closeModalApp());
         expect(store.getActions().length).toEqual(2); // unlock + location change

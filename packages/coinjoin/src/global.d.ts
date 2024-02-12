@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/ban-types */
-/* eslint-disable max-classes-per-file */
 
 declare module 'golomb' {
     class Golomb {

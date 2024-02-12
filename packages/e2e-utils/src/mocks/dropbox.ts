@@ -1,4 +1,4 @@
-/* eslint-disable camelcase, no-console */
+/* eslint-disable no-console */
 
 import express, { Express } from 'express';
 

@@ -1,5 +1,4 @@
-/* eslint-disable react/no-unused-prop-types */
-
+/* eslint-disable react/jsx-key */
 import { ReactNode } from 'react';
 
 import styled from 'styled-components';
@@ -273,7 +272,6 @@ export const ErrorView = (props: ErrorViewProps) => {
                         >
                             <StepsList>
                                 {tip.detail.steps.map((step, index) => (
-                                    // eslint-disable-next-line react/no-array-index-key
                                     <li key={index}>{step}</li>
                                 ))}
                             </StepsList>

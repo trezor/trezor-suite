@@ -1,6 +1,5 @@
 // mock 'dropbox' package
 
-/* eslint-disable max-classes-per-file */
 class Dropbox {
     filesUpload() {
         return true;

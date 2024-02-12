@@ -74,7 +74,7 @@ describe('CoinjoinFilterController', () => {
                     await expect(() => iterator.next()).rejects.toThrow(error);
                 } else {
                     const received = [];
-                    // eslint-disable-next-line no-restricted-syntax
+
                     for await (const b of iterator) {
                         received.push(b);
                     }
@@ -89,7 +89,7 @@ describe('CoinjoinFilterController', () => {
             const received = [];
 
             client.setFixture(REORG_FILTERS);
-            // eslint-disable-next-line no-restricted-syntax
+
             for await (const b of controller.getFilterIterator(params)) {
                 received.push(b);
             }
@@ -98,7 +98,7 @@ describe('CoinjoinFilterController', () => {
             received.length = 0;
 
             client.setFixture(FILTERS);
-            // eslint-disable-next-line no-restricted-syntax
+
             for await (const b of controller.getFilterIterator({
                 ...params,
                 checkpoints: [REORG_FILTER, FILTERS[5]],

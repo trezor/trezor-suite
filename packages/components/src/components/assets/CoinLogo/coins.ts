@@ -1,4 +1,3 @@
-/* eslint-disable global-require */
 export const COINS = {
     ada: require('../../../images/coins/ada.svg'),
     bch: require('../../../images/coins/bch.svg'),

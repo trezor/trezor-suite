@@ -1,4 +1,3 @@
-/* eslint-disable max-classes-per-file */
 import { EventEmitter } from 'events';
 
 class IpcRendererMock extends EventEmitter {

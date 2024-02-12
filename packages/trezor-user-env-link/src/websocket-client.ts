@@ -35,8 +35,6 @@ export interface Firmwares {
     R: string[];
 }
 
-/* eslint-disable no-await-in-loop,no-async-promise-executor */
-
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 class TrezorUserEnvLinkClass extends EventEmitter {

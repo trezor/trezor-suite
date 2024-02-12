@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 import { Type, Static } from '@trezor/schema-utils';
 
 export enum DeviceModelInternal {

@@ -140,7 +140,6 @@ export const isPoolOverSaturated = (pool: StakePool, additionalStake?: string) =
 export const getStakePoolForDelegation = (trezorPools: PoolsResponse, accountBalance: string) => {
     let pool = trezorPools.next;
     if (isPoolOverSaturated(pool, accountBalance)) {
-        // eslint-disable-next-line prefer-destructuring
         pool = trezorPools.pools[0];
     }
     return pool;

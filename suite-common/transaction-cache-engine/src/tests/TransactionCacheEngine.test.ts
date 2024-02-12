@@ -7,7 +7,7 @@ import { AccountBalanceHistory, AccountUniqueParams } from '../types';
 import { accountBalanceHistoryResult as rippleAccountBalanceHistoryResult } from './__fixtures__/xrp';
 
 jest.mock('@trezor/connect', () => {
-    // eslint-disable-next-line global-require, @typescript-eslint/no-var-requires
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const { connectGetAccountInfoMock } = require('./__fixtures__');
     const { DeviceModelInternal } = jest.requireActual('@trezor/connect');
     return {

@@ -52,11 +52,11 @@ declare interface ILogger {
 
 // Globals
 declare namespace globalThis {
-    // eslint-disable-next-line no-var, vars-on-top
+    // eslint-disable-next-line no-var
     var logger: ILogger;
-    // eslint-disable-next-line no-var, vars-on-top
+    // eslint-disable-next-line no-var
     var resourcesPath: string;
-    // eslint-disable-next-line no-var, vars-on-top
+    // eslint-disable-next-line no-var
     var customProtocolUrl: string;
 }
 

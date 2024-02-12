@@ -1,5 +1,3 @@
-/* eslint-disable camelcase */
-
 // eslint-disable-next-line @typescript-eslint/prefer-ts-expect-error
 // @ts-ignore
 import commonFixtures from '../../../submodules/trezor-common/tests/fixtures/ethereum/sign_typed_data.json';

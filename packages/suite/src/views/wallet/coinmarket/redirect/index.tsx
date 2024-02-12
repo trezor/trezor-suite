@@ -51,7 +51,7 @@ const CoinmarketRedirect = () => {
             if (params[4].startsWith('p-')) {
                 feeIndex = 10;
                 params[4] = params[4].substring(2);
-                // eslint-disable-next-line prefer-destructuring
+
                 orderId = params[9];
             }
             redirectToSellOffers({

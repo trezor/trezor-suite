@@ -55,10 +55,10 @@ export class CoinjoinFilterController {
 
         // Backward phase:
         // Try to rollback through the older checkpoints as long as 'not-found' (handles reorgs)
-        // eslint-disable-next-line no-restricted-syntax
+
         for (const checkpoint of olderCheckpoints) {
             if (batch.response.status !== 'not-found') break;
-            // eslint-disable-next-line no-await-in-loop
+
             batch = await fetchFilterBatch(checkpoint);
         }
 
@@ -89,7 +89,7 @@ export class CoinjoinFilterController {
                         batchFrom: last.blockHeight,
                     });
                 });
-                // eslint-disable-next-line no-restricted-syntax
+
                 for (const filter of filters) {
                     const filterParams = { M, P, key: zeroedKey ? undefined : filter.blockHash };
                     yield { ...filter, filterParams };
@@ -105,7 +105,7 @@ export class CoinjoinFilterController {
                     batchFrom: last.blockHeight,
                     progress: { from, to, current: last.blockHeight },
                 });
-                // eslint-disable-next-line no-await-in-loop
+
                 batch = await nextBatchPromise;
             } while (batch.response.status === 'ok');
         }

@@ -1,4 +1,4 @@
-/* eslint-disable no-underscore-dangle, @typescript-eslint/no-use-before-define */
+/* eslint-disable @typescript-eslint/no-use-before-define */
 
 // origin: https://github.com/trezor/connect/blob/develop/src/js/iframe/iframe.js
 
@@ -117,11 +117,9 @@ const handleMessage = async (event: MessageEvent<CoreRequestMessage>) => {
             );
         }
 
-        // eslint-disable-next-line camelcase
         const { tracking_enabled, tracking_id } = storage.load();
 
         analytics.init(tracking_enabled, {
-            // eslint-disable-next-line camelcase
             instanceId: tracking_id,
             commitId: process.env.COMMIT_HASH || '',
             isDev: process.env.NODE_ENV === 'development',

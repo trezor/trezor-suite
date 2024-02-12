@@ -1,6 +1,3 @@
-/* eslint-disable no-restricted-syntax */
-/* eslint-disable no-continue */
-
 import { execSync } from 'child_process';
 import path from 'path';
 

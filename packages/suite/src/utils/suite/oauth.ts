@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { getPrefixedURL } from 'src/utils/suite/router';
 import { METADATA_PROVIDER } from 'src/actions/suite/constants';

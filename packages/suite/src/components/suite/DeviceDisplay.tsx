@@ -128,13 +128,8 @@ export const DeviceDisplay = ({ address, network, valueDataTest }: DeviceDisplay
 
     const showChunksInRows = (chunks: ReactNode[][] | undefined, isNextAddress?: boolean) =>
         chunks?.map((row, rowIndex) => (
-            <Row
-                // eslint-disable-next-line react/no-array-index-key
-                key={rowIndex}
-                isAlignedRight={rowIndex === 0 && isNextAddress}
-            >
+            <Row key={rowIndex} isAlignedRight={rowIndex === 0 && isNextAddress}>
                 {row.map((chunk, chunkIndex) => (
-                    // eslint-disable-next-line react/no-array-index-key
                     <Text isPixelType={isPixelType} key={chunkIndex} data-test="chunk">
                         {chunk}
                     </Text>

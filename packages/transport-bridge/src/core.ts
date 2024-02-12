@@ -41,7 +41,7 @@ const writeUtil = async ({ path, data }: { path: string; data: string }) => {
 
     for (let i = 0; i < buffers.length; i++) {
         const bufferSegment = buffers[i];
-        // eslint-disable-next-line no-await-in-loop
+
         await api.write(path, bufferSegment);
     }
 };

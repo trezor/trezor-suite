@@ -23,7 +23,6 @@ export const retrieveStorageEncryptionKey = async () => {
     return secureKey;
 };
 
-// eslint-disable-next-line import/no-mutable-exports
 export let encryptedStorage: MMKV;
 
 export const clearStorage = () => {

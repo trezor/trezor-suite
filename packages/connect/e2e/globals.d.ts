@@ -1,4 +1,4 @@
-/* eslint-disable no-var, vars-on-top */
+/* eslint-disable no-var */
 
 // Globals used in connect test
 declare namespace globalThis {

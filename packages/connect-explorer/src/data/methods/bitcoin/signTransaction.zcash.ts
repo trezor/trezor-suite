@@ -1,4 +1,3 @@
-/* eslint-disable no-bitwise */
 import { select } from './common';
 
 const name = 'signTransaction';

@@ -77,7 +77,6 @@ const RoundedCorner = ({ x = 0, y = 0, width, height, ...restProps }: RoundedCor
                 height={height}
                 r={ROUNDED_CORNER_SIZE}
                 color="lightgrey"
-                // eslint-disable-next-line react/style-prop-object
                 style="stroke"
                 strokeWidth={1}
                 antiAlias

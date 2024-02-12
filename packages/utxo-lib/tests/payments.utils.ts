@@ -1,4 +1,3 @@
-/* eslint-disable no-continue */
 import * as BNETWORKS from '../src/networks';
 import * as bscript from '../src/script';
 
@@ -25,7 +24,6 @@ function asmToBuffer(x: string): Buffer {
 }
 
 function carryOver(a: any, b: any): void {
-    // eslint-disable-next-line no-restricted-syntax
     for (const k in b) {
         if (!k) continue;
         if (k in a && k === 'redeem') {

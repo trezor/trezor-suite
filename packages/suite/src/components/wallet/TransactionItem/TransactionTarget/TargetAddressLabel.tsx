@@ -33,10 +33,9 @@ export const TargetAddressLabel = ({ target, type, accountMetadata }: TargetAddr
                 // or it may show address metadata label added from receive tab e.g "My address for illegal things"
                 type === 'sent' ? (
                     // Using index as a key is safe as the array doesn't change (no filter/reordering, pushing new items)
-                    // eslint-disable-next-line react/no-array-index-key
+
                     <AddressLabeling key={i} address={a} />
                 ) : (
-                    // eslint-disable-next-line react/no-array-index-key
                     <span key={i}>{accountMetadata?.addressLabels[a] || a}</span>
                 ),
             )}

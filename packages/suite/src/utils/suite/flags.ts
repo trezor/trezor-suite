@@ -1,5 +1,3 @@
-/* eslint-disable no-bitwise */
-
 export const HAS_EMAIL_FLAG = 'hasEmail';
 export const HAS_BOOKMARK_FLAG = 'hasBookmark';
 

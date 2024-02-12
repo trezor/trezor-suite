@@ -43,11 +43,10 @@ const getAllSignatures = async (
 
     const limit = 100;
     while (keepFetching) {
-        const signaturesInfos = // eslint-disable-next-line no-await-in-loop
-            await api.getSignaturesForAddress(new PublicKey(descriptor), {
-                before: lastSignature?.signature,
-                limit,
-            });
+        const signaturesInfos = await api.getSignaturesForAddress(new PublicKey(descriptor), {
+            before: lastSignature?.signature,
+            limit,
+        });
 
         const signatures = signaturesInfos.map(info => ({
             signature: info.signature,

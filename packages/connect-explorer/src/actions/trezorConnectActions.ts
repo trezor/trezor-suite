@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 import TrezorConnect, { DEVICE, DEVICE_EVENT, TRANSPORT_EVENT } from '@trezor/connect-web';
 
 import { TrezorConnectDevice, Dispatch, Field, GetState } from '../types';

@@ -233,7 +233,7 @@ describe('Suite init action', () => {
             const store = initStore(getInitialState(options.initialRun));
 
             if (options?.initialPath) {
-                // eslint-disable-next-line global-require, @typescript-eslint/no-var-requires
+                // eslint-disable-next-line @typescript-eslint/no-var-requires
                 require('src/support/history').default.location.pathname = options.initialPath;
             }
 
