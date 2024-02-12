@@ -3,10 +3,11 @@ import { useEffect, useState } from 'react';
 import type { Locale } from 'date-fns';
 
 import { useSelector } from 'src/hooks/suite';
+import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 
 export const useLocales = () => {
     const [locale, setLocale] = useState<Locale>();
-    const language = useSelector(state => state.suite.settings.language);
+    const language = useSelector(selectLanguage);
 
     useEffect(() => {
         let active = true;

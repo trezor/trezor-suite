@@ -19,6 +19,7 @@ import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants'
 import type { AppState } from 'src/types/suite';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { networkToCryptoSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
+import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 
 export const SpendContext = createContext<SpendContextValues | null>(null);
 SpendContext.displayName = 'CoinmarketSpendContext';
@@ -70,7 +71,7 @@ export const useCoinmarketSpend = ({
     const { account, network } = selectedAccount;
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
     const sellInfo = useSelector(state => state.wallet.coinmarket.sell.sellInfo);
-    const language = useSelector(state => state.suite.settings.language);
+    const language = useSelector(selectLanguage);
     const fees = useSelector(state => state.wallet.fees);
 
     const country = sellInfo?.sellList?.country;

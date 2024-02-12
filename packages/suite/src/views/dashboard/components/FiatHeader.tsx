@@ -2,6 +2,7 @@ import { useFormatters } from '@suite-common/formatters';
 import { typography } from '@trezor/theme';
 import { HiddenPlaceholder } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
+import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 import styled from 'styled-components';
 
 const ValueWrapper = styled.div`
@@ -31,7 +32,7 @@ interface FiatHeaderProps {
 }
 
 export const FiatHeader = ({ size, fiatAmount, localCurrency }: FiatHeaderProps) => {
-    const language = useSelector(state => state.suite.settings.language);
+    const language = useSelector(selectLanguage);
     const { FiatAmountFormatter } = useFormatters();
     const formattedAmount = FiatAmountFormatter({
         value: fiatAmount,
