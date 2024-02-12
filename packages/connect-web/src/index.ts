@@ -233,7 +233,7 @@ const call: CallMethod = async params => {
     } catch (error) {
         _log.error('__call error', error);
         if (_popupManager) {
-            _popupManager.clear();
+            _popupManager.clear(false);
         }
         return createErrorMessage(error);
     }
