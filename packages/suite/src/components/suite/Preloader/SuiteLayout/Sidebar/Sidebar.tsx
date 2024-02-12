@@ -6,11 +6,13 @@ import { AccountsMenu } from 'src/components/wallet/WalletLayout/AccountsMenu/Ac
 import { QuickActions } from './QuickActions';
 import { ElevationContext } from '@trezor/components';
 
+export const SIDEBAR_WIDTH_NUMERIC = 280;
+
 const Container = styled.nav`
     display: flex;
     flex-direction: column;
     flex: 0 0 auto;
-    width: 280px;
+    width: ${SIDEBAR_WIDTH_NUMERIC}px;
     resize: horizontal;
     min-width: 200px;
     max-width: 400px;
