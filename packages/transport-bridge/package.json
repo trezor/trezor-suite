@@ -9,17 +9,11 @@
         "type-check": "yarn g:tsc --build",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
-    "devDependencies": {
-        "@types/cors": "^2.8.17",
-        "@types/express": "^4"
-    },
     "dependencies": {
         "@trezor/node-utils": "workspace:^",
         "@trezor/protocol": "workspace:*",
         "@trezor/transport": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "cors": "^2.8.5",
-        "express": "^4.18.2",
         "usb": "^2.11.0"
     }
 }
