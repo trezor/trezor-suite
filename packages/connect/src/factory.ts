@@ -102,6 +102,8 @@ export const factory = <
 
     composeTransaction: params => call({ ...params, method: 'composeTransaction' }),
 
+    eraseBonds: params => call({ ...params, method: 'eraseBonds' }),
+
     ethereumGetAddress: params =>
         call({
             ...params,

@@ -38,6 +38,7 @@ import { ethereumSignMessage } from './ethereumSignMessage';
 import { ethereumSignTransaction } from './ethereumSignTransaction';
 import { ethereumSignTypedData } from './ethereumSignTypedData';
 import { ethereumVerifyMessage } from './ethereumVerifyMessage';
+import { eraseBonds } from './eraseBonds';
 import { firmwareUpdate } from './firmwareUpdate';
 import { getAccountDescriptor } from './getAccountDescriptor';
 import { getAccountInfo } from './getAccountInfo';
@@ -206,6 +207,9 @@ export interface TrezorConnect {
 
     // https://connect.trezor.io/9/methods/ethereum/ethereumVerifyMessage/
     ethereumVerifyMessage: typeof ethereumVerifyMessage;
+
+    // https://connect.trezor.io/9/methods/device/eraseBonds/
+    eraseBonds: typeof eraseBonds;
 
     // https://connect.trezor.io/9/methods/device/firmwareUpdate/
     firmwareUpdate: typeof firmwareUpdate;

@@ -1,5 +1,8 @@
 {
     "nested": {
+        "EraseBonds": {
+            "fields": {}
+        },
         "BinanceGetAddress": {
             "fields": {
                 "address_n": {
@@ -6863,6 +6866,7 @@
                 "BinanceOrderMsg": 707,
                 "BinanceCancelMsg": 708,
                 "BinanceSignedTx": 709,
+                "EraseBonds": 8006,
                 "SolanaGetPublicKey": 900,
                 "SolanaPublicKey": 901,
                 "SolanaGetAddress": 902,
