@@ -21,7 +21,7 @@ export const PageName = ({ backRoute }: PageNameProps) => {
     // as the `route` does not indicate the current page
     // (however location.pathname does)
     if (currentRoute?.includes('settings')) {
-        return <SettingsName nameId="TR_SETTINGS" />;
+        return <SettingsName />;
     }
 
     if (selectedAccount && isAccountTabPage) {

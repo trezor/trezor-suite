@@ -9,7 +9,7 @@ export type RouterState = {
     url: string;
     pathname: string;
     hash?: string;
-    settingsBackRoute: SettingsBackRoute;
+    settingsBackRoute: SettingsBackRoute; // TODO: Probably not needed with the new router
     anchor?: AnchorType;
 } & RouterAppWithParams;
 
