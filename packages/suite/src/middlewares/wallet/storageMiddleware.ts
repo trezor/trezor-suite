@@ -22,7 +22,7 @@ import { analyticsActions } from '@suite-common/analytics';
 import { db } from 'src/storage';
 import { WALLET_SETTINGS } from 'src/actions/settings/constants';
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
-import { GRAPH, SEND, COINMARKET_COMMON, FORM_DRAFT } from 'src/actions/wallet/constants';
+import { GRAPH, COINMARKET_COMMON, FORM_DRAFT } from 'src/actions/wallet/constants';
 import * as COINJOIN from 'src/actions/wallet/constants/coinjoinConstants';
 import * as storageActions from 'src/actions/suite/storageActions';
 import { SUITE, METADATA, STORAGE } from 'src/actions/suite/constants';
@@ -30,6 +30,7 @@ import * as metadataActions from 'src/actions/suite/metadataActions';
 import { serializeDiscovery } from 'src/utils/suite/storage';
 import type { AppState, Action as SuiteAction, Dispatch } from 'src/types/suite';
 import type { WalletAction } from 'src/types/wallet';
+import { sendFormActions } from '../../actions/wallet/sendFormActions';
 
 const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
     db.onBlocking = () => api.dispatch({ type: STORAGE.ERROR, payload: 'blocking' });
@@ -155,6 +156,19 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 }
             }
 
+            if (sendFormActions.storeDraft.match(action)) {
+                const device = selectDevice(api.getState());
+                const { formState, accountKey } = action.payload;
+                // save drafts for remembered device
+                if (isDeviceRemembered(device)) {
+                    storageActions.saveDraft(formState, accountKey);
+                }
+            }
+
+            if (sendFormActions.removeDraft.match(action)) {
+                storageActions.removeDraft(action.payload.accountKey);
+            }
+
             switch (action.type) {
                 case WALLET_SETTINGS.SET_HIDE_BALANCE:
                 case walletSettingsActions.setLocalCurrency.type:
@@ -198,17 +212,6 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     }
                     break;
                 }
-                case SEND.STORE_DRAFT: {
-                    const device = selectDevice(api.getState());
-                    // save drafts for remembered device
-                    if (isDeviceRemembered(device)) {
-                        storageActions.saveDraft(action.formState, action.key);
-                    }
-                    break;
-                }
-                case SEND.REMOVE_DRAFT:
-                    storageActions.removeDraft(action.key);
-                    break;
                 case COINMARKET_COMMON.SAVE_TRADE: {
                     const { type, ...trade } = action;
                     storageActions.saveCoinmarketTrade(trade);

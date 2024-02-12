@@ -139,6 +139,11 @@ export const extraDependencies: ExtraDependencies = {
         storageLoadDevices: (state, { payload }: StorageLoadAction) => {
             state.devices = payload.devices;
         },
+        storageLoadFormDrafts: (state, { payload }: StorageLoadAction) => {
+            payload.sendFormDrafts.forEach(d => {
+                state.drafts[d.key] = d.value;
+            });
+        },
     },
     utils: {
         saveAs: (data, fileName) => saveAs(data, fileName),

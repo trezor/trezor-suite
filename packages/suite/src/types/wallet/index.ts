@@ -16,7 +16,7 @@ import { CoinmarketP2pAction } from 'src/actions/wallet/coinmarketP2pActions';
 import { CoinmarketSavingsAction } from 'src/actions/wallet/coinmarketSavingsActions';
 import { CoinmarketCommonAction } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 import { GraphAction } from 'src/actions/wallet/graphActions';
-import { SendFormAction } from 'src/actions/wallet/sendFormActions';
+import { sendFormActions } from 'src/actions/wallet/sendFormActions';
 import { AccountSearchAction } from 'src/actions/wallet/accountSearchActions';
 import { FormDraftAction } from 'src/actions/wallet/formDraftActions';
 import { CardanoStakingAction } from 'src/actions/wallet/cardanoStakingActions';
@@ -63,6 +63,7 @@ type AccountsAction = ReturnType<(typeof accountsActions)[keyof typeof accountsA
 type BlockchainAction = ReturnType<(typeof blockchainActions)[keyof typeof blockchainActions]>;
 type DiscoveryAction = ReturnType<(typeof discoveryActions)[keyof typeof discoveryActions]>;
 type StakeAction = ReturnType<(typeof stakeActions)[keyof typeof stakeActions]>;
+type SendFormAction = ReturnType<(typeof sendFormActions)[keyof typeof sendFormActions]>;
 
 export type WalletAction =
     | BlockchainAction

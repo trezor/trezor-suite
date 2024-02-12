@@ -18,7 +18,7 @@ import selectedAccountReducer from './selectedAccountReducer';
 import receiveReducer from './receiveReducer';
 import feesReducer from './feesReducer';
 import coinmarketReducer from './coinmarketReducer';
-import sendFormReducer from './sendFormReducer';
+import { prepareSendFormReducer } from './sendFormReducer';
 import accountSearchReducer from './accountSearchReducer';
 import formDraftReducer from './formDraftReducer';
 import cardanoStakingReducer from './cardanoStakingReducer';
@@ -32,6 +32,7 @@ export const fiatRatesReducer = prepareFiatRatesReducer(extraDependencies);
 export const discoveryReducer = prepareDiscoveryReducer(extraDependencies);
 export const tokenDefinitionsReducer = prepareTokenDefinitionsReducer(extraDependencies);
 export const stakeReducer = prepareStakeReducer(extraDependencies);
+export const sendFormReducer = prepareSendFormReducer(extraDependencies);
 
 const WalletReducers = combineReducers({
     fiat: fiatRatesReducer,
