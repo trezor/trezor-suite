@@ -419,9 +419,10 @@ export const countUniqueCoins = (accounts: Account[]) => {
 export const enhanceTokens = (tokens: Account['tokens']) => {
     if (!tokens) return [];
     return tokens
-        .filter(t => t.symbol && t.balance && t.name)
+        .filter(t => t.symbol && t.balance)
         .map(t => ({
             ...t,
+            name: t.name || t.symbol,
             symbol: t.symbol!.toLowerCase(),
             balance: formatAmount(t.balance!, t.decimals),
         }));
