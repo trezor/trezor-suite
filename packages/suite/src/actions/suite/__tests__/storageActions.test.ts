@@ -18,7 +18,7 @@ import * as walletSettingsActions from 'src/actions/settings/walletSettingsActio
 import { accountsReducer, fiatRatesReducer, transactionsReducer } from 'src/reducers/wallet';
 import walletSettingsReducer from 'src/reducers/wallet/settingsReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
-import sendFormReducer from 'src/reducers/wallet/sendFormReducer';
+import { prepareSendFormReducer } from 'src/reducers/wallet/sendFormReducer';
 import graphReducer from 'src/reducers/wallet/graphReducer';
 import storageMiddleware from 'src/middlewares/wallet/storageMiddleware';
 import { coinjoinReducer } from 'src/reducers/wallet/coinjoinReducer';
@@ -35,6 +35,7 @@ const { getSuiteDevice, getWalletAccount, getWalletTransaction } = testMocks;
 
 const discoveryReducer = prepareDiscoveryReducer(extraDependencies);
 const deviceReducer = prepareDeviceReducer(extraDependencies);
+const sendFormReducer = prepareSendFormReducer(extraDependencies);
 
 // TODO: add method in suite-storage for deleting all stored data (done as a static method on SuiteDB), call it after each test
 // TODO: test deleting device instances on parent device forget

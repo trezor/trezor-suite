@@ -26,12 +26,13 @@ import {
     PrecomposedTransactionFinal,
     PrecomposedTransactionFinalCardano,
     FormSignedTx,
+    AccountKey,
+    TxFinalCardano,
 } from '@suite-common/wallet-types';
 import { cloneObject, getSynchronize } from '@trezor/utils';
 
 import * as modalActions from 'src/actions/suite/modalActions';
 import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
-import { SEND } from 'src/actions/wallet/constants';
 import { Dispatch, GetState } from 'src/types/suite';
 import { Account } from 'src/types/wallet';
 import { MetadataAddPayload } from 'src/types/suite/metadata';
@@ -42,46 +43,81 @@ import * as sendFormRippleActions from './send/sendFormRippleActions';
 import * as sendFormSolanaActions from './send/sendFormSolanaActions';
 import * as sendFormCardanoActions from './send/sendFormCardanoActions';
 import { findLabelsToBeMovedOrDeleted, moveLabelsForRbfAction } from './moveLabelsForRbfActions';
+import { createAction } from '@reduxjs/toolkit';
 
-export type SendFormAction =
-    | {
-          type: typeof SEND.STORE_DRAFT;
-          key: string;
-          formState: FormState;
-      }
-    | {
-          type: typeof SEND.REMOVE_DRAFT;
-          key: string;
-      }
-    | {
-          type: typeof SEND.REQUEST_SIGN_TRANSACTION;
-          payload?: {
-              formValues: FormState;
-              transactionInfo: PrecomposedTransactionFinal;
-          };
-      }
-    | {
-          type: typeof SEND.REQUEST_PUSH_TRANSACTION;
-          payload?: FormSignedTx;
-      }
-    | {
-          type: typeof SEND.SEND_RAW;
-          payload?: boolean;
-      }
-    | {
-          type: typeof SEND.DISPOSE;
-      };
+export const MODULE_PREFIX = '@send';
+
+const storeDraft = createAction(
+    `${MODULE_PREFIX}/store-draft`,
+    ({ accountKey, formState }: { accountKey: AccountKey; formState: FormState }) => ({
+        payload: {
+            accountKey,
+            formState,
+        },
+    }),
+);
+
+const removeDraft = createAction(
+    `${MODULE_PREFIX}/remove-draft`,
+    ({ accountKey }: { accountKey: AccountKey }) => ({
+        payload: {
+            accountKey,
+        },
+    }),
+);
+
+const storePrecomposedTransaction = createAction(
+    `${MODULE_PREFIX}/store-precomposed-transaction`,
+    ({
+        formState,
+        transactionInfo,
+    }: {
+        formState: FormState;
+        transactionInfo: PrecomposedTransactionFinal | TxFinalCardano;
+    }) => ({
+        payload: {
+            formState,
+            transactionInfo,
+        },
+    }),
+);
+
+const storeSignedTransaction = createAction(
+    `${MODULE_PREFIX}/store-signed-transaction`,
+    ({ tx, coin }: FormSignedTx) => ({
+        payload: {
+            tx,
+            coin,
+        },
+    }),
+);
+
+const discardTransaction = createAction(`${MODULE_PREFIX}/discard-transaction`);
+
+const sendRaw = createAction(`${MODULE_PREFIX}/sendRaw`, (value: boolean) => ({
+    payload: { sendRaw: value },
+}));
+
+export const dispose = createAction(`${MODULE_PREFIX}/dispose`);
+
+export const sendFormActions = {
+    storeDraft,
+    removeDraft,
+    storePrecomposedTransaction,
+    storeSignedTransaction,
+    discardTransaction,
+    sendRaw,
+    dispose,
+};
 
 export const saveDraft = (formState: FormState) => (dispatch: Dispatch, getState: GetState) => {
     const { selectedAccount } = getState().wallet;
     if (selectedAccount.status !== 'loaded') return null;
 
-    dispatch({
-        type: SEND.STORE_DRAFT,
-        key: selectedAccount.account.key,
-        formState,
-    });
-};
+        dispatch(
+            sendFormActions.storeDraft({ accountKey: selectedAccount.account.key, formState }),
+        );
+    };
 
 export const getDraft = () => (_dispatch: Dispatch, getState: GetState) => {
     const { selectedAccount, send } = getState().wallet;
@@ -100,10 +136,7 @@ export const removeDraft = () => (dispatch: Dispatch, getState: GetState) => {
     const { key } = selectedAccount.account;
 
     if (send.drafts[key]) {
-        dispatch({
-            type: SEND.REMOVE_DRAFT,
-            key,
-        });
+        dispatch(sendFormActions.removeDraft({ accountKey: key }));
     }
 };
 
@@ -150,11 +183,12 @@ export const convertDrafts = () => (dispatch: Dispatch, getState: GetState) => {
             }
         });
 
-        dispatch({
-            type: SEND.STORE_DRAFT,
-            key,
-            formState: updatedDraft,
-        });
+        dispatch(
+            sendFormActions.storeDraft({
+                accountKey: key,
+                formState: updatedDraft,
+            }),
+        );
     });
 };
 
@@ -193,8 +227,7 @@ export const importRequest = () => (dispatch: Dispatch) =>
 // this could be called at any time during signTransaction or pushTransaction process (from TransactionReviewModal)
 export const cancelSignTx = () => (dispatch: Dispatch, getState: GetState) => {
     const { signedTx } = getState().wallet.send;
-    dispatch({ type: SEND.REQUEST_SIGN_TRANSACTION });
-    dispatch({ type: SEND.REQUEST_PUSH_TRANSACTION });
+    dispatch(sendFormActions.discardTransaction());
     // if transaction is not signed yet interrupt signing in TrezorConnect
     if (!signedTx) {
         TrezorConnect.cancel('tx-cancelled');
@@ -443,13 +476,12 @@ export const signTransaction =
         }
 
         // store formValues and transactionInfo in send reducer to be used by TransactionReviewModal
-        dispatch({
-            type: SEND.REQUEST_SIGN_TRANSACTION,
-            payload: {
-                formValues,
+        dispatch(
+            sendFormActions.storePrecomposedTransaction({
+                formState: formValues,
                 transactionInfo: enhancedTxInfo,
-            },
-        });
+            }),
+        );
 
         // TransactionReviewModal has 2 steps: signing and pushing
         // TrezorConnect emits UI.CLOSE_UI.WINDOW after the signing process
@@ -497,13 +529,12 @@ export const signTransaction =
         }
 
         // store serializedTx in reducer (TrezorConnect.pushTransaction params) to be used in TransactionReviewModal and pushTransaction method
-        dispatch({
-            type: SEND.REQUEST_PUSH_TRANSACTION,
-            payload: {
+        dispatch(
+            sendFormActions.storeSignedTransaction({
                 tx: serializedTx,
                 coin: account.symbol,
-            },
-        });
+            }),
+        );
 
         // Open a deferred modal and get the decision
         const decision = await dispatch(
@@ -514,11 +545,6 @@ export const signTransaction =
             return dispatch(pushTransaction(signedTransaction));
         }
     };
-
-export const sendRaw = (payload?: boolean): SendFormAction => ({
-    type: SEND.SEND_RAW,
-    payload,
-});
 
 export const pushRawTransaction =
     (tx: string, coin: Account['symbol']) => async (dispatch: Dispatch) => {
@@ -548,7 +574,3 @@ export const pushRawTransaction =
         // resolve sign process
         return sentTx.success;
     };
-
-export const dispose = (): SendFormAction => ({
-    type: SEND.DISPOSE,
-});

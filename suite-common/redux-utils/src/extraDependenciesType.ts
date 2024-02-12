@@ -89,6 +89,7 @@ export type ExtraDependencies = {
         addButtonRequestFirmware: AddButtonRequestReducer;
         setDeviceMetadataReducer: BaseReducer;
         storageLoadDevices: StorageLoadReducer;
+        storageLoadFormDrafts: StorageLoadReducer;
     };
     utils: {
         saveAs: (data: Blob, fileName: string) => void;
