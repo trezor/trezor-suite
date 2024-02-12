@@ -1,63 +1,60 @@
 import { ReactNode, useEffect, useRef, useState } from 'react';
-import styled, { DefaultTheme } from 'styled-components';
-import { Icon, useTheme, variables, Image } from '@trezor/components';
+import styled, { DefaultTheme, useTheme } from 'styled-components';
+import { Icon, variables } from '@trezor/components';
 import { ProgressLabelState } from './types';
+import { borders, spacingsPx } from '@trezor/theme';
 
 const DEFAULT_LABEL_HEIGHT = 48;
 
 const getProgressStateColor = ({
     theme,
     $progressState,
-    // TODO: Hack for current design. Remove when not needed.
-    $isIconWrapper = false,
 }: {
     theme: DefaultTheme;
     $progressState: ProgressLabelState;
-    $isIconWrapper?: boolean;
 }) => {
     if ($progressState === 'active') {
-        return theme.TYPE_LIGHT_ORANGE;
+        return theme.backgroundAlertYellowSubtleOnElevation2;
     }
 
     if ($progressState === 'done') {
-        return theme.BG_LIGHT_GREEN;
+        return theme.backgroundPrimarySubtleOnElevation1;
     }
 
-    return $isIconWrapper ? theme.STROKE_GREY : theme.BG_GREY;
+    return theme.backgroundSurfaceElevation2;
 };
 
 const ProgressLabelItem = styled.div<{
-    ref: any;
     $progressState: ProgressLabelState;
     $currentHeight?: number;
 }>`
     background: ${({ theme, $progressState }) => getProgressStateColor({ theme, $progressState })};
     display: flex;
-    gap: 12px;
-    padding: 8px 12px;
+    gap: ${spacingsPx.sm};
+    padding: ${spacingsPx.xs} ${spacingsPx.sm};
     align-items: center;
-    border-radius: 25px;
+    border-radius: ${borders.radii.full};
     min-height: ${DEFAULT_LABEL_HEIGHT}px;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.SMALL};
     color: ${({ theme, $progressState }) => {
         if ($progressState === 'active') {
-            return theme.TYPE_ORANGE;
+            return theme.textAlertYellow;
         }
         if ($progressState === 'done') {
-            return theme.TYPE_GREEN;
+            return theme.textPrimaryDefault;
         }
 
-        return theme.TYPE_LIGHT_GREY;
+        return theme.textSubdued;
     }};
 
     &:not(:last-of-type) {
         position: relative;
-        margin-right: 8px;
+        margin-right: ${spacingsPx.xs};
         border-top-right-radius: 0;
         border-bottom-right-radius: 0;
 
-        &:after {
+        &::after {
             content: '';
             display: block;
             position: absolute;
@@ -79,13 +76,13 @@ const ProgressLabelItem = styled.div<{
         border-bottom-left-radius: 0;
         padding-left: 20px;
 
-        &:before {
+        &::before {
             content: '';
             display: block;
             position: absolute;
             top: 0;
             left: 0;
-            border-left: 12px solid ${({ theme }) => theme.BG_WHITE};
+            border-left: 12px solid ${({ theme }) => theme.backgroundSurfaceElevation1};
             border-top: ${({ $currentHeight = DEFAULT_LABEL_HEIGHT }) => $currentHeight / 2}px solid
                 transparent;
             border-bottom: ${({ $currentHeight = DEFAULT_LABEL_HEIGHT }) => $currentHeight / 2}px
@@ -95,9 +92,16 @@ const ProgressLabelItem = styled.div<{
 `;
 
 const IconWrapper = styled.div<{ $progressState: ProgressLabelState }>`
-    // TODO: Add right bg colors when they're in the design system
-    background: ${({ theme, $progressState }) =>
-        getProgressStateColor({ theme, $progressState, $isIconWrapper: true })};
+    background: ${({ theme, $progressState }) => {
+        if ($progressState === 'active') {
+            return theme.backgroundAlertYellowSubtleOnElevation0;
+        }
+        if ($progressState === 'done') {
+            return theme.backgroundPrimarySubtleOnElevation0;
+        }
+
+        return theme.backgroundSurfaceElevationNegative;
+    }};
     border-radius: 100%;
     min-width: 24px;
     min-height: 24px;
@@ -110,7 +114,7 @@ const IconDot = styled.div`
     width: 4px;
     height: 4px;
     border-radius: 100%;
-    background: ${({ theme }) => theme.TYPE_DARK_GREY};
+    background: ${({ theme }) => theme.backgroundNeutralBold};
 `;
 
 interface ProgressLabelProps {
@@ -122,7 +126,7 @@ export const ProgressLabel = ({ children, progressState = 'stale' }: ProgressLab
     const theme = useTheme();
 
     // Watch height to adjust element's edge shape sizes (triangle, flag tale)
-    const ref = useRef<HTMLElement>(null);
+    const ref = useRef<HTMLDivElement>(null);
     const [currentHeight, setCurrentHeight] = useState(DEFAULT_LABEL_HEIGHT);
     useEffect(() => {
         if (ref.current === null) return;
@@ -143,11 +147,11 @@ export const ProgressLabel = ({ children, progressState = 'stale' }: ProgressLab
 
     const getProgressStateIcon = () => {
         if (progressState === 'active') {
-            return <Image width={20} height={20} image="SPINNER_ORANGE" />;
+            return <Icon icon="SPINNER" size={20} color={theme.iconAlertYellow} />;
         }
 
         if (progressState === 'done') {
-            return <Icon icon="CHECK" size={16} color={theme.TYPE_GREEN} />;
+            return <Icon icon="CHECK" size={16} color={theme.backgroundPrimaryDefault} />;
         }
 
         return <IconDot />;

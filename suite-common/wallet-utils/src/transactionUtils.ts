@@ -491,6 +491,14 @@ export const getTargetAmount = (
         return txAmount;
     }
 
+    // The amount used for Ethereum transactions (e.g. unstake) when there wasn't any account balance change
+    // except fees. In this case, there's no other amount available in other fields, but we still should show
+    // a user the amount info
+    const ethParsedAmount = transaction.ethereumSpecific?.parsedData?.params?.[0].values?.[0];
+    if (ethParsedAmount) {
+        return formatNetworkAmount(ethParsedAmount, transaction.symbol);
+    }
+
     // "sent to self" target while other non-self targets are also present
     return null;
 };

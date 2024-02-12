@@ -1,11 +1,12 @@
 import styled from 'styled-components';
+import { spacingsPx } from '@trezor/theme';
 import { ProgressLabelData } from './types';
 import { ProgressLabel } from './ProgressLabel';
 
 const ProgressLabelsList = styled.div`
     display: flex;
     flex-wrap: wrap;
-    row-gap: 8px;
+    row-gap: ${spacingsPx.xs};
 
     & > div {
         flex: 1 0 220px;

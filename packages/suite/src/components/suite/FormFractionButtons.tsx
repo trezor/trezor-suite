@@ -13,11 +13,11 @@ const Flex = styled.div`
     gap: 4px;
 `;
 
-const SmallButton = styled(Button).attrs(props => ({
+const TinyButton = styled(Button).attrs(props => ({
     ...props,
     variant: 'tertiary',
     type: 'button',
-    size: 'small',
+    size: 'tiny',
 }))``;
 
 interface FormFractionButtonsProps {
@@ -66,9 +66,9 @@ export const FormFractionButtons = ({
                 cursor="pointer"
                 disabled={!is10PercentDisabled}
             >
-                <SmallButton isDisabled={is10PercentDisabled} onClick={() => setRatioAmount(10)}>
+                <TinyButton isDisabled={is10PercentDisabled} onClick={() => setRatioAmount(10)}>
                     10%
-                </SmallButton>
+                </TinyButton>
             </Tooltip>
             <Tooltip
                 content={
@@ -83,9 +83,9 @@ export const FormFractionButtons = ({
                 cursor="pointer"
                 disabled={!is25PercentDisabled}
             >
-                <SmallButton isDisabled={is25PercentDisabled} onClick={() => setRatioAmount(4)}>
+                <TinyButton isDisabled={is25PercentDisabled} onClick={() => setRatioAmount(4)}>
                     25%
-                </SmallButton>
+                </TinyButton>
             </Tooltip>
             <Tooltip
                 content={
@@ -100,9 +100,9 @@ export const FormFractionButtons = ({
                 cursor="pointer"
                 disabled={!is50PercentDisabled}
             >
-                <SmallButton isDisabled={is50PercentDisabled} onClick={() => setRatioAmount(2)}>
+                <TinyButton isDisabled={is50PercentDisabled} onClick={() => setRatioAmount(2)}>
                     50%
-                </SmallButton>
+                </TinyButton>
             </Tooltip>
             <Tooltip
                 content={
@@ -117,9 +117,9 @@ export const FormFractionButtons = ({
                 cursor="pointer"
                 disabled={!is50PercentDisabled}
             >
-                <SmallButton isDisabled={isDisabled || isMaxDisabled} onClick={setMax}>
+                <TinyButton isDisabled={isDisabled || isMaxDisabled} onClick={setMax}>
                     <Translation id="TR_STAKE_MAX" />
-                </SmallButton>
+                </TinyButton>
             </Tooltip>
         </Flex>
     );

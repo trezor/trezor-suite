@@ -1,7 +1,7 @@
 import styled, { useTheme } from 'styled-components';
 import BigNumber from 'bignumber.js';
 import { getFeeUnits, formatNetworkAmount, formatAmount } from '@suite-common/wallet-utils';
-import { Icon, CoinLogo, variables, useTheme } from '@trezor/components';
+import { Icon, CoinLogo, variables } from '@trezor/components';
 import { formatDuration, isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { borders, spacingsPx, typography } from '@trezor/theme';
 import { TranslationKey } from '@suite-common/intl-types';
@@ -132,7 +132,9 @@ const TxDetailsButton = styled.button<{ detailsOpen: boolean }>`
     border: 0;
     ${typography.label}
     color: ${({ theme }) => theme.textSubdued};
-    transition: background 0.15s opacity 0.15s;
+    transition:
+        background 0.15s,
+        opacity 0.15s;
     background: ${({ theme, detailsOpen }) => detailsOpen && theme.backgroundSurfaceElevation3};
     cursor: pointer;
 

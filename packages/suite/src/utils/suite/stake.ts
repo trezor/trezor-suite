@@ -98,6 +98,7 @@ export const prepareStakeEthTx = async ({
         };
     } catch (e) {
         console.error(e);
+
         return {
             success: false,
             errorMessage: e.message,
@@ -130,6 +131,7 @@ export const prepareUnstakeEthTx = async ({
         };
     } catch (e) {
         console.error(e);
+
         return {
             success: false,
             errorMessage: e.message,
@@ -159,6 +161,7 @@ export const prepareClaimEthTx = async ({
         };
     } catch (e) {
         console.error(e);
+
         return {
             success: false,
             errorMessage: e.message,
@@ -225,6 +228,7 @@ export const getStakeTxGasLimit = async ({
         };
     } catch (e) {
         console.error(e);
+
         return {
             success: false,
             error: genericError,

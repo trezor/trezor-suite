@@ -3,7 +3,7 @@ import { AccountExceptionLayout, WalletLayout } from 'src/components/wallet';
 import { useSelector } from 'src/hooks/suite';
 import { CardanoStakingDashboard } from './components/CardanoStakingDashboard';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
-import { EthStakingDashboard } from './components/EthStakingDashboard';
+import { EthStakingDashboard } from './components/EthStakingDashboard/EthStakingDashboard';
 
 export const WalletStaking = () => {
     const { selectedAccount } = useSelector(state => state.wallet);

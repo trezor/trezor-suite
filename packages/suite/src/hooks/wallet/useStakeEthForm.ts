@@ -171,6 +171,7 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
 
     const composedFee = useMemo(() => {
         const transactionInfo = composedLevels?.[selectedFee];
+
         return transactionInfo !== undefined && transactionInfo.type !== 'error'
             ? new BigNumber(fromWei(transactionInfo.fee))
             : new BigNumber('0');
@@ -200,7 +201,7 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
 
             if (currentRate) {
                 const fiatValue = toFiatCurrency(amount, localCurrency, {
-                    [currentRate.locale]: currentRate?.rate,
+                    [localCurrency]: currentRate?.rate,
                 });
                 setValue(FIAT_INPUT, fiatValue || '', { shouldValidate: true });
             }
@@ -232,7 +233,7 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
                 amount,
                 localCurrency,
                 {
-                    [currentRate.locale]: currentRate?.rate,
+                    [localCurrency]: currentRate?.rate,
                 },
                 network.decimals,
             );
@@ -312,7 +313,7 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
 
                 const fiatValue = currentRate
                     ? toFiatCurrency(max, localCurrency, {
-                          [currentRate.locale]: currentRate?.rate,
+                          [localCurrency]: currentRate?.rate,
                       })
                     : '';
                 setValue(FIAT_INPUT, fiatValue || '', { shouldValidate: true, shouldDirty: true });
@@ -391,5 +392,6 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
 export const useStakeEthFormContext = () => {
     const ctx = useContext(StakeEthFormContext);
     if (ctx === null) throw Error('useStakeEthFormContext used without Context');
+
     return ctx;
 };

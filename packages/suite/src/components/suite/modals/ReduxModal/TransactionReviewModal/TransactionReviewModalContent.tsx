@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import { ConfirmOnDevice, variables } from '@trezor/components';
-import { DeviceModelInternal } from '@trezor/protobuf/lib/messages';
 import { Deferred } from '@trezor/utils';
 import { selectDevice, StakeState } from '@suite-common/wallet-core';
 import { isCardanoTx } from '@suite-common/wallet-utils';
@@ -14,6 +13,8 @@ import { getTransactionReviewModalActionText } from 'src/utils/suite/transaction
 import { Modal, Translation } from 'src/components/suite';
 import { TransactionReviewSummary } from './TransactionReviewSummary';
 import { TransactionReviewOutputList } from './TransactionReviewOutputList/TransactionReviewOutputList';
+import { TransactionReviewEvmExplanation } from './TransactionReviewEvmExplanation';
+import { DeviceModelInternal } from '@trezor/connect';
 
 const StyledModal = styled(Modal)`
     ${Modal.Body} {
@@ -22,7 +23,7 @@ const StyledModal = styled(Modal)`
     }
     ${Modal.Content} {
         @media (min-width: ${variables.SCREEN_SIZE.SM}) {
-            flex-direction: row;
+            flex-flow: row wrap;
         }
     }
 `;
@@ -153,6 +154,7 @@ export const TransactionReviewModalContent = ({
                 isRbfAction={isRbfAction}
                 actionText={actionText}
             />
+            <TransactionReviewEvmExplanation account={selectedAccount.account} />
         </StyledModal>
     );
 };

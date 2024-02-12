@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import styled from 'styled-components';
-import { Button, Checkbox, H2, Icon, useTheme, variables } from '@trezor/components';
+import styled, { useTheme } from 'styled-components';
+import { Button, Checkbox, H2, Icon, Divider } from '@trezor/components';
+import { spacingsPx } from '@trezor/theme';
 import { Modal, Translation, TrezorLink } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
@@ -13,46 +14,40 @@ const StyledModal = styled(Modal)`
 const VStack = styled.div`
     display: flex;
     flex-direction: column;
-    gap: 18px;
-    margin-top: 26px;
+    gap: ${spacingsPx.lg};
+    margin-top: ${spacingsPx.xl};
 `;
 
 const Flex = styled.div`
     display: flex;
     align-items: center;
-    gap: 16px;
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    gap: ${spacingsPx.md};
 `;
 
-const Divider = styled.div`
-    height: 1px;
-    background: ${({ theme }) => theme.STROKE_GREY};
-    margin: 20px 0 17px auto;
-    max-width: 396px;
-    width: 100%;
-
-    ${variables.SCREEN_QUERY.BELOW_TABLET} {
+const DividerWrapper = styled.div`
+    & > div {
+        background: ${({ theme }) => theme.borderOnElevation1};
+        margin: ${spacingsPx.lg} 0 ${spacingsPx.md} auto;
         max-width: 428px;
+        width: 100%;
     }
 `;
 
 const StyledCheckbox = styled(Checkbox)`
-    & > div:nth-child(2) {
-        color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-        font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-        font-size: ${variables.FONT_SIZE.NORMAL};
+    & > div:nth-child(3) {
+        color: ${({ theme }) => theme.textSubdued};
+        margin-left: ${spacingsPx.xs};
     }
 `;
 
 const ButtonsWrapper = styled.div`
     display: flex;
     flex-wrap: wrap;
-    gap: 4px;
+    gap: ${spacingsPx.xxs};
     width: 100%;
-    margin-top: 20px;
+    margin-top: ${spacingsPx.lg};
 
     & > button {
-        font-size: ${variables.FONT_SIZE.NORMAL};
         padding: 9px 22px;
         flex: 1 0 164px;
     }
@@ -85,11 +80,11 @@ export const ConfirmStakeEthModal = ({ onConfirm, onCancel }: ConfirmStakeEthMod
 
             <VStack>
                 <Flex>
-                    <Icon icon="CLOCK" size={24} color={theme.TYPE_DARK_ORANGE} />
+                    <Icon icon="CLOCK" size={24} color={theme.iconAlertYellow} />
                     <Translation id="TR_STAKE_ENTERING_POOL_MAY_TAKE" values={{ days: 35 }} />
                 </Flex>
                 <Flex>
-                    <Icon icon="HAND" size={24} color={theme.TYPE_DARK_ORANGE} />
+                    <Icon icon="HAND" size={24} color={theme.iconAlertYellow} />
                     <Translation
                         id="TR_STAKE_ETH_WILL_BE_BLOCKED"
                         values={{
@@ -104,7 +99,9 @@ export const ConfirmStakeEthModal = ({ onConfirm, onCancel }: ConfirmStakeEthMod
                 </Flex>
             </VStack>
 
-            <Divider />
+            <DividerWrapper>
+                <Divider />
+            </DividerWrapper>
 
             <StyledCheckbox onClick={() => setHasAgreed(!hasAgreed)} isChecked={hasAgreed}>
                 <Translation id="TR_STAKE_ACKNOWLEDGE_ENTRY_PERIOD" />

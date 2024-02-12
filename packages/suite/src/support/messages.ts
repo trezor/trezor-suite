@@ -8507,10 +8507,10 @@ export default defineMessages({
     },
     TR_STAKE_ETH_SEE_MONEY_DANCE_DESC: {
         id: 'TR_STAKE_ETH_SEE_MONEY_DANCE_DESC',
-        defaultMessage: 'Earn up to {apyPercent}% APY* by staking your Ethereum with Trezor.',
+        defaultMessage: 'Earn {apyPercent}% APY* by staking your Ethereum with Trezor.',
     },
-    TR_APY_DESC: {
-        id: 'TR_APY_DESC',
+    TR_STAKE_APY_DESC: {
+        id: 'TR_STAKE_APY_DESC',
         defaultMessage: '*Annual Percentage Yield',
     },
     TR_STAKE_ETH_LOCK_FUNDS: {
@@ -8533,47 +8533,47 @@ export default defineMessages({
         id: 'TR_AVAILABLE_NOW_FOR',
         defaultMessage: 'Available now for',
     },
-    TR_START_STAKING: {
-        id: 'TR_START_STAKING',
+    TR_STAKE_START_STAKING: {
+        id: 'TR_STAKE_START_STAKING',
         defaultMessage: 'Start staking',
     },
     TR_MAYBE_LATER: {
         id: 'TR_MAYBE_LATER',
         defaultMessage: 'Maybe later',
     },
-    TR_WHAT_IS_STAKING: {
-        id: 'TR_WHAT_IS_STAKING',
+    TR_STAKE_WHAT_IS_STAKING: {
+        id: 'TR_STAKE_WHAT_IS_STAKING',
         defaultMessage: 'What is staking?',
     },
-    TR_STAKING_IS: {
-        id: 'TR_STAKING_IS',
+    TR_STAKE_STAKING_IS: {
+        id: 'TR_STAKE_STAKING_IS',
         defaultMessage:
             "Staking is like a friendly gesture where you temporarily lock your Ethereum assets to support the blockchain's operation. As a sweet reward, you'll actually earn more ETH in return!",
     },
     TR_STAKE_ANY_AMOUNT_ETH: {
         id: 'TR_STAKE_ANY_AMOUNT_ETH',
         defaultMessage:
-            'Stake any amount and watch that sweet ETH roll in. With up to {apyPercent}% APY, your rewards earn too!',
+            'Stake any amount and watch that sweet ETH roll in. With our current APY rate of {apyPercent}%, your rewards earn too!',
     },
-    TR_STAKE_ETH_LEARN_MORE: {
-        id: 'TR_STAKE_ETH_LEARN_MORE',
+    TR_STAKE_LEARN_MORE: {
+        id: 'TR_STAKE_LEARN_MORE',
         defaultMessage: 'Learn more',
     },
-    TR_STAKING_IN_A_NUTSHELL: {
-        id: 'TR_STAKING_IN_A_NUTSHELL',
+    TR_STAKE_STAKING_IN_A_NUTSHELL: {
+        id: 'TR_STAKE_STAKING_IN_A_NUTSHELL',
         defaultMessage: 'Staking in a nutshell',
     },
-    TR_STAKED_ETH_AMOUNT_LOCKED: {
-        id: 'TR_STAKED_ETH_AMOUNT_LOCKED',
+    TR_STAKE_STAKED_ETH_AMOUNT_LOCKED: {
+        id: 'TR_STAKE_STAKED_ETH_AMOUNT_LOCKED',
         defaultMessage: 'The staked amount of ETH is locked and can’t be traded or sent.',
     },
-    TR_UNSTAKING_TAKES: {
-        id: 'TR_UNSTAKING_TAKES',
+    TR_STAKE_UNSTAKING_TAKES: {
+        id: 'TR_STAKE_UNSTAKING_TAKES',
         defaultMessage:
             'Unstaking usually takes about 3 days. Once completed, you can trade or send it.',
     },
-    TR_ETH_REWARDS_EARN: {
-        id: 'TR_ETH_REWARDS_EARN',
+    TR_STAKE_ETH_REWARDS_EARN: {
+        id: 'TR_STAKE_ETH_REWARDS_EARN',
         defaultMessage: 'Your rewards also earn. Keep them staked and watch your ETH rewards soar.',
     },
     TR_STAKE_AVAILABLE: {
@@ -8667,7 +8667,7 @@ export default defineMessages({
     },
     TR_STAKE_WAITING_TO_BE_ADDED: {
         id: 'TR_STAKE_WAITING_TO_BE_ADDED',
-        defaultMessage: 'Your {symbol} is waiting to be added to the staking pool.',
+        defaultMessage: 'Your {symbol} is waiting to be added {br} to the staking pool.',
     },
     TR_TX_CONFIRMED: {
         id: 'TR_TX_CONFIRMED',
@@ -8753,6 +8753,10 @@ export default defineMessages({
         id: 'TOAST_TX_CLAIMED',
         defaultMessage: '{amount} claimed',
     },
+    TOAST_SUCCESSFUL_CLAIM: {
+        id: 'TOAST_SUCCESSFUL_CLAIM',
+        defaultMessage: '{symbol} claimed successfully',
+    },
     TR_STAKE_TOTAL_PENDING: {
         id: 'TR_STAKE_TOTAL_PENDING',
         defaultMessage: 'Total stake pending:',
@@ -8769,10 +8773,6 @@ export default defineMessages({
         id: 'TR_STAKE_CAN_CLAIM_WARNING',
         defaultMessage:
             'You can already claim {amount} {symbol}. {br}Please claim or wait until new unstake is processed',
-    },
-    TOAST_SUCCESSFUL_CLAIM: {
-        id: 'TOAST_SUCCESSFUL_CLAIM',
-        defaultMessage: '{symbol} claimed successfully',
     },
     TR_STAKE_CLAIM_IN_NEXT_BLOCK: {
         id: 'TR_STAKE_CLAIM_IN_NEXT_BLOCK',

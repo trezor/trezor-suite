@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 import { variables } from '@trezor/components';
+import { spacingsPx } from '@trezor/theme';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { useSelector } from 'src/hooks/suite';
-import { useValidatorsQueue } from 'src/hooks/wallet/useValidatorsQueue';
+import { useSelector, useEverstakePoolStats, useValidatorsQueue } from 'src/hooks/suite';
 import { Divider, Translation } from 'src/components/suite';
 import { DashboardSection } from 'src/components/dashboard';
 import { StakingCard } from './StakingCard';
@@ -10,19 +10,18 @@ import { ApyCard } from './ApyCard';
 import { PayoutCard } from './PayoutCard';
 import { ClaimCard } from './claim/ClaimCard';
 import { Transactions } from './Transactions';
-import { useEverstakePoolStats } from '../hooks/useEverstakePoolStats';
 import { useDaysTo } from '../hooks/useDaysTo';
 
 const FlexCol = styled.div`
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: ${spacingsPx.xs};
 `;
 
 const FlexRow = styled.div`
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
+    gap: ${spacingsPx.xs};
 
     & > div {
         flex: 1 0 205px;
@@ -30,7 +29,7 @@ const FlexRow = styled.div`
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
         flex-direction: column;
-        gap: 8px;
+        gap: ${spacingsPx.xs};
 
         & > div {
             flex: 1 0 auto;
@@ -65,6 +64,7 @@ export const StakingDashboard = () => {
                         <PayoutCard
                             nextRewardPayout={nextRewardPayout}
                             daysToAddToPool={daysToAddToPool}
+                            validatorWithdrawTime={validatorsQueue.validatorWithdrawTime}
                         />
                     </FlexRow>
                 </FlexCol>

@@ -1,11 +1,12 @@
 import styled from 'styled-components';
-import { StakeEthFormContext, useStakeEthForm } from 'src/hooks/wallet/useStakeEthForm';
-import { StakeEthForm } from './StakeEthForm';
+import { spacingsPx } from '@trezor/theme';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { StakeEthFormContext, useStakeEthForm } from 'src/hooks/wallet/useStakeEthForm';
+import { StakeEthForm } from './StakeEthForm/StakeEthForm';
 
 const Flex = styled.div`
     display: flex;
-    gap: 16px;
+    gap: ${spacingsPx.md};
 `;
 
 const Left = styled.div`
