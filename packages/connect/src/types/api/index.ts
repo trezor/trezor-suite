@@ -34,6 +34,7 @@ import { composeTransaction } from './composeTransaction';
 import { dispose } from './dispose';
 import { eosGetPublicKey } from './eosGetPublicKey';
 import { eosSignTransaction } from './eosSignTransaction';
+import { eraseBonds } from './eraseBonds';
 import { ethereumGetAddress } from './ethereumGetAddress';
 import { ethereumGetPublicKey } from './ethereumGetPublicKey';
 import { ethereumSignMessage } from './ethereumSignMessage';
@@ -216,6 +217,9 @@ export interface TrezorConnect {
 
     // https://connect.trezor.io/9/methods/ethereum/ethereumVerifyMessage/
     ethereumVerifyMessage: typeof ethereumVerifyMessage;
+
+    // https://connect.trezor.io/9/methods/device/eraseBonds/
+    eraseBonds: typeof eraseBonds;
 
     // https://connect.trezor.io/9/methods/device/firmwareUpdate/
     firmwareUpdate: typeof firmwareUpdate;
