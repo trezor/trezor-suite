@@ -1,6 +1,7 @@
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
-import { Button, Icon, P, variables } from '@trezor/components';
+import { Button, Icon, Paragraph, variables } from '@trezor/components';
+import { borders, spacingsPx } from '@trezor/theme';
 import { openModal } from 'src/actions/suite/modalActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
@@ -8,14 +9,14 @@ import { mapTestnetSymbol } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { FiatValueWrapper, FormattedCryptoAmountWrapper } from './styled';
 
 const StyledCard = styled.div`
-    border-radius: 16px;
-    padding: 16px 30px 30px 16px;
-    margin-bottom: 8px;
+    border-radius: ${borders.radii.md};
+    padding: ${spacingsPx.md} ${spacingsPx.xxl} ${spacingsPx.xxl} ${spacingsPx.md};
+    margin-bottom: ${spacingsPx.xs};
 
     background: linear-gradient(
         87deg,
-        ${({ theme }) => theme.BG_LIGHT_GREEN} 0%,
-        ${({ theme }) => theme.BG_WHITE} 73.33%
+        ${({ theme }) => theme.backgroundPrimarySubtleOnElevation1} 0%,
+        ${({ theme }) => theme.backgroundNeutralBoldInverted} 73.33%
     );
     position: relative;
     overflow: hidden;
@@ -33,39 +34,35 @@ const Flex = styled.div`
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    row-gap: 12px;
+    row-gap: ${spacingsPx.sm};
 `;
 
 const InfoWrapper = styled.div`
     display: flex;
     flex-wrap: wrap;
-    column-gap: 50px;
-    row-gap: 20px;
+    gap: ${spacingsPx.lg} 50px;
 `;
 
 const InfoHeading = styled.div`
     display: flex;
     align-items: center;
-    gap: 4px;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    gap: ${spacingsPx.xxs};
+    color: ${({ theme }) => theme.textSubdued};
     font-size: ${variables.FONT_SIZE.TINY};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    margin-bottom: 8px;
+    margin-bottom: ${spacingsPx.xs};
 `;
 
-const StyledP = styled(P)`
+const StyledP = styled(Paragraph)`
     font-size: ${variables.FONT_SIZE.H2};
-    line-height: normal;
+    line-height: 24px;
 `;
-
-// TODO: Move to theme.
-const iconColor = '#0F6148';
 
 interface ClaimReadyCardProps {
     claimAmount: string;
 }
 
 export const ClaimReadyCard = ({ claimAmount }: ClaimReadyCardProps) => {
+    const theme = useTheme();
     const { symbol } = useSelector(selectSelectedAccount) ?? {};
     const mappedSymbol = mapTestnetSymbol(symbol ?? 'eth');
     const dispatch = useDispatch();
@@ -75,17 +72,17 @@ export const ClaimReadyCard = ({ claimAmount }: ClaimReadyCardProps) => {
 
     return (
         <StyledCard>
-            <BgImgWrapper top={30} left={-8}>
-                <Icon icon="PIGGY_BANK_FILLED" size={31} color={iconColor} />
+            <BgImgWrapper top={30} left={-16}>
+                <Icon icon="PIGGY_BANK_FILLED" size={31} color={theme.iconPrimaryDefault} />
             </BgImgWrapper>
-            <BgImgWrapper top={93} left={126}>
-                <Icon icon="CURRENCY_ETH" size={29} color={iconColor} />
+            <BgImgWrapper top={103} left={126}>
+                <Icon icon="CURRENCY_ETH" size={29} color={theme.iconPrimaryDefault} />
             </BgImgWrapper>
-            <BgImgWrapper top={90} left={273}>
-                <Icon icon="MONEY" size={25} color={iconColor} />
+            <BgImgWrapper top={103} left={273}>
+                <Icon icon="MONEY" size={25} color={theme.iconPrimaryDefault} />
             </BgImgWrapper>
             <BgImgWrapper top={-3} left={340}>
-                <Icon icon="COIN_FILLED" size={31} color={iconColor} />
+                <Icon icon="COIN_FILLED" size={31} color={theme.iconPrimaryDefault} />
             </BgImgWrapper>
 
             <Flex>
@@ -114,7 +111,7 @@ export const ClaimReadyCard = ({ claimAmount }: ClaimReadyCardProps) => {
                             <Translation id="TR_STAKE_TIME_TO_CLAIM" />
                         </InfoHeading>
 
-                        <StyledP weight="medium">
+                        <StyledP>
                             <Translation id="TR_STAKE_INSTANT" />
                         </StyledP>
                     </div>

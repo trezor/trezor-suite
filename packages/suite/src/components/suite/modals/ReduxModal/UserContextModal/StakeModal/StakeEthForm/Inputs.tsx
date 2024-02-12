@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import { Icon, Warning } from '@trezor/components';
-import { variables } from '@trezor/components/src/config';
 import { getInputState } from '@suite-common/wallet-utils';
 import { useFormatters } from '@suite-common/formatters';
 import { formInputsMaxLength } from '@suite-common/validators';
@@ -16,6 +15,7 @@ import {
 } from 'src/utils/suite/validation';
 import { FIAT_INPUT, CRYPTO_INPUT } from 'src/types/wallet/stakeForms';
 import { MIN_ETH_FOR_WITHDRAWALS } from 'src/constants/suite/ethStaking';
+import { spacingsPx } from '@trezor/theme';
 
 const VStack = styled.div`
     display: flex;
@@ -25,17 +25,16 @@ const VStack = styled.div`
 
 const StyledIcon = styled(Icon)`
     transform: rotate(90deg);
-    margin-bottom: 22px;
+    margin-bottom: 26px;
 `;
 
 const InputAddon = styled.span`
     text-transform: uppercase;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    color: ${({ theme }) => theme.textSubdued};
 `;
 
 const StyledWarning = styled(Warning)`
-    margin-top: 12px;
+    margin-top: ${spacingsPx.sm};
 `;
 
 export const Inputs = () => {
@@ -47,7 +46,6 @@ export const Inputs = () => {
         account,
         network,
         formState: { errors },
-        getValues,
         amountLimits,
         onCryptoAmountChange,
         onFiatAmountChange,
@@ -57,8 +55,6 @@ export const Inputs = () => {
         currentRate,
     } = useStakeEthFormContext();
 
-    const cryptoValue = getValues(CRYPTO_INPUT);
-    const fiatValue = getValues(FIAT_INPUT);
     const cryptoError = errors.cryptoInput;
     const fiatError = errors.fiatInput;
 
@@ -87,40 +83,38 @@ export const Inputs = () => {
 
     return (
         <VStack>
-            {currentRate && (
-                <>
-                    <NumberInput
-                        noTopLabel
-                        name={FIAT_INPUT}
-                        control={control}
-                        rules={fiatInputRules}
-                        maxLength={formInputsMaxLength.fiat}
-                        innerAddon={<InputAddon>{localCurrency}</InputAddon>}
-                        bottomText={errors[FIAT_INPUT]?.message}
-                        inputState={getInputState(fiatError || cryptoError, fiatValue)}
-                        onChange={value => {
-                            onFiatAmountChange(value);
-                        }}
-                    />
-
-                    {/* TODO: Add new transfer icon. Export from Figma isn't handled as is it should by the strokes to fills online converter */}
-                    <StyledIcon icon="TRANSFER" size={16} />
-                </>
-            )}
-
             <NumberInput
-                noTopLabel
                 name={CRYPTO_INPUT}
                 control={control}
                 rules={cryptoInputRules}
                 maxLength={formInputsMaxLength.amount}
                 innerAddon={<InputAddon>{account.symbol}</InputAddon>}
-                bottomText={errors[CRYPTO_INPUT]?.message}
-                inputState={getInputState(cryptoError || fiatError, cryptoValue)}
+                bottomText={errors[CRYPTO_INPUT]?.message ?? null}
+                inputState={getInputState(cryptoError || fiatError)}
                 onChange={value => {
                     onCryptoAmountChange(value);
                 }}
             />
+
+            {currentRate && (
+                <>
+                    {/* TODO: Add new transfer icon. Export from Figma isn't handled as is it should by the strokes to fills online converter */}
+                    <StyledIcon icon="TRANSFER" size={16} />
+
+                    <NumberInput
+                        name={FIAT_INPUT}
+                        control={control}
+                        rules={fiatInputRules}
+                        maxLength={formInputsMaxLength.fiat}
+                        innerAddon={<InputAddon>{localCurrency}</InputAddon>}
+                        bottomText={errors[FIAT_INPUT]?.message ?? null}
+                        inputState={getInputState(fiatError || cryptoError)}
+                        onChange={value => {
+                            onFiatAmountChange(value);
+                        }}
+                    />
+                </>
+            )}
 
             {isAmountForWithdrawalWarningShown && (
                 <StyledWarning variant="info">

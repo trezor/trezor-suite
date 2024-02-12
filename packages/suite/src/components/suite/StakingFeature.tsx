@@ -1,19 +1,21 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
-import { H3, P, variables } from '@trezor/components';
-import { CircleBorder } from 'src/components/suite';
+import { H3, Paragraph, variables } from '@trezor/components';
+import { IconBorderedWrapper } from 'src/components/suite';
+import { spacingsPx } from '@trezor/theme';
 
 const StyledH3 = styled(H3)<{ size?: string }>`
-    margin-top: 18px;
+    margin-top: ${spacingsPx.lg};
     font-size: ${({ size }) => size === 'small' && variables.FONT_SIZE.NORMAL};
 `;
 
-const StyledP = styled(P)`
-    margin-top: 8px;
+const GreyP = styled(Paragraph)`
+    color: ${({ theme }) => theme.textSubdued};
 `;
 
-const GreyP = styled(StyledP)`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+const StyledP = styled(GreyP)`
+    margin-top: ${spacingsPx.xs};
+    font-size: ${variables.FONT_SIZE.TINY};
 `;
 
 interface StakingFeatureProps {
@@ -32,16 +34,12 @@ export const StakingFeature = ({
     extraDescription,
 }: StakingFeatureProps) => (
     <div>
-        <CircleBorder>{icon}</CircleBorder>
+        <IconBorderedWrapper>{icon}</IconBorderedWrapper>
 
         <StyledH3 size={titleSize}>{title}</StyledH3>
 
-        <GreyP size="small" weight="medium">
-            {description}
-        </GreyP>
+        <GreyP>{description}</GreyP>
 
-        <StyledP size="tiny" weight="medium">
-            {extraDescription}
-        </StyledP>
+        <StyledP>{extraDescription}</StyledP>
     </div>
 );

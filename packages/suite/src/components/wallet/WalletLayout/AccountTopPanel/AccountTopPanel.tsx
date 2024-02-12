@@ -34,7 +34,11 @@ const AccountCryptoBalance = styled.div`
 const AmountsWrapper = styled.div`
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: ${spacingsPx.sm};
+
+    & > div:nth-of-type(2) {
+        max-width: fit-content;
+    }
 `;
 
 interface AccountTopPanelSkeletonProps {

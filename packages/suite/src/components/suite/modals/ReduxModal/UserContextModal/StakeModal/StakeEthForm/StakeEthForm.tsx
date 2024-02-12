@@ -8,18 +8,19 @@ import { Inputs } from './Inputs';
 import { FeesInfo } from 'src/components/wallet/FeesInfo';
 import { ConfirmStakeEthModal } from './ConfirmStakeEthModal';
 import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/wallet/stakeForms';
+import { spacingsPx } from '@trezor/theme';
 
 const Body = styled.div`
-    margin-bottom: 26px;
+    margin-bottom: ${spacingsPx.xl};
 `;
 
 const InputsWrapper = styled.div`
-    margin-top: 16px;
-    margin-bottom: 22px;
+    margin-top: ${spacingsPx.md};
+    margin-bottom: ${spacingsPx.xl};
 `;
 
 const ButtonsWrapper = styled.div`
-    margin-top: 12px;
+    margin-top: ${spacingsPx.sm};
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -69,7 +70,12 @@ export const StakeEthForm = () => {
                         />
 
                         {(isDirty || hasValues) && (
-                            <Button type="button" variant="tertiary" onClick={clearForm}>
+                            <Button
+                                type="button"
+                                variant="tertiary"
+                                size="tiny"
+                                onClick={clearForm}
+                            >
                                 <Translation id="TR_CLEAR_ALL" />
                             </Button>
                         )}
@@ -83,7 +89,7 @@ export const StakeEthForm = () => {
                 </Body>
 
                 <Button
-                    fullWidth
+                    isFullWidth
                     isDisabled={!(formIsValid && hasValues) || isSubmitting}
                     isLoading={isComposing || isSubmitting}
                     onClick={handleSubmit(onSubmit)}

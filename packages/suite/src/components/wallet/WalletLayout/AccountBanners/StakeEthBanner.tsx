@@ -1,14 +1,15 @@
 import { useLocation } from 'react-router-dom';
-import styled from 'styled-components';
-import { Button, Icon, P, useTheme, variables } from '@trezor/components';
-import { Card, Translation, CircleBorder } from 'src/components/suite';
+import styled, { useTheme } from 'styled-components';
+import { Button, Card, Icon, Paragraph, variables, IconButton } from '@trezor/components';
+import { spacingsPx } from '@trezor/theme';
+import { Translation, IconBorderedWrapper } from 'src/components/suite';
 import { goto } from 'src/actions/suite/routerActions';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector, useEverstakePoolStats } from 'src/hooks/suite';
 import { selectSelectedAccountHasSufficientEthForStaking } from 'src/reducers/wallet/selectedAccountReducer';
 import { setFlag } from 'src/actions/suite/suiteActions';
 
 const StyledCard = styled(Card)`
-    padding: 18px 32px 18px 14px;
+    padding: ${spacingsPx.lg} ${spacingsPx.xxl} ${spacingsPx.lg} ${spacingsPx.md};
     flex-direction: column;
 `;
 
@@ -16,13 +17,13 @@ const Flex = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 16px;
+    gap: ${spacingsPx.md};
     flex-wrap: wrap;
 `;
 
 const Left = styled.div`
     display: flex;
-    gap: 14px;
+    gap: ${spacingsPx.sm};
     align-items: center;
     flex-wrap: wrap;
 `;
@@ -30,24 +31,19 @@ const Left = styled.div`
 const Right = styled.div`
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: ${spacingsPx.xs};
 `;
 
 const Title = styled.h4`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.textSubdued};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     margin-bottom: 4px;
 `;
 
 const Text = styled.div`
-    max-width: 370px;
+    max-width: 390px;
     line-height: 24px;
-`;
-
-const TertiaryButton = styled(Button)`
-    width: 38px;
-    height: 38px;
 `;
 
 export const StakeEthBanner = () => {
@@ -57,6 +53,7 @@ export const StakeEthBanner = () => {
     const hasSufficientEthForStaking = useSelector(selectSelectedAccountHasSufficientEthForStaking);
     const { pathname } = useLocation();
     const isShown = !stakeEthBannerClosed && pathname === '/accounts' && hasSufficientEthForStaking;
+    const { ethApy } = useEverstakePoolStats();
 
     const closeBanner = () => {
         dispatch(setFlag('stakeEthBannerClosed', true));
@@ -72,28 +69,31 @@ export const StakeEthBanner = () => {
         <StyledCard>
             <Flex>
                 <Left>
-                    <CircleBorder>
-                        <Icon icon="PIGGY_BANK" size={32} color={theme.TYPE_GREEN} />
-                    </CircleBorder>
+                    <IconBorderedWrapper>
+                        <Icon icon="PIGGY_BANK" size={32} color={theme.iconPrimaryDefault} />
+                    </IconBorderedWrapper>
 
                     <Text>
                         <Title>
                             <Translation id="TR_STAKE_ETH_EARN_REPEAT" />
                         </Title>
-                        <P weight="medium">
-                            <Translation id="TR_STAKE_ANY_AMOUNT_ETH" values={{ apyPercent: 5 }} />
-                        </P>
+                        <Paragraph>
+                            <Translation
+                                id="TR_STAKE_ANY_AMOUNT_ETH"
+                                values={{ apyPercent: ethApy }}
+                            />
+                        </Paragraph>
                     </Text>
                 </Left>
 
                 <Right>
                     <Button onClick={goToEthStakingTab}>
-                        <Translation id="TR_STAKE_ETH_LEARN_MORE" />
+                        <Translation id="TR_STAKE_LEARN_MORE" />
                     </Button>
-                    <TertiaryButton
-                        icon="CROSS"
+                    <IconButton
                         variant="tertiary"
-                        size={16}
+                        icon="CROSS"
+                        iconSize={16}
                         onClick={closeBanner}
                     />
                 </Right>

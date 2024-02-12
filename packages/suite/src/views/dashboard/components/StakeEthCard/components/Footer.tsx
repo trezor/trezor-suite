@@ -1,30 +1,35 @@
 import styled from 'styled-components';
-import { Button, P, variables } from '@trezor/components';
+import { Button, Paragraph, variables } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { NetworkBadge } from './NetworkBadge';
 import { useAccountSearch, useDispatch } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
+import { spacingsPx } from '@trezor/theme';
 
 const Wrapper = styled.div`
-    padding: 22px 20px 20px 36px;
+    padding: ${spacingsPx.lg} ${spacingsPx.lg} ${spacingsPx.lg} ${spacingsPx.xxl};
     border-top: 1px solid ${({ theme }) => theme.STROKE_LIGHT_GREY};
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: ${spacingsPx.xs};
+`;
+
+const StyledP = styled(Paragraph)`
+    font-size: ${variables.FONT_SIZE.TINY};
+    color: ${({ theme }) => theme.textSubdued};
 `;
 
 const Flex = styled.div`
-    margin-top: 6px;
     display: flex;
-    gap: 8px;
+    gap: ${spacingsPx.xs};
     flex-wrap: wrap;
 `;
 
 const Right = styled.div`
     display: flex;
-    gap: 8px;
+    gap: ${spacingsPx.xs};
 `;
 
 const ButtonTertiary = styled(Button)`
@@ -58,9 +63,9 @@ export const Footer = ({ accountIndex = 0, hideSection }: FooterProps) => {
     return (
         <Wrapper>
             <div>
-                <P size="tiny" weight="medium">
+                <StyledP>
                     <Translation id="TR_AVAILABLE_NOW_FOR" />
-                </P>
+                </StyledP>
                 {/* Flex is used because more networks will be available for staking in the future  */}
                 <Flex>
                     <NetworkBadge logo="eth" name={<Translation id="TR_NETWORK_ETHEREUM" />} />
@@ -69,7 +74,7 @@ export const Footer = ({ accountIndex = 0, hideSection }: FooterProps) => {
 
             <Right>
                 <Button onClick={goToEthStakingTab}>
-                    <Translation id="TR_START_STAKING" />
+                    <Translation id="TR_STAKE_START_STAKING" />
                 </Button>
                 <ButtonTertiary variant="tertiary" onClick={hideSection}>
                     <Translation id="TR_MAYBE_LATER" />

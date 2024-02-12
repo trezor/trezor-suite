@@ -1,45 +1,44 @@
-import styled from 'styled-components';
-import { Button, H2, Icon, P, useTheme } from '@trezor/components';
-import { Card, Translation, StakingFeature } from 'src/components/suite';
+import { useMemo } from 'react';
+import styled, { useTheme } from 'styled-components';
+import { Button, Card, Icon, Paragraph } from '@trezor/components';
+import { spacingsPx } from '@trezor/theme';
+import { Translation, StakingFeature } from 'src/components/suite';
 import { openModal } from 'src/actions/suite/modalActions';
-import { useDispatch } from 'src/hooks/suite';
+import { useDispatch, useEverstakePoolStats } from 'src/hooks/suite';
+import { DashboardSection } from 'src/components/dashboard';
 
 const StyledCard = styled(Card)`
-    padding: 26px 26px 36px;
+    padding: ${spacingsPx.xl} ${spacingsPx.xl} ${spacingsPx.xxl};
     flex-direction: column;
-`;
-
-const StyledH2 = styled(H2)`
-    margin-bottom: 18px;
 `;
 
 const Flex = styled.div`
     display: flex;
-    gap: 4px;
+    gap: ${spacingsPx.xxs};
     align-items: center;
 `;
 
-const StyledP = styled(P)`
-    margin-top: 8px;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+const StyledP = styled(Paragraph)`
+    margin-top: ${spacingsPx.xs};
+    color: ${({ theme }) => theme.textSubdued};
 `;
 
-const GreenP = styled(P)`
-    color: ${({ theme }) => theme.TYPE_GREEN};
+const GreenP = styled(Paragraph)`
+    color: ${({ theme }) => theme.textPrimaryDefault};
 `;
 
 const Header = styled.div`
-    padding-bottom: 22px;
+    padding-bottom: ${spacingsPx.xl};
 `;
 
 const Body = styled.div`
-    border-top: 1px solid ${({ theme }) => theme.STROKE_LIGHT_GREY};
+    border-top: 1px solid ${({ theme }) => theme.borderOnElevation1};
 `;
 
 const FlexRow = styled.div`
     display: flex;
     justify-content: space-between;
-    margin: 26px 0 34px;
+    margin: ${spacingsPx.xl} 0 ${spacingsPx.xxl};
     gap: 68px;
     flex-wrap: wrap;
 `;
@@ -50,53 +49,53 @@ const FlexRowChild = styled.div`
 
 export const EmptyStakingCard = () => {
     const theme = useTheme();
+    const { ethApy } = useEverstakePoolStats();
 
     const dispatch = useDispatch();
     const openStakingEthInANutshellModal = () =>
         dispatch(openModal({ type: 'stake-eth-in-a-nutshell' }));
 
-    const stakeEthFeatures = [
-        {
-            id: 0,
-            icon: <Icon icon="PIGGY_BANK" size={32} color={theme.TYPE_GREEN} />,
-            title: <Translation id="TR_STAKE_ETH_SEE_MONEY_DANCE" />,
-            description: (
-                <Translation
-                    id="TR_STAKE_ETH_SEE_MONEY_DANCE_DESC"
-                    values={{
-                        apyPercent: 5,
-                    }}
-                />
-            ),
-            extraDescription: <Translation id="TR_APY_DESC" />,
-        },
-        {
-            id: 1,
-            icon: <Icon icon="LOCK_LAMINATED_OPEN" size={32} color={theme.TYPE_GREEN} />,
-            title: <Translation id="TR_STAKE_ETH_LOCK_FUNDS" />,
-            description: <Translation id="TR_STAKE_ETH_LOCK_FUNDS_DESC" />,
-        },
-    ];
+    const stakeEthFeatures = useMemo(
+        () => [
+            {
+                id: 0,
+                icon: <Icon icon="PIGGY_BANK" size={32} color={theme.iconPrimaryDefault} />,
+                title: <Translation id="TR_STAKE_ETH_SEE_MONEY_DANCE" />,
+                description: (
+                    <Translation
+                        id="TR_STAKE_ETH_SEE_MONEY_DANCE_DESC"
+                        values={{
+                            apyPercent: ethApy,
+                        }}
+                    />
+                ),
+                extraDescription: <Translation id="TR_STAKE_APY_DESC" />,
+            },
+            {
+                id: 1,
+                icon: (
+                    <Icon icon="LOCK_LAMINATED_OPEN" size={32} color={theme.iconPrimaryDefault} />
+                ),
+                title: <Translation id="TR_STAKE_ETH_LOCK_FUNDS" />,
+                description: <Translation id="TR_STAKE_ETH_LOCK_FUNDS_DESC" />,
+            },
+        ],
+        [ethApy, theme.iconPrimaryDefault],
+    );
 
     return (
-        <div>
-            <StyledCard
-                customHeader={
-                    <StyledH2>
-                        <Translation id="TR_STAKE_ETH" />
-                    </StyledH2>
-                }
-            >
+        <DashboardSection heading={<Translation id="TR_STAKE_ETH" />}>
+            <StyledCard>
                 <Header>
                     <Flex>
-                        <Icon icon="QUESTION_FILLED" size={11} color={theme.TYPE_GREEN} />
+                        <Icon icon="QUESTION_FILLED" size={11} color={theme.iconPrimaryDefault} />
 
-                        <GreenP size="tiny" weight="bold">
-                            <Translation id="TR_WHAT_IS_STAKING" />
+                        <GreenP>
+                            <Translation id="TR_STAKE_WHAT_IS_STAKING" />
                         </GreenP>
                     </Flex>
-                    <StyledP size="small" weight="medium">
-                        <Translation id="TR_STAKING_IS" />
+                    <StyledP>
+                        <Translation id="TR_STAKE_STAKING_IS" />
                     </StyledP>
                 </Header>
 
@@ -119,10 +118,10 @@ export const EmptyStakingCard = () => {
 
                     {/* TODO: Add arrow line down icon. Export from Figma isn't handled as is it should by the strokes to fills online converter */}
                     <Button onClick={openStakingEthInANutshellModal}>
-                        <Translation id="TR_START_STAKING" />
+                        <Translation id="TR_STAKE_START_STAKING" />
                     </Button>
                 </Body>
             </StyledCard>
-        </div>
+        </DashboardSection>
     );
 };

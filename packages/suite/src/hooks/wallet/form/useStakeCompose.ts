@@ -72,6 +72,7 @@ export const useStakeCompose = <TFieldValues extends StakeFormState>({
                 }
 
                 const values = getValues();
+
                 return dispatch(composeTransaction(values, state));
             });
 
@@ -104,6 +105,7 @@ export const useStakeCompose = <TFieldValues extends StakeFormState>({
                     // this error is unexpected and should be handled in sendFormActions
                     console.warn('Compose unexpected error', error);
                     setLoading(false);
+
                     return;
                 }
 
@@ -124,6 +126,7 @@ export const useStakeCompose = <TFieldValues extends StakeFormState>({
                     values.outputs.forEach((_, i) => setError(`outputs.${i}.amount`, formError));
                 }
                 setLoading(false);
+
                 return;
             }
 

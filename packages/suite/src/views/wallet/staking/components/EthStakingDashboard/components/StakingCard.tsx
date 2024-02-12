@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js';
-import styled from 'styled-components';
-import { Button, Card, Icon, Image, useTheme, variables } from '@trezor/components';
+import styled, { useTheme } from 'styled-components';
+import { Button, Card, Icon, variables } from '@trezor/components';
+import { spacingsPx } from '@trezor/theme';
 import { selectAccountStakeTransactions } from '@suite-common/wallet-core';
 import { isPending } from '@suite-common/wallet-utils';
 import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
@@ -13,23 +14,22 @@ import {
 import { mapTestnetSymbol } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { MIN_ETH_AMOUNT_FOR_STAKING } from 'src/constants/suite/ethStaking';
 import { InfoBox, ProgressBar } from './styled';
-import { ProgressLabels } from './ProgressLabels';
+import { ProgressLabels } from './ProgressLabels/ProgressLabels';
 import { useProgressLabelsData } from '../hooks/useProgressLabelsData';
 import { useIsTxStatusShown } from '../hooks/useIsTxStatusShown';
 
 const StyledCard = styled(Card)`
-    padding: 16px;
+    padding: ${spacingsPx.md};
 `;
 
 const EnteringAmountInfo = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 4px;
+    gap: ${spacingsPx.xxs};
     flex-wrap: wrap;
-    padding: 2px 8px 10px 8px;
+    padding: ${spacingsPx.xxxs} ${spacingsPx.xs} ${spacingsPx.sm} ${spacingsPx.xs};
     font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
 const EnteringAmountsWrapper = styled.div`
@@ -37,13 +37,12 @@ const EnteringAmountsWrapper = styled.div`
 `;
 
 const EnteringFiatValueWrapper = styled.span`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.textSubdued};
 `;
 
 const AmountsWrapper = styled.div<{ $isUnstakePending: boolean }>`
     display: flex;
-    column-gap: 8px;
-    row-gap: 12px;
+    gap: ${spacingsPx.sm} ${spacingsPx.xs};
     flex-wrap: wrap;
     justify-content: ${({ $isUnstakePending }) =>
         $isUnstakePending ? 'space-between' : 'flex-start'};
@@ -55,40 +54,36 @@ const AmountsWrapper = styled.div<{ $isUnstakePending: boolean }>`
 
 const AmountHeading = styled.div`
     display: flex;
-    gap: 4px;
+    gap: ${spacingsPx.xxs};
     align-items: center;
     font-size: ${variables.FONT_SIZE.TINY};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.textSubdued};
 `;
 
 const StyledFormattedCryptoAmount = styled(FormattedCryptoAmount)<{ $isRewards?: boolean }>`
     display: block;
-    margin-top: 8px;
+    margin-top: ${spacingsPx.xs};
     font-size: ${variables.FONT_SIZE.H2};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ $isRewards = false, theme }) => ($isRewards ? theme.TYPE_GREEN : '')};
+    color: ${({ $isRewards = false, theme }) => ($isRewards ? theme.textPrimaryDefault : '')};
 `;
 
 const StyledFiatValue = styled(FiatValue)`
     display: block;
     font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.textSubdued};
 `;
 
 const ProgressBarWrapper = styled.div`
-    margin-top: 36px;
+    margin-top: ${spacingsPx.xxxl};
 `;
 
 const Info = styled.div`
-    margin: 16px 0 0 6px;
+    margin: ${spacingsPx.md} 0 0 ${spacingsPx.xs};
     display: flex;
-    gap: 4px;
+    gap: ${spacingsPx.xxs};
     align-items: center;
     font-size: ${variables.FONT_SIZE.TINY};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.textSubdued};
 `;
 
 const NoMarginInfo = styled(Info)`
@@ -96,13 +91,13 @@ const NoMarginInfo = styled(Info)`
 `;
 
 const SmMarginInfo = styled(Info)`
-    margin: 0 0 2px 6px;
+    margin: 0 0 ${spacingsPx.xxxs} ${spacingsPx.xs};
 `;
 
 const ButtonsWrapper = styled.div`
     margin-top: 66px;
     display: flex;
-    gap: 8px;
+    gap: ${spacingsPx.xs};
     flex-wrap: wrap;
 `;
 
@@ -176,7 +171,7 @@ export const StakingCard = ({
                     <EnteringAmountInfo>
                         <Translation
                             id="TR_STAKE_WAITING_TO_BE_ADDED"
-                            values={{ symbol: symbol?.toUpperCase() }}
+                            values={{ symbol: symbol?.toUpperCase(), br: <br /> }}
                         />
 
                         <EnteringAmountsWrapper>
@@ -253,11 +248,7 @@ export const StakingCard = ({
                 {isPendingUnstakeShown && (
                     <div>
                         <AmountHeading>
-                            <Image
-                                width={18}
-                                height={18}
-                                image={theme.THEME === 'dark' ? 'SPINNER_GREY' : 'SPINNER_BLACK'}
-                            />
+                            <Icon icon="SPINNER" size={18} color={theme.iconSubdued} />
                             <span>
                                 <Translation id="TR_STAKE_UNSTAKING" />{' '}
                                 {isDaysToUnstakeShown && (

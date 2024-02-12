@@ -30,6 +30,11 @@ export const useEverstakePoolStats = () => {
                 );
 
                 const stats = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(`${response.status} ${stats.message}`);
+                }
+
                 setPoolStats({
                     ethApy: new BigNumber(stats.apr)
                         .times(100)
@@ -46,6 +51,7 @@ export const useEverstakePoolStats = () => {
         };
 
         getEverstakePoolStats();
+
         return () => {
             abortController.abort();
         };

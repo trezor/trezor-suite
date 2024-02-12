@@ -3,8 +3,8 @@ import { Modal, Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { StakeModalContent } from './StakeModalContent';
 
+// TODO: Make the modal wider when the right section with the graph and staking info is implemented.
 const StyledModal = styled(Modal)`
-    // TODO: Make the modal wider when the right section with the graph and staking info is implemented.
     width: 400px;
     text-align: left;
 `;

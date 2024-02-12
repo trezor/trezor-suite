@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
-import { H3, Icon, P, Tooltip, variables } from '@trezor/components';
+import { H3, Icon, Paragraph, Tooltip, variables } from '@trezor/components';
+import { spacingsPx } from '@trezor/theme';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { FormattedCryptoAmount, FiatValue, Translation } from 'src/components/suite';
 import { mapTestnetSymbol } from 'src/utils/wallet/coinmarket/coinmarketUtils';
@@ -15,27 +16,27 @@ const Flex = styled.div`
 
 const StyledH3 = styled(H3)`
     font-size: ${variables.FONT_SIZE.NORMAL};
+    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     line-height: normal;
 `;
 
 const StyledH3Wrapper = styled.div`
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: ${spacingsPx.xxs};
 `;
 
 const Right = styled.div`
     text-align: right;
 `;
 
-const GreyP = styled(P)`
-    margin-top: 4px;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+const GreyP = styled(Paragraph)`
+    margin-top: ${spacingsPx.xxs};
+    color: ${({ theme }) => theme.textSubdued};
 `;
 
 const HelperTextWrapper = styled(GreyP)`
     font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
 interface FeesInfoProps {
@@ -52,7 +53,7 @@ export const FeesInfo = ({ symbol, transactionInfo, helperText }: FeesInfoProps)
         <Flex>
             <div>
                 <StyledH3Wrapper>
-                    <StyledH3 fontWeight={600}>
+                    <StyledH3>
                         <Translation id="MAX_FEE" />
                     </StyledH3>
 
@@ -68,14 +69,14 @@ export const FeesInfo = ({ symbol, transactionInfo, helperText }: FeesInfoProps)
             <Right>
                 {isFeeShown && (
                     <>
-                        <P weight="medium">
+                        <Paragraph>
                             <FormattedCryptoAmount
                                 disableHiddenPlaceholder
                                 value={formatNetworkAmount(transactionInfo.fee, symbol)}
                                 symbol={symbol}
                             />
-                        </P>
-                        <GreyP size="small" weight="medium">
+                        </Paragraph>
+                        <GreyP>
                             <FiatValue
                                 disableHiddenPlaceholder
                                 amount={formatNetworkAmount(transactionInfo.fee, symbolForFiat)}

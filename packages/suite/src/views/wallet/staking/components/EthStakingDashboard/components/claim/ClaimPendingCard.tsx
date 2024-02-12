@@ -1,21 +1,22 @@
-import styled from 'styled-components';
-import { Image } from '@trezor/components';
+import styled, { useTheme } from 'styled-components';
+import { Icon } from '@trezor/components';
 import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { FiatValueWrapper, FormattedCryptoAmountWrapper } from './styled';
 import { useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { mapTestnetSymbol } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { variables } from '@trezor/components/src/config';
+import { borders, spacingsPx } from '@trezor/theme';
 
 const StyledCard = styled.div`
-    border-radius: 16px;
-    padding: 12px 28px 14px;
-    margin-bottom: 8px;
-    background: ${({ theme }) => theme.BG_LIGHT_GREEN};
+    border-radius: ${borders.radii.md};
+    padding: ${spacingsPx.sm} ${spacingsPx.xxl} ${spacingsPx.md};
+    margin-bottom: ${spacingsPx.xs};
+    background: ${({ theme }) => theme.backgroundPrimarySubtleOnElevation1};
     position: relative;
     overflow: hidden;
 
-    &:before {
+    &::before {
         content: '';
         display: block;
         position: absolute;
@@ -23,22 +24,21 @@ const StyledCard = styled.div`
         top: 0;
         width: 8px;
         height: 100%;
-        background: ${({ theme }) => theme.TYPE_GREEN};
+        background: ${({ theme }) => theme.backgroundPrimaryDefault};
     }
 `;
 
 const Flex = styled.div`
     display: flex;
-    gap: 18px;
+    gap: ${spacingsPx.lg};
     align-items: center;
     flex-wrap: wrap;
 `;
 
 const Heading = styled.div`
-    margin-bottom: 4px;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    margin-bottom: ${spacingsPx.xxs};
+    color: ${({ theme }) => theme.textSubdued};
     font-size: ${variables.FONT_SIZE.TINY};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
 interface ClaimPendingCardProps {
@@ -46,13 +46,14 @@ interface ClaimPendingCardProps {
 }
 
 export const ClaimPendingCard = ({ claimAmount }: ClaimPendingCardProps) => {
+    const theme = useTheme();
     const { symbol } = useSelector(selectSelectedAccount) ?? {};
     const mappedSymbol = mapTestnetSymbol(symbol ?? 'eth');
 
     return (
         <StyledCard>
             <Flex>
-                <Image width={40} height={40} image="SPINNER" />
+                <Icon icon="SPINNER" size={40} color={theme.iconPrimaryDefault} />
 
                 <div>
                     <Heading>

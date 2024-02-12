@@ -7,7 +7,7 @@ import SecurityFeatures from './components/SecurityFeatures';
 import { PromoBanner } from './components/PromoBanner';
 import { T2B1PromoBanner } from './components/T2B1PromoBanner';
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
-import { StakeEthCard } from './components/StakeEthCard';
+import { StakeEthCard } from './components/StakeEthCard/StakeEthCard';
 
 const Wrapper = styled.div`
     display: flex;

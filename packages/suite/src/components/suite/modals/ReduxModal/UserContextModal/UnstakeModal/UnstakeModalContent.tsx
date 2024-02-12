@@ -1,6 +1,6 @@
 import { UnstakeEthFormContext, useUnstakeEthForm } from 'src/hooks/wallet/useUnstakeEthForm';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { UnstakeEthForm } from './UnstakeEthForm';
+import { UnstakeEthForm } from './UnstakeEthForm/UnstakeEthForm';
 
 interface UnstakeModalContentProps {
     selectedAccount: SelectedAccountLoaded;

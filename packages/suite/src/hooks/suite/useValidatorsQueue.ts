@@ -23,6 +23,11 @@ export const useValidatorsQueue = () => {
                 );
 
                 const validatorsQueue = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(`${response.status} ${validatorsQueue.message}`);
+                }
+
                 setValidatorsQueue({
                     validatorsEnteringNum: validatorsQueue.validators_entering_num,
                     validatorsExitingNum: validatorsQueue.validators_exiting_num,
@@ -45,6 +50,7 @@ export const useValidatorsQueue = () => {
         };
 
         getValidatorsQueue();
+
         return () => {
             abortController.abort();
         };

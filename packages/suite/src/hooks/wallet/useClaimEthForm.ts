@@ -140,5 +140,6 @@ export const useClaimEthForm = ({ selectedAccount }: UseStakeFormsProps): ClaimC
 export const useClaimEthFormContext = () => {
     const ctx = useContext(ClaimEthFormContext);
     if (ctx === null) throw Error('useClaimEthFormContext used without Context');
+
     return ctx;
 };

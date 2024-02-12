@@ -1,4 +1,5 @@
-import { Icon, useTheme } from '@trezor/components';
+import { useTheme } from 'styled-components';
+import { Icon } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { AccentP, CardBottomContent, GreyP, StyledCard } from './styled';
 
@@ -11,7 +12,7 @@ export const ApyCard = ({ apy }: ApyCardProps) => {
 
     return (
         <StyledCard>
-            <Icon icon="PERCENT" color={theme.TYPE_LIGHT_GREY} />
+            <Icon icon="PERCENT" color={theme.iconSubdued} />
 
             <CardBottomContent>
                 <AccentP>{`${apy}%`}</AccentP>

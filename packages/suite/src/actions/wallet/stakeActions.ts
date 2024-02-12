@@ -29,6 +29,7 @@ export const composeTransaction =
         if (account.networkType === 'ethereum') {
             return dispatch(stakeFormEthereumActions.composeTransaction(formValues, formState));
         }
+
         return Promise.resolve(undefined);
     };
 
@@ -40,6 +41,7 @@ export const cancelSignTx = (isSuccessTx?: boolean) => (dispatch: Dispatch, getS
     // if transaction is not signed yet interrupt signing in TrezorConnect
     if (!signedTx) {
         TrezorConnect.cancel('tx-cancelled');
+
         return;
     }
     // otherwise just close modal and open stake modal
