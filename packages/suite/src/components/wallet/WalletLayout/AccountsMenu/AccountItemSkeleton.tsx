@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { useLoadingSkeleton } from 'src/hooks/suite';
 import { Left, Right } from './AccountItem';
-import { NavigationItemBase } from 'src/components/suite/Preloader/SuiteLayout/Sidebar/NavigationItem';
+import { NavigationItemBase } from 'src/components/suite/layouts/SuiteLayout/Sidebar/NavigationItem';
 import { SkeletonCircle, SkeletonStack, SkeletonRectangle } from '@trezor/components';
 
 const StyledSkeletonStack = styled(SkeletonStack)`

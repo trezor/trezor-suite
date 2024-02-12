@@ -6,7 +6,7 @@ import { CoinmarketFooter } from 'src/views/wallet/coinmarket/common';
 import { List } from 'src/views/wallet/coinmarket/p2p/offers/List';
 import { SelectedOffer } from 'src/views/wallet/coinmarket/p2p/offers/SelectedOffer';
 import { useLayout } from 'src/hooks/suite';
-import { PageHeader } from 'src/components/suite/Preloader/SuiteLayout/PageHeader/PageHeader';
+import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 
 const Wrapper = styled.div`
     display: flex;

@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import { borders, spacingsPx } from '@trezor/theme';
 import { variables } from '@trezor/components';
 import { anchorOutlineStyles } from 'src/utils/suite/anchor';
-import {} from '../Preloader/SuiteLayout/SubpageNavigation';
 import { SUBPAGE_NAV_HEIGHT } from 'src/constants/suite/layout';
 
 const Content = styled.div<{ shouldHighlight?: boolean }>`

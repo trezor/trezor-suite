@@ -12,7 +12,7 @@ import { useCoinmarketExchangeOffersContext } from 'src/hooks/wallet/useCoinmark
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 import { InvityAPIReloadQuotesAfterSeconds } from 'src/constants/wallet/coinmarket/metadata';
 import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
-import { PageHeader } from 'src/components/suite/Preloader/SuiteLayout/PageHeader/PageHeader';
+import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import SelectedOffer from './SelectedOffer';
 import { ExchangeQuoteList } from './List/ExchangeQuoteList';
 

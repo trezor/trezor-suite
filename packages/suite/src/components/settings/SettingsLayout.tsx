@@ -2,11 +2,11 @@ import { ReactNode, useMemo } from 'react';
 import styled from 'styled-components';
 import { useDiscovery, useDispatch, useLayout, useSelector } from 'src/hooks/suite';
 import { SettingsLoading } from 'src/views/settings/SettingsLoader';
-import { PageHeader } from 'src/components/suite/Preloader/SuiteLayout/PageHeader/PageHeader';
 import {
+    PageHeader,
     NavigationItem,
     SubpageNavigation,
-} from 'src/components/suite/Preloader/SuiteLayout/SubpageNavigation';
+} from 'src/components/suite/layouts/SuiteLayout';
 import { goto } from 'src/actions/suite/routerActions';
 import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 import { Translation } from 'src/components/suite';

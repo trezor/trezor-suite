@@ -6,7 +6,7 @@ import { Translation } from 'src/components/suite';
 import { useLayout } from 'src/hooks/suite';
 import { useCoinmarketBuyOffersContext } from 'src/hooks/wallet/useCoinmarketBuyOffers';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
-import { PageHeader } from 'src/components/suite/Preloader/SuiteLayout/PageHeader/PageHeader';
+import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import SelectedOffer from './SelectedOffer';
 import { BuyQuoteList } from './List/BuyQuoteList';
 

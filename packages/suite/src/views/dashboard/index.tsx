@@ -6,7 +6,7 @@ import PortfolioCard from './components/PortfolioCard';
 import SecurityFeatures from './components/SecurityFeatures';
 import { PromoBanner } from './components/PromoBanner';
 import { T2B1PromoBanner } from './components/T2B1PromoBanner';
-import { PageHeader } from 'src/components/suite/Preloader/SuiteLayout/PageHeader/PageHeader';
+import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 
 const Wrapper = styled.div`
     display: flex;

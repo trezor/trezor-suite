@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Card, variables } from '@trezor/components';
 import { useCoinmarketSellDetailContext } from 'src/hooks/wallet/useCoinmarketSellDetail';
 import { SellFiatTradeFinalStatuses } from 'src/hooks/wallet/useCoinmarket';
-import { PageHeader } from 'src/components/suite/Preloader/SuiteLayout/PageHeader/PageHeader';
+import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useLayout } from 'src/hooks/suite';
 import PaymentPending from '../components/PaymentPending';
