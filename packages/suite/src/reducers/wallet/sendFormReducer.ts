@@ -5,6 +5,7 @@ import { Action } from 'src/types/suite';
 import { FormState, PrecomposedTransactionFinal, TxFinalCardano } from 'src/types/wallet/sendForm';
 import { accountsActions } from '@suite-common/wallet-core';
 import { cloneObject } from '@trezor/utils';
+import { FormSignedTx } from '@suite-common/wallet-types';
 
 export interface SendState {
     drafts: {
@@ -13,7 +14,7 @@ export interface SendState {
     sendRaw?: boolean;
     precomposedTx?: PrecomposedTransactionFinal | TxFinalCardano;
     precomposedForm?: FormState;
-    signedTx?: { tx: string; coin: string }; // payload for TrezorConnect.pushTransaction
+    signedTx?: FormSignedTx; // payload for TrezorConnect.pushTransaction
 }
 
 export const initialState: SendState = {

@@ -25,6 +25,7 @@ import {
     ComposeActionContext,
     PrecomposedTransactionFinal,
     PrecomposedTransactionFinalCardano,
+    FormSignedTx,
 } from '@suite-common/wallet-types';
 import { cloneObject, getSynchronize } from '@trezor/utils';
 
@@ -61,10 +62,7 @@ export type SendFormAction =
       }
     | {
           type: typeof SEND.REQUEST_PUSH_TRANSACTION;
-          payload?: {
-              tx: string;
-              coin: Account['symbol'];
-          };
+          payload?: FormSignedTx;
       }
     | {
           type: typeof SEND.SEND_RAW;
