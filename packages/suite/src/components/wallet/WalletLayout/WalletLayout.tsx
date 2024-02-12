@@ -2,24 +2,15 @@ import { ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { SkeletonRectangle } from '@trezor/components';
-import { MAX_CONTENT_WIDTH } from 'src/constants/suite/layout';
 import { AppState, ExtendedMessageDescriptor } from 'src/types/suite';
 import { useTranslation, useLayout } from 'src/hooks/suite';
+import { PageHeader } from 'src/components/suite/Preloader/SuiteLayout/PageHeader/PageHeader';
 
 import { AccountBanners } from './AccountBanners/AccountBanners';
 import { AccountException } from './AccountException/AccountException';
-import { AccountTopPanel } from './AccountTopPanel/AccountTopPanel';
 import { CoinjoinAccountDiscovery } from './CoinjoinAccountDiscovery/CoinjoinAccountDiscovery';
-
-const Wrapper = styled.div`
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    max-width: ${MAX_CONTENT_WIDTH};
-    width: 100%;
-    height: 100%;
-    margin-top: 8px;
-`;
+import { AccountTopPanel } from './AccountTopPanel/AccountTopPanel';
+import { AccountNavigation } from './AccountTopPanel/AccountNavigation';
 
 // This placeholder makes the "Receive" and "Trade" tabs look aligned with other tabs in "Accounts" view,
 // which implement some kind of toolbar.
@@ -47,43 +38,53 @@ export const WalletLayout = ({
     const { translationString } = useTranslation();
     const l10nTitle = translationString(title);
 
-    useLayout(l10nTitle, AccountTopPanel);
+    useLayout(l10nTitle, PageHeader);
 
     const { status, account: selectedAccount, loader, network } = account;
 
+    let pageContent;
+
     if (status === 'loading') {
         if (selectedAccount?.accountType === 'coinjoin') {
-            return (
-                <Wrapper>
+            pageContent = (
+                <>
                     <AccountBanners account={selectedAccount} />
                     {showEmptyHeaderPlaceholder && <EmptyHeaderPlaceholder />}
                     <CoinjoinAccountDiscovery />
-                </Wrapper>
+                </>
+            );
+        } else {
+            pageContent = (
+                <>
+                    {showEmptyHeaderPlaceholder && <EmptyHeaderPlaceholder />}
+                    <SkeletonRectangle
+                        width="100%"
+                        height="300px"
+                        borderRadius="12px"
+                        animate={loader === 'account-loading'}
+                    />
+                </>
             );
         }
-
-        return (
-            <Wrapper>
+    } else {
+        pageContent = (
+            <>
+                <AccountBanners account={selectedAccount} />
                 {showEmptyHeaderPlaceholder && <EmptyHeaderPlaceholder />}
-                <SkeletonRectangle
-                    width="100%"
-                    height="300px"
-                    borderRadius="12px"
-                    animate={loader === 'account-loading'}
-                />
-            </Wrapper>
+                {status === 'exception' ? (
+                    <AccountException loader={loader} network={network} />
+                ) : (
+                    <div className={className}>{children}</div>
+                )}
+            </>
         );
     }
 
     return (
         <>
-            <AccountBanners account={selectedAccount} />
-            {showEmptyHeaderPlaceholder && <EmptyHeaderPlaceholder />}
-            {status === 'exception' ? (
-                <AccountException loader={loader} network={network} />
-            ) : (
-                <div className={className}>{children}</div>
-            )}
+            <AccountTopPanel />
+            <AccountNavigation />
+            {pageContent}
         </>
     );
 };

@@ -20,6 +20,8 @@ import { CoinjoinBars } from './CoinjoinBars/CoinjoinBars';
 import { MobileAccountsMenu } from 'src/components/wallet/WalletLayout/AccountsMenu/MobileAccountsMenu';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
+export const SCROLL_WRAPPER_ID = 'layout-scroll';
+
 export const Wrapper = styled.div`
     display: flex;
     flex: 1;
@@ -118,7 +120,7 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
                             <Columns>
                                 {!isMobileLayout && <Sidebar />}
 
-                                <AppWrapper data-test="@app" ref={scrollRef} id="layout-scroll">
+                                <AppWrapper data-test="@app" ref={scrollRef} id={SCROLL_WRAPPER_ID}>
                                     {isMobileLayout && isAccountPage && <MobileAccountsMenu />}
                                     {TopMenu && <TopMenu />}
 
