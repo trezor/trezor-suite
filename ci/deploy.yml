@@ -72,14 +72,9 @@ msg-system deploy sldev:
 # connect deploy to dev
 connect deploy to dev:
   stage: deploy to dev
-  # only:
-  #   <<: *run_connect_rules
   needs:
     - connect-web build
     - connect-explorer build
-  except:
-    refs:
-      - /^release\/connect\//
   variables:
     GIT_STRATEGY: none
     DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/connect/${CI_COMMIT_REF_NAME}
