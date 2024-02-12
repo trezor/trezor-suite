@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from 'react';
 import { FieldPath, UseFormReturn } from 'react-hook-form';
 
-import { Network } from '@suite-common/wallet-config';
+import { Network, NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountUtxo, FeeLevel, PROTO } from '@trezor/connect';
 
 import { Account } from './account';
@@ -46,6 +46,8 @@ export interface FormState {
     anonymityWarningChecked?: boolean;
     selectedUtxos: AccountUtxo[];
 }
+
+export type FormSignedTx = { tx: string; coin: NetworkSymbol };
 
 export type ExcludedUtxos = Record<string, 'low-anonymity' | 'dust' | undefined>;
 
