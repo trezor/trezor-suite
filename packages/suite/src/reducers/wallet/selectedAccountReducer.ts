@@ -71,6 +71,7 @@ export const selectSelectedAccountEverstakeStakingPool = (
 
 export const selectSelectedAccountAutocompoundBalance = (state: SelectedAccountRootState) => {
     const pool = selectSelectedAccountEverstakeStakingPool(state);
+
     return pool?.autocompoundBalance ?? '0';
 };
 

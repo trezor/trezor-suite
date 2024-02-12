@@ -7,6 +7,7 @@ import { Translation } from 'src/components/suite';
 const DaysToAddToPool = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    line-height: 12px;
 `;
 
 interface UseProgressLabelsData {
@@ -28,6 +29,7 @@ export const useProgressLabelsData = ({
                 id: 0,
                 progressState: (() => {
                     if (isStakeConfirming) return 'active';
+
                     return 'done';
                 })(),
                 children: <Translation id="TR_TX_CONFIRMED" />,

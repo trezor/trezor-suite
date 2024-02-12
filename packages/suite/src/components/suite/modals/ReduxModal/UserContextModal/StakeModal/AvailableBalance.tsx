@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { H3, P, variables } from '@trezor/components';
+import { H3, Paragraph, variables } from '@trezor/components';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Translation, FormattedCryptoAmount, FiatValue } from 'src/components/suite';
 
@@ -9,8 +9,8 @@ const Title = styled(H3)`
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 `;
 
-const GreyP = styled(P)`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+const GreyP = styled(Paragraph)`
+    color: ${({ theme }) => theme.textSubdued};
 `;
 
 interface AvailableBalanceProps {
@@ -24,7 +24,7 @@ export const AvailableBalance = ({ formattedBalance, symbol }: AvailableBalanceP
             <Translation id="AMOUNT" />
         </Title>
 
-        <GreyP size="small" weight="medium">
+        <GreyP>
             <Translation id="TR_STAKE_AVAILABLE" />{' '}
             <FormattedCryptoAmount value={formattedBalance} symbol={symbol} />{' '}
             <FiatValue amount={formattedBalance} symbol={symbol} showApproximationIndicator>

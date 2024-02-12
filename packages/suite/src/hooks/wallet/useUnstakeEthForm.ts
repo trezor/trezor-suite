@@ -166,7 +166,7 @@ export const useUnstakeEthForm = ({
         async (amount: string) => {
             if (currentRate) {
                 const fiatValue = toFiatCurrency(amount, localCurrency, {
-                    [currentRate.locale]: currentRate?.rate,
+                    [localCurrency]: currentRate?.rate,
                 });
                 setValue(FIAT_INPUT, fiatValue || '', { shouldValidate: true });
             }
@@ -184,7 +184,7 @@ export const useUnstakeEthForm = ({
             const cryptoValue = fromFiatCurrency(
                 amount,
                 localCurrency,
-                { [currentRate.locale]: currentRate?.rate },
+                { [localCurrency]: currentRate?.rate },
                 network.decimals,
             );
             setValue(CRYPTO_INPUT, cryptoValue || '', { shouldDirty: true, shouldValidate: true });
@@ -253,5 +253,6 @@ export const useUnstakeEthForm = ({
 export const useUnstakeEthFormContext = () => {
     const ctx = useContext(UnstakeEthFormContext);
     if (ctx === null) throw Error('useUnstakeEthFormContext used without Context');
+
     return ctx;
 };

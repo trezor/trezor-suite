@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import styled from 'styled-components';
-import { Button, P, variables, Warning } from '@trezor/components';
+import { Button, Paragraph, Warning } from '@trezor/components';
 import { Translation, FiatValue, FormattedCryptoAmount } from 'src/components/suite';
 import { FeesInfo } from 'src/components/wallet/FeesInfo';
 import { mapTestnetSymbol } from 'src/utils/wallet/coinmarket/coinmarketUtils';
@@ -8,14 +8,14 @@ import { useSelector } from 'src/hooks/suite';
 import { useClaimEthFormContext } from 'src/hooks/wallet/useClaimEthForm';
 import { selectSelectedAccountEverstakeStakingPool } from 'src/reducers/wallet/selectedAccountReducer';
 import { CRYPTO_INPUT } from 'src/types/wallet/stakeForms';
+import { spacingsPx } from '@trezor/theme';
 
 const AmountInfo = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    margin-bottom: 16px;
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    margin-bottom: ${spacingsPx.md};
 `;
 
 const TxtRight = styled.div`
@@ -23,27 +23,24 @@ const TxtRight = styled.div`
 `;
 
 const GreenTxt = styled.span`
-    color: ${({ theme }) => theme.TYPE_GREEN};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    color: ${({ theme }) => theme.textPrimaryDefault};
 `;
 
 const StyledWarning = styled(Warning)`
-    margin-top: 12px;
-    color: ${({ theme }) => theme.TYPE_RED};
+    margin-top: ${spacingsPx.sm};
     justify-content: flex-start;
 `;
 
 const ClaimingPeriodWrapper = styled.div`
     display: flex;
     justify-content: space-between;
-    padding: 18px 0 14px;
-    margin-top: 26px;
-    border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    padding: ${spacingsPx.lg} 0 ${spacingsPx.md};
+    margin-top: ${spacingsPx.xl};
+    border-top: 1px solid ${({ theme }) => theme.borderOnElevation1};
 `;
 
-const GreyP = styled(P)`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+const GreyP = styled(Paragraph)`
+    color: ${({ theme }) => theme.textSubdued};
 `;
 
 export const ClaimEthForm = () => {
@@ -75,14 +72,14 @@ export const ClaimEthForm = () => {
                 <Translation id="AMOUNT" />
 
                 <TxtRight>
-                    <P weight="medium">
+                    <GreyP>
+                        <FormattedCryptoAmount value={claimableAmount} symbol={symbol} />
+                    </GreyP>
+                    <Paragraph>
                         <GreenTxt>
                             <FiatValue amount={claimableAmount} symbol={mappedSymbol} />
                         </GreenTxt>
-                    </P>
-                    <GreyP size="small" weight="medium">
-                        <FormattedCryptoAmount value={claimableAmount} symbol={symbol} />
-                    </GreyP>
+                    </Paragraph>
                 </TxtRight>
             </AmountInfo>
 
@@ -97,7 +94,7 @@ export const ClaimEthForm = () => {
             )}
 
             <ClaimingPeriodWrapper>
-                <GreyP weight="medium">
+                <GreyP>
                     <Translation id="TR_STAKE_CLAIMING_PERIOD" />
                 </GreyP>
 
@@ -106,7 +103,7 @@ export const ClaimEthForm = () => {
 
             <Button
                 type="submit"
-                fullWidth
+                isFullWidth
                 isDisabled={!(formIsValid && hasValues) || isSubmitting}
                 isLoading={isComposing || isSubmitting}
                 onClick={handleSubmit(signTx)}

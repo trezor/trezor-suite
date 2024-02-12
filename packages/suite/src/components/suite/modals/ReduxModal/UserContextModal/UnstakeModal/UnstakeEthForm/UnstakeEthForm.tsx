@@ -1,39 +1,36 @@
 import styled from 'styled-components';
-import { Button, P, variables, Warning } from '@trezor/components';
+import { Button, Divider, Paragraph, Warning } from '@trezor/components';
+import { spacingsPx } from '@trezor/theme';
 import { Translation } from 'src/components/suite';
 import { FeesInfo } from 'src/components/wallet/FeesInfo';
-import { useSelector } from 'src/hooks/suite';
+import { useSelector, useValidatorsQueue } from 'src/hooks/suite';
 import { useUnstakeEthFormContext } from 'src/hooks/wallet/useUnstakeEthForm';
-import { useValidatorsQueue } from 'src/hooks/wallet/useValidatorsQueue';
 import { selectSelectedAccountEverstakeStakingPool } from 'src/reducers/wallet/selectedAccountReducer';
 import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/wallet/stakeForms';
 import { Options } from './Options';
 
-const GreyP = styled(P)`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+const GreyP = styled(Paragraph)`
+    color: ${({ theme }) => theme.textSubdued};
 `;
 
-const MaxWidthDivider = styled.div`
-    height: 1px;
-    background: ${({ theme }) => theme.STROKE_GREY};
-    width: calc(100% + 64px);
-    margin-left: -32px;
-    margin-bottom: 20px;
+const DividerWrapper = styled.div`
+    & > div {
+        background: ${({ theme }) => theme.borderOnElevation1};
+        width: calc(100% + 64px);
+        margin-left: -${spacingsPx.xxl};
+        margin-bottom: ${spacingsPx.lg};
+    }
 `;
 
 const StyledWarning = styled(Warning)`
     justify-content: flex-start;
 `;
 
-const StyledCriticalWarning = styled(StyledWarning)`
-    color: ${({ theme }) => theme.TYPE_RED};
-`;
-
 const WarningsWrapper = styled.div`
-    margin-top: 12px;
+    margin-top: ${spacingsPx.sm};
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: ${spacingsPx.md};
 `;
 
 const UpToDaysWrapper = styled.div`
@@ -41,9 +38,8 @@ const UpToDaysWrapper = styled.div`
     justify-content: space-between;
     align-items: center;
     margin-top: 16px;
-    padding: 20px 0 16px;
-    border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    padding: ${spacingsPx.lg} 0 ${spacingsPx.md};
+    border-top: 1px solid ${({ theme }) => theme.borderOnElevation1};
 `;
 
 export const UnstakeEthForm = () => {
@@ -76,7 +72,9 @@ export const UnstakeEthForm = () => {
         <form onSubmit={handleSubmit(signTx)}>
             <Options symbol={symbol} />
 
-            <MaxWidthDivider />
+            <DividerWrapper>
+                <Divider />
+            </DividerWrapper>
 
             <FeesInfo
                 transactionInfo={transactionInfo}
@@ -86,9 +84,9 @@ export const UnstakeEthForm = () => {
 
             <WarningsWrapper>
                 {errors[CRYPTO_INPUT] && (
-                    <StyledCriticalWarning variant="critical">
+                    <StyledWarning variant="critical">
                         {errors[CRYPTO_INPUT]?.message}
-                    </StyledCriticalWarning>
+                    </StyledWarning>
                 )}
 
                 {canClaim && (
@@ -108,7 +106,7 @@ export const UnstakeEthForm = () => {
             <UpToDaysWrapper>
                 {!Number.isNaN(unstakingPeriod) && (
                     <>
-                        <GreyP weight="medium">
+                        <GreyP>
                             <Translation id="TR_STAKE_UNSTAKING_PERIOD" />
                         </GreyP>
                         <Translation
@@ -123,7 +121,7 @@ export const UnstakeEthForm = () => {
 
             <Button
                 type="submit"
-                fullWidth
+                isFullWidth
                 isDisabled={!(formIsValid && hasValues) || isSubmitting}
                 isLoading={isComposing || isSubmitting}
                 onClick={handleSubmit(signTx)}

@@ -11,6 +11,7 @@ export const useIsTxStatusShown = (totalPendingStake: BigNumber) => {
         if (totalPendingStake.gt(0)) {
             prevTotalDeposited.current = totalPendingStake;
             setIsTxStatusShown(true);
+
             return;
         }
 

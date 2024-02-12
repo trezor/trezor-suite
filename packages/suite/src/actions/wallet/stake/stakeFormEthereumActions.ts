@@ -65,6 +65,7 @@ const calculate = (
         (compareWithAmount && totalSpent.isGreaterThan(availableBalance))
     ) {
         const error = 'AMOUNT_IS_NOT_ENOUGH';
+
         // errorMessage declared later
         return { type: 'error', error, errorMessage: { id: error } } as const;
     }
@@ -96,6 +97,7 @@ const calculate = (
             ],
         };
     }
+
     return payloadData;
 };
 
@@ -231,6 +233,7 @@ export const signTransaction =
         const pendingTxs = (transactions.transactions[account.key] || []).filter(isPending);
         const pendingNonce = pendingTxs.reduce((value, tx) => {
             if (!tx.ethereumSpecific) return value;
+
             return Math.max(value, tx.ethereumSpecific.nonce + 1);
         }, 0);
         const pendingNonceBig = new BigNumber(pendingNonce);
@@ -320,6 +323,7 @@ export const signTransaction =
                     error: signedTx.payload.error,
                 }),
             );
+
             return;
         }
 

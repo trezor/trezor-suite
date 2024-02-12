@@ -42,7 +42,6 @@ export const Inputs = () => {
         control,
         network,
         formState: { errors },
-        getValues,
         amountLimits,
         onCryptoAmountChange,
         onFiatAmountChange,
@@ -50,8 +49,6 @@ export const Inputs = () => {
         currentRate,
     } = useUnstakeEthFormContext();
 
-    const cryptoValue = getValues(CRYPTO_INPUT);
-    const fiatValue = getValues(FIAT_INPUT);
     const cryptoError = errors.cryptoInput;
     const fiatError = errors.fiatInput;
 
@@ -77,42 +74,40 @@ export const Inputs = () => {
 
     return (
         <HStack>
-            {currentRate && (
-                <>
-                    <NumberInput
-                        noTopLabel
-                        name={FIAT_INPUT}
-                        control={control}
-                        rules={fiatInputRules}
-                        maxLength={formInputsMaxLength.fiat}
-                        innerAddon={<InputAddon>{localCurrency}</InputAddon>}
-                        bottomText={errors[FIAT_INPUT]?.message}
-                        inputState={getInputState(fiatError || cryptoError, fiatValue)}
-                        onChange={value => {
-                            onFiatAmountChange(value);
-                        }}
-                    />
-
-                    <IconWrapper>
-                        {/* TODO: Add new transfer icon. Export from Figma isn't handled as is it should by the strokes to fills online converter */}
-                        <Icon icon="TRANSFER" size={16} />
-                    </IconWrapper>
-                </>
-            )}
-
             <NumberInput
-                noTopLabel
                 name={CRYPTO_INPUT}
                 control={control}
                 rules={cryptoInputRules}
                 maxLength={formInputsMaxLength.amount}
                 innerAddon={<InputAddon>{symbol}</InputAddon>}
-                bottomText={errors[CRYPTO_INPUT]?.message}
-                inputState={getInputState(cryptoError || fiatError, cryptoValue)}
+                bottomText={errors[CRYPTO_INPUT]?.message ?? null}
+                inputState={getInputState(cryptoError || fiatError)}
                 onChange={value => {
                     onCryptoAmountChange(value);
                 }}
             />
+
+            {currentRate && (
+                <>
+                    <IconWrapper>
+                        {/* TODO: Add new transfer icon. Export from Figma isn't handled as is it should by the strokes to fills online converter */}
+                        <Icon icon="TRANSFER" size={16} />
+                    </IconWrapper>
+
+                    <NumberInput
+                        name={FIAT_INPUT}
+                        control={control}
+                        rules={fiatInputRules}
+                        maxLength={formInputsMaxLength.fiat}
+                        innerAddon={<InputAddon>{localCurrency}</InputAddon>}
+                        bottomText={errors[FIAT_INPUT]?.message ?? null}
+                        inputState={getInputState(fiatError || cryptoError)}
+                        onChange={value => {
+                            onFiatAmountChange(value);
+                        }}
+                    />
+                </>
+            )}
         </HStack>
     );
 };

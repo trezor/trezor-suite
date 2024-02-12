@@ -107,8 +107,15 @@ export const TransactionReviewOutputList = ({
     const { networkType } = account;
 
     const { symbol } = account;
-    const { options, selectedFee, isCoinControlEnabled, hasCoinControlBeenOpened } =
-        precomposedForm;
+    const { options, selectedFee } = precomposedForm;
+    let isCoinControlEnabled = false;
+    let hasCoinControlBeenOpened = false;
+    if ('isCoinControlEnabled' in precomposedForm) {
+        ({ isCoinControlEnabled } = precomposedForm);
+    }
+    if ('hasCoinControlBeenOpened' in precomposedForm) {
+        ({ hasCoinControlBeenOpened } = precomposedForm);
+    }
     const broadcastEnabled = options.includes('broadcast');
 
     const reportTransactionCreatedEvent = (action: 'sent' | 'copied' | 'downloaded' | 'replaced') =>
