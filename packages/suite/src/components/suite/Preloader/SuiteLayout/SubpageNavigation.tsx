@@ -1,38 +1,12 @@
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { LayoutGroup, motion } from 'framer-motion';
-import { spacings, spacingsPx, zIndices } from '@trezor/theme';
+import { spacingsPx, zIndices } from '@trezor/theme';
 import { motionEasing, variables } from '@trezor/components';
 import { useSelector } from 'src/hooks/suite';
-import { SECONDARY_PANEL_HEIGHT } from '../../AppNavigation/AppNavigation';
+import { selectRouteName } from 'src/reducers/suite/routerReducer';
 import { HoverAnimation } from '../../HoverAnimation';
 import { AppNavigationTooltip } from '../../AppNavigation/AppNavigationTooltip';
-import { MAX_CONTENT_WIDTH, MAX_CONTENT_WIDTH_NUMERIC } from 'src/constants/suite/layout';
-import { SIDEBAR_WIDTH_NUMERIC } from './Sidebar/Sidebar';
-import { selectRouteName } from 'src/reducers/suite/routerReducer';
-
-// TODO: together with designers change the SuiteLayout so that the negative paddings are not needed
-// either do not have max-width in the SuiteLayout but in the local Page Layouts
-// or add one more structural element to the SuiteLayout, which is added via the useLayout hook:
-// <TopMenu />
-// <NewElement />
-// <ContentWrapper>{children}</ContentWrapper>
-const sidePaddingWidth = `(100vw - ${MAX_CONTENT_WIDTH} + ${
-    spacings.md * 2
-}px - ${SIDEBAR_WIDTH_NUMERIC}px) / 2`;
-
-export const globalPaddingEraserStyle = css`
-    padding-left: ${spacingsPx.md};
-    padding-right: ${spacingsPx.md};
-
-    /* when paddings begin to appear due to the layout not being hugged by the content
-    here, the negative horizontal margins are equal to the paddings */
-    margin: 0 calc(-1 * ${sidePaddingWidth}) ${spacingsPx.lg};
-
-    /* when the content is hugged by the layout */
-    @media (max-width: ${MAX_CONTENT_WIDTH_NUMERIC + SIDEBAR_WIDTH_NUMERIC}px) {
-        margin: 0 -${spacingsPx.md} ${spacingsPx.lg};
-    }
-`;
+import { SUBPAGE_NAV_HEIGHT, globalPaddingEraserStyle } from 'src/constants/suite/layout';
 
 const Container = styled.div`
     position: sticky;
@@ -41,7 +15,7 @@ const Container = styled.div`
     justify-content: flex-start;
     align-items: center;
     gap: ${spacingsPx.sm};
-    height: ${SECONDARY_PANEL_HEIGHT};
+    height: ${SUBPAGE_NAV_HEIGHT};
     background: ${({ theme }) => theme.backgroundSurfaceElevation0};
     padding: ${spacingsPx.xs} 0 ${spacingsPx.sm};
     border-bottom: 1px solid ${({ theme }) => theme.borderOnElevation0};

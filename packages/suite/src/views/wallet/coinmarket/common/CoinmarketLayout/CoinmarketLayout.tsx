@@ -49,7 +49,7 @@ export const CoinmarketLayout = ({
     selectedAccount,
     onClearFormButtonClick,
 }: CoinmarketLayoutProps) => (
-    <WalletLayout title="TR_NAV_TRADE" account={selectedAccount}>
+    <WalletLayout title="TR_NAV_TRADE" isSubpage account={selectedAccount}>
         <WalletLayoutHeader title="TR_NAV_TRADE">
             {onClearFormButtonClick && (
                 <Button

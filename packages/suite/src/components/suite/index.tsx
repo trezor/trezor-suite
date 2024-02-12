@@ -29,7 +29,6 @@ import { FormattedDateWithBullet } from './FormattedDateWithBullet';
 import { Metadata } from './Metadata';
 import { HomescreenGallery } from './HomescreenGallery';
 import { DeviceMatrixExplanation } from './DeviceMatrixExplanation';
-import { AccountFormCloseButton } from './AccountFormCloseButton';
 import { TroubleshootingTips } from './troubleshooting/TroubleshootingTips';
 import { ConnectDevicePrompt } from './ConnectDevicePrompt';
 import { CoinGroup } from './CoinGroup/CoinGroup';
@@ -84,7 +83,6 @@ export {
     Metadata,
     HomescreenGallery,
     DeviceMatrixExplanation,
-    AccountFormCloseButton,
     TroubleshootingTips,
     ConnectDevicePrompt,
     CoinGroup,

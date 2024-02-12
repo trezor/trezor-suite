@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { forwardRef } from 'react';
 
 import { spacingsPx } from '@trezor/theme';
 import { NetworkSymbol } from '@suite-common/wallet-config';
@@ -8,9 +9,8 @@ import { FormattedCryptoAmount, AmountUnitSwitchWrapper } from 'src/components/s
 import { useSelector } from 'src/hooks/suite';
 import { FiatHeader } from 'src/views/dashboard/components/FiatHeader';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
-import { globalPaddingEraserStyle } from 'src/components/suite/Preloader/SuiteLayout/SubpageNavigation';
 import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
-import { forwardRef } from 'react';
+import { globalPaddingEraserStyle } from 'src/constants/suite/layout';
 
 export const ACCOUNT_INFO_HEIGHT = 80;
 

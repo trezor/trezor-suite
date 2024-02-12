@@ -1,10 +1,12 @@
 import styled from 'styled-components';
 
+import { Route } from '@suite-common/suite-types';
 import { spacingsPx, zIndices } from '@trezor/theme';
-import { HeaderActions } from './HeaderActions';
-import { PageName } from './PageNames/PageName';
 import { useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { selectIsAccountTabPage } from 'src/reducers/suite/routerReducer';
+import { HeaderActions } from './HeaderActions';
+import { PageName } from './PageNames/PageName';
 
 const HEADER_HEIGHT = 64;
 
@@ -23,14 +25,21 @@ const Container = styled.div`
     z-index: ${zIndices.pageHeader};
 `;
 
-export const PageHeader = () => {
+// TODO: perhaps this could be a part of some router config / useLayoutHook / somthing else?
+interface PageHeaderProps {
+    backRoute?: Route['name'];
+}
+
+export const PageHeader = ({ backRoute }: PageHeaderProps) => {
     const selectedAccount = useSelector(selectSelectedAccount);
+    // TODO subpages + tabs could be in some router config? this approach feels a bit fragile
+    const isAccountTabPage = useSelector(selectIsAccountTabPage);
 
     return (
         <Container>
-            <PageName />
+            <PageName backRoute={backRoute} />
 
-            {!!selectedAccount && <HeaderActions />}
+            {!!selectedAccount && isAccountTabPage && <HeaderActions />}
         </Container>
     );
 };

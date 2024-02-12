@@ -6,7 +6,7 @@ const Anonymize = () => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
 
     return (
-        <WalletLayout title="TR_NAV_ANONYMIZE" account={selectedAccount}>
+        <WalletLayout title="TR_NAV_ANONYMIZE" isSubpage account={selectedAccount}>
             {selectedAccount.status === 'loaded' && (
                 <>
                     <WalletLayoutHeader title="TR_NAV_ANONYMIZE" />

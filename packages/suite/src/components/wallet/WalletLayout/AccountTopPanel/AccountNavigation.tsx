@@ -1,5 +1,4 @@
 import { WalletParams } from 'src/types/wallet';
-import { NavigationItem } from 'src/components/suite/AppNavigation/AppNavigation';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { getNetwork, hasNetworkFeatures } from '@suite-common/wallet-utils';
@@ -7,6 +6,23 @@ import { goto } from 'src/actions/suite/routerActions';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { SubpageNavigation } from 'src/components/suite/Preloader/SuiteLayout/SubpageNavigation';
+import { Route } from '@suite-common/suite-types';
+
+// to make sure the routes are taken from the main route definition
+type AccountTab = Extract<
+    Route['name'],
+    'wallet-index' | 'wallet-details' | 'wallet-tokens' | 'wallet-staking'
+>;
+
+export const ACCOUNT_TABS = ['wallet-index', 'wallet-details', 'wallet-tokens', 'wallet-staking'];
+
+type NavigationItem = {
+    id: AccountTab;
+    callback: () => void;
+    title: JSX.Element;
+    'data-test'?: string;
+    isHidden?: boolean;
+};
 
 export const AccountNavigation = () => {
     const account = useSelector(selectSelectedAccount);
@@ -26,7 +42,7 @@ export const AccountNavigation = () => {
         dispatch(goto(routeName, options));
     };
 
-    const accountSubpages: NavigationItem[] = [
+    const accountTabs: NavigationItem[] = [
         {
             id: 'wallet-index',
             callback: () => {
@@ -61,5 +77,5 @@ export const AccountNavigation = () => {
         },
     ];
 
-    return <SubpageNavigation items={accountSubpages} />;
+    return <SubpageNavigation items={accountTabs} />;
 };

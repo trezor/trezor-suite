@@ -23,6 +23,7 @@ const EmptyHeaderPlaceholder = styled.div`
 type WalletLayoutProps = {
     title: ExtendedMessageDescriptor['id'];
     account: AppState['wallet']['selectedAccount'];
+    isSubpage?: boolean;
     showEmptyHeaderPlaceholder?: boolean; // TODO: remove this, it's not even used according to it's name (account details)
     className?: string;
     children?: ReactNode;
@@ -32,6 +33,7 @@ export const WalletLayout = ({
     showEmptyHeaderPlaceholder = false,
     title,
     account,
+    isSubpage,
     className,
     children,
 }: WalletLayoutProps) => {
@@ -82,8 +84,12 @@ export const WalletLayout = ({
 
     return (
         <>
-            <AccountTopPanel />
-            <AccountNavigation />
+            {!isSubpage && (
+                <>
+                    <AccountTopPanel />
+                    <AccountNavigation />
+                </>
+            )}
             {pageContent}
         </>
     );

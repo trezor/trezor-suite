@@ -194,7 +194,7 @@ const SignVerify = () => {
     };
 
     return (
-        <WalletLayout title="TR_NAV_SIGN_VERIFY" account={selectedAccount}>
+        <WalletLayout title="TR_NAV_SIGN_VERIFY" isSubpage account={selectedAccount}>
             <WalletLayoutHeader title="TR_NAV_SIGN_VERIFY">
                 {isFormDirty && (
                     <Button type="button" variant="tertiary" onClick={resetForm}>

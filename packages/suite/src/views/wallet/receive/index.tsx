@@ -34,7 +34,7 @@ const Receive = () => {
     const showCexWarning = account?.accountType === 'coinjoin' && !isCoinjoinReceiveWarningHidden;
 
     return (
-        <WalletLayout title="TR_NAV_RECEIVE" account={selectedAccount}>
+        <WalletLayout title="TR_NAV_RECEIVE" isSubpage account={selectedAccount}>
             <WalletLayoutHeader title="TR_NAV_RECEIVE" />
 
             {showCexWarning && <CoinjoinReceiveWarning />}

@@ -1,5 +1,3 @@
-import styled from 'styled-components';
-
 import {
     selectDevice as selectDeviceSelector,
     selectDevices,

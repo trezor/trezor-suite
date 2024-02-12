@@ -1,10 +1,11 @@
 import styled from 'styled-components';
 
-import { CoinmarketFooter, CoinmarketTopPanel, NoOffers } from 'src/views/wallet/coinmarket/common';
+import { CoinmarketFooter, NoOffers } from 'src/views/wallet/coinmarket/common';
 import { variables } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { useLayout } from 'src/hooks/suite/useLayout';
 import { useCoinmarketSellOffersContext } from 'src/hooks/wallet/useCoinmarketSellOffers';
+import { PageHeader } from 'src/components/suite/Preloader/SuiteLayout/PageHeader/PageHeader';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 import { SelectedOffer } from './SelectedOffer';
 import { SellQuoteList } from './List/SellQuoteList';
@@ -62,9 +63,7 @@ const Offers = () => {
         useCoinmarketSellOffersContext();
     const { navigateToSellForm } = useCoinmarketNavigation(account);
 
-    useLayout('Trezor Suite | Trade', () => (
-        <CoinmarketTopPanel backRoute="wallet-coinmarket-sell" />
-    ));
+    useLayout('Trezor Suite | Trade', () => <PageHeader backRoute="wallet-coinmarket-sell" />);
 
     const hasLoadingFailed = !(quotes && alternativeQuotes);
     const noOffers = hasLoadingFailed || (quotes.length === 0 && alternativeQuotes.length === 0);

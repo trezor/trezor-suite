@@ -4,7 +4,6 @@ import { FormattedCryptoAmount, Translation } from 'src/components/suite';
 import {
     CoinmarketFooter,
     CoinmarketRefreshTime,
-    CoinmarketTopPanel,
     NoOffers,
 } from 'src/views/wallet/coinmarket/common';
 import { variables, Icon, H2 } from '@trezor/components';
@@ -12,9 +11,10 @@ import { useLayout } from 'src/hooks/suite';
 import { useCoinmarketExchangeOffersContext } from 'src/hooks/wallet/useCoinmarketExchangeOffers';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 import { InvityAPIReloadQuotesAfterSeconds } from 'src/constants/wallet/coinmarket/metadata';
+import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
+import { PageHeader } from 'src/components/suite/Preloader/SuiteLayout/PageHeader/PageHeader';
 import SelectedOffer from './SelectedOffer';
 import { ExchangeQuoteList } from './List/ExchangeQuoteList';
-import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 
 const Wrapper = styled.div`
     padding: 0 32px 32px;
@@ -92,9 +92,7 @@ const Offers = () => {
     } = useCoinmarketExchangeOffersContext();
     const { navigateToExchangeForm } = useCoinmarketNavigation(account);
 
-    useLayout('Trezor Suite | Trade', () => (
-        <CoinmarketTopPanel backRoute="wallet-coinmarket-exchange" />
-    ));
+    useLayout('Trezor Suite | Trade', () => <PageHeader backRoute="wallet-coinmarket-exchange" />);
 
     if (!quotesRequest) return null;
     const hasLoadingFailed = !(fixedQuotes && floatQuotes && dexQuotes);

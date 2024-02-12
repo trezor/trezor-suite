@@ -22,7 +22,7 @@ export const withSelectedAccountLoaded = (
         const selectedAccount = useSelector(state => state.wallet.selectedAccount);
 
         if (selectedAccount.status !== 'loaded') {
-            return <WalletLayout title={title} account={selectedAccount} />;
+            return <WalletLayout title={title} isSubpage account={selectedAccount} />;
         }
         return <WrappedComponent selectedAccount={selectedAccount} />;
     };
