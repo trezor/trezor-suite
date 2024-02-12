@@ -9876,10 +9876,6 @@ __metadata:
     "@trezor/protocol": "workspace:*"
     "@trezor/transport": "workspace:*"
     "@trezor/utils": "workspace:*"
-    "@types/cors": "npm:^2.8.17"
-    "@types/express": "npm:^4"
-    cors: "npm:^2.8.5"
-    express: "npm:^4.18.2"
     usb: "npm:^2.11.0"
   languageName: unknown
   linkType: soft
@@ -10455,7 +10451,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/express@npm:*, @types/express@npm:^4, @types/express@npm:^4.17.13, @types/express@npm:^4.7.0":
+"@types/express@npm:*, @types/express@npm:^4.17.13, @types/express@npm:^4.7.0":
   version: 4.17.21
   resolution: "@types/express@npm:4.17.21"
   dependencies:
