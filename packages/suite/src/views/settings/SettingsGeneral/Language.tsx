@@ -17,6 +17,7 @@ import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { getPlatformLanguages } from '@trezor/env-utils';
 import { CROWDIN_URL } from '@trezor/urls';
+import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 
 const onlyOfficial = (locale: [string, LocaleInfo]): locale is [Locale, LocaleInfo] =>
     locale[1].type === 'official';
@@ -60,7 +61,7 @@ const useLanguageOptions = () => {
 };
 
 export const Language = () => {
-    const language = useSelector(state => state.suite.settings.language);
+    const language = useSelector(selectLanguage);
     const autodetectLanguage = useSelector(state => state.suite.settings.autodetect.language);
     const dispatch = useDispatch();
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.Language);

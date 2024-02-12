@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
 import { setView } from 'src/actions/suite/guideActions';
 import { getNodeTitle } from 'src/utils/suite/guide';
+import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 
 const Section = styled.div`
     margin-bottom: 20px;
@@ -36,7 +37,7 @@ const Nodes = styled.div`
 
 export const GuideCategory = () => {
     const currentNode = useSelector(state => state.guide.currentNode);
-    const language = useSelector(state => state.suite.settings.language);
+    const language = useSelector(selectLanguage);
     const dispatch = useDispatch();
 
     if (!currentNode || currentNode.type === 'page') {

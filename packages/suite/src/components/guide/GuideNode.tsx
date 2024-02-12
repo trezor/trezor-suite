@@ -9,6 +9,7 @@ import { openNode } from 'src/actions/suite/guideActions';
 import { GuideNode as GuideNodeType } from '@suite-common/suite-types';
 import { getNodeTitle } from 'src/utils/suite/guide';
 import { borders } from '@trezor/theme';
+import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 
 const NodeButton = styled.button`
     display: flex;
@@ -70,7 +71,7 @@ type GuideNodeProps = {
 };
 
 export const GuideNode = ({ node, description }: GuideNodeProps) => {
-    const language = useSelector(state => state.suite.settings.language);
+    const language = useSelector(selectLanguage);
     const dispatch = useDispatch();
 
     const theme = useTheme();

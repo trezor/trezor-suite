@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { getTorUrlIfAvailable } from 'src/utils/suite/tor';
 import { Banner } from './Banner';
 
-import { selectTorState } from 'src/reducers/suite/suiteReducer';
+import { selectLanguage, selectTorState } from 'src/reducers/suite/suiteReducer';
 
 const BannerOnTop = styled(Banner)`
     position: relative;
@@ -23,7 +23,7 @@ export const MessageSystemBanner = ({ message }: MessageSystemBannerProps) => {
     const { cta, variant, id, content, dismissible } = message;
 
     const { isTorEnabled } = useSelector(selectTorState);
-    const language = useSelector(state => state.suite.settings.language);
+    const language = useSelector(selectLanguage);
     const torOnionLinks = useSelector(state => state.suite.settings.torOnionLinks);
     const dispatch = useDispatch();
 

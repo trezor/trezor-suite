@@ -11,6 +11,7 @@ import { TrezorLink } from 'src/components/suite/TrezorLink';
 import { findAncestorNodes, getNodeTitle } from 'src/utils/suite/guide';
 
 import type { GuideCategory } from '@suite-common/suite-types';
+import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 
 const BreadcrumbWrapper = styled.span`
     font-size: ${variables.FONT_SIZE.SMALL};
@@ -44,7 +45,7 @@ const CategoryLink = styled(TrezorLink)`
 `;
 
 export const HeaderBreadcrumb = () => {
-    const language = useSelector(state => state.suite.settings.language);
+    const language = useSelector(selectLanguage);
     const indexNode = useSelector(state => state.guide.indexNode);
     const currentNode = useSelector(state => state.guide.currentNode);
     const dispatch = useDispatch();
