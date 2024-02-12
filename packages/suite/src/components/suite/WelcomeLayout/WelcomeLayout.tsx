@@ -108,7 +108,7 @@ const ChildrenWrapper = styled.div`
     align-items: center;
     justify-content: center;
     width: 100%;
-    max-width: ${MAX_ONBOARDING_WIDTH};
+    max-width: ${MAX_ONBOARDING_WIDTH}px;
 `;
 
 interface WelcomeLayoutProps {

@@ -5,8 +5,7 @@ import { Navigation } from './Navigation';
 import { AccountsMenu } from 'src/components/wallet/WalletLayout/AccountsMenu/AccountsMenu';
 import { QuickActions } from './QuickActions';
 import { ElevationContext } from '@trezor/components';
-
-export const SIDEBAR_WIDTH_NUMERIC = 280;
+import { SIDEBAR_WIDTH_NUMERIC } from 'src/constants/suite/layout';
 
 const Container = styled.nav`
     display: flex;

@@ -4,11 +4,13 @@ import { spacingsPx, zIndices } from '@trezor/theme';
 import { motionEasing, variables } from '@trezor/components';
 import { useSelector } from 'src/hooks/suite';
 import { selectRouteName } from 'src/reducers/suite/routerReducer';
+import { SUBPAGE_NAV_HEIGHT } from 'src/constants/suite/layout';
+import { selectIsLoggedOut } from 'src/reducers/suite/suiteReducer';
 import { HoverAnimation } from '../../HoverAnimation';
 import { AppNavigationTooltip } from '../../AppNavigation/AppNavigationTooltip';
-import { SUBPAGE_NAV_HEIGHT, globalPaddingEraserStyle } from 'src/constants/suite/layout';
+import { globalPaddingEraserStyle } from './utils';
 
-const Container = styled.div`
+const Container = styled.div<{ isFullWidth: boolean }>`
     position: sticky;
     top: 64px;
     display: flex;
@@ -69,13 +71,14 @@ interface SubpageNavigationProps {
 export const SubpageNavigation = ({ items, className }: SubpageNavigationProps) => {
     const routeName = useSelector(selectRouteName);
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    const isLoggedOut = useSelector(selectIsLoggedOut);
 
     const isAccountLoading = selectedAccount.status === 'loading';
 
     const visibleItems = items.filter(item => !item.isHidden);
 
     return (
-        <Container className={className}>
+        <Container isFullWidth={isLoggedOut} className={className}>
             <LayoutGroup id={items[0].id}>
                 {visibleItems.map(item => {
                     const { id, title } = item;

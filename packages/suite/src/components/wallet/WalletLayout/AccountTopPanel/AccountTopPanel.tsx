@@ -10,7 +10,7 @@ import { useSelector } from 'src/hooks/suite';
 import { FiatHeader } from 'src/views/dashboard/components/FiatHeader';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
-import { globalPaddingEraserStyle } from 'src/constants/suite/layout';
+import { globalPaddingEraserStyle } from 'src/components/suite/Preloader/SuiteLayout/utils';
 
 export const ACCOUNT_INFO_HEIGHT = 80;
 
