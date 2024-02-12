@@ -16,6 +16,10 @@ export enum DeviceModelInternal {
     UNKNOWN = 'UNKNOWN',
 }
 
+export type EraseBonds = {};
+
+export type Unpair = {};
+
 export type BinanceGetAddress = {
     address_n: number[];
     show_display?: boolean;
@@ -2292,6 +2296,8 @@ export type TezosSignedTx = {
 
 // custom connect definitions
 export type MessageType = {
+    EraseBonds: EraseBonds;
+    Unpair: Unpair;
     BinanceGetAddress: BinanceGetAddress;
     BinanceAddress: BinanceAddress;
     BinanceGetPublicKey: BinanceGetPublicKey;
