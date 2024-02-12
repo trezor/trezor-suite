@@ -1,6 +1,6 @@
 import { selectDevice, selectPendingAccountAddresses } from '@suite-common/wallet-core';
 
-import { WalletLayout, WalletLayoutHeader } from 'src/components/wallet';
+import { WalletLayout, WalletSubpageHeading } from 'src/components/wallet';
 import { useDevice, useSelector } from 'src/hooks/suite';
 
 import { FreshAddress } from './components/FreshAddress';
@@ -35,7 +35,7 @@ const Receive = () => {
 
     return (
         <WalletLayout title="TR_NAV_RECEIVE" isSubpage account={selectedAccount}>
-            <WalletLayoutHeader title="TR_NAV_RECEIVE" />
+            <WalletSubpageHeading title="TR_NAV_RECEIVE" />
 
             {showCexWarning && <CoinjoinReceiveWarning />}
 

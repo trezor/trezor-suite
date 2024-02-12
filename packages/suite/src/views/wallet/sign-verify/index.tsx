@@ -12,7 +12,7 @@ import {
     Tooltip,
 } from '@trezor/components';
 
-import { WalletLayout, WalletLayoutHeader } from 'src/components/wallet';
+import { WalletLayout, WalletSubpageHeading } from 'src/components/wallet';
 import { Translation } from 'src/components/suite';
 import { useDevice, useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { sign, verify } from 'src/actions/wallet/signVerifyActions';
@@ -195,13 +195,13 @@ const SignVerify = () => {
 
     return (
         <WalletLayout title="TR_NAV_SIGN_VERIFY" isSubpage account={selectedAccount}>
-            <WalletLayoutHeader title="TR_NAV_SIGN_VERIFY">
+            <WalletSubpageHeading title="TR_NAV_SIGN_VERIFY">
                 {isFormDirty && (
                     <Button type="button" variant="tertiary" onClick={resetForm}>
                         <Translation id="TR_CLEAR_ALL" />
                     </Button>
                 )}
-            </WalletLayoutHeader>
+            </WalletSubpageHeading>
 
             <Card paddingType="none">
                 <Navigation page={page} setPage={setPage} />
