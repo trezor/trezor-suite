@@ -1,5 +1,8 @@
 {
     "nested": {
+        "EraseBonds": {
+            "fields": {}
+        },
         "BinanceGetAddress": {
             "fields": {
                 "address_n": {
@@ -8627,6 +8630,9 @@
                 "MessageType_EosSignedTx": {
                     "(wire_out)": true
                 },
+                "MessageType_EraseBonds": {
+                    "(wire_in)": true
+                },
                 "MessageType_BinanceGetAddress": {
                     "(wire_in)": true
                 },
@@ -8909,6 +8915,7 @@
                 "MessageType_EosTxActionRequest": 603,
                 "MessageType_EosTxActionAck": 604,
                 "MessageType_EosSignedTx": 605,
+                "MessageType_EraseBonds": 8006,
                 "MessageType_BinanceGetAddress": 700,
                 "MessageType_BinanceAddress": 701,
                 "MessageType_BinanceGetPublicKey": 702,

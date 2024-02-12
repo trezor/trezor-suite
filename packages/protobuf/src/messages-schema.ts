@@ -2419,6 +2419,9 @@ export const ApplyFlags = Type.Object(
     { $id: 'ApplyFlags' },
 );
 
+export type EraseBonds = Static<typeof EraseBonds>;
+export const EraseBonds = Type.Object({});
+
 export type ChangePin = Static<typeof ChangePin>;
 export const ChangePin = Type.Object(
     {
@@ -3483,6 +3486,7 @@ export const experimental_field = Type.Object({}, { $id: 'experimental_field' })
 export type MessageType = Static<typeof MessageType>;
 export const MessageType = Type.Object(
     {
+        EraseBonds,
         BinanceGetAddress,
         BinanceAddress,
         BinanceGetPublicKey,

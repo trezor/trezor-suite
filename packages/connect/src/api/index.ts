@@ -24,6 +24,7 @@ export { default as cipherKeyValue } from './cipherKeyValue';
 export { default as composeTransaction } from './composeTransaction';
 // export { default as disableWebUSB } from './disableWebUSB';
 // export { default as dispose } from './dispose';
+export { default as eraseBonds } from './eraseBonds';
 export { default as getAccountDescriptor } from './getAccountDescriptor';
 export { default as getAccountInfo } from './getAccountInfo';
 export { default as getAddress } from './getAddress';
