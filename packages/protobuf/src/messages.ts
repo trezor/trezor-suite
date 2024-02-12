@@ -12,6 +12,9 @@ export enum DeviceModelInternal {
     T2B1 = 'T2B1',
 }
 
+// EraseBonds
+export type EraseBonds = {};
+
 // BinanceGetAddress
 export type BinanceGetAddress = {
     address_n: number[];
@@ -311,32 +314,32 @@ export type TxRequest = {
 export type InternalInputScriptType = Exclude<InputScriptType, 'EXTERNAL'>;
 
 type CommonTxInputType = {
-    prev_hash: string; // required: previous transaction hash (reversed)
-    prev_index: number; // required: previous transaction index
-    amount: UintType; // required
-    sequence?: number;
-    multisig?: MultisigRedeemScriptType;
-    decred_tree?: number;
-    orig_hash?: string; // RBF
-    orig_index?: number; // RBF
-    decred_staking_spend?: DecredStakingSpendType;
-    script_pubkey?: string; // required if script_type=EXTERNAL
-    coinjoin_flags?: number; // bit field of coinjoin-specific flags
-    script_sig?: string; // used by EXTERNAL, depending on script_pubkey
-    witness?: string; // used by EXTERNAL, depending on script_pubkey
-    ownership_proof?: string; // used by EXTERNAL, depending on script_pubkey
-    commitment_data?: string; // used by EXTERNAL, depending on ownership_proof
+    prev_hash: string, // required: previous transaction hash (reversed)
+    prev_index: number, // required: previous transaction index
+    amount: UintType, // required
+    sequence?: number,
+    multisig?: MultisigRedeemScriptType,
+    decred_tree?: number,
+    orig_hash?: string, // RBF
+    orig_index?: number, // RBF
+    decred_staking_spend?: DecredStakingSpendType,
+    script_pubkey?: string, // required if script_type=EXTERNAL
+    coinjoin_flags?: number, // bit field of coinjoin-specific flags
+    script_sig?: string, // used by EXTERNAL, depending on script_pubkey
+    witness?: string, // used by EXTERNAL, depending on script_pubkey
+    ownership_proof?: string, // used by EXTERNAL, depending on script_pubkey
+    commitment_data?: string, // used by EXTERNAL, depending on ownership_proof
 };
 
 export type TxInputType =
     | (CommonTxInputType & {
-          address_n: number[];
-          script_type?: InternalInputScriptType;
+          address_n: number[],
+          script_type?: InternalInputScriptType,
       })
     | (CommonTxInputType & {
-          address_n?: typeof undefined;
-          script_type: 'EXTERNAL';
-          script_pubkey: string;
+          address_n?: typeof undefined,
+          script_type: 'EXTERNAL',
+          script_pubkey: string,
       });
 
 export type TxInput = TxInputType;
@@ -357,46 +360,46 @@ export type ChangeOutputScriptType = Exclude<OutputScriptType, 'PAYTOOPRETURN'>;
 
 export type TxOutputType =
     | {
-          address: string;
-          address_n?: typeof undefined;
-          script_type: 'PAYTOADDRESS';
-          amount: UintType;
-          multisig?: MultisigRedeemScriptType;
-          orig_hash?: string;
-          orig_index?: number;
-          payment_req_index?: number;
+          address: string,
+          address_n?: typeof undefined,
+          script_type: 'PAYTOADDRESS',
+          amount: UintType,
+          multisig?: MultisigRedeemScriptType,
+          orig_hash?: string,
+          orig_index?: number,
+          payment_req_index?: number,
       }
     | {
-          address?: typeof undefined;
-          address_n: number[];
-          script_type?: ChangeOutputScriptType;
-          amount: UintType;
-          multisig?: MultisigRedeemScriptType;
-          orig_hash?: string;
-          orig_index?: number;
-          payment_req_index?: number;
+          address?: typeof undefined,
+          address_n: number[],
+          script_type?: ChangeOutputScriptType,
+          amount: UintType,
+          multisig?: MultisigRedeemScriptType,
+          orig_hash?: string,
+          orig_index?: number,
+          payment_req_index?: number,
       }
     // NOTE: the type was loosened for compatibility (issue #10474)
     // It is not originally intended to use address instead of address_n with change output
     | {
-          address: string;
-          address_n?: typeof undefined;
-          script_type?: ChangeOutputScriptType;
-          amount: UintType;
-          multisig?: MultisigRedeemScriptType;
-          orig_hash?: string;
-          orig_index?: number;
-          payment_req_index?: number;
-      }
+        address: string,
+        address_n?: typeof undefined,
+        script_type?: ChangeOutputScriptType,
+        amount: UintType,
+        multisig?: MultisigRedeemScriptType,
+        orig_hash?: string,
+        orig_index?: number,
+        payment_req_index?: number,
+    }
     | {
-          address?: typeof undefined;
-          address_n?: typeof undefined;
-          amount: '0' | 0;
-          op_return_data: string;
-          script_type: 'PAYTOOPRETURN';
-          orig_hash?: string;
-          orig_index?: number;
-          payment_req_index?: number;
+          address?: typeof undefined,
+          address_n?: typeof undefined,
+          amount: '0' | 0,
+          op_return_data: string,
+          script_type: 'PAYTOOPRETURN',
+          orig_hash?: string,
+          orig_index?: number,
+          payment_req_index?: number,
       };
 
 export type TxOutput = TxOutputType;
@@ -471,32 +474,32 @@ export type TxAckPaymentRequest = {
 
 export type TxAckResponse =
     | {
-          inputs: Array<TxInputType | PrevInput>;
+          inputs: Array<TxInputType | PrevInput>,
       }
     | {
-          bin_outputs: TxOutputBinType[];
+          bin_outputs: TxOutputBinType[],
       }
     | {
-          outputs: TxOutputType[];
+          outputs: TxOutputType[],
       }
     | {
-          extra_data: string;
+          extra_data: string,
       }
     | {
-          version?: number;
-          lock_time?: number;
-          inputs_cnt: number;
-          outputs_cnt: number;
-          extra_data?: string;
-          extra_data_len?: number;
-          timestamp?: number;
-          version_group_id?: number;
-          expiry?: number;
-          branch_id?: number;
+          version?: number,
+          lock_time?: number,
+          inputs_cnt: number,
+          outputs_cnt: number,
+          extra_data?: string,
+          extra_data_len?: number,
+          timestamp?: number,
+          version_group_id?: number,
+          expiry?: number,
+          branch_id?: number,
       };
 
 export type TxAck = {
-    tx: TxAckResponse;
+    tx: TxAckResponse,
 };
 // - TxAck replacement end
 
@@ -2084,7 +2087,7 @@ export enum StellarAssetType {
 
 // StellarAsset
 export type StellarAsset = {
-    type: 0 | 1 | 2 | 'NATIVE' | 'ALPHANUM4' | 'ALPHANUM12';
+    type: 0 | 1 | 2  | "NATIVE" | "ALPHANUM4" | "ALPHANUM12";
     code?: string;
     issuer?: string;
 };
@@ -2396,6 +2399,7 @@ export type TezosSignedTx = {
 
 // custom connect definitions
 export type MessageType = {
+    EraseBonds: EraseBonds;
     BinanceGetAddress: BinanceGetAddress;
     BinanceAddress: BinanceAddress;
     BinanceGetPublicKey: BinanceGetPublicKey;

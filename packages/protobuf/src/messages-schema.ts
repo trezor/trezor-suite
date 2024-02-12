@@ -1804,6 +1804,9 @@ export const ApplyFlags = Type.Object({
     flags: Type.Number(),
 });
 
+export type EraseBonds = Static<typeof EraseBonds>;
+export const EraseBonds = Type.Object({});
+
 export type ChangePin = Static<typeof ChangePin>;
 export const ChangePin = Type.Object({
     remove: Type.Optional(Type.Boolean()),
@@ -2792,6 +2795,7 @@ export const MessageType = Type.Object({
     TranslationDataRequest,
     TranslationDataAck,
     ApplyFlags,
+    EraseBonds,
     ChangePin,
     ChangeWipeCode,
     SdProtect,

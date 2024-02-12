@@ -1,5 +1,8 @@
 {
     "nested": {
+        "EraseBonds": {
+            "fields": {}
+        },
         "BinanceGetAddress": {
             "fields": {
                 "address_n": {
@@ -7342,6 +7345,9 @@
                 "MessageType_BinanceGetAddress": {
                     "(wire_in)": true
                 },
+                "MessageType_EraseBonds": {
+                    "(wire_in)": true
+                },
                 "MessageType_BinanceAddress": {
                     "(wire_out)": true
                 },
@@ -7643,7 +7649,8 @@
                 "MessageType_SolanaGetAddress": 902,
                 "MessageType_SolanaAddress": 903,
                 "MessageType_SolanaSignTx": 904,
-                "MessageType_SolanaTxSignature": 905
+                "MessageType_SolanaTxSignature": 905,
+                "MessageType_EraseBonds": 8006
             }
         },
         "RippleGetAddress": {
