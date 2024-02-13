@@ -111,6 +111,9 @@ module.exports = {
                 pattern: {
                     // it's nice to explicitly know we are dealing with JSON
                     json: 'always',
+                    ts: 'never',
+                    tsx: 'never',
+                    jws: 'never',
                 },
             },
         ],
@@ -267,7 +270,6 @@ module.exports = {
             rules: {
                 // JS files are usually configs or scripts where require is OK
                 '@typescript-eslint/no-var-requires': 'off',
-                'import/no-unresolved': 'error',
                 'no-console': 'off',
             },
         },
