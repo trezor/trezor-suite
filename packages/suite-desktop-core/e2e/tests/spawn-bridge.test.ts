@@ -7,14 +7,9 @@ import { launchSuite, waitForDataTestSelector } from '../support/common';
 testPlaywright.describe.serial('Bridge', () => {
     testPlaywright.beforeAll(async () => {
         // We make sure that bridge from trezor-user-env is stopped.
-        // So we properly test the electron app spawning bridge binary.
+        // So we properly test the electron app starting node-bridge module.
         await TrezorUserEnvLink.api.trezorUserEnvConnect();
         await TrezorUserEnvLink.api.stopBridge();
-    });
-
-    testPlaywright.afterAll(async () => {
-        // When finish we make bridge from trezor-user-env to run so it is ready for the rest of the tests.
-        await TrezorUserEnvLink.api.startBridge();
     });
 
     testPlaywright('App spawns bundled bridge and stops it after app quit', async ({ request }) => {
