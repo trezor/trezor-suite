@@ -10,7 +10,6 @@ import { SENTRY_CONFIG } from '@suite-common/sentry';
 import { Metadata, Preloader, ToastContainer } from 'src/components/suite';
 import { ConnectedIntlProvider } from 'src/support/suite/ConnectedIntlProvider';
 import Resize from 'src/support/suite/Resize';
-import { Shortcuts } from 'src/support/suite/Shortcuts';
 import Protocol from 'src/support/suite/Protocol';
 import Autodetect from 'src/support/suite/Autodetect';
 import { useTor } from 'src/support/suite/useTor';
@@ -39,7 +38,6 @@ const Main = () => {
                 <ModalContextProvider>
                     <ErrorBoundary>
                         <Autodetect />
-                        <Shortcuts />
                         <Resize />
                         <Protocol />
                         <OnlineStatus />
