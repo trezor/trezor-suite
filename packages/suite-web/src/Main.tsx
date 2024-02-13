@@ -10,7 +10,6 @@ import { SENTRY_CONFIG } from '@suite-common/sentry';
 import { Metadata, Preloader, ToastContainer } from 'src/components/suite';
 import { ConnectedIntlProvider } from 'src/support/suite/ConnectedIntlProvider';
 import Resize from 'src/support/suite/Resize';
-import { Shortcuts } from 'src/support/suite/Shortcuts';
 import Protocol from 'src/support/suite/Protocol';
 import Autodetect from 'src/support/suite/Autodetect';
 import { useTor } from 'src/support/suite/useTor';
@@ -19,7 +18,7 @@ import ErrorBoundary from 'src/support/suite/ErrorBoundary';
 import RouterHandler from 'src/support/suite/Router';
 import { ConnectedThemeProvider } from 'src/support/suite/ConnectedThemeProvider';
 import { LoadingScreen } from 'src/support/suite/screens/LoadingScreen';
-import { useFormattersConfig } from 'src/hooks/suite';
+import { useDebugLanguageShortcut, useFormattersConfig } from 'src/hooks/suite';
 import history from 'src/support/history';
 import { ModalContextProvider } from 'src/support/suite/ModalContext';
 
@@ -30,6 +29,7 @@ import { FormatterProvider } from '@suite-common/formatters';
 const Main = () => {
     useCypress();
     useTor();
+    useDebugLanguageShortcut();
     const formattersConfig = useFormattersConfig();
 
     return (
@@ -38,7 +38,6 @@ const Main = () => {
                 <ModalContextProvider>
                     <ErrorBoundary>
                         <Autodetect />
-                        <Shortcuts />
                         <Resize />
                         <Protocol />
                         <OnlineStatus />
