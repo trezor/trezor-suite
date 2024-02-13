@@ -13,6 +13,7 @@ const bridgeDev = app.commandLine.hasSwitch('bridge-dev');
 const bridgeTest = app.commandLine.hasSwitch('bridge-test');
 // bridge node is intended for internal testing
 const bridgeNode = app.commandLine.hasSwitch('bridge-node');
+const bridgeNodeTest = app.commandLine.hasSwitch('bridge-node-test');
 
 export const SERVICE_NAME = 'bridge';
 
@@ -41,8 +42,8 @@ const start = async (bridge: BridgeProcess | TrezordNode) => {
 };
 
 const getBridgeInstance = () => {
-    if (bridgeNode) {
-        return new TrezordNode({ port: 21325 });
+    if (bridgeNode || bridgeNodeTest) {
+        return new TrezordNode({ port: 21325, api: bridgeNodeTest ? 'udp' : 'usb' });
     }
     return new BridgeProcess();
 };
