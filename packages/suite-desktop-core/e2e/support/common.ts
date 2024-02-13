@@ -12,7 +12,7 @@ export const launchSuite = async () => {
         args: [
             path.join(appDir, './dist/app.js'),
             `--log-level=${desiredLogLevel}`,
-            '--bridge-test',
+            '--bridge-node',
         ],
         // when testing electron, video needs to be setup like this. it works locally but not in docker
         // recordVideo: { dir: 'test-results' },
