@@ -52,6 +52,10 @@ class SettingsActions {
         await waitForDataTestSelector(window, '@modal');
     }
 
+    async enableCoin(window: Page, desiredNetwork: NetworkSymbol) {
+        await window.getByTestId(`@settings/wallet/network/${desiredNetwork}`).click();
+    }
+
     async changeNetworkBackend(
         window: Page,
         desiredNetworkBackend: BackendType,
