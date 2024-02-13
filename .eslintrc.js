@@ -103,20 +103,7 @@ module.exports = {
         'no-nested-ternary': 'error',
         // Does not work with Babel react-native to react-native-web
         'import/no-unresolved': 'off',
-        'import/extensions': [
-            'error',
-            'never',
-            {
-                ignorePackages: true,
-                pattern: {
-                    // it's nice to explicitly know we are dealing with JSON
-                    json: 'always',
-                    ts: 'never',
-                    tsx: 'never',
-                    jws: 'never',
-                },
-            },
-        ],
+        'import/extensions': 'off',
         // Could be useful, but it's very very very slow
         'import/no-cycle': 'off',
         'import/no-anonymous-default-export': [

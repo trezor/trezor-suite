@@ -32,7 +32,7 @@ export const All: StoryObj = {
         <StoryColumn minWidth={700}>
             <WrapperIcons>
                 {variables.COINS.map((coin: CoinType) => (
-                    <Icon>
+                    <Icon key={coin}>
                         <CoinName>{coin}</CoinName>
                         <CoinLogo symbol={coin} data-test={`coin-${coin}`} size={64} />
                     </Icon>
