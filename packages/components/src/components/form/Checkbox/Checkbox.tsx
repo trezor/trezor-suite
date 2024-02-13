@@ -22,7 +22,7 @@ interface VariantStyles {
 export const variantStyles: Record<CheckboxVariant, VariantStyles> = {
     primary: {
         background: 'backgroundSurfaceElevation1',
-        border: 'borderOnElevation1',
+        border: 'iconSubdued',
         backgroundHover: 'backgroundSurfaceElevation0',
         borderHover: 'borderFocus',
         backgroundChecked: 'backgroundPrimaryDefault',
