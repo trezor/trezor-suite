@@ -1,7 +1,7 @@
 import path from 'path';
 
 import { isNotUndefined } from '@trezor/utils';
-import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
+import { TypedEmitter } from '@trezor/utils';
 import { InterceptedEvent } from '@trezor/request-manager';
 import { isDevEnv } from '@suite-common/suite-utils';
 import type { HandshakeClient, TorStatus } from '@trezor/suite-desktop-api';

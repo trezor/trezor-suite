@@ -2,8 +2,8 @@
 import EventEmitter from 'events';
 
 import { TRANSPORT, TRANSPORT_ERROR } from '@trezor/transport';
-import { createDeferred, Deferred } from '@trezor/utils/lib/createDeferred';
-import { getSynchronize } from '@trezor/utils/lib/getSynchronize';
+import { createDeferred, Deferred } from '@trezor/utils';
+import { getSynchronize } from '@trezor/utils';
 import { storage } from '@trezor/connect-common';
 
 import { DataManager } from '../data/DataManager';

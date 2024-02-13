@@ -1,5 +1,5 @@
 import { getWeakRandomId } from '@trezor/utils';
-import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
+import { TypedEmitter } from '@trezor/utils';
 
 import { Descriptor } from '../types';
 import {

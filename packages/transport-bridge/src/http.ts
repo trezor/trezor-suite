@@ -1,6 +1,6 @@
 import { HttpServer, parseBodyJSON, parseBodyText, Handler } from '@trezor/node-utils';
 import { Descriptor } from '@trezor/transport/src/types';
-import { arrayPartition } from '@trezor/utils/lib/arrayPartition';
+import { arrayPartition } from '@trezor/utils';
 
 import { sessionsClient, enumerate, acquire, release, call, send, receive } from './core';
 

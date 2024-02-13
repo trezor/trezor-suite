@@ -1,6 +1,6 @@
 import { storage } from '@trezor/connect-common';
-import * as versionUtils from '@trezor/utils/lib/versionUtils';
-import { Deferred } from '@trezor/utils/lib/createDeferred';
+import { versionUtils } from '@trezor/utils';
+import { Deferred } from '@trezor/utils';
 import { DataManager } from '../data/DataManager';
 import { ERRORS, NETWORK } from '../constants';
 import {

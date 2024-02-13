@@ -1,6 +1,6 @@
 import * as protobuf from 'protobufjs/light';
 import { scheduleAction, ScheduleActionParams, ScheduledAction, Deferred } from '@trezor/utils';
-import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
+import { TypedEmitter } from '@trezor/utils';
 import { PROTOCOL_MALFORMED, TransportProtocol } from '@trezor/protocol';
 import { MessageFromTrezor } from '@trezor/protobuf';
 

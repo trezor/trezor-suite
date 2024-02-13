@@ -1,6 +1,6 @@
 import EventEmitter from 'events';
 
-import { createDeferredManager } from '@trezor/utils/lib/createDeferredManager';
+import { createDeferredManager } from '@trezor/utils';
 
 import { Core, initCore } from './core';
 import { factory } from './factory';
