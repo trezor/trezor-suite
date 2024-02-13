@@ -9457,6 +9457,7 @@ __metadata:
     "@sinclair/typebox": "npm:^0.31.28"
     "@sinclair/typebox-codegen": "npm:^0.8.13"
     ts-mixer: "npm:^6.0.3"
+    ts-node: "npm:^10.9.2"
   languageName: unknown
   linkType: soft
 

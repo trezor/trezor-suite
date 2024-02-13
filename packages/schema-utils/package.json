@@ -18,7 +18,8 @@
         "prepublish": "yarn g:tsx ../../scripts/prepublish.js"
     },
     "devDependencies": {
-        "@sinclair/typebox-codegen": "^0.8.13"
+        "@sinclair/typebox-codegen": "^0.8.13",
+        "ts-node": "^10.9.2"
     },
     "dependencies": {
         "@sinclair/typebox": "^0.31.28",
