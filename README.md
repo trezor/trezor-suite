@@ -51,7 +51,7 @@ Run a dev build:
 
 Inspired by [GitLab Contributing Guide](https://docs.gitlab.com/ee/development/contributing/)
 
-Using [Conventional Commits](COMMITS.md) is strongly recommended.
+Using [Conventional Commits](COMMITS.md) is required.
 
 ## Security vulnerability disclosure
 

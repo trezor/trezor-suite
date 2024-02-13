@@ -1,0 +1,12 @@
+name: "[Check]: Commit messages"
+
+on: [pull_request]
+
+jobs:
+  commit-message-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Check commit messages
+        run: ./scripts/check-commit-messages.sh
