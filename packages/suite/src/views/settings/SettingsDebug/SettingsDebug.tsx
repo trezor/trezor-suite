@@ -15,6 +15,7 @@ import { Devkit } from './Devkit';
 import { Transport } from './Transport';
 import { Processes } from './Processes';
 import { PasswordManager } from './PasswordManager/PasswordManager';
+import { BluetoothEraseBonds } from './BluetoothEraseBonds';
 
 export const SettingsDebug = () => (
     <SettingsLayout>
@@ -55,5 +56,10 @@ export const SettingsDebug = () => (
         <SettingsSection title="Password manager">
             <PasswordManager />
         </SettingsSection>
+        {!isWeb() && (
+            <SettingsSection title="Bluetooth">
+                <BluetoothEraseBonds />
+            </SettingsSection>
+        )}
     </SettingsLayout>
 );
