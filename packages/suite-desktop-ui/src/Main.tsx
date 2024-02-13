@@ -22,11 +22,10 @@ import { useTor } from 'src/support/suite/useTor';
 import OnlineStatus from 'src/support/suite/OnlineStatus';
 import ErrorBoundary from 'src/support/suite/ErrorBoundary';
 import RouterHandler from 'src/support/suite/Router';
-import { Shortcuts } from 'src/support/suite/Shortcuts';
 import { ConnectedThemeProvider } from 'src/support/suite/ConnectedThemeProvider';
 import { LoadingScreen } from 'src/support/suite/screens/LoadingScreen';
 import { ErrorScreen } from 'src/support/suite/screens/ErrorScreen';
-import { useFormattersConfig } from 'src/hooks/suite';
+import { useDebugLanguageShortcut, useFormattersConfig } from 'src/hooks/suite';
 import history from 'src/support/history';
 import { ModalContextProvider } from 'src/support/suite/ModalContext';
 import { desktopHandshake } from 'src/actions/suite/suiteActions';
@@ -38,6 +37,7 @@ import { TorLoadingScreen } from './support/screens/TorLoadingScreen';
 
 const Main = () => {
     useTor();
+    useDebugLanguageShortcut();
     const formattersConfig = useFormattersConfig();
 
     return (
@@ -46,7 +46,6 @@ const Main = () => {
                 <ModalContextProvider>
                     <ErrorBoundary>
                         <Autodetect />
-                        <Shortcuts />
                         <Resize />
                         <Protocol />
                         <OnlineStatus />
