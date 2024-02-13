@@ -22,6 +22,7 @@ import { useSelector } from 'src/hooks/suite';
 import { PreField } from './PreField';
 import { AutoStart } from './AutoStart';
 import { Tor } from './Tor';
+import { BluetoothEraseBonds } from './BluetoothEraseBonds';
 
 export const SettingsDebug = () => {
     const flags = useSelector(selectSuiteFlags);
@@ -82,6 +83,11 @@ export const SettingsDebug = () => {
             <SettingsSection title="Flags JSON">
                 <PreField>{JSON.stringify(flags)}</PreField>
             </SettingsSection>
+            {isDesktop() && (
+                <SettingsSection title="Bluetooth">
+                    <BluetoothEraseBonds />
+                </SettingsSection>
+            )}
         </SettingsLayout>
     );
 };
