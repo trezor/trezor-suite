@@ -221,7 +221,7 @@ module.exports = {
             'error',
             {
                 paths: [{ name: '.' }, { name: '..' }, { name: '../..' }],
-                patterns: ['**/libDev/src'],
+                patterns: ['**/libDev/src', '@trezor/utils/lib', '@trezor/utils/lib/*'],
             },
         ],
         'no-restricted-syntax': [
