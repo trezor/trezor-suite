@@ -10,18 +10,19 @@ const StyledCheckbox = styled(Checkbox)`
     left: 0;
     height: 100%;
     width: 100%;
-
     > div {
         position: absolute;
 
         /* Card padding */
-        bottom: ${spacingsPx.sm};
+        top: ${spacingsPx.lg};
         left: ${spacingsPx.sm};
     }
 
-    ${variables.SCREEN_QUERY.MOBILE} {
+    ${variables.SCREEN_QUERY.ABOVE_MOBILE} {
         > div {
-            bottom: auto;
+            top: auto;
+            bottom: ${spacingsPx.md};
+            left: ${spacingsPx.lg};
         }
     }
 `;
