@@ -5,7 +5,6 @@ import { analytics, EventType } from '@trezor/suite-analytics';
 
 import {
     Button,
-    Icon,
     variables,
     Dropdown,
     DropdownRef,
@@ -19,36 +18,7 @@ import { DEFAULT_LABEL } from 'src/constants/suite/device';
 import { isHomescreenSupportedOnDevice } from 'src/utils/suite/homescreen';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import { ChangeDeviceLabel } from 'src/components/suite/ChangeDeviceLabel';
-import { borders, spacingsPx, typography } from '@trezor/theme';
-
-const StyledButton = styled(Button)`
-    display: flex;
-    padding: ${spacingsPx.sm} ${spacingsPx.md};
-    height: 42px;
-    border: 1px solid ${({ theme }) => theme.borderOnElevation1};
-    border-radius: ${borders.radii.xxs};
-    align-items: center;
-    cursor: pointer;
-    background-color: transparent;
-    ${typography.hint}
-
-    :not(:disabled) {
-        color: ${({ theme }) => theme.TYPE_DARK_GREY};
-    }
-
-    :hover,
-    :focus {
-        background-color: transparent;
-        color: initial;
-    }
-`;
-
-const StyledIcon = styled(Icon)`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: auto ${spacingsPx.md} auto 0;
-`;
+import { spacingsPx, typography } from '@trezor/theme';
 
 const Content = styled.div`
     flex-direction: column;
@@ -187,13 +157,15 @@ export const FinalStep = () => {
                     </Heading>
                     {!state && (
                         <SetupActions>
-                            <StyledButton
+                            <Button
+                                variant="tertiary"
+                                size="small"
+                                icon="PENCIL"
                                 onClick={() => setState('rename')}
                                 isDisabled={isWaitingForConfirm}
                             >
-                                <StyledIcon size={16} icon="PENCIL" />
                                 <Translation id="TR_DEVICE_SETTINGS_DEVICE_EDIT_LABEL" />
-                            </StyledButton>
+                            </Button>
 
                             <Tooltip
                                 maxWidth={285}
@@ -217,10 +189,14 @@ export const FinalStep = () => {
                                         </GalleryWrapper>
                                     }
                                 >
-                                    <StyledButton onClick={() => setState(null)}>
-                                        <StyledIcon size={16} icon="DASHBOARD" />
+                                    <Button
+                                        variant="tertiary"
+                                        size="small"
+                                        onClick={() => setState(null)}
+                                        icon="DASHBOARD"
+                                    >
                                         <Translation id="TR_ONBOARDING_FINAL_CHANGE_HOMESCREEN" />
-                                    </StyledButton>
+                                    </Button>
                                 </Dropdown>
                             </Tooltip>
                         </SetupActions>
