@@ -1,7 +1,6 @@
 import { isDesktop, isWeb } from '@trezor/env-utils';
 
 import { SettingsLayout, SettingsSection } from 'src/components/settings';
-import { Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
 
@@ -26,6 +25,7 @@ import { TriggerHighlight } from './TriggerHighlight';
 import { ViewOnlySettings } from './ViewOnlySettings';
 import { WalletConnect } from './WalletConnect';
 import { WipeData } from './WipeData';
+import { Translation } from '../../../components/suite';
 
 export const SettingsDebug = () => {
     const flags = useSelector(selectSuiteFlags);
