@@ -21,6 +21,7 @@ import { TriggerHighlight } from './TriggerHighlight';
 import { Backends } from './Backends';
 import { PreField } from './PreField';
 import { Tor } from './Tor';
+import { BluetoothEraseBonds } from './BluetoothEraseBonds';
 
 export const SettingsDebug = () => {
     const flags = useSelector(selectSuiteFlags);
@@ -76,6 +77,11 @@ export const SettingsDebug = () => {
             <SettingsSection title="Flags JSON">
                 <PreField>{JSON.stringify(flags)}</PreField>
             </SettingsSection>
+            {isDesktop() && (
+                <SettingsSection title="Bluetooth">
+                    <BluetoothEraseBonds />
+                </SettingsSection>
+            )}
         </SettingsLayout>
     );
 };
