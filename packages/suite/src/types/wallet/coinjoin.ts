@@ -99,7 +99,6 @@ export interface CoinjoinAccount {
 export type CoinjoinServerEnvironment = 'public' | 'staging' | 'localhost';
 
 export interface CoinjoinDebugSettings {
-    coinjoinAllowNoTor?: boolean;
     coinjoinServerEnvironment?: PartialRecord<NetworkSymbol, CoinjoinServerEnvironment>;
     coinjoinConfigOverride?: PartialRecord<NetworkSymbol, Partial<CoinjoinNetworksConfig>>;
 }
