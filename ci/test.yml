@@ -183,8 +183,8 @@ suite web canary fws manual:
 
 suite desktop:
   extends: .e2e desktop
-  only:
-    <<: *run_everything_rules
+  # only:
+  #   <<: *run_everything_rules
 
 suite desktop manual:
   extends: .e2e desktop
