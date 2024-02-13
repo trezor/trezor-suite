@@ -34,7 +34,7 @@ export const Stepper = ({ step, total, maxWidth = 200 }: StepperProps) => {
         .map((_, index) => {
             const isActive = index < step;
 
-            return <Step isActive={isActive} />;
+            return <Step key={`${index}`} isActive={isActive} />;
         });
 
     return <Container maxWidth={maxWidth}>{steps}</Container>;

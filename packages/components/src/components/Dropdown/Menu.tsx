@@ -233,6 +233,7 @@ const Group = ({
                     isKeyboardSelected={itemId === keyboardFocusedItemId}
                     onMouseOver={() => !item.isDisabled && handleItemHover(itemId)}
                     {...item}
+                    key={itemId}
                 />
             );
         })}
@@ -441,6 +442,7 @@ export const Menu = forwardRef<HTMLUListElement, MenuProps>(
                         keyboardFocusedItemId={keyboardFocusedItemId}
                         handleItemHover={handleItemHover}
                         {...group}
+                        key={group.key}
                     />
                 ))}
             </Container>
