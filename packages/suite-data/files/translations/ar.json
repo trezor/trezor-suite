@@ -36,7 +36,6 @@
   "REFRESH": "تحديث",
   "REVIEW_AND_SEND_TRANSACTION": "مراجعة وإرسال",
   "SEND_RAW": "ارسل الخام",
-  "SEND_RAW_TRANSACTION": "نسخ المعاملة الخام",
   "SEND_RAW_TRANSACTION_TOOLTIP": "يمكنك تقديم جميع البيانات الخام للمعاملة الخاصة بك بنفسك.",
   "SEND_TRANSACTION": "إرسال",
   "SETTINGS_UPDATE_CHECKING": "جارٍ التحقق...",
@@ -177,6 +176,5 @@
   "TR_WALLET_DUPLICATE_TITLE": "كلمة المرور مكررة",
   "TR_WALLET_RECOVERED_FROM_SEED": "اكتمل الاسترداد",
   "TR_WALLET_SELECTION_ACCESS_HIDDEN_WALLET": "الدخول إلى المحفظة المخفية",
-  "TR_WALLET_SELECTION_HIDDEN_WALLET": "المحفظة المخفية",
-  "TR_WARNING": "تحذير"
+  "TR_WALLET_SELECTION_HIDDEN_WALLET": "المحفظة المخفية"
 }
