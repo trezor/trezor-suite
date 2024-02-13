@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { NetworkSymbol, networks } from '@suite-common/wallet-config';
-import { Switch, Button, Link } from '@trezor/components';
+import { Button, Link } from '@trezor/components';
 
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from 'src/components/suite';
 import { COINJOIN_NETWORKS } from 'src/services/coinjoin';
@@ -103,9 +103,6 @@ export const CoinjoinApi = () => {
         reloadApp(100);
     };
 
-    const handleTorChange = () =>
-        dispatch(setDebugSettings({ coinjoinAllowNoTor: !debug?.coinjoinAllowNoTor }));
-
     return (
         <>
             {(Object.keys(COINJOIN_NETWORKS) as NetworkSymbol[]).map(symbol => {
@@ -127,19 +124,6 @@ export const CoinjoinApi = () => {
                     />
                 );
             })}
-            <SectionItem data-test="@settings/debug/coinjoin-allow-no-tor">
-                <TextColumn
-                    title="Allow no Tor"
-                    description="Normally, coinjoin is allowed only when Tor is running. You may allow coinjoin without running Tor"
-                />
-                <ActionColumn>
-                    <Switch
-                        onChange={handleTorChange}
-                        isChecked={debug?.coinjoinAllowNoTor ?? false}
-                        data-test="@settings/debug/coinjoin/allow-no-tor-checkbox"
-                    />
-                </ActionColumn>
-            </SectionItem>
         </>
     );
 };

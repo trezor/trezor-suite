@@ -36,9 +36,9 @@ import {
     selectCoinjoinAccountByKey,
     selectIsAnySessionInCriticalPhase,
     selectIsAccountWithSessionInCriticalPhaseByAccountKey,
-    selectIsCoinjoinBlockedByTor,
     selectCoinjoinSessionBlockerByAccountKey,
 } from 'src/reducers/wallet/coinjoinReducer';
+import { selectTorState } from 'src/reducers/suite/suiteReducer';
 
 export const coinjoinMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -113,7 +113,7 @@ export const coinjoinMiddleware =
 
         if (action.type === SUITE.READY) {
             const state = api.getState();
-            const isCoinjoinBlockedByTor = selectIsCoinjoinBlockedByTor(state);
+            const isCoinjoinBlockedByTor = !selectTorState(state).isTorEnabled;
             if (!isCoinjoinBlockedByTor) {
                 api.dispatch(coinjoinAccountActions.restoreCoinjoinAccounts());
             }
@@ -125,7 +125,7 @@ export const coinjoinMiddleware =
                 action.type === discoveryActions.startDiscovery.type
                     ? undefined
                     : action.payload.symbol;
-            const isCoinjoinBlockedByTor = selectIsCoinjoinBlockedByTor(state);
+            const isCoinjoinBlockedByTor = !selectTorState(state).isTorEnabled;
             if (!isCoinjoinBlockedByTor) {
                 // find all coinjoin accounts (for specific network when initiating action is network-specific)
                 const coinjoinAccounts = state.wallet.accounts.filter(
