@@ -5439,6 +5439,11 @@ export default defineMessages({
         id: 'TR_ADD_TOKEN_TITLE',
         defaultMessage: 'Add ERC20 token',
     },
+    TR_ADD_TOKEN_DESCRIPTION: {
+        id: 'TR_ADD_TOKEN_DESCRIPTION',
+        defaultMessage:
+            "Enter a contract address of a token you wish to add to your wallet. This is typically a 42-character alphanumeric string starting with '0x'.",
+    },
     TR_ADD_TOKEN_LABEL: {
         id: 'TR_ADD_TOKEN_LABEL',
         defaultMessage: 'ERC20 token address',
@@ -6158,12 +6163,12 @@ export default defineMessages({
     METADATA_PROVIDER_AUTH_ERROR: {
         id: 'METADATA_PROVIDER_AUTH_ERROR',
         defaultMessage:
-            'Failed to sync labels with cloud provider {provider}. User was logged out.',
+            'Failed to sync labels with cloud storage provider {provider}. User was logged out.',
     },
     METADATA_PROVIDER_UNEXPECTED_ERROR: {
         id: 'METADATA_PROVIDER_UNEXPECTED_ERROR',
         defaultMessage:
-            'Failed to sync labels with cloud provider {provider}. User was logged out.',
+            'Failed to sync labels with cloud storage provider {provider}. User was logged out.',
     },
     TR_REVEAL_ADDRESS: {
         id: 'TR_REVEAL_ADDRESS',
@@ -6576,7 +6581,7 @@ export default defineMessages({
     TR_TRANSACTIONS_SEARCH_TIP_6: {
         id: 'TR_TRANSACTIONS_SEARCH_TIP_6',
         defaultMessage:
-            'Tip: You can use greater than (>) and lesser than (<) symbols on date searches. For example <strong> 2020-12-01<strong> will show all transactions on and after December 1st, 2020.',
+            'Tip: Use greater than (>) and lesser than (<) symbols on date searches. For example <strong> 2020-12-01<strong> will show all transactions on and after December 1st, 2020.',
     },
     TR_TRANSACTIONS_SEARCH_TIP_7: {
         id: 'TR_TRANSACTIONS_SEARCH_TIP_7',
@@ -6591,12 +6596,12 @@ export default defineMessages({
     TR_TRANSACTIONS_SEARCH_TIP_9: {
         id: 'TR_TRANSACTIONS_SEARCH_TIP_9',
         defaultMessage:
-            'Tip: You can display results matching multiple searches by grouping them with the AND operator (&). For example <strong> 2020-12-01 & < 2020-12-31 & > 0</strong> will show all incoming (amount higher than 0) transactions in December 2020.',
+            'Tip: Display results matching multiple searches by grouping them with the AND operator (&). For example <strong> 2020-12-01 & < 2020-12-31 & > 0</strong> will show all incoming (amount higher than 0) transactions in December 2020.',
     },
     TR_TRANSACTIONS_SEARCH_TIP_10: {
         id: 'TR_TRANSACTIONS_SEARCH_TIP_10',
         defaultMessage:
-            'Tip: You can combine AND (&) and OR (|) operators for more complex searches. For example <strong> 2022-01-01 & < 2022-01-31 | > 2022-12-01 & < 2022-12-31</strong> will show all transactions in January 2022 or December 2022.',
+            'Tip: Combine AND (&) and OR (|) operators for more complex searches. For example <strong> 2022-01-01 & < 2022-01-31 | > 2022-12-01 & < 2022-12-31</strong> will show all transactions in January 2022 or December 2022.',
     },
     TR_INTERNAL_TRANSACTIONS: {
         id: 'TR_INTERNAL_TRANSACTIONS',
@@ -7933,7 +7938,7 @@ export default defineMessages({
     },
     TR_LOADING_ACCOUNTS_DESCRIPTION: {
         id: 'TR_LOADING_ACCOUNTS_DESCRIPTION',
-        defaultMessage: 'You can change these settings after accounts are loaded.',
+        defaultMessage: 'You can change these settings after accounts have loaded.',
     },
     TR_LOADING_FACT_TITLE: {
         id: 'TR_LOADING_FACT_TITLE',
@@ -8414,7 +8419,7 @@ export default defineMessages({
     },
     TR_DISCOVERY_NEW_COINS_TEXT: {
         id: 'TR_DISCOVERY_NEW_COINS_TEXT',
-        defaultMessage: "Don't see an account after activating coin?",
+        defaultMessage: "Don't see an account after activating a coin?",
     },
     TR_SIDEBAR_ADD_COIN: {
         id: 'TR_SIDEBAR_ADD_COIN',
@@ -8422,7 +8427,7 @@ export default defineMessages({
     },
     TR_EVM_EXPLANATION_TITLE: {
         id: 'TR_EVM_EXPLANATION_TITLE',
-        defaultMessage: '{network} is its own blockchain',
+        defaultMessage: '{network} is its own network',
     },
     TR_EVM_EXPLANATION_DESCRIPTION: {
         id: 'TR_EVM_EXPLANATION_DESCRIPTION',
@@ -8431,54 +8436,54 @@ export default defineMessages({
     },
     TR_CONFIRM_EVM_EXPLANATION_RECEIVE_TITLE: {
         id: 'TR_CONFIRM_EVM_EXPLANATION_RECEIVE_TITLE',
-        defaultMessage: 'Receive through {network}',
+        defaultMessage: 'Receive through the {network} network',
     },
     TR_CONFIRM_EVM_EXPLANATION_RECEIVE_DESCRIPTION_ETH: {
         id: 'TR_CONFIRM_EVM_EXPLANATION_RECEIVE_DESCRIPTION_ETH',
         defaultMessage:
-            "Make sure you receive your crypto only through Ethereum network. If coins or tokens are sent outside the Ethereum (e.g. Polygon or Avalanche..), you won't be able to access them.",
+            'Make sure you receive your crypto only through the Ethereum network. If coins or tokens are sent outside the Ethereum network (e.g., Polygon or Avalanche), you may not be able to access them.',
     },
     TR_CONFIRM_EVM_EXPLANATION_RECEIVE_DESCRIPTION_OTHER: {
         id: 'TR_CONFIRM_EVM_EXPLANATION_RECEIVE_DESCRIPTION_OTHER',
         defaultMessage:
-            "Make sure you receive your crypto only through {network}. If coins or tokens are sent outside the {network} chain, you won't be able to access them.",
+            'Make sure you receive your crypto only through the {network} network. If coins or tokens are sent outside the {network} network, you may not be able to access them.',
     },
     TR_CONFIRM_EVM_EXPLANATION_SEND_TITLE: {
         id: 'TR_CONFIRM_EVM_EXPLANATION_SEND_TITLE',
-        defaultMessage: 'Send through {network}',
+        defaultMessage: 'Send through the {network} network',
     },
     TR_CONFIRM_EVM_EXPLANATION_SEND_DESCRIPTION: {
         id: 'TR_CONFIRM_EVM_EXPLANATION_SEND_DESCRIPTION',
         defaultMessage:
-            "Make sure you send your crypto only through {network}. If coins or tokens are sent outside the {network} chain, the receiver won't be able to access them.",
+            'Make sure you send your crypto only through the {network} network. If coins or tokens are sent outside the {network} network, the receiver may not be able to access them.',
     },
     TR_EVM_EXPLANATION_RECEIVE_DESCRIPTION: {
         id: 'TR_EVM_EXPLANATION_RECEIVE_DESCRIPTION',
         defaultMessage:
-            "This receive address is only for {network} coins and tokens. If someone sends you crypto from outside the {network} chain, you won't receive them. They'll be lost.",
+            'This receive address is only for {network} coins and tokens. If someone sends you crypto from outside the {network} network, you may not receive them.',
     },
     TR_EVM_EXPLANATION_SEND_TITLE: {
         id: 'TR_EVM_EXPLANATION_SEND_TITLE',
-        defaultMessage: 'Send through {network}',
+        defaultMessage: 'Send through the {network} network',
     },
     TR_EVM_EXPLANATION_SEND_DESCRIPTION: {
         id: 'TR_EVM_EXPLANATION_SEND_DESCRIPTION',
         defaultMessage:
-            "Send only through {network}. The address must be on the {network} chain or the receiver won't receive their crypto.",
+            'Send only through the {network} network. The address must be on the {network} network for the crypto to be received.',
     },
     TR_EVM_EXPLANATION_EXCHANGE_TITLE: {
         id: 'TR_EVM_EXPLANATION_EXCHANGE_TITLE',
-        defaultMessage: 'Did you choose the right chain?',
+        defaultMessage: 'Did you choose the correct network?',
     },
     TR_EVM_EXPLANATION_EXCHANGE_DESCRIPTION: {
         id: 'TR_EVM_EXPLANATION_EXCHANGE_DESCRIPTION',
         defaultMessage:
-            "You selected {coin} on {network}, but it seems you don't have any {networkSymbol} coins. Did you mean to choose {coin} on another chain?",
+            "You selected {coin} on the {network} network, but it seems you don't have any {networkSymbol} coins. Did you mean to choose {coin} on another network?",
     },
     TR_EVM_EXPLANATION_SEND_MODAL_DESCRIPTION: {
         id: 'TR_EVM_EXPLANATION_SEND_MODAL_DESCRIPTION',
         defaultMessage:
-            'You can only send {network} tokens to a <b>receive address on the {network} chain</b>, otherwise your tokens <b>will be lost</b>.',
+            'You can only send {network} tokens to a <b>receive address on the {network} network</b>, otherwise your tokens <b>may be lost</b>.',
     },
     TR_FROM: {
         id: 'TR_FROM',

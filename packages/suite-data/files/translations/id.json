@@ -25,7 +25,6 @@
   "DATA_ETH": "Data",
   "DATA_ETH_ADD": "Tambah Data",
   "DATA_ETH_ADD_TOOLTIP": "Data transaksi untuk transaksi Ethereum.",
-  "DATA_ETH_TOOLTIP": "Data biasanya digunakan saat Anda mengirim transaksi ke kontrak.",
   "DATA_HEX_TOO_BIG": "Batas data telah terlampaui.",
   "DATA_NOT_SET": "Data tidak diatur.",
   "DATA_NOT_VALID_HEX": "Tidak valid dalam format hexadesimal.",
