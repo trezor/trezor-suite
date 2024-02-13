@@ -29,6 +29,7 @@ const INTERFACE_DEVICE_DISCONNECTED = 'The device was disconnected.' as const;
 export class UsbApi extends AbstractApi {
     devices: TransportInterfaceDevice[] = [];
     usbInterface: ConstructorParams['usbInterface'];
+    pathPrefix = 'usb' as const;
 
     constructor({ usbInterface, logger }: ConstructorParams) {
         super({ logger });
@@ -43,7 +44,7 @@ export class UsbApi extends AbstractApi {
             this.devices = [...this.devices, ...this.createDevices([event.device])];
             this.emit(
                 'transport-interface-change',
-                this.devices.map(d => d.path),
+                this.devices.map(d => `${this.pathPrefix}-${d.path}`),
             );
         };
 
@@ -62,7 +63,7 @@ export class UsbApi extends AbstractApi {
                 this.devices.splice(index, 1);
                 this.emit(
                     'transport-interface-change',
-                    this.devices.map(d => d.path),
+                    this.devices.map(d => `${this.pathPrefix}-${d.path}`),
                 );
             } else {
                 this.emit('transport-interface-error', ERRORS.DEVICE_NOT_FOUND);
@@ -84,7 +85,7 @@ export class UsbApi extends AbstractApi {
             }
             this.devices = this.createDevices(nonHidDevices);
 
-            return this.success(this.devices.map(d => d.path));
+            return this.success(this.devices.map(d => `${this.pathPrefix}-${d.path}`));
         } catch (err) {
             // this shouldn't throw
             return this.unknownError(err, []);
@@ -155,6 +156,7 @@ export class UsbApi extends AbstractApi {
     }
 
     public async openDevice(path: string, first: boolean) {
+        console.log('usdb opendevice, path', path);
         // note: multiple retries to open device. reason:  when another window acquires device, changed session
         // is broadcasted to other clients. they are responsible for releasing interface, which takes some time.
         // if there is only one client working with device, this will succeed using only one attempt.
@@ -236,7 +238,9 @@ export class UsbApi extends AbstractApi {
         return this.success(undefined);
     }
 
-    private findDevice(path: string) {
+    private findDevice(_path: string) {
+        const path = _path.replace(`${this.pathPrefix}-`, '');
+        console.log('usb findDevice', path, this.devices);
         const device = this.devices.find(d => d.path === path);
         if (!device) {
             return;

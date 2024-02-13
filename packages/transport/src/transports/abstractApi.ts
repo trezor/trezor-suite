@@ -1,5 +1,9 @@
 import { createDeferred, Deferred } from '@trezor/utils';
-import { v1 as v1Protocol } from '@trezor/protocol';
+import {
+    // TransportProtocolEncode,
+    // TransportProtocolDecode,
+    v1 as v1Protocol,
+} from '@trezor/protocol';
 
 import {
     AbstractTransport,
@@ -11,6 +15,7 @@ import { buildBuffers } from '../utils/send';
 import { receiveAndParse } from '../utils/receive';
 import { SessionsClient } from '../sessions/client';
 import * as ERRORS from '../errors';
+// import { MessageFromTrezor } from 'packages/protobuf/lib';
 
 interface ConstructorParams extends AbstractTransportParams {
     api: AbstractApi;
@@ -23,14 +28,18 @@ interface ConstructorParams extends AbstractTransportParams {
 export abstract class AbstractApiTransport extends AbstractTransport {
     // sessions client is a standardized interface for communicating with sessions backend
     // which can live in couple of context (shared worker, local module, websocket server etc)
-    private sessionsClient: ConstructorParams['sessionsClient'];
-    private api: AbstractApi;
+    public sessionsClient: ConstructorParams['sessionsClient'];
+    public api: AbstractApi;
     protected acquirePromise?: Deferred<void>;
+    protected read: ConstructorParams['read'];
+    protected write: ConstructorParams['write'];
 
-    constructor({ messages, api, sessionsClient, signal }: ConstructorParams) {
+    constructor({ messages, api, sessionsClient, signal, read, write }: ConstructorParams) {
         super({ messages, signal });
         this.sessionsClient = sessionsClient;
         this.api = api;
+        this.read = read;
+        this.write = write;
     }
 
     public init() {
@@ -51,6 +60,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
 
         // 1. transport api reports descriptors change
         this.api.on('transport-interface-change', devices => {
+            console.log('abstractApiTransport listen: transport-interface-change', devices);
             // 2. we signal this to sessions background
             this.sessionsClient.enumerateDone({
                 paths: devices,
@@ -93,6 +103,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
         return this.scheduleAction(
             async () => {
                 const { path } = input;
+                console.log('nodeusb acquire: input', input);
 
                 if (this.listening) {
                     this.listenPromise[path] = createDeferred();
@@ -101,6 +112,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                 this.acquirePromise = createDeferred();
 
                 const acquireIntentResponse = await this.sessionsClient.acquireIntent(input);
+                console.log('acquireIntentResponse', acquireIntentResponse);
 
                 if (this.acquirePromise) {
                     this.acquirePromise.resolve(undefined);
@@ -114,7 +126,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
 
                 const reset = !!input.previous;
                 const openDeviceResult = await this.api.openDevice(path, reset);
-
+                console.log('openDeviceResult', openDeviceResult);
                 if (!openDeviceResult.success) {
                     if (this.listenPromise) {
                         this.listenPromise[path].resolve(openDeviceResult);
@@ -173,7 +185,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
         });
     }
 
-    public call({ session, name, data, protocol }: AbstractTransportMethodParams<'call'>) {
+    public call(session, writeParams) {
         return this.scheduleAction(
             async () => {
                 const getPathBySessionResponse = await this.sessionsClient.getPathBySession({
@@ -189,6 +201,8 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                 const { path } = getPathBySessionResponse.payload;
 
                 try {
+                    await this.write({ api: this.api, protocol: protocol || v1Protocol });
+
                     const { encode, decode } = protocol || v1Protocol;
                     const buffers = buildBuffers(this.messages, name, data, encode);
                     for (let i = 0; i < buffers.length; i++) {
@@ -201,17 +215,18 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                         });
                     }
 
-                    const message = await receiveAndParse(
-                        this.messages,
-                        () =>
-                            this.api.read(path).then(result => {
-                                if (result.success) {
-                                    return result.payload;
-                                }
-                                throw new Error(result.error);
-                            }),
-                        decode,
-                    );
+                    const message = this.read({ api: this.api, protocol: protocol || v1Protocol });
+                    // const message = await receiveAndParse(
+                    //     this.messages,
+                    //     () =>
+                    //         this.api.read(path).then(result => {
+                    //             if (result.success) {
+                    //                 return result.payload;
+                    //             }
+                    //             throw new Error(result.error);
+                    //         }),
+                    //     decode,
+                    // );
 
                     return this.success(message);
                 } catch (err) {

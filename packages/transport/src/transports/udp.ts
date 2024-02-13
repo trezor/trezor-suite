@@ -29,12 +29,5 @@ export class UdpTransport extends AbstractApiTransport {
             logger,
             sessionsClient,
         });
-
-        const enumerateRecursive = () => {
-            setTimeout(() => {
-                this.enumerate().promise.finally(enumerateRecursive);
-            }, 500);
-        };
-        enumerateRecursive();
     }
 }

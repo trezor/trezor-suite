@@ -1,6 +1,6 @@
 import { Root } from 'protobufjs/light';
 
-import { decode as decodeProtobuf, createMessageFromType } from '@trezor/protobuf';
+import { decode as decodeProtobuf, createMessageFromType, MessageFromTrezor } from '@trezor/protobuf';
 import { TransportProtocolDecode } from '@trezor/protocol';
 
 async function receiveRest(
@@ -54,7 +54,7 @@ export async function receiveAndParse(
     messages: Root,
     receiver: () => Promise<ArrayBuffer>,
     decoder: TransportProtocolDecode,
-) {
+): Promise<MessageFromTrezor> {
     const { buffer, typeId } = await receive(receiver, decoder);
     const { Message, messageName } = createMessageFromType(messages, typeId);
     const message = decodeProtobuf(Message, buffer);

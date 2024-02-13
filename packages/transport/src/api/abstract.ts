@@ -18,6 +18,7 @@ export abstract class AbstractApi extends TypedEmitter<{
     'transport-interface-change': string[];
     'transport-interface-error': typeof ERRORS.DEVICE_NOT_FOUND | typeof ERRORS.DEVICE_UNREADABLE;
 }> {
+    abstract pathPrefix: string;
     logger: Logger;
 
     constructor({ logger }: AbstractApiConstructorParams) {

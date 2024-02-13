@@ -1,19 +1,39 @@
 {
     "name": "@trezor/transport-bridge",
-    "version": "1.0.0",
+    "version": "3.0.0",
     "main": "src/index",
     "license": "See LICENSE.md in repo root",
     "private": true,
     "sideEffects": false,
     "scripts": {
         "type-check": "yarn g:tsc --build",
-        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "build:js": "rimraf ./dist && yarn esbuild ./src/bin.ts --bundle --outfile=dist/bin.js --platform=node --target=node18 --external:usb",
+        "build:bin": "rimraf -rf build && yarn pkg ./dist/bin.js --config package.json",
+        "build": "yarn build:js && yarn build:bin"
+    },
+    "devDependencies": {
+        "esbuild": "^0.20.0",
+        "pkg": "^5.8.1"
     },
     "dependencies": {
-        "@trezor/node-utils": "workspace:^",
+        "@trezor/node-utils": "workspace:*",
         "@trezor/protocol": "workspace:*",
         "@trezor/transport": "workspace:*",
         "@trezor/utils": "workspace:*",
         "usb": "^2.11.0"
+    },
+    "pkg": {
+        "outputPath": "build",
+        "targets": [
+            "node18-macos-x64",
+            "node18-macos-arm64",
+            "node18-linux-x64",
+            "node18-linux-arm64",
+            "node18-win-x64"
+        ],
+        "assets": [
+            "../../node_modules/usb/**/*"
+        ]
     }
 }
