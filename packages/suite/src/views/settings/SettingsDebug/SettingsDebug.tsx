@@ -5,6 +5,7 @@ import { useSelector } from 'src/hooks/suite';
 import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
 
 import { Backends } from './Backends';
+import { BluetoothEraseBonds } from './BluetoothEraseBonds';
 import { CheckFirmwareAuthenticity } from './CheckFirmwareAuthenticity';
 import { CoinjoinApi } from './CoinjoinApi';
 import { DeviceAuthenticity } from './DeviceAuthenticity';
@@ -88,6 +89,11 @@ export const SettingsDebug = () => {
             <SettingsSection title="WalletConnect">
                 <WalletConnect />
             </SettingsSection>
+            {isDesktop() && (
+                <SettingsSection title="Bluetooth">
+                    <BluetoothEraseBonds />
+                </SettingsSection>
+            )}
         </SettingsLayout>
     );
 };
