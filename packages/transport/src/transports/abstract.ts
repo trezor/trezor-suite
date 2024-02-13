@@ -15,9 +15,12 @@ import {
     Logger,
 } from '../types';
 import { success, error, unknownError } from '../utils/result';
+import { AbstractApi } from '../api/abstract';
 
 import * as ERRORS from '../errors';
 import { ACTION_TIMEOUT, TRANSPORT } from '../constants';
+
+import { TransportProtocolEncode, TransportProtocolDecode } from '@trezor/protocol';
 
 export type AcquireInput = {
     path: string;
@@ -48,6 +51,14 @@ export interface AbstractTransportParams {
     messages?: Record<string, any>;
     signal?: AbortSignal;
     logger?: Logger;
+    write: (params: {
+        api: AbstractApi;
+        protocol: { encode: TransportProtocolEncode; decode: TransportProtocolDecode };
+    }) => Promise<void>;
+    read: (params: {
+        api: AbstractApi;
+        protocol: { encode: TransportProtocolEncode; decode: TransportProtocolDecode };
+    }) => Promise<MessageFromTrezor>;
 }
 
 export const isTransportInstance = (transport?: AbstractTransport) => {
@@ -311,12 +322,16 @@ export abstract class AbstractTransport extends TypedEmitter<{
     /**
      * Send and read after that
      */
-    abstract call(params: {
-        session: string;
-        name: string;
-        data: Record<string, unknown>;
-        protocol?: TransportProtocol;
-    }): AbortableCall<
+    abstract call(
+        session: string,
+        writeParams: Parameters<AbstractTransportParams['write']>, //     params: {
+    ) //     session: string;
+    //     name: string;
+    //     data: Record<string, unknown>;
+    //     protocol?: TransportProtocol;
+    //     medium?: string;
+    // }
+    : AbortableCall<
         MessageFromTrezor,
         // bridge
         | typeof ERRORS.HTTP_ERROR

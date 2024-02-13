@@ -102,6 +102,10 @@ export class SessionsBackground extends TypedEmitter<{
         } finally {
             if (result && result.success && result.payload && 'descriptors' in result.payload) {
                 const { descriptors } = result.payload;
+                console.log(
+                    'sessions background emitting descriptrors',
+                    JSON.stringify(descriptors, null, 2),
+                );
                 setTimeout(() => this.emit('descriptors', descriptors), 0);
             }
         }
@@ -127,6 +131,7 @@ export class SessionsBackground extends TypedEmitter<{
      * - caller informs about disconnected devices so that they may be removed from sessions list
      */
     private enumerateDone(payload: EnumerateDoneRequest) {
+        console.log('sessionsbackground enumerate done', payload);
         this.clearLock();
         const disconnectedDevices = this.filterDisconnectedDevices(
             this.sessionsToDescriptors(),
@@ -157,6 +162,10 @@ export class SessionsBackground extends TypedEmitter<{
      * acquire intent
      */
     private async acquireIntent(payload: AcquireIntentRequest) {
+        console.log(
+            'sessions back acquireIntent sessions:',
+            JSON.stringify(this.sessions, null, 2),
+        );
         const previous = this.sessions[payload.path];
 
         if (payload.previous && payload.previous !== previous) {
@@ -190,6 +199,7 @@ export class SessionsBackground extends TypedEmitter<{
      * - assign client a new "session". this session will be used in all subsequent communication
      */
     private acquireDone(payload: AcquireDoneRequest) {
+        console.log('sessions back acquireDone sessions:', JSON.stringify(this.sessions, null, 2));
         this.clearLock();
         this.sessions[payload.path] = `${this.lastSession}`;
 

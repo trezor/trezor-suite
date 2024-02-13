@@ -2,7 +2,8 @@ import { HttpServer, parseBodyJSON, parseBodyText, Handler } from '@trezor/node-
 import { Descriptor } from '@trezor/transport/src/types';
 import { arrayPartition } from '@trezor/utils/lib/arrayPartition';
 
-import { sessionsClient, enumerate, acquire, release, call, send, receive } from './core';
+import { multiTransport } from './multi';
+import { sessionsClient } from './core';
 
 const defaults = {
     port: 21325,
@@ -13,6 +14,7 @@ const str = (value: Record<string, any> | string) => JSON.stringify(value);
 export class TrezordNode {
     /** versioning, baked in by webpack */
     version = '3.0.0';
+    commitHash = process.env.COMMIT_HASH || 'unknown';
     serviceName = 'trezord-node';
     /** last known descriptors state */
     descriptors: string;
@@ -32,9 +34,17 @@ export class TrezordNode {
 
         this.listenSubscriptions = [];
 
-        // whenever sessions module reports changes to descriptors (including sessions), resolve affected /listen subscriptions
-        sessionsClient.on('descriptors', descriptors => {
-            this.resolveListenSubscriptions(descriptors);
+        multiTransport.transports.forEach(transport => {
+            // whenever sessions module reports changes to descriptors (including sessions), resolve affected /listen subscriptions
+            transport.sessionsClient.on('descriptors', descriptors => {
+                console.log('multitransport, nextdescriptors', descriptors);
+
+                console.log(
+                    'multitransport pending subscriptiosns',
+                    this.listenSubscriptions.map(d => d.descriptors),
+                );
+                this.resolveListenSubscriptions(descriptors);
+            });
         });
     }
 
@@ -65,8 +75,10 @@ export class TrezordNode {
             app.post('/enumerate', [
                 (_req, res) => {
                     res.setHeader('Content-Type', 'text/plain');
-                    enumerate()
+                    multiTransport
+                        .enumerate()
                         .then(result => {
+                            console.log('enumerate result', result);
                             if (!result.success) {
                                 throw new Error(result.error);
                             }
@@ -95,14 +107,17 @@ export class TrezordNode {
             app.post('/acquire/:path/:previous', [
                 (req, res) => {
                     res.setHeader('Content-Type', 'text/plain');
-                    acquire({ path: req.params.path, previous: req.params.previous }).then(
-                        result => {
+                    console.log('acquire req.params', req.params);
+                    multiTransport
+                        .acquire({
+                            input: { path: req.params.path, previous: req.params.previous },
+                        })
+                        .promise.then(result => {
                             if (!result.success) {
                                 return res.end(str({ error: result.error }));
                             }
-                            res.end(str({ session: result.payload.session }));
-                        },
-                    );
+                            res.end(str({ session: result.payload }));
+                        });
                 },
             ]);
 
@@ -111,54 +126,64 @@ export class TrezordNode {
                 (req, res) => {
                     // todo:
                     // @ts-expect-error
-                    release({ session: req.params.session, path: req.body }).then(result => {
-                        if (!result.success) {
-                            return res.end(str({ error: result.error }));
-                        }
-                        res.end(str({ session: req.params.session }));
-                    });
+                    multiTransport
+                        .release({ session: req.params.session, path: req.body })
+                        .promise.then(result => {
+                            if (!result.success) {
+                                return res.end(str({ error: result.error }));
+                            }
+                            res.end(str({ session: req.params.session }));
+                        });
                 },
             ]);
 
             app.post('/call/:session', [
                 parseBodyText,
                 (req, res) => {
-                    // todo:
-                    // @ts-expect-error
-                    call({ session: req.params.session, data: req.body }).then(result => {
-                        if (!result.success) {
-                            return res.end(str({ error: result.error }));
-                        }
-                        res.end(str(result.payload));
-                    });
+                    sessionsClient
+                        .getPathBySession({ session: req.params.session })
+                        .then(result => {
+                            const path = result.success ? result.payload.path : null;
+                            console.log('result', result);
+                            // todo:
+                            // @ts-expect-error
+                            multiTransport
+                                .call({ session: req.params.session, data: req.body, path })
+                                .promise.then(result => {
+                                    if (!result.success) {
+                                        return res.end(str({ error: result.error }));
+                                    }
+                                    res.end(str(result.payload));
+                                });
+                        });
                 },
             ]);
 
-            app.post('/read/:session', [
-                parseBodyJSON,
-                (req, res) => {
-                    receive({ session: req.params.session }).then(result => {
-                        if (!result.success) {
-                            return res.end(str({ error: result.error }));
-                        }
-                        res.end(str(result.payload));
-                    });
-                },
-            ]);
+            // app.post('/read/:session', [
+            //     parseBodyJSON,
+            //     (req, res) => {
+            //         multiTransport.receive({ session: req.params.session }).then(result => {
+            //             if (!result.success) {
+            //                 return res.end(str({ error: result.error }));
+            //             }
+            //             res.end(str(result.payload));
+            //         });
+            //     },
+            // ]);
 
-            app.post('/post/:session', [
-                parseBodyJSON,
-                (req, res) => {
-                    // todo:
-                    // @ts-expect-error
-                    send({ session: req.params.session, data: req.body }).then(result => {
-                        if (!result.success) {
-                            return res.end(str({ error: result.error }));
-                        }
-                        res.end();
-                    });
-                },
-            ]);
+            // app.post('/post/:session', [
+            //     parseBodyJSON,
+            //     (req, res) => {
+            //         // todo:
+            //         // @ts-expect-error
+            //         multiTransport.send({ session: req.params.session, data: req.body }).then(result => {
+            //             if (!result.success) {
+            //                 return res.end(str({ error: result.error }));
+            //             }
+            //             res.end();
+            //         });
+            //     },
+            // ]);
 
             app.get('/', [
                 (_req, res) => {

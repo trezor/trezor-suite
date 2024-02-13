@@ -9,9 +9,11 @@ import * as ERRORS from '../errors';
 export class UdpApi extends AbstractApi {
     interface = UDP.createSocket('udp4');
     protected communicating = false;
+    pathPrefix = 'upd' as const;
 
     constructor({ logger }: AbstractApiConstructorParams) {
         super({ logger });
+        this.enumerateRecursive();
     }
 
     public write(path: string, buffer: Buffer) {
@@ -118,8 +120,7 @@ export class UdpApi extends AbstractApi {
 
         const enumerateResult = await Promise.all(
             paths.map(path => this.ping(path).then(pinged => (pinged ? path : undefined))),
-        ).then(res => res.filter(isNotUndefined));
-
+        ).then(res => res.filter(isNotUndefined).map(path => `${this.pathPrefix}-${path}`));
         return this.success(enumerateResult);
     }
 
@@ -131,4 +132,10 @@ export class UdpApi extends AbstractApi {
     public closeDevice(_path: string) {
         return Promise.resolve(this.success(undefined));
     }
+
+    protected enumerateRecursive = () => {
+        setTimeout(() => {
+            this.enumerate().finally(this.enumerateRecursive);
+        }, 500);
+    };
 }

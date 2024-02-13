@@ -221,13 +221,14 @@ export class BridgeTransport extends AbstractTransport {
     }
 
     // https://github.dev/trezor/trezord-go/blob/f559ee5079679aeb5f897c65318d3310f78223ca/core/core.go#L534
-    public call({ session, name, data, protocol }: AbstractTransportMethodParams<'call'>) {
+    public call({ session, name, data, protocol, medium }: AbstractTransportMethodParams<'call'>) {
+        console.log('call medium', medium);
         return this.scheduleAction(
             async signal => {
                 const { encode, decode } = protocol || bridgeProtocol;
                 const [bytes] = buildBuffers(this.messages, name, data, encode);
                 const response = await this.post(`/call`, {
-                    params: session,
+                    params: `${session}${medium ? `/${medium}` : ''}`,
                     body: bytes.toString('hex'),
                     signal,
                 });
