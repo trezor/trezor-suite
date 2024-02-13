@@ -70,22 +70,14 @@ msg-system deploy sldev:
   interruptible: true
 
 # connect deploy to dev
-connect deploy to dev:
+.base deploy to dev:
   stage: deploy to dev
-  needs:
-    - connect-web build
-    - connect-explorer build
   variables:
     GIT_STRATEGY: none
     DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/connect/${CI_COMMIT_REF_NAME}
-  # when: manual
-  dependencies:
-    - connect-web build
-    - connect-explorer build
   environment:
     name: $CI_COMMIT_REF_NAME
     url: $BASE_REVIEW_URL/$CI_COMMIT_REF_NAME
-  before_script: []
   script:
     - rm -rfv ${DEPLOY_DIRECTORY}
     - mkdir -pv ${DEPLOY_DIRECTORY}
@@ -100,9 +92,25 @@ connect deploy to dev:
     - ls -la ${DEPLOY_DIRECTORY}/js
   tags:
     - deploy
-    # todo: use connect_deploy?
-    # - connect_deploy
   interruptible: true
+
+deploy to dev for release branch:
+  extends: .base deploy to dev
+  only:
+    refs:
+      - /^release\/connect\//
+  needs:
+    - connect-web build production
+    - connect-explorer build production
+
+deploy to dev for non-release branch:
+  extends: .base deploy to dev
+  except:
+    refs:
+      - /^release\/connect\//
+  needs:
+    - connect-web build
+    - connect-explorer build
 
 # components deploy
 .run_components_rules: &run_components_rules
