@@ -1,9 +1,9 @@
 import { Type, Static } from '@trezor/schema-utils';
 
 export enum DeviceModelInternal {
-    T1B1 = 'T1B1', // Trezor One
-    T2T1 = 'T2T1', // Trezor T
-    T2B1 = 'T2B1', // Trezor Safe 3
+    T1B1 = 'T1B1',
+    T2T1 = 'T2T1',
+    T2B1 = 'T2B1',
 }
 
 export type EnumDeviceModelInternal = Static<typeof EnumDeviceModelInternal>;

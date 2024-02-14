@@ -375,6 +375,8 @@ export type TxOutputType =
           orig_index?: number;
           payment_req_index?: number;
       }
+    // NOTE: the type was loosened for compatibility (issue #10474)
+    // It is not originally intended to use address instead of address_n with change output
     | {
           address: string;
           address_n?: typeof undefined;
