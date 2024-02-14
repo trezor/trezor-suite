@@ -315,6 +315,7 @@ connect-popup legacy npm package:
     COMPOSE_PROJECT_NAME: $CI_JOB_ID
     COMPOSE_FILE: ./docker/docker-compose.connect-popup-ci.yml
     URL: ${DEV_SERVER_URL}/connect/${CI_COMMIT_REF_NAME}/
+    __TREZOR_CONNECT_SRC: ${DEV_SERVER_URL}/connect/${CI_COMMIT_REF_NAME}/
     TEST_FILE: $TEST_FILE
     IS_WEBEXTENSION: "true"
   script:
