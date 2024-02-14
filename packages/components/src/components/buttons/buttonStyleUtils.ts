@@ -1,6 +1,7 @@
 import { css } from 'styled-components';
+
 import { Color, Colors, Elevation, spacings, spacingsPx } from '@trezor/theme';
-import { capitalizeFirstLetter } from '../../../../utils/src/capitalizeFirstLetter';
+import { capitalizeFirstLetter } from '@trezor/utils';
 
 export type ButtonVariant =
     | 'primary'
