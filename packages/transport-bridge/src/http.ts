@@ -177,6 +177,14 @@ export class TrezordNode {
 
             app.get('/', [
                 (_req, res) => {
+                    res.writeHead(301, {
+                        Location: `http://127.0.0.1:${this.port}/status`,
+                    });
+                },
+            ]);
+
+            app.get('/status', [
+                (_req, res) => {
                     res.end(`hello, I am bridge in node, version: ${this.version}`);
                 },
             ]);
