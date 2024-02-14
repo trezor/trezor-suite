@@ -4,11 +4,8 @@ import { useSelector } from 'react-redux';
 import * as Sentry from '@sentry/react-native';
 
 import { selectIsAnalyticsEnabled } from '@suite-common/analytics';
-import { getEnv, isDebugEnv, isDevelopEnv, isStagingEnv } from '@suite-native/config';
+import { getEnv, isDebugEnv, isDevelopEnv } from '@suite-native/config';
 import { selectIsOnboardingFinished } from '@suite-native/module-settings';
-
-// Enforce sentry to be enabled in devs environments (dev,staging) because we want to catch all errors
-const isAlwaysEnabled = isDevelopEnv() || isStagingEnv();
 
 const initSentry = () => {
     if (!isDebugEnv()) {
@@ -29,7 +26,8 @@ export const SentryProvider = ({ children }: { children: ReactNode }) => {
     const isAnalyticsEnabled = useSelector(selectIsAnalyticsEnabled);
 
     useEffect(() => {
-        if (!isAlwaysEnabled && isOnboardingFinished) {
+        // Enforce sentry to be enabled in dev environment because we want to catch all errors
+        if (!isDevelopEnv() && isOnboardingFinished) {
             if (!isAnalyticsEnabled) {
                 Sentry.close();
             } else {

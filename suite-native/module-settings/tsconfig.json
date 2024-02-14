@@ -23,6 +23,7 @@
         { "path": "../navigation" },
         { "path": "../storage" },
         { "path": "../theme" },
+        { "path": "../toasts" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/styles" },

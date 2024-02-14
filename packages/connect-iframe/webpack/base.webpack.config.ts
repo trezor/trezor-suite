@@ -10,7 +10,10 @@ const MESSAGES_SRC = '../../packages/protobuf/messages.json';
 
 const DIST = path.resolve(__dirname, '../build');
 
-const commitHash = execSync('git rev-parse HEAD').toString().trim();
+// Because of Expo EAS, we need to use the commit hash from expo to avoid failing git command inside EAS
+// because we need to call `yarn build:libs during native build`
+const commitHash =
+    process.env.EAS_BUILD_GIT_COMMIT_HASH || execSync('git rev-parse HEAD').toString().trim();
 
 export const config: webpack.Configuration = {
     target: 'web',
