@@ -8,8 +8,5 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Check for fixup commits
-        uses: 13rac1/block-fixup-merge-action@v2.0.0
-
       - name: Check commit messages
         run: ./scripts/check-commit-messages.sh
