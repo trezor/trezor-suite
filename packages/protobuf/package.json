@@ -26,7 +26,7 @@
         "type-check": "yarn g:tsc --build",
         "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json",
         "update:schema": "yarn workspace @trezor/schema-utils codegen $(pwd)/src/messages.ts > src/messages-schema.ts && yarn g:prettier --write src/messages-schema.ts && yarn g:eslint --fix src/messages-schema.ts",
-        "update:protobuf": "./scripts/protobuf-build.sh && yarn g:prettier --write \"{messages.json,src/messages.ts}\"",
+        "update:protobuf": "./scripts/protobuf-build.sh && yarn g:prettier --write \"{messages.json,src/messages.ts}\" && yarn g:eslint --fix src/messages.ts",
         "prepublishOnly": "yarn g:tsx ../../scripts/prepublishNPM.js",
         "prepublish": "yarn g:tsx ../../scripts/prepublish.js"
     },
