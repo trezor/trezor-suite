@@ -2,7 +2,7 @@ import { HttpServer, parseBodyJSON, parseBodyText, Handler } from '@trezor/node-
 import { Descriptor } from '@trezor/transport/src/types';
 import { arrayPartition } from '@trezor/utils';
 
-import { sessionsClient, enumerate, acquire, release, call, send, receive } from './core';
+import { sessionsClient, createApi } from './core';
 
 const defaults = {
     port: 21325,
@@ -24,8 +24,9 @@ export class TrezordNode {
     }[];
     port: number;
     server?: HttpServer<never>;
+    api: ReturnType<typeof createApi>;
 
-    constructor({ port }: { port: number }) {
+    constructor({ port, api }: { port: number; api: 'usb' | 'udp' }) {
         this.port = port || defaults.port;
 
         this.descriptors = '{}';
@@ -36,6 +37,7 @@ export class TrezordNode {
         sessionsClient.on('descriptors', descriptors => {
             this.resolveListenSubscriptions(descriptors);
         });
+        this.api = createApi(api);
     }
 
     private resolveListenSubscriptions(descriptors: Descriptor[]) {
@@ -65,7 +67,8 @@ export class TrezordNode {
             app.post('/enumerate', [
                 (_req, res) => {
                     res.setHeader('Content-Type', 'text/plain');
-                    enumerate()
+                    this.api
+                        .enumerate()
                         .then(result => {
                             if (!result.success) {
                                 throw new Error(result.error);
@@ -95,49 +98,57 @@ export class TrezordNode {
             app.post('/acquire/:path/:previous', [
                 (req, res) => {
                     res.setHeader('Content-Type', 'text/plain');
-                    acquire({ path: req.params.path, previous: req.params.previous }).then(
-                        result => {
+                    this.api
+                        .acquire({ path: req.params.path, previous: req.params.previous })
+                        .then(result => {
                             if (!result.success) {
                                 return res.end(str({ error: result.error }));
                             }
                             res.end(str({ session: result.payload.session }));
-                        },
-                    );
+                        });
                 },
             ]);
 
             app.post('/release/:session', [
                 parseBodyText,
                 (req, res) => {
-                    // todo:
-                    // @ts-expect-error
-                    release({ session: req.params.session, path: req.body }).then(result => {
-                        if (!result.success) {
-                            return res.end(str({ error: result.error }));
-                        }
-                        res.end(str({ session: req.params.session }));
-                    });
+                    this.api
+                        .release({
+                            session: req.params.session,
+                            // @ts-expect-error
+                            path: req.body,
+                        })
+                        .then(result => {
+                            if (!result.success) {
+                                return res.end(str({ error: result.error }));
+                            }
+                            res.end(str({ session: req.params.session }));
+                        });
                 },
             ]);
 
             app.post('/call/:session', [
                 parseBodyText,
                 (req, res) => {
-                    // todo:
-                    // @ts-expect-error
-                    call({ session: req.params.session, data: req.body }).then(result => {
-                        if (!result.success) {
-                            return res.end(str({ error: result.error }));
-                        }
-                        res.end(str(result.payload));
-                    });
+                    this.api
+                        .call({
+                            session: req.params.session,
+                            // @ts-expect-error
+                            data: req.body,
+                        })
+                        .then(result => {
+                            if (!result.success) {
+                                return res.end(str({ error: result.error }));
+                            }
+                            res.end(str(result.payload));
+                        });
                 },
             ]);
 
             app.post('/read/:session', [
                 parseBodyJSON,
                 (req, res) => {
-                    receive({ session: req.params.session }).then(result => {
+                    this.api.receive({ session: req.params.session }).then(result => {
                         if (!result.success) {
                             return res.end(str({ error: result.error }));
                         }
@@ -149,14 +160,18 @@ export class TrezordNode {
             app.post('/post/:session', [
                 parseBodyJSON,
                 (req, res) => {
-                    // todo:
-                    // @ts-expect-error
-                    send({ session: req.params.session, data: req.body }).then(result => {
-                        if (!result.success) {
-                            return res.end(str({ error: result.error }));
-                        }
-                        res.end();
-                    });
+                    this.api
+                        .send({
+                            session: req.params.session,
+                            // @ts-expect-error
+                            data: req.body,
+                        })
+                        .then(result => {
+                            if (!result.success) {
+                                return res.end(str({ error: result.error }));
+                            }
+                            res.end();
+                        });
                 },
             ]);
 
