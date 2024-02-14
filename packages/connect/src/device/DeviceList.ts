@@ -247,8 +247,8 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
                     d.forEach(descriptor => {
                         const path = descriptor.path.toString();
                         const device = this.devices[path];
-                        _log.debug('Event', e, device.toMessageObject());
                         if (device) {
+                            _log.debug('Event', e, device.toMessageObject());
                             this.emit(e, device.toMessageObject());
                         }
                     });
