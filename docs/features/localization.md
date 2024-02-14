@@ -92,7 +92,7 @@ Definition for `TR_TRANSACTIONS_SEARCH_TIP_2`:
 TR_TRANSACTIONS_SEARCH_TIP_2: {
   id: 'TR_TRANSACTIONS_SEARCH_TIP_2',
   defaultMessage:
-      'Tip: You can use the greater than (>) and lesser than (<) symbols on amount searches. For example <strong>> 1<strong> will show all transactions that have an amount of 1 or higher.',
+      'Tip: You can use the greater than (>) and lesser than (<) symbols on amount searches. For example <strong>> 1</strong> will show all transactions that have an amount of 1 or higher.',
 },
 ```
 

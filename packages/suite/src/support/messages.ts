@@ -6557,7 +6557,7 @@ export default defineMessages({
     TR_TRANSACTIONS_SEARCH_TIP_2: {
         id: 'TR_TRANSACTIONS_SEARCH_TIP_2',
         defaultMessage:
-            'Tip: Use the greater than (>) and less than (<) symbols for amount searches. For example <strong> 1</strong> will show all transactions that have an amount of 1 and higher.',
+            'Tip: Use the greater than (>) and less than (<) symbols for amount searches. For example <strong>> 1</strong> will show all transactions that have an amount of 1 and higher.',
     },
     TR_TRANSACTIONS_SEARCH_TIP_3: {
         id: 'TR_TRANSACTIONS_SEARCH_TIP_3',
@@ -6572,32 +6572,32 @@ export default defineMessages({
     TR_TRANSACTIONS_SEARCH_TIP_5: {
         id: 'TR_TRANSACTIONS_SEARCH_TIP_5',
         defaultMessage:
-            'Tip: Dates can be searched using the <strong>YYYY-MM-DD</strong> format. For example <strong>2020-12-14</strong> will show all transactions on December 14th, 2020.',
+            'Tip: Dates can be searched using the <strong>YYYY-MM-DD</strong> format. For example <strong>{lastYear}-12-14</strong> will show all transactions on December 14th, {lastYear}.',
     },
     TR_TRANSACTIONS_SEARCH_TIP_6: {
         id: 'TR_TRANSACTIONS_SEARCH_TIP_6',
         defaultMessage:
-            'Tip: Use greater than (>) and lesser than (<) symbols on date searches. For example <strong> 2020-12-01<strong> will show all transactions on and after December 1st, 2020.',
+            'Tip: Use greater than (>) and lesser than (<) symbols on date searches. For example <strong>> {lastYear}-12-01</strong> will show all transactions on and after December 1st, {lastYear}.',
     },
     TR_TRANSACTIONS_SEARCH_TIP_7: {
         id: 'TR_TRANSACTIONS_SEARCH_TIP_7',
         defaultMessage:
-            'Tip: You can exclude a date by using the exlamation mark and equal symbols together (!=). For example <strong>!= 2020-12-14</strong> will show all transactions except the ones on December 14th, 2020.',
+            'Tip: You can exclude a date by using the exclamation mark and equal symbols together (!=). For example <strong>!= {lastYear}-12-14</strong> will show all transactions except the ones on December 14th, {lastYear}.',
     },
     TR_TRANSACTIONS_SEARCH_TIP_8: {
         id: 'TR_TRANSACTIONS_SEARCH_TIP_8',
         defaultMessage:
-            'Tip: You can display results matching at least one of multiple searches by grouping them with the OR operator (|). For example <strong>2022-12-31 | 2023-01-01</strong> will show all transactions that have happened on the 31st of December 2022 or the 1st of January 2023.',
+            'Tip: You can display results matching at least one of multiple searches by grouping them with the OR operator (|). For example <strong>{lastYear}-11-30 | {lastYear}-12-01</strong> will show all transactions that have happened on the 30th of November or the 1st of December {lastYear}.',
     },
     TR_TRANSACTIONS_SEARCH_TIP_9: {
         id: 'TR_TRANSACTIONS_SEARCH_TIP_9',
         defaultMessage:
-            'Tip: Display results matching multiple searches by grouping them with the AND operator (&). For example <strong> 2020-12-01 & < 2020-12-31 & > 0</strong> will show all incoming (amount higher than 0) transactions in December 2020.',
+            'Tip: Display results matching multiple searches by grouping them with the AND operator (&). For example <strong>> {lastYear}-12-01 & < {lastYear}-12-31 & > 0</strong> will show all incoming (amount higher than 0) transactions in December {lastYear}.',
     },
     TR_TRANSACTIONS_SEARCH_TIP_10: {
         id: 'TR_TRANSACTIONS_SEARCH_TIP_10',
         defaultMessage:
-            'Tip: Combine AND (&) and OR (|) operators for more complex searches. For example <strong> 2022-01-01 & < 2022-01-31 | > 2022-12-01 & < 2022-12-31</strong> will show all transactions in January 2022 or December 2022.',
+            'Tip: Combine AND (&) and OR (|) operators for more complex searches. For example <strong>> {lastYear}-01-01 & < {lastYear}-01-31 | > {lastYear}-12-01 & < {lastYear}-12-31</strong> will show all transactions in January or December {lastYear}.',
     },
     TR_INTERNAL_TRANSACTIONS: {
         id: 'TR_INTERNAL_TRANSACTIONS',
