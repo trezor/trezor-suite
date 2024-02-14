@@ -1,8 +1,8 @@
 {
     "cli": {
         "version": ">= 7.1.1",
-        "promptToConfigurePushNotifications": false,
-        "appVersionSource": "remote"
+        "appVersionSource": "remote",
+        "promptToConfigurePushNotifications": false
     },
     "build": {
         "develop": {
@@ -32,10 +32,6 @@
     },
     "submit": {
         "develop": {
-            "android": {
-                "track": "internal",
-                "changesNotSentForReview": true
-            },
             "ios": {
                 "bundleIdentifier": "io.trezor.suite.develop",
                 "ascAppId": "1631884497",
