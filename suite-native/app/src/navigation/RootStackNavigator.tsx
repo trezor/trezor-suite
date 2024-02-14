@@ -52,11 +52,6 @@ export const RootStackNavigator = () => {
                 component={AccountsImportStackNavigator}
             />
             <RootStack.Screen
-                name={RootStackRoutes.ConnectDevice}
-                component={ConnectDeviceStackNavigator}
-                options={{ ...stackNavigationOptionsConfig, animation: 'slide_from_bottom' }}
-            />
-            <RootStack.Screen
                 options={{ title: RootStackRoutes.AccountSettings }}
                 name={RootStackRoutes.AccountSettings}
                 component={AccountSettingsScreen}
@@ -81,6 +76,15 @@ export const RootStackNavigator = () => {
             />
             <RootStack.Screen name={RootStackRoutes.ReceiveModal} component={ReceiveModalScreen} />
             <RootStack.Screen name={RootStackRoutes.DeviceInfo} component={DeviceInfoModalScreen} />
+            <RootStack.Screen
+                name={RootStackRoutes.ConnectDevice}
+                component={ConnectDeviceStackNavigator}
+                options={{
+                    ...stackNavigationOptionsConfig,
+                    animation: 'slide_from_bottom',
+                    presentation: 'modal',
+                }}
+            />
         </RootStack.Navigator>
     );
 };
