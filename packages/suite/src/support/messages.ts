@@ -5442,7 +5442,7 @@ export default defineMessages({
     TR_ADD_TOKEN_DESCRIPTION: {
         id: 'TR_ADD_TOKEN_DESCRIPTION',
         defaultMessage:
-            "Enter a contract address of a token you wish to add to your wallet. This is typically a 42-character alphanumeric string starting with '0x'.",
+            "Enter a contract address of a token you wish to add to your wallet. This is typically a 42-character alphanumeric string starting with '0x'd.",
     },
     TR_ADD_TOKEN_LABEL: {
         id: 'TR_ADD_TOKEN_LABEL',
