@@ -250,6 +250,14 @@ module.exports = {
                     "CallExpression[callee.name='useSelector'] MemberExpression[object.name='state']:matches([property.type='Identifier'])",
             },
         ],
+        'object-shorthand': [
+            'error',
+            'always',
+            {
+                ignoreConstructors: false,
+                avoidQuotes: true,
+            },
+        ],
     },
     overrides: [
         {
