@@ -38,6 +38,16 @@ export const nativeBoxShadows: Record<string, NativeBoxShadowDefinition> = {
         shadowOpacity: 0.1,
         shadowRadius: 4,
     },
+    medium: {
+        elevation: 3,
+        shadowColor: 'rgba(0, 0, 0, 0.4)',
+        shadowOffset: {
+            height: 16,
+            width: 0,
+        },
+        shadowOpacity: 0.16,
+        shadowRadius: 16,
+    },
 };
 
 export type NativeBoxShadow = keyof typeof nativeBoxShadows;

@@ -23,6 +23,8 @@
         { "path": "../discovery" },
         { "path": "../intl" },
         { "path": "../link" },
-        { "path": "../navigation" }
+        { "path": "../navigation" },
+        { "path": "../../packages/styles" },
+        { "path": "../../packages/theme" }
     ]
 }
