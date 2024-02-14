@@ -1629,6 +1629,23 @@ export type ApplySettings = {
     hide_passphrase_from_host?: boolean;
 };
 
+// ChangeLanguage
+export type ChangeLanguage = {
+    data_length: number;
+    show_display?: boolean;
+};
+
+// TranslationDataRequest
+export type TranslationDataRequest = {
+    data_length: number;
+    data_offset: number;
+};
+
+// TranslationDataAck
+export type TranslationDataAck = {
+    data_chunk: string;
+};
+
 // ApplyFlags
 export type ApplyFlags = {
     flags: number;
@@ -1790,6 +1807,7 @@ export enum BootCommand {
 export type RebootToBootloader = {
     boot_command?: BootCommand;
     firmware_header?: string;
+    language_data_length?: number;
 };
 
 // GetNonce
@@ -2541,6 +2559,9 @@ export type MessageType = {
     SetBusy: SetBusy;
     EndSession: EndSession;
     ApplySettings: ApplySettings;
+    ChangeLanguage: ChangeLanguage;
+    TranslationDataRequest: TranslationDataRequest;
+    TranslationDataAck: TranslationDataAck;
     ApplyFlags: ApplyFlags;
     ChangePin: ChangePin;
     ChangeWipeCode: ChangeWipeCode;

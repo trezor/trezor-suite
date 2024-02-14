@@ -4591,7 +4591,10 @@
             "fields": {
                 "language": {
                     "type": "string",
-                    "id": 1
+                    "id": 1,
+                    "options": {
+                        "deprecated": true
+                    }
                 },
                 "label": {
                     "type": "string",
@@ -4635,6 +4638,42 @@
                 "hide_passphrase_from_host": {
                     "type": "bool",
                     "id": 11
+                }
+            }
+        },
+        "ChangeLanguage": {
+            "fields": {
+                "data_length": {
+                    "rule": "required",
+                    "type": "uint32",
+                    "id": 1
+                },
+                "show_display": {
+                    "type": "bool",
+                    "id": 2
+                }
+            }
+        },
+        "TranslationDataRequest": {
+            "fields": {
+                "data_length": {
+                    "rule": "required",
+                    "type": "uint32",
+                    "id": 1
+                },
+                "data_offset": {
+                    "rule": "required",
+                    "type": "uint32",
+                    "id": 2
+                }
+            }
+        },
+        "TranslationDataAck": {
+            "fields": {
+                "data_chunk": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 1
                 }
             }
         },
@@ -4779,7 +4818,7 @@
                     "type": "string",
                     "id": 5,
                     "options": {
-                        "default": "en-US"
+                        "deprecated": true
                     }
                 },
                 "label": {
@@ -4829,7 +4868,7 @@
                     "type": "string",
                     "id": 5,
                     "options": {
-                        "default": "en-US"
+                        "deprecated": true
                     }
                 },
                 "label": {
@@ -4888,7 +4927,10 @@
                 },
                 "language": {
                     "type": "string",
-                    "id": 4
+                    "id": 4,
+                    "options": {
+                        "deprecated": true
+                    }
                 },
                 "label": {
                     "type": "string",
@@ -4989,6 +5031,13 @@
                 "firmware_header": {
                     "type": "bytes",
                     "id": 2
+                },
+                "language_data_length": {
+                    "type": "uint32",
+                    "id": 3,
+                    "options": {
+                        "default": 0
+                    }
                 }
             },
             "nested": {
@@ -7916,6 +7965,18 @@
                     "(bitcoin_only)": true,
                     "(wire_in)": true
                 },
+                "MessageType_ChangeLanguage": {
+                    "(bitcoin_only)": true,
+                    "(wire_in)": true
+                },
+                "MessageType_TranslationDataRequest": {
+                    "(bitcoin_only)": true,
+                    "(wire_out)": true
+                },
+                "MessageType_TranslationDataAck": {
+                    "(bitcoin_only)": true,
+                    "(wire_in)": true
+                },
                 "MessageType_SetU2FCounter": {
                     "(wire_in)": true
                 },
@@ -8594,6 +8655,9 @@
                 "MessageType_UnlockBootloader": 96,
                 "MessageType_AuthenticateDevice": 97,
                 "MessageType_AuthenticityProof": 98,
+                "MessageType_ChangeLanguage": 990,
+                "MessageType_TranslationDataRequest": 991,
+                "MessageType_TranslationDataAck": 992,
                 "MessageType_SetU2FCounter": 63,
                 "MessageType_GetNextU2FCounter": 80,
                 "MessageType_NextU2FCounter": 81,
