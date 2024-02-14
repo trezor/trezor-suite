@@ -7203,6 +7203,19 @@
                 }
             }
         },
+        "StellarClaimClaimableBalanceOp": {
+            "fields": {
+                "source_account": {
+                    "type": "string",
+                    "id": 1
+                },
+                "balance_id": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 2
+                }
+            }
+        },
         "StellarSignedTx": {
             "fields": {
                 "public_key": {
@@ -8319,6 +8332,9 @@
                 "MessageType_StellarPathPaymentStrictSendOp": {
                     "(wire_in)": true
                 },
+                "MessageType_StellarClaimClaimableBalanceOp": {
+                    "(wire_in)": true
+                },
                 "MessageType_StellarSignedTx": {
                     "(wire_out)": true
                 },
@@ -8755,6 +8771,7 @@
                 "MessageType_StellarBumpSequenceOp": 221,
                 "MessageType_StellarManageBuyOfferOp": 222,
                 "MessageType_StellarPathPaymentStrictSendOp": 223,
+                "MessageType_StellarClaimClaimableBalanceOp": 225,
                 "MessageType_StellarSignedTx": 230,
                 "MessageType_CardanoGetPublicKey": 305,
                 "MessageType_CardanoPublicKey": 306,
