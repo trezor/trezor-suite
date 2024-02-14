@@ -170,7 +170,7 @@ export const config: webpack.Configuration = {
                 },
             }),
         ],
-        usedExports: false,
+        usedExports: true,
     },
     // We are using WASM package - it's much faster (https://github.com/Emurgo/cardano-serialization-lib)
     // This option makes it possible
