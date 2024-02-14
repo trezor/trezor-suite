@@ -58,6 +58,7 @@ export const NoSearchResults = () => {
                     id={getTip(tip)}
                     values={{
                         strong: chunks => <strong>{chunks}</strong>, // search string is wrapped in strong tag for additional styling
+                        lastYear: new Date().getFullYear() - 1,
                     }}
                 />
             </Examples>
