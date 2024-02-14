@@ -36,18 +36,18 @@ const appNames = {
     production: 'Trezor Suite',
 } as const satisfies Record<BuildType, string>;
 
-type DeploymentBuildTypes = Exclude<BuildType, 'debug'>;
 const projectIds = {
     develop: '3e4ea82b-6c9f-4cd3-8975-54bddda3ec2d',
     production: 'b9bbf16c-3d44-4d58-8f0c-ba9e6265276a',
-} as const satisfies Record<DeploymentBuildTypes, string>;
+    debug: '',
+} as const satisfies Record<BuildType, string>;
 
 export default ({ config }: ConfigContext): ExpoConfig => {
     const buildType = (process.env.ENVIRONMENT_EXPO as BuildType) ?? 'debug';
     const name = appNames[buildType];
     const slug = appNames[buildType].toLowerCase().split(' ').join('-');
     const bundleIdentifier = bundleIdentifiers[buildType];
-    const projectId = buildType !== 'debug' ? projectIds[buildType as DeploymentBuildTypes] : '';
+    const projectId = projectIds[buildType];
     const appIconIos = appIconsIos[buildType];
     const appIconAndroid = appIconsAndroid[buildType];
 
