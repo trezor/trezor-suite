@@ -57,7 +57,7 @@ export const VersionWithUpdate = () => {
                                 version: (
                                     <TrezorLink href={getReleaseUrl(appVersion)} variant="nostyle">
                                         <Button
-                                            variant="destructive"
+                                            variant="tertiary"
                                             size="tiny"
                                             icon="EXTERNAL_LINK"
                                             iconAlignment="right"
