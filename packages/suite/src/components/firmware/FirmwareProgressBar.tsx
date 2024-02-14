@@ -12,6 +12,12 @@ const Wrapper = styled.div`
     font-size: ${variables.FONT_SIZE.SMALL};
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     align-items: center;
+
+    ${variables.SCREEN_QUERY.ABOVE_LAPTOP} {
+        &:last-child {
+            border-radius: 0 0 ${borders.radii.md} ${borders.radii.md};
+        }
+    }
 `;
 
 const Label = styled.div`
