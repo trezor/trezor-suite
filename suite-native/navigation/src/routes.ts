@@ -60,6 +60,7 @@ export enum ReceiveStackRoutes {
 
 export enum AddCoinAccountStackRoutes {
     AddCoinAccount = 'AddCoinAccount',
+    SelectAccountType = 'SelectAccountType',
 }
 
 export enum SettingsStackRoutes {

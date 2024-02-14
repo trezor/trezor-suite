@@ -31,7 +31,7 @@
         "type-check": "yarn nx run-many --target=type-check",
         "type-check:force": "rimraf -rf -- **/libDev && yarn type-check",
         "test:unit": "yarn nx run-many --target=test:unit",
-        "lint:js": "eslint . --cache --cache-strategy content --report-unused-disable-directives --ignore-path .gitignore",
+        "lint:js": "eslint . --cache --cache-strategy content --ignore-path .gitignore",
         "lint:styles": "yarn nx run-many --target=lint:styles",
         "lint": "yarn lint:styles && yarn lint:js",
         "lint-staged": "npx lint-staged",

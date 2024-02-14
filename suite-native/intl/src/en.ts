@@ -16,6 +16,7 @@ export const en = {
             eject: 'Eject',
         },
         unknownError: 'Something went wrong',
+        default: 'Default',
     },
     messageSystem: {
         killswitch: {
@@ -169,6 +170,45 @@ export const en = {
                 actionPrimary: 'Close',
                 actionSecondary: 'Learn more',
                 actionSecondaryUrl: 'https://trezor.io/learn/a/multiple-accounts-in-trezor-suite',
+            },
+        },
+        accountTypeDecisionBootomSheet: {
+            title: 'Add <coin></coin> account',
+            description:
+                '<type></type> is the default address type. <moreLink>Learn more</moreLink>',
+            buttons: {
+                select: 'Change account type',
+                confirm: 'Continue with <type></type>',
+            },
+        },
+        selectAccountTypeScreen: {
+            title: 'Select <symbol></symbol> account type',
+            accountTypes: {
+                normal: {
+                    title: 'SegWit',
+                    subtitle: 'BIP84, P2WPKH, Bech32',
+                    desc: '<li>Reduces transaction size, boosts capacity, and enhances scalability</li><li>Enables lower transaction fees</li><li>May not work with some older services.</li>',
+                },
+                taproot: {
+                    title: 'Taproot',
+                    subtitle: 'BIP86, P2TR, Bech32m',
+                    desc: '<li>Enhances privacy and network efficiency</li><li>Allows more complex spending conditions privately on the blockchain</li><li>May not be supported by all services</li>',
+                },
+                segwit: {
+                    title: 'Legacy SegWit ',
+                    subtitle: 'BIP49, P2SH-P2WPKH, Base58',
+                    desc: '<li>Enhances privacy and network efficiency</li><li>Allows more complex spending conditions privately on the blockchain</li><li>May not be supported by all services</li>',
+                },
+                legacy: {
+                    title: 'Legacy',
+                    subtitle: 'BIP44, P2PKH, Base58',
+                    desc: '<li>Uses simpler transaction formats</li><li>May result in higher transaction fees</li><li>Lacks the efficiency and features found in newer address types</li>',
+                },
+            },
+            aboutTypesLabel: 'Curious about different address types?',
+            buttons: {
+                more: 'Learn more',
+                confirm: 'Continue with <type></type>',
             },
         },
     },

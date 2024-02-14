@@ -11,6 +11,7 @@ import {
     isLowAnonymityWarning,
     getInputState,
     findToken,
+    getFiatRateKey,
 } from '@suite-common/wallet-utils';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { Output } from 'src/types/wallet/sendForm';
@@ -18,7 +19,7 @@ import { formInputsMaxLength } from '@suite-common/validators';
 import { TokenSelect } from './components/TokenSelect';
 import { Fiat } from './components/Fiat';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { useTranslation } from 'src/hooks/suite';
+import { useSelector, useTranslation } from 'src/hooks/suite';
 import {
     validateDecimals,
     validateInteger,
@@ -27,6 +28,9 @@ import {
 } from 'src/utils/suite/validation';
 import { spacingsPx } from '@trezor/theme';
 import { breakpointMediaQueries } from '@trezor/styles';
+import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
+import { TokenAddress } from '@suite-common/wallet-types';
+import { FiatCurrencyCode } from '@suite-common/suite-config';
 
 const Row = styled.div`
     position: relative;
@@ -136,6 +140,18 @@ export const Amount = ({ output, outputId }: AmountProps) => {
             } ${token.symbol!.toUpperCase()}`}</TokenBalanceValue>
         </HiddenPlaceholder>
     ) : undefined;
+
+    const currentRate = useSelector(state =>
+        selectFiatRatesByFiatRateKey(
+            state,
+            getFiatRateKey(
+                symbol,
+                localCurrencyOption.value as FiatCurrencyCode,
+                (token?.contract || '') as TokenAddress,
+            ),
+            'current',
+        ),
+    );
 
     let decimals: number;
     if (token) {
@@ -249,7 +265,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
                     />
                 </Left>
 
-                {!token && (
+                {(!token || (token && currentRate?.rate)) && (
                     <FiatValue amount="1" symbol={symbol} fiatCurrency={localCurrencyOption.value}>
                         {({ rate }) =>
                             rate && (

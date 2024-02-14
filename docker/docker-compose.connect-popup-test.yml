@@ -18,7 +18,7 @@ services:
     network_mode: service:trezor-user-env-unix
 
   test-run:
-    image: mcr.microsoft.com/playwright:latest
+    image: mcr.microsoft.com/playwright:v1.41.2-jammy
     container_name: explorer-test-runner
     depends_on:
       - trezor-user-env-unix
