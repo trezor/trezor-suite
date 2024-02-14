@@ -23,7 +23,7 @@ const LANGUAGES = {
     nl: { name: 'Nederlands', en: 'Dutch' },
     no: { name: 'Norsk', en: 'Norwegian' },
     pl: { name: 'Polski', en: 'Polish' },
-    pt: { name: 'Português', en: 'Portuguese', type: 'community' },
+    pt: { name: 'Português (BR)', en: 'Portuguese (BR)', type: 'community' },
     ro: { name: 'Română', en: 'Romanian' },
     ru: { name: 'Русский', en: 'Russian', type: 'community' },
     sk: { name: 'Slovenčina', en: 'Slovak' },
