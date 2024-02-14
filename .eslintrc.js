@@ -250,6 +250,27 @@ module.exports = {
                     "CallExpression[callee.name='useSelector'] MemberExpression[object.name='state']:matches([property.type='Identifier'])",
             },
         ],
+        'object-shorthand': [
+            'error',
+            'always',
+            {
+                ignoreConstructors: false,
+                avoidQuotes: true,
+            },
+        ],
+        'constructor-super': 'error',
+        'no-duplicate-imports': 'off',
+        // disallow renaming import, export, and destructured assignments to the same name
+        // https://eslint.org/docs/rules/no-useless-rename
+        'no-useless-rename': [
+            'error',
+            {
+                ignoreDestructuring: false,
+                ignoreImport: false,
+                ignoreExport: false,
+            },
+        ],
+        'prefer-numeric-literals': 'error',
     },
     overrides: [
         {
