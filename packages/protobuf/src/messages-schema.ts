@@ -2451,6 +2451,12 @@ export const StellarBumpSequenceOp = Type.Object({
     bump_to: Type.Uint(),
 });
 
+export type StellarClaimClaimableBalanceOp = Static<typeof StellarClaimClaimableBalanceOp>;
+export const StellarClaimClaimableBalanceOp = Type.Object({
+    source_account: Type.Optional(Type.String()),
+    balance_id: Type.String(),
+});
+
 export type StellarSignedTx = Static<typeof StellarSignedTx>;
 export const StellarSignedTx = Type.Object({
     public_key: Type.String(),
@@ -2863,6 +2869,7 @@ export const MessageType = Type.Object({
     StellarAccountMergeOp,
     StellarManageDataOp,
     StellarBumpSequenceOp,
+    StellarClaimClaimableBalanceOp,
     StellarSignedTx,
     TezosGetAddress,
     TezosAddress,
