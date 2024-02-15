@@ -9,7 +9,7 @@ import {
 } from 'src/components/suite';
 import { DashboardSection } from 'src/components/dashboard';
 import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
-import { useFastAccounts, useFiatValue } from 'src/hooks/wallet';
+import { useFastAccounts } from 'src/hooks/wallet';
 import { goto } from 'src/actions/suite/routerActions';
 import { setFlag } from 'src/actions/suite/suiteActions';
 import { getTotalFiatBalance } from '@suite-common/wallet-utils';
@@ -18,6 +18,7 @@ import { Header } from './components/Header';
 import { Exception } from './components/Exception';
 import { EmptyWallet } from './components/EmptyWallet';
 import { DashboardGraph } from './components/DashboardGraph';
+import { selectFiatRates } from '@suite-common/wallet-core';
 
 const Body = styled.div`
     align-items: center;
@@ -44,14 +45,15 @@ const Wrapper = styled.div`
 `;
 
 const PortfolioCard = memo(() => {
-    const { coins, localCurrency } = useFiatValue();
+    const rates = useSelector(selectFiatRates);
+    const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
     const { discovery, getDiscoveryStatus, isDiscoveryRunning } = useDiscovery();
     const accounts = useFastAccounts();
     const { dashboardGraphHidden } = useSelector(s => s.suite.flags);
     const dispatch = useDispatch();
 
     const isDeviceEmpty = useMemo(() => accounts.every(a => a.empty), [accounts]);
-    const fiatAmount = getTotalFiatBalance(accounts, localCurrency, coins).toString();
+    const fiatAmount = getTotalFiatBalance(accounts, localCurrency, rates).toString();
 
     const discoveryStatus = getDiscoveryStatus();
 

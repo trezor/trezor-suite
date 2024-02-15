@@ -1,13 +1,4 @@
 import type { SavingsProviderInfo } from 'invity-api';
-import { CurrentFiatRates } from 'src/types/wallet/fiatRates';
-
-export const FIAT_RATES: CurrentFiatRates = {
-    ts: 0,
-    symbol: 'BTC',
-    rates: {
-        usd: 54321,
-    },
-};
 
 export const SELECTED_PROVIDER: SavingsProviderInfo = {
     companyName: 'FAKE',

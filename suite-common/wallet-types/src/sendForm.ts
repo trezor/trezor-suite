@@ -5,7 +5,6 @@ import { Network } from '@suite-common/wallet-config';
 import { AccountUtxo, FeeLevel, PROTO } from '@trezor/connect';
 
 import { Account } from './account';
-import { CoinFiatRates } from './fiatRates';
 import {
     CurrencyOption,
     FeeInfo,
@@ -14,6 +13,7 @@ import {
     PrecomposedLevelsCardano,
     RbfTransactionParams,
 } from './transaction';
+import { Rate } from './fiatRates';
 
 export type FormOptions =
     | 'broadcast'
@@ -100,7 +100,7 @@ export type SendContextValues<TFormValues extends FormState = FormState> =
     UseFormReturn<TFormValues> &
         UseSendFormState & {
             isLoading: boolean;
-            fiatRates?: CoinFiatRates;
+            fiatRate: Rate | undefined;
             // additional fields
             outputs: Partial<Output & { id: string }>[]; // useFieldArray fields
             updateContext: (value: Partial<UseSendFormState>) => void;

@@ -25,12 +25,11 @@ interface TickerProps {
 export const TrendTicker = ({ symbol }: TickerProps) => {
     const locale = useSelector(state => state.suite.settings.language);
     const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
+    const fiatRateKey = getFiatRateKey(symbol, localCurrency);
     const lastWeekRate = useSelector(state =>
-        selectFiatRatesByFiatRateKey(state, getFiatRateKey(symbol, localCurrency), 'lastWeek'),
+        selectFiatRatesByFiatRateKey(state, fiatRateKey, 'lastWeek'),
     );
-    const currentRate = useSelector(state =>
-        selectFiatRatesByFiatRateKey(state, getFiatRateKey(symbol, localCurrency), 'current'),
-    );
+    const currentRate = useSelector(state => selectFiatRatesByFiatRateKey(state, fiatRateKey));
 
     const theme = useTheme();
 

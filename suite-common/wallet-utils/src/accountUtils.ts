@@ -18,12 +18,14 @@ import {
 } from '@suite-common/wallet-config';
 import {
     Account,
-    CoinFiatRates,
     Discovery,
     PrecomposedTransactionFinal,
     ReceiveInfo,
+    TokenAddress,
     TxFinalCardano,
+    FiatRates,
 } from '@suite-common/wallet-types';
+import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { ACCOUNT_TYPE } from '@suite-common/wallet-constants';
 import {
@@ -33,6 +35,7 @@ import {
 } from '@trezor/urls';
 
 import { toFiatCurrency } from './fiatConverterUtils';
+import { getFiatRateKey } from './fiatRatesUtils';
 
 export const isEthereumAccountSymbol = (symbol: NetworkSymbol) => symbol === 'eth';
 
@@ -549,31 +552,31 @@ export const enhanceHistory = ({
 export const getAccountFiatBalance = (
     account: Account,
     localCurrency: string,
-    fiat: CoinFiatRates[],
+    rates: FiatRates | undefined,
 ) => {
-    const coinFiatRates = fiat.find(f => f.symbol === account.symbol);
-    if (!coinFiatRates) return null;
+    const coinFiatRateKey = getFiatRateKey(
+        account.symbol as NetworkSymbol,
+        localCurrency as FiatCurrencyCode,
+    );
+    const coinFiatRate = rates?.[coinFiatRateKey];
+    if (!coinFiatRate?.rate) return null;
 
     let totalBalance = new BigNumber(0);
 
     // account fiat balance
-    const balance = toFiatCurrency(
-        account.formattedBalance,
-        localCurrency,
-        coinFiatRates.current?.rates,
-    );
+    const balance = toFiatCurrency(account.formattedBalance, localCurrency, coinFiatRate, 2, false);
 
     // sum fiat value of all tokens
     account.tokens?.forEach(t => {
-        const tokenRates = fiat.find(
-            f => f.mainNetworkSymbol === account.symbol && f.tokenAddress === t.contract,
+        const tokenFiatRateKey = getFiatRateKey(
+            account.symbol as NetworkSymbol,
+            localCurrency as FiatCurrencyCode,
+            t.contract as TokenAddress,
         );
-        if (tokenRates && t.balance) {
-            const tokenBalance = toFiatCurrency(
-                t.balance,
-                localCurrency,
-                tokenRates.current?.rates,
-            );
+
+        const tokenFiatRate = rates?.[tokenFiatRateKey];
+        if (tokenFiatRate?.rate && t.balance) {
+            const tokenBalance = toFiatCurrency(t.balance, localCurrency, tokenFiatRate, 2, false);
             if (tokenBalance) {
                 totalBalance = totalBalance.plus(tokenBalance);
             }
@@ -588,11 +591,11 @@ export const getAccountFiatBalance = (
 export const getTotalFiatBalance = (
     deviceAccounts: Account[],
     localCurrency: string,
-    fiat: CoinFiatRates[],
+    rates: FiatRates | undefined,
 ) => {
     let instanceBalance = new BigNumber(0);
     deviceAccounts.forEach(a => {
-        const accountFiatBalance = getAccountFiatBalance(a, localCurrency, fiat) ?? '0';
+        const accountFiatBalance = getAccountFiatBalance(a, localCurrency, rates) ?? '0';
         instanceBalance = instanceBalance.plus(accountFiatBalance);
     });
 

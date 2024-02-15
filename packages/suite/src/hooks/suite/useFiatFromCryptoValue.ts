@@ -1,10 +1,12 @@
 import { useSelector } from 'src/hooks/suite';
 
 import { Network } from 'src/types/wallet';
-import { toFiatCurrency } from '@suite-common/wallet-utils';
+import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
-import { selectCoinsLegacy } from '@suite-common/wallet-core';
+import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
 import { TimestampedRates } from 'src/types/wallet/fiatRates';
+import { NetworkSymbol } from '@suite-common/wallet-config';
+import { TokenAddress } from '@suite-common/wallet-types';
 
 interface CommonOwnProps {
     amount: string;
@@ -34,19 +36,20 @@ export const useFiatFromCryptoValue = ({
     source,
 }: useFiatFromCryptoValueParams) => {
     const localCurrency = useSelector(selectLocalCurrency);
-    const coins = useSelector(selectCoinsLegacy);
+    const fiatRateKey = getFiatRateKey(
+        symbol as NetworkSymbol,
+        localCurrency,
+        tokenAddress as TokenAddress,
+    );
+
+    const currentRate = useSelector(state => selectFiatRatesByFiatRateKey(state, fiatRateKey));
 
     const targetCurrency = fiatCurrency ?? localCurrency;
-    const currentFiatRates = coins.find(f =>
-        tokenAddress
-            ? f.tokenAddress?.toLowerCase() === tokenAddress?.toLowerCase()
-            : f.symbol.toLowerCase() === symbol.toLowerCase(),
-    )?.current;
 
-    const ratesSource = useCustomSource ? source : currentFiatRates?.rates;
+    const ratesSource = useCustomSource ? source : { [localCurrency]: currentRate?.rate };
     const fiatAmount: string | null = ratesSource
         ? toFiatCurrency(amount, targetCurrency, ratesSource)
         : null;
 
-    return { targetCurrency, fiatAmount, ratesSource, currentFiatRates };
+    return { targetCurrency, fiatAmount, ratesSource, currentRate };
 };

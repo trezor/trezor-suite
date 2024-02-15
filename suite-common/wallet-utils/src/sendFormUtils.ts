@@ -28,7 +28,6 @@ import type {
     Output,
     UseSendFormState,
     RbfTransactionParams,
-    CoinFiatRates,
     Account,
     CurrencyOption,
     ExcludedUtxos,
@@ -192,12 +191,6 @@ export const getInputState = (
 
 export const isLowAnonymityWarning = (error?: Merge<FieldError, FieldErrorsImpl<Output>>) =>
     error?.amount?.type === COMPOSE_ERROR_TYPES.ANONYMITY;
-
-export const getFiatRate = (fiatRates: CoinFiatRates | undefined, currency: string) => {
-    if (!fiatRates || !fiatRates.current || !fiatRates.current.rates) return;
-
-    return fiatRates.current.rates[currency];
-};
 
 export const getFeeUnits = (networkType: NetworkType) => {
     if (networkType === 'ethereum') return 'GWEI';

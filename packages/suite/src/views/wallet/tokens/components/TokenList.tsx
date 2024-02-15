@@ -1,4 +1,4 @@
-import { useMemo, Fragment } from 'react';
+import { Fragment } from 'react';
 import styled, { css, useTheme } from 'styled-components';
 import { variables, Icon, Card } from '@trezor/components';
 import {
@@ -9,12 +9,13 @@ import {
 } from 'src/components/suite';
 import { Account } from 'src/types/wallet';
 import { useSelector } from 'src/hooks/suite';
-import { enhanceTokensWithRates, sortTokensWithRates } from '@suite-common/wallet-utils';
-import { selectCoinsLegacy, selectTokenDefinitions } from '@suite-common/wallet-core';
+import { selectTokenDefinitions } from '@suite-common/wallet-core';
 import { NoRatesTooltip } from 'src/components/suite/Ticker/NoRatesTooltip';
-import { FiatRates, TokenInfo } from '@trezor/blockchain-link-types';
+import { TokenInfo } from '@trezor/blockchain-link-types';
 import { spacingsPx } from '@trezor/theme';
 import { NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
+import { enhanceTokensWithRates, sortTokensWithRates } from 'src/utils/wallet/tokenUtils';
+import { Rate } from '@suite-common/wallet-types';
 
 const Wrapper = styled(Card)<{ isTestnet?: boolean }>`
     display: grid;
@@ -94,7 +95,7 @@ interface TokenListProps {
     networkSymbol: NetworkSymbol;
 }
 
-type EnhancedTokenInfo = TokenInfo & { rates?: FiatRates };
+type EnhancedTokenInfo = TokenInfo & { fiatRate?: Rate };
 
 export const TokenList = ({
     tokens,
@@ -105,14 +106,15 @@ export const TokenList = ({
     networkSymbol,
 }: TokenListProps) => {
     const theme = useTheme();
-    const coins = useSelector(selectCoinsLegacy);
     const tokenDefinitions = useSelector(state => selectTokenDefinitions(state, networkSymbol));
+    const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
+    const { account } = useSelector(state => state.wallet.selectedAccount);
 
-    const sortedTokens: EnhancedTokenInfo[] = useMemo(() => {
-        const tokensWithRates = enhanceTokensWithRates(tokens, coins);
+    if (!account) return null;
 
-        return tokensWithRates.sort(sortTokensWithRates);
-    }, [tokens, coins]);
+    const tokensWithRates = enhanceTokensWithRates(tokens, localCurrency, account.symbol);
+
+    const sortedTokens = tokensWithRates.sort(sortTokensWithRates);
 
     if (!tokens || tokens.length === 0) return null;
 
@@ -152,10 +154,6 @@ export const TokenList = ({
                                     t.symbol?.toLowerCase() === t.name?.toLowerCase();
                                 const noSymbol = !t.symbol || symbolMatchesName;
 
-                                const isTokenWithRate = Boolean(
-                                    t.rates && Object.keys(t.rates).length,
-                                );
-
                                 return (
                                     <Fragment key={t.contract}>
                                         <Col isTestnet={isTestnet}>
@@ -179,11 +177,11 @@ export const TokenList = ({
                                         </Col>
                                         {!isTestnet && (
                                             <Col isTestnet={isTestnet} justify="right">
-                                                {t.balance && t.symbol && isTokenWithRate ? (
+                                                {t.balance && t.symbol && t.fiatRate?.rate ? (
                                                     <FiatWrapper>
                                                         <FiatValue
                                                             amount={t.balance}
-                                                            symbol={t.symbol}
+                                                            symbol={account.symbol}
                                                             tokenAddress={t.contract}
                                                         />
                                                     </FiatWrapper>

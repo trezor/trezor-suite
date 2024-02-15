@@ -12,18 +12,18 @@ import {
     formatAmount,
 } from '@suite-common/wallet-utils';
 import { UseSendFormState, Output } from 'src/types/wallet/sendForm';
-import { CoinFiatRates } from '@suite-common/wallet-types';
+import { Rate } from '@suite-common/wallet-types';
 
 type Props = {
     network: UseSendFormState['network'];
     tokens: UseSendFormState['account']['tokens'];
-    fiatRates?: CoinFiatRates;
+    fiatRate?: Rate;
     localCurrencyOption: UseSendFormState['localCurrencyOption'];
 };
 
 // This hook should be used only as a sub-hook of `useSendForm`
 
-export const useSendFormImport = ({ network, tokens, localCurrencyOption, fiatRates }: Props) => {
+export const useSendFormImport = ({ network, tokens, localCurrencyOption, fiatRate }: Props) => {
     const dispatch = useDispatch();
     const { shouldSendInSats } = useBitcoinAmountUnit(network.symbol);
 
@@ -60,7 +60,7 @@ export const useSendFormImport = ({ network, tokens, localCurrencyOption, fiatRa
                     }
 
                     // calculate Fiat from Amount
-                    if (fiatRates && fiatRates.current) {
+                    if (fiatRate?.rate) {
                         const cryptoValue = shouldSendInSats
                             ? formatAmount(output.amount, network.decimals)
                             : output.amount;
@@ -68,14 +68,14 @@ export const useSendFormImport = ({ network, tokens, localCurrencyOption, fiatRa
                             toFiatCurrency(
                                 cryptoValue,
                                 output.currency.value,
-                                fiatRates.current.rates,
+                                fiatRate,
+                                2,
+                                false,
                             ) || '';
                     }
                 } else if (
                     Object.keys(fiatCurrencies).find(c => c === currency) &&
-                    fiatRates &&
-                    fiatRates.current &&
-                    Object.keys(fiatRates.current.rates).includes(currency)
+                    fiatRate?.rate
                 ) {
                     // csv amount in fiat currency
                     output.currency = { value: currency, label: currency.toUpperCase() };
@@ -84,8 +84,9 @@ export const useSendFormImport = ({ network, tokens, localCurrencyOption, fiatRa
                     const cryptoValue = fromFiatCurrency(
                         output.fiat,
                         currency,
-                        fiatRates.current.rates,
+                        fiatRate,
                         network.decimals,
+                        false,
                     );
                     const cryptoAmount =
                         cryptoValue && shouldSendInSats

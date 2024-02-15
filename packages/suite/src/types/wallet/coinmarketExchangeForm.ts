@@ -1,6 +1,6 @@
 import type { AppState } from 'src/types/suite';
 import type { FormState as ReactHookFormState, UseFormReturn } from 'react-hook-form';
-import type { Account, Network, CoinFiatRates } from 'src/types/wallet';
+import type { Account, Network } from 'src/types/wallet';
 import type { FeeLevel } from '@trezor/connect';
 import type { ExchangeInfo } from 'src/actions/wallet/coinmarketExchangeActions';
 import type {
@@ -11,7 +11,7 @@ import type {
 } from 'src/types/wallet/sendForm';
 import type { AmountLimits, CryptoAmountLimits, Option } from './coinmarketCommonTypes';
 import type { WithSelectedAccountLoadedProps } from 'src/components/wallet';
-import { SendContextValues } from '@suite-common/wallet-types';
+import { Rate, SendContextValues } from '@suite-common/wallet-types';
 import { CryptoSymbol, CryptoSymbolInfo } from 'invity-api';
 
 export const CRYPTO_INPUT = 'outputs.0.amount';
@@ -40,7 +40,7 @@ export interface ExchangeFormContextValues extends UseFormReturn<ExchangeFormSta
     updateSendCryptoValue: (fiatValue: string, decimals: number) => void;
     amountLimits?: AmountLimits;
     composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;
-    fiatRates?: CoinFiatRates;
+    fiatRate?: Rate;
     setAmountLimits: (limits?: CryptoAmountLimits) => void;
     quotesRequest: AppState['wallet']['coinmarket']['exchange']['quotesRequest'];
     isLoading: boolean;

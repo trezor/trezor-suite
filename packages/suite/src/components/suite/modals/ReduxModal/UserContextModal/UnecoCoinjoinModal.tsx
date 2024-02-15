@@ -45,8 +45,9 @@ const AgreeButton = styled(Button)`
 
 export const UnecoCoinjoinModal = () => {
     const account = useSelector(selectSelectedAccount);
+    const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
     const isAccountWithRate = useSelector(state =>
-        selectIsAccountWithRatesByKey(state, account?.key || ''),
+        selectIsAccountWithRatesByKey(state, account?.key || '', localCurrency),
     );
 
     const dispatch = useDispatch();
