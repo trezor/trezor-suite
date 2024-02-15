@@ -2,20 +2,26 @@ import { useState } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { View } from 'react-native';
 
-import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 
 import { useNativeStyles, prepareNativeStyle } from '@trezor/styles';
 import { AccountType } from '@suite-common/wallet-config';
 import {
-    StackNavigationProps,
     AddCoinAccountStackParamList,
     AddCoinAccountStackRoutes,
     Screen,
     ScreenSubHeader,
     StackProps,
 } from '@suite-native/navigation';
-import { Button, VStack, Text, IconButton, Box, SelectableItem } from '@suite-native/atoms';
+import {
+    Button,
+    VStack,
+    Text,
+    IconButton,
+    SelectableItem,
+    BulletListItem,
+    Box,
+} from '@suite-native/atoms';
 import { useTranslate, Translation, TxKeyPath } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 
@@ -29,22 +35,22 @@ const EXTRA_BOTTOM_PADDING = 48;
 const ACCOUNT_TYPES_URL = 'https://trezor.io/learn/a/multiple-accounts-in-trezor-suite';
 
 const bulletsForKeyPath = (keyPath: TxKeyPath) => (
-    <Translation
-        id={keyPath}
-        values={{
-            li: chunks =>
-                chunks.map(row => (
-                    <Box flexDirection="row">
-                        <Text variant="hint" color="textSubdued">
-                            {'  '}•{'  '}
-                        </Text>
-                        <Text variant="hint" color="textSubdued">
-                            {row}
-                        </Text>
-                    </Box>
-                )),
-        }}
-    />
+    <Box paddingLeft="small">
+        <Translation
+            id={keyPath}
+            values={{
+                li: chunks =>
+                    chunks.map(
+                        row =>
+                            row && (
+                                <BulletListItem key={`${row}`} variant="hint" color="textSubdued">
+                                    {row}
+                                </BulletListItem>
+                            ),
+                    ),
+            }}
+        />
+    </Box>
 );
 
 const itemsStyle = prepareNativeStyle(utils => ({
@@ -78,19 +84,13 @@ const aboutStyle = prepareNativeStyle((utils, { bottomInset }: { bottomInset: nu
 
 export const SelectAccountTypeScreen = ({
     route,
+    navigation,
 }: StackProps<AddCoinAccountStackParamList, AddCoinAccountStackRoutes.SelectAccountType>) => {
-    const { accountType: defaultType, network } = route.params;
+    const { accountType: defaultType, network, flowType } = route.params;
     const { translate } = useTranslate();
     const openLink = useOpenLink();
     const insets = useSafeAreaInsets();
     const { applyStyle, utils } = useNativeStyles();
-    const navigation =
-        useNavigation<
-            StackNavigationProps<
-                AddCoinAccountStackParamList,
-                AddCoinAccountStackRoutes.SelectAccountType
-            >
-        >();
 
     const { getAvailableAccountTypesForNetwork, addCoinAccount } = useAddCoinAccount();
 
@@ -103,9 +103,8 @@ export const SelectAccountTypeScreen = ({
 
     const handleMoreTap = () => openLink(ACCOUNT_TYPES_URL);
 
-    const handleConfirmTap = () => {
-        addCoinAccount({ network, accountType: selectedAccountType });
-    };
+    const handleConfirmTap = () =>
+        addCoinAccount({ network, accountType: selectedAccountType, flowType });
 
     return (
         <>

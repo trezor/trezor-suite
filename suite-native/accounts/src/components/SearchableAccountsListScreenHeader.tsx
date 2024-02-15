@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react';
+import { useState } from 'react';
 import Animated, {
     EntryExitAnimationFunction,
     FadeOut,
@@ -6,17 +6,22 @@ import Animated, {
     withDelay,
     withTiming,
 } from 'react-native-reanimated';
+import { useSelector } from 'react-redux';
 
 import { ScreenSubHeader } from '@suite-native/navigation';
 import { Box, IconButton } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import {
+    selectAreAllDevicesDisconnectedOrAccountless,
+    selectDeviceDiscovery,
+} from '@suite-common/wallet-core';
 
 import { AccountsSearchForm, SEARCH_INPUT_ANIMATION_DURATION } from './AccountsSearchForm';
+import { AddAccountButton } from './AddAccountsButton';
 
 type SearchableAccountsListScreenHeaderProps = {
     title: string;
     onSearchInputChange: (value: string) => void;
-    rightIcon?: ReactNode;
 };
 
 const HEADER_ANIMATION_DURATION = 100;
@@ -30,11 +35,14 @@ const searchFormContainerStyle = prepareNativeStyle(utils => ({
 export const SearchableAccountsListScreenHeader = ({
     title,
     onSearchInputChange,
-    rightIcon,
 }: SearchableAccountsListScreenHeaderProps) => {
     const isFirstRender = useSharedValue(true);
     const { applyStyle } = useNativeStyles();
 
+    const discovery = useSelector(selectDeviceDiscovery);
+    const areAllDevicesDisconnectedOrAccountless = useSelector(
+        selectAreAllDevicesDisconnectedOrAccountless,
+    );
     const [isSearchActive, setIsSearchActive] = useState(false);
 
     const handleHideFilter = () => {
@@ -78,7 +86,10 @@ export const SearchableAccountsListScreenHeader = ({
                 >
                     <ScreenSubHeader
                         content={title}
-                        rightIcon={rightIcon}
+                        rightIcon={
+                            !areAllDevicesDisconnectedOrAccountless &&
+                            !discovery && <AddAccountButton />
+                        }
                         leftIcon={
                             <IconButton
                                 iconName="search"

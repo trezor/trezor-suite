@@ -83,11 +83,16 @@ export type AccountsImportStackParamList = {
     };
 };
 
+export type AddCoinFlowType = 'receive' | 'accounts';
+
 export type AddCoinAccountStackParamList = {
-    [AddCoinAccountStackRoutes.AddCoinAccount]: undefined;
+    [AddCoinAccountStackRoutes.AddCoinAccount]: {
+        flowType: AddCoinFlowType;
+    };
     [AddCoinAccountStackRoutes.SelectAccountType]: {
         accountType: AccountType;
         network: Network;
+        flowType: AddCoinFlowType;
     };
 };
 
@@ -115,5 +120,5 @@ export type RootStackParamList = {
         tokenContract?: TokenAddress;
     };
     [RootStackRoutes.DeviceInfo]: undefined;
-    [RootStackRoutes.AddCoinAccountStack]: undefined;
+    [RootStackRoutes.AddCoinAccountStack]: NavigatorScreenParams<AddCoinAccountStackParamList>;
 };

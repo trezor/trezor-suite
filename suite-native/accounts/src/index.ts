@@ -1,3 +1,4 @@
+export * from './components/AddAccountsButton';
 export * from './components/AccountsList';
 export * from './components/AccountsListGroup';
 export * from './components/AccountListItem';

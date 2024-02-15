@@ -171,6 +171,11 @@ export const en = {
                 actionSecondary: 'Learn more',
                 actionSecondaryUrl: 'https://trezor.io/learn/a/multiple-accounts-in-trezor-suite',
             },
+            generalError: {
+                title: 'We couldn’t add your account.',
+                description: 'There’s been an unknown technical issue on our end.',
+                actionPrimary: 'Close',
+            },
         },
         accountTypeDecisionBootomSheet: {
             title: 'Add <coin></coin> account',
