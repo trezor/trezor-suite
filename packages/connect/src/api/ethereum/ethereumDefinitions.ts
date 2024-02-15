@@ -116,7 +116,6 @@ export const decodeEthereumDefinition = (
 
         const messages = DataManager.getProtobufMessages();
 
-        // @ts-expect-error
         const proto = parseConfigure(messages);
 
         const type = definitionType === 0 ? 'EthereumNetworkInfo' : 'EthereumTokenInfo';
