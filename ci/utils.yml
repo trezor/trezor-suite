@@ -96,3 +96,13 @@ test unit manual:
   when: manual
   except:
     <<: *run_everything_rules
+
+test protobuf nightly:
+  stage: utils
+  only:
+    <<: *run_everything_rules
+  needs: []
+  script:
+    - yarn install --immutable
+    - yarn workspace @trezor/protobuf update:protobuf
+    - yarn workspace @trezor/protobuf update:schema
