@@ -5452,10 +5452,6 @@ export default defineMessages({
         id: 'TR_ADD_TOKEN_SUBMIT',
         defaultMessage: 'Add token',
     },
-    TR_ADD_TOKEN_PLACEHOLDER: {
-        id: 'TR_ADD_TOKEN_PLACEHOLDER',
-        defaultMessage: 'Paste token address',
-    },
     TR_ADD_TOKEN_ADDRESS_NOT_VALID: {
         id: 'TR_ADD_TOKEN_ADDRESS_NOT_VALID',
         defaultMessage: 'Invalid address',
