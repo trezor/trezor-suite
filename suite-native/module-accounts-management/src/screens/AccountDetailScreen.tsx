@@ -67,10 +67,14 @@ export const AccountDetailScreen = memo(() => {
         if (account) {
             analytics.report({
                 type: EventType.AssetDetail,
-                payload: { assetSymbol: account.symbol, tokenSymbol: token?.symbol },
+                payload: {
+                    assetSymbol: account.symbol,
+                    tokenSymbol: token?.symbol,
+                    tokenAddress: token?.contract,
+                },
             });
         }
-    }, [account, token?.symbol]);
+    }, [account, token?.symbol, token?.contract]);
 
     const toggleIncludeTokenTransactions = useCallback(() => {
         setAreTokensIncluded(prev => !prev);
