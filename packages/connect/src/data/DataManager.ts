@@ -8,13 +8,13 @@ import { config } from './config';
 
 import { ConnectSettings, DeviceModelInternal } from '../types';
 
-type AssetCollection = { [key: string]: JSON };
+type AssetCollection = { [key: string]: Record<string, any> };
 
 export class DataManager {
     static assets: AssetCollection = {};
 
     private static settings: ConnectSettings;
-    private static messages: JSON;
+    private static messages: Record<string, any>;
 
     static async load(settings: ConnectSettings, withAssets = true) {
         const ts = settings.env === 'web' ? `?r=${settings.timestamp}` : '';

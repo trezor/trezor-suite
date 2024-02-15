@@ -9,10 +9,13 @@ if (global && typeof global.fetch !== 'function') {
     global.fetch = fetch;
 }
 
-export const httpRequest = (url: string, type: string): any => {
+export function httpRequest(url: string, type: 'text'): Promise<string>;
+export function httpRequest(url: string, type: 'binary'): Promise<ArrayBuffer>;
+export function httpRequest(url: string, type: 'json'): Promise<Record<string, any>>;
+export function httpRequest(url: any, type: any) {
     const asset = getAssetByUrl(url);
     if (!asset) {
         return /^https?/.test(url) ? browserHttpRequest(url, type) : fs.readFile(url);
     }
     return asset;
-};
+}
