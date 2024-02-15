@@ -1,4 +1,4 @@
-import { test } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { fixtures } from './__fixtures__/methods';
@@ -114,6 +114,16 @@ filteredFixtures.forEach(f => {
             fullPage: true,
         });
         await popup.click('button.confirm');
+
+        log(f.url, 'checking method name set');
+        // In React shadow DOM, so we use evaluate to get the method name
+        const methodName = await popup.evaluate(() => {
+            return (document as Document)
+                ?.querySelector('#react')
+                ?.shadowRoot?.querySelector("aside[data-test='@info-panel'] h2")?.textContent;
+        });
+        expect(methodName).not.toBe(undefined);
+        expect(methodName).not.toBe('');
 
         let screenshotCount = 1;
         for (const v of f.views) {

@@ -51,6 +51,7 @@ let _deviceListInitTimeout: ReturnType<typeof setTimeout> | undefined;
 let _overridePromise: Promise<void> | undefined;
 
 const methodSynchronize = getSynchronize();
+let waitForFirstMethod = createDeferred();
 
 // custom log
 const _log = initLog('Core');
@@ -67,6 +68,9 @@ const postMessage = (message: CoreEventMessage) => {
         const index = _callMethods.findIndex(call => call && call.responseID === message.id);
         if (index >= 0) {
             _callMethods.splice(index, 1);
+            if (_callMethods.length === 0) {
+                waitForFirstMethod = createDeferred();
+            }
         }
     }
     _core.emit(CORE_EVENT, message);
@@ -337,6 +341,7 @@ const onCall = async (message: IFrameCallMessage) => {
             await method.initAsync?.();
             return method;
         });
+        waitForFirstMethod.resolve();
         _callMethods.push(method);
     } catch (error) {
         postMessage(createPopupMessage(POPUP.CANCEL_POPUP_REQUEST));
@@ -856,6 +861,7 @@ const onPopupClosed = (customErrorMessage?: string) => {
                         postMessage(createResponseMessage(m.responseID, false, { error }));
                     });
                     _callMethods.splice(0, _callMethods.length);
+                    waitForFirstMethod = createDeferred();
                 }
             }
         });
@@ -1024,8 +1030,9 @@ export class Core extends EventEmitter {
         }
     }
 
-    getCurrentMethod() {
-        return methodSynchronize(() => _callMethods[0]);
+    async getCurrentMethod() {
+        await waitForFirstMethod.promise;
+        return await methodSynchronize(() => _callMethods[0]);
     }
 
     getTransportInfo(): TransportInfo | undefined {
