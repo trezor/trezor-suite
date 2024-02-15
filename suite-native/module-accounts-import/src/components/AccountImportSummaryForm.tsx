@@ -22,7 +22,7 @@ import {
 import { AccountInfo } from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { analytics, EventType } from '@suite-native/analytics';
-import { TokenInfoBranded, TokenSymbol } from '@suite-common/wallet-types';
+import { TokenAddress, TokenInfoBranded, TokenSymbol } from '@suite-common/wallet-types';
 import { selectAnyOfTokensHasFiatRates } from '@suite-native/ethereum-tokens';
 import { FiatRatesRootState } from '@suite-native/fiat-rates';
 import { SettingsSliceRootState } from '@suite-native/module-settings';
@@ -85,6 +85,9 @@ export const AccountImportSummaryForm = ({
                 payload: {
                     assetSymbol: networkSymbol,
                     tokenSymbols: accountInfo?.tokens?.map(token => token.symbol as TokenSymbol),
+                    tokenAddresses: accountInfo?.tokens?.map(
+                        token => token.contract as TokenAddress,
+                    ),
                 },
             });
 

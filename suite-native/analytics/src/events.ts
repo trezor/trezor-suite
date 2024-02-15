@@ -1,7 +1,7 @@
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { UNIT_ABBREVIATION } from '@suite-common/suite-constants';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { TokenSymbol } from '@suite-common/wallet-types';
+import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
 import { DeviceModelInternal, VersionArray } from '@trezor/connect';
 
 import { EventType } from './constants';
@@ -35,6 +35,7 @@ export type SuiteNativeAnalyticsEvent =
           payload: {
               assetSymbol: NetworkSymbol;
               tokenSymbols?: TokenSymbol[];
+              tokenAddresses?: TokenAddress[];
           };
       }
     | {
@@ -55,6 +56,7 @@ export type SuiteNativeAnalyticsEvent =
           payload: {
               assetSymbol: NetworkSymbol;
               tokenSymbol?: TokenSymbol;
+              tokenAddress?: TokenAddress;
           };
       }
     | {
@@ -63,6 +65,7 @@ export type SuiteNativeAnalyticsEvent =
               timeframe: string;
               assetSymbol: NetworkSymbol;
               tokenSymbol?: TokenSymbol;
+              tokenAddress?: TokenAddress;
           };
       }
     | {
@@ -70,6 +73,7 @@ export type SuiteNativeAnalyticsEvent =
           payload: {
               assetSymbol: NetworkSymbol;
               tokenSymbol?: TokenSymbol;
+              tokenAddress?: TokenAddress;
           };
       }
     | {

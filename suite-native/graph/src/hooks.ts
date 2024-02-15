@@ -45,7 +45,7 @@ const useWatchTimeframeChangeForAnalytics = (
 
         if (timeframeLabel) {
             if (networkSymbol) {
-                // TODO: Report tokenSymbol if displaying ERC20 token account graph.
+                // TODO: Report tokenSymbol and tokenAddress if displaying ERC20 token account graph.
                 // related to issue: https://github.com/trezor/trezor-suite/issues/7839
                 analytics.report({
                     type: EventType.AssetDetailTimeframeChange,

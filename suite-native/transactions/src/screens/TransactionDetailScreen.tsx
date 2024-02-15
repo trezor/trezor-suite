@@ -19,6 +19,7 @@ import {
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { analytics, EventType } from '@suite-native/analytics';
 import { EthereumTokenTransfer, WalletAccountTransaction } from '@suite-native/ethereum-tokens';
+import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
 
 import { TransactionDetailHeader } from '../components/TransactionDetail/TransactionDetailHeader';
 import { TransactionDetailData } from '../components/TransactionDetail/TransactionDetailData';
@@ -41,14 +42,16 @@ export const TransactionDetailScreen = ({
     );
 
     useEffect(() => {
-        // TODO: Report tokenSymbol if displaying ERC20 token transaction detail.
-        // related to issue: https://github.com/trezor/trezor-suite/issues/7881
         if (transaction)
             analytics.report({
                 type: EventType.TransactionDetail,
-                payload: { assetSymbol: transaction.symbol },
+                payload: {
+                    assetSymbol: transaction.symbol,
+                    tokenSymbol: tokenTransfer?.symbol as TokenSymbol,
+                    tokenAddress: tokenTransfer?.contract as TokenAddress,
+                },
             });
-    }, [transaction]);
+    }, [transaction, tokenTransfer]);
 
     if (!transaction) return null;
 
