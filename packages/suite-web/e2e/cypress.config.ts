@@ -225,6 +225,10 @@ export default defineConfig({
                     return store[key];
                 },
                 ...TrezorUserEnvLink.api,
+                async setupEmu(opts: Parameters<typeof TrezorUserEnvLink.api.setupEmu>[0]) {
+                    await TrezorUserEnvLink.api.setupEmu(opts);
+                    return TrezorUserEnvLink.api.startBridge();
+                },
             });
         },
     },
