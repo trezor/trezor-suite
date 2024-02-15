@@ -57,4 +57,8 @@ export default class RecoveryDevice extends AbstractMethod<'recoveryDevice', PRO
         const response = await cmd.typedCall('RecoveryDevice', 'Success', this.params);
         return response.message;
     }
+
+    get info() {
+        return 'Recover device';
+    }
 }
