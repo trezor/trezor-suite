@@ -20,13 +20,14 @@ import { SavingsTrade } from 'invity-api';
 import invityAPI from 'src/services/suite/invityAPI';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
-import { selectCoinsLegacy } from '@suite-common/wallet-core';
+import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
+import { getFiatRateKey } from '@suite-common/wallet-utils';
+import { FiatCurrencyCode } from '@suite-common/suite-config';
 
 export const useSavingsSetupContinue = ({
     selectedAccount,
 }: UseSavingsSetupContinueProps): SavingsSetupContinueContextValues => {
     const { account } = selectedAccount;
-    const coins = useSelector(selectCoinsLegacy);
     const {
         isSavingsTradeLoading,
         isWatchingKYCStatus,
@@ -52,9 +53,10 @@ export const useSavingsSetupContinue = ({
         removeDraft(account.descriptor);
     }, [account.descriptor, dispatch, removeDraft]);
 
-    const fiatRates = coins.find(item => item.symbol === account.symbol);
     // NOTE: There is only one fiat currency per provider.
     const fiatCurrency = selectedProvider?.tradedFiatCurrencies[0];
+    const fiatRateKey = getFiatRateKey(account.symbol, fiatCurrency as FiatCurrencyCode);
+    const fiatRate = useSelector(state => selectFiatRatesByFiatRateKey(state, fiatRateKey));
     const { address: unusedAddress } = getUnusedAddressFromAccount(account);
 
     const paymentFrequencyOptions = getPaymentFrequencyOptions(selectedProvider);
@@ -113,8 +115,7 @@ export const useSavingsSetupContinue = ({
         paymentFrequency,
         fiatAmount,
         customFiatAmount,
-        fiatCurrency,
-        fiatRates?.current,
+        fiatRate?.rate,
     );
 
     const onSubmit = useCallback(

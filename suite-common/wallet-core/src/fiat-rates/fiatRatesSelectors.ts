@@ -2,7 +2,7 @@
 // There are some small differences such as removed memoization
 
 import { A, D, F, pipe } from '@mobily/ts-belt';
-import { memoize } from 'proxy-memoize';
+import { memoizeWithArgs } from 'proxy-memoize';
 
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import {
@@ -10,12 +10,12 @@ import {
     AccountKey,
     WalletAccountTransaction,
     FiatRateKey,
-    FiatRatesStateLegacy,
     Rate,
     RateType,
     TickerId,
+    FiatRates,
 } from '@suite-common/wallet-types';
-import { getFiatRateKeyFromTicker } from '@suite-common/wallet-utils';
+import { getFiatRateKey, getFiatRateKeyFromTicker } from '@suite-common/wallet-utils';
 
 import {
     AccountsRootState,
@@ -23,10 +23,15 @@ import {
     selectDeviceAccounts,
 } from '../accounts/accountsReducer';
 import { TransactionsRootState, selectTransactions } from '../transactions/transactionsReducer';
-import { MAX_AGE, ONE_WEEK_IN_MS } from './fiatRatesConstants';
+import { MAX_AGE } from './fiatRatesConstants';
 import { FiatRatesRootState } from './fiatRatesTypes';
 
 type UnixTimestamp = number;
+
+export const selectFiatRates = (
+    state: FiatRatesRootState,
+    rateType: RateType = 'current',
+): FiatRates | undefined => state.wallet.fiat?.[rateType];
 
 export const selectFiatRatesByFiatRateKey = (
     state: FiatRatesRootState,
@@ -133,86 +138,22 @@ export const selectTransactionsWithMissingRates = (
     }[];
 };
 
-/**
- * @deprecated Use selectFiatRatesByFiatRateKey or any other selector
- */
-export const selectCoinsLegacy = memoize(
-    (state: FiatRatesRootState): FiatRatesStateLegacy['coins'] => {
-        const coins: FiatRatesStateLegacy['coins'] = [];
+export const selectIsAccountWithRatesByKey = memoizeWithArgs(
+    (
+        state: AccountsRootState & FiatRatesRootState,
+        accountKey: string,
+        fiatCurrency: FiatCurrencyCode,
+    ) => {
+        const account = selectAccountByKey(state, accountKey);
 
-        Object.values(state.wallet.fiat.current).forEach(rate => {
-            const coin = coins.find(
-                c => c.symbol === rate.ticker.symbol && c.tokenAddress === rate.ticker.tokenAddress,
-            );
-            if (coin && coin.current) {
-                coin.current.rates[rate.locale] = rate.rate;
-            } else {
-                coins.push({
-                    ...rate.ticker,
-                    current: {
-                        rates: {
-                            [rate.locale]: rate.rate,
-                        },
-                        ...rate.ticker,
-                        ts: rate.lastSuccessfulFetchTimestamp,
-                    },
-                });
-            }
-        });
+        if (!account) {
+            return false;
+        }
 
-        Object.values(state.wallet.fiat.lastWeek).forEach(rate => {
-            const coin = coins.find(
-                c => c.symbol === rate.ticker.symbol && c.tokenAddress === rate.ticker.tokenAddress,
-            );
-            if (coin) {
-                const ticker = coin.lastWeek?.tickers.find(
-                    t => t.ts === rate.lastSuccessfulFetchTimestamp,
-                );
-                if (ticker) {
-                    ticker.rates[rate.locale] = rate.rate;
-                } else {
-                    coin.lastWeek?.tickers.push({
-                        rates: {
-                            [rate.locale]: rate.rate,
-                        },
-                        ts: rate.lastSuccessfulFetchTimestamp,
-                    });
-                }
-            } else {
-                coins.push({
-                    ...rate.ticker,
-                    lastWeek: {
-                        tickers: [
-                            {
-                                rates: {
-                                    [rate.locale]: rate.rate,
-                                },
-                                ts: rate.lastSuccessfulFetchTimestamp - ONE_WEEK_IN_MS,
-                            },
-                        ],
-                        ts: rate.lastSuccessfulFetchTimestamp,
-                        ...rate.ticker,
-                    },
-                });
-            }
-        });
+        const fiatRateKey = getFiatRateKey(account.symbol, fiatCurrency);
+        const rates = selectFiatRatesByFiatRateKey(state, fiatRateKey);
 
-        return coins;
+        return !!rates;
     },
+    { size: 100 },
 );
-
-export const selectIsAccountWithRatesByKey = (
-    state: AccountsRootState & FiatRatesRootState,
-    accountKey: string,
-) => {
-    const account = selectAccountByKey(state, accountKey);
-
-    if (!account) {
-        return false;
-    }
-
-    // TODO: refactor
-    const rates = selectCoinsLegacy(state);
-
-    return !!rates.find(rate => rate.symbol === account.symbol);
-};

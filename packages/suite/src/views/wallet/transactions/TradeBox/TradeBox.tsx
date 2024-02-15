@@ -3,7 +3,7 @@ import { differenceInMinutes } from 'date-fns';
 import { FormattedRelativeTime } from 'react-intl';
 
 import { getMainnets } from '@suite-common/wallet-config';
-import { selectCoinsLegacy } from '@suite-common/wallet-core';
+import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
 import { spacingsPx, typography } from '@trezor/theme';
 import { useSelector } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
@@ -11,6 +11,7 @@ import { Translation } from 'src/components/suite';
 import { Card, CoinLogo, variables } from '@trezor/components';
 import { TradeBoxMenu } from './TradeBoxMenu';
 import { TradeBoxPrices } from './TradeBoxPrices';
+import { getFiatRateKey } from '@suite-common/wallet-utils';
 
 const StyledCard = styled(Card)`
     flex-flow: row wrap;
@@ -76,14 +77,15 @@ interface TradeBoxProps {
 
 export const TradeBox = ({ account }: TradeBoxProps) => {
     const network = getMainnets().find(n => n.symbol === account.symbol);
-    const coins = useSelector(selectCoinsLegacy);
-    const fiatRates = coins.find(item => item.symbol === network?.symbol);
+    const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
+    const fiatRateKey = getFiatRateKey(account.symbol, localCurrency);
+    const fiatRates = useSelector(state => selectFiatRatesByFiatRateKey(state, fiatRateKey));
 
     if (!network) {
         return null;
     }
 
-    const currentRateTimestamp = fiatRates?.current?.ts;
+    const currentRateTimestamp = fiatRates?.lastSuccessfulFetchTimestamp;
     const getRateAge = (timestamp: number) => differenceInMinutes(new Date(timestamp), new Date());
 
     return (

@@ -9,10 +9,10 @@ import {
 } from 'src/types/wallet/sendForm';
 import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
-import { CoinFiatRates } from '@suite-common/wallet-types';
+import { Rate } from '@suite-common/wallet-types';
 
 type Props = UseFormReturn<FormState> & {
-    fiatRates?: CoinFiatRates;
+    fiatRate?: Rate;
     network: UseSendFormState['network'];
 };
 
@@ -22,7 +22,7 @@ export const useSendFormFields = ({
     getValues,
     setValue,
     clearErrors,
-    fiatRates,
+    fiatRate,
     network,
     formState: { errors },
 }: Props) => {
@@ -52,22 +52,18 @@ export const useSendFormFields = ({
                 return;
             }
             // calculate Fiat value
-            if (!fiatRates || !fiatRates.current) return;
+            if (!fiatRate?.rate) return;
 
             const formattedAmount = shouldSendInSats // toFiatCurrency always works with BTC, not satoshis
                 ? formatNetworkAmount(amount, network.symbol)
                 : amount;
 
-            const fiatValue = toFiatCurrency(
-                formattedAmount,
-                currency.value,
-                fiatRates.current.rates,
-            );
+            const fiatValue = toFiatCurrency(formattedAmount, currency.value, fiatRate, 2, false);
             if (fiatValue) {
                 setValue(inputName, fiatValue, { shouldValidate: true });
             }
         },
-        [getValues, setValue, fiatRates, shouldSendInSats, network.symbol, errors],
+        [getValues, setValue, fiatRate, shouldSendInSats, network.symbol, errors],
     );
 
     const setAmount = useCallback(

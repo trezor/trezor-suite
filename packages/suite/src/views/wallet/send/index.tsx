@@ -15,7 +15,6 @@ import {
     selectTargetAnonymityByAccountKey,
     selectRegisteredUtxosByAccountKey,
 } from 'src/reducers/wallet/coinjoinReducer';
-import { selectCoinsLegacy } from '@suite-common/wallet-core';
 import { Translation } from 'src/components/suite';
 import { spacingsPx } from '@trezor/theme';
 import { breakpointMediaQueries } from '@trezor/styles';
@@ -69,9 +68,7 @@ const SendLoaded = ({ children, selectedAccount }: SendLoadedProps) => {
         prison: selectRegisteredUtxosByAccountKey(state, selectedAccount.account.key),
     }));
 
-    const coins = useSelector(selectCoinsLegacy);
-
-    const sendContextValues = useSendForm({ ...props, selectedAccount, coins });
+    const sendContextValues = useSendForm({ ...props, selectedAccount });
 
     const { symbol } = selectedAccount.account;
 

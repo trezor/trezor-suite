@@ -7,7 +7,7 @@ import { FiatValue, Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { NoRatesTooltip } from './NoRatesTooltip';
 import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
-import { getFiatRateKey } from '@suite-common/wallet-utils/src/fiatRatesUtils';
+import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
 const FiatRateWrapper = styled.span`
@@ -31,13 +31,11 @@ export const Ticker = ({ symbol, tooltipPos = 'top' }: TickerProps) => {
     const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
     const theme = useTheme();
 
+    const fiatRateKey = getFiatRateKey(symbol, localCurrency);
     const lastWeekRate = useSelector(state =>
-        selectFiatRatesByFiatRateKey(state, getFiatRateKey(symbol, localCurrency), 'lastWeek'),
+        selectFiatRatesByFiatRateKey(state, fiatRateKey, 'lastWeek'),
     );
-
-    const currentRate = useSelector(state =>
-        selectFiatRatesByFiatRateKey(state, getFiatRateKey(symbol, localCurrency), 'current'),
-    );
+    const currentRate = useSelector(state => selectFiatRatesByFiatRateKey(state, fiatRateKey));
 
     const isSuccessfullyFetched =
         lastWeekRate?.lastSuccessfulFetchTimestamp && currentRate?.lastSuccessfulFetchTimestamp;

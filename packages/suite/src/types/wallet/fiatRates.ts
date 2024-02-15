@@ -3,5 +3,4 @@ export type {
     CurrentFiatRates,
     TimestampedRates,
     LastWeekRates,
-    CoinFiatRates,
 } from '@suite-common/wallet-types';

@@ -7,7 +7,9 @@ import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigatio
 import { useSelector } from 'src/hooks/suite';
 import { Trade } from 'src/types/wallet/coinmarketCommonTypes';
 import BigNumber from 'bignumber.js';
-import { selectCoinsLegacy } from '@suite-common/wallet-core';
+import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
+import { getFiatRateKey } from '@suite-common/wallet-utils';
+import { FiatCurrencyCode } from '@suite-common/suite-config';
 
 export const SavingsOverviewContext = createContext<SavingsOverviewContextValues | null>(null);
 SavingsOverviewContext.displayName = 'SavingsOverviewContext';
@@ -20,7 +22,6 @@ export const useSavingsOverview = ({
     const { navigateToSavingsSetupContinue } = useCoinmarketNavigation(account);
 
     const trades = useSelector(state => state.wallet.coinmarket.trades);
-    const coins = useSelector(selectCoinsLegacy);
     const {
         isSavingsTradeLoading,
         isWatchingKYCStatus,
@@ -46,12 +47,15 @@ export const useSavingsOverview = ({
     const savingsTradeItemCompletedExists = savingsCryptoSum.isGreaterThan(0);
 
     let savingsFiatSum = new BigNumber(0);
-    const fiatRates = coins.find(item => item.symbol === account.symbol);
-    if (fiatRates?.current?.rates && savingsTrade?.fiatCurrency) {
-        const rate = fiatRates.current.rates[savingsTrade.fiatCurrency.toLowerCase()];
-        if (rate) {
-            savingsFiatSum = new BigNumber(savingsCryptoSum).multipliedBy(rate).decimalPlaces(2);
-        }
+    const fiatRateKey = getFiatRateKey(
+        account.symbol,
+        (savingsTrade?.fiatCurrency || '') as FiatCurrencyCode,
+    );
+    const fiatRate = useSelector(state => selectFiatRatesByFiatRateKey(state, fiatRateKey));
+    if (fiatRate?.rate && savingsTrade?.fiatCurrency) {
+        savingsFiatSum = new BigNumber(savingsCryptoSum)
+            .multipliedBy(fiatRate?.rate)
+            .decimalPlaces(2);
     }
 
     const handleEditSetupButtonClick = useCallback(() => {

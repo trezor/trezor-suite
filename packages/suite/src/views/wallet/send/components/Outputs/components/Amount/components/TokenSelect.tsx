@@ -6,17 +6,14 @@ import styled from 'styled-components';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { Account } from 'src/types/wallet';
 import { Output } from 'src/types/wallet/sendForm';
-import {
-    getShortFingerprint,
-    enhanceTokensWithRates,
-    sortTokensWithRates,
-} from '@suite-common/wallet-utils';
 import { useSelector } from 'src/hooks/suite';
-import { selectCoinsLegacy, selectTokenDefinitions } from '@suite-common/wallet-core';
+import { selectTokenDefinitions } from '@suite-common/wallet-core';
 import BigNumber from 'bignumber.js';
 import { TokenDefinitions } from '@suite-common/wallet-types';
 import { TooltipSymbol, Translation } from 'src/components/suite';
 import { getNetworkFeatures } from '@suite-common/wallet-config';
+import { enhanceTokensWithRates, sortTokensWithRates } from 'src/utils/wallet/tokenUtils';
+import { getShortFingerprint } from '@suite-common/wallet-utils';
 
 const UnrecognizedTokensHeading = styled.div`
     display: flex;
@@ -166,14 +163,13 @@ export const TokenSelect = ({ output, outputId }: TokenSelectProps) => {
         composeTransaction,
         watch,
     } = useSendFormContext();
-    const coins = useSelector(selectCoinsLegacy);
     const tokenDefinitions = useSelector(state => selectTokenDefinitions(state, account.symbol));
+    const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
+    const tokensWithRates = enhanceTokensWithRates(account.tokens, localCurrency, account.symbol);
 
     const sortedTokens = useMemo(() => {
-        const tokensWithRates = enhanceTokensWithRates(account.tokens, coins);
-
         return tokensWithRates.sort(sortTokensWithRates);
-    }, [account.tokens, coins]);
+    }, [tokensWithRates]);
 
     const tokenInputName = `outputs.${outputId}.token` as const;
     const amountInputName = `outputs.${outputId}.amount` as const;

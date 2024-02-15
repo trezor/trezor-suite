@@ -2,13 +2,13 @@ import BigNumber from 'bignumber.js';
 import styled, { useTheme } from 'styled-components';
 
 import { Button, variables, Icon, H3, Card } from '@trezor/components';
-import { selectCoinsLegacy } from '@suite-common/wallet-core';
+import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
 
 import { FormattedCryptoAmount, QuestionTooltip, Translation } from 'src/components/suite';
 import { useFormatters } from '@suite-common/formatters';
 import { ExchangeTrade } from 'invity-api';
 import { useSelector, useTranslation } from 'src/hooks/suite';
-import { toFiatCurrency } from '@suite-common/wallet-utils';
+import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
 import { getTagAndInfoNote } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { isQuoteError } from 'src/utils/wallet/coinmarket/exchangeUtils';
 import { useCoinmarketExchangeOffersContext } from 'src/hooks/wallet/useCoinmarketExchangeOffers';
@@ -183,8 +183,9 @@ export const ExchangeQuote = ({ className, quote }: QuoteProps) => {
     const feePerByte = useSelector(
         state => state.wallet.coinmarket.composedTransactionInfo.composed?.feePerByte,
     );
-    const coins = useSelector(selectCoinsLegacy);
     const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
+    const fiatRateKey = getFiatRateKey(account.symbol, localCurrency);
+    const fiatRate = useSelector(state => selectFiatRatesByFiatRateKey(state, fiatRateKey));
 
     const { tag, infoNote } = getTagAndInfoNote(quote);
     const { exchange, receive, receiveStringAmount } = quote;
@@ -199,15 +200,10 @@ export const ExchangeQuote = ({ className, quote }: QuoteProps) => {
     let swapFee: number | undefined;
     let swapFeeFiat: string | null = null;
     if (quote.isDex && quote.approvalGasEstimate && quote.swapGasEstimate && feePerByte) {
-        const fiatRates = coins.find(item => item.symbol === account.symbol);
         approvalFee = quote.approvalGasEstimate * Number(feePerByte) * 1e-9;
-        approvalFeeFiat = toFiatCurrency(
-            approvalFee.toString(),
-            localCurrency,
-            fiatRates?.current?.rates,
-        );
+        approvalFeeFiat = toFiatCurrency(approvalFee.toString(), localCurrency, fiatRate, 2, false);
         swapFee = quote.swapGasEstimate * Number(feePerByte) * 1e-9;
-        swapFeeFiat = toFiatCurrency(swapFee.toString(), localCurrency, fiatRates?.current?.rates);
+        swapFeeFiat = toFiatCurrency(swapFee.toString(), localCurrency, fiatRate, 2, false);
 
         if (quote.send === account.symbol.toUpperCase() && !errorQuote) {
             // if base currency, it is necessary to check that there is some value left for the fees

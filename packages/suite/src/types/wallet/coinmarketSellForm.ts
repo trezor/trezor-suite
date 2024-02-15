@@ -1,6 +1,6 @@
 import type { AppState } from 'src/types/suite';
 import type { FormState as ReactHookFormState, UseFormReturn } from 'react-hook-form';
-import type { Account, Network, CoinFiatRates } from 'src/types/wallet';
+import type { Account, Network } from 'src/types/wallet';
 import type { FeeLevel } from '@trezor/connect';
 import type { CryptoSymbol } from 'invity-api';
 import type { SellInfo } from 'src/actions/wallet/coinmarketSellActions';
@@ -12,7 +12,7 @@ import type {
 } from 'src/types/wallet/sendForm';
 import type { Option, DefaultCountryOption, AmountLimits } from './coinmarketCommonTypes';
 import type { WithSelectedAccountLoadedProps } from 'src/components/wallet';
-import { SendContextValues } from '@suite-common/wallet-types';
+import { Rate, SendContextValues } from '@suite-common/wallet-types';
 
 export const OUTPUT_AMOUNT = 'outputs.0.amount';
 export const CRYPTO_TOKEN = 'outputs.0.token';
@@ -47,7 +47,7 @@ export type SellFormContextValues = UseFormReturn<SellFormState> & {
     composeRequest: SendContextValues<SellFormState>['composeTransaction'];
     amountLimits?: AmountLimits;
     composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;
-    fiatRates?: CoinFiatRates;
+    fiatRate?: Rate;
     setAmountLimits: (limits?: AmountLimits) => void;
     quotesRequest: AppState['wallet']['coinmarket']['sell']['quotesRequest'];
     isLoading: boolean;

@@ -68,7 +68,7 @@ export type TransactionDetail = {
     totalOutput: string;
 };
 
-export interface FiatRates {
+export interface FiatRatesLegacy {
     [symbol: string]: number | undefined;
 }
 
@@ -78,7 +78,7 @@ export interface AccountBalanceHistory {
     received: string;
     sent: string;
     sentToSelf?: string; // should always be there for blockbook >= 0.3.3
-    rates: FiatRates;
+    rates: FiatRatesLegacy;
 }
 
 export interface Transaction {

@@ -16,9 +16,9 @@ import { goto } from 'src/actions/suite/routerActions';
 import { fillSendForm } from 'src/actions/suite/protocolActions';
 import { AppState } from 'src/types/suite';
 import {
-    CoinFiatRates,
     FormState,
     SendContextValues,
+    TokenAddress,
     UseSendFormState,
 } from '@suite-common/wallet-types';
 import {
@@ -26,6 +26,7 @@ import {
     getDefaultValues,
     amountToSatoshi,
     formatAmount,
+    getFiatRateKey,
 } from '@suite-common/wallet-utils';
 import { useSendFormOutputs } from './useSendFormOutputs';
 import { useSendFormFields } from './useSendFormFields';
@@ -36,6 +37,8 @@ import { PROTOCOL_TO_NETWORK } from 'src/constants/suite/protocol';
 import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
 import { useUtxoSelection } from './form/useUtxoSelection';
 import { useExcludedUtxos } from './form/useExcludedUtxos';
+import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
+import { FiatCurrencyCode } from '@suite-common/suite-config';
 
 export const SendContext = createContext<SendContextValues | null>(null);
 SendContext.displayName = 'SendContext';
@@ -46,7 +49,6 @@ export interface SendFormProps {
     localCurrency: AppState['wallet']['settings']['localCurrency'];
     fees: AppState['wallet']['fees'];
     online: boolean;
-    coins: CoinFiatRates[];
     sendRaw?: boolean;
     metadataEnabled: boolean;
     targetAnonymity?: number;
@@ -107,14 +109,12 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     const values = getValues();
     const token = values?.outputs?.[0]?.token;
 
-    const fiatRates = props.coins.find(item => {
-        const hasToken = !!token;
-
-        return (
-            item.symbol === props.selectedAccount.account.symbol &&
-            (!hasToken || item.tokenAddress === token)
-        );
-    });
+    const fiatRateKey = getFiatRateKey(
+        props.selectedAccount.account.symbol,
+        localCurrencyOption.value as FiatCurrencyCode,
+        token as TokenAddress,
+    );
+    const fiatRate = useSelector(state => selectFiatRatesByFiatRateKey(state, fiatRateKey));
 
     // register array fields (outputs array in react-hook-form)
     const outputsFieldArray = useFieldArray({
@@ -167,7 +167,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     // declare sendFormUtils, sub-hook of useSendForm
     const sendFormUtils = useSendFormFields({
         ...useFormMethods,
-        fiatRates,
+        fiatRate,
         network: state.network,
     });
 
@@ -232,7 +232,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     const { importTransaction, validateImportedTransaction } = useSendFormImport({
         network: state.network,
         tokens: state.account.tokens,
-        fiatRates,
+        fiatRate,
         localCurrencyOption,
     });
 
@@ -372,8 +372,8 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         ...state,
         ...useFormMethods,
         isLoading,
+        fiatRate,
         register,
-        fiatRates,
         outputs: outputsFieldArray.fields,
         composedLevels,
         updateContext,

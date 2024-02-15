@@ -42,7 +42,7 @@ export const Fiat = ({ output, outputId }: FiatProps) => {
     const {
         account,
         network,
-        fiatRates,
+        fiatRate,
         formState: { errors },
         clearErrors,
         getDefaultValue,
@@ -128,10 +128,9 @@ export const Fiat = ({ output, outputId }: FiatProps) => {
 
             const decimals = token ? token.decimals : network.decimals;
 
-            const amount =
-                fiatRates && fiatRates.current && fiatCurrency
-                    ? fromFiatCurrency(value, fiatCurrency, fiatRates.current.rates, decimals)
-                    : null;
+            const amount = fiatRate?.rate
+                ? fromFiatCurrency(value, fiatCurrency, fiatRate, decimals, false)
+                : null;
 
             const formattedAmount = shouldSendInSats
                 ? amountToSatoshi(amount || '0', decimals)
@@ -152,7 +151,7 @@ export const Fiat = ({ output, outputId }: FiatProps) => {
             currencyValue.value,
             token,
             network.decimals,
-            fiatRates,
+            fiatRate,
             shouldSendInSats,
             composeTransaction,
             amountInputName,

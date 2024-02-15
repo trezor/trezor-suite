@@ -11,7 +11,6 @@ import {
     getBitcoinComposeOutputs,
     getExcludedUtxos,
     getExternalComposeOutput,
-    getFiatRate,
     getInputState,
     getLamportsFromSol,
     prepareEthereumTransaction,
@@ -345,18 +344,6 @@ describe('sendForm utils', () => {
         // @ts-expect-error invalid params
         expect(calculateEthFee(null, true)).toEqual('0');
         expect(calculateEthFee('1', '2')).toEqual('2');
-    });
-
-    it('getFiatRate', () => {
-        expect(getFiatRate(undefined, 'usd')).toBe(undefined);
-        // @ts-expect-error invalid params
-        expect(getFiatRate({}, 'usd')).toBe(undefined);
-        // @ts-expect-error invalid params
-        expect(getFiatRate({ current: {} }, 'usd')).toBe(undefined);
-        // @ts-expect-error invalid params
-        expect(getFiatRate({ current: { rates: {} } }, 'usd')).toBe(undefined);
-        // @ts-expect-error invalid params
-        expect(getFiatRate({ current: { rates: { usd: 1 } } }, 'usd')).toBe(1);
     });
 
     it('getExcludedUtxos', () => {

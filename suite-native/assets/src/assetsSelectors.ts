@@ -62,10 +62,8 @@ export const selectDeviceAssetsWithBalances = memoize(
 
         return deviceNetworksWithAssets
             .map((networkSymbol: NetworkSymbol) => {
-                const fiatRate = selectFiatRatesByFiatRateKey(
-                    state,
-                    getFiatRateKey(networkSymbol, fiatCurrencyCode),
-                );
+                const fiatRateKey = getFiatRateKey(networkSymbol, fiatCurrencyCode);
+                const fiatRate = selectFiatRatesByFiatRateKey(state, fiatRateKey);
 
                 // Note: This shouldn't be happening in a selector but rather in component itself.
                 // In future, we will probably have something like `CryptoAmountToFiatFormatter` in component just using value sent from this selector.

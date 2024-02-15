@@ -3,8 +3,6 @@ import { memoize, memoizeWithArgs } from 'proxy-memoize';
 
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import {
-    AccountsRootState,
-    FiatRatesStateLegacy,
     selectAccountByKey,
     selectDeviceAccounts,
     selectTransactions,
@@ -117,89 +115,4 @@ export const selectTransactionsWithMissingRates = memoizeWithArgs(
     },
     // There could be only one active local currency at the time
     { size: 1 },
-);
-
-const ONE_WEEK_IN_MS = 7 * 24 * 60 * 60 * 1000;
-/**
- * @deprecated Use selectFiatRatesByFiatRateKey or any other selector
- */
-export const selectCoinsLegacy = memoize(
-    (state: FiatRatesRootState): FiatRatesStateLegacy['coins'] => {
-        const coins: FiatRatesStateLegacy['coins'] = [];
-
-        Object.values(state.wallet.fiat.current).forEach(rate => {
-            const coin = coins.find(
-                c => c.symbol === rate.ticker.symbol && c.tokenAddress === rate.ticker.tokenAddress,
-            );
-            if (coin && coin.current) {
-                coin.current.rates[rate.locale] = rate.rate;
-            } else {
-                coins.push({
-                    ...rate.ticker,
-                    current: {
-                        rates: {
-                            [rate.locale]: rate.rate,
-                        },
-                        ...rate.ticker,
-                        ts: rate.lastSuccessfulFetchTimestamp,
-                    },
-                });
-            }
-        });
-
-        Object.values(state.wallet.fiat.lastWeek).forEach(rate => {
-            const coin = coins.find(
-                c => c.symbol === rate.ticker.symbol && c.tokenAddress === rate.ticker.tokenAddress,
-            );
-            if (coin) {
-                const ticker = coin.lastWeek?.tickers.find(
-                    t => t.ts === rate.lastSuccessfulFetchTimestamp,
-                );
-                if (ticker) {
-                    ticker.rates[rate.locale] = rate.rate;
-                } else {
-                    coin.lastWeek?.tickers.push({
-                        rates: {
-                            [rate.locale]: rate.rate,
-                        },
-                        ts: rate.lastSuccessfulFetchTimestamp,
-                    });
-                }
-            } else {
-                coins.push({
-                    ...rate.ticker,
-                    lastWeek: {
-                        tickers: [
-                            {
-                                rates: {
-                                    [rate.locale]: rate.rate,
-                                },
-                                ts: rate.lastSuccessfulFetchTimestamp - ONE_WEEK_IN_MS,
-                            },
-                        ],
-                        ts: rate.lastSuccessfulFetchTimestamp,
-                        ...rate.ticker,
-                    },
-                });
-            }
-        });
-
-        return coins;
-    },
-);
-
-export const selectIsAccountWithRatesByKey = memoizeWithArgs(
-    (state: AccountsRootState & FiatRatesRootState, accountKey: string) => {
-        const account = selectAccountByKey(state, accountKey);
-
-        if (!account) {
-            return false;
-        }
-
-        // TODO: refactor
-        const rates = selectCoinsLegacy(state);
-
-        return !!rates.find(rate => rate.symbol === account.symbol);
-    },
-    { size: 100 },
 );

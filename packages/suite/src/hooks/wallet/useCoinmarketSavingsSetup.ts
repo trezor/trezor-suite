@@ -28,13 +28,14 @@ import {
 } from 'src/utils/wallet/coinmarket/savingsUtils';
 import { isDesktop } from '@trezor/env-utils';
 import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
-import { selectCoinsLegacy } from '@suite-common/wallet-core';
+import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
+import { getFiatRateKey } from '@suite-common/wallet-utils';
+import { FiatCurrencyCode } from '@suite-common/suite-config';
 
 export const useSavingsSetup = ({
     selectedAccount,
 }: UseSavingsSetupProps): SavingsSetupContextValues => {
     const { account } = selectedAccount;
-    const coins = useSelector(selectCoinsLegacy);
     const selectedProvider = useSelector(state => state.wallet.coinmarket.savings.selectedProvider);
     const supportedCountries = useSelector(
         state => state.wallet.coinmarket.savings.savingsInfo?.supportedCountries,
@@ -104,9 +105,10 @@ export const useSavingsSetup = ({
         savingsTrade,
     ]);
 
-    const fiatRates = coins.find(item => item.symbol === 'btc');
     // NOTE: There is only one fiat currency per provider.
     const fiatCurrency = selectedProvider?.tradedFiatCurrencies[0];
+    const fiatRateKey = getFiatRateKey('btc', fiatCurrency as FiatCurrencyCode);
+    const fiatRate = useSelector(state => selectFiatRatesByFiatRateKey(state, fiatRateKey));
     const { navigateToBuyForm } = useCoinmarketNavigation(account);
 
     const paymentFrequencyOptions = getPaymentFrequencyOptions(selectedProvider);
@@ -184,8 +186,7 @@ export const useSavingsSetup = ({
         paymentFrequency,
         fiatAmount,
         customFiatAmount,
-        fiatCurrency,
-        fiatRates?.current,
+        fiatRate?.rate,
     );
 
     const onSubmit = useCallback(

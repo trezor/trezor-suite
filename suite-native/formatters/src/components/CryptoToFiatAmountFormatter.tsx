@@ -1,6 +1,6 @@
 import { TextProps } from '@suite-native/atoms';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { FiatRates } from '@trezor/blockchain-link';
+import { FiatRatesLegacy } from '@trezor/blockchain-link';
 import { useFormatters } from '@suite-common/formatters';
 
 import { FormatterProps } from '../types';
@@ -10,7 +10,7 @@ import { useFiatFromCryptoValue } from '../hooks/useFiatFromCryptoValue';
 type CryptoToFiatAmountFormatterProps = FormatterProps<string | null> &
     TextProps & {
         network: NetworkSymbol;
-        customRates?: FiatRates;
+        customRates?: FiatRatesLegacy;
         isDiscreetText?: boolean;
     };
 

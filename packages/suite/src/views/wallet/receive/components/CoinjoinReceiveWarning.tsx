@@ -66,8 +66,9 @@ const StyledButton = styled(Button)`
 
 export const CoinjoinReceiveWarning = () => {
     const account = useSelector(selectSelectedAccount);
+    const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
     const isAccountWithRate = useSelector(state =>
-        selectIsAccountWithRatesByKey(state, account?.key || ''),
+        selectIsAccountWithRatesByKey(state, account?.key || '', localCurrency),
     );
 
     const theme = useTheme();

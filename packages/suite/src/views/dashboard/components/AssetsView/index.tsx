@@ -2,7 +2,7 @@ import styled, { useTheme } from 'styled-components';
 import BigNumber from 'bignumber.js';
 
 import { Icon, Button, LoadingContent, Card } from '@trezor/components';
-import { selectDeviceSupportedNetworks, selectCoinsLegacy } from '@suite-common/wallet-core';
+import { selectDeviceSupportedNetworks, selectFiatRates } from '@suite-common/wallet-core';
 
 import { NETWORKS } from 'src/config/wallet';
 import { DashboardSection } from 'src/components/dashboard';
@@ -17,9 +17,10 @@ import { useEnabledNetworks } from 'src/hooks/settings/useEnabledNetworks';
 import { AssetCard, AssetCardSkeleton } from './components/AssetCard';
 import { spacingsPx, typography } from '@trezor/theme';
 import { AssetFiatBalance } from '@suite-common/assets';
-import { toFiatCurrency } from '@suite-common/wallet-utils';
+import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { AssetTable, AssetTableRowType } from './components/AssetTable';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 
 const StyledCard = styled(Card)`
     flex-direction: column;
@@ -62,18 +63,22 @@ const useAssetsFiatBalances = (
     accounts: { [key: string]: Account[] },
 ) => {
     const localCurrency = useSelector(selectLocalCurrency);
-    const coins = useSelector(selectCoinsLegacy);
+    const fiatRates = useSelector(selectFiatRates);
 
     return assetsData.reduce<AssetFiatBalance[]>((acc, asset) => {
         if (!asset) return acc;
-        const fiatRates = coins.find(item => item.symbol === asset.symbol);
+
+        const fiatRateKey = getFiatRateKey(asset.symbol as NetworkSymbol, localCurrency);
+        const fiatRate = fiatRates?.[fiatRateKey];
         const fiatBalance =
             toFiatCurrency(
                 accounts[asset.symbol]
                     .reduce((balance, account) => balance + Number(account.formattedBalance), 0)
                     .toString() ?? '0',
                 localCurrency,
-                fiatRates?.current?.rates,
+                fiatRate,
+                2,
+                false,
             ) ?? '0';
 
         return [...acc, { fiatBalance, symbol: asset.symbol }];

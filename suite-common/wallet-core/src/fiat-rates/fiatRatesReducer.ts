@@ -31,7 +31,6 @@ export const prepareFiatRatesReducer = createReducerWithExtraDeps(
                         isLoading: true,
                         error: null,
                         ticker,
-                        locale: localCurrency,
                     };
                 }
                 state[rateType][fiatRateKey] = currentRate;
@@ -72,7 +71,6 @@ export const prepareFiatRatesReducer = createReducerWithExtraDeps(
                     ...currentRate,
                     isLoading: false,
                     error: action.error.message || `Failed to update ${ticker.symbol} fiat rate.`,
-                    locale: localCurrency,
                 };
             });
     },
