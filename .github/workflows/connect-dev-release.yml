@@ -1,0 +1,105 @@
+# TODO: add tests and call it [Build/Test]
+name: "[Build] connect"
+
+permissions:
+  id-token: write # for fetching the OIDC token
+  contents: read # for actions/checkout
+
+on:
+  pull_request:
+    paths:
+      - "packages/blockchain-link"
+      - "packages/connect/**"
+      - "packages/connect-common/**"
+      - "packages/connect-iframe/**"
+      - "packages/connect-web/**"
+      - "packages/transport"
+      - "packages/utxo-lib"
+      - "packages/utils"
+      - "submodules/trezor-common"
+      - "yarn.lock"
+
+env:
+  DEV_SERVER_URL: "https://dev.suite.sldev.cz"
+  CI_COMMIT_REF_NAME: ${{ steps.extract_branch.outputs.branch }}
+
+jobs:
+  build-connect-explorer:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy
+          aws-region: eu-central-1
+
+      - name: Extract branch name
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        id: extract_branch
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Build connect-web
+        run: |
+          git submodule update --init --recursive
+          yarn install --immutable
+          yarn workspace @trezor/connect-web build
+          ./packages/connect-web/scripts/check-inline-build-size.sh
+          yarn workspace @trezor/connect-iframe build
+          yarn workspace @trezor/connect-popup build
+          yarn workspace @trezor/connect-webextension build
+
+      - name: Build connect-explorer
+        env:
+          ASSET_PREFIX: /connect/${{ steps.extract_branch.outputs.branch }}
+          # TODO: maybe we don't want to build it for production for every branch
+          NODE_ENV: "production"
+          name: $CI_COMMIT_REF_NAME
+          url: $DEV_SERVER_URL/connect/$CI_COMMIT_REF_NAME
+        run: |
+          yarn install
+          yarn build:libs
+          yarn workspace @trezor/connect-explorer build
+
+      - name: Build connect-examples webextension
+        run: |
+          node ./packages/connect-examples/update-webextensions.js --trezor-connect-src "https://suite.corp.sldev.cz/connect/${CI_COMMIT_REF_NAME}/"
+          node ./packages/connect-examples/update-webextensions.js --trezor-connect-src "https://suite.corp.sldev.cz/connect/${CI_COMMIT_REF_NAME}/" --build-folder build-legacy --npm-src "https://connect.trezor.io/9/trezor-connect.js"
+
+      - name: Build connect-explorer-webextension
+        run: |
+          yarn workspace @trezor/connect-explorer build:webextension
+
+      # this step should upload build result to s3 bucket dev.suite.sldev.cz using awscli
+      - name: Upload connect-explorer to dev.suite.sldev.cz
+        env:
+          DEPLOY_PATH: s3://dev.suite.sldev.cz/connect/${{ steps.extract_branch.outputs.branch }}
+        run: |
+          aws s3 sync --delete ./packages/connect-iframe/build ${DEPLOY_PATH}
+          aws s3 sync --delete ./packages/connect-popup/build ${DEPLOY_PATH}
+          aws s3 sync --delete ./packages/connect-web/build ${DEPLOY_PATH}
+          aws s3 sync --delete ./packages/connect-explorer/build ${DEPLOY_PATH}
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-artifacts
+          path: |
+            - packages/connect-iframe/build
+            - packages/connect-web/build
+            - packages/connect-popup/build
+            - packages/connect-examples/webextension-mv2/build
+            - packages/connect-examples/webextension-mv2/build-legacy
+            - packages/connect-examples/webextension-mv3/build
+            - packages/connect-examples/webextension-mv3/build-legacy
+            - packages/connect-examples/webextension-mv3-sw/build
+            - packages/connect-explorer-webextension/build
+            - packages/connect-explorer/build-webextension
