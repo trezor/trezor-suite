@@ -8,8 +8,8 @@
     "scripts": {
         "type-check": "yarn g:tsc --build",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "build:js": "rimraf ./dist && yarn esbuild ./src/bin.ts --bundle --outfile=dist/bin.js --platform=node --target=node18 --external:usb",
-        "build:bin": "rimraf -rf build && yarn pkg ./dist/bin.js --config package.json",
+        "build:js": "yarn g:rimraf ./dist && yarn esbuild ./src/bin.ts --bundle --outfile=dist/bin.js --platform=node --target=node18 --external:usb",
+        "build:bin": "yarn g:rimraf -rf build && yarn pkg ./dist/bin.js --config package.json",
         "build": "yarn build:js && yarn build:bin"
     },
     "devDependencies": {
