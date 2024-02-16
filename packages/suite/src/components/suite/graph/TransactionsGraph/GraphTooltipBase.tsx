@@ -57,7 +57,7 @@ const CustomTooltipWrapper = styled.div<WrapperProps>`
         getTooltipXPosition(positionX, boxWidth)}, -90px);
     line-height: 1.5;
 
-    ::after {
+    &::after {
         position: absolute;
         content: '';
         top: 100%;

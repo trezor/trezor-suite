@@ -22,7 +22,7 @@ const Container = styled.div`
 const DescreetContainer = styled(NavigationItemBase)`
     width: 100%;
 
-    :hover {
+    &:hover {
         background: ${({ theme }) => theme.backgroundTertiaryPressedOnElevation0};
     }
 `;
@@ -57,8 +57,8 @@ const TorToggleContainer = styled.div`
     position: relative;
     width: 100%;
 
-    :hover,
-    :focus-within {
+    &:hover,
+    &:focus-within {
         ${StyledCheckIcon} {
             background-color: ${({ theme }) => theme.backgroundTertiaryPressedOnElevation0};
         }

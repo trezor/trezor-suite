@@ -78,19 +78,19 @@ export const baseInputStyle = css<BaseInputProps>`
     outline: none;
     font-variant-numeric: slashed-zero tabular-nums;
 
-    ::placeholder {
+    &::placeholder {
         color: ${({ theme }) => theme.textSubdued};
     }
 
-    :read-only:not(:disabled) {
-        background: ${mapElevationToBackground};
-        color: ${({ theme }) => theme.textDisabled};
-    }
-
-    :focus,
-    :focus-within {
+    &:focus,
+    &:focus-within {
         border-color: ${({ theme }) =>
             theme.borderOnElevation0}; /* Todo: make it based on elevation */
+    }
+
+    &:read-only:not(:disabled) {
+        background: ${mapElevationToBackground};
+        color: ${({ theme }) => theme.textDisabled};
     }
 
     ${({ disabled }) =>

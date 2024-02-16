@@ -22,7 +22,7 @@ const MoreIcon = styled(IconButton)<{ $isToggled: boolean }>`
     background: ${({ isDisabled, $isToggled, theme }) =>
         !isDisabled && $isToggled && theme.backgroundNeutralSubdued};
 
-    :hover {
+    &:hover {
         background: ${({ theme, $isToggled }) => $isToggled && theme.backgroundNeutralSubdued};
     }
 `;

@@ -18,14 +18,14 @@ describe('makeTypedSelectorsPlugin', () => {
             plugin({
                 fontSize: '12px',
                 selectors: {
-                    ':hover': {
+                    '&:hover': {
                         fontSize: '14px',
                     },
                 },
             }),
         ).toEqual({
             fontSize: '12px',
-            ':hover': {
+            '&:hover': {
                 fontSize: '14px',
             },
         });
@@ -36,10 +36,10 @@ describe('makeTypedSelectorsPlugin', () => {
             plugin({
                 fontSize: '12px',
                 selectors: {
-                    ':hover': {
+                    '&:hover': {
                         fontSize: '14px',
                         selectors: {
-                            ':active': {
+                            '&:active': {
                                 fontSize: '16px',
                             },
                         },
@@ -48,9 +48,9 @@ describe('makeTypedSelectorsPlugin', () => {
             }),
         ).toEqual({
             fontSize: '12px',
-            ':hover': {
+            '&:hover': {
                 fontSize: '14px',
-                ':active': {
+                '&:active': {
                     fontSize: '16px',
                 },
             },

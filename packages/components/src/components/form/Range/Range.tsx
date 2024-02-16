@@ -32,7 +32,7 @@ const thumb = css<Pick<RangeProps, 'disabled'>>`
     ${({ disabled }) =>
         !disabled &&
         css`
-            :active {
+            &:active {
                 box-shadow: 0 0 2px 0 rgb(0 0 0 / 50%);
                 cursor: grabbing;
             }
@@ -53,7 +53,7 @@ const Input = styled.input<Pick<RangeProps, 'disabled' | 'trackStyle'>>`
     appearance: none;
     cursor: ${({ disabled }) => !disabled && 'pointer'};
 
-    ::-webkit-slider-runnable-track {
+    &::-webkit-slider-runnable-track {
         ${track};
     }
 
@@ -69,8 +69,16 @@ const Input = styled.input<Pick<RangeProps, 'disabled' | 'trackStyle'>>`
         ${thumb};
     }
 
-    :focus-visible {
-        ::-webkit-slider-thumb {
+    &::-moz-range-track {
+        ${track}
+    }
+
+    &::-moz-range-thumb {
+        ${thumb};
+    }
+
+    &:focus-visible {
+        &::-webkit-slider-thumb {
             ${focusStyle}
         }
 

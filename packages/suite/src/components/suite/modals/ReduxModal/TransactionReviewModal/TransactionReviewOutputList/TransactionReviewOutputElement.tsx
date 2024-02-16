@@ -52,7 +52,7 @@ const MultiIndicatorWrapper = styled.div<{ linesCount: number }>`
     position: relative;
     z-index: ${zIndices.base};
 
-    ::after {
+    &::after {
         z-index: -2;
         width: 10px;
         left: 10px;
@@ -65,7 +65,7 @@ const MultiIndicatorWrapper = styled.div<{ linesCount: number }>`
         display: block;
     }
 
-    ::before {
+    &::before {
         z-index: -1;
         width: 20px;
         background: ${({ theme }) => theme.BG_WHITE};

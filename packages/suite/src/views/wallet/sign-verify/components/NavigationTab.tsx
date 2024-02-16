@@ -17,7 +17,7 @@ const NavLink = styled.div<{ active?: boolean }>`
     border-bottom: 2px solid ${({ active, theme }) => (active ? theme.BG_GREEN : 'transparent')};
     transition: border-color 0.1s;
 
-    :hover {
+    &:hover {
         border-bottom: 2px solid ${({ theme, active }) => !active && theme.STROKE_GREY};
     }
 

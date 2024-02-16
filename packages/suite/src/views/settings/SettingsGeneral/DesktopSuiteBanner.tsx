@@ -39,12 +39,12 @@ const CloseButton = styled(Icon)`
         fill: ${({ theme }) => theme.BG_WHITE};
     }
 
-    :hover {
+    &:hover {
         background: ${({ theme }) => theme.BG_GREEN_HOVER};
         opacity: 0.7;
     }
 
-    :active {
+    &:active {
         opacity: 0.9;
     }
 `;
@@ -76,8 +76,8 @@ const StyledButton = styled(Button)`
     color: ${({ theme }) => theme.TYPE_GREEN};
     transition: opacity 0.2s;
 
-    :hover,
-    :focus {
+    &:hover,
+    &:focus {
         background: ${({ theme }) => theme.BG_WHITE};
         opacity: 0.8;
     }

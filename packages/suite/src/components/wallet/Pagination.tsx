@@ -31,7 +31,7 @@ const PageItem = styled.div<{ isActive?: boolean }>`
     ${({ isActive, theme }) =>
         !isActive &&
         css`
-            :hover {
+            &:hover {
                 background: ${theme.backgroundTertiaryDefaultOnElevation0};
                 color: ${theme.textOnTertiary};
             }

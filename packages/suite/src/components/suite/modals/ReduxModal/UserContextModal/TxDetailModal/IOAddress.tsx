@@ -12,7 +12,7 @@ const IconWrapper = styled.div`
     background-color: ${({ theme }) => theme.iconSubdued};
     height: 14px;
 
-    :hover {
+    &:hover {
         opacity: 0.7;
     }
 `;
@@ -45,8 +45,8 @@ const TextOverflowContainer = styled.div<{ shouldAllowCopy?: boolean }>`
                 ${onHoverTextOverflowContainerHover}
             }
 
-            :hover,
-            :focus {
+            &:hover,
+            &:focus {
                 ${onHoverTextOverflowContainerHover}
             }
         `}

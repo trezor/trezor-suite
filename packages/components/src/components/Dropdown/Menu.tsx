@@ -106,7 +106,7 @@ const MenuItemContainer = styled.li<MenuItemsProps & { elevation: Elevation }>`
         css`
             margin-top: ${spacingsPx.md};
 
-            ::after {
+            &::after {
                 position: absolute;
                 width: 100%;
                 top: -${spacingsPx.xs};

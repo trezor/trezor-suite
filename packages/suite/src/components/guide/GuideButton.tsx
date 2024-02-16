@@ -23,7 +23,7 @@ const Wrapper = styled.button<{ $isGuideOpen: boolean }>`
     transition: opacity 0.3s ease 0.3s;
     opacity: ${({ $isGuideOpen }) => ($isGuideOpen ? 0 : 1)};
 
-    :focus {
+    &:focus {
         transition: opacity 0.1s ease; /* hide button faster on guide open to prevent overlap */
     }
 

@@ -66,7 +66,7 @@ const Container = styled.button<{
     cursor: pointer;
     appearance: none;
 
-    :focus-visible {
+    &:focus-visible {
         ${({ theme }) => getHoverStyle(theme.BG_GREY, theme.TYPE_LIGHTER_GREY)}
     }
 
@@ -79,7 +79,7 @@ const Container = styled.button<{
             background: ${theme.BG_LIGHT_GREEN};
             color: ${theme.TYPE_GREEN};
 
-            :focus-visible {
+            &:focus-visible {
                 ${getHoverStyle(theme.BG_LIGHT_RED, theme.TYPE_RED, theme.TYPE_RED)}
             }
 

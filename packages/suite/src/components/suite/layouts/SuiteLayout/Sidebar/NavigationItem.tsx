@@ -45,7 +45,7 @@ const Container = styled(NavigationItemBase)<
                   }
               `
             : css`
-                  :hover {
+                  &:hover {
                       color: ${theme.textDefault};
 
                       path {
