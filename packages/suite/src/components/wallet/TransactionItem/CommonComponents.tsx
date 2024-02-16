@@ -36,7 +36,7 @@ export const Content = styled.div`
     padding-top: 10px;
 `;
 
-export const Description = styled(props => <HiddenPlaceholder {...props} />)`
+export const Description = styled(HiddenPlaceholder)`
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};

@@ -8,7 +8,7 @@ import {
     useFiatFromCryptoValueParams,
 } from 'src/hooks/suite/useFiatFromCryptoValue';
 
-const StyledHiddenPlaceholder = styled(props => <HiddenPlaceholder {...props} />)`
+const StyledHiddenPlaceholder = styled(HiddenPlaceholder)`
     font-variant-numeric: tabular-nums;
 `;
 
@@ -69,17 +69,23 @@ export const FiatValue = ({
     const { FiatAmountFormatter } = useFormatters();
     const value = shouldConvert ? fiatAmount : amount;
 
-    const WrapperComponent = disableHiddenPlaceholder ? SameWidthNums : StyledHiddenPlaceholder;
     if (value) {
-        const fiatValueComponent = (
-            <WrapperComponent className={className}>
+        const fiatValueContent = (
+            <>
                 {showApproximationIndicator && <>≈ </>}
                 <FiatAmountFormatter
                     currency={targetCurrency.toUpperCase()}
                     value={value}
                     {...fiatAmountFormatterOptions}
                 />
-            </WrapperComponent>
+            </>
+        );
+        const fiatValueComponent = disableHiddenPlaceholder ? (
+            <SameWidthNums className={className}>{fiatValueContent}</SameWidthNums>
+        ) : (
+            <StyledHiddenPlaceholder className={className}>
+                {fiatValueContent}
+            </StyledHiddenPlaceholder>
         );
 
         const fiatRateValue = ratesSource?.[targetCurrency] ?? null;

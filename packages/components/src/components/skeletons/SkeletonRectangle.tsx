@@ -19,7 +19,7 @@ const StyledSkeletonRectangle = styled.div<SkeletonRectangleProps & { elevation:
 
     ${props =>
         props.animate &&
-        css`
+        css<{ elevation: Elevation }>`
             ${shimmerEffect}
         `}
 `;
