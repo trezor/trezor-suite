@@ -18,7 +18,9 @@ const screenContentStyle = prepareNativeStyle(() => ({
 }));
 
 const animationStyle = prepareNativeStyle(() => ({
+    // Both height and width has to be set https://github.com/lottie-react-native/lottie-react-native/blob/master/MIGRATION-5-TO-6.md#updating-the-style-props
     height: ANIMATION_HEIGHT,
+    width: '100%',
 }));
 
 export const ConnectAndUnlockDeviceScreen = () => {
