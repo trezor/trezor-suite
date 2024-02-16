@@ -9645,7 +9645,6 @@ __metadata:
   resolution: "@trezor/request-manager@workspace:packages/request-manager"
   dependencies:
     "@trezor/utils": "workspace:*"
-    cross-fetch: "npm:^4.0.0"
     socks-proxy-agent: "npm:6.1.1"
     ts-node: "npm:^10.9.1"
     ws: "npm:^8.16.0"
@@ -9811,7 +9810,6 @@ __metadata:
     "@trezor/utils": "workspace:*"
     "@types/electron-localshortcut": "npm:^3.1.3"
     chalk: "npm:^4.1.2"
-    cross-fetch: "npm:^4.0.0"
     electron: "npm:27.0.4"
     electron-localshortcut: "npm:^3.2.1"
     electron-store: "npm:^8.1.0"
@@ -10136,8 +10134,6 @@ __metadata:
 "@trezor/urls@workspace:*, @trezor/urls@workspace:packages/urls":
   version: 0.0.0-use.local
   resolution: "@trezor/urls@workspace:packages/urls"
-  dependencies:
-    cross-fetch: "npm:^4.0.0"
   languageName: unknown
   linkType: soft
 
@@ -32135,7 +32131,6 @@ __metadata:
     "@typescript-eslint/eslint-plugin": "npm:^6.21.0"
     "@typescript-eslint/parser": "npm:^6.21.0"
     babel-jest: "npm:29.7.0"
-    cross-fetch: "npm:^4.0.0"
     eslint: "npm:^8.56.0"
     eslint-plugin-chai-friendly: "npm:^0.7.4"
     eslint-plugin-cypress: "npm:^2.15.1"

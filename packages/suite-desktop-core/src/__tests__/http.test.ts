@@ -1,5 +1,3 @@
-import fetch from 'cross-fetch';
-
 import { createHttpReceiver } from '../libs/http-receiver';
 import { fixtures } from '../__fixtures__/http';
 import { Logger } from '../libs/logger';
