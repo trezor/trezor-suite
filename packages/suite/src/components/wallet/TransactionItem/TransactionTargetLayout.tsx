@@ -34,7 +34,7 @@ const TargetAmountsWrapper = styled.div<{ paddingBottom?: boolean }>`
     padding-bottom: ${({ paddingBottom }) => (paddingBottom ? '30px' : '10px')};
 `;
 
-const StyledHiddenPlaceholder = styled(props => <HiddenPlaceholder {...props} />)`
+const StyledHiddenPlaceholder = styled(HiddenPlaceholder)`
     /* padding: 8px 0px; row padding */
     display: block;
     overflow: hidden;

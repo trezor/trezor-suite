@@ -26,7 +26,11 @@ const Wrapper = styled.div<{ hasBottomPadding: boolean }>`
         hasBottomPadding ? `${BOTTOM_TEXT_MIN_HEIGHT}px` : '0'};
 `;
 
-const TextareaWrapper = styled(InputWrapper)`
+const TextareaWrapper = styled(InputWrapper)<{
+    disabled?: boolean;
+    elevation: Elevation;
+    inputState?: InputState;
+}>`
     ${baseInputStyle}
     padding: ${spacingsPx.xl} 0 ${spacingsPx.md};
 
