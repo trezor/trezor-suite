@@ -17,7 +17,7 @@ export const AppVersion = () => (
         <ProductionDebug>
             {S.isNotEmpty(getCommitHash()) && (
                 <Text variant="hint" color="textDisabled">
-                    Last commit hash: {getCommitHash()}
+                    Last commit hash: {getCommitHash().slice(-7)}
                 </Text>
             )}
         </ProductionDebug>

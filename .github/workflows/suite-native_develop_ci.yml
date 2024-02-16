@@ -38,6 +38,7 @@ jobs:
           --profile develop
           --non-interactive
           --no-wait
+          --message ${{ github.event.head_commit.message }} ${{ github.sha }}
         working-directory: suite-native/app
       - name: Build on EAS iOS
         run: eas build
@@ -46,4 +47,5 @@ jobs:
           --non-interactive
           --auto-submit
           --no-wait
+          --message ${{ github.event.head_commit.message }} ${{ github.sha }}
         working-directory: suite-native/app

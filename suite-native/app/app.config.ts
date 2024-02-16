@@ -147,7 +147,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
             ['./plugins/withEnvFile.js', { buildType }],
         ],
         extra: {
-            commitHash: process.env.EAS_BUILD_GIT_COMMIT_HASH?.substring(-6) || '',
+            commitHash: process.env.EAS_BUILD_GIT_COMMIT_HASH || '',
             eas: {
                 projectId,
             },
