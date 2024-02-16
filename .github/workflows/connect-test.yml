@@ -20,17 +20,14 @@ jobs:
   # todo: meaning of 'build' job is questionable. only 'web' tests use part of this jobs output
   build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [18.x]
     steps:
       - uses: actions/checkout@v3
         with:
           submodules: recursive
-      - name: node ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+      - name: Setup node
+        uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version-file: ".nvmrc"
           cache: yarn
           cache-dependency-path: "**/yarn.lock"
       - run: sed -i "/\"node\"/d" package.json
