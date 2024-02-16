@@ -24,7 +24,7 @@ const PreviousCategoryLink = styled(TrezorLink)`
     transition: ${({ theme }) =>
         `background ${theme.HOVER_TRANSITION_TIME} ${theme.HOVER_TRANSITION_EFFECT}`};
 
-    :hover {
+    &:hover {
         color: ${({ theme }) => darken(theme.HOVER_DARKEN_FILTER, theme.TYPE_LIGHT_GREY)};
     }
 `;
@@ -39,7 +39,7 @@ const CategoryLink = styled(TrezorLink)`
     transition: ${({ theme }) =>
         `background ${theme.HOVER_TRANSITION_TIME} ${theme.HOVER_TRANSITION_EFFECT}`};
 
-    :hover {
+    &:hover {
         color: ${({ theme }) => darken(theme.HOVER_DARKEN_FILTER, theme.TYPE_GREEN)};
     }
 `;

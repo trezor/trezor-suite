@@ -78,7 +78,7 @@ const StyledCheckbox = styled(Checkbox)`
 const StyledButton = styled(Button)`
     margin: ${spacingsPx.xl} auto 0;
 
-    :disabled {
+    &:disabled {
         background: ${({ theme }) => theme.STROKE_GREY};
     }
 `;

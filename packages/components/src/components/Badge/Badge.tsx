@@ -76,7 +76,7 @@ const Container = styled.button<BadgeContainerProps>`
     background: ${mapVariantToBackgroundColor};
     transition: ${focusStyleTransition};
 
-    :disabled {
+    &:disabled {
         background: ${({ theme }) => theme.backgroundNeutralSubtleOnElevation0};
     }
 
@@ -85,7 +85,7 @@ const Container = styled.button<BadgeContainerProps>`
     ${({ theme, hasAlert }) =>
         hasAlert &&
         css`
-            :not(:focus-visible) {
+            &:not(:focus-visible) {
                 border: 1px solid ${theme.borderAlertRed};
                 box-shadow: 0 0 0 1px ${theme.borderAlertRed};
             }

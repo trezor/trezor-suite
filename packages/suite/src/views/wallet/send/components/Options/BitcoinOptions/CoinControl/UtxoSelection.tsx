@@ -69,8 +69,8 @@ const Wrapper = styled.div<{ isDisabled: boolean }>`
             cursor: default;
         `};
 
-    :hover,
-    :focus-within {
+    &:hover,
+    &:focus-within {
         ${({ isDisabled }) =>
             !isDisabled &&
             css`
@@ -120,8 +120,8 @@ const StyledCryptoAmount = styled(FormattedCryptoAmount)`
 const TransactionDetailButton = styled(TextButton)`
     color: ${({ theme }) => theme.textSubdued};
 
-    :hover,
-    :focus {
+    &:hover,
+    &:focus {
         color: ${({ theme }) => theme.textOnTertiary};
     }
 `;

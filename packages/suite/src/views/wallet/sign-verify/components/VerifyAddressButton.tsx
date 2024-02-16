@@ -34,7 +34,7 @@ const ButtonWrapper = styled.button`
     pointer-events: all;
     cursor: pointer;
 
-    :hover {
+    &:hover {
         > ${RevealText} {
             max-width: 100px;
             opacity: 1;

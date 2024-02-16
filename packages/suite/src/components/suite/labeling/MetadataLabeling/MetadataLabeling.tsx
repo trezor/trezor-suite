@@ -32,7 +32,7 @@ const LabelDefaultValue = styled(LabelValue)`
     transition-timing-function: ease-out;
     opacity: 0;
 
-    ::before {
+    &::before {
         content: '|';
         font-size: 14px;
         line-height: 14px;
@@ -69,7 +69,7 @@ const SuccessButton = styled(Button)`
     background-color: ${({ theme }) => theme.backgroundPrimarySubtleOnElevation0};
     color: ${({ theme }) => theme.textPrimaryDefault};
 
-    :hover {
+    &:hover {
         color: ${({ theme }) => theme.textPrimaryDefault};
         background-color: ${({ theme }) => theme.backgroundPrimarySubtleOnElevation0};
     }
@@ -82,7 +82,7 @@ const LabelContainer = styled.div`
     justify-content: flex-start;
     overflow: hidden;
 
-    :hover {
+    &:hover {
         ${ActionButton} {
             visibility: visible;
             width: auto;

@@ -18,7 +18,7 @@ const StyledAssetTableRowGrid = styled.div<{ elevation: Elevation }>`
 
                   ${styledHoverOnParentOfArrowIcon}
 
-                  :hover {
+                  &:hover {
                       background: ${mapElevationToBackground({
                           theme,
                           elevation: nextElevation[elevation],

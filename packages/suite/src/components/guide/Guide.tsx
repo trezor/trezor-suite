@@ -40,8 +40,8 @@ const FeedbackButton = styled.button`
     position: relative;
     z-index: ${zIndices.guide};
 
-    :hover,
-    :focus {
+    &:hover,
+    &:focus {
         background: ${({ theme }) => theme.backgroundTertiaryPressedOnElevation1};
     }
 

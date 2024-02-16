@@ -39,7 +39,7 @@ const Explanation = styled.i`
 const AgreeButton = styled(Button)`
     background: ${({ theme }) => theme.TYPE_DARK_ORANGE};
 
-    :hover {
+    &:hover {
         background: ${({ theme }) => transparentize(0.2, theme.TYPE_DARK_ORANGE)};
     }
 `;

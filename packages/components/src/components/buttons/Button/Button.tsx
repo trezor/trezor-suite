@@ -43,7 +43,7 @@ export const ButtonContainer = styled.button<ButtonContainerProps>`
     ${getFocusShadowStyle()}
     ${({ variant, elevation }) => getVariantStyle(variant, elevation)}
 
-    :disabled {
+    &:disabled {
         background: ${({ theme }) => theme.BG_GREY};
         color: ${({ theme }) => theme.textDisabled};
         pointer-events: none;

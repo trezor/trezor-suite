@@ -46,7 +46,7 @@ const DisableButton = styled(Button)`
     background: ${({ theme }) => theme.BG_WHITE};
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 
-    :hover {
+    &:hover {
         background: ${({ theme }) => theme.BG_LIGHT_RED};
     }
 `;

@@ -84,7 +84,7 @@ const LinkButton = styled(Button)`
     align-items: center;
     text-decoration: underline;
 
-    :hover {
+    &:hover {
         opacity: 0.8;
     }
 `;

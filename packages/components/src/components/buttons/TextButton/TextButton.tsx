@@ -37,7 +37,7 @@ const TextButtonContainer = styled.button<{
         transition: fill 0.1s ease-out;
     }
 
-    :hover {
+    &:hover {
         color: ${({ theme }) => theme.textPrimaryPressed};
 
         path {
@@ -45,7 +45,7 @@ const TextButtonContainer = styled.button<{
         }
     }
 
-    :disabled {
+    &:disabled {
         color: ${({ theme }) => theme.textDisabled};
         cursor: default;
 
