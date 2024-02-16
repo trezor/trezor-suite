@@ -170,6 +170,15 @@ export const StellarInflationOperation = Type.Object({
     source: Type.Optional(Type.String()), // Proto: "source_account"
 });
 
+export type StellarClaimClaimableBalanceOperation = Static<
+    typeof StellarClaimClaimableBalanceOperation
+>;
+export const StellarClaimClaimableBalanceOperation = Type.Object({
+    type: Type.Literal('claimClaimableBalance'), // Proto: "StellarClaimClaimableBalanceOp"
+    source: Type.Optional(Type.String()), // Proto: "source_account"
+    balanceId: Type.String(), // Proto: "balance_id"
+});
+
 export type StellarOperation = Static<typeof StellarOperation>;
 export const StellarOperation = Type.Union([
     StellarCreateAccountOperation,
@@ -186,6 +195,7 @@ export const StellarOperation = Type.Union([
     StellarInflationOperation,
     StellarManageDataOperation,
     StellarBumpSequenceOperation,
+    StellarClaimClaimableBalanceOperation,
 ]);
 
 export type StellarTransaction = Static<typeof StellarTransaction>;
@@ -303,5 +313,11 @@ export const StellarOperationMessage = Type.Union([
             type: Type.Literal('StellarBumpSequenceOp'),
         }),
         PROTO.StellarBumpSequenceOp,
+    ]),
+    Type.Intersect([
+        Type.Object({
+            type: Type.Literal('StellarClaimClaimableBalanceOp'),
+        }),
+        PROTO.StellarClaimClaimableBalanceOp,
     ]),
 ]);

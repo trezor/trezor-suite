@@ -32,7 +32,7 @@ jobs:
       - run: yarn install
       # todo: ideally reuse libs from build step
       - run: yarn build:libs
-      - run: './docker/docker-connect-test.sh node -p "${{ inputs.test-pattern }}" -f 2-latest -i ${{ inputs.methods }}'
+      - run: './docker/docker-connect-test.sh node -p "${{ inputs.test-pattern }}" -f 2-main -i ${{ inputs.methods }}'
 
   web:
     name: web
@@ -59,4 +59,4 @@ jobs:
           path: packages/connect-web/build
       - name: "Echo download path"
         run: echo ${{steps.download.outputs.download-path}}
-      - run: './docker/docker-connect-test.sh web -p "${{ inputs.test-pattern }}" -f 2-latest -i ${{ inputs.methods }}'
+      - run: './docker/docker-connect-test.sh web -p "${{ inputs.test-pattern }}" -f 2-main -i ${{ inputs.methods }}'

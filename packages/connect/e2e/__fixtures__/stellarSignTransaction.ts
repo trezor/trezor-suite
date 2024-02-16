@@ -127,6 +127,12 @@ const transformOperation = (op: any) => {
                     weight: op.signer_weight,
                 },
             };
+        case 'StellarClaimClaimableBalanceOp':
+            return {
+                type: 'claimClaimableBalance',
+                source: op.source_account,
+                balanceId: op.balance_id,
+            };
         default:
             return [];
     }
