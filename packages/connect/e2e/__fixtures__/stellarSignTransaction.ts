@@ -127,6 +127,12 @@ const transformOperation = (op: any) => {
                     weight: op.signer_weight,
                 },
             };
+        case 'StellarClaimClaimableBalanceOp':
+            return {
+                type: 'claimClaimableBalance',
+                source: op.source_account,
+                balanceId: op.balance_id,
+            };
         default:
             return [];
     }
@@ -159,6 +165,8 @@ const legacyResultsMap: Record<string, LegacyResult[]> = {
             payload: false,
         },
     ],
+    // newly added message in 2.6.5
+    StellarClaimClaimableBalanceOp: [{ rules: ['<2.6.5'], payload: false }],
 };
 
 export default {
