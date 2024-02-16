@@ -26,7 +26,7 @@
         "react-redux": "8.0.7",
         "react-router": "^5.2.0",
         "react-router-dom": "^5.2.0",
-        "styled-components": "^5.3.10",
+        "styled-components": "^6.1.8",
         "worker-loader": "^3.0.8"
     },
     "devDependencies": {
@@ -47,7 +47,6 @@
         "@types/react-helmet": "^6.1.11",
         "@types/react-router": "^5.1.20",
         "@types/react-router-dom": "^5.1.7",
-        "@types/styled-components": "^5.1.34",
         "chrome-remote-interface": "^0.33.0",
         "cypress": "^13.6.4",
         "cypress-file-upload": "^5.0.8",
