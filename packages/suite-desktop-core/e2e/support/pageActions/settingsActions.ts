@@ -52,6 +52,10 @@ class SettingsActions {
         await waitForDataTestSelector(window, '@modal');
     }
 
+    async enableCoin(window: Page, desiredNetwork: NetworkSymbol) {
+        await window.getByTestId(`@settings/wallet/network/${desiredNetwork}`).click();
+    }
+
     async changeNetworkBackend(
         window: Page,
         desiredNetworkBackend: BackendType,
@@ -66,6 +70,11 @@ class SettingsActions {
         const electrumAddressInput = await window.getByTestId('@settings/advance/url');
         await electrumAddressInput.fill(backendUrl);
         await window.getByTestId('@settings/advance/button/save').click();
+    }
+
+    async closeSettings(window: Page) {
+        await window.getByTestId('@settings/menu/close').click();
+        await window.getByTestId('@settings/menu/title').waitFor({ state: 'detached' });
     }
 }
 
