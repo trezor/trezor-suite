@@ -9,8 +9,5 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "type-check": "yarn g:tsc --build",
         "test:e2e": "yarn g:jest -c ../../jest.config.base.js"
-    },
-    "devDependencies": {
-        "cross-fetch": "^4.0.0"
     }
 }

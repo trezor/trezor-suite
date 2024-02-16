@@ -1,7 +1,6 @@
 import path from 'path';
 import http from 'http';
 import WebSocket from 'ws';
-import fetch from 'cross-fetch';
 
 import { TorController, createInterceptor } from '../src';
 import { torRunner } from './torRunner';
@@ -267,7 +266,7 @@ describe('Interceptor', () => {
         it('POST request headers', async () => {
             const { serverUrl, host } = serverInit;
 
-            // default headers added by cross-fetch and underlying libs
+            // default headers
             await expect(
                 fetchHeaders(serverUrl, {
                     method: 'POST',
@@ -305,7 +304,7 @@ describe('Interceptor', () => {
         it('GET request headers', async () => {
             const { serverUrl, host } = serverInit;
 
-            // default headers added by cross-fetch and underlying libs
+            // default headers
             await expect(
                 fetchHeaders(serverUrl, {
                     method: 'GET',

@@ -1,5 +1,3 @@
-import fetch from 'cross-fetch';
-
 import * as URLS from '../src/urls';
 
 // Excluded urls
