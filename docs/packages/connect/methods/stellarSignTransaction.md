@@ -19,11 +19,11 @@ const result = await TrezorConnect.stellarSignTransaction(params);
 
 ### Stellar SDK compatibility
 
-`stellar-sdk` is not a part of `trezor-connect` repository.
+`@stellar/stellar-sdk` is not a part of `trezor-connect` repository.
 To transform `StellarSDK.Transaction` object into `TrezorConnect.StellarTransaction`, install [@trezor/connect-plugin-stellar](https://github.com/trezor/trezor-suite/tree/develop/packages/connect-plugin-stellar) into your project.
 
 ```javascript
-import StellarSDK from 'stellar-sdk';
+import * as StellarSDK from '@stellar/stellar-sdk';
 import transformTrezorTransaction from '<path-to-plugin>/index.js';
 
 const tx = new StellarSdk.TransactionBuilder(...);
