@@ -84,7 +84,7 @@ const linkStyle = css`
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     cursor: pointer;
 
-    :hover {
+    &:hover {
         color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
         text-decoration: underline;
     }

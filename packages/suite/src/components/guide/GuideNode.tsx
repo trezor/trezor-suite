@@ -24,8 +24,8 @@ const NodeButton = styled.button`
     transition: ${({ theme }) =>
         `background ${theme.HOVER_TRANSITION_TIME} ${theme.HOVER_TRANSITION_EFFECT}`};
 
-    :hover,
-    :focus {
+    &:hover,
+    &:focus {
         background: ${({ theme }) => theme.backgroundTertiaryPressedOnElevation1};
     }
 `;

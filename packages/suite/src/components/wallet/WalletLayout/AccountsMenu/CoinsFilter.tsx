@@ -17,7 +17,7 @@ const StyledCoinLogo = styled(CoinLogo)<{ isSelected?: boolean }>`
     filter: ${({ isSelected }) => !isSelected && 'grayscale(100%)'};
     cursor: pointer;
 
-    :hover {
+    &:hover {
         outline: 2px solid ${({ theme }) => theme.backgroundSecondaryDefault};
     }
 `;
@@ -31,7 +31,7 @@ const Container = styled.div`
     margin: ${spacingsPx.xxs} ${spacingsPx.xs} ${spacingsPx.xs} 48px;
     z-index: 2;
 
-    :hover {
+    &:hover {
         ${StyledCoinLogo} {
             filter: none;
         }

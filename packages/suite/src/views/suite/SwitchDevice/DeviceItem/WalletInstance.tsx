@@ -53,7 +53,7 @@ const Col = styled.div<{ grow?: number; centerItems?: boolean }>`
     flex-direction: column;
     align-items: ${({ centerItems }) => (centerItems ? 'center' : 'flex-start')};
 
-    :first-child {
+    &:first-child {
         cursor: pointer;
     }
 `;

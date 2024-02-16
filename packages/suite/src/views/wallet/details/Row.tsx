@@ -8,7 +8,7 @@ const Container = styled.div`
     padding-bottom: ${spacingsPx.md};
     justify-content: space-between;
 
-    :not(:first-child) {
+    &:not(:first-child) {
         padding-top: ${spacingsPx.md};
         border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
     }

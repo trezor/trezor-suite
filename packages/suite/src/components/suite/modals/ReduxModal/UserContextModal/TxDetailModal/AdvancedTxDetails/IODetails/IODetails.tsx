@@ -55,7 +55,7 @@ const StyledCollapsibleBox = styled(CollapsibleBox)<{ elevation: Elevation }>`
         border-radius: ${borders.radii.sm};
         ${blurFix}
 
-        :hover {
+        &:hover {
             background-color: ${mapElevationToBackground};
         }
     }

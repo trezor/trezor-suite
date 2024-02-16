@@ -8,7 +8,7 @@ const Wrapper = styled.div<{ size?: string; isHoverable?: boolean }>`
     align-items: center;
     justify-content: center;
 
-    ::after {
+    &::after {
         content: '';
         position: absolute;
         width: 100%;
@@ -26,10 +26,10 @@ const Wrapper = styled.div<{ size?: string; isHoverable?: boolean }>`
     ${props =>
         props.isHoverable &&
         css`
-            :hover,
-            :focus,
-            :active {
-                ::after {
+            &:hover,
+            &:focus,
+            &:active {
+                &::after {
                     transform: scale(1);
                     background-color: ${({ theme }) => theme.backgroundTertiaryDefaultOnElevation0};
                 }

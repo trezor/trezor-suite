@@ -19,7 +19,7 @@ const OpenGuideLink = styled.span`
     overflow: visible;
     cursor: pointer;
 
-    :hover {
+    &:hover {
         background: ${({ theme }) => transparentize(0.9, theme.backgroundAlertYellowBold)};
     }
 `;

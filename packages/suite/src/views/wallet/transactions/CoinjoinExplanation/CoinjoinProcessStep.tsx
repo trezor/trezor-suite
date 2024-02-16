@@ -48,14 +48,10 @@ const Container = styled.div`
     position: relative;
     max-width: 220px;
 
-    :not(:last-child) {
-        margin-right: 15px;
-    }
-
     & + & {
         margin-left: 15px;
 
-        ::before {
+        &::before {
             content: '';
             position: absolute;
             bottom: 0;
@@ -66,13 +62,17 @@ const Container = styled.div`
         }
     }
 
+    &:not(:last-child) {
+        margin-right: 15px;
+    }
+
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
         display: grid;
         grid-template-columns: 50px auto;
         gap: 0 14px;
         max-width: unset;
 
-        :not(:last-child) {
+        &:not(:last-child) {
             margin-right: 0;
             margin-bottom: 26px;
         }
@@ -80,7 +80,7 @@ const Container = styled.div`
         & + & {
             margin-left: 0;
 
-            ::before {
+            &::before {
                 content: none;
             }
         }

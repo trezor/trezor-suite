@@ -40,7 +40,7 @@ const Container = styled(Card)<{ checked: boolean }>`
         border 0.1s;
     cursor: pointer;
 
-    :hover {
+    &:hover {
         box-shadow: ${({ theme }) => theme.boxShadowElevated};
     }
 

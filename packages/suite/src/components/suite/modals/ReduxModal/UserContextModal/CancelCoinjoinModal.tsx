@@ -18,7 +18,7 @@ const CancelButton = styled(StyledButton)`
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
     background: ${({ theme }) => theme.BG_WHITE_ALT_HOVER};
 
-    :hover {
+    &:hover {
         background: ${({ theme }) => theme.STROKE_GREY};
     }
 `;

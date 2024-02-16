@@ -25,11 +25,11 @@ const ButtonReview = styled(TooltipButton)<{ isRed: boolean }>`
     flex-direction: column;
     min-width: 200px;
 
-    :disabled {
+    &:disabled {
         background: ${({ theme }) => theme.STROKE_GREY};
     }
 
-    :hover {
+    &:hover {
         background: ${({ isRed, theme }) => isRed && theme.BUTTON_RED_HOVER};
     }
 `;

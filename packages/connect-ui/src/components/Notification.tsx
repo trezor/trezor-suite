@@ -51,17 +51,9 @@ const StyledButton = styled(Button)`
     color: #eb8a00;
     transition: all 0.15s;
 
-    :hover {
-        background-color: #eb8a00;
-        color: #ffefd9;
-    }
-
-    :active {
-        background-color: #eb8a00;
-        color: #ffefd9;
-    }
-
-    :focus {
+    &:active,
+    &:focus,
+    &:hover {
         background-color: #eb8a00;
         color: #ffefd9;
     }

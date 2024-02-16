@@ -25,7 +25,7 @@ const TabButton = styled.button<{ selected: boolean }>`
         selected ? `${theme.TYPE_GREEN}` : `${theme.TYPE_LIGHT_GREY}`};
     border-bottom: ${({ selected, theme }) => (selected ? `2px solid ${theme.BG_GREEN}` : 'none')};
 
-    :hover {
+    &:hover {
         border-bottom: 2px solid ${({ theme, selected }) => !selected && theme.STROKE_GREY};
     }
 `;

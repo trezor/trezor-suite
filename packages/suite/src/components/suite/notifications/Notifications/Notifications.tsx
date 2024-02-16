@@ -38,7 +38,7 @@ const TabButton = styled.button<{ selected: boolean }>`
     border-color: ${({ selected, theme }) => (selected ? theme.TYPE_DARK_GREY : 'transparent')};
     transition: border-color 0.1s;
 
-    :hover {
+    &:hover {
         border-color: ${({ theme, selected }) => !selected && theme.STROKE_GREY};
     }
 `;

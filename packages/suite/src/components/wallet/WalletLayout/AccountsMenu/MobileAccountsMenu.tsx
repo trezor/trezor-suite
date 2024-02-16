@@ -23,7 +23,7 @@ const MenuHeader = styled.div`
     border-top: 1px solid ${({ theme }) => theme.borderOnElevation0};
     padding: 12px 16px;
 
-    :hover {
+    &:hover {
         background-color: ${({ theme }) => theme.backgroundSurfaceElevation2};
     }
 `;

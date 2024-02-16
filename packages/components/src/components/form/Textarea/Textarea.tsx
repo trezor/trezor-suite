@@ -30,7 +30,7 @@ const TextareaWrapper = styled(InputWrapper)`
     ${baseInputStyle}
     padding: ${spacingsPx.xl} 0 ${spacingsPx.md};
 
-    :focus-within {
+    &:focus-within {
         border-color: ${({ theme }) => theme.borderOnElevation0};
     }
 
@@ -38,7 +38,7 @@ const TextareaWrapper = styled(InputWrapper)`
     ${({ disabled, theme, inputState, elevation }) =>
         !disabled &&
         `
-        :read-only:not(:disabled) {
+        &:read-only:not(:disabled) {
             background-color: ${getInputStateBgColor(inputState, theme, elevation)};
             color: ${theme.textDefault};
         }

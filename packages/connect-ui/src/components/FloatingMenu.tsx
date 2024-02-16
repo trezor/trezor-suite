@@ -15,7 +15,7 @@ const IconWrapper = styled.div`
     transition: background-color 0.3s;
     animation: ${animations.FADE_IN} 0.15s ease-in-out;
 
-    :hover {
+    &:hover {
         background-color: #c4c4c480;
     }
 `;

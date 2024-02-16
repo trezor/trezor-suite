@@ -60,9 +60,9 @@ const WarningList = styled.ul`
 const StyledButton = styled(Button)`
     background: ${({ theme }) => theme.TYPE_DARK_ORANGE};
 
-    :hover,
-    :focus,
-    :active {
+    &:hover,
+    &:focus,
+    &:active {
         background: ${({ theme }) => darken(theme.HOVER_DARKEN_FILTER, theme.TYPE_DARK_ORANGE)};
     }
 `;
