@@ -52,6 +52,10 @@ class SettingsActions {
         await waitForDataTestSelector(window, '@modal');
     }
 
+    async enableCoin(window: Page, desiredNetwork: NetworkSymbol) {
+        await window.getByTestId(`@settings/wallet/network/${desiredNetwork}`).click();
+    }
+
     async changeNetworkBackend(
         window: Page,
         desiredNetworkBackend: BackendType,
@@ -77,8 +81,12 @@ class SettingsActions {
         await eapModal.getByTestId('@settings/early-access-confirm-button').click();
         await eapModal.getByTestId('@settings/early-access-skip-button').click();
     }
-    getEarlyAccessButtonText(window: Page) {
-        return window.getByTestId('@settings/early-access-join-button').textContent();
+    async getEarlyAccessButtonText(window: Page) {
+        return await window.getByTestId('@settings/early-access-join-button').textContent();
+    }
+    async closeSettings(window: Page) {
+        await window.getByTestId('@settings/menu/close').click();
+        await window.getByTestId('@settings/menu/title').waitFor({ state: 'detached' });
     }
 }
 
