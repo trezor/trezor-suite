@@ -71,7 +71,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - TEST_GROUP: ["@group:suite"]
+          - TEST_GROUP: "@group:suite"
             CONTAINERS: "trezor-user-env-unix"
             CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: "1"
           - TEST_GROUP: "@group:wallet"
