@@ -90,7 +90,7 @@ const LabelHeadline = styled.strong`
     align-items: center;
     justify-content: space-between;
 
-    :not(:only-child) {
+    &:not(:only-child) {
         margin-bottom: 5px;
     }
 `;

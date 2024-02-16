@@ -20,7 +20,7 @@ const Wrapper = styled.div<{ elevation: Elevation }>`
     cursor: pointer;
     transition: all 0.3s;
 
-    :hover {
+    &:hover {
         box-shadow: 0 6px 40px 0 ${({ theme }) => theme.BOX_SHADOW_OPTION_CARD};
         border: 1px solid ${({ theme }) => theme.STROKE_GREY_ALT};
     }

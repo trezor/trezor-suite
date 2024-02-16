@@ -88,7 +88,7 @@ export const CoinWrapper = styled.button<{
         background: ${({ theme }) => theme.BG_GREY};
     }
 
-    :hover {
+    &:hover {
         background: ${({ theme }) => theme.BG_GREY_ALT};
         border-color: ${({ theme, toggled }) =>
             toggled ? theme.BG_GREEN_HOVER : theme.TYPE_LIGHTER_GREY};

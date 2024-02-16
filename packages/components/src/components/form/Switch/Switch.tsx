@@ -44,18 +44,18 @@ const Container = styled.div<Pick<SwitchProps, 'isChecked' | 'isDisabled' | 'isA
     ${({ isDisabled, theme, isChecked }) =>
         !isDisabled &&
         css`
-            ${getFocusShadowStyle(':focus-within:has(:focus-visible)')}
+            ${getFocusShadowStyle('&:focus-within:has(:focus-visible)')}
 
-            :focus-within:has(:focus-visible) {
-                background: ${isChecked
-                    ? theme.backgroundPrimaryDefault
-                    : theme.backgroundNeutralDisabled};
-            }
-
-            :hover {
+            &:hover {
                 background: ${isChecked
                     ? theme.backgroundPrimaryPressed
                     : theme.backgroundNeutralSubdued};
+            }
+
+            &:focus-within:has(:focus-visible) {
+                background: ${isChecked
+                    ? theme.backgroundPrimaryDefault
+                    : theme.backgroundNeutralDisabled};
             }
         `};
 `;

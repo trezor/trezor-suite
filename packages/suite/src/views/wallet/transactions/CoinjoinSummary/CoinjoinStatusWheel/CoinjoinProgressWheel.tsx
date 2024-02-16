@@ -84,7 +84,7 @@ const Wheel = styled.div<{
         css`
             cursor: pointer;
 
-            :active {
+            &:active {
                 ${ProgressContentContainer} {
                     background: ${({ theme }) => lighten(0.02, theme.BG_GREY)};
                 }
@@ -118,7 +118,7 @@ const Wheel = styled.div<{
         (isStartable || isPaused) &&
         !hasCriticalError &&
         css`
-            :hover {
+            &:hover {
                 ${ProgressContentContainer} {
                     width: calc(100% - 12px);
                     height: calc(100% - 12px);
@@ -138,7 +138,7 @@ const Wheel = styled.div<{
                 0.6,
             )} 0)`};
 
-            :hover {
+            &:hover {
                 path {
                     fill: ${!hasCriticalError && theme.TYPE_GREEN};
                 }

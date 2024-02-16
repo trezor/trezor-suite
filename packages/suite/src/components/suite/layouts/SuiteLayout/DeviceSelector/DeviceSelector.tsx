@@ -39,7 +39,7 @@ const Wrapper = styled.div<{ isAnimationTriggered?: boolean }>`
 
     ${getFocusShadowStyle()};
 
-    :hover {
+    &:hover {
         ${CaretContainer} {
             background: ${({ theme }) => theme.backgroundTertiaryPressedOnElevation0};
         }

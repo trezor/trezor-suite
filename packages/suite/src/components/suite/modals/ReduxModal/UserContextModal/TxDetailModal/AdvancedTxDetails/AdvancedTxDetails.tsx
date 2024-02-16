@@ -40,7 +40,7 @@ const TabButton = styled.button<{ selected: boolean; elevation: Elevation }>`
     border-bottom: ${({ selected, theme }) =>
         selected ? `2px solid ${theme.borderSecondary}` : 'none'};
 
-    :hover {
+    &:hover {
         border-bottom: 2px solid
             ${({ selected, ...props }) => !selected && mapElevationToBorder(props)};
     }

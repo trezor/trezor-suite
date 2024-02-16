@@ -78,8 +78,8 @@ const DesktopLinkButton = styled(Button)`
     transition: opacity 0.15s;
     opacity: 0.6;
 
-    :hover,
-    :focus {
+    &:hover,
+    &:focus {
         background: ${({ theme }) => theme.STROKE_GREY};
         opacity: 1;
     }

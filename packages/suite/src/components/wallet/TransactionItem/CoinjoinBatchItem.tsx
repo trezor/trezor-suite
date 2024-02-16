@@ -40,7 +40,7 @@ const RoundRow = styled.div`
     border-radius: ${borders.radii.xs};
     cursor: pointer;
 
-    :hover {
+    &:hover {
         background-color: ${({ theme }) => theme.BG_GREY};
     }
 
@@ -108,7 +108,7 @@ const StyledCollapsibleBox = styled(CollapsibleBox)<{ isPending: boolean }>`
             padding: 12px 16px;
         }
 
-        :not(:hover) {
+        &:not(:hover) {
             ${CollapsibleBox.IconWrapper} {
                 margin-left: -20px;
                 opacity: 0;

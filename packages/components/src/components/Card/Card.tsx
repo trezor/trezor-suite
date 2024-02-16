@@ -49,7 +49,7 @@ const CardContainer = styled.div<{ elevation: Elevation; paddingType: PaddingTyp
     ${({ onClick, theme }) =>
         onClick !== undefined
             ? css`
-                  :hover {
+                  &:hover {
                       cursor: pointer;
 
                       box-shadow: ${() => theme.boxShadowElevated};

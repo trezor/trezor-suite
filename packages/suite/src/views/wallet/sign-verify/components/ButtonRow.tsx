@@ -23,7 +23,7 @@ export const Row = styled.div`
         flex-direction: column;
     }
 
-    :last-child {
+    &:last-child {
         flex-direction: row;
         padding-top: 40px;
     }

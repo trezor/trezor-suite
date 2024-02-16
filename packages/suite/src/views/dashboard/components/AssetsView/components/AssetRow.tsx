@@ -1,4 +1,4 @@
-import { memo, ComponentProps } from 'react';
+import { memo } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { Network } from 'src/types/wallet';
 import { Icon, variables, motionAnimation, SkeletonRectangle } from '@trezor/components';
@@ -53,7 +53,7 @@ const CoinLogoWrapper = styled(Col)`
         border-bottom: none;
     }
 
-    :hover {
+    &:hover {
         ${Coin} {
             text-decoration: underline;
         }
