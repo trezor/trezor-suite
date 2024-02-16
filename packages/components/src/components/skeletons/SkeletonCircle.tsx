@@ -20,7 +20,7 @@ const StyledSkeletonCircle = styled.div<SkeletonCircleProps & { elevation: Eleva
 
     ${props =>
         props.animate &&
-        css`
+        css<{ elevation: Elevation }>`
             ${shimmerEffect}
         `}
 `;

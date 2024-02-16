@@ -15,7 +15,7 @@ const Wrapper = styled.span<WrapperProps>`
         props.discreetMode &&
         css`
             transition: all 0.1s ease;
-            filter: blur(${(props: WrapperProps) => props.intensity}px);
+            filter: blur(${intensity}px);
 
             &:hover {
                 filter: none;
