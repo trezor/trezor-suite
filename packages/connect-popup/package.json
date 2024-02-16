@@ -54,7 +54,7 @@
     },
     "peerDependencies": {
         "react": "18.2.0",
-        "styled-components": "^5.3.10",
+        "styled-components": "^6.1.8",
         "stylelint": "^16.2.1",
         "stylelint-config-standard": "^36.0.0"
     }
