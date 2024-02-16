@@ -23,13 +23,12 @@
         "lib/"
     ],
     "peerDependencies": {
+        "@stellar/stellar-sdk": "^11.2.2",
         "@trezor/connect": "9.x.x",
-        "stellar-sdk": "^11.2.1",
         "tslib": "^2.6.2"
     },
     "devDependencies": {
-        "stellar-base": "^10.0.2",
-        "stellar-sdk": "^11.2.1"
+        "@stellar/stellar-sdk": "^11.2.2"
     },
     "dependencies": {
         "bignumber.js": "^9.1.2"

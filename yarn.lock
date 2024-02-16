@@ -6595,29 +6595,45 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@stellar/js-xdr@npm:^3.0.1":
+"@stellar/js-xdr@npm:^3.1.0":
   version: 3.1.0
   resolution: "@stellar/js-xdr@npm:3.1.0"
   checksum: 1bffc11285fe743936db23eca6a05310b051db500bee5ef9e26a036ea2d952bbf3cf8afe05052d00a209ca1629450f311dd4d2ffe24e148673f2499400450a04
   languageName: node
   linkType: hard
 
-"@stellar/stellar-base@npm:^10.0.2":
-  version: 10.0.2
-  resolution: "@stellar/stellar-base@npm:10.0.2"
+"@stellar/stellar-base@npm:^11.0.0":
+  version: 11.0.0
+  resolution: "@stellar/stellar-base@npm:11.0.0"
   dependencies:
-    "@stellar/js-xdr": "npm:^3.0.1"
+    "@stellar/js-xdr": "npm:^3.1.0"
     base32.js: "npm:^0.1.0"
     bignumber.js: "npm:^9.1.2"
     buffer: "npm:^6.0.3"
     sha.js: "npm:^2.3.6"
-    sodium-native: "npm:^4.0.5"
+    sodium-native: "npm:^4.0.8"
     tweetnacl: "npm:^1.0.3"
     typescript: "npm:^5.3.3"
   dependenciesMeta:
     sodium-native:
       optional: true
-  checksum: 30b6ebf9a0b39d7d5c116ee117274bea05623b3ad18c65c2d72d6db26d85e11d9f8336f2e299fd1b203854448744cd6c4f2df4abebb8d63131af623822521236
+  checksum: 2b59029daf68b22166e1a5cd3709e6ad16bbc8088a34fdd7aeb3c87828139100dd93265d244697a7a715a78fb219574f8c2149787336280b07d783a40c6568ec
+  languageName: node
+  linkType: hard
+
+"@stellar/stellar-sdk@npm:^11.2.2":
+  version: 11.2.2
+  resolution: "@stellar/stellar-sdk@npm:11.2.2"
+  dependencies:
+    "@stellar/stellar-base": "npm:^11.0.0"
+    axios: "npm:^1.6.7"
+    bignumber.js: "npm:^9.1.2"
+    eventsource: "npm:^2.0.2"
+    randombytes: "npm:^2.1.0"
+    toml: "npm:^3.0.0"
+    typescript: "npm:^5.3.3"
+    urijs: "npm:^1.19.1"
+  checksum: f587cce2c8dc78ac2d64acde78655f498e0b4fd4b6214dca8818a04d21ccdaf5d6035881c2cc9431b1db0f247837e6059e1e38400ea7fdcd93179e4b7f6ed19c
   languageName: node
   linkType: hard
 
@@ -9364,12 +9380,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/connect-plugin-stellar@workspace:packages/connect-plugin-stellar"
   dependencies:
+    "@stellar/stellar-sdk": "npm:^11.2.2"
     bignumber.js: "npm:^9.1.2"
-    stellar-base: "npm:^10.0.2"
-    stellar-sdk: "npm:^11.2.1"
   peerDependencies:
+    "@stellar/stellar-sdk": ^11.2.2
     "@trezor/connect": 9.x.x
-    stellar-sdk: ^11.2.1
     tslib: ^2.6.2
   languageName: unknown
   linkType: soft
@@ -13023,7 +13038,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.6.0, axios@npm:^1.6.1, axios@npm:^1.6.5":
+"axios@npm:^1.6.0, axios@npm:^1.6.1, axios@npm:^1.6.7":
   version: 1.6.7
   resolution: "axios@npm:1.6.7"
   dependencies:
@@ -30508,13 +30523,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sodium-native@npm:^4.0.5":
-  version: 4.0.6
-  resolution: "sodium-native@npm:4.0.6"
+"sodium-native@npm:^4.0.8":
+  version: 4.0.8
+  resolution: "sodium-native@npm:4.0.8"
   dependencies:
     node-gyp: "npm:latest"
     node-gyp-build: "npm:^4.6.0"
-  checksum: fd155ea1c80f65c71f3717d4b1ab4ecac54982cba4b167a6af7c48f24b581be47da918012ac8078d9f70537d2ddfd5595931ed7e2ee64464c9933283b41d004b
+  checksum: d8bb16dbfe91cc036c2dec3317bb08d89b76e022be3ba9cd6daa2c0eae657343da94a057d8954e0bcef2c4c6703f0364a78af41426cc1f09686a678b49e902bd
   languageName: node
   linkType: hard
 
@@ -30874,41 +30889,6 @@ __metadata:
   version: 1.5.0
   resolution: "statuses@npm:1.5.0"
   checksum: c469b9519de16a4bb19600205cffb39ee471a5f17b82589757ca7bd40a8d92ebb6ed9f98b5a540c5d302ccbc78f15dc03cc0280dd6e00df1335568a5d5758a5c
-  languageName: node
-  linkType: hard
-
-"stellar-base@npm:^10.0.2":
-  version: 10.0.2
-  resolution: "stellar-base@npm:10.0.2"
-  dependencies:
-    "@stellar/js-xdr": "npm:^3.0.1"
-    base32.js: "npm:^0.1.0"
-    bignumber.js: "npm:^9.1.2"
-    buffer: "npm:^6.0.3"
-    sha.js: "npm:^2.3.6"
-    sodium-native: "npm:^4.0.5"
-    tweetnacl: "npm:^1.0.3"
-    typescript: "npm:^5.3.3"
-  dependenciesMeta:
-    sodium-native:
-      optional: true
-  checksum: 7ec13cacad364985a114a5438e383f9291a0c6747669bff721cd679c36ede989c1c20faeaf6206037b5de6e4b8d8ebbaf34e7e8e796d80b54ad7e60bebb8332f
-  languageName: node
-  linkType: hard
-
-"stellar-sdk@npm:^11.2.1":
-  version: 11.2.1
-  resolution: "stellar-sdk@npm:11.2.1"
-  dependencies:
-    "@stellar/stellar-base": "npm:^10.0.2"
-    axios: "npm:^1.6.5"
-    bignumber.js: "npm:^9.1.2"
-    eventsource: "npm:^2.0.2"
-    randombytes: "npm:^2.1.0"
-    toml: "npm:^3.0.0"
-    typescript: "npm:^5.3.3"
-    urijs: "npm:^1.19.1"
-  checksum: 849abafd1a2144d025a0795f4cc1bd37015593261ce2d87feaa7415a903b0aef37f1088e2645a7769d0173f9066c439dad89bdb1d84346184d306dffb322aa10
   languageName: node
   linkType: hard
 
