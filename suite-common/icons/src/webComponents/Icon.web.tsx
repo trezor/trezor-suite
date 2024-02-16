@@ -36,7 +36,7 @@ const SVG = styled(ReactSVG)`
                 }
             }
         `}
-`;
+` as typeof ReactSVG;
 
 type WebIconProps = Omit<IconProps, 'color'> & {
     color?: CSSColor | Color;
