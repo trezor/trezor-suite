@@ -22,11 +22,11 @@ const Description = styled.div`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 
-    :first-child {
+    &:first-child {
         margin-top: 0;
     }
 
-    :last-child {
+    &:last-child {
         margin-bottom: 0;
     }
 `;

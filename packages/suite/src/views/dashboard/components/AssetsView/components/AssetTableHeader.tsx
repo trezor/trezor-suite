@@ -11,7 +11,7 @@ const Header = styled.div`
     padding: ${spacingsPx.sm} 0;
     border-bottom: 1px solid ${({ theme }) => theme.borderOnElevation1};
 
-    :last-child {
+    &:last-child {
         padding-right: ${spacingsPx.md};
     }
 `;

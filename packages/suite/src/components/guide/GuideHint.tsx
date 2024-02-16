@@ -10,7 +10,7 @@ const StyledWarning = styled(Warning)`
     gap: 10px;
     padding: 10px;
 
-    :not(:last-child) {
+    &:not(:last-child) {
         margin-bottom: 16px;
     }
 

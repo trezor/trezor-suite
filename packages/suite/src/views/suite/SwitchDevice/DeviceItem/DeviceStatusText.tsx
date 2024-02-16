@@ -13,7 +13,7 @@ const Container = styled.span<{ color: string; isAction?: boolean }>`
     ${({ isAction }) =>
         isAction &&
         css`
-            :hover {
+            &:hover {
                 opacity: 0.8;
             }
         `}

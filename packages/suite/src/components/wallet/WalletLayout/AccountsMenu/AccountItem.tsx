@@ -27,7 +27,7 @@ const Wrapper = styled(NavigationItemBase)<{ isSelected: boolean }>`
         margin-top: ${spacingsPx.xxs};
     }
 
-    :hover {
+    &:hover {
         position: relative;
         background: ${({ theme, isSelected }) =>
             !isSelected && theme.backgroundTertiaryPressedOnElevation0};

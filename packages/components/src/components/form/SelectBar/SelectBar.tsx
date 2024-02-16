@@ -101,7 +101,7 @@ const Option = styled.div<{ isSelected: boolean; isDisabled: boolean }>`
     transition: color 0.175s;
     cursor: pointer;
 
-    :hover {
+    &:hover {
         color: ${({ theme, isSelected, isDisabled }) =>
             !isSelected && !isDisabled && theme.textDefault};
     }

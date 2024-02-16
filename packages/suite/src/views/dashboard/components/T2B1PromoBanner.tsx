@@ -165,8 +165,8 @@ const ButtonShopNow = styled(Button)`
     z-index: 1;
     color: black;
 
-    :hover,
-    :focus {
+    &:hover,
+    &:focus {
         background-color: #7cba6c;
     }
 `;
@@ -184,8 +184,8 @@ const ButtonClose = styled(IconButton)`
     height: 42px;
     width: 42px;
 
-    :hover,
-    :focus {
+    &:hover,
+    &:focus {
         background: #0b4936;
     }
 

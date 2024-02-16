@@ -24,7 +24,7 @@ const Level = styled(Input)`
         font-size: ${variables.FONT_SIZE.H3};
         text-align: center;
 
-        :disabled {
+        &:disabled {
             color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
         }
     }

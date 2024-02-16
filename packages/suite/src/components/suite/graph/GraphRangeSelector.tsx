@@ -30,7 +30,7 @@ const RangeItem = styled.div<{ selected: boolean; separated?: boolean }>`
     text-transform: uppercase;
     font-variant-numeric: tabular-nums;
 
-    :hover {
+    &:hover {
         color: ${({ theme }) => theme.TYPE_DARK_GREY};
     }
 

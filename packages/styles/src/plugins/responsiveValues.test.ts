@@ -128,12 +128,12 @@ describe('makeResponsiveValuePlugin', () => {
         expect(
             plugin({
                 // @ts-expect-error
-                ':hover': {
+                '&:hover': {
                     fontSize: '12px',
                 },
             }),
         ).toEqual({
-            ':hover': {
+            '&:hover': {
                 fontSize: '12px',
             },
         });
@@ -143,14 +143,14 @@ describe('makeResponsiveValuePlugin', () => {
         expect(
             plugin({
                 // @ts-expect-error
-                ':hover': {
+                '&:hover': {
                     fontSize: {
                         sm: '12px',
                     },
                 },
             }),
         ).toEqual({
-            ':hover': {
+            '&:hover': {
                 [breakpointMediaQueries.sm]: {
                     fontSize: '12px',
                 },
