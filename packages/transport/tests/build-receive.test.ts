@@ -68,6 +68,7 @@ const messages = {
             MessageType_StellarAccountMergeOp: 218,
             MessageType_StellarManageDataOp: 220,
             MessageType_StellarBumpSequenceOp: 221,
+            MessageType_StellarClaimClaimableBalanceOp: 225,
             MessageType_StellarSignedTx: 230,
         },
     },

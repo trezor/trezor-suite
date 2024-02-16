@@ -324,6 +324,11 @@ export const stellarSignTransaction = async (api: TrezorConnect) => {
                     assetCode: 'XLM',
                     authorize: true,
                 },
+                {
+                    type: 'claimClaimableBalance',
+                    balanceId:
+                        '00000000178826fbfe339e1f5c53417c6fedfe2c05e8bec14303143ec46b38981b09c3f9',
+                },
             ],
         },
     });

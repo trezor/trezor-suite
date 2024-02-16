@@ -1006,6 +1006,44 @@ export const transformTransactionInputs = [
         },
     },
     {
+        description: 'claim claimable balance operation',
+        path: "m/44'/148'/0'",
+        tx: (() => {
+            const op = Operation.claimClaimableBalance({
+                balanceId:
+                    '00000000178826fbfe339e1f5c53417c6fedfe2c05e8bec14303143ec46b38981b09c3f9',
+            });
+
+            return build_tx(
+                DEFAULT_SOURCE,
+                DEFAULT_SEQUENCE,
+                DEFAULT_FEE,
+                DEFAULT_NETWORK,
+                DEFAULT_TIMEBOUNDS,
+                DEFAULT_MEMO,
+                op,
+            );
+        })(),
+        result: {
+            networkPassphrase: 'Public Global Stellar Network ; September 2015',
+            path: "m/44'/148'/0'",
+            transaction: {
+                fee: 100,
+                memo: { text: 'trezor stellar', type: 1 },
+                operations: [
+                    {
+                        type: 'claimClaimableBalance',
+                        balanceId:
+                            '00000000178826fbfe339e1f5c53417c6fedfe2c05e8bec14303143ec46b38981b09c3f9',
+                    },
+                ],
+                sequence: '103420918407103889',
+                source: 'GBRF6PKZYP4J4WI2A3NF4CGF23SL34GRKA5LTQZCQFEUT2YJDZO2COXH',
+                timebounds: { maxTime: 1700000000, minTime: 1600000000 },
+            },
+        },
+    },
+    {
         description: 'none memo',
         path: "m/44'/148'/0'",
         tx: (() => {

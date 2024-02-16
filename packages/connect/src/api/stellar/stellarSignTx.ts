@@ -200,6 +200,12 @@ const transformOperation = (op: StellarOperation): StellarOperationMessage | und
                 source_account: op.source,
                 bump_to: op.bumpTo,
             };
+        case 'claimClaimableBalance':
+            return {
+                type: 'StellarClaimClaimableBalanceOp',
+                source_account: op.source,
+                balance_id: op.balanceId,
+            };
 
         // no default
     }
