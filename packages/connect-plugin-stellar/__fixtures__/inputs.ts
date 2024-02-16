@@ -7,7 +7,7 @@ import {
     TransactionBuilder,
     Keypair,
     StrKey,
-} from 'stellar-base';
+} from '@stellar/stellar-sdk';
 
 const nativeAsset = Asset.native();
 const credit4Asset = new Asset('USD', 'GCNY5OXYSY4FKHOPT2SPOQZAOEIGXB5LBYW3HVU3OWSTQITS65M5RCNY');
