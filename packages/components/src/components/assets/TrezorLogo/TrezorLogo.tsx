@@ -12,17 +12,14 @@ export type TrezorLogoType =
     | 'suite_compact';
 
 const SvgWrapper = styled.div<Omit<TrezorLogoProps, 'type'>>`
+    color: ${({ theme }) => theme.iconDefault};
     display: inline-block;
-    width: ${props => props.width};
-    height: ${props => props.height};
+    width: ${({ width }) => width};
+    height: ${({ height }) => height};
 
     div {
-        height: ${props => props.height};
+        height: ${({ height }) => height};
     }
-`;
-
-const StyledReactSVG = styled(ReactSVG)`
-    color: ${({ theme }) => theme.iconDefault};
 `;
 
 export interface TrezorLogoProps extends ImgHTMLAttributes<HTMLImageElement> {
@@ -42,7 +39,7 @@ export const TrezorLogo = ({ type, width = 'auto', height = 'auto', ...rest }: T
             height={typeof height === 'number' ? `${height}px` : height}
             {...rest}
         >
-            <StyledReactSVG
+            <ReactSVG
                 src={LOGOS[type.toUpperCase()]}
                 beforeInjection={(svg: SVGElement) => {
                     if (typeof height === 'number') {

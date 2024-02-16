@@ -206,7 +206,6 @@ export const CollapsibleOnboardingCard = ({
     expandableIcon,
     nested,
     tag,
-    onCanPlayThroughCapture,
     onToggle = () => undefined,
     ...rest
 }: CollapsibleOnboardingCardProps) => {

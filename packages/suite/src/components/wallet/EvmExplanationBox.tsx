@@ -60,7 +60,7 @@ export const EvmExplanationBox = forwardRef<
     const { elevation } = useElevation();
 
     return (
-        <EvmExplanationBoxWrapper ref={ref} caret={caret} elevation={elevation} {...rest}>
+        <EvmExplanationBoxWrapper ref={ref} caret={caret} {...rest} elevation={elevation}>
             <CoinLogo symbol={symbol} size={38} />
             <div>
                 <EvmExplanationTitle>{title}</EvmExplanationTitle>

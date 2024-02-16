@@ -20,7 +20,7 @@ const Description = styled.span`
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
-const StyledImage = styled(props => <Image {...props} />)`
+const StyledImage = styled(Image)`
     width: auto;
     height: 80px;
     margin-top: 60px;
