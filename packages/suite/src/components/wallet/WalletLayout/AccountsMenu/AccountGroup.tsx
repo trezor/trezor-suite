@@ -41,7 +41,7 @@ const Header = styled.header<{ isOpen: boolean; onClick?: () => void }>`
     ${typography.label}
     color: ${({ theme }) => theme.textSubdued};
 
-    :hover {
+    &:hover {
         ${ChevronIcon} {
             background: ${({ theme }) => theme.backgroundSurfaceElevation1};
         }

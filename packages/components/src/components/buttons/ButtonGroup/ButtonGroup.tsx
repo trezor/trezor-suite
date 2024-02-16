@@ -25,7 +25,7 @@ const Container = styled.div<{ variant?: Exclude<ButtonVariant, 'danger'> }>`
     > :not(:last-child) {
         position: relative;
 
-        ::after {
+        &::after {
             content: '';
             position: absolute;
             right: -1px;

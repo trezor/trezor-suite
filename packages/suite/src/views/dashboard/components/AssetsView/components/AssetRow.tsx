@@ -53,7 +53,7 @@ const CoinLogoWrapper = styled(Col)`
         border-bottom: none;
     }
 
-    :hover {
+    &:hover {
         ${Coin} {
             text-decoration: underline;
         }

@@ -110,7 +110,7 @@ const RateInfo = styled.div`
     border-radius: 6px;
     color: ${({ theme }) => theme.textAlertBlue};
 
-    ::before {
+    &::before {
         content: '';
         position: absolute;
         top: -6px;
@@ -138,7 +138,7 @@ const TxDetailsButton = styled.button<{ detailsOpen: boolean }>`
     background: ${({ theme, detailsOpen }) => detailsOpen && theme.backgroundSurfaceElevation3};
     cursor: pointer;
 
-    :hover {
+    &:hover {
         opacity: 0.8;
     }
 

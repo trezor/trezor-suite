@@ -8,7 +8,7 @@ export const ArrowIcon = styled(Icon)`
 `;
 
 export const styledHoverOnParentOfArrowIcon = css`
-    :hover {
+    &:hover {
         ${ArrowIcon} {
             path {
                 fill: ${({ theme }) => theme.iconPrimaryDefault};

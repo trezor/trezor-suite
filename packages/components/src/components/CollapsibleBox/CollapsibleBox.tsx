@@ -50,7 +50,7 @@ const Header = styled.div<Pick<CollapsibleBoxProps, 'variant'>>`
             : `${spacingsPx.md} ${spacingsPx.xl}`};
     cursor: pointer;
 
-    :hover {
+    &:hover {
         ${IconWrapper} {
             opacity: 0.5;
         }

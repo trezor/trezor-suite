@@ -86,7 +86,7 @@ const createSelectStyle = (
         },
         cursor: 'pointer',
 
-        ':active': {
+        '&:active': {
             background: theme.backgroundSurfaceElevation0,
         },
     }),
@@ -123,7 +123,6 @@ const Wrapper = styled.div<WrapperProps>`
         padding: 0;
         transition: transform 0.2s cubic-bezier(0.68, -0.02, 0.21, 1.1);
         cursor: pointer;
-        display: ${({ isDisabled }) => isDisabled && 'none'};
     }
 
     .${reactSelectClassNamePrefix}__control {
@@ -138,11 +137,11 @@ const Wrapper = styled.div<WrapperProps>`
         ${baseInputStyle}
         background-color: ${({ isClean }) => isClean && 'transparent !important'};
 
-        :hover:not(:focus-within) {
+        &:hover:not(:focus-within) {
             border-color: transparent;
         }
 
-        :focus-within {
+        &:focus-within {
             .${reactSelectClassNamePrefix}__dropdown-indicator {
                 transform: rotate(180deg);
             }
@@ -176,7 +175,7 @@ const Wrapper = styled.div<WrapperProps>`
         transform: none;
         margin-left: 0;
 
-        :hover {
+        &:hover {
             cursor: ${({ isSearchable }) => isSearchable && 'text'};
         }
     }

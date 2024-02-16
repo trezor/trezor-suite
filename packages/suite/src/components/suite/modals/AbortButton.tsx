@@ -52,7 +52,7 @@ const AbortContainer = styled.div`
 
     ${/* sc-selector */ mediaQueries.hover} {
         ${/* sc-block */ collapsedStyle}
-        :hover {
+        &:hover {
             ${/* sc-block */ expandedStyle}
         }
     }

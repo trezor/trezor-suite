@@ -28,7 +28,7 @@ const EapIcon = styled(HelperIcon)<{ isEapEnabled: boolean }>`
     background-color: ${({ theme, isEapEnabled }) =>
         isEapEnabled ? '#8247E5' : theme.backgroundAlertYellowBold};
 
-    :hover {
+    &:hover {
         background-color: ${({ theme, isEapEnabled }) =>
             isEapEnabled ? '#551ab8' : theme.iconAlertYellow};
     }

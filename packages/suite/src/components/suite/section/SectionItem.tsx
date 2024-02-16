@@ -23,8 +23,8 @@ const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
 
-    :not(:last-child) {
-        ::after {
+    &:not(:last-child) {
+        &::after {
             content: '';
             position: relative;
             top: ${spacingsPx.md};

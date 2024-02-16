@@ -17,7 +17,7 @@ const Container = styled.div`
     transition: background 0.1s ease-in;
     cursor: pointer;
     ${mediaQueries.hover} {
-        :hover {
+        &:hover {
             background: ${({ theme }) => theme.BG_GREY};
         }
     }

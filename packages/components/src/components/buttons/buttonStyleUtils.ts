@@ -97,8 +97,8 @@ export const getVariantStyle = (
                 background: ${({ theme }) => theme.backgroundPrimaryDefault};
                 color: ${({ theme }) => theme.textOnPrimary};
 
-                :hover,
-                :active {
+                &:hover,
+                &:active {
                     /* we use this color only for this case  */
                     background: ${({ theme }) => theme.backgroundPrimaryPressed};
                 }
@@ -109,8 +109,8 @@ export const getVariantStyle = (
                 background: ${({ theme }) => theme.backgroundSecondaryDefault};
                 color: ${({ theme }) => theme.textOnSecondary};
 
-                :hover,
-                :active {
+                &:hover,
+                &:active {
                     /* we use this color only for this case  */
                     background: ${({ theme }) => theme.backgroundSecondaryPressed};
                 }
@@ -124,8 +124,8 @@ export const getVariantStyle = (
                 })};
                 color: ${({ theme }) => theme.textOnTertiary};
 
-                :hover,
-                :active {
+                &:hover,
+                &:active {
                     background: ${mapElevationToButtonBackground({
                         elevation,
                         variant,
@@ -142,8 +142,8 @@ export const getVariantStyle = (
                 })};
                 color: ${({ theme }) => theme.textAlertBlue};
 
-                :hover,
-                :active {
+                &:hover,
+                &:active {
                     background: ${mapElevationToButtonBackground({
                         elevation,
                         variant,
@@ -156,8 +156,8 @@ export const getVariantStyle = (
                 background: ${({ theme }) => theme.backgroundAlertYellowSubtleOnElevation0};
                 color: ${({ theme }) => theme.textAlertYellow};
 
-                :hover,
-                :active {
+                &:hover,
+                &:active {
                     background: ${({ theme }) => theme.backgroundAlertYellowSubtleOnElevation1};
                 }
             `;
@@ -166,8 +166,8 @@ export const getVariantStyle = (
                 background: ${({ theme }) => theme.backgroundAlertRedSubtleOnElevation0};
                 color: ${({ theme }) => theme.textAlertRed};
 
-                :hover,
-                :active {
+                &:hover,
+                &:active {
                     background: ${({ theme }) => theme.backgroundAlertRedSubtleOnElevation1};
                 }
             `;
