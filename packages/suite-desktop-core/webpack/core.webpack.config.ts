@@ -144,6 +144,7 @@ const config: webpack.Configuration = {
             'process.env.SUITE_TYPE': JSON.stringify(PROJECT),
             'process.env.IS_CODESIGN_BUILD': `"${isCodesignBuild}"`, // to keep it as string "true"/"false" and not boolean
             'process.env.NODE_BACKEND': JSON.stringify('js'),
+            'process.env.WS_NO_BUFFER_UTIL': true, // ignore bufferutils import in ws lib (https://github.com/trezor/trezor-suite/pull/11225)
         }),
     ],
 
