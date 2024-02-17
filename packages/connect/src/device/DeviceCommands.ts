@@ -4,7 +4,7 @@ import { randomBytes } from 'crypto';
 import { Transport } from '@trezor/transport';
 import * as Messages from '@trezor/protobuf/lib/messages-schema';
 import * as versionUtils from '@trezor/utils/lib/versionUtils';
-import { ERRORS, NETWORK } from '../constants';
+import { ERRORS } from '../constants';
 import { DEVICE } from '../events';
 import * as hdnodeUtils from '../utils/hdnodeUtils';
 import {
@@ -360,16 +360,8 @@ export class DeviceCommands {
         }
     }
 
-    getDeviceState(networkType?: string) {
-        // cardano backwards compatibility. we only need this for firmware before initialize.derive_cardano message was introduced
-        if (!this.device.atLeast('2.4.3')) {
-            return this._getAddressForNetworkType(networkType);
-        }
-
-        // skipping network type parameter intentionally
-        return this._getAddressForNetworkType();
-
-        // bitcoin.crypto.hash256(Buffer.from(secret, 'binary')).toString('hex');
+    getDeviceState() {
+        return this._getAddress();
     }
 
     // Sends an async message to the opened device.
@@ -572,32 +564,13 @@ export class DeviceCommands {
         return Promise.resolve(res);
     }
 
-    async _getAddressForNetworkType(networkType?: string) {
-        switch (networkType) {
-            case NETWORK.TYPES.cardano: {
-                const { message } = await this.typedCall('CardanoGetAddress', 'CardanoAddress', {
-                    address_parameters: {
-                        address_type: 8, // Byron
-                        address_n: [toHardened(44), toHardened(1815), toHardened(0), 0, 0],
-                        address_n_staking: [],
-                    },
-                    protocol_magic: 42,
-                    network_id: 0,
-                    // derivation type doesn't really matter as it is not recognized by older firmwares.
-                    // but it is a required field within protobuf definitions so we must provide something here
-                    derivation_type: 2, // icarus_trezor
-                });
-                return message.address;
-            }
-            default: {
-                const { message } = await this.typedCall('GetAddress', 'Address', {
-                    address_n: [toHardened(44), toHardened(1), toHardened(0), 0, 0],
-                    coin_name: 'Testnet',
-                    script_type: 'SPENDADDRESS',
-                });
-                return message.address;
-            }
-        }
+    private async _getAddress() {
+        const { message } = await this.typedCall('GetAddress', 'Address', {
+            address_n: [toHardened(44), toHardened(1), toHardened(0), 0, 0],
+            coin_name: 'Testnet',
+            script_type: 'SPENDADDRESS',
+        });
+        return message.address;
     }
 
     _promptPin(type?: Messages.PinMatrixRequestType) {

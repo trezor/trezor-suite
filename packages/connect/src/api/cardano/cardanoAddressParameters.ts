@@ -2,7 +2,6 @@
 
 import { validatePath } from '../../utils/pathUtils';
 import { PROTO, ERRORS } from '../../constants';
-import type { Device } from '../../device/Device';
 import { CardanoAddressParameters } from '../../types/api/cardano';
 import { Assert } from '@trezor/schema-utils';
 
@@ -18,7 +17,6 @@ export const validateAddressParameters = (addressParameters: CardanoAddressParam
 };
 
 export const modifyAddressParametersForBackwardsCompatibility = (
-    device: Device,
     address_parameters: PROTO.CardanoAddressParametersType,
 ): PROTO.CardanoAddressParametersType => {
     if (address_parameters.address_type === PROTO.CardanoAddressType.REWARD) {
@@ -32,14 +30,9 @@ export const modifyAddressParametersForBackwardsCompatibility = (
             );
         }
 
-        if (device.atLeast(['0', '2.4.3'])) {
-            if (address_n.length > 0) {
-                address_n_staking = address_n;
-                address_n = [];
-            }
-        } else if (address_n_staking.length > 0) {
-            address_n = address_n_staking;
-            address_n_staking = [];
+        if (address_n.length > 0) {
+            address_n_staking = address_n;
+            address_n = [];
         }
 
         return {

@@ -6,7 +6,6 @@ import {
     validateAddressParameters,
 } from './cardanoAddressParameters';
 import { validatePath } from '../../utils/pathUtils';
-import type { Device } from '../../device/Device';
 import { ERRORS, PROTO } from '../../constants';
 import {
     CardanoAuxiliaryData,
@@ -101,14 +100,12 @@ export const transformAuxiliaryData = (
 };
 
 export const modifyAuxiliaryDataForBackwardsCompatibility = (
-    device: Device,
     auxiliary_data: PROTO.CardanoTxAuxiliaryData,
 ): PROTO.CardanoTxAuxiliaryData => {
     const { cvote_registration_parameters } = auxiliary_data;
     if (cvote_registration_parameters?.payment_address_parameters) {
         cvote_registration_parameters.payment_address_parameters =
             modifyAddressParametersForBackwardsCompatibility(
-                device,
                 cvote_registration_parameters.payment_address_parameters,
             );
 

@@ -563,7 +563,7 @@ const onCall = async (message: IFrameCallMessage) => {
             const isDeviceUnlocked = device.features.unlocked;
             try {
                 const invalidDeviceState = method.useDeviceState
-                    ? await device.validateState(method.network, method.preauthorized)
+                    ? await device.validateState(method.preauthorized)
                     : undefined;
                 if (invalidDeviceState) {
                     if (isUsingPopup) {
