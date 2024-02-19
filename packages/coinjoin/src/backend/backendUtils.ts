@@ -1,6 +1,5 @@
 import { arrayDistinct } from '@trezor/utils';
-import { deriveAddresses as deriveNewAddresses, Network } from '@trezor/utxo-lib';
-import { getAddressType } from '@trezor/utxo-lib/lib/address';
+import { deriveAddresses as deriveNewAddresses, Network, getAddressType } from '@trezor/utxo-lib';
 
 import type { VinVout, PrederivedAddress } from '../types/backend';
 

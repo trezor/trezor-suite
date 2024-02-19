@@ -20,13 +20,16 @@
         "utxo",
         "javascript"
     ],
-    "main": "./lib/index.js",
+    "main": "./src/index",
+    "publishConfig": {
+        "main": "./lib/index.js",
+        "types": "lib/index.d.ts",
+        "typings": "lib/index.d.ts"
+    },
     "files": [
         "lib/",
         "!**/*.map"
     ],
-    "types": "lib/index.d.ts",
-    "typings": "lib/index.d.ts",
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "test:unit": "yarn g:jest --verbose -c jest.config.js",

@@ -8,6 +8,7 @@ import * as networks from './networks';
 import { composeTx } from './compose';
 import { deriveAddresses, getXpubOrDescriptorInfo } from './derivation';
 import { discovery } from './discovery';
+export { getAddressType } from './address';
 
 export { Transaction } from './transaction';
 
@@ -40,3 +41,4 @@ export type {
 } from './types';
 export type { Network } from './networks';
 export type { BIP32Interface } from './bip32';
+export type { TxInput, TxOutput } from './transaction/base';

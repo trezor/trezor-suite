@@ -9,10 +9,7 @@ import {
 import * as bufferUtils from '@trezor/utils/lib/bufferUtils';
 import { getHDPath, getScriptType, getOutputScriptType } from '../../utils/pathUtils';
 import { TypedError } from '../../constants/errors';
-import type {
-    TxInput as BitcoinJsInput,
-    TxOutput as BitcoinJsOutput,
-} from '@trezor/utxo-lib/lib/transaction/base';
+import type { TxInput as BitcoinJsInput, TxOutput as BitcoinJsOutput } from '@trezor/utxo-lib';
 import type {
     CoinInfo,
     AccountAddresses,
