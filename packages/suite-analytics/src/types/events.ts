@@ -275,16 +275,6 @@ export type SuiteAnalyticsEvent =
           };
       }
     | {
-          type: EventType.SettingsDeviceBackground;
-          payload: {
-              image?: string;
-              format?: string;
-              size?: number;
-              resolutionWidth?: number;
-              resolutionHeight?: number;
-          };
-      }
-    | {
           type: EventType.SettingsDeviceChangeOrientation;
           payload: {
               value: 0 | 90 | 180 | 270;
