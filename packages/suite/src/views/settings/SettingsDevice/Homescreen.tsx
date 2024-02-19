@@ -1,7 +1,6 @@
 import { useRef, useState } from 'react';
 import styled from 'styled-components';
 
-import { analytics, EventType } from '@trezor/suite-analytics';
 import { DeviceModelInternal } from '@trezor/connect';
 import { HOMESCREEN_EDITOR_URL } from '@trezor/urls';
 
@@ -22,7 +21,6 @@ import {
     fileToDataUrl,
     ImageValidationError,
     validateImage,
-    dataUrlToImage,
     isHomescreenSupportedOnDevice,
 } from 'src/utils/suite/homescreen';
 import { useAnchor } from 'src/hooks/suite/useAnchor';
@@ -41,20 +39,6 @@ const ValidationMessage = styled.div`
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
-
-export const reportImageUploadToAnalytics = async (dataUrl: string, file: File) => {
-    const image = await dataUrlToImage(dataUrl);
-
-    analytics.report({
-        type: EventType.SettingsDeviceBackground,
-        payload: {
-            format: file.type,
-            size: file.size,
-            resolutionWidth: image.width,
-            resolutionHeight: image.height,
-        },
-    });
-};
 
 interface HomescreenProps {
     isDeviceLocked: boolean;
@@ -95,8 +79,6 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
 
         const dataUrl = await fileToDataUrl(file);
         setCustomHomescreen(dataUrl);
-
-        reportImageUploadToAnalytics(dataUrl, file);
     };
 
     const onChangeHomescreen = async () => {
