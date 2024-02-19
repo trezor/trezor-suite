@@ -420,6 +420,7 @@ const StyledTimerange = styled.div`
     flex-direction: column;
     background: ${({ theme }) => theme.backgroundSurfaceElevation1};
     border-radius: ${borders.radii.sm};
+    margin: -${spacingsPx.sm};
 
     ${mediaQueries.dark_theme} {
         border: 1px solid ${({ theme }) => theme.borderOnElevation0};
@@ -466,7 +467,6 @@ const Calendar = styled.div`
     .rdrDateDisplayItem {
         border-radius: ${borders.radii.xxs};
         background-color: transparent;
-        border: 1px solid ${({ theme }) => theme.borderOnElevation1};
     }
 
     .rdrDateDisplayItem input {
@@ -572,6 +572,7 @@ const Calendar = styled.div`
         padding-bottom: ${spacingsPx.sm};
         background: ${({ theme }) => theme.backgroundSurfaceElevation3};
         border-bottom: 1px solid ${({ theme }) => theme.borderOnElevation1};
+        border-radius: ${borders.radii.xs};
     }
 
     .rdrMonthAndYearWrapper {
