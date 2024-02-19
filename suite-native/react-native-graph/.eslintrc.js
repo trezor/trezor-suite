@@ -8,4 +8,7 @@ module.exports = {
         'no-restricted-properties': 'off',
         '@typescript-eslint/no-shadow': 'off',
     },
+    parserOptions: {
+        tsconfigRootDir: __dirname,
+    },
 };

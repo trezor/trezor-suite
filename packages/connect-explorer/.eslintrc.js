@@ -15,4 +15,7 @@ module.exports = {
         ],
     },
     extends: ['plugin:mdx/recommended'],
+    parserOptions: {
+        tsconfigRootDir: __dirname,
+    },
 };

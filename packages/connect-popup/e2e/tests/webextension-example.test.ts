@@ -1,4 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/no-shadow
 import { test, expect, chromium } from '@playwright/test';
 import path from 'path';
 

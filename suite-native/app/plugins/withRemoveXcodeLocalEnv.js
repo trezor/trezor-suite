@@ -2,7 +2,6 @@
  * This plugin is used to replace generated .xcode.env.local file with .xcode.env file.
  * This is needed because the generated .xcode.env.local file for some reason contains wrong path to Node.js binary.
  */
-/* eslint-disable @typescript-eslint/no-shadow */
 /* eslint-disable require-await */
 const { withDangerousMod, withPlugins } = require('expo/config-plugins');
 const fs = require('fs');
