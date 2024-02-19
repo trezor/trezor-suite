@@ -165,6 +165,8 @@ const legacyResultsMap: Record<string, LegacyResult[]> = {
             payload: false,
         },
     ],
+    // newly added message in 2.6.5
+    StellarClaimClaimableBalanceOp: [{ rules: ['<2.6.5'], payload: false }],
 };
 
 export default {
