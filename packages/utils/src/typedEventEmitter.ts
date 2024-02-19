@@ -1,3 +1,13 @@
+/*
+Usage example:
+type EventMap = {
+    obj: { id: string };
+    primitive: boolean | number | string | symbol;
+    noArgs: undefined;
+    multipleArgs: (a: number, b: string, c: boolean) => void;
+    [type: `dynamic/${string}`]: boolean;
+};
+*/
 import { EventEmitter } from 'events';
 
 type EventMap = Record<string, any>;
