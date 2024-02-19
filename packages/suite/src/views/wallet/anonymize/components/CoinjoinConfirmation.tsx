@@ -173,7 +173,7 @@ export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => 
                 <StyledCheckbox
                     isChecked={termsConfirmed}
                     onClick={toggleTermsConfirmation}
-                    data-test="@coinjoin/checkbox"
+                    data-test-id="@coinjoin/checkbox"
                 >
                     <Translation
                         id="TR_TERMS_AND_PRIVACY_CONFIRMATION"

@@ -26,7 +26,7 @@ export const DisplayRotation = ({ isDeviceLocked }: DisplayRotationProps) => {
 
     return (
         <SectionItem
-            data-test="@settings/device/display-rotation"
+            data-test-id="@settings/device/display-rotation"
             ref={anchorRef}
             shouldHighlight={shouldHighlight}
         >
@@ -46,7 +46,7 @@ export const DisplayRotation = ({ isDeviceLocked }: DisplayRotationProps) => {
                                     },
                                 });
                             }}
-                            data-test={`@settings/device/rotation-button/${variant.value}`}
+                            data-test-id={`@settings/device/rotation-button/${variant.value}`}
                         >
                             {variant.label}
                         </Button>

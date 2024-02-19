@@ -10,7 +10,7 @@ export const NoBackup = () => {
     const action = {
         label: <Translation id="TR_CREATE_BACKUP" />,
         onClick: () => dispatch(goto('backup-index')),
-        'data-test': '@notification/no-backup/button',
+        'data-test-id': '@notification/no-backup/button',
     };
 
     const translation = `${translationString(

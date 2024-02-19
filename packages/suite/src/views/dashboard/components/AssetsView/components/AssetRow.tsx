@@ -172,7 +172,7 @@ export const AssetRow = memo(
                 {!failed ? (
                     <CryptoBalanceWrapper
                         isLastRow={isLastRow}
-                        data-test={`@asset-card/${symbol}/balance`}
+                        data-test-id={`@asset-card/${symbol}/balance`}
                     >
                         <FiatBalanceWrapper>
                             <FiatValue amount={cryptoValue} symbol={symbol} />

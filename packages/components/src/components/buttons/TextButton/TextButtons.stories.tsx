@@ -11,7 +11,7 @@ export const All: StoryFn = () => (
     <>
         <StoryColumn minWidth={350} maxWidth={420}>
             <TextButton
-                data-test="text-button"
+                data-test-id="text-button"
                 onClick={() => {
                     console.log('click');
                 }}
@@ -20,7 +20,7 @@ export const All: StoryFn = () => (
             </TextButton>
             <TextButton
                 size="medium"
-                data-test="text-button"
+                data-test-id="text-button"
                 onClick={() => {
                     console.log('click');
                 }}
@@ -30,7 +30,7 @@ export const All: StoryFn = () => (
 
             <TextButton
                 size="small"
-                data-test="text-button"
+                data-test-id="text-button"
                 onClick={() => {
                     console.log('click');
                 }}
@@ -39,7 +39,7 @@ export const All: StoryFn = () => (
             </TextButton>
 
             <TextButton
-                data-test="text-button-icon"
+                data-test-id="text-button-icon"
                 icon="GHOST"
                 onClick={() => {
                     console.log('click');
@@ -48,14 +48,14 @@ export const All: StoryFn = () => (
                 Text Button Icon
             </TextButton>
 
-            <TextButton icon="GHOST" data-test="text-button-loading" isLoading>
+            <TextButton icon="GHOST" data-test-id="text-button-loading" isLoading>
                 Text Button loading
             </TextButton>
 
             <TextButton
                 icon="GHOST"
                 isDisabled
-                data-test="text-button-disabled"
+                data-test-id="text-button-disabled"
                 onClick={() => {
                     console.log('click');
                 }}

@@ -56,7 +56,10 @@ const PaymentSuccessful = ({ account }: PaymentSuccessfulProps) => {
             <Description>
                 <Translation id="TR_EXCHANGE_DETAIL_SUCCESS_TEXT" />
             </Description>
-            <Button data-test="@coinmarket/exchange/payment/back-to-account" onClick={handleClick}>
+            <Button
+                data-test-id="@coinmarket/exchange/payment/back-to-account"
+                onClick={handleClick}
+            >
                 <Translation id="TR_EXCHANGE_DETAIL_SUCCESS_BUTTON" />
             </Button>
         </Wrapper>

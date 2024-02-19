@@ -91,7 +91,7 @@ export interface ButtonProps extends SelectedHTMLButtonProps {
     children: React.ReactNode;
     title?: string;
     className?: string;
-    'data-test'?: string;
+    'data-test-id'?: string;
 }
 
 export const Button = ({

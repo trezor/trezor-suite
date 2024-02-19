@@ -22,7 +22,7 @@ export const DeviceInitialize = () => {
         <TroubleshootingTips
             label={<Translation id="TR_DEVICE_NOT_INITIALIZED" />}
             cta={
-                <Button data-test="@button/go-to-onboarding" onClick={handleCtaClick}>
+                <Button data-test-id="@button/go-to-onboarding" onClick={handleCtaClick}>
                     <Translation id="TR_GO_TO_ONBOARDING" />
                 </Button>
             }

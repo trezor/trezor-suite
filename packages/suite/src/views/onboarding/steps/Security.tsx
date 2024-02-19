@@ -23,7 +23,7 @@ const SecurityStep = () => {
                 description={<Translation id="TR_SECURITY_SUBHEADING" />}
                 innerActions={
                     <OnboardingButtonCta
-                        data-test="@onboarding/create-backup-button"
+                        data-test-id="@onboarding/create-backup-button"
                         onClick={() => {
                             goToNextStep();
                         }}
@@ -33,7 +33,7 @@ const SecurityStep = () => {
                 }
                 outerActions={
                     <OnboardingButtonSkip
-                        data-test="@onboarding/skip-backup"
+                        data-test-id="@onboarding/skip-backup"
                         onClick={() => {
                             setShowSkipConfirmation(true);
                             updateAnalytics({ backup: 'skip' });

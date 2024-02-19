@@ -11,7 +11,7 @@ const StyledButton = styled(Button)`
 const InstallButtonCommon = (
     props: Omit<ButtonProps, 'children'> & { children?: React.ReactNode },
 ) => (
-    <StyledButton {...props} data-test="@firmware/install-button">
+    <StyledButton {...props} data-test-id="@firmware/install-button">
         {props.children || <Translation id="TR_INSTALL" />}
     </StyledButton>
 );

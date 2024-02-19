@@ -14,15 +14,15 @@ const Line = styled.div`
 `;
 
 export const Version = () => (
-    <Modal data-test="@modal/version">
+    <Modal data-test-id="@modal/version">
         <Wrapper>
             <Paragraph type="callout">APPLICATION VERSION</Paragraph>
-            <H2 data-test="@version/number">{getSuiteVersion()}</H2>
+            <H2 data-test-id="@version/number">{getSuiteVersion()}</H2>
             <Line />
             <Paragraph type="callout">LAST COMMIT HASH</Paragraph>
             <Link
                 href={`https://github.com/trezor/trezor-suite/commits/${getCommitHash()}`}
-                data-test="@version/commit-hash-link"
+                data-test-id="@version/commit-hash-link"
             >
                 <H2>{getCommitHash()}</H2>
             </Link>

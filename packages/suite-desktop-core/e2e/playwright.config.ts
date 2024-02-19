@@ -9,7 +9,7 @@ const config: PlaywrightTestConfig = {
         trace: 'on',
         video: 'on',
         screenshot: 'on',
-        testIdAttribute: 'data-test',
+        testIdAttribute: 'data-test-id',
     },
     reportSlowTests: null,
     reporter: [['list']],

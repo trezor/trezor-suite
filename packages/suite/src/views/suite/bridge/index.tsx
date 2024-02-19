@@ -137,7 +137,7 @@ export const InstallBridge = () => {
         <Modal
             heading={<Translation id="TR_TREZOR_BRIDGE_DOWNLOAD" />}
             description={<Translation id="TR_NEW_COMMUNICATION_TOOL" />}
-            data-test="@modal/bridge"
+            data-test-id="@modal/bridge"
         >
             <Metadata title="Download Bridge | Trezor Suite" />
             <Content>
@@ -154,7 +154,7 @@ export const InstallBridge = () => {
                 </Version>
                 <StyledImage image={`BRIDGE_CHECK_TREZOR_${DeviceModelInternal.T2T1}`} />
                 {isLoading ? (
-                    <LoaderWrapper data-test="@bridge/loading">
+                    <LoaderWrapper data-test-id="@bridge/loading">
                         <CenteredLoader size={50} />
                         <Paragraph>
                             <Translation id="TR_GATHERING_INFO" />
@@ -169,11 +169,11 @@ export const InstallBridge = () => {
                             onChange={setSelectedTarget}
                             options={installers}
                             maxMenuHeight={160}
-                            data-test="@bridge/installers"
+                            data-test-id="@bridge/installers"
                         />
 
                         <TrezorLink variant="nostyle" href={`${data.uri}${target.value}`}>
-                            <DownloadBridgeButton data-test="@bridge/download-button">
+                            <DownloadBridgeButton data-test-id="@bridge/download-button">
                                 <Translation
                                     id="TR_DOWNLOAD_LATEST_BRIDGE"
                                     values={{ version: data.latestVersion }}
@@ -198,7 +198,7 @@ export const InstallBridge = () => {
                             icon="ARROW_LEFT"
                             variant="tertiary"
                             onClick={goToWallet}
-                            data-test="@bridge/goto/wallet-index"
+                            data-test-id="@bridge/goto/wallet-index"
                         >
                             <Translation id="TR_TAKE_ME_BACK_TO_WALLET" />
                         </StyledButton>

@@ -12,7 +12,7 @@ export const DeviceUnreadable = () => {
 
     return (
         <DeviceInvalidModeLayout
-            data-test="@device-invalid-mode/unreadable"
+            data-test-id="@device-invalid-mode/unreadable"
             title={<Translation id="TR_UNREADABLE" />}
             text={<Translation id="TR_UNREADABLE_EXPLAINED" />}
             resolveButton={

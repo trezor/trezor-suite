@@ -149,7 +149,7 @@ export type NavigationItem = {
     id: string;
     callback: () => void;
     title: JSX.Element;
-    'data-test'?: string;
+    'data-test-id'?: string;
     isHidden?: boolean;
 };
 export type ActionItem = NavigationItem & {
@@ -251,7 +251,7 @@ export const AppNavigation = ({ items, actions, primaryContent, inView }: AppNav
                                                         isActive={isActive}
                                                         isNavigationDisabled={isAccountLoading}
                                                         onClick={onClick}
-                                                        data-test={item['data-test']}
+                                                        data-test-id={item['data-test-id']}
                                                     >
                                                         <Text>{title}</Text>
                                                     </StyledNavLink>
@@ -291,7 +291,7 @@ export const AppNavigation = ({ items, actions, primaryContent, inView }: AppNav
                                             icon={buyAction?.icon}
                                             key={buyAction?.id}
                                             onClick={buyAction?.callback}
-                                            data-test={`@wallet/menu/${buyAction?.id}`}
+                                            data-test-id={`@wallet/menu/${buyAction?.id}`}
                                             variant="tertiary"
                                             size="small"
                                             isDisabled={disabledButtonsDueDiscovery}
@@ -315,7 +315,7 @@ export const AppNavigation = ({ items, actions, primaryContent, inView }: AppNav
                                                         icon={icon}
                                                         key={id}
                                                         onClick={item.callback}
-                                                        data-test={`@wallet/menu/${item.id}`}
+                                                        data-test-id={`@wallet/menu/${item.id}`}
                                                         variant={
                                                             id === 'wallet-coinmarket-buy'
                                                                 ? 'tertiary'
@@ -334,7 +334,7 @@ export const AppNavigation = ({ items, actions, primaryContent, inView }: AppNav
                                         <Dropdown
                                             alignMenu="bottom-right"
                                             isDisabled={disabledButtonsDueDiscovery}
-                                            data-test="@wallet/menu/extra-dropdown"
+                                            data-test-id="@wallet/menu/extra-dropdown"
                                             items={[
                                                 {
                                                     key: 'extra',
@@ -350,7 +350,7 @@ export const AppNavigation = ({ items, actions, primaryContent, inView }: AppNav
                                                                             ? undefined
                                                                             : item.callback,
                                                                     label: title,
-                                                                    'data-test': `@wallet/menu/${item.id}`,
+                                                                    'data-test-id': `@wallet/menu/${item.id}`,
                                                                 };
                                                             },
                                                         ),

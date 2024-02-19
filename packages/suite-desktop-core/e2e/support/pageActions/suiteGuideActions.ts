@@ -59,9 +59,9 @@ class SuiteGuide {
 
     async closeGuide(window: Page) {
         // since there's a possibility of a notification, we first check for it
-        const suiteNotification = await window.locator('[data-test*="@toast"]').first();
+        const suiteNotification = await window.locator('[data-test-id*="@toast"]').first();
         if (await suiteNotification.isVisible()) {
-            await suiteNotification.locator('[data-test$="close"]').click();
+            await suiteNotification.locator('[data-test-id$="close"]').click();
             await suiteNotification.waitFor({ state: 'detached' });
         }
         await window.getByTestId('@guide/button-close').click();

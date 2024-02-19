@@ -24,7 +24,7 @@ export const CustomFirmware = () => {
 
     return (
         <SectionItem
-            data-test="@settings/device/custom-firmware"
+            data-test-id="@settings/device/custom-firmware"
             ref={anchorRef}
             shouldHighlight={shouldHighlight}
         >
@@ -38,7 +38,7 @@ export const CustomFirmware = () => {
                     onClick={openModal}
                     variant="destructive"
                     isDisabled={isDeviceLocked}
-                    data-test="@settings/device/custom-firmware-modal-button"
+                    data-test-id="@settings/device/custom-firmware-modal-button"
                 >
                     <Translation id="TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_BUTTON" />
                 </ActionButton>

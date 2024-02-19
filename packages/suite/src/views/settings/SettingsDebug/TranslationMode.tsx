@@ -10,7 +10,7 @@ export const TranslationMode = () => {
 
     return (
         <SectionItem
-            data-test="@settings/debug/translation-mode"
+            data-test-id="@settings/debug/translation-mode"
             ref={anchorRef}
             shouldHighlight={shouldHighlight}
         >

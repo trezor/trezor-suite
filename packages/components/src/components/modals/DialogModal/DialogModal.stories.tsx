@@ -42,7 +42,7 @@ export const DialogModal: StoryObj<DialogModalProps> = {
         className: {
             control: 'none',
         },
-        'data-test': {
+        'data-test-id': {
             control: 'none',
         },
     },

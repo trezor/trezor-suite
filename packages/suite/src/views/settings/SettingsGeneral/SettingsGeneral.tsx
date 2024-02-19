@@ -48,7 +48,7 @@ export const SettingsGeneral = () => {
     const isProviderConnected = useSelector(selectSelectedProviderForLabels);
 
     return (
-        <SettingsLayout data-test="@settings/index">
+        <SettingsLayout data-test-id="@settings/index">
             {isWeb() && !isMobileLayout && shouldShowSettingsDesktopAppPromoBanner && (
                 <DesktopSuiteBanner />
             )}

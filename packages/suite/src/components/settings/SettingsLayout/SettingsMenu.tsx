@@ -70,21 +70,21 @@ export const SettingsMenu = () => {
                 id: 'settings-index',
                 title: <Translation id="TR_GENERAL" />,
                 position: 'primary',
-                'data-test': '@settings/menu/general',
+                'data-test-id': '@settings/menu/general',
                 callback: () => dispatch(goto('settings-index', { preserveParams: true })),
             },
             {
                 id: 'settings-device',
                 title: <Translation id="TR_DEVICE" />,
                 position: 'primary',
-                'data-test': '@settings/menu/device',
+                'data-test-id': '@settings/menu/device',
                 callback: () => dispatch(goto('settings-device', { preserveParams: true })),
             },
             {
                 id: 'settings-coins',
                 title: <Translation id="TR_COINS" />,
                 position: 'primary',
-                'data-test': '@settings/menu/wallet',
+                'data-test-id': '@settings/menu/wallet',
                 callback: () => dispatch(goto('settings-coins', { preserveParams: true })),
             },
             {
@@ -92,7 +92,7 @@ export const SettingsMenu = () => {
                 title: <Translation id="TR_DEBUG_SETTINGS" />,
                 position: 'primary',
                 isHidden: !showDebugMenu,
-                'data-test': '@settings/menu/debug',
+                'data-test-id': '@settings/menu/debug',
                 callback: () => dispatch(goto('settings-debug', { preserveParams: true })),
             },
         ],
@@ -104,7 +104,7 @@ export const SettingsMenu = () => {
             title={
                 <span
                     aria-hidden="true"
-                    data-test="@settings/menu/title"
+                    data-test-id="@settings/menu/title"
                     onClick={handleTitleClick}
                 >
                     <Translation id="TR_SETTINGS" />
@@ -117,7 +117,7 @@ export const SettingsMenu = () => {
                         <CloseButtonSticky
                             isAppNavigationPanelInView={isAppNavigationPanelInView}
                             onClick={handleClose}
-                            data-test="@settings/menu/close"
+                            data-test-id="@settings/menu/close"
                         />
                     </CloseButtonWrapper>
                 )

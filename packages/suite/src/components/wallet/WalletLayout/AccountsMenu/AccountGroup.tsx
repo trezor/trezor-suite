@@ -115,12 +115,12 @@ export const AccountGroup = forwardRef(
                         <Header
                             isOpen={isOpen}
                             onClick={!keepOpen ? onClick : undefined}
-                            data-test={`@account-menu/${type}`}
+                            data-test-id={`@account-menu/${type}`}
                         >
                             <ChevronContainer>
                                 {!keepOpen && (
                                     <ChevronIcon
-                                        data-test="@account-menu/arrow"
+                                        data-test-id="@account-menu/arrow"
                                         isActive={isOpen}
                                         size={18}
                                         color={theme.iconSubdued}

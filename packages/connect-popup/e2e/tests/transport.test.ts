@@ -40,7 +40,7 @@ fixtures.forEach(f => {
 
         [popup] = await Promise.all([
             page.waitForEvent('popup'),
-            page.click("button[data-test='@submit-button']"),
+            page.click("button[data-test-id='@submit-button']"),
         ]);
 
         await f.expect();

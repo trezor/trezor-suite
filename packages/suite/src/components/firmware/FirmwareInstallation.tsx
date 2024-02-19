@@ -70,7 +70,7 @@ export const FirmwareInstallation = ({
                     <Button
                         variant="primary"
                         onClick={getContinueAction}
-                        data-test="@firmware/continue-button"
+                        data-test-id="@firmware/continue-button"
                     >
                         <Translation id={standaloneFwUpdate ? 'TR_CLOSE' : 'TR_CONTINUE'} />
                     </Button>

@@ -37,7 +37,11 @@ export const GuideButton = () => {
 
     return (
         <FreeFocusInside>
-            <Wrapper data-test="@guide/button-open" onClick={openGuide} $isGuideOpen={isGuideOpen}>
+            <Wrapper
+                data-test-id="@guide/button-open"
+                onClick={openGuide}
+                $isGuideOpen={isGuideOpen}
+            >
                 <Icon size={18} icon="LIGHTBULB" />
             </Wrapper>
         </FreeFocusInside>

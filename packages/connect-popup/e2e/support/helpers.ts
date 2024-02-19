@@ -4,16 +4,16 @@ import { BrowserContext, chromium, Page } from '@playwright/test';
 // Waits and clicks for an array on buttons in serial order.
 export const waitAndClick = async (page: Page, buttons: string[]) => {
     for (const button of buttons) {
-        await page.waitForSelector(`[data-test='${button}']`, { state: 'visible' });
-        await page.click(`[data-test='${button}']`);
+        await page.waitForSelector(`[data-test-id='${button}']`, { state: 'visible' });
+        await page.click(`[data-test-id='${button}']`);
     }
 };
 
 // Helper to use data-test attributes to find elements.
 export const findElementByDataTest = async (page: Page, dataTest: string, timeout?: number) => {
-    await page.waitForSelector(`[data-test='${dataTest}']`, { state: 'visible', timeout });
+    await page.waitForSelector(`[data-test-id='${dataTest}']`, { state: 'visible', timeout });
 
-    return page.$(`[data-test='${dataTest}']`);
+    return page.$(`[data-test-id='${dataTest}']`);
 };
 
 export const log = (...val: string[]) => {
@@ -109,13 +109,13 @@ export const openPopup = (
     } else {
         triggerPopup.push(explorerPage.waitForEvent('popup'));
     }
-    triggerPopup.push(explorerPage.click("button[data-test='@submit-button']"));
+    triggerPopup.push(explorerPage.click("button[data-test-id='@submit-button']"));
 
     return Promise.all(triggerPopup) as Promise<Page[]>;
 };
 
 export const checkHasLogs = async (logPage: Page) => {
-    const locator = await logPage.locator("button[data-test='@log-container/download-button']");
+    const locator = await logPage.locator("button[data-test-id='@log-container/download-button']");
     if (await locator.isVisible()) {
         return true;
     }
@@ -126,7 +126,7 @@ export const checkHasLogs = async (logPage: Page) => {
 export const downloadLogs = async (logPage: Page, downloadLogPath: string) => {
     const [download] = await Promise.all([
         logPage.waitForEvent('download'), // wait for download to start
-        logPage.click("button[data-test='@log-container/download-button']"),
+        logPage.click("button[data-test-id='@log-container/download-button']"),
     ]);
 
     await download.saveAs(downloadLogPath);

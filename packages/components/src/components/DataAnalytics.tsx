@@ -123,7 +123,7 @@ export const DataAnalytics = ({
     const [trackingEnabled, setTrackingEnabled] = useState<boolean>(true);
 
     return (
-        <StyledCard data-test="@analytics/consent" className={className}>
+        <StyledCard data-test-id="@analytics/consent" className={className}>
             <Wrapper>
                 <Heading>
                     <FormattedMessage
@@ -179,7 +179,7 @@ export const DataAnalytics = ({
 
                 <ButtonWrapper>
                     <StyledButton
-                        data-test="@analytics/continue-button"
+                        data-test-id="@analytics/continue-button"
                         onClick={() => onConfirm(trackingEnabled)}
                     >
                         <FormattedMessage id="TR_CONFIRM" defaultMessage="Confirm" />

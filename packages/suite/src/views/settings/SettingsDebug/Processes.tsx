@@ -53,14 +53,17 @@ export const Processes = () => {
 
     return (
         <>
-            <SectionItem data-test="@settings/debug/processes">
+            <SectionItem data-test-id="@settings/debug/processes">
                 <TextColumn
                     title="Processes"
                     description="You may control subprocesses launched by Trezor Suite in this panel"
                 />
             </SectionItem>
             {items.map(item => (
-                <SectionItem data-test={`@settings/debug/processes/${item.name}`} key={item.name}>
+                <SectionItem
+                    data-test-id={`@settings/debug/processes/${item.name}`}
+                    key={item.name}
+                >
                     <TextColumn title={item.name} />
                     <ActionColumn>
                         <Checkbox

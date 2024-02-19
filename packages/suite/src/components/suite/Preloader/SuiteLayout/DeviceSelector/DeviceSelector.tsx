@@ -165,7 +165,7 @@ export const DeviceSelector = () => {
 
     return (
         <Wrapper
-            data-test="@menu/switch-device"
+            data-test-id="@menu/switch-device"
             onClick={handleSwitchDeviceClick}
             isAnimationTriggered={isAnimationTriggered}
             tabIndex={0}

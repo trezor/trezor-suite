@@ -41,7 +41,10 @@ export const PassphraseOnDeviceModal = ({ device }: PassphraseOnDeviceModalProps
         useSelector(selectIsDiscoveryAuthConfirmationRequired) || device.authConfirm;
 
     return (
-        <StyledDevicePromptModal isAbortable={false} data-test="@modal/enter-passphrase-on-device">
+        <StyledDevicePromptModal
+            isAbortable={false}
+            data-test-id="@modal/enter-passphrase-on-device"
+        >
             <StyledDeviceConfirmImage device={device} />
 
             <StyledH2>

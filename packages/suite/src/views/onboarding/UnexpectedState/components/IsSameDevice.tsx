@@ -24,7 +24,7 @@ const IsSameDevice = () => {
                         enableOnboardingReducer(true);
                     }}
                     variant="secondary"
-                    data-test="@onboarding/unexpected-state/is-same/start-over-button"
+                    data-test-id="@onboarding/unexpected-state/is-same/start-over-button"
                 >
                     <Translation id="TR_START_AGAIN" />
                 </Button>

@@ -18,7 +18,7 @@ export const ShowApplicationLog = () => {
 
     return (
         <SectionItem
-            data-test="@settings/application-log"
+            data-test-id="@settings/application-log"
             ref={anchorRef}
             shouldHighlight={shouldHighlight}
         >
@@ -30,7 +30,7 @@ export const ShowApplicationLog = () => {
                 <ActionButton
                     onClick={handleClick}
                     variant="secondary"
-                    data-test="@settings/show-log-button"
+                    data-test-id="@settings/show-log-button"
                 >
                     <Translation id="TR_SHOW_LOG" />
                 </ActionButton>

@@ -70,7 +70,7 @@ const DownloadButton = ({ array, filename }: { array: any[]; filename: string })
     };
 
     return (
-        <Button data-test="@log-container/download-button" onClick={downloadArrayAsFile}>
+        <Button data-test-id="@log-container/download-button" onClick={downloadArrayAsFile}>
             Download Logs
         </Button>
     );
@@ -149,7 +149,7 @@ const DebugCenter = () => {
             {logs.length > 0 ? (
                 <View
                     title="Logs"
-                    data-test="@connect-logs/logs"
+                    data-test-id="@connect-logs/logs"
                     buttons={
                         <DownloadButton
                             array={orderByTimestamp(logs)}
@@ -165,7 +165,7 @@ const DebugCenter = () => {
                 </View>
             ) : (
                 <Wrapper>
-                    <StyledP data-test="@connect-logs/no-logs">
+                    <StyledP data-test-id="@connect-logs/no-logs">
                         Waiting for an app to connect
                     </StyledP>
                 </Wrapper>

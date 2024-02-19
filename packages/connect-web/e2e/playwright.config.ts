@@ -9,6 +9,7 @@ const config: PlaywrightTestConfig = {
         headless: process.env.HEADLESS === 'true',
         ignoreHTTPSErrors: true,
         trace: 'retain-on-failure',
+        testIdAttribute: 'data-test-id',
     },
 };
 export default config;

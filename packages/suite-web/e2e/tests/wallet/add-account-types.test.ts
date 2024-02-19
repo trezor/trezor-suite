@@ -74,7 +74,7 @@ describe('Account types suite', () => {
                 // for a specific type of BTC acc, get the current number of accounts
                 cy.getTestElement(`@account-menu/${type}/group`)
                     .children()
-                    .not(`[data-test="@account-menu/account-item-skeleton"]`)
+                    .not(`[data-test-id="@account-menu/account-item-skeleton"]`)
                     .then(specificAccounts => {
                         const numberOfAccounts1 = specificAccounts.length;
 
@@ -84,7 +84,7 @@ describe('Account types suite', () => {
                         // for a specific type of BTC acc, get the current number of accounts again for comparison
                         cy.getTestElement(`@account-menu/${type}/group`)
                             .children()
-                            .not(`[data-test="@account-menu/account-item-skeleton"]`)
+                            .not(`[data-test-id="@account-menu/account-item-skeleton"]`)
                             .then(specificAccounts => {
                                 const numberOfAccounts2 = specificAccounts.length;
                                 expect(numberOfAccounts2).to.be.equal(numberOfAccounts1 + 1);
@@ -128,19 +128,19 @@ describe('Account types suite', () => {
         coins.forEach((coin: NetworkSymbol) => {
             onAccountsPage.applyCoinFilter(coin);
             // get the element containing all accounts
-            cy.get(`[type="normal"] [data-test*="@account-menu/${coin}/normal"]`).then(
+            cy.get(`[type="normal"] [data-test-id*="@account-menu/${coin}/normal"]`).then(
                 currentAccounts => {
                     const numberOfAccounts1 = currentAccounts.length;
 
                     cy.getTestElement('@account-menu/add-account').should('be.visible').click();
                     cy.getTestElement('@modal').should('be.visible');
-                    cy.get(`[data-test="@settings/wallet/network/${coin}"]`)
+                    cy.get(`[data-test-id="@settings/wallet/network/${coin}"]`)
                         .should('be.visible')
                         .click();
                     cy.getTestElement('@add-account').click();
                     cy.discoveryShouldFinish();
 
-                    cy.get(`[type="normal"] [data-test*="@account-menu/${coin}/normal"]`).then(
+                    cy.get(`[type="normal"] [data-test-id*="@account-menu/${coin}/normal"]`).then(
                         newAccounts => {
                             const numberOfAccounts2 = newAccounts.length;
                             expect(numberOfAccounts2).to.be.equal(numberOfAccounts1 + 1);

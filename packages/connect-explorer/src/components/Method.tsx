@@ -49,7 +49,7 @@ export const getField = (field: Field<any> | FieldWithBundle<any>, props: Props)
         case 'checkbox':
             return (
                 <Checkbox
-                    data-test={`@checkbox/${field.name}`}
+                    data-test-id={`@checkbox/${field.name}`}
                     key={field.name}
                     field={field}
                     onChange={props.actions.onFieldChange}
@@ -119,7 +119,7 @@ const Method = () => {
         <MethodContent>
             {fields.map(field => getField(field, { actions }))}
             <Row>
-                <Button onClick={onSubmit} data-test="@submit-button">
+                <Button onClick={onSubmit} data-test-id="@submit-button">
                     {submitButton}
                 </Button>
                 {response && response.success && <VerifyButton name={name} onClick={onVerify} />}

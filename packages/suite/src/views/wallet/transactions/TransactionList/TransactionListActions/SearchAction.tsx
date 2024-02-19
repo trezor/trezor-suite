@@ -174,7 +174,7 @@ export const SearchAction = ({ account, searchQuery, setSearch, setSelectedPage 
 
             <StyledInput
                 isExpanded={isExpanded}
-                data-test="@wallet/accounts/search-icon"
+                data-test-id="@wallet/accounts/search-icon"
                 size="small"
                 innerRef={inputRef}
                 innerAddon={<SearchIcon icon="SEARCH" size={16} color={theme.iconSubdued} />}

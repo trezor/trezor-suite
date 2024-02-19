@@ -14,7 +14,7 @@ const LoaderWrapper = styled.div`
 `;
 
 export const BundleLoader = () => (
-    <LoaderWrapper data-test="@suite/bundle-loader">
+    <LoaderWrapper data-test-id="@suite/bundle-loader">
         <Spinner size={64} isGrey={false} />
     </LoaderWrapper>
 );

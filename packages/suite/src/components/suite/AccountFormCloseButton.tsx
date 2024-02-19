@@ -7,5 +7,5 @@ export const AccountFormCloseButton = () => {
 
     const handleClick = () => dispatch(goto('wallet-index', { preserveParams: true }));
 
-    return <CloseButton onClick={handleClick} data-test="@wallet/menu/close-button" />;
+    return <CloseButton onClick={handleClick} data-test-id="@wallet/menu/close-button" />;
 };

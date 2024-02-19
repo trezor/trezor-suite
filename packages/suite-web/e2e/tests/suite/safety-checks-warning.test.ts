@@ -39,7 +39,7 @@ describe('safety_checks Warning For PromptTemporarily', () => {
         cy.getTestElement('@settings/device/safety-checks-button').click({
             scrollBehavior: 'bottom',
         });
-        cy.get(`[data-test="@radio-button-prompt"]`).click();
+        cy.get(`[data-test-id="@radio-button-prompt"]`).click();
         cy.getTestElement('@safety-checks-apply').click();
         cy.getTestElement('@prompts/confirm-on-device');
         cy.task('pressYes');
@@ -66,7 +66,7 @@ describe('safety_checks Warning For PromptTemporarily', () => {
         cy.getTestElement('@settings/device/safety-checks-button').click({
             scrollBehavior: 'bottom',
         });
-        cy.get('[data-test="@radio-button-strict"]').click();
+        cy.get('[data-test-id="@radio-button-strict"]').click();
         cy.getTestElement('@safety-checks-apply').click();
         cy.getTestElement('@prompts/confirm-on-device');
         cy.task('pressYes');
@@ -81,7 +81,7 @@ describe('safety_checks Warning For PromptTemporarily', () => {
         cy.getTestElement('@settings/device/safety-checks-button').click({
             scrollBehavior: 'bottom',
         });
-        cy.get('[data-test="@radio-button-strict"]').click();
+        cy.get('[data-test-id="@radio-button-strict"]').click();
         cy.getTestElement('@safety-checks-apply').click();
         cy.getTestElement('@prompts/confirm-on-device');
         cy.task('pressYes');
@@ -91,7 +91,7 @@ describe('safety_checks Warning For PromptTemporarily', () => {
         cy.getTestElement('@settings/device/safety-checks-button').click({
             scrollBehavior: 'bottom',
         });
-        cy.get(`[data-test="@radio-button-prompt"]`).click();
+        cy.get(`[data-test-id="@radio-button-prompt"]`).click();
         cy.getTestElement('@safety-checks-apply').click();
         cy.getTestElement('@prompts/confirm-on-device');
         cy.task('pressYes');

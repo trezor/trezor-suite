@@ -12,7 +12,7 @@ export const Control = ({ dataTest, ...controlProps }: ControlComponentProps) =>
             dataTest
                 ? ({
                       ...controlProps.innerProps,
-                      'data-test': `${dataTest}/input`,
+                      'data-test-id': `${dataTest}/input`,
                   } as ControlProps<OptionType>['innerProps'])
                 : controlProps.innerProps
         }
@@ -29,7 +29,7 @@ export const Option = ({ dataTest, ...optionProps }: OptionComponentProps) => (
         innerProps={
             {
                 ...optionProps.innerProps,
-                'data-test': `${dataTest}/option/${
+                'data-test-id': `${dataTest}/option/${
                     typeof optionProps.data.value === 'string'
                         ? optionProps.data.value
                         : optionProps.label

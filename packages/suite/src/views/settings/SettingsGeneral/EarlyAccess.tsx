@@ -32,7 +32,7 @@ export const EarlyAccess = () => {
 
     return (
         <SectionItem
-            data-test="@settings/early-access"
+            data-test-id="@settings/early-access"
             ref={anchorRef}
             shouldHighlight={shouldHighlight}
         >

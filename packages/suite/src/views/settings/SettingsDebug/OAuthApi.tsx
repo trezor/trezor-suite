@@ -31,7 +31,7 @@ export const OAuthApi = () => {
 
     return (
         <SectionItem
-            data-test="@settings/debug/oauth-api"
+            data-test-id="@settings/debug/oauth-api"
             ref={anchorRef}
             shouldHighlight={shouldHighlight}
         >

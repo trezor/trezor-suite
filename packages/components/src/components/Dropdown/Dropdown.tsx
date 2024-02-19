@@ -36,7 +36,7 @@ const Container = styled.div<{ disabled?: boolean; $hasCustomChildren: boolean }
     ${getFocusShadowStyle()};
     cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
 
-    /** 
+    /**
         This must be here to reduce clickable area to the "circle" of the (...) children.
         However, if you use custom children its your own responsibility to handle it.
     */
@@ -75,7 +75,7 @@ export type DropdownProps = Omit<MenuProps, 'setToggled'> & {
     renderOnClickPosition?: boolean;
     onToggle?: (isToggled: boolean) => void;
     className?: string;
-    'data-test'?: string;
+    'data-test-id'?: string;
     children?: ((isToggled: boolean) => ReactElement<any>) | ReactElement<any>;
 };
 
@@ -100,7 +100,7 @@ export const Dropdown = forwardRef(
             onToggle,
             className,
             children,
-            'data-test': dataTest,
+            'data-test-id': dataTest,
         }: DropdownProps,
         ref,
     ) => {
@@ -208,7 +208,7 @@ export const Dropdown = forwardRef(
                 onClick={e => e.stopPropagation()}
                 $isToggled={isToggled}
                 isDisabled={isDisabled}
-                data-test={dataTest}
+                data-test-id={dataTest}
             />
         );
 

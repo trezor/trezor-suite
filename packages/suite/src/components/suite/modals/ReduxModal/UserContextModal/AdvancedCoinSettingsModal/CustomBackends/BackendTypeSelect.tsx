@@ -35,7 +35,7 @@ const useBackendOptions = (network: Network) =>
                                 id="TR_BACKEND_CUSTOM_SERVERS"
                                 values={{
                                     type: (
-                                        <Capitalize data-test={`@settings/advance/${backend}`}>
+                                        <Capitalize data-test-id={`@settings/advance/${backend}`}>
                                             {backend}
                                         </Capitalize>
                                     ),
@@ -63,7 +63,7 @@ export const BackendTypeSelect = ({ network, value, onChange }: BackendTypeSelec
             value={backendOptions.find(option => option.value === value)}
             onChange={changeType}
             options={backendOptions}
-            data-test="@settings/advance/select-type"
+            data-test-id="@settings/advance/select-type"
         />
     ) : null;
 };

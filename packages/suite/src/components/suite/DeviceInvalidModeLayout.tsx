@@ -44,7 +44,7 @@ type DeviceInvalidModeLayoutProps = {
     image?: ImageType;
     allowSwitchDevice?: boolean;
     resolveButton?: ReactNode;
-    ['data-test']?: string;
+    ['data-test-id']?: string;
 };
 
 export const DeviceInvalidModeLayout = ({
@@ -53,7 +53,7 @@ export const DeviceInvalidModeLayout = ({
     image = 'UNI_WARNING',
     allowSwitchDevice,
     resolveButton,
-    'data-test': dataTest,
+    'data-test-id': dataTest,
 }: DeviceInvalidModeLayoutProps) => {
     const devicesCount = useSelector(selectDevicesCount);
     const dispatch = useDispatch();
@@ -65,7 +65,7 @@ export const DeviceInvalidModeLayout = ({
         <StyledModal
             heading={title}
             description={text}
-            data-test={dataTest}
+            data-test-id={dataTest}
             bottomBarComponents={
                 <>
                     {resolveButton && resolveButton}

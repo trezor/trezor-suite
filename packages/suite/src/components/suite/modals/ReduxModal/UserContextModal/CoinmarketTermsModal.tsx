@@ -109,7 +109,7 @@ export const CoinmarketTermsModal = ({
             bottomBarComponents={
                 <FooterContent>
                     <Button
-                        data-test={`@coinmarket/${lowercaseType}/offers/buy-terms-confirm-button`}
+                        data-test-id={`@coinmarket/${lowercaseType}/offers/buy-terms-confirm-button`}
                         onClick={() => {
                             decision.resolve(true);
                             onCancel();

@@ -11,6 +11,6 @@ export const CoinBalance = ({ value, symbol }: CoinBalanceProps) => (
         value={value}
         symbol={symbol}
         isBalance
-        data-test={`@wallet/coin-balance/value-${symbol}`}
+        data-test-id={`@wallet/coin-balance/value-${symbol}`}
     />
 );

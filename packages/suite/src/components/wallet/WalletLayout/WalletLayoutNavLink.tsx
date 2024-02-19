@@ -58,14 +58,14 @@ export interface WalletLayoutNavLinkProps {
     values?: ExtendedMessageDescriptor['values'];
     badge?: ExtendedMessageDescriptor['id'];
     onClick: () => void;
-    'data-test'?: string;
+    'data-test-id'?: string;
 }
 
 export const WalletLayoutNavLink = (props: WalletLayoutNavLinkProps) => {
     const { active, title, onClick, values, badge } = props;
 
     return (
-        <NavLink active={active} onClick={onClick} data-test={props['data-test']}>
+        <NavLink active={active} onClick={onClick} data-test-id={props['data-test-id']}>
             <NavLinkText>
                 <Translation id={title} values={values} />
                 {badge && (

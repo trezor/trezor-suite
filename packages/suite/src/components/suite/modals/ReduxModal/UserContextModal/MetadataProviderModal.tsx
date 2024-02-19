@@ -86,7 +86,7 @@ export const MetadataProviderModal = ({ onCancel, decision }: MetadataProviderMo
             isCancelable
             onCancel={onModalCancel}
             heading={<Translation id="METADATA_MODAL_HEADING" />}
-            data-test="@modal/metadata-provider"
+            data-test-id="@modal/metadata-provider"
             bottomBarComponents={
                 <Wrapper>
                     <StyledButton
@@ -94,7 +94,7 @@ export const MetadataProviderModal = ({ onCancel, decision }: MetadataProviderMo
                         onClick={() => connect('dropbox')}
                         isLoading={isLoading === 'dropbox'}
                         isDisabled={!!isLoading}
-                        data-test="@modal/metadata-provider/dropbox-button"
+                        data-test-id="@modal/metadata-provider/dropbox-button"
                         icon="DROPBOX"
                     >
                         <Translation id="TR_DROPBOX" />
@@ -106,7 +106,7 @@ export const MetadataProviderModal = ({ onCancel, decision }: MetadataProviderMo
                             onClick={() => connect('google')}
                             isLoading={isLoading === 'google'}
                             isDisabled={!!isLoading}
-                            data-test="@modal/metadata-provider/google-button"
+                            data-test-id="@modal/metadata-provider/google-button"
                             icon="GOOGLE_DRIVE"
                         >
                             <Translation id="TR_GOOGLE_DRIVE" />
@@ -120,7 +120,7 @@ export const MetadataProviderModal = ({ onCancel, decision }: MetadataProviderMo
                             onClick={() => connect('fileSystem')}
                             isLoading={isLoading === 'fileSystem'}
                             isDisabled={!!isLoading}
-                            data-test="@modal/metadata-provider/file-system-button"
+                            data-test-id="@modal/metadata-provider/file-system-button"
                         >
                             <Translation id="TR_LOCAL_FILE_SYSTEM" />
                         </StyledButton>

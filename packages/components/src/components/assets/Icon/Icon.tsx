@@ -58,7 +58,7 @@ export interface IconProps extends SVGAttributes<HTMLDivElement> {
     color?: string;
     hoverColor?: string;
     useCursorPointer?: boolean;
-    'data-test'?: string;
+    'data-test-id'?: string;
 }
 
 export const Icon = forwardRef(
@@ -73,7 +73,7 @@ export const Icon = forwardRef(
             onClick,
             onMouseEnter,
             onMouseLeave,
-            'data-test': dataTest,
+            'data-test-id': dataTest,
         }: IconProps,
         ref?: Ref<HTMLDivElement>,
     ) => {
@@ -91,7 +91,7 @@ export const Icon = forwardRef(
                 ref={ref}
                 $useCursorPointer={onClick !== undefined || useCursorPointer}
                 $color={defaultColor}
-                data-test={dataTest}
+                data-test-id={dataTest}
             >
                 <ReactSVG
                     src={ICONS[icon]}

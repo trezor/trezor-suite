@@ -84,7 +84,7 @@ export const Inputs = () => {
                             )}
                         />
                     }
-                    data-test="@coinmarket/p2p/fiat-input"
+                    data-test-id="@coinmarket/p2p/fiat-input"
                 />
             </Left>
             <Right>

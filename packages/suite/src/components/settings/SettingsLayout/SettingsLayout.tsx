@@ -14,7 +14,7 @@ const Wrapper = styled.div`
 type SettingsLayoutProps = {
     title?: string;
     children?: ReactNode;
-    ['data-test']?: string;
+    ['data-test-id']?: string;
     className?: string;
 };
 
@@ -22,13 +22,13 @@ export const SettingsLayout = ({
     title,
     children,
     className,
-    'data-test': dataTest,
+    'data-test-id': dataTest,
 }: SettingsLayoutProps) => {
     useLayout(title || 'Settings', SettingsMenu);
     const { isDiscoveryRunning } = useDiscovery();
 
     return (
-        <Wrapper className={className} data-test={dataTest}>
+        <Wrapper className={className} data-test-id={dataTest}>
             <SettingsLoading isPresent={isDiscoveryRunning} />
             <>{children}</>
         </Wrapper>

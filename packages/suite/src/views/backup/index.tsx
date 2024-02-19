@@ -49,7 +49,7 @@ type CloseButtonProps = {
 const CloseButton = ({ onClick, variant }: CloseButtonProps) => (
     <StyledButton
         onClick={onClick}
-        data-test="@backup/close-button"
+        data-test-id="@backup/close-button"
         variant="tertiary"
         icon="CROSS"
     >
@@ -98,7 +98,7 @@ export const Backup = ({ cancelable, onCancel }: ForegroundAppProps) => {
                 heading={<Translation id="TR_RECONNECT_HEADER" />}
                 isCancelable
                 onCancel={onCancel}
-                data-test="@backup/no-device"
+                data-test-id="@backup/no-device"
             >
                 <StyledImage image="CONNECT_DEVICE" width="360" />
             </Modal>
@@ -125,7 +125,7 @@ export const Backup = ({ cancelable, onCancel }: ForegroundAppProps) => {
                 {device.features.unfinished_backup ? (
                     <VerticalCenter>
                         <StyledImage image="UNI_ERROR" />
-                        <StyledP data-test="@backup/already-failed-message">
+                        <StyledP data-test-id="@backup/already-failed-message">
                             <Translation id="BACKUP_BACKUP_ALREADY_FAILED_DESCRIPTION" />
                             <TrezorLink icon="EXTERNAL_LINK" href={HELP_CENTER_FAILED_BACKUP_URL}>
                                 <Translation id="TR_LEARN_MORE" />
@@ -135,7 +135,7 @@ export const Backup = ({ cancelable, onCancel }: ForegroundAppProps) => {
                 ) : (
                     <VerticalCenter>
                         <StyledImage image="UNI_SUCCESS" />
-                        <StyledP data-test="@backup/already-finished-message">
+                        <StyledP data-test-id="@backup/already-finished-message">
                             <Translation id="BACKUP_BACKUP_ALREADY_FINISHED_DESCRIPTION" />
                         </StyledP>
                     </VerticalCenter>
@@ -148,7 +148,7 @@ export const Backup = ({ cancelable, onCancel }: ForegroundAppProps) => {
         <StyledModal
             isCancelable={cancelable}
             onCancel={onCancel}
-            data-test="@backup"
+            data-test-id="@backup"
             heading={getModalHeading(backup.status)}
             totalProgressBarSteps={nonErrorBackupStatuses.length}
             currentProgressBarStep={currentProgressBarStep}
@@ -157,7 +157,7 @@ export const Backup = ({ cancelable, onCancel }: ForegroundAppProps) => {
                     {backup.status === 'initial' && (
                         <>
                             <StyledButton
-                                data-test="@backup/start-button"
+                                data-test-id="@backup/start-button"
                                 onClick={() => dispatch(backupDevice())}
                                 isDisabled={!canStart(backup.userConfirmed, locks)}
                             >
@@ -180,7 +180,7 @@ export const Backup = ({ cancelable, onCancel }: ForegroundAppProps) => {
                                 <>
                                     <CloseButton onClick={onCancel} variant="TR_SKIP_PIN" />
                                     <StyledButton
-                                        data-test="@backup/continue-to-pin-button"
+                                        data-test-id="@backup/continue-to-pin-button"
                                         isDisabled={!canContinue(backup.userConfirmed)}
                                         onClick={() => {
                                             onCancel();
@@ -213,7 +213,7 @@ export const Backup = ({ cancelable, onCancel }: ForegroundAppProps) => {
 
             {backup.status === 'finished' && (
                 <>
-                    <StyledP type="hint" data-test="@backup/success-message">
+                    <StyledP type="hint" data-test-id="@backup/success-message">
                         <Translation id="TR_BACKUP_FINISHED_TEXT" />
                     </StyledP>
                     <AfterBackupCheckboxes />
@@ -223,7 +223,7 @@ export const Backup = ({ cancelable, onCancel }: ForegroundAppProps) => {
             {backup.status === 'error' && (
                 <VerticalCenter>
                     <StyledImage image="UNI_ERROR" />
-                    <StyledP data-test="@backup/error-message">{backup.error}</StyledP>
+                    <StyledP data-test-id="@backup/error-message">{backup.error}</StyledP>
                 </VerticalCenter>
             )}
         </StyledModal>

@@ -53,7 +53,7 @@ export const DeviceAuthenticityOptOutModal = ({ onCancel }: DeviceAuthenticityOp
                     variant="destructive"
                     onClick={handleDeviceAuthenticityOptOut}
                     isDisabled={!isConfirmed}
-                    data-test="@device-authenticity/opt-out/button"
+                    data-test-id="@device-authenticity/opt-out/button"
                 >
                     <Translation id="TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_BUTTON" />
                 </Button>
@@ -76,7 +76,7 @@ export const DeviceAuthenticityOptOutModal = ({ onCancel }: DeviceAuthenticityOp
                     title={<Translation id="TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_CHECKBOX_TITLE" />}
                     isChecked={isConfirmed}
                     onClick={() => setIsConfirmed(!isConfirmed)}
-                    data-test="@device-authenticity/checkbox"
+                    data-test-id="@device-authenticity/checkbox"
                 />
             </CheckboxWrapper>
         </StyledModal>

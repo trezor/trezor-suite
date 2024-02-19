@@ -124,7 +124,7 @@ export const DashboardGraph = memo(({ accounts }: DashboardGraphProps) => {
     }, [dispatch, isLoading, selectedDeviceState, selectedRange]);
 
     return (
-        <Wrapper data-test="@dashboard/graph">
+        <Wrapper data-test-id="@dashboard/graph">
             <GraphWrapper>
                 {allFailed ? (
                     <ErrorMessage>

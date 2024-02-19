@@ -5,7 +5,7 @@ import { typography, TypographyStyle } from '@trezor/theme';
 export type ParagraphProps = {
     type?: TypographyStyle;
     className?: string; // Used for color, margins etc. while typography properties should be set via type prop.
-    'data-test'?: string;
+    'data-test-id'?: string;
     children: React.ReactNode;
 };
 
@@ -16,10 +16,10 @@ const P = styled.div<{ type: TypographyStyle }>`
 export const Paragraph = ({
     className,
     type = 'body',
-    'data-test': dataTest,
+    'data-test-id': dataTest,
     children,
 }: ParagraphProps) => (
-    <P className={className} type={type} data-test={dataTest}>
+    <P className={className} type={type} data-test-id={dataTest}>
         {children}
     </P>
 );

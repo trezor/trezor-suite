@@ -52,7 +52,7 @@ export const Tor = () => {
     };
 
     return (
-        <SectionItem data-test="@settings/tor" ref={anchorRef} shouldHighlight={shouldHighlight}>
+        <SectionItem data-test-id="@settings/tor" ref={anchorRef} shouldHighlight={shouldHighlight}>
             <TextColumn
                 title={
                     <LoadingContent isLoading={isTorLoading} isSuccessful={!hasTorError}>

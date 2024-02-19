@@ -53,7 +53,7 @@ export const AccountTypeSelect = ({
     return (
         <>
             <Select
-                data-test="@add-account-type/select"
+                data-test-id="@add-account-type/select"
                 label={<Translation id="TR_ACCOUNT_TYPE" />}
                 isSearchable={false}
                 isClearable={false}

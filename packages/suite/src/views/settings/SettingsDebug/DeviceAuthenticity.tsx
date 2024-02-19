@@ -12,7 +12,7 @@ export const DeviceAuthenticity = () => {
         dispatch(setDebugMode({ isUnlockedBootloaderAllowed: state }));
 
     return (
-        <SectionItem data-test="@settings/debug/device-authenticity/switch">
+        <SectionItem data-test-id="@settings/debug/device-authenticity/switch">
             <TextColumn
                 title="Allow unlocked bootloader"
                 description="Skip device authenticity check when bootloader is unlocked."

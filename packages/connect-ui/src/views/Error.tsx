@@ -246,7 +246,7 @@ export const ErrorView = (props: ErrorViewProps) => {
     const tips = getTroubleshootingTips(props);
 
     return (
-        <View data-test="@connect-ui/error">
+        <View data-test-id="@connect-ui/error">
             <InnerWrapper>
                 <H>Error</H>
 
@@ -280,7 +280,7 @@ export const ErrorView = (props: ErrorViewProps) => {
                 </TipsContainer>
 
                 <Button
-                    data-test="@connect-ui/error-close-button"
+                    data-test-id="@connect-ui/error-close-button"
                     variant="primary"
                     onClick={() => window.close()}
                 >

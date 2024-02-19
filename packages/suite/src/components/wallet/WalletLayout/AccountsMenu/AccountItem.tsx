@@ -142,7 +142,7 @@ export const AccountItem = forwardRef(
                 isSelected={isSelected}
                 ref={ref}
                 onClick={handleHeaderClick}
-                data-test={dataTestKey}
+                data-test-id={dataTestKey}
                 tabIndex={0}
             >
                 <Left>
@@ -151,7 +151,7 @@ export const AccountItem = forwardRef(
                 </Left>
                 <Right>
                     <Row>
-                        <AccountName isSelected={isSelected} data-test={`${dataTestKey}/label`}>
+                        <AccountName isSelected={isSelected} data-test-id={`${dataTestKey}/label`}>
                             <AccountLabelContainer>
                                 <AccountLabel
                                     accountLabel={accountLabel}

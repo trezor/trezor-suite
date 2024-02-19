@@ -41,7 +41,7 @@ export const CoinmarketBuyButton = ({ symbol, dataTest }: BuyButtonProps) => {
     };
 
     return (
-        <Button onClick={onClick} variant="tertiary" data-test={dataTest} size="small">
+        <Button onClick={onClick} variant="tertiary" data-test-id={dataTest} size="small">
             <Translation id="TR_BUY_BUY" />
         </Button>
     );

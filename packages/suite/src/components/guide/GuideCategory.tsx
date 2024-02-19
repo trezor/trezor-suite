@@ -63,7 +63,7 @@ export const GuideCategory = () => {
                         <SectionHeading>
                             <Translation id="TR_GUIDE_ARTICLES" />
                         </SectionHeading>
-                        <Nodes data-test="@guide/nodes">
+                        <Nodes data-test-id="@guide/nodes">
                             {pages.map(page => (
                                 <GuideNode key={page.id} node={page} />
                             ))}

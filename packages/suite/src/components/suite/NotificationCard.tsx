@@ -27,7 +27,7 @@ interface NotificationCardProps {
     isLoading?: boolean;
     button?: ButtonType;
     className?: string;
-    ['data-test']?: string;
+    ['data-test-id']?: string;
     icon?: IconType;
 }
 
@@ -148,7 +148,7 @@ export const NotificationCard = ({
             variant={variant}
             className={className}
             elevation={elevation}
-            data-test={props['data-test']}
+            data-test-id={props['data-test-id']}
         >
             <ElevationContext baseElevation={elevation}>
                 <IconWrapper>

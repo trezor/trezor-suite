@@ -237,9 +237,9 @@ export const Feedback = ({ type }: FeedbackProps) => {
                         <Headline>
                             <Translation id="TR_GUIDE_FEEDBACK_CATEGORY_HEADLINE" />
                         </Headline>
-                        <SelectWrapper data-test="@guide/feedback/suggestion-dropdown">
+                        <SelectWrapper data-test-id="@guide/feedback/suggestion-dropdown">
                             <Select
-                                data-test="@guide/feedback/suggestion-dropdown/select"
+                                data-test-id="@guide/feedback/suggestion-dropdown/select"
                                 isSearchable={false}
                                 defaultValue={category && categoryToOption(category)}
                                 options={Object.keys(feedbackCategories).map(category =>
@@ -266,7 +266,7 @@ export const Feedback = ({ type }: FeedbackProps) => {
                                     key={item.id}
                                     selected={rating?.id === item.id}
                                     onClick={() => setRating(item)}
-                                    data-test={`@guide/feedback/suggestion/${item.id}`}
+                                    data-test-id={`@guide/feedback/suggestion/${item.id}`}
                                 >
                                     {item.value}
                                 </RatingItem>
@@ -292,7 +292,7 @@ export const Feedback = ({ type }: FeedbackProps) => {
                         setDescription(e.target.value)
                     }
                     characterCount
-                    data-test="@guide/feedback/suggestion-form"
+                    data-test-id="@guide/feedback/suggestion-form"
                     maxLength={MESSAGE_CHARACTER_LIMIT}
                 />
 
@@ -303,7 +303,7 @@ export const Feedback = ({ type }: FeedbackProps) => {
                         (type === 'SUGGESTION' && rating === undefined) ||
                         (type === 'BUG' && category === undefined)
                     }
-                    data-test="@guide/feedback/submit-button"
+                    data-test-id="@guide/feedback/submit-button"
                 >
                     <Translation id="TR_GUIDE_FEEDBACK_SEND_REPORT" />
                 </Submit>

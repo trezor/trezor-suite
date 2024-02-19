@@ -13,7 +13,7 @@ export const Devkit = () => {
     };
 
     return (
-        <SectionItem data-test="@settings/debug/firmware-devkit/switch">
+        <SectionItem data-test-id="@settings/debug/firmware-devkit/switch">
             <TextColumn
                 title="Devkit"
                 description="Offer devkit versions of firmware binaries. Never install regular firmware on devkit and vice versa! Use this only if you know what you are doing."

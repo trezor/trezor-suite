@@ -99,7 +99,7 @@ interface LoaderProps {
     message?: string;
 }
 export const Loader = ({ message }: LoaderProps) => (
-    <StyledLoaderWrapper data-test="@connect-ui/loader">
+    <StyledLoaderWrapper data-test-id="@connect-ui/loader">
         <StyledLoader>
             <Circular>
                 <svg

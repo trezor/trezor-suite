@@ -81,11 +81,11 @@ export const GuideSearch = ({ pageRoot, setSearchActive }: GuideSearchProps) => 
                 showClearButton="always"
                 onClear={() => setQuery('')}
                 innerAddon={loading ? <Spinner size={24} /> : <Icon icon="SEARCH" size={24} />}
-                data-test="@guide/search"
+                data-test-id="@guide/search"
             />
 
             {searchResult.length ? (
-                <PageFoundList data-test="@guide/search/results">
+                <PageFoundList data-test-id="@guide/search/results">
                     {searchResult.map(({ page, preview }) => (
                         <GuideNode
                             key={page.id}
@@ -97,7 +97,7 @@ export const GuideSearch = ({ pageRoot, setSearchActive }: GuideSearchProps) => 
             ) : (
                 query &&
                 !loading && (
-                    <NoResults data-test="@guide/search/no-results">
+                    <NoResults data-test-id="@guide/search/no-results">
                         <Translation id="TR_ACCOUNT_SEARCH_NO_RESULTS" />
                     </NoResults>
                 )

@@ -98,7 +98,7 @@ export const Pagination = ({
                 calculatedPages.map(i => (
                     <PageItem
                         key={i}
-                        data-test={`@wallet/accounts/pagination/${i}`}
+                        data-test-id={`@wallet/accounts/pagination/${i}`}
                         data-test-activated={i === currentPage ?? 'true'}
                         onClick={() => onPageSelected(i)}
                         isActive={i === currentPage}
@@ -114,7 +114,7 @@ export const Pagination = ({
                         // https://medium.com/@robinpokorny/index-as-a-key-is-an-anti-pattern-e0349aece318
                         <PageItem
                             key={i}
-                            data-test={`@wallet/accounts/pagination/${i + 1}`}
+                            data-test-id={`@wallet/accounts/pagination/${i + 1}`}
                             onClick={() => onPageSelected(i + 1)}
                         >
                             {i + 1}

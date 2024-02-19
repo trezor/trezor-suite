@@ -84,7 +84,7 @@ export const ResetDeviceStep = () => {
                 <OptionsWrapper fullWidth={false}>
                     <OnboardingOption
                         icon="SEED_SINGLE"
-                        data-test={
+                        data-test-id={
                             isShamirBackupAvailable
                                 ? '@onboarding/button-standard-backup'
                                 : '@onboarding/only-backup-option-button'
@@ -99,7 +99,7 @@ export const ResetDeviceStep = () => {
                             <OptionsDivider />
                             <OnboardingOption
                                 icon="SEED_SHAMIR"
-                                data-test="@onboarding/shamir-backup-option-button"
+                                data-test-id="@onboarding/shamir-backup-option-button"
                                 onClick={isDisabled ? undefined : handleShamirReset}
                                 heading={<Translation id="SHAMIR_SEED" />}
                                 description={<Translation id="SHAMIR_SEED_DESCRIPTION" />}

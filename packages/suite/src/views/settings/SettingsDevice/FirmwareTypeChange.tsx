@@ -56,7 +56,7 @@ export const FirmwareTypeChange = ({ isDeviceLocked }: FirmwareTypeProps) => {
 
     return (
         <SectionItem
-            data-test="@settings/device/firmware-type"
+            data-test-id="@settings/device/firmware-type"
             ref={anchorRef}
             shouldHighlight={shouldHighlight}
         >
@@ -93,7 +93,7 @@ export const FirmwareTypeChange = ({ isDeviceLocked }: FirmwareTypeProps) => {
                     <ActionButton
                         variant="secondary"
                         onClick={handleAction}
-                        data-test="@settings/device/switch-fw-type-button"
+                        data-test-id="@settings/device/switch-fw-type-button"
                         isDisabled={isDeviceLocked}
                     >
                         <Translation

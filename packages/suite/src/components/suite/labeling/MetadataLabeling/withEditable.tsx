@@ -92,7 +92,7 @@ export const withEditable =
                     <Editable
                         minWidth={20}
                         ref={divRef}
-                        data-test="@metadata/input"
+                        data-test-id="@metadata/input"
                         value={value}
                         // onBlur={onBlur}
                         onChange={event => {
@@ -115,7 +115,7 @@ export const withEditable =
                         <Icon
                             useCursorPointer
                             size={14}
-                            data-test="@metadata/submit"
+                            data-test-id="@metadata/submit"
                             icon="CHECK"
                             onClick={e => {
                                 e.stopPropagation();
@@ -129,7 +129,7 @@ export const withEditable =
                         <Icon
                             useCursorPointer
                             size={14}
-                            data-test="@metadata/cancel"
+                            data-test-id="@metadata/cancel"
                             icon="CROSS"
                             onClick={e => {
                                 e.stopPropagation();

@@ -274,7 +274,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                             icon="CROSS"
                             size="tiny"
                             variant="tertiary"
-                            data-test={`outputs.${outputId}.remove`}
+                            data-test-id={`outputs.${outputId}.remove`}
                             onClick={() => {
                                 removeOutput(outputId);
                                 // compose by first Output
@@ -293,7 +293,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                         addressBottomText
                     )
                 }
-                data-test={inputName}
+                data-test-id={inputName}
                 defaultValue={addressValue}
                 maxLength={formInputsMaxLength.address}
                 innerRef={inputRef}

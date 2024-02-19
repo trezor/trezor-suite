@@ -82,11 +82,11 @@ const SetPinStep = () => {
                 image="PIN"
                 key="pin-mismatch" // to properly rerender in translation mode
                 heading={<Translation id="TR_PIN_MISMATCH_HEADING" />}
-                data-test="@pin-mismatch"
+                data-test-id="@pin-mismatch"
                 innerActions={
                     <OnboardingButtonCta
                         onClick={onTryAgain}
-                        data-test="@pin-mismatch/try-again-button"
+                        data-test-id="@pin-mismatch/try-again-button"
                     >
                         <Translation id="TR_TRY_AGAIN" />
                     </OnboardingButtonCta>
@@ -105,7 +105,7 @@ const SetPinStep = () => {
                 description={<Translation id="TR_PIN_SET_SUCCESS" />}
                 outerActions={
                     <OnboardingButtonCta
-                        data-test="@onboarding/pin/continue-button"
+                        data-test-id="@onboarding/pin/continue-button"
                         onClick={() => goToNextStep()}
                     >
                         <Translation id="TR_CONTINUE" />
@@ -136,7 +136,7 @@ const SetPinStep = () => {
                     // "Create a pin" button to start the process, continue button after the pin is set (as outerAction), no primary CTA during the setup procedure on T2T1
                     !showConfirmationPrompt ? (
                         <OnboardingButtonCta
-                            data-test="@onboarding/set-pin-button"
+                            data-test-id="@onboarding/set-pin-button"
                             onClick={setPin}
                         >
                             <Translation id="TR_SET_PIN" />
@@ -147,7 +147,10 @@ const SetPinStep = () => {
                     // show skip button only if we are not done yet with setting up the pin (state is other than success state)
                     // and if confirmation prompt is not active (I guess there is no point showing back btn which can't be clicked because it is under the modal)
                     !showConfirmationPrompt ? (
-                        <OnboardingButtonSkip data-test="@onboarding/skip-button" onClick={skipPin}>
+                        <OnboardingButtonSkip
+                            data-test-id="@onboarding/skip-button"
+                            onClick={skipPin}
+                        >
                             <Translation id="TR_SKIP" />
                         </OnboardingButtonSkip>
                     ) : undefined

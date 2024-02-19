@@ -171,7 +171,7 @@ export const CustomFee = <TFieldValues extends FormState>({
                         label={<Translation id="TR_GAS_LIMIT" />}
                         inputState={getInputState(feeLimitError)}
                         name={FEE_LIMIT}
-                        data-test={FEE_LIMIT}
+                        data-test-id={FEE_LIMIT}
                         onChange={changeFeeLimit}
                         rules={feeLimitRules}
                         bottomText={
@@ -192,7 +192,7 @@ export const CustomFee = <TFieldValues extends FormState>({
                     inputState={getInputState(feePerUnitError)}
                     innerAddon={<Units>{feeUnits}</Units>}
                     name={FEE_PER_UNIT}
-                    data-test={FEE_PER_UNIT}
+                    data-test-id={FEE_PER_UNIT}
                     rules={feeRules}
                     bottomText={feePerUnitError?.message || null}
                 />

@@ -241,22 +241,22 @@ export const All: StoryObj = {
             <StoryColumn maxWidth={200}>
                 <Heading>Checkbox</Heading>
                 <SubHeading>Unchecked</SubHeading>
-                <Checkbox onClick={() => {}} data-test="checkbox">
+                <Checkbox onClick={() => {}} data-test-id="checkbox">
                     Label
                 </Checkbox>
                 <SubHeading>Checked</SubHeading>
-                <Checkbox onClick={() => {}} isChecked data-test="checkbox-checked">
+                <Checkbox onClick={() => {}} isChecked data-test-id="checkbox-checked">
                     Label
                 </Checkbox>
             </StoryColumn>
             <StoryColumn maxWidth={200}>
                 <Heading>Radio Buttons</Heading>
                 <SubHeading>Unchecked</SubHeading>
-                <Radio onClick={() => {}} data-test="radio-button">
+                <Radio onClick={() => {}} data-test-id="radio-button">
                     Label
                 </Radio>
                 <SubHeading>Checked</SubHeading>
-                <Radio onClick={() => {}} isChecked data-test="radio-button-checked">
+                <Radio onClick={() => {}} isChecked data-test-id="radio-button-checked">
                     Label
                 </Radio>
             </StoryColumn>

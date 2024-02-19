@@ -94,7 +94,7 @@ export const MobileNavigation = ({ closeMobileNavigation }: MobileNavigationProp
                 return (
                     <HoverAnimation isHoverable={!isActive} key={route}>
                         <MenuItem
-                            data-test={`@suite/menu/${route}`}
+                            data-test-id={`@suite/menu/${route}`}
                             onClick={() => {
                                 if (!isDisabled) {
                                     if (route === 'wallet-index') {

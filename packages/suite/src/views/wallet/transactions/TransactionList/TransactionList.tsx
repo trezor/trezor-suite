@@ -183,7 +183,7 @@ export const TransactionList = ({
                     accountMetadata={accountMetadata}
                 />
             }
-            data-test="@wallet/accounts/transaction-list"
+            data-test-id="@wallet/accounts/transaction-list"
         >
             {account.accountType === 'coinjoin' && !isSearching && (
                 <TransactionCandidates accountKey={account.key} />

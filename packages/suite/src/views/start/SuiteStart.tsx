@@ -11,7 +11,7 @@ const Content = styled.div`
 
 export const SuiteStart = () => (
     <WelcomeLayout>
-        <Content data-test="@onboarding/welcome">
+        <Content data-test-id="@onboarding/welcome">
             <StartContent />
         </Content>
     </WelcomeLayout>

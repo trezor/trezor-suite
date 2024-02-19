@@ -6,26 +6,26 @@ import { NetworkAnalyzer } from '../support/networkAnalyzer';
 const timeout = 1000 * 60 * 5; // 5 minutes because it takes a while to start tor.
 
 const turnOnTorInSettings = async (window: Page, shouldEnableTor = true) => {
-    await window.click('[data-test="@suite/menu/settings"]');
-    await window.waitForSelector('[data-test="@settings/general/tor-switch"]');
+    await window.click('[data-test-id="@suite/menu/settings"]');
+    await window.waitForSelector('[data-test-id="@settings/general/tor-switch"]');
     const torIAlreadyEnabled = await window.isChecked(
-        '[data-test="@settings/general/tor-switch"] > input',
+        '[data-test-id="@settings/general/tor-switch"] > input',
     );
     if ((shouldEnableTor && torIAlreadyEnabled) || (!shouldEnableTor && !torIAlreadyEnabled)) {
         // If tor is already enabled, we return early.
         return;
     }
 
-    await window.click('[data-test="@settings/general/tor-switch"]');
-    await window.waitForSelector('[data-test="@loading-content/loader"]', {
+    await window.click('[data-test-id="@settings/general/tor-switch"]');
+    await window.waitForSelector('[data-test-id="@loading-content/loader"]', {
         state: 'visible',
     });
-    await window.waitForSelector('[data-test="@loading-content/loader"]', {
+    await window.waitForSelector('[data-test-id="@loading-content/loader"]', {
         state: 'detached',
         timeout,
     });
     await expectPlaywright(
-        window.locator('[data-test="@settings/general/tor-switch"] > input'),
+        window.locator('[data-test-id="@settings/general/tor-switch"] > input'),
     ).toBeChecked();
 
     await window.waitForTimeout(1000);
@@ -43,11 +43,11 @@ testPlaywright.describe('Tor loading screen', () => {
 
         suite = await launchSuite();
 
-        await suite.window.waitForSelector('[data-test="@tor-loading-screen"]', {
+        await suite.window.waitForSelector('[data-test-id="@tor-loading-screen"]', {
             state: 'visible',
         });
 
-        await suite.window.waitForSelector('[data-test="@welcome/title"]', { timeout });
+        await suite.window.waitForSelector('[data-test-id="@welcome/title"]', { timeout });
 
         suite.electronApp.close();
     });
@@ -69,11 +69,11 @@ testPlaywright.describe('Tor loading screen', () => {
             // Start network analyzer after making sure tor is going to be running.
             networkAnalyzer.start();
 
-            await suite.window.waitForSelector('[data-test="@tor-loading-screen"]', {
+            await suite.window.waitForSelector('[data-test-id="@tor-loading-screen"]', {
                 state: 'visible',
             });
 
-            await suite.window.waitForSelector('[data-test="@welcome/title"]', { timeout });
+            await suite.window.waitForSelector('[data-test-id="@welcome/title"]', { timeout });
             networkAnalyzer.stop();
             const requests = networkAnalyzer.getRequests();
             requests.forEach(request => {
@@ -95,17 +95,17 @@ testPlaywright.describe('Tor loading screen', () => {
 
         suite = await launchSuite();
 
-        await suite.window.waitForSelector('[data-test="@tor-loading-screen"]', {
+        await suite.window.waitForSelector('[data-test-id="@tor-loading-screen"]', {
             state: 'visible',
         });
-        await suite.window.click('[data-test="@tor-loading-screen/disable-button"]');
+        await suite.window.click('[data-test-id="@tor-loading-screen/disable-button"]');
 
         // disabling loader appears and disappears
         suite.window.locator('text=Disabling Tor');
-        await suite.window.click('[data-test="@suite/menu/settings"]');
+        await suite.window.click('[data-test-id="@suite/menu/settings"]');
 
         await expectPlaywright(
-            suite.window.locator('[data-test="@settings/general/tor-switch"] > input'),
+            suite.window.locator('[data-test-id="@settings/general/tor-switch"] > input'),
         ).not.toBeChecked();
 
         suite.electronApp.close();

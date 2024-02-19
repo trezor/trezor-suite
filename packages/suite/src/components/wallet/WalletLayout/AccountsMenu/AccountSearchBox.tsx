@@ -51,7 +51,7 @@ export const AccountSearchBox = () => {
                 placeholder={translationString('TR_SEARCH')}
                 showClearButton="always"
                 onClear={onClear}
-                data-test="@account-menu/search-input"
+                data-test-id="@account-menu/search-input"
             />
         </InputWrapper>
     );

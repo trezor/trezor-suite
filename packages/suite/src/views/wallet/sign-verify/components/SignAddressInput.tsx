@@ -25,7 +25,7 @@ const Option = ({ data, value, isFocused, innerProps, ...rest }: any) => (
         isFocused={isFocused}
         innerProps={{
             ...innerProps,
-            'data-test': `@sign-verify/sign-address/option/${value}`,
+            'data-test-id': `@sign-verify/sign-address/option/${value}`,
         }}
         {...rest}
     >

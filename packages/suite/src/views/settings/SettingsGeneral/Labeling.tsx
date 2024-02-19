@@ -45,7 +45,7 @@ export const Labeling = () => {
 
     return (
         <SectionItem
-            data-test="@settings/metadata"
+            data-test-id="@settings/metadata"
             ref={anchorRef}
             shouldHighlight={shouldHighlight}
         >

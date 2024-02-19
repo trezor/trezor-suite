@@ -95,7 +95,7 @@ export const BuyQuoteList = ({ isAlternative, quotes }: ListProps) => {
     const { fiatStringAmount, fiatCurrency, wantCrypto } = quotesRequest;
 
     return (
-        <Wrapper data-test="@coinmarket/buy/offers-list">
+        <Wrapper data-test-id="@coinmarket/buy/offers-list">
             <Header>
                 <Left>
                     <SummaryRow>

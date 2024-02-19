@@ -78,14 +78,14 @@ export const ChangeDeviceLabel = ({
                 placeholder={placeholder}
                 inputState={error ? 'error' : undefined}
                 onChange={handleChange}
-                data-test="@settings/device/label-input"
+                data-test-id="@settings/device/label-input"
                 hasBottomPadding={false}
                 size={isVertical ? 'small' : 'large'}
             />
             <Button
                 onClick={handleClick}
                 isDisabled={isDisabled}
-                data-test="@settings/device/label-submit"
+                data-test-id="@settings/device/label-submit"
                 size={isVertical ? 'small' : 'large'}
                 isFullWidth
             >

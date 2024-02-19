@@ -147,7 +147,7 @@ export const SupportFeedbackSelection = () => {
                     <SectionButton
                         onClick={handleBugButtonClick}
                         hasBackground
-                        data-test="@guide/feedback/bug"
+                        data-test-id="@guide/feedback/bug"
                     >
                         <ButtonImage
                             src={resolveStaticPath('images/png/recovery@2x.png')}
@@ -167,7 +167,7 @@ export const SupportFeedbackSelection = () => {
                     <SectionButton
                         onClick={handleFeedbackButtonClick}
                         hasBackground
-                        data-test="@guide/feedback/suggestion"
+                        data-test-id="@guide/feedback/suggestion"
                     >
                         <ButtonImage
                             src={resolveStaticPath('images/png/understand@2x.png')}
@@ -192,7 +192,7 @@ export const SupportFeedbackSelection = () => {
                     </SectionHeader>
 
                     <StyledLink href={TREZOR_FORUM_URL} variant="nostyle">
-                        <SectionButton data-test="@guide/forum">
+                        <SectionButton data-test-id="@guide/forum">
                             <Label>
                                 <LabelHeadline>
                                     <Translation id="TR_GUIDE_FORUM" />
@@ -206,7 +206,7 @@ export const SupportFeedbackSelection = () => {
                     </StyledLink>
 
                     <StyledLink href={TREZOR_SUPPORT_URL} variant="nostyle">
-                        <SectionButton data-test="@guide/support">
+                        <SectionButton data-test-id="@guide/support">
                             <Label>
                                 <LabelHeadline>
                                     <Translation id="TR_GUIDE_SUPPORT" />
@@ -218,7 +218,7 @@ export const SupportFeedbackSelection = () => {
                 </Section>
 
                 <Details>
-                    <DetailItem data-test="@guide/support/version">
+                    <DetailItem data-test-id="@guide/support/version">
                         <Translation id="TR_APP" />
                         :&nbsp;
                         {!isDevEnv && appUpToDate ? (

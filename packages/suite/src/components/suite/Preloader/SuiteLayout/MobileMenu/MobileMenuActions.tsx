@@ -78,7 +78,7 @@ export const MobileMenuActions = ({ closeMobileNavigation }: MobileMenuActionsPr
 
             <MobileActionItem
                 label={<Translation id="TR_NOTIFICATIONS" />}
-                data-test="@suite/menu/notifications-index"
+                data-test-id="@suite/menu/notifications-index"
                 onClick={() => action('notifications-index')}
                 isActive={getIfTabIsActive(['notifications-index'])}
                 icon="NOTIFICATION"
@@ -87,14 +87,14 @@ export const MobileMenuActions = ({ closeMobileNavigation }: MobileMenuActionsPr
 
             <MobileActionItem
                 label={<Translation id="TR_GUIDE_VIEW_HEADLINE_LEARN_AND_DISCOVER" />}
-                data-test="@suite/menu/guide-index"
+                data-test-id="@suite/menu/guide-index"
                 onClick={handleOpenGuide}
                 icon="LIGHTBULB"
             />
 
             <MobileActionItem
                 label={<Translation id="TR_SETTINGS" />}
-                data-test="@suite/menu/settings-index"
+                data-test-id="@suite/menu/settings-index"
                 onClick={() => action('settings-index')}
                 isActive={getIfTabIsActive([
                     'settings-index',

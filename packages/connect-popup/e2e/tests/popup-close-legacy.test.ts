@@ -58,8 +58,8 @@ test.beforeEach(async ({ page }) => {
     await TrezorUserEnvLink.api.startBridge(BRIDGE_VERSION);
     log('beforeEach', 'go to: ', `${url}#/method/verifyMessage`);
     await page.goto(`${url}#/method/verifyMessage`);
-    log('beforeEach', 'waitForSelector: ', "button[data-test='@submit-button']");
-    await page.waitForSelector("button[data-test='@submit-button']", { state: 'visible' });
+    log('beforeEach', 'waitForSelector: ', "button[data-test-id='@submit-button']");
+    await page.waitForSelector("button[data-test-id='@submit-button']", { state: 'visible' });
 
     // Subscribe to 'request' and 'response' events.
     page.on('request', request => {
@@ -91,16 +91,16 @@ test.beforeEach(async ({ page }) => {
     log('beforeEach', 'waitForEvent: ', 'popup');
     [popup] = await Promise.all([
         page.waitForEvent('popup'),
-        page.click("button[data-test='@submit-button']"),
+        page.click("button[data-test-id='@submit-button']"),
     ]);
 
     log('beforeEach', 'waitForLoadState: ', 'load');
-    await popup.waitForSelector("button[data-test='@analytics/continue-button']", {
+    await popup.waitForSelector("button[data-test-id='@analytics/continue-button']", {
         state: 'visible',
         timeout: 40000,
     });
-    log('beforeEach', 'click: ', "button[data-test='@analytics/continue-button']");
-    await popup.click("button[data-test='@analytics/continue-button']");
+    log('beforeEach', 'click: ', "button[data-test-id='@analytics/continue-button']");
+    await popup.click("button[data-test-id='@analytics/continue-button']");
 
     popupClosedPromise = new Promise(resolve => {
         popup.on('close', () => resolve(undefined));
@@ -124,12 +124,12 @@ test.beforeEach(async ({ page }) => {
 test.afterEach(async ({ page }) => {
     log('afterEach', `goto: ${url}#/method/verifyMessage`);
     await page.goto(`${url}#/method/verifyMessage`);
-    log('afterEach', 'waitForSelector: ', "button[data-test='@submit-button']");
-    await page.waitForSelector("button[data-test='@submit-button']", { state: 'visible' });
+    log('afterEach', 'waitForSelector: ', "button[data-test-id='@submit-button']");
+    await page.waitForSelector("button[data-test-id='@submit-button']", { state: 'visible' });
     log('afterEach', 'waitForEvent: ', 'popup');
     [popup] = await Promise.all([
         page.waitForEvent('popup'),
-        page.click("button[data-test='@submit-button']"),
+        page.click("button[data-test-id='@submit-button']"),
     ]);
 
     log('afterEach', 'waitForLoadState: ', 'load');
@@ -219,7 +219,7 @@ test.skip(`popup is reloaded by user. bridge version ${BRIDGE_VERSION}`, async (
     await popup.reload();
     // after popup is reload, communication is lost, there is only infinite loader
     log('waiting for infinite loader');
-    await popup.waitForSelector('div[data-test="@connect-ui/loader"]');
+    await popup.waitForSelector('div[data-test-id="@connect-ui/loader"]');
     // todo: there is no message into client about the fact that popup was unloaded
 });
 
@@ -237,11 +237,11 @@ test.skip('when user cancels permissions in popup it closes automatically', asyn
     await popupClosedPromise;
 
     await page.goto(`${url}#/method/getAddress`);
-    await page.waitForSelector("button[data-test='@submit-button']", { state: 'visible' });
+    await page.waitForSelector("button[data-test-id='@submit-button']", { state: 'visible' });
 
     [popup] = await Promise.all([
         page.waitForEvent('popup'),
-        page.click("button[data-test='@submit-button']"),
+        page.click("button[data-test-id='@submit-button']"),
     ]);
 
     popupClosedPromise = new Promise(resolve => {
@@ -250,9 +250,9 @@ test.skip('when user cancels permissions in popup it closes automatically', asyn
 
     await popup.waitForLoadState('load');
     await popup.waitForSelector('button.confirm', { state: 'visible', timeout: 40000 });
-    await popup.waitForSelector("button[data-test='@permissions/confirm-button']");
+    await popup.waitForSelector("button[data-test-id='@permissions/confirm-button']");
     // We are testing that when cancel permissions, popup is closed automatically.
-    await popup.click("button[data-test='@permissions/cancel-button']");
+    await popup.click("button[data-test-id='@permissions/cancel-button']");
     // Wait for popup to close.
     await popupClosedPromise;
 });
@@ -273,10 +273,10 @@ test.skip('when user cancels Export Bitcoin address dialog in popup it closes au
     await popupClosedPromise;
 
     await page.goto(`${url}#/method/getAddress`);
-    await page.waitForSelector("button[data-test='@submit-button']", { state: 'visible' });
+    await page.waitForSelector("button[data-test-id='@submit-button']", { state: 'visible' });
     [popup] = await Promise.all([
         page.waitForEvent('popup'),
-        page.click("button[data-test='@submit-button']"),
+        page.click("button[data-test-id='@submit-button']"),
     ]);
     popupClosedPromise = new Promise(resolve => {
         popup.on('close', () => resolve(undefined));
@@ -284,11 +284,11 @@ test.skip('when user cancels Export Bitcoin address dialog in popup it closes au
 
     await popup.waitForLoadState('load');
     await popup.waitForSelector('button.confirm', { state: 'visible', timeout: 40000 });
-    await popup.waitForSelector("button[data-test='@permissions/confirm-button']");
-    await popup.click("button[data-test='@permissions/confirm-button']");
-    await popup.waitForSelector("button[data-test='@export-address/cancel-button']");
+    await popup.waitForSelector("button[data-test-id='@permissions/confirm-button']");
+    await popup.click("button[data-test-id='@permissions/confirm-button']");
+    await popup.waitForSelector("button[data-test-id='@export-address/cancel-button']");
     // We are testing that when cancel Export Bitcoin address, popup is closed automatically.
-    await popup.click("button[data-test='@export-address/cancel-button']");
+    await popup.click("button[data-test-id='@export-address/cancel-button']");
     // Wait for popup to close.
     await popupClosedPromise;
 });

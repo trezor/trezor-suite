@@ -128,7 +128,7 @@ export const WelcomeLayout = ({ children }: WelcomeLayoutProps) => {
         <Wrapper>
             {bannerMessage && <MessageSystemBanner message={bannerMessage} />}
 
-            <Body data-test="@welcome-layout/body">
+            <Body data-test-id="@welcome-layout/body">
                 <WelcomeWrapper>
                     <AnimatePresence>
                         {(!isGuideOpen || isGuideOnTop) && (
@@ -151,7 +151,7 @@ export const WelcomeLayout = ({ children }: WelcomeLayoutProps) => {
                                 <Expander>
                                     <TrezorLogo type="suite" width="128px" />
 
-                                    <WelcomeTitle data-test="@welcome/title">
+                                    <WelcomeTitle data-test-id="@welcome/title">
                                         <Translation id="TR_ONBOARDING_WELCOME_HEADING" />
                                     </WelcomeTitle>
                                 </Expander>

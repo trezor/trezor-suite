@@ -21,7 +21,7 @@ describe('ApplicationLog', () => {
         cy.getTestElement('@log/export-button');
         // cypress open todo: implement match-image snapshot. blackout stopped working properly
         cy.getTestElement('@modal/application-log').screenshot('log-modal', {
-            blackout: ['[data-test="@log/content"]'],
+            blackout: ['[data-test-id="@log/content"]'],
         });
 
         // todo: check it really exports something;

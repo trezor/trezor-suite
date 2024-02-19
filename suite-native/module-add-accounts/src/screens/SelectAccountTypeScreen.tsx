@@ -138,7 +138,7 @@ export const SelectAccountTypeScreen = ({
                                 description={bulletsForKeyPath(descKey)}
                                 isSelected={selectedAccountType === item}
                                 isDefault={defaultType === item}
-                                data-testID={`@add-account/select-type/${item}`}
+                                data-test-id={`@add-account/select-type/${item}`}
                                 onSelected={() => setSelectedAccountType(item)}
                             />
                         );

@@ -19,5 +19,5 @@ export interface ExtendedProps extends Props {
     editActive: boolean;
     onSubmit: (value: string | undefined) => void;
     onBlur: () => void;
-    'data-test': string;
+    'data-test-id': string;
 }

@@ -55,7 +55,7 @@ export const PinModal = ({ device, ...rest }: PinModalProps) => {
             }
             onCancel={onCancel}
             isCancelable
-            data-test="@modal/pin"
+            data-test-id="@modal/pin"
             $isExtended={isExtended}
             {...rest}
         >

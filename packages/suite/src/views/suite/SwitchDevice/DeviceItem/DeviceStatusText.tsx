@@ -54,7 +54,7 @@ export const DeviceStatusText = ({
     return (
         <Container
             color={connected ? theme.textPrimaryDefault : theme.textSubdued}
-            data-test={connected ? '@deviceStatus-connected' : '@deviceStatus-disconnected'}
+            data-test-id={connected ? '@deviceStatus-connected' : '@deviceStatus-disconnected'}
         >
             <TextRow>
                 <Icon

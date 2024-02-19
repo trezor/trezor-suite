@@ -26,7 +26,7 @@ export const TorOnionLinks = () => {
 
     return (
         <SectionItem
-            data-test="@settings/tor-onion-links"
+            data-test-id="@settings/tor-onion-links"
             ref={anchorRef}
             shouldHighlight={shouldHighlight}
         >

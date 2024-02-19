@@ -23,7 +23,7 @@ const IconWrapper = styled.div`
 type FloatingMenuProps = { onShowAnalyticsConsent: () => void };
 
 export const FloatingMenu = ({ onShowAnalyticsConsent }: FloatingMenuProps) => (
-    <IconWrapper onClick={onShowAnalyticsConsent} data-test="@analytics/settings">
+    <IconWrapper onClick={onShowAnalyticsConsent} data-test-id="@analytics/settings">
         <Icon icon="SETTINGS" size={22} color={colors.TYPE_DARK_GREY} />
     </IconWrapper>
 );

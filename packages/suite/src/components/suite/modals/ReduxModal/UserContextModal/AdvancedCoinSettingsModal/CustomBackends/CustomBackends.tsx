@@ -150,7 +150,7 @@ export const CustomBackends = ({ network, onCancel }: CustomBackendsProps) => {
 
                 {editable && (
                     <Input
-                        data-test={`@settings/advance/${name}`}
+                        data-test-id={`@settings/advance/${name}`}
                         placeholder={placeholder}
                         inputState={error ? 'error' : undefined}
                         bottomText={error?.message || null}
@@ -163,7 +163,7 @@ export const CustomBackends = ({ network, onCancel }: CustomBackendsProps) => {
                     <AddUrlButton
                         variant="tertiary"
                         icon="PLUS"
-                        data-test="@settings/advance/button/add"
+                        data-test-id="@settings/advance/button/add"
                         onClick={() => {
                             addUrl(value);
                             reset();
@@ -185,7 +185,7 @@ export const CustomBackends = ({ network, onCancel }: CustomBackendsProps) => {
                     variant="primary"
                     onClick={onSaveClick}
                     isDisabled={!!error}
-                    data-test="@settings/advance/button/save"
+                    data-test-id="@settings/advance/button/save"
                 >
                     <Translation id="TR_CONFIRM" />
                 </SaveButton>

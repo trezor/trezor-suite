@@ -47,7 +47,7 @@ const SecurityItem = styled.div`
 type EmptyWalletProps = HTMLAttributes<HTMLDivElement>;
 
 export const EmptyWallet = (props: EmptyWalletProps) => (
-    <Wrapper {...props} data-test="@dashboard/wallet-ready">
+    <Wrapper {...props} data-test-id="@dashboard/wallet-ready">
         <StyledImage image="UNI_SUCCESS" />
         <Content>
             <Title>

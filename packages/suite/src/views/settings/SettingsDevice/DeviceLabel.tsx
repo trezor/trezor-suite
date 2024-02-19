@@ -13,7 +13,7 @@ export const DeviceLabel = ({ isDeviceLocked }: DeviceLabelProps) => {
 
     return (
         <SectionItem
-            data-test="@settings/device/device-label"
+            data-test-id="@settings/device/device-label"
             ref={anchorRef}
             shouldHighlight={shouldHighlight}
         >

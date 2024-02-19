@@ -43,7 +43,7 @@ export const VersionWithUpdate = () => {
 
     return (
         <SectionItem
-            data-test="@settings/version"
+            data-test-id="@settings/version"
             ref={anchorRef}
             shouldHighlight={shouldHighlight}
         >

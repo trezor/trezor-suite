@@ -69,11 +69,11 @@ window.addEventListener('load', () => {
                 <br>
                 To keep your funds safe, we recommend using the latest version of a supported browser.
                 </p>
-                <p class=${style.continueButton} id="continue-to-suite" data-test="@continue-to-suite">Continue at my own risk</p>`
+                <p class=${style.continueButton} id="continue-to-suite" data-test-id="@continue-to-suite">Continue at my own risk</p>`
             : '';
 
     const getMainHtml = (props: MainHtmlProps) => `
-    <div id="unsupported-browser" class="${style.container}" data-test="@browser-detect">
+    <div id="unsupported-browser" class="${style.container}" data-test-id="@browser-detect">
         <h1 class="${style.title}">${props.title}</h1>
         <p class="${style.subtitle}">${props.subtitle}</p>
         ${getSupportedDevicesList(props)}

@@ -158,7 +158,7 @@ const SignVerify = () => {
         label: translationString('TR_SIGNATURE'),
         inputState: getInputState(formErrors.signature) as ReturnType<typeof getInputState>,
         bottomText: signatureError,
-        'data-test': '@sign-verify/signature',
+        'data-test-id': '@sign-verify/signature',
         innerRef: signatureRef,
         ...signatureField,
     };
@@ -223,7 +223,7 @@ const SignVerify = () => {
                             }}
                             bottomText={messageError || null}
                             rows={4}
-                            data-test="@sign-verify/message"
+                            data-test-id="@sign-verify/message"
                             innerRef={messageRef}
                             {...messageField}
                         />
@@ -238,7 +238,7 @@ const SignVerify = () => {
                                 revealedAddresses={revealedAddresses}
                                 inputState={getInputState(formErrors.path)}
                                 bottomText={pathError || null}
-                                data-test="@sign-verify/sign-address"
+                                data-test-id="@sign-verify/sign-address"
                                 {...pathField}
                             />
                         ) : (
@@ -248,7 +248,7 @@ const SignVerify = () => {
                                 type="text"
                                 inputState={getInputState(formErrors.address)}
                                 bottomText={addressError || null}
-                                data-test="@sign-verify/select-address"
+                                data-test-id="@sign-verify/select-address"
                                 {...addressField}
                             />
                         )}
@@ -261,7 +261,7 @@ const SignVerify = () => {
                                     </Tooltip>
                                 }
                                 options={formatOptions}
-                                data-test="@sign-verify/format"
+                                data-test-id="@sign-verify/format"
                                 {...isElectrumField}
                             />
                         )}

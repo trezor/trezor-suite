@@ -91,7 +91,7 @@ const SendCryptoSelect = () => {
                     isDisabled={account.networkType !== 'ethereum'}
                     minValueWidth="58px"
                     isClean
-                    data-test="@coinmarket/exchange/crypto-currency-select"
+                    data-test-id="@coinmarket/exchange/crypto-currency-select"
                 />
             )}
         />

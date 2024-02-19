@@ -87,10 +87,10 @@ export const GuideHeader = ({ back, label, useBreadcrumb }: GuideHeaderProps) =>
                         icon="ARROW_LEFT_LONG"
                         onClick={goBack}
                         variant="tertiary"
-                        data-test="@guide/button-back"
+                        data-test-id="@guide/button-back"
                     />
 
-                    {label && <Label data-test="@guide/label">{label}</Label>}
+                    {label && <Label data-test-id="@guide/label">{label}</Label>}
                 </>
             )}
             {!useBreadcrumb && !back && label && <MainLabel>{label}</MainLabel>}
@@ -101,7 +101,7 @@ export const GuideHeader = ({ back, label, useBreadcrumb }: GuideHeaderProps) =>
                 icon="ARROW_RIGHT_LINE"
                 variant="tertiary"
                 onClick={handleClose}
-                data-test="@guide/button-close"
+                data-test-id="@guide/button-close"
                 size="medium"
             />
         </HeaderWrapper>

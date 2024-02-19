@@ -97,7 +97,7 @@ const ToastNotification = ({
     );
 
     return (
-        <Wrapper data-test={dataTestBase} variant={variant} isTall={isTall} ref={wrapperRef}>
+        <Wrapper data-test-id={dataTestBase} variant={variant} isTall={isTall} ref={wrapperRef}>
             {defaultIcon && typeof defaultIcon === 'string' ? (
                 <Icon icon={defaultIcon} size={24} color={getVariantColor(variant)} />
             ) : (
@@ -119,7 +119,7 @@ const ToastNotification = ({
                     icon="CROSS"
                     hoverColor={theme.TYPE_LIGHTER_GREY}
                     onClick={handleCancelClick}
-                    data-test={`${dataTestBase}/close`}
+                    data-test-id={`${dataTestBase}/close`}
                 />
             )}
         </Wrapper>

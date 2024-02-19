@@ -222,7 +222,7 @@ export const SelectBar: <V extends ValueTypes>(props: SelectBarProps<V>) => JSX.
                                 ? selectedOptionIn === option.value
                                 : false
                         }
-                        data-test={`select-bar/${String(option.value)}`}
+                        data-test-id={`select-bar/${String(option.value)}`}
                     >
                         <span>{option.label}</span>
                         <WidthMock>{option.label}</WidthMock>

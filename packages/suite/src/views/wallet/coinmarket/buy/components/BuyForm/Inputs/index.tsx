@@ -128,7 +128,7 @@ const Inputs = () => {
                                         .filter(c => buyInfo?.supportedFiatCurrencies.has(c))
                                         .map((currency: string) => buildFiatOption(currency))}
                                     isSearchable
-                                    data-test="@coinmarket/buy/fiat-currency-select"
+                                    data-test-id="@coinmarket/buy/fiat-currency-select"
                                     value={value}
                                     isClearable={false}
                                     minValueWidth="58px"
@@ -141,7 +141,7 @@ const Inputs = () => {
                             )}
                         />
                     }
-                    data-test="@coinmarket/buy/fiat-input"
+                    data-test-id="@coinmarket/buy/fiat-input"
                 />
             </Left>
             <Middle responsiveSize="LG">
@@ -176,7 +176,7 @@ const Inputs = () => {
                                     value={value}
                                     isSearchable
                                     isClearable={false}
-                                    data-test="@coinmarket/buy/crypto-currency-select"
+                                    data-test-id="@coinmarket/buy/crypto-currency-select"
                                     options={getCryptoOptions(
                                         account.symbol,
                                         buyInfo?.supportedCryptoCurrencies || new Set(),
@@ -202,7 +202,7 @@ const Inputs = () => {
                             )}
                         />
                     }
-                    data-test="@coinmarket/buy/crypto-input"
+                    data-test-id="@coinmarket/buy/crypto-input"
                 />
             </Right>
         </Wrapper>

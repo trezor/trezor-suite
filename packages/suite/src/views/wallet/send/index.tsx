@@ -88,7 +88,7 @@ const SendLoaded = ({ children, selectedAccount }: SendLoadedProps) => {
             <SendContext.Provider value={sendContextValues}>
                 <Header />
 
-                <FormGrid data-test="@wallet/send/outputs-and-options">
+                <FormGrid data-test-id="@wallet/send/outputs-and-options">
                     <Outputs disableAnim={!!children} />
                     <Options />
                     <SendFees />

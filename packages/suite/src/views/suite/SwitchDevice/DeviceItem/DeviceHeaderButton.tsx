@@ -35,7 +35,7 @@ export const DeviceHeaderButton = ({
                     button={{
                         children: <Translation id="TR_SOLVE_ISSUE" />,
                         onClick: onSolveIssueClick,
-                        'data-test': `@switch-device/${device.path}/solve-issue-button`,
+                        'data-test-id': `@switch-device/${device.path}/solve-issue-button`,
                     }}
                 >
                     {deviceStatusMessage && <Translation id={deviceStatusMessage} />}

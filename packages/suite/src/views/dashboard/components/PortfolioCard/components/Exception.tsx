@@ -68,7 +68,7 @@ const Container = ({ title, description, cta, dataTestBase }: ContainerProps) =>
     const actions = Array.isArray(cta) ? cta : [cta];
 
     return (
-        <Wrapper data-test={`@exception/${dataTestBase}`}>
+        <Wrapper data-test-id={`@exception/${dataTestBase}`}>
             <StyledImage image="UNI_ERROR" />
             <Title>
                 <Translation id={title} />
@@ -90,7 +90,7 @@ const Container = ({ title, description, cta, dataTestBase }: ContainerProps) =>
                         icon={a.icon || 'PLUS'}
                         isLoading={isLocked()}
                         onClick={a.action}
-                        data-test={`@exception/${dataTestBase}/${a.variant || 'primary'}-button`}
+                        data-test-id={`@exception/${dataTestBase}/${a.variant || 'primary'}-button`}
                     >
                         <Translation id={a.label || 'TR_RETRY'} />
                     </Button>

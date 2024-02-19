@@ -149,7 +149,7 @@ export interface DropdownMenuItemProps {
     isDisabled?: boolean;
     isHidden?: boolean;
     separatorBefore?: boolean;
-    'data-test'?: string;
+    'data-test-id'?: string;
 }
 
 interface MenuItemComponentProps extends DropdownMenuItemProps {

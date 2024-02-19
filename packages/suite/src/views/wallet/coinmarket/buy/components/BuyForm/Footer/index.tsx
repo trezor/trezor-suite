@@ -74,7 +74,7 @@ const Footer = () => {
                     name={countrySelect}
                     render={({ field: { onChange, value } }) => (
                         <StyledSelect
-                            data-test="@coinmarket/buy/country-select"
+                            data-test-id="@coinmarket/buy/country-select"
                             options={regional.countriesOptions}
                             isSearchable
                             value={value}
@@ -107,7 +107,7 @@ const Footer = () => {
                     isDisabled={!(formIsValid && hasValues) || formState.isSubmitting}
                     isLoading={formState.isSubmitting}
                     type="submit"
-                    data-test="@coinmarket/buy/compare-button"
+                    data-test-id="@coinmarket/buy/compare-button"
                 >
                     <Translation id="TR_BUY_SHOW_OFFERS" />
                 </StyledButton>

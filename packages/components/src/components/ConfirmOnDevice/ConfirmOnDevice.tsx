@@ -170,7 +170,7 @@ export const ConfirmOnDevice = ({
     return (
         <Wrapper
             animation={isConfirmed ? AnimationDirection.Down : AnimationDirection.Up}
-            data-test="@prompts/confirm-on-device"
+            data-test-id="@prompts/confirm-on-device"
         >
             <Left>
                 {deviceModelInternal === DeviceModelInternal.T2B1 && (
@@ -191,7 +191,9 @@ export const ConfirmOnDevice = ({
                 <Title>{title}</Title>
 
                 {successText && hasSteps && activeStep > steps && (
-                    <Success data-test="@prompts/confirm-on-device/success">{successText}</Success>
+                    <Success data-test-id="@prompts/confirm-on-device/success">
+                        {successText}
+                    </Success>
                 )}
 
                 {hasSteps && activeStep <= steps && (
@@ -200,7 +202,7 @@ export const ConfirmOnDevice = ({
                             <Step
                                 key={step}
                                 isActive={isStepActive(index, activeStep)}
-                                data-test={`@prompts/confirm-on-device/step/${index}${
+                                data-test-id={`@prompts/confirm-on-device/step/${index}${
                                     isStepActive(index, activeStep) ? '/active' : ''
                                 }`}
                             />
@@ -212,7 +214,7 @@ export const ConfirmOnDevice = ({
             <Right>
                 <CloseWrapper>
                     {onCancel && (
-                        <Close onClick={onCancel} data-test="@confirm-on-device/close-button">
+                        <Close onClick={onCancel} data-test-id="@confirm-on-device/close-button">
                             <Icon icon="CROSS" size={16} color={theme.textOnTertiary} />
                         </Close>
                     )}

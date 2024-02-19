@@ -20,7 +20,7 @@ const openPopup = async (page: Page) =>
             // It is important to call waitForEvent before click to set up waiting.
             page.waitForEvent('popup'),
             // Opens popup.
-            page.click("button[data-test='@submit-button']"),
+            page.click("button[data-test-id='@submit-button']"),
         ])
     )[0];
 
@@ -36,7 +36,7 @@ test('unsupported browser', async ({ browser }) => {
     });
     const page = await context.newPage();
     await page.goto(`${url}#/method/getPublicKey`);
-    await page.waitForSelector("button[data-test='@submit-button']", { state: 'visible' });
+    await page.waitForSelector("button[data-test-id='@submit-button']", { state: 'visible' });
     popup = await openPopup(page);
     await popup.waitForSelector('text=Unsupported browser');
     await popup.screenshot({ path: `${dir}/browser-not-supported.png` });
@@ -52,7 +52,7 @@ test('outdated-browser', async ({ browser }) => {
     });
     const page = await context.newPage();
     await page.goto(`${url}#/method/getPublicKey`);
-    await page.waitForSelector("button[data-test='@submit-button']", { state: 'visible' });
+    await page.waitForSelector("button[data-test-id='@submit-button']", { state: 'visible' });
     popup = await openPopup(page);
     await popup.waitForLoadState('load');
     await popup.waitForSelector('text=Outdated browser');

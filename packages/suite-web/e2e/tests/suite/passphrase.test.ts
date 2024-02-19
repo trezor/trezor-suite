@@ -65,7 +65,7 @@ describe('Passphrase', () => {
         // click reveal address
         cy.getTestElement('@wallet/receive/reveal-address-button').click();
         cy.getTestElement('@modal/confirm-address/address-field')
-            .find('[data-test*="chunk"]')
+            .find('[data-test-id*="chunk"]')
             .then(chunks => {
                 let fullAddress = '';
                 // @ts-expect-error
@@ -119,7 +119,7 @@ describe('Passphrase', () => {
         cy.getTestElement('@wallet/receive/reveal-address-button').should('not.be.disabled');
         cy.getTestElement('@wallet/receive/reveal-address-button').click();
         cy.getTestElement('@modal/confirm-address/address-field')
-            .find('[data-test*="chunk"]')
+            .find('[data-test-id*="chunk"]')
             .then(chunks => {
                 let fullAddress = '';
                 // @ts-expect-error
@@ -152,7 +152,7 @@ describe('Passphrase', () => {
 
         // should display confirm passphrase modal
         cy.getTestElement('@modal/confirm-address/address-field')
-            .find('[data-test*="chunk"]')
+            .find('[data-test-id*="chunk"]')
             .then(chunks => {
                 let fullAddress = '';
                 // @ts-expect-error

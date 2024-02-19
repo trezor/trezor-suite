@@ -110,7 +110,7 @@ export const OpReturn = ({ outputId }: { outputId: number }) => {
             <Inputs>
                 <StyledTextarea
                     inputState={getInputState(asciiError)}
-                    data-test={inputAsciiName}
+                    data-test-id={inputAsciiName}
                     defaultValue={asciiValue}
                     maxLength={formInputsMaxLength.opReturn}
                     bottomText={asciiError?.message || null}
@@ -121,7 +121,7 @@ export const OpReturn = ({ outputId }: { outputId: number }) => {
                 <Space> = </Space>
                 <StyledTextarea
                     inputState={getInputState(hexError)}
-                    data-test={inputHexName}
+                    data-test-id={inputHexName}
                     defaultValue={hexValue}
                     maxLength={formInputsMaxLength.opReturn}
                     bottomText={hexError?.message || null}

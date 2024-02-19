@@ -20,7 +20,7 @@ export const Analytics = () => {
 
     return (
         <SectionItem
-            data-test="@settings/analytics"
+            data-test-id="@settings/analytics"
             ref={anchorRef}
             shouldHighlight={shouldHighlight}
         >

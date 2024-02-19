@@ -56,13 +56,13 @@ export const TaprootBanner = ({ onClose }: TaprootBannerProps) => {
     const theme = useTheme();
 
     return (
-        <StyledCard data-test="@accounts/empty-account/taproot-account">
+        <StyledCard data-test-id="@accounts/empty-account/taproot-account">
             <Heading>
                 <Title>
                     <Translation id="TR_TAPROOT_BANNER_TITLE" />
                 </Title>
                 <Button
-                    data-test="@accounts/empty-account/taproot-account/close"
+                    data-test-id="@accounts/empty-account/taproot-account/close"
                     variant="tertiary"
                     onClick={onClose}
                 >

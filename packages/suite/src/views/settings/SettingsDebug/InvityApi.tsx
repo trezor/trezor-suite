@@ -37,7 +37,7 @@ export const InvityApi = () => {
 
     return (
         <SectionItem
-            data-test="@settings/debug/invity-api"
+            data-test-id="@settings/debug/invity-api"
             ref={anchorRef}
             shouldHighlight={shouldHighlight}
         >

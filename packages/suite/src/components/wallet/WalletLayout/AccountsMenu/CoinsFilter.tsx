@@ -89,7 +89,7 @@ export const CoinsFilter = () => {
                         >
                             <motion.div key={network} {...coinAnimcationConfig} layout>
                                 <StyledCoinLogo
-                                    data-test={`@account-menu/filter/${network}`}
+                                    data-test-id={`@account-menu/filter/${network}`}
                                     symbol={network}
                                     size={16}
                                     data-test-activated={coinFilter === network}

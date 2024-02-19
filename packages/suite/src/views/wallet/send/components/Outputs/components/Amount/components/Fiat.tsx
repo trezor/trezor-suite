@@ -184,7 +184,7 @@ export const Fiat = ({ output, outputId }: FiatProps) => {
             isSearchable
             minValueWidth="58px"
             isClean
-            data-test={currencyInputName}
+            data-test-id={currencyInputName}
             onChange={async (selected: CurrencyOption) => {
                 // propagate changes to FormState
                 onChange(selected);
@@ -218,7 +218,7 @@ export const Fiat = ({ output, outputId }: FiatProps) => {
                 inputState={inputState}
                 onChange={handleChange}
                 name={fiatInputName}
-                data-test={fiatInputName}
+                data-test-id={fiatInputName}
                 defaultValue={fiatValue}
                 maxLength={formInputsMaxLength.fiat}
                 rules={rules}
