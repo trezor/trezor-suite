@@ -21,7 +21,7 @@ jobs:
       AWS_CLOUDFRONT_ID: E1ERY5K2OTKKI1
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           lfs: true
       - name: Configure aws credentials

@@ -6,7 +6,7 @@ jobs:
   commit-message-check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Check commit messages
         run: ./scripts/check-commit-messages.sh
