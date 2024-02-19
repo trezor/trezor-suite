@@ -66,7 +66,6 @@ export enum EventType {
     SettingsDeviceDisableWipeCode = 'settings/device/disable-wipe-code',
     SettingsDeviceChangeLabel = 'settings/device/change-label',
     SettingsDeviceUpdateAutoLock = 'settings/device/update-auto-lock',
-    SettingsDeviceBackground = 'settings/device/background',
     SettingsDeviceChangeOrientation = 'settings/device/change-orientation',
     SettingsDeviceWipe = 'settings/device/wipe',
     SettingsDeviceChangePassphraseProtection = 'settings/device/change-passphrase-protection',

@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { analytics, EventType } from '@trezor/suite-analytics';
 import { resolveStaticPath } from '@suite-common/suite-utils';
 
 import { homescreens } from 'src/constants/suite/homescreens';
@@ -59,13 +58,6 @@ export const HomescreenGallery = ({ onConfirm }: HomescreenGalleryProps) => {
         if (onConfirm) {
             onConfirm();
         }
-
-        analytics.report({
-            type: EventType.SettingsDeviceBackground,
-            payload: {
-                image,
-            },
-        });
     };
 
     return (
