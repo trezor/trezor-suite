@@ -11,19 +11,6 @@ const StyledImage = styled(Image)`
     margin: 14px 0;
 `;
 
-const StyledModal = styled(Modal)`
-    width: 380px;
-    ${Modal.Content} {
-        justify-content: center;
-        align-items: center;
-    }
-    ${Modal.BottomBar} {
-        > * {
-            flex: 1;
-        }
-    }
-`;
-
 type PassphraseDuplicateModalProps = {
     device: TrezorDevice;
     duplicate: TrezorDevice;
@@ -39,7 +26,7 @@ export const PassphraseDuplicateModal = ({ device, duplicate }: PassphraseDuplic
     const handleAuthorizeDevice = () => dispatch(authorizeDevice());
 
     return (
-        <StyledModal
+        <Modal
             heading={<Translation id="TR_WALLET_DUPLICATE_TITLE" />}
             description={<Translation id="TR_WALLET_DUPLICATE_DESC" />}
             data-test="@passphrase-duplicate"
@@ -63,6 +50,6 @@ export const PassphraseDuplicateModal = ({ device, duplicate }: PassphraseDuplic
             }
         >
             <StyledImage image="UNI_WARNING" width="160" />
-        </StyledModal>
+        </Modal>
     );
 };
