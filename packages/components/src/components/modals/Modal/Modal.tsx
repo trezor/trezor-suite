@@ -163,6 +163,7 @@ const BottomBar = styled.footer`
 
 const BottomBarComponents = styled.div`
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: ${spacingsPx.xs};
 `;
