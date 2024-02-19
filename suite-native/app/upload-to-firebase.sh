@@ -1,7 +1,8 @@
 #!/bin/bash
 
 if [[ "$EAS_BUILD_PLATFORM" == "android" ]]; then
-  curl -sL https://firebase.tools | bash
+  if [[ "$EAS_BUILD_PROFILE" == "develop" ]]; then
+    curl -sL https://firebase.tools | bash
 
   release_notes="Last commit hash: $EAS_BUILD_GIT_COMMIT_HASH"
   echo "$EAS_BUILD_GIT_COMMIT_HASH"
@@ -11,6 +12,7 @@ if [[ "$EAS_BUILD_PLATFORM" == "android" ]]; then
     --groups "develop-testers" \
     --release-notes "$release_notes" \
     --token "$FIREBASE_TOKEN"
+  fi
 elif [[ "$EAS_BUILD_PLATFORM" == "ios" ]]; then
   exit 0
 fi

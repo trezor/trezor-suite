@@ -59,6 +59,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         ...config,
         name,
         slug,
+        owner: 'trezorcompany',
         version: suiteNativeVersion,
         splash: {
             image: './assets/splash_icon.png',
@@ -76,6 +77,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         ios: {
             bundleIdentifier,
             icon: appIconIos,
+            supportsTablet: true,
             infoPlist: {
                 NSCameraUsageDescription:
                     '$(PRODUCT_NAME) needs access to your Camera to scan your XPUB.',
@@ -99,6 +101,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
                         },
                     },
                 },
+                UIRequiredDeviceCapabilities: ['armv7'],
             },
         },
         plugins: [
@@ -145,6 +148,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
             // These should come last
             './plugins/withRemoveXcodeLocalEnv.js',
             ['./plugins/withEnvFile.js', { buildType }],
+            './plugins/withRemoveiOSNotificationEntitlement.js',
         ],
         extra: {
             commitHash: process.env.EAS_BUILD_GIT_COMMIT_HASH || '',
@@ -152,6 +156,5 @@ export default ({ config }: ConfigContext): ExpoConfig => {
                 projectId,
             },
         },
-        owner: 'trezorcompany',
     };
 };
