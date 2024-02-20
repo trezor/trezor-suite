@@ -7,6 +7,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: Check commit messages
         run: ./scripts/check-commit-messages.sh
+        env:
+          CURRENT_BRANCH_NAME: ${{ github.head_ref }}
+          BASE_BRANCH_NAME: ${{ github.head_ref }}

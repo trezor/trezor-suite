@@ -2,12 +2,14 @@
 
 branch_name=$(echo ${GITHUB_REF#refs/heads/})
 echo "test: $branch_name"
+echo "CURRENT_BRANCH_NAME: $CURRENT_BRANCH_NAME"
+echo "BASE_BRANCH_NAME: $BASE_BRANCH_NAME"
 
 echo "Current branch: $(git rev-parse --abbrev-ref HEAD)"
 
 echo echo "Remote branch: $(git rev-parse --abbrev-ref origin/HEAD)"
 
-for commit in $(git rev-list origin/develop..HEAD); do
+for commit in $(git rev-list $BASE_BRANCH_NAME..$CURRENT_BRANCH_NAME); do
 
     commit_msg=$(git log --format=%B -n 1 "$commit")
 
