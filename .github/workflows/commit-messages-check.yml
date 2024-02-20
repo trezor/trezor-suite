@@ -11,7 +11,7 @@ jobs:
           fetch-depth: 0
 
       - name: Fetch base branch
-        run: git fetch origin ${{ github.base_ref }}
+        run: git pull origin ${{ github.base_ref }}
 
       - name: Check commit messages
         run: ./scripts/check-commit-messages.sh
