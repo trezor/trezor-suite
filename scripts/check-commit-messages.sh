@@ -2,9 +2,9 @@
 
 echo "CURRENT_BRANCH_NAME: $CURRENT_BRANCH_NAME"
 echo "BASE_BRANCH_NAME: $BASE_BRANCH_NAME"
-echo $(git rev-list origin/$BASE_BRANCH_NAME..$CURRENT_BRANCH_NAME)
+echo $(git rev-list $BASE_BRANCH_NAME..$CURRENT_BRANCH_NAME)
 
-for commit in $(git rev-list origin/$BASE_BRANCH_NAME..$CURRENT_BRANCH_NAME); do
+for commit in $(git rev-list $BASE_BRANCH_NAME..$CURRENT_BRANCH_NAME); do
 
     commit_msg=$(git log --format=%B -n 1 "$commit")
 
