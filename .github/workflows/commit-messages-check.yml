@@ -10,7 +10,7 @@ jobs:
 
       - name: Fetch base and current branch
         run: |
-          git fetch --no-tags origin ${{ github.base_ref }}
+          git pull --no-tags origin ${{ github.base_ref }}
           git fetch --no-tags origin ${{ github.head_ref }}
           git switch ${{ github.head_ref }}
 
