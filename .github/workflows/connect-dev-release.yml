@@ -62,15 +62,14 @@ jobs:
           ASSET_PREFIX: /connect/${{ steps.extract_branch.outputs.branch }}
           # TODO: maybe we don't want to build it for production for every branch
           NODE_ENV: "production"
-          name: $CI_COMMIT_REF_NAME
-          url: https://$DEV_SERVER_HOSTNAME/connect/$CI_COMMIT_REF_NAME
-        run: |
+          url: https://${ DEV_SERVER_HOSTNAME }/connect/${{ steps.extract_branch.outputs.branch }}
+          run: |
           yarn workspace @trezor/connect-explorer build
 
       - name: Build connect-examples webextension
         run: |
-          node ./packages/connect-examples/update-webextensions.js --trezor-connect-src "https://$DEV_SERVER_HOSTNAME/connect/${CI_COMMIT_REF_NAME}/"
-          node ./packages/connect-examples/update-webextensions.js --trezor-connect-src "https://$DEV_SERVER_HOSTNAME/connect/${CI_COMMIT_REF_NAME}/" --build-folder build-legacy --npm-src "https://connect.trezor.io/9/trezor-connect.js"
+          node ./packages/connect-examples/update-webextensions.js --trezor-connect-src "https://${ DEV_SERVER_HOSTNAME }/connect/${{ steps.extract_branch.outputs.branch }}/"
+          node ./packages/connect-examples/update-webextensions.js --trezor-connect-src "https://${ DEV_SERVER_HOSTNAME }/connect/${{ steps.extract_branch.outputs.branch }}/" --build-folder build-legacy --npm-src "https://connect.trezor.io/9/trezor-connect.js"
           node ./packages/connect-examples/update-webextensions-sw.js
 
       - name: Build connect-explorer-webextension
@@ -80,7 +79,7 @@ jobs:
       # this step should upload build result to s3 bucket DEV_SERVER_HOSTNAME using awscli
       - name: Upload connect-explorer to dev.suite.sldev.cz
         env:
-          DEPLOY_PATH: s3://dev.suite.sldev.cz/connect/${{ steps.extract_branch.outputs.branch }}
+          DEPLOY_PATH: s3://${ DEV_SERVER_HOSTNAME }/connect/${{ steps.extract_branch.outputs.branch }}
         run: |
           mkdir -p tmp_build_directory
           cp -R ./packages/connect-iframe/build/* tmp_build_directory/
