@@ -3,6 +3,8 @@
  */
 
 import type { PROTO } from '../../constants';
-import type { CommonParams, Response } from '../params';
+import type { Params, Response } from '../params';
 
-export declare function rebootToBootloader(params?: CommonParams): Response<PROTO.Success>;
+export declare function rebootToBootloader(
+    params?: Params<PROTO.RebootToBootloader>,
+): Response<PROTO.Success>;
