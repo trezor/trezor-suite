@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
-echo "CURRENT_BRANCH_NAME: $CURRENT_BRANCH_NAME"
-echo $(git log $BASE_BRANCH_NAME -2)
-echo "BASE_BRANCH_NAME: $BASE_BRANCH_NAME"
-echo $(git log $BASE_BRANCH_NAME -2)
-echo "rev-list"
-echo $(git rev-list $BASE_BRANCH_NAME..$CURRENT_BRANCH_NAME)
+if ! git rev-list $BASE_BRANCH_NAME..$CURRENT_BRANCH_NAME; then
+  tput -T linux setaf 1
+  echo "git rev-list command failed"
+  tput -T linux sgr0
+  exit 1
+fi
 
 for commit in $(git rev-list $BASE_BRANCH_NAME..$CURRENT_BRANCH_NAME); do
 
@@ -19,7 +19,8 @@ for commit in $(git rev-list $BASE_BRANCH_NAME..$CURRENT_BRANCH_NAME); do
     # Check for fixup commits
     if echo "$commit_msg" | grep -qE "^fixup! "; then
     tput -T linux setaf 1
-    echo -e "Fixup commit validation failed for commit $commit:\n$commit_msg"
+    echo "Fixup commit validation failed for commit $commit:"
+    echo $commit_msg
     tput -T linux sgr0
     echo -e "To squash fixup commits, run:\ngit rebase -i --autosquash origin/HEAD"
     exit 1
@@ -28,7 +29,8 @@ for commit in $(git rev-list $BASE_BRANCH_NAME..$CURRENT_BRANCH_NAME); do
     # Check commit message syntax
     if ! echo "$commit_msg" | grep -qE "^(build|ci|docs|feat|fix|perf|refactor|style|test|chore|revert)(\([a-z, -]+\))?: "; then
     tput -T linux setaf 1
-    echo -e "Conventional Commits validation failed for commit $commit:\n$commit_msg"
+    echo "Conventional Commits validation failed for commit $commit:"
+    echo $commit_msg
     tput -T linux sgr0
     echo "Learn more about Conventional Commits at https://www.conventionalcommits.org"
     exit 1

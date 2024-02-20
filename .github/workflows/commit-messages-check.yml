@@ -11,9 +11,7 @@ jobs:
       - name: Fetch base branch
         run: |
           git fetch --no-tags origin ${{ github.base_ref }}
-          git switch ${{ github.base_ref }}
           git fetch --no-tags origin ${{ github.head_ref }}
-          git switch ${{ github.head_ref }}
 
       - name: Check commit messages
         run: ./scripts/check-commit-messages.sh
