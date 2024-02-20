@@ -187,6 +187,10 @@ export default defineMessages({
         id: 'TR_ADDRESSES_USED',
         defaultMessage: 'Used addresses',
     },
+    TR_ADDRESSES_CHANGE: {
+        id: 'TR_ADDRESSES_CHANGE',
+        defaultMessage: 'Change addresses',
+    },
     TR_TRADE_REDIRECTING: {
         defaultMessage: 'Redirecting ...',
         id: 'TR_TRADE_REDIRECTING',

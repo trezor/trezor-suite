@@ -41,9 +41,11 @@ export const HiddenAddressRow = ({
 
     const currentElevation = isElevated ? nextElevation[elevation] : elevation;
 
+    const pathParts = item.value.split('/');
+
     return (
         <Wrapper className={`${className} react-select__single-value`}>
-            <DerivationPathColumn>/{item.value.split('/').pop()}</DerivationPathColumn>
+            <DerivationPathColumn>/{pathParts[pathParts.length - 1]}</DerivationPathColumn>
 
             <AddressColumn>
                 <StyledGradientOverlay forcedElevation={currentElevation} hiddenFrom="160px" />
