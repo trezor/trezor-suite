@@ -16,17 +16,18 @@ const Button = styled.button`
     background: ${({ theme }) => theme.BG_GREY};
 
     &:first-child {
-        margin-left: 0px;
+        margin-left: 0;
     }
+
     &:last-child {
-        margin-right: 0px;
+        margin-right: 0;
     }
 
     &:hover {
         background: ${({ theme }) => theme.BG_LIGHT_GREEN};
     }
 
-    &:before {
+    &::before {
         width: 6px;
         height: 6px;
         content: ' ';
@@ -37,7 +38,7 @@ const Button = styled.button`
         left: calc(50% - 3px);
     }
 
-    &:hover:before {
+    &:hover::before {
         background: ${({ theme }) => theme.TYPE_GREEN};
     }
 `;

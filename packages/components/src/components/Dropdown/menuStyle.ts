@@ -33,6 +33,7 @@ export const menuStyle = css<{ elevation: Elevation }>`
     animation: ${DROPDOWN_MENU} 0.15s ease-in-out;
     list-style-type: none;
     overflow: hidden;
+
     /* when theme changes from light to dark */
     transition: background 0.3s;
     ${typography.hint}

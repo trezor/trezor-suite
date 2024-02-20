@@ -19,6 +19,7 @@ const animationVariants = {
 const Wrapper = styled.div<Pick<CollapsibleBoxProps, 'variant'>>`
     background: ${({ theme }) => theme.backgroundSurfaceElevation1};
     border-radius: ${borders.radii.sm};
+
     /* when theme changes from light to dark */
     transition: background 0.3s;
 
@@ -26,7 +27,7 @@ const Wrapper = styled.div<Pick<CollapsibleBoxProps, 'variant'>>`
         variant === 'large' &&
         css`
             border-radius: ${borders.radii.md};
-            box-shadow: 0 2px 5px 0 ${theme.BOX_SHADOW_BLACK_20}; // TODO: use theme
+            box-shadow: ${theme.boxShadowBase};
         `}
 `;
 
@@ -81,6 +82,7 @@ const easingValues = motionEasing.transition.join(', ');
 const ANIMATION_DURATION = 0.4;
 const StyledIcon = styled(Icon)<{ isCollapsed?: boolean }>`
     transform: ${({ isCollapsed }) => (isCollapsed ? 'rotate(0deg)' : 'rotate(180deg)')};
+
     /* to sync with the expand animation */
     transition: transform ${ANIMATION_DURATION}s cubic-bezier(${easingValues});
     transform-origin: center;

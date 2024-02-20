@@ -22,7 +22,7 @@ const Container = styled.div<Pick<SwitchProps, 'isChecked' | 'isDisabled' | 'isA
     height: ${({ isSmall }) => (isSmall ? '18px' : '24px')};
     width: ${({ isSmall }) => (isSmall ? '32px' : '44px')};
     flex-shrink: 0;
-    margin: 0px;
+    margin: 0;
     padding: 3px;
     position: relative;
     background: ${({ isChecked, isDisabled, theme }) =>
@@ -75,12 +75,12 @@ const Handle = styled.button<{ disabled?: boolean } & Pick<SwitchProps, 'isCheck
 `;
 
 const CheckboxInput = styled.input`
-    border: 0px;
-    clip: rect(0px, 0px, 0px, 0px);
+    border: 0;
+    clip: rect(0, 0, 0, 0);
     height: 1px;
     margin: -1px;
     overflow: hidden;
-    padding: 0px;
+    padding: 0;
     position: absolute;
     width: 1px;
 `;
