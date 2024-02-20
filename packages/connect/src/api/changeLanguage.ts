@@ -93,7 +93,6 @@ export default class ChangeLanguage extends AbstractMethod<'changeLanguage', Cha
         // todo: signed?
         const url = `${baseUrl}/data/translations/translation-${model}-${language}-${version}-unsigned.bin`;
 
-        // todo: does it throw?
         const downloadedBinary = await httpRequest(url, 'binary');
 
         return this.uploadTranslationData(downloadedBinary);
