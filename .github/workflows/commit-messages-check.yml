@@ -16,7 +16,7 @@ jobs:
           git switch ${{ github.head_ref }}
 
       - name: Check commit messages
-        run: current-branch/scripts/check-commit-messages.sh
+        run: ./scripts/check-commit-messages.sh
         env:
           CURRENT_BRANCH_NAME: ${{ github.head_ref }}
           BASE_BRANCH_NAME: ${{ github.base_ref }}
