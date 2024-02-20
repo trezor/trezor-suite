@@ -65,4 +65,5 @@ export const portfolioTrackerDevice: TrezorDevice = {
     buttonRequests: [],
     metadata: {},
     unavailableCapabilities: {},
+    availableTranslations: [],
 };
