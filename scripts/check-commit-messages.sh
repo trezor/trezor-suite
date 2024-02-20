@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+echo "Current branch: $(git rev-parse --abbrev-ref HEAD)"
+
+echo echo "Remote branch: $(git rev-parse --abbrev-ref origin/HEAD)"
+
 for commit in $(git rev-list origin/develop..HEAD); do
 
     commit_msg=$(git log --format=%B -n 1 "$commit")
