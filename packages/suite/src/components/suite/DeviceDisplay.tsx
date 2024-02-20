@@ -8,8 +8,9 @@ import {
 } from '@suite-common/wallet-core';
 import { DeviceModelInternal } from '@trezor/connect';
 import { Icon, variables } from '@trezor/components';
+import { splitStringEveryNCharacters } from '@trezor/utils';
 import { Translation } from './Translation';
-import { ClipboardEvent, ReactElement, ReactNode } from 'react';
+import { ClipboardEvent, Fragment, ReactElement, ReactNode } from 'react';
 import { MAX_CHARACTERS_ON_SCREEN } from 'src/constants/suite/device';
 
 const Display = styled.div`
@@ -112,12 +113,14 @@ export const DeviceDisplay = ({ address, network, valueDataTest }: DeviceDisplay
 
     const isPaginated =
         MAX_CHARACTERS_ON_SCREEN[selectedDeviceInternalModel] <= processedAddress.length;
+
     const areChunksUsed =
         addressDisplayType === AddressDisplayOptions.CHUNKED &&
         !unavailableCapabilities?.chunkify &&
         valueDataTest !== '@xpub-modal/xpub-field' &&
         network !== 'cardano' &&
         (network !== 'solana' || valueDataTest === '@modal/confirm-address/address-field');
+
     const isPixelType = selectedDeviceInternalModel !== DeviceModelInternal.T2T1;
     const iconNextName = isPixelType ? 'ADDRESS_PIXEL_NEXT' : 'ADDRESS_NEXT';
     const iconContinuesName = isPixelType ? 'ADDRESS_PIXEL_CONTINUES' : 'ADDRESS_CONTINUES';
@@ -173,28 +176,49 @@ export const DeviceDisplay = ({ address, network, valueDataTest }: DeviceDisplay
         if (isPaginated) {
             const breakpoint = isPixelType ? 70 : 81;
 
-            return (
-                <>
-                    <Text isPixelType={isPixelType} data-test={valueDataTest}>
-                        {address.slice(0, breakpoint)}
-                    </Text>
-                    <StyledNextIcon {...iconConfig} isPixelType={isPixelType} icon={iconNextName} />
-                    <Wrapper>
-                        <Divider areChunksUsed={areChunksUsed} />
-                        <AddressLabel areChunksUsed={areChunksUsed}>
-                            <Translation id="NEXT_PAGE" />
-                        </AddressLabel>
-                    </Wrapper>
-                    <StyledContinuesIcon
-                        {...iconConfig}
+            const slices = splitStringEveryNCharacters(address, breakpoint);
+
+            const components = [];
+
+            for (let i = 0; i < slices.length; i++) {
+                const isFirst = i === 0;
+                const isLast = i === slices.length - 1;
+
+                components.push(
+                    <Text
+                        key={`text-${i}`}
                         isPixelType={isPixelType}
-                        icon={iconContinuesName}
-                    />
-                    <Text isPixelType={isPixelType} isWithIndentation>
-                        {address.slice(breakpoint)}
-                    </Text>
-                </>
-            );
+                        data-test={isFirst ? valueDataTest : undefined}
+                    >
+                        {slices[i]}
+                    </Text>,
+                );
+
+                if (!isLast) {
+                    components.push(
+                        <Fragment key={`separator-${i}`}>
+                            <StyledNextIcon
+                                {...iconConfig}
+                                isPixelType={isPixelType}
+                                icon={iconNextName}
+                            />
+                            <Wrapper>
+                                <Divider areChunksUsed={areChunksUsed} />
+                                <AddressLabel areChunksUsed={areChunksUsed}>
+                                    <Translation id="NEXT_PAGE" />
+                                </AddressLabel>
+                            </Wrapper>
+                            <StyledContinuesIcon
+                                {...iconConfig}
+                                isPixelType={isPixelType}
+                                icon={iconContinuesName}
+                            />
+                        </Fragment>,
+                    );
+                }
+            }
+
+            return components;
         }
 
         return <Text isPixelType={isPixelType}>{address}</Text>;
