@@ -1,4 +1,9 @@
-import { selectDevices, selectDevice, deviceActions } from '@suite-common/wallet-core';
+import {
+    selectDevices,
+    selectDevice,
+    deviceActions,
+    firmwareActionsPrefix,
+} from '@suite-common/wallet-core';
 import * as deviceUtils from '@suite-common/suite-utils';
 import TrezorConnect from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
@@ -8,6 +13,7 @@ import * as modalActions from 'src/actions/suite/modalActions';
 import * as routerActions from 'src/actions/suite/routerActions';
 import { Dispatch, GetState } from 'src/types/suite';
 import * as DEVICE from 'src/constants/suite/device';
+import { createThunk } from '@suite-common/redux-utils';
 
 export const applySettings =
     (params: Parameters<typeof TrezorConnect.applySettings>[0]) =>
@@ -175,3 +181,40 @@ export const resetDevice =
 
         return result;
     };
+
+export const changeLanguage = createThunk(
+    `${firmwareActionsPrefix}/update-firmware-language`,
+    async (params: Parameters<typeof TrezorConnect.changeLanguage>[0], { dispatch, getState }) => {
+        const device = selectDevice(getState());
+
+        if (!device) return;
+
+        const result = await TrezorConnect.changeLanguage({
+            device: {
+                path: device.path,
+            },
+            ...params,
+        });
+
+        if (result.success) {
+            dispatch(notificationsActions.addToast({ type: 'firmware-language-changed' }));
+        } else {
+            // Different errors for desktop/Chrome/Firefox
+            const isFetchError =
+                result.payload.code === 'ENOTFOUND' ||
+                ['Failed to fetch', 'NetworkError when attempting to fetch resource.'].includes(
+                    result.payload.error,
+                );
+            if (isFetchError) {
+                dispatch(notificationsActions.addToast({ type: 'firmware-language-fetch-error' }));
+            } else {
+                dispatch(
+                    notificationsActions.addToast({
+                        type: 'error',
+                        error: result.payload.error,
+                    }),
+                );
+            }
+        }
+    },
+);
