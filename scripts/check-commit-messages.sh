@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+
+branch_name=$(echo ${GITHUB_REF#refs/heads/})
+echo "test: $branch_name"
+
 echo "Current branch: $(git rev-parse --abbrev-ref HEAD)"
 
 echo echo "Remote branch: $(git rev-parse --abbrev-ref origin/HEAD)"
