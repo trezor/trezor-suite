@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-for commit in $(git rev-list "$BASE_BRANCH_NAME"..HEAD); do
+for commit in $(git rev-list origin/"$BASE_BRANCH_NAME"..HEAD); do
 
     commit_msg=$(git log --format=%B -n 1 "$commit")
 
