@@ -12256,6 +12256,9 @@ __metadata:
     "@trezor/protocol": "workspace:*"
     "@trezor/transport": "workspace:*"
     "@trezor/utils": "workspace:*"
+    webpack: "npm:^5.94.0"
+    webpack-cli: "npm:^5.1.4"
+    webpack-dev-server: "npm:^5.0.4"
     ws: "npm:^8.18.0"
   languageName: unknown
   linkType: soft
