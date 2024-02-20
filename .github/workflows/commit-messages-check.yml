@@ -7,12 +7,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Fetch develop branch
-        run: |
-          git switch ${{ github.base_ref }}
-          git pull
-          git switch ${{ github.head_ref }}
+      - name: Fetch base branch
+        run: git fetch origin ${{ github.base_ref }}
 
       - name: Check commit messages
         run: ./scripts/check-commit-messages.sh
