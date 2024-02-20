@@ -8,16 +8,16 @@ const Wrapper = styled.div`
 `;
 
 const BorderAutoScalingInput = styled(Input)`
-    padding: 1px 5px 1px 5px;
+    padding: 1px 5px;
     border-radius: 3px;
     border-style: solid;
     border-width: 1px;
 `;
 
 const BorderlessAutoScalingInput = styled(Input)`
-    padding: 1px 5px 1px 5px;
+    padding: 1px 5px;
     border-style: solid;
-    border-width: 0px;
+    border-width: 0;
     background-color: #ccc;
 `;
 

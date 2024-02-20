@@ -27,6 +27,7 @@ const A = styled.a<LinkProps>`
         css`
             color: inherit;
             font-weight: inherit;
+
             &:visited,
             &:active,
             &:hover {

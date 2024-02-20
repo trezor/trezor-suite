@@ -9,6 +9,7 @@
     "scripts": {
         "lint": "yarn lint:js && yarn lint:styles",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "lint:styles": "npx stylelint './src/**/*{.ts,.tsx}' --cache --config ../../.stylelintrc",
         "lint-fix": "npx eslint ./src --fix",
         "type-check": "yarn g:tsc --build tsconfig.json",
         "type-check:watch": "yarn type-check -- --watch",

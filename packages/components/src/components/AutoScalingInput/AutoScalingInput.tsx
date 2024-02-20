@@ -5,6 +5,7 @@ const HiddenInputToMeasurePlaceholderScrollableWidth = styled.input`
     visibility: hidden !important;
     width: 0 !important;
     height: 0 !important;
+
     /* Never change any style here! It would affect the scrollWidth calculation of the placeholder. */
 `;
 

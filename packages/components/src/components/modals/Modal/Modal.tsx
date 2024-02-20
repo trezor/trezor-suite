@@ -24,12 +24,14 @@ const Container = styled.div`
     flex-direction: column;
     position: relative;
     border-radius: 16px;
+
     /* when theme changes from light to dark */
     transition: background 0.3s;
     max-width: 95%;
     min-width: 305px;
     max-height: 90vh;
     width: 680px;
+
     /* Model has intentionally always Elevation = 1 (it resets the elevation) */
     background: ${({ theme }) => theme.backgroundSurfaceElevation1};
     box-shadow: ${({ theme }) => theme.boxShadowElevated};

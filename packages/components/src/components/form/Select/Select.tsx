@@ -103,6 +103,7 @@ type WrapperProps = Pick<
 };
 
 const Wrapper = styled.div<WrapperProps>`
+    /* stylelint-disable selector-class-pattern */
     position: relative;
     width: 100%;
     padding-bottom: ${({ hasBottomPadding }) =>
@@ -117,7 +118,6 @@ const Wrapper = styled.div<WrapperProps>`
         `}
 
     .${reactSelectClassNamePrefix}__dropdown-indicator {
-        display: flex;
         align-items: center;
         color: ${({ theme, isDisabled }) => (isDisabled ? theme.iconDisabled : theme.iconSubdued)};
         padding: 0;

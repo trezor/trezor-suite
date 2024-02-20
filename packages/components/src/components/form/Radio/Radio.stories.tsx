@@ -8,6 +8,7 @@ import { H2 } from '../../typography/Heading/Heading';
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
+
     & > * {
         padding: 10px;
     }

@@ -23,6 +23,7 @@ import { TooltipProps, Tooltip } from '../Tooltip/Tooltip';
 const Wrapper = styled.div<Pick<PassphraseTypeCardProps, 'type' | 'singleColModal'>>`
     display: flex;
     flex: 1;
+
     /* align-items: center; */
     border-radius: ${borders.radii.xs};
     flex-direction: column;
@@ -37,6 +38,7 @@ const Wrapper = styled.div<Pick<PassphraseTypeCardProps, 'type' | 'singleColModa
         !props.singleColModal &&
         css`
             padding: ${spacingsPx.sm};
+
             /* border: solid 1px ${({ theme }) => theme.STROKE_GREY}; */
         `}
 
@@ -99,7 +101,7 @@ const InputWrapper = styled(Description)`
 `;
 
 const Spacer = styled.div`
-    margin: ${spacingsPx.md} 0px;
+    margin: ${spacingsPx.md} 0;
 `;
 
 const PassphraseInput = styled(Input)`
@@ -124,7 +126,7 @@ const ActionButton = styled(Button)`
     margin-top: ${spacingsPx.xs};
 
     &:first-child {
-        margin-top: 0px;
+        margin-top: 0;
     }
 `;
 
@@ -134,7 +136,7 @@ const OnDeviceActionButton = styled(ActionButton)`
     color: ${({ theme }) => theme.textSubdued};
 
     &:first-child {
-        margin-top: 0px;
+        margin-top: 0;
     }
 
     &:hover,
