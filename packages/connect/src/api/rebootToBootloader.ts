@@ -3,8 +3,13 @@
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getFirmwareRange } from './common/paramsValidator';
 import { UI, createUiMessage } from '../events';
+import { Assert } from '@trezor/schema-utils';
+import { PROTO } from '../constants';
 
-export default class RebootToBootloader extends AbstractMethod<'rebootToBootloader'> {
+export default class RebootToBootloader extends AbstractMethod<
+    'rebootToBootloader',
+    PROTO.RebootToBootloader
+> {
     confirmed?: boolean;
 
     init() {
@@ -14,6 +19,15 @@ export default class RebootToBootloader extends AbstractMethod<'rebootToBootload
         this.requiredPermissions = ['management'];
         this.useDeviceState = false;
         this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
+
+        const { payload } = this;
+        Assert(PROTO.RebootToBootloader, payload);
+
+        this.params = {
+            boot_command: payload.boot_command,
+            firmware_header: payload.firmware_header,
+            language_data_length: payload.language_data_length,
+        };
     }
 
     get info() {
@@ -49,7 +63,7 @@ export default class RebootToBootloader extends AbstractMethod<'rebootToBootload
 
     async run() {
         const cmd = this.device.getCommands();
-        const response = await cmd.typedCall('RebootToBootloader', 'Success');
+        const response = await cmd.typedCall('RebootToBootloader', 'Success', this.params);
 
         return response.message;
     }
