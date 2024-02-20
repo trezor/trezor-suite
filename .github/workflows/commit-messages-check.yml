@@ -11,7 +11,10 @@ jobs:
           fetch-depth: 0
 
       - name: Fetch base branch
-        run: git pull origin ${{ github.base_ref }}
+        run: |
+          git switch ${{ github.base_ref }}
+          git pull origin ${{ github.base_ref }}
+          git switch ${{ github.head_ref }}
 
       - name: Check commit messages
         run: ./scripts/check-commit-messages.sh
