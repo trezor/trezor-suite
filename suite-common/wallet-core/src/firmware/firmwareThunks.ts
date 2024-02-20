@@ -28,6 +28,26 @@ import {
 } from './firmwareReducer';
 import { firmwareActionsPrefix, firmwareActions } from './firmwareActions';
 
+export const resolveFileBaseUrl = createThunk(
+    `${firmwareActionsPrefix}/resolve-file-url`,
+    (_, { getState, extra }): string | undefined => {
+        const {
+            selectors: { selectDesktopBinDir, selectDevice },
+        } = extra;
+
+        const device = selectDevice(getState());
+        const useDevkit = selectUseDevkit(getState());
+        const desktopBinDir = selectDesktopBinDir(getState());
+
+        if (!device) return;
+
+        // FW binaries are stored in "*/static/connect/data/firmware/*/*.bin". see "connect-common" package
+        return `${isDesktop() ? desktopBinDir : resolveStaticPath('connect/data')}${
+            useDevkit ? '/devkit' : ''
+        }`;
+    },
+);
+
 /**
  * This action will install firmware from the given binary, or the latest
  * possible firmware if the given binary is undefined. The function is not
@@ -40,14 +60,12 @@ const firmwareInstallThunk = createThunk(
         { dispatch, getState, extra },
     ) => {
         const {
-            selectors: { selectDesktopBinDir, selectDevice },
+            selectors: { selectDevice },
         } = extra;
         const device = selectDevice(getState());
         const targetRelease = selectTargetRelease(getState());
         const prevDevice = selectPrevDevice(getState());
-        const useDevkit = selectUseDevkit(getState());
         const intermediaryInstalled = selectIntermediaryInstalled(getState());
-        const desktopBinDir = selectDesktopBinDir(getState());
 
         if (fwBinary) {
             dispatch(firmwareActions.setIsCustomFirmware(true));
@@ -136,10 +154,7 @@ const firmwareInstallThunk = createThunk(
                 dispatch(firmwareActions.setTargetType(firmwareType));
             }
 
-            // FW binaries are stored in "*/static/connect/data/firmware/*/*.bin". see "connect-common" package
-            const baseUrl = `${isDesktop() ? desktopBinDir : resolveStaticPath('connect/data')}${
-                useDevkit ? '/devkit' : ''
-            }`;
+            const baseUrl = await dispatch(resolveFileBaseUrl()).unwrap();
 
             updateResponse = await TrezorConnect.firmwareUpdate({
                 keepSession: false,

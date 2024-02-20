@@ -53,18 +53,29 @@ export default class ChangeLanguage extends AbstractMethod<'changeLanguage', Cha
         return uiResp.payload;
     }
 
-    private async uploadTranslationData(payload: ArrayBuffer) {
-        const length = payload.byteLength;
+    private async uploadTranslationData(payload: ArrayBuffer | null) {
         if (!this.device.commands) {
             throw ERRORS.TypedError('Runtime', 'uploadTranslationData: device.commands is not set');
         }
+
+        if (payload === null) {
+            const response = await this.device.commands.typedCall(
+                'ChangeLanguage',
+                ['Success'],
+                { data_length: 0 }, // For en-US where we just send `ChangeLanguage(size=0)`
+            );
+
+            return response.message;
+        }
+
+        const length = payload.byteLength;
+
         let response = await this.device.commands.typedCall(
             'ChangeLanguage',
             ['TranslationDataRequest', 'Success'],
-            {
-                data_length: length,
-            },
+            { data_length: length },
         );
+
         while (response.type !== 'Success') {
             const start = response.message.data_offset!;
             const end = response.message.data_offset! + response.message.data_length!;
@@ -85,6 +96,10 @@ export default class ChangeLanguage extends AbstractMethod<'changeLanguage', Cha
     async run() {
         const { language, binary, baseUrl } = this.params;
 
+        if (language === 'en-US') {
+            return this.uploadTranslationData(null);
+        }
+
         if (binary) {
             return this.uploadTranslationData(binary);
         }
@@ -92,8 +107,7 @@ export default class ChangeLanguage extends AbstractMethod<'changeLanguage', Cha
         const version = this.device.getVersion().join('.');
         const model = this.device.features.internal_model;
 
-        // todo: signed?
-        const url = `${baseUrl}/data/translations/translation-${model}-${language}-${version}-unsigned.bin`;
+        const url = `${baseUrl}/firmware/translations/${model.toLowerCase()}/translation-${model.toUpperCase()}-${language}-${version}.bin`;
 
         const downloadedBinary = await httpRequest(url, 'binary');
 

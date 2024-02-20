@@ -25,6 +25,7 @@ import { PinProtection } from './PinProtection';
 import { SafetyChecks } from './SafetyChecks';
 import { WipeCode } from './WipeCode';
 import { WipeDevice } from './WipeDevice';
+import { ChangeLanguage } from './ChangeLanguage';
 
 const deviceSettingsUnavailable = (device?: TrezorDevice, transport?: Partial<TransportInfo>) => {
     const noTransportAvailable = transport && !transport.type;
@@ -121,6 +122,7 @@ export const SettingsDevice = () => {
                 {(!bootloaderMode || bitcoinOnlyDevice) && (
                     <FirmwareTypeChange isDeviceLocked={isDeviceLocked} />
                 )}
+                <ChangeLanguage isDeviceLocked={isDeviceLocked} />
             </SettingsSection>
 
             {!bootloaderMode && !initializeMode && (

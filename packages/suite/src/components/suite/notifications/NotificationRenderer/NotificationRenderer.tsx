@@ -59,7 +59,10 @@ export type NotificationRendererProps<
     notification: Extract<NotificationEntry, { type: T }>;
 };
 
-export const NotificationRenderer = ({ notification, render }: NotificationRendererProps) => {
+export const NotificationRenderer = ({
+    notification,
+    render,
+}: NotificationRendererProps): JSX.Element => {
     switch (notification.type) {
         case 'acquire-error':
             return error(render, notification, 'TOAST_ACQUIRE_ERROR');
@@ -283,7 +286,11 @@ export const NotificationRenderer = ({ notification, render }: NotificationRende
             return success(render, notification, 'TOAST_SUCCESSFUL_CLAIM', 'CHECK', {
                 symbol: notification.symbol,
             });
-        default:
-            return info(render, notification, 'TR_404_DESCRIPTION');
+        case 'firmware-language-changed':
+            return success(render, notification, 'TR_FIRMWARE_LANGUAGE_CHANGED');
+        case 'firmware-language-fetch-error':
+            return error(render, notification, 'TR_FIRMWARE_LANGUAGE_FETCH_ERROR');
+
+        // intentionally no default, all cases must be handled.
     }
 };

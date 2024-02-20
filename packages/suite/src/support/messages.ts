@@ -5965,6 +5965,14 @@ export default defineMessages({
         id: 'TR_UPDATE_FIRMWARE_HOMESCREEN_TOOLTIP',
         defaultMessage: 'Update your firmware to change your homescreen',
     },
+    TR_FIRMWARE_LANGUAGE_CHANGED: {
+        id: 'TR_FIRMWARE_LANGUAGE_CHANGED',
+        defaultMessage: 'Device language sucessfully changed',
+    },
+    TR_FIRMWARE_LANGUAGE_FETCH_ERROR: {
+        id: 'TR_FIRMWARE_LANGUAGE_FETCH_ERROR',
+        defaultMessage: 'Translations download failed',
+    },
     TR_UPDATE_FIRMWARE_HOMESCREEN_LATER_TOOLTIP: {
         id: 'TR_UPDATE_FIRMWARE_HOMESCREEN_LATER_TOOLTIP',
         defaultMessage:
