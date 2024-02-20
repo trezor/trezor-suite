@@ -19,7 +19,13 @@ import { Ticker } from './Ticker/Ticker';
 import { TrendTicker } from './Ticker/TrendTicker';
 import { PriceTicker } from './Ticker/PriceTicker';
 import { Translation } from './Translation';
-import { AccountLabeling, AddressLabeling, WalletLabeling, MetadataLabeling } from './labeling';
+import {
+    AccountLabeling,
+    AddressLabeling,
+    WalletLabeling,
+    MetadataLabeling,
+    useGetWalletLabel,
+} from './labeling';
 import { FormattedCryptoAmount } from './FormattedCryptoAmount';
 import { FormattedNftAmount } from './FormattedNftAmount';
 import { Sign } from './Sign';
@@ -70,6 +76,7 @@ export {
     AccountLabeling,
     AddressLabeling,
     WalletLabeling,
+    useGetWalletLabel,
     MetadataLabeling,
     QuestionTooltip,
     AppNavigationPanel,
