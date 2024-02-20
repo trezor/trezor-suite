@@ -64,15 +64,6 @@ export const getField = (field: Field<any> | FieldWithBundle<any>, props: Props)
             return (
                 <CoinSelect key={field.name} field={field} onChange={props.actions.onFieldChange} />
             );
-        // case 'select-async':
-        //     return (
-        //         <AsyncSelect
-        //             key={field.name}
-        //             field={field}
-        //             onDataChange={props.actions.onFieldDataChange}
-        //             onChange={props.actions.onFieldChange}
-        //         />
-        //     );
         case 'file':
             return <File key={field.name} field={field} onChange={props.actions.onFieldChange} />;
         default:

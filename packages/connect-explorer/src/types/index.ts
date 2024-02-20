@@ -45,7 +45,6 @@ export interface Field<Value> {
         | 'address'
         | 'json'
         | 'function'
-        | 'select-async'
         | 'file';
     value: Value;
     defaultValue?: Value;
