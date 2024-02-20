@@ -217,6 +217,7 @@ export const getInfo = ({ features, releases }: GetInfoProps): ReleaseInfo | nul
     const changelog = getChangelog(releasesParsed, features);
 
     const release = releasesParsed[0];
+    const prevRelease = releasesParsed[1];
 
     const intermediaryVersion = getIntermediaryVersion(
         releases,
@@ -224,12 +225,17 @@ export const getInfo = ({ features, releases }: GetInfoProps): ReleaseInfo | nul
         isEqual(releasesSafe[0], latest),
     );
 
+    const isNewerResult = isNewer(latest, features); // do not consider safe releases, we want to show "outdated" even if it's not safe to update
+
     return {
         changelog,
+        // release available to be installed
         release,
         isRequired: isRequired(changelog),
-        isNewer: isNewer(latest, features), // do not consider safe releases, we want to show "outdated" even if it's not safe to update
+        isNewer: isNewerResult,
         intermediaryVersion,
+        // translations available to be installed
+        translations: isNewerResult ? prevRelease.translations : release.translations,
     };
 };
 
