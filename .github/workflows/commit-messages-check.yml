@@ -6,17 +6,19 @@ jobs:
   commit-message-check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout curent branch
+        uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          path: current-branch
 
       - name: Fetch base branch
-        run: |
-          git pull origin ${{ github.base_ref }}
-          git switch ${{ github.head_ref }}
+        uses: actions/checkout@v4
+        with:
+          path: base-branch
+          ref: ${{ github.base_ref }}
 
       - name: Check commit messages
-        run: ./scripts/check-commit-messages.sh
+        run: current-branch/scripts/check-commit-messages.sh
         env:
-          CURRENT_BRANCH_NAME: ${{ github.head_ref }}
-          BASE_BRANCH_NAME: ${{ github.base_ref }}
+          CURRENT_BRANCH_NAME: current-branch/${{ github.head_ref }}
+          BASE_BRANCH_NAME: base-branch/${{ github.base_ref }}
