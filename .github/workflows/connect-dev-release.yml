@@ -64,7 +64,7 @@ jobs:
           NODE_ENV: "production"
           url: https://${ DEV_SERVER_HOSTNAME }/connect/${{ steps.extract_branch.outputs.branch }}
           run: |
-          yarn workspace @trezor/connect-explorer build
+            yarn workspace @trezor/connect-explorer build
 
       - name: Build connect-examples webextension
         run: |
