@@ -8,10 +8,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Fetch base branch
+      - name: Fetch base and current branch
         run: |
           git fetch --no-tags origin ${{ github.base_ref }}
           git fetch --no-tags origin ${{ github.head_ref }}
+          git switch ${{ github.head_ref }}
 
       - name: Check commit messages
         run: ./scripts/check-commit-messages.sh
