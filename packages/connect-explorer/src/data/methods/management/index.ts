@@ -5,6 +5,7 @@ import applyFlags from './applyFlags';
 import applySettings from './applySettings';
 import backupDevice from './backupDevice';
 import changePin from './changePin';
+import changeLanguage from './changeLanguage';
 import changeWipeCode from './changeWipeCode';
 import recoverDevice from './recoverDevice';
 import firmwareUpdate from './firmwareUpdate';
@@ -17,6 +18,7 @@ export default [
     ...applyFlags,
     ...applySettings,
     ...backupDevice,
+    ...changeLanguage,
     ...changePin,
     ...changeWipeCode,
     ...recoverDevice,

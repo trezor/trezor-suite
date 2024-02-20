@@ -528,6 +528,19 @@ export default [
                 url: '/method/backupDevice',
             },
             {
+                name: 'Change language',
+                children: [
+                    {
+                        name: 'using select',
+                        url: '/method/changeLanguage',
+                    },
+                    {
+                        name: 'using binary',
+                        url: '/method/changeLanguage-binary',
+                    },
+                ],
+            },
+            {
                 name: 'Change PIN',
                 url: '/method/changePin',
             },
