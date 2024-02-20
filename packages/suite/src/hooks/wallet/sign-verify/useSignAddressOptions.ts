@@ -43,6 +43,10 @@ export const useSignAddressOptions = (
                         account.addresses?.used?.slice().reverse() || [],
                         'TR_ADDRESSES_USED',
                     ),
+                    ...reduceAddresses(
+                        account.addresses?.change?.slice().reverse() || [],
+                        'TR_ADDRESSES_CHANGE',
+                    ),
                 };
             case 'ethereum':
                 return {
@@ -59,30 +63,38 @@ export const useSignAddressOptions = (
 
     const { translationString } = useTranslation();
 
-    const groupedOptions = useMemo(
-        () =>
-            Object.entries(
-                Object.values(signAddresses).reduce<{
-                    [category: string]: AddressItem[];
-                }>(
-                    (grouped, { address, path, category }) => ({
-                        ...grouped,
-                        [category]: [
-                            ...(grouped[category] || []),
-                            {
-                                label: address,
-                                value: path,
-                            },
-                        ],
-                    }),
-                    {},
-                ),
-            ).map(([label, options]) => ({
-                label: label ? translationString(label as ExtendedMessageDescriptor['id']) : label,
+    const groupedOptions = useMemo(() => {
+        const signAddressesValues = Object.values(signAddresses);
+        const groupedAddresses = signAddressesValues.reduce<{
+            [category: string]: AddressItem[];
+        }>(
+            (grouped, { address, path, category }) => ({
+                ...grouped,
+                [category]: [
+                    ...(grouped[category] || []),
+                    {
+                        label: address,
+                        value: path,
+                    },
+                ],
+            }),
+            {},
+        );
+
+        return Object.entries(groupedAddresses).map(([label, options]) => {
+            const translatedLabel = label
+                ? translationString(label as ExtendedMessageDescriptor['id'])
+                : label;
+
+            const pathParts = options[0].value.split('/');
+            const pathLabel = `m/${pathParts[pathParts.length - 2]}/i`;
+
+            return {
+                label: `${translatedLabel} ${pathLabel}`,
                 options,
-            })),
-        [signAddresses, translationString],
-    );
+            };
+        });
+    }, [signAddresses, translationString]);
 
     const getValue = (path: string): AddressItem | null => {
         const address = signAddresses[path];
