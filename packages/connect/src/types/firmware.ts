@@ -31,6 +31,7 @@ export type FirmwareRelease = {
     fingerprint_bitcoinonly?: string;
     notes?: string;
     channel?: string;
+    translations?: string[];
 };
 
 export type IntermediaryVersion = 1 | 2 | 3;
@@ -47,4 +48,5 @@ export type ReleaseInfo = {
      * v3 - bootloader >= 1.12.0
      */
     intermediaryVersion?: IntermediaryVersion;
+    translations?: string[];
 };

@@ -132,6 +132,8 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
     color?: string;
 
+    availableTranslations: string[] = [];
+
     constructor(transport: Transport, descriptor: Descriptor) {
         super();
 
@@ -552,6 +554,8 @@ export class Device extends TypedEmitter<DeviceEvents> {
             this.unavailableCapabilities = getUnavailableCapabilities(feat, getAllNetworks());
             this.firmwareStatus = getFirmwareStatus(feat);
             this.firmwareRelease = getRelease(feat);
+
+            this.availableTranslations = this.firmwareRelease?.translations ?? [];
         }
 
         this.features = feat;
@@ -579,6 +583,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
         this.name = deviceInfo.name;
 
+        // todo: move to 553
         if (feat?.unit_color) {
             const deviceUnitColor = feat.unit_color.toString();
 
@@ -752,6 +757,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             firmwareType: this.firmwareType,
             features: this.features,
             unavailableCapabilities: this.unavailableCapabilities,
+            availableTranslations: this.availableTranslations,
         };
     }
 

@@ -45,6 +45,7 @@ export type KnownDevice = {
     state?: string;
     features: PROTO.Features;
     unavailableCapabilities: UnavailableCapabilities;
+    availableTranslations: string[];
 };
 
 export type UnknownDevice = {
@@ -63,6 +64,7 @@ export type UnknownDevice = {
     mode?: typeof undefined;
     state?: typeof undefined;
     unavailableCapabilities?: typeof undefined;
+    availableTranslations?: typeof undefined;
 };
 
 export type UnreadableDevice = {
@@ -81,6 +83,7 @@ export type UnreadableDevice = {
     mode?: typeof undefined;
     state?: typeof undefined;
     unavailableCapabilities?: typeof undefined;
+    availableTranslations?: typeof undefined;
 };
 
 export type Device = KnownDevice | UnknownDevice | UnreadableDevice;
