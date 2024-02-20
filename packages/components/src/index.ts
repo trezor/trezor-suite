@@ -7,6 +7,7 @@ export * from './support/ThemeProvider';
 
 export * from './components/Badge/Badge';
 export * from './components/buttons/Button/Button';
+export * from './components/Divider/Divider';
 export * from './components/buttons/IconButton/IconButton';
 export * from './components/buttons/TextButton/TextButton';
 export * from './components/buttons/ButtonGroup/ButtonGroup';
