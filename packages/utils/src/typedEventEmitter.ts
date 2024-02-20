@@ -1,12 +1,5 @@
 /*
-
-This file should not be exported from index to prevent missing dependency/polyfill error.
-EventEmitter is accessible in nodejs but requires polyfills in web builds.
-
-use:
-import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
-
-example:
+Usage example:
 type EventMap = {
     obj: { id: string };
     primitive: boolean | number | string | symbol;
@@ -14,9 +7,7 @@ type EventMap = {
     multipleArgs: (a: number, b: string, c: boolean) => void;
     [type: `dynamic/${string}`]: boolean;
 };
-
 */
-
 import { EventEmitter } from 'events';
 
 type EventMap = Record<string, any>;

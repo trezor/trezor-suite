@@ -3,8 +3,8 @@ import * as net from 'net';
 import * as url from 'url';
 
 import type { RequiredKey } from '@trezor/type-utils';
-import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
-import { arrayPartition } from '@trezor/utils/lib/arrayPartition';
+import { TypedEmitter } from '@trezor/utils';
+import { arrayPartition } from '@trezor/utils';
 
 import { getFreePort } from './getFreePort';
 

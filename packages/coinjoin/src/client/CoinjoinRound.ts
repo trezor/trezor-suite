@@ -1,4 +1,4 @@
-import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
+import { TypedEmitter } from '@trezor/utils';
 import { scheduleAction, arrayDistinct, arrayPartition } from '@trezor/utils';
 import { Network } from '@trezor/utxo-lib';
 

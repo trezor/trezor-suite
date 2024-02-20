@@ -1,4 +1,4 @@
-import * as versionUtils from '@trezor/utils/lib/versionUtils';
+import { versionUtils } from '@trezor/utils';
 
 import type { Features } from '../../types';
 

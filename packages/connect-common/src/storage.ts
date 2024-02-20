@@ -1,6 +1,6 @@
 // https://github.com/trezor/connect/blob/develop/src/js/storage/index.js
 
-import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
+import { TypedEmitter } from '@trezor/utils';
 
 const storageVersion = 2;
 const storageName = `storage_v${storageVersion}`;

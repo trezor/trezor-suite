@@ -24,7 +24,7 @@ import type { ConnectSettings, Manifest } from '@trezor/connect/lib/types';
 import { factory } from '@trezor/connect/lib/factory';
 import { initLog } from '@trezor/connect/lib/utils/debug';
 import { config } from '@trezor/connect/lib/data/config';
-import { createDeferredManager } from '@trezor/utils/lib/createDeferredManager';
+import { createDeferredManager } from '@trezor/utils';
 
 import * as iframe from './iframe';
 import * as popup from './popup';

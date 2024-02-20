@@ -1,7 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/popup/PopupManager.js
 
 import EventEmitter from 'events';
-import { createDeferred, Deferred } from '@trezor/utils/lib/createDeferred';
+import { createDeferred, Deferred } from '@trezor/utils';
 import { POPUP, IFRAME, UI, CoreEventMessage, IFrameLoaded } from '@trezor/connect/lib/events';
 import type { ConnectSettings } from '@trezor/connect/lib/types';
 import { getOrigin } from '@trezor/connect/lib/utils/urlUtils';

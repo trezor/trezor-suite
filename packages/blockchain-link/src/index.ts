@@ -1,6 +1,4 @@
-import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
-import { createDeferred } from '@trezor/utils/lib/createDeferred';
-import { createDeferredManager } from '@trezor/utils/lib/createDeferredManager';
+import { createDeferred, createDeferredManager, TypedEmitter } from '@trezor/utils';
 import { CustomError } from '@trezor/blockchain-link-types/lib/constants/errors';
 import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/lib/constants';
 import { Throttler } from './workers/throttler';

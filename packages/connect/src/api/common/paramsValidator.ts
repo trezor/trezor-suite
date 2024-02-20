@@ -1,5 +1,5 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/paramsValidator.js
-import * as versionUtils from '@trezor/utils/lib/versionUtils';
+import { versionUtils } from '@trezor/utils';
 
 import { ERRORS } from '../../constants';
 import { fromHardened } from '../../utils/pathUtils';

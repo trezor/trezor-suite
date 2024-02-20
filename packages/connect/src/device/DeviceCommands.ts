@@ -3,7 +3,7 @@
 import { randomBytes } from 'crypto';
 import { Transport } from '@trezor/transport';
 import * as Messages from '@trezor/protobuf/lib/messages-schema';
-import * as versionUtils from '@trezor/utils/lib/versionUtils';
+import { versionUtils } from '@trezor/utils';
 import { ERRORS, NETWORK } from '../constants';
 import { DEVICE } from '../events';
 import * as hdnodeUtils from '../utils/hdnodeUtils';

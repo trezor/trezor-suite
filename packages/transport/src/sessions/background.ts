@@ -10,7 +10,7 @@
  */
 
 import { createDeferred, Deferred } from '@trezor/utils';
-import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
+import { TypedEmitter } from '@trezor/utils';
 
 import type {
     EnumerateDoneRequest,
