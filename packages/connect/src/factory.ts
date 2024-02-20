@@ -239,6 +239,8 @@ export const factory = ({
 
         backupDevice: params => call({ ...params, method: 'backupDevice' }),
 
+        changeLanguage: params => call({ ...params, method: 'changeLanguage' }),
+
         changePin: params => call({ ...params, method: 'changePin' }),
 
         changeWipeCode: params => call({ ...params, method: 'changeWipeCode' }),
