@@ -10,8 +10,8 @@ jobs:
 
       - name: Fetch base and current branch
         run: |
-          git pull --no-tags origin ${{ github.base_ref }}
-          git fetch --no-tags origin ${{ github.head_ref }}
+          git fetch --no-tags origin ${{ github.base_ref }}:${{ github.base_ref }}
+          git fetch --no-tags origin ${{ github.head_ref }}:${{ github.head_ref }}
           git switch ${{ github.head_ref }}
 
       - name: Check commit messages
