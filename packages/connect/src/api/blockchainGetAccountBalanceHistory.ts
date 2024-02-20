@@ -51,6 +51,7 @@ export default class BlockchainGetAccountBalanceHistory extends AbstractMethod<
 
     async run() {
         const backend = await initBlockchain(this.params.coinInfo, this.postMessage);
+
         return backend.getAccountBalanceHistory(this.params.request);
     }
 }

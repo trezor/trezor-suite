@@ -35,6 +35,7 @@ export const ImportTransactionModal = ({ onCancel, decision }: ImportTransaction
         reader.onload = () => {
             if (typeof reader.result !== 'string') {
                 setError({ id: 'TR_DROPZONE_ERROR_EMPTY' });
+
                 return;
             }
             onCsvResult(reader.result);

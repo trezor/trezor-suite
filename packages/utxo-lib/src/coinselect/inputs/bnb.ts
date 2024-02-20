@@ -31,6 +31,7 @@ function calculateEffectiveValues(utxos: CoinSelectInput[], feeRate: number) {
         }
         const effectiveFee = getFeeForBytes(feeRate, inputBytes(utxo));
         const effectiveValue = value.sub(new BN(effectiveFee));
+
         return {
             utxo,
             effectiveValue,
@@ -171,6 +172,7 @@ export function bnb(
             if (subtract !== 0) {
                 return subtract;
             }
+
             return a.utxo.i - b.utxo.i;
         });
 

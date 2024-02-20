@@ -47,6 +47,7 @@ const initializeAccount = (state: TransactionsState, accountKey: AccountKey) => 
     if (!state.transactions[accountKey]) {
         state.transactions[accountKey] = [];
     }
+
     return state.transactions[accountKey];
 };
 
@@ -185,6 +186,7 @@ export const selectAccountTransactionsWithNulls = (
 export const selectAccountTransactions = memoizeWithArgs(
     (state: TransactionsRootState, accountKey: AccountKey | null): WalletAccountTransaction[] => {
         const transactions = selectAccountTransactionsWithNulls(state, accountKey);
+
         return transactions.filter(t => t !== null);
     },
     { size: EXPECTED_MAX_NUMBER_OF_ACCOUNTS },
@@ -200,6 +202,7 @@ export const selectPendingAccountAddresses = memoizeWithArgs(
                 target.addresses?.forEach(a => pendingAddresses.unshift(a)),
             ),
         );
+
         return pendingAddresses;
     },
     { size: EXPECTED_MAX_NUMBER_OF_ACCOUNTS },
@@ -207,9 +210,11 @@ export const selectPendingAccountAddresses = memoizeWithArgs(
 
 export const selectAllPendingTransactions = (state: TransactionsRootState) => {
     const { transactions } = state.wallet.transactions;
+
     return Object.keys(transactions).reduce(
         (response, accountKey) => {
             response[accountKey] = transactions[accountKey].filter(isPending);
+
             return response;
         },
         {} as typeof transactions,
@@ -223,6 +228,7 @@ export const selectTransactionByTxidAndAccountKey = (
     accountKey: AccountKey,
 ) => {
     const transactions = selectAccountTransactions(state, accountKey);
+
     return transactions.find(tx => tx?.txid === txid) ?? null;
 };
 
@@ -235,6 +241,7 @@ export const selectTransactionBlockTimeById = (
     if (transaction?.blockTime) {
         return transaction.blockTime * 1000;
     }
+
     return null;
 };
 
@@ -244,6 +251,7 @@ export const selectTransactionTargets = (
     accountKey: AccountKey,
 ) => {
     const transaction = selectTransactionByTxidAndAccountKey(state, txid, accountKey);
+
     return transaction?.targets;
 };
 
@@ -253,6 +261,7 @@ export const selectTransactionFirstTargetAddress = (
     accountKey: AccountKey,
 ) => {
     const transactionTargets = selectTransactionTargets(state, txid, accountKey);
+
     return transactionTargets?.[0]?.addresses?.[0];
 };
 
@@ -262,6 +271,7 @@ export const selectIsTransactionPending = (
     accountKey: AccountKey,
 ): boolean => {
     const transaction = selectTransactionByTxidAndAccountKey(state, txid, accountKey);
+
     return transaction ? isPending(transaction) : false;
 };
 
@@ -274,6 +284,7 @@ export const selectTransactionConfirmations = (
     if (!transaction) return 0;
 
     const blockchainHeight = selectBlockchainHeightBySymbol(state, transaction.symbol);
+
     return getConfirmations(transaction, blockchainHeight);
 };
 

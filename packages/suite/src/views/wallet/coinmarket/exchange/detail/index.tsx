@@ -14,6 +14,7 @@ const Wrapper = styled.div`
 
 const DetailIndex = (props: WithSelectedAccountLoadedProps) => {
     const coinmarketExchangeContextValues = useCoinmarketExchangeDetail(props);
+
     return (
         <CoinmarketExchangeDetailContext.Provider value={coinmarketExchangeContextValues}>
             <Wrapper>

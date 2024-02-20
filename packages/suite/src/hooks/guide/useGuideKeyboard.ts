@@ -26,6 +26,7 @@ export const useGuideKeyboard = () => {
 
     useEffect(() => {
         document.addEventListener('keydown', onGuideKeys);
+
         return () => {
             document.removeEventListener('keydown', onGuideKeys);
         };

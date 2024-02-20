@@ -55,6 +55,7 @@ export function createTransaction<Input extends ComposeInput, Change extends Com
         if (request.outputs[index]) {
             return convertOutput(output, request.outputs[index]);
         }
+
         return convertOutput(output, { type: 'change', ...request.changeAddress });
     });
 

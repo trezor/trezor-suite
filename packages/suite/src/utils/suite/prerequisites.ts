@@ -70,6 +70,7 @@ export const getExcludedPrerequisites = (router: RouterState): PrerequisiteType[
             'firmware-required',
         ];
     }
+
     return [];
 };
 

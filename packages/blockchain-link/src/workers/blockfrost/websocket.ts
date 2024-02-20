@@ -21,6 +21,7 @@ interface BlockfrostEvents {
 export class BlockfrostAPI extends BaseWebsocket<BlockfrostEvents> {
     protected createWebsocket() {
         const { url } = this.options;
+
         // options are not used in web builds (see ./src/utils/ws)
         return new WebSocket(url, {
             agent: this.options.agent,
@@ -68,22 +69,26 @@ export class BlockfrostAPI extends BaseWebsocket<BlockfrostEvents> {
     subscribeBlock() {
         this.removeSubscription('block');
         this.addSubscription('block', result => this.emit('block', result));
+
         return this.send('SUBSCRIBE_BLOCK');
     }
 
     subscribeAddresses(addresses: string[]) {
         this.removeSubscription('notification');
         this.addSubscription('notification', result => this.emit('notification', result));
+
         return this.send('SUBSCRIBE_ADDRESS', { addresses });
     }
 
     unsubscribeBlock() {
         const index = this.removeSubscription('block');
+
         return index >= 0 ? this.send('UNSUBSCRIBE_BLOCK') : { subscribed: false };
     }
 
     unsubscribeAddresses() {
         const index = this.removeSubscription('notification');
+
         return index >= 0 ? this.send('UNSUBSCRIBE_ADDRESS') : { subscribed: false };
     }
 }

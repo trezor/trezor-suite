@@ -47,9 +47,11 @@ export const save = async (
         }
 
         await fs.promises.writeFile(file, content, 'utf-8');
+
         return { success: true };
     } catch (error) {
         global.logger.error('user-data', `Save failed: ${error.message}`);
+
         return { success: false, error: error.message, code: error.code };
     }
 };
@@ -66,9 +68,11 @@ export const read = async (directory: string, name: string): Promise<InvokeResul
 
     try {
         const payload = await fs.promises.readFile(file, 'utf-8');
+
         return { success: true, payload };
     } catch (error) {
         global.logger.error('user-data', `Read failed: ${error.message}`);
+
         return { success: false, error: error.message, code: error.code };
     }
 };
@@ -91,6 +95,7 @@ export const readDir = async (directory: string): Promise<InvokeResult<string[]>
         return { success: true, payload: filteredDirFiles };
     } catch (error) {
         global.logger.error('user-data', `Get folder file names failed: ${error.message}`);
+
         return { success: false, error: error.message, code: error.code };
     }
 };
@@ -108,6 +113,7 @@ export const rename = async (
         return { success: true };
     } catch (error) {
         global.logger.error('user-data', `Rename file name failed: ${error.message}`);
+
         return { success: false, error: error.message, code: error.code };
     }
 };
@@ -116,9 +122,11 @@ export const clear = async (): Promise<InvokeResult> => {
     const dir = path.normalize(app.getPath('userData'));
     try {
         await fs.promises.rm(dir, { recursive: true, force: true });
+
         return { success: true };
     } catch (error) {
         global.logger.error('user-data', `Remove dir failed: ${error.message}`);
+
         return { success: false, error: error.message, code: error.code };
     }
 };
@@ -135,9 +143,11 @@ export const open = async (directory: string): Promise<InvokeResult> => {
         if (errorMessage) {
             throw new Error(errorMessage);
         }
+
         return { success: true };
     } catch (error) {
         global.logger.error('user-data', `Opening user data directory failed: ${error.message}`);
+
         return { success: false, error: error.message, code: error.code };
     }
 };

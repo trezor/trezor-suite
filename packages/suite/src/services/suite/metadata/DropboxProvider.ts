@@ -46,6 +46,7 @@ class DropboxProvider extends AbstractMetadataProvider {
         // refresh token is present, refresh it and return true
         try {
             await this.auth.refreshAccessToken(['']);
+
             return true;
         } catch (err) {
             return false;
@@ -87,6 +88,7 @@ class DropboxProvider extends AbstractMetadataProvider {
             if (err instanceof Error) {
                 return this.error('AUTH_ERROR', err.message);
             }
+
             return this.error(
                 'OTHER_ERROR',
                 'Unexpected error when trying to connect to dropbox provider',
@@ -99,6 +101,7 @@ class DropboxProvider extends AbstractMetadataProvider {
     async disconnect() {
         try {
             await this.client.authTokenRevoke();
+
             return this.ok();
         } catch (error) {
             return this.handleProviderError(error);
@@ -274,6 +277,7 @@ class DropboxProvider extends AbstractMetadataProvider {
                 // intentional fall-through
             }
         }
+
         return this.error('OTHER_ERROR', message);
     }
 }

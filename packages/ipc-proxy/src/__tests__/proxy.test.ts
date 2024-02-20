@@ -35,11 +35,13 @@ describe('proxy', () => {
         createIpcProxyHandler<TestApi>(ipcMain, 'TestApi', {
             onCreateInstance: () => {
                 const api = new TestApi();
+
                 return {
                     onRequest: (method, params) => {
                         if (method === 'oneArgMethod') {
                             return api[method](...params);
                         }
+
                         // unfortunately still needs type-casting
                         // return api[method](...params);
                         return (api[method] as any)(...params);

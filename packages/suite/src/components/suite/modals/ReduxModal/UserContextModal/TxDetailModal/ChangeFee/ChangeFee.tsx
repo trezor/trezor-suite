@@ -177,6 +177,7 @@ export const ChangeFee = (props: Omit<ChangeFeeProps, 'selectedAccount' | 'rbfPa
     if (selectedAccount.status !== 'loaded' || !props.tx.rbfParams) {
         return null;
     }
+
     return (
         <ChangeFeeLoaded
             selectedAccount={selectedAccount}

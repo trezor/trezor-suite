@@ -34,6 +34,7 @@ export class UdpApi extends AbstractApi {
                         }),
                     );
                 }
+
                 return resolve(this.success(undefined));
             });
         });

@@ -78,6 +78,7 @@ export default class RequestLogin extends AbstractMethod<'requestLogin', PROTO.S
         }
         const cmd = this.device.getCommands();
         const { message } = await cmd.typedCall('SignIdentity', 'SignedIdentity', this.params);
+
         return {
             address: message.address,
             publicKey: message.public_key,

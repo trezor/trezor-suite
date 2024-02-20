@@ -49,6 +49,7 @@ export const Downloading = ({ hideWindow, progress }: DownloadingProps) => {
 
     useEffect(() => {
         const timer = setTimeout(() => setStep(step > 2 ? 0 : step + 1), 300);
+
         return () => clearTimeout(timer);
     }, [step]);
 

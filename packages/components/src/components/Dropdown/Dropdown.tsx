@@ -177,6 +177,7 @@ export const Dropdown = forwardRef(
             // do not loose focus when clicking within the menu
             if (!content && document.activeElement === menuRef.current) {
                 toggleRef.current?.focus();
+
                 return;
             }
 

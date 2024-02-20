@@ -32,6 +32,7 @@ export const convertXpub = (
         // override network of BIP32Interface
         node.network = requestedNetwork;
     }
+
     return node.toBase58();
 };
 
@@ -45,6 +46,7 @@ export const convertBitcoinXpub = (xpub: string, network: Network) => {
 
     // override network of BIP32Interface
     node.network = network;
+
     return node.toBase58();
 };
 
@@ -97,6 +99,7 @@ export function xpubDerive<PK extends PROTO.PublicKey | PROTO.EthereumPublicKey>
 
 export const xpubToHDNodeType = (xpub: string, network: Network): PROTO.HDNodeType => {
     const hd = bip32.fromBase58(xpub, network);
+
     return {
         depth: hd.depth,
         child_num: hd.index,
@@ -118,5 +121,6 @@ export const convertMultisigPubKey = <T extends PROTO.TxInputType | PROTO.TxOutp
             }
         });
     }
+
     return utxo;
 };

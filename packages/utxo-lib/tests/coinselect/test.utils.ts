@@ -7,6 +7,7 @@ function addScriptLength(values: any[], scriptLength: number) {
         if (x.script === undefined) {
             x.script = { length: scriptLength };
         }
+
         return x;
     });
 }
@@ -16,6 +17,7 @@ function valueToBN(vinVout: VinVoutFixture) {
     if (vinVout.value) {
         return { ...vinVout, value: new BN(vinVout.value) };
     }
+
     return vinVout;
 }
 
@@ -23,6 +25,7 @@ function valueToString(vinVout: VinVoutResult) {
     if (vinVout.value) {
         return { ...vinVout, value: vinVout.value.toString() };
     }
+
     return vinVout;
 }
 
@@ -35,6 +38,7 @@ export function addScriptLengthToExpected(expected: { inputs?: any[]; outputs?: 
             if (newInput.script == null) {
                 newInput.script = { length: INPUT_SCRIPT_LENGTH.p2pkh };
             }
+
             return newInput;
         });
     }
@@ -45,6 +49,7 @@ export function addScriptLengthToExpected(expected: { inputs?: any[]; outputs?: 
             if (newOutput.script == null) {
                 newOutput.script = { length: OUTPUT_SCRIPT_LENGTH.p2pkh };
             }
+
             return newOutput;
         });
     }

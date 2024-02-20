@@ -41,6 +41,7 @@ export const uploadFirmware = async (
             payload,
         });
         postProgressMessage(device, 100, postMessage);
+
         return message;
     }
 
@@ -62,6 +63,7 @@ export const uploadFirmware = async (
             });
         }
         postProgressMessage(device, 100, postMessage);
+
         return response.message;
     }
 

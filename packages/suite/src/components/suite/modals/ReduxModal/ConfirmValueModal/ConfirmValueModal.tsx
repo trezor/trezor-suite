@@ -122,6 +122,7 @@ export const ConfirmValueModal = ({
         if (!addressConfirmed) {
             return <Translation id="TR_CONFIRM_BEFORE_COPY" />;
         }
+
         return null;
     };
 

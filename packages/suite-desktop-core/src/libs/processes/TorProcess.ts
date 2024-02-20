@@ -36,6 +36,7 @@ export class TorProcess extends BaseProcess {
 
     async status(): Promise<TorProcessStatus> {
         const torControllerStatus = await this.torController.getStatus();
+
         return {
             service: torControllerStatus === TOR_CONTROLLER_STATUS.CircuitEstablished,
             process: Boolean(this.process),

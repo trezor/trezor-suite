@@ -5,6 +5,7 @@ import { useOnboarding } from 'src/hooks/suite';
 
 const IsSameDevice = () => {
     const { resetOnboarding, enableOnboardingReducer } = useOnboarding();
+
     return (
         <OnboardingStepBox
             disableConfirmWrapper

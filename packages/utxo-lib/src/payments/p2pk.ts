@@ -35,22 +35,27 @@ export function p2pk(a: Payment, opts?: PaymentOpts): Payment {
 
     lazy.prop(o, 'output', () => {
         if (!a.pubkey) return;
+
         return bscript.compile([a.pubkey, OPS.OP_CHECKSIG]);
     });
     lazy.prop(o, 'pubkey', () => {
         if (!a.output) return;
+
         return a.output.subarray(1, -1);
     });
     lazy.prop(o, 'signature', () => {
         if (!a.input) return;
+
         return _chunks()[0] as Buffer;
     });
     lazy.prop(o, 'input', () => {
         if (!a.signature) return;
+
         return bscript.compile([a.signature]);
     });
     lazy.prop(o, 'witness', () => {
         if (!o.input) return;
+
         return [];
     });
 

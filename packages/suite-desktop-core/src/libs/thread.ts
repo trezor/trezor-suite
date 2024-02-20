@@ -62,10 +62,12 @@ export const createThread = <P, T extends EventEmitter>(init: (params: P) => T |
             switch (data.type) {
                 case 'init':
                     obj = await init(data.payload);
+
                     return respond(data.id);
                 case 'call': {
                     const { method, params } = data.payload;
                     const result = await (obj as any)[method](...params);
+
                     return respond(data.id, result);
                 }
                 case 'subscribe': {
@@ -73,11 +75,13 @@ export const createThread = <P, T extends EventEmitter>(init: (params: P) => T |
                     if (!obj.listenerCount(event)) {
                         obj.on(event, payload => fire(event, payload));
                     }
+
                     return respond(data.id);
                 }
                 case 'unsubscribe': {
                     const { event } = data.payload;
                     obj.removeAllListeners(event);
+
                     return respond(data.id);
                 }
                 default:

@@ -246,6 +246,7 @@ export const useCoinmarketSpend = ({
             if (isDesktop()) {
                 // handle messages from desktop
                 desktopApi.on('spend/message', handleMessage);
+
                 return () => {
                     desktopApi.removeAllListeners('spend/message');
                 };
@@ -253,6 +254,7 @@ export const useCoinmarketSpend = ({
 
             // handle messages from web
             window.addEventListener('message', handleMessage);
+
             return () => {
                 window.removeEventListener('message', handleMessage);
             };
@@ -293,5 +295,6 @@ export const useCoinmarketSpend = ({
 export const useCoinmarketSpendContext = () => {
     const context = useContext(SpendContext);
     if (context === null) throw Error('SpendContext used without Context');
+
     return context;
 };

@@ -64,6 +64,7 @@ export default class CardanoGetNativeScriptHash extends AbstractMethod<
         if (script.keyPath) {
             keyPath = validatePath(script.keyPath, 3);
         }
+
         return {
             type: script.type,
             scripts,

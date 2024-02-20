@@ -74,6 +74,7 @@ export default class CardanoGetAddress extends AbstractMethod<'cardanoGetAddress
                 fromHardened(this.params[0].address_parameters.address_n[2]) + 1
             }`;
         }
+
         return 'Export multiple Cardano addresses';
     }
 
@@ -108,6 +109,7 @@ export default class CardanoGetAddress extends AbstractMethod<'cardanoGetAddress
         const uiResp = await uiPromise.promise;
 
         this.confirmed = uiResp.payload;
+
         return this.confirmed;
     }
 
@@ -126,6 +128,7 @@ export default class CardanoGetAddress extends AbstractMethod<'cardanoGetAddress
 
         // wait for user action
         const uiResp = await uiPromise.promise;
+
         return uiResp.payload;
     }
 
@@ -146,6 +149,7 @@ export default class CardanoGetAddress extends AbstractMethod<'cardanoGetAddress
             show_display,
             chunkify,
         });
+
         return response.message;
     }
 
@@ -222,6 +226,7 @@ export default class CardanoGetAddress extends AbstractMethod<'cardanoGetAddress
 
             this.progress++;
         }
+
         return this.hasBundle ? responses : responses[0];
     }
 }

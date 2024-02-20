@@ -84,6 +84,7 @@ export const createAddressManager = (getNetwork: () => Network | undefined) => {
                 ([_acc, { change, unused, used }]) =>
                     !!change.concat(used, unused).find(ad => ad.address === address),
             ) || [];
+
         return {
             descriptor: account || address,
             addresses,

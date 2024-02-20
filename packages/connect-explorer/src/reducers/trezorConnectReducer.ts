@@ -43,6 +43,7 @@ const removeDevice = (state: ConnectState, device: TrezorConnectDevice): Connect
     if (state.devices.length === 1) {
         state.selectedDevice = state.devices[0].path;
     }
+
     return state;
 };
 
@@ -59,6 +60,7 @@ const onOptionChange = <T>(state: ConnectState, field: Field<T>, value: T): Conn
         };
     }
     newState.options[field.name] = value;
+
     return newState;
 };
 

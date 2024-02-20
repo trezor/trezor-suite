@@ -273,10 +273,10 @@ module.exports = {
             },
         ],
         'prefer-numeric-literals': 'error',
-        "padding-line-between-statements": [
-            "error",
-            { blankLine: "always", prev: "*", next: "return" },
-        ]
+        'padding-line-between-statements': [
+            'error',
+            { blankLine: 'always', prev: '*', next: 'return' },
+        ],
     },
     overrides: [
         {

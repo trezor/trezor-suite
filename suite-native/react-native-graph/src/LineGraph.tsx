@@ -8,6 +8,7 @@ export function LineGraphImpl<TEventPayload extends object>(
     props: LineGraphProps<TEventPayload>,
 ): ReactElement {
     if (props.animated) return <AnimatedLineGraph<TEventPayload> {...props} />;
+
     return <StaticLineGraph {...props} />;
 }
 

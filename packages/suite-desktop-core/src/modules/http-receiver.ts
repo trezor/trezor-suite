@@ -11,6 +11,7 @@ export const SERVICE_NAME = 'http-receiver';
 export const init: Module = ({ mainWindow }) => {
     const { logger } = global;
     let httpReceiver: ReturnType<typeof createHttpReceiver> | null = null;
+
     return async () => {
         if (httpReceiver) {
             return httpReceiver.getInfo();

@@ -107,11 +107,13 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
         const address = this.getServerAddress();
         const route = this.routes.find(r => r.pathname === pathname);
         if (!route) return;
+
         return `http://${address.address}:${address.port}${route.pathname}`;
     }
 
     public getInfo() {
         const address = this.getServerAddress();
+
         return {
             url: `http://${address.address}:${address.port}`,
         };
@@ -119,6 +121,7 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
 
     public async start() {
         const port = this.port || (this.port = await getFreePort());
+
         return new Promise((resolve, reject) => {
             let nextSocketId = 0;
             this.server.on('connection', socket => {
@@ -142,6 +145,7 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
                         : `Start error code: ${errorCode}`;
 
                 this.logger.error(errorMessage);
+
                 return reject(new Error(`http-receiver: ${errorMessage}`));
             });
 
@@ -151,6 +155,7 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
                 if (address) {
                     this.emitter.emit('server/listening', address);
                 }
+
                 return resolve(address);
             });
         });
@@ -186,6 +191,7 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
             pathname.split('/').filter(segment => segment),
             segment => !segment.includes(':'),
         );
+
         return [baseSegments, paramsSegments];
     }
 
@@ -241,10 +247,12 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
                 if (matchedSegments.length > acc.matchedSegments.length) {
                     return { route, matchedSegments };
                 }
+
                 return acc;
             },
             { route: undefined as Route | undefined, matchedSegments: [] as string[] },
         );
+
         return match.route;
     };
     /**
@@ -255,6 +263,7 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
         if (!request.url) {
             this.logger.warn('Unexpected incoming message (no url)');
             this.emitter.emit('server/error', 'Unexpected incoming message');
+
             return;
         }
 
@@ -267,6 +276,7 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
             const msg = `url ${request.url} could not be parsed`;
             this.emitter.emit('server/error', msg);
             this.logger.warn(msg);
+
             return;
         }
         this.logger.info(`Handling request for ${pathname}`);
@@ -275,12 +285,14 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
         if (!route) {
             this.emitter.emit('server/error', `Route not found for ${pathname}`);
             this.logger.warn(`Route not found for ${pathname}`);
+
             return;
         }
 
         if (!route.handler.length) {
             this.emitter.emit('server/error', `No handlers registered for route ${pathname}`);
             this.logger.warn(`No handlers registered for route ${pathname}`);
+
             return;
         }
         const paramsSegments = pathname
@@ -292,6 +304,7 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
         requestWithParams.params = route.params.reduce(
             (acc, param, index) => {
                 acc[param.replace(':', '')] = paramsSegments[index];
+
                 return acc;
             },
             {} as Record<string, string>,
@@ -341,6 +354,7 @@ const checkOrigin = ({
             domain = new URL(referer).hostname;
         } catch (err) {
             logger.warn(`Invalid referer ${referer}`);
+
             return false;
         }
 
@@ -360,8 +374,10 @@ const checkOrigin = ({
         logger.warn(`Origin rejected for ${pathname}`);
         logger.warn(`- Received: '${referer}'`);
         logger.warn(`- Allowed origins: ${origins.map(o => `'${o}'`).join(', ')}`);
+
         return false;
     }
+
     return true;
 };
 

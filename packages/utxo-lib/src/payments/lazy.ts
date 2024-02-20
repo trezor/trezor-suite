@@ -7,6 +7,7 @@ export function prop(object: Record<string, any>, name: string, f: () => any) {
         get() {
             const value = f.call(this);
             this[name] = value;
+
             return value;
         },
         set<V>(value: V) {
@@ -22,9 +23,11 @@ export function prop(object: Record<string, any>, name: string, f: () => any) {
 
 export function value<T>(f: () => T): () => T {
     let value: T;
+
     return (): T => {
         if (value !== undefined) return value;
         value = f();
+
         return value;
     };
 }

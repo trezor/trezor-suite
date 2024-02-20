@@ -9,6 +9,7 @@ export const parseQuery = (uri: string) => {
     } catch (e) {
         // empty
     }
+
     return params;
 };
 

@@ -100,6 +100,7 @@ export const init = async (settings: ConnectSettings) => {
     const onLoad = () => {
         if (!instance) {
             initPromise.reject(ERRORS.TypedError('Init_IframeBlocked'));
+
             return;
         }
         try {
@@ -107,6 +108,7 @@ export const init = async (settings: ConnectSettings) => {
             const iframeOrigin = instance.contentWindow?.location.origin;
             if (!iframeOrigin || iframeOrigin === 'null') {
                 handleIframeBlocked();
+
                 return;
             }
         } catch (e) {

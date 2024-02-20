@@ -11,6 +11,7 @@ import { useOnboarding } from 'src/hooks/suite';
 const SecurityStep = () => {
     const [showSkipConfirmation, setShowSkipConfirmation] = useState(false);
     const { goToNextStep, updateAnalytics } = useOnboarding();
+
     return (
         <>
             {showSkipConfirmation && (

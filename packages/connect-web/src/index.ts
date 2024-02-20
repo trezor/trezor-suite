@@ -47,6 +47,7 @@ const initPopupManager = () => {
             payload: error ? { error } : null,
         });
     });
+
     return pm;
 };
 
@@ -64,6 +65,7 @@ const dispose = () => {
     if (_popupManager) {
         _popupManager.close();
     }
+
     return Promise.resolve(undefined);
 };
 
@@ -146,6 +148,7 @@ const init = async (settings: Partial<ConnectSettings> = {}): Promise<void> => {
     if (_settings.lazyLoad) {
         // reset "lazyLoad" after first use
         _settings.lazyLoad = false;
+
         return;
     }
 
@@ -193,6 +196,7 @@ const call: CallMethod = async params => {
                     _popupManager.clear();
                 }
             }
+
             return createErrorMessage(error);
         }
     }
@@ -224,17 +228,20 @@ const call: CallMethod = async params => {
             ) {
                 _popupManager.unlock();
             }
+
             return response;
         }
         if (_popupManager) {
             _popupManager.unlock();
         }
+
         return createErrorMessage(ERRORS.TypedError('Method_NoResponse'));
     } catch (error) {
         _log.error('__call error', error);
         if (_popupManager) {
             _popupManager.clear(false);
         }
+
         return createErrorMessage(error);
     }
 };
@@ -282,8 +289,10 @@ const requestLogin = async (params: any) => {
             callback: null,
         });
         window.removeEventListener('message', loginChallengeListener);
+
         return response;
     }
+
     return call({ method: 'requestLogin', ...params });
 };
 

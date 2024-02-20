@@ -22,6 +22,7 @@ const mostRecent = (previous: HistoryTx | undefined, current: HistoryTx) => {
     if (current.height === -1) return current;
     if (previous.height === 0) return previous;
     if (current.height === 0) return current;
+
     return previous.height >= current.height ? previous : current;
 };
 
@@ -72,6 +73,7 @@ export const txListener = (worker: BaseWorker<ElectrumAPI>) => {
                 api().request('blockchain.scripthash.subscribe', scripthash),
             ),
         );
+
         return { subscribed: true };
     };
 
@@ -93,6 +95,7 @@ export const txListener = (worker: BaseWorker<ElectrumAPI>) => {
                 api().request('blockchain.scripthash.unsubscribe', scripthash),
             ),
         );
+
         return { subscribed: false };
     };
 

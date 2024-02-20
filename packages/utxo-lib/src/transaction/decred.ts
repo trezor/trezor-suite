@@ -25,6 +25,7 @@ function byteLength(tx: TransactionBase, _ALLOW_WITNESS = true) {
             sum += 8 + 4 + 4; // value + height + block index
             sum += varSliceSize(input.decredWitness!.script);
         }
+
         return sum;
     }, 0);
     if (hasWitnesses) {
@@ -34,9 +35,11 @@ function byteLength(tx: TransactionBase, _ALLOW_WITNESS = true) {
     byteLength += tx.outs.reduce((sum, output) => {
         sum += 8 + 2; // value + script version
         sum += varSliceSize(output.script);
+
         return sum;
     }, 0);
     byteLength += 4 + 4; // block height + block index
+
     return byteLength;
 }
 
@@ -83,12 +86,14 @@ function toBuffer(
 
     // avoid slicing unless necessary
     if (initialOffset !== undefined) return buffer.subarray(initialOffset, bufferWriter.offset);
+
     return buffer;
 }
 
 function getHash(tx: TransactionBase, forWitness = false): Buffer {
     // wtxid for coinbase is always 32 bytes of 0x00
     if (forWitness && tx.isCoinbase()) return Buffer.alloc(32, 0);
+
     return bcrypto.blake256(toBuffer(tx, undefined, undefined, forWitness));
 }
 
@@ -104,6 +109,7 @@ export function fromConstructor(options: TransactionOptions) {
     tx.hasWitnesses = hasWitnesses.bind(null, tx);
     tx.getHash = getHash.bind(null, tx);
     tx.weight = weight.bind(null, tx);
+
     return tx;
 }
 

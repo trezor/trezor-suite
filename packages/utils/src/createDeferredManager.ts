@@ -78,6 +78,7 @@ export const createDeferredManager = <T = any>(
         const deadline = timeout && Date.now() + timeout;
         promises.push({ ...deferred, deadline });
         if (timeout) replanTimeout();
+
         return { promiseId, promise: deferred.promise };
     };
 
@@ -85,18 +86,21 @@ export const createDeferredManager = <T = any>(
         const index = promises.findIndex(({ id }) => id === promiseId);
         const [promise] = index >= 0 ? promises.splice(index, 1) : [undefined];
         if (promise?.deadline) replanTimeout();
+
         return promise;
     };
 
     const resolve = (promiseId: number, value: T) => {
         const promise = extract(promiseId);
         promise?.resolve(value);
+
         return !!promise;
     };
 
     const reject = (promiseId: number, error: Error) => {
         const promise = extract(promiseId);
         promise?.reject(error);
+
         return !!promise;
     };
 

@@ -161,6 +161,7 @@ const rerun = () => async (dispatch: Dispatch, getState: GetState) => {
     if (!response.success) {
         dispatch(setStatus('finished'));
         dispatch(setError('failed to rerun recovery'));
+
         return;
     }
 

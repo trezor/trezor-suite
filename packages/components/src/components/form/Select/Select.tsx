@@ -281,6 +281,7 @@ export const Select = ({
                     selectRef.current?.blur();
                 }
             }
+
             return null;
         },
         [onChange, menuIsOpen],

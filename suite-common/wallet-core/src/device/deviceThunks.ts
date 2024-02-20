@@ -84,6 +84,7 @@ export const toggleRememberDevice = createThunk(
         analytics.report({
             type: device.remember ? EventType.SwitchDeviceForget : EventType.SwitchDeviceRemember,
         });
+
         return dispatch(
             deviceActions.rememberDevice({
                 device,
@@ -120,6 +121,7 @@ export const createDeviceInstance = createThunk(
                 dispatch(
                     notificationsActions.addToast({ type: 'error', error: response.payload.error }),
                 );
+
                 return;
             }
 
@@ -186,6 +188,7 @@ export const handleDeviceDisconnect = createThunk(
          */
         if (['onboarding', 'firmware', 'firmware-type'].includes(routerApp)) {
             dispatch(selectDeviceThunk(undefined));
+
             return;
         }
 
@@ -198,6 +201,7 @@ export const handleDeviceDisconnect = createThunk(
             if (!devicePresent) {
                 dispatch(selectDeviceThunk(deviceInstances[0]));
             }
+
             return;
         }
 
@@ -332,6 +336,7 @@ export const authorizeDevice = createThunk(
                     dispatch(deviceActions.updatePassphraseMode({ device, hidden: true }));
                 }
                 dispatch(openModal({ type: 'passphrase-duplicate', device, duplicate }));
+
                 return false;
             }
 
@@ -344,6 +349,7 @@ export const authorizeDevice = createThunk(
         dispatch(
             notificationsActions.addToast({ type: 'auth-failed', error: response.payload.error }),
         );
+
         return false;
     },
 );
@@ -373,6 +379,7 @@ export const authConfirm = createThunk(
                 await dispatch(createDeviceInstance({ device }));
                 // forget previous empty wallet
                 dispatch(deviceActions.forgetDevice(device));
+
                 return;
             }
             dispatch(
@@ -382,12 +389,14 @@ export const authConfirm = createThunk(
                 }),
             );
             dispatch(deviceActions.receiveAuthConfirm({ device, success: false }));
+
             return;
         }
 
         if (response.payload.state !== device.state) {
             dispatch(notificationsActions.addToast({ type: 'auth-confirm-error' }));
             dispatch(deviceActions.receiveAuthConfirm({ device, success: false }));
+
             return;
         }
 
@@ -519,6 +528,7 @@ export const confirmAddressOnDeviceThunk = createThunk(
                     payload: { error: 'Method for getAddress not defined', code: undefined },
                 } as const;
         }
+
         return response;
     },
 );

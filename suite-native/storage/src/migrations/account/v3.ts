@@ -44,6 +44,7 @@ const getPaymentTypeFromXpub = (xpub: string) => {
     if (xpub.startsWith('tr(')) return 'p2tr';
 
     const xpubVersion = Buffer.from(decode(xpub)).readUInt32BE();
+
     return BIP32_PAYMENT_TYPES[xpubVersion as XpubVersion];
 };
 

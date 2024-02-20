@@ -99,6 +99,7 @@ export const AddTokenModal = ({ onCancel }: AddTokenModalProps) => {
     };
     const getInputState = () => {
         if (error) return 'error';
+
         return undefined;
     };
 

@@ -36,5 +36,6 @@ export const withCoinmarket = (
         );
     }, options);
     Component.displayName = `withCoinmarket(${displayName})`;
+
     return Component;
 };

@@ -43,6 +43,7 @@ export const getTransactionVbytesFromAddresses = (
 ) => {
     const ins = inputs.map(toVin(network));
     const outs = outputs.map(toVout(network));
+
     return transactionBytes(ins, outs);
 };
 

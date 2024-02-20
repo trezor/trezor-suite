@@ -55,6 +55,7 @@ const firmwareInstallThunk = createThunk(
 
         if (!device || !device.connected || !device.features) {
             dispatch({ type: firmwareActions.setError.type, payload: 'no device connected' });
+
             return;
         }
 
@@ -63,6 +64,7 @@ const firmwareInstallThunk = createThunk(
                 type: firmwareActions.setError.type,
                 payload: 'device must be connected in bootloader mode',
             });
+
             return;
         }
 
@@ -106,6 +108,7 @@ const firmwareInstallThunk = createThunk(
                 if (firmwareType) {
                     return firmwareType;
                 }
+
                 return hasBitcoinOnlyFirmware(prevDevice) || isBitcoinOnlyDevice(prevDevice)
                     ? FirmwareType.BitcoinOnly
                     : FirmwareType.Regular;
@@ -244,6 +247,7 @@ export const validateFirmwareHash = createThunk(
         if (!firmwareChallenge || !firmwareHash) {
             // prevent false positives of invalid firmware hash. this should never happen though
             console.error('firmwareChallenge or firmwareHash is missing');
+
             return;
         }
 
@@ -280,11 +284,13 @@ export const validateFirmwareHash = createThunk(
                     // validate firmware hash
                     handleFwHashError(fwHash);
                 }
+
                 return;
             }
 
             if (fwHash.payload.hash !== firmwareHash) {
                 handleFwHashMismatch(device);
+
                 return;
             }
         }

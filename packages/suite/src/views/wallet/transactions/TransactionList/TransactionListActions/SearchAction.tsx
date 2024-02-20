@@ -154,6 +154,7 @@ export const SearchAction = ({ account, searchQuery, setSearch, setSelectedPage 
 
         // @ts-expect-error
         document.addEventListener('keydown', onSearchKeys);
+
         return () => {
             // @ts-expect-error
             document.removeEventListener('keydown', onSearchKeys);

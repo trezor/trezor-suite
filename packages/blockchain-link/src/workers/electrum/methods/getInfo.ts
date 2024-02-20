@@ -10,6 +10,7 @@ const getInfo: Api<Req, Res> = client => {
         block: { hex, height },
         version: [_name, version],
     } = client.getInfo() || throwError('Client not initialized');
+
     return Promise.resolve({
         url,
         version,

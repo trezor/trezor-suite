@@ -83,6 +83,7 @@ export default [
                 affect: 'outputs',
                 data: select.map(v => {
                     const example = examples[v.value];
+
                     return {
                         ...v,
                         affectedValue: example || undefined,

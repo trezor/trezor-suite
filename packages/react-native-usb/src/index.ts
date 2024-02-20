@@ -56,6 +56,7 @@ const transferOut = async (
         const perf = performance.now();
         await ReactNativeUsbModule.transferOut(deviceName, endpointNumber, data.toString());
         debugLog('JS: USB write time', performance.now() - perf);
+
         return { status: 'ok' };
     } catch (error) {
         debugLog('JS: USB write error', error);
@@ -110,11 +111,13 @@ export function onDeviceConnected(listener: (event: OnConnectEvent) => void): Su
             console.error('JS: USB onDeviceConnect: event is null');
             // just for debugging purposes now
             alert('JS: USB onDeviceConnect: event is null');
+
             return;
         }
 
         if (connectedDevices.has(event.deviceName)) {
             debugLog('JS: USB onDeviceConnect: device already connected');
+
             return;
         }
 
@@ -125,6 +128,7 @@ export function onDeviceConnected(listener: (event: OnConnectEvent) => void): Su
         debugLog('JS: USB onDeviceConnect', eventPayload);
 
         connectedDevices.set(event.deviceName, eventPayload.device);
+
         return listener(eventPayload as any);
     });
 }
@@ -135,6 +139,7 @@ export function onDeviceDisconnect(listener: (event: OnConnectEvent) => void): S
             console.error('JS: USB onDeviceConnect: event is null');
             // just for debugging purposes now
             alert('JS: USB onDeviceConnect: event is null');
+
             return;
         }
 
@@ -145,12 +150,14 @@ export function onDeviceDisconnect(listener: (event: OnConnectEvent) => void): S
         debugLog('JS: USB onDeviceDisconnect', eventPayload);
 
         connectedDevices.delete(event.deviceName);
+
         return listener(eventPayload as any);
     });
 }
 
 export async function getDevices(): Promise<any> {
     const devices = await ReactNativeUsbModule.getDevices();
+
     return devices.map((device: NativeDevice) => createWebUSBDevice(device));
 }
 

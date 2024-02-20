@@ -59,6 +59,7 @@ function toBuffer<S>(
 
     // avoid slicing unless necessary
     if (initialOffset !== undefined) return buffer.subarray(initialOffset, bufferWriter.offset);
+
     return buffer;
 }
 
@@ -66,6 +67,7 @@ export function fromConstructor(options: TransactionOptions) {
     const tx = new TransactionBase(options);
     // override base methods
     tx.toBuffer = toBuffer.bind(null, tx);
+
     return tx;
 }
 

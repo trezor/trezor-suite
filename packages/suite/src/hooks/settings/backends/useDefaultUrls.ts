@@ -16,5 +16,6 @@ export const useDefaultUrls = (
             setIsLoading(false);
         });
     }, [coin]);
+
     return { defaultUrls: link?.url ?? [], isLoading };
 };

@@ -44,6 +44,7 @@ export function p2pkh(a: Payment, opts?: PaymentOpts): Payment {
 
     lazy.prop(o, 'address', () => {
         if (!o.hash) return;
+
         return bs58check.encodeAddress(o.hash, network.pubKeyHash, network);
     });
     lazy.prop(o, 'hash', () => {
@@ -53,6 +54,7 @@ export function p2pkh(a: Payment, opts?: PaymentOpts): Payment {
     });
     lazy.prop(o, 'output', () => {
         if (!o.hash) return;
+
         return bscript.compile([
             OPS.OP_DUP,
             OPS.OP_HASH160,
@@ -63,19 +65,23 @@ export function p2pkh(a: Payment, opts?: PaymentOpts): Payment {
     });
     lazy.prop(o, 'pubkey', () => {
         if (!a.input) return;
+
         return _chunks()[1] as Buffer;
     });
     lazy.prop(o, 'signature', () => {
         if (!a.input) return;
+
         return _chunks()[0] as Buffer;
     });
     lazy.prop(o, 'input', () => {
         if (!a.pubkey) return;
         if (!a.signature) return;
+
         return bscript.compile([a.signature, a.pubkey]);
     });
     lazy.prop(o, 'witness', () => {
         if (!o.input) return;
+
         return [];
     });
 

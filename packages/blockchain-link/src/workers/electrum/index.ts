@@ -131,6 +131,7 @@ const onRequest = async <T extends Message>(
             // @ts-expect-error
 
             const { method, params } = request.payload;
+
             return client
                 .request(method, ...params)
                 .then((res: any) => ({ type: method, payload: res }));

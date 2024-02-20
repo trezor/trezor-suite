@@ -17,6 +17,7 @@ export const submitRequestForm = async (
             // slightly delay opening of the new page, Suite Web may not complete storing data do DB otherwise
             window.open(formAction, isDesktop() ? '_blank' : formTarget);
         }, 100);
+
         return;
     }
 
@@ -47,6 +48,7 @@ export const submitRequestForm = async (
 
 const getDarkThemeQuery = (): MediaQueryList | undefined => {
     const matchMedia = window?.matchMedia;
+
     return matchMedia && matchMedia('(prefers-color-scheme: dark)');
 };
 
@@ -56,5 +58,6 @@ export const watchOsTheme = (callback: (theme: Exclude<SuiteThemeVariant, 'syste
     const onThemeChange = (e: MediaQueryListEvent) => callback(e.matches ? 'dark' : 'light');
     const query = getDarkThemeQuery();
     query?.addEventListener('change', onThemeChange);
+
     return () => query?.removeEventListener('change', onThemeChange);
 };

@@ -29,6 +29,7 @@ type EaringType = keyof typeof motionEasing;
 export const motionEasingStrings = Object.entries(motionEasing).reduce(
     (acc: Record<EaringType, string>, [key, value]) => {
         acc[key as EaringType] = `cubic-bezier(${value.join(',')})`;
+
         return acc;
     },
     {} as Record<EaringType, string>,

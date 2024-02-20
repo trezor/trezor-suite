@@ -24,6 +24,7 @@ export const getConnectedDeviceStatus = (device: TrezorDevice | undefined) => {
     if (device.features?.initialized) return 'initialized';
     if (device.features?.no_backup) return 'seedless';
     if (device.type === 'unreadable') return 'unreadable';
+
     return 'ok';
 };
 
@@ -56,6 +57,7 @@ export const getStatus = (device: TrezorDevice) => {
         if (device.firmware === 'outdated') {
             return 'firmware-recommended';
         }
+
         return 'connected';
     }
 
@@ -65,6 +67,7 @@ export const getStatus = (device: TrezorDevice) => {
     if (device.type === 'unreadable') {
         return 'unreadable';
     }
+
     return 'unknown';
 };
 
@@ -116,6 +119,7 @@ export const isDeviceRemembered = (device?: TrezorDevice): boolean => !!device?.
 
 export const isDeviceAccessible = (device?: TrezorDevice) => {
     if (!device || !device.features) return false;
+
     return device.mode === 'normal' && device.firmware !== 'required';
 };
 
@@ -133,6 +137,7 @@ export const isSelectedInstance = (selected?: TrezorDevice, device?: TrezorDevic
 export const isSelectedDevice = (selected?: TrezorDevice | Device, device?: TrezorDevice) => {
     if (!selected || !device) return false;
     if (!selected.id || selected.mode === 'bootloader') return selected.path === device.path;
+
     return selected.id === device.id;
 };
 
@@ -165,6 +170,7 @@ export const getNewInstanceNumber = (devices: TrezorDevice[], device: TrezorDevi
             if (!a.instance) {
                 return -1;
             }
+
             return !b.instance || a.instance > b.instance ? 1 : -1;
         });
 
@@ -173,6 +179,7 @@ export const getNewInstanceNumber = (devices: TrezorDevice[], device: TrezorDevi
         (inst, dev) => (dev.instance ? dev.instance + 1 : inst + 1),
         0,
     );
+
     return instance > 0 ? instance : undefined;
 };
 
@@ -283,6 +290,7 @@ export const sortByTimestamp = (devices: TrezorDevice[]): TrezorDevice[] =>
         if (!a.ts && !b.ts) return 0; // both devices has undefined ts, keep their pos
         if (!b.ts && a.ts) return -1;
         if (!a.ts && b.ts) return 1;
+
         return b.ts - a.ts;
     });
 
@@ -319,6 +327,7 @@ export const sortByPriority = (a: TrezorDevice, b: TrezorDevice) => {
     if (!b.ts && !a.ts) return 0;
     if (!b.ts && a.ts) return -1;
     if (!b.ts || !a.ts) return 1;
+
     return b.ts - a.ts;
 };
 
@@ -335,6 +344,7 @@ export const getDeviceInstances = (
     exclude = false,
 ): AcquiredDevice[] => {
     if (!device || !device.features || !device.id) return [];
+
     return devices
         .filter(
             d =>
@@ -345,6 +355,7 @@ export const getDeviceInstances = (
         .sort((a, b) => {
             if (!a.instance) return -1;
             if (!b.instance) return 1;
+
             return a.instance > b.instance ? 1 : -1;
         }) as AcquiredDevice[];
 };
@@ -364,6 +375,7 @@ export const getFirstDeviceInstance = (devices: TrezorDevice[]) =>
             // `device_id` already exists in result
             const alreadyExists = result.find(r => r.features && dev.features && r.id === dev.id);
             if (alreadyExists) return result;
+
             // base (np passphrase) or first passphrase instance
             return result.concat(instances[0]);
         }, [] as TrezorDevice[])

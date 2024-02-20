@@ -33,6 +33,7 @@ describe('CoinjoinMempoolController', () => {
                 analyze: (getTxs, onTxs) => {
                     const txs = getTxs({ address: ADDRESS } as AccountAddress);
                     onTxs?.(txs);
+
                     return { receive: [], change: [] };
                 },
             }),

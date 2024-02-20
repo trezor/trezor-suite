@@ -76,6 +76,7 @@ export abstract class BaseProcess {
     async start(params: string[] = []) {
         if (this.startupThrottle) {
             this.logger.warn(this.logTopic, 'Canceling process start (throttle)');
+
             return;
         }
 
@@ -84,6 +85,7 @@ export abstract class BaseProcess {
         // Service is running, nothing to do
         if (status.service) {
             this.logger.warn(this.logTopic, 'Canceling process start (service running)');
+
             return;
         }
 
@@ -190,6 +192,7 @@ export abstract class BaseProcess {
             if (!this.process) {
                 this.logger.warn(this.logTopic, "Couldn't stop process (already stopped)");
                 resolve();
+
                 return;
             }
 
@@ -203,6 +206,7 @@ export abstract class BaseProcess {
                     clearInterval(interval);
                     this.process = null;
                     resolve();
+
                     return;
                 }
 
@@ -261,6 +265,7 @@ export abstract class BaseProcess {
         const platform = this.getPlatform();
         const ext = platform === 'win' ? '.exe' : '';
         const system = `${platform}-${arch}`;
+
         return { system, platform, arch, ext };
     }
 

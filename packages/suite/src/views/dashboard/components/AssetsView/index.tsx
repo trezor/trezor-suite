@@ -114,6 +114,7 @@ export const AssetsView = () => {
             const network = NETWORKS.find(n => n.symbol === symbol && !n.accountType);
             if (!network) {
                 console.error('unknown network');
+
                 return null;
             }
 
@@ -123,6 +124,7 @@ export const AssetsView = () => {
             );
 
             const assetFailed = accounts.find(f => f.symbol === network.symbol && f.failed);
+
             return { symbol, network, assetFailed: !!assetFailed, assetBalance };
         })
         .filter(data => data !== null) as AssetTableRowType[];

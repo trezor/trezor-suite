@@ -31,6 +31,7 @@ export const getRoundParameters = (round: Round) => {
     if (events.length < 1) return;
 
     const [{ RoundParameters }] = events;
+
     return RoundParameters;
 };
 
@@ -39,6 +40,7 @@ export const getCommitmentData = (identifier: string, roundId: string) => {
     const name = Buffer.from(identifier);
     const len = Buffer.allocUnsafe(1);
     len.writeUInt8(name.length, 0);
+
     return Buffer.concat([len, name, Buffer.from(roundId, 'hex')]).toString('hex');
 };
 
@@ -104,6 +106,7 @@ export const getCoinjoinRoundDeadlines = (round: PartialCoinjoinRound) => {
         case RoundPhase.InputRegistration: {
             const deadline =
                 new Date(round.InputRegistrationEnd).getTime() + ROUND_REGISTRATION_END_OFFSET;
+
             return {
                 phaseDeadline: deadline,
                 roundDeadline:
@@ -116,6 +119,7 @@ export const getCoinjoinRoundDeadlines = (round: PartialCoinjoinRound) => {
         case RoundPhase.ConnectionConfirmation: {
             const deadline =
                 now + readTimeSpan(round.RoundParameters.ConnectionConfirmationTimeout);
+
             return {
                 phaseDeadline: deadline,
                 roundDeadline:
@@ -126,6 +130,7 @@ export const getCoinjoinRoundDeadlines = (round: PartialCoinjoinRound) => {
         }
         case RoundPhase.OutputRegistration: {
             const deadline = now + readTimeSpan(round.RoundParameters.OutputRegistrationTimeout);
+
             return {
                 phaseDeadline: deadline,
                 roundDeadline:
@@ -135,6 +140,7 @@ export const getCoinjoinRoundDeadlines = (round: PartialCoinjoinRound) => {
         case RoundPhase.TransactionSigning:
         case RoundPhase.Ended: {
             const deadline = now + readTimeSpan(round.RoundParameters.TransactionSigningTimeout);
+
             return {
                 phaseDeadline: deadline,
                 roundDeadline: deadline,
@@ -165,6 +171,7 @@ export const findNearestDeadline = (rounds: Round[]) => {
     const deadlines = rounds.map(r => {
         const phaseDeadline = estimatePhaseDeadline(r);
         const timeLeft = phaseDeadline ? new Date(phaseDeadline).getTime() - now : 0;
+
         return timeLeft > 0 ? timeLeft : now;
     });
 

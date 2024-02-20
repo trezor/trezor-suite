@@ -29,10 +29,12 @@ export const sum = (valuesAndUnits: string[]) => {
 
 export const negative = (value: number): number => {
     if (value <= 0) return value;
+
     return value * -1;
 };
 
 export const isDarkColor = (color: CSSColor) => {
     const luminance = getLuminance(color);
+
     return luminance < 0.5;
 };

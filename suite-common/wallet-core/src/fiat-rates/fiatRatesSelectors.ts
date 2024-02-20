@@ -40,6 +40,7 @@ export const selectIsFiatRateLoading = (
     rateType: RateType = 'current',
 ) => {
     const currentRate = selectFiatRatesByFiatRateKey(state, fiatRateKey, rateType);
+
     return currentRate?.isLoading ?? false;
 };
 
@@ -50,6 +51,7 @@ export const selectIsTickerLoading = (
     rateType: RateType = 'current',
 ) => {
     const fiatRateKey = getFiatRateKeyFromTicker(ticker, fiatCurrency);
+
     return selectIsFiatRateLoading(state, fiatRateKey, rateType);
 };
 
@@ -72,6 +74,7 @@ export const selectShouldUpdateFiatRate = (
 
 export const selectTickerFromAccounts = (state: FiatRatesRootState): TickerId[] => {
     const accounts = selectDeviceAccounts(state as any);
+
     return pipe(
         accounts,
         A.map(account => [
@@ -101,6 +104,7 @@ export const selectTickersToBeUpdated = (
 
     return tickers.filter(ticker => {
         const fiatRateKey = getFiatRateKeyFromTicker(ticker, fiatCurrency);
+
         return (
             selectShouldUpdateFiatRate(state, currentTimestamp, fiatRateKey, rateType) &&
             !selectIsTickerLoading(state, ticker, fiatCurrency, rateType)

@@ -3,6 +3,7 @@ import { useTranslate, Translation } from '@suite-native/intl';
 
 export const UnverifiedAddressWarning = () => {
     const { translate } = useTranslate();
+
     return (
         <Box marginVertical="medium" paddingHorizontal="medium" paddingVertical="extraLarge">
             <Pictogram

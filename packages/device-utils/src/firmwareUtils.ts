@@ -29,6 +29,7 @@ export const getFirmwareVersion = (device?: Device) => {
             ? `${features.fw_major}.${features.fw_minor}.${features.fw_patch}`
             : '';
     }
+
     return `${features.major_version}.${features.minor_version}.${features.patch_version}`;
 };
 

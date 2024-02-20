@@ -163,6 +163,7 @@ export class TransactionCacheEngine {
 
         if (!(await this.accountExists({ coin, descriptor }))) {
             console.warn('Account was removed while fetching transactions', coin, descriptor);
+
             return;
         }
 
@@ -217,6 +218,7 @@ export class TransactionCacheEngine {
             debugLog(
                 `Periodic fetch of new transactions for ${coin} - ${descriptor} is already running`,
             );
+
             return;
         }
 

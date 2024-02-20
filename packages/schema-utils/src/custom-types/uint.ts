@@ -18,6 +18,7 @@ TypeRegistry.Set('Uint', (schema: TUint, value: unknown) => {
     ) {
         return false;
     }
+
     return true;
 });
 

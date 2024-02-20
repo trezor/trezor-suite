@@ -99,6 +99,7 @@ export const AddCoinjoinAccountButton = ({ network }: AddCoinjoinAccountProps) =
             }
             if (continueWithTor === RequestEnableTorResponse.Skip) {
                 await createAccount();
+
                 return;
             }
 

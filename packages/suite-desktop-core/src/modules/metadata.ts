@@ -16,18 +16,21 @@ export const init: Module = () => {
     ipcMain.handle('metadata/write', async (_, message) => {
         logger.info(SERVICE_NAME, `Writing metadata to ${DATA_DIR}/${message.file}`);
         const resp = await save(DATA_DIR, message.file, message.content);
+
         return resp;
     });
 
     ipcMain.handle('metadata/read', async (_, message) => {
         logger.info(SERVICE_NAME, `Reading metadata from ${DATA_DIR}/${message.file}`);
         const resp = await read(DATA_DIR, message.file);
+
         return resp;
     });
 
     ipcMain.handle('metadata/get-files', async () => {
         logger.info(SERVICE_NAME, `Retrieving metadata file names from ${DATA_DIR}`);
         const resp = await readDir(DATA_DIR);
+
         return resp;
     });
 
@@ -35,6 +38,7 @@ export const init: Module = () => {
         const { file, to } = message;
         logger.info(SERVICE_NAME, `Renaming metadata file ${file} name to ${to}`);
         const resp = await rename(DATA_DIR, file, to);
+
         return resp;
     });
 };

@@ -95,6 +95,7 @@ const getLines = (
             },
         ];
     }
+
     return [
         {
             id: 'total',

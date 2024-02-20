@@ -56,6 +56,7 @@ export class DataManager {
         if (typeof key === 'string') {
             return this.settings[key];
         }
+
         return this.settings;
     }
 

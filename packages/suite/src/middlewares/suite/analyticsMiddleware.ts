@@ -121,6 +121,7 @@ const analyticsMiddleware =
 
                     const id = `${symbol}_${accType}`;
                     acc[id] = (acc[id] || 0) + 1;
+
                     return acc;
                 };
 
@@ -144,6 +145,7 @@ const analyticsMiddleware =
                     .filter(account => new BigNumber((account.tokens || []).length).gt(0))
                     .reduce((acc: { [key: string]: number }, { symbol }: Account) => {
                         acc[symbol] = (acc[symbol] || 0) + 1;
+
                         return acc;
                     }, {});
 
@@ -220,6 +222,7 @@ const analyticsMiddleware =
             default:
                 break;
         }
+
         return action;
     };
 

@@ -13,6 +13,7 @@ export const buildBuffers = (
 ) => {
     const { Message, messageType } = createMessageFromName(messages, name);
     const buffer = encodeProtobuf(Message, data);
+
     return encoder(buffer, {
         messageType,
     });

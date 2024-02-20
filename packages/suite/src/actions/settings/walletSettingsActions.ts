@@ -92,6 +92,7 @@ export const setLastUsedFeeLevel =
 export const getLastUsedFeeLevel = () => (_: Dispatch, getState: GetState) => {
     const { selectedAccount, settings } = getState().wallet;
     if (selectedAccount.status !== 'loaded') return;
+
     return settings.lastUsedFeeLevel[selectedAccount.account.symbol];
 };
 
@@ -102,6 +103,7 @@ export const setBitcoinAmountUnits = (units: PROTO.AmountUnit): WalletSettingsAc
             unit: UNIT_ABBREVIATIONS[units],
         },
     });
+
     return {
         type: WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS,
         payload: units,

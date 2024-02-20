@@ -35,6 +35,7 @@ export class KeyofEnumBuilder extends JavaScriptTypeBuilder {
         options?: SchemaOptions,
     ): TKeyOfEnum<T> {
         const keys = Object.keys(schema).map(key => this.Literal(key));
+
         return this.Union(keys, { ...options, [Hint]: 'KeyOfEnum' }) as TKeyOfEnum<T>;
     }
 }

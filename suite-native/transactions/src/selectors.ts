@@ -23,6 +23,7 @@ const selectTransactionTargetAddresses = memoizeWithArgs(
         if (G.isNullable(transaction) || G.isNullable(transactionTargets)) return [];
 
         const isSentTransactionType = transaction.type === 'sent';
+
         return mapTransactionInputsOutputsToAddresses({
             inputsOutputs: transactionTargets,
             addressesType: 'outputs',
@@ -50,6 +51,7 @@ export const selectTransactionAddresses = memoizeWithArgs(
             if (addressesType === 'inputs') {
                 return [{ address: transaction.descriptor, isChangeAddress: false }];
             }
+
             // We have only one output so we don't need to sort it
             return selectTransactionTargetAddresses(state, txid, accountKey);
         }

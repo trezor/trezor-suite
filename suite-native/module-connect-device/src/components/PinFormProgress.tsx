@@ -7,6 +7,7 @@ const MAX_DIGITS_DISPLAYED_AS_DOTS = 6;
 
 const dotStyle = prepareNativeStyle<{ isSubmitted: boolean }>((utils, { isSubmitted }) => {
     const color = isSubmitted ? utils.colors.textDisabled : utils.colors.textDefault;
+
     return {
         width: utils.spacings.small,
         height: utils.spacings.small,
@@ -43,6 +44,7 @@ export const PinFormProgress = () => {
 
     if (pinLength > MAX_DIGITS_DISPLAYED_AS_DOTS) {
         const color = isSubmitted ? 'textDisabled' : 'textSubdued';
+
         return (
             <Box flexDirection="row" style={applyStyle(enteredDigitsStyle)}>
                 <Text color={color}>

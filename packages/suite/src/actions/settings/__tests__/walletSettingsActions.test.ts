@@ -26,6 +26,7 @@ const initStore = (state: State) => {
         store.getState().wallet.settings = settingsReducer(settings, action);
         store.getActions().push(action);
     });
+
     return store;
 };
 

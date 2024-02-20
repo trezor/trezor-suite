@@ -83,6 +83,7 @@ const calculate = (
             ],
         };
     }
+
     return payloadData;
 };
 
@@ -228,6 +229,7 @@ export const signTransaction =
                     error: signedTx.payload.error,
                 }),
             );
+
             return;
         }
 

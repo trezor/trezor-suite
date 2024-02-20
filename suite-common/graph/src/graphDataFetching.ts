@@ -259,6 +259,7 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
         // If there is only one account, we don't need to merge anything.
         // We can also keep cryptoBalance in points.
         const { coin, balanceHistory } = A.head(accountsWithBalanceHistory)!;
+
         return mapCryptoBalanceMovementToFixedTimeFrame({
             fiatRates: coinsFiatRates[coin],
             fiatCurrency,
@@ -270,6 +271,7 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
         accountsWithBalanceHistory,
         ({ coin, balanceHistory }) => {
             const coinFiatRates = coinsFiatRates[coin];
+
             return mapCryptoBalanceMovementToFixedTimeFrame({
                 fiatRates: coinFiatRates,
                 fiatCurrency,

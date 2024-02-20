@@ -21,6 +21,7 @@ export function composeTx<
 
     try {
         const result = coinselect(coinselectRequest);
+
         return getResult(request, coinselectRequest, result);
     } catch (error) {
         return getErrorResult(error);

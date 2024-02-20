@@ -41,6 +41,7 @@ export const GuideHint = ({ children }: BlockquoteHTMLAttributes<HTMLQuoteElemen
         if (isValidElement(child)) {
             return child.props.children;
         }
+
         return false;
     })?.filter(child => !!child);
     const variant = message?.[0]?.startsWith(WARNING_EMOJI) ? 'warning' : 'learn';
@@ -63,6 +64,7 @@ export const GuideHint = ({ children }: BlockquoteHTMLAttributes<HTMLQuoteElemen
                 children: updatedMessage || child.props.children,
             });
         }
+
         return child;
     });
 

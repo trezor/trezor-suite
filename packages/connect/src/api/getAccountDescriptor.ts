@@ -104,6 +104,7 @@ export default class GetAccountDescriptor extends AbstractMethod<
 
         // wait for user action
         const uiResp = await uiPromise.promise;
+
         return uiResp.payload;
     }
 
@@ -125,6 +126,7 @@ export default class GetAccountDescriptor extends AbstractMethod<
 
         // wait for user action
         const uiResp = await uiPromise.promise;
+
         return uiResp.payload;
     }
 
@@ -155,6 +157,7 @@ export default class GetAccountDescriptor extends AbstractMethod<
         if (invalid.length > 0) {
             throw ERRORS.TypedError('Method_Discovery_BundleException', JSON.stringify(invalid));
         }
+
         return undefined;
     }
 
@@ -212,6 +215,7 @@ export default class GetAccountDescriptor extends AbstractMethod<
         }
 
         if (this.disposed) return new Promise<typeof responses>(() => []);
+
         return this.hasBundle ? responses : responses[0]!;
     }
 

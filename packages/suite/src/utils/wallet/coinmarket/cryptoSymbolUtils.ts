@@ -40,6 +40,7 @@ export function networkToCryptoSymbol(networkSymbol: NetworkSymbol): CryptoSymbo
 
 export function cryptoToNetworkSymbol(cryptoSymbol: CryptoSymbol): NetworkSymbol | undefined {
     const network = isCryptoSymbolToken(cryptoSymbol) ? cryptoSymbol.split('@')[1] : cryptoSymbol;
+
     return cryptoToNetworkSymbols[network as CryptoSymbol];
 }
 
@@ -48,6 +49,7 @@ export function tokenToCryptoSymbol(
     networkSymbol: NetworkSymbol,
 ): CryptoSymbol | undefined {
     const networkCryptoSymbol = networkToCryptoSymbol(networkSymbol);
+
     return networkCryptoSymbol
         ? (`${tokenSymbol.toUpperCase()}@${networkCryptoSymbol}` as CryptoSymbol)
         : undefined;

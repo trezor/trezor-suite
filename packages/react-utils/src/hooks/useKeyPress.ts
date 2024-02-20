@@ -23,6 +23,7 @@ export const useKeyPress = (targetKey: string) => {
     useEffect(() => {
         window.addEventListener('keydown', downHandler);
         window.addEventListener('keyup', upHandler);
+
         // Remove event listeners on cleanup
         return () => {
             window.removeEventListener('keydown', downHandler);

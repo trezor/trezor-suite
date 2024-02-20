@@ -30,6 +30,7 @@ const router = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
         default:
             break;
     }
+
     return next(action);
 };
 

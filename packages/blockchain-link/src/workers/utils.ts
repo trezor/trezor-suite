@@ -15,6 +15,7 @@ export const prioritizeEndpoints = (urls: string[]) =>
             } else if (hostname?.endsWith('.onion')) {
                 priority += 1;
             }
+
             return [url, priority];
         })
         .sort(([, a], [, b]) => b - a)

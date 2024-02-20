@@ -12,6 +12,7 @@ export const XRPReserve = ({ account }: XRPReserveProps) => {
     if (account?.networkType !== 'ripple') return null;
     const bigBalance = new Bignumber(account.balance);
     const bigReserve = new Bignumber(account.misc.reserve);
+
     return bigBalance.isLessThan(bigReserve) ? (
         <NotificationCard
             variant="warning"

@@ -13,6 +13,7 @@ const loadInstance = (settings: ReturnType<typeof getCoinjoinConfig>) => {
             createIpcProxy<CoinjoinClient>('CoinjoinClient', { target: { settings } }, settings),
         ] as const);
     }
+
     return import(/* webpackChunkName: "coinjoin" */ '@trezor/coinjoin').then(
         pkg => [new pkg.CoinjoinBackend(settings), new pkg.CoinjoinClient(settings)] as const,
     );
@@ -45,6 +46,7 @@ export class CoinjoinService {
         }
 
         this.instances[network] = instance;
+
         return instance;
     }
 

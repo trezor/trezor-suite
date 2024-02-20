@@ -24,6 +24,7 @@ const initStore = (state: State) => {
         store.getState().wallet.selectedAccount = selectedAccountReducer(selectedAccount, action);
         store.getActions().push(action);
     });
+
     return store;
 };
 

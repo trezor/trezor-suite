@@ -39,6 +39,7 @@ export default class NEMSignTransaction extends AbstractMethod<
     async run() {
         const cmd = this.device.getCommands();
         const response = await cmd.typedCall('NEMSignTx', 'NEMSignedTx', this.params);
+
         return response.message;
     }
 }

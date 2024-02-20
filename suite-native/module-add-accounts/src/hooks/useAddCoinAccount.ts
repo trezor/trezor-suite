@@ -188,6 +188,7 @@ export const useAddCoinAccount = () => {
         // Do not allow adding more than 10 accounts of the same type
         if (currentAccountTypeAccounts.length > LIMIT) {
             showTooManyAccountsAlert();
+
             return false;
         }
 
@@ -196,14 +197,17 @@ export const useAddCoinAccount = () => {
 
         if (emptyAccounts.length > 0) {
             showAnotherEmptyAccountAlert();
+
             return false;
         }
+
         return true;
     };
 
     const addCoinAccount = async ({ network, accountType }: NetworkWithAccountType) => {
         if (!device?.state) {
             setNetworkWithTypeToBeAdded(null);
+
             return false;
         }
 

@@ -15,6 +15,7 @@ const splitString = (str?: string, len?: number) => {
     }
     const first = str.slice(0, len);
     const second = str.slice(len);
+
     return [first, second];
 };
 
@@ -83,6 +84,7 @@ const stripLeadingZeroes = (str: string) => {
     while (/^00/.test(str)) {
         str = str.slice(2);
     }
+
     return str;
 };
 

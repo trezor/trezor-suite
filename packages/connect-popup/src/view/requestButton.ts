@@ -24,6 +24,7 @@ const showAddressValidation = (payload: UiRequestButton['payload']) => {
         if (dataContainer.parentNode) {
             dataContainer.parentNode.removeChild(dataContainer);
         }
+
         return;
     }
 

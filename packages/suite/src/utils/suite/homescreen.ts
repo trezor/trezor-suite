@@ -76,6 +76,7 @@ const bitmap = (imageData: ImageData, deviceModelInternal: DeviceModelInternal) 
                         .map(k => (j * width + i * 8 + k) * 4)
                         .map(index => (imageData.data[index] === 0 ? '0' : '1'))
                         .join('');
+
                     return String.fromCharCode(parseInt(bytestr, 2));
                 })
                 .join(''),
@@ -88,6 +89,7 @@ const bitmap = (imageData: ImageData, deviceModelInternal: DeviceModelInternal) 
         .map(charCode => charCode.toString(16))
         .map(chr => (chr.length < 2 ? `0${chr}` : chr))
         .join('');
+
     return hex;
 };
 
@@ -98,11 +100,13 @@ const rightPad = (len: number, val: string) => {
     while (val.length < len) {
         val = `${val}0`;
     }
+
     return val;
 };
 
 const evenPad = (val: string) => {
     if (val.length % 2 === 0) return val;
+
     return `0${val}`;
 };
 
@@ -110,6 +114,7 @@ const chunkString = (size: number, str: string) => {
     const re = new RegExp(`.{1,${size}}`, 'g');
     const result = str.match(re);
     if (!result) return [];
+
     return result;
 };
 
@@ -128,6 +133,7 @@ const toig = (imageData: ImageData, deviceModelInternal: DeviceModelInternal) =>
                 const r = imageData.data[4 * i];
                 const g = imageData.data[4 * i + 1];
                 const b = imageData.data[4 * i + 2];
+
                 return toGrayscale(r, g, b);
             }),
         )
@@ -267,6 +273,7 @@ export const validateImage = async (file: File, deviceModelInternal: DeviceModel
         if (supports.includes('png') && supports.includes('jpeg')) {
             return ImageValidationError.InvalidFormatOnlyPngJpg;
         }
+
         return ImageValidationError.InvalidFormatOnlyJpg;
     }
     if (

@@ -43,12 +43,14 @@ export default class RebootToBootloader extends AbstractMethod<'rebootToBootload
         const uiResp = await uiPromise.promise;
 
         this.confirmed = uiResp.payload;
+
         return this.confirmed;
     }
 
     async run() {
         const cmd = this.device.getCommands();
         const response = await cmd.typedCall('RebootToBootloader', 'Success');
+
         return response.message;
     }
 }

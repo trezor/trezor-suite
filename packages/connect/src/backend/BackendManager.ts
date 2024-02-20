@@ -39,6 +39,7 @@ export class BackendManager {
         try {
             const info = await backend.init();
             this.setPreferred(coinInfo.shortcut, info.url);
+
             return backend;
         } catch (error) {
             this.setInstance(coinInfo.shortcut, undefined);
@@ -61,6 +62,7 @@ export class BackendManager {
         const params = Object.values(this.instances).map(i => [i.coinInfo, i.postMessage] as const);
         // remove all backends
         Object.values(this.instances).forEach(i => i.disconnect());
+
         // initialize again using params tuple
         return Promise.all(params.map(p => this.getOrConnect(...p)));
     }
@@ -113,6 +115,7 @@ export class BackendManager {
         const reconnect = this.reconnect[shortcut];
         clearTimeout(reconnect?.handle);
         delete this.reconnect[shortcut];
+
         return reconnect;
     }
 
@@ -127,6 +130,7 @@ export class BackendManager {
         const custom = this.custom[coinInfo.shortcut];
         const preferred = this.preferred[coinInfo.shortcut];
         const url = preferred ? [preferred] : custom?.url ?? coinInfo.blockchainLink?.url;
+
         return {
             ...coinInfo,
             blockchainLink: {

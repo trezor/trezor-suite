@@ -22,6 +22,7 @@ const errorMessageStyle = prepareNativeStyle(utils => ({
 
 export const ErrorMessage = ({ errorMessage }: ErrorMessageProps) => {
     const { applyStyle } = useNativeStyles();
+
     return (
         <Box style={applyStyle(errorMessageStyle)}>
             <Box marginRight="small">

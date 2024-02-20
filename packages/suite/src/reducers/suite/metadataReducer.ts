@@ -183,6 +183,7 @@ export const selectAccountLabels = (state: {
             if ('accountLabel' in data) {
                 dict[account.key] = data.accountLabel;
             }
+
             return dict;
         },
         {} as Record<string, string | undefined>,
@@ -207,6 +208,7 @@ export const selectLabelingDataForWallet = (
     if (metadataKeys && metadataKeys.fileName && provider?.data[metadataKeys.fileName]) {
         return provider.data[metadataKeys.fileName] as WalletLabels;
     }
+
     return DEFAULT_WALLET_METADATA;
 };
 
@@ -214,6 +216,7 @@ export const selectLabelableEntities = (state: MetadataRootState, deviceState: s
     const { wallet, device } = state;
     const { devices } = device;
     const { accounts } = wallet;
+
     return [
         ...accounts
             .filter(a => a.deviceState === deviceState)
@@ -244,6 +247,7 @@ const selectLabelableEntityByKey = (
         if ('state' in e) {
             return e.state === entityKey;
         }
+
         return false;
     });
 
@@ -287,6 +291,7 @@ export const selectIsLabelingAvailableForEntity = (
     const device = deviceState ? selectDeviceByState(state, deviceState) : selectDevice(state);
     if (!device?.state) return false;
     const entity = selectLabelableEntityByKey(state, device.state, entityKey);
+
     return (
         selectIsLabelingAvailable(state) &&
         entity &&

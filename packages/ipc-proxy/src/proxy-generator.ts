@@ -20,6 +20,7 @@ const createIpcProxyApi = (ipcRenderer: IpcRenderer, validChannels: string[]): I
     const validateChannel = (channelName: string): true => {
         if (!validChannels.includes(channelName))
             throw new Error(`Proxy name ${channelName} not registered in electron preload`);
+
         return true;
     };
 

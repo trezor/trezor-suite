@@ -55,6 +55,7 @@ export const OnboardingScreen = ({
         if (colorScheme === 'dark') {
             return require('../assets/darkRectangles.png');
         }
+
         return require('../assets/rectangles.png');
     }, [colorScheme]);
 

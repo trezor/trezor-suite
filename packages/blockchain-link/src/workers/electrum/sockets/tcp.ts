@@ -7,6 +7,7 @@ export class TcpSocket extends SocketBase {
         const socket = new TCPSocket();
         this.configureSocket(socket);
         this.bindSocket(socket, listener);
+
         return new Promise<TCPSocket>((resolve, reject) => {
             const errorHandler = (err: Error) => reject(err);
             socket.on('error', errorHandler);

@@ -11,6 +11,7 @@ const Wrapper = styled.div`
 
 const OffersIndex = (props: WithSelectedAccountLoadedProps) => {
     const coinmarketOffersValues = useOffers(props);
+
     return (
         <CoinmarketBuyOffersContext.Provider value={coinmarketOffersValues}>
             <Wrapper>

@@ -124,6 +124,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         if (sendMax) {
             return 'Send maximum amount';
         }
+
         return `Send ${formatAmount(this.params.total.toString(), this.params.coinInfo)}`;
     }
 
@@ -152,6 +153,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         // TODO: make it possible without it (offline composing)
         const blockchain = await initBlockchain(this.params.coinInfo, this.postMessage);
         await composer.init(blockchain);
+
         return feeLevels.map(level => {
             composer.composeCustomFee(level.feePerUnit);
             const tx = { ...composer.composed.custom }; // needs to spread otherwise flow has a problem with ComposeResult vs PrecomposedTransaction (max could be undefined)
@@ -168,6 +170,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
                     inputs: tx.inputs.map(inp => inputToTrezor(inp, this.params.sequence)),
                 };
             }
+
             return tx;
         });
     }
@@ -194,6 +197,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
             // back to account selection
             return this.run();
         }
+
         return response;
     }
 
@@ -215,6 +219,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
             const uiResp = await dfd.promise;
             const account = discovery.accounts[uiResp.payload];
             const utxo = await blockchain.getAccountUtxo(account.descriptor);
+
             return {
                 account,
                 utxo,
@@ -277,6 +282,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         const account = discovery.accounts[uiResp.payload];
         this.params.coinInfo = fixCoinInfoNetwork(this.params.coinInfo, account.address_n);
         const utxo = await blockchain.getAccountUtxo(account.descriptor);
+
         return {
             account,
             utxo,
@@ -304,6 +310,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
             this.postMessage(createUiMessage(UI.INSUFFICIENT_FUNDS));
             // wait few seconds...
             await resolveAfter(2000, null).promise;
+
             // and go back to discovery
             return 'change-account';
         }
@@ -390,6 +397,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         if (this.params.push) {
             const blockchain = await initBlockchain(coinInfo, this.postMessage);
             const txid = await blockchain.pushTransaction(response.serializedTx);
+
             return {
                 ...response,
                 txid,

@@ -7,6 +7,7 @@ export class TlsSocket extends SocketBase {
         const socket = new TLSSocket(null as any /* TODO omg why? */);
         this.configureSocket(socket);
         this.bindSocket(socket, listener);
+
         return new Promise<TLSSocket>((resolve, reject) => {
             const errorHandler = (err: Error) => reject(err);
             socket.on('error', errorHandler);

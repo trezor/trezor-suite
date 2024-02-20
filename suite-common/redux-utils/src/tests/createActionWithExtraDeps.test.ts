@@ -35,6 +35,7 @@ const initStore = () => {
                 immutableCheck: false,
             }),
     });
+
     return store;
 };
 

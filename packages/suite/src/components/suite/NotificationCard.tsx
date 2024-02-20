@@ -124,6 +124,7 @@ const CardButton = ({ href, ...props }: ButtonType) => {
             </TrezorLink>
         );
     }
+
     return <Button {...props} />;
 };
 

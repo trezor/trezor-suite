@@ -57,6 +57,7 @@ const intervalBetweenRequests = 1000 * 20;
     const makeRequests = async (identities: any) => {
         const promises: Promise<Response>[] = identities.map((identity: string) => {
             console.log('identity', identity);
+
             return fetch(testGetUrlHttps, {
                 headers: { 'Proxy-Authorization': identity },
             });
@@ -68,10 +69,12 @@ const intervalBetweenRequests = 1000 * 20;
         const requests = responseIdentities.map(async response => {
             const text: any = await response.text();
             const ip = text.match(ipRegex)[0];
+
             return {
                 ip,
             };
         });
+
         return Promise.all(requests);
     };
 

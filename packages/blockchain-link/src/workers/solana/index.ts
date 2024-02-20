@@ -56,6 +56,7 @@ const getAllSignatures = async (
         keepFetching = signatures.length === limit;
         allSignatures = [...allSignatures, ...signatures];
     }
+
     return allSignatures;
 };
 
@@ -71,6 +72,7 @@ const fetchTransactionPage = async (
             resultArray[chunkIndex] = []; // start a new chunk
         }
         resultArray[chunkIndex].push(item);
+
         return resultArray;
     }, [] as string[][]);
 
@@ -93,6 +95,7 @@ const pushTransaction = async (request: Request<MessageTypes.PushTransaction>) =
     const rawTx = request.payload.startsWith('0x') ? request.payload.slice(2) : request.payload;
     const api = await request.connect();
     const payload = await api.sendRawTransaction(Buffer.from(rawTx, 'hex'));
+
     return {
         type: RESPONSES.PUSH_TRANSACTION,
         payload,
@@ -231,6 +234,7 @@ const getInfo = async (request: Request<MessageTypes.GetInfo>) => {
         version: (await api.getVersion())['solana-core'],
         decimals: 9,
     };
+
     return {
         type: RESPONSES.GET_INFO,
         payload: { ...serverInfo },
@@ -394,6 +398,7 @@ const subscribeAccounts = async (
         });
         state.addAccounts([{ ...a, subscriptionId }]);
     });
+
     return { subscribed: newAccounts.length > 0 };
 };
 
@@ -438,6 +443,7 @@ const subscribe = async (request: Request<MessageTypes.Subscribe>) => {
         default:
             throw new CustomError('worker_unknown_request', `+${request.type}`);
     }
+
     return {
         type: RESPONSES.SUBSCRIBE,
         payload: response,
@@ -456,6 +462,7 @@ const unsubscribe = (request: Request<MessageTypes.Unsubscribe>) => {
         default:
             throw new CustomError('worker_unknown_request', `+${request.type}`);
     }
+
     return {
         type: RESPONSES.UNSUBSCRIBE,
         payload: { subscribed: request.state.getAccounts().length > 0 },
@@ -489,6 +496,7 @@ class SolanaWorker extends BaseWorker<SolanaAPI> {
     tryConnect(url: string): Promise<SolanaAPI> {
         const api = new Connection(url, { wsEndpoint: url.replace('https', 'wss') });
         this.post({ id: -1, type: RESPONSES.CONNECTED });
+
         return Promise.resolve(api);
     }
 

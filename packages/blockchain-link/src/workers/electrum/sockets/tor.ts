@@ -25,6 +25,7 @@ export class TorSocket extends SocketBase {
         listener.onConnect();
         this.configureSocket(socket);
         this.bindSocket(socket, listener);
+
         return socket;
     }
 }

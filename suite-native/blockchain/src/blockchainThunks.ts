@@ -26,6 +26,7 @@ const shouldRefetchAccount = ({
 }) => {
     const lastFetchTime = accountLastFetchTime[accountKey];
     if (!lastFetchTime) return true;
+
     return Date.now() - lastFetchTime > refetchLimitMs;
 };
 

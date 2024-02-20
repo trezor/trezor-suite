@@ -7,6 +7,7 @@ const round = (value: number, precision = 0): number => {
     'worklet';
 
     const p = Math.pow(10, precision);
+
     return Math.round(value * p) / p;
 };
 
@@ -15,6 +16,7 @@ const cuberoot = (x: number): number => {
     'worklet';
 
     const y = Math.pow(Math.abs(x), 1 / 3);
+
     return x < 0 ? -y : y;
 };
 
@@ -34,6 +36,7 @@ const solveCubic = (a: number, b: number, c: number, d: number): number[] => {
                 // Degenerate case
                 return [];
             }
+
             return [-b / a];
         }
 
@@ -87,6 +90,7 @@ const cubicBezier = (t: number, from: number, c1: number, c2: number, to: number
     const b = 3 * term ** 2 * t ** 1 * c1;
     const c = 3 * term ** 1 * t ** 2 * c2;
     const d = 1 * term ** 0 * t ** 3 * to;
+
     return a + b + c + d;
 };
 
@@ -109,6 +113,7 @@ export const cubicBezierYForX = (
         .filter(root => root >= 0 && root <= 1);
     const t = ts[0];
     if (t == null) return 0;
+
     return cubicBezier(t, a.y, b.y, c.y, d.y);
 };
 
@@ -143,6 +148,7 @@ export const selectCurve = (cmds: PathCommand[], x: number): Cubic | undefined =
             from = to;
         }
     }
+
     return undefined;
 };
 

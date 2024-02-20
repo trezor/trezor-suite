@@ -186,6 +186,7 @@ export class CoinjoinRound extends TypedEmitter<Events> {
             const unlock = () => {
                 this.logger.warn(`Aborting round ${this.id}`);
                 abort();
+
                 return promise;
             };
 
@@ -236,6 +237,7 @@ export class CoinjoinRound extends TypedEmitter<Events> {
         const { info: log } = this.logger;
         if (this.inputs.length === 0) {
             log('Trying to process round without inputs');
+
             return this;
         }
         await this.processPhase(accounts);
@@ -252,6 +254,7 @@ export class CoinjoinRound extends TypedEmitter<Events> {
                 if (shouldBeExcluded) {
                     input.clearConfirmationInterval();
                 }
+
                 return !shouldBeExcluded;
             });
         } else if (this.phase > RoundPhase.InputRegistration) {
@@ -322,6 +325,7 @@ export class CoinjoinRound extends TypedEmitter<Events> {
                     this.logger.info(`Requesting ownership for ~~${input.outpoint}~~`);
                     input.setRequest('ownership');
                 });
+
                 return {
                     type: 'ownership',
                     roundId: this.id,
@@ -338,6 +342,7 @@ export class CoinjoinRound extends TypedEmitter<Events> {
                     this.logger.info(`Requesting witness for ~~${input.outpoint}~~`);
                     input.setRequest('signature');
                 });
+
                 return {
                     type: 'signature',
                     roundId: this.id,

@@ -38,6 +38,7 @@ export default {
 
 export const All: StoryFn = () => {
     const flags = Object.keys(FLAGS) as FlagType[];
+
     return (
         <Wrapper>
             {flags.map(country => (

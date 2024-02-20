@@ -27,6 +27,7 @@ const transformVinVout = (vinvout: EnhancedVinVout, network: Network) => {
     if (vinvout.isAccountOwned) return { Address, Value } as AnalyzeInternalVinVout;
 
     const ScriptPubKey = addressBjs.toOutputScript(Address, network).toString('hex');
+
     return {
         ScriptPubKey,
         Value,
@@ -48,6 +49,7 @@ export const getRawLiquidityClue = (
         .flatMap(vout => transformVinVout(vout, options.network))
         .filter(vout => !('address' in vout))
         .map(o => Number(o.Value));
+
     return middleware.initLiquidityClue(externalAmounts, {
         baseUrl: options.middlewareUrl,
         signal: options.signal,
@@ -90,6 +92,7 @@ export const getAnonymityScores = async (
         return scores.reduce(
             (dict, { Address, AnonymitySet }) => {
                 dict[Address] = AnonymitySet;
+
                 return dict;
             },
             {} as Record<string, number>,

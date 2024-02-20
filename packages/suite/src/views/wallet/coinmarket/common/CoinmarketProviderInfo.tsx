@@ -45,6 +45,7 @@ interface CoinmarketProviderInfoProps {
 
 export const CoinmarketProviderInfo = ({ exchange, providers }: CoinmarketProviderInfoProps) => {
     const provider = providers && exchange ? providers[exchange] : null;
+
     return (
         <Wrapper>
             {!exchange && 'Unknown provider'}

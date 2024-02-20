@@ -20,6 +20,7 @@ export const filterTargets = (addresses: Addresses, targets: VinVout[]): VinVout
         .map(a => {
             if (typeof a === 'string') return a;
             if (typeof a === 'object' && typeof a.address === 'string') return a.address;
+
             return undefined;
         })
         .filter(isNotUndefined);
@@ -65,5 +66,6 @@ export const sortTxsFromLatest = (transactions: Transaction[]) => {
         }
         from = to;
     }
+
     return txs;
 };

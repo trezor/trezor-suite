@@ -122,6 +122,7 @@ const useLogWorker = (setLogs: React.Dispatch<React.SetStateAction<any[]>>) => {
                             if (prevLogs.length > MAX_ENTRIES) {
                                 prevLogs.shift();
                             }
+
                             return [...prevLogs, data.payload];
                         });
                         break;

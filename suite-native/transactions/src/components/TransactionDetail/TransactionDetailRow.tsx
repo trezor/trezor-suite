@@ -23,6 +23,7 @@ const valueContainerStyle = prepareNativeStyle(_ => ({
 
 export const TransactionDetailRow = ({ title, children }: TransactionDetailRowProps) => {
     const { applyStyle } = useNativeStyles();
+
     return (
         <Box style={applyStyle(rowStyle)}>
             <Text color="textSubdued">{title}</Text>

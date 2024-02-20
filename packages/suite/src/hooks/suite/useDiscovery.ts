@@ -15,6 +15,7 @@ export const useDiscovery = () => {
         if (discovery && discovery.loaded && discovery.total) {
             return Math.round((discovery.loaded / discovery.total) * 100);
         }
+
         return 0;
     }, [discovery]);
 
@@ -71,6 +72,7 @@ export const useDiscovery = () => {
                     type: 'discovery-failed',
                 };
         }
+
         return undefined;
     }, [device, discovery]);
 

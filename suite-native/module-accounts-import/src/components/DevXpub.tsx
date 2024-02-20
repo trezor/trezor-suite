@@ -24,6 +24,7 @@ const devXpubs: Partial<Record<NetworkSymbol, string>> = {
 export const DevXpub = ({ symbol, onSelect }: DevXpubProps) => {
     const xpub = devXpubs[symbol];
     if (!xpub) return null;
+
     return (
         <Box marginTop="medium">
             <Button

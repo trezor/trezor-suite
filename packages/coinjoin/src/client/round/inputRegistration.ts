@@ -31,11 +31,13 @@ const registerInput = async (
     // stop here and request for ownership proof from the wallet
     if (!input.ownershipProof) {
         logger.info(`Waiting for ~~${input.outpoint}~~ ownership proof`);
+
         return input;
     }
 
     if (input.registrationData) {
         logger.info(`Input ~~${input.outpoint}~~ already registered. Skipping.`);
+
         return input;
     }
 
@@ -182,6 +184,7 @@ const registerInput = async (
         return input;
     } catch (error) {
         input.setError(error);
+
         return input;
     }
 };

@@ -34,6 +34,7 @@ const split = (version: string) => {
     if (!isVersionArray(arr)) {
         throw new Error(`version string is in wrong format: ${version}`);
     }
+
     return arr;
 };
 
@@ -71,6 +72,7 @@ export const isNewer = (versionX: VersionInput, versionY: VersionInput) => {
 export const isEqual = (versionX: VersionInput, versionY: VersionInput) => {
     const strX = typeof versionX === 'string' ? versionX : versionToString(versionX);
     const strY = typeof versionY === 'string' ? versionY : versionToString(versionY);
+
     return strX === strY;
 };
 

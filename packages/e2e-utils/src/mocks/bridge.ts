@@ -33,6 +33,7 @@ export class TrezorBridgeMock extends EventEmitter {
 
             if (!first) {
                 console.log('[mocked bridge] no request found');
+
                 return;
             }
 
@@ -59,6 +60,7 @@ export class TrezorBridgeMock extends EventEmitter {
                     console.log(`[mocked bridge] response for request ${req.url}`);
                     res.send(first.response.content.text);
                 });
+
                 return;
             }
 

@@ -99,6 +99,7 @@ const TooltipLabel = ({
             />
         );
     }
+
     return addressLabel;
 };
 
@@ -151,6 +152,7 @@ export const FreshAddress = ({
         if (!firstFreshAddress) {
             return <Translation id="RECEIVE_ADDRESS_LIMIT_REACHED" />;
         }
+
         return null;
     };
 

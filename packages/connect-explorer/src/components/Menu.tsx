@@ -85,6 +85,7 @@ interface NodeProps {
 const Node = ({ data, name }: NodeProps) => {
     const css = data.currentUrl === data.url ? 'selected' : '';
     const href = data.url;
+
     return (
         <a key={data.keyPath} className={css} href={`#${href}`}>
             {name}
@@ -99,6 +100,7 @@ interface LeafProps extends NodeProps {
 
 const Leaf = ({ data, isOpen, name, onClick }: LeafProps) => {
     const css = isOpen ? 'leaf selected' : 'leaf';
+
     return (
         <div key={data.keyPath} className={css} onClick={onClick}>
             <div className="leaf-arrow">
@@ -127,8 +129,10 @@ const findFiltered = (url: any, tree: any, node: any, key: any) => {
         if (node.url && node.url === url) {
             // window.location = `#/${url};
             node.isOpen = true;
+
             return tree.concat([node]);
         }
+
         return tree;
     }
     const subFolder = node.children.length
@@ -137,6 +141,7 @@ const findFiltered = (url: any, tree: any, node: any, key: any) => {
 
     node.customComponent = Leaf;
     node.isOpen = subFolder && subFolder.filter(s => s.isOpen).length > 0;
+
     return tree.concat([node]);
 };
 
@@ -145,6 +150,7 @@ const getTree = (url: string) => {
     const tree = JSON.parse(JSON.stringify(config));
     const filteredTree = tree.reduce((prev, curr, key) => {
         if (key === undefined) return prev;
+
         return findFiltered(url, prev, curr, key);
     }, []);
 

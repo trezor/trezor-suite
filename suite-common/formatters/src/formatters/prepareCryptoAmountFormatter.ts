@@ -83,6 +83,7 @@ export const prepareCryptoAmountFormatter = (config: FormatterConfig) =>
 
             if (withSymbol) {
                 const NetworkSymbolFormatter = prepareNetworkSymbolFormatter(config);
+
                 return `${formattedValue} ${NetworkSymbolFormatter.format(symbol!)}`;
             }
 

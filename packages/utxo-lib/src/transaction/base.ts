@@ -8,6 +8,7 @@ import { bitcoin as BITCOIN_NETWORK, Network, isNetworkType } from '../networks'
 
 export function varSliceSize(someScript: Buffer) {
     const { length } = someScript;
+
     return varuint.encodingLength(length) + length;
 }
 
@@ -23,6 +24,7 @@ export function isCoinbaseHash(buffer: Buffer): boolean {
     for (let i = 0; i < 32; ++i) {
         if (buffer[i] !== 0) return false;
     }
+
     return true;
 }
 
@@ -87,9 +89,11 @@ export class TransactionBase<S = undefined> {
         if (!isNetworkType('litecoin', this.network)) {
             return false;
         }
+
         return (
             this.outs.some(output => {
                 const asm = bscript.toASM(output.script);
+
                 return asm.startsWith('OP_8');
             }) &&
             this.ins.some(
@@ -103,6 +107,7 @@ export class TransactionBase<S = undefined> {
     weight(): number {
         const base = this.byteLength(false, false);
         const total = this.byteLength(true, false);
+
         return base * 3 + total;
     }
 
@@ -130,6 +135,7 @@ export class TransactionBase<S = undefined> {
     getHash(forWitness = false, forMweb = false): Buffer {
         // wtxid for coinbase is always 32 bytes of 0x00
         if (forWitness && this.isCoinbase()) return Buffer.alloc(32, 0);
+
         return bcrypto.hash256(this.toBuffer(undefined, undefined, forWitness, forMweb));
     }
 
@@ -152,6 +158,7 @@ export class TransactionBase<S = undefined> {
             (arr, chunk) => arr.concat([getChunkSize(chunk.length), chunk]),
             [getChunkSize(witness.length)],
         );
+
         return Buffer.concat(chunks);
     }
 

@@ -107,6 +107,7 @@ export class BridgeTransport extends AbstractTransport {
 
         this.listening = true;
         this.listen2();
+
         return this.success(undefined);
     }
 
@@ -125,9 +126,11 @@ export class BridgeTransport extends AbstractTransport {
             const time = new Date().getTime() - listenTimestamp;
             if (time > 1100) {
                 await createTimeoutPromise(1000);
+
                 return this.listen2();
             }
             this.emit('transport-error', response.error);
+
             return;
         }
 
@@ -136,6 +139,7 @@ export class BridgeTransport extends AbstractTransport {
         }
 
         this.handleDescriptorsChange(response.payload);
+
         return this.listen2();
     }
 
@@ -239,6 +243,7 @@ export class BridgeTransport extends AbstractTransport {
                     () => Promise.resolve(Buffer.from(response.payload, 'hex')),
                     decode,
                 );
+
                 return this.success(message);
             },
             { timeout: undefined },
@@ -257,6 +262,7 @@ export class BridgeTransport extends AbstractTransport {
             if (!response.success) {
                 return response;
             }
+
             return this.success(undefined);
         });
     }
@@ -277,6 +283,7 @@ export class BridgeTransport extends AbstractTransport {
                 () => Promise.resolve(Buffer.from(response.payload, 'hex')),
                 decode,
             );
+
             return this.success(message);
         });
     }

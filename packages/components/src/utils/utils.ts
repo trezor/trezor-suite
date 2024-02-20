@@ -14,6 +14,7 @@ export const getInputColor = (theme: DefaultTheme, { checked, disabled }: InputC
     if (!checked) {
         return theme.backgroundNeutralDisabled;
     }
+
     return disabled ? theme.backgroundPrimarySubtleOnElevation0 : theme.backgroundPrimaryDefault;
 };
 
@@ -21,6 +22,7 @@ export const getLabelColor = (theme: DefaultTheme, { alert, disabled }: LabelCol
     if (alert) {
         return theme.borderAlertRed;
     }
+
     return disabled ? theme.textDisabled : theme.textDefault;
 };
 

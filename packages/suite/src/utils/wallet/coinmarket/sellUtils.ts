@@ -61,6 +61,7 @@ export function processQuotes(allQuotes: SellFiatTrade[]): [SellFiatTrade[], Sel
     const alternativeQuotes = allQuotes.filter(
         q => q.tags && q.tags.includes('alternativeCurrency') && !q.error,
     );
+
     return [quotes, alternativeQuotes];
 }
 
@@ -96,6 +97,7 @@ export const createQuoteLink = async (
 
     if (isDesktop()) {
         const url = await desktopApi.getHttpReceiverAddress('/sell-redirect');
+
         return `${url}?p=${encodeURIComponent(`/coinmarket-redirect/${params}`)}`;
     }
 

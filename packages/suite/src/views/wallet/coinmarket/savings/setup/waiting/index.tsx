@@ -22,6 +22,7 @@ const StyledLoader = styled(Spinner)`
 
 const CoinmarketSavingsSetupWaiting = (props: WithSelectedAccountLoadedProps) => {
     const { handleGoToInvity } = useCoinmarketSavingsSetupWaiting(props);
+
     return (
         <Wrapper>
             <Message>

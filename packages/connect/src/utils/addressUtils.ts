@@ -13,6 +13,7 @@ const isValidBase58Address = (address: string, network: BitcoinNetworkInfo['netw
     } catch (e) {
         return false;
     }
+
     return true;
 };
 
@@ -26,6 +27,7 @@ const isValidBech32Address = (address: string, network: BitcoinNetworkInfo['netw
     } catch (e) {
         return false;
     }
+
     return true;
 };
 

@@ -8,6 +8,7 @@ import * as CONSTANTS from '../../src/constants';
 // mock random delay function
 jest.mock('@trezor/utils', () => {
     const originalModule = jest.requireActual('@trezor/utils');
+
     return {
         __esModule: true,
         ...originalModule,
@@ -18,6 +19,7 @@ jest.mock('@trezor/utils', () => {
 // mock ROUND_PHASE_PROCESS_TIMEOUT, use getter to mock individually for each test
 jest.mock('../../src/constants', () => {
     const originalModule = jest.requireActual('../../src/constants');
+
     return {
         __esModule: true,
         ...originalModule,

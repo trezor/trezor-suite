@@ -48,12 +48,14 @@ export default class ApplySettings extends AbstractMethod<'applySettings', PROTO
 
         // wait for user action
         const uiResp = await uiPromise.promise;
+
         return uiResp.payload;
     }
 
     async run() {
         const cmd = this.device.getCommands();
         const response = await cmd.typedCall('ApplySettings', 'Success', this.params);
+
         return response.message;
     }
 }

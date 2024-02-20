@@ -95,6 +95,7 @@ export class Analytics<T extends AnalyticsEvent> {
             console.error(
                 `Unable to report ${data.type}. Analytics is not initialized! Missing: ${listOfMissingFields}`,
             );
+
             return;
         }
 

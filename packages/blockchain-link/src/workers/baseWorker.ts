@@ -98,6 +98,7 @@ export abstract class BaseWorker<API> {
                 this.debug('Connected');
                 this.api = api;
                 this.connectPromise = undefined;
+
                 return api;
             });
         }
@@ -120,6 +121,7 @@ export abstract class BaseWorker<API> {
 
         return this.tryConnect(url).catch(error => {
             this.debug('Connection failed', error);
+
             return this.connectRecursive(rest);
         });
     }
@@ -142,21 +144,25 @@ export abstract class BaseWorker<API> {
             this.proxyAgent = data.settings.proxy
                 ? SocksProxyAgent(data.settings.proxy)
                 : undefined;
+
             return true;
         }
         if (data.type === MESSAGES.CONNECT) {
             await this.connect();
             this.post({ id, type: RESPONSES.CONNECT, payload: true });
+
             return true;
         }
         if (data.type === MESSAGES.DISCONNECT) {
             this.disconnect();
             this.post({ id, type: RESPONSES.DISCONNECTED, payload: true });
+
             return true;
         }
         if (data.type === MESSAGES.TERMINATE) {
             this.disconnect();
             this.cleanup();
+
             return true;
         }
     }

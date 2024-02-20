@@ -11,6 +11,7 @@ export const getPrefixedURL = (url: string) => {
     // do not use object destructuring https://github.com/webpack/webpack/issues/5392
     const prefix = process.env.ASSET_PREFIX;
     if (prefix && url.indexOf(prefix) !== 0) return prefix + url;
+
     return url;
 };
 
@@ -20,17 +21,20 @@ export const stripPrefixedURL = (url: string) => {
     if (typeof prefix === 'string' && url.indexOf(prefix) === 0) {
         url = url.slice(prefix.length);
     }
+
     return url;
 };
 
 // Strips params delimited by a hashtag from the URL
 export const stripPrefixedPathname = (url: string) => {
     const [pathname] = stripPrefixedURL(url).split('#');
+
     return pathname.length > 1 ? pathname.replace(/\/$/, '') : pathname;
 };
 
 export const findRoute = (url: string) => {
     const clean = stripPrefixedPathname(url);
+
     return routes.find(r => r.pattern === clean);
 };
 
@@ -38,6 +42,7 @@ export const findRouteByName = (name: Route['name']) => routes.find(r => r.name 
 
 export const getApp = (url: string) => {
     const route = findRoute(url);
+
     return route ? route.app : 'unknown';
 };
 
@@ -66,6 +71,7 @@ const validateModalAppParams = (url: string) => {
     if (!hash) return;
     const [cancelable] = hash.split('/').filter(p => p.length > 0);
     if (cancelable !== 'true') return;
+
     return {
         cancelable: true,
     };
@@ -120,6 +126,7 @@ export const getRoute = (name: Route['name'], params?: RouteParams) => {
             .sort((a, b) => {
                 const aIndex = order.findIndex((o: string) => o === a[0]);
                 const bIndex = order.findIndex((o: string) => o === b[0]);
+
                 return aIndex - bIndex;
             })
             .reduce((val, curr) => {
@@ -127,10 +134,13 @@ export const getRoute = (name: Route['name'], params?: RouteParams) => {
                 if (exists < 0) return val;
                 // exclude accountType="normal" (most of accounts are normal)
                 if (curr[0] === 'accountType' && curr[1] === 'normal') return val;
+
                 return `${val}/${curr[1]}`;
             }, '');
+
         return paramsString.length > 0 ? `${route.pattern}#${paramsString}` : route.pattern;
     }
+
     return route.pattern;
 };
 

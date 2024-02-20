@@ -115,6 +115,7 @@ export const DashboardGraph = memo(({ accounts }: DashboardGraphProps) => {
             };
 
             worker.addEventListener('message', handleMessage);
+
             return () => {
                 worker.removeEventListener('message', handleMessage);
                 worker.terminate();

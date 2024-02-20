@@ -27,6 +27,7 @@ import * as fixtures from '../__fixtures__/coinjoinClientActions';
 const TrezorConnect = testMocks.getTrezorConnectMock();
 jest.mock('src/services/coinjoin/coinjoinService', () => {
     const mock = jest.requireActual('../__fixtures__/mockCoinjoinService');
+
     return mock.mockCoinjoinService();
 });
 
@@ -79,6 +80,7 @@ const initStore = ({ accounts, coinjoin, device, selectedAccount, suite }: Walle
         }),
         middleware: [coinjoinMiddleware],
     });
+
     return store;
 };
 

@@ -31,6 +31,7 @@ const getBitcoinFeeInfo = (info: FeeInfo, feeRate: string) => {
         ...l,
         feePerUnit: new BigNumber(l.feePerUnit).plus(feeRate).toString(),
     }));
+
     return {
         ...info,
         levels,
@@ -48,6 +49,7 @@ const getEthereumFeeInfo = (info: FeeInfo, gasPrice: string) => {
         if (minFeeFromNetwork.lte(current)) {
             return current.plus(1);
         }
+
         return minFeeFromNetwork;
     };
 
@@ -58,6 +60,7 @@ const getEthereumFeeInfo = (info: FeeInfo, gasPrice: string) => {
         ...l,
         feePerUnit: fee.toString(),
     }));
+
     return {
         ...info,
         levels,
@@ -72,6 +75,7 @@ const getFeeInfo = (
 ) => {
     if (networkType === 'bitcoin') return getBitcoinFeeInfo(info, rbfParams.feeRate);
     if (networkType === 'ethereum') return getEthereumFeeInfo(info, rbfParams.feeRate);
+
     return info;
 };
 
@@ -125,6 +129,7 @@ const useRbfState = ({ selectedAccount, rbfParams, finalize, chainedTxs }: UseRb
                     dataAscii: o.dataAscii,
                 };
             }
+
             return {
                 ...DEFAULT_PAYMENT,
                 address: o.address,
@@ -293,5 +298,6 @@ RbfContext.displayName = 'RbfContext';
 export const useRbfContext = () => {
     const ctx = useContext(RbfContext);
     if (ctx === null) throw Error('useRbfContext used without Context');
+
     return ctx;
 };

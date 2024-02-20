@@ -14,5 +14,6 @@ export const useRediscoveryNeeded = () => {
             setIsRediscoveryNeeded(false);
         }
     }, [discovery, isDiscoveryRunning, discovery?.loaded, discovery?.total]);
+
     return isRediscoveryNeeded;
 };

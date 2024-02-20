@@ -25,12 +25,14 @@ export const isCompletedLocale = (lang: string): lang is Locale =>
  */
 export const getOsLocale = (defaultLocale: Locale = DEFAULT_LOCALE): Locale => {
     const languages = getPlatformLanguages() || [];
+
     return languages.map(lang => lang.split('-')[0]).find(isCompletedLocale) || defaultLocale;
 };
 
 export const watchOsLocale = (callback: (loc: Locale) => void) => {
     const onLanguageChange = () => callback(getOsLocale());
     window.addEventListener('languagechange', onLanguageChange);
+
     return () => window.removeEventListener('languagechange', onLanguageChange);
 };
 
@@ -42,5 +44,6 @@ export const ensureLocale = (loc: string): Locale => {
     const translationMode = isTranslationMode();
     if (translationMode) return TRANSLATION_PSEUDOLANGUAGE;
     if (loc === TRANSLATION_PSEUDOLANGUAGE) return DEFAULT_LOCALE;
+
     return isLocale(loc) ? loc : DEFAULT_LOCALE;
 };

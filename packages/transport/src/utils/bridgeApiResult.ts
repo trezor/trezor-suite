@@ -20,6 +20,7 @@ export function info(res: UnknownPayload) {
         return error({ error: ERRORS.WRONG_RESULT_TYPE });
     }
     const configured = !!res.configured;
+
     return success({ version, configured });
 }
 
@@ -27,6 +28,7 @@ export function version(res: UnknownPayload) {
     if (!isString(res)) {
         return error({ error: ERRORS.WRONG_RESULT_TYPE });
     }
+
     return success(res.trim());
 }
 
@@ -48,6 +50,7 @@ export function devices(res: UnknownPayload) {
     ) {
         return error({ error: ERRORS.WRONG_RESULT_TYPE });
     }
+
     return success(
         res.map(
             (o: any): Descriptor => ({
@@ -71,6 +74,7 @@ export function acquire(res: UnknownPayload) {
     if (typeof session !== 'string') {
         return error({ error: ERRORS.WRONG_RESULT_TYPE });
     }
+
     return success(session);
 }
 
@@ -78,6 +82,7 @@ export function call(res: UnknownPayload) {
     if (!isString(res)) {
         return error({ error: ERRORS.WRONG_RESULT_TYPE });
     }
+
     return success(res);
 }
 

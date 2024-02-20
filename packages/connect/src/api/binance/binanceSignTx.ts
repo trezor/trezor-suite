@@ -19,6 +19,7 @@ const processTxRequest = async (
 
     if (lastOp) {
         const response = await typedCall(type, 'BinanceSignedTx', params);
+
         return response.message;
     }
     await typedCall(type, 'BinanceTxRequest', params);
@@ -89,5 +90,6 @@ export const signTx = async (
         source,
         chunkify,
     });
+
     return processTxRequest(typedCall, messages, 0);
 };

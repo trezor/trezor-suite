@@ -44,6 +44,7 @@ export default class PushTransaction extends AbstractMethod<'pushTransaction', P
     async run() {
         const backend = await initBlockchain(this.params.coinInfo, this.postMessage);
         const txid = await backend.pushTransaction(this.params.tx);
+
         return {
             txid,
         };

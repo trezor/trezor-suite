@@ -22,6 +22,7 @@ export default class ShowDeviceTutorial extends AbstractMethod<
         const cmd = this.device.getCommands();
 
         const response = await cmd.typedCall('ShowDeviceTutorial', 'Success');
+
         return response.message;
     }
 }

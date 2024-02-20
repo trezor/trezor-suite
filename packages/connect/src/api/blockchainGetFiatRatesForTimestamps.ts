@@ -49,6 +49,7 @@ export default class BlockchainGetFiatRatesForTimestamps extends AbstractMethod<
 
     async run() {
         const backend = await initBlockchain(this.params.coinInfo, this.postMessage);
+
         return backend.getFiatRatesForTimestamps({
             currencies: this.params.currencies,
             timestamps: this.params.timestamps,

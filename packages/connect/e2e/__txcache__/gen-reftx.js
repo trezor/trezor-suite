@@ -39,6 +39,7 @@ const enhanceTransaction = (refTx, srcTx) => {
             refTx.version |= srcTx.type << 16;
         }
     }
+
     return refTx;
 };
 

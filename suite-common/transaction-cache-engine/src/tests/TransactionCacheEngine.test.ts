@@ -10,6 +10,7 @@ jest.mock('@trezor/connect', () => {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const { connectGetAccountInfoMock } = require('./__fixtures__');
     const { DeviceModelInternal } = jest.requireActual('@trezor/connect');
+
     return {
         __esModule: true,
         default: {

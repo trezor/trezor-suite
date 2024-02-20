@@ -12,6 +12,7 @@ const getAnonymityStatus = (targetAnonymity: number) => {
     if (targetAnonymity < AnonymityStatus.Good) {
         return AnonymityStatus.Good;
     }
+
     return AnonymityStatus.Great;
 };
 

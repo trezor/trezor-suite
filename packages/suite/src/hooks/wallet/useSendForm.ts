@@ -109,6 +109,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
 
     const fiatRates = props.coins.find(item => {
         const hasToken = !!token;
+
         return (
             item.symbol === props.selectedAccount.account.symbol &&
             (!hasToken || item.tokenAddress === token)
@@ -136,6 +137,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
                     }
                 }
             }
+
             return {
                 ...getDefaultValues(localCurrencyOption, state.network),
                 ...loadedState,
@@ -392,5 +394,6 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
 export const useSendFormContext = () => {
     const ctx = useContext(SendContext);
     if (ctx === null) throw Error('useSendFormContext used without Context');
+
     return ctx;
 };

@@ -52,6 +52,7 @@ const getTransactionInputsAndOutputsCount = (transfers: TransactionTranfer[]) =>
         (accumulator, { inputs, outputs }) => {
             accumulator.inputsCount += inputs.length;
             accumulator.outputsCount += outputs.length;
+
             return accumulator;
         },
         { inputsCount: 0, outputsCount: 0 },

@@ -21,9 +21,11 @@ const transform = (field: Field, value: any) => {
                 // old trezor-link behavior https://github.com/trezor/trezor-link/blob/9c200cc5608976cff0542484525e98c753ba1888/src/lowlevel/protobuf/message_decoder.js#L80
                 return value.toNumber();
             }
+
             // otherwise return as string
             return value.toString();
         }
+
         return value;
     }
 

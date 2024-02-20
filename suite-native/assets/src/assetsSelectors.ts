@@ -84,6 +84,7 @@ export const selectDeviceAssetsWithBalances = memoize(
                     assetBalance: deviceBalancesPerNetwork[networkSymbol] ?? new BigNumber(0),
                     fiatBalance,
                 };
+
                 return asset;
             })
             .filter(data => data !== undefined) as AssetType[];

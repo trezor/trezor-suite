@@ -35,6 +35,7 @@ export default class EthereumGetPublicKey extends AbstractMethod<'ethereumGetPub
             const path = validatePath(batch.path, 3);
             const network = getEthereumNetwork(path);
             this.firmwareRange = getFirmwareRange(this.name, network, this.firmwareRange);
+
             return {
                 address_n: path,
                 show_display: typeof batch.showOnTrezor === 'boolean' ? batch.showOnTrezor : false,
@@ -53,6 +54,7 @@ export default class EthereumGetPublicKey extends AbstractMethod<'ethereumGetPub
         if (uniqNetworks.length === 1 && uniqNetworks[0]) {
             return getNetworkLabel('Export multiple #NETWORK public keys', uniqNetworks[0]);
         }
+
         return 'Export multiple public keys';
     }
 
@@ -75,6 +77,7 @@ export default class EthereumGetPublicKey extends AbstractMethod<'ethereumGetPub
         const uiResp = await uiPromise.promise;
 
         this.confirmed = uiResp.payload;
+
         return this.confirmed;
     }
 
@@ -99,6 +102,7 @@ export default class EthereumGetPublicKey extends AbstractMethod<'ethereumGetPub
                 );
             }
         }
+
         return this.hasBundle ? responses : responses[0];
     }
 }

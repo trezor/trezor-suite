@@ -46,6 +46,7 @@ export const AccountImportLoadingScreen = ({
     useEffect(() => {
         // loader should disappear after 5 seconds soonest by design.
         const timeout = setTimeout(() => setIsAnimationFinished(true), LOADING_ANIMATION_DURATION);
+
         return () => clearTimeout(timeout);
     }, [setIsAnimationFinished]);
 

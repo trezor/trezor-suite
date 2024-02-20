@@ -49,6 +49,7 @@ export const TEXT_MAX_FONT_MULTIPLIER = 2;
 
 const getAccessibilityFontScale = () => {
     const fontScale = PixelRatio.getFontScale();
+
     return fontScale < TEXT_MAX_FONT_MULTIPLIER ? fontScale : TEXT_MAX_FONT_MULTIPLIER;
 };
 
@@ -89,6 +90,7 @@ export const BaseText = ({
 }: TextProps & { TextComponent: typeof RNText }) => {
     const { applyStyle } = useNativeStyles();
     const maxFontSizeMultiplier = variantToMaxFontSizeMultiplier[variant];
+
     return (
         <DefaultTextComponent
             style={[applyStyle(textStyle, { variant, color, textAlign }), style]}

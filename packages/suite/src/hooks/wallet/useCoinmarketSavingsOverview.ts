@@ -39,6 +39,7 @@ export const useSavingsOverview = ({
         ) {
             previous = previous.plus(new BigNumber(current.data.receiveStringAmount));
         }
+
         return previous;
     }, new BigNumber(0));
 
@@ -75,5 +76,6 @@ export const useSavingsOverview = ({
 export const useSavingsOverviewContext = () => {
     const context = useContext(SavingsOverviewContext);
     if (context === null) throw Error('SavingsOverviewContext used without Context');
+
     return context;
 };

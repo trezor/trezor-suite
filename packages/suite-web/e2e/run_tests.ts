@@ -101,6 +101,7 @@ const runTests = async () => {
 
     if (!finalTestFiles.length) {
         console.log('[run_tests.js] nothing to test!');
+
         return;
     }
 

@@ -66,6 +66,7 @@ export default class CipherKeyValue extends AbstractMethod<
                 );
             }
         }
+
         return this.hasBundle ? responses : responses[0];
     }
 }

@@ -68,6 +68,7 @@ export class TorController extends EventEmitter {
 
     public getTorConfiguration(processId: number): string[] {
         const controlAuthCookiePath = path.join(this.options.torDataDir, 'control_auth_cookie');
+
         // https://github.com/torproject/tor/blob/bf30943cb75911d70367106af644d4273baaa85d/doc/man/tor.1.txt
         return [
             // Try to write to disk less frequently than we would otherwise.
@@ -178,8 +179,10 @@ export class TorController extends EventEmitter {
                 }
             }
             await createTimeoutPromise(this.waitingTime);
+
             return waitUntilResponse(triesCount + 1);
         };
+
         return waitUntilResponse(1);
     }
 
@@ -191,6 +194,7 @@ export class TorController extends EventEmitter {
             if (this.getIsBootstrapping()) {
                 return resolve(TOR_CONTROLLER_STATUS.Bootstrapping);
             }
+
             return resolve(TOR_CONTROLLER_STATUS.Stopped);
         });
     }

@@ -60,6 +60,7 @@ export function accumulative(
         if (!utxoValue || utxoValue.lt(new BN(utxoFee))) {
             if (i === utxos.length - 1) {
                 const fee = getFee([...inputs, utxo], outputs, feeRate, options);
+
                 return { fee };
             }
         } else {
@@ -77,5 +78,6 @@ export function accumulative(
     }
 
     const fee = getFee(inputs, outputs, feeRate, options);
+
     return { fee };
 }

@@ -50,6 +50,7 @@ export const blockchainInitialState: BlockchainNetworks = networksCompatibility.
                       }
                     : {},
         };
+
         return state;
     },
     initialStatePredefined as BlockchainState,
@@ -186,6 +187,7 @@ export const selectNetworkBlockchainInfo =
 export const selectBlockchainHeightBySymbol = memoizeWithArgs(
     (state: BlockchainRootState, symbol: NetworkSymbol) => {
         const blockchain = selectNetworkBlockchainInfo(symbol)(state);
+
         return blockchain.blockHeight;
     },
 );
@@ -194,6 +196,7 @@ export const selectBlockchainExplorerBySymbol = memoizeWithArgs(
     (state: BlockchainRootState, symbol?: NetworkSymbol) => {
         if (!symbol) return null;
         const blockchain = selectNetworkBlockchainInfo(symbol)(state);
+
         return blockchain.explorer;
     },
     { size: 100 },
@@ -202,6 +205,7 @@ export const selectBlockchainExplorerBySymbol = memoizeWithArgs(
 export const selectBlockchainBlockInfoBySymbol = memoizeWithArgs(
     (state: BlockchainRootState, symbol: NetworkSymbol) => {
         const blockchain = selectNetworkBlockchainInfo(symbol)(state);
+
         return {
             blockhash: blockchain.blockHash,
             blockHeight: blockchain.blockHeight,

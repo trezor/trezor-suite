@@ -109,15 +109,18 @@ export const createIpcProxy = async <T extends object>(
             // handle event-emitter-like methods
             if (name === 'on') {
                 proxyTarget[name] = addListener;
+
                 return proxyTarget[name];
             }
 
             if (name === 'off' || name === 'removeAllListeners') {
                 proxyTarget[name] = removeListener;
+
                 return proxyTarget[name];
             }
 
             proxyTarget[name] = request(name);
+
             return proxyTarget[name];
         },
     };

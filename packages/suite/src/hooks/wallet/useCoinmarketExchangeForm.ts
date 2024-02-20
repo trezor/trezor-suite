@@ -165,11 +165,13 @@ export const useCoinmarketExchangeForm = ({
     useEffect(() => {
         if (!isChanged(defaultValues, values)) {
             removeDraft(account.key);
+
             return;
         }
 
         if (values.sendCryptoSelect && !values.sendCryptoSelect?.cryptoSymbol) {
             removeDraft(account.key);
+
             return;
         }
 
@@ -411,5 +413,6 @@ export const useCoinmarketExchangeForm = ({
 export const useCoinmarketExchangeFormContext = () => {
     const context = useContext(ExchangeFormContext);
     if (context === null) throw Error('ExchangeFormContext used without Context');
+
     return context;
 };

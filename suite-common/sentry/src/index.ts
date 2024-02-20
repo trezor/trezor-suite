@@ -22,6 +22,7 @@ const redactUserPath = (event: SentryEvent) => {
     try {
         const eventAsString = JSON.stringify(event);
         const redactedString = redactUserPathFromString(eventAsString);
+
         return JSON.parse(redactedString);
     } catch (error) {
         console.warn('Redacting user path failed', error);
@@ -29,6 +30,7 @@ const redactUserPath = (event: SentryEvent) => {
             redactUserPathFailed: true, // to be able to see in Sentry if there are such an errors
             ...event.tags,
         };
+
         return event;
     }
 };
@@ -72,6 +74,7 @@ const beforeBreadcrumb: Options['beforeBreadcrumb'] = breadcrumb => {
     if (isAnalytics || isImageFetch || isConsole) {
         return null;
     }
+
     return breadcrumb;
 };
 

@@ -159,6 +159,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
 
         // wait for user action
         const uiResp = await uiPromise.promise;
+
         return uiResp.payload;
     }
 
@@ -180,6 +181,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
 
         // wait for user action
         const uiResp = await uiPromise.promise;
+
         return uiResp.payload;
     }
 
@@ -334,6 +336,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
             }
         }
         if (this.disposed) return new Promise<typeof responses>(() => []);
+
         return this.hasBundle ? responses : responses[0]!;
     }
 

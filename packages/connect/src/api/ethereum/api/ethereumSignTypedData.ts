@@ -142,6 +142,7 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
             );
 
             const { address, signature } = response.message;
+
             return {
                 address,
                 signature: `0x${signature}`,
@@ -250,6 +251,7 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
         }
 
         const { address, signature } = response.message;
+
         return {
             address,
             signature: `0x${signature}`,

@@ -172,5 +172,6 @@ export const resetDevice =
         if (!result.success) {
             dispatch(notificationsActions.addToast({ type: 'error', error: result.payload.error }));
         }
+
         return result;
     };

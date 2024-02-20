@@ -22,6 +22,7 @@ export const XpubQRCodeCard = ({
     qrCodeData: string;
 }) => {
     const { applyStyle } = useNativeStyles();
+
     return (
         <Card style={applyStyle(xpubCardStyle)}>
             {isXpubShown ? (

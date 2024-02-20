@@ -43,6 +43,7 @@ const enhanceAddress =
         const txs = transactions.filter(tx => doesTxContainAddress(address)(tx.details));
         const sent = sumAddressValues(txs, address, tx => tx.details.vin);
         const received = sumAddressValues(txs, address, tx => tx.details.vout);
+
         return {
             address,
             path,

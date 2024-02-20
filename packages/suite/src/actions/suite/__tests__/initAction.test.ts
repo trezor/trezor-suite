@@ -224,6 +224,7 @@ const initStore = (state: State) => {
         store.getState().suite = suiteReducer(suite, action);
         store.getState().router = routerReducer(router, action);
     });
+
     return store;
 };
 

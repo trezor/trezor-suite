@@ -166,6 +166,7 @@ export const ConfirmOnDevice = ({
 }: ConfirmOnDeviceProps) => {
     const hasSteps = steps && activeStep !== undefined;
     const theme = useTheme();
+
     return (
         <Wrapper
             animation={isConfirmed ? AnimationDirection.Down : AnimationDirection.Up}

@@ -18,6 +18,7 @@ export function decodeBlake(buffer: Buffer) {
 export function decodeBlake256Key(key: string) {
     const bytes = bs58.decode(key);
     const buffer = Buffer.from(bytes);
+
     return decodeBlake(buffer);
 }
 
@@ -34,11 +35,13 @@ export function decodeBlake256(address: string) {
         }
         throw new Error(`${address} ${e}`);
     }
+
     return payload;
 }
 
 export function encodeBlake256(payload: Buffer) {
     const checksum = blake256(blake256(payload)).subarray(0, 4);
+
     return bs58.encode(Buffer.concat([payload, checksum]));
 }
 
@@ -91,5 +94,6 @@ export function encodeAddress(hash: Buffer, version: number, network = BITCOIN_N
     hash.copy(payload, offset);
 
     const encoded = encode(payload, network);
+
     return isNetworkType('bitcoinCash', network) ? bchaddrjs.toCashAddress(encoded) : encoded;
 }

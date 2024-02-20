@@ -89,6 +89,7 @@ export const FiatValue = ({
             </SameWidthNums>
         ) : null;
         if (!children) return fiatValueComponent;
+
         return children({
             value: fiatValueComponent,
             rate: fiatRateComponent,
@@ -96,5 +97,6 @@ export const FiatValue = ({
         });
     }
     if (!children) return null;
+
     return children({ value: null, rate: null, timestamp: null });
 };

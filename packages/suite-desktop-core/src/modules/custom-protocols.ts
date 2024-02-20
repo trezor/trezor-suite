@@ -66,6 +66,7 @@ export const init: Module = ({ mainWindow }) => {
     const firstRunOnly = (url: string) => () => {
         if (!firstRun) return;
         firstRun = false;
+
         return url;
     };
 

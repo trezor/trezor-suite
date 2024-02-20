@@ -180,6 +180,7 @@ const log =
 
             // no default
         }
+
         return next(action);
     };
 

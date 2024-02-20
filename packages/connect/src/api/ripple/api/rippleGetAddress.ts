@@ -38,6 +38,7 @@ export default class RippleGetAddress extends AbstractMethod<'rippleGetAddress',
 
         this.params = payload.bundle.map(batch => {
             const path = validatePath(batch.path, 3);
+
             return {
                 address_n: path,
                 address: batch.address,
@@ -62,6 +63,7 @@ export default class RippleGetAddress extends AbstractMethod<'rippleGetAddress',
                 fromHardened(this.params[0].address_n[2]) + 1
             }`;
         }
+
         return 'Export multiple Ripple addresses';
     }
     getButtonRequestData(code: string) {
@@ -92,6 +94,7 @@ export default class RippleGetAddress extends AbstractMethod<'rippleGetAddress',
         // wait for user action
         const uiResp = await uiPromise.promise;
         this.confirmed = uiResp.payload;
+
         return this.confirmed;
     }
 
@@ -110,6 +113,7 @@ export default class RippleGetAddress extends AbstractMethod<'rippleGetAddress',
 
         // wait for user action
         const uiResp = await uiPromise.promise;
+
         return uiResp.payload;
     }
 
@@ -120,6 +124,7 @@ export default class RippleGetAddress extends AbstractMethod<'rippleGetAddress',
             show_display,
             chunkify,
         });
+
         return response.message;
     }
 
@@ -163,6 +168,7 @@ export default class RippleGetAddress extends AbstractMethod<'rippleGetAddress',
 
             this.progress++;
         }
+
         return this.hasBundle ? responses : responses[0];
     }
 }

@@ -45,6 +45,7 @@ const CoinmarketDetail = () => {
                 },
             }),
         );
+
         return null;
     }
 

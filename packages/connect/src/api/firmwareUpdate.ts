@@ -73,6 +73,7 @@ export default class FirmwareUpdate extends AbstractMethod<'firmwareUpdate', Par
 
         // wait for user action
         const uiResp = await uiPromise.promise;
+
         return uiResp.payload;
     }
 

@@ -162,6 +162,7 @@ function getQuoteError(quote: ExchangeTrade) {
             />
         );
     }
+
     return quote.error;
 }
 

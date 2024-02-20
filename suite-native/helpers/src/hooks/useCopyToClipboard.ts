@@ -19,5 +19,6 @@ export function useCopyToClipboard() {
         },
         [showToast],
     );
+
     return copyToClipboard;
 }

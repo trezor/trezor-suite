@@ -136,11 +136,13 @@ export abstract class AbstractMetadataProvider {
                 payload,
             };
         }
+
         return { success } as const;
     }
 
     error(code: keyof typeof ProviderErrorReason, reason: string) {
         const success = false as const;
+
         return {
             success,
             code,
@@ -153,6 +155,7 @@ export abstract class AbstractMetadataProvider {
         options: { retries: number; delay: number } = { retries: 3, delay: 1000 },
     ) {
         let retried = 0;
+
         return new Promise<Awaited<ReturnType<R>>>(resolve => {
             const { retries, delay } = options;
             const run = async () => {

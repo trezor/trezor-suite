@@ -28,6 +28,7 @@ class BlockchainLink {
     }
     disconnect() {
         this.emit('disconnected');
+
         return Promise.resolve(true);
     }
     dispose() {}

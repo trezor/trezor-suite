@@ -82,6 +82,7 @@ export const FormattedCryptoAmount = ({
     // output as a string, mostly for compatibility with graphs
     if (isRawString) {
         const displayedSignValue = signValue ? `${isSignValuePositive(signValue) ? '+' : '-'}` : '';
+
         return <>{`${displayedSignValue} ${formattedValue} ${formattedSymbol}`}</>;
     }
 

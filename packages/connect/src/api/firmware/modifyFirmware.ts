@@ -35,5 +35,6 @@ export const stripFwHeaders = (fw: ArrayBuffer) => {
     ) {
         return fw.slice(256);
     }
+
     return fw;
 };

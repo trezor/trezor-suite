@@ -76,6 +76,7 @@ const getParam = (field: Field<any>, $params: Record<string, any> = {}) => {
     } else {
         params[field.name] = field.value;
     }
+
     return params;
 };
 
@@ -174,6 +175,7 @@ const prepareBundle = (field: any) => {
             });
         });
     }
+
     return field;
 };
 
@@ -182,8 +184,10 @@ const findField = (state: MethodState, field: any) => {
         const key = field.key.split('-');
         const bundle = state.fields.find(f => f.name === key[0]);
         const batch = bundle?.items?.find((_batch, index) => index === Number.parseInt(key[1], 10));
+
         return batch.find(f => f.name === field.name);
     }
+
     return state.fields.find(f => f.name === field.name);
 };
 
@@ -197,6 +201,7 @@ const onFieldChange = (state: MethodState, _field: any, value: any) => {
     if (field.affect) {
         setAffectedValues(newState, field);
     }
+
     return updateParams(newState);
 };
 
@@ -204,6 +209,7 @@ const onFieldDataChange = (state: MethodState, _field: any, data: any) => {
     const newState = state;
     const field = findField(newState, _field);
     field.data = data;
+
     return updateParams(newState);
 };
 
@@ -221,6 +227,7 @@ const getMethodState = (url: string) => {
     // set default values
     state.fields = state.fields.map(f => setAffectedValues(state, prepareBundle(f)));
     state.tab = initialState.tab;
+
     // set method params
     return updateParams(state);
 };

@@ -22,6 +22,7 @@ export const useAsyncDebounce = () => {
             timeout.current = null; // reset timeout
             // call compose function
             const result = await fn();
+
             return result;
         },
         [timeout],

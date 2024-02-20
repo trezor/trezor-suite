@@ -107,6 +107,7 @@ const initStore = (state: State) => {
         store.getState().wallet.accounts = accountsReducer(wallet.accounts, action);
         store.getState().device = deviceReducer(device, action) as any;
     });
+
     return store;
 };
 
@@ -138,8 +139,10 @@ describe('Metadata Actions', () => {
                         '../../../utils/suite/__fixtures__/828652b66f2e6f919fbb7fe4c9609d4891ed531c6fac4c28441e53ebe577ac85.mtdt',
                     ),
                 );
+
                 return { success: true, payload: file };
             }
+
             return { success: true, payload: undefined };
         };
         DropboxProvider.prototype.getFilesList = () =>

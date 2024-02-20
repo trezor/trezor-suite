@@ -21,6 +21,7 @@ export const createActionWithExtraDeps = <TPayload, TReturn, TActionName extends
             const resultPayload = payloadCreator(payload, { dispatch, getState, extra });
             const resultAction = action(resultPayload);
             dispatch(action(resultPayload));
+
             return resultAction;
         };
 

@@ -52,6 +52,7 @@ export class CoinjoinClient extends TypedEmitter<CoinjoinClientEvents> {
         if (this.abortController.signal.aborted) {
             this.abortController = new AbortController();
         }
+
         return this.status.start();
     }
 
@@ -188,6 +189,7 @@ export class CoinjoinClient extends TypedEmitter<CoinjoinClientEvents> {
                     // and update fresh data from Status
                     return currentRound.onPhaseChange(round);
                 }
+
                 return [];
             }),
         );
@@ -268,6 +270,7 @@ export class CoinjoinClient extends TypedEmitter<CoinjoinClientEvents> {
     private getLogger(): Logger {
         const emit = (level: LogLevel) => (payload: string) =>
             this.emit('log', { level, payload: redacted(payload) });
+
         return {
             debug: emit('debug'),
             info: emit('info'),

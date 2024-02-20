@@ -11,6 +11,7 @@ export const deriveMetadataKey = (masterKey: string, xpub: string) => {
     const hmac = crypto.createHmac('sha256', Buffer.from(masterKey, 'hex'));
     hmac.update(xpub);
     const hash = hmac.digest();
+
     return base58check.encode(hash);
 };
 
@@ -18,6 +19,7 @@ const deriveHmac = (metadataKey: string) => {
     const hmac = crypto.createHmac('sha512', metadataKey);
     const buf = Buffer.from('0123456789abcdeffedcba9876543210', 'hex');
     hmac.update(buf);
+
     return hmac.digest();
 };
 
@@ -31,12 +33,14 @@ export const deriveAesKey = (metadataKey: string) => {
         );
     }
     const secondHalf = hash.subarray(32, 64);
+
     return secondHalf.toString('hex');
 };
 
 export const deriveFilename = (metadataKey: string) => {
     const hash = deriveHmac(metadataKey);
     const firstHalf = hash.subarray(0, 32);
+
     return firstHalf.toString('hex');
 };
 
@@ -45,6 +49,7 @@ export const deriveFilenameForLabeling = (metaKey: string, encryptionVersion: nu
     // postfixes were added with version 2
     const postfix = encryptionVersion > 1 ? `_v${encryptionVersion}` : '';
     const extension = '.mtdt';
+
     return `${name}${postfix}${extension}`;
 };
 
@@ -69,6 +74,7 @@ export const arrayBufferToBuffer = (ab: ArrayBuffer) => {
     for (let i = 0; i < buffer.length; ++i) {
         buffer[i] = view[i];
     }
+
     return buffer;
 };
 
@@ -84,6 +90,7 @@ export const encrypt = async (input: Record<string, any>, aesKey: string | Buffe
     const endCText = cipher.final();
     // tag is always 128-bits
     const authTag = cipher.getAuthTag();
+
     return Buffer.concat([iv, authTag, startCText, endCText]);
 };
 
@@ -105,6 +112,7 @@ export const decrypt = (input: Buffer, key: string | Buffer) => {
 
     const res = Buffer.concat([start, end]);
     const stringified = res.toString('utf8');
+
     return JSON.parse(stringified);
 };
 
@@ -122,6 +130,7 @@ export const urlHashParams = (hash: string) => {
         const [key, value] = part.split('=');
         result[key] = decodeURIComponent(value);
     });
+
     return result;
 };
 
@@ -132,5 +141,6 @@ export const urlSearchParams = (search: string) => {
     if (search[0] === '?') {
         search = search.substring(1);
     }
+
     return urlHashParams(search);
 };

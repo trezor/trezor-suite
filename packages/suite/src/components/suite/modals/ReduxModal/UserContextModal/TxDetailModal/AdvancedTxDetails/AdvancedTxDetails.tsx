@@ -77,6 +77,7 @@ export const AdvancedTxDetails = ({
         content = <ChainedTxs txs={chainedTxs} explorerUrl={explorerUrl} network={network} />;
     }
     const { elevation } = useElevation();
+
     return (
         <Wrapper>
             <TabSelector elevation={elevation}>

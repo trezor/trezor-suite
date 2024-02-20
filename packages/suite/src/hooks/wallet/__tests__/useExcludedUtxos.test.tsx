@@ -68,6 +68,7 @@ const getRenders = () => Number(screen.getByTestId('renders').innerHTML);
 // mock getExcludedUtxos so we can count calls
 jest.mock('@suite-common/wallet-utils', () => {
     const originalModule = jest.requireActual('@suite-common/wallet-utils');
+
     return {
         __esModule: true,
         ...originalModule,

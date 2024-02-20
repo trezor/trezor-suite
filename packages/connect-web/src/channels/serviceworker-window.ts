@@ -59,6 +59,7 @@ export class ServiceWorkerWindowChannel<
             this.port.onMessage.addListener((message: Message<IncomingMessages>, { sender }) => {
                 if (!sender) {
                     this.logger?.error('service-worker-window', 'no sender');
+
                     return;
                 }
 
@@ -91,6 +92,7 @@ export class ServiceWorkerWindowChannel<
                         'origin not whitelisted',
                         origin,
                     );
+
                     return;
                 }
 

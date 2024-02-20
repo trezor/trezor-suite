@@ -17,6 +17,7 @@ export const initialState: State = {
 const selectedAccountReducer = (state: State = initialState, action: Action): State => {
     if (accountsActions.updateSelectedAccount.match(action)) return action.payload;
     if (accountsActions.disposeAccount.match(action)) return initialState;
+
     return state;
 };
 

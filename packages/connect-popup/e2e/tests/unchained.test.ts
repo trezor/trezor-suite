@@ -32,6 +32,7 @@ const getConnectPopup = async (page: Page) => {
         page.locator('button', { hasText: 'Start Test' }).click(),
     ]);
     await popup.waitForLoadState('load');
+
     return popup;
 };
 

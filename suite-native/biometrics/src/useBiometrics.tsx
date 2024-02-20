@@ -21,6 +21,7 @@ export const authenticate = async () => {
 
     if (isBiometricsAvailable) {
         const result = await LocalAuthentication.authenticateAsync();
+
         return result;
     }
 };
@@ -39,6 +40,7 @@ export const useBiometrics = () => {
         // Stop the authentication flow if the user leaves the app.
         if (appState.current !== 'active' && Platform.OS === 'android') {
             LocalAuthentication.cancelAuthenticate();
+
             return;
         }
 

@@ -8,5 +8,6 @@ export const ensureDirectoryExists = async (dir: string) => {
     if (!(await exists(dir))) {
         await mkdir(dir, { recursive: true });
     }
+
     return dir;
 };

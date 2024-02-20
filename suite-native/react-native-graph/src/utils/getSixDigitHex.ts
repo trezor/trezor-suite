@@ -9,6 +9,7 @@ export function getSixDigitHex(color: string): `#${string}` {
                 .split('')
                 .map(hex => hex + hex)
                 .join('');
+
             return `#${sixDigitHex}`;
         }
         case 6:

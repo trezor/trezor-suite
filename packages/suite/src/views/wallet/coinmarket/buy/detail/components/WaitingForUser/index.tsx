@@ -45,6 +45,7 @@ const getTranslations = (tradeStatus: BuyTradeStatus | undefined) => {
             buttonTextTranslationId: 'TR_BUY_DETAIL_WAITING_FOR_USER_GATE',
         } as const;
     }
+
     return {
         titleTranslationId: 'TR_BUY_DETAIL_SUBMITTED_TITLE',
         descriptionTranslationId: 'TR_BUY_DETAIL_SUBMITTED_TEXT',

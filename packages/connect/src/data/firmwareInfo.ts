@@ -57,6 +57,7 @@ const getChangelog = (releases: FirmwareRelease[], features: StrictFeatures) => 
                 ]),
             );
         }
+
         // for fresh devices, we can assume that all releases are actually "new"
         return releases;
     }
@@ -77,6 +78,7 @@ const isNewer = (release: FirmwareRelease, features: StrictFeatures) => {
     if (features.major_version === 1 && features.bootloader_mode) {
         return null;
     }
+
     return versionUtils.isNewer(release.version, [
         features.major_version,
         features.minor_version,
@@ -86,6 +88,7 @@ const isNewer = (release: FirmwareRelease, features: StrictFeatures) => {
 
 const isRequired = (changelog: ReturnType<typeof getChangelog>) => {
     if (!changelog || !changelog.length) return null;
+
     return changelog.some(item => item.required);
 };
 
@@ -168,6 +171,7 @@ const getSafeReleases = ({ features, releases }: GetInfoProps) => {
             // in bootloader, T2T1, T2B1 knows its firmware, so we still may filter "by firmware".
             return filterSafeListByFirmware(releases, fwVersion);
         }
+
         return filterSafeListByBootloader(releases, firmwareVersion);
     }
     if (major_version === 1 && bootloader_mode) {

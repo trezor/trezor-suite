@@ -96,6 +96,7 @@ export const GuideMarkdown = ({ markdown }: GuideMarkdownProps) => {
                         a: ({ children, href }) => {
                             if (!href) {
                                 console.error('Missing href in Suite Guide link!');
+
                                 return null;
                             }
 

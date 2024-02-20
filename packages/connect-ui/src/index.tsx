@@ -132,6 +132,7 @@ export const ConnectUI = ({ postMessage, clearLegacyView }: ConnectUIProps) => {
             } else if (message?.type === 'phishing-domain') {
                 notifications[message.type] = <SuspiciousOriginNotification key={message.type} />;
             }
+
             return notifications;
         });
 

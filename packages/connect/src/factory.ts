@@ -267,5 +267,6 @@ export const factory = ({
 
         requestWebUSBDevice,
     };
+
     return api;
 };

@@ -26,6 +26,7 @@ export const initSentry = ({ mainThreadEmitter, store }: InitSentryParams) => {
                 // Queue can be inspected in @trezor/suite-desktop/sentry/queue folder.
                 return 'queue';
             }
+
             return 'send';
         },
     };

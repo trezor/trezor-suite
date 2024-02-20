@@ -33,10 +33,12 @@ export function p2data(a: Payment, opts?: PaymentOpts): Payment {
 
     lazy.prop(o, 'output', () => {
         if (!a.data) return;
+
         return bscript.compile(([OPS.OP_RETURN] as Stack).concat(a.data));
     });
     lazy.prop(o, 'data', () => {
         if (!a.output) return;
+
         return bscript.decompile(a.output)!.slice(1);
     });
 

@@ -34,5 +34,6 @@ export const mockFilterSequence = (
             prevHash: filters[i - 1]?.blockHash ?? baseHash,
         });
     }
+
     return filters;
 };

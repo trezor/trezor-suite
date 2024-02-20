@@ -23,6 +23,7 @@ module.exports = config =>
                 });
                 config.modResults.push(gradleProperty);
             }
+
             return config.modResults;
         });
 

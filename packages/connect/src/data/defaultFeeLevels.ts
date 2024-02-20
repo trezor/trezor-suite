@@ -41,6 +41,7 @@ export const getBitcoinFeeLevels = (coin: CoinsJsonData): FeeInfoWithLevels => {
         .sort((levelA, levelB) => defaultFees[levelB] - defaultFees[levelA])
         .map(level => {
             const label = level.toLowerCase() as FeeLevel['label']; // string !== 'high' | 'normal'....
+
             return {
                 label,
                 feePerUnit: defaultFees[level].toString(),
@@ -109,6 +110,7 @@ const MISC_FEE_LEVELS: Record<string, FeeInfoWithLevels> = {
 
 export const getMiscFeeLevels = (data: CoinsJsonData): FeeInfoWithLevels => {
     const shortcut = data.shortcut.toLowerCase();
+
     return (
         MISC_FEE_LEVELS[shortcut] || {
             blockTime: -1,

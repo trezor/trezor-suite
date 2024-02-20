@@ -102,6 +102,7 @@ export class TransactionComposer {
                 if (tx.type === 'final') {
                     this.feeLevels.updateCustomFee(lastFee.toString());
                     this.composed.custom = tx;
+
                     return true;
                 }
             }
@@ -143,6 +144,7 @@ export class TransactionComposer {
                 });
             }
         });
+
         return list;
     }
 

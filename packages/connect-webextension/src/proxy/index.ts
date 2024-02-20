@@ -25,11 +25,13 @@ const manifest = (data: Manifest) => {
             },
         });
     }
+
     return Promise.resolve(undefined);
 };
 
 const dispose = () => {
     eventEmitter.removeAllListeners();
+
     return Promise.resolve(undefined);
 };
 

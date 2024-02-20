@@ -58,6 +58,7 @@ export const initBackgroundInBrowser = () => {
                 },
             );
         };
+
         return { background, requestFn, registerBackgroundCallbacks };
     } catch (err) {
         console.warn(
@@ -69,6 +70,7 @@ export const initBackgroundInBrowser = () => {
                 onDescriptorsCallback(descriptors);
             });
         };
+
         return {
             background,
             requestFn: background.handleMessage.bind(background),

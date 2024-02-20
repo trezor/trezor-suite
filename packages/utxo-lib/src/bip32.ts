@@ -51,6 +51,7 @@ function fromPrivateKeyLocal(
     network = network || BITCOIN;
 
     if (!ecc.isPrivate(privateKey)) throw new TypeError('Private key not in range [1, n)');
+
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
     return new BIP32(privateKey, undefined, chainCode, network, depth, index, parentFingerprint);
 }
@@ -74,6 +75,7 @@ function fromPublicKeyLocal(
 
     // verify the X coordinate is a point on the curve
     if (!ecc.isPoint(publicKey)) throw new TypeError('Point is not on the curve');
+
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
     return new BIP32(undefined, publicKey, chainCode, network, depth, index, parentFingerprint);
 }
@@ -130,6 +132,7 @@ class BIP32 implements BIP32Interface {
 
     get publicKey(): Buffer {
         if (this.__Q === undefined) this.__Q = ecc.pointFromScalar(this.__D, true);
+
         return this.__Q!;
     }
 
@@ -139,6 +142,7 @@ class BIP32 implements BIP32Interface {
 
     get identifier(): Buffer {
         if (isNetworkType('decred', this.network)) return crypto.hash160blake256(this.publicKey);
+
         return crypto.hash160(this.publicKey);
     }
 
@@ -205,6 +209,7 @@ class BIP32 implements BIP32Interface {
 
     toWIF(): string {
         if (!this.privateKey) throw new TypeError('Missing private key');
+
         return wif.encode(this.network.wif, this.privateKey, true);
     }
 
@@ -301,9 +306,11 @@ class BIP32 implements BIP32Interface {
             let index;
             if (indexStr.slice(-1) === `'`) {
                 index = parseInt(indexStr.slice(0, -1), 10);
+
                 return prevHd.deriveHardened(index);
             }
             index = parseInt(indexStr, 10);
+
             return prevHd.derive(index);
         }, this as BIP32Interface);
     }
@@ -324,6 +331,7 @@ class BIP32 implements BIP32Interface {
             extraData.writeUIntLE(counter, 0, 6);
             sig = ecc.signWithEntropy(hash, this.privateKey, extraData);
         }
+
         return sig;
     }
 

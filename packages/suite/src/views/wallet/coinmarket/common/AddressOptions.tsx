@@ -117,6 +117,7 @@ export const AddressOptions = <TFieldValues extends AddressOptionsFormState>({
                             accountAddress.balance || '0',
                             receiveSymbol as Account['symbol'],
                         );
+
                         return (
                             <Option>
                                 <AddressWrapper>

@@ -51,6 +51,7 @@ export default class SignMessage extends AbstractMethod<'signMessage', PROTO.Sig
 
     get info() {
         const coinInfo = getBitcoinNetwork(this.payload.coin ?? this.params.address_n);
+
         return getLabel('Sign #NETWORK message', coinInfo);
     }
 
@@ -60,6 +61,7 @@ export default class SignMessage extends AbstractMethod<'signMessage', PROTO.Sig
         // convert signature to base64
         const signatureBuffer = Buffer.from(message.signature, 'hex');
         message.signature = signatureBuffer.toString('base64');
+
         return message;
     }
 }

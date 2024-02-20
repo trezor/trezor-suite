@@ -11,6 +11,7 @@ type BulletListProps = {
 
 const BulletList = ({ texts }: BulletListProps) => {
     const data = texts.map(text => ({ key: text }));
+
     return (
         <FlatList
             data={data}
@@ -31,6 +32,7 @@ type QuestionItemProps = {
 
 const QuestionItem = ({ question, answer }: QuestionItemProps) => {
     const txt = typeof answer === 'string' ? answer : <BulletList texts={answer} />;
+
     return (
         <Fragment key={question}>
             <AccordionItem title={question} content={txt} />
@@ -40,6 +42,7 @@ const QuestionItem = ({ question, answer }: QuestionItemProps) => {
 
 const EnabledUsbFAQ = () => {
     const { translate } = useTranslate();
+
     return (
         <>
             <QuestionItem
@@ -89,6 +92,7 @@ const EnabledUsbFAQ = () => {
 
 const DisabledUsbFAQ = () => {
     const { translate } = useTranslate();
+
     return (
         <>
             <QuestionItem

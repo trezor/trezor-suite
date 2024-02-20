@@ -40,6 +40,7 @@ export class SessionsClient extends TypedEmitter<{
             params.caller = this.caller;
             params.id = this.id;
             this.id++;
+
             return requestFn(params);
         };
 

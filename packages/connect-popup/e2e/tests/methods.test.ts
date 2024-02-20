@@ -45,6 +45,7 @@ const filteredFixtures = fixtures.filter(f => {
     if (isWebExtension && methodsUrlToSkipInWebExtension.includes(f.url)) {
         return false;
     }
+
     return true;
 });
 filteredFixtures.forEach(f => {

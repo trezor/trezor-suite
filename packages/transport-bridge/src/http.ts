@@ -217,6 +217,7 @@ export class TrezordNode {
         const running = await fetch(`http://127.0.0.1:${this.port}/`)
             .then(resp => resp.ok)
             .catch(() => false);
+
         return {
             service: running,
             process: running,

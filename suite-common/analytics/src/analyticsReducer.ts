@@ -56,6 +56,7 @@ export const selectIsAnalyticsConfirmed = (state: AnalyticsRootState) =>
 
 export const selectIsAnalyticsEnabled = (state: AnalyticsRootState): boolean => {
     const isAnalyticsConfirmed = selectIsAnalyticsConfirmed(state);
+
     return isAnalyticsConfirmed ? !!state.analytics.enabled : false;
 };
 
@@ -65,5 +66,6 @@ export const selectHasUserAllowedTracking = (state: AnalyticsRootState): boolean
     if (!state.analytics.confirmed) {
         return undefined;
     }
+
     return !!state.analytics.confirmed && !!state.analytics.enabled;
 };

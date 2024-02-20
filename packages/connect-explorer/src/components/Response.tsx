@@ -121,6 +121,7 @@ const Response = ({ code, docs, hasDocumentation, response, tab }: ResponseProps
                         const json = response ? (
                             <Inspector data={response} expandLevel={10} table={false} />
                         ) : null;
+
                         return (
                             <Container data-test="@response">
                                 <CopyToClipboard data={JSON.stringify(response, null, 2)} />

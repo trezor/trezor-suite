@@ -6,5 +6,6 @@ export const cloneObject = <T>(obj: T): T => {
         // therefore no need to clone
         return obj;
     }
+
     return JSON.parse(jsonString);
 };

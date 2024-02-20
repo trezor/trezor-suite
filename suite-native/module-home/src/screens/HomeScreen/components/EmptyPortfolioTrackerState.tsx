@@ -43,6 +43,7 @@ export const EmptyPortfolioTrackerState = () => {
         if (colorScheme === 'dark') {
             return require('../../../assets/darkDashboard.png');
         }
+
         return require('../../../assets/dashboard.png');
     }, [colorScheme]);
 

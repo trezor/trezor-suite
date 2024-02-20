@@ -34,6 +34,7 @@ interface CoordinatorServerProps {
 
 const CoordinatorVersion = ({ version }: { version: CoordinatorServerProps['version'] }) => {
     if (!version) return null;
+
     return (
         <CoordinatorVersionContainer>
             Build{' '}
@@ -111,6 +112,7 @@ export const CoinjoinApi = () => {
                 const environments = Object.keys(
                     COINJOIN_NETWORKS[symbol] || {},
                 ) as CoinjoinServerEnvironment[];
+
                 return (
                     <CoordinatorServer
                         key={symbol}

@@ -23,6 +23,7 @@ export type SearchResult = {
 const getPreview = (markdown: string, query: string, index: number) => {
     const previewStart = markdown.substring(0, Math.max(index - 10, 0)).lastIndexOf(' ') + 1;
     const previewEnd = markdown.indexOf(' ', index + query.length + 20);
+
     return {
         content: markdown.slice(previewStart, previewEnd),
         from: index - previewStart,
@@ -42,6 +43,7 @@ const searchInFile = (url: string, query: string, markdown: string) => {
         .trim();
     const regex = new RegExp(`\\b${query}`, 'ig'); // find query prepended with non-word char = word start
     const count = sanitized.match(regex)?.length || 0;
+
     return {
         url,
         score: count,
@@ -63,6 +65,7 @@ const search = async (query: string, pageMap: PageMap): Promise<SearchResult[]> 
                           .then(md => searchInFile(url, querySanitized, md)),
                   ),
               );
+
     return results
         .filter(res => res.score)
         .sort((a, b) => b.score - a.score)
@@ -82,6 +85,7 @@ export const useGuideSearch = (query: string, pageRoot: GuideCategory | null) =>
                       }),
                       {},
                   );
+
         return pageRoot ? reduceNode(pageRoot) : {};
     }, [pageRoot]);
 
@@ -99,6 +103,7 @@ export const useGuideSearch = (query: string, pageRoot: GuideCategory | null) =>
                 })
                 .finally(() => setLoading(false));
         }, SEARCH_DELAY);
+
         return () => {
             clearTimeout(timeout);
             active = false;

@@ -30,6 +30,7 @@ export const NavigationContainerWithAnalytics = ({ children }: { children: React
                 },
             };
         }
+
         return {
             ...DefaultTheme,
             colors: {

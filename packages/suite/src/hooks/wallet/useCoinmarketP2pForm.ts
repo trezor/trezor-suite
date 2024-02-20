@@ -116,5 +116,6 @@ export const useCoinmarketP2pForm = ({
 export const useCoinmarketP2pFormContext = () => {
     const context = useContext(P2pFormContext);
     if (context === null) throw Error('P2pFormContext used without Context');
+
     return context;
 };

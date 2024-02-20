@@ -9,6 +9,7 @@ export const initBrowserView = (systemInfo: SystemInfo): Promise<boolean> => {
         // popup is not supported on mobile devices
         // webusb is now available only on trezor.io domains and bridge can't be installed on mobile
         showView('smartphones-not-supported');
+
         return Promise.resolve(false);
     }
 

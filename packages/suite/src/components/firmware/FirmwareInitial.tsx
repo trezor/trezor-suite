@@ -91,6 +91,7 @@ const getDescription = ({
         if (!isBitcoinOnlyAvailable) {
             return 'TR_BITCOIN_ONLY_UNAVAILABLE';
         }
+
         return targetFirmwareType === FirmwareType.BitcoinOnly
             ? 'TR_SWITCH_TO_BITCOIN_ONLY_DESCRIPTION'
             : 'TR_SWITCH_TO_REGULAR_DESCRIPTION';
@@ -105,6 +106,7 @@ const getDescription = ({
             ? 'TR_FIRMWARE_REINSTALL_FW_DESCRIPTION'
             : 'TR_FIRMWARE_NEW_FW_DESCRIPTION';
     }
+
     return 'TR_ONBOARDING_NEW_FW_DESCRIPTION';
 };
 
@@ -116,6 +118,7 @@ const getNoFirmwareInstalledSubheading = (device: AcquiredDevice) => {
             ? 'TR_FIRMWARE_SUBHEADING_NONE_BITCOIN_ONLY_DEVICE'
             : 'TR_FIRMWARE_SUBHEADING_UNKNOWN_BITCOIN_ONLY_DEVICE';
     }
+
     return device.firmware === 'none'
         ? 'TR_FIRMWARE_SUBHEADING_NONE'
         : 'TR_FIRMWARE_SUBHEADING_UNKNOWN';
@@ -431,5 +434,6 @@ export const FirmwareInitial = ({
             </>
         );
     }
+
     return null;
 };

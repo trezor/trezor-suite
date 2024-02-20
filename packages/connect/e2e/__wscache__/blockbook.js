@@ -18,6 +18,7 @@ const blockbookFixtures = {
         const file = path.resolve(__dirname, `./getAccountInfo/${message.params.descriptor}.json`);
         const rawJson = fs.readFileSync(file);
         const data = JSON.parse(rawJson);
+
         return {
             data,
         };

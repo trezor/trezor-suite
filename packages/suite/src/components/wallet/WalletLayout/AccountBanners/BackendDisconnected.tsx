@@ -22,6 +22,7 @@ const DisconnectedNotification = ({
             const secToResolve = Math.round((resolveTime - new Date().getTime()) / 1000);
             setTime(secToResolve);
         }, 500);
+
         return () => {
             clearInterval(interval);
         };

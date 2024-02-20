@@ -43,6 +43,7 @@ export const prepareTokenDefinitionsMiddleware = createMiddlewareWithExtraDeps(
                 });
             }
         }
+
         return action;
     },
 );

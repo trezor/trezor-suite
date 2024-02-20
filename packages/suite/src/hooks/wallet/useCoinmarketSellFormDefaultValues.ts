@@ -38,5 +38,6 @@ export const useCoinmarketSellFormDefaultValues = (
                 : undefined,
         [symbol, defaultCountry, defaultCurrency, sellInfo, defaultAddress],
     );
+
     return { defaultCountry, defaultCurrency, defaultValues };
 };

@@ -18,6 +18,7 @@ const pollingMiddleware =
             if (polling) {
                 if (polling.counter >= polling.maxPollingRequestCount) {
                     api.dispatch(pollingActions.stopPolling(action.key));
+
                     return action;
                 }
                 Promise.resolve(polling.pollingFunction()).then(() => {

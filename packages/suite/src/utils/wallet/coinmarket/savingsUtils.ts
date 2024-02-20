@@ -40,8 +40,10 @@ export const getFiatAmountEffective = (
         ) {
             return '0';
         }
+
         return customFiatAmount || '0';
     }
+
     return fiatAmount || '0';
 };
 
@@ -94,6 +96,7 @@ export const createReturnLink = async () => {
 
     if (isDesktop()) {
         const url = await desktopApi.getHttpReceiverAddress('/buy-redirect');
+
         return `${url}?p=${encodeURIComponent(href)}`;
     }
 

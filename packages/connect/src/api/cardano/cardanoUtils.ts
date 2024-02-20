@@ -51,6 +51,7 @@ export const prepareCertificates = (certs: CardanoCertificate[]) => {
             // no default
         }
     });
+
     return convertedCerts;
 };
 
@@ -64,6 +65,7 @@ export const getTtl = (testnet: boolean) => {
     const shelleyTimestamp = testnet ? 1672848449 : 1596491091;
     const currentTimestamp = Math.floor(new Date().getTime() / 1000);
     const currentSlot = shelleySlot + currentTimestamp - shelleyTimestamp;
+
     return currentSlot + CARDANO_DEFAULT_TTL_OFFSET;
 };
 

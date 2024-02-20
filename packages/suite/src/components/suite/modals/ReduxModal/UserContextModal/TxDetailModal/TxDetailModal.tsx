@@ -94,6 +94,7 @@ export const TxDetailModal = ({ tx, rbfForm, onCancel }: TxDetailModalProps) => 
     // https://github.com/trezor/blockbook/issues/555
     const chainedTxs = useMemo(() => {
         if (!isPending(tx)) return;
+
         return findChainedTransactions(tx.descriptor, tx.txid, transactions);
     }, [tx, transactions]);
     const accountKey = getAccountKey(tx.descriptor, tx.symbol, tx.deviceState);

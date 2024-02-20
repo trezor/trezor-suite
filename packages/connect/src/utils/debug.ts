@@ -126,6 +126,7 @@ export const initLog = (prefix: string, enabled?: boolean, logWriter?: LogWriter
     const instanceWriter = logWriter || writer;
     const instance = new Log(prefix, !!enabled, instanceWriter);
     _logs[prefix] = instance;
+
     return instance;
 };
 
@@ -161,5 +162,6 @@ export const getLog = () => {
         logs = logs.concat(_logs[key].messages);
     });
     logs.sort((a, b) => a.timestamp - b.timestamp);
+
     return logs;
 };

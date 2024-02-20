@@ -56,6 +56,7 @@ const validation = (coinInfo: BitcoinNetworkInfo) => {
     if (!selectedFee) {
         sendButton.setAttribute('disabled', 'disabled');
         sendButton.innerHTML = 'Send';
+
         return;
     }
     const selectedName = selectedFee.getAttribute('data-fee') || 'custom';

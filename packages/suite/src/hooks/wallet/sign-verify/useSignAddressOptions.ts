@@ -86,6 +86,7 @@ export const useSignAddressOptions = (
 
     const getValue = (path: string): AddressItem | null => {
         const address = signAddresses[path];
+
         return address
             ? {
                   label: address.address,

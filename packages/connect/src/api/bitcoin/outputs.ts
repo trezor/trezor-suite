@@ -55,6 +55,7 @@ export const validateTrezorOutputs = (
             );
         }
     });
+
     return trezorOutputs;
 };
 
@@ -77,6 +78,7 @@ export const validateHDOutput = (
     switch (output.type) {
         case 'opreturn':
             validateParams(output, [{ name: 'dataHex', type: 'string' }]);
+
             return {
                 type: 'opreturn',
                 dataHex: output.dataHex,
@@ -85,6 +87,7 @@ export const validateHDOutput = (
         case 'send-max':
             validateParams(output, [{ name: 'address', type: 'string', required: true }]);
             validateAddress(output.address);
+
             return {
                 type: 'send-max',
                 address: output.address,
@@ -92,6 +95,7 @@ export const validateHDOutput = (
 
         case 'payment-noaddress':
             validateParams(output, [{ name: 'amount', type: 'uint', required: true }]);
+
             return {
                 type: 'payment-noaddress',
                 amount: output.amount,
@@ -108,6 +112,7 @@ export const validateHDOutput = (
                 { name: 'address', type: 'string', required: true },
             ]);
             validateAddress(output.address);
+
             return {
                 type: 'payment',
                 address: output.address,
@@ -132,6 +137,7 @@ export const outputToTrezor = (
 
     if (output.type === 'change') {
         const address_n = getHDPath(output.path);
+
         return {
             address_n,
             amount: output.amount,

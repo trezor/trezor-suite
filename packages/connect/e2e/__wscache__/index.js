@@ -11,6 +11,7 @@ const transformCoinsJson = json => {
             }
         });
     });
+
     return json;
 };
 

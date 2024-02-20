@@ -85,6 +85,7 @@ export const init =
             await TrezorConnect.init(connectOptions);
         } catch (err) {
             console.log('ERROR', err);
+
             return;
         }
 
@@ -95,5 +96,6 @@ export const onSubmitInit = () => async (dispatch: Dispatch, getState: GetState)
     const { connect } = getState();
     // Disposing TrezorConnect to init it again.
     await TrezorConnect.dispose();
+
     return dispatch(init(connect.options));
 };

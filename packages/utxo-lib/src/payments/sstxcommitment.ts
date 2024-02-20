@@ -33,6 +33,7 @@ export function sstxcommitment(a: Payment, opts?: PaymentOpts): Payment {
 
     lazy.prop(o, 'address', () => {
         if (!o.hash) return;
+
         return bs58check.encodeAddress(o.hash, network.pubKeyHash, network);
     });
 
@@ -50,6 +51,7 @@ export function sstxcommitment(a: Payment, opts?: PaymentOpts): Payment {
         writer.writeUInt64(a.amount);
         writer.writeUInt8(0); // hardcoded in FW
         writer.writeUInt8(88); // hardcoded in FW
+
         return bscript.compile([OPS.OP_RETURN, buf] as Stack);
     });
 

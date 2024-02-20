@@ -57,12 +57,14 @@ export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.Res
         const uiResp = await uiPromise.promise;
 
         this.confirmed = uiResp.payload;
+
         return this.confirmed;
     }
 
     async run() {
         const cmd = this.device.getCommands();
         const response = await cmd.typedCall('ResetDevice', 'Success', this.params);
+
         return response.message;
     }
 }

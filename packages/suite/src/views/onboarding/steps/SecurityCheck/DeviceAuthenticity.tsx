@@ -43,6 +43,7 @@ export const DeviceAuthenticity = () => {
         if (isCheckSuccessful) {
             return 'TR_CONGRATS';
         }
+
         return isWaitingForConfirmation ? 'TR_CHECKING_YOUR_DEVICE' : 'TR_LETS_CHECK_YOUR_DEVICE';
     };
     const getDescription = () => {

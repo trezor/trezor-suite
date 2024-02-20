@@ -13,6 +13,7 @@ let fixtures: Record<string, any> | Record<string, any>[] | undefined;
 const getNextFixture = (_methodName: string) => {
     const fixture = Array.isArray(fixtures) ? fixtures.shift() : fixtures;
     if (typeof fixture === 'function') return fixture();
+
     return fixture;
 };
 
@@ -73,6 +74,7 @@ methods.composeTransaction = jest.fn(async _params => {
     if (fixture && typeof fixture.delay === 'number') {
         await new Promise(resolve => setTimeout(resolve, fixture.delay));
     }
+
     return { success: false, payload: { error: 'error' }, ...fixture, _params };
 });
 

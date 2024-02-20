@@ -66,12 +66,14 @@ export const MetadataProviderModal = ({ onCancel, decision }: MetadataProviderMo
         // window close indicates user action, user knows what happened, no need to show an error message
         if (result === 'window closed') {
             setIsLoading('');
+
             // stop here, user might have changed his decision and wants to use another provider
             return;
         }
         if (typeof result === 'string') {
             setError(result);
             setIsLoading('');
+
             return;
         }
 

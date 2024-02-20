@@ -21,6 +21,7 @@ import { Action } from 'src/types/suite';
 export const getInitialState = (custom?: any) => {
     const suite = custom ? custom.suite : undefined;
     const onboarding = custom ? custom.onboarding : undefined;
+
     return {
         onboarding: {
             ...onboardingReducer(undefined, {} as Action),
@@ -40,6 +41,7 @@ export const getInitialState = (custom?: any) => {
 
 const createStore = (initialState: ReturnType<typeof getInitialState>) => {
     const store = configureStore<ReturnType<typeof getInitialState>, any>()(initialState);
+
     return store;
 };
 
@@ -59,6 +61,7 @@ const updateStore = (store: ReturnType<typeof createStore>) => {
 const mockStore = (initialState: ReturnType<typeof getInitialState>) => {
     const store = createStore(initialState);
     store.subscribe(() => updateStore(store));
+
     return store;
 };
 

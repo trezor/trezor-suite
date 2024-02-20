@@ -95,6 +95,7 @@ const attemptLoop = async <T>(
             clear.removeEventListener('abort', onClear);
         }
     }
+
     return clear.aborted ? Promise.reject() : attempt(attempts - 1, clear);
 };
 

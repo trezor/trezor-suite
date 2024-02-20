@@ -80,6 +80,7 @@ const TransactionEventContent = ({
         }
 
         if (onEventHover) runOnJS(onEventHover)(index, false);
+
         return false;
     });
 
@@ -100,6 +101,7 @@ const TransactionEventContent = ({
     const variant: EventVariant = received >= sent ? 'positive' : 'negative';
 
     const { innerColor, outerColor } = variantToStylesMaps[colorScheme][variant];
+
     return (
         <Group opacity={animatedOpacity}>
             <Circle

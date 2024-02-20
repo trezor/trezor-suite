@@ -33,6 +33,7 @@ class ShellSpawnPlugin {
                 if (isSync) {
                     return spawnSync(command, args, { stdio: 'inherit', cwd: this.options.cwd });
                 }
+
                 return spawn(command, args, { stdio: 'inherit', cwd: this.options.cwd });
             };
 

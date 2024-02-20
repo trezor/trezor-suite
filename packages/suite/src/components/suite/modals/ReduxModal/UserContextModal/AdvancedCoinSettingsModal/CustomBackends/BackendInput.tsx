@@ -22,6 +22,7 @@ export const BackendInput = ({ url, isActive, isLoading, onRemove }: BackendInpu
         if (isActive) {
             return ActiveStatus;
         }
+
         return undefined;
     };
 

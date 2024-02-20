@@ -50,6 +50,7 @@ export const BoxSkeleton = ({
 
     const rct = useMemo(() => {
         const coreRect = rect(0, 0, width, height);
+
         return rrect(coreRect, borderRadius, borderRadius);
     }, [width, height, borderRadius]);
 

@@ -12,6 +12,7 @@ export class PowerSaveBlocker {
     startBlockingPowerSave() {
         if (this.powerSaveBlockerId && this.isBlocking(this.powerSaveBlockerId)) {
             this.logger.info('power-save-blocker', 'Power save is already blocked');
+
             return;
         }
         this.logger.info('power-save-blocker', 'Start blocking power save');
@@ -27,6 +28,7 @@ export class PowerSaveBlocker {
 
     private isBlocking(id: number | undefined) {
         if (!id) return false;
+
         return powerSaveBlocker.isStarted(id);
     }
 }
