@@ -8,17 +8,15 @@ jobs:
     steps:
       - name: Checkout curent branch
         uses: actions/checkout@v4
-        with:
-          path: current-branch
 
       - name: Fetch base branch
-        uses: actions/checkout@v4
-        with:
-          path: base-branch
-          ref: ${{ github.base_ref }}
+        run: |
+          git fetch --no-tags --depth=1 origin ${{ github.base_ref }}
+          git checkout -b ${{ github.base_ref }}
+          git checkout ${{ github.head_ref }}
 
       - name: Check commit messages
         run: current-branch/scripts/check-commit-messages.sh
         env:
-          CURRENT_BRANCH_NAME: current-branch/${{ github.head_ref }}
-          BASE_BRANCH_NAME: base-branch/${{ github.base_ref }}
+          CURRENT_BRANCH_NAME: ${{ github.head_ref }}
+          BASE_BRANCH_NAME: ${{ github.base_ref }}
