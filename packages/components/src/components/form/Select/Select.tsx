@@ -174,6 +174,7 @@ const Wrapper = styled.div<WrapperProps>`
         color: ${({ isDisabled, theme }) => (isDisabled ? theme.textDisabled : theme.textDefault)};
         border-style: none;
         transform: none;
+        margin-left: 0;
 
         :hover {
             cursor: ${({ isSearchable }) => isSearchable && 'text'};
