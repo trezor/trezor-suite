@@ -5,8 +5,14 @@ import { selectDevice } from '@suite-common/wallet-core';
 import { SUITE } from 'src/actions/suite/constants';
 
 import { useSelector } from './useSelector';
+import { TrezorDevice } from '@suite-common/suite-types';
 
-export const useDevice = () => {
+type Result = {
+    device?: TrezorDevice;
+    isLocked: (ignoreDisconnectedDevice?: boolean) => boolean;
+};
+
+export const useDevice = (): Result => {
     const device = useSelector(selectDevice);
     const locks = useSelector(state => state.suite.locks);
 

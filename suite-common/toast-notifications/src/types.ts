@@ -152,6 +152,12 @@ export type ToastPayload = (
           type: 'successful-claim';
           symbol: string;
       }
+    | {
+          type: 'firmware-language-changed';
+      }
+    | {
+          type: 'firmware-language-fetch-error';
+      }
     | StakedTransactionNotification
     | UnstakedTransactionNotification
     | ClaimedTransactionNotification
