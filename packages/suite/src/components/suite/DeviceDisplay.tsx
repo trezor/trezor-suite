@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import styled from 'styled-components';
 
 import { useSelector } from 'src/hooks/suite/useSelector';
@@ -11,7 +12,11 @@ import { Icon, variables } from '@trezor/components';
 import { splitStringEveryNCharacters } from '@trezor/utils';
 import { Translation } from './Translation';
 import { ClipboardEvent, Fragment, ReactElement, ReactNode } from 'react';
-import { MAX_CHARACTERS_ON_SCREEN } from 'src/constants/suite/device';
+import {
+    CHARACTER_OFFSET_FOR_ARROW,
+    MAX_CHARACTERS_ON_ROW,
+    MAX_CHARACTERS_ON_SCREEN,
+} from 'src/constants/suite/device';
 
 const Display = styled.div`
     display: flex;
@@ -54,10 +59,10 @@ const Chunks = styled.div`
 `;
 
 const Wrapper = styled.div`
-    position: relative;
     width: 100%;
     display: flex;
     flex-direction: column;
+    height: 32px;
 `;
 
 const Divider = styled.div<{ areChunksUsed: boolean }>`
@@ -72,7 +77,7 @@ const AddressLabel = styled.span<{ areChunksUsed: boolean }>`
     color: #808080;
     font-size: ${variables.FONT_SIZE.TINY};
     text-transform: uppercase;
-    position: absolute;
+    position: relative;
     background: #000;
     padding: 0 10px;
     text-align: center;
@@ -82,15 +87,13 @@ const AddressLabel = styled.span<{ areChunksUsed: boolean }>`
 `;
 
 const StyledNextIcon = styled(Icon)<{ isPixelType: boolean }>`
-    position: relative;
-    bottom: ${({ isPixelType }) => (isPixelType ? '13' : '20')}px;
-    right: ${({ isPixelType }) => (isPixelType ? '-95' : '35')}px;
+    display: inline-block;
+    margin-left: ${({ isPixelType }) => (isPixelType ? '2px' : '24px')};
 `;
 
 const StyledContinuesIcon = styled(Icon)<{ isPixelType: boolean }>`
-    position: relative;
-    top: ${({ isPixelType }) => (isPixelType ? '10' : '25')}px;
-    right: ${({ isPixelType }) => (isPixelType ? '84' : '97')}px;
+    display: inline-block;
+    margin-right: ${({ isPixelType }) => (isPixelType ? '2px' : '24px')};
 `;
 
 export interface DeviceDisplayProps {
@@ -122,6 +125,10 @@ export const DeviceDisplay = ({ address, network, valueDataTest }: DeviceDisplay
         (network !== 'solana' || valueDataTest === '@modal/confirm-address/address-field');
 
     const isPixelType = selectedDeviceInternalModel !== DeviceModelInternal.T2T1;
+    const charsPerPage = MAX_CHARACTERS_ON_SCREEN[selectedDeviceInternalModel];
+    const charsPerRow = MAX_CHARACTERS_ON_ROW[selectedDeviceInternalModel];
+    const offsetForArrows = CHARACTER_OFFSET_FOR_ARROW[selectedDeviceInternalModel];
+
     const iconNextName = isPixelType ? 'ADDRESS_PIXEL_NEXT' : 'ADDRESS_NEXT';
     const iconContinuesName = isPixelType ? 'ADDRESS_PIXEL_CONTINUES' : 'ADDRESS_CONTINUES';
     const iconConfig = {
@@ -174,46 +181,67 @@ export const DeviceDisplay = ({ address, network, valueDataTest }: DeviceDisplay
 
     const renderOriginal = (address: string) => {
         if (isPaginated) {
-            const breakpoint = isPixelType ? 70 : 81;
-
-            const slices = splitStringEveryNCharacters(address, breakpoint);
+            const slices = splitStringEveryNCharacters(address, charsPerPage);
 
             const components = [];
 
             for (let i = 0; i < slices.length; i++) {
-                const isFirst = i === 0;
-                const isLast = i === slices.length - 1;
+                const isFirstPage = i === 0;
+                const isLastPage = i === slices.length - 1;
+                const pageText = slices[i];
+
+                const breakpointFirstLine = charsPerRow - (isFirstPage ? 0 : offsetForArrows);
+
+                const firstRow = pageText.slice(0, breakpointFirstLine);
+                const remainingRows = splitStringEveryNCharacters(
+                    pageText.slice(breakpointFirstLine),
+                    charsPerRow,
+                );
+
+                const rows = [firstRow, ...remainingRows];
 
                 components.push(
                     <Text
                         key={`text-${i}`}
                         isPixelType={isPixelType}
-                        data-test={isFirst ? valueDataTest : undefined}
+                        data-test={isFirstPage ? valueDataTest : undefined}
                     >
-                        {slices[i]}
+                        {rows.map((row, index) => {
+                            const isFirstLine = index !== 0;
+                            const isLastLine = index === rows.length - 1;
+
+                            return (
+                                <>
+                                    {isFirstLine ? <br /> : null}
+                                    {isFirstLine && !isFirstPage ? (
+                                        <StyledContinuesIcon
+                                            {...iconConfig}
+                                            isPixelType={isPixelType}
+                                            icon={iconContinuesName}
+                                        />
+                                    ) : null}
+                                    {row}
+                                    {isLastLine && !isLastPage ? (
+                                        <StyledNextIcon
+                                            {...iconConfig}
+                                            isPixelType={isPixelType}
+                                            icon={iconNextName}
+                                        />
+                                    ) : null}
+                                </>
+                            );
+                        })}
                     </Text>,
                 );
 
-                if (!isLast) {
+                if (!isLastPage) {
                     components.push(
-                        <Fragment key={`separator-${i}`}>
-                            <StyledNextIcon
-                                {...iconConfig}
-                                isPixelType={isPixelType}
-                                icon={iconNextName}
-                            />
-                            <Wrapper>
-                                <Divider areChunksUsed={areChunksUsed} />
-                                <AddressLabel areChunksUsed={areChunksUsed}>
-                                    <Translation id="NEXT_PAGE" />
-                                </AddressLabel>
-                            </Wrapper>
-                            <StyledContinuesIcon
-                                {...iconConfig}
-                                isPixelType={isPixelType}
-                                icon={iconContinuesName}
-                            />
-                        </Fragment>,
+                        <Wrapper key={`separator-${i}`}>
+                            <Divider areChunksUsed={areChunksUsed} />
+                            <AddressLabel areChunksUsed={areChunksUsed}>
+                                <Translation id="NEXT_PAGE" />
+                            </AddressLabel>
+                        </Wrapper>,
                     );
                 }
             }
