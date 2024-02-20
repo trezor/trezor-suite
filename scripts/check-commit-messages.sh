@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-for commit in $(git rev-list origin/HEAD..HEAD); do
+for commit in $(git rev-list origin/develop..HEAD); do
 
     commit_msg=$(git log --format=%B -n 1 "$commit")
 

@@ -7,9 +7,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-
-      - name: Fetch develop branch
-        run: git fetch origin HEAD
+        with:
+          fetch-depth: 0
 
       - name: Check commit messages
         run: ./scripts/check-commit-messages.sh
