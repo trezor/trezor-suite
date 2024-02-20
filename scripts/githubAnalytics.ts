@@ -70,6 +70,7 @@ async function getValidationCheckRuns({ pagesToFetch }: { pagesToFetch: number }
         return [...runs, ...(await getValidationCheckRuns({ pagesToFetch: pagesToFetch - 1 }))];
     } catch (error) {
         console.error(chalk.red('Error fetching validation check runs'), error);
+
         return [];
     }
 }

@@ -9,6 +9,7 @@ const overlayStyle = prepareNativeStyle(utils => ({
 
 export const XpubOverlayWarning = () => {
     const { applyStyle } = useNativeStyles();
+
     return (
         <Box style={applyStyle(overlayStyle)}>
             <Pictogram

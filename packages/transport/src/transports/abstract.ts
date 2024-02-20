@@ -65,6 +65,7 @@ export const isTransportInstance = (transport?: AbstractTransport) => {
     if (transport && typeof transport === 'object') {
         return !requiredMethods.some(m => typeof transport[m] !== 'function');
     }
+
     return false;
 };
 
@@ -353,6 +354,7 @@ export abstract class AbstractTransport extends TypedEmitter<{
             if (currentDescriptor) {
                 return currentDescriptor.session !== d.session;
             }
+
             return false;
         });
 
@@ -472,6 +474,7 @@ export abstract class AbstractTransport extends TypedEmitter<{
 
     protected unknownError = <E extends AnyError>(err: Error | string, expectedErrors: E[]) => {
         this.logger.error(this.name, 'unexpected error: ', err);
+
         return unknownError(typeof err !== 'string' ? err : new Error(err), expectedErrors);
     };
 
@@ -485,6 +488,7 @@ export abstract class AbstractTransport extends TypedEmitter<{
             this.abortController.signal.removeEventListener('abort', abort);
         });
         this.abortController.signal.addEventListener('abort', abort);
+
         return { signal: localAbortController.signal, abort };
     };
 
@@ -494,6 +498,7 @@ export abstract class AbstractTransport extends TypedEmitter<{
         errors?: E[],
     ) => {
         const { signal, abort } = this.createLocalAbortController();
+
         return {
             promise: scheduleAction(action, {
                 signal,
@@ -505,6 +510,7 @@ export abstract class AbstractTransport extends TypedEmitter<{
                     if (errors) {
                         (expectedErrors as E[]).push(...errors);
                     }
+
                     return unknownError(err, expectedErrors);
                 })
                 .finally(() => {

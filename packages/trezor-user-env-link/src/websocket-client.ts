@@ -140,6 +140,7 @@ class TrezorUserEnvLinkClass extends EventEmitter {
         this.setPingTimeout();
 
         ws.send(JSON.stringify(req));
+
         // todo: proper return type
         return dfd.promise;
     }
@@ -251,6 +252,7 @@ class TrezorUserEnvLinkClass extends EventEmitter {
 
     isConnected() {
         const { ws } = this;
+
         return ws && ws.readyState === WebSocket.OPEN;
     }
 
@@ -292,6 +294,7 @@ class TrezorUserEnvLinkClass extends EventEmitter {
                     const res = await fetch(USER_ENV_URL.DASHBOARD);
                     if (res.status === 200) {
                         console.log('trezor-user-env is online');
+
                         return resolve();
                     }
                 } catch (err) {

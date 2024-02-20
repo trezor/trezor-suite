@@ -33,6 +33,7 @@ describe('sessions', () => {
             async (client, index) => {
                 const res = await client.enumerateIntent();
                 clientPromiseResolved[index] = true;
+
                 return res;
             },
         );

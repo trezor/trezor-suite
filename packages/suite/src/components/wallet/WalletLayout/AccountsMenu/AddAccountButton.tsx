@@ -13,6 +13,7 @@ const getExplanationMessage = (device: TrezorDevice | undefined, discoveryIsRunn
     } else if (discoveryIsRunning) {
         message = <Translation id="TR_TO_ADD_NEW_ACCOUNT_WAIT_FOR_DISCOVERY" />;
     }
+
     return message;
 };
 
@@ -96,5 +97,6 @@ export const AddAccountButton = ({
             </Tooltip>
         );
     }
+
     return ButtonComponent;
 };

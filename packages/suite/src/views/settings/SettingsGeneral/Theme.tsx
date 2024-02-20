@@ -44,6 +44,7 @@ const useThemeOptions = () => {
                 return options[1].options[0];
         }
     };
+
     return {
         options,
         getOption,

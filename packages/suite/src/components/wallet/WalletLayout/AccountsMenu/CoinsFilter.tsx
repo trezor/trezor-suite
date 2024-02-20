@@ -79,6 +79,7 @@ export const CoinsFilter = () => {
             <AnimatePresence initial={false}>
                 {supportedNetworks.map(network => {
                     const isSelected = coinFilter === network;
+
                     return (
                         <Tooltip
                             key={network}

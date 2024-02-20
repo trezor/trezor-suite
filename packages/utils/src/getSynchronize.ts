@@ -23,6 +23,7 @@ export const getSynchronize = () => {
                 }
             });
         lock = newLock;
+
         return lock as any;
     };
 };

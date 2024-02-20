@@ -42,6 +42,7 @@ const strip = deepTransform(value => {
     if (stripped.length % 2 !== 0) {
         stripped = `0${stripped}`;
     }
+
     return stripped;
 });
 

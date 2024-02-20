@@ -36,6 +36,7 @@ export const getInitialState = (override: any) => {
     if (override) {
         return mergeDeepObject(defaults, override);
     }
+
     return defaults;
 };
 

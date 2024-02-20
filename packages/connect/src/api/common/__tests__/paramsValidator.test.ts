@@ -29,6 +29,7 @@ describe('helpers/paramsValidator', () => {
                 const mock = f.config;
                 jest.mock('../../../data/config', () => {
                     const actualConfig = jest.requireActual('../../../data/config').config;
+
                     return {
                         __esModule: true,
                         config: mock || actualConfig,

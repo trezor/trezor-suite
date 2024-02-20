@@ -23,6 +23,7 @@ const concatArray = (first: Uint8Array, second: Uint8Array) => {
     const result = new Uint8Array(first.length + second.length);
     result.set(first);
     result.set(second, first.length);
+
     return result;
 };
 

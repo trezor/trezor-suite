@@ -349,8 +349,10 @@ const init = (instances: any[]) => {
             const b = i.blockchain;
             if (i.selected) {
                 fillValues(i.data);
+
                 return `<option value="${b.name}" selected>${b.name}</option>`;
             }
+
             return `<option value="${b.name}">${b.name}</option>`;
         })
         .join('');

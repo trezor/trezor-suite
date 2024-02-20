@@ -17,6 +17,7 @@ export const rippleWorkerFactory = () => {
         //     require('../../../lib/workers/ripple/index.js');
         // });
     }
+
     return new Worker('./build/web/ripple-worker.js');
 };
 
@@ -34,6 +35,7 @@ export const blockbookWorkerFactory = () => {
         //     require('../../../lib/workers/blockbook/index.js');
         // });
     }
+
     return new Worker('./build/web/blockbook-worker.js');
 };
 
@@ -47,6 +49,7 @@ export const blockfrostWorkerFactory = () => {
         });
         // return new TinyWorker('./build/module/blockfrost-worker.js');
     }
+
     return new Worker('./build/web/blockfrost-worker.js');
 };
 

@@ -63,6 +63,7 @@ export const prepareRootReducers = async () => {
                 const oldAccountsState: { accounts: any } = { accounts: oldState.accounts };
                 const migratedAccounts = migrateAccountLabel(oldAccountsState.accounts);
                 const migratedState = { ...oldState, accounts: migratedAccounts };
+
                 return migratedState;
             },
             3: oldState => {
@@ -71,6 +72,7 @@ export const prepareRootReducers = async () => {
                     oldAccountsState.accounts,
                 );
                 const migratedState = { ...oldState, accounts: migratedAccounts };
+
                 return migratedState;
             },
         },

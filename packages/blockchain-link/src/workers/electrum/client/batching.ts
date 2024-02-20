@@ -27,6 +27,7 @@ export class BatchingJsonRpcClient extends JsonRpcClient {
     protected send(message: string) {
         if (this.batchingDisabled) {
             super.send(message);
+
             return;
         }
         const { queue } = this;

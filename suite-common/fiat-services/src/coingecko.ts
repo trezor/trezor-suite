@@ -18,8 +18,10 @@ const fetchCoinGecko = async (url: string) => {
         const res = await rateLimiter.limit(signal => fetchUrl(url, { signal }));
         if (!res.ok) {
             console.warn(`Coingecko: Fiat rates failed to fetch: ${res.status}`);
+
             return;
         }
+
         return res.json();
     } catch (error) {
         // Do not report to Sentry to save the issues count limit.
@@ -40,10 +42,12 @@ const buildCoinUrl = (ticker: TickerId) => {
     const config = getTickerConfig(ticker);
     if (!config) {
         console.error('buildCoinUrl: cannot find ticker config for ', ticker);
+
         return null;
     }
 
     const baseUrl = `${COINGECKO_API_BASE_URL}/coins/${config.coingeckoId}`;
+
     return ticker.tokenAddress ? `${baseUrl}/contract/${ticker.tokenAddress}` : baseUrl;
 };
 

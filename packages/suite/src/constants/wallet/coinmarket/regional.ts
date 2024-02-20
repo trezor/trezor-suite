@@ -264,6 +264,7 @@ class Regional {
         .sort((c1, c2) => {
             const l1 = c1.label.split(' ')[1];
             const l2 = c2.label.split(' ')[1];
+
             return l1.localeCompare(l2);
         });
 }

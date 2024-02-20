@@ -25,6 +25,7 @@ export const parseBridgeJSON = (json: any) => {
     info.version = data.version;
     info.directory = directory;
     info.packages = packages;
+
     return info;
 };
 
@@ -42,5 +43,6 @@ export const suggestBridgeInstaller = (platform?: string) => {
             }));
         }
     }
+
     return info;
 };

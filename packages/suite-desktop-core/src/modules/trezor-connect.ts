@@ -16,6 +16,7 @@ export const init: Module = ({ store }) => {
         if (ifRunning && !tor.running) return Promise.resolve();
         const payload = tor.running ? { proxy: `socks://${tor.host}:${tor.port}` } : { proxy: '' };
         logger.info(SERVICE_NAME, `${tor.running ? 'Enable' : 'Disable'} proxy ${payload.proxy}`);
+
         return TrezorConnect.setProxy(payload);
     };
 
@@ -26,16 +27,20 @@ export const init: Module = ({ store }) => {
                 if (method === 'init') {
                     const response = await TrezorConnect[method](...params);
                     await setProxy(true);
+
                     return response;
                 }
+
                 return (TrezorConnect[method] as any)(...params);
             },
             onAddListener: (eventName, listener) => {
                 logger.debug(SERVICE_NAME, `Add event listener ${eventName}`);
+
                 return TrezorConnect.on(eventName, listener);
             },
             onRemoveListener: eventName => {
                 logger.debug(SERVICE_NAME, `Remove event listener ${eventName}`);
+
                 return TrezorConnect.removeAllListeners(eventName);
             },
         }),

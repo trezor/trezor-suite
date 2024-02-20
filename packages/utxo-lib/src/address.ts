@@ -125,6 +125,7 @@ export function fromOutputScript(output: Buffer, network = BITCOIN_NETWORK) {
 function decodeAddress(address: string, network: Network) {
     try {
         const { hash, version } = fromBase58Check(address, network);
+
         return { success: true, format: 'base58', version, hash } as const;
     } catch {
         try {
@@ -132,11 +133,13 @@ function decodeAddress(address: string, network: Network) {
             if (prefix === network.bech32) {
                 return { success: true, format: 'bech32', version, hash: data } as const;
             }
+
             return { success: false, error: 'bech32-invalid-prefix' } as const;
         } catch {
             // silent
         }
     }
+
     return { success: false, error: 'unknown-format' } as const;
 }
 
@@ -165,6 +168,7 @@ function identifyAddressType(
             return 'p2w-unknown' as const;
         }
     }
+
     return 'unknown';
 }
 
@@ -191,6 +195,7 @@ function createOutputScript(
 
 export function getAddressType(address: string, network = BITCOIN_NETWORK) {
     const { success, format, version, hash } = decodeAddress(address, network);
+
     return success ? identifyAddressType(format, version, hash, network) : 'unknown';
 }
 

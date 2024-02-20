@@ -65,6 +65,7 @@ describe('CoinjoinAddressController', () => {
         controller.analyze(
             ({ address }) => {
                 const index = SEGWIT_RECEIVE_ADDRESSES.indexOf(address);
+
                 return index % 2 === 0 ? [index] : [];
             },
             (txs: number[]) => result.push(...txs),

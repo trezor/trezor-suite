@@ -80,6 +80,7 @@ export const useCompose = <TFieldValues extends FormState>({
                 }
 
                 const values = getValues();
+
                 return dispatch(composeTransaction(values, state));
             });
 
@@ -112,6 +113,7 @@ export const useCompose = <TFieldValues extends FormState>({
                     // this error is unexpected and should be handled in sendFormActions
                     console.warn('Compose unexpected error', error);
                     setLoading(false);
+
                     return;
                 }
 
@@ -132,6 +134,7 @@ export const useCompose = <TFieldValues extends FormState>({
                     values.outputs.forEach((_, i) => setError(`outputs.${i}.amount`, formError));
                 }
                 setLoading(false);
+
                 return;
             }
 
@@ -230,6 +233,7 @@ export const useCompose = <TFieldValues extends FormState>({
             // sign workflow in Actions:
             // signTransaction > sign[COIN]Transaction > requestPushTransaction (modal with promise decision)
             const result = await dispatch(signTransaction(values, composedTx));
+
             return result?.success;
         }
     };

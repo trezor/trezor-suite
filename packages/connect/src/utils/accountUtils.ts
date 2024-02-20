@@ -39,6 +39,7 @@ export const getAccountAddressN = (
         // FW bug: https://github.com/trezor/trezor-firmware/issues/321
         return [toHardened(options.purpose), toHardened(144), toHardened(index), 0, 0];
     }
+
     // TODO: cover all misc coins or throw error
     return [toHardened(options.purpose), toHardened(options.coinType), toHardened(index), 0, 0];
 };
@@ -56,9 +57,11 @@ export const getAccountLabel = (path: number[], coinInfo: CoinInfo) => {
         } else if (accountType === 44 && coinInfo.segwit) {
             prefix = 'legacy';
         }
+
         return `${prefix} <span>account #${account + 1}</span>`;
     }
     const account = fromHardened(path[4]);
+
     return `account #${account + 1}`;
 };
 
@@ -102,6 +105,7 @@ export const getPublicKeyLabel = (path: number[], coinInfo?: BitcoinNetworkInfo)
     if (realAccountId > 0) {
         return `${prefix} of ${accountType} <span>account #${realAccountId}</span>`;
     }
+
     return prefix;
 };
 

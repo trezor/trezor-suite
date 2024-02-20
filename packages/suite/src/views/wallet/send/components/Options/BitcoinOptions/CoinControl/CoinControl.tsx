@@ -138,6 +138,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
     ].map(utxoCategory => {
         const lastIndexOnPage = currentPage * utxosPerPage - previousItemsLength;
         previousItemsLength += utxoCategory.length;
+
         // avoid negative values which may cause unintended results
         return utxoCategory.slice(
             Math.max(0, lastIndexOnPage - utxosPerPage),
@@ -158,6 +159,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
                 recursive: true,
             }),
         );
+
         return () => {
             promise.abort();
         };

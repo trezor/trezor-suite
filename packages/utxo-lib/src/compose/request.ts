@@ -34,6 +34,7 @@ function validateAndParseFeeRate(rate: unknown) {
     ) {
         return;
     }
+
     return feeRate;
 }
 
@@ -104,6 +105,7 @@ function transformOutput(
     if (output.type === 'payment') {
         const value = bignumberOrNaN(output.amount);
         if (!value) throw new Error('Invalid amount');
+
         return {
             value,
             script: toOutputScript(output.address, network),
@@ -112,6 +114,7 @@ function transformOutput(
     if (output.type === 'payment-noaddress') {
         const value = bignumberOrNaN(output.amount);
         if (!value) throw new Error('Invalid amount');
+
         return {
             value,
             script,

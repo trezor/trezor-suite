@@ -53,6 +53,7 @@ export type RunOptions = {
 
 const parseRunOptions = (options?: RunOptions): RunOptions => {
     if (!options) options = {};
+
     return options;
 };
 
@@ -155,6 +156,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         const descriptor = { ...originalDescriptor, session: null };
         try {
             const device: Device = new Device(transport, descriptor);
+
             return device;
         } catch (error) {
             _log.error('Device.fromDescriptor', error);
@@ -169,6 +171,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
     ) {
         const device = new Device(transport, descriptor);
         device.unreadableError = unreadableError;
+
         return device;
     }
 
@@ -350,10 +353,12 @@ export class Device extends TypedEmitter<DeviceEvents> {
                     // if GetFeatures fails try again
                     // this time add empty "fn" param to force Initialize message
                     this.inconsistent = true;
+
                     return this._runInner(() => Promise.resolve({}), options);
                 }
                 this.inconsistent = true;
                 delete this.runPromise;
+
                 return Promise.reject(
                     ERRORS.TypedError(
                         'Device_InitializeFailed',
@@ -411,6 +416,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         if (!this.commands) {
             throw ERRORS.TypedError('Runtime', `Device: commands not defined`);
         }
+
         return this.commands;
     }
 
@@ -624,6 +630,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
     getVersion() {
         if (!this.features) return [];
+
         return [
             this.features.major_version,
             this.features.minor_version,
@@ -635,6 +642,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         if (!this.features) return false;
         const modelVersion =
             typeof versions === 'string' ? versions : versions[this.features.major_version - 1];
+
         return versionUtils.isNewerOrEqual(this.getVersion().join('.'), modelVersion);
     }
 
@@ -689,6 +697,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 return UI.NOT_IN_BOOTLOADER;
             }
         }
+
         return null;
     }
 
@@ -715,6 +724,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         if (this.features.bootloader_mode) return 'bootloader';
         if (!this.features.initialized) return 'initialize';
         if (this.features.no_backup) return 'seedless';
+
         return 'normal';
     }
 
@@ -742,6 +752,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             this.features.label === '' || !this.features.label ? defaultLabel : this.features.label;
         let status: DeviceStatus = this.isUsedElsewhere() ? 'occupied' : 'available';
         if (this.featuresNeedsReload) status = 'used';
+
         return {
             type: 'acquired',
             id: this.features.device_id || null,

@@ -31,6 +31,7 @@ export const invityApiSymbolToSymbol = (symbol?: string) => {
     if (!symbol) return 'UNKNOWN';
     const lowercaseSymbol = symbol.toLowerCase();
     const result = suiteToInvitySymbols.find(s => s.invitySymbol === lowercaseSymbol);
+
     return result ? result.suiteSymbol : lowercaseSymbol;
 };
 
@@ -38,6 +39,7 @@ export const invityApiSymbolToSymbol = (symbol?: string) => {
 export const symbolToInvityApiSymbol = (symbol?: string) => {
     if (!symbol) return 'UNKNOWN';
     const result = suiteToInvitySymbols.find(s => s.suiteSymbol === symbol.toLowerCase());
+
     return result ? result.invitySymbol : symbol;
 };
 
@@ -152,6 +154,7 @@ export const getCountryLabelParts = (label: string) => {
         const flag = parts[0];
         parts.shift();
         const text = parts.join(' ');
+
         return { flag, text };
     } catch (err) {
         return null;
@@ -202,6 +205,7 @@ export const getComposeAddressPlaceholder = async (
                     return result.payload.address;
                 }
             }
+
             // as a fallback, use the change address of current account
             return account.addresses?.change[0].address;
         }
@@ -224,6 +228,7 @@ export const mapTestnetSymbol = (symbol: Network['symbol']) => {
     if (symbol === 'thol') return 'eth';
     if (symbol === 'txrp') return 'xrp';
     if (symbol === 'tada') return 'ada';
+
     return symbol;
 };
 

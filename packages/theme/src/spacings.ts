@@ -16,6 +16,7 @@ type SpacingSize = keyof typeof spacings;
 export const spacingsPx = (Object.keys(spacings) as Array<SpacingSize>).reduce(
     (result, key) => {
         (result as Record<SpacingSize, string>)[key] = `${spacings[key]}px`;
+
         return result;
     },
     {} as { [K in SpacingSize]: `${(typeof spacings)[K]}px` },

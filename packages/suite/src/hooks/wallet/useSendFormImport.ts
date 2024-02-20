@@ -108,6 +108,7 @@ export const useSendFormImport = ({ network, tokens, localCurrencyOption, fiatRa
                     console.warn('import error', currency, output);
                 }
             }
+
             return output;
         });
 

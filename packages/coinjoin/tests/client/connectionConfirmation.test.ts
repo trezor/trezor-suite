@@ -10,6 +10,7 @@ let server: Awaited<ReturnType<typeof createServer>>;
 
 jest.mock('@trezor/utils', () => {
     const originalModule = jest.requireActual('@trezor/utils');
+
     return {
         __esModule: true,
         ...originalModule,
@@ -187,6 +188,7 @@ describe('connectionConfirmation', () => {
                 if (i > 0) {
                     return a - timestamps[i - 1];
                 }
+
                 return 0;
             })
             .forEach(ts => {

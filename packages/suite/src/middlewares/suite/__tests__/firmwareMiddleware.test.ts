@@ -66,6 +66,7 @@ const initStore = (state: State) => {
 
         store.getActions().push(action);
     });
+
     return store;
 };
 

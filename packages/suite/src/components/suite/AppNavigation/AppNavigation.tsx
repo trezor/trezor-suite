@@ -272,6 +272,7 @@ export const AppNavigation = ({ items, actions, primaryContent, inView }: AppNav
                                                 key: 'all',
                                                 options: actions?.map(item => {
                                                     const { id, title } = item;
+
                                                     return {
                                                         key: id,
                                                         onClick: () => item.callback(),
@@ -341,6 +342,7 @@ export const AppNavigation = ({ items, actions, primaryContent, inView }: AppNav
                                                         itemsSecondaryWithExtra.map<DropdownMenuItemProps>(
                                                             item => {
                                                                 const { id, title } = item;
+
                                                                 return {
                                                                     key: id,
                                                                     onClick:

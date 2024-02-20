@@ -35,5 +35,6 @@ export const suggestUdevInstaller = (platform?: string) => {
             }));
         }
     }
+
     return info;
 };

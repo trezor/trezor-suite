@@ -51,6 +51,7 @@ export const groupBalanceMovementEvents = (
             balanceMovement.date - currentGroup[currentGroup.length - 1].date < groupingThreshold
         ) {
             currentGroup.push(balanceMovement);
+
             return;
         }
         groups.push(currentGroup);
@@ -58,6 +59,7 @@ export const groupBalanceMovementEvents = (
     });
 
     if (A.isNotEmpty(currentGroup)) groups.push(currentGroup);
+
     return groups;
 };
 

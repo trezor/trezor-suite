@@ -10,6 +10,7 @@ export const unecryptedJotaiStorage = new MMKV({
 
 function getItem<T>(key: string): T | null {
     const value = unecryptedJotaiStorage.getString(key);
+
     return value ? JSON.parse(value) : null;
 }
 

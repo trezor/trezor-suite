@@ -91,6 +91,7 @@ export const Graph = <TGraphPoint extends FiatGraphPoint>({
         } else {
             setDelayedLoading(false);
         }
+
         return () => {
             clearTimeout(timeout);
         };

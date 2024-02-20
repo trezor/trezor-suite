@@ -35,6 +35,7 @@ export const AccountListPlaceholder = ({ isFilterEmpty }: AccountListPlaceholder
         if (isReceiveRoute) {
             return 'receive';
         }
+
         return 'discover';
     };
 
@@ -46,6 +47,7 @@ export const AccountListPlaceholder = ({ isFilterEmpty }: AccountListPlaceholder
         if (isReceiveRoute) {
             return 'moduleAccounts.emptyState.receiveSubtitle';
         }
+
         return 'moduleAccounts.emptyState.subtitle';
     };
 

@@ -20,6 +20,7 @@ export const countUnusedFromEnd = <T>(
             return array.length - i;
         }
     }
+
     return array.length;
 };
 
@@ -39,7 +40,9 @@ export const discovery = <T>(
         const moreCount = lookout - unused;
         const addresses = deriveAddresses(xpub, type, from, moreCount, network);
         const more = await Promise.all(addresses.map(discover));
+
         return discoverRecursive(from + moreCount, prev.concat(more));
     };
+
     return discoverRecursive(0, []);
 };

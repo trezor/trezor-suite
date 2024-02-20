@@ -194,8 +194,10 @@ export function getQuoteError(quote: SellFiatTrade, amountInCrypto: boolean) {
                 );
             }
         }
+
         return quote.error;
     }
+
     return '';
 }
 

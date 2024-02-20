@@ -12,6 +12,7 @@ const ThemeProvider = ({ children, theme }: ThemeProviderProps) => {
     if (!children) {
         return null;
     }
+
     return <ThemeContext.Provider value={theme}>{children}</ThemeContext.Provider>;
 };
 

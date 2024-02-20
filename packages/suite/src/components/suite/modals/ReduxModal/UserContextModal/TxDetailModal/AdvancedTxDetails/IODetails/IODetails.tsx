@@ -359,6 +359,7 @@ const SolanaSpecificBalanceDetailsRow = ({
     isPhishingTransaction,
 }: SolanaSpecificBalanceDetailsRowProps) => {
     const { tokens } = tx;
+
     return (
         <>
             {tokens.map((transfer, index) => (
@@ -471,6 +472,7 @@ const CollapsibleIOSection = ({
     isPhishingTransaction,
 }: CollapsibleIOSectionProps) => {
     const { elevation } = useElevation();
+
     return inputs?.length || outputs?.length ? (
         <StyledCollapsibleBox
             elevation={elevation}

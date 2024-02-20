@@ -57,6 +57,7 @@ export function ensureSingleRunningInstance<T extends (...args: any[]) => Promis
             });
             ongoingPromises.set(key, promise);
         }
+
         return ongoingPromises.get(key) as ReturnType<T>;
     } as unknown as T;
 }
@@ -77,6 +78,7 @@ export function EnsureSingleRunningInstance() {
         ): Promise<ReturnType<T>> {
             return ensureSingleRunningInstance(originalMethod).apply(this, args) as ReturnType<T>;
         } as unknown as T;
+
         return replacementMethod;
     };
 }
@@ -102,10 +104,13 @@ export function TrackRunningTransactionFetches() {
                     .apply(this, [args])
                     .finally(() => transactionFetchesPromises.delete(key));
                 transactionFetchesPromises.set(key, operation);
+
                 return operation;
             }
+
             return transactionFetchesPromises.get(key)!;
         }
+
         return replacementMethod;
     };
 }
@@ -124,8 +129,10 @@ export function WaitUntilFetchIsFinished() {
                     // Ignoring the error as per original logic
                 }
             }
+
             return originalMethod.call(this, args);
         }
+
         return replacementMethod;
     };
 }

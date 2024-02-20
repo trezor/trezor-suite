@@ -37,6 +37,7 @@ export default class CardanoGetPublicKey extends AbstractMethod<'cardanoGetPubli
 
         this.params = payload.bundle.map(batch => {
             const path = validatePath(batch.path, 3);
+
             return {
                 address_n: path,
                 derivation_type:
@@ -81,6 +82,7 @@ export default class CardanoGetPublicKey extends AbstractMethod<'cardanoGetPubli
         const uiResp = await uiPromise.promise;
 
         this.confirmed = uiResp.payload;
+
         return this.confirmed;
     }
 
@@ -105,6 +107,7 @@ export default class CardanoGetPublicKey extends AbstractMethod<'cardanoGetPubli
 
         // wait for user action
         const uiResp = await uiPromise.promise;
+
         return uiResp.payload;
     }
 
@@ -135,6 +138,7 @@ export default class CardanoGetPublicKey extends AbstractMethod<'cardanoGetPubli
                 );
             }
         }
+
         return this.hasBundle ? responses : responses[0];
     }
 }

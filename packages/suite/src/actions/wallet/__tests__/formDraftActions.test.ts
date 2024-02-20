@@ -20,6 +20,7 @@ const initStore = (state: State) => {
         store.getState().wallet.formDrafts = formDraftReducer(formDrafts, action);
         store.getActions().push(action);
     });
+
     return store;
 };
 

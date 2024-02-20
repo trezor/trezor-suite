@@ -33,6 +33,7 @@ const request = <T>(url: string): Promise<T | null> =>
         )
         .catch(err => {
             console.warn(err);
+
             return null;
         });
 
@@ -70,6 +71,7 @@ const getLastWeekTimestamps = () =>
     Array.from(Array(7).keys()).map(i => {
         const date = new Date();
         date.setDate(date.getDate() - 7 + i);
+
         return Math.floor(date.getTime() / 1000);
     });
 

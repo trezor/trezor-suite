@@ -48,6 +48,7 @@ export const useSendFormFields = ({
                 if (fiat.length > 0) {
                     setValue(inputName, '');
                 }
+
                 return;
             }
             // calculate Fiat value
@@ -112,8 +113,10 @@ export const useSendFormFields = ({
         if (fallbackValue !== undefined) {
             const stateValue = getValues(fieldName);
             if (stateValue !== undefined) return stateValue;
+
             return fallbackValue;
         }
+
         return getValues(fieldName);
     };
 

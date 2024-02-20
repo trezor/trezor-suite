@@ -23,6 +23,7 @@ export class MemoryStorage implements TransactionCacheEngineStorage {
 
     async accountExist(account: AccountUniqueParams) {
         const accountUniqueKey = getAccountUniqueKey(account);
+
         return !!this.accounts[accountUniqueKey];
     }
 
@@ -73,6 +74,7 @@ export class MemoryStorage implements TransactionCacheEngineStorage {
         txids: string[];
     }): Promise<number> {
         const existingTxids = this.getAccountTxids({ coin, descriptor });
+
         return txids.filter(txid => existingTxids.includes(txid)).length;
     }
 
@@ -86,12 +88,14 @@ export class MemoryStorage implements TransactionCacheEngineStorage {
         descriptor,
     }: AccountUniqueParams): Promise<AccountTransaction[]> {
         const accountUniqueKey = getAccountUniqueKey({ coin, descriptor });
+
         return this.accountTransactions[accountUniqueKey] || [];
     }
 
     private getAccountTxids(account: AccountUniqueParams) {
         const accountUniqueKey = getAccountUniqueKey(account);
         const transactions = this.accountTransactions[accountUniqueKey] || [];
+
         return transactions.map(t => t.txid);
     }
 }

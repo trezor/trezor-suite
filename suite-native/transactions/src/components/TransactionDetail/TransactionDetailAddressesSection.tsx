@@ -94,6 +94,7 @@ export const TransactionDetailAddressesSection = ({
     const isShowMoreButtonVisible = addresses.length > 2;
     const hiddenAddressesCount = targetAddresses.length - 2;
     const areChangeAddressesVisible = changeAddresses.length > 0;
+
     return (
         <>
             <SummaryRow leftComponent={<TransactionDetailSummaryStepper />}>

@@ -174,6 +174,7 @@ export const SellTransaction = ({ trade, providers, account }: SellTransactionPr
                     },
                 }),
             );
+
             return;
         }
         dispatch(

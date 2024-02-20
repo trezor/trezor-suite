@@ -37,6 +37,7 @@ export const transformUtxos = (utxos: BlockfrostUtxos[]): Utxo[] => {
             });
         }),
     );
+
     return result;
 };
 
@@ -64,6 +65,7 @@ const getSubtype = (tx: Pick<BlockfrostTransaction, 'txData'>) => {
             // transaction could both register staking address and delegate stake at the same time. In that case we treat it as "stake registration"
             return 'stake_registration';
         }
+
         return 'stake_deregistration';
     }
 
@@ -90,6 +92,7 @@ export const transformTokenInfo = (
     if (!tokens || !Array.isArray(tokens)) return undefined;
     const info = tokens.map(token => {
         const { assetName } = parseAsset(token.unit);
+
         return {
             type: 'BLOCKFROST',
             name: token.fingerprint!, // this is safe as fingerprint is defined for all tokens except lovelace and lovelace is never included in account.tokens

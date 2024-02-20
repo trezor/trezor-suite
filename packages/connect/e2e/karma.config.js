@@ -12,6 +12,7 @@ const getTestPattern = () => {
         // if yes add full path
         return process.argv.slice(pos + 1).map(f => `${root}/**/${f}.test.ts`);
     }
+
     // else return all glob patter for all tests
     return [`${root}/**/*.test.ts`];
 };

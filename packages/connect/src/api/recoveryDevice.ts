@@ -49,12 +49,14 @@ export default class RecoveryDevice extends AbstractMethod<'recoveryDevice', PRO
 
         // wait for user action
         const uiResp = await uiPromise.promise;
+
         return uiResp.payload;
     }
 
     async run() {
         const cmd = this.device.getCommands();
         const response = await cmd.typedCall('RecoveryDevice', 'Success', this.params);
+
         return response.message;
     }
 

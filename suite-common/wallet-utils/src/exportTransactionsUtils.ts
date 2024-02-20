@@ -122,6 +122,7 @@ const loadPdfMake = async () => {
     if (fonts?.pdfMake?.vfs) {
         pdfMake.vfs = fonts.pdfMake.vfs;
     }
+
     return pdfMake;
 };
 
@@ -137,6 +138,7 @@ const makePdf = (
 
 const prepareContent = (data: Data, tokenDefinitions: TokenDefinitions): Fields[] => {
     const { transactions, coin } = data;
+
     return transactions
         .map(formatAmounts(coin))
         .flatMap(t => {
@@ -213,6 +215,7 @@ const prepareContent = (data: Data, tokenDefinitions: TokenDefinitions): Fields[
                         other: '',
                     };
                     hasFeeBeenAlreadyUsed = true;
+
                     return tokenData;
                 });
             }
@@ -241,6 +244,7 @@ const prepareContent = (data: Data, tokenDefinitions: TokenDefinitions): Fields[
                         other: '',
                     };
                     hasFeeBeenAlreadyUsed = true;
+
                     return internalTransferData;
                 });
             }
@@ -254,6 +258,7 @@ const sanitizeCsvValue = (value: string) => {
     if (value.indexOf(CSV_SEPARATOR) !== -1) {
         return `"${value.replace(/"/g, '""')}"`;
     }
+
     return value;
 };
 
@@ -400,12 +405,14 @@ export const formatData = async (data: Data, tokenDefinitions: TokenDefinitions)
     switch (type) {
         case 'csv': {
             const csv = prepareCsv(data, tokenDefinitions);
+
             return new Blob([csv], { type: 'text/csv;charset=utf-8' });
         }
         case 'pdf': {
             const pdfLayout = preparePdf(data, tokenDefinitions);
             const pdfMake = await loadPdfMake();
             const pdf = await makePdf(pdfLayout, pdfMake);
+
             return pdf;
         }
         case 'json': {
@@ -417,6 +424,7 @@ export const formatData = async (data: Data, tokenDefinitions: TokenDefinitions)
                 null,
                 2,
             );
+
             return new Blob([json], { type: 'text/json;charset=utf-8' });
         }
         // no default

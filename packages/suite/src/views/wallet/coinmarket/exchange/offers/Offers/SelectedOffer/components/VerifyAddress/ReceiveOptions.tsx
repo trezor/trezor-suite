@@ -139,6 +139,7 @@ export const ReceiveOptions = (props: ReceiveOptionsProps) => {
                     case 'SUITE': {
                         if (!option.account) return null;
                         const { symbol, formattedBalance } = option.account;
+
                         return (
                             <Option>
                                 <LogoWrapper>

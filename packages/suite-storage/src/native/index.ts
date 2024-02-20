@@ -86,11 +86,13 @@ class CommonDB<TDBStructure> {
 
     isSupported = (): Promise<boolean> => {
         this.supported = false;
+
         return Promise.resolve(false);
     };
 
     isAccessible = async () => {
         const isSupported = await this.isSupported();
+
         // if the instance is blocking db upgrade, db connection will be closed
         return isSupported && !this.blocking && !this.blocked;
     };

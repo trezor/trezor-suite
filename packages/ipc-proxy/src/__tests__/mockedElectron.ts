@@ -59,6 +59,7 @@ class IpcMainMock extends EventEmitter {
 
     on(event: string, listener: any) {
         this.setup();
+
         return super.on(event, listener);
     }
 }

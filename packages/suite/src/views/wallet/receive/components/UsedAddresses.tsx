@@ -205,6 +205,7 @@ export const UsedAddresses = ({
             const r = addresses.find(u => u.path === addr.path);
             const p = pendingAddresses.find(u => u === addr.address);
             const f = r || p;
+
             return f ? result.concat(addr) : result;
         },
         [] as typeof unused,

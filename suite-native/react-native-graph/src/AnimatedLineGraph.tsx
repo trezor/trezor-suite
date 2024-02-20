@@ -119,12 +119,14 @@ export function AnimatedLineGraph<TEventPayload extends object>({
                 INDICATOR_PULSE_BLUR_RADIUS_BIG,
             );
         }
+
         return 0;
     });
     const indicatorPulseOpacity = useDerivedValue(() => {
         if (pulseTrigger.value === 0) {
             return mix(indicatorPulseAnimation.value, 1, 0);
         }
+
         return 0;
     });
 
@@ -310,6 +312,7 @@ export function AnimatedLineGraph<TEventPayload extends object>({
                 `${getSixDigitHex(color)}33`,
             ];
         }
+
         return [color, color, color, `${getSixDigitHex(color)}33`, `${getSixDigitHex(color)}33`];
     }, [color, enableFadeInMask]);
 

@@ -103,6 +103,7 @@ export abstract class AbstractMessageChannel<
                 this.handshakeWithPeer();
             }
         }
+
         return this.handshakeFinished.promise;
     }
 
@@ -112,6 +113,7 @@ export abstract class AbstractMessageChannel<
      */
     protected handshakeWithPeer(): Promise<void> {
         this.logger?.log(this.channel.here, 'handshake');
+
         return scheduleAction(
             async () => {
                 this.postMessage(
@@ -169,10 +171,12 @@ export abstract class AbstractMessageChannel<
         if (!this.legacyMode) {
             if (!channel?.peer || channel.peer !== this.channel.here) {
                 this.logger?.warn('to wrong peer', channel?.peer, 'should be', this.channel.here);
+
                 return;
             }
             if (!channel?.here || this.channel.peer !== channel.here) {
                 this.logger?.warn('from wrong peer', channel?.here, 'should be', this.channel.peer);
+
                 return;
             }
         }
@@ -189,10 +193,12 @@ export abstract class AbstractMessageChannel<
                 // When received channel-handshake-request in lazyHandshake mode we start from this side.
                 this.handshakeWithPeer();
             }
+
             return;
         }
         if (type === 'channel-handshake-confirm') {
             this.handshakeFinished?.resolve(undefined);
+
             return;
         }
 
@@ -222,6 +228,7 @@ export abstract class AbstractMessageChannel<
                     this.messagesQueue.push(message);
                 }
             }
+
             return;
         }
 

@@ -26,6 +26,7 @@ const progressInfoReducer = (
         if (info.stage === 'block') {
             const current = info.progress.current - info.progress.from;
             const total = info.progress.to - info.progress.from;
+
             return {
                 stage: 'block',
                 outOf: { current, total },
@@ -36,6 +37,7 @@ const progressInfoReducer = (
         // mempool stage with progress, simply calculate, but only for 0th iteration
         if (!info.progress.iteration) {
             const { current, total } = info.progress;
+
             return {
                 stage: 'mempool',
                 outOf: { current, total },
@@ -52,6 +54,7 @@ const progressInfoReducer = (
                 messageId: 'TR_COINJOIN_DISCOVERY_BLOCK_FETCHING',
             };
         }
+
         // mempool stage without progress, previous stage was block
         return {
             stage: 'mempool',
@@ -59,6 +62,7 @@ const progressInfoReducer = (
             messageId: 'TR_COINJOIN_DISCOVERY_MEMPOOL_FETCHING',
         };
     }
+
     // following iterations of mempool stage OR unchanged stage without progress, leave as it is
     return state;
 };

@@ -51,6 +51,7 @@ const calculate = (
 
     if (totalSpent.isGreaterThan(availableBalance)) {
         const error = token ? 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE' : 'AMOUNT_IS_NOT_ENOUGH';
+
         // errorMessage declared later
         return { type: 'error', error, errorMessage: { id: error } } as const;
     }
@@ -322,6 +323,7 @@ export const signTransaction =
                     error: signature.payload.error,
                 }),
             );
+
             return;
         }
 

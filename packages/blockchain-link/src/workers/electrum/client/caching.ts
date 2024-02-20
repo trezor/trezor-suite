@@ -31,11 +31,13 @@ export class CachingElectrumClient extends ElectrumClient {
             const [cachedStatus, cachedResponse] = cached;
             if (cachedStatus === status) {
                 this.cached++;
+
                 return cachedResponse;
             }
         }
         const response = await super.request(method, ...params);
         this.cache[descriptor] = [status, response];
+
         return response;
     }
 
@@ -48,6 +50,7 @@ export class CachingElectrumClient extends ElectrumClient {
         // Subscribe to the new scripthash and store the status
         const newStatus = await super.request('blockchain.scripthash.subscribe', scripthash);
         this.statuses[scripthash] = newStatus;
+
         return newStatus;
     }
 
@@ -59,25 +62,30 @@ export class CachingElectrumClient extends ElectrumClient {
             case 'blockchain.scripthash.listunspent': {
                 const [scripthash] = params;
                 const status = await this.trySubscribe(scripthash);
+
                 return this.cacheRequest(status, method, params);
             }
             case 'blockchain.transaction.get': {
                 const curBlock = this.lastBlock?.hex;
                 if (curBlock === undefined) break;
+
                 return this.cacheRequest(curBlock, method, params);
             }
             case 'blockchain.scripthash.subscribe': {
                 const [scripthash] = params;
+
                 return this.trySubscribe(scripthash);
             }
             case 'blockchain.scripthash.unsubscribe': {
                 const [scripthash] = params;
                 delete this.statuses[scripthash];
+
                 return super.request(method, ...params);
             }
             default:
                 break;
         }
+
         return super.request(method, ...params);
     }
 

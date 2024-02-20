@@ -37,6 +37,7 @@ export default class EthereumVerifyMessage extends AbstractMethod<
     async run() {
         const cmd = this.device.getCommands();
         const response = await cmd.typedCall('EthereumVerifyMessage', 'Success', this.params);
+
         return response.message;
     }
 }

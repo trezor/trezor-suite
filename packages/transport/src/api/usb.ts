@@ -54,6 +54,7 @@ export class UsbApi extends AbstractApi {
                 // filters (TREZOR_USB_DESCRIPTORS) but does not have serial number. this could indicate error in fw
                 this.emit('transport-interface-error', ERRORS.DEVICE_UNREADABLE);
                 this.logger.error('device does not have serial number');
+
                 return;
             }
 
@@ -118,6 +119,7 @@ export class UsbApi extends AbstractApi {
             if (err.message === INTERFACE_DEVICE_DISCONNECTED) {
                 return this.error({ error: ERRORS.DEVICE_DISCONNECTED_DURING_ACTION });
             }
+
             return this.error({ error: ERRORS.INTERFACE_DATA_TRANSFER, message: err.message });
         }
     }
@@ -145,11 +147,13 @@ export class UsbApi extends AbstractApi {
                 );
                 throw new Error('transfer out status not ok');
             }
+
             return this.success(undefined);
         } catch (err) {
             if (err.message === INTERFACE_DEVICE_DISCONNECTED) {
                 return this.error({ error: ERRORS.DEVICE_DISCONNECTED_DURING_ACTION });
             }
+
             return this.error({ error: ERRORS.INTERFACE_DATA_TRANSFER, message: err.message });
         }
     }
@@ -169,6 +173,7 @@ export class UsbApi extends AbstractApi {
 
             await createTimeoutPromise(100 * i);
         }
+
         return this.openInternal(path, first);
     }
 
@@ -233,6 +238,7 @@ export class UsbApi extends AbstractApi {
                 });
             }
         }
+
         return this.success(undefined);
     }
 
@@ -241,6 +247,7 @@ export class UsbApi extends AbstractApi {
         if (!device) {
             return;
         }
+
         return device.device;
     }
 
@@ -256,6 +263,7 @@ export class UsbApi extends AbstractApi {
                 bootloaderId++;
                 path += bootloaderId;
             }
+
             return { path, device };
         });
     }
@@ -269,10 +277,12 @@ export class UsbApi extends AbstractApi {
             const isTrezor = TREZOR_USB_DESCRIPTORS.some(
                 desc => dev.vendorId === desc.vendorId && dev.productId === desc.productId,
             );
+
             return isTrezor;
         });
         const hidDevices = trezorDevices.filter(dev => this.deviceIsHid(dev));
         const nonHidDevices = trezorDevices.filter(dev => !this.deviceIsHid(dev));
+
         return [hidDevices, nonHidDevices];
     }
 }

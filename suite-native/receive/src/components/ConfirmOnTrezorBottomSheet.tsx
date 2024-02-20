@@ -11,6 +11,7 @@ export const ConfirmOnTrezorBottomSheet = ({
     onClose: () => void;
 }) => {
     const { translate } = useTranslate();
+
     return (
         <BottomSheet
             isVisible={isOpened}

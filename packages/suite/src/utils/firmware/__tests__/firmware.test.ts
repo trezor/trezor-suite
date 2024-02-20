@@ -21,6 +21,7 @@ const getT1V2FW = () => {
     firmwareView[1] = 82;
     firmwareView[2] = 90;
     firmwareView[3] = 70;
+
     return fw;
 };
 

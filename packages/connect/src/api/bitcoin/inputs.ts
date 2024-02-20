@@ -50,6 +50,7 @@ export const validateTrezorInputs = (
             } else {
                 validatePath(input.address_n);
             }
+
             return input;
         });
 
@@ -75,6 +76,7 @@ export const enhanceTrezorInputs = (
  ****** */
 export const inputToTrezor = (input: ComposeUtxo, sequence = 0xffffffff): PROTO.TxInputType => {
     const address_n = getHDPath(input.path);
+
     return {
         address_n,
         prev_index: input.vout,

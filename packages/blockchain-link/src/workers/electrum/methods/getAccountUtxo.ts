@@ -35,6 +35,7 @@ const getAccountUtxo: Api<Req, Res> = async (client, descriptor) => {
 
     if (parsed.valid) {
         const utxos = await client.request('blockchain.scripthash.listunspent', parsed.scripthash);
+
         return utxos.map(transformUtxo(height));
     }
 
@@ -51,6 +52,7 @@ const getAccountUtxo: Api<Req, Res> = async (client, descriptor) => {
                     .then(utxos => utxos.map(transformUtxo(height, { address, path }))),
             ),
     ).then(res => res.flat());
+
     return result;
 };
 

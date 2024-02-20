@@ -27,6 +27,7 @@ const initStore = (state: State) => {
         // add action back to stack
         store.getActions().push(action);
     });
+
     return store;
 };
 
@@ -41,6 +42,7 @@ const setFetchMock = (mock: any) => {
                         if (mock.reject) {
                             return reject(mock.reject);
                         }
+
                         return resolve(mock.response);
                     }),
             });

@@ -56,6 +56,7 @@ export const mockCoinjoinService = () => {
             })),
             getAccountCheckpoint: jest.fn(() => undefined),
         };
+
         return { client, backend };
     };
 
@@ -69,6 +70,7 @@ export const mockCoinjoinService = () => {
                 if (clients[network]) return clients[network];
                 const instance = getMockedInstance(network);
                 clients[network] = instance;
+
                 return instance;
             }),
             removeInstance: jest.fn((symbol: string) => {

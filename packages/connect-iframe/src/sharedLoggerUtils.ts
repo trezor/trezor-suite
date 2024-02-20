@@ -21,6 +21,7 @@ export const initLogWriterWithWorker = (LogWorker: LogWorkerClass) => {
     } catch (error) {
         console.warn('Failed to initialize LogWorker:', error);
     }
+
     return logWriterFactory(logWorker);
 };
 
@@ -30,5 +31,6 @@ export const initLogWriterWithSrcPath = (workerSrc: string) => {
     } catch (error) {
         console.warn('Failed to initialize LogWorker:', error);
     }
+
     return logWriterFactory(logWorker);
 };

@@ -5,6 +5,7 @@ import { getHost } from '@trezor/connect/src/utils/urlUtils';
 
 export const isOriginWhitelisted = (origin: string) => {
     const host = getHost(origin);
+
     return config.whitelist.find(item => item.origin === origin || item.origin === host);
 };
 
@@ -12,6 +13,7 @@ const getPriority = (whitelist?: (typeof config)['whitelist'][0]) => {
     if (whitelist) {
         return whitelist.priority;
     }
+
     return DEFAULT_PRIORITY;
 };
 

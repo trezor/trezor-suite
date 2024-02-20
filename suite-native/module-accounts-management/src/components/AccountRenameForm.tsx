@@ -29,6 +29,7 @@ type AccountLabelFieldHintProps = {
 
 const AccountLabelFieldHint = ({ formControl }: AccountLabelFieldHintProps) => {
     const { accountLabel } = useWatch({ control: formControl });
+
     return (
         <Box paddingLeft="small">
             <Text variant="label" color="textSubdued">

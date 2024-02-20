@@ -33,6 +33,7 @@ export function parseConfigure(data: protobuf.INamespace) {
     if (typeof data === 'string') {
         return protobuf.Root.fromJSON(JSON.parse(data));
     }
+
     return protobuf.Root.fromJSON(data);
 }
 

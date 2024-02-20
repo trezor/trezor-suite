@@ -21,6 +21,7 @@ export const getStatus = async (options: RequestOptions) => {
         },
         options,
     );
+
     return data;
 };
 

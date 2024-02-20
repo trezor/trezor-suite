@@ -36,6 +36,7 @@ const useWatchTimeframeChangeForAnalytics = (
         if (isFirstRender.current) {
             // Do not report default value on first render.
             isFirstRender.current = false;
+
             return;
         }
 
@@ -84,6 +85,7 @@ export const useGraphForSingleAccount = ({
 
     const accounts = useMemo(() => {
         if (!account) return [];
+
         return [
             {
                 coin: account.symbol,

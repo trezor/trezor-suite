@@ -8,6 +8,7 @@ const occurrences = (text: string, delimiter: string) => {
     const specialChars = '!@#$^&%*()+=-[]/{}|:<>?,.';
     const escaped = specialChars.indexOf(delimiter) >= 0 ? '\\' : '';
     const regExp = new RegExp(escaped + delimiter, 'g');
+
     return (text.match(regExp) || []).length;
 };
 
@@ -23,6 +24,7 @@ const detectDelimiter = (text: string, delimiters: string[]) => {
                 frequency = f;
             }
         });
+
     return delimiters[index];
 };
 
@@ -46,6 +48,7 @@ const parseLine = (line: string, delimiter: string, columns: string[]) => {
             output[index] = cleanValue;
         }
     });
+
     return output;
 };
 
@@ -63,5 +66,6 @@ export const parseCSV = (text: string, columns: string[] = [], delimiter?: strin
             result.push(output);
         }
     });
+
     return result;
 };

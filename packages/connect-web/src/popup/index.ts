@@ -149,6 +149,7 @@ export class PopupManager extends EventEmitter {
             } else if (this.popupWindow?.mode === 'window') {
                 this.popupWindow.window.focus();
             }
+
             return;
         }
 
@@ -179,6 +180,7 @@ export class PopupManager extends EventEmitter {
         if (this.settings.useCoreInPopup) {
             // Timeout not used in Core mode, we can't run showPopupRequest with no DOM
             this.openWrapper(src);
+
             return;
         }
 
@@ -431,6 +433,7 @@ export class PopupManager extends EventEmitter {
             showPopupRequest(this.open.bind(this), () => {
                 this.emit(POPUP.CLOSED);
             });
+
             return;
         }
 

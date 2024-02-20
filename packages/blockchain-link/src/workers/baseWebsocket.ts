@@ -103,6 +103,7 @@ export abstract class BaseWebsocket<T extends EventMap> extends TypedEmitter<T &
         this.options.onSending?.(message);
 
         ws.send(JSON.stringify(req));
+
         return promise;
     }
 
@@ -142,6 +143,7 @@ export abstract class BaseWebsocket<T extends EventMap> extends TypedEmitter<T &
             // remove previous subscriptions
             this.subscriptions.splice(index, 1);
         }
+
         return index;
     }
 

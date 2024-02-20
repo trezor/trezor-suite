@@ -104,6 +104,7 @@ class Storage extends TypedEmitter<Events> {
         } catch (err) {
             // memory storage is fallback of the last resort
             console.warn('long term storage not available');
+
             return memoryStorage;
         }
     }

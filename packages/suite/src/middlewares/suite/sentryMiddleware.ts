@@ -147,6 +147,7 @@ const sentryMiddleware =
             default:
                 break;
         }
+
         return action;
     };
 

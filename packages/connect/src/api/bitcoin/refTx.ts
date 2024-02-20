@@ -35,6 +35,7 @@ export const requireReferencedTransactions = (
         return !(options.version && options.version >= 5);
     }
     const inputTypes = ['SPENDTAPROOT', 'EXTERNAL'];
+
     return !!inputs.find(input => !inputTypes.find(t => t === input.script_type));
 };
 
@@ -46,6 +47,7 @@ export const getReferencedTransactions = (inputs: PROTO.TxInputType[]): string[]
             result.push(input.prev_hash);
         }
     });
+
     return result;
 };
 
@@ -65,6 +67,7 @@ export const getOrigTransactions = (
             result.push(output.orig_hash);
         }
     });
+
     return result;
 };
 
@@ -86,16 +89,19 @@ const enhanceTransaction = (refTx: RefTransaction, srcTx: BitcoinJsTransaction):
             refTx.version |= srcTx.type << 16;
         }
     }
+
     return refTx;
 };
 
 const parseOutputScript = (output: Buffer, network?: Network) => {
     try {
         const address = BitcoinJsAddress.fromOutputScript(output, network);
+
         return { type: 'address', address } as const;
     } catch {
         try {
             const { data } = BitcoinJsPayments.embed({ output }, { validate: true });
+
             return { type: 'data', data } as const;
         } catch {
             return { type: 'unknown' } as const;
@@ -154,6 +160,7 @@ const transformOrigTransaction = (
                         `transformOrigTransactions: invalid op_return_data at ${tx.getId()} [${i}]`,
                     );
                 }
+
                 return {
                     script_type: 'PAYTOOPRETURN',
                     amount: '0',
@@ -165,6 +172,7 @@ const transformOrigTransaction = (
                 const changeAddress = addresses.change.find(addr => addr.address === address);
                 const address_n = changeAddress && getHDPath(changeAddress.path);
                 const amount = output.value.toString();
+
                 return address_n
                     ? {
                           address_n,
@@ -276,8 +284,10 @@ export const validateReferencedTransactions = ({
                         'Method_InvalidParameter',
                         `refTx: addresses for ${tx.txid} not provided`,
                     );
+
                 return transformOrigTransaction(srcTx, coinInfo, inputs, addresses);
             }
+
             return transformReferencedTransaction(srcTx);
         }
         // validate common fields
@@ -303,6 +313,7 @@ export const validateReferencedTransactions = ({
                 }),
                 tx,
             );
+
             return tx;
         }
 

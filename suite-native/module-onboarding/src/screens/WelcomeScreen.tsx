@@ -81,6 +81,7 @@ export const WelcomeScreen = () => {
         if (isDarkMode) {
             return require('../assets/darkRectangles.png');
         }
+
         return require('../assets/rectangles.png');
     }, [isDarkMode]);
 

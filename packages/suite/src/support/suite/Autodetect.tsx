@@ -23,6 +23,7 @@ const Autodetect = () => {
             setTheme(osTheme);
         }
         const unwatch = watchOsTheme(setTheme);
+
         return () => unwatch();
     }, [autodetectTheme, currentTheme, setTheme]);
 
@@ -33,6 +34,7 @@ const Autodetect = () => {
             setLanguage(osLocale);
         }
         const unwatch = watchOsLocale(setLanguage);
+
         return () => unwatch();
     }, [autodetectLanguage, currentLanguage, setLanguage]);
 

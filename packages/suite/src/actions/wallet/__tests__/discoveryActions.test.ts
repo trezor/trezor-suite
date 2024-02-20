@@ -74,8 +74,10 @@ const setTrezorConnectFixtures = (input?: FixtureInput) => {
             const { code, error } = connect.error;
             if (code) {
                 delete connect.error; // reset this value, it shouldn't be used in next iteration
+
                 return paramsError(error, code);
             }
+
             return paramsError(error);
         }
 
@@ -90,6 +92,7 @@ const setTrezorConnectFixtures = (input?: FixtureInput) => {
                 const interrupted = connect.interruption.indexOf(param.path!);
                 if (interrupted >= 0) {
                     connect.interruption[interrupted] = 'interruption-item-used';
+
                     return {
                         success: false,
                         payload: {
@@ -104,8 +107,10 @@ const setTrezorConnectFixtures = (input?: FixtureInput) => {
                     const found = a.indexOf(accountType) >= 0;
                     if (found && param.path !== a) {
                         isEmpty = false;
+
                         return true;
                     }
+
                     return false;
                 });
             }
@@ -115,8 +120,10 @@ const setTrezorConnectFixtures = (input?: FixtureInput) => {
                     const found = a.indexOf(accountType) >= 0;
                     if (found && param.path === a) {
                         isFailed = true;
+
                         return true;
                     }
+
                     return false;
                 });
             }
@@ -197,6 +204,7 @@ const initStore = (state: State = getInitialState()) => {
         // add action back to stack
         store.getActions().push(action);
     });
+
     return store;
 };
 
@@ -276,8 +284,10 @@ describe('Discovery Actions', () => {
                     expect(update?.type).toEqual(discoveryActions.updateDiscovery.type);
                     expect(interrupt?.type).toEqual(discoveryActions.interruptDiscovery.type);
                     store.clearActions();
+
                     return loop();
                 }
+
                 return lastAction;
             };
 
@@ -647,6 +657,7 @@ describe('Discovery Actions', () => {
                     failedAccounts,
                 },
             });
+
             return mockedGetAccountInfo(params);
         });
 
@@ -677,6 +688,7 @@ describe('Discovery Actions', () => {
                     exception: 'not supported',
                 });
             }
+
             // return error
             return Promise.resolve(
                 paramsError(JSON.stringify(failedAccounts), 'Method_Discovery_BundleException'),

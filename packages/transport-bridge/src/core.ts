@@ -62,6 +62,7 @@ export const createApi = (apiStr: 'usb' | 'udp') => {
                     }),
                 protocolV1.decode,
             );
+
             return protocolBridge
                 .encode(message.buffer, { messageType: message.typeId })[0]
                 .toString('hex');
@@ -77,6 +78,7 @@ export const createApi = (apiStr: 'usb' | 'udp') => {
         if (!enumerateResult.success) {
             return enumerateResult;
         }
+
         return sessionsClient.enumerateDone({ paths: enumerateResult.payload });
     };
 
@@ -103,6 +105,7 @@ export const createApi = (apiStr: 'usb' | 'udp') => {
         }
 
         await api.closeDevice(path);
+
         return sessionsClient.releaseDone({ path: sessionsResult.payload.path });
     };
 
@@ -117,6 +120,7 @@ export const createApi = (apiStr: 'usb' | 'udp') => {
         await api.openDevice(path, false);
         await writeUtil({ path, data });
         const message = await readUtil({ path });
+
         return { success: true as const, payload: message };
     };
 
@@ -132,6 +136,7 @@ export const createApi = (apiStr: 'usb' | 'udp') => {
 
         await api.openDevice(path, false);
         await writeUtil({ path, data });
+
         return { success: true as const };
     };
 

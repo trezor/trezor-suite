@@ -14,10 +14,12 @@ export class WorkerState {
     private validateAddresses(addr: string[]) {
         if (!Array.isArray(addr)) throw new CustomError('invalid_param', '+addresses');
         const seen: string[] = [];
+
         return addr.filter(a => {
             if (typeof a !== 'string') return false;
             if (seen.indexOf(a) >= 0) return false;
             seen.push(a);
+
             return true;
         });
     }
@@ -25,6 +27,7 @@ export class WorkerState {
     addAddresses(addr: string[]) {
         const unique = this.validateAddresses(addr).filter(a => this.addresses.indexOf(a) < 0);
         this.addresses = this.addresses.concat(unique);
+
         return unique;
     }
 
@@ -35,18 +38,22 @@ export class WorkerState {
     removeAddresses(addr: string[]) {
         const unique = this.validateAddresses(addr);
         this.addresses = this.addresses.filter(a => unique.indexOf(a) < 0);
+
         return this.addresses;
     }
 
     private validateAccounts(acc: SubscriptionAccountInfo[]): SubscriptionAccountInfo[] {
         if (!Array.isArray(acc)) throw new CustomError('invalid_param', '+accounts');
         const seen: string[] = [];
+
         return acc.filter(a => {
             if (a && typeof a === 'object' && typeof a.descriptor === 'string') {
                 if (seen.indexOf(a.descriptor) >= 0) return false;
                 seen.push(a.descriptor);
+
                 return true;
             }
+
             return false;
         });
     }
@@ -54,8 +61,10 @@ export class WorkerState {
     private getAccountAddresses(acc: SubscriptionAccountInfo) {
         if (acc.addresses) {
             const { change, used, unused } = acc.addresses;
+
             return change.concat(used, unused).map(a => a.address);
         }
+
         return [acc.descriptor];
     }
 
@@ -68,6 +77,7 @@ export class WorkerState {
             [] as string[],
         );
         this.addAddresses(addresses);
+
         return valid;
     }
 
@@ -80,6 +90,7 @@ export class WorkerState {
                 if (used.find(ad => ad.address === address)) return true;
                 if (unused.find(ad => ad.address === address)) return true;
             }
+
             return false;
         });
     }
@@ -99,6 +110,7 @@ export class WorkerState {
         );
         this.accounts = this.accounts.filter(a => accountsToRemove.indexOf(a) < 0);
         this.removeAddresses(addressesToRemove);
+
         return this.accounts;
     }
 
@@ -130,6 +142,7 @@ export class WorkerState {
             if (obj[key] && typeof obj[key] === 'object') this.removeEmpty(obj[key]);
             else if (obj[key] === undefined) delete obj[key];
         });
+
         return obj;
     }
 

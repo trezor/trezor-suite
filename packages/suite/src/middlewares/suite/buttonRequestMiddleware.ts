@@ -31,6 +31,7 @@ const buttonRequest =
                         passphraseOnDevice: true,
                     },
                 });
+
                 return action;
             }
         }
@@ -51,6 +52,7 @@ const buttonRequest =
                         ...action,
                         payload: { ...action.payload, code: 'ButtonRequest_SignTx' },
                     });
+
                     return action;
                 }
             }

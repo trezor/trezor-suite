@@ -20,6 +20,7 @@ const AddButton = ({ field, onAdd, label }: AddButtonProps) => {
     if (field.batch.length > 1) {
         return null;
     }
+
     return (
         <AddBatchButton title="Add batch" onClick={onAdd}>
             <Icon icon="PLUS" onClick={() => {}} /> {label}

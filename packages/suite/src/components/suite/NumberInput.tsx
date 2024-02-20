@@ -165,6 +165,7 @@ export const NumberInput = <TFieldValues extends FieldValues>({
 
             // clean so that it's compatible with Number() and localize
             const formattedNumber = localizeNumber(cleanValue, locale);
+
             return handleSetDisplayValue(formattedNumber);
         },
         [inputRef, locale],
@@ -344,6 +345,7 @@ export const NumberInput = <TFieldValues extends FieldValues>({
         if (/[\d.,]/g.test(e.data)) {
             // reset the redo history when a new digit is entered
             setRedoHistory([]);
+
             return;
         }
 
@@ -436,18 +438,21 @@ export const NumberInput = <TFieldValues extends FieldValues>({
 
             if (['ArrowLeft', 'ArrowRight'].includes(pressedKey)) {
                 handleKeyNav(e);
+
                 return;
             }
 
             if (!e.shiftKey && (e.ctrlKey || e.metaKey) && pressedKey.toLocaleLowerCase() === 'z') {
                 e.preventDefault();
                 handleUndo();
+
                 return;
             }
 
             if (e.shiftKey && (e.ctrlKey || e.metaKey) && pressedKey.toLocaleLowerCase() === 'z') {
                 e.preventDefault();
                 handleRedo();
+
                 return;
             }
 

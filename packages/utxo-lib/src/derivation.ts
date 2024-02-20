@@ -42,6 +42,7 @@ const validateVersion = (version: number): version is VersionBytes =>
 const getVersion = (xpub: string) => {
     const version = Buffer.from(decode(xpub)).readUInt32BE();
     if (!validateVersion(version)) throw new Error(`Unknown xpub version: ${xpub}`);
+
     return version;
 };
 
@@ -86,6 +87,7 @@ const getXpubInfo = (xpub: string, network: Network) => {
     const node = getBip32Node(xpub, version, network);
     const account = `${(node.index << 1) >>> 1}'`; // Unsigned to signed conversion
     const levels = [purpose, coinType, account];
+
     return {
         levels,
         paymentType,
@@ -101,6 +103,7 @@ const getDescriptorInfo = (paymentType: PaymentType, descriptor: string, network
     const [_fingerprint, ...levels] = path.split('/');
     const version = getVersion(xpub);
     const node = getBip32Node(xpub, version, network);
+
     return {
         levels,
         paymentType,
@@ -121,6 +124,7 @@ export const getXpubOrDescriptorInfo = (descriptor: string, network: Network = b
     if (descriptor.startsWith('tr(')) {
         return getDescriptorInfo('p2tr', descriptor, network);
     }
+
     return getXpubInfo(descriptor, network);
 };
 
@@ -138,6 +142,7 @@ export const deriveAddresses = (
     const getAddress = getPubkeyToPayment(paymentType, network);
     const change = type === 'receive' ? 0 : 1;
     const changeNode = node.derive(change);
+
     return Array.from(Array(count).keys())
         .map(i => changeNode.derive(from + i).publicKey)
         .map(a => getAddress(a).address || throwError('Cannot convert pubkey to address'))

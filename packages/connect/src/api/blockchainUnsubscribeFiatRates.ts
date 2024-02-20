@@ -38,6 +38,7 @@ export default class BlockchainUnsubscribeFiatRates extends AbstractMethod<
 
     async run() {
         const backend = await initBlockchain(this.params.coinInfo, this.postMessage);
+
         return backend.unsubscribeFiatRates();
     }
 }

@@ -4,6 +4,7 @@ import type { GetBlockHash as Res } from '@trezor/blockchain-link-types/lib/resp
 
 const getBlockHash: Api<Req, Res> = async (client, payload) => {
     const blockheader = await client.request('blockchain.block.header', payload);
+
     return blockheaderToBlockhash(blockheader);
 };
 

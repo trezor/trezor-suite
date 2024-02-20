@@ -36,5 +36,6 @@ export const Header = ({ account }: HeaderProps) => {
             </Content>
         );
     }
+
     return <H2>{title}</H2>;
 };

@@ -38,6 +38,7 @@ export default class TezosGetAddress extends AbstractMethod<'tezosGetAddress', P
 
         this.params = payload.bundle.map(batch => {
             const path = validatePath(batch.path, 3);
+
             return {
                 address_n: path,
                 address: batch.address,
@@ -61,6 +62,7 @@ export default class TezosGetAddress extends AbstractMethod<'tezosGetAddress', P
                 fromHardened(this.params[0].address_n[2]) + 1
             }`;
         }
+
         return 'Export multiple Tezos addresses';
     }
 
@@ -93,6 +95,7 @@ export default class TezosGetAddress extends AbstractMethod<'tezosGetAddress', P
         const uiResp = await uiPromise.promise;
 
         this.confirmed = uiResp.payload;
+
         return this.confirmed;
     }
 
@@ -111,6 +114,7 @@ export default class TezosGetAddress extends AbstractMethod<'tezosGetAddress', P
 
         // wait for user action
         const uiResp = await uiPromise.promise;
+
         return uiResp.payload;
     }
 
@@ -121,6 +125,7 @@ export default class TezosGetAddress extends AbstractMethod<'tezosGetAddress', P
             show_display,
             chunkify,
         });
+
         return response.message;
     }
 
@@ -164,6 +169,7 @@ export default class TezosGetAddress extends AbstractMethod<'tezosGetAddress', P
 
             this.progress++;
         }
+
         return this.hasBundle ? responses : responses[0];
     }
 }

@@ -25,6 +25,7 @@ export default class UnlockPath extends AbstractMethod<'unlockPath', PROTO.Unloc
     async run() {
         const cmd = this.device.getCommands();
         const { message } = await cmd.unlockPath(this.params);
+
         return {
             address_n: this.params.address_n,
             mac: message.mac,

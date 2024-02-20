@@ -203,5 +203,6 @@ export const getGraphDataForInterval =
                 }
             }
         });
+
         return data;
     };

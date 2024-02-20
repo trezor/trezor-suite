@@ -21,6 +21,7 @@ const getDeviceInfo = (device?: TrezorDevice) => {
     if (!device?.features) {
         return '';
     }
+
     return `Trezor ${device.features.internal_model} ${getFirmwareVersion(device)} ${
         device.firmwareType
     } (revision ${device.features.revision})`;
@@ -33,6 +34,7 @@ const getTransportInfo = (transport?: Partial<TransportInfo>) => {
     if (!transport?.type) {
         return 'N/A';
     }
+
     return transport?.type === 'BridgeTransport'
         ? `${transport.type} ${transport.version}`
         : transport.type;

@@ -60,6 +60,7 @@ const aggregateTransactions = (txs: (Transaction & { blockTime: number })[], gro
         });
         i = j;
     }
+
     return result;
 };
 

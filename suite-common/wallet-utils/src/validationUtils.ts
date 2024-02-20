@@ -6,6 +6,7 @@ import { Account } from '@suite-common/wallet-types';
 const getNetworkType = (symbol: Account['symbol']) => {
     if (symbol === 'regtest') return symbol;
     const testnets = getTestnetSymbols();
+
     return testnets.includes(symbol) ? 'testnet' : 'prod';
 };
 
@@ -51,6 +52,7 @@ export const isAddressDeprecated = (address: string, symbol: Account['symbol']) 
 export const isTaprootAddress = (address: string, symbol: Account['symbol']) => {
     const networkType = getNetworkType(symbol);
     const updatedSymbol = getCoinFromTestnet(symbol);
+
     return (
         addressValidator.getAddressType(address, updatedSymbol.toUpperCase(), networkType) ===
         'p2tr'
@@ -64,6 +66,7 @@ export const isDecimalsValid = (value: string, decimals: number) => {
     const DECIMALS_RE = new RegExp(
         `^(0|0\\.([0-9]{0,${decimals}})?|[1-9][0-9]*\\.?([0-9]{0,${decimals}})?)$`,
     );
+
     return DECIMALS_RE.test(value);
 };
 
@@ -83,5 +86,6 @@ export const isHexValid = (value: string, prefix?: string) => {
     if (value.length % 2 !== 0) return false;
     // TODO: ETH may contain uppercase? does BTC as well?
     if (!/^[0-9A-Fa-f]+$/.test(value)) return false;
+
     return true;
 };

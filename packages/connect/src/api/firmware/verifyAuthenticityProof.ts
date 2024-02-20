@@ -100,6 +100,7 @@ export const verifyAuthenticityProof = async ({
 
     if (!rootPubKey) {
         const configExpired = new Date(config.timestamp).getTime() < caCertValidityFrom;
+
         return {
             valid: false,
             configExpired,

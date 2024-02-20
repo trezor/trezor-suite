@@ -94,6 +94,7 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
         if (uniqNetworks.length === 1 && uniqNetworks[0]) {
             return getNetworkLabel('Export multiple #NETWORK addresses', uniqNetworks[0]);
         }
+
         return 'Export multiple addresses';
     }
 
@@ -126,6 +127,7 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
         const uiResp = await uiPromise.promise;
 
         this.confirmed = uiResp.payload;
+
         return this.confirmed;
     }
 
@@ -144,11 +146,13 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
 
         // wait for user action
         const uiResp = await uiPromise.promise;
+
         return uiResp.payload;
     }
 
     _call({ address_n, show_display, encoded_network, chunkify }: Params) {
         const cmd = this.device.getCommands();
+
         return cmd.ethereumGetAddress({
             address_n,
             show_display,
@@ -200,6 +204,7 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
 
             this.progress++;
         }
+
         return this.hasBundle ? responses : responses[0];
     }
 }

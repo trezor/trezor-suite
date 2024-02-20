@@ -8,6 +8,7 @@ export const getDesktopApi = () => {
         // @ts-expect-error
         api = window.desktopApi;
     }
+
     return api || factory();
 };
 

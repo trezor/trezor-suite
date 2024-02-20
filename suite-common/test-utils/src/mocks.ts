@@ -157,6 +157,7 @@ const getConnectDevice = (dev?: Partial<Device>, feat?: Partial<Features>): Devi
     }
 
     const features = getDeviceFeatures(feat);
+
     return {
         id: features.device_id,
         path: '',
@@ -200,6 +201,7 @@ const getSuiteDevice = (dev?: Partial<TrezorDevice>, feat?: Partial<Features>): 
             ...device,
         } as TrezorDevice;
     }
+
     return device as TrezorDevice;
 };
 
@@ -263,6 +265,7 @@ const getWalletTransaction = (t?: Partial<WalletAccountTransaction>): WalletAcco
 // Mocked @trezor/suite-analytics package used in various tests
 const getAnalytics = () => {
     const originalModule = jest.requireActual('@trezor/suite-analytics');
+
     return {
         __esModule: true, // this property makes it work
         ...originalModule,
@@ -526,6 +529,7 @@ const mockedBlockchainNetworks = networksCompatibility.reduce((result, network) 
                   }
                 : {},
     };
+
     return result;
 }, {} as BlockchainNetworks);
 
@@ -538,6 +542,7 @@ type MockTrezorConnect = jest.Mocked<TrezorConnect> & {
 const getTrezorConnectMock = () => {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const pkg = require('@trezor/connect');
+
     return {
         ...pkg.default,
         setTestFixtures: pkg.setTestFixtures,

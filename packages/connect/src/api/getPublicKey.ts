@@ -95,6 +95,7 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
         const uiResp = await uiPromise.promise;
 
         this.confirmed = uiResp.payload;
+
         return this.confirmed;
     }
 
@@ -119,6 +120,7 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
 
         // wait for user action
         const uiResp = await uiPromise.promise;
+
         return uiResp.payload;
     }
 
@@ -140,6 +142,7 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
                 );
             }
         }
+
         return this.hasBundle ? responses : responses[0];
     }
 }

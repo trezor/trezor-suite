@@ -60,6 +60,7 @@ export function p2sh(a: Payment, opts?: PaymentOpts): Payment {
 
     const _redeem = lazy.value((): Payment => {
         const chunks = _chunks();
+
         return {
             network,
             output: chunks[chunks.length - 1] as Buffer,
@@ -71,6 +72,7 @@ export function p2sh(a: Payment, opts?: PaymentOpts): Payment {
     // output dependents
     lazy.prop(o, 'address', () => {
         if (!o.hash) return;
+
         return bs58check.encodeAddress(o.hash, network!.scriptHash, network);
     });
     lazy.prop(o, 'hash', () => {
@@ -81,16 +83,19 @@ export function p2sh(a: Payment, opts?: PaymentOpts): Payment {
     });
     lazy.prop(o, 'output', () => {
         if (!o.hash) return;
+
         return bscript.compile([OPS.OP_HASH160, o.hash, OPS.OP_EQUAL]);
     });
 
     // input dependents
     lazy.prop(o, 'redeem', () => {
         if (!a.input) return;
+
         return _redeem();
     });
     lazy.prop(o, 'input', () => {
         if (!a.redeem || !a.redeem.input || !a.redeem.output) return;
+
         return bscript.compile(
             ([] as Stack).concat(bscript.decompile(a.redeem.input) as Stack, a.redeem.output),
         );
@@ -102,6 +107,7 @@ export function p2sh(a: Payment, opts?: PaymentOpts): Payment {
     lazy.prop(o, 'name', () => {
         const nameParts = ['p2sh'];
         if (o.redeem !== undefined && o.redeem.name !== undefined) nameParts.push(o.redeem.name!);
+
         return nameParts.join('-');
     });
 

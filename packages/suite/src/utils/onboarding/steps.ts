@@ -25,6 +25,7 @@ export const isStepUsed = (step: Step, getState: GetState) => {
             debug: { isUnlockedBootloaderAllowed },
         } = state.suite.settings;
         const isBootloaderUnlocked = device?.features?.bootloader_locked === false;
+
         return (
             !isDeviceAuthenticityCheckDisabled &&
             (!isUnlockedBootloaderAllowed || !isBootloaderUnlocked)
@@ -36,6 +37,7 @@ export const isStepUsed = (step: Step, getState: GetState) => {
     if (path.length === 0) {
         return true;
     }
+
     return path.every((pathMember: AnyPath) =>
         step.path?.some((stepPathMember: AnyPath) => stepPathMember === pathMember),
     );
@@ -46,6 +48,7 @@ export const findNextStep = (currentStepId: AnyStepId, steps: Step[]) => {
     if (!steps[currentIndex + 1]) {
         throw new Error('no next step exists');
     }
+
     return steps[currentIndex + 1];
 };
 
@@ -54,5 +57,6 @@ export const findPrevStep = (currentStepId: AnyStepId, steps: Step[]) => {
     if (!steps[currentIndex - 1]) {
         throw new Error('no prev step exists');
     }
+
     return steps[currentIndex - 1];
 };

@@ -41,6 +41,7 @@ const UnexpectedState = ({ children }: UnexpectedStateProps) => {
             // we don't know
             return null;
         }
+
         return deviceId !== prevDeviceId;
     }, [prevDevice, device]);
 

@@ -16,6 +16,7 @@ export const useClearAnchorHighlightOnClick = (elementRef: RefObject<HTMLElement
 
         if (parent && anchor) {
             parent.addEventListener('click', removeAnchor);
+
             return () => parent.removeEventListener('click', removeAnchor);
         }
     }, [elementRef, anchor, dispatch]);

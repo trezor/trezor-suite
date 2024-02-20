@@ -70,6 +70,7 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
             if (Array.isArray(allQuotes)) {
                 if (allQuotes.length === 0) {
                     timer.stop();
+
                     return;
                 }
                 const [quotes, alternativeQuotes] = processQuotes(allQuotes);
@@ -90,6 +91,7 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
     useEffect(() => {
         if (!quotesRequest) {
             navigateToSellForm();
+
             return;
         }
 
@@ -154,6 +156,7 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
                         error: response.trade.error,
                     }),
                 );
+
                 return undefined;
             }
             if (
@@ -168,8 +171,10 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
                     setSellStep('SEND_TRANSACTION');
                 }
                 dispatch(submitRequestForm(response.tradeForm?.form));
+
                 return undefined;
             }
+
             return response.trade;
         }
         const errorMessage = 'No response from the server';
@@ -193,6 +198,7 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
                 !!quote.quoteId && !(quote.bankAccounts && quote.bankAccounts.some(b => b.verified))
             );
         }
+
         return false;
     };
 
@@ -331,5 +337,6 @@ CoinmarketSellOffersContext.displayName = 'CoinmarketSellOffersContext';
 export const useCoinmarketSellOffersContext = () => {
     const context = useContext(CoinmarketSellOffersContext);
     if (context === null) throw Error('CoinmarketSellOffersContext used without Context');
+
     return context;
 };

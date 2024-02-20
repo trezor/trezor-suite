@@ -12,6 +12,7 @@ export const waitAndClick = async (page: Page, buttons: string[]) => {
 // Helper to use data-test attributes to find elements.
 export const findElementByDataTest = async (page: Page, dataTest: string, timeout?: number) => {
     await page.waitForSelector(`[data-test='${dataTest}']`, { state: 'visible', timeout });
+
     return page.$(`[data-test='${dataTest}']`);
 };
 
@@ -118,6 +119,7 @@ export const checkHasLogs = async (logPage: Page) => {
     if (await locator.isVisible()) {
         return true;
     }
+
     return false;
 };
 
@@ -128,6 +130,7 @@ export const downloadLogs = async (logPage: Page, downloadLogPath: string) => {
     ]);
 
     await download.saveAs(downloadLogPath);
+
     return download;
 };
 

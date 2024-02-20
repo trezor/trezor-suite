@@ -17,5 +17,6 @@ export const TorLoadingModal = ({ onCancel, decision }: TorLoadingModalProps) =>
         onCancel();
         decision.resolve(result);
     };
+
     return <TorLoader ModalWrapper={SmallModal} callback={callback} />;
 };

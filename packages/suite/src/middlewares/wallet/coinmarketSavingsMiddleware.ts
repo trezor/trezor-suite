@@ -109,6 +109,7 @@ const coinmarketSavingsMiddleware =
         }
 
         next(action);
+
         return action;
     };
 export default coinmarketSavingsMiddleware;

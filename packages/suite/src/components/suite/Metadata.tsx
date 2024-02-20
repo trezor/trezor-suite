@@ -16,6 +16,7 @@ export const Metadata = ({
 }: MetadataProps) => {
     const intl = useIntl();
     description = description || intl.formatMessage(messages.TR_SUITE_META_DESCRIPTION);
+
     return (
         <Helmet>
             <title>{title}</title>

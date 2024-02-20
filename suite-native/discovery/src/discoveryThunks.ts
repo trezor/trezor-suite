@@ -53,6 +53,7 @@ const getBatchSizeByCoin = (coin: NetworkSymbol): number => {
     if (coin in DISCOVERY_BATCH_SIZE_PER_COIN) {
         return DISCOVERY_BATCH_SIZE_PER_COIN[coin]!;
     }
+
     return DISCOVERY_DEFAULT_BATCH_SIZE;
 };
 
@@ -309,6 +310,7 @@ const discoverNetworkBatchThunk = createThunk(
 
         if (isIncompatibleCardanoType) {
             dispatch(finishNetworkTypeDiscoveryThunk());
+
             return;
         }
 
@@ -347,6 +349,7 @@ const discoverNetworkBatchThunk = createThunk(
                     round: round + 1,
                 }),
             );
+
             return;
         }
 
@@ -438,6 +441,7 @@ export const startDescriptorPreloadedDiscoveryThunk = createThunk(
             console.warn(
                 `Warning discovery for device ${deviceState} already exists. Skipping discovery.`,
             );
+
             return;
         }
 

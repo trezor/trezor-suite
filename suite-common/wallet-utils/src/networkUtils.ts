@@ -3,11 +3,13 @@ export const httpRequest = async (url: string, type = 'text'): Promise<any> => {
     if (response.ok) {
         if (type === 'json') {
             const txt = await response.text();
+
             return JSON.parse(txt);
         }
         if (type === 'binary') {
             return response.arrayBuffer();
         }
+
         return response.text();
     }
     throw new Error(`${url} ${response.statusText}`);

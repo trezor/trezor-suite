@@ -52,6 +52,7 @@ const getTransactionData = (
             const { index, hash } = readOutpoint(Coin.Outpoint);
             const internal = myInputsInRound.find(a => compareOutpoint(a.outpoint, Coin.Outpoint));
             const address = getAddressFromScriptPubKey(Coin.TxOut.ScriptPubKey, options.network);
+
             return {
                 path: internal?.path,
                 outpoint: internal?.outpoint || Coin.Outpoint, // NOTE: internal outpoints are in lowercase, coordinators in uppercase
@@ -72,6 +73,7 @@ const getTransactionData = (
                 o => Output.ScriptPubKey === o.scriptPubKey,
             );
             const address = getAddressFromScriptPubKey(Output.ScriptPubKey, options.network);
+
             return {
                 path: internalOutput?.path,
                 address,
@@ -98,6 +100,7 @@ const updateRawLiquidityClue = async (
             const externalAmounts = tx.outputs
                 .filter(o => !account.changeAddresses.find(addr => addr.address === o.address))
                 .map(o => o.amount);
+
             return middleware.updateLiquidityClue(
                 account.rawLiquidityClue,
                 round.roundParameters.MaxSuggestedAmount,
@@ -174,12 +177,14 @@ export const transactionSigning = async (
         inputsWithError.forEach(input => {
             logger.error(`Trying to sign input with assigned error ${input.error?.message}`);
         });
+
         return round;
     }
 
     const alreadyRequested = round.inputs.some(input => input.requested?.type === 'signature');
     if (alreadyRequested) {
         logger.error(`Signature request was not fulfilled`);
+
         return round;
     }
 
@@ -187,6 +192,7 @@ export const transactionSigning = async (
         logger.warn(`Missing affiliate request. Waiting for status`);
         round.setSessionPhase(SessionPhase.AwaitingCoinjoinTransaction);
         round.transactionSignTries.push(Date.now());
+
         return round;
     }
 
@@ -194,6 +200,7 @@ export const transactionSigning = async (
     const resolvedTime = Math.max(
         ...round.inputs.map(i => {
             const res = i.getResolvedRequest('signature');
+
             return res?.timestamp || 0;
         }),
     );
@@ -211,6 +218,7 @@ export const transactionSigning = async (
             );
             round.transactionData = transactionData;
             round.liquidityClues = liquidityClues;
+
             return round;
         }
 

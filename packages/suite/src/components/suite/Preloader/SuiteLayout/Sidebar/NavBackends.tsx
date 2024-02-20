@@ -54,6 +54,7 @@ const BackendRow = ({
     blockchain: BlockchainState;
 }) => {
     const chain = blockchain[coin];
+
     return (
         <RowWrapper>
             <CoinLogo symbol={coin} />

@@ -46,6 +46,7 @@ export const findAncestorNodes = (node: GuideNode, root: GuideCategory): GuideNo
                 if (ancestorNode === undefined) {
                     throw Error(`Ancestor node of '${node.id}' node was not found!`);
                 }
+
                 return true;
             })
     );

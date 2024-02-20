@@ -5,5 +5,6 @@ export const getTxsPerPage = (networkType: Account['networkType']) => {
     if (networkType === 'solana') {
         return 5;
     }
+
     return settingsCommonConfig.TXS_PER_PAGE;
 };

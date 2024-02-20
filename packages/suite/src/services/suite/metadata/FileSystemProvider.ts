@@ -35,6 +35,7 @@ class FileSystemProvider extends AbstractMetadataProvider {
         if (!result.success && result.code !== 'ENOENT') {
             return this.error('PROVIDER_ERROR', result.error);
         }
+
         return this.ok(result.success ? Buffer.from(result.payload, 'hex') : undefined);
     }
 
@@ -71,6 +72,7 @@ class FileSystemProvider extends AbstractMetadataProvider {
         if (!response.success) {
             return this.error('PROVIDER_ERROR', response.error);
         }
+
         return this.ok(undefined);
     }
 

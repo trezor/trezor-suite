@@ -67,6 +67,7 @@ export const DevicePaginationButton = ({
     const { applyStyle } = useNativeStyles();
     const chevronIcon: Extract<IconName, 'chevronDown' | 'chevronUp'> =
         activePage === 1 ? 'chevronDown' : 'chevronUp';
+
     return (
         <Pressable
             onPress={onPress}

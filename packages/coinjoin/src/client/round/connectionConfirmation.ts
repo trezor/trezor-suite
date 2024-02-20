@@ -31,6 +31,7 @@ const confirmInput = async (
     }
     if (input.confirmedAmountCredentials && input.confirmedVsizeCredentials) {
         options.logger.info(`Input ~~${input.outpoint}~~ already confirmed. Skipping.`);
+
         return input;
     }
 
@@ -75,6 +76,7 @@ const confirmInput = async (
         !confirmationData.RealVsizeCredentials
     ) {
         logger.info(`Confirmed in phase ${round.phase} ~~${input.outpoint}~~ in ~~${round.id}~~`);
+
         return input;
     }
 
@@ -198,6 +200,7 @@ export const connectionConfirmation = async (
             if (!input.getConfirmationInterval()) {
                 input.setConfirmationInterval(interval);
             }
+
             return interval.promise;
         }),
     ).then(result =>

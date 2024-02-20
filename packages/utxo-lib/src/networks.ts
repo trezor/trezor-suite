@@ -281,6 +281,7 @@ export function isNetworkType(type: NetworkTypes, network?: Network) {
     } catch (e) {
         return false;
     }
+
     return !!NETWORK_TYPES[type].find(
         n =>
             n.bip32.public === network.bip32.public &&

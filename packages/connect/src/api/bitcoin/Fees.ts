@@ -11,6 +11,7 @@ const convertFeeRate = (fee: string, minFee: number) => {
     if (feePerKB.isNaN() || feePerKB.lte('0')) return;
     const feePerB = feePerKB.div(1000);
     if (feePerB.lt(minFee)) return minFee.toString();
+
     return feePerB.isInteger() ? feePerB.toString() : feePerB.toFixed(2);
 };
 
@@ -19,6 +20,7 @@ const fillGap = (from: number, step: number, size: number) => {
     for (let i = from + step; i <= from + size; i += step) {
         fill.push(i);
     }
+
     return fill;
 };
 
@@ -42,6 +44,7 @@ const findNearest = (requested: number, blocks: Blocks) => {
     while (typeof blocks[index] !== 'string' && index > 0) {
         index--;
     }
+
     // return something or undefined
     return blocks[index];
 };
@@ -57,6 +60,7 @@ const findBlocksForFee = (feePerUnit: string, blocks: Blocks) => {
     // find first occurrence of value lower or equal than requested
     const lower = blocks.find(b => typeof b === 'string' && bn.gte(b));
     if (!lower) return -1;
+
     // if not found get latest know value
     return blocks.indexOf(lower);
 };
@@ -93,6 +97,7 @@ export class FeeLevels {
         } catch (error) {
             // silent
         }
+
         return this.levels;
     }
 
@@ -117,6 +122,7 @@ export class FeeLevels {
                     // otherwise fill every 6th block (1h)
                     const incr = gap <= 30 ? 1 : 6;
                     const fill = fillGap(from, incr, gap);
+
                     // add to result
                     return result.concat(fill);
                 }, []);

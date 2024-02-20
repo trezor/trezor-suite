@@ -32,6 +32,7 @@ export function readUInt64LE(buffer: Buffer, offset: number) {
 export function readUInt64LEasString(buffer: Buffer, offset: number) {
     try {
         const result = readUInt64LE(buffer, offset);
+
         return result.toString();
     } catch (error) {
         const aUint = buffer.readUInt32LE(offset);
@@ -56,6 +57,7 @@ export function writeUInt64LE(buffer: Buffer, value: number, offset: number) {
     verifuint(value, 0x001fffffffffffff);
     buffer.writeInt32LE(value & -1, offset);
     buffer.writeUInt32LE(Math.floor(value / 0x100000000), offset + 4);
+
     return offset + 8;
 }
 
@@ -65,6 +67,7 @@ export function writeUInt64LEasString(buffer: Buffer, value: string | number, of
     }
     const v = new Int64LE(value);
     v.toBuffer().copy(buffer, offset);
+
     return offset + 8;
 }
 
@@ -74,6 +77,7 @@ export function writeInt64LE(buffer: Buffer, value: number, offset: number) {
     for (let i = 0; i < 8; i++) {
         buffer.writeUInt8(a[i], offset + i);
     }
+
     return offset + 8;
 }
 
@@ -88,12 +92,14 @@ export function readVarInt(buffer: Buffer, offset: number) {
 
 export function writeVarInt(buffer: Buffer, number: number, offset: number) {
     varuint.encode(number, buffer, offset);
+
     return varuint.encode.bytes;
 }
 
 export function cloneBuffer(buffer: Buffer): Buffer {
     const clone = Buffer.allocUnsafe(buffer.length);
     buffer.copy(clone);
+
     return clone;
 }
 
@@ -193,48 +199,56 @@ export class BufferReader {
     readUInt8(): number {
         const result = this.buffer.readUInt8(this.offset);
         this.offset++;
+
         return result;
     }
 
     readUInt16(): number {
         const result = this.buffer.readUInt16LE(this.offset);
         this.offset += 2;
+
         return result;
     }
 
     readInt32(): number {
         const result = this.buffer.readInt32LE(this.offset);
         this.offset += 4;
+
         return result;
     }
 
     readUInt32(): number {
         const result = this.buffer.readUInt32LE(this.offset);
         this.offset += 4;
+
         return result;
     }
 
     readInt64(): number {
         const result = readInt64LE(this.buffer, this.offset);
         this.offset += 8;
+
         return result;
     }
 
     readUInt64() {
         const result = readUInt64LE(this.buffer, this.offset);
         this.offset += 8;
+
         return result;
     }
 
     readUInt64String() {
         const result = readUInt64LEasString(this.buffer, this.offset);
         this.offset += 8;
+
         return result;
     }
 
     readVarInt(): number {
         const vi = varuint.decode(this.buffer, this.offset);
         this.offset += varuint.decode.bytes;
+
         return vi;
     }
 
@@ -244,6 +258,7 @@ export class BufferReader {
         }
         const result = this.buffer.subarray(this.offset, this.offset + n);
         this.offset += n;
+
         return result;
     }
 
@@ -255,6 +270,7 @@ export class BufferReader {
         const count = this.readVarInt();
         const vector: Buffer[] = [];
         for (let i = 0; i < count; i++) vector.push(this.readVarSlice());
+
         return vector;
     }
 }

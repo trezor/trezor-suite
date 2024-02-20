@@ -23,6 +23,7 @@ const BottomSheetGestureHandler = gestureHandlerRootHOC<{ children: ReactNode }>
 
 export const BottomSheetContainer = ({ children, isVisible, onClose }: SheetProps) => {
     const { applyStyle } = useNativeStyles();
+
     return (
         <RNModal transparent visible={isVisible} onRequestClose={onClose}>
             <BottomSheetGestureHandler>

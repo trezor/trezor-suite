@@ -19,6 +19,7 @@ const CoinSelect = ({ field, onChange }: CoinSelectProps) => (
                 if (!Number.isNaN(parseInt(value, 10))) {
                     return onChange(field, Number.parseInt(value, 10));
                 }
+
                 return onChange(field, value);
             }}
             options={field.data}

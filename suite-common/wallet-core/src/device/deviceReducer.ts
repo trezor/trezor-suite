@@ -90,6 +90,7 @@ const connectDevice = (draft: State, device: Device) => {
             metadata: {},
             ts: new Date().getTime(),
         });
+
         return;
     }
 
@@ -140,6 +141,7 @@ const connectDevice = (draft: State, device: Device) => {
             ) {
                 return merge(d, { ...device, connected: true, available: false });
             }
+
             return merge(d, { ...device, connected: true, available: true });
         });
 
@@ -200,6 +202,7 @@ const changeDevice = (
                 const available = d.useEmptyPassphrase
                     ? true
                     : !!device.features.passphrase_protection;
+
                 return merge(d, { ...device, ...extended, available });
             }
             if (
@@ -216,6 +219,7 @@ const changeDevice = (
                     useEmptyPassphrase: true, // device with disabled passphrase_protection can have only standard wallet
                 });
             }
+
             return merge(d, { ...device, ...extended });
         });
         // fill draft with affectedDevices values
@@ -438,6 +442,7 @@ const addButtonRequest = (
     // update state
     if (!buttonRequest) {
         draft.devices[index].buttonRequests = [];
+
         return;
     }
     draft.devices[index].buttonRequests.push(buttonRequest);
@@ -531,11 +536,13 @@ export const selectDeviceFeatures = (state: DeviceRootState) =>
 
 export const selectIsDeviceProtectedByPin = (state: DeviceRootState) => {
     const features = selectDeviceFeatures(state);
+
     return !!features?.pin_protection;
 };
 
 export const selectIsDeviceProtectedByWipeCode = (state: DeviceRootState) => {
     const features = selectDeviceFeatures(state);
+
     return !!features?.wipe_code_protection;
 };
 
@@ -544,6 +551,7 @@ export const selectDeviceButtonRequests = (state: DeviceRootState) =>
 
 export const selectDeviceButtonRequestsCodes = (state: DeviceRootState) => {
     const buttonRequests = selectDeviceButtonRequests(state);
+
     return buttonRequests.map(r => r.code);
 };
 
@@ -560,6 +568,7 @@ export const selectDeviceRequestedPin = (state: DeviceRootState) => {
 
 export const selectIsUnacquiredDevice = (state: DeviceRootState) => {
     const deviceType = selectDeviceType(state);
+
     return deviceType === 'unacquired';
 };
 
@@ -587,6 +596,7 @@ export const selectIsConnectedDeviceUninitialized = (state: DeviceRootState) => 
 
 export const selectIsDeviceAuthorized = (state: DeviceRootState) => {
     const device = selectDevice(state);
+
     return !!device?.state;
 };
 
@@ -607,6 +617,7 @@ export const selectDeviceUnavailableCapabilities = (state: DeviceRootState) =>
 
 export const selectDeviceStatus = (state: DeviceRootState) => {
     const device = selectDevice(state);
+
     return device && getStatus(device);
 };
 
@@ -653,16 +664,19 @@ export const selectDeviceById = (state: DeviceRootState, deviceId: TrezorDevice[
 
 export const selectDeviceAuthenticity = (state: DeviceRootState) => {
     const device = selectDevice(state);
+
     return device?.id ? state.device.deviceAuthenticity?.[device.id] : undefined;
 };
 
 export const selectIsPortfolioTrackerDevice = (state: DeviceRootState) => {
     const device = selectDevice(state);
+
     return device?.id === PORTFOLIO_TRACKER_DEVICE_ID;
 };
 
 export const selectDeviceLabelById = (state: DeviceRootState, id: TrezorDevice['id']) => {
     const device = selectDeviceById(state, id);
+
     return device?.label ?? null;
 };
 
@@ -671,56 +685,67 @@ export const selectDeviceNameById = (
     id: TrezorDevice['id'],
 ): string | null => {
     const device = selectDeviceById(state, id);
+
     return device?.name ?? null;
 };
 
 export const selectDeviceLabel = (state: DeviceRootState) => {
     const selectedDevice = selectDevice(state);
+
     return selectDeviceLabelById(state, selectedDevice?.id);
 };
 
 export const selectDeviceId = (state: DeviceRootState) => {
     const selectedDevice = selectDevice(state);
+
     return selectedDevice?.id ?? null;
 };
 
 export const selectDeviceModelById = (state: DeviceRootState, id: TrezorDevice['id']) => {
     const device = selectDeviceById(state, id);
+
     return device?.features?.internal_model ?? null;
 };
 
 export const selectDeviceModel = (state: DeviceRootState) => {
     const selectedDevice = selectDevice(state);
+
     return selectDeviceModelById(state, selectedDevice?.id);
 };
 
 export const selectDeviceReleaseInfo = (state: DeviceRootState) => {
     const device = selectDevice(state);
+
     return device?.firmwareRelease ?? null;
 };
 
 export const selectDeviceFirmwareVersion = memoize((state: DeviceRootState) => {
     const device = selectDevice(state);
+
     return getFirmwareVersionArray(device);
 });
 
 export const selectPersistedDeviceStates = (state: DeviceRootState) => {
     const devices = selectDevices(state);
+
     return [...devices.map(d => d.state), PORTFOLIO_TRACKER_DEVICE_STATE];
 };
 
 export const selectIsNoPhysicalDeviceConnected = (state: DeviceRootState) => {
     const devices = selectDevices(state);
+
     return devices.length === 1 && devices[0].id === PORTFOLIO_TRACKER_DEVICE_ID;
 };
 
 export const selectIsDeviceBitcoinOnly = (state: DeviceRootState) => {
     const features = selectDeviceFeatures(state);
+
     return features?.unit_btconly ?? false;
 };
 
 export const selectDeviceLanguage = (state: DeviceRootState) => {
     const features = selectDeviceFeatures(state);
+
     return features?.language ?? null;
 };
 

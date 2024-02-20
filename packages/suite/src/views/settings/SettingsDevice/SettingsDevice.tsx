@@ -32,6 +32,7 @@ const deviceSettingsUnavailable = (device?: TrezorDevice, transport?: Partial<Tr
     const wrongDeviceMode =
         (device?.mode && ['seedless'].includes(device.mode)) || device?.features?.recovery_mode;
     const firmwareUpdateRequired = device?.firmware === 'required';
+
     return noTransportAvailable || wrongDeviceType || wrongDeviceMode || firmwareUpdateRequired;
 };
 

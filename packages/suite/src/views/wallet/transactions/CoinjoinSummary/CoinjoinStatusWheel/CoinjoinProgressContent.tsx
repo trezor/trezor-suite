@@ -147,6 +147,7 @@ export const CoinjoinProgressContent = ({
                     </>
                 );
             }
+
             return (
                 <>
                     <StyledIcon icon="STOP" {...iconConfig} />
@@ -172,6 +173,7 @@ export const CoinjoinProgressContent = ({
                     </Tooltip>
                 );
             }
+
             return (
                 <>
                     <StyledIcon icon="STOP" {...iconConfig} />

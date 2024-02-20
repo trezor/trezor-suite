@@ -8,6 +8,7 @@ export const redacted = (message: string) =>
                       match.length - 2,
                   )}`;
               }
+
               return `[redacted]`;
           })
         : `${message}`;

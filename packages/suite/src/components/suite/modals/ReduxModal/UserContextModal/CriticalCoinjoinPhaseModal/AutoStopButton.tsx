@@ -103,6 +103,7 @@ const getButtonConfig = (
                 text: 'TR_DISABLE_AUTOSTOP_COINJOIN',
             };
         }
+
         return {
             icon: 'CHECK',
             iconSize: 10,

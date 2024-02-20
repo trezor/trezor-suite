@@ -66,6 +66,7 @@ interface ContainerProps {
 const Container = ({ title, description, cta, dataTestBase }: ContainerProps) => {
     const { isLocked } = useDevice();
     const actions = Array.isArray(cta) ? cta : [cta];
+
     return (
         <Wrapper data-test={`@exception/${dataTestBase}`}>
             <StyledImage image="UNI_ERROR" />
@@ -113,12 +114,14 @@ const discoveryFailedMessage = (discovery?: Discovery) => {
         const n = accountUtils.getNetwork(account.symbol)!;
         if (networkError.includes(account.symbol)) return value;
         networkError.push(account.symbol);
+
         return value.concat(
             <div key={account.symbol}>
                 {n.name}: {account.error}
             </div>,
         );
     }, [] as JSX.Element[]);
+
     return <>{details}</>;
 };
 

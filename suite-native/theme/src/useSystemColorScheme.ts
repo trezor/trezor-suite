@@ -7,5 +7,6 @@ export const useSystemColorScheme = (): ThemeColorVariant => {
     if (colorScheme === 'dark') {
         return 'dark';
     }
+
     return 'standard';
 };

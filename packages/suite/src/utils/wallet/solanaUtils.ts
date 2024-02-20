@@ -121,6 +121,7 @@ export const getAssociatedTokenAccountAddress = async (
     tokenMintAddress: string,
 ) => {
     const { PublicKey } = await loadSolanaLib();
+
     return PublicKey.findProgramAddressSync(
         [
             new PublicKey(baseAddress).toBuffer(),
@@ -183,6 +184,7 @@ export const buildCreateAssociatedTokenAccountInstruction = async (
         programId: new PublicKey(ASSOCIATED_TOKEN_PROGRAM_PUBLIC_KEY),
         data: Buffer.from([]),
     });
+
     return [txInstruction, associatedTokenAccountAddress] as const;
 };
 

@@ -38,6 +38,7 @@ export const init: Module = ({ mainWindow, store, mainThreadEmitter }) => {
             const port = await getFreePort();
             coinjoinProcess = new CoinjoinProcess(port);
         }
+
         return coinjoinProcess;
     };
 
@@ -94,16 +95,20 @@ export const init: Module = ({ mainWindow, store, mainThreadEmitter }) => {
                     if (method === 'disable') {
                         backend.dispose();
                         backends.splice(backends.indexOf(backend), 1);
+
                         return Promise.resolve();
                     }
+
                     return backend.request(method, params);
                 },
                 onAddListener: (eventName, listener) => {
                     logger.debug(SERVICE_NAME, `${BACKEND_CHANNEL} add listener ${eventName}`);
+
                     return backend.on(eventName, listener);
                 },
                 onRemoveListener: (eventName: any) => {
                     logger.debug(SERVICE_NAME, `${BACKEND_CHANNEL} remove listener ${eventName}`);
+
                     return backend.removeAllListeners(eventName) as any;
                 },
             };
@@ -124,6 +129,7 @@ export const init: Module = ({ mainWindow, store, mainThreadEmitter }) => {
                 logger[level](SERVICE_NAME, `${CLIENT_CHANNEL} ${payload}`);
             });
             clients.push(client);
+
             return {
                 onRequest: async (method, params) => {
                     logger.debug(SERVICE_NAME, `${CLIENT_CHANNEL} call ${method}`);
@@ -158,15 +164,18 @@ export const init: Module = ({ mainWindow, store, mainThreadEmitter }) => {
                             powerSaveBlocker.stopBlockingPowerSave();
                         }
                     }
+
                     // needs type casting
                     return (client[method] as any)(...params); // bind method to instance context
                 },
                 onAddListener: (eventName, listener) => {
                     logger.debug(SERVICE_NAME, `${CLIENT_CHANNEL} add listener ${eventName}`);
+
                     return client.on(eventName, listener);
                 },
                 onRemoveListener: eventName => {
                     logger.debug(SERVICE_NAME, `${CLIENT_CHANNEL} remove listener ${eventName}`);
+
                     return client.removeAllListeners(eventName);
                 },
             };

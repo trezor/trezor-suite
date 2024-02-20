@@ -11,6 +11,7 @@ export const getOauthReceiverUrl = () => {
     if (!desktopApi.available) {
         return `${window.location.origin}${getPrefixedURL('/static/oauth/oauth_receiver.html')}`;
     }
+
     return desktopApi.getHttpReceiverAddress('/oauth');
 };
 
@@ -46,6 +47,7 @@ const openWindowOnAnotherDomain = (
             closeCallback();
         }
     }, 1000);
+
     return win;
 };
 
@@ -107,6 +109,7 @@ const getDesktopHandlerInstance = (
             },
         );
     };
+
     return desktopHandlerInstance;
 };
 
@@ -133,6 +136,7 @@ const getWebHandlerInstance = (
             },
         );
     };
+
     return webHandlerInstance;
 };
 

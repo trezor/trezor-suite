@@ -13,6 +13,7 @@ export const DiscoveryProgress = () => {
     const { discovery, isDiscoveryRunning, calculateProgress } = useDiscovery();
 
     if (!discovery || !isDiscoveryRunning) return null;
+
     return (
         <StyledProgressBar value={calculateProgress()} data-test="@wallet/discovery-progress-bar" />
     );

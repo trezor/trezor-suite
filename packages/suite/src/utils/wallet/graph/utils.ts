@@ -14,6 +14,7 @@ import { ObjectType, TypeName, sumFiatValueMapInPlace } from './utilsShared';
 
 export const deviceGraphDataFilterFn = (d: GraphData, deviceState: string | undefined) => {
     if (!deviceState) return false;
+
     return d.account.deviceState === deviceState;
 };
 
@@ -71,6 +72,7 @@ export const enhanceBlockchainAccountHistory = (
             balance,
         };
     });
+
     return enhancedResponse;
 };
 
@@ -132,6 +134,7 @@ export const getMinMaxValueFromData = <TType extends TypeName>(
         .filter(m => !!m)
         .map(m => m!.toNumber());
     const minValue = Math.min(...minsToCompare);
+
     return [minValue, maxValue];
 };
 
@@ -141,6 +144,7 @@ export const sumFiatValueMap = (
 ) => {
     const newMap = { ...valueMap };
     sumFiatValueMapInPlace(newMap, obj);
+
     return newMap;
 };
 
@@ -153,6 +157,7 @@ const calcMinYDomain = (minMaxValues: [number, number]) => {
     const [minDataValue] = minMaxValues;
     const decimals = minDataValue.toString().split('.')[1]?.length;
     const min = decimals && decimals > 0 ? 1 / 10 ** decimals : 0.00000001;
+
     return min;
     // return 0.00000001;
 };
@@ -254,6 +259,7 @@ export const calcFakeGraphDataForTimestamps = (
                 balance: currentBalance,
             });
         });
+
         return balanceData;
     }
 

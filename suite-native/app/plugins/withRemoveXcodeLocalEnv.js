@@ -34,6 +34,7 @@ module.exports = config =>
                      * Now re-adds the content
                      */
                     await saveFile(fileLocal, contents);
+
                     return config;
                 },
             ]),

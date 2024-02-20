@@ -35,6 +35,7 @@ export class Parser {
             // Won't be shown in the UI anyway.
             return 'Suite Guide';
         }
+
         // For pages with children (i.e. Categories)
         // GitBook creates a directory with README.md.
         // Parse the title from there.
@@ -86,6 +87,7 @@ export class Parser {
         if (id.length !== 0) {
             return id;
         }
+
         // Use `/` as id for the root Node.
         return '/';
     }
@@ -168,6 +170,7 @@ export class Parser {
 
                 if (rightChild === undefined) {
                     console.warn(`Missing ${right.locales} alternative for ${leftChild.id}`);
+
                     return leftChild;
                 }
 
@@ -210,6 +213,7 @@ export class Parser {
                 .reduce((englishIndex, locale) => {
                     // Parse the locale's version of the content.
                     const otherIndex = this.parseTree(join(this.source, locale), locale);
+
                     // Merge it into the english index.
                     return this.zip(englishIndex, otherIndex);
                 }, englishIndex)

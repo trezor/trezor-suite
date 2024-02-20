@@ -93,6 +93,7 @@ const mockStore = configureStore<State, any>();
 
 const initStore = (state: State) => {
     const store = mockStore(state);
+
     return store;
 };
 

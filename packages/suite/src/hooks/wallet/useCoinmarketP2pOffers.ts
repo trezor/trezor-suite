@@ -37,6 +37,7 @@ export const useOffers = ({ selectedAccount }: UseOffersProps): ContextValues =>
 
             if (!response || response.quotes?.length === 0) {
                 timer.stop();
+
                 return;
             }
 
@@ -48,6 +49,7 @@ export const useOffers = ({ selectedAccount }: UseOffersProps): ContextValues =>
     useEffect(() => {
         if (!quotesRequest) {
             navigateToP2pForm();
+
             return;
         }
 
@@ -118,5 +120,6 @@ CoinmarketP2pOffersContext.displayName = 'CoinmarketP2pOffersContext';
 export const useCoinmarketP2pOffersContext = () => {
     const context = useContext(CoinmarketP2pOffersContext);
     if (context === null) throw Error('CoinmarketP2pOffersContext used without Context');
+
     return context;
 };

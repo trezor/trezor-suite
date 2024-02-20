@@ -50,6 +50,7 @@ const requestPrevTxInfo = ({
                 'Runtime',
                 `requestPrevTxInfo: Requested unknown TXINPUT: ${tx_hash}`,
             );
+
         return typedCall('TxAckPrevInput', 'TxRequest', {
             tx: { input: tx.inputs[details.request_index] },
         });
@@ -61,6 +62,7 @@ const requestPrevTxInfo = ({
                 'Runtime',
                 `requestPrevTxInfo: Requested unknown TXOUTPUT: ${tx_hash}`,
             );
+
         return typedCall('TxAckPrevOutput', 'TxRequest', {
             tx: { output: tx.bin_outputs[details.request_index] },
         });
@@ -72,6 +74,7 @@ const requestPrevTxInfo = ({
                 'Runtime',
                 `requestPrevTxInfo: Requested unknown TXORIGINPUT: ${tx_hash}`,
             );
+
         return typedCall('TxAckInput', 'TxRequest', {
             tx: { input: tx.inputs[details.request_index] },
         });
@@ -83,6 +86,7 @@ const requestPrevTxInfo = ({
                 'Runtime',
                 `requestPrevTxInfo: Requested unknown TXORIGOUTPUT: ${tx_hash}`,
             );
+
         return typedCall('TxAckOutput', 'TxRequest', {
             tx: { output: tx.outputs[details.request_index] },
         });
@@ -104,6 +108,7 @@ const requestPrevTxInfo = ({
         const dataLen = details.extra_data_len;
         const dataOffset = details.extra_data_offset;
         const extra_data_chunk = data.substring(dataOffset * 2, (dataOffset + dataLen) * 2);
+
         return typedCall('TxAckPrevExtraData', 'TxRequest', { tx: { extra_data_chunk } });
     }
     if (request_type === 'TXMETA') {
@@ -119,6 +124,7 @@ const requestPrevTxInfo = ({
             branch_id: tx.branch_id,
             extra_data_len: data ? data.length / 2 : undefined,
         };
+
         return typedCall('TxAckPrevMeta', 'TxRequest', { tx: meta });
     }
     throw ERRORS.TypedError('Runtime', `requestPrevTxInfo: Unknown request type: ${request_type}`);
@@ -149,6 +155,7 @@ const requestSignedTxInfo = ({
                 `requestPrevTxInfo: Requested unknown payment request at ${details.request_index}`,
             );
         }
+
         return typedCall('TxAckPaymentRequest', 'TxRequest', {
             nonce: req.nonce,
             recipient_name: req.recipient_name,
@@ -182,6 +189,7 @@ const requestTxAck = (props: SignTxHelperProps) => {
     if (tx_hash) {
         return requestPrevTxInfo(props);
     }
+
     return requestSignedTxInfo(props);
 };
 
@@ -216,6 +224,7 @@ const processTxRequest = async (props: SignTxHelperProps): Promise<SignedTransac
     }
 
     const { message } = await requestTxAck(props);
+
     return processTxRequest({
         ...props,
         txRequest: message,

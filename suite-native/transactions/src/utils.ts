@@ -21,6 +21,7 @@ export const mapTransactionInputsOutputsToAddresses = ({
                     addressesType === 'outputs' &&
                     (target.isAccountOwned || target.isAccountTarget)) ??
                 false;
+
             return target.addresses?.map(
                 (address): VinVoutAddress => ({
                     address,

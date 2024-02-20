@@ -196,8 +196,10 @@ export function getQuoteError(quote: BuyTrade, wantCrypto: boolean) {
                 );
             }
         }
+
         return quote.error;
     }
+
     return '';
 }
 

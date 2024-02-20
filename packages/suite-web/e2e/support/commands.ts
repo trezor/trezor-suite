@@ -35,6 +35,7 @@ const prefixedVisit = (route: string, options?: Partial<Cypress.VisitOptions>) =
     const assetPrefix = Cypress.env('ASSET_PREFIX') || '';
     const testUrl = Cypress.env('TEST_URLS')?.[0] || '';
     cy.visit(baseUrl + testUrl + assetPrefix + route, options);
+
     return cy.document().its('fonts.status').should('equal', 'loaded');
 };
 
@@ -43,6 +44,7 @@ const safeReload = () => {
     // - device is released
     // - writes to indexedDB are finished
     cy.wait(2000);
+
     return cy.reload();
 };
 

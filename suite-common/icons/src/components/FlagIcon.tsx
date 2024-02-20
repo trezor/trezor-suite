@@ -9,6 +9,7 @@ export const FlagIcon = ({ name, size = 'medium' }: FlagIconProps) => {
 
     const svg = useSVG(flagIcons[name]);
     const sizeNumber = flagIconSizes[size];
+
     return (
         <Canvas
             style={{

@@ -50,6 +50,7 @@ export const FirmwareInstallation = ({
             // device without fw starts installation without a confirmation and we need to fake progress bar for both devices (UI.FIRMWARE_PROGRESS is sent too late)
             return cachedDeviceModelInternal === DeviceModelInternal.T1B1 ? 25 : 40; // T1B1 seems a bit faster
         }
+
         // Updating from older fw, device asks for confirmation, but sends first info about installation progress somewhat to late
         return cachedDeviceModelInternal === DeviceModelInternal.T1B1 ? 25 : undefined; // 25s for T1B1, no fake progress for updating from older fw on other devices
     };

@@ -15,6 +15,7 @@ export const createInterceptor = (): RequestInterceptor => {
             const res = beforeRequestListeners[i](details);
             if (res) {
                 callback(res);
+
                 return;
             }
         }

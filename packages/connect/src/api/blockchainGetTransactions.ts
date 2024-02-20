@@ -43,6 +43,7 @@ export default class BlockchainGetTransactions extends AbstractMethod<
 
     async run() {
         const backend = await initBlockchain(this.params.coinInfo, this.postMessage);
+
         return backend.getTransactions(this.params.txs);
     }
 }

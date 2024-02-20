@@ -16,6 +16,7 @@ const setTrezorConnectFixtures = (fixture: any) => {
             if (fixture.getPublicKey.success && buttonRequest) {
                 buttonRequest({ code: 'ButtonRequest_PublicKey' });
             }
+
             return fixture.getPublicKey;
         }
         // trigger multiple button requests
@@ -24,6 +25,7 @@ const setTrezorConnectFixtures = (fixture: any) => {
             buttonRequest({ code: 'some-other-code' });
             buttonRequest();
         }
+
         return {
             success: true,
         };
@@ -83,6 +85,7 @@ const initStore = (stateOverrides?: StateOverrides) => {
     if (stateOverrides?.networkType) {
         preloadedState.wallet.selectedAccount.account.networkType = stateOverrides.networkType;
     }
+
     return configureMockStore<any>({ reducer: rootReducer, preloadedState });
 };
 

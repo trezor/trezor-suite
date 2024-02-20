@@ -10,5 +10,6 @@ export const torRunner = ({ torParams = [] }: { torParams: string[] }) => {
         cwd: processDir,
         stdio: ['ignore', 'ignore', 'ignore'],
     });
+
     return process;
 };

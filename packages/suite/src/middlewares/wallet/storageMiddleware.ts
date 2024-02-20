@@ -34,6 +34,7 @@ import type { WalletAction } from 'src/types/wallet';
 const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
     db.onBlocking = () => api.dispatch({ type: STORAGE.ERROR, payload: 'blocking' });
     db.onBlocked = () => api.dispatch({ type: STORAGE.ERROR, payload: 'blocked' });
+
     return (next: Dispatch) =>
         (action: SuiteAction | WalletAction): SuiteAction | WalletAction => {
             // pass action
@@ -285,6 +286,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 default:
                     break;
             }
+
             return action;
         };
 };

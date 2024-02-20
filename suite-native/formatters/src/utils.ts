@@ -43,6 +43,7 @@ export const formatNumberWithThousandCommas = (
             // Remove trailing zeroes after formatting:
             return new BigNumber(amount.toFixed(maxDecimals)).decimalPlaces() ?? maxDecimals;
         }
+
         return originalDecimalsLegth;
     };
 

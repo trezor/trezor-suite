@@ -161,6 +161,7 @@ class InvityAPI {
                 body: JSON.stringify(body),
             };
         }
+
         return {
             method,
             mode: 'cors',
@@ -178,10 +179,12 @@ class InvityAPI {
     ): Promise<any> {
         const finalUrl = `${this.getApiServerUrl()}${url}`;
         const opts = this.options(body, method, apiHeaderValue);
+
         return fetch(finalUrl, opts).then(response => {
             if (response.ok) {
                 return response.json();
             }
+
             return response.json().then(output => {
                 if (output.error) {
                     return output;
@@ -198,10 +201,12 @@ class InvityAPI {
                     ? this.GET_COUNTRY_INFO.replace('{{country}}', country)
                     : this.DETECT_COUNTRY_INFO;
             const response: CountryInfo = await this.request(url, {}, 'GET');
+
             return response;
         } catch (error) {
             console.log('[fetchCountryInfo]', error);
         }
+
         return { country: this.unknownCountry };
     };
 
@@ -211,10 +216,12 @@ class InvityAPI {
             if (!response || response.length === 0) {
                 return [];
             }
+
             return response;
         } catch (error) {
             console.log('[getSymbolsInfo]', error);
         }
+
         return [];
     };
 
@@ -224,10 +231,12 @@ class InvityAPI {
             if (!response || response.length === 0) {
                 return [];
             }
+
             return response;
         } catch (error) {
             console.log('[getExchangeList]', error);
         }
+
         return [];
     };
 
@@ -240,6 +249,7 @@ class InvityAPI {
                 params,
                 'POST',
             );
+
             return response;
         } catch (error) {
             console.log('[getExchangeQuotes]', error);
@@ -253,9 +263,11 @@ class InvityAPI {
                 tradeRequest,
                 'POST',
             );
+
             return response;
         } catch (error) {
             console.log('[doExchangeTrade]', error);
+
             return { error: error.toString(), exchange: tradeRequest.trade.exchange };
         }
     };
@@ -270,9 +282,11 @@ class InvityAPI {
                 trade,
                 'POST',
             );
+
             return response;
         } catch (error) {
             console.log('[watchExchangeTrade]', error);
+
             return { error: error.toString() };
         }
     };
@@ -280,6 +294,7 @@ class InvityAPI {
     getBuyList = async (): Promise<BuyListResponse | undefined> => {
         try {
             const response = await this.request(this.BUY_LIST, {}, 'GET');
+
             return response;
         } catch (error) {
             console.log('[getBuyList]', error);
@@ -293,6 +308,7 @@ class InvityAPI {
                 params,
                 'POST',
             );
+
             return response;
         } catch (error) {
             console.log('[getBuyQuotes]', error);
@@ -306,9 +322,11 @@ class InvityAPI {
                 tradeRequest,
                 'POST',
             );
+
             return response;
         } catch (error) {
             console.log('[doBuyTrade]', error);
+
             return { trade: { error: error.toString(), exchange: tradeRequest.trade.exchange } };
         }
     };
@@ -320,9 +338,11 @@ class InvityAPI {
                 tradeRequest,
                 'POST',
             );
+
             return response;
         } catch (error) {
             console.log('[getBuyTradeForm]', error);
+
             return { error: error.toString() };
         }
     };
@@ -334,9 +354,11 @@ class InvityAPI {
                 trade,
                 'POST',
             );
+
             return response;
         } catch (error) {
             console.log('[watchBuyTrade]', error);
+
             return { error: error.toString() };
         }
     };
@@ -344,6 +366,7 @@ class InvityAPI {
     getSellList = async (): Promise<SellListResponse | undefined> => {
         try {
             const response = await this.request(this.SELL_LIST, {}, 'GET');
+
             return response;
         } catch (error) {
             console.log('[getSellList]', error);
@@ -359,6 +382,7 @@ class InvityAPI {
                 params,
                 'POST',
             );
+
             return response;
         } catch (error) {
             console.log('[getVoucherQuotes]', error);
@@ -374,9 +398,11 @@ class InvityAPI {
                 tradeRequest,
                 'POST',
             );
+
             return response;
         } catch (error) {
             console.log('[doVoucherTrade]', error);
+
             return { error: error.toString(), exchange: tradeRequest.exchange };
         }
     };
@@ -388,9 +414,11 @@ class InvityAPI {
                 trade,
                 'POST',
             );
+
             return response;
         } catch (error) {
             console.log('[confirmVoucherTrade]', error);
+
             return { error: error.toString(), exchange: trade.exchange };
         }
     };
@@ -404,6 +432,7 @@ class InvityAPI {
                 params,
                 'POST',
             );
+
             return response;
         } catch (error) {
             console.log('[getSellQuotes]', error);
@@ -417,9 +446,11 @@ class InvityAPI {
                 tradeRequest,
                 'POST',
             );
+
             return response;
         } catch (error) {
             console.log('[doSellTrade]', error);
+
             return { trade: { error: error.toString(), exchange: tradeRequest.trade.exchange } };
         }
     };
@@ -431,9 +462,11 @@ class InvityAPI {
                 trade,
                 'POST',
             );
+
             return response;
         } catch (error) {
             console.log('[doSellConfirm]', error);
+
             return { error: error.toString(), exchange: trade.exchange };
         }
     };
@@ -448,9 +481,11 @@ class InvityAPI {
                 trade,
                 'POST',
             );
+
             return response;
         } catch (error) {
             console.log('[watchSellFiatTrade]', error);
+
             return { error: error.toString() };
         }
     };
@@ -489,9 +524,11 @@ class InvityAPI {
                 {},
                 'GET',
             );
+
             return response;
         } catch (error) {
             console.log('[watchSavingsTrade]', error);
+
             return { code: error.toString() };
         }
     };
@@ -499,6 +536,7 @@ class InvityAPI {
     getSavingsList = async (): Promise<SavingsListResponse | undefined> => {
         try {
             const response: SavingsListResponse = await this.request(this.SAVINGS_LIST, {}, 'GET');
+
             return response;
         } catch (error) {
             console.log('[getSavingsList]', error);
@@ -514,6 +552,7 @@ class InvityAPI {
                 savingsParameters,
                 'POST',
             );
+
             return response;
         } catch (error) {
             console.log('[initSavingsTrade]', error);
@@ -527,6 +566,7 @@ class InvityAPI {
                 {},
                 'GET',
             );
+
             return response;
         } catch (error) {
             console.log('[getSavingsTrade]', error);
@@ -542,6 +582,7 @@ class InvityAPI {
                 requestBody,
                 'POST',
             );
+
             return response;
         } catch (error) {
             console.log('[doSavingsTrade]', error);

@@ -14,6 +14,7 @@ export const buildOverview = ({ emuScreenshots }: { emuScreenshots: Record<strin
         if (emuScreenshots[screenshotPath]) {
             return `<img src="data:image/png;base64, ${emuScreenshots[screenshotPath]}" />`;
         }
+
         // not found, this is expected, not all screens on host have device interaction
         return '<div>no device interaction</div>';
     };

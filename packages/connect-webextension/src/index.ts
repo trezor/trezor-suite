@@ -59,6 +59,7 @@ const dispose = () => {
     if (_popupManager) {
         _popupManager.close();
     }
+
     return Promise.resolve(undefined);
 };
 
@@ -138,6 +139,7 @@ const call: CallMethod = async params => {
             if (_popupManager && response.success) {
                 _popupManager.clear();
             }
+
             return response;
         }
 
@@ -211,6 +213,7 @@ const initProxyChannel = () => {
 
         if (type === POPUP.INIT) {
             proxySettings = parseConnectSettings({ ..._settings, ...settings });
+
             return;
         }
 

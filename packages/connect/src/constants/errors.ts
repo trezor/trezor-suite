@@ -63,6 +63,7 @@ export const serializeError = (payload: any) => {
     if (payload && payload.error instanceof Error) {
         return { error: payload.error.message, code: payload.error.code };
     }
+
     return payload;
 };
 

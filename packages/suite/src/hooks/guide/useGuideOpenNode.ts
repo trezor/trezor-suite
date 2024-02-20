@@ -14,11 +14,13 @@ export const useGuideOpenNode = () => {
     const openNodeById = (id: string) => {
         if (!indexNode) {
             console.error(`Guide index node was not found.`);
+
             return;
         }
         const node = getNodeById(id, indexNode);
         if (!node) {
             console.error(`Guide node with id: ${id} was not found.`);
+
             return;
         }
 

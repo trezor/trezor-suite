@@ -51,6 +51,7 @@ const escapeHtml = (payload: any) => {
     try {
         const div = document.createElement('div');
         div.appendChild(document.createTextNode(JSON.stringify(payload)));
+
         return JSON.parse(div.innerHTML);
     } catch (error) {
         // do nothing
@@ -65,6 +66,7 @@ export const handleUIAffectingMessage = (message: CoreEventMessage) => {
                 info: message.payload.info,
             });
             reactEventBus.dispatch({ type: 'state-update', payload: getState() });
+
             return;
         case UI_REQUEST.TRANSPORT:
         case UI_REQUEST.FIRMWARE_OUTDATED:
@@ -73,6 +75,7 @@ export const handleUIAffectingMessage = (message: CoreEventMessage) => {
             // todo: I don't have power to solve this now
             // @ts-expect-error
             reactEventBus.dispatch(message);
+
             // already implemented in react. return here
             return;
         default:
@@ -213,6 +216,7 @@ const handleInitMessage = (event: MessageEvent<PopupEvent | IFrameLogRequest>) =
             },
         });
         reactEventBus.dispatch({ type: 'state-update', payload: getState() });
+
         return;
     }
 
@@ -256,6 +260,7 @@ const handleMessageInIframeMode = (
     // catch first message from iframe
     if (data.type === POPUP.HANDSHAKE) {
         handshake(data, event.origin);
+
         return;
     }
 
@@ -295,6 +300,7 @@ const handleMessageInCoreMode = (
             transport,
         });
         reactEventBus.dispatch({ type: 'state-update', payload: getState() });
+
         return;
     }
 

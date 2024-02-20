@@ -25,8 +25,10 @@ const transformError = (error: any) => {
         if (error.data) {
             return new CustomError(code, `${error.name} ${error.data.error_message}`);
         }
+
         return new CustomError(code, error.toString());
     }
+
     return error;
 };
 
@@ -55,6 +57,7 @@ const getMempoolAccountInfo = async (api: RippleAPI, account: string) => {
         ledger_index: 'current',
         queue: true,
     });
+
     return {
         xrpBalance: info.account_data.Balance,
         sequence: info.account_data.Sequence,
@@ -176,6 +179,7 @@ const getTransaction = async ({ connect, payload }: Request<MessageTypes.GetTran
     const api = await connect();
     const rawtx = await api.request('tx', { transaction: payload, binary: false });
     const tx = utils.transformTransaction(rawtx);
+
     return {
         type: RESPONSES.GET_TRANSACTION,
         payload: tx,
@@ -211,6 +215,7 @@ const estimateFee = async (request: Request<MessageTypes.EstimateFee>) => {
         request.payload && Array.isArray(request.payload.blocks)
             ? request.payload.blocks.map(() => ({ feePerUnit: drops }))
             : [{ feePerUnit: drops }];
+
     return {
         type: RESPONSES.ESTIMATE_FEE,
         payload,
@@ -274,6 +279,7 @@ const subscribeAccounts = async (ctx: Context, accounts: SubscriptionAccountInfo
             accounts_proposed: uniqueAddresses,
         });
     }
+
     return { subscribed: state.getAddresses().length > 0 };
 };
 
@@ -298,6 +304,7 @@ const subscribeAddresses = async (ctx: Context, addresses: string[]) => {
 
         await api.request('subscribe', request);
     }
+
     return { subscribed: state.getAddresses().length > 0 };
 };
 
@@ -307,6 +314,7 @@ const subscribeBlock = async (ctx: Context) => {
         api.on('ledger', ev => onNewBlock(ctx, ev));
         ctx.state.addSubscription('ledger');
     }
+
     return { subscribed: true };
 };
 
@@ -323,6 +331,7 @@ const subscribe = async (request: Request<MessageTypes.Subscribe>) => {
     } else {
         throw new CustomError('invalid_param', '+type');
     }
+
     return {
         type: RESPONSES.SUBSCRIBE,
         payload: response,
@@ -458,6 +467,7 @@ class RippleWorker extends BaseWorker<RippleAPI> {
         });
 
         this.post({ id: -1, type: RESPONSES.CONNECTED });
+
         return api;
     }
 

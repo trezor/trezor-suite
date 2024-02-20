@@ -33,6 +33,7 @@ export const getRealCredentials = async (
         },
         options,
     );
+
     return data.RealCredentialRequests;
 };
 
@@ -44,6 +45,7 @@ export const getZeroCredentials = async (issuer: IssuerParameter, options: Reque
         },
         options,
     );
+
     return data.ZeroCredentialRequests;
 };
 
@@ -62,6 +64,7 @@ export const getCredentials = async (
         },
         options,
     );
+
     return data.Credentials;
 };
 
@@ -78,6 +81,7 @@ export const getOutputsAmounts = async (
     options: RequestOptions,
 ) => {
     const data = await request<{ OutputAmounts: number[] }>('get-outputs-amounts', body, options);
+
     return data.OutputAmounts;
 };
 
@@ -97,6 +101,7 @@ export const selectInputsForRound = async (
     options: RequestOptions,
 ) => {
     const data = await request<{ Indices: number[] }>('select-inputs-for-round', body, options);
+
     return data.Indices;
 };
 
@@ -115,6 +120,7 @@ export const initLiquidityClue = async (ExternalAmounts: number[], options: Requ
         { ExternalAmounts },
         options,
     );
+
     return data.RawLiquidityClue;
 };
 
@@ -129,6 +135,7 @@ export const updateLiquidityClue = async (
         { RawLiquidityClue: rawLiquidityClue, MaxSuggestedAmount, ExternalAmounts },
         options,
     );
+
     return data.RawLiquidityClue;
 };
 
@@ -142,6 +149,7 @@ export const getLiquidityClue = async (
         { rawLiquidityClue, maxSuggestedAmount },
         options,
     );
+
     return data.LiquidityClue;
 };
 

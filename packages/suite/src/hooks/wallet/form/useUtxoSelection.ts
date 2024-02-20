@@ -83,9 +83,11 @@ export const useUtxoSelection = ({
         switch (excludedUtxos[getUtxoOutpoint(utxo)]) {
             case 'low-anonymity':
                 lowAnonymityUtxos.push(utxo);
+
                 return;
             case 'dust':
                 dustUtxos.push(utxo);
+
                 return;
             default:
                 spendableUtxos.push(utxo);

@@ -112,6 +112,7 @@ export const AccountImportSummaryForm = ({
     const areTokensDisplayed = useSelector((state: SettingsSliceRootState & FiatRatesRootState) =>
         selectAnyOfTokensHasFiatRates(state, (accountInfo?.tokens as TokenInfoBranded[]) ?? []),
     );
+
     return (
         <Form form={form}>
             <VStack spacing="large">

@@ -45,5 +45,6 @@ export const Sign = ({
     if (!isValuePositive && showMinusSign) {
         return <StyledSign color={grayscale ? defaultColor : theme.textAlertRed}>–</StyledSign>;
     }
+
     return null;
 };

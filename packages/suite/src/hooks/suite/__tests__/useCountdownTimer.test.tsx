@@ -13,6 +13,7 @@ const Component = ({
 }) => {
     const result = useCountdownTimer(...params);
     callback(result);
+
     return null;
 };
 

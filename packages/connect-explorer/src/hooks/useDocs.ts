@@ -35,6 +35,7 @@ export const useDocs = (url: string) => {
                         if (link.startsWith('./')) {
                             return `${baseUrl}/${link}`.replace('./', '');
                         }
+
                         return `${baseUrl}/${link}`;
                     },
                 });

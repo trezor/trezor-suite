@@ -22,6 +22,7 @@ export const getVinVoutScript = (vinvout: { data?: string; script?: string }) =>
     if (vinvout.script) {
         return bscript.fromASM(vinvout.script);
     }
+
     return EMPTY_SCRIPT;
 };
 
@@ -64,6 +65,7 @@ export const fromRaw = (raw: any, options: RawOptions = {}) => {
         script: getVinVoutScript(output),
         value: output.value,
     }));
+
     return tx;
 };
 

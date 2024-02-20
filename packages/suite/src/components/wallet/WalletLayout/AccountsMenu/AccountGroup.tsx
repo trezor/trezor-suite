@@ -107,6 +107,7 @@ export const AccountGroup = forwardRef(
         // Group needs to be wrapped into container (div)
 
         const heading = getGroupLabel(type, hideLabel);
+
         return (
             <Container ref={wrapperRef}>
                 <HeaderWrapper>

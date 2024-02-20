@@ -18,6 +18,7 @@ const Component = ({
 }) => {
     const modal = useFilteredModal(...params);
     callback(modal);
+
     return null;
 };
 

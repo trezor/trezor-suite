@@ -32,6 +32,7 @@ export const useCoinmarketSavingsSetupWaiting = ({
     useEffect(() => {
         if (savingsTrade?.status === 'SetSavingsParameters') {
             navigateToSavingsSetup();
+
             return;
         }
         if (

@@ -26,6 +26,7 @@ class Transaction extends TransactionBase<dash.DashSpecific | zcash.ZcashSpecifi
         if (isNetworkType('decred', this.network)) return decred.fromConstructor(options);
         if (isNetworkType('peercoin', this.network)) return peercoin.fromConstructor(options);
         if (isNetworkType('zcash', this.network)) return zcash.fromConstructor(options);
+
         return bitcoin.fromConstructor(options);
     }
 
@@ -38,6 +39,7 @@ class Transaction extends TransactionBase<dash.DashSpecific | zcash.ZcashSpecifi
         if (isNetworkType('decred', options.network)) return decred.fromBuffer(buffer, options);
         if (isNetworkType('peercoin', options.network)) return peercoin.fromBuffer(buffer, options);
         if (isNetworkType('zcash', options.network)) return zcash.fromBuffer(buffer, options);
+
         return bitcoin.fromBuffer(buffer, options);
     }
 

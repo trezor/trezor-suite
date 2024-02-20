@@ -68,6 +68,7 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
             if (Array.isArray(allQuotes)) {
                 if (allQuotes.length === 0) {
                     timer.stop();
+
                     return;
                 }
                 const [quotes, alternativeQuotes] = processQuotes(allQuotes);
@@ -84,6 +85,7 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
     useEffect(() => {
         if (!quotesRequest) {
             navigateToBuyForm();
+
             return;
         }
 
@@ -196,5 +198,6 @@ CoinmarketBuyOffersContext.displayName = 'CoinmarketBuyOffersContext';
 export const useCoinmarketBuyOffersContext = () => {
     const context = useContext(CoinmarketBuyOffersContext);
     if (context === null) throw Error('CoinmarketBuyOffersContext used without Context');
+
     return context;
 };

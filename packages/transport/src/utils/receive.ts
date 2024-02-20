@@ -36,6 +36,7 @@ async function receiveBuffer(
     }
 
     await receiveRest(result, receiver, buffer.length, length);
+
     return { received: result, typeId };
 }
 
@@ -44,6 +45,7 @@ export async function receive(
     decoder: TransportProtocolDecode,
 ) {
     const { received, typeId } = await receiveBuffer(receiver, decoder);
+
     return {
         typeId,
         buffer: received,
@@ -58,6 +60,7 @@ export async function receiveAndParse(
     const { buffer, typeId } = await receive(receiver, decoder);
     const { Message, messageName } = createMessageFromType(messages, typeId);
     const message = decodeProtobuf(Message, buffer);
+
     return {
         message,
         type: messageName,

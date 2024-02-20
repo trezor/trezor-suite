@@ -37,6 +37,7 @@ export const getRoundCandidates = ({
     prison,
 }: Omit<SelectRoundProps, 'aliceGenerator' | 'accounts' | 'runningAffiliateServer'>) => {
     const now = Date.now();
+
     return statusRounds
         .filter(
             round =>
@@ -100,6 +101,7 @@ export const getAccountCandidates = ({
         // account was detained
         if (prison.isDetained(accountKey)) {
             logger.info(`Account ~~${accountKey}~~ detained`);
+
             return [];
         }
 
@@ -107,6 +109,7 @@ export const getAccountCandidates = ({
             account.utxos,
             utxo => {
                 const blamedUtxo = blameOfInputs.find(i => i.id === utxo.outpoint);
+
                 return blamedUtxo?.roundId;
             },
             true,
@@ -114,6 +117,7 @@ export const getAccountCandidates = ({
 
         if (Object.keys(blameOfUtxos).length > 0) {
             logger.info(`Found account candidate for blame round ~~${accountKey}~~`);
+
             return {
                 ...account,
                 blameOf: blameOfUtxos,
@@ -130,6 +134,7 @@ export const getAccountCandidates = ({
                 key: account.accountKey,
                 reason: SessionPhase.SkippingRound,
             });
+
             return [];
         }
 
@@ -167,6 +172,7 @@ export const getAccountCandidates = ({
                     key: account.accountKey,
                     reason: SessionPhase.BlockedUtxos,
                 });
+
                 return [];
             }
         }
@@ -205,6 +211,7 @@ export const getAccountCandidates = ({
             }
 
             logger.info(`Found account candidate ~~${accountKey}~~ with ${utxos.length} inputs`);
+
             return {
                 ...account,
                 blameOf: null,
@@ -273,8 +280,10 @@ const selectInputsForBlameRound = ({
         if (inputs.length > 0) {
             round.inputs.push(...inputs);
             logger.info(`Created blame round ~~${round.id}~~ with ${round.inputs.length} inputs`);
+
             return true;
         }
+
         return false;
     });
 
@@ -303,6 +312,7 @@ export const selectInputsForRound = async ({
             accountCandidates: blameOfAccounts,
             options,
         });
+
         return blameRound;
     }
 
@@ -323,6 +333,7 @@ export const selectInputsForRound = async ({
                 AllowedOutputAmounts: roundParameters.AllowedOutputAmounts,
                 AllowedInputTypes: roundParameters.AllowedInputTypes,
             };
+
             return Promise.all(
                 // ...and for each Account
                 normalAccounts.map(account => {
@@ -342,6 +353,7 @@ export const selectInputsForRound = async ({
                         logger.info(
                             `Skipping round ~~${round.id}~~ for ~~${account.accountKey}~~. Fees to high ${roundParameters.MiningFeeRate} ${roundParameters.CoordinationFeeRate.Rate}`,
                         );
+
                         return [];
                     }
 
@@ -372,6 +384,7 @@ export const selectInputsForRound = async ({
                         .then(indices => indices.filter(i => Utxos[i])) // filter valid existing indices
                         .catch(error => {
                             logger.error(`selectInputsForRound failed ${error.message}`);
+
                             return [] as number[];
                         });
                 }),
@@ -384,6 +397,7 @@ export const selectInputsForRound = async ({
     const maxUtxosInRound = Math.max(...sumUtxosInRounds);
     if (maxUtxosInRound < 1) {
         logger.info('No results from selectInputsForRound');
+
         return;
     }
 
@@ -450,6 +464,7 @@ export const selectRound = async ({
             phase: SessionPhase.AffiliateServerOffline,
             accountKeys: unregisteredAccountKeys,
         });
+
         return;
     }
 
@@ -463,6 +478,7 @@ export const selectRound = async ({
     });
     if (roundCandidates.length < 1) {
         logger.info('No suitable rounds');
+
         return;
     }
 
@@ -477,6 +493,7 @@ export const selectRound = async ({
 
     if (accountCandidates.length < 1) {
         logger.info('No suitable accounts');
+
         return;
     }
 
@@ -494,9 +511,11 @@ export const selectRound = async ({
             phase: SessionPhase.RetryingRoundPairing,
             accountKeys: unregisteredAccountKeys,
         });
+
         return;
     }
 
     logger.info(`Created new round ~~${newRound.id}~~ with ${newRound.inputs.length} inputs`);
+
     return newRound;
 };

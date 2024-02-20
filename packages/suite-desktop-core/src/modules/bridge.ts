@@ -28,6 +28,7 @@ const handleBridgeStatus = async (
     logger.info('bridge', `Toggling bridge. Status: ${JSON.stringify(status)}`);
 
     mainWindow.webContents.send('bridge/status', status);
+
     return status;
 };
 
@@ -45,6 +46,7 @@ const getBridgeInstance = () => {
     if (bridgeNode || bridgeNodeTest) {
         return new TrezordNode({ port: 21325, api: bridgeNodeTest ? 'udp' : 'usb' });
     }
+
     return new BridgeProcess();
 };
 
@@ -67,6 +69,7 @@ const load = async ({ store, mainWindow }: Dependencies) => {
                 await start(bridge);
                 store.setBridgeSettings({ startOnStartup: true });
             }
+
             return { success: true };
         } catch (error) {
             return { success: false, error };
@@ -78,6 +81,7 @@ const load = async ({ store, mainWindow }: Dependencies) => {
     ipcMain.handle('bridge/get-status', async () => {
         try {
             const status = await bridge.status();
+
             return { success: true, payload: status };
         } catch (error) {
             return { success: false, error };
@@ -99,6 +103,7 @@ const load = async ({ store, mainWindow }: Dependencies) => {
 
 export const init: Module = dependencies => {
     let loaded = false;
+
     return () => {
         if (loaded) return;
         loaded = true;

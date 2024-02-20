@@ -7,6 +7,7 @@ const themesContainerStyle = prepareNativeStyle(_ => ({ flexWrap: 'wrap' }));
 
 export const ColorSchemePicker = () => {
     const { applyStyle } = useNativeStyles();
+
     return (
         <VStack spacing={11}>
             <Text>Color Scheme</Text>

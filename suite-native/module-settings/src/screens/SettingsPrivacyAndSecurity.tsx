@@ -66,6 +66,7 @@ const AnalyticsSwitchRow = () => {
     const handleAnalyticsChange = (isEnabled: boolean) => {
         if (isEnabled) {
             analytics.enable();
+
             return;
         }
         analytics.disable();

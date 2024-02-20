@@ -220,6 +220,7 @@ export const setBusyScreen =
         // collect unique deviceStates from accounts (passphrase)
         const uniqueDeviceStates = accountKeys.flatMap(key => {
             const account = accounts.find(a => a.key === key);
+
             return account?.deviceState || [];
         });
 
@@ -230,6 +231,7 @@ export const setBusyScreen =
                 if (device && !result.find(d => d.id === device.id)) {
                     return result.concat(device);
                 }
+
                 return result;
             },
             [] as typeof devices,
@@ -257,6 +259,7 @@ export const setBusyScreen =
 
 export const hasCriticalPhaseModal = () => (_: Dispatch, getState: GetState) => {
     const { modal } = getState();
+
     return 'payload' in modal && modal.payload.type === 'critical-coinjoin-phase';
 };
 
@@ -470,23 +473,27 @@ const getOwnershipProof =
             const utxos = groupUtxosByAccount[key];
             if (!coinjoinAccount || !realAccount) {
                 response.inputs.push(...coinjoinResponseError(utxos, 'Account not found'));
+
                 return [];
             }
             const { session } = coinjoinAccount;
             // do not provide ownership if requested account is no longer authorized
             if (!session || session.paused || session.signedRounds.length >= session.maxRounds) {
                 response.inputs.push(...coinjoinResponseError(utxos, 'Account without session'));
+
                 return [];
             }
 
             const device = devices.find(d => d.state === realAccount.deviceState);
             if (!device?.connected) {
                 response.inputs.push(...coinjoinResponseError(utxos, 'Device disconnected'));
+
                 return [];
             }
 
             if (locks.includes(SUITE.LOCK_TYPE.DEVICE)) {
                 response.inputs.push(...coinjoinResponseError(utxos, 'Device locked'));
+
                 return [];
             }
 
@@ -499,6 +506,7 @@ const getOwnershipProof =
                 userConfirmation: true,
                 preauthorized: true,
             }));
+
             return { key, device, bundle, utxos };
         });
 
@@ -517,6 +525,7 @@ const getOwnershipProof =
                             ownershipProof: p.ownership_proof,
                         });
                     });
+
                     return;
                 }
                 utxos.forEach(u => {
@@ -581,22 +590,26 @@ const signCoinjoinTx =
             const utxos = groupUtxosByAccount[key];
             if (!coinjoinAccount || !realAccount) {
                 response.inputs.push(...coinjoinResponseError(utxos, 'Account not found'));
+
                 return [];
             }
 
             const { session, rawLiquidityClue } = coinjoinAccount;
             if (!session || session.signedRounds.length >= session.maxRounds) {
                 response.inputs.push(...coinjoinResponseError(utxos, 'Account without session'));
+
                 return [];
             }
 
             const device = devices.find(d => d.state === realAccount.deviceState);
             if (!device?.connected) {
                 response.inputs.push(...coinjoinResponseError(utxos, 'Device disconnected'));
+
                 return [];
             }
 
             const tx = prepareCoinjoinTransaction(realAccount, request.transaction);
+
             return {
                 device,
                 unlockPath: realAccount.unlockPath,
@@ -700,6 +713,7 @@ export const onCoinjoinClientRequest = (data: CoinjoinRequestEvent[]) => (dispat
             if (request.type === 'signature') {
                 return dispatch(signCoinjoinTx(request));
             }
+
             return request;
         }),
     );
@@ -782,6 +796,7 @@ export const initCoinjoinService =
             // handle session phase change
             client.on('session-phase', event => dispatch(clientSessionPhase(event)));
             dispatch(clientEnableSuccess(symbol, status));
+
             return service;
         } catch (error) {
             CoinjoinService.removeInstance(symbol);

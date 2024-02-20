@@ -9,6 +9,7 @@ export const firmwareNotSupported = (device: UiRequestUnexpectedDeviceMode['payl
     // showView return type has undefined in union (if react component is available);
     if (!view) {
         console.error('view does not exist!');
+
         return;
     }
 

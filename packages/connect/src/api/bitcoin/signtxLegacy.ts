@@ -42,6 +42,7 @@ const requestPrevTxInfo = ({
         const dataLen = details.extra_data_len;
         const dataOffset = details.extra_data_offset;
         const extra_data = data.substring(dataOffset * 2, (dataOffset + dataLen) * 2);
+
         return { extra_data };
     }
     if (request_type === 'TXMETA') {
@@ -63,6 +64,7 @@ const requestPrevTxInfo = ({
                 extra_data_len: data.length / 2,
             };
         }
+
         return meta;
     }
     throw ERRORS.TypedError('Runtime', `requestPrevTxInfo: Unknown request type: ${request_type}`);
@@ -104,6 +106,7 @@ const requestTxAck = (props: SignTxHelperProps) => {
     if (tx_hash) {
         return requestPrevTxInfo(props);
     }
+
     return requestSignedTxInfo(props);
 };
 
@@ -140,6 +143,7 @@ const processTxRequest = async (props: SignTxHelperProps): Promise<SignedTransac
 
     const txAck = requestTxAck(props);
     const { message } = await typedCall('TxAck', 'TxRequest', { tx: txAck });
+
     return processTxRequest({
         ...props,
         txRequest: message,

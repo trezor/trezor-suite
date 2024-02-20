@@ -32,11 +32,13 @@ export type StorageLoadAction = Extract<StorageAction, { type: typeof STORAGE.LO
 // send form drafts start
 export const saveDraft = async (formState: FormState, accountKey: string) => {
     if (!(await db.isAccessible())) return;
+
     return db.addItem('sendFormDrafts', formState, accountKey, true);
 };
 
 export const removeDraft = async (accountKey: string) => {
     if (!(await db.isAccessible())) return;
+
     return db.removeItemByPK('sendFormDrafts', accountKey);
 };
 
@@ -51,6 +53,7 @@ export const saveAccountDraft = (account: Account) => async (_: Dispatch, getSta
 
 const removeAccountDraft = async (account: Account) => {
     if (!(await db.isAccessible())) return Promise.resolve();
+
     return db.removeItemByPK('sendFormDrafts', account.key);
 };
 
@@ -101,11 +104,13 @@ export const saveCoinjoinDebugSettings = () => async (_dispatch: Dispatch, getSt
 
 export const saveFormDraft = async (key: string, draft: FieldValues) => {
     if (!(await db.isAccessible())) return;
+
     return db.addItem('formDrafts', draft, key, true);
 };
 
 export const removeFormDraft = async (key: string) => {
     if (!(await db.isAccessible())) return;
+
     return db.removeItemByPK('formDrafts', key);
 };
 
@@ -117,22 +122,26 @@ export const saveAccountFormDraft =
 
         const formDraftKey = getFormDraftKey(prefix, accountKey);
         const formDraft = formDrafts[formDraftKey];
+
         return formDraft ? db.addItem('formDrafts', formDraft, formDraftKey, true) : undefined;
     };
 
 const removeAccountFormDraft = async (prefix: FormDraftKeyPrefix, accountKey: string) => {
     if (!(await db.isAccessible())) return;
+
     return db.removeItemByPK('formDrafts', getFormDraftKey(prefix, accountKey));
 };
 
 export const saveDevice = async (device: TrezorDevice, forceRemember?: true) => {
     if (!(await db.isAccessible())) return;
     if (!device || !device.features || !device.state) return;
+
     return db.addItem('devices', serializeDevice(device, forceRemember), device.state, true);
 };
 
 const removeAccount = async (account: Account) => {
     if (!(await db.isAccessible())) return;
+
     return db.removeItemByPK('accounts', [account.descriptor, account.symbol, account.deviceState]);
 };
 
@@ -147,6 +156,7 @@ export const removeAccountTransactions = async (account: Account) => {
 
 const removeAccountGraph = async (account: Account) => {
     if (!(await db.isAccessible())) return;
+
     return db.removeItemByIndex('graph', 'accountKey', [
         account.descriptor,
         account.symbol,
@@ -182,21 +192,25 @@ export const forgetDevice = (device: TrezorDevice) => async (_: Dispatch, getSta
 
 export const saveAccounts = async (accounts: Account[]) => {
     if (!(await db.isAccessible())) return;
+
     return db.addItems('accounts', accounts, true);
 };
 
 export const saveCoinmarketTrade = async (trade: Trade) => {
     if (!(await db.isAccessible())) return;
+
     return db.addItem('coinmarketTrades', trade, undefined, true);
 };
 
 export const saveDiscovery = async (discoveries: Discovery[]) => {
     if (!(await db.isAccessible())) return;
+
     return db.addItems('discovery', discoveries, true);
 };
 
 export const saveGraph = async (graphData: GraphData[]) => {
     if (!(await db.isAccessible())) return;
+
     return db.addItems('graph', graphData, true);
 };
 
@@ -208,6 +222,7 @@ export const saveAccountTransactions =
 
         // wrap txs and add its order inside the array
         const orderedTxs = accTxs.map((tx, order) => ({ tx, order }));
+
         return db.addItems('txs', orderedTxs, true);
     };
 
@@ -219,6 +234,7 @@ export const rememberDevice =
         if (!remember) {
             // eslint-disable-next-line @typescript-eslint/no-use-before-define
             dispatch(forgetDeviceMetadataError(device));
+
             return dispatch(forgetDevice(device));
         }
 

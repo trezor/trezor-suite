@@ -48,6 +48,7 @@ export const useBiometricsSettings = () => {
                 icon: 'warningCircle',
                 pictogramVariant: 'yellow',
             });
+
             return 'notAvailable';
         }
 
@@ -66,6 +67,7 @@ export const useBiometricsSettings = () => {
                 type: EventType.BiometricsChange,
                 payload: { enabled: false, origin: 'settingsToggle' },
             });
+
             return 'disabled';
         }
 
@@ -75,6 +77,7 @@ export const useBiometricsSettings = () => {
             type: EventType.BiometricsChange,
             payload: { enabled: true, origin: 'settingsToggle' },
         });
+
         return 'enabled';
     }, [
         isBiometricsOptionEnabled,
@@ -83,5 +86,6 @@ export const useBiometricsSettings = () => {
         setIsUserAuthenticated,
         showAlert,
     ]);
+
     return { toggleBiometricsOption, isFacialEnabled, isFingerprintEnabled };
 };

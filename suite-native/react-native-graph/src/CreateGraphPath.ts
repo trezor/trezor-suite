@@ -101,6 +101,7 @@ export const getYInRange = (height: number, value: number, yRange: GraphYRange):
 export const getPointsInRange = (allPoints: GraphPoint[], range: GraphPathRange) =>
     allPoints.filter(point => {
         const portionFactorX = getXPositionInRange(point.date, range.x);
+
         return portionFactorX <= 1 && portionFactorX >= 0;
     });
 
@@ -139,6 +140,7 @@ function createGraphPathBase({
 
     const getNextPixelValue = (pixel: number) => {
         if (pixel === endX || pixel + PIXEL_RATIO < endX) return pixel + PIXEL_RATIO;
+
         return endX;
     };
 

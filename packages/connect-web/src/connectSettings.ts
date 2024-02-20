@@ -17,6 +17,7 @@ export const getEnv = () => {
             return 'electron';
         }
     }
+
     return 'web';
 };
 
@@ -31,6 +32,7 @@ const processQueryString = (url: string, keys: string[]) => {
             result[key] = decodeURIComponent(value);
         }
     });
+
     return result;
 };
 

@@ -47,6 +47,7 @@ export const filterTokenTransfers = (
     const all: (string | null)[] = addresses.map(a => {
         if (typeof a === 'string') return a;
         if (typeof a === 'object' && typeof a.address === 'string') return a.address;
+
         return null;
     });
 
@@ -58,6 +59,7 @@ export const filterTokenTransfers = (
                     (transfer.to && all.indexOf(transfer.to) >= 0)
                 );
             }
+
             return false;
         })
         .map(transfer => {
@@ -288,6 +290,7 @@ export const transformTokenInfo = (
     if (!tokens || !Array.isArray(tokens)) return undefined;
     const info = tokens.reduce((arr, token) => {
         if (token.type === 'XPUBAddress') return arr;
+
         return arr.concat([
             {
                 ...token,
@@ -295,6 +298,7 @@ export const transformTokenInfo = (
             },
         ]);
     }, [] as TokenInfo[]);
+
     return info.length > 0 ? info : undefined;
 };
 
@@ -304,6 +308,7 @@ export const transformAddresses = (
     if (!tokens || !Array.isArray(tokens)) return undefined;
     const addresses = tokens.reduce((arr, t) => {
         if (t.type !== 'XPUBAddress') return arr;
+
         return arr.concat([
             {
                 address: t.name,

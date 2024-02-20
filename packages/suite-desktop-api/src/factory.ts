@@ -31,6 +31,7 @@ export const factory = <R extends StrictIpcRenderer<any, IpcRendererEvent>>(
     ipcRenderer?: R,
 ): DesktopApi => {
     if (!ipcRenderer) return factory(ipcRendererFallback);
+
     return {
         available: ipcRenderer !== ipcRendererFallback,
         on: (channel, listener) =>
@@ -73,12 +74,14 @@ export const factory = <R extends StrictIpcRenderer<any, IpcRendererEvent>>(
             if (validation.isObject({ file: 'string' }, options)) {
                 return ipcRenderer.invoke('metadata/read', options);
             }
+
             return Promise.resolve({ success: false, error: 'invalid params' });
         },
         metadataWrite: options => {
             if (validation.isObject({ file: 'string', content: 'string' }, options)) {
                 return ipcRenderer.invoke('metadata/write', options);
             }
+
             return Promise.resolve({ success: false, error: 'invalid params' });
         },
         metadataGetFiles: () => ipcRenderer.invoke('metadata/get-files'),
@@ -86,6 +89,7 @@ export const factory = <R extends StrictIpcRenderer<any, IpcRendererEvent>>(
             if (validation.isObject({ file: 'string', to: 'string' }, options)) {
                 return ipcRenderer.invoke('metadata/rename-file', options);
             }
+
             return Promise.resolve({ success: false, error: 'invalid params' });
         },
         // HttpReceiver
@@ -93,6 +97,7 @@ export const factory = <R extends StrictIpcRenderer<any, IpcRendererEvent>>(
             if (validation.isPrimitive('string', route)) {
                 return ipcRenderer.invoke('server/request-address', route);
             }
+
             return Promise.resolve(undefined);
         },
 
@@ -102,6 +107,7 @@ export const factory = <R extends StrictIpcRenderer<any, IpcRendererEvent>>(
             if (validation.isPrimitive('boolean', shouldEnableTor)) {
                 return ipcRenderer.invoke('tor/toggle', shouldEnableTor);
             }
+
             return Promise.resolve({ success: false, error: 'invalid params' });
         },
 
@@ -114,6 +120,7 @@ export const factory = <R extends StrictIpcRenderer<any, IpcRendererEvent>>(
             if (validation.isPrimitive('string', directory)) {
                 return ipcRenderer.invoke('user-data/open', directory);
             }
+
             return Promise.resolve({ success: false, error: 'invalid params' });
         },
 

@@ -63,6 +63,7 @@ export interface WalletLayoutNavLinkProps {
 
 export const WalletLayoutNavLink = (props: WalletLayoutNavLinkProps) => {
     const { active, title, onClick, values, badge } = props;
+
     return (
         <NavLink active={active} onClick={onClick} data-test={props['data-test']}>
             <NavLinkText>

@@ -52,6 +52,7 @@ const NONSEGWIT_INPUT_SCRIPT_TYPES = ['SPENDADDRESS', 'SPENDMULTISIG'];
 function getVarIntSize(length: number) {
     if (length < 253) return 1;
     if (length < 65536) return 3;
+
     return 5;
 }
 
@@ -59,6 +60,7 @@ function getOpPushSize(length: number) {
     if (length < 76) return 1;
     if (length < 256) return 2;
     if (length < 65536) return 3;
+
     return 5;
 }
 

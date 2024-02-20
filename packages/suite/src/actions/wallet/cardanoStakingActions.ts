@@ -25,6 +25,7 @@ export const getPendingStakeTx =
         const pendingTx = getState().wallet.cardanoStaking.pendingTx.find(
             tx => tx.accountKey === account.key,
         );
+
         return pendingTx;
     };
 

@@ -62,12 +62,14 @@ function toBuffer(
 
     // avoid slicing unless necessary
     if (initialOffset !== undefined) return buffer.subarray(initialOffset, bufferWriter.offset);
+
     return buffer;
 }
 
 function getExtraData(tx: TransactionBase<DashSpecific>) {
     if (!tx.specific?.extraPayload) return;
     const extraDataLength = varuint.encode(tx.specific.extraPayload.length);
+
     return Buffer.concat([extraDataLength, tx.specific.extraPayload]);
 }
 
@@ -79,6 +81,7 @@ export function fromConstructor(options: TransactionOptions) {
     tx.byteLength = byteLength.bind(null, tx);
     tx.toBuffer = toBuffer.bind(null, tx);
     tx.getExtraData = getExtraData.bind(null, tx);
+
     return tx;
 }
 

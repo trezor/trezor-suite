@@ -43,6 +43,7 @@ export const TransactionListItemValues = ({
     const isTestnetAccount = useSelector((state: AccountsRootState) =>
         selectIsTestnetAccount(state, accountKey),
     );
+
     return (
         <>
             {isTestnetAccount ? (

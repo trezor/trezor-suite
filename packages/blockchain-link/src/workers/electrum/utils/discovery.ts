@@ -14,6 +14,7 @@ export const discoverAddress =
     async ({ address, path }: { address: string; path: string }): Promise<AddressHistory> => {
         const scripthash = addressToScripthash(address, client.getInfo()?.network);
         const history = await client.request('blockchain.scripthash.get_history', scripthash);
+
         return {
             address,
             scripthash,

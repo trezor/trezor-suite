@@ -37,6 +37,7 @@ export default class WipeDevice extends AbstractMethod<'wipeDevice'> {
         const uiResp = await uiPromise.promise;
 
         this.confirmed = uiResp.payload;
+
         return this.confirmed;
     }
 

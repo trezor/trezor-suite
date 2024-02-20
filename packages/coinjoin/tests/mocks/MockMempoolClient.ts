@@ -26,6 +26,7 @@ export class MockMempoolClient implements MempoolClient {
 
     fetchTransaction(txid: string) {
         const tx = this.mempoolTxs.find(t => t.txid === txid);
+
         return tx
             ? Promise.resolve(tx as unknown as BlockbookTransaction)
             : Promise.reject(new Error('not found'));
@@ -35,11 +36,13 @@ export class MockMempoolClient implements MempoolClient {
 
     subscribeMempoolTxs(listener: (tx: BlockbookTransaction) => void) {
         this.listener = listener;
+
         return Promise.resolve();
     }
 
     unsubscribeMempoolTxs(_listener: (tx: BlockbookTransaction) => void) {
         this.listener = undefined;
+
         return Promise.resolve();
     }
 }

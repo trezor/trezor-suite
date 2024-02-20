@@ -18,6 +18,7 @@ type Request<T> = T & Context;
 const getInfo = async (request: Request<MessageTypes.GetInfo>) => {
     const api = await request.connect();
     const info = await api.getServerInfo();
+
     return {
         type: RESPONSES.GET_INFO,
         payload: {
@@ -30,6 +31,7 @@ const getInfo = async (request: Request<MessageTypes.GetInfo>) => {
 const getBlockHash = async (request: Request<MessageTypes.GetBlockHash>) => {
     const api = await request.connect();
     const info = await api.getBlockHash(request.payload);
+
     return {
         type: RESPONSES.GET_BLOCK_HASH,
         payload: info.hash,
@@ -39,6 +41,7 @@ const getBlockHash = async (request: Request<MessageTypes.GetBlockHash>) => {
 const getBlock = async (request: Request<MessageTypes.GetBlock>) => {
     const api = await request.connect();
     const info = await api.getBlock(request.payload);
+
     return {
         type: RESPONSES.GET_BLOCK,
         payload: info,
@@ -49,6 +52,7 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
     const { payload } = request;
     const api = await request.connect();
     const info = await api.getAccountInfo(payload);
+
     return {
         type: RESPONSES.GET_ACCOUNT_INFO,
         payload: utils.transformAccountInfo(info),
@@ -59,6 +63,7 @@ const getAccountUtxo = async (request: Request<MessageTypes.GetAccountUtxo>) => 
     const { payload } = request;
     const api = await request.connect();
     const utxos = await api.getAccountUtxo(payload);
+
     return {
         type: RESPONSES.GET_ACCOUNT_UTXO,
         payload: utils.transformAccountUtxo(utxos),
@@ -71,6 +76,7 @@ const getAccountBalanceHistory = async (
     const { payload } = request;
     const api = await request.connect();
     const history = await api.getAccountBalanceHistory(payload);
+
     return {
         type: RESPONSES.GET_ACCOUNT_BALANCE_HISTORY,
         payload: history,
@@ -81,6 +87,7 @@ const getCurrentFiatRates = async (request: Request<MessageTypes.GetCurrentFiatR
     const { payload } = request;
     const api = await request.connect();
     const fiatRates = await api.getCurrentFiatRates(payload);
+
     return {
         type: RESPONSES.GET_CURRENT_FIAT_RATES,
         payload: fiatRates,
@@ -93,6 +100,7 @@ const getFiatRatesForTimestamps = async (
     const { payload } = request;
     const api = await request.connect();
     const { tickers } = await api.getFiatRatesForTimestamps(payload);
+
     return {
         type: RESPONSES.GET_FIAT_RATES_FOR_TIMESTAMPS,
         payload: { tickers },
@@ -103,6 +111,7 @@ const getFiatRatesTickersList = async (request: Request<MessageTypes.GetFiatRate
     const { payload } = request;
     const api = await request.connect();
     const tickers = await api.getFiatRatesTickersList(payload);
+
     return {
         type: RESPONSES.GET_FIAT_RATES_TICKERS_LIST,
         payload: {
@@ -116,6 +125,7 @@ const getTransaction = async (request: Request<MessageTypes.GetTransaction>) => 
     const api = await request.connect();
     const rawtx = await api.getTransaction(request.payload);
     const tx = utils.transformTransaction(rawtx);
+
     return {
         type: RESPONSES.GET_TRANSACTION,
         payload: tx,
@@ -126,6 +136,7 @@ const getTransactionHex = async (request: Request<MessageTypes.GetTransactionHex
     const api = await request.connect();
     const { hex } = await api.getTransaction(request.payload);
     if (!hex) throw new CustomError(`Missing hex of ${request.payload}`);
+
     return {
         type: RESPONSES.GET_TRANSACTION_HEX,
         payload: hex,
@@ -135,6 +146,7 @@ const getTransactionHex = async (request: Request<MessageTypes.GetTransactionHex
 const pushTransaction = async (request: Request<MessageTypes.PushTransaction>) => {
     const api = await request.connect();
     const resp = await api.pushTransaction(request.payload);
+
     return {
         type: RESPONSES.PUSH_TRANSACTION,
         payload: resp.result,
@@ -144,6 +156,7 @@ const pushTransaction = async (request: Request<MessageTypes.PushTransaction>) =
 const estimateFee = async (request: Request<MessageTypes.EstimateFee>) => {
     const api = await request.connect();
     const resp = await api.estimateFee(request.payload);
+
     return {
         type: RESPONSES.ESTIMATE_FEE,
         payload: resp,
@@ -217,6 +230,7 @@ const subscribeAccounts = async (ctx: Context, accounts: SubscriptionAccountInfo
         api.on('notification', ev => onTransaction(ctx, ev));
         state.addSubscription('notification');
     }
+
     return api.subscribeAddresses(state.getAddresses());
 };
 
@@ -229,6 +243,7 @@ const subscribeAddresses = async (ctx: Context, addresses: string[]) => {
         api.on('notification', ev => onTransaction(ctx, ev));
         state.addSubscription('notification');
     }
+
     return api.subscribeAddresses(state.getAddresses());
 };
 
@@ -237,6 +252,7 @@ const subscribeBlock = async (ctx: Context) => {
     const api = await ctx.connect();
     ctx.state.addSubscription('block');
     api.on('block', ev => onNewBlock(ctx, ev));
+
     return api.subscribeBlock();
 };
 
@@ -246,6 +262,7 @@ const subscribeFiatRates = async (ctx: Context, currency?: string) => {
         ctx.state.addSubscription('fiatRates');
         api.on('fiatRates', ev => onNewFiatRates(ctx, ev));
     }
+
     return api.subscribeFiatRates(currency);
 };
 
@@ -255,6 +272,7 @@ const subscribeMempool = async (ctx: Context) => {
         ctx.state.addSubscription('mempool');
         api.on('mempool', ev => onMempoolTx(ctx, ev));
     }
+
     return api.subscribeMempool();
 };
 
@@ -295,8 +313,10 @@ const unsubscribeAccounts = async (
         // remove listeners
         api.removeAllListeners('notification');
         state.removeSubscription('notification');
+
         return api.unsubscribeAddresses();
     }
+
     // subscribe remained addresses
     return api.subscribeAddresses(subscribed);
 };
@@ -313,8 +333,10 @@ const unsubscribeAddresses = async ({ state, connect }: Context, addresses?: str
         // remove listeners
         api.removeAllListeners('notification');
         state.removeSubscription('notification');
+
         return api.unsubscribeAddresses();
     }
+
     // subscribe remained addresses
     return api.subscribeAddresses(subscribed);
 };
@@ -324,6 +346,7 @@ const unsubscribeBlock = async ({ state, connect }: Context) => {
     const api = await connect();
     api.removeAllListeners('block');
     state.removeSubscription('block');
+
     return api.unsubscribeBlock();
 };
 
@@ -332,6 +355,7 @@ const unsubscribeFiatRates = async ({ state, connect }: Context) => {
     const api = await connect();
     api.removeAllListeners('fiatRates');
     state.removeSubscription('fiatRates');
+
     return api.unsubscribeFiatRates();
 };
 
@@ -340,6 +364,7 @@ const unsubscribeMempool = async ({ state, connect }: Context) => {
     const api = await connect();
     api.removeAllListeners('mempool');
     state.removeSubscription('mempool');
+
     return api.unsubscribeMempool();
 };
 

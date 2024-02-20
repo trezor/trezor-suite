@@ -29,10 +29,12 @@ export const createPendingTransaction = (
     const allAddresses = addresses.unused.concat(addresses.used, addresses.change);
     const findAddress = ({ address_n }: { address_n?: number[] }) => {
         const path = address_n ? getSerializedPath(address_n) : undefined;
+
         return allAddresses
             .filter(address => address.path === path)
             .map(address => address.address);
     };
+
     return {
         txid: tx.getId(),
         hex: tx.toHex(),

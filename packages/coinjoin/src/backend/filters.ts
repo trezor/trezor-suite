@@ -24,6 +24,7 @@ const createFilter = (data: Buffer, { P = P_DEFAULT, M = M_DEFAULT }) => {
     const filter = Golomb.fromNBytes(P, data);
     // In golomb package, M is hardcoded to 784931. With custom value, m must be calculated separately (as M * n).
     filter.m = new U64(M).mul(new U64(filter.n));
+
     return filter;
 };
 
@@ -34,6 +35,7 @@ export const getFilter = (filterHex: string, { P, M, key }: FilterParams = {}) =
     if (!filterHex) return () => false;
     const filter = createFilter(Buffer.from(filterHex, 'hex'), { P, M });
     const keyBuffer = key ? Buffer.from(key, 'hex').subarray(0, KEY_SIZE) : ZERO_KEY;
+
     return (script: Buffer) => filter.match(keyBuffer, script);
 };
 
@@ -41,5 +43,6 @@ export const getMultiFilter = (filterHex: string, { P, M, key }: FilterParams = 
     if (!filterHex) return () => false;
     const filter = createFilter(Buffer.from(filterHex, 'hex'), { P, M });
     const keyBuffer = key ? Buffer.from(key, 'hex').subarray(0, KEY_SIZE) : ZERO_KEY;
+
     return (scripts: Buffer[]) => !!scripts.length && filter.matchAny(keyBuffer, scripts);
 };

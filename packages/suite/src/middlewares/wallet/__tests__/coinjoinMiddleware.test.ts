@@ -15,6 +15,7 @@ import selectedAccountReducer from 'src/reducers/wallet/selectedAccountReducer';
 
 jest.mock('src/services/coinjoin/coinjoinService', () => {
     const mock = jest.requireActual('../../../actions/wallet/__fixtures__/mockCoinjoinService');
+
     return mock.mockCoinjoinService();
 });
 

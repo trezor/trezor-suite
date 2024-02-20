@@ -61,6 +61,7 @@ const ConfirmationsCount = ({ txid, accountKey }: { txid: string; accountKey: Ac
     const confirmationsCount = useSelector((state: TransactionsRootState & BlockchainRootState) =>
         selectTransactionConfirmations(state, txid, accountKey),
     );
+
     return <>{confirmationsCount}</>;
 };
 

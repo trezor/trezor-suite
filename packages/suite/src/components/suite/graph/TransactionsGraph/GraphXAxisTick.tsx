@@ -19,6 +19,7 @@ const getFormattedDate = (range: GraphRange, date: Date) => {
             if (differenceInMonths(range.endDate, range.startDate) <= 1) {
                 return <FormattedDate value={date} day="2-digit" month="short" />;
             }
+
             return <FormattedDate value={date} month="short" year="numeric" />;
         // no default
     }

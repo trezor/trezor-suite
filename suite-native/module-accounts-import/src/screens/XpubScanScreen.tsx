@@ -106,6 +106,7 @@ export const XpubScanScreen = ({
                     },
                 });
             }, 1000);
+
             return;
         }
 

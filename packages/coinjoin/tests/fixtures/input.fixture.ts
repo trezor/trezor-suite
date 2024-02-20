@@ -19,5 +19,6 @@ export const createInput = (
             input[key] = options[key];
         });
     }
+
     return input;
 };

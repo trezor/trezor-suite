@@ -34,6 +34,7 @@ const percentageChangeAtom = atom(get => {
 
 const hasPriceIncreasedAtom = atom(get => {
     const percentageChange = get(percentageChangeAtom);
+
     return percentageChange >= 0;
 });
 

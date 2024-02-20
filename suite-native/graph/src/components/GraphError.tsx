@@ -26,6 +26,7 @@ const tryAgainButtonStyle = prepareNativeStyle(({ spacings }) => ({
 
 const ErrorIcon = () => {
     const { applyStyle } = useNativeStyles();
+
     return (
         <Animated.View style={applyStyle(errorIconStyle)} entering={FadeInUp} exiting={FadeInDown}>
             <Icon name="warningTriangle" color="iconAlertYellow" />

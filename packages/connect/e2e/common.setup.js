@@ -23,6 +23,7 @@ const getController = name => {
     });
 
     TrezorUserEnvLink.state = {};
+
     return TrezorUserEnvLink;
 };
 
@@ -172,14 +173,17 @@ const skipTest = rules => {
                 // exact
                 return true;
             }
+
             return false;
         });
+
     return rule;
 };
 
 const conditionalTest = (rules, ...args) => {
     const skipMethod = typeof jest !== 'undefined' ? it.skip : xit;
     const testMethod = skipTest(rules) ? skipMethod : it;
+
     return testMethod(...args);
 };
 

@@ -70,6 +70,7 @@ const Offers = () => {
 
     const hasLoadingFailed = !(quotes && alternativeQuotes);
     const noOffers = hasLoadingFailed || (quotes.length === 0 && alternativeQuotes.length === 0);
+
     return (
         <Wrapper>
             {!selectedQuote && (

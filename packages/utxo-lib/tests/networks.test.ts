@@ -7,6 +7,7 @@ const defs = Object.keys(networks).reduce((n, key) => {
     if (typeof networks[key as Key] !== 'object') {
         return n;
     }
+
     return n.concat([key as Key]);
 }, [] as Key[]);
 

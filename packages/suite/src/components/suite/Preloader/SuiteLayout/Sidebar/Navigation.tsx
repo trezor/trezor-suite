@@ -36,6 +36,7 @@ export const Navigation = () => (
     <Nav>
         {navItems.map(item => {
             const Component = item.CustomComponent ? item.CustomComponent : NavigationItem;
+
             return <Component key={item.nameId} {...item} />;
         })}
     </Nav>

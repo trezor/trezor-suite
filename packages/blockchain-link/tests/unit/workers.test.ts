@@ -112,8 +112,10 @@ describe('Worker', () => {
                     const blob = new Blob([js], {
                         type: 'application/javascript',
                     });
+
                     return new Worker(URL.createObjectURL(blob));
                 }
+
                 return new TinyWorker(() => {
                     setTimeout(() => {
                         // @ts-expect-error self is not typed
@@ -156,8 +158,10 @@ describe('Worker', () => {
                     const blob = new Blob([js], {
                         type: 'application/javascript',
                     });
+
                     return new Worker(URL.createObjectURL(blob));
                 }
+
                 return new TinyWorker(() => {
                     self.onmessage = () => {
                         // @ts-expect-error undefined "x"

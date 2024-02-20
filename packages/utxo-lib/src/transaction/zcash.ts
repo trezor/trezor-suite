@@ -109,6 +109,7 @@ function byteLength(tx: TransactionBase<ZcashSpecific>) {
             return 0;
         const joinSplitsLen = txSpecific.joinsplits.length;
         if (joinSplitsLen < 1) return varIntSize(joinSplitsLen);
+
         return (
             varIntSize(joinSplitsLen) +
             (tx.version >= ZCASH_SAPLING_VERSION ? 1698 * joinSplitsLen : 1802 * joinSplitsLen) + // vJoinSplit using JSDescriptionGroth16 (sapling) or JSDescriptionPHGR13 (pre sapling)
@@ -288,6 +289,7 @@ function toBuffer(tx: TransactionBase<ZcashSpecific>, buffer?: Buffer, initialOf
 
     // avoid slicing unless necessary
     if (initialOffset !== undefined) return buffer.subarray(initialOffset, bufferWriter.offset);
+
     return buffer;
 }
 
@@ -302,11 +304,13 @@ function getExtraData(tx: TransactionBase<ZcashSpecific>) {
         tx.ins.reduce((sum, input) => sum + 40 + varSliceSize(input.script), 0) + // inputs
         tx.outs.reduce((sum, output) => sum + 8 + varSliceSize(output.script), 0) + // outputs
         4; // locktime
+
     return tx.toBuffer().subarray(offset);
 }
 
 function getBlake2bDigestHash(buffer: Buffer, personalization: string | Buffer) {
     const hash = blake2b(buffer, undefined, 32, undefined, Buffer.from(personalization));
+
     return Buffer.from(hash);
 }
 
@@ -319,6 +323,7 @@ function getHeaderDigest(tx: TransactionBase<ZcashSpecific>) {
     writer.writeUInt32(tx.specific!.consensusBranchId);
     writer.writeUInt32(tx.locktime);
     writer.writeUInt32(tx.expiry!);
+
     return getBlake2bDigestHash(writer.buffer, 'ZTxIdHeadersHash');
 }
 
@@ -329,6 +334,7 @@ function getPrevoutsDigest(ins: any[]) {
         bufferWriter.writeSlice(txIn.hash);
         bufferWriter.writeUInt32(txIn.index);
     });
+
     return getBlake2bDigestHash(bufferWriter.buffer, 'ZTxIdPrevoutHash');
 }
 
@@ -338,6 +344,7 @@ function getSequenceDigest(ins: any[]) {
     ins.forEach(txIn => {
         bufferWriter.writeUInt32(txIn.sequence);
     });
+
     return getBlake2bDigestHash(bufferWriter.buffer, 'ZTxIdSequencHash');
 }
 
@@ -349,6 +356,7 @@ function getOutputsDigest(outs: any[]) {
         bufferWriter.writeUInt64(out.value);
         bufferWriter.writeVarSlice(out.script);
     });
+
     return getBlake2bDigestHash(bufferWriter.buffer, 'ZTxIdOutputsHash');
 }
 
@@ -364,6 +372,7 @@ function getTransparentDigest(tx: TransactionBase<ZcashSpecific>) {
     } else {
         buffer = Buffer.of();
     }
+
     return getBlake2bDigestHash(buffer, 'ZTxIdTranspaHash');
 }
 
@@ -388,6 +397,7 @@ function getHash(tx: TransactionBase<ZcashSpecific>, _forWitness = false) {
     );
     personalization.writeSlice(Buffer.from(personalizationTag));
     personalization.writeUInt32(tx.specific!.consensusBranchId);
+
     return getBlake2bDigestHash(writer.buffer, personalization.buffer);
 }
 
@@ -412,6 +422,7 @@ export function fromConstructor(options: TransactionOptions) {
     tx.toBuffer = toBuffer.bind(null, tx);
     tx.getExtraData = getExtraData.bind(null, tx);
     tx.getHash = getHash.bind(null, tx);
+
     return tx;
 }
 
@@ -462,6 +473,7 @@ export function fromBuffer(buffer: Buffer, options: TransactionOptions) {
     function readCompressedG1() {
         const yLsb = bufferReader.readUInt8() & 1;
         const x = bufferReader.readSlice(32);
+
         return {
             x,
             yLsb,
@@ -471,6 +483,7 @@ export function fromBuffer(buffer: Buffer, options: TransactionOptions) {
     function readCompressedG2() {
         const yLsb = bufferReader.readUInt8() & 1;
         const x = bufferReader.readSlice(64);
+
         return {
             x,
             yLsb,
@@ -490,6 +503,7 @@ export function fromBuffer(buffer: Buffer, options: TransactionOptions) {
         if (tx.version >= ZCASH_SAPLING_VERSION) {
             return readSaplingZKProof();
         }
+
         return {
             type: 'joinsplit',
             gA: readCompressedG1(),

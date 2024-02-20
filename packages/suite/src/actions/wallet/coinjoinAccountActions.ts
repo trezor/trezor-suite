@@ -247,6 +247,7 @@ const getAccountCache = ({ addresses, path }: Extract<Account, { backendType: 'c
     );
     const receivePrederived = receiveSorted.map(({ address, path }) => ({ address, path }));
     const changePrederived = addresses.change.map(({ address, path }) => ({ address, path }));
+
     return {
         receivePrederived,
         changePrederived,
@@ -572,6 +573,7 @@ export const createCoinjoinAccount =
             dispatch(handleError(unlockPath.payload.error));
             dispatch(clearCoinjoinInstances(network.symbol));
             dispatch(coinjoinAccountPreloading(false));
+
             return;
         }
 
@@ -590,6 +592,7 @@ export const createCoinjoinAccount =
             dispatch(handleError(publicKey.payload.error));
             dispatch(clearCoinjoinInstances(network.symbol));
             dispatch(coinjoinAccountPreloading(false));
+
             return;
         }
 
@@ -694,6 +697,7 @@ const authorizeCoinjoin =
 
         if (auth.success) {
             dispatch(coinjoinAccountAuthorizeSuccess(account.key, params));
+
             return true;
         }
 
@@ -848,6 +852,7 @@ export const restorePausedCoinjoinSessions = () => (dispatch: Dispatch, getState
             state.router.route?.name === 'wallet-send' &&
             key === state.wallet.selectedAccount.account?.key;
         const blocker = selectCoinjoinSessionBlockerByAccountKey(state, key);
+
         return !hasSendFormOpen && !blocker && session?.paused;
     });
 
@@ -911,6 +916,7 @@ export const restoreCoinjoinAccounts = () => (dispatch: Dispatch, getState: GetS
         if (!res.includes(account.symbol)) {
             return res.concat(account.symbol);
         }
+
         return res;
     }, []);
 

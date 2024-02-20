@@ -24,8 +24,10 @@ export const withSelectedAccountLoaded = (
         if (selectedAccount.status !== 'loaded') {
             return <WalletLayout title={title} account={selectedAccount} />;
         }
+
         return <WrappedComponent selectedAccount={selectedAccount} />;
     };
     Component.displayName = `withSelectedAccountLoaded(${displayName})`;
+
     return Component;
 };

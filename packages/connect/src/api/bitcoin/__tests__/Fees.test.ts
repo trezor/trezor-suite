@@ -20,8 +20,10 @@ describe('api/bitcoin/Fees', () => {
                 const response = params.blocks.map(block => {
                     const reduce = Math.floor(block / 10) * 379; // every 10th result is lower
                     const fee = 10000 - reduce;
+
                     return { feePerUnit: fee.toString() };
                 });
+
                 return Promise.resolve(response);
             });
 
@@ -52,8 +54,10 @@ describe('api/bitcoin/Fees', () => {
                     if (block < 20 && block % 3 === 0) return { feePerUnit: '-1' }; // each third requested block returns unknown value
                     const reduce = Math.floor(block / 2) * 379; // every second known result is lower
                     const fee = 10000 - reduce;
+
                     return { feePerUnit: fee.toString() };
                 });
+
                 return Promise.resolve(response);
             });
 
@@ -79,8 +83,10 @@ describe('api/bitcoin/Fees', () => {
                     if (block < 5) return { feePerUnit: '-1' }; // first 5 requested blocks are unknown
                     const reduce = Math.floor(block / 2) * 379; // every second known result is lower
                     const fee = 10000 - reduce;
+
                     return { feePerUnit: fee.toString() };
                 });
+
                 return Promise.resolve(response);
             });
 

@@ -21,6 +21,7 @@ export const formatTime = (n: number) => {
     if (minutes !== 0) {
         res += `${minutes} minutes`;
     }
+
     return res;
 };
 
@@ -41,6 +42,7 @@ const isHexString = (value: string, length?: number) => {
     if (length && value.length !== 2 + 2 * length) {
         return false;
     }
+
     return true;
 };
 
@@ -57,6 +59,7 @@ export const messageToHex = (message: string) => {
     } else {
         buffer = Buffer.from(message);
     }
+
     return buffer.toString('hex');
 };
 
@@ -74,7 +77,9 @@ export const deepTransform = (transform: (str: string) => string) => {
                 {},
             ) as T;
         }
+
         return value;
     };
+
     return recursion;
 };

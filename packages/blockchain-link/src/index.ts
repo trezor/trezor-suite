@@ -91,6 +91,7 @@ class BlockchainLink extends TypedEmitter<Events> {
             this.worker.onmessage = this.onMessage.bind(this);
             this.worker.onerror = this.onError.bind(this);
         }
+
         return this.worker;
     }
 
@@ -99,6 +100,7 @@ class BlockchainLink extends TypedEmitter<Events> {
         const worker = await this.getWorker();
         const { promiseId, promise } = this.deferred.create();
         worker.postMessage({ id: promiseId, ...message });
+
         return promise;
     }
 
@@ -271,6 +273,7 @@ class BlockchainLink extends TypedEmitter<Events> {
     // eslint-disable-next-line require-await
     async disconnect(): Promise<boolean> {
         if (!this.worker) return true;
+
         return this.sendMessage({
             type: MESSAGES.DISCONNECT,
         });
@@ -283,6 +286,7 @@ class BlockchainLink extends TypedEmitter<Events> {
 
         if (data.id === -1) {
             this.onEvent(data);
+
             return;
         }
 

@@ -56,6 +56,7 @@ export const Onboarding = () => {
                 return FinalStep;
             default:
                 console.error('no corresponding component found');
+
                 return () => null;
         }
     }, [activeStepId]);

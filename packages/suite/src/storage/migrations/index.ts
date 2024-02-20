@@ -96,6 +96,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
                 addressLabels: {},
             };
             account.key = `${account.descriptor}-${account.symbol}-${account.deviceState}`;
+
             return account;
         });
 
@@ -104,6 +105,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
                 // @ts-expect-error
                 status: 'disabled',
             };
+
             return device;
         });
     }
@@ -125,6 +127,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
     if (oldVersion < 18) {
         await updateAll(transaction, 'devices', device => {
             device.walletNumber = device.instance;
+
             return device;
         });
     }
@@ -157,6 +160,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
                     totalOutput: formatNetworkAmount(tx.tx.details.totalOutput, tx.tx.symbol),
                 };
             }
+
             return tx;
         });
     }
@@ -193,6 +197,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
                     // self, recv txs
                     tx.tx.totalSpent = tx.tx.amount;
                 }
+
                 return tx;
             }
         });
@@ -203,6 +208,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             if (account.symbol === 'ltc' && account.accountType === 'normal') {
                 // change account type from normal to segwit
                 account.accountType = 'segwit';
+
                 return account;
             }
         });
@@ -212,6 +218,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             if (d.networks.includes('ltc')) {
                 d.index = 0;
                 d.loaded = 0;
+
                 return d;
             }
         });
@@ -247,6 +254,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
                     {},
                 );
                 delete settings.blockbookUrls;
+
                 return settings;
             }
         });
@@ -257,6 +265,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             if (account.symbol === 'vtc' && account.accountType === 'normal') {
                 // change account type from normal to segwit
                 account.accountType = 'segwit';
+
                 return account;
             }
         });
@@ -266,6 +275,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             if (d.networks.includes('vtc')) {
                 d.index = 0;
                 d.loaded = 0;
+
                 return d;
             }
         });
@@ -298,6 +308,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
         await updateAll(transaction, 'devices', device => {
             if (device.state?.includes('undefined')) {
                 device.state = device.state.replace('undefined', '0');
+
                 return device;
             }
         });
@@ -388,6 +399,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
                 }
                 // @ts-expect-error
                 delete state.provider.token;
+
                 return state;
             }
         });
@@ -400,6 +412,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             }
 
             walletSettings.bitcoinAmountUnit = 0;
+
             return walletSettings;
         });
     }
@@ -501,6 +514,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
                 return null;
             }
             tx.tx.internalTransfers = [];
+
             return tx;
         });
 
@@ -508,6 +522,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
         await updateAll(transaction, 'accounts', account => {
             if (accountsToUpdate.includes(account.symbol)) {
                 account.history = { total: 0, unconfirmed: 0, tokens: 0 };
+
                 return account;
             }
         });
@@ -526,6 +541,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
                 // @ts-expect-error
                 delete token.address;
             });
+
             return tx;
         });
 
@@ -541,6 +557,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
                 // @ts-expect-error
                 delete token.address;
             });
+
             return account;
         });
 
@@ -597,6 +614,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
                 }
                 device.features.internal_model = deviceInternalModel;
             }
+
             return device;
         });
     }
@@ -707,6 +725,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
     if (oldVersion < 41) {
         await updateAll(transaction, 'metadata', metadata => {
             metadata.selectedProvider.passwords = '';
+
             return metadata;
         });
     }
@@ -729,6 +748,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             if (!metadata.selectedProvider.passwords) {
                 metadata.selectedProvider.passwords = '';
             }
+
             return metadata;
         });
     }

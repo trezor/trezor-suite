@@ -54,6 +54,7 @@ const useLanguageOptions = () => {
         ],
         [systemOption, translationString],
     );
+
     return {
         options,
         systemOption,

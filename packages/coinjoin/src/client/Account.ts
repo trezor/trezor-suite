@@ -71,6 +71,7 @@ export class Account {
     // find inputs/outputs already registered in Round(s)
     findDetainedElements(rounds: Round[]) {
         const { accountKey } = this;
+
         return rounds.flatMap(round => {
             if (round.Phase > 0) {
                 const registeredInputs = getRoundEvents('InputAdded', round.CoinjoinState.Events);
@@ -93,6 +94,7 @@ export class Account {
 
                 return [...inputs, ...outputs];
             }
+
             return [];
         });
     }

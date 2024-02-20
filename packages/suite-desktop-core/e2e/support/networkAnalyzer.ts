@@ -22,6 +22,7 @@ export class NetworkAnalyzer {
                             const parsed = output
                                 .trim()
                                 .match(/^electron .* TCP.*->(?<url>[\s\S]* )/);
+
                             return parsed?.groups?.url ?? '';
                         });
                         // Removing empty strings.

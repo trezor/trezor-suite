@@ -61,6 +61,7 @@ const handleMessage = async (event: MessageEvent<CoreRequestMessage>) => {
         if (logWriterProxy) {
             logWriterProxy.add(data.payload);
         }
+
         return;
     }
 
@@ -68,12 +69,14 @@ const handleMessage = async (event: MessageEvent<CoreRequestMessage>) => {
     // TODO: instead of error _core should be initialized automatically
     if (!_core && data.type === IFRAME.CALL) {
         fail('Core not initialized yet!');
+
         return;
     }
 
     // catch first message from window.opener
     if (data.type === IFRAME.INIT) {
         init(data.payload, event.origin);
+
         return;
     }
 
@@ -85,6 +88,7 @@ const handleMessage = async (event: MessageEvent<CoreRequestMessage>) => {
         if (event.target !== _popupMessagePort) {
             if (event.ports?.length < 1) {
                 fail('POPUP.HANDSHAKE: popupMessagePort not found');
+
                 return;
             }
             // reassign to current MessagePort
@@ -93,6 +97,7 @@ const handleMessage = async (event: MessageEvent<CoreRequestMessage>) => {
 
         if (!_core) {
             fail('POPUP.HANDSHAKE: Core not initialized');
+
             return;
         }
 
@@ -204,6 +209,7 @@ const postMessage = (message: CoreEventMessage) => {
     if (!usingPopup) {
         if (_core && message.type === UI.REQUEST_UI_WINDOW) {
             _core.handleMessage({ type: POPUP.HANDSHAKE });
+
             return;
         }
         if (message.type === POPUP.CANCEL_POPUP_REQUEST) {
@@ -255,6 +261,7 @@ const shouldUiEventBeSentToHost = (message: CoreEventMessage) => {
         DEVICE.DISCONNECT,
         DEVICE.BUTTON,
     ];
+
     return whitelistedMessages.includes(message.type);
 };
 
@@ -274,9 +281,11 @@ const filterDeviceEvent = (message: DeviceEvent) => {
             const devicePermissions = savedPermissions.filter(
                 p => p.type === 'read' && p.device === features.device_id,
             );
+
             return devicePermissions.length > 0;
         }
     }
+
     return false;
 };
 

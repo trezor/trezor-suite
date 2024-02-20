@@ -39,6 +39,7 @@ export const TransactionsGroup = ({
     const totalAmountPerDay = sumTransactions(transactions);
     const totalFiatAmountPerDay = sumTransactionsFiat(transactions, localCurrency);
     const isMissingFiatRates = transactions.some(tx => !tx.rates?.[localCurrency]);
+
     return (
         <TransactionsGroupWrapper
             key={dateKey}

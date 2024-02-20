@@ -81,6 +81,7 @@ export const FormatterProvider = ({ config, children }: FormatterProviderProps) 
             ...config,
             intl,
         };
+
         return getFormatters(extendedConfig);
     }, [config, intl]);
 

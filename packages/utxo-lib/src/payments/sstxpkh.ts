@@ -31,6 +31,7 @@ export function sstxpkh(a: Payment, opts?: PaymentOpts): Payment {
 
     lazy.prop(o, 'address', () => {
         if (!o.hash) return;
+
         return bs58check.encodeAddress(o.hash, network.pubKeyHash, network);
     });
     lazy.prop(o, 'hash', () => {
@@ -39,6 +40,7 @@ export function sstxpkh(a: Payment, opts?: PaymentOpts): Payment {
     });
     lazy.prop(o, 'output', () => {
         if (!o.hash) return;
+
         return bscript.compile([
             OPS.OP_SSTX,
             OPS.OP_DUP,

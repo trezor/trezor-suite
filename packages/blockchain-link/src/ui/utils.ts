@@ -8,6 +8,7 @@ export const onClear = () => {
 
 export const getInputValue = (id: string): string => {
     const input = document.getElementById(id) as HTMLInputElement;
+
     return input.value;
 };
 

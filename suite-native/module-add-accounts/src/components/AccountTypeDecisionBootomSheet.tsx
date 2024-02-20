@@ -29,6 +29,7 @@ export const AccountTypeDecisionBootomSheet = ({
 }: AccountTypeDecisionBootomSheetProps) => {
     const { translate } = useTranslate();
     const { applyStyle } = useNativeStyles();
+
     return (
         <BottomSheet
             title={translate('moduleAddAccounts.accountTypeDecisionBootomSheet.title', {

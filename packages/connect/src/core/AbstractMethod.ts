@@ -173,8 +173,10 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         const { granted, remember } = uiResp.payload;
         if (granted) {
             this.savePermissions(!remember);
+
             return true;
         }
+
         return false;
     }
 
@@ -196,6 +198,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
                 const granted = originPermissions.find(
                     p => p.type === np && p.device === this.device.features.device_id,
                 );
+
                 return !granted;
             });
         }
@@ -227,6 +230,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
                 const granted = originPermissions.find(
                     p => p.type === p2s.type && p.device === p2s.device,
                 );
+
                 return !granted;
             });
         }
@@ -303,6 +307,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
             const allowed = DataManager.getConfig().management.find(
                 item => item.origin === host || item.origin === origin,
             );
+
             return !allowed;
         }
     }

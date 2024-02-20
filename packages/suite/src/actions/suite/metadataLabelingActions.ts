@@ -112,6 +112,7 @@ export const setAccountMetadataKey =
             const fileName = metadataUtils.deriveFilenameForLabeling(metaKey, encryptionVersion);
 
             const aesKey = metadataUtils.deriveAesKey(metaKey);
+
             return {
                 ...account,
                 metadata: {
@@ -127,6 +128,7 @@ export const setAccountMetadataKey =
                 }),
             );
         }
+
         return account;
     };
 
@@ -575,6 +577,7 @@ export const init =
                         failed: true,
                     },
                 });
+
                 return false;
             }
         }
@@ -594,6 +597,7 @@ export const init =
             if (!providerResult) {
                 dispatch({ type: METADATA.SET_INITIATING, payload: false });
                 dispatch({ type: METADATA.SET_EDITING, payload: undefined });
+
                 return false;
             }
         }

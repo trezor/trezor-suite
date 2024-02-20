@@ -28,6 +28,7 @@ const binaryToDecimal = (bignum: Uint8Array | number[], minDigits = 1) => {
         }
     }
     result.reverse();
+
     return String.fromCharCode(...result);
 };
 
@@ -47,6 +48,7 @@ const serialize = (s?: string) => {
         if (c >= '1'.charCodeAt(0) && c <= '5'.charCodeAt(0)) {
             return c - '1'.charCodeAt(0) + 1;
         }
+
         return 0;
     };
 
@@ -64,6 +66,7 @@ const serialize = (s?: string) => {
             }
         }
     }
+
     return binaryToDecimal(a);
 };
 
@@ -140,6 +143,7 @@ const parseAuth = (a: $EosAuthorization): PROTO.EosAuthorization => {
             key: key.subarray(0, key.length - 4).toString('hex'),
         };
     };
+
     return {
         threshold: a.threshold,
         keys: a.keys.map(k => ({
@@ -169,6 +173,7 @@ const parseDate = (d: string) => {
     if (d.substring(d.length - 1, d.length) !== 'Z') {
         d += 'Z';
     }
+
     return Date.parse(d) / 1000;
 };
 
@@ -288,6 +293,7 @@ const parseAck = (action: Action) => {
 
 const parseUnknown = (action: any) => {
     if (typeof action.data !== 'string') return null;
+
     return {
         unknown: {
             data_size: action.data.length / 2,
@@ -307,6 +313,7 @@ const parseCommon = (action: Action): PROTO.EosActionCommon => ({
 
 const parseAction = (action: any) => {
     const ack = parseAck(action) || parseUnknown(action);
+
     return {
         common: parseCommon(action),
         ...ack,
@@ -344,6 +351,7 @@ const CHUNK_SIZE = 2048;
 const getDataChunk = (data: string, offset: number) => {
     if (!data || offset < 0 || data.length < offset) return '';
     const o = offset > 0 ? data.length - offset * 2 : 0;
+
     return data.substring(o, o + CHUNK_SIZE * 2);
 };
 
@@ -374,6 +382,7 @@ const processTxRequest = async (
 
         if (lastOp && lastChunk) {
             const response = await typedCall('EosTxActionAck', 'EosSignedTx', params);
+
             return response.message;
         }
         ack = await typedCall('EosTxActionAck', 'EosTxActionRequest', params);
@@ -383,6 +392,7 @@ const processTxRequest = async (
     } else {
         if (lastOp) {
             const response = await typedCall('EosTxActionAck', 'EosSignedTx', action);
+
             return response.message;
         }
         ack = await typedCall('EosTxActionAck', 'EosTxActionRequest', action);
@@ -407,5 +417,6 @@ export const signTx = async (
         num_actions: actions.length,
         chunkify,
     });
+
     return processTxRequest(typedCall, response.message, actions, 0);
 };

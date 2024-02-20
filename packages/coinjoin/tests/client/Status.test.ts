@@ -15,6 +15,7 @@ const fastForward = (time: number) => jest.advanceTimersByTimeAsync(time);
 // use getters to allow mocking different values in each test case
 jest.mock('../../src/constants', () => {
     const originalModule = jest.requireActual('../../src/constants');
+
     return {
         __esModule: true,
         ...originalModule,
@@ -64,6 +65,7 @@ describe('Status', () => {
             if (url === 'status') {
                 coordinatorRequestSpy();
             }
+
             return Promise.resolve({
                 ...STATUS_EVENT,
                 RoundStates: [{ ...DEFAULT_ROUND }],
@@ -121,6 +123,7 @@ describe('Status', () => {
             if (url === 'status') {
                 coordinatorRequestSpy();
             }
+
             return Promise.resolve({
                 ...STATUS_EVENT,
                 RoundStates: [{ ...DEFAULT_ROUND, Phase: coordinatorRequestSpy.mock.calls.length }], // increment phase on each request to trigger update event
@@ -164,6 +167,7 @@ describe('Status', () => {
                     identities.push(id);
                 }
             }
+
             return Promise.resolve({
                 ...STATUS_EVENT,
                 RoundStates: [{ ...DEFAULT_ROUND }],
@@ -282,6 +286,7 @@ describe('Status', () => {
             if (url === 'status') {
                 coordinatorRequestSpy();
             }
+
             return Promise.resolve({
                 ...STATUS_EVENT,
                 RoundStates: [{ ...round }], // NOTE: always return new reference for the Round from mock

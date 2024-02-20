@@ -17,5 +17,6 @@ export function httpRequest(url: any, type: any) {
     if (!asset) {
         return /^https?/.test(url) ? browserHttpRequest(url, type) : fs.readFile(url);
     }
+
     return asset;
 }

@@ -51,6 +51,7 @@ const getColor = (score: OptionalZXCVBNScore, password: string) => {
 
 const getPasswordScore = async (password: string) => {
     const zxcvbn = await import(/* webpackChunkName: "zxcvbn" */ 'zxcvbn');
+
     return zxcvbn.default(password).score;
 };
 

@@ -13,6 +13,7 @@ const showDialog = async (mainWindow: BrowserWindow) => {
         message: 'The application seems to be hanging...',
         buttons: ['Wait', 'Quit', 'Clear cache & restart'],
     });
+
     return (['wait', 'quit', 'reload'] as const)[resp.response];
 };
 
@@ -37,6 +38,7 @@ export const hangDetect = (mainWindow: BrowserWindow): Promise<HandshakeResult> 
             // always resolve repeated handshakes from renderer (e.g. Ctrl+R)
             ipcMain.handle('handshake/client', () => Promise.resolve());
             resolve('success');
+
             return Promise.resolve();
         });
         logger.debug('init', `Load URL (${APP_SRC})`);

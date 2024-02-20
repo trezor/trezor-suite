@@ -19,5 +19,6 @@ export const promiseAllSequence = async <
         const result = await actions[i]();
         results.push(result);
     }
+
     return results;
 };

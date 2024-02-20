@@ -40,5 +40,6 @@ CoinmarketBuyDetailContext.displayName = 'CoinmarketBuyDetailContext';
 export const useCoinmarketBuyDetailContext = () => {
     const context = useContext(CoinmarketBuyDetailContext);
     if (context === null) throw Error('CoinmarketBuyDetailContext used without Context');
+
     return context;
 };

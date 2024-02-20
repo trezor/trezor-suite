@@ -19,6 +19,7 @@ const validateKey = (key: unknown): key is DictionaryKey => {
     if (['string', 'number'].includes(typeof key)) {
         return true;
     }
+
     return false;
 };
 
@@ -36,6 +37,7 @@ export const arrayToDictionary: ArrayToDictionary = <T, Fn extends GetKey<T>>(
                       [key]: [...(prev[key] ?? []), cur],
                   };
               }
+
               return prev;
           }, {})
         : array.reduce<Record<DictionaryKey, T>>((prev, cur) => {
@@ -46,5 +48,6 @@ export const arrayToDictionary: ArrayToDictionary = <T, Fn extends GetKey<T>>(
                       [key]: cur,
                   };
               }
+
               return prev;
           }, {});

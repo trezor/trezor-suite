@@ -7,6 +7,7 @@ describe('parseUri', () => {
             const url = parseUri(f.uri as string);
             if (!url) {
                 expect(f.result).toEqual(undefined);
+
                 return;
             }
             // url is a class. get action needs to be called to get samples

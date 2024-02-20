@@ -48,6 +48,7 @@ export const deriveAddresses = (
     const derived = countNew
         ? deriveNewAddresses(descriptor, type, fromNew, countNew, network)
         : [];
+
     return prederived.slice(fromPrederived, fromPrederived + countPrederived).concat(derived);
 };
 

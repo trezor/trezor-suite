@@ -81,6 +81,7 @@ export const verifyAddress =
                     addressPath: path,
                 }),
             );
+
             return;
         }
 

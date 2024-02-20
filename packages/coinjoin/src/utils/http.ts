@@ -33,6 +33,7 @@ export const patchResponse = (obj: any) => {
             }
         });
     }
+
     return obj;
 };
 
@@ -54,11 +55,13 @@ const createHeaders = (options: RequestOptions) => {
     if (typeof options.userAgent === 'string') {
         headers['User-Agent'] = options.userAgent || 'Trezor Suite';
     }
+
     return headers;
 };
 
 export const httpGet = (url: string, query?: Record<string, any>, options: RequestOptions = {}) => {
     const queryString = query ? `?${new URLSearchParams(query)}` : '';
+
     return fetch(`${url}${queryString}`, {
         method: 'GET',
         signal: options.signal,
@@ -77,5 +80,6 @@ export const httpPost = (url: string, body?: Record<string, any>, options: Reque
 // Randomize identity password to reset TOR circuit for this identity
 export const resetIdentityCircuit = (identity: string) => {
     const [user] = identity.split(':');
+
     return `${user}:${getWeakRandomId(16)}`;
 };

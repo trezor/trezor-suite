@@ -27,6 +27,7 @@ export const getInstallerPackage = (): InstallerPackage | undefined => {
             return 'mac';
         case 'Windows': {
             const arch = agent.match(/(Win64|WOW64)/) ? '64' : '32';
+
             return `win${arch}`;
         }
         case 'Linux': {
@@ -34,6 +35,7 @@ export const getInstallerPackage = (): InstallerPackage | undefined => {
                 ? 'rpm'
                 : 'deb';
             const is64x = agent.match(/Linux i[3456]86/) ? '32' : '64';
+
             return `${isRpm}${is64x}`;
         }
         default:

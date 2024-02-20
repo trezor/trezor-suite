@@ -11,11 +11,13 @@ const randomBytes = util.promisify(crypto.randomBytes);
 
 export const getCookieString = async (torDataDir: string) => {
     const controlAuthCookiePath = path.join(torDataDir, 'control_auth_cookie');
+
     return (await readFile(controlAuthCookiePath)).toString('hex');
 };
 
 export const createHmacSignature = (authString: string, key: string) => {
     const bufferToSign = Buffer.from(authString, 'hex');
+
     return crypto.createHmac('sha256', key).update(bufferToSign).digest('hex').toUpperCase();
 };
 
@@ -163,6 +165,7 @@ export class TorControlPort {
                 const value = values.find(v => v.startsWith(key));
                 if (!value) return;
                 const resp = quoted ? value.match(/"(.*?)"/) : value.split('=');
+
                 return resp ? resp[1] : undefined;
             };
 
@@ -173,6 +176,7 @@ export class TorControlPort {
                 )
                 .map(line => {
                     const [id, status, ...values] = line.split(' ');
+
                     return {
                         id,
                         status,
@@ -185,11 +189,13 @@ export class TorControlPort {
                     };
                 });
         }
+
         return [];
     }
 
     async closeActiveCircuits() {
         const circuits = await this.getCircuits();
+
         return promiseAllSequence(
             circuits.map(circuit => () => this.sendCommand(`closecircuit ${circuit.id}`)),
         );
