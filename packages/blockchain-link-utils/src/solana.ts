@@ -95,6 +95,7 @@ type SplTokenAccount = { account: AccountInfo<SplTokenAccountData>; pubkey: Publ
 
 const isSplTokenAccount = (tokenAccount: ApiTokenAccount): tokenAccount is SplTokenAccount => {
     const { parsed } = tokenAccount.account.data;
+
     return (
         tokenAccount.account.data.program === 'spl-token' &&
         'info' in parsed &&
@@ -117,6 +118,7 @@ export const transformTokenInfo = (
             A.filter(isSplTokenAccount),
             A.map(tokenAccount => {
                 const { info } = tokenAccount.account.data.parsed;
+
                 return {
                     type: 'SPL', // Designation for Solana tokens
                     contract: info.mint,
@@ -260,6 +262,7 @@ export const getTargets = (
             if (txType === 'unknown') {
                 return false;
             }
+
             // count in only positive effects, for `sent` tx they gonna be represented as negative, for `recv` as positive
             return effect.amount.isGreaterThan(0);
         })
@@ -271,6 +274,7 @@ export const getTargets = (
                 amount: effect.amount.abs().toString(),
                 isAccountTarget: effect.address === accountAddress && txType !== 'sent',
             };
+
             return target;
         });
 
@@ -383,6 +387,7 @@ export const getDetails = (
     if (txType === 'self') {
         vout.push(getVin({ address: accountAddress }, vout.length));
     }
+
     return {
         size: transaction.meta?.computeUnitsConsumed || 0,
         totalInput: senders
@@ -406,6 +411,7 @@ export const getAmount = (
     if (txType === 'self') {
         return accountEffect.amount?.abs().toString();
     }
+
     return accountEffect.amount.toString();
 };
 
@@ -485,6 +491,7 @@ export const getTokens = (
         if (isAccountDestination) {
             return 'recv';
         }
+
         return 'sent';
     };
 

@@ -40,10 +40,6 @@ interface ReadAndConfirmShamirMnemonicEmu {
     threshold: number;
 }
 
-// remember which version was bridge last started with and reuse it on other places where
-// bridge is started and stopped implicitly (setupEmu)
-let bridgeVersion: string | undefined;
-
 export const api = (controller: any) => ({
     setupEmu: async (options: SetupEmu) => {
         const defaults = {
@@ -65,7 +61,7 @@ export const api = (controller: any) => ({
             ...defaults,
             ...options,
         });
-        await controller.send({ type: 'bridge-start', version: bridgeVersion });
+
         return null;
     },
     sendToAddressAndMineBlock: async (options: SendToAddressAndMineBlock) => {
@@ -73,6 +69,7 @@ export const api = (controller: any) => ({
             type: 'regtest-send-to-address',
             ...options,
         });
+
         return null;
     },
     mineBlocks: async (options: MineBlocks) => {
@@ -80,6 +77,7 @@ export const api = (controller: any) => ({
             type: 'regtest-mine-blocks',
             ...options,
         });
+
         return null;
     },
     generateBlock: async (options: GenerateBlock) => {
@@ -87,15 +85,17 @@ export const api = (controller: any) => ({
             type: 'regtest-generateblock',
             ...options,
         });
+
         return null;
     },
     startBridge: async (version?: string) => {
-        bridgeVersion = version;
         await controller.send({ type: 'bridge-start', version });
+
         return null;
     },
     stopBridge: async () => {
         await controller.send({ type: 'bridge-stop' });
+
         return null;
     },
     startEmu: (arg?: StartEmu) => {
@@ -104,6 +104,7 @@ export const api = (controller: any) => ({
             version: '2-latest',
             ...arg,
         };
+
         return controller.send(params);
     },
     startEmuFromUrl: ({ url, model, wipe }: { url: string; model: string; wipe?: boolean }) =>
@@ -115,38 +116,47 @@ export const api = (controller: any) => ({
         }),
     stopEmu: async () => {
         await controller.send({ type: 'emulator-stop' });
+
         return null;
     },
     wipeEmu: async () => {
         await controller.send({ type: 'emulator-wipe' });
+
         return null;
     },
     pressYes: async () => {
         await controller.send({ type: 'emulator-press-yes' });
+
         return null;
     },
     pressNo: async () => {
         await controller.send({ type: 'emulator-press-no' });
+
         return null;
     },
     swipeEmu: async (direction: 'up' | 'down' | 'left' | 'right') => {
         await controller.send({ type: 'emulator-swipe', direction });
+
         return null;
     },
     inputEmu: async (value: string) => {
         await controller.send({ type: 'emulator-input', value });
+
         return null;
     },
     clickEmu: async (options: ClickEmu) => {
         await controller.send({ type: 'emulator-click', ...options });
+
         return null;
     },
     resetDevice: async (options: any) => {
         await controller.send({ type: 'emulator-reset-device', ...options });
+
         return null;
     },
     readAndConfirmMnemonicEmu: async () => {
         await controller.send({ type: 'emulator-read-and-confirm-mnemonic' });
+
         return null;
     },
     readAndConfirmShamirMnemonicEmu: async (options: ReadAndConfirmShamirMnemonicEmu) => {
@@ -154,6 +164,7 @@ export const api = (controller: any) => ({
             type: 'emulator-read-and-confirm-shamir-mnemonic',
             ...options,
         });
+
         return null;
     },
     applySettings: async (options: ApplySettings) => {
@@ -161,27 +172,33 @@ export const api = (controller: any) => ({
             type: 'emulator-apply-settings',
             ...options,
         });
+
         return null;
     },
     selectNumOfWordsEmu: async (num: number) => {
         await controller.send({ type: 'emulator-select-num-of-words', num });
+
         return null;
     },
     getDebugState: async () => {
         const { response } = await controller.send({ type: 'emulator-get-debug-state' });
+
         return response;
     },
 
     logTestDetails: async (text: string) => {
         await controller.send({ type: 'log', text });
+
         return null;
     },
     trezorUserEnvConnect: async () => {
         await controller.connect();
+
         return null;
     },
     trezorUserEnvDisconnect: async () => {
         await controller.disconnect();
+
         return null;
     },
 });

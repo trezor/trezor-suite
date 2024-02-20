@@ -5,5 +5,6 @@ export const resolveAfter = (msec: number, value?: any) => {
     const promise = new Promise<any>(resolve => {
         timeout = setTimeout(resolve, msec, value);
     });
+
     return { promise, timeout };
 };

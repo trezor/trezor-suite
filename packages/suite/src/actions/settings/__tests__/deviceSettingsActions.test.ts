@@ -45,6 +45,7 @@ const initStore = (state: State) => {
         // add action back to stack
         store.getActions().push(action);
     });
+
     return store;
 };
 
@@ -59,6 +60,7 @@ describe('DeviceSettings Actions', () => {
                     store.dispatch(deviceActions.deviceChanged(f.deviceChange));
                     store.dispatch(deviceActions.updateSelectedDevice(f.deviceChange));
                 }
+
                 return Promise.resolve(f.mocks) as any;
             };
             jest.spyOn(TrezorConnect, 'applySettings').mockImplementation(mock);

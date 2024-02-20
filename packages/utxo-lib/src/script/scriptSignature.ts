@@ -11,6 +11,7 @@ export function toDER(x: Buffer) {
     if (i === x.length) return ZERO;
     x = x.subarray(i);
     if (x[0] & 0x80) return Buffer.concat([ZERO, x], 1 + x.length);
+
     return x;
 }
 
@@ -19,6 +20,7 @@ export function fromDER(x: Buffer) {
     const buffer = Buffer.alloc(32, 0);
     const bstart = Math.max(0, 32 - x.length);
     x.copy(buffer, bstart);
+
     return buffer;
 }
 

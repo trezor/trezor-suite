@@ -46,6 +46,7 @@ export default class BlockchainUnsubscribe extends AbstractMethod<'blockchainUns
 
     async run() {
         const backend = await initBlockchain(this.params.coinInfo, this.postMessage);
+
         return backend.unsubscribe(this.params.accounts);
     }
 }

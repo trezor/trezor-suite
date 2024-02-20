@@ -11,6 +11,7 @@ const LoadingWrapper = styled.div`
 const LoaderCell = styled.div<Required<Omit<LoadingContentProps, 'isSuccessful'>>>`
     width: ${({ size }) => 1.5 * size}px;
     transition: all 0.25s ease-out 0.5s;
+
     ${({ isLoading }) =>
         !isLoading &&
         css`

@@ -24,6 +24,7 @@ jasmine.getEnv().beforeAll(() => {
                                     if (typeof item === 'object') {
                                         return jasmine.objectContaining(nested(item));
                                     }
+
                                     return item;
                                 }),
                             );
@@ -45,10 +46,12 @@ jasmine.getEnv().beforeAll(() => {
                         } else {
                             match[key] = obj[key];
                         }
+
                         return match;
                     }, {});
 
                 expect(actual).toEqual(jasmine.objectContaining(nested(expected)));
+
                 return success;
             },
         }),

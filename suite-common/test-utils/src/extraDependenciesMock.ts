@@ -21,12 +21,14 @@ const mockedConsoleLog = (...args: any) => {
 export const mockAction = (type: string): any =>
     createAction<any>(`@mocked/extraDependency/action/notImplemented/${type}`, (payload: any) => {
         mockedConsoleLog(`Calling not implemented action ${type} with payload: `, payload);
+
         return { payload };
     });
 
 export const mockThunk = (type: string) =>
     createThunk(`@mocked/extraDependency/notImplemented/${type}`, (thunkPayload: any) => {
         mockedConsoleLog(`Calling not implemented thunk: ${type} and payload: `, thunkPayload);
+
         return thunkPayload;
     });
 
@@ -39,6 +41,7 @@ export const mockSelector =
             ' and args: ',
             selectorArgs,
         );
+
         return mockedReturnValue;
     };
 
@@ -47,6 +50,7 @@ export const mockActionType = (type: string) =>
 
 export const mockReducer = (name: string) => (state: any, action: any) => {
     mockedConsoleLog(`Calling not implemented reducer "${name}" with action: `, action);
+
     return state;
 };
 

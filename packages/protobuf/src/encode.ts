@@ -16,6 +16,7 @@ const transform = (fieldType: string, value: any) => {
     if (typeof value === 'number' && !Number.isSafeInteger(value)) {
         throw new RangeError('field value is not within safe integer range');
     }
+
     return value;
 };
 
@@ -41,6 +42,7 @@ export function patch(Message: Type, payload: any) {
             } else {
                 patched[key] = transform(field.type, value);
             }
+
             return;
         }
         // repeated
@@ -70,5 +72,6 @@ export const encode = (Message: Type, data: Record<string, unknown>) => {
     const message = Message.fromObject(payload);
     // Encode a message to an Uint8Array (browser) or Buffer (node)
     const bytes = Message.encode(message).finish();
+
     return Buffer.from(bytes);
 };

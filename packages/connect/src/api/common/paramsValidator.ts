@@ -1,5 +1,5 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/paramsValidator.js
-import * as versionUtils from '@trezor/utils/lib/versionUtils';
+import { versionUtils } from '@trezor/utils';
 
 import { ERRORS } from '../../constants';
 import { fromHardened } from '../../utils/pathUtils';
@@ -40,6 +40,7 @@ export function validateParams<P extends Record<string, any>>(params: P, schema:
             const success = type.reduce((count, t) => {
                 try {
                     validateParams(p, [{ name: field.name, type: t }]);
+
                     return count + 1;
                 } catch (e) {
                     return count;
@@ -51,6 +52,7 @@ export function validateParams<P extends Record<string, any>>(params: P, schema:
                     `Parameter "${name}" has invalid type. Union of "${type.join('|')}" expected.`,
                 );
             }
+
             return;
         }
 
@@ -88,6 +90,7 @@ export function validateParams<P extends Record<string, any>>(params: P, schema:
             throw invalidParameter(`Parameter "${name}" has invalid type. "${type}" expected.`);
         }
     });
+
     return params;
 }
 
@@ -133,6 +136,7 @@ export const getFirmwareRange = (
             if (rule.capabilities) {
                 return rule.capabilities.includes(method);
             }
+
             // rule doesn't have specified methods
             // it may be a global rule for coin or coinType
             return true;
@@ -151,6 +155,7 @@ export const getFirmwareRange = (
                 // @ts-expect-error
                 return (typeof rule.coin === 'string' ? [rule.coin] : rule.coin).includes(shortcut);
             }
+
             // rule for method
             return rule.methods || rule.capabilities;
         });

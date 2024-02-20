@@ -45,6 +45,7 @@ export const SuiteBanners = () => {
         ) {
             return false;
         }
+
         return transport?.outdated;
     };
 

@@ -21,6 +21,7 @@ const DEFAULT = {
         if (!data || !data.AmountsToRequest) {
             return { RealCredentialRequests: {} };
         }
+
         return {
             RealCredentialRequests: {
                 CredentialsRequest: {
@@ -52,6 +53,7 @@ const DEFAULT = {
         if (!data || !data.CredentialsResponse) {
             return { Credentials: [{}, {}] };
         }
+
         return {
             Credentials: data.CredentialsResponse,
         };
@@ -93,6 +95,7 @@ const DEFAULT = {
         if (!data || !data.RealAmountCredentialRequests) {
             return {};
         }
+
         return {
             RealAmountCredentials: data.RealAmountCredentialRequests.Requested.map((a: number) => ({
                 Value: a,
@@ -150,6 +153,7 @@ const handleRequest = (
         response.setHeader('Content-Type', 'application/json');
         response.write(JSON.stringify(testResponse));
         response.end();
+
         return;
     }
 

@@ -26,10 +26,12 @@ const derivePubKeyHash = async (
             { coinInfo, unlockPath },
         );
         const node = bip32.fromBase58(response.xpub, coinInfo.network);
+
         return node.derive(address_n[address_n.length - 1]);
     }
     // custom address_n
     const response = await getHDNode({ address_n }, { coinInfo, unlockPath });
+
     return bip32.fromBase58(response.xpub, coinInfo.network);
 };
 

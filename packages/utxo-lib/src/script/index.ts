@@ -69,6 +69,7 @@ export function compile(chunks: Buffer | Stack) {
             if (opcode !== undefined) {
                 buffer.writeUInt8(opcode, offset);
                 offset += 1;
+
                 return;
             }
 
@@ -84,6 +85,7 @@ export function compile(chunks: Buffer | Stack) {
     });
 
     if (offset !== buffer.length) throw new Error('Could not decode chunks');
+
     return buffer;
 }
 
@@ -145,6 +147,7 @@ export function toASM(chunks: Buffer | Stack) {
                 if (op === undefined) return chunk.toString('hex');
                 chunk = op;
             }
+
             // opcode!
             return REVERSE_OPS[chunk];
         })
@@ -173,6 +176,7 @@ export function toStack(chunks0: Buffer | Stack) {
     return chunks?.map(op => {
         if (types.Buffer(op)) return op;
         if (op === OPS.OP_0) return Buffer.allocUnsafe(0);
+
         return scriptNumber.encode(op - OP_INT_BASE);
     });
 }

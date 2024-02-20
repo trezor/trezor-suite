@@ -94,6 +94,7 @@ export const connectInitThunk = createThunk(
                 dispatch(lockDevice(true));
                 const result = await synchronize(() => original(params));
                 dispatch(lockDevice(false));
+
                 return result;
             };
         });

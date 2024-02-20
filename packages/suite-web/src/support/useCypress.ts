@@ -13,6 +13,7 @@ export const useCypress = () => {
         if (typeof window !== 'undefined' && window.Cypress) {
             window.store = store;
             window.TrezorConnect = TrezorConnect;
+
             return () => {
                 delete window.store;
                 delete window.TrezorConnect;

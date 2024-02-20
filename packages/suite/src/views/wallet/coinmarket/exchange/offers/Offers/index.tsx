@@ -99,6 +99,7 @@ const Offers = () => {
     const noOffers =
         hasLoadingFailed ||
         (fixedQuotes.length === 0 && floatQuotes.length === 0 && dexQuotes.length === 0);
+
     return (
         <Wrapper>
             {!selectedQuote && (

@@ -21,6 +21,7 @@ export const MessageSystemBannerRenderer = () => {
 
     const activeBannerMessages = useSelector(selectActiveBannerMessages);
     const topInset = A.isNotEmpty(activeBannerMessages) ? topSafeAreaInset : 0;
+
     return (
         <VStack
             spacing={4}

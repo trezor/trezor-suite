@@ -1,7 +1,7 @@
 import path from 'path';
 
 import { isNotUndefined } from '@trezor/utils';
-import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
+import { TypedEmitter } from '@trezor/utils';
 import { InterceptedEvent } from '@trezor/request-manager';
 import { isDevEnv } from '@suite-common/suite-utils';
 import type { HandshakeClient, TorStatus } from '@trezor/suite-desktop-api';
@@ -106,13 +106,16 @@ export const initModules = (dependencies: Dependencies) => {
                 `Couldn't initialize ${moduleToInit.SERVICE_NAME} (${err.toString()})`,
             );
         }
+
         return undefined;
     });
     logger.info('modules', 'All modules initialized');
 
     const modulesToLoad = modules.filter(isNotUndefined);
+
     return (handshake: HandshakeClient) => {
         let loaded = 0;
+
         return Promise.all(
             modulesToLoad.map(async ([moduleToLoad, loadModule]) => {
                 const moduleName = moduleToLoad.SERVICE_NAME;
@@ -128,6 +131,7 @@ export const initModules = (dependencies: Dependencies) => {
                             total: modulesToLoad.length,
                         },
                     });
+
                     return [moduleName, payload] as const;
                 } catch (err) {
                     logger.error('modules', `Couldn't load ${moduleName} (${err?.toString()})`);

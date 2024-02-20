@@ -15,6 +15,7 @@ import {
 
 export const selectNetworksWithPendingTransactions = (state: TransactionsRootState) => {
     const pendingTransactions = selectAllPendingTransactions(state);
+
     return Object.keys(pendingTransactions)
         .filter(accountKey => pendingTransactions[accountKey].length > 0)
         .map(accountKey => pendingTransactions[accountKey][0].symbol);

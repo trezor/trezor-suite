@@ -164,6 +164,7 @@ class Client {
                 await Client.forceImplicitFlow();
             }
         }
+
         return Client.accessToken;
     }
 
@@ -264,6 +265,7 @@ class Client {
         );
         Client.accessToken = '';
         Client.refreshToken = '';
+
         return promise;
     }
 
@@ -273,6 +275,7 @@ class Client {
             { method: 'GET' },
             {},
         );
+
         return response.json();
     }
 
@@ -320,6 +323,7 @@ class Client {
             },
             params,
         );
+
         return response.text();
     }
 
@@ -338,6 +342,7 @@ class Client {
             },
             params,
         );
+
         return response.json();
     }
 
@@ -356,6 +361,7 @@ class Client {
             },
             params,
         );
+
         return response.json;
     }
 
@@ -370,6 +376,7 @@ class Client {
             },
             params,
         );
+
         return response.json;
     }
 
@@ -390,6 +397,7 @@ class Client {
             if (Client.listPromise) {
                 await Client.listPromise;
                 Client.listPromise = undefined; // unset
+
                 return Client.nameIdMap[name];
             }
             // refresh nameIdMap
@@ -455,10 +463,12 @@ class Client {
                 const error = await response.json();
                 throw error;
             }
+
             return response;
         };
 
         const response = await getTokenAndFetch();
+
         return response;
     }
 }

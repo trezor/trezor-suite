@@ -179,6 +179,7 @@ export const composeTransaction =
         if (account.networkType === 'solana') {
             return dispatch(sendFormSolanaActions.composeTransaction(formValues, formState));
         }
+
         return Promise.resolve(undefined);
     };
 
@@ -200,6 +201,7 @@ export const cancelSignTx = () => (dispatch: Dispatch, getState: GetState) => {
     // if transaction is not signed yet interrupt signing in TrezorConnect
     if (!signedTx) {
         TrezorConnect.cancel('tx-cancelled');
+
         return;
     }
     // otherwise just close modal
@@ -352,6 +354,7 @@ const pushTransaction =
                             value: label,
                             defaultValue: '',
                         };
+
                         return metadata;
                     })
                     // filter out empty values AFTER creating metadata objects (see outputs mapping above)
@@ -488,6 +491,7 @@ export const signTransaction =
         if (!serializedTx) {
             // close modal manually since UI.CLOSE_UI.WINDOW was blocked
             dispatch(modalActions.onCancel());
+
             return;
         }
 

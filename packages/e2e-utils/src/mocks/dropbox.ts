@@ -31,6 +31,7 @@ export class DropboxMock {
                 res.writeHeader(response.status, response.headers);
                 res.write(JSON.stringify(response!.body));
                 res.end();
+
                 return;
             }
             next();
@@ -64,6 +65,7 @@ export class DropboxMock {
                     expires_in: 14400,
                 });
             }
+
             return res.send('foo bar');
         });
 
@@ -159,6 +161,7 @@ export class DropboxMock {
             } else {
                 console.error('[dropboxMock]: no such file found', file);
             }
+
             return res.end();
         });
 
@@ -182,6 +185,7 @@ export class DropboxMock {
     start() {
         if (this.running) {
             this.reset();
+
             return;
         }
 

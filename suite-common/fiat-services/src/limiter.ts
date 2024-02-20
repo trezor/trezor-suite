@@ -39,6 +39,7 @@ export class RateLimiter {
             // if all queued requests were fired, we need to reset totalDelay to properly delay next batch of requests
             this.totalDelay = 0;
         }
+
         return results;
     }
 }

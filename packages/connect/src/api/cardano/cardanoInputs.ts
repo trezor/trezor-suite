@@ -29,6 +29,7 @@ export const InputWithPathParam = Type.Composite([
 
 export const transformInput = (input: unknown): InputWithPath => {
     Assert(InputWithPathParam, input);
+
     return {
         input: {
             prev_hash: input.prev_hash,
@@ -40,6 +41,7 @@ export const transformInput = (input: unknown): InputWithPath => {
 
 export const transformCollateralInput = (collateralInput: unknown): CollateralInputWithPath => {
     Assert(InputWithPathParam, collateralInput);
+
     return {
         collateralInput: {
             prev_hash: collateralInput.prev_hash,
@@ -51,6 +53,7 @@ export const transformCollateralInput = (collateralInput: unknown): CollateralIn
 
 export const transformReferenceInput = (referenceInput: unknown): PROTO.CardanoTxReferenceInput => {
     Assert(PROTO.CardanoTxInput, referenceInput);
+
     return {
         prev_hash: referenceInput.prev_hash,
         prev_index: referenceInput.prev_index,

@@ -174,6 +174,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                 const url = isAddressDeprecated(value, symbol);
                 if (url) {
                     setAddressDeprecatedUrl(url);
+
                     return translationString('TR_UNSUPPORTED_ADDRESS_FORMAT', {
                         url,
                     });

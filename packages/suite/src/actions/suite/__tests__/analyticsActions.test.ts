@@ -31,6 +31,7 @@ const initStore = (state: State) => {
         // Add action back to stack
         store.getActions().push(action);
     });
+
     return store;
 };
 

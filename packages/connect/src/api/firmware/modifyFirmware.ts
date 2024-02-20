@@ -1,4 +1,4 @@
-import * as versionUtils from '@trezor/utils/lib/versionUtils';
+import { versionUtils } from '@trezor/utils';
 
 import type { Features } from '../../types';
 
@@ -35,5 +35,6 @@ export const stripFwHeaders = (fw: ArrayBuffer) => {
     ) {
         return fw.slice(256);
     }
+
     return fw;
 };

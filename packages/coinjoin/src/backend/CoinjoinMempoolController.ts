@@ -128,6 +128,7 @@ export class CoinjoinMempoolController {
                 ),
             );
             this.lastPurge = new Date().getTime();
+
             return [...this.mempool.values()];
         }
 
@@ -160,6 +161,7 @@ export class CoinjoinMempoolController {
         }
 
         this.lastPurge = new Date().getTime();
+
         return Array.from(set, txid => this.mempool.get(txid)!);
     }
 

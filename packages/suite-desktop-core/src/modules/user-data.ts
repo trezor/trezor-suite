@@ -10,11 +10,13 @@ export const init: Module = () => {
 
     ipcMain.handle('user-data/clear', () => {
         logger.info(SERVICE_NAME, `Clearing user-data.`);
+
         return userData.clear();
     });
 
     ipcMain.handle('user-data/open', (_, directory = '') => {
         logger.info(SERVICE_NAME, `Opening user-data${directory} folder.`);
+
         return userData.open(directory);
     });
 

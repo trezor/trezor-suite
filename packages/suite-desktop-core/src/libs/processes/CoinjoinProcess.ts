@@ -38,6 +38,7 @@ export class CoinjoinProcess extends BaseProcess {
             if (resp.status === 200) {
                 const { Version } = await resp.json();
                 this.logger.debug(this.logTopic, `WabiSabiClientLibrary version: ${Version}`);
+
                 return {
                     service: true,
                     process: true,
@@ -58,6 +59,7 @@ export class CoinjoinProcess extends BaseProcess {
         // We add the port where the process is going to run
         // since there is no way to pass it as argument yet.
         process.env.WCL_BIND_PORT = `${this.port}`;
+
         return super.start();
     }
 }

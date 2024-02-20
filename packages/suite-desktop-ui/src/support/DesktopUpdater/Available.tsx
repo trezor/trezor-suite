@@ -96,6 +96,7 @@ const getVersionName = ({ latestVersion, prerelease }: VersionNameProps): string
         // add beta label for pre-releases, but prevent versions like '21.10.1-alpha-beta'
         return `${latestVersion}-beta`;
     }
+
     // fallback for pre-release versions already including some pre-release components
     return latestVersion;
 };

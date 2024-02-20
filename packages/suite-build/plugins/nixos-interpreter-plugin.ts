@@ -22,6 +22,7 @@ export class NixosInterpreterPlugin {
             encoding: 'utf-8',
             cwd: this.options.cwd,
         });
+
         return output.join('').replace(/(\r\n|\n|\r)/gm, '');
     }
 

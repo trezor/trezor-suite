@@ -74,14 +74,17 @@ export const initMmkvStorage = async (): Promise<Storage> => {
     return {
         setItem: (key, value) => {
             encryptedStorage.set(key, value);
+
             return Promise.resolve(true);
         },
         getItem: key => {
             const value = encryptedStorage.getString(key);
+
             return Promise.resolve(value);
         },
         removeItem: key => {
             encryptedStorage.delete(key);
+
             return Promise.resolve();
         },
     };

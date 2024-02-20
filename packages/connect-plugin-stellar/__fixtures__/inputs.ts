@@ -49,6 +49,7 @@ function build_tx(
     ops.forEach(op => {
         tx.addOperation(op);
     });
+
     return tx.build();
 }
 
@@ -147,6 +148,7 @@ export const transformTransactionInputs = [
                 destAmount: '200',
                 path: [nativeAsset, credit4Asset, credit12Asset],
             });
+
             return build_tx(
                 DEFAULT_SOURCE,
                 DEFAULT_SEQUENCE,
@@ -207,6 +209,7 @@ export const transformTransactionInputs = [
                 destAsset: credit4Asset,
                 destAmount: '200',
             });
+
             return build_tx(
                 DEFAULT_SOURCE,
                 DEFAULT_SEQUENCE,
@@ -256,6 +259,7 @@ export const transformTransactionInputs = [
                 destMin: '200',
                 path: [nativeAsset, credit4Asset, credit12Asset],
             });
+
             return build_tx(
                 DEFAULT_SOURCE,
                 DEFAULT_SEQUENCE,
@@ -316,6 +320,7 @@ export const transformTransactionInputs = [
                 destAsset: credit4Asset,
                 destMin: '200',
             });
+
             return build_tx(
                 DEFAULT_SOURCE,
                 DEFAULT_SEQUENCE,
@@ -803,6 +808,7 @@ export const transformTransactionInputs = [
                 assetCode: 'USDC',
                 authorize: true,
             });
+
             return build_tx(
                 DEFAULT_SOURCE,
                 DEFAULT_SEQUENCE,
@@ -843,6 +849,7 @@ export const transformTransactionInputs = [
                 assetCode: 'USDC',
                 authorize: false,
             });
+
             return build_tx(
                 DEFAULT_SOURCE,
                 DEFAULT_SEQUENCE,
@@ -1051,6 +1058,7 @@ export const transformTransactionInputs = [
                 bumpTo: '200000000000000000',
             });
             const memo = Memo.none();
+
             return build_tx(
                 DEFAULT_SOURCE,
                 DEFAULT_SEQUENCE,
@@ -1082,6 +1090,7 @@ export const transformTransactionInputs = [
                 bumpTo: '200000000000000000',
             });
             const memo = Memo.text('Hello, Stellar!');
+
             return build_tx(
                 DEFAULT_SOURCE,
                 DEFAULT_SEQUENCE,
@@ -1113,6 +1122,7 @@ export const transformTransactionInputs = [
                 bumpTo: '200000000000000000',
             });
             const memo = Memo.id('1234567890');
+
             return build_tx(
                 DEFAULT_SOURCE,
                 DEFAULT_SEQUENCE,
@@ -1146,6 +1156,7 @@ export const transformTransactionInputs = [
             const memo = Memo.hash(
                 '3389e9f0f1a65f19736cacf544c2e825313e8447f569233bb8db39aa607c8889',
             );
+
             return build_tx(
                 DEFAULT_SOURCE,
                 DEFAULT_SEQUENCE,
@@ -1182,6 +1193,7 @@ export const transformTransactionInputs = [
             const memo = Memo.return(
                 '3389e9f0f1a65f19736cacf544c2e825313e8447f569233bb8db39aa607c8889',
             );
+
             return build_tx(
                 DEFAULT_SOURCE,
                 DEFAULT_SEQUENCE,
@@ -1319,6 +1331,7 @@ export const transformTransactionInputs = [
                 asset: credit12Asset,
                 amount: '5000000',
             });
+
             return build_tx(
                 DEFAULT_SOURCE,
                 DEFAULT_SEQUENCE,

@@ -3,7 +3,7 @@
 import { randomBytes } from 'crypto';
 import { Transport } from '@trezor/transport';
 import * as Messages from '@trezor/protobuf/lib/messages-schema';
-import * as versionUtils from '@trezor/utils/lib/versionUtils';
+import { versionUtils } from '@trezor/utils';
 import { ERRORS, NETWORK } from '../constants';
 import { DEVICE } from '../events';
 import * as hdnodeUtils from '../utils/hdnodeUtils';
@@ -88,6 +88,7 @@ const filterForLog = (type: string, msg: any) => {
     if (type in blacklist) {
         return { ...msg, ...blacklist[type] };
     }
+
     return msg;
 };
 
@@ -139,6 +140,7 @@ export class DeviceCommands {
             ignore_xpub_magic: params.ignore_xpub_magic,
             ecdsa_curve_name: params.ecdsa_curve_name,
         });
+
         return response.message;
     }
 
@@ -262,6 +264,7 @@ export class DeviceCommands {
                 response.xpubSegwit = hdnodeUtils.convertBitcoinXpub(publicKey.xpub, segwitNetwork);
             }
         }
+
         return response;
     }
 
@@ -311,6 +314,7 @@ export class DeviceCommands {
             encoded_network,
             chunkify,
         });
+
         return {
             path: address_n,
             serializedPath: getSerializedPath(address_n),
@@ -353,9 +357,11 @@ export class DeviceCommands {
     async preauthorize(throwError: boolean) {
         try {
             await this.typedCall('DoPreauthorized', 'PreauthorizedRequest', {});
+
             return true;
         } catch (error) {
             if (throwError) throw error;
+
             return false;
         }
     }
@@ -397,6 +403,7 @@ export class DeviceCommands {
             res.payload.type,
             filterForLog(res.payload.type, res.payload.message),
         );
+
         // TODO: https://github.com/trezor/trezor-suite/issues/5301
         // @ts-expect-error
         return res.payload;
@@ -436,6 +443,7 @@ export class DeviceCommands {
             // throw error anyway, next call should be resolved properly
             throw error;
         }
+
         return response;
     }
 
@@ -444,6 +452,7 @@ export class DeviceCommands {
         if (this.disposed) {
             throw ERRORS.TypedError('Runtime', 'typedCall: DeviceCommands already disposed');
         }
+
         return this._filterCommonTypes(resp);
     }
 
@@ -465,6 +474,7 @@ export class DeviceCommands {
             if (code === 'Failure_ActionCancelled' && !message) {
                 message = 'Action cancelled by user';
             }
+
             // pass code and message from firmware error
             return Promise.reject(
                 new ERRORS.TrezorError(
@@ -492,6 +502,7 @@ export class DeviceCommands {
             } else {
                 this.device.emit(DEVICE.BUTTON, this.device, res.message);
             }
+
             return this._commonCall('ButtonAck', {});
         }
 
@@ -509,6 +520,7 @@ export class DeviceCommands {
                             // reload features to after successful PIN
                             return this.device.getFeatures().then(() => response);
                         }
+
                         return response;
                     }),
                 () => this._commonCall('Cancel', {}),
@@ -528,6 +540,7 @@ export class DeviceCommands {
             // T2T1 fw lower than 2.3.0, entering passphrase on device
             if (legacy && res.message._on_device) {
                 this.device.emit(DEVICE.PASSPHRASE_ON_DEVICE);
+
                 return this._commonCall('PassphraseAck', { _state: state });
             }
 
@@ -536,11 +549,13 @@ export class DeviceCommands {
                     const { passphrase, passphraseOnDevice, cache } = response;
                     if (legacyT1) {
                         this.device.setInternalState(cache ? passphrase : undefined);
+
                         return this._commonCall('PassphraseAck', { passphrase });
                     }
                     if (legacy) {
                         return this._commonCall('PassphraseAck', { passphrase, _state: state });
                     }
+
                     return !passphraseOnDevice
                         ? this._commonCall('PassphraseAck', { passphrase })
                         : this._commonCall('PassphraseAck', { on_device: true });
@@ -559,6 +574,7 @@ export class DeviceCommands {
         if (res.type === 'Deprecated_PassphraseStateRequest') {
             const { state } = res.message;
             this.device.setInternalState(state);
+
             return this._commonCall('Deprecated_PassphraseStateAck', {});
         }
 
@@ -587,6 +603,7 @@ export class DeviceCommands {
                     // but it is a required field within protobuf definitions so we must provide something here
                     derivation_type: 2, // icarus_trezor
                 });
+
                 return message.address;
             }
             default: {
@@ -595,6 +612,7 @@ export class DeviceCommands {
                     coin_name: 'Testnet',
                     script_type: 'SPENDADDRESS',
                 });
+
                 return message.address;
             }
         }
@@ -676,6 +694,7 @@ export class DeviceCommands {
 
         if (coinInfo.type === 'bitcoin') {
             const resp = await this.getHDNode({ address_n }, { coinInfo, validation: false });
+
             return {
                 descriptor: resp.xpubSegwit || resp.xpub,
                 legacyXpub: resp.xpub,
@@ -684,6 +703,7 @@ export class DeviceCommands {
         }
         if (coinInfo.type === 'ethereum') {
             const resp = await this.ethereumGetAddress({ address_n });
+
             return {
                 descriptor: resp.address,
                 address_n,
@@ -697,6 +717,7 @@ export class DeviceCommands {
                 address_n,
                 derivation_type: derivationType,
             });
+
             return {
                 descriptor: message.xpub,
                 address_n,
@@ -706,6 +727,7 @@ export class DeviceCommands {
             const { message } = await this.typedCall('RippleGetAddress', 'RippleAddress', {
                 address_n,
             });
+
             return {
                 descriptor: message.address,
                 address_n,
@@ -716,6 +738,7 @@ export class DeviceCommands {
             const { message } = await this.typedCall('SolanaGetAddress', 'SolanaAddress', {
                 address_n,
             });
+
             return {
                 descriptor: message.address,
                 address_n,
@@ -733,6 +756,7 @@ export class DeviceCommands {
         if (this._cancelableRequest) {
             this._cancelableRequest();
             this._cancelableRequest = undefined;
+
             return;
         }
 
@@ -745,6 +769,7 @@ export class DeviceCommands {
             if (this.callPromise) {
                 await this.callPromise.promise;
             }
+
             return;
         }
         /**

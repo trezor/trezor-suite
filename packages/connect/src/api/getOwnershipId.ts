@@ -69,6 +69,7 @@ export default class GetOwnershipId extends AbstractMethod<
         const uiResp = await uiPromise.promise;
 
         this.confirmed = uiResp.payload;
+
         return this.confirmed;
     }
 
@@ -94,6 +95,7 @@ export default class GetOwnershipId extends AbstractMethod<
                 );
             }
         }
+
         return this.hasBundle ? responses : responses[0];
     }
 }

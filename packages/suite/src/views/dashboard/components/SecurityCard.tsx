@@ -98,6 +98,7 @@ export const SecurityCard = ({
     const theme = useTheme();
 
     const isDone = variant === 'secondary';
+
     return (
         <Wrapper {...rest}>
             <StyledCard>

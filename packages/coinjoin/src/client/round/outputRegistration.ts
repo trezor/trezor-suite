@@ -91,6 +91,7 @@ const registerOutput = async (
                                 sentenceEnd: Infinity, // this address should never be recycled
                             },
                         );
+
                         return tryToRegisterOutput(false);
                     }
                     if (error.errorCode === WabiSabiProtocolErrorCode.NotEnoughFunds) {
@@ -157,6 +158,7 @@ export const outputRegistration = async (
                 if (!account) throw new Error(`Unknown account ~~${accountKey}~~`);
 
                 const assignedAddresses: AccountAddress[] = [];
+
                 return Promise.all(
                     arrayShuffle(outputs).map(output =>
                         registerOutput(round, account, output, assignedAddresses, options),
@@ -180,5 +182,6 @@ export const outputRegistration = async (
 
         round.inputs.forEach(input => input.setError(new Error(message)));
     }
+
     return round;
 };

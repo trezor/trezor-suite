@@ -24,6 +24,7 @@ export const serializeDevice = (device: AcquiredDevice, forceRemember?: true) =>
         buttonRequests: [],
     };
     if (forceRemember) sd.forceRemember = true;
+
     return sd;
 };
 
@@ -32,6 +33,7 @@ export const serializeDevice = (device: AcquiredDevice, forceRemember?: true) =>
  */
 export const serializeCoinjoinAccount = (coinjoinAccount: CoinjoinAccount) => {
     const { session, transactionCandidates, ...propertiesToSave } = coinjoinAccount;
+
     return propertiesToSave;
 };
 

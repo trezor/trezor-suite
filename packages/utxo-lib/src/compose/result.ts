@@ -23,6 +23,7 @@ export function getErrorResult(error: unknown): ComposeResultError {
     if (known) {
         return { type: 'error', error: known };
     }
+
     return { type: 'error', error: 'COINSELECT', message };
 }
 
@@ -61,6 +62,7 @@ export function getResult<
         if (request.outputs[index]) {
             return total.add(output.value);
         }
+
         return total;
     }, new BN(result.fee));
 
@@ -73,6 +75,7 @@ export function getResult<
 
     if (incomplete.length > 0) {
         const inputs = result.inputs.map(input => request.utxos[input.i]);
+
         return {
             type: 'nonfinal',
             fee: result.fee.toString(),

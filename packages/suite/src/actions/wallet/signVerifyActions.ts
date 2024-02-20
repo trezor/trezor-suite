@@ -118,6 +118,7 @@ const onSignSuccess =
             type: SIGN_VERIFY.SIGN_SUCCESS,
             signSignature: signature,
         });
+
         return signature;
     };
 
@@ -130,6 +131,7 @@ const onVerifySuccess = (dispatch: Dispatch) => () => {
     dispatch({
         type: SIGN_VERIFY.VERIFY_SUCCESS,
     });
+
     return true;
 };
 
@@ -150,6 +152,7 @@ const onError =
                 error: error.message,
             }),
         );
+
         return false as const;
     };
 

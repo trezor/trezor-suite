@@ -287,6 +287,7 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
 
 export const selectTorState = (state: SuiteRootState) => {
     const { torStatus, torBootstrap } = state.suite;
+
     return {
         isTorEnabled: getIsTorEnabled(torStatus),
         isTorLoading: getIsTorLoading(torStatus),

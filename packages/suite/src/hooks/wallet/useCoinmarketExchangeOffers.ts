@@ -85,6 +85,7 @@ export const useOffers = ({ selectedAccount }: UseCoinmarketExchangeFormProps) =
             if (Array.isArray(allQuotes)) {
                 if (allQuotes.length === 0) {
                     timer.stop();
+
                     return;
                 }
                 const [fixedQuotes, floatQuotes, dexQuotes] = splitToQuoteCategories(
@@ -106,6 +107,7 @@ export const useOffers = ({ selectedAccount }: UseCoinmarketExchangeFormProps) =
     useEffect(() => {
         if (!quotesRequest) {
             navigateToExchangeForm();
+
             return;
         }
 
@@ -163,6 +165,7 @@ export const useOffers = ({ selectedAccount }: UseCoinmarketExchangeFormProps) =
                                 (a.accountType === 'normal' && a.index === 0)),
                     ),
                 );
+
                 return;
             }
         }
@@ -228,6 +231,7 @@ export const useOffers = ({ selectedAccount }: UseCoinmarketExchangeFormProps) =
             navigateToExchangeDetail();
         }
         setCallInProgress(false);
+
         return ok;
     };
 
@@ -276,6 +280,7 @@ export const useOffers = ({ selectedAccount }: UseCoinmarketExchangeFormProps) =
     const sendTransaction = async () => {
         if (selectedQuote?.isDex) {
             sendDexTransaction();
+
             return;
         }
         if (
@@ -344,5 +349,6 @@ CoinmarketExchangeOffersContext.displayName = 'CoinmarketExchangeOffersContext';
 export const useCoinmarketExchangeOffersContext = () => {
     const context = useContext(CoinmarketExchangeOffersContext);
     if (context === null) throw Error('CoinmarketExchangeOffersContext used without Context');
+
     return context;
 };

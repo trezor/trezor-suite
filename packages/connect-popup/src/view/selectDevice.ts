@@ -50,6 +50,7 @@ const initWebUsbButton = (showLoader: boolean) => {
                         postMessage({ type: TRANSPORT.REQUEST_DEVICE });
                     }
                 };
+
                 return;
             }
             await window.navigator.usb.requestDevice({
@@ -94,6 +95,7 @@ export const selectDevice = (payload: UiRequestSelectDevice['payload']) => {
         if (payload.webusb) {
             initWebUsbButton(true);
         }
+
         return;
     }
 
@@ -124,6 +126,7 @@ export const selectDevice = (payload: UiRequestSelectDevice['payload']) => {
         if (d1.type !== 'unreadable' && d2.type === 'unreadable') {
             return -1;
         }
+
         return 0;
     });
 

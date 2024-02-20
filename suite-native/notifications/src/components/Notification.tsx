@@ -84,6 +84,7 @@ export const Notification = ({
             () => isHiddenAutomatically && onHide(),
             NOTIFICATION_VISIBLE_DURATION,
         );
+
         return () => clearTimeout(timeout);
     }, [isHiddenAutomatically, onHide]);
 
@@ -106,6 +107,7 @@ export const Notification = ({
             originY: HIDDEN_OFFSET,
             opacity: 0,
         };
+
         return {
             initialValues,
             animations,

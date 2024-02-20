@@ -35,6 +35,7 @@ export const useCoinmarketRecomposeAndSign = () => {
                         error: 'Missing composed data',
                     }),
                 );
+
                 return;
             }
             // prepare the fee levels, set custom values from composed
@@ -100,6 +101,7 @@ export const useCoinmarketRecomposeAndSign = () => {
                             error: errorMessage,
                         }),
                     );
+
                     return;
                 }
                 formValues.feeLimit = normalLevels.normal.feeLimit;
@@ -116,6 +118,7 @@ export const useCoinmarketRecomposeAndSign = () => {
                         error: 'Missing fee level',
                     }),
                 );
+
                 return;
             }
             const composedToSign = composedLevels[selectedFee];
@@ -137,6 +140,7 @@ export const useCoinmarketRecomposeAndSign = () => {
                         error: errorMessage,
                     }),
                 );
+
                 return;
             }
 
@@ -144,5 +148,6 @@ export const useCoinmarketRecomposeAndSign = () => {
         },
         [composed, dispatch, fees, selectedFee, translationString],
     );
+
     return { selectedFee, composed, recomposeAndSign };
 };

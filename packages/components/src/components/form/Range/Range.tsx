@@ -56,12 +56,15 @@ const Input = styled.input<Pick<RangeProps, 'disabled' | 'trackStyle'>>`
     ::-webkit-slider-runnable-track {
         ${track};
     }
+
     ::-webkit-slider-thumb {
         ${thumb};
     }
+
     ::-moz-range-track {
         ${track}
     }
+
     ::-moz-range-thumb {
         ${thumb};
     }
@@ -70,6 +73,7 @@ const Input = styled.input<Pick<RangeProps, 'disabled' | 'trackStyle'>>`
         ::-webkit-slider-thumb {
             ${focusStyle}
         }
+
         ::-moz-range-thumb {
             ${focusStyle}
         }

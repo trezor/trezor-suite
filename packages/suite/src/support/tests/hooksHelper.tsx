@@ -17,6 +17,7 @@ export const renderWithProviders = (store: any, children: ReactNode) => {
             </ConnectedThemeProvider>
         </Provider>,
     );
+
     return renderMethods;
 };
 
@@ -40,11 +41,14 @@ export function findByTestId(id: any) {
     if (typeof id === 'string') {
         return screen.getByText((_, element) => {
             const attrValue = element?.getAttribute('data-test');
+
             return attrValue ? attrValue === id : false;
         });
     }
+
     return screen.getAllByText((_, element) => {
         const attrValue = element?.getAttribute('data-test');
+
         return attrValue ? id.test(attrValue) : false;
     });
 }

@@ -38,6 +38,7 @@ export const sortNetworks = (networks: Network[]) =>
     A.sort(networks, (a, b) => {
         const aOrder = discoverySupportedNetworks.indexOf(a.symbol) ?? Number.MAX_SAFE_INTEGER;
         const bOrder = discoverySupportedNetworks.indexOf(b.symbol) ?? Number.MAX_SAFE_INTEGER;
+
         return aOrder - bOrder;
     });
 
@@ -46,6 +47,7 @@ export const filterTestnetNetworks = (
     isTestnetEnabled: boolean,
 ) => {
     if (isTestnetEnabled) return networkSymbols;
+
     return networkSymbols.filter(networkSymbol => !isTestnet(networkSymbol));
 };
 

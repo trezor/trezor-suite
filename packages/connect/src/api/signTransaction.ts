@@ -152,6 +152,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
 
     get info() {
         const coinInfo = getBitcoinNetwork(this.payload.coin);
+
         return getLabel('Sign #NETWORK transaction', coinInfo);
     }
 
@@ -172,6 +173,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
             descriptor: node.xpubSegwit || node.xpub,
             details: 'tokens',
         });
+
         return account.addresses;
     }
 
@@ -199,6 +201,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
                   .then(parseTransactionHexes(coinInfo.network))
                   .then(rawTxs => {
                       enhanceTrezorInputs(this.params.inputs, rawTxs);
+
                       return transformReferencedTransactions(rawTxs);
                   });
 
@@ -211,6 +214,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
                       // if sender account addresses not provided, fetch account info from the blockbook
                       const accountAddresses = addresses ?? (await this.fetchAddresses(blockchain));
                       if (!accountAddresses) return [];
+
                       return transformOrigTransactions(
                           rawOrigTxs,
                           coinInfo,

@@ -84,6 +84,7 @@ export const DeviceInfoModalScreen = () => {
                     alertVariant: 'warning',
                 } as const;
             }
+
             return {
                 alertTitle: translate('deviceInfo.upToDateFw'),
                 alertVariant: 'success',
@@ -118,6 +119,7 @@ export const DeviceInfoModalScreen = () => {
     };
 
     const handleUpdateClick = () => setIsUpdateSheetOpen(true);
+
     return (
         <Screen
             screenHeader={

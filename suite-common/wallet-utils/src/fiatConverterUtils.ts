@@ -45,5 +45,6 @@ export const fromFiatCurrency = (
 
     const amount = new BigNumber(formattedLocalAmount).div(rate);
     const amountStr = amount.isNaN() ? null : amount.toFixed(decimals);
+
     return amountStr;
 };

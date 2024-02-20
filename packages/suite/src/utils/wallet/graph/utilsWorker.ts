@@ -18,6 +18,7 @@ const calcFiatValueMap = (
     Object.keys(rates).forEach(fiatSymbol => {
         fiatValueMap[fiatSymbol] = toFiatCurrency(amount, fiatSymbol, rates) ?? '0';
     });
+
     return fiatValueMap;
 };
 
@@ -116,5 +117,6 @@ export const aggregateBalanceHistory = <TType extends TypeName>(
     const aggregatedData = Object.keys(groupedByTimestamp)
         .map(timestamp => groupedByTimestamp[timestamp])
         .sort((a, b) => Number(a.time) - Number(b.time)); // sort from older to newer;;
+
     return aggregatedData;
 };

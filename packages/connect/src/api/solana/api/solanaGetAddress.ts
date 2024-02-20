@@ -36,6 +36,7 @@ export default class SolanaGetAddress extends AbstractMethod<'solanaGetAddress',
 
         this.params = payload.bundle.map(batch => {
             const path = validatePath(batch.path, 2);
+
             return {
                 address_n: path,
                 address: batch.address,
@@ -57,6 +58,7 @@ export default class SolanaGetAddress extends AbstractMethod<'solanaGetAddress',
         if (this.params.length === 1) {
             return 'Export solana address';
         }
+
         return 'Export multiple Solana addresses';
     }
 
@@ -98,6 +100,7 @@ export default class SolanaGetAddress extends AbstractMethod<'solanaGetAddress',
         const uiResp = await uiPromise.promise;
 
         this.confirmed = uiResp.payload;
+
         return this.confirmed;
     }
 
@@ -116,6 +119,7 @@ export default class SolanaGetAddress extends AbstractMethod<'solanaGetAddress',
 
         // wait for user action
         const uiResp = await uiPromise.promise;
+
         return uiResp.payload;
     }
 
@@ -126,6 +130,7 @@ export default class SolanaGetAddress extends AbstractMethod<'solanaGetAddress',
             show_display,
             chunkify,
         });
+
         return response.message;
     }
 
@@ -170,6 +175,7 @@ export default class SolanaGetAddress extends AbstractMethod<'solanaGetAddress',
 
             this.progress++;
         }
+
         return this.hasBundle ? responses : responses[0];
     }
 }

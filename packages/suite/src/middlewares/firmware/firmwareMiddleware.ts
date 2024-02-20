@@ -60,6 +60,7 @@ export const prepareFirmwareMiddleware = createMiddlewareWithExtraDeps(
                     'Device with intermediary firmware detected. Installing the latest update.',
                 );
                 dispatch(firmwareUpdate(firmware.targetType));
+
                 return action;
             }
 

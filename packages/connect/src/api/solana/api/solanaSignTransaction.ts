@@ -41,6 +41,7 @@ export default class SolanaSignTransaction extends AbstractMethod<
     async run() {
         const cmd = this.device.getCommands();
         const { message } = await cmd.typedCall('SolanaSignTx', 'SolanaTxSignature', this.params);
+
         return { signature: message.signature };
     }
 }

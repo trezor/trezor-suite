@@ -1,6 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/iframe/builder.js
 
-import { createDeferred } from '@trezor/utils/lib/createDeferred';
+import { createDeferred } from '@trezor/utils';
 import * as ERRORS from '@trezor/connect/lib/constants/errors';
 import { IFRAME, CoreRequestMessage } from '@trezor/connect/lib/events';
 import type { ConnectSettings } from '@trezor/connect/lib/types';
@@ -100,6 +100,7 @@ export const init = async (settings: ConnectSettings) => {
     const onLoad = () => {
         if (!instance) {
             initPromise.reject(ERRORS.TypedError('Init_IframeBlocked'));
+
             return;
         }
         try {
@@ -107,6 +108,7 @@ export const init = async (settings: ConnectSettings) => {
             const iframeOrigin = instance.contentWindow?.location.origin;
             if (!iframeOrigin || iframeOrigin === 'null') {
                 handleIframeBlocked();
+
                 return;
             }
         } catch (e) {

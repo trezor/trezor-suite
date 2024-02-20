@@ -127,6 +127,7 @@ export const PaymentDetail = ({
     const { copyPaymentInfo } = useCoinmarketSavingsPaymentInfoCopy(
         savingsTradePayment.paymentInfo,
     );
+
     return (
         <Wrapper>
             <Label>

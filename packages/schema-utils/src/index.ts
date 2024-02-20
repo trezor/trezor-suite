@@ -18,6 +18,7 @@ class CustomTypeBuilder extends Mixin(
 export function Validate<T extends TSchema>(schema: T, value: unknown): value is Static<T> {
     try {
         Assert(schema, value);
+
         return true;
     } catch (e) {
         return false;
@@ -32,6 +33,7 @@ function FindErrorInUnion(error: ValueError) {
         // Find possible matches by literals
         const possibleMatchesByLiterals = unionMembers.filter(unionSchema => {
             if (unionSchema[Kind] !== 'Object') return false;
+
             return !Object.entries(unionSchema.properties as TObject['properties']).find(
                 ([property, propertySchema]) =>
                     propertySchema.const && propertySchema.const !== currentValue[property],

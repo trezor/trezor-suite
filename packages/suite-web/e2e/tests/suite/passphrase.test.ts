@@ -72,6 +72,7 @@ describe('Passphrase', () => {
                 chunks.each((i, el) => {
                     fullAddress += Cypress.$(el).text();
                 });
+
                 return fullAddress;
             })
             .should('contain', abcAddr);
@@ -125,6 +126,7 @@ describe('Passphrase', () => {
                 chunks.each((i, el) => {
                     fullAddress += Cypress.$(el).text();
                 });
+
                 return fullAddress;
             })
             .should('contain', defAddr);
@@ -157,6 +159,7 @@ describe('Passphrase', () => {
                 chunks.each((i, el) => {
                     fullAddress += Cypress.$(el).text();
                 });
+
                 return fullAddress;
             })
             .should('contain', abcAddr);

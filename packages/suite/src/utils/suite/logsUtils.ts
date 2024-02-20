@@ -46,6 +46,7 @@ export const prettifyLog = (json: Record<any, any>) => JSON.stringify(json, null
 
 export const redactAccount = (account: DeepPartial<Account> | undefined) => {
     if (!account) return undefined;
+
     return {
         ...account,
         descriptor: REDACTED_REPLACEMENT,
@@ -90,6 +91,7 @@ export const redactDiscovery = (discovery: DeepPartial<Discovery> | undefined) =
 
 export const redactDevice = (device: DeepPartial<TrezorDevice> | undefined) => {
     if (!device) return undefined;
+
     return {
         ...device,
         id: REDACTED_REPLACEMENT,

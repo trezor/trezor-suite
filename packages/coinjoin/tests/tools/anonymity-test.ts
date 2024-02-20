@@ -50,6 +50,7 @@ const CACHE_PARAMS = `${CACHE_DIR}/anonymityScoreParams.json`;
             const originalWrite = req.write.bind(req);
             req.write = (chunk: Buffer) => {
                 chunks.push(chunk);
+
                 return originalWrite(chunk);
             };
 

@@ -61,6 +61,7 @@ export class Alice {
             type,
             timestamp: Date.now(),
         };
+
         return {
             accountKey: this.accountKey,
             path: this.path,

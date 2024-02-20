@@ -93,6 +93,7 @@ export const selectDiscoveryByDeviceState = (
 
 export const selectDeviceDiscovery = (state: DiscoveryRootState & DeviceRootState) => {
     const selectedDevice = selectDevice(state);
+
     return selectDiscoveryByDeviceState(state, selectedDevice?.state);
 };
 

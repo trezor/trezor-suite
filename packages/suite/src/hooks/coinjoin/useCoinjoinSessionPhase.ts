@@ -8,6 +8,7 @@ import { getFirstSessionPhaseFromRoundPhase } from 'src/utils/wallet/coinjoinUti
 const checkExpiration = (lastChangeTimestamp: number) => {
     const currentTimestamp = Date.now();
     const expirationTimestamp = lastChangeTimestamp + SESSION_PHASE_TRANSITION_DELAY;
+
     return {
         isExpired: expirationTimestamp <= currentTimestamp,
         currentTimestamp,

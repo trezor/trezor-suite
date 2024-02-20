@@ -141,11 +141,13 @@ export class Blockchain {
             this.initPromise = this.initLink()
                 .then(info => {
                     this.initPromise = Promise.resolve(info);
+
                     return info;
                 })
                 .catch(error => {
                     this.initPromise = Promise.reject(error);
                     this.link.dispose();
+
                     return this.initPromise;
                 });
         }
@@ -212,9 +214,11 @@ export class Blockchain {
                 this.feeForBlock[block] = fees[index];
             });
             this.feeTimestamp = Date.now();
+
             // return requested fees
             return fees;
         }
+
         return this.link.estimateFee(request);
     }
 
@@ -280,14 +284,17 @@ export class Blockchain {
 
             // remove all subscriptions
             await this.link.unsubscribe({ type: 'fiatRates' });
+
             return this.link.unsubscribe({ type: 'block' });
         }
+
         // unsubscribe only requested accounts
         return this.link.unsubscribe({ type: 'accounts', accounts });
     }
 
     unsubscribeFiatRates() {
         this.link.removeAllListeners('fiatRates');
+
         return this.link.unsubscribe({ type: 'fiatRates' });
     }
 

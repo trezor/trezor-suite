@@ -31,6 +31,7 @@ export default class BinanceGetPublicKey extends AbstractMethod<
 
         this.params = payload.bundle.map(batch => {
             const path = validatePath(batch.path, 3);
+
             return {
                 address_n: path,
                 show_display: typeof batch.showOnTrezor === 'boolean' ? batch.showOnTrezor : true,
@@ -70,6 +71,7 @@ export default class BinanceGetPublicKey extends AbstractMethod<
         const uiResp = await uiPromise.promise;
 
         this.confirmed = uiResp.payload;
+
         return this.confirmed;
     }
 
@@ -99,6 +101,7 @@ export default class BinanceGetPublicKey extends AbstractMethod<
                 );
             }
         }
+
         return this.hasBundle ? responses : responses[0];
     }
 }

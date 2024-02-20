@@ -65,5 +65,6 @@ module.exports = config =>
     withAndroidManifest(config, async config => {
         // Modifiers can be async, but try to keep them fast.
         config.modResults = await setCustomConfigAsync(config, config.modResults);
+
         return config;
     });

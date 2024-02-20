@@ -30,6 +30,7 @@ const BottomSheetTrigger = ({
     onPress: () => void;
 }) => {
     const { applyStyle } = useNativeStyles();
+
     return (
         <TouchableOpacity style={applyStyle(triggerStyle)} onPress={onPress}>
             <Box flexDirection="row">

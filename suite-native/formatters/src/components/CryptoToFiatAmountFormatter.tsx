@@ -26,5 +26,6 @@ export const CryptoToFiatAmountFormatter = ({
     const fiatValue = useFiatFromCryptoValue({ cryptoValue: value, network, customRates });
 
     const formattedFiatValue = FiatAmountFormatter.format(fiatValue ?? '0');
+
     return <AmountText value={formattedFiatValue} isDiscreetText={isDiscreetText} {...textProps} />;
 };

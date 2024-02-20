@@ -66,6 +66,7 @@ export const composeTransaction =
                     error: response.payload.error,
                 }),
             );
+
             return;
         }
 
@@ -164,6 +165,7 @@ export const signTransaction =
                     error: res.payload.error,
                 }),
             );
+
             return;
         }
 

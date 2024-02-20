@@ -53,6 +53,7 @@ export const AffectedTransactionItem = ({
     const { isMobileLayout } = useLayoutSize();
     const shownTxidChars = isMobileLayout ? 4 : 8;
     const iconType = tx.type === 'recv' ? 'RECEIVE' : 'SEND';
+
     return (
         <TxRow className={className}>
             {!isMobileLayout && (

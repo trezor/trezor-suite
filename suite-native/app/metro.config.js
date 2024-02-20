@@ -38,6 +38,7 @@ const config = {
                     type: 'sourceFile',
                 };
             }
+
             // Optionally, chain to the standard Metro resolver.
             return context.resolveRequest(context, moduleName, platform);
         },

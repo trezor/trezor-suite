@@ -19,6 +19,7 @@ const tokenAmountsToProto = (tokenAmounts: CardanoToken[]): PROTO.CardanoToken[]
 
 export const tokenBundleToProto = (tokenBundle: CardanoAssetGroup[]): AssetGroupWithTokens[] => {
     Assert(Type.Array(CardanoAssetGroup), tokenBundle);
+
     return tokenBundle.map(tokenGroup => ({
         policyId: tokenGroup.policyId,
         tokens: tokenAmountsToProto(tokenGroup.tokenAmounts),

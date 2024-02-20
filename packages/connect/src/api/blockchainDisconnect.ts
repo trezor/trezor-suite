@@ -43,6 +43,7 @@ export default class BlockchainDisconnect extends AbstractMethod<'blockchainDisc
         if (backend) {
             backend.disconnect();
         }
+
         return Promise.resolve({ disconnected: true });
     }
 }

@@ -10,7 +10,7 @@
  */
 
 import { createDeferred, Deferred } from '@trezor/utils';
-import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
+import { TypedEmitter } from '@trezor/utils';
 
 import type {
     EnumerateDoneRequest,
@@ -168,6 +168,7 @@ export class SessionsBackground extends TypedEmitter<{
         // in case there are 2 simultaneous acquireIntents, one goes through, the other one waits and gets error here
         if (previous !== this.sessions[payload.path]) {
             this.clearLock();
+
             return this.error(ERRORS.SESSION_WRONG_PREVIOUS);
         }
 
@@ -219,6 +220,7 @@ export class SessionsBackground extends TypedEmitter<{
 
         this.clearLock();
         const descriptors = this.sessionsToDescriptors();
+
         return Promise.resolve(this.success({ descriptors }));
     }
 
@@ -231,6 +233,7 @@ export class SessionsBackground extends TypedEmitter<{
         if (!path) {
             return this.error(ERRORS.SESSION_NOT_FOUND);
         }
+
         return this.success({ path });
     }
 
@@ -241,6 +244,7 @@ export class SessionsBackground extends TypedEmitter<{
                 path = pathKey;
             }
         });
+
         return path;
     }
 
@@ -291,6 +295,7 @@ export class SessionsBackground extends TypedEmitter<{
 
     private getNewSessionId() {
         this.lastSession++;
+
         return this.lastSession;
     }
 

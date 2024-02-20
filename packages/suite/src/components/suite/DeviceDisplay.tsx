@@ -172,6 +172,7 @@ export const DeviceDisplay = ({ address, network, valueDataTest }: DeviceDisplay
     const renderOriginal = (address: string) => {
         if (isPaginated) {
             const breakpoint = isPixelType ? 70 : 81;
+
             return (
                 <>
                     <Text isPixelType={isPixelType} data-test={valueDataTest}>
@@ -195,6 +196,7 @@ export const DeviceDisplay = ({ address, network, valueDataTest }: DeviceDisplay
                 </>
             );
         }
+
         return <Text isPixelType={isPixelType}>{address}</Text>;
     };
 

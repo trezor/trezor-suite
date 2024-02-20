@@ -23,6 +23,7 @@ const TAGGED_HASH_PREFIXES = TAGS.reduce(
     (obj, tag) => {
         const tagHash = bcrypto.sha256(Buffer.from(tag));
         obj[tag] = Buffer.concat([tagHash, tagHash]);
+
         return obj;
     },
     {} as { [k in TaggedHashPrefix]: Buffer },
@@ -46,6 +47,7 @@ function tapTweakPubkey(pubkey: Buffer, tapTreeRoot?: Buffer) {
         Buffer.concat([EVEN_Y_COORD_PREFIX, pubkey]),
         tapTweak,
     );
+
     return {
         parity: tweakedPubkey[0] === EVEN_Y_COORD_PREFIX[0] ? 0 : 1,
         pubkey: tweakedPubkey.slice(1),
@@ -55,6 +57,7 @@ function tapTweakPubkey(pubkey: Buffer, tapTreeRoot?: Buffer) {
 const liftX = (pubkey: Buffer) => {
     // bip32.derive returns one additional byte in publicKey
     const offset = pubkey.length === 33 ? 1 : 0;
+
     return pubkey.subarray(offset);
 };
 
@@ -82,6 +85,7 @@ export function p2tr(a: Payment, opts?: PaymentOpts): Payment {
         const result = bech32m.decode(a.address!);
         const version = result.words.shift();
         const data = bech32m.fromWords(result.words);
+
         return {
             version,
             prefix: result.prefix,
@@ -93,6 +97,7 @@ export function p2tr(a: Payment, opts?: PaymentOpts): Payment {
         if (!o.hash) return;
         const words = bech32m.toWords(o.hash);
         words.unshift(0x01);
+
         return bech32m.encode(network.bech32, words);
     });
     lazy.prop(o, 'hash', () => {
@@ -104,6 +109,7 @@ export function p2tr(a: Payment, opts?: PaymentOpts): Payment {
     });
     lazy.prop(o, 'output', () => {
         if (!o.hash) return;
+
         return bscript.compile([OPS.OP_1, o.hash]);
     });
 

@@ -113,6 +113,7 @@ export const useCoinmarketBuyForm = ({
     useEffect(() => {
         if (!isChanged(defaultValues, values)) {
             removeDraft(account.key);
+
             return;
         }
 
@@ -188,5 +189,6 @@ export const useCoinmarketBuyForm = ({
 export const useCoinmarketBuyFormContext = () => {
     const context = useContext(BuyFormContext);
     if (context === null) throw Error('BuyFormContext used without Context');
+
     return context;
 };

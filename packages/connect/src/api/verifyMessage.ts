@@ -43,12 +43,14 @@ export default class VerifyMessage extends AbstractMethod<'verifyMessage', PROTO
         if (!coinInfo) {
             return 'Verify message';
         }
+
         return getLabel('Verify #NETWORK message', coinInfo);
     }
 
     async run() {
         const cmd = this.device.getCommands();
         const response = await cmd.typedCall('VerifyMessage', 'Success', this.params);
+
         return response.message;
     }
 }

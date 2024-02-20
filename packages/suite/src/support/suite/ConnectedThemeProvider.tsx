@@ -8,5 +8,6 @@ interface ConnectedThemeProviderProps {
 
 export const ConnectedThemeProvider = ({ children }: ConnectedThemeProviderProps) => {
     const variant = useSelector(state => state.suite.settings.theme.variant);
+
     return <ThemeProvider themeVariant={variant}>{children}</ThemeProvider>;
 };

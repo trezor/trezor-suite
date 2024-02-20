@@ -2,8 +2,8 @@
 import EventEmitter from 'events';
 
 import { TRANSPORT, TRANSPORT_ERROR } from '@trezor/transport';
-import { createDeferred, Deferred } from '@trezor/utils/lib/createDeferred';
-import { getSynchronize } from '@trezor/utils/lib/getSynchronize';
+import { createDeferred, Deferred } from '@trezor/utils';
+import { getSynchronize } from '@trezor/utils';
 import { storage } from '@trezor/connect-common';
 
 import { DataManager } from '../data/DataManager';
@@ -91,6 +91,7 @@ const getPopupPromise = (requestWindow = true) => {
     if (!_popupPromise) {
         _popupPromise = createDeferred();
     }
+
     return _popupPromise;
 };
 
@@ -223,6 +224,7 @@ const initDevice = async (method: AbstractMethod<any>) => {
     if (preferredDevice && !preferredDeviceInList) {
         storage.save(store => {
             store.origin[origin] = { ...store.origin[origin], preferredDevice: undefined };
+
             return store;
         });
     }
@@ -296,6 +298,7 @@ const initDevice = async (method: AbstractMethod<any>) => {
     if (!device) {
         throw ERRORS.TypedError('Device_NotFound');
     }
+
     return device;
 };
 
@@ -339,6 +342,7 @@ const onCall = async (message: IFrameCallMessage) => {
             // start validation process
             method.init();
             await method.initAsync?.();
+
             return method;
         });
         waitForFirstMethod.resolve();
@@ -346,6 +350,7 @@ const onCall = async (message: IFrameCallMessage) => {
     } catch (error) {
         postMessage(createPopupMessage(POPUP.CANCEL_POPUP_REQUEST));
         postMessage(createResponseMessage(responseID, false, { error }));
+
         return Promise.resolve();
     }
 
@@ -365,6 +370,7 @@ const onCall = async (message: IFrameCallMessage) => {
             messageResponse = createResponseMessage(method.responseID, false, { error });
         }
         postMessage(messageResponse);
+
         return Promise.resolve();
     }
 
@@ -380,6 +386,7 @@ const onCall = async (message: IFrameCallMessage) => {
                 error: ERRORS.TypedError('Method_NotAllowed'),
             }),
         );
+
         return Promise.resolve();
     }
 
@@ -483,9 +490,11 @@ const onCall = async (message: IFrameCallMessage) => {
 
                     // wait for device disconnect
                     await createUiPromise(DEVICE.DISCONNECT, device).promise;
+
                     // interrupt process and go to "final" block
                     return Promise.reject(ERRORS.TypedError('Method_Cancel'));
                 }
+
                 // return error if not using popup
                 return Promise.reject(ERRORS.TypedError('Device_FwException', firmwareException));
             }
@@ -505,11 +514,13 @@ const onCall = async (message: IFrameCallMessage) => {
 
                     // wait for device disconnect
                     await createUiPromise(DEVICE.DISCONNECT, device).promise;
+
                     // interrupt process and go to "final" block
                     return Promise.reject(
                         ERRORS.TypedError('Device_ModeException', unexpectedMode),
                     );
                 }
+
                 // throw error if not using popup
                 return Promise.reject(ERRORS.TypedError('Device_ModeException', unexpectedMode));
             }
@@ -584,6 +595,7 @@ const onCall = async (message: IFrameCallMessage) => {
                                 method.useEmptyPassphrase,
                                 method.useCardanoDerivation,
                             );
+
                             return inner();
                         }
                         // set new state as requested
@@ -600,6 +612,7 @@ const onCall = async (message: IFrameCallMessage) => {
                     postMessage(
                         createUiMessage(UI.INVALID_PIN, { device: device.toMessageObject() }),
                     );
+
                     return inner();
                 }
                 // other error
@@ -607,6 +620,7 @@ const onCall = async (message: IFrameCallMessage) => {
                 // closePopup();
                 // clear cached passphrase. it's not valid
                 device.setInternalState(undefined);
+
                 // interrupt process and go to "final" block
                 return Promise.reject(error);
             }
@@ -1032,6 +1046,7 @@ export class Core extends EventEmitter {
 
     async getCurrentMethod() {
         await waitForFirstMethod.promise;
+
         return await methodSynchronize(() => _callMethods[0]);
     }
 
@@ -1039,6 +1054,7 @@ export class Core extends EventEmitter {
         if (!_deviceList) {
             return undefined;
         }
+
         return _deviceList.getTransportInfo();
     }
 

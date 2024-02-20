@@ -386,6 +386,7 @@ const updateAccountPrison = (
                     const { id, accountKey, ...rest } = inmate;
                     prison[id] = rest;
                 }
+
                 return prison;
             },
             {},
@@ -620,17 +621,20 @@ export const selectMaxMiningFeeConfig = (state: CoinjoinRootState) =>
 
 export const selectCoinjoinAccountByKey = (state: CoinjoinRootState, accountKey: AccountKey) => {
     const coinjoinAccounts = selectCoinjoinAccounts(state);
+
     return coinjoinAccounts.find(account => account.key === accountKey);
 };
 
 export const selectCoinjoinClient = (state: CoinjoinRootState, accountKey: AccountKey) => {
     const coinjoinAccount = selectCoinjoinAccountByKey(state, accountKey);
     const clients = selectCoinjoinClients(state);
+
     return coinjoinAccount?.symbol && clients[coinjoinAccount?.symbol];
 };
 
 export const selectSessionByAccountKey = (state: CoinjoinRootState, accountKey: AccountKey) => {
     const coinjoinAccount = selectCoinjoinAccountByKey(state, accountKey);
+
     return coinjoinAccount?.session;
 };
 
@@ -640,6 +644,7 @@ export const selectTargetAnonymityByAccountKey = (
 ) => {
     const coinjoinAccount = selectCoinjoinAccountByKey(state, accountKey);
     if (!coinjoinAccount) return;
+
     return coinjoinAccount.setup?.targetAnonymity ?? DEFAULT_TARGET_ANONYMITY;
 };
 
@@ -667,6 +672,7 @@ export const selectRegisteredUtxosByAccountKey = (
     const coinjoinAccount = selectCoinjoinAccountByKey(state, accountKey);
     if (!coinjoinAccount?.prison) return;
     const { prison, session, transactionCandidates } = coinjoinAccount;
+
     return Object.keys(prison).reduce<typeof prison>((result, key) => {
         const inmate = prison[key];
         // select **only** inmates with assigned roundId (signed in current round or promised to future blaming round)
@@ -676,6 +682,7 @@ export const selectRegisteredUtxosByAccountKey = (
         ) {
             result[key] = inmate;
         }
+
         return result;
     }, {});
 };
@@ -747,6 +754,7 @@ export const selectIsAccountWithSessionInCriticalPhaseByAccountKey = (
     accountKey: AccountKey,
 ) => {
     const coinjoinAccount = selectCoinjoinAccountByKey(state, accountKey);
+
     return isRoundPhaseCritical(coinjoinAccount?.session?.roundPhase);
 };
 
@@ -755,6 +763,7 @@ export const selectIsAccountWithSessionByAccountKey = (
     accountKey: AccountKey,
 ) => {
     const coinjoinAccounts = selectCoinjoinAccounts(state);
+
     return coinjoinAccounts.find(a => a.key === accountKey && a.session && !a.session.paused);
 };
 
@@ -763,6 +772,7 @@ export const selectFeeRateMedianByAccountKey = (
     accountKey: AccountKey,
 ) => {
     const coinjoinClient = selectCoinjoinClient(state, accountKey);
+
     return coinjoinClient?.feeRateMedian || FEE_RATE_MEDIAN_FALLBACK;
 };
 
@@ -773,6 +783,7 @@ export const selectDefaultMaxMiningFeeByAccountKey = (
     const feeRateMedian = selectFeeRateMedianByAccountKey(state, accountKey);
     const maxMiningFeeModifier = selectMaxMiningFeeModifier(state);
     const maxMiningFeeConfig = selectMaxMiningFeeConfig(state); // value defined in message system config has priority over default value (but not over custom value set by user)
+
     return maxMiningFeeConfig ?? getMaxFeePerVbyte(feeRateMedian, maxMiningFeeModifier);
 };
 
@@ -781,6 +792,7 @@ export const selectMinAllowedInputWithFee = (state: CoinjoinRootState, accountKe
     const status = coinjoinClient || CLIENT_STATUS_FALLBACK;
     const minAllowedInput = status.allowedInputAmounts.min;
     const txSize = getInputSize('Taproot') + getOutputSize('Taproot');
+
     // Add estimated fee based on weekly median fee rate.
     return minAllowedInput + txSize * status.feeRateMedian;
 };

@@ -22,6 +22,7 @@ function chunkHasUncompressedPubkey(chunk: StackElement): boolean {
     if (Buffer.isBuffer(chunk) && chunk.length === 65 && chunk[0] === 0x04 && ecc.isPoint(chunk)) {
         return true;
     }
+
     return false;
 }
 
@@ -58,6 +59,7 @@ export function p2wsh(a: Payment, opts?: PaymentOpts): Payment {
         const result = bech32.decode(a.address!);
         const version = result.words.shift();
         const data = bech32.fromWords(result.words);
+
         return {
             version,
             prefix: result.prefix,
@@ -78,6 +80,7 @@ export function p2wsh(a: Payment, opts?: PaymentOpts): Payment {
         if (!o.hash) return;
         const words = bech32.toWords(o.hash);
         words.unshift(0x00);
+
         return bech32.encode(network!.bech32, words);
     });
     lazy.prop(o, 'hash', () => {
@@ -87,10 +90,12 @@ export function p2wsh(a: Payment, opts?: PaymentOpts): Payment {
     });
     lazy.prop(o, 'output', () => {
         if (!o.hash) return;
+
         return bscript.compile([OPS.OP_0, o.hash]);
     });
     lazy.prop(o, 'redeem', () => {
         if (!a.witness) return;
+
         return {
             output: a.witness[a.witness.length - 1],
             input: EMPTY_BUFFER,
@@ -99,6 +104,7 @@ export function p2wsh(a: Payment, opts?: PaymentOpts): Payment {
     });
     lazy.prop(o, 'input', () => {
         if (!o.witness) return;
+
         return EMPTY_BUFFER;
     });
     lazy.prop(o, 'witness', () => {
@@ -115,17 +121,20 @@ export function p2wsh(a: Payment, opts?: PaymentOpts): Payment {
             // assign, and blank the existing input
             o.redeem = Object.assign({ witness: stack }, a.redeem);
             o.redeem.input = EMPTY_BUFFER;
+
             return ([] as Buffer[]).concat(stack, a.redeem.output);
         }
 
         if (!a.redeem) return;
         if (!a.redeem.output) return;
         if (!a.redeem.witness) return;
+
         return ([] as Buffer[]).concat(a.redeem.witness, a.redeem.output);
     });
     lazy.prop(o, 'name', () => {
         const nameParts = ['p2wsh'];
         if (o.redeem !== undefined && o.redeem.name !== undefined) nameParts.push(o.redeem.name!);
+
         return nameParts.join('-');
     });
 

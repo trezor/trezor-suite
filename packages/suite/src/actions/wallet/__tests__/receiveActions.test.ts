@@ -27,6 +27,7 @@ const setTrezorConnectFixtures = (fixture?: any) => {
             if (fixture.getAddress.success && buttonRequest) {
                 buttonRequest({ code: 'ButtonRequest_Address' });
             }
+
             return fixture.getAddress;
         }
         // trigger multiple button requests
@@ -35,6 +36,7 @@ const setTrezorConnectFixtures = (fixture?: any) => {
             buttonRequest({ code: 'some-other-code' });
             buttonRequest();
         }
+
         return {
             success: true,
             payload: {
@@ -126,6 +128,7 @@ const initStore = (state: State) => {
         // add action back to stack
         store.getActions().push(action);
     });
+
     return store;
 };
 

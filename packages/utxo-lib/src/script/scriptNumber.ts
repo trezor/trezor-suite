@@ -17,6 +17,7 @@ export function decode(buffer: Buffer, maxLength = 4, minimal = true) {
         const b = buffer.readUInt8(4);
 
         if (b & 0x80) return -((b & ~0x80) * 0x100000000 + a);
+
         return b * 0x100000000 + a;
     }
 
@@ -28,6 +29,7 @@ export function decode(buffer: Buffer, maxLength = 4, minimal = true) {
     }
 
     if (buffer[length - 1] & 0x80) return -(result & ~(0x80 << (8 * (length - 1))));
+
     return result;
 }
 
@@ -37,6 +39,7 @@ function scriptNumSize(i: number) {
     if (i > 0x7fff) return 3;
     if (i > 0x7f) return 2;
     if (i > 0x00) return 1;
+
     return 0;
 }
 

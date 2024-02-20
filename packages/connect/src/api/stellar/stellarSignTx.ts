@@ -19,6 +19,7 @@ const processTxRequest = async (
 
     if (lastOp) {
         const response = await typedCall(type, 'StellarSignedTx', op);
+
         return response.message;
     }
     await typedCall(type, 'StellarTxOpRequest', op);
@@ -146,6 +147,7 @@ const transformOperation = (op: StellarOperation): StellarOperationMessage | und
                       signer_weight: op.signer.weight,
                   }
                 : undefined;
+
             return {
                 type: 'StellarSetOptionsOp',
                 source_account: op.source,

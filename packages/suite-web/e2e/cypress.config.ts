@@ -92,6 +92,7 @@ export default defineConfig({
                         default:
                             throw new Error('not a valid case');
                     }
+
                     return null;
                 },
                 metadataStopProvider: provider => {
@@ -105,6 +106,7 @@ export default defineConfig({
                         default:
                             throw new Error('not a valid case');
                     }
+
                     return null;
                 },
                 metadataSetFileContent: async ({ provider, file, content, aesKey }) => {
@@ -119,6 +121,7 @@ export default defineConfig({
                         default:
                             throw new Error('not a valid case');
                     }
+
                     return null;
                 },
                 metadataSetNextResponse: ({ provider, status, body }) => {
@@ -132,6 +135,7 @@ export default defineConfig({
                         default:
                             throw new Error('not a valid case');
                     }
+
                     return null;
                 },
                 metadataGetRequests: ({ provider }) => {
@@ -146,10 +150,12 @@ export default defineConfig({
                 },
                 startMockedBridge: async har => {
                     await mocked.bridge.start(har);
+
                     return null;
                 },
                 stopMockedBridge: async () => {
                     await mocked.bridge.stop();
+
                     return null;
                 },
                 stealBridgeSession: async () => {
@@ -187,6 +193,7 @@ export default defineConfig({
                     if (fs.existsSync(dir)) {
                         fs.rmdirSync(dir, { recursive });
                     }
+
                     return null;
                 },
                 csvToJson(data) {
@@ -202,6 +209,7 @@ export default defineConfig({
                         }
                         result.push(obj);
                     }
+
                     return result;
                 },
                 async startBlockbookMock({ endpointsFile }) {
@@ -209,22 +217,30 @@ export default defineConfig({
 
                     blockbook = await BackendWebsocketServerMock.create('blockbook');
                     blockbook.setFixtures(fixtures);
+
                     return blockbook.options.port;
                 },
                 stopBlockbookMock() {
                     if (blockbook) {
                         blockbook.stop();
                     }
+
                     return null;
                 },
                 set({ key, value }: { key: string; value: any }) {
                     store[key] = value;
+
                     return null;
                 },
                 get({ key }: { key: string }): any {
                     return store[key];
                 },
                 ...TrezorUserEnvLink.api,
+                async setupEmu(opts: Parameters<typeof TrezorUserEnvLink.api.setupEmu>[0]) {
+                    await TrezorUserEnvLink.api.setupEmu(opts);
+
+                    return TrezorUserEnvLink.api.startBridge();
+                },
             });
         },
     },

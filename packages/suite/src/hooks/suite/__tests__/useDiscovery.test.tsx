@@ -54,6 +54,7 @@ const Component = ({ callback }: { callback: Callback }) => {
         status: getDiscoveryStatus(),
         progress: calculateProgress(),
     });
+
     return null;
 };
 

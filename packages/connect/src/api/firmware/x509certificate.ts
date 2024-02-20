@@ -29,6 +29,7 @@ const derToAsn1 = (byteArray: Uint8Array): Asn1 => {
             tag = tag * 128 + byteArray[position] - 0x80;
             position += 1;
         }
+
         return tag;
     }
 
@@ -47,6 +48,7 @@ const derToAsn1 = (byteArray: Uint8Array): Asn1 => {
                 position += 1;
             }
         }
+
         return length;
     }
 
@@ -90,6 +92,7 @@ const derToAsn1List = (byteArray: Uint8Array) => {
         result.push(nextPiece);
         nextPosition += nextPiece.byteLength;
     }
+
     return result;
 };
 
@@ -128,6 +131,7 @@ export const fixSignature = (byteArray: Uint8Array) => {
         // fill new chunk with data
         newChunk.set(data, 2 + offset);
         newLength += newChunk.length;
+
         return newChunk;
     });
 
@@ -150,6 +154,7 @@ const parseSignatureValue = (asn1: Asn1) => {
         throw new Error('Bad signature value. Not a BIT STRING.');
     }
     const { unusedBits, bytes } = derBitStringValue(asn1.contents);
+
     return {
         asn1,
         bits: { unusedBits, bytes: fixSignature(bytes) },
@@ -169,6 +174,7 @@ const derObjectIdentifierValue = (byteArray: Uint8Array) => {
         position += 1;
         oid += `.${nextInteger}`;
     }
+
     return oid;
 };
 
@@ -209,6 +215,7 @@ export const parseName = (asn1: Asn1) =>
     // SEQUENCE > SET > SEQUENCE
     derToAsn1List(asn1.contents).map(item => {
         const attrSet = derToAsn1(item.contents);
+
         return parseAlgorithmIdentifier(attrSet);
     });
 
@@ -260,6 +267,7 @@ const parseUtcTime = (time: Asn1) => {
     const date = new Date();
     date.setUTCFullYear(year, month, day);
     date.setUTCHours(hour, minute, 0);
+
     return date;
 };
 
@@ -271,6 +279,7 @@ const parseUtcTime = (time: Asn1) => {
  */
 const parseValidity = (asn1: Asn1) => {
     const [from, to] = derToAsn1List(asn1.contents);
+
     return {
         from: parseUtcTime(from),
         to: parseUtcTime(to),

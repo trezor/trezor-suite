@@ -166,6 +166,7 @@ export const useSendFormCompose = ({
                     // this error is unexpected and should be handled in sendFormActions
                     console.warn('Compose unexpected error', error);
                     setLoading(false);
+
                     return;
                 }
 
@@ -193,6 +194,7 @@ export const useSendFormCompose = ({
                     values.outputs.forEach((_, i) => setError(`outputs.${i}.amount`, formError));
                 }
                 setLoading(false);
+
                 return;
             }
 
@@ -306,6 +308,7 @@ export const useSendFormCompose = ({
         if (!isDirty) {
             // there was no interaction with the form, just update state.account
             updateContext({ account });
+
             return;
         }
 

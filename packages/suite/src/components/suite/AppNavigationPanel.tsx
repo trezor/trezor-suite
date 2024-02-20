@@ -100,6 +100,7 @@ export const AppNavigationPanel = ({
         if (current) {
             observer.observe(current);
         }
+
         return () => {
             if (current) observer.unobserve(current);
         };

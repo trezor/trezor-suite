@@ -1,4 +1,4 @@
-import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
+import { TypedEmitter } from '@trezor/utils';
 import type { AnyError, AsyncResultWithTypedError, Success, Logger } from '../types';
 import { success, error, unknownError } from '../utils/result';
 

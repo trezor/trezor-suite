@@ -31,6 +31,7 @@ export const selectEthereumAccountTokenInfo = (
 ): TokenInfoBranded | null => {
     const account = selectAccountByKey(state, accountKey);
     if (!account || !account.tokens) return null;
+
     return (
         (A.find(
             account.tokens,
@@ -94,6 +95,7 @@ export const selectEthereumTokenHasFiatRates = (
         fiatCurrencyCode,
     );
     const rates = selectFiatRatesByFiatRateKey(state, fiatRateKey);
+
     return !!rates?.rate;
 };
 
@@ -158,6 +160,7 @@ export const selectAccountOrTokenAccountTransactions = (
     if (tokenAddress) {
         return selectEthereumAccountTokenTransactions(state, accountKey, tokenAddress);
     }
+
     return selectAccountTransactionsWithTokensWithFiatRates(
         state,
         accountKey,
@@ -172,6 +175,7 @@ export const selectEthereumAccountsTokensWithFiatRates = memoizeWithArgs(
     ): TokenInfoBranded[] => {
         const account = selectAccountByKey(state, ethereumAccountKey);
         if (!account || !isEthereumAccountSymbol(account.symbol)) return [];
+
         return A.filter(account.tokens ?? [], token =>
             selectEthereumTokenHasFiatRates(
                 state,

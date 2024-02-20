@@ -1,5 +1,5 @@
 import { scheduleAction, arrayShuffle, urlToOnion } from '@trezor/utils';
-import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
+import { TypedEmitter } from '@trezor/utils';
 import type { BlockbookAPI } from '@trezor/blockchain-link/lib/workers/blockbook/websocket';
 
 import { RequestOptions, resetIdentityCircuit } from '../utils/http';
@@ -50,6 +50,7 @@ export class CoinjoinBackendClient {
 
     fetchBlock(height: number, options?: RequestOptions): Promise<BlockbookBlock> {
         const identity = this.identitiesBlockbook[height & 0x3]; // Works only when identities.length === 4
+
         return this.getBlockbookApi(api => api.getBlock(height), { identity, ...options });
     }
 
@@ -62,6 +63,7 @@ export class CoinjoinBackendClient {
     fetchTransaction(txid: string, options?: RequestOptions): Promise<BlockbookTransaction> {
         const lastCharCode = txid.charCodeAt(txid.length - 1);
         const identity = this.identitiesBlockbook[lastCharCode & 0x3]; // Works only when identities.length === 4
+
         return this.getBlockbookApi(api => api.getTransaction(txid), { identity, ...options });
     }
 
@@ -85,8 +87,10 @@ export class CoinjoinBackendClient {
                         if (!blockFiltersBatch.length) return { status: 'up-to-date' };
                         const filters = blockFiltersBatch.map(item => {
                             const [blockHeight, blockHash, filter] = item.split(':');
+
                             return { blockHeight: Number(blockHeight), blockHash, filter };
                         });
+
                         return { status: 'ok', filters, ...rest };
                     })
                     .catch<BlockFilterResponse>(error => {
@@ -134,6 +138,7 @@ export class CoinjoinBackendClient {
             newApi = await this.getBlockbookApi(api => api);
         } catch {
             this.emitter.emit('mempoolDisconnected');
+
             return;
         }
 
@@ -185,6 +190,7 @@ export class CoinjoinBackendClient {
         { identity, ...options }: RequestOptions = {},
     ): Promise<T> {
         let preferOnion = true;
+
         return scheduleAction(
             async () => {
                 const urlIndex = this.blockbookRequestId++ % this.blockbookUrls.length;
@@ -203,6 +209,7 @@ export class CoinjoinBackendClient {
                         }
                         throw error;
                     });
+
                 return callbackFn(api);
             },
             { attempts: 3, timeout: HTTP_REQUEST_TIMEOUT, gap: HTTP_REQUEST_GAP, ...options },

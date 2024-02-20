@@ -23,8 +23,10 @@ function contentType(body: string | unknown) {
         if (body === '') {
             return 'text/plain';
         }
+
         return 'application/octet-stream';
     }
+
     return 'application/json';
 }
 
@@ -32,6 +34,7 @@ function wrapBody(body: unknown) {
     if (typeof body === 'string') {
         return body;
     }
+
     return JSON.stringify(body);
 }
 
@@ -104,6 +107,7 @@ export async function bridgeApiCall(options: HttpRequestOptions) {
         if (errStr === BRIDGE_MALFORMED_WIRE_FORMAT) {
             return error({ error: PROTOCOL_MALFORMED });
         }
+
         return unknownError(new Error(errStr), [
             ERRORS.DEVICE_NOT_FOUND,
             ERRORS.HTTP_ERROR,

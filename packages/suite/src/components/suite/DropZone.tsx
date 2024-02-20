@@ -37,12 +37,14 @@ export const useDropZone = ({ accept, onSelect, className }: DropZoneProps) => {
             setFilename(file?.name);
             if (!file) {
                 setError({ id: 'TR_DROPZONE_ERROR_EMPTY' });
+
                 return;
             }
             if (allowedExtensions.length) {
                 const extRegex = new RegExp(`\\.(${allowedExtensions.join('|')})$`, 'i');
                 if (!extRegex.test(file.name)) {
                     setError({ id: 'TR_DROPZONE_ERROR_FILETYPE' });
+
                     return;
                 }
             }

@@ -112,6 +112,7 @@ export const ReviewButton = () => {
                 ? 'TR_SEND_NOT_ANONYMIZED_COINS'
                 : 'TR_SIGN_WITH_NOT_ANONYMIZED_COINS';
         }
+
         return broadcastEnabled ? 'REVIEW_AND_SEND_TRANSACTION' : 'SIGN_TRANSACTION';
     };
 

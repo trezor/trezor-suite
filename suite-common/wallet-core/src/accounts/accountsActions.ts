@@ -144,6 +144,7 @@ const updateAccount = createAction(
                 },
             };
         }
+
         return {
             payload: account,
         };

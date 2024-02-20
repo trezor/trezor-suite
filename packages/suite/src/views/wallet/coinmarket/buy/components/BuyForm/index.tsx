@@ -13,6 +13,7 @@ const Form = styled.form`
 
 const BuyForm = () => {
     const { onSubmit, handleSubmit, isLoading, noProviders } = useCoinmarketBuyFormContext();
+
     return (
         <Wrapper responsiveSize="LG">
             {isLoading && <CoinmarketSkeleton />}

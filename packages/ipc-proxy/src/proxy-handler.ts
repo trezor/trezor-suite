@@ -125,6 +125,7 @@ export const createIpcProxyHandler = <Api extends EventEmitterApi>(
 
         ipcMain.handle(`${instancePrefix}/invoke`, async (_, params) => {
             const payload = await onRequest(...params);
+
             return payload;
         });
     });

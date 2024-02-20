@@ -34,6 +34,7 @@ const getMessageStateById = (draft: MessageSystemState, id: string): MessageStat
             feature: false,
         };
     }
+
     return draft.dismissedMessages[id];
 };
 

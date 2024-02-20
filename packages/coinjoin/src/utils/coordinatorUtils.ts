@@ -63,12 +63,14 @@ export function prefixScriptPubKey(scriptPubKey: string, useHex: false): Buffer;
 export function prefixScriptPubKey(scriptPubKey: string, useHex = true) {
     const [OP, hash] = scriptPubKey.split(' ');
     const script = bscript.fromASM(`OP_${OP} ${hash}`);
+
     return useHex ? script.toString('hex') : script;
 }
 
 // return address from WabiSabi.scriptPubKey
 export const getAddressFromScriptPubKey = (scriptPubKey: string, network: Network) => {
     const script = prefixScriptPubKey(scriptPubKey, false);
+
     return baddress.fromOutputScript(script, network);
 };
 
@@ -88,6 +90,7 @@ export const getOutputSize = (type: AllowedScriptTypes) => {
 
 export const getExternalOutputSize = (scriptPubKey: string) => {
     const type = getScriptTypeFromScriptPubKey(scriptPubKey);
+
     return getOutputSize(type);
 };
 
@@ -97,6 +100,7 @@ export const readOutpoint = (outpoint: string) => {
     const txid = reader.readSlice(32);
     const index = reader.readUInt32();
     const hash = bUtils.reverseBuffer(txid).toString('hex');
+
     return { index, hash, txid: txid.toString('hex') };
 };
 
@@ -111,6 +115,7 @@ const compareByteArray = (left: Buffer, right: Buffer) => {
         if (left[i] < right[i]) return -1;
         if (left[i] > right[i]) return 1;
     }
+
     return left.length - right.length;
 };
 
@@ -122,8 +127,10 @@ export const mergePubkeys = (outputs: CoinjoinOutputAddedEvent[]) =>
         if (duplicates.length > 1) {
             if (a.find(o => o.Output.ScriptPubKey === item.Output.ScriptPubKey)) return a;
             const Value = duplicates.reduce((v, b) => v + b.Output.Value, 0);
+
             return a.concat({ ...item, Output: { ...item.Output, Value } });
         }
+
         return a.concat(item);
     }, [] as CoinjoinOutputAddedEvent[]);
 
@@ -140,6 +147,7 @@ export const sortInputs = (a: CoinjoinInput, b: CoinjoinInput) => {
 export const sortOutputs = (a: CoinjoinOutput, b: CoinjoinOutput) => {
     if (a.Value === b.Value)
         return compareByteArray(Buffer.from(a.ScriptPubKey), Buffer.from(b.ScriptPubKey));
+
     return b.Value - a.Value;
 };
 

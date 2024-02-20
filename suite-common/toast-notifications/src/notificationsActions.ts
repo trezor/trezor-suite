@@ -44,6 +44,7 @@ export const addToastOnce = createActionWithExtraDeps(
         if (notifications.length > 0) {
             return;
         }
+
         return dispatch(addToast(payload));
     },
 );

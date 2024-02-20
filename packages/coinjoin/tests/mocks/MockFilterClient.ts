@@ -10,6 +10,7 @@ export class MockFilterClient implements FilterClient {
 
     fetchNetworkInfo(): ReturnType<FilterClient['fetchNetworkInfo']> {
         const tip = this.filters[this.filters.length - 1];
+
         return Promise.resolve({ bestHeight: tip.blockHeight } as any);
     }
 
@@ -22,6 +23,7 @@ export class MockFilterClient implements FilterClient {
             return Promise.resolve({ status: 'up-to-date' });
         }
         const from = this.filters.findIndex(f => f.prevHash === knownHash);
+
         return from < 0
             ? Promise.resolve({ status: 'not-found' })
             : Promise.resolve({

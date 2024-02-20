@@ -149,6 +149,7 @@ export function formatCryptoAmountAsAmount(
     if (baseAmount < 0.01) {
         digits = decimals;
     }
+
     return amount.toFixed(digits);
 }
 
@@ -216,6 +217,7 @@ const SendSwapTransactionComponent = () => {
                 type: 'error',
                 message: 'TR_EXCHANGE_SWAP_SLIPPAGE_NOT_SET',
             });
+
             return;
         }
         const slippage = new BigNumber(value);

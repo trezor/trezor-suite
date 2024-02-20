@@ -56,11 +56,13 @@ const renderLegacyView = (className: string) => {
             container.innerHTML = unknownItem.outerHTML;
         }
     }
+
     return container;
 };
 
 export const showView = (component: string) => {
     reactEventBus.dispatch();
+
     return renderLegacyView(component);
 };
 
@@ -80,6 +82,7 @@ export const getIframeElement = () => {
             // do nothing, try next entry
         }
     }
+
     return iframe;
 };
 
@@ -136,6 +139,7 @@ export const initMessageChannelWithIframe = async (
             // POPUP.HANDSHAKE successfully received back from the iframe
             if (await broadcastHandshake) {
                 setState({ broadcast, systemInfo, iframe });
+
                 return;
             }
 
@@ -166,6 +170,7 @@ export const initMessageChannelWithIframe = async (
     // POPUP.HANDSHAKE successfully received back from the iframe
     if (await iframeHandshake) {
         setState({ iframe, systemInfo });
+
         return;
     }
 
@@ -177,14 +182,17 @@ export const postMessage = (message: CoreRequestMessage) => {
     const { broadcast, iframe, core } = getState();
     if (core) {
         core.handleMessage(message);
+
         return;
     }
     if (broadcast) {
         broadcast.postMessage(message);
+
         return;
     }
     if (iframe) {
         iframe.postMessage(message, window.location.origin);
+
         return;
     }
     throw ERRORS.TypedError('Popup_ConnectionMissing');

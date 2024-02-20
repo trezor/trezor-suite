@@ -154,6 +154,7 @@ const ButtonLikeLabel = ({
             </LabelButton>
         );
     }
+
     return <>{defaultVisibleValue}</>;
 };
 
@@ -259,6 +260,7 @@ export const MetadataLabeling = ({
     useEffect(() => {
         setPending(false);
         setShowSuccess(false);
+
         return () => {
             isSubscribedToSubmitResult.current = '';
             clearTimeout(timeout!);
@@ -339,6 +341,7 @@ export const MetadataLabeling = ({
         if (payload.value) {
             return withDropdown(ButtonLikeLabel);
         }
+
         return ButtonLikeLabel;
     }, [payload.value]);
 

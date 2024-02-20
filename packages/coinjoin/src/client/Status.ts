@@ -1,4 +1,4 @@
-import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
+import { TypedEmitter } from '@trezor/utils';
 
 import * as coordinator from './coordinator';
 import { transformStatus } from '../utils/roundUtils';
@@ -75,6 +75,7 @@ export class Status extends TypedEmitter<StatusEvents> {
                         'warn',
                         `Unexpected phase change: ${nextRound.Id} ${known.Phase} => ${nextRound.Phase}`,
                     );
+
                     // possible corner-case:
                     // - suite fetch the /status, next fetch will be in ~20 sec. + potential network delay
                     // - round is currently in phase "0" but will be changed to "1" in few seconds,
@@ -82,6 +83,7 @@ export class Status extends TypedEmitter<StatusEvents> {
                     // - suite fetch the /status, round phase is changed from 0 to 2
                     return true;
                 }
+
                 return false;
             })
             .concat(
@@ -192,6 +194,7 @@ export class Status extends TypedEmitter<StatusEvents> {
 
             this.emit('update', statusEvent);
             this.rounds = status.RoundStates;
+
             return statusEvent;
         }
     }
@@ -254,6 +257,7 @@ export class Status extends TypedEmitter<StatusEvents> {
 
             // start lifecycle only if status is present
             this.setStatusTimeout();
+
             return { success: true as const, ...status, version };
         } catch (error) {
             return { success: false as const, error: error.message };

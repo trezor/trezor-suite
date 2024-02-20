@@ -15,9 +15,11 @@ export const initSharedLogger = (workerSrc: string) => {
         }
         worker = new SharedWorker(workerSrc);
         worker.port.start();
+
         return logWriterFactory();
     } catch (error) {
         console.warn('Failed to initialize LogWorker:', error);
+
         return {
             add: (_message: LogMessage) => {},
         };

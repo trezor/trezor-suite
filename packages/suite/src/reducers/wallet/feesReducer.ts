@@ -29,6 +29,7 @@ export const initialState = NETWORKS.reduce((state, network) => {
         maxFee: 100,
         levels: [{ label: 'normal', feePerUnit: '1', blocks: 0 }],
     };
+
     return state;
 }, initialStatePredefined as State);
 

@@ -23,6 +23,7 @@ export function parseArrayType(arrayTypeName: string) {
         );
     }
     const [_, entryTypeName, arraySize] = arrayMatch;
+
     return {
         entryTypeName,
         arraySize: parseInt(arraySize, 10) || null,
@@ -59,6 +60,7 @@ function twosComplement(number: BigNumber, bytes: number) {
     if (bigNumber.isPositive()) {
         return bigNumber;
     }
+
     return bigNumber.minus(minValue).minus(minValue);
 }
 
@@ -82,6 +84,7 @@ function intToHex(number: BigNumber | bigint | number | string, bytes: number, s
             `Overflow when trying to convert number ${number} into ${bytes} bytes`,
         );
     }
+
     return hex.padStart(bytes * 2, '0');
 }
 
@@ -103,6 +106,7 @@ export function encodeData(typeName: string, data: any) {
     if (numberMatch) {
         const [_, intType, bits] = numberMatch;
         const bytes = Math.ceil(parseInt(bits, 10) / 8);
+
         return intToHex(data, bytes, intType === 'int');
     }
     if (typeName === 'bool') {
@@ -137,6 +141,7 @@ export function getFieldType(
     if (arrayMatch) {
         const [_, arrayItemTypeName, arraySize] = arrayMatch;
         const entryType = getFieldType(arrayItemTypeName, types);
+
         return {
             data_type: PROTO.EthereumDataType.ARRAY,
             size: parseInt(arraySize, 10) || undefined,
@@ -147,6 +152,7 @@ export function getFieldType(
     const numberMatch = paramTypeNumber.exec(typeName);
     if (numberMatch) {
         const [_, type, bits] = numberMatch;
+
         return {
             data_type: type === 'uint' ? PROTO.EthereumDataType.UINT : PROTO.EthereumDataType.INT,
             size: Math.floor(parseInt(bits, 10) / 8),
@@ -156,6 +162,7 @@ export function getFieldType(
     const bytesMatch = paramTypeBytes.exec(typeName);
     if (bytesMatch) {
         const [_, size] = bytesMatch;
+
         return {
             data_type: PROTO.EthereumDataType.BYTES,
             size: parseInt(size, 10) || undefined,

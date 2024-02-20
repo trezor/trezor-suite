@@ -39,12 +39,14 @@ export default class ApplyFlags extends AbstractMethod<'applyFlags', PROTO.Apply
 
         // wait for user action
         const uiResp = await uiPromise.promise;
+
         return uiResp.payload;
     }
 
     async run() {
         const cmd = this.device.getCommands();
         const response = await cmd.typedCall('ApplyFlags', 'Success', this.params);
+
         return response.message;
     }
 }

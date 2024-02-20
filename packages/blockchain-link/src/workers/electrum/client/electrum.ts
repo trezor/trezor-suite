@@ -86,6 +86,7 @@ export class ElectrumClient extends BatchingJsonRpcClient implements ElectrumAPI
 
     request(method: string, ...params: any[]) {
         this.timeLastCall = new Date().getTime();
+
         return super.request(method, ...params);
     }
 

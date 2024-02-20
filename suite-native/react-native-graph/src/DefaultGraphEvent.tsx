@@ -21,6 +21,7 @@ export function DefaultGraphEvent({
     const dotRadius = useDerivedValue(() =>
         withSpring(isEventActive.value ? ACTIVE_EVENT_SIZE : EVENT_SIZE),
     );
+
     return (
         <Group>
             <Circle cx={eventX} cy={eventY} r={dotRadius} color={color} />

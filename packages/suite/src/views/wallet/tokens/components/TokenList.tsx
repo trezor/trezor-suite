@@ -127,6 +127,7 @@ export const TokenList = ({
             } else {
                 acc.unknownTokens.push(token);
             }
+
             return acc;
         },
         { knownTokens: [], unknownTokens: [] },

@@ -1,4 +1,4 @@
-import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
+import { TypedEmitter } from '@trezor/utils';
 
 import { CoinjoinPrisonInmate, CoinjoinPrisonEvents } from '../types/client';
 import { WabiSabiProtocolErrorCode } from '../enums';
@@ -98,6 +98,7 @@ export class CoinjoinPrison extends TypedEmitter<CoinjoinPrisonEvents> {
         } else {
             id = inmate.accountKey;
         }
+
         return this.inmates.find(i => i.id === id);
     }
 
@@ -144,6 +145,7 @@ export class CoinjoinPrison extends TypedEmitter<CoinjoinPrisonEvents> {
                 // regardless of their sentenceEnd
                 if (!rounds.includes(inmate.roundId)) return false;
             }
+
             return inmate.sentenceEnd > now;
         });
 

@@ -357,6 +357,7 @@ describe('selectRound', () => {
             if (url.endsWith('/select-inputs-for-round')) {
                 const Indices = data.Utxos.flatMap((utxo: any, i: number) => {
                     if (utxo.Amount < data.MiningFeeRate) return [];
+
                     return i;
                 });
                 resolve({ Indices });
@@ -421,6 +422,7 @@ describe('selectRound', () => {
                 spy();
                 const Indices = data.Utxos.flatMap((utxo: any, i: number) => {
                     if (utxo.Amount < 1000 + data.MiningFeeRate) return [];
+
                     return i;
                 });
 

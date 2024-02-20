@@ -31,6 +31,7 @@ export const localizeNumber = (
             // Remove trailing zeroes after formatting:
             return new BigNumber(amount.toFixed(maxDecimals)).decimalPlaces() ?? maxDecimals;
         }
+
         return originalDecimalsLength;
     };
 

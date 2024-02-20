@@ -42,6 +42,7 @@ export const useTor = () => {
             if (!isTorEnabling) {
                 desktopApi.getTorStatus();
             }
+
             return () => desktopApi.removeAllListeners('tor/status');
         }
     }, [dispatch, torBootstrap, isTorEnabling]);

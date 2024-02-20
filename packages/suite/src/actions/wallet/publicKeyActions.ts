@@ -22,6 +22,7 @@ export const showXpub = () => async (dispatch: Dispatch, getState: GetState) => 
     // Show warning when device is not connected.
     if (!device.connected || !device.available) {
         dispatch(openModal({ type: 'unverified-xpub' }));
+
         return;
     }
 

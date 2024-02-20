@@ -22,6 +22,7 @@ const PATH_NEGATIVE_VALUES = ERRORS.TypedError(
 export const getHDPath = (path: string): number[] => {
     const parts = path.toLowerCase().split('/');
     if (parts[0] !== 'm') throw PATH_NOT_VALID;
+
     return parts
         .filter(p => p !== 'm' && p !== '')
         .map(p => {
@@ -40,6 +41,7 @@ export const getHDPath = (path: string): number[] => {
                 // hardened index
                 n = toHardened(n);
             }
+
             return n;
         });
 };
@@ -57,6 +59,7 @@ export const getAccountType = (path: number[] | undefined) => {
     if (isTaprootPath(path)) return 'p2tr';
     if (isBech32Path(path)) return 'p2wpkh';
     if (isSegwitPath(path)) return 'p2sh';
+
     return 'p2pkh';
 };
 
@@ -158,11 +161,13 @@ export const validatePath = (path: DerivationPath, length = 0, base = false): nu
             } else if (n < 0) {
                 throw PATH_NEGATIVE_VALUES;
             }
+
             return n;
         });
     }
     if (!valid) throw PATH_NOT_VALID;
     if (length > 0 && valid.length < length) throw PATH_NOT_VALID;
+
     return base ? valid.splice(0, 3) : valid;
 };
 
@@ -173,6 +178,7 @@ export const getSerializedPath = (path: number[]) =>
             if (i & HD_HARDENED) {
                 return `${s}'`;
             }
+
             return s;
         })
         .join('/')}`;
@@ -190,6 +196,7 @@ export const getIndexFromPath = (path: number[]) => {
             `getIndexFromPath: invalid path length ${path.toString()}`,
         );
     }
+
     return fromHardened(path[2]);
 };
 
@@ -208,6 +215,7 @@ export const fixPath = <
     if (utxo.address_n && typeof utxo.address_n === 'string') {
         utxo.address_n = getHDPath(utxo.address_n);
     }
+
     return utxo as ProtoWithAddressN<T>;
 };
 
@@ -215,5 +223,6 @@ export const getLabel = (label: string, coinInfo?: CoinInfo) => {
     if (coinInfo) {
         return label.replace('#NETWORK', coinInfo.label);
     }
+
     return label.replace('#NETWORK', '');
 };

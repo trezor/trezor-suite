@@ -20,6 +20,7 @@ type SpacerStyleProps = {
 const spacerStyle = prepareNativeStyle<SpacerStyleProps>((utils, { spacing, orientation }) => {
     const spacingValue = typeof spacing === 'number' ? spacing : utils.spacings[spacing ?? 'small'];
     const flexDirection = orientation === 'horizontal' ? 'row' : 'column';
+
     return {
         gap: spacingValue,
         flexDirection,

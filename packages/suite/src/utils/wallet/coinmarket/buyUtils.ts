@@ -86,6 +86,7 @@ export const createQuoteLink = async (request: BuyTradeQuoteRequest, account: Ac
 
     if (isDesktop()) {
         const url = await desktopApi.getHttpReceiverAddress('/buy-redirect');
+
         return `${url}?p=${encodeURIComponent(`/coinmarket-redirect/${params}`)}`;
     }
 
@@ -99,6 +100,7 @@ export const createTxLink = async (trade: BuyTrade, account: Account) => {
 
     if (isDesktop()) {
         const url = await desktopApi.getHttpReceiverAddress('/buy-redirect');
+
         return `${url}?p=${encodeURIComponent(`/coinmarket-redirect/${params}`)}`;
     }
 

@@ -125,6 +125,7 @@ const buttonToIconSizeMap = {
 export const buttonStyle = prepareNativeStyle<ButtonStyleProps>(
     (utils, { size, backgroundColor, isDisabled }) => {
         const sizeDimensions = sizeToDimensionsMap[size];
+
         return {
             flexDirection: 'row',
             justifyContent: 'center',

@@ -23,6 +23,7 @@ export const XpubImportSection = ({ onRequestCamera, networkSymbol }: XpubImport
 
     const { networkType } = networks[networkSymbol];
     const buttonTitle = networkTypeToTitleMap[networkType];
+
     return (
         <Box style={applyStyle(importSectionWrapperStyle)}>
             <Box justifyContent="center" alignItems="center" style={applyStyle(iconWrapperStyle)}>

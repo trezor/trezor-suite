@@ -12,6 +12,7 @@ export const getFiatRateKey = (
     if (tokenAddress) {
         return `${symbol}-${tokenAddress}-${fiatCurrency}` as FiatRateKey;
     }
+
     return `${symbol}-${fiatCurrency}` as FiatRateKey;
 };
 
@@ -20,5 +21,6 @@ export const getFiatRateKeyFromTicker = (
     fiatCurrency: FiatCurrencyCode,
 ): FiatRateKey => {
     const { symbol, tokenAddress } = ticker;
+
     return getFiatRateKey(symbol, fiatCurrency, tokenAddress);
 };

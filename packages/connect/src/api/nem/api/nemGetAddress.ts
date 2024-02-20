@@ -38,6 +38,7 @@ export default class NEMGetAddress extends AbstractMethod<'nemGetAddress', Param
 
         this.params = payload.bundle.map(batch => {
             const path = validatePath(batch.path, 3);
+
             return {
                 address_n: path,
                 network: batch.network || MAINNET,
@@ -72,10 +73,12 @@ export default class NEMGetAddress extends AbstractMethod<'nemGetAddress', Param
                     break;
                 // no default
             }
+
             return `Export NEM address for account #${
                 fromHardened(this.params[0].address_n[2]) + 1
             } on ${network} network`;
         }
+
         return 'Export multiple NEM addresses';
     }
 
@@ -108,6 +111,7 @@ export default class NEMGetAddress extends AbstractMethod<'nemGetAddress', Param
         const uiResp = await uiPromise.promise;
 
         this.confirmed = uiResp.payload;
+
         return this.confirmed;
     }
 
@@ -126,6 +130,7 @@ export default class NEMGetAddress extends AbstractMethod<'nemGetAddress', Param
 
         // wait for user action
         const uiResp = await uiPromise.promise;
+
         return uiResp.payload;
     }
 
@@ -137,6 +142,7 @@ export default class NEMGetAddress extends AbstractMethod<'nemGetAddress', Param
             show_display,
             chunkify,
         });
+
         return response.message;
     }
 
@@ -180,6 +186,7 @@ export default class NEMGetAddress extends AbstractMethod<'nemGetAddress', Param
 
             this.progress++;
         }
+
         return this.hasBundle ? responses : responses[0];
     }
 }

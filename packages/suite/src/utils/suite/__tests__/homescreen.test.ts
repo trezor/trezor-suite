@@ -57,6 +57,7 @@ describe('homescreen', () => {
                             element.onload(new Event('load'));
                         }, 100);
                     }
+
                     return element;
                 })(originalCreateElement);
         });

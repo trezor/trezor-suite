@@ -17,11 +17,13 @@ class GoogleProvider extends AbstractMetadataProvider {
         try {
             await GoogleClient.authorize();
             this.connected = true;
+
             return this.ok();
         } catch (err) {
             if (err instanceof Error) {
                 return this.error('AUTH_ERROR', err.message);
             }
+
             return this.error(
                 'OTHER_ERROR',
                 'Unexpected error when trying to connect to google provider',
@@ -32,6 +34,7 @@ class GoogleProvider extends AbstractMetadataProvider {
     async disconnect() {
         try {
             await GoogleClient.revoke();
+
             return this.ok();
         } catch (error) {
             return this.handleProviderError(error);
@@ -56,12 +59,14 @@ class GoogleProvider extends AbstractMetadataProvider {
             if (response) {
                 return this.ok(Buffer.from(response, 'hex'));
             }
+
             return this.ok(undefined);
         } catch (err) {
             // special case, not found means file is not there which is actually information we want to know
             if (err?.error?.code === 404) {
                 return this.ok(undefined);
             }
+
             return this.handleProviderError(err);
         }
     }
@@ -86,6 +91,7 @@ class GoogleProvider extends AbstractMetadataProvider {
                     content.toString('hex'),
                     id,
                 );
+
                 return this.ok();
             }
             await GoogleClient.create(
@@ -98,6 +104,7 @@ class GoogleProvider extends AbstractMetadataProvider {
                 },
                 content.toString('hex'),
             );
+
             return this.ok();
         } catch (err) {
             return this.handleProviderError(err);
@@ -149,6 +156,7 @@ class GoogleProvider extends AbstractMetadataProvider {
     async getProviderDetails() {
         try {
             const response = await GoogleClient.getTokenInfo();
+
             return this.ok({
                 type: this.type,
                 isCloud: this.isCloud,
@@ -169,6 +177,7 @@ class GoogleProvider extends AbstractMetadataProvider {
     async isConnected() {
         try {
             const result = await GoogleClient.getAccessToken();
+
             return !!result;
         } catch (_err) {
             return false;
@@ -206,6 +215,7 @@ class GoogleProvider extends AbstractMetadataProvider {
             default:
             // no default
         }
+
         return this.error('OTHER_ERROR', message);
     }
 }

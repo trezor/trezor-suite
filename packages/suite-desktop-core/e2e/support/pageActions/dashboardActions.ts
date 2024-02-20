@@ -27,6 +27,7 @@ class DashboardActions {
         await window.getByTestId('@menu/switch-device').click();
         const deviceSwitcherModal = window.getByTestId('@modal');
         await deviceSwitcherModal.waitFor({ state: 'visible' });
+
         return deviceSwitcherModal;
     }
 

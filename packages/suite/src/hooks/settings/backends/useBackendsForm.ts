@@ -127,11 +127,13 @@ export const useBackendsForm = (coin: Network['symbol']) => {
 
     const getUrls = () => {
         const lastUrl = input.value && !input.error ? [input.value] : [];
+
         return currentValues.urls.concat(lastUrl);
     };
 
     const hasOnlyOnions = () => {
         const urls = getUrls();
+
         return !!urls.length && urls.every(isOnionUrl);
     };
 

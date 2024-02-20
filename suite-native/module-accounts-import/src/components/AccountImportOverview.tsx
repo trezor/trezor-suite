@@ -20,6 +20,7 @@ export const AccountImportOverview = ({ balance, networkSymbol }: AssetsOverview
         cryptoValue: balance,
         network: networkSymbol,
     });
+
     return (
         <AccountImportOverviewCard
             icon={<RoundedIcon name={networkSymbol} iconSize="large" />}

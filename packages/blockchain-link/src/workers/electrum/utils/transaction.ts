@@ -12,18 +12,21 @@ import type {
 
 const transformOpReturn = (hex: string) => {
     const [, _len, data] = hex.match(/^6a(?:4c)?([0-9a-f]{2})([0-9a-f]*)$/i) ?? [];
+
     return data ? `OP_RETURN (${Buffer.from(data, 'hex').toString('ascii')})` : undefined;
 };
 
 const parseAddresses = ({ address, addresses, type, hex }: TxOut['scriptPubKey']) => {
     if (type === 'nulldata') {
         const opReturn = transformOpReturn(hex);
+
         return {
             addresses: opReturn ? [opReturn] : [],
             isAddress: false,
         };
     }
     const addrs = !address ? addresses || [] : [address];
+
     return {
         addresses: addrs,
         isAddress: addrs.length === 1,
@@ -56,6 +59,7 @@ const formatTransaction =
         const valueIn = vinRegular
             .map(({ txid, vout }) => getVout(txid, vout).value)
             .reduce((a, b) => a + b, 0);
+
         return {
             txid,
             hex,

@@ -182,6 +182,7 @@ export const BasicTxDetails = ({
     const isFinal = isTxFinal(tx, confirmations);
 
     const { elevation } = useElevation();
+
     return (
         <Wrapper elevation={elevation}>
             <HeaderFirstRow elevation={elevation}>

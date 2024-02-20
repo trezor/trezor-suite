@@ -50,6 +50,7 @@ export function split(
     // assign splitValue to outputs not user defined
     const outputsSplit = outputs.map(output => {
         if (output.value) return output;
+
         return {
             ...output,
             value: splitValue,

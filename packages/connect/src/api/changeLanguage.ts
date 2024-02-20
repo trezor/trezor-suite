@@ -49,7 +49,8 @@ export default class ChangeLanguage extends AbstractMethod<'changeLanguage', Cha
 
         // wait for user action
         const uiResp = await uiPromise.promise;
-        return uiResp.payload;
+
+      return uiResp.payload;
     }
 
     private async uploadTranslationData(payload: ArrayBuffer) {
@@ -77,6 +78,7 @@ export default class ChangeLanguage extends AbstractMethod<'changeLanguage', Cha
                 },
             );
         }
+
         return response.message;
     }
 

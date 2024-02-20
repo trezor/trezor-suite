@@ -44,6 +44,7 @@ const SendTransactionComponent = () => {
     if (!exchange) return null;
     const providerName =
         exchangeInfo?.providerInfos[exchange]?.companyName || selectedQuote.exchange;
+
     return (
         <Wrapper>
             <Row>

@@ -1,4 +1,4 @@
-import * as versionUtils from '@trezor/utils/lib/versionUtils';
+import { versionUtils } from '@trezor/utils';
 import { PROTO } from '../constants';
 import { config } from '../data/config';
 import { Features, CoinInfo, UnavailableCapabilities, DeviceModelInternal } from '../types';
@@ -35,6 +35,7 @@ export const parseCapabilities = (features?: Features): PROTO.Capability[] => {
     if (!features.capabilities || !features.capabilities.length) {
         return features.major_version === 1 ? DEFAULT_CAPABILITIES_T1 : DEFAULT_CAPABILITIES_TT;
     }
+
     return features.capabilities;
 };
 
@@ -53,8 +54,10 @@ export const getUnavailableCapabilities = (features: Features, coins: CoinInfo[]
         // - string for supported models (version)
         if (!info.support || info.support[key] === false) {
             list[info.shortcut.toLowerCase()] = 'no-support';
+
             return false;
         }
+
         return true;
     });
 
@@ -64,6 +67,7 @@ export const getUnavailableCapabilities = (features: Features, coins: CoinInfo[]
             if (info.name === 'Bitcoin' || info.name === 'Testnet' || info.name === 'Regtest') {
                 return !capabilities.includes('Capability_Bitcoin');
             }
+
             return !capabilities.includes('Capability_Bitcoin_like');
         }
         if (info.type === 'ethereum') {
@@ -80,6 +84,7 @@ export const getUnavailableCapabilities = (features: Features, coins: CoinInfo[]
             return !capabilities.includes('Capability_Ripple');
         if (info.shortcut === 'SOL' || info.shortcut === 'DSOL')
             return !capabilities.includes('Capability_Solana');
+
         return !capabilities.includes(`Capability_${info.name}` as PROTO.Capability);
     });
 
@@ -139,6 +144,7 @@ export const parseRevision = (features: Features) => {
 
     // otherwise it is probably in hexadecimal raw bytes representation so we encode it into standard hexadecimal notation
     const revisionUtf8 = Buffer.from(revision, 'hex').toString('utf-8');
+
     /**
      * We have to make sure, that revision was not in standard hexadecimal notation before encoding,
      * that means it consisted only from decimal numbers (chance close to zero).

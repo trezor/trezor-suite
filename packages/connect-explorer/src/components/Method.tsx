@@ -25,6 +25,7 @@ const getArray = (field: FieldWithBundle<any>, props: Props) => (
         {field.items?.map((batch, index) => {
             const key = `${field.name}-${index}`;
             const children = batch.map((batchField: any) => getField(batchField, props));
+
             return (
                 <BatchWrapper key={key} onRemove={() => props.actions.onBatchRemove(field, batch)}>
                     {children}

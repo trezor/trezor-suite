@@ -115,6 +115,7 @@ export const init = async (container: HTMLElement) => {
     if (!loadModules.success) {
         // loading failed, render error with theme provider without redux and do not continue
         root.render(<ErrorScreen error={loadModules.error} />);
+
         return;
     }
 

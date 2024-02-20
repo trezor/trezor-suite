@@ -41,6 +41,7 @@ const addPath = (path: AnyPath, state: OnboardingState) => {
     if (!state.path.includes(path)) {
         return [...state.path, path];
     }
+
     return [...state.path];
 };
 

@@ -63,6 +63,7 @@ export const calcTicksFromData = (data: { time: number }[]) => {
     if (interval === 'month') {
         // 1 month interval
         const timestamps = eachMonthOfInterval({ start: startUnix, end: endUnix });
+
         return timestamps;
     }
 
@@ -81,6 +82,7 @@ export const getBlockbookSafeTime = (timestamp?: number) => {
         // timestamp is older than 3 mins, no adjustment needed
         return timestamp;
     }
+
     return currentTimestamp - 180;
 };
 
@@ -100,6 +102,7 @@ export const resetTime = (ts: number, resetDay?: boolean) => {
     if (resetDay) {
         sanitizedTimestamp = startOfMonth(sanitizedTimestamp);
     }
+
     return getUnixTime(sanitizedTimestamp);
 };
 
@@ -122,5 +125,6 @@ export const resetUTCTime = (ts: number, resetDay?: boolean) => {
         sanitizedTimestamp = fromUnixTime(sanitizedTimestamp.setUTCDate(1) / 1000);
     }
     const sanitizedUnixTimestamp = getUnixTime(sanitizedTimestamp);
+
     return sanitizedUnixTimestamp;
 };

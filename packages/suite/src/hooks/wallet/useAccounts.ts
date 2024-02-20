@@ -35,6 +35,7 @@ export const useFastAccounts = () => {
         () => (device ? accountUtils.getAllAccounts(device.state, accounts) : []),
         [accounts, device],
     );
+
     return deviceAccounts;
 };
 
@@ -48,6 +49,7 @@ export const useAccountAddressDictionary = (account: Account | undefined) =>
                     .reduce(
                         (previous, current) => {
                             previous[current.address] = current;
+
                             return previous;
                         },
                         {} as { [address: string]: AccountAddress },

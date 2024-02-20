@@ -49,6 +49,7 @@ export const cardanoConnectPatch = (getEnabledNetworks: () => string[]) => {
                     ...params,
                     useCardanoDerivation: cardanoEnabled,
                 });
+
                 return result;
             };
         });

@@ -33,6 +33,7 @@ export default class CancelCoinjoinAuthorization extends AbstractMethod<
         }
 
         const response = await cmd.typedCall('CancelAuthorization', 'Success');
+
         return response.message;
     }
 }

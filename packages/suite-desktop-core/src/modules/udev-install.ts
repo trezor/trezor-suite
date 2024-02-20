@@ -11,10 +11,12 @@ const FILE_NAME = '51-trezor.rules';
 const fileExists = async (filePath: string) => {
     try {
         await fs.promises.stat(filePath);
+
         return true;
     } catch (error) {
         // file is not present
     }
+
     return false;
 };
 
@@ -47,6 +49,7 @@ export const init: Module = () => {
                 await fs.promises.chmod(userRules, 0o444);
             } catch (error) {
                 logger.error(SERVICE_NAME, `User data rules error ${error}`);
+
                 return { success: false, error: `${error}` };
             }
         }

@@ -1,5 +1,5 @@
 import * as crypto from 'crypto';
-import * as bufferUtils from '@trezor/utils/lib/bufferUtils';
+import { bufferUtils } from '@trezor/utils';
 
 import { PROTO } from '../../constants';
 import { DeviceAuthenticityConfig } from '../../data/deviceAuthenticityConfig';
@@ -100,6 +100,7 @@ export const verifyAuthenticityProof = async ({
 
     if (!rootPubKey) {
         const configExpired = new Date(config.timestamp).getTime() < caCertValidityFrom;
+
         return {
             valid: false,
             configExpired,

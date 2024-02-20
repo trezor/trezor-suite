@@ -13,5 +13,6 @@ export function getKeyByValue<E extends EnumObject>(obj: E, value: E[keyof E]) {
  */
 export function getValueByKey<E extends EnumObject>(obj: E, enumKey: keyof E) {
     const key = obj && (Object.keys(obj) as (keyof E)[]).find(x => x === enumKey);
+
     return key && obj[key];
 }

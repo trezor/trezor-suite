@@ -73,6 +73,7 @@ export class CoinjoinWebsocketController {
                 this.logger?.debug(`WS CLOSED ${socketId}`);
             });
         }
+
         return socket;
     }
 

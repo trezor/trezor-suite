@@ -51,6 +51,7 @@ export const TransactionIconSpinner = ({ radius, color }: TransactionIconSpinner
             }),
             WITH_REPEAT_INFINITE,
         );
+
         return () => cancelAnimation(rotation);
     }, [rotation]);
 

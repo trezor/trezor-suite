@@ -52,6 +52,7 @@ export const parseAddressToDeviceLines = ({
         splitAddressToChunks,
         addressChunks => {
             if (!isPaginationEnabled) return addressChunks;
+
             return filterAddressChunksByPagination(addressChunks, activePage);
         },
         A.splitEvery(4),

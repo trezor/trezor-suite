@@ -16,7 +16,6 @@ testPlaywright.describe.serial('Suite works with Electrum server', () => {
         await TrezorUserEnvLink.api.stopBridge();
         await TrezorUserEnvLink.api.trezorUserEnvConnect();
         await TrezorUserEnvLink.api.startEmu({ wipe: true });
-        await TrezorUserEnvLink.api.startBridge();
         await TrezorUserEnvLink.api.setupEmu({
             needs_backup: true,
             mnemonic: 'all all all all all all all all all all all all',

@@ -46,6 +46,7 @@ export default class BlockchainGetCurrentFiatRates extends AbstractMethod<
 
     async run() {
         const backend = await initBlockchain(this.params.coinInfo, this.postMessage);
+
         return backend.getCurrentFiatRates({
             currencies: this.params.currencies,
             token: this.params.token,

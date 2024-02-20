@@ -131,6 +131,7 @@ export const validateReserveOrBalance =
             if (reserve && amountBig.lt(formatNetworkAmount(account.balance, account.symbol))) {
                 return translationString('AMOUNT_IS_MORE_THAN_RESERVE', { reserve });
             }
+
             return translationString('AMOUNT_IS_NOT_ENOUGH');
         }
     };

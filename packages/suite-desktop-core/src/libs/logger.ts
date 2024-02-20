@@ -87,6 +87,7 @@ export class Logger implements ILogger {
                     'logger',
                     `Can't write log to file because outputFile is not properly set (${outputFile})`,
                 );
+
                 return;
             }
 
@@ -95,6 +96,7 @@ export class Logger implements ILogger {
                     'logger',
                     `Can't write log to file because outputPath is not properly set (${outputPath})`,
                 );
+
                 return;
             }
 

@@ -1,6 +1,6 @@
 import EventEmitter from 'events';
 
-import { createDeferredManager } from '@trezor/utils/lib/createDeferredManager';
+import { createDeferredManager } from '@trezor/utils';
 
 import { Core, initCore } from './core';
 import { factory } from './factory';
@@ -56,6 +56,7 @@ const handleMessage = (message: CoreEventMessage) => {
 
     if (type === UI.REQUEST_UI_WINDOW) {
         _core.handleMessage({ type: POPUP.HANDSHAKE });
+
         return;
     }
 
@@ -115,6 +116,7 @@ const init = async (settings: Partial<ConnectSettings> = {}) => {
     if (_settings.lazyLoad) {
         // reset "lazyLoad" after first use
         _settings.lazyLoad = false;
+
         return;
     }
 
@@ -146,9 +148,11 @@ const call: CallMethod = async params => {
         if (response) {
             return response;
         }
+
         return createErrorMessage(ERRORS.TypedError('Method_NoResponse'));
     } catch (error) {
         _log.error('call', error);
+
         return createErrorMessage(error);
     }
 };
@@ -191,8 +195,10 @@ const requestLogin = async (params: any) => {
             callback: null,
         });
         _core?.removeListener(CORE_EVENT, loginChallengeListener);
+
         return response;
     }
+
     return call({ method: 'requestLogin', ...params });
 };
 

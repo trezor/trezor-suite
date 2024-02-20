@@ -35,5 +35,6 @@ export const useCoinmarketBuyFormDefaultValues = (
                 : undefined,
         [buyInfo, defaultCountry, defaultCrypto, defaultCurrency],
     );
+
     return { defaultValues, defaultCountry, defaultCurrency };
 };

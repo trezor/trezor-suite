@@ -18,6 +18,7 @@ export const getDataStepInMinutes = ({
     numberOfPoints: number;
 }): number => {
     const differenceMinutes = differenceInMinutes(endOfTimeFrameDate, startOfTimeFrameDate);
+
     return Math.ceil(differenceMinutes / numberOfPoints);
 };
 
@@ -104,6 +105,7 @@ export const mergeMultipleFiatBalanceHistories = (
                       (acc, fiatBalancePoint) => acc + fiatBalancePoint.value,
                   )
                 : 0;
+
             return {
                 date: fromUnixTime(timestamp),
                 value: fiatBalance,
@@ -123,6 +125,7 @@ export const findOldestBalanceMovementTimestamp = (
     const allTimestamps = accountsWithBalanceHistory
         .map(account => {
             const oldestBalanceMovement = account.balanceHistory;
+
             return oldestBalanceMovement ? oldestBalanceMovement.map(({ time }) => time) : 0;
         })
         .flatMap(timestamp => timestamp);

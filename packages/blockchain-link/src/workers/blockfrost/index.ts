@@ -21,6 +21,7 @@ type Request<T> = T & Context;
 const getInfo = async (request: Request<MessageTypes.GetInfo>) => {
     const api = await request.connect();
     const info = await api.getServerInfo();
+
     return {
         type: RESPONSES.GET_INFO,
         payload: {
@@ -33,6 +34,7 @@ const getInfo = async (request: Request<MessageTypes.GetInfo>) => {
 const getBlockHash = async (request: Request<MessageTypes.GetBlockHash>) => {
     const api = await request.connect();
     const blockMessage = await api.getBlockHash(request.payload);
+
     return {
         type: RESPONSES.GET_BLOCK_HASH,
         payload: blockMessage.hash,
@@ -44,6 +46,7 @@ const getAccountBalanceHistory = async (
 ) => {
     const socket = await request.connect();
     const history = await socket.getAccountBalanceHistory(request.payload);
+
     return {
         type: RESPONSES.GET_ACCOUNT_BALANCE_HISTORY,
         payload: history,
@@ -54,6 +57,7 @@ const getTransaction = async (request: Request<MessageTypes.GetTransaction>) => 
     const api = await request.connect();
     const txData = await api.getTransaction(request.payload);
     const tx = transformTransaction({ txData });
+
     return {
         type: RESPONSES.GET_TRANSACTION,
         payload: tx,
@@ -76,6 +80,7 @@ const estimateFee = async (request: Request<MessageTypes.EstimateFee>) => {
 const pushTransaction = async (request: Request<MessageTypes.PushTransaction>) => {
     const api = await request.connect();
     const payload = await api.pushTransaction(request.payload);
+
     return {
         type: RESPONSES.PUSH_TRANSACTION,
         payload,
@@ -85,6 +90,7 @@ const pushTransaction = async (request: Request<MessageTypes.PushTransaction>) =
 const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => {
     const api = await request.connect();
     const info = await api.getAccountInfo(request.payload);
+
     return {
         type: RESPONSES.GET_ACCOUNT_INFO,
         payload: transformAccountInfo(info),
@@ -94,6 +100,7 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
 const getAccountUtxo = async (request: Request<MessageTypes.GetAccountUtxo>) => {
     const api = await request.connect();
     const utxos = await api.getAccountUtxo(request.payload);
+
     return {
         type: RESPONSES.GET_ACCOUNT_UTXO,
         payload: transformUtxos(utxos),
@@ -138,6 +145,7 @@ const subscribeBlock = async (ctx: Context) => {
     const api = await ctx.connect();
     ctx.state.addSubscription('block');
     api.on('block', ev => onNewBlock(ctx, ev));
+
     return api.subscribeBlock();
 };
 
@@ -149,6 +157,7 @@ const subscribeAccounts = async (ctx: Context, accounts: SubscriptionAccountInfo
         api.on('notification', ev => onTransaction(ctx, ev));
         state.addSubscription('notification');
     }
+
     return api.subscribeAddresses(state.getAddresses());
 };
 
@@ -160,6 +169,7 @@ const subscribeAddresses = async (ctx: Context, addresses: string[]) => {
         api.on('notification', ev => onTransaction(ctx, ev));
         state.addSubscription('notification');
     }
+
     return api.subscribeAddresses(state.getAddresses());
 };
 
@@ -188,6 +198,7 @@ const unsubscribeBlock = async ({ state, connect }: Context) => {
     const api = await connect();
     api.removeAllListeners('block');
     state.removeSubscription('block');
+
     return api.unsubscribeBlock();
 };
 
@@ -204,8 +215,10 @@ const unsubscribeAccounts = async (
         // remove listeners
         api.removeAllListeners('notification');
         state.removeSubscription('notification');
+
         return api.unsubscribeAddresses();
     }
+
     // subscribe remained addresses
     return api.subscribeAddresses(subscribed);
 };
@@ -222,8 +235,10 @@ const unsubscribeAddresses = async ({ state, connect }: Context, addresses?: str
         // remove listeners
         socket.removeAllListeners('notification');
         state.removeSubscription('notification');
+
         return socket.unsubscribeAddresses();
     }
+
     // subscribe remained addresses
     return socket.subscribeAddresses(subscribed);
 };

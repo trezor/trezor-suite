@@ -13,6 +13,7 @@ import * as fixtures from '../__fixtures__/coinjoinAccountActions';
 
 jest.mock('src/services/coinjoin/coinjoinService', () => {
     const mock = jest.requireActual('../__fixtures__/mockCoinjoinService');
+
     return mock.mockCoinjoinService();
 });
 

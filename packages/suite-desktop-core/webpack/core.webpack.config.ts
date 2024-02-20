@@ -68,6 +68,7 @@ const config: webpack.Configuration = {
             const chunkName = a.chunk?.name;
             if (chunkName && /-worker$/.test(chunkName)) return `workers/${chunkName}.js`;
             if (chunkName && /-api$/.test(chunkName)) return `coins/${chunkName}.js`;
+
             return '[name].js';
         },
         path: path.resolve(__dirname, '../../suite-desktop/dist'),

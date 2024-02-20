@@ -18,6 +18,7 @@ export const Loader = ({ size, title, color = 'backgroundPrimaryDefault' }: Load
     const {
         utils: { colors },
     } = useNativeStyles();
+
     return (
         <Box>
             <ActivityIndicator size={size} color={colors[color]} />

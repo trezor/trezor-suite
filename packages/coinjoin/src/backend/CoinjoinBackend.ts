@@ -1,4 +1,4 @@
-import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
+import { TypedEmitter } from '@trezor/utils';
 
 import { CoinjoinBackendClient } from './CoinjoinBackendClient';
 import { CoinjoinFilterController } from './CoinjoinFilterController';
@@ -84,6 +84,7 @@ export class CoinjoinBackend extends TypedEmitter<Events> {
             cache,
             network: this.network,
         });
+
         return Promise.resolve(accountInfo);
     }
 
@@ -122,6 +123,7 @@ export class CoinjoinBackend extends TypedEmitter<Events> {
 
         if (addressFirstPage.txs === 0) {
             const networkInfo = await this.client.fetchNetworkInfo();
+
             return {
                 blockHash: networkInfo.bestHash,
                 blockHeight: networkInfo.bestHeight,
@@ -150,6 +152,7 @@ export class CoinjoinBackend extends TypedEmitter<Events> {
 
     private getLogger(): Logger {
         const emit = (level: LogLevel) => (payload: string) => this.emit('log', { level, payload });
+
         return {
             debug: emit('debug'),
             info: emit('info'),

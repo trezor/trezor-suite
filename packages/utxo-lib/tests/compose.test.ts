@@ -73,6 +73,7 @@ describe('composeTx addresses cross-check', () => {
                                               o.address,
                                 };
                             }
+
                             return o;
                         }),
                     } as any);

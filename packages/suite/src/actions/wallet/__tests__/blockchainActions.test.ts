@@ -85,6 +85,7 @@ const initStore = (state: State) => {
         };
         store.getState().notifications = notificationsReducer(state.notifications, action);
     });
+
     return store;
 };
 

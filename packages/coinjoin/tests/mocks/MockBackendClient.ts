@@ -92,6 +92,7 @@ export class MockBackendClient extends CoinjoinBackendClient {
                             .slice(from, from + count)
                             .map(({ height, hash, filter }) => `${height}:${hash}:${filter}`),
                     });
+
                 return Promise.reject(new Error('Block not found'));
             }
             // no default

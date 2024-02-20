@@ -169,6 +169,7 @@ export const setCustomBackendThunk = createThunk(
     (coin: NetworkSymbol, { getState }) => {
         const blockchain = selectBlockchainState(getState());
         const backends = [getBackendFromSettings(coin, blockchain[coin].backends)];
+
         return setBackendsToConnect(backends);
     },
 );
@@ -215,6 +216,7 @@ export const subscribeBlockchainThunk = createThunk(
             selectAccounts(getState()),
         ).filter(a => isTrezorConnectBackendType(a.backendType)); // do not subscribe accounts with unsupported backend type
         if (!accountsToSubscribe.length) return;
+
         return TrezorConnect.blockchainSubscribe({
             accounts: accountsToSubscribe,
             coin: symbol,
@@ -241,6 +243,7 @@ export const unsubscribeBlockchainThunk = createThunk(
                     coin: symbol,
                 });
             }
+
             // there are no accounts left for this coin, disconnect backend
             return TrezorConnect.blockchainDisconnect({ coin: symbol });
         });

@@ -58,12 +58,14 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
                         chunkify: true,
                     }),
                 ).unwrap();
+
                 return thunkResponse;
             });
 
             if (!response.success) {
                 // Wasn't able to get access to device
                 console.warn(response.error);
+
                 return false;
             }
 
@@ -72,6 +74,7 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
                 response.payload.payload.code === 'Failure_ActionCancelled'
             ) {
                 navigation.goBack();
+
                 return false;
             }
 
@@ -92,6 +95,7 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
                         setIsUnverifiedAddressRevealed(false);
                     },
                 });
+
                 return false;
             }
 

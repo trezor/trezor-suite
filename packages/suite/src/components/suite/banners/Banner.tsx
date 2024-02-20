@@ -135,6 +135,7 @@ export const Banner = ({ body, variant, action, dismissal, className }: BannerPr
     const theme = useTheme();
 
     const iconElement = getIcon(variant, theme);
+
     return (
         <Wrapper variant={variant} className={className}>
             <BlankLeft />

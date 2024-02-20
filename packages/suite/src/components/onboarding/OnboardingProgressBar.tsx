@@ -104,11 +104,13 @@ export const OnboardingProgressBar = ({
     className,
 }: OnboardingProgressBarProps) => {
     const theme = useTheme();
+
     return (
         <ProgressBarWrapper className={className}>
             {steps.map((step, index) => {
                 const stepCompleted = (activeStep ?? 0) > index;
                 const stepActive = index === activeStep;
+
                 return (
                     <Fragment key={step.key}>
                         <StepWrapper active={stepActive}>

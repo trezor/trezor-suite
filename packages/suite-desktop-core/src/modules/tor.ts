@@ -161,6 +161,7 @@ const load = async ({ mainWindow, store, mainThreadEmitter }: Dependencies) => {
         // Once Tor is toggled it renderer should know the new status.
         const status = await tor.status();
         handleTorProcessStatus(status);
+
         return { success: true };
     });
 
@@ -202,12 +203,14 @@ type TorModule = (dependencies: Dependencies) => () => Promise<HandshakeTorModul
 
 export const init: TorModule = dependencies => {
     let loaded = false;
+
     return async () => {
         if (loaded) return { shouldRunTor: false };
 
         loaded = true;
         await load(dependencies);
         const torSettings = dependencies.store.getTorSettings();
+
         return {
             shouldRunTor: torSettings.running,
         };

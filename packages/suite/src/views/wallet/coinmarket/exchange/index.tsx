@@ -13,6 +13,7 @@ const CoinmarketExchange = (props: WithSelectedAccountLoadedProps) => {
         formState: { isDirty },
         handleClearFormButtonClick,
     } = coinmarketExchangeContextValues;
+
     return (
         <CoinmarketLayout
             selectedAccount={props.selectedAccount}

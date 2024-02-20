@@ -144,44 +144,52 @@ export class BlockbookAPI extends BaseWebsocket<BlockbookEvents> {
     subscribeAddresses(addresses: string[]) {
         this.removeSubscription('notification');
         this.addSubscription('notification', result => this.emit('notification', result));
+
         return this.send('subscribeAddresses', { addresses });
     }
 
     unsubscribeAddresses() {
         const index = this.removeSubscription('notification');
+
         return index >= 0 ? this.send('unsubscribeAddresses') : { subscribed: false };
     }
 
     subscribeBlock() {
         this.removeSubscription('block');
         this.addSubscription('block', result => this.emit('block', result));
+
         return this.send('subscribeNewBlock');
     }
 
     unsubscribeBlock() {
         const index = this.removeSubscription('block');
+
         return index >= 0 ? this.send('unsubscribeNewBlock') : { subscribed: false };
     }
 
     subscribeFiatRates(currency?: string) {
         this.removeSubscription('fiatRates');
         this.addSubscription('fiatRates', result => this.emit('fiatRates', result));
+
         return this.send('subscribeFiatRates', { currency });
     }
 
     unsubscribeFiatRates() {
         const index = this.removeSubscription('fiatRates');
+
         return index >= 0 ? this.send('unsubscribeFiatRates') : { subscribed: false };
     }
 
     subscribeMempool() {
         this.removeSubscription('mempool');
         this.addSubscription('mempool', result => this.emit('mempool', result));
+
         return this.send('subscribeNewTransaction');
     }
 
     unsubscribeMempool() {
         const index = this.removeSubscription('mempool');
+
         return index >= 0 ? this.send('unsubscribeNewTransaction') : { subscribed: false };
     }
 }

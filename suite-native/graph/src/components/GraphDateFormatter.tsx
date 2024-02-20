@@ -22,6 +22,7 @@ const OtherDateFormatter = ({ selectedPointAtom }: { selectedPointAtom: Selected
     const { DateFormatter } = useFormatters();
 
     const { date: value } = useAtomValue(selectedPointAtom);
+
     return <DateFormatter value={value} />;
 };
 

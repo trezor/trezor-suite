@@ -38,6 +38,7 @@ const modalReducer = (state: State = initialState, action: Action): State => {
             ) {
                 return initialState;
             }
+
             return state;
         // assign device to modal context
         case UI.REQUEST_PIN:

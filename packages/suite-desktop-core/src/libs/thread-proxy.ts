@@ -67,9 +67,11 @@ export class ThreadProxy<_Target extends object> extends EventEmitter {
                 utility.removeAllListeners('exit');
                 utility.once('exit', () => {
                     this.clean();
+
                     return this.run(params);
                 });
             }
+
             return true;
         } catch (e) {
             // No need to unset `this.utility` because kill will trigger `clean()`
@@ -85,6 +87,7 @@ export class ThreadProxy<_Target extends object> extends EventEmitter {
         const { utility } = this;
         utility?.removeAllListeners();
         this.clean();
+
         return utility?.kill() ?? false;
     }
 
@@ -97,6 +100,7 @@ export class ThreadProxy<_Target extends object> extends EventEmitter {
     on(event: string | symbol, listener: (...args: any[]) => void) {
         super.on(event, listener);
         this.sendMessage('subscribe', { event });
+
         return this;
     }
 
@@ -104,6 +108,7 @@ export class ThreadProxy<_Target extends object> extends EventEmitter {
     removeAllListeners(event?: string | symbol | undefined) {
         super.removeAllListeners(event);
         this.sendMessage('unsubscribe', { event });
+
         return this;
     }
 
@@ -116,6 +121,7 @@ export class ThreadProxy<_Target extends object> extends EventEmitter {
         const dfd = createDeferred<any, number>(id);
         this.promises.set(id, dfd);
         this.utility.postMessage({ id, type, payload });
+
         return dfd.promise;
     }
 

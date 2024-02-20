@@ -37,6 +37,7 @@ const onLoaded = (method: AppState['method'], html: string) => ({
 
 const onError = (method: AppState['method']) => {
     const url = `${GITHUB}${method?.docs}`;
+
     return {
         type: DOCS_LOADED,
         docs: {

@@ -6,5 +6,6 @@ import type { Action, ThunkAction } from 'src/types/suite';
 export const useActions = <M extends ActionCreatorsMapObject<Action | ThunkAction>>(actions: M) => {
     const dispatch = useDispatch();
     const ref = useRef(actions);
+
     return useMemo(() => bindActionCreators(ref.current, dispatch), [dispatch, ref]);
 };

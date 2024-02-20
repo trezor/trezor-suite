@@ -59,6 +59,7 @@ https.request = (...args) => {
     response.on('response', res => {
         res.on('data', (data: Buffer) => (bytes += data.byteLength));
     });
+
     return response;
 };
 
@@ -68,6 +69,7 @@ http.request = (...args) => {
     response.on('response', res => {
         res.on('data', (data: Buffer) => (bytes += data.byteLength));
     });
+
     return response;
 };
 
@@ -95,8 +97,10 @@ const filtersFromWasabi = async (hash: string) => {
         const buffer = await response.buffer();
         const { filters }: { filters: string[] } = JSON.parse(buffer.toString());
         log(hash, bytes, buffer.byteLength);
+
         return filters.map(data => {
             const [_blockHeight, blockHash, _filter, _prevHash, _blockTime] = data.split(':');
+
             return blockHash;
         });
     }
@@ -132,6 +136,7 @@ const getWebsocket = async () => {
     return (bestKnownBlockHash: string) => {
         compressed = 0;
         const reqID = (messageID++).toString();
+
         return new Promise<string[]>((resolve, reject) => {
             const timeout = setTimeout(() => reject(new Error('timeout')), TIMEOUT);
             ws.once('message', (message: string) => {

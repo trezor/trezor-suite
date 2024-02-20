@@ -62,6 +62,7 @@ wrappedMethods.forEach(key => {
             ...params,
             useEmptyPassphrase: true,
         });
+
         return result;
     };
 });

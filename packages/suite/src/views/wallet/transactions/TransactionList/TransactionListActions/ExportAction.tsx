@@ -29,6 +29,7 @@ export const ExportAction = ({ account, searchQuery, accountMetadata }: ExportAc
         if (account.accountType === 'coinjoin') {
             return translationString(getTitleForCoinjoinAccount(account.symbol));
         }
+
         return translationString('LABELING_ACCOUNT', {
             networkName: translationString(getTitleForNetwork(account.symbol)),
             index: account.index + 1,

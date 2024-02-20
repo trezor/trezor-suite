@@ -1,6 +1,6 @@
 // https://github.com/trezor/connect/blob/develop/src/js/storage/index.js
 
-import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
+import { TypedEmitter } from '@trezor/utils';
 
 const storageVersion = 2;
 const storageName = `storage_v${storageVersion}`;
@@ -104,6 +104,7 @@ class Storage extends TypedEmitter<Events> {
         } catch (err) {
             // memory storage is fallback of the last resort
             console.warn('long term storage not available');
+
             return memoryStorage;
         }
     }

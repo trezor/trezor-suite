@@ -46,6 +46,7 @@ export class CoinjoinAddressController {
 
     private deriveMore(type: 'receive' | 'change', from: number, count: number) {
         const prederived = this.cache?.[`${type}Prederived`];
+
         return deriveAddresses(prederived, this.xpub, type, from, count, this.network).map(
             ({ address, path }) => ({
                 address,

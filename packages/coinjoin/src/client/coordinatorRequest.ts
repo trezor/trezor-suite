@@ -44,6 +44,7 @@ const parseResult = (headers: Headers, text: string) => {
             // fall down and return text
         }
     }
+
     return text;
 };
 
@@ -101,6 +102,7 @@ export const coordinatorRequest = async <R = void>(
         }
 
         const text = await response.text();
+
         return { response, text };
     };
 

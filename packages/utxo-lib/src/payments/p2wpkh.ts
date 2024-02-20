@@ -39,6 +39,7 @@ export function p2wpkh(a: Payment, opts?: PaymentOpts): Payment {
         const result = bech32.decode(a.address!);
         const version = result.words.shift();
         const data = bech32.fromWords(result.words);
+
         return {
             version,
             prefix: result.prefix,
@@ -54,6 +55,7 @@ export function p2wpkh(a: Payment, opts?: PaymentOpts): Payment {
 
         const words = bech32.toWords(o.hash);
         words.unshift(0x00);
+
         return bech32.encode(network.bech32, words);
     });
     lazy.prop(o, 'hash', () => {
@@ -63,24 +65,29 @@ export function p2wpkh(a: Payment, opts?: PaymentOpts): Payment {
     });
     lazy.prop(o, 'output', () => {
         if (!o.hash) return;
+
         return bscript.compile([OPS.OP_0, o.hash]);
     });
     lazy.prop(o, 'pubkey', () => {
         if (a.pubkey) return a.pubkey;
         if (!a.witness) return;
+
         return a.witness[1];
     });
     lazy.prop(o, 'signature', () => {
         if (!a.witness) return;
+
         return a.witness[0];
     });
     lazy.prop(o, 'input', () => {
         if (!o.witness) return;
+
         return EMPTY_BUFFER;
     });
     lazy.prop(o, 'witness', () => {
         if (!a.pubkey) return;
         if (!a.signature) return;
+
         return [a.signature, a.pubkey];
     });
 

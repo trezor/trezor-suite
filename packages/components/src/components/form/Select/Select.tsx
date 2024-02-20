@@ -103,6 +103,7 @@ type WrapperProps = Pick<
 };
 
 const Wrapper = styled.div<WrapperProps>`
+    /* stylelint-disable selector-class-pattern */
     position: relative;
     width: 100%;
     padding-bottom: ${({ hasBottomPadding }) =>
@@ -117,7 +118,6 @@ const Wrapper = styled.div<WrapperProps>`
         `}
 
     .${reactSelectClassNamePrefix}__dropdown-indicator {
-        display: flex;
         align-items: center;
         color: ${({ theme, isDisabled }) => (isDisabled ? theme.iconDisabled : theme.iconSubdued)};
         padding: 0;
@@ -174,6 +174,7 @@ const Wrapper = styled.div<WrapperProps>`
         color: ${({ isDisabled, theme }) => (isDisabled ? theme.textDisabled : theme.textDefault)};
         border-style: none;
         transform: none;
+        margin-left: 0;
 
         :hover {
             cursor: ${({ isSearchable }) => isSearchable && 'text'};
@@ -280,6 +281,7 @@ export const Select = ({
                     selectRef.current?.blur();
                 }
             }
+
             return null;
         },
         [onChange, menuIsOpen],

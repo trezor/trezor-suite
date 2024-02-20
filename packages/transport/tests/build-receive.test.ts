@@ -111,6 +111,7 @@ describe('encoding json -> protobuf -> json', () => {
                     parsedMessages,
                     () => {
                         i++;
+
                         return Promise.resolve(result[i]);
                     },
                     bridgeProtocol.decode,
@@ -131,6 +132,7 @@ describe('encoding json -> protobuf -> json', () => {
                     parsedMessages,
                     () => {
                         i++;
+
                         return Promise.resolve(result[i]);
                     },
                     v1Protocol.decode,

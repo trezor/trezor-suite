@@ -29,17 +29,20 @@ export const init: Module = ({ mainWindow, store }) => {
     const { logger } = global;
     if (!isFeatureFlagEnabled('DESKTOP_AUTO_UPDATER') && !enableUpdater) {
         logger.info(SERVICE_NAME, 'Disabled via feature flag');
+
         return;
     }
 
     if (isFeatureFlagEnabled('DESKTOP_AUTO_UPDATER') && disableUpdater) {
         logger.info(SERVICE_NAME, 'Disabled via command line parameter');
+
         return;
     }
 
     // If APPIMAGE is not set on Linux, the auto updater can't handle that
     if (process.platform === 'linux' && process.env.APPIMAGE === undefined && !isDevEnv) {
         logger.warn(SERVICE_NAME, 'APPIMAGE is not defined, skipping auto updater');
+
         return;
     }
 

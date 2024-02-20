@@ -180,6 +180,7 @@ const result = fixtures.sort((a, b) => {
     if (!a.setup.mnemonic || !b.setup.mnemonic) return 0;
     if (a.setup.mnemonic > b.setup.mnemonic) return 1;
     if (b.setup.mnemonic > a.setup.mnemonic) return -1;
+
     return 0;
 });
 

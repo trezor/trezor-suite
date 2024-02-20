@@ -26,6 +26,7 @@ const rippleFixtures = {
         const file = path.resolve(__dirname, `./getAccountInfo/${message.account}.json`);
         const rawJson = fs.readFileSync(file);
         const data = JSON.parse(rawJson);
+
         return data;
     },
     subscribe: () => ({

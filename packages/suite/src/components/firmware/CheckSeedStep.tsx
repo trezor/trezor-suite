@@ -103,6 +103,7 @@ export const CheckSeedStep = ({ onClose, onSuccess, willBeWiped }: CheckSeedStep
                 checkbox: <Translation id="TR_READ_AND_UNDERSTOOD" />,
             };
         }
+
         return isBackedUp
             ? {
                   heading: <Translation id="TR_SECURITY_CHECKPOINT_GOT_SEED" />,

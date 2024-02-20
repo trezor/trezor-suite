@@ -28,6 +28,7 @@ const cacheFiles = (dir, cache = {}) => {
             }
         }
     });
+
     return cache;
 };
 
@@ -39,10 +40,12 @@ const CACHE = cacheFiles(path.resolve(__dirname));
 
 const TX_CACHE = (txs, force = false) => {
     if (process.env.TESTS_USE_TX_CACHE === 'false' && !force) return [];
+
     return txs.map(hash => {
         if (!CACHE[hash]) {
             throw Error(`TX_CACHE for ${hash} is undefined`);
         }
+
         return CACHE[hash];
     });
 };

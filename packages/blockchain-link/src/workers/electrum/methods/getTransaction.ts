@@ -5,6 +5,7 @@ import type { GetTransaction as Res } from '@trezor/blockchain-link-types/lib/re
 
 const getTransaction: Api<Req, Res> = async (client, payload) => {
     const [tx] = await getTransactions(client, [{ tx_hash: payload, height: -1 }]);
+
     return transformTransaction(tx);
 };
 

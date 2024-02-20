@@ -27,6 +27,7 @@ const getBalances =
                           confirmed: 0,
                           unconfirmed: 0,
                       };
+
                 return {
                     address,
                     path,

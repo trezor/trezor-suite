@@ -56,6 +56,7 @@ const graphMiddleware =
             default:
                 break;
         }
+
         return action;
     };
 

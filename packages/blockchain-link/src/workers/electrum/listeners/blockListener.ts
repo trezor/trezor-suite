@@ -29,6 +29,7 @@ export const blockListener = (worker: BaseWorker<ElectrumAPI>) => {
             state.addSubscription('block');
             api().on('blockchain.headers.subscribe', onBlock);
         }
+
         return { subscribed: true };
     };
 
@@ -37,6 +38,7 @@ export const blockListener = (worker: BaseWorker<ElectrumAPI>) => {
             api().off('blockchain.headers.subscribe', onBlock);
             state.removeSubscription('block');
         }
+
         return { subscribed: false };
     };
 

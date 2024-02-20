@@ -56,6 +56,7 @@ function WsCachePreprocessor(logger) {
     return function (content, file, done) {
         if (process.env.TESTS_USE_WS_CACHE !== 'true') {
             done(content);
+
             return;
         }
         const log = logger.create('preprocessor.WsCachePreprocessor');

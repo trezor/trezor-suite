@@ -20,6 +20,7 @@ export const init: Module = ({ mainWindow, store }) => {
         // https://benjamin-altpeter.de/shell-openexternal-dangers/
         if (!config.allowedProtocols.includes(protocol)) {
             logger.error(SERVICE_NAME, `Protocol '${protocol}' not allowed`);
+
             return { action: 'deny' };
         }
 

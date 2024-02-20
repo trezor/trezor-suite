@@ -60,6 +60,7 @@ export const showAddress =
                     ...modalPayload,
                 }),
             );
+
             return;
         }
 

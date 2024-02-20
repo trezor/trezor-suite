@@ -21,6 +21,7 @@ const useFetchMessages = (locale: Locale) => {
             setMessages({ ...enMessages, ...messages });
         };
         fetchMessages();
+
         return () => {
             active = false;
         };
@@ -36,6 +37,7 @@ interface ConnectedIntlProviderProps {
 export const ConnectedIntlProvider = ({ children }: ConnectedIntlProviderProps) => {
     const locale = useSelector(state => state.suite.settings.language);
     const messages = useFetchMessages(locale);
+
     return (
         <IntlProvider
             locale={locale}

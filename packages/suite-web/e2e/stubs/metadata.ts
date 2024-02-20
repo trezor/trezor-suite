@@ -4,6 +4,7 @@
 export const stubOpen = (win: Window) => {
     // @ts-expect-error
     win.Math.random = () => 0.4; // to make tests deterministic, this value ensures state YYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
+
     return () =>
         win.postMessage({ search: '?code=chicken-cho-cha&state=YYYYYYYYYY', key: 'trezor-oauth' });
 };
@@ -31,5 +32,6 @@ export const rerouteMetadataToMockProvider = (
     if (googleOrigins.some(o => uri.includes(o))) {
         return fetch(url.href.replace(url.origin, 'http://localhost:30001'), options);
     }
+
     return fetch(uri, options);
 };

@@ -29,6 +29,7 @@ export const getInitialState = (custom?: any): any => ({
 
 const createStore = (initialState: ReturnType<typeof getInitialState>) => {
     const store = configureStore<ReturnType<typeof getInitialState>, any>()(initialState);
+
     return store;
 };
 
@@ -48,6 +49,7 @@ const updateStore = (store: ReturnType<typeof createStore>) => {
 const mockStore = (initialState: ReturnType<typeof getInitialState>) => {
     const store = createStore(initialState);
     store.subscribe(() => updateStore(store));
+
     return store;
 };
 

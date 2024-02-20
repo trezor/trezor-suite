@@ -30,6 +30,7 @@ const RouterComponent = () => {
         };
 
         window.addEventListener('popstate', onPopState);
+
         return () => window.removeEventListener('popstate', onPopState);
     }, [dispatch]);
 

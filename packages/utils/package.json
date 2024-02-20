@@ -14,7 +14,10 @@
         "url": "https://github.com/trezor/trezor-suite/issues"
     },
     "sideEffects": false,
-    "main": "lib/index",
+    "publishConfig": {
+        "main": "lib/index"
+    },
+    "main": "src/index",
     "files": [
         "lib/",
         "!**/*.map"

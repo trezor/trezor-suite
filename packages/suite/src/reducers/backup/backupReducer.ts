@@ -21,6 +21,7 @@ const initialState: BackupState = {
 const handleToggleCheckboxByKey = (draft: BackupState, key: ConfirmKey) => {
     if (!draft.userConfirmed.includes(key)) {
         draft.userConfirmed.push(key);
+
         return;
     }
     draft.userConfirmed.splice(

@@ -109,6 +109,7 @@ export class BackendWebsocketServerMock extends WebSocket.Server {
                 }
                 // emit event for test case
                 this.emit(`blockbook_${request.method}`, request);
+
                 return this.sendResponse(client, request.method, request);
             }
 
@@ -117,6 +118,7 @@ export class BackendWebsocketServerMock extends WebSocket.Server {
                     throw new Error('Unknown blockfrost request without method');
                 }
                 this.emit(`blockfrost_${request.command}`, request);
+
                 return this.sendResponse(client, request.command, request);
             }
 
@@ -125,6 +127,7 @@ export class BackendWebsocketServerMock extends WebSocket.Server {
                     throw new Error('Unknown ripple request without command');
                 }
                 this.emit(`ripple_${request.command}`, request);
+
                 return this.sendResponse(client, request.command, request);
             }
 

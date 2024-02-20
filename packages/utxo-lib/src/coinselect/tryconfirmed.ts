@@ -18,6 +18,7 @@ function filterUtxos(utxos: CoinSelectInput[], minConfOwn: number, minConfOther:
             unusable.push(utxo);
         }
     }
+
     return {
         usable,
         unusable,

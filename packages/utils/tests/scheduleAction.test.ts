@@ -142,6 +142,7 @@ describe('scheduleAction', () => {
         let signal: AbortSignal | undefined;
         const action = (sig?: AbortSignal) => {
             signal = sig;
+
             return Promise.resolve(true);
         };
         const result = await scheduleAction(action, {});
@@ -156,6 +157,7 @@ describe('scheduleAction', () => {
         const times: number[] = [Date.now()];
         const action = (signal?: AbortSignal) => {
             signal?.addEventListener('abort', () => times.push(Date.now()));
+
             return new Promise(() => {});
         };
 

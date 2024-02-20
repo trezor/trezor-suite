@@ -18,6 +18,7 @@ const ConnectionInfo = ({ coin }: ConnectionInfoProps) => {
     const blockchain = useSelector(state => state.wallet.blockchain);
 
     const { connected, url, blockHash: hash, blockHeight: height, version } = blockchain[coin];
+
     return (
         <Wrapper type="hint">
             {connected ? (

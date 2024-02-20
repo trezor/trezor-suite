@@ -95,6 +95,7 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
         if (uniqNetworks.length === 1 && uniqNetworks[0]) {
             return getLabel('Export multiple #NETWORK addresses', uniqNetworks[0]);
         }
+
         return 'Export multiple addresses';
     }
 
@@ -127,6 +128,7 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
         const uiResp = await uiPromise.promise;
 
         this.confirmed = uiResp.payload;
+
         return this.confirmed;
     }
 
@@ -145,6 +147,7 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
 
         // wait for user action
         const uiResp = await uiPromise.promise;
+
         return uiResp.payload;
     }
 
@@ -161,6 +164,7 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
         if (unlockPath) {
             await cmd.unlockPath(unlockPath);
         }
+
         return cmd.getAddress(
             {
                 address_n,
@@ -209,6 +213,7 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
 
             this.progress++;
         }
+
         return this.hasBundle ? responses : responses[0];
     }
 }

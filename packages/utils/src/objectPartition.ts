@@ -10,6 +10,7 @@ export const objectPartition = <T>(obj: Obj<T>, keys: string[]): [Obj<T>, Obj<T>
     keys.reduce(
         ([included, excluded], key) => {
             const { [key]: value, ...rest } = excluded;
+
             return typeof value !== 'undefined'
                 ? [{ ...included, [key]: value }, rest]
                 : [included, excluded];

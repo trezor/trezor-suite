@@ -34,6 +34,7 @@ export const RootStackNavigator = () => {
         if (isOnboardingFinished) {
             return RootStackRoutes.AppTabs;
         }
+
         return RootStackRoutes.Onboarding;
     };
 

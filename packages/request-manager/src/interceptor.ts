@@ -14,6 +14,7 @@ type InterceptorContext = InterceptorOptions & {
 
 const getIdentityName = (proxyAuthorization?: http.OutgoingHttpHeader) => {
     const identity = Array.isArray(proxyAuthorization) ? proxyAuthorization[0] : proxyAuthorization;
+
     // Only return identity name if it is explicitly defined.
     return typeof identity === 'string' ? identity.match(/Basic (.*)/)?.[1] : undefined;
 };
@@ -250,6 +251,7 @@ const interceptHttp = (context: InterceptorContext) => {
         const overload = overloadHttpRequest(context, 'http', ...args);
         if (overload) {
             const [identity, ...overloadedArgs] = overload;
+
             return context.requestPool(originalHttpRequest(...overloadedArgs), identity);
         }
 
@@ -263,8 +265,10 @@ const interceptHttp = (context: InterceptorContext) => {
         const overload = overloadWebsocketHandshake(context, 'http', ...args);
         if (overload) {
             const [identity, ...overloadedArgs] = overload;
+
             return context.requestPool(originalHttpGet(...overloadedArgs), identity);
         }
+
         return originalHttpGet(...(args as Parameters<typeof https.get>));
     };
 };
@@ -276,6 +280,7 @@ const interceptHttps = (context: InterceptorContext) => {
         const overload = overloadHttpRequest(context, 'https', ...args);
         if (overload) {
             const [identity, ...overloadedArgs] = overload;
+
             return context.requestPool(originalHttpsRequest(...overloadedArgs), identity);
         }
 
@@ -289,8 +294,10 @@ const interceptHttps = (context: InterceptorContext) => {
         const overload = overloadWebsocketHandshake(context, 'https', ...args);
         if (overload) {
             const [identity, ...overloadedArgs] = overload;
+
             return context.requestPool(originalHttpsGet(...overloadedArgs), identity);
         }
+
         return originalHttpsGet(...(args as Parameters<typeof https.get>));
     };
 };
@@ -312,6 +319,7 @@ const interceptTlsConnect = (context: InterceptorContext) => {
                 options.rejectUnauthorized ??
                 !isWhitelistedHost(options.host, context.whitelistedHosts);
         }
+
         return originalTlsConnect(...(args as Parameters<typeof tls.connect>));
     };
 };

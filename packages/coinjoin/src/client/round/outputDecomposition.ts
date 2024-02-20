@@ -64,9 +64,11 @@ const getOutputAmounts = async (params: GetOutputAmountsParams) => {
         { signal, baseUrl: middlewareUrl },
     );
     logger.info(`Decompose amounts: ${outputAmounts.join(',')}`);
+
     return outputAmounts.map(amount => {
         const miningFee = Math.floor((outputSize * roundParameters.MiningFeeRate) / 1000);
         const coordinatorFee = 0; // NOTE: middleware issue https://github.com/zkSNACKs/WalletWasabi/issues/8814 should be `amount > plebsDontPayThreshold ? Math.floor(roundParameters.coordinationFeeRate.rate * amount) : 0` but middleware does not considerate coordinationFeeRate and plebs for external amounts
+
         return amount + coordinatorFee + miningFee;
     });
 };
@@ -238,6 +240,7 @@ const findCredentialsForTarget = (
             if (pair) {
                 return [cre, pair];
             }
+
             return [];
         })
         .find(pair => pair.length === 2);
@@ -405,6 +408,7 @@ export const outputDecomposition = async (
             if (!input.confirmedAmountCredentials || !input.confirmedVsizeCredentials) {
                 throw new Error(`Missing confirmed credentials for ~~${input.outpoint}~~`);
             }
+
             return input.accountKey;
         },
         true,
@@ -460,6 +464,7 @@ export const outputDecomposition = async (
                 options,
                 result: [],
             });
+
             return result;
         }),
     );
@@ -468,6 +473,7 @@ export const outputDecomposition = async (
     return Object.keys(groupInputsByAccount).map((accountKey, index) => {
         if (!joinedCredentials[index])
             throw new Error(`Missing joined credentials at index ${index}`);
+
         return {
             accountKey,
             outputs: joinedCredentials[index],

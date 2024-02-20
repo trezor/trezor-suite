@@ -100,6 +100,7 @@ const buildOptions = (
                 name: coin.name,
                 cryptoSymbol: coin.symbol,
             });
+
             return options;
         }, [] as OptionsGroup[]);
 };
@@ -126,6 +127,7 @@ const ReceiveCryptoSelect = () => {
         ) {
             return true;
         }
+
         return false;
     };
 

@@ -27,6 +27,7 @@ export const selectIsFiatRateLoading = (
     rateType: RateType = 'current',
 ) => {
     const currentRate = selectFiatRatesByFiatRateKey(state, fiatRateKey, rateType);
+
     return currentRate?.isLoading ?? false;
 };
 
@@ -36,6 +37,7 @@ export const selectIsTickerLoading = (
     fiatCurrency: FiatCurrencyCode,
 ) => {
     const fiatRateKey = getFiatRateKeyFromTicker(ticker, fiatCurrency);
+
     return selectIsFiatRateLoading(state, fiatRateKey);
 };
 
@@ -58,6 +60,7 @@ export const selectShouldUpdateFiatRate = (
 
 export const selectTickerFromAccounts = memoize((state: FiatRatesRootState): TickerId[] => {
     const accounts = selectDeviceAccounts(state as any);
+
     return pipe(
         accounts,
         A.map(account => [
@@ -80,8 +83,10 @@ export const selectTickerFromAccounts = memoize((state: FiatRatesRootState): Tic
 export const selectTickersToBeUpdated = memoizeWithArgs(
     (state: FiatRatesRootState, fiatCurrency: FiatCurrencyCode, rateType: RateType): TickerId[] => {
         const tickers = selectTickerFromAccounts(state);
+
         return tickers.filter(ticker => {
             const fiatRateKey = getFiatRateKeyFromTicker(ticker, fiatCurrency);
+
             return (
                 selectShouldUpdateFiatRate(state, fiatRateKey, rateType) &&
                 !selectIsTickerLoading(state, ticker, fiatCurrency)

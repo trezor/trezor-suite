@@ -48,6 +48,7 @@ export const isQuoteError = (quote: ExchangeTrade): boolean => {
     if (quote.max && quote.max !== 'NONE' && Number(quote.sendStringAmount) > quote.max) {
         return true;
     }
+
     return false;
 };
 
@@ -95,6 +96,7 @@ export const splitToQuoteCategories = (
     const dexQuotes =
         // eslint-disable-next-line no-nested-ternary
         dexOK.length > 0 ? dexOK.concat(dexMinMax) : okLength > 0 ? [] : dexMinMax.concat(dexError);
+
     return [fixedQuotes, floatQuotes, dexQuotes];
 };
 

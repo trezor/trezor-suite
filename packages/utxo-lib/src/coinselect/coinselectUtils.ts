@@ -45,6 +45,7 @@ export function getVarIntSize(length: number) {
     if (length < 253) return 1;
     if (length < 65536) return 3;
     if (length < 4294967296) return 5;
+
     return 9;
 }
 
@@ -62,6 +63,7 @@ export function inputWeight(input: Vin) {
         }
         weight += 1 + input.script.length; // discounted witness
     }
+
     return weight;
 }
 
@@ -71,6 +73,7 @@ export function inputBytes(input: Vin) {
 
 export function outputWeight(output: VinVout) {
     if (output.weight) return output.weight; // weight may be pre-calculated. see ../compose/utils convertOutput
+
     return 4 * (8 + 1 + output.script.length);
 }
 
@@ -119,6 +122,7 @@ export function getDustAmount(
     const longTermFee = longTermFeeRate ? Math.min(feeRate, longTermFeeRate) : 0;
     // use default dust relay fee if it is lower than long term fee
     const dustRelayFeeRate = Math.max(longTermFee, DUST_RELAY_FEE_RATE);
+
     // use explicit dustThreshold if it is higher than calculated from script type
     return Math.max(dustThreshold || 0, getFeeForBytes(dustRelayFeeRate, inputSize));
 }
@@ -150,6 +154,7 @@ export function sumOrNaN(range: { value?: BN }[], forgiving = false) {
         if (!a) return a;
         const value = bignumberOrNaN(x.value);
         if (!value) return forgiving ? ZERO.add(a) : undefined;
+
         return value.add(a);
     }, ZERO);
 }
@@ -157,6 +162,7 @@ export function sumOrNaN(range: { value?: BN }[], forgiving = false) {
 export function getFeePolicy(network?: Network) {
     if (isNetworkType('doge', network)) return 'doge';
     if (isNetworkType('zcash', network)) return 'zcash';
+
     return 'bitcoin';
 }
 
@@ -168,6 +174,7 @@ function getBitcoinFee(
 ) {
     const bytes = transactionBytes(inputs, outputs);
     const defaultFee = getFeeForBytes(feeRate, bytes);
+
     return baseFee && floorBaseFee
         ? // increase baseFee for every started kb
           baseFee * (1 + Math.floor(defaultFee / baseFee))
@@ -303,6 +310,7 @@ export function sortByScore(feeRate: number) {
         if (difference.eq(ZERO)) {
             return a.i - b.i;
         }
+
         return difference.isNeg() ? 1 : -1;
     };
 }
@@ -312,6 +320,7 @@ export function filterCoinbase(utxos: CoinSelectInput[], minConfCoinbase: number
         if (utxo.coinbase && !utxo.required) {
             return utxo.confirmations >= minConfCoinbase;
         }
+
         return true;
     });
 }

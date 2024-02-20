@@ -19,5 +19,6 @@ const getFlagsForEnv = (env?: string) => {
  */
 export const isFeatureFlagEnabled = (flag: FeatureFlags, env?: string) => {
     const flags = getFlagsForEnv(env ?? process.env.SUITE_TYPE);
+
     return flags[flag] ?? false;
 };

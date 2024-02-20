@@ -20,6 +20,7 @@ export const bootstrapParser = (message: string): BootstrapEvent[] => {
 
     return clientStatusGroups.map(clientStatus => {
         const clientStatusParsed = statusParser(clientStatus);
+
         return {
             type: 'progress',
             progress: clientStatusParsed?.groups?.progress ?? '',

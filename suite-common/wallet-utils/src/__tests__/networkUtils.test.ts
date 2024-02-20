@@ -10,6 +10,7 @@ const setMock = (mock: any) => {
                         if (mock.reject) {
                             return reject(mock.reject);
                         }
+
                         return resolve(mock.response);
                     }),
                 text: () =>
@@ -20,6 +21,7 @@ const setMock = (mock: any) => {
                         if (typeof mock.response === 'string') {
                             return resolve(mock.response);
                         }
+
                         return resolve(JSON.stringify(mock.response));
                     }),
             });

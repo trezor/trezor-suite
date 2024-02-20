@@ -99,6 +99,7 @@ export default class CardanoComposeTransaction extends AbstractMethod<
                 if (error instanceof CoinSelectionError && error.code === 'UTXO_VALUE_TOO_SMALL') {
                     return { type: 'error', error: 'UTXO_VALUE_TOO_SMALL' };
                 }
+
                 // generic handling for the rest of CoinSelectionError and other unexpected errors
                 return { type: 'error', error: error.message };
             }

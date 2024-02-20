@@ -280,6 +280,7 @@ export const prepareCoinjoinTransaction = (
                     script_type: outputScriptType,
                 } as const;
             }
+
             return {
                 address: output.address,
                 amount: output.amount,

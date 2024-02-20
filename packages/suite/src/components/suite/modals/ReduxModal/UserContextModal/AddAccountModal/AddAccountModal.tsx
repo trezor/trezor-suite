@@ -239,6 +239,7 @@ export const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: AddAcc
                   ),
               };
     };
+
     return (
         <StyledModal
             isCancelable

@@ -15,6 +15,7 @@ export const useDevice = () => {
             if (!device?.connected && !ignoreDisconnectedDevice) return true;
             if (locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI))
                 return true;
+
             return false;
         },
         [device, locks],

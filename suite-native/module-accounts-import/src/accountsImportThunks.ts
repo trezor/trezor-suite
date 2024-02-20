@@ -26,6 +26,7 @@ const getAccountTypeFromDescriptor = (
     if (networkSymbol !== 'btc' && networkSymbol !== 'ltc' && networkSymbol !== 'test')
         return 'imported';
     const { paymentType } = getXpubOrDescriptorInfo(descriptor);
+
     return paymentTypeToAccountType[paymentType];
 };
 

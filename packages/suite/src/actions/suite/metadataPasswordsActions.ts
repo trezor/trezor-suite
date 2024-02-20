@@ -54,6 +54,7 @@ export const fetchPasswords =
                         });
                     } catch (err) {
                         const error = provider.error('OTHER_ERROR', err.message);
+
                         return reject(error);
                     }
                 }

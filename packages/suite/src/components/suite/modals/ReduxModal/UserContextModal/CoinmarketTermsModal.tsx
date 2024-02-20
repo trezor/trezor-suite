@@ -84,6 +84,7 @@ export const CoinmarketTermsModal = ({
 }: CoinmarketTermsModalProps) => {
     const providerName = provider || 'unknown provider';
     const lowercaseType = type.toLowerCase();
+
     return (
         <Modal
             isCancelable

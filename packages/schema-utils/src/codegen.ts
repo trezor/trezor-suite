@@ -75,11 +75,13 @@ export type TypedCall = <T extends MessageKey, R extends MessageKey>(
 ) => Promise<MessageResponse<R>>;
 `;
     }
+
     return output;
 }
 
 export function generateForFile(fileName: string) {
     const code = fs.readFileSync(fileName, 'utf-8');
+
     return generate(code);
 }
 

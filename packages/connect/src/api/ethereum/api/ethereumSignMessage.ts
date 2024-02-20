@@ -65,6 +65,7 @@ export default class EthereumSignMessage extends AbstractMethod<'ethereumSignMes
             address_n,
             message,
         });
+
         return response.message;
     }
 }

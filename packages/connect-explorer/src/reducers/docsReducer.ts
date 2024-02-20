@@ -13,6 +13,7 @@ const update = (state: Docs[], docs: Docs) => {
     const current = state.find(d => d.name === docs.name);
     if (current) {
         const others = state.filter(d => d !== current);
+
         return [...others, docs];
     }
 

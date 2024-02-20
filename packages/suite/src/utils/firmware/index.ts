@@ -70,6 +70,7 @@ export const parseFirmwareFormat = (fw: ArrayBuffer): FirmwareFormat | undefined
     switch (header) {
         case 'TRZR': {
             const headerEmbedded = String.fromCharCode(...Array.from(firmwareView.slice(256, 260)));
+
             return headerEmbedded === 'TRZF' ? FirmwareFormat.T1_EMBEDDED_V2 : FirmwareFormat.T1;
         }
         case 'TRZF':

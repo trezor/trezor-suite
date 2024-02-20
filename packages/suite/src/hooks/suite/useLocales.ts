@@ -30,6 +30,7 @@ export const useLocales = () => {
         };
 
         loadLocale();
+
         return () => {
             active = false;
         };

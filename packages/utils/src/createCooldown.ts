@@ -4,12 +4,15 @@
  */
 export const createCooldown = (cooldownMs: number) => {
     let last = 0;
+
     return () => {
         const now = Date.now();
         if (now - last >= cooldownMs) {
             last = now;
+
             return true;
         }
+
         return false;
     };
 };

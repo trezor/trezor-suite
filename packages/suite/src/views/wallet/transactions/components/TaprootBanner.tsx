@@ -54,6 +54,7 @@ interface TaprootBannerProps {
 
 export const TaprootBanner = ({ onClose }: TaprootBannerProps) => {
     const theme = useTheme();
+
     return (
         <StyledCard data-test="@accounts/empty-account/taproot-account">
             <Heading>

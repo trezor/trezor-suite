@@ -9,5 +9,6 @@ export const useOnce = <T>(first: T, subsequent: T) => {
     useEffect(() => {
         ref.current = subsequent;
     }, [subsequent]);
+
     return ref.current;
 };

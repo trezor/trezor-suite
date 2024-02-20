@@ -61,6 +61,7 @@ const redirect =
             ) {
                 api.dispatch(routerActions.closeModalApp());
             }
+
             return action;
         }
 
