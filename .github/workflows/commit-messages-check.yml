@@ -12,8 +12,8 @@ jobs:
       - name: Fetch base branch
         run: |
           git fetch --no-tags --depth=1 origin ${{ github.base_ref }}
-          git checkout -b ${{ github.base_ref }}
-          git checkout ${{ github.head_ref }}
+          git switch ${{ github.base_ref }}
+          git switch -
 
       - name: Check commit messages
         run: current-branch/scripts/check-commit-messages.sh
