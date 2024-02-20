@@ -6,14 +6,13 @@ jobs:
   commit-message-check:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout curent branch
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Fetch base branch
         run: |
           git fetch --no-tags --depth=1 origin ${{ github.base_ref }}
           git switch ${{ github.base_ref }}
-          git switch -
+          git switch ${{ github.head_ref }}
 
       - name: Check commit messages
         run: current-branch/scripts/check-commit-messages.sh
