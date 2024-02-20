@@ -10,6 +10,9 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Fetch develop branch
+        run: git fetch origin develop:develop
+
       - name: Check commit messages
         run: ./scripts/check-commit-messages.sh
         env:
