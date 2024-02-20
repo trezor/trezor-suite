@@ -18,4 +18,3 @@ jobs:
         run: ./scripts/check-commit-messages.sh
         env:
           CURRENT_BRANCH_NAME: ${{ github.head_ref }}
-          BASE_BRANCH_NAME: ${{ github.base_ref }}
