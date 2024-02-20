@@ -4,7 +4,6 @@ import { PROTO } from '../../constants';
 
 export type ChangeLanguage = Static<typeof ChangeLanguage>;
 
-// todo: is this the right way to define discriminated unions?
 export const ChangeLanguage = Type.Union([
     Type.Object({
         binary: Type.Optional(Type.Undefined()),
