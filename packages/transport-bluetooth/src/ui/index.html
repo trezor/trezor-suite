@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <title>Bluetooth transport | Trezor</title>
+        <meta name="title" content="Bluetooth transport | Trezor" />
+        <meta name="description" content="Bluetooth transport | Trezor" />
+        <meta name="keywords" content="bluetooth transport trezor" />
+        <meta name="author" content="SatoshiLabs s.r.o." />
+        <meta name="viewport" content="width=1024, initial-scale=1" />
+        <link rel="stylesheet" type="text/css" href="./index.css" />
+    </head>
+    <body>
+        <header>
+            <h2>Trezor Bluetooth transport API</h2>
+            <div>
+                <svg
+                    fill="#000000"
+                    height="24px"
+                    width="24px"
+                    version="1.1"
+                    xmlns="http://www.w3.org/2000/svg"
+                    xmlns:xlink="http://www.w3.org/1999/xlink"
+                    viewBox="0 0 217.499 217.499"
+                    xml:space="preserve"
+                >
+                    <g>
+                        <path
+                            d="M123.264,108.749l45.597-44.488c1.736-1.693,2.715-4.016,2.715-6.441s-0.979-4.748-2.715-6.441l-50.038-48.82
+                    c-2.591-2.528-6.444-3.255-9.78-1.853c-3.336,1.406-5.505,4.674-5.505,8.294v80.504l-42.331-41.3
+                    c-3.558-3.471-9.255-3.402-12.727,0.156c-3.471,3.558-3.401,9.256,0.157,12.727l48.851,47.663l-48.851,47.663
+                    c-3.558,3.471-3.628,9.169-0.157,12.727s9.17,3.628,12.727,0.156l42.331-41.3v80.504c0,3.62,2.169,6.888,5.505,8.294
+                    c1.128,0.476,2.315,0.706,3.493,0.706c2.305,0,4.572-0.886,6.287-2.559l50.038-48.82c1.736-1.693,2.715-4.016,2.715-6.441
+                    s-0.979-4.748-2.715-6.441L123.264,108.749z M121.539,30.354l28.15,27.465l-28.15,27.465V30.354z M121.539,187.143v-54.93
+                    l28.15,27.465L121.539,187.143z"
+                        />
+                    </g>
+                </svg>
+            </div>
+            <button id="api_connect">API Connect</button>
+            <button id="api_disconnect">API Disconnect</button>
+        </header>
+        <content>
+            Devices
+            <div id="device-list"></div>
+            Output:
+            <div id="output"></div>
+
+            <section>
+                <button id="start_scan">Start scan</button>
+                <button id="stop_scan">Stop scan</button>
+                <button id="get_info">Get info</button>
+            </section>
+
+            <section>
+                <input type="text" id="connect_device_input" />
+                <button id="connect_device">Connect device</button>
+                <button id="open_device">Open device</button>
+                <button id="write">Write</button>
+                <button id="read">Read</button>
+                <button id="close_device">Close device</button>
+                <button id="disconnect_device">Disconnect device</button>
+            </section>
+        </content>
+
+        <section>
+            <textarea id="send_message_input" rows="3"></textarea>
+            <button id="send_message">SEND</button>
+        </section>
+    </body>
+</html>

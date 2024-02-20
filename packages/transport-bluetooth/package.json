@@ -21,6 +21,8 @@
         "type-check": "tsc --build tsconfig.json",
         "test:unit": "jest",
         "lint:rs": "cargo fmt --all -- --check",
+        "ui:dev": "webpack serve --config ./webpack/webpack.dev.js",
+        "ui:build": "webpack --config ./webpack/webpack.build.js",
         "dev:server": "RUST_BACKTRACE=1 && RUST_LOG=debug && cargo run"
     },
     "dependencies": {
@@ -28,5 +30,10 @@
         "@trezor/transport": "workspace:*",
         "@trezor/utils": "workspace:*",
         "ws": "^8.18.0"
+    },
+    "devDependencies": {
+        "webpack": "^5.94.0",
+        "webpack-cli": "^5.1.4",
+        "webpack-dev-server": "^5.0.4"
     }
 }
