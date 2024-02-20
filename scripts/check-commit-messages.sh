@@ -17,7 +17,7 @@ for commit in $(git rev-list $BASE_BRANCH_NAME..$CURRENT_BRANCH_NAME); do
     if echo "$commit_msg" | grep -qE "^fixup! "; then
     tput -T linux setaf 1
     echo -e "Fixup commit validation failed for commit $commit:\n$commit_msg"
-    tput sgr0
+    tput -T linux sgr0
     echo -e "To squash fixup commits, run:\ngit rebase -i --autosquash origin/HEAD"
     exit 1
     fi
@@ -26,7 +26,7 @@ for commit in $(git rev-list $BASE_BRANCH_NAME..$CURRENT_BRANCH_NAME); do
     if ! echo "$commit_msg" | grep -qE "^(build|ci|docs|feat|fix|perf|refactor|style|test|chore|revert)(\([a-z, -]+\))?: "; then
     tput -T linux setaf 1
     echo -e "Conventional Commits validation failed for commit $commit:\n$commit_msg"
-    tput sgr0
+    tput -T linux sgr0
     echo "Learn more about Conventional Commits at https://www.conventionalcommits.org"
     exit 1
     fi

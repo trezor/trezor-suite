@@ -12,7 +12,6 @@ jobs:
 
       - name: Fetch base branch
         run: |
-          git switch ${{ github.base_ref }}
           git pull origin ${{ github.base_ref }}
           git switch ${{ github.head_ref }}
 
