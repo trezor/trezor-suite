@@ -23,7 +23,9 @@
         "test:unit": "jest",
         "lint:rs": "cargo fmt --all -- --check",
         "server:dev": "RUST_BACKTRACE=1 && RUST_LOG=debug && cargo run",
-        "server:build": "RUST_BACKTRACE=1 && RUST_LOG=debug && cargo run"
+        "server:build": "RUST_BACKTRACE=1 && RUST_LOG=debug && cargo run",
+        "ui:dev": "webpack serve --config ./webpack/webpack.dev.js",
+        "ui:build": "webpack --config ./webpack/webpack.build.js"
     },
     "dependencies": {
         "@trezor/ipc-proxy": "workspace:*",
@@ -31,5 +33,10 @@
         "@trezor/transport": "workspace:*",
         "@trezor/utils": "workspace:*",
         "ws": "^8.18.0"
+    },
+    "devDependencies": {
+        "webpack": "^5.96.1",
+        "webpack-cli": "^5.1.4",
+        "webpack-dev-server": "^5.0.4"
     }
 }
