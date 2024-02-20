@@ -21,7 +21,8 @@
         "type-check": "yarn g:tsc --build",
         "lint:rs": "cargo fmt --all -- --check",
         "dev:server": "RUST_BACKTRACE=1 RUST_LOG=debug cargo run",
-        "build:server": "./scripts/build.sh"
+        "build:server": "./scripts/build.sh",
+        "build:ui": "webpack --config ./webpack/webpack.build.js"
     },
     "dependencies": {
         "@trezor/ipc-proxy": "workspace:*",
@@ -29,5 +30,9 @@
         "@trezor/transport": "workspace:*",
         "@trezor/utils": "workspace:*",
         "@trezor/websocket-client": "workspace:*"
+    },
+    "devDependencies": {
+        "html-webpack-plugin": "^5.6.3",
+        "webpack": "5.99.9"
     }
 }

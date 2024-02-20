@@ -79,3 +79,15 @@ nix-shell ./packages/transport-bluetooth/shell.nix
 yarn workspace @trezor/transport-bluetooth dev:server
 
 ```
+
+### Run dev UI:
+
+Simple html page to communicate with the server using `TrezorBluetooth` client.
+
+```
+
+yarn workspace @trezor/transport-bluetooth build:ui
+
+```
+
+and open `./packages/transport-bluetooth/build/index.html` in the browser
