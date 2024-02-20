@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-set -e
-
 for commit in $(git rev-list "$BASE_BRANCH_NAME"..HEAD); do
 
     commit_msg=$(git log --format=%B -n 1 "$commit")
