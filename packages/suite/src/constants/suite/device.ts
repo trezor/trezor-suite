@@ -19,12 +19,12 @@ export const MAX_CHARACTERS_ON_SCREEN: Record<DeviceModelInternal, number> = {
 
 export const MAX_CHARACTERS_ON_ROW: Record<DeviceModelInternal, number> = {
     [DeviceModelInternal.T1B1]: 21,
-    [DeviceModelInternal.T2T1]: 17,
+    [DeviceModelInternal.T2T1]: 17, // -1 for the space for the scrollbar (Trezor T only)
     [DeviceModelInternal.T2B1]: 18,
 };
 
 export const CHARACTER_OFFSET_FOR_ARROW: Record<DeviceModelInternal, number> = {
-    [DeviceModelInternal.T1B1]: 1,
+    [DeviceModelInternal.T1B1]: 0, // Trezor One does not have prev-arrow, and only "..." is used for "next-arrow"
     [DeviceModelInternal.T2T1]: 4,
     [DeviceModelInternal.T2B1]: 1,
 };
