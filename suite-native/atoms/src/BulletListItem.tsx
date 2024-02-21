@@ -1,3 +1,5 @@
+import { ReactNode } from 'react';
+
 import { Color, TypographyStyle } from '@trezor/theme';
 
 import { Box } from './Box';
@@ -6,7 +8,7 @@ import { Text } from './Text';
 const INDENTED_BULLET_POINT_SYMBOL = ' \u2022 ';
 
 type BulletListItemProps = {
-    children: string;
+    children: ReactNode;
     variant?: TypographyStyle;
     color?: Color;
 };

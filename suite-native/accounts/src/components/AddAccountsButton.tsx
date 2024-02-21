@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import {
     AccountsImportStackRoutes,
+    AddCoinAccountStackRoutes,
     RootStackParamList,
     RootStackRoutes,
     StackNavigationProps,
@@ -22,7 +23,13 @@ export const AddAccountButton = () => {
         });
     };
 
-    const navigateToAddCoinAccount = () => navigation.navigate(RootStackRoutes.AddCoinAccountStack);
+    const navigateToAddCoinAccount = () =>
+        navigation.navigate(RootStackRoutes.AddCoinAccountStack, {
+            screen: AddCoinAccountStackRoutes.AddCoinAccount,
+            params: {
+                flowType: 'accounts',
+            },
+        });
 
     return (
         <IconButton
