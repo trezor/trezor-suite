@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { capitalizeFirstLetter } from '@trezor/utils';
 import { Input, Button, IconButton } from '@trezor/components';
 import { AddressLabeling, Translation, MetadataLabeling } from 'src/components/suite';
-import { scanQrRequest } from 'src/actions/wallet/sendFormActions';
+import { scanOrRequestSendFormThunk } from 'src/actions/wallet/send/sendFormThunks';
 import { useDevice, useDispatch, useTranslation } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { getProtocolInfo } from 'src/utils/suite/protocol';
@@ -88,7 +88,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     const inputState = getInputState(addressError);
 
     const handleQrClick = useCallback(async () => {
-        const uri = await dispatch(scanQrRequest());
+        const uri = await dispatch(scanOrRequestSendFormThunk()).unwrap();
 
         if (typeof uri !== 'string') {
             return;

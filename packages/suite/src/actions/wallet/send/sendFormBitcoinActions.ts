@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 
-import TrezorConnect, { FeeLevel, Params, PROTO, SignTransaction } from '@trezor/connect';
+import TrezorConnect, { FeeLevel, Params, SignTransaction } from '@trezor/connect';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     formatNetworkAmount,
@@ -10,30 +10,33 @@ import {
     getUtxoOutpoint,
 } from '@suite-common/wallet-utils';
 import { BTC_RBF_SEQUENCE, BTC_LOCKTIME_SEQUENCE } from '@suite-common/wallet-constants';
-import {
-    FormState,
-    ComposeActionContext,
-    PrecomposedLevels,
-    PrecomposedTransaction,
-    PrecomposedTransactionFinal,
-} from '@suite-common/wallet-types';
-import { selectDevice } from '@suite-common/wallet-core';
+import { PrecomposedLevels, PrecomposedTransaction } from '@suite-common/wallet-types';
+import { selectDevice, selectTransactions } from '@suite-common/wallet-core';
 
-import { Dispatch, GetState } from 'src/types/suite';
 import { AddressDisplayOptions, selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
+import { createThunk } from '@suite-common/redux-utils';
+import { MODULE_PREFIX } from './constants';
+import {
+    selectAreSatsAmountUnit,
+    selectBitcoinAmountUnit,
+} from 'src/reducers/wallet/settingsReducer';
+import { G } from '@mobily/ts-belt';
+import {
+    selectSelectedAccount,
+    selectSelectedAccountStatus,
+} from 'src/reducers/wallet/selectedAccountReducer';
+import { ComposeTransactionThunkArguments, SignTransactionThunkArguments } from './types';
 
-export const composeTransaction =
-    (formValues: FormState, formState: ComposeActionContext) =>
-    async (dispatch: Dispatch, getState: GetState) => {
+export const composeBitcoinSendFormTransactionThunk = createThunk(
+    `${MODULE_PREFIX}/composeBitcoinSendFormTransactionThunk`,
+    async ({ formValues, formState }: ComposeTransactionThunkArguments, { dispatch, getState }) => {
         const { account, excludedUtxos, feeInfo, prison } = formState;
 
-        const {
-            settings: { bitcoinAmountUnit },
-        } = getState().wallet;
+        const areSatsAmountUnit = selectAreSatsAmountUnit(getState());
         const device = selectDevice(getState());
 
         const isSatoshis =
-            bitcoinAmountUnit === PROTO.AmountUnit.SATOSHI &&
+            areSatsAmountUnit &&
             !device?.unavailableCapabilities?.amountUnit &&
             hasNetworkFeatures(account, 'amount-unit');
 
@@ -131,7 +134,11 @@ export const composeTransaction =
             // generate custom levels in range from lastKnownFee minus customGap to feeInfo.minFee (coinInfo in @trezor/connect)
             const customLevels: FeeLevel[] = [];
             while (maxFee.gte(minFee)) {
-                customLevels.push({ feePerUnit: maxFee.toString(), label: 'custom', blocks: -1 });
+                customLevels.push({
+                    feePerUnit: maxFee.toString(),
+                    label: 'custom',
+                    blocks: -1,
+                });
                 maxFee = maxFee.minus(rangeGap);
             }
 
@@ -196,32 +203,32 @@ export const composeTransaction =
         });
 
         return wrappedResponse;
-    };
+    },
+);
 
-export const signTransaction =
-    (formValues: FormState, transactionInfo: PrecomposedTransactionFinal) =>
-    async (dispatch: Dispatch, getState: GetState) => {
-        const state = getState();
-        const {
-            selectedAccount,
-            settings: { bitcoinAmountUnit },
-        } = state.wallet;
-        const device = selectDevice(state);
+export const signBitcoinSendFormTransactionThunk = createThunk(
+    `${MODULE_PREFIX}/signBitcoinSendFormTransactionThunk`,
+    async (
+        { formValues, transactionInfo }: SignTransactionThunkArguments,
+        { dispatch, getState },
+    ) => {
+        const selectedAccount = selectSelectedAccount(getState());
+        const bitcoinAmountUnit = selectBitcoinAmountUnit(getState());
+        const selectedAccountStatus = selectSelectedAccountStatus(getState());
+        const device = selectDevice(getState());
+        const transactions = selectTransactions(getState());
+        const addressDisplayType = selectAddressDisplayType(getState());
 
         if (
-            selectedAccount.status !== 'loaded' ||
+            G.isNullable(selectedAccount) ||
+            selectedAccountStatus !== 'loaded' ||
             !device ||
             !transactionInfo ||
             transactionInfo.type !== 'final'
-        ) {
+        )
             return;
-        }
-
-        const addressDisplayType = selectAddressDisplayType(getState());
 
         // transactionInfo needs some additional changes:
-        const { account } = selectedAccount;
-
         const signEnhancement: Partial<SignTransaction> = {};
 
         if (formValues.bitcoinLockTime) {
@@ -237,10 +244,8 @@ export const signTransaction =
             // but in RBF case they are needed to obtain data of original transaction
             // passing them directly from tx history will prevent downloading them from the backend (in @trezor/connect)
             // this is essential step for coinjoin account to avoid leaking txid
-            if (['coinjoin', 'taproot'].includes(account.accountType)) {
-                refTxs = (state.wallet.transactions.transactions[account.key] || []).filter(
-                    tx => tx.txid === txid,
-                );
+            if (['coinjoin', 'taproot'].includes(selectedAccount.accountType)) {
+                refTxs = (transactions[selectedAccount.key] || []).filter(tx => tx.txid === txid);
             }
 
             // override inputs and outputs of precomposed transaction
@@ -268,14 +273,14 @@ export const signTransaction =
         }
 
         if (
-            hasNetworkFeatures(account, 'amount-unit') &&
+            hasNetworkFeatures(selectedAccount, 'amount-unit') &&
             !device.unavailableCapabilities?.amountUnit
         ) {
             signEnhancement.amountUnit = bitcoinAmountUnit;
         }
 
-        if (account.unlockPath) {
-            signEnhancement.unlockPath = account.unlockPath;
+        if (selectedAccount.unlockPath) {
+            signEnhancement.unlockPath = selectedAccount.unlockPath;
         }
 
         const signPayload: Params<SignTransaction> = {
@@ -288,10 +293,10 @@ export const signTransaction =
             inputs: transactionInfo.inputs,
             outputs: transactionInfo.outputs,
             account: {
-                addresses: account.addresses!,
+                addresses: selectedAccount.addresses!,
                 transactions: refTxs,
             },
-            coin: account.symbol,
+            coin: selectedAccount.symbol,
             chunkify: addressDisplayType === AddressDisplayOptions.CHUNKED,
             ...signEnhancement,
         };
@@ -311,4 +316,5 @@ export const signTransaction =
         }
 
         return response.payload;
-    };
+    },
+);

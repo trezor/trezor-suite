@@ -5,8 +5,7 @@ import { Deferred } from '@trezor/utils';
 import { selectDevice, StakeState } from '@suite-common/wallet-core';
 import { isCardanoTx } from '@suite-common/wallet-utils';
 import { SendState } from 'src/reducers/wallet/sendFormReducer';
-import { Dispatch, GetState } from 'src/types/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import { constructOutputs } from 'src/utils/wallet/reviewTransactionUtils';
 import { getTransactionReviewModalActionText } from 'src/utils/suite/transactionReview';
@@ -31,7 +30,7 @@ const StyledModal = styled(Modal)`
 interface TransactionReviewModalContentProps {
     decision: Deferred<boolean, string | number | undefined> | undefined;
     txInfoState: SendState | StakeState;
-    cancelSignTx: () => (dispatch: Dispatch, getState: GetState) => void;
+    cancelSignTx: () => void;
 }
 
 export const TransactionReviewModalContent = ({
@@ -43,7 +42,6 @@ export const TransactionReviewModalContent = ({
     const fees = useSelector(state => state.wallet.fees);
     const device = useSelector(selectDevice);
     const isActionAbortable = useSelector(selectIsActionAbortable);
-    const dispatch = useDispatch();
     const [detailsOpen, setDetailsOpen] = useState(false);
 
     const deviceModelInternal = device?.features?.internal_model;
@@ -113,7 +111,7 @@ export const TransactionReviewModalContent = ({
     const onCancel =
         isActionAbortable || signedTx
             ? () => {
-                  dispatch(cancelSignTx());
+                  cancelSignTx();
                   decision?.resolve(false);
               }
             : undefined;

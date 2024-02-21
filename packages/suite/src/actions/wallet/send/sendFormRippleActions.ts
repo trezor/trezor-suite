@@ -11,17 +11,21 @@ import {
 } from '@suite-common/wallet-utils';
 import { XRP_FLAG } from '@suite-common/wallet-constants';
 import {
-    FormState,
-    ComposeActionContext,
     PrecomposedLevels,
     PrecomposedTransaction,
-    PrecomposedTransactionFinal,
     ExternalOutput,
 } from '@suite-common/wallet-types';
 import { selectDevice } from '@suite-common/wallet-core';
 
-import { Dispatch, GetState } from 'src/types/suite';
 import { AddressDisplayOptions, selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
+import { MODULE_PREFIX } from './constants';
+import { createThunk } from '@suite-common/redux-utils';
+import { G } from '@mobily/ts-belt';
+import {
+    selectSelectedAccount,
+    selectSelectedAccountStatus,
+} from 'src/reducers/wallet/selectedAccountReducer';
+import { ComposeTransactionThunkArguments, SignTransactionThunkArguments } from './types';
 
 const calculate = (
     availableBalance: string,
@@ -87,8 +91,9 @@ const calculate = (
     return payloadData;
 };
 
-export const composeTransaction =
-    (formValues: FormState, formState: ComposeActionContext) => async () => {
+export const composeRippleSendFormTransactionThunk = createThunk(
+    `${MODULE_PREFIX}/composeRippleSendFormTransactionThunk`,
+    async ({ formValues, formState }: ComposeTransactionThunkArguments) => {
         const { account, network, feeInfo } = formState;
         const composeOutputs = getExternalComposeOutput(formValues, account, network);
         if (!composeOutputs) return; // no valid Output
@@ -176,28 +181,34 @@ export const composeTransaction =
         });
 
         return wrappedResponse;
-    };
+    },
+);
 
-export const signTransaction =
-    (formValues: FormState, transactionInfo: PrecomposedTransactionFinal) =>
-    async (dispatch: Dispatch, getState: GetState) => {
-        const { selectedAccount } = getState().wallet;
+export const signRippleSendFormTransactionThunk = createThunk(
+    `${MODULE_PREFIX}/signRippleSendFormTransactionThunk`,
+    async (
+        { formValues, transactionInfo }: SignTransactionThunkArguments,
+        { dispatch, getState },
+    ) => {
+        const selectedAccount = selectSelectedAccount(getState());
+        const selectedAccountStatus = selectSelectedAccountStatus(getState());
         const device = selectDevice(getState());
+        const addressDisplayType = selectAddressDisplayType(getState());
+
         if (
-            selectedAccount.status !== 'loaded' ||
+            G.isNullable(selectedAccount) ||
+            selectedAccountStatus !== 'loaded' ||
             !device ||
             !transactionInfo ||
             transactionInfo.type !== 'final'
         )
             return;
-        const { account } = selectedAccount;
-        if (account.networkType !== 'ripple') return;
 
-        const addressDisplayType = selectAddressDisplayType(getState());
+        if (selectedAccount.networkType !== 'ripple') return;
 
         const payment: RipplePayment = {
             destination: formValues.outputs[0].address,
-            amount: networkAmountToSatoshi(formValues.outputs[0].amount, account.symbol),
+            amount: networkAmountToSatoshi(formValues.outputs[0].amount, selectedAccount.symbol),
         };
 
         if (formValues.rippleDestinationTag) {
@@ -211,11 +222,11 @@ export const signTransaction =
                 state: device.state,
             },
             useEmptyPassphrase: device.useEmptyPassphrase,
-            path: account.path,
+            path: selectedAccount.path,
             transaction: {
                 fee: transactionInfo.feePerByte,
                 flags: XRP_FLAG,
-                sequence: account.misc.sequence,
+                sequence: selectedAccount.misc.sequence,
                 payment,
             },
             chunkify: addressDisplayType === AddressDisplayOptions.CHUNKED,
@@ -234,4 +245,5 @@ export const signTransaction =
         }
 
         return signedTx.payload.serializedTx;
-    };
+    },
+);

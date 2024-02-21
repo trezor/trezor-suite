@@ -18,8 +18,9 @@ import { FeeLevel } from '@trezor/connect';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 
 import { TranslationKey } from 'src/components/suite/Translation';
-import { composeTransaction } from 'src/actions/wallet/sendFormActions';
-import { useDispatch, useTranslation } from 'src/hooks/suite';
+import { useDispatch } from 'react-redux';
+import { composeSendFormTransactionThunk } from '../../actions/wallet/send/sendFormThunks';
+import { useTranslation } from '../suite';
 
 type Props = UseFormReturn<FormState> & {
     state: UseSendFormState;
@@ -61,20 +62,23 @@ export const useSendFormCompose = ({
     const debounce = useAsyncDebounce();
 
     const composeDraft = useCallback(
-        async (values: FormState) => {
+        async (formValues: FormState) => {
             // start composing without debounce
             setLoading(true);
             setComposedLevels(undefined);
 
             const result = await dispatch(
-                composeTransaction(values, {
-                    account,
-                    network: state.network,
-                    feeInfo: state.feeInfo,
-                    excludedUtxos,
-                    prison,
+                composeSendFormTransactionThunk({
+                    formValues,
+                    formState: {
+                        account,
+                        network: state.network,
+                        feeInfo: state.feeInfo,
+                        excludedUtxos,
+                        prison,
+                    },
                 }),
-            );
+            ).unwrap();
 
             if (result) {
                 setComposedLevels(result);
@@ -115,14 +119,17 @@ export const useSendFormCompose = ({
                 setDraftSaveRequest(true);
 
                 return dispatch(
-                    composeTransaction(values, {
-                        account,
-                        network: state.network,
-                        feeInfo: state.feeInfo,
-                        excludedUtxos,
-                        prison,
+                    composeSendFormTransactionThunk({
+                        formValues: values,
+                        formState: {
+                            account,
+                            network: state.network,
+                            feeInfo: state.feeInfo,
+                            excludedUtxos,
+                            prison,
+                        },
                     }),
-                );
+                ).unwrap();
             });
 
             // RACE-CONDITION NOTE:

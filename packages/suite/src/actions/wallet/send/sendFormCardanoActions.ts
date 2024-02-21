@@ -1,4 +1,4 @@
-import TrezorConnect, { PROTO } from '@trezor/connect';
+import TrezorConnect, { PROTO, PrecomposedTransactionFinalCardano } from '@trezor/connect';
 import {
     isTestnet,
     getDerivationType,
@@ -11,19 +11,23 @@ import {
 } from '@suite-common/wallet-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
-    FormState,
-    ComposeActionContext,
     PrecomposedLevelsCardano,
-    PrecomposedTransactionFinalCardano,
     PrecomposedTransactionCardano,
 } from '@suite-common/wallet-types';
 import { selectDevice } from '@suite-common/wallet-core';
 
-import { Dispatch, GetState } from 'src/types/suite';
+import { createThunk } from '@suite-common/redux-utils';
+import { MODULE_PREFIX } from './constants';
+import { G } from '@mobily/ts-belt';
+import {
+    selectSelectedAccount,
+    selectSelectedAccountStatus,
+} from 'src/reducers/wallet/selectedAccountReducer';
+import { ComposeTransactionThunkArguments } from './types';
 
-export const composeTransaction =
-    (formValues: FormState, formState: ComposeActionContext) =>
-    async (dispatch: Dispatch): Promise<PrecomposedLevelsCardano | undefined> => {
+export const composeCardanoSendFormTransactionThunk = createThunk(
+    `${MODULE_PREFIX}/composeCardanoSendFormTransactionThunk`,
+    async ({ formValues, formState }: ComposeTransactionThunkArguments, { dispatch }) => {
         const { account, feeInfo } = formState;
         const changeAddress = getUnusedChangeAddress(account);
         if (!changeAddress || !account.utxo || !account.addresses) return;
@@ -116,25 +120,31 @@ export const composeTransaction =
         });
 
         return wrappedResponse;
-    };
+    },
+);
 
-export const signTransaction =
-    (_formValues: FormState, transactionInfo: PrecomposedTransactionFinalCardano) =>
-    async (dispatch: Dispatch, getState: GetState) => {
-        const { selectedAccount } = getState().wallet;
+export const signCardanoSendFormTransactionThunk = createThunk(
+    `${MODULE_PREFIX}/signCardanoSendFormTransactionThunk`,
+    async (
+        { transactionInfo }: { transactionInfo: PrecomposedTransactionFinalCardano },
+        { dispatch, getState },
+    ) => {
+        const selectedAccount = selectSelectedAccount(getState());
+        const selectedAccountStatus = selectSelectedAccountStatus(getState());
         const device = selectDevice(getState());
 
         if (
-            selectedAccount.status !== 'loaded' ||
+            G.isNullable(selectedAccount) ||
+            selectedAccountStatus !== 'loaded' ||
             !device ||
             !transactionInfo ||
             transactionInfo.type !== 'final'
         )
             return;
 
-        const { account } = selectedAccount;
+        const { symbol, accountType } = selectedAccount;
 
-        if (account.networkType !== 'cardano') return;
+        if (selectedAccount.networkType !== 'cardano') return;
 
         // todo: add chunkify once we allow it for Cardano
         const res = await TrezorConnect.cardanoSignTransaction({
@@ -148,12 +158,12 @@ export const signTransaction =
             inputs: transactionInfo.inputs,
             outputs: transactionInfo.outputs,
             unsignedTx: transactionInfo.unsignedTx,
-            testnet: isTestnet(account.symbol),
-            protocolMagic: getProtocolMagic(account.symbol),
-            networkId: getNetworkId(account.symbol),
+            testnet: isTestnet(symbol),
+            protocolMagic: getProtocolMagic(symbol),
+            networkId: getNetworkId(symbol),
             fee: transactionInfo.fee,
             ttl: transactionInfo.ttl?.toString(),
-            derivationType: getDerivationType(account.accountType),
+            derivationType: getDerivationType(accountType),
         });
 
         if (!res.success) {
@@ -170,4 +180,5 @@ export const signTransaction =
         }
 
         return res.payload.serializedTx;
-    };
+    },
+);

@@ -58,5 +58,11 @@ const settingsReducer = (state: State = initialState, action: Action): State =>
 export const selectEnabledNetworks = (state: AppState) => state.wallet.settings.enabledNetworks;
 export const selectLocalCurrency = (state: AppState) => state.wallet.settings.localCurrency;
 export const selectIsDiscreteModeActive = (state: AppState) => state.wallet.settings.discreetMode;
+export const selectBitcoinAmountUnit = (state: AppState) => state.wallet.settings.bitcoinAmountUnit;
 
+export const selectAreSatsAmountUnit = (state: AppState) => {
+    const bitcoinAmountUnit = selectBitcoinAmountUnit(state);
+
+    return bitcoinAmountUnit === PROTO.AmountUnit.SATOSHI;
+};
 export default settingsReducer;

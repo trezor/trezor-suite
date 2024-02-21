@@ -27,6 +27,12 @@ const selectedAccountReducer = (state: State = initialState, action: Action): St
 export const selectSelectedAccount = (state: SelectedAccountRootState) =>
     state.wallet.selectedAccount.account;
 
+export const selectSelectedAccountKey = (state: SelectedAccountRootState) =>
+    state.wallet.selectedAccount.account?.key;
+
+export const selectSelectedAccountStatus = (state: SelectedAccountRootState) =>
+    state.wallet.selectedAccount.status;
+
 export const selectSelectedAccountBalance = (state: SelectedAccountRootState) =>
     state.wallet.selectedAccount.account?.formattedBalance;
 
@@ -74,5 +80,10 @@ export const selectSelectedAccountAutocompoundBalance = (state: SelectedAccountR
 
     return pool?.autocompoundBalance ?? '0';
 };
+export const selectIsSelectedAccountLoaded = (state: SelectedAccountRootState) =>
+    state.wallet.selectedAccount.status === 'loaded';
+
+export const selectSelectedAccountNetwork = (state: SelectedAccountRootState) =>
+    state.wallet.selectedAccount.network;
 
 export default selectedAccountReducer;

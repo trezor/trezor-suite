@@ -4,7 +4,10 @@ import { FieldPath, UseFormReturn } from 'react-hook-form';
 import { FeeLevel } from '@trezor/connect';
 import { useAsyncDebounce } from '@trezor/react-utils';
 import { useDispatch, useTranslation } from 'src/hooks/suite';
-import { composeTransaction, signTransaction } from 'src/actions/wallet/sendFormActions';
+import {
+    signSendFormTransactionThunk,
+    composeSendFormTransactionThunk,
+} from 'src/actions/wallet/send/sendFormThunks';
 import { findComposeErrors } from '@suite-common/wallet-utils';
 import {
     FormState,
@@ -81,7 +84,9 @@ export const useCompose = <TFieldValues extends FormState>({
 
                 const values = getValues();
 
-                return dispatch(composeTransaction(values, state));
+                return dispatch(
+                    composeSendFormTransactionThunk({ formValues: values, formState: state }),
+                ).unwrap();
             });
 
             // RACE-CONDITION NOTE:
@@ -231,8 +236,10 @@ export const useCompose = <TFieldValues extends FormState>({
             : undefined;
         if (composedTx && composedTx.type === 'final') {
             // sign workflow in Actions:
-            // signTransaction > sign[COIN]Transaction > requestPushTransaction (modal with promise decision)
-            const result = await dispatch(signTransaction(values, composedTx));
+            // signSendFormTransactionThunk > sign[COIN]TransactionThunk > sendFormActions.storeSignedTransaction (modal with promise decision)
+            const result = await dispatch(
+                signSendFormTransactionThunk({ formValues: values, transactionInfo: composedTx }),
+            ).unwrap();
 
             return result?.success;
         }

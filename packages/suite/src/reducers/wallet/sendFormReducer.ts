@@ -6,7 +6,7 @@ import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 
 import { sendFormActions } from 'src/actions/wallet/sendFormActions';
 
-export interface SendState {
+export type SendState = {
     drafts: {
         [key: string]: FormState; // Key: account key
     };
@@ -14,7 +14,7 @@ export interface SendState {
     precomposedTx?: PrecomposedTransactionFinal | TxFinalCardano;
     precomposedForm?: FormState;
     signedTx?: FormSignedTx; // payload for TrezorConnect.pushTransaction
-}
+};
 
 export const initialState: SendState = {
     drafts: {},
@@ -59,7 +59,7 @@ export const prepareSendFormReducer = createReducerWithExtraDeps(initialState, (
             delete state.precomposedForm;
             delete state.signedTx;
         })
-        .addCase(sendFormActions.sendRaw, (state, { payload: { sendRaw } }) => {
+        .addCase(sendFormActions.sendRaw, (state, { payload: sendRaw }) => {
             state.sendRaw = sendRaw;
         })
         .addCase(sendFormActions.dispose, state => {

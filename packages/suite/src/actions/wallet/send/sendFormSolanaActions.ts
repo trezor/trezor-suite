@@ -1,16 +1,12 @@
 import TrezorConnect, { FeeLevel } from '@trezor/connect';
 import type { TokenInfo, TokenAccount } from '@trezor/blockchain-link-types';
 import {
-    FormState,
-    PrecomposedTransactionFinal,
-    ComposeActionContext,
     ExternalOutput,
     PrecomposedTransaction,
     PrecomposedLevels,
 } from '@suite-common/wallet-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectBlockchainBlockInfoBySymbol, selectDevice } from '@suite-common/wallet-core';
-import { Dispatch, GetState } from 'src/types/suite';
 import {
     amountToSatoshi,
     calculateMax,
@@ -25,7 +21,12 @@ import {
     buildTokenTransferTransaction,
     getAssociatedTokenAccountAddress,
 } from 'src/utils/wallet/solanaUtils';
-import { SYSTEM_PROGRAM_PUBLIC_KEY } from '@trezor/blockchain-link-utils/src/solana';
+
+import {
+    selectSelectedAccount,
+    selectSelectedAccountStatus,
+} from 'src/reducers/wallet/selectedAccountReducer';
+import { ComposeTransactionThunkArguments, SignTransactionThunkArguments } from './types';
 
 const calculate = (
     availableBalance: string,
@@ -115,9 +116,9 @@ const fetchAccountOwnerAndTokenInfoForAddress = async (
     return [accountOwner, tokenInfo] as const;
 };
 
-export const composeTransaction =
-    (formValues: FormState, formState: ComposeActionContext) =>
-    async (_dispatch: Dispatch, getState: GetState) => {
+export const composeSolanaSendFormTransactionThunk = createThunk(
+    `${MODULE_PREFIX}/composeSolanaSendFormTransactionThunk`,
+    async ({ formValues, formState }: ComposeTransactionThunkArguments, { getState }) => {
         const { account, network, feeInfo } = formState;
         const composeOutputs = getExternalComposeOutput(formValues, account, network);
         if (!composeOutputs) return; // no valid Output
@@ -229,36 +230,40 @@ export const composeTransaction =
         });
 
         return wrappedResponse;
-    };
+    },
+);
 
-export const signTransaction =
-    (formValues: FormState, transactionInfo: PrecomposedTransactionFinal) =>
-    async (dispatch: Dispatch, getState: GetState) => {
-        const { selectedAccount } = getState().wallet;
+export const signSolanaSendFormTransactionThunk = createThunk(
+    `${MODULE_PREFIX}/signSolanaSendFormTransactionThunk`,
+    async (
+        { formValues, transactionInfo }: SignTransactionThunkArguments,
+        { dispatch, getState },
+    ) => {
+        const selectedAccount = selectSelectedAccount(getState());
+        const selectedAccountStatus = selectSelectedAccountStatus(getState());
         const device = selectDevice(getState());
 
         if (
-            selectedAccount.status !== 'loaded' ||
+            G.isNullable(selectedAccount) ||
+            selectedAccountStatus !== 'loaded' ||
             !device ||
             !transactionInfo ||
             transactionInfo.type !== 'final'
         )
             return;
 
-        const { account } = selectedAccount;
-
-        if (account.networkType !== 'solana') return;
+        if (selectedAccount.networkType !== 'solana') return;
         const { token } = transactionInfo;
 
         const { blockhash, blockHeight: lastValidBlockHeight } = selectBlockchainBlockInfoBySymbol(
             getState(),
-            account.symbol,
+            selectedAccount.symbol,
         );
 
         const [recipientAccountOwner, recipientTokenAccounts] = token
             ? await fetchAccountOwnerAndTokenInfoForAddress(
                   formValues.outputs[0].address,
-                  account.symbol,
+                  selectedAccount.symbol,
                   token.contract,
               )
             : [undefined, undefined];
@@ -268,8 +273,8 @@ export const signTransaction =
         const tokenTransferTxAndDestinationAddress =
             token && token.accounts
                 ? await buildTokenTransferTransaction(
-                      account.descriptor,
-                      formValues.outputs[0].address || account.descriptor,
+                      selectedAccount.descriptor,
+                      formValues.outputs[0].address || selectedAccount.descriptor,
                       recipientAccountOwner || SYSTEM_PROGRAM_PUBLIC_KEY,
                       token.contract,
                       formValues.outputs[0].amount || '0',
@@ -286,7 +291,7 @@ export const signTransaction =
         const tx = tokenTransferTxAndDestinationAddress
             ? tokenTransferTxAndDestinationAddress.transaction
             : await buildTransferTransaction(
-                  account.descriptor,
+                  selectedAccount.descriptor,
                   formValues.outputs[0].address,
                   formValues.outputs[0].amount,
                   blockhash,
@@ -301,7 +306,7 @@ export const signTransaction =
                 instance: device.instance,
                 state: device.state,
             },
-            path: account.path,
+            path: selectedAccount.path,
             serializedTx,
             additionalInfo:
                 tokenTransferTxAndDestinationAddress &&
@@ -327,10 +332,11 @@ export const signTransaction =
             return;
         }
 
-        const signerPubKey = await getPubKeyFromAddress(account.descriptor);
+        const signerPubKey = await getPubKeyFromAddress(selectedAccount.descriptor);
         tx.addSignature(signerPubKey, Buffer.from(signature.payload.signature, 'hex'));
 
         const signedTx = tx.serialize().toString('hex');
 
         return signedTx;
-    };
+    },
+);
