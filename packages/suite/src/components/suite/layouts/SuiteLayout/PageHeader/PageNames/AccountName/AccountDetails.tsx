@@ -7,6 +7,7 @@ import {
     AccountLabel,
     FormattedCryptoAmount,
     FiatValue,
+    AmountUnitSwitchWrapper,
 } from 'src/components/suite';
 import { useAccountLabel } from 'src/components/suite/AccountLabel';
 import { useSelector } from 'src/hooks/suite';
@@ -65,7 +66,9 @@ export const AccountDetails = ({ selectedAccount }: AccountDetailsProps) => {
             <AccountBalance>
                 <CryptoBalance>
                     <CoinLogo size={16} symbol={symbol} />
-                    <FormattedCryptoAmount value={formattedBalance} symbol={symbol} />
+                    <AmountUnitSwitchWrapper symbol={symbol}>
+                        <FormattedCryptoAmount value={formattedBalance} symbol={symbol} />
+                    </AmountUnitSwitchWrapper>
                 </CryptoBalance>
 
                 <span>
