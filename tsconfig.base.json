@@ -36,6 +36,7 @@
         "**/libDev",
         "**/build",
         "**/build-electron",
+        "**/build-webextension",
         "**/dist",
         "**/coverage",
         "**/public",
