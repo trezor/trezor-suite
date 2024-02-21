@@ -26,8 +26,8 @@ const getExtensionPage = async () => {
         '..',
         '..',
         '..',
-        'connect-explorer-webextension',
-        'build',
+        'connect-explorer',
+        'build-webextension',
     );
 
     const initialBrowserContext = await chromium.launchPersistentContext(
@@ -84,7 +84,7 @@ export const getContexts = async (
 ) => {
     if (!isWebExtension) {
         return {
-            exploreUrl: originalUrl,
+            explorerUrl: originalUrl,
             explorerPage: originalPage,
         };
     }
@@ -92,7 +92,7 @@ export const getContexts = async (
 
     return {
         explorerPage: page,
-        exploreUrl: url,
+        explorerUrl: url,
         browserContext,
     };
 };
@@ -134,9 +134,25 @@ export const downloadLogs = async (logPage: Page, downloadLogPath: string) => {
     return download;
 };
 
-export const setTrustedHost = async (explorerPage: Page, explorerUrl: string) => {
+export const setConnectSettings = async (
+    explorerPage: Page,
+    explorerUrl: string,
+    { trustedHost = false, connectSrc }: { trustedHost?: boolean; connectSrc?: string },
+    isWebExtension?: boolean,
+) => {
     await explorerPage.goto(`${explorerUrl}#/settings`);
-    await waitAndClick(explorerPage, ['@checkbox/trustedHost']);
+    if (isWebExtension) {
+        // When webextension and using service-worker we need to wait for handshake is confirmed with proxy.
+        await explorerPage.waitForSelector("div[data-test='@settings/handshake-confirmed']");
+    }
+    if (trustedHost) {
+        await waitAndClick(explorerPage, ['@checkbox/trustedHost']);
+    }
+    if (connectSrc) {
+        (await explorerPage.waitForSelector("input[data-test='@input/connectSrc']")).fill(
+            connectSrc,
+        );
+    }
     await waitAndClick(explorerPage, ['@submit-button']);
 };
 

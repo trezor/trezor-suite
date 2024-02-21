@@ -150,7 +150,7 @@ test(`popup closed by user with bridge version ${BRIDGE_VERSION}`, async ({ page
     log('start', test.info().title);
     log('waiting for popup close');
     // user closed popup
-    await popup.close();
+    await popup.close({ runBeforeUnload: true });
     log('waiting for popupClosePromise');
     await popupClosedPromise;
     log('waiting for timeout');
