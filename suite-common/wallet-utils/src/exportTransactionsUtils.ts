@@ -102,7 +102,7 @@ const formatAmounts =
         ethereumSpecific: tx.ethereumSpecific
             ? {
                   ...tx.ethereumSpecific,
-                  gasPrice: fromWei(tx.ethereumSpecific.gasPrice, 'gwei'),
+                  gasPrice: fromWei(tx.ethereumSpecific?.gasPrice ?? '0', 'gwei'),
               }
             : undefined,
         cardanoSpecific: tx.cardanoSpecific
