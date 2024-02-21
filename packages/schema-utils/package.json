@@ -3,7 +3,10 @@
     "version": "1.0.1",
     "license": "See LICENSE.md in repo root",
     "sideEffects": false,
-    "main": "lib/index",
+    "main": "src/index.ts",
+    "publishConfig": {
+        "main": "lib/index.js"
+    },
     "npmPublishAccess": "public",
     "files": [
         "lib/"
