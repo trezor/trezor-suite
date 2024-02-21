@@ -81,7 +81,7 @@ const DeviceDetail = styled.div`
     flex: 1;
     flex-direction: column;
     overflow: hidden;
-    align-self: baseline;
+    align-self: center;
 `;
 
 const needsRefresh = (device?: TrezorDevice) => {

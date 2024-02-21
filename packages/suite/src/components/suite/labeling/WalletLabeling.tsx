@@ -30,7 +30,7 @@ export const useWalletLabeling = () => {
     };
 };
 
-export const WalletLabeling = ({ device, shouldUseDeviceLabel }: WalletLabellingProps) => {
+export const useGetWalletLabel = ({ device, shouldUseDeviceLabel }: WalletLabellingProps) => {
     const { defaultAccountLabelString } = useWalletLabeling();
     const { walletLabel } = useSelector(state => selectLabelingDataForWallet(state, device.state));
 
@@ -46,6 +46,11 @@ export const WalletLabeling = ({ device, shouldUseDeviceLabel }: WalletLabelling
     }
 
     if (!label) return null;
+    return label;
+};
+
+export const WalletLabeling = ({ device, shouldUseDeviceLabel }: WalletLabellingProps) => {
+    const label = useGetWalletLabel({ device, shouldUseDeviceLabel });
 
     return <Container>{label}</Container>;
 };
