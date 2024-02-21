@@ -6,12 +6,14 @@ type ConnectState = {
     devices: TrezorConnectDevice[];
     selectedDevice?: string;
     options?: Parameters<(typeof TrezorConnect)['init']>[0];
+    isHandshakeConfirmed: boolean;
 };
 
 const initialState: ConnectState = {
     devices: [],
     selectedDevice: undefined,
     options: undefined,
+    isHandshakeConfirmed: false,
 };
 
 const findDeviceIndexByPath = (devices: TrezorConnectDevice[], path: string): number =>
@@ -92,6 +94,11 @@ export default function connect(state: ConnectState = initialState, action: Acti
             return {
                 ...state,
                 options: action.payload,
+            };
+        case ACTIONS.ON_HANDSHAKE_CONFIRMED:
+            return {
+                ...state,
+                isHandshakeConfirmed: true,
             };
         default:
             return state;

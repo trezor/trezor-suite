@@ -24,3 +24,5 @@ export const ON_CHANGE_CONNECT_OPTIONS = 'action__on_change_connect_options';
 export const ON_CHANGE_CONNECT_OPTION = 'action__on_change_connect_option';
 
 export const ON_LOCATION_CHANGE = 'action__on_location_change';
+
+export const ON_HANDSHAKE_CONFIRMED = 'action__on_handshake_confirmed';
