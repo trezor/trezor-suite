@@ -42,7 +42,14 @@ export const getField = (field: Field<any> | FieldWithBundle<any>, props: Props)
         case 'input':
         case 'input-long':
         case 'number':
-            return <Input key={field.name} field={field} onChange={props.actions.onFieldChange} />;
+            return (
+                <Input
+                    dataTest={`@input/${field.name}`}
+                    key={field.name}
+                    field={field}
+                    onChange={props.actions.onFieldChange}
+                />
+            );
         case 'address':
             return <Input key={field.name} field={field} onChange={props.actions.onFieldChange} />;
 

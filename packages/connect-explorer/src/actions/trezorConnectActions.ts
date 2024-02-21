@@ -1,4 +1,9 @@
-import TrezorConnect, { DEVICE, DEVICE_EVENT, TRANSPORT_EVENT } from '@trezor/connect-web';
+import TrezorConnect, {
+    DEVICE,
+    DEVICE_EVENT,
+    TRANSPORT_EVENT,
+    WEBEXTENSION,
+} from '@trezor/connect-web';
 
 import { TrezorConnectDevice, Dispatch, Field, GetState } from '../types';
 import * as ACTIONS from './index';
@@ -10,6 +15,7 @@ export type TrezorConnectAction =
     | { type: typeof DEVICE.CONNECT_UNACQUIRED; device: TrezorConnectDevice }
     | { type: typeof DEVICE.DISCONNECT; device: TrezorConnectDevice }
     | { type: typeof ACTIONS.ON_CHANGE_CONNECT_OPTIONS; payload: ConnectOptions }
+    | { type: typeof ACTIONS.ON_HANDSHAKE_CONFIRMED }
     | {
           type: typeof ACTIONS.ON_CHANGE_CONNECT_OPTION;
           payload: { option: Field<any>; value: any };
@@ -34,6 +40,15 @@ export const init =
     (options: Partial<Parameters<(typeof TrezorConnect)['init']>[0]> = {}) =>
     async (dispatch: Dispatch) => {
         window.TrezorConnect = TrezorConnect;
+
+        // The event `WEBEXTENSION.CHANNEL_HANDSHAKE_CONFIRM` is coming from @trezor/connect-webextension/proxy
+        // that is replacing @trezor/connect-web when connect-explorer is run in connect-explorer-webextension
+        // so Typescript cannot recognize it.
+        (TrezorConnect.on as any)(WEBEXTENSION.CHANNEL_HANDSHAKE_CONFIRM, event => {
+            if (event.type === WEBEXTENSION.CHANNEL_HANDSHAKE_CONFIRM) {
+                dispatch({ type: ACTIONS.ON_HANDSHAKE_CONFIRMED });
+            }
+        });
 
         TrezorConnect.on(DEVICE_EVENT, event => {
             dispatch({
