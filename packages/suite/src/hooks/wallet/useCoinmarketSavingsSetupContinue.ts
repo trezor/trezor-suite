@@ -55,7 +55,10 @@ export const useSavingsSetupContinue = ({
 
     // NOTE: There is only one fiat currency per provider.
     const fiatCurrency = selectedProvider?.tradedFiatCurrencies[0];
-    const fiatRateKey = getFiatRateKey(account.symbol, fiatCurrency as FiatCurrencyCode);
+    const fiatRateKey = getFiatRateKey(
+        account.symbol,
+        fiatCurrency?.toLowerCase() as FiatCurrencyCode,
+    );
     const fiatRate = useSelector(state => selectFiatRatesByFiatRateKey(state, fiatRateKey));
     const { address: unusedAddress } = getUnusedAddressFromAccount(account);
 
