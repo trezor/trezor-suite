@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { toWei } from 'web3-utils';
+import { G } from '@mobily/ts-belt';
 
 import TrezorConnect, { FeeLevel, TokenInfo } from '@trezor/connect';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -15,21 +16,22 @@ import {
     isPending,
     getNetwork,
 } from '@suite-common/wallet-utils';
+import { createThunk } from '@suite-common/redux-utils';
 import { ETH_DEFAULT_GAS_LIMIT, ERC20_GAS_LIMIT } from '@suite-common/wallet-constants';
 import {
     PrecomposedLevels,
     PrecomposedTransaction,
     ExternalOutput,
 } from '@suite-common/wallet-types';
-import { MODULE_PREFIX, selectDevice, selectTransactions } from '@suite-common/wallet-core';
+import { selectDevice, selectTransactions } from '@suite-common/wallet-core';
 
-import { AddressDisplayOptions, selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
-import { createThunk } from '@suite-common/redux-utils';
 import {
     selectSelectedAccount,
     selectSelectedAccountStatus,
 } from 'src/reducers/wallet/selectedAccountReducer';
-import { G } from '@mobily/ts-belt';
+import { AddressDisplayOptions, selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
+
+import { MODULE_PREFIX } from './constants';
 import { ComposeTransactionThunkArguments, SignTransactionThunkArguments } from './types';
 
 const calculate = (

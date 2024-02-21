@@ -27,6 +27,7 @@ describe('Send form for bitcoin', () => {
         // navigate to the send form
         cy.getTestElement('@account-menu/regtest/normal/0/label').click();
         cy.getTestElement('@wallet/menu/wallet-send').click();
+        cy.wait(100); // wait until is the form interactive
     });
 
     it('add and remove output in send form, toggle form options, input data', () => {
@@ -37,7 +38,7 @@ describe('Send form for bitcoin', () => {
 
         cy.getTestElement('outputs.0.remove').click();
 
-        cy.wait(10); // wait for animation
+        cy.wait(100); // wait for animation
         cy.getTestElement('outputs.0.amount').should('be.visible'); // 1 output is visible
 
         cy.getTestElement('outputs.0.address').type('bcrt1qkvwu9g3k2pdxewfqr7syz89r3gj557l374sg5v');

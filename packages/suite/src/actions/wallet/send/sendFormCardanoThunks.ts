@@ -1,3 +1,5 @@
+import { G } from '@mobily/ts-belt';
+
 import TrezorConnect, { PROTO, PrecomposedTransactionFinalCardano } from '@trezor/connect';
 import {
     isTestnet,
@@ -15,14 +17,14 @@ import {
     PrecomposedTransactionCardano,
 } from '@suite-common/wallet-types';
 import { selectDevice } from '@suite-common/wallet-core';
-
 import { createThunk } from '@suite-common/redux-utils';
-import { MODULE_PREFIX } from './constants';
-import { G } from '@mobily/ts-belt';
+
 import {
     selectSelectedAccount,
     selectSelectedAccountStatus,
 } from 'src/reducers/wallet/selectedAccountReducer';
+
+import { MODULE_PREFIX } from './constants';
 import { ComposeTransactionThunkArguments } from './types';
 
 export const composeCardanoSendFormTransactionThunk = createThunk(

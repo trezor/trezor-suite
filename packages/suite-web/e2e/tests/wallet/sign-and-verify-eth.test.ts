@@ -19,6 +19,21 @@ describe('Sign and verify ETH', () => {
         cy.viewport(1440, 2560).resetDb();
         cy.prefixedVisit('/settings/coins');
         cy.passThroughInitialRun();
+
+        //
+        // Test preparation
+        //
+        cy.getTestElement('@settings/menu/wallet').click();
+        cy.getTestElement('@settings/wallet/network/btc').click({ force: true });
+        cy.getTestElement('@settings/wallet/network/eth').click({ force: true });
+        //
+        // Test execution
+        //
+        cy.getTestElement('@suite/menu/suite-index').click();
+        cy.discoveryShouldFinish();
+        cy.getTestElement('@account-menu/eth/normal/0').click();
+
+        cy.wait(300); // wait until is the dropdown loaded
     });
 
     afterEach(() => {
@@ -35,19 +50,6 @@ describe('Sign and verify ETH', () => {
      * 7. Repeat fo verify dialogue
      */
     it('Sign ETH', () => {
-        //
-        // Test preparation
-        //
-        cy.getTestElement('@settings/menu/wallet').click();
-        cy.getTestElement('@settings/wallet/network/btc').click({ force: true });
-        cy.getTestElement('@settings/wallet/network/eth').click({ force: true });
-        //
-        // Test execution
-        //
-        cy.getTestElement('@suite/menu/suite-index').click();
-        cy.discoveryShouldFinish();
-        cy.getTestElement('@account-menu/eth/normal/0').click();
-
         cy.getTestElement('@wallet/menu/extra-dropdown').click();
         cy.getTestElement('@wallet/menu/wallet-sign-verify').click();
         cy.getTestElement('@sign-verify/message').type(MESSAGE_SIGN);
@@ -63,19 +65,6 @@ describe('Sign and verify ETH', () => {
     });
 
     it('Verify ETH', () => {
-        //
-        // Test preparation
-        //
-        cy.getTestElement('@settings/menu/wallet').click();
-        cy.getTestElement('@settings/wallet/network/btc').click({ force: true });
-        cy.getTestElement('@settings/wallet/network/eth').click({ force: true });
-        //
-        // Test execution
-        //
-        cy.getTestElement('@suite/menu/suite-index').click();
-        cy.discoveryShouldFinish();
-        cy.getTestElement('@account-menu/eth/normal/0').click();
-
         cy.getTestElement('@wallet/menu/extra-dropdown').click();
         cy.getTestElement('@wallet/menu/wallet-sign-verify').click();
         cy.getTestElement('@sign-verify/navigation/verify').click();

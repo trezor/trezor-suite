@@ -1,5 +1,9 @@
+import BigNumber from 'bignumber.js';
+import { G } from '@mobily/ts-belt';
+
 import TrezorConnect, { FeeLevel } from '@trezor/connect';
 import type { TokenInfo, TokenAccount } from '@trezor/blockchain-link-types';
+import { SYSTEM_PROGRAM_PUBLIC_KEY } from '@trezor/blockchain-link-utils/lib/solana';
 import {
     ExternalOutput,
     PrecomposedTransaction,
@@ -7,6 +11,7 @@ import {
 } from '@suite-common/wallet-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectBlockchainBlockInfoBySymbol, selectDevice } from '@suite-common/wallet-core';
+import { createThunk } from '@suite-common/redux-utils';
 import {
     amountToSatoshi,
     calculateMax,
@@ -14,7 +19,7 @@ import {
     formatAmount,
     getExternalComposeOutput,
 } from '@suite-common/wallet-utils';
-import BigNumber from 'bignumber.js';
+
 import {
     getPubKeyFromAddress,
     buildTransferTransaction,
@@ -26,6 +31,8 @@ import {
     selectSelectedAccount,
     selectSelectedAccountStatus,
 } from 'src/reducers/wallet/selectedAccountReducer';
+
+import { MODULE_PREFIX } from './constants';
 import { ComposeTransactionThunkArguments, SignTransactionThunkArguments } from './types';
 
 const calculate = (
