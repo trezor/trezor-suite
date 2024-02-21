@@ -12,7 +12,6 @@ import {
     selectDevice,
     selectDeviceAccounts,
 } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
 import {
     addAndDiscoverNetworkAccountThunk,
@@ -180,6 +179,21 @@ export const useAddCoinAccount = () => {
         setNetworkWithTypeToBeAdded([network, defaultType]);
     };
 
+    const accountsForNetworSymbolkWithAccountType = ({
+        network,
+        accountType,
+    }: {
+        network: Network;
+        accountType: AccountType;
+    }) =>
+        accounts.filter(
+            account => account.symbol === network.symbol && account.accountType === accountType,
+        );
+
+    const clearNetworkWithTypeToBeAdded = () => {
+        setNetworkWithTypeToBeAdded(null);
+    };
+
     const checkCanAddAccount = ({
         network,
         accountType,
@@ -189,9 +203,10 @@ export const useAddCoinAccount = () => {
     }) => {
         const selectedType = accountType ?? getDefaultAccountType({ network });
 
-        const currentAccountTypeAccounts = accounts.filter(
-            account => account.symbol === network.symbol && account.accountType === selectedType,
-        );
+        const currentAccountTypeAccounts = accountsForNetworSymbolkWithAccountType({
+            network,
+            accountType: selectedType,
+        });
 
         // Do not allow adding more than 10 accounts of the same type
         if (currentAccountTypeAccounts.length > LIMIT) {
@@ -213,7 +228,7 @@ export const useAddCoinAccount = () => {
     };
 
     const navigateToAccountTypeSelectionScreen = (network: Network, flowType: AddCoinFlowType) => {
-        setNetworkWithTypeToBeAdded(null);
+        clearNetworkWithTypeToBeAdded();
         navigation.navigate(AddCoinAccountStackRoutes.SelectAccountType, {
             accountType: network.accountType ?? NORMAL_ACCOUNT_TYPE,
             network,
@@ -221,13 +236,28 @@ export const useAddCoinAccount = () => {
         });
     };
 
-    const navigateToSuccessorScreen = (accountKey: AccountKey, flowType: AddCoinFlowType) => {
+    const navigateToSuccessorScreen = ({
+        flowType,
+        networkSymbol,
+        accountType,
+        accountIndex,
+    }: {
+        flowType: AddCoinFlowType;
+        networkSymbol: NetworkSymbol;
+        accountType: AccountType;
+        accountIndex: number;
+    }) => {
         if (flowType === 'receive') {
-            navigation.replace(RootStackRoutes.ReceiveModal, { accountKey });
+            navigation.replace(RootStackRoutes.ReceiveModal, {
+                networkSymbol,
+                accountType,
+                accountIndex,
+            });
         } else {
             navigation.replace(RootStackRoutes.AccountDetail, {
-                accountKey,
-                tokenContract: undefined,
+                networkSymbol,
+                accountType,
+                accountIndex,
             });
         }
     };
@@ -241,8 +271,8 @@ export const useAddCoinAccount = () => {
         accountType?: AccountType;
         flowType: AddCoinFlowType;
     }) => {
+        clearNetworkWithTypeToBeAdded();
         if (!device?.state) {
-            setNetworkWithTypeToBeAdded(null);
             showGeneralErrorAlert();
 
             return;
@@ -256,10 +286,20 @@ export const useAddCoinAccount = () => {
         });
 
         if (!canAddAccount) {
-            setNetworkWithTypeToBeAdded(null);
-
             return;
         }
+
+        const accountsWithTypeLength = accountsForNetworSymbolkWithAccountType({
+            network,
+            accountType: selectedType,
+        }).length;
+
+        navigateToSuccessorScreen({
+            flowType,
+            networkSymbol: network.symbol,
+            accountType: selectedType,
+            accountIndex: accountsWithTypeLength,
+        });
 
         const account = await dispatch(
             addAndDiscoverNetworkAccountThunk({
@@ -269,13 +309,10 @@ export const useAddCoinAccount = () => {
             }),
         ).unwrap();
 
-        setNetworkWithTypeToBeAdded(null);
-        if (account) {
-            navigateToSuccessorScreen(account.key as AccountKey, flowType);
-
-            return;
+        if (!account) {
+            navigation.goBack();
+            showGeneralErrorAlert();
         }
-        showGeneralErrorAlert();
     };
 
     const onSelectedNetworkItem = ({
@@ -296,10 +333,6 @@ export const useAddCoinAccount = () => {
                 addCoinAccount({ network, flowType });
             }
         }
-    };
-
-    const clearNetworkWithTypeToBeAdded = () => {
-        setNetworkWithTypeToBeAdded(null);
     };
 
     return {

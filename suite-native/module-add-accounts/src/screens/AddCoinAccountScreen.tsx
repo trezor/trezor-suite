@@ -42,11 +42,15 @@ export const AddCoinAccountScreen = ({
 
     const handleConfirmTap = () => {
         if (networkWithTypeToBeAdded) {
-            addCoinAccount({
-                network: networkWithTypeToBeAdded[0],
-                accountType: networkWithTypeToBeAdded[1],
-                flowType,
-            });
+            // Timeout is needed so bottom sheet has time to hide otherwise app crashes
+            setTimeout(() => {
+                addCoinAccount({
+                    network: networkWithTypeToBeAdded[0],
+                    accountType: networkWithTypeToBeAdded[1],
+                    flowType,
+                });
+            }, 100);
+            clearNetworkWithTypeToBeAdded();
         }
     };
 

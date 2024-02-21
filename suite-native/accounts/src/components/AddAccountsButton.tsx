@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import {
     AccountsImportStackRoutes,
     AddCoinAccountStackRoutes,
+    AddCoinFlowType,
     RootStackParamList,
     RootStackRoutes,
     StackNavigationProps,
@@ -12,7 +13,7 @@ import {
 import { IconButton } from '@suite-native/atoms';
 import { selectIsPortfolioTrackerDevice } from '@suite-common/wallet-core';
 
-export const AddAccountButton = () => {
+export const AddAccountButton = ({ flowType }: { flowType: AddCoinFlowType }) => {
     const isSelectedDevicePortfolioTracker = useSelector(selectIsPortfolioTrackerDevice);
     const navigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AccountsImport>>();
@@ -27,7 +28,7 @@ export const AddAccountButton = () => {
         navigation.navigate(RootStackRoutes.AddCoinAccountStack, {
             screen: AddCoinAccountStackRoutes.AddCoinAccount,
             params: {
-                flowType: 'accounts',
+                flowType,
             },
         });
 

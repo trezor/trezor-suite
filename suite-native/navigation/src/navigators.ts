@@ -1,4 +1,5 @@
 import { NavigatorScreenParams } from '@react-navigation/native';
+import { RequireAllOrNone } from 'type-fest';
 
 import { AccountKey, TokenAddress, XpubAddress } from '@suite-common/wallet-types';
 import { AccountType, Network, NetworkSymbol } from '@suite-common/wallet-config';
@@ -21,7 +22,10 @@ import {
 type ReceiveAccountsParams = {
     accountKey?: AccountKey;
     tokenContract?: TokenAddress;
-};
+} & RequireAllOrNone<
+    { networkSymbol?: NetworkSymbol; accountType?: AccountType; accountIndex?: number },
+    'networkSymbol' | 'accountType' | 'accountIndex'
+>;
 
 export type AccountsStackParamList = {
     [AccountsStackRoutes.Accounts]: undefined;
@@ -116,9 +120,12 @@ export type RootStackParamList = {
     };
     [RootStackRoutes.DevUtilsStack]: undefined;
     [RootStackRoutes.AccountDetail]: {
-        accountKey: AccountKey;
+        accountKey?: AccountKey;
         tokenContract?: TokenAddress;
-    };
+    } & RequireAllOrNone<
+        { networkSymbol?: NetworkSymbol; accountType?: AccountType; accountIndex?: number },
+        'networkSymbol' | 'accountType' | 'accountIndex'
+    >;
     [RootStackRoutes.DeviceInfo]: undefined;
     [RootStackRoutes.AddCoinAccountStack]: NavigatorScreenParams<AddCoinAccountStackParamList>;
 };
