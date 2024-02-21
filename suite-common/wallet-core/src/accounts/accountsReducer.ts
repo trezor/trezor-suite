@@ -159,9 +159,12 @@ export const selectDeviceAccounts = (state: AccountsRootState & DeviceRootState)
 export const selectDeviceAccountsForNetworkSymbolAndAccountType = memoizeWithArgs(
     (
         state: AccountsRootState & DeviceRootState,
-        networkSymbol: NetworkSymbol,
-        accountType: AccountType,
+        networkSymbol?: NetworkSymbol,
+        accountType?: AccountType,
     ) => {
+        if (!networkSymbol || !accountType) {
+            return [];
+        }
         const accounts = selectDeviceAccounts(state);
 
         return accounts.filter(
@@ -171,6 +174,24 @@ export const selectDeviceAccountsForNetworkSymbolAndAccountType = memoizeWithArg
     // memoize data for every network
     { size: D.keys(networks).length },
 );
+
+export const selectDeviceAccountKeyForNetworkSymbolAndAccountTypeWithIndex = (
+    state: AccountsRootState & DeviceRootState,
+    networkSymbol?: NetworkSymbol,
+    accountType?: AccountType,
+    accountIndex?: number,
+) => {
+    if (!networkSymbol || !accountType || accountIndex === undefined || accountIndex < 0) {
+        return undefined;
+    }
+    const accounts = selectDeviceAccountsForNetworkSymbolAndAccountType(
+        state,
+        networkSymbol,
+        accountType,
+    );
+
+    return accounts[accountIndex]?.key;
+};
 
 export const selectDeviceAccountsLengthPerNetwork = (state: AccountsRootState & DeviceRootState) =>
     pipe(

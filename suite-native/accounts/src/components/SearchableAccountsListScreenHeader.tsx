@@ -7,7 +7,7 @@ import Animated, {
     withTiming,
 } from 'react-native-reanimated';
 
-import { ScreenSubHeader } from '@suite-native/navigation';
+import { AddCoinFlowType, ScreenSubHeader } from '@suite-native/navigation';
 import { Box, IconButton } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -17,6 +17,7 @@ import { AddAccountButton } from './AddAccountsButton';
 type SearchableAccountsListScreenHeaderProps = {
     title: string;
     onSearchInputChange: (value: string) => void;
+    flowType: AddCoinFlowType;
 };
 
 const HEADER_ANIMATION_DURATION = 100;
@@ -30,6 +31,7 @@ const searchFormContainerStyle = prepareNativeStyle(utils => ({
 export const SearchableAccountsListScreenHeader = ({
     title,
     onSearchInputChange,
+    flowType,
 }: SearchableAccountsListScreenHeaderProps) => {
     const isFirstRender = useSharedValue(true);
     const { applyStyle } = useNativeStyles();
@@ -77,7 +79,7 @@ export const SearchableAccountsListScreenHeader = ({
                 >
                     <ScreenSubHeader
                         content={title}
-                        rightIcon={<AddAccountButton />}
+                        rightIcon={<AddAccountButton flowType={flowType} />}
                         leftIcon={
                             <IconButton
                                 iconName="search"

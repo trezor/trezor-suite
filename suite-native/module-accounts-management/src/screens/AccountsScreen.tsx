@@ -36,6 +36,7 @@ export const AccountsScreen = () => {
                 <SearchableAccountsListScreenHeader
                     title="My assets"
                     onSearchInputChange={handleFilterChange}
+                    flowType="accounts"
                 />
             }
         >

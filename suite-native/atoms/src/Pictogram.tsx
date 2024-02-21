@@ -19,7 +19,7 @@ type PictogramProps = {
     size?: PictogramSize;
     title?: ReactNode;
     titleVariant?: TypographyStyle;
-    subtitle?: string;
+    subtitle?: ReactNode;
 };
 
 type PictogramStyle = {

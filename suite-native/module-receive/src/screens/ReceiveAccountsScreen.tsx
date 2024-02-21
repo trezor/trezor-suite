@@ -39,6 +39,7 @@ export const ReceiveAccountsScreen = () => {
                 <SearchableAccountsListScreenHeader
                     title="Receive to"
                     onSearchInputChange={handleFilterChange}
+                    flowType="receive"
                 />
             }
         >
