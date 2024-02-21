@@ -2,7 +2,6 @@
 // There are some small differences such as removed memoization
 
 import { A, D, F, pipe } from '@mobily/ts-belt';
-import { memoizeWithArgs } from 'proxy-memoize';
 
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import {
