@@ -17,6 +17,7 @@ import { Processes } from './Processes';
 import { PasswordManager } from './PasswordManager/PasswordManager';
 import { ViewOnlySettings } from './ViewOnlySettings';
 import { TriggerHighlight } from './TriggerHighlight';
+import { Backends } from './Backends';
 
 export const SettingsDebug = () => (
     <SettingsLayout>
@@ -54,6 +55,9 @@ export const SettingsDebug = () => (
         )}
         <SettingsSection title="Transports">
             <Transport />
+        </SettingsSection>
+        <SettingsSection title="Backends">
+            <Backends />
         </SettingsSection>
         <SettingsSection title="Password manager">
             <PasswordManager />
