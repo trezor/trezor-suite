@@ -39,7 +39,7 @@ export const AccountImportOverview = ({ balance, networkSymbol }: AssetsOverview
             <VStack spacing="large">
                 {!isTestnet(networkSymbol) && <FiatBalanceFormatter value={fiatBalanceValue} />}
                 <TextInputField
-                    data-testID="@account-import/coin-synced/label-input"
+                    data-test-id="@account-import/coin-synced/label-input"
                     name="accountLabel"
                     label="Coin label"
                     elevation="1"

@@ -85,7 +85,7 @@ export const AbortButton = ({ onAbort, className }: AbortButtonProps) => {
     return (
         <AbortContainer
             key="@modal/close-button" // passed in array
-            data-test="@modal/close-button"
+            data-test-id="@modal/close-button"
             onClick={onAbort}
             className={className}
         >

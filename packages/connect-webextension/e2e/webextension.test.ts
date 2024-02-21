@@ -75,18 +75,18 @@ test('Basic web extension MV2', async () => {
     await page.goto(`chrome-extension://${extensionId}/connect-manager.html`);
 
     // Wait for connect to be ready.
-    await page.waitForSelector("div[data-test='connect-loaded']");
+    await page.waitForSelector("div[data-test-id='connect-loaded']");
 
-    await page.waitForSelector("button[data-test='get-address']");
-    await page.click("button[data-test='get-address']");
+    await page.waitForSelector("button[data-test-id='get-address']");
+    await page.click("button[data-test-id='get-address']");
 
     const popup = await browserContext.waitForEvent('page');
     await popup.waitForLoadState('load');
-    await popup.waitForSelector("button[data-test='@analytics/continue-button']", {
+    await popup.waitForSelector("button[data-test-id='@analytics/continue-button']", {
         state: 'visible',
         timeout: 40000,
     });
-    await popup.click("button[data-test='@analytics/continue-button']");
+    await popup.click("button[data-test-id='@analytics/continue-button']");
 
     await popup.waitForSelector('button.confirm', { state: 'visible', timeout: 40000 });
     await popup.click('button.confirm');
@@ -165,17 +165,17 @@ test('Basic web extension MV3', async () => {
     await page.goto(`chrome-extension://${extensionId}/connect-manager.html`);
     await page.screenshot({ path: `${dir}/web-extension-mv3-1.png` });
 
-    await (await page.waitForSelector("button[data-test='get-address']")).click();
+    await (await page.waitForSelector("button[data-test-id='get-address']")).click();
 
     const popup = await browserContext.waitForEvent('page');
     await popup.waitForLoadState('load');
 
     // There is not analytics button since this test is after the MV2 that already clicked it and the container is not pruned after.
-    // await popup.waitForSelector("button[data-test='@analytics/continue-button']", {
+    // await popup.waitForSelector("button[data-test-id='@analytics/continue-button']", {
     //     state: 'visible',
     //     timeout: 40000,
     // });
-    // await popup.click("button[data-test='@analytics/continue-button']");
+    // await popup.click("button[data-test-id='@analytics/continue-button']");
 
     await popup.waitForSelector('button.confirm', { state: 'visible', timeout: 40000 });
     await popup.click('button.confirm');

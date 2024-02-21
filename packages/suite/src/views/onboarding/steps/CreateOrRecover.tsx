@@ -19,7 +19,7 @@ const CreateOrRecoverStep = () => {
             <OptionsWrapper>
                 <OnboardingOption
                     icon="NEW"
-                    data-test="@onboarding/path-create-button"
+                    data-test-id="@onboarding/path-create-button"
                     onClick={() => {
                         addPath(STEP.PATH_CREATE);
                         goToNextStep();
@@ -30,7 +30,7 @@ const CreateOrRecoverStep = () => {
                 <OptionsDivider />
                 <OnboardingOption
                     icon="RECOVER"
-                    data-test="@onboarding/path-recovery-button"
+                    data-test-id="@onboarding/path-recovery-button"
                     onClick={() => {
                         addPath(STEP.PATH_RECOVERY);
                         goToNextStep();

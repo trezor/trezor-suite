@@ -84,7 +84,11 @@ export const Theme = () => {
     };
 
     return (
-        <SectionItem data-test="@settings/theme" ref={anchorRef} shouldHighlight={shouldHighlight}>
+        <SectionItem
+            data-test-id="@settings/theme"
+            ref={anchorRef}
+            shouldHighlight={shouldHighlight}
+        >
             <TextColumn
                 title={<Translation id="TR_COLOR_SCHEME" />}
                 description={<Translation id="TR_COLOR_SCHEME_DESCRIPTION" />}
@@ -95,7 +99,7 @@ export const Theme = () => {
                     value={selectedValue}
                     options={options}
                     onChange={onChange}
-                    data-test="@theme/color-scheme-select"
+                    data-test-id="@theme/color-scheme-select"
                 />
             </ActionColumn>
         </SectionItem>

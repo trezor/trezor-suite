@@ -150,7 +150,7 @@ const Details = () => {
                             <ActionColumn>
                                 <StyledActionButton
                                     variant="secondary"
-                                    data-test="@wallets/details/show-xpub-button"
+                                    data-test-id="@wallets/details/show-xpub-button"
                                     onClick={handleXpubClick}
                                     isDisabled={disabled}
                                     isLoading={locked}

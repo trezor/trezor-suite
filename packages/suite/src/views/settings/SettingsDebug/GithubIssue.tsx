@@ -11,7 +11,7 @@ export const GithubIssue = () => {
 
     return (
         <SectionItem
-            data-test="@settings/debug/github"
+            data-test-id="@settings/debug/github"
             ref={anchorRef}
             shouldHighlight={shouldHighlight}
         >

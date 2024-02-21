@@ -41,7 +41,7 @@ export const NavSettings = ({ isActive }: NavSettingsProps) => {
             content={<Translation id="TR_SETTINGS" />}
         >
             <HoverAnimation>
-                <Wrapper data-test="@suite/menu/settings" onClick={handleClick}>
+                <Wrapper data-test-id="@suite/menu/settings" onClick={handleClick}>
                     <Icon
                         color={isActive ? theme.TYPE_DARK_GREY : theme.TYPE_LIGHT_GREY}
                         size={24}

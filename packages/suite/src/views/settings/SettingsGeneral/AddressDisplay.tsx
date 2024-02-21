@@ -37,7 +37,7 @@ export const AddressDisplay = () => {
 
     return (
         <SectionItem
-            data-test="@settings/address-display"
+            data-test-id="@settings/address-display"
             ref={anchorRef}
             shouldHighlight={shouldHighlight}
         >

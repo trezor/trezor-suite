@@ -25,7 +25,7 @@ export const DisconnectLabelingProvider = () => {
 
     return (
         <SectionItem
-            data-test="@settings/metadata-provider"
+            data-test-id="@settings/metadata-provider"
             ref={anchorRef}
             shouldHighlight={shouldHighlight}
         >
@@ -62,7 +62,7 @@ export const DisconnectLabelingProvider = () => {
                             }),
                         )
                     }
-                    data-test="@settings/metadata/disconnect-provider-button"
+                    data-test-id="@settings/metadata/disconnect-provider-button"
                 >
                     <Translation id="TR_DISCONNECT" />
                 </ActionButton>

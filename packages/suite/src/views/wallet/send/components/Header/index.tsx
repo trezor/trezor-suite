@@ -27,7 +27,7 @@ export const Header = () => {
     const options: Array<DropdownMenuItemProps> = [
         {
             key: 'opreturn',
-            'data-test': '@send/header-dropdown/opreturn',
+            'data-test-id': '@send/header-dropdown/opreturn',
             onClick: addOpReturn,
             label: <Translation id="OP_RETURN_ADD" />,
             isDisabled: !!opreturnOutput,
@@ -35,7 +35,7 @@ export const Header = () => {
         },
         {
             key: 'import',
-            'data-test': '@send/header-dropdown/import',
+            'data-test-id': '@send/header-dropdown/import',
             onClick: () => {
                 loadTransaction();
             },
@@ -44,7 +44,7 @@ export const Header = () => {
         },
         {
             key: 'raw',
-            'data-test': '@send/header-dropdown/raw',
+            'data-test-id': '@send/header-dropdown/raw',
             onClick: () => {
                 dispatch(sendRaw(true));
             },
@@ -59,7 +59,7 @@ export const Header = () => {
                     size="small"
                     variant="tertiary"
                     onClick={resetContext}
-                    data-test="clear-form"
+                    data-test-id="clear-form"
                 >
                     <Translation id="TR_CLEAR_ALL" />
                 </ClearButton>
@@ -67,7 +67,7 @@ export const Header = () => {
 
             <Dropdown
                 alignMenu="bottom-right"
-                data-test="@send/header-dropdown"
+                data-test-id="@send/header-dropdown"
                 items={[
                     {
                         key: 'header',

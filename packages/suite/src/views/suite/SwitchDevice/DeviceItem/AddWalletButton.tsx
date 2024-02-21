@@ -74,7 +74,7 @@ export const AddWalletButton = ({
                 cursor="pointer"
             >
                 <StyledButton
-                    data-test={
+                    data-test-id={
                         emptyPassphraseWalletExists
                             ? '@switch-device/add-hidden-wallet-button'
                             : '@switch-device/add-wallet-button'

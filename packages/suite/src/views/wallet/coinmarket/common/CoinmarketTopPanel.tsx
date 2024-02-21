@@ -69,7 +69,7 @@ const CoinmarketTopPanel = ({ backRoute }: CoinmarketTopPanelProps) => {
         <Wrapper>
             <Content>
                 <Left>
-                    <Back onClick={goBack} data-test="@coinmarket/back">
+                    <Back onClick={goBack} data-test-id="@coinmarket/back">
                         <StyledIcon icon="ARROW_LEFT" />
                         <AccountLabeling account={account} />
                     </Back>

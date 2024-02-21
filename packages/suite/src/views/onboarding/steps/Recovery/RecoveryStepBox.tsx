@@ -54,7 +54,7 @@ const RecoveryStepBox = (props: OnboardingStepBoxProps) => {
                 isBackButtonVisible() ? (
                     <OnboardingButtonBack
                         onClick={() => handleBack()}
-                        data-test="@onboarding/recovery/back-button"
+                        data-test-id="@onboarding/recovery/back-button"
                     />
                 ) : undefined
             }

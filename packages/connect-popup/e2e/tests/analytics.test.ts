@@ -29,12 +29,12 @@ test('reporting', async ({ page }) => {
 
     await page.goto(`${url}#/method/getAddress`);
 
-    await page.waitForSelector("button[data-test='@submit-button']", { state: 'visible' });
+    await page.waitForSelector("button[data-test-id='@submit-button']", { state: 'visible' });
     const [popup] = await Promise.all([
         // It is important to call waitForEvent before click to set up waiting.
         page.waitForEvent('popup'),
         // Opens popup.
-        page.click("button[data-test='@submit-button']"),
+        page.click("button[data-test-id='@submit-button']"),
     ]);
     await popup.waitForLoadState('load');
 
@@ -51,11 +51,11 @@ test('reporting', async ({ page }) => {
     // analytics events sent yet
     expect(requests.length).toEqual(0);
 
-    await popup.waitForSelector("div[data-test='@analytics/consent']", {
+    await popup.waitForSelector("div[data-test-id='@analytics/consent']", {
         state: 'visible',
         timeout: 40000,
     });
-    await popup.click("button[data-test='@analytics/continue-button']");
+    await popup.click("button[data-test-id='@analytics/continue-button']");
 
     // analytics is now enabled, events should be sent now
     expect(requests.length).toBeGreaterThan(0);
@@ -64,14 +64,14 @@ test('reporting', async ({ page }) => {
     // should be saved in local storage
     expect(localStorage.search('"tracking_enabled\\":true')).toBeTruthy();
 
-    await popup.click("div[data-test='@analytics/settings']");
+    await popup.click("div[data-test-id='@analytics/settings']");
 
     // disable analytics
-    await popup.click("div[data-test='@analytics/toggle-switch']");
+    await popup.click("div[data-test-id='@analytics/toggle-switch']");
 
     requests = [];
 
-    await popup.click("button[data-test='@analytics/continue-button']");
+    await popup.click("button[data-test-id='@analytics/continue-button']");
 
     // disable analytics event is sent
     expect(requests.length).toBe(1);

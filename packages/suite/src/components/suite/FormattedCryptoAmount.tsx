@@ -32,7 +32,7 @@ export interface FormattedCryptoAmountProps {
     signValue?: SignValue;
     disableHiddenPlaceholder?: boolean;
     isRawString?: boolean;
-    'data-test'?: string;
+    'data-test-id'?: string;
     className?: string;
 }
 
@@ -43,7 +43,7 @@ export const FormattedCryptoAmount = ({
     signValue,
     disableHiddenPlaceholder,
     isRawString,
-    'data-test': dataTest,
+    'data-test-id': dataTest,
     className,
 }: FormattedCryptoAmountProps) => {
     const locale = useSelector(state => state.suite.settings.language);
@@ -90,7 +90,7 @@ export const FormattedCryptoAmount = ({
         <Container className={className}>
             {!!signValue && <Sign value={signValue} />}
 
-            <Value data-test={dataTest}>{formattedValue}</Value>
+            <Value data-test-id={dataTest}>{formattedValue}</Value>
 
             {symbol && <Symbol>&nbsp;{formattedSymbol}</Symbol>}
         </Container>

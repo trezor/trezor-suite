@@ -145,7 +145,7 @@ export const WalletInstance = ({
 
     return (
         <Wrapper
-            data-test={dataTestBase}
+            data-test-id={dataTestBase}
             key={`${instance.label}${instance.instance}${instance.state}`}
             state={isSelected ? 'success' : undefined}
             {...rest}
@@ -215,7 +215,7 @@ export const WalletInstance = ({
 
                     <ColEject centerItems>
                         <Icon
-                            data-test={`${dataTestBase}/eject-button`}
+                            data-test-id={`${dataTestBase}/eject-button`}
                             icon="EJECT"
                             size={22}
                             color={theme.TYPE_LIGHT_GREY}

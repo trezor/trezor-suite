@@ -135,7 +135,7 @@ export const DesktopSuiteBanner = () => {
                         size={18}
                         icon="CROSS"
                         onClick={handleClose}
-                        data-test="@banner/install-desktop-suite/close-button"
+                        data-test-id="@banner/install-desktop-suite/close-button"
                     />
 
                     <StyledImage image="TREZOR_PATTERN" width={140} />

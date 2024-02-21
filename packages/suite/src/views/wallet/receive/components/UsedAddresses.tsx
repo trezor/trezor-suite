@@ -117,7 +117,7 @@ const Item = ({ addr, locked, symbol, onClick, metadataPayload, index }: ItemPro
     return (
         <>
             <GridItemAddress
-                data-test={`@wallet/receive/used-address/${index}`}
+                data-test-id={`@wallet/receive/used-address/${index}`}
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
             >
@@ -141,7 +141,7 @@ const Item = ({ addr, locked, symbol, onClick, metadataPayload, index }: ItemPro
             >
                 <AddressActions isVisible={isHovered}>
                     <Button
-                        data-test={`@wallet/receive/reveal-address-button/${index}`}
+                        data-test-id={`@wallet/receive/reveal-address-button/${index}`}
                         variant="tertiary"
                         isDisabled={locked}
                         isLoading={locked}

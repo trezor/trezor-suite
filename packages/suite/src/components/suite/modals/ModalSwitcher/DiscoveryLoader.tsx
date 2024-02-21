@@ -17,7 +17,7 @@ export const DiscoveryLoader = () => (
     <StyledModal
         heading={<Translation id="TR_COIN_DISCOVERY_IN_PROGRESS" />}
         description={<Translation id="TR_TO_FIND_YOUR_ACCOUNTS_AND" />}
-        data-test="@discovery/loader"
+        data-test-id="@discovery/loader"
     >
         <Expand>
             <Spinner size={80} isGrey={false} />

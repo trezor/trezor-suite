@@ -13,7 +13,7 @@ export const WordModal = (props: ModalProps) => {
 
     return (
         <StyledModal
-            data-test="@recovery/word"
+            data-test-id="@recovery/word"
             heading={<Translation id="TR_FOLLOW_INSTRUCTIONS_ON_DEVICE" />}
             description={
                 <>

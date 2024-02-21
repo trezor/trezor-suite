@@ -62,7 +62,7 @@ export const AutoLock = ({ isDeviceLocked }: AutoLockProps) => {
 
     return (
         <SectionItem
-            data-test="@settings/device/autolock"
+            data-test-id="@settings/device/autolock"
             ref={anchorRef}
             shouldHighlight={shouldHighlight}
         >
@@ -80,7 +80,7 @@ export const AutoLock = ({ isDeviceLocked }: AutoLockProps) => {
                         option => autoLockDelay && autoLockDelay / 1000 === option.value,
                     )}
                     isDisabled={isDeviceLocked}
-                    data-test="@settings/auto-lock-select"
+                    data-test-id="@settings/auto-lock-select"
                 />
             </ActionColumn>
         </SectionItem>

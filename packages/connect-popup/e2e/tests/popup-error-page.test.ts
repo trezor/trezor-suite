@@ -53,24 +53,26 @@ test('popup should display error page when device disconnected and debug mode', 
     log('opening explorer page');
     await explorerPage.goto(`${exploreUrl}#/method/verifyMessage`);
     log('waiting for explorer to load');
-    await explorerPage.waitForSelector("button[data-test='@submit-button']", { state: 'visible' });
+    await explorerPage.waitForSelector("button[data-test-id='@submit-button']", {
+        state: 'visible',
+    });
 
     log('opening popup');
     [popup] = await openPopup(context, explorerPage, isWebExtension);
 
     log('waiting for popup analytics to load');
-    await popup.waitForSelector("button[data-test='@analytics/continue-button']", {
+    await popup.waitForSelector("button[data-test-id='@analytics/continue-button']", {
         state: 'visible',
         timeout: 40000,
     });
     log('clicking on analytics continue button');
-    await popup.click("button[data-test='@analytics/continue-button']");
+    await popup.click("button[data-test-id='@analytics/continue-button']");
 
     log('waiting for permissions');
-    await popup.waitForSelector("div[data-test='@permissions']");
+    await popup.waitForSelector("div[data-test-id='@permissions']");
 
     log('stopEmu');
     await TrezorUserEnvLink.api.stopEmu();
     log('waiting for popup error page');
-    await popup.waitForSelector("div[data-test='@connect-ui/error']");
+    await popup.waitForSelector("div[data-test-id='@connect-ui/error']");
 });

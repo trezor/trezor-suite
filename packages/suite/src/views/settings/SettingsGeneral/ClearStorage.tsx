@@ -33,7 +33,7 @@ export const ClearStorage = () => {
 
     return (
         <SectionItem
-            data-test="@settings/storage"
+            data-test-id="@settings/storage"
             ref={anchorRef}
             shouldHighlight={shouldHighlight}
         >
@@ -45,7 +45,7 @@ export const ClearStorage = () => {
                 <ActionButton
                     onClick={hanldeClick}
                     variant="secondary"
-                    data-test="@settings/reset-app-button"
+                    data-test-id="@settings/reset-app-button"
                 >
                     <Translation id="TR_CLEAR_STORAGE" />
                 </ActionButton>

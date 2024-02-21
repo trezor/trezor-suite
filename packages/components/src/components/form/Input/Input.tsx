@@ -135,7 +135,7 @@ const Input = ({
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
             hasBottomPadding={hasBottomPadding === true && bottomText === null}
-            data-test={dataTest}
+            data-test-id={dataTest}
             className={className}
         >
             <TopAddons isHovered={isHovered} hoverAddon={labelHoverAddon} addonRight={labelRight} />

@@ -81,7 +81,7 @@ export interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElemen
     hasBottomPadding?: boolean;
     value?: string;
     characterCount?: CharacterCountProps['characterCount'];
-    'data-test'?: string;
+    'data-test-id'?: string;
 }
 
 export const Textarea = ({
@@ -99,7 +99,7 @@ export const Textarea = ({
     labelRight,
     characterCount,
     hasBottomPadding = true,
-    'data-test': dataTest,
+    'data-test-id': dataTest,
     ...rest
 }: TextareaProps) => {
     const [isHovered, setIsHovered] = useState(false);
@@ -124,7 +124,7 @@ export const Textarea = ({
                     disabled={isDisabled}
                     inputState={inputState}
                     rows={rows}
-                    data-test={dataTest}
+                    data-test-id={dataTest}
                     placeholder={placeholder || ''} // needed for uncontrolled inputs
                     ref={innerRef}
                     {...rest}

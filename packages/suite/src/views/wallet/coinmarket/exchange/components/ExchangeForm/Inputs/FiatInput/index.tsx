@@ -56,7 +56,7 @@ const FiatInput = () => {
             rules={fiatInputRules}
             bottomText={fiatError?.message || null}
             innerAddon={<FiatSelect />}
-            data-test="@coinmarket/exchange/fiat-input"
+            data-test-id="@coinmarket/exchange/fiat-input"
         />
     );
 };

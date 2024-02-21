@@ -104,7 +104,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                 heading={<Translation id="TR_RECONNECT_HEADER" />}
                 isCancelable
                 onCancel={onCancel}
-                data-test="@recovery/no-device"
+                data-test-id="@recovery/no-device"
             >
                 <StyledImage image="CONNECT_DEVICE" width="360" />
             </Modal>
@@ -121,7 +121,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                             : dispatch(checkSeed())
                     }
                     isDisabled={!understood || isLocked()}
-                    data-test="@recovery/start-button"
+                    data-test-id="@recovery/start-button"
                 >
                     <Translation id="TR_START" />
                 </StyledButton>
@@ -185,7 +185,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                         </StepsContainer>
 
                         <CheckItem
-                            data-test="@recovery/user-understands-checkbox"
+                            data-test-id="@recovery/user-understands-checkbox"
                             title={<Translation id="TR_DRY_RUN_CHECK_ITEM_TITLE" />}
                             description={<Translation id="TR_DRY_RUN_CHECK_ITEM_DESCRIPTION" />}
                             isChecked={understood}
@@ -230,7 +230,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                 return !recovery.error ? (
                     <VerticalCenter>
                         <StatusImage image="UNI_SUCCESS" />
-                        <H2 data-test="@recovery/success-title">
+                        <H2 data-test-id="@recovery/success-title">
                             <Translation id="TR_SEED_CHECK_SUCCESS_TITLE" />
                         </H2>
                         <StyledP type="hint">

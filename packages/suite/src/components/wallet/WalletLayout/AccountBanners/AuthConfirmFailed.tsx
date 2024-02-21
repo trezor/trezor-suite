@@ -18,7 +18,7 @@ export const AuthConfirmFailed = () => {
                 onClick: handleClick,
                 isLoading: isLocked(),
                 icon: 'REFRESH',
-                'data-test': '@passphrase-mismatch/retry-button',
+                'data-test-id': '@passphrase-mismatch/retry-button',
                 children: <Translation id="TR_AUTH_CONFIRM_FAILED_RETRY" />,
             }}
         >

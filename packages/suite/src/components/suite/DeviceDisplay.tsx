@@ -130,7 +130,7 @@ export const DeviceDisplay = ({ address, network, valueDataTest }: DeviceDisplay
         chunks?.map((row, rowIndex) => (
             <Row key={rowIndex} isAlignedRight={rowIndex === 0 && isNextAddress}>
                 {row.map((chunk, chunkIndex) => (
-                    <Text isPixelType={isPixelType} key={chunkIndex} data-test="chunk">
+                    <Text isPixelType={isPixelType} key={chunkIndex} data-test-id="chunk">
                         {chunk}
                     </Text>
                 ))}
@@ -163,7 +163,7 @@ export const DeviceDisplay = ({ address, network, valueDataTest }: DeviceDisplay
         };
 
         return (
-            <Chunks onCopy={handleOnCopy} data-test={valueDataTest}>
+            <Chunks onCopy={handleOnCopy} data-test-id={valueDataTest}>
                 {showChunksInRows(groupedChunks)}
             </Chunks>
         );
@@ -175,7 +175,7 @@ export const DeviceDisplay = ({ address, network, valueDataTest }: DeviceDisplay
 
             return (
                 <>
-                    <Text isPixelType={isPixelType} data-test={valueDataTest}>
+                    <Text isPixelType={isPixelType} data-test-id={valueDataTest}>
                         {address.slice(0, breakpoint)}
                     </Text>
                     <StyledNextIcon {...iconConfig} isPixelType={isPixelType} icon={iconNextName} />

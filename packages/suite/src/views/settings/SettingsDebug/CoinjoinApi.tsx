@@ -63,7 +63,7 @@ const CoordinatorServer = ({
     const networkName = networks[symbol].name;
 
     return (
-        <SectionItem data-test={`@settings/debug/coinjoin/${symbol}`}>
+        <SectionItem data-test-id={`@settings/debug/coinjoin/${symbol}`}>
             <TextColumn
                 title={`${networkName}`}
                 description={
@@ -79,7 +79,7 @@ const CoordinatorServer = ({
                     onChange={({ value }) => onChange(symbol, value)}
                     value={selectedOption}
                     options={options}
-                    data-test={`@settings/debug/coinjoin/${symbol}/server-select`}
+                    data-test-id={`@settings/debug/coinjoin/${symbol}/server-select`}
                 />
             </ActionColumn>
         </SectionItem>
@@ -127,7 +127,7 @@ export const CoinjoinApi = () => {
                     />
                 );
             })}
-            <SectionItem data-test="@settings/debug/coinjoin-allow-no-tor">
+            <SectionItem data-test-id="@settings/debug/coinjoin-allow-no-tor">
                 <TextColumn
                     title="Allow no Tor"
                     description="Normally, coinjoin is allowed only when Tor is running. You may allow coinjoin without running Tor"
@@ -136,7 +136,7 @@ export const CoinjoinApi = () => {
                     <Switch
                         onChange={handleTorChange}
                         isChecked={debug?.coinjoinAllowNoTor ?? false}
-                        data-test="@settings/debug/coinjoin/allow-no-tor-checkbox"
+                        data-test-id="@settings/debug/coinjoin/allow-no-tor-checkbox"
                     />
                 </ActionColumn>
             </SectionItem>

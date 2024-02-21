@@ -28,7 +28,7 @@ export const TorLoadingScreen = ({ callback }: TorLoadingScreenProps) => {
 
     return (
         <ThemeProvider>
-            <Wrapper data-test="@tor-loading-screen">
+            <Wrapper data-test-id="@tor-loading-screen">
                 <TorLoader ModalWrapper={StyledModal} callback={callback} />
             </Wrapper>
         </ThemeProvider>

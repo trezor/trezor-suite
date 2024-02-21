@@ -33,8 +33,8 @@ export const DeviceConnect = ({ isWebUsbTransport }: DeviceConnectProps) => {
             label={<Translation id="TR_STILL_DONT_SEE_YOUR_TREZOR" />}
             items={items}
             offerWebUsb={isWebUsbTransport}
-            cta={isWebUsbTransport ? <WebUsbButton data-test="@webusb-button" /> : undefined}
-            data-test="@connect-device-prompt/no-device-detected"
+            cta={isWebUsbTransport ? <WebUsbButton data-test-id="@webusb-button" /> : undefined}
+            data-test-id="@connect-device-prompt/no-device-detected"
         />
     );
 };

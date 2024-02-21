@@ -52,7 +52,7 @@ interface LinkProps {
     variant?: 'default' | 'nostyle' | 'underline';
     icon?: IconProps['icon'];
     iconProps?: IconProps;
-    'data-test'?: string;
+    'data-test-id'?: string;
 }
 
 const Link = ({
@@ -62,7 +62,7 @@ const Link = ({
     iconProps,
     type,
     onClick,
-    'data-test': dataTest,
+    'data-test-id': dataTest,
     ...props
 }: LinkProps) => {
     const theme = useTheme();
@@ -74,7 +74,7 @@ const Link = ({
             href={href}
             target={target || '_blank'}
             rel="noreferrer noopener"
-            data-test={dataTest}
+            data-test-id={dataTest}
             onClick={(e: MouseEvent<any>) => {
                 e.stopPropagation();
                 onClick?.(e);

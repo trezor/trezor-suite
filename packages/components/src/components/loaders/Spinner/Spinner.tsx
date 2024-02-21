@@ -80,7 +80,7 @@ export const Spinner = ({
             $isGrey={isGrey}
             className={className}
             {...getProps()}
-            data-test={dataTest}
+            data-test-id={dataTest}
         />
     );
 };

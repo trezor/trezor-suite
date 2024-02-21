@@ -25,7 +25,7 @@ interface ConfirmActionProps extends DevicePromptModalProps {
 }
 
 export const ConfirmActionModal = ({ device, ...rest }: ConfirmActionProps) => (
-    <StyledDevicePromptModal data-test="@suite/modal/confirm-action-on-device" {...rest}>
+    <StyledDevicePromptModal data-test-id="@suite/modal/confirm-action-on-device" {...rest}>
         <StyledDeviceConfirmImage device={device} />
 
         <StyledH1>

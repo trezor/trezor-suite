@@ -38,7 +38,7 @@ export const AnimationWrapper = ({
                     onUpdate={onUpdate}
                     onAnimationComplete={onAnimationComplete}
                     transition={transition}
-                    data-test={dataTest}
+                    data-test-id={dataTest}
                 >
                     {children}
                 </motion.div>

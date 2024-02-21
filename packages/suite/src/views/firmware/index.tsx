@@ -176,7 +176,7 @@ export const Firmware = ({ shouldSwitchFirmwareType }: FirmwareProps) => {
                 )
             }
             onCancel={onClose}
-            data-test="@firmware"
+            data-test-id="@firmware"
             heading={<Translation id={heading} />}
         >
             <Wrapper isWithTopPadding={!isCancelable}>{Component}</Wrapper>

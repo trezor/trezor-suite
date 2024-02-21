@@ -12,7 +12,7 @@ const Wrapper = styled.div`
 
 export const UdevRules = ({ onCancel }: ForegroundAppProps) => (
     <Modal
-        data-test="@modal/udev"
+        data-test-id="@modal/udev"
         isCancelable
         onCancel={onCancel}
         heading={<Translation id="TR_UDEV_DOWNLOAD_TITLE" />}

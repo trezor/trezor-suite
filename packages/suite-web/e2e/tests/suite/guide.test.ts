@@ -61,7 +61,7 @@ describe('Test Guide', () => {
         cy.getTestElement('@guide/button-feedback').click();
         // cypress open todo: panel is probably animated, we need to wait until it is fully expanded
         cy.getTestElement('@guide/panel').screenshot('guide-side-panel', {
-            blackout: ['[data-test="@guide/support/version"]'],
+            blackout: ['[data-test-id="@guide/support/version"]'],
         });
     });
 });

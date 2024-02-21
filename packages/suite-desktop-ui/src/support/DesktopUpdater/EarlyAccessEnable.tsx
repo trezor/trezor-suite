@@ -97,7 +97,7 @@ export const EarlyAccessEnable = ({ hideWindow }: EarlyAccessEnableProps) => {
             </DescriptionWrapper>
             <Divider />
             <Checkbox
-                data-test="@settings/early-access-confirm-check"
+                data-test-id="@settings/early-access-confirm-check"
                 title={
                     <Paragraph type="highlight">
                         <Translation id="TR_EARLY_ACCESS_ENABLE_CONFIRM_CHECK" />

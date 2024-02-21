@@ -35,7 +35,7 @@ export const All = () => (
         {variables.ICONS.map((icon: IconType) => (
             <IconWrapper key={icon}>
                 <IconText>{icon}</IconText>
-                <Icon icon={icon} data-test={`icon-${icon.toLowerCase().replace('_', '-')}`} />
+                <Icon icon={icon} data-test-id={`icon-${icon.toLowerCase().replace('_', '-')}`} />
             </IconWrapper>
         ))}
     </Wrapper>

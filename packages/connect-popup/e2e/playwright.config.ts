@@ -10,6 +10,7 @@ const config: PlaywrightTestConfig = {
         ignoreHTTPSErrors: true,
         trace: 'retain-on-failure',
         ...devices['Desktop Chrome'],
+        testIdAttribute: 'data-test-id',
     },
 };
 export default config;

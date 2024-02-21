@@ -32,7 +32,7 @@ const fixtures = [
             'iframe and host same origins but with settings to NOT trustedHost -> show permissions',
         queryString: '',
         setTrustedHost: false,
-        expect: () => popup.waitForSelector("[data-test='@permissions/confirm-button']"),
+        expect: () => popup.waitForSelector("[data-test-id='@permissions/confirm-button']"),
     },
 ];
 
@@ -47,7 +47,7 @@ fixtures.forEach(f => {
 
         [popup] = await Promise.all([
             page.waitForEvent('popup'),
-            page.click("button[data-test='@submit-button']"),
+            page.click("button[data-test-id='@submit-button']"),
         ]);
 
         await f.expect();

@@ -19,21 +19,21 @@ export const AfterBackupCheckboxes = () => {
     return (
         <CheckboxWrapper>
             <CheckItem
-                data-test="@backup/check-item/wrote-seed-properly"
+                data-test-id="@backup/check-item/wrote-seed-properly"
                 onClick={() => dispatch(toggleCheckboxByKey('wrote-seed-properly'))}
                 title={<Translation id="TR_BACKUP_CHECKBOX_1_TITLE" />}
                 description={<Translation id="TR_BACKUP_CHECKBOX_1_DESCRIPTION" />}
                 isChecked={isChecked('wrote-seed-properly')}
             />
             <CheckItem
-                data-test="@backup/check-item/made-no-digital-copy"
+                data-test-id="@backup/check-item/made-no-digital-copy"
                 onClick={() => dispatch(toggleCheckboxByKey('made-no-digital-copy'))}
                 title={<Translation id="TR_BACKUP_CHECKBOX_2_TITLE" />}
                 description={<Translation id="TR_BACKUP_CHECKBOX_2_DESCRIPTION" />}
                 isChecked={isChecked('made-no-digital-copy')}
             />
             <CheckItem
-                data-test="@backup/check-item/will-hide-seed"
+                data-test-id="@backup/check-item/will-hide-seed"
                 onClick={() => dispatch(toggleCheckboxByKey('will-hide-seed'))}
                 title={<Translation id="TR_BACKUP_CHECKBOX_3_TITLE" />}
                 description={<Translation id="TR_BACKUP_CHECKBOX_3_DESCRIPTION" />}

@@ -46,7 +46,7 @@ export const Settings = () => {
         <SettingsContent>
             {fields.map(field => getField(field, { actions }))}
             <Row>
-                <Button onClick={actions.onSubmitInit} data-test="@submit-button">
+                <Button onClick={actions.onSubmitInit} data-test-id="@submit-button">
                     {submitButton}
                 </Button>
             </Row>

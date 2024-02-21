@@ -55,7 +55,7 @@ export const AccountImportSummary = ({ networkSymbol, accountInfo }: AccountImpo
                     title={
                         <Text
                             variant="titleSmall"
-                            data-testID="@account-import/coin-synced/success-text"
+                            data-test-id="@account-import/coin-synced/success-text"
                         >
                             {title}
                         </Text>

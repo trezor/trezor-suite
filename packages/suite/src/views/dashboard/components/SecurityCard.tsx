@@ -127,7 +127,7 @@ export const SecurityCard = ({
                                     size="small"
                                     {...(cta.dataTest
                                         ? {
-                                              'data-test': `@dashboard/security-card/${cta.dataTest}/button`,
+                                              'data-test-id': `@dashboard/security-card/${cta.dataTest}/button`,
                                           }
                                         : {})}
                                 >
@@ -150,7 +150,7 @@ export const SecurityCard = ({
                                     size="small"
                                     {...(cta.dataTest
                                         ? {
-                                              'data-test': `@dashboard/security-card/${cta.dataTest}/button`,
+                                              'data-test-id': `@dashboard/security-card/${cta.dataTest}/button`,
                                           }
                                         : {})}
                                 >

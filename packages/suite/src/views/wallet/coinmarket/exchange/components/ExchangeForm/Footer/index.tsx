@@ -34,7 +34,7 @@ const Footer = () => {
                     }
                     isLoading={formState.isSubmitting || isComposing}
                     type="submit"
-                    data-test="@coinmarket/exchange/compare-button"
+                    data-test-id="@coinmarket/exchange/compare-button"
                 >
                     <Translation id="TR_EXCHANGE_SHOW_OFFERS" />
                 </StyledButton>

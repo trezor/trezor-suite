@@ -173,7 +173,7 @@ export const FreshAddress = ({
             </AddressContainer>
             <Tooltip content={buttonTooltipContent()}>
                 <StyledButton
-                    data-test="@wallet/receive/reveal-address-button"
+                    data-test-id="@wallet/receive/reveal-address-button"
                     icon="TREZOR_LOGO"
                     onClick={handleAddressReveal}
                     isDisabled={disabled || locked || coinjoinDisallowReveal || !firstFreshAddress}

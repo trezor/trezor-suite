@@ -107,7 +107,7 @@ export const Raw = ({ network }: RawProps) => {
 
             <StyledTextarea
                 inputState={inputState}
-                data-test={INPUT_NAME}
+                data-test-id={INPUT_NAME}
                 defaultValue={inputValue}
                 bottomText={error?.message || null}
                 label={<Translation id="RAW_TRANSACTION" />}

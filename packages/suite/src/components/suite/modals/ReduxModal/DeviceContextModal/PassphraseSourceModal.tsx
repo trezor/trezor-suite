@@ -33,7 +33,7 @@ export const PassphraseSourceModal = ({ device }: PassphraseSourceModalProps) =>
     return (
         <StyledDevicePromptModal
             isPillShown={!authConfirmation}
-            data-test={
+            data-test-id={
                 authConfirmation ? '@modal/confirm-empty-hidden-wallet' : '@modal/passphrase-source'
             }
         >

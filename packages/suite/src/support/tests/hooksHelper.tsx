@@ -40,14 +40,14 @@ export function findByTestId(id: RegExp): HTMLElement[];
 export function findByTestId(id: any) {
     if (typeof id === 'string') {
         return screen.getByText((_, element) => {
-            const attrValue = element?.getAttribute('data-test');
+            const attrValue = element?.getAttribute('data-test-id');
 
             return attrValue ? attrValue === id : false;
         });
     }
 
     return screen.getAllByText((_, element) => {
-        const attrValue = element?.getAttribute('data-test');
+        const attrValue = element?.getAttribute('data-test-id');
 
         return attrValue ? id.test(attrValue) : false;
     });

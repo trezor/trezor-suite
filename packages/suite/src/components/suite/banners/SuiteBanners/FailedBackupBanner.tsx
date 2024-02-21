@@ -10,7 +10,7 @@ export const FailedBackup = () => {
     const action = {
         label: <Translation id="TR_CONTINUE" />,
         onClick: () => dispatch(goto('settings-device', { anchor: SettingsAnchor.BackupFailed })),
-        'data-test': '@notification/failed-backup/cta',
+        'data-test-id': '@notification/failed-backup/cta',
     };
 
     return (

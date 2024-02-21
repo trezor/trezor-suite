@@ -147,7 +147,7 @@ export const Tooltip = ({
     // set data-test attribute to Tippy https://github.com/atomiks/tippyjs-react/issues/89
     const onCreate = (instance: Instance) => {
         const content = instance.popper;
-        content.setAttribute('data-test', '@tooltip');
+        content.setAttribute('data-test-id', '@tooltip');
     };
 
     const animationVariants = {

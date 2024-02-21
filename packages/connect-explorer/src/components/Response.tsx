@@ -123,7 +123,7 @@ const Response = ({ code, docs, hasDocumentation, response, tab }: ResponseProps
                         ) : null;
 
                         return (
-                            <Container data-test="@response">
+                            <Container data-test-id="@response">
                                 <CopyToClipboard data={JSON.stringify(response, null, 2)} />
                                 {json}
                             </Container>
@@ -132,7 +132,7 @@ const Response = ({ code, docs, hasDocumentation, response, tab }: ResponseProps
 
                     case 'code':
                         return (
-                            <CodeContainer data-test="@code">
+                            <CodeContainer data-test-id="@code">
                                 <CopyToClipboard data={code} />
                                 {code}
                             </CodeContainer>
@@ -140,7 +140,7 @@ const Response = ({ code, docs, hasDocumentation, response, tab }: ResponseProps
 
                     case 'docs':
                         return (
-                            <div data-test="@docs">
+                            <div data-test-id="@docs">
                                 <Container
                                     className="docs-container"
                                     dangerouslySetInnerHTML={{ __html: docs! }}

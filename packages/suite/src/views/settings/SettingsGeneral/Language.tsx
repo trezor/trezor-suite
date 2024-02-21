@@ -99,7 +99,7 @@ export const Language = () => {
 
     return (
         <SectionItem
-            data-test="@settings/language"
+            data-test-id="@settings/language"
             ref={anchorRef}
             shouldHighlight={shouldHighlight}
         >
@@ -116,7 +116,7 @@ export const Language = () => {
                     options={options}
                     onChange={onChange}
                     isDisabled={isTranslationMode()}
-                    data-test="@settings/language-select"
+                    data-test-id="@settings/language-select"
                 />
             </ActionColumn>
         </SectionItem>

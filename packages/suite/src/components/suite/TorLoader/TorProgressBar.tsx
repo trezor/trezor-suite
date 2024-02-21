@@ -134,7 +134,7 @@ export const TorProgressBar = ({
 
                 {!isTorDisabling && (
                     <DisableButton
-                        data-test="@tor-loading-screen/disable-button"
+                        data-test-id="@tor-loading-screen/disable-button"
                         variant="secondary"
                         onClick={disableTor}
                     >

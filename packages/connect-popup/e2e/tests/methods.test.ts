@@ -89,11 +89,11 @@ filteredFixtures.forEach(f => {
         // screenshot request
         log(f.url, 'screenshot @trezor/connect call params');
 
-        const code = explorerPage.locator('[data-test="@code"]');
+        const code = explorerPage.locator('[data-test-id="@code"]');
         await code.screenshot({ path: `${screenshotsPath}/1-request.png` });
 
         log(f.url, 'submitting in connect explorer');
-        await explorerPage.waitForSelector("button[data-test='@submit-button']", {
+        await explorerPage.waitForSelector("button[data-test-id='@submit-button']", {
             state: 'visible',
         });
         log(f.url, 'waiting for popup promise');
@@ -102,11 +102,11 @@ filteredFixtures.forEach(f => {
         log(f.url, 'popup promise resolved');
 
         log(f.url, 'waiting for confirm analytics');
-        await popup.waitForSelector("button[data-test='@analytics/continue-button']", {
+        await popup.waitForSelector("button[data-test-id='@analytics/continue-button']", {
             state: 'visible',
             timeout: 40000,
         });
-        await popup.click("button[data-test='@analytics/continue-button']");
+        await popup.click("button[data-test-id='@analytics/continue-button']");
 
         log(f.url, 'waiting for confirm permissions button');
         await popup.waitForSelector('button.confirm', { state: 'visible' });
@@ -121,7 +121,7 @@ filteredFixtures.forEach(f => {
         const methodName = await popup.evaluate(() => {
             return (document as Document)
                 ?.querySelector('#react')
-                ?.shadowRoot?.querySelector("aside[data-test='@info-panel'] h2")?.textContent;
+                ?.shadowRoot?.querySelector("aside[data-test-id='@info-panel'] h2")?.textContent;
         });
         expect(methodName).not.toBe(undefined);
         expect(methodName).not.toBe('');
@@ -172,7 +172,7 @@ filteredFixtures.forEach(f => {
 
         // screenshot response
         log(f.url, 'screenshot response');
-        const response = explorerPage.locator('[data-test="@response"]');
+        const response = explorerPage.locator('[data-test-id="@response"]');
         await response.screenshot({ path: `${screenshotsPath}/4-response.png` });
         log(f.url, 'method finished');
     });

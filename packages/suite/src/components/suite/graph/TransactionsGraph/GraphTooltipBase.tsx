@@ -164,7 +164,7 @@ export const GraphTooltipBase = (props: GraphTooltipBaseProps) => {
         <CustomTooltipWrapper
             positionX={props.coordinate!.x!}
             boxWidth={props.viewBox!.width!}
-            data-test="@dashboard/customtooltip"
+            data-test-id="@dashboard/customtooltip"
         >
             <Row>
                 <Title>{date && formatDate(date, dateFormat)}</Title>

@@ -136,7 +136,7 @@ export const AccountNavigation = ({
     // collect all items suitable for current networkType
     const items = ITEMS.filter(item => !item.isHidden).map(item => ({
         ...item,
-        'data-test': `@wallet/menu/${item.id}${dataTestSuffix ? `-${dataTestSuffix}` : ''}`,
+        'data-test-id': `@wallet/menu/${item.id}${dataTestSuffix ? `-${dataTestSuffix}` : ''}`,
     }));
 
     return (

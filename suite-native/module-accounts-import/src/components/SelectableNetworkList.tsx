@@ -22,7 +22,7 @@ const NetworkItemSection = ({
                 <SelectableNetworkItem
                     key={symbol}
                     symbol={symbol}
-                    data-testID={`@onboarding/select-coin/${symbol}`}
+                    data-test-id={`@onboarding/select-coin/${symbol}`}
                     onPress={onSelectItem}
                 />
             ))}

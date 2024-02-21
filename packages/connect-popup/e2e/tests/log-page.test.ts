@@ -39,7 +39,7 @@ test('log page should contain logs from shared worker', async ({ page, context }
     await page.goto(`${url}#/method/verifyMessage`);
     [popup] = await Promise.all([
         page.waitForEvent('popup'),
-        page.click("button[data-test='@submit-button']"),
+        page.click("button[data-test-id='@submit-button']"),
     ]);
     await popup.waitForLoadState('load');
     log(`loaded: ${url}#/method/verifyMessage`);
@@ -52,7 +52,7 @@ test('log page should contain logs from shared worker', async ({ page, context }
     log(`loaded: ${url}log.html`);
 
     log('waiting for download-button to be visible');
-    await logsPage.waitForSelector("button[data-test='@log-container/download-button']", {
+    await logsPage.waitForSelector("button[data-test-id='@log-container/download-button']", {
         state: 'visible',
         timeout: 40 * 1000,
     });
@@ -60,7 +60,7 @@ test('log page should contain logs from shared worker', async ({ page, context }
     log('clicking download button and waiting for download to start');
     const [download] = await Promise.all([
         logsPage.waitForEvent('download'), // wait for download to start
-        logsPage.click("button[data-test='@log-container/download-button']"),
+        logsPage.click("button[data-test-id='@log-container/download-button']"),
     ]);
 
     log('download started');

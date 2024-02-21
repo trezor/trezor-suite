@@ -30,7 +30,7 @@ const UdevWeb = () => (
                 description: <UdevDownload />,
             },
         ]}
-        data-test="@connect-device-prompt/unreadable-udev"
+        data-test-id="@connect-device-prompt/unreadable-udev"
     />
 );
 
@@ -66,7 +66,7 @@ const UdevDesktop = () => {
                 opened={false}
                 label={<Translation id="TR_RECONNECT_IN_NORMAL" />}
                 items={[]}
-                data-test="@connect-device-prompt/unreadable-udev"
+                data-test-id="@connect-device-prompt/unreadable-udev"
             />
         );
     }
@@ -92,7 +92,7 @@ const UdevDesktop = () => {
                     noBullet: true,
                 },
             ]}
-            data-test="@connect-device-prompt/unreadable-udev"
+            data-test-id="@connect-device-prompt/unreadable-udev"
         />
     );
 };
@@ -111,7 +111,7 @@ export const DeviceUnreadable = ({ device, isWebUsbTransport }: DeviceUnreadable
                 label={<Translation id="TR_TROUBLESHOOTING_UNREADABLE_WEBUSB" />}
                 items={[TROUBLESHOOTING_TIP_BRIDGE_STATUS, TROUBLESHOOTING_TIP_BRIDGE_INSTALL]}
                 offerWebUsb
-                data-test="@connect-device-prompt/unreadable-hid"
+                data-test-id="@connect-device-prompt/unreadable-hid"
             />
         );
     }
@@ -135,7 +135,7 @@ export const DeviceUnreadable = ({ device, isWebUsbTransport }: DeviceUnreadable
                 TROUBLESHOOTING_TIP_DIFFERENT_COMPUTER,
             ]}
             offerWebUsb={isWebUsbTransport}
-            data-test="@connect-device-prompt/unreadable-unknown"
+            data-test-id="@connect-device-prompt/unreadable-unknown"
         />
     );
 };

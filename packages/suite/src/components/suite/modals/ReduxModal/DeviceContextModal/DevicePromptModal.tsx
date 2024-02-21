@@ -38,7 +38,7 @@ export interface DevicePromptModalProps {
     onAbort?: () => void;
     className?: string;
     children?: ReactNode;
-    'data-test'?: string;
+    'data-test-id'?: string;
 }
 
 const DevicePromptModalRenderer = ({

@@ -9,7 +9,7 @@ export const UpdateBridge = () => {
     const action = {
         label: <Translation id="TR_SHOW_DETAILS" />,
         onClick: () => dispatch(goto('suite-bridge')),
-        'data-test': '@notification/update-bridge/button',
+        'data-test-id': '@notification/update-bridge/button',
     };
 
     return (

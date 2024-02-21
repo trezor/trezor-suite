@@ -20,7 +20,7 @@ const FiatSelect = () => {
                         updateFiatCurrency(selected);
                         setAmountLimits(undefined);
                     }}
-                    data-test="@coinmarket/exchange/fiat-select"
+                    data-test-id="@coinmarket/exchange/fiat-select"
                     value={value}
                     isClearable={false}
                     options={buildCurrencyOptions(value)}

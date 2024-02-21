@@ -85,7 +85,7 @@ interface BackupSeedCardProps {
     icon: IconProps['icon'];
     isChecked: boolean;
     onClick: () => void;
-    ['data-test']: string;
+    ['data-test-id']: string;
 }
 
 export const BackupSeedCard = ({
@@ -93,7 +93,7 @@ export const BackupSeedCard = ({
     icon,
     isChecked,
     onClick,
-    'data-test': dataTest,
+    'data-test-id': dataTest,
 }: BackupSeedCardProps) => {
     const theme = useTheme();
 
@@ -103,7 +103,7 @@ export const BackupSeedCard = ({
     };
 
     return (
-        <Container forceElevation={2} checked={isChecked} data-test={dataTest}>
+        <Container forceElevation={2} checked={isChecked} data-test-id={dataTest}>
             <Content>
                 <IconWrapper>
                     <Icon icon={icon} color={theme.iconDefault} />

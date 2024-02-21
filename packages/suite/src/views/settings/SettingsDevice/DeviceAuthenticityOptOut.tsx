@@ -25,7 +25,7 @@ export const DeviceAuthenticityOptOut = () => {
         );
 
     return (
-        <SectionItem data-test="@settings/device/device-authenticity-opt-out">
+        <SectionItem data-test-id="@settings/device/device-authenticity-opt-out">
             <TextColumn
                 title={
                     <Translation
@@ -51,7 +51,7 @@ export const DeviceAuthenticityOptOut = () => {
                 <ActionButton
                     onClick={handleClick}
                     variant={isDeviceAuthenticityCheckDisabled ? 'primary' : 'destructive'}
-                    data-test="@settings/device/open-device-authenticity-opt-out-modal-button"
+                    data-test-id="@settings/device/open-device-authenticity-opt-out-modal-button"
                 >
                     <Translation
                         id={

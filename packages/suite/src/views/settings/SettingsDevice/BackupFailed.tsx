@@ -15,7 +15,7 @@ export const BackupFailed = () => {
 
     return (
         <SectionItem
-            data-test="@settings/device/failed-backup-row"
+            data-test-id="@settings/device/failed-backup-row"
             ref={anchorRef}
             shouldHighlight={shouldHighlight}
         >

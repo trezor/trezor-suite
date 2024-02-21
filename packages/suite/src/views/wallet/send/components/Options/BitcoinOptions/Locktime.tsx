@@ -113,7 +113,7 @@ export const Locktime = ({ close }: LocktimeProps) => {
                     <IconButton icon="CROSS" size="tiny" variant="tertiary" onClick={close} />
                 }
                 bottomText={error?.message || null}
-                data-test="locktime-input"
+                data-test-id="locktime-input"
             />
 
             {isFeatureFlagEnabled('RBF') && network.features?.includes('rbf') && (

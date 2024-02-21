@@ -268,7 +268,7 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardProps) => {
                     setHiddenWalletTouched(true);
                 }
             }}
-            data-test={`@passphrase-type/${props.type}`}
+            data-test-id={`@passphrase-type/${props.type}`}
         >
             {!props.singleColModal && (
                 // only used to show options in modal where user selects wallet type
@@ -285,7 +285,9 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardProps) => {
                         <Col>
                             <WalletTitle
                                 withMargin={props.type === 'hidden'}
-                                data-test={props.type === 'hidden' && '@tooltip/passphrase-tooltip'}
+                                data-test-id={
+                                    props.type === 'hidden' && '@tooltip/passphrase-tooltip'
+                                }
                             >
                                 {props.type === 'hidden' ? (
                                     <Tooltip
@@ -328,7 +330,7 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardProps) => {
                         {/* Show passphrase input */}
                         <InputWrapper authConfirmation={props.authConfirmation}>
                             <PassphraseInput
-                                data-test="@passphrase/input"
+                                data-test-id="@passphrase/input"
                                 placeholder={intl.formatMessage({
                                     defaultMessage: 'Enter passphrase',
                                     id: 'TR_ENTER_PASSPHRASE',
@@ -359,7 +361,7 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardProps) => {
                                             }
                                             setShowPassword(!showPassword);
                                         }}
-                                        data-test="@passphrase/show-toggle"
+                                        data-test-id="@passphrase/show-toggle"
                                     />
                                 }
                             />
@@ -372,7 +374,7 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardProps) => {
                 // Checkbox if user fully understands what's happening when confirming empty passphrase
                 <Content>
                     <Checkbox
-                        data-test="@passphrase/confirm-checkbox"
+                        data-test-id="@passphrase/confirm-checkbox"
                         onClick={() => setEnabled(!enabled)}
                         isChecked={enabled}
                     >
@@ -391,7 +393,7 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardProps) => {
                         {(props.singleColModal || hiddenWalletTouched) && (
                             <motion.div {...motionConfig.motionAnimation.expand}>
                                 <ActionButton
-                                    data-test={`@passphrase/${
+                                    data-test-id={`@passphrase/${
                                         props.type === 'hidden' ? 'hidden' : 'standard'
                                     }/submit-button`}
                                     isDisabled={!enabled || isTooLong}
@@ -410,7 +412,7 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardProps) => {
                                 variant="tertiary"
                                 onClick={() => submit(value, true)}
                                 isFullWidth
-                                data-test="@passphrase/enter-on-device-button"
+                                data-test-id="@passphrase/enter-on-device-button"
                             >
                                 <FormattedMessage
                                     id="TR_ENTER_PASSPHRASE_ON_DEVICE"

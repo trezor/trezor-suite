@@ -70,7 +70,7 @@ export const RequestEnableTorModal = ({ onCancel, decision }: RequestEnableTorMo
                         <Button
                             variant="tertiary"
                             onClick={onSkip}
-                            data-test="@request-enable-tor-modal/skip-button"
+                            data-test-id="@request-enable-tor-modal/skip-button"
                         >
                             <Translation id="TR_TOR_SKIP" />
                         </Button>

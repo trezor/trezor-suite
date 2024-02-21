@@ -75,7 +75,7 @@ export const GuideRouter = () => {
                 <AnimatePresence>
                     {isGuideOpen && (
                         <MotionGuide
-                            data-test="@guide/panel"
+                            data-test-id="@guide/panel"
                             initial={{
                                 width: isFirstRender ? variables.LAYOUT_SIZE.GUIDE_PANEL_WIDTH : 0,
                             }}

@@ -48,7 +48,7 @@ export const BackupStep = () => {
                     description={<Translation id="TR_BACKUP_SUBHEADING_1" />}
                     innerActions={
                         <OnboardingButtonCta
-                            data-test="@backup/start-button"
+                            data-test-id="@backup/start-button"
                             onClick={() => {
                                 dispatch(updateAnalytics({ backup: 'create' }));
                                 dispatch(backupDevice({}, true));
@@ -60,7 +60,7 @@ export const BackupStep = () => {
                     }
                     outerActions={
                         <OnboardingButtonSkip
-                            data-test="@onboarding/exit-app-button"
+                            data-test-id="@onboarding/exit-app-button"
                             onClick={() => {
                                 dispatch(updateAnalytics({ backup: 'skip' }));
                                 setShowSkipConfirmation(true);
@@ -94,7 +94,7 @@ export const BackupStep = () => {
                     description={<Translation id="TR_BACKUP_FINISHED_TEXT" />}
                     innerActions={
                         <OnboardingButtonCta
-                            data-test="@backup/close-button"
+                            data-test-id="@backup/close-button"
                             onClick={() => dispatch(goToNextStep())}
                             isDisabled={!canContinue(backup.userConfirmed)}
                         >

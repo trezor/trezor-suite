@@ -209,7 +209,7 @@ export const CollapsibleOnboardingCard = ({
         animate={expanded ? 'expanded' : 'closed'}
         transition={{ duration: 0.4, ease: motionEasing.transition }}
         onClick={expandable && !expanded ? onToggle : undefined}
-        data-test="@components/collapsible-box"
+        data-test-id="@components/collapsible-box"
         {...rest}
     >
         <CardWrapperInner expandable={expandable}>

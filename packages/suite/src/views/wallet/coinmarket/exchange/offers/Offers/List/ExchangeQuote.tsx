@@ -257,7 +257,7 @@ export const ExchangeQuote = ({ className, quote }: QuoteProps) => {
                         isLoading={callInProgress}
                         isDisabled={errorQuote || callInProgress}
                         onClick={() => selectQuote(quote)}
-                        data-test="@coinmarket/exchange/offers/get-this-deal-button"
+                        data-test-id="@coinmarket/exchange/offers/get-this-deal-button"
                     >
                         <Translation id="TR_EXCHANGE_GET_THIS_OFFER" />
                     </StyledButton>

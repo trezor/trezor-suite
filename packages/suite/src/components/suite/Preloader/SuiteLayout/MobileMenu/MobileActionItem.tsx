@@ -82,7 +82,7 @@ interface CommonProps extends Pick<HTMLAttributes<HTMLDivElement>, 'onClick'> {
     label: ReactNode;
     isActive?: boolean;
     indicator?: IndicatorStatus;
-    'data-test'?: string;
+    'data-test-id'?: string;
 }
 
 interface CustomIconComponentProps extends CommonProps {
@@ -105,7 +105,7 @@ export const MobileActionItem = ({
     isActive,
     label,
     onClick,
-    'data-test': dataTest,
+    'data-test-id': dataTest,
 }: MobileActionItemProps) => {
     const theme = useTheme();
 
@@ -143,7 +143,7 @@ export const MobileActionItem = ({
     );
 
     return (
-        <MobileWrapper data-test={dataTest} onClick={onClick}>
+        <MobileWrapper data-test-id={dataTest} onClick={onClick}>
             <MobileIconWrapper>{Content}</MobileIconWrapper>
             <Label isActive={isActive}>{label}</Label>
         </MobileWrapper>

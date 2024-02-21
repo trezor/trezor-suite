@@ -29,7 +29,7 @@ describe('Bridge page', () => {
         cy.getTestElement('@bridge/installers/input').should('contain', 'Windows');
 
         cy.getTestElement('@modal/bridge').matchImageSnapshot('bridge-modal', {
-            blackout: ['[data-test="@bridge/download-button"]'],
+            blackout: ['[data-test-id="@bridge/download-button"]'],
         });
 
         // user may exit bridge page and use webusb

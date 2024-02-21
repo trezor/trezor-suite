@@ -119,7 +119,7 @@ export const AccountsMenu = () => {
                     {!isEmpty && <AccountSearchBox />}
                     <AddAccountButton
                         isFullWidth={isEmpty}
-                        data-test="@account-menu/add-account"
+                        data-test-id="@account-menu/add-account"
                         device={device}
                     />
                 </Row>

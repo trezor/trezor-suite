@@ -81,9 +81,9 @@ test('input passphrase in popup and device accepts it', async ({ page }) => {
     await waitAndClick(popup, ['@permissions/confirm-button', '@export-address/confirm-button']);
 
     log('typing passphrase');
-    (await popup.waitForSelector("input[data-test='@passphrase/input']", { timeout: 40000 })).type(
-        'abc',
-    );
+    (
+        await popup.waitForSelector("input[data-test-id='@passphrase/input']", { timeout: 40000 })
+    ).type('abc');
 
     log('submitting passphrase');
     await waitAndClick(popup, ['@passphrase/hidden/submit-button']);
@@ -121,7 +121,7 @@ test('introduce passphrase in popup and device rejects it', async ({ page }) => 
     log('waiting for confirm permissions button');
     await waitAndClick(popup, ['@permissions/confirm-button', '@export-address/confirm-button']);
 
-    (await popup.waitForSelector("input[data-test='@passphrase/input']")).type('abc');
+    (await popup.waitForSelector("input[data-test-id='@passphrase/input']")).type('abc');
 
     await waitAndClick(popup, ['@passphrase/hidden/submit-button']);
 
@@ -156,7 +156,7 @@ test('introduce passphrase successfully next time should not ask for it', async 
     log('waiting for confirm permissions button');
     await waitAndClick(popup, ['@permissions/confirm-button', '@export-address/confirm-button']);
 
-    (await popup.waitForSelector("input[data-test='@passphrase/input']")).type('abc');
+    (await popup.waitForSelector("input[data-test-id='@passphrase/input']")).type('abc');
 
     await waitAndClick(popup, ['@passphrase/hidden/submit-button']);
 
@@ -207,7 +207,7 @@ test('introduce passphrase successfully reload 3rd party it should ask again for
     log('waiting and click confirm permissions button');
     await waitAndClick(popup, ['@permissions/confirm-button', '@export-address/confirm-button']);
 
-    (await popup.waitForSelector("input[data-test='@passphrase/input']")).type('abc');
+    (await popup.waitForSelector("input[data-test-id='@passphrase/input']")).type('abc');
 
     await waitAndClick(popup, ['@passphrase/hidden/submit-button']);
 
@@ -236,7 +236,7 @@ test('introduce passphrase successfully reload 3rd party it should ask again for
     await waitAndClick(popup, ['@permissions/confirm-button', '@export-address/confirm-button']);
 
     // Popup should go to passphrase screen
-    await popup.waitForSelector("input[data-test='@passphrase/input']");
+    await popup.waitForSelector("input[data-test-id='@passphrase/input']");
 });
 
 test('passphrase mismatch', async ({ page }) => {
@@ -276,7 +276,7 @@ test('passphrase mismatch', async ({ page }) => {
 
     log('typing passphrase');
     // use different passphrase (not corresponding to device.state)
-    (await popup.waitForSelector("input[data-test='@passphrase/input']")).type('cba');
+    (await popup.waitForSelector("input[data-test-id='@passphrase/input']")).type('cba');
     log('submitting passphrase');
     await waitAndClick(popup, ['@passphrase/hidden/submit-button']);
     // Accept to see Passphrase.
@@ -292,7 +292,7 @@ test('passphrase mismatch', async ({ page }) => {
 
     log('typing passphrase');
     // Input right passphrase.
-    (await popup.waitForSelector("input[data-test='@passphrase/input']")).type('abc');
+    (await popup.waitForSelector("input[data-test-id='@passphrase/input']")).type('abc');
 
     log('submitting passphrase');
     await waitAndClick(popup, ['@passphrase/hidden/submit-button']);
@@ -335,7 +335,7 @@ test('passphrase mismatch', async ({ page }) => {
     await waitAndClick(popup, ['@permissions/confirm-button', '@export-address/confirm-button']);
 
     // Use different passphrase (not corresponding to device.state)
-    (await popup.waitForSelector("input[data-test='@passphrase/input']")).type('cba');
+    (await popup.waitForSelector("input[data-test-id='@passphrase/input']")).type('cba');
 
     await waitAndClick(popup, ['@passphrase/hidden/submit-button']);
 

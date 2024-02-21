@@ -271,7 +271,7 @@ export const BuyQuote = ({ className, quote, wantCrypto }: QuoteProps) => {
                             <StyledButton
                                 isDisabled={!!quote.error}
                                 onClick={() => selectQuote(quote)}
-                                data-test="@coinmarket/buy/offers/get-this-deal-button"
+                                data-test-id="@coinmarket/buy/offers/get-this-deal-button"
                             >
                                 <Translation id="TR_BUY_GET_THIS_OFFER" />
                             </StyledButton>

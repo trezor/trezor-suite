@@ -33,7 +33,7 @@ const BasicSettings = () => {
             outerActions={
                 <AdvancedSetup>
                     <OnboardingButtonCta
-                        data-test="@onboarding/coins/continue-button"
+                        data-test-id="@onboarding/coins/continue-button"
                         onClick={() => {
                             goToNextStep();
                         }}

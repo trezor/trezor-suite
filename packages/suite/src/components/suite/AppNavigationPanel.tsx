@@ -113,7 +113,7 @@ export const AppNavigationPanel = ({
                     <BasicInfo>
                         <TitleRow>
                             <Title>{title}</Title>
-                            <Aside data-test="@app/navigation/aside">
+                            <Aside data-test-id="@app/navigation/aside">
                                 {titleContent?.(inView)}
                             </Aside>
                         </TitleRow>

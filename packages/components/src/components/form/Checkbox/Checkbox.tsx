@@ -143,7 +143,7 @@ export interface CheckboxProps {
     isDisabled?: boolean;
     labelAlignment?: LabelAlignment;
     onClick: EventHandler<SyntheticEvent>;
-    'data-test'?: string;
+    'data-test-id'?: string;
     className?: string;
     children?: ReactNode;
 }
@@ -154,7 +154,7 @@ export const Checkbox = ({
     isDisabled,
     labelAlignment = 'right',
     onClick,
-    'data-test': dataTest,
+    'data-test-id': dataTest,
     className,
     children,
 }: CheckboxProps) => {
@@ -172,7 +172,7 @@ export const Checkbox = ({
             labelAlignment={labelAlignment}
             onClick={onClick}
             onKeyUp={handleKeyUp}
-            data-test={dataTest}
+            data-test-id={dataTest}
             className={className}
         >
             <HiddenInput

@@ -170,7 +170,7 @@ export const ConfirmValueModal = ({
                             <StyledButton
                                 isDisabled={!addressConfirmed}
                                 onClick={copy}
-                                data-test={copyButtonDataTest}
+                                data-test-id={copyButtonDataTest}
                             >
                                 {copyButtonText}
                             </StyledButton>

@@ -75,7 +75,7 @@ test.beforeAll(async () => {
         explorerUrl = contexts.exploreUrl;
 
         await explorerPage.goto(`${explorerUrl}#/method/verifyMessage`);
-        await explorerPage.waitForSelector("button[data-test='@submit-button']", {
+        await explorerPage.waitForSelector("button[data-test-id='@submit-button']", {
             state: 'visible',
         });
 
@@ -110,12 +110,12 @@ test.beforeAll(async () => {
         [popup] = await openPopup(browserContext, explorerPage, isWebExtension);
 
         log('beforeEach', 'waiting for analytics confirm button');
-        await popup.waitForSelector("button[data-test='@analytics/continue-button']", {
+        await popup.waitForSelector("button[data-test-id='@analytics/continue-button']", {
             state: 'visible',
             timeout: 40000,
         });
         log('beforeEach', 'clicking on analytics confirm button');
-        await popup.click("button[data-test='@analytics/continue-button']");
+        await popup.click("button[data-test-id='@analytics/continue-button']");
 
         popupClosedPromise = new Promise(resolve => {
             popup.on('close', () => resolve(undefined));
@@ -162,7 +162,7 @@ test.beforeAll(async () => {
         log('afterEach', 'go to verifyMessage');
         await explorerPage.goto(`${explorerUrl}#/method/verifyMessage`);
         log('afterEach', 'waiting for submit button');
-        await explorerPage.waitForSelector("button[data-test='@submit-button']", {
+        await explorerPage.waitForSelector("button[data-test-id='@submit-button']", {
             state: 'visible',
         });
         log('afterEach', 'waiting for popup open');
@@ -217,7 +217,7 @@ test.beforeAll(async () => {
             expect(response.url).not.toContain('post');
         });
 
-        await popup.click("button[data-test='@connect-ui/error-close-button']");
+        await popup.click("button[data-test-id='@connect-ui/error-close-button']");
         await releasePromise!.promise;
         await popupClosedPromise;
 
@@ -240,7 +240,7 @@ test.beforeAll(async () => {
             status: 400,
         });
 
-        await popup.click("button[data-test='@connect-ui/error-close-button']");
+        await popup.click("button[data-test-id='@connect-ui/error-close-button']");
         await releasePromise!.promise;
         await popupClosedPromise;
 
@@ -284,7 +284,7 @@ test.beforeAll(async () => {
         log(`test: ${test.info().title}`);
         await popup.reload();
         // after popup is reload, communication is lost, there is only infinite loader
-        await popup.waitForSelector('div[data-test="@connect-ui/loader"]');
+        await popup.waitForSelector('div[data-test-id="@connect-ui/loader"]');
         // todo: there is no message into client about the fact that popup was unloaded
     });
 
@@ -302,7 +302,7 @@ test.beforeAll(async () => {
         await popupClosedPromise;
 
         await explorerPage.goto(`${explorerUrl}#/method/getAddress`);
-        await explorerPage.waitForSelector("button[data-test='@submit-button']", {
+        await explorerPage.waitForSelector("button[data-test-id='@submit-button']", {
             state: 'visible',
         });
 
@@ -315,9 +315,9 @@ test.beforeAll(async () => {
 
         await popup.waitForLoadState('load');
         await popup.waitForSelector('button.confirm', { state: 'visible', timeout: 40000 });
-        await popup.waitForSelector("button[data-test='@permissions/confirm-button']");
+        await popup.waitForSelector("button[data-test-id='@permissions/confirm-button']");
         // We are testing that when cancel permissions, popup is closed automatically.
-        await popup.click("button[data-test='@permissions/cancel-button']");
+        await popup.click("button[data-test-id='@permissions/cancel-button']");
         // Wait for popup to close.
         await popupClosedPromise;
     });
@@ -336,7 +336,7 @@ test.beforeAll(async () => {
         await popupClosedPromise;
 
         await explorerPage.goto(`${explorerUrl}#/method/getAddress`);
-        await explorerPage.waitForSelector("button[data-test='@submit-button']", {
+        await explorerPage.waitForSelector("button[data-test-id='@submit-button']", {
             state: 'visible',
         });
 
@@ -348,11 +348,11 @@ test.beforeAll(async () => {
 
         await popup.waitForLoadState('load');
         await popup.waitForSelector('button.confirm', { state: 'visible', timeout: 40000 });
-        await popup.waitForSelector("button[data-test='@permissions/confirm-button']");
-        await popup.click("button[data-test='@permissions/confirm-button']");
-        await popup.waitForSelector("button[data-test='@export-address/cancel-button']");
+        await popup.waitForSelector("button[data-test-id='@permissions/confirm-button']");
+        await popup.click("button[data-test-id='@permissions/confirm-button']");
+        await popup.waitForSelector("button[data-test-id='@export-address/cancel-button']");
         // We are testing that when cancel Export Bitcoin address, popup is closed automatically.
-        await popup.click("button[data-test='@export-address/cancel-button']");
+        await popup.click("button[data-test-id='@export-address/cancel-button']");
         // Wait for popup to close.
         await popupClosedPromise;
     });
@@ -397,7 +397,7 @@ test.beforeAll(async () => {
         await popupClosedPromise;
 
         await explorerPage.goto(`${explorerUrl}#/method/getAddress`);
-        await explorerPage.waitForSelector("button[data-test='@submit-button']", {
+        await explorerPage.waitForSelector("button[data-test-id='@submit-button']", {
             state: 'visible',
         });
 
@@ -408,7 +408,7 @@ test.beforeAll(async () => {
             popup.on('close', () => resolve(undefined));
         });
 
-        await popup.waitForSelector("button[data-test='@permissions/confirm-button']");
+        await popup.waitForSelector("button[data-test-id='@permissions/confirm-button']");
 
         await waitAndClick(popup, ['@permissions/confirm-button']);
 
@@ -441,7 +441,7 @@ test.beforeAll(async () => {
         await popupClosedPromise;
 
         await explorerPage.goto(`${explorerUrl}#/method/getAddress`);
-        await explorerPage.waitForSelector("button[data-test='@submit-button']", {
+        await explorerPage.waitForSelector("button[data-test-id='@submit-button']", {
             state: 'visible',
         });
         log('waiting for popup open');

@@ -28,7 +28,7 @@ export const CheckRecoverySeed = ({ isDeviceLocked }: CheckRecoverySeedProps) =>
 
     return (
         <SectionItem
-            data-test="@settings/device/check-recovery-seed"
+            data-test-id="@settings/device/check-recovery-seed"
             ref={anchorRef}
             shouldHighlight={shouldHighlight}
         >
@@ -39,7 +39,7 @@ export const CheckRecoverySeed = ({ isDeviceLocked }: CheckRecoverySeedProps) =>
             />
             <ActionColumn>
                 <ActionButton
-                    data-test="@settings/device/check-seed-button"
+                    data-test-id="@settings/device/check-seed-button"
                     onClick={handleClick}
                     isDisabled={isDeviceLocked || needsBackup}
                     variant="secondary"

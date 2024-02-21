@@ -58,7 +58,7 @@ export const SkipStepConfirmation = ({ onCancel }: SkipStepConfirmationProps) =>
                     </Button>
                     <Button
                         variant="destructive"
-                        data-test="@onboarding/skip-button-confirm"
+                        data-test-id="@onboarding/skip-button-confirm"
                         onClick={() => goToNextStep(nextStep)}
                     >
                         {text}

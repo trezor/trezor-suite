@@ -16,7 +16,7 @@ export const ConnectLabelingProvider = () => {
 
     return (
         <SectionItem
-            data-test="@settings/labeling-connect"
+            data-test-id="@settings/labeling-connect"
             ref={anchorRef}
             shouldHighlight={shouldHighlight}
         >
@@ -28,7 +28,7 @@ export const ConnectLabelingProvider = () => {
                 <ActionButton
                     variant="secondary"
                     onClick={() => dispatch(metadataLabelingActions.init(true))}
-                    data-test="@settings/metadata/connect-provider-button"
+                    data-test-id="@settings/metadata/connect-provider-button"
                 >
                     <Translation id="TR_CONNECT" />
                 </ActionButton>

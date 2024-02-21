@@ -138,7 +138,7 @@ export const FinalStep = () => {
 
     return (
         <OnboardingStepBox
-            data-test="@onboarding/final"
+            data-test-id="@onboarding/final"
             device={isWaitingForConfirm ? device : undefined}
             isActionAbortable={isActionAbortable}
         >
@@ -213,7 +213,7 @@ export const FinalStep = () => {
 
                     <EnterSuiteButton
                         variant="secondary"
-                        data-test="@onboarding/exit-app-button"
+                        data-test-id="@onboarding/exit-app-button"
                         onClick={() => {
                             goToSuite(true);
 

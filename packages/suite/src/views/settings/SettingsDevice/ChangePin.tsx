@@ -29,7 +29,7 @@ export const ChangePin = ({ isDeviceLocked }: ChangePinProps) => {
 
     return (
         <SectionItem
-            data-test="@settings/device/change-pin"
+            data-test-id="@settings/device/change-pin"
             ref={anchorRef}
             shouldHighlight={shouldHighlight}
         >

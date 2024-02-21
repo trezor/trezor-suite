@@ -175,7 +175,7 @@ const CollapsibleBox: FC<CollapsibleBoxProps> & CollapsibleBoxSubcomponents = ({
                         ease: isCollapsed ? motionEasing.enter : motionEasing.exit,
                     },
                 }}
-                data-test="@collapsible-box/body"
+                data-test-id="@collapsible-box/body"
             >
                 <Content variant={variant}>{children}</Content>
             </Collapser>

@@ -80,7 +80,7 @@ export const OnboardingStepBox = ({
         <>
             <StyledBackdrop show={isBackDropVisible} />
             {!disableConfirmWrapper && (
-                <ConfirmWrapper data-test="@onboarding/confirm-on-device">
+                <ConfirmWrapper data-test-id="@onboarding/confirm-on-device">
                     {deviceModelInternal && (
                         <ConfirmOnDevice
                             title={devicePromptTitle || <Translation id="TR_CONFIRM_ON_TREZOR" />}

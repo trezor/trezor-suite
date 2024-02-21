@@ -37,9 +37,9 @@ export const LoggedOutLayout = ({ children }: LoggedOutLayout) => {
                     <ModalSwitcher />
 
                     <LayoutContext.Provider value={setLayoutPayload}>
-                        <Body data-test="@suite-layout/body">
+                        <Body data-test-id="@suite-layout/body">
                             <Columns>
-                                <AppWrapper data-test="@app" ref={scrollRef} id="layout-scroll">
+                                <AppWrapper data-test-id="@app" ref={scrollRef} id="layout-scroll">
                                     {TopMenu && <TopMenu />}
 
                                     <ContentWrapper>{children}</ContentWrapper>

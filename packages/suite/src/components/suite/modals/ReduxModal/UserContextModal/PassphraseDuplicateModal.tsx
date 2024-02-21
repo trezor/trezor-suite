@@ -29,7 +29,7 @@ export const PassphraseDuplicateModal = ({ device, duplicate }: PassphraseDuplic
         <Modal
             heading={<Translation id="TR_WALLET_DUPLICATE_TITLE" />}
             description={<Translation id="TR_WALLET_DUPLICATE_DESC" />}
-            data-test="@passphrase-duplicate"
+            data-test-id="@passphrase-duplicate"
             bottomBarComponents={
                 <>
                     <Button

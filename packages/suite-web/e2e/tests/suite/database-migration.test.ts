@@ -98,7 +98,7 @@ describe('Database migration', () => {
         // remember the wallet
         cy.getTestElement('@menu/switch-device').click();
         cy.contains(hiddenWalletSelector, 'Hidden wallet #1')
-            .find('[data-test*="toggle-remember-switch"]')
+            .find('[data-test-id*="toggle-remember-switch"]')
             .click()
             .find('input')
             .should('be.checked');
@@ -142,7 +142,7 @@ describe('Database migration', () => {
 
         // checking the Send form
         cy.getTestElement('@wallet/menu/wallet-send').click();
-        // TODO: remove this workaround after the "old" version also uses the new data-testid attribute
+        // TODO: remove this workaround after the "old" version also uses the new data-test-id attribute
         cy.getTestElement(workaroundBtcAddressInputSelector)
             .should('be.visible')
             .invoke('attr', 'value')

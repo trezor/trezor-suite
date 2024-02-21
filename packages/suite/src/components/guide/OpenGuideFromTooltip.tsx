@@ -36,7 +36,7 @@ export const OpenGuideFromTooltip = ({ id, instance, dataTest }: OpenGuideFromTo
 
     return (
         <OpenGuideLink
-            data-test={dataTest}
+            data-test-id={dataTest}
             onClick={(e: MouseEvent<any>) => {
                 e.stopPropagation();
                 instance.hide();

@@ -113,7 +113,7 @@ export const Footer = () => {
                     isDisabled={!(formIsValid && hasValues) || isSubmitting}
                     isLoading={isSubmitting}
                     type="submit"
-                    data-test="@coinmarket/p2p/compare-button"
+                    data-test-id="@coinmarket/p2p/compare-button"
                 >
                     <Translation id="TR_P2P_SHOW_OFFERS" />
                 </StyledButton>

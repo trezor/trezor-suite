@@ -19,7 +19,7 @@ chrome.runtime.onMessage.addListener((message, sender) => {
         document.getElementById('result').innerText = JSON.stringify(data);
     } else if (type === 'connectLoaded') {
         const connectLoaded = document.createElement('div');
-        connectLoaded.setAttribute('data-test', 'connect-loaded');
+        connectLoaded.setAttribute('data-test-id', 'connect-loaded');
         connectLoaded.innerText = 'TrezorConnect is loaded';
         connectLoaded.style.display = 'block';
         document.body.appendChild(connectLoaded);

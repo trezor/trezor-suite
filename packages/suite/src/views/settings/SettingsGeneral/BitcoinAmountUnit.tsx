@@ -21,7 +21,7 @@ export const BitcoinAmountUnit = () => {
 
     return (
         <SectionItem
-            data-test="@settings/btc-units"
+            data-test-id="@settings/btc-units"
             ref={anchorRef}
             shouldHighlight={shouldHighlight}
         >
@@ -37,7 +37,7 @@ export const BitcoinAmountUnit = () => {
                     }}
                     options={UNIT_OPTIONS}
                     onChange={handleUnitsChange}
-                    data-test="@settings/btc-units-select"
+                    data-test-id="@settings/btc-units-select"
                 />
             </ActionColumn>
         </SectionItem>

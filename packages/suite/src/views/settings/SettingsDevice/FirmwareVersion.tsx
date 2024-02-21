@@ -92,7 +92,7 @@ export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
 
     return (
         <SectionItem
-            data-test="@settings/device/firmware-version"
+            data-test-id="@settings/device/firmware-version"
             ref={anchorRef}
             shouldHighlight={shouldHighlight}
         >
@@ -128,7 +128,7 @@ export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
                 <ActionButton
                     variant="secondary"
                     onClick={handleUpdate}
-                    data-test="@settings/device/update-button"
+                    data-test-id="@settings/device/update-button"
                     isDisabled={isDeviceLocked}
                 >
                     <Translation

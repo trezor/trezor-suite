@@ -8,7 +8,7 @@ const StyledButton = styled(Button)`
 `;
 
 export const FirmwareContinueButton = (props: Omit<ButtonProps, 'children'>) => (
-    <StyledButton {...props} data-test="@firmware/continue-button">
+    <StyledButton {...props} data-test-id="@firmware/continue-button">
         <Translation id="TR_CONTINUE" />
     </StyledButton>
 );

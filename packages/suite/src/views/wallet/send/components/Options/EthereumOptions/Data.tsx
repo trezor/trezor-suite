@@ -103,7 +103,7 @@ export const Data = ({ close }: DataProps) => {
         <Wrapper>
             <Textarea
                 inputState={getInputState(asciiError)}
-                data-test={inputAsciiName}
+                data-test-id={inputAsciiName}
                 defaultValue={asciiValue}
                 maxLength={formInputsMaxLength.ethData}
                 bottomText={asciiError?.message || null}
@@ -114,7 +114,7 @@ export const Data = ({ close }: DataProps) => {
             <Space> = </Space>
             <Textarea
                 inputState={getInputState(hexError)}
-                data-test={inputHexName}
+                data-test-id={inputHexName}
                 defaultValue={hexValue}
                 maxLength={formInputsMaxLength.ethData}
                 bottomText={hexError?.message || null}
@@ -122,7 +122,7 @@ export const Data = ({ close }: DataProps) => {
                     <Icon
                         size={20}
                         icon="CROSS"
-                        data-test="send/close-ethereum-data"
+                        data-test-id="send/close-ethereum-data"
                         onClick={handleClose}
                     />
                 }

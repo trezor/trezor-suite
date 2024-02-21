@@ -188,7 +188,7 @@ export const Coin = ({
             forceHover={forceHover}
             hasSettings={!!onSettings}
             onClick={onToggle}
-            data-test={`@settings/wallet/network/${symbol}`}
+            data-test-id={`@settings/wallet/network/${symbol}`}
             data-active={toggled}
         >
             <ImageWrapper>
@@ -210,7 +210,7 @@ export const Coin = ({
             <SettingsWrapper
                 onClick={onSettingsClick}
                 toggled={toggled}
-                data-test={`@settings/wallet/network/${symbol}/advance`}
+                data-test-id={`@settings/wallet/network/${symbol}/advance`}
             >
                 <Icon icon="SETTINGS" />
             </SettingsWrapper>

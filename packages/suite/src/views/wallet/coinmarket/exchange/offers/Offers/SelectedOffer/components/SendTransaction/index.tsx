@@ -66,7 +66,7 @@ const SendTransactionComponent = () => {
 
             <ButtonWrapper>
                 <Button
-                    data-test="@coinmarket/exchange/offers/confirm-on-trezor-and-send"
+                    data-test-id="@coinmarket/exchange/offers/confirm-on-trezor-and-send"
                     isLoading={callInProgress}
                     onClick={sendTransaction}
                 >

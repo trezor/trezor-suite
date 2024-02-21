@@ -30,7 +30,7 @@ export const PinProtection = ({ isDeviceLocked }: PinProtectionProps) => {
 
     return (
         <SectionItem
-            data-test="@settings/device/pin-protection"
+            data-test-id="@settings/device/pin-protection"
             ref={anchorRef}
             shouldHighlight={shouldHighlight}
         >

@@ -178,7 +178,7 @@ export const FirmwareCustom = () => {
                     />
                 )
             }
-            data-test="@firmware-custom"
+            data-test-id="@firmware-custom"
         >
             <ModalContent isNarrow={status === 'initial'}>
                 <Step />

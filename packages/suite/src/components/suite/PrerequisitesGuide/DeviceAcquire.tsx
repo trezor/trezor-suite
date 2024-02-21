@@ -19,7 +19,7 @@ export const DeviceAcquire = () => {
     };
 
     const ctaButton = (
-        <Button data-test="@device-acquire" isLoading={isDeviceLocked} onClick={handleClick}>
+        <Button data-test-id="@device-acquire" isLoading={isDeviceLocked} onClick={handleClick}>
             <Translation id="TR_ACQUIRE_DEVICE" />
         </Button>
     );

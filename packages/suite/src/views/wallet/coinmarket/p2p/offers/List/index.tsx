@@ -113,7 +113,7 @@ export const List = ({ quotes }: ListProps) => {
     const alternativeQuotes = quotes.filter(quote => !currencyMatches(quote));
 
     return (
-        <Wrapper data-test="@coinmarket/p2p/offers-list">
+        <Wrapper data-test-id="@coinmarket/p2p/offers-list">
             <Header>
                 <Left>
                     <SummaryRow>

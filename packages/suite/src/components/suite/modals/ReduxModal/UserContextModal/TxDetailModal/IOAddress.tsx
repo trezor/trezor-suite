@@ -97,7 +97,7 @@ export const IOAddress = ({
         <HiddenPlaceholder>
             <TextOverflowContainer
                 onMouseLeave={() => setIsClicked(false)}
-                data-test="@tx-detail/txid-value"
+                data-test-id="@tx-detail/txid-value"
                 id={txAddress}
                 shouldAllowCopy={shouldAllowCopy}
             >

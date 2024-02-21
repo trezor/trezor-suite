@@ -42,7 +42,7 @@ export const WipeCode = ({ isDeviceLocked }: Props) => {
 
     return (
         <SectionItem
-            data-test="@settings/device/change-wipe-code"
+            data-test-id="@settings/device/change-wipe-code"
             ref={anchorRef}
             shouldHighlight={shouldHighlight}
         >

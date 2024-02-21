@@ -32,7 +32,7 @@ const SelectedOffer = () => {
                 selectedQuote={selectedQuote}
                 account={account}
                 providers={providersInfo}
-                data-test="@CoinmarketBuyOfferInfo"
+                data-test-id="@CoinmarketBuyOfferInfo"
             />
         </Wrapper>
     );

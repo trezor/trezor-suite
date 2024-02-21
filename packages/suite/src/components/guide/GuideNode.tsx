@@ -96,7 +96,7 @@ export const GuideNode = ({ node, description }: GuideNodeProps) => {
 
     if (node.type === 'page') {
         return (
-            <PageNodeButton data-test={`@guide/node${node.id}`} onClick={navigateToNode}>
+            <PageNodeButton data-test-id={`@guide/node${node.id}`} onClick={navigateToNode}>
                 <PageNodeButtonIcon icon="ARTICLE" size={20} color={theme.TYPE_LIGHT_GREY} />
                 {label}
             </PageNodeButton>
@@ -105,7 +105,7 @@ export const GuideNode = ({ node, description }: GuideNodeProps) => {
 
     if (node.type === 'category') {
         return (
-            <CategoryNodeButton data-test={`@guide/category${node.id}`} onClick={navigateToNode}>
+            <CategoryNodeButton data-test-id={`@guide/category${node.id}`} onClick={navigateToNode}>
                 {node.image && <Image src={resolveStaticPath(node.image)} />}
                 {label}
             </CategoryNodeButton>

@@ -53,7 +53,7 @@ export const AddCoinAccountScreen = () => {
                         <SelectableNetworkItem
                             key={symbol}
                             symbol={symbol}
-                            data-testID={`@add-account/select-coin/${symbol}`}
+                            data-test-id={`@add-account/select-coin/${symbol}`}
                             onPress={onSelectedNetworkItem}
                         />
                     ))}

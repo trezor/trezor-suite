@@ -126,7 +126,7 @@ export const AccountImportSummaryForm = ({
                 <Divider marginHorizontal="extraLarge" />
                 <Box marginHorizontal="medium">
                     <Button
-                        data-testID="@account-import/coin-synced/confirm-button"
+                        data-test-id="@account-import/coin-synced/confirm-button"
                         onPress={handleImportAccount}
                         size="large"
                         style={applyStyle(confirmButtonStyle)}

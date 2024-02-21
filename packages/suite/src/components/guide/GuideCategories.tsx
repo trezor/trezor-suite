@@ -35,7 +35,7 @@ export const GuideCategories = ({ node, label }: GuideCategoriesProps) => {
     return (
         <Section>
             {label && <SectionHeading>{label}</SectionHeading>}
-            <Nodes data-test="@guide/nodes">
+            <Nodes data-test-id="@guide/nodes">
                 {node.children.map(child => (
                     <GuideNode key={child.id} node={child} />
                 ))}

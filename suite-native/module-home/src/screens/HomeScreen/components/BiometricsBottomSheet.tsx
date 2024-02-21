@@ -154,12 +154,12 @@ export const BiometricsBottomSheet = () => {
             <Box style={applyStyle(buttonWrapperStyle)}>
                 <Button
                     colorScheme="tertiaryElevation0"
-                    data-testID="reject-biometrics"
+                    data-test-id="reject-biometrics"
                     onPress={handleClose}
                 >
                     {translate('moduleHome.biometricsModal.button.later')}
                 </Button>
-                <Button data-testID="enable-biometrics" onPress={handleEnable}>
+                <Button data-test-id="enable-biometrics" onPress={handleEnable}>
                     {translate('moduleHome.biometricsModal.button.enable')}
                 </Button>
             </Box>

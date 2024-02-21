@@ -24,10 +24,10 @@ export const PinMismatchModal = (props: ModalProps) => {
             // need to pass props when cloning this inside nested modal
             {...props}
             heading={<Translation id="TR_PIN_MISMATCH_HEADING" />}
-            data-test="@pin-mismatch"
+            data-test-id="@pin-mismatch"
         >
             <StyledImage image="UNI_ERROR" />
-            <Button onClick={onTryAgain} data-test="@pin-mismatch/try-again-button">
+            <Button onClick={onTryAgain} data-test-id="@pin-mismatch/try-again-button">
                 <Translation id="TR_TRY_AGAIN" />
             </Button>
         </StyledModal>

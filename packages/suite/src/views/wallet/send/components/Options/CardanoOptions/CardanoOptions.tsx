@@ -29,7 +29,7 @@ export const CardanoOptions = () => {
                 variant="tertiary"
                 size="small"
                 icon="PLUS"
-                data-test="add-output"
+                data-test-id="add-output"
                 onClick={addOutput}
             >
                 <Translation id="RECIPIENT_ADD" />

@@ -31,7 +31,7 @@ export const Passphrase = ({ isDeviceLocked }: PassphraseProps) => {
 
     return (
         <SectionItem
-            data-test="@settings/device/passphrase"
+            data-test-id="@settings/device/passphrase"
             ref={anchorRef}
             shouldHighlight={shouldHighlight}
         >

@@ -23,7 +23,7 @@ export const All: StoryFn = () => (
             <StoryColumn key={variant} minWidth={350} maxWidth={420}>
                 <Button
                     variant={variant}
-                    data-test={`button-${variant}`}
+                    data-test-id={`button-${variant}`}
                     onClick={() => {
                         console.log('click');
                     }}
@@ -33,7 +33,7 @@ export const All: StoryFn = () => (
                 <Button
                     variant={variant}
                     size="medium"
-                    data-test={`button-${variant}`}
+                    data-test-id={`button-${variant}`}
                     onClick={() => {
                         console.log('click');
                     }}
@@ -43,7 +43,7 @@ export const All: StoryFn = () => (
                 <Button
                     variant={variant}
                     size="small"
-                    data-test={`button-${variant}`}
+                    data-test-id={`button-${variant}`}
                     onClick={() => {
                         console.log('click');
                     }}
@@ -53,7 +53,7 @@ export const All: StoryFn = () => (
 
                 <Button
                     variant={variant}
-                    data-test={`button-${variant}-icon`}
+                    data-test-id={`button-${variant}-icon`}
                     icon="PALETTE"
                     onClick={() => {
                         console.log('click');
@@ -63,22 +63,22 @@ export const All: StoryFn = () => (
                 </Button>
                 <Button
                     variant={variant}
-                    data-test={`button-${variant}-icon-right`}
+                    data-test-id={`button-${variant}-icon-right`}
                     iconAlignment="right"
                     icon="PLUS"
                 >
                     {capitalizeFirstLetter(variant)} icon right
                 </Button>
-                <Button variant={variant} data-test={`button-${variant}-loading`} isLoading>
+                <Button variant={variant} data-test-id={`button-${variant}-loading`} isLoading>
                     {capitalizeFirstLetter(variant)} loading
                 </Button>
-                <Button variant={variant} data-test={`button-${variant}-full-width`} isFullWidth>
+                <Button variant={variant} data-test-id={`button-${variant}-full-width`} isFullWidth>
                     {capitalizeFirstLetter(variant)} full width
                 </Button>
                 <Button
                     variant={variant}
                     isDisabled
-                    data-test={`button-${variant}-disabled`}
+                    data-test-id={`button-${variant}-disabled`}
                     onClick={() => {
                         console.log('click');
                     }}

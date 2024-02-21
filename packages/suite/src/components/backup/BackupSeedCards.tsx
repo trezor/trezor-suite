@@ -77,7 +77,7 @@ export const BackupSeedCards = () => {
                 {items.map(item => (
                     <StyledBackupSeedCard
                         // TODO: change data-test, checkbox keys to something more generic, independent of actual content
-                        data-test={`@backup/check-item/${item.key}`}
+                        data-test-id={`@backup/check-item/${item.key}`}
                         key={item.key}
                         onClick={() => dispatch(toggleCheckboxByKey(item.key))}
                         label={item.label}

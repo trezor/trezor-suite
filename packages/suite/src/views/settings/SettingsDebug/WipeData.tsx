@@ -22,7 +22,7 @@ export const WipeData = () => {
 
     return (
         <SectionItem
-            data-test="@settings/debug/wipe-data"
+            data-test-id="@settings/debug/wipe-data"
             ref={anchorRef}
             shouldHighlight={shouldHighlight}
         >

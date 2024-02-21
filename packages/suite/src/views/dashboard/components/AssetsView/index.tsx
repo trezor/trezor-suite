@@ -169,7 +169,7 @@ export const AssetsView = () => {
                         )}
                         <Icon
                             icon="TABLE"
-                            data-test="@dashboard/assets/table-icon"
+                            data-test-id="@dashboard/assets/table-icon"
                             onClick={setTable}
                             color={
                                 !dashboardAssetsGridMode
@@ -179,7 +179,7 @@ export const AssetsView = () => {
                         />
                         <Icon
                             icon="GRID"
-                            data-test="@dashboard/assets/grid-icon"
+                            data-test-id="@dashboard/assets/grid-icon"
                             onClick={setGrid}
                             color={
                                 dashboardAssetsGridMode

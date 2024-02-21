@@ -51,7 +51,7 @@ export const SafetyChecksModal = ({ onCancel }: ModalProps) => {
                     onClick={confirm}
                     // Only allow confirming when the value will be changed.
                     isDisabled={isLocked() || level === device?.features?.safety_checks}
-                    data-test="@safety-checks-apply"
+                    data-test-id="@safety-checks-apply"
                 >
                     <Translation id="TR_CONFIRM" />
                 </StyledButton>
@@ -61,7 +61,7 @@ export const SafetyChecksModal = ({ onCancel }: ModalProps) => {
                 <Radio
                     isChecked={level === 'Strict'}
                     onClick={() => setLevel('Strict')}
-                    data-test="@radio-button-strict"
+                    data-test-id="@radio-button-strict"
                 >
                     <RadioInner>
                         <H3>
@@ -76,7 +76,7 @@ export const SafetyChecksModal = ({ onCancel }: ModalProps) => {
                     // For the purpose of this modal consider `PromptAlways` as identical to `PromptTemporarily`.
                     isChecked={level === 'PromptTemporarily' || level === 'PromptAlways'}
                     onClick={() => setLevel('PromptTemporarily')}
-                    data-test="@radio-button-prompt"
+                    data-test-id="@radio-button-prompt"
                 >
                     <RadioInner>
                         <H3>

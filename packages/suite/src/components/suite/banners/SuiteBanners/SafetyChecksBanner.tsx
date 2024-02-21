@@ -20,7 +20,7 @@ export const SafetyChecksBanner = ({ onDismiss }: SafetyChecksBannerProps) => {
                     anchor: SettingsAnchor.SafetyChecks,
                 }),
             ),
-        'data-test': '@banner/safety-checks/button',
+        'data-test-id': '@banner/safety-checks/button',
     };
 
     return (
@@ -32,7 +32,7 @@ export const SafetyChecksBanner = ({ onDismiss }: SafetyChecksBannerProps) => {
                 onDismiss
                     ? {
                           onClick: onDismiss,
-                          'data-test': '@banner/safety-checks/dismiss',
+                          'data-test-id': '@banner/safety-checks/dismiss',
                       }
                     : undefined
             }

@@ -141,7 +141,7 @@ export const WordInputAdvanced = ({ count }: WordInputAdvancedProps) => {
                             <PinButton
                                 data-value="1"
                                 onClick={() => onSubmit('1')}
-                                data-test="@recovery/word-input-advanced/1"
+                                data-test-id="@recovery/word-input-advanced/1"
                             />
                             <PinButton data-value="2" onClick={() => onSubmit('2')} />
                             <PinButton data-value="3" onClick={() => onSubmit('3')} />
@@ -163,7 +163,7 @@ export const WordInputAdvanced = ({ count }: WordInputAdvancedProps) => {
                             <PinButton
                                 data-value="2"
                                 onClick={() => onSubmit('1')}
-                                data-test="@recovery/word-input-advanced/1"
+                                data-test-id="@recovery/word-input-advanced/1"
                             />
                             <PinButton data-value="3" onClick={() => onSubmit('3')} />
                         </Row>

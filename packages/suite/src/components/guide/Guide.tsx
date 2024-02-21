@@ -85,7 +85,7 @@ export const Guide = () => {
             <FeedbackBorder />
             <FeedbackLinkWrapper>
                 <FeedbackButton
-                    data-test="@guide/button-feedback"
+                    data-test-id="@guide/button-feedback"
                     onClick={handleFeedbackButtonClick}
                 >
                     <Icon icon="USERS" size={24} color={theme.iconOnTertiary} />
