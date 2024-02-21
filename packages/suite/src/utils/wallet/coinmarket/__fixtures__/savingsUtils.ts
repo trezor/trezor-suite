@@ -1,5 +1,8 @@
 import type { SavingsProviderInfo } from 'invity-api';
 
+export const FIAT_AMOUNT = '100';
+export const USD_BITCOIN_PRICE = 54321;
+
 export const SELECTED_PROVIDER: SavingsProviderInfo = {
     companyName: 'FAKE',
     name: 'FAKE',

@@ -11,6 +11,7 @@ import { formatAmount, getAccountDecimals } from '@suite-common/wallet-utils';
 import { UNECONOMICAL_COINJOIN_THRESHOLD } from 'src/services/coinjoin';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { useSelector } from 'src/hooks/suite/useSelector';
+import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 
 const StyledModal = styled(Modal)`
     width: 500px;
@@ -45,7 +46,7 @@ const AgreeButton = styled(Button)`
 
 export const UnecoCoinjoinModal = () => {
     const account = useSelector(selectSelectedAccount);
-    const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
+    const localCurrency = useSelector(selectLocalCurrency);
     const isAccountWithRate = useSelector(state =>
         selectIsAccountWithRatesByKey(state, account?.key || '', localCurrency),
     );

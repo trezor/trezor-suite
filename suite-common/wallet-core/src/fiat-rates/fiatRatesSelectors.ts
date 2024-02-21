@@ -138,22 +138,19 @@ export const selectTransactionsWithMissingRates = (
     }[];
 };
 
-export const selectIsAccountWithRatesByKey = memoizeWithArgs(
-    (
-        state: AccountsRootState & FiatRatesRootState,
-        accountKey: string,
-        fiatCurrency: FiatCurrencyCode,
-    ) => {
-        const account = selectAccountByKey(state, accountKey);
+export const selectIsAccountWithRatesByKey = (
+    state: AccountsRootState & FiatRatesRootState,
+    accountKey: string,
+    fiatCurrency: FiatCurrencyCode,
+) => {
+    const account = selectAccountByKey(state, accountKey);
 
-        if (!account) {
-            return false;
-        }
+    if (!account) {
+        return false;
+    }
 
-        const fiatRateKey = getFiatRateKey(account.symbol, fiatCurrency);
-        const rates = selectFiatRatesByFiatRateKey(state, fiatRateKey);
+    const fiatRateKey = getFiatRateKey(account.symbol, fiatCurrency);
+    const rates = selectFiatRatesByFiatRateKey(state, fiatRateKey);
 
-        return !!rates;
-    },
-    { size: 100 },
-);
+    return !!rates;
+};

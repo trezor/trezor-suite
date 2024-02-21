@@ -100,7 +100,7 @@ export type SendContextValues<TFormValues extends FormState = FormState> =
     UseFormReturn<TFormValues> &
         UseSendFormState & {
             isLoading: boolean;
-            fiatRate: Rate | undefined;
+            fiatRate?: Rate;
             // additional fields
             outputs: Partial<Output & { id: string }>[]; // useFieldArray fields
             updateContext: (value: Partial<UseSendFormState>) => void;
