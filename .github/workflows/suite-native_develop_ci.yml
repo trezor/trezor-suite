@@ -16,6 +16,7 @@ concurrency:
 jobs:
   build:
     name: Install and build
+    environment: develop
     runs-on: ubuntu-latest
     env:
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
