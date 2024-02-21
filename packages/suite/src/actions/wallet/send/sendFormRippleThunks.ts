@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js';
+import { G } from '@mobily/ts-belt';
 
 import TrezorConnect, { FeeLevel, RipplePayment } from '@trezor/connect';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -17,14 +18,15 @@ import {
 } from '@suite-common/wallet-types';
 import { selectDevice } from '@suite-common/wallet-core';
 
-import { AddressDisplayOptions, selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
-import { MODULE_PREFIX } from './constants';
 import { createThunk } from '@suite-common/redux-utils';
-import { G } from '@mobily/ts-belt';
+
 import {
     selectSelectedAccount,
     selectSelectedAccountStatus,
 } from 'src/reducers/wallet/selectedAccountReducer';
+import { AddressDisplayOptions, selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
+
+import { MODULE_PREFIX } from './constants';
 import { ComposeTransactionThunkArguments, SignTransactionThunkArguments } from './types';
 
 const calculate = (

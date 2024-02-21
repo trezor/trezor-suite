@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js';
+import { G } from '@mobily/ts-belt';
 
 import TrezorConnect, { FeeLevel, Params, SignTransaction } from '@trezor/connect';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -12,19 +13,19 @@ import {
 import { BTC_RBF_SEQUENCE, BTC_LOCKTIME_SEQUENCE } from '@suite-common/wallet-constants';
 import { PrecomposedLevels, PrecomposedTransaction } from '@suite-common/wallet-types';
 import { selectDevice, selectTransactions } from '@suite-common/wallet-core';
-
-import { AddressDisplayOptions, selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
 import { createThunk } from '@suite-common/redux-utils';
-import { MODULE_PREFIX } from './constants';
-import {
-    selectAreSatsAmountUnit,
-    selectBitcoinAmountUnit,
-} from 'src/reducers/wallet/settingsReducer';
-import { G } from '@mobily/ts-belt';
+
 import {
     selectSelectedAccount,
     selectSelectedAccountStatus,
 } from 'src/reducers/wallet/selectedAccountReducer';
+import { AddressDisplayOptions, selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
+import {
+    selectAreSatsAmountUnit,
+    selectBitcoinAmountUnit,
+} from 'src/reducers/wallet/settingsReducer';
+
+import { MODULE_PREFIX } from './constants';
 import { ComposeTransactionThunkArguments, SignTransactionThunkArguments } from './types';
 
 export const composeBitcoinSendFormTransactionThunk = createThunk(
