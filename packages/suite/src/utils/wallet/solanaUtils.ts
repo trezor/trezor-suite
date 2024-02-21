@@ -2,13 +2,12 @@ import * as BufferLayout from '@solana/buffer-layout';
 import type { TokenAccount } from '@trezor/blockchain-link-types';
 import { A, F, pipe } from '@mobily/ts-belt';
 import { getLamportsFromSol } from '@suite-common/wallet-utils';
-import {
-    TOKEN_PROGRAM_PUBLIC_KEY,
-    ASSOCIATED_TOKEN_PROGRAM_PUBLIC_KEY,
-    SYSTEM_PROGRAM_PUBLIC_KEY,
-} from '@trezor/blockchain-link-utils/lib/solana';
+import { solanaUtils } from '@trezor/blockchain-link-utils';
 import BigNumber from 'bignumber.js';
 import type { Transaction } from '@solana/web3.js';
+
+const { TOKEN_PROGRAM_PUBLIC_KEY, ASSOCIATED_TOKEN_PROGRAM_PUBLIC_KEY, SYSTEM_PROGRAM_PUBLIC_KEY } =
+    solanaUtils;
 
 const loadSolanaLib = async () => {
     const lib = await import('@solana/web3.js');

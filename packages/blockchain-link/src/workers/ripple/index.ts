@@ -4,7 +4,7 @@ import BigNumber from 'bignumber.js';
 import { CustomError } from '@trezor/blockchain-link-types/lib/constants/errors';
 import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/lib/constants';
 import { BaseWorker, CONTEXT, ContextType } from '../baseWorker';
-import * as utils from '@trezor/blockchain-link-utils/lib/ripple';
+import { rippleUtils } from '@trezor/blockchain-link-utils';
 import type { Response, SubscriptionAccountInfo, AccountInfo } from '@trezor/blockchain-link-types';
 import type * as MessageTypes from '@trezor/blockchain-link-types/lib/messages';
 
@@ -44,7 +44,7 @@ const getInfo = async (request: Request<MessageTypes.GetInfo>) => {
         type: RESPONSES.GET_INFO,
         payload: {
             url: api.connection.getUrl(),
-            ...utils.transformServerInfo(info),
+            ...rippleUtils.transformServerInfo(info),
         },
     } as const;
 };
@@ -163,7 +163,7 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
     const api = await request.connect();
     const transactionsData: RawTxData = await api.request('account_tx', requestOptions);
     account.history.transactions = transactionsData.transactions.map(raw =>
-        utils.transformTransaction(raw.tx, payload.descriptor),
+        rippleUtils.transformTransaction(raw.tx, payload.descriptor),
     );
 
     return {
@@ -178,7 +178,7 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
 const getTransaction = async ({ connect, payload }: Request<MessageTypes.GetTransaction>) => {
     const api = await connect();
     const rawtx = await api.request('tx', { transaction: payload, binary: false });
-    const tx = utils.transformTransaction(rawtx);
+    const tx = rippleUtils.transformTransaction(rawtx);
 
     return {
         type: RESPONSES.GET_TRANSACTION,
@@ -250,7 +250,7 @@ const onTransaction = ({ state, post }: Context, event: any) => {
                 type: 'notification',
                 payload: {
                     descriptor,
-                    tx: utils.transformTransaction({ ...event, ...tx }, descriptor),
+                    tx: rippleUtils.transformTransaction({ ...event, ...tx }, descriptor),
                 },
             },
         });

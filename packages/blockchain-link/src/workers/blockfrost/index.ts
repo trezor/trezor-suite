@@ -2,11 +2,7 @@ import { CustomError } from '@trezor/blockchain-link-types/lib/constants/errors'
 import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/lib/constants';
 import { BaseWorker, CONTEXT, ContextType } from '../baseWorker';
 import { BlockfrostAPI } from './websocket';
-import {
-    transformUtxos,
-    transformAccountInfo,
-    transformTransaction,
-} from '@trezor/blockchain-link-utils/lib/blockfrost';
+import { blockfrostUtils } from '@trezor/blockchain-link-utils';
 import type { SubscriptionAccountInfo } from '@trezor/blockchain-link-types/lib/common';
 import type { Response } from '@trezor/blockchain-link-types';
 import type {
@@ -56,7 +52,7 @@ const getAccountBalanceHistory = async (
 const getTransaction = async (request: Request<MessageTypes.GetTransaction>) => {
     const api = await request.connect();
     const txData = await api.getTransaction(request.payload);
-    const tx = transformTransaction({ txData });
+    const tx = blockfrostUtils.transformTransaction({ txData });
 
     return {
         type: RESPONSES.GET_TRANSACTION,
@@ -93,7 +89,7 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
 
     return {
         type: RESPONSES.GET_ACCOUNT_INFO,
-        payload: transformAccountInfo(info),
+        payload: blockfrostUtils.transformAccountInfo(info),
     } as const;
 };
 
@@ -103,7 +99,7 @@ const getAccountUtxo = async (request: Request<MessageTypes.GetAccountUtxo>) => 
 
     return {
         type: RESPONSES.GET_ACCOUNT_UTXO,
-        payload: transformUtxos(utxos),
+        payload: blockfrostUtils.transformUtxos(utxos),
     } as const;
 };
 
@@ -133,8 +129,11 @@ const onTransaction = ({ state, post }: Context, event: BlockfrostTransaction) =
             payload: {
                 descriptor: account ? account.descriptor : descriptor,
                 tx: account
-                    ? transformTransaction(event, account.addresses ?? account.descriptor)
-                    : transformTransaction(event, descriptor),
+                    ? blockfrostUtils.transformTransaction(
+                          event,
+                          account.addresses ?? account.descriptor,
+                      )
+                    : blockfrostUtils.transformTransaction(event, descriptor),
             },
         },
     });

@@ -17,11 +17,9 @@ import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/lib/constants
 import { Connection, Message, PublicKey } from '@solana/web3.js';
 import { solanaUtils } from '@trezor/blockchain-link-utils';
 
-import {
-    transformTokenInfo,
-    TOKEN_PROGRAM_PUBLIC_KEY,
-} from '@trezor/blockchain-link-utils/lib/solana';
 import { TOKEN_ACCOUNT_LAYOUT } from './tokenUtils';
+
+const { transformTokenInfo, TOKEN_PROGRAM_PUBLIC_KEY } = solanaUtils;
 
 export type SolanaAPI = Connection;
 

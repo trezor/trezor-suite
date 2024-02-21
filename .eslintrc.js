@@ -229,6 +229,8 @@ module.exports = {
                     '@trezor/utils/lib/*',
                     '@trezor/protobuf/lib',
                     '@trezor/protobuf/lib/*',
+                    '@trezor/blockchain-link-utils/lib',
+                    '@trezor/blockchain-link-utils/lib/*',
                 ],
             },
         ],

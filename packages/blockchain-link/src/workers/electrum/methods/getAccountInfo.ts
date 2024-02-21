@@ -1,7 +1,7 @@
 import { discovery } from '@trezor/utxo-lib';
 import { sortTxsFromLatest } from '@trezor/blockchain-link-utils';
 import { Api, tryGetScripthash, discoverAddress, AddressHistory, getTransactions } from '../utils';
-import { transformTransaction } from '@trezor/blockchain-link-utils/lib/blockbook';
+import { blockbookUtils } from '@trezor/blockchain-link-utils';
 import type { ElectrumAPI } from '@trezor/blockchain-link-types/lib/electrum';
 import type { GetAccountInfo as Req } from '@trezor/blockchain-link-types/lib/messages';
 import type { GetAccountInfo as Res } from '@trezor/blockchain-link-types/lib/responses';
@@ -78,7 +78,9 @@ const getAccountInfo: Api<Req, Res> = async (client, payload) => {
         const transactions =
             details === 'txs'
                 ? await getTransactions(client, history)
-                      .then(txs => txs.map(tx => transformTransaction(tx, descriptor)))
+                      .then(txs =>
+                          txs.map(tx => blockbookUtils.transformTransaction(tx, descriptor)),
+                      )
                       .then(sortTxsFromLatest)
                 : undefined;
 
@@ -125,7 +127,7 @@ const getAccountInfo: Api<Req, Res> = async (client, payload) => {
 
     const transactions = ['tokenBalances', 'txids', 'txs'].includes(details)
         ? await getTransactions(client, history)
-              .then(txs => txs.map(tx => transformTransaction(tx, addresses)))
+              .then(txs => txs.map(tx => blockbookUtils.transformTransaction(tx, addresses)))
               .then(sortTxsFromLatest)
         : [];
 

@@ -1,5 +1,5 @@
 import { createCooldown } from '@trezor/utils';
-import { transformTransaction } from '@trezor/blockchain-link-utils/lib/blockbook';
+import { blockbookUtils } from '@trezor/blockchain-link-utils';
 
 import { getMultiFilter } from './filters';
 import { doesTxContainAddress } from './backendUtils';
@@ -18,7 +18,7 @@ const transformTx =
     ({ receive, change }: CoinjoinAddressController) =>
     (tx: BlockbookTransaction) =>
         // It doesn't matter for transformTransaction which receive addrs are used and which are unused
-        transformTransaction(tx, { used: receive, unused: [], change });
+        blockbookUtils.transformTransaction(tx, { used: receive, unused: [], change });
 
 export const scanAccount = async (
     params: ScanAccountParams & { checkpoints: ScanAccountCheckpoint[] },

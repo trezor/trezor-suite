@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js';
 import { discovery } from '@trezor/utxo-lib';
 import { sumVinVout } from '@trezor/blockchain-link-utils';
 import { Api, tryGetScripthash, getTransactions, discoverAddress, AddressHistory } from '../utils';
-import { transformTransaction } from '@trezor/blockchain-link-utils/lib/blockbook';
+import { blockbookUtils } from '@trezor/blockchain-link-utils/';
 import type { GetAccountBalanceHistory as Req } from '@trezor/blockchain-link-types/lib/messages';
 import type { GetAccountBalanceHistory as Res } from '@trezor/blockchain-link-types/lib/responses';
 import type { AccountAddresses, Transaction } from '@trezor/blockchain-link-types/lib/common';
@@ -98,7 +98,10 @@ const getAccountBalanceHistory: Api<Req, Res> = async (
                     (from || 0) <= blockTime && blockTime <= (to || Number.MAX_SAFE_INTEGER),
             )
             .sort((a, b) => a.blockTime - b.blockTime)
-            .map(tx => ({ blockTime: -1, ...transformTransaction(tx, addresses ?? descriptor) })),
+            .map(tx => ({
+                blockTime: -1,
+                ...blockbookUtils.transformTransaction(tx, addresses ?? descriptor),
+            })),
     );
 
     return aggregateTransactions(txs, groupBy);

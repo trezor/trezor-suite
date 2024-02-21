@@ -2,7 +2,7 @@ import { CustomError } from '@trezor/blockchain-link-types/lib/constants/errors'
 import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/lib/constants';
 import { BaseWorker, CONTEXT, ContextType } from '../baseWorker';
 import { BlockbookAPI } from './websocket';
-import * as utils from '@trezor/blockchain-link-utils/lib/blockbook';
+import { blockbookUtils } from '@trezor/blockchain-link-utils';
 import type { Response, SubscriptionAccountInfo } from '@trezor/blockchain-link-types';
 import type {
     AddressNotification,
@@ -23,7 +23,7 @@ const getInfo = async (request: Request<MessageTypes.GetInfo>) => {
         type: RESPONSES.GET_INFO,
         payload: {
             url: api.options.url,
-            ...utils.transformServerInfo(info),
+            ...blockbookUtils.transformServerInfo(info),
         },
     } as const;
 };
@@ -55,7 +55,7 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
 
     return {
         type: RESPONSES.GET_ACCOUNT_INFO,
-        payload: utils.transformAccountInfo(info),
+        payload: blockbookUtils.transformAccountInfo(info),
     } as const;
 };
 
@@ -66,7 +66,7 @@ const getAccountUtxo = async (request: Request<MessageTypes.GetAccountUtxo>) => 
 
     return {
         type: RESPONSES.GET_ACCOUNT_UTXO,
-        payload: utils.transformAccountUtxo(utxos),
+        payload: blockbookUtils.transformAccountUtxo(utxos),
     } as const;
 };
 
@@ -124,7 +124,7 @@ const getFiatRatesTickersList = async (request: Request<MessageTypes.GetFiatRate
 const getTransaction = async (request: Request<MessageTypes.GetTransaction>) => {
     const api = await request.connect();
     const rawtx = await api.getTransaction(request.payload);
-    const tx = utils.transformTransaction(rawtx);
+    const tx = blockbookUtils.transformTransaction(rawtx);
 
     return {
         type: RESPONSES.GET_TRANSACTION,
@@ -201,8 +201,11 @@ const onTransaction = ({ state, post }: Context, event: AddressNotification) => 
             payload: {
                 descriptor: account ? account.descriptor : descriptor,
                 tx: account
-                    ? utils.transformTransaction(event.tx, account.addresses ?? account.descriptor)
-                    : utils.transformTransaction(event.tx, descriptor),
+                    ? blockbookUtils.transformTransaction(
+                          event.tx,
+                          account.addresses ?? account.descriptor,
+                      )
+                    : blockbookUtils.transformTransaction(event.tx, descriptor),
             },
         },
     });
