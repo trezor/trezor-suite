@@ -4,7 +4,7 @@ import * as deviceUtils from '@suite-common/suite-utils';
 import { Icon, TOOLTIP_DELAY_LONG, TruncateWithTooltip } from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';
 import React, { MouseEventHandler } from 'react';
-import { Translation, WalletLabeling } from 'src/components/suite';
+import { Translation, WalletLabeling, useGetWalletLabel } from 'src/components/suite';
 
 const Container = styled.span<{ color: string; isAction?: boolean }>`
     ${typography.label}
@@ -39,6 +39,7 @@ export const DeviceStatusText = ({
     const { connected } = device;
     const deviceStatus = deviceUtils.getStatus(device);
     const needsAttention = deviceUtils.deviceNeedsAttention(deviceStatus);
+    const isDeviceStatusVisible = Boolean(useGetWalletLabel({ device }));
 
     if (connected && needsAttention && onRefreshClick) {
         return (
@@ -51,7 +52,7 @@ export const DeviceStatusText = ({
         );
     }
 
-    return (
+    return isDeviceStatusVisible ? (
         <Container
             color={connected ? theme.textPrimaryDefault : theme.textSubdued}
             data-test={connected ? '@deviceStatus-connected' : '@deviceStatus-disconnected'}
@@ -71,5 +72,5 @@ export const DeviceStatusText = ({
                 )}
             </TextRow>
         </Container>
-    );
+    ) : null;
 };
