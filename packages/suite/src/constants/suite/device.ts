@@ -18,7 +18,7 @@ export const MAX_CHARACTERS_ON_SCREEN: Record<DeviceModelInternal, number> = {
 };
 
 export const MAX_CHARACTERS_ON_ROW: Record<DeviceModelInternal, number> = {
-    [DeviceModelInternal.T1B1]: 17,
+    [DeviceModelInternal.T1B1]: 21,
     [DeviceModelInternal.T2T1]: 17,
     [DeviceModelInternal.T2B1]: 18,
 };

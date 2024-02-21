@@ -6,9 +6,9 @@ import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/su
 import { Network, Account, NetworkSymbol } from 'src/types/wallet';
 import { TokenInfo } from '@trezor/connect';
 import { amountToSatoshi } from '@suite-common/wallet-utils';
-import { DeviceDisplay } from 'src/components/suite/DeviceDisplay';
 import { TransactionReviewStepIndicatorProps } from './TransactionReviewStepIndicator';
 import { zIndices } from '@trezor/theme';
+import { DeviceDisplay } from '../../../../DeviceDisplay/DeviceDisplay';
 
 const OutputWrapper = styled.div`
     display: flex;
