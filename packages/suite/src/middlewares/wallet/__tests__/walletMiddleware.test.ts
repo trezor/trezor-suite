@@ -141,7 +141,13 @@ describe('walletMiddleware', () => {
 
                 store.dispatch(action);
 
-                expect(store.getActions()).toEqual(expectedActions);
+                // Omit irrelevant `metadata` property so it does not have to be included in the fixtures.
+                const capturedActions = store.getActions().map(action => ({
+                    type: action.type,
+                    payload: action.payload,
+                }));
+
+                expect(capturedActions).toEqual(expectedActions);
                 expect(store.getState().wallet.send?.drafts).toEqual(expectedDrafts);
             },
         );

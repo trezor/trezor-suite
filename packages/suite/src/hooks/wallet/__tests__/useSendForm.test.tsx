@@ -17,6 +17,9 @@ import SendIndex from 'src/views/wallet/send';
 
 import * as fixtures from '../__fixtures__/useSendForm';
 import { useSendFormContext } from '../useSendForm';
+import { act, waitFor } from '@testing-library/react';
+
+const TEST_TIMEOUT = 30000;
 
 global.ResizeObserver = class MockedResizeObserver {
     observe = jest.fn();
@@ -198,44 +201,181 @@ const actionCallback = (
     }
 };
 
+const waitForOutputsRender = (timeout = 200) =>
+    waitFor(() => findByTestId(/outputs\.[0-9]+\.address/), { timeout });
+
 describe('useSendForm hook', () => {
     afterEach(() => {
         jest.clearAllMocks();
     });
 
     fixtures.addingOutputs.forEach(f => {
-        it(f.description, async () => {
-            const store = initStore(f.store);
-            const callback: TestCallback = {};
-            const { unmount } = renderWithProviders(
-                store,
-                <SendIndex>
-                    <Component callback={callback} />
-                </SendIndex>,
-            );
-
-            // wait for first render
-            await waitForLoader();
-            if (!callback.getContextValues) throw Error('callback.getContextValues missing');
-
-            // check HTML elements after first render
-            expect(findByTestId(/outputs\.[0-9]+\.address/).length).toBe(f.initial.outputs.length);
-            expect(callback.getContextValues().getValues()).toMatchObject(f.initial);
-
-            await actionSequence(f.actions, a => {
-                // check rendered HTML elements (Output.address input)
-                expect(findByTestId(/outputs\.[0-9]+\.address/).length).toBe(
-                    a.result.formValues.outputs.length,
+        it(
+            f.description,
+            async () => {
+                const store = initStore(f.store);
+                const callback: TestCallback = {};
+                const { unmount } = await act(() =>
+                    renderWithProviders(
+                        store,
+                        <SendIndex>
+                            <Component callback={callback} />
+                        </SendIndex>,
+                    ),
                 );
-                // validate action result
-                actionCallback(callback, a);
-            });
+                // wait for first render
+                await waitForLoader();
+                const renderedOutputs = await waitForOutputsRender();
 
-            unmount();
-        });
-    }, 30000);
+                if (!callback.getContextValues) throw Error('callback.getContextValues missing');
+
+                // check HTML elements after first render
+                expect(renderedOutputs.length).toBe(f.initial.outputs.length);
+                expect(callback.getContextValues().getValues()).toMatchObject(f.initial);
+
+                await actionSequence(f.actions, a => {
+                    // check rendered HTML elements (Output.address input)
+                    expect(findByTestId(/outputs\.[0-9]+\.address/).length).toBe(
+                        a.result.formValues.outputs.length,
+                    );
+                    // validate action result
+                    actionCallback(callback, a);
+                });
+                unmount();
+            },
+            TEST_TIMEOUT,
+        );
+    });
 
     fixtures.setMax.forEach(f => {
+        it(
+            f.description,
+            async () => {
+                testMocks.setTrezorConnectFixtures(f.connect);
+                const store = initStore(f.store);
+                const callback: TestCallback = {};
+                const { unmount } = renderWithProviders(
+                    store,
+                    <SendIndex>
+                        <Component callback={callback} />
+                    </SendIndex>,
+                );
+                // wait for first render
+                await waitForLoader();
+                await waitForOutputsRender();
+                // execute user actions sequence
+                if (f.actions) {
+                    await actionSequence(f.actions, a => actionCallback(callback, a));
+                }
+
+                // validate finalResult
+                actionCallback(callback, { result: f.finalResult });
+
+                unmount();
+            },
+            TEST_TIMEOUT,
+        );
+    });
+
+    fixtures.composeDebouncedTransaction.forEach(f => {
+        it(
+            f.description,
+            async () => {
+                testMocks.setTrezorConnectFixtures(f.connect);
+                const store = initStore();
+                const callback: TestCallback = {};
+                const { unmount } = renderWithProviders(
+                    store,
+                    <SendIndex>
+                        <Component callback={callback} />
+                    </SendIndex>,
+                );
+                await waitFor(() => findByTestId(/outputs\.[0-9]+\.address/));
+                // execute user actions sequence
+                if (f.actions) {
+                    await actionSequence(f.actions, a => actionCallback(callback, a));
+                }
+
+                // validate finalResult
+                actionCallback(callback, { result: f.finalResult });
+
+                unmount();
+            },
+            TEST_TIMEOUT,
+        );
+    });
+
+    fixtures.signAndPush.forEach(f => {
+        it(
+            f.description,
+            async () => {
+                testMocks.setTrezorConnectFixtures(f.connect);
+                const store = initStore(f.store);
+                const callback: TestCallback = {};
+                const { unmount } = await act(() =>
+                    renderWithProviders(
+                        store,
+                        <SendIndex>
+                            <Component callback={callback} />
+                        </SendIndex>,
+                    ),
+                );
+
+                // wait for first render
+                await waitForLoader();
+                store.subscribe(() => {
+                    const actions = filterThunkActionTypes(store.getActions());
+                    const lastAction = actions[actions.length - 1];
+                    if (lastAction.payload?.decision) {
+                        lastAction.payload.decision.resolve(true); // always resolve push tx request
+                    }
+                });
+
+                await actionSequence([{ type: 'click', element: '@send/review-button' }], () => {
+                    const actions = store.getActions();
+                    f.result.actions.forEach((action: any) => {
+                        expect(actions.find(a => a.type === action.type)).toMatchObject(action);
+                    });
+                    actionCallback(callback, { result: f.result });
+                });
+
+                unmount();
+            },
+            TEST_TIMEOUT,
+        );
+    });
+
+    fixtures.feeChange.forEach(f => {
+        it(
+            `changeFee: ${f.description}`,
+            async () => {
+                testMocks.setTrezorConnectFixtures(f.connect);
+                const store = initStore(f.store);
+                const callback: TestCallback = {};
+                const { unmount } = renderWithProviders(
+                    store,
+                    <SendIndex>
+                        <Component callback={callback} />
+                    </SendIndex>,
+                );
+
+                // wait for first render
+                await waitForLoader();
+                await waitForOutputsRender();
+
+                // execute user actions sequence
+                await actionSequence(f.actionSequence, a => actionCallback(callback, a));
+
+                // validate finalResult
+                actionCallback(callback, { result: f.finalResult });
+
+                unmount();
+            },
+            TEST_TIMEOUT,
+        );
+    });
+
+    fixtures.amountUnitChange.forEach(f => {
         it(
             f.description,
             async () => {
@@ -251,127 +391,17 @@ describe('useSendForm hook', () => {
 
                 // wait for first render
                 await waitForLoader();
+                await waitForOutputsRender();
 
                 // execute user actions sequence
-                if (f.actions) {
-                    await actionSequence(f.actions, a => actionCallback(callback, a));
-                }
+                await actionSequence(f.actions, a => actionCallback(callback, a));
 
                 // validate finalResult
                 actionCallback(callback, { result: f.finalResult });
 
                 unmount();
             },
-            30000,
+            TEST_TIMEOUT,
         );
-    });
-
-    fixtures.composeDebouncedTransaction.forEach(f => {
-        it(f.description, async () => {
-            testMocks.setTrezorConnectFixtures(f.connect);
-            const store = initStore();
-            const callback: TestCallback = {};
-            const { unmount } = renderWithProviders(
-                store,
-                <SendIndex>
-                    <Component callback={callback} />
-                </SendIndex>,
-            );
-
-            // execute user actions sequence
-            if (f.actions) {
-                await actionSequence(f.actions, a => actionCallback(callback, a));
-            }
-
-            // validate finalResult
-            actionCallback(callback, { result: f.finalResult });
-
-            unmount();
-        });
-    });
-
-    fixtures.signAndPush.forEach(f => {
-        it(f.description, async () => {
-            testMocks.setTrezorConnectFixtures(f.connect);
-            const store = initStore(f.store);
-            const callback: TestCallback = {};
-            const { unmount } = renderWithProviders(
-                store,
-                <SendIndex>
-                    <Component callback={callback} />
-                </SendIndex>,
-            );
-
-            // wait for first render
-            await waitForLoader();
-
-            store.subscribe(() => {
-                const actions = filterThunkActionTypes(store.getActions());
-                const lastAction = actions[actions.length - 1];
-                if (lastAction.payload?.decision) {
-                    lastAction.payload.decision.resolve(true); // always resolve push tx request
-                }
-            });
-
-            await actionSequence([{ type: 'click', element: '@send/review-button' }], () => {
-                const actions = store.getActions();
-                f.result.actions.forEach((action: any) => {
-                    expect(actions.find(a => a.type === action.type)).toMatchObject(action);
-                });
-                actionCallback(callback, { result: f.result });
-            });
-
-            unmount();
-        });
-    });
-
-    fixtures.feeChange.forEach(f => {
-        it(`changeFee: ${f.description}`, async () => {
-            testMocks.setTrezorConnectFixtures(f.connect);
-            const store = initStore(f.store);
-            const callback: TestCallback = {};
-            const { unmount } = renderWithProviders(
-                store,
-                <SendIndex>
-                    <Component callback={callback} />
-                </SendIndex>,
-            );
-
-            // wait for first render
-            await waitForLoader();
-
-            // execute user actions sequence
-            await actionSequence(f.actionSequence, a => actionCallback(callback, a));
-
-            // validate finalResult
-            actionCallback(callback, { result: f.finalResult });
-
-            unmount();
-        }, 30000);
-    });
-
-    fixtures.amountUnitChange.forEach(f => {
-        it(f.description, async () => {
-            testMocks.setTrezorConnectFixtures(f.connect);
-            const store = initStore(f.store);
-            const callback: TestCallback = {};
-            const { unmount } = renderWithProviders(
-                store,
-                <SendIndex>
-                    <Component callback={callback} />
-                </SendIndex>,
-            );
-
-            // wait for first render
-            await waitForLoader();
-
-            // execute user actions sequence
-            await actionSequence(f.actions, a => actionCallback(callback, a));
-
-            // validate finalResult
-            actionCallback(callback, { result: f.finalResult });
-
-            unmount();
-        });
     });
 });

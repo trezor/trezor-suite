@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-import { importRequest } from 'src/actions/wallet/sendFormActions';
+import { importSendFormRequestThunk } from 'src/actions/wallet/send/sendFormThunks';
 import { useDispatch } from 'src/hooks/suite';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
@@ -29,7 +29,7 @@ export const useSendFormImport = ({ network, tokens, localCurrencyOption, fiatRa
 
     const importTransaction = async () => {
         // open ImportTransactionModal and get parsed csv
-        const result = await dispatch(importRequest());
+        const result = await dispatch(importSendFormRequestThunk()).unwrap();
         if (!result || result.length < 1) return; // cancelled
 
         const outputs = result.map(item => {

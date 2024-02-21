@@ -1,6 +1,10 @@
 import { useCallback } from 'react';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
-import { composeTransaction, signTransaction } from 'src/actions/wallet/sendFormActions';
+import {
+    signSendFormTransactionThunk,
+    composeSendFormTransactionThunk,
+} from 'src/actions/wallet/send/sendFormThunks';
+
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { DEFAULT_VALUES, DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
 import { FormState, UseSendFormState } from 'src/types/wallet/sendForm';
@@ -71,11 +75,11 @@ export const useCoinmarketRecomposeAndSign = () => {
             // but recompute the feeLimit based on a different transaction data (for example from ethereumDataHex)
             if (recalcCustomLimit && selectedFee === 'custom') {
                 const normalLevels = await dispatch(
-                    composeTransaction(
-                        { ...formValues, selectedFee: 'normal' },
-                        formState as UseSendFormState,
-                    ),
-                );
+                    composeSendFormTransactionThunk({
+                        formValues: { ...formValues, selectedFee: 'normal' },
+                        formState: formState as UseSendFormState,
+                    }),
+                ).unwrap();
                 if (
                     !normalLevels ||
                     !normalLevels.normal ||
@@ -109,8 +113,8 @@ export const useCoinmarketRecomposeAndSign = () => {
 
             // compose transaction again to recalculate fees based on real account values
             const composedLevels = await dispatch(
-                composeTransaction(formValues, formState as UseSendFormState),
-            );
+                composeSendFormTransactionThunk({ formValues, formState }),
+            ).unwrap();
             if (!selectedFee || !composedLevels) {
                 dispatch(
                     notificationsActions.addToast({
@@ -144,7 +148,9 @@ export const useCoinmarketRecomposeAndSign = () => {
                 return;
             }
 
-            return dispatch(signTransaction(formValues, composedToSign));
+            return dispatch(
+                signSendFormTransactionThunk({ formValues, transactionInfo: composedToSign }),
+            ).unwrap();
         },
         [composed, dispatch, fees, selectedFee, translationString],
     );

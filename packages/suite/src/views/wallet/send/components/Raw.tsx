@@ -5,7 +5,8 @@ import { Card, Textarea, Button, Tooltip, H3, IconButton } from '@trezor/compone
 
 import { Translation } from 'src/components/suite';
 import { useDispatch, useTranslation } from 'src/hooks/suite';
-import { pushRawTransaction, sendFormActions } from 'src/actions/wallet/sendFormActions';
+import { sendFormActions } from 'src/actions/wallet/sendFormActions';
+import { pushSendFormRawTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
 import { getInputState, isHexValid } from '@suite-common/wallet-utils';
 import { Network } from 'src/types/wallet';
 import { OpenGuideFromTooltip } from 'src/components/guide';
@@ -71,7 +72,9 @@ export const Raw = ({ network }: RawProps) => {
     const cancel = () => dispatch(sendFormActions.sendRaw(false));
 
     const send = async () => {
-        const result = await dispatch(pushRawTransaction(inputValue, network.symbol));
+        const result = await dispatch(
+            pushSendFormRawTransactionThunk({ tx: inputValue, coin: network.symbol }),
+        ).unwrap();
 
         if (result) {
             setValue(INPUT_NAME, '');

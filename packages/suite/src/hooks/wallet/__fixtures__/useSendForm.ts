@@ -1393,26 +1393,6 @@ export const signAndPush = [
             ],
         },
     },
-    // {
-    //     description: 'XRP',
-    //     store: {
-    //         send: {
-    //             drafts: getDraft(),
-    //         },
-    //         selectedAccount: XRP_ACCOUNT,
-    //     },
-    //     // connect: [
-    //     //     { success: false, payload: { error: 'irrelevant ' } }, // getAccountInfo address check
-    //     //     // { success: true, payload: {} },
-    //     // ],
-    //     result: {
-    //         formValues: {
-    //             selectedFee: undefined,
-    //             outputs: [{ address: '', amount: '' }], // form was cleared
-    //         },
-    //         actions: [1],
-    //     },
-    // },
     {
         description: 'Success with: custom fee, 2 outputs, 0 utxo (ignored)',
         store: {
@@ -1992,18 +1972,6 @@ export const feeChange = [
                     misc: { reserve: '20000000' },
                 },
             },
-            // {
-            //     success: true,
-            //     payload: {
-            //         levels: [{ feeLimit: '41000' }],
-            //     },
-            // },
-            // {
-            //     success: true,
-            //     payload: {
-            //         levels: [{ feeLimit: '21009' }],
-            //     },
-            // },
         ],
         actionSequence: [
             {

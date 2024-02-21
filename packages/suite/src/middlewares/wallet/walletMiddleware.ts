@@ -16,7 +16,8 @@ import { getTxsPerPage } from '@suite-common/suite-utils';
 import { ROUTER } from 'src/actions/suite/constants';
 import { WALLET_SETTINGS } from 'src/actions/settings/constants';
 import * as selectedAccountActions from 'src/actions/wallet/selectedAccountActions';
-import * as sendFormActions from 'src/actions/wallet/sendFormActions';
+import { sendFormActions } from 'src/actions/wallet/sendFormActions';
+import { convertSendFormDraftsThunk } from 'src/actions/wallet/send/sendFormThunks';
 import * as modalActions from 'src/actions/suite/modalActions';
 import * as receiveActions from 'src/actions/wallet/receiveActions';
 import * as cardanoStakingActions from 'src/actions/wallet/cardanoStakingActions';
@@ -115,7 +116,7 @@ const walletMiddleware =
         }
 
         if (action.type === WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS) {
-            api.dispatch(sendFormActions.convertDrafts());
+            api.dispatch(convertSendFormDraftsThunk());
             api.dispatch(coinmarketCommonActions.convertDrafts());
         }
 

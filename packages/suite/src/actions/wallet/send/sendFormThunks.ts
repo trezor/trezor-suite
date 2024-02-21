@@ -1,135 +1,86 @@
 import BigNumber from 'bignumber.js';
+import { G, A } from '@mobily/ts-belt';
 
-import TrezorConnect, { SignedTransaction } from '@trezor/connect';
+import { createThunk } from '@suite-common/redux-utils';
 import {
-    accountsActions,
-    addFakePendingCardanoTxThunk,
-    addFakePendingTxThunk,
-    replaceTransactionThunk,
-    syncAccountsWithBlockchainThunk,
-    selectDevice,
-    selectAccounts,
-} from '@suite-common/wallet-core';
+    Account,
+    ComposeActionContext,
+    FormState,
+    PrecomposedTransactionFinal,
+    PrecomposedTransactionFinalCardano,
+} from '@suite-common/wallet-types';
+import { MetadataAddPayload } from '@suite-common/metadata-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    formatNetworkAmount,
-    getPendingAccount,
-    getAreSatoshisUsed,
+    selectAccounts,
+    selectDevice,
+    replaceTransactionThunk,
+    addFakePendingCardanoTxThunk,
+    accountsActions,
+    addFakePendingTxThunk,
+    syncAccountsWithBlockchainThunk,
+} from '@suite-common/wallet-core';
+import {
+    hasNetworkFeatures,
     amountToSatoshi,
     formatAmount,
     getAccountDecimals,
-    hasNetworkFeatures,
+    getAreSatoshisUsed,
+    formatNetworkAmount,
+    getPendingAccount,
     isCardanoTx,
 } from '@suite-common/wallet-utils';
-import {
-    FormState,
-    ComposeActionContext,
-    PrecomposedTransactionFinal,
-    PrecomposedTransactionFinalCardano,
-    FormSignedTx,
-    AccountKey,
-    TxFinalCardano,
-} from '@suite-common/wallet-types';
+import TrezorConnect, { SignedTransaction } from '@trezor/connect';
 import { cloneObject, getSynchronize } from '@trezor/utils';
 
+import { selectRoute } from 'src/reducers/suite/routerReducer';
 import * as modalActions from 'src/actions/suite/modalActions';
 import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
-import { Account } from 'src/types/wallet';
-import { MetadataAddPayload } from 'src/types/suite/metadata';
 import {
-    signBitcoinTransactionThunk,
-    composeBitcoinTransactionThunk,
-} from './send/sendFormBitcoinActions';
-import {
-    signEthereumTransactionThunk,
-    composeEthereumTransactionThunk,
-} from './send/sendFormEthereumActions';
-import {
-    signCardanoTransactionThunk,
-    composeCardanoTransactionThunk,
-} from './send/sendFormCardanoActions';
-import {
-    signRippleTransactionThunk,
-    composeRippleTransactionThunk,
-} from './send/sendFormRippleActions';
-import {
-    signSolanaTransactionThunk,
-    composeSolanaTransactionThunk,
-} from './send/sendFormSolanaActions';
-import { findLabelsToBeMovedOrDeleted, moveLabelsForRbfAction } from './moveLabelsForRbfActions';
-import { createAction } from '@reduxjs/toolkit';
-import {
-    selectPrecomposedSendForm,
-    selectSendFormDrafts,
-    selectSendPrecomposedTx,
-    selectSendSignedTx,
-} from 'src/reducers/wallet/sendFormReducer';
-import { createThunk } from '@suite-common/redux-utils';
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import {
+    selectSelectedAccountKey,
     selectIsSelectedAccountLoaded,
     selectSelectedAccount,
-    selectSelectedAccountKey,
+    selectSelectedAccountNetwork,
 } from 'src/reducers/wallet/selectedAccountReducer';
-import { A, G } from '@mobily/ts-belt';
-import { selectRoute } from 'src/reducers/suite/routerReducer';
+
+import {
+    selectSendFormDrafts,
+    selectSendSignedTx,
+    selectSendPrecomposedTx,
+    selectPrecomposedSendForm,
+} from 'src/reducers/wallet/sendFormReducer';
 import {
     selectAreSatsAmountUnit,
     selectBitcoinAmountUnit,
 } from 'src/reducers/wallet/settingsReducer';
-import { MODULE_PREFIX } from './send/constants';
 
-const storeDraft = createAction(
-    `${MODULE_PREFIX}/store-draft`,
-    (payload: { accountKey: AccountKey; formState: FormState }) => ({
-        payload,
-    }),
-);
+import {
+    signBitcoinSendFormTransactionThunk,
+    composeBitcoinSendFormTransactionThunk,
+} from './sendFormBitcoinThunks';
+import {
+    signEthereumSendFormTransactionThunk,
+    composeEthereumSendFormTransactionThunk,
+} from './sendFormEthereumThunks';
+import {
+    signCardanoSendFormTransactionThunk,
+    composeCardanoSendFormTransactionThunk,
+} from './sendFormCardanoThunks';
+import {
+    signRippleSendFormTransactionThunk,
+    composeRippleSendFormTransactionThunk,
+} from './sendFormRippleThunks';
+import {
+    signSolanaSendFormTransactionThunk,
+    composeSolanaSendFormTransactionThunk,
+} from './sendFormSolanaThunks';
+import { MODULE_PREFIX } from './constants';
+import { findLabelsToBeMovedOrDeleted, moveLabelsForRbfAction } from '../moveLabelsForRbfActions';
+import { sendFormActions } from '../sendFormActions';
 
-const removeDraft = createAction(
-    `${MODULE_PREFIX}/remove-draft`,
-    (payload: { accountKey: AccountKey }) => ({
-        payload,
-    }),
-);
-
-const storePrecomposedTransaction = createAction(
-    `${MODULE_PREFIX}/store-precomposed-transaction`,
-    (payload: {
-        formState: FormState;
-        transactionInfo: PrecomposedTransactionFinal | TxFinalCardano;
-    }) => ({
-        payload,
-    }),
-);
-
-const storeSignedTransaction = createAction(
-    `${MODULE_PREFIX}/store-signed-transaction`,
-    (payload: FormSignedTx) => ({
-        payload,
-    }),
-);
-
-const discardTransaction = createAction(`${MODULE_PREFIX}/discard-transaction`);
-
-const sendRaw = createAction(`${MODULE_PREFIX}/sendRaw`, (payload: boolean) => ({
-    payload,
-}));
-
-export const dispose = createAction(`${MODULE_PREFIX}/dispose`);
-
-export const sendFormActions = {
-    storeDraft,
-    removeDraft,
-    storePrecomposedTransaction,
-    storeSignedTransaction,
-    discardTransaction,
-    sendRaw,
-    dispose,
-};
-
-export const saveFormDraftThunk = createThunk(
-    `${MODULE_PREFIX}/saveFormDraftThunk`,
+export const saveSendFormDraftThunk = createThunk(
+    `${MODULE_PREFIX}/saveSendFormDraftThunk`,
     ({ formState }: { formState: FormState }, { dispatch, getState }) => {
         const selectedAccountKey = selectSelectedAccountKey(getState());
         const isSelectedAccountLoaded = selectIsSelectedAccountLoaded(getState());
@@ -140,8 +91,8 @@ export const saveFormDraftThunk = createThunk(
     },
 );
 
-export const getFormDraftThunk = createThunk(
-    `${MODULE_PREFIX}/getFormDraftThunk`,
+export const getSendFormDraftThunk = createThunk(
+    `${MODULE_PREFIX}/getSendFormDraftThunk`,
     (_, { getState }) => {
         const isSelectedAccountLoaded = selectIsSelectedAccountLoaded(getState());
         const selectedAccountKey = selectSelectedAccountKey(getState());
@@ -157,8 +108,8 @@ export const getFormDraftThunk = createThunk(
     },
 );
 
-export const removeFormDraftThunk = createThunk(
-    `${MODULE_PREFIX}/removeFormDraftThunk`,
+export const removeSendFormDraftThunk = createThunk(
+    `${MODULE_PREFIX}/removeSendFormDraftThunk`,
     (_, { dispatch, getState }) => {
         const isSelectedAccountLoaded = selectIsSelectedAccountLoaded(getState());
         const selectedAccountKey = selectSelectedAccountKey(getState());
@@ -169,8 +120,8 @@ export const removeFormDraftThunk = createThunk(
     },
 );
 
-export const convertDraftsThunk = createThunk(
-    `${MODULE_PREFIX}/convertDraftsThunk`,
+export const convertSendFormDraftsThunk = createThunk(
+    `${MODULE_PREFIX}/convertSendFormDraftsThunk`,
     (_, { dispatch, getState }) => {
         const route = selectRoute(getState());
         const selectedAccountKey = selectSelectedAccountKey(getState());
@@ -220,8 +171,8 @@ export const convertDraftsThunk = createThunk(
     },
 );
 
-export const composeTransactionThunk = createThunk(
-    `${MODULE_PREFIX}/composeTransactionThunk`,
+export const composeSendFormTransactionThunk = createThunk(
+    `${MODULE_PREFIX}/composeSendFormTransactionThunk`,
     async (
         { formValues, formState }: { formValues: FormState; formState: ComposeActionContext },
         { dispatch },
@@ -229,39 +180,49 @@ export const composeTransactionThunk = createThunk(
     ) => {
         const { account } = formState;
         if (account.networkType === 'bitcoin') {
-            return dispatch(composeBitcoinTransactionThunk({ formValues, formState })).unwrap();
+            return dispatch(
+                composeBitcoinSendFormTransactionThunk({ formValues, formState }),
+            ).unwrap();
         }
         if (account.networkType === 'ethereum') {
-            return dispatch(composeEthereumTransactionThunk({ formValues, formState })).unwrap();
+            return dispatch(
+                composeEthereumSendFormTransactionThunk({ formValues, formState }),
+            ).unwrap();
         }
         if (account.networkType === 'ripple') {
-            return dispatch(composeRippleTransactionThunk({ formValues, formState })).unwrap();
+            return dispatch(
+                composeRippleSendFormTransactionThunk({ formValues, formState }),
+            ).unwrap();
         }
         if (account.networkType === 'cardano') {
-            return dispatch(composeCardanoTransactionThunk({ formValues, formState })).unwrap();
+            return dispatch(
+                composeCardanoSendFormTransactionThunk({ formValues, formState }),
+            ).unwrap();
         }
         if (account.networkType === 'solana') {
-            return dispatch(composeSolanaTransactionThunk({ formValues, formState })).unwrap();
+            return dispatch(
+                composeSolanaSendFormTransactionThunk({ formValues, formState }),
+            ).unwrap();
         }
     },
 );
 
 // this is only a wrapper for `openDeferredModal` since it doesn't work with `bindActionCreators`
 // used in send/Address component
-export const scanOrRequestThunk = createThunk(
-    `${MODULE_PREFIX}/scanOrRequestThunk`,
+export const scanOrRequestSendFormThunk = createThunk(
+    `${MODULE_PREFIX}/scanOrRequestSendFormThunk`,
     (_, { dispatch }) => dispatch(modalActions.openDeferredModal({ type: 'qr-reader' })),
 );
 
 // this is only a wrapper for `openDeferredModal` since it doesn't work with `bindActionCreators`
 // used in send/Header component
-export const importRequestThunk = createThunk(
-    `${MODULE_PREFIX}/importRequestThunk`,
+export const importSendFormRequestThunk = createThunk(
+    `${MODULE_PREFIX}/importSendFormRequestThunk`,
     (_, { dispatch }) => dispatch(modalActions.openDeferredModal({ type: 'import-transaction' })),
 );
 
-export const cancelSignTxThunk = createThunk(
-    `${MODULE_PREFIX}/cancelSignTxThunk`,
+export const cancelSignSendFormTransactionThunk = createThunk(
+    `${MODULE_PREFIX}/cancelSignSendFormTransactionThunk`,
     (_, { dispatch, getState, extra }) => {
         const {
             actions: { onModalCancel },
@@ -280,8 +241,8 @@ export const cancelSignTxThunk = createThunk(
 );
 
 // private, called from signTransaction only
-export const pushTransactionThunk = createThunk(
-    `${MODULE_PREFIX}/pushTransactionThunk`,
+export const pushSendFormTransactionThunk = createThunk(
+    `${MODULE_PREFIX}/pushSendFormTransactionThunk`,
     async (
         {
             signedTransaction,
@@ -462,7 +423,7 @@ export const pushTransactionThunk = createThunk(
             );
         }
 
-        dispatch(cancelSignTxThunk());
+        dispatch(cancelSignSendFormTransactionThunk());
 
         // resolve sign process
         return sentTx;
@@ -470,8 +431,8 @@ export const pushTransactionThunk = createThunk(
 );
 
 // this could be called at any time during signTransaction or pushTransaction process (from TransactionReviewModal)
-export const pushRawTransactionThunk = createThunk(
-    `${MODULE_PREFIX}/pushRawTransactionThunk`,
+export const pushSendFormRawTransactionThunk = createThunk(
+    `${MODULE_PREFIX}/pushSendFormRawTransactionThunk`,
     async ({ tx, coin }: { tx: string; coin: NetworkSymbol }, { dispatch }) => {
         const sentTx = await TrezorConnect.pushTransaction({
             tx,
@@ -501,8 +462,8 @@ export const pushRawTransactionThunk = createThunk(
     },
 );
 
-export const signTransactionThunk = createThunk(
-    `${MODULE_PREFIX}/signTransactionThunk`,
+export const signSendFormTransactionThunk = createThunk(
+    `${MODULE_PREFIX}/signSendFormTransactionThunk`,
     async (
         {
             formValues,
@@ -515,6 +476,7 @@ export const signTransactionThunk = createThunk(
     ) => {
         const device = selectDevice(getState());
         const selectedAccount = selectSelectedAccount(getState());
+        const selectedAccountNetwork = selectSelectedAccountNetwork(getState());
         if (!device || !selectedAccount) return;
 
         // native RBF is available since FW 1.9.4/2.3.5
@@ -555,11 +517,11 @@ export const signTransactionThunk = createThunk(
             !isCardanoTx(selectedAccount, enhancedTxInfo) &&
             selectedAccount.networkType === 'ethereum' &&
             enhancedTxInfo.token?.contract &&
-            network?.chainId
+            selectedAccountNetwork?.chainId
         ) {
             const isTokenKnown = await fetch(
                 `https://data.trezor.io/firmware/eth-definitions/chain-id/${
-                    network.chainId
+                    selectedAccountNetwork.chainId
                 }/token-${enhancedTxInfo.token.contract.substring(2).toLowerCase()}.dat`,
                 { method: 'HEAD' },
             )
@@ -588,14 +550,14 @@ export const signTransactionThunk = createThunk(
         // Type guard to differentiate between PrecomposedTransactionFinal and PrecomposedTransactionFinalCardano
         if (isCardanoTx(selectedAccount, enhancedTxInfo)) {
             serializedTx = await dispatch(
-                signCardanoTransactionThunk({
+                signCardanoSendFormTransactionThunk({
                     transactionInfo: enhancedTxInfo,
                 }),
             ).unwrap();
         } else {
             if (selectedAccount.networkType === 'bitcoin') {
                 const response = await dispatch(
-                    signBitcoinTransactionThunk({
+                    signBitcoinSendFormTransactionThunk({
                         formValues,
                         transactionInfo: enhancedTxInfo,
                     }),
@@ -605,12 +567,15 @@ export const signTransactionThunk = createThunk(
             }
             if (selectedAccount.networkType === 'ethereum') {
                 serializedTx = await dispatch(
-                    signEthereumTransactionThunk({ formValues, transactionInfo: enhancedTxInfo }),
+                    signEthereumSendFormTransactionThunk({
+                        formValues,
+                        transactionInfo: enhancedTxInfo,
+                    }),
                 ).unwrap();
             }
             if (selectedAccount.networkType === 'ripple') {
                 serializedTx = await dispatch(
-                    signRippleTransactionThunk({
+                    signRippleSendFormTransactionThunk({
                         formValues,
                         transactionInfo: enhancedTxInfo,
                     }),
@@ -618,7 +583,7 @@ export const signTransactionThunk = createThunk(
             }
             if (selectedAccount.networkType === 'solana') {
                 serializedTx = await dispatch(
-                    signSolanaTransactionThunk({
+                    signSolanaSendFormTransactionThunk({
                         formValues,
                         transactionInfo: enhancedTxInfo,
                     }),
@@ -648,7 +613,10 @@ export const signTransactionThunk = createThunk(
         if (decision) {
             // push tx to the network
             return dispatch(
-                pushTransactionThunk({ signedTransaction, sendingAccount: selectedAccount }),
+                pushSendFormTransactionThunk({
+                    signedTransaction,
+                    sendingAccount: selectedAccount,
+                }),
             ).unwrap();
         }
     },
