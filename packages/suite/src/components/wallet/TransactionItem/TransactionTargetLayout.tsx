@@ -2,15 +2,14 @@ import { ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 import { motion } from 'framer-motion';
 import { HiddenPlaceholder } from 'src/components/suite';
-import { variables, motionAnimation } from '@trezor/components';
+import { motionAnimation } from '@trezor/components';
+import { borders, spacingsPx, typography } from '@trezor/theme';
 
 export const MIN_ROW_HEIGHT = '23px';
 
 const FiatAmount = styled.span`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    line-height: 1.57;
+    color: ${({ theme }) => theme.textSubdued};
+    ${typography.hint}
 `;
 
 const TargetWrapper = styled(motion.div)`
@@ -46,16 +45,16 @@ const StyledHiddenPlaceholder = styled(props => <HiddenPlaceholder {...props} />
 const TargetAddress = styled(motion.div)`
     display: flex;
     flex: 1;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    color: ${({ theme }) => theme.textSubdued};
+    ${typography.hint}
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
     font-variant-numeric: tabular-nums slashed-zero;
-    margin-right: 4px;
+    margin-right: ${spacingsPx.xxs};
     padding-left: 10px;
     margin-left: -10px;
+    line-height: 26px;
 
     /* start of css to prevent hidden labeling button (23px height) to expand the target row */
     align-items: center;
@@ -66,8 +65,8 @@ const TargetAddress = styled(motion.div)`
 `;
 
 const TimelineDotWrapper = styled.div`
-    margin: 0 8px;
-    min-width: 8px;
+    margin: 0 ${spacingsPx.xs};
+    min-width: ${spacingsPx.xs};
     display: flex;
     align-items: center;
     flex-direction: column;
@@ -76,18 +75,18 @@ const TimelineDotWrapper = styled.div`
 const TimelineDot = styled.div`
     width: 3px;
     height: 3px;
-    border-radius: 50%;
-    background: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    border-radius: ${borders.radii.full};
+    background: ${({ theme }) => theme.iconSubdued};
 `;
 
 const TimelineLine = styled.div<{ show: boolean; top?: boolean }>`
     width: 1px;
-    background: ${({ show, theme }) => (show ? theme.STROKE_GREY : 'transparent')};
+    background: ${({ show, theme }) => (show ? theme.borderDashed : 'transparent')};
 
     ${({ top }) =>
         top
             ? css`
-                  height: 10px;
+                  height: ${spacingsPx.sm};
               `
             : css`
                   flex: 1;
