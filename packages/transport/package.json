@@ -54,7 +54,6 @@
         "@trezor/protobuf": "workspace:*",
         "@trezor/protocol": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "cross-fetch": "^4.0.0",
         "json-stable-stringify": "^1.1.1",
         "long": "^4.0.0",
         "protobufjs": "7.2.6",

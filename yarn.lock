@@ -10103,7 +10103,6 @@ __metadata:
     "@types/bytebuffer": "npm:^5.0.48"
     "@types/sharedworker": "npm:^0.0.111"
     "@types/w3c-web-usb": "npm:^1.0.10"
-    cross-fetch: "npm:^4.0.0"
     jest: "npm:29.7.0"
     json-stable-stringify: "npm:^1.1.1"
     long: "npm:^4.0.0"
@@ -10120,7 +10119,6 @@ __metadata:
   resolution: "@trezor/trezor-user-env-link@workspace:packages/trezor-user-env-link"
   dependencies:
     "@trezor/utils": "workspace:*"
-    cross-fetch: "npm:^4.0.0"
     ws: "npm:^8.16.0"
   languageName: unknown
   linkType: soft
