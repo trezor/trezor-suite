@@ -1,6 +1,6 @@
 import fetch from 'cross-fetch';
 
-import { EthereumDefinitions } from '@trezor/protobuf/lib/messages-schema';
+import { MessagesSchema } from '@trezor/protobuf';
 import { trzd } from '@trezor/protocol';
 import { parseConfigure, decode as decodeProtobuf } from '@trezor/protobuf';
 import { DataManager } from '../../data/DataManager';
@@ -24,7 +24,7 @@ export const getEthereumDefinitions = async ({
     slip44,
     contractAddress,
 }: GetEthereumDefinitions) => {
-    const definitions: EthereumDefinitions = {};
+    const definitions: MessagesSchema.EthereumDefinitions = {};
 
     if (!chainId && !slip44) {
         throw new Error('argument chainId or slip44 is required');
@@ -97,7 +97,7 @@ export const EthereumDefinitionDecoded = Type.Object({
 });
 
 export const decodeEthereumDefinition = (
-    encodedDefinition: EthereumDefinitions,
+    encodedDefinition: MessagesSchema.EthereumDefinitions,
 ): EthereumDefinitionDecoded => {
     const decoded: EthereumDefinitionDecoded = {
         network: undefined,
