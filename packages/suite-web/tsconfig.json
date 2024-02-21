@@ -4,7 +4,7 @@
         "outDir": "./libDev",
         "baseUrl": "../suite"
     },
-    "include": ["."],
+    "include": ["./src"],
     "references": [
         {
             "path": "../../suite-common/formatters"

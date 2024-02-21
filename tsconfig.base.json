@@ -21,7 +21,7 @@
         "resolveJsonModule": true,
         "forceConsistentCasingInFileNames": true,
         "isolatedModules": true,
-        "types": ["jest", "node"],
+        "types": ["jest", "node", "monorepo-global-types"],
         "esModuleInterop": true,
         "composite": true,
         "declaration": true,

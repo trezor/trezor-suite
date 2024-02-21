@@ -171,6 +171,9 @@
         { "path": "packages/utils" },
         { "path": "packages/utxo-lib" },
         {
+            "path": "packages/monorepo-global-types"
+        },
+        {
             "path": "packages/connect-examples/electron-main-process"
         },
         {

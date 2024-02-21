@@ -11104,6 +11104,12 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/monorepo-global-types@workspace:packages/monorepo-global-types":
+  version: 0.0.0-use.local
+  resolution: "@types/monorepo-global-types@workspace:packages/monorepo-global-types"
+  languageName: unknown
+  linkType: soft
+
 "@types/ms@npm:*":
   version: 0.7.31
   resolution: "@types/ms@npm:0.7.31"

@@ -1,0 +1,6 @@
+{
+    "name": "@types/monorepo-global-types",
+    "description": "Private package for global types in monorepo, mostly for missing types for some libraries that we use over monorepo. Check README.md for more info.",
+    "private": true,
+    "types": "index.d.ts"
+}
