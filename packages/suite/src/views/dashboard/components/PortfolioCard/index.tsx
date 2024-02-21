@@ -19,6 +19,7 @@ import { Exception } from './components/Exception';
 import { EmptyWallet } from './components/EmptyWallet';
 import { DashboardGraph } from './components/DashboardGraph';
 import { selectFiatRates } from '@suite-common/wallet-core';
+import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 
 const Body = styled.div`
     align-items: center;
@@ -46,7 +47,7 @@ const Wrapper = styled.div`
 
 const PortfolioCard = memo(() => {
     const rates = useSelector(selectFiatRates);
-    const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
+    const localCurrency = useSelector(selectLocalCurrency);
     const { discovery, getDiscoveryStatus, isDiscoveryRunning } = useDiscovery();
     const accounts = useFastAccounts();
     const { dashboardGraphHidden } = useSelector(s => s.suite.flags);

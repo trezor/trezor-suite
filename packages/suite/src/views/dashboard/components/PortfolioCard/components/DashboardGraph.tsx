@@ -14,6 +14,7 @@ import { Account } from 'src/types/wallet';
 import { TransactionsGraph, Translation, HiddenPlaceholder } from 'src/components/suite';
 import { AggregatedDashboardHistory } from 'src/types/wallet/graph';
 import { getMinMaxValueFromData } from 'src/utils/wallet/graph';
+import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 
 const Wrapper = styled.div`
     display: flex;
@@ -48,7 +49,7 @@ interface DashboardGraphProps {
 export const DashboardGraph = memo(({ accounts }: DashboardGraphProps) => {
     const { error, isLoading, selectedRange } = useSelector(state => state.wallet.graph);
     const selectedDevice = useSelector(selectDevice);
-    const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
+    const localCurrency = useSelector(selectLocalCurrency);
     const dispatch = useDispatch();
 
     const [data, setData] = useState<AggregatedDashboardHistory[]>([]);

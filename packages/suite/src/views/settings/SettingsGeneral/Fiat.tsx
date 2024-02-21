@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { setLocalCurrency } from 'src/actions/settings/walletSettingsActions';
 import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 
 const buildCurrencyOption = (currency: string) => ({
     value: currency,
@@ -19,7 +20,7 @@ const buildCurrencyOption = (currency: string) => ({
 });
 
 export const Fiat = () => {
-    const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
+    const localCurrency = useSelector(selectLocalCurrency);
     const dispatch = useDispatch();
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.Fiat);
 

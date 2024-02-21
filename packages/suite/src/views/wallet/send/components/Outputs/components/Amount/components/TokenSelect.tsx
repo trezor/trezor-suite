@@ -14,6 +14,7 @@ import { TooltipSymbol, Translation } from 'src/components/suite';
 import { getNetworkFeatures } from '@suite-common/wallet-config';
 import { enhanceTokensWithRates, sortTokensWithRates } from 'src/utils/wallet/tokenUtils';
 import { getShortFingerprint } from '@suite-common/wallet-utils';
+import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 
 const UnrecognizedTokensHeading = styled.div`
     display: flex;
@@ -164,7 +165,7 @@ export const TokenSelect = ({ output, outputId }: TokenSelectProps) => {
         watch,
     } = useSendFormContext();
     const tokenDefinitions = useSelector(state => selectTokenDefinitions(state, account.symbol));
-    const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
+    const localCurrency = useSelector(selectLocalCurrency);
     const tokensWithRates = enhanceTokensWithRates(account.tokens, localCurrency, account.symbol);
 
     const sortedTokens = useMemo(() => {

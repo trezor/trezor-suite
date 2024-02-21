@@ -9,6 +9,7 @@ import { NoRatesTooltip } from './NoRatesTooltip';
 import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 
 const FiatRateWrapper = styled.span`
     display: flex;
@@ -28,7 +29,7 @@ interface TickerProps {
 }
 
 export const Ticker = ({ symbol, tooltipPos = 'top' }: TickerProps) => {
-    const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
+    const localCurrency = useSelector(selectLocalCurrency);
     const theme = useTheme();
 
     const fiatRateKey = getFiatRateKey(symbol, localCurrency);

@@ -53,6 +53,7 @@ import { useFees } from './form/useFees';
 import { AddressDisplayOptions, selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
 import { networkToCryptoSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 
 export const ExchangeFormContext = createContext<ExchangeFormContextValues | null>(null);
 ExchangeFormContext.displayName = 'CoinmarketExchangeContext';
@@ -90,7 +91,7 @@ export const useCoinmarketExchangeForm = ({
     const { exchangeInfo, quotesRequest } = useSelector(state => state.wallet.coinmarket.exchange);
     const { symbolsInfo } = useSelector(state => state.wallet.coinmarket.info);
     const device = useSelector(selectDevice);
-    const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
+    const localCurrency = useSelector(selectLocalCurrency);
     const fees = useSelector(state => state.wallet.fees);
     const dispatch = useDispatch();
     const addressDisplayType = useSelector(selectAddressDisplayType);

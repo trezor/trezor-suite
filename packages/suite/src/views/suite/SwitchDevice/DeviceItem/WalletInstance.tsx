@@ -23,6 +23,7 @@ import { TrezorDevice, AcquiredDevice } from 'src/types/suite';
 import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer';
 import { useWalletLabeling } from '../../../../components/suite/labeling/WalletLabeling';
 import { METADATA_LABELING } from 'src/actions/suite/constants';
+import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 
 const InstanceType = styled.div`
     display: flex;
@@ -111,7 +112,7 @@ export const WalletInstance = ({
 }: WalletInstanceProps) => {
     const accounts = useSelector(state => state.wallet.accounts);
     const rates = useSelector(selectFiatRates);
-    const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
+    const localCurrency = useSelector(selectLocalCurrency);
     const editing = useSelector(state => state.metadata.editing);
     const dispatch = useDispatch();
 
