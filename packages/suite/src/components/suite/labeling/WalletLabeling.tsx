@@ -46,6 +46,7 @@ export const useGetWalletLabel = ({ device, shouldUseDeviceLabel }: WalletLabell
     }
 
     if (!label) return null;
+
     return label;
 };
 
