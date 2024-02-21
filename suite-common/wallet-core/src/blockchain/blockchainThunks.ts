@@ -148,7 +148,8 @@ export const updateFeeInfoThunk = createThunk(
 // call TrezorConnect.unsubscribe, it doesn't cost anything and should emit BLOCKCHAIN.CONNECT or BLOCKCHAIN.ERROR event
 export const reconnectBlockchainThunk = createThunk(
     `${BLOCKCHAIN_MODULE_PREFIX}/reconnectBlockchainThunk`,
-    (coin: NetworkSymbol) => TrezorConnect.blockchainUnsubscribeFiatRates({ coin }),
+    (payload: { coin: NetworkSymbol; identity?: string }) =>
+        TrezorConnect.blockchainUnsubscribeFiatRates(payload),
 );
 
 const setBackendsToConnect = (backends: CustomBackend[]) =>
@@ -197,7 +198,7 @@ export const initBlockchainThunk = createThunk(
             }
         });
 
-        const promises = coins.map(coin => dispatch(reconnectBlockchainThunk(coin)));
+        const promises = coins.map(coin => dispatch(reconnectBlockchainThunk({ coin })));
         await Promise.all(promises);
 
         // continue suite initialization
