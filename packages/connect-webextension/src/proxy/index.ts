@@ -5,6 +5,7 @@ import {
     ERRORS,
     IFRAME,
     POPUP,
+    WEBEXTENSION,
     createErrorMessage,
     ConnectSettings,
     Manifest,
@@ -51,6 +52,12 @@ const init = (settings: Partial<ConnectSettings> = {}): Promise<void> => {
             },
         });
     }
+
+    _channel.port.onMessage.addListener((message: any) => {
+        if (message.type === WEBEXTENSION.CHANNEL_HANDSHAKE_CONFIRM) {
+            eventEmitter.emit(WEBEXTENSION.CHANNEL_HANDSHAKE_CONFIRM, message);
+        }
+    });
 
     return _channel.init().then(() =>
         _channel.postMessage(
