@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { FormattedDate } from 'src/components/suite';
 import { WalletAccountTransaction } from 'src/types/wallet';
-import { typography } from '@trezor/theme';
+import { spacingsPx, typography } from '@trezor/theme';
 
 const TimestampLink = styled.div`
     display: block;
@@ -9,6 +9,7 @@ const TimestampLink = styled.div`
     color: ${({ theme }) => theme.textSubdued};
     ${typography.hint}
     white-space: nowrap;
+    margin-top: ${spacingsPx.xxs};
 `;
 
 interface TransactionTimestampProps {

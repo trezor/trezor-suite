@@ -39,7 +39,6 @@ const HeadingWrapper = styled.div`
 const ChevronIconWrapper = styled.div<{ show: boolean; animate: boolean }>`
     display: flex;
     margin-left: ${({ animate }) => (animate ? '5px' : '3px')};
-    padding-bottom: 2px;
     opacity: ${({ show }) => (show ? 1 : 0)};
     transition:
         visibility 0s,
