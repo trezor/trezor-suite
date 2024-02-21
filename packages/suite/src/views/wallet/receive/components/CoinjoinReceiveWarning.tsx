@@ -8,6 +8,7 @@ import { formatAmount, getAccountDecimals } from '@suite-common/wallet-utils';
 import { UNECONOMICAL_COINJOIN_THRESHOLD } from 'src/services/coinjoin';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { selectIsAccountWithRatesByKey } from '@suite-common/wallet-core';
+import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 
 const StyledWarning = styled(Warning)`
     justify-content: space-between;
@@ -66,7 +67,7 @@ const StyledButton = styled(Button)`
 
 export const CoinjoinReceiveWarning = () => {
     const account = useSelector(selectSelectedAccount);
-    const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
+    const localCurrency = useSelector(selectLocalCurrency);
     const isAccountWithRate = useSelector(state =>
         selectIsAccountWithRatesByKey(state, account?.key || '', localCurrency),
     );

@@ -12,6 +12,7 @@ import { Card, CoinLogo, variables } from '@trezor/components';
 import { TradeBoxMenu } from './TradeBoxMenu';
 import { TradeBoxPrices } from './TradeBoxPrices';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
+import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 
 const StyledCard = styled(Card)`
     flex-flow: row wrap;
@@ -77,7 +78,7 @@ interface TradeBoxProps {
 
 export const TradeBox = ({ account }: TradeBoxProps) => {
     const network = getMainnets().find(n => n.symbol === account.symbol);
-    const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
+    const localCurrency = useSelector(selectLocalCurrency);
     const fiatRateKey = getFiatRateKey(account.symbol, localCurrency);
     const fiatRates = useSelector(state => selectFiatRatesByFiatRateKey(state, fiatRateKey));
 

@@ -17,6 +17,7 @@ import { variables, Button, Card } from '@trezor/components';
 import { TransactionSummaryDropdown } from './TransactionSummaryDropdown';
 import { SummaryCards } from './SummaryCards';
 import { aggregateBalanceHistory, getMinMaxValueFromData } from 'src/utils/wallet/graph';
+import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 
 const Wrapper = styled.div`
     display: flex;
@@ -61,7 +62,7 @@ interface TransactionSummaryProps {
 
 export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
     const selectedRange = useSelector(state => state.wallet.graph.selectedRange);
-    const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
+    const localCurrency = useSelector(selectLocalCurrency);
     const dispatch = useDispatch();
 
     const intervalGraphData = dispatch(getGraphDataForInterval({ account }));

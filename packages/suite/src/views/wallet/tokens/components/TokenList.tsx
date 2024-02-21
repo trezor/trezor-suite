@@ -16,6 +16,7 @@ import { spacingsPx } from '@trezor/theme';
 import { NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
 import { enhanceTokensWithRates, sortTokensWithRates } from 'src/utils/wallet/tokenUtils';
 import { Rate } from '@suite-common/wallet-types';
+import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 
 const Wrapper = styled(Card)<{ isTestnet?: boolean }>`
     display: grid;
@@ -107,7 +108,7 @@ export const TokenList = ({
 }: TokenListProps) => {
     const theme = useTheme();
     const tokenDefinitions = useSelector(state => selectTokenDefinitions(state, networkSymbol));
-    const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
+    const localCurrency = useSelector(selectLocalCurrency);
     const { account } = useSelector(state => state.wallet.selectedAccount);
 
     if (!account) return null;

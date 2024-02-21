@@ -18,6 +18,7 @@ import {
     CoinmarketTag,
 } from 'src/views/wallet/coinmarket/common';
 import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
+import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 
 const Details = styled.div`
     display: flex;
@@ -183,7 +184,7 @@ export const ExchangeQuote = ({ className, quote }: QuoteProps) => {
     const feePerByte = useSelector(
         state => state.wallet.coinmarket.composedTransactionInfo.composed?.feePerByte,
     );
-    const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
+    const localCurrency = useSelector(selectLocalCurrency);
     const fiatRateKey = getFiatRateKey(account.symbol, localCurrency);
     const fiatRate = useSelector(state => selectFiatRatesByFiatRateKey(state, fiatRateKey));
 

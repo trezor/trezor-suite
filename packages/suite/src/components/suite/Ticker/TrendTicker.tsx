@@ -7,6 +7,7 @@ import { FiatValue } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { NoRatesTooltip } from './NoRatesTooltip';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 
 const PercentageWrapper = styled.div<{ isRateGoingUp: boolean }>`
     ${typography.hint}
@@ -24,7 +25,7 @@ interface TickerProps {
 }
 export const TrendTicker = ({ symbol }: TickerProps) => {
     const locale = useSelector(state => state.suite.settings.language);
-    const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
+    const localCurrency = useSelector(selectLocalCurrency);
     const fiatRateKey = getFiatRateKey(symbol, localCurrency);
     const lastWeekRate = useSelector(state =>
         selectFiatRatesByFiatRateKey(state, fiatRateKey, 'lastWeek'),

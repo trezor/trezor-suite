@@ -25,6 +25,7 @@ import { TransactionCandidates } from './TransactionCandidates';
 import { selectLabelingDataForAccount } from 'src/reducers/suite/metadataReducer';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { SkeletonStack } from '@trezor/components';
+import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 
 const StyledSection = styled(DashboardSection)`
     margin-bottom: 20px;
@@ -47,7 +48,7 @@ export const TransactionList = ({
     account,
     symbol,
 }: TransactionListProps) => {
-    const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
+    const localCurrency = useSelector(selectLocalCurrency);
     const anchor = useSelector(state => state.router.anchor);
     const dispatch = useDispatch();
     const accountMetadata = useSelector(state => selectLabelingDataForAccount(state, account.key));
