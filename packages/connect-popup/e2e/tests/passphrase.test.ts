@@ -1,10 +1,11 @@
-import { test, Page } from '@playwright/test';
+import { test, Page, BrowserContext } from '@playwright/test';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import {
     findElementByDataTest,
     getContexts,
     log,
     openPopup,
+    setConnectSettings,
     waitAndClick,
 } from '../support/helpers';
 
@@ -12,14 +13,21 @@ const url = process.env.URL || 'http://localhost:8088/';
 const bridgeVersion = '2.0.31';
 
 const isWebExtension = process.env.IS_WEBEXTENSION === 'true';
+const connectSrc = process.env.TREZOR_CONNECT_SRC;
 
 let context: any = null;
+let browserContext: BrowserContext | undefined;
+let explorerPage: Page;
+let explorerUrl: string;
 
 test.beforeAll(async () => {
     await TrezorUserEnvLink.connect();
+    log(`isWebExtension: ${isWebExtension}`);
+    log(`connectSrc: ${connectSrc}`);
+    log(`url: ${url}`);
 });
 
-test.beforeEach(async () => {
+test.beforeEach(async ({ page }) => {
     log('beforeEach', 'stopBridge');
     await TrezorUserEnvLink.api.stopBridge();
     log('beforeEach', 'stopEmu');
@@ -38,9 +46,26 @@ test.beforeEach(async () => {
     });
     log('beforeEach', 'startBridge');
     await TrezorUserEnvLink.api.startBridge(bridgeVersion);
+
+    log('beforeEach', 'getting contexts');
+    const contexts = await getContexts(page, url, isWebExtension);
+    browserContext = contexts.browserContext;
+    explorerPage = contexts.explorerPage;
+    explorerUrl = contexts.explorerUrl;
+    context = browserContext;
+
+    if (connectSrc) {
+        log('beforeEach', 'applying connect settings');
+        await setConnectSettings(explorerPage, explorerUrl, {
+            trustedHost: false,
+            connectSrc,
+        });
+    }
 });
 
 test.afterEach(async () => {
+    log('afterEach', 'if context close it.');
+
     if (context) {
         // BrowserContext has to start fresh each test.
         // https://playwright.dev/docs/api/class-browsercontext#browser-context-close
@@ -53,17 +78,11 @@ test.afterEach(async () => {
 let popup: Page;
 
 // Debug mode does not have to be enable since it is default in connect-explorer
-test('input passphrase in popup and device accepts it', async ({ page }) => {
-    log('start', test.info().title);
-    const { explorerPage, exploreUrl, browserContext } = await getContexts(
-        page,
-        url,
-        isWebExtension,
-    );
-    context = browserContext;
+test('input passphrase in popup and device accepts it', async () => {
+    log(`test: ${test.info().title}`);
 
-    log(`opening ${exploreUrl}#/method/getAddress`);
-    await explorerPage.goto(`${exploreUrl}#/method/getAddress`);
+    log(`opening ${explorerUrl}#/method/getAddress`);
+    await explorerPage.goto(`${explorerUrl}#/method/getAddress`);
 
     log('waiting for submit button');
     await findElementByDataTest(explorerPage, '@submit-button');
@@ -101,15 +120,10 @@ test('input passphrase in popup and device accepts it', async ({ page }) => {
     await TrezorUserEnvLink.api.pressYes();
 });
 
-test('introduce passphrase in popup and device rejects it', async ({ page }) => {
-    const { explorerPage, exploreUrl, browserContext } = await getContexts(
-        page,
-        url,
-        isWebExtension,
-    );
-    context = browserContext;
+test('introduce passphrase in popup and device rejects it', async () => {
+    log(`test: ${test.info().title}`);
 
-    await explorerPage.goto(`${exploreUrl}#/method/getAddress`);
+    await explorerPage.goto(`${explorerUrl}#/method/getAddress`);
     await findElementByDataTest(explorerPage, '@submit-button');
 
     [popup] = await openPopup(context, explorerPage, isWebExtension);
@@ -136,15 +150,12 @@ test('introduce passphrase in popup and device rejects it', async ({ page }) => 
     await explorerPage.waitForSelector('text=Failure_ActionCancelled');
 });
 
-test('introduce passphrase successfully next time should not ask for it', async ({ page }) => {
-    const { explorerPage, exploreUrl, browserContext } = await getContexts(
-        page,
-        url,
-        isWebExtension,
-    );
-    context = browserContext;
+test('introduce passphrase successfully next time should not ask for it', async () => {
+    test.skip(isWebExtension, 'test does not apply for webextension');
 
-    await explorerPage.goto(`${exploreUrl}#/method/getAddress`);
+    log(`test: ${test.info().title}`);
+
+    await explorerPage.goto(`${explorerUrl}#/method/getAddress`);
     await findElementByDataTest(explorerPage, '@submit-button');
 
     [popup] = await openPopup(context, explorerPage, isWebExtension);
@@ -185,17 +196,12 @@ test('introduce passphrase successfully next time should not ask for it', async 
     await findElementByDataTest(popup, '@check-address-on-device');
 });
 
-test('introduce passphrase successfully reload 3rd party it should ask again for passphrase', async ({
-    page,
-}) => {
-    const { explorerPage, exploreUrl, browserContext } = await getContexts(
-        page,
-        url,
-        isWebExtension,
-    );
-    context = browserContext;
+test('introduce passphrase successfully reload 3rd party it should ask again for passphrase', async () => {
+    test.skip(isWebExtension, 'test does not apply for webextension');
 
-    await explorerPage.goto(`${exploreUrl}#/method/getAddress`);
+    log(`test: ${test.info().title}`);
+
+    await explorerPage.goto(`${explorerUrl}#/method/getAddress`);
     await findElementByDataTest(explorerPage, '@submit-button');
 
     [popup] = await openPopup(context, explorerPage, isWebExtension);
@@ -240,10 +246,9 @@ test('introduce passphrase successfully reload 3rd party it should ask again for
 });
 
 test('passphrase mismatch', async ({ page }) => {
-    if (isWebExtension) {
-        // This test uses addScriptTag so we cannot run it in web extension.
-        test.skip();
-    }
+    // This test uses addScriptTag so we cannot run it in web extension.
+    test.skip(isWebExtension);
+    log(`test: ${test.info().title}`);
 
     log('start', test.info().title);
     log('got to: ', `${url}#/method/getAddress`);

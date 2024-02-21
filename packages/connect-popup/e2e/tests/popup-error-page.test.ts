@@ -1,6 +1,6 @@
 import { test, Page, BrowserContext } from '@playwright/test';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
-import { getContexts, openPopup, log } from '../support/helpers';
+import { getContexts, openPopup, log, setConnectSettings } from '../support/helpers';
 
 const url = process.env.URL || 'http://localhost:8088/';
 
@@ -10,9 +10,13 @@ let popup: Page;
 let context: BrowserContext | undefined;
 
 const isWebExtension = process.env.IS_WEBEXTENSION === 'true';
+const connectSrc = process.env.TREZOR_CONNECT_SRC;
 
 test.beforeAll(async () => {
     await TrezorUserEnvLink.connect();
+    log(`isWebExtension: ${isWebExtension}`);
+    log(`connectSrc: ${connectSrc}`);
+    log(`url: ${url}`);
 });
 
 test.afterEach(async () => {
@@ -43,15 +47,22 @@ test('popup should display error page when device disconnected and debug mode', 
     await TrezorUserEnvLink.api.startBridge(bridgeVersion);
 
     log('generating contexts');
-    const { explorerPage, exploreUrl, browserContext } = await getContexts(
+    const { explorerPage, explorerUrl, browserContext } = await getContexts(
         page,
         url,
         isWebExtension,
     );
     context = browserContext;
 
+    if (connectSrc) {
+        await setConnectSettings(explorerPage, explorerUrl, {
+            trustedHost: false,
+            connectSrc,
+        });
+    }
+
     log('opening explorer page');
-    await explorerPage.goto(`${exploreUrl}#/method/verifyMessage`);
+    await explorerPage.goto(`${explorerUrl}#/method/verifyMessage`);
     log('waiting for explorer to load');
     await explorerPage.waitForSelector("button[data-test='@submit-button']", { state: 'visible' });
 
