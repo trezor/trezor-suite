@@ -10,6 +10,8 @@ module.exports = function (api) {
         // TODO: use babel-presets-expo once @babel/plugin-proposal-decorators is removed from this preset (it conflicts with our settings of this plugin)
         presets: ['module:@react-native/babel-preset'],
         plugins: [
+            // @babel/plugin-transform-export-namespace-from could be removed once we use babel-preset-expo ^^
+            '@babel/plugin-transform-export-namespace-from',
             ['@babel/plugin-proposal-decorators', { version: '2023-05' }],
             ['@babel/plugin-transform-class-static-block'],
             // react-native-reanimated plugin has to be listed last
