@@ -9,14 +9,9 @@ import {
 } from '@suite-common/wallet-core';
 import { DeviceModelInternal } from '@trezor/connect';
 import { Icon, variables } from '@trezor/components';
-import { splitStringEveryNCharacters } from '@trezor/utils';
-import { Translation } from './Translation';
-import { ClipboardEvent, Fragment, ReactElement, ReactNode } from 'react';
-import {
-    CHARACTER_OFFSET_FOR_ARROW,
-    MAX_CHARACTERS_ON_ROW,
-    MAX_CHARACTERS_ON_SCREEN,
-} from 'src/constants/suite/device';
+import { ClipboardEvent, ReactElement, ReactNode } from 'react';
+import { Translation } from '../Translation';
+import { parseTextToPagesAndLines } from './parseTextToPagesAndLines';
 
 const Display = styled.div`
     display: flex;
@@ -36,7 +31,6 @@ const Text = styled.div<{ isPixelType: boolean; isWithIndentation?: boolean }>`
     font-size: ${({ isPixelType }) => (isPixelType ? '12' : '18')}px;
     color: white;
     word-break: break-word;
-    max-width: 216px;
     display: inline;
     ${({ isWithIndentation, isPixelType }) =>
         isWithIndentation &&
@@ -114,9 +108,6 @@ export const DeviceDisplay = ({ address, network, valueDataTest }: DeviceDisplay
         ? address.replace('bitcoincash:', '')
         : address;
 
-    const isPaginated =
-        MAX_CHARACTERS_ON_SCREEN[selectedDeviceInternalModel] <= processedAddress.length;
-
     const areChunksUsed =
         addressDisplayType === AddressDisplayOptions.CHUNKED &&
         !unavailableCapabilities?.chunkify &&
@@ -125,9 +116,6 @@ export const DeviceDisplay = ({ address, network, valueDataTest }: DeviceDisplay
         (network !== 'solana' || valueDataTest === '@modal/confirm-address/address-field');
 
     const isPixelType = selectedDeviceInternalModel !== DeviceModelInternal.T2T1;
-    const charsPerPage = MAX_CHARACTERS_ON_SCREEN[selectedDeviceInternalModel];
-    const charsPerRow = MAX_CHARACTERS_ON_ROW[selectedDeviceInternalModel];
-    const offsetForArrows = CHARACTER_OFFSET_FOR_ARROW[selectedDeviceInternalModel];
 
     const iconNextName = isPixelType ? 'ADDRESS_PIXEL_NEXT' : 'ADDRESS_NEXT';
     const iconContinuesName = isPixelType ? 'ADDRESS_PIXEL_CONTINUES' : 'ADDRESS_CONTINUES';
@@ -148,7 +136,7 @@ export const DeviceDisplay = ({ address, network, valueDataTest }: DeviceDisplay
         ));
 
     const renderChunks = (address: string) => {
-        const chunks: Array<string | ReactElement> | null = address.match(/.{1,4}/g);
+        const chunks: string[] | null = address.match(/.{1,4}/g);
 
         const groupedChunks = chunks?.reduce((result, chunk, index) => {
             const rowIndex = Math.floor(index / 4);
@@ -160,7 +148,7 @@ export const DeviceDisplay = ({ address, network, valueDataTest }: DeviceDisplay
             result[rowIndex].push(chunk);
 
             return result;
-        }, [] as ReactNode[][]);
+        }, [] as string[][]);
 
         const handleOnCopy = (event: ClipboardEvent) => {
             const selectedText = window.getSelection()?.toString();
@@ -180,76 +168,65 @@ export const DeviceDisplay = ({ address, network, valueDataTest }: DeviceDisplay
     };
 
     const renderOriginal = (address: string) => {
-        if (isPaginated) {
-            const slices = splitStringEveryNCharacters(address, charsPerPage);
+        const { pages } = parseTextToPagesAndLines({
+            device: selectedDeviceInternalModel,
+            text: address,
+        });
 
-            const components = [];
+        const components = [];
 
-            for (let i = 0; i < slices.length; i++) {
-                const isFirstPage = i === 0;
-                const isLastPage = i === slices.length - 1;
-                const pageText = slices[i];
+        for (let i = 0; i < pages.length; i++) {
+            const isFirstPage = i === 0;
+            const isLastPage = i === pages.length - 1;
+            const page = pages[i];
 
-                const breakpointFirstLine = charsPerRow - (isFirstPage ? 0 : offsetForArrows);
+            components.push(
+                <Text
+                    key={`text-${i}`}
+                    isPixelType={isPixelType}
+                    data-test={isFirstPage ? valueDataTest : undefined}
+                >
+                    {page.rows.map((row, index) => {
+                        const isFirstLine = index !== 0;
+                        const isLastLine = index === page.rows.length - 1;
 
-                const firstRow = pageText.slice(0, breakpointFirstLine);
-                const remainingRows = splitStringEveryNCharacters(
-                    pageText.slice(breakpointFirstLine),
-                    charsPerRow,
-                );
+                        return (
+                            <>
+                                {isFirstLine ? <br /> : null}
+                                {isFirstLine && !isFirstPage ? (
+                                    <StyledContinuesIcon
+                                        {...iconConfig}
+                                        isPixelType={isPixelType}
+                                        icon={iconContinuesName}
+                                    />
+                                ) : null}
+                                {row.text}
+                                {isLastLine && !isLastPage ? (
+                                    <StyledNextIcon
+                                        {...iconConfig}
+                                        isPixelType={isPixelType}
+                                        icon={iconNextName}
+                                    />
+                                ) : null}
+                            </>
+                        );
+                    })}
+                </Text>,
+            );
 
-                const rows = [firstRow, ...remainingRows];
-
+            if (!isLastPage) {
                 components.push(
-                    <Text
-                        key={`text-${i}`}
-                        isPixelType={isPixelType}
-                        data-test={isFirstPage ? valueDataTest : undefined}
-                    >
-                        {rows.map((row, index) => {
-                            const isFirstLine = index !== 0;
-                            const isLastLine = index === rows.length - 1;
-
-                            return (
-                                <>
-                                    {isFirstLine ? <br /> : null}
-                                    {isFirstLine && !isFirstPage ? (
-                                        <StyledContinuesIcon
-                                            {...iconConfig}
-                                            isPixelType={isPixelType}
-                                            icon={iconContinuesName}
-                                        />
-                                    ) : null}
-                                    {row}
-                                    {isLastLine && !isLastPage ? (
-                                        <StyledNextIcon
-                                            {...iconConfig}
-                                            isPixelType={isPixelType}
-                                            icon={iconNextName}
-                                        />
-                                    ) : null}
-                                </>
-                            );
-                        })}
-                    </Text>,
+                    <Wrapper key={`separator-${i}`}>
+                        <Divider areChunksUsed={areChunksUsed} />
+                        <AddressLabel areChunksUsed={areChunksUsed}>
+                            <Translation id="NEXT_PAGE" />
+                        </AddressLabel>
+                    </Wrapper>,
                 );
-
-                if (!isLastPage) {
-                    components.push(
-                        <Wrapper key={`separator-${i}`}>
-                            <Divider areChunksUsed={areChunksUsed} />
-                            <AddressLabel areChunksUsed={areChunksUsed}>
-                                <Translation id="NEXT_PAGE" />
-                            </AddressLabel>
-                        </Wrapper>,
-                    );
-                }
             }
-
-            return components;
         }
 
-        return <Text isPixelType={isPixelType}>{address}</Text>;
+        return components;
     };
 
     return (
