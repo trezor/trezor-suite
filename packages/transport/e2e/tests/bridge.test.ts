@@ -3,7 +3,7 @@ import * as messages from '@trezor/protobuf/messages.json';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 // testing build. yarn workspace @trezor/transport build:lib is a required step therefore
-import { BridgeTransport } from '../../lib';
+import { BridgeTransport } from '../../src';
 
 // todo: introduce global jest config for e2e
 jest.setTimeout(60000);
