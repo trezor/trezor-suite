@@ -10,7 +10,7 @@ import {
     TRANSPORT,
     WEBEXTENSION,
 } from '@trezor/connect';
-import { TREZOR_USB_DESCRIPTORS } from '@trezor/transport/lib/constants';
+import { TREZOR_USB_DESCRIPTORS } from '@trezor/transport';
 import { SUITE_BRIDGE_URL, SUITE_UDEV_URL, TREZOR_SUPPORT_URL } from '@trezor/urls';
 import { container, getState, showView, postMessage } from './common';
 import { reactEventBus } from '@trezor/connect-ui/src/utils/eventBus';

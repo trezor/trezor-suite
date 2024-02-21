@@ -1,6 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/data/config.json
 
-import { TREZOR_USB_DESCRIPTORS } from '@trezor/transport/lib/constants';
+import { TREZOR_USB_DESCRIPTORS } from '@trezor/transport';
 
 export const config = {
     webusb: TREZOR_USB_DESCRIPTORS,

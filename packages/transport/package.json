@@ -15,18 +15,19 @@
         "Trezor",
         "transport"
     ],
-    "main": "./lib/index.js",
+    "main": "./src/index.ts",
     "browser": {
-        "./lib/transports/nodeusb": "./lib/transports/nodeusb.browser",
-        "./lib/transports/udp": "./lib/transports/udp.browser",
-        "./lib/transports/webusb": "./lib/transports/webusb.browser",
         "./src/transports/nodeusb": "./src/transports/nodeusb.browser",
         "./src/transports/udp": "./src/transports/udp.browser",
         "./src/transports/webusb": "./src/transports/webusb.browser"
     },
-    "react-native": {
-        "__comment__": "Fixes commutation between android device and bridge by always applying content-type header.",
-        "./lib/utils/applyContentTypeHeader": "./lib/utils/applyContentTypeHeader.native.js"
+    "publishConfig": {
+        "main": "./lib/index.js",
+        "browser": {
+            "./lib/transports/nodeusb": "./lib/transports/nodeusb.browser",
+            "./lib/transports/udp": "./lib/transports/udp.browser",
+            "./lib/transports/webusb": "./lib/transports/webusb.browser"
+        }
     },
     "files": [
         "lib/",
@@ -35,7 +36,7 @@
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "type-check": "yarn g:tsc --build tsconfig.json",
-        "build:lib": "yarn g:rimraf -rf lib && yarn g:tsc --build ./tsconfig.lib.json",
+        "build:lib2": "yarn g:rimraf -rf lib && yarn g:tsc --build ./tsconfig.lib.json",
         "publish:lib": "./scripts/publish-lib.sh",
         "test:unit": "jest",
         "test:e2e": "ts-node -O '{\"module\": \"commonjs\", \"esModuleInterop\": true}' ./e2e/run.ts",
