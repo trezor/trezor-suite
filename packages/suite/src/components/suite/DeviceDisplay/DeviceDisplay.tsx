@@ -29,11 +29,11 @@ export interface DeviceDisplayProps {
 }
 
 export const DeviceDisplay = ({ address, network, valueDataTest }: DeviceDisplayProps) => {
-    const device = useSelector(selectDeviceInternalModel);
+    const deviceModel = useSelector(selectDeviceInternalModel);
     const unavailableCapabilities = useSelector(selectDeviceUnavailableCapabilities);
     const addressDisplayType = useSelector(selectAddressDisplayType);
 
-    if (!device) return null;
+    if (!deviceModel) return null;
 
     // remove bitcoincash: prefix
     const processedAddress = address.startsWith('bitcoincash:')
@@ -47,7 +47,7 @@ export const DeviceDisplay = ({ address, network, valueDataTest }: DeviceDisplay
         network !== 'cardano' &&
         (network !== 'solana' || valueDataTest === '@modal/confirm-address/address-field');
 
-    const isPixelType = device !== DeviceModelInternal.T2T1;
+    const isPixelType = deviceModel !== DeviceModelInternal.T2T1;
 
     return (
         <Display>
@@ -59,7 +59,7 @@ export const DeviceDisplay = ({ address, network, valueDataTest }: DeviceDisplay
                 />
             ) : (
                 <DisplayPaginatedText
-                    device={device}
+                    deviceModel={deviceModel}
                     text={processedAddress}
                     isPixelType={isPixelType}
                     data-test={valueDataTest}

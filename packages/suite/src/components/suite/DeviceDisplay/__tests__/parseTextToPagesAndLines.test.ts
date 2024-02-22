@@ -16,7 +16,7 @@ describe(parseTextToPagesAndLines.name, () => {
         {
             it: 'Trezor One: Address',
             input: {
-                device: DeviceModelInternal.T1B1,
+                deviceModel: DeviceModelInternal.T1B1,
                 text: 'bc1qsexljl54vsc9hlwldrsd455kl7q29wvq9rnmua',
             },
             expected: {
@@ -28,13 +28,13 @@ describe(parseTextToPagesAndLines.name, () => {
                         ],
                     },
                 ],
-                isPrevPageIconOnDevice: false, // Trezor One has "..." as next-page indicator and no prev-page indicator
+                hasNextIcon: false, // Trezor One has "..." as next-page indicator and no prev-page indicator
             },
         },
         {
             it: 'Trezor One: XPUB',
             input: {
-                device: DeviceModelInternal.T1B1,
+                deviceModel: DeviceModelInternal.T1B1,
                 text: 'zpub6qWFmC4WMAU5pDeAmqhWRCu2yoPYs7ZeeFkjPmpPh9R8XRkUcNoYGBFNTS8Ru64UT9BZqCEtbxkYvF69K6bsPAqUiLtTfcy8mnpLwDM1vsz',
             },
             expected: {
@@ -55,7 +55,7 @@ describe(parseTextToPagesAndLines.name, () => {
                         ],
                     },
                 ],
-                isPrevPageIconOnDevice: false, // Trezor One has "..." as next-page indicator and no prev-page indicator
+                hasNextIcon: false, // Trezor One has "..." as next-page indicator and no prev-page indicator
             },
         },
 
@@ -65,7 +65,7 @@ describe(parseTextToPagesAndLines.name, () => {
         {
             it: 'Trezor T: XPUB',
             input: {
-                device: DeviceModelInternal.T2T1,
+                deviceModel: DeviceModelInternal.T2T1,
                 text: 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
             },
             expected: {
@@ -87,7 +87,7 @@ describe(parseTextToPagesAndLines.name, () => {
                         ],
                     },
                 ],
-                isPrevPageIconOnDevice: true,
+                hasNextIcon: true,
             },
         },
 
@@ -97,7 +97,7 @@ describe(parseTextToPagesAndLines.name, () => {
         {
             it: 'Trezor Safe 3 XPUB',
             input: {
-                device: DeviceModelInternal.T2B1,
+                deviceModel: DeviceModelInternal.T2B1,
                 text: 'zpub6rCCBgYm34WmcmW49pUvY5NmtG2oMwfCaDteT8xh8pEkKugU61KNjoYCAauoUgsDpufKTtnc8qYQaTbcawyBtbTvtFZEKjT5w12GNJr3xrB',
             },
             expected: {
@@ -118,7 +118,44 @@ describe(parseTextToPagesAndLines.name, () => {
                         ],
                     },
                 ],
-                isPrevPageIconOnDevice: true,
+                hasNextIcon: true,
+            },
+        },
+
+        // --------------- Trezor Safe3 ---------------
+
+        // No case for 'Trezor Safe 3: Address', it is handled by different logic, as chunks are used
+        {
+            it: 'Trezor Safe 3 XPUB Taproot',
+            input: {
+                deviceModel: DeviceModelInternal.T2B1,
+                text: "tr([592078a3/86'/0'/0']xpub6CRY1LAXPqbPAjnDxpX5n5P2MDAkzx67rNywJTNRqpLP28R9vpBEURzQCuymMcWstdDJvb7ajK1Cz4Pz4qyWtfgRZWw547a3NSRGnPxu6zU/<0;1>/*)",
+            },
+            expected: {
+                pages: [
+                    {
+                        rows: [
+                            { text: "tr([592078a3/86'/0" },
+                            { text: "'/0']xpub6CRY1LAXP" },
+                            { text: 'qbPAjnDxpX5n5P2MDA' },
+                            { text: 'kzx67rNywJTNRqpL' }, // space for next-arrow
+                        ],
+                    },
+                    {
+                        rows: [
+                            { text: 'P28R9vpBEURzQCuy' }, // space for continue-arrow
+                            { text: 'mMcWstdDJvb7ajK1Cz' },
+                            { text: '4Pz4qyWtfgRZWw547a' },
+                            { text: '3NSRGnPxu6zU/<0;' }, // space for next-arrow
+                        ],
+                    },
+                    {
+                        rows: [
+                            { text: '1>/*)' }, // space for continue-arrow
+                        ],
+                    },
+                ],
+                hasNextIcon: true,
             },
         },
     ];

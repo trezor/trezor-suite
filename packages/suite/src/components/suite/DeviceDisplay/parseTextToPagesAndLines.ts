@@ -1,53 +1,106 @@
 import { DeviceModelInternal } from '@trezor/connect';
 import {
-    MAX_CHARACTERS_ON_SCREEN,
+    MAX_ROWS_PER_PAGE,
     MAX_CHARACTERS_ON_ROW,
-    CHARACTER_OFFSET_FOR_ARROW,
+    CHARACTER_OFFSET_FOR_CONTINUES_ARROW,
+    CHARACTER_OFFSET_FOR_NEXT_ARROW,
 } from '../../../constants/suite/device';
-import { splitStringEveryNCharacters } from '@trezor/utils';
 
 export type ParseTextToLinesParams = {
-    device: DeviceModelInternal;
+    deviceModel: DeviceModelInternal;
     text: string;
 };
 
-type ResultRow = { text: string };
-type ResultPage = { rows: ResultRow[] };
+export type ResultRow = { text: string };
+export type ResultPage = { rows: ResultRow[] };
 
 export type ParseTextToLinesResult = {
     pages: ResultPage[];
-    isPrevPageIconOnDevice: boolean;
+    hasNextIcon: boolean;
+};
+
+const getCharsShorter = ({
+    isFirstRow,
+    isFirstPage,
+    isLastRow,
+    isLastPage,
+    offsetForContinuesArrows,
+    offsetForNextArrows,
+}: {
+    isFirstRow: boolean;
+    isFirstPage: boolean;
+    isLastRow: boolean;
+    isLastPage: boolean;
+    offsetForContinuesArrows: number;
+    offsetForNextArrows: number;
+}): number => {
+    const isShorterFirstRow = isFirstRow && !isFirstPage;
+    const isShorterLastRow = isLastRow && !isLastPage;
+
+    if (isShorterFirstRow) {
+        return offsetForNextArrows;
+    }
+
+    if (isShorterLastRow) {
+        return offsetForContinuesArrows;
+    }
+
+    return 0;
 };
 
 export const parseTextToPagesAndLines = ({
-    device,
+    deviceModel,
     text,
 }: ParseTextToLinesParams): ParseTextToLinesResult => {
-    const charsPerPage = MAX_CHARACTERS_ON_SCREEN[device];
-    const charsPerRow = MAX_CHARACTERS_ON_ROW[device];
-    const offsetForArrows = CHARACTER_OFFSET_FOR_ARROW[device];
+    const rowsPerPage = MAX_ROWS_PER_PAGE[deviceModel];
+    const charsPerRow = MAX_CHARACTERS_ON_ROW[deviceModel];
+    const offsetForContinuesArrows = CHARACTER_OFFSET_FOR_CONTINUES_ARROW[deviceModel];
+    const offsetForNextArrows = CHARACTER_OFFSET_FOR_NEXT_ARROW[deviceModel];
 
-    const pages = splitStringEveryNCharacters(text, charsPerPage);
+    const charsOnLastPage = rowsPerPage * charsPerRow - offsetForNextArrows;
 
-    const resultPages: ResultPage[] = [];
+    let pageIndex = 0;
+    let remaining = text;
+    let pages: ResultPage[] = [];
 
-    for (let i = 0; i < pages.length; i++) {
-        const isFirstPage = i === 0;
-        const pageText = pages[i];
+    while (remaining.length > 0) {
+        const isFirstPage = pageIndex === 0;
+        const isLastPage = remaining.length <= charsOnLastPage;
 
-        const breakpointFirstLine = charsPerRow - (isFirstPage ? 0 : offsetForArrows);
+        let rowIndex = 0;
+        const rows: ResultRow[] = [];
 
-        const firstRow = pageText.slice(0, breakpointFirstLine);
-        const remainingRows = splitStringEveryNCharacters(
-            pageText.slice(breakpointFirstLine),
-            charsPerRow,
-        );
+        while (rowIndex < rowsPerPage) {
+            const isFirstRow = rowIndex === 0;
+            const isLastRow = rowIndex === rowsPerPage - 1;
 
-        resultPages.push({ rows: [firstRow, ...remainingRows].map(row => ({ text: row })) });
+            const chars =
+                charsPerRow -
+                getCharsShorter({
+                    isFirstPage,
+                    isLastPage,
+                    isFirstRow,
+                    isLastRow,
+                    offsetForContinuesArrows,
+                    offsetForNextArrows,
+                });
+
+            rows.push({ text: remaining.slice(0, chars) });
+            remaining = remaining.slice(chars);
+
+            if (remaining.length === 0) {
+                break;
+            }
+
+            rowIndex++;
+        }
+
+        pages.push({ rows });
+        pageIndex++;
     }
 
     return {
-        pages: resultPages,
-        isPrevPageIconOnDevice: offsetForArrows > 1,
+        pages,
+        hasNextIcon: offsetForNextArrows > 1,
     };
 };
