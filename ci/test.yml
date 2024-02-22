@@ -248,9 +248,8 @@ transport manual:
     matrix:
       - TEST_FILE: ["methods.test"]
       - TEST_FILE: ["popup-close.test"]
-      - TEST_FILE: ["popup-error-page.test"]
       - TEST_FILE: ["passphrase.test"]
-      - TEST_FILE: ["log-page.test"]
+      - TEST_FILE: ["popup-pages.test"]
       - TEST_FILE: ["unchained.test"]
       - TEST_FILE: ["browser-support.test"]
       - TEST_FILE: ["transport.test"]
@@ -342,7 +341,7 @@ connect-popup legacy npm package:
       - TEST_FILE: ["methods.test"]
       - TEST_FILE: ["passphrase.test"]
       - TEST_FILE: ["popup-close.test"]
-      - TEST_FILE: ["popup-error-page.test"]
+      - TEST_FILE: ["popup-pages.test"]
 
 connect-explorer-webextension:
   extends: .e2e connect-explorer-webextension
