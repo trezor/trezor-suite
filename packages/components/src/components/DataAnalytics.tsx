@@ -110,6 +110,7 @@ interface DataAnalyticsProps {
     analyticsLink?: (chunks: ReactNode[]) => JSX.Element;
     tosLink?: (chunks: ReactNode[]) => JSX.Element;
     className?: string;
+    isInitialTrackingEnabled?: boolean;
 }
 
 // This component is used in connect-ui, therefore it's located in this library,
@@ -119,8 +120,9 @@ export const DataAnalytics = ({
     analyticsLink,
     tosLink,
     className,
+    isInitialTrackingEnabled = true,
 }: DataAnalyticsProps) => {
-    const [trackingEnabled, setTrackingEnabled] = useState<boolean>(true);
+    const [trackingEnabled, setTrackingEnabled] = useState<boolean>(isInitialTrackingEnabled);
 
     return (
         <StyledCard data-test="@analytics/consent" className={className}>
