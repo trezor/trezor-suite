@@ -12,12 +12,12 @@ import {
     EthereumNetworkInfo,
     EthereumSignMessage as EthereumSignMessageSchema,
 } from '../../../types';
-import type { EthereumDefinitions } from '@trezor/protobuf/lib/messages-schema';
+import { MessagesSchema } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
 type Params = PROTO.EthereumSignMessage & {
     network?: EthereumNetworkInfo;
-    definitions?: EthereumDefinitions;
+    definitions?: MessagesSchema.EthereumDefinitions;
 };
 
 export default class EthereumSignMessage extends AbstractMethod<'ethereumSignMessage', Params> {

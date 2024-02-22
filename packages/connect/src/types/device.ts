@@ -88,7 +88,8 @@ export type UnreadableDevice = {
 
 export type Device = KnownDevice | UnknownDevice | UnreadableDevice;
 export type Features = PROTO.Features;
-export { DeviceModelInternal } from '@trezor/protobuf/lib/messages-schema';
+
+export { DeviceModelInternal } from '@trezor/protobuf';
 
 type FeaturesNarrowing =
     | {

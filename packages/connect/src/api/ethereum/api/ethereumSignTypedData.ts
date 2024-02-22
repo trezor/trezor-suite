@@ -15,7 +15,7 @@ import { getFieldType, parseArrayType, encodeData } from '../ethereumSignTypedDa
 import { messageToHex } from '../../../utils/formatUtils';
 import { getEthereumDefinitions } from '../ethereumDefinitions';
 import { EthereumNetworkInfo, DeviceModelInternal } from '../../../types';
-import { EthereumDefinitions } from '@trezor/protobuf/lib/messages-schema';
+import { MessagesSchema } from '@trezor/protobuf';
 import { Assert, Type } from '@trezor/schema-utils';
 
 // This type is not inferred, because it internally uses types that are generic
@@ -25,7 +25,7 @@ type Params = (
 ) & {
     address_n: number[];
     network?: EthereumNetworkInfo;
-    definitions?: EthereumDefinitions;
+    definitions?: MessagesSchema.EthereumDefinitions;
 };
 const Params = Type.Intersect([
     Type.Union([
@@ -35,7 +35,7 @@ const Params = Type.Intersect([
     Type.Object({
         address_n: Type.Array(Type.Number()),
         network: Type.Optional(EthereumNetworkInfo),
-        definitions: Type.Optional(EthereumDefinitions),
+        definitions: Type.Optional(MessagesSchema.EthereumDefinitions),
     }),
 ]);
 

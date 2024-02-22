@@ -1,12 +1,14 @@
 import { NETWORK_IDS, PROTOCOL_MAGICS } from '../../src/constants/cardano';
 
-import {
+import { MessagesSchema } from '@trezor/protobuf';
+
+const {
     CardanoAddressType,
     CardanoCVoteRegistrationFormat,
     CardanoCertificateType,
     CardanoTxOutputSerializationFormat,
     CardanoTxSigningMode,
-} from '@trezor/protobuf/lib/messages-schema';
+} = MessagesSchema;
 
 // vectors from https://github.com/trezor/trezor-firmware/tree/main/python/trezorlib/tests/device_tests/test_msg_cardano_sign_transaction.py
 

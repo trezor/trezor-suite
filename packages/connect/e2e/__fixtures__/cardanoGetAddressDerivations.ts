@@ -2,7 +2,9 @@
 // @ts-ignore
 import commonFixtures from '../../../../submodules/trezor-common/tests/fixtures/cardano/get_base_address.derivations.json';
 
-import { CardanoAddressType, CardanoDerivationType } from '@trezor/protobuf/lib/messages-schema';
+import { MessagesSchema } from '@trezor/protobuf';
+
+const { CardanoAddressType, CardanoDerivationType } = MessagesSchema;
 
 export default {
     method: 'cardanoGetAddress',
