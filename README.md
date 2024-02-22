@@ -59,4 +59,4 @@ Please report suspected security vulnerabilities in private to [security@satoshi
 
 ## IDE specific settings
 
-Find specific settings for Integrated Development Environments (IDE) in [IDE.md](./IDE.md).
+Find specific settings for Integrated Development Environments (IDE) in [IDE.md](./IDE.md)
