@@ -28,7 +28,7 @@ for commit in $(git rev-list origin/"$BASE_BRANCH_NAME"..HEAD); do
     fi
 
     # Check commit message syntax
-    if ! echo "$commit_msg" | grep -qE "^(build|ci|docs|feat|fix|perf|refactor|style|test|chore|revert)(\([a-z, -]+\))?: "; then
+    if ! echo "$commit_msg" | grep -qE "^(build|ci|docs|feat|fix|perf|refactor|style|test|chore|revert|npm-release|release)(\([a-z, -]+\))?: "; then
     tput -T linux setaf 1
     echo "Conventional Commits validation failed for commit $commit: $commit_msg"
     tput -T linux sgr0
