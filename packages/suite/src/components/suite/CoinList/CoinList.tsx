@@ -6,7 +6,7 @@ import { getFirmwareVersion, isDeviceInBootloaderMode } from '@trezor/device-uti
 import { versionUtils } from '@trezor/utils';
 
 import { Translation } from 'src/components/suite';
-import { useDevice, useSelector } from 'src/hooks/suite';
+import { useDevice, useDiscovery, useSelector } from 'src/hooks/suite';
 import type { Network } from 'src/types/wallet';
 
 import { Coin } from './Coin';
@@ -35,9 +35,11 @@ export const CoinList = ({
 }: CoinListProps) => {
     const { device, isLocked } = useDevice();
     const blockchain = useSelector(state => state.wallet.blockchain);
-
     const isDeviceLocked = !!device && isLocked();
-    const lockedTooltip = isDeviceLocked && 'TR_DISABLED_SWITCH_TOOLTIP';
+    const { isDiscoveryRunning } = useDiscovery();
+    const lockedTooltip = isDeviceLocked ? 'TR_DISABLED_SWITCH_TOOLTIP' : null;
+    const discoveryTooltip = isDiscoveryRunning ? 'TR_LOADING_ACCOUNTS' : null;
+
     const deviceModelInternal = device?.features?.internal_model;
     const isBootloaderMode = isDeviceInBootloaderMode(device);
     const firmwareVersion = getFirmwareVersion(device);
@@ -70,7 +72,8 @@ export const CoinList = ({
                     !!unavailableReason &&
                     !isBootloaderMode &&
                     getCoinUnavailabilityMessage(unavailableReason);
-                const tooltipString = lockedTooltip || unavailabilityTooltip || tooltip;
+                const tooltipString =
+                    discoveryTooltip || lockedTooltip || unavailabilityTooltip || tooltip;
 
                 const coinLabel = blockchain[symbol].backends.selected
                     ? 'TR_CUSTOM_BACKEND'
