@@ -28,6 +28,7 @@ describe(parseTextToPagesAndLines.name, () => {
                         ],
                     },
                 ],
+                isPrevPageIconOnDevice: false, // Trezor One has "..." as next-page indicator and no prev-page indicator
             },
         },
         {
@@ -54,6 +55,7 @@ describe(parseTextToPagesAndLines.name, () => {
                         ],
                     },
                 ],
+                isPrevPageIconOnDevice: false, // Trezor One has "..." as next-page indicator and no prev-page indicator
             },
         },
 
@@ -79,12 +81,13 @@ describe(parseTextToPagesAndLines.name, () => {
                     },
                     {
                         rows: [
-                            { text: '5k5xymrLFJnCy' }, // shorter, space for prev-arrow
+                            { text: '5k5xymrLFJnCy' }, // shorter, space for continue-arrow
                             { text: '46bMYJPyZsbpFGagT' },
                             //
                         ],
                     },
                 ],
+                isPrevPageIconOnDevice: true,
             },
         },
 
@@ -109,12 +112,13 @@ describe(parseTextToPagesAndLines.name, () => {
                     },
                     {
                         rows: [
-                            { text: 'fKTtnc8qYQaTbcaw' }, // shorter, space for prev-arrow
+                            { text: 'fKTtnc8qYQaTbcaw' }, // shorter, space for continue-arrow
                             { text: 'yBtbTvtFZEKjT5w12G' },
                             { text: 'NJr3xrB' },
                         ],
                     },
                 ],
+                isPrevPageIconOnDevice: true,
             },
         },
     ];

@@ -9,7 +9,6 @@ export const DeviceDisplayText = styled.div<{ isPixelType: boolean; isWithIndent
     display: inline;
     ${({ isWithIndentation, isPixelType }) =>
         isWithIndentation &&
-        `
-        text-indent: ${isPixelType ? '36px' : '28px'};
+        `text-indent: ${isPixelType ? '36px' : '28px'};
     `}
 `;
