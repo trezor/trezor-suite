@@ -1,0 +1,79 @@
+name: '[Test] Run maestro tests'
+
+on: [push, pull_request]
+
+jobs:
+    run_android_e2e:
+        timeout-minutes: 90
+        runs-on: ubuntu-latest
+
+        strategy:
+            fail-fast: false
+            max-parallel: 5
+            matrix: # only these combinations work stable on `ubuntu-*`:
+                api-level: [26, 27, 28]
+                arch: [x86, x86_64]
+                target: [default]
+                # Print all available Android emulators: `sdkmanager --list --verbose | grep system-images`
+                include:
+                    - api-level: 26
+                      target: google_apis
+                      arch: x86
+
+        steps:
+            - uses: actions/checkout@v3
+              with:
+                  fetch-depth: 1
+
+            - run: npx envinfo
+
+            - name: Setup Java
+              uses: actions/setup-java@v3
+              with:
+                  distribution: temurin
+                  java-version: 11
+
+            - name: Install Maestro
+              run: MAESTRO_VERSION=1.30.4 curl -Ls 'https://get.maestro.mobile.dev' | bash
+
+            - name:
+              run: MAESTRO_VERSION=1.30.4 curl -Ls 'https://get.maestro.mobile.dev' | bash
+
+            - name: Download Maestro samples
+              run: $HOME/.maestro/bin/maestro download-samples
+
+            - name: Download apk from expo
+              run: curl -Lo samples/curlFile.apk https://expo.dev/artifacts/eas/mKNgSp64oreciYb1V2XrvR.apk
+
+            - name: Check samples
+              run: |
+                  pwd
+                  ls -alF
+
+            - name: Run Maestro E2E tests
+              uses: reactivecircus/android-emulator-runner@v2
+              with:
+                  api-level: ${{ matrix.api-level }}
+                  target: ${{ matrix.target }}
+                  arch: ${{ matrix.arch }}
+                  cores: 2
+                  ram-size: 2048M
+                  force-avd-creation: false
+                  emulator-boot-timeout: 900 # 15min
+                  emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+                  disable-animations: true
+                  pre-emulator-launch-script: |
+                      echo "Running pre emulator launch script. Printing the working directory now:"
+                      pwd
+                  script: |
+                      # check memory usage
+                      npx envinfo
+
+                      # verify emulator is running
+                      adb devices
+
+                      # Install app
+                      adb install samples/curlFile.apk|| (adb kill-server && adb start-server && adb devices && adb install samples/curlFile.apk)
+
+                      # Run e2e
+                      $HOME/.maestro/bin/maestro test samples/android-flow.yaml

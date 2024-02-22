@@ -1,52 +1,52 @@
-name: "[Release] suite-native develop"
-
-on:
-  push:
-    branches:
-      - develop
-    paths:
-      - "suite-native/**"
-      - "suite-common/**"
-  workflow_dispatch:
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref }}
-  cancel-in-progress: true
-
-jobs:
-  build:
-    name: Install and build
-    environment: develop
-    runs-on: ubuntu-latest
-    env:
-      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: ".nvmrc"
-          cache: yarn
-      - name: Setup EAS
-        uses: expo/expo-github-action@v8
-        with:
-          eas-version: latest
-          token: ${{ secrets.EXPO_TOKEN }}
-      - name: Install libs
-        run: yarn install
-      - name: Build on EAS Android
-        run: eas build
-          --platform android
-          --profile develop
-          --non-interactive
-          --no-wait
-          --message ${{ github.sha }}
-        working-directory: suite-native/app
-      - name: Build on EAS iOS
-        run: eas build
-          --platform ios
-          --profile develop
-          --non-interactive
-          --auto-submit
-          --no-wait
-          --message ${{ github.sha }}
-        working-directory: suite-native/app
+#name: "[Release] suite-native develop"
+#
+#on:
+#  push:
+#    branches:
+#      - develop
+#    paths:
+#      - "suite-native/**"
+#      - "suite-common/**"
+#  workflow_dispatch:
+#
+#concurrency:
+#  group: ${{ github.workflow }}-${{ github.head_ref }}
+#  cancel-in-progress: true
+#
+#jobs:
+#  build:
+#    name: Install and build
+#    environment: develop
+#    runs-on: ubuntu-latest
+#    env:
+#      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+#    steps:
+#      - uses: actions/checkout@v4
+#      - uses: actions/setup-node@v4
+#        with:
+#          node-version-file: ".nvmrc"
+#          cache: yarn
+#      - name: Setup EAS
+#        uses: expo/expo-github-action@v8
+#        with:
+#          eas-version: latest
+#          token: ${{ secrets.EXPO_TOKEN }}
+#      - name: Install libs
+#        run: yarn install
+#      - name: Build on EAS Android
+#        run: eas build
+#          --platform android
+#          --profile develop
+#          --non-interactive
+#          --no-wait
+#          --message ${{ github.sha }}
+#        working-directory: suite-native/app
+#      - name: Build on EAS iOS
+#        run: eas build
+#          --platform ios
+#          --profile develop
+#          --non-interactive
+#          --auto-submit
+#          --no-wait
+#          --message ${{ github.sha }}
+#        working-directory: suite-native/app

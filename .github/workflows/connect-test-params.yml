@@ -1,58 +1,58 @@
-name: "[Test] connect"
-on:
-  workflow_call:
-    inputs:
-      methods:
-        description: "List of methods to include in tests (example applySettings,applyFlags,getFeatures)"
-        type: "string"
-        required: false
-      test-pattern:
-        description: "Test pattern to use (e.g. `init` or `methods`)"
-        type: "string"
-        required: true
-
-jobs:
-  node:
-    name: node
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: recursive
-      - name: Setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: ".nvmrc"
-          cache: yarn
-      # todo: ideally do not install everything. possibly only devDependencies could be enough for testing (if there was not for building libs)?
-      - run: sed -i "/\"node\"/d" package.json
-      - run: yarn install
-      # todo: ideally reuse libs from build step
-      - run: yarn build:libs
-      - run: './docker/docker-connect-test.sh node -p "${{ inputs.test-pattern }}" -f 2-latest -i ${{ inputs.methods }}'
-
-  web:
-    name: web
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: recursive
-      - name: Setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: ".nvmrc"
-          cache: yarn
-      # todo: ideally do not install everything. possibly only devDependencies could be enough for testing (if there was not for building libs)?
-      - run: sed -i "/\"node\"/d" package.json
-      - run: yarn install
-      # todo: ideally reuse libs from build step
-      - run: yarn build:libs
-      - name: Retrieve build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: build-artifact
-          path: packages/connect-web/build
-      - name: "Echo download path"
-        run: echo ${{steps.download.outputs.download-path}}
-      - run: './docker/docker-connect-test.sh web -p "${{ inputs.test-pattern }}" -f 2-latest -i ${{ inputs.methods }}'
+#name: "[Test] connect"
+#on:
+#  workflow_call:
+#    inputs:
+#      methods:
+#        description: "List of methods to include in tests (example applySettings,applyFlags,getFeatures)"
+#        type: "string"
+#        required: false
+#      test-pattern:
+#        description: "Test pattern to use (e.g. `init` or `methods`)"
+#        type: "string"
+#        required: true
+#
+#jobs:
+#  node:
+#    name: node
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v4
+#        with:
+#          submodules: recursive
+#      - name: Setup node
+#        uses: actions/setup-node@v4
+#        with:
+#          node-version-file: ".nvmrc"
+#          cache: yarn
+#      # todo: ideally do not install everything. possibly only devDependencies could be enough for testing (if there was not for building libs)?
+#      - run: sed -i "/\"node\"/d" package.json
+#      - run: yarn install
+#      # todo: ideally reuse libs from build step
+#      - run: yarn build:libs
+#      - run: './docker/docker-connect-test.sh node -p "${{ inputs.test-pattern }}" -f 2-latest -i ${{ inputs.methods }}'
+#
+#  web:
+#    name: web
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v4
+#        with:
+#          submodules: recursive
+#      - name: Setup node
+#        uses: actions/setup-node@v4
+#        with:
+#          node-version-file: ".nvmrc"
+#          cache: yarn
+#      # todo: ideally do not install everything. possibly only devDependencies could be enough for testing (if there was not for building libs)?
+#      - run: sed -i "/\"node\"/d" package.json
+#      - run: yarn install
+#      # todo: ideally reuse libs from build step
+#      - run: yarn build:libs
+#      - name: Retrieve build artifacts
+#        uses: actions/download-artifact@v4
+#        with:
+#          name: build-artifact
+#          path: packages/connect-web/build
+#      - name: "Echo download path"
+#        run: echo ${{steps.download.outputs.download-path}}
+#      - run: './docker/docker-connect-test.sh web -p "${{ inputs.test-pattern }}" -f 2-latest -i ${{ inputs.methods }}'

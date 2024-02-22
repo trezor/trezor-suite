@@ -1,0 +1,2 @@
+testAPKFolder/appFirebase.apk filter=lfs diff=lfs merge=lfs -text
+testAPKFolder/appEAS.apk filter=lfs diff=lfs merge=lfs -text

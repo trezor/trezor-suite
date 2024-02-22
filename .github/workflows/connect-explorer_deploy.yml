@@ -1,37 +1,37 @@
-name: "[Deploy] connect-explorer"
-
-on:
-  push:
-    branches:
-      - develop
-    paths:
-      - "packages/connect-explorer/**"
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: ".nvmrc"
-
-      - name: Build connect-explorer
-        run: |
-          npm install -g yarn && yarn install
-          yarn build:libs
-          yarn workspace @trezor/connect-explorer build
-
-      - name: Deploy connect-explorer
-        uses: peaceiris/actions-gh-pages@v3
-        if: ${{ github.ref == 'refs/heads/develop' }}
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./packages/connect-explorer/build
-          destination_dir: connect-explorer
-          publish_branch: gh-pages
-        env:
-          GITHUB_TOKEN: ${{ secrets.TREZOR_BOT_TOKEN }}
+#name: "[Deploy] connect-explorer"
+#
+#on:
+#  push:
+#    branches:
+#      - develop
+#    paths:
+#      - "packages/connect-explorer/**"
+#
+#jobs:
+#  deploy:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v4
+#
+#      - name: Setup node
+#        uses: actions/setup-node@v4
+#        with:
+#          node-version-file: ".nvmrc"
+#
+#      - name: Build connect-explorer
+#        run: |
+#          npm install -g yarn && yarn install
+#          yarn build:libs
+#          yarn workspace @trezor/connect-explorer build
+#
+#      - name: Deploy connect-explorer
+#        uses: peaceiris/actions-gh-pages@v3
+#        if: ${{ github.ref == 'refs/heads/develop' }}
+#        with:
+#          github_token: ${{ secrets.GITHUB_TOKEN }}
+#          publish_dir: ./packages/connect-explorer/build
+#          destination_dir: connect-explorer
+#          publish_branch: gh-pages
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.TREZOR_BOT_TOKEN }}

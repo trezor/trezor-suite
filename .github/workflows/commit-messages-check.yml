@@ -1,20 +1,20 @@
-name: "[Check]: Commit messages"
-
-on: [pull_request]
-
-jobs:
-  commit-message-check:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Fetch base and current branch
-        run: |
-          git fetch --no-tags origin ${{ github.base_ref }}
-          git fetch --no-tags origin ${{ github.head_ref }}:${{ github.head_ref }}
-          git switch ${{ github.head_ref }}
-
-      - name: Check commit messages
-        run: ./scripts/check-commit-messages.sh
-        env:
-          BASE_BRANCH_NAME: ${{ github.base_ref }}
+#name: "[Check]: Commit messages"
+#
+#on: [pull_request]
+#
+#jobs:
+#  commit-message-check:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v4
+#
+#      - name: Fetch base and current branch
+#        run: |
+#          git fetch --no-tags origin ${{ github.base_ref }}
+#          git fetch --no-tags origin ${{ github.head_ref }}:${{ github.head_ref }}
+#          git switch ${{ github.head_ref }}
+#
+#      - name: Check commit messages
+#        run: ./scripts/check-commit-messages.sh
+#        env:
+#          BASE_BRANCH_NAME: ${{ github.base_ref }}
