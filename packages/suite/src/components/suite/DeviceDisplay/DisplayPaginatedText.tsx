@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { Icon } from '@trezor/components';
-import { parseTextToPagesAndLines } from './parseTextToPagesAndLines';
+import { ResultRow, parseTextToPagesAndLines } from './parseTextToPagesAndLines';
 import { DeviceDisplayText } from './DeviceDisplayText';
 import { DeviceModelInternal } from '@trezor/connect';
 import { DisplayPageSeparator } from './DisplayPageSeparator';
@@ -15,19 +15,41 @@ const StyledContinuesIcon = styled(Icon)<{ isPixelType: boolean }>`
     margin-right: ${({ isPixelType }) => (isPixelType ? '12px' : '24px')};
 `;
 
+const Container = styled.div`
+    text-align: left;
+`;
+
 type DisplayPaginatedTextProps = {
     isPixelType: boolean;
     'data-test'?: string;
     text: string;
-    device: DeviceModelInternal;
+    deviceModel: DeviceModelInternal;
 };
 
-export const DisplayPaginatedText = ({
+type PageProps = {
+    isPrevPageIconOnDevice: boolean;
+    isPixelType: boolean;
+    isFirstLine: boolean;
+    isLastLine: boolean;
+    row: ResultRow;
+    isFirstPage: boolean;
+    isLastPage: boolean;
+    'data-test'?: string;
+};
+
+const Page = styled.div``;
+const RowContainer = styled.div``;
+
+const Row = ({
+    isFirstPage,
+    isLastPage,
+    isFirstLine,
+    isLastLine,
     isPixelType,
+    isPrevPageIconOnDevice,
+    row,
     'data-test': dataTest,
-    text,
-    device,
-}: DisplayPaginatedTextProps) => {
+}: PageProps) => {
     const iconNextName = isPixelType ? 'ADDRESS_PIXEL_NEXT' : 'ADDRESS_NEXT';
     const iconContinuesName = isPixelType ? 'ADDRESS_PIXEL_CONTINUES' : 'ADDRESS_CONTINUES';
     const iconConfig = {
@@ -35,59 +57,67 @@ export const DisplayPaginatedText = ({
         color: isPixelType ? '#ffffff' : '#959596',
     };
 
-    const { pages, isPrevPageIconOnDevice } = parseTextToPagesAndLines({
-        device,
-        text,
-    });
+    const showNextPageArrow = isLastLine && !isLastPage;
+    const showPrevPageArrow = isFirstLine && !isFirstPage && isPrevPageIconOnDevice;
 
-    const components = [];
-
-    for (let i = 0; i < pages.length; i++) {
-        const isFirstPage = i === 0;
-        const isLastPage = i === pages.length - 1;
-        const page = pages[i];
-
-        components.push(
+    return (
+        <RowContainer>
+            {showPrevPageArrow && (
+                <StyledContinuesIcon
+                    {...iconConfig}
+                    isPixelType={isPixelType}
+                    icon={iconContinuesName}
+                />
+            )}
             <DeviceDisplayText
-                key={`text-${i}`}
                 isPixelType={isPixelType}
                 data-test={isFirstPage ? dataTest : undefined}
             >
-                {page.rows.map((row, index) => {
-                    const isFirstLine = index === 0;
-                    const isLastLine = index === page.rows.length - 1;
+                {row.text}
+            </DeviceDisplayText>
+            {showNextPageArrow && (
+                <StyledNextIcon {...iconConfig} isPixelType={isPixelType} icon={iconNextName} />
+            )}
+        </RowContainer>
+    );
+};
 
-                    const showNextPageArrow = isLastLine && !isLastPage;
-                    const showPrevPageArrow = isFirstLine && !isFirstPage && isPrevPageIconOnDevice;
+export const DisplayPaginatedText = ({
+    isPixelType,
+    'data-test': dataTest,
+    text,
+    deviceModel,
+}: DisplayPaginatedTextProps) => {
+    const { pages, hasNextIcon: isPrevPageIconOnDevice } = parseTextToPagesAndLines({
+        deviceModel,
+        text,
+    });
 
-                    return (
-                        <>
-                            {!isFirstLine ? <br /> : null}
-                            {showPrevPageArrow ? (
-                                <StyledContinuesIcon
-                                    {...iconConfig}
-                                    isPixelType={isPixelType}
-                                    icon={iconContinuesName}
-                                />
-                            ) : null}
-                            {row.text}
-                            {showNextPageArrow ? (
-                                <StyledNextIcon
-                                    {...iconConfig}
-                                    isPixelType={isPixelType}
-                                    icon={iconNextName}
-                                />
-                            ) : null}
-                        </>
-                    );
-                })}
-            </DeviceDisplayText>,
-        );
+    return (
+        <Container>
+            {pages.map((page, pageIndex) => {
+                const isFirstPage = pageIndex === 0;
+                const isLastPage = pageIndex === pages.length - 1;
 
-        if (!isLastPage) {
-            components.push(<DisplayPageSeparator key={`separator-${i}`} />);
-        }
-    }
-
-    return <>{components}</>;
+                return (
+                    <Page key={`page-${pageIndex}`}>
+                        {page.rows.map((row, index) => (
+                            <Row
+                                isPrevPageIconOnDevice={isPrevPageIconOnDevice}
+                                isPixelType={isPixelType}
+                                row={row}
+                                isFirstLine={index === 0}
+                                isLastLine={index === page.rows.length - 1}
+                                key={`row-${index}`}
+                                isFirstPage={isFirstPage}
+                                isLastPage={isLastPage}
+                                data-test={dataTest}
+                            />
+                        ))}
+                        {!isLastPage && <DisplayPageSeparator key={`separator-${pageIndex}`} />}
+                    </Page>
+                );
+            })}
+        </Container>
+    );
 };
