@@ -59,7 +59,23 @@ export const filterUnavailableNetworks = (
 const calculateProgress =
     (discovery: Discovery) =>
     (_dispatch: any, getState: any): PartialDiscovery => {
-        let total = LIMIT * discovery.networks.length;
+        const numberOfNonCardano = discovery.networks.filter(s => s !== 'ada').length;
+
+        // This is ugly hack, but it works in both scenarios:
+        //
+        //      1) We some `discovery.networks` (we added Cardano), but only some are allowed,
+        //         the `availableCardanoDerivations` < discovery.networks(===ada).length` so it works
+        //
+        //      2) When we remove Cardano, the `availableCardanoDerivations` keeps some stuff,
+        //         but because `discovery.networks(===ada).length` becomes 0 it works
+        //
+        const numberOfCardano = Math.min(
+            discovery.availableCardanoDerivations?.length ?? 0,
+            discovery.networks.filter(s => s === 'ada').length,
+        );
+
+        let total = LIMIT * (numberOfNonCardano + numberOfCardano);
+
         let loaded = 0;
         const accounts = selectAccounts(getState());
         const accountsByDeviceState = accounts.filter(a => a.deviceState === discovery.deviceState);
