@@ -3,7 +3,7 @@ import { A } from '@mobily/ts-belt';
 import { isTestnet } from '@suite-common/wallet-utils';
 import { Network, NetworkSymbol, getMainnets, getTestnets } from '@suite-common/wallet-config';
 
-const discoveryBlacklist: NetworkSymbol[] = ['sol', 'dsol'];
+const discoveryBlacklist: NetworkSymbol[] = ['sol', 'dsol', 'matic'];
 
 // All supported coins for device discovery
 export const networkSymbolsWhitelistMap = {
