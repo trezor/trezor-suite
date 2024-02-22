@@ -7,12 +7,13 @@ import { useFormatters } from '@suite-common/formatters';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import {
     selectTransactionBlockTimeById,
-    selectIsTransactionZeroValuePhishing,
     TransactionsRootState,
+    selectIsPhishingTransaction,
 } from '@suite-common/wallet-core';
 import { EthereumTokenTransfer, WalletAccountTransaction } from '@suite-native/ethereum-tokens';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
+import { TokenDefinitionsRootState } from '@suite-common/wallet-core';
 
 import { TransactionDetailSummary } from './TransactionDetailSummary';
 import { TransactionDetailRow } from './TransactionDetailRow';
@@ -35,8 +36,9 @@ export const TransactionDetailData = ({
         selectTransactionBlockTimeById(state, transaction.txid, accountKey),
     );
 
-    const isZeroValuePhishing = useSelector((state: TransactionsRootState) =>
-        selectIsTransactionZeroValuePhishing(state, transaction.txid, accountKey),
+    const isPhishingTransaction = useSelector(
+        (state: TokenDefinitionsRootState & TransactionsRootState) =>
+            selectIsPhishingTransaction(state, transaction.txid, accountKey),
     );
 
     const transactionTokensCount = transaction.tokens.length;
@@ -50,7 +52,7 @@ export const TransactionDetailData = ({
     return (
         <>
             <VStack>
-                {isZeroValuePhishing && (
+                {isPhishingTransaction && (
                     <AlertBox
                         variant="error"
                         isStandalone

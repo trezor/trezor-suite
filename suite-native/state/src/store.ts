@@ -6,6 +6,7 @@ import { prepareButtonRequestMiddleware, prepareDeviceMiddleware } from '@suite-
 import { prepareDiscoveryMiddleware } from '@suite-native/discovery';
 import { prepareTransactionCacheMiddleware } from '@suite-native/accounts';
 import { blockchainMiddleware } from '@suite-native/blockchain';
+import { tokenDefinitionsMiddleware } from '@suite-native/token-definitions';
 
 import { extraDependencies } from './extraDependencies';
 import { prepareRootReducers } from './reducers';
@@ -18,6 +19,7 @@ const middlewares: Middleware[] = [
     prepareButtonRequestMiddleware(extraDependencies),
     prepareDiscoveryMiddleware(extraDependencies),
     prepareTransactionCacheMiddleware(extraDependencies),
+    tokenDefinitionsMiddleware,
 ];
 
 if (__DEV__) {

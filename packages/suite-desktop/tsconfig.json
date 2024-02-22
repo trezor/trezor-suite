@@ -1,8 +1,6 @@
 {
     "extends": "../../tsconfig.base.json",
-    "compilerOptions": {
-        "outDir": "./libDev"
-    },
+    "compilerOptions": { "outDir": "./libDev" },
     "include": ["./src", "./e2e", "**/*.json"],
     "references": []
 }

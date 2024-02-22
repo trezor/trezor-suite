@@ -33,6 +33,7 @@
         { "path": "../module-settings" },
         { "path": "../storage" },
         { "path": "../toasts" },
+        { "path": "../token-definitions" },
         { "path": "../../packages/connect" },
         {
             "path": "../../packages/transport-native"

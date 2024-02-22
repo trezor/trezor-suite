@@ -146,7 +146,7 @@ export const TransactionItem = memo(
             );
         };
         const isPhishingTransaction = useSelector(state =>
-            selectIsPhishingTransaction(state, transaction),
+            selectIsPhishingTransaction(state, transaction.txid, accountKey),
         );
 
         const dataTestBase = `@transaction-item/${index}${

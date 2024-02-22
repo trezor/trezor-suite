@@ -5,7 +5,6 @@ import {
     findTransaction,
     getConfirmations,
     isPending,
-    getIsZeroValuePhishing,
     getIsPhishingTransaction,
 } from '@suite-common/wallet-utils';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
@@ -288,8 +287,8 @@ export const selectTransactionConfirmations = (
     return getConfirmations(transaction, blockchainHeight);
 };
 
-export const selectIsTransactionZeroValuePhishing = (
-    state: TransactionsRootState,
+export const selectIsPhishingTransaction = (
+    state: TokenDefinitionsRootState & TransactionsRootState,
     txid: string,
     accountKey: AccountKey,
 ) => {
@@ -297,13 +296,6 @@ export const selectIsTransactionZeroValuePhishing = (
 
     if (!transaction) return false;
 
-    return getIsZeroValuePhishing(transaction);
-};
-
-export const selectIsPhishingTransaction = (
-    state: TokenDefinitionsRootState,
-    transaction: WalletAccountTransaction,
-) => {
     const tokenDefinitions = selectTokenDefinitions(state, transaction.symbol);
 
     if (!tokenDefinitions) return false;

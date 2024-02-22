@@ -103,7 +103,9 @@ export const TxDetailModal = ({ tx, rbfForm, onCancel }: TxDetailModalProps) => 
     );
     const account = useSelector(state => selectAccountByKey(state, accountKey));
     const network = account && getAccountNetwork(account);
-    const isPhishingTransaction = useSelector(state => selectIsPhishingTransaction(state, tx));
+    const isPhishingTransaction = useSelector(state =>
+        selectIsPhishingTransaction(state, tx.txid, accountKey),
+    );
 
     return (
         <StyledModal

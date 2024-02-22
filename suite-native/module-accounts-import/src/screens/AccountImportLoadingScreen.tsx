@@ -11,7 +11,8 @@ import {
     StackToStackCompositeScreenProps,
 } from '@suite-native/navigation';
 import TrezorConnect, { AccountInfo } from '@trezor/connect';
-import { TokenAddress } from '@suite-common/wallet-types';
+import { getTokenDefinitionThunk } from '@suite-common/wallet-core';
+import { networks } from '@suite-common/wallet-config';
 
 import { AccountImportLoader } from '../components/AccountImportLoader';
 import { useShowImportError } from '../useShowImportError';
@@ -85,18 +86,15 @@ export const AccountImportLoadingScreen = ({
             if (!ignore) {
                 if (fetchedAccountInfo?.success) {
                     if (networkSymbol === 'eth') {
-                        fetchedAccountInfo.payload.tokens?.forEach(token => {
+                        fetchedAccountInfo.payload.tokens?.forEach(token =>
                             dispatch(
-                                updateFiatRatesThunk({
-                                    ticker: {
-                                        symbol: 'eth',
-                                        tokenAddress: token.contract as TokenAddress,
-                                    },
-                                    rateType: 'current',
-                                    localCurrency: fiatCurrency,
+                                getTokenDefinitionThunk({
+                                    networkSymbol: 'eth',
+                                    chainId: networks.eth.chainId,
+                                    contractAddress: token.contract,
                                 }),
-                            );
-                        });
+                            ),
+                        );
                     }
                     setAccountInfo(fetchedAccountInfo.payload);
                 } else {
