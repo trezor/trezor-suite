@@ -444,6 +444,7 @@ const initCoreInIframe = async (payload: PopupInit['payload']) => {
     reactEventBus.dispatch({ type: 'loading', message: 'waiting for iframe init' });
     await initMessageChannelWithIframe(payload, handleMessageInIframeMode);
     // done, popup is ready to handle incoming messages, waiting for handshake from iframe
+    reactEventBus.dispatch({ type: 'loading', message: 'waiting for handshake' });
 };
 
 // handle POPUP.HANDSHAKE message from iframe or npm-client

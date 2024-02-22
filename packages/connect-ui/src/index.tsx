@@ -53,6 +53,10 @@ export const ConnectUI = ({ postMessage, clearLegacyView }: ConnectUIProps) => {
         // set state
         if (message?.type === 'state-update') {
             setState(message.payload);
+
+            // do not add state-update messages to the list of messages
+            // it would mean Component gets set to null
+            return;
         }
 
         // set current view
