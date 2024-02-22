@@ -14,7 +14,7 @@ export const DEFAULT_STRENGTH: Record<DeviceModelInternal, number> = {
 export const MAX_CHARACTERS_ON_SCREEN: Record<DeviceModelInternal, number> = {
     [DeviceModelInternal.T1B1]: 81,
     [DeviceModelInternal.T2T1]: 81,
-    [DeviceModelInternal.T2B1]: 71,
+    [DeviceModelInternal.T2B1]: 70, // 4 * 18 - 2
 };
 
 export const MAX_CHARACTERS_ON_ROW: Record<DeviceModelInternal, number> = {
@@ -24,7 +24,7 @@ export const MAX_CHARACTERS_ON_ROW: Record<DeviceModelInternal, number> = {
 };
 
 export const CHARACTER_OFFSET_FOR_ARROW: Record<DeviceModelInternal, number> = {
-    [DeviceModelInternal.T1B1]: 0, // Trezor One does not have prev-arrow, and only "..." is used for "next-arrow"
+    [DeviceModelInternal.T1B1]: 0, // Trezor One does not have continues-arrow, and only "..." is used for "next-arrow"
     [DeviceModelInternal.T2T1]: 4,
-    [DeviceModelInternal.T2B1]: 1,
+    [DeviceModelInternal.T2B1]: 2,
 };

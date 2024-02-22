@@ -16,6 +16,7 @@ type ResultPage = { rows: ResultRow[] };
 
 export type ParseTextToLinesResult = {
     pages: ResultPage[];
+    isPrevPageIconOnDevice: boolean;
 };
 
 export const parseTextToPagesAndLines = ({
@@ -45,5 +46,8 @@ export const parseTextToPagesAndLines = ({
         resultPages.push({ rows: [firstRow, ...remainingRows].map(row => ({ text: row })) });
     }
 
-    return { pages: resultPages };
+    return {
+        pages: resultPages,
+        isPrevPageIconOnDevice: offsetForArrows > 1,
+    };
 };
