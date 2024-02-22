@@ -48,9 +48,6 @@ const dispose = async () => {
     }
 };
 
-console.log('WIP: just to trigger GitHub deploy to dev!');
-console.log('WIP');
-
 // handle message received from iframe
 const handleMessage = (message: CoreEventMessage) => {
     const { event, type, payload } = message;
