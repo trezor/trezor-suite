@@ -215,6 +215,7 @@ const initDevice = async (method: AbstractMethod<any>) => {
     const isWebUsb = _deviceList.transportType() === 'WebUsbTransport';
     let device: Device | typeof undefined;
     let showDeviceSelection = isWebUsb;
+    const isUsingPopup = DataManager.getSettings('popup');
     const origin = DataManager.getSettings('origin')!;
     const { preferredDevice } = storage.load().origin[origin] || {};
     const preferredDeviceInList = preferredDevice && _deviceList.getDevice(preferredDevice.path);
@@ -231,13 +232,14 @@ const initDevice = async (method: AbstractMethod<any>) => {
 
     if (method.devicePath) {
         device = _deviceList.getDevice(method.devicePath);
-        showDeviceSelection = !device || !!device?.unreadableError;
+        showDeviceSelection =
+            !device || !!device?.unreadableError || (device.isUnacquired() && !!isUsingPopup);
     } else {
         const devices = _deviceList.asArray();
         if (devices.length === 1 && !isWebUsb) {
             // there is only one device available. use it
             device = _deviceList.getDevice(devices[0].path);
-            showDeviceSelection = !!device?.unreadableError;
+            showDeviceSelection = !!device?.unreadableError || device.isUnacquired();
         } else {
             showDeviceSelection = true;
         }
@@ -263,7 +265,12 @@ const initDevice = async (method: AbstractMethod<any>) => {
         // check again for available devices
         // there is a possible race condition before popup open
         const devices = _deviceList.asArray();
-        if (devices.length === 1 && devices[0].type !== 'unreadable' && !isWebUsb) {
+        if (
+            devices.length === 1 &&
+            devices[0].type !== 'unreadable' &&
+            devices[0].features &&
+            !isWebUsb
+        ) {
             // there is one device available. use it
             device = _deviceList.getDevice(devices[0].path);
         } else {
