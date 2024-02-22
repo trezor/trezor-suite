@@ -14,14 +14,12 @@ const Wrapper = styled.div`
     z-index: 1;
 `;
 
-enum View {
-    AnalyticsConsent,
-    Default,
-}
+const View = {
+    AnalyticsConsent: 'AnalyticsConsent',
+    Default: 'Default',
+} as const;
 
-const getView = () => {
-    const showAnalyticsConsent = storage.load().tracking_enabled === undefined;
-
+const getView = (showAnalyticsConsent: boolean) => {
     if (showAnalyticsConsent) {
         return View.AnalyticsConsent;
     }
@@ -34,13 +32,16 @@ type BottomRightFloatingBarProps = {
 };
 
 export const BottomRightFloatingBar = ({ onAnalyticsConfirm }: BottomRightFloatingBarProps) => {
-    const [view, setView] = useState(getView());
+    const initialStorage = storage.load();
+    const [view, setView] = useState(getView(initialStorage.tracking_enabled === undefined));
+    const isInitialTrackingEnabled = initialStorage.tracking_enabled !== false;
 
     let content;
     switch (view) {
         case View.AnalyticsConsent:
             content = (
                 <AnalyticsConsentWrapper
+                    isInitialTrackingEnabled={isInitialTrackingEnabled}
                     onAnalyticsConfirm={(enabled: boolean) => {
                         setView(View.Default);
                         onAnalyticsConfirm(enabled);

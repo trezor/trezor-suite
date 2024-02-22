@@ -12,10 +12,14 @@ const StyledDataAnalytics = styled(DataAnalytics)`
 `;
 
 type AnalyticsConsentWrapperProps = {
+    isInitialTrackingEnabled: boolean;
     onAnalyticsConfirm: (enabled: boolean) => void;
 };
 
-export const AnalyticsConsentWrapper = ({ onAnalyticsConfirm }: AnalyticsConsentWrapperProps) => {
+export const AnalyticsConsentWrapper = ({
+    isInitialTrackingEnabled,
+    onAnalyticsConfirm,
+}: AnalyticsConsentWrapperProps) => {
     const onConfirm = (trackingEnabled: boolean) => {
         if (trackingEnabled) {
             analytics.enable();
@@ -28,7 +32,10 @@ export const AnalyticsConsentWrapper = ({ onAnalyticsConfirm }: AnalyticsConsent
 
     return (
         <Wrapper>
-            <StyledDataAnalytics onConfirm={onConfirm} />
+            <StyledDataAnalytics
+                isInitialTrackingEnabled={isInitialTrackingEnabled}
+                onConfirm={onConfirm}
+            />
         </Wrapper>
     );
 };
