@@ -1,3 +1,8 @@
+# 9.1.12
+
+-   initial non-beta release
+-   added serviceworker proxy and example how to use it.
+
 # 0.0.0-beta.3
 
 -   Include directory `lib/` into release in order to publish TypeScript types.
