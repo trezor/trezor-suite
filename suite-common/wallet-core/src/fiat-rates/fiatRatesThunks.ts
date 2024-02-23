@@ -105,7 +105,7 @@ export const updateFiatRatesThunk = createThunk(
             );
 
             if (!tokenDefinition?.isTokenKnown) {
-                return;
+                throw new Error('Missing token definition');
             }
         }
 
