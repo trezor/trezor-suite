@@ -31,15 +31,15 @@ const AccountCryptoBalance = styled.div`
     color: ${({ theme }) => theme.textSubdued};
 `;
 
-const AmountsWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: ${spacingsPx.sm};
-
-    & > div:nth-of-type(2) {
-        max-width: fit-content;
-    }
-`;
+// const AmountsWrapper = styled.div`
+//     display: flex;
+//     flex-direction: column;
+//     gap: ${spacingsPx.sm};
+//
+//     & > div:nth-of-type(2) {
+//         max-width: fit-content;
+//     }
+// `;
 
 interface AccountTopPanelSkeletonProps {
     animate?: boolean;
@@ -60,6 +60,7 @@ const AccountTopPanelSkeleton = ({ animate, symbol }: AccountTopPanelSkeletonPro
 export const AccountTopPanel = forwardRef<HTMLDivElement>((_, ref) => {
     const { account, loader, status } = useSelector(state => state.wallet.selectedAccount);
     const localCurrency = useSelector(selectLocalCurrency);
+    const isDebug = useSelector(selectIsDebugModeActive);
 
     // TODO: move this to FiatHeader
     const { fiatAmount } = useFiatFromCryptoValue({
@@ -77,6 +78,8 @@ export const AccountTopPanel = forwardRef<HTMLDivElement>((_, ref) => {
     }
 
     const { symbol, formattedBalance } = account;
+    // TODO: remove isDebug for staking release
+    // const isStakeShown = STAKE_SYMBOLS.includes(symbol) && isDebug;
 
     return (
         <Container ref={ref}>

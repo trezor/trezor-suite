@@ -4,9 +4,11 @@ import { useSelector } from 'src/hooks/suite';
 import { CardanoStakingDashboard } from './components/CardanoStakingDashboard';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { EthStakingDashboard } from './components/EthStakingDashboard/EthStakingDashboard';
+import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 
 export const WalletStaking = () => {
     const { selectedAccount } = useSelector(state => state.wallet);
+    const isDebug = useSelector(selectIsDebugModeActive);
 
     if (selectedAccount.status !== 'loaded') {
         return (
@@ -23,7 +25,10 @@ export const WalletStaking = () => {
             case 'cardano':
                 return <CardanoStakingDashboard selectedAccount={selectedAccount} />;
             case 'ethereum':
-                return <EthStakingDashboard selectedAccount={selectedAccount} />;
+                // TODO: remove isDebug for staking release
+                if (isDebug) {
+                    return <EthStakingDashboard selectedAccount={selectedAccount} />;
+                }
             // no default
         }
     }
