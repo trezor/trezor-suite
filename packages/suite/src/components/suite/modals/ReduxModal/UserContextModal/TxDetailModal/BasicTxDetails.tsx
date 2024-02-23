@@ -326,7 +326,7 @@ export const BasicTxDetails = ({
                             <StyledIcon icon="GAS" size={10} />
                             <Translation id="TR_GAS_PRICE" />
                         </Title>
-                        <Value>{`${fromWei(tx.ethereumSpecific.gasPrice, 'gwei')} ${getFeeUnits(
+                        <Value>{`${fromWei(tx.ethereumSpecific?.gasPrice ?? '0', 'gwei')} ${getFeeUnits(
                             'ethereum',
                         )}`}</Value>
 

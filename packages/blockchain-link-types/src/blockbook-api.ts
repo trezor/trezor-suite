@@ -32,7 +32,7 @@ export interface EthereumSpecific {
     nonce: number;
     gasLimit: number;
     gasUsed?: number;
-    gasPrice: string;
+    gasPrice?: string;
     data?: string;
     parsedData?: EthereumParsedInputData;
     internalTransfers?: EthereumInternalTransfer[];

@@ -442,7 +442,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
                     ethereumSpecific: origTx.ethereumSpecific
                         ? {
                               ...origTx.ethereumSpecific,
-                              gasPrice: toWei(origTx.ethereumSpecific.gasPrice, 'gwei'),
+                              gasPrice: toWei(origTx.ethereumSpecific?.gasPrice ?? '0', 'gwei'),
                           }
                         : undefined,
                     cardanoSpecific: origTx.cardanoSpecific
