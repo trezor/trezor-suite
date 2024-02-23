@@ -2,7 +2,7 @@ import { AccountLabel } from './AccountLabel';
 import { DeviceConfirmImage } from './DeviceConfirmImage';
 import { CheckItem } from './CheckItem';
 import { PrerequisitesGuide } from './PrerequisitesGuide/PrerequisitesGuide';
-import { WelcomeLayout } from './WelcomeLayout/WelcomeLayout';
+import { WelcomeLayout } from './layouts/WelcomeLayout/WelcomeLayout';
 import { NotificationCard } from './NotificationCard';
 import { WordInput } from './WordInput';
 import { WordInputAdvanced } from './WordInputAdvanced';
@@ -13,8 +13,6 @@ import { WebUsbButton } from './WebUsbButton';
 import { HiddenPlaceholder } from './HiddenPlaceholder';
 import { QuestionTooltip } from './QuestionTooltip';
 import { DeviceInvalidModeLayout } from './DeviceInvalidModeLayout';
-import { AppNavigationPanel } from './AppNavigationPanel';
-import { AppNavigation } from './AppNavigation/AppNavigation';
 import { Ticker } from './Ticker/Ticker';
 import { TrendTicker } from './Ticker/TrendTicker';
 import { PriceTicker } from './Ticker/PriceTicker';
@@ -37,7 +35,6 @@ import { FormattedDateWithBullet } from './FormattedDateWithBullet';
 import { Metadata } from './Metadata';
 import { HomescreenGallery } from './HomescreenGallery';
 import { DeviceMatrixExplanation } from './DeviceMatrixExplanation';
-import { AccountFormCloseButton } from './AccountFormCloseButton';
 import { TroubleshootingTips } from './troubleshooting/TroubleshootingTips';
 import { ConnectDevicePrompt } from './ConnectDevicePrompt';
 import { CoinGroup } from './CoinGroup/CoinGroup';
@@ -79,8 +76,6 @@ export {
     useGetWalletLabel,
     MetadataLabeling,
     QuestionTooltip,
-    AppNavigationPanel,
-    AppNavigation,
     FormattedCryptoAmount,
     FormattedNftAmount,
     Ticker,
@@ -95,7 +90,6 @@ export {
     Metadata,
     HomescreenGallery,
     DeviceMatrixExplanation,
-    AccountFormCloseButton,
     TroubleshootingTips,
     ConnectDevicePrompt,
     CoinGroup,

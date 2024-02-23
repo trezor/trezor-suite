@@ -1,3 +1,3 @@
 export { DeviceBanner } from './DeviceBanner';
-export { SettingsLayout } from './SettingsLayout/SettingsLayout';
+export { SettingsLayout } from './SettingsLayout';
 export { SettingsSection } from './SettingsSection';

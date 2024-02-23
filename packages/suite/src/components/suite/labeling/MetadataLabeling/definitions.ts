@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { DropdownMenuItemProps } from '@trezor/components/libDev';
+import { DropdownMenuItemProps } from '@trezor/components';
 import { MetadataAddPayload } from 'src/types/suite/metadata';
 
 export interface Props {

@@ -1,7 +1,6 @@
 import { ReactNode } from 'react';
 import styled, { css } from 'styled-components';
-import { transparentize } from 'polished';
-import { borders, zIndices } from '@trezor/theme';
+import { borders } from '@trezor/theme';
 
 const Wrapper = styled.div<{ size?: string; isHoverable?: boolean }>`
     position: relative;
@@ -21,7 +20,7 @@ const Wrapper = styled.div<{ size?: string; isHoverable?: boolean }>`
 
         background-color: transparent;
         pointer-events: none;
-        z-index: ${zIndices.base};
+        z-index: -1;
     }
 
     ${props =>
@@ -32,11 +31,7 @@ const Wrapper = styled.div<{ size?: string; isHoverable?: boolean }>`
             :active {
                 ::after {
                     transform: scale(1);
-                    background-color: ${({ theme }) =>
-                        transparentize(
-                            theme.HOVER_TRANSPARENTIZE_FILTER,
-                            theme.HOVER_PRIMER_COLOR,
-                        )};
+                    background-color: ${({ theme }) => theme.backgroundTertiaryDefaultOnElevation0};
                 }
             }
         `}

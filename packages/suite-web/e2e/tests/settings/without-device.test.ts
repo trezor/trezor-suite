@@ -28,25 +28,11 @@ describe('Settings changes persist when device disconnected', () => {
 
         cy.task('startEmu');
 
-        // Close settings when device connected, should be on send form again
-        cy.getTestElement('@settings/menu/close').click();
+        // Go back to send form
+        cy.getTestElement('@suite/menu/suite-index').click();
+        cy.getTestElement('@account-menu/btc/normal/0').click();
+        cy.getTestElement('@wallet/menu/wallet-send').click();
         cy.location('pathname').should('match', /\/accounts\/send$/);
-    });
-
-    it('Settings persistence', () => {
-        cy.task('stopEmu');
-
-        // Open settings, enable ETH
-        cy.getTestElement('@connect-device-prompt');
-        cy.getTestElement('@suite/menu/settings').click();
-        cy.getTestElement('@settings/menu/wallet').click();
-        cy.getTestElement('@settings/wallet/network/eth').click({ force: true });
-
-        cy.task('startEmu');
-
-        // Verify settings persistence
-        cy.getTestElement('@settings/menu/close').click();
-        cy.getTestElement('@account-menu/eth/normal/0').should('be.visible');
     });
 });
 

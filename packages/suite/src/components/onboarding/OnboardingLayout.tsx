@@ -52,7 +52,7 @@ const Header = styled.div`
     justify-content: space-between;
     align-items: center;
     flex-direction: column;
-    max-width: ${MAX_ONBOARDING_WIDTH};
+    max-width: ${MAX_ONBOARDING_WIDTH}px;
     background: ${({ theme }) => theme.backgroundSurfaceElevation2};
     box-shadow: 0 ${spacingsPx.md} ${spacingsPx.sm} ${spacingsPx.xxs}
         ${({ theme }) => theme.backgroundSurfaceElevation2};
@@ -102,7 +102,7 @@ const Content = styled.div`
     color: ${({ theme }) => theme.textSubdued};
     justify-content: center;
     align-items: center;
-    max-width: ${MAX_ONBOARDING_WIDTH};
+    max-width: ${MAX_ONBOARDING_WIDTH}px;
     width: 100%;
     padding: 0 ${spacingsPx.lg} ${spacingsPx.xxxxl} ${spacingsPx.lg};
 `;

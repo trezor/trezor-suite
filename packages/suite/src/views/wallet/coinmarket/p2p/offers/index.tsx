@@ -1,11 +1,12 @@
 import styled from 'styled-components';
 import { variables } from '@trezor/components';
-import { useCoinmarketLayout } from 'src/hooks/wallet/useCoinmarketLayout';
 import { CoinmarketP2pOffersContext, useOffers } from 'src/hooks/wallet/useCoinmarketP2pOffers';
 import { withSelectedAccountLoaded, WithSelectedAccountLoadedProps } from 'src/components/wallet';
-import { CoinmarketFooter, CoinmarketP2pTopPanel } from 'src/views/wallet/coinmarket/common';
+import { CoinmarketFooter } from 'src/views/wallet/coinmarket/common';
 import { List } from 'src/views/wallet/coinmarket/p2p/offers/List';
 import { SelectedOffer } from 'src/views/wallet/coinmarket/p2p/offers/SelectedOffer';
+import { useLayout } from 'src/hooks/suite';
+import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 
 const Wrapper = styled.div`
     display: flex;
@@ -23,7 +24,7 @@ const Wrapper = styled.div`
 `;
 
 const OffersIndex = (props: WithSelectedAccountLoadedProps) => {
-    useCoinmarketLayout(CoinmarketP2pTopPanel);
+    useLayout('Trezor Suite | Trade', () => <PageHeader backRoute="wallet-coinmarket-p2p" />);
 
     const coinmarketOffersValues = useOffers(props);
     const { quotes, selectedQuote } = coinmarketOffersValues;

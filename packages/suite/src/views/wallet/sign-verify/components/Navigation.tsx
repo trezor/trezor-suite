@@ -1,4 +1,22 @@
-import { WalletLayoutNavigation, WalletLayoutNavLink } from 'src/components/wallet';
+import styled from 'styled-components';
+import { NavigationTab } from './NavigationTab';
+
+const Container = styled.div`
+    display: flex;
+    width: 100%;
+    min-height: 57px;
+    padding: 0 25px;
+    overflow-x: auto;
+    scrollbar-width: none; /* Firefox */
+
+    ::-webkit-scrollbar {
+        /* WebKit */
+        width: 0;
+        height: 0;
+    }
+
+    border-bottom: 1px solid ${({ theme }) => theme.borderOnElevation1};
+`;
 
 export type NavPages = 'sign' | 'verify';
 
@@ -8,18 +26,18 @@ interface NavigationProps {
 }
 
 export const Navigation = ({ page, setPage }: NavigationProps) => (
-    <WalletLayoutNavigation>
-        <WalletLayoutNavLink
+    <Container>
+        <NavigationTab
             title="TR_SIGN_MESSAGE"
             active={page === 'sign'}
             onClick={() => setPage('sign')}
             data-test="@sign-verify/navigation/sign"
         />
-        <WalletLayoutNavLink
+        <NavigationTab
             title="TR_VERIFY_MESSAGE"
             active={page === 'verify'}
             onClick={() => setPage('verify')}
             data-test="@sign-verify/navigation/verify"
         />
-    </WalletLayoutNavigation>
+    </Container>
 );

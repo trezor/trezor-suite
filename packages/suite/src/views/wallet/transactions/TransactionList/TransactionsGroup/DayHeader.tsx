@@ -9,13 +9,13 @@ import { parseTransactionDateKey, isTestnet } from '@suite-common/wallet-utils';
 
 import { Translation, HiddenPlaceholder, FormattedCryptoAmount } from 'src/components/suite';
 import { Network } from 'src/types/wallet';
-import { SECONDARY_PANEL_HEIGHT } from 'src/components/suite/AppNavigation/AppNavigation';
+import { SUBPAGE_NAV_HEIGHT } from 'src/constants/suite/layout';
 
 const Wrapper = styled.div`
     display: flex;
     position: sticky;
     background: ${({ theme }) => theme.backgroundSurfaceElevation0};
-    top: ${SECONDARY_PANEL_HEIGHT};
+    top: ${SUBPAGE_NAV_HEIGHT};
     align-items: center;
     justify-content: space-between;
     flex: 1;

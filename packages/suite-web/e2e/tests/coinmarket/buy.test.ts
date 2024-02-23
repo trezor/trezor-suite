@@ -157,7 +157,7 @@ describe('Coinmarket buy', () => {
             });
 
         // Goes back and verifies the transaction is listed under "Trade transactions"
-        cy.getTestElement('@coinmarket/back').click();
+        cy.getTestElement('@account-subpage/back').click();
         cy.get('[class*="BuyTransaction__Wrapper"]')
             .first()
             .should('exist')

@@ -9,6 +9,8 @@ interface WrapperProps {
 }
 
 const Wrapper = styled.span<WrapperProps>`
+    font-variant-numeric: tabular-nums;
+
     ${(props: WrapperProps) =>
         props.discreetMode &&
         css`
