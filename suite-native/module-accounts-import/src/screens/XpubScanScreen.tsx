@@ -15,7 +15,7 @@ import {
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { getNetworkType } from '@suite-common/wallet-config';
-import { isAddressValid, isAddressBasedNetwork } from '@suite-common/wallet-utils';
+import { isAddressBasedNetwork } from '@suite-common/wallet-utils';
 import { useAlert } from '@suite-native/alerts';
 import { useTranslate } from '@suite-native/intl';
 import {
@@ -32,6 +32,7 @@ import { AccountImportSubHeader } from '../components/AccountImportSubHeader';
 import { DevXpub } from '../components/DevXpub';
 import { XpubHint } from '../components/XpubHint';
 import { XpubHintBottomSheet } from '../components/XpubHintBottomSheet';
+import { validateXpub } from '../utils/validationUtils';
 
 const FORM_BUTTON_FADE_IN_DURATION = 200;
 
@@ -79,15 +80,13 @@ export const XpubScanScreen = ({
     );
 
     const goToAccountImportScreen = ({ xpubAddress }: XpubFormValues) => {
-        if (
-            xpubAddress &&
-            !isAddressBasedNetwork(networkType) &&
-            isAddressValid(xpubAddress, networkSymbol)
-        ) {
+        const validation = validateXpub(xpubAddress, networkSymbol);
+        if (!validation.isValid) {
             // we need to set timeout to avoid showing alert during screen transition, otherwise it will freeze the app
             setTimeout(() => {
                 showAlert({
-                    title: translate('moduleAccountImport.xpubScanScreen.alert.address.title'),
+                    title: `Invalid ${validation.failedOn}`,
+                    // title: translate('moduleAccountImport.xpubScanScreen.alert.address.title'),
                     description: translate(
                         'moduleAccountImport.xpubScanScreen.alert.address.description',
                     ),
@@ -109,7 +108,6 @@ export const XpubScanScreen = ({
 
             return;
         }
-
         navigation.navigate(AccountsImportStackRoutes.AccountImportLoading, {
             xpubAddress,
             networkSymbol,

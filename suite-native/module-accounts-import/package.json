@@ -8,6 +8,7 @@
     "main": "src/index",
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest -c ../../jest.config.native.js",
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
