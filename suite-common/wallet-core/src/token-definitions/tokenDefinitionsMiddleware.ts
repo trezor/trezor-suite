@@ -1,3 +1,6 @@
+import { Account, Timestamp, TokenAddress } from 'suite-common/wallet-types/src';
+import { isAnyOf } from '@reduxjs/toolkit';
+
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { getNetworkFeatures, isEthereumBasedNetwork, networks } from '@suite-common/wallet-config';
 
@@ -10,31 +13,44 @@ export const prepareTokenDefinitionsMiddleware = createMiddlewareWithExtraDeps(
         next(action);
 
         if (
-            accountsActions.createAccount.match(action) ||
-            accountsActions.updateAccount.match(action)
+            isAnyOf(
+                accountsActions.createAccount,
+                accountsActions.updateAccount,
+                accountsActions.updateSelectedAccount,
+            )(action)
         ) {
-            const { symbol } = action.payload;
+            let account: Account;
+            if (isAnyOf(accountsActions.createAccount, accountsActions.updateAccount)(action)) {
+                account = action.payload;
+            } else if (
+                accountsActions.updateSelectedAccount.match(action) &&
+                action.payload.status === 'loaded'
+            ) {
+                account = action.payload.account;
+            } else {
+                return action;
+            }
 
-            const networkFeatures = getNetworkFeatures(symbol);
+            const networkFeatures = getNetworkFeatures(account.symbol);
 
             if (networkFeatures.includes('token-definitions')) {
-                action.payload.tokens?.forEach(token => {
+                account.tokens?.forEach(token => {
                     const contractAddress = token.contract;
 
                     const tokenDefinition = selectSpecificTokenDefinition(
                         getState(),
-                        symbol,
+                        account.symbol,
                         contractAddress,
                     );
 
-                    const network = networks[symbol];
+                    const network = networks[account.symbol];
                     if (
                         isEthereumBasedNetwork(network) &&
                         (!tokenDefinition || tokenDefinition.error)
                     ) {
                         dispatch(
                             getTokenDefinitionThunk({
-                                networkSymbol: symbol,
+                                networkSymbol: account.symbol,
                                 chainId: network.chainId,
                                 contractAddress,
                             }),
