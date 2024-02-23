@@ -20,11 +20,12 @@ export const mapElevationToBorder = ({
     elevation,
 }: StyledComponentElevationProps): CSSColor => {
     const map: Record<Elevation, Color> = {
+        // @TODO fix colors borderOnElevation -> borderElevation
         '-1': 'borderOnElevationNegative', // For example left menu is negative elevation
-        0: 'borderOnElevation0',
-        1: 'borderOnElevation1',
-        2: 'borderOnElevation0', // Todo: once we get tokens
-        3: 'borderOnElevation1', // Todo: once we get tokens
+        0: 'borderOnElevation1',
+        1: 'borderOnElevation0',
+        2: 'borderOnElevation1', // Todo: once we get tokens
+        3: 'borderOnElevation0', // Todo: once we get tokens
     };
 
     return theme[map[elevation]];
