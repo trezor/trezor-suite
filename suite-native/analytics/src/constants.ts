@@ -26,4 +26,5 @@ export enum EventType {
     ConnectDevice = 'device_connect',
     UnsupportedDevice = 'unsupported_device',
     CoinDiscovery = 'coin_discovery',
+    CoinDiscoveryNewAccount = 'coin_discovery/new_account',
 }

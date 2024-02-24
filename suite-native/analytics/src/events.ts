@@ -1,6 +1,6 @@
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { UNIT_ABBREVIATION } from '@suite-common/suite-constants';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
 import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
 import { DeviceModelInternal, VersionArray } from '@trezor/connect';
 
@@ -177,5 +177,13 @@ export type SuiteNativeAnalyticsEvent =
               loadDuration: number;
           } & {
               [key in NetworkSymbol]: number;
+          };
+      }
+    | {
+          type: EventType.CoinDiscoveryNewAccount;
+          payload: {
+              symbol: NetworkSymbol;
+              path: string;
+              type: AccountType;
           };
       };

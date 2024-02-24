@@ -157,6 +157,15 @@ const addAccountsByDescriptorThunk = createThunk(
                     accountInfo,
                 }),
             );
+
+            analytics.report({
+                type: EventType.CoinDiscoveryNewAccount,
+                payload: {
+                    symbol: bundleItem.coin,
+                    path: bundleItem.path,
+                    type: bundleItem.accountType,
+                },
+            });
         }
     },
 );
