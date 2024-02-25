@@ -87,7 +87,7 @@ describe('Database migration', () => {
         cy.getTestElement('@wallet/menu/wallet-send').click();
         cy.getTestElement(btcAddressInputSelector).should('be.visible').type(testData.btcAddress);
         cy.wait(500); // wait has to be for a state save to happen
-        cy.getTestElement('@wallet/menu/close-button').last().click();
+        cy.getTestElement('@account-subpage/back').last().click();
 
         // check and store address of first btc tx
         cy.get('[data-test^="@metadata/outputLabel"] > span').should('be.visible');
@@ -138,7 +138,7 @@ describe('Database migration', () => {
 
         cy.task('startEmu');
         cy.getTestElement('@deviceStatus-connected').should('be.visible');
-        cy.getTestElement('@wallet/menu/close-button').last().click();
+        cy.getTestElement('@account-subpage/back').last().click();
 
         // checking the Send form
         cy.getTestElement('@wallet/menu/wallet-send').click();
@@ -147,7 +147,7 @@ describe('Database migration', () => {
             .should('be.visible')
             .invoke('attr', 'value')
             .should('eq', testData.btcAddress);
-        cy.getTestElement('@wallet/menu/close-button').last().click();
+        cy.getTestElement('@account-subpage/back').last().click();
 
         cy.get('body').should('have.css', 'background-color', 'rgb(22, 22, 22)');
     });

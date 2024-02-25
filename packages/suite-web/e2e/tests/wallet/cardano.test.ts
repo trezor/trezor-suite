@@ -50,7 +50,7 @@ describe('Cardano', () => {
 
         //  go to cardano account #1 - send
         cy.getTestElement('@wallet/menu/wallet-send').click();
-        cy.getTestElement('@wallet/menu/close-button').last().click();
+        cy.getTestElement('@account-subpage/back').last().click();
 
         //  go to cardano account #1 - receive
         cy.getTestElement('@wallet/menu/wallet-receive').click();
@@ -58,7 +58,7 @@ describe('Cardano', () => {
         cy.getTestElement('@modal').matchImageSnapshot('cardano-receive');
         cy.task('pressYes');
         cy.getTestElement('@modal/close-button').click();
-        cy.getTestElement('@wallet/menu/close-button').last().click();
+        cy.getTestElement('@account-subpage/back').last().click();
 
         // go to cardano account #1 - staking
         cy.getTestElement('@wallet/menu/wallet-tokens').click();
