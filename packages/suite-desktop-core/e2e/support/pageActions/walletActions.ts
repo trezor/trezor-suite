@@ -1,5 +1,7 @@
 import { Page } from '@playwright/test';
 
+import { onDashboardPage } from './dashboardActions';
+
 class WalletActions {
     async filterTransactions(window: Page, desiredTransaction: string) {
         const searchInput = window.getByTestId('@wallet/accounts/search-icon');
@@ -12,6 +14,15 @@ class WalletActions {
         for (const arrow of accountArrows) {
             await arrow.click();
         }
+    }
+    async enableAllCardanoAccounts(window: Page) {
+        const cardanoTypes = ['normal', 'legacy', 'ledger'];
+        for (const type of cardanoTypes) {
+            await window.click(`[data-test="@settings/wallet/network/ada/${type}/0"]`);
+        }
+        await onDashboardPage.assertHasVisibleBalanceOnFirstAccount(window, 'ada');
+        await window.click('[data-test="@wallet/menu/wallet-staking"]');
+        await window.getByText('Your stake address');
     }
 }
 
