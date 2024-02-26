@@ -29,8 +29,9 @@ export const EmptyHomeRenderer = () => {
     }
 
     if (isUsbDeviceConnectFeatureEnabled) {
-        // Crossroads should be displayed only if there is no real device connected and portfolio tracker has no accounts.
-        if (areAllDevicesDisconnectedOrAccountless) {
+        // Crossroads should be displayed if there is no real device connected and portfolio tracker has no accounts
+        // or if there is device connected, but not authorized (PIN enter cancelled).
+        if (areAllDevicesDisconnectedOrAccountless || !isDeviceAuthorized) {
             return <EmptyPortfolioCrossroads />;
         }
 
