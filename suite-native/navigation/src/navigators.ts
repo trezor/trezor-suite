@@ -19,13 +19,15 @@ import {
     AddCoinAccountStackRoutes,
 } from './routes';
 
+type AddCoinFlowParams = RequireAllOrNone<
+    { networkSymbol: NetworkSymbol; accountType: AccountType; accountIndex: number },
+    'networkSymbol' | 'accountType' | 'accountIndex'
+>;
+
 type ReceiveAccountsParams = {
     accountKey?: AccountKey;
     tokenContract?: TokenAddress;
-} & RequireAllOrNone<
-    { networkSymbol?: NetworkSymbol; accountType?: AccountType; accountIndex?: number },
-    'networkSymbol' | 'accountType' | 'accountIndex'
->;
+} & AddCoinFlowParams;
 
 export type AccountsStackParamList = {
     [AccountsStackRoutes.Accounts]: undefined;
@@ -122,10 +124,7 @@ export type RootStackParamList = {
     [RootStackRoutes.AccountDetail]: {
         accountKey?: AccountKey;
         tokenContract?: TokenAddress;
-    } & RequireAllOrNone<
-        { networkSymbol?: NetworkSymbol; accountType?: AccountType; accountIndex?: number },
-        'networkSymbol' | 'accountType' | 'accountIndex'
-    >;
+    } & AddCoinFlowParams;
     [RootStackRoutes.DeviceInfo]: undefined;
     [RootStackRoutes.AddCoinAccountStack]: NavigatorScreenParams<AddCoinAccountStackParamList>;
 };

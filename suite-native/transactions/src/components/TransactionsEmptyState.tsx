@@ -37,7 +37,7 @@ export const TransactionsEmptyState = ({ accountKey }: { accountKey: string }) =
     };
 
     return (
-        <Box paddingHorizontal="medium" style={applyStyle(wrapperStyle)}>
+        <Box style={applyStyle(wrapperStyle)}>
             <Card style={applyStyle(cardStyle)}>
                 <Box marginBottom="large" alignItems="center">
                     <Pictogram

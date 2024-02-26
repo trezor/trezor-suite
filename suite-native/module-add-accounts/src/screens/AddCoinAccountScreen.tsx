@@ -42,7 +42,7 @@ export const AddCoinAccountScreen = ({
 
     const handleConfirmTap = () => {
         if (networkWithTypeToBeAdded) {
-            // Timeout is needed so bottom sheet has time to hide otherwise app crashes
+            // Timeout is needed so AccountTypeDecisionBootomSheet has time to hide otherwise app crashes
             setTimeout(() => {
                 addCoinAccount({
                     network: networkWithTypeToBeAdded[0],
