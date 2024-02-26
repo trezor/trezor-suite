@@ -39,8 +39,8 @@ export const useFiatFromCryptoValue = ({
     const targetCurrency = fiatCurrency ?? localCurrency;
     const currentFiatRates = coins.find(f =>
         tokenAddress
-            ? f.tokenAddress?.toLowerCase() === tokenAddress?.toLowerCase()
-            : f.symbol.toLowerCase() === symbol.toLowerCase(),
+            ? f.tokenAddress?.toLowerCase() === tokenAddress.toLowerCase()
+            : f.symbol.toLowerCase() === symbol.toLowerCase() && !f.tokenAddress,
     )?.current;
 
     const ratesSource = useCustomSource ? source : currentFiatRates?.rates;
