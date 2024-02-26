@@ -11,10 +11,7 @@ const Wrapper = styled.div`
     display: flex;
     flex: 1;
     flex-direction: column;
-`;
-
-const StyledRow = styled(BoxComponent)`
-    margin: 10px 0;
+    gap: 20px;
 `;
 
 export default {
@@ -25,18 +22,21 @@ export const Box: StoryObj = {
     render: () => (
         <>
             <Wrapper>
-                <StyledRow>
+                <BoxComponent>
                     <Text>No state</Text>
-                </StyledRow>
-                <StyledRow>
+                </BoxComponent>
+                <BoxComponent variant="primary">
                     <Text>Success</Text>
-                </StyledRow>
-                <StyledRow state="error">
+                </BoxComponent>
+                <BoxComponent variant="destructive">
                     <Text>Error</Text>
-                </StyledRow>
-                <StyledRow state="warning">
+                </BoxComponent>
+                <BoxComponent variant="warning">
                     <Text>Warning</Text>
-                </StyledRow>
+                </BoxComponent>
+                <BoxComponent variant="info">
+                    <Text>Info</Text>
+                </BoxComponent>
             </Wrapper>
         </>
     ),

@@ -1,85 +1,79 @@
 import React from 'react';
-import styled, { css, DefaultTheme } from 'styled-components';
+import styled, { css, DefaultTheme, useTheme } from 'styled-components';
 import { IconName } from '@suite-common/icons';
 import { Icon } from '@suite-common/icons/src/webComponents';
-import { borders, Color, spacings, spacingsPx, typography } from '@trezor/theme';
+import { borders, Color, CSSColor, spacings, spacingsPx, typography } from '@trezor/theme';
 import { focusStyleTransition, getFocusShadowStyle } from '../../utils/utils';
+import type { UISize, UIVariant } from '../../config/types';
 
-const getBackgroundColor = (variant: BadgeVariant | undefined, theme: DefaultTheme) => {
-    switch (variant) {
-        case 'green':
-            return theme.backgroundPrimarySubtleOnElevation0;
-        case 'red':
-            return theme.backgroundAlertRedSubtleOnElevation0;
-        case 'bold':
-            return theme.backgroundNeutralBold;
-        case 'neutral':
-        default:
-            return theme.backgroundNeutralSubtleOnElevation0;
-    }
-};
+type BadgeSize = Extract<UISize, 'tiny' | 'small' | 'medium'>;
+type BadgeVariant = Extract<UIVariant, 'primary' | 'tertiary' | 'destructive'>;
 
-const getTextColor = (
-    variant: BadgeVariant | undefined,
-    isDisabled: boolean | undefined,
-    theme: DefaultTheme,
-) => {
-    if (isDisabled) {
-        return theme.textDisabled;
-    }
+export interface BadgeProps {
+    size?: BadgeSize;
+    variant?: BadgeVariant;
+    isDisabled?: boolean;
+    icon?: IconName;
+    hasAlert?: boolean;
+    className?: string;
+    children?: React.ReactNode;
+}
 
-    switch (variant) {
-        case 'green':
-            return theme.textPrimaryDefault;
-        case 'red':
-            return theme.textAlertRed;
-        case 'bold':
-            return theme.textOnPrimary;
-        case 'neutral':
-        default:
-            return theme.textSubdued;
-    }
-};
-
-const getIconColor = (variant: BadgeVariant, isDisabled: boolean | undefined): Color => {
-    if (isDisabled) {
-        return 'iconDisabled';
-    }
-
-    switch (variant) {
-        case 'green':
-            return 'iconPrimaryDefault';
-        case 'red':
-            return 'iconAlertRed';
-        case 'bold':
-            return 'iconOnPrimary';
-        case 'neutral':
-        default:
-            return 'iconSubdued';
-    }
-};
-
-const getPadding = (size: BadgeSize) => {
-    switch (size) {
-        case 'tiny':
-            return `0 ${spacings.xs - spacings.xxxs}px`;
-        case 'small':
-            return `0 ${spacingsPx.xs}`;
-        default:
-            return `${spacingsPx.xxxs} ${spacingsPx.xs}`;
-    }
+type MapArgs = {
+    variant: BadgeVariant;
+    theme: DefaultTheme;
 };
 
 type BadgeContainerProps = Required<Pick<BadgeProps, 'size' | 'variant' | 'hasAlert'>>;
+
+const mapVariantToBackgroundColor = ({ variant, theme }: MapArgs): CSSColor => {
+    const colorMap: Record<BadgeVariant, Color> = {
+        primary: 'backgroundPrimarySubtleOnElevation0',
+        tertiary: 'backgroundNeutralSubtleOnElevation0',
+        destructive: 'backgroundAlertRedSubtleOnElevation0',
+    };
+
+    return theme[colorMap[variant]];
+};
+
+const mapVariantToTextColor = ({ variant, theme }: MapArgs): CSSColor => {
+    const colorMap: Record<BadgeVariant, Color> = {
+        primary: 'textPrimaryDefault',
+        tertiary: 'textSubdued',
+        destructive: 'textAlertRed',
+    };
+
+    return theme[colorMap[variant]];
+};
+
+const mapVariantToIconColor = ({ variant, theme }: MapArgs): CSSColor => {
+    const colorMap: Record<BadgeVariant, Color> = {
+        primary: 'iconPrimaryDefault',
+        tertiary: 'iconSubdued',
+        destructive: 'iconAlertRed',
+    };
+
+    return theme[colorMap[variant]];
+};
+
+const mapVariantToPadding = ({ size }: { size: BadgeSize }): string => {
+    const colorMap: Record<BadgeSize, string> = {
+        tiny: `0 ${spacings.xs - spacings.xxxs}px`,
+        small: `0 ${spacingsPx.xs}`,
+        medium: `${spacingsPx.xxxs} ${spacingsPx.xs}`,
+    };
+
+    return colorMap[size];
+};
 
 const Container = styled.button<BadgeContainerProps>`
     display: flex;
     align-items: center;
     gap: ${spacingsPx.xxs};
-    padding: ${({ size }) => getPadding(size)};
+    padding: ${mapVariantToPadding};
     border-radius: ${borders.radii.full};
     border: 1px solid transparent;
-    background: ${({ variant, theme }) => getBackgroundColor(variant, theme)};
+    background: ${mapVariantToBackgroundColor};
     transition: ${focusStyleTransition};
 
     :disabled {
@@ -99,43 +93,39 @@ const Container = styled.button<BadgeContainerProps>`
 `;
 
 const Content = styled.span<Required<Pick<BadgeProps, 'size' | 'variant' | 'isDisabled'>>>`
-    color: ${({ variant, isDisabled, theme }) => getTextColor(variant, isDisabled, theme)};
+    color: ${({ isDisabled, theme }) => (isDisabled ? theme.textDisabled : mapVariantToTextColor)};
     ${({ size }) => (size === 'medium' ? typography.hint : typography.label)};
 `;
 
-type BadgeSize = 'tiny' | 'small' | 'medium';
-type BadgeVariant = 'neutral' | 'green' | 'red' | 'bold';
-
-export interface BadgeProps {
-    size?: BadgeSize;
-    variant?: BadgeVariant;
-    isDisabled?: boolean;
-    icon?: IconName;
-    hasAlert?: boolean;
-    className?: string;
-    children?: React.ReactNode;
-}
-
 export const Badge = ({
     size = 'medium',
-    variant = 'neutral',
+    variant = 'tertiary',
     isDisabled,
     icon,
     hasAlert,
     className,
     children,
-}: BadgeProps) => (
-    <Container
-        size={size}
-        variant={variant}
-        disabled={!!isDisabled}
-        hasAlert={!!hasAlert}
-        className={className}
-    >
-        {icon && <Icon name={icon} color={getIconColor(variant, isDisabled)} />}
+}: BadgeProps) => {
+    const theme = useTheme();
 
-        <Content size={size} variant={variant} isDisabled={!!isDisabled}>
-            {children}
-        </Content>
-    </Container>
-);
+    return (
+        <Container
+            size={size}
+            variant={variant}
+            disabled={!!isDisabled}
+            hasAlert={!!hasAlert}
+            className={className}
+        >
+            {icon && (
+                <Icon
+                    name={icon}
+                    color={isDisabled ? 'iconDisabled' : mapVariantToIconColor({ variant, theme })}
+                />
+            )}
+
+            <Content size={size} variant={variant} isDisabled={!!isDisabled}>
+                {children}
+            </Content>
+        </Container>
+    );
+};

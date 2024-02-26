@@ -147,7 +147,7 @@ export const WalletInstance = ({
         <Wrapper
             data-test={dataTestBase}
             key={`${instance.label}${instance.instance}${instance.state}`}
-            state={isSelected ? 'success' : undefined}
+            variant={isSelected ? 'primary' : undefined}
             {...rest}
         >
             <Col grow={1} onClick={() => !editing && selectDeviceInstance(instance)} tabIndex={0}>

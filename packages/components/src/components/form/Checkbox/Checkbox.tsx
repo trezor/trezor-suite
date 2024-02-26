@@ -5,6 +5,7 @@ import { borders, Color, spacingsPx, typography } from '@trezor/theme';
 import { KEYBOARD_CODE } from '../../../constants/keyboardEvents';
 import { Icon } from '../../assets/Icon/Icon';
 import { getFocusShadowStyle } from '../../../utils/utils';
+import { UIHorizontalAlignment, UIVariant } from 'packages/components/src/config/types';
 
 interface VariantStyles {
     background: Color;
@@ -32,7 +33,7 @@ export const variantStyles: Record<CheckboxVariant, VariantStyles> = {
         backgroundDisabledChecked: 'backgroundPrimarySubtleOnElevation0',
         borderDisabledChecked: 'backgroundPrimarySubtleOnElevation0',
     },
-    'alert-red': {
+    destructive: {
         background: 'backgroundAlertRedSubtleOnElevation0',
         border: 'borderAlertRed',
         backgroundHover: 'backgroundSurfaceElevation0',
@@ -44,7 +45,7 @@ export const variantStyles: Record<CheckboxVariant, VariantStyles> = {
         backgroundDisabledChecked: 'backgroundAlertRedSubtleOnElevation1',
         borderDisabledChecked: 'backgroundAlertRedSubtleOnElevation1',
     },
-    'alert-yellow': {
+    warning: {
         background: 'backgroundAlertYellowSubtleOnElevation0',
         border: 'backgroundAlertYellowBold',
         backgroundHover: 'backgroundSurfaceElevation0',
@@ -134,8 +135,8 @@ export const HiddenInput = styled.input`
     height: 0;
 `;
 
-export type CheckboxVariant = 'primary' | 'alert-red' | 'alert-yellow';
-export type LabelAlignment = 'left' | 'right';
+export type CheckboxVariant = Extract<UIVariant, 'primary' | 'destructive' | 'warning'>;
+export type LabelAlignment = Extract<UIHorizontalAlignment, 'left' | 'right'>;
 
 export interface CheckboxProps {
     variant?: CheckboxVariant;
@@ -192,7 +193,7 @@ export const Checkbox = ({
                 />
             </CheckContainer>
 
-            {children && <Label isRed={variant === 'alert-red'}>{children}</Label>}
+            {children && <Label isRed={variant === 'destructive'}>{children}</Label>}
         </Container>
     );
 };

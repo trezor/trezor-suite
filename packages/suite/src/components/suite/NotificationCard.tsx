@@ -13,13 +13,13 @@ import {
 } from '@trezor/components';
 import { Elevation, borders, spacingsPx, typography } from '@trezor/theme';
 import { TrezorLink } from './TrezorLink';
-import { ButtonVariant } from '@trezor/components/src/components/buttons/buttonStyleUtils';
+import { UIVariant } from '@trezor/components/src/config/types';
 
 // TODO: move to components
 
 type ButtonType = ButtonProps & { href?: string };
 
-export type NotificationCardVariant = Extract<ButtonVariant, 'info' | 'warning' | 'destructive'>;
+export type NotificationCardVariant = Extract<UIVariant, 'info' | 'warning' | 'destructive'>;
 
 interface NotificationCardProps {
     children: ReactNode;

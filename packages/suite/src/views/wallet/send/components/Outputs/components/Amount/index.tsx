@@ -92,7 +92,7 @@ const Symbol = styled.span`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
-const StyledWarning = styled(Warning)`
+const WarningWrapper = styled.div`
     margin-bottom: 8px;
 `;
 
@@ -287,9 +287,11 @@ export const Amount = ({ output, outputId }: AmountProps) => {
             </Row>
 
             {isLowAnonymity && (
-                <StyledWarning withIcon>
-                    <Translation id="TR_NOT_ENOUGH_ANONYMIZED_FUNDS_WARNING" />
-                </StyledWarning>
+                <WarningWrapper>
+                    <Warning withIcon>
+                        <Translation id="TR_NOT_ENOUGH_ANONYMIZED_FUNDS_WARNING" />
+                    </Warning>
+                </WarningWrapper>
             )}
         </>
     );

@@ -1,42 +1,58 @@
-import styled from 'styled-components';
+import { UIVariant } from '@trezor/components/src/config/types';
+import { CSSColor, Color } from '@trezor/theme';
+import styled, { DefaultTheme } from 'styled-components';
 
-type Status = 'ok' | 'warning' | 'error';
+type StatusLightVariant = Extract<UIVariant, 'primary' | 'warning' | 'destructive'>;
 
-const Circle = styled.div<{ status: Status }>`
+type MapArgs = {
+    variant: StatusLightVariant;
+    theme: DefaultTheme;
+};
+
+const mapVariantToBackgroundColor = ({ variant, theme }: MapArgs): CSSColor => {
+    const colorMap: Record<StatusLightVariant, Color> = {
+        primary: 'backgroundPrimarySubtleOnElevation0',
+        warning: 'backgroundAlertRedSubtleOnElevation0',
+        destructive: 'backgroundAlertRedSubtleOnElevation0',
+    };
+
+    return theme[colorMap[variant]];
+};
+
+const getInnerBackgroundColor = ({ variant, theme }: MapArgs): CSSColor => {
+    const colorMap: Record<StatusLightVariant, Color> = {
+        primary: 'backgroundPrimaryDefault',
+        warning: 'backgroundAlertYellowBold',
+        destructive: 'backgroundAlertRedBold',
+    };
+
+    return theme[colorMap[variant]];
+};
+
+const Circle = styled.div<{ variant: StatusLightVariant }>`
     display: flex;
     justify-content: center;
     align-items: center;
     width: 18px;
     height: 18px;
     border-radius: 50%;
-    background: ${({ status, theme }) =>
-        status === 'ok' ? theme.BG_LIGHT_GREEN : theme.BG_LIGHT_RED};
+    background: ${mapVariantToBackgroundColor};
 
     & > div {
         width: 6px;
         height: 6px;
         border-radius: 50%;
-        background: ${({ status, theme }) => {
-            switch (status) {
-                case 'ok':
-                    return theme.TYPE_GREEN;
-                case 'warning':
-                    return theme.TYPE_ORANGE;
-                case 'error':
-                default:
-                    return theme.TYPE_RED;
-            }
-        }};
+        background: ${getInnerBackgroundColor};
     }
 `;
 
 interface StatusLightProps {
-    status: Status;
+    variant: StatusLightVariant;
     className?: string;
 }
 
-export const StatusLight = ({ status, className }: StatusLightProps) => (
-    <Circle status={status} className={className}>
+export const StatusLight = ({ variant, className }: StatusLightProps) => (
+    <Circle variant={variant} className={className}>
         <div />
     </Circle>
 );

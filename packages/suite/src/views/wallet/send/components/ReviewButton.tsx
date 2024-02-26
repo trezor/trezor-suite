@@ -151,9 +151,9 @@ export const ReviewButton = () => {
     return (
         <Container>
             {showCoinControlWarning && (
-                <StyledWarning variant="critical">
+                <StyledWarning variant="destructive">
                     <Checkbox
-                        variant="alert-red"
+                        variant="destructive"
                         isChecked={anonymityWarningChecked}
                         onClick={toggleAnonymityWarning}
                     >
