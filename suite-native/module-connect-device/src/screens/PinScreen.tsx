@@ -8,7 +8,7 @@ import { ConnectDeviceSreenView } from '../components/ConnectDeviceSreenView';
 import { PinForm } from '../components/PinForm';
 import { PinOnDevice, deviceImageMap } from '../components/PinOnDevice';
 
-export const PinMatrixScreen = () => {
+export const PinScreen = () => {
     const deviceModel = useSelector(selectDeviceModel);
 
     if (!deviceModel) return null;

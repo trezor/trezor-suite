@@ -7,7 +7,7 @@ import {
 } from '@suite-native/navigation';
 
 import { ConnectAndUnlockDeviceScreen } from '../screens/ConnectAndUnlockDeviceScreen';
-import { PinMatrixScreen } from '../screens/PinMatrixScreen';
+import { PinScreen } from '../screens/PinScreen';
 import { ConnectingDeviceScreen } from '../screens/ConnectingDeviceScreen';
 
 export const ConnectDeviceStack = createNativeStackNavigator<ConnectDeviceStackParamList>();
@@ -20,7 +20,7 @@ export const ConnectDeviceStackNavigator = () => (
         />
         <ConnectDeviceStack.Screen
             name={ConnectDeviceStackRoutes.PinMatrix}
-            component={PinMatrixScreen}
+            component={PinScreen}
         />
         <ConnectDeviceStack.Screen
             name={ConnectDeviceStackRoutes.ConnectingDevice}
