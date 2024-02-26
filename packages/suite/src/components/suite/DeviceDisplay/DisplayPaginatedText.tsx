@@ -34,7 +34,6 @@ type PageProps = {
     row: ResultRow;
     isFirstPage: boolean;
     isLastPage: boolean;
-    'data-test'?: string;
 };
 
 const Page = styled.div``;
@@ -48,7 +47,6 @@ const Row = ({
     isPixelType,
     isPrevPageIconOnDevice,
     row,
-    'data-test': dataTest,
 }: PageProps) => {
     const iconNextName = isPixelType ? 'ADDRESS_PIXEL_NEXT' : 'ADDRESS_NEXT';
     const iconContinuesName = isPixelType ? 'ADDRESS_PIXEL_CONTINUES' : 'ADDRESS_CONTINUES';
@@ -69,12 +67,7 @@ const Row = ({
                     icon={iconContinuesName}
                 />
             )}
-            <DeviceDisplayText
-                isPixelType={isPixelType}
-                data-test={isFirstPage ? dataTest : undefined}
-            >
-                {row.text}
-            </DeviceDisplayText>
+            <DeviceDisplayText isPixelType={isPixelType}>{row.text}</DeviceDisplayText>
             {showNextPageArrow && (
                 <StyledNextIcon {...iconConfig} isPixelType={isPixelType} icon={iconNextName} />
             )}
@@ -100,7 +93,7 @@ export const DisplayPaginatedText = ({
                 const isLastPage = pageIndex === pages.length - 1;
 
                 return (
-                    <Page key={`page-${pageIndex}`}>
+                    <Page key={`page-${pageIndex}`} data-test={isFirstPage ? dataTest : undefined}>
                         {page.rows.map((row, index) => (
                             <Row
                                 isPrevPageIconOnDevice={isPrevPageIconOnDevice}
@@ -111,7 +104,6 @@ export const DisplayPaginatedText = ({
                                 key={`row-${index}`}
                                 isFirstPage={isFirstPage}
                                 isLastPage={isLastPage}
-                                data-test={dataTest}
                             />
                         ))}
                         {!isLastPage && <DisplayPageSeparator key={`separator-${pageIndex}`} />}
