@@ -226,6 +226,7 @@ export const en = {
             title: 'Connect & unlock\nyour Trezor',
         },
         pinScreen: {
+            title: 'Enter PIN\non your Trezor',
             form: {
                 title: 'Enter PIN',
                 entered: 'Entered',
