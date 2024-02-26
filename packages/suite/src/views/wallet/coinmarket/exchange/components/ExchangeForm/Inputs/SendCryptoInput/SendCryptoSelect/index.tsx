@@ -12,6 +12,7 @@ import {
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { useSelector } from 'src/hooks/suite';
 import { selectTokenDefinitions } from '@suite-common/wallet-core';
+import { hasNetworkTypeTradableTokens } from 'src/utils/wallet/coinmarket/commonUtils';
 
 const Option = styled.div`
     display: flex;
@@ -84,7 +85,7 @@ const SendCryptoSelect = () => {
                     value={value}
                     isClearable={false}
                     options={sendCryptoOptions}
-                    isDisabled={account.networkType !== 'ethereum'}
+                    isDisabled={!hasNetworkTypeTradableTokens(account.networkType)}
                     minValueWidth="58px"
                     isClean
                     data-test="@coinmarket/exchange/crypto-currency-select"

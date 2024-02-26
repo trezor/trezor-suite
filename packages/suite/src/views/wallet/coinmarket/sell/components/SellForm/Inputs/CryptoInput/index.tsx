@@ -28,6 +28,7 @@ import {
 } from 'src/utils/suite/validation';
 import { networkToCryptoSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import { selectTokenDefinitions } from '@suite-common/wallet-core';
+import { hasNetworkTypeTradableTokens } from 'src/utils/wallet/coinmarket/commonUtils';
 
 const Option = styled.div`
     display: flex;
@@ -138,7 +139,7 @@ const CryptoInput = () => {
                                 tokenDefinitions,
                             )}
                             isClean
-                            isDisabled={account.networkType !== 'ethereum'}
+                            isDisabled={!hasNetworkTypeTradableTokens(account.networkType)}
                             minValueWidth="100px"
                             formatOptionLabel={(
                                 option: ReturnType<typeof getSendCryptoOptions>[number],
