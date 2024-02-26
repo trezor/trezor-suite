@@ -111,6 +111,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
         getDefaultValue,
         formState: { errors },
         setValue,
+        getValues,
         setMax,
         calculateFiat,
         composeTransaction,
@@ -132,6 +133,8 @@ export const Amount = ({ output, outputId }: AmountProps) => {
     const amountValue = getDefaultValue(inputName, output.amount || '');
     const tokenValue = getDefaultValue(tokenInputName, output.token);
     const token = findToken(tokens, tokenValue);
+    const values = getValues();
+    const fiatCurrency = values?.outputs?.[0]?.currency;
 
     const tokenBalance = token ? (
         <HiddenPlaceholder>
@@ -146,7 +149,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
             state,
             getFiatRateKey(
                 symbol,
-                localCurrencyOption.value as FiatCurrencyCode,
+                fiatCurrency?.value as FiatCurrencyCode,
                 (token?.contract || '') as TokenAddress,
             ),
             'current',
