@@ -1,3 +1,14 @@
+# 1.0.14
+
+-   fix(suite): `fromWei` and `toWei`check errors (#11266) (99bb3324d)
+-   chore(suite): replace `selectCoinsLegacy` by fiat rates selectors (4e3ce7367)
+-   chore(blockchain-link): remove unused error event (4c1b8df7d)
+-   chore: update various dependencies (no major update) (fecd89f6e)
+-   chore: use global tsx (c21d81f66)
+-   chore: update typescript and use global tsc (84bc9b8bd)
+-   chore: use global rimraf (5a6759eff)
+-   chore: update root dependencies (fac6d99ec)
+
 # 1.0.12
 
 -   feat(suite-native): modals renderer (#10801) (a9b4d1e8fe)
