@@ -9,6 +9,7 @@ import {
     tokenToCryptoSymbol,
 } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import { TokenDefinitions } from '@suite-common/wallet-types';
+import { getNetworkFeatures } from '@suite-common/wallet-config';
 
 /** @deprecated */
 const suiteToInvitySymbols: {
@@ -62,6 +63,10 @@ export const getSendCryptoOptions = (
     }[] = [{ value: cryptoSymbol, label: cryptoSymbol, cryptoSymbol }];
 
     if (account.tokens) {
+        const hasTokenDefinitions = getNetworkFeatures(account.symbol).includes(
+            'token-definitions',
+        );
+
         account.tokens.forEach(token => {
             if (!token.symbol || token.balance === '0') {
                 return;
@@ -77,8 +82,11 @@ export const getSendCryptoOptions = (
             }
 
             // exclude unknown tokens
-            const isTokenKnown = !tokenDefinitions || tokenDefinitions[token.contract].isTokenKnown;
-            if (!isTokenKnown) {
+            if (
+                hasTokenDefinitions &&
+                tokenDefinitions &&
+                !tokenDefinitions[token.contract]?.isTokenKnown
+            ) {
                 return;
             }
 
