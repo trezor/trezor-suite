@@ -51,15 +51,10 @@ testPlaywright('Discover all Cardano account types', async () => {
 
     await onTopBar.openDashboard(window);
     await onDashboardPage.discoveryShouldFinish(window);
-    await window.click('[data-test="@account-menu/ada/normal/0"]');
-    await onDashboardPage.assertHasVisibleBalanceOnFirstAccount(window, 'ada');
-    await window.getByTestId('data-test="@wallet/menu/wallet-staking"').click;
-    await window.getByText('Cardano Staking');
+
     await onWalletPage.clickAllAccountArrows(window);
     await onWalletPage.enableAllCardanoAccounts(window);
+    // await window.pause();
 
-    await window.click('[data-test="@account-menu/ada/ledger/0"]');
-    await onDashboardPage.assertHasVisibleBalanceOnFirstAccount(window, 'ada');
-
-    expectPlaywright(await window.getByTestId('@wallet/menu/wallet-staking]')).toBeVisible();
+    expectPlaywright(onWalletPage.getaccountsCount(window, 'ada')).toEqual(3);
 });

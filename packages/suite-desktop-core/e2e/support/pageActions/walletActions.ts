@@ -18,11 +18,20 @@ class WalletActions {
     async enableAllCardanoAccounts(window: Page) {
         const cardanoTypes = ['normal', 'legacy', 'ledger'];
         for (const type of cardanoTypes) {
-            await window.click(`[data-test="@settings/wallet/network/ada/${type}/0"]`);
+            // await window.click(`[data-test="@settings/wallet/network/ada/${type}/0"]`);
+            await onDashboardPage.assertHasVisibleBalanceOnFirstAccount(window, 'ada');
+            await window.click(`[data-test="@account-menu/ada/${type}/0/label"]`);
+            await window.click('[data-test="@wallet/menu/wallet-staking"]');
+            await window.getByText('Your stake address').waitFor({ state: 'visible' });
         }
-        await onDashboardPage.assertHasVisibleBalanceOnFirstAccount(window, 'ada');
-        await window.click('[data-test="@wallet/menu/wallet-staking"]');
-        await window.getByText('Your stake address');
+    }
+    // asserts
+    async getaccountsCount(window: Page, network: string) {
+        // return await window.getByTestId(`[data-test="@account-menu/${network}"]`).count();
+        const bla = await window.getByTestId(`[data-test*="@account-menu/ada"]`).count();
+        // console.log(`[data-test*="@account-menu/${network}"]`);
+
+        console.log(bla);
     }
 }
 

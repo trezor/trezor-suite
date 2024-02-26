@@ -71,11 +71,6 @@ class SettingsActions {
         await electrumAddressInput.fill(backendUrl);
         await window.getByTestId('@settings/advance/button/save').click();
     }
-
-    async closeSettings(window: Page) {
-        await window.getByTestId('@settings/menu/close').click();
-        await window.getByTestId('@settings/menu/title').waitFor({ state: 'detached' });
-    }
 }
 
 export const onSettingsPage = new SettingsActions();
