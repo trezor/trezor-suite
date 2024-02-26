@@ -130,6 +130,10 @@ export const en = {
                     description: 'To check the balance of your coin, scan your public key (XPUB).',
                     hintButton: 'Where to find it?',
                 },
+                xpub: {
+                    title: 'Incompatible XPUB detected',
+                    description: "Provided XPUB doesn't correspond with selected network.",
+                },
             },
             input: {
                 label: {

@@ -16,7 +16,7 @@ import {
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { getNetworkType } from '@suite-common/wallet-config';
 import { isAddressValid, isAddressBasedNetwork } from '@suite-common/wallet-utils';
-import { useAlert } from '@suite-native/alerts';
+import { Alert, useAlert } from '@suite-native/alerts';
 import { useTranslate } from '@suite-native/intl';
 import {
     XpubFormContext,
@@ -43,6 +43,15 @@ const cameraStyle = prepareNativeStyle(utils => ({
     marginTop: 20,
     marginBottom: utils.spacings.medium,
 }));
+
+const isBtcTestnetXpub = (xpubAddress: string) => {
+    // This is to strip the start section of taproot xpubs
+    const xpub = xpubAddress.slice(xpubAddress.indexOf(']') + 1);
+
+    const btcTestnetPrefixes = ['tpub', 'upub', 'vpub', 'Upub', 'Vpub'];
+
+    return btcTestnetPrefixes.some(prefix => prefix === xpub.slice(0, 4));
+};
 
 export const XpubScanScreen = ({
     navigation,
@@ -78,34 +87,50 @@ export const XpubScanScreen = ({
             : 'moduleAccountImport.xpubScanScreen.input.label.xpub',
     );
 
+    const showDelayedAlert = (alertProps: Alert) => {
+        // we need to set timeout to avoid showing alert during screen transition, otherwise it will freeze the app
+        setTimeout(() => {
+            showAlert(alertProps);
+        }, 1000);
+    };
+
     const goToAccountImportScreen = ({ xpubAddress }: XpubFormValues) => {
+        if (networkSymbol === 'btc' && isBtcTestnetXpub(xpubAddress)) {
+            showDelayedAlert({
+                title: translate('moduleAccountImport.xpubScanScreen.alert.xpub.title'),
+                description: translate('moduleAccountImport.xpubScanScreen.alert.xpub.description'),
+                icon: 'warningCircle',
+                pictogramVariant: 'red',
+                primaryButtonTitle: translate('moduleAccountImport.xpubScanScreen.confirmButton'),
+                onPressPrimaryButton: () => null,
+            });
+
+            return;
+        }
+
+        // This is only to verify the bitcoin based networks. If you supply address instead of XPUB, it should fail here.
         if (
             xpubAddress &&
             !isAddressBasedNetwork(networkType) &&
             isAddressValid(xpubAddress, networkSymbol)
         ) {
-            // we need to set timeout to avoid showing alert during screen transition, otherwise it will freeze the app
-            setTimeout(() => {
-                showAlert({
-                    title: translate('moduleAccountImport.xpubScanScreen.alert.address.title'),
-                    description: translate(
-                        'moduleAccountImport.xpubScanScreen.alert.address.description',
-                    ),
-                    icon: 'warningCircle',
-                    pictogramVariant: 'red',
-                    primaryButtonTitle: translate(
-                        'moduleAccountImport.xpubScanScreen.confirmButton',
-                    ),
-                    onPressPrimaryButton: () => null,
-                    secondaryButtonTitle: translate(
-                        'moduleAccountImport.xpubScanScreen.alert.address.hintButton',
-                    ),
-                    onPressSecondaryButton: () => {
-                        hideAlert();
-                        setIsHintSheetVisible(true);
-                    },
-                });
-            }, 1000);
+            showDelayedAlert({
+                title: translate('moduleAccountImport.xpubScanScreen.alert.address.title'),
+                description: translate(
+                    'moduleAccountImport.xpubScanScreen.alert.address.description',
+                ),
+                icon: 'warningCircle',
+                pictogramVariant: 'red',
+                primaryButtonTitle: translate('moduleAccountImport.xpubScanScreen.confirmButton'),
+                onPressPrimaryButton: () => null,
+                secondaryButtonTitle: translate(
+                    'moduleAccountImport.xpubScanScreen.alert.address.hintButton',
+                ),
+                onPressSecondaryButton: () => {
+                    hideAlert();
+                    setIsHintSheetVisible(true);
+                },
+            });
 
             return;
         }
