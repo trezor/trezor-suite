@@ -1,3 +1,23 @@
+# 1.0.9
+
+-   chore(repo): remove build from protobuf (#11288) (11ffd941e)
+-   chore(suite): autofix newlines (c82455e74)
+-   chore(protobuf): update with Stellar related messages (22babdcf6)
+-   chore(protobuf): add language related messages (36ca33a67)
+-   chore(protobuf): recreate messages files (c06b3ee47)
+-   chore(protobuf): add eslint --fix to update:protobuf (db58d01b4)
+-   fix(protobuf): codegen devdependencies (0632e9ced)
+-   chore(repo): ESLint refactor + speed up 70% (#11143) (44fa12a79)
+-   chore: update various dependencies (no major update) (fecd89f6e)
+-   chore: use global tsx (c21d81f66)
+-   chore: update typescript and use global tsc (84bc9b8bd)
+-   chore: use global rimraf (5a6759eff)
+-   chore: remove test scripts for packages without tests (01e33b714)
+-   chore: use global jest (a7e68797d)
+-   chore: upgrade jest to 29.7.0 (3c656dc0b)
+-   chore: upgrade jest (004938e24)
+-   chore: update root dependencies (fac6d99ec)
+
 # 1.0.8
 
 -   fix(suite): navbar positioning (icons) (123882a387)
