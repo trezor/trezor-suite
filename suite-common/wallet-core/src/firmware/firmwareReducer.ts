@@ -5,6 +5,7 @@ import { Device, FirmwareType, UI } from '@trezor/connect';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 
 import { firmwareActions } from './firmwareActions';
+import { deviceActions } from '../device/deviceActions';
 
 type FirmwareUpdateCommon = {
     installingProgress?: number;
@@ -122,7 +123,7 @@ export const prepareFirmwareReducer = createReducerWithExtraDeps(initialState, (
         .addCase(firmwareActions.toggleUseDevkit, (state, { payload }) => {
             state.useDevkit = payload;
         })
-        .addCase(extra.actionTypes.addButtonRequest, extra.reducers.addButtonRequestFirmware)
+        .addCase(deviceActions.addButtonRequest, extra.reducers.addButtonRequestFirmware)
         .addMatcher(
             action => action.type === UI.FIRMWARE_PROGRESS,
             (state, action) => {

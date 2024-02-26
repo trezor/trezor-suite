@@ -74,6 +74,7 @@ const breadcrumbActions = [
     SUITE.TOR_STATUS,
     SUITE.ONLINE_STATUS,
     deviceActions.addButtonRequest.type,
+    deviceActions.removeButtonRequests.type,
     PROTOCOL.SAVE_COIN_PROTOCOL,
     MODAL.OPEN_USER_CONTEXT,
 ];

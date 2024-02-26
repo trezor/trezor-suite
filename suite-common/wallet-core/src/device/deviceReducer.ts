@@ -433,19 +433,36 @@ const forgetAndDisconnect = (draft: State, device: TrezorDevice) => {
 const addButtonRequest = (
     draft: State,
     device: TrezorDevice | undefined,
-    buttonRequest?: ButtonRequest,
+    buttonRequest: ButtonRequest,
 ) => {
     // only acquired devices
     if (!device || !device.features) return;
     const index = deviceUtils.findInstanceIndex(draft.devices, device);
     if (!draft.devices[index]) return;
     // update state
-    if (!buttonRequest) {
+
+    draft.devices[index].buttonRequests.push(buttonRequest);
+};
+
+const removeButtonRequests = (
+    draft: State,
+    device?: TrezorDevice,
+    buttonRequestCode?: ButtonRequest['code'],
+) => {
+    // only acquired devices
+    if (!device || !device.features) return;
+    const index = deviceUtils.findInstanceIndex(draft.devices, device);
+    if (!draft.devices[index]) return;
+    // update state
+    if (!buttonRequestCode) {
         draft.devices[index].buttonRequests = [];
 
         return;
     }
-    draft.devices[index].buttonRequests.push(buttonRequest);
+
+    draft.devices[index].buttonRequests = draft.devices[index].buttonRequests.filter(
+        ({ code }) => code !== buttonRequestCode,
+    );
 };
 
 export const setDeviceAuthenticity = (
@@ -496,6 +513,9 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
         })
         .addCase(deviceActions.addButtonRequest, (state, { payload }) => {
             addButtonRequest(state, payload.device, payload.buttonRequest);
+        })
+        .addCase(deviceActions.removeButtonRequests, (state, { payload }) => {
+            removeButtonRequests(state, payload.device, payload.buttonRequestCode);
         })
         .addCase(deviceActions.requestDeviceReconnect, state => {
             if (state.selectedDevice) {

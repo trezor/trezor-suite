@@ -27,6 +27,7 @@ const isActionDeviceRelated = (action: AnyAction): boolean => {
             deviceActions.receiveAuthConfirm,
             deviceActions.updatePassphraseMode,
             deviceActions.addButtonRequest,
+            deviceActions.removeButtonRequests,
             deviceActions.rememberDevice,
             deviceActions.forgetDevice,
         )(action)

@@ -77,7 +77,6 @@ export type ExtraDependencies = {
     // in place where we have all types available to ensure type safety.
     actionTypes: {
         storageLoad: ActionType;
-        addButtonRequest: ActionType;
         setDeviceMetadata: ActionType;
     };
     reducers: {
