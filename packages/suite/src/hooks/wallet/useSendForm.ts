@@ -108,10 +108,11 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
 
     const values = getValues();
     const token = values?.outputs?.[0]?.token;
+    const fiatCurrency = values?.outputs?.[0]?.currency;
 
     const fiatRateKey = getFiatRateKey(
         props.selectedAccount.account.symbol,
-        localCurrencyOption.value as FiatCurrencyCode,
+        fiatCurrency?.value as FiatCurrencyCode,
         token as TokenAddress,
     );
     const fiatRate = useSelector(state => selectFiatRatesByFiatRateKey(state, fiatRateKey));
